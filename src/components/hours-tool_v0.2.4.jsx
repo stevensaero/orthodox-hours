@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // ─── CALENDAR ENGINE ────────────────────────────────────────────────────────
 // Sources:
@@ -716,525 +716,6 @@ function getNamedDay(date, pascha) {
 }
 
 // ── MAIN LITURGICAL DATA FUNCTION ───────────────────────────────────────────
-function getLiturgicalData(date) {
-  const year = date.getFullYear();
-
-  // Compute Pascha for surrounding years
-  const prevPascha = computePascha(year - 1);
-  const thisPascha = computePascha(year);
-  const nextPascha = computePascha(year + 1);
-  const nextNextPascha = computePascha(year + 2);
-
-  // Relevant Pascha = most recent one that has already occurred
-  let relevantPascha = prevPascha;
-  if (thisPascha <= date) relevantPascha = thisPascha;
-  if (nextPascha <= date) relevantPascha = nextPascha;
-
-  // Following Pascha = next one after relevantPascha
-  let followingPascha;
-  if (relevantPascha === prevPascha) followingPascha = thisPascha;
-  else if (relevantPascha === thisPascha) followingPascha = nextPascha;
-  else followingPascha = nextNextPascha;
-
-  // Key movable dates
-  const brightSaturday = new Date(relevantPascha);
-  brightSaturday.setDate(brightSaturday.getDate() + 6);
-
-  const allSaintsSunday = new Date(relevantPascha);
-  allSaintsSunday.setDate(allSaintsSunday.getDate() + 56);
-
-  const nextMeatfareSunday = new Date(followingPascha);
-  nextMeatfareSunday.setDate(nextMeatfareSunday.getDate() - 56);
-
-  const nextFridayBeforeMeatfare = new Date(nextMeatfareSunday);
-  nextFridayBeforeMeatfare.setDate(nextFridayBeforeMeatfare.getDate() - 2);
-
-  const nextGreatLentStart = new Date(followingPascha);
-  nextGreatLentStart.setDate(nextGreatLentStart.getDate() - 48);
-
-  const thisGreatLentStart = new Date(relevantPascha);
-  thisGreatLentStart.setDate(thisGreatLentStart.getDate() - 48);
-
-  // Tone calculation
-  const daysFromAllSaints = Math.floor((date - allSaintsSunday) / 86400000);
-  const weeksFromAllSaints = Math.floor(daysFromAllSaints / 7);
-  const weeksSincePascha = Math.floor((date - relevantPascha) / 86400000 / 7);
-
-  let tone;
-  if (daysFromAllSaints < 0) {
-    tone = ((weeksSincePascha % 8) + 8) % 8 || 8;
-  } else {
-    tone = (weeksFromAllSaints % 8) + 1;
-  }
-
-  const dow = date.getDay();
-  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const dayName = dayNames[dow];
-
-  // Feast period detection — runs before season detection
-  const feastPeriod = getFeastPeriod(date, relevantPascha);
-
-  // Season detection — most restrictive first
-  let season, seasonNote;
-
-  if ((date >= thisGreatLentStart && date < relevantPascha) ||
-      (date >= nextGreatLentStart && date < followingPascha)) {
-    season = "lent";
-    seasonNote = "Great Lent — Lenten Hours order applies (Fekula Chapter Three)";
-  } else if (date >= relevantPascha && date <= brightSaturday) {
-    season = "brightweek";
-    seasonNote = "Bright Week — Paschal Hours order applies";
-  } else if (date > brightSaturday && date < allSaintsSunday) {
-    season = "pentecostarion";
-    seasonNote = "Pentecostarion — Fekula §4A rules apply";
-  } else if (date >= nextFridayBeforeMeatfare && date < nextGreatLentStart) {
-    season = "prefasting";
-    seasonNote = "Pre-Lenten period (Cheesefare) — Fekula §3B rules apply";
-  } else if (date >= nextMeatfareSunday && date < nextFridayBeforeMeatfare) {
-    season = "prefasting";
-    seasonNote = "Pre-Lenten period (Meatfare week) — Fekula §3A rules apply";
-  } else if (date >= allSaintsSunday && date < nextMeatfareSunday) {
-    if (dow === 0) {
-      season = "sunday";
-      seasonNote = "Sunday — Fekula §1A or §1B rules apply";
-    } else if (feastPeriod && feastPeriod.periodType === "feast" && feastPeriod.feast.rank === "great") {
-      season = "great_feast";
-      seasonNote = `Great Feast — ${feastPeriod.feast.name}`;
-    } else if (feastPeriod && feastPeriod.periodType === "apodosis") {
-      season = "apodosis";
-      seasonNote = `Apodosis of ${feastPeriod.feast.name} — Fekula §2G3 or §2G4`;
-    } else if (feastPeriod && feastPeriod.periodType === "forefeast") {
-      season = "forefeast";
-      seasonNote = `Forefeast of ${feastPeriod.feast.name} — Fekula §2G1 or §2G2`;
-    } else if (feastPeriod && feastPeriod.periodType === "afterfeast") {
-      season = "afterfeast";
-      seasonNote = `Afterfeast of ${feastPeriod.feast.name} — Fekula §2G1 or §2G2`;
-    } else {
-      season = "ordinary";
-      seasonNote = "Ordinary weekday — Fekula §2A–§2F rules apply";
-    }
-  } else {
-    season = "unknown";
-    seasonNote = "Season undetermined";
-  }
-
-  // Named movable day detection
-  const namedDay = getNamedDay(date, relevantPascha);
-
-  const paschaOffset = Math.floor((date - relevantPascha) / 86400000);
-
-  return {
-    tone, dayName, dow, season, seasonNote, feastPeriod, namedDay,
-    pascha: relevantPascha, allSaintsSunday,
-    nextMeatfareSunday, followingPascha,
-    paschaOffset,
-    isOrdinaryWeekday: season === "ordinary",
-    isSunday: season === "sunday",
-    isLent: season === "lent",
-    isPentecostarion: season === "pentecostarion" || season === "brightweek",
-    isFeastPeriod: ["great_feast", "forefeast", "afterfeast", "apodosis"].includes(season),
-  };
-}
-
-// ─── GLOSSARY ────────────────────────────────────────────────────────────────
-const GLOSSARY = {
-  // Core hymnography
-  troparion:
-    "A short hymn summarizing the meaning of the feast or the life of a saint. " +
-    "It is the primary variable hymn of the service, and the most important indicator " +
-    "of what the Church is celebrating on a given day.",
-  kontakion:
-    "A shorter hymn serving as a theological summary or 'caption' for the feast or saint. " +
-    "Originally a longer poetic sermon of many stanzas; now typically one stanza is used. " +
-    "At the Hours, the kontakion appears after the second Trisagion.",
-  theotokion:
-    "A hymn addressed to the Theotokos (the Virgin Mary, 'Birth-giver of God'). " +
-    "Appears at 'Both now and ever' after the troparion group. " +
-    "The 9th Hour has its own appointed theotokion for ordinary time.",
-  stavrotheotokion:
-    "A theotokion with a specifically crucifixion theme — the Theotokos contemplating " +
-    "the suffering of her Son on the Cross. Used on Wednesdays and Fridays in place of " +
-    "the ordinary theotokion, reflecting those days' commemoration of the Cross.",
-  kathisma:
-    "A section of the Psalter. The 150 psalms are divided into 20 kathismas for liturgical " +
-    "reading. At the Hours during Great Lent, an appointed kathisma is read in place of " +
-    "the ordinary troparion slot.",
-  // Liturgical books
-  menaion:
-    "The twelve liturgical books — one per month — containing the fixed-calendar services " +
-    "for saints and feasts. Provides troparia, kontakia, canons, and stichera for each day. " +
-    "The primary source for a saint's troparion and kontakion at the Hours.",
-  octoechos:
-    "The 'Book of Eight Tones' — contains the weekly cycle of hymns in eight musical modes. " +
-    "Each tone lasts one week; the cycle of eight weeks repeats throughout the year. " +
-    "Provides the resurrectional troparion on Sundays and variable material on weekdays.",
-  horologion:
-    "The 'Book of Hours' — the fixed liturgical book containing the structure and invariable " +
-    "texts of the daily cycle of services: the Midnight Office, Matins, the four Hours, " +
-    "Vespers, and Compline. The skeleton into which Menaion and Octoechos content is inserted.",
-  triodion:
-    "The liturgical book covering the pre-Lenten and Lenten period — from the Sunday of " +
-    "the Publican and Pharisee through Holy Saturday. Contains the Lenten troparia, canons, " +
-    "and special services including the Royal Hours of Holy Friday.",
-  pentecostarion:
-    "The liturgical book covering the Paschal period — from Pascha (Easter) through " +
-    "All Saints Sunday (the first Sunday after Pentecost). Contains the Paschal canon, " +
-    "weekly Pentecostarion hymns, and services for Ascension and Pentecost.",
-  // Theology
-  theotokos:
-    "Greek: 'Birth-giver of God' (literally 'God-bearer'). The title given to the Virgin Mary, " +
-    "affirming that Christ whom she bore is fully God. Defined at the Council of Ephesus (431 AD). " +
-    "Nearly every liturgical service includes a hymn addressed to her.",
-  // Tones and music
-  tone:
-    "One of eight musical modes used in Orthodox chant. The eight tones (or 'plagal' modes) " +
-    "form a cycle that repeats every eight weeks, beginning on All Saints Sunday. " +
-    "The tone of the week determines which Octoechos hymns are used.",
-  // Service structure
-  "service rank":
-    "The classification assigned to a saint or feast in the Menaion, determining which " +
-    "service template is used. Ranks in ascending order: Simple, Double (Six-Stichera), " +
-    "Doxology, Polyeleos, Vigil, Great Feast. The rank is revealed by reading the structure " +
-    "of Matins in the Menaion — not by a label, but by what the service contains.",
-  polyeleos:
-    "Literally 'of great mercy' — refers to Psalms 134 and 135 ('Praise the name of the Lord' " +
-    "and 'Confess to the Lord, for He is good'), sung at Matins on feast days of this rank. " +
-    "The presence of the Polyeleos in the Menaion identifies a feast as Polyeleos rank.",
-  doxology:
-    "The 'Great Doxology' ('Glory to God in the highest') — sung rather than read at Matins " +
-    "for feasts of this rank. Its singing identifies a feast as Doxology rank or higher.",
-  // Feast periods
-  "great feast":
-    "One of the twelve principal feasts of the liturgical year, plus Pascha which stands " +
-    "above all feasts. The twelve are: Nativity of the Theotokos, Elevation of the Cross, " +
-    "Entry of the Theotokos, Nativity of Christ, Theophany, Meeting of the Lord, " +
-    "Annunciation, Palm Sunday, Ascension, Pentecost, Transfiguration, Dormition.",
-  forefeast:
-    "The day or days immediately before a Great Feast, during which the Church begins to " +
-    "anticipate the feast liturgically. The troparion of the upcoming feast appears at the " +
-    "Hours, and the kontakion of the feast predominates (Fekula §2G1–§2G2).",
-  afterfeast:
-    "The period of days following a Great Feast during which the feast continues to be " +
-    "celebrated. Length varies: from 1 day (Annunciation) to 8 days (Theophany, Dormition). " +
-    "The feast troparion leads at the Hours throughout the afterfeast (Fekula §2G1–§2G2).",
-  apodosis:
-    "Greek: 'giving back' or 'leave-taking.' The final day of the afterfeast of a Great Feast — " +
-    "the day the Church formally concludes its celebration and 'returns' the feast. " +
-    "On the apodosis, the troparion and kontakion of the feast are used exclusively at the Hours, " +
-    "as if it were the feast day itself (Fekula §2G3). The apodosis of Pascha is called " +
-    "the 'Leavetaking of Pascha' and falls on the Wednesday before Ascension.",
-  // Calendar
-  "all saints sunday":
-    "The first Sunday after Pentecost. Marks the beginning of the ordinary liturgical season " +
-    "(Fekula Chapter Two) and the restart of Tone 1 in the Octoechos cycle. " +
-    "From this Sunday through the Friday before Meatfare Sunday, ordinary weekday rules apply.",
-  "paschal cycle":
-    "The moveable part of the liturgical year, anchored to the date of Pascha. " +
-    "Includes the pre-Lenten weeks, Great Lent, Holy Week, Bright Week, the Pentecostarion, " +
-    "and concludes with All Saints Sunday. The date of Pascha is calculated using the " +
-    "Julian calendar and converted to the Gregorian calendar by adding 13 days.",
-  computus:
-    "The ancient science of calculating the date of Pascha (Easter). " +
-    "Established at the First Ecumenical Council of Nicaea (325 AD), the rule is: " +
-    "Pascha falls on the first Sunday after the first full moon after the vernal equinox, " +
-    "where the equinox is fixed at March 21 (Julian) and the full moon is the " +
-    "ecclesiastical (calculated) rather than astronomical moon. " +
-    "The Orthodox Church uses the Julian calendar for this calculation.",
-  // People and roles
-  "reader":
-    "A person ordained to the minor order of Reader (also called Lector), who chants " +
-    "the fixed portions of services when no deacon is present. In parish practice, " +
-    "trained laypeople often fulfill this role. The Hours are typically reader services.",};
-
-
-// ─── FIXED TEXTS — 9TH HOUR ──────────────────────────────────────────────────
-// Source: The Unabbreviated Horologion or Book of the Hours,
-// Holy Trinity Publications, The Printshop of St. Job of Pochaev,
-// Holy Trinity Monastery, Jordanville, New York. Second Edition, 1994/1997.
-//
-// Structure per HTM Horologion, p. 174. Two blocks:
-//   NINTH_HOUR_OPENING  — priest's blessing through the three psalms
-//   NINTH_HOUR_CLOSING  — second Trisagion block through Prayer of St. Basil
-// The movable troparion/kontakion slots are inserted between these by the assembler.
-
-const NINTH_HOUR_OPENING = [
-  {
-    id: "blessing",
-    type: "fixed",
-    label: "Opening Blessing",
-    rubric: "Priest:",
-    text: "Blessed is our God, always, now and ever, and unto the ages of ages.",
-  },
-  {
-    id: "glory-thee",
-    type: "fixed",
-    label: "Reader's Response",
-    rubric: "Reader:",
-    text: "Amen. Glory to Thee, our God, glory to Thee.\n\nO Heavenly King, Comforter, Spirit of Truth, Who art everywhere present and fillest all things, Treasury of good things, and Giver of life: Come and dwell in us, and cleanse us of all impurity, and save our souls, O Good One.",
-  },
-  {
-    id: "trisagion-1",
-    type: "fixed",
-    label: "Trisagion Prayers",
-    rubric: null,
-    text: "Holy God, Holy Mighty, Holy Immortal, have mercy on us. (thrice)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nO Most Holy Trinity, have mercy on us. O Lord, blot out our sins. O Master, pardon our iniquities. O Holy One, visit and heal our infirmities for Thy name's sake.\n\nLord, have mercy. (thrice)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.",
-  },
-  {
-    id: "ourfather-1",
-    type: "fixed",
-    label: "Our Father",
-    rubric: null,
-    text: "Our Father, Who art in the heavens, hallowed be Thy name. Thy kingdom come, Thy will be done, on earth as it is in heaven. Give us this day our daily bread, and forgive us our debts, as we forgive our debtors; and lead us not into temptation, but deliver us from the evil one.",
-  },
-  {
-    id: "exclamation-1",
-    type: "fixed",
-    label: "Exclamation",
-    rubric: "Priest:",
-    text: "For Thine is the kingdom, and the power, and the glory: of the Father, and of the Son, and of the Holy Spirit, now and ever, and unto the ages of ages.",
-  },
-  {
-    id: "lhm-12",
-    type: "fixed",
-    label: "Lord, have mercy",
-    rubric: "Reader: Amen.",
-    text: "Lord, have mercy. (twelve times)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.",
-  },
-  {
-    id: "o-come",
-    type: "fixed",
-    label: "O come, let us worship",
-    rubric: null,
-    text: "O come, let us worship God our King.\nO come, let us worship and fall down before Christ our King and God.\nO come, let us worship and fall down before Christ Himself, our King and God.",
-  },
-  {
-    id: "psalm83",
-    type: "fixed",
-    label: "Psalm 83",
-    rubric: null,
-    text: "How beloved are Thy dwellings, O Lord of hosts; my soul longeth and fainteth for the courts of the Lord. My heart and my flesh have rejoiced in the living God. For the sparrow hath found herself a house, and the turtledove a nest for herself where she may lay her young, Even Thine altars, O Lord of hosts, my King and my God. Blessed are they that dwell in Thy house; unto ages of ages shall they praise Thee. Blessed is the man whose help is from Thee; he hath made ascents in his heart, in the vale of weeping, in the place which he hath appointed. Yea, for the lawgiver will give blessings; they shall go from strength to strength, the God of gods shall be seen in Sion. O Lord of hosts, hearken unto my prayer; give ear, O God of Jacob. O God, our defender, behold, and look upon the face of Thine anointed one. For better is one day in Thy courts than thousands elsewhere. I have chosen rather to be an outcast in the house of my God than to dwell in the tents of sinners. For the Lord loveth mercy and truth, God will give grace and glory; the Lord will not withhold good things from them that walk in innocence. O Lord God of hosts, blessed is the man that hopeth in Thee.",
-  },
-  {
-    id: "psalm84",
-    type: "fixed",
-    label: "Psalm 84",
-    rubric: null,
-    text: "Thou hast been gracious, O Lord, unto Thy land; Thou hast turned back the captivity of Jacob. Thou hast forgiven the iniquities of Thy people, Thou hast covered all their sins. Thou hast made all Thy wrath to cease, Thou hast turned back from the wrath of Thine anger. Turn us back, O God of our salvation, and turn away Thine anger from us. Wilt Thou be wroth with us unto the ages? Or wilt Thou draw out Thy wrath from generation to generation? O God, Thou wilt turn and quicken us, and Thy people shall be glad in Thee. Show us, O Lord, Thy mercy, and Thy salvation do Thou give unto us. I will hear what the Lord God will speak in me; for He will speak peace to His people and to His saints and to them that turn their heart unto Him. Surely nigh unto them that fear Him is His salvation, that glory may dwell in our land. Mercy and truth are met together, righteousness and peace have kissed each other. Truth is sprung out of the earth, and righteousness hath looked down from heaven. Yea, for the Lord will give goodness, and our land shall yield her fruit. Righteousness shall go before Him and shall set His footsteps in the way.",
-  },
-  {
-    id: "psalm85",
-    type: "fixed",
-    label: "Psalm 85",
-    rubric: null,
-    text: "Bow down Thine ear, O Lord, and hearken unto me, for poor and needy am I. Preserve my soul, for I am holy; save Thy servant, O my God, that hopeth in Thee. Have mercy on me, O Lord, for unto Thee will I cry all the day long; make glad the soul of Thy servant, for unto Thee have I lifted up my soul. For Thou, O Lord, art good and gentle, and plenteous in mercy unto all them that call upon Thee. Give ear, O Lord, unto my prayer, and attend unto the voice of my supplication. In the day of mine affliction have I cried unto Thee, for Thou hast heard me. There is none like unto Thee among the gods, O Lord, nor are there any works like unto Thy works. All the nations whom Thou hast made shall come and shall worship before Thee, O Lord, and shall glorify Thy name. For Thou art great and workest wonders; Thou alone art God. Guide me, O Lord, in Thy way, and I will walk in Thy truth; let my heart rejoice that I may fear Thy name. I will confess Thee, O Lord my God, with all my heart, and I will glorify Thy name forever. For great is Thy mercy upon me, and Thou hast delivered my soul from the nethermost hades. O God, transgressors have risen up against me, and the assembly of the mighty hath sought after my soul, and they have not set Thee before them. But Thou, O Lord my God, art compassionate and merciful, long suffering and plenteous in mercy, and true. Look upon me and have mercy upon me; give Thy strength unto Thy servant, and save the son of Thy handmaiden. Work in me a sign unto good, and let them that hate me behold and be put to shame; for Thou, O Lord, hast holpen me and comforted me.\n\nAnd again: Work in me a sign unto good, and let them that hate me behold and be put to shame; for Thou, O Lord, hast holpen me and comforted me.",
-  },
-  {
-    id: "alleluia",
-    type: "fixed",
-    label: "Glory … Alleluia",
-    rubric: null,
-    text: "Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nAlleluia, alleluia, alleluia. Glory to Thee, O God. (thrice)\n\nLord, have mercy. (thrice)",
-  },
-];
-
-// Fixed theotokion for the 9th Hour — ordinary time
-// Source: HTM Horologion, p. 176. This is the fixed theotokion that follows
-// the troparia at "Both now and ever" for the 9th Hour in ordinary time.
-// Note: This is distinct from the Chapter 6 theotokia which vary by tone
-// and appear at other services. The 9th Hour has its own appointed theotokion.
-const NINTH_HOUR_THEOTOKION = {
-  id: "theotokion-fixed",
-  type: "fixed",
-  label: "Both now and ever … Theotokion",
-  rubric: "Both now and ever, and unto the ages of ages. Amen.",
-  source: "HTM Horologion, p. 176 — appointed theotokion for the 9th Hour",
-  text: "O Thou Who for our sake wast born of a Virgin, and didst suffer crucifixion, O Good One, and didst despoil death by death, and, as God, didst reveal the resurrection: Disdain not them which Thou hast fashioned with Thy hand; show forth Thy love for mankind, O Merciful One; accept the Theotokos who gave Thee birth, who intercedeth for us; and do Thou, our Saviour, save a despairing people.",
-};
-
-const NINTH_HOUR_CLOSING = [
-  {
-    id: "deliver-us",
-    type: "fixed",
-    label: "Deliver us not up",
-    rubric: null,
-    text: "Deliver us not up utterly, for Thy holy name's sake, neither disannul Thou Thy covenant, and cause not Thy mercy to depart from us, for Abraham's sake, Thy beloved, and for Isaac's sake, Thy servant, and for Israel's, Thy holy one.",
-  },
-  {
-    id: "trisagion-2",
-    type: "fixed",
-    label: "Trisagion Prayers",
-    rubric: "Then:",
-    text: "Holy God, Holy Mighty, Holy Immortal, have mercy on us. (thrice)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nO Most Holy Trinity, have mercy on us. O Lord, blot out our sins. O Master, pardon our iniquities. O Holy One, visit and heal our infirmities for Thy name's sake.\n\nLord, have mercy. (thrice)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nOur Father, Who art in the heavens, hallowed be Thy name. Thy kingdom come, Thy will be done, on earth as it is in heaven. Give us this day our daily bread, and forgive us our debts, as we forgive our debtors; and lead us not into temptation, but deliver us from the evil one.",
-  },
-  {
-    id: "exclamation-2",
-    type: "fixed",
-    label: "Exclamation",
-    rubric: "Priest:",
-    text: "For Thine is the kingdom, and the power, and the glory: of the Father, and of the Son, and of the Holy Spirit, now and ever, and unto the ages of ages.",
-  },
-  // ── KONTAKION is inserted here by the assembler (movable) ──
-  {
-    id: "lhm-40",
-    type: "fixed",
-    label: "Lord, have mercy",
-    rubric: "Reader: Amen.",
-    text: "Lord, have mercy. (forty times)",
-  },
-  {
-    id: "prayer-of-hours",
-    type: "fixed",
-    label: "Prayer of the Hours",
-    rubric: null,
-    text: "Thou who at all times and at every hour, in heaven and on earth, art worshipped and glorified, O Christ God, Who art long-suffering, plenteous in mercy, most compassionate, Who lovest the righteous and hast mercy on sinners, Who callest all to salvation through the promise of good things to come: Receive, O Lord, our prayers at this hour, and guide our life toward Thy commandments. Sanctify our souls, make chaste our bodies, correct our thoughts, purify our intentions, and deliver us from every sorrow, evil, and pain. Compass us about with Thy holy angels, that, guarded and guided by their array, we may attain to the unity of the faith and the knowledge of Thine unapproachable glory; for blessed art Thou unto the ages of ages. Amen.",
-  },
-  {
-    id: "lhm-3",
-    type: "fixed",
-    label: "Lord, have mercy",
-    rubric: null,
-    text: "Lord, have mercy. (thrice)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.",
-  },
-  {
-    id: "more-honourable",
-    type: "fixed",
-    label: "More honourable",
-    rubric: null,
-    text: "More honourable than the Cherubim, and beyond compare more glorious than the Seraphim, who without corruption gavest birth to God the Word, the very Theotokos, thee do we magnify.",
-  },
-  {
-    id: "priest-blessing-2",
-    type: "fixed",
-    label: "Blessing",
-    rubric: "In the name of the Lord, father (master), bless.\nPriest:",
-    text: "God be gracious unto us and bless us, and cause Thy face to shine upon us and have mercy on us.",
-  },
-  {
-    id: "prayer-basil",
-    type: "fixed",
-    label: "Prayer of St. Basil the Great",
-    rubric: "Reader: Amen.",
-    text: "O Master, Lord Jesus Christ, our God, Who art long-suffering in the face of our transgressions, and Who hast brought us even unto this present hour, wherein Thou didst hang upon the life-giving Tree, and didst make a way into paradise for the wise thief, and by death didst destroy death: Be gracious unto us sinners and Thine unworthy servants; for we have sinned and committed iniquity, and are not worthy to lift up our eyes and behold the height of heaven, for we have abandoned the way of Thy righteousness, and have walked in the desires of our hearts. But we beseech Thy boundless goodness: Spare us, O Lord, according to the multitude of Thy mercy and save us for Thy holy name's sake; for our days were consumed in vanity. Rescue us from the hand of the adversary, and forgive us our sins, and mortify our carnal mind; that, putting aside the old man, we may be clad with the new, and live for Thee, our Master and Benefactor; and that thus by following in Thy commandments, we may attain to rest everlasting, wherein is the dwelling-place of all them that rejoice. For Thou art indeed the true joy and gladness of them that love Thee, O Christ our God, and unto Thee we send up glory, with Thine unoriginate Father, and Thy Most-holy and good and life-creating Spirit, now and ever, and unto the ages of ages. Amen.",
-  },
-  {
-    id: "dismissal",
-    type: "fixed",
-    label: "Dismissal",
-    rubric: null,
-    text: "Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nLord, have mercy. (thrice)\n\nFather (Master), bless.\n\n[And Vespers begins immediately, or the priest gives the dismissal.]",
-  },
-];
-
-// Movable element citations are set in the assembler functions.
-// Fixed elements use a single footer attribution rather than per-element footnotes.
-// Only the psalms get a special psalter note on the theotokion since it differs from HTM.
-const HTM_THEOTOKION_CITATION = "HTM Horologion, p. 176 — appointed theotokion for the 9th Hour, ordinary time.";
-NINTH_HOUR_THEOTOKION.citation = HTM_THEOTOKION_CITATION;
-
-// ─── FIXED TEXTS — 1ST HOUR ──────────────────────────────────────────────────
-// Source: HTM Horologion. Psalms 5, 89, 100.
-// Kontakion rubric (verbatim HTM): "he saith the kontakion which was chanted
-// after the 3rd Ode at Matins" — governs 1st & 6th Hours.
-// When only one kontakion exists, kontakion_3rd_ode is absent; use kontakion.
-
-const FIRST_HOUR_OPENING = [
-  // Typical Beginning (Blessed is our God → O Heavenly King → Trisagion → Lord have
-  // mercy ×12) is now in the TypicalBeginning collapsible component above this body.
-  // The body begins at O come let us worship — correct for use after Matins.
-  // Source: OCA first-hour.pdf: 'The First Hour is often celebrated immediately
-  // following Matins, and it begins as shown here.'
-  {
-    id: "1h-o-come", type: "fixed", label: "O come, let us worship", rubric: null,
-    text: "O come, let us worship God our King.\nO come, let us worship and fall down before Christ our King and God.\nO come, let us worship and fall down before Christ Himself, our King and God.",
-  },
-  {
-    id: "1h-psalm5", type: "fixed", label: "Psalm 5", rubric: null,
-    text: 'Unto my words give ear, O Lord; hear my cry. Attend unto the voice of my supplication, O my King and my God; for unto Thee will I pray, O Lord. In the morning Thou shalt hear my voice. In the morning shall I stand before Thee, and Thou shalt look upon me; for not a God that willest iniquity art Thou. He that worketh evil shall not dwell near Thee, nor shall transgressors abide before Thine eyes. Thou hast hated all them that work iniquity; Thou shalt destroy all them that speak a lie. A man that is bloody and deceitful shall the Lord abhor. But as for me, in the multitude of Thy mercy shall I go into Thy house; I shall worship toward Thy holy temple in fear of Thee. O Lord, guide me in the way of Thy righteousness; because of mine enemies, make straight my way before Thee. For in their mouth there is no truth; their heart is vain. Their throat is an open sepulchre, with their tongues have they spoken deceitfully; judge them, O God. Let them fall down on account of their own devisings; according to the multitude of their ungodliness, cast them out, for they have embittered Thee, O Lord. And let all them be glad that hope in Thee; they shall ever rejoice, and Thou shalt dwell among them. And all shall glory in Thee that love Thy name, for Thou shalt bless the righteous. O Lord, as with a shield of Thy good pleasure hast Thou crowned us.',
-  },
-  {
-    id: "1h-psalm89", type: "fixed", label: "Psalm 89", rubric: null,
-    text: 'Lord, Thou hast been our refuge in generation and generation. Before the mountains came to be and the earth was formed and the world, even from everlasting to everlasting Thou art. Turn not man away unto lowliness; yea, Thou hast said: Turn back, ye sons of men. For a thousand years in Thine eyes, O Lord, are but as yesterday that is past, and as a watch in the night. Things of no account shall their years be; in the morning like grass shall man pass away. In the morning shall he bloom and pass away, in the evening shall he fall and grow withered and dry. For we have fainted away in Thy wrath, and in Thine anger have we been troubled. Thou hast set our iniquities before Thee; our lifespan is in the light of Thy countenance. For all our days are faded away, and in Thy wrath are we fainted away; our years have, like a spider, spun out their tale. As for the days of our years, in their span they be threescore years and ten. And if we be in strength, mayhap fourscore years; and what is more than these is toil and travail. For mildness is come upon us, and we shall be chastened. Who knoweth the might of Thy wrath? And out of fear of Thee, who can recount Thine anger? So make Thy right hand known to me, and to them that in their heart are instructed in wisdom. Return, O Lord; how long? And be Thou entreated concerning Thy servants. We were filled in the morning with Thy mercy, O Lord, and we rejoiced and were glad. In all our days, let us be glad for the days wherein Thou didst humble us, for the years wherein we saw evils. And look upon Thy servants, and upon Thy works, and do Thou guide their sons. And let the brightness of the Lord our God be upon us, and the works of our hands do Thou guide aright upon us, yea, the work of our hands do Thou guide aright.',
-  },
-  {
-    id: "1h-psalm100", type: "fixed", label: "Psalm 100", rubric: null,
-    text: 'Of mercy and judgment will I sing unto Thee, O Lord; I will chant and have understanding in a blameless path. When wilt Thou come unto me? I have walked in the innocence of my heart in the midst of my house. I have no unlawful thing before mine eyes; the workers of transgressions I have hated. A crooked heart hath not cleaved unto me; as for the wicked man who turned from me, I knew him not. Him that privily talked against his neighbour did I drive away from me. With him whose eye was proud and his heart insatiate, I did not eat. Mine eyes were upon the faithful of the land, that they might sit with me; the man that walked in the blameless path, he ministered unto me. The proud doer dwelt not in the midst of my house; the speaker of unjust things prospered not before mine eyes. In the morning I slew all the sinners of the land, utterly to destroy out of the city of the Lord all them that work iniquity.',
-  },
-  {
-    id: "1h-alleluia", type: "fixed", label: "Glory \u2026 Alleluia", rubric: null,
-    text: "Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nAlleluia, alleluia, alleluia. Glory to Thee, O God. (thrice)\n\nLord, have mercy. (thrice)",
-  },
-];
-
-// Fixed theotokion for the 1st Hour — ordinary time
-// Source: HTM Horologion — "What shall we call thee" — the appointed theotokion
-// for the 1st Hour at "Both now and ever" in ordinary time.
-const FIRST_HOUR_THEOTOKION = {
-  id: "1h-theotokion-fixed", type: "fixed",
-  label: "Both now and ever \u2026 Theotokion",
-  rubric: "Both now and ever, and unto the ages of ages. Amen.",
-  source: "HTM Horologion \u2014 appointed theotokion for the 1st Hour",
-  text: 'What shall we call thee, O thou that art full of grace? Heaven: for thou hast dawned forth the Sun of Righteousness. Paradise: for thou hast blossomed forth the Flower of Immortality. Virgin: for thou hast remained incorrupt. Pure Mother: for thou hast held in thy holy embrace the Son, the God of all. Do thou entreat Him to save our souls.',
-};
-
-const FIRST_HOUR_CLOSING = [
-  {
-    id: "1h-my-steps", type: "fixed", label: "My steps", rubric: null,
-    text: "My steps do Thou direct according to Thy saying, and let no iniquity have dominion over me. Deliver me from the false accusation of men, and I will keep Thy commandments. Make Thy face to shine upon Thy servant, and teach me Thy statutes.",
-  },
-  {
-    id: "1h-mouth-filled", type: "fixed", label: "Let my mouth be filled", rubric: null,
-    text: "Let my mouth be filled with Thy praise, O Lord, that I may hymn Thy glory and Thy majesty all the day long.",
-  },
-  {
-    id: "1h-trisagion-2", type: "fixed", label: "Trisagion Prayers", rubric: "Then:",
-    text: "Holy God, Holy Mighty, Holy Immortal, have mercy on us. (thrice)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nO Most Holy Trinity, have mercy on us. O Lord, blot out our sins. O Master, pardon our iniquities. O Holy One, visit and heal our infirmities for Thy name\u2019s sake.\n\nLord, have mercy. (thrice)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nOur Father, Who art in the heavens, hallowed be Thy name. Thy kingdom come, Thy will be done, on earth as it is in heaven. Give us this day our daily bread, and forgive us our debts, as we forgive our debtors; and lead us not into temptation, but deliver us from the evil one.",
-  },
-  {
-    id: "1h-exclamation-2", type: "fixed", label: "Exclamation", rubric: "Priest:",
-    text: "For Thine is the kingdom, and the power, and the glory: of the Father, and of the Son, and of the Holy Spirit, now and ever, and unto the ages of ages.",
-  },
-  // ── KONTAKION is inserted here by the assembler (movable) ──
-  {
-    id: "1h-lhm-40", type: "fixed", label: "Lord, have mercy", rubric: "Reader: Amen.",
-    text: "Lord, have mercy. (forty times)",
-  },
-  {
-    id: "1h-prayer-hours", type: "fixed", label: "Prayer of the Hours", rubric: null,
-    text: "Thou who at all times and at every hour, in heaven and on earth, art worshipped and glorified, O Christ God, Who art long-suffering, plenteous in mercy, most compassionate, Who lovest the righteous and hast mercy on sinners, Who callest all to salvation through the promise of good things to come: Receive, O Lord, our prayers at this hour, and guide our life toward Thy commandments. Sanctify our souls, make chaste our bodies, correct our thoughts, purify our intentions, and deliver us from every sorrow, evil, and pain. Compass us about with Thy holy angels, that, guarded and guided by their array, we may attain to the unity of the faith and the knowledge of Thine unapproachable glory; for blessed art Thou unto the ages of ages. Amen.",
-  },
-  {
-    id: "1h-lhm-3", type: "fixed", label: "Lord, have mercy", rubric: null,
-    text: "Lord, have mercy. (thrice)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.",
-  },
-  {
-    id: "1h-more-honourable", type: "fixed", label: "More honourable", rubric: null,
-    text: "More honourable than the Cherubim, and beyond compare more glorious than the Seraphim, who without corruption gavest birth to God the Word, the very Theotokos, thee do we magnify.",
-  },
-  {
-    id: "1h-priest-blessing", type: "fixed", label: "Blessing", rubric: "In the name of the Lord, father (master), bless.\nPriest:",
-    text: "God be gracious unto us and bless us, and cause Thy face to shine upon us and have mercy on us.",
-  },
-  {
-    id: "1h-closing-prayer", type: "fixed", label: "Prayer of St. Basil the Great", rubric: "Reader: Amen.",
-    text: 'O Christ the True Light, Who enlightenest and sanctifiest every man that cometh into the world: Let the light of Thy countenance be signed upon us, that in it we may see the Unapproachable Light, and guide our steps in the doing of Thy commandments, through the intercessions of Thy most pure Mother, and of all Thy saints. Amen.',
-  },
-  {
-    id: "1h-dismissal", type: "fixed", label: "Dismissal", rubric: null,
-    text: "Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nLord, have mercy. (thrice)\n\nFather (Master), bless.\n\n[Priest gives the dismissal. The Third Hour follows.]",
-  },
-];
-
-
-
-// ─── MENAION DATA ────────────────────────────────────────────────────────────
-// Source: OCA (oca.org/saints/troparia/YYYY/MM/DD) — authoritative for OCA parishes.
-// Keyed by MM-DD. The primary saint listed first governs the Hours assembly.
-// Phase 2 will replace this with a live OCA fetch for any date.
-//
-// Note on rank: rank is determined by reading the Menaion Matins structure.
-// For now, rank is set based on OCA calendar indicators and rubrical knowledge.
-// A "simple" weekday saint has one troparion and kontakion, no Polyeleos or Doxology.
-
 const SAMPLE_MENAION = {
 
   // ── June 7 — All Saints Sunday ───────────────────────────────────────────
@@ -3051,26 +2532,260 @@ function getServices(raw) {
   return Array.isArray(raw) ? raw : [raw];
 }
 
-// ─── PENTECOSTARION ──────────────────────────────────────────────────────────
-// Liturgical texts for the Pentecostarion period (P+0 through P+63).
-// Keyed by Pascha offset (integer). Parallel to SAMPLE_MENAION / LECTIONARY.
-// Source: St. Sergius Pentecostarian PDFs (Pentecostarian/st-sergius-pdf/).
-// Assembly rules: Fekula & Williams Chapter 4 (§4A–§4B17).
+function getLiturgicalData(date) {
+  const year = date.getFullYear();
+
+  // Compute Pascha for surrounding years
+  const prevPascha = computePascha(year - 1);
+  const thisPascha = computePascha(year);
+  const nextPascha = computePascha(year + 1);
+  const nextNextPascha = computePascha(year + 2);
+
+  // Relevant Pascha = most recent one that has already occurred
+  let relevantPascha = prevPascha;
+  if (thisPascha <= date) relevantPascha = thisPascha;
+  if (nextPascha <= date) relevantPascha = nextPascha;
+
+  // Following Pascha = next one after relevantPascha
+  let followingPascha;
+  if (relevantPascha === prevPascha) followingPascha = thisPascha;
+  else if (relevantPascha === thisPascha) followingPascha = nextPascha;
+  else followingPascha = nextNextPascha;
+
+  // Key movable dates
+  const brightSaturday = new Date(relevantPascha);
+  brightSaturday.setDate(brightSaturday.getDate() + 6);
+
+  const allSaintsSunday = new Date(relevantPascha);
+  allSaintsSunday.setDate(allSaintsSunday.getDate() + 56);
+
+  const nextMeatfareSunday = new Date(followingPascha);
+  nextMeatfareSunday.setDate(nextMeatfareSunday.getDate() - 56);
+
+  const nextFridayBeforeMeatfare = new Date(nextMeatfareSunday);
+  nextFridayBeforeMeatfare.setDate(nextFridayBeforeMeatfare.getDate() - 2);
+
+  const nextGreatLentStart = new Date(followingPascha);
+  nextGreatLentStart.setDate(nextGreatLentStart.getDate() - 48);
+
+  const thisGreatLentStart = new Date(relevantPascha);
+  thisGreatLentStart.setDate(thisGreatLentStart.getDate() - 48);
+
+  // Tone calculation
+  const daysFromAllSaints = Math.floor((date - allSaintsSunday) / 86400000);
+  const weeksFromAllSaints = Math.floor(daysFromAllSaints / 7);
+  const weeksSincePascha = Math.floor((date - relevantPascha) / 86400000 / 7);
+
+  let tone;
+  if (daysFromAllSaints < 0) {
+    tone = ((weeksSincePascha % 8) + 8) % 8 || 8;
+  } else {
+    tone = (weeksFromAllSaints % 8) + 1;
+  }
+
+  const dow = date.getDay();
+  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const dayName = dayNames[dow];
+
+  // Feast period detection — runs before season detection
+  const feastPeriod = getFeastPeriod(date, relevantPascha);
+
+  // Season detection — most restrictive first
+  let season, seasonNote;
+
+  if ((date >= thisGreatLentStart && date < relevantPascha) ||
+      (date >= nextGreatLentStart && date < followingPascha)) {
+    season = "lent";
+    seasonNote = "Great Lent — Lenten Hours order applies (Fekula Chapter Three)";
+  } else if (date >= relevantPascha && date <= brightSaturday) {
+    season = "brightweek";
+    seasonNote = "Bright Week — Paschal Hours order applies";
+  } else if (date > brightSaturday && date < allSaintsSunday) {
+    season = "pentecostarion";
+    seasonNote = "Pentecostarion — Fekula §4A rules apply";
+  } else if (date >= nextFridayBeforeMeatfare && date < nextGreatLentStart) {
+    season = "prefasting";
+    seasonNote = "Pre-Lenten period (Cheesefare) — Fekula §3B rules apply";
+  } else if (date >= nextMeatfareSunday && date < nextFridayBeforeMeatfare) {
+    season = "prefasting";
+    seasonNote = "Pre-Lenten period (Meatfare week) — Fekula §3A rules apply";
+  } else if (date >= allSaintsSunday && date < nextMeatfareSunday) {
+    if (dow === 0) {
+      season = "sunday";
+      seasonNote = "Sunday — Fekula §1A or §1B rules apply";
+    } else if (feastPeriod && feastPeriod.periodType === "feast" && feastPeriod.feast.rank === "great") {
+      season = "great_feast";
+      seasonNote = `Great Feast — ${feastPeriod.feast.name}`;
+    } else if (feastPeriod && feastPeriod.periodType === "apodosis") {
+      season = "apodosis";
+      seasonNote = `Apodosis of ${feastPeriod.feast.name} — Fekula §2G3 or §2G4`;
+    } else if (feastPeriod && feastPeriod.periodType === "forefeast") {
+      season = "forefeast";
+      seasonNote = `Forefeast of ${feastPeriod.feast.name} — Fekula §2G1 or §2G2`;
+    } else if (feastPeriod && feastPeriod.periodType === "afterfeast") {
+      season = "afterfeast";
+      seasonNote = `Afterfeast of ${feastPeriod.feast.name} — Fekula §2G1 or §2G2`;
+    } else {
+      season = "ordinary";
+      seasonNote = "Ordinary weekday — Fekula §2A–§2F rules apply";
+    }
+  } else {
+    season = "unknown";
+    seasonNote = "Season undetermined";
+  }
+
+  // Named movable day detection
+  const namedDay = getNamedDay(date, relevantPascha);
+
+  const paschaOffset = Math.floor((date - relevantPascha) / 86400000);
+
+  return {
+    tone, dayName, dow, season, seasonNote, feastPeriod, namedDay,
+    pascha: relevantPascha, allSaintsSunday,
+    nextMeatfareSunday, followingPascha,
+    paschaOffset,
+    isOrdinaryWeekday: season === "ordinary",
+    isSunday: season === "sunday",
+    isLent: season === "lent",
+    isPentecostarion: season === "pentecostarion" || season === "brightweek",
+    isFeastPeriod: ["great_feast", "forefeast", "afterfeast", "apodosis"].includes(season),
+  };
+}
+
+// ─── GLOSSARY ────────────────────────────────────────────────────────────────
+const GLOSSARY = {
+  // Core hymnography
+  troparion:
+    "A short hymn summarizing the meaning of the feast or the life of a saint. " +
+    "It is the primary variable hymn of the service, and the most important indicator " +
+    "of what the Church is celebrating on a given day.",
+  kontakion:
+    "A shorter hymn serving as a theological summary or 'caption' for the feast or saint. " +
+    "Originally a longer poetic sermon of many stanzas; now typically one stanza is used. " +
+    "At the Hours, the kontakion appears after the second Trisagion.",
+  theotokion:
+    "A hymn addressed to the Theotokos (the Virgin Mary, 'Birth-giver of God'). " +
+    "Appears at 'Both now and ever' after the troparion group. " +
+    "The 9th Hour has its own appointed theotokion for ordinary time.",
+  stavrotheotokion:
+    "A theotokion with a specifically crucifixion theme — the Theotokos contemplating " +
+    "the suffering of her Son on the Cross. Used on Wednesdays and Fridays in place of " +
+    "the ordinary theotokion, reflecting those days' commemoration of the Cross.",
+  kathisma:
+    "A section of the Psalter. The 150 psalms are divided into 20 kathismas for liturgical " +
+    "reading. At the Hours during Great Lent, an appointed kathisma is read in place of " +
+    "the ordinary troparion slot.",
+  // Liturgical books
+  menaion:
+    "The twelve liturgical books — one per month — containing the fixed-calendar services " +
+    "for saints and feasts. Provides troparia, kontakia, canons, and stichera for each day. " +
+    "The primary source for a saint's troparion and kontakion at the Hours.",
+  octoechos:
+    "The 'Book of Eight Tones' — contains the weekly cycle of hymns in eight musical modes. " +
+    "Each tone lasts one week; the cycle of eight weeks repeats throughout the year. " +
+    "Provides the resurrectional troparion on Sundays and variable material on weekdays.",
+  horologion:
+    "The 'Book of Hours' — the fixed liturgical book containing the structure and invariable " +
+    "texts of the daily cycle of services: the Midnight Office, Matins, the four Hours, " +
+    "Vespers, and Compline. The skeleton into which Menaion and Octoechos content is inserted.",
+  triodion:
+    "The liturgical book covering the pre-Lenten and Lenten period — from the Sunday of " +
+    "the Publican and Pharisee through Holy Saturday. Contains the Lenten troparia, canons, " +
+    "and special services including the Royal Hours of Holy Friday.",
+  pentecostarion:
+    "The liturgical book covering the Paschal period — from Pascha (Easter) through " +
+    "All Saints Sunday (the first Sunday after Pentecost). Contains the Paschal canon, " +
+    "weekly Pentecostarion hymns, and services for Ascension and Pentecost.",
+  // Theology
+  theotokos:
+    "Greek: 'Birth-giver of God' (literally 'God-bearer'). The title given to the Virgin Mary, " +
+    "affirming that Christ whom she bore is fully God. Defined at the Council of Ephesus (431 AD). " +
+    "Nearly every liturgical service includes a hymn addressed to her.",
+  // Tones and music
+  tone:
+    "One of eight musical modes used in Orthodox chant. The eight tones (or 'plagal' modes) " +
+    "form a cycle that repeats every eight weeks, beginning on All Saints Sunday. " +
+    "The tone of the week determines which Octoechos hymns are used.",
+  // Service structure
+  "service rank":
+    "The classification assigned to a saint or feast in the Menaion, determining which " +
+    "service template is used. Ranks in ascending order: Simple, Double (Six-Stichera), " +
+    "Doxology, Polyeleos, Vigil, Great Feast. The rank is revealed by reading the structure " +
+    "of Matins in the Menaion — not by a label, but by what the service contains.",
+  polyeleos:
+    "Literally 'of great mercy' — refers to Psalms 134 and 135 ('Praise the name of the Lord' " +
+    "and 'Confess to the Lord, for He is good'), sung at Matins on feast days of this rank. " +
+    "The presence of the Polyeleos in the Menaion identifies a feast as Polyeleos rank.",
+  doxology:
+    "The 'Great Doxology' ('Glory to God in the highest') — sung rather than read at Matins " +
+    "for feasts of this rank. Its singing identifies a feast as Doxology rank or higher.",
+  // Feast periods
+  "great feast":
+    "One of the twelve principal feasts of the liturgical year, plus Pascha which stands " +
+    "above all feasts. The twelve are: Nativity of the Theotokos, Elevation of the Cross, " +
+    "Entry of the Theotokos, Nativity of Christ, Theophany, Meeting of the Lord, " +
+    "Annunciation, Palm Sunday, Ascension, Pentecost, Transfiguration, Dormition.",
+  forefeast:
+    "The day or days immediately before a Great Feast, during which the Church begins to " +
+    "anticipate the feast liturgically. The troparion of the upcoming feast appears at the " +
+    "Hours, and the kontakion of the feast predominates (Fekula §2G1–§2G2).",
+  afterfeast:
+    "The period of days following a Great Feast during which the feast continues to be " +
+    "celebrated. Length varies: from 1 day (Annunciation) to 8 days (Theophany, Dormition). " +
+    "The feast troparion leads at the Hours throughout the afterfeast (Fekula §2G1–§2G2).",
+  apodosis:
+    "Greek: 'giving back' or 'leave-taking.' The final day of the afterfeast of a Great Feast — " +
+    "the day the Church formally concludes its celebration and 'returns' the feast. " +
+    "On the apodosis, the troparion and kontakion of the feast are used exclusively at the Hours, " +
+    "as if it were the feast day itself (Fekula §2G3). The apodosis of Pascha is called " +
+    "the 'Leavetaking of Pascha' and falls on the Wednesday before Ascension.",
+  // Calendar
+  "all saints sunday":
+    "The first Sunday after Pentecost. Marks the beginning of the ordinary liturgical season " +
+    "(Fekula Chapter Two) and the restart of Tone 1 in the Octoechos cycle. " +
+    "From this Sunday through the Friday before Meatfare Sunday, ordinary weekday rules apply.",
+  "paschal cycle":
+    "The moveable part of the liturgical year, anchored to the date of Pascha. " +
+    "Includes the pre-Lenten weeks, Great Lent, Holy Week, Bright Week, the Pentecostarion, " +
+    "and concludes with All Saints Sunday. The date of Pascha is calculated using the " +
+    "Julian calendar and converted to the Gregorian calendar by adding 13 days.",
+  computus:
+    "The ancient science of calculating the date of Pascha (Easter). " +
+    "Established at the First Ecumenical Council of Nicaea (325 AD), the rule is: " +
+    "Pascha falls on the first Sunday after the first full moon after the vernal equinox, " +
+    "where the equinox is fixed at March 21 (Julian) and the full moon is the " +
+    "ecclesiastical (calculated) rather than astronomical moon. " +
+    "The Orthodox Church uses the Julian calendar for this calculation.",
+  // People and roles
+  "reader":
+    "A person ordained to the minor order of Reader (also called Lector), who chants " +
+    "the fixed portions of services when no deacon is present. In parish practice, " +
+    "trained laypeople often fulfill this role. The Hours are typically reader services.",};
+
+
+// ─── FIXED TEXTS — 9TH HOUR ──────────────────────────────────────────────────
+// Source: The Unabbreviated Horologion or Book of the Hours,
+// Holy Trinity Publications, The Printshop of St. Job of Pochaev,
+// Holy Trinity Monastery, Jordanville, New York. Second Edition, 1994/1997.
 //
-// hours_format values:
-//   "paschal"               — Pascha + Bright Week (§4B1–4B4)
-//   "pentecostarion_sunday" — Sundays P+7 through P+42 (§4B5–4B13)
-//   "pentecostarion_weekday"— Weekdays P+8 through P+48 (§4A)
-//   "ascension"             — Ascension P+39 (§4B12)
-//   "pentecost"             — Pentecost P+49 (§4B15)
-//   "all_saints"            — All Saints Sunday P+56 (§4B17)
+// Structure per HTM Horologion, p. 174. Two blocks:
+//   NINTH_HOUR_OPENING  — priest's blessing through the three psalms
+//   NINTH_HOUR_CLOSING  — second Trisagion block through Prayer of St. Basil
+// The movable troparion/kontakion slots are inserted between these by the assembler.
+
+
+// ─── UNIFIED HOUR ASSEMBLER ─────────────────────────────────────────────────
+// Single assembler for all four Hours across all seasons.
+// Fixed skeleton: HTM Horologion, Jordanville NY (1994).
+// Seasonal overlays: Fekula §4A, §4B11, §4B12.
 //
-// Kontakion assignment at the Hours (Fekula §4A):
-//   1st Hour / 6th Hour: kontakion_ode3 (after 3rd Ode at Matins)
-//   3rd Hour / 9th Hour: kontakion_ode6 (after 6th Ode at Matins)
+// Opening states (applies to 3rd/9th full beginning; 1st/6th just the O come slot):
+//   P+7–P+38: Christ is risen ×3 (HTM + Fekula §4A)
+//   P+39–Pentecost: O Heavenly King omitted (Fekula §4B11)
+//   All other: full ordinary beginning
 //
-// Fields not yet used by the assembly engine are captured for future
-// Vespers, Matins, and Liturgy assembly. Do not remove or stub them.
+// Movable parts: troparion block and kontakion vary by season/source.
+// Everything else is invariable HTM text.
 
 const PENTECOSTARION = {
 
@@ -4451,759 +4166,7 @@ function getPentecostarionEntry(offset) {
   return PENTECOSTARION[offset] || null;
 }
 
-// ─── TOOLTIP ─────────────────────────────────────────────────────────────────
-function Tooltip({ term, children }) {
-  const [visible, setVisible] = useState(false);
-  const def = GLOSSARY[term.toLowerCase()];
-  if (!def) return <span>{children}</span>;
-
-  return (
-    <span className="tooltip-wrap" style={{ position: "relative", display: "inline" }}>
-      <span
-        style={{
-          borderBottom: "1px dotted #8B6914",
-          cursor: "help",
-          color: "#8B6914",
-        }}
-        onMouseEnter={() => setVisible(true)}
-        onMouseLeave={() => setVisible(false)}
-        onClick={() => setVisible((v) => !v)}
-      >
-        {children}
-      </span>
-      {visible && (
-        <span
-          style={{
-            position: "absolute",
-            bottom: "calc(100% + 6px)",
-            left: "50%",
-            transform: "translateX(-50%)",
-            background: "#1C1008",
-            color: "#F5EDD6",
-            padding: "8px 12px",
-            borderRadius: "4px",
-            fontSize: "0.78rem",
-            lineHeight: "1.5",
-            width: "240px",
-            zIndex: 100,
-            boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
-            fontFamily: "Georgia, serif",
-            fontStyle: "italic",
-            border: "1px solid #8B6914",
-          }}
-        >
-          <strong style={{ fontStyle: "normal", color: "#D4AA50" }}>{term}:</strong>{" "}
-          {def}
-        </span>
-      )}
-    </span>
-  );
-}
-
-// ─── FEKULA BADGE ─────────────────────────────────────────────────────────────
-function FekulaBadge({ section, note }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
-      <button
-        onClick={() => setOpen((v) => !v)}
-        style={{
-          background: "rgba(139,105,20,0.15)",
-          border: "1px solid #8B6914",
-          borderRadius: "3px",
-          color: "#8B6914",
-          fontSize: "0.68rem",
-          padding: "1px 6px",
-          cursor: "pointer",
-          fontFamily: "Georgia, serif",
-          letterSpacing: "0.03em",
-        }}
-      >
-        Fekula {section}
-      </button>
-      {open && (
-        <span
-          style={{
-            display: "block",
-            marginTop: "4px",
-            padding: "6px 10px",
-            background: "rgba(139,105,20,0.08)",
-            border: "1px solid rgba(139,105,20,0.3)",
-            borderRadius: "4px",
-            fontSize: "0.78rem",
-            fontStyle: "italic",
-            color: "#5C4A1E",
-            lineHeight: "1.5",
-          }}
-        >
-          {note}
-        </span>
-      )}
-    </span>
-  );
-}
-
-// ─── SERVICE BLOCK ────────────────────────────────────────────────────────────
-function ServiceBlock({ element }) {
-  const isMovable = element.type !== "fixed";
-
-  return (
-    <div
-      id={element.id}
-      style={{
-        marginBottom: "1.4rem",
-        paddingLeft: isMovable ? "1rem" : "0",
-        borderLeft: isMovable ? "3px solid #8B6914" : "none",
-      }}
-    >
-      {element.rubric && (
-        <div
-          style={{
-            fontSize: "0.72rem",
-            textTransform: "uppercase",
-            letterSpacing: "0.1em",
-            color: "#8B6914",
-            marginBottom: "0.25rem",
-            fontFamily: "Georgia, serif",
-          }}
-        >
-          {element.rubric}
-        </div>
-      )}
-
-      <div style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "0.3rem", flexWrap: "wrap" }}>
-        <span
-          style={{
-            fontSize: "0.7rem",
-            textTransform: "uppercase",
-            letterSpacing: "0.12em",
-            color: isMovable ? "#8B6914" : "#9A8A70",
-            fontFamily: "Georgia, serif",
-            fontWeight: "bold",
-          }}
-        >
-          {element.label}
-        </span>
-        {isMovable && element.source && (
-          <span style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic" }}>
-            — {element.source}
-          </span>
-        )}
-        {isMovable && element.fekula && (
-          <FekulaBadge section={element.fekula.section} note={element.fekula.note} />
-        )}
-        {element.unresolved && (
-          <span
-            style={{
-              fontSize: "0.68rem",
-              background: "rgba(180,60,30,0.1)",
-              border: "1px solid rgba(180,60,30,0.3)",
-              color: "#B43C1E",
-              borderRadius: "3px",
-              padding: "1px 6px",
-              fontFamily: "Georgia, serif",
-            }}
-          >
-            ⚠ Unresolved — see Chapter 6
-          </span>
-        )}
-      </div>
-
-      {element.toneNote && (
-        <div style={{ fontSize: "0.76rem", color: "#9A8A70", fontStyle: "italic", marginBottom: "0.3rem" }}>
-          {element.toneNote}
-        </div>
-      )}
-
-      <div
-        style={{
-          fontFamily: "Georgia, serif",
-          fontSize: "0.97rem",
-          lineHeight: "1.75",
-          color: isMovable ? "#1C1008" : "#3D3020",
-          whiteSpace: "pre-wrap",
-          background: isMovable ? "rgba(139,105,20,0.04)" : "transparent",
-          padding: isMovable ? "0.6rem 0.8rem" : "0",
-          borderRadius: isMovable ? "4px" : "0",
-        }}
-      >
-        {element.text}
-      </div>
-
-      {/* ── Citation footnote ── */}
-      {element.citation && (
-        <div style={{
-          fontSize: "0.68rem",
-          color: "#B8A882",
-          fontStyle: "italic",
-          marginTop: "0.25rem",
-          paddingLeft: isMovable ? "0.8rem" : "0",
-          letterSpacing: "0.01em",
-          lineHeight: "1.4",
-        }}>
-          ¹ {element.citation}
-        </div>
-      )}
-    </div>
-  );
-}
-
-
-// ─── TYPICAL BEGINNING ───────────────────────────────────────────────────────
-// Collapsible component for the 1st and 6th Hours.
-// These Hours begin directly with O come let us worship when following
-// the previous service. When said separately, the Typical Beginning is used.
-// Source: OCA first-hour.pdf and sixth-hour.pdf; HTM skeleton; Fekula §4A.
-
-function TypicalBeginning({ hourKey, liturgicalData, tbOpen, setTbOpen }) {
-  const open = tbOpen;
-  const setOpen = setTbOpen;
-
-  const is1st = hourKey === '1st_hour';
-  const ocaNote = is1st
-    ? "The First Hour is often celebrated immediately following Matins, and it begins as shown here. If the First Hour is said separately, it begins with the Typical Beginning, as at Vespers."
-    : "The Sixth Hour is often celebrated immediately following the Third Hour, and it begins as shown here. If the Sixth Hour is said separately, it begins with the Typical Beginning, as at Vespers.";
-
-  const { paschaOffset, season } = liturgicalData;
-  const isPentecostarion = season === 'pentecostarion' || season === 'brightweek';
-  const christIsRisenActive = isPentecostarion && paschaOffset >= 7 && paschaOffset <= 38;
-  const heavenlyKingOmitted = isPentecostarion && paschaOffset > 38;
-  // Build the opening content based on season
-  const openingContent = () => {
-    if (christIsRisenActive) {
-      return (
-        <div>
-          <p style={rubrStyle}>
-            Reader: Amen. <em>(Glory to Thee and O Heavenly King are both skipped. Immediately:)</em>
-          </p>
-          <p style={textStyle}>
-            Christ is risen from the dead,<br/>
-            trampling down death by death,<br/>
-            and on those in the tombs bestowing life.
-          </p>
-          <p style={rubrStyle}>Thrice. Then continuing with:</p>
-          <p style={{...badgeStyle, marginBottom: '0.5rem'}}>
-            <span style={fekulaStyle}>§4A</span>
-            After the reader saith Amen, he immediately saith thrice: Christ is risen
-            (Glory to Thee and O Heavenly King are both skipped). — HTM 1st/6th Hour rubric; Fekula §4A
-          </p>
-        </div>
-      );
-    } else if (heavenlyKingOmitted) {
-      return (
-        <div>
-          <p style={rubrStyle}>Reader: Amen.</p>
-          <p style={{...textStyle, color: '#9A8A70', fontStyle: 'italic'}}>
-            Glory to Thee, our God and O Heavenly King are both omitted from
-            the Apodosis of Pascha until Pentecost.
-            The reader proceeds directly to Holy God, Holy Mighty...
-          </p>
-          <p style={{...badgeStyle, marginBottom: '0.5rem'}}>
-            <span style={fekulaStyle}>§4B11</span>
-            The Ninth Hour begins with the reading of the Trisagion (and thus until
-            Pentecost, when we read O Heavenly King... for the first time). — Fekula §4B11
-          </p>
-        </div>
-      );
-    } else {
-      // Ordinary time
-      return (
-        <div>
-          <p style={rubrStyle}>Reader: Amen.</p>
-          <p style={textStyle}>
-            Glory to Thee, our God, glory to Thee.<br/><br/>
-            O Heavenly King, Comforter, Spirit of Truth,<br/>
-            Who art everywhere present and fillest all things,<br/>
-            Treasury of good things and Giver of life:<br/>
-            Come and dwell in us, and cleanse us of all impurity,<br/>
-            and save our souls, O Good One.
-          </p>
-        </div>
-      );
-    }
-  };
-  const containerStyle = {
-    border: '1px solid #D4C49A',
-    borderRadius: '6px',
-    marginBottom: '2rem',
-    overflow: 'hidden',
-  };
-  const headerStyle = {
-    background: open ? '#F0E8D0' : '#FAF6EE',
-    borderBottom: open ? '1px solid #D4C49A' : 'none',
-    padding: '0.75rem 1rem',
-    cursor: 'pointer',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    userSelect: 'none',
-  };
-  const titleStyle = {
-    fontSize: '0.75rem',
-    textTransform: 'uppercase',
-    letterSpacing: '0.1em',
-    color: '#8B6914',
-    fontFamily: 'Georgia, serif',
-    fontWeight: 'bold',
-  };
-  const noteStyle = {
-    fontSize: '0.78rem',
-    color: '#9A8A70',
-    fontStyle: 'italic',
-    marginTop: '0.35rem',
-    lineHeight: '1.5',
-  };
-  const rubrStyle = {
-    fontSize: '0.72rem',
-    textTransform: 'uppercase',
-    letterSpacing: '0.1em',
-    color: '#8B6914',
-    marginBottom: '0.25rem',
-    marginTop: '1rem',
-  };
-  const textStyle = {
-    fontSize: '1rem',
-    lineHeight: '1.8',
-    color: '#1C1008',
-    marginBottom: '1rem',
-  };
-  const badgeStyle = {
-    fontSize: '0.72rem',
-    color: '#9A8A70',
-    fontStyle: 'italic',
-    display: 'flex',
-    alignItems: 'baseline',
-    gap: '6px',
-  };
-  const fekulaStyle = {
-    fontSize: '0.65rem',
-    letterSpacing: '0.12em',
-    textTransform: 'uppercase',
-    color: '#8B6914',
-    background: 'rgba(139,105,20,0.12)',
-    border: '1px solid rgba(139,105,20,0.3)',
-    borderRadius: '3px',
-    padding: '1px 5px',
-    whiteSpace: 'nowrap',
-    flexShrink: 0,
-  };
-  const labelStyle = {
-    fontSize: '0.7rem',
-    textTransform: 'uppercase',
-    letterSpacing: '0.12em',
-    color: '#9A8A70',
-    fontFamily: 'Georgia, serif',
-    fontWeight: 'bold',
-    marginBottom: '0.2rem',
-  };
-  return (
-    <div style={containerStyle}>
-      <div style={headerStyle} onClick={() => setOpen(o => !o)}>
-        <div>
-          <div style={titleStyle}>
-            &#9651; Typical Beginning (if said separately)
-          </div>
-          <div style={noteStyle}>{ocaNote}</div>
-        </div>
-        <span style={{ color: '#8B6914', fontSize: '1.1rem', marginLeft: '1rem', flexShrink: 0 }}>
-          {open ? '▲' : '▼'}
-        </span>
-      </div>
-
-      {open && (
-        <div style={{ padding: '1rem 1.25rem 1.25rem' }}>
-
-          {/* Priest blessing */}
-          <div style={{ marginBottom: '1.4rem' }}>
-            <div style={rubrStyle}>Priest (or Reader if no priest):</div>
-            <div style={textStyle}>
-              Blessed is our God, always, now and ever, and unto the ages of ages.
-            </div>
-          </div>
-
-          {/* Seasonal opening */}
-          <div style={{ marginBottom: '1.4rem' }}>
-            {openingContent()}
-          </div>
-
-          {/* Trisagion Prayers */}
-          <div style={{ marginBottom: '1.4rem' }}>
-            <div style={rubrStyle}>Trisagion Prayers</div>
-            <div style={textStyle}>
-              Holy God, Holy Mighty, Holy Immortal, have mercy on us. (thrice)<br/>
-              Glory to the Father, and to the Son, and to the Holy Spirit,<br/>
-              both now and ever, and unto the ages of ages. Amen.<br/><br/>
-              O Most Holy Trinity, have mercy on us. O Lord, blot out our sins.<br/>
-              O Master, pardon our iniquities. O Holy One, visit and heal our
-              infirmities for Thy name's sake.<br/>
-              Lord, have mercy. (thrice)<br/>
-              Glory to the Father, and to the Son, and to the Holy Spirit,<br/>
-              both now and ever, and unto the ages of ages. Amen.
-            </div>
-          </div>
-
-          {/* Our Father */}
-          <div style={{ marginBottom: '1.4rem' }}>
-            <div style={rubrStyle}>Our Father</div>
-            <div style={textStyle}>
-              Our Father, Who art in the heavens, hallowed be Thy name.<br/>
-              Thy kingdom come, Thy will be done, on earth as it is in heaven.<br/>
-              Give us this day our daily bread,<br/>
-              and forgive us our debts, as we forgive our debtors;<br/>
-              and lead us not into temptation, but deliver us from the evil one.
-            </div>
-          </div>
-
-          {/* Exclamation and Lord have mercy */}
-          <div style={{ marginBottom: '1.4rem' }}>
-            <div style={rubrStyle}>Priest:</div>
-            <div style={textStyle}>
-              For Thine is the kingdom, and the power, and the glory:<br/>
-              of the Father, and of the Son, and of the Holy Spirit,<br/>
-              now and ever, and unto the ages of ages.
-            </div>
-            <div style={rubrStyle}>Reader: Amen.</div>
-            <div style={textStyle}>
-              Lord, have mercy. (twelve times)<br/>
-              Glory to the Father, and to the Son, and to the Holy Spirit,<br/>
-              both now and ever, and unto the ages of ages. Amen.
-            </div>
-          </div>
-
-          {/* Source note */}
-          <div style={{ fontSize: '0.72rem', color: '#9A8A70', fontStyle: 'italic',
-                       borderTop: '1px solid #E8DFC0', paddingTop: '0.6rem', marginTop: '0.5rem' }}>
-            Fixed texts: HTM Horologion, Jordanville (1994).
-            Note and rubric: OCA liturgical texts.
-            Seasonal substitution: Fekula §4A.
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── ASSEMBLE 9TH HOUR ───────────────────────────────────────────────────────
-// Per Fekula §2A: "The Hours: Troparion and kontakion from the Menaion."
-// Structure per HTM Horologion p. 174:
-//   OPENING block → [Troparion] → [Theotokion] → CLOSING block → [Kontakion] → remainder
-
-function assembleNinthHour(liturgicalData, menaionEntry) {
-  const elements = [];
-  const fekulaSection = menaionEntry
-    ? (menaionEntry.fekula_section_override
-        ? `§${menaionEntry.fekula_section_override}`
-        : menaionEntry.rank === "six_stichera" ? "§2C"
-        : menaionEntry.rank === "doxology"     ? "§2D"
-        : menaionEntry.rank === "polyeleos"    ? "§2E"
-        : menaionEntry.rank === "vigil"        ? "§2F"
-        : "§2A")
-    : "§2A";
-
-  // ── BLOCK 1: Opening through psalms and Alleluia ─────────────────────────
-  NINTH_HOUR_OPENING.forEach(el => elements.push(el));
-
-  // ── TROPARION (movable) ───────────────────────────────────────────────────
-  if (menaionEntry) {
-    elements.push({
-      id: "troparion",
-      type: "movable",
-      label: "Troparion",
-      source: `Menaion — ${menaionEntry.saint}`,
-      toneNote: `Tone ${menaionEntry.troparion.tone}`,
-      fekula: {
-        section: fekulaSection,
-        note: '"The Hours: Troparion and kontakion from the Menaion." — Fekula, Chapter Two, Weekday Simple Service',
-      },
-      rubric: "Here we say the first troparion, if there be two.\nGlory to the Father, and to the Son, and to the Holy Spirit.\nAnd we say the appointed troparion (or the second, if there be two).",
-      text: menaionEntry.troparion.text,
-      citation: `OCA, oca.org/saints/troparia — ${menaionEntry.saint}.`,
-    });
-  } else {
-    elements.push({
-      id: "troparion",
-      type: "movable",
-      label: "Troparion",
-      source: "Menaion — saint of the day",
-      fekula: {
-        section: fekulaSection,
-        note: '"The Hours: Troparion and kontakion from the Menaion." — Fekula, Chapter Two, Weekday Simple Service',
-      },
-      rubric: "Here we say the first troparion, if there be two.\nGlory to the Father, and to the Son, and to the Holy Spirit.\nAnd we say the appointed troparion (or the second, if there be two).",
-      text: "[Troparion of the saint from the Menaion — text not yet in library for this date]",
-    });
-  }
-
-  // ── THEOTOKION (fixed for 9th Hour ordinary time) ─────────────────────────
-  // Per HTM Horologion p. 176: this is the appointed theotokion for the 9th Hour,
-  // not the variable Chapter 6 theotokion. It is fixed for ordinary time.
-  elements.push(NINTH_HOUR_THEOTOKION);
-
-  // ── BLOCK 2: "Deliver us not up" through exclamation ─────────────────────
-  // Insert items up to (but not including) the kontakion slot
-  // Per HTM structure: Trisagion → Our Father → exclamation → [kontakion] → LHM×40…
-  NINTH_HOUR_CLOSING.forEach(el => {
-    elements.push(el);
-    // After the exclamation (id: "exclamation-2"), insert the kontakion
-    if (el.id === "exclamation-2") {
-      if (menaionEntry) {
-        elements.push({
-          id: "kontakion",
-          type: "movable",
-          label: "Kontakion",
-          source: `Menaion — ${menaionEntry.saint}`,
-          toneNote: `Tone ${menaionEntry.kontakion.tone}`,
-          fekula: {
-            section: fekulaSection,
-            note: '"The Hours: Troparion and kontakion from the Menaion." — Fekula, Chapter Two, Weekday Simple Service',
-          },
-          rubric: "Reader: Amen. And he saith the kontakion of the feast, or of the saint of the day.",
-          text: menaionEntry.kontakion.text,
-          citation: `OCA, oca.org/saints/troparia — ${menaionEntry.saint}.`,
-        });
-      } else {
-        elements.push({
-          id: "kontakion",
-          type: "movable",
-          label: "Kontakion",
-          source: "Menaion — saint of the day",
-          fekula: {
-            section: fekulaSection,
-            note: '"The Hours: Troparion and kontakion from the Menaion." — Fekula, Chapter Two, Weekday Simple Service',
-          },
-          rubric: "Reader: Amen. And he saith the kontakion of the feast, or of the saint of the day.",
-          text: "[Kontakion of the saint from the Menaion — text not yet in library for this date]",
-        });
-      }
-    }
-  });
-
-  return elements;
-}
-
-
-// ─── SUNDAY OCTOECHOS DATA ───────────────────────────────────────────────────
-// Source: Resurrectional troparia and kontakia — azbyka.ru (standard OCA/Russian text)
-// Dismissal theotokia for the Hours — St. Sergius Common Theotokia PDF
-//   (The "Dismissal Theotokion" for each tone, used at "Now and ever" at the Hours)
-// All 8 tones encoded. Used by §1A and §1B assembly.
-
-const RESURRECTIONAL_TROPARIA = {
-  1: {
-    tone: 1,
-    text: "When the stone had been sealed by the Jews, and the soldiers were guarding Thine immaculate Body, Thou didst rise on the third day, O Savior, granting life unto the world. Wherefore, the Hosts of the Heavens cried out to Thee, O Life-giver: Glory to Thy Resurrection, O Christ. Glory to Thy kingdom. Glory to Thy dispensation, O only Lover of mankind.",
-  },
-  2: {
-    tone: 2,
-    text: "When Thou didst descend unto death, O Life Immortal, then didst Thou slay Hades with the lightning of Thy Divinity. And when Thou didst also raise the dead out of the nethermost depths, all the Hosts of Heaven cried out: O Life-giver, Christ our God, glory be to Thee.",
-  },
-  3: {
-    tone: 3,
-    text: "Let the heavens be glad; let earthly things rejoice; for the Lord hath wrought might with His arm. He hath trampled down death by death; the first-born of the dead hath He become. From the belly of Hades hath He delivered us and hath granted to the world great mercy.",
-  },
-  4: {
-    tone: 4,
-    text: "Having learned the joyful proclamation of the Resurrection from the angel, and having cast off the ancestral condemnation, the women disciples of the Lord spake to the apostles exultantly: Death is despoiled and Christ God is risen, granting to the world great mercy.",
-  },
-  5: {
-    tone: 5,
-    text: "Let us, O faithful, praise and worship the Word Who is co-unoriginate with the Father and the Spirit, and Who was born of the Virgin for our salvation; for He was pleased to ascend the Cross in the flesh and to endure death, and to raise the dead by His glorious Resurrection.",
-  },
-  6: {
-    tone: 6,
-    text: "Angelic Hosts were above Thy tomb, and they that guarded Thee became as dead. And Mary stood by the grave seeking Thine immaculate Body. Thou didst despoil Hades and wast not tempted by it. Thou didst meet the Virgin and didst grant us life. O Thou Who didst rise from the dead, O Lord, glory be to Thee.",
-  },
-  7: {
-    tone: 7,
-    text: "Thou didst destroy death by Thy Cross, Thou didst open Paradise to the thief. Thou didst change the lamentation of the Myrrh-bearers, and Thou didst command Thine Apostles to proclaim that Thou didst arise, O Christ God, and grantest to the world great mercy.",
-  },
-  8: {
-    tone: 8,
-    text: "From on high didst Thou descend, O Compassionate One; to burial of three days hast Thou submitted that Thou mightest free us from our passions. O our Life and Resurrection, O Lord, glory be to Thee.",
-  },
-};
-
-const SUNDAY_KONTAKIA = {
-  1: {
-    tone: 1,
-    text: "As God Thou didst arise from the tomb in glory, and Thou didst raise the world together with Thyself. And mortal nature praiseth Thee as God, and death hath vanished. And Adam danceth, O Master, and Eve, now freed from fetters, rejoiceth as she crieth out: Thou art He, O Christ, that grantest unto all resurrection.",
-  },
-  2: {
-    tone: 2,
-    text: "Thou didst arise from the tomb, O omnipotent Savior, and Hades was terrified on beholding the wonder; and the dead arose, and creation at the sight thereof rejoiceth with Thee. And Adam also is joyful, and the world, O my Savior, praiseth Thee for ever.",
-  },
-  3: {
-    tone: 3,
-    text: "Thou didst rise today from the tomb, O Merciful One, and didst lead us out of the gates of death. Today Adam danceth and Eve rejoiceth; and together with them both the Prophets and Patriarchs unceasingly praise the divine might of Thine authority.",
-  },
-  4: {
-    tone: 4,
-    text: "My Savior and Redeemer hath, as God, raised up the earthborn from the grave and from their fetters, and He hath broken the gates of Hades, and, Master, hath risen on the third day.",
-  },
-  5: {
-    tone: 5,
-    text: "Unto Hades, O my Savior, didst Thou descend, and having broken its gates as One omnipotent, Thou, as Creator, didst raise up the dead together with Thyself. And Thou didst break the sting of death, and didst deliver Adam from the curse, O Lover of mankind. Wherefore, we all cry unto Thee: Save us, O Lord.",
-  },
-  6: {
-    tone: 6,
-    text: "Having by His life-bestowing hand raised up all the dead out of the dark abysses, Christ God, the Giver of Life, hath bestowed the Resurrection upon the fallen human race; for He is the Savior of all, the Resurrection, and the Life, and the God of all.",
-  },
-  7: {
-    tone: 7,
-    text: "No longer will the dominion of death be able to keep men captive; for Christ hath descended, demolishing and destroying the powers thereof. Hades is bound; the Prophets rejoice with one voice, saying: A Savior hath come for them that have faith. Come forth, ye faithful, for the Resurrection.",
-  },
-  8: {
-    tone: 8,
-    text: "Having arisen from the tomb, Thou didst raise up the dead and didst resurrect Adam. Eve also danceth at Thy Resurrection, and the ends of the world celebrate Thine arising from the dead, O Greatly-merciful One.",
-  },
-};
-
-// The Dismissal Theotokion used at "Now and ever" at the Hours on Sundays.
-// Source: St. Sergius Common Theotokia PDF — "Dismissal Theotokion" by tone.
-// This is the theotokion appointed for "Friday Vespers and Saturday Matins" in each tone,
-// which carries forward to Sunday morning and the Hours per the Horologion rubric.
-const SUNDAY_HOURS_THEOTOKIA = {
-  1: {
-    tone: 1,
-    text: "When Gabriel announced to thee, 'Rejoice!', O Virgin, the Master of all became incarnate within thee, the holy tabernacle, at his cry, as the righteous David said. Thou wast shown to be more spacious than the heavens, having borne thy Creator. Glory to Him Who made His abode within thee! Glory to Him Who came forth from thee! Glory to Him Who hath set us free by thy birthgiving.",
-  },
-  2: {
-    tone: 2,
-    text: "All of thy most glorious mysteries are beyond comprehension, O Theotokos; for, thy purity sealed and thy virginity intact, thou art known to be a true Mother, having given birth unto God. Him do thou entreat, that our souls be saved.",
-  },
-  3: {
-    tone: 3,
-    text: "We hymn thee who hast mediated the salvation of our race, O Virgin Theotokos; for thy Son and our God, accepting suffering on the Cross in the flesh He had received of thee, hath delivered us from corruption, in that He is the Lover of mankind.",
-  },
-  4: {
-    tone: 4,
-    text: "The mystery hidden from all ages and unknown to the ranks of angels, hath been revealed to those on earth through thee, O Theotokos: God incarnate in an uncommingled union, Who willingly accepted the Cross for our sake, and through it hath raised up the first-formed man, and saved our souls from death.",
-  },
-  5: {
-    tone: 5,
-    text: "Rejoice, impassible portal of the Lord! Rejoice, rampart and protection of those who have recourse unto thee! Rejoice, haven untouched by storms, and who knowing not wedlock, didst bear in the flesh thy Creator and God. Cease not to intercede for those who praise and worship thine Offspring.",
-  },
-  6: {
-    tone: 6,
-    text: "Gideon hath foretold of thy conception, and David hath revealed thine ineffable child-bearing, O Theotokos; for the Word descended like a dew upon the fleece of thy womb, and thou O Virgin full of grace, like unto a holy and fertile earth, budded forth without seed our salvation, Christ God.",
-  },
-  7: {
-    tone: 7,
-    text: "As thou art the treasury of our resurrection, O all-hymned one, lead up from the pit and abyss of transgression those who place their trust in thee, for thou who hast given birth to our Salvation hast saved those who are subject to sin. Thou wast a Virgin before giving birth, and a virgin during child-bearing, and thou didst remain a Virgin even after birthgiving.",
-  },
-  8: {
-    tone: 8,
-    text: "O Good One, Who for our sake wast born of the Virgin and, having endured crucifixion, cast down death by death, and as God revealed the resurrection: disdain not that which Thou hast fashioned with Thine own hand. Show forth Thy love for mankind, O Merciful One; accept the supplications of the Theotokos who bore Thee, and save Thy despairing people, O our Savior!",
-  },
-};
-
-// ─── ASSEMBLE SUNDAY 9TH HOUR ────────────────────────────────────────────────
-// Per Fekula §1A (one Menaion saint) and §1B (two Menaion saints):
-//
-// §1A: "We read the Sunday troparion; Glory... the troparion from the Menaion;
-//       Now and ever... the theotokion from the Horologion.
-//       Only the Sunday kontakion is read. The kontakion from the Menaion is not read."
-//
-// §1B at 3rd & 9th Hours: "Resurrectional troparion; Glory... troparion of the SECOND saint;
-//       Now and ever... theotokion from the Horologion."
-//       "At all Hours only the Sunday kontakion is read."
-//
-// The theotokion "from the Horologion" is the Dismissal Theotokion in the tone of the week.
-
-function assembleSundayNinthHour(liturgicalData, menaionEntries) {
-  const { tone } = liturgicalData;
-  const elements = [];
-  const resT = RESURRECTIONAL_TROPARIA[tone];
-  const sundayK = SUNDAY_KONTAKIA[tone];
-  const theotokion = SUNDAY_HOURS_THEOTOKIA[tone];
-
-  // Determine §1A vs §1B
-  const saints = Array.isArray(menaionEntries) ? menaionEntries : menaionEntries ? [menaionEntries] : [];
-  const isDoubleService = saints.length >= 2; // §1B
-  // At the 9th Hour in §1B: Glory… troparion of the SECOND saint
-  const menaionSaint = isDoubleService ? saints[1] : saints[0];
-  const fekulaSection = isDoubleService ? "§1B" : "§1A";
-  const fekulaNote = isDoubleService
-    ? '"At the Third and Ninth Hours: The resurrectional troparion in the tone of the week; Glory... the troparion of the second saint; Now and ever... the theotokion from the Horologion. At all of the Hours only the Sunday kontakion is read." — Fekula, Chapter One'
-    : '"We read the Sunday troparion; Glory... the troparion from the Menaion; Now and ever... the theotokion from the Horologion. Only the Sunday kontakion is read." — Fekula, Chapter One';
-
-  // ── Block 1: Opening through psalms ─────────────────────────────────────
-  NINTH_HOUR_OPENING.forEach(el => elements.push(el));
-
-  // ── Resurrectional Troparion (movable) ───────────────────────────────────
-  elements.push({
-    id: "troparion-resurrectional",
-    type: "movable",
-    label: "Troparion of the Resurrection",
-    source: `Octoechos — Tone ${tone}`,
-    toneNote: `Tone ${tone} of the week`,
-    fekula: { section: fekulaSection, note: fekulaNote },
-    rubric: "The resurrectional troparion in the tone of the week:",
-    text: resT ? resT.text : `[Resurrectional troparion, Tone ${tone}]`,
-    citation: `Octoechos, Tone ${tone} — resurrectional troparion.`,
-  });
-
-  // ── Glory… Troparion of the Menaion saint ────────────────────────────────
-  elements.push({
-    id: "troparion-menaion",
-    type: "movable",
-    label: menaionSaint
-      ? `Glory … Troparion of ${menaionSaint.saint}`
-      : "Glory … Troparion of the saint",
-    source: menaionSaint ? `Menaion — ${menaionSaint.saint}` : "Menaion — saint of the day",
-    toneNote: menaionSaint ? `Tone ${menaionSaint.troparion.tone}` : null,
-    fekula: { section: fekulaSection, note: fekulaNote },
-    rubric: "Glory to the Father, and to the Son, and to the Holy Spirit.",
-    text: menaionSaint
-      ? menaionSaint.troparion.text
-      : `[Troparion of the ${isDoubleService ? "second " : ""}saint from the Menaion — not yet in library for this date]`,
-    citation: menaionSaint
-      ? `OCA, oca.org/saints/troparia — ${menaionSaint.saint}.`
-      : null,
-  });
-
-  // ── Now and ever… Theotokion (from Horologion, in tone of week) ──────────
-  elements.push({
-    id: "theotokion-sunday",
-    type: "movable",
-    label: "Now and ever … Theotokion",
-    source: `Horologion — Dismissal Theotokion, Tone ${tone}`,
-    toneNote: `Tone ${tone}`,
-    fekula: { section: fekulaSection, note: fekulaNote },
-    rubric: "Both now and ever, and unto the ages of ages. Amen.",
-    text: theotokion ? theotokion.text : `[Dismissal Theotokion, Tone ${tone} — from the Horologion]`,
-    citation: `Common Theotokia, Tone ${tone} — st-sergius.org, Common Theotokia PDF.`,
-  });
-
-  // ── Deliver us not up (fixed) + second Trisagion block ───────────────────
-  // Insert closing block, intercept after exclamation-2 for the kontakion
-  NINTH_HOUR_CLOSING.forEach(el => {
-    elements.push(el);
-    if (el.id === "exclamation-2") {
-      // ── Sunday Kontakion only — Menaion kontakion NOT read ────────────────
-      elements.push({
-        id: "kontakion-sunday",
-        type: "movable",
-        label: "Kontakion of the Resurrection",
-        source: `Octoechos — Tone ${tone}`,
-        toneNote: `Tone ${tone}`,
-        fekula: {
-          section: fekulaSection,
-          note: '"Only the Sunday kontakion is read. The kontakion from the Menaion is not read." — Fekula, Chapter One',
-        },
-        rubric: "Reader: Amen. And he saith the kontakion of the Resurrection:",
-        text: sundayK ? sundayK.text : `[Sunday kontakion, Tone ${tone}]`,
-        citation: `Octoechos, Tone ${tone} — Sunday kontakion.`,
-      });
-    }
-  });
-
-  return elements;
-}
-
-
-
-// ─── PENTECOSTARION HOURS ASSEMBLY ───────────────────────────────────────────
+// ─── HTM FIXED TEXT CONSTANTS ─────────────────────────────────────────────────
 // Fixed skeleton: The Unabbreviated Horologion, HTM, Jordanville NY (1994).
 // Seasonal overlays from Fekula §4A and §4B11.
 //
@@ -5646,405 +4609,442 @@ const HTM_PRAYER_9TH_CLOSING =
   "of ages. Amen.";
 // ── Assembly function ────────────────────────────────────────────────────────
 
-function assemblePentecostarionHour(hourKey, pentEntry, menaionEntry, liturgicalData, tbOpen = false) {
-  const elements = [];
-  const { paschaOffset, tone, dayName, season } = liturgicalData;
 
-  // ── Bright Week placeholder ─────────────────────────────────────────────
-  if (season === "brightweek") {
+function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen = false) {
+  const elements = [];
+  const { paschaOffset, tone, dayName, season, namedDay } = liturgicalData;
+
+  // ── Season flags ──────────────────────────────────────────────────────────
+  const isPentecostarion = season === 'pentecostarion' || season === 'brightweek';
+  const isSunday = season === 'sunday' || season === 'pentecostarion_sunday';
+  const isOrdinarySunday = season === 'sunday';
+  const christIsRisenActive = isPentecostarion && paschaOffset >= 7 && paschaOffset <= 38;
+  const heavenlyKingOmitted = isPentecostarion && paschaOffset > 38;
+  const is3rdOr9th = hourKey === '3rd_hour' || hourKey === '9th_hour';
+
+  // ── Fekula section for citations ─────────────────────────────────────────
+  const fekulaSection = (() => {
+    if (isPentecostarion && pentEntry) {
+      const fmt = pentEntry.hours_format;
+      if (fmt === 'apodosis_pascha') return '§4B11';
+      if (fmt === 'ascension')       return '§4B12';
+      if (fmt === 'pentecostarion_sunday') return '§4B';
+      return '§4A';
+    }
+    if (!menaionEntry) return '§2A';
+    if (menaionEntry.fekula_section_override) return `§${menaionEntry.fekula_section_override}`;
+    const r = menaionEntry.rank;
+    return r === 'six_stichera' ? '§2C'
+         : r === 'doxology'    ? '§2D'
+         : r === 'polyeleos'   ? '§2E'
+         : r === 'vigil'       ? '§2F'
+         : '§2A';
+  })();
+
+  // ── Bright Week placeholder ───────────────────────────────────────────────
+  if (season === 'brightweek') {
     elements.push({
-      id: "pent-brightweek",
-      type: "placeholder",
-      label: "Bright Week — Paschal Hours",
-      text: "Bright Week (P+1 through P+6) uses the Paschal Hours, chanted exactly as on Pascha itself. Assembly of the Paschal Hours is in development.",
-      fekula: { section: "§4B2", note: "The Hours are chanted just as on Pascha itself. — Fekula §4B2" },
+      id: 'bright-week-placeholder', type: 'placeholder',
+      label: 'Bright Week — Paschal Hours',
+      text: 'Bright Week (P+1 through P+6) uses the Paschal Hours, chanted exactly as on Pascha itself. Assembly of the Paschal Hours is in development.',
+      fekula: { section: '§4B2', note: 'The Hours are chanted just as on Pascha itself. — Fekula §4B2' },
     });
     return elements;
   }
 
-  // ── Unencoded Pentecostarion date ──────────────────────────────────────
-  if (!pentEntry) {
+  // ── Unencoded Pentecostarion date ────────────────────────────────────────
+  if (isPentecostarion && !pentEntry) {
     const weekNum = Math.ceil(paschaOffset / 7);
     elements.push({
-      id: "pent-not-encoded",
-      type: "placeholder",
+      id: 'pent-not-encoded', type: 'placeholder',
       label: `Pentecostarion — P+${paschaOffset}`,
       text: `Service data not yet encoded for this date (P+${paschaOffset}, ${dayName} of Week ${weekNum} after Pascha).\n\nCurrently encoded: P+35 (Blind Man Sunday) through P+40 (Friday of Week 6, first day of Ascension afterfeast).`,
-      fekula: { section: "§4A", note: "Fekula Chapter Four — Pentecostarion rules" },
+      fekula: { section: '§4A', note: 'Fekula Chapter Four — Pentecostarion rules' },
     });
     return elements;
   }
+  // ── Troparion resolution ─────────────────────────────────────────────────
+  // Primary troparion: Pentecostarion entry or Menaion saint
+  // Secondary troparion: Menaion saint (when Pentecostarion is primary)
+  // Sunday: named day propers override Menaion when applicable
+  let primaryTrop = null;
+  let primaryTropSource = '';
+  let secondaryTrop = null;
+  let secondaryTropSource = '';
 
-  const fmt = pentEntry.hours_format;
-  const fekulaSection = fmt === "apodosis_pascha" ? "§4B11"
-    : fmt === "ascension" ? "§4B12"
-    : fmt === "pentecostarion_sunday" ? "§4B (Sunday)"
-    : "§4A";
-
-  // Skeleton: is Christ is risen active?
-  // P+7 through P+38: yes. P+39+: no (O Heavenly King omitted until Pentecost)
-  const christIsRisenActive = paschaOffset >= 7 && paschaOffset <= 38;
-  const is3rdOr9th = hourKey === '3rd_hour' || hourKey === '9th_hour';
-  const isFullBeginning = is3rdOr9th;
-
-  // Resolve troparion and kontakion
-  const pTrop = pentEntry.troparion;
-  const pKont = pentEntry.hours_kontakion
-    || pentEntry.kontakion_ode6
-    || pentEntry.kontakion_ode3;
   const menaionTrop = menaionEntry && menaionEntry.troparion ? menaionEntry.troparion : null;
-  const menaionKont = menaionEntry && menaionEntry.kontakion ? menaionEntry.kontakion : null;
-  const menaionRank = menaionEntry && menaionEntry.rank ? menaionEntry.rank : "simple";
-  const isHighRank = ["doxology","polyeleos","vigil"].includes(menaionRank);
-  const effectiveKont = (isHighRank && is3rdOr9th && menaionKont) ? menaionKont : pKont;
+  const menaionSaint = menaionEntry ? menaionEntry.saint : 'saint of the day';
+
+  // Resolve named Sunday overrides (All Saints NA, etc.)
+  let effectiveMenaionTrop = menaionTrop;
+  let effectiveSaint = menaionSaint;
+  if (isOrdinarySunday && namedDay && namedDay.troparion) {
+    effectiveMenaionTrop = namedDay.troparion;
+    effectiveSaint = namedDay.name;
+  }
+
+  if (isPentecostarion && pentEntry && pentEntry.troparion) {
+    primaryTrop = pentEntry.troparion;
+    primaryTropSource = `Pentecostarion — ${pentEntry.name}`;
+    if (effectiveMenaionTrop) {
+      secondaryTrop = effectiveMenaionTrop;
+      secondaryTropSource = `Menaion — ${effectiveSaint}`;
+    }
+  } else if (effectiveMenaionTrop) {
+    primaryTrop = effectiveMenaionTrop;
+    primaryTropSource = `Menaion — ${effectiveSaint}`;
+  }
+
+  // ── Kontakion resolution ─────────────────────────────────────────────────
+  // Pentecostarion: ode-aware (HTM rubric)
+  //   1st/6th Hours: after 3rd Ode at Matins → kontakion_ode3
+  //   3rd/9th Hours: after 6th Ode at Matins → kontakion_ode6
+  //   hours_kontakion: universal override (Period 3 single-kontakion days)
+  // Ordinary/Sunday: getKontakionForHour(menaionEntry, hourKey)
+  let kontakion = null;
+  let kontakionSource = '';
+  let kontakionOdeNote = hourKey === '1st_hour' || hourKey === '6th_hour'
+    ? 'And he saith the kontakion of the feast, or of the saint of the day.\nIf there be two kontakia, he saith the kontakion which was chanted after the 3rd Ode at Matins. — HTM'
+    : 'And he saith the kontakion of the feast, or of the saint of the day.\nIf there be two kontakia, he saith the kontakion which was chanted after the 6th Ode at Matins. — HTM';
+
+  if (isPentecostarion && pentEntry) {
+    const pKont = pentEntry.hours_kontakion
+      || (is3rdOr9th
+          ? (pentEntry.kontakion_ode6 || pentEntry.kontakion_ode3)
+          : (pentEntry.kontakion_ode3 || pentEntry.kontakion_ode6));
+    const mKont = menaionEntry && menaionEntry.kontakion ? menaionEntry.kontakion : null;
+    const isHighRank = menaionEntry && ['doxology','polyeleos','vigil'].includes(menaionEntry.rank);
+    kontakion = (isHighRank && is3rdOr9th && mKont) ? mKont : pKont;
+    kontakionSource = (isHighRank && is3rdOr9th && mKont)
+      ? `Menaion — ${effectiveSaint} (Doxology+ rank)`
+      : `Pentecostarion — ${pentEntry.name}`;
+  } else {
+    kontakion = getKontakionForHour(menaionEntry, hourKey);
+    kontakionSource = `Menaion — ${effectiveSaint}`;
+    if (isOrdinarySunday && namedDay && namedDay.kontakion) {
+      const useThirdOde = hourKey === '1st_hour' || hourKey === '6th_hour';
+      kontakion = useThirdOde && namedDay.kontakion_3rd_ode
+        ? namedDay.kontakion_3rd_ode
+        : namedDay.kontakion;
+      kontakionSource = namedDay.name;
+    }
+  }
   // ── OPENING ─────────────────────────────────────────────────────────────
-  if (isFullBeginning) {
-    // 3rd and 9th Hours: full beginning
+  if (is3rdOr9th) {
+    // Full beginning at 3rd and 9th Hours
     elements.push({
-      id: `pent-${hourKey}-blessing`,
-      type: "fixed",
-      label: "Opening Blessing",
-      rubric: "Priest (or Reader if no priest):",
-      text: "Blessed is our God, always, now and ever, and unto the ages of ages.",
-      source: "HTM",
+      id: `${hourKey}-blessing`, type: 'fixed', label: '', rubric: 'Priest (or Reader if no priest):',
+      text: 'Blessed is our God, always, now and ever, and unto the ages of ages.',
+      source: 'HTM',
     });
     if (christIsRisenActive) {
-      // HTM rubric: "after the reader saith Amen, he IMMEDIATELY saith thrice:
-      // Christ is risen" — Glory to Thee and O Heavenly King are BOTH skipped.
+      // P+7–P+38: after Amen, immediately Christ is risen (Glory to Thee and
+      // O Heavenly King both skipped). HTM rubric; Fekula §4A.
       elements.push({
-        id: `pent-${hourKey}-christ-is-risen`,
-        type: "pentecostarion_skeleton",
-        label: "Christ is Risen (thrice)",
-        rubric: "Reader: Amen. (Glory to Thee and O Heavenly King are both skipped — immediately:)",
-        text: HTM_CHRIST_IS_RISEN,
-        repeat: 3,
-        source: "HTM",
+        id: `${hourKey}-christ-is-risen`, type: 'pentecostarion_skeleton', label: '',
+        rubric: '(Glory to Thee and O Heavenly King are both skipped — immediately:)',
+        text: 'Reader: Amen.\n\n' + HTM_CHRIST_IS_RISEN, repeat: 3, source: 'HTM',
         fekula: { section: fekulaSection,
-          note: "After the reader saith Amen, he immediately saith thrice: Christ is risen " +
-                "(Glory to Thee and O Heavenly King are both skipped). " +
-                "— HTM 3rd/9th Hour rubric; Fekula §4A" },
+          note: 'After the reader saith Amen, he immediately saith thrice: Christ is risen (Glory to Thee and O Heavenly King are both skipped). — HTM 3rd/9th Hour; Fekula §4A' },
+      });
+    } else if (heavenlyKingOmitted) {
+      // P+39–Pentecost: Glory to Thee and O Heavenly King both omitted
+      elements.push({
+        id: `${hourKey}-heavenly-king-omitted`, type: 'rubric', label: '',
+        rubric: null,
+        text: 'Reader: Amen.\n\n[Glory to Thee, our God and O Heavenly King are both omitted from the Apodosis of Pascha until Pentecost. The reader proceeds directly to Holy God, Holy Mighty...]',
+        source: 'HTM; Fekula §4B11',
+        fekula: { section: '§4B11', note: 'The Ninth Hour begins with the reading of the Trisagion (and thus until Pentecost, when we read O Heavenly King... for the first time). — Fekula §4B11' },
       });
     } else {
-      // P+39 through Pentecost: both Glory to Thee and O Heavenly King omitted.
-      // Reader goes directly from Amen to Holy God, Holy Mighty...
+      // Ordinary: Glory to Thee + O Heavenly King
       elements.push({
-        id: `pent-${hourKey}-heavenly-king-omitted`,
-        type: "rubric",
-        label: "Glory to Thee and O Heavenly King — omitted",
-        rubric: "Reader: Amen.",
-        text: "Glory to Thee, our God and O Heavenly King are both omitted from " +
-              "the Apodosis of Pascha until Pentecost. " +
-              "The reader proceeds directly to Holy God, Holy Mighty...",
-        source: "HTM; Fekula §4B11",
-        fekula: { section: "§4B11", note: "The Ninth Hour begins with the reading " +
-                  "of the Trisagion (and thus until Pentecost, when we read O Heavenly " +
-                  "King... for the first time). — Fekula §4B11" },
+        id: `${hourKey}-reader-amen-opening`, type: 'fixed', label: '',
+        rubric: null,
+        text: 'Reader: Amen.',
+        source: 'HTM',
+      });
+      elements.push({
+        id: `${hourKey}-glory-to-thee`, type: 'fixed', label: '',
+        rubric: null,
+        text: 'Glory to Thee, our God, glory to Thee.',
+        source: 'HTM',
+      });
+      elements.push({
+        id: `${hourKey}-heavenly-king`, type: 'fixed', label: '',
+        rubric: null,
+        text: HTM_O_HEAVENLY_KING,
+        source: 'HTM',
       });
     }
     elements.push({
-      id: `pent-${hourKey}-trisagion-opening`,
-      type: "fixed",
-      label: "Then continuing with:",
-      text: HTM_TRISAGION,
-      source: "HTM",
+      id: `${hourKey}-trisagion-opening`, type: 'fixed', label: '', rubric: null,
+      text: HTM_TRISAGION, source: 'HTM',
     });
     elements.push({
-      id: `pent-${hourKey}-for-thine`,
-      type: "fixed",
-      label: "",
-      text: HTM_FOR_THINE,
-      source: "HTM",
+      id: `${hourKey}-for-thine`, type: 'fixed', label: '', rubric: 'Priest:',
+      text: 'For Thine is the kingdom, and the power, and the glory: of the Father, and of the Son, and of the Holy Spirit, now and ever, and unto the ages of ages.',
+      source: 'HTM',
     });
     elements.push({
-      id: `pent-${hourKey}-lord-mercy-12`,
-      type: "fixed",
-      label: "Lord, have mercy (12 times)",
-      text: "Reader: Amen. Lord, have mercy. (12 times)\nGlory to the Father, and to the Son, and to the Holy Spirit,\nboth now and ever, and unto the ages of ages. Amen.",
-      source: "HTM",
+      id: `${hourKey}-reader-amen-1`, type: 'fixed', label: '', rubric: null,
+      text: 'Reader: Amen.', source: 'HTM',
     });
     elements.push({
-      id: `pent-${hourKey}-o-come`,
-      type: "fixed",
-      label: "O Come, Let Us Worship",
-      text: HTM_O_COME,
-      source: "HTM",
+      id: `${hourKey}-lhm-12`, type: 'fixed', label: '', rubric: null,
+      text: 'Lord, have mercy. (twelve times)\nGlory to the Father, and to the Son, and to the Holy Spirit,\nboth now and ever, and unto the ages of ages. Amen.',
+      source: 'HTM',
+    });
+    elements.push({
+      id: `${hourKey}-o-come`, type: 'fixed', label: '', rubric: null,
+      text: HTM_O_COME, source: 'HTM',
     });
   } else {
-    // 1st and 6th Hours: no full beginning.
-    // tbOpen=false (following previous service): Christ is risen replaces
-    //   O come let us worship per Fekula §4A.
-    // tbOpen=true (Typical Beginning used): Christ is risen was already said
-    //   in the TB. Body resumes with O come let us worship.
+    // 1st and 6th Hours: no full beginning
     if (christIsRisenActive && !tbOpen) {
       elements.push({
-        id: `pent-${hourKey}-christ-is-risen`,
-        type: "pentecostarion_skeleton",
-        label: "Christ is Risen (thrice)",
-        rubric: "Instead of O come let us worship:",
-        text: HTM_CHRIST_IS_RISEN,
-        repeat: 3,
-        source: "Fekula §4A",
+        id: `${hourKey}-christ-is-risen`, type: 'pentecostarion_skeleton', label: '',
+        rubric: 'Instead of O come let us worship:',
+        text: HTM_CHRIST_IS_RISEN, repeat: 3, source: 'HTM',
         fekula: { section: fekulaSection,
-          note: "At those Hours that normally start with O come let us worship " +
-                "(i.e. First and Sixth Hours), we read Christ is risen... thrice, " +
-                "instead of O come let us worship. — Fekula §4A" },
+          note: 'At those Hours that normally start with O come let us worship (i.e. First and Sixth Hours), we read Christ is risen... thrice, instead of O come let us worship. — Fekula §4A' },
       });
     } else {
       elements.push({
-        id: `pent-${hourKey}-o-come`,
-        type: "fixed",
-        label: "O Come, Let Us Worship",
+        id: `${hourKey}-o-come`, type: 'fixed', label: '', rubric: null,
+        text: HTM_O_COME, source: 'HTM',
         rubric: (christIsRisenActive && tbOpen)
-          ? "Christ is risen was said in the Typical Beginning above. Continuing:"
+          ? 'Christ is risen was said in the Typical Beginning above. Continuing:'
           : null,
-        text: HTM_O_COME,
-        source: "HTM",
       });
     }
   }
   // ── PSALMS ──────────────────────────────────────────────────────────────
-  if (hourKey === "1st_hour") {
-    elements.push({ id: `pent-${hourKey}-ps5`,  type: 'fixed', label: '', text: HTM_PSALM_5,  source: 'HTM' });
-    elements.push({ id: `pent-${hourKey}-ps89`, type: 'fixed', label: '', text: HTM_PSALM_89, source: 'HTM' });
-    elements.push({ id: `pent-${hourKey}-ps100`,type: 'fixed', label: '', text: HTM_PSALM_100,source: 'HTM' });
-  } else if (hourKey === "3rd_hour") {
-    elements.push({ id: `pent-${hourKey}-ps16`, type: 'fixed', label: '', text: HTM_PSALM_16, source: 'HTM' });
-    elements.push({ id: `pent-${hourKey}-ps24`, type: 'fixed', label: '', text: HTM_PSALM_24, source: 'HTM' });
-    elements.push({ id: `pent-${hourKey}-ps50`, type: 'fixed', label: '', text: HTM_PSALM_50, source: 'HTM' });
-  } else if (hourKey === "6th_hour") {
-    elements.push({ id: `pent-${hourKey}-ps53`, type: 'fixed', label: '', text: HTM_PSALM_53, source: 'HTM' });
-    elements.push({ id: `pent-${hourKey}-ps54`, type: 'fixed', label: '', text: HTM_PSALM_54, source: 'HTM' });
-    elements.push({ id: `pent-${hourKey}-ps90`, type: 'fixed', label: '', text: HTM_PSALM_90, source: 'HTM' });
-  } else if (hourKey === "9th_hour") {
-    elements.push({ id: `pent-${hourKey}-ps83`, type: 'fixed', label: '', text: HTM_PSALM_83, source: 'HTM' });
-    elements.push({ id: `pent-${hourKey}-ps84`, type: 'fixed', label: '', text: HTM_PSALM_84, source: 'HTM' });
-    elements.push({ id: `pent-${hourKey}-ps85`, type: 'fixed', label: '', text: HTM_PSALM_85, source: 'HTM' });
+  if (hourKey === '1st_hour') {
+    elements.push({ id: `${hourKey}-ps5`,   type: 'fixed', label: '', text: HTM_PSALM_5,   source: 'HTM' });
+    elements.push({ id: `${hourKey}-ps89`,  type: 'fixed', label: '', text: HTM_PSALM_89,  source: 'HTM' });
+    elements.push({ id: `${hourKey}-ps100`, type: 'fixed', label: '', text: HTM_PSALM_100, source: 'HTM' });
+  } else if (hourKey === '3rd_hour') {
+    elements.push({ id: `${hourKey}-ps16`, type: 'fixed', label: '', text: HTM_PSALM_16, source: 'HTM' });
+    elements.push({ id: `${hourKey}-ps24`, type: 'fixed', label: '', text: HTM_PSALM_24, source: 'HTM' });
+    elements.push({ id: `${hourKey}-ps50`, type: 'fixed', label: '', text: HTM_PSALM_50, source: 'HTM' });
+  } else if (hourKey === '6th_hour') {
+    elements.push({ id: `${hourKey}-ps53`, type: 'fixed', label: '', text: HTM_PSALM_53, source: 'HTM' });
+    elements.push({ id: `${hourKey}-ps54`, type: 'fixed', label: '', text: HTM_PSALM_54, source: 'HTM' });
+    elements.push({ id: `${hourKey}-ps90`, type: 'fixed', label: '', text: HTM_PSALM_90, source: 'HTM' });
+  } else {
+    elements.push({ id: `${hourKey}-ps83`, type: 'fixed', label: '', text: HTM_PSALM_83, source: 'HTM' });
+    elements.push({ id: `${hourKey}-ps84`, type: 'fixed', label: '', text: HTM_PSALM_84, source: 'HTM' });
+    elements.push({ id: `${hourKey}-ps85`, type: 'fixed', label: '', text: HTM_PSALM_85, source: 'HTM' });
   }
 
-  // Glory / Both now / Alleluia
+  // Glory / Alleluia block
   elements.push({
-    id: `pent-${hourKey}-glory-alleluia`,
-    type: "fixed",
-    label: "Glory to the Father...",
-    text: "Glory to the Father, and to the Son, and to the Holy Spirit,\n" +
-          "both now and ever, and unto the ages of ages. Amen.\n" +
-          "Alleluia, alleluia, alleluia. Glory to Thee, O God. (thrice)\n" +
-          "Lord, have mercy. (thrice)",
-    source: "HTM",
+    id: `${hourKey}-glory-alleluia`, type: 'fixed', label: '', rubric: null,
+    text: 'Glory to the Father, and to the Son, and to the Holy Spirit,\nboth now and ever, and unto the ages of ages. Amen.\n\nAlleluia, alleluia, alleluia. Glory to Thee, O God. (thrice)\n\nLord, have mercy. (thrice)',
+    source: 'HTM',
   });
-  // ── TROPARIA BLOCK ──────────────────────────────────────────────────────
-  if (pTrop) {
+  // ── TROPARION BLOCK ────────────────────────────────────────────────────
+  // HTM rubric: "Here we say the first troparion, if there be two."
+  //   ONE troparion:  Glory... → Troparion → Both now... → Theotokion
+  //   TWO troparia:   First troparion → Glory... → Second troparion → Both now... → Theotokion
+  const tropFekulaNote = isPentecostarion
+    ? 'Troparion of the preceding Sunday and the troparion from the Menaion, if there be such. — Fekula §4A(3)'
+    : '"The Hours: Troparion and kontakion from the Menaion." — Fekula, Chapter Two';
+
+  const hasTwoTroparia = !!(primaryTrop && secondaryTrop);
+
+  if (!hasTwoTroparia) {
+    // ONE troparion: Glory comes BEFORE the troparion
     elements.push({
-      id: `pent-${hourKey}-troparion`,
-      type: "movable",
-      label: "Troparion",
-      source: `Pentecostarion — ${pentEntry.name}`,
-      toneNote: `Tone ${pTrop.tone}`,
-      text: pTrop.text,
-      fekula: { section: fekulaSection,
-        note: "Troparion of the preceding Sunday and the troparion from the " +
-              "Menaion, if there be such. — Fekula §4A(3)" },
+      id: `${hourKey}-glory`, type: 'fixed', label: '', rubric: null,
+      text: 'Glory to the Father, and to the Son, and to the Holy Spirit.',
     });
   }
-  if (menaionTrop) {
+
+  if (primaryTrop) {
     elements.push({
-      id: `pent-${hourKey}-glory`,
-      type: "fixed",
-      label: "Glory to the Father...",
-      text: "Glory to the Father, and to the Son, and to the Holy Spirit.",
+      id: `${hourKey}-troparion`, type: 'movable', label: 'Troparion',
+      source: primaryTropSource,
+      toneNote: `Tone ${primaryTrop.tone}`,
+      text: primaryTrop.text,
+      rubric: hasTwoTroparia
+        ? 'Here we say the first troparion, if there be two. — HTM'
+        : null,
+      fekula: { section: fekulaSection, note: tropFekulaNote },
+    });
+  } else {
+    // No troparion resolved — placeholder
+    elements.push({
+      id: `${hourKey}-glory`, type: 'fixed', label: '', rubric: null,
+      text: 'Glory to the Father, and to the Son, and to the Holy Spirit.',
     });
     elements.push({
-      id: `pent-${hourKey}-troparion-menaion`,
-      type: "movable",
-      label: "Troparion",
-      source: `Menaion — ${menaionEntry.saint}`,
-      toneNote: `Tone ${menaionTrop.tone}`,
-      text: menaionTrop.text,
-      fekula: { section: fekulaSection,
-        note: "...and the troparion from the Menaion, if there be such. — Fekula §4A" },
+      id: `${hourKey}-troparion`, type: 'movable', label: 'Troparion',
+      source: `Menaion — ${effectiveSaint}`,
+      text: '[Troparion — text not yet in library for this date]',
+      unresolved: true,
+      fekula: { section: fekulaSection, note: tropFekulaNote },
+    });
+  }
+
+  if (hasTwoTroparia) {
+    // TWO troparia: Glory comes BETWEEN first and second
+    elements.push({
+      id: `${hourKey}-glory`, type: 'fixed', label: '', rubric: null,
+      text: 'Glory to the Father, and to the Son, and to the Holy Spirit.',
+    });
+    elements.push({
+      id: `${hourKey}-troparion-secondary`, type: 'movable', label: 'Troparion',
+      source: secondaryTropSource,
+      toneNote: `Tone ${secondaryTrop.tone}`,
+      text: secondaryTrop.text,
+      rubric: 'And we say the appointed troparion (or the second, if there be two). — HTM',
+      fekula: { section: fekulaSection, note: '...and the troparion from the Menaion, if there be such. — Fekula §4A' },
     });
   }
 
   // Both now / Theotokion
-  elements.push({
-    id: `pent-${hourKey}-both-now`,
-    type: "fixed",
-    label: "Both now and ever...",
-    text: "Both now and ever, and unto the ages of ages. Amen.",
-  });
+  elements.push({ id: `${hourKey}-both-now`, type: 'fixed', label: '', rubric: null,
+    text: 'Both now and ever, and unto the ages of ages. Amen.' });
   const THEOTOKION_BY_HOUR = {
-    "1st_hour": HTM_THEOTOKION_1ST,
-    "3rd_hour": HTM_THEOTOKION_3RD,
-    "6th_hour": HTM_THEOTOKION_6TH,
-    "9th_hour": HTM_THEOTOKION_9TH,
+    '1st_hour': HTM_THEOTOKION_1ST,
+    '3rd_hour': HTM_THEOTOKION_3RD,
+    '6th_hour': HTM_THEOTOKION_6TH,
+    '9th_hour': HTM_THEOTOKION_9TH,
   };
   elements.push({
-    id: `pent-${hourKey}-theotokion`,
-    type: "fixed",
-    label: "Theotokion",
-    text: THEOTOKION_BY_HOUR[hourKey] || "",
-    source: "HTM",
+    id: `${hourKey}-theotokion`, type: 'fixed', label: '', rubric: null,
+    text: THEOTOKION_BY_HOUR[hourKey] || '',
+    source: 'HTM',
   });
-  // ── APPOINTED VERSE ─────────────────────────────────────────────────────
+  // ── APPOINTED VERSE ───────────────────────────────────────────────────
   const VERSE_BY_HOUR = {
-    "1st_hour": HTM_VERSE_1ST,
-    "3rd_hour": HTM_VERSE_3RD,
-    "6th_hour": HTM_VERSE_6TH,
-    "9th_hour": HTM_VERSE_9TH,
+    '1st_hour': HTM_VERSE_1ST,
+    '3rd_hour': HTM_VERSE_3RD,
+    '6th_hour': HTM_VERSE_6TH,
+    '9th_hour': HTM_VERSE_9TH,
   };
   elements.push({
-    id: `pent-${hourKey}-appointed-verse`,
-    type: "fixed",
-    label: "Appointed Verse",
-    text: VERSE_BY_HOUR[hourKey] || "",
-    source: "HTM",
+    id: `${hourKey}-appointed-verse`, type: 'fixed', label: '', rubric: null,
+    text: VERSE_BY_HOUR[hourKey] || '',
+    source: 'HTM',
   });
 
   // ── TRISAGION (2nd) / OUR FATHER ────────────────────────────────────────
   elements.push({
-    id: `pent-${hourKey}-trisagion-2`,
-    type: "fixed",
-    label: "Holy God (Trisagion Prayers)",
-    text: HTM_TRISAGION,
-    source: "HTM",
+    id: `${hourKey}-trisagion-2`, type: 'fixed', label: '', rubric: null,
+    text: HTM_TRISAGION, source: 'HTM',
   });
   elements.push({
-    id: `pent-${hourKey}-for-thine-2`,
-    type: "fixed",
-    label: "",
-    text: HTM_FOR_THINE,
-    source: "HTM",
+    id: `${hourKey}-for-thine-2`, type: 'fixed', label: '', rubric: 'Priest:',
+    text: 'For Thine is the kingdom, and the power, and the glory: of the Father, and of the Son, and of the Holy Spirit, now and ever, and unto the ages of ages.',
+    source: 'HTM',
+  });
+  elements.push({
+    id: `${hourKey}-reader-amen-2`, type: 'fixed', label: '', rubric: null,
+    text: 'Reader: Amen.', source: 'HTM',
   });
 
   // ── KONTAKION ────────────────────────────────────────────────────────────
-  const kontSource = (isHighRank && is3rdOr9th && menaionKont)
-    ? `Menaion — ${menaionEntry.saint} (Doxology+ rank)`
-    : `Pentecostarion — ${pentEntry.name}`;
-  const kontFekulaNote = (isHighRank && is3rdOr9th && menaionKont)
-    ? "If it be a service of Doxology, Polyeleos or Vigil rank, at the Third and Ninth Hours we read the kontakion from the Menaion. — Fekula §4A"
-    : fmt === "apodosis_pascha"
-    ? "Sunday troparion, Let us worship... kontakion of the Blind Man. — Fekula §4B11"
-    : "Kontakion of the preceding Sunday. — Fekula §4A(3)";
-  if (effectiveKont) {
+  if (kontakion) {
     elements.push({
-      id: `pent-${hourKey}-kontakion`,
-      type: "movable",
-      label: "Kontakion",
-      rubric: hourKey === "1st_hour" || hourKey === "6th_hour"
-        ? "And he saith the kontakion which was chanted after the 3rd Ode at Matins. — HTM"
-        : "And he saith the kontakion which was chanted after the 6th Ode at Matins. — HTM",
-      source: kontSource,
-      toneNote: `Tone ${effectiveKont.tone || "—"}`,
-      text: effectiveKont.text,
-      fekula: { section: fekulaSection, note: kontFekulaNote },
+      id: `${hourKey}-kontakion`, type: 'movable', label: 'Kontakion',
+      rubric: kontakionOdeNote,
+      source: kontakionSource,
+      toneNote: `Tone ${kontakion.tone || '—'}`,
+      text: kontakion.text,
+      fekula: { section: fekulaSection,
+        note: isPentecostarion
+          ? 'Kontakion of the preceding Sunday. — Fekula §4A(3)'
+          : '"The Hours: Troparion and kontakion from the Menaion." — Fekula, Chapter Two' },
+    });
+  } else {
+    elements.push({
+      id: `${hourKey}-kontakion`, type: 'movable', label: 'Kontakion',
+      rubric: kontakionOdeNote,
+      source: `Menaion — ${effectiveSaint}`,
+      text: '[Kontakion — text not yet in library for this date]',
+      unresolved: true,
+      fekula: { section: fekulaSection, note: '"The Hours: Troparion and kontakion from the Menaion." — Fekula, Chapter Two' },
     });
   }
 
   // ── LORD HAVE MERCY × 40 / PRAYER OF THE HOURS ──────────────────────────
   elements.push({
-    id: `pent-${hourKey}-lord-40`,
-    type: "fixed",
-    label: "Lord, have mercy (40 times)",
-    text: "Lord, have mercy. (×40)",
-    source: "HTM",
+    id: `${hourKey}-lhm-40`, type: 'fixed', label: '', rubric: null,
+    text: 'Lord, have mercy. (forty times)', source: 'HTM',
   });
   elements.push({
-    id: `pent-${hourKey}-prayer-of-hours`,
-    type: "fixed",
-    label: "Prayer of the Hours",
-    text: HTM_PRAYER_OF_HOURS,
-    source: "HTM",
+    id: `${hourKey}-prayer-of-hours`, type: 'fixed', label: '', rubric: null,
+    text: HTM_PRAYER_OF_HOURS, source: 'HTM',
   });
   elements.push({
-    id: `pent-${hourKey}-lord-3`,
-    type: "fixed",
-    label: "Lord, have mercy (thrice)",
-    text: "Lord, have mercy. (thrice)\n" +
-          "Glory to the Father, and to the Son, and to the Holy Spirit,\n" +
-          "both now and ever, and unto the ages of ages. Amen.",
-    source: "HTM",
+    id: `${hourKey}-lhm-3`, type: 'fixed', label: '', rubric: null,
+    text: 'Lord, have mercy. (thrice)\nGlory to the Father, and to the Son, and to the Holy Spirit,\nboth now and ever, and unto the ages of ages. Amen.',
+    source: 'HTM',
   });
   elements.push({
-    id: `pent-${hourKey}-more-honourable`,
-    type: "fixed",
-    label: "More Honourable",
-    text: HTM_MORE_HONOURABLE,
-    source: "HTM",
+    id: `${hourKey}-more-honourable`, type: 'fixed', label: '', rubric: null,
+    text: HTM_MORE_HONOURABLE, source: 'HTM',
   });
-
-  // ── CLOSING PRAYER and DISMISSAL ────────────────────────────────────────
+  // ── CLOSING PRAYER ───────────────────────────────────────────────────────
+  elements.push({
+    id: `${hourKey}-priest-blessing`, type: 'fixed', label: '', rubric: null,
+    text: 'In the name of the Lord, father (master), bless.',
+    source: 'HTM',
+  });
   const CLOSING_PRAYER = {
-    "1st_hour": HTM_PRAYER_1ST_CLOSING,
-    "3rd_hour": HTM_PRAYER_3RD_CLOSING,
-    "6th_hour": HTM_PRAYER_6TH_CLOSING,
-    "9th_hour": HTM_PRAYER_9TH_CLOSING,
+    '1st_hour': HTM_PRAYER_1ST_CLOSING,
+    '3rd_hour': HTM_PRAYER_3RD_CLOSING,
+    '6th_hour': HTM_PRAYER_6TH_CLOSING,
+    '9th_hour': HTM_PRAYER_9TH_CLOSING,
   };
-  elements.push({
-    id: `pent-${hourKey}-closing-prayer`,
-    type: "fixed",
-    label: "In the name of the Lord, father (master), bless.",
-    text: "In the name of the Lord, father (master), bless.",
-    source: "HTM",
-  });
-  elements.push({
-    id: `pent-${hourKey}-prayer-closing`,
-    type: "fixed",
-    label: "Prayer",
-    text: CLOSING_PRAYER[hourKey] || "",
-    source: "HTM",
-  });
-
-  // 1st Hour only: O Christ the True Light + To thee the Champion Leader
-  if (hourKey === "1st_hour") {
+  if (CLOSING_PRAYER[hourKey]) {
     elements.push({
-      id: "pent-1st-champion-leader",
-      type: "fixed",
-      label: "To thee, the Champion Leader",
-      text: "To thee, the Champion Leader, we thy servants dedicate a feast of " +
-            "victory and of thanksgiving as ones rescued out of sufferings, " +
-            "O Theotokos; but as thou art one with might which is invincible, " +
-            "from all dangers that can be do thou deliver us, that we may cry " +
-            "to thee: Rejoice, thou Bride Unwedded!",
-      source: "HTM",
-    });
-    elements.push({
-      id: "pent-1st-glory-to-thee-christ",
-      type: "fixed",
-      label: "Glory to Thee, O Christ God",
-      text: "Priest: Glory to Thee, O Christ God, our hope, glory to Thee.",
-      source: "HTM",
+      id: `${hourKey}-closing-prayer`, type: 'fixed', label: '', rubric: null,
+      text: CLOSING_PRAYER[hourKey],
+      source: 'HTM',
     });
   }
 
-  // Dismissal — Sunday form throughout Pentecostarion (Fekula §4A)
-  const dismissalText = fmt === "ascension"
-    ? "May Christ our true God Who in glory did ascend from us into heaven, and " +
-      "sitteth at the right hand of the Father, through the intercessions of His " +
-      "most pure Mother, and of all the Saints, have mercy on us and save us, " +
-      "for He is good and the Lover of mankind."
-    : "May He Who rose from the dead, Christ our true God, through the " +
-      "intercessions of His most pure Mother, and of all the Saints, have mercy " +
-      "on us and save us, for He is good and the Lover of mankind.";
+  // ── 1ST HOUR SPECIAL CLOSE (HTM) ─────────────────────────────────────────
+  if (hourKey === '1st_hour') {
+    elements.push({
+      id: '1st_hour-champion-leader', type: 'fixed', label: '', rubric: null,
+      text: 'To thee, the Champion Leader, we thy servants dedicate a feast of victory and of thanksgiving as ones rescued out of sufferings, O Theotokos; but as thou art one with might which is invincible, from all dangers that can be do thou deliver us, that we may cry to thee: Rejoice, thou Bride Unwedded!',
+      source: 'HTM',
+    });
+    elements.push({
+      id: '1st_hour-glory-to-thee-christ', type: 'fixed', label: '', rubric: 'Priest:',
+      text: 'Glory to Thee, O Christ God, our hope, glory to Thee.',
+      source: 'HTM',
+    });
+  }
+
+  // ── DISMISSAL ────────────────────────────────────────────────────────────
+  const dismissalText = (() => {
+    if (isPentecostarion && pentEntry) {
+      const fmt = pentEntry.hours_format;
+      if (fmt === 'ascension')
+        return 'May Christ our true God Who in glory did ascend from us into heaven, and sitteth at the right hand of the Father, through the intercessions of His most pure Mother, and of all the Saints, have mercy on us and save us, for He is good and the Lover of mankind.';
+      // All Pentecostarion: Sunday/Paschal dismissal
+      return 'May He Who rose from the dead, Christ our true God, through the intercessions of His most pure Mother, and of all the Saints, have mercy on us and save us, for He is good and the Lover of mankind.';
+    }
+    return null; // Ordinary time: assembler signals priest gives dismissal
+  })();
   elements.push({
-    id: `pent-${hourKey}-dismissal`,
-    type: "fixed",
-    label: "Dismissal",
-    rubric: "Priest:",
-    text: dismissalText,
-    source: "Fekula §4A",
-    fekula: { section: fekulaSection,
-      note: "The usual Sunday dismissal is used at all services. — Fekula §4A" },
+    id: `${hourKey}-dismissal`, type: 'fixed', label: '', rubric: null,
+    text: dismissalText ||
+      'Glory to the Father, and to the Son, and to the Holy Spirit,\nboth now and ever, and unto the ages of ages. Amen.\n\nLord, have mercy. (thrice)\n\nFather (Master), bless.\n\n[Priest gives the dismissal.]',
+    fekula: isPentecostarion ? { section: fekulaSection,
+      note: 'The usual Sunday dismissal is used at all services. — Fekula §4A' } : undefined,
+    source: 'HTM',
   });
 
   return elements;
 }
 
-// ─── KONTAKION ROUTING HELPER ─────────────────────────────────────────────────
-// HTM rubric:
-//   1st & 6th Hours: "kontakion chanted after the 3rd Ode at Matins"
-//   3rd & 9th Hours: "kontakion chanted after the 6th Ode at Matins"
-// When only one kontakion exists (most days), kontakion_3rd_ode is absent;
-// use kontakion at all four Hours.
 function getKontakionForHour(entry, hourKey) {
   const useThirdOde = hourKey === "1st_hour" || hourKey === "6th_hour";
   if (useThirdOde && entry.kontakion_3rd_ode) {
@@ -6053,671 +5053,7 @@ function getKontakionForHour(entry, hourKey) {
   return entry.kontakion;
 }
 
-// ─── ASSEMBLE 1ST HOUR (weekday ordinary time) ───────────────────────────────
-// Per Fekula §2A/§2C: "The Hours: Troparion and kontakion from the Menaion."
-// Kontakion: after the 3rd Ode at Matins (HTM rubric).
-function assembleFirstHour(liturgicalData, menaionEntry, tbOpen = false) {
-  const elements = [];
-  const hourKey = "1st_hour";
-  const fekulaSection = menaionEntry
-    ? (menaionEntry.fekula_section_override
-        ? `§${menaionEntry.fekula_section_override}`
-        : menaionEntry.rank === "six_stichera" ? "§2C"
-        : menaionEntry.rank === "doxology"     ? "§2D"
-        : menaionEntry.rank === "polyeleos"    ? "§2E"
-        : menaionEntry.rank === "vigil"        ? "§2F"
-        : "§2A")
-    : "§2A";
-  const fekulaNote = '"The Hours: Troparion and kontakion from the Menaion." — Fekula, Chapter Two';
 
-  // Opening block
-  FIRST_HOUR_OPENING.forEach(el => elements.push(el));
-
-  // Troparion (movable)
-  elements.push(menaionEntry ? {
-    id: "1h-troparion", type: "movable",
-    label: "Troparion",
-    source: `Menaion \u2014 ${menaionEntry.saint}`,
-    toneNote: `Tone ${menaionEntry.troparion.tone}`,
-    fekula: { section: fekulaSection, note: fekulaNote },
-    rubric: "Here we say the first troparion, if there be two.\nGlory to the Father, and to the Son, and to the Holy Spirit.\nAnd we say the appointed troparion (or the second, if there be two).",
-    text: menaionEntry.troparion.text,
-    citation: `OCA, oca.org/saints/troparia \u2014 ${menaionEntry.saint}.`,
-  } : {
-    id: "1h-troparion", type: "movable",
-    label: "Troparion",
-    source: "Menaion \u2014 saint of the day",
-    fekula: { section: fekulaSection, note: fekulaNote },
-    rubric: "Here we say the first troparion, if there be two.\nGlory to the Father, and to the Son, and to the Holy Spirit.\nAnd we say the appointed troparion (or the second, if there be two).",
-    text: "[Troparion of the saint from the Menaion \u2014 text not yet in library for this date]",
-  });
-
-  // Fixed theotokion
-  elements.push(FIRST_HOUR_THEOTOKION);
-
-  // Closing block — insert kontakion after exclamation-2
-  FIRST_HOUR_CLOSING.forEach(el => {
-    elements.push(el);
-    if (el.id === "1h-exclamation-2") {
-      const k = menaionEntry ? getKontakionForHour(menaionEntry, hourKey) : null;
-      elements.push(menaionEntry && k ? {
-        id: "1h-kontakion", type: "movable",
-        label: "Kontakion",
-        source: `Menaion \u2014 ${k.saint || menaionEntry.saint}`,
-        toneNote: `Tone ${k.tone}`,
-        fekula: { section: fekulaSection, note: fekulaNote },
-        rubric: "Reader: Amen. And he saith the kontakion of the feast, or of the saint of the day.\nIf there be two kontakia, he saith the kontakion chanted after the 3rd Ode at Matins.",
-        text: k.text,
-        citation: `HTM Horologion \u2014 1st Hour kontakion rubric (after Matins 3rd Ode).`,
-      } : {
-        id: "1h-kontakion", type: "movable",
-        label: "Kontakion",
-        source: "Menaion \u2014 saint of the day",
-        fekula: { section: fekulaSection, note: fekulaNote },
-        rubric: "Reader: Amen. And he saith the kontakion of the feast, or of the saint of the day.\nIf there be two kontakia, he saith the kontakion chanted after the 3rd Ode at Matins.",
-        text: "[Kontakion of the saint from the Menaion \u2014 text not yet in library for this date]",
-      });
-    }
-  });
-
-  return elements;
-}
-
-// ─── ASSEMBLE SUNDAY 1ST HOUR ────────────────────────────────────────────────
-// Per Fekula §1A (one saint) and §1B (two saints):
-// §1A: Resurrectional troparion; Glory… Menaion saint; Now and ever… theotokion.
-//      Only the Sunday kontakion is read.
-// §1B at 1st & 6th Hours: Resurrectional troparion; Glory… troparion of FIRST saint.
-function assembleSundayFirstHour(liturgicalData, menaionEntry, tbOpen = false) {
-  const elements = [];
-  const { tone } = liturgicalData;
-  const resT = RESURRECTIONAL_TROPARIA[tone];
-  const sundayK = SUNDAY_KONTAKIA[tone];
-  const theotokion = SUNDAY_HOURS_THEOTOKIA[tone];
-
-  const saints = Array.isArray(menaionEntry) ? menaionEntry : menaionEntry ? [menaionEntry] : [];
-  const isDoubleService = saints.length >= 2;
-  // At the 1st Hour in §1B: Glory… troparion of the FIRST saint
-  const menaionSaint = isDoubleService ? saints[0] : saints[0];
-  const fekulaSection = isDoubleService ? "§1B" : "§1A";
-  const fekulaNote = isDoubleService
-    ? '"At the First and Sixth Hours: The resurrectional troparion; Glory... the troparion of the first saint; Now and ever... the theotokion from the Horologion. At all Hours only the Sunday kontakion is read." \u2014 Fekula, Chapter One'
-    : '"We read the Sunday troparion; Glory... the troparion from the Menaion; Now and ever... the theotokion from the Horologion. Only the Sunday kontakion is read." \u2014 Fekula, Chapter One';
-
-  FIRST_HOUR_OPENING.forEach(el => elements.push(el));
-
-  elements.push({
-    id: "1h-troparion-resurrectional", type: "movable",
-    label: "Troparion of the Resurrection",
-    source: `Octoechos \u2014 Tone ${tone}`,
-    toneNote: `Tone ${tone} of the week`,
-    fekula: { section: fekulaSection, note: fekulaNote },
-    rubric: "Here we say the first troparion, if there be two.\nGlory to the Father, and to the Son, and to the Holy Spirit.",
-    text: resT ? resT.text : `[Resurrectional troparion, Tone ${tone}]`,
-    citation: `Octoechos, Tone ${tone} \u2014 resurrectional troparion.`,
-  });
-
-  elements.push({
-    id: "1h-troparion-menaion", type: "movable",
-    label: menaionSaint ? `Glory \u2026 Troparion of ${menaionSaint.saint}` : "Glory \u2026 Troparion of the saint",
-    source: menaionSaint ? `Menaion \u2014 ${menaionSaint.saint}` : "Menaion \u2014 saint of the day",
-    toneNote: menaionSaint ? `Tone ${menaionSaint.troparion.tone}` : null,
-    fekula: { section: fekulaSection, note: fekulaNote },
-    rubric: "And we say the appointed troparion (or the second, if there be two).",
-    text: menaionSaint ? menaionSaint.troparion.text : `[Troparion of the ${isDoubleService ? "first " : ""}saint from the Menaion \u2014 not yet in library for this date]`,
-    citation: menaionSaint ? `OCA, oca.org/saints/troparia \u2014 ${menaionSaint.saint}.` : null,
-  });
-
-  elements.push({
-    id: "1h-theotokion-sunday", type: "movable",
-    label: "Now and ever \u2026 Theotokion",
-    source: `Horologion \u2014 Dismissal Theotokion, Tone ${tone}`,
-    toneNote: `Tone ${tone}`,
-    fekula: { section: fekulaSection, note: fekulaNote },
-    rubric: "Both now and ever, and unto the ages of ages. Amen.",
-    text: theotokion ? theotokion.text : `[Dismissal Theotokion, Tone ${tone} \u2014 from the Horologion]`,
-    citation: `Common Theotokia, Tone ${tone} \u2014 st-sergius.org.`,
-  });
-
-  FIRST_HOUR_CLOSING.forEach(el => {
-    elements.push(el);
-    if (el.id === "1h-exclamation-2") {
-      elements.push({
-        id: "1h-kontakion-sunday", type: "movable",
-        label: "Kontakion of the Resurrection",
-        source: `Octoechos \u2014 Tone ${tone}`,
-        toneNote: `Tone ${tone}`,
-        fekula: {
-          section: fekulaSection,
-          note: '"Only the Sunday kontakion is read. The kontakion from the Menaion is not read." \u2014 Fekula, Chapter One',
-        },
-        rubric: "Reader: Amen. And he saith the kontakion of the Resurrection:",
-        text: sundayK ? sundayK.text : `[Sunday kontakion, Tone ${tone}]`,
-        citation: `Octoechos, Tone ${tone} \u2014 Sunday kontakion.`,
-      });
-    }
-  });
-
-  return elements;
-}
-
-
-
-// ─── FIXED TEXTS — 3RD HOUR ──────────────────────────────────────────────────
-// Source: HTM Horologion. Psalms 16, 24, 50.
-// Kontakion rubric (verbatim HTM): "he saith the kontakion which was chanted
-// after the 6th Ode at Matins" — governs 3rd & 9th Hours.
-// When only one kontakion exists, kontakion_3rd_ode is absent; use kontakion.
-
-const THIRD_HOUR_OPENING = [
-  {
-    id: "3h-blessing", type: "fixed", label: "Opening Blessing", rubric: "Priest:",
-    text: "Blessed is our God, always, now and ever, and unto the ages of ages.",
-  },
-  {
-    id: "3h-reader-response", type: "fixed", label: "Reader\u2019s Response", rubric: "Reader:",
-    text: "Amen. Glory to Thee, our God, glory to Thee.\n\nO Heavenly King, Comforter, Spirit of Truth, Who art everywhere present and fillest all things, Treasury of good things and Giver of life: Come and dwell in us, and cleanse us of all impurity, and save our souls, O Good One.",
-  },
-  {
-    id: "3h-trisagion", type: "fixed", label: "Trisagion Prayers", rubric: null,
-    text: "Holy God, Holy Mighty, Holy Immortal, have mercy on us. (thrice)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nO Most Holy Trinity, have mercy on us. O Lord, blot out our sins. O Master, pardon our iniquities. O Holy One, visit and heal our infirmities for Thy name\u2019s sake.\n\nLord, have mercy. (thrice)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.",
-  },
-  {
-    id: "3h-ourfather", type: "fixed", label: "Our Father", rubric: null,
-    text: "Our Father, Who art in the heavens, hallowed be Thy name. Thy kingdom come, Thy will be done, on earth as it is in heaven. Give us this day our daily bread, and forgive us our debts, as we forgive our debtors; and lead us not into temptation, but deliver us from the evil one.",
-  },
-  {
-    id: "3h-exclamation-1", type: "fixed", label: "Exclamation", rubric: "Priest:",
-    text: "For Thine is the kingdom, and the power, and the glory: of the Father, and of the Son, and of the Holy Spirit, now and ever, and unto the ages of ages.",
-  },
-  {
-    id: "3h-lhm-12", type: "fixed", label: "Lord, have mercy", rubric: "Reader: Amen.",
-    text: "Lord, have mercy. (twelve times)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.",
-  },
-  {
-    id: "3h-o-come", type: "fixed", label: "O come, let us worship", rubric: null,
-    text: "O come, let us worship God our King.\nO come, let us worship and fall down before Christ our King and God.\nO come, let us worship and fall down before Christ Himself, our King and God.",
-  },
-  {
-    id: "3h-psalm16", type: "fixed", label: "Psalm 16", rubric: null,
-    text: 'Hearken, O Lord, unto my righteousness, attend unto my supplication. Give ear unto my prayer, which cometh not from deceitful lips. From before Thy face let my judgment come forth, let mine eyes behold uprightness. Thou hast proved my heart, Thou hast visited it in the night, Thou hast tried me by fire, and unrighteousness was not found in me. That my mouth might not speak of the works of men, for the sake of the words of Thy lips have I kept the ways that are hard. Set my footsteps in Thy paths, that my steps may not be shaken. I have cried for Thou hast hearkened unto me, O God. Incline Thine ear unto me, and hearken unto my words. Let Thy mercies be made wonderful, O Thou that savest them that hope in Thee. From them that have resisted Thy right hand, keep me, O Lord, as the apple of Thine eye. In the shelter of Thy wings wilt Thou shelter me, from the face of the ungodly which have oppressed me. Mine enemies have surrounded my soul, they have enclosed themselves with their own fat, their mouth hath spoken pride. They that cast me out have now encircled me, they have set their eyes to look askance on the earth. They have taken me as might a lion ready for his prey, and as might a lions whelp that dwelleth in hiding. Arise, O Lord, overtake them and trip their heels; deliver my soul from ungodly men, Thy sword from the enemies of Thy hand. O Lord, from Thy few do Thou separate them from the earth in their life; yea, with Thy hidden treasures hath their belly been filled. They have satisfied themselves with swine and have left the remnants to their babes. But as for me, in righteousness shall I appear before Thy face; I shall be filled when Thy glory is made manifest to me.',
-  },
-  {
-    id: "3h-psalm24", type: "fixed", label: "Psalm 24", rubric: null,
-    text: 'Unto Thee, O Lord, have I lifted up my soul. O my God, in Thee have I trusted; let me never be put to shame, nor let mine enemies laugh me to scorn. Yea, let none that wait on Thee be put to shame; let them be ashamed which are lawless without a cause. Make Thy ways, O Lord, known unto me and teach me Thy paths. Lead me in Thy truth and teach me, for Thou art God my Saviour; for on Thee have I waited all the day long. Remember Thy compassions, O Lord, and Thy mercies, for they are from everlasting. The sins of my youth and mine ignorances remember not; according to Thy mercy remember Thou me, for the sake of Thy goodness, O Lord. Good and upright is the Lord; therefore will He set a law for them that sin in the way. He will guide the meek in judgment, He will teach the meek His ways. All the ways of the Lord are mercy and truth, unto them that seek after His covenant and His testimonies. For the sake of Thy name, O Lord, be gracious unto my sin; for it is great. Who is the man that feareth the Lord? He will set him a law in the way which He hath chosen. His soul shall dwell among good things, and his seed shall inherit the earth. The Lord is the strength of them that fear Him, and His covenant shall be manifested unto them. Mine eyes are ever toward the Lord, for He it is that will draw my feet out of the snare. Look upon me, and have mercy on me; for I am one only-begotten and poor. The afflictions of my heart are multiplied; bring me out from my necessities. Behold my lowliness and my toil, and forgive all my sins. Look upon mine enemies, for they are multiplied, and with an unjust hatred have they hated me. Keep my soul and rescue me; let me not be put to shame, for I have hoped in Thee. The innocent and the upright have cleaved unto me, for I have waited on Thee, O Lord. Redeem Israel, O God, out of all his afflictions.',
-  },
-  {
-    id: "3h-psalm50", type: "fixed", label: "Psalm 50", rubric: null,
-    text: 'Have mercy on me, O God, according to Thy great mercy; and according to the multitude of Thy compassions blot out my transgression. Wash me thoroughly from mine iniquity, and cleanse me from my sin. For I know mine iniquity, and my sin is ever before me. Against Thee only have I sinned and done this evil before Thee, that Thou mightest be justified in Thy words, and prevail when Thou art judged. For behold, I was conceived in iniquities, and in sins did my mother bear me. For behold, Thou hast loved truth; the hidden and the secret things of Thy wisdom hast Thou made manifest unto me. Thou shalt sprinkle me with hyssop, and I shall be made clean; Thou shalt wash me, and I shall be made whiter than snow. Thou shalt make me to hear joy and gladness; the bones that be humbled, they shall rejoice. Turn Thy face away from my sins, and blot out all mine iniquities. Create in me a clean heart, O God, and renew a right spirit within me. Cast me not away from Thy presence, and take not Thy Holy Spirit from me. Restore unto me the joy of Thy salvation, and with Thy governing Spirit establish me. I shall teach transgressors Thy ways, and the ungodly shall turn back unto Thee. Deliver me from blood-guiltiness, O God, Thou God of my salvation; my tongue shall rejoice in Thy righteousness. O Lord, Thou shalt open my lips, and my mouth shall declare Thy praise. For if Thou hadst desired sacrifice, I had given it; with whole-burnt offerings Thou shalt not be pleased. A sacrifice unto God is a broken spirit; a heart that is broken and humbled God will not despise. Do good, O Lord, in Thy good pleasure unto Sion, and let the walls of Jerusalem be builded. Then shalt Thou be pleased with a sacrifice of righteousness, with oblation and whole-burnt offerings. Then shall they offer bullocks upon Thine altar.',
-  },
-  {
-    id: "3h-alleluia", type: "fixed", label: "Glory \u2026 Alleluia", rubric: null,
-    text: "Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nAlleluia, alleluia, alleluia. Glory to Thee, O God. (thrice)\n\nLord, have mercy. (thrice)",
-  },
-];
-
-// Fixed theotokion for the 3rd Hour — ordinary time
-// Source: HTM Horologion — "O Theotokos, thou art the true vine"
-const THIRD_HOUR_THEOTOKION = {
-  id: "3h-theotokion-fixed", type: "fixed",
-  label: "Both now and ever \u2026 Theotokion",
-  rubric: "Both now and ever, and unto the ages of ages. Amen.",
-  source: "HTM Horologion \u2014 appointed theotokion for the 3rd Hour",
-  text: 'O Theotokos, thou art the true vine that hath blossomed forth for us the Fruit of life. Thee do we supplicate; intercede, O Lady, together with the holy apostles, that our souls find mercy.',
-};
-
-const THIRD_HOUR_CLOSING = [
-  {
-    id: "3h-blessed-lord", type: "fixed", label: "Blessed is the Lord", rubric: null,
-    text: "Blessed is the Lord God, blessed is the Lord day by day; the God of our salvation shall prosper us along the way; our God is the God of salvation.",
-  },
-  {
-    id: "3h-trisagion-2", type: "fixed", label: "Trisagion Prayers", rubric: "Then:",
-    text: "Holy God, Holy Mighty, Holy Immortal, have mercy on us. (thrice)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nO Most Holy Trinity, have mercy on us. O Lord, blot out our sins. O Master, pardon our iniquities. O Holy One, visit and heal our infirmities for Thy name\u2019s sake.\n\nLord, have mercy. (thrice)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nOur Father, Who art in the heavens, hallowed be Thy name. Thy kingdom come, Thy will be done, on earth as it is in heaven. Give us this day our daily bread, and forgive us our debts, as we forgive our debtors; and lead us not into temptation, but deliver us from the evil one.",
-  },
-  {
-    id: "3h-exclamation-2", type: "fixed", label: "Exclamation", rubric: "Priest:",
-    text: "For Thine is the kingdom, and the power, and the glory: of the Father, and of the Son, and of the Holy Spirit, now and ever, and unto the ages of ages.",
-  },
-  // ── KONTAKION inserted here by assembler ──
-  {
-    id: "3h-lhm-40", type: "fixed", label: "Lord, have mercy", rubric: "Reader: Amen.",
-    text: "Lord, have mercy. (forty times)",
-  },
-  {
-    id: "3h-prayer-hours", type: "fixed", label: "Prayer of the Hours", rubric: null,
-    text: "Thou who at all times and at every hour, in heaven and on earth, art worshipped and glorified, O Christ God, Who art long-suffering, plenteous in mercy, most compassionate, Who lovest the righteous and hast mercy on sinners, Who callest all to salvation through the promise of good things to come: Receive, O Lord, our prayers at this hour, and guide our life toward Thy commandments. Sanctify our souls, make chaste our bodies, correct our thoughts, purify our intentions, and deliver us from every sorrow, evil, and pain. Compass us about with Thy holy angels, that, guarded and guided by their array, we may attain to the unity of the faith and the knowledge of Thine unapproachable glory; for blessed art Thou unto the ages of ages. Amen.",
-  },
-  {
-    id: "3h-lhm-3", type: "fixed", label: "Lord, have mercy", rubric: null,
-    text: "Lord, have mercy. (thrice)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.",
-  },
-  {
-    id: "3h-more-honourable", type: "fixed", label: "More honourable", rubric: null,
-    text: "More honourable than the Cherubim, and beyond compare more glorious than the Seraphim, who without corruption gavest birth to God the Word, the very Theotokos, thee do we magnify.",
-  },
-  {
-    id: "3h-priest-blessing", type: "fixed", label: "Blessing",
-    rubric: "In the name of the Lord, father (master), bless.\nPriest:",
-    text: "Through the prayers of our holy fathers, O Lord Jesus Christ our God, have mercy on us.",
-  },
-  {
-    id: "3h-closing-prayer", type: "fixed", label: "Prayer of St. Mardarius", rubric: "Reader: Amen.",
-    text: 'O Master, God the Father Almighty, O Lord, the Only-begotten Son, Jesus Christ, and O Holy Spirit, one Godhead, one Power: Have mercy on me a sinner, and by the judgments which Thou knowest, save me, Thine unworthy servant; for blessed art Thou unto the ages of ages. Amen.',
-  },
-  {
-    id: "3h-dismissal", type: "fixed", label: "Dismissal", rubric: null,
-    text: "Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nLord, have mercy. (thrice)\n\nFather (Master), bless.\n\n[Priest gives the dismissal. The Sixth Hour follows.]",
-  },
-];
-
-
-
-// ─── ASSEMBLE 3RD HOUR (weekday ordinary time) ───────────────────────────────
-// Per Fekula §2A/§2C: "The Hours: Troparion and kontakion from the Menaion."
-// Kontakion: after the 6th Ode at Matins (HTM rubric) — same as the 9th Hour.
-function assembleThirdHour(liturgicalData, menaionEntry) {
-  const elements = [];
-  const hourKey = "3rd_hour";
-  const fekulaSection = menaionEntry
-    ? (menaionEntry.fekula_section_override
-        ? `§${menaionEntry.fekula_section_override}`
-        : menaionEntry.rank === "six_stichera" ? "§2C"
-        : menaionEntry.rank === "doxology"     ? "§2D"
-        : menaionEntry.rank === "polyeleos"    ? "§2E"
-        : menaionEntry.rank === "vigil"        ? "§2F"
-        : "§2A")
-    : "§2A";
-  const fekulaNote = '"The Hours: Troparion and kontakion from the Menaion." \u2014 Fekula, Chapter Two';
-
-  THIRD_HOUR_OPENING.forEach(el => elements.push(el));
-
-  // Troparion (movable)
-  elements.push(menaionEntry ? {
-    id: "3h-troparion", type: "movable",
-    label: "Troparion",
-    source: `Menaion \u2014 ${menaionEntry.saint}`,
-    toneNote: `Tone ${menaionEntry.troparion.tone}`,
-    fekula: { section: fekulaSection, note: fekulaNote },
-    rubric: "Here we say the first troparion, if there be two.\nGlory to the Father, and to the Son, and to the Holy Spirit.\nAnd we say the appointed troparion (or the second, if there be two).",
-    text: menaionEntry.troparion.text,
-    citation: `OCA, oca.org/saints/troparia \u2014 ${menaionEntry.saint}.`,
-  } : {
-    id: "3h-troparion", type: "movable",
-    label: "Troparion",
-    source: "Menaion \u2014 saint of the day",
-    fekula: { section: fekulaSection, note: fekulaNote },
-    rubric: "Here we say the first troparion, if there be two.\nGlory to the Father, and to the Son, and to the Holy Spirit.\nAnd we say the appointed troparion (or the second, if there be two).",
-    text: "[Troparion of the saint from the Menaion \u2014 text not yet in library for this date]",
-  });
-
-  // Fixed theotokion
-  elements.push(THIRD_HOUR_THEOTOKION);
-
-  // Closing block — insert kontakion after 3h-exclamation-2
-  THIRD_HOUR_CLOSING.forEach(el => {
-    elements.push(el);
-    if (el.id === "3h-exclamation-2") {
-      const k = menaionEntry ? getKontakionForHour(menaionEntry, hourKey) : null;
-      elements.push(menaionEntry && k ? {
-        id: "3h-kontakion", type: "movable",
-        label: "Kontakion",
-        source: `Menaion \u2014 ${k.saint || menaionEntry.saint}`,
-        toneNote: `Tone ${k.tone}`,
-        fekula: { section: fekulaSection, note: fekulaNote },
-        rubric: "Reader: Amen. And he saith the kontakion of the feast, or of the saint of the day.\nIf there be two kontakia, he saith the kontakion chanted after the 6th Ode at Matins.",
-        text: k.text,
-        citation: "HTM Horologion \u2014 3rd Hour kontakion rubric (after Matins 6th Ode).",
-      } : {
-        id: "3h-kontakion", type: "movable",
-        label: "Kontakion",
-        source: "Menaion \u2014 saint of the day",
-        fekula: { section: fekulaSection, note: fekulaNote },
-        rubric: "Reader: Amen. And he saith the kontakion of the feast, or of the saint of the day.\nIf there be two kontakia, he saith the kontakion chanted after the 6th Ode at Matins.",
-        text: "[Kontakion of the saint from the Menaion \u2014 text not yet in library for this date]",
-      });
-    }
-  });
-
-  return elements;
-}
-
-// ─── ASSEMBLE SUNDAY 3RD HOUR ────────────────────────────────────────────────
-// Per Fekula §1A (one saint) and §1B (two saints):
-// §1B at 3rd & 9th Hours: Resurrectional troparion; Glory… troparion of SECOND saint.
-// Sunday kontakion only at all Hours.
-function assembleSundayThirdHour(liturgicalData, menaionEntry) {
-  const elements = [];
-  const { tone } = liturgicalData;
-  const resT = RESURRECTIONAL_TROPARIA[tone];
-  const sundayK = SUNDAY_KONTAKIA[tone];
-  const theotokion = SUNDAY_HOURS_THEOTOKIA[tone];
-
-  const saints = Array.isArray(menaionEntry) ? menaionEntry : menaionEntry ? [menaionEntry] : [];
-  const isDoubleService = saints.length >= 2;
-  // At the 3rd Hour in §1B: Glory… troparion of the SECOND saint
-  const menaionSaint = isDoubleService ? saints[1] : saints[0];
-  const fekulaSection = isDoubleService ? "\u00a71B" : "\u00a71A";
-  const fekulaNote = isDoubleService
-    ? '"At the Third and Ninth Hours: The resurrectional troparion; Glory... the troparion of the second saint; Now and ever... the theotokion from the Horologion. At all Hours only the Sunday kontakion is read." \u2014 Fekula, Chapter One'
-    : '"We read the Sunday troparion; Glory... the troparion from the Menaion; Now and ever... the theotokion from the Horologion. Only the Sunday kontakion is read." \u2014 Fekula, Chapter One';
-
-  THIRD_HOUR_OPENING.forEach(el => elements.push(el));
-
-  elements.push({
-    id: "3h-troparion-resurrectional", type: "movable",
-    label: "Troparion of the Resurrection",
-    source: `Octoechos \u2014 Tone ${tone}`,
-    toneNote: `Tone ${tone} of the week`,
-    fekula: { section: fekulaSection, note: fekulaNote },
-    rubric: "Here we say the first troparion, if there be two.\nGlory to the Father, and to the Son, and to the Holy Spirit.",
-    text: resT ? resT.text : `[Resurrectional troparion, Tone ${tone}]`,
-    citation: `Octoechos, Tone ${tone} \u2014 resurrectional troparion.`,
-  });
-
-  elements.push({
-    id: "3h-troparion-menaion", type: "movable",
-    label: menaionSaint ? `Glory \u2026 Troparion of ${menaionSaint.saint}` : "Glory \u2026 Troparion of the saint",
-    source: menaionSaint ? `Menaion \u2014 ${menaionSaint.saint}` : "Menaion \u2014 saint of the day",
-    toneNote: menaionSaint ? `Tone ${menaionSaint.troparion.tone}` : null,
-    fekula: { section: fekulaSection, note: fekulaNote },
-    rubric: "And we say the appointed troparion (or the second, if there be two).",
-    text: menaionSaint ? menaionSaint.troparion.text
-      : `[Troparion of the ${isDoubleService ? "second " : ""}saint from the Menaion \u2014 not yet in library for this date]`,
-    citation: menaionSaint ? `OCA, oca.org/saints/troparia \u2014 ${menaionSaint.saint}.` : null,
-  });
-
-  elements.push({
-    id: "3h-theotokion-sunday", type: "movable",
-    label: "Now and ever \u2026 Theotokion",
-    source: `Horologion \u2014 Dismissal Theotokion, Tone ${tone}`,
-    toneNote: `Tone ${tone}`,
-    fekula: { section: fekulaSection, note: fekulaNote },
-    rubric: "Both now and ever, and unto the ages of ages. Amen.",
-    text: theotokion ? theotokion.text : `[Dismissal Theotokion, Tone ${tone} \u2014 from the Horologion]`,
-    citation: `Common Theotokia, Tone ${tone} \u2014 st-sergius.org.`,
-  });
-
-  THIRD_HOUR_CLOSING.forEach(el => {
-    elements.push(el);
-    if (el.id === "3h-exclamation-2") {
-      elements.push({
-        id: "3h-kontakion-sunday", type: "movable",
-        label: "Kontakion of the Resurrection",
-        source: `Octoechos \u2014 Tone ${tone}`,
-        toneNote: `Tone ${tone}`,
-        fekula: {
-          section: fekulaSection,
-          note: '"Only the Sunday kontakion is read. The kontakion from the Menaion is not read." \u2014 Fekula, Chapter One',
-        },
-        rubric: "Reader: Amen. And he saith the kontakion of the Resurrection:",
-        text: sundayK ? sundayK.text : `[Sunday kontakion, Tone ${tone}]`,
-        citation: `Octoechos, Tone ${tone} \u2014 Sunday kontakion.`,
-      });
-    }
-  });
-
-  return elements;
-}
-
-
-
-// ─── FIXED TEXTS — 6TH HOUR ──────────────────────────────────────────────────
-// Source: HTM Horologion. Psalms 53, 54, 90.
-// Kontakion rubric (verbatim HTM): "he saith the kontakion which was chanted
-// after the 3rd Ode at Matins" — governs 1st & 6th Hours.
-// When only one kontakion exists, kontakion_3rd_ode is absent; use kontakion.
-
-const SIXTH_HOUR_OPENING = [
-  {
-    id: "6h-blessing", type: "fixed", label: "Opening Blessing", rubric: "Priest:",
-    text: "Blessed is our God, always, now and ever, and unto the ages of ages.",
-  },
-  {
-    id: "6h-reader-response", type: "fixed", label: "Reader\u2019s Response", rubric: "Reader:",
-    text: "Amen. Glory to Thee, our God, glory to Thee.\n\nO Heavenly King, Comforter, Spirit of Truth, Who art everywhere present and fillest all things, Treasury of good things and Giver of life: Come and dwell in us, and cleanse us of all impurity, and save our souls, O Good One.",
-  },
-  {
-    id: "6h-trisagion", type: "fixed", label: "Trisagion Prayers", rubric: null,
-    text: "Holy God, Holy Mighty, Holy Immortal, have mercy on us. (thrice)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nO Most Holy Trinity, have mercy on us. O Lord, blot out our sins. O Master, pardon our iniquities. O Holy One, visit and heal our infirmities for Thy name\u2019s sake.\n\nLord, have mercy. (thrice)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.",
-  },
-  {
-    id: "6h-ourfather", type: "fixed", label: "Our Father", rubric: null,
-    text: "Our Father, Who art in the heavens, hallowed be Thy name. Thy kingdom come, Thy will be done, on earth as it is in heaven. Give us this day our daily bread, and forgive us our debts, as we forgive our debtors; and lead us not into temptation, but deliver us from the evil one.",
-  },
-  {
-    id: "6h-exclamation-1", type: "fixed", label: "Exclamation", rubric: "Priest:",
-    text: "For Thine is the kingdom, and the power, and the glory: of the Father, and of the Son, and of the Holy Spirit, now and ever, and unto the ages of ages.",
-  },
-  {
-    id: "6h-lhm-12", type: "fixed", label: "Lord, have mercy", rubric: "Reader: Amen.",
-    text: "Lord, have mercy. (twelve times)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.",
-  },
-  {
-    id: "6h-o-come", type: "fixed", label: "O come, let us worship", rubric: null,
-    text: "O come, let us worship God our King.\nO come, let us worship and fall down before Christ our King and God.\nO come, let us worship and fall down before Christ Himself, our King and God.",
-  },
-  {
-    id: "6h-psalm53", type: "fixed", label: "Psalm 53", rubric: null,
-    text: 'O God, in Thy name save me, and in Thy strength do Thou judge me. O God, hearken unto my prayer, give ear unto the words of my mouth. For strangers are risen up against me, and mighty men have sought after my soul and have not set God before themselves. For behold, God helpeth me, and the Lord is the protector of my soul. He will bring evils upon mine enemies. Utterly destroy them by Thy truth. Willingly shall I sacrifice unto Thee; I will confess Thy name, O Lord, for it is good. For out of every affliction hast Thou delivered me, and mine eye hath looked down upon mine enemies.',
-  },
-  {
-    id: "6h-psalm54", type: "fixed", label: "Psalm 54", rubric: null,
-    text: 'Give ear, O God, unto my prayer, and disdain not my supplication, attend unto me, and hear me. I was grieved in my meditation, and I was troubled at the voice of the enemy and at the oppression of the sinner; because they have turned iniquity upon me, and with wrath were they angry against me. My heart is troubled within me, and the terror of death is fallen upon me. Fear and trembling are come upon me, and darkness hath covered me. And I said: Who will give me wings like a dove? And I will fly and be at rest. Lo, I have fled afar off and have dwelt in the wilderness. I waited for God that saveth me from faintheartedness and from tempest. Plunge them into the depths, O Lord, and divide their tongues, for I have seen iniquity and gainsaying in the city. Day and night they go round about her upon her walls; iniquity and toil and unrighteousness are in the midst of her. And usury and deceit have not departed from her streets. For if mine enemy had reviled me, I might have endured it. And if he that hateth me had spoken boastful words against me, I might have hid myself from him. But thou it was, O man of like soul with me, my guide and my familiar friend, thou who together with me didst sweeten my repasts; in the house of God I walked with thee in oneness of mind. Let death come upon such ones, and let them go down alive into hades. For wickedness is in their dwellings, and in the midst of them. As for me, unto God have I cried, and the Lord hearkened unto me. Evening, morning, and noonday will I tell of it and will declare it, and He will hear my voice. He will redeem my soul in peace from them that draw nigh unto me, for they among many were with me. God will hear, and He will humble them, He that is before the ages. For to them there is no requital, because they have not feared God; He hath stretched forth His hand in retribution. They have defiled His covenant; they were scattered by the wrath of His countenance, and their hearts have convened. Their words were smoother than oil, and yet they are darts. Cast thy care upon the Lord, and He will nourish thee; He will never permit the righteous to be shaken. But Thou, O God, shalt bring those men down into the pit of destruction. Bloody and deceitful men shall not live out half their days; but as for me, O Lord, I will hope in Thee.',
-  },
-  {
-    id: "6h-psalm90", type: "fixed", label: "Psalm 90", rubric: null,
-    text: 'He that dwelleth in the help of the Most High shall abide in the shelter of the God of heaven. He shall say unto the Lord: Thou art my helper and my refuge. He is my God, and I will hope in Him. For He shall deliver thee from the snare of the hunters and from every troubling word. With His shoulders will He overshadow thee, and under His wings shalt thou have hope. With a shield will His truth encompass thee; thou shalt not be afraid for the terror by night, nor for the arrow that flieth by day, nor for the thing that walketh in darkness, nor for the mishap and demon of noonday. A thousand shall fall at thy side, and ten thousand at thy right hand, but unto thee shall it not come nigh. Only with thine eyes shalt thou behold, and thou shalt see the reward of sinners. For Thou, O Lord, art my hope. Thou madest the Most High thy refuge; no evils shall come nigh thee, and no scourge shall draw nigh unto thy dwelling. For He shall give His angels charge over thee, to keep thee in all thy ways. On their hands shall they bear thee up, lest at any time thou dash thy foot against a stone. Upon the asp and basilisk shalt thou tread, and thou shalt trample upon the lion and dragon. For he hath set his hope on Me, and I will deliver him; I will shelter him because he hath known My name. He shall cry unto Me, and I will hearken unto him. I am with him in affliction, and I will rescue him and glorify him. With length of days will I satisfy him and I will show him My salvation.',
-  },
-  {
-    id: "6h-alleluia", type: "fixed", label: "Glory \u2026 Alleluia", rubric: null,
-    text: "Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nAlleluia, alleluia, alleluia. Glory to Thee, O God. (thrice)\n\nLord, have mercy. (thrice)",
-  },
-];
-
-// Fixed theotokion for the 6th Hour — ordinary time
-// Source: HTM Horologion — "Seeing that we have no boldness"
-const SIXTH_HOUR_THEOTOKION = {
-  id: "6h-theotokion-fixed", type: "fixed",
-  label: "Both now and ever \u2026 Theotokion",
-  rubric: "Both now and ever, and unto the ages of ages. Amen.",
-  source: "HTM Horologion \u2014 appointed theotokion for the 6th Hour",
-  text: 'Seeing that we have no boldness on account of our many sins, do thou beseech Him that was born of thee, O Virgin Theotokos; for the supplication of a mother availeth much to win the Masters favour. Disdain not the prayers of sinners, O all-pure one, for merciful and mighty to save is He, Who deigned also to suffer for our sake.',
-};
-
-const SIXTH_HOUR_CLOSING = [
-  {
-    id: "6h-let-thy-compassions", type: "fixed", label: "Let Thy compassions", rubric: null,
-    text: "Let Thy compassions quickly go before us, O Lord, for we are become exceedingly poor. Help us, O God our Saviour, for the sake of the glory of Thy name; O Lord, deliver us and be gracious unto our sins for Thy name\u2019s sake.",
-  },
-  {
-    id: "6h-trisagion-2", type: "fixed", label: "Trisagion Prayers", rubric: "Then:",
-    text: "Holy God, Holy Mighty, Holy Immortal, have mercy on us. (thrice)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nO Most Holy Trinity, have mercy on us. O Lord, blot out our sins. O Master, pardon our iniquities. O Holy One, visit and heal our infirmities for Thy name\u2019s sake.\n\nLord, have mercy. (thrice)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nOur Father, Who art in the heavens, hallowed be Thy name. Thy kingdom come, Thy will be done, on earth as it is in heaven. Give us this day our daily bread, and forgive us our debts, as we forgive our debtors; and lead us not into temptation, but deliver us from the evil one.",
-  },
-  {
-    id: "6h-exclamation-2", type: "fixed", label: "Exclamation", rubric: "Priest:",
-    text: "For Thine is the kingdom, and the power, and the glory: of the Father, and of the Son, and of the Holy Spirit, now and ever, and unto the ages of ages.",
-  },
-  // ── KONTAKION inserted here by assembler ──
-  {
-    id: "6h-lhm-40", type: "fixed", label: "Lord, have mercy", rubric: "Reader: Amen.",
-    text: "Lord, have mercy. (forty times)",
-  },
-  {
-    id: "6h-prayer-hours", type: "fixed", label: "Prayer of the Hours", rubric: null,
-    text: "Thou who at all times and at every hour, in heaven and on earth, art worshipped and glorified, O Christ God, Who art long-suffering, plenteous in mercy, most compassionate, Who lovest the righteous and hast mercy on sinners, Who callest all to salvation through the promise of good things to come: Receive, O Lord, our prayers at this hour, and guide our life toward Thy commandments. Sanctify our souls, make chaste our bodies, correct our thoughts, purify our intentions, and deliver us from every sorrow, evil, and pain. Compass us about with Thy holy angels, that, guarded and guided by their array, we may attain to the unity of the faith and the knowledge of Thine unapproachable glory; for blessed art Thou unto the ages of ages. Amen.",
-  },
-  {
-    id: "6h-lhm-3", type: "fixed", label: "Lord, have mercy", rubric: null,
-    text: "Lord, have mercy. (thrice)\n\nGlory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.",
-  },
-  {
-    id: "6h-more-honourable", type: "fixed", label: "More honourable", rubric: null,
-    text: "More honourable than the Cherubim, and beyond compare more glorious than the Seraphim, who without corruption gavest birth to God the Word, the very Theotokos, thee do we magnify.",
-  },
-  {
-    id: "6h-priest-blessing", type: "fixed", label: "Blessing",
-    rubric: "In the name of the Lord, father (master), bless.\nPriest:",
-    text: "Through the prayers of our holy fathers, O Lord Jesus Christ our God, have mercy on us.",
-  },
-  {
-    id: "6h-closing-prayer", type: "fixed", label: "Prayer of St. Basil the Great", rubric: "Reader: Amen.",
-    text: 'O God and Lord of hosts, and Maker of all creation, Who by the tender compassion of Thy mercy which transcendeth comprehension, didst send down Thine Only-begotten Son, our Lord Jesus Christ, for the salvation of our race, and by His precious Cross didst tear asunder the handwriting of our sins, and thereby didst triumph over the principalities and powers of darkness: Do Thou Thyself, O Master, Lover of mankind, accept also from us sinners these prayers of thanksgiving and entreaty, and deliver us from every destructive and dark transgression, and from all enemies, both visible and invisible, that seek to do us evil. Nail down our flesh with the fear of Thee, and incline not our hearts unto words or thoughts of evil, but pierce our souls with longing for Thee, so that ever looking to Thee, and being guided by Thy light as we behold Thee, the Unapproachable and Everlasting Light, we may send up unceasing praise and thanksgiving unto Thee, the unoriginate Father, with Thine Only-begotten Son, and Thine All-holy and good and life-creating Spirit, now and ever, and unto the ages of ages. Amen.',
-  },
-  {
-    id: "6h-dismissal", type: "fixed", label: "Dismissal", rubric: null,
-    text: "Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nLord, have mercy. (thrice)\n\nFather (Master), bless.\n\n[Priest gives the dismissal. The Ninth Hour follows.]",
-  },
-];
-
-
-
-// ─── ASSEMBLE 6TH HOUR (weekday ordinary time) ───────────────────────────────
-// Per Fekula §2A/§2C: "The Hours: Troparion and kontakion from the Menaion."
-// Kontakion: after the 3rd Ode at Matins (HTM rubric) — same as the 1st Hour.
-function assembleSixthHour(liturgicalData, menaionEntry, tbOpen = false) {
-  const elements = [];
-  const hourKey = "6th_hour";
-  const fekulaSection = menaionEntry
-    ? (menaionEntry.fekula_section_override
-        ? `§${menaionEntry.fekula_section_override}`
-        : menaionEntry.rank === "six_stichera" ? "§2C"
-        : menaionEntry.rank === "doxology"     ? "§2D"
-        : menaionEntry.rank === "polyeleos"    ? "§2E"
-        : menaionEntry.rank === "vigil"        ? "§2F"
-        : "§2A")
-    : "§2A";
-  const fekulaNote = '"The Hours: Troparion and kontakion from the Menaion." \u2014 Fekula, Chapter Two';
-
-  SIXTH_HOUR_OPENING.forEach(el => elements.push(el));
-
-  // Troparion (movable)
-  elements.push(menaionEntry ? {
-    id: "6h-troparion", type: "movable",
-    label: "Troparion",
-    source: `Menaion \u2014 ${menaionEntry.saint}`,
-    toneNote: `Tone ${menaionEntry.troparion.tone}`,
-    fekula: { section: fekulaSection, note: fekulaNote },
-    rubric: "Here we say the first troparion, if there be two.\nGlory to the Father, and to the Son, and to the Holy Spirit.\nAnd we say the appointed troparion (or the second, if there be two).",
-    text: menaionEntry.troparion.text,
-    citation: `OCA, oca.org/saints/troparia \u2014 ${menaionEntry.saint}.`,
-  } : {
-    id: "6h-troparion", type: "movable",
-    label: "Troparion",
-    source: "Menaion \u2014 saint of the day",
-    fekula: { section: fekulaSection, note: fekulaNote },
-    rubric: "Here we say the first troparion, if there be two.\nGlory to the Father, and to the Son, and to the Holy Spirit.\nAnd we say the appointed troparion (or the second, if there be two).",
-    text: "[Troparion of the saint from the Menaion \u2014 text not yet in library for this date]",
-  });
-
-  // Fixed theotokion
-  elements.push(SIXTH_HOUR_THEOTOKION);
-
-  // Closing block — insert kontakion after 6h-exclamation-2
-  SIXTH_HOUR_CLOSING.forEach(el => {
-    elements.push(el);
-    if (el.id === "6h-exclamation-2") {
-      const k = menaionEntry ? getKontakionForHour(menaionEntry, hourKey) : null;
-      elements.push(menaionEntry && k ? {
-        id: "6h-kontakion", type: "movable",
-        label: "Kontakion",
-        source: `Menaion \u2014 ${k.saint || menaionEntry.saint}`,
-        toneNote: `Tone ${k.tone}`,
-        fekula: { section: fekulaSection, note: fekulaNote },
-        rubric: "Reader: Amen. And he saith the kontakion of the feast, or of the saint of the day.\nIf there be two kontakia, he saith the kontakion chanted after the 3rd Ode at Matins.",
-        text: k.text,
-        citation: "HTM Horologion \u2014 6th Hour kontakion rubric (after Matins 3rd Ode).",
-      } : {
-        id: "6h-kontakion", type: "movable",
-        label: "Kontakion",
-        source: "Menaion \u2014 saint of the day",
-        fekula: { section: fekulaSection, note: fekulaNote },
-        rubric: "Reader: Amen. And he saith the kontakion of the feast, or of the saint of the day.\nIf there be two kontakia, he saith the kontakion chanted after the 3rd Ode at Matins.",
-        text: "[Kontakion of the saint from the Menaion \u2014 text not yet in library for this date]",
-      });
-    }
-  });
-
-  return elements;
-}
-
-// ─── ASSEMBLE SUNDAY 6TH HOUR ────────────────────────────────────────────────
-// Per Fekula §1A (one saint) and §1B (two saints):
-// §1B at 1st & 6th Hours: Resurrectional troparion; Glory… troparion of FIRST saint.
-// Sunday kontakion only at all Hours.
-function assembleSundaySixthHour(liturgicalData, menaionEntry, tbOpen = false) {
-  const elements = [];
-  const { tone } = liturgicalData;
-  const resT = RESURRECTIONAL_TROPARIA[tone];
-  const sundayK = SUNDAY_KONTAKIA[tone];
-  const theotokion = SUNDAY_HOURS_THEOTOKIA[tone];
-
-  const saints = Array.isArray(menaionEntry) ? menaionEntry : menaionEntry ? [menaionEntry] : [];
-  const isDoubleService = saints.length >= 2;
-  // At the 6th Hour in §1B: Glory… troparion of the FIRST saint (same as 1st Hour)
-  const menaionSaint = saints[0];
-  const fekulaSection = isDoubleService ? "\u00a71B" : "\u00a71A";
-  const fekulaNote = isDoubleService
-    ? '"At the First and Sixth Hours: The resurrectional troparion; Glory... the troparion of the first saint; Now and ever... the theotokion from the Horologion. At all Hours only the Sunday kontakion is read." \u2014 Fekula, Chapter One'
-    : '"We read the Sunday troparion; Glory... the troparion from the Menaion; Now and ever... the theotokion from the Horologion. Only the Sunday kontakion is read." \u2014 Fekula, Chapter One';
-
-  SIXTH_HOUR_OPENING.forEach(el => elements.push(el));
-
-  elements.push({
-    id: "6h-troparion-resurrectional", type: "movable",
-    label: "Troparion of the Resurrection",
-    source: `Octoechos \u2014 Tone ${tone}`,
-    toneNote: `Tone ${tone} of the week`,
-    fekula: { section: fekulaSection, note: fekulaNote },
-    rubric: "Here we say the first troparion, if there be two.\nGlory to the Father, and to the Son, and to the Holy Spirit.",
-    text: resT ? resT.text : `[Resurrectional troparion, Tone ${tone}]`,
-    citation: `Octoechos, Tone ${tone} \u2014 resurrectional troparion.`,
-  });
-
-  elements.push({
-    id: "6h-troparion-menaion", type: "movable",
-    label: menaionSaint ? `Glory \u2026 Troparion of ${menaionSaint.saint}` : "Glory \u2026 Troparion of the saint",
-    source: menaionSaint ? `Menaion \u2014 ${menaionSaint.saint}` : "Menaion \u2014 saint of the day",
-    toneNote: menaionSaint ? `Tone ${menaionSaint.troparion.tone}` : null,
-    fekula: { section: fekulaSection, note: fekulaNote },
-    rubric: "And we say the appointed troparion (or the second, if there be two).",
-    text: menaionSaint ? menaionSaint.troparion.text
-      : "[Troparion of the first saint from the Menaion \u2014 not yet in library for this date]",
-    citation: menaionSaint ? `OCA, oca.org/saints/troparia \u2014 ${menaionSaint.saint}.` : null,
-  });
-
-  elements.push({
-    id: "6h-theotokion-sunday", type: "movable",
-    label: "Now and ever \u2026 Theotokion",
-    source: `Horologion \u2014 Dismissal Theotokion, Tone ${tone}`,
-    toneNote: `Tone ${tone}`,
-    fekula: { section: fekulaSection, note: fekulaNote },
-    rubric: "Both now and ever, and unto the ages of ages. Amen.",
-    text: theotokion ? theotokion.text : `[Dismissal Theotokion, Tone ${tone} \u2014 from the Horologion]`,
-    citation: `Common Theotokia, Tone ${tone} \u2014 st-sergius.org.`,
-  });
-
-  SIXTH_HOUR_CLOSING.forEach(el => {
-    elements.push(el);
-    if (el.id === "6h-exclamation-2") {
-      elements.push({
-        id: "6h-kontakion-sunday", type: "movable",
-        label: "Kontakion of the Resurrection",
-        source: `Octoechos \u2014 Tone ${tone}`,
-        toneNote: `Tone ${tone}`,
-        fekula: {
-          section: fekulaSection,
-          note: '"Only the Sunday kontakion is read. The kontakion from the Menaion is not read." \u2014 Fekula, Chapter One',
-        },
-        rubric: "Reader: Amen. And he saith the kontakion of the Resurrection:",
-        text: sundayK ? sundayK.text : `[Sunday kontakion, Tone ${tone}]`,
-        citation: `Octoechos, Tone ${tone} \u2014 Sunday kontakion.`,
-      });
-    }
-  });
-
-  return elements;
-}
 
 
 // ─── GLOSSARY PANEL COMPONENT ────────────────────────────────────────────────
@@ -6830,6 +5166,766 @@ const SERVICE_REGISTRY = [
   { key: "vespers",   label: "Vespers",               built: false },
 ];
 
+
+
+// ─── TOOLTIP ─────────────────────────────────────────────────────────────────
+function Tooltip({ term, children }) {
+  const [visible, setVisible] = useState(false);
+  const def = GLOSSARY[term.toLowerCase()];
+  if (!def) return <span>{children}</span>;
+
+  return (
+    <span className="tooltip-wrap" style={{ position: "relative", display: "inline" }}>
+      <span
+        style={{
+          borderBottom: "1px dotted #8B6914",
+          cursor: "help",
+          color: "#8B6914",
+        }}
+        onMouseEnter={() => setVisible(true)}
+        onMouseLeave={() => setVisible(false)}
+        onClick={() => setVisible((v) => !v)}
+      >
+        {children}
+      </span>
+      {visible && (
+        <span
+          style={{
+            position: "absolute",
+            bottom: "calc(100% + 6px)",
+            left: "50%",
+            transform: "translateX(-50%)",
+            background: "#1C1008",
+            color: "#F5EDD6",
+            padding: "8px 12px",
+            borderRadius: "4px",
+            fontSize: "0.78rem",
+            lineHeight: "1.5",
+            width: "240px",
+            zIndex: 100,
+            boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
+            fontFamily: "Georgia, serif",
+            fontStyle: "italic",
+            border: "1px solid #8B6914",
+          }}
+        >
+          <strong style={{ fontStyle: "normal", color: "#D4AA50" }}>{term}:</strong>{" "}
+          {def}
+        </span>
+      )}
+    </span>
+  );
+}
+
+
+// ─── FEKULA BADGE ────────────────────────────────────────────────────────────
+function FekulaBadge({ section, note }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        style={{
+          background: "rgba(139,105,20,0.15)",
+          border: "1px solid #8B6914",
+          borderRadius: "3px",
+          color: "#8B6914",
+          fontSize: "0.68rem",
+          padding: "1px 6px",
+          cursor: "pointer",
+          fontFamily: "Georgia, serif",
+          letterSpacing: "0.03em",
+        }}
+      >
+        Fekula {section}
+      </button>
+      {open && (
+        <span
+          style={{
+            display: "block",
+            marginTop: "4px",
+            padding: "6px 10px",
+            background: "rgba(139,105,20,0.08)",
+            border: "1px solid rgba(139,105,20,0.3)",
+            borderRadius: "4px",
+            fontSize: "0.78rem",
+            fontStyle: "italic",
+            color: "#5C4A1E",
+            lineHeight: "1.5",
+          }}
+        >
+          {note}
+        </span>
+      )}
+    </span>
+  );
+}
+
+
+// ─── SERVICE BLOCK ────────────────────────────────────────────────────────────
+function ServiceBlock({ element }) {
+  const isMovable = element.type !== "fixed";
+
+  return (
+    <div
+      id={element.id}
+      style={{
+        marginBottom: "1.4rem",
+        paddingLeft: isMovable ? "1rem" : "0",
+        borderLeft: isMovable ? "3px solid #8B6914" : "none",
+      }}
+    >
+      {element.rubric && (
+        <div
+          style={{
+            fontSize: "0.72rem",
+            textTransform: "uppercase",
+            letterSpacing: "0.1em",
+            color: "#8B6914",
+            marginBottom: "0.25rem",
+            fontFamily: "Georgia, serif",
+          }}
+        >
+          {element.rubric}
+        </div>
+      )}
+
+      <div style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "0.3rem", flexWrap: "wrap" }}>
+        <span
+          style={{
+            fontSize: "0.7rem",
+            textTransform: "uppercase",
+            letterSpacing: "0.12em",
+            color: isMovable ? "#8B6914" : "#9A8A70",
+            fontFamily: "Georgia, serif",
+            fontWeight: "bold",
+          }}
+        >
+          {element.label}
+        </span>
+        {isMovable && element.source && (
+          <span style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic" }}>
+            — {element.source}
+          </span>
+        )}
+        {isMovable && element.fekula && (
+          <FekulaBadge section={element.fekula.section} note={element.fekula.note} />
+        )}
+        {element.unresolved && (
+          <span
+            style={{
+              fontSize: "0.68rem",
+              background: "rgba(180,60,30,0.1)",
+              border: "1px solid rgba(180,60,30,0.3)",
+              color: "#B43C1E",
+              borderRadius: "3px",
+              padding: "1px 6px",
+              fontFamily: "Georgia, serif",
+            }}
+          >
+            ⚠ Unresolved — see Chapter 6
+          </span>
+        )}
+      </div>
+
+      {element.toneNote && (
+        <div style={{ fontSize: "0.76rem", color: "#9A8A70", fontStyle: "italic", marginBottom: "0.3rem" }}>
+          {element.toneNote}
+        </div>
+      )}
+
+      {(() => {
+        const isPriest = element.rubric && element.rubric.startsWith("Priest:");
+        const isPsalm = element.text && element.text.startsWith("PSALM ");
+        const bodyStyle = {
+          fontFamily: "Georgia, serif",
+          fontSize: "0.97rem",
+          lineHeight: "1.75",
+          color: isPriest ? "#A89880" : isMovable ? "#1C1008" : "#3D3020",
+          fontStyle: isPriest ? "italic" : "normal",
+          whiteSpace: "pre-wrap",
+          background: isMovable ? "rgba(139,105,20,0.04)" : "transparent",
+          padding: isMovable ? "0.6rem 0.8rem" : "0",
+          borderRadius: isMovable ? "4px" : "0",
+        };
+        if (isPsalm) {
+          const newlineIdx = element.text.indexOf("\n");
+          const heading = newlineIdx >= 0 ? element.text.slice(0, newlineIdx) : element.text;
+          const body = newlineIdx >= 0 ? element.text.slice(newlineIdx).trimStart() : "";
+          return (
+            <div>
+              <div style={{
+                fontSize: "0.72rem",
+                textTransform: "uppercase",
+                letterSpacing: "0.12em",
+                color: "#8B6914",
+                fontFamily: "Georgia, serif",
+                fontWeight: "bold",
+                marginBottom: "0.4rem",
+              }}>
+                {heading}
+              </div>
+              {body && <div style={bodyStyle}>{body}</div>}
+            </div>
+          );
+        }
+        return <div style={bodyStyle}>{element.text}</div>;
+      })()}
+
+      {/* ── Citation footnote ── */}
+      {element.citation && (
+        <div style={{
+          fontSize: "0.68rem",
+          color: "#B8A882",
+          fontStyle: "italic",
+          marginTop: "0.25rem",
+          paddingLeft: isMovable ? "0.8rem" : "0",
+          letterSpacing: "0.01em",
+          lineHeight: "1.4",
+        }}>
+          ¹ {element.citation}
+        </div>
+      )}
+    </div>
+  );
+}
+
+
+const RESURRECTIONAL_TROPARIA = {
+  1: {
+    tone: 1,
+    text: "When the stone had been sealed by the Jews, and the soldiers were guarding Thine immaculate Body, Thou didst rise on the third day, O Savior, granting life unto the world. Wherefore, the Hosts of the Heavens cried out to Thee, O Life-giver: Glory to Thy Resurrection, O Christ. Glory to Thy kingdom. Glory to Thy dispensation, O only Lover of mankind.",
+  },
+  2: {
+    tone: 2,
+    text: "When Thou didst descend unto death, O Life Immortal, then didst Thou slay Hades with the lightning of Thy Divinity. And when Thou didst also raise the dead out of the nethermost depths, all the Hosts of Heaven cried out: O Life-giver, Christ our God, glory be to Thee.",
+  },
+  3: {
+    tone: 3,
+    text: "Let the heavens be glad; let earthly things rejoice; for the Lord hath wrought might with His arm. He hath trampled down death by death; the first-born of the dead hath He become. From the belly of Hades hath He delivered us and hath granted to the world great mercy.",
+  },
+  4: {
+    tone: 4,
+    text: "Having learned the joyful proclamation of the Resurrection from the angel, and having cast off the ancestral condemnation, the women disciples of the Lord spake to the apostles exultantly: Death is despoiled and Christ God is risen, granting to the world great mercy.",
+  },
+  5: {
+    tone: 5,
+    text: "Let us, O faithful, praise and worship the Word Who is co-unoriginate with the Father and the Spirit, and Who was born of the Virgin for our salvation; for He was pleased to ascend the Cross in the flesh and to endure death, and to raise the dead by His glorious Resurrection.",
+  },
+  6: {
+    tone: 6,
+    text: "Angelic Hosts were above Thy tomb, and they that guarded Thee became as dead. And Mary stood by the grave seeking Thine immaculate Body. Thou didst despoil Hades and wast not tempted by it. Thou didst meet the Virgin and didst grant us life. O Thou Who didst rise from the dead, O Lord, glory be to Thee.",
+  },
+  7: {
+    tone: 7,
+    text: "Thou didst destroy death by Thy Cross, Thou didst open Paradise to the thief. Thou didst change the lamentation of the Myrrh-bearers, and Thou didst command Thine Apostles to proclaim that Thou didst arise, O Christ God, and grantest to the world great mercy.",
+  },
+  8: {
+    tone: 8,
+    text: "From on high didst Thou descend, O Compassionate One; to burial of three days hast Thou submitted that Thou mightest free us from our passions. O our Life and Resurrection, O Lord, glory be to Thee.",
+  },
+};
+
+
+const SUNDAY_KONTAKIA = {
+  1: {
+    tone: 1,
+    text: "As God Thou didst arise from the tomb in glory, and Thou didst raise the world together with Thyself. And mortal nature praiseth Thee as God, and death hath vanished. And Adam danceth, O Master, and Eve, now freed from fetters, rejoiceth as she crieth out: Thou art He, O Christ, that grantest unto all resurrection.",
+  },
+  2: {
+    tone: 2,
+    text: "Thou didst arise from the tomb, O omnipotent Savior, and Hades was terrified on beholding the wonder; and the dead arose, and creation at the sight thereof rejoiceth with Thee. And Adam also is joyful, and the world, O my Savior, praiseth Thee for ever.",
+  },
+  3: {
+    tone: 3,
+    text: "Thou didst rise today from the tomb, O Merciful One, and didst lead us out of the gates of death. Today Adam danceth and Eve rejoiceth; and together with them both the Prophets and Patriarchs unceasingly praise the divine might of Thine authority.",
+  },
+  4: {
+    tone: 4,
+    text: "My Savior and Redeemer hath, as God, raised up the earthborn from the grave and from their fetters, and He hath broken the gates of Hades, and, Master, hath risen on the third day.",
+  },
+  5: {
+    tone: 5,
+    text: "Unto Hades, O my Savior, didst Thou descend, and having broken its gates as One omnipotent, Thou, as Creator, didst raise up the dead together with Thyself. And Thou didst break the sting of death, and didst deliver Adam from the curse, O Lover of mankind. Wherefore, we all cry unto Thee: Save us, O Lord.",
+  },
+  6: {
+    tone: 6,
+    text: "Having by His life-bestowing hand raised up all the dead out of the dark abysses, Christ God, the Giver of Life, hath bestowed the Resurrection upon the fallen human race; for He is the Savior of all, the Resurrection, and the Life, and the God of all.",
+  },
+  7: {
+    tone: 7,
+    text: "No longer will the dominion of death be able to keep men captive; for Christ hath descended, demolishing and destroying the powers thereof. Hades is bound; the Prophets rejoice with one voice, saying: A Savior hath come for them that have faith. Come forth, ye faithful, for the Resurrection.",
+  },
+  8: {
+    tone: 8,
+    text: "Having arisen from the tomb, Thou didst raise up the dead and didst resurrect Adam. Eve also danceth at Thy Resurrection, and the ends of the world celebrate Thine arising from the dead, O Greatly-merciful One.",
+  },
+};
+
+
+const SUNDAY_HOURS_THEOTOKIA = {
+  1: {
+    tone: 1,
+    text: "When Gabriel announced to thee, 'Rejoice!', O Virgin, the Master of all became incarnate within thee, the holy tabernacle, at his cry, as the righteous David said. Thou wast shown to be more spacious than the heavens, having borne thy Creator. Glory to Him Who made His abode within thee! Glory to Him Who came forth from thee! Glory to Him Who hath set us free by thy birthgiving.",
+  },
+  2: {
+    tone: 2,
+    text: "All of thy most glorious mysteries are beyond comprehension, O Theotokos; for, thy purity sealed and thy virginity intact, thou art known to be a true Mother, having given birth unto God. Him do thou entreat, that our souls be saved.",
+  },
+  3: {
+    tone: 3,
+    text: "We hymn thee who hast mediated the salvation of our race, O Virgin Theotokos; for thy Son and our God, accepting suffering on the Cross in the flesh He had received of thee, hath delivered us from corruption, in that He is the Lover of mankind.",
+  },
+  4: {
+    tone: 4,
+    text: "The mystery hidden from all ages and unknown to the ranks of angels, hath been revealed to those on earth through thee, O Theotokos: God incarnate in an uncommingled union, Who willingly accepted the Cross for our sake, and through it hath raised up the first-formed man, and saved our souls from death.",
+  },
+  5: {
+    tone: 5,
+    text: "Rejoice, impassible portal of the Lord! Rejoice, rampart and protection of those who have recourse unto thee! Rejoice, haven untouched by storms, and who knowing not wedlock, didst bear in the flesh thy Creator and God. Cease not to intercede for those who praise and worship thine Offspring.",
+  },
+  6: {
+    tone: 6,
+    text: "Gideon hath foretold of thy conception, and David hath revealed thine ineffable child-bearing, O Theotokos; for the Word descended like a dew upon the fleece of thy womb, and thou O Virgin full of grace, like unto a holy and fertile earth, budded forth without seed our salvation, Christ God.",
+  },
+  7: {
+    tone: 7,
+    text: "As thou art the treasury of our resurrection, O all-hymned one, lead up from the pit and abyss of transgression those who place their trust in thee, for thou who hast given birth to our Salvation hast saved those who are subject to sin. Thou wast a Virgin before giving birth, and a virgin during child-bearing, and thou didst remain a Virgin even after birthgiving.",
+  },
+  8: {
+    tone: 8,
+    text: "O Good One, Who for our sake wast born of the Virgin and, having endured crucifixion, cast down death by death, and as God revealed the resurrection: disdain not that which Thou hast fashioned with Thine own hand. Show forth Thy love for mankind, O Merciful One; accept the supplications of the Theotokos who bore Thee, and save Thy despairing people, O our Savior!",
+  },
+};
+
+
+
+// ─── RANK EXPLAINER ──────────────────────────────────────────────────────────
+// Informational ⓘ icon next to the service rank label. Expands inline to explain
+// how the rank was determined and what it means for assembly.
+
+const RANK_EXPLANATIONS = {
+  simple: {
+    label: 'Simple',
+    fekula: '§2A',
+    evidence: '3 stichera on "Lord I Call" at Vespers',
+    detection: 'The number of stichera (hymns) sung on "Lord I Call" at Vespers is the definitive indicator of service rank. Three stichera = Simple rank.',
+    assembly: 'At the Hours: troparion and kontakion from the Menaion. No structural change to the Hour skeleton. Readings at Liturgy come from the Oktoechos, not the Menaion.',
+    vespers: 'Small Vespers. No Litya, no paroemias (OT readings). Aposticha from the Oktoechos.',
+    source: 'Fekula §2A — Simple Saint',
+  },
+  six_stichera: {
+    label: 'Six-Stichera',
+    fekula: '§2C',
+    evidence: '6 stichera on "Lord I Call" at Vespers',
+    detection: 'Six stichera on "Lord I Call" at Vespers raises the service to Six-Stichera rank. The Hours structure is identical to Simple rank — the difference shows at Vespers and Matins.',
+    assembly: 'At the Hours: same troparion and kontakion rules as Simple (§2A). The rank difference is in Vespers (6 stichera vs 3) and Matins (Alleluia service, same as §2A).',
+    vespers: 'Great Vespers with 6 stichera. No Litya, no paroemias. Aposticha from the Oktoechos.',
+    source: 'Fekula §2C — Six-Stichera Saint',
+  },
+  doxology: {
+    label: 'Doxology',
+    fekula: '§2D',
+    evidence: 'Great Doxology sung (not read) at Matins',
+    detection: 'The Great Doxology is sung at Matins rather than read. This is noted in the Menaion rubric and raises the service above Six-Stichera.',
+    assembly: 'At the Hours: troparion and kontakion from the Menaion. If the Menaion saint is Doxology rank, the 3rd and 9th Hours use the Menaion kontakion even when a Pentecostarion kontakion would otherwise govern.',
+    vespers: 'Great Vespers with 6 stichera. Great Doxology at Matins.',
+    source: 'Fekula §2D — Doxology Saint',
+  },
+  polyeleos: {
+    label: 'Polyeleos',
+    fekula: '§2E',
+    evidence: 'Polyeleos (Psalms 134–135) sung at Matins',
+    detection: 'The Polyeleos ("Great Mercy") — Psalms 134 and 135 — is sung at Matins. This is among the most visible rank indicators: the church is fully lit and the priest censes the whole temple.',
+    assembly: 'At the Hours: Menaion troparion and kontakion. OT Paroemias (3 readings) at Vespers. Feast proper Epistle and Gospel at Liturgy.',
+    vespers: 'Great Vespers with Litya, 3 OT paroemias. Polyeleos and Matins Gospel at Matins.',
+    source: 'Fekula §2E — Polyeleos Saint',
+  },
+  vigil: {
+    label: 'Vigil',
+    fekula: '§2F',
+    evidence: 'All-Night Vigil prescribed in the Menaion',
+    detection: 'The Menaion explicitly prescribes an All-Night Vigil. This is the highest rank for a fixed Menaion commemoration, reserved for great feasts and especially venerated saints.',
+    assembly: 'At the Hours: Menaion troparion and kontakion govern exclusively. Great Vespers with Litya, 3 OT paroemias. Polyeleos, Matins Gospel, and Great Doxology at Matins.',
+    vespers: 'All-Night Vigil: Great Vespers + Matins combined. Full feast structure throughout.',
+    source: 'Fekula §2F — Vigil Saint',
+  },
+};
+
+function RankExplainer({ menaionEntry, isSunday }) {
+  const [open, setOpen] = React.useState(false);
+
+  if (isSunday || !menaionEntry) return null;
+
+  const rank = menaionEntry.rank || 'simple';
+  const info = RANK_EXPLANATIONS[rank] || RANK_EXPLANATIONS.simple;
+
+  // Extract rank confirmation note from encoding record
+  const encodingNote = menaionEntry.note || '';
+  const rankConfirm = (() => {
+    // Pull the first sentence that mentions the rank or stichera count
+    const sentences = encodingNote.split(/[.;]/).map(s => s.trim()).filter(Boolean);
+    const relevant = sentences.find(s =>
+      s.includes('§2') || s.includes('stichera') || s.includes('confirmed') ||
+      s.includes('Polyeleos') || s.includes('Vigil') || s.includes('Doxology')
+    );
+    return relevant || null;
+  })();
+
+  const containerStyle = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    position: 'relative',
+  };
+  const iconStyle = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '14px',
+    height: '14px',
+    borderRadius: '50%',
+    border: '1px solid #8B6914',
+    color: '#8B6914',
+    fontSize: '9px',
+    fontStyle: 'normal',
+    cursor: 'pointer',
+    marginLeft: '5px',
+    lineHeight: 1,
+    userSelect: 'none',
+    flexShrink: 0,
+    fontFamily: 'Georgia, serif',
+    fontWeight: 'bold',
+  };
+  const panelStyle = {
+    marginTop: '0.6rem',
+    padding: '0.9rem 1rem',
+    background: '#FAF6EE',
+    border: '1px solid #D4C49A',
+    borderRadius: '5px',
+    fontSize: '0.76rem',
+    lineHeight: '1.6',
+    color: '#3D3020',
+  };
+  const headStyle = {
+    fontSize: '0.7rem',
+    textTransform: 'uppercase',
+    letterSpacing: '0.1em',
+    color: '#8B6914',
+    fontFamily: 'Georgia, serif',
+    fontWeight: 'bold',
+    marginBottom: '0.3rem',
+    marginTop: '0.7rem',
+  };
+  const firstHeadStyle = { ...headStyle, marginTop: 0 };
+  const panel = open ? (
+    <div style={{
+      marginTop: '0.5rem',
+      marginBottom: '0.5rem',
+      width: '100%',
+      maxWidth: '480px',
+      boxShadow: '0 2px 12px rgba(0,0,0,0.10)',
+      ...panelStyle,
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#1C1008' }}>
+          How this rank was determined
+        </div>
+        <span onClick={() => setOpen(false)} style={{ cursor: 'pointer', color: '#9A8A70', fontSize: '1rem', lineHeight: 1, marginLeft: '1rem', flexShrink: 0 }}>✕</span>
+      </div>
+
+      <div style={firstHeadStyle}>Rank</div>
+      <div><strong>{info.label}</strong> — Fekula <strong>{info.fekula}</strong></div>
+
+      <div style={headStyle}>Evidence from the Menaion PDF</div>
+      <div>{info.evidence}</div>
+      {rankConfirm && (
+        <div style={{ marginTop: '0.3rem', color: '#9A8A70', fontStyle: 'italic' }}>
+          Encoding note: "{rankConfirm}"
+        </div>
+      )}
+
+      <div style={headStyle}>Detection rule</div>
+      <div>{info.detection}</div>
+
+      <div style={headStyle}>At the Hours</div>
+      <div>{info.assembly}</div>
+
+      <div style={headStyle}>At Vespers & Matins</div>
+      <div>{info.vespers}</div>
+
+      <div style={{
+        marginTop: '0.7rem',
+        paddingTop: '0.5rem',
+        borderTop: '1px solid #E8DFC0',
+        fontSize: '0.7rem',
+        color: '#B8A882',
+        fontStyle: 'italic',
+      }}>
+        {info.source}
+      </div>
+    </div>
+  ) : null;
+
+  // Render icon inline; panel flows as a block element below its parent container.
+  // Using a fragment so the panel sits outside the inline span — no viewport bleed.
+  return (
+    <React.Fragment>
+      <span style={containerStyle}>
+        <span style={iconStyle} onClick={() => setOpen(o => !o)} title='How was this rank determined?'>
+          i
+        </span>
+      </span>
+      {open && (
+        <div style={{ display: 'block', width: '100%' }}>
+          {panel}
+        </div>
+      )}
+    </React.Fragment>
+  );
+}
+
+// ─── TYPICAL BEGINNING ───────────────────────────────────────────────────────
+// Collapsible component for the 1st and 6th Hours.
+// These Hours begin directly with O come let us worship when following
+// the previous service. When said separately, the Typical Beginning is used.
+// Source: OCA first-hour.pdf and sixth-hour.pdf; HTM skeleton; Fekula §4A.
+
+function TypicalBeginning({ hourKey, liturgicalData, tbOpen, setTbOpen }) {
+  const open = tbOpen;
+  const setOpen = setTbOpen;
+
+  const is1st = hourKey === '1st_hour';
+  const ocaNote = is1st
+    ? "The First Hour is often celebrated immediately following Matins, and it begins as shown here. If the First Hour is said separately, it begins with the Typical Beginning, as at Vespers."
+    : "The Sixth Hour is often celebrated immediately following the Third Hour, and it begins as shown here. If the Sixth Hour is said separately, it begins with the Typical Beginning, as at Vespers.";
+
+  const { paschaOffset, season } = liturgicalData;
+  const isPentecostarion = season === 'pentecostarion' || season === 'brightweek';
+  const christIsRisenActive = isPentecostarion && paschaOffset >= 7 && paschaOffset <= 38;
+  const heavenlyKingOmitted = isPentecostarion && paschaOffset > 38;
+  // Build the opening content based on season
+  const openingContent = () => {
+    if (christIsRisenActive) {
+      return (
+        <div>
+          <p style={textStyle}>Reader: Amen.</p>
+          <p style={rubrStyle}>(Glory to Thee and O Heavenly King are both skipped — immediately:)</p>
+          <p style={textStyle}>
+            Christ is risen from the dead,<br/>
+            trampling down death by death,<br/>
+            and on those in the tombs bestowing life.
+          </p>
+          <p style={rubrStyle}>Thrice. Then continuing with:</p>
+          <p style={{...badgeStyle, marginBottom: '0.5rem'}}>
+            <span style={fekulaStyle}>§4A</span>
+            After the reader saith Amen, he immediately saith thrice: Christ is risen
+            (Glory to Thee and O Heavenly King are both skipped). — HTM 1st/6th Hour rubric; Fekula §4A
+          </p>
+        </div>
+      );
+    } else if (heavenlyKingOmitted) {
+      return (
+        <div>
+          <p style={textStyle}>Reader: Amen.</p>
+          <p style={{...textStyle, color: '#9A8A70', fontStyle: 'italic'}}>
+            Glory to Thee, our God and O Heavenly King are both omitted from
+            the Apodosis of Pascha until Pentecost.
+            The reader proceeds directly to Holy God, Holy Mighty...
+          </p>
+          <p style={{...badgeStyle, marginBottom: '0.5rem'}}>
+            <span style={fekulaStyle}>§4B11</span>
+            The Ninth Hour begins with the reading of the Trisagion (and thus until
+            Pentecost, when we read O Heavenly King... for the first time). — Fekula §4B11
+          </p>
+        </div>
+      );
+    } else {
+      // Ordinary time
+      return (
+        <div>
+          <p style={textStyle}>Reader: Amen.</p>
+          <p style={textStyle}>
+            Glory to Thee, our God, glory to Thee.<br/><br/>
+            O Heavenly King, Comforter, Spirit of Truth,<br/>
+            Who art everywhere present and fillest all things,<br/>
+            Treasury of good things and Giver of life:<br/>
+            Come and dwell in us, and cleanse us of all impurity,<br/>
+            and save our souls, O Good One.
+          </p>
+        </div>
+      );
+    }
+  };
+  const containerStyle = {
+    border: '1px solid #D4C49A',
+    borderRadius: '6px',
+    marginBottom: '2rem',
+    overflow: 'hidden',
+  };
+  const headerStyle = {
+    background: open ? '#F0E8D0' : '#FAF6EE',
+    borderBottom: open ? '1px solid #D4C49A' : 'none',
+    padding: '0.75rem 1rem',
+    cursor: 'pointer',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    userSelect: 'none',
+  };
+  const titleStyle = {
+    fontSize: '0.75rem',
+    textTransform: 'uppercase',
+    letterSpacing: '0.1em',
+    color: '#8B6914',
+    fontFamily: 'Georgia, serif',
+    fontWeight: 'bold',
+  };
+  const noteStyle = {
+    fontSize: '0.78rem',
+    color: '#9A8A70',
+    fontStyle: 'italic',
+    marginTop: '0.35rem',
+    lineHeight: '1.5',
+  };
+  const rubrStyle = {
+    fontSize: '0.72rem',
+    textTransform: 'uppercase',
+    letterSpacing: '0.1em',
+    color: '#8B6914',
+    marginBottom: '0.25rem',
+    marginTop: '1rem',
+  };
+  const priestStyle = {
+    fontSize: '0.85rem',
+    fontStyle: 'italic',
+    color: '#9A8A70',
+    marginBottom: '0.25rem',
+    marginTop: '1rem',
+    fontFamily: 'Georgia, serif',
+  };
+  const textStyle = {
+    fontSize: '1rem',
+    lineHeight: '1.8',
+    color: '#1C1008',
+    marginBottom: '1rem',
+  };
+  const badgeStyle = {
+    fontSize: '0.72rem',
+    color: '#9A8A70',
+    fontStyle: 'italic',
+    display: 'flex',
+    alignItems: 'baseline',
+    gap: '6px',
+  };
+  const fekulaStyle = {
+    fontSize: '0.65rem',
+    letterSpacing: '0.12em',
+    textTransform: 'uppercase',
+    color: '#8B6914',
+    background: 'rgba(139,105,20,0.12)',
+    border: '1px solid rgba(139,105,20,0.3)',
+    borderRadius: '3px',
+    padding: '1px 5px',
+    whiteSpace: 'nowrap',
+    flexShrink: 0,
+  };
+  const labelStyle = {
+    fontSize: '0.7rem',
+    textTransform: 'uppercase',
+    letterSpacing: '0.12em',
+    color: '#9A8A70',
+    fontFamily: 'Georgia, serif',
+    fontWeight: 'bold',
+    marginBottom: '0.2rem',
+  };
+  return (
+    <div style={containerStyle}>
+      <div style={headerStyle} onClick={() => setOpen(o => !o)}>
+        <div>
+          <div style={titleStyle}>
+            &#9651; Typical Beginning (if said separately)
+          </div>
+          <div style={noteStyle}>{ocaNote}</div>
+        </div>
+        <span style={{ color: '#8B6914', fontSize: '1.1rem', marginLeft: '1rem', flexShrink: 0 }}>
+          {open ? '▲' : '▼'}
+        </span>
+      </div>
+
+      {open && (
+        <div style={{ padding: '1rem 1.25rem 1.25rem' }}>
+
+          {/* Priest blessing */}
+          <div style={{ marginBottom: '1.4rem' }}>
+            <div style={rubrStyle}>Priest (or Reader if no priest):</div>
+            <div style={{...textStyle, color: '#A89880', fontStyle: 'italic'}}>
+              Blessed is our God, always, now and ever, and unto the ages of ages.
+            </div>
+          </div>
+
+          {/* Seasonal opening */}
+          <div style={{ marginBottom: '1.4rem' }}>
+            {openingContent()}
+          </div>
+
+          {/* Trisagion Prayers */}
+          <div style={{ marginBottom: '1.4rem' }}>
+            <div style={rubrStyle}>Trisagion Prayers</div>
+            <div style={textStyle}>
+              Holy God, Holy Mighty, Holy Immortal, have mercy on us. (thrice)<br/>
+              Glory to the Father, and to the Son, and to the Holy Spirit,<br/>
+              both now and ever, and unto the ages of ages. Amen.<br/><br/>
+              O Most Holy Trinity, have mercy on us. O Lord, blot out our sins.<br/>
+              O Master, pardon our iniquities. O Holy One, visit and heal our
+              infirmities for Thy name's sake.<br/>
+              Lord, have mercy. (thrice)<br/>
+              Glory to the Father, and to the Son, and to the Holy Spirit,<br/>
+              both now and ever, and unto the ages of ages. Amen.
+            </div>
+          </div>
+
+          {/* Our Father */}
+          <div style={{ marginBottom: '1.4rem' }}>
+            <div style={rubrStyle}>Our Father</div>
+            <div style={textStyle}>
+              Our Father, Who art in the heavens, hallowed be Thy name.<br/>
+              Thy kingdom come, Thy will be done, on earth as it is in heaven.<br/>
+              Give us this day our daily bread,<br/>
+              and forgive us our debts, as we forgive our debtors;<br/>
+              and lead us not into temptation, but deliver us from the evil one.
+            </div>
+          </div>
+
+          {/* Exclamation and Lord have mercy */}
+          <div style={{ marginBottom: '1.4rem' }}>
+            <div style={rubrStyle}>Priest:</div>
+            <div style={{...textStyle, color: '#A89880', fontStyle: 'italic'}}>
+              For Thine is the kingdom, and the power, and the glory:<br/>
+              of the Father, and of the Son, and of the Holy Spirit,<br/>
+              now and ever, and unto the ages of ages.
+            </div>
+            <div style={textStyle}>Reader: Amen.</div>
+            <div style={textStyle}>
+              Lord, have mercy. (twelve times)<br/>
+              Glory to the Father, and to the Son, and to the Holy Spirit,<br/>
+              both now and ever, and unto the ages of ages. Amen.
+            </div>
+          </div>
+
+          {/* Source note */}
+          <div style={{ fontSize: '0.72rem', color: '#9A8A70', fontStyle: 'italic',
+                       borderTop: '1px solid #E8DFC0', paddingTop: '0.6rem', marginTop: '0.5rem' }}>
+            Fixed texts: HTM Horologion, Jordanville (1994).
+            Note and rubric: OCA liturgical texts.
+            Seasonal substitution: Fekula §4A.
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+
 export default function App() {
   const today = new Date();
   const [selectedDate, setSelectedDate] = useState(
@@ -6881,7 +5977,10 @@ export default function App() {
   // skip scroll-to-top for that specific transition only. FW-14 resolved.
   const prevServiceKeyRef = React.useRef(selectedServiceKey);
   React.useEffect(() => {
+    const from = prevServiceKeyRef.current;
     prevServiceKeyRef.current = selectedServiceKey;
+    // Skip auto-scroll when transitioning 3rd→6th; the Continue button handles it
+    if (from === "3rd_hour" && selectedServiceKey === "6th_hour") return;
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [selectedServiceKey]);
   const menaionEntry = services.length > 0
@@ -6903,67 +6002,12 @@ export default function App() {
   const nextService = currentServiceIdx < SERVICE_REGISTRY.length - 1 ? SERVICE_REGISTRY[currentServiceIdx + 1] : null;
 
   // Assemble elements for the current service
+  // Assemble elements — single unified assembler for all seasons
   const elements = (() => {
     if (!inScope) return [];
-
-    // ── Pentecostarion / Bright Week routing ────────────────────────────────
-    if (isPentecostarion || isBrightWeek) {
-      return assemblePentecostarionHour(
-        currentService.key, pentEntry, menaionEntry, liturgicalData, tbOpen
-      );
-    }
-
-    // ── Sunday routing ──────────────────────────────────────────────────────
-    if (currentService.key === "1st_hour") {
-      if (liturgicalData.season === "sunday") {
-        let sundayMenaion = menaionEntry;
-        if (liturgicalData.namedDay && liturgicalData.namedDay.key === "all_saints_na_sunday") {
-          const nd = liturgicalData.namedDay;
-          sundayMenaion = { saint: nd.name, troparion: nd.troparion, kontakion: nd.kontakion };
-        }
-        return assembleSundayFirstHour(liturgicalData, sundayMenaion, tbOpen);
-      }
-      return assembleFirstHour(liturgicalData, menaionEntry, tbOpen);
-    }
-    if (currentService.key === "6th_hour") {
-      if (liturgicalData.season === "sunday") {
-        let sundayMenaion = menaionEntry;
-        if (liturgicalData.namedDay && liturgicalData.namedDay.key === "all_saints_na_sunday") {
-          const nd = liturgicalData.namedDay;
-          sundayMenaion = { saint: nd.name, troparion: nd.troparion, kontakion: nd.kontakion };
-        }
-        return assembleSundaySixthHour(liturgicalData, sundayMenaion, tbOpen);
-      }
-      return assembleSixthHour(liturgicalData, menaionEntry, tbOpen);
-    }
-    if (currentService.key === "3rd_hour") {
-      if (liturgicalData.season === "sunday") {
-        let sundayMenaion = menaionEntry;
-        if (liturgicalData.namedDay && liturgicalData.namedDay.key === "all_saints_na_sunday") {
-          const nd = liturgicalData.namedDay;
-          sundayMenaion = { saint: nd.name, troparion: nd.troparion, kontakion: nd.kontakion };
-        }
-        return assembleSundayThirdHour(liturgicalData, sundayMenaion);
-      }
-      return assembleThirdHour(liturgicalData, menaionEntry);
-    }
-    if (currentService.key === "9th_hour") {
-      if (liturgicalData.season === "sunday") {
-        let sundayMenaion = menaionEntry;
-        if (liturgicalData.namedDay && liturgicalData.namedDay.key === "all_saints_na_sunday") {
-          const nd = liturgicalData.namedDay;
-          sundayMenaion = {
-            saint: nd.name,
-            troparion: nd.troparion,
-            kontakion: nd.kontakion,
-          };
-        }
-        return assembleSundayNinthHour(liturgicalData, sundayMenaion);
-      }
-      return assembleNinthHour(liturgicalData, menaionEntry);
-    }
-    return []; // 3rd & 6th Hours: placeholder until built
+    return assembleHour(currentService.key, liturgicalData, menaionEntry, pentEntry, tbOpen);
   })();
+
 
   const OUT_OF_SCOPE_NOTES = {
     lent: "Great Lent uses a different order at the Hours — the Lenten troparia, prostrations, and Prayer of St. Ephraim replace the ordinary structure. Lenten Hours are in active development.",
@@ -7020,7 +6064,7 @@ export default function App() {
                            color: "#8B6914", background: "rgba(139,105,20,0.12)",
                            border: "1px solid rgba(139,105,20,0.3)", borderRadius: "3px",
                            padding: "2px 7px", fontFamily: "Georgia, serif" }}>
-              v0.2.3
+              v0.2.4
             </span>
           </div>
         </div>
@@ -7215,11 +6259,16 @@ export default function App() {
           {/* Saint / multi-service selector */}
           {services.length > 0 && !isMultiService && (
             <div>
-              <strong>Saint:</strong> {menaionEntry.saint} —{" "}
-              <Tooltip term="service rank">{menaionEntry.rank} service</Tooltip>
-              {menaionEntry.oca_primary === true && (
-                <span style={{ marginLeft: "8px", fontSize: "0.68rem", letterSpacing: "0.08em", textTransform: "uppercase", background: "rgba(139,105,20,0.15)", border: "1px solid rgba(139,105,20,0.4)", borderRadius: "3px", padding: "1px 6px", color: "#6B4E10", fontFamily: "Georgia, serif" }}>OCA primary</span>
-              )}
+              <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "4px", lineHeight: "1.6" }}>
+                <strong>Saint:</strong>
+                <span>{menaionEntry.saint} —{" "}
+                  <Tooltip term="service rank">{(RANK_EXPLANATIONS[menaionEntry.rank] || RANK_EXPLANATIONS.simple).label} service</Tooltip>
+                </span>
+                <RankExplainer menaionEntry={menaionEntry} isSunday={isSunday} />
+                {menaionEntry.oca_primary === true && (
+                  <span style={{ fontSize: "0.68rem", letterSpacing: "0.08em", textTransform: "uppercase", background: "rgba(139,105,20,0.15)", border: "1px solid rgba(139,105,20,0.4)", borderRadius: "3px", padding: "1px 6px", color: "#6B4E10", fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}>OCA primary</span>
+                )}
+              </div>
             </div>
           )}
           {isMultiService && (
@@ -7232,7 +6281,8 @@ export default function App() {
                   <input type="radio" name="serviceSelector" checked={selectedServiceIndex === idx} onChange={() => setSelectedServiceIndex(idx)} style={{ marginTop: "2px", accentColor: "#8B6914", flexShrink: 0 }} />
                   <span>
                     <span style={{ color: "#1C1008" }}>{svc.saint}</span>
-                    <span style={{ color: "#9A8A70", fontSize: "0.78rem", marginLeft: "6px" }}>(<Tooltip term="service rank">{svc.rank}</Tooltip>)</span>
+                    <span style={{ color: "#9A8A70", fontSize: "0.78rem", marginLeft: "6px" }}>(<Tooltip term="service rank">{(RANK_EXPLANATIONS[svc.rank] || RANK_EXPLANATIONS.simple).label}</Tooltip>)</span>
+                    <RankExplainer menaionEntry={svc} isSunday={isSunday} />
                     {svc.oca_primary === true && (
                       <span style={{ marginLeft: "8px", fontSize: "0.66rem", letterSpacing: "0.08em", textTransform: "uppercase", background: "rgba(139,105,20,0.15)", border: "1px solid rgba(139,105,20,0.4)", borderRadius: "3px", padding: "1px 5px", color: "#6B4E10" }}>OCA primary</span>
                     )}
@@ -7286,7 +6336,7 @@ export default function App() {
             {/* Service title */}
             <div style={{ marginBottom: "1.5rem" }}>
               <div style={{ fontSize: "0.68rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#8B6914", marginBottom: "0.3rem" }}>Service</div>
-              <h2 style={{ fontSize: "1.4rem", fontWeight: "normal", margin: "0", letterSpacing: "0.02em", borderBottom: "1px solid #D4C49A", paddingBottom: "0.6rem" }}>
+              <h2 id="service-heading" style={{ fontSize: "1.4rem", fontWeight: "normal", margin: "0", letterSpacing: "0.02em", borderBottom: "1px solid #D4C49A", paddingBottom: "0.6rem" }}>
                 {currentService.label}
               </h2>
 
@@ -7296,8 +6346,11 @@ export default function App() {
                   {isSunday
                     ? <><Tooltip term="octoechos">Octoechos</Tooltip> + <Tooltip term="menaion">Menaion</Tooltip> content</>
                     : <Tooltip term="menaion">Menaion</Tooltip>}{" "}
-                  · <Tooltip term="service rank">{isSunday ? "Sunday" : "Simple"} service</Tooltip>{" "}
-                  · Assembled per Fekula {isSunday ? "§1A" : "§2A"}
+                  · <Tooltip term="service rank">
+                      {isSunday ? "Sunday" : (menaionEntry ? (RANK_EXPLANATIONS[menaionEntry.rank] || RANK_EXPLANATIONS.simple).label : "Simple")} service
+                    </Tooltip>
+                    <RankExplainer menaionEntry={menaionEntry} isSunday={isSunday} />
+                    {" "}· Assembled per Fekula {isSunday ? "§1A" : (menaionEntry ? (RANK_EXPLANATIONS[menaionEntry.rank] || RANK_EXPLANATIONS.simple).fekula : "§2A")}
                 </div>
               ) : (
                 <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
@@ -7349,7 +6402,13 @@ export default function App() {
             {currentService.key === "3rd_hour" && (
               <div style={{ marginTop: "2rem", textAlign: "center" }}>
                 <button
-                  onClick={() => setSelectedServiceKey("6th_hour")}
+                  onClick={() => {
+                    setSelectedServiceKey("6th_hour");
+                    setTimeout(() => {
+                      const el = document.getElementById("service-heading");
+                      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }, 80);
+                  }}
                   style={{
                     background: "transparent",
                     border: "1px solid #8B6914",
