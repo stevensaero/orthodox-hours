@@ -1,5 +1,5 @@
 import './App.css';
-import MyAwesomeComponent from './components/hours-tool_v0.2.3.jsx';   // ← CHANGE THIS
+import MyAwesomeComponent from './components/hours-tool_v0.2.4.jsx';   // ← CHANGE THIS
 
 function App() {
   return (
