@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from 'react';
 
 // ─── CALENDAR ENGINE ────────────────────────────────────────────────────────
 // Sources:
@@ -6790,6 +6790,138 @@ function TypicalBeginning({ hourKey, liturgicalData, tbOpen, setTbOpen }) {
 
 
 
+// ─── VERSION BADGE ────────────────────────────────────────────────────────────
+// Clickable version badge in the header. Expands inline to show release notes.
+
+const RELEASE_NOTES = [
+  {
+    version: "v0.2.5",
+    date: "May 2026",
+    summary: "HTM closing sequence corrected · End-of-hour markers · 1st Hour default · How It Works rebuilt · Pentecostarion P+35–P+56 complete",
+    items: [
+      "Closing sequence of every Hour corrected directly from HTM source: correct order, correct priest blessing text per Hour (1st/9th: God be gracious… · 3rd/6th: Through the prayers of our holy fathers…)",
+      "1st Hour special close fully rebuilt: O Christ the True Light said by the Priest, Champion Leader by chanters, full dismissal with Joachim & Anna",
+      "Fabricated dismissal (May He Who rose…) removed from all individual Hours — it does not appear in the HTM at the end of any Hour",
+      "End-of-hour markers added: THE END OF THE Nth HOUR, centered and bold, matching HTM exactly",
+      "Default service changed from 9th Hour to 1st Hour",
+      "How It Works panel rebuilt as five-section accordion: Calendar Engine · Source Hierarchy · Anatomy of a Service (with annotated specimen) · How a Date Gets Encoded (with 28-field inventory table) · Known Limitations & Feedback",
+      "Pentecostarion fully encoded P+35 through P+56 — Ascension afterfeast through All Saints Sunday",
+      "Standalone explainer document how-the-tool-works.md published",
+    ],
+  },
+  {
+    version: "v0.2.4",
+    date: "May 2026",
+    summary: "Unified assembler · Rendering fixes · RankExplainer ⓘ · 3rd→6th scroll",
+    items: [
+      "Single assembleHour() function replaces 9 separate assemblers — all seasons, all Hours",
+      "Reader: Amen. now renders as body text everywhere (was incorrectly showing as rubric)",
+      "Priest exclamation text rendered in grey italic throughout",
+      "Psalm headings rendered in gold small caps",
+      "Troparion block: correct structure for one vs. two troparia (Glory placement fixed)",
+      "RankExplainer ⓘ icon added next to service rank label — explains how rank was determined",
+      "3rd Hour → 6th Hour button now scrolls directly to service heading",
+    ],
+  },
+  {
+    version: "v0.2.3",
+    date: "May 2026",
+    summary: "Pentecostarion engine · Seasonal openings · Ode-aware kontakion routing",
+    items: [
+      "Pentecostarion P+35–P+40 encoded (Blind Man Sunday through Ascension afterfeast Day 1)",
+      "Seasonal opening sequences: Christ is risen (P+7–P+38), O Heavenly King omitted (P+39–P+48)",
+      "Ode-aware kontakion routing: 1st/6th Hours use Ode III kontakion; 3rd/9th use Ode VI",
+      "Continuation button added at foot of 3rd Hour",
+    ],
+  },
+];
+
+function VersionBadge() {
+  const [open, setOpen] = React.useState(false);
+
+  const badgeStyle = {
+    fontSize: "0.65rem",
+    letterSpacing: "0.12em",
+    textTransform: "uppercase",
+    color: open ? "#5C4A1E" : "#8B6914",
+    background: open ? "rgba(139,105,20,0.22)" : "rgba(139,105,20,0.12)",
+    border: "1px solid rgba(139,105,20,0.4)",
+    borderRadius: "3px",
+    padding: "2px 7px",
+    fontFamily: "Georgia, serif",
+    cursor: "pointer",
+    userSelect: "none",
+    display: "inline-block",
+  };
+
+  const panelStyle = {
+    position: "absolute",
+    right: "0",
+    top: "calc(100% + 6px)",
+    zIndex: 200,
+    width: "min(480px, 92vw)",
+    background: "#FAF6EE",
+    border: "1px solid #D4C49A",
+    borderRadius: "5px",
+    boxShadow: "0 4px 20px rgba(0,0,0,0.13)",
+    padding: "1rem",
+    fontSize: "0.78rem",
+    lineHeight: "1.6",
+    color: "#3D3020",
+    textAlign: "left",
+    maxHeight: "70vh",
+    overflowY: "auto",
+  };
+
+  return (
+    <div style={{ position: "relative", display: "inline-block" }}>
+      <span style={badgeStyle} onClick={() => setOpen(o => !o)}
+            title="Click to see release notes">
+        {RELEASE_NOTES[0].version} {open ? "▴" : "▾"}
+      </span>
+
+      {open && (
+        <div style={panelStyle}>
+          <div style={{ display: "flex", justifyContent: "space-between",
+                        alignItems: "center", marginBottom: "0.75rem" }}>
+            <div style={{ fontSize: "0.72rem", textTransform: "uppercase",
+                          letterSpacing: "0.1em", color: "#8B6914",
+                          fontWeight: "bold" }}>Release Notes</div>
+            <span onClick={() => setOpen(false)}
+                  style={{ cursor: "pointer", color: "#9A8A70",
+                           fontSize: "1rem", lineHeight: 1 }}>✕</span>
+          </div>
+
+          {RELEASE_NOTES.map((rel, ri) => (
+            <div key={ri} style={{ marginBottom: "1rem",
+                                   paddingBottom: "1rem",
+                                   borderBottom: ri < RELEASE_NOTES.length - 1
+                                     ? "1px solid #E8DFC0" : "none" }}>
+              <div style={{ display: "flex", justifyContent: "space-between",
+                            alignItems: "baseline", marginBottom: "0.2rem" }}>
+                <span style={{ fontWeight: "bold", color: "#1C1008",
+                               fontSize: "0.82rem" }}>{rel.version}</span>
+                <span style={{ fontSize: "0.7rem", color: "#9A8A70" }}>{rel.date}</span>
+              </div>
+              <div style={{ fontStyle: "italic", color: "#5C4A1E",
+                            marginBottom: "0.45rem", fontSize: "0.75rem" }}>
+                {rel.summary}
+              </div>
+              <ul style={{ margin: 0, paddingLeft: "1.1rem" }}>
+                {rel.items.map((item, ii) => (
+                  <li key={ii} style={{ marginBottom: "0.25rem",
+                                        fontSize: "0.74rem" }}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+
 // ─── HOW IT WORKS PANEL ───────────────────────────────────────────────────────
 // Accordion of five sections. Each panel opens/closes independently.
 // Matches the RankExplainer visual language (same gold, same type scale).
@@ -7199,12 +7331,7 @@ export default function App() {
           </div>
           </div>{/* end left column */}
           <div style={{ textAlign: "right", flexShrink: 0, marginLeft: "1rem", paddingTop: "0.15rem" }}>
-            <span style={{ fontSize: "0.65rem", letterSpacing: "0.12em", textTransform: "uppercase",
-                           color: "#8B6914", background: "rgba(139,105,20,0.12)",
-                           border: "1px solid rgba(139,105,20,0.3)", borderRadius: "3px",
-                           padding: "2px 7px", fontFamily: "Georgia, serif" }}>
-              v0.2.5
-            </span>
+            <VersionBadge />
           </div>
         </div>
       </div>
@@ -7319,9 +7446,7 @@ export default function App() {
           >
             ← {prevService ? prevService.label : ""}
           </button>
-          <span style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic" }}>
-            {currentServiceIdx + 1} of {SERVICE_REGISTRY.length}
-          </span>
+
           <button
             onClick={() => nextService && setSelectedServiceKey(nextService.key)}
             disabled={!nextService}
@@ -7577,9 +7702,7 @@ export default function App() {
               >
                 ← {prevService ? prevService.label : ""}
               </button>
-              <span style={{ fontSize: "0.75rem", color: "#9A8A70", fontStyle: "italic" }}>
-                {currentServiceIdx + 1} of {SERVICE_REGISTRY.length}
-              </span>
+
               <button
                 onClick={() => nextService && setSelectedServiceKey(nextService.key)}
                 disabled={!nextService}
