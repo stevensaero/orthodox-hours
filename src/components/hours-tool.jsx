@@ -1822,6 +1822,32 @@ const SAMPLE_MENAION = {
             "O Constantine, equal of the apostles, pray thou for our souls.",
     },
     // Aposticha Both Now: from Pentecostarion (handled at runtime by assembler)
+
+    // ── AT TYPICA: BEATITUDES ─────────────────────────────────────────────
+    // Source: 05-21.pdf AT LITURGY — "8 Troparia: 4 from the appointed Ode of the
+    // Pentecostarion canon, and 4 from Ode VI of the canon of the righteous ones."
+    // The 4 Pentecostarion troparia come from the governing week's canon (P+19 = Ode IV).
+    // The 4 Menaion troparia (Ode VI) are printed in the PDF and encoded here.
+    beatitudes_ode: 6,  // Ode VI of the Menaion canon
+    beatitudes_count: 4, // 4 from Menaion + 4 from Pentecostarion = 8 total
+    beatitudes_troparia: [
+      { text: "Most gloriously didst thou assemble the divine choir of the God-bearing fathers, " +
+              "O Constantine, and through them make steadfast the storm-tossed hearts of all, " +
+              "that they might glorify the Word as equal in honor " +
+              "and co-enthroned with the One Who begat Him." },
+      { text: "Having believed on the living Lord Who giveth life unto all, O Helena, " +
+              "thou didst spurn the abominable worship of vain idols " +
+              "and joyously received the kingdom of heaven." },
+      { text: "Guided by Thy hand, O Word, through Thee the sovereigns " +
+              "thrust aside the most profound darkness of ignorance " +
+              "and the tempest of cruel godlessness, " +
+              "and arrived, rejoicing, at the calm havens of piety." },
+      { label: "Theotokion",
+        text: "Heal thou my heart, which hath grown incurably sick " +
+              "and hath been grievously wounded by the sting of the evil one, O Maiden, " +
+              "and by thine entreaties grant healing unto me, " +
+              "and save me who trust in thee, O most pure one." },
+    ],
   },
 
 
@@ -3724,6 +3750,41 @@ const PENTECOSTARION = {
           "Aposticha from Pentecostarion Tone II with universal weekday verses. " +
           "Prokeimenon: Monday Tone IV from weekly table. " +
           "Christ is risen replaces usual opening throughout Bright/Myrrhbearers weeks.",
+
+    // ── AT TYPICA: BEATITUDES ─────────────────────────────────────────────
+    // Source: 32.pdf TUESDAY AT LITURGY — "For the Beatitudes, 6 verses from Ode IV of the Canon."
+    // When combined with a §2E/§2F Menaion saint (e.g. 05-21), the split is:
+    //   4 from this Pentecostarion Ode IV + 4 from the Menaion Ode VI = 8 total.
+    // Standalone (no Menaion saint or §2A): 6 Pentecostarion troparia used.
+    beatitudes_ode: 4,  // Ode IV of the Pentecostarion canon
+    beatitudes_count: 6, // 6 standalone; 4 when combined with §2E/§2F Menaion
+    beatitudes_troparia: [
+      { text: "By the Cross Thou didst bind the belly of Hades, " +
+              "and didst raise up the dead together with Thyself, " +
+              "and didst destroy the tyranny of death. " +
+              "Wherefore, we who are of Adam worship and praise Thy burial and arising, O Christ." },
+      { text: "O our Savior, Whose good pleasure it was, for the sake of Thy compassionate mercy " +
+              "to be nailed to the Cross and redeem us from the paternal curse, " +
+              "loose the bonds of my many transgressions, " +
+              "for Thou art able to accomplish whatsoever Thou dost will." },
+      { text: "O Thou Who didst nail to the Cross mine ancient curse, " +
+              "and didst cause blessing to pour forth for me from Thy side by Thy blood, O Savior, " +
+              "loose Thou the bonds of my many transgressions, " +
+              "for Thou art able to accomplish whatsoever Thou dost will." },
+      { text: "When hades met Thee in the nethermost regions, it was embittered, O Savior, " +
+              "seeing that those whom it had the power to devour aforetime, " +
+              "it now gave up involuntarily; " +
+              "its depths are searched out, and it is stripped and despoiled of its dead." },
+      { label: "Glory",
+        text: "Who can tell of the immeasurable glory of the Godhead, transcendent in essence? " +
+              "for being the Trinity by nature, He is praised as beginningless and consubstantial, " +
+              "and is hymned as a Unity in Trinity, in simple hypostases." },
+      { label: "Both now",
+        text: "Do thou unceasingly entreat Him Who dwelt in thy womb, O pure Virgin Mother, " +
+              "and Whom thou, the Theotokos, didst bear without knowing a man, " +
+              "that He loose the bonds of my many transgressions; " +
+              "for thou art able to help in whatsoever thou dost will." },
+    ],
   },
 
   // ── P+35 — Sixth Sunday of Pascha: Sunday of the Blind Man ──────────────────
@@ -4696,12 +4757,17 @@ const PENTECOSTARION = {
                     "but Israel hath He saved as they chanted a song of victory." },
     ],
 
-    feast_e: "Acts 18:22-28",
-    feast_g: "John 12:36-47",
+    feast_e: "Acts 1:1-12",
+    feast_g: "Luke 24:36-53",
 
-    prokeimenon_tone: 8,
-    prokeimenon_text: "This is the day which the Lord hath made, let us rejoice and be glad therein.",
-    prokeimenon_stichos: "O give thanks unto the Lord, for He is good, for His mercy endureth forever.",
+    // ── PROKEIMENON — encoding gap closed via Typica assembly (v0.3.x) ──────
+    // Previous entry had Pascha prokeimenon (Tone 8 "This is the day…") — incorrect.
+    // Ascension proper prokeimenon sourced from HTM_selected_material_from_pentecostarian.txt.
+    // Note in P+39 encoding record: "Prokeimenon Tone VII and Alleluia Tone II govern
+    // throughout entire Ascension afterfeast." (project_notes v0.3.19)
+    prokeimenon_tone: 7,
+    prokeimenon_text: "Be Thou exalted above the heavens, O God, and Thy glory above all the earth.",
+    prokeimenon_stichos: "Ready is my heart, O God, ready is my heart; I will sing and chant in my glory.",
 
     alleluia_tone: 4,
     alleluia_verse: "Thou, O Lord, shalt rise up and have pity upon Sion, " +
@@ -7136,6 +7202,53 @@ const HTM_PSALM_103_REFRAIN =
   "Glory to the Father, and to the Son, and to the Holy Spirit, " +
   "both now and ever, and unto the ages of ages. Amen.\n\n" +
   "Alleluia, alleluia, alleluia. Glory to Thee, O God. (thrice)";
+
+// ── OCTOECHOS SUNDAY HYPAKOË ──────────────────────────────────────────────────
+// Source: St. Sergius Sunday Octoechos PDFs (N-1.pdf files), tones 1-8.
+// Used at Sunday Typica in place of the Kontakion section.
+// NOTE: In the Russian Octoechos PDFs these appear as "The Sessional Hymn" following
+// the small litany after the Evlogitaria (Resurrectional Verses) at Sunday Matins.
+// The Pascha Hypakoë (Tone 8 variant) is drawn from the HTM Pentecostarion.
+const OCTOECHOS_HYPAKOE = {
+  1: "The Thief's repentance plundered Paradise, but the myrrh-bearers' lamentations " +
+     "announced the joy that Thou hast risen, O Christ God, granting the world great mercy.",
+  2: "The women coming to Thy grave after the Passion to anoint Thy body, O Christ God, " +
+     "saw angels in the tomb and were affrightened, for they heard a message from them: " +
+     "The Lord hath arisen, granting the world His great mercy.",
+  3: "A cause of amazement by his appearance, and source of refreshment by his speech, " +
+     "the radiant angel spake unto the myrrh-bearing women saying: " +
+     "\"Why do ye seek the living in a grave? He hath arisen, emptying the graves. " +
+     "Know that the unchangeable One hath changed corruption. " +
+     "Wherefore cry unto God saying: How fearful are Thy works! For Thou hast saved mankind.\"",
+  4: "The myrrh-bearing women hastened to proclaim to the apostles " +
+     "the news of Thy wondrous rising, O Christ: " +
+     "that as God Thou hast arisen, granting the world great mercy.",
+  5: "The myrrh-bearing women, amazed in their minds by the vision of the angel " +
+     "yet enlightened in their souls by the divine Resurrection, " +
+     "announced the glad tidings to the apostles: " +
+     "Proclaim ye among the nations the Resurrection of the Lord, " +
+     "Who worketh in us through wonders, and Who granteth us great mercy.",
+  6: "By Thy voluntary and life-giving death, O Christ, Thou hast shattered the gates of Hades, " +
+     "and as God Thou hast opened unto us the paradise of old; " +
+     "and by arising from the dead, Thou hast delivered our lives from corruption.",
+  7: "O Christ God, Who took upon Thyself our form and endured the Cross in the body, " +
+     "save me by Thy Resurrection, as Thou alone lovest mankind.",
+  8: "The myrrh-bearing women standing at the tomb of the Giver of life, " +
+     "seeking the immortal Master among the dead; " +
+     "and having received the glad tidings of joy from the angel, " +
+     "announced unto the apostles that Christ the Lord is risen, " +
+     "granting the world great mercy.",
+  // Pascha Hypakoë (Tone 8, used during Bright Week)
+  // Source: HTM Pentecostarion (HTM_selected_material_from_pentecostarian.txt)
+  "pascha": "Forestalling the dawn, the women came with Mary, " +
+     "and found the stone rolled away from the sepulchre, " +
+     "and heard from the angel: Why seek ye among the dead, " +
+     "as though He were a mortal, Him Who liveth in everlasting light? " +
+     "Behold the grave-clothes. Go quickly and proclaim to the world " +
+     "that the Lord is risen and hath slain death. " +
+     "For He is the Son of God Who saveth mankind.",
+};
+
 const WEEKLY_VESPERS_PROKEIMENON = {
   6: { tone: 6, text: "The Lord is King, He is clothed with majesty.",
     verses: ["The Lord is clothed with strength and He hath girt Himself.",
@@ -9134,6 +9247,784 @@ function GlossaryEntry({ term, def, highlight }) {
 
 // Service registry — ordered list of all services the tool can display.
 // Add new services here as they are built; the dropdown and nav arrows update automatically.
+
+// ─── TYPICA DATA ─────────────────────────────────────────────────────────────
+// Source: HTM, The Order of the Typica (htm_typica.pdf).
+// Assembly authority: HTM primary; OCA outline confirms structure.
+// Fekula context: Typica follows the 6th Hour on ordinary Octoechos weekdays
+//   and Sundays when no Divine Liturgy is served.
+// The ONLY movable element is the Kontakia section (see TYPICA_KONTAKIA below).
+// Beatitudes troparia — from pentEntry or menaionEntry.beatitudes_troparia.
+
+// ── PSALM 102 ──────────────────────────────────────────────────────────────
+// Source: HTM htm_typica.pdf p.1
+const TYPICA_PSALM_102 =
+  "Bless the Lord, O my soul, and all that is within me bless His holy name. " +
+  "Bless the Lord, O my soul, and forget not all that He hath done for thee, " +
+  "Who is gracious unto all thine iniquities, Who healeth all thine infirmities, " +
+  "Who redeemeth thy life from corruption, Who crowneth thee with mercy and compassion, " +
+  "Who fulfilleth thy desire with good things; thy youth shall be renewed as the eagle\u2019s. " +
+  "The Lord performeth deeds of mercy, and executeth judgment for all them that are wronged. " +
+  "He hath made His ways known unto Moses, unto the sons of Israel the things that He hath willed. " +
+  "Compassionate and merciful is the Lord, long-suffering and plenteous in mercy; " +
+  "not unto the end will He be angered, neither unto eternity will He be wroth. " +
+  "Not according to our iniquities hath He dealt with us, neither according to our sins hath He rewarded us. " +
+  "For according to the height of heaven from the earth, the Lord hath made His mercy to prevail over them that fear Him. " +
+  "As far as the east is from the west, so far hath He removed our iniquities from us. " +
+  "Like as a father hath compassion upon his sons, so hath the Lord had compassion upon them that fear Him: " +
+  "for He knoweth whereof we are made, He hath remembered that we are dust. " +
+  "As for man, his days are as the grass; as a flower of the field, so shall he blossom forth. " +
+  "For when the wind is passed over it, then it shall be gone, and no longer will it know the place thereof. " +
+  "But the mercy of the Lord is from eternity, even unto eternity, upon them that fear Him. " +
+  "And His righteousness is upon sons of sons, upon them that keep His testament, " +
+  "and remember His commandments to do them. " +
+  "The Lord in heaven hath prepared His throne, and His kingdom ruleth over all. " +
+  "Bless the Lord, all ye His angels, mighty in strength, that perform His word, to hear the voice of His words. " +
+  "Bless the Lord, all ye His hosts, His ministers that do His will. " +
+  "Bless the Lord, all ye His works, in every place of His dominion.\n\n" +
+  "Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\n" +
+  "Bless the Lord, O my soul, and all that is within me bless His holy name.\n\n" +
+  "Blessed art Thou, O Lord.\n\n" +
+  "Glory to the Father, and to the Son, and to the Holy Spirit.";
+
+// ── PSALM 145 ──────────────────────────────────────────────────────────────
+// Source: HTM htm_typica.pdf p.2
+const TYPICA_PSALM_145 =
+  "Praise the Lord, O my soul. I will praise the Lord in my life, " +
+  "I will chant unto my God for as long as I have my being. " +
+  "Trust ye not in princes, in the sons of men, in whom there is no salvation. " +
+  "His spirit shall go forth, and he shall return unto his earth. " +
+  "In that day all his thoughts shall perish. " +
+  "Blessed is he of whom the God of Jacob is his help, whose hope is in the Lord his God, " +
+  "Who hath made heaven and the earth, the sea and all that is therein, " +
+  "Who keepeth truth unto eternity, Who executeth judgment for the wronged, " +
+  "Who giveth food unto the hungry. The Lord looseth the fettered; " +
+  "the Lord maketh wise the blind; the Lord setteth aright the fallen; " +
+  "the Lord loveth the righteous; the Lord preserveth the proselytes. " +
+  "He shall adopt for His own the orphan and widow, and the way of the sinners shall He destroy. " +
+  "The Lord shall be king unto eternity; thy God, O Sion, unto generation and generation.\n\n" +
+  "Both now and ever, and unto the ages of ages. Amen.";
+
+// ── ONLY-BEGOTTEN SON ──────────────────────────────────────────────────────
+// Source: HTM htm_typica.pdf p.2
+const TYPICA_ONLY_BEGOTTEN =
+  "O Only-begotten Son and Word of God, Who art immortal, yet didst deign for our salvation " +
+  "to be incarnate of the holy Theotokos and Ever-Virgin Mary, and without change didst become man, " +
+  "and wast crucified, O Christ God, trampling down death by death; " +
+  "Thou Who art one of the Holy Trinity, glorified with the Father and the Holy Spirit, save us.";
+
+// ── THE BEATITUDES (fixed verses) ──────────────────────────────────────────
+// Source: OCA (replaces HTM version)
+const TYPICA_BEATITUDES_FIXED = [
+  "In Thy Kingdom, remember us, O Lord, when Thou comest in Thy Kingdom.",
+  "Blessed are the poor in spirit, for theirs is the Kingdom of Heaven.",
+  "Blessed are those who mourn, for they shall be comforted.",
+  "Blessed are the meek, for they shall inherit the earth.",
+  "Blessed are those who hunger and thirst after righteousness, for they shall be filled.",
+  "Blessed are the merciful, for they shall obtain mercy.",
+  "Blessed are the pure in heart, for they shall see God.",
+  "Blessed are the peacemakers, for they shall be called the sons of God.",
+  "Blessed are those who are persecuted for righteousness\u2019 sake, for theirs is the Kingdom of Heaven.",
+  "Blessed are you when men shall revile you and persecute you, and shall say all manner of evil against you falsely for my sake.",
+  "Rejoice and be exceedingly glad, for great is your reward in heaven.",
+  "Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.",
+];
+
+// ── THE CREED ──────────────────────────────────────────────────────────────
+// Source: HTM htm_typica.pdf pp.4-5
+const TYPICA_CREED =
+  "I believe in one God, the Father Almighty, Maker of heaven and earth, " +
+  "and of all things visible and invisible. " +
+  "And in one Lord Jesus Christ, the Son of God, the Only-begotten, " +
+  "begotten of the Father before all ages; Light of Light, true God of true God; " +
+  "begotten, not made; of one essence with the Father; by Whom all things were made; " +
+  "Who for us men, and for our salvation, came down from the heavens, " +
+  "and was incarnate of the Holy Spirit and the Virgin Mary, and became man; " +
+  "And was crucified for us under Pontius Pilate, and suffered, and was buried, " +
+  "and arose again on the third day according to the Scriptures; " +
+  "And ascended into the heavens, and sitteth on the right hand of the Father; " +
+  "And shall come again, with glory, to judge both the living and the dead; " +
+  "Whose kingdom shall have no end. " +
+  "And in the Holy Spirit, the Lord, the Giver of Life; Who proceedeth from the Father; " +
+  "Who with the Father and the Son together is worshipped and glorified; " +
+  "Who spake by the prophets. " +
+  "In One, Holy, Catholic, and Apostolic Church. " +
+  "I confess one baptism for the remission of sins. " +
+  "I look for the resurrection of the dead, And the life of the age to come. Amen.";
+
+// ── FORGIVENESS PRAYER ─────────────────────────────────────────────────────
+// Source: HTM htm_typica.pdf p.5
+const TYPICA_FORGIVENESS =
+  "Remit, pardon, forgive, O God, our offences, both voluntary and involuntary, " +
+  "in deed and word, in knowledge and ignorance, by day and by night, in mind and thought; " +
+  "forgive us all things, for Thou art good and the Lover of mankind.";
+
+// ── PSALM 33 ───────────────────────────────────────────────────────────────
+// Source: HTM htm_typica.pdf p.9
+const TYPICA_PSALM_33 =
+  "I will bless the Lord at all times, His praise shall continually be in my mouth. " +
+  "In the Lord shall my soul be praised; let the meek hear and be glad. " +
+  "O magnify the Lord with me, and let us exalt His name together. " +
+  "I sought the Lord, and He heard me, and delivered me from all my tribulations. " +
+  "Come unto Him, and be enlightened, and your faces shall not be ashamed. " +
+  "This poor man cried, and the Lord heard him, and saved him out of all his tribulations. " +
+  "The angel of the Lord will encamp round about them that fear Him, and will deliver them. " +
+  "O taste and see that the Lord is good; blessed is the man that hopeth in Him. " +
+  "O fear the Lord, all ye His saints; for there is no want to them that fear Him. " +
+  "Rich men have turned poor and gone hungry; but they that seek the Lord shall not be deprived of any good thing. " +
+  "Come ye children, hearken unto me; I will teach you the fear of the Lord. " +
+  "What man is there that desireth life, who loveth to see good days? " +
+  "Keep thy tongue from evil, and thy lips from speaking guile. " +
+  "Turn away from evil, and do good; seek peace, and pursue it. " +
+  "The eyes of the Lord are upon the righteous, and His ears are opened unto their supplication. " +
+  "The face of the Lord is against them that do evil, utterly to destroy the remembrance of them from the earth. " +
+  "The righteous cried, and the Lord heard them, and He delivered them out of all their tribulations. " +
+  "The Lord is nigh unto them that are a contrite heart, and He will save the humble of spirit. " +
+  "Many are the tribulations of the righteous, and the Lord shall deliver them out of them all. " +
+  "The Lord keepeth all their bones, not one of them shall be broken. " +
+  "The death of sinners is evil, and they that hate the righteous shall do wrong. " +
+  "The Lord will redeem the souls of His servants, and none of them will do wrong that hope in Him.\n\n" +
+  "Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.";
+
+// ── TYPICA KONTAKIA (fixed weekday/Saturday texts) ─────────────────────────
+// Source: HTM htm_typica.pdf pp.5-6
+// Keys: day-of-week (0=Sun … 6=Sat). Sunday uses Hypakoë (OCTOECHOS_HYPAKOE).
+// Structure: each entry is an ordered array of { label, tone, text } objects.
+// The saint's own kontakion (from menaionEntry) is appended at runtime
+// per the rubric: "the Kontakion to the saint is said first: Glory…Both now…
+// and then the Kontakion to the feast."
+// The "Both now" Theotokion on weekdays (not Saturday) = O Protection of Christians.
+// On Saturday the Both now = Kontakion to the Martyrs.
+
+const TYPICA_KONTAKIA = {
+  // Monday — Bodiless Hosts, then Both now (Theotokos)
+  1: [
+    { label: "Kontakion — Bodiless Hosts", tone: 2,
+      text: "Supreme commanders of God and ministers of the divine glory, " +
+            "guides of men and leaders of the bodiless hosts: " +
+            "Ask for what is to our profit and for great mercy, " +
+            "since ye are Supreme Commanders of the Bodiless Hosts." },
+    { label: "Both now — Theotokos", tone: null,
+      text: "O protection of Christians that cannot be put to shame, " +
+            "O mediation unto the Creator unfailing, disdain not the suppliant voices of sinners; " +
+            "but be thou quick, O good one, to help us who in faith cry unto thee; " +
+            "Hasten to intercession and speed thou to make supplication, " +
+            "thou who dost ever protect, O Theotokos, them that honour thee." },
+  ],
+  // Tuesday — Forerunner, then Both now (Theotokos)
+  2: [
+    { label: "Kontakion — St John the Forerunner", tone: 2,
+      text: "O Prophet of God and Forerunner of grace, " +
+            "having obtained thy head from the earth as a most sacred rose, " +
+            "we ever receive healings; " +
+            "for again, as of old in the world, thou preachest repentance." },
+    { label: "Both now — Theotokos", tone: null,
+      text: "O protection of Christians that cannot be put to shame, " +
+            "O mediation unto the Creator unfailing, disdain not the suppliant voices of sinners; " +
+            "but be thou quick, O good one, to help us who in faith cry unto thee; " +
+            "Hasten to intercession and speed thou to make supplication, " +
+            "thou who dost ever protect, O Theotokos, them that honour thee." },
+  ],
+  // Wednesday — Cross, then Both now (Theotokos)
+  3: [
+    { label: "Kontakion — the Holy Cross", tone: 4,
+      text: "O Thou Who wast lifted up willingly on the Cross, " +
+            "bestow Thy mercies upon the new community named after Thee, O Christ God; " +
+            "gladden with Thy power the Orthodox Christians, granting them victory over enemies; " +
+            "may they have as Thy help the weapon of peace, the invincible trophy." },
+    { label: "Both now — Theotokos", tone: null,
+      text: "O protection of Christians that cannot be put to shame, " +
+            "O mediation unto the Creator unfailing, disdain not the suppliant voices of sinners; " +
+            "but be thou quick, O good one, to help us who in faith cry unto thee; " +
+            "Hasten to intercession and speed thou to make supplication, " +
+            "thou who dost ever protect, O Theotokos, them that honour thee." },
+  ],
+  // Thursday — Apostles, Nicholas, then Both now (Theotokos)
+  4: [
+    { label: "Kontakion — the Holy Apostles", tone: 2,
+      text: "The firm and divine-voiced preachers, the chief of Thy disciples, O Lord, " +
+            "Thou hast taken to Thyself for the enjoyment of Thy blessings and for repose; " +
+            "their labours and death didst Thou accept as above every sacrifice, " +
+            "O Thou Who alone knowest the hearts." },
+    { label: "Kontakion — St Nicholas", tone: 3,
+      text: "In Myra, O Saint, thou didst prove to be a minister of things sacred; " +
+            "for having fulfilled the Gospel of Christ, O righteous one, " +
+            "thou didst lay down thy life for thy people, and didst save the innocent from death. " +
+            "Wherefore thou wast sanctified as a great initiate of the grace of God." },
+    { label: "Both now — Theotokos", tone: null,
+      text: "O protection of Christians that cannot be put to shame, " +
+            "O mediation unto the Creator unfailing, disdain not the suppliant voices of sinners; " +
+            "but be thou quick, O good one, to help us who in faith cry unto thee; " +
+            "Hasten to intercession and speed thou to make supplication, " +
+            "thou who dost ever protect, O Theotokos, them that honour thee." },
+  ],
+  // Friday — Cross, then Both now (Theotokos)
+  5: [
+    { label: "Kontakion — the Holy Cross", tone: 4,
+      text: "O Thou Who wast lifted up willingly on the Cross, " +
+            "bestow Thy mercies upon the new community named after Thee, O Christ God; " +
+            "gladden with Thy power the Orthodox Christians, granting them victory over enemies; " +
+            "may they have as Thy help the weapon of peace, the invincible trophy." },
+    { label: "Both now — Theotokos", tone: null,
+      text: "O protection of Christians that cannot be put to shame, " +
+            "O mediation unto the Creator unfailing, disdain not the suppliant voices of sinners; " +
+            "but be thou quick, O good one, to help us who in faith cry unto thee; " +
+            "Hasten to intercession and speed thou to make supplication, " +
+            "thou who dost ever protect, O Theotokos, them that honour thee." },
+  ],
+  // Saturday — Departed (Glory), Martyrs (Both now)
+  6: [
+    { label: "Glory — Kontakion for the Departed", tone: 8,
+      text: "With the saints give rest, O Christ, to the souls of Thy servants, " +
+            "where there is neither sickness, nor sorrow, nor sighing, but life everlasting." },
+    { label: "Both now — Kontakion to the Martyrs", tone: 8,
+      text: "To Thee, O Lord, the Planter of creation, the world doth offer the " +
+            "God-bearing martyrs as the firstfruits of nature. " +
+            "By their intercessions preserve Thy Church, Thy commonwealth, in profound peace, " +
+            "through the Theotokos, O Greatly-merciful One." },
+  ],
+};
+
+
+// ─── TYPICA PROKEIMENON TABLES ───────────────────────────────────────────────
+// Source: HTM_daily_troparia_kontakia_alleluia_prokeimena.txt (weekdays)
+// Source: St. Sergius Sunday Octoechos (resurrectional prokeimena by tone)
+// Routing in assembleTypica():
+//   1. pentEntry.prokeimenon_text — Pentecostarion Sunday/feast (already encoded)
+//   2. SUNDAY_RESURRECTIONAL_PROKEIMENON[tone] — ordinary Sunday (Octoechos)
+//   3. TYPICA_WEEKDAY_PROKEIMENON[dowNumber] — Mon–Sat
+//   4. menaionEntry.prokeimenon_text — feast proper prokeimenon (appended)
+
+// Weekday prokeimena — invariable, keyed by day of week (1=Mon … 6=Sat)
+// Saturday has TWO prokeimena (All Saints + Departed), shown in sequence.
+const TYPICA_WEEKDAY_PROKEIMENON = {
+  1: { tone: 4,
+       text: "Who maketh His angels spirits, and His ministers a flame of fire.",
+       stichos: "Bless the Lord, O my soul; O Lord my God, Thou hast been magnified exceedingly." },
+  2: { tone: 7,
+       text: "The righteous man shall be glad in the Lord, and shall hope in Him.",
+       stichos: "Hearken, O God, unto my prayer, when I make supplication unto Thee." },
+  3: { tone: 3,
+       text: "My soul doth magnify the Lord, and my spirit hath rejoiced in God my Saviour.",
+       stichos: "For He hath looked upon the lowliness of His handmaiden; for behold, from henceforth all generations shall call me blessed.",
+       label: "the Song of the Theotokos" },
+  4: { tone: 8,
+       text: "Their sound hath gone forth into all the earth, and their words unto the ends of the world.",
+       stichos: "The heavens declare the glory of God, and the firmament proclaimeth the work of His hands." },
+  5: { tone: 7,
+       text: "Exalt ye the Lord our God, and worship the footstool of His feet; for it is holy.",
+       stichos: "The Lord is king, let the peoples rage." },
+  6: [
+    { tone: 8,
+      text: "Be glad in the Lord, and rejoice, ye righteous.",
+      stichos: "Blessed are they whose iniquities are forgiven, and whose sins are covered.",
+      label: "All Saints" },
+    { tone: 6,
+      text: "Their souls shall dwell among good things.",
+      stichos: "Unto Thee, O Lord, have I lifted up my soul. O my God, in Thee have I trusted; let me never be put to shame.",
+      label: "the Departed" },
+  ],
+};
+
+// Weekday Alleluia verses — keyed by day of week (1=Mon … 6=Sat)
+// Source: HTM_daily_troparia_kontakia_alleluia_prokeimena.txt
+// Saturday has two stichoi (All Saints + Departed).
+const TYPICA_WEEKDAY_ALLELUIA = {
+  1: { tone: 5,
+       verse: "Praise the Lord, all ye His angels; praise Him, all ye His hosts.",
+       stichoi: ["For He spake, and they came to be; He commanded, and they were created."] },
+  2: { tone: 4,
+       verse: "The righteous man shall flourish like a palm tree, and like a cedar in Lebanon shall he be multiplied.",
+       stichoi: ["They that are planted in the house of the Lord, in the courts of our God they shall blossom forth."] },
+  3: { tone: 8,
+       verse: "Hearken, O daughter, and see, and incline thine ear.",
+       stichoi: ["The rich among the people shall entreat thy countenance."] },
+  4: { tone: 1,
+       verse: "The heavens shall confess Thy wonders, O Lord, and Thy truth in the congregation of saints.",
+       stichoi: ["God Who is glorified in the council of the saints."] },
+  5: { tone: 1,
+       verse: "Remember Thy congregation which Thou hast purchased from the beginning.",
+       stichoi: ["But God is our king before the ages, He hath wrought salvation in the midst of the earth."] },
+  6: { tone: 4,
+       verse: "The righteous cried, and the Lord heard them, and He delivered them out of all their tribulations.",
+       stichoi: [
+         "Many are the tribulations of the righteous, and the Lord shall deliver them out of them all.",
+         "Blessed are they whom Thou hast chosen and hast taken to Thyself, O Lord, and their memorial is unto generation and generation.",
+       ]},
+};
+// Sunday resurrectional Alleluia verses — keyed by tone (1–8)
+// Source: St. Sergius Sunday Octoechos (resurrectional Alleluia table)
+// Used on ordinary Sundays when no pentEntry alleluia_verse is encoded.
+const SUNDAY_RESURRECTIONAL_ALLELUIA = {
+  1: { tone: 1,
+       verse: "God is our refuge and strength, a helper in the afflictions that have found us greatly.",
+       stichoi: ["For God hath blessed thee for ever and ever."] },
+  2: { tone: 2,
+       verse: "O Lord, in Thy strength the king shall be glad, and in Thy salvation shall he rejoice exceedingly.",
+       stichoi: ["Thou hast granted him his heart's desire, and hast not denied him the requests of his lips."] },
+  3: { tone: 3,
+       verse: "For the righteous, O Lord, hast Thou blessed; Thou hast crowned us as with a shield of favor.",
+       stichoi: ["Hearken, O Lord, unto my righteousness; attend unto my supplication."] },
+  4: { tone: 4,
+       verse: "Arise, O Lord my God, let Thy hand be lifted high; forget not Thy poor forever.",
+       stichoi: ["I will give thanks unto Thee, O Lord, with my whole heart; I will tell of all Thy marvellous works."] },
+  5: { tone: 5,
+       verse: "O Lord, Thou shalt open my lips, and my mouth shall declare Thy praise.",
+       stichoi: ["Create in me a clean heart, O God, and renew a right spirit within me."] },
+  6: { tone: 6,
+       verse: "Blessed is the man that feareth the Lord; he shall delight greatly in His commandments.",
+       stichoi: ["His seed shall be mighty upon the earth; the generation of the righteous shall be blessed."] },
+  7: { tone: 7,
+       verse: "Arise, O Lord, help us, and deliver us for Thy mercy's sake.",
+       stichoi: ["O God, we have heard with our ears, our fathers have told us, what works Thou didst in their days."] },
+  8: { tone: 8,
+       verse: "Come let us rejoice in the Lord, let us shout with jubilation unto God our Saviour.",
+       stichoi: ["For the Lord is a great God and a great King over all the earth."] },
+};
+
+// Sunday resurrectional prokeimena — keyed by tone (1–8)
+// Source: St. Sergius Sunday Octoechos (standard resurrectional table)
+// Used on ordinary Sundays outside Pentecostarion (i.e. when no pentEntry
+// prokeimenon is encoded). Each has one stichos verse.
+const SUNDAY_RESURRECTIONAL_PROKEIMENON = {
+  1: { tone: 1,
+       text: "Now I will arise, saith the Lord: I will set him in safety, I will deal boldly in his behalf.",
+       stichos: "The words of the Lord are pure words, as silver tried in a furnace of earth, purified seven times." },
+  2: { tone: 2,
+       text: "Arise, O Lord my God, let Thy hand be lifted high; forget not Thy poor forever.",
+       stichos: "I will give thanks unto Thee, O Lord, with my whole heart; I will tell of all Thy marvellous works." },
+  3: { tone: 3,
+       text: "Have mercy upon me, O Lord; behold my humility at the hands of mine enemies.",
+       stichos: "Who is like unto Thee among the mighty, O Lord? Who is like unto Thee?" },
+  4: { tone: 4,
+       text: "Arise, O Lord, help us, and deliver us for Thy mercy's sake.",
+       stichos: "O God, we have heard with our ears, our fathers have told us, what works Thou didst in their days." },
+  5: { tone: 5,
+       text: "Arise, O Lord my God, let Thy hand be lifted high; forget not Thy poor forever.",
+       stichos: "I will give thanks unto Thee, O Lord, with my whole heart." },
+  6: { tone: 6,
+       text: "Save, O Lord, Thy people and bless Thine inheritance.",
+       stichos: "Unto Thee, O Lord, will I cry; O my God, be not silent unto me." },
+  7: { tone: 7,
+       text: "Arise, O Lord my God, let Thy hand be lifted high; forget not Thy poor forever.",
+       stichos: "I will give thanks unto Thee, O Lord, with my whole heart; I will tell of all Thy marvellous works." },
+  8: { tone: 8,
+       text: "Make your vows and pay them to the Lord our God.",
+       stichos: "In Judea is God known, His name is great in Israel." },
+};
+
+// ─── TYPICA ASSEMBLER ────────────────────────────────────────────────────────
+// Source: HTM htm_typica.pdf (complete order)
+// Assembly rules:
+//   Sunday  → Hypakoë of the tone from OCTOECHOS_HYPAKOE; no Kontakia section
+//   Weekday → TYPICA_KONTAKIA[dow]; saint's kontakion prepended if present
+//   Beatitudes troparia: from pentEntry.beatitudes_troparia or
+//     menaionEntry.beatitudes_troparia if available; else placeholder shown
+//
+// Phase 1 scope: ordinary Octoechos time (Sundays + Mon–Sat outside Lent/Bright Week).
+// Not assembled: Lenten Typica (different skeleton per htm_typica.pdf p.3-4).
+// Readings slot: Prokeimenon and Epistle/Gospel rubric noted but not rendered
+//   (readings engine FW-19/20 not yet built).
+
+function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode = false) {
+  const { dowNumber, tone } = liturgicalData;
+  const isSunday = dowNumber === 0;
+  const elements = [];
+
+  const src = "HTM, Order of the Typica";
+
+  // ── helper: push a fixed block ──────────────────────────────────────────
+  const fixed = (id, label, text, rubric = null) => elements.push({
+    id, label, text,
+    type: "fixed",
+    source: src,
+    rubric: rubric || null,
+  });
+
+  const movable = (id, label, text, note = null, rubric = null) => elements.push({
+    id, label, text,
+    type: "movable",
+    source: src,
+    note: note || null,
+    rubric: rubric || null,
+  });
+
+  // ── 1. Opening ───────────────────────────────────────────────────────────
+  fixed("typica-open", "Opening",
+    "Reader: Bless the Lord, O my soul. Blessed art Thou, O Lord.");
+
+  // ── 2. Psalm 102 ─────────────────────────────────────────────────────────
+  fixed("typica-ps102", "Psalm 102",
+    TYPICA_PSALM_102);
+
+  // ── 3. Psalm 145 ─────────────────────────────────────────────────────────
+  fixed("typica-ps145", "Psalm 145",
+    TYPICA_PSALM_145);
+
+  // ── 4. Only-Begotten Son ─────────────────────────────────────────────────
+  fixed("typica-onlybegotten", "Only-Begotten Son",
+    TYPICA_ONLY_BEGOTTEN);
+
+  // ── 5. The Beatitudes ────────────────────────────────────────────────────
+  // Source: OCA. No canon troparia inserted — the Typica reads all verses
+  // as written (beatitudes_troparia fields are for the Divine Liturgy only).
+  fixed("typica-beatitudes", "The Beatitudes",
+    TYPICA_BEATITUDES_FIXED.join("\n"));
+
+  // ── 6. Prokeimenon ───────────────────────────────────────────────────────
+  // Routing: pentEntry > Sunday resurrectional > weekday daily > none
+  // Uses prokeimenon element type (same as Vespers) so ServiceBlock renders
+  // "Reader: The Prokeimenon in Tone X: [text]" with verse exchange correctly.
+  {
+    const buildProkEl = (id, p, sourceStr, noteStr) => ({
+      id,
+      type: "prokeimenon",
+      typicaMode: true,
+      label: "Prokeimenon · Tone " + p.tone + (p.label ? " — " + p.label : ""),
+      announcement: "Wisdom! The Prokeimenon in Tone " + p.tone + ": " + p.text,
+      exchanges: [
+        { speaker: "chanters", text: p.text },
+        { speaker: "chanters", text: p.text },
+        ...(p.stichos ? [
+          { speaker: "deacon", text: "V.: " + p.stichos },
+          { speaker: "chanters", text: p.text },
+        ] : []),
+      ],
+      readerMode,
+      source: sourceStr,
+      fekula: { section: null, note: noteStr },
+    });
+
+    // In reader mode the prokeimenon element itself handles the Ch10 pattern:
+    // "Wisdom!" is stripped, "Reader:" label shown, verse in black — no separate note needed.
+
+    if (pentEntry?.prokeimenon_text) {
+      elements.push(buildProkEl("typica-prokeimenon",
+        { tone: pentEntry.prokeimenon_tone, text: pentEntry.prokeimenon_text, stichos: pentEntry.prokeimenon_stichos },
+        "Pentecostarion · " + (pentEntry.source_file || "St. Sergius PDF"),
+        "Pentecostarion proper prokeimenon."));
+      // Menaion feast-proper prokeimenon suppressed — Pentecostarion governs
+    } else if (isSunday) {
+      const p = SUNDAY_RESURRECTIONAL_PROKEIMENON[tone] || SUNDAY_RESURRECTIONAL_PROKEIMENON[1];
+      elements.push(buildProkEl("typica-prokeimenon", p,
+        "St. Sergius Sunday Octoechos",
+        "Sunday resurrectional prokeimenon, Tone " + tone + "."));
+      // Menaion feast-proper prokeimenon suppressed on Sunday — resurrectional governs
+    } else {
+      const daily = TYPICA_WEEKDAY_PROKEIMENON[dowNumber];
+      if (Array.isArray(daily)) {
+        daily.forEach((p, i) => elements.push(buildProkEl(
+          "typica-prokeimenon-" + i, p,
+          "HTM daily file",
+          "Saturday prokeimenon — " + p.label + ".")));
+      } else if (daily) {
+        elements.push(buildProkEl("typica-prokeimenon", daily,
+          "HTM daily file",
+          ["","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dowNumber] + " prokeimenon."));
+      }
+      // Feast-proper prokeimenon only appended on weekdays for §2E/§2F rank
+      if (menaionEntry?.prokeimenon_text &&
+          (menaionEntry.rank === 'polyeleos' || menaionEntry.rank === 'vigil')) {
+        elements.push(buildProkEl("typica-prokeimenon-feast",
+          { tone: menaionEntry.prokeimenon_tone, text: menaionEntry.prokeimenon_text, stichos: menaionEntry.prokeimenon_stichos },
+          "Menaion · " + (menaionEntry.saint || "saint of the day"),
+          "Feast proper prokeimenon for " + (menaionEntry.saint || "this commemoration") + "."));
+      }
+    }
+  }
+
+  // ── 7. Readings ─────────────────────────────────────────────────────────
+  // Source: HTM p.3 rubric — Prokeimenon may be chanted; Epistle and Gospel may be read.
+  // Cycle reading from LECTIONARY (getDailyReading); feast proper from menaionEntry.
+  // Reading introductions follow standard reader service convention.
+  {
+    // Build "The reading is from..." introduction from a reference string
+    const epistleIntro = (ref) => {
+      if (!ref) return null;
+      const r = ref.replace(/\s*\(§[^)]+\)/, '').trim();
+      const book = r.split(/\s+\d/)[0].trim();
+      if (/^acts$/i.test(book)) return "The reading is from the Acts of the Holy Apostles.";
+      if (/^rev/i.test(book)) return "The reading is from the Revelation of the Holy Apostle and Evangelist John the Theologian.";
+      if (/^heb/i.test(book)) return "The reading is from the Epistle to the Hebrews.";
+      if (/^james$/i.test(book)) return "The reading is from the General Epistle of the Holy Apostle James.";
+      if (/^jude$/i.test(book)) return "The reading is from the General Epistle of the Holy Apostle Jude.";
+      if (/^[123]\s*peter/i.test(book)) {
+        const n = book.match(/^([123])/)[1];
+        return "The reading is from the " + ["","First","Second","Third"][+n] + " General Epistle of the Holy Apostle Peter.";
+      }
+      if (/^[123]\s*john/i.test(book)) {
+        const n = book.match(/^([123])/)[1];
+        return "The reading is from the " + ["","First","Second","Third"][+n] + " General Epistle of the Holy Apostle and Evangelist John the Theologian.";
+      }
+      if (/^[123]\s*cor/i.test(book)) return "The reading is from the " + (book.startsWith('1') ? "First" : "Second") + " Epistle of the Holy Apostle Paul to the Corinthians.";
+      if (/^[123]\s*thess/i.test(book)) return "The reading is from the " + (book.startsWith('1') ? "First" : "Second") + " Epistle of the Holy Apostle Paul to the Thessalonians.";
+      if (/^[123]\s*tim/i.test(book)) return "The reading is from the " + (book.startsWith('1') ? "First" : "Second") + " Epistle of the Holy Apostle Paul to Timothy.";
+      // Remaining Pauline epistles by name
+      const pauline = {
+        rom: "Romans", gal: "Galatians", eph: "Ephesians",
+        phil: "Philippians", col: "Colossians", tit: "Titus",
+        philem: "Philemon",
+      };
+      for (const [key, name] of Object.entries(pauline)) {
+        if (new RegExp('^' + key, 'i').test(book)) {
+          return "The reading is from the Epistle of the Holy Apostle Paul to the " + name + ".";
+        }
+      }
+      // Fallback
+      return "The reading is from the Epistle to the " + book + ".";
+    };
+
+    const gospelIntro = (ref) => {
+      if (!ref) return null;
+      const r = ref.replace(/\s*\(§[^)]+\)/, '').trim();
+      const book = r.split(/\s+\d/)[0].trim();
+      if (/^matt/i.test(book)) return "The reading is from the Holy Gospel according to Matthew.";
+      if (/^mark/i.test(book)) return "The reading is from the Holy Gospel according to Mark.";
+      if (/^luke/i.test(book)) return "The reading is from the Holy Gospel according to Luke.";
+      if (/^john/i.test(book)) return "The reading is from the Holy Gospel according to John.";
+      return "The reading is from the Holy Gospel according to " + book + ".";
+    };
+
+    if (dailyReading) {
+      if (dailyReading.e) {
+        const intro = epistleIntro(dailyReading.e);
+        const cycleNote = isSunday
+          ? `Sunday proper Epistle · Source: OCA lectionary`
+          : "Daily cycle Epistle · Source: OCA lectionary";
+        movable("typica-epistle", "Epistle",
+          (intro ? intro + "\n\n" : "") + dailyReading.e,
+          cycleNote);
+      }
+
+      // ── Alleluia — between Epistle and Gospel ──────────────────────────
+      // Routing: pentEntry > menaionEntry > weekday daily table
+      {
+        const buildAlleluia = (a) => {
+          const lines = ["Alleluia, Tone " + a.tone + ".\n\nV.: " + a.verse];
+          (a.stichoi || a.stichos ? [].concat(a.stichoi || a.stichos) : []).forEach(s => {
+            lines.push("V.: " + s);
+          });
+          return lines.join("\n\n");
+        };
+
+        let alData = null;
+        let alNote = null;
+
+        if (pentEntry?.alleluia_verse) {
+          alData = { tone: pentEntry.alleluia_tone, verse: pentEntry.alleluia_verse,
+                     stichoi: pentEntry.alleluia_stichos ? [pentEntry.alleluia_stichos] : [] };
+          alNote = "Pentecostarion proper Alleluia · Source: St. Sergius PDF";
+        } else if (menaionEntry?.alleluia_verse) {
+          alData = { tone: menaionEntry.alleluia_tone, verse: menaionEntry.alleluia_verse,
+                     stichoi: menaionEntry.alleluia_stichos ? [menaionEntry.alleluia_stichos] : [] };
+          alNote = "Menaion proper Alleluia · Source: St. Sergius Menaion · " + (menaionEntry.saint || "saint of the day");
+        } else if (!isSunday) {
+          const daily = TYPICA_WEEKDAY_ALLELUIA[dowNumber];
+          if (daily) {
+            alData = daily;
+            alNote = ["","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dowNumber] +
+                     " Alleluia, Tone " + daily.tone + " · Source: HTM daily file";
+          }
+        }
+        // Sunday without pentEntry: use resurrectional Alleluia by tone
+        if (!alData && isSunday) {
+          const a = SUNDAY_RESURRECTIONAL_ALLELUIA[tone] || SUNDAY_RESURRECTIONAL_ALLELUIA[1];
+          alData = a;
+          alNote = "Sunday resurrectional Alleluia, Tone " + tone + " · Source: St. Sergius Sunday Octoechos";
+        }
+
+        if (alData) {
+          movable("typica-alleluia", "Alleluia", buildAlleluia(alData), alNote);
+        }
+      }
+
+      if (dailyReading.g) {
+        const intro = gospelIntro(dailyReading.g);
+        const cycleNote = isSunday
+          ? `Sunday proper Gospel · Source: OCA lectionary`
+          : "Daily cycle Gospel · Source: OCA lectionary" +
+            (dailyReading.lukanJump ? " · Luke series" : "");
+        movable("typica-gospel", "Gospel",
+          (intro ? intro + "\n\n" : "") + dailyReading.g,
+          cycleNote);
+      }
+    } else {
+      fixed("typica-readings-cycle", "Epistle and Gospel",
+        "No cycle reading appointed for this date.",
+        "HTM p.3: Prokeimenon may be chanted, Epistle and Gospel may be read.");
+    }
+
+    // Feast proper readings
+    if (feastReading && (feastReading.e || feastReading.g)) {
+      if (feastReading.e) {
+        const intro = epistleIntro(feastReading.e);
+        movable("typica-epistle-feast", "Feast Epistle",
+          (intro ? intro + "\n\n" : "") + feastReading.e,
+          `Proper Epistle for ${menaionEntry ? menaionEntry.saint : "saint of the day"} · Source: Menaion`);
+      }
+      if (feastReading.g) {
+        const intro = gospelIntro(feastReading.g);
+        movable("typica-gospel-feast", "Feast Gospel",
+          (intro ? intro + "\n\n" : "") + feastReading.g,
+          `Proper Gospel for ${menaionEntry ? menaionEntry.saint : "saint of the day"} · Source: Menaion`);
+      }
+    }
+  }
+
+  // ── 8. Remember us ───────────────────────────────────────────────────────
+  fixed("typica-remember", "Remember Us",
+    "Remember us, O Lord, when Thou comest in Thy kingdom.\n" +
+    "Remember us, O Master, when Thou comest in Thy kingdom.\n" +
+    "Remember us, O Holy One, when Thou comest in Thy kingdom.");
+
+  // ── 9. Heavenly Choir ────────────────────────────────────────────────────
+  fixed("typica-heavenlychoir", "The Heavenly Choir",
+    "Reader: The Heavenly choir praiseth Thee and saith: Holy, Holy, Holy, Lord of Sabaoth; " +
+    "heaven and earth are full of Thy glory.\n\n" +
+    "Stichos: Come unto Him, and be enlightened, and your faces shall not be ashamed.\n\n" +
+    "The Heavenly choir praiseth Thee and saith: Holy, Holy, Holy, Lord of Sabaoth; " +
+    "heaven and earth are full of Thy glory.\n\n" +
+    "Glory to the Father, and to the Son, and to the Holy Spirit.\n\n" +
+    "The choir of holy Angels and Archangels, with all the Heavenly Hosts, praiseth Thee and saith: " +
+    "Holy, Holy, Holy, Lord of Sabaoth; heaven and earth are full of Thy glory.\n\n" +
+    "Both now and ever, and unto the ages of ages. Amen.");
+
+  // ── 10. The Creed ─────────────────────────────────────────────────────────
+  fixed("typica-creed", "The Creed",
+    TYPICA_CREED);
+
+  // ── 11. Forgiveness Prayer ───────────────────────────────────────────────
+  fixed("typica-forgiveness", "Forgiveness Prayer",
+    TYPICA_FORGIVENESS);
+
+  // ── 12. Our Father ───────────────────────────────────────────────────────
+  fixed("typica-ourfath", "Our Father",
+    "Our Father, Who art in the heavens, hallowed be Thy name. " +
+    "Thy kingdom come, Thy will be done, on earth as it is in heaven. " +
+    "Give us this day our daily bread, and forgive us our debts, as we forgive our debtors; " +
+    "and lead us not into temptation, but deliver us from the evil one.");
+
+  // After Our Father: Priest exclamation or Ch10 reader substitution
+  if (readerMode) {
+    elements.push({
+      id: "typica-for-thine", type: "substitution", label: "", rubric: "Reader:",
+      text: "Through the prayers of our holy fathers, Lord Jesus Christ, Son of God, have mercy on us. Amen.",
+      source: "Fekula Chapter 10",
+      fekula: { section: "§10", note: "Reader's service: instead of the priest's exclamation 'For Thine is the kingdom…', the reader says: Through the prayers of our holy fathers… — Fekula Chapter 10" },
+    });
+  } else {
+    elements.push({
+      id: "typica-for-thine", type: "fixed", label: "", rubric: "Priest:",
+      text: "For Thine is the kingdom, and the power, and the glory: of the Father, and of the Son, and of the Holy Spirit, now and ever, and unto the ages of ages.",
+      source: "HTM, Order of the Typica",
+    });
+  }
+
+  // ── 13. Kontakia section ─────────────────────────────────────────────────
+  if (isSunday) {
+    // Sunday: Hypakoë of the tone in place of Kontakia section
+    const toneKey = pentEntry?.name?.toLowerCase().includes("pascha") || pentEntry?.name?.toLowerCase().includes("bright")
+      ? "pascha"
+      : (tone || 1);
+    const hypakoeText = OCTOECHOS_HYPAKOE[toneKey] || OCTOECHOS_HYPAKOE[tone] || OCTOECHOS_HYPAKOE[1];
+    movable("typica-hypakoe", `Hypakoë — Tone ${tone}`,
+      hypakoeText,
+      `Sunday: Hypakoë of Tone ${tone} from the Octoechos sung in place of the Kontakia section. ` +
+      `Source: St. Sergius Sunday Octoechos PDF (${tone}-1.pdf).`);
+  } else {
+    // Weekday: build kontakia sequence
+    const dailyKontakia = TYPICA_KONTAKIA[dowNumber] || [];
+    const saint = menaionEntry || pentEntry;
+    const saintKontakion = saint?.kontakion;
+
+    // Per HTM rubric p.5: saint's kontakion is said first (Glory…Both now…),
+    // then the daily kontakia follow.
+    let kontakiaBody = "";
+    const kontakiaNote = [];
+
+    if (saintKontakion) {
+      const toneLabel = saintKontakion.tone ? `, Tone ${saintKontakion.tone}` : "";
+      kontakiaBody += `Glory to the Father, and to the Son, and to the Holy Spirit.\n\n`;
+      kontakiaBody += `Kontakion — ${saint.saint || "Saint of the day"}${toneLabel}:\n`;
+      kontakiaBody += saintKontakion.text + "\n\n";
+      kontakiaBody += "Both now and ever, and unto the ages of ages. Amen.\n\n";
+      kontakiaNote.push(`Saint's kontakion said first per HTM rubric (Glory… Both now…)`);
+    }
+
+    dailyKontakia.forEach((k, i) => {
+      const toneLabel = k.tone ? `, Tone ${k.tone}` : "";
+      kontakiaBody += `${k.label}${toneLabel}:\n${k.text}`;
+      if (i < dailyKontakia.length - 1) kontakiaBody += "\n\n";
+    });
+
+    const dowNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    movable("typica-kontakia", "Kontakia",
+      kontakiaBody.trim(),
+      `${dowNames[dowNumber]} order per HTM p.5–6.` +
+        (kontakiaNote.length ? " " + kontakiaNote.join(" ") : ""));
+  }
+
+  // ── 14. Lord Have Mercy ×40 ───────────────────────────────────────────────
+  fixed("typica-lhm40", "Lord Have Mercy (×40)",
+    "Lord, have mercy. (forty times)\n\n" +
+    "Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.");
+
+  // ── 15. Psalm 33 ─────────────────────────────────────────────────────────
+  fixed("typica-ps33", "Psalm 33",
+    TYPICA_PSALM_33);
+
+  // ── 16. Dismissal ────────────────────────────────────────────────────────
+  // Same dismissal formula as Vespers/Liturgy — inserts season/saint phrase.
+  // Served: Priest: gold rubric, grey italic text.
+  // Reader: Ch10 substitution — "Through the prayers of our holy fathers…"
+  {
+    const open = "May Christ our true God, through the intercessions of His most pure Mother;";
+    const close = "of the holy, glorious, and all-praised apostles; " +
+      "of the holy, glorious, and victorious martyrs; " +
+      "of our holy and God-bearing fathers; " +
+      "of the holy and Righteous Ancestors of God Joachim and Anna, " +
+      "and of all the saints; have mercy on us and save us, " +
+      "for He is good and the Lover of mankind.";
+
+    let middle = "";
+    if (isSunday) {
+      middle = "Who rose from the dead;";
+    } else if (pentEntry) {
+      const fmt = pentEntry.hours_format;
+      if (fmt === "ascension" || fmt === "apodosis_ascension") {
+        middle = "Who ascended in glory into heaven;";
+      } else if (fmt === "pentecost" || fmt === "apodosis_pentecost" || fmt === "holy_spirit_day") {
+        middle = "Who sent down the Holy Spirit upon His holy apostles;";
+      } else {
+        middle = "Who rose from the dead;";
+      }
+    } else if (menaionEntry?.saint) {
+      middle = menaionEntry.saint + ";";
+    }
+
+    const dismissalText = middle ? `${open} ${middle} ${close}` : `${open} ${close}`;
+
+    if (readerMode) {
+      elements.push({
+        id: "typica-dismissal", type: "substitution", label: "Dismissal", rubric: "Reader:",
+        text: "Through the prayers of our holy fathers, Lord Jesus Christ our God, have mercy on us and save us. Amen.",
+        source: "Fekula Chapter 10",
+        fekula: { section: "§10", note: "Reader's service: instead of the priest's dismissal, the reader says: Through the prayers of our holy fathers… — Fekula Chapter 10" },
+      });
+    } else {
+      elements.push({
+        id: "typica-dismissal", type: "fixed", label: "Dismissal", rubric: "Priest:",
+        text: dismissalText,
+        source: "HTM, Order of the Typica",
+        fekula: { section: null, note: "Dismissal formula: seasonal phrase inserted after 'His most pure Mother.' Sunday: 'Who rose from the dead.' Pentecostarion feast: feast phrase. Weekday: saint of the day by name." },
+      });
+    }
+  }
+
+  return elements;
+}
+
+
 const SERVICE_REGISTRY = [
   { key: "vespers",        label: "Vespers",                    built: true  },
   { key: "compline",       label: "Compline (Apodeipnon)",      built: false },
@@ -9144,7 +10035,7 @@ const SERVICE_REGISTRY = [
   { key: "6th_hour",       label: "The Sixth Hour",             built: true  },
   { key: "9th_hour",       label: "The Ninth Hour",             built: true  },
   { key: "liturgy",        label: "Divine Liturgy",             built: false },
-  { key: "typica",         label: "The Order of the Typica",    built: false },
+  { key: "typica",         label: "The Order of the Typica",    built: true  },
 ];
 
 
@@ -9410,7 +10301,7 @@ function ServiceBlock({ element }) {
               </>
             ) : (
               <>
-                <div style={rubrStyle}>Deacon (or Priest):</div>
+                <div style={rubrStyle}>{element.typicaMode ? "Priest (or Deacon):" : "Deacon (or Priest):"}</div>
                 <div style={deaconStyle}>{element.announcement}</div>
               </>
             )}
@@ -9421,7 +10312,7 @@ function ServiceBlock({ element }) {
           <div key={gi} style={{ marginBottom: '0.2rem' }}>
             <div style={rubrStyle}>
               {group.speaker === 'deacon'
-                ? (element.readerMode ? 'Reader:' : 'Deacon (or Priest):')
+                ? (element.readerMode ? 'Reader:' : (element.typicaMode ? 'Priest (or Deacon):' : 'Deacon (or Priest):'))
                 : 'Chanters:'}
             </div>
             {group.lines.map((line, li) => (
@@ -9490,21 +10381,7 @@ function ServiceBlock({ element }) {
         borderLeft: isMovable ? "3px solid #8B6914" : "none",
       }}
     >
-      {element.rubric && (
-        <div
-          style={{
-            fontSize: "0.72rem",
-            textTransform: "uppercase",
-            letterSpacing: "0.1em",
-            color: "#8B6914",
-            marginBottom: "0.25rem",
-            fontFamily: "Georgia, serif",
-          }}
-        >
-          {element.rubric}
-        </div>
-      )}
-
+      {/* Label (section title) first */}
       <div style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "0.3rem", flexWrap: "wrap" }}>
         <span
           style={{
@@ -9542,6 +10419,21 @@ function ServiceBlock({ element }) {
           </span>
         )}
       </div>
+
+      {element.rubric && (
+        <div
+          style={{
+            fontSize: "0.72rem",
+            textTransform: "uppercase",
+            letterSpacing: "0.1em",
+            color: "#8B6914",
+            marginBottom: "0.25rem",
+            fontFamily: "Georgia, serif",
+          }}
+        >
+          {element.rubric}
+        </div>
+      )}
 
       {element.toneNote && (
         <div style={{ fontSize: "0.76rem", color: "#9A8A70", fontStyle: "italic", marginBottom: "0.3rem" }}>
@@ -10409,6 +11301,29 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
 
 const RELEASE_NOTES = [
   {
+    version: "v0.3.2",
+    date: "May 2026",
+    summary: "Typica assembler · Prokeimenon/Alleluia tables · Ch.10 reader toggle · Encoding gaps closed",
+    items: [
+      "Typica assembler built (FW-17 Phase 1): full HTM Order of the Typica for ordinary Octoechos time",
+      "Fixed skeleton: Psalms 102, 145, Only-Begotten, Beatitudes (OCA text), Heavenly Choir, Creed, Forgiveness, Our Father, Lord Have Mercy ×40 (rubric notation), Psalm 33",
+      "Beatitudes: OCA translation used; Glory/Both now included as final verse; no troparia insertion (Typica differs from Liturgy)",
+      "Kontakia section: Sunday → Hypakoë of the tone (OCTOECHOS_HYPAKOE); weekday → TYPICA_KONTAKIA daily sequence with saint's kontakion prepended per HTM rubric",
+      "TYPICA_WEEKDAY_PROKEIMENON: Mon–Sat table from HTM daily file; Saturday carries two prokeimena (All Saints + Departed)",
+      "SUNDAY_RESURRECTIONAL_PROKEIMENON: 8-tone table from St. Sergius Sunday Octoechos",
+      "TYPICA_WEEKDAY_ALLELUIA: Mon–Sat table from HTM daily file; inserted between Epistle and Gospel",
+      "SUNDAY_RESURRECTIONAL_ALLELUIA: 8-tone table — gap closed; no more placeholder on any Sunday",
+      "Prokeimenon routing: pentEntry > Sunday resurrectional > weekday daily; feast-proper appended for §2E/§2F only; Menaion suppressed when pentEntry governs",
+      "Epistle and Gospel: separate movable elements with proper 'The reading is from…' introductions; full edge-case coverage (Acts, Revelation, Hebrews, James, Jude, numbered Petrine/Johannine/Pauline epistles)",
+      "Prokeimenon element uses prokeimenon type (matching Vespers): served mode shows gold Priest (or Deacon): rubric; reader mode strips Wisdom! per Ch.10",
+      "Our Father ending: served → gold Priest: exclamation; reader → Ch.10 substitution with §10 badge",
+      "Dismissal: built dynamically (Sunday/Pentecostarion feast/weekday saint formula); served → gold Priest: rubric; reader → Ch.10 substitution",
+      "ServiceBlock render order fixed: label (section title) now renders before rubric (Priest:/Deacon:) globally",
+      "Encoding gaps closed via Typica assembly pass: P+39 prokeimenon (was missing), P+39 feast_e/feast_g (were wrong — had Pentecost readings), corrected to Acts 1:1-12 / Luke 24:36-53",
+      "Hypakoë encoding complete: all 8 tones + Pascha variant in OCTOECHOS_HYPAKOE from St. Sergius Sunday Octoechos PDFs",
+    ],
+  },
+  {
     version: "v0.3.1",
     date: "May 2026",
     summary: "Pentecostarion §4A3 mixed assembly · P+19 & P+39 encoding · prokeimenon renderer · Reader's Service · 9th Hour → Vespers button",
@@ -11241,6 +12156,9 @@ export default function App() {
     if (currentService.key === 'vespers') {
       return assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, readerMode);
     }
+    if (currentService.key === 'typica') {
+      return assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode);
+    }
     return assembleHour(currentService.key, liturgicalData, menaionEntry, pentEntry, tbOpen, readerMode);
   })();
 
@@ -11660,6 +12578,14 @@ export default function App() {
                       </Tooltip>
                       <RankExplainer menaionEntry={menaionEntry} isSunday={isSunday} />
                       {" "}· Assembled per Fekula {isSunday ? "§1A" : (menaionEntry ? (RANK_EXPLANATIONS[menaionEntry.rank] || RANK_EXPLANATIONS.simple).fekula : "§2A")}
+                  </div>
+                ) : currentService.key === 'typica' ? (
+                  <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
+                    HTM Order of the Typica ·{" "}
+                    {isSunday
+                      ? <><Tooltip term="octoechos">Octoechos</Tooltip> Hypakoë (Tone {liturgicalData?.tone})</>
+                      : <>Weekday kontakia sequence</>}{" "}
+                    · Served after the Sixth Hour when no Divine Liturgy is celebrated
                   </div>
                 ) : (
                 <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
