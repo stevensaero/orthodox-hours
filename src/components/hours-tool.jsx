@@ -1725,6 +1725,103 @@ const SAMPLE_MENAION = {
             "For our sake the great standard hath appeared, terrible in battle.",
       matins_ode: 6,
     },
+
+    // ── AT VESPERS: LORD I HAVE CRIED ──────────────────────────────────────
+    // Structure: 3 from Pentecostarion + 5 from Menaion. §2E = 8 stichera total.
+    // The 3 Pentecostarion stichera come from the Octoechos/Pentecostarion path.
+    // The 5 Menaion stichera are encoded here (slots 4-8 in the interleave).
+    // Texts: PDF gives 3 distinct texts; first two sung twice each = 5 total.
+    // Source: 05-21.pdf
+    stichera_lord_i_call_count: 8,
+    stichera_lord_i_call: [
+      { tone: 4,
+        text: "Thou didst give a most mighty weapon to our emperor: Thy precious Cross, " +
+              "whereby he reigned all the earth in righteousness, shining forth in piety, " +
+              "and hath been deemed worthy of the kingdom of heaven by Thy loving-kindness. " +
+              "And with him do we glorify Thy loving dispensation, O almighty Jesus, " +
+              "Thou Savior of our souls." },
+      { tone: 4,
+        text: "Thou didst give a most mighty weapon to our emperor: Thy precious Cross, " +
+              "whereby he reigned all the earth in righteousness, shining forth in piety, " +
+              "and hath been deemed worthy of the kingdom of heaven by Thy loving-kindness. " +
+              "And with him do we glorify Thy loving dispensation, O almighty Jesus, " +
+              "Thou Savior of our souls.",
+        repeat: true },
+      { tone: 4,
+        text: "Thou didst give to thy pious favorite, O Lover of mankind, " +
+              "the wisdom of Solomon, the meekness of David and the Orthodoxy of the apostles, " +
+              "in that Thou art the King of kings and Lord of lords. " +
+              "Wherefore, we glorify Thy loving dispensation, O almighty Jesus, " +
+              "Thou Savior of our souls." },
+      { tone: 4,
+        text: "Thou didst give to thy pious favorite, O Lover of mankind, " +
+              "the wisdom of Solomon, the meekness of David and the Orthodoxy of the apostles, " +
+              "in that Thou art the King of kings and Lord of lords. " +
+              "Wherefore, we glorify Thy loving dispensation, O almighty Jesus, " +
+              "Thou Savior of our souls.",
+        repeat: true },
+      { tone: 4,
+        text: "Thou wast the first to subject the royal purple willingly to Christ, " +
+              "O ever-memorable emperor, acknowledging Him as God, " +
+              "the Benefactor of all Who reigneth over all, " +
+              "the Victor over every principality, transcending all dominion. " +
+              "Wherefore, O thou who lovest Christ, " +
+              "Jesus Who is the Lover of mankind, the Savior of our souls, " +
+              "hath appointed thee as ruler." },
+    ],
+    stichera_glory: {
+      tone: 2,
+      text: "Receiving from God the highest of rich gifts, O most mighty and all-great Constantine, " +
+            "thou didst prosper well therein; for, having been illumined through baptism " +
+            "with the rays of the most holy Spirit by the holy hierarch Sylvester, " +
+            "thou wast shown to be invincible among kings, " +
+            "and as a gift didst give to thy Creator thine empire and the pious imperial city. " +
+            "Wherefore, as thou hast boldness, cease thou never to pray to Christ God, " +
+            "that He grant forgiveness of sins and great mercy unto all who keep thy memory.",
+    },
+    // Both Now: from Pentecostarion (handled at runtime by assembler)
+
+    // ── AT VESPERS: APOSTICHA ─────────────────────────────────────────────
+    // Source: 05-21.pdf — Tone II Spec. Mel. "When from the Tree..."
+    stichera_aposticha: [
+      { tone: 2,
+        text: "O Constantine, thou wast the first emperor among Christians " +
+              "to receive thy scepter from God; " +
+              "for the sign of salvation, which was hidden in the earth, " +
+              "was revealed to thee, whereby thou didst subdue all nations " +
+              "beneath the feet of the Romans, " +
+              "in that thou didst have the life-creating Cross " +
+              "as thine invincible weapon, O blessed one, " +
+              "whereby thou wast brought to our God." },
+      { tone: 2,
+        verse: "I have raised up one chosen out of My people; I have found David My servant.",
+        text: "Truly blessed and hallowed is the womb which bore thee, " +
+              "O peace-loving emperor, divinely crowned Constantine, " +
+              "thou joy of Christians, glory of the Romans, " +
+              "wealth and champion of orphans and widows, " +
+              "protection of the lowly, correction of those who are in confusion and sorrow, " +
+              "and true deliverance of captives." },
+      { tone: 2,
+        verse: "Wherefore God, thy God, hath anointed Thee with the oil of gladness.",
+        text: "Wounded by desire and love for Christ, the mother of the all-sweet offspring " +
+              "arrived with haste in holy Sion, at the holy place " +
+              "wherein our Savior was voluntarily crucified for our salvation; " +
+              "and there, taking up the Cross, she cried aloud, rejoicing: " +
+              "Glory to Him Who hath given me that for which I hoped!" },
+    ],
+    aposticha_glory: {
+      tone: 8,
+      text: "The most radiant light, the royal and never-waning star, " +
+            "passing from unbelief to faith in the Godhead, " +
+            "was led to sanctify his people and city; " +
+            "and, beholding the image of the Cross in the sky, " +
+            "he heard a voice therefrom say: By this conquer thine enemies! " +
+            "Wherefore, receiving the understanding of the Spirit as a renowned priest and king, " +
+            "with oil thou hast established the Church of God, O father, " +
+            "thou glory of Orthodox kings, whose shrine poureth forth healing. " +
+            "O Constantine, equal of the apostles, pray thou for our souls.",
+    },
+    // Aposticha Both Now: from Pentecostarion (handled at runtime by assembler)
   },
 
 
@@ -3504,6 +3601,131 @@ function getKathismaForMatins(liturgicalData) {
 
 const PENTECOSTARION = {
 
+  // ── P+19 — Monday of the Third Week (Myrrhbearers Week) ──────────────────
+  // Source: St. Sergius 32.pdf | Fekula §2A (weekday, Tone II)
+  // File: "Monday Evening in the Third Week" — covers Vespers + Tuesday Matins/Liturgy.
+  // Ordinary weekday: 6 stichera (3 Pentecostarion + 3 Menaion), no Litya.
+  // Aposticha: Pentecostarion stichera Tone II with weekday universal verses.
+  // Prokeimenon: Monday Tone IV (weekly table).
+  19: {
+    name: "Monday of the Third Week — Myrrhbearers",
+    source_file: "32.pdf",
+    fekula_section: "2A",
+    tone: 2,
+
+    troparion: [
+      { tone: 2,
+        text: "The noble Joseph having taken down Thy most pure Body from the tree, " +
+              "wrapped it in a fine linen shroud covering it with fragrant spices " +
+              "and placed it in a new sepulcher; " +
+              "but on the third day Thou didst arise, O Lord, " +
+              "granting the world great mercy." },
+      { tone: 2,
+        text: "When Thou didst descend unto death, O Life Immortal, " +
+              "then didst Thou slay Hades with the radiant brilliance of Thy divinity. " +
+              "And when Thou didst also raise the dead out of the nethermost depths, " +
+              "all the hosts of the heavens cried aloud: " +
+              "O Life-giver, Christ our God, glory be to Thee." },
+    ],
+    troparion_bothnow: {
+      tone: 2,
+      text: "The angel standing by the tomb cried unto the myrrh-bearing women, " +
+            "Myrrh is fitting for the dead, but Christ hath been revealed a stranger to corruption. " +
+            "Rather cry aloud: The Lord is risen, granting the world great mercy!",
+    },
+
+    kontakion_ode6: {
+      tone: 2,
+      text: "When Thou didst cry, Rejoice, unto the myrrh-bearers, " +
+            "Thou didst make the lamentation of Eve the first mother " +
+            "to cease by Thy Resurrection, O Christ God. " +
+            "And Thou didst bid Thine apostles to preach: " +
+            "The Savior is risen from the grave.",
+    },
+
+    // ── AT VESPERS: LORD I HAVE CRIED ─────────────────────────────────────
+    // 3 Pentecostarion + 3 Menaion = 6 total. §2A weekday structure.
+    // Source: 32.pdf — "3 from the Pentecostarion, in Tone II"
+    stichera_lord_i_call_count: 6,
+    stichera_lord_i_call: [
+      { tone: 2,
+        text: "When the myrrh-bearing women, O Christ, came early in the morning " +
+              "seeking after Thee the Life of all, carrying spices and myrrh. " +
+              "Constrained by their love they wept inconsolably, " +
+              "whereupon they heard a young man speak from within the tomb: " +
+              "Leave off your weeping. Rather, be ye glad and rejoice now, " +
+              "since ye have received your salvation, " +
+              "and proclaim the Lord's arising unto all." },
+      { tone: 2,
+        text: "O noble Joseph, we know thee to be a cherubic chariot, " +
+              "since thou didst bear Christ the King in thine arms " +
+              "when thou didst take Him down from the Cross. " +
+              "Wherefore we bless thy divine hands and eyes; " +
+              "and thy palms do we now honor, " +
+              "by which thou wast deemed worthy to carry the Sun, " +
+              "and the Word to His tomb and place Him therein. " +
+              "Therefore, with love we acclaim thy godly memory." },
+      { tone: 2,
+        text: "The feast of the myrrh-bearers and of the noble Joseph " +
+              "hath now appeared unto us, as if another Paradise bearing a fount of life. " +
+              "It doth well up for all the world with waters of grace, " +
+              "and it poureth forth in strength the Resurrection's streams. " +
+              "Thus, the faithful keep feast and cry aloud: " +
+              "Glory be to Him that hath bestowed grace and Resurrection upon all the World." },
+    ],
+    // LIC Glory Both Now Tone II — appointed theotokion (not a doxasticon; §2A weekday)
+    // "And 3 Stichera from the Menaion, Glory..., Both now..., in Tone II"
+    // The Both Now is this appointed theotokion from the Pentecostarion week
+    lic_theotokion: {
+      tone: 2,
+      text: "Rising up early and coming with earnestness unto Thy tomb, " +
+            "the myrrh-bearers sought for Thee so as to anoint Thine immaculate Body, O Christ. " +
+            "And having been told by the words of the angel, " +
+            "they preached to the apostles the tokens of joy: " +
+            "That the Author of our salvation hath arisen, having despoiled death, " +
+            "and granting the world eternal life and great mercy.",
+    },
+
+    // ── AT VESPERS: APOSTICHA ─────────────────────────────────────────────
+    // Source: 32.pdf — Tone II with universal weekday verses
+    stichera_aposticha: [
+      { tone: 2,
+        text: "Christ our Savior by nailing the record against us to the Cross " +
+              "hath blotted it out, and destroyed the might of death. " +
+              "We worship His arising on the third day." },
+      { tone: 2,
+        verse: "Unto Thee have I lifted up mine eyes, O Thou that dwellest in the heavens. " +
+               "Behold, as the eyes of servants look unto the hands of their masters, " +
+               "as the eyes of the handmaid look unto the hands of her mistress, " +
+               "so do our eyes look unto the Lord our God, until He take pity on us.",
+        text: "I cry unto Thee, O Christ my Savior, with the voice of the publican: " +
+              "Be gracious unto me, as Thou wast unto him, and have mercy on me, O God." },
+      { tone: 2,
+        verse: "Have mercy on us, O Lord, have mercy on us, for greatly are we filled with abasement. " +
+               "Greatly hath our soul been filled therewith; let reproach come upon them that prosper, " +
+               "and abasement on the proud.",
+        text: "In so far as the holy martyrs intercede for us and praise Christ, " +
+              "every deception is brought to naught, " +
+              "and the race of mankind is saved through faith." },
+    ],
+    aposticha_glory: {
+      tone: 2,
+      text: "Why mingle ye tears with the myrrh-oils, O ye women disciples? " +
+            "The stone hath been rolled away, the sepulcher hath been emptied. " +
+            "Behold corruption hath been trodden under by Life, " +
+            "the seals clearly bearing witness, the guards of the disobedient ones are fast asleep. " +
+            "Mortal nature hath been saved by the flesh of God, Hades is lamenting. " +
+            "Hasten ye with joy, and say unto the apostles: " +
+            "Christ, the Firstborn of the dead, Who caused death to die, " +
+            "goeth before you into Galilee.",
+    },
+
+    note: "Monday of Myrrhbearers Week. Ordinary weekday §2A structure — 3 Pentecostarion + 3 Menaion at LIC. " +
+          "Aposticha from Pentecostarion Tone II with universal weekday verses. " +
+          "Prokeimenon: Monday Tone IV from weekly table. " +
+          "Christ is risen replaces usual opening throughout Bright/Myrrhbearers weeks.",
+  },
+
   // ── P+35 — Sixth Sunday of Pascha: Sunday of the Blind Man ──────────────────
   // Source: St. Sergius 60.pdf | Fekula §4B11
   // This file covers Saturday evening Vespers through Sunday Liturgy.
@@ -4664,6 +4886,7 @@ const PENTECOSTARION = {
     ],
 
     it_is_truly_meet_suppressed: true,
+    menaion_set_aside: true,  // Great Feast of the Lord — Menaion saint entirely set aside
     beatitudes_source: "Festal Antiphons (3 antiphons with Ps. 46, 47, 48 — not Beatitudes)",
     note: "Great Feast. Full Vigil structure with Polyeleos. " +
           "Festal Antiphons replace Typika/Beatitudes at Liturgy. " +
@@ -4671,6 +4894,184 @@ const PENTECOSTARION = {
           "Prokeimenon Tone VII and Alleluia Tone II govern throughout entire Ascension afterfeast. " +
           "Instead of It is truly meet: Irmos of Ode IX Canon 1 chanted through afterfeast. " +
           "Dismissal: May Christ our true God Who didst ascend in Glory from us into heaven...",
+
+    // Both Now at LIC: appointed Theotokion Tone II from the Pentecostarion/Menaion
+    // Source: 64.pdf — "Both now…, from the Pentecostarion, or this Theotokion in Tone II"
+    lic_theotokion: {
+      tone: 2,
+      text: "The shadow of the law hath passed now that grace hath come, " +
+            "for as the Bush wrapped in flame was not consumed, " +
+            "so didst thou bear a Child O Virgin and remained a Virgin; " +
+            "in place of a pillar of fire, the Sun of righteousness hath dawned, " +
+            "instead of Moses, Christ is come, the salvation of our souls.",
+    },
+
+    // ── AT GREAT VESPERS (source: 64.txt / 64.pdf) ──────────────────────────
+    // Vespers prokeimenon: Wednesday weekly Tone 5 governs (no special feast prokeimenon
+    // at Vespers for Ascension — the weekly table entry applies). Source: 64.txt.
+    // LIC: 10 stichera §2F rank. Litya. Aposticha. Glory Both Now on each section.
+
+    stichera_lord_i_call_count: 10,
+    stichera_lord_i_call: [
+      { tone: 6, verse: "Bring my soul out of prison that I may confess Thy name.",
+        text: "The Lord was taken up into the heavens that He might send the Comforter unto the world. " +
+              "The heavens made ready His throne, and the clouds His Ascension. " +
+              "The angels marvel as they see a man more exalted than they. " +
+              "The Father receiveth Him Whom He had with Him eternally in His bosom. " +
+              "The Holy Spirit commandeth all His angels: Lift up your gates, O ye princes. " +
+              "All ye nations, clap your hands; Christ hath ascended whither He was before." },
+      { tone: 6, verse: "The righteous shall wait patiently for me until Thou shalt reward me.",
+        text: "The Lord was taken up into the heavens that He might send the Comforter unto the world. " +
+              "The heavens made ready His throne, and the clouds His Ascension. " +
+              "The angels marvel as they see a man more exalted than they. " +
+              "The Father receiveth Him Whom He had with Him eternally in His bosom. " +
+              "The Holy Spirit commandeth all His angels: Lift up your gates, O ye princes. " +
+              "All ye nations, clap your hands; Christ hath ascended whither He was before.",
+        repeat: true },
+      { tone: 6, verse: "Out of the depths have I cried unto Thee, O Lord; O Lord, hear my voice.",
+        text: "O Lord, the cherubim were amazed at Thine Ascension, " +
+              "when they beheld Thee, O God, Who sittest on them, ascending upon the clouds. " +
+              "And we glorify Thee, for Thy mercy is good. Glory be to Thee." },
+      { tone: 6, verse: "Let Thine ears be attentive to the voice of my supplication.",
+        text: "O Lord, the cherubim were amazed at Thine Ascension, " +
+              "when they beheld Thee, O God, Who sittest on them, ascending upon the clouds. " +
+              "And we glorify Thee, for Thy mercy is good. Glory be to Thee.",
+        repeat: true },
+      { tone: 6, verse: "If Thou shouldest mark iniquities, O Lord, O Lord, who shall stand? For with Thee there is forgiveness.",
+        text: "Having beheld Thine ascents on the holy mountains, O Christ, " +
+              "Thou effulgence of the Father's glory, we praise the radiant likeness of thy countenance. " +
+              "We worship Thy passion, we honor Thy Resurrection, and we glorify Thy glorious Ascension. " +
+              "Have mercy on us." },
+      { tone: 6, verse: "For Thy name's sake have I patiently waited for Thee, O Lord; my soul hath patiently waited for Thy word, my soul hath hoped in the Lord.",
+        text: "Having beheld Thine ascents on the holy mountains, O Christ, " +
+              "Thou effulgence of the Father's glory, we praise the radiant likeness of thy countenance. " +
+              "We worship Thy passion, we honor Thy Resurrection, and we glorify Thy glorious Ascension. " +
+              "Have mercy on us.",
+        repeat: true },
+      { tone: 6, verse: "From the morning watch until night, from the morning watch let Israel hope in the Lord.",
+        text: "O Lord, as the apostles saw Thee being lifted up in the clouds, O life-giving Christ, " +
+              "they were filled with sorrow and wept with lamentation, saying with grief: " +
+              "O Master, leave not as orphans us Thy servants whom Thou didst love in Thy mercy, since Thou art compassionate. " +
+              "But as Thou didst promise, send us Thy most holy Spirit, to illumine our souls." },
+      { tone: 6, verse: "For with the Lord there is mercy, and with Him is plenteous redemption; and He shall redeem Israel out of all his iniquities.",
+        text: "O Lord, as the apostles saw Thee being lifted up in the clouds, O life-giving Christ, " +
+              "they were filled with sorrow and wept with lamentation, saying with grief: " +
+              "O Master, leave not as orphans us Thy servants whom Thou didst love in Thy mercy, since Thou art compassionate. " +
+              "But as Thou didst promise, send us Thy most holy Spirit, to illumine our souls.",
+        repeat: true },
+      { tone: 6, verse: "O praise the Lord, all ye nations; praise Him, all ye peoples.",
+        text: "O Lord, when Thou didst fulfill the mystery of Thy dispensation, " +
+              "Thou didst take Thy disciples and ascend the Mount of Olives; " +
+              "and behold, Thou didst pass through the firmament of heaven. " +
+              "O Thou Who for my sake didst become poor like unto me, " +
+              "and Who didst ascend thither whence Thou wast not separated, " +
+              "send forth Thy most holy Spirit to enlighten our souls." },
+      { tone: 6, verse: "For He hath made His mercy to prevail over us, and the truth of the Lord abideth forever.",
+        text: "O Lord, when Thou didst fulfill the mystery of Thy dispensation, " +
+              "Thou didst take Thy disciples and ascend the Mount of Olives; " +
+              "and behold, Thou didst pass through the firmament of heaven. " +
+              "O Thou Who for my sake didst become poor like unto me, " +
+              "and Who didst ascend thither whence Thou wast not separated, " +
+              "send forth Thy most holy Spirit to enlighten our souls.",
+        repeat: true },
+    ],
+    stichera_glory: {
+      tone: 6,
+      text: "Not being separated from the bosom of the Father, O most sweet Jesus, " +
+            "and having lived on earth as a man, Thou wast taken up in glory today from the Mount of Olives. " +
+            "And having raised our fallen nature by Thy compassion, Thou didst seat it together with the Father. " +
+            "Wherefore, the heavenly orders of the bodiless ones were amazed at the wonder " +
+            "and stood in awe and astonishment. They were seized with trembling and magnified Thy love for mankind. " +
+            "With them we on earth also glorify Thy condescension toward us, and Thine Ascension from us, " +
+            "entreating and saying: O Thou Who by Thine Ascension didst fill with infinite joy " +
+            "Thy disciples and the Theotokos who gave birth to Thee, " +
+            "by their prayers count us also worthy of the joy of Thy chosen ones, for the sake of Thy great mercy.",
+    },
+
+    litya_stichera: [
+      { tone: 1,
+        text: "As Thou didst ascend into the heavens, from whence Thou didst also descend, " +
+              "leave us not orphaned, O Lord; let Thy Spirit come, bringing peace unto the world; " +
+              "show Thou unto the sons of men the works of Thy might, O Lord and Lover of mankind." },
+      { tone: 1,
+        text: "Though Thou wast not parted from His uncircumscribable bosom, " +
+              "Thou didst ascend unto Thy beginningless Father, O Christ, " +
+              "and the hosts on high accepted no addition to the thrice-holy praise. " +
+              "But even after Thou didst become man they recognized Thee as the one Son, " +
+              "only-begotten of the Father, O Lord. In the multitude of Thy compassions, have mercy on us." },
+      { tone: 1,
+        text: "Thine angels said unto the apostles, O Lord: Ye men of Galilee, " +
+              "why stand ye looking up into heaven? " +
+              "This is Christ God, Who hath been taken up from you into heaven. " +
+              "He shall come again in the manner ye have seen Him going into heaven. " +
+              "Worship Him in holiness and righteousness." },
+      { tone: 4,
+        text: "When Thou, O Christ, didst come unto the Mount of Olives to accomplish the good will of the Father, " +
+              "the heavenly angels were amazed and the nethermost regions shuddered with fear. " +
+              "The disciples stood by with joy and trembling as Thou spakest unto them, " +
+              "and a cloud prepared as a throne awaited opposite them; " +
+              "and heaven, throwing open the gates, shone with comeliness; " +
+              "and the earth revealeth its hidden chambers, that the descent and immediate ascent might be made known unto Adam; " +
+              "but his steps were led upwards as it were by a hand, and his mouth was heard blessing Thee greatly; " +
+              "the cloud took Thee up and heaven received Thee within itself. " +
+              "Thou hast wrought this great and strange deed, O Lord, for the salvation of our souls." },
+      { tone: 4,
+        text: "Thou hast renewed in Thyself Adam's nature, which had gone down into the lower parts of the earth, " +
+              "and Thou didst raise it up above every principality and authority today. " +
+              "For since Thou didst love it, Thou didst seat it together with Thyself; " +
+              "since Thou hast taken compassion on it, Thou didst unite it to Thyself; " +
+              "since Thou didst unite it to Thyself, Thou didst suffer with it; " +
+              "and enduring the Passion, though Thou art impassable, Thou didst glorify it. " +
+              "But the Bodiless ones said: Who is this comely man? " +
+              "But not only is He man, but God and man; that which is manifest is twofold. " +
+              "Wherefore, beside themselves, the angels, flying about clad in radiant vesture, " +
+              "cried unto the disciples: Ye men of Galilee, He that is gone from you, " +
+              "Jesus, Man and God, shall come again as the God-man to judge the living and the dead; " +
+              "and He granteth unto the faithful the forgiveness of sins and great mercy." },
+      { tone: 4,
+        text: "When Thou didst ascend in glory, O Christ God, while the disciples were watching, " +
+              "the clouds took Thee up with Thy flesh; the heavenly gates were lifted up; " +
+              "the choir of the angels rejoiced with rejoicing; " +
+              "the powers above cried aloud, saying: Lift up thy gates, O ye princes, " +
+              "and the King of Glory shall enter therein. " +
+              "And the disciples were astonished and said: Be Thou not parted from us, O Good Shepherd, " +
+              "but send unto us Thy most holy Spirit to guide and establish our souls." },
+      { label: "Glory, Both now", tone: 4,
+        text: "O Lord, having fulfilled the mystery that was hidden from before the ages and from all generations, " +
+              "as Thou art good Thou didst come with Thy disciples to the Mount of Olives, " +
+              "having together with Thyself her that gave birth unto Thee, the Creator and Fashioner of all things; " +
+              "for it was meet that she who, as Thy Mother, suffered at Thy Passion more than all, " +
+              "should also enjoy the surpassing joy of the glorification of Thy flesh, O Master, " +
+              "which we have attained by Thine Ascension to the heavens, " +
+              "and we glorify Thy great mercy toward us." },
+    ],
+
+    stichera_aposticha: [
+      { tone: 2, verse: null,
+        text: "Thou wast born as Thou Thyself didst will; Thou didst appear of Thine own choice; " +
+              "Thou didst suffer in the flesh, O our God. Thou didst arise from the dead, trampling down death; " +
+              "and Thou didst ascend in glory, O Thou Who fillest all things, " +
+              "and didst send unto us the divine Spirit, that we may praise and glorify Thy Divinity." },
+      { tone: 2, verse: "Clap your hands, all ye nations; shout unto God with a voice of rejoicing.",
+        text: "Beholding Thee being taken up from the Mount of Olives, O Christ, " +
+              "the Powers cried one to another: Who is this? And it was said unto them: " +
+              "This is He that is strong and mighty. This is He that is mighty in war. " +
+              "This is truly the King of Glory. And wherefore are His garments red? " +
+              "Because He cometh from Bozrah, which is the flesh. " +
+              "But Thou Thyself, being God, didst sit at the right hand of majesty " +
+              "and didst send unto us the Holy Spirit, that He may guide and save our souls." },
+      { tone: 2, verse: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
+        text: "Thou wast taken up in glory from the Mount of Olives, O Christ God, " +
+              "in the presence of Thy disciples, and didst sit down at the right hand of the Father, " +
+              "O Thou Who dost fill all things with Thy Divinity; " +
+              "and Thou didst send unto them the Holy Spirit, " +
+              "Who doth illumine and strengthen and sanctify our souls." },
+    ],
+    aposticha_glory: {
+      tone: 6,
+      text: "God is gone up in jubilation, the Lord with the voice of the trumpet, " +
+            "to raise the fallen image of Adam, and to send the Comforting Spirit to sanctify our souls.",
+    },
   },
 
   // ── P+40 — Friday of the Sixth Week: First Day of Ascension Afterfeast ─────
@@ -7706,13 +8107,16 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     effTropTone = typeof nd === "string" ? null : nd.tone;
     effSaint = namedDay.name;
   }
-  let primTrop = null, primTropTone = null, primSrc = "", secTrop = null, secSrc = "";
+  let primTrop = null, primTropTone = null, primSrc = "", secTrop = null, secTropTone = null, secSrc = "";
   if (isPentecostarion && pentEntry && pentEntry.troparion) {
     const pt = pentEntry.troparion;
     primTrop = typeof pt === "string" ? pt : pt.text;
     primTropTone = typeof pt === "string" ? null : pt.tone;
     primSrc = "Pentecostarion — " + pentEntry.name;
-    if (effTrop) { secTrop = effTrop; secSrc = "Menaion — " + effSaint; }
+    // Only show Menaion second troparion if feast does not set aside the Menaion entirely
+    if (effTrop && !(pentEntry && pentEntry.menaion_set_aside)) {
+      secTrop = effTrop; secTropTone = effTropTone; secSrc = "Menaion — " + effSaint;
+    }
   } else if (effTrop) {
     primTrop = effTrop; primTropTone = effTropTone; primSrc = "Menaion — " + effSaint;
   }
@@ -7914,18 +8318,35 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     const licDayKey = getVespersDayKey(dow);
     const octoDay = (!isPentecostarion && (rank === "simple" || !menaionEntry))
       ? getOctoechosVespers(tone, licDayKey) : null;
-    // Stichera count: 6 for §2A/§2C, 8 for §2E, 10 for §2F
-    const licCount = isHighRank
-      ? (rank === "vigil" ? 10 : 8)
-      : 6;
+    // Stichera count: from pentEntry if Pentecostarion; else 6/8/10 by rank
+    const licCount = (isPentecostarion && pentEntry && pentEntry.menaion_set_aside && pentEntry.stichera_lord_i_call_count)
+      ? pentEntry.stichera_lord_i_call_count
+      : (isHighRank ? (rank === "vigil" ? 10 : 8) : 6);
 
     // Build the ordered list of stichera (up to licCount entries)
     // §2A weekday: 3 Octoechos + 3 Menaion (from stichera_lord_i_call if encoded, else unresolved)
     // §2A Saturday: same pattern
     // §2C/§2D+: Menaion-only (from stichera_lord_i_call if encoded, else unresolved)
-    const menaionLicStichera = menaionEntry && menaionEntry.stichera_lord_i_call
-      ? menaionEntry.stichera_lord_i_call : [];
+    // Pentecostarion Great Feast (menaion_set_aside): all stichera from pentEntry
+    // Ordinary Pentecostarion weekday: Menaion stichera always from menaionEntry
+    const _stichSrc = (isPentecostarion && pentEntry && pentEntry.menaion_set_aside)
+      ? pentEntry : menaionEntry;
+    const menaionLicStichera = _stichSrc && _stichSrc.stichera_lord_i_call
+      ? _stichSrc.stichera_lord_i_call : [];
+    const LIC_VERSES = [
+      {n:10, text:"Bring my soul out of prison, that I may give thanks to Thy Name."},
+      {n:9,  text:"The righteous will surround me, for Thou wilt deal bountifully with me."},
+      {n:8,  text:"Out of the depths I cry to Thee, O Lord. Lord, hear my voice!"},
+      {n:7,  text:"Let Thine ears be attentive to the voice of my supplication."},
+      {n:6,  text:"If Thou, O Lord, shouldst mark iniquities, Lord, who could stand? But there is forgiveness with Thee."},
+      {n:5,  text:"For Thy Name\'s sake I wait for Thee, O Lord. My soul has waited for Thy word; my soul has hoped on the Lord."},
+      {n:4,  text:"From the morning watch until night, from the morning watch, let Israel hope on the Lord."},
+      {n:3,  text:"For with the Lord there is mercy, and with Him is plenteous redemption, and He will deliver Israel from all his iniquities."},
+      {n:2,  text:"Praise the Lord, all nations! Praise Him, all peoples!"},
+      {n:1,  text:"For His mercy is confirmed on us, and the truth of the Lord endures forever."},
+    ];
     let licStichera = [];
+    let licRendered = false; // true when Pentecostarion branch renders directly
     if (!isPentecostarion && rank === "simple" && octoDay && octoDay.lic) {
       // §2A: first 3 from Octoechos
       const octoLic = octoDay.lic.slice(0, 3);
@@ -7945,34 +8366,127 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           ? {text: ms.text, source:"Menaion", resolved:true}
           : {text:null, source:"Menaion", resolved:false});
       }
-    }
-    // Pentecostarion: keep existing placeholder (handled separately below)
+    } else if (isPentecostarion && menaionLicStichera.length > 0) {
+      // Pentecostarion + Menaion (§4A3 — Polyeleos/Vigil Menaion saint):
+      // 3 slots from Pentecostarion Octoechos, remaining from Menaion.
+      // OR Great Feast: all stichera from pentEntry (menaionLicStichera = pentEntry's stichera).
+      const allFromPent = (pentEntry && pentEntry.menaion_set_aside); // Great Feast case
+      const pentLicSlots = allFromPent ? 0 : Math.max(0, licCount - menaionLicStichera.length); // 3 for §4A3
+      const interleaveVerses = LIC_VERSES.filter(v => v.n <= licCount);
 
-    // Verse texts V.10 → V.1
-    const LIC_VERSES = [
-      {n:10, text:"Bring my soul out of prison, that I may give thanks to Thy Name."},
-      {n:9,  text:"The righteous will surround me, for Thou wilt deal bountifully with me."},
-      {n:8,  text:"Out of the depths I cry to Thee, O Lord. Lord, hear my voice!"},
-      {n:7,  text:"Let Thine ears be attentive to the voice of my supplication."},
-      {n:6,  text:"If Thou, O Lord, shouldst mark iniquities, Lord, who could stand? But there is forgiveness with Thee."},
-      {n:5,  text:"For Thy Name\'s sake I wait for Thee, O Lord. My soul has waited for Thy word; my soul has hoped on the Lord."},
-      {n:4,  text:"From the morning watch until night, from the morning watch, let Israel hope on the Lord."},
-      {n:3,  text:"For with the Lord there is mercy, and with Him is plenteous redemption, and He will deliver Israel from all his iniquities."},
-      {n:2,  text:"Praise the Lord, all nations! Praise Him, all peoples!"},
-      {n:1,  text:"For His mercy is confirmed on us, and the truth of the Lord endures forever."},
-    ];
-
-    if (isPentecostarion) {
-      // Pentecostarion: keep placeholder — stichera from Pentecostarion + Menaion (future)
-      LIC_VERSES.forEach(v => {
+      // Plain verses above the insertion point (if any)
+      LIC_VERSES.filter(v => v.n > licCount).forEach(v => {
         elements.push({id:"v-lic-verse-"+v.n, type:"fixed", label:"",
           text:"V. ("+v.n+") "+v.text, source:"HTM Vespers"});
       });
-      elements.push({id:"v-stichera",type:"movable",label:"Stichera on Lord I Have Cried",
-        rubric:sticheraCount+" stichera inserted here", unresolved:true,
-        text:"[Stichera not yet assembled for Pentecostarion]\n\nRequired: "+sticheraRule,
-        source:"Pentecostarion + Menaion",
-        fekula:{section:fekulaSection, note:"At Lord I Have Cried: "+sticheraRule+". Pentecostarion stichera assembly pending."}});
+
+      interleaveVerses.forEach((v, i) => {
+        const slotIndex = licCount - v.n; // 0 = highest verse
+        const stich = menaionLicStichera[slotIndex - pentLicSlots];
+        const isPentSlot = slotIndex < pentLicSlots;
+
+        // Verse text — use feast verse from sticheron if present
+        const verseText = (stich && stich.verse) ? stich.verse : v.text;
+        elements.push({id:"v-lic-verse-"+v.n, type:"fixed", label:"",
+          text:"V. ("+v.n+") "+verseText, source:"HTM Vespers"});
+
+        if (isPentSlot) {
+          // Slot filled by Pentecostarion — use encoded stichera if present, else placeholder
+          const pentStich = pentEntry && pentEntry.stichera_lord_i_call
+            ? pentEntry.stichera_lord_i_call[slotIndex] : null;
+          if (pentStich) {
+            elements.push({id:"v-lic-stich-"+v.n, type:"movable", label:"",
+              rubric:"Tone "+(pentStich.tone||tone)+":",
+              text:pentStich.text, source:"Pentecostarion",
+              fekula:{section:fekulaSection, note:"Pentecostarion sticheron at V.("+v.n+")."}});
+          } else {
+            elements.push({id:"v-lic-stich-"+v.n, type:"movable", label:"",
+              unresolved:true,
+              text:"[Sticheron from Pentecostarion — not yet encoded for this week]",
+              source:"Pentecostarion",
+              fekula:{section:fekulaSection, note:"§4A3: first "+pentLicSlots+" stichera from Pentecostarion."}});
+          }
+        } else if (stich) {
+          elements.push({id:"v-lic-stich-"+v.n, type:"movable", label:"",
+            rubric:"Tone "+(stich.tone||tone)+":",
+            text:stich.text, source:allFromPent ? "Pentecostarion" : "Menaion",
+            fekula:{section:fekulaSection, note:(allFromPent ? "Pentecostarion" : "Menaion")+" sticheron at V.("+v.n+")."}});
+        } else {
+          elements.push({id:"v-lic-stich-"+v.n, type:"movable", label:"",
+            unresolved:true,
+            text:"[Sticheron "+(i+1)+" — not yet encoded.]",
+            source:"Menaion",
+            fekula:{section:fekulaSection, note:"Sticheron pending encoding."}});
+        }
+      });
+      // Glory → doxasticon → Both Now
+      elements.push({id:"v-lic-glory", type:"fixed", label:"", text:"Glory to the Father, and to the Son, and to the Holy Spirit.", source:"HTM Vespers"});
+      const pentDox = (pentEntry && pentEntry.menaion_set_aside && pentEntry.stichera_glory) ? pentEntry.stichera_glory
+        : (menaionEntry && menaionEntry.stichera_glory);
+      if (pentDox) {
+        elements.push({id:"v-lic-doxasticon", type:"movable", label:"Doxasticon",
+          rubric:"Tone "+(pentDox.tone||tone)+":",
+          text:pentDox.text||pentDox,
+          source: (pentEntry && pentEntry.stichera_glory) ? "Pentecostarion" : "Menaion",
+          fekula:{section:fekulaSection, note:"Glory: doxasticon."}});
+      }
+      elements.push({id:"v-lic-nowever", type:"fixed", label:"", text:"Now and ever and unto ages of ages. Amen.", source:"HTM Vespers"});
+      // Both Now theotokion: use pentEntry.lic_theotokion if encoded, else Octoechos weekday
+      const pentLicTheot = pentEntry && pentEntry.lic_theotokion;
+      const licTheotPent = pentLicTheot ? pentLicTheot : { tone, text: OCTOECHOS_LIC_THEOTOKIA[tone] };
+      if (licTheotPent && licTheotPent.text) {
+        elements.push({id:"v-lic-theotokion", type:"movable", label:"Theotokion",
+          rubric:"Tone "+licTheotPent.tone+":",
+          text:licTheotPent.text,
+          source: pentLicTheot ? "Pentecostarion" : "Octoechos",
+          fekula:{section:fekulaSection, note:"Both Now: " + (pentLicTheot ? "appointed Theotokion from Pentecostarion." : "weekday theotokion in tone of week. Fekula §2A/§4A.")}});
+      }
+      licRendered = true;
+    } // end else if (isPentecostarion && menaionLicStichera.length > 0)
+
+    // Verse texts V.10 → V.1
+    if (isPentecostarion && !licRendered) {
+      if (licStichera.length > 0) {
+        // Pentecostarion Great Feast: render stichera with their own feast verses
+        // Plain verses V.10 down to V.(licCount+1)
+        LIC_VERSES.filter(v => v.n > licCount).forEach(v => {
+          elements.push({id:"v-lic-verse-"+v.n, type:"fixed", label:"",
+            text:"V. ("+v.n+") "+v.text, source:"HTM Vespers"});
+        });
+        // Interleaved: feast verse then sticheron
+        const interleaveVerses = LIC_VERSES.filter(v => v.n <= licCount);
+        interleaveVerses.forEach((v, i) => {
+          const stich = licStichera[licCount - v.n];
+          // Use feast verse from sticheron if present, else fall back to LIC_VERSES
+          const verseText = (stich && stich.verse) ? stich.verse : v.text;
+          elements.push({id:"v-lic-verse-"+v.n, type:"fixed", label:"",
+            text:"V. ("+v.n+") "+verseText, source:"Pentecostarion"});
+          if (stich && stich.resolved) {
+            elements.push({id:"v-lic-stich-"+v.n, type:"movable", label:"",
+              rubric:"Tone "+(stich.tone||tone)+":",
+              text:stich.text, source:"Pentecostarion",
+              fekula:{section:fekulaSection, note:"Pentecostarion sticheron at V.("+v.n+")."}});
+          } else {
+            elements.push({id:"v-lic-stich-"+v.n, type:"movable", label:"",
+              unresolved:true,
+              text:"[Sticheron "+(i+1)+" — not yet encoded for this Pentecostarion date.]",
+              source:"Pentecostarion",
+              fekula:{section:fekulaSection, note:"Pentecostarion stichera pending encoding."}});
+          }
+        });
+        licRendered = true;
+      } else {
+        // Pentecostarion: keep placeholder when not yet encoded
+        LIC_VERSES.forEach(v => {
+          elements.push({id:"v-lic-verse-"+v.n, type:"fixed", label:"",
+            text:"V. ("+v.n+") "+v.text, source:"HTM Vespers"});
+        });
+        elements.push({id:"v-stichera",type:"movable",label:"Stichera on Lord I Have Cried",
+          rubric:sticheraCount+" stichera inserted here", unresolved:true,
+          text:"[Stichera not yet assembled for Pentecostarion]\n\nRequired: "+sticheraRule,
+          source:"Pentecostarion + Menaion",
+          fekula:{section:fekulaSection, note:"At Lord I Have Cried: "+sticheraRule+". Pentecostarion stichera assembly pending."}});
+      }
     } else if (licStichera.some(s => s.resolved)) {
       // §2A: Octoechos stichera available — render full interleave
       // Plain verses: V.10 down to V.(licCount+1)
@@ -8001,7 +8515,9 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       });
       // Glory → doxasticon
       elements.push({id:"v-lic-glory", type:"fixed", label:"", text:"Glory to the Father, and to the Son, and to the Holy Spirit.", source:"HTM Vespers"});
-      const doxasticonEntry = menaionEntry && menaionEntry.stichera_glory;
+      const doxasticonEntry = (isPentecostarion && pentEntry && pentEntry.menaion_set_aside && pentEntry.stichera_glory)
+        ? pentEntry.stichera_glory
+        : (menaionEntry && menaionEntry.stichera_glory);
       if (doxasticonEntry) {
         elements.push({id:"v-lic-doxasticon", type:"movable", label:"Doxasticon",
           rubric:"Tone "+(doxasticonEntry.tone||tone)+":",
@@ -8044,7 +8560,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
             fekula:{section:fekulaSection, note:"Both Now: theotokion in tone of week."}});
         }
       }
-    } else {
+    } else if (!licRendered) {
       // §2C/§2D+: all Menaion, render plain verses + single placeholder
       LIC_VERSES.forEach(v => {
         elements.push({id:"v-lic-verse-"+v.n, type:"fixed", label:"",
@@ -8218,12 +8734,38 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
          "Holiness becometh Thy house, O Lord, unto length of days."];
 
     if (isPentecostarion) {
-      // Pentecostarion: placeholder
-      elements.push({id:"v-apost-stich",type:"movable",label:"Aposticha Stichera",
-        rubric:"Stichera with their appointed verses", unresolved:true,
-        text:"[Aposticha stichera not yet assembled for Pentecostarion]\n\nSource: Pentecostarion",
-        source:"Pentecostarion",
-        fekula:{section:fekulaSection, note:"Aposticha: Pentecostarion stichera assembly pending."}});
+      // Pentecostarion Great Feast: use encoded stichera_aposticha if present
+      if (pentEntry && pentEntry.stichera_aposticha && pentEntry.stichera_aposticha.length > 0) {
+        const pentAposticha = pentEntry.stichera_aposticha;
+        pentAposticha.forEach((s, i) => {
+          if (i > 0 && s.verse) {
+            elements.push({id:"v-apost-verse-pent-"+i, type:"fixed", label:"", rubric:"Reader:",
+              text:s.verse, source:"Pentecostarion"});
+          }
+          elements.push({id:"v-apost-stich-pent-"+i, type:"movable",
+            label: i===0 ? "Aposticha" : "",
+            rubric:"Tone "+(s.tone||tone)+":",
+            text:s.text, source:"Pentecostarion",
+            fekula:{section:fekulaSection, note:"Aposticha stichera from Pentecostarion."}});
+        });
+        // Glory / Both Now
+        elements.push({id:"v-apost-glory", type:"fixed", label:"", text:"Glory to the Father, and to the Son, and to the Holy Spirit.", source:"HTM Vespers"});
+        const pentApostGlory = pentEntry.aposticha_glory;
+        if (pentApostGlory) {
+          elements.push({id:"v-apost-doxasticon", type:"movable", label:"Aposticha Doxasticon",
+            rubric:"Tone "+(pentApostGlory.tone||tone)+":",
+            text:pentApostGlory.text||pentApostGlory, source:"Pentecostarion",
+            fekula:{section:fekulaSection, note:"Aposticha Glory: doxasticon from Pentecostarion."}});
+        }
+        elements.push({id:"v-apost-bothnow", type:"fixed", label:"", text:"Now and ever, and unto the ages of ages. Amen.", source:"HTM Vespers"});
+      } else {
+        // Pentecostarion: placeholder when not yet encoded
+        elements.push({id:"v-apost-stich",type:"movable",label:"Aposticha Stichera",
+          rubric:"Stichera with their appointed verses", unresolved:true,
+          text:"[Aposticha stichera not yet assembled for Pentecostarion]\n\nSource: Pentecostarion",
+          source:"Pentecostarion",
+          fekula:{section:fekulaSection, note:"Aposticha: Pentecostarion stichera assembly pending."}});
+      }
     } else if (!isPentecostarion && rank === "simple" && apostOctoDay && apostOctoDay.aposticha) {
       // §2A: Octoechos stichera + universal verses — fully assembled
       const apostStichera = apostOctoDay.aposticha; // array of 3 strings
@@ -8340,7 +8882,8 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       fekula:{section:fekulaSection, note:"Troparion from the Menaion — not yet encoded for this date."}});
   }
   if (secTrop) {
-    elements.push({id:"v-trop-2",type:"movable",label:"Troparion (Glory…)",
+    const secToneLabel = secTropTone ? " · Tone " + secTropTone : "";
+    elements.push({id:"v-trop-2",type:"movable",label:"Troparion (Glory…)" + secToneLabel,
       rubric:"",
       text:"Glory to the Father, and to the Son, and to the Holy Spirit.\n\n" + secTrop,
       source: secSrc,
@@ -9865,6 +10408,22 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.3.1",
+    date: "May 2026",
+    summary: "Pentecostarion §4A3 mixed assembly · P+19 & P+39 encoding · prokeimenon renderer · Reader's Service · 9th Hour → Vespers button",
+    items: [
+      "§4A3 mixed LIC assembly: 3 Pentecostarion + 5 Menaion slots resolved end-to-end",
+      "P+19 (Myrrhbearers Monday) encoded: 3 LIC stichera Tone II, aposticha, lic_theotokion",
+      "P+39 (Ascension) Vespers fields encoded: 10 LIC stichera, litya, aposticha, lic_theotokion",
+      "05-21 (Constantine & Helena) stichera encoded: 5 LIC Tone IV, doxasticon, aposticha",
+      "menaion_set_aside flag governs all Pentecostarion/Menaion routing decisions",
+      "Prokeimenon renderer: Deacon announces, Chanters/Deacon exchange with proper rubrics",
+      "Reader's Service (Fekula Ch.10): Wisdom! dropped, announcement → Reader",
+      "9th Hour → Vespers continuation button added",
+      "Troparion (Glory…) now shows tone in label",
+    ],
+  },
   {
     version: "v0.3.0",
     date: "May 2026",
