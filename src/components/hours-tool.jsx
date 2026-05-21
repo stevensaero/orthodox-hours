@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from "react";
 
 // ─── CALENDAR ENGINE ────────────────────────────────────────────────────────
 // Sources:
@@ -2915,12 +2915,6 @@ function getLiturgicalData(date) {
   // Season detection — most restrictive first
   let season, seasonNote;
 
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-  if ((date >= thisGreatLentStart && date < relevantPascha) ||
-      (date >= nextGreatLentStart && date < followingPascha)) {
-    season = "lent";
-    seasonNote = "Great Lent — Lenten Hours order applies (Fekula Chapter Three)";
-========
   // ── Lent week/Sunday tracking (used by kathisma schedule and context card) ──
   // Lent starts P-48 (Clean Monday). Week 1 = days 1-7, Week 2 = days 8-14, etc.
   // Passion Week = P-7 through P-1 (week 7 in the count but special).
@@ -2981,7 +2975,6 @@ function getLiturgicalData(date) {
     } else {
       seasonNote = "Great Lent";
     }
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
   } else if (date >= relevantPascha && date <= brightSaturday) {
     season = "brightweek";
     seasonNote = "Bright Week — Paschal Hours order applies";
@@ -3024,8 +3017,6 @@ function getLiturgicalData(date) {
 
   const paschaOffset = Math.floor((date - relevantPascha) / 86400000);
 
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-========
   // ── Sundays after Pentecost / Sundays of Luke ────────────────────────────
   // After All Saints Sunday (P+56), Sundays are counted as Nth Sunday after
   // Pentecost. After the Lukan Jump, a parallel count tracks the Nth Sunday
@@ -3174,18 +3165,14 @@ function getLiturgicalData(date) {
     kathismaPeriod = isSummerWinter ? "summer_winter" : "autumn_spring";
   }
 
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
   return {
     tone, dayName, dow, season, seasonNote, feastPeriod, namedDay,
     pascha: relevantPascha, allSaintsSunday,
     nextMeatfareSunday, followingPascha,
     paschaOffset,
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-========
     lentWeek, lentSunday, passionWeek, lentInfo,
     sundayAfterPentecost, sundayOfLuke, pentecostWeekInfo,
     kathismaPeriod,
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
     isOrdinaryWeekday: season === "ordinary",
     isSunday: season === "sunday",
     isLent: season === "lent",
@@ -3316,9 +3303,6 @@ const GLOSSARY = {
 // The movable troparion/kontakion slots are inserted between these by the assembler.
 
 
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-// ─── UNIFIED HOUR ASSEMBLER ─────────────────────────────────────────────────
-========
 // ─── KATHISMA SCHEDULE ───────────────────────────────────────────────────────
 // Source: OCA Liturgics
 //   Vespers: oca.org/liturgics/outlines/kathisma-readings-at-vespers
@@ -3491,7 +3475,6 @@ function getKathismaForMatins(liturgicalData) {
 }
 
 // ─── UNIFIED HOUR ASSEMBLER ─────────────────────────────────────────────────────────────────────
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
 // Single assembler for all four Hours across all seasons.
 // Fixed skeleton: HTM Horologion, Jordanville NY (1994).
 // Seasonal overlays: Fekula §4A, §4B11, §4B12.
@@ -6612,9 +6595,6 @@ function getKontakionForHour(entry, hourKey) {
   if (useThirdOde && entry.kontakion_3rd_ode) {
     return entry.kontakion_3rd_ode;
   }
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-  return entry.kontakion;
-========
   return entry.kontakion || null;
 }
 
@@ -7057,7 +7037,6 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias) {
   // END MARKER
   elements.push({id:"v-end",type:"end_marker",label:"",text:"THE END OF VESPERS",source:"HTM Vespers"});
   return elements;
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
 }
 
 
@@ -7294,8 +7273,6 @@ function ServiceBlock({ element }) {
     );
   }
 
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-========
   // ── Litany renderer ──────────────────────────────────────────────────────
   // Petitions in grey italic (deacon/priest); congregational responses
   // (Lord, have mercy / Grant this, O Lord / To Thee, O Lord) on their own
@@ -7344,7 +7321,6 @@ function ServiceBlock({ element }) {
     );
   }
 
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
   const isMovable = element.type !== "fixed";
 
   return (
@@ -7416,14 +7392,10 @@ function ServiceBlock({ element }) {
       )}
 
       {(() => {
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-        const isPriest = element.rubric && element.rubric.startsWith("Priest:");
-========
         const isPriest = element.rubric && (
           element.rubric.startsWith("Priest:") ||
           element.rubric.startsWith("Deacon:")
         );
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
         const isPsalm = element.text && element.text.startsWith("PSALM ");
         const bodyStyle = {
           fontFamily: "Georgia, serif",
@@ -7645,19 +7617,11 @@ function RankExplainer({ menaionEntry, isSunday }) {
 
   if (isSunday || !menaionEntry) return null;
 
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-  const rank = menaionEntry.rank || 'simple';
-  const info = RANK_EXPLANATIONS[rank] || RANK_EXPLANATIONS.simple;
-
-  // Extract rank confirmation note from encoding record
-  const encodingNote = menaionEntry.note || '';
-========
   const rank = (menaionEntry && menaionEntry.rank) || 'simple';
   const info = RANK_EXPLANATIONS[rank] || RANK_EXPLANATIONS.simple;
 
   // Extract rank confirmation note from encoding record
   const encodingNote = (menaionEntry && menaionEntry.note) || '';
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
   const rankConfirm = (() => {
     // Pull the first sentence that mentions the rank or stichera count
     const sentences = encodingNote.split(/[.;]/).map(s => s.trim()).filter(Boolean);
@@ -8023,8 +7987,6 @@ function TypicalBeginning({ hourKey, liturgicalData, tbOpen, setTbOpen }) {
 
 
 
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-========
 // ─── VESPERS OPENING ─────────────────────────────────────────────────────────
 // Collapsible component shown before the Vespers elements, parallel to
 // TypicalBeginning on the 1st and 6th Hours.
@@ -8217,14 +8179,11 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen }) {
 
 
 
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
 // ─── VERSION BADGE ────────────────────────────────────────────────────────────
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
   {
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-========
     version: "v0.2.7",
     date: "May 2026",
     summary: "Vespers skeleton · HTM invariable texts · stichera placeholders · prokeimenon routing",
@@ -8255,7 +8214,6 @@ const RELEASE_NOTES = [
     ],
   },
   {
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
     version: "v0.2.5",
     date: "May 2026",
     summary: "HTM closing sequence corrected · End-of-hour markers · 1st Hour default · How It Works rebuilt · Pentecostarion P+35–P+56 complete",
@@ -8383,8 +8341,6 @@ function VersionBadge() {
 }
 
 
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-========
 // ─── VESPERS LESSONS EXPLAINER ────────────────────────────────────────────────
 // Always present in the context card whether or not paroemias are shown.
 // Explains the rule governing OT lessons at Vespers, what was suppressed,
@@ -8597,7 +8553,6 @@ function VespersLessonsExplainer({ rank, pentEntry, isPentecostarion, feastPerio
 }
 
 
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
 // ─── HOW IT WORKS PANEL ───────────────────────────────────────────────────────
 // Accordion of five sections. Each panel opens/closes independently.
 // Matches the RankExplainer visual language (same gold, same type scale).
@@ -8669,11 +8624,7 @@ function HowItWorksPanel() {
   const typeLabel = { fixed: "Fixed", movable: "Movable", unresolved: "Unresolved" };
 
   return (
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-    <div style={{ marginTop: "1rem", textAlign: "left" }}>
-========
     <div style={{ marginTop: "1rem", textAlign: "left", padding: "0 1rem" }}>
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
 
       {/* ── 1. The Calendar Engine ─────────────────────────────────────────── */}
       <div style={headerStyle} onClick={() => toggle("calendar")}>
@@ -8685,8 +8636,6 @@ function HowItWorksPanel() {
           {p(<>From Pascha, every other movable date is a simple offset. Lent begins 48 days before Pascha (Clean Monday). Pentecost falls 49 days after. All Saints Sunday is 56 days after. The five Lenten Sundays, the pre-Lenten period (Meatfare, Cheesefare), Ascension, and All Saints of North America are all computed the same way — as a signed number of days from Pascha. The algorithm has been verified against the OCA desk calendar for 2026, 2027, and 2028.</>)}
           {p(<>The <strong>tone cycle</strong> (Tones 1–8 of the Octoechos) begins on the Monday after All Saints Sunday and advances one tone per week, cycling continuously through ordinary time.</>)}
           {p(<>The tool recognizes <strong>35 named movable days</strong> — from the Sunday of the Publican and Pharisee (Pascha−70) through All Saints of North America (Pascha+63) — and displays contextual notes for each. Great Feasts with their forefeasts, afterfeasts, and apodoses are tracked and influence which Fekula assembly rule applies.</>)}
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-========
           {sub("Great Lent Week and Sunday Tracking")}
           {p(<>Within Great Lent, the tool tracks the <strong>week number</strong> (1–6) and, on Sundays, the <strong>named Lenten Sunday</strong> (1–5). Clean Monday is day 1 of week 1; the first Sunday of Lent is day 7, the last day of week 1. Weeks are counted as Monday-to-Sunday spans: week {"\u00a0"}= ⌈day-of-Lent ÷ 7⌉. Passion (Holy) Week is detected separately as days 43–49 (P−7 through P−1) and does not carry a week number.</>)}
           {p(<>The five named Lenten Sundays correspond to Sundays 1–5: <em>Sunday of Orthodoxy, Sunday of St. Gregory Palamas, Sunday of the Holy Cross, Sunday of St. John Climacus,</em> and <em>Sunday of St. Mary of Egypt.</em> Palm Sunday (P−7) is detected as a named movable day. The week and Sunday data appear in the liturgical context card and drive the kathisma schedule.</>)}
@@ -8695,7 +8644,6 @@ function HowItWorksPanel() {
           {p(<>The <strong>Lukan Jump</strong> occurs on the Monday after the Sunday on or after the Elevation of the Holy Cross (September 14). From that Monday, the daily Gospel readings shift from Matthew to Luke. However, the first Sunday after the jump is a carryover week completing the interrupted Matthew readings — so the <strong>first Sunday of Luke</strong> is the <em>second</em> Sunday after the Elevation, computed as Lukan Jump Monday + 13 days. This convention is confirmed against OCA parish bulletins.</>)}
           {p(<>Both counts — Sundays after Pentecost and Sundays of Luke — end definitively on the <strong>Sunday of the Publican and Pharisee</strong> (followingPascha − 70), which opens the Triodion. The weekdays of that same week continue to show the count; tracking stops on the following Monday, when the Prodigal Son Sunday begins the Triodion proper. The Prodigal Son, Meatfare, and Cheesefare Sundays are not numbered in the Pentecost sequence — they belong to the pre-Lenten Triodion.</>)}
           {p(<>On weekdays, the count points <em>forward</em> to the upcoming Sunday: Monday through Saturday after the 1st Sunday after Pentecost show <em>2nd Week after Pentecost</em>, not "week of the 1st Sunday." This matches standard OCA parish bulletin usage.</>)}
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
           {sub("The Lectionary")}
           {p(<>The daily scripture readings shown in the context card come from a static table of <strong>298 entries</strong>, each keyed by its Pascha offset. The same offset yields the same readings every year — the entire New Testament cycle is purely movable, anchored to Pascha, not the calendar date.</>)}
           {p(<>One complication is the <strong>Lukan Jump</strong>: on the Monday after the Sunday on or after the Elevation of the Holy Cross (September 14), the Gospel abruptly leaves Matthew and begins Luke from the start. Because September 14 falls on a different day of the week each year, the exact Pascha offset where Luke begins shifts annually (typically P+134 to P+162) and is computed dynamically.</>)}
@@ -8726,8 +8674,6 @@ function HowItWorksPanel() {
       </div>
       {open.anatomy && (
         <div style={panelStyle}>
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-========
           {sub("The Daily Cycle")}
           {p(<>The Orthodox Church sanctifies the entire day through a cycle of eight services, each tied to a specific hour of prayer. The new liturgical day begins at <strong>sunset</strong> — so Vespers is always the first service of the day, not the last.</>)}
           {ul([
@@ -8751,7 +8697,6 @@ function HowItWorksPanel() {
           {p(<>The verses between aposticha stichera also differ by rank. For Simple and Six-Stichera rank, the stichera come from the Octoechos and the verses between them are fixed universal texts: <em>"To Thee I lift up mine eyes…"</em> and <em>"Have mercy upon us, O Lord…"</em> On Saturday evening (Great Vespers), three different fixed verses from Psalm 92 are used. For Doxology rank and above, the Menaion itself provides both the stichera texts <em>and</em> their own specific psalm verses — these feast-specific verses are embedded in the Menaion PDF alongside each sticheron and must be captured during encoding.</>)}
           {p(<>The current tool shows the full psalm texts (Ps. 140, 141, 129, 116) with the stichera verse scaffold as a readable fallback. The interleaved assembler — inserting encoded stichera into the correct verse slots — is the next major Vespers development milestone. It requires both the Menaion stichera encoding (FW-23) and the Octoechos stichera encoding for all 8 tones (FW-OCTOECHOS-VESPERS), which together enable the complete assembly for all rank levels.</>)}
           {sub("Fixed and Movable Elements")}
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
           {p("A Daily Hour has two kinds of content. The colour coding below shows how they are distinguished in the assembled service.")}
 
           {/* Legend */}
@@ -8802,8 +8747,6 @@ function HowItWorksPanel() {
           </div>
 
           {p("Only the two Movable rows change from day to day. Everything else is identical on every ordinary weekday of the year. On feast days and during the Pentecostarion, seasonal rules alter the Fixed skeleton too — replacing O come let us worship with Christ is risen, or omitting O Heavenly King — but those changes are also fixed by the rubrics, not by the saint of the day.")}
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-========
           {sub("The Kathisma Schedule")}
           {p(<>At Vespers and Matins, one or more sections of the Psalter — called <strong>kathismas</strong> — are read in sequence throughout the week. The Psalter's 150 psalms are divided into <strong>20 kathismas</strong>, each further subdivided into three stases (antiphons). The full Psalter is read through once per week in ordinary time; more frequently during Great Lent.</>)}
           {p(<>Which kathisma is appointed depends on two things: the <strong>day of the week</strong> and the <strong>period of the church year</strong>. The tool detects one of six periods:</>)}
@@ -8816,7 +8759,6 @@ function HowItWorksPanel() {
           ])}
           {p(<>Several <strong>override rules</strong> apply before the table is consulted, in priority order: Bright Week suppresses all kathismas; Passion Week Thursday–Saturday have none; great feasts of the Lord have no kathisma (same if a vigil was served the night before — <em>the tool flags this as a known limitation it cannot detect automatically</em>); Saturday evening and feasts of Polyeleos or Vigil rank always use Kathisma I ("Blessed is the Man," the first stasis); Sunday evening has no kathisma.</>)}
           {p(<>The kathisma shown at Vespers currently identifies the appointed kathisma by number and psalm range (e.g. <em>Kathisma 6, Psalms 37–45</em>). Full psalm texts are a planned future feature — they will be loaded from a separate Psalter reference document rather than bundled into this tool. Source: OCA Liturgics, oca.org/liturgics/outlines/kathisma-readings-at-vespers.</>)}
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
         </div>
       )}
 
@@ -8841,64 +8783,22 @@ function HowItWorksPanel() {
             "Is this a New Style / Old Style date divergence?",
           ])}
           {sub("Step 3 · Record the encoding")}
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-          {p("All fields are written to a plain-text record (.txt file) saved to the project's Google Drive folder, including source file, Fekula section, troparion, kontakion(s) with ode assignments, service rank confirmation evidence, and all OCA divergences.")}
-          {sub("Step 4 · Enter into the tool")}
-          {p(<>Encoded data is written into the tool's <code>SAMPLE_MENAION</code> object (fixed calendar dates) or <code>PENTECOSTARION</code> object (dates keyed to Pascha). <strong>Currently encoded:</strong> Menaion May 18–31, June 1–30. Pentecostarion P+35 through P+56. Earlier dates are in progress.</>)}
-          {sub("All encoded fields — the complete data record")}
-          {p("Every date that has been encoded carries some or all of the following fields. Fields marked † are used directly in the assembled Hours today. All others are stored for future services (Vespers, Matins, Liturgy) or for display in the context card.")}
-========
           {p("All fields are written to a plain-text .txt record saved to the project's Google Drive folder. This is the full capture — it records every field available in the source: troparion, kontakion(s) with ode assignments, all Vespers stichera texts, Matins canon data, all Liturgy propers (prokeimenon, alleluia, communion verse), paroemias, rank evidence, Fekula section, and all OCA divergences. The .txt file is the authoritative source record.")}
           {sub("Step 4 · Enter into the tool")}
           {p(<>Encoded data from the .txt record is then written into the tool's <code>SAMPLE_MENAION</code> object (fixed calendar dates) or <code>PENTECOSTARION</code> object (dates keyed to Pascha). <strong>Currently encoded:</strong> Menaion May 18–31, June 1–30. Pentecostarion P+35 through P+56. Earlier dates are in progress.</>)}
           {p(<><strong>Note — .txt records and tool entries are not always fully in sync.</strong> The .txt files are complete: they capture the full encoding pass. But not every field has been entered into the tool yet, because the assembly logic for Vespers and Matins is still being built — entering fields the tool cannot use would be premature. As each new service is assembled, the corresponding .txt data is transcribed. The two data objects also differ in richness: <code>PENTECOSTARION</code> entries were encoded when the schema was more mature and carry more fields than the earlier <code>SAMPLE_MENAION</code> entries, which have a known data-entry backlog for fields like <code>oca_primary</code>, <code>service_file</code>, <code>has_great_doxology</code>, and <code>magnificat_sung</code>.</>)}
           {sub("All encoded fields — the complete data record")}
           {p("Every date that has been encoded carries some or all of the following fields. The Status column reflects the honest current state.")}
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
           <table style={{ width: "100%", fontSize: "0.75rem", borderCollapse: "collapse", marginBottom: "0.8rem" }}>
             <thead>
               <tr style={{ background: "rgba(139,105,20,0.1)", textAlign: "left" }}>
                 <th style={{ padding: "4px 8px", borderBottom: "1px solid #D4C49A", color: "#5C4A1E" }}>Field</th>
                 <th style={{ padding: "4px 8px", borderBottom: "1px solid #D4C49A", color: "#5C4A1E" }}>What it contains</th>
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-                <th style={{ padding: "4px 8px", borderBottom: "1px solid #D4C49A", color: "#5C4A1E" }}>Used now</th>
-========
                 <th style={{ padding: "4px 8px", borderBottom: "1px solid #D4C49A", color: "#5C4A1E" }}>Status</th>
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
               </tr>
             </thead>
             <tbody>
               {[
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-                ["saint", "Full name of the commemorated saint or feast", "✓ context card"],
-                ["rank", "Service rank: simple · six_stichera · doxology · polyeleos · vigil", "✓ rank badge & explainer"],
-                ["fekula_section", "Fekula §2A–§2F or §4A–§4B15 governing assembly", "✓ citation badges"],
-                ["oca_primary", "Whether this is the OCA calendar's primary commemoration", "✓ OCA PRIMARY badge"],
-                ["service_file", "Source PDF filename (e.g. 06-08.pdf)", "✓ encoding provenance"],
-                ["note", "Encoding notes: OCA divergences, calendar collisions, rank evidence", "✓ context card note"],
-                ["troparion · tone & text †", "Primary troparion — tone number and full text", "✓ assembled at all four Hours"],
-                ["troparion_2 · tone, text, placement †", "Second troparion (Glory) when two troparia govern", "✓ assembled at all four Hours"],
-                ["kontakion · tone, text, matins_ode †", "Kontakion with Matins ode assignment (III or VI)", "✓ assembled at 3rd & 9th Hours"],
-                ["kontakion_3rd_ode · tone, text †", "Second kontakion when Ode III differs from Ode VI", "✓ assembled at 1st & 6th Hours"],
-                ["hours_kontakion", "Pentecostarion: feast kontakion governing Both now at Hours", "✓ Pentecostarion Hours"],
-                ["feast_e", "Feast proper Epistle reading (e.g. 2 Timothy 2:1-10)", "✓ context card"],
-                ["feast_g", "Feast proper Gospel reading (e.g. Matthew 10:16-22)", "✓ context card"],
-                ["prokeimenon_tone & text", "Prokeimenon tone, text, and stichos verse at Liturgy", "— Liturgy (future)"],
-                ["prokeimenon_stichos", "Verse sung with the prokeimenon", "— Liturgy (future)"],
-                ["alleluia_tone & verse", "Alleluia tone and verse at Liturgy", "— Liturgy (future)"],
-                ["alleluia_stichos", "Second alleluia verse", "— Liturgy (future)"],
-                ["communion_verse", "Communion hymn text at Liturgy", "— Liturgy (future)"],
-                ["paroemia_1/2/3", "Old Testament Vespers lessons (Polyeleos & above)", "— Vespers (future)"],
-                ["zadostoinik_irmos", "Irmos replacing It is truly meet on feast days", "— Matins/Liturgy (future)"],
-                ["matins_gospel", "Resurrection Gospel number (1–11) at Sunday Matins", "— Matins (future)"],
-                ["has_litya", "Whether the feast has a Litya at Vespers", "— Vespers (future)"],
-                ["has_great_doxology", "Whether the Great Doxology is sung at Matins", "— Matins (future)"],
-                ["magnificat_sung", "Whether the Magnificat (Ode IX) is sung or omitted", "— Matins (future)"],
-                ["trisagion_replacement", "Text replacing the Trisagion on certain feasts (e.g. Pentecost)", "— Liturgy (future)"],
-                ["reposed_e / reposed_g", "Second epistle/gospel set for the Saturday of Reposed", "— Liturgy (future)"],
-                ["hours_format", "Assembly engine signal: paschal · pentecostarion_sunday · ascension · etc.", "✓ skeleton selection"],
-                ["fekula_section_override", "Overrides default Fekula section for special cases (e.g. §2B double service)", "✓ citation badges"],
-========
                 ["saint", "Full name of the commemorated saint or feast", "✓ in tool"],
                 ["rank", "Service rank: simple · six_stichera · doxology · polyeleos · vigil", "✓ in tool"],
                 ["fekula_section", "Fekula §2A–§2F or §4A–§4B15 governing assembly", "✓ in tool"],
@@ -8929,29 +8829,20 @@ function HowItWorksPanel() {
                 ["trisagion_replacement", "Text replacing the Trisagion on certain feasts", "⚠ in .txt — Liturgy future"],
                 ["ikos", "Kontakion ikos text (Matins, after kontakion)", "⚠ in .txt — Matins future"],
                 ["exapostilarion", "Exapostilarion text at Matins", "⚠ in .txt — Matins future"],
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
               ].map(([field, desc, used], i) => (
                 <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : "rgba(0,0,0,0.02)" }}>
                   <td style={{ padding: "4px 8px", borderBottom: "1px solid #EDE5CE", fontFamily: "monospace", fontSize: "0.72rem", color: "#3B4A6B", whiteSpace: "nowrap" }}>{field}</td>
                   <td style={{ padding: "4px 8px", borderBottom: "1px solid #EDE5CE", color: "#2C1F0A" }}>{desc}</td>
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-                  <td style={{ padding: "4px 8px", borderBottom: "1px solid #EDE5CE", color: used.startsWith("✓") ? "#3A6B3A" : "#9A8A70", whiteSpace: "nowrap" }}>{used}</td>
-========
                   <td style={{ padding: "4px 8px", borderBottom: "1px solid #EDE5CE",
                     color: used.startsWith("✓ in tool") ? "#3A6B3A" : used.startsWith("⚠") ? "#8B6914" : "#9A8A70",
                     whiteSpace: "nowrap" }}>
                     {used}
                   </td>
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
                 </tr>
               ))}
             </tbody>
           </table>
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-          {p("In short: the tool stores the full data needed to assemble Vespers, Matins, and Liturgy for every encoded date. The Hours are the first surface — the underlying record is already built for the full daily cycle.", { fontStyle: "italic", color: "#5C4A1E" })}
-========
           {p("Legend: ✓ in tool = field is active in SAMPLE_MENAION or PENTECOSTARION. ✓ in tool (data only) = entered and stored, but not yet surfaced in any assembled service. ⚠ in .txt = captured in the Drive encoding record but not yet entered into the tool, either because the assembly logic isn't built yet (future service) or because it is a known data-entry backlog.", { fontStyle: "italic", color: "#5C4A1E" })}
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
         </div>
       )}
 
@@ -8994,11 +8885,7 @@ export default function App() {
   );
   const [showGlossary, setShowGlossary] = useState(false);
   const [showHowItWorks, setShowHowItWorks] = useState(false);
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-  const [selectedServiceKey, setSelectedServiceKey] = useState("1st_hour");
-========
   const [selectedServiceKey, setSelectedServiceKey] = useState("vespers");
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
   // tbOpen: tracks whether the Typical Beginning is expanded on 1st/6th Hours.
   // When expanded, the Hour body shows O come let us worship (not Christ is risen)
   // because Christ is risen was already said within the Typical Beginning.
@@ -9106,12 +8993,9 @@ export default function App() {
   // Assemble elements — single unified assembler for all seasons
   const elements = (() => {
     if (!inScope) return [];
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-========
     if (currentService.key === 'vespers') {
       return assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias);
     }
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
     return assembleHour(currentService.key, liturgicalData, menaionEntry, pentEntry, tbOpen);
   })();
 
@@ -9409,13 +9293,8 @@ export default function App() {
             <div>
               <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "4px", lineHeight: "1.6" }}>
                 <strong>Saint:</strong>
-<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
-                <span>{menaionEntry.saint} —{" "}
-                  <Tooltip term="service rank">{(RANK_EXPLANATIONS[menaionEntry.rank] || RANK_EXPLANATIONS.simple).label} service</Tooltip>
-========
                 <span>{(menaionEntry && menaionEntry.saint) || 'Saint of the day'} —{" "}
                   <Tooltip term="service rank">{(RANK_EXPLANATIONS[menaionEntry && menaionEntry.rank] || RANK_EXPLANATIONS.simple).label} service</Tooltip>
->>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
                 </span>
                 <RankExplainer menaionEntry={menaionEntry} isSunday={isSunday} />
                 {menaionEntry.oca_primary === true && (
