@@ -722,23 +722,7 @@ const SAMPLE_MENAION = {
   // Source: OCA. This Sunday has its own proper troparion and kontakion.
   // On Sunday this is used as the Menaion saint entry for §1A assembly —
   // the resurrectional troparion leads, Glory… this troparion follows.
-  "06-07": {
-    saint: "All Saints",
-    rank: "great",
-    note: "All Saints Sunday — first Sunday after Pentecost. Special proper hymns.",
-    troparion: {
-      tone: 4,
-      text: "Your Church, O Christ God, is arrayed in the blood of Your martyrs throughout all the world as in purple and fine linen. Through them she cries to You: Send down Your bounties on Your people, grant peace to Your habitation, and great mercy to our souls.",
-    feast_e: "Hebrews 11:33-12:2",
-    feast_g: "Matthew 10:32-33, 37-38, 19:27-30",
-    },
-    kontakion: {
-      tone: 8,
-      text: "As first-fruits of Your nature, the world offers to You, O Lord, the God-bearing martyrs. Through their prayers keep Your Church in deep peace and preserve our lives, O greatly Merciful One.",
-    },
-  },
-
-  // ── June 7 — Multi-service: HM Theodotus (OCA primary) + Martyrs Kyriaka/Valeria/Maria ─
+    // ── June 7 — Multi-service: HM Theodotus (OCA primary) + Martyrs Kyriaka/Valeria/Maria ─
   // Source: St. Sergius 06-07A.pdf (Theodotus, Simple §2A) + 06-07.pdf (Kyriaka etc., Polyeleos §2E)
   // OCA primary: HM Theodotus, Bishop of Ancyra. Kyriaka/Valeria/Maria are OCA secondary.
   // Troparion/kontakion for Theodotus sourced from OCA (not in simple rank PDF).
@@ -790,8 +774,24 @@ const SAMPLE_MENAION = {
     note: "Commemoration of the miracle on Mt. Athos when the Archangel Gabriel taught a monk the " +
           "“It is truly meet” hymn (Axion Estin). Also: icons “Unbreakable Wall” and “Seven Arrows” (OCA calendar); " +
           "those icons do not have compiled services in this library.",
-    feast_e: "Acts 11:19-26, 29-30",
-    feast_g: "Luke 10:16-21",
+    feast_e: "Philippians 2:5-11 (§240)",
+    feast_g: "Luke 10:38-42; 11:27-28 (§54)",
+    prokeimenon_tone: 3,
+    prokeimenon_text: "My soul doth magnify the Lord, " +
+      "and my spirit hath rejoiced in God my Savior.",
+    prokeimenon_stichos: "For He hath looked upon the lowliness of His handmaiden; " +
+      "for behold, from henceforth all generations shall call me blessed.",
+    alleluia_tone: 8,
+    alleluia_verse: "Hearken, O daughter, and see, and incline thine ear.",
+    alleluia_stichos: "The rich among the people shall entreat thy countenance.",
+    communion_verse: "I will take the cup of salvation, " +
+      "and I will call upon the name of the Lord.",
+    paroemia_1: "Genesis 28:10-17 (Jacob\'s ladder — This is none other than the house of God)",
+    paroemia_2: "Ezekiel 43:27; 44:1-4 (the shut gate — the Lord God of Israel shall enter by it)",
+    paroemia_3: "Proverbs 9:1-11 (Wisdom hath built a house for herself)",
+    matins_gospel: "Luke 1:39-49, 56 (§4)",
+    has_litya: true,
+    has_polyeleos: true,
     troparion: {
       tone: 4,
       text: "O ye faithful, with boldness let us hasten to the Theotokos, our merciful Queen, and with compunction let us cry out to her: Send down upon us thy rich mercies; preserve our Church; and maintain the people in prosperity; and deliver our land from every evil circumstance; and grant peace to the world and salvation to our souls.",
@@ -816,6 +816,18 @@ const SAMPLE_MENAION = {
     fekula_section_override: "2B",
     note: "Double service: two venerable fathers in one compiled service. Joint troparion. " +
           "Per Fekula §2B: 9th Hour uses Onuphrius kontakion (second saint, Tone III).",
+    feast_e: "Galatians 5:22-6:2 (§213)",
+    feast_g: "Matthew 11:27-30 (§43)",
+    prokeimenon_tone: 7,
+    prokeimenon_text: "Precious in the sight of the Lord " +
+      "is the death of His saints.",
+    prokeimenon_stichos: "What shall I render unto the Lord for all that He hath rendered unto me?",
+    alleluia_tone: 6,
+    alleluia_verse: "Blessed is the man that feareth the Lord; " +
+      "in His commandments shall he greatly delight.",
+    alleluia_stichos: "His seed shall be mighty upon the earth.",
+    communion_verse: "Rejoice in the Lord, O ye righteous; " +
+      "praise is meet for the upright.",
     troparion: {
       tone: 4,
       text: "O God of our fathers, ever deal with us according to Thy meekness. Take not Thy mercy from us, but by the prayers of these saints direct our life in peace.",
@@ -848,7 +860,11 @@ const SAMPLE_MENAION = {
     rank: "six_stichera",
     fekula_section_override: "2B",
     note: "Double service: martyr and hierarch in one compiled service. Two separate troparia. " +
-          "Per Fekula §2B: 9th Hour uses Triphyllius kontakion (second saint, Tone VIII).",
+          "Per Fekula §2B: 9th Hour uses Triphyllius kontakion (second saint, Tone VIII). " +
+          "AT LITURGY section in PDF names Troparion/Kontakion only — no Prokeimenon, Epistle, " +
+          "Gospel, Alleluia, or Communion verse. §2B confirmed: readings from Oktoechos.",
+    feast_e: "absent — §2B/§2C, readings from Oktoechos",
+    feast_g: "absent — §2B/§2C, readings from Oktoechos",
     troparion: {
       tone: 4,
       text: "Thy ewe-lamb Aquilina, O Jesus crieth out with a loud voice: Thee do I love, O my Bridegroom, and, seeking Thee, I endure suffering. In Thy baptism I am crucified and buried with Thee. I suffer for Thy sake, that I may reign with Thee; I die for Thee, that I may live with Thee. Accept me, who with love sacrifice myself for Thee, as an unblemished offering! By her supplications, in that Thou art merciful, save Thou our souls.",
@@ -894,6 +910,16 @@ const SAMPLE_MENAION = {
           "nearest June 8 (movable, Pascha+42) — not this fixed date.",
     feast_e: "2 Timothy 2:1-10",
     feast_g: "Matthew 10:16-22",
+    prokeimenon_tone: 7,
+    prokeimenon_text: "The righteous man shall be glad in the Lord, and shall hope in Him.",
+    prokeimenon_stichos: "Hearken, O God, unto my prayer, when I make supplication unto Thee.",
+    alleluia_tone: 4,
+    alleluia_verse: "The righteous man shall flourish like a palm tree, " +
+      "and like a cedar in Lebanon shall he be multiplied.",
+    alleluia_stichos: "They that are planted in the house of the Lord, " +
+      "in the courts of our God shall they blossom forth.",
+    communion_verse: "In everlasting remembrance shall the righteous be; " +
+      "he shall not be afraid of evil tidings.",
     troparion: {
       tone: 4,
       text: "Through noetic recruitment thou didst become a most comely general of the heavenly King, O passion-bearer Theodore; for wisely arraying thyself with the weaponry of faith thou didst vanquish legions of demons, revealing thyself to be a victorious spiritual athlete. Wherefore, with faith we ever bless thee.",
@@ -913,7 +939,21 @@ const SAMPLE_MENAION = {
     rank: "six_stichera",
     note: "Pillar of Orthodoxy and defender of the title Theotokos at the Council of " +
           "Ephesus (431 AD). Authored extensive commentaries and theological treatises. " +
-          "Matins canon acrostic: 'Cyril is the harp of divine visions' (Theophanes, Tone IV).",
+          "Matins canon acrostic: 'Cyril is the harp of divine visions' (Theophanes, Tone IV). " +
+          "Single kontakion — Ode VI only (same used at all four Hours).",
+    feast_e: "Hebrews 13:7-16 (§334)",
+    feast_g: "Matthew 5:14-19 (§11)",
+    prokeimenon_tone: 1,
+    prokeimenon_text: "My mouth shall speak wisdom, " +
+      "and the meditation of my heart shall be of understanding.",
+    prokeimenon_stichos: "Hear this, all ye nations; give ear, all ye that inhabit the world.",
+    alleluia_tone: 2,
+    alleluia_verse: "The mouth of the righteous shall meditate wisdom " +
+      "and his tongue shall speak of judgment.",
+    alleluia_stichos: "The law of his God is in his heart, " +
+      "and his steps shall not be tripped.",
+    communion_verse: "In everlasting remembrance shall the righteous be; " +
+      "he shall not be afraid of evil tidings.",
     troparion: {
       tone: 8,
       text: "Teacher of Orthodoxy, instructor of piety and chastity, luminary of the Church, God-inspired instructor of Hierarchs, O supremely wise Cyril, thou hast illumined all by thy teaching; O harp of the Spirit entreat Christ God that our souls be saved.",
@@ -1097,8 +1137,20 @@ const SAMPLE_MENAION = {
     note: "Double service. In 2026 this date falls on All Saints of North America " +
           "Sunday (Pascha+63); Sunday propers and the NA Saints synaxis take precedence. " +
           "Holy Fathers of the First Ecumenical Council = Pascha+42 = May 24 in 2026.",
-    feast_e: "Hebrews 11:33-12:2",
-    feast_g: "Matthew 4:25-5:12",
+    feast_e: "James 5:10-20 (§57)",
+    feast_g: "Luke 4:22-30 (§14)",
+    prokeimenon_tone: 4,
+    prokeimenon_text: "Thou art a priest forever, " +
+      "after the order of Melchisedek.",
+    prokeimenon_stichos: "The Lord said unto my Lord: Sit Thou at My right hand, " +
+      "until I make Thine enemies the footstool of Thy feet.",
+    alleluia_tone: 4,
+    alleluia_verse: "Moses and Aaron among His priests, " +
+      "and Samuel is among them that call upon His name.",
+    alleluia_stichos: "A light hath dawned forth for the righteous man, " +
+      "and gladness for the upright of heart.",
+    communion_verse: "In everlasting remembrance shall the righteous be; " +
+      "he shall not be afraid of evil tidings.",
     troparion: {
       tone: 4,
       text: "The angel in the flesh, the foundation of the prophets, the second forerunner " +
@@ -1147,22 +1199,28 @@ const SAMPLE_MENAION = {
       service_file: "06-16.pdf",
       rank: "simple",
       note: "OCA also lists Ven. Tikhon of Kaluga on June 16 (Polyeleos, 06-16A.pdf — OCA secondary). " +
-            "OCA troparion differs: “God called you to the sacred priesthood...”; St. Sergius text used.",
+            "§2A confirmed — 3 stichera; PDF has no AT LITURGY Epistle/Gospel section. " +
+            "OCA troparion and kontakion (both Tone 3) corrected from oca.org — differ from St. Sergius.",
+      feast_e: "absent — §2A, readings from Oktoechos",
+      feast_g: "absent — §2A, readings from Oktoechos",
       troparion: {
-        tone: 1,
-        text: "A desert dweller, an angel in the flesh and a wonder-worker wast thou revealed " +
-              "to be, O our God-bearing father Tichon. Receiving heavenly gifts through fasting, " +
-              "vigils and prayers, thou healest the infirm and the souls of those who with faith " +
-              "have recourse unto thee. Glory to Him Who hath given thee strength! Glory to Him " +
-              "Who hath crowned thee! Glory to Him Who through thee worketh healings for all!",
+        tone: 3,
+        text: "God called you to the sacred priesthood " +
+              "as a worthy servant of the Holy Trinity. " +
+              "You shone forth with the grace of godliness " +
+              "strengthening the Church by many miracles. " +
+              "Righteous Tikhon, entreat Christ our God to grant us His great mercy.",
+        source: "OCA — oca.org/saints/troparia/2024/06/16",
       },
       kontakion: {
         tone: 3,
-        text: "Persevering in the struggle of the love of God, O holy one, from on high thou " +
-              "didst receive the power of the Comforter to cast down the idols of delusion, to " +
-              "save mortals, cast out demons, and to heal sicknesses. Wherefore, we honor thee " +
-              "as a friend of God, O blessed Tichon.",
+        text: "Through your ascetic labors, you shone forth, O beloved of God, " +
+              "and received from on high the power of the Comforter " +
+              "to destroy the idols of delusion, and to save people, " +
+              "to cast out demons and to heal the sick. " +
+              "Therefore, venerable Tikhon, we honor you as a friend of God.",
         matins_ode: 6,
+        source: "OCA — oca.org/saints/troparia/2024/06/16",
       },
     },
     {
@@ -1171,7 +1229,25 @@ const SAMPLE_MENAION = {
       service_file: "06-16A.pdf",
       rank: "polyeleos",
       note: "Ven. Tikhon of Kaluga appears on the OCA calendar as a secondary commemoration " +
-            "on June 16. The OCA primary is HM Tichon of Amathus.",
+            "on June 16. The OCA primary is HM Tichon of Amathus. " +
+            "§2E Polyeleos confirmed — 8 stichera, Great Vespers, Litya, Polyeleos.",
+      feast_e: "Galatians 5:22-6:2 (§213)",
+      feast_g: "Matthew 4:25-5:12 (§10)",
+      prokeimenon_tone: 7,
+      prokeimenon_text: "Precious in the sight of the Lord is the death of His saints.",
+      prokeimenon_stichos: "What shall I render unto the Lord for all that He hath rendered unto me?",
+      alleluia_tone: 6,
+      alleluia_verse: "Blessed is the man that feareth the Lord; " +
+        "in His commandments shall he greatly delight.",
+      alleluia_stichos: "His seed shall be mighty upon the earth.",
+      communion_verse: "In everlasting remembrance shall the righteous be; " +
+        "he shall not be afraid of evil tidings.",
+      paroemia_1: "Proverbs — The memory of the just is praised (Prov 10:7; 3:13-16; 8:6, 34-35)",
+      paroemia_2: "Proverbs — The mouth of the righteous droppeth wisdom (Prov 10:31-32; 11:2-12)",
+      paroemia_3: "Wisdom of Solomon 3:1-9 — souls of the righteous are in the hand of God",
+      matins_gospel: "Matthew 11:27-30 (§43)",
+      has_litya: true,
+      has_polyeleos: true,
       troparion: {
         tone: 4,
         text: "O Tikhon our venerable father, thou wast shown to be a most radiant beacon in " +
@@ -1189,6 +1265,7 @@ const SAMPLE_MENAION = {
               "Wherefore, remember us who honor thy memory, that we may cry out to thee: " +
               "Rejoice, O venerable Tikhon our father!",
         matins_ode: 6,
+        source: "St. Sergius 06-16A.pdf",
       },
     },
   ],
@@ -1201,7 +1278,23 @@ const SAMPLE_MENAION = {
     oca_primary: true,
     service_file: "06-17.pdf",
     rank: "simple",
-    note: "Three Persian brothers martyred under Julian the Apostate (362).",
+    note: "Three Persian brothers martyred under Julian the Apostate (362). " +
+          "§2A by stichera count (3); PDF includes full AT LITURGY section — " +
+          "compiled martyrs' service with proper Epistle and Gospel.",
+    feast_e: "Ephesians 6:10-17 (§233)",
+    feast_g: "Luke 21:12-19 (§106)",
+    prokeimenon_tone: 4,
+    prokeimenon_text: "Wondrous is God in His saints, " +
+      "the God of Israel.",
+    prokeimenon_stichos: "In congregations bless ye God, " +
+      "the Lord from the well-springs of Israel.",
+    alleluia_tone: 4,
+    alleluia_verse: "The righteous cried, and the Lord heard them, " +
+      "and He delivered them out of all their tribulations.",
+    alleluia_stichos: "Many are the tribulations of the righteous, " +
+      "and the Lord shall deliver them out of them all.",
+    communion_verse: "Rejoice in the Lord, O ye righteous; " +
+      "praise is meet for the upright.",
     troparion: {
       tone: 4,
       text: "In their sufferings, Thy martyrs O Lord, received imperishable crowns from " +
@@ -1227,7 +1320,23 @@ const SAMPLE_MENAION = {
     oca_primary: true,
     service_file: "06-18.pdf",
     rank: "simple",
-    note: "Roman soldier martyred at Tripoli in Phoenicia under Vespasian (c. 70 AD).",
+    note: "Roman soldier martyred at Tripoli in Phoenicia under Vespasian (c. 70 AD). " +
+          "§2A by stichera count (3); PDF includes full AT LITURGY section — " +
+          "compiled martyr service with proper Epistle and Gospel.",
+    feast_e: "Acts 12:1-11 (§29)",
+    feast_g: "John 15:17-16:2 (§52)",
+    prokeimenon_tone: 7,
+    prokeimenon_text: "The righteous man shall be glad in the Lord, " +
+      "and shall hope in Him.",
+    prokeimenon_stichos: "Hearken, O God, unto my prayer, " +
+      "when I make supplications unto Thee.",
+    alleluia_tone: 4,
+    alleluia_verse: "The righteous man shall flourish like a palm tree, " +
+      "and like a cedar in Lebanon shall he be multiplied.",
+    alleluia_stichos: "They that are planted in the house of the Lord, " +
+      "in the courts of our God they shall blossom forth.",
+    communion_verse: "In everlasting remembrance shall the righteous be; " +
+      "he shall not be afraid of evil tidings.",
     troparion: {
       tone: 4,
       text: "In his sufferings, Thy martyr Leontius O Lord, received an imperishable " +
@@ -1298,10 +1407,15 @@ const SAMPLE_MENAION = {
       oca_primary: true,
       service_file: "06-15.pdf",
       rank: "simple",
-      note: "",
+      note: "§2A confirmed — 3 stichera; PDF has no AT LITURGY Epistle/Gospel section. " +
+           "Troparion absent from PDF Vespers rubric — T2 generic prophet text sourced from OCA. " +
+           "Kontakion T4 matches PDF exactly.",
+      feast_e: "absent — §2A, readings from Oktoechos",
+      feast_g: "absent — §2A, readings from Oktoechos",
       troparion: {
         tone: 2,
         text: "We celebrate the memory of Thy prophet Amos, O Lord, and through him we beseech Thee: save our souls.",
+        source: "OCA (generic prophet troparion — not printed in St. Sergius PDF)",
       },
       kontakion: {
         tone: 4,
@@ -1314,15 +1428,39 @@ const SAMPLE_MENAION = {
       oca_primary: false,
       service_file: "06-15A.pdf",
       rank: "polyeleos",
-      note: "St Jerome of Stridon appears on the OCA calendar as a secondary commemoration on this date. The OCA primary is Prophet Amos.",
+      note: "St Jerome of Stridon appears on the OCA calendar as a secondary commemoration on this date. " +
+           "The OCA primary is Prophet Amos. §2E Polyeleos confirmed — 6 stichera, Great Vespers, Litya, Polyeleos.",
+      feast_e: "Galatians 5:22-6:2 (§213)",
+      feast_g: "Matthew 4:25-5:12 (§10)",
+      prokeimenon_tone: 7,
+      prokeimenon_text: "Precious in the sight of the Lord is the death of His saints.",
+      prokeimenon_stichos: "What shall I render unto the Lord for all that He hath rendered unto me?",
+      alleluia_tone: 6,
+      alleluia_verse: "Blessed is the man that feareth the Lord; " +
+        "in His commandments shall he greatly delight.",
+      alleluia_stichos: "His seed shall be mighty upon the earth.",
+      communion_verse: "In everlasting remembrance shall the righteous be; " +
+        "he shall not be afraid of evil tidings.",
+      paroemia_1: "Wisdom 5:15ff; 6:1-3 — the righteous live for evermore; their reward with the Lord",
+      paroemia_2: "Wisdom 3:1-9 — souls of the righteous are in the hand of God",
+      paroemia_3: "Wisdom 4:7-15 — though the righteous be prevented with death",
+      matins_gospel: "Matthew 11:27-30 (§43)",
+      has_litya: true,
+      has_polyeleos: true,
       troparion: {
-        tone: 8,
-        text: "REQUIRES OCA FETCH — troparion not yet encoded.",
+        tone: 3,
+        text: "The assembly of the Orthodox hath thee as a great intercessor, O divinely wise one, " +
+              "for as thou art a converser with the venerable and a partaker of divine wisdom, " +
+              "so, O most wondrous Jerome, entreat Christ God that He grant us great mercy.",
+        source: "St. Sergius 06-15A.pdf",
       },
       kontakion: {
-        tone: 4,
-        text: "REQUIRES OCA FETCH — kontakion not yet encoded.",
+        tone: 8,
+        text: "With hymns let us praise the right praiseworthy Jerome, the most venerable among the " +
+              "venerable and most blessed among the blessed, the instructor and helper of the faithful, " +
+              "crying out to him with love: Rejoice, O divinely wise father!",
         matins_ode: 6,
+        source: "St. Sergius 06-15A.pdf",
       },
     },
     {
@@ -1330,15 +1468,49 @@ const SAMPLE_MENAION = {
       oca_primary: false,
       service_file: "06-15B.pdf",
       rank: "polyeleos",
-      note: "St Jonah of Moscow is not listed on the OCA calendar for this date. This service is from the Russian Menaion. Verify with your priest before serving.",
+      note: "St Jonah of Moscow is NOT listed on the OCA calendar for this date. " +
+           "This service is from the Russian Menaion only. Verify with your priest before serving. " +
+           "§2E Polyeleos confirmed — 8 stichera (4+4), Great Vespers, Litya, Polyeleos.",
+      feast_e: "Hebrews 13:17-21 (§335)",
+      feast_g: "Matthew 5:14-19 (§11)",
+      prokeimenon_tone: 1,
+      prokeimenon_text: "My mouth shall speak wisdom, " +
+        "and the meditation of my heart shall be of understanding.",
+      prokeimenon_stichos: "Hear this, all ye nations; give ear, " +
+        "all ye that inhabit the earth.",
+      alleluia_tone: 2,
+      alleluia_verse: "The mouth of the righteous shall meditate wisdom " +
+        "and his tongue shall speak of judgment.",
+      alleluia_stichos: "The law of his God is in his heart, " +
+        "and his steps shall not be tripped.",
+      communion_verse: "In everlasting remembrance shall the righteous be; " +
+        "he shall not be afraid of evil tidings.",
+      paroemia_1: "Proverbs — The memory of the just is praised (Prov 10:7; 3:13-16; 8:6, 34-35)",
+      paroemia_2: "Proverbs — The mouth of the righteous droppeth wisdom (Prov 10:31-32; 11:2-12)",
+      paroemia_3: "Wisdom of Solomon 4:7-15 — though the righteous be prevented with death",
+      matins_gospel: "Matthew 11:27-30 (§43)",
+      has_litya: true,
+      has_polyeleos: true,
       troparion: {
-        tone: 3,
-        text: "REQUIRES ENCODING — troparion not yet extracted from 06-15B.pdf.",
+        tone: 4,
+        text: "Having dedicated thyself wholly to the Lord from thy youth, thou didst become a model " +
+              "of virtue in prayers, labors and fasting; wherefore, beholding thy goodly intent, God " +
+              "appointed thee a hierarch and pastor of His Church: wherefore, thy precious body hath " +
+              "been preserved whole and incorrupt after thy repose. O holy hierarch Jonah, entreat " +
+              "Christ God, that He save our souls.",
+        source: "St. Sergius 06-15B.pdf",
       },
       kontakion: {
-        tone: 3,
-        text: "REQUIRES ENCODING — kontakion not yet extracted from 06-15B.pdf.",
+        tone: 8,
+        text: "O wise one from childhood thou didst give thyself over wholly to the Lord, laying waste " +
+              "to thy body through fasting and the keeping of vigils; wherefore, thou wast revealed to " +
+              "be a pure vessel and abode of the most holy Spirit. For this cause He ordained thee as " +
+              "hierarch and pastor for His Church, and having tended it well, thou didst depart unto the " +
+              "Lord Whom thou didst love. We therefore beseech thee: Be thou mindful of us who honor " +
+              "thy holy memory with faith, that we may all cry aloud unto thee: Rejoice, O father Jonah, " +
+              "most honored and holy hierarch!",
         matins_ode: 6,
+        source: "St. Sergius 06-15B.pdf",
       },
     },
   ],
@@ -1353,8 +1525,11 @@ const SAMPLE_MENAION = {
     saint: "Holy Hieromartyr Timothy, Bishop of Prussia",
     rank: "simple",
     note: "Bishop of Prussia martyred for the faith. Also: St John of Tobolsk (separate service). " +
-          "Troparion and kontakion sourced from General Menaion (Hieromartyr), " +
-          "as the full Menaion entry does not include them explicitly.",
+          "§2A confirmed — 3 stichera on Lord I Call; PDF has no AT LITURGY section (readings from Oktoechos). " +
+          "Troparion absent from Vespers rubric in PDF — sourced from General Menaion (Hieromartyr). " +
+          "Kontakion sourced from General Menaion.",
+    feast_e: "absent — §2A, readings from Oktoechos",
+    feast_g: "absent — §2A, readings from Oktoechos",
     troparion: {
       tone: 4,
       text: "As thou didst share in the ways of the apostles and didst occupy their throne, thou didst find thine activity to be a passage to divine vision, O divinely inspired one. Wherefore, ordering the word of truth, thou didst suffer for the Faith even to the shedding of thy blood, O Hieromartyr Timothy, entreat Christ God, that our souls be saved.",
@@ -1966,7 +2141,10 @@ const SAMPLE_MENAION = {
     service_file: "06-20.pdf",
     rank: "simple",
     note: "Bishop of Patara in Lycia; refuted Origen. Martyred c. 311. " +
-          "Distinct from Patriarch Methodius of Constantinople (June 14).",
+          "Distinct from Patriarch Methodius of Constantinople (June 14). " +
+          "§2A confirmed — 3 stichera; PDF has no AT LITURGY Epistle/Gospel section.",
+    feast_e: "absent — §2A, readings from Oktoechos",
+    feast_g: "absent — §2A, readings from Oktoechos",
     troparion: {
       tone: 2,
       text: "Thy blood mystically crieth out to God from the earth, like that of Abel, " +
@@ -1995,7 +2173,23 @@ const SAMPLE_MENAION = {
     service_file: "06-21.pdf",
     rank: "simple",
     note: "Youth martyred c. 305 under Diocletian; cast into the sea in a sack with " +
-          "sand and serpents. St. John Chrysostom composed an encomium in his honor.",
+          "sand and serpents. St. John Chrysostom composed an encomium in his honor. " +
+          "§2A by stichera count (3); PDF includes full AT LITURGY section — " +
+          "compiled martyr service with proper Epistle and Gospel.",
+    feast_e: "Ephesians 6:10-17 (§233)",
+    feast_g: "Luke 21:12-19 (§106)",
+    prokeimenon_tone: 4,
+    prokeimenon_text: "In the saints that are in His earth hath the Lord been wondrous; " +
+      "He hath wrought all His desires in them.",
+    prokeimenon_stichos: "I beheld the Lord ever before me, for He is at my right hand, " +
+      "that I might not be shaken.",
+    alleluia_tone: 4,
+    alleluia_verse: "The righteous cried, and the Lord heard them, " +
+      "and He delivered them out of all their tribulations.",
+    alleluia_stichos: "Many are the tribulations of the righteous, " +
+      "and the Lord shall deliver them out of them all.",
+    communion_verse: "In everlasting remembrance shall the righteous be; " +
+      "he shall not be afraid of evil tidings.",
     troparion: {
       tone: 4,
       text: "In his sufferings, Thy martyr Julian O Lord, received an imperishable crown " +
@@ -2022,7 +2216,10 @@ const SAMPLE_MENAION = {
     service_file: "06-22.pdf",
     rank: "simple",
     note: "Defender of Nicene Orthodoxy against Arianism. Martyred 380 when an Arian " +
-          "woman struck him with a roof tile. Troparion not printed in PDF; sourced from OCA.",
+          "woman struck him with a roof tile. Troparion not printed in PDF; sourced from OCA. " +
+          "§2A confirmed — 3 stichera; PDF AT LITURGY has kontakion only, no Epistle/Gospel.",
+    feast_e: "absent — §2A, readings from Oktoechos",
+    feast_g: "absent — §2A, readings from Oktoechos",
     troparion: {
       tone: 4,
       text: "By sharing in the ways of the apostles, thou didst occupy their throne. " +
@@ -2054,7 +2251,10 @@ const SAMPLE_MENAION = {
       service_file: "06-23.pdf",
       rank: "simple",
       note: "Vladimir Icon of the Theotokos is also a full OCA commemoration on June 23 " +
-            "(also May 21 & Aug 26). Agrippina listed first/primary by OCA.",
+            "(also May 21 & Aug 26). Agrippina listed first/primary by OCA. " +
+            "§2A confirmed — 3 stichera; PDF AT LITURGY has troparion and kontakion only.",
+      feast_e: "absent — §2A, readings from Oktoechos",
+      feast_g: "absent — §2A, readings from Oktoechos",
       troparion: {
         tone: 4,
         text: "Thy ewe-lamb Agrippina, O Jesus crieth out with a loud voice: Thee do I love, " +
@@ -2079,8 +2279,32 @@ const SAMPLE_MENAION = {
       note: "The Vladimir Icon is commemorated on the OCA calendar on June 23 " +
             "(also May 21 and August 26). This is a full OCA commemoration, not Russian-only. " +
             "The June 23 celebration commemorates the deliverance of Moscow from Khan Achmed (1480).",
-      feast_e: "Hebrews 9:1-7",
-      feast_g: "Luke 10:38-42; 11:27-28",
+      feast_e: "Hebrews 9:1-7 (§320)",
+      feast_g: "Luke 10:38-42; 11:27-28 (§54)",
+      prokeimenon_tone: 3,
+      prokeimenon_text: "My soul doth magnify the Lord, " +
+        "and my spirit hath rejoiced in God my Savior.",
+      prokeimenon_stichos: "For He hath looked upon the lowliness of His handmaiden; " +
+        "for behold, from henceforth all generations shall call me blessed.",
+      prokeimenon_note: "Song of the Theotokos (Magnificat) — Tone III",
+      alleluia_tone: 2,
+      alleluia_verse: "Arise, O Lord, into Thy rest, " +
+        "Thou and the ark of Thy holiness.",
+      alleluia_stichos: "The Lord hath sworn in truth unto David, " +
+        "and He will not annul it.",
+      communion_verse: "I will take the cup of salvation, " +
+        "and I will call upon the name of the Lord.",
+      paroemia_1: "Genesis 28:10-17 — Jacob’s ladder; gate of heaven " +
+        "(Theotokos as ladder and gate typology)",
+      paroemia_2: "Ezekiel 43:27-44:4 — the shut gate through which the Lord enters " +
+        "(Theotokos as the sealed gate typology)",
+      paroemia_3: "Proverbs 9:1-11 — Wisdom hath built a house for herself " +
+        "(Theotokos as house of Wisdom)",
+      matins_gospel: "Luke 1:39-49, 56 (§4) — the Visitation; " +
+        "My soul doth magnify the Lord",
+      has_litya: true,
+      has_polyeleos: true,
+      has_great_doxology: true,
       troparion: {
         tone: 4,
         text: "Today the most glorious city of Moscow is adorned, having received thy " +
@@ -2115,8 +2339,30 @@ const SAMPLE_MENAION = {
     note: "Great Feast of the Nativity of John the Forerunner. One of the twelve Great " +
           "Feasts. Hours follow Feast rules (out of ordinary scope). Troparion and " +
           "kontakion encoded for reference.",
-    feast_e: "Romans 13:11-14:4",
-    feast_g: "Luke 1:1-25, 57-68, 76, 80",
+    feast_e: "Romans 13:11-14:4 (§112)",
+    feast_g: "Luke 1:5-25, 57-68, 76, 80 (§1)",
+    prokeimenon_tone: 7,
+    prokeimenon_text: "The righteous man shall be glad in the Lord, " +
+      "and shall hope in Him.",
+    prokeimenon_stichos: "Hearken, O God, unto my prayer, " +
+      "when I make supplication unto Thee.",
+    alleluia_tone: 1,
+    alleluia_verse: "Blessed be the Lord God of Israel, " +
+      "for He hath visited and wrought redemption for His people.",
+    alleluia_stichos: "And thou, O child, shalt be called " +
+      "the prophet of the Most High.",
+    communion_verse: "In everlasting remembrance shall the righteous be; " +
+      "he shall not be afraid of evil tidings.",
+    paroemia_1: "Genesis 17:15-17,19; 18:11-14; 21:1-8 — Sarah shall bear a son; " +
+      "barren woman bears Isaac (barren-to-fruitful typology)",
+    paroemia_2: "Judges 13:2-8, 13-14, 17-18, 21-24 — Manoah’s wife shall conceive " +
+      "a son sanctified from birth (Samson typology)",
+    paroemia_3: "Isaiah 40:1-3, 9; 41:17-18; 45:8; 54:1 — voice crying in wilderness; " +
+      "Rejoice thou barren",
+    matins_gospel: "Luke 1:24-25, 57-68, 76, 80 (§3)",
+    has_litya: true,
+    has_polyeleos: true,
+    has_great_doxology: true,
     troparion: {
       tone: 4,
       text: "O prophet and forerunner of the coming of Christ, we who honor thee with love " +
@@ -2152,6 +2398,19 @@ const SAMPLE_MENAION = {
           "of the feast at the Hours, Glory... of the saint; kontakion of the feast only " +
           "at all Hours (Febronia is not Doxology rank). Hours assembly out of ordinary " +
           "scope until §2G1–§2G4 is built.",
+    feast_e: "2 Corinthians 6:1-10 (§181)",
+    feast_g: "Luke 7:36-50 (§33)",
+    prokeimenon_tone: 4,
+    prokeimenon_text: "Wondrous is God in His saints, the God of Israel.",
+    prokeimenon_stichos: "In congregations bless ye God, " +
+      "the Lord from the well-springs of Israel.",
+    alleluia_tone: 1,
+    alleluia_verse: "With patience I waited patiently for the Lord, " +
+      "and He was attentive unto me, and He hearkened unto my supplication.",
+    alleluia_stichos: "And He brought me up out of the pit of misery, " +
+      "and from the mire of clay.",
+    communion_verse: "In everlasting remembrance shall the righteous be; " +
+      "he shall not be afraid of evil tidings.",
     troparion: {
       tone: 4,
       text: "O prophet and forerunner of the coming of Christ, we who honor thee with love " +
@@ -2195,7 +2454,10 @@ const SAMPLE_MENAION = {
     rank: "simple",
     note: "5th-century ascetic who lived in an almond tree for 3 years near Thessalonica, " +
           "emulating the Stylites. Known for holding burning embers before the emperor " +
-          "without being burned.",
+          "without being burned. §2A confirmed — 3 stichera; PDF AT LITURGY " +
+          "has troparion and kontakion only, no Epistle/Gospel.",
+    feast_e: "absent — §2A, readings from Oktoechos",
+    feast_g: "absent — §2A, readings from Oktoechos",
     troparion: {
       tone: 8,
       text: "In thee, O father, the image of God was preserved, for taking up thy cross, " +
@@ -2223,7 +2485,20 @@ const SAMPLE_MENAION = {
     service_file: "06-27.pdf",
     rank: "simple",
     note: "Roman-born physician and monastic who founded a renowned hospital in " +
-          "Constantinople. Healed Emperor Justinian of a grave illness. Reposed c. 530.",
+          "Constantinople. Healed Emperor Justinian of a grave illness. Reposed c. 530. " +
+          "§2A by stichera count (3); PDF includes full AT LITURGY section — " +
+          "venerable saint service with proper Epistle and Gospel.",
+    feast_e: "Galatians 5:22-6:2 (§213)",
+    feast_g: "Luke 12:32-40 (§67)",
+    prokeimenon_tone: 7,
+    prokeimenon_text: "Precious in the sight of the Lord is the death of His saints.",
+    prokeimenon_stichos: "What shall I render unto God for all that He hath rendered unto me?",
+    alleluia_tone: 6,
+    alleluia_verse: "Blessed is the man that feareth the Lord; " +
+      "in His commandments shall he greatly delight.",
+    alleluia_stichos: "His seed shall be mighty upon the earth.",
+    communion_verse: "In everlasting remembrance shall the righteous be; " +
+      "he shall not be afraid of evil tidings.",
     troparion: {
       tone: 8,
       text: "In thy patience, O venerable father, thou didst acquire thy reward, having " +
@@ -2252,7 +2527,21 @@ const SAMPLE_MENAION = {
     note: "The translation of the relics of the Holy Unmercenaries Cyrus and John from " +
           "Canopus to Menouthis near Alexandria in the 5th century. Their primary feast " +
           "is January 31. Both were physician-martyrs: Cyrus a monk, John a soldier, " +
-          "who suffered under Diocletian.",
+          "who suffered under Diocletian. §2C confirmed — 6 stichera.",
+    feast_e: "1 Corinthians 12:27-13:8 (§153)",
+    feast_g: "Matthew 10:1, 5-8 (§34 from midpoint)",
+    prokeimenon_tone: 4,
+    prokeimenon_text: "In the saints that are in His earth hath the Lord been wondrous; " +
+      "He hath wrought all His desires in them.",
+    prokeimenon_stichos: "I beheld the Lord ever before me, " +
+      "for He is at my right hand, that I might not be shaken.",
+    alleluia_tone: 2,
+    alleluia_verse: "Behold now, what is so good or so joyous " +
+      "as for brethren to dwell together in unity?",
+    alleluia_stichos: "For there the Lord commanded the blessing, " +
+      "life for evermore.",
+    communion_verse: "Rejoice in the Lord, O ye righteous; " +
+      "praise is meet for the upright.",
     troparion: {
       tone: 5,
       text: "O Christ God Who hast given us the miracles of Thy holy martyrs as an " +
@@ -2286,8 +2575,30 @@ const SAMPLE_MENAION = {
       text: "O first enthroned among the apostles and teachers of the whole world: " +
             "entreat the Master of all, that He grant peace to the world " +
             "and great mercy to our souls.",
-    feast_e: "2 Corinthians 11:21-12:9",
-    feast_g: "Matthew 16:13-19",
+    feast_e: "2 Corinthians 11:21-30 (§193)",
+    feast_g: "Matthew 16:13-19 (§67)",
+    prokeimenon_tone: 8,
+    prokeimenon_text: "Their sound hath gone forth into all the earth, " +
+      "and their words unto the ends of the world.",
+    prokeimenon_stichos: "The heavens declare the glory of God, " +
+      "and the firmament proclaimeth the work of His hands.",
+    alleluia_tone: 1,
+    alleluia_verse: "The heavens shall confess Thy wonders, O Lord, " +
+      "and Thy truth in the congregation of saints.",
+    alleluia_stichos: "God Who is glorified in the council of the saints.",
+    communion_verse: "Their sound hath gone forth into all the earth, " +
+      "and their words unto the ends of the world.",
+    paroemia_1: "1 Peter 1:1-9 — begotten again unto a lively hope; " +
+      "trial of faith more precious than gold",
+    paroemia_2: "1 Peter 1:10-16 — be ye holy for I am holy; " +
+      "redeemed with the precious blood of Christ",
+    paroemia_3: "1 Peter 2:11-24 — abstain from fleshly lusts; " +
+      "Christ also suffered for us, leaving us an example",
+    matins_gospel: "John 21:15-23 (§67) — Feed my lambs; " +
+      "signifying by what death he should glorify God",
+    has_litya: true,
+    has_polyeleos: true,
+    has_great_doxology: true,
     },
     kontakion: {
       tone: 2,
@@ -2319,8 +2630,19 @@ const SAMPLE_MENAION = {
             "entreat the Master of all, that He grant peace to the world " +
             "and great mercy to our souls.",
       note: "Same troparion as June 29 (Feast of Peter & Paul) — confirmed by OCA and St. Sergius.",
-    feast_e: "1 Corinthians 4:9-16",
-    feast_g: "Mark 3:13-19",
+    feast_e: "1 Corinthians 4:9-16 (§131)",
+    feast_g: "Mark 3:13-19 (§12)",
+    prokeimenon_tone: 8,
+    prokeimenon_text: "Their sound hath gone forth into all the earth, " +
+      "and their words unto the ends of the world.",
+    prokeimenon_stichos: "The heavens declare the glory of God, " +
+      "and the firmament proclaimeth the work of His hands.",
+    alleluia_tone: 1,
+    alleluia_verse: "The heavens shall confess Thy wonders, O Lord, " +
+      "and Thy truth in the congregation of saints.",
+    alleluia_stichos: "God Who is glorified in the council of the saints.",
+    communion_verse: "Their sound hath gone forth into all the earth, " +
+      "and their words unto the ends of the world.",
     },
     kontakion: {
       tone: 2,
@@ -2593,10 +2915,73 @@ function getLiturgicalData(date) {
   // Season detection — most restrictive first
   let season, seasonNote;
 
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
   if ((date >= thisGreatLentStart && date < relevantPascha) ||
       (date >= nextGreatLentStart && date < followingPascha)) {
     season = "lent";
     seasonNote = "Great Lent — Lenten Hours order applies (Fekula Chapter Three)";
+========
+  // ── Lent week/Sunday tracking (used by kathisma schedule and context card) ──
+  // Lent starts P-48 (Clean Monday). Week 1 = days 1-7, Week 2 = days 8-14, etc.
+  // Passion Week = P-7 through P-1 (week 7 in the count but special).
+  let lentWeek = null;        // 1-6 (Passion Week handled separately)
+  let lentSunday = null;      // 1-5 (named Lenten Sundays)
+  let passionWeek = false;
+  let lentInfo = null;        // { week, weekName, isPassionWeek }
+
+  // Compute for the relevant Lent (the one this date falls in)
+  const computeLentData = (lentStart, pascha) => {
+    if (date < lentStart || date >= pascha) return null;
+    const dayOfLent = Math.floor((date - lentStart) / 86400000) + 1; // 1-based
+    if (dayOfLent >= 43 && dayOfLent <= 49) { // P-7 to P-1
+      return { week: null, weekName: "Passion Week", isPassionWeek: true, dayOfLent };
+    }
+    const wk = Math.ceil(dayOfLent / 7);
+    const LENT_WEEK_NAMES = {
+      1: "Week 1 of Great Lent",
+      2: "Week 2 of Great Lent",
+      3: "Week 3 of Great Lent",
+      4: "Week 4 of Great Lent",
+      5: "Week 5 of Great Lent",
+      6: "Week 6 of Great Lent",
+    };
+    const LENT_SUNDAYS = {
+      1: "Sunday of Orthodoxy",
+      2: "Sunday of St. Gregory Palamas",
+      3: "Sunday of the Holy Cross",
+      4: "Sunday of St. John Climacus",
+      5: "Sunday of St. Mary of Egypt",
+    };
+    const lentSun = (dow === 0 && wk >= 1 && wk <= 5) ? wk : null;
+    return {
+      week: wk,
+      weekName: LENT_WEEK_NAMES[wk] || "Great Lent",
+      isPassionWeek: false,
+      dayOfLent,
+      sundayName: lentSun ? LENT_SUNDAYS[lentSun] : null,
+      sundayNum: lentSun,
+    };
+  };
+
+  const lentDataThis = computeLentData(thisGreatLentStart, relevantPascha);
+  const lentDataNext = computeLentData(nextGreatLentStart, followingPascha);
+  const activeLentData = lentDataThis || lentDataNext;
+  if (activeLentData) {
+    lentWeek = activeLentData.isPassionWeek ? null : activeLentData.week;
+    passionWeek = activeLentData.isPassionWeek;
+    lentSunday = activeLentData.sundayNum || null;
+    lentInfo = activeLentData;
+  }
+
+  if ((date >= thisGreatLentStart && date < relevantPascha) ||
+      (date >= nextGreatLentStart && date < followingPascha)) {
+    season = "lent";
+    if (passionWeek) {
+      seasonNote = "Passion Week (Holy Week)";
+    } else {
+      seasonNote = "Great Lent";
+    }
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
   } else if (date >= relevantPascha && date <= brightSaturday) {
     season = "brightweek";
     seasonNote = "Bright Week — Paschal Hours order applies";
@@ -2639,11 +3024,168 @@ function getLiturgicalData(date) {
 
   const paschaOffset = Math.floor((date - relevantPascha) / 86400000);
 
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
+========
+  // ── Sundays after Pentecost / Sundays of Luke ────────────────────────────
+  // After All Saints Sunday (P+56), Sundays are counted as Nth Sunday after
+  // Pentecost. After the Lukan Jump, a parallel count tracks the Nth Sunday
+  // of Luke. Both counts end on the Sunday of the Publican and Pharisee
+  // (followingPascha - 70), which opens the Triodion. The Prodigal Son Sunday
+  // (followingPascha - 63) is already in the Triodion and carries no Luke number.
+  //
+  // Convention confirmed against OCA bulletin Oct 19, 2025:
+  //   Pascha Apr 20 2025 → All Saints Jun 15 → Sep 14 (Elevation, Sunday)
+  //   → Lukan Jump Monday Sep 15 → 1st Sunday of Luke Sep 28
+  //   → Oct 19 = 19th Sunday after Pentecost, 4th of Luke ✓
+  //
+  // Rule: 1st Sunday of Luke = lukeMonday + 13 days (second Sunday after Elevation)
+  // End of both counts: Sunday of the Publican and Pharisee (followingPascha - 70)
+  // For weekdays: show the PRECEDING Sunday's counts
+
+  let sundayAfterPentecost = null;
+  let sundayOfLuke = null;
+  let pentecostWeekInfo = null;
+
+  const ordSuffix = (n) => {
+    if (n === 11 || n === 12 || n === 13) return n + "th";
+    const r = n % 10;
+    return n + (r === 1 ? "st" : r === 2 ? "nd" : r === 3 ? "rd" : "th");
+  };
+
+  // Triodion opens on the Sunday of the Publican and Pharisee = followingPascha - 70
+  // Both Sundays-after-Pentecost and Sundays-of-Luke tracking end here.
+  const publicanPhariseeSunday = new Date(followingPascha);
+  publicanPhariseeSunday.setDate(publicanPhariseeSunday.getDate() - 70);
+
+  // Prodigal Son Sunday = followingPascha - 63 (reused by kathisma period detection)
+  const prodigalSonSunday = new Date(followingPascha);
+  prodigalSonSunday.setDate(followingPascha.getDate() - 63);
+
+  // Only compute after All Saints Sunday and before the Triodion opens
+  if (date >= allSaintsSunday) {
+    const MS_PER_DAY = 86400000;
+
+    // Which Sunday is this date on or preceded by?
+    const dow_js = date.getDay(); // 0=Sun
+    const daysSinceSunday = dow_js;
+    const precedingSunday = new Date(date);
+    precedingSunday.setDate(precedingSunday.getDate() - daysSinceSunday);
+
+    // Only count up to the end of P&P week — Sunday itself and the days
+    // of that week. Once the following Monday arrives, the Triodion governs.
+    // Practical cutoff: the date itself must be on or before P&P Sunday's Saturday,
+    // i.e. date < publicanPhariseeSunday + 7 days.
+    const triodiOnOpens = new Date(publicanPhariseeSunday);
+    triodiOnOpens.setDate(triodiOnOpens.getDate() + 7); // Monday after P&P week
+
+    if (precedingSunday >= allSaintsSunday && date < triodiOnOpens) {
+      // For weekdays, the "week" belongs to the UPCOMING Sunday.
+      // e.g. Mon–Sat after the 1st Sunday = "Week of the 2nd Sunday after Pentecost"
+      // For Sundays, use that Sunday's own number.
+      const isSunday = dow_js === 0;
+      const referenceSunday = isSunday ? precedingSunday : (() => {
+        const ns = new Date(precedingSunday);
+        ns.setDate(ns.getDate() + 7);
+        return ns;
+      })();
+
+      const weeksSinceAllSaints = Math.floor(
+        (referenceSunday - allSaintsSunday) / (7 * MS_PER_DAY)
+      );
+      const sunNumAfterPent = weeksSinceAllSaints + 1;
+
+      // Lukan Jump for the relevant year
+      const lukeJumpOffset = getLukanJumpOffset(date.getFullYear());
+      const lukeMonday = new Date(relevantPascha);
+      lukeMonday.setDate(lukeMonday.getDate() + lukeJumpOffset);
+      const firstLukeSunday = new Date(lukeMonday);
+      firstLukeSunday.setDate(firstLukeSunday.getDate() + 13);
+
+      // Luke count: use referenceSunday (same as Pentecost count)
+      let lukeNum = null;
+      if (referenceSunday >= firstLukeSunday && referenceSunday <= publicanPhariseeSunday) {
+        lukeNum = Math.floor(
+          (referenceSunday - firstLukeSunday) / (7 * MS_PER_DAY)
+        ) + 1;
+      }
+
+      sundayAfterPentecost = sunNumAfterPent;
+      sundayOfLuke = lukeNum;
+      pentecostWeekInfo = {
+        sunNumAfterPent,
+        lukeNum,
+        isSunday,
+        label: isSunday
+          ? ordSuffix(sunNumAfterPent) + " Sunday after Pentecost"
+            + (lukeNum ? " (" + ordSuffix(lukeNum) + " of Luke)" : "")
+          : ordSuffix(sunNumAfterPent) + " Week after Pentecost"
+            + (lukeNum ? " (" + ordSuffix(lukeNum) + " of Luke)" : ""),
+      };
+    }
+  }
+
+  // ── Kathisma period detection ──────────────────────────────────────────────
+  // Four periods govern the kathisma schedule at both Vespers and Matins.
+  // Source: OCA Liturgics, oca.org/liturgics/outlines/kathisma-readings-at-vespers
+  // Boundaries:
+  //   summer_winter: Thomas Sun (P+7) → Sep 21; Dec 20 → Jan 14;
+  //                  Prodigal Son Sun (Meatfare-7) → Forgiveness Sun (Meatfare+7)
+  //   autumn_spring: Sep 22 → Dec 19; Jan 15 → Sat before Prodigal Son Sun
+  //   lent_1_4_6:   Great Lent weeks 1-4 and 6
+  //   lent_5:       Great Lent week 5
+  //   passion_week: P-7 through P-1
+  //   bright_week:  P+0 through P+6
+  //   pentecostarion: P+7 through P+55 (follows summer_winter table)
+  let kathismaPeriod = null;
+
+  const forgivenessSunday = new Date(nextMeatfareSunday);
+  forgivenessSunday.setDate(forgivenessSunday.getDate() + 7);
+
+  const mm = date.getMonth() + 1; // 1-12
+  const dd = date.getDate();
+
+  if (season === "brightweek") {
+    kathismaPeriod = "bright_week";
+  } else if (season === "pentecostarion") {
+    kathismaPeriod = "summer_winter"; // Thomas Sun through All Saints — same table
+  } else if (passionWeek) {
+    kathismaPeriod = "passion_week";
+  } else if (season === "lent") {
+    if (lentWeek === 5) {
+      kathismaPeriod = "lent_5";
+    } else if (lentWeek !== null) {
+      kathismaPeriod = "lent_1_4_6"; // weeks 1-4 and 6
+    } else {
+      kathismaPeriod = "passion_week"; // fallback if lentWeek null (shouldn't happen)
+    }
+  } else if (season === "prefasting") {
+    // Meatfare week (ordinary) or Cheesefare (Prodigal Son through Forgiveness)
+    if (date >= prodigalSonSunday && date <= forgivenessSunday) {
+      kathismaPeriod = "summer_winter";
+    } else {
+      kathismaPeriod = "autumn_spring";
+    }
+  } else {
+    // Ordinary time, Sunday, great_feast, etc. — determined by fixed calendar dates
+    const isSummerWinter =
+      (mm < 9 || (mm === 9 && dd <= 21)) ||   // through Sep 21
+      (mm > 11 || (mm === 12 && dd >= 20)) ||  // Dec 20 onward
+      (mm === 1 && dd <= 14);                   // through Jan 14
+    kathismaPeriod = isSummerWinter ? "summer_winter" : "autumn_spring";
+  }
+
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
   return {
     tone, dayName, dow, season, seasonNote, feastPeriod, namedDay,
     pascha: relevantPascha, allSaintsSunday,
     nextMeatfareSunday, followingPascha,
     paschaOffset,
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
+========
+    lentWeek, lentSunday, passionWeek, lentInfo,
+    sundayAfterPentecost, sundayOfLuke, pentecostWeekInfo,
+    kathismaPeriod,
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
     isOrdinaryWeekday: season === "ordinary",
     isSunday: season === "sunday",
     isLent: season === "lent",
@@ -2774,7 +3316,182 @@ const GLOSSARY = {
 // The movable troparion/kontakion slots are inserted between these by the assembler.
 
 
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
 // ─── UNIFIED HOUR ASSEMBLER ─────────────────────────────────────────────────
+========
+// ─── KATHISMA SCHEDULE ───────────────────────────────────────────────────────
+// Source: OCA Liturgics
+//   Vespers: oca.org/liturgics/outlines/kathisma-readings-at-vespers
+//   Matins:  oca.org/liturgics/outlines/kathisma-readings-at-matins
+//   Psalm divisions: oca.org/liturgics/outlines/the-division-of-the-psalter-into-kathismas
+// LXX (Septuagint/Greek) psalm numbering used throughout.
+// FW-B: Full psalm texts to be fetched from Drive Psalter reference document on demand.
+
+const KATHISMA_PSALMS = {
+   1: "1–8",    2: "9–16",   3: "17–23",  4: "24–31",  5: "32–36",
+   6: "37–45",  7: "46–54",  8: "55–63",  9: "64–69",  10: "70–76",
+  11: "77–84", 12: "85–90", 13: "91–100", 14: "101–104", 15: "105–108",
+  16: "109–117", 17: "118", 18: "119–133", 19: "134–142", 20: "143–150",
+};
+
+// Vespers kathisma schedule keyed by kathismaPeriod, then dow (0=Sun … 6=Sat).
+// null = kathisma omitted.
+// Saturday always = 1 (full Kathisma I, or "Blessed is the Man" on feasts).
+// Sunday always = null.
+const VESPERS_KATHISMA = {
+  summer_winter: { 0:null, 1:6,  2:9,  3:12, 4:15, 5:18, 6:1 },
+  autumn_spring: { 0:null, 1:18, 2:18, 3:18, 4:18, 5:18, 6:1 },
+  lent_1_4_6:   { 0:null, 1:18, 2:18, 3:18, 4:18, 5:18, 6:1 },
+  lent_5:        { 0:null, 1:10, 2:19, 3:7,  4:12, 5:18, 6:1 },
+  passion_week:  { 0:null, 1:18, 2:18, 3:18, 4:null, 5:null, 6:null },
+  bright_week:   { 0:null, 1:null, 2:null, 3:null, 4:null, 5:null, 6:null },
+};
+
+// Matins kathisma schedule. Arrays = multiple kathismas read in sequence.
+// null = omitted. "polyeleos" = Polyeleos (Ps 134-135) replaces/supplements.
+const MATINS_KATHISMA = {
+  summer_winter: {
+    // Sunday blank in OCA table for this period — no Sunday matins kathismas listed
+    0: null, 1: [4, 5], 2: [7, 8],
+    3: [10, 11], 4: [13, 14], 5: [19, 20], 6: [16, 17],
+  },
+  autumn_spring: {
+    // Sunday: 2, 3, 17 or Polyeleos
+    0: [2, 3, "17_or_polyeleos"], 1: [4, 5, 6], 2: [7, 8, 9],
+    3: [10, 11, 12], 4: [13, 14, 15], 5: [19, 20], 6: [16, 17],
+  },
+  lent_1_4_6: {
+    0: [4, 5, 6], 1: [10, 11, 12], 2: [19, 20, 1],
+    3: [6, 7, 8], 4: [13, 14, 15], 5: [16, 17], 6: [16, 17],
+    // Saturday blank in OCA table — universal Saturday rule: kathismas 16, 17
+  },
+  lent_5: {
+    0: [4, 5, 6], 1: [11, 12, 13], 2: [20, 1, 2],
+    3: [8], 4: [13, 14, 15], 5: [16, 17], 6: [16, 17],
+    // Saturday blank in OCA table — universal Saturday rule: kathismas 16, 17
+  },
+  passion_week: {
+    0: [2, 3, "polyeleos"], 1: [4, 5, 6], 2: [9, 10, 11],
+    3: [14, 15, 16], 4: null, 5: null, 6: [17],
+    // Passion Week Saturday: only Kathisma 17 (Ps. 118) — explicitly in OCA table
+  },
+  bright_week: {
+    0: null, 1: null, 2: null, 3: null, 4: null, 5: null, 6: null,
+  },
+};
+
+// ── getKathismaForVespers ────────────────────────────────────────────────────
+// Returns { num, psalms, label, rule, source, hadVigilNote } or
+//         { omitted: true, rule, source } or
+//         { blessedIsMan: true, rule, source }
+// rank: service rank string. hadVigil: boolean placeholder (always false for now).
+function getKathismaForVespers(liturgicalData, rank, hadVigil = false, pentEntry = null) {
+  const { dow, kathismaPeriod, season, passionWeek } = liturgicalData;
+  const isHighRank = rank === "polyeleos" || rank === "vigil";
+  const isSaturday = dow === 6;
+  const isSundayEve = dow === 0;
+  // Great feast of Lord: fixed calendar feasts (season="great_feast") OR
+  // Pentecostarion feasts where Fekula explicitly suppresses the kathisma.
+  // Per Fekula §4B12: At Ascension Vespers "We do not sing Blessed is the man...
+  //   but we immediately sing Lord I have cried..." — kathisma suppressed.
+  //   At second Vespers (after Liturgy): "no kathisma on account of the Vigil."
+  // Per Fekula §4B15: At Pentecost Vespers (Saturday evening) "We sing Blessed is
+  //   the man..., the entire kathisma, as usual on Saturday evening" — NOT suppressed.
+  // Per Fekula §4B8: Mid-Pentecost "The service begins as usual, with the appointed
+  //   kathisma (i.e., not Blessed is the man...)" — ordinary kathisma is read.
+  // Therefore only Ascension suppresses the kathisma in the Pentecostarion.
+  const PENT_KATHISMA_SUPPRESSED = ["ascension"]; // Fekula §4B12
+  const isPentKathismaSuppressed = pentEntry &&
+    PENT_KATHISMA_SUPPRESSED.includes(pentEntry.hours_format);
+  const isGreatFeastOfLord = season === "great_feast" || isPentKathismaSuppressed;
+  const SOURCE = "OCA — Psalter Readings at Vespers";
+
+  // 1. Bright Week — no kathisma
+  if (kathismaPeriod === "bright_week") {
+    return { omitted: true, rule: "No kathisma during Bright Week.", source: SOURCE };
+  }
+
+  // 2. Passion Week Thu/Fri/Sat — no kathisma
+  if (kathismaPeriod === "passion_week" && (dow === 4 || dow === 5 || dow === 6)) {
+    return { omitted: true, rule: "No kathisma on Thursday, Friday, or Saturday of Passion Week.", source: SOURCE };
+  }
+
+  // 3. Great Feast of the Lord — no kathisma (flag vigil shortcoming)
+  if (isGreatFeastOfLord) {
+    return {
+      omitted: true,
+      rule: "On great feasts of the Lord there is no Psalter reading at Vespers.",
+      source: SOURCE,
+      hadVigilNote: "⚠ FW: If a vigil was served last night, no kathisma applies — the tool cannot detect this automatically.",
+    };
+  }
+
+  // 4. Vigil served previous night — no kathisma (placeholder — always false now)
+  if (hadVigil) {
+    return {
+      omitted: true,
+      rule: "No kathisma when a vigil was served the previous night.",
+      source: SOURCE,
+    };
+  }
+
+  // 5. Saturday, or Polyeleos/Vigil rank on any day — Kathisma I ("Blessed is the Man")
+  if (isSaturday || isHighRank) {
+    const rule = isSaturday
+      ? "At Saturday Vespers the entire first kathisma is read (often abbreviated to 'Blessed is the Man' in parish practice)."
+      : "At feasts of Polyeleos or Vigil rank, only the first stasis of Kathisma I ('Blessed is the Man') is read.";
+    return { blessedIsMan: true, num: 1, psalms: KATHISMA_PSALMS[1], rule, source: SOURCE };
+  }
+
+  // 6. Sunday evening — no kathisma
+  if (isSundayEve) {
+    return { omitted: true, rule: "No Psalter reading at Sunday evening Vespers.", source: SOURCE };
+  }
+
+  // 7. Vigil shortcoming note for ordinary days
+  const vigiNote = "⚠ FW: If a vigil was served last night, no kathisma applies — the tool cannot detect this automatically.";
+
+  // 8. Table lookup
+  const table = VESPERS_KATHISMA[kathismaPeriod];
+  const num = table ? table[dow] : null;
+  if (!num) {
+    return { omitted: true, rule: "No kathisma appointed for this day and season.", source: SOURCE };
+  }
+  const periodLabels = {
+    summer_winter: "Summer/Winter period (Thomas Sun–Sep 21, Dec 20–Jan 14, Prodigal Son–Forgiveness Sun)",
+    autumn_spring: "Autumn/Spring period (Sep 22–Dec 19, Jan 15–Sat before Prodigal Son Sun)",
+    lent_1_4_6: "Great Lent, Weeks 1–4 and 6",
+    lent_5: "Great Lent, Week 5",
+  };
+  return {
+    num,
+    psalms: KATHISMA_PSALMS[num],
+    label: "Kathisma " + num + " (Ps. " + KATHISMA_PSALMS[num] + ")",
+    rule: "Appointed kathisma for " + (periodLabels[kathismaPeriod] || kathismaPeriod) + ".",
+    source: SOURCE,
+    hadVigilNote: vigiNote,
+  };
+}
+
+// ── getKathismaForMatins ─────────────────────────────────────────────────────
+// Returns array of kathisma descriptors for Matins. Data-ready for Matins build.
+// Each entry: { num, psalms } or { polyeleos: true } or { polyeleos_or_17: true }
+function getKathismaForMatins(liturgicalData) {
+  const { dow, kathismaPeriod } = liturgicalData;
+  const SOURCE = "OCA — Psalter Readings at Matins";
+  const table = MATINS_KATHISMA[kathismaPeriod];
+  if (!table) return [];
+  const raw = table[dow];
+  if (!raw) return [];
+  return raw.map(k => {
+    if (k === "polyeleos") return { polyeleos: true, source: SOURCE };
+    if (k === "17_or_polyeleos") return { polyeleos_or_17: true, num: 17, psalms: KATHISMA_PSALMS[17], source: SOURCE };
+    return { num: k, psalms: KATHISMA_PSALMS[k], source: SOURCE };
+  });
+}
+
+// ─── UNIFIED HOUR ASSEMBLER ─────────────────────────────────────────────────────────────────────
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
 // Single assembler for all four Hours across all seasons.
 // Fixed skeleton: HTM Horologion, Jordanville NY (1994).
 // Seasonal overlays: Fekula §4A, §4B11, §4B12.
@@ -5890,11 +6607,457 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
 }
 
 function getKontakionForHour(entry, hourKey) {
+  if (!entry) return null;
   const useThirdOde = hourKey === "1st_hour" || hourKey === "6th_hour";
   if (useThirdOde && entry.kontakion_3rd_ode) {
     return entry.kontakion_3rd_ode;
   }
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
   return entry.kontakion;
+========
+  return entry.kontakion || null;
+}
+
+
+const HTM_PSALM_103 =
+  "Bless the Lord, O my soul; O Lord my God, Thou hast been magnified exceedingly. " +
+  "Confession and majesty hast Thou put on, Who coverest Thyself with light as with a garment, " +
+  "Who stretchest out the heaven as it were a curtain; Who supporteth His chambers in the waters, " +
+  "Who appointeth the clouds for His ascent, Who walketh upon the wings of the winds, " +
+  "Who maketh His angels spirits, and His ministers a flame of fire, " +
+  "Who establisheth the earth in the sureness thereof; it shall not be turned back for ever and ever. " +
+  "The abyss like a garment is His mantle; upon the mountains shall the waters stand. " +
+  "At Thy rebuke they will flee, at the voice of Thy thunder shall they be afraid. " +
+  "The mountains rise up and the plains sink down, unto the place where Thou hast established them. " +
+  "Thou appointedst a bound that they shall not pass, neither return to cover the earth. " +
+  "He sendeth forth springs in the valleys; between the mountains will the waters run. " +
+  "They shall give drink to all the beasts of the field; the wild asses will quench their thirst. " +
+  "Beside them will the birds of the heaven lodge, from the midst of the rocks will they give voice. " +
+  "He watereth the mountains from His chambers; the earth is satisfied with the fruit of Thy works. " +
+  "He causeth the grass to grow for the cattle, and green herb for the service of men, " +
+  "to bring forth bread out of the earth; and wine maketh glad the heart of man, " +
+  "to make his face cheerful with oil; and bread strengtheneth man's heart. " +
+  "The trees of the plain shall be satisfied, the cedars of Lebanon, which Thou hast planted. " +
+  "There will the sparrows make their nests; the house of the heron is chief among them. " +
+  "The high mountains are a refuge for the harts, and so is the rock for the hares. " +
+  "He hath made the moon for seasons; the sun knoweth his going down. " +
+  "Thou appointedst the darkness, and there was the night, wherein all the beasts of the forest go abroad. " +
+  "Young lions roaring after their prey, and seeking their food from God. " +
+  "The sun ariseth, and they are gathered together, and they lay them down in their dens. " +
+  "But man shall go forth unto his work, and to his labour until the evening. " +
+  "How magnified are Thy works, O Lord! In wisdom hast Thou made them all; the earth is filled with Thy creation. " +
+  "So is this great and spacious sea, therein are things creeping innumerable, small living creatures with the great. " +
+  "There go the ships; there this dragon, whom Thou hast made to play therein. " +
+  "All things wait on Thee, to give them their food in due season; when Thou givest it them, they will gather it. " +
+  "When Thou openest Thy hand, all things shall be filled with goodness; when Thou turnest away Thy face, they shall be troubled. " +
+  "Thou wilt take their spirit, and they shall cease; and unto their dust shall they return. " +
+  "Thou wilt send forth Thy Spirit, and they shall be created; and Thou shalt renew the face of the earth. " +
+  "Let the glory of the Lord be unto the ages; the Lord will rejoice in His works, " +
+  "Who looketh on the earth and maketh it tremble, Who toucheth the mountains and they smoke. " +
+  "I will sing unto the Lord throughout my life, I will chant to my God for as long as I have my being. " +
+  "May my words be sweet unto Him, and I will rejoice in the Lord. " +
+  "O that sinners would cease from the earth, and they that work iniquity, that they should be no more. " +
+  "Bless the Lord, O my soul.";
+
+const HTM_PSALM_103_REFRAIN =
+  "The sun knoweth his going down, Thou appointedst the darkness, and there was the night. " +
+  "How magnified are Thy works, O Lord! In wisdom hast Thou made them all.\n\n" +
+  "Glory to the Father, and to the Son, and to the Holy Spirit, " +
+  "both now and ever, and unto the ages of ages. Amen.\n\n" +
+  "Alleluia, alleluia, alleluia. Glory to Thee, O God. (thrice)";
+const WEEKLY_VESPERS_PROKEIMENON = {
+  6: { tone: 6, text: "The Lord is King, He is clothed with majesty.",
+    verses: ["The Lord is clothed with strength and He hath girt Himself.",
+             "For He established the universe which shall not be shaken.",
+             "Holiness becometh Thy house, O Lord, unto length of days."] },
+  0: { tone: 8, text: "Behold now, bless ye the Lord, all ye servants of the Lord.",
+    verses: ["Ye that stand in the house of the Lord, in the courts of the house of our God."] },
+  1: { tone: 4, text: "The Lord will hearken unto me when I cry unto Him.",
+    verses: ["When I called upon Thee, O God of my righteousness, Thou didst hearken unto me."] },
+  2: { tone: 1, text: "Thy mercy, O Lord, shall pursue me all the days of my life.",
+    verses: ["The Lord is my shepherd, and I shall not want. In a place of green pasture, there hath He made me to dwell."] },
+  3: { tone: 5, text: "O God, in Thy name save me, and in Thy strength do Thou judge me.",
+    verses: ["O God, hearken unto my prayer, give ear unto the words of my mouth."] },
+  4: { tone: 6, text: "My help cometh from the Lord, Who hath made heaven and the earth.",
+    verses: ["I have lifted up mine eyes to the mountains, from whence cometh my help."] },
+  5: { tone: 7, text: "O God, my helper art Thou, and Thy mercy shall go before me.",
+    verses: ["Rescue me from mine enemies, O God, and from them that rise up against me redeem me."] },
+};
+
+// assembleVespers — all fixed texts from HTM Order of Vespers.
+// Movable slots use already-encoded SAMPLE_MENAION / PENTECOSTARION data.
+// Stichera (Lord I Have Cried, Aposticha) are Phase 2 — unresolved placeholders.
+// Sources: Fekula §2A-§2F (Ch.2), §4A-§4B (Ch.4); HTM Vespers (htm_vespers.md).
+function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias) {
+  const elements = [];
+  const { paschaOffset, tone, dayName, season, namedDay } = liturgicalData;
+  const isPentecostarion = season === "pentecostarion" || season === "brightweek";
+  const isSunday = season === "sunday";
+  const christIsRisenActive = isPentecostarion && paschaOffset >= 7 && paschaOffset <= 38;
+  const rank = (menaionEntry && menaionEntry.rank) || "simple";
+  const isHighRank = rank === "polyeleos" || rank === "vigil";
+  const isDoxOrAbove = rank === "doxology" || isHighRank;
+  const fekulaSection = (() => {
+    if (isPentecostarion && pentEntry) {
+      const fmt = pentEntry.hours_format;
+      if (fmt === "ascension") return "§4B12";
+      if (fmt === "pentecost") return "§4B15";
+      return "§4A";
+    }
+    if (!menaionEntry) return "§2A";
+    if (menaionEntry.fekula_section_override) return "§" + menaionEntry.fekula_section_override;
+    return rank === "six_stichera" ? "§2C" : rank === "doxology" ? "§2D"
+         : rank === "polyeleos" ? "§2E" : rank === "vigil" ? "§2F" : "§2A";
+  })();
+  const sticheraRule = isHighRank
+    ? (isPentecostarion ? "3 from Pentecostarion + 5 from Menaion" : "8 stichera: Octoechos + Menaion")
+    : (isPentecostarion ? "3 from Pentecostarion + 3 from Menaion" : "6 stichera: 3 Octoechos + 3 Menaion");
+  const sticheraCount = isHighRank ? "8" : "6";
+  const dowMap = {Sunday:0,Monday:1,Tuesday:2,Wednesday:3,Thursday:4,Friday:5,Saturday:6};
+  const dow = dowMap[dayName] !== undefined ? dowMap[dayName] : 0;
+  const weeklyProk = WEEKLY_VESPERS_PROKEIMENON[dow];
+  const vespProk = (isPentecostarion && pentEntry && pentEntry.vespers_prokeimenon)
+    ? pentEntry.vespers_prokeimenon : weeklyProk;
+  // Troparion / kontakion — same resolution as assembleHour
+  // Troparion objects are { tone, text } — extract text and tone separately
+  const mTropObj = menaionEntry && menaionEntry.troparion;
+  const mTropText = mTropObj ? (typeof mTropObj === "string" ? mTropObj : mTropObj.text) : null;
+  const mTropTone = mTropObj ? (typeof mTropObj === "string" ? null : mTropObj.tone) : null;
+  const mSaint = (menaionEntry && menaionEntry.saint) || "saint of the day";
+  let effTrop = mTropText, effTropTone = mTropTone, effSaint = mSaint;
+  if (isSunday && namedDay && namedDay.troparion) {
+    const nd = namedDay.troparion;
+    effTrop = typeof nd === "string" ? nd : nd.text;
+    effTropTone = typeof nd === "string" ? null : nd.tone;
+    effSaint = namedDay.name;
+  }
+  let primTrop = null, primTropTone = null, primSrc = "", secTrop = null, secSrc = "";
+  if (isPentecostarion && pentEntry && pentEntry.troparion) {
+    const pt = pentEntry.troparion;
+    primTrop = typeof pt === "string" ? pt : pt.text;
+    primTropTone = typeof pt === "string" ? null : pt.tone;
+    primSrc = "Pentecostarion — " + pentEntry.name;
+    if (effTrop) { secTrop = effTrop; secSrc = "Menaion — " + effSaint; }
+  } else if (effTrop) {
+    primTrop = effTrop; primTropTone = effTropTone; primSrc = "Menaion — " + effSaint;
+  }
+  // Kontakion objects are also { tone, text } — extract text
+  const _extractText = (v) => !v ? null : (typeof v === "string" ? v : (v.text || null));
+  const kont = (() => {
+    if (isPentecostarion && pentEntry)
+      return _extractText(pentEntry.hours_kontakion || pentEntry.kontakion_ode3 || pentEntry.kontakion_ode6);
+    if (menaionEntry && menaionEntry.kontakion_3rd_ode) return _extractText(menaionEntry.kontakion_3rd_ode);
+    return menaionEntry ? _extractText(menaionEntry.kontakion) : null;
+  })();
+  const kontSrc = (isPentecostarion && pentEntry) ? "Pentecostarion — " + pentEntry.name : "Menaion — " + effSaint;
+  // ── OPENING ELEMENTS (shown inline when VespersOpening is collapsed) ─────────
+  // Tagged openingElement:true so the render hides them when the panel is expanded.
+  elements.push({id:"v-blessing",type:"fixed",label:"",rubric:"Priest:",
+    text:"Blessed is our God, always, now and ever, and unto the ages of ages.",
+    source:"OCA Vespers (2021)", openingElement:true});
+  if (christIsRisenActive) {
+    elements.push({id:"v-cr",type:"pentecostarion_skeleton",label:"",
+      openingElement:true,
+      rubric:"(Glory to Thee and O Heavenly King are both skipped — immediately:)",
+      text:HTM_CHRIST_IS_RISEN, repeat:3,
+      source:"HTM Vespers",
+      fekula:{section:fekulaSection,
+        note:"At the beginning of Vespers, after the blessing by the priest, we sing Christ is risen… thrice and immediately read Psalm 103. — Fekula §4A"}});
+  } else {
+    elements.push({id:"v-come",type:"fixed",label:"",rubric:null,
+      openingElement:true,
+      text:HTM_O_COME,source:"HTM Vespers"});
+  }
+  // PSALM 103 — opening handled by VespersOpening collapsible component
+  elements.push({id:"v-ps103",type:"fixed",label:"PSALM 103",rubric:"",
+    text:HTM_PSALM_103, source:"HTM Vespers"});
+  elements.push({id:"v-ps103-refrain",type:"fixed",label:"",rubric:"And Again:",
+    text:HTM_PSALM_103_REFRAIN, source:"HTM Vespers"});
+  // 4. GREAT LITANY
+  elements.push({id:"v-gt-litany",type:"litany",label:"Great Litany",rubric:"Deacon (or Priest):",
+    text:"In peace let us pray to the Lord.\nLord, have mercy.\n" +
+      "For the peace from above and the salvation of our souls, let us pray to the Lord.\nLord, have mercy.\n" +
+      "For the peace of the whole world, the good estate of the holy churches of God, and the union of all, let us pray to the Lord.\nLord, have mercy.\n" +
+      "For this holy temple, and for them that with faith, reverence, and the fear of God enter herein, let us pray to the Lord.\nLord, have mercy.\n" +
+      "For our Metropolitan N., our Bishop N., for the honorable priesthood, the diaconate in Christ, and all the clergy and the people, let us pray to the Lord.\nLord, have mercy.\n" +
+      "For this country, its authorities and armed forces, let us pray to the Lord.\nLord, have mercy.\n" +
+      "For this city, every city and countryside, and the faithful dwelling therein, let us pray to the Lord.\nLord, have mercy.\n" +
+      "For seasonable weather, abundance of the fruits of the earth, and peaceful times, let us pray to the Lord.\nLord, have mercy.\n" +
+      "For travelers by sea, land, and air, for the sick, the suffering, the imprisoned, and for their salvation, let us pray to the Lord.\nLord, have mercy.\n" +
+      "That we may be delivered from all tribulation, wrath, and necessity, let us pray to the Lord.\nLord, have mercy.\n" +
+      "Help us, save us, have mercy on us, and keep us, O God, by Thy grace.\nLord, have mercy.\n" +
+      "Calling to remembrance our most holy, most pure, most blessed, glorious Lady Theotokos and Ever-Virgin Mary with all the saints, let us commit ourselves and one another and all our life unto Christ our God.\nTo Thee, O Lord.",
+    source:"HTM Vespers"});
+  elements.push({id:"v-gt-exc",type:"fixed",label:"",rubric:"Priest:",
+    text:"For unto Thee is due all glory, honour, and worship: to the Father, and to the Son, and to the Holy Spirit, now and ever, and unto the ages of ages.",
+    source:"HTM Vespers"});
+  // 5. KATHISMA
+  // Routed through getKathismaForVespers() — full schedule with all seasonal rules.
+  // Source: OCA oca.org/liturgics/outlines/kathisma-readings-at-vespers
+  // FW-B: Full psalm texts to be fetched from Drive Psalter reference document.
+  const kathismaResult = getKathismaForVespers(liturgicalData, rank, false, pentEntry);
+
+  let kathLabel, kathText, kathFekula, kathSource;
+  if (kathismaResult.blessedIsMan) {
+    kathLabel = "Kathisma I — Blessed Is the Man";
+    kathText  =
+      "Blessed is the man that hath not walked in the counsel of the ungodly. Alleluia, alleluia, alleluia.\n\n" +
+      "For the Lord knoweth the way of the righteous, and the way of the ungodly shall perish. Alleluia, alleluia, alleluia.\n\n" +
+      "Serve ye the Lord with fear, and rejoice in Him with trembling. Alleluia, alleluia, alleluia.\n\n" +
+      "Blessed are all that have put their trust in Him. Alleluia, alleluia, alleluia.\n\n" +
+      "Arise, O Lord, save me, O my God. Alleluia, alleluia, alleluia.\n\n" +
+      "Salvation is of the Lord, and Thy blessing is upon Thy people. Alleluia, alleluia, alleluia.\n\n" +
+      "Glory to the Father, and to the Son, and to the Holy Spirit. Alleluia, alleluia, alleluia.\n\n" +
+      "Both now and ever, and unto the ages of ages. Amen. Alleluia, alleluia, alleluia.\n\n" +
+      "Alleluia, alleluia, alleluia. Glory to Thee, O God. (thrice)";
+    kathSource = kathismaResult.source;
+    kathFekula = { section: fekulaSection, note: kathismaResult.rule +
+      (kathismaResult.hadVigilNote ? "\n\n" + kathismaResult.hadVigilNote : "") };
+  } else if (kathismaResult.omitted) {
+    kathLabel = "Kathisma";
+    kathText  = "(Omitted — see Fekula note)";
+    kathSource = kathismaResult.source;
+    kathFekula = { section: fekulaSection, note: kathismaResult.rule +
+      (kathismaResult.hadVigilNote ? "\n\n" + kathismaResult.hadVigilNote : "") };
+  } else {
+    kathLabel = kathismaResult.label;
+    kathText  = kathismaResult.label + " is read here.";
+    kathSource = kathismaResult.source;
+    kathFekula = { section: fekulaSection, note: kathismaResult.rule +
+      (kathismaResult.hadVigilNote ? "\n\n" + kathismaResult.hadVigilNote : "") };
+  }
+
+  elements.push({id:"v-kathisma", type:"movable",
+    label: kathLabel, rubric:"",
+    text: kathText,
+    source: kathSource,
+    fekula: kathFekula});
+
+  // Small Litany
+  elements.push({id:"v-sm-lit",type:"litany",label:"Small Litany",rubric:"Deacon (or Priest):",
+    text:"Again and again, in peace let us pray to the Lord.\nLord, have mercy.\n" +
+      "Help us, save us, have mercy on us, and keep us, O God, by Thy grace.\nLord, have mercy.\n" +
+      "Calling to remembrance our most holy, most pure, most blessed, glorious Lady Theotokos and Ever-Virgin Mary with all the saints, let us commit ourselves and one another and all our life unto Christ our God.\nTo Thee, O Lord.",
+    source:"HTM Vespers"});
+  elements.push({id:"v-sm-exc",type:"fixed",label:"",rubric:"Priest:",
+    text:"For Thine is the dominion, and Thine is the kingdom, and the power, and the glory: of the Father, and of the Son, and of the Holy Spirit, now and ever, and unto the ages of ages.",
+    source:"HTM Vespers"});
+  // 6. LORD I HAVE CRIED
+  elements.push({id:"v-lic",type:"fixed",label:"Lord I Have Cried",rubric:"",
+    text:"Lord, I have cried unto Thee, hearken unto me. Hearken unto me, O Lord.\n" +
+      "Lord, I have cried unto Thee, hearken unto me; attend to the voice of my supplication, when I cry unto Thee. Hearken unto me, O Lord.\n\n" +
+      "Let my prayer be set forth as incense before Thee, the lifting up of my hands as an evening sacrifice. Hearken unto me, O Lord.",
+    source:"HTM Vespers"});
+  elements.push({id:"v-ps140",type:"fixed",label:"PSALM 140",rubric:"",
+    text:"Set a guard over my mouth, O Lord, keep watch over the door of my lips. " +
+      "Incline not my heart to any evil, to busy myself with wicked deeds in company with men who work iniquity; " +
+      "and let me not eat of their dainties. " +
+      "Let a good man strike or rebuke me in kindness, but let the oil of the wicked never anoint my head; " +
+      "for my prayer is continually against their wicked deeds. " +
+      "When they are given over to those who shall condemn them, then they shall learn that the word of the Lord is true. " +
+      "As a rock which one cleaves and shatters on the land, so shall their bones be strewn at the mouth of Sheol. " +
+      "But my eyes are toward Thee, O Lord God; in Thee I seek refuge; leave me not defenseless. " +
+      "Keep me from the trap which they have laid for me, and from the snares of evildoers. " +
+      "Let the wicked together fall into their own nets, while I escape.",
+    source:"HTM Vespers"});
+  elements.push({id:"v-ps141",type:"fixed",label:"PSALM 141",rubric:"",
+    text:"I cry with my voice to the Lord, with my voice I make supplication to the Lord, " +
+      "I pour out my complaint before Him, I tell my trouble before Him. " +
+      "When my spirit is faint, Thou knowest my way. " +
+      "In the path where I walk they have hidden a trap for me. " +
+      "I look to the right and watch, but there is none who takes notice of me; " +
+      "no refuge remains to me, no man cares for me. " +
+      "I cry to Thee, O Lord; I say, Thou art my refuge, my portion in the land of the living. " +
+      "Give heed to my cry; for I am brought very low. " +
+      "Deliver me from my persecutors; for they are too strong for me.\n\n" +
+      "V. (10) Bring my soul out of prison, that I may give thanks to Thy Name.\n" +
+      "V. (9) The righteous will surround me, for Thou wilt deal bountifully with me.",
+    source:"HTM Vespers"});
+  elements.push({id:"v-ps129",type:"fixed",label:"PSALM 129",rubric:"",
+    text:"V. (8) Out of the depths I cry to Thee, O Lord. Lord, hear my voice!\n" +
+      "V. (7) Let Thine ears be attentive to the voice of my supplication.\n" +
+      "V. (6) If Thou, O Lord, shouldst mark iniquities, Lord, who could stand? But there is forgiveness with Thee.\n" +
+      "V. (5) For Thy Name's sake I wait for Thee, O Lord. My soul has waited for Thy word; my soul has hoped on the Lord.\n" +
+      "V. (4) From the morning watch until night, from the morning watch, let Israel hope on the Lord.\n" +
+      "V. (3) For with the Lord there is mercy, and with Him is plenteous redemption, and He will deliver Israel from all his iniquities.",
+    source:"HTM Vespers"});
+  elements.push({id:"v-ps116",type:"fixed",label:"PSALM 116",rubric:"",
+    text:"V. (2) Praise the Lord, all nations! Praise Him, all peoples!\n" +
+      "V. (1) For His mercy is confirmed on us, and the truth of the Lord endures forever.\n\n" +
+      "Glory to the Father, and to the Son, and to the Holy Spirit.\n" +
+      "Now and ever and unto ages of ages. Amen.",
+    source:"HTM Vespers"});
+  // Stichera — unresolved placeholder
+  elements.push({id:"v-stichera",type:"movable",label:"Stichera on Lord I Have Cried",
+    rubric: sticheraCount + " stichera inserted here",
+    unresolved: true,
+    text:"[Stichera texts not yet encoded for this date]\n\nRequired: " + sticheraRule + "\n\nGlory… / Both now… theotokion follows — rule governed by rank and day of week (Fekula Chapter 6).",
+    source: isPentecostarion ? "Pentecostarion + Menaion" : "Octoechos + Menaion",
+    fekula:{section:fekulaSection, note:"At Lord I Have Cried: " + sticheraRule + ". Glory…/Both now… theotokion: see Fekula Chapter 6."}});
+  // 7. ENTRANCE (Great Vespers: Polyeleos+, Vigil, Saturday evening)
+  if (isDoxOrAbove || dow === 6) {
+    elements.push({id:"v-entrance",type:"fixed",label:"Entrance",rubric:"Deacon (or Priest):",
+      text:"Wisdom, Aright!\n\n(Entrance with the censer at Daily Vespers; with the Gospel at Vigil on Sundays)",
+      source:"HTM Vespers",
+      fekula:{section:fekulaSection, note:"At Vigil and Polyeleos — and on Sept 1 and 13 — there will be an Entry with the Gospel. At Daily Vespers the entrance is with the censer. — HTM Vespers; Fekula §2D–§2F"}});
+  }
+  // 8. GLADSOME LIGHT
+  elements.push({id:"v-gladsome",type:"fixed",label:"Gladsome Light",rubric:"Chanters:",
+    text:"O Gentle Light of the holy glory of the immortal, heavenly, holy, blessed Father, O Jesus Christ: Having come to the setting of the sun, having beheld the evening light, we praise the Father, the Son, and the Holy Spirit: God. Meet it is for Thee at all times to be hymned with reverent voices, O Son of God, Giver of life. Wherefore, the world doth glorify Thee.",
+    source:"HTM Vespers"});
+  // 9. PROKEIMENON
+  const prokText = vespProk
+    ? "Tone " + vespProk.tone + ": " + vespProk.text + "\n\n" + (vespProk.verses||[]).map((v,i)=>"V."+(i+1)+": "+v).join("\n")
+    : "[Prokeimenon not found — check day of week]";
+  elements.push({id:"v-prok",type:"movable",label:"Prokeimenon",
+    rubric:"Deacon (or Priest): Wisdom! The Prokeimenon in the ___ Tone.",
+    text: prokText,
+    source:(isPentecostarion && pentEntry && pentEntry.vespers_prokeimenon) ? "Pentecostarion" : "HTM Vespers — daily",
+    fekula:{section:fekulaSection, note:"The daily prokeimenon is chanted at every Vespers. Special Great Prokiemena replace it on the eves of certain Great Feasts. — HTM Vespers; Fekula §2"}});
+  // 10. OT LESSONS (§2E / §2F only)
+  if (paroemias && paroemias.length > 0) {
+    elements.push({id:"v-les-hdr",type:"fixed",label:"Old Testament Lessons",rubric:"Deacon: Wisdom.",
+      text:"Reader: The reading is from ___. Deacon: Let us attend.\n(Three lessons are read from the Menaion)",
+      source:"HTM Vespers"});
+    paroemias.forEach((p,i) => {
+      elements.push({id:"v-les-"+(i+1),type:"movable",label:"Lesson "+(i+1),rubric:"",
+        text:p, source:"Menaion",
+        fekula:{section:fekulaSection, note:"After the Entrance and prokeimenon there are three readings appointed in the Menaion. — Fekula " + fekulaSection}});
+    });
+  }
+  // 11. AUGMENTED LITANY
+  elements.push({id:"v-aug",type:"litany",label:"Augmented Litany",rubric:"Deacon (or Priest):",
+    text:"Let us all say with our whole soul and with our whole mind, let us say.\nLord, have mercy.\n" +
+      "O Lord Almighty, the God of our fathers, we pray Thee, hearken and have mercy.\nLord, have mercy.\n" +
+      "Have mercy on us, O God, according to Thy great mercy, we pray Thee, hearken and have mercy.\nLord, have mercy. (thrice)\n" +
+      "Again we pray for the Orthodox episcopate; for our hierarch N.; for the honorable priesthood, the diaconate in Christ, and all our brethren in Christ.\nLord, have mercy. (thrice)\n" +
+      "Again we pray for this land, its authorities and armed forces.\nLord, have mercy. (thrice)\n" +
+      "Again we pray for the blessed and ever-memorable founders of this holy temple, and for all our fathers and brethren gone to their rest before us, and the Orthodox here and everywhere laid to rest.\nLord, have mercy. (thrice)\n" +
+      "Again we pray for mercy, life, peace, health, salvation, visitation, pardon, and remission of the sins of the servants of God, the brethren of this holy temple.\nLord, have mercy. (thrice)\n" +
+      "Again we pray for them that bring offerings and do good works in this holy temple; for them that minister and them that chant, and for all people here present, that await of Thee great and abundant mercy.\nLord, have mercy. (thrice)",
+    source:"HTM Vespers"});
+  elements.push({id:"v-aug-exc",type:"fixed",label:"",rubric:"Priest:",
+    text:"For a merciful God Thou art, and the Lover of mankind, and unto Thee do we send up glory: to the Father, and to the Son, and to the Holy Spirit, now and ever, and unto the ages of ages.",
+    source:"HTM Vespers"});
+  // 12. VOUCHSAFE O LORD
+  elements.push({id:"v-vouchsafe",type:"fixed",label:"Vouchsafe, O Lord",rubric:"Reader:",
+    text:"Vouchsafe, O Lord, to keep us this evening without sin. Blessed art Thou, O Lord, the God of our fathers, and praised and glorified is Thy name unto the ages. Amen.\n\nLet Thy mercy, O Lord, be upon us, according as we have hoped in Thee. Blessed art Thou, O Lord, teach me Thy statutes. Blessed art Thou, O Master, give me understanding of Thy statutes. Blessed art Thou, O Holy One, enlighten me by Thy statutes.\n\nO Lord, Thy mercy endureth for ever, disdain not the work of Thy hands. To Thee is due praise, to Thee is due a song, to Thee glory is due, to the Father, and to the Son, and to the Holy Spirit, now and ever, and unto the ages of ages. Amen.",
+    source:"HTM Vespers"});
+  // 13. EVENING LITANY
+  elements.push({id:"v-eve-lit",type:"litany",label:"Evening Litany",rubric:"Deacon (or Priest):",
+    text:"Let us complete our evening prayer unto the Lord.\nLord, have mercy.\n" +
+      "Help us, save us, have mercy on us, and keep us, O God, by Thy grace.\nLord, have mercy.\n" +
+      "That the whole evening may be perfect, holy, peaceful, and sinless, let us ask of the Lord.\nGrant this, O Lord.\n" +
+      "An angel of peace, a faithful guide, a guardian of our souls and bodies, let us ask of the Lord.\nGrant this, O Lord.\n" +
+      "Pardon and remission of our sins and offences, let us ask of the Lord.\nGrant this, O Lord.\n" +
+      "Things good and profitable for our souls, and peace for the world, let us ask of the Lord.\nGrant this, O Lord.\n" +
+      "That we may complete the remaining time of our life in peace and repentance, let us ask of the Lord.\nGrant this, O Lord.\n" +
+      "A Christian ending to our life, painless, blameless, peaceful, and a good defence before the dread judgment seat of Christ, let us ask.\nGrant this, O Lord.\n" +
+      "Calling to remembrance our most holy, most pure, most blessed, glorious Lady Theotokos and Ever-Virgin Mary with all the saints, let us commit ourselves and one another and all our life unto Christ our God.\nTo Thee, O Lord.",
+    source:"HTM Vespers"});
+  elements.push({id:"v-eve-exc",type:"fixed",label:"",rubric:"Priest:",
+    text:"For a good God art Thou, and the Lover of mankind, and unto Thee do we send up glory: to the Father, and to the Son, and to the Holy Spirit, now and ever, and unto the ages of ages.",
+    source:"HTM Vespers"});
+  // 14. HEAD-BOWING
+  elements.push({id:"v-peace",type:"fixed",label:"",rubric:"Priest:",
+    text:"Peace be unto all.", source:"HTM Vespers"});
+  elements.push({id:"v-bow",type:"fixed",label:"",rubric:"Deacon (or Priest):",
+    text:"Let us bow our heads unto the Lord.",
+    source:"HTM Vespers"});
+  elements.push({id:"v-bow-response",type:"fixed",label:"",rubric:"Chanters:",
+    text:"To Thee, O Lord. (Sung slowly if no deacon.)",
+    source:"HTM Vespers"});
+  elements.push({id:"v-bow-exc",type:"fixed",label:"",rubric:"Priest:",
+    text:"Blessed and most glorified be the dominion of Thy kingdom: of the Father, and of the Son, and of the Holy Spirit, now and ever, and unto the ages of ages.",
+    source:"HTM Vespers"});
+  // 15. APOSTICHA
+  elements.push({id:"v-apost-verses",type:"fixed",label:"Aposticha — Verses",rubric:"",
+    text:"At Daily Vespers (simple service):\nStichos 1: Unto Thee have I lifted mine eyes, O Thou that dwellest in heaven…\nStichos 2: Have mercy on us, O Lord, have mercy on us, for greatly are we filled with abasement…\n\nAt Saturday evening the Aposticha of the Resurrection are chanted:\nStichos 1: The Lord is King, He is clothed with majesty.\nStichos 2: For He established the world which shall not be shaken.\nStichos 3: Holiness becometh Thy house, O Lord, unto length of days.",
+    source:"HTM Vespers"});
+  elements.push({id:"v-apost-stich",type:"movable",label:"Aposticha Stichera",
+    rubric:"Stichera with their appointed verses",
+    unresolved:true,
+    text:"[Aposticha stichera not yet encoded for this date]\n\nSource: " + (isHighRank ? "Menaion (with appointed verses)" : isPentecostarion ? "Pentecostarion" : "Octoechos") + "\n\nGlory… / Both now… theotokion follows — governed by rank and day of week (Fekula Chapter 6).",
+    source: isHighRank ? "Menaion" : isPentecostarion ? "Pentecostarion" : "Octoechos",
+    fekula:{section:fekulaSection, note:"Aposticha stichera with their verses. Glory…/Both now… theotokion governed by rank and day of week — see Fekula Chapter 6."}});
+  // 16. NUNC DIMITTIS
+  elements.push({id:"v-nunc",type:"fixed",label:"Prayer of St. Symeon",rubric:"Reader/Canonarch:",
+    text:"Now lettest Thou Thy servant depart in peace, O Master, according to Thy word, for mine eyes have seen Thy salvation, which Thou hast prepared before the face of all peoples; a light of revelation for the Gentiles, and the glory of Thy people Israel.",
+    source:"HTM Vespers"});
+  // 17. TRISAGION THROUGH OUR FATHER
+  elements.push({id:"v-trisagion",type:"fixed",label:"Trisagion Prayers",rubric:"",
+    text:"Holy God, Holy Mighty, Holy Immortal, have mercy on us. (thrice)\n\n" +
+      "Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\n" +
+      "O Most Holy Trinity, have mercy on us. O Lord, blot out our sins. O Master, pardon our iniquities. O Holy One, visit and heal our infirmities for Thy name\'s sake.\n\n" +
+      "Lord, have mercy. (thrice)\n\n" +
+      "Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\n" +
+      "Our Father, Who art in the heavens, hallowed be Thy name. Thy kingdom come, Thy will be done, on earth as it is in heaven. Give us this day our daily bread, and forgive us our debts, as we forgive our debtors; and lead us not into temptation, but deliver us from the evil one.",
+    source:"HTM Vespers"});
+  elements.push({id:"v-priest-exc",type:"fixed",label:"",rubric:"Priest:",
+    text:"For Thine is the kingdom, and the power, and the glory: of the Father, and of the Son, and of the Holy Spirit, now and ever, and unto the ages of ages.",
+    source:"HTM Vespers"});
+  // 18. TROPARIA
+  elements.push({id:"v-chanters",type:"fixed",label:"",rubric:"",
+    text:"Chanters sing the appointed dismissal troparia.",
+    source:"HTM Vespers"});
+  if (primTrop) {
+    const toneLabel = primTropTone ? " · Tone " + primTropTone : "";
+    elements.push({id:"v-trop-1",type:"movable",label:"Troparion" + toneLabel,
+      rubric:"",
+      text: primTrop,
+      source: primSrc,
+      fekula:{section:fekulaSection, note:"Troparia at Vespers: " + fekulaSection + ". Simple/weekday: troparion from Menaion; Glory…; Both now… theotokion per Chapter 6. Vigil: troparion twice + O Theotokos Virgin once. — Fekula §2A–§2F"}});
+  } else {
+    elements.push({id:"v-trop-none",type:"movable",label:"Troparion",
+      rubric:"",
+      unresolved:true,
+      text:"[Troparion not yet encoded for this date]",
+      source:"Menaion",
+      fekula:{section:fekulaSection, note:"Troparion from the Menaion — not yet encoded for this date."}});
+  }
+  if (secTrop) {
+    elements.push({id:"v-trop-2",type:"movable",label:"Troparion (Glory…)",
+      rubric:"",
+      text:"Glory to the Father, and to the Son, and to the Holy Spirit.\n\n" + secTrop,
+      source: secSrc,
+      fekula:{section:fekulaSection, note:"Second troparion (after Glory…) from the Menaion saint when Pentecostarion governs the primary. — Fekula §4A"}});
+  }
+  if (kont) {
+    elements.push({id:"v-kont",type:"movable",label:"Kontakion (Both now…)",
+      rubric:"",
+      text:"Both now and ever, and unto the ages of ages. Amen.\n\n" + kont,
+      source: kontSrc,
+      fekula:{section:fekulaSection, note:"Theotokion/kontakion at Both now… — governed by rank, day of week, and Fekula Chapter 6 rules."}});
+  }
+  // 19. DISMISSAL SEQUENCE
+  elements.push({id:"v-diss-wisdom",type:"fixed",label:"Dismissal",rubric:"Deacon (or Priest):",
+    text:"Wisdom!",
+    source:"HTM Vespers"});
+  elements.push({id:"v-diss-wisdom-chanters",type:"fixed",label:"",rubric:"Chanters:",
+    text:"Father (Master), bless!",
+    source:"HTM Vespers"});
+  elements.push({id:"v-diss-priest",type:"fixed",label:"",rubric:"Priest:",
+    text:"He that is is blessed, Christ our God, always, now and ever, and unto the ages of ages.",
+    source:"HTM Vespers"});
+  elements.push({id:"v-diss-chanters",type:"fixed",label:"",rubric:"Chanters:",
+    text:"Amen. Establish, O God, the holy Orthodox Faith of Orthodox Christians, unto the ages of ages.",
+    source:"HTM Vespers"});
+  elements.push({id:"v-diss-theot",type:"fixed",label:"",rubric:"Priest:",
+    text:"O most holy Theotokos, save us!",
+    source:"HTM Vespers"});
+  elements.push({id:"v-more-hon",type:"fixed",label:"",rubric:"Chanters:",
+    text:"More honourable than the Cherubim, and beyond compare more glorious than the Seraphim, who without corruption gavest birth to God the Word, the very Theotokos, thee do we magnify.",
+    source:"HTM Vespers"});
+  elements.push({id:"v-glory-thee",type:"fixed",label:"",rubric:"Priest:",
+    text:"Glory to Thee, O Christ God, our hope, glory to Thee.",
+    source:"HTM Vespers"});
+  elements.push({id:"v-diss-end",type:"fixed",label:"",rubric:"Chanters:",
+    text:"Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nLord, have mercy. (thrice) Father (Master), bless!\n\n(Priest pronounces the dismissal of the day.)",
+    source:"HTM Vespers"});
+  // END MARKER
+  elements.push({id:"v-end",type:"end_marker",label:"",text:"THE END OF VESPERS",source:"HTM Vespers"});
+  return elements;
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
 }
 
 
@@ -6002,12 +7165,16 @@ function GlossaryEntry({ term, def, highlight }) {
 // Service registry — ordered list of all services the tool can display.
 // Add new services here as they are built; the dropdown and nav arrows update automatically.
 const SERVICE_REGISTRY = [
-  { key: "1st_hour",  label: "The First Hour",        built: true  },
-  { key: "3rd_hour",  label: "The Third Hour",        built: true  },
-  { key: "6th_hour",  label: "The Sixth Hour",        built: true  },
-  { key: "typica",    label: "The Order of the Typica", built: false },
-  { key: "9th_hour",  label: "The Ninth Hour",        built: true  },
-  { key: "vespers",   label: "Vespers",               built: false },
+  { key: "vespers",        label: "Vespers",                    built: true  },
+  { key: "compline",       label: "Compline (Apodeipnon)",      built: false },
+  { key: "midnight",       label: "Midnight Office",            built: false },
+  { key: "matins",         label: "Matins (Orthros)",           built: false },
+  { key: "1st_hour",       label: "The First Hour",             built: true  },
+  { key: "3rd_hour",       label: "The Third Hour",             built: true  },
+  { key: "6th_hour",       label: "The Sixth Hour",             built: true  },
+  { key: "9th_hour",       label: "The Ninth Hour",             built: true  },
+  { key: "liturgy",        label: "Divine Liturgy",             built: false },
+  { key: "typica",         label: "The Order of the Typica",    built: false },
 ];
 
 
@@ -6127,6 +7294,57 @@ function ServiceBlock({ element }) {
     );
   }
 
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
+========
+  // ── Litany renderer ──────────────────────────────────────────────────────
+  // Petitions in grey italic (deacon/priest); congregational responses
+  // (Lord, have mercy / Grant this, O Lord / To Thee, O Lord) on their own
+  // line in normal black reading text.
+  if (element.type === 'litany') {
+    const rubrStyle = {
+      fontSize: '0.72rem', textTransform: 'uppercase',
+      letterSpacing: '0.1em', color: '#8B6914',
+      marginBottom: '0.5rem', fontFamily: 'Georgia, serif',
+    };
+    const petitionStyle = {
+      fontFamily: 'Georgia, serif', fontSize: '0.97rem',
+      lineHeight: '1.75', color: '#A89880', fontStyle: 'italic',
+    };
+    const responseStyle = {
+      fontFamily: 'Georgia, serif', fontSize: '0.97rem',
+      lineHeight: '1.75', color: '#1C1008', fontStyle: 'normal',
+      marginBottom: '0.5rem',
+    };
+    const isResponse = (line) =>
+      /^(Lord, have mercy|To Thee, O Lord|Grant this, O Lord)/.test(line.trim());
+
+    const lines = element.text.split('\n');
+    const rendered = [];
+    lines.forEach((line, li) => {
+      if (!line.trim()) return;
+      if (isResponse(line)) {
+        rendered.push(<div key={'r-'+li} style={responseStyle}>{line.trim()}</div>);
+      } else {
+        rendered.push(<div key={'p-'+li} style={petitionStyle}>{line.trim()}</div>);
+      }
+    });
+    return (
+      <div style={{ marginBottom: '1.4rem' }}>
+        {element.rubric && <div style={rubrStyle}>{element.rubric}</div>}
+        {element.label && (
+          <div style={{ fontSize: '0.7rem', textTransform: 'uppercase',
+            letterSpacing: '0.12em', color: '#9A8A70',
+            fontFamily: 'Georgia, serif', fontWeight: 'bold',
+            marginBottom: '0.4rem' }}>
+            {element.label}
+          </div>
+        )}
+        <div>{rendered}</div>
+      </div>
+    );
+  }
+
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
   const isMovable = element.type !== "fixed";
 
   return (
@@ -6198,7 +7416,14 @@ function ServiceBlock({ element }) {
       )}
 
       {(() => {
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
         const isPriest = element.rubric && element.rubric.startsWith("Priest:");
+========
+        const isPriest = element.rubric && (
+          element.rubric.startsWith("Priest:") ||
+          element.rubric.startsWith("Deacon:")
+        );
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
         const isPsalm = element.text && element.text.startsWith("PSALM ");
         const bodyStyle = {
           fontFamily: "Georgia, serif",
@@ -6420,11 +7645,19 @@ function RankExplainer({ menaionEntry, isSunday }) {
 
   if (isSunday || !menaionEntry) return null;
 
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
   const rank = menaionEntry.rank || 'simple';
   const info = RANK_EXPLANATIONS[rank] || RANK_EXPLANATIONS.simple;
 
   // Extract rank confirmation note from encoding record
   const encodingNote = menaionEntry.note || '';
+========
+  const rank = (menaionEntry && menaionEntry.rank) || 'simple';
+  const info = RANK_EXPLANATIONS[rank] || RANK_EXPLANATIONS.simple;
+
+  // Extract rank confirmation note from encoding record
+  const encodingNote = (menaionEntry && menaionEntry.note) || '';
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
   const rankConfirm = (() => {
     // Pull the first sentence that mentions the rank or stichera count
     const sentences = encodingNote.split(/[.;]/).map(s => s.trim()).filter(Boolean);
@@ -6790,11 +8023,239 @@ function TypicalBeginning({ hourKey, liturgicalData, tbOpen, setTbOpen }) {
 
 
 
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
+========
+// ─── VESPERS OPENING ─────────────────────────────────────────────────────────
+// Collapsible component shown before the Vespers elements, parallel to
+// TypicalBeginning on the 1st and 6th Hours.
+// Contains the full opening sequence (blessing through O come let us worship)
+// which is omitted when the 9th Hour immediately precedes Vespers.
+// Source: OCA office-vespers.md (2021 edition) — used for OCA-facing rubric note;
+// HTM htm_vespers.md — text source.
+
+function VespersOpening({ liturgicalData, voOpen, setVoOpen }) {
+  const open = voOpen;
+  const { paschaOffset, season } = liturgicalData;
+  const isPentecostarion = season === 'pentecostarion' || season === 'brightweek';
+  const christIsRisenActive = isPentecostarion && paschaOffset >= 7 && paschaOffset <= 38;
+  const heavenlyKingOmitted = isPentecostarion && paschaOffset > 38;
+
+  const containerStyle = {
+    border: '1px solid #D4C49A', borderRadius: '6px',
+    marginBottom: '2rem', overflow: 'hidden',
+  };
+  const headerStyle = {
+    background: open ? '#F0E8D0' : '#FAF6EE',
+    borderBottom: open ? '1px solid #D4C49A' : 'none',
+    padding: '0.75rem 1rem', cursor: 'pointer',
+    display: 'flex', justifyContent: 'space-between',
+    alignItems: 'center', userSelect: 'none',
+  };
+  const titleStyle = {
+    fontSize: '0.75rem', textTransform: 'uppercase',
+    letterSpacing: '0.1em', color: '#8B6914',
+    fontFamily: 'Georgia, serif', fontWeight: 'bold',
+  };
+  const noteStyle = {
+    fontSize: '0.78rem', color: '#9A8A70',
+    fontStyle: 'italic', marginTop: '0.35rem', lineHeight: '1.5',
+  };
+  const rubrStyle = {
+    fontSize: '0.72rem', textTransform: 'uppercase',
+    letterSpacing: '0.1em', color: '#8B6914',
+    marginBottom: '0.25rem', marginTop: '1rem',
+  };
+  const textStyle = {
+    fontSize: '1rem', lineHeight: '1.8',
+    color: '#1C1008', marginBottom: '1rem',
+    fontFamily: 'Georgia, serif',
+  };
+  const priestStyle = {
+    fontSize: '0.97rem', fontStyle: 'italic',
+    color: '#A89880', marginBottom: '0.5rem',
+    fontFamily: 'Georgia, serif', lineHeight: '1.75',
+  };
+  const badgeStyle = {
+    fontSize: '0.72rem', color: '#9A8A70', fontStyle: 'italic',
+    display: 'flex', alignItems: 'baseline', gap: '6px',
+  };
+  const fekulaStyle = {
+    fontSize: '0.65rem', letterSpacing: '0.12em',
+    textTransform: 'uppercase', color: '#8B6914',
+    background: 'rgba(139,105,20,0.12)',
+    border: '1px solid rgba(139,105,20,0.3)',
+    borderRadius: '3px', padding: '1px 5px',
+    whiteSpace: 'nowrap', flexShrink: 0,
+  };
+
+  const seasonalContent = () => {
+    if (christIsRisenActive) {
+      return (
+        <div>
+          <p style={rubrStyle}>(Glory to Thee and O Heavenly King are both skipped — immediately:)</p>
+          <p style={textStyle}>
+            Christ is risen from the dead,<br/>
+            trampling down death by death,<br/>
+            and on those in the tombs bestowing life.
+          </p>
+          <p style={rubrStyle}>Thrice. Then Psalm 103 immediately.</p>
+          <p style={{...badgeStyle, marginBottom: '0.5rem'}}>
+            <span style={fekulaStyle}>§4A</span>
+            At the beginning of Vespers, after the blessing by the priest, we sing
+            Christ is risen… thrice and immediately read Psalm 103. — Fekula §4A
+          </p>
+        </div>
+      );
+    } else if (heavenlyKingOmitted) {
+      return (
+        <div>
+          <p style={rubrStyle}>Reader: Amen.</p>
+          <p style={{...textStyle, color: '#9A8A70', fontStyle: 'italic'}}>
+            O Heavenly King is omitted from the Apodosis of Pascha until Pentecost.
+            The reader proceeds directly to Holy God, Holy Mighty…
+          </p>
+          <p style={{...badgeStyle, marginBottom: '0.5rem'}}>
+            <span style={fekulaStyle}>§4B11</span>
+            O Heavenly King is read for the first time at Pentecost. — Fekula §4B11
+          </p>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <p style={rubrStyle}>Reader:</p>
+          <p style={textStyle}>
+            Amen. Glory to Thee, our God, glory to Thee.
+          </p>
+          <p style={rubrStyle}>O Heavenly King</p>
+          <p style={textStyle}>
+            O Heavenly King, the Comforter, the Spirit of truth,
+            Who art everywhere and fillest all things;
+            Treasury of blessings and Giver of life:
+            come and abide in us and cleanse us from every impurity,
+            and save our souls, O Good One.
+          </p>
+          <p style={rubrStyle}>Trisagion Prayers</p>
+          <p style={textStyle}>
+            Holy God, Holy Mighty, Holy Immortal, have mercy on us. (thrice)<br/>
+            Glory to the Father, and to the Son, and to the Holy Spirit,
+            now and ever and unto ages of ages. Amen.<br/><br/>
+            O Most Holy Trinity, have mercy on us. O Lord, cleanse us from our sins.
+            O Master, pardon our transgressions. O Holy One, visit and heal our
+            infirmities, for Thy Name's sake.<br/>
+            Lord, have mercy. (thrice)<br/>
+            Glory to the Father, and to the Son, and to the Holy Spirit,
+            now and ever and unto ages of ages. Amen.
+          </p>
+          <p style={rubrStyle}>Our Father</p>
+          <p style={textStyle}>
+            Our Father, Who art in heaven, hallowed be Thy Name;
+            Thy Kingdom come; Thy will be done on earth, as it is in heaven.
+            Give us this day our daily bread, and forgive us our trespasses,
+            as we forgive those who trespass against us; and lead us not
+            into temptation, but deliver us from evil.
+          </p>
+          <div style={{ marginBottom: '1.4rem' }}>
+            <div style={rubrStyle}>Priest:</div>
+            <p style={priestStyle}>
+              For Thine is the Kingdom, and the power, and the glory of the Father,
+              and of the Son, and of the Holy Spirit, now and ever and unto ages of ages.
+            </p>
+            <p style={textStyle}>
+              Reader: Amen. Lord, have mercy. (12×)<br/>
+              Glory to the Father, and to the Son, and to the Holy Spirit,
+              now and ever and unto ages of ages. Amen.
+            </p>
+          </div>
+          <p style={rubrStyle}>O Come, Let Us Worship</p>
+          <p style={textStyle}>
+            Come, let us worship God our King.<br/>
+            Come, let us worship and fall down before Christ, our King and our God.<br/>
+            Come, let us worship and fall down before Christ Himself, our King and our God.
+          </p>
+        </div>
+      );
+    }
+  };
+
+  return (
+    <div style={containerStyle}>
+      <div style={headerStyle} onClick={() => setVoOpen(o => !o)}>
+        <div>
+          <div style={titleStyle}>
+            &#9651; Opening of Vespers (if not preceded by the 9th Hour)
+          </div>
+          <div style={noteStyle}>
+            If the Ninth Hour was said immediately before Vespers, begin at Psalm 103 below.
+            Expand to see the full opening sequence.
+          </div>
+        </div>
+        <span style={{ color: '#8B6914', fontSize: '1.1rem', marginLeft: '1rem', flexShrink: 0 }}>
+          {open ? '▲' : '▼'}
+        </span>
+      </div>
+
+      {open && (
+        <div style={{ padding: '1rem 1.25rem 1.25rem' }}>
+          <div style={{ marginBottom: '1.4rem' }}>
+            <div style={rubrStyle}>Priest:</div>
+            <p style={priestStyle}>
+              Blessed is our God, always, now and ever, and unto the ages of ages.
+            </p>
+          </div>
+          {seasonalContent()}
+          <div style={{ fontSize: '0.72rem', color: '#9A8A70', fontStyle: 'italic',
+                       borderTop: '1px solid #E8DFC0', paddingTop: '0.6rem', marginTop: '0.5rem' }}>
+            Fixed texts: OCA Office of Vespers (2021). Seasonal substitution: Fekula §4A.
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+
+
+
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
 // ─── VERSION BADGE ────────────────────────────────────────────────────────────
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
   {
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
+========
+    version: "v0.2.7",
+    date: "May 2026",
+    summary: "Vespers skeleton · HTM invariable texts · stichera placeholders · prokeimenon routing",
+    items: [
+      "Vespers assembler built: full HTM Order of Vespers invariable spine from opening blessing through dismissal",
+      "Psalm 103 (full HTM text) rendered as fixed block",
+      "Kathisma routing: Blessed is the Man at Polyeleos/Vigil and Saturday evening; appointed kathisma on weekdays",
+      "Entrance rendered for Great Vespers (Doxology+ rank and Saturday evening); omitted for Daily Vespers",
+      "Weekly prokeimenon table (all 7 days, HTM text); Pentecostarion vespers_prokeimenon used when present",
+      "OT Lessons displayed when already encoded: §2E/§2F saints and Pentecostarion P+42/P+49/P+56",
+      "Troparia and kontakia from existing SAMPLE_MENAION / PENTECOSTARION data",
+      "Stichera (Lord I Have Cried) and Aposticha shown as unresolved placeholders with correct Fekula count rule — Phase 2 encoding",
+      "Service subtitle shows HTM source attribution for Vespers",
+    ],
+  },
+  {
+    version: "v0.2.6",
+    date: "May 2026",
+    summary: "FW-21 Vespers lessons · VespersLessonsExplainer · P+offset · Null guards",
+    items: [
+      "FW-21 complete: OT Vespers lessons (paroemias) now displayed in context card for §2E Polyeleos and §2F Vigil saints, and for Pentecostarion Sundays P+42 / P+49 / P+56",
+      "Paroemia collision resolution: Menaion paroemias suppressed when Great Feast governs (§2G3); §2G2 exception correctly retains Polyeleos/Vigil paroemias within feast periods; P+39 Ascension and P+49 Pentecost Great Feast paroemias suppressed at afterfeast",
+      "VespersLessonsExplainer ⓘ — always-visible teaching panel next to Vespers lessons row. Eight distinct cases handled: explains whether lessons are appointed or not, the governing rule (Fekula §2A through §2G), verbatim Fekula citation, and suppression disclosure when applicable",
+      "Vespers lessons row always present — on days with no paroemias reads 'not appointed at this rank' with ⓘ explaining why; on days with lessons shows them with source",
+      "P+NN Pascha offset shown after the date in the Liturgical Context card — small grey italic annotation for sanity-checking against encoding records",
+      "Null guards added throughout: getKontakionForHour(), RankExplainer, context card saint/note display — tool no longer crashes on unencoded dates",
+      "Drive housekeeping: fekula_ODS, hours-tool_jsx_archive, project_notes_archive created; Fekula chapters now accessible as source files; workflow unchanged",
+    ],
+  },
+  {
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
     version: "v0.2.5",
     date: "May 2026",
     summary: "HTM closing sequence corrected · End-of-hour markers · 1st Hour default · How It Works rebuilt · Pentecostarion P+35–P+56 complete",
@@ -6922,6 +8383,221 @@ function VersionBadge() {
 }
 
 
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
+========
+// ─── VESPERS LESSONS EXPLAINER ────────────────────────────────────────────────
+// Always present in the context card whether or not paroemias are shown.
+// Explains the rule governing OT lessons at Vespers, what was suppressed,
+// and the Fekula citation. Source: Fekula Chapter 2.
+
+const VESPERS_PAROEMIA_CASES = {
+  none_low_rank: {
+    headline: "No Old Testament lessons appointed",
+    why: "At Vespers for Simple (§2A), Double (§2B), and Six-Stichera (§2C) services, " +
+         "there is no Entrance and therefore no prokeimenon after which readings could " +
+         "be proclaimed. The service proceeds from Lord I Call directly to the Aposticha. " +
+         "Old Testament lessons (paroemias) require Polyeleos (§2E) or Vigil (§2F) rank — " +
+         "the threshold at which Great Vespers with an Entrance is served.",
+    rule: "\"At Lord I have cried... we sing [stichera]. [No entrance.]\" — Fekula §2A–§2C",
+    fekula: "§2A / §2B / §2C",
+    suppressed: null,
+  },
+  none_doxology: {
+    headline: "No Old Testament lessons appointed",
+    why: "Doxology (§2D) rank uses Great Vespers with an Entrance, but the Menaion does " +
+         "not appoint Old Testament readings at this rank. The prokeimenon is sung after " +
+         "the Entrance, but no lessons follow it. Paroemias begin at Polyeleos rank " +
+         "(§2E) and above.",
+    rule: "Fekula §2D: Vespers includes Entrance and prokeimenon — no readings listed.",
+    fekula: "§2D",
+    suppressed: null,
+  },
+  shown_polyeleos: {
+    headline: "Three Old Testament lessons appointed",
+    why: "Polyeleos (§2E) rank is among the more solemn weekday commemorations. " +
+         "Great Vespers is served with an Entrance, and after the prokeimenon, three " +
+         "Old Testament lessons (paroemias) appointed in the Menaion are proclaimed. " +
+         "These lessons typically illuminate the life or significance of the saint — " +
+         "drawing parallels between the saint and figures or themes from the Hebrew scriptures.",
+    rule: "\"After the Entrance and prokeimenon there are three readings appointed in the Menaion.\" — Fekula §2E",
+    fekula: "§2E",
+    suppressed: null,
+  },
+  shown_vigil: {
+    headline: "Three Old Testament lessons appointed",
+    why: "Vigil (§2F) rank is the highest Menaion rank. Great Vespers includes an " +
+         "Entrance and — after the prokeimenon — three Old Testament lessons from the " +
+         "Menaion. At this rank the Litya is also served and the Blessing of Loaves " +
+         "follows. The paroemia texts are appointed specifically to this feast and are " +
+         "integral to the festal evening.",
+    rule: "\"After the Entrance and prokeimenon there are three readings appointed in the Menaion.\" — Fekula §2F",
+    fekula: "§2F",
+    suppressed: null,
+  },
+  shown_2g2: {
+    headline: "Three Old Testament lessons appointed",
+    why: "This is a Polyeleos or Vigil saint falling within a Great Feast afterfeast or " +
+         "forefeast period. Fekula §2G2 applies: the higher-ranking Menaion saint retains " +
+         "its full Vespers structure including the Entrance, prokeimenon, and three Old " +
+         "Testament lessons. The feast period affects the ordering of stichera and troparia " +
+         "(feast leads, saint follows) but does not suppress the Polyeleos Vespers readings.",
+    rule: "\"After the Entrance and prokeimenon there are three readings appointed in the Menaion.\" — Fekula §2G2",
+    fekula: "§2G2",
+    suppressed: null,
+  },
+  suppressed_great_feast: {
+    headline: "Great Feast paroemias — not displayed at Apodosis or Afterfeast",
+    why: "Great Feasts of the Lord and Theotokos have their own OT lessons at the feast " +
+         "day Vespers. However, on the Apodosis (leavetaking) and ordinary afterfeast days, " +
+         "Fekula §2G3 is explicit: there is neither an Entrance nor readings from the Old " +
+         "Testament at Vespers. The feast structure is reproduced in full on those days " +
+         "except for the Entrance and its attendant readings.",
+    rule: "\"Note: There is neither an Entrance, nor readings from the Old Testament.\" — Fekula §2G3",
+    fekula: "§2G3",
+    suppressed: "Great Feast paroemias are encoded in the database for reference but are not appointed at afterfeast Vespers.",
+  },
+  suppressed_pent_feast: {
+    headline: "Great Feast paroemias — feast day only",
+    why: "Pentecost and Holy Spirit Day have their own OT lessons at the feast Vespers " +
+         "(Numbers 11, Joel 2, Ezekiel 36 for Pentecost). These are proclaimed on the " +
+         "feast day itself and at Kneeling Vespers. On the afterfeast days that follow, " +
+         "there is no Entrance and no OT readings — Pentecostarion afterfeast structure " +
+         "follows §4A rules, not the full Great Vespers pattern.",
+    rule: "Fekula §4A — Pentecostarion afterfeast weekday structure. Great Feast paroemias at feast-day Vespers only.",
+    fekula: "§4A / §4B15",
+    suppressed: "Pentecost paroemias (Numbers 11, Joel 2, Ezekiel 36) are encoded in the database but not displayed during the afterfeast.",
+  },
+  shown_pent_sunday: {
+    headline: "Three Old Testament lessons appointed",
+    why: "This Sunday has its own appointed Old Testament lessons at Saturday evening " +
+         "Great Vespers — drawn from the Pentecostarion rather than the fixed Menaion. " +
+         "These are the proper lessons for this specific feast or commemoration and are " +
+         "proclaimed after the Entrance and prokeimenon.",
+    rule: "Three readings appointed in the Pentecostarion for this Sunday. — Fekula §4B",
+    fekula: "§4B",
+    suppressed: null,
+  },
+};
+
+function VespersLessonsExplainer({ rank, pentEntry, isPentecostarion, feastPeriod, paroemias }) {
+  const [open, setOpen] = React.useState(false);
+
+  // ── Determine which case applies ──────────────────────────────────────────
+  const caseKey = (() => {
+    // Pentecostarion Great Feast entries (Pentecost, Holy Spirit Day) — suppressed
+    if (isPentecostarion && pentEntry) {
+      const fmt = pentEntry.hours_format;
+      const isGreatFeastOfLord = fmt === 'ascension' || fmt === 'pentecost' ||
+        fmt === 'apodosis_ascension' || fmt === 'apodosis_pentecost' || fmt === 'holy_spirit_day';
+      if (isGreatFeastOfLord) return 'suppressed_pent_feast';
+      // Pentecostarion Sunday with paroemias (P+42, P+56)
+      if (pentEntry.paroemia_1) return 'shown_pent_sunday';
+    }
+
+    // Great Feast Apodosis / Afterfeast suppression (non-Pentecostarion)
+    if (feastPeriod && (feastPeriod.periodType === 'apodosis' || feastPeriod.periodType === 'afterfeast')) {
+      if (rank === 'polyeleos' || rank === 'vigil') return feastPeriod.periodType === 'afterfeast' ? 'shown_2g2' : 'suppressed_great_feast';
+      return 'suppressed_great_feast';
+    }
+
+    // Ordinary time by rank
+    if (rank === 'vigil') return 'shown_vigil';
+    if (rank === 'polyeleos') {
+      // §2G2: Polyeleos within feast period
+      if (feastPeriod) return 'shown_2g2';
+      return 'shown_polyeleos';
+    }
+    if (rank === 'doxology') return 'none_doxology';
+    return 'none_low_rank';
+  })();
+
+  const info = VESPERS_PAROEMIA_CASES[caseKey];
+  const hasParoemias = !!(paroemias && paroemias.length > 0);
+  const isSuppressed = caseKey.startsWith('suppressed');
+
+  const iconStyle = {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    width: '14px', height: '14px', borderRadius: '50%',
+    border: `1px solid ${isSuppressed ? '#9A8A70' : '#8B6914'}`,
+    color: isSuppressed ? '#9A8A70' : '#8B6914',
+    fontSize: '9px', fontStyle: 'normal', cursor: 'pointer',
+    marginLeft: '5px', lineHeight: 1, userSelect: 'none',
+    flexShrink: 0, fontFamily: 'Georgia, serif', fontWeight: 'bold',
+  };
+
+  const panelStyle = {
+    marginTop: '0.5rem', marginBottom: '0.5rem', width: '100%',
+    maxWidth: '480px',
+    background: '#FAF6EE', border: '1px solid #D4C49A',
+    borderRadius: '5px', padding: '0.9rem 1rem',
+    boxShadow: '0 2px 12px rgba(0,0,0,0.10)',
+    fontSize: '0.76rem', lineHeight: '1.65', color: '#3D3020',
+  };
+
+  const headStyle = {
+    fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em',
+    color: '#8B6914', fontFamily: 'Georgia, serif', fontWeight: 'bold',
+    marginBottom: '0.3rem', marginTop: '0.7rem',
+  };
+
+  return (
+    <React.Fragment>
+      <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+        <span style={iconStyle} onClick={() => setOpen(o => !o)}
+              title="How are Vespers lessons determined?">i</span>
+      </span>
+      {open && (
+        <div style={{ display: 'block', width: '100%' }}>
+          <div style={panelStyle}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#1C1008' }}>
+                {info.headline}
+              </div>
+              <span onClick={() => setOpen(false)}
+                    style={{ cursor: 'pointer', color: '#9A8A70', fontSize: '1rem',
+                              lineHeight: 1, marginLeft: '1rem', flexShrink: 0 }}>✕</span>
+            </div>
+
+            <div style={{ ...headStyle, marginTop: '0.6rem' }}>Why</div>
+            <div>{info.why}</div>
+
+            <div style={headStyle}>Rule</div>
+            <div style={{ fontStyle: 'italic', color: '#5C4A1E' }}>{info.rule}</div>
+
+            <div style={headStyle}>Fekula citation</div>
+            <div>
+              <span style={{ display: 'inline-block', padding: '1px 7px', borderRadius: '3px',
+                              fontSize: '0.72rem', fontWeight: 'bold', letterSpacing: '0.06em',
+                              textTransform: 'uppercase', fontFamily: 'Georgia, serif',
+                              color: '#8B6914', background: 'rgba(139,105,20,0.1)',
+                              border: '1px solid rgba(139,105,20,0.35)' }}>
+                Fekula {info.fekula}
+              </span>
+            </div>
+
+            {info.suppressed && (
+              <React.Fragment>
+                <div style={headStyle}>What was suppressed</div>
+                <div style={{ color: '#9A8A70', fontStyle: 'italic' }}>{info.suppressed}</div>
+              </React.Fragment>
+            )}
+
+            <div style={{ marginTop: '0.8rem', paddingTop: '0.5rem',
+                          borderTop: '1px solid #E8DFC0',
+                          fontSize: '0.7rem', color: '#B8A882', fontStyle: 'italic' }}>
+              {hasParoemias
+                ? 'Lessons shown above are drawn from the ' + (isPentecostarion ? 'Pentecostarion' : 'Menaion') + ' for this date.'
+                : 'No lessons are displayed because none are appointed at this rank.'}
+            </div>
+          </div>
+        </div>
+      )}
+    </React.Fragment>
+  );
+}
+
+
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
 // ─── HOW IT WORKS PANEL ───────────────────────────────────────────────────────
 // Accordion of five sections. Each panel opens/closes independently.
 // Matches the RankExplainer visual language (same gold, same type scale).
@@ -6993,7 +8669,11 @@ function HowItWorksPanel() {
   const typeLabel = { fixed: "Fixed", movable: "Movable", unresolved: "Unresolved" };
 
   return (
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
     <div style={{ marginTop: "1rem", textAlign: "left" }}>
+========
+    <div style={{ marginTop: "1rem", textAlign: "left", padding: "0 1rem" }}>
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
 
       {/* ── 1. The Calendar Engine ─────────────────────────────────────────── */}
       <div style={headerStyle} onClick={() => toggle("calendar")}>
@@ -7005,6 +8685,17 @@ function HowItWorksPanel() {
           {p(<>From Pascha, every other movable date is a simple offset. Lent begins 48 days before Pascha (Clean Monday). Pentecost falls 49 days after. All Saints Sunday is 56 days after. The five Lenten Sundays, the pre-Lenten period (Meatfare, Cheesefare), Ascension, and All Saints of North America are all computed the same way — as a signed number of days from Pascha. The algorithm has been verified against the OCA desk calendar for 2026, 2027, and 2028.</>)}
           {p(<>The <strong>tone cycle</strong> (Tones 1–8 of the Octoechos) begins on the Monday after All Saints Sunday and advances one tone per week, cycling continuously through ordinary time.</>)}
           {p(<>The tool recognizes <strong>35 named movable days</strong> — from the Sunday of the Publican and Pharisee (Pascha−70) through All Saints of North America (Pascha+63) — and displays contextual notes for each. Great Feasts with their forefeasts, afterfeasts, and apodoses are tracked and influence which Fekula assembly rule applies.</>)}
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
+========
+          {sub("Great Lent Week and Sunday Tracking")}
+          {p(<>Within Great Lent, the tool tracks the <strong>week number</strong> (1–6) and, on Sundays, the <strong>named Lenten Sunday</strong> (1–5). Clean Monday is day 1 of week 1; the first Sunday of Lent is day 7, the last day of week 1. Weeks are counted as Monday-to-Sunday spans: week {"\u00a0"}= ⌈day-of-Lent ÷ 7⌉. Passion (Holy) Week is detected separately as days 43–49 (P−7 through P−1) and does not carry a week number.</>)}
+          {p(<>The five named Lenten Sundays correspond to Sundays 1–5: <em>Sunday of Orthodoxy, Sunday of St. Gregory Palamas, Sunday of the Holy Cross, Sunday of St. John Climacus,</em> and <em>Sunday of St. Mary of Egypt.</em> Palm Sunday (P−7) is detected as a named movable day. The week and Sunday data appear in the liturgical context card and drive the kathisma schedule.</>)}
+          {sub("Sundays after Pentecost and the Lukan Jump")}
+          {p(<>From All Saints Sunday (P+56) through the end of the Pentecost season, the tool tracks two parallel counts displayed in the liturgical context card: the <strong>Nth Sunday after Pentecost</strong> (on Sundays) or <strong>Nth Week after Pentecost</strong> (on weekdays), and — once the Lukan lectionary begins — the <strong>Nth Sunday of Luke</strong> or <strong>Nth Week of Luke</strong>.</>)}
+          {p(<>The <strong>Lukan Jump</strong> occurs on the Monday after the Sunday on or after the Elevation of the Holy Cross (September 14). From that Monday, the daily Gospel readings shift from Matthew to Luke. However, the first Sunday after the jump is a carryover week completing the interrupted Matthew readings — so the <strong>first Sunday of Luke</strong> is the <em>second</em> Sunday after the Elevation, computed as Lukan Jump Monday + 13 days. This convention is confirmed against OCA parish bulletins.</>)}
+          {p(<>Both counts — Sundays after Pentecost and Sundays of Luke — end definitively on the <strong>Sunday of the Publican and Pharisee</strong> (followingPascha − 70), which opens the Triodion. The weekdays of that same week continue to show the count; tracking stops on the following Monday, when the Prodigal Son Sunday begins the Triodion proper. The Prodigal Son, Meatfare, and Cheesefare Sundays are not numbered in the Pentecost sequence — they belong to the pre-Lenten Triodion.</>)}
+          {p(<>On weekdays, the count points <em>forward</em> to the upcoming Sunday: Monday through Saturday after the 1st Sunday after Pentecost show <em>2nd Week after Pentecost</em>, not "week of the 1st Sunday." This matches standard OCA parish bulletin usage.</>)}
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
           {sub("The Lectionary")}
           {p(<>The daily scripture readings shown in the context card come from a static table of <strong>298 entries</strong>, each keyed by its Pascha offset. The same offset yields the same readings every year — the entire New Testament cycle is purely movable, anchored to Pascha, not the calendar date.</>)}
           {p(<>One complication is the <strong>Lukan Jump</strong>: on the Monday after the Sunday on or after the Elevation of the Holy Cross (September 14), the Gospel abruptly leaves Matthew and begins Luke from the start. Because September 14 falls on a different day of the week each year, the exact Pascha offset where Luke begins shifts annually (typically P+134 to P+162) and is computed dynamically.</>)}
@@ -7035,6 +8726,32 @@ function HowItWorksPanel() {
       </div>
       {open.anatomy && (
         <div style={panelStyle}>
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
+========
+          {sub("The Daily Cycle")}
+          {p(<>The Orthodox Church sanctifies the entire day through a cycle of eight services, each tied to a specific hour of prayer. The new liturgical day begins at <strong>sunset</strong> — so Vespers is always the first service of the day, not the last.</>)}
+          {ul([
+            <><strong>Vespers</strong> (sunset / early evening) — First service of the new liturgical day. Thanks God for the day that has passed and asks His protection for the night.</>,
+            <><strong>Compline</strong> (after supper / bedtime) — Also called Apodeipnon ("after supper"). Evening prayers before sleep.</>,
+            <><strong>Midnight Office</strong> (around midnight) — Also called Mesonyktikon or Nocturns. Commemorates the parable of the wise and foolish virgins.</>,
+            <><strong>Matins / Orthros</strong> (sunrise / early morning) — The main morning praise service. On Sundays and feasts it includes the Polyeleos, canon, and (on Sundays) a Resurrection Gospel.</>,
+            <><strong>First Hour</strong> (~6 a.m.) — Said after Matins. Focuses on the morning light and Christ before Pilate.</>,
+            <><strong>Third Hour</strong> (~9 a.m.) — Remembers the descent of the Holy Spirit at Pentecost.</>,
+            <><strong>Sixth Hour</strong> (noon) — Remembers the Crucifixion.</>,
+            <><strong>Ninth Hour</strong> (~3 p.m.) — Remembers the death of Christ on the Cross. Traditionally said immediately before Vespers, beginning the transition to the new day.</>,
+            <><strong>Divine Liturgy</strong> (usually mid-morning, often after the Sixth Hour on Sundays and feast days) — The Eucharistic service. On days without a Liturgy, the <strong>Typica</strong> may be read in its place.</>,
+          ])}
+          {p(<>In parish practice the full cycle is rarely served in its entirety on weekdays. The most commonly served combination is the <strong>9th Hour → Vespers</strong> in the evening, and <strong>Matins → 1st Hour</strong> in the morning, followed by the Divine Liturgy. This tool assembles the services in their canonical daily order, beginning with Vespers.</>)}
+          {sub("Lord I Have Cried — How Stichera Are Inserted")}
+          {p(<>At every Vespers, after the kathisma, the psalms <strong>Lord I Have Cried</strong> (Psalms 140, 141, 129, and 116) are chanted. The last several verses of these psalms serve as an <em>insertion scaffold</em> — a numbered countdown from verse 10 down to verse 1. The <strong>stichera</strong> (hymns appointed for the day) are inserted into this countdown, one sticheron after each verse, beginning at the verse that matches the stichera count. The verse is always sung <em>first</em>, then its sticheron follows as a response.</>)}
+          {p(<>The stichera count is determined by service rank: <strong>6 stichera</strong> for Simple, Six-Stichera, and Doxology rank (insertion begins at V.6, so V.10–V.7 are sung plain); <strong>8 stichera</strong> for Polyeleos rank (insertion at V.8, V.10–V.9 plain); <strong>10 stichera</strong> for Vigil rank (insertion at V.10, no plain verses). After V.1, the sequence closes with <em>Glory…</em> (the doxasticon) and <em>Now and ever…</em> (the theotokion).</>)}
+          {p(<>The <em>sources</em> of the stichera vary by rank. For Simple rank (§2A), three stichera come from the <strong>Octoechos</strong> (the weekly book, in the tone of the week) and three from the <strong>Menaion</strong> (the saint's book). For Six-Stichera rank and above, all stichera come from the Menaion. During the Pentecostarion, three come from the Pentecostarion and the remainder from the Menaion. On Friday evenings at Simple rank, all six come from the Menaion with each sticheron doubled.</>)}
+          {sub("The Aposticha — A Structural Inversion")}
+          {p(<>The <strong>Aposticha</strong> (sung later in Vespers, before the troparia) looks similar to Lord I Have Cried but works differently. The Greek name means literally <em>"hymns on the verses"</em> — but uniquely, the aposticha sticheron comes <em>before</em> its psalm verse, not after. The pattern is: sticheron → verse → sticheron → verse → sticheron → verse → Glory… → doxasticon → Now and ever… → theotokion.</>)}
+          {p(<>The verses between aposticha stichera also differ by rank. For Simple and Six-Stichera rank, the stichera come from the Octoechos and the verses between them are fixed universal texts: <em>"To Thee I lift up mine eyes…"</em> and <em>"Have mercy upon us, O Lord…"</em> On Saturday evening (Great Vespers), three different fixed verses from Psalm 92 are used. For Doxology rank and above, the Menaion itself provides both the stichera texts <em>and</em> their own specific psalm verses — these feast-specific verses are embedded in the Menaion PDF alongside each sticheron and must be captured during encoding.</>)}
+          {p(<>The current tool shows the full psalm texts (Ps. 140, 141, 129, 116) with the stichera verse scaffold as a readable fallback. The interleaved assembler — inserting encoded stichera into the correct verse slots — is the next major Vespers development milestone. It requires both the Menaion stichera encoding (FW-23) and the Octoechos stichera encoding for all 8 tones (FW-OCTOECHOS-VESPERS), which together enable the complete assembly for all rank levels.</>)}
+          {sub("Fixed and Movable Elements")}
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
           {p("A Daily Hour has two kinds of content. The colour coding below shows how they are distinguished in the assembled service.")}
 
           {/* Legend */}
@@ -7085,6 +8802,21 @@ function HowItWorksPanel() {
           </div>
 
           {p("Only the two Movable rows change from day to day. Everything else is identical on every ordinary weekday of the year. On feast days and during the Pentecostarion, seasonal rules alter the Fixed skeleton too — replacing O come let us worship with Christ is risen, or omitting O Heavenly King — but those changes are also fixed by the rubrics, not by the saint of the day.")}
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
+========
+          {sub("The Kathisma Schedule")}
+          {p(<>At Vespers and Matins, one or more sections of the Psalter — called <strong>kathismas</strong> — are read in sequence throughout the week. The Psalter's 150 psalms are divided into <strong>20 kathismas</strong>, each further subdivided into three stases (antiphons). The full Psalter is read through once per week in ordinary time; more frequently during Great Lent.</>)}
+          {p(<>Which kathisma is appointed depends on two things: the <strong>day of the week</strong> and the <strong>period of the church year</strong>. The tool detects one of six periods:</>)}
+          {ul([
+            "Summer/Winter — Thomas Sunday through Sep. 21; Dec. 20 through Jan. 14; Prodigal Son Sunday through Forgiveness Sunday. The Pentecostarion (Thomas Sunday through All Saints eve) follows this same table.",
+            "Autumn/Spring — Sep. 22 through Dec. 19; Jan. 15 through the Saturday before Prodigal Son Sunday. Also Great Lent Weeks 1–4 and 6, which share the same kathisma assignments.",
+            "Great Lent Week 5 — a unique table distinct from the rest of Lent.",
+            "Passion (Holy) Week — Monday through Wednesday only; Thursday, Friday, and Saturday have no kathisma.",
+            "Bright Week — no kathisma at any service.",
+          ])}
+          {p(<>Several <strong>override rules</strong> apply before the table is consulted, in priority order: Bright Week suppresses all kathismas; Passion Week Thursday–Saturday have none; great feasts of the Lord have no kathisma (same if a vigil was served the night before — <em>the tool flags this as a known limitation it cannot detect automatically</em>); Saturday evening and feasts of Polyeleos or Vigil rank always use Kathisma I ("Blessed is the Man," the first stasis); Sunday evening has no kathisma.</>)}
+          {p(<>The kathisma shown at Vespers currently identifies the appointed kathisma by number and psalm range (e.g. <em>Kathisma 6, Psalms 37–45</em>). Full psalm texts are a planned future feature — they will be loaded from a separate Psalter reference document rather than bundled into this tool. Source: OCA Liturgics, oca.org/liturgics/outlines/kathisma-readings-at-vespers.</>)}
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
         </div>
       )}
 
@@ -7109,21 +8841,35 @@ function HowItWorksPanel() {
             "Is this a New Style / Old Style date divergence?",
           ])}
           {sub("Step 3 · Record the encoding")}
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
           {p("All fields are written to a plain-text record (.txt file) saved to the project's Google Drive folder, including source file, Fekula section, troparion, kontakion(s) with ode assignments, service rank confirmation evidence, and all OCA divergences.")}
           {sub("Step 4 · Enter into the tool")}
           {p(<>Encoded data is written into the tool's <code>SAMPLE_MENAION</code> object (fixed calendar dates) or <code>PENTECOSTARION</code> object (dates keyed to Pascha). <strong>Currently encoded:</strong> Menaion May 18–31, June 1–30. Pentecostarion P+35 through P+56. Earlier dates are in progress.</>)}
           {sub("All encoded fields — the complete data record")}
           {p("Every date that has been encoded carries some or all of the following fields. Fields marked † are used directly in the assembled Hours today. All others are stored for future services (Vespers, Matins, Liturgy) or for display in the context card.")}
+========
+          {p("All fields are written to a plain-text .txt record saved to the project's Google Drive folder. This is the full capture — it records every field available in the source: troparion, kontakion(s) with ode assignments, all Vespers stichera texts, Matins canon data, all Liturgy propers (prokeimenon, alleluia, communion verse), paroemias, rank evidence, Fekula section, and all OCA divergences. The .txt file is the authoritative source record.")}
+          {sub("Step 4 · Enter into the tool")}
+          {p(<>Encoded data from the .txt record is then written into the tool's <code>SAMPLE_MENAION</code> object (fixed calendar dates) or <code>PENTECOSTARION</code> object (dates keyed to Pascha). <strong>Currently encoded:</strong> Menaion May 18–31, June 1–30. Pentecostarion P+35 through P+56. Earlier dates are in progress.</>)}
+          {p(<><strong>Note — .txt records and tool entries are not always fully in sync.</strong> The .txt files are complete: they capture the full encoding pass. But not every field has been entered into the tool yet, because the assembly logic for Vespers and Matins is still being built — entering fields the tool cannot use would be premature. As each new service is assembled, the corresponding .txt data is transcribed. The two data objects also differ in richness: <code>PENTECOSTARION</code> entries were encoded when the schema was more mature and carry more fields than the earlier <code>SAMPLE_MENAION</code> entries, which have a known data-entry backlog for fields like <code>oca_primary</code>, <code>service_file</code>, <code>has_great_doxology</code>, and <code>magnificat_sung</code>.</>)}
+          {sub("All encoded fields — the complete data record")}
+          {p("Every date that has been encoded carries some or all of the following fields. The Status column reflects the honest current state.")}
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
           <table style={{ width: "100%", fontSize: "0.75rem", borderCollapse: "collapse", marginBottom: "0.8rem" }}>
             <thead>
               <tr style={{ background: "rgba(139,105,20,0.1)", textAlign: "left" }}>
                 <th style={{ padding: "4px 8px", borderBottom: "1px solid #D4C49A", color: "#5C4A1E" }}>Field</th>
                 <th style={{ padding: "4px 8px", borderBottom: "1px solid #D4C49A", color: "#5C4A1E" }}>What it contains</th>
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
                 <th style={{ padding: "4px 8px", borderBottom: "1px solid #D4C49A", color: "#5C4A1E" }}>Used now</th>
+========
+                <th style={{ padding: "4px 8px", borderBottom: "1px solid #D4C49A", color: "#5C4A1E" }}>Status</th>
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
               </tr>
             </thead>
             <tbody>
               {[
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
                 ["saint", "Full name of the commemorated saint or feast", "✓ context card"],
                 ["rank", "Service rank: simple · six_stichera · doxology · polyeleos · vigil", "✓ rank badge & explainer"],
                 ["fekula_section", "Fekula §2A–§2F or §4A–§4B15 governing assembly", "✓ citation badges"],
@@ -7152,16 +8898,60 @@ function HowItWorksPanel() {
                 ["reposed_e / reposed_g", "Second epistle/gospel set for the Saturday of Reposed", "— Liturgy (future)"],
                 ["hours_format", "Assembly engine signal: paschal · pentecostarion_sunday · ascension · etc.", "✓ skeleton selection"],
                 ["fekula_section_override", "Overrides default Fekula section for special cases (e.g. §2B double service)", "✓ citation badges"],
+========
+                ["saint", "Full name of the commemorated saint or feast", "✓ in tool"],
+                ["rank", "Service rank: simple · six_stichera · doxology · polyeleos · vigil", "✓ in tool"],
+                ["fekula_section", "Fekula §2A–§2F or §4A–§4B15 governing assembly", "✓ in tool"],
+                ["note", "Encoding notes: OCA divergences, calendar collisions, rank evidence", "✓ in tool"],
+                ["troparion · tone & text", "Primary troparion — tone number and full text", "✓ in tool — all four Hours"],
+                ["troparion_2 · tone, text, placement", "Second troparion (Glory) when two troparia govern", "✓ in tool — all four Hours"],
+                ["kontakion · tone, text, matins_ode", "Kontakion with Matins ode assignment (III or VI)", "✓ in tool — 3rd & 9th Hours"],
+                ["kontakion_3rd_ode · tone, text", "Second kontakion when Ode III differs from Ode VI", "✓ in tool — 1st & 6th Hours"],
+                ["hours_kontakion", "Pentecostarion: feast kontakion governing Both now at Hours", "✓ in tool — Pentecostarion only"],
+                ["hours_format", "Assembly engine signal: paschal · pentecostarion_sunday · etc.", "✓ in tool — skeleton selection"],
+                ["fekula_section_override", "Overrides default Fekula section for special cases (e.g. §2B)", "✓ in tool"],
+                ["feast_e / feast_g", "Feast proper Epistle and Gospel readings", "✓ in tool — context card"],
+                ["prokeimenon · tone, text, stichos", "Prokeimenon tone, text, and stichos verse at Liturgy", "✓ in tool (data only) — Liturgy future"],
+                ["alleluia · tone, verse, stichos", "Alleluia tone and verse at Liturgy", "✓ in tool (data only) — Liturgy future"],
+                ["communion_verse", "Communion hymn text at Liturgy", "✓ in tool (data only) — Liturgy future"],
+                ["paroemia_1/2/3", "Old Testament Vespers lessons (Polyeleos & above)", "✓ in tool (data only) — Vespers stichera future"],
+                ["reposed_e / reposed_g", "Second epistle/gospel set for Saturday of the Reposed", "✓ in tool — Pentecostarion only"],
+                ["oca_primary", "Whether this is the OCA calendar's primary commemoration", "⚠ in .txt — backlog, not all Menaion entries in tool"],
+                ["service_file", "Source PDF filename (e.g. 06-09.pdf)", "⚠ in .txt — backlog, not all Menaion entries in tool"],
+                ["has_great_doxology", "Whether the Great Doxology is sung at Matins", "⚠ in .txt — backlog, Matins future"],
+                ["magnificat_sung", "Whether the Magnificat (Ode IX) is sung or omitted", "⚠ in .txt — backlog, Matins future"],
+                ["stichera_lord_i_call", "Vespers Lord I Call stichera texts and count", "⚠ in .txt — Vespers Phase 2 (FW-23)"],
+                ["glory / doxasticon", "Vespers Glory sticheron text", "⚠ in .txt — Vespers Phase 2 (FW-23)"],
+                ["aposticha", "Vespers Aposticha stichera texts", "⚠ in .txt — Vespers Phase 2 (FW-23)"],
+                ["has_litya", "Whether the feast has a Litya at Vespers", "⚠ in .txt — Vespers future"],
+                ["zadostoinik_irmos", "Irmos replacing It is truly meet on feast days", "⚠ in .txt — Matins/Liturgy future"],
+                ["matins_gospel", "Resurrection Gospel number (1–11) at Sunday Matins", "⚠ in .txt — Matins future"],
+                ["trisagion_replacement", "Text replacing the Trisagion on certain feasts", "⚠ in .txt — Liturgy future"],
+                ["ikos", "Kontakion ikos text (Matins, after kontakion)", "⚠ in .txt — Matins future"],
+                ["exapostilarion", "Exapostilarion text at Matins", "⚠ in .txt — Matins future"],
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
               ].map(([field, desc, used], i) => (
                 <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : "rgba(0,0,0,0.02)" }}>
                   <td style={{ padding: "4px 8px", borderBottom: "1px solid #EDE5CE", fontFamily: "monospace", fontSize: "0.72rem", color: "#3B4A6B", whiteSpace: "nowrap" }}>{field}</td>
                   <td style={{ padding: "4px 8px", borderBottom: "1px solid #EDE5CE", color: "#2C1F0A" }}>{desc}</td>
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
                   <td style={{ padding: "4px 8px", borderBottom: "1px solid #EDE5CE", color: used.startsWith("✓") ? "#3A6B3A" : "#9A8A70", whiteSpace: "nowrap" }}>{used}</td>
+========
+                  <td style={{ padding: "4px 8px", borderBottom: "1px solid #EDE5CE",
+                    color: used.startsWith("✓ in tool") ? "#3A6B3A" : used.startsWith("⚠") ? "#8B6914" : "#9A8A70",
+                    whiteSpace: "nowrap" }}>
+                    {used}
+                  </td>
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
                 </tr>
               ))}
             </tbody>
           </table>
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
           {p("In short: the tool stores the full data needed to assemble Vespers, Matins, and Liturgy for every encoded date. The Hours are the first surface — the underlying record is already built for the full daily cycle.", { fontStyle: "italic", color: "#5C4A1E" })}
+========
+          {p("Legend: ✓ in tool = field is active in SAMPLE_MENAION or PENTECOSTARION. ✓ in tool (data only) = entered and stored, but not yet surfaced in any assembled service. ⚠ in .txt = captured in the Drive encoding record but not yet entered into the tool, either because the assembly logic isn't built yet (future service) or because it is a known data-entry backlog.", { fontStyle: "italic", color: "#5C4A1E" })}
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
         </div>
       )}
 
@@ -7204,11 +8994,16 @@ export default function App() {
   );
   const [showGlossary, setShowGlossary] = useState(false);
   const [showHowItWorks, setShowHowItWorks] = useState(false);
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
   const [selectedServiceKey, setSelectedServiceKey] = useState("1st_hour");
+========
+  const [selectedServiceKey, setSelectedServiceKey] = useState("vespers");
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
   // tbOpen: tracks whether the Typical Beginning is expanded on 1st/6th Hours.
   // When expanded, the Hour body shows O come let us worship (not Christ is risen)
   // because Christ is risen was already said within the Typical Beginning.
   const [tbOpen, setTbOpen] = useState(false);
+  const [voOpen, setVoOpen] = useState(false);
 
   const date = new Date(selectedDate + "T12:00:00");
   const liturgicalData = getLiturgicalData(date);
@@ -7232,8 +9027,9 @@ export default function App() {
         g: hasFeastG ? selectedMenaionEntry.feast_g : null }
     : null;
 
+
   // Reset Typical Beginning when service changes
-  React.useEffect(() => { setTbOpen(false); }, [selectedServiceKey, selectedDate]);
+  React.useEffect(() => { setTbOpen(false); setVoOpen(false); }, [selectedServiceKey, selectedDate]);
 
   // When the date changes, reset saint selector to OCA primary
   const ocaPrimaryIndex = services.findIndex(s => s.oca_primary === true);
@@ -7266,6 +9062,40 @@ export default function App() {
     ? getPentecostarionEntry(liturgicalData.paschaOffset)
     : null;
 
+  // Paroemias — OT Vespers lessons (FW-21).
+  // Rules per Fekula Chapter 2:
+  // - §2E (Polyeleos) and §2F (Vigil) saints: always show Menaion paroemias
+  //   (even within afterfeast periods — §2G2 preserves the Polyeleos structure)
+  // - Pentecostarion entries P+42/P+49/P+56: show their own paroemias
+  // - P+39 (Ascension) and other Great Feast pentEntries: paroemias encoded
+  //   for Vespers reference only — NOT displayed here (Great Feast of the Lord,
+  //   not a Polyeleos saint pattern)
+  // - All other cases: no paroemias
+  const paroemias = (() => {
+    // Pentecostarion: show only if pentEntry explicitly carries paroemias
+    // AND it is not a Great Feast of the Lord (hours_format filters those out)
+    if (isPentecostarion || isBrightWeek) {
+      if (!pentEntry || !pentEntry.paroemia_1) {
+        // Fall through to check Menaion saint (§2E/§2F within afterfeast — §2G2)
+        const mEntry = selectedMenaionEntry;
+        const rank = mEntry && mEntry.rank;
+        if (rank !== 'polyeleos' && rank !== 'vigil') return null;
+        if (!mEntry.paroemia_1) return null;
+        return [mEntry.paroemia_1, mEntry.paroemia_2, mEntry.paroemia_3].filter(Boolean);
+      }
+      // pentEntry has paroemias — only show for non-Great-Feast-of-Lord entries
+      const fmt = pentEntry.hours_format;
+      const isGreatFeastOfLord = fmt === 'ascension' || fmt === 'pentecost' || fmt === 'apodosis_ascension' || fmt === 'apodosis_pentecost' || fmt === 'holy_spirit_day';
+      if (isGreatFeastOfLord) return null;
+      return [pentEntry.paroemia_1, pentEntry.paroemia_2, pentEntry.paroemia_3].filter(Boolean);
+    }
+    // Ordinary time: show Menaion paroemias for §2E and §2F only
+    const mEntry = selectedMenaionEntry;
+    const rank = mEntry && mEntry.rank;
+    if (rank !== 'polyeleos' && rank !== 'vigil') return null;
+    if (!mEntry.paroemia_1) return null;
+    return [mEntry.paroemia_1, mEntry.paroemia_2, mEntry.paroemia_3].filter(Boolean);
+  })();
   // Current service metadata from registry
   const currentServiceIdx = SERVICE_REGISTRY.findIndex(s => s.key === selectedServiceKey);
   const currentService = SERVICE_REGISTRY[currentServiceIdx];
@@ -7276,6 +9106,12 @@ export default function App() {
   // Assemble elements — single unified assembler for all seasons
   const elements = (() => {
     if (!inScope) return [];
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
+========
+    if (currentService.key === 'vespers') {
+      return assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias);
+    }
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
     return assembleHour(currentService.key, liturgicalData, menaionEntry, pentEntry, tbOpen);
   })();
 
@@ -7461,7 +9297,16 @@ export default function App() {
           <div style={{ fontSize: "0.68rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#8B6914", marginBottom: "0.5rem" }}>
             Liturgical Context
           </div>
-          <div><strong>Date:</strong> {dayLabel}</div>
+          <div>
+            <strong>Date:</strong> {dayLabel}
+            {liturgicalData.paschaOffset >= -101 && liturgicalData.paschaOffset <= 263 && (
+              <span style={{ fontSize: "0.72rem", color: "#9A8A70", marginLeft: "0.5rem", fontStyle: "italic" }}>
+                {liturgicalData.paschaOffset >= 0
+                  ? `(P+${liturgicalData.paschaOffset})`
+                  : `(P${liturgicalData.paschaOffset})`}
+              </span>
+            )}
+          </div>
           {liturgicalData.namedDay && (
             <div style={{ marginTop: "0.2rem", marginBottom: "0.2rem", padding: "0.35rem 0.6rem", background: "rgba(139,105,20,0.1)", borderLeft: "3px solid #8B6914", borderRadius: "0 4px 4px 0" }}>
               <div style={{ fontWeight: "bold", color: "#1C1008", fontSize: "0.88rem" }}>{liturgicalData.namedDay.name}</div>
@@ -7473,7 +9318,23 @@ export default function App() {
             <Tooltip term="tone">Tone {liturgicalData.tone}</Tooltip>
             {" "}of the <Tooltip term="octoechos">Octoechos</Tooltip>
           </div>
-          <div><strong>Season:</strong> {liturgicalData.seasonNote}</div>
+          <div>
+            <strong>Season:</strong>{" "}
+            {liturgicalData.seasonNote}
+            {liturgicalData.lentInfo && !liturgicalData.passionWeek && (
+              <span style={{ marginLeft: "0.4rem", fontSize: "0.85rem", color: "#5C4A1E" }}>
+                {"— "}
+                {liturgicalData.lentInfo.sundayName
+                  ? liturgicalData.lentInfo.sundayName + " · " + liturgicalData.lentInfo.weekName
+                  : liturgicalData.lentInfo.weekName + " · " + liturgicalData.dayName}
+              </span>
+            )}
+            {liturgicalData.pentecostWeekInfo && (
+              <span style={{ marginLeft: "0.4rem", fontSize: "0.85rem", color: "#5C4A1E" }}>
+                {"— "}{liturgicalData.pentecostWeekInfo.label}
+              </span>
+            )}
+          </div>
           {dailyReading && (
             <div style={{ marginTop: "0.4rem" }}>
               <strong>{namedDayIsSunday ? "Sunday proper:" : "Readings:"}</strong>{" "}
@@ -7507,6 +9368,29 @@ export default function App() {
               </span>
             </div>
           )}
+          <div style={{ marginTop: "0.3rem" }}>
+            <strong>Vespers lessons</strong>{" "}
+            <span style={{ fontSize: "0.72rem", color: "#8B7040" }}>
+              {paroemias ? "(OT paroemias at Great Vespers)" : "(not appointed at this rank)"}
+            </span>
+            <VespersLessonsExplainer
+              rank={selectedMenaionEntry && selectedMenaionEntry.rank}
+              pentEntry={pentEntry}
+              isPentecostarion={isPentecostarion}
+              feastPeriod={liturgicalData && liturgicalData.feastPeriod}
+              paroemias={paroemias}
+            />
+            {paroemias && (
+              <span style={{ color: "#5C4A1E", display: "block", marginTop: "0.15rem" }}>
+                {paroemias.map((p, i) => (
+                  <span key={i}>
+                    <em>{["I.", "II.", "III."][i]}</em>{" "}{p}
+                    {i < paroemias.length - 1 && <br />}
+                  </span>
+                ))}
+              </span>
+            )}
+          </div>
 
           {liturgicalData.feastPeriod &&
            !(liturgicalData.namedDay && liturgicalData.feastPeriod.periodType === "forefeast") && (
@@ -7525,8 +9409,13 @@ export default function App() {
             <div>
               <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "4px", lineHeight: "1.6" }}>
                 <strong>Saint:</strong>
+<<<<<<<< HEAD:src/components/hours-tool_v0.2.5.jsx
                 <span>{menaionEntry.saint} —{" "}
                   <Tooltip term="service rank">{(RANK_EXPLANATIONS[menaionEntry.rank] || RANK_EXPLANATIONS.simple).label} service</Tooltip>
+========
+                <span>{(menaionEntry && menaionEntry.saint) || 'Saint of the day'} —{" "}
+                  <Tooltip term="service rank">{(RANK_EXPLANATIONS[menaionEntry && menaionEntry.rank] || RANK_EXPLANATIONS.simple).label} service</Tooltip>
+>>>>>>>> 75befca (Add v0.2.7 tool + Octoechos data file; rename to hours-tool.jsx):src/components/hours-tool.jsx
                 </span>
                 <RankExplainer menaionEntry={menaionEntry} isSunday={isSunday} />
                 {menaionEntry.oca_primary === true && (
@@ -7554,7 +9443,7 @@ export default function App() {
                 </label>
               ))}
               {menaionEntry && !menaionEntry.oca_primary && menaionEntry.note && (() => {
-                const isAbsent = menaionEntry.note.toLowerCase().includes("not listed") || menaionEntry.note.toLowerCase().includes("not on the oca");
+                const isAbsent = (menaionEntry.note || '').toLowerCase().includes("not listed") || (menaionEntry.note || '').toLowerCase().includes("not on the oca");
                 return (
                   <div style={{ marginTop: "0.6rem", padding: "0.5rem 0.75rem", background: isAbsent ? "rgba(180,120,20,0.1)" : "rgba(139,105,20,0.07)", border: `1px solid ${isAbsent ? "rgba(180,120,20,0.4)" : "rgba(139,105,20,0.25)"}`, borderRadius: "4px", fontSize: "0.78rem", color: "#5C4A1E", lineHeight: "1.55" }}>
                     <span style={{ marginRight: "5px", color: "#8B6914" }}>ⓘ</span>
@@ -7582,7 +9471,22 @@ export default function App() {
                 ? <Tooltip term={liturgicalData.season === "apodosis" ? "apodosis" : liturgicalData.season === "forefeast" ? "forefeast" : liturgicalData.season === "afterfeast" ? "afterfeast" : "great feast"}>Feast Period</Tooltip>
                 : "Outside Ordinary Season"}
             </div>
-            <div style={{ fontSize: "0.9rem", lineHeight: "1.6", fontWeight: "500" }}>{liturgicalData.seasonNote}</div>
+            <div style={{ fontSize: "0.9rem", lineHeight: "1.6", fontWeight: "500" }}>
+              {liturgicalData.seasonNote}
+              {liturgicalData.lentInfo && !liturgicalData.passionWeek && (
+                <span style={{ fontWeight: "normal", marginLeft: "0.4rem", color: "#5C4A1E" }}>
+                  {"— "}
+                  {liturgicalData.lentInfo.sundayName
+                    ? liturgicalData.lentInfo.sundayName + " · " + liturgicalData.lentInfo.weekName
+                    : liturgicalData.lentInfo.weekName + " · " + liturgicalData.dayName}
+                </span>
+              )}
+              {liturgicalData.pentecostWeekInfo && (
+                <span style={{ fontWeight: "normal", marginLeft: "0.4rem", color: "#5C4A1E" }}>
+                  {"— "}{liturgicalData.pentecostWeekInfo.label}
+                </span>
+              )}
+            </div>
             <div style={{ fontSize: "0.8rem", color: "#5C4A1E", marginTop: "0.5rem", lineHeight: "1.6" }}>
               {OUT_OF_SCOPE_NOTES[liturgicalData.season] || "Assembly rules for this period are in development."}
             </div>
@@ -7605,6 +9509,19 @@ export default function App() {
               </h2>
 
               {currentService.built ? (
+                currentService.key === 'vespers' ? (
+                  <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
+                    HTM Order of Vespers ·{" "}
+                    {isSunday
+                      ? <><Tooltip term="octoechos">Octoechos</Tooltip> + <Tooltip term="menaion">Menaion</Tooltip> content</>
+                      : <Tooltip term="menaion">Menaion</Tooltip>}{" "}
+                    · <Tooltip term="service rank">
+                        {isSunday ? "Sunday" : (menaionEntry ? (RANK_EXPLANATIONS[menaionEntry.rank] || RANK_EXPLANATIONS.simple).label : "Simple")} service
+                      </Tooltip>
+                      <RankExplainer menaionEntry={menaionEntry} isSunday={isSunday} />
+                      {" "}· Assembled per Fekula {isSunday ? "§1A" : (menaionEntry ? (RANK_EXPLANATIONS[menaionEntry.rank] || RANK_EXPLANATIONS.simple).fekula : "§2A")}
+                  </div>
+                ) : (
                 <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
                   <Tooltip term="horologion">Horologion</Tooltip> structure ·{" "}
                   {isSunday
@@ -7616,6 +9533,7 @@ export default function App() {
                     <RankExplainer menaionEntry={menaionEntry} isSunday={isSunday} />
                     {" "}· Assembled per Fekula {isSunday ? "§1A" : (menaionEntry ? (RANK_EXPLANATIONS[menaionEntry.rank] || RANK_EXPLANATIONS.simple).fekula : "§2A")}
                 </div>
+                )
               ) : (
                 <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
                   Assembly in development
@@ -7647,7 +9565,12 @@ export default function App() {
                 {(currentService.key === "1st_hour" || currentService.key === "6th_hour") && (
                   <TypicalBeginning hourKey={currentService.key} liturgicalData={liturgicalData} tbOpen={tbOpen} setTbOpen={setTbOpen} />
                 )}
-                {elements.map((el) => <ServiceBlock key={el.id} element={el} />)}
+                {currentService.key === "vespers" && (
+                  <VespersOpening liturgicalData={liturgicalData} voOpen={voOpen} setVoOpen={setVoOpen} />
+                )}
+                {elements
+                  .filter(el => !(el.openingElement && voOpen))
+                  .map((el) => <ServiceBlock key={el.id} element={el} />)}
               </div>
             ) : (
               <div style={{ background: "rgba(139,105,20,0.06)", border: "1px solid #D4C49A", borderRadius: "6px", padding: "2rem", textAlign: "center" }}>
@@ -7656,8 +9579,8 @@ export default function App() {
                   {currentService.label} — in development
                 </div>
                 <div style={{ fontSize: "0.8rem", color: "#9A8A70", fontStyle: "italic" }}>
-                  The fixed skeleton and variable texts for this Hour are being assembled.
-                  The Ninth Hour is complete and available now.
+                  The fixed skeleton and variable texts for this feature are being assembled.
+                  The Hours are complete and available now.
                 </div>
               </div>
             )}
@@ -7741,7 +9664,7 @@ export default function App() {
         )}
 
       {/* ── HOW IT WORKS — always visible, below service content ── */}
-      <div style={{ maxWidth: "720px", margin: "0 auto", padding: "0 2rem 2rem",
+      <div style={{ width: "100%", padding: "0 0 2rem",
                     textAlign: "center", marginTop: "1.5rem" }}>
         <button
           onClick={() => setShowHowItWorks(v => !v)}

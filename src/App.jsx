@@ -1,11 +1,10 @@
-import './App.css';
-import MyAwesomeComponent from './components/hours-tool_v0.2.5.jsx';   // ← CHANGE THIS
+import React from 'react';
+import HoursTool from './components/hours-tool.jsx';
 
 function App() {
   return (
     <div className="App">
-      <h1>My React App on GitHub Pages</h1>
-      <MyAwesomeComponent />
+      <HoursTool />
     </div>
   );
 }
