@@ -307,7 +307,7 @@ def build_manifest(out_dir):
         book_id = abbr.lower().replace(" ", "")
         json_path = os.path.join(out_dir, f"{book_id}.json")
         if os.path.exists(json_path):
-            with open(json_path) as f:
+            with open(json_path, encoding="utf-8") as f:
                 data = json.load(f)
             actual_chapters = len(data.get("chapters", []))
             manifest.append({
@@ -356,8 +356,7 @@ def verify_json_files(out_dir, verbose=False):
                 print(f"  SKIP {abbr} — file not found")
             continue
 
-        with open(json_path) as f:
-            data = json.load(f)
+        with open(json_path, encoding="utf-8") as f:
 
         chapter_map = {ch["chapter"]: ch["verses"] for ch in data["chapters"]}
 
