@@ -346,7 +346,12 @@ function KathismaView({ k, onNav }) {
 
 // ─── MAIN EXPORT ─────────────────────────────────────────────────────────────
 export default function Psalter() {
-  const [currentK, setCurrentK] = useState(1);
+  const initialK = (() => {
+    const params = new URLSearchParams(window.location.search);
+    const k = parseInt(params.get("kathisma"), 10);
+    return k >= 1 && k <= 20 ? k : 1;
+  })();
+  const [currentK, setCurrentK] = useState(initialK);
 
   return (
     <div style={{ minHeight: "100vh", background: C.parchment, fontFamily: "Georgia, serif", color: C.ink }}>
