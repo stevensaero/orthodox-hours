@@ -442,6 +442,31 @@ export default function Psalter() {
           </div>
         )}
 
+        {fromContext && (
+          <button
+            onClick={() => window.history.back()}
+            style={{
+              display: "flex", alignItems: "center", gap: "0.5rem",
+              marginTop: "2rem",
+              marginLeft: "-1.25rem", marginRight: "-1.25rem",
+              width: "calc(100% + 2.5rem)",
+              padding: "0.5rem 1.25rem",
+              background: "#FAF6EE",
+              border: "none", borderTop: `1px solid ${C.goldLight}`,
+              cursor: "pointer", textAlign: "left",
+              fontFamily: "Georgia, serif",
+            }}
+          >
+            <span style={{ fontSize: "1rem", lineHeight: 1, color: C.gold }}>←</span>
+            <span style={{ fontSize: "0.78rem", fontFamily: "Georgia, serif", color: C.gold, marginLeft: "0.4rem" }}>
+              Hours Tool
+            </span>
+            <span style={{ fontSize: "0.72rem", color: C.inkLight, fontStyle: "italic", marginLeft: "0.25rem" }}>
+              · {fromContext.serviceLabel} · {fromContext.dayName}, {fromContext.dateLabel}
+            </span>
+          </button>
+        )}
+
         <div style={{ marginTop: "3rem", paddingTop: "1rem", borderTop: `1px solid ${C.border}`, fontSize: "0.7rem", color: "#B8A882", fontStyle: "italic", textAlign: "center", lineHeight: "1.6" }}>
           Psalm texts from the Brenton Septuagint (1851), public domain.<br />
           Sourced from <a href="https://psalter.app" target="_blank" rel="noopener" style={{ color: C.gold }}>psalter.app</a> (MIT license). All 20 kathismata fully encoded.
