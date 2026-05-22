@@ -1,0 +1,22 @@
+{
+  "gospel": {
+    "12": {
+      "label": "Gospel (12)",
+      "description": "4th Sunday of Pascha — Sunday of the Samaritan Woman",
+      "readings": [
+        {"book": "John", "chapter": 4, "verseStart": 5, "verseEnd": 42}
+      ]
+    }
+  },
+  "apostolos": {
+    "26": {
+      "label": "Epistle (26)",
+      "description": "3rd Sunday of Pascha — Sunday of the Myrrhbearers",
+      "readings": [
+        {"book": "Acts", "chapter": 11, "verseStart": 19, "verseEnd": 26},
+        {"book": "Acts", "chapter": 11, "verseStart": 29, "verseEnd": 30}
+      ]
+    }
+  },
+  "ot": {}
+}
