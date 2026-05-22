@@ -12869,11 +12869,17 @@ export default function App() {
                       : <>Weekday kontakia sequence</>}{" "}
                     · Served after the Sixth Hour when no Divine Liturgy is celebrated
                   </div>
-                ) : currentService.key === 'post_communion' ? (
-                  <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
-                    HTM, Prayers After Holy Communion
-                  </div>
-                ) : (
+                ) : currentService.key === 'post_communion' ? (() => {
+                    const _lt = getLiturgyType(liturgicalData);
+                    const _ltLabel = _lt === 'basil' ? 'Liturgy of St. Basil the Great'
+                      : _lt === 'presanctified' ? 'Liturgy of the Presanctified Gifts'
+                      : 'Liturgy of St. John Chrysostom';
+                    return (
+                      <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
+                        HTM, Prayers After Holy Communion · {_ltLabel}
+                      </div>
+                    );
+                  })() : (
                 <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
                   <Tooltip term="horologion">Horologion</Tooltip> structure ·{" "}
                   {isSunday
@@ -12904,10 +12910,12 @@ export default function App() {
                   <span style={{ width: "12px", height: "12px", borderRadius: "2px", background: "#8B6914", display: "inline-block" }} />
                   Movable text (variable by date)
                 </span>
+                {currentService.key !== 'post_communion' && (
                 <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                   <span style={{ width: "12px", height: "12px", borderRadius: "2px", background: "#B43C1E", display: "inline-block" }} />
                   Unresolved (Phase 2)
                 </span>
+                )}
               </div>
             )}
 
