@@ -12876,7 +12876,7 @@ export default function App() {
                       : 'Liturgy of St. John Chrysostom';
                     return (
                       <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
-                        HTM, Prayers After Holy Communion · {_ltLabel}
+                        Read After Holy Communion · Following {_ltLabel}
                       </div>
                     );
                   })() : (
