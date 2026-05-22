@@ -3311,6 +3311,7 @@ function getLiturgicalData(date) {
     lentWeek, lentSunday, passionWeek, lentInfo,
     sundayAfterPentecost, sundayOfLuke, pentecostWeekInfo,
     kathismaPeriod,
+    mm, dd,
     isOrdinaryWeekday: season === "ordinary",
     isSunday: season === "sunday",
     isLent: season === "lent",
@@ -10025,6 +10026,213 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
 }
 
 
+
+// ─── POST-COMMUNION PRAYERS ───────────────────────────────────────────────────
+// Source: HTM, htm_post_comunion_prayers.pdf
+// Served after Holy Communion. No Fekula citation — Fekula does not govern
+// post-communion prayers. The only movable element is the Troparion/Kontakion
+// block, which varies by which Liturgy was served that day.
+
+// ── Liturgy type detection ────────────────────────────────────────────────────
+// Basil Liturgy days: Jan 1, Jan 5, Lenten Sundays 1–5, Great Thursday, Great Saturday.
+// Presanctified: Lenten Wed & Fri (out of scope for now — stubbed).
+// All other days: St. John Chrysostom.
+function getLiturgyType(liturgicalData) {
+  const { season, lentSunday, passionWeek, dow, mm, dd } = liturgicalData;
+  if (mm === 1 && dd === 1) return 'basil';
+  if (mm === 1 && dd === 5) return 'basil';
+  if (season === 'lent' && lentSunday && lentSunday >= 1 && lentSunday <= 5) return 'basil';
+  if (passionWeek && dow === 4) return 'basil';
+  if (passionWeek && dow === 6) return 'basil';
+  if (season === 'lent' && !passionWeek && (dow === 3 || dow === 5)) return 'presanctified';
+  return 'chrysostom';
+}
+
+// ── Fixed prayer texts ────────────────────────────────────────────────────────
+
+const PC_OPENING = `Glory to Thee, O God. Glory to Thee, O God. Glory to Thee, O God.`;
+
+const PC_PRAYER_1 = `I thank Thee, O Lord my God, that Thou hast not rejected me, a sinner, but hast vouchsafed me to be a communicant of Thy Holy Things. I thank Thee that Thou hast vouchsafed me, the unworthy, to partake of Thy most pure and heavenly Gifts. But, O Master, Lover of mankind, Who for our sake didst die and didst rise again, and didst bestow upon us these dread and life-giving Mysteries for the well-being and sanctification of our souls and bodies, grant that these may be even unto me for the healing of both soul and body, for the averting of everything hostile, for the enlightenment of the eyes of my heart, for the peace of the powers of my soul, for faith unashamed, for love unfeigned, for the fullness of wisdom, for the keeping of Thy commandments, for an increase of Thy Divine grace, and for the attainment of Thy kingdom; that being preserved by them in Thy holiness, I may always remember Thy grace, and no longer live for myself, but for Thee our Master and Benefactor; and thus when I shall have departed this life in hope of life eternal, I may attain unto everlasting rest, where the sound of them that keep festival is unceasing, and the delight is endless of them that behold the ineffable beauty of Thy countenance. For Thou art the true desire and the unutterable gladness of them that love Thee, O Christ our God, and all creation doth hymn Thee unto the ages. Amen.`;
+
+const PC_PRAYER_2 = `O Master Christ God, King of the ages, and Creator of all things, I thank Thee for all the good things which Thou hast bestowed upon me, and for the Communion of Thy most pure and life-giving Mysteries. I pray Thee, therefore, O Good One and Lover of Mankind: Keep me under Thy protection and in the shadow of Thy wings and grant me, even until my last breath, to partake worthily, with a pure conscience, of Thy Holy Things, unto the remission of sins and life eternal. For Thou art the Bread of Life, the Source of holiness, the Giver of good things; and unto Thee do we send up glory, together with the Father and the Holy Spirit, now and ever, and unto the ages of ages. Amen.`;
+
+const PC_PRAYER_3 = `O Thou who givest me willingly Thy Flesh as food, Thou Who art Fire that doth consume the unworthy, burn me not, O my Creator; but, rather, enter Thou into my members, into all my joints, my reins, my heart. Burn up the thorns of all my sins. Purify my soul, sanctify my thoughts. Strengthen my substance together with my bones. Enlighten my simple five senses. Nail down the whole of me with Thy fear. Ever protect, preserve, and keep me from every soul-corrupting deed and word. Purify and cleanse, and adorn me; make me comely, give me understanding, and enlighten me. Show me to be the dwelling-place of Thy Spirit alone, and no longer the habitation of sin; that from me as Thine abode through the entry of Communion, every evildoer, every passion, may flee as from fire. As intercessors I offer unto Thee all the saints, the commanders of the bodiless hosts, Thy Forerunner, the wise apostles, and further, Thine undefiled pure Mother, whose entreaties do Thou accept, O my compassionate Christ, and make Thy servant a child of light. For Thou alone art our sanctification, O Good One, and the radiance of our souls, and unto Thee as God and Master, we all send up glory, as is meet, every day.`;
+
+const PC_PRAYER_4 = `O Lord Jesus Christ our God, may Thy holy Body be unto me for life eternal, and Thy precious Blood for the remission of sins; and may this Eucharist be unto me for joy, health, and gladness. And at Thy dread Second Coming vouchsafe me, a sinner, to stand at the right hand of Thy glory, through the intercessions of Thy most pure Mother and of all the saints.`;
+
+const PC_PRAYER_THEOTOKOS = `O most holy Lady Theotokos, light of my darkened soul, my hope, protection, refuge, consolation, my joy: I thank thee that thou hast vouchsafed me, who am unworthy, to be a partaker of the most pure Body and precious Blood of Thy Son. O thou who gavest birth to the True Light, do thou enlighten the spiritual eyes of my heart; thou who gavest birth to the Source of immortality, revive me who am dead in sin; thou who art the lovingly-compassionate Mother of the merciful God, have mercy on me, and grant me compunction, and contrition in my heart, and humility in my thoughts, and the recall of my thoughts from captivity. And vouchsafe me until my last breath to receive without condemnation the sanctification of the most pure Mysteries, for the healing both soul and body; and grant me tears of repentance and confession, with which to hymn and glorify thee all the days of my life; for blessed and most glorified art thou unto the ages. Amen.`;
+
+const PC_NUNC_DIMITTIS = `Now lettest Thou Thy servant depart in peace, O Master, according to Thy word; for mine eyes have seen Thy salvation which Thou hast prepared before the face of all peoples, a light of revelation for the Gentiles, and the glory of Thy people Israel.`;
+
+const PC_TRISAGION_BLOCK = `Holy God, Holy Mighty, Holy Immortal, have mercy on us. (Thrice.)
+
+Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.
+
+O Most Holy Trinity, have mercy on us. O Lord, blot out our sins. O Master, pardon our iniquities. O Holy One, visit and heal our infirmities for Thy name's sake.
+
+Lord, have mercy. (Thrice.)
+
+Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.
+
+Our Father, Who art in the heavens, hallowed be Thy name. Thy kingdom come, Thy will be done, on earth as it is in heaven. Give us this day our daily bread, and forgive us our debts, as we forgive our debtors; and lead us not into temptation, but deliver us from the evil one.`;
+
+const PC_THEOTOKION_FIXED = `O protection of Christians that cannot be put to shame, O mediation unto the Creator unfailing, disdain not the suppliant voices of sinners; but be thou quick, O good one, to help us who in faith cry unto thee; hasten to intercession and speed thou to make supplication, thou who dost ever protect, O Theotokos, them that honour thee.`;
+
+const PC_CLOSING = `Lord, have mercy. (Twelve times.)
+
+Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.
+
+More honourable than the Cherubim, and beyond compare more glorious than the Seraphim, who without corruption gavest birth to God the Word, the very Theotokos, thee do we magnify.
+
+And the Dismissal.`;
+
+// ── Movable T/K texts ─────────────────────────────────────────────────────────
+
+const PC_TK_CHRYSOSTOM = {
+  liturgyLabel: 'The Divine Liturgy of Saint John Chrysostom',
+  explainer: 'The Liturgy of Saint John Chrysostom was celebrated today. We therefore read the troparion and kontakion of Saint John Chrysostom, the great Archbishop of Constantinople whose Liturgy we have just celebrated. This is the ordinary Liturgy of the Church, served on most days of the year.',
+  troparion: {
+    tone: 8,
+    label: 'Troparion to St. John Chrysostom',
+    text: `Grace shining forth from thy mouth like a beacon hath illumined the universe, and disclosed to the world treasures of uncovetousness, and shown us the heights of humility; but while instructing by thy words, O Father John Chrysostom, intercede with the Word, Christ our God, to save our souls.`,
+  },
+  glory: 'Glory to the Father, and to the Son, and to the Holy Spirit.',
+  kontakion: {
+    tone: 6,
+    label: 'Kontakion to St. John Chrysostom',
+    text: `From the heavens hast thou received divine grace and by thy lips thou dost teach all to worship the One God in Trinity, O John Chrysostom, all-blessed righteous one. Rightly do we acclaim thee, for thou art a teacher revealing things divine.`,
+  },
+  bothNow: 'Both now and ever, and unto the ages of ages. Amen.',
+};
+
+const PC_TK_BASIL = {
+  liturgyLabel: 'The Divine Liturgy of Saint Basil the Great',
+  explainer: 'The Liturgy of Saint Basil the Great was celebrated today. The Basil Liturgy is served ten times a year: on the feast of Saint Basil (January 1), on the eve of Theophany (January 5), on the five Sundays of Great Lent, and on Great Thursday and Great Saturday. We therefore read the troparion and kontakion of Saint Basil the Great, whose Liturgy we have just celebrated.',
+  troparion: {
+    tone: 1,
+    label: 'Troparion to St. Basil the Great',
+    text: `Thy fame hath gone forth into all the earth, which hath received thy word. Thereby thou hast divinely taught the Faith; thou hast made manifest the nature of created things; thou hast made the moral life of men a royal priesthood. O Basil our righteous father, intercede with Christ God that our souls be saved.`,
+  },
+  glory: 'Glory to the Father, and to the Son, and to the Holy Spirit.',
+  kontakion: {
+    tone: 4,
+    label: 'Kontakion to St. Basil the Great',
+    text: `Thou didst prove to be an unshakable foundation of the Church, giving to all mortals an inviolate lordship, and sealing it with thy doctrines, O righteous Basil, revealer of heavenly things.`,
+  },
+  bothNow: 'Both now and ever, and unto the ages of ages. Amen.',
+};
+
+const PC_TK_PRESANCTIFIED = {
+  liturgyLabel: 'The Liturgy of the Presanctified Gifts',
+  explainer: 'The Liturgy of the Presanctified Gifts was celebrated today. This Liturgy, attributed to Saint Gregory the Dialogist (Pope Gregory the Great), is served on Wednesday and Friday evenings during Great Lent, and is combined with Vespers. We read the troparion and kontakion of Saint Gregory the Dialogist, whose rite we have just celebrated.',
+  troparion: {
+    tone: 4,
+    label: 'Troparion to St. Gregory the Dialogist',
+    text: `Thou who hast received of God divine grace from on high, O glorious Gregory, and hast been fortified by His power, thou didst will to walk according to the Gospel; wherefore, thou hast received of Christ the reward of thy labours, O all-blessed one. Entreat Him that He save our souls.`,
+  },
+  glory: 'Glory to the Father, and to the Son, and to the Holy Spirit.',
+  kontakion: {
+    tone: 3,
+    label: 'Kontakion to St. Gregory the Dialogist',
+    text: `Thou hast shown thyself to be a leader like unto the Chief Shepherd Christ, O Father Gregory, guiding flocks of monks into the heavenly sheepfold, and from whence thou didst teach the flock of Christ His commandments. And now thou dost rejoice with them and dance in the heavenly mansions.`,
+  },
+  bothNow: 'Both now and ever, and unto the ages of ages. Amen.',
+};
+
+// ── Assembler ─────────────────────────────────────────────────────────────────
+
+function assemblePostCommunion(liturgicalData, readerMode = false) {
+  const elements = [];
+  const src = 'HTM, Prayers After Holy Communion';
+  const liturgyType = getLiturgyType(liturgicalData);
+  const tk = liturgyType === 'basil' ? PC_TK_BASIL
+            : liturgyType === 'presanctified' ? PC_TK_PRESANCTIFIED
+            : PC_TK_CHRYSOSTOM;
+
+  const fixed = (id, label, text, rubric = null) =>
+    elements.push({ id, type: 'fixed', label, text, rubric, source: src });
+
+  const priest = (id, text) => {
+    if (readerMode) {
+      elements.push({
+        id, type: 'substitution', label: '', rubric: 'Reader:',
+        text: 'Through the prayers of our holy fathers, Lord Jesus Christ, Son of God, have mercy on us. Amen.',
+        source: src,
+      });
+    } else {
+      elements.push({
+        id, type: 'fixed', label: '', rubric: 'Priest:',
+        text, source: src,
+      });
+    }
+  };
+
+  // ── Opening ──────────────────────────────────────────────────────────────
+  elements.push({
+    id: 'pc-rubric-open', type: 'fixed', label: '', source: src,
+    rubric: 'When thou hast received the good Communion of the life-giving Mystical Gifts, give praise immediately, give thanks greatly, and from the soul say fervently unto God these things:',
+    text: '',
+  });
+
+  fixed('pc-opening', '', PC_OPENING);
+
+  // ── Prayer 1 — Thanksgiving ───────────────────────────────────────────────
+  fixed('pc-prayer-1-heading', 'Prayer of Thanksgiving', '');
+  fixed('pc-prayer-1', '', PC_PRAYER_1);
+
+  // ── Prayer 2 — Basil the Great ───────────────────────────────────────────
+  fixed('pc-prayer-2-heading', 'Of Basil the Great', '');
+  fixed('pc-prayer-2', '', PC_PRAYER_2);
+
+  // ── Prayer 3 — Verses of Metaphrastes ───────────────────────────────────
+  fixed('pc-prayer-3-heading', 'Verses of Metaphrastes', '');
+  fixed('pc-prayer-3', '', PC_PRAYER_3);
+
+  // ── Prayer 4 — Another Prayer ────────────────────────────────────────────
+  fixed('pc-prayer-4-heading', 'Another Prayer', '');
+  fixed('pc-prayer-4', '', PC_PRAYER_4);
+
+  // ── Prayer 5 — To the Most Holy Theotokos ───────────────────────────────
+  fixed('pc-prayer-theotokos-heading', 'Another Prayer, to the Most Holy Theotokos', '');
+  fixed('pc-prayer-theotokos', '', PC_PRAYER_THEOTOKOS);
+
+  // ── Nunc Dimittis ────────────────────────────────────────────────────────
+  elements.push({
+    id: 'pc-nunc-rubric', type: 'fixed', label: '', source: src,
+    rubric: 'Then:',
+    text: '',
+  });
+  fixed('pc-nunc-dimittis', 'Nunc Dimittis', PC_NUNC_DIMITTIS);
+
+  // ── Trisagion / Our Father ───────────────────────────────────────────────
+  fixed('pc-trisagion-block', '', PC_TRISAGION_BLOCK);
+
+  // ── Priest exclamation after Our Father ─────────────────────────────────
+  priest('pc-for-thine',
+    'For Thine is the kingdom, and the power, and the glory: of the Father, and of the Son, and of the Holy Spirit, now and ever, and unto the ages of ages.');
+
+  fixed('pc-amen', '', 'Amen.');
+
+  // ── Movable: Troparion / Kontakion ───────────────────────────────────────
+  elements.push({
+    id: 'pc-tk-block',
+    type: 'movable',
+    label: 'Troparion & Kontakion',
+    source: tk.liturgyLabel,
+    rubric: tk.explainer,
+    _tk: tk,   // renderer will unpack this
+    fekula: null,
+  });
+
+  // ── Fixed Theotokion ──────────────────────────────────────────────────────
+  fixed('pc-theotokion-fixed', 'Theotokion', PC_THEOTOKION_FIXED);
+
+  // ── Closing ───────────────────────────────────────────────────────────────
+  fixed('pc-closing', '', PC_CLOSING);
+
+  return elements;
+}
+
 const SERVICE_REGISTRY = [
   { key: "vespers",        label: "Vespers",                    built: true  },
   { key: "compline",       label: "Compline (Apodeipnon)",      built: false },
@@ -10035,6 +10243,7 @@ const SERVICE_REGISTRY = [
   { key: "6th_hour",       label: "The Sixth Hour",             built: true  },
   { key: "9th_hour",       label: "The Ninth Hour",             built: true  },
   { key: "liturgy",        label: "Divine Liturgy",             built: false },
+  { key: "post_communion", label: "Prayers After Holy Communion", built: true  },
   { key: "typica",         label: "The Order of the Typica",    built: true  },
 ];
 
@@ -10480,6 +10689,49 @@ function ServiceBlock({ element }) {
           );
         }
         return <div style={bodyStyle}>{element.text}</div>;
+      })()}
+
+      {/* ── Post-communion T/K block ── */}
+      {element._tk && (() => {
+        const tk = element._tk;
+        const goldLabel = {
+          fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.12em",
+          color: "#8B6914", fontFamily: "Georgia, serif", fontWeight: "bold",
+          marginBottom: "0.25rem",
+        };
+        const toneTag = {
+          fontSize: "0.76rem", color: "#9A8A70", fontStyle: "italic", marginBottom: "0.3rem",
+        };
+        const bodyText = {
+          fontFamily: "Georgia, serif", fontSize: "0.97rem", lineHeight: "1.75",
+          color: "#1C1008", whiteSpace: "pre-wrap",
+          background: "rgba(139,105,20,0.04)", padding: "0.6rem 0.8rem", borderRadius: "4px",
+        };
+        const gloryText = {
+          fontFamily: "Georgia, serif", fontSize: "0.97rem", lineHeight: "1.75",
+          color: "#3D3020", margin: "0.5rem 0",
+        };
+        return (
+          <div>
+            <div style={{ ...goldLabel, marginBottom: "0.5rem", color: "#9A8A70", fontStyle: "italic",
+              textTransform: "none", letterSpacing: "0", fontSize: "0.82rem", borderLeft: "2px solid #D4C49A",
+              paddingLeft: "0.6rem", lineHeight: "1.5" }}>
+              {tk.explainer}
+            </div>
+            <div style={{ marginTop: "0.75rem" }}>
+              <div style={goldLabel}>{tk.troparion.label}</div>
+              <div style={toneTag}>Tone {tk.troparion.tone}</div>
+              <div style={bodyText}>{tk.troparion.text}</div>
+            </div>
+            <div style={gloryText}>{tk.glory}</div>
+            <div style={{ marginTop: "0.25rem" }}>
+              <div style={goldLabel}>{tk.kontakion.label}</div>
+              <div style={toneTag}>Tone {tk.kontakion.tone}</div>
+              <div style={bodyText}>{tk.kontakion.text}</div>
+            </div>
+            <div style={gloryText}>{tk.bothNow}</div>
+          </div>
+        );
       })()}
 
       {/* ── Citation footnote ── */}
@@ -11300,6 +11552,21 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.3.3",
+    date: "May 2026",
+    summary: "Prayers After Holy Communion assembler · Liturgy type detection · movable T/K by Liturgy served",
+    items: [
+      "New service: Prayers After Holy Communion (post_communion) — full HTM order assembled",
+      "Five prayers: Thanksgiving (Prayer 1), Basil the Great (Prayer 2), Verses of Metaphrastes (Prayer 3), Another Prayer, Prayer to the Theotokos",
+      "Nunc Dimittis, Trisagion / Our Father block, Theotokion (O protection of Christians), and closing",
+      "Movable T/K block: three variants by Liturgy served — St. John Chrysostom (default), St. Basil the Great, St. Gregory the Dialogist (Presanctified)",
+      "getLiturgyType() detects Basil days (Jan 1, Jan 5, Lenten Sundays 1–5, Great Thursday, Great Saturday) and Presanctified days (Lenten Wed/Fri, stubbed)",
+      "Each T/K variant includes an educational explainer explaining why this troparion/kontakion is read on this day",
+      "Reader mode: priest exclamation (For Thine is the kingdom) replaced by blue-grey reader substitution (Through the prayers of our holy fathers…)",
+      "mm/dd added to liturgicalData return object (used by getLiturgyType and available for future assemblers)",
+    ],
+  },
   {
     version: "v0.3.2",
     date: "May 2026",
@@ -12158,6 +12425,9 @@ export default function App() {
     }
     if (currentService.key === 'typica') {
       return assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode);
+    }
+    if (currentService.key === 'post_communion') {
+      return assemblePostCommunion(liturgicalData, readerMode);
     }
     return assembleHour(currentService.key, liturgicalData, menaionEntry, pentEntry, tbOpen, readerMode);
   })();
