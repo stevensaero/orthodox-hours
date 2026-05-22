@@ -10623,7 +10623,7 @@ function ServiceBlock({ element }) {
         )}
         {isMovable && element.kathismaNum && (
           <a
-            href={`/orthodox-hours/psalter?kathisma=${element.kathismaNum}`}
+            href={`/orthodox-hours/psalter?kathisma=${element.kathismaNum}&service=${currentService.key}&date=${selectedDate}`}
             target="_blank"
             rel="noopener"
             style={{

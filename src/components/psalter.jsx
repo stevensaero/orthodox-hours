@@ -356,11 +356,52 @@ export default function Psalter() {
     const k = parseInt(params.get("kathisma"), 10);
     return k >= 1 && k <= 20 ? k : 1;
   })();
+
+  const fromContext = (() => {
+    const params = new URLSearchParams(window.location.search);
+    const service = params.get("service");
+    const date = params.get("date");
+    if (!service || !date) return null;
+    const d = new Date(date + "T12:00:00");
+    const dayName = d.toLocaleDateString("en-US", { weekday: "long" });
+    const dateLabel = d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+    const serviceLabel = service === "vespers" ? "Vespers"
+      : service === "post_communion" ? "Prayers After Communion"
+      : service === "typica" ? "Typica"
+      : service.replace("_", " ").replace(/\b\w/g, c => c.toUpperCase());
+    return { dayName, dateLabel, serviceLabel, href: "/orthodox-hours/" };
+  })();
+
   const [currentK, setCurrentK] = useState(initialK);
 
   return (
     <div style={{ minHeight: "100vh", background: C.parchment, fontFamily: "Georgia, serif", color: C.ink }}>
       <div style={{ maxWidth: "680px", margin: "0 auto", padding: "1.5rem 1.25rem 5rem" }}>
+
+        {/* ── Context strip — shown when opened from Hours tool ── */}
+        {fromContext && (
+          <a
+            href={fromContext.href}
+            style={{
+              display: "flex", alignItems: "center", gap: "0.5rem",
+              marginBottom: "1.25rem",
+              padding: "0.5rem 0.75rem",
+              background: "rgba(139,105,20,0.06)",
+              border: `1px solid ${C.goldLight}`,
+              borderRadius: "4px",
+              textDecoration: "none",
+              color: C.gold,
+            }}
+          >
+            <span style={{ fontSize: "1rem", lineHeight: 1 }}>←</span>
+            <span style={{ fontSize: "0.78rem", fontFamily: "Georgia, serif", color: C.gold }}>
+              Hours Tool
+            </span>
+            <span style={{ fontSize: "0.72rem", color: C.inkLight, fontStyle: "italic", marginLeft: "0.25rem" }}>
+              · {fromContext.serviceLabel} · {fromContext.dayName}, {fromContext.dateLabel}
+            </span>
+          </a>
+        )}
 
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", borderBottom: `2px solid ${C.goldLight}`, paddingBottom: "0.6rem", marginBottom: "1.5rem" }}>
           <span style={{ fontSize: "0.65rem", letterSpacing: "0.22em", textTransform: "uppercase", color: C.gold, fontWeight: "bold" }}>Orthodox Psalter</span>
