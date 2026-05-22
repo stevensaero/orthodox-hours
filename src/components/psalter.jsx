@@ -447,7 +447,7 @@ export default function Psalter() {
             onClick={() => window.history.back()}
             style={{
               display: "flex", alignItems: "center", gap: "0.5rem",
-              marginTop: "2rem",
+              position: "sticky", bottom: 0, zIndex: 10,
               marginLeft: "-1.25rem", marginRight: "-1.25rem",
               width: "calc(100% + 2.5rem)",
               padding: "0.5rem 1.25rem",
