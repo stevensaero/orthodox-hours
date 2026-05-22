@@ -12379,7 +12379,8 @@ export default function App() {
     ? services[Math.min(selectedServiceIndex, services.length - 1)]
     : null;
 
-  const inScope = ["ordinary", "sunday", "pentecostarion", "brightweek"].includes(liturgicalData.season);
+  const inScope = selectedServiceKey === 'post_communion'
+    || ["ordinary", "sunday", "pentecostarion", "brightweek"].includes(liturgicalData.season);
   const isSunday = liturgicalData.season === "sunday";
   const isPentecostarion = liturgicalData.season === "pentecostarion";
   const isBrightWeek = liturgicalData.season === "brightweek";
