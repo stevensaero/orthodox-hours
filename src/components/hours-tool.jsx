@@ -10228,6 +10228,16 @@ function assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMo
   // ── Closing ───────────────────────────────────────────────────────────────
   fixed('pc-closing', '', PC_CLOSING);
 
+  // ── "In the name of the Lord…" — served mode only ────────────────────────
+  // Reader's cue to the priest to give the dismissal. Drops out in reader mode.
+  if (!readerMode) {
+    elements.push({
+      id: 'pc-in-the-name', type: 'fixed', label: '', source: src,
+      rubric: null,
+      text: 'In the name of the Lord, father, bless!',
+    });
+  }
+
   // ── Dismissal ─────────────────────────────────────────────────────────────
   elements.push(buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, "pc"));
 
@@ -12857,6 +12867,10 @@ export default function App() {
                       ? <><Tooltip term="octoechos">Octoechos</Tooltip> Hypakoë (Tone {liturgicalData?.tone})</>
                       : <>Weekday kontakia sequence</>}{" "}
                     · Served after the Sixth Hour when no Divine Liturgy is celebrated
+                  </div>
+                ) : currentService.key === 'post_communion' ? (
+                  <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
+                    HTM, Prayers After Holy Communion · Served privately after receiving the Holy Mysteries · No Fekula citation
                   </div>
                 ) : (
                 <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
