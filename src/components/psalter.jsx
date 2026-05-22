@@ -27,7 +27,7 @@ const KATHISMA_MAP = {
   17: { stases: [[118]], verseRanges: [[1,72],[73,131],[132,176]] },
   18: { stases: [[119,120,121,122,123],[124,125,126,127,128],[129,130,131,132,133]] },
   19: { stases: [[134,135,136],[137,138,139],[140,141,142]] },
-  20: { stases: [[143,144,145],[146,147,148],[149,150,151]] },
+  20: { stases: [[143,144,145],[146,147,148],[149,150]] },
 };
 
 // ─── PSALM DATA ───────────────────────────────────────────────────────────────
@@ -373,6 +373,18 @@ export default function Psalter() {
         </div>
 
         <KathismaView key={currentK} k={currentK} onNav={setCurrentK} />
+
+        {currentK === 20 && PSALMS[151] && (
+          <div style={{ marginTop: "2rem", paddingTop: "1.5rem", borderTop: `1px solid ${C.border}` }}>
+            <div style={{ fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: C.inkLight, fontWeight: "bold", marginBottom: "0.5rem" }}>
+              Supplementary
+            </div>
+            <div style={{ fontSize: "0.78rem", color: C.inkLight, fontStyle: "italic", marginBottom: "1rem", lineHeight: "1.5" }}>
+              Psalm 151 is not numbered among the 150 Psalms and is not part of any Kathisma. It is placed here as a supplement, following the Septuagint tradition.
+            </div>
+            <PsalmBlock num={151} />
+          </div>
+        )}
 
         <div style={{ marginTop: "3rem", paddingTop: "1rem", borderTop: `1px solid ${C.border}`, fontSize: "0.7rem", color: "#B8A882", fontStyle: "italic", textAlign: "center", lineHeight: "1.6" }}>
           Psalm texts from the Brenton Septuagint (1851), public domain.<br />
