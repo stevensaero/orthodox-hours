@@ -10234,7 +10234,7 @@ function assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMo
     elements.push({
       id: 'pc-in-the-name', type: 'fixed', label: '', source: src,
       rubric: null,
-      text: 'In the name of the Lord, father, bless!',
+      text: 'In the name of the Lord, father (master), bless!',
     });
   }
 
@@ -12870,7 +12870,7 @@ export default function App() {
                   </div>
                 ) : currentService.key === 'post_communion' ? (
                   <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
-                    HTM, Prayers After Holy Communion · Served privately after receiving the Holy Mysteries · No Fekula citation
+                    HTM, Prayers After Holy Communion
                   </div>
                 ) : (
                 <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
