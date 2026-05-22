@@ -77,7 +77,7 @@
     "abbreviation": "1Sam",
     "testament": "OT",
     "group": "History",
-    "chapters": 22,
+    "chapters": 31,
     "file": "1sam.json"
   },
   {
@@ -86,8 +86,35 @@
     "abbreviation": "2Sam",
     "testament": "OT",
     "group": "History",
-    "chapters": 25,
+    "chapters": 24,
     "file": "2sam.json"
+  },
+  {
+    "id": "3Kgdm",
+    "name": "3 Kingdoms (1 Kings)",
+    "abbreviation": "3Kgdm",
+    "testament": "OT",
+    "group": "History",
+    "chapters": 22,
+    "file": "3kgdm.json"
+  },
+  {
+    "id": "4Kgdm",
+    "name": "4 Kingdoms (2 Kings)",
+    "abbreviation": "4Kgdm",
+    "testament": "OT",
+    "group": "History",
+    "chapters": 25,
+    "file": "4kgdm.json"
+  },
+  {
+    "id": "EsthGr",
+    "name": "Esther (Greek)",
+    "abbreviation": "EsthGr",
+    "testament": "OT",
+    "group": "History",
+    "chapters": 10,
+    "file": "esg.json"
   },
   {
     "id": "1Chr",
@@ -331,6 +358,15 @@
     "group": "Prophets Minor",
     "chapters": 1,
     "file": "obad.json"
+  },
+  {
+    "id": "Jon",
+    "name": "Jonah",
+    "abbreviation": "Jon",
+    "testament": "OT",
+    "group": "Prophets",
+    "chapters": 4,
+    "file": "jon.json"
   },
   {
     "id": "Mic",
