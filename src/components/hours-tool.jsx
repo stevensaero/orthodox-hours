@@ -10624,8 +10624,6 @@ function ServiceBlock({ element }) {
         {isMovable && element.kathismaNum && (
           <a
             href={element.psalterHref || `/orthodox-hours/psalter?kathisma=${element.kathismaNum}`}
-            target="_blank"
-            rel="noopener"
             style={{
               fontSize: "0.68rem",
               color: "#8B6914",

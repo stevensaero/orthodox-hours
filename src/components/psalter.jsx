@@ -272,10 +272,10 @@ function KathismaView({ k, onNav }) {
   const topRef = useRef(null);
 
   useEffect(() => {
-    // Small delay ensures this fires after browser scroll restoration
+    // Fire on mount and on k change — delay overrides browser scroll restoration
     const t = setTimeout(() => {
-      topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 50);
+      topRef.current?.scrollIntoView({ behavior: "instant", block: "start" });
+    }, 80);
     return () => clearTimeout(t);
   }, [k]);
 
@@ -352,6 +352,7 @@ function KathismaView({ k, onNav }) {
 export default function Psalter() {
   const initialK = (() => {
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
     const params = new URLSearchParams(window.location.search);
     const k = parseInt(params.get("kathisma"), 10);
     return k >= 1 && k <= 20 ? k : 1;
@@ -384,11 +385,12 @@ export default function Psalter() {
             href={fromContext.href}
             style={{
               display: "flex", alignItems: "center", gap: "0.5rem",
+              position: "sticky", top: 0, zIndex: 10,
               marginBottom: "1.25rem",
-              padding: "0.5rem 0.75rem",
-              background: "rgba(139,105,20,0.06)",
-              border: `1px solid ${C.goldLight}`,
-              borderRadius: "4px",
+              marginLeft: "-1.25rem", marginRight: "-1.25rem",
+              padding: "0.5rem 1.25rem",
+              background: "#FAF6EE",
+              borderBottom: `1px solid ${C.goldLight}`,
               textDecoration: "none",
               color: C.gold,
             }}
