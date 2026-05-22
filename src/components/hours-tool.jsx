@@ -10623,7 +10623,7 @@ function ServiceBlock({ element }) {
         )}
         {isMovable && element.kathismaNum && (
           <a
-            href={`/orthodox-hours/psalter?kathisma=${element.kathismaNum}&service=${currentService.key}&date=${selectedDate}`}
+            href={element.psalterHref || `/orthodox-hours/psalter?kathisma=${element.kathismaNum}`}
             target="_blank"
             rel="noopener"
             style={{
@@ -12454,16 +12454,20 @@ export default function App() {
   // Assemble elements — single unified assembler for all seasons
   const elements = (() => {
     if (!inScope) return [];
+    let els;
     if (currentService.key === 'vespers') {
-      return assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, readerMode);
+      els = assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, readerMode);
+    } else if (currentService.key === 'typica') {
+      els = assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode);
+    } else if (currentService.key === 'post_communion') {
+      els = assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMode);
+    } else {
+      els = assembleHour(currentService.key, liturgicalData, menaionEntry, pentEntry, tbOpen, readerMode);
     }
-    if (currentService.key === 'typica') {
-      return assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode);
-    }
-    if (currentService.key === 'post_communion') {
-      return assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMode);
-    }
-    return assembleHour(currentService.key, liturgicalData, menaionEntry, pentEntry, tbOpen, readerMode);
+    // Patch psalterHref onto any element that has kathismaNum
+    return els.map(el => el.kathismaNum
+      ? { ...el, psalterHref: `/orthodox-hours/psalter?kathisma=${el.kathismaNum}&service=${currentService.key}&date=${selectedDate}` }
+      : el);
   })();
 
 
