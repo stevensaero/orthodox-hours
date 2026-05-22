@@ -10168,12 +10168,6 @@ function assemblePostCommunion(liturgicalData, readerMode = false) {
   };
 
   // ── Opening ──────────────────────────────────────────────────────────────
-  elements.push({
-    id: 'pc-rubric-open', type: 'fixed', label: '', source: src,
-    rubric: 'When thou hast received the good Communion of the life-giving Mystical Gifts, give praise immediately, give thanks greatly, and from the soul say fervently unto God these things:',
-    text: '',
-  });
-
   fixed('pc-opening', '', PC_OPENING);
 
   // ── Prayer 1 — Thanksgiving ───────────────────────────────────────────────
@@ -10219,7 +10213,6 @@ function assemblePostCommunion(liturgicalData, readerMode = false) {
     type: 'movable',
     label: 'Troparion & Kontakion',
     source: tk.liturgyLabel,
-    rubric: tk.explainer,
     _tk: tk,   // renderer will unpack this
     fekula: null,
   });
