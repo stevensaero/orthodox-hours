@@ -9614,6 +9614,58 @@ const SUNDAY_RESURRECTIONAL_PROKEIMENON = {
        stichos: "In Judea is God known, His name is great in Israel." },
 };
 
+// ─── SHARED DISMISSAL BUILDER ────────────────────────────────────────────────
+// Used by assembleTypica and assemblePostCommunion.
+// idPrefix: element id prefix ('typica' or 'pc')
+// Returns a single element ready to push into an elements array.
+function buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, idPrefix) {
+  const { season, namedDay } = liturgicalData;
+  const isSunday = season === 'sunday' || season === 'pentecostarion_sunday';
+
+  const open = "May Christ our true God, through the intercessions of His most pure Mother;";
+  const close =
+    "of the holy, glorious, and all-praised apostles; " +
+    "of the holy, glorious, and victorious martyrs; " +
+    "of our holy and God-bearing fathers; " +
+    "of the holy and Righteous Ancestors of God Joachim and Anna, " +
+    "and of all the saints; have mercy on us and save us, " +
+    "for He is good and the Lover of mankind.";
+
+  let middle = "";
+  if (isSunday) {
+    middle = "Who rose from the dead;";
+  } else if (pentEntry) {
+    const fmt = pentEntry.hours_format;
+    if (fmt === "ascension" || fmt === "apodosis_ascension") {
+      middle = "Who ascended in glory into heaven;";
+    } else if (fmt === "pentecost" || fmt === "apodosis_pentecost" || fmt === "holy_spirit_day") {
+      middle = "Who sent down the Holy Spirit upon His holy apostles;";
+    } else {
+      middle = "Who rose from the dead;";
+    }
+  } else if (menaionEntry?.saint) {
+    middle = menaionEntry.saint + ";";
+  }
+
+  const dismissalText = middle ? `${open} ${middle} ${close}` : `${open} ${close}`;
+
+  if (readerMode) {
+    return {
+      id: `${idPrefix}-dismissal`, type: "substitution", label: "Dismissal", rubric: "Reader:",
+      text: "Through the prayers of our holy fathers, Lord Jesus Christ our God, have mercy on us and save us. Amen.",
+      source: "Fekula Chapter 10",
+      fekula: { section: "§10", note: "Reader's service: instead of the priest's dismissal, the reader says: Through the prayers of our holy fathers… — Fekula Chapter 10" },
+    };
+  } else {
+    return {
+      id: `${idPrefix}-dismissal`, type: "fixed", label: "Dismissal", rubric: "Priest:",
+      text: dismissalText,
+      source: "HTM",
+      fekula: { section: null, note: "Dismissal formula: seasonal phrase inserted after 'His most pure Mother.' Sunday: 'Who rose from the dead.' Pentecostarion feast: feast phrase. Weekday: saint of the day by name." },
+    };
+  }
+}
+
 // ─── TYPICA ASSEMBLER ────────────────────────────────────────────────────────
 // Source: HTM htm_typica.pdf (complete order)
 // Assembly rules:
@@ -9975,52 +10027,7 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
     TYPICA_PSALM_33);
 
   // ── 16. Dismissal ────────────────────────────────────────────────────────
-  // Same dismissal formula as Vespers/Liturgy — inserts season/saint phrase.
-  // Served: Priest: gold rubric, grey italic text.
-  // Reader: Ch10 substitution — "Through the prayers of our holy fathers…"
-  {
-    const open = "May Christ our true God, through the intercessions of His most pure Mother;";
-    const close = "of the holy, glorious, and all-praised apostles; " +
-      "of the holy, glorious, and victorious martyrs; " +
-      "of our holy and God-bearing fathers; " +
-      "of the holy and Righteous Ancestors of God Joachim and Anna, " +
-      "and of all the saints; have mercy on us and save us, " +
-      "for He is good and the Lover of mankind.";
-
-    let middle = "";
-    if (isSunday) {
-      middle = "Who rose from the dead;";
-    } else if (pentEntry) {
-      const fmt = pentEntry.hours_format;
-      if (fmt === "ascension" || fmt === "apodosis_ascension") {
-        middle = "Who ascended in glory into heaven;";
-      } else if (fmt === "pentecost" || fmt === "apodosis_pentecost" || fmt === "holy_spirit_day") {
-        middle = "Who sent down the Holy Spirit upon His holy apostles;";
-      } else {
-        middle = "Who rose from the dead;";
-      }
-    } else if (menaionEntry?.saint) {
-      middle = menaionEntry.saint + ";";
-    }
-
-    const dismissalText = middle ? `${open} ${middle} ${close}` : `${open} ${close}`;
-
-    if (readerMode) {
-      elements.push({
-        id: "typica-dismissal", type: "substitution", label: "Dismissal", rubric: "Reader:",
-        text: "Through the prayers of our holy fathers, Lord Jesus Christ our God, have mercy on us and save us. Amen.",
-        source: "Fekula Chapter 10",
-        fekula: { section: "§10", note: "Reader's service: instead of the priest's dismissal, the reader says: Through the prayers of our holy fathers… — Fekula Chapter 10" },
-      });
-    } else {
-      elements.push({
-        id: "typica-dismissal", type: "fixed", label: "Dismissal", rubric: "Priest:",
-        text: dismissalText,
-        source: "HTM, Order of the Typica",
-        fekula: { section: null, note: "Dismissal formula: seasonal phrase inserted after 'His most pure Mother.' Sunday: 'Who rose from the dead.' Pentecostarion feast: feast phrase. Weekday: saint of the day by name." },
-      });
-    }
-  }
+  elements.push(buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, "typica"));
 
   return elements;
 }
@@ -10082,9 +10089,7 @@ const PC_CLOSING = `Lord, have mercy. (Twelve times.)
 
 Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.
 
-More honourable than the Cherubim, and beyond compare more glorious than the Seraphim, who without corruption gavest birth to God the Word, the very Theotokos, thee do we magnify.
-
-And the Dismissal.`;
+More honourable than the Cherubim, and beyond compare more glorious than the Seraphim, who without corruption gavest birth to God the Word, the very Theotokos, thee do we magnify.`;
 
 // ── Movable T/K texts ─────────────────────────────────────────────────────────
 
@@ -10141,7 +10146,7 @@ const PC_TK_PRESANCTIFIED = {
 
 // ── Assembler ─────────────────────────────────────────────────────────────────
 
-function assemblePostCommunion(liturgicalData, readerMode = false) {
+function assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMode = false) {
   const elements = [];
   const src = 'HTM, Prayers After Holy Communion';
   const liturgyType = getLiturgyType(liturgicalData);
@@ -10222,6 +10227,9 @@ function assemblePostCommunion(liturgicalData, readerMode = false) {
 
   // ── Closing ───────────────────────────────────────────────────────────────
   fixed('pc-closing', '', PC_CLOSING);
+
+  // ── Dismissal ─────────────────────────────────────────────────────────────
+  elements.push(buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, "pc"));
 
   return elements;
 }
@@ -12420,7 +12428,7 @@ export default function App() {
       return assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode);
     }
     if (currentService.key === 'post_communion') {
-      return assemblePostCommunion(liturgicalData, readerMode);
+      return assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMode);
     }
     return assembleHour(currentService.key, liturgicalData, menaionEntry, pentEntry, tbOpen, readerMode);
   })();
