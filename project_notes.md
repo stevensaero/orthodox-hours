@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.3.3** | Last synced: May 2026 | Notes version: v0.3.21
+**Tool version: v0.3.4** | Last synced: May 2026 | Notes version: v0.3.22
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
@@ -91,6 +91,7 @@ destroys historical context and violates the integrity of the record.
 | v0.3.19 | May 2026 | FW-OCTOECHOS-VESPERS complete: octoechos_vespers.txt encoded (477 records, all 8 tones, tones 1–6 fully complete, tones 7–8 complete); Drive structure updated with Octoechos/ folder; data file schema documented |
 | v0.3.20 | May 2026 | Tool v0.3.2: Typica assembler complete (FW-17 Phase 1); prokeimenon/alleluia tables; Ch.10 reader toggle; encoding gaps closed via Typica discovery pass |
 | v0.3.21 | May 2026 | Tool v0.3.3: Prayers After Holy Communion assembler; getLiturgyType() Basil/Presanctified/Chrysostom detection; shared buildDismissal() helper; mm/dd added to liturgicalData; post_communion bypasses seasonal inScope gate |
+| v0.3.22 | May 2026 | Tool v0.3.4: Orthodox Psalter (all 20 kathismata, Brenton LXX embedded); Vespers kathisma link; context strip banner; history.back() scroll restoration; same-tab navigation |
 
 ---
 
@@ -1126,7 +1127,7 @@ or on a named Sunday: "Great Lent — Sunday of Orthodoxy · Week 1 of Great Len
 
 ---
 
-## What Is Working (as of May 2026 — v0.3.3)
+## What Is Working (as of May 2026 — v0.3.4)
 
 ### Calendar Engine
 - Paschal calculation verified correct for 2026, 2027, 2028
@@ -1234,6 +1235,16 @@ block (3 variants by Liturgy served), fixed Theotokion, computed dismissal.
   father (master), bless!" drops; dismissal → reader formula
 - post_communion always inScope — prayers are season-independent
 - mm/dd added to liturgicalData return object
+
+
+### Orthodox Psalter (v0.3.4)
+Standalone Psalter at /psalter — all 20 kathismata, Psalms 1–150, Brenton LXX fully
+embedded with no external fetch dependencies. Psalm 118 (K17) split across three stases
+at correct verse boundaries. Psalm 151 shown as supplementary section outside kathisma
+structure. Vespers kathisma movable element links to /psalter?kathisma=N&service=vespers&date=.
+Context strip banner (sticky top and bottom) shows service/date context and uses
+window.history.back() to return user to exact scroll position in Hours tool.
+Same-tab navigation eliminates tab accumulation on mobile.
 
 ## Important Discoveries and Corrections
 
@@ -1630,4 +1641,4 @@ Badge must correctly identify section even though assembly is the same.
 
 ---
 
-*Last updated: May 2026 · Notes v0.3.21 · Synced to tool v0.3.3*
+*Last updated: May 2026 · Notes v0.3.22 · Synced to tool v0.3.4*

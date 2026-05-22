@@ -11584,6 +11584,22 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
 
 const RELEASE_NOTES = [
   {
+    version: "v0.3.4",
+    date: "May 2026",
+    summary: "Orthodox Psalter · Vespers kathisma link · Psalter↔Hours navigation",
+    items: [
+      "Orthodox Psalter built as standalone component at /psalter — all 20 kathismata, Psalms 1–150, Brenton LXX fully embedded (no external fetch)",
+      "Psalm 118 (Kathisma 17) split across three stases at correct verse boundaries (vv. 1–72, 73–131, 132–176)",
+      "Psalm 151 preserved in data but displayed as supplementary section outside the kathisma structure — correctly distinguished from the canonical 150",
+      "Vespers kathisma movable element gains 'Read in Psalter' link — passes kathisma number, service, and date as URL params",
+      "Psalter reads ?kathisma=N on load and opens to the correct kathisma, scrolling to top instantly",
+      "Context strip banner (sticky top and bottom) — shows '← Hours Tool · Vespers · Friday, May 22, 2026' when opened from the tool",
+      "Banner uses window.history.back() — returns to exact scroll position in the Hours tool, not page top",
+      "Same-tab navigation (no target=_blank) — eliminates tab accumulation on mobile",
+      "history.scrollRestoration = 'manual' prevents browser scroll restoration fighting the kathisma scroll",
+    ],
+  },
+  {
     version: "v0.3.3",
     date: "May 2026",
     summary: "Prayers After Holy Communion assembler · Liturgy type detection · movable T/K by Liturgy served",
