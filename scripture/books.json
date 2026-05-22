@@ -1,41 +1,686 @@
 [
-  {"id":"Matt","name":"Matthew","abbreviation":"Mt","testament":"NT","group":"Gospels","chapters":28,"file":"matt.json"},
-  {"id":"Mark","name":"Mark","abbreviation":"Mk","testament":"NT","group":"Gospels","chapters":16,"file":"mark.json"},
-  {"id":"Luke","name":"Luke","abbreviation":"Lk","testament":"NT","group":"Gospels","chapters":24,"file":"luke.json"},
-  {"id":"John","name":"John","abbreviation":"Jn","testament":"NT","group":"Gospels","chapters":21,"file":"john.json"},
-  {"id":"Acts","name":"Acts","abbreviation":"Acts","testament":"NT","group":"Apostolos","chapters":28,"file":"acts.json"},
-  {"id":"Rom","name":"Romans","abbreviation":"Rom","testament":"NT","group":"Apostolos","chapters":16,"file":"rom.json"},
-  {"id":"1Cor","name":"1 Corinthians","abbreviation":"1Cor","testament":"NT","group":"Apostolos","chapters":16,"file":"1cor.json"},
-  {"id":"2Cor","name":"2 Corinthians","abbreviation":"2Cor","testament":"NT","group":"Apostolos","chapters":13,"file":"2cor.json"},
-  {"id":"Gal","name":"Galatians","abbreviation":"Gal","testament":"NT","group":"Apostolos","chapters":6,"file":"gal.json"},
-  {"id":"Eph","name":"Ephesians","abbreviation":"Eph","testament":"NT","group":"Apostolos","chapters":6,"file":"eph.json"},
-  {"id":"Phil","name":"Philippians","abbreviation":"Phil","testament":"NT","group":"Apostolos","chapters":4,"file":"phil.json"},
-  {"id":"Col","name":"Colossians","abbreviation":"Col","testament":"NT","group":"Apostolos","chapters":4,"file":"col.json"},
-  {"id":"1Thes","name":"1 Thessalonians","abbreviation":"1Thes","testament":"NT","group":"Apostolos","chapters":5,"file":"1thes.json"},
-  {"id":"2Thes","name":"2 Thessalonians","abbreviation":"2Thes","testament":"NT","group":"Apostolos","chapters":3,"file":"2thes.json"},
-  {"id":"1Tim","name":"1 Timothy","abbreviation":"1Tim","testament":"NT","group":"Apostolos","chapters":6,"file":"1tim.json"},
-  {"id":"2Tim","name":"2 Timothy","abbreviation":"2Tim","testament":"NT","group":"Apostolos","chapters":4,"file":"2tim.json"},
-  {"id":"Tit","name":"Titus","abbreviation":"Tit","testament":"NT","group":"Apostolos","chapters":3,"file":"tit.json"},
-  {"id":"Phlm","name":"Philemon","abbreviation":"Phlm","testament":"NT","group":"Apostolos","chapters":1,"file":"phlm.json"},
-  {"id":"Heb","name":"Hebrews","abbreviation":"Heb","testament":"NT","group":"Apostolos","chapters":13,"file":"heb.json"},
-  {"id":"Jas","name":"James","abbreviation":"Jas","testament":"NT","group":"Apostolos","chapters":5,"file":"jas.json"},
-  {"id":"1Pet","name":"1 Peter","abbreviation":"1Pet","testament":"NT","group":"Apostolos","chapters":5,"file":"1pet.json"},
-  {"id":"2Pet","name":"2 Peter","abbreviation":"2Pet","testament":"NT","group":"Apostolos","chapters":3,"file":"2pet.json"},
-  {"id":"1John","name":"1 John","abbreviation":"1Jn","testament":"NT","group":"Apostolos","chapters":5,"file":"1john.json"},
-  {"id":"2John","name":"2 John","abbreviation":"2Jn","testament":"NT","group":"Apostolos","chapters":1,"file":"2john.json"},
-  {"id":"3John","name":"3 John","abbreviation":"3Jn","testament":"NT","group":"Apostolos","chapters":1,"file":"3john.json"},
-  {"id":"Jude","name":"Jude","abbreviation":"Jude","testament":"NT","group":"Apostolos","chapters":1,"file":"jude.json"},
-  {"id":"Gen","name":"Genesis","abbreviation":"Gen","testament":"OT","group":"Law","chapters":50,"file":"gen.json"},
-  {"id":"Ex","name":"Exodus","abbreviation":"Ex","testament":"OT","group":"Law","chapters":40,"file":"ex.json"},
-  {"id":"Lev","name":"Leviticus","abbreviation":"Lev","testament":"OT","group":"Law","chapters":27,"file":"lev.json"},
-  {"id":"Num","name":"Numbers","abbreviation":"Num","testament":"OT","group":"Law","chapters":36,"file":"num.json"},
-  {"id":"Deut","name":"Deuteronomy","abbreviation":"Deut","testament":"OT","group":"Law","chapters":34,"file":"deut.json"},
-  {"id":"Isa","name":"Isaiah","abbreviation":"Isa","testament":"OT","group":"Prophets Major","chapters":66,"file":"isa.json"},
-  {"id":"Jer","name":"Jeremiah","abbreviation":"Jer","testament":"OT","group":"Prophets Major","chapters":52,"file":"jer.json"},
-  {"id":"Ezek","name":"Ezekiel","abbreviation":"Ezek","testament":"OT","group":"Prophets Major","chapters":48,"file":"ezek.json"},
-  {"id":"Dan","name":"Daniel","abbreviation":"Dan","testament":"OT","group":"Prophets Major","chapters":14,"file":"dan.json"},
-  {"id":"Prov","name":"Proverbs","abbreviation":"Prov","testament":"OT","group":"Wisdom","chapters":31,"file":"prov.json"},
-  {"id":"Job","name":"Job","abbreviation":"Job","testament":"OT","group":"Wisdom","chapters":42,"file":"job.json"},
-  {"id":"Wis","name":"Wisdom of Solomon","abbreviation":"Wis","testament":"OT","group":"Wisdom","chapters":19,"file":"wis.json"},
-  {"id":"Sir","name":"Sirach","abbreviation":"Sir","testament":"OT","group":"Wisdom","chapters":51,"file":"sir.json"}
+  {
+    "id": "Gen",
+    "name": "Genesis",
+    "abbreviation": "Gen",
+    "testament": "OT",
+    "group": "Law",
+    "chapters": 50,
+    "file": "gen.json"
+  },
+  {
+    "id": "Ex",
+    "name": "Exodus",
+    "abbreviation": "Ex",
+    "testament": "OT",
+    "group": "Law",
+    "chapters": 40,
+    "file": "ex.json"
+  },
+  {
+    "id": "Lev",
+    "name": "Leviticus",
+    "abbreviation": "Lev",
+    "testament": "OT",
+    "group": "Law",
+    "chapters": 27,
+    "file": "lev.json"
+  },
+  {
+    "id": "Num",
+    "name": "Numbers",
+    "abbreviation": "Num",
+    "testament": "OT",
+    "group": "Law",
+    "chapters": 36,
+    "file": "num.json"
+  },
+  {
+    "id": "Deut",
+    "name": "Deuteronomy",
+    "abbreviation": "Deut",
+    "testament": "OT",
+    "group": "Law",
+    "chapters": 34,
+    "file": "deut.json"
+  },
+  {
+    "id": "Josh",
+    "name": "Joshua",
+    "abbreviation": "Josh",
+    "testament": "OT",
+    "group": "History",
+    "chapters": 24,
+    "file": "josh.json"
+  },
+  {
+    "id": "Judg",
+    "name": "Judges",
+    "abbreviation": "Judg",
+    "testament": "OT",
+    "group": "History",
+    "chapters": 21,
+    "file": "judg.json"
+  },
+  {
+    "id": "Ruth",
+    "name": "Ruth",
+    "abbreviation": "Ruth",
+    "testament": "OT",
+    "group": "History",
+    "chapters": 4,
+    "file": "ruth.json"
+  },
+  {
+    "id": "1Sam",
+    "name": "1 Kingdoms (1 Samuel)",
+    "abbreviation": "1Sam",
+    "testament": "OT",
+    "group": "History",
+    "chapters": 22,
+    "file": "1sam.json"
+  },
+  {
+    "id": "2Sam",
+    "name": "2 Kingdoms (2 Samuel)",
+    "abbreviation": "2Sam",
+    "testament": "OT",
+    "group": "History",
+    "chapters": 25,
+    "file": "2sam.json"
+  },
+  {
+    "id": "1Chr",
+    "name": "1 Chronicles",
+    "abbreviation": "1Chr",
+    "testament": "OT",
+    "group": "History",
+    "chapters": 29,
+    "file": "1chr.json"
+  },
+  {
+    "id": "2Chr",
+    "name": "2 Chronicles",
+    "abbreviation": "2Chr",
+    "testament": "OT",
+    "group": "History",
+    "chapters": 36,
+    "file": "2chr.json"
+  },
+  {
+    "id": "Ezra",
+    "name": "Ezra",
+    "abbreviation": "Ezra",
+    "testament": "OT",
+    "group": "History",
+    "chapters": 23,
+    "file": "ezra.json"
+  },
+  {
+    "id": "Neh",
+    "name": "Nehemiah",
+    "abbreviation": "Neh",
+    "testament": "OT",
+    "group": "History",
+    "chapters": 13,
+    "file": "neh.json"
+  },
+  {
+    "id": "Tob",
+    "name": "Tobit",
+    "abbreviation": "Tob",
+    "testament": "OT",
+    "group": "History",
+    "chapters": 14,
+    "file": "tob.json"
+  },
+  {
+    "id": "Jdt",
+    "name": "Judith",
+    "abbreviation": "Jdt",
+    "testament": "OT",
+    "group": "History",
+    "chapters": 16,
+    "file": "jdt.json"
+  },
+  {
+    "id": "1Esd",
+    "name": "1 Esdras",
+    "abbreviation": "1Esd",
+    "testament": "OT",
+    "group": "History",
+    "chapters": 9,
+    "file": "1esd.json"
+  },
+  {
+    "id": "Job",
+    "name": "Job",
+    "abbreviation": "Job",
+    "testament": "OT",
+    "group": "Wisdom",
+    "chapters": 42,
+    "file": "job.json"
+  },
+  {
+    "id": "Ps",
+    "name": "Psalms",
+    "abbreviation": "Ps",
+    "testament": "OT",
+    "group": "Wisdom",
+    "chapters": 151,
+    "file": "ps.json"
+  },
+  {
+    "id": "Prov",
+    "name": "Proverbs",
+    "abbreviation": "Prov",
+    "testament": "OT",
+    "group": "Wisdom",
+    "chapters": 30,
+    "file": "prov.json"
+  },
+  {
+    "id": "Eccl",
+    "name": "Ecclesiastes",
+    "abbreviation": "Eccl",
+    "testament": "OT",
+    "group": "Wisdom",
+    "chapters": 12,
+    "file": "eccl.json"
+  },
+  {
+    "id": "Song",
+    "name": "Song of Songs",
+    "abbreviation": "Song",
+    "testament": "OT",
+    "group": "Wisdom",
+    "chapters": 8,
+    "file": "song.json"
+  },
+  {
+    "id": "Wis",
+    "name": "Wisdom of Solomon",
+    "abbreviation": "Wis",
+    "testament": "OT",
+    "group": "Wisdom",
+    "chapters": 19,
+    "file": "wis.json"
+  },
+  {
+    "id": "Sir",
+    "name": "Sirach (Ecclesiasticus)",
+    "abbreviation": "Sir",
+    "testament": "OT",
+    "group": "Wisdom",
+    "chapters": 51,
+    "file": "sir.json"
+  },
+  {
+    "id": "Isa",
+    "name": "Isaiah",
+    "abbreviation": "Isa",
+    "testament": "OT",
+    "group": "Prophets Major",
+    "chapters": 66,
+    "file": "isa.json"
+  },
+  {
+    "id": "Jer",
+    "name": "Jeremiah",
+    "abbreviation": "Jer",
+    "testament": "OT",
+    "group": "Prophets Major",
+    "chapters": 52,
+    "file": "jer.json"
+  },
+  {
+    "id": "Lam",
+    "name": "Lamentations",
+    "abbreviation": "Lam",
+    "testament": "OT",
+    "group": "Prophets Major",
+    "chapters": 5,
+    "file": "lam.json"
+  },
+  {
+    "id": "Bar",
+    "name": "Baruch",
+    "abbreviation": "Bar",
+    "testament": "OT",
+    "group": "Prophets Major",
+    "chapters": 5,
+    "file": "bar.json"
+  },
+  {
+    "id": "LJe",
+    "name": "Letter of Jeremiah",
+    "abbreviation": "LJe",
+    "testament": "OT",
+    "group": "Prophets Major",
+    "chapters": 1,
+    "file": "lje.json"
+  },
+  {
+    "id": "Ezek",
+    "name": "Ezekiel",
+    "abbreviation": "Ezek",
+    "testament": "OT",
+    "group": "Prophets Major",
+    "chapters": 48,
+    "file": "ezek.json"
+  },
+  {
+    "id": "Dan",
+    "name": "Daniel (with additions)",
+    "abbreviation": "Dan",
+    "testament": "OT",
+    "group": "Prophets Major",
+    "chapters": 12,
+    "file": "dan.json"
+  },
+  {
+    "id": "Sus",
+    "name": "Susanna",
+    "abbreviation": "Sus",
+    "testament": "OT",
+    "group": "Prophets Major",
+    "chapters": 1,
+    "file": "sus.json"
+  },
+  {
+    "id": "Bel",
+    "name": "Bel and the Dragon",
+    "abbreviation": "Bel",
+    "testament": "OT",
+    "group": "Prophets Major",
+    "chapters": 1,
+    "file": "bel.json"
+  },
+  {
+    "id": "Hos",
+    "name": "Hosea",
+    "abbreviation": "Hos",
+    "testament": "OT",
+    "group": "Prophets Minor",
+    "chapters": 14,
+    "file": "hos.json"
+  },
+  {
+    "id": "Joel",
+    "name": "Joel",
+    "abbreviation": "Joel",
+    "testament": "OT",
+    "group": "Prophets Minor",
+    "chapters": 4,
+    "file": "joel.json"
+  },
+  {
+    "id": "Amos",
+    "name": "Amos",
+    "abbreviation": "Amos",
+    "testament": "OT",
+    "group": "Prophets Minor",
+    "chapters": 9,
+    "file": "amos.json"
+  },
+  {
+    "id": "Obad",
+    "name": "Obadiah",
+    "abbreviation": "Obad",
+    "testament": "OT",
+    "group": "Prophets Minor",
+    "chapters": 1,
+    "file": "obad.json"
+  },
+  {
+    "id": "Mic",
+    "name": "Micah",
+    "abbreviation": "Mic",
+    "testament": "OT",
+    "group": "Prophets Minor",
+    "chapters": 7,
+    "file": "mic.json"
+  },
+  {
+    "id": "Nah",
+    "name": "Nahum",
+    "abbreviation": "Nah",
+    "testament": "OT",
+    "group": "Prophets Minor",
+    "chapters": 3,
+    "file": "nah.json"
+  },
+  {
+    "id": "Hab",
+    "name": "Habakkuk",
+    "abbreviation": "Hab",
+    "testament": "OT",
+    "group": "Prophets Minor",
+    "chapters": 3,
+    "file": "hab.json"
+  },
+  {
+    "id": "Zeph",
+    "name": "Zephaniah",
+    "abbreviation": "Zeph",
+    "testament": "OT",
+    "group": "Prophets Minor",
+    "chapters": 3,
+    "file": "zeph.json"
+  },
+  {
+    "id": "Hag",
+    "name": "Haggai",
+    "abbreviation": "Hag",
+    "testament": "OT",
+    "group": "Prophets Minor",
+    "chapters": 2,
+    "file": "hag.json"
+  },
+  {
+    "id": "Zech",
+    "name": "Zechariah",
+    "abbreviation": "Zech",
+    "testament": "OT",
+    "group": "Prophets Minor",
+    "chapters": 14,
+    "file": "zech.json"
+  },
+  {
+    "id": "Mal",
+    "name": "Malachi",
+    "abbreviation": "Mal",
+    "testament": "OT",
+    "group": "Prophets Minor",
+    "chapters": 3,
+    "file": "mal.json"
+  },
+  {
+    "id": "PrMan",
+    "name": "Prayer of Manasseh",
+    "abbreviation": "PrMan",
+    "testament": "OT",
+    "group": "Deuterocanon",
+    "chapters": 1,
+    "file": "prman.json"
+  },
+  {
+    "id": "1Mac",
+    "name": "1 Maccabees",
+    "abbreviation": "1Mac",
+    "testament": "OT",
+    "group": "Deuterocanon",
+    "chapters": 16,
+    "file": "1mac.json"
+  },
+  {
+    "id": "2Mac",
+    "name": "2 Maccabees",
+    "abbreviation": "2Mac",
+    "testament": "OT",
+    "group": "Deuterocanon",
+    "chapters": 15,
+    "file": "2mac.json"
+  },
+  {
+    "id": "3Mac",
+    "name": "3 Maccabees",
+    "abbreviation": "3Mac",
+    "testament": "OT",
+    "group": "Deuterocanon",
+    "chapters": 7,
+    "file": "3mac.json"
+  },
+  {
+    "id": "4Mac",
+    "name": "4 Maccabees",
+    "abbreviation": "4Mac",
+    "testament": "OT",
+    "group": "Deuterocanon",
+    "chapters": 18,
+    "file": "4mac.json"
+  },
+  {
+    "id": "Matt",
+    "name": "Matthew",
+    "abbreviation": "Matt",
+    "testament": "NT",
+    "group": "Gospels",
+    "chapters": 28,
+    "file": "matt.json"
+  },
+  {
+    "id": "Mark",
+    "name": "Mark",
+    "abbreviation": "Mark",
+    "testament": "NT",
+    "group": "Gospels",
+    "chapters": 16,
+    "file": "mark.json"
+  },
+  {
+    "id": "Luke",
+    "name": "Luke",
+    "abbreviation": "Luke",
+    "testament": "NT",
+    "group": "Gospels",
+    "chapters": 24,
+    "file": "luke.json"
+  },
+  {
+    "id": "John",
+    "name": "John",
+    "abbreviation": "John",
+    "testament": "NT",
+    "group": "Gospels",
+    "chapters": 21,
+    "file": "john.json"
+  },
+  {
+    "id": "Acts",
+    "name": "Acts",
+    "abbreviation": "Acts",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 28,
+    "file": "acts.json"
+  },
+  {
+    "id": "Rom",
+    "name": "Romans",
+    "abbreviation": "Rom",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 16,
+    "file": "rom.json"
+  },
+  {
+    "id": "1Cor",
+    "name": "1 Corinthians",
+    "abbreviation": "1Cor",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 16,
+    "file": "1cor.json"
+  },
+  {
+    "id": "2Cor",
+    "name": "2 Corinthians",
+    "abbreviation": "2Cor",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 13,
+    "file": "2cor.json"
+  },
+  {
+    "id": "Gal",
+    "name": "Galatians",
+    "abbreviation": "Gal",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 6,
+    "file": "gal.json"
+  },
+  {
+    "id": "Eph",
+    "name": "Ephesians",
+    "abbreviation": "Eph",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 6,
+    "file": "eph.json"
+  },
+  {
+    "id": "Phil",
+    "name": "Philippians",
+    "abbreviation": "Phil",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 4,
+    "file": "phil.json"
+  },
+  {
+    "id": "Col",
+    "name": "Colossians",
+    "abbreviation": "Col",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 4,
+    "file": "col.json"
+  },
+  {
+    "id": "1Thes",
+    "name": "1 Thessalonians",
+    "abbreviation": "1Thes",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 5,
+    "file": "1thes.json"
+  },
+  {
+    "id": "2Thes",
+    "name": "2 Thessalonians",
+    "abbreviation": "2Thes",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 3,
+    "file": "2thes.json"
+  },
+  {
+    "id": "1Tim",
+    "name": "1 Timothy",
+    "abbreviation": "1Tim",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 6,
+    "file": "1tim.json"
+  },
+  {
+    "id": "2Tim",
+    "name": "2 Timothy",
+    "abbreviation": "2Tim",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 4,
+    "file": "2tim.json"
+  },
+  {
+    "id": "Tit",
+    "name": "Titus",
+    "abbreviation": "Tit",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 3,
+    "file": "tit.json"
+  },
+  {
+    "id": "Phlm",
+    "name": "Philemon",
+    "abbreviation": "Phlm",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 1,
+    "file": "phlm.json"
+  },
+  {
+    "id": "Heb",
+    "name": "Hebrews",
+    "abbreviation": "Heb",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 13,
+    "file": "heb.json"
+  },
+  {
+    "id": "Jas",
+    "name": "James",
+    "abbreviation": "Jas",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 5,
+    "file": "jas.json"
+  },
+  {
+    "id": "1Pet",
+    "name": "1 Peter",
+    "abbreviation": "1Pet",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 5,
+    "file": "1pet.json"
+  },
+  {
+    "id": "2Pet",
+    "name": "2 Peter",
+    "abbreviation": "2Pet",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 3,
+    "file": "2pet.json"
+  },
+  {
+    "id": "1John",
+    "name": "1 John",
+    "abbreviation": "1John",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 5,
+    "file": "1john.json"
+  },
+  {
+    "id": "2John",
+    "name": "2 John",
+    "abbreviation": "2John",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 1,
+    "file": "2john.json"
+  },
+  {
+    "id": "3John",
+    "name": "3 John",
+    "abbreviation": "3John",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 1,
+    "file": "3john.json"
+  },
+  {
+    "id": "Jude",
+    "name": "Jude",
+    "abbreviation": "Jude",
+    "testament": "NT",
+    "group": "Apostolos",
+    "chapters": 1,
+    "file": "jude.json"
+  },
+  {
+    "id": "Rev",
+    "name": "Revelation",
+    "abbreviation": "Rev",
+    "testament": "NT",
+    "group": "Out of Scope",
+    "chapters": 22,
+    "file": "rev.json"
+  }
 ]
