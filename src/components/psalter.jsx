@@ -334,7 +334,7 @@ function KathismaView({ k, onNav }) {
         );
       })}
 
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "2rem", paddingTop: "1rem", borderTop: `1px solid ${C.border}` }}>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "2rem", marginBottom: "1.5rem", paddingTop: "1rem", borderTop: `1px solid ${C.border}` }}>
         <button onClick={() => onNav(k - 1)} disabled={k <= 1}
           style={{ fontFamily: "Georgia, serif", fontSize: "0.82rem", color: C.gold, background: "none", border: `1px solid ${C.goldLight}`, borderRadius: "3px", padding: "5px 14px", cursor: k <= 1 ? "default" : "pointer", opacity: k <= 1 ? 0.3 : 1 }}>
           ← Kathisma {k - 1}
