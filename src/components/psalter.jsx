@@ -272,7 +272,11 @@ function KathismaView({ k, onNav }) {
   const topRef = useRef(null);
 
   useEffect(() => {
-    topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    // Small delay ensures this fires after browser scroll restoration
+    const t = setTimeout(() => {
+      topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+    return () => clearTimeout(t);
   }, [k]);
 
   const info = KATHISMA_MAP[k];
@@ -347,6 +351,7 @@ function KathismaView({ k, onNav }) {
 // ─── MAIN EXPORT ─────────────────────────────────────────────────────────────
 export default function Psalter() {
   const initialK = (() => {
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
     const params = new URLSearchParams(window.location.search);
     const k = parseInt(params.get("kathisma"), 10);
     return k >= 1 && k <= 20 ? k : 1;
