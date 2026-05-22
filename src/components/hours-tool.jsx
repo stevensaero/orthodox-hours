@@ -8373,7 +8373,8 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     label: kathLabel, rubric:"",
     text: kathText,
     source: kathSource,
-    fekula: kathFekula});
+    fekula: kathFekula,
+    kathismaNum: kathismaResult.num || null});
 
   // Small Litany
   if (readerMode) {
@@ -10619,6 +10620,27 @@ function ServiceBlock({ element }) {
           <span style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic" }}>
             — {element.source}
           </span>
+        )}
+        {isMovable && element.kathismaNum && (
+          <a
+            href={`/orthodox-hours/psalter?kathisma=${element.kathismaNum}`}
+            target="_blank"
+            rel="noopener"
+            style={{
+              fontSize: "0.68rem",
+              color: "#8B6914",
+              textDecoration: "none",
+              border: "1px solid rgba(139,105,20,0.35)",
+              borderRadius: "3px",
+              padding: "1px 7px",
+              background: "rgba(139,105,20,0.07)",
+              fontFamily: "Georgia, serif",
+              letterSpacing: "0.04em",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Read in Psalter ↗
+          </a>
         )}
         {isMovable && element.fekula && (
           <FekulaBadge section={element.fekula.section} note={element.fekula.note} />
