@@ -383,28 +383,29 @@ export default function Psalter() {
 
         {/* ── Context strip — shown when opened from Hours tool ── */}
         {fromContext && (
-          <a
-            href={fromContext.href}
+          <button
+            onClick={() => window.history.back()}
             style={{
               display: "flex", alignItems: "center", gap: "0.5rem",
               position: "sticky", top: 0, zIndex: 10,
               marginBottom: "1.25rem",
               marginLeft: "-1.25rem", marginRight: "-1.25rem",
+              width: "calc(100% + 2.5rem)",
               padding: "0.5rem 1.25rem",
               background: "#FAF6EE",
-              borderBottom: `1px solid ${C.goldLight}`,
-              textDecoration: "none",
-              color: C.gold,
+              border: "none", borderBottom: `1px solid ${C.goldLight}`,
+              cursor: "pointer", textAlign: "left",
+              fontFamily: "Georgia, serif",
             }}
           >
-            <span style={{ fontSize: "1rem", lineHeight: 1 }}>←</span>
-            <span style={{ fontSize: "0.78rem", fontFamily: "Georgia, serif", color: C.gold }}>
+            <span style={{ fontSize: "1rem", lineHeight: 1, color: C.gold }}>←</span>
+            <span style={{ fontSize: "0.78rem", fontFamily: "Georgia, serif", color: C.gold, marginLeft: "0.4rem" }}>
               Hours Tool
             </span>
             <span style={{ fontSize: "0.72rem", color: C.inkLight, fontStyle: "italic", marginLeft: "0.25rem" }}>
               · {fromContext.serviceLabel} · {fromContext.dayName}, {fromContext.dateLabel}
             </span>
-          </a>
+          </button>
         )}
 
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", borderBottom: `2px solid ${C.goldLight}`, paddingBottom: "0.6rem", marginBottom: "1.5rem" }}>
