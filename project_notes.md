@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.3.2** | Last synced: May 2026 | Notes version: v0.3.20
+**Tool version: v0.3.3** | Last synced: May 2026 | Notes version: v0.3.21
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
@@ -90,6 +90,7 @@ destroys historical context and violates the integrity of the record.
 | v0.3.18 | May 2026 | LIC/Aposticha mechanics fully researched and documented; Octoechos gap identified as blocker; FW-23 extended with stichera schema; FW-OCTOECHOS-VESPERS added; encoding KEY FIELDS template expanded with stichera/aposticha fields; How It Works LIC/Aposticha explainer added; Vespers psalm texts (Ps 140, 141, 129, 116) with stichera verses encoded |
 | v0.3.19 | May 2026 | FW-OCTOECHOS-VESPERS complete: octoechos_vespers.txt encoded (477 records, all 8 tones, tones 1–6 fully complete, tones 7–8 complete); Drive structure updated with Octoechos/ folder; data file schema documented |
 | v0.3.20 | May 2026 | Tool v0.3.2: Typica assembler complete (FW-17 Phase 1); prokeimenon/alleluia tables; Ch.10 reader toggle; encoding gaps closed via Typica discovery pass |
+| v0.3.21 | May 2026 | Tool v0.3.3: Prayers After Holy Communion assembler; getLiturgyType() Basil/Presanctified/Chrysostom detection; shared buildDismissal() helper; mm/dd added to liturgicalData; post_communion bypasses seasonal inScope gate |
 
 ---
 
@@ -1125,7 +1126,7 @@ or on a named Sunday: "Great Lent — Sunday of Orthodoxy · Week 1 of Great Len
 
 ---
 
-## What Is Working (as of May 2026 — v0.2.7)
+## What Is Working (as of May 2026 — v0.3.3)
 
 ### Calendar Engine
 - Paschal calculation verified correct for 2026, 2027, 2028
@@ -1219,6 +1220,20 @@ matins_gospel, has_litya, has_polyeleos, has_great_doxology.
 | Jun 30 | Synaxis of Twelve Apostles | §2C | 1 Cor 4:9-16 (§131) / Mark 3:13-19 (§12) |
 
 ---
+
+
+### Prayers After Holy Communion (v0.3.3)
+Full HTM order (htm_post_comunion_prayers.pdf) assembled as a standalone service.
+Five prayers (Thanksgiving, Of Basil the Great, Verses of Metaphrastes, Another Prayer,
+Prayer to the Theotokos), Nunc Dimittis, Trisagion/Our Father block, movable T/K
+block (3 variants by Liturgy served), fixed Theotokion, computed dismissal.
+- getLiturgyType(): Basil (Jan 1, Jan 5, Lenten Sundays 1–5, Great Thursday, Great Saturday);
+  Presanctified (Lenten Wed/Fri — stubbed); Chrysostom (all else)
+- buildDismissal() extracted as shared helper used by both Typica and post-communion
+- Reader mode: priest exclamation → blue-grey substitution; "In the name of the Lord,
+  father (master), bless!" drops; dismissal → reader formula
+- post_communion always inScope — prayers are season-independent
+- mm/dd added to liturgicalData return object
 
 ## Important Discoveries and Corrections
 
@@ -1615,4 +1630,4 @@ Badge must correctly identify section even though assembly is the same.
 
 ---
 
-*Last updated: May 2026 · Notes v0.3.19 · Synced to tool v0.2.7*
+*Last updated: May 2026 · Notes v0.3.21 · Synced to tool v0.3.3*
