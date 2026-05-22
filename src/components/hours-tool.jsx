@@ -367,6 +367,30 @@ function getDailyReading(dateObj) {
   return { ...entry, lukanJump: offset >= lukanOffset };
 }
 
+// ── SCRIPTURE HREF HELPER ─────────────────────────────────────────────────────
+// Converts a LECTIONARY reference string (e.g. "Romans 6:3-11") to a scripture
+// deep-link URL. Lands on the first chapter:verse of the reading.
+const SCRIPTURE_BOOK_ID = {
+  "Matthew": "Matt", "Mark": "Mark", "Luke": "Luke", "John": "John",
+  "Acts": "Acts", "Romans": "Rom", "Colossians": "Col", "Ephesians": "Eph",
+  "Galatians": "Gal", "Philippians": "Phil", "Hebrews": "Heb",
+  "1 Corinthians": "1Cor", "2 Corinthians": "2Cor",
+  "1 Thessalonians": "1Thes", "2 Thessalonians": "2Thes",
+  "1 Timothy": "1Tim", "2 Timothy": "2Tim",
+  "Titus": "Tit", "Philemon": "Phlm",
+  "1 Peter": "1Pet", "2 Peter": "2Pet",
+  "James": "Jas", "Jude": "Jude",
+  "1 John": "1John", "2 John": "2John", "3 John": "3John",
+};
+function refToScriptureHref(ref, service, date) {
+  if (!ref) return null;
+  const m = ref.trim().match(/^((?:\d\s+)?[A-Za-z]+(?:\s+[A-Za-z]+)*)\s+(\d+):(\d+)/);
+  if (!m) return null;
+  const bookId = SCRIPTURE_BOOK_ID[m[1].trim()];
+  if (!bookId) return null;
+  return `/orthodox-hours/scripture?book=${bookId}&chapter=${m[2]}&verse=${m[3]}&service=${service}&date=${date}`;
+}
+
 // ── GREAT FEASTS DATA ────────────────────────────────────────────────────────
 // Each feast has:
 //   forefeast: number of days before the feast date (0 = no forefeast)
@@ -9695,12 +9719,14 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
     rubric: rubric || null,
   });
 
-  const movable = (id, label, text, note = null, rubric = null) => elements.push({
+  const movable = (id, label, text, note = null, rubric = null, fekula = null, scriptureHref = null) => elements.push({
     id, label, text,
     type: "movable",
     source: src,
     note: note || null,
     rubric: rubric || null,
+    fekula: fekula || null,
+    scriptureHref: scriptureHref || null,
   });
 
   // ── 1. Opening ───────────────────────────────────────────────────────────
@@ -9845,9 +9871,10 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
         const cycleNote = isSunday
           ? `Sunday proper Epistle · Source: OCA lectionary`
           : "Daily cycle Epistle · Source: OCA lectionary";
+        const eHref = refToScriptureHref(dailyReading.e, "typica", selectedDate);
         movable("typica-epistle", "Epistle",
           (intro ? intro + "\n\n" : "") + dailyReading.e,
-          cycleNote);
+          cycleNote, undefined, undefined, eHref);
       }
 
       // ── Alleluia — between Epistle and Gospel ──────────────────────────
@@ -9898,9 +9925,10 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
           ? `Sunday proper Gospel · Source: OCA lectionary`
           : "Daily cycle Gospel · Source: OCA lectionary" +
             (dailyReading.lukanJump ? " · Luke series" : "");
+        const gHref = refToScriptureHref(dailyReading.g, "typica", selectedDate);
         movable("typica-gospel", "Gospel",
           (intro ? intro + "\n\n" : "") + dailyReading.g,
-          cycleNote);
+          cycleNote, undefined, undefined, gHref);
       }
     } else {
       fixed("typica-readings-cycle", "Epistle and Gospel",
@@ -9912,15 +9940,19 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
     if (feastReading && (feastReading.e || feastReading.g)) {
       if (feastReading.e) {
         const intro = epistleIntro(feastReading.e);
+        const feHref = refToScriptureHref(feastReading.e, "typica", selectedDate);
         movable("typica-epistle-feast", "Feast Epistle",
           (intro ? intro + "\n\n" : "") + feastReading.e,
-          `Proper Epistle for ${menaionEntry ? menaionEntry.saint : "saint of the day"} · Source: Menaion`);
+          `Proper Epistle for ${menaionEntry ? menaionEntry.saint : "saint of the day"} · Source: Menaion`,
+          undefined, undefined, feHref);
       }
       if (feastReading.g) {
         const intro = gospelIntro(feastReading.g);
+        const fgHref = refToScriptureHref(feastReading.g, "typica", selectedDate);
         movable("typica-gospel-feast", "Feast Gospel",
           (intro ? intro + "\n\n" : "") + feastReading.g,
-          `Proper Gospel for ${menaionEntry ? menaionEntry.saint : "saint of the day"} · Source: Menaion`);
+          `Proper Gospel for ${menaionEntry ? menaionEntry.saint : "saint of the day"} · Source: Menaion`,
+          undefined, undefined, fgHref);
       }
     }
   }
@@ -10638,6 +10670,25 @@ function ServiceBlock({ element }) {
             }}
           >
             Read in Psalter ↗
+          </a>
+        )}
+        {isMovable && element.scriptureHref && (
+          <a
+            href={element.scriptureHref}
+            style={{
+              fontSize: "0.68rem",
+              color: "#8B6914",
+              textDecoration: "none",
+              border: "1px solid rgba(139,105,20,0.35)",
+              borderRadius: "3px",
+              padding: "1px 7px",
+              background: "rgba(139,105,20,0.07)",
+              fontFamily: "Georgia, serif",
+              letterSpacing: "0.04em",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Read in Scripture ↗
           </a>
         )}
         {isMovable && element.fekula && (

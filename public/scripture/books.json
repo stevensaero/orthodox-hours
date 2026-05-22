@@ -364,7 +364,7 @@
     "name": "Jonah",
     "abbreviation": "Jon",
     "testament": "OT",
-    "group": "Prophets",
+    "group": "Prophets Minor",
     "chapters": 4,
     "file": "jon.json"
   },
@@ -715,7 +715,7 @@
     "name": "Revelation",
     "abbreviation": "Rev",
     "testament": "NT",
-    "group": "Out of Scope",
+    "group": "Not Used Liturgically",
     "chapters": 22,
     "file": "rev.json"
   }

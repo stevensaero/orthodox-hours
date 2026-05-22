@@ -19,6 +19,7 @@ const GROUP_ORDER = [
   "Gospels", "Apostolos",
   "Law", "History", "Wisdom",
   "Prophets Major", "Prophets Minor", "Deuterocanon",
+  "Not Used Liturgically",
 ];
 
 // ─── URL PARAM HELPERS ────────────────────────────────────────────────────────
@@ -84,15 +85,24 @@ function verseStatus(bookId, chapter, verseNum, pericope) {
   if (!pericope) return "normal";
   const readings = pericope.readings || [];
   let isAppointed = false;
-  let isCovered = false; // within chapter range of any reading
+  let isCovered = false;
 
   for (const r of readings) {
     if (r.book.toLowerCase() !== bookId.toLowerCase() && r.book !== bookId) continue;
-    if (r.chapter !== chapter) continue;
-    isCovered = true;
-    if (verseNum >= r.verseStart && verseNum <= r.verseEnd) {
-      isAppointed = true;
-      break;
+    // Same-chapter reading
+    if (r.chapter !== undefined) {
+      if (r.chapter !== chapter) continue;
+      isCovered = true;
+      if (verseNum >= r.verseStart && verseNum <= r.verseEnd) { isAppointed = true; break; }
+    } else {
+      // Cross-chapter reading: chapterStart/chapterEnd
+      const inRange =
+        (chapter > r.chapterStart && chapter < r.chapterEnd) ||
+        (chapter === r.chapterStart && verseNum >= r.verseStart) ||
+        (chapter === r.chapterEnd && verseNum <= r.verseEnd);
+      if (chapter < r.chapterStart || chapter > r.chapterEnd) continue;
+      isCovered = true;
+      if (inRange) { isAppointed = true; break; }
     }
   }
 
@@ -327,6 +337,14 @@ function BookSelector({ manifest, selectedBookId, onSelect, open, onToggle }) {
               }}>
                 {groupName}
               </div>
+              {groupName === "Not Used Liturgically" && (
+                <div style={{
+                  fontSize: "0.68rem", color: C.inkLight, fontStyle: "italic",
+                  padding: "0 0.75rem 0.25rem",
+                }}>
+                  Revelation is not read in Orthodox liturgy.
+                </div>
+              )}
               <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", padding: "0.25rem 0.75rem 0.5rem" }}>
                 {groups[groupName].map(book => {
                   const isSelected = book.id.toLowerCase() === selectedBookId?.toLowerCase();
@@ -499,8 +517,10 @@ export default function Scripture() {
           setPericopeMeta(resolved);
           const firstReading = resolved.readings[0];
           const bookId = firstReading.book;
+          // Support both same-chapter (chapter) and cross-chapter (chapterStart) readings
+          const landingChapter = firstReading.chapter ?? firstReading.chapterStart ?? 1;
           setSelectedBookId(bookId);
-          setCurrentChapter(firstReading.chapter);
+          setCurrentChapter(landingChapter);
           setTargetVerse(firstReading.verseStart);
         }
       } else if (!initState.bookParam) {
