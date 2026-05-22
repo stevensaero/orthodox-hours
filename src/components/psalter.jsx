@@ -352,7 +352,6 @@ function KathismaView({ k, onNav }) {
 export default function Psalter() {
   const initialK = (() => {
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-    window.scrollTo(0, 0);
     const params = new URLSearchParams(window.location.search);
     const k = parseInt(params.get("kathisma"), 10);
     return k >= 1 && k <= 20 ? k : 1;
@@ -374,6 +373,9 @@ export default function Psalter() {
   })();
 
   const [currentK, setCurrentK] = useState(initialK);
+
+  // Scroll window to top on initial load — must be in useEffect, not render
+  useEffect(() => { window.scrollTo(0, 0); }, []);
 
   return (
     <div style={{ minHeight: "100vh", background: C.parchment, fontFamily: "Georgia, serif", color: C.ink }}>
