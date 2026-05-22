@@ -357,6 +357,7 @@ def verify_json_files(out_dir, verbose=False):
             continue
 
         with open(json_path, encoding="utf-8") as f:
+            data = json.load(f)
 
         chapter_map = {ch["chapter"]: ch["verses"] for ch in data["chapters"]}
 
