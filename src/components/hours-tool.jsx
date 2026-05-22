@@ -10681,7 +10681,7 @@ function ServiceBlock({ element }) {
             </div>
           );
         }
-        return <div style={bodyStyle}>{element.text}</div>;
+        return element.text ? <div style={bodyStyle}>{element.text}</div> : null;
       })()}
 
       {/* ── Post-communion T/K block ── */}
