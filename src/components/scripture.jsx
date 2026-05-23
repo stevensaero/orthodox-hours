@@ -87,6 +87,7 @@ function resolvePericope(pericopeParam, pericopes) {
 // e.g. "Romans 13:11-14:4"     → [{book:"Rom", chapterStart:13, verseStart:11,
 //                                   chapterEnd:14, verseEnd:4}]
 const LECTIONARY_BOOK_ID = {
+  // NT
   "Matthew": "Matt", "Mark": "Mark", "Luke": "Luke", "John": "John",
   "Acts": "Acts", "Romans": "Rom", "Colossians": "Col", "Ephesians": "Eph",
   "Galatians": "Gal", "Philippians": "Phil", "Hebrews": "Heb",
@@ -97,6 +98,31 @@ const LECTIONARY_BOOK_ID = {
   "1 Peter": "1Pet", "2 Peter": "2Pet",
   "James": "Jas", "Jude": "Jude",
   "1 John": "1John", "2 John": "2John", "3 John": "3John",
+  // OT
+  "Genesis": "Gen", "Gen": "Gen",
+  "Exodus": "Ex", "Exod": "Ex",
+  "Leviticus": "Lev", "Numbers": "Num", "Deuteronomy": "Deut",
+  "Joshua": "Josh", "Judges": "Judg", "Ruth": "Ruth",
+  "1 Samuel": "1Sam", "2 Samuel": "2Sam",
+  "1 Kings": "3Kgdm", "2 Kings": "4Kgdm",
+  "3 Kings": "3Kgdm", "4 Kings": "4Kgdm",
+  "1 Chronicles": "1Chr", "2 Chronicles": "2Chr",
+  "Ezra": "Ezra", "Nehemiah": "Neh",
+  "Tobit": "Tob", "Judith": "Jdt",
+  "Job": "Job",
+  "Proverbs": "Prov", "Prov": "Prov",
+  "Ecclesiastes": "Eccl",
+  "Wisdom": "Wis", "Wis": "Wis",
+  "Wisdom of Solomon": "Wis",
+  "Sirach": "Sir", "Baruch": "Bar",
+  "Isaiah": "Isa", "Isa": "Isa",
+  "Jeremiah": "Jer", "Lamentations": "Lam",
+  "Ezekiel": "Ezek", "Ezek": "Ezek",
+  "Daniel": "Dan",
+  "Hosea": "Hos", "Joel": "Joel", "Amos": "Amos",
+  "Jonah": "Jon", "Micah": "Mic",
+  "Zephaniah": "Zeph", "Haggai": "Hag",
+  "Zechariah": "Zech", "Malachi": "Mal",
 };
 const BOOK_DISPLAY_NAME = Object.fromEntries(
   Object.entries(LECTIONARY_BOOK_ID).map(([name, id]) => [id, name])
@@ -104,12 +130,28 @@ const BOOK_DISPLAY_NAME = Object.fromEntries(
 
 function parseRefString(refStr) {
   if (!refStr) return null;
-  const m = refStr.trim().match(/^((?:\d\s+)?[A-Za-z]+(?:\s+[A-Za-z]+)*)\s+(.+)$/);
+
+  // Strip trailing description in parens: "Genesis 28:10-17 (Jacob's ladder)" -> "Genesis 28:10-17"
+  const cleaned = refStr.trim().replace(/\s*\([^)]*\)\s*$/, "").trim();
+
+  const m = cleaned.match(/^((?:\d\s+)?[A-Za-z]+(?:\s+of\s+[A-Za-z]+)?(?:\s+[A-Za-z]+)?)\s+(.+)$/);
   if (!m) return null;
   const bookName = m[1].trim();
   const bookId = LECTIONARY_BOOK_ID[bookName];
   if (!bookId) return null;
-  const rest = m[2].trim(); // e.g. "11:19-26, 29-30" or "13:11-14:4"
+  const rest = m[2].trim();
+
+  // Semicolon-separated multi-span (same book, possibly different chapters):
+  // "10:7; 3:13-16; 8:6, 34-35" — each segment may be "Ch:V-V" or "Ch:V, V"
+  if (rest.includes(";")) {
+    const segments = rest.split(/;\s*/);
+    const spans = [];
+    for (const seg of segments) {
+      const sub = parseSpanSegments(bookId, bookName, seg.trim());
+      if (sub) spans.push(...sub);
+    }
+    return spans.length ? spans : null;
+  }
 
   // Cross-chapter: "13:11-14:4"
   const crossChapter = rest.match(/^(\d+):(\d+)-(\d+):(\d+)$/);
@@ -121,11 +163,16 @@ function parseRefString(refStr) {
     }];
   }
 
-  // Same-chapter, possibly multi-span: "11:19-26, 29-30" or "6:3-11"
-  const chapterMatch = rest.match(/^(\d+):(.+)$/);
+  // Same-chapter, possibly multi-span comma-separated: "11:19-26, 29-30" or "6:3-11"
+  return parseSpanSegments(bookId, bookName, rest);
+}
+
+// Parse a single chapter ref segment: "Ch:V-V" or "Ch:V, V-V" (comma spans within same chapter)
+function parseSpanSegments(bookId, bookName, seg) {
+  const chapterMatch = seg.match(/^(\d+):(.+)$/);
   if (!chapterMatch) return null;
   const chapter = parseInt(chapterMatch[1]);
-  const spanPart = chapterMatch[2]; // "19-26, 29-30" or "3-11"
+  const spanPart = chapterMatch[2];
 
   const spans = spanPart.split(/,\s*/).map(s => {
     const parts = s.trim().match(/^(\d+)(?:-(\d+))?$/);
@@ -633,9 +680,16 @@ export default function Scripture() {
   // ── Load manifest + pericopes on mount ───────────────────────────────────
   useEffect(() => {
     window.scrollTo(0, 0);
-    Promise.all([loadManifest(), loadPericopes()]).then(([mf, pc]) => {
+    // In browse mode, don't block on the 249KB pericopes fetch.
+    // Load pericopes only when actually needed (reading mode or pericope param).
+    const needsPericopes = isReadingMode || !!initState.pericopeParam;
+    const loaders = needsPericopes
+      ? [loadManifest(), loadPericopes()]
+      : [loadManifest(), Promise.resolve(null)];
+
+    Promise.all(loaders).then(([mf, pc]) => {
       setManifest(mf);
-      setPericopes(pc);
+      if (pc) setPericopes(pc);
 
       if (isReadingMode) {
         // Reading mode: load all unique books referenced in spans
@@ -659,13 +713,17 @@ export default function Scripture() {
           setCurrentChapter(landingChapter);
           setTargetVerse(firstReading.verseStart);
         }
+        setLoading(false);
       } else if (!initState.bookParam) {
+        // No book param — default to Matthew (book-load effect sets loading false)
         setSelectedBookId("Matt");
       } else {
         // bookParam present — book-load effect will set loading false
-        // but if somehow nothing fires, release loading here
         setLoading(false);
       }
+    }).catch(() => {
+      // Manifest failed — release loading so we don't hang blank
+      setLoading(false);
     });
   }, []);
 
