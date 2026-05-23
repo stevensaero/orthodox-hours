@@ -1851,10 +1851,68 @@ const SAMPLE_MENAION = {
     rank: "simple",
     fekula_section: "2A",
     note: "May 19 O.S. = June 1 N.S. OCA commemorates May 19 N.S. — DIVERGENCE; OCA date governs. " +
-          "§2A simple confirmed — 3 stichera. OCA primary troparion is the proper hieromartyr text; " +
-          "generic martyr troparion stored as troparion_2. Kontakion matches St. Sergius.",
-    feast_e: "absent — §2A, readings from Oktoechos",
-    feast_g: "absent — §2A, readings from Oktoechos",
+          "§2A simple confirmed — 3 stichera Tone VI. OCA primary troparion is the proper hieromartyr text. " +
+          "Kontakion matches St. Sergius. Glory/Both now: theotokion Tone VI printed in PDF.",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "alleluia",
+    feast_e: null,  // §2A — readings from Octoechos
+    feast_g: null,
+    aposticha_source: "octoechos",
+    // ── LORD I HAVE CRIED — from 05-19.pdf ──────────────────────────────────
+    // 3 stichera of the holy hieromartyrs, Tone VI, Spec. Mel.: "Having set all aside"
+    stichera_lord_i_call: [
+      { tone: 6, spec_mel: "Having set all aside",
+        text: "Steered by the Word " +
+              "the blessed hieromartyrs " +
+              "sailed easily across the threefold waves of the passions, " +
+              "and were entrusted with the task " +
+              "of healing the sufferings of mortals " +
+              "with the waters of fervor. " +
+              "Their relics were given sacred burial, " +
+              "and richly pour forth healings upon those in need. " +
+              "O ye faithful, let us unceasingly honor them as is meet, " +
+              "for they pray with boldness on behalf of our souls." },
+      { tone: 6, spec_mel: "Having set all aside",
+        text: "Wearing purple robes " +
+              "dyed in the blood of martyrdom " +
+              "and wielding the precious Cross as a scepter, " +
+              "the godly martyrs reign with Christ rejoicing, " +
+              "having desired willingly to suffer for Him: " +
+              "Polyenus manifest in holiness, " +
+              "Acacius and Menander, and the divinely wise Patrick. " +
+              "And, rejoicing now, " +
+              "they stand before the throne of Christ, " +
+              "praying with boldness on behalf of our souls." },
+      { tone: 6, spec_mel: "Having set all aside",
+        text: "Desiring the kingdom of Christ, " +
+              "the blessed and valiant ones " +
+              "preferred a temporary death as though it were food, " +
+              "manfully enduring starvation and the pain of wounds. " +
+              "Wherefore, they have become the helpers of all the faithful, " +
+              "imparting health in abundance to their souls and bodies. " +
+              "O ye faithful, as is meet " +
+              "let us now joyfully hymn them, " +
+              "for they pray to the Lord on behalf of our souls." },
+    ],
+    stichera_lord_i_call_count: 3,
+    stichera_glory: null,  // §2A — Glory: theotokion from Menaion (Tone VI) printed in PDF
+    lic_theotokion: {
+      tone: 6,
+      text: "From the sea-monster's belly of wicked sin " +
+            "do thou lead me up, O Lady, " +
+            "who contained the Infinite One in thy womb. " +
+            "Deliver me from the cruel waves of temptations, " +
+            "and rescue me from the tempest of falls, O Maiden, " +
+            "drying up the abyss of mine iniquities, " +
+            "and repelling the present hordes of the demons " +
+            "by thy divine assistance, O pure one, " +
+            "that I may unceasingly glorify thee, the ever-blessed one.",
+      note: "Glory and Both now — printed in 05-19.pdf as LIC theotokion (§2A, no separate Glory sticheron)",
+    },
     troparion: {
       tone: 4,
       text: "You were arrayed in the beauty of the priesthood, O Patrick, and adorned with the blood " +
@@ -1889,9 +1947,58 @@ const SAMPLE_MENAION = {
     fekula_section: "2A",
     note: "May 20 O.S. = June 2 N.S. OCA commemorates May 20 N.S. — DIVERGENCE; OCA date governs. " +
           "§2A simple confirmed. OCA proper troparion used; differs from St. Sergius generic martyr text. " +
-          "Movable feast deconfliction (e.g. Ascension) handled automatically by the calendar engine.",
-    feast_e: "absent — §2A, readings from Oktoechos",
-    feast_g: "absent — §2A, readings from Oktoechos",
+          "Movable feast deconfliction (e.g. Ascension) handled automatically by the calendar engine. " +
+          "3 stichera Tone IV + Glory/Both now theotokion Tone IV from PDF.",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "alleluia",
+    feast_e: null,  // §2A — readings from Octoechos
+    feast_g: null,
+    aposticha_source: "octoechos",
+    // ── LORD I HAVE CRIED — from 05-20.pdf ──────────────────────────────────
+    // 3 stichera of the holy martyr, Tone IV, Spec. Mel.: "As one valiant among the martyrs"
+    stichera_lord_i_call: [
+      { tone: 4, spec_mel: "As one valiant among the martyrs",
+        text: "When the great turbulence of the lands under heaven " +
+              "laid hold of thee, " +
+              "and a storm smote thy soul, O all-glorious one, " +
+              "steered by thine exalted name as with a rudder " +
+              "thou didst traverse unharmed " +
+              "the abyss of greatly painful tortures; " +
+              "and having attained unto the harbors of the Most High, " +
+              "thou wast filled with everlasting calm, O martyr Thalaleus." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs",
+        text: "Lifted up upon a tree, " +
+              "thy side lacerated by the savagery of the torturers, " +
+              "thou didst emulate the suffering of the Master of creation, O glorious one; " +
+              "and denounce their erroneous thought, " +
+              "reviling the delusion of idolatry " +
+              "and manifestly strengthening piety, O great-martyr Thalaleus." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs",
+        text: "At the command of the tyrant " +
+              "thou wast committed to the depths of the sea, " +
+              "yet through divine grace remained un-drowned, O most wise one; " +
+              "and with the torrents of thy blood " +
+              "drowned the noetic Pharaoh and his army, O divinely wise one, " +
+              "wherefore, strengthened greatly by Christ, " +
+              "thou didst commit him to utter destruction." },
+    ],
+    stichera_lord_i_call_count: 3,
+    stichera_glory: null,  // §2A — Glory: theotokion Tone IV from PDF
+    lic_theotokion: {
+      tone: 4,
+      text: "Tens of thousands of times have I promised " +
+            "to repent of mine offenses, O most pure one, " +
+            "yet the cherished habits of mine evil ways " +
+            "will not depart from me; " +
+            "wherefore, I cry unto thee and fall down, praying: " +
+            "O Sovereign Lady, rescue me from such tyranny, " +
+            "guiding me to things that are higher, which are nigh unto salvation.",
+      note: "Glory and Both now — theotokion Tone IV printed in 05-20.pdf (§2A pattern)",
+    },
     troparion: {
       tone: 4,
       text: "O holy prize-winner and healer Thallelaios, intercede with the merciful God " +
@@ -1919,9 +2026,18 @@ const SAMPLE_MENAION = {
     rank: "polyeleos",
     fekula_section: "2E",
     note: "May 21 O.S. = June 3 N.S. OCA commemorates May 21 N.S. — DIVERGENCE; OCA date governs. " +
-          "Polyeleos §2E confirmed. OCA and St. Sergius texts agree. " +
-          "Dual epistle: Gal 1:11-19 (primary); Acts 26:1-5, 12-20 when within Pentecostarion. " +
-          "In years when Ascension falls May 21, movable feast takes precedence.",
+          "§2E Polyeleos confirmed — Great Vespers, Litya, 3 paroemias, Polyeleos, Matins Gospel. " +
+          "OCA and St. Sergius texts agree. Dual epistle: Gal 1:11-19 (primary); Acts 26:1-5,12-20 during Pentecostarion. " +
+          "Matins Gospel: John 10:9-16 (§36). In years when Ascension falls May 21, movable feast takes precedence.",
+    has_great_doxology: true,   // §2E Polyeleos — Great Doxology sung; printed in PDF
+    has_polyeleos: true,
+    has_litya: true,             // Litya stichera printed in PDF
+    has_paroemias: true,         // 3 paroemias confirmed: 3 Kings 8, Isaiah 61, Isaiah 60
+    magnificat_sung: true,       // §2E — Magnificat sung
+    matins_format: "god_is_the_lord",
+    matins_gospel: "John 10:9-16 (§36) — I am the door; the good shepherd giveth his life",
+    feast_e_pentecostarion: "Acts 26:1-5, 12-20 (§49) — Paul before Agrippa; I am Jesus whom thou persecutest",
+    aposticha_source: "menaion",  // Vespers aposticha from Menaion (already encoded above)
     feast_e: "Galatians 1:11-19",
     feast_g: "John 10:1-9",
     prokeimenon_tone: 8,
