@@ -3818,7 +3818,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     const octoDay = (!isPentecostarion && (rank === "simple" || !menaionEntry))
       ? getOctoechosVespers(tone, licDayKey) : null;
     // Stichera count: from pentEntry if Pentecostarion; else 6/8/10 by rank
-    const licCount = (isPentecostarion && pentEntry && pentEntry.menaion_set_aside && pentEntry.stichera_lord_i_call_count)
+    const licCount = (isPentecostarion && pentEntry && pentEntry.stichera_lord_i_call_count)
       ? pentEntry.stichera_lord_i_call_count
       : (isHighRank ? (rank === "vigil" ? 10 : 8) : 6);
 
@@ -3874,14 +3874,18 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       const isPentSunday = pentEntry && pentEntry.hours_format === 'pentecostarion_sunday';
 
       // For pentecostarion_sunday: compose merged array — 7 Octoechos resurrection + pentEntry stichera
+      // This applies regardless of menaion_set_aside — all Pentecostarion Sundays use
+      // Octoechos resurrection stichera (Fekula §4B6: "seven of the resurrection").
       let effectiveLicStichera = menaionLicStichera;
-      if (allFromPent && isPentSunday && menaionLicStichera.length < licCount) {
+      if (isPentSunday) {
         // Fekula §4B6: "we sing ten stichera: seven of the resurrection and three of the Sunday"
+        // The 3 Sunday stichera come from pentEntry (not Menaion), the 7 from Octoechos sat LIC.
         const octoSat = getOctoechosVespers(tone, 'sat');
         const octoResurrection = (octoSat && octoSat.lic) ? octoSat.lic.slice(0, 7) : [];
+        const pentSundayStichera = (pentEntry && pentEntry.stichera_lord_i_call) || [];
         effectiveLicStichera = [
           ...octoResurrection.map(text => ({tone, text, source: 'Octoechos'})),
-          ...menaionLicStichera,
+          ...pentSundayStichera,
         ];
       }
 
