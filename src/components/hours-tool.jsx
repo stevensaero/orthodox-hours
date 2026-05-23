@@ -3567,14 +3567,28 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     effSaint = namedDay.name;
   }
   let primTrop = null, primTropTone = null, primSrc = "", secTrop = null, secTropTone = null, secSrc = "";
+  let thirdTrop = null, thirdTropTone = null, thirdSrc = "";
   if (isPentecostarion && pentEntry && pentEntry.troparion) {
     const pt = pentEntry.troparion;
     primTrop = typeof pt === "string" ? pt : pt.text;
     primTropTone = typeof pt === "string" ? null : pt.tone;
     primSrc = "Pentecostarion — " + pentEntry.name;
-    // Only show Menaion second troparion if feast does not set aside the Menaion entirely
-    if (effTrop && !(pentEntry && pentEntry.menaion_set_aside)) {
+    // troparion_2: Glory… troparion (e.g. Holy Fathers T8 on P+42, All Saints T4 on P+56)
+    if (pentEntry.troparion_2) {
+      const t2 = pentEntry.troparion_2;
+      secTrop = typeof t2 === "string" ? t2 : t2.text;
+      secTropTone = typeof t2 === "string" ? null : t2.tone;
+      secSrc = "Pentecostarion — " + pentEntry.name;
+    } else if (effTrop && !(pentEntry && pentEntry.menaion_set_aside)) {
+      // Ordinary Pentecostarion weekday: Menaion saint under Glory
       secTrop = effTrop; secTropTone = effTropTone; secSrc = "Menaion — " + effSaint;
+    }
+    // troparion_3: Both now… troparion (e.g. Ascension T4 on P+42)
+    if (pentEntry.troparion_3) {
+      const t3 = pentEntry.troparion_3;
+      thirdTrop = typeof t3 === "string" ? t3 : t3.text;
+      thirdTropTone = typeof t3 === "string" ? null : t3.tone;
+      thirdSrc = "Pentecostarion — " + pentEntry.name;
     }
   } else if (effTrop) {
     primTrop = effTrop; primTropTone = effTropTone; primSrc = "Menaion — " + effSaint;
@@ -4349,9 +4363,17 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       rubric:"",
       text:"Glory to the Father, and to the Son, and to the Holy Spirit.\n\n" + secTrop,
       source: secSrc,
-      fekula:{section:fekulaSection, note:"Second troparion (after Glory…) from the Menaion saint when Pentecostarion governs the primary. — Fekula §4A"}});
+      fekula:{section:fekulaSection, note:"Second troparion (after Glory…). — Fekula §4A"}});
   }
-  if (kont) {
+  if (thirdTrop) {
+    // Both now… filled by a troparion (e.g. P+42 Ascension, P+56 dogmatic)
+    const thirdToneLabel = thirdTropTone ? " · Tone " + thirdTropTone : "";
+    elements.push({id:"v-trop-3",type:"movable",label:"Troparion (Both now…)" + thirdToneLabel,
+      rubric:"",
+      text:"Now and ever, and unto the ages of ages. Amen.\n\n" + thirdTrop,
+      source: thirdSrc,
+      fekula:{section:fekulaSection, note:"Both now… filled by appointed troparion (not kontakion). — Fekula §4B13"}});
+  } else if (kont) {
     const kontToneLabel = kontTone ? " · Tone " + kontTone : "";
     elements.push({id:"v-kont",type:"movable",label:"Kontakion (Both now…)" + kontToneLabel,
       rubric:"",
