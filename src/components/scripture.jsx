@@ -80,312 +80,39 @@ function resolvePericope(pericopeParam, pericopes) {
   return nsMap[key] || null;
 }
 
-// ─── REF STRING PARSER ────────────────────────────────────────────────────────
-// Parses a LECTIONARY reference string into an array of span objects.
-// e.g. "Acts 11:19-26, 29-30"  → [{book:"Acts", chapter:11, verseStart:19, verseEnd:26},
-//                                   {book:"Acts", chapter:11, verseStart:29, verseEnd:30}]
-// e.g. "Romans 13:11-14:4"     → [{book:"Rom", chapterStart:13, verseStart:11,
-//                                   chapterEnd:14, verseEnd:4}]
-const LECTIONARY_BOOK_ID = {
-  // NT
-  "Matthew": "Matt", "Mark": "Mark", "Luke": "Luke", "John": "John",
-  "Acts": "Acts", "Romans": "Rom", "Colossians": "Col", "Ephesians": "Eph",
-  "Galatians": "Gal", "Philippians": "Phil", "Hebrews": "Heb",
-  "1 Corinthians": "1Cor", "2 Corinthians": "2Cor",
-  "1 Thessalonians": "1Thes", "2 Thessalonians": "2Thes",
-  "1 Timothy": "1Tim", "2 Timothy": "2Tim",
-  "Titus": "Tit", "Philemon": "Phlm",
-  "1 Peter": "1Pet", "2 Peter": "2Pet",
-  "James": "Jas", "Jude": "Jude",
-  "1 John": "1John", "2 John": "2John", "3 John": "3John",
-  // OT
-  "Genesis": "Gen", "Gen": "Gen",
-  "Exodus": "Ex", "Exod": "Ex",
-  "Leviticus": "Lev", "Numbers": "Num", "Deuteronomy": "Deut",
-  "Joshua": "Josh", "Judges": "Judg", "Ruth": "Ruth",
-  "1 Samuel": "1Sam", "2 Samuel": "2Sam",
-  "1 Kings": "3Kgdm", "2 Kings": "4Kgdm",
-  "3 Kings": "3Kgdm", "4 Kings": "4Kgdm",
-  "1 Chronicles": "1Chr", "2 Chronicles": "2Chr",
-  "Ezra": "Ezra", "Nehemiah": "Neh",
-  "Tobit": "Tob", "Judith": "Jdt",
-  "Job": "Job",
-  "Proverbs": "Prov", "Prov": "Prov",
-  "Ecclesiastes": "Eccl",
-  "Wisdom": "Wis", "Wis": "Wis",
-  "Wisdom of Solomon": "Wis",
-  "Sirach": "Sir", "Baruch": "Bar",
-  "Isaiah": "Isa", "Isa": "Isa",
-  "Jeremiah": "Jer", "Lamentations": "Lam",
-  "Ezekiel": "Ezek", "Ezek": "Ezek",
-  "Daniel": "Dan",
-  "Hosea": "Hos", "Joel": "Joel", "Amos": "Amos",
-  "Jonah": "Jon", "Micah": "Mic",
-  "Zephaniah": "Zeph", "Haggai": "Hag",
-  "Zechariah": "Zech", "Malachi": "Mal",
-};
-const BOOK_DISPLAY_NAME = Object.fromEntries(
-  Object.entries(LECTIONARY_BOOK_ID).map(([name, id]) => [id, name])
-);
+// Determine if a verse is appointed/skipped within a pericope's readings
+function verseStatus(bookId, chapter, verseNum, pericope) {
+  if (!pericope) return "normal";
+  const readings = pericope.readings || [];
+  let isAppointed = false;
+  let isCovered = false;
 
-function parseRefString(refStr) {
-  if (!refStr) return null;
-
-  // Strip trailing description in parens: "Genesis 28:10-17 (Jacob's ladder)" -> "Genesis 28:10-17"
-  const cleaned = refStr.trim().replace(/\s*\([^)]*\)\s*$/, "").trim();
-
-  const m = cleaned.match(/^((?:\d\s+)?[A-Za-z]+(?:\s+of\s+[A-Za-z]+)?(?:\s+[A-Za-z]+)?)\s+(.+)$/);
-  if (!m) return null;
-  const bookName = m[1].trim();
-  const bookId = LECTIONARY_BOOK_ID[bookName];
-  if (!bookId) return null;
-  const rest = m[2].trim();
-
-  // Semicolon-separated multi-span (same book, possibly different chapters):
-  // "10:7; 3:13-16; 8:6, 34-35" — each segment may be "Ch:V-V" or "Ch:V, V"
-  if (rest.includes(";")) {
-    const segments = rest.split(/;\s*/);
-    const spans = [];
-    for (const seg of segments) {
-      const sub = parseSpanSegments(bookId, bookName, seg.trim());
-      if (sub) spans.push(...sub);
+  for (const r of readings) {
+    if (r.book.toLowerCase() !== bookId.toLowerCase() && r.book !== bookId) continue;
+    // Same-chapter reading
+    if (r.chapter !== undefined) {
+      if (r.chapter !== chapter) continue;
+      isCovered = true;
+      if (verseNum >= r.verseStart && verseNum <= r.verseEnd) { isAppointed = true; break; }
+    } else {
+      // Cross-chapter reading: chapterStart/chapterEnd
+      const inRange =
+        (chapter > r.chapterStart && chapter < r.chapterEnd) ||
+        (chapter === r.chapterStart && verseNum >= r.verseStart) ||
+        (chapter === r.chapterEnd && verseNum <= r.verseEnd);
+      if (chapter < r.chapterStart || chapter > r.chapterEnd) continue;
+      isCovered = true;
+      if (inRange) { isAppointed = true; break; }
     }
-    return spans.length ? spans : null;
   }
 
-  // Cross-chapter: "13:11-14:4"
-  const crossChapter = rest.match(/^(\d+):(\d+)-(\d+):(\d+)$/);
-  if (crossChapter) {
-    return [{
-      book: bookId, bookName,
-      chapterStart: parseInt(crossChapter[1]), verseStart: parseInt(crossChapter[2]),
-      chapterEnd: parseInt(crossChapter[3]), verseEnd: parseInt(crossChapter[4]),
-    }];
-  }
-
-  // Same-chapter, possibly multi-span comma-separated: "11:19-26, 29-30" or "6:3-11"
-  return parseSpanSegments(bookId, bookName, rest);
+  if (!isCovered) return "normal";
+  return isAppointed ? "appointed" : "skipped";
 }
 
-// Parse a single chapter ref segment: "Ch:V-V" or "Ch:V, V-V" (comma spans within same chapter)
-function parseSpanSegments(bookId, bookName, seg) {
-  const chapterMatch = seg.match(/^(\d+):(.+)$/);
-  if (!chapterMatch) return null;
-  const chapter = parseInt(chapterMatch[1]);
-  const spanPart = chapterMatch[2];
-
-  const spans = spanPart.split(/,\s*/).map(s => {
-    const parts = s.trim().match(/^(\d+)(?:-(\d+))?$/);
-    if (!parts) return null;
-    const vs = parseInt(parts[1]);
-    const ve = parts[2] ? parseInt(parts[2]) : vs;
-    return { book: bookId, bookName, chapter, verseStart: vs, verseEnd: ve };
-  }).filter(Boolean);
-
-  return spans.length ? spans : null;
-}
-
-// Human-readable label for a span
-function spanLabel(span) {
-  if (span.chapterStart !== undefined) {
-    return `${span.bookName} ${span.chapterStart}:${span.verseStart}–${span.chapterEnd}:${span.verseEnd}`;
-  }
-  return `${span.bookName} ${span.chapter}:${span.verseStart}–${span.verseEnd}`;
-}
-
-// ─── SPAN HEADING ─────────────────────────────────────────────────────────────
-function SpanHeading({ label }) {
-  return (
-    <div style={{
-      fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase",
-      color: C.gold, marginBottom: "1rem", marginTop: "1.5rem", fontWeight: "bold",
-      display: "flex", alignItems: "center", gap: "0.75rem",
-    }}>
-      {label}
-      <span style={{ flex: 1, height: "1px", background: C.goldLight }} />
-    </div>
-  );
-}
-
-// ─── READING VIEW ─────────────────────────────────────────────────────────────
-// Appointed-only render mode — activated when arriving via ?ref= param.
-// Renders each span as: SpanHeading + appointed verses only.
-function ReadingView({ spans, allBookData }) {
-  const topRef = useRef(null);
-
-  useEffect(() => {
-    topRef.current?.scrollIntoView({ behavior: "instant", block: "start" });
-  }, [spans]);
-
-  if (!spans || spans.length === 0) return null;
-
-  const verseStyle = {
-    fontSize: "0.97rem", lineHeight: "1.9", color: C.inkMid,
-    display: "block", marginBottom: "0.15rem",
-  };
-  const supStyle = {
-    fontSize: "0.62rem", color: C.gold,
-    marginRight: "2px", verticalAlign: "super",
-  };
-
-  // Render a single cross-chapter span — may span multiple chapters
-  const renderCrossChapter = (span, bookData) => {
-    if (!bookData) return <div style={{ color: C.inkLight, fontStyle: "italic" }}>Loading…</div>;
-    const verses = [];
-    for (let ch = span.chapterStart; ch <= span.chapterEnd; ch++) {
-      const chapterData = bookData.chapters?.find(c => c.chapter === ch);
-      if (!chapterData) continue;
-      const vStart = ch === span.chapterStart ? span.verseStart : 1;
-      const vEnd = ch === span.chapterEnd ? span.verseEnd : 99999;
-      const chVerses = chapterData.verses.filter(v => v.verse >= vStart && v.verse <= vEnd);
-      // Insert a chapter split heading if needed
-      if (ch > span.chapterStart && chVerses.length > 0) {
-        const splitLabel = `${span.bookName ?? span.book} ${ch}:${chVerses[0].verse}`;
-        verses.push(
-          <SpanHeading key={`ch-${ch}`} label={splitLabel} />
-        );
-      }
-      chVerses.forEach(v => {
-        verses.push(
-          <span key={`${ch}-${v.verse}`} style={verseStyle}>
-            <sup style={supStyle}>{v.verse}</sup>{v.text}
-          </span>
-        );
-      });
-    }
-    return <div>{verses}</div>;
-  };
-
-  // Render a single same-chapter span
-  const renderSameChapter = (span, bookData) => {
-    if (!bookData) return <div style={{ color: C.inkLight, fontStyle: "italic" }}>Loading…</div>;
-    const chapterData = bookData.chapters?.find(c => c.chapter === span.chapter);
-    if (!chapterData) return (
-      <div style={{ color: C.inkLight, fontStyle: "italic", padding: "1rem 0" }}>
-        Chapter {span.chapter} not yet encoded.
-      </div>
-    );
-    const appointed = chapterData.verses.filter(v =>
-      v.verse >= span.verseStart && v.verse <= span.verseEnd
-    );
-    return (
-      <div>
-        {appointed.map(v => (
-          <span key={v.verse} style={verseStyle}>
-            <sup style={supStyle}>{v.verse}</sup>{v.text}
-          </span>
-        ))}
-      </div>
-    );
-  };
-
-  return (
-    <div ref={topRef}>
-      {spans.map((span, i) => {
-        const bookData = allBookData[span.book];
-        const isCross = span.chapterStart !== undefined;
-        return (
-          <div key={i}>
-            <SpanHeading label={spanLabel(span)} />
-            {isCross
-              ? renderCrossChapter(span, bookData)
-              : renderSameChapter(span, bookData)
-            }
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-// ─── CHAPTER VIEW ─────────────────────────────────────────────────────────────
-function ChapterView({ bookData, chapterNum, targetVerse, totalChapters, onChapterChange }) {
-  const topRef = useRef(null);
-  const verseRefs = useRef({});
-
-  const chapterData = bookData?.chapters?.find(c => c.chapter === chapterNum);
-
-  useEffect(() => {
-    const t = setTimeout(() => {
-      if (targetVerse && verseRefs.current[targetVerse]) {
-        verseRefs.current[targetVerse].scrollIntoView({ behavior: "instant", block: "center" });
-      } else {
-        topRef.current?.scrollIntoView({ behavior: "instant", block: "start" });
-      }
-    }, 80);
-    return () => clearTimeout(t);
-  }, [chapterNum, targetVerse, bookData]);
-
-  const bookId = bookData?.id || "";
-
-  return (
-    <div ref={topRef}>
-      {/* Chapter heading */}
-      <div style={{
-        fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase",
-        color: C.gold, marginBottom: "1rem", fontWeight: "bold",
-        display: "flex", alignItems: "center", gap: "0.75rem",
-      }}>
-        Chapter {chapterNum}
-        <span style={{ flex: 1, height: "1px", background: C.goldLight }} />
-      </div>
-
-      {/* Verse text */}
-      {!chapterData ? (
-        <div style={{ fontSize: "0.9rem", color: C.inkLight, fontStyle: "italic", padding: "2rem 0", textAlign: "center" }}>
-          Chapter {chapterNum} not yet encoded.{" "}
-          <a href={`https://www.biblegateway.com/passage/?search=${bookId}+${chapterNum}`}
-             target="_blank" rel="noopener" style={{ color: C.gold }}>
-            Read online →
-          </a>
-        </div>
-      ) : (
-        <div style={{ fontSize: "0.97rem", lineHeight: "1.9", color: C.inkMid }}>
-          {chapterData.verses.map(v => (
-            <span
-              key={v.verse}
-              ref={el => { if (el) verseRefs.current[v.verse] = el; }}
-              style={{ display: "inline" }}
-            >
-              <sup style={{
-                fontSize: "0.62rem", color: C.gold,
-                marginRight: "2px", verticalAlign: "super",
-              }}>
-                {v.verse}
-              </sup>
-              {v.text}{" "}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {/* Chapter navigation */}
-      <div style={{
-        display: "flex", justifyContent: "space-between",
-        marginTop: "2rem", marginBottom: "1.5rem",
-        paddingTop: "1rem", borderTop: `1px solid ${C.border}`,
-      }}>
-        <button
-          onClick={() => onChapterChange(chapterNum - 1)}
-          disabled={chapterNum <= 1}
-          style={navBtnStyle(chapterNum <= 1)}
-        >
-          ← Chapter {chapterNum - 1}
-        </button>
-        <button
-          onClick={() => onChapterChange(chapterNum + 1)}
-          disabled={chapterNum >= totalChapters}
-          style={navBtnStyle(chapterNum >= totalChapters)}
-        >
-          Chapter {chapterNum + 1} →
-        </button>
-      </div>
-    </div>
-  );
-}
+// ─── CONTEXT STRIP ────────────────────────────────────────────────────────────
 function ContextStrip({ fromContext, fromTool, position }) {
-  const show = fromContext || fromTool;
-  if (!show) return null;
+  if (!fromContext && !fromTool) return null;
   const isBottom = position === "bottom";
   return (
     <button
@@ -456,6 +183,115 @@ function PericopeHeader({ pericope }) {
   );
 }
 
+// ─── CHAPTER VIEW ─────────────────────────────────────────────────────────────
+function ChapterView({ bookData, chapterNum, targetVerse, pericope, totalChapters, onChapterChange }) {
+  const topRef = useRef(null);
+  const verseRefs = useRef({});
+
+  const chapterData = bookData?.chapters?.find(c => c.chapter === chapterNum);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (targetVerse && verseRefs.current[targetVerse]) {
+        verseRefs.current[targetVerse].scrollIntoView({ behavior: "instant", block: "center" });
+      } else {
+        topRef.current?.scrollIntoView({ behavior: "instant", block: "start" });
+      }
+    }, 80);
+    return () => clearTimeout(t);
+  }, [chapterNum, targetVerse, bookData]);
+
+  const bookId = bookData?.id || "";
+
+  return (
+    <div ref={topRef}>
+      {/* Chapter heading */}
+      <div style={{
+        fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase",
+        color: C.gold, marginBottom: "1rem", fontWeight: "bold",
+        display: "flex", alignItems: "center", gap: "0.75rem",
+      }}>
+        Chapter {chapterNum}
+        <span style={{ flex: 1, height: "1px", background: C.goldLight }} />
+      </div>
+
+      {/* Verse text */}
+      {!chapterData ? (
+        <div style={{ fontSize: "0.9rem", color: C.inkLight, fontStyle: "italic", padding: "2rem 0", textAlign: "center" }}>
+          Chapter {chapterNum} not yet encoded.{" "}
+          <a href={`https://www.biblegateway.com/passage/?search=${bookId}+${chapterNum}`}
+             target="_blank" rel="noopener" style={{ color: C.gold }}>
+            Read online →
+          </a>
+        </div>
+      ) : (
+        <div style={{ fontSize: "0.97rem", lineHeight: "1.9", color: C.inkMid }}>
+          {chapterData.verses.map(v => {
+            const status = verseStatus(bookId, chapterNum, v.verse, pericope);
+            const isAppointed = status === "appointed";
+            const isSkipped = status === "skipped";
+            return (
+              <span
+                key={v.verse}
+                ref={el => { if (el) verseRefs.current[v.verse] = el; }}
+                style={{
+                  display: "inline",
+                  color: isSkipped ? C.skipVerse : C.inkMid,
+                  opacity: isSkipped ? 0.7 : 1,
+                  background: isAppointed ? "rgba(139,105,20,0.04)" : "transparent",
+                  borderLeft: isAppointed ? `2px solid ${C.goldLight}` : undefined,
+                  paddingLeft: isAppointed ? "0.4rem" : undefined,
+                  marginLeft: isAppointed ? "-0.4rem" : undefined,
+                }}
+              >
+                <sup style={{
+                  fontSize: "0.62rem", color: isSkipped ? C.skipVerse : C.gold,
+                  marginRight: "2px", verticalAlign: "super",
+                }}>
+                  {v.verse}
+                </sup>
+                {v.text}{" "}
+              </span>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Chapter navigation */}
+      <div style={{
+        display: "flex", justifyContent: "space-between",
+        marginTop: "2rem", marginBottom: "1.5rem",
+        paddingTop: "1rem", borderTop: `1px solid ${C.border}`,
+      }}>
+        <button
+          onClick={() => onChapterChange(chapterNum - 1)}
+          disabled={chapterNum <= 1}
+          style={navBtnStyle(chapterNum <= 1)}
+        >
+          ← Chapter {chapterNum - 1}
+        </button>
+        <button
+          onClick={() => onChapterChange(chapterNum + 1)}
+          disabled={chapterNum >= totalChapters}
+          style={navBtnStyle(chapterNum >= totalChapters)}
+        >
+          Chapter {chapterNum + 1} →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function navBtnStyle(disabled) {
+  return {
+    fontFamily: "Georgia, serif", fontSize: "0.82rem",
+    color: C.gold, background: "none",
+    border: `1px solid ${C.goldLight}`, borderRadius: "3px",
+    padding: "5px 14px", cursor: disabled ? "default" : "pointer",
+    opacity: disabled ? 0.3 : 1,
+  };
+}
+
 // ─── BOOK SELECTOR ────────────────────────────────────────────────────────────
 function BookSelector({ manifest, selectedBookId, onSelect, open, onToggle }) {
   if (!manifest) return null;
@@ -503,6 +339,14 @@ function BookSelector({ manifest, selectedBookId, onSelect, open, onToggle }) {
               }}>
                 {groupName}
               </div>
+              {groupName === "Not Used Liturgically" && (
+                <div style={{
+                  fontSize: "0.68rem", color: C.inkLight, fontStyle: "italic",
+                  padding: "0 0.75rem 0.25rem",
+                }}>
+                  Revelation is not read in Orthodox liturgy.
+                </div>
+              )}
               {groupName === "Not Used Liturgically" && (
                 <div style={{
                   fontSize: "0.68rem", color: C.inkLight, fontStyle: "italic",
@@ -633,16 +477,13 @@ export default function Scripture() {
 
   const initState = (() => {
     const params = getParams();
-    const pericopeParam = params.get("pericope");
     const refParam = params.get("ref");
+    const pericopeParam = params.get("pericope");
     const bookParam = params.get("book") || params.get("Book");
     const chapterParam = parseInt(params.get("chapter") || "1", 10);
     const verseParam = parseInt(params.get("verse") || "0", 10) || null;
     const service = params.get("service");
     const date = params.get("date");
-
-    const refSpans = refParam ? parseRefString(refParam) : null;
-    const fromTool = params.get("from") === "tool";
 
     let fromContext = null;
     if (service && date) {
@@ -657,11 +498,9 @@ export default function Scripture() {
       fromContext = { dayName, dateLabel, serviceLabel };
     }
 
-    return { pericopeParam, refParam, refSpans, bookParam, chapterParam, verseParam, fromContext, fromTool };
+    const fromTool = params.get("from") === "tool";
+    return { pericopeParam, bookParam, chapterParam, verseParam, fromContext, fromTool };
   })();
-
-  // Reading mode: arrived via ?ref= from hours-tool
-  const isReadingMode = !!initState.refSpans;
 
   const [manifest, setManifest] = useState(null);
   const [pericopes, setPericopes] = useState(null);
@@ -673,60 +512,40 @@ export default function Scripture() {
   const [bookSelectorOpen, setBookSelectorOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [pericopeMeta, setPericopeMeta] = useState(null);
-  // allBookData: keyed by bookId — used in reading mode to load multiple books
-  const [allBookData, setAllBookData] = useState({});
   const { fromContext, fromTool } = initState;
+  const refSpans = initState.refParam ? null : null; // reading mode: see isReadingMode
 
   // ── Load manifest + pericopes on mount ───────────────────────────────────
   useEffect(() => {
     window.scrollTo(0, 0);
+    Promise.all([loadManifest(), loadPericopes()]).then(([mf, pc]) => {
+      setManifest(mf);
+      setPericopes(pc);
 
-    if (isReadingMode) {
-      // Reading mode: need manifest + pericopes + all referenced books
-      Promise.all([loadManifest(), loadPericopes()]).then(([mf, pc]) => {
-        setManifest(mf);
-        setPericopes(pc);
-        const uniqueBooks = [...new Set(initState.refSpans.map(s => s.book))];
-        return Promise.all(uniqueBooks.map(bid => loadBook(bid).then(data => ({ bid, data }))));
-      }).then(results => {
-        const map = {};
-        results.forEach(({ bid, data }) => { map[bid] = data; });
-        setAllBookData(map);
-        setLoading(false);
-      }).catch(() => setLoading(false));
-
-    } else {
-      // Browse mode: only need manifest. Pericopes loaded on demand.
-      loadManifest().then(mf => {
-        setManifest(mf);
-        if (initState.pericopeParam) {
-          return loadPericopes().then(pc => {
-            setPericopes(pc);
-            const resolved = resolvePericope(initState.pericopeParam, pc);
-            if (resolved && resolved.readings?.length > 0) {
-              setActivePericope(resolved);
-              setPericopeMeta(resolved);
-              const firstReading = resolved.readings[0];
-              const landingChapter = firstReading.chapter ?? firstReading.chapterStart ?? 1;
-              setSelectedBookId(firstReading.book);
-              setCurrentChapter(landingChapter);
-              setTargetVerse(firstReading.verseStart);
-            }
-            setLoading(false);
-          });
-        } else if (initState.bookParam) {
-          // book-load effect will call setLoading(false)
-        } else {
-          setSelectedBookId("Matt");
-          // book-load effect will call setLoading(false)
+      // Resolve pericope mode
+      if (initState.pericopeParam) {
+        const resolved = resolvePericope(initState.pericopeParam, pc);
+        if (resolved && resolved.readings?.length > 0) {
+          setActivePericope(resolved);
+          setPericopeMeta(resolved);
+          const firstReading = resolved.readings[0];
+          const bookId = firstReading.book;
+          // Support both same-chapter (chapter) and cross-chapter (chapterStart) readings
+          const landingChapter = firstReading.chapter ?? firstReading.chapterStart ?? 1;
+          setSelectedBookId(bookId);
+          setCurrentChapter(landingChapter);
+          setTargetVerse(firstReading.verseStart);
         }
-      }).catch(() => setLoading(false));
-    }
+      } else if (!initState.bookParam) {
+        // Default to Matthew ch.1
+        setSelectedBookId("Matt");
+      }
+    });
   }, []);
 
-  // ── Load book data when selectedBookId changes (browse mode) ─────────────
+  // ── Load book data when selectedBookId changes ────────────────────────────
   useEffect(() => {
-    if (isReadingMode || !selectedBookId) return;
+    if (!selectedBookId) return;
     setLoading(true);
     setBookData(null);
     loadBook(selectedBookId).then(data => {
@@ -790,113 +609,93 @@ export default function Scripture() {
             Orthodox Scripture
           </span>
           <span style={{ fontSize: "0.72rem", color: C.inkLight, fontStyle: "italic" }}>
-            {isReadingMode
-              ? (Object.values(allBookData)[0]?.testament === "NT" ? "KJV 2006 · Public Domain" : "Brenton LXX 1844 · Public Domain")
-              : (bookData ? sourceLabel : "Brenton LXX · KJV")}
+            {bookData ? sourceLabel : "Brenton LXX · KJV"}
           </span>
         </div>
 
-        {/* ── READING MODE ── appointed verses only, no browse chrome */}
-        {isReadingMode && (
-          <>
-            {loading && (
-              <div style={{ textAlign: "center", padding: "3rem", color: C.inkLight, fontStyle: "italic", fontSize: "0.9rem" }}>
-                Loading…
+        {/* Pericope header */}
+        {pericopeMeta && <PericopeHeader pericope={pericopeMeta} />}
+
+        {/* Book selector */}
+        <BookSelector
+          manifest={manifest}
+          selectedBookId={selectedBookId}
+          onSelect={handleBookSelect}
+          open={bookSelectorOpen}
+          onToggle={() => setBookSelectorOpen(o => !o)}
+        />
+
+        {/* Book + chapter heading */}
+        {selectedBookId && (
+          <div style={{ marginBottom: "0.5rem" }}>
+            <div style={{
+              fontSize: "0.65rem", letterSpacing: "0.22em",
+              textTransform: "uppercase", color: C.gold, marginBottom: "0.2rem",
+            }}>
+              {bookName}
+            </div>
+            {bookData && (
+              <div style={{ fontSize: "0.72rem", color: C.inkLight, fontStyle: "italic" }}>
+                {bookData.testament === "NT" ? "New Testament" : "Old Testament"} · {bookMeta?.group || bookData.group}
               </div>
             )}
-            {!loading && (
-              <ReadingView spans={initState.refSpans} allBookData={allBookData} />
-            )}
-          </>
+          </div>
         )}
 
-        {/* ── BROWSE MODE ── full navigator chrome */}
-        {!isReadingMode && (
-          <>
-            {/* Pericope header */}
-            {pericopeMeta && <PericopeHeader pericope={pericopeMeta} />}
+        {/* Chapter selector */}
+        {!loading && (
+          <ChapterSelector
+            totalChapters={totalChapters}
+            currentChapter={currentChapter}
+            onSelect={(ch) => { setCurrentChapter(ch); setTargetVerse(null); }}
+          />
+        )}
 
-            {/* Book selector */}
-            <BookSelector
-              manifest={manifest}
-              selectedBookId={selectedBookId}
-              onSelect={handleBookSelect}
-              open={bookSelectorOpen}
-              onToggle={() => setBookSelectorOpen(o => !o)}
-            />
+        {/* Verse goto */}
+        {bookData && (
+          <VerseGoto
+            bookData={bookData}
+            chapterNum={currentChapter}
+            onGoto={(v) => setTargetVerse(v)}
+          />
+        )}
 
-            {/* Book + chapter heading */}
-            {selectedBookId && (
-              <div style={{ marginBottom: "0.5rem" }}>
-                <div style={{
-                  fontSize: "0.65rem", letterSpacing: "0.22em",
-                  textTransform: "uppercase", color: C.gold, marginBottom: "0.2rem",
-                }}>
-                  {bookName}
-                </div>
-                {bookData && (
-                  <div style={{ fontSize: "0.72rem", color: C.inkLight, fontStyle: "italic" }}>
-                    {bookData.testament === "NT" ? "New Testament" : "Old Testament"} · {bookMeta?.group || bookData.group}
-                  </div>
-                )}
-              </div>
-            )}
+        {/* Loading state */}
+        {loading && (
+          <div style={{
+            textAlign: "center", padding: "3rem",
+            color: C.inkLight, fontStyle: "italic", fontSize: "0.9rem",
+          }}>
+            {selectedBookId ? `Loading ${bookName}…` : "Loading…"}
+          </div>
+        )}
 
-            {/* Chapter selector */}
-            {!loading && (
-              <ChapterSelector
-                totalChapters={totalChapters}
-                currentChapter={currentChapter}
-                onSelect={(ch) => { setCurrentChapter(ch); setTargetVerse(null); }}
-              />
-            )}
+        {/* Chapter content */}
+        {!loading && selectedBookId && (
+          <ChapterView
+            key={`${selectedBookId}-${currentChapter}`}
+            bookData={bookData}
+            chapterNum={currentChapter}
+            targetVerse={targetVerse}
+            pericope={activePericope}
+            totalChapters={totalChapters}
+            onChapterChange={handleChapterChange}
+          />
+        )}
 
-            {/* Verse goto */}
-            {bookData && (
-              <VerseGoto
-                bookData={bookData}
-                chapterNum={currentChapter}
-                onGoto={(v) => setTargetVerse(v)}
-              />
-            )}
-
-            {/* Loading state */}
-            {loading && (
-              <div style={{
-                textAlign: "center", padding: "3rem",
-                color: C.inkLight, fontStyle: "italic", fontSize: "0.9rem",
-              }}>
-                {selectedBookId ? `Loading ${bookName}…` : "Loading…"}
-              </div>
-            )}
-
-            {/* Chapter content */}
-            {!loading && selectedBookId && (
-              <ChapterView
-                key={`${selectedBookId}-${currentChapter}`}
-                bookData={bookData}
-                chapterNum={currentChapter}
-                targetVerse={targetVerse}
-                totalChapters={totalChapters}
-                onChapterChange={handleChapterChange}
-              />
-            )}
-
-            {/* Welcome state */}
-            {!loading && !selectedBookId && (
-              <div style={{
-                textAlign: "center", padding: "3rem 1rem",
-                color: C.inkLight, fontStyle: "italic",
-              }}>
-                <div style={{ fontSize: "0.9rem", marginBottom: "0.5rem" }}>
-                  Select a book to begin reading.
-                </div>
-                <div style={{ fontSize: "0.78rem" }}>
-                  Brenton Septuagint (OT) · KJV 2006 (NT)
-                </div>
-              </div>
-            )}
-          </>
+        {/* Welcome state */}
+        {!loading && !selectedBookId && (
+          <div style={{
+            textAlign: "center", padding: "3rem 1rem",
+            color: C.inkLight, fontStyle: "italic",
+          }}>
+            <div style={{ fontSize: "0.9rem", marginBottom: "0.5rem" }}>
+              Select a book to begin reading.
+            </div>
+            <div style={{ fontSize: "0.78rem" }}>
+              Brenton Septuagint (OT) · KJV 2006 (NT)
+            </div>
+          </div>
         )}
 
         {/* Context strip — bottom */}
