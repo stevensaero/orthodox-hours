@@ -4234,6 +4234,14 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
             fekula:{section:fekulaSection, note:"Aposticha Glory: doxasticon from Pentecostarion."}});
         }
         elements.push({id:"v-apost-bothnow", type:"fixed", label:"", text:"Now and ever, and unto the ages of ages. Amen.", source:"HTM Vespers"});
+        // Both now: aposticha_theotokion from pentEntry (e.g. Ascension troparion on P+42)
+        const pentApostTheot = pentEntry.aposticha_theotokion;
+        if (pentApostTheot) {
+          elements.push({id:"v-apost-theotokion", type:"movable", label:"Theotokion (Both now…)",
+            rubric:"Tone "+(pentApostTheot.tone||tone)+":",
+            text:pentApostTheot.text||pentApostTheot, source:"Pentecostarion",
+            fekula:{section:fekulaSection, note:"Aposticha Both now: from Pentecostarion. — Fekula §4B"}});
+        }
       } else {
         // Pentecostarion: placeholder when not yet encoded
         elements.push({id:"v-apost-stich",type:"movable",label:"Aposticha Stichera",
