@@ -1,6 +1,12 @@
-# ENCODING RULE v2.0 — Orthodox Hours Tool
+# ENCODING RULE v2.1 — Orthodox Hours Tool
 **Authority:** Fekula & Williams (2009) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** May 2026 · Supersedes:** encoding_rule_complete_capture.md (v1.1 and all prior)
+**Updated:** May 2026 · **Supersedes:** encoding_rule_v2.0, encoding_rule_complete_capture.md (v1.1 and all prior)
+
+**v2.1 changes:** Kontakion field names unified across Menaion and Pentecostarion —
+`kontakion_ode6` (3rd & 9th Hours) and `kontakion_ode3` (1st & 6th Hours) replace
+the prior asymmetric `kontakion` / `kontakion_3rd_ode` (Menaion) naming.
+`source_file` replaces `service_file` in Menaion entries. `hours_kontakion` retained
+for single-kontakion Pentecostarion entries only.
 
 ---
 
@@ -81,16 +87,30 @@ The HTM rubric governs which kontakion is chanted at each Hour when two exist:
 > Matins [at the 1st and 6th Hours]; and that chanted after the 6th Ode [at the
 > 3rd and 9th Hours]."
 
-| Case | .txt | Tool field(s) | Hour routing |
+Field names carry the ode number in both Menaion and Pentecostarion entries.
+`hours_kontakion` is used only when a single kontakion governs all four Hours
+with no ode distinction needed — exclusively for Pentecostarion entries.
+
+| Case | .txt label | Tool field(s) | Hours governed |
 |---|---|---|---|
-| Single kontakion — Menaion | `KONTAKION ode 6` / `KONTAKION_3RD_ODE: ABSENT` | `kontakion` (matins_ode:6) | all four Hours |
+| Single kontakion — Menaion | `KONTAKION_ODE6` / `KONTAKION_ODE3: ABSENT` | `kontakion_ode6` | all four Hours |
 | Single kontakion — Pentecostarion | `HOURS_KONTAKION` | `hours_kontakion` | all four Hours |
-| Two kontakia — §2B or major Sunday | `KONTAKION ode 6` + `KONTAKION_3RD_ODE ode 3` | `kontakion` + `kontakion_3rd_ode` | ode6→3rd&9th; ode3→1st&6th |
-| Pentecostarion feast + secondary | `KONTAKION (Glory)` + `HOURS_KONTAKION (Both now)` | `kontakion` + `hours_kontakion` | §4B routing |
+| Two kontakia — any (§2B, major Sunday, Pentecostarion feast+secondary) | `KONTAKION_ODE6` + `KONTAKION_ODE3` | `kontakion_ode6` + `kontakion_ode3` | ode6→3rd&9th; ode3→1st&6th |
+
+**Single-kontakion Menaion:** encode only `kontakion_ode6`. The assembler finds no
+`kontakion_ode3` and uses `kontakion_ode6` at all four Hours.
+
+**Two-kontakion Menaion or Pentecostarion:** encode both fields. The assembler routes:
+`kontakion_ode3` → 1st & 6th Hours; `kontakion_ode6` → 3rd & 9th Hours.
+
+**Single-kontakion Pentecostarion:** encode only `hours_kontakion`. This short-circuits
+all ode routing — the same kontakion appears at all four Hours without distinction.
+Use this only when there is genuinely one kontakion and no routing is needed.
+Do NOT use `hours_kontakion` when two kontakia exist — the routing will not fire.
 
 **§2G2 flag:** When a Menaion saint is §2E (Polyeleos) or §2F (Vigil) and falls during
-a Pentecostarion feast, the Menaion kontakion should appear at the 3rd & 9th Hours
-per §2G2. Flag this in the note field — the assembler does not yet implement it.
+a Pentecostarion feast, the Menaion `kontakion_ode6` should appear at the 3rd & 9th
+Hours per §2G2. Flag this in the note field — the assembler does not yet implement it.
 
 ---
 
@@ -136,11 +156,12 @@ OCA_KONTAKION_DIFFERS: [Yes / No]
 TROPARION: tone [X]
   [full text]
 
-KONTAKION: tone [X] | matins_ode: [3 / 6]
+KONTAKION_ODE6 (Ode VI — governs 3rd & 9th Hours): tone [X]
   [full text]
 
-KONTAKION_3RD_ODE: [ABSENT — single kontakion, same at all four Hours]
-  OR: tone [X] | matins_ode: 3
+KONTAKION_ODE3 (Ode III — governs 1st & 6th Hours):
+  [ABSENT — single kontakion; kontakion_ode6 used at all four Hours]
+  OR: tone [X]
   [full text]
 
 === VESPERS — LORD I HAVE CRIED ===
@@ -469,7 +490,7 @@ After the .txt skeleton is complete, these fields map to the tool data objects:
 | .txt field | Tool key | Notes |
 |---|---|---|
 | SAINT | `saint` | |
-| SOURCE FILE | `service_file` | |
+| SOURCE FILE | `source_file` | |
 | OCA PRIMARY | `oca_primary` | true/false |
 | NOTE | `note` | All divergences, version history |
 | RANK | `rank` | simple/six_stichera/doxology/polyeleos/vigil |
@@ -480,8 +501,8 @@ After the .txt skeleton is complete, these fields map to the tool data objects:
 | MAGNIFICAT_SUNG | `magnificat_sung` | |
 | MATINS_FORMAT | `matins_format` | god_is_the_lord / alleluia |
 | TROPARION | `troparion.tone` + `.text` | |
-| KONTAKION | `kontakion.tone` + `.text` + `.matins_ode` | |
-| KONTAKION_3RD_ODE | `kontakion_3rd_ode` | null if single kontakion |
+| KONTAKION_ODE6 | `kontakion_ode6.tone` + `.text` | Primary kontakion — 3rd & 9th Hours |
+| KONTAKION_ODE3 | `kontakion_ode3` | null if single kontakion — 1st & 6th Hours |
 | STICHERA_LORD_I_CALL | `stichera_lord_i_call[]` | `{tone, text}` per sticheron |
 | STICHERA_GLORY | `stichera_glory` | null if §2A |
 | LIC_THEOTOKION | `lic_theotokion` | null if Pentecostarion governs |
@@ -507,18 +528,20 @@ After the .txt skeleton is complete, these fields map to the tool data objects:
 
 ### PENTECOSTARION[offset] — same as above, plus:
 
-| .txt field | Tool key |
-|---|---|
-| HOURS_FORMAT | `hours_format` |
-| MENAION_SET_ASIDE | `menaion_set_aside` |
-| IT_IS_TRULY_MEET_SUPPRESSED | `it_is_truly_meet_suppressed` |
-| HEAVENLY_KING_OMITTED | `heavenly_king_omitted` |
-| HOURS_KONTAKION | `hours_kontakion.tone` + `.text` |
-| STICHERA_MATINS_APOSTICHA | `stichera_matins_aposticha[]` |
-| MATINS_APOSTICHA_GLORY | `stichera_matins_aposticha_glory` |
-| VESPERS_ALLELUIA_REPLACES_PROKEIMENON | `vespers_alleluia_replaces_prokeimenon` |
-| VESPERS_ALLELUIA | `vespers_alleluia` |
-| REPOSED_EPISTLE/GOSPEL | `reposed_e` / `reposed_g` |
+| .txt field | Tool key | Notes |
+|---|---|---|
+| HOURS_FORMAT | `hours_format` | |
+| MENAION_SET_ASIDE | `menaion_set_aside` | |
+| IT_IS_TRULY_MEET_SUPPRESSED | `it_is_truly_meet_suppressed` | |
+| HEAVENLY_KING_OMITTED | `heavenly_king_omitted` | |
+| HOURS_KONTAKION | `hours_kontakion.tone` + `.text` | Single-kontakion entries only |
+| KONTAKION_ODE6 | `kontakion_ode6.tone` + `.text` | Two-kontakion entries: 3rd & 9th Hours |
+| KONTAKION_ODE3 | `kontakion_ode3.tone` + `.text` | Two-kontakion entries: 1st & 6th Hours |
+| STICHERA_MATINS_APOSTICHA | `stichera_matins_aposticha[]` | |
+| MATINS_APOSTICHA_GLORY | `stichera_matins_aposticha_glory` | |
+| VESPERS_ALLELUIA_REPLACES_PROKEIMENON | `vespers_alleluia_replaces_prokeimenon` | Saturday of Reposed only |
+| VESPERS_ALLELUIA | `vespers_alleluia` | |
+| REPOSED_EPISTLE/GOSPEL | `reposed_e` / `reposed_g` | |
 
 ---
 
@@ -535,8 +558,11 @@ After the .txt skeleton is complete, these fields map to the tool data objects:
 4. **feast_e / feast_g for §2A** — always `null`, never the string `"absent"`.
    The assembler checks for null; the string bypasses that check silently.
 
-5. **Kontakion matins_ode** — always record 3 or 6. Single kontakion → ode 6,
-   all Hours. Missing matins_ode means the assembler cannot route it.
+5. **Kontakion field names carry the ode number** — `kontakion_ode6` governs 3rd & 9th
+   Hours; `kontakion_ode3` governs 1st & 6th Hours. These names apply to both Menaion
+   and Pentecostarion two-kontakion entries. `hours_kontakion` is for single-kontakion
+   Pentecostarion entries only — it short-circuits all routing. Never put two different
+   kontakia into `hours_kontakion`; the assembler will not distinguish them by Hour.
 
 6. **OCA check** — always verify oca.org before writing troparion/kontakion.
    Do not assume St. Sergius matches OCA. Record both if they differ.
@@ -567,7 +593,7 @@ every field under it has an explicit value (not blank):
 - [ ] Calendar section complete
 - [ ] Service rank — all flags present
 - [ ] OCA vs St. Sergius check documented
-- [ ] Troparion + kontakion (+ KONTAKION_3RD_ODE: ABSENT if single)
+- [ ] Troparion + kontakion_ode6 (+ KONTAKION_ODE3: ABSENT if single)
 - [ ] LIC stichera ×3 with tones
 - [ ] STICHERA_GLORY: null or text
 - [ ] LIC_THEOTOKION: null or text
@@ -587,7 +613,7 @@ prokeimenon, alleluia, matins aposticha (or NOT YET ENCODED with source ref)
 **Pentecostarion weekday afterfeast:**
 - [ ] Structural note and PDF boundary documented
 - [ ] All flags present (menaion_set_aside through heavenly_king_omitted)
-- [ ] Troparion + hours_kontakion + KONTAKION_3RD_ODE: ABSENT
+- [ ] Troparion + hours_kontakion (single) OR kontakion_ode6 + kontakion_ode3 (two kontakia) + ABSENT notes
 - [ ] LIC stichera (or ABSENT with reason for Apodosis)
 - [ ] Stichera Glory + LIC theotokion
 - [ ] Vespers prokeimenon (or Alleluia-replaces noted)
