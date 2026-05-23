@@ -759,7 +759,7 @@ const MOVABLE_NAMED_DAYS = [
     name: "Sunday of All Saints of North America",
     note: "OCA-specific observance. The second Sunday after Pentecost. Glorifies all saints who have shone forth in North America.",
     troparion: { tone: 8, text: "As the bountiful harvest of Your sowing of salvation, the lands of North America offer to You, O Lord, all the saints who have shone in them. By their prayers keep the Church and our land in abiding peace through the Theotokos, O most Merciful One." },
-    kontakion: { tone: 3, text: "Today the choir of Saints who were pleasing to God in the lands of North America now stands before us in the Church and invisibly prays to God for us. With them the angels glorify Him, and all the saints of the Church of Christ keep festival with them; and together they all pray for us to the Pre-Eternal God." },
+    kontakion_ode6: { tone: 3, text: "Today the choir of Saints who were pleasing to God in the lands of North America now stands before us in the Church and invisibly prays to God for us. With them the angels glorify Him, and all the saints of the Church of Christ keep festival with them; and together they all pray for us to the Pre-Eternal God." },
   },
 ];
 
@@ -812,10 +812,9 @@ const SAMPLE_MENAION = {
         tone: 4,
         text: "Your holy martyr Theodotus and his companions, O Lord, through their sufferings have received incorruptible crowns from You, our God. For having Your strength, they laid low their adversaries, and shattered the powerless boldness of demons. Through their intercessions, save our souls!",
       },
-      kontakion: {
+      kontakion_ode6: {
         tone: 4,
         text: "You struggled well, O Theodotus, together with your fellow athletes and passion-bearing virgins. You have received crowns of honor. Therefore, unceasingly pray to Christ God for us all.",
-        matins_ode: 6,
       },
     },
     {
@@ -828,10 +827,9 @@ const SAMPLE_MENAION = {
         tone: 1,
         text: "As reasonable lambs, you were guided by Christ, the Chief Shepherd, along the path of martyrdom. You finished your course and kept the faith; therefore, honored Kyra, Valerie, and Mary, with joyful hearts, we magnify Christ today, as we honor your holy memory!",
       },
-      kontakion: {
+      kontakion_ode6: {
         tone: 4,
         text: "Passion-bearers Kyra, Valerie and Mary, you loved the faithful promises of God; you clung to the faith of Christ, looking for eternal life and the blessedness of Paradise! You endured torture with steadfastness and bowed your necks beneath the sword. Therefore, you have been crowned by the hand of the Lord and glorious is your memory. Entreat Christ God, the Judge of the contest, on behalf of those who honor your struggles with faith!",
-        matins_ode: 6,
       },
     },
   ],
@@ -874,7 +872,6 @@ const SAMPLE_MENAION = {
     kontakion_ode6: {
       tone: 8,
       text: "O Queen of all, we cry aloud to thee the words of the archangel: It is truly meet to bless thee, the Theotokos, ever-blessed and all-immaculate, and the Mother of our God!",
-      matins_ode: 6,
     },
   },
 
@@ -911,14 +908,12 @@ const SAMPLE_MENAION = {
     kontakion_ode6: {
       tone: 3,
       text: "Illumined by the radiance of the most holy Spirit, O divinely wise one, thou didst forsake all the tumults of life; and upon reaching the desert, O venerable father, thou didst gladden God the Creator, Who is over all things. Wherefore, Christ, the great Bestower of gifts doth glorify thee, O blessed one.",
-      matins_ode: 6,
       saint: "Onuphrius the Great",
     },
     // kontakion_ode3 = Matins Ode III (Peter, first saint) → 1st & 6th Hours
     kontakion_ode3: {
       tone: 2,
       text: "Having withdrawn thyself from human companionship, out of divine desire and love for thy Lord, O Peter, thou didst dwell in caves of stone and deep ravines, receiving from Him a crown. Pray thou unceasingly, that we be saved.",
-      matins_ode: 3,
       saint: "Peter of Athos",
     },
   },
@@ -954,14 +949,12 @@ const SAMPLE_MENAION = {
     kontakion_ode6: {
       tone: 8,
       text: "Receiving the purity of virginity through the excellency of thy life, O Triphyllius, thou wast the first hierarch of Leucosia and wast revealed to be its evangelizer and instructor in the knowledge of God. Wherefore, with joy we cry out to thee: Rejoice, O adornment of hierarchs!",
-      matins_ode: 6,
       saint: "Triphyllius",
     },
     // kontakion_ode3 = Matins Ode III (Aquilina, first saint) → 1st & 6th Hours
     kontakion_ode3: {
       tone: 2,
       text: "Having utterly purified thy soul with the beauties of thy virginity and attained the heights by martyrdom, O most honored Aquilina, wounded with the love of Christ Thy Bridegroom, thou standest before Him with the angels in gladness. With them cease thou never to pray on behalf of us all.",
-      matins_ode: 3,
       saint: "Aquilina",
     },
   },
@@ -1002,7 +995,6 @@ const SAMPLE_MENAION = {
     kontakion_ode6: {
       tone: 2,
       text: "Arrayed in faith with manliness of soul, and taking in hand the word of God as a spear, thou didst conquer the enemy, O Theodore, great among the martyrs. With them unceasingly entreat Christ God on behalf of us all.",
-      matins_ode: 6,
     },
   },
 
@@ -1036,7 +1028,6 @@ const SAMPLE_MENAION = {
     kontakion_ode6: {
       tone: 6,
       text: "Thou hast manifestly poured forth upon us an abyss of the doctrines of theology from the wellsprings of the Savior, drowning heresies and saving thy flock unharmed from the threefold waves, O blessed Cyril, as a guide for all lands, revealing things divine, O venerable one.",
-      matins_ode: 6,
     },
   },
 
@@ -1058,7 +1049,6 @@ const SAMPLE_MENAION = {
     kontakion_ode6: {
       tone: 2,
       text: "Thou didst manifestly preach the Faith of Christ, and preserving it, thou didst truly cause thy faithful flock to increase. Wherefore, thou dost rejoice with the angels, O Metrophanes, entreating Christ unceasingly for us all.",
-      matins_ode: 6,
     },
   },
 
@@ -1080,7 +1070,6 @@ const SAMPLE_MENAION = {
     kontakion_ode6: {
       tone: 5,
       text: "Resplendent with virtues brighter than the sun and with thy sufferings, O blessed Dorotheus, thou didst shine forth and illumine the land, dispelling the darkness of polytheism and putrid heresy. Wherefore, we radiantly celebrate thy memory.",
-      matins_ode: 6,
     },
   },
 
@@ -1106,14 +1095,12 @@ const SAMPLE_MENAION = {
     kontakion_ode6: {
       tone: 2,
       text: "Like a shepherd didst thou preserve within thy fold the flock of thy life-bearing pasture, and wast shown to be great by the loftiness of thy works, O Hilarion the New, having undergone much suffering and sorrow in thy piety. Wherefore, thou hast made thine abode in the most joyful life in heavenly Sion. Pray for us, O venerable one!",
-      matins_ode: 6,
       saint: "Hilarion the New",
     },
     // kontakion_ode3 = Matins 3rd Ode → governs 1st & 6th Hours (Fekula §2B first saint)
     kontakion_ode3: {
       tone: 2,
       text: "Emulating the powers on high, by example thou didst live the life of the birds, O venerable one; putting transitory things far from thy mind, thou wast led to the heavenly beauties of Christ the King by thy constant desire, thou didst come even unto Him. O Bessarion, unceasingly entreat Him on behalf of us all!",
-      matins_ode: 3,
       saint: "Bessarion the Wonderworker",
     },
   },
@@ -1134,7 +1121,6 @@ const SAMPLE_MENAION = {
     kontakion_ode6: {
       tone: 2,
       text: "Adorned with the wisdom of thy divine words, O Justin, the whole Church of God doth illumine the world with the radiance of thy life. Having received a crown because of the out-pouring of thy blood, standing with the angels before Christ, pray thou unceasingly on behalf of us all.",
-      matins_ode: 6,
     },
   },
 
@@ -1152,10 +1138,9 @@ const SAMPLE_MENAION = {
         tone: 4,
         text: "The truth of things revealed thee to thy flock as a rule of faith, icon of meekness, and teacher of temperance; wherefore, thou hast attained the heights through humility and riches through poverty; O hierarch Nicephorus our father, entreat Christ God, that our souls be saved.",
       },
-      kontakion: {
+      kontakion_ode6: {
         tone: 2,
         text: "Through your inspired confession, you gained victory for the Church, holy Hierarch Nicephorus. You suffered unjust exile because of your reverence for the icon of God the Word. Righteous Father, entreat Christ our God to grant us His great mercy.",
-        matins_ode: 6,
       },
     },
     {
@@ -1168,10 +1153,9 @@ const SAMPLE_MENAION = {
         tone: 4,
         text: "Having sustained well thy life on earth with almsgiving, and frequent prayers and tears, O spiritual athlete, thou didst manfully hasten to suffering, and denounce the ungodliness of the Persians; wherefore, thou hast become a firm foundation for the Church and the boast of Christians, O ever-memorable John.",
       },
-      kontakion: {
+      kontakion_ode6: {
         tone: 4,
         text: "Plying the deep of the sea for trade, thou didst set out from the East for the North; but when God called thee, as He did Matthew the tax-collector, thou didst forsake thy trade and follow Him by the blood of martyrdom, exchanging transitory things for those which are eternal; thus receiving a crown of victory.",
-        matins_ode: 6,
       },
     },
   ],
@@ -1193,7 +1177,6 @@ const SAMPLE_MENAION = {
     kontakion_ode6: {
       tone: 4,
       text: "You attained the dignity of the martyrs of Christ through the torments that you courageously endured, O Lucillian. Together with Paula and the four martyred children, you sing to the Creator: 'Like sheep we are slaughtered for love of You, O Savior.'",
-      matins_ode: 6,
     },
   },
 
@@ -1249,7 +1232,6 @@ const SAMPLE_MENAION = {
             "inherited the heavens, as one who explained the veneration of icons to the ends " +
             "of the earth; for subjected all the more to labors and pangs, thou didst not " +
             "cease to boldly denounce those who cast aside the icons of Christ.",
-      matins_ode: 6,
       saint: "Methodius",
     },
     // kontakion_ode3 = Matins Ode III (Elisha, first saint) → 1st & 6th Hours
@@ -1258,7 +1240,6 @@ const SAMPLE_MENAION = {
       text: "Thou wast shown to be a prophet of God, receiving a twofold measure of grace, " +
             "which truly befitted thee, O blessed Elisha; for thou wast the companion of " +
             "Elijah, and with him dost unceasingly entreat Christ God on behalf of us all.",
-      matins_ode: 3,
       saint: "Elisha",
     },
   },
@@ -1287,14 +1268,13 @@ const SAMPLE_MENAION = {
               "Righteous Tikhon, entreat Christ our God to grant us His great mercy.",
         source: "OCA — oca.org/saints/troparia/2024/06/16",
       },
-      kontakion: {
+      kontakion_ode6: {
         tone: 3,
         text: "Through your ascetic labors, you shone forth, O beloved of God, " +
               "and received from on high the power of the Comforter " +
               "to destroy the idols of delusion, and to save people, " +
               "to cast out demons and to heal the sick. " +
               "Therefore, venerable Tikhon, we honor you as a friend of God.",
-        matins_ode: 6,
         source: "OCA — oca.org/saints/troparia/2024/06/16",
       },
     },
@@ -1332,14 +1312,13 @@ const SAMPLE_MENAION = {
               "to the shrine of thy relics, we say with compunction: O venerable father, entreat " +
               "Christ God, that our souls be saved.",
       },
-      kontakion: {
+      kontakion_ode6: {
         tone: 8,
         text: "Forsaking thy homeland, O venerable one, thou didst make thine abode in the " +
               "wilderness, where thou didst show thy manner of life to be strict; and amazing " +
               "many by thy virtues, thou didst receive from Christ the gift of miracles. " +
               "Wherefore, remember us who honor thy memory, that we may cry out to thee: " +
               "Rejoice, O venerable Tikhon our father!",
-        matins_ode: 6,
         source: "St. Sergius 06-16A.pdf",
       },
     },
@@ -1383,7 +1362,6 @@ const SAMPLE_MENAION = {
             "drained the cup thereof, ye cast the worship and audacity of the Persians " +
             "down to the ground, making supplications on behalf of us all, O ye who are " +
             "equal in number to the Trinity.",
-      matins_ode: 6,
     },
   },
 
@@ -1425,7 +1403,6 @@ const SAMPLE_MENAION = {
             "religion of the Greeks, and didst shine forth the knowledge of God upon all " +
             "mankind in thy doctrines of piety, O divinely wise martyr. Wherefore, with " +
             "love we honor thy memory, O most wise Leontius.",
-      matins_ode: 6,
     },
   },
 
@@ -1469,7 +1446,6 @@ const SAMPLE_MENAION = {
             "telling them to believe in one Godhead. You were glorified by Him, receiving " +
             "the grace of healing, healing the ills of all who came to you, O most " +
             "praised Apostle Jude!",
-      matins_ode: 6,
     },
   },
 
@@ -1492,10 +1468,9 @@ const SAMPLE_MENAION = {
         text: "We celebrate the memory of Thy prophet Amos, O Lord, and through him we beseech Thee: save our souls.",
         source: "OCA (generic prophet troparion — not printed in St. Sergius PDF)",
       },
-      kontakion: {
+      kontakion_ode6: {
         tone: 4,
         text: "Enlightened by the Spirit, O blessed one, thou wast made radiant with divine utterances, proclaiming the word of righteousness unto all; wherefore we honor thee, O glorious Amos.",
-        matins_ode: 6,
       },
     },
     {
@@ -1529,12 +1504,11 @@ const SAMPLE_MENAION = {
               "so, O most wondrous Jerome, entreat Christ God that He grant us great mercy.",
         source: "St. Sergius 06-15A.pdf",
       },
-      kontakion: {
+      kontakion_ode6: {
         tone: 8,
         text: "With hymns let us praise the right praiseworthy Jerome, the most venerable among the " +
               "venerable and most blessed among the blessed, the instructor and helper of the faithful, " +
               "crying out to him with love: Rejoice, O divinely wise father!",
-        matins_ode: 6,
         source: "St. Sergius 06-15A.pdf",
       },
     },
@@ -1575,7 +1549,7 @@ const SAMPLE_MENAION = {
               "Christ God, that He save our souls.",
         source: "St. Sergius 06-15B.pdf",
       },
-      kontakion: {
+      kontakion_ode6: {
         tone: 8,
         text: "O wise one from childhood thou didst give thyself over wholly to the Lord, laying waste " +
               "to thy body through fasting and the keeping of vigils; wherefore, thou wast revealed to " +
@@ -1584,7 +1558,6 @@ const SAMPLE_MENAION = {
               "Lord Whom thou didst love. We therefore beseech thee: Be thou mindful of us who honor " +
               "thy holy memory with faith, that we may all cry aloud unto thee: Rejoice, O father Jonah, " +
               "most honored and holy hierarch!",
-        matins_ode: 6,
         source: "St. Sergius 06-15B.pdf",
       },
     },
@@ -1598,13 +1571,14 @@ const SAMPLE_MENAION = {
   // The General Menaion provides fallback troparia for saints without compiled services.
   "06-10": {
     saint: "Holy Hieromartyr Timothy, Bishop of Prussia",
+    source_file: "06-10.pdf",
     rank: "simple",
     note: "Bishop of Prussia martyred for the faith. Also: St John of Tobolsk (separate service). " +
           "§2A confirmed — 3 stichera on Lord I Call; PDF has no AT LITURGY section (readings from Oktoechos). " +
           "Troparion absent from Vespers rubric in PDF — sourced from General Menaion (Hieromartyr). " +
           "Kontakion sourced from General Menaion.",
-    feast_e: "absent — §2A, readings from Oktoechos",
-    feast_g: "absent — §2A, readings from Oktoechos",
+    feast_e: null,
+    feast_g: null,
     // Vespers stichera — sourced from 06-10.pdf, AT VESPERS section. Tone 4.
     // Three stichera on Lord I Call (§2A). Glory and Both now from PDF (Menaion-supplied).
     stichera_lord_i_call_count: 6,
@@ -1627,7 +1601,6 @@ const SAMPLE_MENAION = {
     kontakion_ode6: {
       tone: 4,
       text: "As one who lived piously among hierarchs and who underwent martyrdom, thou, O divinely-wise one, hast extinguished the sacrifices of idolatry and shown thyself to be a protector of thy flock. Wherefore, in honor we fervently cry out unto thee: Do thou, through thine intercessions, ever deliver us from all misfortunes, O Timothy, our Father.",
-      matins_ode: 6,
     },
   },
   "05-16": {
@@ -1686,7 +1659,6 @@ const SAMPLE_MENAION = {
       text: "Having struggled well as a spiritual athlete, O Theodotus, with the spiritual athletes " +
             "and the passion-bearing virgins thou hast received crowns of honor. " +
             "Wherefore, unceasingly entreat Christ God on behalf of us all.",
-      matins_ode: 6,
     },
   },
 
@@ -1723,7 +1695,6 @@ const SAMPLE_MENAION = {
       text: "As one resplendent in the beauty of the priesthood and supremely adorned with the blood " +
             "of martyrdom, standing before Christ with those who suffered with thee, O Patrick, " +
             "be thou mindful of us, in that thou art an honored passion-bearer.",
-      matins_ode: 6,
     },
   },
 
@@ -1753,7 +1724,6 @@ const SAMPLE_MENAION = {
       text: "Revealed as a fellow contestant with the Martyrs, you were an excellent soldier " +
             "of the King of Glory. Through your trials and torments you humbled the arrogance " +
             "of the idolators. Therefore, we praise your august memory, O wise Thallelaios.",
-      matins_ode: 6,
     },
   },
 
@@ -1798,7 +1768,6 @@ const SAMPLE_MENAION = {
       text: "Today Constantine and his mother Helena have revealed the Cross, the most precious Tree, " +
             "which putteth to shame all the Jews and is the weapon of faithful kings against the adversary. " +
             "For our sake the great standard hath appeared, terrible in battle.",
-      matins_ode: 6,
     },
 
     // ── AT VESPERS: LORD I HAVE CRIED ──────────────────────────────────────
@@ -1963,7 +1932,6 @@ const SAMPLE_MENAION = {
             "You openly bore the name of Christ, putting the tyrant to shame! " +
             "Therefore we honor you, most honored Basiliscus, " +
             "ever crying: \"Rejoice, splendid adornment of the martyrs!\"",
-      matins_ode: 6,
     },
     // ── VESPERS — LORD I HAVE CRIED ──────────────────────────────────────────
     // Source: 05-22.pdf. 3 stichera, Tone IV. Spec. Mel.: "As one valiant among the martyrs"
@@ -2044,7 +2012,6 @@ const SAMPLE_MENAION = {
             "you conquered his heretical opposition, freely proclaiming in a loud voice: " +
             "\"I venerate the icon of Christ and of His all-pure Mother!\" " +
             "Therefore, we honor you, O Michael!",
-      matins_ode: 6,
     },
     // ── VESPERS — LORD I HAVE CRIED ───────────────────────────────────────────
     // Source: 05-23.pdf. 3 Menaion stichera Tone VIII. Spec. Mel.: "O most glorious wonder"
@@ -2139,7 +2106,6 @@ const SAMPLE_MENAION = {
             "You built a pillar on which you lived as if in heaven, " +
             "shining with the splendor of miracles, venerable Simeon, " +
             "and unceasingly praying for us all to Christ, the God of all.",
-      matins_ode: 6,
     },
     // ── VESPERS — LORD I HAVE CRIED ───────────────────────────────────────────
     // Source: 05-24.pdf. 6 stichera Tone VIII. Spec. Mel.: "O most glorious wonder"
@@ -2295,7 +2261,6 @@ const SAMPLE_MENAION = {
             "But we behold it and cry out for joy, " +
             "and say to you, O forerunner: " +
             "Pray to the Lord that He may grant mercy to us all!",
-      matins_ode: 6,
     },
     // ── VESPERS — LORD I HAVE CRIED ────────────────────────────────────────────
     // Source: 05-25.pdf. 5 Menaion stichera Tone VIII. Spec. Mel.: "O most glorious wonder"
@@ -2436,7 +2401,6 @@ const SAMPLE_MENAION = {
             "the Church hath ever acquired thee, O Apostle Carpus, " +
             "as a most radiant star. " +
             "Save those who with faith honor thy memory.",
-      matins_ode: 6,
     },
     stichera_lord_i_call: [
       { tone: 1, text: "Making thy mind divine with pleasing effulgence, " +
@@ -2498,10 +2462,9 @@ const SAMPLE_MENAION = {
               "even to the shedding of your blood. " +
               "Hieromartyr Therapon, entreat Christ God to save our souls.",
       },
-      kontakion: {
+      kontakion_ode6: {
         tone: null,
         text: "absent — not found in OCA or St. Sergius for this date; flagged for future resolution.",
-        matins_ode: 6,
       },
       // ── VESPERS — LORD I HAVE CRIED ──────────────────────────────────────────
       // Source: 05-27.pdf. 3 stichera Tone VIII. Spec. Mel.: "Thy martyrs, O Lord"
@@ -2569,12 +2532,11 @@ const SAMPLE_MENAION = {
               "where you also won Christ as your friend. " +
               "Therefore, entreat Him that our souls may be saved.",
       },
-      kontakion: {
+      kontakion_ode6: {
         tone: 4,
         text: "O Righteous Father John, " +
               "the holy memory of your illustrious contests has come today, " +
               "gladdening the souls of those who honor you with reverence and faith.",
-        matins_ode: 3,
       },
     },
   ],
@@ -2621,7 +2583,6 @@ const SAMPLE_MENAION = {
             "You became an heir to the throne of the apostles. " +
             "Completely filled, O Father, with the teachings of God, you shone like the sun upon your flock. " +
             "Therefore we cry out to you: \"Rejoice, beauty of Chalcedon.\"",
-      matins_ode: 6,
     },
     // ── VESPERS — LORD I HAVE CRIED ────────────────────────────────────────────
     // Source: 05-28.pdf. 3 stichera Tone IV. Spec. Mel.: "As one valiant among the martyrs"
@@ -2696,7 +2657,6 @@ const SAMPLE_MENAION = {
       text: "As a pure virgin and prize-winner, " +
             "you were spiritually betrothed to the King of Heaven, " +
             "O all-praised Theodosia, entreat Him for the salvation of our souls.",
-      matins_ode: 6,
     },
     // ── VESPERS — LORD I HAVE CRIED ────────────────────────────────────────────
     // Source: 05-29.pdf. 3 stichera Tone VIII. Spec. Mel.: "O most glorious wonder"
@@ -2773,7 +2733,6 @@ const SAMPLE_MENAION = {
             "and drew in the reins of the emperor Valens, O venerable one; " +
             "you prophetically foretold to him the captivity of the Church and of his own wretched death. " +
             "Therefore, venerable Isaac, ceaselessly pray for us who honor you.",
-      matins_ode: 6,
     },
     // ── VESPERS — LORD I HAVE CRIED ────────────────────────────────────────────
     // Source: 05-30.pdf. 3 stichera Tone I. Spec. Mel.: "Joy of the ranks of heaven"
@@ -2836,7 +2795,6 @@ const SAMPLE_MENAION = {
             "extinguishing the allure of false gods, " +
             "you enlighten the faithful, " +
             "always interceding for us all.",
-      matins_ode: 6,
     },
   },
 
@@ -2868,7 +2826,6 @@ const SAMPLE_MENAION = {
             "Orthodox, O Methodius thou didst denounce the thoughts of the heretics for the " +
             "sake of Orthodoxy, shown by thy blood to be a hieromartyr. Standing before " +
             "Christ with the angels, entreat Him that we be saved.",
-      matins_ode: 6,
     },
   },
 
@@ -2910,7 +2867,6 @@ const SAMPLE_MENAION = {
       text: "As is meet, let us all praise Julian today, the invincible warrior of piety, " +
             "the true counselor and soldier of the Truth, and let us cry aloud unto him: " +
             "Entreat Christ God on behalf of us all!",
-      matins_ode: 6,
     },
   },
 
@@ -2942,7 +2898,6 @@ const SAMPLE_MENAION = {
             "martyrdom, thou didst extinguish the burnt offerings of the idolaters, O holy " +
             "hierarch Eusebius. But as thou hast boldness before Christ God, entreat Him, " +
             "that our souls be saved.",
-      matins_ode: 6,
     },
   },
 
@@ -2971,12 +2926,11 @@ const SAMPLE_MENAION = {
               "Thee; I die for Thee, that I may live with Thee. Accept me, who with love " +
               "sacrifice myself for Thee, as an unblemished offering! By her supplications, " +
               "in that Thou art merciful, save Thou our souls.",      },
-      kontakion: {
+      kontakion_ode6: {
         tone: 4,
         text: "The radiant day of thy splendid struggles hath dawned, whereon the divine " +
               "Church, honoring them, doth call all together with gladness to cry out to thee: " +
               "Rejoice, O virgin and martyr, most honored Agrippina!",
-        matins_ode: 6,
       },
     },
     {
@@ -3023,13 +2977,12 @@ const SAMPLE_MENAION = {
               "all the assaults of the enemy, and save thou our souls, in that thou art " +
               "compassionate.",
       },
-      kontakion: {
+      kontakion_ode6: {
         tone: 8,
         text: "To thee the champion leader, we thy flock chant hymns of victory, as ones " +
               "rescued out of sufferings O Lady Theotokos, wherefore on the feast of thy " +
               "meeting we radiantly celebrate the arrival of thy precious image, and cry to " +
               "thee: Rejoice thou bride unwedded.",
-        matins_ode: 6,
       },
     },
   ],
@@ -3085,7 +3038,6 @@ const SAMPLE_MENAION = {
             "he is the fulfillment of all prophecy; for, laying his hand in the Jordan upon " +
             "Him Whom the prophets foretold, he hath been shown to be the prophet, herald " +
             "and forerunner of the Word of God.",
-      matins_ode: 6,
     },
   },
 
@@ -3144,7 +3096,6 @@ const SAMPLE_MENAION = {
             "he is the fulfillment of all prophecy; for, laying his hand in the Jordan upon " +
             "Him Whom the prophets foretold, he hath been shown to be the prophet, herald " +
             "and forerunner of the Word of God.",
-      matins_ode: 6,
       saint: "Forerunner (feast kontakion — governs all Hours per §2G1)",
     },
   },
@@ -3180,7 +3131,6 @@ const SAMPLE_MENAION = {
             "Tree of life, in thy heart all the more, and cultivating it like a garden, O " +
             "divinely wise one, thou hast thereby nurtured us with grace. Pray thou ever on " +
             "our behalf, O all-blessed David.",
-      matins_ode: 6,
     },
   },
 
@@ -3219,7 +3169,6 @@ const SAMPLE_MENAION = {
             "hastening to thy divine shrine, as to that of an excellent physician and a right " +
             "acceptable intercessor, we glorify Christ Who hath bestowed upon thee such grace " +
             "of healing.",
-      matins_ode: 6,
     },
   },
 
@@ -3262,7 +3211,6 @@ const SAMPLE_MENAION = {
       text: "Receiving the gift of miracles from divine grace, O saints, ye work wonders " +
             "unceasingly, cutting down all our passions with invisible skill, O divinely " +
             "wise Cyrus and glorious John; for ye are divine physicians.",
-      matins_ode: 6,
     },
   },
   // ── June 29 — Holy Apostles Peter & Paul (Great Feast) ──────────────────────
@@ -3314,7 +3262,6 @@ const SAMPLE_MENAION = {
             "O Lord, hast Thou received into the rest and delight of Thy good things; " +
             "for Thou hast accepted their pangs and death as greater than any wholeburnt " +
             "offering, O Thou Who alone knowest the hearts of all mankind.",
-      matins_ode: 6,
     },
   },
 
@@ -3358,7 +3305,6 @@ const SAMPLE_MENAION = {
             "the most excellent of His disciples, as He doth Paul and the assembly " +
             "of the twelve today; and, faithfully celebrating their memory, " +
             "we glorify Him Who glorified them.",
-      matins_ode: 6,
     },
   },
 
@@ -3391,7 +3337,6 @@ const SAMPLE_MENAION = {
       text: "Having received the grace of healings, ye extend health to those in need, " +
             "O most glorious physicians and wonder-workers. By your visitation cast down " +
             "the audacity of the enemy, healing the world with miracles.",
-      matins_ode: 6,
     },
   },
 
@@ -3434,7 +3379,6 @@ const SAMPLE_MENAION = {
       text: "Thy heart hath gone out to all who entreat thee with love, O holy hierarch John, " +
             "and who remember the struggle of thy whole industrious life, and thy painless and " +
             "easy repose, O faithful servant of the most pure Directress.",
-      matins_ode: 6,
     },
   },
 
@@ -3463,7 +3407,6 @@ const SAMPLE_MENAION = {
       tone: 2,
       text: "Come, you faithful, plait a crown of unfading hyacinths today for the Martyr Hyacinth, " +
             "and let us cry to Him: Rejoice, glory of martyrs.",
-      matins_ode: 6,
     },
   },
 
@@ -3509,7 +3452,6 @@ const SAMPLE_MENAION = {
       text: "The Church doth celebrate thee as a most excellent initiate of the mysteries of the life of " +
             "virtue and piety, O God-bearing teacher of Orthodoxy; for receiving gifts from heaven, " +
             "with thy divine writings thou dost illumine those who cry to thee: Rejoice, O father Nicodemus!",
-      matins_ode: 6,
     },
   },
 
@@ -3544,7 +3486,6 @@ const SAMPLE_MENAION = {
             "who today hast been translated to the life which waxeth not old, the heir of the apostles, " +
             "fellow initiate of the mysteries with the God-bearing fathers, expounder of the dogmas of " +
             "Orthodoxy, denouncer of false doctrines, the universal teacher of the Truth.",
-      matins_ode: 6,
     },
   },
 
@@ -5493,6 +5434,8 @@ const PENTECOSTARION = {
     ],
 
     it_is_truly_meet_suppressed: true,
+    matins_format: "god_is_the_lord",
+    heavenly_king_omitted: true,  // Paschal period — omitted from Ascension through Pentecost eve
     menaion_set_aside: true,  // Great Feast of the Lord — Menaion saint entirely set aside
     beatitudes_source: "Festal Antiphons (3 antiphons with Ps. 46, 47, 48 — not Beatitudes)",
     note: "Great Feast. Full Vigil structure with Polyeleos. " +
@@ -5913,6 +5856,7 @@ const PENTECOSTARION = {
     beatitudes_source: "6 verses from Ode I of Ascension Canon 1 including Irmos",
 
     it_is_truly_meet_suppressed: true,
+    heavenly_king_omitted: true,
     menaion_set_aside: false,
     note: "Vespers opens P+40 week (Thursday evening). Great Prokeimenon Tone VII. " +
           "Ascension troparion replaces Resurrection troparion throughout. " +
@@ -5943,6 +5887,7 @@ const PENTECOSTARION = {
     magnificat_sung: true,
     matins_format: "god_is_the_lord",
     it_is_truly_meet_suppressed: true,
+    heavenly_king_omitted: true,
 
     troparion: {
       tone: 4,
@@ -6117,6 +6062,7 @@ const PENTECOSTARION = {
     magnificat_sung: true,     // Magnificat sung at Ode IX per PDF rubric
     matins_format: "god_is_the_lord",
     it_is_truly_meet_suppressed: true,
+    heavenly_king_omitted: true,
 
     troparion: {
       tone: 6,
@@ -6388,6 +6334,7 @@ const PENTECOSTARION = {
     magnificat_sung: true,
     matins_format: "god_is_the_lord",
     it_is_truly_meet_suppressed: true,
+    heavenly_king_omitted: true,
 
     troparion: {
       tone: 4,
@@ -6551,6 +6498,7 @@ const PENTECOSTARION = {
     magnificat_sung: true,
     matins_format: "god_is_the_lord",
     it_is_truly_meet_suppressed: true,
+    heavenly_king_omitted: true,
 
     troparion: {
       tone: 4,
@@ -6706,6 +6654,7 @@ const PENTECOSTARION = {
     magnificat_sung: true,
     matins_format: "god_is_the_lord",
     it_is_truly_meet_suppressed: true,
+    heavenly_king_omitted: true,
 
     troparion: {
       tone: 4,
@@ -6845,6 +6794,7 @@ const PENTECOSTARION = {
     magnificat_sung: true,
     matins_format: "god_is_the_lord",
     it_is_truly_meet_suppressed: true,
+    heavenly_king_omitted: true,
 
     troparion: {
       tone: 4,
@@ -7027,6 +6977,7 @@ const PENTECOSTARION = {
     magnificat_sung: true,
     matins_format: "god_is_the_lord",
     it_is_truly_meet_suppressed: true,
+    heavenly_king_omitted: true,
 
     troparion: {
       tone: 4,
