@@ -1615,6 +1615,7 @@ const PENTECOSTARION_DATA = {
 
     magnificat_sung: false,    // Ode IX uses Paschal Megalynarion refrains
     has_great_doxology: true,  // CHANTED — feast-level Matins
+    matins_format: "god_is_the_lord",
 
     ode9_refrain: "Magnify, O my soul, Him Who willingly suffered, " +
                   "and was buried, and arose from the grave on the third day.",
@@ -3716,6 +3717,7 @@ const PENTECOSTARION_DATA = {
     menaion_set_aside: true,
     heavenly_king_restored: true,
     has_great_doxology: true,
+    matins_format: "god_is_the_lord",
     has_polyeleos: true,
     has_litya: true,
   },
@@ -3761,6 +3763,7 @@ const PENTECOSTARION_DATA = {
       "and every mind is confounded in seeking to comprehend thy childbirth. " +
       "Wherefore, with one accord thee do we glorify.",
     magnificat_sung: false,
+    matins_format: "god_is_the_lord",
     menaion_set_aside: false,
     has_great_doxology: true,
   },
@@ -3807,6 +3810,9 @@ const PENTECOSTARION_DATA = {
       "and every mind is confounded in seeking to comprehend thy childbirth. " +
       "Wherefore, with one accord thee do we glorify.",
     magnificat_sung: true,
+    matins_format: "god_is_the_lord",
+    menaion_set_aside: false,
+    has_great_doxology: false,
   },
 
   // ── P+52 — Wednesday of the Eighth Week — Pentecost Afterfeast Day 3 ────────
@@ -3850,7 +3856,9 @@ const PENTECOSTARION_DATA = {
       "for every eloquent and capable mouth is unable to extol thee worthily, " +
       "and every mind is confounded in seeking to comprehend thy childbirth. " +
       "Wherefore, with one accord thee do we glorify.",
-    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    menaion_set_aside: false,
+    has_great_doxology: false,
   },
 
   // ── P+53 — Thursday of the Eighth Week — Pentecost Afterfeast, Day 4 ────────
@@ -3893,7 +3901,9 @@ const PENTECOSTARION_DATA = {
       "for every eloquent and capable mouth is unable to extol thee worthily, " +
       "and every mind is confounded in seeking to comprehend thy childbirth. " +
       "Wherefore, with one accord thee do we glorify.",
-    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    menaion_set_aside: false,
+    has_great_doxology: false,
   },
 
   // ── P+54 — Friday of the Eighth Week — Pentecost Afterfeast, Day 5 ──────────
@@ -3937,7 +3947,9 @@ const PENTECOSTARION_DATA = {
       "for every eloquent and capable mouth is unable to extol thee worthily, " +
       "and every mind is confounded in seeking to comprehend thy childbirth. " +
       "Wherefore, with one accord thee do we glorify.",
-    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    menaion_set_aside: false,
+    has_great_doxology: false,
   },
 
   // ── P+55 — Saturday of the Eighth Week — Apodosis of Pentecost ──────────────
@@ -3984,7 +3996,9 @@ const PENTECOSTARION_DATA = {
       "and every mind is confounded in seeking to comprehend thy childbirth. " +
       "Wherefore, with one accord thee do we glorify.",
     magnificat_sung: false,
+    matins_format: "god_is_the_lord",
     menaion_set_aside: true,
+    has_great_doxology: false,
   },
 
   // ── P+56 — First Sunday After Pentecost — All Saints ────────────────────────
@@ -4059,6 +4073,7 @@ const PENTECOSTARION_DATA = {
     paroemia_3: "Wisdom of Solomon 5:15ff",
 
     magnificat_sung: true,
+    matins_format: "god_is_the_lord",
     has_great_doxology: true,
     has_litya: true,
     matins_gospel: 1,
