@@ -2565,6 +2565,7 @@ const PENTECOSTARION_DATA = {
     },
     // troparion_3 (Both now): Ascension Tone IV — see hours_kontakion.source
     troparion_3: {
+    vespers_kontakion: false,  // §4B13: dismissal = 3 troparia only; kontakion not sung at Vespers
       tone: 4,
       text: "Thou hast ascended in glory, O Christ our God, " +
             "having gladdened Thy disciples with the promise of the Holy Spirit; " +
@@ -4239,6 +4240,7 @@ const PENTECOSTARION_DATA = {
 
     // Under Glory: All Saints troparion Tone 4
     troparion_2: {
+    vespers_kontakion: false,  // §4B17: dismissal = Sunday + All Saints troparia; kontakion not at Vespers
       tone: 4,
       text: "Adorned in the blood of Thy martyrs " +
             "throughout all the world as in purple and fine linen, " +

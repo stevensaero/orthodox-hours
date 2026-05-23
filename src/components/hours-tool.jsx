@@ -4373,6 +4373,11 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       source: secSrc,
       fekula:{section:fekulaSection, note:"Second troparion (after Glory…). — Fekula §4A"}});
   }
+  // vespers_kontakion: false means the entry explicitly suppresses the kontakion
+  // at the Vespers dismissal (e.g. P+42 §4B13, P+56 §4B17 — three troparia only).
+  // When true/absent, the kontakion appears unless a thirdTrop fills Both now.
+  const vespersKontakionSuppressed = isPentecostarion && pentEntry && pentEntry.vespers_kontakion === false;
+
   if (thirdTrop) {
     // Both now… filled by a troparion (e.g. P+42 Ascension, P+56 dogmatic)
     const thirdToneLabel = thirdTropTone ? " · Tone " + thirdTropTone : "";
@@ -4381,7 +4386,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       text:"Now and ever, and unto the ages of ages. Amen.\n\n" + thirdTrop,
       source: thirdSrc,
       fekula:{section:fekulaSection, note:"Both now… filled by appointed troparion (not kontakion). — Fekula §4B13"}});
-  } else if (kont) {
+  } else if (kont && !vespersKontakionSuppressed) {
     const kontToneLabel = kontTone ? " · Tone " + kontTone : "";
     elements.push({id:"v-kont",type:"movable",label:"Kontakion (Both now…)" + kontToneLabel,
       rubric:"",
