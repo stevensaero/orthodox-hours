@@ -13,7 +13,7 @@ const MAY_MENAION = {
     // Rank: §2A confirmed — OCA calendar lists Simple rank; no AT LITURGY section expected.
     // Note: May 16 O.S. = May 29 N.S. OCA commemorates May 16 N.S. — DIVERGENCE; OCA governs.
     saint: "St. Theodore the Sanctified, Disciple of St. Pachomius the Great",
-    source_file: null,  // NOT IN DRIVE — General Menaion fallback
+    source_file: "05-16.pdf",
     oca_primary: true,
     rank: "simple",
     fekula_section: "2A",
@@ -23,42 +23,64 @@ const MAY_MENAION = {
     has_paroemias: false,
     magnificat_sung: false,
     matins_format: "alleluia",
-    note: "No St. Sergius PDF available. General Menaion fallback for venerable father. " +
-          "May 16 O.S. = May 29 N.S. OCA commemorates May 16 N.S. — DIVERGENCE; OCA date governs. " +
-          "Abbot of a large monastic community in Egypt under St. Pachomius; d. 368.",
+    note: "Source: 05-16.pdf. May 16 O.S. = May 29 N.S. — DIVERGENCE; OCA date governs. " +
+          "§2A confirmed — 3 Menaion stichera (+ 3 from Pentecostarion = 6 total per §4A Pentecostarion pattern). " +
+          "Troparion Tone I from PDF (proper text); replaces OCA Tone VIII generic used in prior encoding. " +
+          "No AT LITURGY section — readings from Octoechos. " +
+          "Disciple of St. Pachomius; abbot of Tabennisi monastery in Egypt; d. 368.",
     feast_e: null,  // §2A — readings from Octoechos
     feast_g: null,
-    // ── LORD I HAVE CRIED — General Menaion for Venerable Father, Tone VIII ──
+    // ── LORD I HAVE CRIED — from 05-16.pdf ──────────────────────────────────
+    // 3 Menaion stichera Tone VI (Spec. Mel.: "Having set all aside")
+    // + 3 from Pentecostarion = 6 total per §4A Pentecostarion pattern
+    // Glory/Both now: Doxasticon from Pentecostarion (per PDF rubric)
     aposticha_source: "octoechos",
     stichera_lord_i_call: [
-      { tone: 8, text: "In thee, O father, was preserved with exactness the divine image, " +
-                       "for thou didst take up the cross and follow Christ. " +
-                       "In deed thou didst learn to ignore the body, preferring the soul, " +
-                       "a thing of value. Wherefore thy spirit rejoiceth with the angels, " +
-                       "O holy Theodore.",
-        note: "General Menaion — Venerable Father" },
-      { tone: 8, text: "In thee, O father, was preserved with exactness the divine image, " +
-                       "for thou didst take up the cross and follow Christ. " +
-                       "In deed thou didst learn to ignore the body, preferring the soul, " +
-                       "a thing of value. Wherefore thy spirit rejoiceth with the angels, " +
-                       "O holy Theodore.",
-        note: "General Menaion — Venerable Father (repeat)" },
-      { tone: 8, text: "Thou didst love Christ our God with all thy soul, O father, " +
-                       "and following His footsteps with eagerness, " +
-                       "thou didst quench the fire of the passions with the streams of thy tears. " +
-                       "Wherefore, thou hast been received into the eternal tabernacles " +
-                       "where all who love God dwell, O holy Theodore.",
-        note: "General Menaion — Venerable Father" },
+      { tone: 6, spec_mel: "Having set all aside",
+        text: "The Master Who of old appointed " +
+              "the ascent of the clouds, " +
+              "later, having come down into Egypt on the light cloud, " +
+              "foretold that His chosen ones would shine forth, " +
+              "caught up on the clouds, in that they are divinely wise. " +
+              "And with them our father Theodore the sanctified, " +
+              "the unshakable pillar, steadfast in virtue, " +
+              "shining with the most radiant effulgence of Christ, " +
+              "doth pray with boldness on behalf of our souls." },
+      { tone: 6, spec_mel: "Having set all aside",
+        text: "Egypt, which before was driven insane " +
+              "by demonic sacrifices and passions, " +
+              "is now adorned with ranks of fasters " +
+              "and revealed to be adorned with divers beauties and divine virtues. " +
+              "Among them hath shone forth the namesake of divine gifts, " +
+              "the venerable Theodore, " +
+              "who beheld and pleased God, " +
+              "and who, emulating Christ in wondrous humility, " +
+              "prayeth with boldness on behalf of our souls." },
+      { tone: 6, spec_mel: "Having set all aside",
+        text: "From his youth, the wise Theodore, " +
+              "the great faster, the divinely wise one, " +
+              "showed forth asceticism, abstinence, " +
+              "humility, patience, the avoidance of evil " +
+              "and the acquisition of the virtues, " +
+              "in that he is a lover of divine love, " +
+              "and the wondrous one, rejoicing, hath transcended all things visible, " +
+              "being exalted by his manner of life; " +
+              "and, conversing with God, " +
+              "he now prayeth with boldness on behalf of our souls." },
     ],
     stichera_lord_i_call_count: 3,
-    stichera_glory: null,  // §2A — Glory and Both now from Pentecostarion/Octoechos
+    stichera_glory: null,  // Glory/Both now from Pentecostarion (per PDF rubric)
     lic_theotokion: null,
     troparion: {
-      tone: 8,
-      text: "By a flood of tears thou didst make the desert fertile, " +
-            "and thy longing for God brought forth fruits in abundance. " +
-            "By the radiance of miracles thou didst enlighten the whole universe! " +
-            "O our holy father Theodore, pray to Christ our God to save our souls!",
+      tone: 1,
+      text: "A desert dweller, an angel in the flesh and a wonder-worker " +
+            "wast thou revealed to be, O our God-bearing father Theodore. " +
+            "Receiving heavenly gifts through fasting, vigils and prayers, " +
+            "thou healest the infirm and the souls of those who with faith have recourse unto thee. " +
+            "Glory to Him Who hath given thee strength! " +
+            "Glory to Him Who hath crowned thee! " +
+            "Glory to Him Who through thee worketh healings for all!",
+      note: "From 05-16.pdf AT LITURGY — proper Tone I text",
     },
     kontakion_ode6: {
       tone: 2,
@@ -78,7 +100,7 @@ const MAY_MENAION = {
     // Note: May 17 O.S. = May 30 N.S. OCA commemorates May 17 N.S. — DIVERGENCE; OCA governs.
     // Rank: §2A confirmed — OCA calendar lists Simple rank.
     saint: "Holy Apostles Andronicus and Junia of the Seventy",
-    source_file: null,  // NOT IN DRIVE — General Menaion fallback
+    source_file: "05-17.pdf",
     oca_primary: true,
     rank: "simple",
     fekula_section: "2A",
@@ -88,40 +110,45 @@ const MAY_MENAION = {
     has_paroemias: false,
     magnificat_sung: false,
     matins_format: "alleluia",
-    note: "No St. Sergius PDF available. General Menaion fallback for holy apostles. " +
-          "May 17 O.S. = May 30 N.S. OCA commemorates May 17 N.S. — DIVERGENCE; OCA date governs. " +
-          "Andronicus: kinsman of St. Paul (Romans 16:7); worked among Gentiles; became bishop. " +
-          "Junia: his fellow laborer, named as apostle by Paul; commemorated jointly.",
+    note: "Source: 05-17.pdf. May 17 O.S. = May 30 N.S. — DIVERGENCE; OCA date governs. " +
+          "§2A confirmed — 3 stichera Tone VIII. Glory/Both now from Pentecostarion (per PDF rubric). " +
+          "Kontakion from PDF Tone II (proper text naming both Andronicus and Junia). " +
+          "Troparion Tone III matches OCA and PDF. No AT LITURGY section — readings from Octoechos. " +
+          "Andronicus: kinsman of St. Paul (Romans 16:7). Junia: his fellow laborer, named as apostle.",
     feast_e: null,  // §2A — readings from Octoechos
     feast_g: null,
-    // ── LORD I HAVE CRIED — General Menaion for Holy Apostles, Tone II ──────
+    // ── LORD I HAVE CRIED — from 05-17.pdf ──────────────────────────────────
+    // 3 stichera Tone VIII (Spec. Mel.: "O most glorious wonder")
+    // Glory/Both now from Pentecostarion (per PDF rubric)
     aposticha_source: "octoechos",
     stichera_lord_i_call: [
-      { tone: 2,
-        text: "O glorious apostles Andronicus and Junia, " +
-              "who with labor and sleeplessness traversed the breadth of the earth, " +
-              "and having sown the word of God with the sweat of your brows, " +
-              "ye gathered in rich harvests of souls for the Master's barns; " +
-              "with boldness now entreat Him on behalf of our souls.",
-        note: "General Menaion — Holy Apostle (adapted for two saints)" },
-      { tone: 2,
-        text: "O glorious apostles Andronicus and Junia, " +
-              "who with labor and sleeplessness traversed the breadth of the earth, " +
-              "and having sown the word of God with the sweat of your brows, " +
-              "ye gathered in rich harvests of souls for the Master's barns; " +
-              "with boldness now entreat Him on behalf of our souls.",
-        note: "General Menaion — repeat" },
-      { tone: 2,
-        text: "Ye were shown to be pillars of the Church of Christ, " +
-              "O ye blessed ones numbered among His holy apostles, " +
-              "and as kinsmen of the divine Paul " +
-              "and fellow workers in his apostolic labors, " +
-              "ye illumined the nations with the light of the Holy Spirit; " +
-              "wherefore we the faithful honor your memory with love.",
-        note: "General Menaion — Holy Apostle" },
+      { tone: 8, spec_mel: "O most glorious wonder",
+        text: "As a servant of the Word, " +
+              "a glorious minister, " +
+              "and most radiant luminary of the whole world, O divinely blessed one, " +
+              "thou didst bring an end " +
+              "to the irrational corruption of ungodliness by thy word; " +
+              "wherefore, with divine words we joyfully glorify and celebrate " +
+              "thy holy memory, offering praise to the Almighty." },
+      { tone: 8, spec_mel: "O most glorious wonder",
+        text: "The divine Apostle Paul, " +
+              "splendidly praising you all with divine laudations, " +
+              "setting forth your valor before the faithful, " +
+              "speaking first of all to show that ye " +
+              "are divinely wise disciples of the Word of God and His true kinsmen, " +
+              "O glorious Junia and blessed Andronicus, ye favorites of God." },
+      { tone: 8, spec_mel: "O most glorious wonder",
+        text: "Illumining the whole earth " +
+              "with sacred preaching, " +
+              "ye dispelled the gloom of vainglory " +
+              "and have directed to the light of divine knowledge " +
+              "those who from of old were sunk in the darkness of ungodliness, " +
+              "O divine apostles, " +
+              "ye guides to salvation " +
+              "and intercessors for all who ever honor you with faith." },
     ],
     stichera_lord_i_call_count: 3,
-    stichera_glory: null,  // §2A — Glory and Both now from Pentecostarion/Octoechos
+    stichera_glory: null,  // Glory/Both now from Pentecostarion (per PDF rubric)
     lic_theotokion: null,
     troparion: {
       tone: 3,
@@ -131,10 +158,14 @@ const MAY_MENAION = {
     },
     kontakion_ode6: {
       tone: 2,
-      text: "Having received divine grace from on high, " +
-            "thou didst illumine the nations with godly wisdom, " +
-            "O glorious apostle Andronicus; " +
-            "wherefore we honor thee with faith.",
+      spec_mel: "Seeking the highest",
+      text: "Let us praise Andronicus, the apostle of Christ, " +
+            "the most radiant star who hath illumined the nations " +
+            "with the light of divine knowledge, " +
+            "and with him the most wise Junia, who shone forth in piety; " +
+            "and let us cry aloud: " +
+            "Entreat Christ God without ceasing on behalf of our souls!",
+      note: "From 05-17.pdf — proper text naming both Andronicus and Junia",
     },
   },
 
