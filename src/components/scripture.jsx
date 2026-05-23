@@ -329,7 +329,9 @@ function parseSpanSegments(bookId, bookName, seg) {
     if (!p) return null;
     const vs = parseInt(p[1]), ve = p[2] ? parseInt(p[2]) : vs;
     const rv = remapVerses(bookId, chapter, vs, ve);
-    return { book: bookId, bookName, chapter: rv.chapter, verseStart: rv.verseStart, verseEnd: rv.verseEnd };
+    const remapped = rv.chapter !== chapter || rv.verseStart !== vs;
+    return { book: bookId, bookName, chapter: rv.chapter, verseStart: rv.verseStart, verseEnd: rv.verseEnd,
+      ...(remapped ? { origChapter: chapter, origVerseStart: vs, origVerseEnd: ve } : {}) };
   }).filter(Boolean);
   return spans.length ? spans : null;
 }
@@ -376,9 +378,15 @@ function parseRefString(refStr) {
 }
 
 function spanLabel(span) {
-  if (span.chapterStart !== undefined)
+  if (span.chapterStart !== undefined) {
     return `${span.bookName} ${span.chapterStart}:${span.verseStart}\u2013${span.chapterEnd}:${span.verseEnd}`;
-  return `${span.bookName} ${span.chapter}:${span.verseStart}\u2013${span.verseEnd}`;
+  }
+  const lxx = `${span.bookName} ${span.chapter}:${span.verseStart}\u2013${span.verseEnd}`;
+  if (span.origChapter !== undefined) {
+    const heb = `${span.bookName} ${span.origChapter}:${span.origVerseStart}\u2013${span.origVerseEnd}`;
+    return `${lxx} (${heb})`;
+  }
+  return lxx;
 }
 
 function SpanHeading({ label }) {
