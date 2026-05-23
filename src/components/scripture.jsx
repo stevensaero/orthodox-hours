@@ -680,51 +680,48 @@ export default function Scripture() {
   // ── Load manifest + pericopes on mount ───────────────────────────────────
   useEffect(() => {
     window.scrollTo(0, 0);
-    // In browse mode, don't block on the 249KB pericopes fetch.
-    // Load pericopes only when actually needed (reading mode or pericope param).
-    const needsPericopes = isReadingMode || !!initState.pericopeParam;
-    const loaders = needsPericopes
-      ? [loadManifest(), loadPericopes()]
-      : [loadManifest(), Promise.resolve(null)];
 
-    Promise.all(loaders).then(([mf, pc]) => {
-      setManifest(mf);
-      if (pc) setPericopes(pc);
-
-      if (isReadingMode) {
-        // Reading mode: load all unique books referenced in spans
+    if (isReadingMode) {
+      // Reading mode: need manifest + pericopes + all referenced books
+      Promise.all([loadManifest(), loadPericopes()]).then(([mf, pc]) => {
+        setManifest(mf);
+        setPericopes(pc);
         const uniqueBooks = [...new Set(initState.refSpans.map(s => s.book))];
-        Promise.all(uniqueBooks.map(bid => loadBook(bid).then(data => ({ bid, data }))))
-          .then(results => {
-            const map = {};
-            results.forEach(({ bid, data }) => { map[bid] = data; });
-            setAllBookData(map);
+        return Promise.all(uniqueBooks.map(bid => loadBook(bid).then(data => ({ bid, data }))));
+      }).then(results => {
+        const map = {};
+        results.forEach(({ bid, data }) => { map[bid] = data; });
+        setAllBookData(map);
+        setLoading(false);
+      }).catch(() => setLoading(false));
+
+    } else {
+      // Browse mode: only need manifest. Pericopes loaded on demand.
+      loadManifest().then(mf => {
+        setManifest(mf);
+        if (initState.pericopeParam) {
+          return loadPericopes().then(pc => {
+            setPericopes(pc);
+            const resolved = resolvePericope(initState.pericopeParam, pc);
+            if (resolved && resolved.readings?.length > 0) {
+              setActivePericope(resolved);
+              setPericopeMeta(resolved);
+              const firstReading = resolved.readings[0];
+              const landingChapter = firstReading.chapter ?? firstReading.chapterStart ?? 1;
+              setSelectedBookId(firstReading.book);
+              setCurrentChapter(landingChapter);
+              setTargetVerse(firstReading.verseStart);
+            }
             setLoading(false);
           });
-      } else if (initState.pericopeParam) {
-        const resolved = resolvePericope(initState.pericopeParam, pc);
-        if (resolved && resolved.readings?.length > 0) {
-          setActivePericope(resolved);
-          setPericopeMeta(resolved);
-          const firstReading = resolved.readings[0];
-          const bookId = firstReading.book;
-          const landingChapter = firstReading.chapter ?? firstReading.chapterStart ?? 1;
-          setSelectedBookId(bookId);
-          setCurrentChapter(landingChapter);
-          setTargetVerse(firstReading.verseStart);
+        } else if (initState.bookParam) {
+          // book-load effect will call setLoading(false)
+        } else {
+          setSelectedBookId("Matt");
+          // book-load effect will call setLoading(false)
         }
-        setLoading(false);
-      } else if (!initState.bookParam) {
-        // No book param — default to Matthew (book-load effect sets loading false)
-        setSelectedBookId("Matt");
-      } else {
-        // bookParam present — book-load effect will set loading false
-        setLoading(false);
-      }
-    }).catch(() => {
-      // Manifest failed — release loading so we don't hang blank
-      setLoading(false);
-    });
+      }).catch(() => setLoading(false));
+    }
   }, []);
 
   // ── Load book data when selectedBookId changes (browse mode) ─────────────
