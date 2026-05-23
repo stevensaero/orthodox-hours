@@ -2583,18 +2583,30 @@ const SAMPLE_MENAION = {
   // Source: St. Sergius 05-28.pdf. May 28 O.S. = June 10 N.S. — DIVERGENCE.
   // OCA commemorates May 28 N.S.; encoded at 05-28 per OCA primacy.
   // Service rank: Simple (§2A) — 3 stichera. OCA and St. Sergius texts agree.
+  // ── May 28 — Saint Nicetas, Bishop of Chalcedon ─────────────────────────────
+  // Source: St. Sergius 05-28.pdf. May 28 O.S. = June 10 N.S. — DIVERGENCE.
+  // OCA commemorates May 28 N.S.; encoded at 05-28 per OCA primacy.
+  // Service rank: Simple (§2A) — 3 stichera. No AT LITURGY epistle/gospel.
+  // Kontakion: St. Sergius Tone VIII full text; OCA paraphrase in substance agrees.
+  //   OCA text governs per encoding rule; St. Sergius full text noted in Drive record.
+  // Canon also commemorates his kinsman St. Ignatius (mentioned in Ode VI).
+  // v2: stichera, flags, feast_e→null added. // v0.3.7
   "05-28": {
     saint: "Saint Nicetas, Bishop of Chalcedon",
     oca_primary: true,
     service_file: "05-28.pdf",
     rank: "simple",
     fekula_section: "2A",
+    has_great_doxology: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
     note: "May 28 O.S. = June 10 N.S. OCA commemorates May 28 N.S. — DIVERGENCE; OCA date governs. " +
-          "§2A simple — 3 stichera. OCA and St. Sergius texts agree on troparion and kontakion. " +
+          "§2A simple — 3 stichera. OCA and St. Sergius texts agree in substance on troparion and kontakion. " +
           "Confessor under Leo the Armenian; exiled for venerating icons. " +
-          "Canon also commemorates his brother St. Ignatius.",
-    feast_e: "absent — §2A, readings from Oktoechos",
-    feast_g: "absent — §2A, readings from Oktoechos",
+          "Canon also commemorates his kinsman St. Ignatius. " +
+          "v2: stichera added, feast_e/g corrected to null. // v0.3.7",
+    feast_e: null,
+    feast_g: null,
     troparion: {
       tone: 4,
       text: "In truth you were revealed to your flock as a rule of faith, " +
@@ -2611,27 +2623,65 @@ const SAMPLE_MENAION = {
             "Therefore we cry out to you: \"Rejoice, beauty of Chalcedon.\"",
       matins_ode: 6,
     },
+    // ── VESPERS — LORD I HAVE CRIED ────────────────────────────────────────────
+    // Source: 05-28.pdf. 3 stichera Tone IV. Spec. Mel.: "As one valiant among the martyrs"
+    // Glory+Both now: theotokion Tone IV (PDF — "Glory…Both now…Theotokion, in Tone IV")
+    stichera_lord_i_call: [
+      { tone: 4, text: "Emulating the hospitality of Abraham, Isaac's love for God " +
+                       "and the guilelessness of Jacob, " +
+                       "thou didst emulate also the suffering of Job of Uz, " +
+                       "the meekness of David and the innocence of Moses, " +
+                       "and having been anointed with holy chrism as Aaron was of old, " +
+                       "O God-bearing hierarch, thou wast manifest as a sacred wonder-worker." },
+      { tone: 4, text: "Thy great innocence dispelled the malice of the demons " +
+                       "with the grace of the divine Spirit, " +
+                       "gladdening with thy suffering God, Whom thou didst desire, " +
+                       "and thy spirit was illumined by the indwelling of prayer. " +
+                       "Wherefore, thou hast received the grace of miracles, " +
+                       "to heal the infirmities, O Nicetas, " +
+                       "of those who piously have recourse unto thee." },
+      { tone: 4, text: "Bound by kinship, ye kept the laws of the Holy Spirit, O ye priests, " +
+                       "and, following the steps of the divinely wise Shepherd " +
+                       "Who emitted rays of most glorious healings, " +
+                       "ye were adorned similarly with the power of healing, " +
+                       "O most glorious Nicetas and divinely wise Ignatius." },
+    ],
+    stichera_glory: null,  // §2A — no separate doxasticon
+    lic_theotokion: {
+      tone: 4,
+      text: "Tens of thousands of times have I promised to repent of mine offenses, O most pure one, " +
+            "yet the cherished habits of mine evil ways will not depart from me; " +
+            "wherefore, I cry unto thee and fall down, praying: " +
+            "O Sovereign Lady, rescue me from such tyranny, " +
+            "guiding me to things that are higher, which are nigh unto salvation.",
+    },
+    aposticha_source: "octoechos",
   },
 
-  // ── May 29 — Holy Martyred Virgin Theodosia ───────────────────────────────────
+  // ── May 29 — Holy Martyred Virgin Theodosia ──────────────────────────────────
   // Source: St. Sergius 05-29.pdf. May 29 O.S. = June 11 N.S. — DIVERGENCE.
   // OCA commemorates May 29 N.S.; encoded at 05-29 per OCA primacy.
-  // Service rank: Simple (§2A) — 3 stichera. AT LITURGY: troparion and kontakion only.
+  // Service rank: Simple (§2A) — 3 stichera. No AT LITURGY section.
   // OCA troparion and kontakion both differ from St. Sergius. OCA texts govern.
   // OCA carries Theodosia on Apr 3 and May 29 — same saint; OCA Apr 3 texts used for May 29 N.S.
+  // v2: stichera, flags, feast_e→null added. // v0.3.7
   "05-29": {
     saint: "Holy Martyred Virgin Theodosia of Tyre",
     oca_primary: true,
     service_file: "05-29.pdf",
     rank: "simple",
     fekula_section: "2A",
+    has_great_doxology: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
     note: "May 29 O.S. = June 11 N.S. OCA commemorates May 29 N.S. — DIVERGENCE; OCA date governs. " +
-          "§2A simple — 3 stichera. OCA troparion (Tone 4 Podoben) and kontakion (Tone 4 Podoben) " +
+          "§2A simple — 3 stichera. OCA troparion (Tone 4) and kontakion (Tone 4) " +
           "both differ from St. Sergius texts; OCA texts govern. " +
           "OCA also commemorates Theodosia on Apr 3 with the same texts. " +
-          "Martyred at Constantinople under Constantine Copronymus for defending holy icons.",
-    feast_e: "absent — §2A, readings from Oktoechos",
-    feast_g: "absent — §2A, readings from Oktoechos",
+          "Martyred at Constantinople under Constantine Copronymus for defending holy icons. " +
+          "v2: stichera added, feast_e/g corrected to null. // v0.3.7",
+    feast_e: null,
+    feast_g: null,
     troparion: {
       tone: 4,
       text: "Through your struggles in the contest, " +
@@ -2640,6 +2690,7 @@ const SAMPLE_MENAION = {
             "O prize-winner, intercede with the Master of all, " +
             "that He may deliver us from all manner of misfortunes.",
     },
+    // OCA kontakion Tone IV governs; St. Sergius Tone II text is different (see Drive record).
     kontakion: {
       tone: 4,
       text: "As a pure virgin and prize-winner, " +
@@ -2647,6 +2698,41 @@ const SAMPLE_MENAION = {
             "O all-praised Theodosia, entreat Him for the salvation of our souls.",
       matins_ode: 6,
     },
+    // ── VESPERS — LORD I HAVE CRIED ────────────────────────────────────────────
+    // Source: 05-29.pdf. 3 stichera Tone VIII. Spec. Mel.: "O most glorious wonder"
+    // Glory+Both now: theotokion Tone VIII (PDF — "Glory…Both now…Theotokion, in Tone VIII")
+    stichera_lord_i_call: [
+      { tone: 8, text: "Shining with the radiance of virginity, O honored Theodosia, " +
+                       "and splendidly adorned with a royal robe dyed in the blood of martyrdom, " +
+                       "O all-wise one, thou didst make thine abode in the heavenly bridal-chamber of Christ, " +
+                       "rejoicing with the angelic ranks in perpetual chorus, " +
+                       "O glorious and all-immaculate maiden." },
+      { tone: 8, text: "O virgin martyr, all-praised Theodosia, " +
+                       "desiring Christ with all thy soul, thou didst endure the wounds of martyrdom, " +
+                       "courageously enduring lacerations for Him Whom thou didst love, " +
+                       "thy sides raked with iron claws. " +
+                       "O the steadfast opposition of thy struggles, " +
+                       "whereby thou didst truly cast the prideful one down to the ground!" },
+      { tone: 8, text: "Splendidly adorned with beauty of body and soul, " +
+                       "thou didst bring thyself to Christ, " +
+                       "desiring to be crowned by Him with a wreath of glory, " +
+                       "O all-glorious martyr Theodosia, " +
+                       "manifestly receiving upon thy brow, as is meet, " +
+                       "the truly priceless diadem of the kingdom, " +
+                       "having been shown to be an incorrupt bride, O thou who art divinely wise." },
+    ],
+    stichera_glory: null,  // §2A — no separate doxasticon
+    lic_theotokion: {
+      tone: 8,
+      text: "Let me magnify thee with joyful cries, O pure one, " +
+            "and glorify the abyss of thy love for mankind. " +
+            "Save me from misfortunes, " +
+            "and rescue me from the soul-destroying darts " +
+            "of the invisible and most evil foe; " +
+            "for I wield thee against him as a firm and invincible weapon, " +
+            "O divine Bride, Mother of Christ God.",
+    },
+    aposticha_source: "octoechos",
   },
 
   // ── May 30 — Venerable Isaacius, Abbot of the Monastery of Dalmatus ──────────
@@ -2655,19 +2741,24 @@ const SAMPLE_MENAION = {
   // Service rank: Simple (§2A) — 3 stichera. AT LITURGY: kontakion only (no epistle/gospel).
   // St. Sergius PDF has no troparion rubric at Vespers; OCA standard venerable Tone 8 text used.
   // OCA kontakion matches St. Sergius exactly.
+  // v2: stichera, flags, feast_e→null added. // v0.3.7
   "05-30": {
     saint: "Venerable Isaacius, Abbot of the Monastery of Dalmatus",
     oca_primary: true,
     service_file: "05-30.pdf",
     rank: "simple",
     fekula_section: "2A",
+    has_great_doxology: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
     note: "May 30 O.S. = June 12 N.S. OCA commemorates May 30 N.S. — DIVERGENCE; OCA date governs. " +
           "§2A simple — 3 stichera. St. Sergius PDF has no troparion rubric; " +
           "OCA standard venerable Tone 8 troparion used. Kontakion matches St. Sergius. " +
           "Confronted Emperor Valens over Arianism; prophesied his defeat at Adrianople (378). " +
-          "Also commemorated Aug 3 with Dalmatus and Faustus.",
-    feast_e: "absent — §2A, readings from Oktoechos",
-    feast_g: "absent — §2A, readings from Oktoechos",
+          "Also commemorated Aug 3 with Dalmatus and Faustus. " +
+          "v2: stichera added, feast_e/g corrected to null. // v0.3.7",
+    feast_e: null,
+    feast_g: null,
     troparion: {
       tone: 8,
       text: "The image of God was truly preserved in you, O Father, " +
@@ -2684,6 +2775,33 @@ const SAMPLE_MENAION = {
             "Therefore, venerable Isaac, ceaselessly pray for us who honor you.",
       matins_ode: 6,
     },
+    // ── VESPERS — LORD I HAVE CRIED ────────────────────────────────────────────
+    // Source: 05-30.pdf. 3 stichera Tone I. Spec. Mel.: "Joy of the ranks of heaven"
+    // Glory+Both now: theotokion Tone I (PDF — "Glory…Both now…Theotokion, in Tone I")
+    stichera_lord_i_call: [
+      { tone: 1, text: "Beholding the beauties of paradise, " +
+                       "and richly delighting in the flowers of incorruption, " +
+                       "thou didst pour forth for the world the knowledge of God, " +
+                       "partaking whereof with spiritual love, " +
+                       "O venerable Isaacius, we cause our souls to grow." },
+      { tone: 1, text: "Protecting thy body with abstinence, O father, " +
+                       "with thy prayers and vigils thou didst mortify the uprisings of the passions. " +
+                       "Wherefore, the power of the Spirit within thee, covering thee, " +
+                       "showed thee to be a noetic and universal luminary." },
+      { tone: 1, text: "Shining forth upon the city from the desert like unto the sun, O father, " +
+                       "thou didst adorn the monastic life; " +
+                       "wherefore, with thy teachings thou hast enlightened the faithful " +
+                       "to bless the Father and the Son, and the consubstantial Spirit." },
+    ],
+    stichera_glory: null,  // §2A — no separate doxasticon
+    lic_theotokion: {
+      tone: 1,
+      text: "Having stumbled through my corrupt character, I lie prostrate, " +
+            "yet do I hasten to thy tranquility, O Virgin. " +
+            "Deliver me from the adverse tempest and multifarious temptations, " +
+            "that I may unceasingly hymn thy grace, O Ever-virgin Mother and Theotokos.",
+    },
+    aposticha_source: "octoechos",
   },
 
   // ── May 31 — Holy Martyr Hermias ──────────────────────────────────────────────
@@ -6741,12 +6859,23 @@ const PENTECOSTARION = {
 
   // ── P+46 — Thursday of the Seventh Week — Ascension Afterfeast, Day 7 ─────
   // Source: 74.pdf. Drive record: 74.txt.
+  // ── P+46 — Thursday of the Seventh Week — Ascension Afterfeast, Day 7 ──────
+  // Source: 74.pdf (Wednesday Evening / Thursday Matins+Liturgy). Drive record: P+46.txt.
+  // NEW Pentecostarion stichera set Tone IV. Beatitudes from Ode VIII. // v0.3.7
   46: {
     name: "Thursday of the Seventh Week — Ascension Afterfeast, Day 7",
     source_file: "74.pdf",
     fekula_section: "4A",
     hours_format: "pentecostarion_weekday",
     tone: 4,
+    menaion_set_aside: false,
+    has_great_doxology: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: true,
+    matins_format: "god_is_the_lord",
+    it_is_truly_meet_suppressed: true,
+
     troparion: {
       tone: 4,
       text: "Thou hast ascended in glory, O Christ our God, " +
@@ -6763,6 +6892,131 @@ const PENTECOSTARION = {
             "and crying unto them that love Thee: " +
             "I am with you, and no one shall be against you.",
     },
+
+    // ── VESPERS — LORD I HAVE CRIED (Wednesday Evening) ─────────────────────
+    // Source: 74.pdf. 3 NEW Pentecostarion Tone IV + 3 Menaion (May 28 = Nicetas §2A).
+    // NOTE: These are yet another set of Ascension afterfeast stichera — different from P+40-45.
+    stichera_lord_i_call: [
+      { tone: 4, text: "Having achieved the salvation of all mankind, " +
+                       "Thou didst go up to the Mount of Olives O Christ, " +
+                       "from whence Thou wast taken to heaven before Thy disciples, " +
+                       "being borne thither in glory. " +
+                       "Wherefore, amazed by the mystery, " +
+                       "the lower orders cried out unto the higher powers: " +
+                       "Lift ye up the gates, that the sovereign God of all may enter therein " +
+                       "from whence He had departed, as He had willed, " +
+                       "to wondrously effect the salvation of the world." },
+      { tone: 4, text: "As the choir of the disciples looked upon Thee ascending, they cried aloud: " +
+                       "O Master, why dost Thou leave Thy servants behind? " +
+                       "Whither dost Thou journey, Thou Who holdest all of creation in Thy hands? " +
+                       "Behold, we have left all things to follow after Thee rejoicing, " +
+                       "with the hope that we would ever abide and dwell with Thee: " +
+                       "Leave us not orphaned, " +
+                       "but as Thou didst promise O compassionate Savior, " +
+                       "send Thou the Comforter and Savior of our souls." },
+      { tone: 4, text: "As Thou didst grant a final blessing unto Thy friends O Master, " +
+                       "Thou didst teach them the mystery: " +
+                       "Behold O my Friends, I go to the Father, " +
+                       "I shall send forth unto you the Comforter. " +
+                       "I shall not leave my beloved sheep which I have gathered, " +
+                       "I shall not forget those on whom I bestowed my love. " +
+                       "Endowed with power of the Most High God, " +
+                       "ye shall go forth and preach unto all the world the good tidings " +
+                       "of the salvation of the race of mankind." },
+    ],
+    // Glory+Both now: Ascension doxasticon Tone VI (74.pdf)
+    stichera_glory: {
+      tone: 6,
+      text: "God is gone up in jubilation, the Lord with the voice of the trumpet, " +
+            "to raise the fallen image of Adam, " +
+            "and to send the Comforting Spirit to sanctify our souls.",
+    },
+    lic_theotokion: null,
+
+    // ── VESPERS — PROKEIMENON (Wednesday Evening) ────────────────────────────
+    vespers_prokeimenon: {
+      tone: 5,
+      text: "O God, in Thy name save me, and in Thy strength do Thou judge me.",
+      stichos: "O God, hearken unto my prayer, give ear unto the words of my mouth.",
+    },
+
+    // ── VESPERS — APOSTICHA (Wednesday Evening) ──────────────────────────────
+    // Ascension feast aposticha Tone II — same melody "O House of Ephratha" (74.pdf)
+    // NEW texts — different from P+40/44 aposticha sets
+    stichera_aposticha: [
+      { tone: 2, verse: null,
+        text: "The Lord spake unto His friends saying, I will not leave you " +
+              "whom I have gathered orphaned, " +
+              "but I will send unto you the Most-holy Spirit." },
+      { tone: 2, verse: "Clap your hands, all ye nations; shout unto God with a voice of rejoicing.",
+        text: "The angels cried aloud unto the most wise apostles saying: " +
+              "O ye men of Galilee, in such a manner as ye see Him ascend, " +
+              "so shall He come again." },
+      { tone: 2, verse: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
+        text: "Descending from the Mount of Olives with great joy, " +
+              "Thy disciples O Word, glorified and hymned Thy divine Ascension." },
+    ],
+    aposticha_glory: {
+      tone: 1,
+      text: "Having ascended into the heavens, from whence Thou didst also descend, " +
+            "leave us not orphaned, O Lord; " +
+            "let Thy Spirit come, bringing peace unto the world; " +
+            "show Thou unto the sons of men the works of Thy might, " +
+            "O Lord and Lover of mankind.",
+    },
+
+    // ── MATINS APOSTICHA (Thursday Morning) ─────────────────────────────────
+    // Different from vespers — Tone II "O House of Ephratha" set (74.pdf matins)
+    stichera_matins_aposticha: [
+      { tone: 2, verse: null,
+        text: "Having fulfilled His will, thus pleasing well the Father, " +
+              "Thou didst ascend in glory. " +
+              "The things of heaven didst Thou unite thus with the things of earth." },
+      { tone: 2, verse: "Clap your hands, all ye nations; shout unto God with a voice of rejoicing.",
+        text: "A brilliant cloud of light conveyed Thee to the heavens, " +
+              "whilst with great fear and trembling " +
+              "the angels came and ministered unto Thy divine command." },
+      { tone: 2, verse: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
+        text: "Let us, together with the apostles and the Theotokos, " +
+              "chant a divinely-beauteous hymn of praise, " +
+              "upon seeing the Lord taken up in the clouds." },
+    ],
+    stichera_matins_aposticha_glory: {
+      tone: 7,
+      text: "Unto the Mount of Olives didst Thou come, Thou Who hast mercy on the race of mankind. " +
+            "And a cloud took Thee up out of the sight of Thy disciples, " +
+            "who, on one hand, trembled because of that which they beheld, " +
+            "and, on the other hand, rejoiced at their expectation of the Holy Spirit, " +
+            "wherein do Thou make us steadfast, O Savior, and have mercy on us.",
+    },
+
+    // ── BEATITUDES (Thursday Liturgy) ────────────────────────────────────────
+    // Source: 74.pdf AT LITURGY — 6 verses from Ode VIII of Ascension Canon (including Irmos)
+    beatitudes_source: "6 verses from Ode VIII of Ascension Canon including Irmos (74.pdf)",
+    beatitudes_troparia: [
+      "The Son of God who before all ages wast born of the Father " +
+      "hath in these last times become incarnate of the Virgin Mother; " +
+      "O ye priests hymn, and ye peoples supremely exalt Him throughout all ages.",  // Irmos
+      "Unto Christ, the Giver of life, Who in two essences hath risen into the heavens with glory " +
+      "and sitteth together with the Father, O ye priests hymn, " +
+      "and ye peoples supremely exalt throughout all ages.",
+      "Unto Thee, O Savior, Who didst deliver creation from slavery to the idols, " +
+      "and didst present it free unto Thine own Father, " +
+      "do we give praise, and we supremely exalt Thee throughout all ages.",
+      "Unto Him Who by His descent destroyed the adversary, and Who by His ascent raised up mankind " +
+      "give praise; O ye priests, hymn, and ye peoples, supremely exalt Him throughout all ages.",
+      // Glory:
+      "The intelligences appeared unto the apostles at the Ascension and said: " +
+      "Why stand ye gazing in astonishment? " +
+      "He that goeth up into the heavens shall come again to judge men upon earth, " +
+      "since He is the only Judge.",
+      // Both now:
+      "Thou hast proved to be more excellent than the cherubim, O pure Theotokos, " +
+      "since thou hast carried in thy womb Him that rideth upon them. " +
+      "Together with the bodiless ones, we mortals glorify Him throughout all ages.",
+    ],
+
+    // ── LITURGY PROPERS ───────────────────────────────────────────────────────
     feast_e: "Acts 25:13-19",
     feast_g: "John 16:23-33",
     prokeimenon_tone: 7,
@@ -6771,8 +7025,12 @@ const PENTECOSTARION = {
     alleluia_tone: 2,
     alleluia_verse: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
     alleluia_stichos: "Clap your hands, all ye nations; shout unto God with a voice of rejoicing.",
+    instead_of_it_is_truly_meet_refrain: "Magnify, O my soul, Christ the giver of life, " +
+                                          "Who ascended from earth to heaven.",
+    instead_of_it_is_truly_meet_irmos: "O Thou who art God's Mother transcending mind and word, " +
+                                        "who ineffably in time hast given birth unto the Timeless One, " +
+                                        "Thee do we the faithful magnify with one accord.",
     communion_verse: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
-    magnificat_sung: true,
   },
 
   // ── P+47 — Friday of the Seventh Week — Apodosis of the Ascension ──────────
@@ -6780,12 +7038,26 @@ const PENTECOSTARION = {
   // PDF rubric: "we chant everything as set forth on the Feast of the Ascension
   // except for the Readings and the Antiphons."
   // Feast texts govern exclusively — no Menaion. O Heavenly King still omitted.
+  // ── P+47 — Friday of the Seventh Week — Apodosis of the Ascension ──────────
+  // Source: 75.pdf. Drive record: P+47.txt. Fekula §4B14.
+  // PDF rubric: "we chant everything as set forth on the Feast of the Ascension
+  // except for the Readings and the Antiphons."
+  // No Menaion. O Heavenly King still omitted. No separate Vespers stichera.
+  // Beatitudes: 8 troparia from Ode IX of BOTH festal canons (PDF explicit). // v0.3.7
   47: {
     name: "Friday of the Seventh Week — Apodosis of the Ascension",
     source_file: "75.pdf",
     fekula_section: "4B14",
     hours_format: "apodosis_ascension",
     tone: 4,
+    menaion_set_aside: true,
+    has_great_doxology: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: true,
+    matins_format: "god_is_the_lord",
+    it_is_truly_meet_suppressed: true,
+
     troparion: {
       tone: 4,
       text: "Thou hast ascended in glory, O Christ our God, " +
@@ -6802,6 +7074,35 @@ const PENTECOSTARION = {
             "and crying unto them that love Thee: " +
             "I am with you, and no one shall be against you.",
     },
+
+    stichera_lord_i_call: null,  // Feast stichera govern — apodosis_ascension assembler handles
+
+    beatitudes_source: "8 troparia from Ode IX of both Ascension Festal Canons (75.pdf)",
+    beatitudes_troparia: [
+      "As the apostles beheld Thee, Christ God, the Redeemer of the world, " +
+      "being exalted in a manner befitting God, they magnified Thee with awe as they leapt for joy.",
+      "Beholding Thy deified flesh on high, O Christ, " +
+      "the angels beckoned to one another: Truly this is our God.",
+      "As the orders of the Bodiless saw Thee being lifted up in the clouds, O Christ God, " +
+      "they cried: Lift up the gates for the King of Glory.",
+      "Thee, Who didst descend unto the utmost depths of the earth, " +
+      "and Who didst save man and exalt him by Thine Ascension, do we magnify.",
+      "O what gifts that surpass understanding! O dread mystery! " +
+      "For He Who reigneth over all hath risen from earth to the heavens, " +
+      "and unto the disciples hath He sent the Holy Spirit, " +
+      "Who enlightened their minds and made them fiery with grace.",
+      "To the ranks of the disciples did the Lord say: Tarry ye in Jerusalem, " +
+      "and I will send you another Comforter, Who is equal in rank to the Father, " +
+      "and in honor to Me, Whom ye behold being taken up and riding upon a radiant cloud.",
+      "The majesty of Him Who became poor in the flesh hath been manifestly taken up above the heavens; " +
+      "and our fallen nature hath been honored by sitting with the Father. " +
+      "Let us all make feast, and with one accord let us cry out with jubilation and clap our hands rejoicing.",
+      "The Light Who shone forth from the Light hath dawned forth from thee, O all-immaculate one, " +
+      "and He hath dispelled all the darkness of godlessness " +
+      "and enlightened those who sleep in the night. " +
+      "Wherefore, as is due, we all ever call thee blessed throughout the ages.",
+    ],
+
     feast_e: "Acts 27:1-43",
     feast_g: "John 17:18-26",
     prokeimenon_tone: 7,
@@ -6810,13 +7111,11 @@ const PENTECOSTARION = {
     alleluia_tone: 2,
     alleluia_verse: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
     alleluia_stichos: "Clap your hands, all ye nations; shout unto God with a voice of rejoicing.",
-    communion_verse: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
-    zadostoinik_irmos: "O Thou who art God\'s Mother transcending mind and word, " +
+    zadostoinik_irmos: "O Thou who art God's Mother transcending mind and word, " +
       "who ineffably in time hast given birth unto the Timeless One, " +
       "Thee do we the faithful magnify with one accord.",
     zadostoinik_refrain: "Magnify, O my soul, Christ the giver of life, Who ascended from earth to heaven.",
-    magnificat_sung: true,
-    menaion_set_aside: true,
+    communion_verse: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
   },
 
   // ── P+48 — Saturday of the Reposed — Before Pentecost ──────────────────────
@@ -6825,12 +7124,27 @@ const PENTECOSTARION = {
   // Entirely unique structure — replaces afterfeast content completely.
   // TWO epistles + TWO gospels at Liturgy (for the Day + for the Reposed).
   // O Heavenly King still omitted (pre-Pentecost).
+  // ── P+48 — Saturday of the Reposed — Before Pentecost ──────────────────────
+  // Source: 76.pdf. Drive record: P+48.txt. Fekula §4B14.
+  // Ecumenical Memorial Saturday for all Orthodox Christians who have fallen asleep.
+  // Entirely unique structure — no Ascension afterfeast content.
+  // TWO epistles + TWO gospels at Liturgy (For the Day + For the Reposed).
+  // Vespers: Alleluia replaces the daily Prokeimenon (PDF explicit rubric).
+  // O Heavenly King still omitted (pre-Pentecost). // v0.3.7
   48: {
     name: "Saturday of the Reposed — Before Pentecost",
     source_file: "76.pdf",
     fekula_section: "4B14",
     hours_format: "pentecostarion_saturday_reposed",
-    tone: 6, // week tone
+    tone: 6,
+    menaion_set_aside: true,
+    has_great_doxology: false,  // Small Doxology read at Matins
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,  // Saturday of Reposed — no Magnificat
+    matins_format: "alleluia",  // Alleluia replaces God is the Lord at Matins
+    it_is_truly_meet_suppressed: false,  // Pentecost zadostoinik not yet; It is Truly Meet sung
+    heavenly_king_omitted: true,  // Pre-Pentecost
 
     troparion: {
       tone: 8,
@@ -6859,10 +7173,172 @@ const PENTECOSTARION = {
       source: "reposed",
     },
 
-    // For the Day
+    // ── VESPERS — LORD I HAVE CRIED ────────────────────────────────────────────
+    // Source: 76.pdf. 3 martyrs Tone VI + 3 reposed Tone VIII — each with preceding verse.
+    // NOTE: Stichera have PRECEDING VERSES (unlike most Pentecostarion LIC stichera).
+    stichera_lord_i_call: [
+      // 3 of the martyrs, Tone VI:
+      { tone: 6, verse: "If Thou shouldest mark iniquities, O Lord, O Lord, who shall stand? For with Thee there is forgiveness.",
+        text: "Thy martyrs, O Lord, did not deny Thee, " +
+              "nor did they fall away from Thy commandments. " +
+              "By their intercessions, have mercy on us." },
+      { tone: 6, verse: "For Thy name's sake have I patiently waited for Thee, O Lord; my soul hath patiently waited for Thy word, my soul hath hoped in the Lord.",
+        text: "They that bare witness to Thee through martyrdom, O Christ, " +
+              "endured many torments. " +
+              "By their intercessions and prayers, O Lord, preserve us all." },
+      { tone: 6, verse: "From the morning watch until night, from the morning watch let Israel hope in the Lord.",
+        text: "The passion-bearing martyrs and citizens of heaven " +
+              "contested on earth and endured many torments, " +
+              "and they received a perfect crown in the heavens, " +
+              "that they might intercede for our souls." },
+      // 3 for the reposed, Tone VIII:
+      { tone: 8, verse: "For with the Lord there is mercy, and with Him is plenteous redemption; and He shall redeem Israel out of all his iniquities.",
+        text: "Calling to remembrance by name today " +
+              "all the dead from all the ages who with faith have lived piously. " +
+              "O ye faithful, let us sing praises to the Savior and Lord, " +
+              "asking Him fervently to grant them a good defense " +
+              "in the hour of judgment before our God, who will judge all the earth. " +
+              "May they receive a place at His right hand in joy; " +
+              "may they dwell in glory with the righteous and the saints, " +
+              "and be found worthy of His heavenly Kingdom." },
+      { tone: 8, verse: "O praise the Lord, all ye nations; praise Him, all ye peoples.",
+        text: "By Thine own Blood, O Savior, Thou hast ransomed mankind, " +
+              "and by Thy death Thou hast delivered us from bitter death, " +
+              "granting us life eternal by Thy Resurrection. " +
+              "Grant rest then, O Lord, to all those who have fallen asleep in godliness, " +
+              "whether in the wilderness or in the city, on the sea or on land, " +
+              "in every place, sovereigns, rulers and hierarchs, " +
+              "priests, monastics and those married, of every age and every race, " +
+              "and grant them Thy heavenly Kingdom." },
+      { tone: 8, verse: "For He hath made His mercy to prevail over us, and the truth of the Lord abideth forever.",
+        text: "By Thine arising from the dead, O Christ, " +
+              "no longer doth death rule over those who have died in piety. " +
+              "Wherefore we pray fervently: " +
+              "Grant rest in Thy courts and in the bosom of Abraham " +
+              "to Thy servants from Adam to this present day " +
+              "who have worshiped Thee in purity, " +
+              "our fathers and brethren, friends and kin, " +
+              "all who in this life have offered faithful service to Thee, " +
+              "and who have now departed to be with Thee, O God, " +
+              "and grant them to receive Thy heavenly Kingdom." },
+    ],
+    stichera_glory: {
+      tone: 8,
+      text: "I lament, and weep when I see death " +
+            "and look upon our beauty, formed according to God's image, " +
+            "lying in the grave disfigured, inglorious, and bereft of animate form. " +
+            "O strange wonder! What mystery is this concerning us? " +
+            "How have we been delivered unto corruption? " +
+            "How have we been yoked to death? " +
+            "All this, as is written, is by the command of God, " +
+            "who granteth rest unto the departed.",
+      source: "reposed",
+    },
+    lic_theotokion: {
+      // Both now — Dogmatic Theotokion Tone VI (PDF: "Both now…Dogmatic Theotokion, in Tone VI")
+      tone: 6,
+      text: "Who doth not call thee blessed, O most holy Virgin? " +
+            "Who will not hymn thy most pure birthgiving? " +
+            "For the only-begotten Son Who hath shone forth timelessly from the Father, " +
+            "came forth, ineffably incarnate, from thee, O pure one; " +
+            "By nature He is God, by nature for our sakes, He hath become a man " +
+            "not divided into two Hypostases, " +
+            "but known in two natures without commingling. " +
+            "Him do thou beseech, O pure and most blessed one, that our souls find mercy!",
+      type: "dogmatic",
+    },
+
+    // ── VESPERS — PROKEIMENON replaced by ALLELUIA ────────────────────────────
+    // PDF: "In place of the daily Prokeimenon, we chant: Alleluia in Tone VIII"
+    vespers_alleluia_replaces_prokeimenon: true,
+    vespers_alleluia: {
+      tone: 8,
+      verses: [
+        "Blessed are they whom Thou hast chosen and taken to Thyself, O Lord!",
+        "Their memorial is unto generation and generation.",
+      ],
+    },
+
+    // ── VESPERS — APOSTICHA ────────────────────────────────────────────────────
+    // Source: 76.pdf. Stichera Tone VI.
+    stichera_aposticha: [
+      { tone: 6, verse: null,
+        text: "Thy Cross, O Lord, became an invincible weapon for the martyrs; " +
+              "for seeing death laying before them, and foreseeing the life to come, " +
+              "they were strengthened by their hope in Thee. " +
+              "By their supplications, have mercy on us.",
+        source: "martyricon",
+      },
+      { tone: 6, verse: "Their souls shall dwell among good things.",
+        text: "Thou didst honour with Thine image that which Thou hadst fashioned with Thy hands, O Savior, " +
+              "and in material form didst Thou depict the likeness of the noetic nature, " +
+              "whereof Thou didst make me a partaker, " +
+              "and didst establish me here to rule by my free will over the things on earth, O Word. " +
+              "Wherefore, O Savior grant rest unto Thy servants " +
+              "in the land of the living, in the tabernacles of the righteous.",
+        source: "reposed",
+      },
+      { tone: 6, verse: "Blessed are they whom Thou hast chosen and hast taken unto Thyself, O Lord.",
+        text: "That the worth of my life might be distinguished from that of others, " +
+              "Thou didst plant a garden in Eden, adorned with diverse plants, " +
+              "where Thou didst establish me free of sorrows and care " +
+              "as a partaker of Thy divine life, " +
+              "as a creature equal to the angels on earth, distinctly mingled in nature. " +
+              "Wherefore, O Savior, grant rest unto Thy servants " +
+              "in the land of the living, in the tabernacles of the righteous.",
+        source: "reposed",
+      },
+    ],
+    aposticha_glory: {
+      tone: 6,
+      text: "My origin and foundation was accomplished by Thy creative will, " +
+            "for Thou didst will to fashion me as a living creature " +
+            "from visible and invisible natures; " +
+            "having brought forth my body from the earth, " +
+            "and given me a soul by Thy divine and quickening breath. " +
+            "Wherefore, O Savior, grant rest unto Thy servants " +
+            "in the land of the living, in the tabernacles of the righteous.",
+      source: "reposed",
+    },
+    aposticha_theotokion: {
+      tone: 6,
+      text: "By the intercessions of her who gave birth to Thee, O Christ, " +
+            "and of Thy martyrs and apostles, and of the prophets, and the holy-bishops, " +
+            "and of the venerable monks, and of the righteous, and of all the saints, " +
+            "grant rest to Thy servants that have fallen asleep.",
+    },
+
+    // ── BEATITUDES (Saturday Liturgy) ─────────────────────────────────────────
+    // Source: 76.pdf AT LITURGY — 3 from Ode III + 3 from Ode VI of Reposed Canon
+    beatitudes_source: "3 troparia from Ode III + 3 from Ode VI of Reposed Canon Tone VIII (76.pdf)",
+    beatitudes_troparia: [
+      // Ode III:
+      "To those who have passed through the course of this life in the glory of piety, " +
+      "do Thou O God, make worthy to be adorned with a crown of righteousness, " +
+      "and may they enjoy eternal blessings.",
+      "To those who have been suddenly snatched away, burnt by lightning, frozen by cold, " +
+      "or struck down by any other calamity, " +
+      "grant rest, O God, when Thou shalt try all things by fire.",
+      "To those who have sailed across the ever-troubled sea of this life, " +
+      "grant safe anchorage O Christ, in the harbor of immortal life with Thee, " +
+      "nurtured by an Orthodox life.",
+      // Ode VI:
+      "To those whom, according to Thine inscrutable judgments, " +
+      "Thou hast permitted to be slain by drugs or by poison, " +
+      "or through choking on bones, grant rest, O Lord, with Thy saints.",
+      // Glory (Ode III Triadicon):
+      "Thrice-holy Godhead, One in throne, Father, Son and Spirit, " +
+      "Thou art my God, holding all in unity by Thine almighty Power.",
+      // Both now (Ode III Theotokion):
+      "Leap for joy, O Jesse the forefather; for from thy root hath sprung forth " +
+      "the Flower of Life that saveth the world, Christ God born from the pure maiden.",
+    ],
+
+    // ── LITURGY PROPERS ───────────────────────────────────────────────────────
+    // For the Day:
     feast_e: "Acts 28:1-31",
     feast_g: "John 21:15-26",
-    // For the Reposed
+    // For the Reposed:
     reposed_e: "1 Thessalonians 4:13-17",
     reposed_g: "John 5:24-30",
 
@@ -6875,11 +7351,8 @@ const PENTECOSTARION = {
     alleluia_stichos: "Their memorial is unto generation and generation.",
     communion_verse: "Blessed are they whom Thou hast chosen and taken to Thyself, O Lord: " +
       "Their memorial is unto generation and generation.",
-
-    magnificat_sung: false,
-    menaion_set_aside: true,
-    heavenly_king_omitted: true,
   },
+
 
   // ── P+49 — Holy Pentecost ───────────────────────────────────────────────────
   // Source: 80.pdf. Drive record: 80.txt. Fekula §4B15.
