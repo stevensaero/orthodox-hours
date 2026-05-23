@@ -11680,6 +11680,29 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
 
 const RELEASE_NOTES = [
   {
+    version: "v0.3.5",
+    date: "May 2026",
+    summary: "Orthodox Scripture tool · pericope layer · OT paroemia links · LXX versification",
+    items: [
+      "Orthodox Scripture tool built as standalone component at /scripture — full OT (Brenton LXX) and NT (KJV 2006), 80 books, 37,177 verses, dynamic JSON loading per book",
+      "Browse mode: book navigator grouped by canon (Gospels, Apostolos, Law, History, Wisdom, Prophets Major/Minor, Deuterocanon, Not Used Liturgically), chapter selector, verse goto",
+      "Revelation included in navigator under 'Not Used Liturgically' with explanatory note",
+      "Reading mode: when opened from a link in the hours tool, only appointed verses render — each span gets a gold heading (e.g. ISAIAH 40:1–8) with rule line; no browse chrome shown",
+      "Non-contiguous spans each get their own heading and verse block (e.g. Acts 11:19–26 / 11:29–30)",
+      "Cross-chapter readings split at chapter boundary with continuation heading",
+      "Sticky context strip top and bottom — shows '← Hours Tool · Typica · Monday, May 25, 2026' when opened from reading link; plain '← Hours Tool' when opened from nav button",
+      "Pericopes.json: 741-entry table from paulkachur/orthodox_calendar zachalosKJ.sql (MIT licensed) — 145 Gospel, 395 Apostolos, 201 OT entries",
+      "'Read in Scripture ↗' links on all Epistle and Gospel elements in Typica assembler",
+      "Context card: Epistle, Gospel, feast readings, and OT paroemias are live gold links to scripture reading mode",
+      "Psalter and Scripture browse buttons added to tool footer — open in browse mode with back strip",
+      "OT book support: full LECTIONARY_BOOK_ID map covering all paroemia books (Genesis through Malachi, deuterocanon)",
+      "Semicolon-separated paroemia spans parsed correctly: 'Prov 10:7; 3:13-16; 8:6, 34-35' → 5 discrete spans",
+      "LXX VERSIFICATION FINDING: Brenton LXX and Hebrew tradition differ in chapter/verse numbering for some books. Malachi confirmed: LXX has 3 chapters, Hebrew has 4 — Mal 4:4-6 (Hebrew/rubric) = Mal 3:22-24 (LXX/Brenton). LXX_REMAP table added; dual heading format shows both refs: 'MALACHI 3:22–24 (MALACHI 4:4–6)'. Books to audit: Daniel, Joel, Greek Esther.",
+      "data directory renamed public/bible/ (from public/scripture/) to prevent GitHub Pages route collision with /scripture React route",
+      "Error boundary added around Scripture component for production safety",
+    ],
+  },
+  {
     version: "v0.3.4",
     date: "May 2026",
     summary: "Orthodox Psalter · Vespers kathisma link · Psalter↔Hours navigation",
