@@ -1042,6 +1042,7 @@ const PENTECOSTARION_DATA = {
 
     feast_e: "Acts 17:1-15",
     feast_g: "John 11:47-57",
+    aposticha_source: "pentecostarion",
 
     prokeimenon_tone: 8,
     prokeimenon_text: "Make your vows and pay them to the Lord our God.",
@@ -1439,6 +1440,7 @@ const PENTECOSTARION_DATA = {
 
     feast_e: "Acts 17:19-28",
     feast_g: "John 12:19-36",
+    aposticha_source: "pentecostarion",
 
     prokeimenon_tone: 8,
     prokeimenon_text: "Make your vows and pay them to the Lord our God.",
@@ -1861,6 +1863,7 @@ const PENTECOSTARION_DATA = {
 
     feast_e: "Acts 1:1-12",
     feast_g: "Luke 24:36-53",
+    aposticha_source: "pentecostarion",
 
     prokeimenon_tone: 7,
     prokeimenon_text: "Be Thou exalted above the heavens, O God, and Thy glory above all the earth.",
@@ -2299,6 +2302,7 @@ const PENTECOSTARION_DATA = {
 
     feast_e: "Acts 19:1-8",
     feast_g: "John 14:1-11",
+    aposticha_source: "pentecostarion",
 
     prokeimenon_tone: 7,
     prokeimenon_text: "Be Thou exalted above the heavens, O God, and Thy glory above all the earth.",
@@ -2491,6 +2495,7 @@ const PENTECOSTARION_DATA = {
     // ── LITURGY PROPERS ──────────────────────────────────────────────────────
     feast_e: "Acts 20:7-12",
     feast_g: "John 14:1-11",
+    aposticha_source: "pentecostarion",
     prokeimenon_tone: 7,
     prokeimenon_text: "Be Thou exalted above the heavens, O God, and Thy glory above all the earth.",
     prokeimenon_stichos: "Ready is my heart, O God, ready is my heart; I will sing and chant in my glory.",
@@ -2758,6 +2763,7 @@ const PENTECOSTARION_DATA = {
     // ── LITURGY PROPERS ───────────────────────────────────────────────────────
     feast_e: "Acts 20:16-18, 28-36",
     feast_g: "John 17:1-13",
+    aposticha_source: "pentecostarion",
     prokeimenon_tone: 4,
     prokeimenon_text: "Blessed art Thou, O Lord, the God of our fathers, " +
       "and praised and glorified is Thy name unto the ages.",
@@ -2930,6 +2936,7 @@ const PENTECOSTARION_DATA = {
     // ── LITURGY PROPERS ───────────────────────────────────────────────────────
     feast_e: "Acts 21:8-14",
     feast_g: "John 14:27-15:7",
+    aposticha_source: "pentecostarion",
     prokeimenon_tone: 7,
     prokeimenon_text: "Be Thou exalted above the heavens, O God, and Thy glory above all the earth.",
     prokeimenon_stichos: "Ready is my heart, O God, ready is my heart; I will sing and chant in my glory.",
@@ -3086,6 +3093,7 @@ const PENTECOSTARION_DATA = {
     // ── LITURGY PROPERS ───────────────────────────────────────────────────────
     feast_e: "Acts 21:26-32",
     feast_g: "John 16:2-13",
+    aposticha_source: "pentecostarion",
     prokeimenon_tone: 7,
     prokeimenon_text: "Be Thou exalted above the heavens, O God, and Thy glory above all the earth.",
     prokeimenon_stichos: "Ready is my heart, O God, ready is my heart; I will sing and chant in my glory.",
@@ -3224,6 +3232,7 @@ const PENTECOSTARION_DATA = {
     // ── LITURGY PROPERS ───────────────────────────────────────────────────────
     feast_e: "Acts 23:1-11",
     feast_g: "John 16:15-23",
+    aposticha_source: "pentecostarion",
     prokeimenon_tone: 7,
     prokeimenon_text: "Be Thou exalted above the heavens, O God, and Thy glory above all the earth.",
     prokeimenon_stichos: "Ready is my heart, O God, ready is my heart; I will sing and chant in my glory.",
@@ -3401,6 +3410,7 @@ const PENTECOSTARION_DATA = {
     // ── LITURGY PROPERS ───────────────────────────────────────────────────────
     feast_e: "Acts 25:13-19",
     feast_g: "John 16:23-33",
+    aposticha_source: "pentecostarion",
     prokeimenon_tone: 7,
     prokeimenon_text: "Be Thou exalted above the heavens, O God, and Thy glory above all the earth.",
     prokeimenon_stichos: "Ready is my heart, O God, ready is my heart; I will sing and chant in my glory.",
@@ -3488,6 +3498,7 @@ const PENTECOSTARION_DATA = {
 
     feast_e: "Acts 27:1-43",
     feast_g: "John 17:18-26",
+    aposticha_source: "pentecostarion",
     prokeimenon_tone: 7,
     prokeimenon_text: "Be Thou exalted above the heavens, O God, and Thy glory above all the earth.",
     prokeimenon_stichos: "Ready is my heart, O God, ready is my heart; I will sing and chant in my glory.",
@@ -3713,6 +3724,7 @@ const PENTECOSTARION_DATA = {
     // For the Day:
     feast_e: "Acts 28:1-31",
     feast_g: "John 21:15-26",
+    aposticha_source: "pentecostarion",
     // For the Reposed:
     reposed_e: "1 Thessalonians 4:13-17",
     reposed_g: "John 5:24-30",
@@ -3855,9 +3867,7 @@ const PENTECOSTARION_DATA = {
       { tone: 4, source: "pentecostarion", text: "Today all the nations beheld strange things in the city of David, when the Holy Spirit descended in fiery tongues, as Luke, the herald of divine things, declared; for he said: As the disciples of Christ were gathered together, there came a sound as of a mighty wind, and it filled the house where they were sitting; and all began to articulate strange and foreign words, doctrines strange and new, strange and new teachings of the Holy Trinity." },
       { tone: 4, source: "pentecostarion", text: "Today all the nations beheld strange things in the city of David, when the Holy Spirit descended in fiery tongues, as Luke, the herald of divine things, declared; for he said: As the disciples of Christ were gathered together, there came a sound as of a mighty wind, and it filled the house where they were sitting; and all began to articulate strange and foreign words, doctrines strange and new, strange and new teachings of the Holy Trinity." },
       { tone: 4, source: "pentecostarion", text: "The Holy Spirit hath ever been, and is, and shall be, neither beginning nor ending; but He is ever ranked and numbered together with the Father and the Son. He is Life, and life-creating; Light, and light-bestowing; by nature good, and the source of goodness; through Him the Father is known, and the Son is glorified; and thereby all acknowledge a single sovereignty, single covenant, one adoration of the Holy Trinity." },
-      { source: "menaion", text: "[Menaion sticheron 1 — from daily Menaion entry]" },
-      { source: "menaion", text: "[Menaion sticheron 2]" },
-      { source: "menaion", text: "[Menaion sticheron 3]" },
+      // 3 Menaion stichera supplied dynamically by assembler from daily Menaion entry
     ],
     stichera_glory: { tone: 6, text: "Heavenly King, Comforter, Spirit of Truth, Who art everywhere present and fillest all things, Treasury of good gifts and Giver of life: come and abide in us, and cleanse us of all impurity, and save our souls, O good One." },
     aposticha_source: "pentecostarion",
@@ -3920,9 +3930,8 @@ const PENTECOSTARION_DATA = {
       { tone: 1, source: "pentecostarion", text: "Now all peoples have been renewed by God's exalted deeds, for by means of tongues in the likeness of fire, all those who dwell on earth have been brought to the faith, and that this sign unto the nations, hath declared that salvation is truly in our midst." },
       { tone: 1, source: "pentecostarion", text: "Having fulfilled Thy promise to send down power from on high unto Thy disciples, O Christ, Thou didst send Thy Holy Spirit, thereby showing us that Thou art Truth, and that those who hope in Thee O good One, shall in no wise ever be ashamed." },
       { tone: 1, source: "pentecostarion", text: "At the time that was appointed, Thou didst send into the world the Holy Spirit, Who came in the form of tongues of fire. All our sins are cleansed by this heavenly fire. Thereby Thou hast granted us a true communion with Him, for in pious faith we proclaim Him to be perfect God." },
-      { source: "menaion", text: "[Menaion sticheron 1]" },
-      { source: "menaion", text: "[Menaion sticheron 2]" },
-      { source: "menaion", text: "[Menaion sticheron 3]" },
+      // 3 Menaion stichera supplied dynamically by assembler from daily Menaion entry
+      // (source: daily Menaion PDF for the specific date in the given year)
     ],
     stichera_glory: { tone: 1, source: "pentecostarion", text: "We celebrate Pentecost and the coming of the Spirit, and the time appointed for the promise, and the fulfillment of hope. How great is this mystery: it is both exceeding great and most venerable. Wherefore, we cry unto Thee: O Creator of all, Lord, glory be to Thee." },
     aposticha_source: "pentecostarion",
@@ -3984,9 +3993,8 @@ const PENTECOSTARION_DATA = {
       { tone: 1, source: "pentecostarion", text: "It is proper and natural that the rational heavens proclaim with tongues of fire unto all the nations, the glory of God, Who hath adorned the heavens by means of fire; and Who, by the Son and the Spirit, hath rendered luminous the world which our senses know." },
       { tone: 1, source: "pentecostarion", text: "When Christ's disciples had gathered in Sion, as He said, then did the Spirit come down upon them, as was promised. Appearing as fire, showing the apostles to be teachers, who spoke of the hidden things of the Trinity while breathing forth fire." },
       { tone: 1, source: "pentecostarion", text: "The divine Spirit came upon the sacred apostles, making of them heavenly swords. Thus they consecrated all the earth unto God the Creator as they cut down the impious ones. By them the swords of the evil one have been destroyed, that our souls may be saved." },
-      { source: "menaion", text: "[Menaion sticheron 1]" },
-      { source: "menaion", text: "[Menaion sticheron 2]" },
-      { source: "menaion", text: "[Menaion sticheron 3]" },
+      // 3 Menaion stichera supplied dynamically by assembler from daily Menaion entry
+      // (source: daily Menaion PDF for the specific date in the given year)
     ],
     stichera_glory: { tone: 2, source: "pentecostarion", text: "We have seen the true Light; we have received the heavenly Spirit; we have found the true Faith, we worship the indivisible Trinity; for He hath saved us." },
     aposticha_source: "pentecostarion",
@@ -4047,9 +4055,8 @@ const PENTECOSTARION_DATA = {
       { tone: 1, source: "pentecostarion", text: "Behold this is the day of joy and rejoicing, for today from on high the Holy Spirit hath appeared unto the sacred apostles, coming from the Father in the form of fire, and enlightening all: The fisherman have became orators of Wisdom, as Luke the divine Trumpet wrote, all things have been filled with the Spirit. Wherefore with faith we stand amazed, offering praise unto the abundance of mercy and self-emptying of Christ our God." },
       { tone: 1, source: "pentecostarion", text: "Let us celebrate the solemn festival of Holy Pentecost, and the power of the Spirit, and the truly joyous consummation of our divine hope, for the mystery from all ages hath been revealed unto us, wherefore we cry aloud unto Thee: O Creator of all things, take not Thy Holy Spirit from us O Word, rather send it down from the heavens O Savior, by the prayers of the Saints, and of Thine all-famed and glorious apostles, we beseech Thee to grant peace unto our souls." },
       { tone: 1, source: "pentecostarion", text: "Today heaven doth declare the vivifying power of the Savior, and the might of the divine Comforter, which hath clearly been preached throughout all the world, enlightening all of creation with its teachings, of the Unity of the undivided Trinity, in three uncommingled Hypostases. Wherefore let us celebrate in faith the coming of the Holy Spirit, which hath appeared from on high, enlightening the ends of the earth." },
-      { source: "menaion", text: "[Menaion sticheron 1]" },
-      { source: "menaion", text: "[Menaion sticheron 2]" },
-      { source: "menaion", text: "[Menaion sticheron 3]" },
+      // 3 Menaion stichera supplied dynamically by assembler from daily Menaion entry
+      // (source: daily Menaion PDF for the specific date in the given year)
     ],
     stichera_glory: { tone: 7, source: "pentecostarion", text: "The Comforter, having come from the Father through Christ God, hath come unto us on earth today, therefore with faith we worship the Holy Spirit." },
     aposticha_source: "pentecostarion",
@@ -4111,9 +4118,8 @@ const PENTECOSTARION_DATA = {
       { tone: 4, source: "pentecostarion", text: "On this day the working of Thy Holy Spirit came down upon Thine apostles, showing them to be supremely wise, and seers of divine things, filling them with Thy blessed teaching. Wherefore, we glorify Thy saving dispensation, O Jesus Almighty, the Savior of our souls." },
       { tone: 4, source: "pentecostarion", text: "On this day Thy Spirit O all-powerful Lord, hath been sent forth from the Father, He Who is consubstantial with Thee, was distributed among the apostles in the form of fiery tongues; thus He prepared them to preach Thy mighty deeds. Wherefore we glorify Thy saving dispensation, O Jesus, Almighty, the Savior of our souls." },
       { tone: 4, source: "pentecostarion", text: "On this day, O Savior, Thou hast poured forth the gifts of Thy Comforting Spirit, granting mortal-mankind to prophesy, as Thou didst once promise O Word, whereby Thou didst teach all to worship and adore the undivided Trinity. Wherefore we glorify Thy saving dispensation, O Jesus Almighty, the Savior of our souls." },
-      { source: "menaion", text: "[Menaion sticheron 1]" },
-      { source: "menaion", text: "[Menaion sticheron 2]" },
-      { source: "menaion", text: "[Menaion sticheron 3]" },
+      // 3 Menaion stichera supplied dynamically by assembler from daily Menaion entry
+      // (source: daily Menaion PDF for the specific date in the given year)
     ],
     stichera_glory: { tone: 2, source: "pentecostarion", text: "Let us praise in hymns the Trinity one in essence, the Father, and the Son, with the Holy Spirit: Who hath been declared by all the prophets, apostles, and martyrs." },
     aposticha_source: "pentecostarion",

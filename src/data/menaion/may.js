@@ -638,6 +638,9 @@ const MAY_MENAION = {
     rank: "simple",
     fekula_section: "2A",
     has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
     magnificat_sung: false,
     matins_format: "god_is_the_lord", // PDF rubric: "if Alleluia is sung INSTEAD of God is the Lord" — confirming God is the Lord is the norm
     note: "May 22 O.S. = June 4 N.S. OCA commemorates May 22 N.S. — DIVERGENCE; OCA date governs. " +
@@ -719,6 +722,9 @@ const MAY_MENAION = {
     rank: "six_stichera",
     fekula_section: "2C",
     has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
     magnificat_sung: false,
     matins_format: "god_is_the_lord", // PDF rubric: "if this day fall during the fast and Alleluia is sung instead" — confirming norm
     note: "May 23 O.S. = June 5 N.S. OCA commemorates May 23 N.S. — DIVERGENCE; OCA date governs. " +
@@ -1121,6 +1127,9 @@ const MAY_MENAION = {
     rank: "simple",
     fekula_section: "2A",
     has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
     magnificat_sung: false,
     matins_format: "god_is_the_lord",
     note: "May 26 O.S. = June 8 N.S. OCA commemorates May 26 N.S. — DIVERGENCE; OCA date governs. " +
@@ -1187,6 +1196,9 @@ const MAY_MENAION = {
       rank: "simple",
       fekula_section: "2A",
       has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
       magnificat_sung: false,
       matins_format: "god_is_the_lord",
       note: "May 27 O.S. = June 9 N.S. OCA commemorates May 27 N.S. — DIVERGENCE; OCA date governs. " +
@@ -1304,6 +1316,9 @@ const MAY_MENAION = {
     rank: "simple",
     fekula_section: "2A",
     has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
     magnificat_sung: false,
     matins_format: "god_is_the_lord",
     note: "May 28 O.S. = June 10 N.S. OCA commemorates May 28 N.S. — DIVERGENCE; OCA date governs. " +
@@ -1378,6 +1393,9 @@ const MAY_MENAION = {
     rank: "simple",
     fekula_section: "2A",
     has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
     magnificat_sung: false,
     matins_format: "god_is_the_lord",
     note: "May 29 O.S. = June 11 N.S. OCA commemorates May 29 N.S. — DIVERGENCE; OCA date governs. " +
@@ -1455,6 +1473,9 @@ const MAY_MENAION = {
     rank: "simple",
     fekula_section: "2A",
     has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
     magnificat_sung: false,
     matins_format: "god_is_the_lord",
     note: "May 30 O.S. = June 12 N.S. OCA commemorates May 30 N.S. — DIVERGENCE; OCA date governs. " +
