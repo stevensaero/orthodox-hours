@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.3.9** | Last synced: May 23, 2026
+**Tool version: v0.3.11** | Last synced: May 23, 2026
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
@@ -1736,3 +1736,45 @@ Drive snapshots are historical record only — do not create new ones.
 ---
 
 *Last updated: May 23, 2026 · Tool v0.3.9*
+
+---
+
+## Session Notes — May 23, 2026 (v0.3.11)
+
+### Bugs fixed this session (all Fekula/PDF-traced)
+
+**1. Aposticha Both now missing (P+42)**
+`pentEntry.aposticha_theotokion` was encoded but `assembleVespers()` never rendered it. After the aposticha doxasticon (Holy Fathers T4), "Now and ever…" appeared with nothing following. Fixed by adding render block for `aposticha_theotokion` in the Pentecostarion aposticha branch.
+
+**2. OT paroemia links missing in Vespers**
+`paroemiaToScriptureHref()` was called in the context card but not in `assembleVespers()`. OT lessons showed as plain text without the "Read in Scripture ↗" badge. Fixed by calling the function per paroemia element in the assembler.
+
+**3. P+42 LIC verse interleave broken**
+`stichera_lord_i_call_count` was missing from P+42, P+48. `licCount` defaulted to 6 instead of 10. V(10) and V(9) floated above the block as uninterleaved verses; Holy Fathers stichera (slots 7–10) never rendered. Fixed by adding count field to affected entries.
+
+**4. Three troparia at Vespers (P+42, P+56)**
+Assembler only read `pentEntry.troparion`; ignored `troparion_2` (Glory) and `troparion_3` (Both now). Added support for both fields. Affects P+42 (Resurrection T6 / Fathers T8 / Ascension T4) and P+56 (Resurrection T8 / All Saints T4).
+
+**5. Vespers kontakion suppression — now explicit**
+Previously suppressed implicitly when `thirdTrop` was present. Now driven by `vespers_kontakion: false` on pentEntry. P+42 (§4B13) and P+56 (§4B17) both set. Assembler reads flag directly.
+
+### §4B13 research — fully resolved
+
+Vetted against `fekula_chapter_4.txt` and St. Sergius 70.pdf.
+
+**No-Vigil Vespers (what our tool shows):**
+Sunday troparion → Glory: Holy Fathers → Both now: Ascension troparion
+✅ Confirmed correct per Fekula §4B13 and 70.pdf explicit rubric.
+
+**Vigil Vespers (published parish schedule):**
+Holy Fathers (×2) → Ascension (×1) — no Resurrection troparion
+Both are correct; they apply to different service forms.
+
+**OCA vs Russian translation divergence:**
+Tool uses St. Sergius/HTM translations. OCA printed guides use OCA translations of the same prayers. Not a bug — expected and documented. Worth noting when comparing tool output with OCA service sheets.
+
+**Chapter 6 theotokion vs §4B13 specific override:**
+Chapter 6 general Sunday rule: Both now = dismissal theotokion in tone of last troparion.
+§4B13 specific override: Both now = troparion of the feast (Ascension).
+St. Sergius and Fekula §4B13 both prescribe the Ascension troparion explicitly.
+OCA may follow the Chapter 6 general rule instead. Worth discussing with the parish priest.
