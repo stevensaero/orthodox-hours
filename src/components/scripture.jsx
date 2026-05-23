@@ -657,6 +657,10 @@ export default function Scripture() {
         }
       } else if (!initState.bookParam) {
         setSelectedBookId("Matt");
+      } else {
+        // bookParam present — book-load effect will set loading false
+        // but if somehow nothing fires, release loading here
+        setLoading(false);
       }
     });
   }, []);

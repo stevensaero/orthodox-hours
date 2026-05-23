@@ -12,6 +12,7 @@ function App() {
         <Route path="/psalter" element={<Psalter />} />
         <Route path="/psalter/:kathisma" element={<Psalter />} />
         <Route path="/scripture" element={<Scripture />} />
+        <Route path="/scripture/" element={<Scripture />} />
       </Routes>
     </BrowserRouter>
   );
