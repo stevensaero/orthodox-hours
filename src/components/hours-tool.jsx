@@ -6950,6 +6950,19 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
 
 const RELEASE_NOTES = [
   {
+    version: "v0.3.9",
+    date: "May 2026",
+    summary: "Data architecture refactor — dynamic monthly modules · context card collapsed by default",
+    items: [
+      "Menaion data extracted to src/data/menaion/may.js, june.js, july.js — monthly dynamic imports, Vite code-split",
+      "Pentecostarion data extracted to src/data/pentecostarion.js — dynamic import, cached after first load",
+      "Main bundle: 1,165 KB → 929 KB (20% smaller); data chunks load on demand per month",
+      "Monthly .js files are now single point of truth for encoding — git tracks all changes",
+      "Adding a new month: create src/data/menaion/{month}.js + one line in _menaionLoaders",
+      "Liturgical context card now collapsed by default — expand with ▼ for full detail",
+    ],
+  },
+  {
     version: "v0.3.8",
     date: "May 2026",
     summary: "Schema normalization · Priority 1/2 cleanup · Encoding rule v2.1 · Priority 3 Menaion begins",
@@ -7777,7 +7790,7 @@ export default function App() {
   );
   const [showGlossary, setShowGlossary] = useState(false);
   const [showHowItWorks, setShowHowItWorks] = useState(false);
-  const [contextOpen, setContextOpen] = useState(true);
+  const [contextOpen, setContextOpen] = useState(false);
   const [selectedServiceKey, setSelectedServiceKey] = useState("vespers");
   // tbOpen: tracks whether the Typical Beginning is expanded on 1st/6th Hours.
   // When expanded, the Hour body shows O come let us worship (not Christ is risen)
