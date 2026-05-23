@@ -2067,8 +2067,12 @@ const SAMPLE_MENAION = {
     rank: "polyeleos",
     fekula_section: "2E",
     has_great_doxology: false,
-    magnificat_sung: true,  // §2E Polyeleos — Magnificat sung at Matins
+    has_polyeleos: true,
+    has_litya: false,  // §2E — no Litya in 05-24.pdf
+    has_paroemias: false,  // NOT IN PDF — unusual for §2E; absent from 05-24.pdf; flagged
+    magnificat_sung: true,  // §2E Polyeleos
     matins_format: "god_is_the_lord",
+    matins_gospel: "Matthew 11:27-30 (§43) — all things delivered unto Me of My Father",
     note: "May 24 O.S. = June 6 N.S. OCA commemorates May 24 N.S. — DIVERGENCE; OCA date governs. " +
           "Polyeleos §2E confirmed — 6 stichera (×2 each of 3 stichera), Aposticha, full AT LITURGY. " +
           "OCA and St. Sergius texts agree on troparion and kontakion. " +
@@ -2225,6 +2229,8 @@ const SAMPLE_MENAION = {
     has_great_doxology: true,
     has_polyeleos: true,
     has_litya: true,
+    has_paroemias: true,  // §2E — 3 paroemias confirmed in 05-25.pdf
+    aposticha_source: "menaion",  // Aposticha from Menaion (finding stichera)
     magnificat_sung: true,
     matins_format: "god_is_the_lord",
     note: "May 25 O.S. = June 7 N.S. OCA commemorates May 25 N.S. — DIVERGENCE; OCA date governs. " +
@@ -4429,6 +4435,266 @@ const PENTECOSTARION = {
 
     // ── AT LITURGY ───────────────────────────────────────────────────────────
 
+    // ── LORD I HAVE CRIED (Vespers) ─────────────────────────────────────────
+    // 7 Octoechos Tone V (assembled) + 3 Blind Man Tone II feast stichera
+    stichera_lord_i_call: [
+      { tone: 2, verse: "For with the Lord there is mercy, and with Him is plenteous redemption; and He shall redeem Israel out of all his iniquities.",
+        text: "He that was born blind thought to himself and said: " +
+              "Was I born without eyes for the sins of my parents? " +
+              "Was I born to be an example because of the unbelief of the nations? " +
+              "I cease not from asking: When is it night, when is it day? " +
+              "My feet cannot endure striking against the stones. " +
+              "For I have neither seen the sun shining nor beheld in image Him Who fashioned me. " +
+              "But I beseech Thee, O Christ God, look upon me and have mercy on me." },
+      { tone: 2, verse: "O praise the Lord, all ye nations; praise Him, all ye peoples.", repeat: true },
+      { tone: 2, verse: "For He hath made His mercy to prevail over us, and the truth of the Lord abideth forever.",
+        text: "As Jesus passed by on His way from the temple, " +
+              "He found a man who was blind from his birth; " +
+              "and taking compassion on him, He put clay on his eyes and said unto him: " +
+              "Go and wash in the pool of Siloam. " +
+              "And he washed and gained his sight, and sent up praise to God. " +
+              "But his kinsmen said unto him: " +
+              "Who hath opened thine eyes, which none of those who see were able to heal? " +
+              "And he cried out and said: " +
+              "A man called Jesus; He told me: Wash in the pool of Siloam; and I gained my sight. " +
+              "He is truly Christ the Messiah, of Whom Moses spake in the Law. " +
+              "He is the Savior of our souls." },
+    ],
+    stichera_lord_i_call_count: 3,  // feast stichera; 7 Octoechos assembled separately
+
+    stichera_glory: {
+      tone: 5,
+      text: "Passing by on the way, O Lord, " +
+            "Thou didst find a man who was blind from his birth. " +
+            "And the disciples, in astonishment, asked Thee and said: " +
+            "Teacher, who did sin, this man or his parents, that he was born blind? " +
+            "And Thou, O my Savior, didst cry unto them: Neither hath this man sinned, nor his parents, " +
+            "but that the works of God should be made manifest in him. " +
+            "I must work the works of Him that sent Me, which none else can work. " +
+            "And when Thou hadst said this, Thou didst spit upon the ground " +
+            "and make clay, and anoint his eyes, saying unto him: " +
+            "Go, wash in the pool of Siloam. " +
+            "And he washed and was made whole and cried unto Thee: " +
+            "Lord, I believe; and he worshipped Thee. " +
+            "Wherefore, we also cry out: Have mercy upon us.",
+    },
+
+    lic_theotokion: {
+      tone: 5,
+      text: "In the Red Sea of old " +
+            "an image of the Bride who knew not wedlock was depicted. " +
+            "There Moses was the one who parted the sea, " +
+            "here Gabriel is the minister of the miracle. " +
+            "At that time Israel marched dry-shod through the deep, " +
+            "now the Virgin doth seedlessly give birth to Christ. " +
+            "The sea after Israel's passage remained impassable; " +
+            "the immaculate one after bearing Emmanuel remained incorrupt. " +
+            "O God, Who doth exist and is pre-eternal, " +
+            "and hath appeared as man, have mercy upon us.",
+      type: "dogmatic",
+    },
+
+    // ── APOSTICHA (Saturday Vespers) ─────────────────────────────────────────
+    // Resurrection sticheron Tone V + 4 Paschal stichera with "Let God arise" verses
+    aposticha_source: "pentecostarion",
+    stichera_aposticha: [
+      { tone: 5,
+        text: "With voices of song we magnify Thee, O Christ, " +
+              "the Savior incarnate, yet not separated from heaven, " +
+              "for as the Lord who lovest mankind " +
+              "Thou hast suffered the cross and death for the sake of our race, " +
+              "overthrowing the gates of Hades, " +
+              "and rising on the third day, thus saving our souls." },
+      { verse: "Let God arise and let His enemies be scattered, and let them that hate Him flee from before His face.",
+        tone: 5, name: "Paschal Sticheron 1",
+        text: "A Pascha sacred today hath been shown unto us; " +
+              "Pascha new and holy, a Pascha mystical, a Pascha all-venerable! " +
+              "A Pascha that is Christ the Redeemer; " +
+              "a Pascha immaculate, a great Pascha; a Pascha of the faithful; " +
+              "a Pascha that hath opened the gates of Paradise to us; " +
+              "a Pascha that doth sanctify all the faithful." },
+      { verse: "As smoke vanisheth, so let them vanish.",
+        tone: 5, name: "Paschal Sticheron 2",
+        text: "Come from the vision, O ye women, bearers of good tidings, " +
+              "and say ye unto Zion: " +
+              "Receive from us the good tidings of the Resurrection of Christ; " +
+              "adorn thyself, exult, and rejoice, O Jerusalem, " +
+              "for thou hast seen Christ the King, like a bridegroom come forth from the tomb." },
+      { verse: "So let sinners perish at the presence of God, and let the righteous be glad.",
+        tone: 5, name: "Paschal Sticheron 3",
+        text: "The myrrh-bearing women in the deep dawn " +
+              "stood before the tomb of the Giver of life; " +
+              "they found an angel sitting upon the stone, " +
+              "and he, speaking to them, said thus: " +
+              "Why seek ye the Living among the dead? " +
+              "Why mourn ye the Incorruptible amid corruption? " +
+              "Go, proclaim unto His disciples." },
+      { verse: "This is the day which the Lord hath made, let us rejoice and be glad therein.",
+        tone: 5, name: "Paschal Sticheron 4",
+        text: "Pascha the beautiful, Pascha, the Lord's Pascha, " +
+              "the Pascha all-venerable hath dawned upon us. " +
+              "Pascha, with joy let us embrace one another. " +
+              "O Pascha! Ransom from sorrow, " +
+              "for from the tomb today, as from a bridal chamber, " +
+              "hath Christ shone forth, " +
+              "and hath filled the women with joy, saying: " +
+              "Proclaim unto the apostles." },
+    ],
+
+    aposticha_glory: {
+      tone: 8,
+      text: "O Christ God, Thou spiritual Sun of Righteousness, " +
+            "Who by Thy most pure touch didst bestow a twofold enlightenment " +
+            "upon him who from his mother's womb was deprived of sight, " +
+            "illumine Thou the eyes of our souls also, " +
+            "and prove us to be sons of the day, that we may cry to Thee with faith: " +
+            "Great and ineffable is Thy compassion toward us, O Lover of man; glory be to Thee.",
+    },
+
+    aposticha_both_now: {
+      tone: 5,
+      text: "It is the Day of Resurrection, let us be radiant for the feast, " +
+            "and let us embrace one another. " +
+            "Let us say, Brethren, even to them that hate us, " +
+            "let us forgive all things on the Resurrection, and thus let us cry out: " +
+            "Christ is risen from the dead, trampling down death by death, " +
+            "and upon those in the tombs bestowing life.",
+      note: "Paschal Both now replaces theotokion",
+    },
+
+    // ── AT LITURGY — BEATITUDES ───────────────────────────────────────────────
+    // 4 Resurrection Tone V + 4 from Ode VI of Canon of the Blind Man (60.pdf)
+    // ── MATINS PRAISES (On the Praises — Sunday Matins aposticha) ────────────
+    // 7 Resurrection Tone V + 1 Blind Man Tone VIII (from 60.pdf)
+    stichera_matins_aposticha: [
+      { tone: 5, name: "Resurrection Sticheron 1",
+        verse: "To do among them the judgment that is written, This glory shall be to all His saints.",
+        text: "O Lord, while the grave was sealed by lawless men, " +
+              "Thou didst come forth from the tomb " +
+              "in a manner similar to Thy birth from the Theotokos. " +
+              "Thy bodiless angels could not fathom the event of Thine incarnation, " +
+              "likewise the soldiers guarding Thee could not know when Thou didst arise. " +
+              "For the full knowledge of both events hath been sealed from those who would inquire, " +
+              "but the wonder of these events hath been revealed to those who with faith " +
+              "worship the mystery which we hymn; " +
+              "grant unto us joy and great mercy." },
+      { tone: 5, name: "Resurrection Sticheron 2",
+        verse: "Praise ye God in His saints, praise Him in the firmament of His power.",
+        text: "O Lord, having smashed the eternal bars and burst asunder the bonds of Hades, " +
+              "Thou didst arise from the tomb, " +
+              "leaving Thy grave clothes behind in testimony of Thy three day burial. " +
+              "Whereupon Thou didst go forth into Galilee, while yet being guarded in a cave. " +
+              "Great is Thy mercy, O Savior, and beyond understanding; have mercy on us." },
+      { tone: 5, name: "Resurrection Sticheron 3",
+        verse: "Praise Him for His mighty acts, praise Him according to the multitude of His greatness.",
+        text: "O Lord, the women ran unto Thy tomb to see Thee, " +
+              "the Christ who had suffered for our sakes. " +
+              "Approaching the tomb they found an angel seated upon the stone, which had rolled back from fear, " +
+              "and he cried unto them saying: " +
+              "'The Lord hath arisen; go tell His disciples that He is risen, saving your souls.'" },
+      { tone: 5, name: "Resurrection Sticheron 4",
+        verse: "Praise Him with the sound of trumpet, praise Him with the psaltery and harp.",
+        text: "O Lord, in a manner similar to that " +
+              "by which Thou didst come forth from the sealed tomb, " +
+              "Thou didst enter in unto Thy disciples when the doors were shut, " +
+              "showing them Thy body's sufferings, O long-suffering Savior, " +
+              "which Thou didst willingly endure. " +
+              "As one who hath sprung forth from the seed of David, Thou didst endure wounds, " +
+              "but as One who didst spring forth from God, even the Son of God " +
+              "Thou hast delivered the world. " +
+              "Incomprehensible and great is Thy mercy, O Savior, have mercy on us." },
+      { tone: 5, name: "Resurrection Sticheron 5",
+        verse: "Praise Him with timbrel and dance, praise Him with strings and flute.",
+        text: "The Lord, and King of the ages, the Creator of all things, " +
+              "Who for our sake willingly endured crucifixion and burial in the flesh, " +
+              "in order to free us all from Hades, " +
+              "Thou art our God and we know no other besides Thee." },
+      { tone: 5, name: "Resurrection Sticheron 6",
+        verse: "Praise Him with tuneful cymbals, praise Him with cymbals of jubilation. Let every breath praise the Lord.",
+        text: "O Lord, who will recount Thine awe-inspiring wonders? " +
+              "Who will confess Thy dread mysteries? " +
+              "For, becoming incarnate for us, as Thou Thyself didst will, " +
+              "Thou hast manifest the might of Thy power; " +
+              "For on Thy Cross Thou didst open Paradise to the Thief, " +
+              "and in Thy Burial Thou didst smash the bars of Hades, " +
+              "and with Thy Resurrection Thou hast enriched all things. " +
+              "O Compassionate Lord, glory be to Thee!" },
+      { tone: 5, name: "Resurrection Sticheron 7",
+        verse: "Arise, O Lord my God, let Thy hands be lifted high; forget not Thy paupers to the end.",
+        text: "The myrrh-bearing women coming to Thy tomb in the deep of morning " +
+              "seeking to anoint with spices the Immortal Word and God; " +
+              "and being informed by the words of the angel, " +
+              "returned with joy to tell the apostles " +
+              "that Thou O Lord, the life of all, hast arisen, " +
+              "granting the world forgiveness and great mercy." },
+      { tone: 8, name: "Blind Man Sticheron",
+        verse: "Look upon me, and have mercy on me.",
+        text: "O Christ God, Who by Thy merciful compassion became incarnate, " +
+              "with Thy fingers which hath fashioned all things " +
+              "Thou didst touch clay to the eyes of him who from the womb was bereft of sight " +
+              "and didst thereby deem him worthy of divine brilliance " +
+              "by Thine ineffable compassion. " +
+              "And now do Thou Thyself, O Bestower of light, " +
+              "illumine also the senses of our souls, " +
+              "since Thou alone art the bountiful Bestower of good gifts." },
+    ],
+    stichera_matins_aposticha_glory: {
+      tone: 8,
+      text: "Who can tell of Thy mighty acts, O Christ, " +
+            "or who can number the multitudes of Thy wonders? " +
+            "For even as Thou, in Thy goodness, didst appear on earth twofold of nature, " +
+            "so didst Thou grant twofold healings to the sick; " +
+            "for Thou didst open not only the bodily eyes of the man who was blind from the womb, " +
+            "but those of his soul also. " +
+            "Wherefore, he confessed Thee, the hidden God, Who grantest great mercy unto all.",
+    },
+    stichera_matins_aposticha_both_now: {
+      tone: 2,
+      text: "Thou art most blessed, O Virgin Theotokos, " +
+            "for through Him who took flesh from thee, Hades hath been captured, " +
+            "Adam recalled, the curse slain, Eve set free, " +
+            "death put to death, and we have been given life. " +
+            "Therefore in praise we cry: " +
+            "Blessed art Thou, O Christ our God, who hast been thus well-pleased, glory be to Thee.",
+    },
+
+
+    beatitudes_source: "4 Resurrection Tone V + 4 from Ode VI of Canon of the Blind Man (60.pdf)",
+    beatitudes_troparia: [
+      { tone: 5, source: "resurrection",
+        text: "Believing Thee to be God, O Christ, the thief on the cross " +
+              "confessed Thee in a pure manner, crying out from the depths of his heart: " +
+              "Remember me in Thy kingdom, O Lord!" },
+      { tone: 5, source: "resurrection",
+        text: "Together let us hymn as Savior and Creator, Him Who on the Cross " +
+              "budded forth life for our race and caused the curse " +
+              "which originated from the tree to wither up." },
+      { tone: 5, source: "resurrection",
+        text: "By Thy death hast Thou destroyed the power of death, O Christ, " +
+              "and Thou didst raise up with Thyself the dead of ages past, " +
+              "who now hymn Thee as our true God and Savior." },
+      { tone: 5, source: "resurrection",
+        text: "Arriving at Thy tomb, O Christ, the honorable women sought to anoint Thee with myrrh, " +
+              "O Bestower of life; but an angel appeared to them, crying out: The Lord is risen!" },
+      { source: "blind_man_ode6",
+        text: "After Thine arising, O Christ, Thou didst say unto Thy friends: " +
+              "Tarry ye in Jerusalem, until ye be endued with invincible power " +
+              "and sure assistance from on high." },
+      { source: "blind_man_ode6",
+        text: "Thou didst make clay and didst anoint the eyes of the man who had been blind from his birth. " +
+              "Thou didst grant him his sight, and he praised Thine immaculate might, " +
+              "whereby Thou hast saved the world, O Word." },
+      { source: "glory",
+        text: "O Unity of three Hypostases, Unbegotten Father, Begotten Son, " +
+              "and Thou Spirit Who proceedest, thrice-holy Lord, " +
+              "one essence and might, save all Thy people." },
+      { source: "theotokion",
+        text: "Who can tell of thy mighty deeds, O pure One? " +
+              "For, in a manner surpassing nature, thou didst give birth in the flesh unto God, " +
+              "Who through thee doth deliver the world from all sin, O all-immaculate Virgin." },
+    ],
+
+
     feast_e: "Acts 16:16-34",
     feast_g: "John 9:1-38",
 
@@ -4542,7 +4808,13 @@ const PENTECOSTARION = {
 
     // ── FLAGS ────────────────────────────────────────────────────────────────
     menaion_set_aside: false,
+    has_great_doxology: true,  // Sunday — Great Doxology sung
+    has_litya: true,   // Great Vespers with Litya on Saturday evening
+    has_paroemias: false,  // Sunday of the Blind Man — no paroemias
+    magnificat_sung: false,  // Zadostoinik replaces; Magnificat not sung
+    matins_format: "god_is_the_lord",
     it_is_truly_meet_suppressed: true,  // Zadostoinik replaces throughout Pentecostarion
+    heavenly_king_omitted: true,
     note: "Saturday Vespers through Sunday Liturgy. Two canons at Matins: " +
           "Canon of Pascha (chanted, Tone I, refrain: Christ is risen) + " +
           "Canon of Blind Man (read, Tone V, refrain: Glory to Thee). " +
@@ -4719,6 +4991,107 @@ const PENTECOSTARION = {
             "look upon me and have mercy on me.",
     },
 
+    // ── VESPERS APOSTICHA (Sunday Evening) ───────────────────────────────────
+    // Stichera of the Resurrection Tone V + Glory Tone VIII (from 61.pdf)
+    stichera_aposticha: [
+      { tone: 5,
+        text: "By Thy precious Cross, O Christ, " +
+              "Thou hast shamed the devil, " +
+              "and by Thy Resurrection Thou hast blunted the sting of sin, " +
+              "and saved us from the gates of death: " +
+              "we glorify Thee, the Only-begotten One." },
+      { verse: "Unto Thee have I lifted up mine eyes, unto Thee that dwellest in heaven. " +
+               "Behold, as the eyes of servants look unto the hands of their masters...",
+        tone: 5, name: "Hymn of Compunction",
+        text: "O Lord, I cease not from sinning; " +
+              "even though I have been deemed worthy of Thy love for mankind, " +
+              "I have not acknowledged it. " +
+              "Do Thou overcome my hardness of heart, " +
+              "O only good One, and have mercy on me." },
+      { verse: "Have mercy on us, O Lord, have mercy on us, for greatly are we filled with abasement.",
+        tone: 5, name: "Martyricon",
+        text: "Having disdained all earthly things, " +
+              "and having courageously endured torments, " +
+              "ye did not fall short of your blessed hopes, " +
+              "but ye became heirs of the Kingdom of the heavens, " +
+              "O all-famed martyrs. " +
+              "Since ye have boldness before God the Lover of mankind, " +
+              "pray that peace be granted unto the world, " +
+              "and great mercy to our souls." },
+    ],
+
+    aposticha_glory: {
+      tone: 8,
+      text: "As Jesus passed by on His way from the temple, " +
+            "He found a man who was blind from his birth; " +
+            "and taking compassion on him, He put clay on his eyes and said unto him: " +
+            "Go and wash in the pool of Siloam. " +
+            "And he washed and gained his sight, and sent up praise to God. " +
+            "But his kinsmen said unto him: " +
+            "Who hath opened thine eyes, which none of those who see were able to heal? " +
+            "And he cried out and said: " +
+            "A man called Jesus; He told me: Wash in the pool of Siloam; and I gained my sight. " +
+            "He is truly Christ the Messiah, of Whom Moses spake in the Law. " +
+            "He is the Savior of our souls.",
+      note: "Both now = same (rubric: Glory...Both now in Tone VIII)",
+    },
+
+    // ── MATINS APOSTICHA (Monday Morning) ────────────────────────────────────
+    // From 61.pdf Matins Aposticha section
+    stichera_matins_aposticha: [
+      { tone: 5,
+        text: "Blindness hath befallen those who could see, " +
+              "and their minds and soul became darkened, " +
+              "for having beheld the blind man regain sight, " +
+              "in their wickedness they demanded of him: " +
+              "'How dost thou now see like those who have sight? " +
+              "For thou wast blind from Thy birth, and thou didst sit by the wayside, begging.' " +
+              "Thereupon, the blind man revealed that it was He Who had bestowed light, " +
+              "and created the world's luminaries, " +
+              "thereby preaching God's pre-beginningless Son, " +
+              "Who in His compassion hath appeared as a man in these latter days, " +
+              "incarnate of the Spirit and the Virgin." },
+      { verse: "Look upon me, and have mercy upon me.", tone: 5,
+        text: "Like unto one bearing a great burden and earthen load, " +
+              "the blind man wandered in this world, striking his feet against the stones. " +
+              "Instead of sight he was endowed with a staff; " +
+              "wherefore he fled for refuge unto the Light-bestower, " +
+              "from Whom he was granted to see the light, " +
+              "and behold the Creator with his own eyes, " +
+              "Him Who fashioned from the earth " +
+              "our human nature in His own image and likeness, " +
+              "but now from spittle mixed with dust " +
+              "He hath enlightened the blind man's eyes, " +
+              "and in His love for mankind hath granted him to see the sun." },
+      { verse: "My steps do Thou direct according to Thy saying.", tone: 5,
+        text: "When he beheld the light, the blind man saw the Word of the Father, " +
+              "Who had formed mankind in His image and likeness. " +
+              "The wondrous vision filled him with gladness, " +
+              "beholding the sun which ruleth the day, brilliant and effulgent, as it is seen by all mankind, " +
+              "and walking free from all stumbling, he traversed paths with ease, " +
+              "and he recognized Him that had enlightened him as the Son of God, " +
+              "Who had become a man out of His extreme compassion. " +
+              "For, being God, He took upon Himself that which He was not, " +
+              "remaining God yet also a man, preserving His uncommingled union." },
+    ],
+    stichera_matins_aposticha_glory: {
+      tone: 5,
+      text: "Passing by on the way, O Lord, " +
+            "Thou didst find a man who was blind from his birth. " +
+            "And the disciples, in astonishment, asked Thee and said: " +
+            "Teacher, who did sin, this man or his parents, that he was born blind? " +
+            "And Thou, O my Savior, didst cry unto them: Neither hath this man sinned, nor his parents, " +
+            "but that the works of God should be made manifest in him. " +
+            "I must work the works of Him that sent Me, which none else can work. " +
+            "And when Thou hadst said this, Thou didst spit upon the ground " +
+            "and make clay, and anoint his eyes, saying unto him: " +
+            "Go, wash in the pool of Siloam. " +
+            "And he washed and was made whole and cried unto Thee: " +
+            "Lord, I believe; and he worshipped Thee. " +
+            "Wherefore, we also cry out: Have mercy upon us.",
+      note: "Both now = same (rubric repeated)",
+    },
+
     // Aposticha (Glory, Both now — unique to this file, Tone VIII)
     aposticha_glory: {
       tone: 8,
@@ -4831,8 +5204,45 @@ const PENTECOSTARION = {
 
     beatitudes_source: "6 verses from Ode I of Canon of the Blind Man",
 
+    beatitudes_troparia: [
+      { source: "blind_man_ode1",
+        text: "Having accepted a voluntary crucifixion in the flesh, " +
+              "Thou didst pour forth blessing and life unto the world, " +
+              "O only most blessed Master and Creator of all. " +
+              "Wherefore we bless and praise and glorify Thee, " +
+              "singing and chanting a hymn of victory." },
+      { source: "blind_man_ode1",
+        text: "When Thou hadst died, O Christ, the noble Joseph laid Thee in a hollow, " +
+              "even the lowest pit, and he rolled a stone against the entrance of the sepulcher, " +
+              "O Long-suffering One. But Thou didst arise in glory " +
+              "and didst raise up the world together with Thyself, " +
+              "as it sang and chanted a hymn of victory." },
+      { source: "blind_man_ode1",
+        text: "Why bring ye myrrh with tears? said the angel who appeared unto the venerable women. " +
+              "Christ is risen. Make haste and tell it to the disciples, " +
+              "those seers of God who are lamenting and weeping, " +
+              "so that they may radiantly leap and dance for joy." },
+      { source: "blind_man_ode1",
+        text: "The Redeemer performed strange wonders, in that He healed the man who had been blind from birth. " +
+              "He anointed him with clay and said: Go and wash in Siloam, " +
+              "that thou mightest know that I am God, " +
+              "Who by the bowels of My compassion walk upon the earth while bearing flesh." },
+      { source: "glory",
+        text: "As we venerate one essence in three hypostases, O ye faithful, " +
+              "let us glorify the Father, and Son, and Upright Spirit, " +
+              "the Creator and Lord and Redeemer of all, one uncreated God, " +
+              "and let us cry out with the Bodiless: Holy, Holy, Holy art Thou, O King." },
+      { source: "theotokion",
+        text: "Out of compassion, the Lord dwelt in thy womb, which knew not wedlock, O pure one, " +
+              "for He wished to save man who, through the devices of the enemy, " +
+              "had become subject to corruption. " +
+              "Entreat Him, therefore, that this city be saved from every enemy assault and conquest." },
+    ],
+
     // ── FLAGS ────────────────────────────────────────────────────────────────
     menaion_set_aside: false,
+    matins_format: "god_is_the_lord",
+    heavenly_king_omitted: true,
     it_is_truly_meet_suppressed: true,
     note: "File covers Sunday evening Small Vespers (P+35 eve) + Monday Matins/Liturgy (P+36). " +
           "Magnificat sung at Ode VIII — weekday rule, differs from P+35 Sunday. " +
@@ -4975,6 +5385,105 @@ const PENTECOSTARION = {
             "O Lover of mankind glory be to Thee.",
     },
 
+    // ── VESPERS APOSTICHA (Monday Evening) ───────────────────────────────────
+    // Stichera of the Resurrection Tone V + Glory Tone VIII (from 62.pdf)
+    stichera_aposticha: [
+      { tone: 5,
+        text: "He who hath granted Resurrection to mankind, " +
+              "was led as a sheep to the slaughter; " +
+              "the princes of Hades trembled before Him " +
+              "and the gates of lamentations were lifted up; " +
+              "for Christ the King of glory entered therein, " +
+              "saying to those in bondage: 'Come forth!' " +
+              "and to those in darkness: 'Reveal yourselves!'" },
+      { verse: "Unto Thee have I lifted up mine eyes, unto Thee that dwellest in heaven. " +
+               "Behold, as the eyes of servants look unto the hands of their masters...",
+        tone: 5, name: "Hymn of Compunction",
+        text: "O Lord, though I am struck with the fear of Thee, " +
+              "I cease not from doing evil. " +
+              "What man under judgment feareth not the judge? " +
+              "Or who wishing to be healed doth provoke the physician to anger as I do? " +
+              "O longsuffering Lord, take pity on mine infirmity " +
+              "and have mercy on me." },
+      { verse: "Have mercy on us, O Lord, have mercy on us, for greatly are we filled with abasement.",
+        tone: 5, name: "Martyricon",
+        text: "Armed with the shield of faith, " +
+              "and strengthened with the sign of the Cross, " +
+              "Thy Saints, O Lord, of their own accord " +
+              "went forth courageously unto torments " +
+              "and destroyed the deception and audacity of the devil. " +
+              "By their intercessions, " +
+              "since Thou art the almighty God, " +
+              "send down peace upon the World, " +
+              "and great mercy to our souls." },
+    ],
+
+    aposticha_glory: {
+      tone: 8,
+      text: "O Christ God, Who by Thy merciful compassion became incarnate, " +
+            "with Thy fingers which hath fashioned all things " +
+            "Thou didst touch clay to the eyes of him who from the womb was bereft of sight " +
+            "and didst thereby deem him worthy of divine brilliance " +
+            "by Thine ineffable compassion. " +
+            "And now do Thou Thyself, O Bestower of light, " +
+            "illumine also the senses of our souls, " +
+            "since Thou alone art the bountiful Bestower of good gifts.",
+      note: "Both now = same (rubric: Glory...Both now in Tone VIII)",
+    },
+
+    // ── MATINS APOSTICHA (Tuesday Morning) ───────────────────────────────────
+    // From 62.pdf Matins Aposticha section
+    stichera_matins_aposticha: [
+      { tone: 5,
+        text: "Those who observed the Law of Moses, " +
+              "upon seeing the effulgent and radiant light " +
+              "which illumined the blind man on the Sabbath day, " +
+              "themselves became noetically blind, " +
+              "seeing shadows which obscured the Law " +
+              "and hid from them Him Who by His Word " +
+              "hath fashioned both the Sabbath and light, " +
+              "and to the blind man who had washed himself, " +
+              "He hath given eyes by a wondrous clay mixture of His pure spittle with dust. " +
+              "Let us join with that man and so behold God; " +
+              "and upon seeing that which is better, " +
+              "may we censure the blindness which gripped the Pharisees." },
+      { verse: "Look upon me, and have mercy on me.", tone: 5,
+        text: "Morning hath dawned for him " +
+              "who walked in the dark night of blindness, " +
+              "the much suffering blind man, " +
+              "who by divine command washed in the pool of Siloam, " +
+              "and received his sight. " +
+              "Wherefore he is seen as a new light-bearer, " +
+              "rebuking the night-creating darkness " +
+              "which had enveloped the scribes of the ancient Law, " +
+              "illumining their blindness by His most luminous effulgence, " +
+              "from which the blindness of the letter of the Law " +
+              "hath now been granted sight, " +
+              "by the brilliant radiant light granted us by the Word." },
+      { verse: "My steps do Thou direct according to Thy saying.", tone: 5,
+        text: "The blind man who endured blindness in body " +
+              "and noetic darkness, " +
+              "ascended to the heights of illumination " +
+              "through divine knowledge, " +
+              "by the wondrous and new outpourings of light from the Word. " +
+              "Though in the past he was doubly blinded, " +
+              "he came to know the Light-giver, " +
+              "Who arose on the third day from the sepulcher, " +
+              "and Who hath made the earth radiant by His Resurrection, " +
+              "from Whom the light of our refashioning hath shone forth in the darkness gripping mankind " +
+              "for the sake of His lovingkindness and great mercy." },
+    ],
+    stichera_matins_aposticha_glory: {
+      tone: 8,
+      text: "O Christ God, Thou spiritual Sun of Righteousness, " +
+            "Who by Thy most pure touch didst bestow a twofold enlightenment " +
+            "upon him who from his mother's womb was deprived of sight, " +
+            "illumine Thou the eyes of our souls also, " +
+            "and prove us to be sons of the day, that we may cry to Thee with faith: " +
+            "Great and ineffable is Thy compassion toward us, O Lover of man; glory be to Thee.",
+      note: "Both now = same",
+    },
+
     // ── AT MATINS ────────────────────────────────────────────────────────────
 
     magnificat_sung: true,
@@ -5092,8 +5601,33 @@ const PENTECOSTARION = {
 
     beatitudes_source: "6 verses from Ode IV of Canon of the Blind Man",
 
+    beatitudes_troparia: [
+      { source: "blind_man_ode4",
+        text: "When Thou Who art Life wast hung upon the Tree, " +
+              "by Thy great mercy Thou didst quicken me who had died because of the tree. " +
+              "For this cause I glorify Thee, O Word." },
+      { source: "blind_man_ode4",
+        text: "Dwelling together with Thine initiates in a wondrous manner, O Lord, " +
+              "Thou didst say unto them: Go, proclaim everywhere My Resurrection." },
+      { source: "blind_man_ode4",
+        text: "Thou didst confirm Thine arising from the grave, O Lord, " +
+              "when Thou didst abide for many days with those who loved Thee, " +
+              "thereby causing them to rejoice, O Christ." },
+      { source: "blind_man_ode4",
+        text: "When Thou didst give eyes unto the man who had been blind from the womb, " +
+              "Thou didst say: Go, wash and receive thy sight, and glorify My Divinity." },
+      { source: "glory",
+        text: "O beginningless Trinity, one in honour, undivided in essence, divided in hypostases, " +
+              "save all those who glorify Thee with faith and fear." },
+      { source: "theotokion",
+        text: "We glorify thy childbirth which is above nature, O immaculate One, " +
+              "and with faith we bless thee as the Birthgiver of the God of all, O most immaculate One." },
+    ],
+
     // ── FLAGS ────────────────────────────────────────────────────────────────
     menaion_set_aside: false,
+    matins_format: "god_is_the_lord",
+    heavenly_king_omitted: true,
     it_is_truly_meet_suppressed: true,
     note: "File covers Monday evening Small Vespers (P+36 eve) + Tuesday Matins/Liturgy (P+37). " +
           "Vespers prokeimenon Tone IV (Monday evening rotation). " +
