@@ -33,7 +33,7 @@ let booksManifest = null;
 let pericopesData = null;
 
 const BASE = import.meta.env.BASE_URL || "/orthodox-hours/";
-const DATA_BASE = `${BASE}scripture/`;
+const DATA_BASE = `${BASE}bible/`;
 
 async function loadManifest() {
   if (booksManifest) return booksManifest;
