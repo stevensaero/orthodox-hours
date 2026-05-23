@@ -1607,6 +1607,73 @@ const PENTECOSTARION_DATA = {
                "In a place of green pasture, there hath He made me to dwell."],
       type: "weekday_ordinary",
       note: "Tuesday evening prokeimenon — Tone I",
+    // ── LORD I HAVE CRIED — from 63.pdf (Apodosis of Pascha) ──────────────
+    // 6 stichera all from Pentecostarion — Blind Man texts
+    // Glory/Both now: Tone VIII doxasticon printed in PDF
+    stichera_lord_i_call_count: 6,
+    stichera_lord_i_call: [
+      { tone: 2, text: "He that was born blind thought to himself and said: " +
+              "Was I born without eyes for the sins of my parents? " +
+              "Was I born to be an example because of the unbelief of the nations? " +
+              "I cease not from asking: When is it night, when is it day? " +
+              "My feet cannot endure striking against the stones. " +
+              "For I have neither seen the sun shining nor beheld in image Him Who fashioned me. " +
+              "But I beseech Thee, O Christ God, look upon me and have mercy on me." },
+      { tone: 2, text: "As Jesus passed by on His way from the temple, " +
+              "He found a man who was blind from his birth; " +
+              "and taking compassion on him, He put clay on his eyes and said unto him: " +
+              "Go and wash in the pool of Siloam. " +
+              "And he washed and gained his sight, and sent up praise to God. " +
+              "But his kinsmen said unto him: Who hath opened thine eyes, which none of them that see was able to heal? " +
+              "And he cried out and said: A man called Jesus; He told me: Wash in the pool of Siloam; and I gained my sight. " +
+              "He is truly Christ the Messiah, of Whom Moses spake in the Law. He is the Savior of our souls." },
+      { tone: 4, text: "The blind man, accounting all his life as though it were night, " +
+              "cried unto Thee, O Lord: " +
+              "Open mine eyes, O our Savior, Thou Son of David, " +
+              "that together with all mankind, I also may praise Thy power." },
+      { tone: 5, text: "Passing by on the way, O Lord, Thou didst find a man who was blind from his birth. " +
+              "And the disciples, in astonishment, asked Thee and said: " +
+              "Teacher, who did sin, this man or his parents, that he was born blind? " +
+              "And Thou, O my Savior, didst cry unto them: Neither hath this man sinned, nor his parents, " +
+              "but that the works of God should be made manifest in him. " +
+              "I must work the works of Him that sent Me, which none else can work. " +
+              "And he washed and was made whole and cried unto Thee: Lord, I believe; and he worshipped Thee. " +
+              "Wherefore, we also cry out: Have mercy on us." },
+      { tone: 8, text: "O Christ God, Thou spiritual Sun of Righteousness, " +
+              "Who by Thine immaculate touch didst bestow a twofold enlightenment " +
+              "upon him who from his mother's womb was deprived of sight, " +
+              "illumine Thou the eyes of our souls also, " +
+              "and prove us to be sons of the day, that we may cry to Thee with faith: " +
+              "Great and ineffable is Thy compassion toward us, O Lover of mankind; glory be to Thee." },
+      { tone: 8, text: "O Christ God, Who by Thy merciful compassion became incarnate, " +
+              "with Thy fingers which hath fashioned all things " +
+              "Thou didst touch clay to the eyes of him who from the womb was bereft of sight " +
+              "and didst thereby deem him worthy of divine brilliance by Thine ineffable compassion. " +
+              "And now do Thou Thyself, O Bestower of light, " +
+              "illumine also the senses of our souls, " +
+              "since Thou alone art the bountiful Bestower of good gifts." },
+    ],
+    stichera_glory: { tone: 8, text: "Who can tell of Thy mighty acts, O Christ, " +
+              "or who can number the multitudes of Thy wonders? " +
+              "For even as Thou, in Thy goodness, didst appear on earth twofold of nature, " +
+              "so didst Thou grant twofold healings to the sick; " +
+              "for Thou didst open not only the bodily eyes of the man who was blind from the womb, " +
+              "but those of his soul also. " +
+              "Wherefore, he confessed Thee, the hidden God, Who grantest great mercy unto all." },
+    aposticha_source: "pentecostarion",
+    stichera_aposticha: [
+      { text: "With voices of song we magnify Thee, O Christ, the Savior incarnate, " +
+              "yet not separated from heaven, for as the Lord who lovest mankind " +
+              "Thou hast suffered the cross and death for the sake of our race, " +
+              "overthrowing the gates of Hades, and rising on the third day, thus saving our souls.",
+        tone: 5 },
+    ],
+    aposticha_glory: { tone: 5, text: "It is the Day of Resurrection, let us be radiant for the feast, " +
+              "and let us embrace one another. " +
+              "Let us say, Brethren, even to them that hate us, " +
+              "let us forgive all things on the Resurrection, and thus let us cry out:" },
+    aposticha_note: "Aposticha: 1 Resurrection sticheron (Tone V) + 3 Paschal stichera (Tone V). " +
+              "Glory: Paschal doxasticon Tone V. The Paschal stichera texts come from the Paschal canon.",
     },
 
     has_litya: false,
@@ -3720,6 +3787,23 @@ const PENTECOSTARION_DATA = {
     matins_format: "god_is_the_lord",
     has_polyeleos: true,
     has_litya: true,
+    stichera_lord_i_call_count: 10,
+    stichera_lord_i_call: [
+      { tone: 1, text: "We celebrate Pentecost and the coming of the Spirit, and the time appointed for the promise, and the fulfillment of hope. How great is this mystery: it is both exceeding great and most venerable. Wherefore, we cry unto Thee: O Creator of all, Lord, glory be to Thee." },
+      { tone: 1, text: "We celebrate Pentecost and the coming of the Spirit, and the time appointed for the promise, and the fulfillment of hope. How great is this mystery: it is both exceeding great and most venerable. Wherefore, we cry unto Thee: O Creator of all, Lord, glory be to Thee." },
+      { tone: 1, text: "Thou hast renewed Thy disciples with foreign tongues, O Christ, that they might therewith proclaim Thee, the immortal Word and God, Who granteth our souls great mercy." },
+      { tone: 1, text: "The Holy Spirit provideth all things; He gusheth forth prophecy; He perfecteth the priesthood; He hath taught wisdom to the illiterate. He hath shown forth the fishermen as theologians. He holdeth together the whole institution of the Church. Wherefore, O Comforter, one in essence and throne with the Father and the Son, glory be to Thee." },
+      { tone: 2, text: "We have seen the true Light; we have received the heavenly Spirit; we have found the true Faith, we worship the indivisible Trinity; for He hath saved us." },
+      { tone: 2, text: "We have seen the true Light; we have received the heavenly Spirit; we have found the true Faith, we worship the indivisible Trinity; for He hath saved us." },
+      { tone: 1, text: "In the prophets Thou didst proclaim unto us the way of salvation, and the grace of Thy Spirit hath shone in the apostles, O our Savior; Thou art God Who art from the beginning, and for time to come, and unto the ages, Thou art our God." },
+      { tone: 1, text: "In Thy courts shall I praise Thee, the Savior of the world, and bending my knee I shall worship Thine invincible might. In the evening, in the morn, at midday, and at all times shall I bless Thee, O Lord." },
+      { tone: 1, text: "In Thy courts, O Lord, as we the faithful bend the knee of the soul and the body, we praise Thee, the beginningless Father, the co-beginningless Son, and the co-eternal and Most holy Spirit, Who dost enlighten and sanctify our souls." },
+      { tone: 1, text: "Let us praise the consubstantial Trinity: the Father and the Son, with the Holy Spirit; for thus did all the prophets and apostles preach, with the martyrs." },
+    ],
+    stichera_glory: { tone: 8, text: "Come, O ye peoples, let us worship the Godhead in three Hypostases: the Son in the Father, with the Holy Spirit; for the Father timelessly begat the Son, Who is co-eternal and of one throne; and the Holy Spirit was in the Father, glorified with the Son; one Might, one Essence, one Godhead, which we all worship, saying: Holy God, Who didst create all things through the Son, with the co-operation of the Holy Spirit. Holy Mighty, through Whom we have known the Father, and through Whom the Holy Spirit came to the world. Holy Immortal, the Comforting Spirit, Who proceedest from the Father and restest in the Son. O Holy Trinity, glory be to Thee." },
+    aposticha_source: "pentecostarion",
+    aposticha_note: "Great Vespers aposticha from Pentecostarion; kneeling prayers follow immediately.",
+
   },
 
   // ── P+50 — Monday of the Eighth Week — Holy Spirit Day ──────────────────────
@@ -3766,6 +3850,24 @@ const PENTECOSTARION_DATA = {
     matins_format: "god_is_the_lord",
     menaion_set_aside: false,
     has_great_doxology: true,
+    stichera_lord_i_call_count: 6,
+    stichera_lord_i_call: [
+      { tone: 4, source: "pentecostarion", text: "Today all the nations beheld strange things in the city of David, when the Holy Spirit descended in fiery tongues, as Luke, the herald of divine things, declared; for he said: As the disciples of Christ were gathered together, there came a sound as of a mighty wind, and it filled the house where they were sitting; and all began to articulate strange and foreign words, doctrines strange and new, strange and new teachings of the Holy Trinity." },
+      { tone: 4, source: "pentecostarion", text: "Today all the nations beheld strange things in the city of David, when the Holy Spirit descended in fiery tongues, as Luke, the herald of divine things, declared; for he said: As the disciples of Christ were gathered together, there came a sound as of a mighty wind, and it filled the house where they were sitting; and all began to articulate strange and foreign words, doctrines strange and new, strange and new teachings of the Holy Trinity." },
+      { tone: 4, source: "pentecostarion", text: "The Holy Spirit hath ever been, and is, and shall be, neither beginning nor ending; but He is ever ranked and numbered together with the Father and the Son. He is Life, and life-creating; Light, and light-bestowing; by nature good, and the source of goodness; through Him the Father is known, and the Son is glorified; and thereby all acknowledge a single sovereignty, single covenant, one adoration of the Holy Trinity." },
+      { source: "menaion", text: "[Menaion sticheron 1 — from daily Menaion entry]" },
+      { source: "menaion", text: "[Menaion sticheron 2]" },
+      { source: "menaion", text: "[Menaion sticheron 3]" },
+    ],
+    stichera_glory: { tone: 6, text: "Heavenly King, Comforter, Spirit of Truth, Who art everywhere present and fillest all things, Treasury of good gifts and Giver of life: come and abide in us, and cleanse us of all impurity, and save our souls, O good One." },
+    aposticha_source: "pentecostarion",
+    stichera_aposticha: [
+      { tone: 3, text: "Now are the tongues manifestly become a sign unto all; for ailing with unbelief, the Jews, from whom Christ came according to the flesh, have fell away from the divine grace and the divine light, of which we, the nations, have been deemed worthy, made steadfast by the words of the disciples, who spake of the glory of God, the Benefactor of all. Together with them, as we bend our hearts and our knees, let us worship the Holy Spirit in faith, made steadfast by the Savior of our souls." },
+      { tone: 3, verse: "Create in me a clean heart, O God, and renew a right spirit within me.", text: "Now the Comforting Spirit hath been poured out upon all flesh; for beginning with the assembly of the apostles, from them He hath extended grace to the believers by participation. And confirmeth His mighty descent by the distribution of tongues in the likeness of fire unto the disciples, to the praise and glory of God. Wherefore, noetically illumined in our hearts, and made steadfast in faith by the Holy Spirit, we beseech Thee that our souls be saved." },
+      { tone: 3, verse: "Cast me not away from Thy presence and take not Thy Holy Spirit from me.", text: "Now the apostles of Christ are clothed with might from on high; for the Comforter doth renew them, working renewal in them with mystical newness of knowledge, which they proclaim to us by foreign voices and lofty words, and they teach us to reverence the eternal, simple, and tri-hypostatic nature of God, the Benefactor of all. Wherefore, illumined by their teachings, let us worship the Father with the Son and the Spirit, beseeching that our souls be saved." },
+    ],
+    aposticha_glory: { tone: 8, text: "Come, O ye peoples, let us worship the Godhead of three Hypostases: the Son in the Father, with the Holy Spirit; for the Father timelessly begat the Son, Who is co-eternal and of one throne; and the Holy Spirit was in the Father, glorified with the Son; one Might, one Essence, one Godhead, which we all worship, saying: Holy God, Who didst create all things through the Son, with the co-operation of the Holy Spirit. Holy Mighty, through Whom we have known the Father, and through Whom the Holy Spirit came into the world. Holy Immortal One, the Comforting Spirit, Who proceedest from the Father and restest in the Son. O Holy Trinity, glory be to Thee." },
+
   },
 
   // ── P+51 — Tuesday of the Eighth Week — Pentecost Afterfeast Day 2 ──────────
@@ -3813,6 +3915,24 @@ const PENTECOSTARION_DATA = {
     matins_format: "god_is_the_lord",
     menaion_set_aside: false,
     has_great_doxology: false,
+    stichera_lord_i_call_count: 6,
+    stichera_lord_i_call: [
+      { tone: 1, source: "pentecostarion", text: "Now all peoples have been renewed by God's exalted deeds, for by means of tongues in the likeness of fire, all those who dwell on earth have been brought to the faith, and that this sign unto the nations, hath declared that salvation is truly in our midst." },
+      { tone: 1, source: "pentecostarion", text: "Having fulfilled Thy promise to send down power from on high unto Thy disciples, O Christ, Thou didst send Thy Holy Spirit, thereby showing us that Thou art Truth, and that those who hope in Thee O good One, shall in no wise ever be ashamed." },
+      { tone: 1, source: "pentecostarion", text: "At the time that was appointed, Thou didst send into the world the Holy Spirit, Who came in the form of tongues of fire. All our sins are cleansed by this heavenly fire. Thereby Thou hast granted us a true communion with Him, for in pious faith we proclaim Him to be perfect God." },
+      { source: "menaion", text: "[Menaion sticheron 1]" },
+      { source: "menaion", text: "[Menaion sticheron 2]" },
+      { source: "menaion", text: "[Menaion sticheron 3]" },
+    ],
+    stichera_glory: { tone: 1, source: "pentecostarion", text: "We celebrate Pentecost and the coming of the Spirit, and the time appointed for the promise, and the fulfillment of hope. How great is this mystery: it is both exceeding great and most venerable. Wherefore, we cry unto Thee: O Creator of all, Lord, glory be to Thee." },
+    aposticha_source: "pentecostarion",
+    stichera_aposticha: [
+      { tone: 2, spec_mel: "O house of Ephratha", text: "O Word, Thou didst send forth, according to Thy promise, the Spirit, Who is true God, that He might dwell among Thy disciples and enlighten them." },
+      { tone: 2, verse: "Create in me a clean heart, O God, and renew a right spirit within me.", text: "Suddenly, from on high, the Comforter's great power showed forth the Words of the apostles' as all-wise theologians who spake of things divine." },
+      { tone: 2, verse: "Cast me not away from Thy presence, and take not Thy Holy Spirit from me.", text: "Foreigners stood amazed, upon hearing the apostles speak in every tongue, glorifying and magnifying God the Trinity." },
+    ],
+    aposticha_glory: { tone: 1, text: "Thou hast renewed Thy disciples with foreign tongues, O Christ, that they might therewith proclaim Thee, the immortal Word and God, Who granteth our souls great mercy." },
+
   },
 
   // ── P+52 — Wednesday of the Eighth Week — Pentecost Afterfeast Day 3 ────────
@@ -3859,6 +3979,24 @@ const PENTECOSTARION_DATA = {
     matins_format: "god_is_the_lord",
     menaion_set_aside: false,
     has_great_doxology: false,
+    stichera_lord_i_call_count: 6,
+    stichera_lord_i_call: [
+      { tone: 1, source: "pentecostarion", text: "It is proper and natural that the rational heavens proclaim with tongues of fire unto all the nations, the glory of God, Who hath adorned the heavens by means of fire; and Who, by the Son and the Spirit, hath rendered luminous the world which our senses know." },
+      { tone: 1, source: "pentecostarion", text: "When Christ's disciples had gathered in Sion, as He said, then did the Spirit come down upon them, as was promised. Appearing as fire, showing the apostles to be teachers, who spoke of the hidden things of the Trinity while breathing forth fire." },
+      { tone: 1, source: "pentecostarion", text: "The divine Spirit came upon the sacred apostles, making of them heavenly swords. Thus they consecrated all the earth unto God the Creator as they cut down the impious ones. By them the swords of the evil one have been destroyed, that our souls may be saved." },
+      { source: "menaion", text: "[Menaion sticheron 1]" },
+      { source: "menaion", text: "[Menaion sticheron 2]" },
+      { source: "menaion", text: "[Menaion sticheron 3]" },
+    ],
+    stichera_glory: { tone: 2, source: "pentecostarion", text: "We have seen the true Light; we have received the heavenly Spirit; we have found the true Faith, we worship the indivisible Trinity; for He hath saved us." },
+    aposticha_source: "pentecostarion",
+    stichera_aposticha: [
+      { tone: 4, text: "On this day the working of Thy Holy Spirit came down upon Thine apostles, showing them to be supremely wise, and seers of divine things, filling them with Thy blessed teaching. Wherefore, we glorify Thy saving dispensation, O Jesus Almighty, the Savior of our souls." },
+      { tone: 4, verse: "Create in me a clean heart, O God, and renew a right spirit within me.", text: "On this day Thy Spirit O all-powerful Lord, hath been sent forth from the Father, He Who is consubstantial with Thee, was distributed among the apostles in the form of fiery tongues; thus He prepared them to preach Thy mighty deeds. Wherefore we glorify Thy saving dispensation, O Jesus, Almighty, the Savior of our souls." },
+      { tone: 4, verse: "Cast me not away from Thy presence, and take not Thy Holy Spirit from me.", text: "On this day, O Savior, Thou hast poured forth the gifts of Thy Comforting Spirit, granting mortal-mankind to prophesy, as Thou didst once promise O Word, whereby Thou didst teach all to worship and adore the undivided Trinity. Wherefore we glorify Thy saving dispensation, O Jesus Almighty, the Savior of our souls." },
+    ],
+    aposticha_glory: { tone: 6, text: "O Lord, the descent of the Holy Spirit, which enveloped Thine apostles, made them to speak with other tongues. Hence, the strange wonder was thought to be drunkenness by the unbelievers, but to the believers it was a cause of salvation. Wherefore, we beseech Thee to grant us also His illumination, O Lover of mankind." },
+
   },
 
   // ── P+53 — Thursday of the Eighth Week — Pentecost Afterfeast, Day 4 ────────
@@ -3904,6 +4042,24 @@ const PENTECOSTARION_DATA = {
     matins_format: "god_is_the_lord",
     menaion_set_aside: false,
     has_great_doxology: false,
+    stichera_lord_i_call_count: 6,
+    stichera_lord_i_call: [
+      { tone: 1, source: "pentecostarion", text: "Behold this is the day of joy and rejoicing, for today from on high the Holy Spirit hath appeared unto the sacred apostles, coming from the Father in the form of fire, and enlightening all: The fisherman have became orators of Wisdom, as Luke the divine Trumpet wrote, all things have been filled with the Spirit. Wherefore with faith we stand amazed, offering praise unto the abundance of mercy and self-emptying of Christ our God." },
+      { tone: 1, source: "pentecostarion", text: "Let us celebrate the solemn festival of Holy Pentecost, and the power of the Spirit, and the truly joyous consummation of our divine hope, for the mystery from all ages hath been revealed unto us, wherefore we cry aloud unto Thee: O Creator of all things, take not Thy Holy Spirit from us O Word, rather send it down from the heavens O Savior, by the prayers of the Saints, and of Thine all-famed and glorious apostles, we beseech Thee to grant peace unto our souls." },
+      { tone: 1, source: "pentecostarion", text: "Today heaven doth declare the vivifying power of the Savior, and the might of the divine Comforter, which hath clearly been preached throughout all the world, enlightening all of creation with its teachings, of the Unity of the undivided Trinity, in three uncommingled Hypostases. Wherefore let us celebrate in faith the coming of the Holy Spirit, which hath appeared from on high, enlightening the ends of the earth." },
+      { source: "menaion", text: "[Menaion sticheron 1]" },
+      { source: "menaion", text: "[Menaion sticheron 2]" },
+      { source: "menaion", text: "[Menaion sticheron 3]" },
+    ],
+    stichera_glory: { tone: 7, source: "pentecostarion", text: "The Comforter, having come from the Father through Christ God, hath come unto us on earth today, therefore with faith we worship the Holy Spirit." },
+    aposticha_source: "pentecostarion",
+    stichera_aposticha: [
+      { tone: 1, text: "The Holy Spirit, proceeding from the Father, and glorified in the Son, Which doth support and rule over all that is, maintaining life, and by Which we live and are saved, Thee do we bless: O unfailing Comforter, grant peace to Thy world." },
+      { tone: 1, verse: "Create in me a clean heart, O God, and renew a right spirit within me.", text: "The Holy Spirit, the wellspring of every good thing, hath come unto all the ends of the earth, in its essential noetic power, filling the apostles with joy, and divine virtue. Wherefore we cry aloud, O ineffable Comforter, grant peace to Thy world." },
+      { tone: 1, verse: "Cast me not away from Thy presence, and take not Thy Holy Spirit from me.", text: "The Holy Spirit is God, equal in sovereignty and co-enthroned with the Father, and manifest through the Son, most supremely pure light shining forth from the Light, of the beginningless perfect Father, and proceeding from the Son. Unto Him do we cry aloud: O Life-giving Comforter, grant peace to Thy world." },
+    ],
+    aposticha_glory: { tone: 8, text: "When Thou didst send down Thy Spirit, O Lord, while the apostles were seated, the children of the Jews beheld and were astonished with amazement; for they heard them speaking in other, foreign tongues, according as the Spirit bestowed on them; for though they were unlearned, they were made wise; and in catching and bringing the nations to the Faith, they preached of things divine. Wherefore, we also cry to Thee: O Thou Who wast seen on earth and didst save us from error, O Lord, glory be to Thee." },
+
   },
 
   // ── P+54 — Friday of the Eighth Week — Pentecost Afterfeast, Day 5 ──────────
@@ -3950,6 +4106,24 @@ const PENTECOSTARION_DATA = {
     matins_format: "god_is_the_lord",
     menaion_set_aside: false,
     has_great_doxology: false,
+    stichera_lord_i_call_count: 6,
+    stichera_lord_i_call: [
+      { tone: 4, source: "pentecostarion", text: "On this day the working of Thy Holy Spirit came down upon Thine apostles, showing them to be supremely wise, and seers of divine things, filling them with Thy blessed teaching. Wherefore, we glorify Thy saving dispensation, O Jesus Almighty, the Savior of our souls." },
+      { tone: 4, source: "pentecostarion", text: "On this day Thy Spirit O all-powerful Lord, hath been sent forth from the Father, He Who is consubstantial with Thee, was distributed among the apostles in the form of fiery tongues; thus He prepared them to preach Thy mighty deeds. Wherefore we glorify Thy saving dispensation, O Jesus, Almighty, the Savior of our souls." },
+      { tone: 4, source: "pentecostarion", text: "On this day, O Savior, Thou hast poured forth the gifts of Thy Comforting Spirit, granting mortal-mankind to prophesy, as Thou didst once promise O Word, whereby Thou didst teach all to worship and adore the undivided Trinity. Wherefore we glorify Thy saving dispensation, O Jesus Almighty, the Savior of our souls." },
+      { source: "menaion", text: "[Menaion sticheron 1]" },
+      { source: "menaion", text: "[Menaion sticheron 2]" },
+      { source: "menaion", text: "[Menaion sticheron 3]" },
+    ],
+    stichera_glory: { tone: 2, source: "pentecostarion", text: "Let us praise in hymns the Trinity one in essence, the Father, and the Son, with the Holy Spirit: Who hath been declared by all the prophets, apostles, and martyrs." },
+    aposticha_source: "pentecostarion",
+    stichera_aposticha: [
+      { tone: 1, text: "On the mountain, Moses beheld in the fire, He Who Is. And now the Spirit hath come in the form of fire to the wise apostles, the beholders of God. Thus clearly enlightening them, that it is one God Who spoke both then and now, of the same essence." },
+      { tone: 1, verse: "Create in me a clean heart, O God, and renew a right spirit within me.", text: "With fiery tongues God's rhetoricians, call all to the waters of divine Baptism; and with the fire of the Spirit they burn the babblings of ungodly rhetoricians. But, do Thou O Comforter, come and enlighten us who faithfully proclaim Thee as God." },
+      { tone: 1, verse: "Cast me not away from Thy presence, and take not Thy Holy Spirit from me.", text: "As Thou didst consecrate all the fiery bodiless ones, so with the Spirit's fire do Thou consecrate all who in material bodies now serve Thee, O God, Who ineffably assumed flesh. O how abundantly praised art Thou, and how wondrous art Thou in Thy works O Lover of mankind!" },
+    ],
+    aposticha_glory: { tone: 7, text: "The Comforter, having come from the Father through Christ God, hath come unto us on earth today, therefore with faith we worship the Holy Spirit." },
+
   },
 
   // ── P+55 — Saturday of the Eighth Week — Apodosis of Pentecost ──────────────
@@ -3999,6 +4173,24 @@ const PENTECOSTARION_DATA = {
     matins_format: "god_is_the_lord",
     menaion_set_aside: true,
     has_great_doxology: false,
+    stichera_lord_i_call_count: 10,
+    stichera_lord_i_call_note: "Apodosis of Pentecost: chant everything as on the Feast of Pentecost (86.pdf). Stichera identical to P+49.",
+    stichera_lord_i_call: [
+      { tone: 1, text: "We celebrate Pentecost and the coming of the Spirit, and the time appointed for the promise, and the fulfillment of hope. How great is this mystery: it is both exceeding great and most venerable. Wherefore, we cry unto Thee: O Creator of all, Lord, glory be to Thee." },
+      { tone: 1, text: "We celebrate Pentecost and the coming of the Spirit, and the time appointed for the promise, and the fulfillment of hope. How great is this mystery: it is both exceeding great and most venerable. Wherefore, we cry unto Thee: O Creator of all, Lord, glory be to Thee." },
+      { tone: 1, text: "Thou hast renewed Thy disciples with foreign tongues, O Christ, that they might therewith proclaim Thee, the immortal Word and God, Who granteth our souls great mercy." },
+      { tone: 1, text: "The Holy Spirit provideth all things; He gusheth forth prophecy; He perfecteth the priesthood; He hath taught wisdom to the illiterate. He hath shown forth the fishermen as theologians. He holdeth together the whole institution of the Church. Wherefore, O Comforter, one in essence and throne with the Father and the Son, glory be to Thee." },
+      { tone: 2, text: "We have seen the true Light; we have received the heavenly Spirit; we have found the true Faith, we worship the indivisible Trinity; for He hath saved us." },
+      { tone: 2, text: "We have seen the true Light; we have received the heavenly Spirit; we have found the true Faith, we worship the indivisible Trinity; for He hath saved us." },
+      { tone: 1, text: "In the prophets Thou didst proclaim unto us the way of salvation, and the grace of Thy Spirit hath shone in the apostles, O our Savior; Thou art God Who art from the beginning, and for time to come, and unto the ages, Thou art our God." },
+      { tone: 1, text: "In Thy courts shall I praise Thee, the Savior of the world, and bending my knee I shall worship Thine invincible might. In the evening, in the morn, at midday, and at all times shall I bless Thee, O Lord." },
+      { tone: 1, text: "In Thy courts, O Lord, as we the faithful bend the knee of the soul and the body, we praise Thee, the beginningless Father, the co-beginningless Son, and the co-eternal and Most holy Spirit, Who dost enlighten and sanctify our souls." },
+      { tone: 1, text: "Let us praise the consubstantial Trinity: the Father and the Son, with the Holy Spirit; for thus did all the prophets and apostles preach, with the martyrs." },
+    ],
+    stichera_glory: { tone: 8, text: "Come, O ye peoples, let us worship the Godhead in three Hypostases: the Son in the Father, with the Holy Spirit; for the Father timelessly begat the Son, Who is co-eternal and of one throne; and the Holy Spirit was in the Father, glorified with the Son; one Might, one Essence, one Godhead, which we all worship, saying: Holy God, Who didst create all things through the Son, with the co-operation of the Holy Spirit. Holy Mighty, through Whom we have known the Father, and through Whom the Holy Spirit came to the world. Holy Immortal, the Comforting Spirit, Who proceedest from the Father and restest in the Son. O Holy Trinity, glory be to Thee." },
+    aposticha_source: "pentecostarion",
+    aposticha_note: "Apodosis: all Vespers/Matins texts same as Feast of Pentecost (P+49). Liturgy readings differ — see feast_e/feast_g.",
+
   },
 
   // ── P+56 — First Sunday After Pentecost — All Saints ────────────────────────
@@ -4077,6 +4269,23 @@ const PENTECOSTARION_DATA = {
     has_great_doxology: true,
     has_litya: true,
     matins_gospel: 1,
+    stichera_lord_i_call_count: 10,
+    stichera_lord_i_call: [
+      { tone: 8, source: "octoechos", text: "We offer unto Thee, O Christ, an evening hymn and spiritual worship; because Thou wast well-pleased to have mercy on us through the Resurrection." },
+      { tone: 8, source: "octoechos", text: "O Lord, cast us not away from Thy presence; but be well-pleased to have mercy on us through the Resurrection." },
+      { tone: 8, source: "octoechos", text: "Rejoice holy Zion, Mother of the Churches, dwelling-place of God; for it was thee who first received forgiveness of sins through the Resurrection." },
+      { tone: 8, source: "octoechos", text: "The Word, begotten of God the Father before all ages, hath in the last times become incarnate of her who knew not wedlock, and willingly endured the crucifixion and death, and mankind, slain of old, hath thereby been saved through His own Resurrection." },
+      { tone: 8, source: "octoechos", text: "We glorify Thy Resurrection from the dead, O Christ, through which Thou hast freed the race of Adam from the tyranny of Hades, and as God hast granted the world eternal life and great mercy." },
+      { tone: 8, source: "octoechos", text: "Glory be to Thee, O Christ Savior, only-begotten Son of God, affixed by nails to the cross and risen from the tomb on the third day." },
+      { tone: 6, source: "menaion", text: "The Spirit-proclaiming Disciples of the Savior, having become, through faith, instruments of the Spirit, and being scattered to the ends of the earth, sowed the venerable proclamations of Orthodoxy: From their divine husbandry hath blossomed forth, an army of martyrs by grace, who inscribed the signs of their passion, by sundry kinds of tortures, scourging and fire. and with boldness they pray on behalf of our souls." },
+      { tone: 6, source: "menaion", text: "Enflamed by the love of the Lord, despising fire; the venerable martyrs in Christ were consumed like divine coals, drying up the grass of the arrogance of falsehood: They bridled the mouths of beasts by their venerable supplications; and, being beheaded, They thereby beheaded all the hosts of the enemy, and having patiently shed their blood, they watered the Church with illumining faith." },
+      { tone: 6, source: "menaion", text: "Having wrestled with beasts, and been struck with swords, their arms and limbs torn apart, the heroic martyrs were tormented, consumed by material fire, dismembered and pierced with lances. Enduring all this with firm patience, foreseeing their approaching end, the crowns of incorruption, and the glory of Christ, Whom, they implore with boldness on behalf of our souls." },
+      { tone: 6, source: "menaion", text: "Let us praise with sacred hymns those who faithfully suffered throughout all the ends of the earth, the apostles, martyrs, Godly-minded Priests, and noble women, for being earthly, they united with those of heaven; and by their passion attained passionlessness by the grace of Christ. And now as luminaries they illumine us and with boldness, pray on behalf of our souls." },
+    ],
+    stichera_glory: { tone: 6, source: "menaion", text: "Ye are the pillars of the Church and the fulfillment of the Gospel, O divine ranks of martyrs. In deeds ye have fulfilled the sayings of the Savior; for through you the gates of Hades, which had been opened against the Church, have been closed; and the blood you shed hath dried up the oblation of idols. And having nourished the perfection of believers through your slaughter, ye astonished the bodiless ones, standing before Christ wearing your crowns. Wherefore, intercede ye ceaselessly with Him on behalf of our souls." },
+    stichera_both_now: { tone: 8, source: "octoechos", text: "In His love for mankind, the King of heaven appeared on earth and dwelt among men; for He Who received flesh from the pure Virgin and cameth forth from her having received human nature, is the only Son of God, twofold in nature but not Hypostasis. Therefore, proclaiming Him to be truly perfect God and perfect man, we confess Christ our God. Him do thou beseech, O unwedded Mother, that our souls find mercy!" },
+    aposticha_source: "octoechos",
+
   },
 
 };
