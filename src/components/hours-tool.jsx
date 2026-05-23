@@ -4100,8 +4100,10 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       text:"Reader: The reading is from ___. Deacon: Let us attend.\n(Three lessons are read from the Menaion)",
       source:"HTM Vespers"});
     paroemias.forEach((p,i) => {
+      const pHref = paroemiaToScriptureHref(p, "vespers", liturgicalData.dateStr);
       elements.push({id:"v-les-"+(i+1),type:"movable",label:"Lesson "+(i+1),rubric:"",
         text:p, source:"Menaion",
+        ...(pHref ? {scriptureHref: pHref} : {}),
         fekula:{section:fekulaSection, note:"After the Entrance and prokeimenon there are three readings appointed in the Menaion. — Fekula " + fekulaSection}});
     });
   }
