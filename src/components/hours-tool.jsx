@@ -4436,7 +4436,7 @@ const PENTECOSTARION = {
     has_paroemias: false,
 
     // Stichera on Lord I Have Cried — 3 Pentecostarion (Tone V) + 3 Menaion
-    stichera_lord_i_cried_pentecostarion: [
+    stichera_lord_i_call: [
       {
         tone: 5,
         text: "Thou art the light of all mankind, " +
@@ -4483,7 +4483,7 @@ const PENTECOSTARION = {
     ],
 
     // Glory, Both now at Lord I Have Cried
-    stichera_glory_both_now: {
+    stichera_glory: {
       tone: 2,
       text: "He that was born blind thought to himself and said: " +
             "Was I born without eyes for the sins of my parents? " +
@@ -4710,7 +4710,7 @@ const PENTECOSTARION = {
     has_litya: false,
     has_paroemias: false,
 
-    stichera_lord_i_cried_pentecostarion: [
+    stichera_lord_i_call: [
       {
         tone: 5,
         text: "He who in times past had been blind " +
@@ -4753,7 +4753,7 @@ const PENTECOSTARION = {
       },
     ],
 
-    stichera_glory_both_now: {
+    stichera_glory: {
       tone: 8,
       text: "O Christ God, Thou noetic Sun of Righteousness, " +
             "Who by Thy most pure touch " +
@@ -5506,7 +5506,12 @@ const PENTECOSTARION = {
     has_great_doxology: false,
     small_doxology_read: true,
 
-    stichera_lord_i_cried_pentecostarion: [
+    // ── VESPERS — LORD I HAVE CRIED (Thursday Evening) ──────────────────────
+    // 3 Pentecostarion stichera Tone I (menaion_set_aside: false →
+    // Menaion saint May 22 Basiliscus §2A contributes 3 slots at Glory per §2G1;
+    // but §2G1 Simple rank: feast kontakion at ALL Hours, Menaion at Glory only).
+    // Field renamed from stichera_lord_i_cried_pentecostarion → stichera_lord_i_call. // v0.3.7
+    stichera_lord_i_call: [
       { tone: 1,
         text: "As Thou didst ascend into the heavens, " +
               "from whence Thou didst also descend, " +
@@ -5529,9 +5534,13 @@ const PENTECOSTARION = {
               "This is Christ God, Who hath been taken up from you into heaven. " +
               "He shall come again in the manner ye have seen Him going into heaven. " +
               "Worship Him in holiness and righteousness." },
+      // Slots [3][4][5] = Menaion stichera (May 22 Basiliscus) per §2G1
+      // (assembled from SAMPLE_MENAION["05-22"].stichera_lord_i_call by engine)
     ],
 
-    stichera_glory_both_now: {
+    // Glory — doxasticon Tone II (renamed from stichera_glory_both_now → stichera_glory)
+    // Field renamed from stichera_glory_both_now → stichera_glory. // v0.3.7
+    stichera_glory: {
       tone: 2,
       text: "Thou wast born as Thou Thyself didst will; " +
             "Thou didst appear of Thine own choice; " +
@@ -5541,6 +5550,37 @@ const PENTECOSTARION = {
             "and didst send unto us the divine Spirit, " +
             "that we may praise and glorify Thy Divinity.",
     },
+
+    // Both now — lic_theotokion from P+39 Ascension feast (same theotokion governs afterfeast)
+    // Source: 64.pdf lic_theotokion Tone II (already encoded in P+39; same text applies). // v0.3.7
+    lic_theotokion: {
+      tone: 2,
+      text: "The shadow of the law hath passed now that grace hath come, " +
+            "for as the Bush wrapped in flame was not consumed, " +
+            "so didst thou bear a Child O Virgin and remained a Virgin; " +
+            "in place of a pillar of fire, the Sun of righteousness hath dawned, " +
+            "instead of Moses, Christ is come, the salvation of our souls.",
+    },
+
+    // ── VESPERS — APOSTICHA (Thursday Evening) ───────────────────────────────
+    // Ascension feast aposticha — same as P+41 aposticha (Tone II, "O House of Ephratha").
+    // Source: 65.pdf. Added in v0.3.7 — was missing from original P+40 encode.
+    stichera_aposticha: [
+      { tone: 2, verse: null,
+        text: "Having fulfilled His will, thus pleasing well the Father, " +
+              "Thou didst ascend in glory. " +
+              "The things of heaven didst Thou unite thus with the things of earth." },
+      { tone: 2, verse: "Clap your hands, all ye nations; shout unto God with a voice of rejoicing.",
+        text: "O merciful One, Thou didst ascend unto Thy Father, " +
+              "from Whom Thou wast not parted, and didst exalt " +
+              "our nature thus which lay prostrate, O Lord." },
+      { tone: 2, verse: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
+        text: "A brilliant cloud of light conveyed Thee to the heavens, " +
+              "whilst with great fear and trembling " +
+              "the angels came and ministered unto Thy divine Ascension." },
+    ],
+
+    matins_format: "god_is_the_lord",
 
     // Matins Aposticha — unique "O House of Ephratha" melody stichera
     stichera_matins_aposticha: [
