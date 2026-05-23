@@ -804,6 +804,7 @@ const PENTECOSTARION_DATA = {
     has_paroemias: false,
 
     // Stichera on Lord I Have Cried — 3 Pentecostarion (Tone V) + 3 Menaion
+    stichera_lord_i_call_count: 6,  // §4A1: 3 Pentecostarion + 3 Menaion
     stichera_lord_i_call: [
       {
         tone: 5,

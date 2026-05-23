@@ -3873,13 +3873,13 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       const allFromPent = (pentEntry && pentEntry.menaion_set_aside); // Great Feast or pent Sunday
       const isPentSunday = pentEntry && pentEntry.hours_format === 'pentecostarion_sunday';
 
-      // For pentecostarion_sunday: compose merged array — 7 Octoechos resurrection + pentEntry stichera
-      // This applies regardless of menaion_set_aside — all Pentecostarion Sundays use
-      // Octoechos resurrection stichera (Fekula §4B6: "seven of the resurrection").
+      // Compose effective stichera array based on service type:
+      // - pentecostarion_sunday: 7 Octoechos resurrection (sat) + 3 pentEntry (Fekula §4B6)
+      // - pentecostarion_weekday (not menaion_set_aside): 3 pentEntry + 3 menaionEntry (Fekula §4A1)
+      // - menaion_set_aside Great Feast: all from pentEntry (already in menaionLicStichera via _stichSrc)
       let effectiveLicStichera = menaionLicStichera;
       if (isPentSunday) {
         // Fekula §4B6: "we sing ten stichera: seven of the resurrection and three of the Sunday"
-        // The 3 Sunday stichera come from pentEntry (not Menaion), the 7 from Octoechos sat LIC.
         const octoSat = getOctoechosVespers(tone, 'sat');
         const octoResurrection = (octoSat && octoSat.lic) ? octoSat.lic.slice(0, 7) : [];
         const pentSundayStichera = (pentEntry && pentEntry.stichera_lord_i_call) || [];
@@ -3887,6 +3887,20 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           ...octoResurrection.map(text => ({tone, text, source: 'Octoechos'})),
           ...pentSundayStichera,
         ];
+      } else if (!allFromPent && pentEntry && pentEntry.stichera_lord_i_call && pentEntry.stichera_lord_i_call.length > 0) {
+        // §4A1 weekday: 3 from Pentecostarion + 3 from Menaion = 6 total
+        // pentEntry.stichera_lord_i_call has the Pentecostarion stichera (afterfeast/feast of week)
+        // menaionEntry.stichera_lord_i_call has the Menaion saint stichera (if encoded)
+        const pentWeekdayStichera = pentEntry.stichera_lord_i_call;
+        const menaionWeekdayStichera = (menaionEntry && menaionEntry.stichera_lord_i_call) || [];
+        effectiveLicStichera = [
+          ...pentWeekdayStichera.map(s => ({...s, source: 'Pentecostarion'})),
+          ...menaionWeekdayStichera.map(s => ({...s, source: 'Menaion'})),
+        ];
+        // Pad with unresolved if Menaion stichera not yet encoded
+        while (effectiveLicStichera.length < licCount) {
+          effectiveLicStichera.push({text: null, source: 'Menaion', unresolved: true});
+        }
       }
 
       const pentLicSlots = allFromPent ? 0 : Math.max(0, licCount - effectiveLicStichera.length); // 3 for §4A3
