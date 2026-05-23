@@ -163,6 +163,18 @@ const PENTECOSTARION_DATA = {
               "that He loose the bonds of my many transgressions; " +
               "for thou art able to help in whatsoever thou dost will." },
     ],
+    // ── Structural flags ─────────────────────────────────────────────────
+    hours_format: "pentecostarion_weekday",
+    matins_format: "god_is_the_lord",   // Myrrhbearers week — "God is the Lord" confirmed
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: true,  // weekday rule
+    feast_e: "Romans 2:10-16",  // Monday of Week 3 Pentecostarion
+    feast_g: "Matthew 5:14-19",
+    aposticha_source: "pentecostarion",
+
   },
 
   // ── P+35 — Sixth Sunday of Pascha: Sunday of the Blind Man ──────────────────
