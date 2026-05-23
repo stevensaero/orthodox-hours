@@ -7061,6 +7061,21 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
 
 const RELEASE_NOTES = [
   {
+    version: "v0.3.13",
+    date: "May 2026",
+    summary: "Vespers LIC assembler complete · §4A1/§4A3/§4B6 weekday+Sunday stichera · repeat/repeatIndex · 8 bug fixes",
+    items: [
+      "feat: §4A1 weekday LIC — 3 Pentecostarion + 3 Menaion stichera composition for ordinary Pentecostarion weekdays",
+      "feat: §4B6 Sunday LIC — 7 Octoechos resurrection (sat key, by tone) + 3 pentEntry stichera composed at runtime; no hardcoding per Sunday",
+      "feat: repeat/repeatIndex sticheron resolution — repeat: true copies from previous; repeatIndex: N copies from specific array index (for non-adjacent repeats like 05-25 Forerunner §4A3)",
+      "feat: May 25 Forerunner stichera complete — 5 Menaion slots filled (3 distinct + 2 repeatIndex) per §4A3 rubric",
+      "fix: Pentecostarion Sunday LIC — menaion_set_aside gates removed; all pentecostarion_sunday entries get Octoechos merge regardless of flag",
+      "fix: menaion_set_aside gates high-rank Menaion kontakion override at Hours — Symeon Stylites §2E was overriding §4B13 Holy Fathers kontakion",
+      "fix: licCount no longer gated by menaion_set_aside — reads pentEntry.stichera_lord_i_call_count directly when present",
+      "fix: P+35 stichera_lord_i_call_count corrected from 3 to 10; P+36 count added (6)",
+    ],
+  },
+  {
     version: "v0.3.12",
     date: "May 2026",
     summary: "Hours troparion + kontakion hour-differentiation for §4B13",
