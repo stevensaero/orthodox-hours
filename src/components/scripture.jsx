@@ -292,6 +292,147 @@ function navBtnStyle(disabled) {
   };
 }
 
+// ─── REF PARSER + READING MODE ──────────────────────────────────────────────
+const LECTIONARY_BOOK_ID = {
+  "Matthew":"Matt","Mark":"Mark","Luke":"Luke","John":"John",
+  "Acts":"Acts","Romans":"Rom","Colossians":"Col","Ephesians":"Eph",
+  "Galatians":"Gal","Philippians":"Phil","Hebrews":"Heb",
+  "1 Corinthians":"1Cor","2 Corinthians":"2Cor",
+  "1 Thessalonians":"1Thes","2 Thessalonians":"2Thes",
+  "1 Timothy":"1Tim","2 Timothy":"2Tim",
+  "Titus":"Tit","Philemon":"Phlm",
+  "1 Peter":"1Pet","2 Peter":"2Pet",
+  "James":"Jas","Jude":"Jude",
+  "1 John":"1John","2 John":"2John","3 John":"3John",
+  "Genesis":"Gen","Gen":"Gen","Exodus":"Ex","Exod":"Ex",
+  "Leviticus":"Lev","Numbers":"Num","Deuteronomy":"Deut",
+  "Joshua":"Josh","Judges":"Judg","Ruth":"Ruth",
+  "1 Samuel":"1Sam","2 Samuel":"2Sam",
+  "1 Kings":"3Kgdm","2 Kings":"4Kgdm","3 Kings":"3Kgdm","4 Kings":"4Kgdm",
+  "1 Chronicles":"1Chr","2 Chronicles":"2Chr",
+  "Ezra":"Ezra","Nehemiah":"Neh","Tobit":"Tob","Judith":"Jdt","Job":"Job",
+  "Proverbs":"Prov","Prov":"Prov","Ecclesiastes":"Eccl",
+  "Wisdom":"Wis","Wis":"Wis","Wisdom of Solomon":"Wis",
+  "Sirach":"Sir","Baruch":"Bar",
+  "Isaiah":"Isa","Isa":"Isa","Jeremiah":"Jer","Lamentations":"Lam",
+  "Ezekiel":"Ezek","Ezek":"Ezek","Daniel":"Dan",
+  "Hosea":"Hos","Joel":"Joel","Amos":"Amos","Jonah":"Jon","Micah":"Mic",
+  "Zephaniah":"Zeph","Haggai":"Hag","Zechariah":"Zech","Malachi":"Mal",
+};
+
+function parseSpanSegments(bookId, bookName, seg) {
+  const cm = seg.match(/^(\d+):(.+)$/);
+  if (!cm) return null;
+  const chapter = parseInt(cm[1]);
+  const spans = cm[2].split(/,\s*/).map(s => {
+    const p = s.trim().match(/^(\d+)(?:-(\d+))?$/);
+    if (!p) return null;
+    const vs = parseInt(p[1]), ve = p[2] ? parseInt(p[2]) : vs;
+    return { book: bookId, bookName, chapter, verseStart: vs, verseEnd: ve };
+  }).filter(Boolean);
+  return spans.length ? spans : null;
+}
+
+function parseRefString(refStr) {
+  if (!refStr) return null;
+  const cleaned = refStr.trim().replace(/\s*\([^)]*\)\s*$/, "").trim();
+  const m = cleaned.match(/^((?:\d\s+)?[A-Za-z]+(?:\s+of\s+[A-Za-z]+)?(?:\s+[A-Za-z]+)?)\s+(.+)$/);
+  if (!m) return null;
+  const bookName = m[1].trim(), bookId = LECTIONARY_BOOK_ID[bookName];
+  if (!bookId) return null;
+  const rest = m[2].trim();
+  if (rest.includes(";")) {
+    const spans = [];
+    for (const seg of rest.split(/;\s*/)) {
+      const sub = parseSpanSegments(bookId, bookName, seg.trim());
+      if (sub) spans.push(...sub);
+    }
+    return spans.length ? spans : null;
+  }
+  const cross = rest.match(/^(\d+):(\d+)-(\d+):(\d+)$/);
+  if (cross) return [{ book: bookId, bookName,
+    chapterStart: parseInt(cross[1]), verseStart: parseInt(cross[2]),
+    chapterEnd: parseInt(cross[3]), verseEnd: parseInt(cross[4]) }];
+  return parseSpanSegments(bookId, bookName, rest);
+}
+
+function spanLabel(span) {
+  if (span.chapterStart !== undefined)
+    return `${span.bookName} ${span.chapterStart}:${span.verseStart}\u2013${span.chapterEnd}:${span.verseEnd}`;
+  return `${span.bookName} ${span.chapter}:${span.verseStart}\u2013${span.verseEnd}`;
+}
+
+function SpanHeading({ label }) {
+  return (
+    <div style={{
+      fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase",
+      color: C.gold, marginBottom: "1rem", marginTop: "1.5rem", fontWeight: "bold",
+      display: "flex", alignItems: "center", gap: "0.75rem",
+    }}>
+      {label}
+      <span style={{ flex: 1, height: "1px", background: C.goldLight }} />
+    </div>
+  );
+}
+
+function ReadingView({ spans, allBookData }) {
+  const topRef = useRef(null);
+  useEffect(() => { topRef.current?.scrollIntoView({ behavior: "instant", block: "start" }); }, [spans]);
+  if (!spans || spans.length === 0) return null;
+
+  const vStyle = { fontSize: "0.97rem", lineHeight: "1.9", color: C.inkMid, display: "block" };
+  const supStyle = { fontSize: "0.62rem", color: C.gold, marginRight: "2px", verticalAlign: "super" };
+
+  const renderCross = (span, bookData) => {
+    if (!bookData) return null;
+    const els = [];
+    for (let ch = span.chapterStart; ch <= span.chapterEnd; ch++) {
+      const chData = bookData.chapters?.find(c => c.chapter === ch);
+      if (!chData) continue;
+      const vStart = ch === span.chapterStart ? span.verseStart : 1;
+      const vEnd = ch === span.chapterEnd ? span.verseEnd : 99999;
+      const verses = chData.verses.filter(v => v.verse >= vStart && v.verse <= vEnd);
+      if (ch > span.chapterStart && verses.length > 0)
+        els.push(<SpanHeading key={`ch${ch}`} label={`${span.bookName || span.book} ${ch}:${verses[0].verse}`} />);
+      verses.forEach(v => els.push(
+        <span key={`${ch}-${v.verse}`} style={vStyle}>
+          <sup style={supStyle}>{v.verse}</sup>{v.text}
+        </span>
+      ));
+    }
+    return <div>{els}</div>;
+  };
+
+  const renderSame = (span, bookData) => {
+    if (!bookData) return null;
+    const chData = bookData.chapters?.find(c => c.chapter === span.chapter);
+    if (!chData) return null;
+    const verses = chData.verses.filter(v => v.verse >= span.verseStart && v.verse <= span.verseEnd);
+    return (
+      <div>
+        {verses.map(v => (
+          <span key={v.verse} style={vStyle}>
+            <sup style={supStyle}>{v.verse}</sup>{v.text}
+          </span>
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <div ref={topRef}>
+      {spans.map((span, i) => (
+        <div key={i}>
+          <SpanHeading label={spanLabel(span)} />
+          {span.chapterStart !== undefined
+            ? renderCross(span, allBookData[span.book])
+            : renderSame(span, allBookData[span.book])}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ─── BOOK SELECTOR ────────────────────────────────────────────────────────────
 function BookSelector({ manifest, selectedBookId, onSelect, open, onToggle }) {
   if (!manifest) return null;
@@ -499,7 +640,8 @@ export default function Scripture() {
     }
 
     const fromTool = params.get("from") === "tool";
-    return { pericopeParam, bookParam, chapterParam, verseParam, fromContext, fromTool };
+    const refSpans = refParam ? parseRefString(refParam) : null;
+    return { pericopeParam, refParam, refSpans, bookParam, chapterParam, verseParam, fromContext, fromTool };
   })();
 
   const [manifest, setManifest] = useState(null);
@@ -512,12 +654,29 @@ export default function Scripture() {
   const [bookSelectorOpen, setBookSelectorOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [pericopeMeta, setPericopeMeta] = useState(null);
-  const { fromContext, fromTool } = initState;
-  const refSpans = initState.refParam ? null : null; // reading mode: see isReadingMode
+  const { fromContext, fromTool, refSpans } = initState;
+  const [allBookData, setAllBookData] = useState({});
+  const isReadingMode = !!(initState.refParam && parseRefString(initState.refParam));
 
   // ── Load manifest + pericopes on mount ───────────────────────────────────
   useEffect(() => {
     window.scrollTo(0, 0);
+    if (isReadingMode) {
+      // Reading mode: load manifest + all books in the ref spans
+      const spans = initState.refSpans;
+      const uniqueBooks = [...new Set(spans.map(s => s.book))];
+      loadManifest().then(mf => {
+        setManifest(mf);
+        return Promise.all(uniqueBooks.map(bid => loadBook(bid).then(data => ({ bid, data }))));
+      }).then(results => {
+        const map = {};
+        results.forEach(({ bid, data }) => { map[bid] = data; });
+        setAllBookData(map);
+        setLoading(false);
+      }).catch(() => setLoading(false));
+      return;
+    }
+
     Promise.all([loadManifest(), loadPericopes()]).then(([mf, pc]) => {
       setManifest(mf);
       setPericopes(pc);
@@ -616,14 +775,14 @@ export default function Scripture() {
         {/* Pericope header */}
         {pericopeMeta && <PericopeHeader pericope={pericopeMeta} />}
 
-        {/* Book selector */}
-        <BookSelector
+        {/* Book selector — browse mode only */}
+        {!isReadingMode && <BookSelector
           manifest={manifest}
           selectedBookId={selectedBookId}
           onSelect={handleBookSelect}
           open={bookSelectorOpen}
           onToggle={() => setBookSelectorOpen(o => !o)}
-        />
+        />}
 
         {/* Book + chapter heading */}
         {selectedBookId && (
@@ -670,32 +829,47 @@ export default function Scripture() {
           </div>
         )}
 
-        {/* Chapter content */}
-        {!loading && selectedBookId && (
-          <ChapterView
-            key={`${selectedBookId}-${currentChapter}`}
-            bookData={bookData}
-            chapterNum={currentChapter}
-            targetVerse={targetVerse}
-            pericope={activePericope}
-            totalChapters={totalChapters}
-            onChapterChange={handleChapterChange}
-          />
+        {/* Reading mode — appointed verses only */}
+        {isReadingMode && !loading && (
+          <ReadingView spans={refSpans} allBookData={allBookData} />
+        )}
+        {isReadingMode && loading && (
+          <div style={{ textAlign: "center", padding: "3rem", color: C.inkLight, fontStyle: "italic", fontSize: "0.9rem" }}>
+            Loading…
+          </div>
         )}
 
-        {/* Welcome state */}
-        {!loading && !selectedBookId && (
-          <div style={{
-            textAlign: "center", padding: "3rem 1rem",
-            color: C.inkLight, fontStyle: "italic",
-          }}>
-            <div style={{ fontSize: "0.9rem", marginBottom: "0.5rem" }}>
-              Select a book to begin reading.
-            </div>
-            <div style={{ fontSize: "0.78rem" }}>
-              Brenton Septuagint (OT) · KJV 2006 (NT)
-            </div>
-          </div>
+        {/* Browse mode */}
+        {!isReadingMode && (
+          <>
+            {/* Chapter content */}
+            {!loading && selectedBookId && (
+              <ChapterView
+                key={`${selectedBookId}-${currentChapter}`}
+                bookData={bookData}
+                chapterNum={currentChapter}
+                targetVerse={targetVerse}
+                pericope={activePericope}
+                totalChapters={totalChapters}
+                onChapterChange={handleChapterChange}
+              />
+            )}
+
+            {/* Welcome state */}
+            {!loading && !selectedBookId && (
+              <div style={{
+                textAlign: "center", padding: "3rem 1rem",
+                color: C.inkLight, fontStyle: "italic",
+              }}>
+                <div style={{ fontSize: "0.9rem", marginBottom: "0.5rem" }}>
+                  Select a book to begin reading.
+                </div>
+                <div style={{ fontSize: "0.78rem" }}>
+                  Brenton Septuagint (OT) · KJV 2006 (NT)
+                </div>
+              </div>
+            )}
+          </>
         )}
 
         {/* Context strip — bottom */}
