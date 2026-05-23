@@ -328,9 +328,28 @@ function parseSpanSegments(bookId, bookName, seg) {
     const p = s.trim().match(/^(\d+)(?:-(\d+))?$/);
     if (!p) return null;
     const vs = parseInt(p[1]), ve = p[2] ? parseInt(p[2]) : vs;
-    return { book: bookId, bookName, chapter, verseStart: vs, verseEnd: ve };
+    const rv = remapVerses(bookId, chapter, vs, ve);
+    return { book: bookId, bookName, chapter: rv.chapter, verseStart: rv.verseStart, verseEnd: rv.verseEnd };
   }).filter(Boolean);
   return spans.length ? spans : null;
+}
+
+// LXX versification: some books differ from Hebrew chapter/verse numbering.
+// Paroemia refs use Hebrew numbering; our Brenton LXX JSON uses LXX numbering.
+const LXX_REMAP = {
+  // Malachi: Hebrew ch4 = LXX ch3 (LXX Malachi has only 3 chapters)
+  // Mal 4:1-6 (Heb) = Mal 3:19-24 (LXX/Brenton)
+  Mal: { 4: { chapter: 3, verseOffset: 18 } },
+};
+
+function remapVerses(bookId, chapter, verseStart, verseEnd) {
+  const remap = LXX_REMAP[bookId]?.[chapter];
+  if (!remap) return { chapter, verseStart, verseEnd };
+  return {
+    chapter: remap.chapter,
+    verseStart: verseStart + remap.verseOffset,
+    verseEnd: verseEnd + remap.verseOffset,
+  };
 }
 
 function parseRefString(refStr) {
@@ -650,12 +669,7 @@ export default function Scripture() {
   const { fromContext, fromTool, refSpans } = initState;
   const [allBookData, setAllBookData] = useState({});
   const isReadingMode = !!(initState.refParam && parseRefString(initState.refParam));
-  // DEBUG — remove after diagnosis
-  if (typeof window !== 'undefined' && initState.refParam) {
-    console.log('[Scripture] refParam:', initState.refParam);
-    console.log('[Scripture] refSpans:', JSON.stringify(refSpans));
-    console.log('[Scripture] isReadingMode:', isReadingMode);
-  }
+
 
   // ── Load manifest + pericopes on mount ───────────────────────────────────
   useEffect(() => {
