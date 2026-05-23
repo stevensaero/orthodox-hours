@@ -6987,6 +6987,19 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
 
 const RELEASE_NOTES = [
   {
+    version: "v0.3.11",
+    date: "May 2026",
+    summary: "Vespers rubric fixes · §4B13 fully resolved · Fekula-traced kontakion logic",
+    items: [
+      "fix: Pentecostarion aposticha Both now rendered — pentEntry.aposticha_theotokion was encoded but never pushed to assembler output; Ascension troparion now appears correctly after the aposticha doxasticon on P+42",
+      "fix: Vespers OT paroemia links — paroemiaToScriptureHref() was called in context card but not in assembleVespers(); OT lessons now show 'Read in Scripture ↗' badge matching Epistle/Gospel",
+      "fix: P+42 LIC verse interleave — stichera_lord_i_call_count missing from P+42, P+48; licCount defaulted to 6 instead of 10; V(10)/V(9) floated above block; Holy Fathers stichera (slots 7–10) never rendered",
+      "fix: Vespers troparion_2/troparion_3 support — assembler now reads troparion_2 (Glory) and troparion_3 (Both now) from pentEntry; affects P+42 (Resurrection/Fathers/Ascension) and P+56 (Resurrection/All Saints)",
+      "fix: explicit vespers_kontakion suppression — previously suppressed implicitly when thirdTrop present; now driven by vespers_kontakion: false on pentEntry (P+42 §4B13, P+56 §4B17)",
+      "research: §4B13 fully vetted against Fekula chapter_4.txt and St. Sergius 70.pdf — no-Vigil Vespers troparion order confirmed; OCA vs Russian translation divergence documented; Chapter 6 general theotokion rule vs §4B13 specific override noted for parish discussion",
+    ],
+  },
+  {
     version: "v0.3.10",
     date: "May 2026",
     summary: "Encoding audit tool · Pentecostarion 23/23 complete · May 16/16 complete",
