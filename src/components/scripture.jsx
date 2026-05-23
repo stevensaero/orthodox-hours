@@ -488,14 +488,7 @@ function BookSelector({ manifest, selectedBookId, onSelect, open, onToggle }) {
                   Revelation is not read in Orthodox liturgy.
                 </div>
               )}
-              {groupName === "Not Used Liturgically" && (
-                <div style={{
-                  fontSize: "0.68rem", color: C.inkLight, fontStyle: "italic",
-                  padding: "0 0.75rem 0.25rem",
-                }}>
-                  Revelation is not read in Orthodox liturgy.
-                </div>
-              )}
+
               <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", padding: "0.25rem 0.75rem 0.5rem" }}>
                 {groups[groupName].map(book => {
                   const isSelected = book.id.toLowerCase() === selectedBookId?.toLowerCase();

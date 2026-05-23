@@ -415,16 +415,17 @@ const SCRIPTURE_BOOK_ID = {
 //   "Proverbs — description (Prov 10:7)"   → ref extracted from parens
 function paroemiaToScriptureHref(paroemia, service, date) {
   if (!paroemia) return null;
-  // Format 1: book ref at start — "Genesis 28:10-17 ..."
-  const m1 = paroemia.match(/^((?:\d\s+)?(?:[A-Za-z]+(?:\s+of\s+[A-Za-z]+)?|[A-Za-z]+(?:\s+[A-Za-z]+)?))\s+(\d+:\d+[^(\s]*)/);
+  // Format 1: book ref at start — "Isaiah 40:1-8, 10-11 — description"
+  // Capture everything up to " —" or end of string as the ref
+  const m1 = paroemia.match(/^((?:\d\s+)?(?:[A-Za-z]+(?:\s+of\s+[A-Za-z]+)?|[A-Za-z]+(?:\s+[A-Za-z]+)?))\s+(\d+:\d+[^—]*)(?:\s*—|$)/);
   if (m1 && SCRIPTURE_BOOK_ID[m1[1].trim()]) {
-    return refToScriptureHref(`${m1[1].trim()} ${m1[2].trim()}`, service, date);
+    const ref = `${m1[1].trim()} ${m1[2].trim()}`;
+    return refToScriptureHref(ref, service, date);
   }
   // Format 2: ref in trailing parentheses — "Proverbs — desc (Prov 10:7; 3:13-16)"
   const m2 = paroemia.match(/\(([A-Za-z]+(?:\s+[A-Za-z]+)?\s+\d+:\d+[^)]*)\)\s*$/);
   if (m2) {
-    // Take only the first span before semicolons/commas for the landing
-    const firstRef = m2[1].split(/[;,]/)[0].trim();
+    const firstRef = m2[1].split(/;/)[0].trim();
     const mm = firstRef.match(/^([A-Za-z]+(?:\s+[A-Za-z]+)?)\s+(.+)$/);
     if (mm && SCRIPTURE_BOOK_ID[mm[1].trim()]) {
       return refToScriptureHref(`${mm[1].trim()} ${mm[2].trim()}`, service, date);
