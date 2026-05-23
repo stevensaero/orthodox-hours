@@ -384,11 +384,12 @@ const SCRIPTURE_BOOK_ID = {
 };
 function refToScriptureHref(ref, service, date) {
   if (!ref) return null;
-  const m = ref.trim().match(/^((?:\d\s+)?[A-Za-z]+(?:\s+[A-Za-z]+)*)\s+(\d+):(\d+)/);
+  // Validate: must start with a recognisable book name
+  const m = ref.trim().match(/^((?:\d\s+)?[A-Za-z]+(?:\s+[A-Za-z]+)*)\s+\d+:\d+/);
   if (!m) return null;
-  const bookId = SCRIPTURE_BOOK_ID[m[1].trim()];
-  if (!bookId) return null;
-  return `/orthodox-hours/scripture?book=${bookId}&chapter=${m[2]}&verse=${m[3]}&service=${service}&date=${date}`;
+  if (!SCRIPTURE_BOOK_ID[m[1].trim()]) return null;
+  // Pass the full reference string so scripture.jsx can render appointed-only
+  return `/orthodox-hours/scripture?ref=${encodeURIComponent(ref.trim())}&service=${service}&date=${date}`;
 }
 
 // ── GREAT FEASTS DATA ────────────────────────────────────────────────────────
