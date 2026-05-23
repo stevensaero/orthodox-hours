@@ -2002,7 +2002,16 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
   if (isPentecostarion && pentEntry && pentEntry.troparion) {
     primaryTrop = pentEntry.troparion;
     primaryTropSource = `Pentecostarion — ${pentEntry.name}`;
-    if (effectiveMenaionTrop) {
+    if (pentEntry.menaion_set_aside && pentEntry.troparion_2) {
+      // §4B13 / §4B17: Menaion set aside — secondary is hour-differentiated from pentEntry.
+      // 1st & 6th Hours: troparion_3 (feast troparion, e.g. Ascension T4 on P+42)
+      // 3rd & 9th Hours: troparion_2 (saint troparion, e.g. Holy Fathers T8 on P+42)
+      // Fekula §4B13: "First and Sixth Hours: Sunday + feast. Third and Ninth Hours: Sunday + Fathers."
+      secondaryTrop = is3rdOr9th
+        ? pentEntry.troparion_2
+        : (pentEntry.troparion_3 || pentEntry.troparion_2);
+      secondaryTropSource = `Pentecostarion — ${pentEntry.name}`;
+    } else if (effectiveMenaionTrop && !pentEntry.menaion_set_aside) {
       secondaryTrop = effectiveMenaionTrop;
       secondaryTropSource = `Menaion — ${effectiveSaint}`;
     }
@@ -2024,10 +2033,22 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
     : 'And he saith the kontakion of the feast, or of the saint of the day.\nIf there be two kontakia, he saith the kontakion which was chanted after the 6th Ode at Matins. — HTM';
 
   if (isPentecostarion && pentEntry) {
-    const pKont = pentEntry.hours_kontakion
-      || (is3rdOr9th
-          ? (pentEntry.kontakion_ode6 || pentEntry.kontakion_ode3)
-          : (pentEntry.kontakion_ode3 || pentEntry.kontakion_ode6));
+    let pKont;
+    if (pentEntry.menaion_set_aside && pentEntry.hours_kontakion && pentEntry.kontakion_ode6) {
+      // §4B13 / §4B17: two distinct kontakia, hour-differentiated.
+      // 1st & 6th Hours: hours_kontakion (feast kontakion, after 3rd Ode — e.g. Ascension T6)
+      // 3rd & 9th Hours: kontakion_ode6 (saint kontakion, after 6th Ode — e.g. Holy Fathers T8)
+      // Fekula §4B13: "First and Sixth Hours: Kontakion of the feast.
+      //                Third and Ninth Hours: Kontakion of the Fathers."
+      pKont = is3rdOr9th ? pentEntry.kontakion_ode6 : pentEntry.hours_kontakion;
+    } else {
+      // Ordinary Pentecostarion: hours_kontakion is a universal single-kontakion override;
+      // otherwise ode-aware selection (3rd Ode after 1st/6th, 6th Ode after 3rd/9th).
+      pKont = pentEntry.hours_kontakion
+        || (is3rdOr9th
+            ? (pentEntry.kontakion_ode6 || pentEntry.kontakion_ode3)
+            : (pentEntry.kontakion_ode3 || pentEntry.kontakion_ode6));
+    }
     const mKont = menaionEntry && menaionEntry.kontakion_ode6 ? menaionEntry.kontakion_ode6 : null;
     const isHighRank = menaionEntry && ['doxology','polyeleos','vigil'].includes(menaionEntry.rank);
     kontakion = (isHighRank && is3rdOr9th && mKont) ? mKont : pKont;
