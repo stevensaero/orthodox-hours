@@ -6950,6 +6950,18 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
 
 const RELEASE_NOTES = [
   {
+    version: "v0.3.10",
+    date: "May 2026",
+    summary: "Encoding audit tool · Pentecostarion 23/23 complete · May 16/16 complete",
+    items: [
+      "scripts/audit.js: completeness enforcer — entry not complete until all required fields present AND no placeholder text; run before closing any session",
+      "Pentecostarion fully clean 23/23: P+49-P+56 stichera encoded from PDFs (P+50-P+54 Menaion slots replaced with assembler comments); P+36-P+48 aposticha_source added; P+19 structural flags completed",
+      "May Menaion fully clean 16/16: 05-22 through 05-30 missing boolean flags (has_polyeleos/has_litya/has_paroemias) resolved",
+      "05-16 and 05-17 re-encoded from PDFs: proper stichera replace General Menaion fallbacks; 05-16 troparion corrected Tone VIII→I",
+      "Rule established: encoding not complete until every skeleton field is populated or explicitly null with a comment",
+    ],
+  },
+  {
     version: "v0.3.9",
     date: "May 2026",
     summary: "Data architecture refactor — dynamic monthly modules · context card collapsed by default",
