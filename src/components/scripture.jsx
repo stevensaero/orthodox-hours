@@ -336,8 +336,9 @@ function ChapterView({ bookData, chapterNum, targetVerse, totalChapters, onChapt
     </div>
   );
 }
-function ContextStrip({ fromContext, position }) {
-  if (!fromContext) return null;
+function ContextStrip({ fromContext, fromTool, position }) {
+  const show = fromContext || fromTool;
+  if (!show) return null;
   const isBottom = position === "bottom";
   return (
     <button
@@ -363,9 +364,11 @@ function ContextStrip({ fromContext, position }) {
       <span style={{ fontSize: "0.78rem", color: C.gold, marginLeft: "0.4rem" }}>
         Hours Tool
       </span>
-      <span style={{ fontSize: "0.72rem", color: C.inkLight, fontStyle: "italic", marginLeft: "0.25rem" }}>
-        · {fromContext.serviceLabel} · {fromContext.dayName}, {fromContext.dateLabel}
-      </span>
+      {fromContext && (
+        <span style={{ fontSize: "0.72rem", color: C.inkLight, fontStyle: "italic", marginLeft: "0.25rem" }}>
+          · {fromContext.serviceLabel} · {fromContext.dayName}, {fromContext.dateLabel}
+        </span>
+      )}
     </button>
   );
 }
@@ -592,6 +595,7 @@ export default function Scripture() {
     const date = params.get("date");
 
     const refSpans = refParam ? parseRefString(refParam) : null;
+    const fromTool = params.get("from") === "tool";
 
     let fromContext = null;
     if (service && date) {
@@ -606,7 +610,7 @@ export default function Scripture() {
       fromContext = { dayName, dateLabel, serviceLabel };
     }
 
-    return { pericopeParam, refParam, refSpans, bookParam, chapterParam, verseParam, fromContext };
+    return { pericopeParam, refParam, refSpans, bookParam, chapterParam, verseParam, fromContext, fromTool };
   })();
 
   // Reading mode: arrived via ?ref= from hours-tool
@@ -624,7 +628,7 @@ export default function Scripture() {
   const [pericopeMeta, setPericopeMeta] = useState(null);
   // allBookData: keyed by bookId — used in reading mode to load multiple books
   const [allBookData, setAllBookData] = useState({});
-  const { fromContext } = initState;
+  const { fromContext, fromTool } = initState;
 
   // ── Load manifest + pericopes on mount ───────────────────────────────────
   useEffect(() => {
@@ -715,7 +719,7 @@ export default function Scripture() {
       <div style={{ maxWidth: "680px", margin: "0 auto", padding: "1.5rem 1.25rem 5rem" }}>
 
         {/* Context strip — top */}
-        <ContextStrip fromContext={fromContext} position="top" />
+        <ContextStrip fromContext={fromContext} fromTool={fromTool} position="top" />
 
         {/* Site header */}
         <div style={{
@@ -841,7 +845,7 @@ export default function Scripture() {
         )}
 
         {/* Context strip — bottom */}
-        <ContextStrip fromContext={fromContext} position="bottom" />
+        <ContextStrip fromContext={fromContext} fromTool={fromTool} position="bottom" />
 
         {/* Footer */}
         <div style={{

@@ -371,6 +371,7 @@ function getDailyReading(dateObj) {
 // Converts a LECTIONARY reference string (e.g. "Romans 6:3-11") to a scripture
 // deep-link URL. Lands on the first chapter:verse of the reading.
 const SCRIPTURE_BOOK_ID = {
+  // NT
   "Matthew": "Matt", "Mark": "Mark", "Luke": "Luke", "John": "John",
   "Acts": "Acts", "Romans": "Rom", "Colossians": "Col", "Ephesians": "Eph",
   "Galatians": "Gal", "Philippians": "Phil", "Hebrews": "Heb",
@@ -381,14 +382,62 @@ const SCRIPTURE_BOOK_ID = {
   "1 Peter": "1Pet", "2 Peter": "2Pet",
   "James": "Jas", "Jude": "Jude",
   "1 John": "1John", "2 John": "2John", "3 John": "3John",
+  // OT
+  "Genesis": "Gen", "Gen": "Gen",
+  "Exodus": "Ex", "Exod": "Ex",
+  "Leviticus": "Lev", "Numbers": "Num", "Deuteronomy": "Deut",
+  "Joshua": "Josh", "Judges": "Judg", "Ruth": "Ruth",
+  "1 Samuel": "1Sam", "2 Samuel": "2Sam",
+  "1 Kings": "3Kgdm", "2 Kings": "4Kgdm",
+  "3 Kings": "3Kgdm", "4 Kings": "4Kgdm",
+  "1 Chronicles": "1Chr", "2 Chronicles": "2Chr",
+  "Ezra": "Ezra", "Nehemiah": "Neh",
+  "Tobit": "Tob", "Judith": "Jdt",
+  "Job": "Job",
+  "Proverbs": "Prov", "Prov": "Prov",
+  "Ecclesiastes": "Eccl",
+  "Wisdom": "Wis", "Wis": "Wis",
+  "Wisdom of Solomon": "Wis",
+  "Sirach": "Sir", "Baruch": "Bar",
+  "Isaiah": "Isa", "Isa": "Isa",
+  "Jeremiah": "Jer", "Lamentations": "Lam",
+  "Ezekiel": "Ezek", "Ezek": "Ezek",
+  "Daniel": "Dan",
+  "Hosea": "Hos", "Joel": "Joel", "Amos": "Amos",
+  "Jonah": "Jon", "Micah": "Mic",
+  "Zephaniah": "Zeph", "Haggai": "Hag",
+  "Zechariah": "Zech", "Malachi": "Mal",
 };
+
+// Extract a scripture href from a paroemia string.
+// Handles two formats:
+//   "Genesis 28:10-17 (description)"       → ref = "Genesis 28:10-17"
+//   "Proverbs — description (Prov 10:7)"   → ref extracted from parens
+function paroemiaToScriptureHref(paroemia, service, date) {
+  if (!paroemia) return null;
+  // Format 1: book ref at start — "Genesis 28:10-17 ..."
+  const m1 = paroemia.match(/^((?:\d\s+)?(?:[A-Za-z]+(?:\s+of\s+[A-Za-z]+)?|[A-Za-z]+(?:\s+[A-Za-z]+)?))\s+(\d+:\d+[^(\s]*)/);
+  if (m1 && SCRIPTURE_BOOK_ID[m1[1].trim()]) {
+    return refToScriptureHref(`${m1[1].trim()} ${m1[2].trim()}`, service, date);
+  }
+  // Format 2: ref in trailing parentheses — "Proverbs — desc (Prov 10:7; 3:13-16)"
+  const m2 = paroemia.match(/\(([A-Za-z]+(?:\s+[A-Za-z]+)?\s+\d+:\d+[^)]*)\)\s*$/);
+  if (m2) {
+    // Take only the first span before semicolons/commas for the landing
+    const firstRef = m2[1].split(/[;,]/)[0].trim();
+    const mm = firstRef.match(/^([A-Za-z]+(?:\s+[A-Za-z]+)?)\s+(.+)$/);
+    if (mm && SCRIPTURE_BOOK_ID[mm[1].trim()]) {
+      return refToScriptureHref(`${mm[1].trim()} ${mm[2].trim()}`, service, date);
+    }
+  }
+  return null;
+}
+
 function refToScriptureHref(ref, service, date) {
   if (!ref) return null;
-  // Validate: must start with a recognisable book name
-  const m = ref.trim().match(/^((?:\d\s+)?[A-Za-z]+(?:\s+[A-Za-z]+)*)\s+\d+:\d+/);
+  const m = ref.trim().match(/^((?:\d\s+)?(?:[A-Za-z]+(?:\s+of\s+[A-Za-z]+)?|[A-Za-z]+(?:\s+[A-Za-z]+)?))\s+(\d+:\d+)/);
   if (!m) return null;
   if (!SCRIPTURE_BOOK_ID[m[1].trim()]) return null;
-  // Pass the full reference string so scripture.jsx can render appointed-only
   return `/orthodox-hours/scripture?ref=${encodeURIComponent(ref.trim())}&service=${service}&date=${date}`;
 }
 
@@ -12782,9 +12831,15 @@ export default function App() {
             <div style={{ marginTop: "0.4rem" }}>
               <strong>{namedDayIsSunday ? "Sunday proper:" : "Readings:"}</strong>{" "}
               <span style={{ color: "#5C4A1E" }}>
-                Epistle: <em>{dailyReading.e}</em>
+                Epistle:{" "}
+                {refToScriptureHref(dailyReading.e, currentService.key, selectedDate)
+                  ? <a href={refToScriptureHref(dailyReading.e, currentService.key, selectedDate)} style={{ color: "#8B6914" }}><em>{dailyReading.e}</em></a>
+                  : <em>{dailyReading.e}</em>}
                 {" · "}
-                Gospel: <em>{dailyReading.g}</em>
+                Gospel:{" "}
+                {refToScriptureHref(dailyReading.g, currentService.key, selectedDate)
+                  ? <a href={refToScriptureHref(dailyReading.g, currentService.key, selectedDate)} style={{ color: "#8B6914" }}><em>{dailyReading.g}</em></a>
+                  : <em>{dailyReading.g}</em>}
               </span>
               {dailyReading.lukanJump && (
                 <span style={{ fontSize: "0.75rem", color: "#8B6914", marginLeft: "0.5rem" }}>
@@ -12802,9 +12857,15 @@ export default function App() {
             <div style={{ marginTop: "0.3rem" }}>
               <strong>Feast readings:</strong>{" "}
               <span style={{ color: "#5C4A1E" }}>
-                {feastReading.e && <><em>Epistle:</em> {feastReading.e}</>}
+                {feastReading.e && <><em>Epistle:</em>{" "}
+                  {refToScriptureHref(feastReading.e, currentService.key, selectedDate)
+                    ? <a href={refToScriptureHref(feastReading.e, currentService.key, selectedDate)} style={{ color: "#8B6914" }}>{feastReading.e}</a>
+                    : feastReading.e}</>}
                 {feastReading.e && feastReading.g && " · "}
-                {feastReading.g && <><em>Gospel:</em> {feastReading.g}</>}
+                {feastReading.g && <><em>Gospel:</em>{" "}
+                  {refToScriptureHref(feastReading.g, currentService.key, selectedDate)
+                    ? <a href={refToScriptureHref(feastReading.g, currentService.key, selectedDate)} style={{ color: "#8B6914" }}>{feastReading.g}</a>
+                    : feastReading.g}</>}
               </span>
               <span style={{ fontSize: "0.72rem", color: "#8B7040", marginLeft: "0.4rem" }}>
                 (proper for this commemoration)
@@ -12825,12 +12886,18 @@ export default function App() {
             />
             {paroemias && (
               <span style={{ color: "#5C4A1E", display: "block", marginTop: "0.15rem" }}>
-                {paroemias.map((p, i) => (
-                  <span key={i}>
-                    <em>{["I.", "II.", "III."][i]}</em>{" "}{p}
-                    {i < paroemias.length - 1 && <br />}
-                  </span>
-                ))}
+                {paroemias.map((p, i) => {
+                  const href = paroemiaToScriptureHref(p, currentService.key, selectedDate);
+                  return (
+                    <span key={i}>
+                      <em>{["I.", "II.", "III."][i]}</em>{" "}
+                      {href
+                        ? <a href={href} style={{ color: "#8B6914" }}>{p}</a>
+                        : p}
+                      {i < paroemias.length - 1 && <br />}
+                    </span>
+                  );
+                })}
               </span>
             )}
           </div>
@@ -13175,6 +13242,26 @@ export default function App() {
           >
             {showGlossary ? "Hide Glossary" : "Glossary"}
           </button>
+          <a
+            href="/orthodox-hours/psalter?from=tool"
+            style={{ background: "transparent", border: "1px solid #8B6914",
+                     color: "#8B6914", borderRadius: "3px", padding: "5px 14px",
+                     fontSize: "0.78rem", letterSpacing: "0.08em", cursor: "pointer",
+                     fontFamily: "Georgia, serif", textDecoration: "none",
+                     display: "inline-block" }}
+          >
+            Psalter
+          </a>
+          <a
+            href="/orthodox-hours/scripture?from=tool"
+            style={{ background: "transparent", border: "1px solid #8B6914",
+                     color: "#8B6914", borderRadius: "3px", padding: "5px 14px",
+                     fontSize: "0.78rem", letterSpacing: "0.08em", cursor: "pointer",
+                     fontFamily: "Georgia, serif", textDecoration: "none",
+                     display: "inline-block" }}
+          >
+            Scripture
+          </a>
         </div>
 
         {showHowItWorks && (

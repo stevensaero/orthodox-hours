@@ -359,8 +359,10 @@ export default function Psalter() {
 
   const fromContext = (() => {
     const params = new URLSearchParams(window.location.search);
+    const fromTool = params.get("from") === "tool";
     const service = params.get("service");
     const date = params.get("date");
+    if (fromTool) return { fromToolOnly: true };
     if (!service || !date) return null;
     const d = new Date(date + "T12:00:00");
     const dayName = d.toLocaleDateString("en-US", { weekday: "long" });
@@ -402,9 +404,11 @@ export default function Psalter() {
             <span style={{ fontSize: "0.78rem", fontFamily: "Georgia, serif", color: C.gold, marginLeft: "0.4rem" }}>
               Hours Tool
             </span>
-            <span style={{ fontSize: "0.72rem", color: C.inkLight, fontStyle: "italic", marginLeft: "0.25rem" }}>
-              · {fromContext.serviceLabel} · {fromContext.dayName}, {fromContext.dateLabel}
-            </span>
+            {!fromContext.fromToolOnly && (
+              <span style={{ fontSize: "0.72rem", color: C.inkLight, fontStyle: "italic", marginLeft: "0.25rem" }}>
+                · {fromContext.serviceLabel} · {fromContext.dayName}, {fromContext.dateLabel}
+              </span>
+            )}
           </button>
         )}
 
@@ -461,9 +465,11 @@ export default function Psalter() {
             <span style={{ fontSize: "0.78rem", fontFamily: "Georgia, serif", color: C.gold, marginLeft: "0.4rem" }}>
               Hours Tool
             </span>
-            <span style={{ fontSize: "0.72rem", color: C.inkLight, fontStyle: "italic", marginLeft: "0.25rem" }}>
-              · {fromContext.serviceLabel} · {fromContext.dayName}, {fromContext.dateLabel}
-            </span>
+            {!fromContext.fromToolOnly && (
+              <span style={{ fontSize: "0.72rem", color: C.inkLight, fontStyle: "italic", marginLeft: "0.25rem" }}>
+                · {fromContext.serviceLabel} · {fromContext.dayName}, {fromContext.dateLabel}
+              </span>
+            )}
           </button>
         )}
 
