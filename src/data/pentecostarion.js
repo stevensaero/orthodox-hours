@@ -2535,6 +2535,7 @@ const PENTECOSTARION_DATA = {
     hours_format: "pentecostarion_sunday",
     tone: 6,
     menaion_set_aside: true,
+    stichera_lord_i_call_count: 10,
     has_great_doxology: true,  // Great Doxology sung at Sunday Matins
     has_litya: true,
     has_paroemias: true,
@@ -3455,6 +3456,7 @@ const PENTECOSTARION_DATA = {
     hours_format: "apodosis_ascension",
     tone: 4,
     menaion_set_aside: true,
+    stichera_lord_i_call_count: null,  // Apodosis — feast stichera govern; assembler uses feast texts
     has_great_doxology: false,
     has_litya: false,
     has_paroemias: false,
@@ -3544,6 +3546,7 @@ const PENTECOSTARION_DATA = {
     hours_format: "pentecostarion_saturday_reposed",
     tone: 6,
     menaion_set_aside: true,
+    stichera_lord_i_call_count: 6,
     has_great_doxology: false,  // Small Doxology read at Matins
     has_litya: false,
     has_paroemias: false,
