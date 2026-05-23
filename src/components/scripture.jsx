@@ -650,6 +650,12 @@ export default function Scripture() {
   const { fromContext, fromTool, refSpans } = initState;
   const [allBookData, setAllBookData] = useState({});
   const isReadingMode = !!(initState.refParam && parseRefString(initState.refParam));
+  // DEBUG — remove after diagnosis
+  if (typeof window !== 'undefined' && initState.refParam) {
+    console.log('[Scripture] refParam:', initState.refParam);
+    console.log('[Scripture] refSpans:', JSON.stringify(refSpans));
+    console.log('[Scripture] isReadingMode:', isReadingMode);
+  }
 
   // ── Load manifest + pericopes on mount ───────────────────────────────────
   useEffect(() => {
