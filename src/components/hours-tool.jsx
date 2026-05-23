@@ -2051,8 +2051,12 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
     }
     const mKont = menaionEntry && menaionEntry.kontakion_ode6 ? menaionEntry.kontakion_ode6 : null;
     const isHighRank = menaionEntry && ['doxology','polyeleos','vigil'].includes(menaionEntry.rank);
-    kontakion = (isHighRank && is3rdOr9th && mKont) ? mKont : pKont;
-    kontakionSource = (isHighRank && is3rdOr9th && mKont)
+    // High-rank Menaion override: on ordinary Pentecostarion weekdays, Doxology+ saints
+    // get their kontakion at 3rd/9th (Fekula §4A footnote). But when menaion_set_aside
+    // is true, the Menaion is entirely displaced — §4B13/§4B17 governs exclusively.
+    const menaionKontakionOverride = isHighRank && is3rdOr9th && mKont && !pentEntry.menaion_set_aside;
+    kontakion = menaionKontakionOverride ? mKont : pKont;
+    kontakionSource = menaionKontakionOverride
       ? `Menaion — ${effectiveSaint} (Doxology+ rank)`
       : `Pentecostarion — ${pentEntry.name}`;
   } else {
