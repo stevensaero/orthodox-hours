@@ -5617,12 +5617,25 @@ const PENTECOSTARION = {
 
   // ── P+41 — Saturday of the Sixth Week — Ascension Afterfeast, Day 2 ──────
   // Source: 66.pdf. Drive record: 66.txt.
+  // ── P+41 — Saturday of the Sixth Week — Ascension Afterfeast, Day 2 ──────
+  // Source: 66.pdf. Drive record: P+41.txt. Fekula §4A.
+  // 66.pdf covers Friday Evening (P+40 Vespers) + Saturday Matins/Liturgy (P+41).
+  // §2G1: Menaion saint (May 22, Basiliscus §2A) participates at Glory only.
+  // hours_kontakion = single Ascension kontakion governs all four Hours. // v0.3.6
   41: {
     name: "Saturday of the Sixth Week — Ascension Afterfeast, Day 2",
     source_file: "66.pdf",
     fekula_section: "4A",
     hours_format: "pentecostarion_weekday",
     tone: 4,
+    menaion_set_aside: false,  // §2G1: Menaion saint at Glory; feast governs Hours
+    has_great_doxology: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: true,
+    matins_format: "god_is_the_lord",
+    it_is_truly_meet_suppressed: true,
+
     troparion: {
       tone: 4,
       text: "Thou hast ascended in glory, O Christ our God, " +
@@ -5639,6 +5652,128 @@ const PENTECOSTARION = {
             "and crying unto them that love Thee: " +
             "I am with you, and no one shall be against you.",
     },
+
+    // ── VESPERS (Friday Evening / P+40 eve) — LORD I HAVE CRIED ─────────────
+    // 3 Pentecostarion Tone IV + 3 Menaion (May 22, Basiliscus — see 05-22-v2.txt)
+    // Source: 66.pdf. Spec. Mel.: "Thou hast given a sign"
+    stichera_lord_i_call: [
+      { tone: 4,
+        text: "Thou didst suffer as a man, though as God Thou art unapproachable. " +
+              "Thou didst arise on the third day despoiling death, " +
+              "and didst raise up all those who had reposed in corruption. " +
+              "And having ascended unto Thy Father, O Christ, " +
+              "Thou didst promise that Thou wouldst send the Comforter " +
+              "to Thy sacred apostles, O Almighty Jesus, Thou Savior of our souls." },
+      { tone: 4,
+        text: "Why stand ye gazing into the heavens? " +
+              "said the angels in human form, unto the Word's initiates: " +
+              "He Whom ye beheld ascending on a cloud of light, " +
+              "shall in a like manner come again to judge the world, as He Himself told you. " +
+              "Therefore, go ye forth and accomplish all that He hath said." },
+      { tone: 4,
+        text: "Having arisen from the tomb in a manner transcending thought, O almighty Lord, " +
+              "Thou didst lead to Bethany Thy beloved ones. " +
+              "And having arrived at the Mount of Olives, O Word, Thou didst bless them all. " +
+              "And Thou wast taken up from thence whilst angels ministered unto Thee, " +
+              "O Almighty Jesus, Thou Savior of our souls." },
+      // Slots [4][5][6] = Menaion stichera (May 22 Basiliscus) — see SAMPLE_MENAION["05-22"]
+    ],
+    stichera_glory: {
+      tone: 6,
+      text: "Today the hosts on high, beholding our nature in the heavens, " +
+            "marvel at the strange manner of its ascent, " +
+            "and, being perplexed, they said one to another: Who is this that cometh? " +
+            "And when they saw that it was their own Master, " +
+            "they were commanded to lift up the heavenly gates, " +
+            "Who again shalt come from thence in the flesh, " +
+            "as the Judge of all and the Almighty God.",
+    },
+
+    // ── VESPERS PROKEIMENON (Friday Evening) ────────────────────────────────
+    // Tone VII weekday prokeimenon (not the Great Prokeimenon — that was Thursday eve P+40)
+    vespers_prokeimenon: {
+      tone: 7,
+      text: "O God, my helper art Thou, and Thy mercy shall go before me.",
+      stichos: "Rescue me from mine enemies, O God, and from them that rise up against me redeem me.",
+    },
+
+    // ── VESPERS APOSTICHA (Friday Evening) ──────────────────────────────────
+    // Ascension stichera Tone II. Spec. Mel.: "O House of Ephratha"
+    stichera_aposticha: [
+      { tone: 2, verse: null,
+        text: "Having fulfilled His will, thus pleasing well the Father, " +
+              "Thou didst ascend in glory. " +
+              "The things of heaven didst Thou unite thus with the things of earth." },
+      { tone: 2, verse: "Clap your hands, all ye nations; shout unto God with a voice of rejoicing.",
+        text: "O merciful One, Thou didst ascend unto Thy Father, " +
+              "from Whom Thou wast not parted, and didst exalt " +
+              "our nature thus which lay prostrate, O Lord." },
+      { tone: 2, verse: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
+        text: "A brilliant cloud of light conveyed Thee to the heavens, " +
+              "whilst with great fear and trembling " +
+              "the angels came and ministered unto Thy divine Ascension." },
+    ],
+    aposticha_glory: {
+      tone: 7,
+      text: "Unto the Mount of Olives didst Thou come, Thou Who hast mercy on the race of mankind. " +
+            "And a cloud took Thee up out of the sight of Thy disciples, " +
+            "who, on one hand, trembled because of that which they beheld, " +
+            "and, on the other hand, rejoiced at their expectation of the Holy Spirit, " +
+            "wherein do Thou make us steadfast, O Savior, and have mercy on us.",
+    },
+
+    // ── MATINS APOSTICHA (Saturday Morning) ─────────────────────────────────
+    // Ascension stichera Tone II. Spec. Mel.: "O House of Ephratha"
+    stichera_matins_aposticha: [
+      { tone: 2, verse: null,
+        text: "The Lord said to His friends: I shall not leave as orphans " +
+              "all you whom I have gathered; " +
+              "but rather I shall send forth the Holy Spirit unto you." },
+      { tone: 2, verse: "Clap your hands, all ye nations; shout unto God with a voice of rejoicing.",
+        text: "The angels cried and said unto the wise apostles: " +
+              "O righteous Galileans, He shall return in like manner " +
+              "as ye see Him now depart." },
+      { tone: 2, verse: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
+        text: "As they descended from that hallowed Mount of Olives, " +
+              "O Word, Thy blest disciples extolled Thy dread Ascension " +
+              "while glorifying it with joy." },
+    ],
+    stichera_matins_aposticha_glory: {
+      tone: 8,
+      text: "Thou wast taken up in glory from earth into the heavens, " +
+            "Thou Who dost fill all things with Thy Divinity; " +
+            "and Thou didst sit down at the right hand of the Father, " +
+            "Thou Who in the beginning wast God the Word. " +
+            "Wherefore, as the heavenly powers beheld, they said unto the apostles with fear: " +
+            "Why look ye, gazing up into the heavens? " +
+            "He Whom ye have beheld, the Same shall come again with glory " +
+            "to judge all the earth and to recompense each according to his works. " +
+            "Let us cry unto Him: O incomprehensible Lord, glory be to Thee.",
+    },
+
+    // ── BEATITUDES (Saturday Liturgy) ───────────────────────────────────────
+    // 6 verses from Ode III of Ascension Canon 2 (including Irmos). Source: 66.pdf AT LITURGY.
+    beatitudes_source: "6 verses from Ode III of Ascension Canon 2 including Irmos (66.pdf)",
+    beatitudes_troparia: [
+      "By the power of Thy Cross, O Christ, do Thou make steadfast mine understanding, " +
+      "that I may hymn and glorify Thy saving Ascension.",  // Irmos
+      "Thou didst go up unto the Father, O Life-giving Christ, " +
+      "and Thou didst exalt our race by Thine ineffable compassion, O Lover of mankind.",
+      "The orders of angels, O Savior, on beholding man's nature going up together with Thee, " +
+      "were amazed and ceaselessly praised Thee.",
+      "The choirs of angels were amazed, O Christ, as they beheld thee taken up with Thy body, " +
+      "and they praised Thy holy Ascension.",
+      // Glory:
+      "The earth doth celebrate and dance for joy, and heaven doth rejoice today " +
+      "on the Ascension of the Maker of creation, Who by His volition clearly united " +
+      "that which was separated.",
+      // Both now:
+      "Since thou hast given birth to God Who destroyed death and Who alone is immortal, " +
+      "O all-pure Virgin Mother, do thou ever entreat Him to slay the passions " +
+      "that slay me and to save me.",
+    ],
+
+    // ── LITURGY PROPERS ──────────────────────────────────────────────────────
     feast_e: "Acts 20:7-12",
     feast_g: "John 14:1-11",
     prokeimenon_tone: 7,
@@ -5647,20 +5782,34 @@ const PENTECOSTARION = {
     alleluia_tone: 2,
     alleluia_verse: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
     alleluia_stichos: "Clap your hands, all ye nations; shout unto God with a voice of rejoicing.",
+    instead_of_it_is_truly_meet_refrain: "Magnify, O my soul, Christ the giver of life, " +
+                                          "Who ascended from earth to heaven.",
+    instead_of_it_is_truly_meet_irmos: "O Thou who art God's Mother transcending mind and word, " +
+                                        "who ineffably in time hast given birth unto the Timeless One, " +
+                                        "Thee do we the faithful magnify with one accord.",
     communion_verse: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
-    magnificat_sung: true,
   },
 
   // ── P+42 — 7th Sunday of Pascha — Holy Fathers of the First Ecumenical Council ──
-  // Source: 70.pdf. Drive record: 70.txt. Fekula §4B13.
-  // THREE troparia: Resurrection Tone 6 (primary), Holy Fathers Tone 8 (Glory), Ascension Tone 4 (Both now).
+  // Source: 70.pdf. Drive record: P+42.txt. Fekula §4B13.
+  // THREE troparia: Resurrection T6 (primary), Holy Fathers T8 (Glory), Ascension T4 (Both now).
   // NOTE: MOVABLE Sunday nearest June 8 (Pascha+42) — NOT fixed June 8 date.
+  // In 2026: May 24. Fixed June 8 = Translation of Relics of GM Theodore Stratelates.
+  // Menaion saint (May 24, Symeon Stylites §2E) fully set aside — Sunday governs. // v0.3.6
   42: {
     name: "Seventh Sunday of Pascha — Holy Fathers of the First Ecumenical Council",
     source_file: "70.pdf",
     fekula_section: "4B13",
     hours_format: "pentecostarion_sunday",
     tone: 6,
+    menaion_set_aside: true,
+    has_great_doxology: true,  // Great Doxology sung at Sunday Matins
+    has_litya: true,
+    has_paroemias: true,
+    magnificat_sung: true,     // Magnificat sung at Ode IX per PDF rubric
+    matins_format: "god_is_the_lord",
+    it_is_truly_meet_suppressed: true,
+
     troparion: {
       tone: 6,
       text: "The angelic hosts were before Thy tomb, " +
@@ -5680,6 +5829,16 @@ const PENTECOSTARION = {
       source: "holy_fathers",
       placement: "glory",
     },
+    // troparion_3 (Both now): Ascension Tone IV — see hours_kontakion.source
+    troparion_3: {
+      tone: 4,
+      text: "Thou hast ascended in glory, O Christ our God, " +
+            "having gladdened Thy disciples with the promise of the Holy Spirit; " +
+            "and they were assured by the blessing " +
+            "that Thou art the Son of God, the Redeemer of the world.",
+      source: "ascension",
+      placement: "both_now",
+    },
     kontakion: {
       tone: 8,
       text: "The preaching of the apostles and the doctrines of the Fathers " +
@@ -5687,6 +5846,7 @@ const PENTECOSTARION = {
             "And wearing the garment of truth woven from the theology on high, " +
             "she rightly divideth and glorifieth the great mystery of piety.",
       source: "holy_fathers",
+      placement: "glory",
     },
     hours_kontakion: {
       tone: 6,
@@ -5699,6 +5859,187 @@ const PENTECOSTARION = {
       source: "ascension",
       placement: "both_now",
     },
+
+    // ── VESPERS — LORD I HAVE CRIED (Saturday Evening) ───────────────────────
+    // 10 stichera: 3 Octoechos (T6) + 3 Ascension (T6) + 4 Holy Fathers (T6)
+    stichera_lord_i_call: [
+      // Octoechos Tone VI (3):
+      { tone: 6, verse: "Bring my soul out of prison that I may confess Thy name.",
+        text: "Victorious over Hades, O Christ, Thou didst ascend the Cross " +
+              "that Thou mightest raise up with Thyself those who sat in the darkness of death; " +
+              "free among the dead, Thou didst pour forth life from Thine own light. " +
+              "O All-powerful Savior, have mercy on us." },
+      { tone: 6, verse: "The righteous shall wait patiently for me until Thou shalt reward me.",
+        text: "Today Christ, having trampled on death, hath arisen as He foretold, " +
+              "granting joy to the world, that we may all cry aloud the hymn and say: " +
+              "O Source of life, O unapproachable light, O All-powerful Savior, have mercy on us." },
+      { tone: 6, verse: "Out of the depths have I cried unto Thee, O Lord; O Lord, hear my voice.",
+        text: "Where shall we sinners escape Thee, O Lord, who art present in all creation? " +
+              "In heaven? Thou dwellest there. In Hades? There Thou didst trample on death. " +
+              "In the depths of the sea? Thy hand is also there O Master. " +
+              "To Thee we flee and falling down before Thee we implore: " +
+              "O Lord risen from the dead, have mercy on us." },
+      // Ascension Tone VI (3):
+      { tone: 6, verse: "Let Thine ears be attentive to the voice of my supplication.",
+        text: "The Lord was taken up into the heavens that He might send the Comforter unto the world. " +
+              "The heavens made ready His throne, and the clouds His Ascension. " +
+              "The angels marvel as they see a man more exalted than they. " +
+              "The Father receiveth Him Whom He had with Him eternally in His bosom. " +
+              "The Holy Spirit commandeth all His angels: Lift up your gates, O ye princes. " +
+              "All ye nations, clap your hands; Christ hath ascended whither He was before." },
+      { tone: 6, verse: "If Thou shouldest mark iniquities, O Lord, O Lord, who shall stand? For with Thee there is forgiveness.",
+        text: "O Lord, the cherubim were amazed at Thine Ascension, " +
+              "when they beheld Thee, O God, Who sittest on them, ascending upon the clouds. " +
+              "And we glorify Thee, for Thy mercy is good. Glory be to Thee." },
+      { tone: 6, verse: "For Thy name's sake have I patiently waited for Thee, O Lord; my soul hath patiently waited for Thy word, my soul hath hoped in the Lord.",
+        text: "Having beheld Thine ascents on the holy mountains, O Christ, " +
+              "Thou effulgence of the Father's glory, we praise the radiant likeness of thy countenance. " +
+              "We worship Thy passion, we honor Thy Resurrection, " +
+              "and we glorify Thy glorious Ascension. Have mercy on us." },
+      // Holy Fathers Tone VI (4):
+      { tone: 6, verse: "From the morning watch until night, from the morning watch let Israel hope in the Lord.",
+        text: "Before the morning star from the womb Thou wast begotten from the Father " +
+              "motherless before the ages, though Arius held Thou wast created and thus not God, " +
+              "boldly and mindlessly identifying thee, the Creator, with things created, " +
+              "thus storing up fuel for the eternal fire. " +
+              "But the Council gathered in Nicaea proclaimed that Thou, O Lord, " +
+              "art truly the Son of God, one in rank with the Father and the Spirit." },
+      { tone: 6, verse: "For with the Lord there is mercy, and with Him is plenteous redemption; and He shall redeem Israel out of all his iniquities.",
+        text: "O My Savior, Who hath rent Thy raiment? " +
+              "Thou didst say: It was Arius who hath cut asunder the Trinity's headship, " +
+              "which is one in rank and honour, disputing that Thou art One of the Most Holy Trinity; " +
+              "thereby teaching Nestorius the godless one to not say Theotokos. " +
+              "But the Council gathered in Nicaea proclaimed that Thou, O Lord, " +
+              "art truly the Son of God, one in rank with the Father and the Spirit." },
+      { tone: 6, verse: "O praise the Lord, all ye nations; praise Him, all ye peoples.",
+        text: "Keeping his eyes shut, that he might not see light, " +
+              "Arius fell headlong into the deep pit of sin. " +
+              "His bowels were rent asunder by a divine hook, " +
+              "such that he violently gave up all his substance and his soul " +
+              "and in this manner became another Judas, through his most evil purpose and disposition. " +
+              "But the Council gathered in Nicaea proclaimed that Thou, O Lord, " +
+              "art truly the Son of God, one in rank with the Father and the Spirit." },
+      { tone: 6, verse: "For He hath made His mercy to prevail over us, and the truth of the Lord abideth forever.",
+        text: "Mindless, foolish Arius once divided the all-holy Trinity's sole dominion " +
+              "thus making three essences, dissimilar and foreign. " +
+              "Hence, the God-bearing Fathers fervently gathered together, " +
+              "burning with zeal like Elias the Tishbite, " +
+              "cutting down with the sharp sword of the Holy Spirit the vile blasphemer, " +
+              "who taught blasphemous doctrines, as thus the Spirit revealed unto them." },
+    ],
+    stichera_glory: {
+      tone: 6,
+      text: "Let us acclaim today those mystical trumpets of the Spirit, the God-bearing Fathers, " +
+            "who, in the midst of the Church, sang a harmonious song of theology, " +
+            "teaching that the Trinity is one, unchanging in essence and Godhead; " +
+            "they are the refuters of Arius, and the foremost warriors of the Orthodox. " +
+            "And they ever intercede with the Lord that our souls find mercy.",
+    },
+    lic_theotokion: {
+      tone: 6,
+      text: "Who doth not call thee blessed, O most holy Virgin? " +
+            "Who will not hymn thy most pure birthgiving? " +
+            "For the only-begotten Son Who hath shone forth timelessly from the Father, " +
+            "came forth, ineffably incarnate, from thee, O pure one; " +
+            "By nature He is God, by nature for our sakes, He hath become a man, " +
+            "not divided into two Hypostases, but known in two natures without commingling. " +
+            "Him do thou beseech, O pure and all-blessed one, that our souls find mercy!",
+    },
+
+    // ── VESPERS — PROKEIMENON (Saturday Evening — Great Vespers) ─────────────
+    vespers_prokeimenon: {
+      tone: 6,
+      text: "The Lord is King, He is clothed with majesty.",
+      verses: [
+        "The Lord is clothed with strength and He hath girt Himself.",
+        "For He established the universe which shall not be shaken.",
+        "Holiness becometh Thy house, O Lord, unto length of days.",
+      ],
+      type: "saturday_great_vespers",
+    },
+
+    // ── VESPERS — OT PAROEMIAS ────────────────────────────────────────────────
+    paroemia_1: "Genesis 14:14-20",   // Abram rescues Lot; Melchizedek type of the priesthood
+    paroemia_2: "Deuteronomy 1:8-11, 15-17",  // Moses appoints judges; judgment is God's
+    paroemia_3: "Deuteronomy 10:14-21", // Heaven and earth are the Lord's; God of gods
+
+    // ── LITIYA STICHERA ───────────────────────────────────────────────────────
+    litya_stichera: [
+      { tone: 1,
+        text: "As Thou didst ascend into the heavens, from whence Thou didst also descend, " +
+              "leave us not orphaned, O Lord; let Thy Spirit come, bringing peace unto the world; " +
+              "show Thou unto the sons of mankind the works of Thy might, O Lord and Lover of mankind." },
+    ],
+    litya_glory: {
+      tone: 3,
+      text: "Ye have become exact keepers of the apostolic traditions, O Holy Fathers; " +
+            "for in setting forth in council the dogma of the consubstantiality " +
+            "of the Holy Trinity in Orthodox fashion, ye cast down the blasphemy of Arius. " +
+            "Then, after censuring Macedonius, the enemy of the Holy Spirit, " +
+            "ye condemned Nestorius, Eutyches, Dioscorus, Sabellius, and Severus the headless one. " +
+            "Wherefore we pray, make supplication on our behalf, " +
+            "that we be delivered from their error, " +
+            "and that our life be preserved blameless in the Faith.",
+    },
+    litya_both_now: {
+      tone: 7,
+      text: "O Lord, when Thou didst fulfill the mystery of Thy dispensation, " +
+            "Thou didst take Thy disciples and ascend the Mount of Olives; " +
+            "and behold, Thou didst pass through the firmament of heaven. " +
+            "O Thou Who for my sake didst become poor like unto me, " +
+            "and Who didst ascend thither whence Thou wast not separated, " +
+            "send forth Thy most holy Spirit to enlighten our souls.",
+    },
+
+    // ── VESPERS — APOSTICHA (Saturday Evening) ───────────────────────────────
+    stichera_aposticha: [
+      { tone: 6, verse: null,
+        text: "Thy Resurrection O Christ our Savior, the angels in the heavens hymn; " +
+              "grant also unto us who are here on earth to glorify Thee with pure hearts." },
+      { tone: 6, verse: "The Lord is King: He is clothed with majesty. The Lord is clothed with strength and He hath girt Himself.",
+        text: "Thou as God all-powerful, hast smashed the gates of brass and shattered the bars of Hades, " +
+              "and Thou hast raised the fallen human race. " +
+              "Therefore with one accord we also cry out to Thee: " +
+              "O Lord, risen from the dead, glory be to Thee!" },
+      { tone: 6, verse: "For He established the universe which shall not be shaken.",
+        text: "Wishing to restore us from our ancient fall, Christ wast nailed to a Cross and placed in a tomb. " +
+              "The myrrh-bearing Women, as they sought Him with tears, said, lamenting: " +
+              "Alas, O Savior of all, how is it that Thou deigned to dwell in a tomb? " +
+              "But as they lamented an angel cried unto them saying: " +
+              "End your lament! Go and tell the apostles that the Lord hath risen, " +
+              "granting the world remission and great mercy." },
+    ],
+    aposticha_glory: {
+      tone: 4,
+      text: "O ye assemblies of the Orthodox, let us celebrate today with faith and piety " +
+            "the annual memorial of the God-bearing Fathers " +
+            "who, in the illustrious city of Nicaea, came together from the whole inhabited world. " +
+            "For with pious mind they refuted the godless dogma of the grievous Arius, " +
+            "and by synodal decree banished him from the Orthodox Catholic Church. " +
+            "And they instructed all to openly confess the consubstantial and co-eternal Son of God, " +
+            "Who existed before the ages. This, in exactness and piety, did they set forth in the Symbol of Faith. " +
+            "Wherefore, following their divine doctrines and believing with assurance, " +
+            "we worship, in one Godhead, the Father, Son and all-holy Spirit, the Trinity one in essence.",
+    },
+    aposticha_theotokion: {
+      tone: 4,
+      text: "O Lord, having fulfilled the mystery that was hidden from before the ages and from all generations, " +
+            "as Thou art good Thou didst come with Thy disciples to the Mount of Olives, " +
+            "having together with Thyself her that gave birth unto Thee, the Creator and Fashioner of all things; " +
+            "for it was meet that she who, as Thy Mother, suffered at Thy Passion more than all, " +
+            "should also enjoy the surpassing joy of the glorification of Thy flesh, O Master, " +
+            "which we have attained by Thine Ascension to the heavens, " +
+            "and we glorify Thy great mercy toward us.",
+    },
+
+    // ── MATINS ────────────────────────────────────────────────────────────────
+    matins_gospel: 10,  // 10th Resurrectional Gospel
+
+    // ── BEATITUDES (Sunday Liturgy) ───────────────────────────────────────────
+    // 12 troparia: 4 Octoechos + 4 Ascension Ode IV + 4 Holy Fathers Ode VI
+    beatitudes_source: "4 Octoechos + 4 Ascension Ode IV + 4 Holy Fathers Ode VI (70.pdf)",
+
+    // ── LITURGY PROPERS ───────────────────────────────────────────────────────
     feast_e: "Acts 20:16-18, 28-36",
     feast_g: "John 17:1-13",
     prokeimenon_tone: 4,
@@ -5708,14 +6049,13 @@ const PENTECOSTARION = {
     alleluia_tone: 1,
     alleluia_verse: "The God of gods, the Lord hath spoken, and He hath called the earth.",
     alleluia_stichos: "Gather together unto Him his holy ones who have established His covenant upon sacrifices.",
+    instead_of_it_is_truly_meet_refrain: "Magnify, O my soul, Christ the giver of life, " +
+                                          "Who ascended from earth to heaven.",
+    instead_of_it_is_truly_meet_irmos: "O Thou who art God's Mother transcending mind and word, " +
+                                        "who ineffably in time hast given birth unto the Timeless One, " +
+                                        "Thee do we the faithful magnify with one accord.",
     communion_verse: "Praise the Lord in the heavens, praise Him in the highest! " +
       "Verse: Rejoice in the Lord, O ye righteous; praise is meet for the upright.",
-    paroemia_1: "Genesis 14:14-20",
-    paroemia_2: "Deuteronomy 1:8-11, 15-17",
-    paroemia_3: "Deuteronomy 10:14-21",
-    has_litya: true,
-    magnificat_sung: false,
-    matins_gospel: 10,
   },
 
   // ── P+43 — Monday of the Seventh Week — Ascension Afterfeast, Day 4 ──────
@@ -11876,6 +12216,17 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.3.7",
+    date: "May 2026",
+    summary: "P+41/P+42 complete encode · Drive .txt protocol established · encoding rule addendum",
+    items: [
+      "P+41 (Sat Afterfeast Day 2): stichera_lord_i_call ×3 Tone IV, vespers aposticha ×3 Tone II, matins aposticha ×3 Tone II, matins aposticha glory Tone VIII, beatitudes_troparia ×6 from Ode III, vespers_prokeimenon Tone VII, menaion_set_aside/has_great_doxology/matins_format flags added",
+      "P+42 (Holy Fathers Sunday): stichera_lord_i_call ×10 (3 Octoechos + 3 Ascension + 4 Holy Fathers) all Tone VI, troparion_3 (Ascension Both now) added, vespers_prokeimenon (Great Vespers Tone VI with 3 verses), litya_stichera/litya_glory/litya_both_now encoded, aposticha ×3 + glory + theotokion encoded, menaion_set_aside/magnificat_sung/matins_format flags corrected",
+      "Drive .txt protocol established: all Menaion encodes → Menaion folder; all Pentecostarion encodes → Pentecostarion folder; artifacts delivered in chat for user placement",
+      "encoding_rule_addendum_v1_1.txt saved to Drive: kontakion ode routing clarified (3 cases), Drive .txt source-of-truth mandate documented",
+    ],
+  },
   {
     version: "v0.3.6",
     date: "May 2026",
