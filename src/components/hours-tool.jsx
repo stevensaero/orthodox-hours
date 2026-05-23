@@ -1936,11 +1936,19 @@ const SAMPLE_MENAION = {
     service_file: "05-22.pdf",
     rank: "simple",
     fekula_section: "2A",
+    has_great_doxology: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord", // PDF rubric: "if Alleluia is sung INSTEAD of God is the Lord" — confirming God is the Lord is the norm
     note: "May 22 O.S. = June 4 N.S. OCA commemorates May 22 N.S. — DIVERGENCE; OCA date governs. " +
-          "§2A simple confirmed — 3 stichera. Nephew of Greatmartyr Theodore the Recruit (Feb 17). " +
-          "OCA and St. Sergius texts agree on both troparion and kontakion.",
-    feast_e: "absent — §2A, readings from Oktoechos",
-    feast_g: "absent — §2A, readings from Oktoechos",
+          "§2A simple confirmed — 3 stichera on Lord I Call. Nephew of Greatmartyr Theodore the Recruit (Feb 17). " +
+          "OCA and St. Sergius texts agree on both troparion and kontakion. " +
+          "No AT LITURGY section in PDF — §2A; cycle readings govern. " +
+          "Aposticha from Octoechos (§2A weekday); only Menaion Glory sticheron provided but during " +
+          "Pentecostarion the Pentecostarion doxasticon governs — no Menaion aposticha doxasticon used. " +
+          "v2: complete encoding per new encoding rule — stichera, doxasticon, theotokion added. // v0.3.5",
+    // §2A — no feast proper readings; cycle lectionary governs
+    feast_e: null,
+    feast_g: null,
     troparion: {
       tone: 4,
       text: "Your holy martyr Basiliscus, O Lord, through his suffering has received an incorruptible " +
@@ -1957,6 +1965,44 @@ const SAMPLE_MENAION = {
             "ever crying: \"Rejoice, splendid adornment of the martyrs!\"",
       matins_ode: 6,
     },
+    // ── VESPERS — LORD I HAVE CRIED ──────────────────────────────────────────
+    // Source: 05-22.pdf. 3 stichera, Tone IV. Spec. Mel.: "As one valiant among the martyrs"
+    stichera_lord_i_call: [
+      { tone: 4, text: "Reigning like a king, thou didst receive the kingdom which abideth forever, " +
+                       "O glorious Basiliscus, and standing before the King of hosts, " +
+                       "thou dost rejoice with all the ranks of angels. " +
+                       "And with them, O blessed one, thou dost unceasingly chant divine hymnody, " +
+                       "radiantly illumined by splendors and divine communion." },
+      { tone: 4, text: "When, rejoicing, thou didst walk the path of martyrdom, O most praised one, " +
+                       "they pierced thy feet with nails, binding them fast; " +
+                       "and therewith thou didst trample upon the head of the enemy " +
+                       "and utterly crushing it, O glorious one, thou didst tread mightily " +
+                       "the paths of heaven, revealing thyself to the Master as victorious." },
+      { tone: 4, text: "Thy supplication first caused a barren tree to put forth fruit, " +
+                       "and a spring put forth living water; " +
+                       "by the fountain of thy blood the earth was sanctified, " +
+                       "and the air was hallowed by the passage of thy soul, O most noetically rich martyr. " +
+                       "Wherefore, with faith, O Basiliscus, we celebrate thy holy and most festive feast-day, " +
+                       "whereon thou didst struggle lawfully." },
+    ],
+    // Glory…Both now…Theotokion — Tone IV (PDF: "Glory…Both now…Theotokion in Tone IV")
+    // During Pentecostarion the doxasticon at Lord I Call is supplied by the Pentecostarion (lic_theotokion),
+    // not from the Menaion; this theotokion serves ordinary time (Apostles' Fast and beyond).
+    stichera_glory: null, // §2A: no separate doxasticon in the Menaion; Glory goes to Both now
+    lic_theotokion: {
+      tone: 4,
+      text: "Tens of thousands of times have I promised to repent of mine offenses, O most pure one, " +
+            "yet the cherished habits of mine evil ways will not depart from me; " +
+            "wherefore, I cry unto thee and fall down, praying: " +
+            "O Sovereign Lady, rescue me from such tyranny, " +
+            "guiding me to things that are higher, which are nigh unto salvation.",
+    },
+    // ── VESPERS — APOSTICHA ───────────────────────────────────────────────────
+    // §2A: aposticha from Octoechos. No Menaion aposticha stichera.
+    // Menaion provides no aposticha stichera text. Octoechos weekday aposticha govern.
+    aposticha_source: "octoechos",
+    // ── MATINS ───────────────────────────────────────────────────────────────
+    // Canon in Tone VIII. No beatitudes troparia specified for §2A.
   },
 
   // ── May 23 — Venerable Father Michael the Confessor, Bishop of Synada ────────
@@ -1971,12 +2017,19 @@ const SAMPLE_MENAION = {
     service_file: "05-23.pdf",
     rank: "six_stichera",
     fekula_section: "2C",
+    has_great_doxology: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord", // PDF rubric: "if this day fall during the fast and Alleluia is sung instead" — confirming norm
     note: "May 23 O.S. = June 5 N.S. OCA commemorates May 23 N.S. — DIVERGENCE; OCA date governs. " +
           "§2C six-stichera confirmed: 3 Menaion + 3 Pentecostarion stichera at Lord I Call. " +
           "OCA proper troparion (Tone 4) used — St. Sergius PDF has no troparion at Vespers rubric. " +
-          "Kontakion matches. Exiled by Leo the Armenian for venerating icons; reposed c. 821.",
-    feast_e: "absent — §2C, readings from Oktoechos",
-    feast_g: "absent — §2C, readings from Oktoechos",
+          "Kontakion matches. Exiled by Leo the Armenian for venerating icons; reposed c. 821. " +
+          "Glory…Both now at Lord I Call = Doxasticon from Pentecostarion (PDF explicit). " +
+          "No AT LITURGY section — §2C; cycle readings govern. " +
+          "Aposticha from Octoechos (§2C weekday); no Menaion aposticha. " +
+          "v2: complete encoding per new encoding rule — stichera added. // v0.3.5",
+    feast_e: null,
+    feast_g: null,
     troparion: {
       tone: 4,
       text: "From your youth you dedicated your life to God, " +
@@ -1993,6 +2046,42 @@ const SAMPLE_MENAION = {
             "Therefore, we honor you, O Michael!",
       matins_ode: 6,
     },
+    // ── VESPERS — LORD I HAVE CRIED ───────────────────────────────────────────
+    // Source: 05-23.pdf. 3 Menaion stichera Tone VIII. Spec. Mel.: "O most glorious wonder"
+    // The other 3 slots come from the Pentecostarion (handled by assembly engine, §4A3 rule).
+    stichera_lord_i_call: [
+      { tone: 8, text: "O blessed and divinely inspired father Michael, as is meet, thou hast been deemed worthy " +
+                       "to behold the Well-spring of blessings, the Fulfillment of the desire for the uttermost desires, " +
+                       "the true Blessedness which all nature truly desireth. " +
+                       "O thy beauteous comeliness, O glorious one! " +
+                       "Rejoicing therein, thou standest now before Christ as a radiant hierarch." },
+      { tone: 8, text: "Arrayed in priestly vesture, O God-pleasing father Michael, thou didst hasten to the tribunal " +
+                       "of the tyrant and offer thyself to Christ; and, adorned with twofold crowns, O blessed one, " +
+                       "thou didst look upon the ranks of the hierarchy. " +
+                       "O thine ineffable gladness, O most wise one, " +
+                       "in which thou wast truly deemed worthy to share, O divinely blessed one." },
+      { tone: 8, text: "Bedewed from on high, O divinely wise father Michael, thou didst divinely quench " +
+                       "the fire of temptations and pass through it unharmed; " +
+                       "and, rejoicing, O blessed hieromartyr, thou wast splendidly added to the holy hierarchs " +
+                       "who went before thee. O thine ineffable and radiant habitation " +
+                       "wherein Christ hath now caused thee to dwell as an honored hierarch!" },
+    ],
+    // Glory…Both now = Doxasticon from Pentecostarion (PDF explicit: "Glory…Both now…Doxasticon from the Pentecostarion")
+    // The Pentecostarion entry supplies this — no Menaion doxasticon here.
+    stichera_glory: null, // Pentecostarion doxasticon governs; see note
+    lic_theotokion: {
+      // Fallback theotokion if Pentecostarion does not supply one (ordinary time / Apostles' Fast):
+      tone: 8,
+      text: "That I may magnify thee with joyful voice, O pure one, " +
+            "and glorify the depth of thy love for mankind, " +
+            "save me from misfortunes and rescue me from the soul-destroying darts " +
+            "of the invisible and most wicked foe; " +
+            "for I set thee against him as a firm and invincible weapon, " +
+            "O divine Bride, Mother of Christ God.",
+    },
+    // ── VESPERS — APOSTICHA ────────────────────────────────────────────────────
+    // §2C: aposticha from Octoechos. No Menaion aposticha stichera for §2C.
+    aposticha_source: "octoechos",
   },
 
   // ── May 24 — Venerable Symeon of the Wondrous Mountain (Stylites the Younger) ─
@@ -2000,15 +2089,27 @@ const SAMPLE_MENAION = {
   // OCA commemorates May 24 N.S.; encoded at 05-24 per OCA primacy.
   // Service rank: Polyeleos (§2E) — 6 stichera, full AT LITURGY section present in PDF.
   // OCA and St. Sergius texts agree on troparion and kontakion.
+  // PAROEMIAS NOTE: No OT paroemias section found in 05-24.pdf — unusual for §2E.
+  //   The PDF goes directly from Vespers to Matins with no "AT VESPERS LESSONS" block.
+  //   Possibly a shorthand edition variant or this saint's office omits them.
+  //   FLAGGED: check General Menaion / full text edition. Leaving paroemia fields absent.
   "05-24": {
     saint: "Venerable Symeon Stylites the Younger of the Wondrous Mountain",
     oca_primary: true,
     service_file: "05-24.pdf",
     rank: "polyeleos",
     fekula_section: "2E",
+    has_great_doxology: false,
+    magnificat_sung: true,  // §2E Polyeleos — Magnificat sung at Matins
+    matins_format: "god_is_the_lord",
     note: "May 24 O.S. = June 6 N.S. OCA commemorates May 24 N.S. — DIVERGENCE; OCA date governs. " +
-          "Polyeleos §2E confirmed — 6 stichera, Aposticha, full AT LITURGY. " +
-          "OCA and St. Sergius texts agree. Born 521 in Antioch; stylite for 68 years on the Wondrous Mountain.",
+          "Polyeleos §2E confirmed — 6 stichera (×2 each of 3 stichera), Aposticha, full AT LITURGY. " +
+          "OCA and St. Sergius texts agree on troparion and kontakion. " +
+          "Born 521 in Antioch; stylite for 68 years on the Wondrous Mountain near Antioch. " +
+          "PAROEMIAS: No OT paroemias found in 05-24.pdf — unusual for §2E. Flagged for verification. " +
+          "Beatitudes: 8 troparia (4 from Pentecostarion Ode + 4 from Ode III of saint's canon). " +
+          "Aposticha: Octoechos stichera with one Menaion Glory sticheron (Tone VI, Germanus). " +
+          "v2: complete encoding per new encoding rule. // v0.3.5",
     feast_e: "Colossians 3:12-16 (§258)",
     feast_g: "Matthew 11:27-30 (§43)",
     prokeimenon_tone: 7,
@@ -2018,6 +2119,10 @@ const SAMPLE_MENAION = {
     alleluia_verse: "Blessed is the man that feareth the Lord; in His commandments shall he greatly delight.",
     alleluia_stichos: "His seed shall be mighty upon the earth.",
     communion_verse: "In everlasting remembrance shall the righteous be; he shall not be afraid of evil tidings.",
+    // §2E — paroemias absent from PDF; flagged for verification
+    paroemia_1: null,
+    paroemia_2: null,
+    paroemia_3: null,
     troparion: {
       tone: 1,
       text: "Dweller of the desert and angel in the body, " +
@@ -2036,6 +2141,98 @@ const SAMPLE_MENAION = {
             "and unceasingly praying for us all to Christ, the God of all.",
       matins_ode: 6,
     },
+    // ── VESPERS — LORD I HAVE CRIED ───────────────────────────────────────────
+    // Source: 05-24.pdf. 6 stichera Tone VIII. Spec. Mel.: "O most glorious wonder"
+    // PDF rubric: first and second stichera each sung twice (×2), third sung twice = 6 total.
+    stichera_lord_i_call: [
+      { tone: 8, text: "Like an inscribed pillar, O most noetically rich Symeon, " +
+                       "by visions and thine activity, thou didst give birth in thy soul to the fullness of the virtues; " +
+                       "and having vanquished the uprisings of the flesh " +
+                       "and arrayed thyself in life-bearing mortality, O venerable one; " +
+                       "thou didst become a luminary ever shining forth, " +
+                       "enlightening with grace all the ends of the earth." },
+      { tone: 8, text: "Like an inscribed pillar, O most noetically rich Symeon, " +
+                       "by visions and thine activity, thou didst give birth in thy soul to the fullness of the virtues; " +
+                       "and having vanquished the uprisings of the flesh " +
+                       "and arrayed thyself in life-bearing mortality, O venerable one; " +
+                       "thou didst become a luminary ever shining forth, " +
+                       "enlightening with grace all the ends of the earth." },
+      { tone: 8, text: "Taking wing with divine desire, while yet bearing the flesh and clad in dust, " +
+                       "thou didst manifestly become a dweller with the angels, " +
+                       "having forsaken earthly things and ascended to the heavenly, O father, " +
+                       "ever mounting to God on thy lofty pillar, and shining forth in thine ascents." },
+      { tone: 8, text: "Taking wing with divine desire, while yet bearing the flesh and clad in dust, " +
+                       "thou didst manifestly become a dweller with the angels, " +
+                       "having forsaken earthly things and ascended to the heavenly, O father, " +
+                       "ever mounting to God on thy lofty pillar, and shining forth in thine ascents." },
+      { tone: 8, text: "Having broken down the flesh by abstinence, O Symeon, " +
+                       "thou didst show forth thy soul as a receptacle of the Spirit, " +
+                       "mounting on high and drawing nigh unto God; " +
+                       "and by His power thou wast deemed worthy to work miracles transcending nature. " +
+                       "Wherefore, thy most divine activity hath surpassed all understanding and thought." },
+      { tone: 8, text: "Having broken down the flesh by abstinence, O Symeon, " +
+                       "thou didst show forth thy soul as a receptacle of the Spirit, " +
+                       "mounting on high and drawing nigh unto God; " +
+                       "and by His power thou wast deemed worthy to work miracles transcending nature. " +
+                       "Wherefore, thy most divine activity hath surpassed all understanding and thought." },
+    ],
+    // Glory — Doxasticon, Tone VI (PDF: "Glory…in Tone VI")
+    stichera_glory: {
+      tone: 6,
+      text: "O right wondrous father, thou hast been shown to be a goodly offspring of the desert and our ally; " +
+            "for therein thou didst find thy desire, the heights of heaven, " +
+            "and wast deemed worthy of the grace of healing from the treasuries of the Spirit which cannot be stolen. " +
+            "Wherefore, Christ hath enriched thee with both, and shown thee to be a worker of wonders. " +
+            "O venerable Symeon, pray thou that our souls be saved.",
+    },
+    // Both now — Theotokion (PDF: "Both now…Theotokion, or this Stavrotheotokion")
+    // The Theotokion is the standard; the Stavrotheotokion is alternate for weekdays of the Cross.
+    // During the Pentecostarion the Pentecostarion supplies the Both Now.
+    lic_theotokion: null, // PDF gives only Stavrotheotokion; Both Now during Pentecostarion from Pentecostarion
+    // ── VESPERS — APOSTICHA ───────────────────────────────────────────────────
+    // PDF: "On the Aposticha, the Stichera of the day [one Menaion sticheron], and Glory…[Germanus, Tone II]"
+    // Structure: Octoechos aposticha stichera (not encoded here) + one Menaion Glory sticheron.
+    aposticha_source: "octoechos_with_menaion_glory",
+    stichera_aposticha: [
+      // Octoechos supplies the 3 aposticha stichera — not captured here (Octoechos table governs)
+      // PDF provides only the Glory sticheron:
+    ],
+    aposticha_glory: {
+      tone: 2,
+      text: "Having ascended the lofty wondrous mountain and entered into the impenetrable as an honored tabernacle, " +
+            "through excellent activity thou didst show forth the ascent of vision. " +
+            "Wherefore, having illumined thy life, adorned with iron chains as with golden coins, " +
+            "beholding God and being seen by Him, and conversing in solitude with Him alone, " +
+            "entreat Him, O honored Symeon, on behalf of our souls.",
+      attribution: "Germanus",
+    },
+    // Both now after aposticha: Stavrotheotokion Tone II (from PDF)
+    aposticha_theotokion: {
+      tone: 2,
+      text: "The Ember which the glorious Isaiah foresaw of old hath become incarnate of the Mother " +
+            "who knew not a man, springing forth at the behest of the Father, " +
+            "and having been born, was slain of His own will, " +
+            "taking away the transgressions of the world, like an unblemished Lamb. " +
+            "Wherefore, the ewe-lamb and Virgin, beholding Him upon the Cross, was pierced with the sword of grief.",
+      note: "Stavrotheotokion (Cross-Theotokion) — used on weekdays; plain Theotokion on other days",
+    },
+    // ── MATINS ────────────────────────────────────────────────────────────────
+    // Beatitudes: 8 troparia — 4 from Pentecostarion Ode + 4 from Ode III of saint's canon
+    beatitudes_source: "4 from Pentecostarion Ode + 4 from Ode III of saint's canon (05-24.pdf, AT LITURGY)",
+    beatitudes_troparia: [
+      // From Ode III of the saint's canon (05-24.pdf):
+      "From earliest infancy thou didst grow to be an excellent ascetic and an ardent lover of divine beauty; " +
+      "wherefore, the Master, foreknowing thee from thy mother's womb, sanctified thee, O most glorious father Symeon.",
+      "Growing in wisdom from childhood with true understanding, O venerable father and wonderworker, " +
+      "thou wast thyself deemed worthy to behold the unapproachable Spirit surrounded by the heavenly hosts.",
+      "Having illumined the senses of thy soul with awesome vision, O venerable father Symeon, " +
+      "thou didst acquire a wondrous understanding of that which is good, " +
+      "and didst show forth a blameless life to those who did not possess one.",
+      // Theotokion of Ode III:
+      "Having made Thine abode within the Virgin, O Lord, Thou didst appear unto men, " +
+      "in that it was fitting that they behold Thee; " +
+      "and Thou didst show her to be the true Theotokos and helper of the faithful, O Thou Who alone lovest mankind.",
+    ],
   },
 
   // ── May 25 — Third Finding of the Head of the Holy Forerunner John ───────────
@@ -11679,6 +11876,17 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.3.6",
+    date: "May 2026",
+    summary: "Encoding rule v1 · May 22/23/24 complete re-encode · stichera, aposticha, beatitudes filled",
+    items: [
+      "encoding_rule_complete_capture.md: new canonical encoding standard for all future sessions — captures every field needed by all 6 assemblers in one pass",
+      "05-22 (Basiliscus, §2A): stichera_lord_i_call × 3 Tone IV added; lic_theotokion Tone IV added; matins_format confirmed; feast_e/g corrected to null",
+      "05-23 (Michael of Synada, §2C): stichera_lord_i_call × 3 Tone VIII added; lic_theotokion Tone VIII added; stichera_glory null (Pentecostarion doxasticon governs); matins_format confirmed; feast_e/g corrected to null",
+      "05-24 (Symeon Stylites Younger, §2E): stichera_lord_i_call × 6 Tone VIII added (×2 each); stichera_glory Tone VI (Germanus) added; aposticha_glory Tone II added; aposticha_theotokion (Stavrotheotokion) Tone II added; beatitudes_troparia × 4 from Ode III added; has_great_doxology/magnificat_sung flags added; paroemia fields null with FLAG note — absent from PDF, unusual for §2E, needs verification",
+    ],
+  },
   {
     version: "v0.3.5",
     date: "May 2026",
