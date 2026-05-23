@@ -1028,6 +1028,10 @@ const MAY_MENAION = {
                        "because of thy godly zeal. " +
                        "The ranks of the angels, the company of martyrs, the divine apostles and all the prophets " +
                        "rejoice in its discovery. With them be thou ever mindful of us, O thou forerunner of the Lord!" },
+      // §4A3: 5 stichera needed; PDF lists 3 with rubric "repeating as necessary"
+      // Standard repeat order: 1,2,3,1,2 — repeat from the beginning
+      { tone: 8, repeatIndex: 0 },  // repeat of sticheron 1 ("O blessed forerunner John...")
+      { tone: 8, repeatIndex: 1 },  // repeat of sticheron 2 ("Pouring forth abundant grace...")
     ],
     // Glory — doxasticon Tone VI (Menaion)
     stichera_glory: {

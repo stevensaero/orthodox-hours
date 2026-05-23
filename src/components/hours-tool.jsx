@@ -3916,12 +3916,19 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         const slotIndex = licCount - v.n; // 0 = highest verse
         let stich = effectiveLicStichera[slotIndex - pentLicSlots];
         const isPentSlot = slotIndex < pentLicSlots;
-        // Handle repeat: true — use text from previous sticheron in the array
-        if (stich && stich.repeat && !stich.text) {
-          const prevIdx = (slotIndex - pentLicSlots) - 1;
-          const prevStich = prevIdx >= 0 ? effectiveLicStichera[prevIdx] : null;
-          if (prevStich && prevStich.text) {
-            stich = {...stich, text: prevStich.text, repeatNote: "(Repeat)"};
+        // Handle repeat/repeatIndex — copy text from another sticheron in the array
+        if (stich && !stich.text) {
+          let sourceStich = null;
+          if (typeof stich.repeatIndex === 'number') {
+            // repeatIndex: explicit index into the array (for non-adjacent repeats)
+            sourceStich = effectiveLicStichera[stich.repeatIndex];
+          } else if (stich.repeat) {
+            // repeat: true — copy from immediately preceding sticheron
+            const prevIdx = (slotIndex - pentLicSlots) - 1;
+            sourceStich = prevIdx >= 0 ? effectiveLicStichera[prevIdx] : null;
+          }
+          if (sourceStich && sourceStich.text) {
+            stich = {...stich, text: sourceStich.text, repeatNote: "(Repeat)"};
           }
         }
 
