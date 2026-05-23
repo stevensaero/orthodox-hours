@@ -3900,8 +3900,16 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
 
       interleaveVerses.forEach((v, i) => {
         const slotIndex = licCount - v.n; // 0 = highest verse
-        const stich = effectiveLicStichera[slotIndex - pentLicSlots];
+        let stich = effectiveLicStichera[slotIndex - pentLicSlots];
         const isPentSlot = slotIndex < pentLicSlots;
+        // Handle repeat: true — use text from previous sticheron in the array
+        if (stich && stich.repeat && !stich.text) {
+          const prevIdx = (slotIndex - pentLicSlots) - 1;
+          const prevStich = prevIdx >= 0 ? effectiveLicStichera[prevIdx] : null;
+          if (prevStich && prevStich.text) {
+            stich = {...stich, text: prevStich.text, repeatNote: "(Repeat)"};
+          }
+        }
 
         // Verse text — use feast verse from sticheron if present
         const verseText = (stich && stich.verse) ? stich.verse : v.text;
