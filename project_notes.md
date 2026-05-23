@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.3.11** | Last synced: May 23, 2026
+**Tool version: v0.3.12** | Last synced: May 23, 2026
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
@@ -1778,3 +1778,27 @@ Chapter 6 general Sunday rule: Both now = dismissal theotokion in tone of last t
 §4B13 specific override: Both now = troparion of the feast (Ascension).
 St. Sergius and Fekula §4B13 both prescribe the Ascension troparion explicitly.
 OCA may follow the Chapter 6 general rule instead. Worth discussing with the parish priest.
+
+---
+
+## Session Notes — May 23, 2026 (v0.3.12)
+
+### Bug fixed
+
+**Hours troparion + kontakion hour-differentiation (P+42, P+56)**
+
+Root cause: `assembleHour()` troparion resolution always used `effectiveMenaionTrop`
+(the Menaion saint — Simeon Stylites on May 24) as the secondary troparion, and
+always used `hours_kontakion` as the kontakion, regardless of which hour was being
+assembled. Both wrong for `menaion_set_aside` Pentecostarion Sundays.
+
+Fekula §4B13 prescribes hour-differentiated selection:
+
+| Hour | Troparion | Kontakion |
+|------|-----------|-----------|
+| 1st & 6th | Sunday + feast (Ascension T4) | feast (Ascension T6) |
+| 3rd & 9th | Sunday + saint (Holy Fathers T8) | saint (Holy Fathers T8) |
+
+Fix: when `menaion_set_aside: true` and `troparion_2` present on pentEntry,
+secondary and kontakion are selected by `is3rdOr9th` flag from pentEntry fields
+rather than from the Menaion. Affects P+42 and P+56 only.

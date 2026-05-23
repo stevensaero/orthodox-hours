@@ -7008,6 +7008,16 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
 
 const RELEASE_NOTES = [
   {
+    version: "v0.3.12",
+    date: "May 2026",
+    summary: "Hours troparion + kontakion hour-differentiation for §4B13",
+    items: [
+      "fix: Hours secondary troparion now hour-differentiated for menaion_set_aside Pentecostarion Sundays — previously always pulled effectiveMenaionTrop (Menaion saint e.g. Simeon Stylites); now uses troparion_3 (feast) at 1st/6th, troparion_2 (saint) at 3rd/9th per Fekula §4B13",
+      "fix: Hours kontakion now hour-differentiated — previously hours_kontakion always won regardless of hour; now 1st/6th uses hours_kontakion (feast), 3rd/9th uses kontakion_ode6 (saint) when menaion_set_aside + both fields present",
+      "affects P+42 (Holy Fathers) and P+56 (All Saints); all other Pentecostarion entries unaffected",
+    ],
+  },
+  {
     version: "v0.3.11",
     date: "May 2026",
     summary: "Vespers rubric fixes · §4B13 fully resolved · Fekula-traced kontakion logic",
