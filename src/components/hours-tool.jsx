@@ -3075,11 +3075,53 @@ const SAMPLE_MENAION = {
     rank: "simple",
     fekula_section: "2A",
     note: "May 31 O.S. = June 13 N.S. OCA commemorates May 31 N.S. — DIVERGENCE; OCA date governs. " +
-          "§2A simple — 3 stichera. OCA troparion matches St. Sergius (Tone 4 generic martyr). " +
-          "OCA kontakion (Tone 2 Podoben generic) differs from St. Sergius proper Tone 6; OCA governs. " +
-          "Martyred at Comana, Cappadocia under Antoninus Pius (138-161); an aged veteran soldier.",
-    feast_e: "absent — §2A, readings from Oktoechos",
-    feast_g: "absent — §2A, readings from Oktoechos",
+          "§2A simple — 3 stichera Tone I (Spec. Mel. Joy of the ranks of heaven). " +
+          "OCA troparion matches St. Sergius (Tone 4 generic martyr). " +
+          "OCA kontakion (Tone 2 generic) differs from St. Sergius proper Tone 6; OCA governs. " +
+          "Martyred at Comana, Cappadocia under Antoninus Pius (138-161); an aged veteran soldier. " +
+          "Glory/Both now: Theotokion Tone I printed in PDF (§2A pattern).",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "alleluia",
+    feast_e: null,  // §2A — readings from Octoechos
+    feast_g: null,
+    aposticha_source: "octoechos",
+    // ── LORD I HAVE CRIED — from 05-31.pdf ──────────────────────────────────
+    // 3 stichera of the holy martyr, Tone I, Spec. Mel.: "Joy of the ranks of heaven"
+    stichera_lord_i_call: [
+      { tone: 1, spec_mel: "Joy of the ranks of heaven",
+        text: "Having extinguished the fire of ungodliness " +
+              "with the drops of thy blood, O great martyr, " +
+              "thou hast richly given drink to the Church of Christ " +
+              "and illumined the hearts of the faithful " +
+              "who piously honor thy sacred and precious memory." },
+      { tone: 1, spec_mel: "Joy of the ranks of heaven",
+        text: "Like an impregnable tower " +
+              "thou wast in nowise shaken by the assaults of the enemy, " +
+              "whose hearts thou didst pierce as with arrows, O Hermias, " +
+              "casting down all their wiles like an undefeatable rampart " +
+              "with the pain of thy valiant struggles." },
+      { tone: 1, spec_mel: "Joy of the ranks of heaven",
+        text: "Raising up with the word of God " +
+              "those who had stumbled into the abyss of unbelief, " +
+              "thou didst endure the great threefold billows of torments, " +
+              "O most praised passion-bearer Hermias, " +
+              "until thou didst joyously enter with them " +
+              "into the harbor of heaven." },
+    ],
+    stichera_lord_i_call_count: 3,
+    stichera_glory: null,  // §2A — Glory: theotokion Tone I printed in PDF
+    lic_theotokion: {
+      tone: 1,
+      text: "Having fallen headlong because of my corrupt character, I lie prostrate, " +
+            "yet I flee from the adverse storm to thy tranquility, O Virgin: " +
+            "deliver me from multifarious temptations, " +
+            "that I may unceasingly hymn thy grace, O Ever-virgin Mother of God.",
+      note: "Glory and Both now — theotokion Tone I printed in 05-31.pdf (§2A pattern)",
+    },
     troparion: {
       tone: 4,
       text: "Your holy martyr Hermias, O Lord, " +
