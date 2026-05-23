@@ -805,7 +805,7 @@ const SAMPLE_MENAION = {
     {
       saint: "Holy Hieromartyr Theodotus, Bishop of Ancyra",
       oca_primary: true,
-      service_file: "06-07A.pdf",
+      source_file: "06-07A.pdf",
       rank: "simple",
       note: "Also: Martyrs Kyriaka, Valeria & Maria (OCA secondary, Polyeleos service, 06-07.pdf).",
       troparion: {
@@ -821,7 +821,7 @@ const SAMPLE_MENAION = {
     {
       saint: "Holy Martyrs Kyriaka, Valeria & Maria",
       oca_primary: false,
-      service_file: "06-07.pdf",
+      source_file: "06-07.pdf",
       rank: "polyeleos",
       note: "The Holy Martyrs Kyriaka, Valeria and Maria appear on the OCA calendar as secondary commemorations on June 7. The OCA primary is HM Theodotus of Ancyra.",
       troparion: {
@@ -844,7 +844,7 @@ const SAMPLE_MENAION = {
   "06-11": {
     saint: "Icon of the Most Holy Theotokos “It Is Truly Meet”",
     oca_primary: true,
-    service_file: "06-11.pdf",
+    source_file: "06-11.pdf",
     rank: "polyeleos",
     note: "Commemoration of the miracle on Mt. Athos when the Archangel Gabriel taught a monk the " +
           "“It is truly meet” hymn (Axion Estin). Also: icons “Unbreakable Wall” and “Seven Arrows” (OCA calendar); " +
@@ -871,7 +871,7 @@ const SAMPLE_MENAION = {
       tone: 4,
       text: "O ye faithful, with boldness let us hasten to the Theotokos, our merciful Queen, and with compunction let us cry out to her: Send down upon us thy rich mercies; preserve our Church; and maintain the people in prosperity; and deliver our land from every evil circumstance; and grant peace to the world and salvation to our souls.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 8,
       text: "O Queen of all, we cry aloud to thee the words of the archangel: It is truly meet to bless thee, the Theotokos, ever-blessed and all-immaculate, and the Mother of our God!",
       matins_ode: 6,
@@ -886,7 +886,7 @@ const SAMPLE_MENAION = {
   "06-12": {
     saint: "Ven. Onuphrius the Great & Ven. Peter of Athos",
     oca_primary: true,
-    service_file: "06-12.pdf",
+    source_file: "06-12.pdf",
     rank: "six_stichera",
     fekula_section_override: "2B",
     note: "Double service: two venerable fathers in one compiled service. Joint troparion. " +
@@ -908,14 +908,14 @@ const SAMPLE_MENAION = {
       text: "O God of our fathers, ever deal with us according to Thy meekness. Take not Thy mercy from us, but by the prayers of these saints direct our life in peace.",
     },
     // kontakion = Matins Ode VI (Onuphrius, second saint) → 3rd & 9th Hours
-    kontakion: {
+    kontakion_ode6: {
       tone: 3,
       text: "Illumined by the radiance of the most holy Spirit, O divinely wise one, thou didst forsake all the tumults of life; and upon reaching the desert, O venerable father, thou didst gladden God the Creator, Who is over all things. Wherefore, Christ, the great Bestower of gifts doth glorify thee, O blessed one.",
       matins_ode: 6,
       saint: "Onuphrius the Great",
     },
-    // kontakion_3rd_ode = Matins Ode III (Peter, first saint) → 1st & 6th Hours
-    kontakion_3rd_ode: {
+    // kontakion_ode3 = Matins Ode III (Peter, first saint) → 1st & 6th Hours
+    kontakion_ode3: {
       tone: 2,
       text: "Having withdrawn thyself from human companionship, out of divine desire and love for thy Lord, O Peter, thou didst dwell in caves of stone and deep ravines, receiving from Him a crown. Pray thou unceasingly, that we be saved.",
       matins_ode: 3,
@@ -931,7 +931,7 @@ const SAMPLE_MENAION = {
   "06-13": {
     saint: "Holy Martyr Aquilina & Holy Hierarch Triphyllius",
     oca_primary: true,
-    service_file: "06-13.pdf",
+    source_file: "06-13.pdf",
     rank: "six_stichera",
     fekula_section_override: "2B",
     note: "Double service: martyr and hierarch in one compiled service. Two separate troparia. " +
@@ -951,14 +951,14 @@ const SAMPLE_MENAION = {
       saint: "Triphyllius",
     },
     // kontakion = Matins Ode VI (Triphyllius, second saint) → 3rd & 9th Hours
-    kontakion: {
+    kontakion_ode6: {
       tone: 8,
       text: "Receiving the purity of virginity through the excellency of thy life, O Triphyllius, thou wast the first hierarch of Leucosia and wast revealed to be its evangelizer and instructor in the knowledge of God. Wherefore, with joy we cry out to thee: Rejoice, O adornment of hierarchs!",
       matins_ode: 6,
       saint: "Triphyllius",
     },
-    // kontakion_3rd_ode = Matins Ode III (Aquilina, first saint) → 1st & 6th Hours
-    kontakion_3rd_ode: {
+    // kontakion_ode3 = Matins Ode III (Aquilina, first saint) → 1st & 6th Hours
+    kontakion_ode3: {
       tone: 2,
       text: "Having utterly purified thy soul with the beauties of thy virginity and attained the heights by martyrdom, O most honored Aquilina, wounded with the love of Christ Thy Bridegroom, thou standest before Him with the angels in gladness. With them cease thou never to pray on behalf of us all.",
       matins_ode: 3,
@@ -999,7 +999,7 @@ const SAMPLE_MENAION = {
       tone: 4,
       text: "Through noetic recruitment thou didst become a most comely general of the heavenly King, O passion-bearer Theodore; for wisely arraying thyself with the weaponry of faith thou didst vanquish legions of demons, revealing thyself to be a victorious spiritual athlete. Wherefore, with faith we ever bless thee.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 2,
       text: "Arrayed in faith with manliness of soul, and taking in hand the word of God as a spear, thou didst conquer the enemy, O Theodore, great among the martyrs. With them unceasingly entreat Christ God on behalf of us all.",
       matins_ode: 6,
@@ -1033,7 +1033,7 @@ const SAMPLE_MENAION = {
       tone: 8,
       text: "Teacher of Orthodoxy, instructor of piety and chastity, luminary of the Church, God-inspired instructor of Hierarchs, O supremely wise Cyril, thou hast illumined all by thy teaching; O harp of the Spirit entreat Christ God that our souls be saved.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 6,
       text: "Thou hast manifestly poured forth upon us an abyss of the doctrines of theology from the wellsprings of the Savior, drowning heresies and saving thy flock unharmed from the threefold waves, O blessed Cyril, as a guide for all lands, revealing things divine, O venerable one.",
       matins_ode: 6,
@@ -1047,7 +1047,7 @@ const SAMPLE_MENAION = {
   "06-04": {
     saint: "St Metrophanes, first Patriarch of Constantinople",
     oca_primary: true,
-    service_file: "06-04.pdf",
+    source_file: "06-04.pdf",
     rank: "simple",
     note: "Also: Sts Mary and Martha, sisters of St Lazarus. Two kontakia in PDF — " +
           "the Matins Ode VI kontakion (Tone II) governs the Hours.",
@@ -1055,7 +1055,7 @@ const SAMPLE_MENAION = {
       tone: 4,
       text: "The truth of things revealed thee to thy flock as a rule of faith, icon of meekness, and teacher of temperance; wherefore, thou hast attained the heights through humility and riches through poverty; O hierarch Metrophanes our father, entreat Christ God, that our souls be saved.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 2,
       text: "Thou didst manifestly preach the Faith of Christ, and preserving it, thou didst truly cause thy faithful flock to increase. Wherefore, thou dost rejoice with the angels, O Metrophanes, entreating Christ unceasingly for us all.",
       matins_ode: 6,
@@ -1070,14 +1070,14 @@ const SAMPLE_MENAION = {
   "06-05": {
     saint: "Holy Hieromartyr Dorotheus, Bishop of Tyre",
     oca_primary: true,
-    service_file: "06-05.pdf",
+    source_file: "06-05.pdf",
     rank: "six_stichera",
     note: "Dorotheus served 107 years as a pastor before martyrdom under Julian the Apostate.",
     troparion: {
       tone: 4,
       text: "As thou didst share in the ways of the apostles and didst occupy their throne, thou didst find thine activity to be a passage to divine vision, O divinely inspired one. Wherefore, ordering the word of truth, thou didst suffer for the Faith even to the shedding of thy blood, O Hieromartyr Dorotheus, entreat Christ God, that our souls be saved.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 5,
       text: "Resplendent with virtues brighter than the sun and with thy sufferings, O blessed Dorotheus, thou didst shine forth and illumine the land, dispelling the darkness of polytheism and putrid heresy. Wherefore, we radiantly celebrate thy memory.",
       matins_ode: 6,
@@ -1087,13 +1087,13 @@ const SAMPLE_MENAION = {
   // ── June 6 — Ven. Bessarion & Ven. Hilarion the New (Double Service §2B) ────
   // Source: St. Sergius 06-06.pdf. OCA and St. Sergius agree.
   // Service rank: Six-Stichera §2B (Double). 6 stichera = 3 per saint.
-  // Fekula §2B: 1st & 6th Hour = kontakion_3rd_ode (Bessarion T2, Matins Ode III);
+  // Fekula §2B: 1st & 6th Hour = kontakion_ode3 (Bessarion T2, Matins Ode III);
   //             3rd & 9th Hour = kontakion (Hilarion T2, Matins Ode VI).
   // Joint troparion used at all Hours.
   "06-06": {
     saint: "Ven. Bessarion the Wonderworker & Ven. Hilarion the New",
     oca_primary: true,
-    service_file: "06-06.pdf",
+    source_file: "06-06.pdf",
     rank: "six_stichera",
     fekula_section_override: "2B",  // Double service
     note: "Double service: two venerable fathers in one compiled service. Joint troparion. " +
@@ -1103,14 +1103,14 @@ const SAMPLE_MENAION = {
       text: "O God of our fathers, ever deal with us according to Thy meekness. Take not Thy mercy from us, but by the prayers of these saints direct our life in peace.",
     },
     // kontakion = Matins 6th Ode → governs 3rd & 9th Hours (Fekula §2B second saint)
-    kontakion: {
+    kontakion_ode6: {
       tone: 2,
       text: "Like a shepherd didst thou preserve within thy fold the flock of thy life-bearing pasture, and wast shown to be great by the loftiness of thy works, O Hilarion the New, having undergone much suffering and sorrow in thy piety. Wherefore, thou hast made thine abode in the most joyful life in heavenly Sion. Pray for us, O venerable one!",
       matins_ode: 6,
       saint: "Hilarion the New",
     },
-    // kontakion_3rd_ode = Matins 3rd Ode → governs 1st & 6th Hours (Fekula §2B first saint)
-    kontakion_3rd_ode: {
+    // kontakion_ode3 = Matins 3rd Ode → governs 1st & 6th Hours (Fekula §2B first saint)
+    kontakion_ode3: {
       tone: 2,
       text: "Emulating the powers on high, by example thou didst live the life of the birds, O venerable one; putting transitory things far from thy mind, thou wast led to the heavenly beauties of Christ the King by thy constant desire, thou didst come even unto Him. O Bessarion, unceasingly entreat Him on behalf of us all!",
       matins_ode: 3,
@@ -1124,14 +1124,14 @@ const SAMPLE_MENAION = {
   "06-01": {
     saint: "Holy Martyr Justin the Philosopher & those with him",
     oca_primary: true,
-    service_file: "06-01.pdf",
+    source_file: "06-01.pdf",
     rank: "simple",
     note: "Also: Blessed Agapitos the Unmercenary of Pechersk (not on OCA calendar).",
     troparion: {
       tone: 4,
       text: "In their sufferings, Thy martyrs O Lord, received imperishable crowns from Thee, our God; for, possessed of Thy might, they set at naught the tyrants and crushed the feeble audacity of the demons. By their supplications save Thou our souls.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 2,
       text: "Adorned with the wisdom of thy divine words, O Justin, the whole Church of God doth illumine the world with the radiance of thy life. Having received a crown because of the out-pouring of thy blood, standing with the angels before Christ, pray thou unceasingly on behalf of us all.",
       matins_ode: 6,
@@ -1145,7 +1145,7 @@ const SAMPLE_MENAION = {
     {
       saint: "St Nicephorus the Confessor, Patriarch of Constantinople",
       oca_primary: true,
-      service_file: "06-02.pdf",
+      source_file: "06-02.pdf",
       rank: "six_stichera",
       note: "",
       troparion: {
@@ -1161,7 +1161,7 @@ const SAMPLE_MENAION = {
     {
       saint: "Holy Greatmartyr John the New of Suceava",
       oca_primary: false,
-      service_file: "06-02A.pdf",
+      source_file: "06-02A.pdf",
       rank: "polyeleos",
       note: "St John the New of Suceava appears on the OCA calendar as a secondary commemoration on June 2. The OCA primary is St Nicephorus the Confessor.",
       troparion: {
@@ -1183,14 +1183,14 @@ const SAMPLE_MENAION = {
   "06-03": {
     saint: "Holy Martyr Lucillian and those with him",
     oca_primary: true,
-    service_file: "06-03.pdf",
+    source_file: "06-03.pdf",
     rank: "simple",
     note: "Companions: venerable Paula and four unnamed children martyrs.",
     troparion: {
       tone: 1,
       text: "By your faith, you shone like a radiant star in the dark night of error; you fought the good fight and slew the crafty enemy, O Lucillian. Together with venerable Paula and the four martyred children entreat Christ our God to save our souls.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 4,
       text: "You attained the dignity of the martyrs of Christ through the torments that you courageously endured, O Lucillian. Together with Paula and the four martyred children, you sing to the Creator: 'Like sheep we are slaughtered for love of You, O Savior.'",
       matins_ode: 6,
@@ -1206,7 +1206,7 @@ const SAMPLE_MENAION = {
   "06-14": {
     saint: "Holy Prophet Elisha & St. Methodius, Patriarch of Constantinople",
     oca_primary: true,
-    service_file: "06-14.pdf",
+    source_file: "06-14.pdf",
     rank: "six_stichera",
     fekula_section_override: "2B",
     note: "Double service. In 2026 this date falls on All Saints of North America " +
@@ -1243,7 +1243,7 @@ const SAMPLE_MENAION = {
       saint: "Methodius",
     },
     // kontakion = Matins Ode VI (Methodius, second saint) → 3rd & 9th Hours
-    kontakion: {
+    kontakion_ode6: {
       tone: 2,
       text: "Thou didst struggle on earth like an incorporeal being, O Methodius, and hast " +
             "inherited the heavens, as one who explained the veneration of icons to the ends " +
@@ -1252,8 +1252,8 @@ const SAMPLE_MENAION = {
       matins_ode: 6,
       saint: "Methodius",
     },
-    // kontakion_3rd_ode = Matins Ode III (Elisha, first saint) → 1st & 6th Hours
-    kontakion_3rd_ode: {
+    // kontakion_ode3 = Matins Ode III (Elisha, first saint) → 1st & 6th Hours
+    kontakion_ode3: {
       tone: 2,
       text: "Thou wast shown to be a prophet of God, receiving a twofold measure of grace, " +
             "which truly befitted thee, O blessed Elisha; for thou wast the companion of " +
@@ -1271,7 +1271,7 @@ const SAMPLE_MENAION = {
     {
       saint: "Holy Hieromartyr Tichon, Bishop of Amathus in Cyprus",
       oca_primary: true,
-      service_file: "06-16.pdf",
+      source_file: "06-16.pdf",
       rank: "simple",
       note: "OCA also lists Ven. Tikhon of Kaluga on June 16 (Polyeleos, 06-16A.pdf — OCA secondary). " +
             "§2A confirmed — 3 stichera; PDF has no AT LITURGY Epistle/Gospel section. " +
@@ -1301,7 +1301,7 @@ const SAMPLE_MENAION = {
     {
       saint: "Venerable Tikhon, Wonderworker of Kaluga",
       oca_primary: false,
-      service_file: "06-16A.pdf",
+      source_file: "06-16A.pdf",
       rank: "polyeleos",
       note: "Ven. Tikhon of Kaluga appears on the OCA calendar as a secondary commemoration " +
             "on June 16. The OCA primary is HM Tichon of Amathus. " +
@@ -1351,7 +1351,7 @@ const SAMPLE_MENAION = {
   "06-17": {
     saint: "Holy Martyrs Manuel, Sabel & Ismael",
     oca_primary: true,
-    service_file: "06-17.pdf",
+    source_file: "06-17.pdf",
     rank: "simple",
     note: "Three Persian brothers martyred under Julian the Apostate (362). " +
           "§2A by stichera count (3); PDF includes full AT LITURGY section — " +
@@ -1377,7 +1377,7 @@ const SAMPLE_MENAION = {
             "and crushed the feeble audacity of the demons. By their supplications save " +
             "Thou our souls.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 2,
       text: "Wounded by the Faith of Christ, O most blessed one, and having faithfully " +
             "drained the cup thereof, ye cast the worship and audacity of the Persians " +
@@ -1393,7 +1393,7 @@ const SAMPLE_MENAION = {
   "06-18": {
     saint: "Holy Martyr Leontius",
     oca_primary: true,
-    service_file: "06-18.pdf",
+    source_file: "06-18.pdf",
     rank: "simple",
     note: "Roman soldier martyred at Tripoli in Phoenicia under Vespasian (c. 70 AD). " +
           "§2A by stichera count (3); PDF includes full AT LITURGY section — " +
@@ -1419,7 +1419,7 @@ const SAMPLE_MENAION = {
             "the tyrants and crushed the feeble audacity of the demons. By his " +
             "supplications save Thou our souls.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 3,
       text: "Thou didst confound the wicked plots of the tyrants, denouncing the ungodly " +
             "religion of the Greeks, and didst shine forth the knowledge of God upon all " +
@@ -1446,7 +1446,7 @@ const SAMPLE_MENAION = {
   "06-19": {
     saint: "Holy Apostle Jude, Brother of the Lord",
     oca_primary: true,
-    service_file: null,
+    source_file: null,
     rank: "simple",
     note: "No St. Sergius PDF for OCA June 19. Troparion/kontakion from OCA. " +
           "Also June 19 OCA: Ven. Barlaam of Shenkursk, Martyr Zosimus the Soldier, " +
@@ -1462,7 +1462,7 @@ const SAMPLE_MENAION = {
             "Today as we celebrate your holy memory, by your intercessions we receive " +
             "remission of sins.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 2,
       text: "You were chosen as a disciple for your firmness of mind: an unshakable " +
             "pillar of the Church of Christ, you proclaimed His word to the Gentiles, " +
@@ -1480,7 +1480,7 @@ const SAMPLE_MENAION = {
     {
       saint: "Holy Prophet Amos",
       oca_primary: true,
-      service_file: "06-15.pdf",
+      source_file: "06-15.pdf",
       rank: "simple",
       note: "§2A confirmed — 3 stichera; PDF has no AT LITURGY Epistle/Gospel section. " +
            "Troparion absent from PDF Vespers rubric — T2 generic prophet text sourced from OCA. " +
@@ -1501,7 +1501,7 @@ const SAMPLE_MENAION = {
     {
       saint: "St Jerome of Stridon",
       oca_primary: false,
-      service_file: "06-15A.pdf",
+      source_file: "06-15A.pdf",
       rank: "polyeleos",
       note: "St Jerome of Stridon appears on the OCA calendar as a secondary commemoration on this date. " +
            "The OCA primary is Prophet Amos. §2E Polyeleos confirmed — 6 stichera, Great Vespers, Litya, Polyeleos.",
@@ -1541,7 +1541,7 @@ const SAMPLE_MENAION = {
     {
       saint: "St Jonah, Metropolitan of Moscow",
       oca_primary: false,
-      service_file: "06-15B.pdf",
+      source_file: "06-15B.pdf",
       rank: "polyeleos",
       note: "St Jonah of Moscow is NOT listed on the OCA calendar for this date. " +
            "This service is from the Russian Menaion only. Verify with your priest before serving. " +
@@ -1624,7 +1624,7 @@ const SAMPLE_MENAION = {
       tone: 4,
       text: "As thou didst share in the ways of the apostles and didst occupy their throne, thou didst find thine activity to be a passage to divine vision, O divinely inspired one. Wherefore, ordering the word of truth, thou didst suffer for the Faith even to the shedding of thy blood, O Hieromartyr Timothy, entreat Christ God, that our souls be saved.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 4,
       text: "As one who lived piously among hierarchs and who underwent martyrdom, thou, O divinely-wise one, hast extinguished the sacrifices of idolatry and shown thyself to be a protector of thy flock. Wherefore, in honor we fervently cry out unto thee: Do thou, through thine intercessions, ever deliver us from all misfortunes, O Timothy, our Father.",
       matins_ode: 6,
@@ -1637,7 +1637,7 @@ const SAMPLE_MENAION = {
       tone: 8,
       text: "By a flood of tears thou didst make the desert fertile, and thy longing for God brought forth fruits in abundance. By the radiance of miracles thou didst enlighten the whole universe! O our holy father Theodore, pray to Christ our God to save our souls!",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 2,
       text: "Having abandoned the tumult of life and subdued the passions of the flesh, thou didst take up thy cross and hasten to Christ. Thou wast a true disciple of the Master: a model for all who seek perfection. Therefore we cry to thee: Rejoice, O father Theodore, adornment of monastics!",
     },
@@ -1652,7 +1652,7 @@ const SAMPLE_MENAION = {
       tone: 3,
       text: "O holy apostle Andronicus, entreat the merciful God to grant our souls forgiveness of transgressions.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 2,
       text: "Having received divine grace from on high, thou didst illumine the nations with godly wisdom, O glorious apostle Andronicus; wherefore we honor thee with faith.",
     },
@@ -1666,7 +1666,7 @@ const SAMPLE_MENAION = {
   "05-18": {
     saint: "Martyr Theodotus of Ancyra, the Seven Holy Virgins, and Martyrs Peter, Dionysius & companions",
     oca_primary: true,
-    service_file: "05-18.pdf",
+    source_file: "05-18.pdf",
     rank: "six_stichera",
     fekula_section: "2C",
     note: "May 18 O.S. = May 31 N.S. OCA commemorates May 18 N.S. — DIVERGENCE; OCA date governs. " +
@@ -1681,7 +1681,7 @@ const SAMPLE_MENAION = {
             "their adversaries, and shattered the powerless boldness of demons. " +
             "Through their intercessions, save our souls!",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 2,
       text: "Having struggled well as a spiritual athlete, O Theodotus, with the spiritual athletes " +
             "and the passion-bearing virgins thou hast received crowns of honor. " +
@@ -1697,7 +1697,7 @@ const SAMPLE_MENAION = {
   "05-19": {
     saint: "Hieromartyr Patrick, Bishop of Prusa, and his companions",
     oca_primary: true,
-    service_file: "05-19.pdf",
+    source_file: "05-19.pdf",
     rank: "simple",
     fekula_section: "2A",
     note: "May 19 O.S. = June 1 N.S. OCA commemorates May 19 N.S. — DIVERGENCE; OCA date governs. " +
@@ -1718,7 +1718,7 @@ const SAMPLE_MENAION = {
             "their adversaries, and shattered the powerless boldness of demons. " +
             "Through their intercessions, save our souls!",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 4,
       text: "As one resplendent in the beauty of the priesthood and supremely adorned with the blood " +
             "of martyrdom, standing before Christ with those who suffered with thee, O Patrick, " +
@@ -1735,7 +1735,7 @@ const SAMPLE_MENAION = {
   "05-20": {
     saint: "Holy Martyr Thallelaios, Unmercenary Physician of Aegae",
     oca_primary: true,
-    service_file: "05-20.pdf",
+    source_file: "05-20.pdf",
     rank: "simple",
     fekula_section: "2A",
     note: "May 20 O.S. = June 2 N.S. OCA commemorates May 20 N.S. — DIVERGENCE; OCA date governs. " +
@@ -1748,7 +1748,7 @@ const SAMPLE_MENAION = {
       text: "O holy prize-winner and healer Thallelaios, intercede with the merciful God " +
             "that He grant to our souls the forgiveness of our faults.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 3,
       text: "Revealed as a fellow contestant with the Martyrs, you were an excellent soldier " +
             "of the King of Glory. Through your trials and torments you humbled the arrogance " +
@@ -1767,7 +1767,7 @@ const SAMPLE_MENAION = {
   "05-21": {
     saint: "Holy Equals-of-Apostles Constantine the Great & Helena",
     oca_primary: true,
-    service_file: "05-21.pdf",
+    source_file: "05-21.pdf",
     rank: "polyeleos",
     fekula_section: "2E",
     note: "May 21 O.S. = June 3 N.S. OCA commemorates May 21 N.S. — DIVERGENCE; OCA date governs. " +
@@ -1793,7 +1793,7 @@ const SAMPLE_MENAION = {
             "Do Thou ever preserve it in peace, through the supplications of the Theotokos, " +
             "O Thou Who alone lovest mankind.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 3,
       text: "Today Constantine and his mother Helena have revealed the Cross, the most precious Tree, " +
             "which putteth to shame all the Jews and is the weapon of faithful kings against the adversary. " +
@@ -1933,7 +1933,7 @@ const SAMPLE_MENAION = {
   "05-22": {
     saint: "Holy Martyr Basiliscus of Comana",
     oca_primary: true,
-    service_file: "05-22.pdf",
+    source_file: "05-22.pdf",
     rank: "simple",
     fekula_section: "2A",
     has_great_doxology: false,
@@ -1956,7 +1956,7 @@ const SAMPLE_MENAION = {
             "and shattered the powerless boldness of demons. " +
             "Through his intercessions, save our souls!",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 8,
       text: "You were shown to be strong and courageous in suffering; " +
             "you were revealed to be a wonder-worker in miracles! " +
@@ -2014,7 +2014,7 @@ const SAMPLE_MENAION = {
   "05-23": {
     saint: "Venerable Father Michael the Confessor, Bishop of Synada",
     oca_primary: true,
-    service_file: "05-23.pdf",
+    source_file: "05-23.pdf",
     rank: "six_stichera",
     fekula_section: "2C",
     has_great_doxology: false,
@@ -2037,7 +2037,7 @@ const SAMPLE_MENAION = {
             "You endured afflictions and exile because you honored the icon of Christ; " +
             "now you pour forth healings for us all.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 8,
       text: "As a most honorable hierarch and champion of true piety, " +
             "undaunted by fear of the notorious tyrant, " +
@@ -2096,7 +2096,7 @@ const SAMPLE_MENAION = {
   "05-24": {
     saint: "Venerable Symeon Stylites the Younger of the Wondrous Mountain",
     oca_primary: true,
-    service_file: "05-24.pdf",
+    source_file: "05-24.pdf",
     rank: "polyeleos",
     fekula_section: "2E",
     has_great_doxology: false,
@@ -2133,7 +2133,7 @@ const SAMPLE_MENAION = {
             "Glory to Him who granted you a crown! " +
             "Glory to Him who through you grants healing to all!",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 2,
       text: "You longed for the things on high, turning away from those below. " +
             "You built a pillar on which you lived as if in heaven, " +
@@ -2253,7 +2253,7 @@ const SAMPLE_MENAION = {
   "05-25": {
     saint: "Third Finding of the Precious Head of the Holy Prophet, Forerunner and Baptist John",
     oca_primary: true,
-    service_file: "05-25.pdf",
+    source_file: "05-25.pdf",
     rank: "polyeleos",
     fekula_section: "2E",
     has_great_doxology: true,
@@ -2288,7 +2288,7 @@ const SAMPLE_MENAION = {
             "Who saves us from corruption through your prayers!",
     },
     // OCA kontakion Tone IV governs (differs from St. Sergius Tone VI finding kontakion)
-    kontakion: {
+    kontakion_ode6: {
       tone: 4,
       text: "By giving your venerable head to a sinful woman, " +
             "Herod broke the law of God. " +
@@ -2410,7 +2410,7 @@ const SAMPLE_MENAION = {
   "05-26": {
     saint: "Holy Apostle Carpus of the Seventy",
     oca_primary: true,
-    service_file: "05-26.pdf",
+    source_file: "05-26.pdf",
     rank: "simple",
     fekula_section: "2A",
     has_great_doxology: false,
@@ -2430,7 +2430,7 @@ const SAMPLE_MENAION = {
             "entreat the merciful God " +
             "to grant our souls forgiveness of transgressions.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 4,
       text: "Illumined by the great outpouring of thy miracles, " +
             "the Church hath ever acquired thee, O Apostle Carpus, " +
@@ -2476,7 +2476,7 @@ const SAMPLE_MENAION = {
       // v2: stichera, flags added. // v0.3.7
       saint: "Holy Hieromartyr Therapont, Bishop of Cyprus",
       oca_primary: true,
-      service_file: "05-27.pdf",
+      source_file: "05-27.pdf",
       rank: "simple",
       fekula_section: "2A",
       has_great_doxology: false,
@@ -2541,7 +2541,7 @@ const SAMPLE_MENAION = {
       // St. Sergius also has a Tone 8 kontakion (Ode 6) — stored as dormant data.
       saint: "Righteous Confessor John the Russian",
       oca_primary: true,
-      service_file: "05-27A.pdf",
+      source_file: "05-27A.pdf",
       rank: "vigil",
       fekula_section: "2F",
       note: "May 27 O.S. = June 9 N.S. OCA commemorates May 27 N.S. — DIVERGENCE; OCA date governs. " +
@@ -2594,7 +2594,7 @@ const SAMPLE_MENAION = {
   "05-28": {
     saint: "Saint Nicetas, Bishop of Chalcedon",
     oca_primary: true,
-    service_file: "05-28.pdf",
+    source_file: "05-28.pdf",
     rank: "simple",
     fekula_section: "2A",
     has_great_doxology: false,
@@ -2615,7 +2615,7 @@ const SAMPLE_MENAION = {
             "Hierarch Father Nicetas, " +
             "entreat Christ our God that our souls may be saved.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 8,
       text: "You shone with the splendor of your deeds, venerable Nicetas. " +
             "You became an heir to the throne of the apostles. " +
@@ -2668,7 +2668,7 @@ const SAMPLE_MENAION = {
   "05-29": {
     saint: "Holy Martyred Virgin Theodosia of Tyre",
     oca_primary: true,
-    service_file: "05-29.pdf",
+    source_file: "05-29.pdf",
     rank: "simple",
     fekula_section: "2A",
     has_great_doxology: false,
@@ -2691,7 +2691,7 @@ const SAMPLE_MENAION = {
             "that He may deliver us from all manner of misfortunes.",
     },
     // OCA kontakion Tone IV governs; St. Sergius Tone II text is different (see Drive record).
-    kontakion: {
+    kontakion_ode6: {
       tone: 4,
       text: "As a pure virgin and prize-winner, " +
             "you were spiritually betrothed to the King of Heaven, " +
@@ -2745,7 +2745,7 @@ const SAMPLE_MENAION = {
   "05-30": {
     saint: "Venerable Isaacius, Abbot of the Monastery of Dalmatus",
     oca_primary: true,
-    service_file: "05-30.pdf",
+    source_file: "05-30.pdf",
     rank: "simple",
     fekula_section: "2A",
     has_great_doxology: false,
@@ -2767,7 +2767,7 @@ const SAMPLE_MENAION = {
             "but to care instead for the soul, since it is immortal. " +
             "Therefore your spirit, venerable Isaac, rejoices with the angels.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 8,
       text: "As a faithful favorite of God you became enflamed with zeal for the Church of Christ " +
             "and drew in the reins of the emperor Valens, O venerable one; " +
@@ -2812,7 +2812,7 @@ const SAMPLE_MENAION = {
   "05-31": {
     saint: "Holy Martyr Hermias of Comana",
     oca_primary: true,
-    service_file: "05-31.pdf",
+    source_file: "05-31.pdf",
     rank: "simple",
     fekula_section: "2A",
     note: "May 31 O.S. = June 13 N.S. OCA commemorates May 31 N.S. — DIVERGENCE; OCA date governs. " +
@@ -2829,7 +2829,7 @@ const SAMPLE_MENAION = {
             "and shattered the powerless boldness of demons. " +
             "Through his intercessions, save our souls!",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 2,
       text: "You appeared as a bright star announcing Christ with your radiance, " +
             "which is repulsive to this world, O Martyr Hermias; " +
@@ -2846,7 +2846,7 @@ const SAMPLE_MENAION = {
   "06-20": {
     saint: "Holy Hieromartyr Methodius, Bishop of Patara",
     oca_primary: true,
-    service_file: "06-20.pdf",
+    source_file: "06-20.pdf",
     rank: "simple",
     note: "Bishop of Patara in Lycia; refuted Origen. Martyred c. 311. " +
           "Distinct from Patriarch Methodius of Constantinople (June 14). " +
@@ -2861,7 +2861,7 @@ const SAMPLE_MENAION = {
             "hast passed over to the heavenly bridal chamber. Entreat Christ God, that He " +
             "save our souls.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 4,
       text: "Thou wast a priest of the mysteries of the Holy Trinity, a proclaimer of the " +
             "commandments of God, passing all understanding, and the confirmation of the " +
@@ -2878,7 +2878,7 @@ const SAMPLE_MENAION = {
   "06-21": {
     saint: "Holy Martyr Julian of Tarsus",
     oca_primary: true,
-    service_file: "06-21.pdf",
+    source_file: "06-21.pdf",
     rank: "simple",
     note: "Youth martyred c. 305 under Diocletian; cast into the sea in a sack with " +
           "sand and serpents. St. John Chrysostom composed an encomium in his honor. " +
@@ -2905,7 +2905,7 @@ const SAMPLE_MENAION = {
             "and crushed the feeble audacity of the demons. By his supplications save Thou " +
             "our souls.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 2,
       text: "As is meet, let us all praise Julian today, the invincible warrior of piety, " +
             "the true counselor and soldier of the Truth, and let us cry aloud unto him: " +
@@ -2921,7 +2921,7 @@ const SAMPLE_MENAION = {
   "06-22": {
     saint: "Holy Hieromartyr Eusebius, Bishop of Samosata",
     oca_primary: true,
-    service_file: "06-22.pdf",
+    source_file: "06-22.pdf",
     rank: "simple",
     note: "Defender of Nicene Orthodoxy against Arianism. Martyred 380 when an Arian " +
           "woman struck him with a roof tile. Troparion not printed in PDF; sourced from OCA. " +
@@ -2936,7 +2936,7 @@ const SAMPLE_MENAION = {
             "thou didst suffer for the Faith even to the shedding of thy blood. " +
             "O Hieromartyr Eusebius, entreat Christ God, that our souls be saved.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 4,
       text: "Having lived piously in the rank of hierarch and traversed the path of " +
             "martyrdom, thou didst extinguish the burnt offerings of the idolaters, O holy " +
@@ -2956,7 +2956,7 @@ const SAMPLE_MENAION = {
     {
       saint: "Holy Martyr Agrippina",
       oca_primary: true,
-      service_file: "06-23.pdf",
+      source_file: "06-23.pdf",
       rank: "simple",
       note: "Vladimir Icon of the Theotokos is also a full OCA commemoration on June 23 " +
             "(also May 21 & Aug 26). Agrippina listed first/primary by OCA. " +
@@ -2982,7 +2982,7 @@ const SAMPLE_MENAION = {
     {
       saint: "Vladimir Icon of the Most Holy Theotokos",
       oca_primary: false,
-      service_file: "06-23A.pdf",
+      source_file: "06-23A.pdf",
       rank: "polyeleos",
       note: "The Vladimir Icon is commemorated on the OCA calendar on June 23 " +
             "(also May 21 and August 26). This is a full OCA commemoration, not Russian-only. " +
@@ -3042,7 +3042,7 @@ const SAMPLE_MENAION = {
   "06-24": {
     saint: "Nativity of the Holy Prophet & Forerunner John the Baptist",
     oca_primary: true,
-    service_file: "06-24.pdf",
+    source_file: "06-24.pdf",
     rank: "great_feast",
     note: "Great Feast of the Nativity of John the Forerunner. One of the twelve Great " +
           "Feasts. Hours follow Feast rules (out of ordinary scope). Troparion and " +
@@ -3079,7 +3079,7 @@ const SAMPLE_MENAION = {
             "muteness of thy father, and proclaimed to the world the incarnation of the Son " +
             "of God.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 3,
       text: "Today she who before was barren giveth birth unto the forerunner of Christ, " +
             "he is the fulfillment of all prophecy; for, laying his hand in the Jordan upon " +
@@ -3099,7 +3099,7 @@ const SAMPLE_MENAION = {
   "06-25": {
     saint: "Afterfeast of the Nativity of the Forerunner & Nun-Martyr Febronia",
     oca_primary: true,
-    service_file: "06-25.pdf",
+    source_file: "06-25.pdf",
     rank: "six_stichera",
     fekula_section_override: "2G1",
     note: "Afterfeast of the Nativity of John the Forerunner. Per Fekula §2G1: troparion " +
@@ -3138,7 +3138,7 @@ const SAMPLE_MENAION = {
             "in that Thou art merciful, save Thou our souls.",
       saint: "Febronia (Glory... at Hours per §2G1)",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 3,
       text: "Today she who before was barren giveth birth unto the forerunner of Christ, " +
             "he is the fulfillment of all prophecy; for, laying his hand in the Jordan upon " +
@@ -3158,7 +3158,7 @@ const SAMPLE_MENAION = {
   "06-26": {
     saint: "Venerable David of Thessalonica",
     oca_primary: true,
-    service_file: "06-26.pdf",
+    source_file: "06-26.pdf",
     rank: "simple",
     note: "5th-century ascetic who lived in an almond tree for 3 years near Thessalonica, " +
           "emulating the Stylites. Known for holding burning embers before the emperor " +
@@ -3173,7 +3173,7 @@ const SAMPLE_MENAION = {
             "flesh, as something transient, but to care for thy soul as something immortal. " +
             "Wherefore, with the angels thy spirit doth rejoice, O venerable David.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 1,
       text: "An ever-blossoming garden, bearing the fruits of the virtues, thou didst appear " +
             "in the tree of a grove, like a right melodious harp, and receiving the Lord, the " +
@@ -3190,7 +3190,7 @@ const SAMPLE_MENAION = {
   "06-27": {
     saint: "Venerable Sampson the Hospitable of Constantinople",
     oca_primary: true,
-    service_file: "06-27.pdf",
+    source_file: "06-27.pdf",
     rank: "simple",
     note: "Roman-born physician and monastic who founded a renowned hospital in " +
           "Constantinople. Healed Emperor Justinian of a grave illness. Reposed c. 530. " +
@@ -3213,7 +3213,7 @@ const SAMPLE_MENAION = {
             "endured in prayer without ceasing, and loved the poor and provided for them. " +
             "Beseech Christ God, O merciful and blessed Sampson, that our souls be saved.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 8,
       text: "Rejoicing with psalms and hymns, O divinely wise and venerable Sampson, and " +
             "hastening to thy divine shrine, as to that of an excellent physician and a right " +
@@ -3230,7 +3230,7 @@ const SAMPLE_MENAION = {
   "06-28": {
     saint: "Translation of the Relics of the Holy Unmercenary Physicians Cyrus and John",
     oca_primary: true,
-    service_file: "06-28.pdf",
+    source_file: "06-28.pdf",
     rank: "six_stichera",
     note: "The translation of the relics of the Holy Unmercenaries Cyrus and John from " +
           "Canopus to Menouthis near Alexandria in the 5th century. Their primary feast " +
@@ -3257,7 +3257,7 @@ const SAMPLE_MENAION = {
             "of the heathen and strengthen right believing rulers, in that Thou alone art " +
             "good and the Lover of mankind.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 3,
       text: "Receiving the gift of miracles from divine grace, O saints, ye work wonders " +
             "unceasingly, cutting down all our passions with invisible skill, O divinely " +
@@ -3272,7 +3272,7 @@ const SAMPLE_MENAION = {
   "06-29": {
     saint: "Holy, Glorious, All-Praised and Preeminent Apostles Peter and Paul",
     oca_primary: true,
-    service_file: "06-29.pdf",
+    source_file: "06-29.pdf",
     rank: "vigil",
     note: "Great Feast of the Holy Apostles Peter and Paul. One of the most solemn " +
           "apostolic feasts. Full Vigil service. Peter martyred by crucifixion (inverted), " +
@@ -3308,7 +3308,7 @@ const SAMPLE_MENAION = {
     has_polyeleos: true,
     has_great_doxology: true,
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 2,
       text: "The steadfast and divinely eloquent preachers, the foremost of Thine apostles, " +
             "O Lord, hast Thou received into the rest and delight of Thy good things; " +
@@ -3327,7 +3327,7 @@ const SAMPLE_MENAION = {
   "06-30": {
     saint: "Synaxis of the Holy, Glorious and All-Praised Twelve Apostles",
     oca_primary: true,
-    service_file: "06-30.pdf",
+    source_file: "06-30.pdf",
     rank: "six_stichera",
     note: "The day after Peter & Paul, honoring all Twelve Apostles together. " +
           "Troparion is the same as June 29. The Synaxis has its own kontakion (T2). " +
@@ -3352,7 +3352,7 @@ const SAMPLE_MENAION = {
     communion_verse: "Their sound hath gone forth into all the earth, " +
       "and their words unto the ends of the world.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 2,
       text: "Christ the Rock hath radiantly glorified the rock of Faith, " +
             "the most excellent of His disciples, as He doth Paul and the assembly " +
@@ -3368,7 +3368,7 @@ const SAMPLE_MENAION = {
   "07-01": {
     saint: "Holy Unmercenaries Cosmas & Damian of Rome",
     oca_primary: true,
-    service_file: "07-01.pdf",
+    source_file: "07-01.pdf",
     rank: "six_stichera",
     fekula_section: "2C",
     note: "OCA commemorates Jul 1 N.S. St. Sergius and OCA in agreement on date and texts.",
@@ -3386,7 +3386,7 @@ const SAMPLE_MENAION = {
       text: "O holy unmercenaries and wonder-workers Cosmas and Damian, visit our infirmities. " +
             "Freely have ye received, freely give unto us.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 2,
       text: "Having received the grace of healings, ye extend health to those in need, " +
             "O most glorious physicians and wonder-workers. By your visitation cast down " +
@@ -3402,7 +3402,7 @@ const SAMPLE_MENAION = {
   "07-02": {
     saint: "St John Maximovich, Archbishop of Shanghai & San Francisco",
     oca_primary: true,
-    service_file: "06-19.pdf",
+    source_file: "06-19.pdf",
     rank: "vigil",
     fekula_section: "2F",
     note: "Jun 19 O.S. = Jul 2 N.S. Vigil §2F confirmed — 8 stichera, Great Vespers with Litya, " +
@@ -3429,7 +3429,7 @@ const SAMPLE_MENAION = {
             "to the suffering, O most gladsome healer. Hasten now also to the aid of us " +
             "who honor thee with all our heart.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 4,
       text: "Thy heart hath gone out to all who entreat thee with love, O holy hierarch John, " +
             "and who remember the struggle of thy whole industrious life, and thy painless and " +
@@ -3445,7 +3445,7 @@ const SAMPLE_MENAION = {
   "07-03": {
     saint: "Holy Martyr Hyacinth of Caesarea",
     oca_primary: true,
-    service_file: "07-03.pdf",
+    source_file: "07-03.pdf",
     rank: "simple",
     fekula_section: "2A",
     note: "Jul 3 O.S. = Jul 16 N.S. OCA commemorates Jul 3 N.S. — DIVERGENCE; OCA date governs. " +
@@ -3459,7 +3459,7 @@ const SAMPLE_MENAION = {
             "you were illustrious in contest in emulation of God the Word " +
             "and you ever illumine those who acclaim you.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 2,
       text: "Come, you faithful, plait a crown of unfading hyacinths today for the Martyr Hyacinth, " +
             "and let us cry to Him: Rejoice, glory of martyrs.",
@@ -3474,7 +3474,7 @@ const SAMPLE_MENAION = {
   "07-14": {
     saint: "Venerable Nicodemus of the Holy Mountain",
     oca_primary: true,
-    service_file: "07-01A.pdf",
+    source_file: "07-01A.pdf",
     rank: "polyeleos",
     fekula_section: "2E",
     note: "Jul 1 O.S. = Jul 14 N.S. OCA and St. Sergius agree on date. Polyeleos §2E confirmed. " +
@@ -3504,7 +3504,7 @@ const SAMPLE_MENAION = {
             "teacher of piety; for having received heavenly grace, you shone your inspirational writings " +
             "upon those who cry to you: Rejoice, O Father Nikodemos.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 8,
       text: "The Church doth celebrate thee as a most excellent initiate of the mysteries of the life of " +
             "virtue and piety, O God-bearing teacher of Orthodoxy; for receiving gifts from heaven, " +
@@ -3521,7 +3521,7 @@ const SAMPLE_MENAION = {
   "07-15": {
     saint: "St Juvenal, Patriarch of Jerusalem",
     oca_primary: true,
-    service_file: "07-02.pdf",
+    source_file: "07-02.pdf",
     rank: "simple",
     fekula_section: "2A",
     note: "Jul 2 O.S. = Jul 15 N.S. OCA commemorates Jul 2 N.S. — DIVERGENCE; OCA date governs. " +
@@ -3538,7 +3538,7 @@ const SAMPLE_MENAION = {
             "Father of Lights in the Kingdom, pray for those who lovingly honor you, and may the peace " +
             "and mercy of the Savior be with us.",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 2,
       text: "Assembling now, with hymns let us honor Juvenal, the boast of Jerusalem, the namesake of youth, " +
             "who today hast been translated to the life which waxeth not old, the heir of the apostles, " +
@@ -4559,7 +4559,7 @@ const PENTECOSTARION = {
 
     // ── AT MATINS ────────────────────────────────────────────────────────────
 
-    matins_gospel_ref: "Sunday Resurrection Gospel 5 (John 20:19-31) — FLAG: verify per Tone V rotation",
+    matins_gospel: "Sunday Resurrection Gospel 5 (John 20:19-31) — FLAG: verify per Tone V rotation",
 
     matins_prokeimenon: {
       tone: 5,
@@ -4666,21 +4666,6 @@ const PENTECOSTARION = {
     },
 
     // AT MATINS: Ode III = Menaion kontakion; Ode VI = Blind Man kontakion (Pentecostarion)
-    matins_kontakion_ode3: {
-      tone: null,
-      text: "Menaion kontakion if present; else Blind Man kontakion",
-      note: "Matins Ode III — Menaion governs if present",
-    },
-    matins_kontakion_ode6: {
-      tone: 4,
-      text: "Since my soul's noetic eyes are blind and sightless, " +
-            "I have come to Thee, O Christ, " +
-            "as did the man who was blind from birth. " +
-            "And in repentance I cry unto Thee: " +
-            "Of those in darkness Thou art the most radiant Light.",
-      name: "Kontakion of the Blind Man",
-      note: "Matins Ode VI — Blind Man kontakion always",
-    },
 
     // Sessional Hymn after Ode III (Blind Man — Glory, Both now)
     sessional_hymn_ode3: {
@@ -4794,7 +4779,7 @@ const PENTECOSTARION = {
     },
 
     // Aposticha (Glory, Both now — unique to this file, Tone VIII)
-    stichera_aposticha_glory: {
+    aposticha_glory: {
       tone: 8,
       text: "As Jesus passed by on His way from the temple, " +
             "He found a man who was blind from his birth; " +
@@ -4952,21 +4937,6 @@ const PENTECOSTARION = {
             "Of those in darkness Thou art the most radiant Light.",
       name: "Kontakion of the Blind Man (preceding Sunday kontakion)",
       note: "All Hours. If Menaion is Doxology+ rank, substitute Menaion kontakion at 3rd/9th.",
-    },
-    matins_kontakion_ode3: {
-      tone: null,
-      text: "Menaion kontakion if present; else Blind Man kontakion",
-      note: "Matins Ode III — Menaion governs if present. Ikos not explicit in 62.pdf — verify from source.",
-    },
-    matins_kontakion_ode6: {
-      tone: 4,
-      text: "Since my soul's noetic eyes are blind and sightless, " +
-            "I have come to Thee, O Christ, " +
-            "as did the man who was blind from birth. " +
-            "And in repentance I cry unto Thee: " +
-            "Of those in darkness Thou art the most radiant Light.",
-      name: "Kontakion of the Blind Man",
-      note: "Matins Ode VI — Blind Man kontakion always",
     },
 
     sessional_hymn_ode3: {
@@ -5468,7 +5438,7 @@ const PENTECOSTARION = {
                        "who ineffably in time hast given birth unto the Timeless One, " +
                        "Thee do we the faithful magnify with one accord.",
 
-    matins_gospel_ref: "Mark 16:9-20 (Resurrection appearances; received up into heaven)",
+    matins_gospel: "Mark 16:9-20 (Resurrection appearances; received up into heaven)",
     matins_prokeimenon: {
       tone: 4,
       text: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
@@ -6177,7 +6147,7 @@ const PENTECOSTARION = {
       source: "ascension",
       placement: "both_now",
     },
-    kontakion: {
+    kontakion_ode6: {
       tone: 8,
       text: "The preaching of the apostles and the doctrines of the Fathers " +
             "confirmed the one Faith in the Church. " +
@@ -7156,14 +7126,6 @@ const PENTECOSTARION = {
             "O our Creator and Fashioner and God.",
       source: "reposed",
     },
-    kontakion: {
-      tone: 8,
-      text: "With the Saints grant rest, O Christ, " +
-            "to the souls of Thy servants, " +
-            "in a place where there is neither pain, nor sorrow, nor sighing, " +
-            "but life everlasting.",
-      source: "reposed",
-    },
     hours_kontakion: {
       tone: 8,
       text: "With the Saints grant rest, O Christ, " +
@@ -7374,14 +7336,6 @@ const PENTECOSTARION = {
             "and through them didst draw the world into Thy net. " +
             "O Lover of mankind, glory be to Thee.",
     },
-    kontakion: {
-      tone: 8,
-      text: "Once, when He descended and confounded the tongues, " +
-            "the Most High divided the nations; " +
-            "and when He divided the tongues of fire, " +
-            "He called all men into unity; " +
-            "and with one accord we glorify the all-holy Spirit.",
-    },
     hours_kontakion: {
       tone: 8,
       text: "Once, when He descended and confounded the tongues, " +
@@ -7439,14 +7393,6 @@ const PENTECOSTARION = {
             "by sending down upon them the Holy Spirit, " +
             "and through them didst draw the world into Thy net. " +
             "O Lover of mankind, glory be to Thee.",
-    },
-    kontakion: {
-      tone: 8,
-      text: "Once, when He descended and confounded the tongues, " +
-            "the Most High divided the nations; " +
-            "and when He divided the tongues of fire, " +
-            "He called all men into unity; " +
-            "and with one accord we glorify the all-holy Spirit.",
     },
     hours_kontakion: {
       tone: 8,
@@ -7668,14 +7614,6 @@ const PENTECOSTARION = {
             "and through them didst draw the world into Thy net. " +
             "O Lover of mankind, glory be to Thee.",
     },
-    kontakion: {
-      tone: 8,
-      text: "Once, when He descended and confounded the tongues, " +
-            "the Most High divided the nations; " +
-            "and when He divided the tongues of fire, " +
-            "He called all men into unity; " +
-            "and with one accord we glorify the all-holy Spirit.",
-    },
     hours_kontakion: {
       tone: 8,
       text: "Once, when He descended and confounded the tongues, " +
@@ -7740,14 +7678,6 @@ const PENTECOSTARION = {
     },
 
     // Kontakion: All Saints Tone 8 (Ode VI / 3rd + 9th Hours — Both now)
-    kontakion: {
-      tone: 8,
-      text: "To Thee, the Planter of creation, " +
-            "the world doth offer the God-bearing martyrs as the first-fruits of nature. " +
-            "By their supplications, preserve Thy Church in perfect peace, " +
-            "through the Theotokos, O Greatly-Merciful One.",
-      source: "all_saints",
-    },
     hours_kontakion: {
       tone: 8,
       text: "To Thee, the Planter of creation, " +
@@ -8341,7 +8271,7 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
       || (is3rdOr9th
           ? (pentEntry.kontakion_ode6 || pentEntry.kontakion_ode3)
           : (pentEntry.kontakion_ode3 || pentEntry.kontakion_ode6));
-    const mKont = menaionEntry && menaionEntry.kontakion ? menaionEntry.kontakion : null;
+    const mKont = menaionEntry && menaionEntry.kontakion_ode6 ? menaionEntry.kontakion_ode6 : null;
     const isHighRank = menaionEntry && ['doxology','polyeleos','vigil'].includes(menaionEntry.rank);
     kontakion = (isHighRank && is3rdOr9th && mKont) ? mKont : pKont;
     kontakionSource = (isHighRank && is3rdOr9th && mKont)
@@ -8350,11 +8280,11 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
   } else {
     kontakion = getKontakionForHour(menaionEntry, hourKey);
     kontakionSource = `Menaion — ${effectiveSaint}`;
-    if (isOrdinarySunday && namedDay && namedDay.kontakion) {
+    if (isOrdinarySunday && namedDay && namedDay.kontakion_ode6) {
       const useThirdOde = hourKey === '1st_hour' || hourKey === '6th_hour';
-      kontakion = useThirdOde && namedDay.kontakion_3rd_ode
-        ? namedDay.kontakion_3rd_ode
-        : namedDay.kontakion;
+      kontakion = useThirdOde && namedDay.kontakion_ode3
+        ? namedDay.kontakion_ode3
+        : namedDay.kontakion_ode6;
       kontakionSource = namedDay.name;
     }
   }
@@ -8808,10 +8738,10 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
 function getKontakionForHour(entry, hourKey) {
   if (!entry) return null;
   const useThirdOde = hourKey === "1st_hour" || hourKey === "6th_hour";
-  if (useThirdOde && entry.kontakion_3rd_ode) {
-    return entry.kontakion_3rd_ode;
+  if (useThirdOde && entry.kontakion_ode3) {
+    return entry.kontakion_ode3;
   }
-  return entry.kontakion || null;
+  return entry.kontakion_ode6 || null;
 }
 
 
@@ -9897,19 +9827,19 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   const _extractTone = (v) => !v ? null : (typeof v === "string" ? null : (v.tone || null));
   const _kontSource = (entry) => {
     if (!entry) return null;
-    return entry.hours_kontakion || entry.kontakion_ode3 || entry.kontakion_ode6 || entry.kontakion || null;
+    return entry.hours_kontakion || entry.kontakion_ode3 || entry.kontakion_ode6 || null;
   };
   const kont = (() => {
     if (isPentecostarion && pentEntry)
       return _extractText(pentEntry.hours_kontakion || pentEntry.kontakion_ode3 || pentEntry.kontakion_ode6);
-    if (menaionEntry && menaionEntry.kontakion_3rd_ode) return _extractText(menaionEntry.kontakion_3rd_ode);
-    return menaionEntry ? _extractText(menaionEntry.kontakion) : null;
+    if (menaionEntry && menaionEntry.kontakion_ode3) return _extractText(menaionEntry.kontakion_ode3);
+    return menaionEntry ? _extractText(menaionEntry.kontakion_ode6) : null;
   })();
   const kontTone = (() => {
     if (isPentecostarion && pentEntry)
       return _extractTone(pentEntry.hours_kontakion || pentEntry.kontakion_ode3 || pentEntry.kontakion_ode6);
-    if (menaionEntry && menaionEntry.kontakion_3rd_ode) return _extractTone(menaionEntry.kontakion_3rd_ode);
-    return menaionEntry ? _extractTone(menaionEntry.kontakion) : null;
+    if (menaionEntry && menaionEntry.kontakion_ode3) return _extractTone(menaionEntry.kontakion_ode3);
+    return menaionEntry ? _extractTone(menaionEntry.kontakion_ode6) : null;
   })();
   const kontSrc = (isPentecostarion && pentEntry) ? "Pentecostarion — " + pentEntry.name : "Menaion — " + effSaint;
   // ── Chapter 10 Reader's Service helpers ──────────────────────────────────
@@ -11649,7 +11579,7 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
     // Weekday: build kontakia sequence
     const dailyKontakia = TYPICA_KONTAKIA[dowNumber] || [];
     const saint = menaionEntry || pentEntry;
-    const saintKontakion = saint?.kontakion;
+    const saintKontakion = saint?.kontakion_ode6;
 
     // Per HTM rubric p.5: saint's kontakion is said first (Glory…Both now…),
     // then the daily kontakia follow.
@@ -14000,7 +13930,7 @@ function HowItWorksPanel() {
                 ["troparion · tone & text", "Primary troparion — tone number and full text", "✓ in tool — all four Hours"],
                 ["troparion_2 · tone, text, placement", "Second troparion (Glory) when two troparia govern", "✓ in tool — all four Hours"],
                 ["kontakion · tone, text, matins_ode", "Kontakion with Matins ode assignment (III or VI)", "✓ in tool — 3rd & 9th Hours"],
-                ["kontakion_3rd_ode · tone, text", "Second kontakion when Ode III differs from Ode VI", "✓ in tool — 1st & 6th Hours"],
+                ["kontakion_ode3 · tone, text", "Kontakion chanted after Ode III at Matins — governs 1st & 6th Hours", "✓ in tool"],
                 ["hours_kontakion", "Pentecostarion: feast kontakion governing Both now at Hours", "✓ in tool — Pentecostarion only"],
                 ["hours_format", "Assembly engine signal: paschal · pentecostarion_sunday · etc.", "✓ in tool — skeleton selection"],
                 ["fekula_section_override", "Overrides default Fekula section for special cases (e.g. §2B)", "✓ in tool"],
