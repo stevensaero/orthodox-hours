@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.3.4** | Last synced: May 2026 | Notes version: v0.3.22
+**Tool version: v0.3.9** | Last synced: May 23, 2026
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
@@ -77,8 +77,8 @@ destroys historical context and violates the integrity of the record.
 | v0.3.5 | May 2026 | Nicodemus OCA troparion check resolved; 07-14-v2.txt saved; two OCA troparia documented; all Jul 1-3 flags cleared |
 | v0.3.6 | May 2026 | St John Maximovich encoded (07-02-john-maximovich.txt); vigil §2F confirmed; OCA/St Sergius texts in full agreement; Jul 1-3 encoding complete |
 | v0.3.7 | May 2026 | Tool v0.2.1: Jul 1/2/3/14/15 entries in SAMPLE_MENAION; new fields (prokeimenon, alleluia, communion_verse, paroemia_1-3, troparion_2, fekula_section) added as dormant data |
-| v0.3.8 | May 2026 | May 18-31 encoding complete (14 dates); new rule: always encode fixed dates; OCA divergence patterns documented |
-| v0.3.9 | May 2026 | Pentecostarion data architecture defined; St. Sergius PDF library inventoried (59 files, P+0–P+63); PENTECOSTARION object design; FW-06 upgraded |
+| v0.3.8 | May 2026 | Schema normalization (v2.1): kontakion_ode6/ode3, source_file, aposticha_glory; Priority 1/2 cleanup; Priority 3 encoding set 1 (05-16–05-18) |
+| v0.3.9 | May 2026 | Dynamic monthly data modules (may.js, june.js, july.js, pentecostarion.js); main bundle 20% smaller; Priority 3 complete (05-16–05-21, 05-31); context card collapsed by default |
 | v0.3.10 | May 2026 | Tool v0.2.2: Pentecostarion Hours assembly implemented; P+35–P+40 encoded; skeleton rules confirmed from Fekula re-read; open questions captured; Math.floor bug fixed |
 | v0.3.11 | May 2026 | Tool v0.2.3: Hours skeleton rebuilt from HTM source; all 12 psalm texts inserted; Typical Beginning collapsible component; tbOpen state lifts context to body assembler |
 | v0.3.12 | May 2026 | P+38 troparion bug fixed (Sunday Tone 5 added); continuation button scroll fixed; 1st Hour body trimmed to O come opening; P+38/P+39 encoding confirmed correct |
@@ -607,7 +607,7 @@ hours_format: [paschal | pentecostarion_weekday | pentecostarion_sunday | apodos
 --- TROPARIA/KONTAKIA ---
 troparion_tone / troparion_text
 hours_kontakion_tone / hours_kontakion_text (single kontakion governs all Hours — §4A)
-matins_kontakion_ode3 / matins_kontakion_ode6 (separate Matins ode assignments)
+kontakion_ode3 / kontakion_ode6 (see encoding_rule_v2.md for routing table)
 ikos_text (if present)
 
 --- AT LITURGY ---
@@ -1329,7 +1329,7 @@ Not yet assembled (flagged in UI):
 
 Reading gaps:
 - TYPE 2 feast proper readings: July encoding in progress (Jul 1/2/3/14/15 complete; remaining July dates pending)
-- Scripture text not yet displayed (references only)
+- Scripture tool deployed (v0.3.5) — browse and reading mode; LXX versification divergences added to LXX_REMAP as discovered
 
 ---
 
@@ -1642,3 +1642,97 @@ Badge must correctly identify section even though assembly is the same.
 ---
 
 *Last updated: May 2026 · Notes v0.3.22 · Synced to tool v0.3.4*
+---
+
+## Data Architecture — Dynamic Monthly Modules (v0.3.9)
+
+Menaion and Pentecostarion data extracted from `hours-tool.jsx` into separate files:
+
+```
+src/data/menaion/may.js        — 16 entries
+src/data/menaion/june.js       — 30 entries
+src/data/menaion/july.js       — 5 entries
+src/data/pentecostarion.js     — full Pentecostarion
+```
+
+Vite dynamic imports with module-level caching. Main bundle: 1,165 KB → 929 KB (20%).
+Monthly `.js` files are the **single point of truth** for encoding — git tracks all changes.
+Adding a new month: create `src/data/menaion/{month}.js` + one line in `_menaionLoaders`.
+
+Drive `.txt` files are no longer the primary record. They remain useful for human review
+but are derived artifacts. The `.txt` step was omitted this session; records for
+05-16–05-21, 05-31, P+35-37, P+40-47, 05-24, 05-25 can be generated from the `.js` files.
+
+---
+
+## Schema Normalization — encoding_rule v2.1 (v0.3.8)
+
+Canonical spec: `encoding_rule_v2.md` in repo root.
+
+| Old field | New field | Scope |
+|---|---|---|
+| `kontakion:` | `kontakion_ode6:` | All Menaion entries + NAMED_DAYS + P+42 |
+| `kontakion_3rd_ode:` | `kontakion_ode3:` | 4 Menaion entries |
+| `service_file:` | `source_file:` | 53 entries |
+| `stichera_aposticha_glory:` | `aposticha_glory:` | 1 entry (bug fix) |
+| `matins_gospel_ref:` | `matins_gospel:` | 2 entries |
+| `matins_ode:` | *(removed)* | 60 entries — redundant |
+
+`kontakion_ode6` → 3rd & 9th Hours; `kontakion_ode3` → 1st & 6th Hours;
+`hours_kontakion` → single-kontakion Pentecostarion weekday entries only.
+
+---
+
+## Encoding Status — May 23, 2026 Session
+
+### Priority 1 (complete)
+- `heavenly_king_omitted: true` P+39–P+47; `matins_format` P+39
+- `kontakion_ode6` renamed in all multi-service Menaion entries (12) + All Saints NA
+- `matins_ode:` removed from 60 Menaion entries
+- 06-10: `source_file` added, `feast_e/g` string→null
+
+### Priority 2 (complete)
+- **P+35** (Blind Man Sunday): full encode — LIC stichera, vespers aposticha (Paschal), matins praises (7+1), beatitudes (4 Resurrection + 4 Ode VI), flags
+- **P+36** (Monday): aposticha Tone V, matins aposticha, beatitudes Ode I, flags
+- **P+37** (Tuesday): aposticha Tone V, matins aposticha, beatitudes Ode IV, flags
+- **05-24** (Symeon Stylites): `has_polyeleos`, `has_litya`, `has_paroemias`, `matins_gospel`
+- **05-25** (3rd Finding): `aposticha_source`, `has_paroemias`
+
+### Priority 3 (complete)
+
+| Date | Saint | Rank | Source |
+|---|---|---|---|
+| 05-16 | Theodore the Sanctified | §2A | General Menaion fallback — no PDF |
+| 05-17 | Andronicus & Junia | §2A | General Menaion fallback — no PDF |
+| 05-18 | Theodotus/Virgins/Peter+Dionysius | §2C | 05-18.pdf — 3+3 stichera |
+| 05-19 | Hieromartyr Patrick of Prusa | §2A | 05-19.pdf |
+| 05-20 | Martyr Thalaleus | §2A | 05-20.pdf |
+| 05-21 | Constantine & Helena | §2E | 05-21.pdf — flags added to existing encode |
+| 05-31 | Martyr Hermias | §2A | 05-31.pdf |
+
+### Re-encoding backlog (from automated schema audit)
+
+**Menaion** — 37 entries still need re-encode (Priority 4):
+- Severity A (full): 06-01–06-30, 07-01–07-15 (stichera + flags missing)
+- Severity C (cleanup): feast_e string→null on several June entries
+
+**Pentecostarion** — P+49–P+56 (post-Pentecost) need full encode;
+P+0–P+34, P+38 are stubs only.
+
+---
+
+## Project Notes Workflow Change (v0.3.9)
+
+**Drive snapshots retired.** `project_notes.md` in the repo root is now the single
+canonical file. Git history replaces versioned filenames. Update protocol:
+
+1. Edit `project_notes.md` directly in the repo
+2. Commit with a descriptive message: `docs: project notes — [summary of session]`
+3. No Drive upload needed. No version in the filename.
+
+Drive addendums (v0.3.22, v0.3.23) have been incorporated into this file.
+Drive snapshots are historical record only — do not create new ones.
+
+---
+
+*Last updated: May 23, 2026 · Tool v0.3.9*
