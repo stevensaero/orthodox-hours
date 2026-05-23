@@ -3869,8 +3869,23 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       // Pentecostarion + Menaion (§4A3 — Polyeleos/Vigil Menaion saint):
       // 3 slots from Pentecostarion Octoechos, remaining from Menaion.
       // OR Great Feast: all stichera from pentEntry (menaionLicStichera = pentEntry's stichera).
-      const allFromPent = (pentEntry && pentEntry.menaion_set_aside); // Great Feast case
-      const pentLicSlots = allFromPent ? 0 : Math.max(0, licCount - menaionLicStichera.length); // 3 for §4A3
+      // OR pentecostarion_sunday: 7 Octoechos resurrection + 3 pentEntry (Fekula §4B6).
+      const allFromPent = (pentEntry && pentEntry.menaion_set_aside); // Great Feast or pent Sunday
+      const isPentSunday = pentEntry && pentEntry.hours_format === 'pentecostarion_sunday';
+
+      // For pentecostarion_sunday: compose merged array — 7 Octoechos resurrection + pentEntry stichera
+      let effectiveLicStichera = menaionLicStichera;
+      if (allFromPent && isPentSunday && menaionLicStichera.length < licCount) {
+        // Fekula §4B6: "we sing ten stichera: seven of the resurrection and three of the Sunday"
+        const octoSat = getOctoechosVespers(tone, 'sat');
+        const octoResurrection = (octoSat && octoSat.lic) ? octoSat.lic.slice(0, 7) : [];
+        effectiveLicStichera = [
+          ...octoResurrection.map(text => ({tone, text, source: 'Octoechos'})),
+          ...menaionLicStichera,
+        ];
+      }
+
+      const pentLicSlots = allFromPent ? 0 : Math.max(0, licCount - effectiveLicStichera.length); // 3 for §4A3
       const interleaveVerses = LIC_VERSES.filter(v => v.n <= licCount);
 
       // Plain verses above the insertion point (if any)
@@ -3881,7 +3896,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
 
       interleaveVerses.forEach((v, i) => {
         const slotIndex = licCount - v.n; // 0 = highest verse
-        const stich = menaionLicStichera[slotIndex - pentLicSlots];
+        const stich = effectiveLicStichera[slotIndex - pentLicSlots];
         const isPentSlot = slotIndex < pentLicSlots;
 
         // Verse text — use feast verse from sticheron if present
@@ -3906,10 +3921,11 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
               fekula:{section:fekulaSection, note:"§4A3: first "+pentLicSlots+" stichera from Pentecostarion."}});
           }
         } else if (stich) {
+          const stichSource = stich.source || (allFromPent ? "Pentecostarion" : "Menaion");
           elements.push({id:"v-lic-stich-"+v.n, type:"movable", label:"",
             rubric:"Tone "+(stich.tone||tone)+":",
-            text:stich.text, source:allFromPent ? "Pentecostarion" : "Menaion",
-            fekula:{section:fekulaSection, note:(allFromPent ? "Pentecostarion" : "Menaion")+" sticheron at V.("+v.n+")."}});
+            text:stich.text, source:stichSource,
+            fekula:{section:fekulaSection, note:stichSource+" sticheron at V.("+v.n+")."}});
         } else {
           elements.push({id:"v-lic-stich-"+v.n, type:"movable", label:"",
             unresolved:true,

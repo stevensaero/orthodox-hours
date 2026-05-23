@@ -332,7 +332,7 @@ const PENTECOSTARION_DATA = {
               "He is truly Christ the Messiah, of Whom Moses spake in the Law. " +
               "He is the Savior of our souls." },
     ],
-    stichera_lord_i_call_count: 3,  // feast stichera; 7 Octoechos assembled separately
+    stichera_lord_i_call_count: 10,  // 7 Octoechos resurrection + 3 Pentecostarion Blind Man
 
     stichera_glory: {
       tone: 5,
