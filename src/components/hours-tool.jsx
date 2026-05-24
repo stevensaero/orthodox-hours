@@ -4448,10 +4448,14 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       fekula:{section:fekulaSection, note:"Troparion from the Menaion — not yet encoded for this date."}});
   }
   if (secTrop) {
+    // Glory… as standalone fixed element between troparion boxes
+    elements.push({id:"v-trop-glory",type:"fixed",label:"",
+      text:"Glory to the Father, and to the Son, and to the Holy Spirit.",
+      source:"HTM Vespers"});
     const secToneLabel = secTropTone ? " · Tone " + secTropTone : "";
     elements.push({id:"v-trop-2",type:"movable",label:"Troparion (Glory…)" + secToneLabel,
       rubric:"",
-      text:"Glory to the Father, and to the Son, and to the Holy Spirit.\n\n" + secTrop,
+      text: secTrop,
       source: secSrc,
       fekula:{section:fekulaSection, note:"Second troparion (after Glory…). — Fekula §4A"}});
   }
@@ -4461,18 +4465,25 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   const vespersKontakionSuppressed = isPentecostarion && pentEntry && pentEntry.vespers_kontakion === false;
 
   if (thirdTrop) {
-    // Both now… filled by a troparion (e.g. P+42 Ascension, P+56 dogmatic)
+    // Both now… as standalone fixed element between troparion boxes
+    elements.push({id:"v-trop-bothnow",type:"fixed",label:"",
+      text:"Both now and ever, and unto the ages of ages. Amen.",
+      source:"HTM Vespers"});
     const thirdToneLabel = thirdTropTone ? " · Tone " + thirdTropTone : "";
     elements.push({id:"v-trop-3",type:"movable",label:"Troparion (Both now…)" + thirdToneLabel,
       rubric:"",
-      text:"Now and ever, and unto the ages of ages. Amen.\n\n" + thirdTrop,
+      text: thirdTrop,
       source: thirdSrc,
       fekula:{section:fekulaSection, note:"Both now… filled by appointed troparion (not kontakion). — Fekula §4B13"}});
   } else if (kont && !vespersKontakionSuppressed) {
+    // Both now… as standalone fixed element before kontakion box
+    elements.push({id:"v-kont-bothnow",type:"fixed",label:"",
+      text:"Both now and ever, and unto the ages of ages. Amen.",
+      source:"HTM Vespers"});
     const kontToneLabel = kontTone ? " · Tone " + kontTone : "";
     elements.push({id:"v-kont",type:"movable",label:"Kontakion (Both now…)" + kontToneLabel,
       rubric:"",
-      text:"Both now and ever, and unto the ages of ages. Amen.\n\n" + kont,
+      text: kont,
       source: kontSrc,
       fekula:{section:fekulaSection, note:"Theotokion/kontakion at Both now… — governed by rank, day of week, and Fekula Chapter 6 rules."}});
   }
