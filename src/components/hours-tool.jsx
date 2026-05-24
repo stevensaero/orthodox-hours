@@ -5564,12 +5564,16 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
     });
 
     // 3. Kontakion of the church/temple (parish-specific — rubric note only)
+    // Styled as a movable block with a proper label, matching the other kontakia,
+    // but the body text is instructional (not service text to be read aloud).
     elements.push({
-      id: "typica-kont-temple", type: "rubric", label: "",
+      id: "typica-kont-temple", type: "movable", label: "Kontakion of the Temple",
+      rubric: null,
       text: "[Here insert the Kontakion of your parish temple, " +
         "if it be dedicated to a saint. If the temple be dedicated to a feast of the Lord, " +
         "its Kontakion is said first, before the Kontakion of the day.]",
       source: "OCA Typica / HTM rubric",
+      isRubricNote: true,  // flag for the renderer to style the text as instructional
     });
 
     // 4. Kontakion of the saint of the date (if present)
@@ -6332,12 +6336,13 @@ function ServiceBlock({ element }) {
           element.rubric.startsWith("Deacon:")
         );
         const isPsalm = element.text && element.text.startsWith("PSALM ");
+        const isRubricNote = element.isRubricNote;
         const bodyStyle = {
           fontFamily: "Georgia, serif",
-          fontSize: "0.97rem",
+          fontSize: isRubricNote ? "0.85rem" : "0.97rem",
           lineHeight: "1.75",
-          color: isPriest ? "#A89880" : isMovable ? "#1C1008" : "#3D3020",
-          fontStyle: isPriest ? "italic" : "normal",
+          color: isPriest ? "#A89880" : isRubricNote ? "#9A8A70" : isMovable ? "#1C1008" : "#3D3020",
+          fontStyle: (isPriest || isRubricNote) ? "italic" : "normal",
           whiteSpace: "pre-wrap",
           background: isMovable ? "rgba(139,105,20,0.04)" : "transparent",
           padding: isMovable ? "0.6rem 0.8rem" : "0",
