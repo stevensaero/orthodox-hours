@@ -5517,7 +5517,25 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
             "that when they should see Thee crucified, they would know Thy Passion to be willing, " +
             "and would preach to the world that Thou, in truth, art the Effulgence of the Father.",
     };
+    const WITH_THE_SAINTS = "With the saints give rest, O Christ, " +
+      "to the souls of Thy servants, " +
+      "where there is neither sickness, nor sorrow, nor sighing, " +
+      "but life everlasting.";
+    const STEADFAST_PROTECTRESS = "O protection of Christians that cannot be put to shame, " +
+      "O mediation unto the Creator unfailing, " +
+      "disdain not the suppliant voices of sinners; " +
+      "but be thou quick, O good one, to help us who in faith cry unto thee; " +
+      "Hasten to intercession and speed thou to make supplication, " +
+      "thou who dost ever protect, O Theotokos, them that honour thee.";
+    const MARTYRS_KONTAKION = "To Thee, O Lord, the Planter of creation, " +
+      "the world doth offer the God-bearing martyrs as the firstfruits of nature. " +
+      "By their intercessions preserve Thy Church, Thy commonwealth, " +
+      "in profound peace, through the Theotokos, O Greatly-merciful One.";
+
+    // Extract only the day-specific kontakia (first entry), not the Glory/Both now closers
     const dailyKontakia = TYPICA_KONTAKIA[dowNumber] || [];
+    const dayKontakia = dailyKontakia.filter(k =>
+      !k.label.startsWith("Both now") && !k.label.startsWith("Glory"));
     const saint = menaionEntry || pentEntry;
     const saintKontakion = saint?.kontakion_ode6;
     const isSaturday = dowNumber === 6;
@@ -5529,31 +5547,40 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
     kontakiaBody += TRANSFIGURATION_KONTAKION.text + "\n\n";
 
     // 2. Kontakion(s) of the day (Mon=Bodiless Hosts, Tue=Forerunner, etc.)
-    // On Saturday the daily kontakia are: Glory…With the saints… / Both now…Martyrs
-    // On weekdays the daily kontakia end with Both now…Protectress
-    // We extract just the day-specific kontakia (not Glory/Both now closers)
-    dailyKontakia.forEach((k, i) => {
+    dayKontakia.forEach((k) => {
       const toneLabel = k.tone ? `, Tone ${k.tone}` : "";
-      // Saturday entries already include "Glory" and "Both now" labels
-      kontakiaBody += `${k.label}${toneLabel}:\n${k.text}`;
-      if (i < dailyKontakia.length - 1 || saintKontakion) kontakiaBody += "\n\n";
+      kontakiaBody += `${k.label}${toneLabel}:\n${k.text}\n\n`;
     });
 
-    // 3. Kontakion of the saint of the date (if present)
+    // 3. Kontakion of the church/temple (parish-specific — rubric note only)
+    kontakiaBody += "[Here insert the Kontakion of your parish temple, " +
+      "if it be dedicated to a saint. If the temple be dedicated to a feast of the Lord, " +
+      "its Kontakion is said first, before the Kontakion of the day.]\n\n";
+
+    // 4. Kontakion of the saint of the date (if present)
     // OCA: "(the Kontakion of the saint of the date, if desired)"
-    // Inserted before the Glory…With the saints… / Both now…Protectress closers
-    if (saintKontakion && !isSaturday) {
+    if (saintKontakion) {
       const toneLabel = saintKontakion.tone ? `, Tone ${saintKontakion.tone}` : "";
-      kontakiaBody += `\nKontakion — ${saint.saint || "Saint of the day"}${toneLabel}:\n`;
-      kontakiaBody += saintKontakion.text;
+      kontakiaBody += `Kontakion — ${saint.saint || "Saint of the day"}${toneLabel}:\n`;
+      kontakiaBody += saintKontakion.text + "\n\n";
+    }
+
+    // 5–6. Closing: Glory…With the saints… / Both now…Protectress (or Martyrs on Saturday)
+    kontakiaBody += "Glory to the Father, and to the Son, and to the Holy Spirit.\n\n";
+    kontakiaBody += `Kontakion for the Departed, Tone 8:\n${WITH_THE_SAINTS}\n\n`;
+    kontakiaBody += "Both now and ever, and unto the ages of ages. Amen.\n\n";
+    if (isSaturday) {
+      kontakiaBody += `Kontakion to the Martyrs, Tone 8:\n${MARTYRS_KONTAKION}`;
+    } else {
+      kontakiaBody += STEADFAST_PROTECTRESS;
     }
 
     const dowNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     movable("typica-kontakia", "Kontakia",
       kontakiaBody.trim(),
       `${dowNames[dowNumber]} order per OCA Typica / HTM rubric. ` +
-      `Transfiguration kontakion always first, followed by kontakion of the day, ` +
-      `then saint of the date (if desired).`);
+      `Sequence: Transfiguration, day, church/temple, saint (if desired), ` +
+      `Glory…With the saints…, Both now…${isSaturday ? "Martyrs" : "Protectress"}.`);
   }
 
   // ── 14. Lord Have Mercy ×40 ───────────────────────────────────────────────
