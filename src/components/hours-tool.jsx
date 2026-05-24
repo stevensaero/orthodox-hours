@@ -3810,7 +3810,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       : (isHighRank ? (rank === "vigil" ? 10 : 8) : 6);
 
     // Psalm 141 prose body (no verse numbers — rendered as-is)
-    elements.push({id:"v-ps141",type:"fixed",label:"PSALM 141" + (licCount ? " — on " + licCount : ""),rubric:"",
+    elements.push({id:"v-ps141",type:"fixed",label:"PSALM 141" + (licCount ? " — Stichera on " + licCount : ""),rubric:"",
       text:"I cry with my voice to the Lord, with my voice I make supplication to the Lord, " +
         "I pour out my complaint before Him, I tell my trouble before Him. " +
         "When my spirit is faint, Thou knowest my way. " +
@@ -3916,7 +3916,8 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       if (plainVerses.length > 0) {
         elements.push({id:"v-lic-transition", type:"rubric", label:"",
           text:"[Stichera begin at V.(" + licCount + ") — " + licCount + " appointed for this day]",
-          source:fekulaSection ? "Fekula §" + fekulaSection.replace(/§/g,'') : ""});
+          source:"",
+          fekula:{section:fekulaSection, note:licCount + " stichera appointed. Insertion begins at V.(" + licCount + "). — Fekula " + fekulaSection}});
       }
 
       interleaveVerses.forEach((v, i) => {
