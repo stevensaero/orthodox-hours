@@ -5640,6 +5640,9 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
   // ── 16. Dismissal ────────────────────────────────────────────────────────
   elements.push(buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, "typica"));
 
+  // ── End marker ──────────────────────────────────────────────────────────
+  elements.push({id:"typica-end",type:"end_marker",label:"",text:"THE END OF THE TYPICA",source:"HTM, Order of the Typica"});
+
   return elements;
 }
 
@@ -5851,6 +5854,9 @@ function assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMo
 
   // ── Dismissal ─────────────────────────────────────────────────────────────
   elements.push(buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, "pc"));
+
+  // ── End marker ──────────────────────────────────────────────────────────
+  elements.push({id:"pc-end",type:"end_marker",label:"",text:"THE END OF THE POST-COMMUNION PRAYERS",source:"HTM"});
 
   return elements;
 }
