@@ -3800,6 +3800,15 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   // Fekula §2A: 6 stichera (3 Octoechos + 3 Menaion). §2C: 6 Menaion.
   // §2E: 8 stichera. §2F: 10 stichera. Insertion point = sticheraCount.
   {
+    // Determine stichera count (insertion start verse) and sources by rank
+    const licDayKey = getVespersDayKey(dow);
+    const octoDay = (!isPentecostarion && (rank === "simple" || !menaionEntry))
+      ? getOctoechosVespers(tone, licDayKey) : null;
+    // Stichera count: from pentEntry if Pentecostarion; else 6/8/10 by rank
+    const licCount = (isPentecostarion && pentEntry && pentEntry.stichera_lord_i_call_count)
+      ? pentEntry.stichera_lord_i_call_count
+      : (isHighRank ? (rank === "vigil" ? 10 : 8) : 6);
+
     // Psalm 141 prose body (no verse numbers — rendered as-is)
     elements.push({id:"v-ps141",type:"fixed",label:"PSALM 141" + (licCount ? " — on " + licCount : ""),rubric:"",
       text:"I cry with my voice to the Lord, with my voice I make supplication to the Lord, " +
@@ -3812,15 +3821,6 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         "Give heed to my cry; for I am brought very low. " +
         "Deliver me from my persecutors; for they are too strong for me.",
       source:"HTM Vespers"});
-
-    // Determine stichera count (insertion start verse) and sources by rank
-    const licDayKey = getVespersDayKey(dow);
-    const octoDay = (!isPentecostarion && (rank === "simple" || !menaionEntry))
-      ? getOctoechosVespers(tone, licDayKey) : null;
-    // Stichera count: from pentEntry if Pentecostarion; else 6/8/10 by rank
-    const licCount = (isPentecostarion && pentEntry && pentEntry.stichera_lord_i_call_count)
-      ? pentEntry.stichera_lord_i_call_count
-      : (isHighRank ? (rank === "vigil" ? 10 : 8) : 6);
 
     // Build the ordered list of stichera (up to licCount entries)
     // §2A weekday: 3 Octoechos + 3 Menaion (from stichera_lord_i_call if encoded, else unresolved)
