@@ -5481,7 +5481,7 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
       elements.push({
         id: "typica-kont-glory-bothnow", type: "fixed", label: "",
         text: "Glory to the Father, and to the Son, and to the Holy Spirit,\n" +
-              "now and ever, and unto the ages of ages. Amen.",
+              "both now and ever, and unto the ages of ages. Amen.",
         source: src,
       });
 
