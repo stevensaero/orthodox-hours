@@ -5501,9 +5501,14 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
     // Ordinary Sunday: Hypakoë of the tone in place of Kontakia section
     // OCA Typica: "On Sundays, if there is no Feast, only the Hypakoë in the
     // appointed tone is sung."
-    const toneKey = pentEntry?.name?.toLowerCase().includes("pascha") || pentEntry?.name?.toLowerCase().includes("bright")
-      ? "pascha"
-      : (tone || 1);
+    // Only use the Pascha Hypakoë for Pascha itself (P+0) and Bright Week (P+1..P+6)
+    const isPaschaWeek = pentEntry && (
+      pentEntry.fekula_section === "§4B1" ||
+      pentEntry.fekula_section === "§4B2" ||
+      pentEntry.fekula_section === "§4B3" ||
+      pentEntry.fekula_section === "§4B4"
+    );
+    const toneKey = isPaschaWeek ? "pascha" : (tone || 1);
     const hypakoeText = OCTOECHOS_HYPAKOE[toneKey] || OCTOECHOS_HYPAKOE[tone] || OCTOECHOS_HYPAKOE[1];
     movable("typica-hypakoe", `Hypakoë — Tone ${tone}`,
       hypakoeText,
