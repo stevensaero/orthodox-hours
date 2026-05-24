@@ -7105,6 +7105,19 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
 
 const RELEASE_NOTES = [
   {
+    version: "v0.3.14",
+    date: "May 2026",
+    summary: "Vespers polish · rubric styling · LIC 'Stichera on N' · May 25 encoding complete",
+    items: [
+      "style: type: 'rubric' elements now render in faded gold italic — instructional notes (e.g. Heavenly King omission) no longer appear as service text to be read aloud",
+      "style: PSALM 141 header shows 'Stichera on N' per liturgical convention (on 6, on 8, on 10)",
+      "style: inline transition note after last plain verse — '[Stichera begin at V.(8) — 8 appointed for this day]' in faded gold italic",
+      "feat: repeatIndex field for non-adjacent sticheron repeats (May 25 Forerunner: 3 stichera → 5 slots via repeatIndex)",
+      "fix: menaion_set_aside gates on LIC merge and kontakion override corrected for P+35 Blind Man Sunday",
+      "fix: licCount variable ordering — was referenced before definition, causing blank page",
+    ],
+  },
+  {
     version: "v0.3.13",
     date: "May 2026",
     summary: "Vespers LIC assembler complete · §4A1/§4A3/§4B6 weekday+Sunday stichera · repeat/repeatIndex · 8 bug fixes",

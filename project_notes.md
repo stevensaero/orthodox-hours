@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.3.13** | Last synced: May 23, 2026
+**Tool version: v0.3.14** | Last synced: May 23, 2026
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
@@ -1802,3 +1802,31 @@ Fekula §4B13 prescribes hour-differentiated selection:
 Fix: when `menaion_set_aside: true` and `troparion_2` present on pentEntry,
 secondary and kontakion are selected by `is3rdOr9th` flag from pentEntry fields
 rather than from the Menaion. Affects P+42 and P+56 only.
+
+---
+
+## Session Notes — May 23, 2026 (v0.3.14)
+
+### Fixes and features
+
+**Rubric type styling**
+Instructional notes (e.g. "[Glory to Thee... and O Heavenly King are both omitted...]") were rendering in black service text. Added `type: 'rubric'` handler to ServiceBlock — bracketed content renders in faded gold italic (#9A8A70), visually distinct from text to be read aloud.
+
+**LIC "Stichera on N" convention**
+Psalm 141 header now shows "PSALM 141 — Stichera on 8" (or 6, 10) per standard liturgical convention. Inline transition note after last plain verse reads "[Stichera begin at V.(8) — 8 appointed for this day]" in faded gold italic. Belt-and-suspenders approach ensures readers know plain verses before the insertion point are intentional.
+
+**May 25 Forerunner encoding complete**
+Third Finding of the Head (§2E Polyeleos): 5 Menaion stichera slots filled (3 distinct + 2 via repeatIndex). Added repeatIndex field for non-adjacent repeats — entry [3] copies text from [0], entry [4] from [1], matching "repeating as necessary" rubric from 05-25.pdf.
+
+**LIC assembler fixes**
+- menaion_set_aside gates removed from licCount and Sunday LIC merge — all pentecostarion_sunday entries now get Octoechos merge regardless of flag
+- menaion_set_aside gate added to high-rank Menaion kontakion override at Hours — Symeon Stylites §2E was overriding §4B13 Holy Fathers kontakion
+- licCount variable ordering fix — was referenced before definition in Psalm 141 label, causing blank page
+
+### Session totals: v0.3.11 → v0.3.14
+
+- 11 bug fixes
+- 3 new features (§4A1 weekday LIC, §4B6 Sunday LIC, repeat/repeatIndex)
+- 2 styling improvements
+- 1 encoding completion (May 25)
+- §4B13 fully researched and resolved against Fekula chapter_4.txt
