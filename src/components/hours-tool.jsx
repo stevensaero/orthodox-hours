@@ -5972,16 +5972,26 @@ function ServiceBlock({ element }) {
     return (
       <div style={{
         textAlign: 'center',
-        fontFamily: 'Georgia, serif',
-        fontSize: '0.8rem',
-        fontWeight: 'bold',
-        letterSpacing: '0.12em',
-        color: '#5A4A2A',
         margin: '2rem 0 0.5rem',
         paddingTop: '1rem',
         borderTop: '1px solid #D4C49A',
       }}>
-        {element.text}
+        <div style={{
+          fontFamily: 'Georgia, serif',
+          fontSize: '0.8rem',
+          fontWeight: 'bold',
+          letterSpacing: '0.12em',
+          color: '#5A4A2A',
+          marginBottom: '1rem',
+        }}>
+          {element.text}
+        </div>
+        <svg width="50" height="85" viewBox="0 0 50 85" role="img" aria-label="Orthodox cross" style={{display:'inline-block'}}>
+          <rect x="19" y="0" fill="#B8A070" width="12" height="85"/>
+          <rect x="7.8" y="9" fill="#B8A070" width="34.4" height="9.7"/>
+          <rect x="1.6" y="25" fill="#B8A070" width="46.8" height="9.7"/>
+          <polygon points="7,48 12,57 43,51 38,42" fill="#B8A070"/>
+        </svg>
       </div>
     );
   }
