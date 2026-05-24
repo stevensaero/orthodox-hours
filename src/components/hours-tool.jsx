@@ -5467,29 +5467,36 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
     //  of the Feast."
     const feastKontakion = pentEntry.hours_kontakion; // e.g. Ascension T6
     const saintKontakion = pentEntry.kontakion_ode6;  // e.g. Holy Fathers T8
-    let kontakiaBody = "";
+    const ocaFeastNote = "Sunday with a Feast per OCA Typica rubric. " +
+      "On Sundays without a Feast, only the Hypakoë in the appointed tone is sung.";
 
     if (saintKontakion && feastKontakion) {
-      // Saint kontakion first, then Glory…Now and ever… Feast kontakion
-      const saintTone = saintKontakion.tone ? `, Tone ${saintKontakion.tone}` : "";
-      const feastTone = feastKontakion.tone ? `, Tone ${feastKontakion.tone}` : "";
-      kontakiaBody += `Kontakion — ${pentEntry.name}${saintTone}:\n`;
-      kontakiaBody += saintKontakion.text + "\n\n";
-      kontakiaBody += "Glory to the Father, and to the Son, and to the Holy Spirit,\n";
-      kontakiaBody += "now and ever, and unto the ages of ages. Amen.\n\n";
-      kontakiaBody += `Kontakion of the Feast${feastTone}:\n`;
-      kontakiaBody += feastKontakion.text;
+      // Saint kontakion first
+      const saintTone = saintKontakion.tone ? " · Tone " + saintKontakion.tone : "";
+      movable("typica-kont-saint", "Kontakion — " + pentEntry.name + saintTone,
+        saintKontakion.text,
+        ocaFeastNote + " Saint kontakion sung first.");
+
+      // Glory…Now and ever…
+      elements.push({
+        id: "typica-kont-glory-bothnow", type: "fixed", label: "",
+        text: "Glory to the Father, and to the Son, and to the Holy Spirit,\n" +
+              "now and ever, and unto the ages of ages. Amen.",
+        source: src,
+      });
+
+      // Feast kontakion
+      const feastTone = feastKontakion.tone ? " · Tone " + feastKontakion.tone : "";
+      movable("typica-kont-feast", "Kontakion of the Feast" + feastTone,
+        feastKontakion.text,
+        ocaFeastNote);
     } else if (feastKontakion) {
       // Feast kontakion only
-      const feastTone = feastKontakion.tone ? `, Tone ${feastKontakion.tone}` : "";
-      kontakiaBody += `Kontakion of the Feast${feastTone}:\n`;
-      kontakiaBody += feastKontakion.text;
+      const feastTone = feastKontakion.tone ? " · Tone " + feastKontakion.tone : "";
+      movable("typica-kont-feast", "Kontakion of the Feast" + feastTone,
+        feastKontakion.text,
+        ocaFeastNote);
     }
-
-    movable("typica-kontakia", "Kontakia",
-      kontakiaBody.trim(),
-      `Sunday with a Feast: Kontakia sung per OCA Typica rubric. ` +
-      `On Sundays without a Feast, only the Hypakoë in the appointed tone is sung.`);
   } else if (isSunday) {
     // Ordinary Sunday: Hypakoë of the tone in place of Kontakia section
     // OCA Typica: "On Sundays, if there is no Feast, only the Hypakoë in the
@@ -5540,47 +5547,65 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
     const saintKontakion = saint?.kontakion_ode6;
     const isSaturday = dowNumber === 6;
 
-    let kontakiaBody = "";
+    const dowNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const ocaNote = `${dowNames[dowNumber]} order per OCA Typica / HTM rubric.`;
 
     // 1. Kontakion of the Transfiguration (always first)
-    kontakiaBody += `Kontakion of the Transfiguration, Tone ${TRANSFIGURATION_KONTAKION.tone}:\n`;
-    kontakiaBody += TRANSFIGURATION_KONTAKION.text + "\n\n";
+    movable("typica-kont-transfig", "Kontakion of the Transfiguration · Tone " + TRANSFIGURATION_KONTAKION.tone,
+      TRANSFIGURATION_KONTAKION.text,
+      ocaNote + " Transfiguration kontakion always first.");
 
     // 2. Kontakion(s) of the day (Mon=Bodiless Hosts, Tue=Forerunner, etc.)
-    dayKontakia.forEach((k) => {
-      const toneLabel = k.tone ? `, Tone ${k.tone}` : "";
-      kontakiaBody += `${k.label}${toneLabel}:\n${k.text}\n\n`;
+    dayKontakia.forEach((k, i) => {
+      const toneLabel = k.tone ? " · Tone " + k.tone : "";
+      movable("typica-kont-day-" + i, k.label + toneLabel,
+        k.text,
+        ocaNote + " Kontakion of the day.");
     });
 
     // 3. Kontakion of the church/temple (parish-specific — rubric note only)
-    kontakiaBody += "[Here insert the Kontakion of your parish temple, " +
-      "if it be dedicated to a saint. If the temple be dedicated to a feast of the Lord, " +
-      "its Kontakion is said first, before the Kontakion of the day.]\n\n";
+    elements.push({
+      id: "typica-kont-temple", type: "rubric", label: "",
+      text: "[Here insert the Kontakion of your parish temple, " +
+        "if it be dedicated to a saint. If the temple be dedicated to a feast of the Lord, " +
+        "its Kontakion is said first, before the Kontakion of the day.]",
+      source: "OCA Typica / HTM rubric",
+    });
 
     // 4. Kontakion of the saint of the date (if present)
     // OCA: "(the Kontakion of the saint of the date, if desired)"
     if (saintKontakion) {
-      const toneLabel = saintKontakion.tone ? `, Tone ${saintKontakion.tone}` : "";
-      kontakiaBody += `Kontakion — ${saint.saint || "Saint of the day"}${toneLabel}:\n`;
-      kontakiaBody += saintKontakion.text + "\n\n";
+      const toneLabel = saintKontakion.tone ? " · Tone " + saintKontakion.tone : "";
+      movable("typica-kont-saint", "Kontakion — " + (saint.saint || "Saint of the day") + toneLabel,
+        saintKontakion.text,
+        ocaNote + " Saint of the date (if desired).");
     }
 
-    // 5–6. Closing: Glory…With the saints… / Both now…Protectress (or Martyrs on Saturday)
-    kontakiaBody += "Glory to the Father, and to the Son, and to the Holy Spirit.\n\n";
-    kontakiaBody += `Kontakion for the Departed, Tone 8:\n${WITH_THE_SAINTS}\n\n`;
-    kontakiaBody += "Both now and ever, and unto the ages of ages. Amen.\n\n";
+    // 5. Glory… With the saints give rest…
+    elements.push({
+      id: "typica-kont-glory", type: "fixed", label: "",
+      text: "Glory to the Father, and to the Son, and to the Holy Spirit.",
+      source: src,
+    });
+    movable("typica-kont-departed", "Kontakion for the Departed · Tone 8",
+      WITH_THE_SAINTS,
+      ocaNote);
+
+    // 6. Both now… Protectress (weekdays) or Martyrs (Saturday)
+    elements.push({
+      id: "typica-kont-bothnow", type: "fixed", label: "",
+      text: "Both now and ever, and unto the ages of ages. Amen.",
+      source: src,
+    });
     if (isSaturday) {
-      kontakiaBody += `Kontakion to the Martyrs, Tone 8:\n${MARTYRS_KONTAKION}`;
+      movable("typica-kont-martyrs", "Kontakion to the Martyrs · Tone 8",
+        MARTYRS_KONTAKION,
+        ocaNote + " Saturday closer.");
     } else {
-      kontakiaBody += STEADFAST_PROTECTRESS;
+      movable("typica-kont-protectress", "Steadfast Protectress",
+        STEADFAST_PROTECTRESS,
+        ocaNote + " Weekday closer.");
     }
-
-    const dowNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-    movable("typica-kontakia", "Kontakia",
-      kontakiaBody.trim(),
-      `${dowNames[dowNumber]} order per OCA Typica / HTM rubric. ` +
-      `Sequence: Transfiguration, day, church/temple, saint (if desired), ` +
-      `Glory…With the saints…, Both now…${isSaturday ? "Martyrs" : "Protectress"}.`);
   }
 
   // ── 14. Lord Have Mercy ×40 ───────────────────────────────────────────────
