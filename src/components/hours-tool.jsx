@@ -5145,7 +5145,7 @@ function buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, idP
 //   (readings engine FW-19/20 not yet built).
 
 function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode = false) {
-  const { dowNumber, tone } = liturgicalData;
+  const { dow: dowNumber, tone } = liturgicalData;
   const isSunday = dowNumber === 0;
   const elements = [];
 
