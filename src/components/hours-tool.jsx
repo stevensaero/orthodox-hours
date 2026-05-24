@@ -5441,8 +5441,59 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
   }
 
   // ── 13. Kontakia section ─────────────────────────────────────────────────
-  if (isSunday) {
-    // Sunday: Hypakoë of the tone in place of Kontakia section
+  // OCA Typica rules for this section:
+  //   1. Sunday with a Feast of the Lord: Kontakion of the saint first,
+  //      Glory…Now and ever… Kontakion of the Feast (OCA Typica rubric)
+  //   2. Sunday without a Feast: Hypakoë of the tone only (OCA Typica rubric)
+  //   3. Weekday: daily kontakia per HTM rubric p.5–6
+
+  // Detect if this is a Sunday with a feast (e.g. §4B13 Holy Fathers + Ascension,
+  // §4B9 Samaritan Woman + Mid-Pentecost, §4B17 All Saints)
+  const hasFeastKontakia = isSunday && pentEntry && (
+    // pentEntry provides both a feast kontakion and a saint/commemoration kontakion
+    // (e.g. P+42: Fathers kontakion + Ascension kontakion)
+    (pentEntry.kontakion_ode6 && pentEntry.hours_kontakion) ||
+    // pentEntry provides a single feast kontakion (e.g. P+56 All Saints)
+    (pentEntry.hours_kontakion && pentEntry.menaion_set_aside) ||
+    // pentEntry explicitly marks feast kontakia for Typica
+    pentEntry.typica_kontakia
+  );
+
+  if (isSunday && hasFeastKontakia) {
+    // Sunday with a Feast: Kontakia section per OCA Typica rubric
+    // "If it is a Feast of the Lord, the Kontakion is sung here.
+    //  But if there is also a saint celebrated on this day, the Kontakion of the
+    //  saint is sung first, followed by Glory… now and ever… and the Kontakion
+    //  of the Feast."
+    const feastKontakion = pentEntry.hours_kontakion; // e.g. Ascension T6
+    const saintKontakion = pentEntry.kontakion_ode6;  // e.g. Holy Fathers T8
+    let kontakiaBody = "";
+
+    if (saintKontakion && feastKontakion) {
+      // Saint kontakion first, then Glory…Now and ever… Feast kontakion
+      const saintTone = saintKontakion.tone ? `, Tone ${saintKontakion.tone}` : "";
+      const feastTone = feastKontakion.tone ? `, Tone ${feastKontakion.tone}` : "";
+      kontakiaBody += `Kontakion — ${pentEntry.name}${saintTone}:\n`;
+      kontakiaBody += saintKontakion.text + "\n\n";
+      kontakiaBody += "Glory to the Father, and to the Son, and to the Holy Spirit,\n";
+      kontakiaBody += "now and ever, and unto the ages of ages. Amen.\n\n";
+      kontakiaBody += `Kontakion of the Feast${feastTone}:\n`;
+      kontakiaBody += feastKontakion.text;
+    } else if (feastKontakion) {
+      // Feast kontakion only
+      const feastTone = feastKontakion.tone ? `, Tone ${feastKontakion.tone}` : "";
+      kontakiaBody += `Kontakion of the Feast${feastTone}:\n`;
+      kontakiaBody += feastKontakion.text;
+    }
+
+    movable("typica-kontakia", "Kontakia",
+      kontakiaBody.trim(),
+      `Sunday with a Feast: Kontakia sung per OCA Typica rubric. ` +
+      `On Sundays without a Feast, only the Hypakoë in the appointed tone is sung.`);
+  } else if (isSunday) {
+    // Ordinary Sunday: Hypakoë of the tone in place of Kontakia section
+    // OCA Typica: "On Sundays, if there is no Feast, only the Hypakoë in the
+    // appointed tone is sung."
     const toneKey = pentEntry?.name?.toLowerCase().includes("pascha") || pentEntry?.name?.toLowerCase().includes("bright")
       ? "pascha"
       : (tone || 1);
@@ -5450,6 +5501,7 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
     movable("typica-hypakoe", `Hypakoë — Tone ${tone}`,
       hypakoeText,
       `Sunday: Hypakoë of Tone ${tone} from the Octoechos sung in place of the Kontakia section. ` +
+      `OCA Typica: "On Sundays, if there is no Feast, only the Hypakoë in the appointed tone is sung." ` +
       `Source: St. Sergius Sunday Octoechos PDF (${tone}-1.pdf).`);
   } else {
     // Weekday: build kontakia sequence
