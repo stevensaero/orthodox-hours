@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.3.15** | Last synced: May 23, 2026
+**Tool version: v0.3.16** | Last synced: May 23, 2026
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
@@ -1863,3 +1863,43 @@ temple the reader serves in. This could become a user setting in a future versio
 - OCA: "On Sundays, if there is no Feast, only the Hypakoë in the appointed tone is sung."
 - HTM: No mention of Hypakoë at Typica; standard kontakia sequence used even on Sundays.
 - Tool follows OCA practice with HTM divergence noted in the source badge.
+
+---
+
+## Session Notes — May 24, 2026 (v0.3.16)
+
+### Typica kontakia overhaul
+
+Complete restructuring of the Typica kontakia section to match OCA and HTM rubrics.
+
+**Three branches govern the Kontakia section:**
+
+1. **Sunday with a Feast** (e.g. P+42 Holy Fathers + Ascension):
+   Saint kontakion first → Glory…Both now… → Feast kontakion.
+   Each rendered as individual styled block. Source: OCA Typica + HTM + Fekula §4B13.
+
+2. **Ordinary Sunday** (no feast): Hypakoë of the tone only.
+   OCA Typica: "On Sundays, if there is no Feast, only the Hypakoë in the appointed tone is sung."
+   HTM does NOT prescribe Hypakoë here — uses standard kontakia. OCA vs Russian divergence documented.
+
+3. **Weekday** (no feast): Transfiguration → day → temple (rubric note) → saint → Glory…With the saints… → Both now…Protectress (or Martyrs on Saturday).
+
+### Bugs fixed
+- Typica isSunday was always false — `dow` vs `dowNumber` destructuring mismatch
+- Hypakoë tone key matched all "of Pascha" pentEntry names — now checks fekula_section
+- "both now and ever" — HTM convention, was missing "Both" prefix in feast Sunday closer
+- menaion_set_aside gate on Hours kontakion override
+
+### Styling improvements
+- Vespers dismissal troparia — Glory/Both now extracted as standalone fixed elements between troparion boxes
+- Typica kontakia — individual styled blocks matching Vespers pattern (was single text blob)
+- Temple rubric note — styled movable box with isRubricNote faded gold body text
+- Orthodox three-bar budded cross (user SVG) at end of every service
+- End markers added to Typica and Post-Communion (were missing)
+
+### Backlog for next session
+- **Pre-Communion Prayers** — full text provided by user (Jordanville Prayer Book order). All fixed text, ~25 sections. Architecture: lazy-loaded `src/data/pre-communion.js` data file (same pattern as Menaion monthly files). Assembler reads sections and pushes fixed elements. No movable parts.
+- **Pentecostarion P+20–P+34** — 15 weekday entries
+- **June Menaion** — 30 entries
+- **Transfiguration kontakion on weekdays during Pentecostarion** — verify whether it should still lead when an Ascension/Pentecost feast kontakion takes precedence
+- **Temple kontakion** — future user setting ("My parish is dedicated to…")
