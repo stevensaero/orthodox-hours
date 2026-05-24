@@ -5504,36 +5504,56 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
       `OCA Typica: "On Sundays, if there is no Feast, only the Hypakoë in the appointed tone is sung." ` +
       `Source: St. Sergius Sunday Octoechos PDF (${tone}-1.pdf).`);
   } else {
-    // Weekday: build kontakia sequence
+    // Weekday (no feast): build kontakia sequence per OCA Typica / HTM rubric.
+    // OCA: "the Kontakion of the Transfiguration is sung first, followed by
+    //   the Kontakion of the day, and then the Kontakion of the church,
+    //   (the Kontakion of the saint of the date, if desired), followed by
+    //   Glory… With the saints, give rest… Now and ever… Steadfast protectress…"
+    // HTM: same order — Transfiguration, day, temple, (saint), Glory…Both now…
+    const TRANSFIGURATION_KONTAKION = {
+      tone: 7,
+      text: "On the mount Thou wast transfigured, and Thy disciples, " +
+            "as much as they could bear, beheld Thy glory, O Christ God; " +
+            "that when they should see Thee crucified, they would know Thy Passion to be willing, " +
+            "and would preach to the world that Thou, in truth, art the Effulgence of the Father.",
+    };
     const dailyKontakia = TYPICA_KONTAKIA[dowNumber] || [];
     const saint = menaionEntry || pentEntry;
     const saintKontakion = saint?.kontakion_ode6;
+    const isSaturday = dowNumber === 6;
 
-    // Per HTM rubric p.5: saint's kontakion is said first (Glory…Both now…),
-    // then the daily kontakia follow.
     let kontakiaBody = "";
-    const kontakiaNote = [];
 
-    if (saintKontakion) {
-      const toneLabel = saintKontakion.tone ? `, Tone ${saintKontakion.tone}` : "";
-      kontakiaBody += `Glory to the Father, and to the Son, and to the Holy Spirit.\n\n`;
-      kontakiaBody += `Kontakion — ${saint.saint || "Saint of the day"}${toneLabel}:\n`;
-      kontakiaBody += saintKontakion.text + "\n\n";
-      kontakiaBody += "Both now and ever, and unto the ages of ages. Amen.\n\n";
-      kontakiaNote.push(`Saint's kontakion said first per HTM rubric (Glory… Both now…)`);
-    }
+    // 1. Kontakion of the Transfiguration (always first)
+    kontakiaBody += `Kontakion of the Transfiguration, Tone ${TRANSFIGURATION_KONTAKION.tone}:\n`;
+    kontakiaBody += TRANSFIGURATION_KONTAKION.text + "\n\n";
 
+    // 2. Kontakion(s) of the day (Mon=Bodiless Hosts, Tue=Forerunner, etc.)
+    // On Saturday the daily kontakia are: Glory…With the saints… / Both now…Martyrs
+    // On weekdays the daily kontakia end with Both now…Protectress
+    // We extract just the day-specific kontakia (not Glory/Both now closers)
     dailyKontakia.forEach((k, i) => {
       const toneLabel = k.tone ? `, Tone ${k.tone}` : "";
+      // Saturday entries already include "Glory" and "Both now" labels
       kontakiaBody += `${k.label}${toneLabel}:\n${k.text}`;
-      if (i < dailyKontakia.length - 1) kontakiaBody += "\n\n";
+      if (i < dailyKontakia.length - 1 || saintKontakion) kontakiaBody += "\n\n";
     });
+
+    // 3. Kontakion of the saint of the date (if present)
+    // OCA: "(the Kontakion of the saint of the date, if desired)"
+    // Inserted before the Glory…With the saints… / Both now…Protectress closers
+    if (saintKontakion && !isSaturday) {
+      const toneLabel = saintKontakion.tone ? `, Tone ${saintKontakion.tone}` : "";
+      kontakiaBody += `\nKontakion — ${saint.saint || "Saint of the day"}${toneLabel}:\n`;
+      kontakiaBody += saintKontakion.text;
+    }
 
     const dowNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     movable("typica-kontakia", "Kontakia",
       kontakiaBody.trim(),
-      `${dowNames[dowNumber]} order per HTM p.5–6.` +
-        (kontakiaNote.length ? " " + kontakiaNote.join(" ") : ""));
+      `${dowNames[dowNumber]} order per OCA Typica / HTM rubric. ` +
+      `Transfiguration kontakion always first, followed by kontakion of the day, ` +
+      `then saint of the date (if desired).`);
   }
 
   // ── 14. Lord Have Mercy ×40 ───────────────────────────────────────────────
@@ -7156,6 +7176,18 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.3.15",
+    date: "May 2026",
+    summary: "Typica kontakia overhaul · feast/Hypakoë/weekday branching · Transfiguration opener",
+    items: [
+      "feat: Typica kontakia — feast Sunday branching per OCA Typica rubric: saint kontakion first, Glory…Now and ever… feast kontakion (§4B13 Holy Fathers + Ascension confirmed against both Fekula and OCA)",
+      "feat: Typica kontakia — ordinary Sunday Hypakoë badge now cites OCA rubric: 'On Sundays, if there is no Feast, only the Hypakoë in the appointed tone is sung'",
+      "feat: Typica kontakia — weekday sequence restructured per OCA/HTM: Transfiguration kontakion always first, then kontakion of the day, then saint of the date (if desired)",
+      "fix: menaion_set_aside gates on Hours kontakion override (Symeon Stylites was overriding Holy Fathers at 3rd Hour)",
+      "research: OCA vs HTM Typica divergence documented — OCA uses Hypakoë on ordinary Sundays; HTM uses standard kontakia sequence; tool follows OCA practice with HTM divergence noted",
+    ],
+  },
   {
     version: "v0.3.14",
     date: "May 2026",

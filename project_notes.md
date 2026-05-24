@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.3.14** | Last synced: May 23, 2026
+**Tool version: v0.3.15** | Last synced: May 23, 2026
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
@@ -1830,3 +1830,36 @@ Third Finding of the Head (§2E Polyeleos): 5 Menaion stichera slots filled (3 d
 - 2 styling improvements
 - 1 encoding completion (May 25)
 - §4B13 fully researched and resolved against Fekula chapter_4.txt
+
+---
+
+## Session Notes — May 24, 2026 (v0.3.15)
+
+### Typica kontakia overhaul
+
+Complete restructuring of the Typica kontakia section to match OCA and HTM rubrics.
+
+**Three branches now govern the Kontakia section:**
+
+1. **Sunday with a Feast** (e.g. P+42 Holy Fathers + Ascension):
+   Saint kontakion first → Glory…Now and ever… → Feast kontakion.
+   Source: OCA Typica rubric + HTM Horologion (both agree).
+   Fekula §4B13 confirms: "Glory… kontakion of the Fathers / Now and ever… kontakion of the feast."
+
+2. **Ordinary Sunday** (no feast):
+   Hypakoë of the tone only — no kontakia.
+   Source: OCA Typica rubric. Note: HTM Horologion does NOT prescribe the Hypakoë here — it uses
+   the standard weekday kontakia sequence even on Sundays. This is an OCA vs Russian divergence.
+
+3. **Weekday** (no feast):
+   Transfiguration kontakion (always first) → Kontakion of the day → (Saint of the date, if desired).
+   Source: OCA Typica + HTM Horologion (both agree on Transfiguration opener).
+   Previously: Transfiguration was missing; saint was rendered before daily kontakia.
+
+**Known gap:** Kontakion of the church/temple is parish-specific — the tool cannot know which
+temple the reader serves in. This could become a user setting in a future version.
+
+**OCA vs HTM divergence documented:**
+- OCA: "On Sundays, if there is no Feast, only the Hypakoë in the appointed tone is sung."
+- HTM: No mention of Hypakoë at Typica; standard kontakia sequence used even on Sundays.
+- Tool follows OCA practice with HTM divergence noted in the source badge.
