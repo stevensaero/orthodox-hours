@@ -3801,7 +3801,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   // §2E: 8 stichera. §2F: 10 stichera. Insertion point = sticheraCount.
   {
     // Psalm 141 prose body (no verse numbers — rendered as-is)
-    elements.push({id:"v-ps141",type:"fixed",label:"PSALM 141",rubric:"",
+    elements.push({id:"v-ps141",type:"fixed",label:"PSALM 141" + (licCount ? " — on " + licCount : ""),rubric:"",
       text:"I cry with my voice to the Lord, with my voice I make supplication to the Lord, " +
         "I pour out my complaint before Him, I tell my trouble before Him. " +
         "When my spirit is faint, Thou knowest my way. " +
@@ -3907,10 +3907,17 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       const interleaveVerses = LIC_VERSES.filter(v => v.n <= licCount);
 
       // Plain verses above the insertion point (if any)
-      LIC_VERSES.filter(v => v.n > licCount).forEach(v => {
+      const plainVerses = LIC_VERSES.filter(v => v.n > licCount);
+      plainVerses.forEach((v, vi) => {
         elements.push({id:"v-lic-verse-"+v.n, type:"fixed", label:"",
           text:"V. ("+v.n+") "+v.text, source:"HTM Vespers"});
       });
+      // Transition note: after the last plain verse, before stichera begin
+      if (plainVerses.length > 0) {
+        elements.push({id:"v-lic-transition", type:"rubric", label:"",
+          text:"[Stichera begin at V.(" + licCount + ") — " + licCount + " appointed for this day]",
+          source:fekulaSection ? "Fekula §" + fekulaSection.replace(/§/g,'') : ""});
+      }
 
       interleaveVerses.forEach((v, i) => {
         const slotIndex = licCount - v.n; // 0 = highest verse
