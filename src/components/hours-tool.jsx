@@ -5862,6 +5862,42 @@ function ServiceBlock({ element }) {
     );
   }
 
+  // ── Rubric note (instructional, not read aloud) ──────────────────────────
+  // Faded gold italic text — visually distinct from service text.
+  // e.g. "[Glory to Thee... and O Heavenly King are both omitted...]"
+  if (element.type === 'rubric') {
+    const parts = (element.text || '').split('\n\n');
+    return (
+      <div style={{
+        marginBottom: '1.4rem',
+        borderLeft: '3px solid #D4C49A',
+        paddingLeft: '12px',
+      }}>
+        {element.source && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '0.68rem', fontFamily: 'Georgia, serif', color: '#9A8A70', fontStyle: 'italic' }}>
+              — {element.source}
+            </span>
+            {element.fekula && <FekulaBadge section={element.fekula.section} note={element.fekula.note} />}
+          </div>
+        )}
+        {parts.map((part, i) => {
+          const isBracketed = part.trim().startsWith('[');
+          return (
+            <p key={i} style={{
+              fontFamily: 'Georgia, serif',
+              fontSize: isBracketed ? '0.85rem' : '1rem',
+              lineHeight: '1.7',
+              color: isBracketed ? '#9A8A70' : '#2C2416',
+              fontStyle: isBracketed ? 'italic' : 'normal',
+              margin: i < parts.length - 1 ? '0 0 0.6rem' : '0',
+            }}>{part}</p>
+          );
+        })}
+      </div>
+    );
+  }
+
   // ── Reader's Service — substitution ──────────────────────────────────────
   // Gold-amber left border (distinct from blue movable); teal-ish header badge.
   if (element.type === 'substitution') {
