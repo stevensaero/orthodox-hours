@@ -134,12 +134,12 @@ function ContextStrip({ fromContext, fromTool, position }) {
         fontFamily: "Georgia, serif",
       }}
     >
-      <span style={{ fontSize: "1rem", lineHeight: 1, color: C.gold }}>←</span>
-      <span style={{ fontSize: "0.78rem", color: C.gold, marginLeft: "0.4rem" }}>
+      <span style={{ fontSize: "1.2rem", lineHeight: 1, color: C.gold }}>←</span>
+      <span style={{ fontSize: "0.95rem", color: C.gold, marginLeft: "0.4rem" }}>
         Hours Tool
       </span>
       {fromContext && (
-        <span style={{ fontSize: "0.72rem", color: C.inkLight, fontStyle: "italic", marginLeft: "0.25rem" }}>
+        <span style={{ fontSize: "0.82rem", color: C.inkLight, fontStyle: "italic", marginLeft: "0.25rem" }}>
           · {fromContext.serviceLabel} · {fromContext.dayName}, {fromContext.dateLabel}
         </span>
       )}
