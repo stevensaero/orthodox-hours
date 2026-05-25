@@ -359,9 +359,20 @@ function PentEntryCard({ offset, entry, audit }) {
           <SectionHeader>Beatitudes</SectionHeader>
           {entry.beatitudes_source && <FieldRow label="source" value={entry.beatitudes_source} />}
           {entry.beatitudes_troparia && Array.isArray(entry.beatitudes_troparia) && (
-            entry.beatitudes_troparia.map((t, i) => (
-              <TextBlock key={i} text={t} label={`[${i + 1}]`} />
-            ))
+            entry.beatitudes_troparia.map((t, i) => {
+              // Items can be strings OR objects with {text, tone?, source?, label?}
+              if (typeof t === 'string') {
+                return <TextBlock key={i} text={t} label={`[${i + 1}]`} />;
+              }
+              return (
+                <TextBlock
+                  key={i}
+                  text={t.text}
+                  tone={t.tone}
+                  label={t.label ? t.label : t.source ? `[${i + 1}] (${t.source})` : `[${i + 1}]`}
+                />
+              );
+            })
           )}
         </>
       )}
