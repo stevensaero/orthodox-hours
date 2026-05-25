@@ -2159,8 +2159,12 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
       text: HTM_O_COME, source: 'HTM',
     });
   } else {
-    // 1st and 6th Hours: no full beginning
-    if (christIsRisenActive && !tbOpen) {
+    // 1st and 6th Hours: no full beginning — O Come starts the Hour
+    // When OrdinaryBeginning panel is expanded (tbOpen), O Come is already
+    // rendered inside that panel — don't duplicate it here.
+    if (tbOpen) {
+      // O Come already shown in the Ordinary Beginning panel above — skip
+    } else if (christIsRisenActive) {
       elements.push({
         id: `${hourKey}-christ-is-risen`, type: 'pentecostarion_skeleton', label: '',
         rubric: 'Instead of O come let us worship:',
@@ -2172,9 +2176,6 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
       elements.push({
         id: `${hourKey}-o-come`, type: 'fixed', label: '', rubric: null,
         text: HTM_O_COME, source: 'HTM',
-        rubric: (christIsRisenActive && tbOpen)
-          ? 'Christ is risen was said in the Typical Beginning above. Continuing:'
-          : null,
       });
     }
   }
