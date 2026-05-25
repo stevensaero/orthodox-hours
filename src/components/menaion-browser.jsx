@@ -172,53 +172,69 @@ function EntryCard({ dateKey, entry, audit }) {
   const secondary = isArray ? entry.slice(1) : [];
 
   return (
-    <div style={{
-      background: "#fff",
-      border: `1px solid ${C.border}`,
-      borderRadius: "6px",
-      padding: "1.25rem",
-      marginBottom: "1rem",
-      boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-    }}>
-      {/* ── Header ── */}
+    <div style={{ marginBottom: "1rem" }}>
+      {/* ── Sticky Header ── */}
       <div style={{
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "space-between",
-        marginBottom: "0.75rem",
+        position: "sticky",
+        top: "72px", // just below the fixed month-tabs bar
+        zIndex: 10,
+        background: C.parchment,
+        paddingTop: "0.35rem",
+        paddingBottom: "0.35rem",
       }}>
-        <div>
-          <span style={{
-            fontSize: "1.1rem",
-            fontWeight: 700,
-            color: C.ink,
-            fontFamily: "Georgia, serif",
-          }}>
-            {dateKey}
-          </span>
-          <span style={{
-            marginLeft: "0.75rem",
-            fontSize: "0.95rem",
-            color: C.inkMid,
-            fontFamily: "Georgia, serif",
-          }}>
-            {primary.saint || '(no saint name)'}
-          </span>
-          {isArray && (
-            <span style={{ marginLeft: "0.5rem", fontSize: "0.78rem", color: C.amber }}>
-              [{entry.length} entries]
-            </span>
-          )}
-        </div>
         <div style={{
-          fontSize: "0.82rem",
-          fontWeight: 600,
-          color: statusColor(audit.status),
-          whiteSpace: "nowrap",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          background: "#fff",
+          border: `1px solid ${C.border}`,
+          borderRadius: "6px 6px 0 0",
+          padding: "0.6rem 1.25rem",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
         }}>
-          {statusIcon(audit.status)} {audit.status}
+          <div>
+            <span style={{
+              fontSize: "1.1rem",
+              fontWeight: 700,
+              color: C.ink,
+              fontFamily: "Georgia, serif",
+            }}>
+              {dateKey}
+            </span>
+            <span style={{
+              marginLeft: "0.75rem",
+              fontSize: "0.95rem",
+              color: C.inkMid,
+              fontFamily: "Georgia, serif",
+            }}>
+              {primary.saint || '(no saint name)'}
+            </span>
+            {isArray && (
+              <span style={{ marginLeft: "0.5rem", fontSize: "0.78rem", color: C.amber }}>
+                [{entry.length} entries]
+              </span>
+            )}
+          </div>
+          <div style={{
+            fontSize: "0.82rem",
+            fontWeight: 600,
+            color: statusColor(audit.status),
+            whiteSpace: "nowrap",
+          }}>
+            {statusIcon(audit.status)} {audit.status}
+          </div>
         </div>
       </div>
+
+      {/* ── Card Body ── */}
+      <div style={{
+        background: "#fff",
+        border: `1px solid ${C.border}`,
+        borderTop: "none",
+        borderRadius: "0 0 6px 6px",
+        padding: "0.75rem 1.25rem 1.25rem",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+      }}>
 
       {/* ── Audit details ── */}
       {audit.missing.length > 0 && (
@@ -443,6 +459,7 @@ function EntryCard({ dateKey, entry, audit }) {
           )}
         </div>
       ))}
+      </div>{/* end card body */}
     </div>
   );
 }
