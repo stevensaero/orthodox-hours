@@ -3547,7 +3547,7 @@ function getVespersDayKey(dow) {
 // LIC and Aposticha stichera: §2A weekday/Saturday fully assembled from Octoechos (FW-23 Track A).
 // §2C Menaion slots and §2D+ stichera remain placeholders pending Track B encoding.
 // Sources: Fekula §2A-§2F (Ch.2), §4A-§4B (Ch.4); HTM Vespers (htm_vespers.md).
-function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, readerMode = false) {
+function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, readerMode = false, selectedDate = "") {
   const elements = [];
   const { paschaOffset, tone, dayName, season, namedDay } = liturgicalData;
   const isPentecostarion = season === "pentecostarion" || season === "brightweek";
@@ -4196,7 +4196,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       text:"Reader: The reading is from ___. Deacon: Let us attend.\n(Three lessons are read from the Menaion)",
       source:"HTM Vespers"});
     paroemias.forEach((p,i) => {
-      const pHref = paroemiaToScriptureHref(p, "vespers", liturgicalData.dateStr);
+      const pHref = paroemiaToScriptureHref(p, "vespers", selectedDate);
       elements.push({id:"v-les-"+(i+1),type:"movable",label:"Lesson "+(i+1),rubric:"",
         text:p, source:"Menaion",
         ...(pHref ? {scriptureHref: pHref} : {}),
@@ -7124,6 +7124,66 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
             <span style={fekulaStyle}>§4B11</span>
             O Heavenly King is read for the first time at Pentecost. — Fekula §4B11
           </p>
+          <p style={rubrStyle}>Trisagion Prayers</p>
+          <p style={textStyle}>
+            Holy God, Holy Mighty, Holy Immortal, have mercy on us. (thrice)<br/>
+            Glory to the Father, and to the Son, and to the Holy Spirit,
+            now and ever and unto ages of ages. Amen.<br/><br/>
+            O Most Holy Trinity, have mercy on us. O Lord, cleanse us from our sins.
+            O Master, pardon our transgressions. O Holy One, visit and heal our
+            infirmities, for Thy Name's sake.<br/>
+            Lord, have mercy. (thrice)<br/>
+            Glory to the Father, and to the Son, and to the Holy Spirit,
+            now and ever and unto ages of ages. Amen.
+          </p>
+          <p style={rubrStyle}>Our Father</p>
+          <p style={textStyle}>
+            Our Father, Who art in heaven, hallowed be Thy Name;
+            Thy Kingdom come; Thy will be done on earth, as it is in heaven.
+            Give us this day our daily bread, and forgive us our trespasses,
+            as we forgive those who trespass against us; and lead us not
+            into temptation, but deliver us from evil.
+          </p>
+          <div style={{ marginBottom: '1.4rem' }}>
+            {readerMode ? (
+              <>
+                <div style={{ fontSize: '0.65rem', color: '#5A7A8A', letterSpacing: '0.08em',
+                  textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+                  Reader: <span style={{ background: 'rgba(90,122,138,0.12)', border: '1px solid rgba(90,122,138,0.4)',
+                    borderRadius: '3px', padding: '1px 6px', marginLeft: '4px' }}>Reader's Service — Fekula §10</span>
+                </div>
+                <p style={textStyle}>
+                  Through the prayers of our holy fathers, Lord Jesus Christ, Son of God, have mercy on us. Amen.
+                </p>
+              </>
+            ) : (
+              <>
+                <div style={rubrStyle}>Priest:</div>
+                <p style={priestStyle}>
+                  For Thine is the Kingdom, and the power, and the glory of the Father,
+                  and of the Son, and of the Holy Spirit, now and ever and unto ages of ages.
+                </p>
+                <p style={textStyle}>
+                  Reader: Amen. Lord, have mercy. (12×)<br/>
+                  Glory to the Father, and to the Son, and to the Holy Spirit,
+                  now and ever and unto ages of ages. Amen.
+                </p>
+              </>
+            )}
+            {readerMode && (
+              <p style={textStyle}>
+                Lord, have mercy. (12×)<br/>
+                Glory to the Father, and to the Son, and to the Holy Spirit,
+                now and ever and unto ages of ages. Amen.
+              </p>
+            )}
+          </div>
+          <p style={rubrStyle}>O Come, Let Us Worship</p>
+          <p style={textStyle}>
+            Come, let us worship God our King.<br/>
+            Come, let us worship and fall down before Christ, our King and our God.<br/>
+            Come, let us worship and fall down before Christ Himself, our King and our God.
+          </p>
         </div>
       );
     } else {
@@ -7264,6 +7324,15 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.4.1",
+    date: "May 2026",
+    summary: "VespersOpening completion · Scripture link fix",
+    items: [
+      "fix: VespersOpening 'heavenly king omitted' branch (P+39–P+48) was truncated after the Fekula note — now includes full Trisagion, Our Father, O Come Let Us Worship sequence with priest/reader mode support",
+      "fix: Vespers OT paroemia Scripture links showed 'Invalid Date' — assembleVespers() referenced nonexistent liturgicalData.dateStr; now receives selectedDate as parameter",
+    ],
+  },
   {
     version: "v0.4.0",
     date: "May 2026",
@@ -8341,7 +8410,7 @@ export default function App() {
     if (!inScope) return [];
     let els;
     if (currentService.key === 'vespers') {
-      els = assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, readerMode);
+      els = assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, readerMode, selectedDate);
     } else if (currentService.key === 'typica') {
       els = assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode);
     } else if (currentService.key === 'post_communion') {
