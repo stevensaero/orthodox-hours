@@ -6758,78 +6758,27 @@ function RankExplainer({ menaionEntry, isSunday }) {
   );
 }
 
-// ─── TYPICAL BEGINNING ───────────────────────────────────────────────────────
-// Collapsible component for the 1st and 6th Hours.
-// These Hours begin directly with O come let us worship when following
-// the previous service. When said separately, the Typical Beginning is used.
-// Source: OCA first-hour.pdf and sixth-hour.pdf; HTM skeleton; Fekula §4A.
+// ─── ORDINARY BEGINNING ──────────────────────────────────────────────────────
+// Shared component for the Typical (Ordinary) Beginning used by all services
+// when served independently. One source of truth for:
+//   - Vespers (if not preceded by the 9th Hour)
+//   - 1st Hour (if not preceded by Matins)
+//   - 3rd Hour (always has full beginning)
+//   - 6th Hour (if not preceded by the 3rd Hour)
+//   - 9th Hour (always has full beginning)
+//   - Typica (if not preceded by the 6th Hour)
+// Three seasonal variants:
+//   1. Ordinary — full sequence with O Heavenly King
+//   2. Christ is risen (P+7–P+38) — Christ is risen ×3 replaces O Heavenly King
+//   3. Heavenly King omitted (P+39–Pentecost) — O Heavenly King skipped
+// Source: HTM Horologion, Jordanville (1994); OCA liturgical texts; Fekula §4A/§4B11.
 
-function TypicalBeginning({ hourKey, liturgicalData, tbOpen, setTbOpen, readerMode }) {
-  const open = tbOpen;
-  const setOpen = setTbOpen;
-
-  const is1st = hourKey === '1st_hour';
-  const ocaNote = is1st
-    ? "The First Hour is often celebrated immediately following Matins, and it begins as shown here. If the First Hour is said separately, it begins with the Typical Beginning, as at Vespers."
-    : "The Sixth Hour is often celebrated immediately following the Third Hour, and it begins as shown here. If the Sixth Hour is said separately, it begins with the Typical Beginning, as at Vespers.";
-
+function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsible = true, title, contextNote }) {
   const { paschaOffset, season } = liturgicalData;
   const isPentecostarion = season === 'pentecostarion' || season === 'brightweek';
   const christIsRisenActive = isPentecostarion && paschaOffset >= 7 && paschaOffset <= 38;
   const heavenlyKingOmitted = isPentecostarion && paschaOffset > 38;
-  // Build the opening content based on season
-  const openingContent = () => {
-    if (christIsRisenActive) {
-      return (
-        <div>
-          {!readerMode && <p style={textStyle}>Reader: Amen.</p>}
-          <p style={rubrStyle}>(Glory to Thee and O Heavenly King are both skipped — immediately:)</p>
-          <p style={textStyle}>
-            Christ is risen from the dead,<br/>
-            trampling down death by death,<br/>
-            and on those in the tombs bestowing life.
-          </p>
-          <p style={rubrStyle}>Thrice. Then continuing with:</p>
-          <p style={{...badgeStyle, marginBottom: '0.5rem'}}>
-            <span style={fekulaStyle}>§4A</span>
-            After the reader saith Amen, he immediately saith thrice: Christ is risen
-            (Glory to Thee and O Heavenly King are both skipped). — HTM 1st/6th Hour rubric; Fekula §4A
-          </p>
-        </div>
-      );
-    } else if (heavenlyKingOmitted) {
-      return (
-        <div>
-          {!readerMode && <p style={textStyle}>Reader: Amen.</p>}
-          <p style={{...textStyle, color: '#9A8A70', fontStyle: 'italic'}}>
-            Glory to Thee, our God and O Heavenly King are both omitted from
-            the Apodosis of Pascha until Pentecost.
-            The reader proceeds directly to Holy God, Holy Mighty...
-          </p>
-          <p style={{...badgeStyle, marginBottom: '0.5rem'}}>
-            <span style={fekulaStyle}>§4B11</span>
-            The Ninth Hour begins with the reading of the Trisagion (and thus until
-            Pentecost, when we read O Heavenly King... for the first time). — Fekula §4B11
-          </p>
-        </div>
-      );
-    } else {
-      // Ordinary time
-      return (
-        <div>
-          {!readerMode && <p style={textStyle}>Reader: Amen.</p>}
-          <p style={textStyle}>
-            Glory to Thee, our God, glory to Thee.<br/><br/>
-            O Heavenly King, Comforter, Spirit of Truth,<br/>
-            Who art everywhere present and fillest all things,<br/>
-            Treasury of good things and Giver of life:<br/>
-            Come and dwell in us, and cleanse us of all impurity,<br/>
-            and save our souls, O Good One.
-          </p>
-        </div>
-      );
-    }
-  };
+
   const containerStyle = {
     border: '1px solid #D4C49A',
     borderRadius: '6px',
@@ -6840,222 +6789,11 @@ function TypicalBeginning({ hourKey, liturgicalData, tbOpen, setTbOpen, readerMo
     background: open ? '#F0E8D0' : '#FAF6EE',
     borderBottom: open ? '1px solid #D4C49A' : 'none',
     padding: '0.75rem 1rem',
-    cursor: 'pointer',
+    cursor: collapsible ? 'pointer' : 'default',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     userSelect: 'none',
-  };
-  const titleStyle = {
-    fontSize: '0.75rem',
-    textTransform: 'uppercase',
-    letterSpacing: '0.1em',
-    color: '#8B6914',
-    fontFamily: 'Georgia, serif',
-    fontWeight: 'bold',
-  };
-  const noteStyle = {
-    fontSize: '0.78rem',
-    color: '#9A8A70',
-    fontStyle: 'italic',
-    marginTop: '0.35rem',
-    lineHeight: '1.5',
-  };
-  const rubrStyle = {
-    fontSize: '0.72rem',
-    textTransform: 'uppercase',
-    letterSpacing: '0.1em',
-    color: '#8B6914',
-    marginBottom: '0.25rem',
-    marginTop: '1rem',
-  };
-  const priestStyle = {
-    fontSize: '0.85rem',
-    fontStyle: 'italic',
-    color: '#9A8A70',
-    marginBottom: '0.25rem',
-    marginTop: '1rem',
-    fontFamily: 'Georgia, serif',
-  };
-  const textStyle = {
-    fontSize: '1rem',
-    lineHeight: '1.8',
-    color: '#1C1008',
-    marginBottom: '1rem',
-  };
-  const badgeStyle = {
-    fontSize: '0.72rem',
-    color: '#9A8A70',
-    fontStyle: 'italic',
-    display: 'flex',
-    alignItems: 'baseline',
-    gap: '6px',
-  };
-  const fekulaStyle = {
-    fontSize: '0.65rem',
-    letterSpacing: '0.12em',
-    textTransform: 'uppercase',
-    color: '#8B6914',
-    background: 'rgba(139,105,20,0.12)',
-    border: '1px solid rgba(139,105,20,0.3)',
-    borderRadius: '3px',
-    padding: '1px 5px',
-    whiteSpace: 'nowrap',
-    flexShrink: 0,
-  };
-  const labelStyle = {
-    fontSize: '0.7rem',
-    textTransform: 'uppercase',
-    letterSpacing: '0.12em',
-    color: '#9A8A70',
-    fontFamily: 'Georgia, serif',
-    fontWeight: 'bold',
-    marginBottom: '0.2rem',
-  };
-  return (
-    <div style={containerStyle}>
-      <div style={headerStyle} onClick={() => setOpen(o => !o)}>
-        <div>
-          <div style={titleStyle}>
-            &#9651; Typical Beginning (if said separately)
-          </div>
-          <div style={noteStyle}>{ocaNote}</div>
-        </div>
-        <span style={{ color: '#8B6914', fontSize: '1.1rem', marginLeft: '1rem', flexShrink: 0 }}>
-          {open ? '▲' : '▼'}
-        </span>
-      </div>
-
-      {open && (
-        <div style={{ padding: '1rem 1.25rem 1.25rem' }}>
-
-          {/* Priest blessing */}
-          <div style={{ marginBottom: '1.4rem' }}>
-            {readerMode ? (
-              <>
-                <div style={{ fontSize: '0.65rem', color: '#5A7A8A', letterSpacing: '0.08em',
-                  textTransform: 'uppercase', marginBottom: '0.25rem' }}>
-                  Reader: <span style={{ background: 'rgba(90,122,138,0.12)', border: '1px solid rgba(90,122,138,0.4)',
-                    borderRadius: '3px', padding: '1px 6px', marginLeft: '4px' }}>Reader's Service — Fekula §10</span>
-                </div>
-                <div style={{...textStyle}}>
-                  Through the prayers of our holy fathers, Lord Jesus Christ, Son of God, have mercy on us. Amen.
-                </div>
-              </>
-            ) : (
-              <>
-                <div style={rubrStyle}>Priest (or Reader if no priest):</div>
-                <div style={{...textStyle, color: '#A89880', fontStyle: 'italic'}}>
-                  Blessed is our God, always, now and ever, and unto the ages of ages.
-                </div>
-              </>
-            )}
-          </div>
-
-          {/* Seasonal opening */}
-          <div style={{ marginBottom: '1.4rem' }}>
-            {openingContent()}
-          </div>
-
-          {/* Trisagion Prayers */}
-          <div style={{ marginBottom: '1.4rem' }}>
-            <div style={rubrStyle}>Trisagion Prayers</div>
-            <div style={textStyle}>
-              Holy God, Holy Mighty, Holy Immortal, have mercy on us. (thrice)<br/>
-              Glory to the Father, and to the Son, and to the Holy Spirit,<br/>
-              both now and ever, and unto the ages of ages. Amen.<br/><br/>
-              O Most Holy Trinity, have mercy on us. O Lord, blot out our sins.<br/>
-              O Master, pardon our iniquities. O Holy One, visit and heal our
-              infirmities for Thy name's sake.<br/>
-              Lord, have mercy. (thrice)<br/>
-              Glory to the Father, and to the Son, and to the Holy Spirit,<br/>
-              both now and ever, and unto the ages of ages. Amen.
-            </div>
-          </div>
-
-          {/* Our Father */}
-          <div style={{ marginBottom: '1.4rem' }}>
-            <div style={rubrStyle}>Our Father</div>
-            <div style={textStyle}>
-              Our Father, Who art in the heavens, hallowed be Thy name.<br/>
-              Thy kingdom come, Thy will be done, on earth as it is in heaven.<br/>
-              Give us this day our daily bread,<br/>
-              and forgive us our debts, as we forgive our debtors;<br/>
-              and lead us not into temptation, but deliver us from the evil one.
-            </div>
-          </div>
-
-          {/* Exclamation and Lord have mercy */}
-          <div style={{ marginBottom: '1.4rem' }}>
-            {readerMode ? (
-              <>
-                <div style={{ fontSize: '0.65rem', color: '#5A7A8A', letterSpacing: '0.08em',
-                  textTransform: 'uppercase', marginBottom: '0.25rem' }}>
-                  Reader: <span style={{ background: 'rgba(90,122,138,0.12)', border: '1px solid rgba(90,122,138,0.4)',
-                    borderRadius: '3px', padding: '1px 6px', marginLeft: '4px' }}>Reader's Service — Fekula §10</span>
-                </div>
-                <div style={textStyle}>
-                  Through the prayers of our holy fathers, Lord Jesus Christ, Son of God, have mercy on us. Amen.
-                </div>
-              </>
-            ) : (
-              <>
-                <div style={rubrStyle}>Priest:</div>
-                <div style={{...textStyle, color: '#A89880', fontStyle: 'italic'}}>
-                  For Thine is the kingdom, and the power, and the glory:<br/>
-                  of the Father, and of the Son, and of the Holy Spirit,<br/>
-                  now and ever, and unto the ages of ages.
-                </div>
-                <div style={textStyle}>Reader: Amen.</div>
-              </>
-            )}
-            <div style={textStyle}>
-              Lord, have mercy. (twelve times)<br/>
-              Glory to the Father, and to the Son, and to the Holy Spirit,<br/>
-              both now and ever, and unto the ages of ages. Amen.
-            </div>
-          </div>
-
-          {/* Source note */}
-          <div style={{ fontSize: '0.72rem', color: '#9A8A70', fontStyle: 'italic',
-                       borderTop: '1px solid #E8DFC0', paddingTop: '0.6rem', marginTop: '0.5rem' }}>
-            Fixed texts: HTM Horologion, Jordanville (1994).
-            Note and rubric: OCA liturgical texts.
-            Seasonal substitution: Fekula §4A.
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-
-
-// ─── VESPERS OPENING ─────────────────────────────────────────────────────────
-// Collapsible component shown before the Vespers elements, parallel to
-// TypicalBeginning on the 1st and 6th Hours.
-// Contains the full opening sequence (blessing through O come let us worship)
-// which is omitted when the 9th Hour immediately precedes Vespers.
-// Source: OCA office-vespers.md (2021 edition) — used for OCA-facing rubric note;
-// HTM htm_vespers.md — text source.
-
-function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
-  const open = voOpen;
-  const { paschaOffset, season } = liturgicalData;
-  const isPentecostarion = season === 'pentecostarion' || season === 'brightweek';
-  const christIsRisenActive = isPentecostarion && paschaOffset >= 7 && paschaOffset <= 38;
-  const heavenlyKingOmitted = isPentecostarion && paschaOffset > 38;
-
-  const containerStyle = {
-    border: '1px solid #D4C49A', borderRadius: '6px',
-    marginBottom: '2rem', overflow: 'hidden',
-  };
-  const headerStyle = {
-    background: open ? '#F0E8D0' : '#FAF6EE',
-    borderBottom: open ? '1px solid #D4C49A' : 'none',
-    padding: '0.75rem 1rem', cursor: 'pointer',
-    display: 'flex', justifyContent: 'space-between',
-    alignItems: 'center', userSelect: 'none',
   };
   const titleStyle = {
     fontSize: '0.75rem', textTransform: 'uppercase',
@@ -7076,11 +6814,6 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
     color: '#1C1008', marginBottom: '1rem',
     fontFamily: 'Georgia, serif',
   };
-  const priestStyle = {
-    fontSize: '0.97rem', fontStyle: 'italic',
-    color: '#A89880', marginBottom: '0.5rem',
-    fontFamily: 'Georgia, serif', lineHeight: '1.75',
-  };
   const badgeStyle = {
     fontSize: '0.72rem', color: '#9A8A70', fontStyle: 'italic',
     display: 'flex', alignItems: 'baseline', gap: '6px',
@@ -7094,28 +6827,32 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
     whiteSpace: 'nowrap', flexShrink: 0,
   };
 
-  const seasonalContent = () => {
+  // Seasonal opening content — replaces or omits O Heavenly King
+  const seasonalOpening = () => {
     if (christIsRisenActive) {
       return (
         <div>
-          <p style={rubrStyle}>(Glory to Thee and O Heavenly King are both skipped — immediately:)</p>
+          {!readerMode && <p style={textStyle}>Reader: Amen.</p>}
+          <p style={{...textStyle, color: '#9A8A70', fontStyle: 'italic'}}>
+            Glory to Thee, our God and O Heavenly King are both omitted.
+            In their place, Christ is risen is read thrice:
+          </p>
           <p style={textStyle}>
             Christ is risen from the dead,<br/>
             trampling down death by death,<br/>
             and on those in the tombs bestowing life.
           </p>
-          <p style={rubrStyle}>Thrice. Then Psalm 103 immediately.</p>
+          <p style={rubrStyle}>Thrice. Then continuing with Holy God...</p>
           <p style={{...badgeStyle, marginBottom: '0.5rem'}}>
             <span style={fekulaStyle}>§4A</span>
-            At the beginning of Vespers, after the blessing by the priest, we sing
-            Christ is risen… thrice and immediately read Psalm 103. — Fekula §4A
+            Christ is risen is read thrice in place of Glory to Thee and O Heavenly King. — Fekula §4A
           </p>
         </div>
       );
     } else if (heavenlyKingOmitted) {
       return (
         <div>
-          <p style={rubrStyle}>Reader: Amen.</p>
+          {!readerMode && <p style={textStyle}>Reader: Amen.</p>}
           <p style={{...textStyle, color: '#9A8A70', fontStyle: 'italic'}}>
             O Heavenly King is omitted from the Apodosis of Pascha until Pentecost.
             The reader proceeds directly to Holy God, Holy Mighty…
@@ -7124,195 +6861,161 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
             <span style={fekulaStyle}>§4B11</span>
             O Heavenly King is read for the first time at Pentecost. — Fekula §4B11
           </p>
-          <p style={rubrStyle}>Trisagion Prayers</p>
-          <p style={textStyle}>
-            Holy God, Holy Mighty, Holy Immortal, have mercy on us. (thrice)<br/>
-            Glory to the Father, and to the Son, and to the Holy Spirit,
-            now and ever and unto ages of ages. Amen.<br/><br/>
-            O Most Holy Trinity, have mercy on us. O Lord, cleanse us from our sins.
-            O Master, pardon our transgressions. O Holy One, visit and heal our
-            infirmities, for Thy Name's sake.<br/>
-            Lord, have mercy. (thrice)<br/>
-            Glory to the Father, and to the Son, and to the Holy Spirit,
-            now and ever and unto ages of ages. Amen.
-          </p>
-          <p style={rubrStyle}>Our Father</p>
-          <p style={textStyle}>
-            Our Father, Who art in heaven, hallowed be Thy Name;
-            Thy Kingdom come; Thy will be done on earth, as it is in heaven.
-            Give us this day our daily bread, and forgive us our trespasses,
-            as we forgive those who trespass against us; and lead us not
-            into temptation, but deliver us from evil.
-          </p>
-          <div style={{ marginBottom: '1.4rem' }}>
-            {readerMode ? (
-              <>
-                <div style={{ fontSize: '0.65rem', color: '#5A7A8A', letterSpacing: '0.08em',
-                  textTransform: 'uppercase', marginBottom: '0.25rem' }}>
-                  Reader: <span style={{ background: 'rgba(90,122,138,0.12)', border: '1px solid rgba(90,122,138,0.4)',
-                    borderRadius: '3px', padding: '1px 6px', marginLeft: '4px' }}>Reader's Service — Fekula §10</span>
-                </div>
-                <p style={textStyle}>
-                  Through the prayers of our holy fathers, Lord Jesus Christ, Son of God, have mercy on us. Amen.
-                </p>
-              </>
-            ) : (
-              <>
-                <div style={rubrStyle}>Priest:</div>
-                <p style={priestStyle}>
-                  For Thine is the Kingdom, and the power, and the glory of the Father,
-                  and of the Son, and of the Holy Spirit, now and ever and unto ages of ages.
-                </p>
-                <p style={textStyle}>
-                  Reader: Amen. Lord, have mercy. (12×)<br/>
-                  Glory to the Father, and to the Son, and to the Holy Spirit,
-                  now and ever and unto ages of ages. Amen.
-                </p>
-              </>
-            )}
-            {readerMode && (
-              <p style={textStyle}>
-                Lord, have mercy. (12×)<br/>
-                Glory to the Father, and to the Son, and to the Holy Spirit,
-                now and ever and unto ages of ages. Amen.
-              </p>
-            )}
-          </div>
-          <p style={rubrStyle}>O Come, Let Us Worship</p>
-          <p style={textStyle}>
-            Come, let us worship God our King.<br/>
-            Come, let us worship and fall down before Christ, our King and our God.<br/>
-            Come, let us worship and fall down before Christ Himself, our King and our God.
-          </p>
         </div>
       );
     } else {
+      // Ordinary time — full O Heavenly King
       return (
         <div>
-          <p style={rubrStyle}>Reader:</p>
+          {!readerMode && <p style={textStyle}>Reader: Amen.</p>}
           <p style={textStyle}>
-            Amen. Glory to Thee, our God, glory to Thee.
+            Glory to Thee, our God, glory to Thee.
           </p>
           <p style={rubrStyle}>O Heavenly King</p>
           <p style={textStyle}>
-            O Heavenly King, the Comforter, the Spirit of truth,
-            Who art everywhere and fillest all things;
-            Treasury of blessings and Giver of life:
-            come and abide in us and cleanse us from every impurity,
+            O Heavenly King, Comforter, Spirit of Truth,<br/>
+            Who art everywhere present and fillest all things,<br/>
+            Treasury of good things and Giver of life:<br/>
+            Come and dwell in us, and cleanse us of all impurity,<br/>
             and save our souls, O Good One.
-          </p>
-          <p style={rubrStyle}>Trisagion Prayers</p>
-          <p style={textStyle}>
-            Holy God, Holy Mighty, Holy Immortal, have mercy on us. (thrice)<br/>
-            Glory to the Father, and to the Son, and to the Holy Spirit,
-            now and ever and unto ages of ages. Amen.<br/><br/>
-            O Most Holy Trinity, have mercy on us. O Lord, cleanse us from our sins.
-            O Master, pardon our transgressions. O Holy One, visit and heal our
-            infirmities, for Thy Name's sake.<br/>
-            Lord, have mercy. (thrice)<br/>
-            Glory to the Father, and to the Son, and to the Holy Spirit,
-            now and ever and unto ages of ages. Amen.
-          </p>
-          <p style={rubrStyle}>Our Father</p>
-          <p style={textStyle}>
-            Our Father, Who art in heaven, hallowed be Thy Name;
-            Thy Kingdom come; Thy will be done on earth, as it is in heaven.
-            Give us this day our daily bread, and forgive us our trespasses,
-            as we forgive those who trespass against us; and lead us not
-            into temptation, but deliver us from evil.
-          </p>
-          <div style={{ marginBottom: '1.4rem' }}>
-            {readerMode ? (
-              <>
-                <div style={{ fontSize: '0.65rem', color: '#5A7A8A', letterSpacing: '0.08em',
-                  textTransform: 'uppercase', marginBottom: '0.25rem' }}>
-                  Reader: <span style={{ background: 'rgba(90,122,138,0.12)', border: '1px solid rgba(90,122,138,0.4)',
-                    borderRadius: '3px', padding: '1px 6px', marginLeft: '4px' }}>Reader's Service — Fekula §10</span>
-                </div>
-                <p style={textStyle}>
-                  Through the prayers of our holy fathers, Lord Jesus Christ, Son of God, have mercy on us. Amen.
-                </p>
-              </>
-            ) : (
-              <>
-                <div style={rubrStyle}>Priest:</div>
-                <p style={priestStyle}>
-                  For Thine is the Kingdom, and the power, and the glory of the Father,
-                  and of the Son, and of the Holy Spirit, now and ever and unto ages of ages.
-                </p>
-                <p style={textStyle}>
-                  Reader: Amen. Lord, have mercy. (12×)<br/>
-                  Glory to the Father, and to the Son, and to the Holy Spirit,
-                  now and ever and unto ages of ages. Amen.
-                </p>
-              </>
-            )}
-            {readerMode && (
-              <p style={textStyle}>
-                Lord, have mercy. (12×)<br/>
-                Glory to the Father, and to the Son, and to the Holy Spirit,
-                now and ever and unto ages of ages. Amen.
-              </p>
-            )}
-          </div>
-          <p style={rubrStyle}>O Come, Let Us Worship</p>
-          <p style={textStyle}>
-            Come, let us worship God our King.<br/>
-            Come, let us worship and fall down before Christ, our King and our God.<br/>
-            Come, let us worship and fall down before Christ Himself, our King and our God.
           </p>
         </div>
       );
     }
   };
 
+  const bodyContent = (
+    <div style={{ padding: '1rem 1.25rem 1.25rem' }}>
+      {/* Priest blessing */}
+      <div style={{ marginBottom: '1.4rem' }}>
+        {readerMode ? (
+          <>
+            <div style={{ fontSize: '0.65rem', color: '#5A7A8A', letterSpacing: '0.08em',
+              textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+              Senior Reader: <span style={{ background: 'rgba(90,122,138,0.12)', border: '1px solid rgba(90,122,138,0.4)',
+                borderRadius: '3px', padding: '1px 6px', marginLeft: '4px' }}>Reader's Service — Fekula §10</span>
+            </div>
+            <div style={textStyle}>
+              Through the prayers of our holy fathers, O Lord Jesus Christ our God, have mercy on us.
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={rubrStyle}>Priest:</div>
+            <div style={{...textStyle, color: '#A89880', fontStyle: 'italic'}}>
+              Blessed is our God, always, now and ever, and unto the ages of ages.
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Seasonal opening (O Heavenly King / Christ is risen / omission) */}
+      <div style={{ marginBottom: '1.4rem' }}>
+        {seasonalOpening()}
+      </div>
+
+      {/* Trisagion Prayers */}
+      <div style={{ marginBottom: '1.4rem' }}>
+        <div style={rubrStyle}>Trisagion Prayers</div>
+        <div style={textStyle}>
+          Holy God, Holy Mighty, Holy Immortal, have mercy on us. (thrice)<br/>
+          Glory to the Father, and to the Son, and to the Holy Spirit,<br/>
+          both now and ever, and unto the ages of ages. Amen.<br/><br/>
+          O Most Holy Trinity, have mercy on us. O Lord, blot out our sins.<br/>
+          O Master, pardon our iniquities. O Holy One, visit and heal our
+          infirmities for Thy name's sake.<br/>
+          Lord, have mercy. (thrice)<br/>
+          Glory to the Father, and to the Son, and to the Holy Spirit,<br/>
+          both now and ever, and unto the ages of ages. Amen.
+        </div>
+      </div>
+
+      {/* Our Father */}
+      <div style={{ marginBottom: '1.4rem' }}>
+        <div style={rubrStyle}>Our Father</div>
+        <div style={textStyle}>
+          Our Father, Who art in the heavens, hallowed be Thy name.<br/>
+          Thy kingdom come, Thy will be done, on earth as it is in heaven.<br/>
+          Give us this day our daily bread,<br/>
+          and forgive us our debts, as we forgive our debtors;<br/>
+          and lead us not into temptation, but deliver us from the evil one.
+        </div>
+      </div>
+
+      {/* Exclamation and Lord have mercy */}
+      <div style={{ marginBottom: '1.4rem' }}>
+        {readerMode ? (
+          <>
+            <div style={{ fontSize: '0.65rem', color: '#5A7A8A', letterSpacing: '0.08em',
+              textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+              Senior Reader: <span style={{ background: 'rgba(90,122,138,0.12)', border: '1px solid rgba(90,122,138,0.4)',
+                borderRadius: '3px', padding: '1px 6px', marginLeft: '4px' }}>Reader's Service — Fekula §10</span>
+            </div>
+            <div style={textStyle}>
+              O Lord Jesus Christ, Son of God, have mercy on us. Amen.
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={rubrStyle}>Priest:</div>
+            <div style={{...textStyle, color: '#A89880', fontStyle: 'italic'}}>
+              For Thine is the kingdom, and the power, and the glory:<br/>
+              of the Father, and of the Son, and of the Holy Spirit,<br/>
+              now and ever, and unto the ages of ages.
+            </div>
+            <div style={textStyle}>Reader: Amen.</div>
+          </>
+        )}
+        <div style={textStyle}>
+          Lord, have mercy. (twelve times)<br/>
+          Glory to the Father, and to the Son, and to the Holy Spirit,<br/>
+          both now and ever, and unto the ages of ages. Amen.
+        </div>
+      </div>
+
+      {/* O Come, Let Us Worship */}
+      <div style={{ marginBottom: '1rem' }}>
+        <div style={rubrStyle}>O Come, Let Us Worship</div>
+        <div style={textStyle}>
+          O come, let us worship God our King.<br/>
+          O come, let us worship and fall down before Christ our King and God.<br/>
+          O come, let us worship and fall down before Christ Himself, our King and God.
+        </div>
+      </div>
+
+      {/* Source note */}
+      <div style={{ fontSize: '0.72rem', color: '#9A8A70', fontStyle: 'italic',
+                   borderTop: '1px solid #E8DFC0', paddingTop: '0.6rem', marginTop: '0.5rem' }}>
+        Fixed texts: HTM Horologion, Jordanville (1994); Reader Service Typikon (Bp. Daniel / ROCA).
+        Seasonal substitution: Fekula §4A / §4B11.
+      </div>
+    </div>
+  );
+
+  if (!collapsible) {
+    // Non-collapsible: render the body directly (used when added to service dropdown)
+    return (
+      <div style={{...containerStyle, border: 'none', marginBottom: '1.5rem' }}>
+        {bodyContent}
+      </div>
+    );
+  }
+
   return (
     <div style={containerStyle}>
-      <div style={headerStyle} onClick={() => setVoOpen(o => !o)}>
+      <div style={headerStyle} onClick={() => collapsible && setOpen(o => !o)}>
         <div>
           <div style={titleStyle}>
-            &#9651; Opening of Vespers (if not preceded by the 9th Hour)
+            &#9651; {title || "Ordinary Beginning (if said separately)"}
           </div>
-          <div style={noteStyle}>
-            If the Ninth Hour was said immediately before Vespers, begin at Psalm 103 below.
-            Expand to see the full opening sequence.
-          </div>
+          {contextNote && <div style={noteStyle}>{contextNote}</div>}
         </div>
         <span style={{ color: '#8B6914', fontSize: '1.1rem', marginLeft: '1rem', flexShrink: 0 }}>
           {open ? '▲' : '▼'}
         </span>
       </div>
 
-      {open && (
-        <div style={{ padding: '1rem 1.25rem 1.25rem' }}>
-          <div style={{ marginBottom: '1.4rem' }}>
-            {readerMode ? (
-              <>
-                <div style={{ fontSize: '0.65rem', color: '#5A7A8A', letterSpacing: '0.08em',
-                  textTransform: 'uppercase', marginBottom: '0.25rem' }}>
-                  Reader: <span style={{ background: 'rgba(90,122,138,0.12)', border: '1px solid rgba(90,122,138,0.4)',
-                    borderRadius: '3px', padding: '1px 6px', marginLeft: '4px' }}>Reader's Service — Fekula §10</span>
-                </div>
-                <p style={textStyle}>
-                  Through the prayers of our holy fathers, Lord Jesus Christ, Son of God, have mercy on us. Amen.
-                </p>
-              </>
-            ) : (
-              <>
-                <div style={rubrStyle}>Priest:</div>
-                <p style={priestStyle}>
-                  Blessed is our God, always, now and ever, and unto the ages of ages.
-                </p>
-              </>
-            )}
-          </div>
-          {seasonalContent()}
-          <div style={{ fontSize: '0.72rem', color: '#9A8A70', fontStyle: 'italic',
-                       borderTop: '1px solid #E8DFC0', paddingTop: '0.6rem', marginTop: '0.5rem' }}>
-            Fixed texts: OCA Office of Vespers (2021). Seasonal substitution: Fekula §4A.
-          </div>
-        </div>
-      )}
+      {open && bodyContent}
     </div>
   );
 }
@@ -7324,6 +7027,17 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.4.2",
+    date: "May 2026",
+    summary: "Unified Ordinary Beginning component · Typica opening added",
+    items: [
+      "refactor: TypicalBeginning and VespersOpening consolidated into single OrdinaryBeginning component — one source of truth for the full opening sequence (blessing through O Come Let Us Worship) with all three seasonal variants",
+      "fix: Christ is risen period (P+7–P+38) now correctly shows full Ordinary Beginning with Christ is risen replacing O Heavenly King, followed by Trisagion, Our Father, and O Come Let Us Worship — previously Vespers showed only Christ is risen ×3 with no continuation",
+      "feat: Typica now has Ordinary Beginning collapsible panel ('if said separately, begins with the Ordinary Beginning') — was previously missing entirely",
+      "arch: OrdinaryBeginning takes configurable title, contextNote, and collapsible props — reused by Vespers, 1st Hour, 6th Hour, and Typica with service-specific explanatory text",
+    ],
+  },
   {
     version: "v0.4.1",
     date: "May 2026",
@@ -8933,11 +8647,26 @@ export default function App() {
             {/* Service elements or placeholder */}
             {currentService.built ? (
               <div>
-                {(currentService.key === "1st_hour" || currentService.key === "6th_hour") && (
-                  <TypicalBeginning hourKey={currentService.key} liturgicalData={liturgicalData} tbOpen={tbOpen} setTbOpen={setTbOpen} readerMode={readerMode} />
+                {/* Ordinary Beginning — shown as collapsible for services that may follow another */}
+                {(currentService.key === "1st_hour") && (
+                  <OrdinaryBeginning liturgicalData={liturgicalData} open={tbOpen} setOpen={setTbOpen} readerMode={readerMode}
+                    title="Ordinary Beginning (if said separately)"
+                    contextNote="The First Hour is often celebrated immediately following Matins, and it begins as shown below. If the First Hour is said separately, it begins with the Ordinary Beginning." />
+                )}
+                {(currentService.key === "6th_hour") && (
+                  <OrdinaryBeginning liturgicalData={liturgicalData} open={tbOpen} setOpen={setTbOpen} readerMode={readerMode}
+                    title="Ordinary Beginning (if said separately)"
+                    contextNote="The Sixth Hour is often celebrated immediately following the Third Hour, and it begins as shown below. If the Sixth Hour is said separately, it begins with the Ordinary Beginning." />
                 )}
                 {currentService.key === "vespers" && (
-                  <VespersOpening liturgicalData={liturgicalData} voOpen={voOpen} setVoOpen={setVoOpen} readerMode={readerMode} />
+                  <OrdinaryBeginning liturgicalData={liturgicalData} open={voOpen} setOpen={setVoOpen} readerMode={readerMode}
+                    title="Opening of Vespers (if not preceded by the 9th Hour)"
+                    contextNote="If the Ninth Hour was said immediately before Vespers, begin at Psalm 103 below. Expand to see the full opening sequence." />
+                )}
+                {currentService.key === "typica" && (
+                  <OrdinaryBeginning liturgicalData={liturgicalData} open={tbOpen} setOpen={setTbOpen} readerMode={readerMode}
+                    title="Ordinary Beginning (if said separately)"
+                    contextNote="The Typica is often celebrated immediately following the Sixth Hour. If said separately, it begins with the Ordinary Beginning." />
                 )}
                 {elements
                   .filter(el => !(el.openingElement && voOpen))
