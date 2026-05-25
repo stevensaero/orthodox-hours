@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.3.16** | Last synced: May 23, 2026
+**Tool version: v0.4.0** | Last synced: May 24, 2026
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
@@ -92,6 +92,7 @@ destroys historical context and violates the integrity of the record.
 | v0.3.20 | May 2026 | Tool v0.3.2: Typica assembler complete (FW-17 Phase 1); prokeimenon/alleluia tables; Ch.10 reader toggle; encoding gaps closed via Typica discovery pass |
 | v0.3.21 | May 2026 | Tool v0.3.3: Prayers After Holy Communion assembler; getLiturgyType() Basil/Presanctified/Chrysostom detection; shared buildDismissal() helper; mm/dd added to liturgicalData; post_communion bypasses seasonal inScope gate |
 | v0.3.22 | May 2026 | Tool v0.3.4: Orthodox Psalter (all 20 kathismata, Brenton LXX embedded); Vespers kathisma link; context strip banner; history.back() scroll restoration; same-tab navigation |
+| v0.3.23 | May 2026 | Tool v0.4.0: Menaion & Pentecostarion data browsers (/menaion, /pentecostarion); shared audit module (src/lib/audit.js); lazy-loaded routes, URL-only access; beatitudes_troparia object-shape fix |
 
 ---
 
@@ -1641,7 +1642,7 @@ Badge must correctly identify section even though assembly is the same.
 
 ---
 
-*Last updated: May 2026 · Notes v0.3.22 · Synced to tool v0.3.4*
+*Last updated: May 24, 2026 · Notes v0.3.23 · Synced to tool v0.4.0*
 ---
 
 ## Data Architecture — Dynamic Monthly Modules (v0.3.9)
@@ -1662,6 +1663,63 @@ Adding a new month: create `src/data/menaion/{month}.js` + one line in `_menaion
 Drive `.txt` files are no longer the primary record. They remain useful for human review
 but are derived artifacts. The `.txt` step was omitted this session; records for
 05-16–05-21, 05-31, P+35-37, P+40-47, 05-24, 05-25 can be generated from the `.js` files.
+
+---
+
+## Menaion & Pentecostarion Data Browsers (v0.4.0)
+
+### What they are
+Full-page dev/truthing tools for proofing encoded Menaion and Pentecostarion
+entries. Every field from the data objects is displayed with full text (no
+truncation), with inline audit indicators showing encoding completeness.
+
+### Routes (URL-only — not linked from main tool UI)
+- **Menaion:** `/orthodox-hours/menaion`
+- **Pentecostarion:** `/orthodox-hours/pentecostarion`
+
+### Architecture
+- Lazy-loaded via `React.lazy` + `Suspense` — zero main bundle impact
+- Import monthly data files directly using the same dynamic import pattern
+  as the main tool — no coupling to `hours-tool.jsx` assembler logic
+- Shared audit module: `src/lib/audit.js` — encoding completeness checks
+  (field presence + placeholder detection) extracted into importable ES module
+
+### Files
+```
+src/components/menaion-browser.jsx        — Menaion browser component
+src/components/pentecostarion-browser.jsx  — Pentecostarion browser component
+src/lib/audit.js                          — shared audit module
+```
+
+### Menaion browser features
+- 12 month tabs (Jan–Dec); months with data files in dark gold, rest greyed
+- Day grid sidebar (1–31); days with entries highlighted with audit-status dot
+- Month summary: "16/31 days encoded · 16 complete · 0 partial"
+- Entry cards grouped: header/metadata, troparion, kontakia, LIC stichera,
+  aposticha, liturgy propers, paroemias, matins, flags, notes
+- Double commemorations (array entries like 05-27) rendered with primary +
+  secondary sections
+
+### Pentecostarion browser features
+- Period tabs: All, Bright Week, Thomas→Blind Man, Ascension, Pentecost
+- Offset grid sidebar grouped by period; offsets with entries highlighted
+- Overall summary: "23/57 offsets encoded · 23 complete · 0 partial"
+- Same field display as Menaion plus Pentecostarion-specific fields:
+  hours_format, menaion_set_aside, hours_kontakion, zadostoinik,
+  matins aposticha, beatitudes with source/label metadata
+
+### Audit module (src/lib/audit.js)
+Exports: `auditMenaionEntry(entry)`, `auditPentecostarionEntry(entry)`,
+`auditSummary(results)`. Returns `{ status, missing, hasPlaceholder }` where
+status is 'complete', 'partial', or 'structural'. Field requirements match
+`scripts/audit.js` (CLI version uses text-based parsing; shared module uses
+object property checks).
+
+### Bug fixed during build
+`beatitudes_troparia` items in Pentecostarion entries (P+19, P+35–P+37) are
+objects with `{text, tone?, source?, label?}` fields, not plain strings.
+Browser initially crashed trying to render objects as React children. Fixed
+to destructure and display source/label metadata alongside text.
 
 ---
 
@@ -1735,7 +1793,7 @@ Drive snapshots are historical record only — do not create new ones.
 
 ---
 
-*Last updated: May 23, 2026 · Tool v0.3.9*
+*Last updated: May 24, 2026 · Tool v0.4.0*
 
 ---
 
