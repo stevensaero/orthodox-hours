@@ -475,11 +475,17 @@ export default function MenaionBrowser() {
   const [headerHeight, setHeaderHeight] = useState(90);
 
   useEffect(() => {
-    if (headerRef.current) {
-      const h = headerRef.current.getBoundingClientRect().height;
-      setHeaderHeight(prev => prev !== h ? h : prev);
-    }
-  });
+    const el = headerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        setHeaderHeight(Math.ceil(entry.contentRect.height + parseFloat(getComputedStyle(el).paddingTop) + parseFloat(getComputedStyle(el).paddingBottom) + 2));
+      }
+    });
+    ro.observe(el);
+    setHeaderHeight(Math.ceil(el.getBoundingClientRect().height));
+    return () => ro.disconnect();
+  }, []);
 
   const hasData = useCallback((monthKey) => monthKey in MONTHS_WITH_DATA, []);
 
