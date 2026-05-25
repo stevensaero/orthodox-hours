@@ -7292,6 +7292,7 @@ const RELEASE_NOTES = [
       "fix: menaion_set_aside gates on Hours kontakion override — Symeon Stylites §2E was overriding §4B13 Holy Fathers kontakion at 3rd Hour",
       "style: Vespers dismissal troparia — Glory/Both now extracted as standalone fixed elements between troparion boxes (was concatenated inside boxes)",
       "style: Orthodox three-bar budded cross (user-provided SVG) at end of every service in gold (#B8A070)",
+      "style: Psalter browse mode — end-of-kathisma markers (THE END OF THE Nth KATHISMA) + Orthodox cross, matching all service text closers",
       "style: type: 'rubric' elements render in faded gold italic — instructional notes visually distinct from service text",
       "research: OCA vs HTM Typica divergence — OCA uses Hypakoë on ordinary Sundays; HTM uses standard kontakia sequence; tool follows OCA with HTM divergence noted",
     ],
