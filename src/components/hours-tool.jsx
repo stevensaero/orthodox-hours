@@ -7265,18 +7265,6 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
 
 const RELEASE_NOTES = [
   {
-    version: "v0.3.15",
-    date: "May 2026",
-    summary: "Typica kontakia overhaul · feast/Hypakoë/weekday branching · Transfiguration opener",
-    items: [
-      "feat: Typica kontakia — feast Sunday branching per OCA Typica rubric: saint kontakion first, Glory…Now and ever… feast kontakion (§4B13 Holy Fathers + Ascension confirmed against both Fekula and OCA)",
-      "feat: Typica kontakia — ordinary Sunday Hypakoë badge now cites OCA rubric: 'On Sundays, if there is no Feast, only the Hypakoë in the appointed tone is sung'",
-      "feat: Typica kontakia — weekday sequence restructured per OCA/HTM: Transfiguration kontakion always first, then kontakion of the day, then saint of the date (if desired)",
-      "fix: menaion_set_aside gates on Hours kontakion override (Symeon Stylites was overriding Holy Fathers at 3rd Hour)",
-      "research: OCA vs HTM Typica divergence documented — OCA uses Hypakoë on ordinary Sundays; HTM uses standard kontakia sequence; tool follows OCA practice with HTM divergence noted",
-    ],
-  },
-  {
     version: "v0.3.16",
     date: "May 2026",
     summary: "Typica kontakia overhaul · Vespers troparion styling · Orthodox cross · end markers",
@@ -7295,6 +7283,18 @@ const RELEASE_NOTES = [
       "style: Psalter browse mode — end-of-kathisma markers (THE END OF THE Nth KATHISMA) + Orthodox cross, matching all service text closers",
       "style: type: 'rubric' elements render in faded gold italic — instructional notes visually distinct from service text",
       "research: OCA vs HTM Typica divergence — OCA uses Hypakoë on ordinary Sundays; HTM uses standard kontakia sequence; tool follows OCA with HTM divergence noted",
+    ],
+  },
+  {
+    version: "v0.3.15",
+    date: "May 2026",
+    summary: "Typica kontakia overhaul · feast/Hypakoë/weekday branching · Transfiguration opener",
+    items: [
+      "feat: Typica kontakia — feast Sunday branching per OCA Typica rubric: saint kontakion first, Glory…Now and ever… feast kontakion (§4B13 Holy Fathers + Ascension confirmed against both Fekula and OCA)",
+      "feat: Typica kontakia — ordinary Sunday Hypakoë badge now cites OCA rubric: 'On Sundays, if there is no Feast, only the Hypakoë in the appointed tone is sung'",
+      "feat: Typica kontakia — weekday sequence restructured per OCA/HTM: Transfiguration kontakion always first, then kontakion of the day, then saint of the date (if desired)",
+      "fix: menaion_set_aside gates on Hours kontakion override (Symeon Stylites was overriding Holy Fathers at 3rd Hour)",
+      "research: OCA vs HTM Typica divergence documented — OCA uses Hypakoë on ordinary Sundays; HTM uses standard kontakia sequence; tool follows OCA practice with HTM divergence noted",
     ],
   },
   {
