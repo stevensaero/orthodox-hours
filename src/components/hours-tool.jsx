@@ -7059,6 +7059,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.5.0",
+    date: "May 2026",
+    summary: "Pre-Communion Prayers · How It Works overhaul · Ordinary Beginning standalone service",
+    items: [
+      "feat: Pre-Communion Prayers — full Order of Preparation for Holy Communion (Jordanville Prayer Book) as new service. 35 sections: Opening prayers, Psalms 22/23/115, Troparia T8, Lenten troparion, Psalm 50, Canon for Holy Communion (Odes I–IX with Kontakion), Prayers 1–10, communion verses, final troparia. Lazy-loaded data file (39KB chunk, 12KB gzipped)",
+      "feat: Ordinary Beginning registered as standalone service at position 0 in SERVICE_REGISTRY — renders the full opening prayer sequence as a readable reference, season-independent",
+      "docs: How It Works panel completely rewritten — 6-section accordion replacing stale 5-section version. New 'What This Tool Does' section with service inventory (9 built / 4 planned). Expanded 'Sources & Texts' (7 sources). Corrected 'Encoding Status' (removed incorrect .txt Drive references, updated counts). Honest 'What's Here, What's Coming' section",
+      "fix: 443 double-escaped Unicode sequences (\\\\u2014 → —) replaced with actual UTF-8 characters throughout",
+    ],
+  },
+  {
     version: "v0.4.2",
     date: "May 2026",
     summary: "Unified Ordinary Beginning component · Typica opening added",
