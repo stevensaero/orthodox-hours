@@ -1,8 +1,20 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import HoursTool from './components/hours-tool.jsx';
 import Psalter from './components/psalter.jsx';
 import Scripture from './components/scripture.jsx';
+
+// Dev/truthing tools — lazy-loaded, URL-only access
+const MenaionBrowser = lazy(() => import('./components/menaion-browser.jsx'));
+const PentecostarionBrowser = lazy(() => import('./components/pentecostarion-browser.jsx'));
+
+function LazyFallback() {
+  return (
+    <div style={{ padding: "3rem", fontFamily: "Georgia, serif", color: "#9A8A70", textAlign: "center" }}>
+      Loading…
+    </div>
+  );
+}
 
 class ErrorBoundary extends React.Component {
   constructor(props) { super(props); this.state = { error: null }; }
@@ -33,6 +45,8 @@ function App() {
         <Route path="/psalter/:kathisma" element={<Psalter />} />
         <Route path="/scripture" element={<ErrorBoundary><Scripture /></ErrorBoundary>} />
         <Route path="/scripture/" element={<ErrorBoundary><Scripture /></ErrorBoundary>} />
+        <Route path="/menaion" element={<Suspense fallback={<LazyFallback />}><MenaionBrowser /></Suspense>} />
+        <Route path="/pentecostarion" element={<Suspense fallback={<LazyFallback />}><PentecostarionBrowser /></Suspense>} />
       </Routes>
     </BrowserRouter>
   );

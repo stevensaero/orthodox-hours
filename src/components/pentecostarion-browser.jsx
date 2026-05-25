@@ -1,0 +1,628 @@
+// pentecostarion-browser.jsx — Pentecostarion Data Browser
+// Dev/truthing tool for proofing encoded Pentecostarion entries.
+// Route: /orthodox-hours/pentecostarion — URL-only access, not linked from main UI.
+
+import React, { useState, useEffect, useRef } from 'react';
+import { auditPentecostarionEntry, auditSummary } from '../lib/audit.js';
+
+// ── Color constants — matches psalter.jsx / hours-tool.jsx ──────────────────
+const C = {
+  parchment: "#FAF6EE",
+  ink: "#1C1008",
+  inkMid: "#3D3020",
+  inkLight: "#9A8A70",
+  gold: "#8B6914",
+  goldLight: "#D4C49A",
+  goldFaint: "rgba(139,105,20,0.06)",
+  border: "#E8DEC8",
+  green: "#2D6A2E",
+  amber: "#A67C00",
+  red: "#A03030",
+};
+
+// ── Liturgical period groupings ─────────────────────────────────────────────
+const PERIODS = [
+  { label: "Bright Week",               start: 0,  end: 6,  note: "P+0 through P+6" },
+  { label: "Thomas → Blind Man",        start: 7,  end: 35, note: "P+7 through P+35" },
+  { label: "Post-Pascha / Ascension",   start: 36, end: 48, note: "P+36 through P+48" },
+  { label: "Pentecost",                 start: 49, end: 56, note: "P+49 through P+56" },
+];
+
+const ALL_OFFSETS = Array.from({ length: 57 }, (_, i) => i); // P+0 through P+56
+
+// ── Helpers ─────────────────────────────────────────────────────────────────
+
+function statusColor(status) {
+  if (status === 'complete') return C.green;
+  if (status === 'partial') return C.amber;
+  return C.red;
+}
+
+function statusIcon(status) {
+  if (status === 'complete') return '●';
+  if (status === 'partial') return '◐';
+  return '○';
+}
+
+// ── Shared display components ───────────────────────────────────────────────
+function FieldLabel({ children }) {
+  return (
+    <span style={{
+      fontSize: "0.68rem", letterSpacing: "0.12em", textTransform: "uppercase",
+      color: C.gold, fontWeight: 600, fontFamily: "Georgia, 'Times New Roman', serif",
+    }}>
+      {children}
+    </span>
+  );
+}
+
+function BoolFlag({ label, value }) {
+  const defined = value !== undefined && value !== null;
+  return (
+    <span style={{
+      display: "inline-block", marginRight: "1rem", marginBottom: "0.25rem",
+      fontSize: "0.85rem", color: defined ? C.inkMid : C.goldLight,
+    }}>
+      <FieldLabel>{label}</FieldLabel>{' '}
+      <span style={{ color: defined ? (value ? C.green : C.inkLight) : C.goldLight }}>
+        {defined ? (value ? '✓' : '✗') : '—'}
+      </span>
+    </span>
+  );
+}
+
+function TextBlock({ tone, text, specMel, label, verse, repeatIndex }) {
+  return (
+    <div style={{
+      marginBottom: "0.75rem", paddingLeft: "0.75rem",
+      borderLeft: `2px solid ${C.border}`,
+    }}>
+      {label && <div style={{ fontSize: "0.75rem", color: C.inkLight, marginBottom: "0.15rem" }}>{label}</div>}
+      {tone !== undefined && tone !== null && (
+        <div style={{ fontSize: "0.78rem", color: C.gold, marginBottom: "0.15rem" }}>
+          Tone {tone}{specMel ? ` — Spec. Mel.: "${specMel}"` : ''}
+        </div>
+      )}
+      {verse && (
+        <div style={{ fontSize: "0.82rem", color: C.inkLight, fontStyle: "italic", marginBottom: "0.25rem" }}>
+          Verse: {verse}
+        </div>
+      )}
+      {repeatIndex !== undefined && (
+        <div style={{ fontSize: "0.78rem", color: C.amber, marginBottom: "0.15rem" }}>
+          [repeats sticheron #{repeatIndex + 1}]
+        </div>
+      )}
+      <div style={{
+        fontSize: "0.88rem", color: C.ink, lineHeight: 1.65,
+        fontFamily: "Georgia, 'Times New Roman', serif",
+      }}>
+        {text || <span style={{ color: C.goldLight, fontStyle: "italic" }}>—</span>}
+      </div>
+    </div>
+  );
+}
+
+function SectionHeader({ children }) {
+  return (
+    <div style={{
+      fontSize: "0.72rem", letterSpacing: "0.14em", textTransform: "uppercase",
+      color: C.gold, fontWeight: 700, borderBottom: `1px solid ${C.border}`,
+      paddingBottom: "0.25rem", marginTop: "1.25rem", marginBottom: "0.6rem",
+    }}>
+      {children}
+    </div>
+  );
+}
+
+function FieldRow({ label, value, mono }) {
+  const display = value === null ? <span style={{ color: C.goldLight }}>null</span>
+    : value === undefined ? <span style={{ color: C.goldLight }}>—</span>
+    : typeof value === 'boolean' ? (value ? <span style={{ color: C.green }}>✓ true</span> : <span style={{ color: C.inkLight }}>✗ false</span>)
+    : <span style={{ fontFamily: mono ? "monospace" : "inherit" }}>{String(value)}</span>;
+
+  return (
+    <div style={{ marginBottom: "0.3rem", fontSize: "0.85rem", color: C.inkMid }}>
+      <FieldLabel>{label}</FieldLabel>{' '}
+      {display}
+    </div>
+  );
+}
+
+// ── Pentecostarion Entry Card ───────────────────────────────────────────────
+function PentEntryCard({ offset, entry, audit }) {
+  return (
+    <div style={{
+      background: "#fff", border: `1px solid ${C.border}`, borderRadius: "6px",
+      padding: "1.25rem", marginBottom: "1rem", boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+    }}>
+      {/* ── Header ── */}
+      <div style={{
+        display: "flex", alignItems: "flex-start", justifyContent: "space-between",
+        marginBottom: "0.75rem",
+      }}>
+        <div>
+          <span style={{
+            fontSize: "1.1rem", fontWeight: 700, color: C.ink,
+            fontFamily: "Georgia, serif",
+          }}>
+            P+{offset}
+          </span>
+          <span style={{
+            marginLeft: "0.75rem", fontSize: "0.95rem", color: C.inkMid,
+            fontFamily: "Georgia, serif",
+          }}>
+            {entry.name || '(unnamed)'}
+          </span>
+        </div>
+        <div style={{
+          fontSize: "0.82rem", fontWeight: 600,
+          color: statusColor(audit.status), whiteSpace: "nowrap",
+        }}>
+          {statusIcon(audit.status)} {audit.status}
+        </div>
+      </div>
+
+      {/* ── Audit details ── */}
+      {audit.missing.length > 0 && (
+        <div style={{
+          fontSize: "0.78rem", color: C.amber,
+          background: "rgba(166,124,0,0.06)", padding: "0.4rem 0.6rem",
+          borderRadius: "3px", marginBottom: "0.75rem",
+        }}>
+          Missing: {audit.missing.join(', ')}
+          {audit.hasPlaceholder && ' · has placeholder text'}
+        </div>
+      )}
+
+      {/* ── Metadata ── */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem 1.5rem", marginBottom: "0.5rem" }}>
+        <FieldRow label="source_file" value={entry.source_file} mono />
+        <FieldRow label="fekula_section" value={entry.fekula_section} />
+        <FieldRow label="hours_format" value={entry.hours_format} />
+        <FieldRow label="tone" value={entry.tone} />
+        <FieldRow label="matins_format" value={entry.matins_format} />
+        <FieldRow label="aposticha_source" value={entry.aposticha_source} />
+      </div>
+
+      {/* ── Flags ── */}
+      <div style={{ display: "flex", flexWrap: "wrap", marginBottom: "0.5rem" }}>
+        <BoolFlag label="menaion set aside" value={entry.menaion_set_aside} />
+        <BoolFlag label="doxology" value={entry.has_great_doxology} />
+        <BoolFlag label="litya" value={entry.has_litya} />
+        <BoolFlag label="paroemias" value={entry.has_paroemias} />
+        <BoolFlag label="magnificat" value={entry.magnificat_sung} />
+        <BoolFlag label="truly meet suppressed" value={entry.it_is_truly_meet_suppressed} />
+        <BoolFlag label="heavenly king omitted" value={entry.heavenly_king_omitted} />
+      </div>
+
+      {/* ── Troparion ── */}
+      <SectionHeader>Troparion</SectionHeader>
+      {entry.troparion ? (
+        Array.isArray(entry.troparion) ? (
+          entry.troparion.map((t, i) => (
+            <TextBlock key={i} tone={t.tone} text={t.text} label={`Troparion ${i + 1}`} />
+          ))
+        ) : (
+          <TextBlock tone={entry.troparion.tone} text={entry.troparion.text} label="Troparion" />
+        )
+      ) : (
+        <div style={{ fontSize: "0.85rem", color: C.goldLight, fontStyle: "italic" }}>Not encoded</div>
+      )}
+      {entry.troparion_2 && (
+        <TextBlock tone={entry.troparion_2.tone} text={entry.troparion_2.text} label="Troparion 2" />
+      )}
+      {entry.troparion_3 && (
+        <TextBlock tone={entry.troparion_3.tone} text={entry.troparion_3.text} label="Troparion 3" />
+      )}
+      {entry.troparion_bothnow && (
+        <TextBlock
+          tone={entry.troparion_bothnow.tone}
+          text={entry.troparion_bothnow.text}
+          label="Both now (Theotokion)"
+        />
+      )}
+
+      {/* ── Kontakia ── */}
+      <SectionHeader>Kontakia</SectionHeader>
+      {entry.hours_kontakion && (
+        <TextBlock
+          tone={entry.hours_kontakion.tone}
+          text={entry.hours_kontakion.text}
+          label="Hours Kontakion (single — all four Hours)"
+        />
+      )}
+      {entry.kontakion_ode6 && (
+        <TextBlock
+          tone={entry.kontakion_ode6.tone}
+          text={entry.kontakion_ode6.text}
+          label="Kontakion (Ode VI → 3rd & 9th Hours)"
+        />
+      )}
+      {entry.kontakion_ode3 && (
+        <TextBlock
+          tone={entry.kontakion_ode3.tone}
+          text={entry.kontakion_ode3.text}
+          label="Kontakion (Ode III → 1st & 6th Hours)"
+        />
+      )}
+      {!entry.hours_kontakion && !entry.kontakion_ode6 && (
+        <div style={{ fontSize: "0.85rem", color: C.goldLight, fontStyle: "italic" }}>Not encoded</div>
+      )}
+
+      {/* ── Lord I Have Cried Stichera ── */}
+      <SectionHeader>Vespers — Lord I Have Cried</SectionHeader>
+      {entry.stichera_lord_i_call_count !== undefined && (
+        <FieldRow label="stichera count" value={entry.stichera_lord_i_call_count} />
+      )}
+      {entry.stichera_lord_i_call && Array.isArray(entry.stichera_lord_i_call) ? (
+        entry.stichera_lord_i_call.map((s, i) => (
+          <TextBlock
+            key={i}
+            tone={s.tone}
+            text={s.text}
+            specMel={s.spec_mel}
+            label={`[${i + 1}]`}
+            repeatIndex={s.repeatIndex}
+          />
+        ))
+      ) : (
+        <div style={{ fontSize: "0.85rem", color: C.goldLight, fontStyle: "italic" }}>Not encoded</div>
+      )}
+      {entry.stichera_glory && (
+        <TextBlock
+          tone={entry.stichera_glory.tone || entry.stichera_glory?.tone}
+          text={entry.stichera_glory.text || (typeof entry.stichera_glory === 'string' ? entry.stichera_glory : null)}
+          label="Glory (Doxasticon)"
+        />
+      )}
+      {entry.lic_theotokion && (
+        <TextBlock
+          tone={entry.lic_theotokion.tone}
+          text={entry.lic_theotokion.text}
+          label="Both now (Theotokion)"
+        />
+      )}
+
+      {/* ── Vespers Aposticha ── */}
+      {(entry.stichera_aposticha || entry.aposticha_glory) && (
+        <>
+          <SectionHeader>Vespers — Aposticha</SectionHeader>
+          {entry.stichera_aposticha && Array.isArray(entry.stichera_aposticha) && (
+            entry.stichera_aposticha.map((s, i) => (
+              <TextBlock key={i} tone={s.tone} text={s.text} verse={s.verse} label={`[${i + 1}]`} />
+            ))
+          )}
+          {entry.aposticha_glory && (
+            <TextBlock
+              tone={entry.aposticha_glory.tone}
+              text={entry.aposticha_glory.text}
+              label="Glory (Doxasticon)"
+            />
+          )}
+          {entry.aposticha_theotokion && (
+            <TextBlock
+              tone={entry.aposticha_theotokion.tone}
+              text={entry.aposticha_theotokion.text}
+              label="Both now (Theotokion)"
+            />
+          )}
+        </>
+      )}
+
+      {/* ── Matins Aposticha ── */}
+      {(entry.stichera_matins_aposticha || entry.stichera_matins_aposticha_glory) && (
+        <>
+          <SectionHeader>Matins — Aposticha</SectionHeader>
+          {entry.stichera_matins_aposticha && Array.isArray(entry.stichera_matins_aposticha) && (
+            entry.stichera_matins_aposticha.map((s, i) => (
+              <TextBlock key={i} tone={s.tone} text={s.text} verse={s.verse} label={`[${i + 1}]`} />
+            ))
+          )}
+          {entry.stichera_matins_aposticha_glory && (
+            <TextBlock
+              tone={entry.stichera_matins_aposticha_glory.tone}
+              text={entry.stichera_matins_aposticha_glory.text}
+              label="Glory (Doxasticon)"
+            />
+          )}
+        </>
+      )}
+
+      {/* ── Liturgy Propers ── */}
+      <SectionHeader>Liturgy Propers</SectionHeader>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem 1.5rem" }}>
+        <FieldRow label="feast_e" value={entry.feast_e} mono />
+        <FieldRow label="feast_g" value={entry.feast_g} mono />
+      </div>
+      <FieldRow label="prokeimenon_tone" value={entry.prokeimenon_tone} />
+      {entry.prokeimenon_text && <FieldRow label="prokeimenon_text" value={entry.prokeimenon_text} />}
+      {entry.prokeimenon_stichos && <FieldRow label="prokeimenon_stichos" value={entry.prokeimenon_stichos} />}
+      <FieldRow label="alleluia_tone" value={entry.alleluia_tone} />
+      {entry.alleluia_verse && <FieldRow label="alleluia_verse" value={entry.alleluia_verse} />}
+      {entry.alleluia_stichos && <FieldRow label="alleluia_stichos" value={entry.alleluia_stichos} />}
+      {entry.communion_verse && <FieldRow label="communion_verse" value={entry.communion_verse} />}
+
+      {/* ── Paroemias ── */}
+      {(entry.paroemia_1 || entry.paroemia_2 || entry.paroemia_3) && (
+        <>
+          <SectionHeader>Vespers — Paroemias</SectionHeader>
+          <FieldRow label="paroemia_1" value={entry.paroemia_1} />
+          <FieldRow label="paroemia_2" value={entry.paroemia_2} />
+          <FieldRow label="paroemia_3" value={entry.paroemia_3} />
+        </>
+      )}
+
+      {/* ── Beatitudes ── */}
+      {(entry.beatitudes_source || entry.beatitudes_troparia) && (
+        <>
+          <SectionHeader>Beatitudes</SectionHeader>
+          {entry.beatitudes_source && <FieldRow label="source" value={entry.beatitudes_source} />}
+          {entry.beatitudes_troparia && Array.isArray(entry.beatitudes_troparia) && (
+            entry.beatitudes_troparia.map((t, i) => (
+              <TextBlock key={i} text={t} label={`[${i + 1}]`} />
+            ))
+          )}
+        </>
+      )}
+
+      {/* ── Matins ── */}
+      {entry.matins_gospel && (
+        <>
+          <SectionHeader>Matins</SectionHeader>
+          <FieldRow label="matins_gospel" value={entry.matins_gospel} />
+        </>
+      )}
+
+      {/* ── Zadostoinik ── */}
+      {(entry.instead_of_it_is_truly_meet_refrain || entry.instead_of_it_is_truly_meet_irmos) && (
+        <>
+          <SectionHeader>Zadostoinik</SectionHeader>
+          {entry.instead_of_it_is_truly_meet_refrain && (
+            <FieldRow label="refrain" value={entry.instead_of_it_is_truly_meet_refrain} />
+          )}
+          {entry.instead_of_it_is_truly_meet_irmos && (
+            <FieldRow label="irmos" value={entry.instead_of_it_is_truly_meet_irmos} />
+          )}
+        </>
+      )}
+
+      {/* ── Notes ── */}
+      {entry.note && (
+        <>
+          <SectionHeader>Notes</SectionHeader>
+          <div style={{
+            fontSize: "0.85rem", color: C.inkMid, lineHeight: 1.65,
+            fontFamily: "Georgia, serif", whiteSpace: "pre-wrap",
+          }}>
+            {entry.note}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ── Main Component ──────────────────────────────────────────────────────────
+export default function PentecostarionBrowser() {
+  const [pentData, setPentData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [activePeriod, setActivePeriod] = useState(null); // null = all
+  const entryRefs = useRef({});
+
+  useEffect(() => {
+    import("../data/pentecostarion.js")
+      .then(m => { setPentData(m.default); setLoading(false); })
+      .catch(err => { setError(err.message); setLoading(false); });
+  }, []);
+
+  // Build entries list
+  const entries = [];
+  const auditResults = [];
+
+  if (pentData) {
+    const offsets = activePeriod
+      ? ALL_OFFSETS.filter(o => o >= activePeriod.start && o <= activePeriod.end)
+      : ALL_OFFSETS;
+
+    for (const offset of offsets) {
+      const entry = pentData[offset];
+      if (entry) {
+        const audit = auditPentecostarionEntry(entry);
+        entries.push({ offset, entry, audit });
+        auditResults.push(audit);
+      }
+    }
+  }
+
+  // Overall summary (all entries, not just filtered)
+  const allAudits = [];
+  if (pentData) {
+    for (const offset of ALL_OFFSETS) {
+      if (pentData[offset]) allAudits.push(auditPentecostarionEntry(pentData[offset]));
+    }
+  }
+  const overallSummary = auditSummary(allAudits);
+  const filteredSummary = auditSummary(auditResults);
+
+  const scrollToEntry = (offset) => {
+    const el = entryRefs.current[offset];
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  return (
+    <div style={{
+      minHeight: "100vh", background: C.parchment,
+      fontFamily: "Georgia, 'Times New Roman', serif", color: C.ink,
+    }}>
+      {/* ── Header ── */}
+      <div style={{
+        background: "#fff", borderBottom: `2px solid ${C.border}`,
+        padding: "1rem 1.5rem", position: "sticky", top: 0, zIndex: 100,
+      }}>
+        <div style={{ maxWidth: "960px", margin: "0 auto" }}>
+          <div style={{
+            display: "flex", alignItems: "baseline", justifyContent: "space-between",
+            marginBottom: "0.75rem",
+          }}>
+            <h1 style={{
+              fontSize: "1.15rem", fontWeight: 700, color: C.gold,
+              margin: 0, letterSpacing: "0.04em",
+            }}>
+              Pentecostarion Data Browser
+            </h1>
+            <span style={{
+              fontSize: "0.72rem", color: C.inkLight, letterSpacing: "0.06em",
+            }}>
+              DEV / TRUTHING TOOL
+            </span>
+          </div>
+
+          {/* ── Period tabs ── */}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.15rem" }}>
+            <button
+              onClick={() => setActivePeriod(null)}
+              style={{
+                padding: "0.3rem 0.6rem", fontSize: "0.78rem", fontFamily: "Georgia, serif",
+                border: !activePeriod ? `1px solid ${C.gold}` : `1px solid transparent`,
+                borderRadius: "3px",
+                background: !activePeriod ? C.goldFaint : "transparent",
+                color: !activePeriod ? C.gold : C.inkMid,
+                cursor: "pointer", fontWeight: !activePeriod ? 700 : 400,
+                letterSpacing: "0.03em",
+              }}
+            >
+              All
+            </button>
+            {PERIODS.map(p => {
+              const active = activePeriod?.label === p.label;
+              return (
+                <button
+                  key={p.label}
+                  onClick={() => setActivePeriod(active ? null : p)}
+                  style={{
+                    padding: "0.3rem 0.6rem", fontSize: "0.78rem", fontFamily: "Georgia, serif",
+                    border: active ? `1px solid ${C.gold}` : `1px solid transparent`,
+                    borderRadius: "3px",
+                    background: active ? C.goldFaint : "transparent",
+                    color: active ? C.gold : C.inkMid,
+                    cursor: "pointer", fontWeight: active ? 700 : 400,
+                    letterSpacing: "0.03em",
+                  }}
+                >
+                  {p.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Body ── */}
+      <div style={{
+        maxWidth: "960px", margin: "0 auto", padding: "1.25rem 1.5rem",
+        display: "flex", gap: "1.5rem",
+      }}>
+        {/* ── Offset sidebar ── */}
+        <div style={{
+          flexShrink: 0, width: "200px", position: "sticky",
+          top: "100px", alignSelf: "flex-start",
+        }}>
+          {/* Summary */}
+          <div style={{
+            fontSize: "0.78rem", color: C.inkMid, marginBottom: "0.75rem", lineHeight: 1.6,
+          }}>
+            <strong style={{ color: C.ink }}>
+              {activePeriod ? activePeriod.label : "All Offsets"}
+            </strong>
+            <br />
+            {overallSummary.total}/57 offsets encoded
+            <br />
+            <span style={{ color: C.green }}>{overallSummary.complete} complete</span>
+            {overallSummary.partial > 0 && <> · <span style={{ color: C.amber }}>{overallSummary.partial} partial</span></>}
+            {overallSummary.structural > 0 && <> · <span style={{ color: C.red }}>{overallSummary.structural} structural</span></>}
+          </div>
+
+          {/* Offset grid — grouped by period */}
+          {PERIODS.map(period => {
+            if (activePeriod && activePeriod.label !== period.label) return null;
+            const offsets = ALL_OFFSETS.filter(o => o >= period.start && o <= period.end);
+            return (
+              <div key={period.label} style={{ marginBottom: "0.75rem" }}>
+                <div style={{
+                  fontSize: "0.65rem", letterSpacing: "0.1em", textTransform: "uppercase",
+                  color: C.inkLight, fontWeight: 600, marginBottom: "0.3rem",
+                }}>
+                  {period.label}
+                </div>
+                <div style={{
+                  display: "flex", flexWrap: "wrap", gap: "2px",
+                }}>
+                  {offsets.map(o => {
+                    const hasEntry = pentData && pentData[o];
+                    const audit = hasEntry ? auditPentecostarionEntry(pentData[o]) : null;
+                    return (
+                      <button
+                        key={o}
+                        onClick={() => hasEntry && scrollToEntry(o)}
+                        disabled={!hasEntry}
+                        style={{
+                          minWidth: "30px", height: "24px", fontSize: "0.68rem",
+                          fontFamily: "Georgia, serif", border: "none", borderRadius: "3px",
+                          background: hasEntry ? C.goldFaint : "transparent",
+                          color: hasEntry ? C.ink : C.goldLight,
+                          cursor: hasEntry ? "pointer" : "default",
+                          fontWeight: hasEntry ? 600 : 400, padding: "0 3px",
+                          position: "relative",
+                        }}
+                        title={hasEntry ? `P+${o} — ${audit.status}` : `P+${o} — no data`}
+                      >
+                        {o}
+                        {audit && (
+                          <span style={{
+                            position: "absolute", bottom: "1px", right: "2px",
+                            fontSize: "0.5rem", color: statusColor(audit.status), lineHeight: 1,
+                          }}>
+                            ●
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* ── Entry cards ── */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {loading && (
+            <div style={{ fontSize: "0.9rem", color: C.inkLight, padding: "2rem 0" }}>
+              Loading Pentecostarion data…
+            </div>
+          )}
+          {error && (
+            <div style={{ fontSize: "0.9rem", color: C.red, padding: "2rem 0" }}>
+              Error loading data: {error}
+            </div>
+          )}
+          {!loading && !error && entries.length === 0 && (
+            <div style={{
+              fontSize: "0.9rem", color: C.inkLight, padding: "3rem 0",
+              textAlign: "center", fontStyle: "italic",
+            }}>
+              No entries encoded for {activePeriod ? activePeriod.label : "the Pentecostarion"} yet.
+            </div>
+          )}
+          {entries.map(({ offset, entry, audit }) => (
+            <div key={offset} ref={el => entryRefs.current[offset] = el}>
+              <PentEntryCard offset={offset} entry={entry} audit={audit} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -7265,6 +7265,18 @@ function VespersOpening({ liturgicalData, voOpen, setVoOpen, readerMode }) {
 
 const RELEASE_NOTES = [
   {
+    version: "v0.4.0",
+    date: "May 2026",
+    summary: "Menaion & Pentecostarion data browsers · shared audit module",
+    items: [
+      "feat: Menaion Data Browser (/menaion) — full-page dev/truthing tool for proofing encoded Menaion entries; 12-month tab navigation; day grid sidebar with per-entry audit indicators; all fields displayed with full text (no truncation); handles array entries for double commemorations",
+      "feat: Pentecostarion Data Browser (/pentecostarion) — parallel browser keyed by P+N offset; grouped by liturgical period (Bright Week, Thomas→Blind Man, Ascension, Pentecost); same field display and audit integration as Menaion browser",
+      "feat: shared audit module (src/lib/audit.js) — encoding completeness checks extracted into importable ES module; used by both browser components; field-presence checks + placeholder detection on parsed objects",
+      "arch: both browsers are lazy-loaded via React.lazy + Suspense — zero impact on main bundle; URL-only access (/orthodox-hours/menaion, /orthodox-hours/pentecostarion), not linked from main tool UI",
+      "arch: browsers import monthly data files directly using same dynamic import pattern as main tool — no coupling to hours-tool.jsx assembler logic",
+    ],
+  },
+  {
     version: "v0.3.16",
     date: "May 2026",
     summary: "Typica kontakia overhaul · Vespers troparion styling · Orthodox cross · end markers",
