@@ -165,7 +165,7 @@ function FieldRow({ label, value, mono }) {
 }
 
 // ── Entry Card ──────────────────────────────────────────────────────────────
-function EntryCard({ dateKey, entry, audit }) {
+function EntryCard({ dateKey, entry, audit, stickyTop }) {
   // Handle array entries (double commemorations)
   const isArray = Array.isArray(entry);
   const primary = isArray ? entry[0] : entry;
@@ -176,7 +176,7 @@ function EntryCard({ dateKey, entry, audit }) {
       {/* ── Sticky Header ── */}
       <div style={{
         position: "sticky",
-        top: headerHeight + "px",
+        top: stickyTop + "px",
         zIndex: 10,
         background: C.parchment,
         paddingTop: "0.35rem",
@@ -738,7 +738,7 @@ export default function MenaionBrowser() {
           )}
           {entries.map(({ key, entry, audit }) => (
             <div key={key} ref={el => entryRefs.current[key] = el}>
-              <EntryCard dateKey={key} entry={entry} audit={audit} />
+              <EntryCard dateKey={key} entry={entry} audit={audit} stickyTop={headerHeight} />
             </div>
           ))}
         </div>

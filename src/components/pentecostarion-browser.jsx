@@ -130,13 +130,13 @@ function FieldRow({ label, value, mono }) {
 }
 
 // ── Pentecostarion Entry Card ───────────────────────────────────────────────
-function PentEntryCard({ offset, entry, audit }) {
+function PentEntryCard({ offset, entry, audit, stickyTop }) {
   return (
     <div style={{ marginBottom: "1rem" }}>
       {/* ── Sticky Header ── */}
       <div style={{
         position: "sticky",
-        top: headerHeight + "px",
+        top: stickyTop + "px",
         zIndex: 10,
         background: C.parchment,
         paddingTop: "0.35rem",
@@ -660,7 +660,7 @@ export default function PentecostarionBrowser() {
           )}
           {entries.map(({ offset, entry, audit }) => (
             <div key={offset} ref={el => entryRefs.current[offset] = el}>
-              <PentEntryCard offset={offset} entry={entry} audit={audit} />
+              <PentEntryCard offset={offset} entry={entry} audit={audit} stickyTop={headerHeight} />
             </div>
           ))}
         </div>
