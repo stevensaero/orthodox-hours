@@ -1956,8 +1956,32 @@ Complete restructuring of the Typica kontakia section to match OCA and HTM rubri
 - End markers added to Typica and Post-Communion (were missing)
 
 ### Backlog for next session
-- **Pre-Communion Prayers** — full text provided by user (Jordanville Prayer Book order). All fixed text, ~25 sections. Architecture: lazy-loaded `src/data/pre-communion.js` data file (same pattern as Menaion monthly files). Assembler reads sections and pushes fixed elements. No movable parts.
 - **Pentecostarion P+20–P+34** — 15 weekday entries
 - **June Menaion** — 30 entries
 - **Transfiguration kontakion on weekdays during Pentecostarion** — verify whether it should still lead when an Ascension/Pentecost feast kontakion takes precedence
 - **Temple kontakion** — future user setting ("My parish is dedicated to…")
+
+## Session Notes — May 25, 2026 (v0.4.0–v0.5.0)
+
+### Data browsers (v0.4.0)
+- **Menaion browser** (`/menaion`): 12 month tabs, day grid sidebar, entry cards with all fields, per-entry audit indicators (green/amber/red). Lazy-loaded via React.lazy + Suspense.
+- **Pentecostarion browser** (`/pentecostarion`): period tabs (Bright Week, Thomas→Blind Man, Post-Pascha/Ascension, Pentecost). Same audit indicators.
+- **Shared audit module** (`src/lib/audit.js`): `auditMenaionEntry()`, `auditPentecostarionEntry()`, `auditSummary()`. Field-presence + placeholder detection.
+
+### Bug fixes (v0.4.1)
+- Vespers OT paroemia Scripture links: `assembleVespers()` referenced nonexistent `liturgicalData.dateStr`. Fixed by adding `selectedDate` parameter.
+- Pentecostarion browser crash: `beatitudes_troparia` items are objects `{text, tone?, source?, label?}`, not strings. Fixed destructuring.
+- Sticky entry headers: ResizeObserver with `[]` deps, passed as `stickyTop` prop.
+
+### OrdinaryBeginning refactor (v0.4.2)
+- Consolidated `TypicalBeginning` and `VespersOpening` into single `OrdinaryBeginning` component. Props: `liturgicalData`, `readerMode`, `open/setOpen`, `collapsible`, `title`, `contextNote`. Three seasonal variants handled internally.
+- Used by: Vespers, 1st Hour, 6th Hour, Typica. Also registered as standalone service at position 0.
+- Net: 185 insertions, 456 deletions (271-line reduction).
+
+### Pre-Communion Prayers (v0.5.0)
+- **New service**: `pre_communion` — "Prayers Before Holy Communion" (Jordanville Prayer Book).
+- **Data file**: `src/data/pre-communion.js` — 35 sections, ~36K chars of prayer text. Lazy-loaded (39KB chunk, 12KB gzipped).
+- **35 sections**: Opening prayers, Psalms 22/23/115, after-psalms doxology, Troparia T8, Lenten troparion, Psalm 50, Canon for Holy Communion (Odes I–IX with Kontakion after Ode VI), It is truly meet + Trisagion/Our Father, Troparia after Canon, LHM 40x + verses, Prayers 1–10 (Basil the Great, Chrysostom ×4, Symeon Metaphrastes, Damascene ×2, Symeon the New Theologian), I Believe, Communion verses (Metaphrastes + Of Thy Mystical Supper), Final troparia, Final prayer, Of Thy Mystical Supper (repeated).
+- **Assembler**: `assemblePreCommunion(data)` — iterates data array, pushes fixed elements + end marker. All fixed text, no movable parts.
+- **SERVICE_REGISTRY**: positioned before `post_communion`. Season-independent (`inScope` bypass). Legend strip hidden (no movable/unresolved items).
+- End marker: "THE END OF THE PRAYERS BEFORE HOLY COMMUNION" + Orthodox cross.

@@ -5759,6 +5759,34 @@ const PC_TK_PRESANCTIFIED = {
   bothNow: 'Both now and ever, and unto the ages of ages. Amen.',
 };
 
+// ── Pre-Communion Assembler ───────────────────────────────────────────────────
+// Iterates over the lazy-loaded PRE_COMMUNION_DATA array and pushes fixed elements.
+// All text is fixed (Jordanville Prayer Book) — no movable parts.
+
+function assemblePreCommunion(data) {
+  if (!data) return [];
+  const elements = [];
+  const src = 'Jordanville Prayer Book, Prayers Before Holy Communion';
+  for (const section of data) {
+    elements.push({
+      id: section.id,
+      type: 'fixed',
+      label: section.label || '',
+      text: section.text,
+      rubric: section.rubric || null,
+      source: src,
+    });
+  }
+  elements.push({
+    id: 'prc-end',
+    type: 'end_marker',
+    label: '',
+    text: 'THE END OF THE PRAYERS BEFORE HOLY COMMUNION',
+    source: src,
+  });
+  return elements;
+}
+
 // ── Assembler ─────────────────────────────────────────────────────────────────
 
 function assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMode = false) {
@@ -5873,6 +5901,7 @@ const SERVICE_REGISTRY = [
   { key: "6th_hour",       label: "The Sixth Hour",             built: true  },
   { key: "9th_hour",       label: "The Ninth Hour",             built: true  },
   { key: "liturgy",        label: "Divine Liturgy",             built: false },
+  { key: "pre_communion",  label: "Prayers Before Holy Communion", built: true  },
   { key: "post_communion", label: "Prayers After Holy Communion", built: true  },
   { key: "typica",         label: "The Order of the Typica",    built: true  },
 ];
@@ -8006,6 +8035,12 @@ export default function App() {
   const [tbOpen, setTbOpen] = useState(false);
   const [voOpen, setVoOpen] = useState(false);
   const [readerMode, setReaderMode] = useState(false);
+  const [preCommunionData, setPreCommunionData] = useState(null);
+  React.useEffect(() => {
+    if (selectedServiceKey === 'pre_communion' && !preCommunionData) {
+      import('../data/pre-communion.js').then(m => setPreCommunionData(m.default));
+    }
+  }, [selectedServiceKey]);
 
   // ── Data loading — preload month + Pentecostarion when date changes ─────────
   const [, setDataVersion] = useState(0);
@@ -8072,6 +8107,7 @@ export default function App() {
     : null;
 
   const inScope = selectedServiceKey === 'post_communion'
+    || selectedServiceKey === 'pre_communion'
     || selectedServiceKey === 'ordinary_beginning'
     || ["ordinary", "sunday", "pentecostarion", "brightweek"].includes(liturgicalData.season);
   const isSunday = liturgicalData.season === "sunday";
@@ -8131,6 +8167,8 @@ export default function App() {
       els = assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, readerMode, selectedDate);
     } else if (currentService.key === 'typica') {
       els = assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode);
+    } else if (currentService.key === 'pre_communion') {
+      els = assemblePreCommunion(preCommunionData);
     } else if (currentService.key === 'post_communion') {
       els = assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMode);
     } else {
@@ -8602,6 +8640,10 @@ export default function App() {
                       : <>Weekday kontakia sequence</>}{" "}
                     · Served after the Sixth Hour when no Divine Liturgy is celebrated
                   </div>
+                ) : currentService.key === 'pre_communion' ? (
+                  <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
+                    Jordanville Prayer Book · Read before receiving Holy Communion · Fixed text, no movable parts
+                  </div>
                 ) : currentService.key === 'post_communion' ? (() => {
                     const _lt = getLiturgyType(liturgicalData);
                     const _ltLabel = _lt === 'basil' ? 'Liturgy of St. Basil the Great'
@@ -8632,8 +8674,8 @@ export default function App() {
               )}
             </div>
 
-            {/* Legend (only when service is built and not ordinary_beginning) */}
-            {currentService.built && currentService.key !== 'ordinary_beginning' && (
+            {/* Legend (only when service is built and not ordinary_beginning/pre_communion) */}
+            {currentService.built && currentService.key !== 'ordinary_beginning' && currentService.key !== 'pre_communion' && (
               <div style={{ display: "flex", gap: "1.2rem", marginBottom: "1.5rem", fontSize: "0.75rem", flexWrap: "wrap" }}>
                 <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                   <span style={{ width: "12px", height: "12px", borderRadius: "2px", background: "#9A8A70", display: "inline-block" }} />
@@ -8680,6 +8722,11 @@ export default function App() {
                   <OrdinaryBeginning liturgicalData={liturgicalData} open={tbOpen} setOpen={setTbOpen} readerMode={readerMode}
                     title="Ordinary Beginning (if said separately)"
                     contextNote="The Typica is often celebrated immediately following the Sixth Hour. If said separately, it begins with the Ordinary Beginning." />
+                )}
+                {currentService.key === 'pre_communion' && !preCommunionData && (
+                  <div style={{ textAlign: 'center', padding: '2rem', color: '#9A8A70', fontStyle: 'italic' }}>
+                    Loading prayers\u2026
+                  </div>
                 )}
                 {elements
                   .filter(el => !(el.openingElement && voOpen))
