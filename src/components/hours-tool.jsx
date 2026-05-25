@@ -4741,7 +4741,7 @@ const TYPICA_PSALM_102 =
   "Bless the Lord, O my soul, and forget not all that He hath done for thee, " +
   "Who is gracious unto all thine iniquities, Who healeth all thine infirmities, " +
   "Who redeemeth thy life from corruption, Who crowneth thee with mercy and compassion, " +
-  "Who fulfilleth thy desire with good things; thy youth shall be renewed as the eagle\u2019s. " +
+  "Who fulfilleth thy desire with good things; thy youth shall be renewed as the eagle’s. " +
   "The Lord performeth deeds of mercy, and executeth judgment for all them that are wronged. " +
   "He hath made His ways known unto Moses, unto the sons of Israel the things that He hath willed. " +
   "Compassionate and merciful is the Lord, long-suffering and plenteous in mercy; " +
@@ -4802,7 +4802,7 @@ const TYPICA_BEATITUDES_FIXED = [
   "Blessed are the merciful, for they shall obtain mercy.",
   "Blessed are the pure in heart, for they shall see God.",
   "Blessed are the peacemakers, for they shall be called the sons of God.",
-  "Blessed are those who are persecuted for righteousness\u2019 sake, for theirs is the Kingdom of Heaven.",
+  "Blessed are those who are persecuted for righteousness’ sake, for theirs is the Kingdom of Heaven.",
   "Blessed are you when men shall revile you and persecute you, and shall say all manner of evil against you falsely for my sake.",
   "Rejoice and be exceedingly glad, for great is your reward in heaven.",
   "Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.",
@@ -7732,7 +7732,7 @@ function HowItWorksPanel() {
   };
   const chevron = isOpen => (
     <span style={{ fontSize: "0.7rem", transition: "transform 0.15s",
-                   display: "inline-block", transform: isOpen ? "rotate(180deg)" : "none" }}>{"\u25BE"}</span>
+                   display: "inline-block", transform: isOpen ? "rotate(180deg)" : "none" }}>{"▾"}</span>
   );
   const p = (txt, style) => (
     <p style={{ margin: "0 0 0.7rem", ...(style||{}) }}>{txt}</p>
@@ -7767,15 +7767,15 @@ function HowItWorksPanel() {
 
   // ── Annotated specimen ──────────────────────────────────────────────────────
   const specimenRows = [
-    { type: "fixed",    label: "Opening blessing", note: "Blessed is our God... \u2014 HTM" },
-    { type: "fixed",    label: "Three psalms (83, 84, 85)", note: "Always the same \u2014 HTM" },
-    { type: "fixed",    label: "Alleluia \u00b7 Lord have mercy", note: "Fixed skeleton \u2014 HTM" },
-    { type: "movable",  label: "Troparion", note: "Tone & text from Menaion or Pentecostarion \u2014 changes daily" },
-    { type: "fixed",    label: "Theotokion", note: "Ordinary theotokion for the tone \u2014 HTM" },
-    { type: "fixed",    label: "Holy God \u00b7 Our Father \u00b7 Priest exclamation", note: "Fixed \u2014 HTM" },
-    { type: "movable",  label: "Kontakion", note: "Ode III or Ode VI per HTM rubric \u2014 changes daily" },
-    { type: "fixed",    label: "Lord have mercy \u00d740 \u00b7 Prayer of the Hours", note: "Fixed \u2014 HTM" },
-    { type: "fixed",    label: "More Honourable \u00b7 Priest blessing \u00b7 Closing prayer", note: "Fixed \u2014 HTM" },
+    { type: "fixed",    label: "Opening blessing", note: "Blessed is our God... — HTM" },
+    { type: "fixed",    label: "Three psalms (83, 84, 85)", note: "Always the same — HTM" },
+    { type: "fixed",    label: "Alleluia · Lord have mercy", note: "Fixed skeleton — HTM" },
+    { type: "movable",  label: "Troparion", note: "Tone & text from Menaion or Pentecostarion — changes daily" },
+    { type: "fixed",    label: "Theotokion", note: "Ordinary theotokion for the tone — HTM" },
+    { type: "fixed",    label: "Holy God · Our Father · Priest exclamation", note: "Fixed — HTM" },
+    { type: "movable",  label: "Kontakion", note: "Ode III or Ode VI per HTM rubric — changes daily" },
+    { type: "fixed",    label: "Lord have mercy ×40 · Prayer of the Hours", note: "Fixed — HTM" },
+    { type: "fixed",    label: "More Honourable · Priest blessing · Closing prayer", note: "Fixed — HTM" },
     { type: "fixed",    label: "THE END OF THE NINTH HOUR", note: "Per HTM" },
   ];
   const typeColor = { fixed: "#3B6EAA", movable: "#8B6914", unresolved: "#B94A3A" };
@@ -7785,13 +7785,13 @@ function HowItWorksPanel() {
   return (
     <div style={{ marginTop: "1rem", textAlign: "left", padding: "0 1rem" }}>
 
-      {/* \u2500\u2500 1. What This Tool Does \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */}
+      {/* ── 1. What This Tool Does ──────────────────────────────────────────────── */}
       <div style={headerStyle} onClick={() => toggle("overview")}>
         <span>What This Tool Does</span>{chevron(open.overview)}
       </div>
       {open.overview && (
         <div style={panelStyle}>
-          {p(<>This is a liturgical assembly tool for <strong>OCA parishes following Russian usage</strong>. Given a date, it computes the liturgical season, looks up the appointed saint or feast, and assembles the correct movable parts of each service \u2014 with every decision traced to its rubrical source. It is as much a <strong>teaching aid</strong> as an assembly tool: every element is annotated with where it comes from and why it appears.</>)}
+          {p(<>This is a liturgical assembly tool for <strong>OCA parishes following Russian usage</strong>. Given a date, it computes the liturgical season, looks up the appointed saint or feast, and assembles the correct movable parts of each service — with every decision traced to its rubrical source. It is as much a <strong>teaching aid</strong> as an assembly tool: every element is annotated with where it comes from and why it appears.</>)}
           {p(<>The tool currently assembles <strong>9 of the 13 services</strong> in the daily cycle. It handles ordinary weekdays, Sundays (with Octoechos tone rotation), and the entire Pentecostarion season from Pascha through All Saints of North America. Great Lent and Triodion services are the next major development area.</>)}
           {sub("Service inventory")}
           <div style={{ fontSize: "0.78rem", border: "1px solid #D4C49A", borderRadius: "4px",
@@ -7806,96 +7806,96 @@ function HowItWorksPanel() {
                 <span style={{
                   flexShrink: 0, fontSize: "0.85rem",
                   color: svc.status === "built" ? "#3A6B3A" : "#9A8A70",
-                }}>{svc.status === "built" ? "\u2713" : "\u25CB"}</span>
+                }}>{svc.status === "built" ? "✓" : "○"}</span>
                 <span style={{
                   fontWeight: svc.status === "built" ? "bold" : "normal",
                   color: svc.status === "built" ? "#1C1008" : "#9A8A70",
                 }}>{svc.name}</span>
                 {svc.note && (
-                  <span style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic" }}> \u2014 {svc.note}</span>
+                  <span style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic" }}> — {svc.note}</span>
                 )}
               </div>
             ))}
           </div>
           {sub("Additional features")}
           {ul([
-            <><strong>Psalter reader</strong> \u2014 Full text of all 20 kathismas, linked from Vespers kathisma assignments. Displays each stasis with psalm numbering.</>,
-            <><strong>Scripture viewer</strong> \u2014 Full-text epistle and gospel readings, linked from the liturgical context card and from within service elements.</>,
-            <><strong>Menaion data browser</strong> (<code>/menaion</code>) \u2014 Inspect all encoded fixed-calendar entries with per-entry completeness auditing.</>,
-            <><strong>Pentecostarion data browser</strong> (<code>/pentecostarion</code>) \u2014 Same for Pascha-anchored entries, organized by liturgical period.</>,
-            <><strong>Reader mode</strong> \u2014 Substitutes lay reader responses for priest exclamations throughout.</>,
+            <><strong>Psalter reader</strong> — Full text of all 20 kathismas, linked from Vespers kathisma assignments. Displays each stasis with psalm numbering.</>,
+            <><strong>Scripture viewer</strong> — Full-text epistle and gospel readings, linked from the liturgical context card and from within service elements.</>,
+            <><strong>Menaion data browser</strong> (<code>/menaion</code>) — Inspect all encoded fixed-calendar entries with per-entry completeness auditing.</>,
+            <><strong>Pentecostarion data browser</strong> (<code>/pentecostarion</code>) — Same for Pascha-anchored entries, organized by liturgical period.</>,
+            <><strong>Reader mode</strong> — Substitutes lay reader responses for priest exclamations throughout.</>,
           ])}
         </div>
       )}
 
-      {/* \u2500\u2500 2. The Calendar Engine \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */}
+      {/* ── 2. The Calendar Engine ──────────────────────────────────────────── */}
       <div style={headerStyle} onClick={() => toggle("calendar")}>
         <span>The Calendar Engine</span>{chevron(open.calendar)}
       </div>
       {open.calendar && (
         <div style={panelStyle}>
-          {p(<>The tool computes every movable feast, fast, and liturgical season from a single anchor: <strong>Pascha</strong> (Orthodox Easter). Pascha is calculated using the <em>Meeus/Jones/Butcher</em> algorithm applied to the Julian calendar, then converted to the Gregorian calendar by adding 13 days \u2014 the current difference between the two calendars, fixed until 2100.</>)}
-          {p(<>From Pascha, every other movable date is a simple offset. Lent begins 48 days before Pascha (Clean Monday). Pentecost falls 49 days after. All Saints Sunday is 56 days after. The five Lenten Sundays, the pre-Lenten period (Meatfare, Cheesefare), Ascension, and All Saints of North America are all computed the same way \u2014 as a signed number of days from Pascha. The algorithm has been verified against the OCA desk calendar for 2026, 2027, and 2028.</>)}
-          {p(<>The <strong>tone cycle</strong> (Tones 1\u20138 of the Octoechos) begins on the Monday after All Saints Sunday and advances one tone per week, cycling continuously through ordinary time.</>)}
-          {p(<>The tool recognizes <strong>35 named movable days</strong> \u2014 from the Sunday of the Publican and Pharisee (Pascha\u221270) through All Saints of North America (Pascha+63) \u2014 and displays contextual notes for each. Great Feasts with their forefeasts, afterfeasts, and apodoses are tracked and influence which Fekula assembly rule applies.</>)}
+          {p(<>The tool computes every movable feast, fast, and liturgical season from a single anchor: <strong>Pascha</strong> (Orthodox Easter). Pascha is calculated using the <em>Meeus/Jones/Butcher</em> algorithm applied to the Julian calendar, then converted to the Gregorian calendar by adding 13 days — the current difference between the two calendars, fixed until 2100.</>)}
+          {p(<>From Pascha, every other movable date is a simple offset. Lent begins 48 days before Pascha (Clean Monday). Pentecost falls 49 days after. All Saints Sunday is 56 days after. The five Lenten Sundays, the pre-Lenten period (Meatfare, Cheesefare), Ascension, and All Saints of North America are all computed the same way — as a signed number of days from Pascha. The algorithm has been verified against the OCA desk calendar for 2026, 2027, and 2028.</>)}
+          {p(<>The <strong>tone cycle</strong> (Tones 1–8 of the Octoechos) begins on the Monday after All Saints Sunday and advances one tone per week, cycling continuously through ordinary time.</>)}
+          {p(<>The tool recognizes <strong>35 named movable days</strong> — from the Sunday of the Publican and Pharisee (Pascha−70) through All Saints of North America (Pascha+63) — and displays contextual notes for each. Great Feasts with their forefeasts, afterfeasts, and apodoses are tracked and influence which Fekula assembly rule applies.</>)}
           {sub("Great Lent week and Sunday tracking")}
-          {p(<>Within Great Lent, the tool tracks the <strong>week number</strong> (1\u20136) and, on Sundays, the <strong>named Lenten Sunday</strong> (1\u20135). Clean Monday is day 1 of week 1; the first Sunday of Lent is day 7, the last day of week 1. Weeks are counted as Monday-to-Sunday spans: week{"\u00a0"}= \u2308day-of-Lent \u00f7 7\u2309. Passion (Holy) Week is detected separately as days 43\u201349 (P\u22127 through P\u22121) and does not carry a week number.</>)}
-          {p(<>The five named Lenten Sundays correspond to Sundays 1\u20135: <em>Sunday of Orthodoxy, Sunday of St. Gregory Palamas, Sunday of the Holy Cross, Sunday of St. John Climacus,</em> and <em>Sunday of St. Mary of Egypt.</em> Palm Sunday (P\u22127) is detected as a named movable day. The week and Sunday data appear in the liturgical context card and drive the kathisma schedule.</>)}
+          {p(<>Within Great Lent, the tool tracks the <strong>week number</strong> (1–6) and, on Sundays, the <strong>named Lenten Sunday</strong> (1–5). Clean Monday is day 1 of week 1; the first Sunday of Lent is day 7, the last day of week 1. Weeks are counted as Monday-to-Sunday spans: week{" "}= ⌈day-of-Lent ÷ 7⌉. Passion (Holy) Week is detected separately as days 43–49 (P−7 through P−1) and does not carry a week number.</>)}
+          {p(<>The five named Lenten Sundays correspond to Sundays 1–5: <em>Sunday of Orthodoxy, Sunday of St. Gregory Palamas, Sunday of the Holy Cross, Sunday of St. John Climacus,</em> and <em>Sunday of St. Mary of Egypt.</em> Palm Sunday (P−7) is detected as a named movable day. The week and Sunday data appear in the liturgical context card and drive the kathisma schedule.</>)}
           {sub("Sundays after Pentecost and the Lukan Jump")}
-          {p(<>From All Saints Sunday (P+56) through the end of the Pentecost season, the tool tracks two parallel counts displayed in the liturgical context card: the <strong>Nth Sunday after Pentecost</strong> (on Sundays) or <strong>Nth Week after Pentecost</strong> (on weekdays), and \u2014 once the Lukan lectionary begins \u2014 the <strong>Nth Sunday of Luke</strong> or <strong>Nth Week of Luke</strong>.</>)}
-          {p(<>The <strong>Lukan Jump</strong> occurs on the Monday after the Sunday on or after the Elevation of the Holy Cross (September 14). From that Monday, the daily Gospel readings shift from Matthew to Luke. However, the first Sunday after the jump is a carryover week completing the interrupted Matthew readings \u2014 so the <strong>first Sunday of Luke</strong> is the <em>second</em> Sunday after the Elevation, computed as Lukan Jump Monday + 13 days. This convention is confirmed against OCA parish bulletins.</>)}
-          {p(<>Both counts end definitively on the <strong>Sunday of the Publican and Pharisee</strong> (followingPascha \u2212 70), which opens the Triodion.</>)}
+          {p(<>From All Saints Sunday (P+56) through the end of the Pentecost season, the tool tracks two parallel counts displayed in the liturgical context card: the <strong>Nth Sunday after Pentecost</strong> (on Sundays) or <strong>Nth Week after Pentecost</strong> (on weekdays), and — once the Lukan lectionary begins — the <strong>Nth Sunday of Luke</strong> or <strong>Nth Week of Luke</strong>.</>)}
+          {p(<>The <strong>Lukan Jump</strong> occurs on the Monday after the Sunday on or after the Elevation of the Holy Cross (September 14). From that Monday, the daily Gospel readings shift from Matthew to Luke. However, the first Sunday after the jump is a carryover week completing the interrupted Matthew readings — so the <strong>first Sunday of Luke</strong> is the <em>second</em> Sunday after the Elevation, computed as Lukan Jump Monday + 13 days. This convention is confirmed against OCA parish bulletins.</>)}
+          {p(<>Both counts end definitively on the <strong>Sunday of the Publican and Pharisee</strong> (followingPascha − 70), which opens the Triodion.</>)}
           {sub("The Lectionary")}
-          {p(<>The daily scripture readings shown in the context card come from a static table of <strong>298 entries</strong>, each keyed by its Pascha offset. The same offset yields the same readings every year \u2014 the entire New Testament cycle is purely movable, anchored to Pascha, not the calendar date. Full epistle and gospel texts can be read via the built-in scripture viewer, linked from the context card.</>)}
-          {sub("What\u2019s next: Triodion")}
-          {p(<>The calendar engine already tracks the pre-Lenten, Lenten, and Holy Week periods. The next major milestone is building the <strong>Triodion data layer</strong> \u2014 encoding the unique hymns, canons, and structural changes that govern services from the Sunday of the Publican and Pharisee through Great and Holy Saturday. This requires both new encoding work and new assembly rules, since Lenten services differ significantly from the ordinary-time pattern.</>)}
+          {p(<>The daily scripture readings shown in the context card come from a static table of <strong>298 entries</strong>, each keyed by its Pascha offset. The same offset yields the same readings every year — the entire New Testament cycle is purely movable, anchored to Pascha, not the calendar date. Full epistle and gospel texts can be read via the built-in scripture viewer, linked from the context card.</>)}
+          {sub("What’s next: Triodion")}
+          {p(<>The calendar engine already tracks the pre-Lenten, Lenten, and Holy Week periods. The next major milestone is building the <strong>Triodion data layer</strong> — encoding the unique hymns, canons, and structural changes that govern services from the Sunday of the Publican and Pharisee through Great and Holy Saturday. This requires both new encoding work and new assembly rules, since Lenten services differ significantly from the ordinary-time pattern.</>)}
         </div>
       )}
 
-      {/* \u2500\u2500 3. Sources & Texts \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */}
+      {/* ── 3. Sources & Texts ───────────────────────────────────────────── */}
       <div style={headerStyle} onClick={() => toggle("sources")}>
         <span>Sources & Texts</span>{chevron(open.sources)}
       </div>
       {open.sources && (
         <div style={panelStyle}>
-          {p("Every decision the tool makes is traced to a source. When sources conflict, the higher-ranked source wins \u2014 and the conflict is flagged in the tool\u2019s notes.")}
-          {sub("1 \u00b7 Fekula & Williams, The Order of Divine Services (2009)")}
-          {p(<>The primary assembly authority. Every structural decision \u2014 which troparion governs, which kontakion goes at which Hour, when the Menaion overrides the Octoechos \u2014 is cited to a specific section of Fekula. When you see a badge like <span style={{color:"#8B6914"}}>\u00a72C</span> or <span style={{color:"#8B6914"}}>\u00a74A</span>, that is the exact section justifying the placement.</>)}
-          {sub("2 \u00b7 OCA Calendar (oca.org)")}
-          {p("Authoritative for OCA parishes. Takes precedence over the Russian Menaion when they differ. The OCA calendar determines which saints are commemorated on which dates. When the OCA calendar and the Russian Menaion disagree, the OCA calendar governs \u2014 and the divergence is documented in the encoding record for that date.")}
-          {sub("3 \u00b7 St. Sergius Menaion PDFs")}
-          {p("The primary source for daily service texts. Each day\u2019s PDF contains the full texts for Vespers, Matins, and Liturgy. The tool reads these PDFs to extract troparion tone and text, kontakion tone and text, service rank (stichera count), paroemias (Old Testament lessons), and Matins ode assignments.")}
-          {sub("4 \u00b7 General Menaion")}
-          {p("A fallback source for days where the daily Menaion PDF does not include a troparion or kontakion. The General Menaion provides common texts organized by saint type (martyrs, hierarchs, venerable, etc.). When used, a (name) placeholder is substituted for the specific saint\u2019s name.")}
-          {sub("5 \u00b7 HTM Horologion (Unabbreviated Book of the Hours)")}
-          {p("Source for all invariable service skeleton texts \u2014 the psalms, the Trisagion, Our Father, More Honourable, priest exclamations, and closing prayers at every Hour. Also the structural source for the Typica and Post-Communion Prayers. These texts never change regardless of season or saint.")}
-          {sub("6 \u00b7 Jordanville Prayer Book")}
-          {p("Source for the Prayers Before Holy Communion. The Jordanville Prayer Book follows the order given in the Jordanville Russian-font Molitvoslov. All text is fixed \u2014 Psalms 22, 23, 115, Psalm 50, the Canon for Holy Communion (Odes I\u2013IX), ten prayers by the Holy Fathers, and the communion verses.")}
-          {sub("7 \u00b7 Pentecostarion")}
+          {p("Every decision the tool makes is traced to a source. When sources conflict, the higher-ranked source wins — and the conflict is flagged in the tool’s notes.")}
+          {sub("1 · Fekula & Williams, The Order of Divine Services (2009)")}
+          {p(<>The primary assembly authority. Every structural decision — which troparion governs, which kontakion goes at which Hour, when the Menaion overrides the Octoechos — is cited to a specific section of Fekula. When you see a badge like <span style={{color:"#8B6914"}}>§2C</span> or <span style={{color:"#8B6914"}}>§4A</span>, that is the exact section justifying the placement.</>)}
+          {sub("2 · OCA Calendar (oca.org)")}
+          {p("Authoritative for OCA parishes. Takes precedence over the Russian Menaion when they differ. The OCA calendar determines which saints are commemorated on which dates. When the OCA calendar and the Russian Menaion disagree, the OCA calendar governs — and the divergence is documented in the encoding record for that date.")}
+          {sub("3 · St. Sergius Menaion PDFs")}
+          {p("The primary source for daily service texts. Each day’s PDF contains the full texts for Vespers, Matins, and Liturgy. The tool reads these PDFs to extract troparion tone and text, kontakion tone and text, service rank (stichera count), paroemias (Old Testament lessons), and Matins ode assignments.")}
+          {sub("4 · General Menaion")}
+          {p("A fallback source for days where the daily Menaion PDF does not include a troparion or kontakion. The General Menaion provides common texts organized by saint type (martyrs, hierarchs, venerable, etc.). When used, a (name) placeholder is substituted for the specific saint’s name.")}
+          {sub("5 · HTM Horologion (Unabbreviated Book of the Hours)")}
+          {p("Source for all invariable service skeleton texts — the psalms, the Trisagion, Our Father, More Honourable, priest exclamations, and closing prayers at every Hour. Also the structural source for the Typica and Post-Communion Prayers. These texts never change regardless of season or saint.")}
+          {sub("6 · Jordanville Prayer Book")}
+          {p("Source for the Prayers Before Holy Communion. The Jordanville Prayer Book follows the order given in the Jordanville Russian-font Molitvoslov. All text is fixed — Psalms 22, 23, 115, Psalm 50, the Canon for Holy Communion (Odes I–IX), ten prayers by the Holy Fathers, and the communion verses.")}
+          {sub("7 · Pentecostarion")}
           {p("Source for the movable-cycle hymns from Pascha through All Saints Sunday (P+0 through P+56). Contains unique troparia, kontakia, and structural overrides (e.g. Christ is risen replacing O Heavenly King, Paschal troparion at all Hours during Bright Week, feast kontakia at the Hours during the Ascension and Pentecost periods).")}
         </div>
       )}
 
-      {/* \u2500\u2500 4. How Services Are Assembled \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */}
+      {/* ── 4. How Services Are Assembled ─────────────────────────────────── */}
       <div style={headerStyle} onClick={() => toggle("anatomy")}>
         <span>How Services Are Assembled</span>{chevron(open.anatomy)}
       </div>
       {open.anatomy && (
         <div style={panelStyle}>
           {sub("The daily cycle")}
-          {p(<>The Orthodox Church sanctifies the entire day through a cycle of services, each tied to a specific hour of prayer. The new liturgical day begins at <strong>sunset</strong> \u2014 so Vespers is always the first service of the day, not the last.</>)}
+          {p(<>The Orthodox Church sanctifies the entire day through a cycle of services, each tied to a specific hour of prayer. The new liturgical day begins at <strong>sunset</strong> — so Vespers is always the first service of the day, not the last.</>)}
           {ul([
-            <><strong>Vespers</strong> (sunset / early evening) \u2014 First service of the new liturgical day. Thanks God for the day that has passed and asks His protection for the night.</>,
-            <><strong>Compline</strong> (after supper / bedtime) \u2014 Also called Apodeipnon (\u201Cafter supper\u201D). Evening prayers before sleep.</>,
-            <><strong>Midnight Office</strong> (around midnight) \u2014 Also called Mesonyktikon or Nocturns. Commemorates the parable of the wise and foolish virgins.</>,
-            <><strong>Matins / Orthros</strong> (sunrise / early morning) \u2014 The main morning praise service. On Sundays and feasts it includes the Polyeleos, canon, and (on Sundays) a Resurrection Gospel.</>,
-            <><strong>First Hour</strong> (~6 a.m.) \u2014 Said after Matins. Focuses on the morning light and Christ before Pilate.</>,
-            <><strong>Third Hour</strong> (~9 a.m.) \u2014 Remembers the descent of the Holy Spirit at Pentecost.</>,
-            <><strong>Sixth Hour</strong> (noon) \u2014 Remembers the Crucifixion.</>,
-            <><strong>Ninth Hour</strong> (~3 p.m.) \u2014 Remembers the death of Christ on the Cross. Traditionally said immediately before Vespers, beginning the transition to the new day.</>,
-            <><strong>Divine Liturgy</strong> (usually mid-morning) \u2014 The Eucharistic service. On days without a Liturgy, the <strong>Typica</strong> may be read in its place.</>,
+            <><strong>Vespers</strong> (sunset / early evening) — First service of the new liturgical day. Thanks God for the day that has passed and asks His protection for the night.</>,
+            <><strong>Compline</strong> (after supper / bedtime) — Also called Apodeipnon (“after supper”). Evening prayers before sleep.</>,
+            <><strong>Midnight Office</strong> (around midnight) — Also called Mesonyktikon or Nocturns. Commemorates the parable of the wise and foolish virgins.</>,
+            <><strong>Matins / Orthros</strong> (sunrise / early morning) — The main morning praise service. On Sundays and feasts it includes the Polyeleos, canon, and (on Sundays) a Resurrection Gospel.</>,
+            <><strong>First Hour</strong> (~6 a.m.) — Said after Matins. Focuses on the morning light and Christ before Pilate.</>,
+            <><strong>Third Hour</strong> (~9 a.m.) — Remembers the descent of the Holy Spirit at Pentecost.</>,
+            <><strong>Sixth Hour</strong> (noon) — Remembers the Crucifixion.</>,
+            <><strong>Ninth Hour</strong> (~3 p.m.) — Remembers the death of Christ on the Cross. Traditionally said immediately before Vespers, beginning the transition to the new day.</>,
+            <><strong>Divine Liturgy</strong> (usually mid-morning) — The Eucharistic service. On days without a Liturgy, the <strong>Typica</strong> may be read in its place.</>,
           ])}
-          {p(<>In parish practice the full cycle is rarely served in its entirety on weekdays. The most commonly served combination is the <strong>9th Hour \u2192 Vespers</strong> in the evening, and <strong>Matins \u2192 1st Hour</strong> in the morning, followed by the Divine Liturgy. The <strong>Prayers Before Holy Communion</strong> are read privately in preparation, and the <strong>Prayers After Holy Communion</strong> are read privately afterward.</>)}
+          {p(<>In parish practice the full cycle is rarely served in its entirety on weekdays. The most commonly served combination is the <strong>9th Hour → Vespers</strong> in the evening, and <strong>Matins → 1st Hour</strong> in the morning, followed by the Divine Liturgy. The <strong>Prayers Before Holy Communion</strong> are read privately in preparation, and the <strong>Prayers After Holy Communion</strong> are read privately afterward.</>)}
           {p(<>This tool assembles the services in their canonical daily order, beginning with Vespers. Each service is accessible from the service selector at the top of the page.</>)}
           {sub("Fixed and movable elements")}
           {p("A Daily Hour has two kinds of content. The colour coding below shows how they are distinguished in the assembled service.")}
@@ -7947,42 +7947,42 @@ function HowItWorksPanel() {
             ))}
           </div>
 
-          {p("Only the two Movable rows change from day to day. Everything else is identical on every ordinary weekday of the year. On feast days and during the Pentecostarion, seasonal rules alter the Fixed skeleton too \u2014 replacing O come let us worship with Christ is risen, or omitting O Heavenly King \u2014 but those changes are also fixed by the rubrics, not by the saint of the day.")}
-          {sub("Lord I Have Cried \u2014 how stichera are inserted at Vespers")}
-          {p(<>At every Vespers, after the kathisma, the psalms <strong>Lord I Have Cried</strong> (Psalms 140, 141, 129, and 116) are chanted. The last several verses of these psalms serve as an <em>insertion scaffold</em> \u2014 a numbered countdown from verse 10 down to verse 1. The <strong>stichera</strong> (hymns appointed for the day) are inserted into this countdown, one sticheron after each verse, beginning at the verse that matches the stichera count.</>)}
-          {p(<>The stichera count is determined by service rank: <strong>6 stichera</strong> for Simple, Six-Stichera, and Doxology rank (insertion begins at V.6); <strong>8 stichera</strong> for Polyeleos rank (insertion at V.8); <strong>10 stichera</strong> for Vigil rank (insertion at V.10, no plain verses). After V.1, the sequence closes with <em>Glory\u2026</em> (the doxasticon) and <em>Now and ever\u2026</em> (the theotokion).</>)}
-          {p(<>The current tool shows the full psalm texts with the stichera verse scaffold as a readable fallback. The interleaved assembler \u2014 inserting encoded stichera into the correct verse slots \u2014 is a future development milestone.</>)}
+          {p("Only the two Movable rows change from day to day. Everything else is identical on every ordinary weekday of the year. On feast days and during the Pentecostarion, seasonal rules alter the Fixed skeleton too — replacing O come let us worship with Christ is risen, or omitting O Heavenly King — but those changes are also fixed by the rubrics, not by the saint of the day.")}
+          {sub("Lord I Have Cried — how stichera are inserted at Vespers")}
+          {p(<>At every Vespers, after the kathisma, the psalms <strong>Lord I Have Cried</strong> (Psalms 140, 141, 129, and 116) are chanted. The last several verses of these psalms serve as an <em>insertion scaffold</em> — a numbered countdown from verse 10 down to verse 1. The <strong>stichera</strong> (hymns appointed for the day) are inserted into this countdown, one sticheron after each verse, beginning at the verse that matches the stichera count.</>)}
+          {p(<>The stichera count is determined by service rank: <strong>6 stichera</strong> for Simple, Six-Stichera, and Doxology rank (insertion begins at V.6); <strong>8 stichera</strong> for Polyeleos rank (insertion at V.8); <strong>10 stichera</strong> for Vigil rank (insertion at V.10, no plain verses). After V.1, the sequence closes with <em>Glory…</em> (the doxasticon) and <em>Now and ever…</em> (the theotokion).</>)}
+          {p(<>The current tool shows the full psalm texts with the stichera verse scaffold as a readable fallback. The interleaved assembler — inserting encoded stichera into the correct verse slots — is a future development milestone.</>)}
           {sub("The Kathisma schedule")}
-          {p(<>At Vespers and Matins, one or more sections of the Psalter \u2014 called <strong>kathismas</strong> \u2014 are read in sequence throughout the week. The Psalter\u2019s 150 psalms are divided into <strong>20 kathismas</strong>, each further subdivided into three stases (antiphons). The full Psalter is read through once per week in ordinary time; more frequently during Great Lent.</>)}
-          {p(<>Which kathisma is appointed depends on two things: the <strong>day of the week</strong> and the <strong>period of the church year</strong>. The tool detects one of six periods: Summer/Winter, Autumn/Spring, Great Lent Weeks 1\u20134 and 6, Great Lent Week 5 (unique table), Passion Week (Monday\u2013Wednesday only), and Bright Week (no kathisma at any service). Several override rules apply: great feasts of the Lord suppress the kathisma; Saturday evening and feasts of Polyeleos or Vigil rank always use Kathisma I (\u201CBlessed is the Man\u201D); Sunday evening has no kathisma.</>)}
+          {p(<>At Vespers and Matins, one or more sections of the Psalter — called <strong>kathismas</strong> — are read in sequence throughout the week. The Psalter’s 150 psalms are divided into <strong>20 kathismas</strong>, each further subdivided into three stases (antiphons). The full Psalter is read through once per week in ordinary time; more frequently during Great Lent.</>)}
+          {p(<>Which kathisma is appointed depends on two things: the <strong>day of the week</strong> and the <strong>period of the church year</strong>. The tool detects one of six periods: Summer/Winter, Autumn/Spring, Great Lent Weeks 1–4 and 6, Great Lent Week 5 (unique table), Passion Week (Monday–Wednesday only), and Bright Week (no kathisma at any service). Several override rules apply: great feasts of the Lord suppress the kathisma; Saturday evening and feasts of Polyeleos or Vigil rank always use Kathisma I (“Blessed is the Man”); Sunday evening has no kathisma.</>)}
           {p(<>The kathisma shown at Vespers links directly to the built-in <strong>Psalter reader</strong>, which displays the full psalm text for the appointed kathisma with stasis divisions. Source: OCA Liturgics, oca.org/liturgics/outlines/kathisma-readings-at-vespers.</>)}
         </div>
       )}
 
-      {/* \u2500\u2500 5. Encoding Status \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */}
+      {/* ── 5. Encoding Status ───────────────────────────────────────────── */}
       <div style={headerStyle} onClick={() => toggle("encoding")}>
         <span>Encoding Status</span>{chevron(open.encoding)}
       </div>
       {open.encoding && (
         <div style={panelStyle}>
-          {p("Before the tool can assemble a service for a given date, that date must be encoded \u2014 meaning a human has read the source PDF and extracted the key liturgical data. This is not automated. Every entry represents a deliberate act of reading, cross-referencing, and decision-making.")}
+          {p("Before the tool can assemble a service for a given date, that date must be encoded — meaning a human has read the source PDF and extracted the key liturgical data. This is not automated. Every entry represents a deliberate act of reading, cross-referencing, and decision-making.")}
           {sub("How encoding works")}
           {p("The encoder opens the St. Sergius Menaion PDF for that date and checks:")}
           {ul([
-            <><strong>Service rank</strong> \u2014 counted from the stichera on Lord I Call at Vespers: 3 stichera = Simple (\u00a72A), 6 stichera = Six-Stichera (\u00a72C), Great Doxology sung = Doxology (\u00a72D), Polyeleos sung = Polyeleos (\u00a72E), All-Night Vigil = Vigil (\u00a72F).</>,
-            <><strong>Troparion</strong> \u2014 tone number and full text.</>,
-            <><strong>Kontakion(s)</strong> \u2014 tone number, full text, and which Matins ode they follow (Ode III or Ode VI). If there are two kontakia, both are recorded with their ode assignments, because the tool uses different kontakia at different Hours.</>,
-            <><strong>OCA cross-reference</strong> \u2014 the OCA calendar at oca.org is checked for the primary commemoration, translation differences, and any date divergences between OCA and Russian usage.</>,
+            <><strong>Service rank</strong> — counted from the stichera on Lord I Call at Vespers: 3 stichera = Simple (§2A), 6 stichera = Six-Stichera (§2C), Great Doxology sung = Doxology (§2D), Polyeleos sung = Polyeleos (§2E), All-Night Vigil = Vigil (§2F).</>,
+            <><strong>Troparion</strong> — tone number and full text.</>,
+            <><strong>Kontakion(s)</strong> — tone number, full text, and which Matins ode they follow (Ode III or Ode VI). If there are two kontakia, both are recorded with their ode assignments, because the tool uses different kontakia at different Hours.</>,
+            <><strong>OCA cross-reference</strong> — the OCA calendar at oca.org is checked for the primary commemoration, translation differences, and any date divergences between OCA and Russian usage.</>,
           ])}
-          {p(<>Encoded data is written directly into the tool\u2019s monthly data files \u2014 <code>src/data/menaion/may.js</code>, <code>june.js</code>, <code>july.js</code>, etc. for fixed-calendar dates, and <code>src/data/pentecostarion.js</code> for dates keyed to Pascha. These files are the single point of truth. Git history is the version record.</>)}
+          {p(<>Encoded data is written directly into the tool’s monthly data files — <code>src/data/menaion/may.js</code>, <code>june.js</code>, <code>july.js</code>, etc. for fixed-calendar dates, and <code>src/data/pentecostarion.js</code> for dates keyed to Pascha. These files are the single point of truth. Git history is the version record.</>)}
           {sub("Currently encoded")}
           {ul([
-            <><strong>Menaion:</strong> May 16\u201331 (17 entries), June 1\u201330 (36 entries), July 1\u201315 (5 entries). Total: 58 entries across 51 calendar days.</>,
+            <><strong>Menaion:</strong> May 16–31 (17 entries), June 1–30 (36 entries), July 1–15 (5 entries). Total: 58 entries across 51 calendar days.</>,
             <><strong>Pentecostarion:</strong> P+19 through P+56 (23 entries). Covers Thomas Sunday week through All Saints of North America including Ascension, Pentecost, and the Saturdays of the Reposed.</>,
             <><strong>Pre-Communion Prayers:</strong> Complete (35 sections, Jordanville Prayer Book).</>,
             <><strong>Post-Communion Prayers:</strong> Complete (HTM order, adapts to liturgy type).</>,
           ])}
-          {p("Dates not yet encoded are marked with a red border in the assembled service. The saint\u2019s name appears from the OCA calendar, but troparion and kontakion texts cannot be supplied until the Menaion PDF has been read and encoded.", { fontStyle: "italic", color: "#5C4A1E" })}
+          {p("Dates not yet encoded are marked with a red border in the assembled service. The saint’s name appears from the OCA calendar, but troparion and kontakion texts cannot be supplied until the Menaion PDF has been read and encoded.", { fontStyle: "italic", color: "#5C4A1E" })}
           {sub("Data record fields")}
           {p("Every date that has been encoded carries some or all of the following fields. The Status column reflects the current state.")}
           <table style={{ width: "100%", fontSize: "0.75rem", borderCollapse: "collapse", marginBottom: "0.8rem" }}>
@@ -7995,34 +7995,34 @@ function HowItWorksPanel() {
             </thead>
             <tbody>
               {[
-                ["saint", "Full name of the commemorated saint or feast", "\u2713 active"],
-                ["rank", "Service rank: simple \u00b7 six_stichera \u00b7 doxology \u00b7 polyeleos \u00b7 vigil", "\u2713 active"],
-                ["fekula_section", "Fekula \u00a72A\u2013\u00a72F or \u00a74A\u2013\u00a74B15 governing assembly", "\u2713 active"],
-                ["note", "Encoding notes: OCA divergences, calendar collisions, rank evidence", "\u2713 active"],
-                ["troparion \u00b7 tone & text", "Primary troparion \u2014 tone number and full text", "\u2713 active \u2014 all four Hours + Vespers"],
-                ["troparion_2 \u00b7 tone, text, placement", "Second troparion (Glory) when two troparia govern", "\u2713 active"],
-                ["kontakion \u00b7 tone, text, matins_ode", "Kontakion with Matins ode assignment (III or VI)", "\u2713 active \u2014 Hours + Typica"],
-                ["kontakion_ode3 \u00b7 tone, text", "Kontakion chanted after Ode III at Matins \u2014 governs 1st & 6th Hours", "\u2713 active"],
-                ["hours_kontakion", "Pentecostarion: feast kontakion governing Both now at Hours", "\u2713 active \u2014 Pentecostarion"],
-                ["hours_format", "Assembly engine signal: paschal \u00b7 pentecostarion_sunday \u00b7 etc.", "\u2713 active"],
-                ["feast_e / feast_g", "Feast proper Epistle and Gospel readings", "\u2713 active \u2014 context card + scripture viewer"],
-                ["paroemia_1/2/3", "Old Testament Vespers lessons (Polyeleos & above)", "\u2713 active \u2014 Vespers"],
-                ["prokeimenon \u00b7 tone, text, stichos", "Prokeimenon at Liturgy", "\u2713 encoded \u2014 Liturgy future"],
-                ["alleluia \u00b7 tone, verse, stichos", "Alleluia verse at Liturgy", "\u2713 encoded \u2014 Liturgy future"],
-                ["communion_verse", "Communion hymn text at Liturgy", "\u2713 encoded \u2014 Liturgy future"],
-                ["oca_primary", "Whether this is the OCA calendar\u2019s primary commemoration", "\u2713 active \u2014 multi-service selector"],
-                ["service_file", "Source PDF filename (e.g. 06-09.pdf)", "\u26a0 partial"],
-                ["has_great_doxology", "Whether the Great Doxology is sung at Matins", "\u26a0 partial \u2014 Matins future"],
-                ["magnificat_sung", "Whether the Magnificat (Ode IX) is sung or omitted", "\u26a0 partial \u2014 Matins future"],
-                ["stichera_lord_i_call", "Vespers Lord I Call stichera texts and count", "\u26a0 future \u2014 Vespers stichera encoding"],
-                ["glory / doxasticon", "Vespers Glory sticheron text", "\u26a0 future"],
-                ["aposticha", "Vespers Aposticha stichera texts", "\u26a0 future"],
+                ["saint", "Full name of the commemorated saint or feast", "✓ active"],
+                ["rank", "Service rank: simple · six_stichera · doxology · polyeleos · vigil", "✓ active"],
+                ["fekula_section", "Fekula §2A–§2F or §4A–§4B15 governing assembly", "✓ active"],
+                ["note", "Encoding notes: OCA divergences, calendar collisions, rank evidence", "✓ active"],
+                ["troparion · tone & text", "Primary troparion — tone number and full text", "✓ active — all four Hours + Vespers"],
+                ["troparion_2 · tone, text, placement", "Second troparion (Glory) when two troparia govern", "✓ active"],
+                ["kontakion · tone, text, matins_ode", "Kontakion with Matins ode assignment (III or VI)", "✓ active — Hours + Typica"],
+                ["kontakion_ode3 · tone, text", "Kontakion chanted after Ode III at Matins — governs 1st & 6th Hours", "✓ active"],
+                ["hours_kontakion", "Pentecostarion: feast kontakion governing Both now at Hours", "✓ active — Pentecostarion"],
+                ["hours_format", "Assembly engine signal: paschal · pentecostarion_sunday · etc.", "✓ active"],
+                ["feast_e / feast_g", "Feast proper Epistle and Gospel readings", "✓ active — context card + scripture viewer"],
+                ["paroemia_1/2/3", "Old Testament Vespers lessons (Polyeleos & above)", "✓ active — Vespers"],
+                ["prokeimenon · tone, text, stichos", "Prokeimenon at Liturgy", "✓ encoded — Liturgy future"],
+                ["alleluia · tone, verse, stichos", "Alleluia verse at Liturgy", "✓ encoded — Liturgy future"],
+                ["communion_verse", "Communion hymn text at Liturgy", "✓ encoded — Liturgy future"],
+                ["oca_primary", "Whether this is the OCA calendar’s primary commemoration", "✓ active — multi-service selector"],
+                ["service_file", "Source PDF filename (e.g. 06-09.pdf)", "⚠ partial"],
+                ["has_great_doxology", "Whether the Great Doxology is sung at Matins", "⚠ partial — Matins future"],
+                ["magnificat_sung", "Whether the Magnificat (Ode IX) is sung or omitted", "⚠ partial — Matins future"],
+                ["stichera_lord_i_call", "Vespers Lord I Call stichera texts and count", "⚠ future — Vespers stichera encoding"],
+                ["glory / doxasticon", "Vespers Glory sticheron text", "⚠ future"],
+                ["aposticha", "Vespers Aposticha stichera texts", "⚠ future"],
               ].map(([field, desc, used], i) => (
                 <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : "rgba(0,0,0,0.02)" }}>
                   <td style={{ padding: "4px 8px", borderBottom: "1px solid #EDE5CE", fontFamily: "monospace", fontSize: "0.72rem", color: "#3B4A6B", whiteSpace: "nowrap" }}>{field}</td>
                   <td style={{ padding: "4px 8px", borderBottom: "1px solid #EDE5CE", color: "#2C1F0A" }}>{desc}</td>
                   <td style={{ padding: "4px 8px", borderBottom: "1px solid #EDE5CE",
-                    color: used.startsWith("\u2713 active") ? "#3A6B3A" : used.startsWith("\u2713 encoded") ? "#3A6B6B" : used.startsWith("\u26a0") ? "#8B6914" : "#9A8A70",
+                    color: used.startsWith("✓ active") ? "#3A6B3A" : used.startsWith("✓ encoded") ? "#3A6B6B" : used.startsWith("⚠") ? "#8B6914" : "#9A8A70",
                     whiteSpace: "nowrap" }}>
                     {used}
                   </td>
@@ -8030,45 +8030,45 @@ function HowItWorksPanel() {
               ))}
             </tbody>
           </table>
-          {p(<>Legend: <strong>{"\u2713"} active</strong> = field drives assembled output today. <strong>{"\u2713"} encoded</strong> = data captured, service not yet built. <strong>{"\u26a0"} partial/future</strong> = not all entries carry this field, or the service that uses it is not yet built.</>, { fontStyle: "italic", color: "#5C4A1E" })}
+          {p(<>Legend: <strong>{"✓"} active</strong> = field drives assembled output today. <strong>{"✓"} encoded</strong> = data captured, service not yet built. <strong>{"⚠"} partial/future</strong> = not all entries carry this field, or the service that uses it is not yet built.</>, { fontStyle: "italic", color: "#5C4A1E" })}
         </div>
       )}
 
-      {/* \u2500\u2500 6. What\u2019s Here, What\u2019s Coming & How to Help \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */}
+      {/* ── 6. What’s Here, What’s Coming & How to Help ──────────────────── */}
       <div style={headerStyle} onClick={() => toggle("limits")}>
-        <span>{"What\u2019s Here, What\u2019s Coming & How to Help"}</span>{chevron(open.limits)}
+        <span>{"What’s Here, What’s Coming & How to Help"}</span>{chevron(open.limits)}
       </div>
       {open.limits && (
         <div style={panelStyle}>
           {sub("What works today")}
           {ul([
             <><strong>Nine services</strong> fully assembled: Ordinary Beginning, Vespers, 1st/3rd/6th/9th Hours, Pre-Communion Prayers, Post-Communion Prayers, and the Typica.</>,
-            <><strong>Ordinary time and Pentecostarion</strong> seasons are fully supported \u2014 the tool correctly handles Sundays with Octoechos tone rotation, weekdays with Menaion saint commemorations, and the complete Paschal cycle from Bright Week through All Saints of North America.</>,
-            <><strong>Great Feasts</strong> of the Lord (Ascension, Pentecost) alter the service structure as prescribed by Fekula \u00a74 and the HTM rubrics.</>,
+            <><strong>Ordinary time and Pentecostarion</strong> seasons are fully supported — the tool correctly handles Sundays with Octoechos tone rotation, weekdays with Menaion saint commemorations, and the complete Paschal cycle from Bright Week through All Saints of North America.</>,
+            <><strong>Great Feasts</strong> of the Lord (Ascension, Pentecost) alter the service structure as prescribed by Fekula §4 and the HTM rubrics.</>,
             <><strong>Reader mode</strong> replaces priest exclamations with lay reader responses throughout.</>,
             <><strong>Scripture viewer</strong> provides full-text epistle and gospel readings linked from the context card.</>,
             <><strong>Psalter reader</strong> shows full psalm texts for appointed kathismas, linked from Vespers.</>,
           ])}
           {sub("Known limitations")}
           {ul([
-            <><strong>Great Lent and Triodion</strong> \u2014 Lenten services follow substantially different rubrical patterns (Lenten Hours with prostrations, Presanctified Liturgy, altered Vespers structure, Lenten kathisma tables). The calendar engine tracks these periods correctly, but the assembly rules and Triodion data have not been built yet. This is the next major development area.</>,
+            <><strong>Great Lent and Triodion</strong> — Lenten services follow substantially different rubrical patterns (Lenten Hours with prostrations, Presanctified Liturgy, altered Vespers structure, Lenten kathisma tables). The calendar engine tracks these periods correctly, but the assembly rules and Triodion data have not been built yet. This is the next major development area.</>,
             <><strong>Compline, Midnight Office, and Matins</strong> are not yet assembled. These are large services with complex structure (especially Matins, which includes the canon, polyeleos, and other elements not present at the Hours).</>,
             <><strong>Divine Liturgy</strong> is not assembled. Epistle and Gospel references are shown in the context card, and Liturgy-specific fields (prokeimenon, alleluia, communion verse) are encoded in the data but not yet surfaced.</>,
-            <><strong>Vespers stichera interleaving</strong> \u2014 the Lord I Have Cried and Aposticha stichera texts are not yet encoded for most dates. The psalm scaffold is displayed, but the interleaved stichera assembly requires both Menaion stichera encoding and Octoechos stichera data for all 8 tones.</>,
-            <><strong>Encoding coverage</strong> \u2014 only May 16\u2013July 15 are encoded in the Menaion. Dates outside this range show the OCA calendar\u2019s saint name but cannot supply troparion or kontakion texts. The Pentecostarion covers P+19\u2013P+56.</>,
+            <><strong>Vespers stichera interleaving</strong> — the Lord I Have Cried and Aposticha stichera texts are not yet encoded for most dates. The psalm scaffold is displayed, but the interleaved stichera assembly requires both Menaion stichera encoding and Octoechos stichera data for all 8 tones.</>,
+            <><strong>Encoding coverage</strong> — only May 16–July 15 are encoded in the Menaion. Dates outside this range show the OCA calendar’s saint name but cannot supply troparion or kontakion texts. The Pentecostarion covers P+19–P+56.</>,
           ])}
           {sub("Translation note")}
-          {p("The tool primarily uses St. Sergius (Russian) Menaion texts. The OCA often uses a different English translation of the same prayer. These are the same prayer in a different rendering \u2014 not different prayers. Known divergences are flagged and will be corrected to OCA text in future updates.")}
+          {p("The tool primarily uses St. Sergius (Russian) Menaion texts. The OCA often uses a different English translation of the same prayer. These are the same prayer in a different rendering — not different prayers. Known divergences are flagged and will be corrected to OCA text in future updates.")}
           {sub("How to give feedback")}
           {p("Your knowledge as a practicing reader is the best quality check this tool has.")}
           {ul([
-            "A troparion or kontakion that doesn\u2019t match your printed Menaion or what your parish chants",
+            "A troparion or kontakion that doesn’t match your printed Menaion or what your parish chants",
             "An incorrect service rank",
             "Something out of order, missing, or misattributed in the service sequence",
             "A date where the OCA calendar disagrees with what the tool shows",
-            "A seasonal transition that doesn\u2019t match your understanding of the rubrics",
+            "A seasonal transition that doesn’t match your understanding of the rubrics",
           ])}
-          {p("What helps most: the specific date and service, what the tool shows vs. what you expected, and which source you\u2019re comparing against.", { fontStyle: "italic", color: "#5C4A1E" })}
+          {p("What helps most: the specific date and service, what the tool shows vs. what you expected, and which source you’re comparing against.", { fontStyle: "italic", color: "#5C4A1E" })}
         </div>
       )}
     </div>
@@ -8779,7 +8779,7 @@ export default function App() {
                 )}
                 {currentService.key === 'pre_communion' && !preCommunionData && (
                   <div style={{ textAlign: 'center', padding: '2rem', color: '#9A8A70', fontStyle: 'italic' }}>
-                    Loading prayers\u2026
+                    Loading prayers…
                   </div>
                 )}
                 {elements
