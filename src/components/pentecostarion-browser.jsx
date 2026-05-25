@@ -136,7 +136,7 @@ function PentEntryCard({ offset, entry, audit }) {
       {/* ── Sticky Header ── */}
       <div style={{
         position: "sticky",
-        top: "72px",
+        top: headerHeight + "px",
         zIndex: 10,
         background: C.parchment,
         paddingTop: "0.35rem",
@@ -437,6 +437,14 @@ export default function PentecostarionBrowser() {
   const [error, setError] = useState(null);
   const [activePeriod, setActivePeriod] = useState(null); // null = all
   const entryRefs = useRef({});
+  const headerRef = useRef(null);
+  const [headerHeight, setHeaderHeight] = useState(90);
+
+  useEffect(() => {
+    if (headerRef.current) {
+      setHeaderHeight(headerRef.current.getBoundingClientRect().height);
+    }
+  });
 
   useEffect(() => {
     import("../data/pentecostarion.js")
@@ -484,7 +492,7 @@ export default function PentecostarionBrowser() {
       fontFamily: "Georgia, 'Times New Roman', serif", color: C.ink,
     }}>
       {/* ── Header ── */}
-      <div style={{
+      <div ref={headerRef} style={{
         background: "#fff", borderBottom: `2px solid ${C.border}`,
         padding: "1rem 1.5rem", position: "sticky", top: 0, zIndex: 100,
       }}>
@@ -554,7 +562,7 @@ export default function PentecostarionBrowser() {
         {/* ── Offset sidebar ── */}
         <div style={{
           flexShrink: 0, width: "200px", position: "sticky",
-          top: "100px", alignSelf: "flex-start",
+          top: (headerHeight + 10) + "px", alignSelf: "flex-start",
         }}>
           {/* Summary */}
           <div style={{

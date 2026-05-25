@@ -176,7 +176,7 @@ function EntryCard({ dateKey, entry, audit }) {
       {/* ── Sticky Header ── */}
       <div style={{
         position: "sticky",
-        top: "72px", // just below the fixed month-tabs bar
+        top: headerHeight + "px",
         zIndex: 10,
         background: C.parchment,
         paddingTop: "0.35rem",
@@ -471,6 +471,14 @@ export default function MenaionBrowser() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const entryRefs = useRef({});
+  const headerRef = useRef(null);
+  const [headerHeight, setHeaderHeight] = useState(90);
+
+  useEffect(() => {
+    if (headerRef.current) {
+      setHeaderHeight(headerRef.current.getBoundingClientRect().height);
+    }
+  });
 
   const hasData = useCallback((monthKey) => monthKey in MONTHS_WITH_DATA, []);
 
@@ -519,7 +527,7 @@ export default function MenaionBrowser() {
       color: C.ink,
     }}>
       {/* ── Header ── */}
-      <div style={{
+      <div ref={headerRef} style={{
         background: "#fff",
         borderBottom: `2px solid ${C.border}`,
         padding: "1rem 1.5rem",
@@ -605,7 +613,7 @@ export default function MenaionBrowser() {
             flexShrink: 0,
             width: "200px",
             position: "sticky",
-            top: "100px",
+            top: (headerHeight + 10) + "px",
             alignSelf: "flex-start",
           }}>
             {/* Month summary */}
