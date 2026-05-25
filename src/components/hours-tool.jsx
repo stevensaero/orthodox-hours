@@ -8886,14 +8886,20 @@ export default function App() {
                 Unless otherwise noted, fixed service texts are from{" "}
                 <em>The Unabbreviated Horologion or Book of the Hours</em>,
                 Holy Trinity Publications, Holy Trinity Monastery, Jordanville, NY,
-                Second Edition (1994). Psalm texts are from{" "}
+                Second Edition (1994). Prayers Before Holy Communion follow the
+                Jordanville Prayer Book (Molitvoslov). Psalm texts within the
+                Daily Hours and Vespers are from{" "}
                 <em>The Psalter According to the Seventy</em> (LXX),
                 Holy Transfiguration Monastery, Brookline, MA.
+                The standalone Psalter viewer uses the Brenton Septuagint (1851),
+                public domain.
               </div>
 
               <div style={{ marginBottom: "0.4rem" }}>
                 Troparia and kontakia sourced from the Orthodox Church in America
-                (oca.org) and St. Sergius Parish liturgical library (st-sergius.org).
+                (oca.org) and St. Sergius of Radonezh Russian Orthodox
+                Cathedral liturgical library (st-sergius.org).
+                Pentecostarion texts from St. Sergius Cathedral.
                 Resurrectional troparia and kontakia from the Octoechos
                 (azbyka.ru, standard OCA/Russian text).
               </div>
