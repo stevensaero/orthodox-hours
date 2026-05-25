@@ -476,7 +476,8 @@ export default function MenaionBrowser() {
 
   useEffect(() => {
     if (headerRef.current) {
-      setHeaderHeight(headerRef.current.getBoundingClientRect().height);
+      const h = headerRef.current.getBoundingClientRect().height;
+      setHeaderHeight(prev => prev !== h ? h : prev);
     }
   });
 
