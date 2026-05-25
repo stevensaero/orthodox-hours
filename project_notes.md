@@ -1966,7 +1966,28 @@ Complete restructuring of the Typica kontakia section to match OCA and HTM rubri
 ### Data browsers (v0.4.0)
 - **Menaion browser** (`/menaion`): 12 month tabs, day grid sidebar, entry cards with all fields, per-entry audit indicators (green/amber/red). Lazy-loaded via React.lazy + Suspense.
 - **Pentecostarion browser** (`/pentecostarion`): period tabs (Bright Week, Thomas→Blind Man, Post-Pascha/Ascension, Pentecost). Same audit indicators.
-- **Shared audit module** (`src/lib/audit.js`): `auditMenaionEntry()`, `auditPentecostarionEntry()`, `auditSummary()`. Field-presence + placeholder detection.
+- **Shared audit module** (`src/lib/audit.js`): exports `auditMenaionEntry()`, `auditPentecostarionEntry()`, `auditSummary()`, plus the `MENAION_REQUIRED` (14 fields) and `PENT_REQUIRED` (7 fields) constants. Operates on parsed JS objects — checks actual field presence and deep-searches nested values for placeholder text. Used by both data browsers for per-entry green/amber/red indicators.
+
+### Encoding validation architecture
+
+Two-tier system, same rule set: **an entry is not complete until every required field is present AND no field contains placeholder text.**
+
+**Tier 1 — CLI audit script** (`scripts/audit.js`): text-based, parses raw JS source files with regex. Run after encoding sessions:
+```
+node scripts/audit.js all           # everything
+node scripts/audit.js may           # just May
+node scripts/audit.js pentecostarion
+```
+
+**Tier 2 — In-browser data browsers** (`/menaion`, `/pentecostarion`): use the shared audit module at `src/lib/audit.js`. Operate on parsed objects, not raw text. Each entry card shows completeness indicator.
+
+**Menaion required fields** (14): `source_file`, `rank`, `fekula_section`, `has_great_doxology`, `has_polyeleos`, `has_litya`, `has_paroemias`, `magnificat_sung`, `matins_format`, `feast_e`, `aposticha_source`, `stichera_lord_i_call`, `troparion`, `kontakion_ode6`
+
+**Pentecostarion required fields** (7 + kontakion): `hours_format`, `matins_format`, `has_great_doxology`, `feast_e`, `aposticha_source`, `stichera_lord_i_call`, `troparion`, plus either `hours_kontakion` or `kontakion_ode6`
+
+**Placeholder patterns detected**: `[Menaion sticheron`, `[stichera not yet`, `[NYE]`, `not yet encoded`, `Track B`, `Phase 2`, `to be encoded`
+
+**Current state (v0.5.0)**: May 16/16 complete. June 0/30 complete (all missing v2.1 matins-era fields — pre-date expanded spec). July 0/5 complete (same). Pentecostarion 23/23 complete.
 
 ### Bug fixes (v0.4.1)
 - Vespers OT paroemia Scripture links: `assembleVespers()` referenced nonexistent `liturgicalData.dateStr`. Fixed by adding `selectedDate` parameter.
@@ -1985,3 +2006,9 @@ Complete restructuring of the Typica kontakia section to match OCA and HTM rubri
 - **Assembler**: `assemblePreCommunion(data)` — iterates data array, pushes fixed elements + end marker. All fixed text, no movable parts.
 - **SERVICE_REGISTRY**: positioned before `post_communion`. Season-independent (`inScope` bypass). Legend strip hidden (no movable/unresolved items).
 - End marker: "THE END OF THE PRAYERS BEFORE HOLY COMMUNION" + Orthodox cross.
+
+### How It Works panel rewrite (v0.5.0)
+- Complete overhaul of the `HowItWorksPanel` — from 5 stale sections to 6 current sections.
+- **New sections**: "What This Tool Does" (service inventory table — 9 built / 4 planned, plus additional features list), "Sources & Texts" (expanded from 4 to 7 sources including Jordanville Prayer Book, General Menaion, Pentecostarion).
+- **Revised sections**: Calendar Engine (added Triodion horizon note), How Services Are Assembled (updated daily cycle, kept Lord I Have Cried teaching content), Encoding Status (removed incorrect `.txt` Drive references, updated counts to actual 58 Menaion + 23 Pentecostarion, updated field table), "What's Here, What's Coming & How to Help" (honest inventory of built vs. planned, Triodion as next horizon).
+- Fixed 443 double-escaped Unicode sequences (`\\u2014` → `—` etc.) caused by Python raw strings.
