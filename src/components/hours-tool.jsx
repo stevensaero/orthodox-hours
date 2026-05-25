@@ -5863,6 +5863,7 @@ function assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMo
 }
 
 const SERVICE_REGISTRY = [
+  { key: "ordinary_beginning", label: "The Ordinary Beginning", built: true },
   { key: "vespers",        label: "Vespers",                    built: true  },
   { key: "compline",       label: "Compline (Apodeipnon)",      built: false },
   { key: "midnight",       label: "Midnight Office",            built: false },
@@ -8071,6 +8072,7 @@ export default function App() {
     : null;
 
   const inScope = selectedServiceKey === 'post_communion'
+    || selectedServiceKey === 'ordinary_beginning'
     || ["ordinary", "sunday", "pentecostarion", "brightweek"].includes(liturgicalData.season);
   const isSunday = liturgicalData.season === "sunday";
   const isPentecostarion = liturgicalData.season === "pentecostarion";
@@ -8123,6 +8125,7 @@ export default function App() {
   // Assemble elements — single unified assembler for all seasons
   const elements = (() => {
     if (!inScope) return [];
+    if (currentService.key === 'ordinary_beginning') return [];
     let els;
     if (currentService.key === 'vespers') {
       els = assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, readerMode, selectedDate);
@@ -8575,7 +8578,11 @@ export default function App() {
               </h2>
 
               {currentService.built ? (
-                currentService.key === 'vespers' ? (
+                currentService.key === 'ordinary_beginning' ? (
+                  <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
+                    The opening prayers read before any service celebrated independently · Fixed text with seasonal variation
+                  </div>
+                ) : currentService.key === 'vespers' ? (
                   <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
                     HTM Order of Vespers ·{" "}
                     {isSunday
@@ -8625,8 +8632,8 @@ export default function App() {
               )}
             </div>
 
-            {/* Legend (only when service is built) */}
-            {currentService.built && (
+            {/* Legend (only when service is built and not ordinary_beginning) */}
+            {currentService.built && currentService.key !== 'ordinary_beginning' && (
               <div style={{ display: "flex", gap: "1.2rem", marginBottom: "1.5rem", fontSize: "0.75rem", flexWrap: "wrap" }}>
                 <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                   <span style={{ width: "12px", height: "12px", borderRadius: "2px", background: "#9A8A70", display: "inline-block" }} />
@@ -8648,6 +8655,11 @@ export default function App() {
             {/* Service elements or placeholder */}
             {currentService.built ? (
               <div>
+                {/* Ordinary Beginning as standalone service */}
+                {currentService.key === "ordinary_beginning" && (
+                  <OrdinaryBeginning liturgicalData={liturgicalData} open={true} setOpen={() => {}} readerMode={readerMode}
+                    collapsible={false} />
+                )}
                 {/* Ordinary Beginning — shown as collapsible for services that may follow another */}
                 {(currentService.key === "1st_hour") && (
                   <OrdinaryBeginning liturgicalData={liturgicalData} open={tbOpen} setOpen={setTbOpen} readerMode={readerMode}
