@@ -10,7 +10,17 @@ const JUNE_MENAION = {
       oca_primary: true,
       source_file: "06-07A.pdf",
       rank: "simple",
-      note: "Also: Martyrs Kyriaka, Valeria & Maria (OCA secondary, Polyeleos service, 06-07.pdf).",
+      fekula_section: "2A",
+      has_great_doxology: false,
+      has_polyeleos: false,
+      has_litya: false,
+      has_paroemias: false,
+      magnificat_sung: false,
+      matins_format: "god_is_the_lord", // PDF: "if Alleluia is to be chanted instead of God is the Lord" — god_is_the_lord is the norm
+      feast_e: null,
+      aposticha_source: "octoechos", // §2A — no Menaion aposticha in PDF
+      note: "Also: Martyrs Kyriaka, Valeria & Maria (OCA secondary, Polyeleos service, 06-07.pdf). " +
+            "3 stichera Tone I confirmed §2A.",
       troparion: {
         tone: 4,
         text: "Your holy martyr Theodotus and his companions, O Lord, through their sufferings have received incorruptible crowns from You, our God. For having Your strength, they laid low their adversaries, and shattered the powerless boldness of demons. Through their intercessions, save our souls!",
@@ -19,13 +29,32 @@ const JUNE_MENAION = {
         tone: 4,
         text: "You struggled well, O Theodotus, together with your fellow athletes and passion-bearing virgins. You have received crowns of honor. Therefore, unceasingly pray to Christ God for us all.",
       },
+      stichera_lord_i_call: [
+        { tone: 1, text: "With joyful heart and steadfast resolve, O martyr, thou didst truly brave the torments, undaunted by the pangs of the torturers or a violent death; wherefore, having contended lawfully, thou hast been crowned with splendor, O Theodotus." },
+        { tone: 1, text: "By the testing of thy flesh thou didst wound the adversary, O blessed one, piercing their hearts with thy rebukes; and with the drops of thy blood which thou didst shed thou didst utterly dry up torrents of ungodliness, O most blessed one." },
+        { tone: 1, text: "Burned steadily with torches and thy back lacerated with stripes, thou didst endure, O martyr, crying aloud: \"Nothing shall ever separate me from the love of Christ, neither death, nor life, nor any other torment!\"" },
+      ],
+      stichera_glory: null, // §2A — no separate doxasticon
     },
     {
       saint: "Holy Martyrs Kyriaka, Valeria & Maria",
       oca_primary: false,
       source_file: "06-07.pdf",
       rank: "polyeleos",
-      note: "The Holy Martyrs Kyriaka, Valeria and Maria appear on the OCA calendar as secondary commemorations on June 7. The OCA primary is HM Theodotus of Ancyra.",
+      fekula_section: "2E",
+      has_great_doxology: false, // Not explicitly stated in PDF — AT LITURGY has troparion/kontakion only
+      has_polyeleos: false, // Not explicitly stated in PDF despite "AT GREAT VESPERS" with 8 stichera
+      has_litya: false, // No Litya section in PDF
+      has_paroemias: false, // No OT lessons in PDF
+      magnificat_sung: false,
+      matins_format: "god_is_the_lord", // Implied by Great Vespers structure
+      feast_e: null, // AT LITURGY: troparion and kontakion only, no proper epistle/gospel
+      aposticha_source: "octoechos", // "Stichera from the Oktoechos; Glory..., of the holy martyrs"
+      note: "The Holy Martyrs Kyriaka, Valeria and Maria appear on the OCA calendar as secondary " +
+            "commemorations on June 7. The OCA primary is HM Theodotus of Ancyra. " +
+            "PDF has 'AT GREAT VESPERS' with 8 stichera and Glory doxasticon Tone VI, suggesting " +
+            "polyeleos rank, but no explicit Polyeleos, Litya, or paroemia rubrics in the PDF. " +
+            "No AT LITURGY proper readings. Rank requires verification against a fuller source.",
       troparion: {
         tone: 1,
         text: "As reasonable lambs, you were guided by Christ, the Chief Shepherd, along the path of martyrdom. You finished your course and kept the faith; therefore, honored Kyra, Valerie, and Mary, with joyful hearts, we magnify Christ today, as we honor your holy memory!",
@@ -34,6 +63,12 @@ const JUNE_MENAION = {
         tone: 4,
         text: "Passion-bearers Kyra, Valerie and Mary, you loved the faithful promises of God; you clung to the faith of Christ, looking for eternal life and the blessedness of Paradise! You endured torture with steadfastness and bowed your necks beneath the sword. Therefore, you have been crowned by the hand of the Lord and glorious is your memory. Entreat Christ God, the Judge of the contest, on behalf of those who honor your struggles with faith!",
       },
+      stichera_lord_i_call: [
+        { tone: 8, text: "Wed to the pre-eternal Word, and having utterly forsaken the folly of idolatry, in the silence of your lips did ye abide, that ye might hear the word of God in your hearts; and like rational ewe-lambs ye were sacrificed unto God in your innocence. Wherefore, we cry out to you: Rejoice, ye partakers of the ineffable glory of Paradise!" },
+        { tone: 8, text: "Like the wise virgins ye went forth to meet Christ, the Bridegroom that cometh at midnight, O martyrs; and having woven wedding garments for yourselves from the blood of your suffering, as a dowry unto Him ye offered your lives. Wherefore, we cry unto you: Rejoice, ye that have been crowned in the heavenly mansions!" },
+        { tone: 8, text: "O martyr Valeria, as thy name signifieth strength, stronger than adamantine didst thou remain in the endurance of martyrdom. Wounding the proud prince of darkness by the power of the Cross, and entering the heavenly mansions with honor, thou dost look down from the heavens upon those who struggle for the faith, granting them strength. Wherefore, we cry to thee: Rejoice, thou mighty champion of the faithful!" },
+      ],
+      stichera_glory: { tone: 6, text: "The most pure and precious lips of Christ have said: Blessed are they that are persecuted for righteousness' sake, for theirs is the Kingdom of Heaven; fear not those who kill the body, but are not able to kill the soul. Keeping these words of the Lord in your hearts, O all-praised martyrs Kyriaka, Valeria and Maria, ye bowed your necks beneath the sword in expectation of a crown from God and life eternal. Wherefore, your hope did not put you to shame; and now, delighting in the mansions of paradise, forget not us who with love hymn your sufferings, that by your bold mediation and fervent supplications we may find great mercy with Christ." },
     },
   ],
 
@@ -48,6 +83,14 @@ const JUNE_MENAION = {
     oca_primary: true,
     source_file: "06-11.pdf",
     rank: "polyeleos",
+    fekula_section: "2E",
+    has_great_doxology: true,
+    has_polyeleos: true,
+    has_litya: true,
+    has_paroemias: true,
+    magnificat_sung: true,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "menaion",
     note: "Commemoration of the miracle on Mt. Athos when the Archangel Gabriel taught a monk the " +
           "“It is truly meet” hymn (Axion Estin). Also: icons “Unbreakable Wall” and “Seven Arrows” (OCA calendar); " +
           "those icons do not have compiled services in this library.",
@@ -77,22 +120,39 @@ const JUNE_MENAION = {
       tone: 8,
       text: "O Queen of all, we cry aloud to thee the words of the archangel: It is truly meet to bless thee, the Theotokos, ever-blessed and all-immaculate, and the Mother of our God!",
     },
+    stichera_lord_i_call: [
+      { tone: 1, text: "O wondrous miracle! God Who became incarnate of thee hath now been well-pleased to magnify thy hymn, O pure one. Wherefore, He sent His archangel in fitting guise to the novice, to teach him thy hymn; for Gabriel before cried out to thee: \"Rejoice, O thou who art full of grace! The Lord is with thee, through thee granting the world great mercy!\"" },
+      { tone: 1, text: "O thy miracles, O pure one! Thou hast been shown to be the Mother of the Most High, O Lady! And now, by thy forethought, O all-immaculate one, the Archangel Gabriel hath been sent from heaven in the guise of a stranger, to teach thy hymnody in a most perfect manner; for he before cried out to thee: \"Rejoice, O thou who art full of grace! The Lord is with thee, through thee granting the world great mercy!\"" },
+      { tone: 1, text: "We glorify thy forethought, O Virgin Mother of God, for by the strange arrival of the divine Gabriel, O all-immaculate one, thou hast now taught us the truly wondrous beginning to thy hymn. Wherefore, falling down with faith, we call out to thee, crying aloud with him: \"Rejoice, O thou who art full of grace! The Lord is with thee, through thee granting the world great mercy!\"" },
+      { tone: 1, text: "O wondrous miracle! The radiant Gabriel, in the guise of a monk, appeared to the monk who remained behind in his cell and miraculously received the amplification of thy hymnody, O all-immaculate one. And straightway with his finger he engraved what he had chanted upon a tablet of stone, and then vanished, leaving the astonished monk to glorify thee, O most hymned one." },
+    ],
+    stichera_glory: { tone: 4, text: "Fitting was it that on Mount Athos, which hath thee as its intercessor, O Mother of God, that this, the hymn of the archangel to thee, was first chanted unto thee, O most hymned Virgin, and that from hence it hath passed to all the ends of the world, as the crown of the hymns of the Mother of God. Wherefore, we cry out to thee: O most glorious Theotokos, beseech thy Son, that our souls be saved!" },
   },
 
   // ── June 12 — Ven. Onuphrius the Great & Ven. Peter of Athos (Double §2B) ────
   // Source: St. Sergius 06-12.pdf. OCA and St. Sergius agree.
-  // Service rank: Six-Stichera §2B (Double). 6 stichera (3+3). Two separate kontakia.
-  // Fekula §2B: Peter (first saint, Ode III) = 1st & 6th Hours;
-  //             Onuphrius (second saint, Ode VI) = 3rd & 9th Hours.
+  // Service rank: Six-Stichera §2B (Double). 6 stichera (3 Onuphrius Tone VIII + 3 Peter same mel.).
+  // Fekula §2B: Peter (Ode III) → 1st & 6th Hours; Onuphrius (Ode VI) → 3rd & 9th Hours.
 
   "06-12": {
     saint: "Ven. Onuphrius the Great & Ven. Peter of Athos",
     oca_primary: true,
     source_file: "06-12.pdf",
     rank: "six_stichera",
-    fekula_section_override: "2B",
+    fekula_section: "2B",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord", // AT MATINS: "One canon from the Octoechos, and two canons..." — no Alleluia conditional
+    feast_e: "Galatians 5:22-6:2 (§213)",
+    feast_g: "Matthew 11:27-30 (§43)",
+    aposticha_source: "octoechos", // "Stichera from the Octoechos, and Glory..., Tone VI"
     note: "Double service: two venerable fathers in one compiled service. Joint troparion. " +
-          "Per Fekula §2B: 9th Hour uses Onuphrius kontakion (second saint, Tone III).",
+          "Per Fekula §2B: 3rd & 9th Hours use Onuphrius kontakion (Ode VI, Tone III). " +
+          "6 stichera (3 Onuphrius Tone VIII + 3 Peter Tone VIII same melody) confirmed §2B. " +
+          "Glory doxasticon Tone VI. AT LITURGY: full readings with Beatitudes (4 from Peter Ode III + 4 from Onuphrius Ode VI).",
     feast_e: "Galatians 5:22-6:2 (§213)",
     feast_g: "Matthew 11:27-30 (§43)",
     prokeimenon_tone: 7,
@@ -121,6 +181,15 @@ const JUNE_MENAION = {
       text: "Having withdrawn thyself from human companionship, out of divine desire and love for thy Lord, O Peter, thou didst dwell in caves of stone and deep ravines, receiving from Him a crown. Pray thou unceasingly, that we be saved.",
       saint: "Peter of Athos",
     },
+    stichera_lord_i_call: [
+      { tone: 8, text: "O divinely wise father Onuphrius, thou didst cut thyself off from the tumult of the world and ascended to celestial perfection, having desired Him Who is the Well-spring of good things; and there thou didst attain true love, O blessed one. Illumined with the effulgence thereof, by thy supplications rescue us from the darkness of sin.", saint: "Onuphrius" },
+      { tone: 8, text: "O divinely wise father Onuphrius, the cold of night and the burning heat of day didst thou endure, O venerable one, in the hope of things to come, and having mortified thy members on earth, thou hast received the life of heaven and entered joyously into the bridal-chamber, O holy one, to behold the infinite beauty of thy Creator.", saint: "Onuphrius" },
+      { tone: 8, text: "O divinely wise father Onuphrius, the glorious Paphnutius found thee in the desert hidden like a treasure, and clearly proclaimed to those in the world the corrections of thy struggles, enriching the faithful with his account of thy God-pleasing life, O all-famed one. By thy supplications, O glorious one, show us to be emulators thereof.", saint: "Onuphrius" },
+      { tone: 8, text: "We have recognized thee, O venerable one, as the namesake of the divine Peter, and one who truly followed him and who piously shared in his zeal for the Faith; for thou didst love the good law, and desire the divine precepts thereof, O father, adorning thy soul with the virtues. Wherefore, we honor and bless thee.", saint: "Peter" },
+      { tone: 8, text: "O spiritually rich and venerable father, having in compunction of soul acquired true patience, love unfeigned, steadfast hope and perfect humility, thou didst become a temple of the divine Spirit, and having received His effulgence in purity, thou wast seen by mortals to be a secondary luminary through the purity of thy life.", saint: "Peter" },
+      { tone: 8, text: "O venerable and divinely inspired father, though thou didst hide unseen for many years on earth, yet thou didst become known through the Spirit in signs and wonders, and by the sweet savor of myrrh; for thou didst pour forth a living radiance and holiness, truly showing the grace of the divine Spirit to those who love thee.", saint: "Peter" },
+    ],
+    stichera_glory: { tone: 6, text: "O venerable fathers, the sound of your corrections hath gone forth into all the earth; wherefore, ye have found the reward of your labors in the heavens, having destroyed hordes of the demons, and attained unto the ranks of the angels, whose lives ye blamelessly emulated. As ye have boldness before the Lord, ask ye peace for our souls." },
   },
 
   // ── June 13 — Martyr Aquilina & Hierarch Triphyllius (Double §2B) ──────────
@@ -177,14 +246,26 @@ const JUNE_MENAION = {
 
   "06-08": {
     saint: "Translation of the Relics of Greatmartyr Theodore Stratelates",
+    oca_primary: true,
+    source_file: "06-08.pdf",
     rank: "six_stichera",
+    fekula_section: "2C",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord", // AT MATINS: "Both canons from the Oktoechos" — no Alleluia conditional
+    feast_e: "2 Timothy 2:1-10",
+    feast_g: "Matthew 10:16-22 (§36)",
+    aposticha_source: "octoechos", // "Stichera from the Oktoechos, and Glory..., Idiomelon Tone VIII"
     note: "Also: St Theodore, first Bishop of Rostov; Relics of Sts Basil & Constantine " +
           "of Yaroslavl; St Ephraim of Antioch; Ven Zosimus of Phoenicia; " +
           "Yaroslavl Icon; White Lake Icon; HM Theodore of Kvelta. " +
           "Note: Holy Fathers of the First Ecumenical Council falls on the Sunday " +
-          "nearest June 8 (movable, Pascha+42) — not this fixed date.",
-    feast_e: "2 Timothy 2:1-10",
-    feast_g: "Matthew 10:16-22",
+          "nearest June 8 (movable, Pascha+42) — not this fixed date. " +
+          "6 stichera (3 Tone II + 3 Tone IV) confirmed §2C. Glory doxasticon Tone V. " +
+          "AT LITURGY: full readings with Beatitudes (8 troparia from Odes III and VI).",
     prokeimenon_tone: 7,
     prokeimenon_text: "The righteous man shall be glad in the Lord, and shall hope in Him.",
     prokeimenon_stichos: "Hearken, O God, unto my prayer, when I make supplication unto Thee.",
@@ -203,21 +284,41 @@ const JUNE_MENAION = {
       tone: 2,
       text: "Arrayed in faith with manliness of soul, and taking in hand the word of God as a spear, thou didst conquer the enemy, O Theodore, great among the martyrs. With them unceasingly entreat Christ God on behalf of us all.",
     },
+    stichera_lord_i_call: [
+      { tone: 2, text: "Wholly didst thou bring thyself to Him Who gaveth thee perfect life, O most blessed one, as a living and animate whole-burnt offering, a sacrifice most pure and well-pleasing. Wherefore, thou hast become a right acceptable intercessor, rescuing from the tempest all who hymn thee with faith and call upon thee, O martyr Theodore." },
+      { tone: 2, text: "Diligently didst thou cultivate the seed of the Word which was sown in thy soul, and increasing it through the pangs of thy suffering; and wisely storing it in the granaries of heaven, thou didst find incorruptible delight, wherein now reveling, O blessed one, by thy mediations before Christ save those who hymn thee with faith." },
+      { tone: 2, text: "O martyr and passion-bearer of Christ, by thine entreaties save those who are in divers needs, repelling every evil circumstance, driving away soul-destroying grief, and beseeching mercy and grace for us, that, saved by thine intercessions, we may hymn thine honored struggles rejoicing, O Theodore." },
+      { tone: 4, text: "A courageous spiritual athlete, an invincible warrior wast thou shown to be by the Holy Spirit, having cast down the aggressor by the wisdom of thy words and by the wise and patient manifestations of thy deeds. Wherefore, thou hast received crowns of victory and been joined to the choirs on high, O great martyr Theodore." },
+      { tone: 4, text: "Thou wast a pillar of godly piety, O most noetically rich martyr, detesting the temples of the impious, brought as a most perfect lamb and most acceptable immolation unto Him who was blamelessly sacrificed for thy sake, Who glorified thy holy memory, and bestowed thee as a treasury of miracles upon those who are in the world, O Theodore." },
+      { tone: 4, text: "Lifted up upon a cross, thy flesh lacerated, wounded with sharp arrows, beset with pain by means of all manner of the tormentors' skills, thou wast shown to be unbowed and invincible by the power of Him who was nailed to the Cross, O Theodore, the glory of the martyrs." },
+    ],
+    stichera_glory: { tone: 5, text: "Today the honored memory of Christ's passion-bearer hath shone forth more brightly than the morning star, invisibly illumining the hearts of the faithful, and dispelling the clouds from their souls through the activity of the grace of the Spirit. To Him let us cry aloud, O ye that love the martyrs: thou divinely bestowed grace which hath been revealed to the faithful, and which hath shed a multitude of miracles upon those who flee unto thee, O blessed Theodore! Unceasingly entreating Christ, that those who honor thy memory with faith, fail not to obtain eternal blessings." },
   },
 
   // ── June 9 — St Cyril of Alexandria, Archbishop ─────────────────────────
   // Source: St. Sergius (06-09.pdf) and OCA. Both agree on primary commemoration.
-  // Service rank: Six-Stichera (§2C) — 6 stichera on Lord I Call.
+  // Service rank: Six-Stichera (§2C) — 6 stichera on Lord I Call (3 texts, each doubled).
 
   "06-09": {
     saint: "St Cyril of Alexandria, Archbishop",
+    oca_primary: true,
+    source_file: "06-09.pdf",
     rank: "six_stichera",
+    fekula_section: "2C",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord", // AT MATINS: "Both canons from the Oktoechos, without the Martyria" — standard format
+    feast_e: "Hebrews 13:7-16 (§334)",
+    feast_g: "Matthew 5:14-19 (§11)",
+    aposticha_source: "octoechos", // "Stichera from the Oktoechos; and Glory..., Tone VI"
     note: "Pillar of Orthodoxy and defender of the title Theotokos at the Council of " +
           "Ephesus (431 AD). Authored extensive commentaries and theological treatises. " +
           "Matins canon acrostic: 'Cyril is the harp of divine visions' (Theophanes, Tone IV). " +
-          "Single kontakion — Ode VI only (same used at all four Hours).",
-    feast_e: "Hebrews 13:7-16 (§334)",
-    feast_g: "Matthew 5:14-19 (§11)",
+          "Single kontakion — Ode VI only (same used at all four Hours). " +
+          "6 stichera (3 texts, each doubled) Tone IV confirmed §2C. Glory doxasticon Tone VI.",
     prokeimenon_tone: 1,
     prokeimenon_text: "My mouth shall speak wisdom, " +
       "and the meditation of my heart shall be of understanding.",
@@ -237,6 +338,12 @@ const JUNE_MENAION = {
       tone: 6,
       text: "Thou hast manifestly poured forth upon us an abyss of the doctrines of theology from the wellsprings of the Savior, drowning heresies and saving thy flock unharmed from the threefold waves, O blessed Cyril, as a guide for all lands, revealing things divine, O venerable one.",
     },
+    stichera_lord_i_call: [
+      { tone: 4, text: "Having illumined thy mind with the effulgence of the Spirit, thou didst become a radiant sun, for, extending the beams of thy teachings to all the ends of the earth, thou hast enlightened the fullness of the faithful, O most blessed God-bearer, driving away the darkness of heresies by the power of Him Who shone forth from the Virgin." },
+      { tone: 4, text: "With the goodly utterance of thy discourses, O sacred Cyril, the whole Church hath been adorned and piously ornamented with comely beauties, honoring in a sacred manner thy holy and right excellent memory, O boast of the Orthodox, summit of the fathers, champion of the all-holy Virgin at the council." },
+      { tone: 4, text: "With thy fiery teachings all the tinder of heresies have been consumed, O most wise one, the armies of the impious who would not submit to the Truth have been drowned in the depths of thine understanding, O sacred Cyril, and the Church of the faithful is thereby ever adorned with thy doctrines, honoring thee with mighty voices." },
+    ],
+    stichera_glory: { tone: 6, text: "O good and faithful servant, laborer in the vineyard of Christ, thou didst bear the burden of the day, and increase the talant entrusted to thee; and thou didst not envy those who came after thee. Wherefore, the portals of heaven have been opened unto thee: enter thou into the joy of thy Lord, and pray for us, O Cyril our father." },
   },
 
   // ── June 4 — St Metrophanes, first Patriarch of Constantinople ─────────────
@@ -249,30 +356,59 @@ const JUNE_MENAION = {
     oca_primary: true,
     source_file: "06-04.pdf",
     rank: "simple",
-    note: "Also: Sts Mary and Martha, sisters of St Lazarus. Two kontakia in PDF — " +
-          "the Matins Ode VI kontakion (Tone II) governs the Hours.",
+    fekula_section: "2A",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord", // §2A — standard format; no Alleluia conditional in PDF
+    feast_e: null, // AT LITURGY: troparion and kontakia only, no proper epistle/gospel
+    aposticha_source: "octoechos", // §2A — no Menaion aposticha in PDF
+    note: "Also: Sts Mary and Martha, sisters of St Lazarus. Two kontakia in PDF: " +
+          "Ode III Tone II governs 1st & 6th Hours; Ode VI Tone IV governs 3rd & 9th Hours. " +
+          "3 stichera Tone VI confirmed §2A.",
     troparion: {
       tone: 4,
       text: "The truth of things revealed thee to thy flock as a rule of faith, icon of meekness, and teacher of temperance; wherefore, thou hast attained the heights through humility and riches through poverty; O hierarch Metrophanes our father, entreat Christ God, that our souls be saved.",
     },
     kontakion_ode6: {
-      tone: 2,
+      tone: 4, // PDF: Kontakion after Ode VI, Tone IV, Spec. Mel. "Thou hast appeared today"
+      text: "From childhood thou wast shown to be a precious vessel, becoming a chosen hierarch of God; and to Him hast thou cried aloud with gladness: O Christ, Thou art equal to the Father and the Spirit!",
+    },
+    kontakion_ode3: {
+      tone: 2, // PDF: Kontakion after Ode III, Tone II, Spec. Mel. "Seeking the highest"
       text: "Thou didst manifestly preach the Faith of Christ, and preserving it, thou didst truly cause thy faithful flock to increase. Wherefore, thou dost rejoice with the angels, O Metrophanes, entreating Christ unceasingly for us all.",
     },
+    stichera_lord_i_call: [
+      { tone: 6, text: "Thou wast shown to be a God-bearer wholly consecrated, the holy anointed of God, clad in the Holy Spirit, ever entering with splendor into the holy of holies, illumined with godly radiance, partaking of the grace of the holy mysteries as a true and most glorious hierarch, praying with boldness on behalf of our souls." },
+      { tone: 6, text: "Thy life was illumined with the radiance of the virtues, and thou hast enlightened the faithful and driven away the darkness of delusion; for thou wast shown to be the bright sun of the truth, O most blessed and holy hierarch Metrophanes. And now thou hast made thine abode where shineth never-waning light, and become a child of the day through the grace of the Holy Spirit. Wherefore, honorably celebrating thy divine and luminous memory, we honor thee with love, O ever-memorable one." },
+      { tone: 6, text: "Thy mind made beautiful by faith and through yearning for God, O divinely wise one, thou wast shown to be radiant; and having learned incorruption in thy mortal and corruptible body, O most wise one, thou didst acquire the splendors of the incorporeal ones, becoming a stranger to pleasures, adorned with dispassion, O most wise father and hierarch Metrophanes, thou radiant lamp and intercessor for those who honor thy memory with love." },
+    ],
+    stichera_glory: null, // §2A — no separate doxasticon
   },
 
   // ── June 5 — Holy Hieromartyr Dorotheus, Bishop of Tyre ─────────────────────
   // Source: St. Sergius 06-05.pdf. OCA and St. Sergius agree.
-  // Service rank: Six-Stichera (§2C). 6 stichera on Lord I Call.
-  // Note: Alleluia rubric present but this applies to fasting weekday alternate use;
-  //       rank is determined by stichera count (6 = §2C), not Alleluia rubric alone.
+  // Service rank: Six-Stichera (§2C). "6 Stichera" in heading, 3 texts printed (each doubled).
+  // Matins: "if Alleluia is to be chanted instead of God is the Lord" — god_is_the_lord is the norm.
 
   "06-05": {
     saint: "Holy Hieromartyr Dorotheus, Bishop of Tyre",
     oca_primary: true,
     source_file: "06-05.pdf",
     rank: "six_stichera",
-    note: "Dorotheus served 107 years as a pastor before martyrdom under Julian the Apostate.",
+    fekula_section: "2C",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord", // PDF: "if Alleluia is to be chanted instead of God is the Lord" — god_is_the_lord is the norm
+    feast_e: null, // AT LITURGY: troparion and kontakion only, no proper epistle/gospel
+    aposticha_source: "octoechos", // §2C — no Menaion aposticha in PDF
+    note: "Dorotheus served 107 years as a pastor before martyrdom under Julian the Apostate. " +
+          "6 stichera (3 texts, each doubled) Tone VIII confirmed §2C.",
     troparion: {
       tone: 4,
       text: "As thou didst share in the ways of the apostles and didst occupy their throne, thou didst find thine activity to be a passage to divine vision, O divinely inspired one. Wherefore, ordering the word of truth, thou didst suffer for the Faith even to the shedding of thy blood, O Hieromartyr Dorotheus, entreat Christ God, that our souls be saved.",
@@ -281,13 +417,19 @@ const JUNE_MENAION = {
       tone: 5,
       text: "Resplendent with virtues brighter than the sun and with thy sufferings, O blessed Dorotheus, thou didst shine forth and illumine the land, dispelling the darkness of polytheism and putrid heresy. Wherefore, we radiantly celebrate thy memory.",
     },
+    stichera_lord_i_call: [
+      { tone: 8, text: "Thou wast revealed to be a tablet of the Spirit of God, O divinely blessed father, bearing the doctrines of God engraved upon thy divine mind; and in disclosing them thou didst illumine those languishing in ignorance. Wherefore, by thy supplications, O father, ask thou great mercy for us all." },
+      { tone: 8, text: "Having dyed thy priestly raiment in the streams of thy divine blood, O Dorotheus, thou hast now entered, rejoicing, into the temple of heaven, to appear before our God, Who bestoweth crowns upon those who have suffered. Him do thou earnestly entreat, that He send down great mercy upon all." },
+      { tone: 8, text: "Angelic was thy life and splendid thy martyrdom, for which thou was deemed worthy to rejoice with the angels, O father Dorotheus, illumining the land with divine miracles and teachings. Wherefore, in thine entreaties ask God to grant great mercy unto all." },
+    ],
+    stichera_glory: null, // §2C — Glory/Both now goes to Theotokion, no separate doxasticon
   },
 
   // ── June 6 — Ven. Bessarion & Ven. Hilarion the New (Double Service §2B) ────
   // Source: St. Sergius 06-06.pdf. OCA and St. Sergius agree.
   // Service rank: Six-Stichera §2B (Double). 6 stichera = 3 per saint.
-  // Fekula §2B: 1st & 6th Hour = kontakion_ode3 (Bessarion T2, Matins Ode III);
-  //             3rd & 9th Hour = kontakion (Hilarion T2, Matins Ode VI).
+  // Fekula §2B: kontakion_ode3 (Hilarion T2, Matins Ode III) → 1st & 6th Hours;
+  //             kontakion_ode6 (Bessarion T2, Matins Ode VI) → 3rd & 9th Hours.
   // Joint troparion used at all Hours.
 
   "06-06": {
@@ -295,25 +437,43 @@ const JUNE_MENAION = {
     oca_primary: true,
     source_file: "06-06.pdf",
     rank: "six_stichera",
-    fekula_section_override: "2B",  // Double service
+    fekula_section: "2B", // Double service — two saints
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord", // No Alleluia conditional in PDF; standard double service format
+    feast_e: null, // AT LITURGY: troparion and both kontakia only, no proper epistle/gospel
+    aposticha_source: "octoechos", // §2B — no Menaion aposticha in PDF
     note: "Double service: two venerable fathers in one compiled service. Joint troparion. " +
-          "Per Fekula §2B: 9th Hour uses the second saint's kontakion (Hilarion, Tone II).",
+          "Per Fekula §2B: 3rd & 9th Hours use second saint's kontakion (Bessarion, Ode VI). " +
+          "6 stichera (3 Bessarion Tone VIII + 3 Hilarion Tone IV) confirmed §2B.",
     troparion: {
       tone: 4,
       text: "O God of our fathers, ever deal with us according to Thy meekness. Take not Thy mercy from us, but by the prayers of these saints direct our life in peace.",
     },
-    // kontakion = Matins 6th Ode → governs 3rd & 9th Hours (Fekula §2B second saint)
+    // kontakion_ode6 = Bessarion (Matins Ode VI) → governs 3rd & 9th Hours
     kontakion_ode6: {
-      tone: 2,
-      text: "Like a shepherd didst thou preserve within thy fold the flock of thy life-bearing pasture, and wast shown to be great by the loftiness of thy works, O Hilarion the New, having undergone much suffering and sorrow in thy piety. Wherefore, thou hast made thine abode in the most joyful life in heavenly Sion. Pray for us, O venerable one!",
-      saint: "Hilarion the New",
-    },
-    // kontakion_ode3 = Matins 3rd Ode → governs 1st & 6th Hours (Fekula §2B first saint)
-    kontakion_ode3: {
       tone: 2,
       text: "Emulating the powers on high, by example thou didst live the life of the birds, O venerable one; putting transitory things far from thy mind, thou wast led to the heavenly beauties of Christ the King by thy constant desire, thou didst come even unto Him. O Bessarion, unceasingly entreat Him on behalf of us all!",
       saint: "Bessarion the Wonderworker",
     },
+    // kontakion_ode3 = Hilarion (Matins Ode III) → governs 1st & 6th Hours
+    kontakion_ode3: {
+      tone: 2,
+      text: "Like a shepherd didst thou preserve within thy fold the flock of thy life-bearing pasture, and wast shown to be great by the loftiness of thy works, O Hilarion the New, having undergone much suffering and sorrow in thy piety. Wherefore, thou hast made thine abode in the most joyful life in heavenly Sion. Pray for us, O venerable one!",
+      saint: "Hilarion the New",
+    },
+    stichera_lord_i_call: [
+      { tone: 8, text: "Thou wast the light of monastics, O wise Bessarion, and by the rays of thy virtues and the effulgence of grace thou wast like a most radiant lamp unto the desert. From the gloom of the passions and the darkness of the wicked, from all sorrow and temptation, deliver those who fervently honor thee and hymn with faith thy divine repose.", saint: "Bessarion" },
+      { tone: 8, text: "Enduring to stand amid thorns in thy divine love of ineffable struggles, thou didst show forth an effort equal to that of the martyrs. Thou dost sweeten the bitter waters of the sea and givest drink to souls in thirst, O most wise one. Thou didst traverse the rushing torrents of the Nile, making thy passage over its waters dryshod, O all-famed one.", saint: "Bessarion" },
+      { tone: 8, text: "Knowing thee to be like unto the wise Elijah, we all manifestly praise thee, O Bessarion, for thou didst cause torrents of water to fall as rain from the sky through God's mercy unto thee, and by thine honored supplications thou bestowest fountains of rain and divine dew from on high upon all the faithful as well as grace and power and invincible protection.", saint: "Bessarion" },
+      { tone: 4, text: "Having attained a life undefiled, patience, meekness and love unfeigned, boundless abstinence, standing all night, divine compunction, faith, true hope and mercy, thou didst live on earth like an angel in the body, O blessed father Hilarion, intercessor for our souls.", saint: "Hilarion" },
+      { tone: 4, text: "Thou wast an earthly angel and a heavenly man, O venerable one, a well-spring of compunction, a torrent of mercy, an abyss of miracles, a surety for sinners, a truly fruitful olive-tree of God, anointing with the oil of thy works the faces of those who praise thee with faith, O wondrous Hilarion.", saint: "Hilarion" },
+      { tone: 4, text: "Thy mind shining with divine understanding, thou didst transcend the passions of the flesh, unconfused by things below, bearing the lineaments and depicting the beauty of God within thyself, and known as wholly luminous through the activity of the Spirit, O Hilarion our father, thou adornment of monastics.", saint: "Hilarion" },
+    ],
+    stichera_glory: null, // §2B — Glory/Both now goes to Theotokion
   },
 
   // ── June 1 — Holy Martyr Justin the Philosopher & those with him ──────────
@@ -325,7 +485,17 @@ const JUNE_MENAION = {
     oca_primary: true,
     source_file: "06-01.pdf",
     rank: "simple",
-    note: "Also: Blessed Agapitos the Unmercenary of Pechersk (not on OCA calendar).",
+    fekula_section: "2A",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord", // PDF: "if Alleluia is to be chanted instead of God is the Lord" — confirming god_is_the_lord is the norm
+    feast_e: null,
+    aposticha_source: "octoechos", // PDF: "On the Aposticha, the Stichera from the Oktoechos"
+    note: "Also: Blessed Agapitos the Unmercenary of Pechersk (not on OCA calendar). " +
+          "3 stichera Tone II confirmed §2A.",
     troparion: {
       tone: 4,
       text: "In their sufferings, Thy martyrs O Lord, received imperishable crowns from Thee, our God; for, possessed of Thy might, they set at naught the tyrants and crushed the feeble audacity of the demons. By their supplications save Thou our souls.",
@@ -334,10 +504,16 @@ const JUNE_MENAION = {
       tone: 2,
       text: "Adorned with the wisdom of thy divine words, O Justin, the whole Church of God doth illumine the world with the radiance of thy life. Having received a crown because of the out-pouring of thy blood, standing with the angels before Christ, pray thou unceasingly on behalf of us all.",
     },
+    stichera_lord_i_call: [
+      { tone: 2, text: "When the ice of ignorance assaulted all creation with hostility and a multitude of idols were worshipped, then did ye, O glorious martyrs, abolish this with a zealous heart and the fervor of divine faith, manifestly shedding your blood with love for Him Who shed His blood on the Cross." },
+      { tone: 2, text: "When, at God's behest, ye set yourselves apart for supra-natural struggles, ignoring your corruptible bodies, and strengthened by the power of the Most High, ye were undaunted by the fire or the cutting sword. Wherefore, bending your necks before God, O blessed ones, ye accepted death with joy." },
+      { tone: 2, text: "The valiant spiritual athletes Peon, Valerian, Chariton and Charita, the godly Justin, Euelpistus and the glorious Hierax, ye who dyed your vesture in your divine blood and arrayed yourselves therein together, with the angels ye now stand before Christ the King and Master of all in the heavens." },
+    ],
+    stichera_glory: null, // §2A — no separate doxasticon
   },
 
   // ── June 2 — Multi-service: St Nicephorus / Greatmartyr John the New ────────
-  // Source: St. Sergius 06-02.pdf (Nicephorus, Six-Stichera) + 06-02A.pdf (John, Polyeleos)
+  // Source: St. Sergius 06-02.pdf (Nicephorus, Six-Stichera §2C) + 06-02A.pdf (John, Polyeleos §2E)
   // OCA primary: St Nicephorus the Confessor. John the New is secondary on OCA calendar.
 
   "06-02": [
@@ -346,22 +522,52 @@ const JUNE_MENAION = {
       oca_primary: true,
       source_file: "06-02.pdf",
       rank: "six_stichera",
-      note: "",
+      fekula_section: "2C",
+      has_great_doxology: false,
+      has_polyeleos: false,
+      has_litya: false,
+      has_paroemias: false,
+      magnificat_sung: false,
+      matins_format: "god_is_the_lord", // §2C — no Alleluia conditional in PDF; Kontakion after Ode VI confirms God is the Lord
+      feast_e: null, // AT LITURGY: troparion and kontakion only, no proper epistle/gospel
+      aposticha_source: "octoechos", // §2C — no Menaion aposticha printed in PDF
+      note: "6 stichera (3 Tone IV + 3 Tone VIII) confirmed §2C. AT LITURGY has troparion and kontakion only.",
       troparion: {
         tone: 4,
         text: "The truth of things revealed thee to thy flock as a rule of faith, icon of meekness, and teacher of temperance; wherefore, thou hast attained the heights through humility and riches through poverty; O hierarch Nicephorus our father, entreat Christ God, that our souls be saved.",
       },
       kontakion_ode6: {
-        tone: 2,
-        text: "Through your inspired confession, you gained victory for the Church, holy Hierarch Nicephorus. You suffered unjust exile because of your reverence for the icon of God the Word. Righteous Father, entreat Christ our God to grant us His great mercy.",
+        tone: 4, // PDF: Kontakion after Ode VI, Tone IV, Spec. Mel. "Thou hast appeared today"
+        text: "As thou hast received a crown of victory from God in heaven, O Nicephorus, save those who with faith honor thee as a hierarch of Christ and a teacher.",
       },
+      stichera_lord_i_call: [
+        { tone: 4, text: "O divinely inspired one, manifest in sanctity, we know thee to be the ground of the Truth, the confirmation of the Faith, the expounder of dogmas, the advocate of piety, the abode of purity, the chosen receptacle, the sweet savor of the Spirit, the great treasury of doctrines, the foundation of the Church of Christ." },
+        { tone: 4, text: "O all-wise, blessed and holy hierarch, we praise thee, the successor of the apostles, who shared in the ways of the martyrs, the emulator of the fasters, the seal of teachers, the model of godliness, the initiate of the mysteries of Christ, the divinely flowing river of understanding, drowning the thoughts of the iniquitous and blasphemous." },
+        { tone: 4, text: "Having increased the talant of wisdom, O most noetically rich confessor, thou wast deemed worthy of the joy of thy Lord. Adorned with the grace of divine radiance, and shining with the effulgence of the Spirit, thou dost now stand at the right hand of the Bestower of life, ever illumined, O glorious one, with the rays emanating therefrom." },
+        { tone: 8, text: "O venerable father, as a priest of the law of God thou didst enter within the divine and impassable tabernacle of the truth, which the Lord erected, not with another's blood, but with thine own, and emulating Christ by not submitting to the vengeance of the council, thou didst thereby utterly please God, O father." },
+        { tone: 8, text: "Adorned with thy words and deeds, with thy priestly vesture and the rightness of thy doctrine, O all-wise Nicephorus, who nurturest with wisdom, wasted away by imprisonment thou didst receive them through thy confession, and didst zealously endure all the evils which beset thee with strength of mind, O blessed one." },
+        { tone: 8, text: "Thou wast shown to be an instrument of the Spirit, sounded from on high by divinely inspired voices and trumpeting forth the ineffable mystery of the Savior, as a divine trumpet truly renowned, proclaiming aloud the incarnation of the Word to us, which is beyond comprehension and transcendeth all minds and thoughts, O thou who art most honorable." },
+      ],
+      stichera_glory: null, // §2C — Glory/Both now goes to Theotokion, no separate doxasticon
     },
     {
       saint: "Holy Greatmartyr John the New of Suceava",
       oca_primary: false,
       source_file: "06-02A.pdf",
       rank: "polyeleos",
-      note: "St John the New of Suceava appears on the OCA calendar as a secondary commemoration on June 2. The OCA primary is St Nicephorus the Confessor.",
+      fekula_section: "2E",
+      has_great_doxology: true, // PDF: "Great Doxology. Troparia. Litanies. Dismissal. First Hour."
+      has_polyeleos: true, // PDF: Polyeleos with magnification
+      has_litya: true, // PDF: "At Litiya, these Stichera..."
+      has_paroemias: true, // PDF: Entrance + 3 OT Lessons (Isaiah, Wisdom of Solomon ×2)
+      magnificat_sung: true, // §2E — Magnificat sung
+      matins_format: "god_is_the_lord", // PDF: "On 'God is the Lord...,' Troparion of the holy great-martyr"
+      feast_e: "Ephesians 6:10-17 (§233)",
+      feast_g: "Matthew 10:16-22 (§36)",
+      aposticha_source: "menaion", // PDF: Menaion aposticha with proper verses at Great Vespers
+      note: "St John the New of Suceava appears on the OCA calendar as a secondary commemoration " +
+            "on June 2. The OCA primary is St Nicephorus the Confessor. Little Vespers + Great Vespers " +
+            "with Entrance, 3 OT Lessons, Litya, Polyeleos, Great Doxology confirmed §2E.",
       troparion: {
         tone: 4,
         text: "Having sustained well thy life on earth with almsgiving, and frequent prayers and tears, O spiritual athlete, thou didst manfully hasten to suffering, and denounce the ungodliness of the Persians; wherefore, thou hast become a firm foundation for the Church and the boast of Christians, O ever-memorable John.",
@@ -370,12 +576,30 @@ const JUNE_MENAION = {
         tone: 4,
         text: "Plying the deep of the sea for trade, thou didst set out from the East for the North; but when God called thee, as He did Matthew the tax-collector, thou didst forsake thy trade and follow Him by the blood of martyrdom, exchanging transitory things for those which are eternal; thus receiving a crown of victory.",
       },
+      prokeimenon_tone: 7,
+      prokeimenon_text: "The righteous man shall be glad in the Lord, and shall hope in Him.",
+      prokeimenon_stichos: "Hearken, O God, unto my prayer, when I make supplication unto Thee.",
+      alleluia_tone: 4,
+      alleluia_verse: "The righteous cried, and the Lord heard them, and He delivered them out of all their tribulations.",
+      alleluia_stichos: "Many are the tribulations of the righteous, and the Lord shall deliver them out of them all.",
+      communion_verse: "In everlasting remembrance shall the righteous be; he shall not be afraid of evil tidings.",
+      paroemia_1: "Isaiah 43:9-14 (Be My witnesses — the Holy One of Israel)",
+      paroemia_2: "Wisdom of Solomon 5:15-6:3 (The righteous live for evermore — a beautiful crown from the Lord's hand)",
+      paroemia_3: "Wisdom of Solomon 4:7-15 (Though the righteous be prevented with death — His grace and mercy is with His saints)",
+      matins_gospel: "Luke 21:12-19 (§106)",
+      stichera_lord_i_call: [
+        { tone: 2, text: "With what good songs of praise shall we hymn John: the true warrior of the great King, the splendid champion, the most excellent spiritual athlete of Christ, who made the Faith steadfast, casting down deception, who was patient amid temptations and undaunted amid tortures the awesome denouncer of the ungodly and ardent helper of the pious, through whom Christ granteth us great mercy?" },
+        { tone: 2, text: "With what wreaths of praise shall we crown John: the restoration of the martyrs, the skilled opponent, the champion of piety, who humbled the enemy, who sanctified the ground with his blood, who terrified the princes of the air and hath been reckoned with the angels of heaven, the pillar of gold which upholdeth all the lands of the north and by whom Christ, Who hath great mercy, doth vanquish all their enemies?" },
+        { tone: 2, text: "With what right harmonious voices shall we glorify John: the eagle who soareth aloft on the wisdom of words, the pinions of whose wings are golden; the trumpet of piety, who hath thundered forth the mysteries of the Word of God, the sword honed sharp by the sayings of the prophets, by whom Christ, Who hath great mercy, hath humbled the uprisings of the Persians?" },
+        { tone: 2, text: "With what hymn and beauties shall we crown the wondrous John: who gave his flesh over to flogging for the sake of Him Who for our sake gave His shoulders over to wounds, and who unsparingly shed his blood for Him Who abased Himself even to assuming the form of a servant, astonishing the tyrant by his supra-natural endurance, putting him to shame by his mighty opposition, whom Christ God, Who hath great mercy, hath crowned with wreaths of immortality?" },
+      ],
+      stichera_glory: { tone: 8, text: "Today, the denizens of heaven celebrate an honorable festival, calling those on earth to gladness for the memorial of John the valiant struggler, the hard diamond; for the arms of those who flogged him became exhausted, and the judge became weary even considering his tortures; but he remained above them all standing like a lion in the midst of the arena and filling the tyrant with fear by his confession of Christ, for he right boldly cried out to him: \"Touch not my flesh, lest retribution overtake thee, O governor! For though thou hast inflicted many wounds, I shall be given crowns of incorruption by Christ; Whom I preach with the Father and the Holy Spirit!\"" },
     },
   ],
 
   // ── June 3 — Holy Martyr Lucillian and those with him ───────────────────────
   // Source: St. Sergius 06-03.pdf. OCA and St. Sergius agree.
-  // Service rank: Simple (§2A). 3 stichera on Lord I Call; Alleluia at Matins.
+  // Service rank: Simple (§2A). 3 stichera on Lord I Call, Tone I.
   // Troparion/kontakion: NOT in PDF — sourced from OCA troparia page.
 
   "06-03": {
@@ -383,7 +607,17 @@ const JUNE_MENAION = {
     oca_primary: true,
     source_file: "06-03.pdf",
     rank: "simple",
-    note: "Companions: venerable Paula and four unnamed children martyrs.",
+    fekula_section: "2A",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord", // PDF: "if Alleluia is to be chanted instead of God is the Lord" — god_is_the_lord is the norm
+    feast_e: null,
+    aposticha_source: "octoechos", // §2A — no Menaion aposticha in PDF
+    note: "Companions: venerable Paula and four unnamed children martyrs. " +
+          "3 stichera Tone I confirmed §2A. Troparion/kontakion from OCA troparia page (not in St. Sergius PDF).",
     troparion: {
       tone: 1,
       text: "By your faith, you shone like a radiant star in the dark night of error; you fought the good fight and slew the crafty enemy, O Lucillian. Together with venerable Paula and the four martyred children entreat Christ our God to save our souls.",
@@ -392,6 +626,12 @@ const JUNE_MENAION = {
       tone: 4,
       text: "You attained the dignity of the martyrs of Christ through the torments that you courageously endured, O Lucillian. Together with Paula and the four martyred children, you sing to the Creator: 'Like sheep we are slaughtered for love of You, O Savior.'",
     },
+    stichera_lord_i_call: [
+      { tone: 1, text: "The cruel children of those who put the Lord to death, consumed with envy, betrayed thee, O glorious one; but, invincibly brave, thou hast received the delight of paradise, O Lucillian. Wherefore, pray thou, that Christ grant unto our souls peace and great mercy." },
+      { tone: 1, text: "The most sacred children and the glorious and holy Paula, the right wondrous martyr, who submitted to thee as to their father, suffered steadfastly with thee; and with them thou now dwellest in the heavens. Entreat Christ, that He grant unto our souls peace and great mercy." },
+      { tone: 1, text: "Thy shrine ever poureth forth the waters of healing upon those who have recourse thereto, O much-suffering martyr, washing away sufferings and drowning hordes of the demons through the activity of the Holy Spirit. Wherefore, pray thou, that He grant unto our souls peace and great mercy." },
+    ],
+    stichera_glory: null, // §2A — no separate doxasticon
   },
 
   // ── June 14 — Prophet Elisha & Patriarch Methodius of Constantinople (§2B Double) ─
@@ -792,29 +1032,29 @@ const JUNE_MENAION = {
 
   "06-10": {
     saint: "Holy Hieromartyr Timothy, Bishop of Prussia",
+    oca_primary: true,
     source_file: "06-10.pdf",
     rank: "simple",
-    note: "Bishop of Prussia martyred for the faith. Also: St John of Tobolsk (separate service). " +
-          "§2A confirmed — 3 stichera on Lord I Call; PDF has no AT LITURGY section (readings from Oktoechos). " +
-          "Troparion absent from Vespers rubric in PDF — sourced from General Menaion (Hieromartyr). " +
-          "Kontakion sourced from General Menaion.",
+    fekula_section: "2A",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord", // PDF: "if Alleluia is to be chanted instead of God is the Lord" — god_is_the_lord is the norm
     feast_e: null,
     feast_g: null,
-    // Vespers stichera — sourced from 06-10.pdf, AT VESPERS section. Tone 4.
-    // Three stichera on Lord I Call (§2A). Glory and Both now from PDF (Menaion-supplied).
-    stichera_lord_i_call_count: 6,
+    aposticha_source: "octoechos", // §2A — no Menaion aposticha in PDF
+    note: "Bishop of Prussia martyred for the faith. Also: St John of Tobolsk (separate service). " +
+          "3 stichera Tone IV confirmed §2A. PDF has no AT LITURGY section (readings from Oktoechos). " +
+          "Troparion absent from Vespers rubric in PDF — sourced from General Menaion (Hieromartyr). " +
+          "Kontakion sourced from General Menaion.",
     stichera_lord_i_call: [
       { tone: 4, text: "Elevated above earthly things by thine active purifications like an animate cloud, O all-blessed one, thou didst cast down the perverse serpent with the thunder-claps of thy miracles and the awesome lightning flashes of thy words, and thou didst receive the grace to burn up the bowels of the adverse carnal serpents with the divine covering of the sacred Gifts." },
       { tone: 4, text: "O holy hierarch Timothy, boast of the people of Prussia, universal champion and beacon of the world, adornment of the Church, sacred sacrifice of faith, and precious and lustrous ornament of the martyrs: pray thou that those who celebrate thy most honored memory with faith may be delivered from corruption and misfortunes." },
       { tone: 4, text: "With thy pangs, O Timothy, thou didst weave a most comely garment dyed in thy blood, and ineffably received from on high a heavenly vesture of incorrupt purity and immutable life. Wearing this immaterial robe in the highest, pray thou on behalf of all who praise thee with piety, O spiritual athlete." },
     ],
-    stichera_glory: {
-      tone: 4,
-      text: "Tens of thousands of times have I promised to repent of mine offenses, O most pure one, yet the cherished habits of mine evil ways will not depart from me; wherefore, I cry unto thee and fall down, praying: O Sovereign Lady, rescue me from such tyranny, guiding me to things that are higher, which are nigh unto salvation.",
-    },
-    // Both now at LIC: stavrotheotokion from PDF (Friday) or theotokion (other days).
-    // The PDF provides a stavrotheotokion for use when this falls on Wed/Fri;
-    // on other days the Octoechos theotokion governs (Track B — pending encoding).
+    stichera_glory: null, // §2A — no separate doxasticon; Glory/Both now goes to Theotokion from Pentecostarion or Octoechos
     troparion: {
       tone: 4,
       text: "As thou didst share in the ways of the apostles and didst occupy their throne, thou didst find thine activity to be a passage to divine vision, O divinely inspired one. Wherefore, ordering the word of truth, thou didst suffer for the Faith even to the shedding of thy blood, O Hieromartyr Timothy, entreat Christ God, that our souls be saved.",
