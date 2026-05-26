@@ -465,7 +465,8 @@ const MAY_MENAION = {
     note: "May 21 O.S. = June 3 N.S. OCA commemorates May 21 N.S. — DIVERGENCE; OCA date governs. " +
           "§2E Polyeleos confirmed — Great Vespers, Litya, 3 paroemias, Polyeleos, Matins Gospel. " +
           "OCA and St. Sergius texts agree. Dual epistle: Gal 1:11-19 (primary); Acts 26:1-5,12-20 during Pentecostarion. " +
-          "Matins Gospel: John 10:9-16 (§36). In years when Ascension falls May 21, movable feast takes precedence.",
+          "Matins Gospel: John 10:9-16 (§36). In years when Ascension falls May 21, movable feast takes precedence. " +
+          "v2.1: litya stichera encoded (5 stichera T1/T2/T2/T3/T4 + Glory T5 + Both Now T5). // v0.5.0",
     has_great_doxology: true,   // §2E Polyeleos — Great Doxology sung; printed in PDF
     has_polyeleos: true,
     has_litya: true,             // Litya stichera printed in PDF
@@ -555,6 +556,67 @@ const MAY_MENAION = {
             "that He grant forgiveness of sins and great mercy unto all who keep thy memory.",
     },
     // Both Now: from Pentecostarion (handled at runtime by assembler)
+
+    // ── AT VESPERS: LITIYA ──────────────────────────────────────────────────
+    // Source: 05-21.pdf — "At Litiya, the Sticheron of the temple, and these Stichera"
+    // 5 stichera in Tones I, II, II, III, IV + Glory T5 + Both Now T5
+    litya_stichera: [
+      { tone: 1,
+        text: "As is meet, we celebrate thy memory, O Constantine, equal of the apostles, " +
+              "thou foundation and boast of all kings; for, illumined by the rays of the Spirit, " +
+              "thou didst enlighten the whole Church of Christ, gathering together assemblies " +
+              "of the faithful from everywhere in the city of Nicaea, where the audacity of the " +
+              "impious was extinguished and the tongues of the heretics grew weak and foolish, " +
+              "while the crown of the Orthodox was exalted when the Faith was revealed. Hence, " +
+              "thou hast been glorified, as one supreme in Orthodoxy, and proclaimed to be the " +
+              "father of all kings, being the first to receive thy robe of royal purple from God. " +
+              "Wherefore, we who celebrate thy memory entreat thee with faith: " +
+              "ask thou cleansing of transgressions for our souls." },
+      { tone: 2,
+        text: "Thou didst not receive thy name from men, but, like the divine Paul, " +
+              "obtained it from Christ God on high, O most glorious Constantine. For, beholding " +
+              "the sign of the Cross in the sky, thou wast thereby caught as goodly prey, " +
+              "and therein hast thou been shown to be an invincible victor over enemies " +
+              "visible and invisible. Wherefore, we on earth entreat thee as a fervent advocate, " +
+              "that in thy boldness thou ask for us enlightenment, forgiveness and great mercy." },
+      { tone: 2,
+        text: "The memory of the pious Constantine hath shone forth today, poured forth " +
+              "like myrrh; for, desiring Christ, he spurned the idols, raising up a temple " +
+              "on the earth to Him Who was crucified for our sake; and in the heavens " +
+              "receiving the crown of hope." },
+      { tone: 3,
+        text: "Passing through the age of thy youth, like the godly Paul thou didst " +
+              "receive a divine gift from on high, and with the full armor of the Cross " +
+              "didst set at naught the warring of the cruel adversary. O apostle Constantine, " +
+              "thou boast of kings, pray thou to the Lord on our behalf, " +
+              "that our souls may be saved." },
+      { tone: 4,
+        text: "Praise is sung to God by lips of clay on the day of thy divine memorial, " +
+              "O all-praised Constantine; for thou wast shown to be a most excellent warrior " +
+              "of the word of faith, reviling the carven faces of the idols. And now thou hast " +
+              "found rest in the effulgence of the Trinity, illumining our thoughts " +
+              "by thine entreaties." },
+    ],
+    litya_glory: {
+      tone: 5,
+      text: "Adorned by thy might, O emperor, the Church mystically rejoiceth today, " +
+            "and honoreth thy most precious memory as is meet with all praise, crying aloud: " +
+            "Rejoice, O thou who didst emulate Paul, taking up the Cross of Christ " +
+            "and crushing the snares of the adversary! Rejoice, O most excellent among emperors, " +
+            "equal in honor to the apostles! Rejoice, thou confirmation of the faithful " +
+            "and mighty bulwark of kings! O blessed Constantine, thou adornment of kings, " +
+            "cease thou never to pray to the Lord on our behalf, in that thou hast boldness.",
+    },
+    litya_both_now: {
+      tone: 5,
+      text: "Rejoice holy mountain upon which God hath walked; " +
+            "Rejoice! living bush unconsumed by fire; " +
+            "Rejoice! O only bridge of creation to God, " +
+            "who leadeth mortals to eternal life; " +
+            "Rejoice! Maiden undefiled, " +
+            "who hath born without wedlock the salvation of our souls.",
+      note: "Theotokion — from Pentecostarion during Pentecostarion season",
+    },
 
     // ── AT VESPERS: APOSTICHA ─────────────────────────────────────────────
     // Source: 05-21.pdf — Tone II Spec. Mel. "When from the Tree..."
@@ -978,7 +1040,8 @@ const MAY_MENAION = {
           "§2E Polyeleos: Great Vespers, Blessed is the Man, Entrance, 3 paroemias, Litya, Polyeleos, Matins Gospel. " +
           "OCA kontakion (Tone 4) differs from St. Sergius finding kontakion (Tone 6); OCA text governs. " +
           "Stichera count varies: 8 (3+5) in Pentecostarion, 6 in Apostles' Fast (all from Menaion, repeating as needed). " +
-          "v2: complete re-encode — stichera, aposticha, beatitudes, flags added. // v0.3.7",
+          "v2: complete re-encode — stichera, aposticha, beatitudes, flags added. " +
+          "v2.1: litya fields added (empty — no dedicated Litiya stichera in PDF). // v0.5.0",
     feast_e: "2 Corinthians 4:6-15 (§176)",
     feast_g: "Matthew 11:2-15 (§40)",
     prokeimenon_tone: 7,
@@ -1044,6 +1107,13 @@ const MAY_MENAION = {
     },
     // Both now — Pentecostarion doxasticon during Pentecostarion; Dogmaticon Tone VI in Apostles' Fast
     lic_theotokion: null, // Pentecostarion doxasticon governs during Pentecostarion
+    // ── VESPERS — LITIYA ───────────────────────────────────────────────────────
+    // has_litya: true (Polyeleos §2E), but neither St. Sergius nor RLE PDF prints
+    // dedicated Litiya stichera for this date. The Litiya petitions (fixed text) are
+    // served; stichera at the Litiya reuse Lord I Have Cried hymns or temple sticheron.
+    litya_stichera: [],  // empty — no dedicated stichera in Menaion PDF
+    litya_glory: null,   // no dedicated Glory at Litiya in PDF
+    litya_both_now: null, // no dedicated Both Now at Litiya in PDF
     // ── VESPERS — APOSTICHA ─────────────────────────────────────────────────────
     // Source: 05-25.pdf. Aposticha stichera of the finding Tone I. Spec. Mel.: "Joy of the ranks..."
     stichera_aposticha: [
