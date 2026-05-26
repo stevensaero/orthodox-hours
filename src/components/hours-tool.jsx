@@ -3545,6 +3545,158 @@ function getVespersDayKey(dow) {
   return ['sun_eve','mon','tue','wed','thu','fri','sat'][dow];
 }
 
+// ── LITIYA FIXED TEXTS ───────────────────────────────────────────────────────
+// Source: OCA_prayer_for_litiya.txt (Google Drive: vespers/oca/)
+// Authoritative OCA diptych — NOT the ROCOR/HTM version.
+// The OCA petition structure is 5 petitions (×40/×50/×30/×3/×3).
+// HTM Vespers (htm_vespers.md) governs structural placement and Vigil formula.
+
+// Petition 1: the saint diptych. Contains "Saint(s) ___" placeholder — replaced
+// at runtime with menaionEntry.saint.
+const LITIYA_PETITION_1 = {
+  rubric: "Deacon:",
+  text: "O God, save Thy people and bless Thine inheritance. " +
+    "Visit Thy world in mercy and compassion. " +
+    "Exalt the estate of Orthodox Christians, and send down upon us Thy rich mercies;\n" +
+    "Through the prayers of our all-pure Lady, the Theotokos and Ever-Virgin Mary;\n" +
+    "By the power of the precious and life-creating Cross;\n" +
+    "Through the protection of the honorable bodiless powers of heaven;\n" +
+    "Through the supplications of the honorable, glorious Prophet, Forerunner and Baptist John;\n" +
+    "Of the holy, glorious, and all-laudable Apostles;\n" +
+    "Of our Fathers among the Saints, great hierarchs and ecumenical teachers, " +
+    "Basil the Great, Gregory the Theologian, and John Chrysostom;\n" +
+    "Of our Fathers among the Saints, Athanasius and Cyril of Alexandria, " +
+    "Ignatius of Antioch, Polycarp of Smyrna, Irenaeus of Lyons and Cyprian of Carthage;\n" +
+    "Of our Fathers among the Saints, Nicholas of Myra in Lycia, the Wonderworker, " +
+    "Leo and Gregory of Rome, Ambrose of Milan, and the holy Confessor Patrick of Ireland:\n" +
+    "Of the holy Methodius and Cyril, the Teachers of the Slavs,\n" +
+    "Of the holy Prince Vladimir, the blessed Princess Olga; Nina, Enlightener of Georgia, " +
+    "and Nicholas, equal to the Apostles and Enlightener of Japan;\n" +
+    "Of our Fathers among the Saints, the hierarchs of all Russia, Peter, Alexis, Kyprian, " +
+    "Jonah and Philip; Innocent, Enlightener of the Aleuts and Apostle to America, " +
+    "and Tikhon the Confessor;\n" +
+    "Of our Fathers among the Saints, Clement of Ochrid, Sava of Serbia and Euthymius of " +
+    "Tornovo; of the holy, glorious and right-victorious martyrs, Demetrios, George, " +
+    "Katherine and Barbara;\n" +
+    "Of our venerable and God-bearing Fathers, Anthony and Theodosius and the other " +
+    "wonderworkers of the Caves of Kiev, Sergius of Radonezh, Seraphim of Sarov, " +
+    "Makarios of Corinth, Nektarios of Aegina, Nikodemos and Silouan of the Holy " +
+    "Mountain, and Cosmas the Aitolian;\n" +
+    "Of our venerable Father Herman, Elder and Wonderworker of Alaska and All-America;\n" +
+    "Of our righteous Father Alexis and our righteous Father John of Kronstadt;\n" +
+    "Of Saint(s) ___;\n" +
+    "Of the holy and righteous ancestors of God, Joachim and Anna,\n" +
+    "And all of the Saints, Hear us sinners who pray unto Thee, and have mercy on us!",
+  response: "Choir: Lord, have mercy. (forty times)",
+  placeholder: "Saint(s) ___",
+};
+
+// Petition 2: for the brotherhood, sick, departed, etc.
+const LITIYA_PETITION_2 = {
+  rubric: "Deacon:",
+  text: "Again we pray for (the most holy Orthodox Patriarchs), our (lord, the Most Blessed) " +
+    "Metropolitan ___, our (lord, the Right Reverend) Bishop ___, and for all our " +
+    "brotherhood in Christ; and for every Christian soul, afflicted and weary, in need of God's " +
+    "mercies and help; for the protection of this city, and for those who dwell therein " +
+    "(or for this village and for those who dwell therein, or for this holy abode and for those who " +
+    "dwell therein); for the peace and quietness of the whole world; for the good estate of " +
+    "the holy churches of God; for the salvation and help of our fathers and brethren who " +
+    "with diligence and fear of God labor and serve; for those who are gone away and those " +
+    "who are abroad; for the healing of those who lie in infirmity; for the repose, " +
+    "refreshment and blessed memory and remission of sins of all our fathers and brethren " +
+    "the Orthodox gone to rest before (us), who lie here and everywhere; for the deliverance " +
+    "of captives; for our brethren who are serving and for all who serve and have served in " +
+    "this holy temple (if it is a monastery, in this holy abode), let us say:",
+  response: "Choir: Lord, have mercy. (fifty times)",
+};
+
+// Petition 3: for civil authorities
+const LITIYA_PETITION_3 = {
+  rubric: "Deacon:",
+  text: "Again we pray for the President of our country (or the title of the highest authority), for " +
+    "all civil authorities, and for the armed forces, let us all say:",
+  response: "Choir: Lord, have mercy. (thirty times)",
+};
+
+// Petition 4: for deliverance from wrath, famine, pestilence, etc.
+const LITIYA_PETITION_4 = {
+  rubric: "Deacon:",
+  text: "Again we pray that He will keep this city (or this village), and this holy church " +
+    "(if it is a monastery, and this holy abode), and every city and country from wrath, famine, " +
+    "pestilence, earthquake, flood, fire, the sword, foreign invasion, from civil war, and from " +
+    "sudden death; that our good God, who loveth man, will be gracious, favorable, and " +
+    "conciliatory, and turn away and dispel all the wrath stirred up against us and all sickness, " +
+    "and may deliver us from His righteous chastisement which impendeth against us, and " +
+    "have mercy on us.",
+  response: "Choir: Lord, have mercy. (thrice)",
+};
+
+// Petition 5: that God hearken unto us
+const LITIYA_PETITION_5 = {
+  rubric: "Deacon:",
+  text: "Again we pray that the Lord God will hearken unto the voice of supplication of us sinners " +
+    "and have mercy on us.",
+  response: "Choir: Lord, have mercy. (thrice)",
+};
+
+// Concluding prayer
+const LITIYA_CONCLUDING_PRAYER =
+  "Hear us, O God our Savior, the hope of all the ends of the earth, and of those who are far " +
+  "off upon the sea; and be gracious, be gracious, O Master, unto us sinners and have mercy " +
+  "on us. For thou art a merciful God who lovest man, and unto thee do we send up glory, " +
+  "to the Father, and to the Son, and to the Holy Spirit, now and ever, and unto ages of " +
+  "ages.";
+
+// Peace and head-bowing at the Litiya (separate from the §14 sequence)
+const LITIYA_PEACE = "Peace be to all.";
+const LITIYA_PEACE_RESPONSE = "And to thy spirit.";
+const LITIYA_BOW = "Let us bow our heads unto the Lord.";
+const LITIYA_BOW_RESPONSE = "To thee, O Lord.";
+const LITIYA_BOW_PRAYER =
+  "O Master, great in mercy, Lord Jesus Christ our God, through the intercessions of our " +
+  "all-immaculate Lady the Theotokos and Ever-Virgin Mary, through the power of the precious " +
+  "and life-creating Cross, (and of all the Saints,) make our prayer acceptable, grant us " +
+  "forgiveness of our trespasses, shelter us under the shelter of thy wings, drive away from " +
+  "us every enemy and adversary, give peace to our life, O Lord. Have mercy on us and on " +
+  "thy world and save our souls, for thou art good and lovest man.";
+
+// "O Theotokos and Virgin, rejoice!" — used in Vigil troparion formula
+const THEOTOKOS_VIRGIN_REJOICE =
+  "O Theotokos and Virgin, rejoice! Mary, full of grace, the Lord is with thee: " +
+  "blessed art thou among women, and blessed is the fruit of thy womb, " +
+  "for thou hast borne the Savior of our souls.";
+
+// Blessing of the Loaves (after Vigil troparion formula)
+const LITIYA_BLESSING_LOAVES_PROMPT = "Let us pray to the Lord.";
+const LITIYA_BLESSING_LOAVES_RESPONSE = "Lord, have mercy.";
+const LITIYA_BLESSING_LOAVES_PRAYER =
+  "O Lord Jesus Christ our God, who didst bless the five breads in the wilderness, and didst satisfy " +
+  "the five thousand therewith, thyself bless these breads, this wheat, wine and oil, and multiply " +
+  "them in this city (or in this village, or in this holy abode), and in all thy world; and sanctify the " +
+  "faithful who partake of them. For it is thou who dost bless and sanctify all things, O Christ our " +
+  "God, and unto thee do we send up glory, together with thy Father, who is without beginning, and " +
+  "thine all-holy, and good, and life-creating Spirit, now and ever, and unto ages of ages.";
+
+// "Blessed be the name of the Lord" (×3) + Psalm 33 first 10 verses + priestly blessing
+const LITIYA_BLESSED_NAME =
+  "Blessed be the name of the Lord, from henceforth and forevermore. (thrice)";
+
+const LITIYA_PS33_FIRST_10 =
+  "I will bless the Lord at all times; His praise shall continually be in my mouth.\n\n" +
+  "In the Lord shall my soul be praised; let the meek hear and be glad.\n" +
+  "O magnify the Lord with me, and let us exalt His name together.\n" +
+  "I sought the Lord, and He heard me, and delivered me from all my tribulations.\n\n" +
+  "Come unto Him, and be enlightened, and your faces shall not be ashamed.\n" +
+  "This poor man cried, and the Lord heard him, and saved him out of all his tribulations.\n\n" +
+  "The angel of the Lord will encamp round about them that fear Him, and will deliver them.\n\n" +
+  "O taste and see that the Lord is good; blessed is the man that hopeth in Him.\n" +
+  "O fear the Lord, all ye His saints; for there is no want to them that fear Him.\n" +
+  "Rich men have turned poor and gone hungry; but they that seek the Lord shall not be deprived of any good thing.";
+
+const LITIYA_PRIESTLY_BLESSING =
+  "The blessing of the Lord be upon you, through His grace and love for mankind, " +
+  "always, now and ever, and unto the ages of ages.";
+
 // assembleVespers — all fixed texts from HTM Order of Vespers.
 // LIC and Aposticha stichera: §2A weekday/Saturday fully assembled from Octoechos (FW-23 Track A).
 // §2C Menaion slots and §2D+ stichera remain placeholders pending Track B encoding.
@@ -4271,6 +4423,158 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       text:"Blessed and most glorified be the dominion of Thy kingdom: of the Father, and of the Son, and of the Holy Spirit, now and ever, and unto the ages of ages.",
     source:"HTM Vespers"});
   }
+  // ── 14b. LITIYA (when has_litya === true) ──────────────────────────────────
+  // Inserted between the §14 head-bowing and §15 Aposticha.
+  // Source: OCA Litiya prayer (Drive: vespers/oca/OCA_prayer_for_litiya.txt)
+  // Structural placement: HTM Vespers (htm_vespers.md)
+  // Fekula: §2E (Polyeleos) or §2F (Vigil/Great Feast)
+  const hasLitya = menaionEntry && menaionEntry.has_litya === true;
+  if (hasLitya) {
+    const litSaint = (menaionEntry && menaionEntry.saint) || "the saint(s) of the day";
+
+    // Processional rubric
+    elements.push({id:"v-litiya-rubric", type:"fixed", label:"Litiya",
+      rubric:"Rubric:",
+      text:"The clergy process to the narthex for the Litiya.",
+      source:"HTM Vespers",
+      fekula:{section:fekulaSection, note:"At a Vigil or Polyeleos, we chant the Litiya stichera as we go forth to the narthex for the Litiya. — HTM Vespers; Fekula " + fekulaSection}});
+
+    // Temple sticheron placeholder (future parish config)
+    elements.push({id:"v-litiya-temple", type:"movable", label:"Sticheron of the Temple",
+      rubric:"", unresolved:true,
+      text:"[The first sticheron at the Litiya is always the Sticheron of the temple (parish dedication). This will be supplied by a future parish configuration setting.]",
+      source:"HTM Vespers",
+      fekula:{section:fekulaSection, note:"We always chant first the first Litiya sticheron of the temple, unless it be one of the great feasts. — HTM Vespers"}});
+
+    // Litiya stichera from Menaion
+    const litStichera = menaionEntry.litya_stichera;
+    if (litStichera && litStichera.length > 0) {
+      litStichera.forEach((s, i) => {
+        elements.push({id:"v-litiya-stich-"+i, type:"movable",
+          label: i === 0 ? "Litiya Stichera" : "",
+          rubric: "Tone " + (s.tone || "?") + ":",
+          text: s.text,
+          source: "Menaion — " + litSaint,
+          fekula:{section:fekulaSection, note:"Litiya sticheron " + (i+1) + " from Menaion. — Fekula " + fekulaSection}});
+      });
+    } else {
+      // Empty array — PDF has no dedicated Litiya stichera (e.g. May 25 §2E)
+      elements.push({id:"v-litiya-stich-none", type:"informational", label:"",
+        text:"The Menaion does not appoint separate Litiya stichera for this feast. The Litiya petitions are served with the temple sticheron alone.",
+        source:"Menaion — " + litSaint,
+        fekula:{section:fekulaSection, note:"No dedicated Litiya stichera in Menaion PDF. The Litiya petitions follow the temple sticheron. — Fekula " + fekulaSection}});
+    }
+
+    // Glory
+    if (menaionEntry.litya_glory) {
+      elements.push({id:"v-litiya-glory-tag", type:"fixed", label:"",
+        text:"Glory to the Father, and to the Son, and to the Holy Spirit.",
+        source:"HTM Vespers"});
+      const lg = menaionEntry.litya_glory;
+      elements.push({id:"v-litiya-glory", type:"movable", label:"Litiya Doxasticon (Glory…)",
+        rubric: "Tone " + (lg.tone || "?") + ":",
+        text: lg.text,
+        source: "Menaion — " + litSaint,
+        fekula:{section:fekulaSection, note:"Litiya Glory: doxasticon from Menaion. — Fekula " + fekulaSection}});
+    }
+
+    // Both Now
+    if (menaionEntry.litya_both_now) {
+      elements.push({id:"v-litiya-bothnow-tag", type:"fixed", label:"",
+        text:"Both now and ever, and unto the ages of ages. Amen.",
+        source:"HTM Vespers"});
+      const lbn = menaionEntry.litya_both_now;
+      elements.push({id:"v-litiya-bothnow", type:"movable", label:"Litiya Theotokion (Both now…)",
+        rubric: "Tone " + (lbn.tone || "?") + ":",
+        text: lbn.text,
+        source: "Menaion — " + litSaint,
+        fekula:{section:fekulaSection, note:"Litiya Both Now: theotokion from Menaion. — Fekula " + fekulaSection}});
+    }
+
+    // Litiya Petitions
+    if (readerMode) {
+      // Reader mode: replace petitions with Lord, have mercy counts (Fekula Ch. 10)
+      elements.push(readerSub("v-litiya-petitions", "Litiya Petitions",
+        "Lord, have mercy. (forty times)\nLord, have mercy. (fifty times)\nLord, have mercy. (thirty times)\nLord, have mercy. (thrice)\nLord, have mercy. (thrice)",
+        "Litiya petitions — in the Reader's Service, the deacon's petitions are replaced by the choir responses alone. — Fekula Chapter 10"));
+    } else {
+      // Full petition block with saint insertion
+      const pet1Text = LITIYA_PETITION_1.text.replace("Saint(s) ___", litSaint);
+      elements.push({id:"v-litiya-petitions", type:"fixed", label:"Litiya Petitions",
+        rubric: LITIYA_PETITION_1.rubric,
+        text: pet1Text + "\n\n" + LITIYA_PETITION_1.response,
+        source:"OCA Litiya Prayer",
+        fekula:{section:fekulaSection, note:"First Litiya petition (OCA diptych) with saint of the day inserted. — OCA Priest's Service Book (1973); Fekula " + fekulaSection}});
+      elements.push({id:"v-litiya-pet-2", type:"fixed", label:"",
+        rubric: LITIYA_PETITION_2.rubric,
+        text: LITIYA_PETITION_2.text + "\n\n" + LITIYA_PETITION_2.response,
+        source:"OCA Litiya Prayer",
+        fekula:{section:fekulaSection, note:"Second Litiya petition (brotherhood, sick, departed). — OCA Priest's Service Book (1973)"}});
+      elements.push({id:"v-litiya-pet-3", type:"fixed", label:"",
+        rubric: LITIYA_PETITION_3.rubric,
+        text: LITIYA_PETITION_3.text + "\n\n" + LITIYA_PETITION_3.response,
+        source:"OCA Litiya Prayer",
+        fekula:{section:fekulaSection, note:"Third Litiya petition (civil authorities). — OCA Priest's Service Book (1973)"}});
+      elements.push({id:"v-litiya-pet-4", type:"fixed", label:"",
+        rubric: LITIYA_PETITION_4.rubric,
+        text: LITIYA_PETITION_4.text + "\n\n" + LITIYA_PETITION_4.response,
+        source:"OCA Litiya Prayer",
+        fekula:{section:fekulaSection, note:"Fourth Litiya petition (deliverance from wrath, famine, pestilence). — OCA Priest's Service Book (1973)"}});
+      elements.push({id:"v-litiya-pet-5", type:"fixed", label:"",
+        rubric: LITIYA_PETITION_5.rubric,
+        text: LITIYA_PETITION_5.text + "\n\n" + LITIYA_PETITION_5.response,
+        source:"OCA Litiya Prayer",
+        fekula:{section:fekulaSection, note:"Fifth Litiya petition. — OCA Priest's Service Book (1973)"}});
+    }
+
+    // Concluding prayer
+    if (readerMode) {
+      elements.push(readerOmit("v-litiya-prayer",
+        "Concluding prayer of the Litiya (Priest: 'Hear us, O God our Savior…') — omitted in Reader's Service. Fekula Chapter 10."));
+    } else {
+      elements.push({id:"v-litiya-prayer", type:"fixed", label:"Concluding Prayer",
+        rubric:"Priest:",
+        text: LITIYA_CONCLUDING_PRAYER + "\n\nChoir: Amen.",
+        source:"OCA Litiya Prayer",
+        fekula:{section:fekulaSection, note:"Concluding prayer of the Litiya. — OCA Priest's Service Book (1973); Fekula " + fekulaSection}});
+    }
+
+    // Peace and head-bowing at the Litiya (separate from §14)
+    if (readerMode) {
+      elements.push(readerOmit("v-litiya-peace",
+        "Peace / head-bowing at the Litiya (Priest: 'Peace be to all' / Deacon: 'Let us bow our heads' / Priest: 'O Master, great in mercy…') — omitted in Reader's Service. Fekula Chapter 10."));
+    } else {
+      elements.push({id:"v-litiya-peace", type:"fixed", label:"Peace (Litiya)",
+        rubric:"Priest:",
+        text: LITIYA_PEACE,
+        source:"OCA Litiya Prayer",
+        fekula:{section:fekulaSection, note:"Peace at the Litiya — separate from the earlier §14 peace/head-bowing. — Fekula " + fekulaSection}});
+      elements.push({id:"v-litiya-peace-resp", type:"fixed", label:"",
+        rubric:"Choir:",
+        text: LITIYA_PEACE_RESPONSE,
+        source:"OCA Litiya Prayer"});
+      elements.push({id:"v-litiya-bow", type:"fixed", label:"",
+        rubric:"Deacon:",
+        text: LITIYA_BOW,
+        source:"OCA Litiya Prayer"});
+      elements.push({id:"v-litiya-bow-resp", type:"fixed", label:"",
+        rubric:"Choir:",
+        text: LITIYA_BOW_RESPONSE,
+        source:"OCA Litiya Prayer"});
+      elements.push({id:"v-litiya-bow-prayer", type:"fixed", label:"",
+        rubric:"Priest:",
+        text: LITIYA_BOW_PRAYER + "\n\nChoir: Amen.",
+        source:"OCA Litiya Prayer",
+        fekula:{section:fekulaSection, note:"Head-bowing prayer at the Litiya: 'O Master, great in mercy…' — OCA Priest's Service Book (1973)"}});
+    }
+
+    // Rubric: return to temple for Aposticha
+    elements.push({id:"v-litiya-return", type:"fixed", label:"",
+      rubric:"Rubric:",
+      text:"We chant the Aposticha as we re-enter the temple.",
+      source:"HTM Vespers",
+      fekula:{section:fekulaSection, note:"After the Litiya prayers, we chant the Aposticha of the feast as we re-enter the temple. — HTM Vespers"}});
+  }
   // 15. APOSTICHA
   // ── APOSTICHA — interleave assembler (FW-23 Track A) ────────────────────────
   // §2A weekday/Saturday: Octoechos stichera + universal fixed verses fully assembled.
@@ -4401,13 +4705,48 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
             fekula:{section:fekulaSection, note:"Aposticha Both Now: theotokion in tone of week."}});
         }
       }
+    } else if (!isPentecostarion && menaionEntry && menaionEntry.stichera_aposticha && menaionEntry.stichera_aposticha.length > 0) {
+      // §2C+: Menaion stichera_aposticha encoded — assemble with verses
+      const menAposticha = menaionEntry.stichera_aposticha;
+      menAposticha.forEach((s, i) => {
+        // First sticheron has no preceding verse; subsequent stichera have their verse before them
+        if (i > 0 && s.verse) {
+          elements.push({id:"v-apost-verse-men-"+i, type:"fixed", label:"", rubric:"Reader:",
+            text:s.verse, source:"Menaion"});
+        }
+        elements.push({id:"v-apost-stich-men-"+i, type:"movable",
+          label: i===0 ? "Aposticha" : "",
+          rubric:"Tone "+(s.tone||"?")+":"  ,
+          text:s.text, source:"Menaion — " + mSaint,
+          fekula:{section:fekulaSection, note:"Aposticha sticheron "+(i+1)+" from Menaion. — Fekula " + fekulaSection}});
+      });
+      // Glory
+      elements.push({id:"v-apost-glory", type:"fixed", label:"", text:"Glory to the Father, and to the Son, and to the Holy Spirit.", source:"HTM Vespers"});
+      if (menaionEntry.aposticha_glory) {
+        const ag = menaionEntry.aposticha_glory;
+        elements.push({id:"v-apost-doxasticon", type:"movable", label:"Aposticha Doxasticon",
+          rubric:"Tone "+(ag.tone||"?")+":"  ,
+          text: typeof ag === "string" ? ag : ag.text,
+          source:"Menaion — " + mSaint,
+          fekula:{section:fekulaSection, note:"Aposticha Glory: doxasticon from Menaion. — Fekula " + fekulaSection}});
+      }
+      // Both Now
+      elements.push({id:"v-apost-bothnow", type:"fixed", label:"", text:"Now and ever, and unto the ages of ages. Amen.", source:"HTM Vespers"});
+      if (menaionEntry.aposticha_theotokion) {
+        const at = menaionEntry.aposticha_theotokion;
+        elements.push({id:"v-apost-theotokion", type:"movable", label:"Theotokion (Both now…)",
+          rubric:"Tone "+(at.tone||"?")+":"  ,
+          text: typeof at === "string" ? at : at.text,
+          source:"Menaion — " + mSaint,
+          fekula:{section:fekulaSection, note:"Aposticha Both Now: theotokion from Menaion. — Fekula " + fekulaSection}});
+      }
     } else {
-      // §2D/§2E/§2F: Menaion stichera + Menaion verses (pending Track B)
+      // §2D/§2E/§2F: Menaion stichera + Menaion verses — not yet encoded
       elements.push({id:"v-apost-stich",type:"movable",label:"Aposticha Stichera",
         rubric:"Stichera with their appointed verses", unresolved:true,
-        text:"[Menaion aposticha stichera not yet entered]\n\nEnter aposticha[] in SAMPLE_MENAION to complete (Track B).",
+        text:"[Menaion aposticha stichera not yet entered]\n\nEnter stichera_aposticha[] in SAMPLE_MENAION to complete.",
         source:"Menaion",
-        fekula:{section:fekulaSection, note:"Aposticha: Menaion stichera with Menaion-provided verses (Track B)."}});
+        fekula:{section:fekulaSection, note:"Aposticha: Menaion stichera with Menaion-provided verses — not yet encoded."}});;
     }
   }
   // 16. NUNC DIMITTIS
@@ -4432,7 +4771,120 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       text:"For Thine is the kingdom, and the power, and the glory: of the Father, and of the Son, and of the Holy Spirit, now and ever, and unto the ages of ages.",
       source:"HTM Vespers"});
   }
-  // 18. TROPARIA
+  // 18. TROPARIA — Vigil troparion formula when has_litya + vigil/great_feast rank
+  const isVigilFormula = hasLitya && (rank === "vigil" || rank === "great_feast");
+  // Great Feast of the Lord: Theotokos feasts are NOT "of the Lord" — only Nativity,
+  // Theophany, Transfiguration, Entry, Palm Sunday, Ascension, Pentecost, Exaltation.
+  // For now, use the isGreatFeastOfLord flag from season (which covers fixed calendar
+  // great feasts of the Lord). June 24 (Baptist) is NOT a Feast of the Lord.
+  const isGreatFeastOfLordForVigil = season === "great_feast" &&
+    menaionEntry && menaionEntry.fekula_section === "2F" &&
+    // TODO: refine — for now, only Theotokos feasts (Dormition, Nativity of Theotokos,
+    // Annunciation, Entry of Theotokos, Protection) use the "×2 + O Theotokos ×1" pattern.
+    // True great feasts of the Lord use troparion ×3. This flag stays false for saint feasts
+    // like June 24 which use the non-Sunday, non-Lord pattern.
+    false; // placeholder — will be refined when Lord-feast dates are encoded
+
+  if (isVigilFormula) {
+    // Vigil troparion formula per HTM Vespers and June 24 PDF
+    elements.push({id:"v-chanters",type:"fixed",label:"",rubric:"",
+      text:"After the Trisagion and Our Father, we chant the dismissal troparia per the Vigil formula.",
+      source:"HTM Vespers"});
+
+    if (isGreatFeastOfLordForVigil) {
+      // Twelve Great Feasts of the Lord: troparion ×3, then Blessing of Loaves
+      const toneLabel = primTropTone ? " · Tone " + primTropTone : "";
+      elements.push({id:"v-trop-vigil-1",type:"movable",label:"Troparion of the Feast (thrice)" + toneLabel,
+        rubric:"",
+        text: primTrop || "[Troparion not yet encoded]",
+        source: primSrc || "Menaion",
+        fekula:{section:fekulaSection, note:"If it be one of the twelve feasts, we chant the dismissal troparion thrice, followed by the blessing of the loaves. — HTM Vespers; Fekula " + fekulaSection}});
+    } else if (isSunday) {
+      // Sunday: "O Theotokos and Virgin" ×2, then saint's troparion ×1
+      elements.push({id:"v-trop-vigil-theot",type:"movable",
+        label:"\"O Theotokos and Virgin, rejoice!\" (twice) · Tone 4",
+        rubric:"",
+        text: THEOTOKOS_VIRGIN_REJOICE,
+        source:"HTM Vespers",
+        fekula:{section:fekulaSection, note:"If it be a Sunday, we chant O Theotokos and Virgin twice, and the dismissal troparion of the saint once. — HTM Vespers; Fekula " + fekulaSection}});
+      if (primTrop) {
+        const toneLabel = primTropTone ? " · Tone " + primTropTone : "";
+        elements.push({id:"v-trop-vigil-saint",type:"movable",
+          label:"Troparion (once)" + toneLabel,
+          rubric:"",
+          text: primTrop,
+          source: primSrc,
+          fekula:{section:fekulaSection, note:"Saint's troparion sung once after O Theotokos ×2 on Sunday Vigil. — HTM Vespers"}});
+      }
+    } else {
+      // Non-Sunday, non-Great-Feast-of-Lord: saint's troparion ×2, then "O Theotokos" ×1
+      if (primTrop) {
+        const toneLabel = primTropTone ? " · Tone " + primTropTone : "";
+        elements.push({id:"v-trop-vigil-saint",type:"movable",
+          label:"Troparion (twice)" + toneLabel,
+          rubric:"",
+          text: primTrop,
+          source: primSrc,
+          fekula:{section:fekulaSection, note:"If it be some other vigil, and it be not Sunday, we chant the dismissal troparion of the saint twice, and O Theotokos and Virgin, rejoice! — HTM Vespers; Fekula " + fekulaSection}});
+      }
+      elements.push({id:"v-trop-vigil-theot",type:"movable",
+        label:"\"O Theotokos and Virgin, rejoice!\" (once) · Tone 4",
+        rubric:"",
+        text: THEOTOKOS_VIRGIN_REJOICE,
+        source:"HTM Vespers",
+        fekula:{section:fekulaSection, note:"O Theotokos and Virgin, rejoice — sung once after the saint's troparion (×2) at a non-Sunday vigil. — HTM Vespers"}});
+    }
+
+    // Blessing of the Loaves
+    if (readerMode) {
+      elements.push(readerOmit("v-litiya-blessing",
+        "Blessing of the Loaves (Deacon: 'Let us pray to the Lord' / Priest: 'O Lord Jesus Christ our God, who didst bless the five breads…') — priestly function, omitted in Reader's Service. Fekula Chapter 10."));
+      // Troparion repetition still applies in reader mode — already emitted above.
+      // Post-blessing: Blessed be the name + Psalm 33 + priestly blessing also omitted
+      elements.push(readerOmit("v-litiya-post-blessing",
+        "Post-blessing sequence (Blessed be the name… / Psalm 33 / priestly blessing) — omitted in Reader's Service. Fekula Chapter 10."));
+    } else {
+      elements.push({id:"v-litiya-blessing-prompt", type:"fixed", label:"Blessing of the Loaves",
+        rubric:"Deacon:",
+        text: LITIYA_BLESSING_LOAVES_PROMPT,
+        source:"OCA Litiya Prayer",
+        fekula:{section:fekulaSection, note:"Then, if there hath been a Litiya, the blessing of the loaves. — HTM Vespers; Fekula " + fekulaSection}});
+      elements.push({id:"v-litiya-blessing-resp", type:"fixed", label:"",
+        rubric:"Choir:",
+        text: LITIYA_BLESSING_LOAVES_RESPONSE,
+        source:"OCA Litiya Prayer"});
+      elements.push({id:"v-litiya-blessing", type:"fixed", label:"",
+        rubric:"Priest:",
+        text: LITIYA_BLESSING_LOAVES_PRAYER + "\n\nChoir: Amen.",
+        source:"OCA Litiya Prayer",
+        fekula:{section:fekulaSection, note:"Blessing of the loaves: 'O Lord Jesus Christ our God, who didst bless the five breads in the wilderness…' — OCA Priest's Service Book (1973); Fekula " + fekulaSection}});
+
+      // Post-blessing sequence
+      elements.push({id:"v-litiya-blessed-name", type:"fixed", label:"",
+        rubric:"Chanters:",
+        text: LITIYA_BLESSED_NAME,
+        source:"HTM Vespers",
+        fekula:{section:fekulaSection, note:"After the blessing of the loaves: 'Blessed be the name of the Lord, from henceforth and forevermore' (thrice). — HTM Vespers"}});
+      elements.push({id:"v-litiya-ps33", type:"fixed", label:"Psalm 33 (first 10 verses)",
+        rubric:"Chanters:",
+        text: LITIYA_PS33_FIRST_10,
+        source:"HTM Vespers",
+        fekula:{section:fekulaSection, note:"And the first ten verses of the 33rd Psalm are chanted. — HTM Vespers"}});
+      elements.push({id:"v-litiya-priestly-blessing", type:"fixed", label:"",
+        rubric:"Priest:",
+        text: LITIYA_PRIESTLY_BLESSING + "\n\nChoir: Amen.",
+        source:"HTM Vespers",
+        fekula:{section:fekulaSection, note:"'The blessing of the Lord be upon you…' — concludes the Blessing of the Loaves sequence. — HTM Vespers"}});
+    }
+
+    // Informational note: transition to Matins
+    elements.push({id:"v-litiya-matins-note", type:"informational", label:"",
+      text:"And the reader beginneth Matins with the Six Psalms.",
+      source:"HTM Vespers",
+      fekula:{section:fekulaSection, note:"At an All-Night Vigil, the service continues directly into Matins after the blessing of the loaves. The dismissal is given at the end of the First Hour. — HTM Vespers"}});
+
+  } else {
+    // Standard troparion logic (non-Vigil or no Litiya)
   elements.push({id:"v-chanters",type:"fixed",label:"",rubric:"",
     text:"Chanters sing the appointed dismissal troparia.",
     source:"HTM Vespers"});
@@ -4442,7 +4894,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       rubric:"",
       text: primTrop,
       source: primSrc,
-      fekula:{section:fekulaSection, note:"Troparia at Vespers: " + fekulaSection + ". Simple/weekday: troparion from Menaion; Glory…; Both now… theotokion per Chapter 6. Vigil: troparion twice + O Theotokos Virgin once. — Fekula §2A–§2F"}});
+      fekula:{section:fekulaSection, note:"Troparia at Vespers: " + fekulaSection + ". Simple/weekday: troparion from Menaion; Glory…; Both now… theotokion per Chapter 6. — Fekula §2A–§2F"}});
   } else {
     elements.push({id:"v-trop-none",type:"movable",label:"Troparion",
       rubric:"",
@@ -4491,8 +4943,14 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       source: kontSrc,
       fekula:{section:fekulaSection, note:"Theotokion/kontakion at Both now… — governed by rank, day of week, and Fekula Chapter 6 rules."}});
   }
+  } // end else (standard troparion logic)
   // 19. DISMISSAL SEQUENCE
-  if (readerMode) {
+  // At an All-Night Vigil with Litiya, there is no standard dismissal —
+  // the service continues directly into Matins. The transition note was
+  // already emitted in the Vigil troparion formula section above.
+  if (isVigilFormula) {
+    // No dismissal — Vigil continues into Matins
+  } else if (readerMode) {
     // Reader's Service dismissal per Fekula Chapter 10:
     //   More honorable…
     //   Glory… Now and ever… Lord, have mercy. (thrice) Lord, bless!
@@ -4620,7 +5078,9 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     source:"HTM Vespers"});
   } // end else (priest mode dismissal)
   // END MARKER
-  elements.push({id:"v-end",type:"end_marker",label:"",text:"THE END OF VESPERS",source:"HTM Vespers"});
+  elements.push({id:"v-end",type:"end_marker",label:"",
+    text: isVigilFormula ? "END OF GREAT VESPERS — SERVICE CONTINUES WITH MATINS" : "THE END OF VESPERS",
+    source:"HTM Vespers"});
   return elements;
 }
 
@@ -6099,6 +6559,35 @@ function ServiceBlock({ element }) {
     );
   }
 
+  // ── Informational note (liturgical guidance, not read aloud) ────────────
+  // Light background, italic — for rubrical notes, empty-stichera messages,
+  // Matins transition notes, etc.
+  if (element.type === 'informational') {
+    return (
+      <div style={{
+        marginBottom: '1.2rem',
+        padding: '8px 12px',
+        background: 'rgba(180,160,112,0.08)',
+        border: '1px solid rgba(180,160,112,0.25)',
+        borderRadius: '4px',
+      }}>
+        <p style={{
+          fontFamily: 'Georgia, serif',
+          fontSize: '0.88rem',
+          lineHeight: '1.6',
+          color: '#7A6A4A',
+          fontStyle: 'italic',
+          margin: 0,
+        }}>{element.text}</p>
+        {element.fekula && (
+          <div style={{ marginTop: '4px' }}>
+            <FekulaBadge section={element.fekula.section} note={element.fekula.note} />
+          </div>
+        )}
+      </div>
+    );
+  }
+
   // ── Reader's Service — substitution ──────────────────────────────────────
   // Gold-amber left border (distinct from blue movable); teal-ish header badge.
   if (element.type === 'substitution') {
@@ -7061,6 +7550,20 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.5.2",
+    date: "May 2026",
+    summary: "Vespers Litiya assembler · Vigil troparion formula · Blessing of Loaves · Menaion aposticha",
+    items: [
+      "feat: Vespers Litiya assembler — full Litiya section inserted between §14 head-bowing and §15 Aposticha when has_litya is true. Includes: processional rubric, temple sticheron placeholder, Menaion Litiya stichera (or empty-stichera note), Glory/Both Now, OCA Litiya petitions (5-petition diptych with saint name insertion), concluding prayer, peace/head-bowing at the Litiya, return-to-temple rubric",
+      "feat: Vigil troparion formula — rank-aware troparion repetition after Trisagion/Our Father at Vigil and Great Feast services. Non-Sunday: saint troparion ×2 + O Theotokos Virgin ×1. Sunday: O Theotokos ×2 + saint troparion ×1. Great Feast of the Lord: troparion ×3 (placeholder flag for future encoding)",
+      "feat: Blessing of the Loaves — full sequence after Vigil troparion: deacon prompt, priest prayer (OCA text), Blessed be the name (×3), Psalm 33 first 10 verses, priestly blessing. Standard dismissal suppressed at Vigil — replaced with Matins transition note",
+      "feat: Menaion aposticha assembler — §2E/§2F entries with encoded stichera_aposticha[] now render properly (stichera interleaved with verses, Glory, Both Now). Previously showed placeholder. June 24 and May 25 aposticha now fully assembled",
+      "feat: Reader mode — Litiya petitions replaced with Lord, have mercy counts (40/50/30/3/3). Priestly parts (concluding prayer, peace/head-bowing, blessing of loaves) replaced with omission stubs per Fekula Chapter 10. Troparion repetition still reads",
+      "feat: Informational element type — new renderer for liturgical guidance notes (rubrical instructions, empty-stichera messages, Matins transition). Light gold background, italic text",
+      "fix: End-of-Vespers marker text now context-aware — shows 'END OF GREAT VESPERS — SERVICE CONTINUES WITH MATINS' at Vigil instead of standard 'THE END OF VESPERS'",
+    ],
+  },
   {
     version: "v0.5.1",
     date: "May 2026",

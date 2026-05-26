@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.5.1** | Last synced: May 26, 2026
+**Tool version: v0.5.2** | Last synced: May 26, 2026
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
@@ -2053,3 +2053,50 @@ node scripts/audit.js pentecostarion
 - **June/July backfill** — 34 entries missing v2.1 matins-era fields
 - **Triodion/Lenten services** — next major development horizon
 - **Temple kontakion/sticheron** — future user setting ("My parish is dedicated to…")
+
+### Vespers Litiya assembler (v0.5.2)
+
+#### Fixed text constants encoded
+All Litiya fixed texts encoded as inline constants in `hours-tool.jsx` (near existing litany blocks, ~150 lines total):
+- `LITIYA_PETITION_1` through `LITIYA_PETITION_5` — OCA 5-petition diptych (×40/×50/×30/×3/×3). Petition 1 contains `Saint(s) ___` placeholder replaced at runtime with `menaionEntry.saint`.
+- `LITIYA_CONCLUDING_PRAYER` — priest's concluding prayer
+- `LITIYA_PEACE` / `LITIYA_BOW` / `LITIYA_BOW_PRAYER` — peace and head-bowing at the Litiya (separate from §14 sequence)
+- `THEOTOKOS_VIRGIN_REJOICE` — full text for Vigil troparion formula
+- `LITIYA_BLESSING_LOAVES_PRAYER` — priest's blessing of the loaves
+- `LITIYA_PS33_FIRST_10` — Psalm 33, first 10 verses
+- `LITIYA_PRIESTLY_BLESSING` — "The blessing of the Lord be upon you…"
+- Source: `OCA_prayer_for_litiya.txt` (Drive: `vespers/oca/`) — authoritative OCA text, not ROCOR/HTM.
+
+#### Litiya insertion (§14b)
+- Condition: `menaionEntry.has_litya === true`
+- Inserted between §14 head-bowing and §15 Aposticha
+- Elements: processional rubric → temple sticheron placeholder (unresolved, future parish config) → Menaion Litiya stichera (or informational note when empty array) → Glory → Both Now → petitions with saint insertion → concluding prayer → peace/head-bowing → return-to-temple rubric
+- Reader mode (Fekula Ch. 10): petitions replaced with LHM counts; priestly parts → omission stubs
+
+#### Menaion aposticha assembler
+- New branch: when `menaionEntry.stichera_aposticha` is a non-empty array, assembles stichera interleaved with their verses, plus Glory and Both Now. Previously all §2D+ entries showed an "unresolved" placeholder.
+- June 24 (3 aposticha T2 with verses + Glory T8 + Both Now T8) and May 25 now render properly.
+
+#### Vigil troparion formula (§18)
+- When `hasLitya && (rank === "vigil" || rank === "great_feast")`:
+  - Non-Sunday, non-Great-Feast-of-Lord: saint troparion ×2 + O Theotokos Virgin ×1
+  - Sunday: O Theotokos ×2 + saint troparion ×1
+  - Great Feast of the Lord: troparion ×3 (placeholder flag — no Lord-feast dates yet encoded to test)
+- Followed by Blessing of Loaves: deacon prompt → priest prayer → Amen → "Blessed be the name…" (×3) → Psalm 33 first 10 verses → priestly blessing → Matins transition note
+- Reader mode: Blessing of Loaves omitted with stub; troparion repetition still reads
+
+#### Dismissal changes
+- Vigil with Litiya: standard dismissal sequence suppressed entirely — service continues into Matins
+- End-of-Vespers marker text: "END OF GREAT VESPERS — SERVICE CONTINUES WITH MATINS" (vs. standard "THE END OF VESPERS")
+
+#### New element type: informational
+- Renderer added for `type:"informational"` — light gold background, italic text
+- Used for rubrical notes, empty-stichera messages, Matins transition note
+
+### Backlog (updated v0.5.2)
+- **Polyeleos Litiya test** — May 25 (§2E) should show empty stichera note, petitions, standard troparion (not Vigil formula), no Blessing of Loaves, standard dismissal. Verify in browser.
+- **Great Feast of the Lord** — `isGreatFeastOfLordForVigil` flag is a placeholder (always false). Needs refinement when Lord-feast dates (Nativity, Theophany, Transfiguration, etc.) are encoded. These use troparion ×3 instead of ×2+×1.
+- **Temple sticheron** — future parish configuration setting ("My parish is dedicated to…"). Currently an unresolved placeholder.
+- **Pentecostarion P+20–P+34** — 15 weekday entries
+- **June/July backfill** — 34 entries missing v2.1 fields
+- **Triodion/Lenten services** — next major development horizon
