@@ -3545,6 +3545,93 @@ function getVespersDayKey(dow) {
   return ['sun_eve','mon','tue','wed','thu','fri','sat'][dow];
 }
 
+// ── TEMPLE DEDICATIONS ───────────────────────────────────────────────────────
+// Registry of common OCA parish dedications. Each entry maps to a data source
+// (Menaion date key or Pentecostarion offset) from which the troparion is
+// resolved at runtime. Only entries whose source data is encoded and audit-passing
+// appear in the user-facing dropdown.
+//
+// The dropdown is stored in localStorage('parish_dedication') and persists across
+// sessions. Used at: Litiya (sticheron of the temple), Typica (kontakion of the
+// temple), and anywhere else the Typikon calls for "of the temple."
+//
+// Categories follow standard liturgical grouping:
+// 1. The Lord & Holy Trinity
+// 2. The Theotokos
+// 3. Saints & Archangels
+// 4. Feasts & Sacred Events
+
+const TEMPLE_DEDICATIONS = [
+  // ── The Lord & Holy Trinity ──
+  { id: "holy_trinity",       label: "Holy Trinity",                  category: "The Lord & Holy Trinity",  source: "pentecostarion", dataKey: 49 },
+  { id: "ascension",          label: "Ascension",                     category: "The Lord & Holy Trinity",  source: "pentecostarion", dataKey: 39 },
+  { id: "resurrection",       label: "Resurrection (Anastasis)",      category: "The Lord & Holy Trinity",  source: "pentecostarion", dataKey: 0,  note: "Paschal troparion" },
+  { id: "transfiguration",    label: "Transfiguration",               category: "The Lord & Holy Trinity",  source: "menaion", dataKey: "08-06" },
+  { id: "holy_cross",         label: "Holy Cross (Exaltation)",       category: "The Lord & Holy Trinity",  source: "menaion", dataKey: "09-14" },
+  { id: "nativity_christ",    label: "Nativity of Christ",            category: "The Lord & Holy Trinity",  source: "menaion", dataKey: "12-25" },
+  { id: "theophany",          label: "Theophany (Baptism of the Lord)", category: "The Lord & Holy Trinity", source: "menaion", dataKey: "01-06" },
+  { id: "christ_savior",      label: "Christ the Savior",             category: "The Lord & Holy Trinity",  source: "menaion", dataKey: "08-06", note: "Uses Transfiguration troparion" },
+  { id: "presentation_lord",  label: "Presentation of Christ (Meeting of the Lord)", category: "The Lord & Holy Trinity", source: "menaion", dataKey: "02-02" },
+
+  // ── The Theotokos ──
+  { id: "annunciation",       label: "Annunciation",                  category: "The Theotokos", source: "menaion", dataKey: "03-25" },
+  { id: "dormition",          label: "Dormition",                     category: "The Theotokos", source: "menaion", dataKey: "08-15" },
+  { id: "nativity_theotokos", label: "Nativity of the Theotokos",     category: "The Theotokos", source: "menaion", dataKey: "09-08" },
+  { id: "protection",         label: "Protection (Pokrov)",           category: "The Theotokos", source: "menaion", dataKey: "10-01" },
+  { id: "entry_theotokos",    label: "Entrance of the Theotokos",    category: "The Theotokos", source: "menaion", dataKey: "11-21" },
+  { id: "vladimir_icon",      label: "Vladimir Icon",                 category: "The Theotokos", source: "menaion", dataKey: "06-23", arrayIndex: 1 },
+  { id: "joy_all_sorrow",     label: "Joy of All Who Sorrow",        category: "The Theotokos", source: "menaion", dataKey: "10-24" },
+  { id: "kazan_icon",         label: "Kazan Icon",                    category: "The Theotokos", source: "menaion", dataKey: "07-08" },
+  { id: "tikhvin_icon",       label: "Tikhvin Icon",                  category: "The Theotokos", source: "menaion", dataKey: "06-26" },
+
+  // ── Saints & Archangels ──
+  { id: "st_nicholas",        label: "St. Nicholas the Wonderworker", category: "Saints & archangels", source: "menaion", dataKey: "12-06" },
+  { id: "archangel_michael",  label: "Archangel Michael",             category: "Saints & archangels", source: "menaion", dataKey: "11-08" },
+  { id: "peter_paul",         label: "Ss. Peter & Paul",              category: "Saints & archangels", source: "menaion", dataKey: "06-29" },
+  { id: "forerunner",         label: "St. John the Baptist (Forerunner)", category: "Saints & archangels", source: "menaion", dataKey: "06-24" },
+  { id: "st_george",          label: "St. George the Great Martyr",   category: "Saints & archangels", source: "menaion", dataKey: "04-23" },
+  { id: "three_hierarchs",    label: "Three Hierarchs",               category: "Saints & archangels", source: "menaion", dataKey: "01-30" },
+  { id: "constantine_helen",  label: "Ss. Constantine & Helen",       category: "Saints & archangels", source: "menaion", dataKey: "05-21" },
+  { id: "st_herman",          label: "St. Herman of Alaska",          category: "Saints & archangels", source: "menaion", dataKey: "08-09" },
+  { id: "st_innocent",        label: "St. Innocent of Alaska",        category: "Saints & archangels", source: "menaion", dataKey: "03-31" },
+  { id: "st_andrew",          label: "St. Andrew the First-Called",   category: "Saints & archangels", source: "menaion", dataKey: "11-30" },
+  { id: "st_john_max",        label: "St. John of Shanghai (Maximovitch)", category: "Saints & archangels", source: "menaion", dataKey: "07-02" },
+  { id: "st_tikhon",          label: "St. Tikhon of Moscow",          category: "Saints & archangels", source: "menaion", dataKey: "04-07" },
+  { id: "st_seraphim",        label: "St. Seraphim of Sarov",         category: "Saints & archangels", source: "menaion", dataKey: "01-02" },
+  { id: "st_raphael",         label: "St. Raphael of Brooklyn",       category: "Saints & archangels", source: "menaion", dataKey: "02-27" },
+  { id: "st_vladimir",        label: "St. Vladimir",                  category: "Saints & archangels", source: "menaion", dataKey: "07-15" },
+  { id: "st_demetrios",       label: "St. Demetrios the Myrrh-Streamer", category: "Saints & archangels", source: "menaion", dataKey: "10-26" },
+  { id: "st_elias",           label: "Holy Prophet Elijah (Elias)",   category: "Saints & archangels", source: "menaion", dataKey: "07-20" },
+  { id: "st_john_theologian", label: "St. John the Theologian",       category: "Saints & archangels", source: "menaion", dataKey: "09-26" },
+  { id: "st_sergius",         label: "St. Sergius of Radonezh",       category: "Saints & archangels", source: "menaion", dataKey: "09-25" },
+
+  // ── Feasts & Sacred Events ──
+  { id: "all_saints",         label: "All Saints",                    category: "Feasts & sacred events", source: "pentecostarion", dataKey: 56 },
+  { id: "pentecost",          label: "Pentecost",                     category: "Feasts & sacred events", source: "pentecostarion", dataKey: 49, note: "Same as Holy Trinity" },
+];
+
+// Resolve a temple dedication to its troparion from live data.
+// Returns { tone, text, saint, source } or null if data not yet encoded.
+// Uses module-level caches directly (_menaionCache, _pentecostarionCache).
+function resolveTempleTroparion(dedicationId) {
+  const ded = TEMPLE_DEDICATIONS.find(d => d.id === dedicationId);
+  if (!ded) return null;
+  if (ded.source === "pentecostarion") {
+    const pentData = _pentecostarionCache || {};
+    const entry = pentData[ded.dataKey];
+    if (!entry || !entry.troparion) return null;
+    return { tone: entry.troparion.tone, text: entry.troparion.text, saint: entry.name, source: "Pentecostarion" };
+  }
+  // Menaion — dataKey is "MM-DD" string
+  const month = ded.dataKey.substring(0, 2);
+  const monthData = _menaionCache[month] || {};
+  const raw = monthData[ded.dataKey];
+  if (!raw) return null;
+  const e = (ded.arrayIndex != null && Array.isArray(raw)) ? raw[ded.arrayIndex] : (Array.isArray(raw) ? raw[0] : raw);
+  if (!e || !e.troparion) return null;
+  return { tone: e.troparion.tone, text: e.troparion.text, saint: e.saint, source: "Menaion" };
+}
+
 // ── LITIYA FIXED TEXTS ───────────────────────────────────────────────────────
 // Source: OCA_prayer_for_litiya.txt (Google Drive: vespers/oca/)
 // Authoritative OCA diptych — NOT the ROCOR/HTM version.
@@ -4439,12 +4526,15 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       source:"HTM Vespers",
       fekula:{section:fekulaSection, note:"At a Vigil or Polyeleos, we chant the Litiya stichera as we go forth to the narthex for the Litiya. — HTM Vespers; Fekula " + fekulaSection}});
 
-    // Temple sticheron placeholder (future parish config)
-    elements.push({id:"v-litiya-temple", type:"movable", label:"Sticheron of the Temple",
-      rubric:"", unresolved:true,
-      text:"[The first sticheron at the Litiya is always the Sticheron of the temple (parish dedication). This will be supplied by a future parish configuration setting.]",
-      source:"HTM Vespers",
-      fekula:{section:fekulaSection, note:"We always chant first the first Litiya sticheron of the temple, unless it be one of the great feasts. — HTM Vespers"}});
+    // Temple sticheron — rendered by TempleSelector component
+    // On Great Feasts, all Litiya stichera are festal (no temple sticheron).
+    const isGreatFeast = rank === "great_feast";
+    if (!isGreatFeast) {
+      elements.push({id:"v-litiya-temple", type:"temple_selector",
+        label:"Sticheron of the Temple",
+        source:"HTM Vespers",
+        fekula:{section:fekulaSection, note:"We always chant first the first Litiya sticheron of the temple, unless it be one of the great feasts. — HTM Vespers"}});
+    }
 
     // Litiya stichera from Menaion
     const litStichera = menaionEntry.litya_stichera;
@@ -6443,6 +6533,198 @@ function Tooltip({ term, children }) {
 
 
 // ─── FEKULA BADGE ────────────────────────────────────────────────────────────
+// ─── TEMPLE SELECTOR COMPONENT ───────────────────────────────────────────────
+// Hybrid UI: compact <select> with optgroups for common dedications,
+// plus visible "No dedication / serving at home" row and "More dedications" expander.
+// Persists choice to localStorage('parish_dedication').
+// Props:
+//   availableDedications: array of { id, label, category } — only audit-passing entries
+//   onSelect: (dedicationId | "none" | null) => void
+//   currentId: string | null — current selection from localStorage
+//   resolvedTroparion: { tone, text, saint } | null — the resolved troparion for display
+
+function TempleSelector({ availableDedications, onSelect, currentId, resolvedTroparion, fekulaSection }) {
+  const [showMore, setShowMore] = useState(false);
+
+  // Group available dedications by category
+  const grouped = {};
+  const primaryIds = new Set();
+  const categories = ["The Lord & Holy Trinity", "The Theotokos", "Saints & archangels", "Feasts & sacred events"];
+
+  // Primary list: top ~15 most common OCA dedications (if available)
+  const primaryOrder = [
+    "holy_trinity","resurrection","ascension","transfiguration","nativity_christ","theophany","holy_cross",
+    "dormition","annunciation","nativity_theotokos","protection",
+    "st_nicholas","archangel_michael","peter_paul","forerunner","st_george","st_herman",
+    "constantine_helen","three_hierarchs","all_saints"
+  ];
+
+  const primaryDeds = [];
+  const moreDeds = [];
+  availableDedications.forEach(d => {
+    if (primaryOrder.includes(d.id)) { primaryDeds.push(d); primaryIds.add(d.id); }
+    else moreDeds.push(d);
+  });
+
+  // Group primary dedications by category for optgroups
+  categories.forEach(cat => { grouped[cat] = primaryDeds.filter(d => d.category === cat); });
+
+  // Group "more" by category
+  const moreGrouped = {};
+  categories.forEach(cat => { moreGrouped[cat] = moreDeds.filter(d => d.category === cat); });
+
+  // If already selected, show the resolved state
+  if (currentId === "none") {
+    return (
+      <div style={{
+        margin: "12px 0", padding: "10px 14px",
+        background: "rgba(180,160,112,0.06)",
+        borderRadius: "4px",
+        display: "flex", alignItems: "flex-start", gap: "8px",
+      }}>
+        <i className="ti ti-home" aria-hidden="true" style={{ fontSize: "15px", color: "#7A6A4A", marginTop: "2px", flexShrink: 0 }}></i>
+        <span style={{
+          fontSize: "0.85rem", color: "#7A6A4A", fontStyle: "italic",
+          fontFamily: "Georgia, serif", lineHeight: "1.5", flex: 1,
+        }}>The sticheron of the temple is omitted when serving outside a dedicated temple. The Litiya proceeds directly to the stichera of the feast.</span>
+        <span onClick={() => onSelect(null)} style={{
+          fontSize: "0.68rem", color: "#9A8A70", cursor: "pointer",
+          whiteSpace: "nowrap", alignSelf: "center",
+        }}>(change)</span>
+      </div>
+    );
+  }
+
+  if (currentId && resolvedTroparion) {
+    return (
+      <div style={{ padding: "12px 0 12px 12px", borderLeft: "3px solid #8B6914", margin: "12px 0" }}>
+        <div style={{ display: "flex", alignItems: "baseline", gap: "6px", marginBottom: "4px", flexWrap: "wrap" }}>
+          <span style={{
+            fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.12em",
+            color: "#8B6914", fontFamily: "Georgia, serif", fontWeight: "bold",
+          }}>Sticheron of the temple</span>
+          <span style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic" }}>
+            — {resolvedTroparion.saint}
+          </span>
+          {fekulaSection && (
+            <FekulaBadge section={fekulaSection}
+              note="We always chant first the first Litiya sticheron of the temple, unless it be one of the great feasts. — HTM Vespers" />
+          )}
+          <span onClick={() => onSelect(null)} style={{
+            fontSize: "0.68rem", color: "#9A8A70", cursor: "pointer", marginLeft: "auto",
+          }}>(change)</span>
+        </div>
+        <div style={{
+          fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em",
+          color: "#5A4A2A", marginBottom: "0.25rem", fontFamily: "Georgia, serif",
+        }}>Tone {resolvedTroparion.tone}:</div>
+        <div style={{
+          fontFamily: "Georgia, serif", fontSize: "0.97rem", lineHeight: "1.75",
+          color: "#1C1008", background: "rgba(139,105,20,0.04)",
+          padding: "0.6rem 0.8rem", borderRadius: "4px",
+        }}>{resolvedTroparion.text}</div>
+      </div>
+    );
+  }
+
+  // Unselected state — show the picker
+  return (
+    <div style={{
+      background: "rgba(180,160,112,0.08)",
+      border: "1px solid rgba(180,160,112,0.25)",
+      borderRadius: "8px",
+      padding: "14px 14px 6px",
+      margin: "12px 0",
+    }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "10px" }}>
+        <i className="ti ti-building-church" aria-hidden="true" style={{ fontSize: "16px", color: "#7A6A4A" }}></i>
+        <span style={{
+          fontSize: "0.85rem", color: "#7A6A4A", fontStyle: "italic",
+          fontFamily: "Georgia, serif", lineHeight: "1.45",
+        }}>The first sticheron at the Litiya is the troparion of your temple's dedication.</span>
+      </div>
+
+      {/* Primary dropdown */}
+      <div style={{ position: "relative", marginBottom: "10px" }}>
+        <select
+          value=""
+          onChange={(e) => { if (e.target.value) onSelect(e.target.value); }}
+          style={{
+            width: "100%", padding: "9px 32px 9px 10px",
+            fontSize: "0.85rem", fontFamily: "Georgia, serif",
+            color: "var(--text-color, #3D3020)",
+            background: "#fff",
+            border: "1px solid rgba(180,160,112,0.4)",
+            borderRadius: "6px",
+            appearance: "none", WebkitAppearance: "none",
+            cursor: "pointer",
+          }}
+        >
+          <option value="" disabled>Select your parish dedication...</option>
+          {categories.map(cat => {
+            const items = grouped[cat];
+            if (!items || items.length === 0) return null;
+            return (
+              <optgroup key={cat} label={cat}>
+                {items.map(d => (
+                  <option key={d.id} value={d.id}>{d.label}</option>
+                ))}
+              </optgroup>
+            );
+          })}
+          {showMore && categories.map(cat => {
+            const items = moreGrouped[cat];
+            if (!items || items.length === 0) return null;
+            return (
+              <optgroup key={"more-"+cat} label={"More — " + cat}>
+                {items.map(d => (
+                  <option key={d.id} value={d.id}>{d.label}</option>
+                ))}
+              </optgroup>
+            );
+          })}
+        </select>
+        <div style={{
+          position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)",
+          width: 0, height: 0,
+          borderLeft: "4px solid transparent", borderRight: "4px solid transparent",
+          borderTop: "5px solid #9A8A70", pointerEvents: "none",
+        }}></div>
+      </div>
+
+      {/* Action rows */}
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        {moreDeds.length > 0 && (
+          <div
+            onClick={() => setShowMore(!showMore)}
+            style={{
+              display: "flex", alignItems: "center", gap: "8px",
+              padding: "9px 0", fontSize: "0.85rem",
+              color: "#9A8A70", cursor: "pointer",
+              borderTop: "1px solid rgba(180,160,112,0.18)",
+            }}
+          >
+            <i className={showMore ? "ti ti-chevron-up" : "ti ti-dots"} aria-hidden="true" style={{ fontSize: "14px" }}></i>
+            {showMore ? "Fewer dedications" : "More dedications..."}
+          </div>
+        )}
+        <div
+          onClick={() => onSelect("none")}
+          style={{
+            display: "flex", alignItems: "center", gap: "8px",
+            padding: "9px 0", fontSize: "0.85rem",
+            color: "#5A4A2A", cursor: "pointer",
+            borderTop: "1px solid rgba(180,160,112,0.18)",
+          }}
+        >
+          <i className="ti ti-home" aria-hidden="true" style={{ fontSize: "15px" }}></i>
+          No dedication / serving at home
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function FekulaBadge({ section, note }) {
   const [open, setOpen] = useState(false);
   return (
@@ -6487,7 +6769,29 @@ function FekulaBadge({ section, note }) {
 
 
 // ─── SERVICE BLOCK ────────────────────────────────────────────────────────────
-function ServiceBlock({ element }) {
+function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
+  // ── Temple selector — hybrid UI for parish dedication ──────────────────
+  if (element.type === 'temple_selector') {
+    // Compute available dedications: only those whose data is encoded with a troparion
+    const available = TEMPLE_DEDICATIONS.filter(d => {
+      const trop = resolveTempleTroparion(d.id);
+      return trop !== null;
+    });
+    // Resolve current selection
+    const resolved = templeDedication && templeDedication !== "none"
+      ? resolveTempleTroparion(templeDedication)
+      : null;
+    return (
+      <TempleSelector
+        availableDedications={available}
+        onSelect={onTempleDedicationChange}
+        currentId={templeDedication}
+        resolvedTroparion={resolved}
+        fekulaSection={element.fekula?.section}
+      />
+    );
+  }
+
   // ── End-of-hour marker ───────────────────────────────────────────────────
   if (element.type === 'end_marker') {
     return (
@@ -7572,6 +7876,20 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.5.3",
+    date: "May 2026",
+    summary: "Temple dedication selector · localStorage persistence · hybrid UI for parish config",
+    items: [
+      "feat: Temple dedication selector — hybrid UI (compact dropdown + visible home/undedicated option) appears inline at the Litiya where the sticheron of the temple belongs. Persists selection to localStorage across sessions. Resolves troparion from live Menaion/Pentecostarion data at runtime",
+      "feat: TEMPLE_DEDICATIONS registry — 40 common OCA parish dedications organized in 4 categories (Lord & Holy Trinity, Theotokos, Saints & Archangels, Feasts). Only dedications with encoded and audit-passing troparion data appear in the dropdown. List grows automatically as more months are encoded",
+      "feat: resolveTempleTroparion() helper — resolves any dedication ID to its troparion (tone, text, saint) from the module-level Menaion/Pentecostarion caches. Used by TempleSelector and available for future Typica kontakion integration",
+      "feat: Three rendering states — unselected (picker card with dropdown, 'More dedications' expander, home option), selected saint (standard movable element with troparion text and '(change)' link), selected 'no dedication' (informational note explaining omission with '(change)' link)",
+      "feat: Great Feast suppression — temple sticheron element omitted entirely on great_feast rank dates per HTM rubric ('unless it be one of the great feasts')",
+      "fix: Litiya choir responses split from deacon petitions — each petition now two elements (deacon in gold/italic, choir response in standard dark text). Previously responses inherited priestly styling",
+      "fix: Rubric label color now context-aware globally — Priest/Deacon rubrics render in gold (#8B6914), Choir/Chanters/Reader/Rubric labels render in dark brown (#5A4A2A)",
+    ],
+  },
+  {
     version: "v0.5.2",
     date: "May 2026",
     summary: "Vespers Litiya assembler · Vigil troparion formula · Blessing of Loaves · Menaion aposticha",
@@ -8645,6 +8963,19 @@ export default function App() {
   const [voOpen, setVoOpen] = useState(false);
   const [readerMode, setReaderMode] = useState(false);
   const [preCommunionData, setPreCommunionData] = useState(null);
+
+  // ── Temple dedication — persisted in localStorage ─────────────────────────
+  const [templeDedication, setTempleDedication] = useState(() => {
+    try { return localStorage.getItem('parish_dedication') || null; } catch(e) { return null; }
+  });
+  const handleTempleDedicationChange = (id) => {
+    try {
+      if (id === null) { localStorage.removeItem('parish_dedication'); }
+      else { localStorage.setItem('parish_dedication', id); }
+    } catch(e) { /* localStorage unavailable */ }
+    setTempleDedication(id);
+  };
+
   React.useEffect(() => {
     if (selectedServiceKey === 'pre_communion' && !preCommunionData) {
       import('../data/pre-communion.js').then(m => setPreCommunionData(m.default));
@@ -8658,11 +8989,19 @@ export default function App() {
     const m = String(d.getMonth() + 1).padStart(2, "0");
     const prev = String(d.getMonth() === 0 ? 12 : d.getMonth()).padStart(2, "0");
     const next = String(d.getMonth() + 2 > 12 ? 1 : d.getMonth() + 2).padStart(2, "0");
+    // Also preload the month for the temple dedication if set
+    const dedMonths = new Set();
+    if (templeDedication && templeDedication !== "none") {
+      const ded = TEMPLE_DEDICATIONS.find(d => d.id === templeDedication);
+      if (ded && ded.source === "menaion" && typeof ded.dataKey === "string") {
+        dedMonths.add(ded.dataKey.substring(0, 2));
+      }
+    }
     Promise.all([
-      ...[...new Set([prev, m, next])].map(mo => _loadMenaionMonth(mo)),
+      ...[...new Set([prev, m, next, ...dedMonths])].map(mo => _loadMenaionMonth(mo)),
       _loadPentecostarion(),
     ]).then(() => setDataVersion(v => v + 1));
-  }, [selectedDate]);
+  }, [selectedDate, templeDedication]);
 
   const date = new Date(selectedDate + "T12:00:00");
   const liturgicalData = getLiturgicalData(date);
@@ -9376,7 +9715,9 @@ export default function App() {
                 )}
                 {elements
                   .filter(el => !(el.openingElement && voOpen))
-                  .map((el) => <ServiceBlock key={el.id} element={el} />)}
+                  .map((el) => <ServiceBlock key={el.id} element={el}
+                    templeDedication={templeDedication}
+                    onTempleDedicationChange={handleTempleDedicationChange} />)}
               </div>
             ) : (
               <div style={{ background: "rgba(139,105,20,0.06)", border: "1px solid #D4C49A", borderRadius: "6px", padding: "2rem", textAlign: "center" }}>
