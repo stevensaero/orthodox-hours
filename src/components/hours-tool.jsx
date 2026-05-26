@@ -8174,7 +8174,8 @@ export default function App() {
   const inScope = selectedServiceKey === 'post_communion'
     || selectedServiceKey === 'pre_communion'
     || selectedServiceKey === 'ordinary_beginning'
-    || ["ordinary", "sunday", "pentecostarion", "brightweek"].includes(liturgicalData.season);
+    || ["ordinary", "sunday", "pentecostarion", "brightweek",
+        "great_feast", "forefeast", "afterfeast", "apodosis"].includes(liturgicalData.season);
   const isSunday = liturgicalData.season === "sunday";
   const isPentecostarion = liturgicalData.season === "pentecostarion";
   const isBrightWeek = liturgicalData.season === "brightweek";
@@ -8673,6 +8674,42 @@ export default function App() {
         {/* ── SERVICE CONTENT ──────────────────────────────── */}
         {inScope && (
           <>
+            {/* Feast-period informational banner */}
+            {["great_feast", "forefeast", "afterfeast", "apodosis"].includes(liturgicalData.season) && (
+              <div style={{
+                background: "rgba(139,105,20,0.07)",
+                border: "1px solid rgba(139,105,20,0.25)",
+                borderRadius: "6px",
+                padding: "0.8rem 1.2rem",
+                marginBottom: "1.25rem",
+                fontSize: "0.82rem",
+                lineHeight: 1.6,
+              }}>
+                <div style={{
+                  fontSize: "0.68rem", letterSpacing: "0.12em", textTransform: "uppercase",
+                  color: "#8B6914", fontWeight: 600, marginBottom: "0.3rem",
+                }}>
+                  {liturgicalData.season === "great_feast" ? "Great Feast"
+                    : liturgicalData.season === "forefeast" ? "Forefeast"
+                    : liturgicalData.season === "afterfeast" ? "Afterfeast"
+                    : "Apodosis (Leavetaking)"}
+                </div>
+                <div style={{ color: "#2C1F0A" }}>
+                  {liturgicalData.seasonNote}
+                </div>
+                <div style={{ color: "#5C4A1E", marginTop: "0.4rem", fontSize: "0.78rem" }}>
+                  The Hours, Typica, and Pre/Post-Communion Prayers use the feast troparion and kontakion.
+                  {currentService.key === 'vespers' && " Vespers assembly is substantially complete but the Litiya insertion and Vigil troparion/blessing sequence are not yet implemented."}
+                  {liturgicalData.season === "great_feast" && " Great Feast-specific assembly rules (Vigil opening, Litiya, Blessing of Loaves) are in active development."}
+                </div>
+                {liturgicalData.feastPeriod && liturgicalData.feastPeriod.feast && liturgicalData.feastPeriod.feast.note && (
+                  <div style={{ fontSize: "0.75rem", color: "#5C4A1E", marginTop: "0.4rem", fontStyle: "italic", borderTop: "1px solid rgba(139,105,20,0.15)", paddingTop: "0.4rem" }}>
+                    {liturgicalData.feastPeriod.feast.note}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Service title */}
             <div style={{ marginBottom: "1.5rem" }}>
               <div style={{ fontSize: "0.68rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#8B6914", marginBottom: "0.3rem" }}>Service</div>
