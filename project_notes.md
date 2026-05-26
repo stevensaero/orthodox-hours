@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.4.0** | Last synced: May 24, 2026
+**Tool version: v0.5.1** | Last synced: May 26, 2026
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
@@ -2043,6 +2043,9 @@ node scripts/audit.js pentecostarion
 #### Menaion + Pentecostarion browser improvements
 - Menaion browser: new Litiya section (stichera, Glory, Both Now), Beatitudes troparia display, improved audit indicator with individual monospace field tags
 - Pentecostarion browser: matching improved audit indicator
+- Both browsers: "← Hours Tool" back link added to sticky header
+- How It Works panel: data browser entries now have clickable "open" links (not just code references)
+- Scroll fix: clicking a partial entry now lands above the audit box (accounts for sticky header height) instead of scrolling past it
 
 ### Backlog for next session
 - **Vespers Litiya assembler** — specification written (`vespers_litiya_spec.md` in repo root). Test cases: May 25 (§2E, no dedicated stichera) and June 24 (great_feast, full Litiya stichera). OCA prayer text on Drive.
