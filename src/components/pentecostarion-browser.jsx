@@ -179,14 +179,36 @@ function PentEntryCard({ offset, entry, audit, stickyTop }) {
       }}>
 
       {/* ── Audit details ── */}
-      {audit.missing.length > 0 && (
+      {(audit.missing.length > 0 || audit.hasPlaceholder) && (
         <div style={{
-          fontSize: "0.78rem", color: C.amber,
-          background: "rgba(166,124,0,0.06)", padding: "0.4rem 0.6rem",
-          borderRadius: "3px", marginBottom: "0.75rem",
+          fontSize: "0.78rem",
+          color: audit.status === 'structural' ? C.red : C.amber,
+          background: audit.status === 'structural' ? "rgba(185,74,58,0.06)" : "rgba(166,124,0,0.06)",
+          padding: "0.5rem 0.7rem",
+          borderRadius: "4px",
+          borderLeft: `3px solid ${audit.status === 'structural' ? C.red : C.amber}`,
+          marginBottom: "0.75rem",
         }}>
-          Missing: {audit.missing.join(', ')}
-          {audit.hasPlaceholder && ' · has placeholder text'}
+          <div style={{ fontWeight: 600, marginBottom: "0.3rem" }}>
+            {audit.status === 'structural' ? 'Structural — ' : ''}
+            {audit.missing.length} missing field{audit.missing.length !== 1 ? 's' : ''}
+            {audit.hasPlaceholder && ' · has placeholder text'}
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.25rem" }}>
+            {audit.missing.map(f => (
+              <span key={f} style={{
+                display: "inline-block",
+                fontSize: "0.72rem",
+                fontFamily: "monospace",
+                background: audit.status === 'structural' ? "rgba(185,74,58,0.1)" : "rgba(166,124,0,0.1)",
+                border: `1px solid ${audit.status === 'structural' ? "rgba(185,74,58,0.3)" : "rgba(166,124,0,0.3)"}`,
+                borderRadius: "3px",
+                padding: "1px 6px",
+              }}>
+                {f}
+              </span>
+            ))}
+          </div>
         </div>
       )}
 
