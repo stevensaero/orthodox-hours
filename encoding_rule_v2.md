@@ -201,10 +201,19 @@ PAROEMIA_2: [reference]
 PAROEMIA_3: [reference]
 [ABSENT for §2A–§2D]
 
-=== VESPERS — LITYA STICHERA ===           ← [§2F only]
-[ABSENT for §2A–§2E]
-OR:
-  [sticheron text]
+=== VESPERS — LITYA STICHERA ===           ← [when has_litya: true, any rank]
+[ABSENT if has_litya: false]
+OR (when has_litya: true but Menaion PDF prints no dedicated Litya stichera):
+  litya_stichera: []   ← empty array; note in encoding record
+OR (when Menaion PDF prints Litya stichera):
+  NOTE: The first sticheron at the Litiya is always the Sticheron of the temple
+  (parish dedication). This is NOT in the Menaion — it will be supplied by a
+  future parish configuration setting. Encode only the Menaion stichera that follow.
+
+  [1] Tone [X]: [sticheron text]
+  [2] Tone [X]: [sticheron text]
+  [3] Tone [X]: [sticheron text]
+  (count varies by feast)
 LITYA_GLORY: Tone [X]: [text]
 LITYA_BOTH_NOW: Tone [X]: [text]
 
@@ -439,9 +448,13 @@ ENCODING RECORD — PENTECOSTARION P+[NN] (Sunday)
 [All weekday fields, PLUS:]
 
 === LITYA STICHERA ===
-[ABSENT if no Great Vespers with Litya]
-OR:
-  [sticheron text]
+[ABSENT if has_litya: false]
+OR (empty array if PDF prints no dedicated stichera):
+  litya_stichera: []
+OR (Menaion stichera — excluding temple sticheron):
+  [1] Tone [X]: [sticheron text]
+  [2] Tone [X]: [sticheron text]
+  ...
 LITYA_GLORY: Tone [X]: [text]
 LITYA_BOTH_NOW: Tone [X]: [text]
 
@@ -512,9 +525,9 @@ After the .txt skeleton is complete, these fields map to the tool data objects:
 | APOSTICHA_GLORY | `aposticha_glory` | |
 | APOSTICHA_THEOTOKION | `aposticha_theotokion` | |
 | PAROEMIA_1/2/3 | `paroemia_1/2/3` | §2E/§2F only; null for §2A–§2D |
-| LITYA_STICHERA | `litya_stichera[]` | §2F only |
-| LITYA_GLORY | `litya_glory` | |
-| LITYA_BOTH_NOW | `litya_both_now` | |
+| LITYA_STICHERA | `litya_stichera[]` | `{tone, text}` — when has_litya: true (any rank). Empty array if PDF has no dedicated stichera |
+| LITYA_GLORY | `litya_glory` | `{tone, text}` — Glory sticheron at the Litiya |
+| LITYA_BOTH_NOW | `litya_both_now` | `{tone, text}` — Both Now theotokion at the Litiya |
 | MATINS_GOSPEL | `matins_gospel` | §2E/§2F only |
 | FEAST_EPISTLE | `feast_e` | null if §2A/§2C |
 | FEAST_GOSPEL | `feast_g` | null if §2A/§2C |
@@ -605,10 +618,14 @@ every field under it has an explicit value (not blank):
 - [ ] COMMUNION_VERSE
 - [ ] NOTES (never blank)
 
-**Add for §2E (Polyeleos):** all 3 paroemias, litya, matins gospel, beatitudes,
-prokeimenon, alleluia, matins aposticha (or NOT YET ENCODED with source ref)
+**Add for §2E (Polyeleos):** all 3 paroemias, litya flag, matins gospel, beatitudes,
+prokeimenon, alleluia, matins aposticha (or NOT YET ENCODED with source ref).
+If has_litya: true AND Menaion prints Litya stichera → encode litya_stichera[],
+litya_glory, litya_both_now. If has_litya: true but no dedicated stichera in
+PDF → litya_stichera: [] (empty array) with note.
 
-**Add for §2F (Vigil):** all §2E fields + litya stichera
+**Add for §2F (Vigil):** all §2E fields + litya stichera (always present in PDF
+for Vigil rank). Encode litya_stichera[], litya_glory, litya_both_now.
 
 **Pentecostarion weekday afterfeast:**
 - [ ] Structural note and PDF boundary documented

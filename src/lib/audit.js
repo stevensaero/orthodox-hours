@@ -71,6 +71,20 @@ export function auditMenaionEntry(entry) {
     return !(field in target) || target[field] === undefined;
   });
 
+  // Conditional Litiya fields: when has_litya is true, require litya_stichera (array,
+  // may be empty), litya_glory, and litya_both_now.
+  if (target.has_litya === true) {
+    if (!('litya_stichera' in target) || !Array.isArray(target.litya_stichera)) {
+      missing.push('litya_stichera');
+    }
+    if (!('litya_glory' in target) || target.litya_glory === undefined) {
+      missing.push('litya_glory');
+    }
+    if (!('litya_both_now' in target) || target.litya_both_now === undefined) {
+      missing.push('litya_both_now');
+    }
+  }
+
   const ph = containsPlaceholder(target);
 
   if (missing.length === 0 && !ph) return { status: 'complete', missing: [], hasPlaceholder: false };

@@ -1261,52 +1261,146 @@ const JUNE_MENAION = {
   // Troparion and kontakion encoded for reference.
 
   "06-24": {
-    saint: "Nativity of the Holy Prophet & Forerunner John the Baptist",
-    oca_primary: true,
-    source_file: "06-24.pdf",
-    rank: "great_feast",
-    note: "Great Feast of the Nativity of John the Forerunner. One of the twelve Great " +
-          "Feasts. Hours follow Feast rules (out of ordinary scope). Troparion and " +
-          "kontakion encoded for reference.",
-    feast_e: "Romans 13:11-14:4 (§112)",
-    feast_g: "Luke 1:5-25, 57-68, 76, 80 (§1)",
-    prokeimenon_tone: 7,
-    prokeimenon_text: "The righteous man shall be glad in the Lord, " +
-      "and shall hope in Him.",
-    prokeimenon_stichos: "Hearken, O God, unto my prayer, " +
-      "when I make supplication unto Thee.",
-    alleluia_tone: 1,
-    alleluia_verse: "Blessed be the Lord God of Israel, " +
-      "for He hath visited and wrought redemption for His people.",
-    alleluia_stichos: "And thou, O child, shalt be called " +
-      "the prophet of the Most High.",
-    communion_verse: "In everlasting remembrance shall the righteous be; " +
-      "he shall not be afraid of evil tidings.",
-    paroemia_1: "Genesis 17:15-17,19; 18:11-14; 21:1-8 — Sarah shall bear a son; " +
-      "barren woman bears Isaac (barren-to-fruitful typology)",
-    paroemia_2: "Judges 13:2-8, 13-14, 17-18, 21-24 — Manoah’s wife shall conceive " +
-      "a son sanctified from birth (Samson typology)",
-    paroemia_3: "Isaiah 40:1-3, 9; 41:17-18; 45:8; 54:1 — voice crying in wilderness; " +
-      "Rejoice thou barren",
-    matins_gospel: "Luke 1:24-25, 57-68, 76, 80 (§3)",
-    has_litya: true,
-    has_polyeleos: true,
-    has_great_doxology: true,
-    troparion: {
-      tone: 4,
-      text: "O prophet and forerunner of the coming of Christ, we who honor thee with love " +
-            "are at a loss how to worthily praise thee; for by thy glorious and honored " +
-            "nativity thou didst loose the barrenness of her who gave birth to thee and the " +
-            "muteness of thy father, and proclaimed to the world the incarnation of the Son " +
-            "of God.",
-    },
-    kontakion_ode6: {
-      tone: 3,
-      text: "Today she who before was barren giveth birth unto the forerunner of Christ, " +
-            "he is the fulfillment of all prophecy; for, laying his hand in the Jordan upon " +
-            "Him Whom the prophets foretold, he hath been shown to be the prophet, herald " +
-            "and forerunner of the Word of God.",
-    },
+      saint: "Nativity of the Holy Prophet & Forerunner John the Baptist",
+      oca_primary: true,
+      source_file: "06-24.pdf",
+      rank: "great_feast",
+      fekula_section: "2F",
+      has_great_doxology: true,
+      has_polyeleos: true,
+      has_litya: true,
+      has_paroemias: true,
+      aposticha_source: "menaion",
+      magnificat_sung: true,
+      matins_format: "god_is_the_lord",
+      note: "Great Feast of the Nativity of John the Forerunner. Vigil-rank service. v2.1: full encode — LIC stichera (8: Great Vespers), Litiya stichera, Aposticha, all Glory/Both Now, beatitudes. The kontakion in the Menaion (Tone 3) differs from OCA troparia page which uses a Tone 6 kontakion beginning 'A splendid and divine pillar' — that is the kontakion chanted after Ode VI at Matins. The Tone 3 kontakion is the one printed in the Menaion for the Little Entrance at Liturgy. PDF prints both; Tone 3 is primary per §2F rubric. Troparion formula at blessing of loaves: troparion ×2, then 'O Theotokos and Virgin, rejoice' ×1.",
+      feast_e: "Romans 13:11-14:4 (§112)",
+      feast_g: "Luke 1:5-25, 57-68, 76, 80 (§1)",
+      prokeimenon_tone: 7,
+      prokeimenon_text: "The righteous man shall be glad in the Lord, and shall hope in Him.",
+      prokeimenon_stichos: "Hearken, O God, unto my prayer, when I make supplication unto Thee.",
+      alleluia_tone: 1,
+      alleluia_verse: "Blessed be the Lord God of Israel, for He hath visited and wrought redemption for His people.",
+      alleluia_stichos: "And thou, O child, shalt be called the prophet of the Most High.",
+      communion_verse: "In everlasting remembrance shall the righteous be; he shall not be afraid of evil tidings.",
+      paroemia_1: "Genesis 17:15-17,19; 18:11-14; 21:1-8 — Sarah shall bear a son; barren woman bears Isaac (barren-to-fruitful typology)",
+      paroemia_2: "Judges 13:2-8, 13-14, 17-18, 21-24 — Manoah’s wife shall conceive a son sanctified from birth (Samson typology)",
+      paroemia_3: "Isaiah 40:1-3, 9; 41:17-18; 45:8; 54:1 — voice crying in wilderness; Rejoice thou barren",
+      matins_gospel: "Luke 1:24-25, 57-68, 76, 80 (§3)",
+      troparion: {
+          tone: 4,
+          text: "O prophet and forerunner of the coming of Christ, we who honor thee with love are at a loss how to worthily praise thee; for by thy glorious and honored nativity thou didst loose the barrenness of her who gave birth to thee and the muteness of thy father, and proclaimed to the world the incarnation of the Son of God."
+      },
+      kontakion_ode6: {
+          tone: 3,
+          text: "Today she who before was barren giveth birth unto the forerunner of Christ, he is the fulfillment of all prophecy; for, laying his hand in the Jordan upon Him Whom the prophets foretold, he hath been shown to be the prophet, herald and forerunner of the Word of God."
+      },
+      stichera_lord_i_call: [
+          {
+              tone: 4,
+              text: "When John was born, he loosed the muteness of Zacharias, for it was not fitting for the father to be silent when the voice of the Word arrived. But since, when the priest had not believed in the beginning, his tongue was bound, so, when John appeared, he set his father free. To him was announced and born the voice of the Word, the forerunner of the Light, praying for our souls."
+          },
+          {
+              tone: 4,
+              repeatIndex: 0
+          },
+          {
+              tone: 4,
+              text: "Today the voice of the Word looseth the voice of his father, which was restrained because of his unbelief, and showeth forth fruitfulness to the Church, loosing the bonds of his mother’s barrenness. The lamp of the Light cometh forth; the splendor of the Sun of righteousness announceth His coming, for the edification of all and the salvation of our souls."
+          },
+          {
+              tone: 4,
+              text: "When the Word of God wished to be born of the Virgin, His angel, the highest of the prophets and greatest born of women, issued forth from elderly loins; for it was meet that he be the most glorious beginning of things divine: an offspring produced past the age of fertility, a conception accomplished without seed. O Thou Who workest miracles for our salvation, glory be to Thee!"
+          },
+          {
+              tone: 4,
+              text: "Today the great forerunner, the greatest of all the prophets, hath appeared, issuing forth from the barren womb of Elizabeth, and there is none like unto him, nor hath any other such arisen; for the most luminous Light followed the lamp of the forerunner, the Word followed the voice, the Bridegroom followed the bridal attendant, who maketh ready an excellent people for the Lord, cleansing them beforehand with water in the Spirit. He is the offspring of Zacharias, the good child of the wilderness, the preacher of repentance, the cleanser of sins, who announceth to those in Hades the resurrection of the dead, and prayeth for our souls."
+          },
+          {
+              tone: 4,
+              text: "Thou wast shown to be a prophet and forerunner from thy mother’s womb, O John, baptizer of Christ, leaping up and rejoicing within her belly when thou didst behold the Queen, bearing the Timeless One Who was begotten of the Father without mother, coming to her handmaid and to thee, who shone forth from a barren woman and an elderly man according to God’s promise."
+          },
+          {
+              tone: 4,
+              text: "O most glorious wonder! He who did not believe the word of the angel, who said that Elizabeth would conceive and bear a son, saying: “How can such a one give birth? For I am stricken with age, and her womb is withered up”, and was condemned to muteness for his unbelief, today beholdeth the promise fulfilled. His silence is broken, and he entereth into gladness, crying: “Blessed art Thou, O Lord God of Israel, for Thou hast visited and wrought deliverance for Thy people, granting the world great mercy!”"
+          },
+          {
+              tone: 4,
+              text: "O all-famed John, apostle to the whole world, glad tiding of Gabriel, offspring of the barren woman, good child of the wilderness and true friend of Christ the Bridegroom: beseech Him, that He have mercy upon our souls."
+          }
+      ],
+      stichera_glory: {
+          tone: 6,
+          text: "Today the lamp of the Light, like a radiant star, doth precede the coming of the Word of God. Today the tongue of Zacharias is loosed, which the angel had commanded to keep silent. For it was thus fitting for the father to hold his tongue in silence for him who issued forth from the barren womb and with great boldness proclaimed the deliverance of all the world."
+      },
+      lic_theotokion: {
+          tone: 6,
+          text: "Elizabeth conceived the forerunner of grace, and the Virgin conceived the Lord of glory. Both mothers kissed each other, and the babe leapt up, for within her womb the servant praised the Master. And the mother of the forerunner marveled and cried aloud: “Whence is this to me, that the Mother of my Lord should come to me? May He Who hath great mercy save a despairing people!”"
+      },
+      litya_stichera: [
+          {
+              tone: 1,
+              text: "Ye mountains, put forth sweetness! Ye hills, leap up like lambs! For the forerunner of the Lord, who loosed the muteness of his father at his birth, hath been born of Elizabeth, desiring to make his abode with us. Wherefore, we cry aloud to him: O thou who baptized Christ, entreat Him, that our souls be saved!"
+          },
+          {
+              tone: 1,
+              text: "O voice who art a sign from God, candle-stand of the Light, forerunner of the Lord, thou to whom witness is borne by Christ, thou foremost of the prophets: make supplication on behalf of the world, and be thou especially mindful of thy flock, that it be saved unharmed."
+          },
+          {
+              tone: 1,
+              text: "Thou wast a preacher of the Word and Lamb of God, O prophet and forerunner John, foretelling things to come, and prophesying unto the ends of the earth: Behold, the Lamb of God Who taketh away the sins of the world, and shall grant great mercy unto all!"
+          }
+      ],
+      litya_glory: {
+          tone: 5,
+          text: "Today Elizabeth giveth birth to the ultimate prophet, the first of the apostles, the earthly angel and heavenly man, the voice of the Word, the soldier and forerunner of Christ, who leapt up beforehand as a sign of the promise, and before his birth proclaimed the Sun of righteousness. And she rejoiceth. Zacharias is astonished in his old age, putting aside his silence like a bond imposed upon him; and as the father of the voice he doth manifestly prophesy: “For thou, O child, shalt be called the prophet of the Most High and shalt go forth to prepare the way for Him.” Wherefore, O angel, prophet, apostle, warrior, forerunner, baptizer, preacher and instructor of repentance: as the voice of the Light and Word, pray thou unceasingly for us who keep thy memory with faith."
+      },
+      litya_both_now: {
+          tone: 5,
+          text: "Thou art the temple and portal, the palace and throne of the King, O most honored Virgin, through whom Christ the Lord, my Redeemer, Who is the Sun of righteousness, hath revealed Himself unto those who sleep in darkness, deigning to enlighten those whom He hath fashioned in His image by His own hand. Wherefore, O all-hymned one, as thou hast acquired a mother’s boldness before Him, entreat Him without ceasing, that our souls be saved."
+      },
+      stichera_aposticha: [
+          {
+              tone: 2,
+              verse: null,
+              text: "With psalms, hymns and spiritual songs let us praise the glorious John, the prophet of prophets, offspring of Elizabeth, greatest of all born of women, citizen of the desert; and let us cry out to him: O baptizer and forerunner of the Savior, as thou hast boldness before Him because of thine honored nativity, entreat Christ, that He grant peace to the world and great mercy to our souls."
+          },
+          {
+              tone: 2,
+              verse: "Blessed is the Lord God of Israel, for He hath visited and wrought deliverance for His people.",
+              text: "John the forerunner hath come: the voice of the grace of the Word, the herald of the Sun, who was born on this day of a barren and childless woman, according to God’s promise. Rejoice, O ye people! He is come to prepare for us the way of salvation. Leaping up, he paid homage, while yet in his mother’s womb, to the Lamb Who taketh away the sins of the world and doth grant us great mercy."
+          },
+          {
+              tone: 2,
+              verse: "And thou, O child, shalt be called the prophet of the Most High.",
+              text: "He who was sanctified from his mother’s womb and was the fulfillment of the prophecy, is born today of a barren woman, manifestly proclaiming the coming of the Lord, saying: Repent, for the kingdom of heaven is at hand!"
+          }
+      ],
+      aposticha_glory: {
+          tone: 8,
+          text: "Today hath been fulfilled the saying of Isaiah the prophet concerning the birth of the greatest of the prophets; for he said: “Behold, I shall send mine angel before thy face, who shall make ready thy path before thee.” This warrior of the King of heaven, running ahead, truly made the paths straight for our God, being a man by nature, but an angel in his life: for, having utterly preserved his purity and chastity, he possessed them by nature; and avoiding that which is unnatural, he struggled supra-naturally. Emulating him in his virtues, O ye faithful, let us all pray, that he make entreaty for our souls to be saved."
+      },
+      aposticha_theotokion: {
+          tone: 8,
+          text: "Behold Elizabeth, who said to the Virgin Mary: “Whence is this to me, O Mother of my Lord? Thou bearest the King, I the warrior; thou the Law-giver, I the upholder of the law; thou the Word, I the voice which proclaimeth the kingdom of heaven!”"
+      },
+      beatitudes_source: "8 troparia from Odes III and VI of the canons of the forerunner (06-24.pdf)",
+      beatitudes_troparia: [
+          "The birthgiving of the Master is accomplished through the Virgin, while that of His beloved servant is through an elderly and barren mother; wherefore, splendidly hath he proceeded the Wonder of wonders.",
+          {
+              repeat: true,
+              note: "Repeat of previous troparion"
+          },
+          "The elderly and barren woman kisseth the Virgin Mother, truly recognizing her birthgiving, for the bond of her barrenness hath been loosed by the will of God.",
+          {
+              repeat: true,
+              note: "Repeat of previous troparion"
+          },
+          "Today John is born: the citizen of the desert, the preacher of repentance, the true witness of grace, the forerunner of the Word, the star which shineth before the Light.",
+          "Today, the axe which hath been forged, hath portended the hewing of barren souls, and planting the fruits of the virtues, hath surely come forth in thy nativity, O forerunner.",
+          "Coming forth, the candle-stand of the Light preached the coming of the Savior, the Lamb of God, Who hath shone forth light upon the earth, offered spiritually for all nature.",
+          "O all-immaculate Birthgiver of God, who hast given birth to the Abyss of mercy: drowning the abyss of my passions in the depths of thy compassions, grant me a torrent of tears from my soul."
+      ]
   },
 
   // ── June 25 — Afterfeast of the Nativity of the Forerunner + Nun-Martyr Febronia
