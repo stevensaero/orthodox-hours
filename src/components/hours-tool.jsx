@@ -7074,6 +7074,8 @@ const RELEASE_NOTES = [
       "feat: Menaion browser — new Litiya section between Paroemias and Matins, Beatitudes troparia display, improved audit indicator with individual field tags",
       "feat: Pentecostarion browser — matching improved audit display with field tags",
       "ref: OCA Litiya prayer text (OCA_prayer_for_litiya.txt) and RLE Menaion identified as secondary source — OCA diptych commemorations differ from ROCOR/HTM (5-petition structure: ×40/×50/×30/×3/×3 vs HTM ×40/×30/×3/×3)",
+      "feat: Data browser navigation — '← Hours Tool' back link in both browser headers; How It Works panel now has clickable 'open' links to both browsers",
+      "fix: Data browser scroll positioning — clicking a partial entry now lands above the audit box instead of below it (accounts for sticky header height)",
     ],
   },
   {
