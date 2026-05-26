@@ -4498,33 +4498,54 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         "Lord, have mercy. (forty times)\nLord, have mercy. (fifty times)\nLord, have mercy. (thirty times)\nLord, have mercy. (thrice)\nLord, have mercy. (thrice)",
         "Litiya petitions — in the Reader's Service, the deacon's petitions are replaced by the choir responses alone. — Fekula Chapter 10"));
     } else {
-      // Full petition block with saint insertion
+      // Full petition block with saint insertion — each petition split into
+      // deacon text (gold priestly styling) + choir response (standard black text)
       const pet1Text = LITIYA_PETITION_1.text.replace("Saint(s) ___", litSaint);
       elements.push({id:"v-litiya-petitions", type:"fixed", label:"Litiya Petitions",
         rubric: LITIYA_PETITION_1.rubric,
-        text: pet1Text + "\n\n" + LITIYA_PETITION_1.response,
+        text: pet1Text,
         source:"OCA Litiya Prayer",
         fekula:{section:fekulaSection, note:"First Litiya petition (OCA diptych) with saint of the day inserted. — OCA Priest's Service Book (1973); Fekula " + fekulaSection}});
+      elements.push({id:"v-litiya-resp-1", type:"fixed", label:"",
+        rubric:"Choir:",
+        text: LITIYA_PETITION_1.response.replace("Choir: ", ""),
+        source:"OCA Litiya Prayer"});
       elements.push({id:"v-litiya-pet-2", type:"fixed", label:"",
         rubric: LITIYA_PETITION_2.rubric,
-        text: LITIYA_PETITION_2.text + "\n\n" + LITIYA_PETITION_2.response,
+        text: LITIYA_PETITION_2.text,
         source:"OCA Litiya Prayer",
         fekula:{section:fekulaSection, note:"Second Litiya petition (brotherhood, sick, departed). — OCA Priest's Service Book (1973)"}});
+      elements.push({id:"v-litiya-resp-2", type:"fixed", label:"",
+        rubric:"Choir:",
+        text: LITIYA_PETITION_2.response.replace("Choir: ", ""),
+        source:"OCA Litiya Prayer"});
       elements.push({id:"v-litiya-pet-3", type:"fixed", label:"",
         rubric: LITIYA_PETITION_3.rubric,
-        text: LITIYA_PETITION_3.text + "\n\n" + LITIYA_PETITION_3.response,
+        text: LITIYA_PETITION_3.text,
         source:"OCA Litiya Prayer",
         fekula:{section:fekulaSection, note:"Third Litiya petition (civil authorities). — OCA Priest's Service Book (1973)"}});
+      elements.push({id:"v-litiya-resp-3", type:"fixed", label:"",
+        rubric:"Choir:",
+        text: LITIYA_PETITION_3.response.replace("Choir: ", ""),
+        source:"OCA Litiya Prayer"});
       elements.push({id:"v-litiya-pet-4", type:"fixed", label:"",
         rubric: LITIYA_PETITION_4.rubric,
-        text: LITIYA_PETITION_4.text + "\n\n" + LITIYA_PETITION_4.response,
+        text: LITIYA_PETITION_4.text,
         source:"OCA Litiya Prayer",
         fekula:{section:fekulaSection, note:"Fourth Litiya petition (deliverance from wrath, famine, pestilence). — OCA Priest's Service Book (1973)"}});
+      elements.push({id:"v-litiya-resp-4", type:"fixed", label:"",
+        rubric:"Choir:",
+        text: LITIYA_PETITION_4.response.replace("Choir: ", ""),
+        source:"OCA Litiya Prayer"});
       elements.push({id:"v-litiya-pet-5", type:"fixed", label:"",
         rubric: LITIYA_PETITION_5.rubric,
-        text: LITIYA_PETITION_5.text + "\n\n" + LITIYA_PETITION_5.response,
+        text: LITIYA_PETITION_5.text,
         source:"OCA Litiya Prayer",
         fekula:{section:fekulaSection, note:"Fifth Litiya petition. — OCA Priest's Service Book (1973)"}});
+      elements.push({id:"v-litiya-resp-5", type:"fixed", label:"",
+        rubric:"Choir:",
+        text: LITIYA_PETITION_5.response.replace("Choir: ", ""),
+        source:"OCA Litiya Prayer"});
     }
 
     // Concluding prayer
@@ -6869,7 +6890,7 @@ function ServiceBlock({ element }) {
             fontSize: "0.72rem",
             textTransform: "uppercase",
             letterSpacing: "0.1em",
-            color: "#8B6914",
+            color: (element.rubric.startsWith("Priest") || element.rubric.startsWith("Deacon")) ? "#8B6914" : "#5A4A2A",
             marginBottom: "0.25rem",
             fontFamily: "Georgia, serif",
           }}
