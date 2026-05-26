@@ -611,7 +611,10 @@ export default function MenaionBrowser() {
 
   const scrollToEntry = (key) => {
     const el = entryRefs.current[key];
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!el) return;
+    const headerH = headerRef.current ? headerRef.current.getBoundingClientRect().height : 90;
+    const elTop = el.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({ top: elTop - headerH - 8, behavior: 'smooth' });
   };
 
   return (

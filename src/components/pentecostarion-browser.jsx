@@ -512,7 +512,12 @@ export default function PentecostarionBrowser() {
 
   const scrollToEntry = (offset) => {
     const el = entryRefs.current[offset];
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!el) return;
+    // Scroll so the entry starts just below the sticky header,
+    // ensuring the audit box is visible (not hidden behind the header).
+    const headerH = headerRef.current ? headerRef.current.getBoundingClientRect().height : 90;
+    const elTop = el.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({ top: elTop - headerH - 8, behavior: 'smooth' });
   };
 
   return (
