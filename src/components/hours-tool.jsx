@@ -7062,6 +7062,21 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.5.1",
+    date: "May 2026",
+    summary: "Litiya encoding support · Great Feast dates in scope · Menaion browser improvements",
+    items: [
+      "feat: Litiya encoding fields — encoding spec amended (litya_stichera[], litya_glory, litya_both_now with {tone, text} shape). Audit module updated with conditional check: when has_litya is true, requires all three fields. Empty array valid for Polyeleos feasts without dedicated Litiya stichera",
+      "data: June 24 (Nativity of the Baptist) fully encoded to v2.1 — 39 fields including 8 LIC stichera, 3 Litiya stichera T1, Litiya Glory T5, Litiya Both Now T5, 3 Aposticha with verses, all Glory/Both Now across three positions confirmed unique",
+      "data: May 21 (Sts. Constantine & Helena) — 5 Litiya stichera encoded (T1/T2/T2/T3/T4 + Glory T5 + Both Now T5). May 25 (Third Finding of the Head) — empty litya_stichera[] with null Glory/Both Now (no dedicated stichera in PDF)",
+      "feat: Great Feast, forefeast, afterfeast, and apodosis dates now in scope — services render with feast troparion/kontakion instead of showing blank screen. Gold informational banner notes what's fully working vs. in development",
+      "fix: great_feast rank recognized in Hours and Vespers assemblers — correct Fekula §2F citation, isHighRank detection for 8-stichera count, Entrance, and Menaion aposticha",
+      "feat: Menaion browser — new Litiya section between Paroemias and Matins, Beatitudes troparia display, improved audit indicator with individual field tags",
+      "feat: Pentecostarion browser — matching improved audit display with field tags",
+      "ref: OCA Litiya prayer text (OCA_prayer_for_litiya.txt) and RLE Menaion identified as secondary source — OCA diptych commemorations differ from ROCOR/HTM (5-petition structure: ×40/×50/×30/×3/×3 vs HTM ×40/×30/×3/×3)",
+    ],
+  },
+  {
     version: "v0.5.0",
     date: "May 2026",
     summary: "Pre-Communion Prayers · How It Works overhaul · Ordinary Beginning standalone service",

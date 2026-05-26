@@ -2012,3 +2012,41 @@ node scripts/audit.js pentecostarion
 - **New sections**: "What This Tool Does" (service inventory table — 9 built / 4 planned, plus additional features list), "Sources & Texts" (expanded from 4 to 7 sources including Jordanville Prayer Book, General Menaion, Pentecostarion).
 - **Revised sections**: Calendar Engine (added Triodion horizon note), How Services Are Assembled (updated daily cycle, kept Lord I Have Cried teaching content), Encoding Status (removed incorrect `.txt` Drive references, updated counts to actual 58 Menaion + 23 Pentecostarion, updated field table), "What's Here, What's Coming & How to Help" (honest inventory of built vs. planned, Triodion as next horizon).
 - Fixed 443 double-escaped Unicode sequences (`\\u2014` → `—` etc.) caused by Python raw strings.
+
+### Litiya encoding support + Great Feast scope (v0.5.1)
+
+#### Encoding spec amendments
+- `litya_stichera[]`, `litya_glory`, `litya_both_now` — added `{tone, text}` object shape
+- Changed "§2F only" → "when has_litya: true, any rank" — Polyeleos feasts can also have Litiya
+- Empty `litya_stichera: []` documented as valid (Polyeleos feasts where PDF has no dedicated stichera)
+- Temple sticheron note added (first sticheron at Litiya = parish dedication, future config setting)
+
+#### Audit module
+- Conditional Litiya check: when `has_litya === true`, requires `litya_stichera` (array, may be empty), `litya_glory`, `litya_both_now`. Null values pass (field present but no dedicated text). Dates with `has_litya: false` unaffected.
+
+#### Encoding — three dates updated
+- **June 24** (Nativity of the Baptist, great_feast §2F): full v2.1 encode, 39 fields. 3 Litiya stichera T1 + Glory T5 (Andrew of Crete) + Both Now T5 (Theotokion). All Glory/Both Now confirmed unique across LIC, Litiya, and Aposticha positions.
+- **May 21** (Sts. Constantine & Helena, §2E): 5 Litiya stichera (T1/T2/T2/T3/T4) + Glory T5 + Both Now T5. All from 05-21.pdf.
+- **May 25** (Third Finding of the Head, §2E): `litya_stichera: []`, `litya_glory: null`, `litya_both_now: null`. Neither St. Sergius nor RLE PDF prints dedicated Litiya stichera.
+
+#### Great Feast and feast-period dates now in scope
+- Added `great_feast`, `forefeast`, `afterfeast`, `apodosis` to `inScope` list
+- Services render with feast troparion/kontakion from Menaion data instead of blank screen
+- Gold informational banner explains what's working vs. in development
+- `great_feast` rank added to `isHighRank` in Vespers assembler — correct 8-stichera count, Entrance shown, Menaion aposticha used
+- Fekula citation correctly shows §2F (from `menaionEntry.fekula_section`) instead of defaulting to §2A
+
+#### Source material discovered
+- **RLE Menaion** (`Menaion/rle/may/`): same work as St. Sergius in different English translation. Less complete for our purposes (Matins incomplete). Useful as cross-reference.
+- **OCA Litiya prayer** (`vespers/oca/OCA_prayer_for_litiya.txt`): complete OCA-specific diptych. 5-petition structure (×40/×50/×30/×3/×3) differs from HTM/ROCOR (×40/×30/×3/×3). Includes blessing of loaves prayer. This is the primary source for the Litiya fixed-text constants.
+
+#### Menaion + Pentecostarion browser improvements
+- Menaion browser: new Litiya section (stichera, Glory, Both Now), Beatitudes troparia display, improved audit indicator with individual monospace field tags
+- Pentecostarion browser: matching improved audit indicator
+
+### Backlog for next session
+- **Vespers Litiya assembler** — specification written (`vespers_litiya_spec.md` in repo root). Test cases: May 25 (§2E, no dedicated stichera) and June 24 (great_feast, full Litiya stichera). OCA prayer text on Drive.
+- **Pentecostarion P+20–P+34** — 15 weekday entries
+- **June/July backfill** — 34 entries missing v2.1 matins-era fields
+- **Triodion/Lenten services** — next major development horizon
+- **Temple kontakion/sticheron** — future user setting ("My parish is dedicated to…")
