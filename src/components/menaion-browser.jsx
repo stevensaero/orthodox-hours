@@ -237,17 +237,36 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
       }}>
 
       {/* ── Audit details ── */}
-      {audit.missing.length > 0 && (
+      {(audit.missing.length > 0 || audit.hasPlaceholder) && (
         <div style={{
           fontSize: "0.78rem",
-          color: C.amber,
-          background: "rgba(166,124,0,0.06)",
-          padding: "0.4rem 0.6rem",
-          borderRadius: "3px",
+          color: audit.status === 'structural' ? C.red : C.amber,
+          background: audit.status === 'structural' ? "rgba(185,74,58,0.06)" : "rgba(166,124,0,0.06)",
+          padding: "0.5rem 0.7rem",
+          borderRadius: "4px",
+          borderLeft: `3px solid ${audit.status === 'structural' ? C.red : C.amber}`,
           marginBottom: "0.75rem",
         }}>
-          Missing: {audit.missing.join(', ')}
-          {audit.hasPlaceholder && ' · has placeholder text'}
+          <div style={{ fontWeight: 600, marginBottom: "0.3rem" }}>
+            {audit.status === 'structural' ? 'Structural — ' : ''}
+            {audit.missing.length} missing field{audit.missing.length !== 1 ? 's' : ''}
+            {audit.hasPlaceholder && ' · has placeholder text'}
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.25rem" }}>
+            {audit.missing.map(f => (
+              <span key={f} style={{
+                display: "inline-block",
+                fontSize: "0.72rem",
+                fontFamily: "monospace",
+                background: audit.status === 'structural' ? "rgba(185,74,58,0.1)" : "rgba(166,124,0,0.1)",
+                border: `1px solid ${audit.status === 'structural' ? "rgba(185,74,58,0.3)" : "rgba(166,124,0,0.3)"}`,
+                borderRadius: "3px",
+                padding: "1px 6px",
+              }}>
+                {f}
+              </span>
+            ))}
+          </div>
         </div>
       )}
 
@@ -399,12 +418,81 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
         </>
       )}
 
+      {/* ── Vespers — Litiya ── */}
+      {primary.has_litya && (
+        <>
+          <SectionHeader>Vespers — Litiya</SectionHeader>
+          {primary.litya_stichera && Array.isArray(primary.litya_stichera) && primary.litya_stichera.length > 0 ? (
+            primary.litya_stichera.map((s, i) => (
+              <TextBlock key={i} tone={s.tone} text={s.text} label={`[${i + 1}]`} />
+            ))
+          ) : primary.litya_stichera && Array.isArray(primary.litya_stichera) && primary.litya_stichera.length === 0 ? (
+            <div style={{ fontSize: "0.85rem", color: C.goldLight, fontStyle: "italic" }}>
+              No dedicated Litiya stichera in Menaion PDF (Litiya petitions are fixed text)
+            </div>
+          ) : (
+            <div style={{ fontSize: "0.85rem", color: C.red, fontStyle: "italic" }}>
+              litya_stichera — not encoded (has_litya is true)
+            </div>
+          )}
+          {primary.litya_glory ? (
+            <TextBlock
+              tone={primary.litya_glory.tone}
+              text={primary.litya_glory.text}
+              label="Glory (Doxasticon)"
+            />
+          ) : primary.litya_stichera ? null : (
+            <div style={{ fontSize: "0.78rem", color: C.red, fontStyle: "italic", marginTop: "0.25rem" }}>
+              litya_glory — not encoded
+            </div>
+          )}
+          {primary.litya_both_now ? (
+            <TextBlock
+              tone={primary.litya_both_now.tone}
+              text={primary.litya_both_now.text}
+              label="Both now (Theotokion)"
+            />
+          ) : primary.litya_stichera ? null : (
+            <div style={{ fontSize: "0.78rem", color: C.red, fontStyle: "italic", marginTop: "0.25rem" }}>
+              litya_both_now — not encoded
+            </div>
+          )}
+        </>
+      )}
+
       {/* ── Matins ── */}
       {(primary.matins_gospel || primary.beatitudes_source) && (
         <>
           <SectionHeader>Matins</SectionHeader>
           {primary.matins_gospel && <FieldRow label="matins_gospel" value={primary.matins_gospel} />}
           {primary.beatitudes_source && <FieldRow label="beatitudes_source" value={primary.beatitudes_source} />}
+          {primary.beatitudes_troparia && Array.isArray(primary.beatitudes_troparia) && (
+            <div style={{ marginTop: "0.4rem" }}>
+              <div style={{ fontSize: "0.75rem", color: C.inkLight, marginBottom: "0.25rem" }}>
+                Beatitudes troparia ({primary.beatitudes_troparia.length})
+              </div>
+              {primary.beatitudes_troparia.map((t, i) => (
+                <div key={i} style={{
+                  fontSize: "0.84rem",
+                  color: typeof t === 'object' && t.repeat ? C.amber : C.ink,
+                  fontStyle: typeof t === 'object' && t.repeat ? "italic" : "normal",
+                  lineHeight: 1.6,
+                  fontFamily: "Georgia, serif",
+                  paddingLeft: "0.75rem",
+                  borderLeft: `2px solid ${C.border}`,
+                  marginBottom: "0.5rem",
+                }}>
+                  <span style={{ fontSize: "0.72rem", color: C.inkLight }}>
+                    [{i + 1}]{' '}
+                  </span>
+                  {typeof t === 'string' ? t
+                    : typeof t === 'object' && t.text ? t.text
+                    : typeof t === 'object' && t.repeat ? `[repeats previous]${t.note ? ' — ' + t.note : ''}`
+                    : JSON.stringify(t)}
+                </div>
+              ))}
+            </div>
+          )}
         </>
       )}
 
