@@ -2,68 +2,95 @@
 
 ## Session Startup
 
-Follow the project instructions: clone `stevensaero/orthodox-hours` (ask for the token), read `project_notes.md`, and confirm the version badge in `hours-tool.jsx` matches. Current version: **v0.5.0**.
+Follow the project instructions: clone `stevensaero/orthodox-hours` (ask for the token), read `project_notes.md`, and confirm the version badge in `hours-tool.jsx` matches. Current version: **v0.5.1**.
+
+## Primary Task: Vespers Litiya Assembler
+
+A detailed implementation specification is at **`vespers_litiya_spec.md`** in the repo root. Read it before starting. It covers:
+
+- Fixed text constants to encode (OCA Litiya petitions, blessing of loaves, "O Theotokos and Virgin, rejoice!", Psalm 33 first 10 verses)
+- Assembler branching logic (insertion point, Vigil troparion formula, dismissal changes)
+- Reader mode adaptations (Fekula Ch. 10)
+- Element IDs and validation checklist
+
+### Source Material (Google Drive)
+
+- **OCA Litiya prayer**: `vespers/oca/OCA_prayer_for_litiya.txt` — complete OCA diptych (5 petitions: ×40/×50/×30/×3/×3), concluding prayer, peace/head-bowing, blessing of loaves prayer. This is the authoritative source — NOT the ROCOR/HTM version.
+- **HTM Vespers**: `vespers/htm/htm_vespers.md` — structural rules for Litiya placement, Vigil troparion formula, Psalm 33, transition to Matins.
+
+### Test Cases
+
+- **June 24** (Nativity of the Baptist, `great_feast` §2F): full Litiya stichera (3 T1 + Glory T5 + Both Now T5), Vigil troparion formula (×2 + O Theotokos ×1), Blessing of Loaves. 39-field entry, fully encoded.
+- **May 25** (Third Finding of the Head, `polyeleos` §2E): `has_litya: true` but empty `litya_stichera: []`, null Glory/Both Now. Litiya petitions still served. Standard troparion (not Vigil formula). No Blessing of Loaves.
+- **May 16** (simple rank, `has_litya: false`): no Litiya — verify flow unchanged.
+
+### Implementation Approach
+
+Inline constants in `hours-tool.jsx` (not a separate file — see discussion in project_notes.md). The Litiya text is structurally part of Vespers, ~8-10KB of fixed text, comparable to the existing litany constants already inline.
 
 ## Encoding Validation — Two Tools, One Rule Set
 
-The tool has a two-tier validation system for encoding completeness. Both tiers enforce the same rule: **an entry is not complete until every required field is present AND no field contains placeholder text.**
+Two-tier system: **an entry is not complete until every required field is present AND no field contains placeholder text.**
 
-### Tier 1: CLI Audit Script (`scripts/audit.js`)
-
-Run from the terminal after any encoding session:
+### Tier 1: CLI Audit (`scripts/audit.js`)
 
 ```bash
-node scripts/audit.js all           # audit everything
-node scripts/audit.js may           # audit just May
-node scripts/audit.js pentecostarion  # audit just Pentecostarion
+node scripts/audit.js all           # everything
+node scripts/audit.js may           # just May
+node scripts/audit.js pentecostarion
 ```
 
-This is a **text-based** audit that parses the raw JS source files with regex. It checks for field-name strings (e.g. `troparion:`, `kontakion_ode6:`) in each entry's text block and scans for placeholder patterns (`[NYE]`, `not yet encoded`, `Phase 2`, etc.). Output is a per-file summary with complete/incomplete/placeholder counts, plus per-entry missing-field lists.
+Text-based, parses raw JS with regex. Per-file summary + per-entry missing-field lists.
 
-**Current state (as of v0.5.0):**
-- May: 16 complete, 0 incomplete
-- June: 0 complete, 30 incomplete (all missing matins-era fields like `fekula_section`, `matins_format`, `aposticha_source`, `stichera_lord_i_call` — these were encoded before the v2.1 spec added those fields)
-- July: 0 complete, 5 incomplete (same pattern)
-- Pentecostarion: 23 complete, 0 incomplete
+### Tier 2: In-Browser Data Browsers
 
-The June/July incompleteness is expected — those entries predate the expanded field requirements. May was re-encoded to v2.1 spec. Bringing June and July up to spec is a backlog item.
+- **Menaion**: `/orthodox-hours/menaion` — also linked from How It Works panel
+- **Pentecostarion**: `/orthodox-hours/pentecostarion` — same
 
-### Tier 2: In-Browser Data Browsers (`/menaion`, `/pentecostarion`)
+Both use the shared audit module (`src/lib/audit.js`). Parsed-object audit with green/amber/red indicators. Missing fields shown as individual monospace tags. Both have "← Hours Tool" back links.
 
-These are full-page data inspection tools accessible via URL only (not linked from the main tool UI):
-- `/orthodox-hours/menaion` — 12 month tabs, day grid sidebar, entry cards with all fields
-- `/orthodox-hours/pentecostarion` — period tabs (Bright Week, Thomas→Blind Man, etc.)
+### Conditional Litiya Audit
 
-Both use the **shared audit module** at `src/lib/audit.js`, which exports:
-- `auditMenaionEntry(entry)` — returns `{ status, missing, hasPlaceholder }`
-- `auditPentecostarionEntry(entry)` — same shape
-- `auditSummary(results[])` — aggregates complete/partial/structural counts
-- `MENAION_REQUIRED` — 14 required fields
-- `PENT_REQUIRED` — 7 required fields + kontakion check
+When `has_litya === true`, the audit also requires `litya_stichera` (array, may be empty), `litya_glory`, and `litya_both_now`. Null values pass (field present but no dedicated text in PDF). Dates with `has_litya: false` are unaffected.
 
-Unlike the CLI script, the browser audit operates on **parsed JS objects** (not raw text), so it checks actual field presence and deep-searches for placeholder text in nested values. Each entry card shows a green/amber/red indicator.
+### Current Audit State (v0.5.1)
 
-### Required Fields
+- May: 16/16 complete
+- June: 1/30 complete (June 24 is the one complete entry — full v2.1 with Litiya)
+- July: 0/5 complete (pre-v2.1 entries)
+- Pentecostarion: 23/23 complete (21 complete + 2 partial per browser — the CLI counts differ because it uses regex)
 
-**Menaion** (14 fields): `source_file`, `rank`, `fekula_section`, `has_great_doxology`, `has_polyeleos`, `has_litya`, `has_paroemias`, `magnificat_sung`, `matins_format`, `feast_e`, `aposticha_source`, `stichera_lord_i_call`, `troparion`, `kontakion_ode6`
+## Architecture Notes
 
-**Pentecostarion** (7 fields + kontakion): `hours_format`, `matins_format`, `has_great_doxology`, `feast_e`, `aposticha_source`, `stichera_lord_i_call`, `troparion`, plus either `hours_kontakion` or `kontakion_ode6`
+### Fekula Rules Drive Branch Logic
 
-### Placeholder Patterns Detected
+Every assembly decision traces to a specific Fekula section. The `fekulaSection` constant (computed from rank + season) drives citation badges on every movable element. The `FekulaBadge` component renders clickable badges that expand to show the full Fekula quote.
 
-Both tools flag these as incomplete: `[Menaion sticheron`, `[stichera not yet`, `[NYE]`, `not yet encoded`, `Track B`, `Phase 2`, `to be encoded`
+### Great Feast Dates Now In Scope
 
-### Encoding Spec
+`great_feast`, `forefeast`, `afterfeast`, `apodosis` are all in `inScope`. Services render with a gold informational banner noting what's working vs. in development. `great_feast` is recognized in `isHighRank` (8-stichera count, Entrance shown, Menaion aposticha used).
 
-Full encoding rules are in `encoding_rule_v2.md` at repo root. Key principle: **no field is ever silently omitted** — every field must be either populated, explicitly `null`, or carry an `ABSENT`/`NOT IN PDF`/`NOT YET ENCODED` annotation.
+### Key Files
 
-## Current Priorities
+```
+src/components/hours-tool.jsx     — main tool + all assemblers
+src/components/menaion-browser.jsx — Menaion data browser
+src/components/pentecostarion-browser.jsx — Pentecostarion data browser
+src/lib/audit.js                  — shared audit module
+src/data/menaion/may.js           — May entries (16, all complete)
+src/data/menaion/june.js          — June entries (30, 1 complete)
+src/data/menaion/july.js          — July entries (5, 0 complete)
+src/data/pentecostarion.js        — Pentecostarion (23 entries)
+src/data/pre-communion.js         — Pre-Communion prayers (35 sections)
+encoding_rule_v2.md               — encoding spec (v2.1 with Litiya amendments)
+vespers_litiya_spec.md            — Litiya assembler implementation spec
+project_notes.md                  — canonical project notes
+```
 
-1. **Debug and test** — the tool has grown substantially (9 services built). Navigate through dates and exercise all the services, especially the new Pre-Communion Prayers.
-2. **Triodion/Lenten services** — the next major development horizon. Calendar engine already tracks Lent, but assembly rules and Triodion data don't exist yet. Requires:
-   - Research how Lenten Hours differ from ordinary Hours (prostrations, special prayers, structural changes)
-   - Design the Triodion data structure (keyed to pre-Lenten/Lenten offsets from Pascha, similar to Pentecostarion)
-   - Build a Triodion data browser (same pattern as Menaion/Pentecostarion browsers)
-   - Encode entries
-3. **June/July backfill** — 35 entries missing v2.1 matins-era fields. Lower priority than Triodion but worth addressing incrementally.
-4. **Encoding new months** — expand Menaion coverage beyond May–July.
+## Backlog (after Litiya)
+
+- **June/July backfill** — 34 entries missing v2.1 fields
+- **Pentecostarion P+20–P+34** — 15 weekday entries
+- **Triodion/Lenten services** — next major development horizon
+- **Temple kontakion/sticheron** — future user setting
+- **Encoding new months** — expand beyond May–July
