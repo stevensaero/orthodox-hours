@@ -6641,7 +6641,7 @@ function TempleSelector({ availableDedications, onSelect, currentId, resolvedTro
       margin: "12px 0",
     }}>
       <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "10px" }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7A6A4A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden="true"><path d="M3 21l18 0"/><path d="M9 3l1 0l0 5.5l2 -2.5l2 2.5l0 -5.5l1 0"/><path d="M3 21v-10l2 -2"/><path d="M21 21v-10l-2 -2"/><path d="M6 9l6 -6l6 6"/></svg>
+        <svg width="14" height="16" viewBox="0 0 14 18" fill="none" stroke="#7A6A4A" strokeWidth="1.5" strokeLinecap="round" style={{ flexShrink: 0 }} aria-hidden="true"><line x1="7" y1="0" x2="7" y2="18"/><line x1="3" y1="3.5" x2="11" y2="3.5"/><line x1="4" y1="7" x2="10" y2="7"/><line x1="4.5" y1="13" x2="9.5" y2="11.5"/></svg>
         <span style={{
           fontSize: "0.85rem", color: "#7A6A4A", fontStyle: "italic",
           fontFamily: "Georgia, serif", lineHeight: "1.45",
