@@ -1954,6 +1954,7 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
          : r === 'doxology'    ? '§2D'
          : r === 'polyeleos'   ? '§2E'
          : r === 'vigil'       ? '§2F'
+         : r === 'great_feast' ? '§' + (menaionEntry.fekula_section || '2F')
          : '§2A';
   })();
 
@@ -3555,7 +3556,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   const isSunday = season === "sunday";
   const christIsRisenActive = isPentecostarion && paschaOffset >= 7 && paschaOffset <= 38;
   const rank = (menaionEntry && menaionEntry.rank) || "simple";
-  const isHighRank = rank === "polyeleos" || rank === "vigil";
+  const isHighRank = rank === "polyeleos" || rank === "vigil" || rank === "great_feast";
   const isDoxOrAbove = rank === "doxology" || isHighRank;
   const fekulaSection = (() => {
     if (isPentecostarion && pentEntry) {
@@ -3567,7 +3568,9 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     if (!menaionEntry) return "§2A";
     if (menaionEntry.fekula_section_override) return "§" + menaionEntry.fekula_section_override;
     return rank === "six_stichera" ? "§2C" : rank === "doxology" ? "§2D"
-         : rank === "polyeleos" ? "§2E" : rank === "vigil" ? "§2F" : "§2A";
+         : rank === "polyeleos" ? "§2E" : rank === "vigil" ? "§2F"
+         : rank === "great_feast" ? "§" + (menaionEntry.fekula_section || "2F")
+         : "§2A";
   })();
   const sticheraRule = isHighRank
     ? (isPentecostarion ? "3 from Pentecostarion + 5 from Menaion" : "8 stichera: Octoechos + Menaion")
