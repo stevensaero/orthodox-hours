@@ -6577,20 +6577,24 @@ function TempleSelector({ availableDedications, onSelect, currentId, resolvedTro
   if (currentId === "none") {
     return (
       <div style={{
-        margin: "12px 0", padding: "10px 14px",
-        background: "rgba(180,160,112,0.06)",
-        borderRadius: "4px",
-        display: "flex", alignItems: "flex-start", gap: "8px",
+        margin: "12px 0", padding: "12px 0 12px 12px",
+        borderLeft: "3px solid #B8A070",
       }}>
-        <i className="ti ti-home" aria-hidden="true" style={{ fontSize: "15px", color: "#7A6A4A", marginTop: "2px", flexShrink: 0 }}></i>
-        <span style={{
-          fontSize: "0.85rem", color: "#7A6A4A", fontStyle: "italic",
-          fontFamily: "Georgia, serif", lineHeight: "1.5", flex: 1,
-        }}>The sticheron of the temple is omitted when serving outside a dedicated temple. The Litiya proceeds directly to the stichera of the feast.</span>
-        <span onClick={() => onSelect(null)} style={{
-          fontSize: "0.68rem", color: "#9A8A70", cursor: "pointer",
-          whiteSpace: "nowrap", alignSelf: "center",
-        }}>(change)</span>
+        <div style={{ display: "flex", alignItems: "baseline", gap: "6px", marginBottom: "4px", flexWrap: "wrap" }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A6A4A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, position: "relative", top: "2px" }} aria-hidden="true"><path d="M5 12l-2 0l9 -9l9 9l-2 0"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"/><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"/></svg>
+          <span style={{
+            fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.12em",
+            color: "#9A8A70", fontFamily: "Georgia, serif", fontWeight: "bold",
+          }}>Serving at home / no temple dedication</span>
+          <span onClick={() => onSelect(null)} style={{
+            fontSize: "0.68rem", color: "#9A8A70", cursor: "pointer", marginLeft: "auto",
+          }}>(change)</span>
+        </div>
+        <div style={{
+          fontFamily: "Georgia, serif", fontSize: "0.88rem", lineHeight: "1.6",
+          color: "#7A6A4A", fontStyle: "italic",
+          background: "rgba(180,160,112,0.06)", padding: "0.5rem 0.7rem", borderRadius: "4px",
+        }}>The sticheron of the temple is omitted when serving outside a dedicated temple. The Litiya proceeds directly to the stichera of the feast.</div>
       </div>
     );
   }
@@ -6637,7 +6641,7 @@ function TempleSelector({ availableDedications, onSelect, currentId, resolvedTro
       margin: "12px 0",
     }}>
       <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "10px" }}>
-        <i className="ti ti-building-church" aria-hidden="true" style={{ fontSize: "16px", color: "#7A6A4A" }}></i>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7A6A4A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden="true"><path d="M3 21l18 0"/><path d="M9 3l1 0l0 5.5l2 -2.5l2 2.5l0 -5.5l1 0"/><path d="M3 21v-10l2 -2"/><path d="M21 21v-10l-2 -2"/><path d="M6 9l6 -6l6 6"/></svg>
         <span style={{
           fontSize: "0.85rem", color: "#7A6A4A", fontStyle: "italic",
           fontFamily: "Georgia, serif", lineHeight: "1.45",
@@ -6652,7 +6656,7 @@ function TempleSelector({ availableDedications, onSelect, currentId, resolvedTro
           style={{
             width: "100%", padding: "9px 32px 9px 10px",
             fontSize: "0.85rem", fontFamily: "Georgia, serif",
-            color: "var(--text-color, #3D3020)",
+            color: "#3D3020",
             background: "#fff",
             border: "1px solid rgba(180,160,112,0.4)",
             borderRadius: "6px",
@@ -6704,7 +6708,7 @@ function TempleSelector({ availableDedications, onSelect, currentId, resolvedTro
               borderTop: "1px solid rgba(180,160,112,0.18)",
             }}
           >
-            <i className={showMore ? "ti ti-chevron-up" : "ti ti-dots"} aria-hidden="true" style={{ fontSize: "14px" }}></i>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{showMore ? <path d="M6 15l6 -6l6 6"/> : <><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></>}</svg>
             {showMore ? "Fewer dedications" : "More dedications..."}
           </div>
         )}
@@ -6717,7 +6721,7 @@ function TempleSelector({ availableDedications, onSelect, currentId, resolvedTro
             borderTop: "1px solid rgba(180,160,112,0.18)",
           }}
         >
-          <i className="ti ti-home" aria-hidden="true" style={{ fontSize: "15px" }}></i>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5A4A2A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12l-2 0l9 -9l9 9l-2 0"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"/><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"/></svg>
           No dedication / serving at home
         </div>
       </div>
