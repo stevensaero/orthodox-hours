@@ -640,15 +640,21 @@ export default function MenaionBrowser() {
             justifyContent: "space-between",
             marginBottom: "0.75rem",
           }}>
-            <h1 style={{
-              fontSize: "1.15rem",
-              fontWeight: 700,
-              color: C.gold,
-              margin: 0,
-              letterSpacing: "0.04em",
-            }}>
-              Menaion Data Browser
-            </h1>
+            <div style={{ display: "flex", alignItems: "baseline", gap: "1rem" }}>
+              <a href="/orthodox-hours/" style={{
+                fontSize: "0.82rem", color: C.gold, textDecoration: "none",
+                fontFamily: "Georgia, serif",
+              }}>← Hours Tool</a>
+              <h1 style={{
+                fontSize: "1.15rem",
+                fontWeight: 700,
+                color: C.gold,
+                margin: 0,
+                letterSpacing: "0.04em",
+              }}>
+                Menaion Data Browser
+              </h1>
+            </div>
             <span style={{
               fontSize: "0.72rem",
               color: C.inkLight,

@@ -7850,8 +7850,8 @@ function HowItWorksPanel() {
           {ul([
             <><strong>Psalter reader</strong> — Full text of all 20 kathismas, linked from Vespers kathisma assignments. Displays each stasis with psalm numbering.</>,
             <><strong>Scripture viewer</strong> — Full-text epistle and gospel readings, linked from the liturgical context card and from within service elements.</>,
-            <><strong>Menaion data browser</strong> (<code>/menaion</code>) — Inspect all encoded fixed-calendar entries with per-entry completeness auditing.</>,
-            <><strong>Pentecostarion data browser</strong> (<code>/pentecostarion</code>) — Same for Pascha-anchored entries, organized by liturgical period.</>,
+            <><strong>Menaion data browser</strong> (<a href="/orthodox-hours/menaion" style={{color: "#8B6914"}}>open</a>) — Inspect all encoded fixed-calendar entries with per-entry completeness auditing. Shows every field, flags missing data, and displays Litiya stichera and Beatitudes troparia.</>,
+            <><strong>Pentecostarion data browser</strong> (<a href="/orthodox-hours/pentecostarion" style={{color: "#8B6914"}}>open</a>) — Same for Pascha-anchored entries, organized by liturgical period.</>,
             <><strong>Reader mode</strong> — Substitutes lay reader responses for priest exclamations throughout.</>,
           ])}
         </div>
