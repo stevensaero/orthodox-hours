@@ -6194,42 +6194,17 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
     });
 
     // 3. Kontakion of the church/temple (parish-specific)
-    // Resolved from TEMPLE_DEDICATIONS via localStorage('parish_dedication').
-    // If no dedication set or data not available, show the instructional rubric note.
+    // Uses same TempleSelector component as Litiya, but resolves kontakion instead of troparion.
     // NOTE: OCA rubric says "If the temple be dedicated to a feast of the Lord,
     // its Kontakion is said first, before the Kontakion of the day." This reordering
     // is not yet implemented — currently all temple kontakia appear at position 3.
     // When Lord-feast dates (Nativity, Theophany, Transfiguration, etc.) are encoded,
     // add logic to move the temple kontakion before Transfiguration for those dedications.
-    const _templeDedId = (() => { try { return localStorage.getItem('parish_dedication'); } catch(e) { return null; } })();
-    const _templeKont = (_templeDedId && _templeDedId !== "none") ? resolveTempleKontakion(_templeDedId) : null;
-    const _templeTrop = (_templeDedId && _templeDedId !== "none") ? resolveTempleTroparion(_templeDedId) : null;
-    const _templeDed = _templeDedId ? TEMPLE_DEDICATIONS.find(d => d.id === _templeDedId) : null;
-
-    if (_templeDedId === "none") {
-      // User explicitly selected "no dedication / serving at home" — omit silently
-    } else if (_templeKont) {
-      const toneLabel = _templeKont.tone ? " · Tone " + _templeKont.tone : "";
-      movable("typica-kont-temple", "Kontakion of the Temple — " + (_templeDed ? _templeDed.label : _templeKont.saint) + toneLabel,
-        _templeKont.text,
-        ocaNote + " Kontakion of the temple (parish dedication). Resolved from saved parish setting.");
-    } else if (_templeTrop && !_templeKont) {
-      // Have troparion but no kontakion — use troparion as fallback with note
-      const toneLabel = _templeTrop.tone ? " · Tone " + _templeTrop.tone : "";
-      movable("typica-kont-temple", "Troparion of the Temple — " + (_templeDed ? _templeDed.label : _templeTrop.saint) + toneLabel,
-        _templeTrop.text,
-        ocaNote + " Troparion of the temple (kontakion not yet encoded; troparion used as reference).");
-    } else {
-      // No dedication set — show instructional note
-      elements.push({
-        id: "typica-kont-temple", type: "movable", label: "Kontakion of the Temple",
-        rubric: null,
-        text: "[Select your parish dedication in the Vespers Litiya section, or navigate to any date with a Litiya to set it. " +
-          "The kontakion of your temple will then appear here automatically.]",
-        source: "OCA Typica / HTM rubric",
-        isRubricNote: true,
-      });
-    }
+    elements.push({id:"typica-kont-temple", type:"temple_selector",
+      label:"Kontakion of the Temple",
+      source:"OCA Typica / HTM rubric",
+      templeMode: "kontakion",
+      fekula:{section:"OCA Typica", note:"The Kontakion of the church is sung after the Kontakion of the day. If the temple be dedicated to a feast of the Lord, its Kontakion is said first. — OCA Typica; HTM Horologion"}});
 
     // 4. Kontakion of the saint of the date (if present)
     // OCA: "(the Kontakion of the saint of the date, if desired)"
@@ -6607,8 +6582,13 @@ function Tooltip({ term, children }) {
 //   currentId: string | null — current selection from localStorage
 //   resolvedTroparion: { tone, text, saint } | null — the resolved troparion for display
 
-function TempleSelector({ availableDedications, onSelect, currentId, resolvedTroparion, fekulaSection }) {
+function TempleSelector({ availableDedications, onSelect, currentId, resolvedTroparion, fekulaSection, mode }) {
   const [showMore, setShowMore] = useState(false);
+  const isKontakion = mode === "kontakion";
+  const elementLabel = isKontakion ? "Kontakion of the temple" : "Sticheron of the temple";
+  const pickerPrompt = isKontakion
+    ? "The kontakion of your temple is sung here. Select your parish dedication."
+    : "The first sticheron at the Litiya is the troparion of your temple's dedication.";
 
   // Group available dedications by category
   const grouped = {};
@@ -6658,7 +6638,7 @@ function TempleSelector({ availableDedications, onSelect, currentId, resolvedTro
           fontFamily: "Georgia, serif", fontSize: "0.88rem", lineHeight: "1.6",
           color: "#7A6A4A", fontStyle: "italic",
           background: "rgba(180,160,112,0.06)", padding: "0.5rem 0.7rem", borderRadius: "4px",
-        }}>The sticheron of the temple is omitted when serving outside a dedicated temple. The Litiya proceeds directly to the stichera of the feast.</div>
+        }}>The {isKontakion ? "kontakion" : "sticheron"} of the temple is omitted when serving outside a dedicated temple.{!isKontakion && " The Litiya proceeds directly to the stichera of the feast."}</div>
       </div>
     );
   }
@@ -6670,13 +6650,15 @@ function TempleSelector({ availableDedications, onSelect, currentId, resolvedTro
           <span style={{
             fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.12em",
             color: "#8B6914", fontFamily: "Georgia, serif", fontWeight: "bold",
-          }}>Sticheron of the temple</span>
+          }}>{ elementLabel }</span>
           <span style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic" }}>
-            — {resolvedTroparion.saint}
+            — {resolvedTroparion.saint}{resolvedTroparion.isTroparionFallback ? " (troparion — kontakion not yet encoded)" : ""}
           </span>
           {fekulaSection && (
             <FekulaBadge section={fekulaSection}
-              note="We always chant first the first Litiya sticheron of the temple, unless it be one of the great feasts. — HTM Vespers" />
+              note={isKontakion
+                ? "The Kontakion of the church is sung after the Kontakion of the day. — OCA Typica; HTM Horologion"
+                : "We always chant first the first Litiya sticheron of the temple, unless it be one of the great feasts. — HTM Vespers"} />
           )}
           <span onClick={() => onSelect(null)} style={{
             fontSize: "0.68rem", color: "#9A8A70", cursor: "pointer", marginLeft: "auto",
@@ -6709,7 +6691,7 @@ function TempleSelector({ availableDedications, onSelect, currentId, resolvedTro
         <span style={{
           fontSize: "0.85rem", color: "#7A6A4A", fontStyle: "italic",
           fontFamily: "Georgia, serif", lineHeight: "1.45",
-        }}>The first sticheron at the Litiya is the troparion of your temple's dedication.</span>
+        }}>{pickerPrompt}</span>
       </div>
 
       {/* Primary dropdown */}
@@ -6840,15 +6822,26 @@ function FekulaBadge({ section, note }) {
 function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
   // ── Temple selector — hybrid UI for parish dedication ──────────────────
   if (element.type === 'temple_selector') {
+    const isKontakionMode = element.templeMode === "kontakion";
     // Compute available dedications: only those whose data is encoded with a troparion
     const available = TEMPLE_DEDICATIONS.filter(d => {
       const trop = resolveTempleTroparion(d.id);
       return trop !== null;
     });
-    // Resolve current selection
-    const resolved = templeDedication && templeDedication !== "none"
-      ? resolveTempleTroparion(templeDedication)
-      : null;
+    // Resolve current selection — kontakion for Typica, troparion for Litiya
+    let resolved = null;
+    if (templeDedication && templeDedication !== "none") {
+      if (isKontakionMode) {
+        resolved = resolveTempleKontakion(templeDedication);
+        // Fallback to troparion if kontakion not encoded
+        if (!resolved) {
+          const tropFallback = resolveTempleTroparion(templeDedication);
+          if (tropFallback) resolved = { ...tropFallback, isTroparionFallback: true };
+        }
+      } else {
+        resolved = resolveTempleTroparion(templeDedication);
+      }
+    }
     return (
       <TempleSelector
         availableDedications={available}
@@ -6856,6 +6849,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
         currentId={templeDedication}
         resolvedTroparion={resolved}
         fekulaSection={element.fekula?.section}
+        mode={isKontakionMode ? "kontakion" : "troparion"}
       />
     );
   }
