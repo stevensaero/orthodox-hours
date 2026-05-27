@@ -4732,7 +4732,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   // Aposticha structure: sticheron → verse → sticheron → verse → sticheron → [verse] → Glory → Both Now
   {
     const apostDayKey = getVespersDayKey(dow);
-    const apostOctoDay = (!isPentecostarion && (rank === "simple" || !menaionEntry))
+    const apostOctoDay = (!isPentecostarion && (rank === "simple" || rank === "six_stichera" || !menaionEntry))
       ? getOctoechosVespers(tone, apostDayKey) : null;
     const isSatEve = dow === 6;
 
@@ -4790,7 +4790,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           source:"Pentecostarion",
           fekula:{section:fekulaSection, note:"Aposticha: Pentecostarion stichera assembly pending."}});
       }
-    } else if (!isPentecostarion && rank === "simple" && apostOctoDay && apostOctoDay.aposticha) {
+    } else if (!isPentecostarion && (rank === "simple" || rank === "six_stichera") && apostOctoDay && apostOctoDay.aposticha) {
       // §2A: Octoechos stichera + universal verses — fully assembled
       const apostStichera = apostOctoDay.aposticha; // array of 3 strings
       const verses = isSatEve ? satVerses : weekdayVerses;
@@ -4808,10 +4808,17 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         }
       });
 
-      // Glory → aposticha_glory
+      // Glory → aposticha_glory (prefer Menaion if encoded, else Octoechos)
       elements.push({id:"v-apost-glory", type:"fixed", label:"", text:"Glory to the Father, and to the Son, and to the Holy Spirit.", source:"HTM Vespers"});
+      const menaionApostGlory = menaionEntry && menaionEntry.aposticha_glory;
       const apostGlory = apostOctoDay.aposticha_glory;
-      if (apostGlory && !apostGlory.startsWith('[')) {
+      if (menaionApostGlory && menaionApostGlory.text) {
+        // Menaion provides its own Glory doxasticon (§2C and above)
+        elements.push({id:"v-apost-doxasticon", type:"movable", label:"Aposticha Doxasticon",
+          rubric:"Tone "+(menaionApostGlory.tone||tone)+":",
+          text:menaionApostGlory.text, source:"Menaion — " + mSaint,
+          fekula:{section:fekulaSection, note:"Aposticha Glory: doxasticon from Menaion. — Fekula " + fekulaSection}});
+      } else if (apostGlory && !apostGlory.startsWith('[')) {
         elements.push({id:"v-apost-doxasticon", type:"movable", label:"Aposticha Doxasticon",
           rubric:"Tone "+tone+":",
           text:apostGlory, source:"Octoechos",
