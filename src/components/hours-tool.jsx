@@ -3604,6 +3604,7 @@ const TEMPLE_DEDICATIONS = [
   { id: "st_elias",           label: "Holy Prophet Elijah (Elias)",   category: "Saints & archangels", source: "menaion", dataKey: "07-20" },
   { id: "st_john_theologian", label: "St. John the Theologian",       category: "Saints & archangels", source: "menaion", dataKey: "09-26" },
   { id: "st_sergius",         label: "St. Sergius of Radonezh",       category: "Saints & archangels", source: "menaion", dataKey: "09-25" },
+  { id: "cosmas_damian",      label: "Ss. Cosmas & Damian (Unmercenaries)", category: "Saints & archangels", source: "menaion", dataKey: "07-01" },
 
   // ── Feasts & Sacred Events ──
   { id: "all_saints",         label: "All Saints",                    category: "Feasts & sacred events", source: "pentecostarion", dataKey: 56 },
