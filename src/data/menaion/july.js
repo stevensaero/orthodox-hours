@@ -10,9 +10,19 @@ const JULY_MENAION = {
     source_file: "07-01.pdf",
     rank: "six_stichera",
     fekula_section: "2C",
-    note: "OCA commemorates Jul 1 N.S. St. Sergius and OCA in agreement on date and texts.",
-    feast_e: "1 Corinthians 12:27-13:8",
-    feast_g: "Matthew 10:1, 5-8",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "octoechos",
+    note: "OCA commemorates Jul 1 N.S. St. Sergius and OCA in agreement on date and texts. " +
+          "§2C confirmed — 6 stichera on Lord I Call (3 T1 + 3 T4); 'God is the Lord' at Matins. " +
+          "Aposticha from Octoechos (§2C); Glory/Both Now from Menaion. " +
+          "Beatitudes: 4 Octoechos + 4 from Ode III. No paroemias, no Litiya, no Polyeleos.",
+    feast_e: "1 Corinthians 12:27-13:8 (§153)",
+    feast_g: "Matthew 10:1, 5-8 (§34)",
     prokeimenon_tone: 4,
     prokeimenon_text: "In the saints that are in His earth hath the Lord been wondrous; He hath wrought all His desires in them.",
     prokeimenon_stichos: "I beheld the Lord ever before me, for He is at my right hand, that I might not be shaken.",
@@ -20,6 +30,93 @@ const JULY_MENAION = {
     alleluia_verse: "Behold, what is so good or so joyous as for brethren to dwell together in unity?",
     alleluia_stichos: "For there the Lord commanded the blessing, life for evermore.",
     communion_verse: "Rejoice in the Lord, O ye righteous; praise is meet for the upright.",
+
+    // ── AT VESPERS: LORD I HAVE CRIED ──────────────────────────────────────
+    // 6 stichera: 3 in Tone I + 3 in Tone IV. §2C = all from Menaion.
+    stichera_lord_i_call_count: 6,
+    stichera_lord_i_call: [
+      { tone: 1,
+        text: "With rays of miracles dispel every infirmity of our sicknesses, " +
+              "freely extending grace to us, and enrich us with the gifts of the Master " +
+              "Who hath taken on His shoulders the afflictions of earthborn mortals." },
+      { tone: 1,
+        text: "Having first been trained well as physicians, ye cleansed away the illnesses of all with faith; " +
+              "and in later times, having armed yourselves spiritually, ye divinely dispel " +
+              "the symptoms of spiritual sicknesses." },
+      { tone: 1,
+        text: "Having received grace freely from Christ God, ye heal the ailments of all without fee, " +
+              "O unmercenary ones, and cleanse not only our infirmities, but even reasonably treat cattle, " +
+              "in that ye are merciful." },
+      { tone: 4,
+        text: "Like rivers in full flood and manifestly overflowing with spiritual waters, " +
+              "ye irrigate creation with divine signs and the most glorious gifts of healing, " +
+              "drying up soul-corrupting passions, healing infirmities, and expelling evil spirits, " +
+              "O God-bearing unmercenaries, intercessors for our souls." },
+      { tone: 4,
+        text: "Having subdued the irrational passions, O holy ones, with spiritual powers, " +
+              "ye impart well-being to men and cattle, having been enriched by Christ " +
+              "with the gift of healings. Wherefore, celebrating your sacred and radiant solemnity, " +
+              "we ask for the cleansing of our souls." },
+      { tone: 4,
+        text: "Your divine temple hath been shown to be like a splendid heaven of salvation, " +
+              "which now displayeth salvific miracles like stars, and the divine working of healings " +
+              "like a radiant sun, O most blessed Cosmas and most glorious Damian, " +
+              "ye servants of the Lord and intercessors for our souls." },
+    ],
+    stichera_glory: {
+      tone: 6,
+      text: "Boundless is the grace of the saints, which they have received from Christ. " +
+            "Wherefore, their relics continually work miracles by the power of God, " +
+            "and their names, when invoked with faith, heal incurable sicknesses. " +
+            "Through them, O Lord, free us also from the passions of soul and body, " +
+            "in that Thou lovest mankind.",
+    },
+    // Both Now: Theotokion or Stavrotheotokion in Tone VI (tone of the Glory).
+    // §2C: Both Now = Octoechos theotokion in tone of the Glory.
+    stichera_both_now: "Octoechos (tone of glory — Tone 6)",
+
+    // ── AT VESPERS: APOSTICHA ──────────────────────────────────────────────
+    // §2C: stichera from Octoechos; Glory/Both Now from Menaion.
+    // Glory doxasticon from PDF:
+    aposticha_glory: {
+      tone: 6,
+      text: "Ever having Christ working within you, O holy unmercenaries, ye work wonders in the world " +
+            "and heal the sick. For your healing is an inexhaustible well-spring, which when drawn from, " +
+            "floweth in abundance every day, pouring and gushing forth in great quantities, " +
+            "granting healing to all who draw forth from it, yet remaining ever full. " +
+            "What, therefore, shall we call you? Healing physicians of souls and bodies? " +
+            "Healers of incurable sufferings who heal all and have received this gift from Christ the Savior, " +
+            "Who granteth great mercy unto us.",
+    },
+    // Both Now: Theotokion or Stavrotheotokion in Tone VI (tone of the Glory).
+    aposticha_theotokion: "Octoechos (tone of glory — Tone 6)",
+
+    // ── AT MATINS ──────────────────────────────────────────────────────────
+    // Kontakion after Ode VI = same as kontakion_ode6 (confirmed from PDF)
+    // Kontakion after Ode III: not present in PDF — Ode III has only troparia and theotokion.
+    // Therefore kontakion_ode3 = same as kontakion_ode6.
+    kontakion_ode3: "same as kontakion_ode6",
+    ikos: "The discourse of the wise physicians surpasseth all reason and wisdom, " +
+          "imparting understanding unto all, for, having received grace from the Most High, " +
+          "they grant health to all, from whence, even I have been granted the grace to sing " +
+          "of the abundance of healings the God-bearing favorites and ministers of Christ bestow; " +
+          "for they deliver multitudes from sickness, healing the world with miracles.",
+    exapostilarion: "What utterances can rightly describe the unmercenaries' grace of healing? " +
+                    "For, after God, they are the saving physicians of the whole world.",
+
+    // ── Beatitudes (AT LITURGY) ────────────────────────────────────────────
+    // 8 troparia: 4 from Octoechos + 4 from Ode III of saint's canon
+    beatitudes_troparia: [
+      { text: "Your divine temple doth sacredly pour forth in spiritual streams the fragrant myrrh of healings, ever washing away the fetid passions.",
+        source: "Ode III", label: "Ode III, 1" },
+      { text: "Ever dwelling in the mansions of heaven, O most wise ones, through the grace of the Almighty ye ever show your tabernacle to be a well-spring of healings.",
+        source: "Ode III", label: "Ode III, 2" },
+      { text: "Curbing the passions of the flesh with the reins of abstinence, ye have most abundantly received spiritual radiance, whereby, ye enrich the world with healings.",
+        source: "Ode III", label: "Ode III, 3" },
+      { text: "God chose thee as the most beautiful among women, O pure one, and He Who resteth in His saints was well pleased to be born in the flesh from thee.",
+        source: "Ode III", label: "Ode III, Theotokion" },
+    ],
+
     troparion: {
       tone: 8,
       text: "O holy unmercenaries and wonder-workers Cosmas and Damian, visit our infirmities. " +
