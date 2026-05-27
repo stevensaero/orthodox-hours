@@ -2134,5 +2134,23 @@ All Litiya fixed texts encoded as inline constants in `hours-tool.jsx` (near exi
 - **Lord-feast temple ordering** — when Lord-feast dates are encoded, temple kontakion at Typica should move to position 1 (before Transfiguration)
 - **Great Feast of the Lord Vigil formula** — `isGreatFeastOfLordForVigil` placeholder needs real detection
 - **Pentecostarion P+20–P+34** — 15 weekday entries
-- **June/July backfill** — 34 entries missing v2.1 fields
+- **June/July backfill** — 33 entries missing v2.1 fields (was 34; Jul 1 completed this session)
 - **Triodion/Lenten services** — next major development horizon
+
+### Encoding session — July 1 (v0.5.3)
+
+**July 1 — Holy Unmercenaries Cosmas & Damian of Rome (§2C Six-Stichera)**
+
+Full v2.1 encoding from 07-01.pdf. Previously had basic fields only (troparion, kontakion, liturgy propers). Now complete:
+
+- **LIC stichera**: 6 stichera (3 × Tone I + 3 × Tone IV). Glory T6 doxasticon. Both Now = Octoechos theotokion (tone of glory).
+- **Aposticha**: §2C = Octoechos stichera. Glory T6 doxasticon from Menaion. Both Now = Octoechos.
+- **Kontakion Ode III**: confirmed same as Ode VI (no separate kontakion at Ode III in PDF).
+- **Ikos**: full text ("The discourse of the wise physicians surpasseth all reason and wisdom...")
+- **Exapostilarion**: "What utterances can rightly describe the unmercenaries' grace of healing?"
+- **Beatitudes**: 4 troparia from Ode III (+ 4 from Octoechos per rubric)
+- **Matins flags**: god_is_the_lord, no great doxology, no polyeleos, no litya, no paroemias, magnificat not sung
+- **Section numbers**: feast_e updated to §153, feast_g to §34
+- **Audit**: ✅ complete — passes all 14 required fields
+
+**Audit totals after session**: May 16/16 complete. June 0/30 (pre-v2.1). July 1/5 complete. Pentecostarion 23/23 complete.
