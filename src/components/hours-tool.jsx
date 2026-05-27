@@ -3931,8 +3931,16 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       text:HTM_O_COME,source:"HTM Vespers"});
   }
   // PSALM 103 — opening handled by VespersOpening collapsible component
+  // At Great Vespers (Saturday evening, Doxology+ rank): sung by the choir.
+  // At Daily Vespers (ordinary weekdays): read by the reader.
+  const isGreatVespers = isDoxOrAbove || dow === 6;
   elements.push({id:"v-ps103",type:"fixed",label:"PSALM 103",rubric:"",
-    text:HTM_PSALM_103, source:"HTM Vespers"});
+    text:HTM_PSALM_103, source:"HTM Vespers",
+    toneNote: isGreatVespers ? "Sung by the choir" : "Read by the reader",
+    showFekula: true,
+    fekula:{section:fekulaSection, note: isGreatVespers
+      ? "At Great Vespers (Saturday evening and feasts of Doxology rank or above), Psalm 103 is sung by the choir, often antiphonally with refrains. The Royal Doors are open and the priest censes the entire temple during this psalm. — HTM Vespers; Fekula §2D–§2F"
+      : "At Daily Vespers (ordinary weekdays), Psalm 103 is read by the reader, not sung. The Royal Doors remain closed. — HTM Vespers; Fekula §2A–§2C"}});
   elements.push({id:"v-ps103-refrain",type:"fixed",label:"",rubric:"And Again:",
     text:HTM_PSALM_103_REFRAIN, source:"HTM Vespers"});
   // 4. GREAT LITANY
@@ -3966,7 +3974,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   // FW-B: Full psalm texts to be fetched from Drive Psalter reference document.
   const kathismaResult = getKathismaForVespers(liturgicalData, rank, false, pentEntry);
 
-  let kathLabel, kathText, kathFekula, kathSource;
+  let kathLabel, kathText, kathFekula, kathSource, kathToneNote;
   if (kathismaResult.blessedIsMan) {
     kathLabel = "Kathisma I — Blessed Is the Man";
     kathText  =
@@ -3980,25 +3988,31 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       "Both now and ever, and unto the ages of ages. Amen. Alleluia, alleluia, alleluia.\n\n" +
       "Alleluia, alleluia, alleluia. Glory to Thee, O God. (thrice)";
     kathSource = kathismaResult.source;
-    kathFekula = { section: fekulaSection, note: kathismaResult.rule +
+    kathToneNote = "Sung by the choir";
+    kathFekula = { section: fekulaSection, note: (dow === 6
+      ? "At Saturday evening Great Vespers, the entire first kathisma is sung (often abbreviated in parish practice to the first stasis, 'Blessed is the Man'). These are selected verses from Psalms 1-3 with Alleluia refrains, chanted antiphonally. — Fekula §2; OCA Kathisma Readings at Vespers"
+      : "At feasts of Polyeleos or Vigil rank, only the first stasis of Kathisma I ('Blessed is the Man') is sung. This replaces the ordinary kathisma reading appointed for the day. — Fekula §2E–§2F; OCA Kathisma Readings at Vespers") +
       (kathismaResult.hadVigilNote ? "\n\n" + kathismaResult.hadVigilNote : "") };
   } else if (kathismaResult.omitted) {
     kathLabel = "Kathisma";
     kathText  = "(Omitted — see Fekula note)";
     kathSource = kathismaResult.source;
+    kathToneNote = null;
     kathFekula = { section: fekulaSection, note: kathismaResult.rule +
       (kathismaResult.hadVigilNote ? "\n\n" + kathismaResult.hadVigilNote : "") };
   } else {
     kathLabel = kathismaResult.label;
     kathText  = kathismaResult.label + " is read here.";
     kathSource = kathismaResult.source;
-    kathFekula = { section: fekulaSection, note: kathismaResult.rule +
+    kathToneNote = "Read by the reader";
+    kathFekula = { section: fekulaSection, note: "On ordinary weekdays at Daily Vespers, the appointed kathisma is read (not sung) by the reader. The kathisma number rotates through the Psalter on a weekly schedule that varies by season. — Fekula §2A; OCA Kathisma Readings at Vespers" +
       (kathismaResult.hadVigilNote ? "\n\n" + kathismaResult.hadVigilNote : "") };
   }
 
   elements.push({id:"v-kathisma", type:"movable",
     label: kathLabel, rubric:"",
     text: kathText,
+    toneNote: kathToneNote,
     source: kathSource,
     fekula: kathFekula,
     kathismaNum: kathismaResult.num || null});
@@ -7172,7 +7186,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
             Read in Scripture ↗
           </a>
         )}
-        {isMovable && element.fekula && (
+        {(isMovable || element.showFekula) && element.fekula && (
           <FekulaBadge section={element.fekula.section} note={element.fekula.note} />
         )}
         {element.unresolved && (
