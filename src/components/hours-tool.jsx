@@ -3632,6 +3632,31 @@ function resolveTempleTroparion(dedicationId) {
   return { tone: e.troparion.tone, text: e.troparion.text, saint: e.saint, source: "Menaion" };
 }
 
+// Resolve a temple dedication to its kontakion from live data.
+// Returns { tone, text, saint, source } or null if data not yet encoded.
+function resolveTempleKontakion(dedicationId) {
+  const ded = TEMPLE_DEDICATIONS.find(d => d.id === dedicationId);
+  if (!ded) return null;
+  if (ded.source === "pentecostarion") {
+    const pentData = _pentecostarionCache || {};
+    const entry = pentData[ded.dataKey];
+    if (!entry) return null;
+    const k = entry.kontakion_ode6 || entry.hours_kontakion || entry.kontakion;
+    if (!k) return null;
+    return { tone: k.tone, text: k.text, saint: entry.name, source: "Pentecostarion" };
+  }
+  // Menaion
+  const month = ded.dataKey.substring(0, 2);
+  const monthData = _menaionCache[month] || {};
+  const raw = monthData[ded.dataKey];
+  if (!raw) return null;
+  const e = (ded.arrayIndex != null && Array.isArray(raw)) ? raw[ded.arrayIndex] : (Array.isArray(raw) ? raw[0] : raw);
+  if (!e) return null;
+  const k = e.kontakion_ode6 || e.kontakion;
+  if (!k) return null;
+  return { tone: k.tone, text: k.text, saint: e.saint, source: "Menaion" };
+}
+
 // ── LITIYA FIXED TEXTS ───────────────────────────────────────────────────────
 // Source: OCA_prayer_for_litiya.txt (Google Drive: vespers/oca/)
 // Authoritative OCA diptych — NOT the ROCOR/HTM version.
@@ -6168,18 +6193,43 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
         ocaNote + " Kontakion of the day.");
     });
 
-    // 3. Kontakion of the church/temple (parish-specific — rubric note only)
-    // Styled as a movable block with a proper label, matching the other kontakia,
-    // but the body text is instructional (not service text to be read aloud).
-    elements.push({
-      id: "typica-kont-temple", type: "movable", label: "Kontakion of the Temple",
-      rubric: null,
-      text: "[Here insert the Kontakion of your parish temple, " +
-        "if it be dedicated to a saint. If the temple be dedicated to a feast of the Lord, " +
-        "its Kontakion is said first, before the Kontakion of the day.]",
-      source: "OCA Typica / HTM rubric",
-      isRubricNote: true,  // flag for the renderer to style the text as instructional
-    });
+    // 3. Kontakion of the church/temple (parish-specific)
+    // Resolved from TEMPLE_DEDICATIONS via localStorage('parish_dedication').
+    // If no dedication set or data not available, show the instructional rubric note.
+    // NOTE: OCA rubric says "If the temple be dedicated to a feast of the Lord,
+    // its Kontakion is said first, before the Kontakion of the day." This reordering
+    // is not yet implemented — currently all temple kontakia appear at position 3.
+    // When Lord-feast dates (Nativity, Theophany, Transfiguration, etc.) are encoded,
+    // add logic to move the temple kontakion before Transfiguration for those dedications.
+    const _templeDedId = (() => { try { return localStorage.getItem('parish_dedication'); } catch(e) { return null; } })();
+    const _templeKont = (_templeDedId && _templeDedId !== "none") ? resolveTempleKontakion(_templeDedId) : null;
+    const _templeTrop = (_templeDedId && _templeDedId !== "none") ? resolveTempleTroparion(_templeDedId) : null;
+    const _templeDed = _templeDedId ? TEMPLE_DEDICATIONS.find(d => d.id === _templeDedId) : null;
+
+    if (_templeDedId === "none") {
+      // User explicitly selected "no dedication / serving at home" — omit silently
+    } else if (_templeKont) {
+      const toneLabel = _templeKont.tone ? " · Tone " + _templeKont.tone : "";
+      movable("typica-kont-temple", "Kontakion of the Temple — " + (_templeDed ? _templeDed.label : _templeKont.saint) + toneLabel,
+        _templeKont.text,
+        ocaNote + " Kontakion of the temple (parish dedication). Resolved from saved parish setting.");
+    } else if (_templeTrop && !_templeKont) {
+      // Have troparion but no kontakion — use troparion as fallback with note
+      const toneLabel = _templeTrop.tone ? " · Tone " + _templeTrop.tone : "";
+      movable("typica-kont-temple", "Troparion of the Temple — " + (_templeDed ? _templeDed.label : _templeTrop.saint) + toneLabel,
+        _templeTrop.text,
+        ocaNote + " Troparion of the temple (kontakion not yet encoded; troparion used as reference).");
+    } else {
+      // No dedication set — show instructional note
+      elements.push({
+        id: "typica-kont-temple", type: "movable", label: "Kontakion of the Temple",
+        rubric: null,
+        text: "[Select your parish dedication in the Vespers Litiya section, or navigate to any date with a Litiya to set it. " +
+          "The kontakion of your temple will then appear here automatically.]",
+        source: "OCA Typica / HTM rubric",
+        isRubricNote: true,
+      });
+    }
 
     // 4. Kontakion of the saint of the date (if present)
     // OCA: "(the Kontakion of the saint of the date, if desired)"
