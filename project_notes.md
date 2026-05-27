@@ -2094,9 +2094,45 @@ All Litiya fixed texts encoded as inline constants in `hours-tool.jsx` (near exi
 - Used for rubrical notes, empty-stichera messages, Matins transition note
 
 ### Backlog (updated v0.5.2)
-- **Polyeleos Litiya test** — May 25 (§2E) should show empty stichera note, petitions, standard troparion (not Vigil formula), no Blessing of Loaves, standard dismissal. Verify in browser.
+- **Polyeleos Litiya test** — May 25 (§2E) should show empty stichera note, petitions, standard troparion (not Vigil formula), no Blessing of Loaves, standard dismissal. ✅ Verified — working correctly.
 - **Great Feast of the Lord** — `isGreatFeastOfLordForVigil` flag is a placeholder (always false). Needs refinement when Lord-feast dates (Nativity, Theophany, Transfiguration, etc.) are encoded. These use troparion ×3 instead of ×2+×1.
-- **Temple sticheron** — future parish configuration setting ("My parish is dedicated to…"). Currently an unresolved placeholder.
+- **Temple sticheron** — ✅ DONE (v0.5.3). See session notes below.
+- **Pentecostarion P+20–P+34** — 15 weekday entries
+- **June/July backfill** — 34 entries missing v2.1 fields
+- **Triodion/Lenten services** — next major development horizon
+
+### Temple dedication selector + Typica integration + sung/read explainers (v0.5.3)
+
+#### Temple dedication selector (Litiya)
+- **TEMPLE_DEDICATIONS constant** — 40 common OCA parish dedications in 4 categories (The Lord & Holy Trinity, The Theotokos, Saints & Archangels, Feasts & Sacred Events). Each maps to a Menaion date key or Pentecostarion offset.
+- **Hybrid UI** — compact `<select>` dropdown with `<optgroup>` categories, plus visible "No dedication / serving at home" row with home icon, plus "More dedications..." expander for less common entries. Only dedications with encoded and audit-passing troparion data appear in the dropdown. List grows automatically as more months are encoded.
+- **localStorage persistence** — `localStorage.setItem('parish_dedication', id)`. Persists across sessions, per-device, no login required. Read on mount, written on selection.
+- **Three rendering states**: (1) unselected — picker card with dropdown; (2) selected saint — standard movable element with troparion text, tone, source, "(change)" link; (3) "no dedication" — informational note with home icon and left bar explaining omission.
+- **Great Feast suppression** — temple sticheron element omitted entirely on `great_feast` rank per HTM rubric. Verified: June 24 (Great Feast) shows no picker; May 25 (Polyeleos) shows picker correctly.
+- **resolveTempleTroparion()** — resolves any dedication ID to `{ tone, text, saint, source }` from module-level Menaion/Pentecostarion caches.
+
+#### Temple kontakion at the Typica
+- **resolveTempleKontakion()** — parallel function resolving kontakion from `kontakion_ode6` (Menaion) or `hours_kontakion`/`kontakion_ode6` (Pentecostarion).
+- **Typica kontakia section** — position 3 (after Transfiguration and daily kontakion) now resolves from the same `localStorage` parish dedication setting. Three states: kontakion rendered, troparion as fallback (when kontakion not yet encoded), or instructional note (when no dedication set). "Serving at home" omits silently.
+- **Lord-feast ordering note** — OCA rubric says feast-of-the-Lord temple kontakion goes first (before Transfiguration). Not yet implemented; noted in code comment for when Lord-feast dates are encoded.
+
+#### Litiya choir response styling
+- Each Litiya petition split into two elements: deacon petition (gold/italic) + choir response (standard dark text). Previously responses inherited priestly styling.
+- Rubric label color now context-aware globally: Priest/Deacon → gold (#8B6914), Choir/Chanters/Reader → dark brown (#5A4A2A).
+
+#### Sung/read explainers
+- **Psalm 103** — annotated with "Sung by the choir" (Great Vespers: Saturday evening, Doxology+ rank) or "Read by the reader" (Daily Vespers: ordinary weekdays). FekulaBadge ⓘ explainer describes the distinction: Royal Doors open + censing at Great Vespers; Royal Doors closed at Daily Vespers.
+- **Kathisma** — "Blessed is the Man" annotated "Sung by the choir" with explainer distinguishing Saturday evening (entire kathisma, often abbreviated) from feast days (first stasis only). Ordinary numbered kathismas annotated "Read by the reader" with explainer about weekly rotation. Omitted kathismas show no annotation.
+- **`showFekula` flag** — opt-in for fixed elements that need the ⓘ badge (Psalm 103). Previously badges only rendered on movable elements.
+
+#### Icons
+- All Tabler icon font references (`ti ti-*`) replaced with inline SVGs throughout the temple selector — Tabler webfont was never loaded in the project. Church icon replaced with scaled-down budded cross matching service end markers.
+
+### Backlog (updated v0.5.3)
+- **HTM 12 Great Feasts encoding** — one session would unlock 12 more temple dedications (Transfiguration, Nativity, Theophany, Annunciation, Dormition, etc.) from the existing Drive file
+- **Common saints encoding** — St. Nicholas (Dec 6), Archangel Michael (Nov 8), St. Herman (Aug 9), St. Innocent (Mar 31) would cover the most popular OCA dedications not yet available
+- **Lord-feast temple ordering** — when Lord-feast dates are encoded, temple kontakion at Typica should move to position 1 (before Transfiguration)
+- **Great Feast of the Lord Vigil formula** — `isGreatFeastOfLordForVigil` placeholder needs real detection
 - **Pentecostarion P+20–P+34** — 15 weekday entries
 - **June/July backfill** — 34 entries missing v2.1 fields
 - **Triodion/Lenten services** — next major development horizon
