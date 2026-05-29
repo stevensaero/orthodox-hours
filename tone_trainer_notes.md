@@ -1,6 +1,6 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.3.0** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.3.1** | Component: `src/components/tone-trainer.jsx`
 
 *Independent version line, decoupled from the Orthodox Hours Tool version. This
 sub-project iterates on its own cadence; its churn does not bump the hours-tool
@@ -145,6 +145,26 @@ service text (23 blocks, all closed by `//`):
   with their phase labels; block-level "point ▸" loads the whole sticheron with
   A·B·C·D·…·Final rotation and scrolls to the pointer.
 
+### Sung vs. read (clarified)
+
+**Underlined = sung to the tone** (reciting-tone + cadence); **not underlined =
+read** (recto tono / spoken, no tonal phrase sequence). This is why the "Lord, I
+call" framing is pointed even though it is not a movable sticheron — it is *sung*
+like one. The `V.` psalm verses are read, not sung, and stay out of the picker.
+Underline is therefore the reliable sung/read discriminator.
+
+### v0.3.1 UI refinements
+
+- Encoding is **`[accent]` only** (dropped `*accent*`; brackets are readable and
+  parse cleanly). No marker toggle.
+- **Per-sticheron encoding**: each block reveals its own encoding inline with its
+  own Copy button (no combined bottom panel — the interleaved service made a
+  copy-all unhelpful).
+- **Context**: expanding a block shows the paragraph immediately before and after
+  it (the bracketing `V.` verses / Glory), to orient a singer holding the paper
+  service. Verified: the Meeting sticheron sits between "V. (2) Praise the Lord…"
+  and "V. (1) For His mercy…".
+
 ## Three-tier accent truth hierarchy (design direction)
 
 1. **OCA-provided accents** — extracted from service `.docx` files. Ground truth.
@@ -183,6 +203,20 @@ is built.
 4. SATB mode using the real four-part page + recorded isolated-voice MP3s.
 5. Define the hours-tool → trainer data contract (format now drafted: see the
    converter contract above).
+5b. **Encoding-aware "your own text" field + A/B comparison harness (next major).**
+   Make the pointer's text input understand `[accent]` + `|` + `//`: if marks are
+   present, trust them as truth and rebuild lines/rotation from the markers (no
+   guessing); if absent, run the auto-draft. "point ▸" would populate this field
+   with the encoded sticheron. The deeper purpose (Bill's intent): use it as a
+   **comparison harness** — take the director's `[accent]` encoding as ground
+   truth, strip the marks while keeping line positions, run the fallback
+   auto-encoder over the stripped text, and show **director vs. machine accents
+   side by side, line by line**. This (a) lets us vet pre-encoded texts from any
+   source, and (b) turns every director-marked docx into a labeled test case that
+   measures auto-accent accuracy empirically — telling us where the heuristic
+   fails and whether a pronouncing dictionary is worth it. Verification to nail:
+   an ingested block pushed through the field must re-parse to the identical
+   pointing as the direct block→pointer path.
 6. Only then: propagate the proven method to Tone 2 (note: rotation differs per
    tone — Tone 2 uses A once then B C D rotating; Tones 5/6 use A B C; Tone 6 adds
    B′; Tone 8 uses A′ — so phrase structure must be per-tone data).
