@@ -10,21 +10,31 @@
 import React, { useState, useMemo, useRef } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.3.0";
+export const TONE_TRAINER_VERSION = "v0.3.1";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
   {
+    version: "v0.3.1",
+    date: "May 2026",
+    summary: "Per-sticheron encoding & context — simplified to [accent] only",
+    items: [
+      "change: dropped the *accent* option — encoding is now always [accent] (more readable, unambiguous to parse). Removed the marker toggle.",
+      "feat: each sticheron now reveals its OWN encoding inline (Show encoding ▸) with a per-block Copy button, instead of one combined panel at the bottom.",
+      "feat: expanding a block shows the paragraph immediately before and after it (the bracketing V. verses / Glory etc.), so a singer with the paper service can locate the sticheron in context.",
+      "remove: bottom 'Show text encoding' / copy-all panel (the interleaved service made a single combined copy unhelpful).",
+      "note: underlined text is sung to the tone (incl. the 'Lord, I call' framing, which is sung though not a movable sticheron); 'V.' verses are read, not sung — underline remains the reliable sung/read signal.",
+    ],
+  },
+  {
     version: "v0.3.0",
     date: "May 2026",
     summary: "Group docx ingest by sticheron — collapsed picker, whole-block pointing with rotation",
     items: [
-      "feat: ingest now segments the document into STICHERA, not individual lines. A sticheron is a run of consecutive underline-bearing paragraphs, closing on the line after a //-terminated line. Verified against the Feb 2 service text (23 blocks, all closed by //).",
-      "feat: picker shows each sticheron COLLAPSED as a clickable incipit (e.g. 'Lord, I call…') with its tone shown once; click to expand the lines, each labeled with its rotational phrase (A·B·C·D·…·Final).",
-      "feat: 'point ▸' is now block-level — loads the WHOLE sticheron into the pointer with correct A·B·C·D·…·Final rotation per line, and scrolls down to the pointer. Line-by-line plays each line in its true rotational phrase.",
-      "feat: encoded text is the full sticheron (blocks separated by a blank line), not individual lines.",
-      "feat: blocks with no // are flagged ⚠ suspect and hidden unless 'show all paragraphs' is ticked. Non-underlined paragraphs (V. verses, Glory/Both now, headings) show as display-only context under 'show all'.",
+      "feat: ingest segments the document into stichera (runs of underlined paragraphs, closing on the line after //), not individual lines.",
+      "feat: collapsed incipit picker; expand to see lines with phase labels; block-level 'point ▸' loads the whole sticheron with A·B·C·D·…·Final rotation and scrolls to the pointer.",
+      "feat: blocks with no // flagged suspect (hidden unless 'show all'); non-underlined paragraphs shown as context under 'show all'.",
     ],
   },
   {
@@ -33,7 +43,6 @@ const TRAINER_RELEASE_NOTES = [
     summary: "Service .docx ingest — extract OCA underline-marked accents as copy-paste truth",
     items: [
       "feat: Open a day's OCA service .docx in the browser (JSZip, fully client-side — nothing uploads). Extracts underlined accents and reconstructs the verse with marks intact.",
-      "feat: Truthing panel emits copy-paste-ready encoded text: accents as [accent] or *accent* (toggle), line ends as | , the OCA // kept verbatim, final line bare. Copy button.",
       "feat: Per-verse tone detection — nearest heading, flagging inherited tones.",
     ],
   },
@@ -202,7 +211,7 @@ function parseDocxParagraphs(xmlString) {
       if (txt) runs.push({ text: txt, underline });
     }
     const text = runs.map((x) => x.text).join("").trim();
-    if (text) paras.push({ text, runs, toneHeading: parseToneLabel(text) });
+    if (text) paras.push({ text, runs, toneHeading: parseToneLabel(text), idx: paras.length });
   }
   return paras;
 }
@@ -270,20 +279,19 @@ function segmentStichera(paras) {
 }
 
 // Encode a whole sticheron block (its lines) as copy-paste marked text.
-function encodeBlock(block, marker) {
-  return encodeVerseBlock(block.lines, marker);
+function encodeBlock(block) {
+  return encodeVerseBlock(block.lines);
 }
 // Phrase for line i within a block of n lines (A B C D rotating, Final last).
 function blockLinePhrase(i, n) { return i === n - 1 ? "Final" : ["A", "B", "C", "D"][i % 4]; }
 
-// Encode one paragraph's runs as marked text. accent marker: "[]" or "*".
-// Underlined fragments are wrapped; everything else passes through verbatim.
-function encodeRuns(runs, marker) {
-  const open = marker === "*" ? "*" : "[";
-  const close = marker === "*" ? "*" : "]";
+// Encode one paragraph's runs as marked text. Accents wrapped in [brackets];
+// everything else passes through verbatim. (Bracket format chosen for readability
+// and unambiguous parsing.)
+function encodeRuns(runs) {
   let out = "";
   for (const r of runs) {
-    out += r.underline ? `${open}${r.text}${close}` : r.text;
+    out += r.underline ? `[${r.text}]` : r.text;
   }
   return out.replace(/\s+/g, " ").trim();
 }
@@ -292,8 +300,8 @@ function encodeRuns(runs, marker) {
 // Line ends: "|" for ordinary lines; the OCA "//" is already inside the text and
 // is kept verbatim (we do NOT add "|" to a line that already ends with "//");
 // the final line gets no marker.
-function encodeVerseBlock(verses, marker) {
-  const lines = verses.map((v) => encodeRuns(v.runs, marker));
+function encodeVerseBlock(verses) {
+  const lines = verses.map((v) => encodeRuns(v.runs));
   return lines
     .map((ln, i) => {
       const isLast = i === lines.length - 1;
@@ -445,9 +453,8 @@ export default function ToneTrainer() {
   const [docParas, setDocParas] = useState([]);     // assignTones output
   const [docError, setDocError] = useState(null);
   const [showAllParas, setShowAllParas] = useState(false);
-  const [marker, setMarker] = useState("[]");        // "[]" | "*"
-  const [encodeOpen, setEncodeOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [encOpenBlocks, setEncOpenBlocks] = useState({}); // block index -> show encoding
+  const [copiedBlock, setCopiedBlock] = useState(null);   // block index just copied
   const [expandedBlocks, setExpandedBlocks] = useState({}); // block index -> bool
   const pointerRef = useRef(null);
   const { ac, tone } = useAudio();
@@ -577,28 +584,28 @@ export default function ToneTrainer() {
     [blocks, showAllParas]
   );
 
-  // Non-underlined context paragraphs (V. verses, Glory/Both now, headings),
-  // shown only under "show all" for reference.
-  const contextParas = useMemo(
-    () => docParas.filter((p) => !hasUnderline(p)),
-    [docParas]
-  );
+  // Context: the paragraph immediately before the block's first line and
+  // immediately after its last line, in original document order. Gives a singer
+  // holding the paper service a place to anchor the sticheron.
+  const blockContext = (block) => {
+    const firstIdx = block.lines[0]?.idx;
+    const lastIdx = block.lines[block.lines.length - 1]?.idx;
+    const before = docParas.find((p) => p.idx === firstIdx - 1) || null;
+    const after = docParas.find((p) => p.idx === lastIdx + 1) || null;
+    return { before, after };
+  };
 
-  // Encoded text = every visible block, blocks separated by a blank line.
-  const encodedAll = useMemo(() => {
-    if (!visibleBlocks.length) return "";
-    return visibleBlocks.map((b) => encodeBlock(b, marker)).join("\n\n");
-  }, [visibleBlocks, marker]);
-
-  const copyEncoded = async () => {
+  const copyBlock = async (block, i) => {
     try {
-      await navigator.clipboard.writeText(encodedAll);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1400);
+      await navigator.clipboard.writeText(encodeBlock(block));
+      setCopiedBlock(i);
+      setTimeout(() => setCopiedBlock((c) => (c === i ? null : c)), 1400);
     } catch {
-      setCopied(false);
+      setCopiedBlock(null);
     }
   };
+
+  const toggleEnc = (i) => setEncOpenBlocks((o) => ({ ...o, [i]: !o[i] }));
 
   // Convert one docx paragraph's runs into a pointer "line" {phrase, words},
   // marking underlined fragments as accented syllables. phrase is supplied by
@@ -749,22 +756,61 @@ export default function ToneTrainer() {
                           onClick={() => sendBlockToPointer(b)}>point ▸</button>
                       )}
                     </div>
-                    {/* expanded lines */}
-                    {open && (
-                      <div style={{ padding: "0 0.6rem 0.5rem 0.6rem", display: "flex", flexDirection: "column", gap: "0.2rem" }}>
-                        {b.lines.map((l, j) => (
-                          <div key={j} style={{ display: "flex", gap: "0.5rem", alignItems: "baseline", fontSize: "0.92rem",
-                                                borderTop: "1px dotted #e7dcc0", paddingTop: "0.2rem" }}>
-                            <span style={{ fontSize: "0.66rem", color: "#283a5c", minWidth: "2.6em", fontStyle: "italic" }}>
-                              {blockLinePhrase(j, b.lines.length)}
-                            </span>
-                            <span style={{ flex: 1 }}
-                              dangerouslySetInnerHTML={{ __html: l.runs.map((r) => r.underline
-                                ? `<u style="text-decoration-color:#7a2418">${escapeHtml(r.text)}</u>` : escapeHtml(r.text)).join("") }} />
+                    {/* expanded lines + context + per-block encoding */}
+                    {open && (() => {
+                      const ctx = blockContext(b);
+                      const encShown = !!encOpenBlocks[i];
+                      return (
+                        <div style={{ padding: "0 0.6rem 0.5rem 0.6rem" }}>
+                          {ctx.before && (
+                            <div style={{ fontSize: "0.78rem", color: "#9A8A70", fontStyle: "italic", padding: "0.15rem 0" }}>
+                              ↑ before: {ctx.before.text}
+                            </div>
+                          )}
+                          <div style={{ display: "flex", flexDirection: "column", gap: "0.2rem" }}>
+                            {b.lines.map((l, j) => (
+                              <div key={j} style={{ display: "flex", gap: "0.5rem", alignItems: "baseline", fontSize: "0.92rem",
+                                                    borderTop: "1px dotted #e7dcc0", paddingTop: "0.2rem" }}>
+                                <span style={{ fontSize: "0.66rem", color: "#283a5c", minWidth: "2.6em", fontStyle: "italic" }}>
+                                  {blockLinePhrase(j, b.lines.length)}
+                                </span>
+                                <span style={{ flex: 1 }}
+                                  dangerouslySetInnerHTML={{ __html: l.runs.map((r) => r.underline
+                                    ? `<u style="text-decoration-color:#7a2418">${escapeHtml(r.text)}</u>` : escapeHtml(r.text)).join("") }} />
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                    )}
+                          {ctx.after && (
+                            <div style={{ fontSize: "0.78rem", color: "#9A8A70", fontStyle: "italic", padding: "0.15rem 0", marginTop: "0.15rem" }}>
+                              ↓ after: {ctx.after.text}
+                            </div>
+                          )}
+                          {/* per-block encoding reveal */}
+                          <div style={{ marginTop: "0.5rem" }}>
+                            <button style={{ ...btn, padding: "3px 10px", fontSize: "0.72rem" }} onClick={() => toggleEnc(i)}>
+                              {encShown ? "Hide encoding ▾" : "Show encoding ▸"}
+                            </button>
+                            {encShown && (
+                              <div style={{ marginTop: "0.4rem" }}>
+                                <div style={{ display: "flex", alignItems: "center", marginBottom: "0.3rem" }}>
+                                  <span style={{ fontSize: "0.72rem", color: "#6b5942", fontStyle: "italic", flex: 1 }}>
+                                    [accent] · line ends <b>|</b> · OCA <b>//</b> verbatim · final line bare
+                                  </span>
+                                  <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none", padding: "3px 12px", fontSize: "0.74rem" }}
+                                    onClick={() => copyBlock(b, i)}>
+                                    {copiedBlock === i ? "Copied ✓" : "Copy"}
+                                  </button>
+                                </div>
+                                <textarea readOnly value={encodeBlock(b)} rows={Math.min(12, b.lines.length + 1)}
+                                  style={{ width: "100%", fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "0.82rem",
+                                           lineHeight: 1.5, border: "1px solid #d6c79f", borderRadius: 6, padding: "0.5rem",
+                                           background: "#fbf6ea", color: ink, resize: "vertical" }} />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })()}
                   </div>
                 );
               })}
@@ -772,55 +818,9 @@ export default function ToneTrainer() {
             <div style={{ marginTop: "0.5rem", fontSize: "0.72rem", color: "#6b5942", fontStyle: "italic" }}>
               Each block is one sticheron (lines grouped, closing after the line that follows <b>//</b>).
               <b> *</b> = tone inherited from a preceding heading. <b>⚠ no //</b> = no penultimate marker found;
-              verify the grouping (shown only under “show all paragraphs”). “point ▸” loads a Tone 1 sticheron
-              into the pointer with full A·B·C·D·…·Final rotation and scrolls to it; other tones convert but aren’t pointed yet.
-            </div>
-
-            {showAllParas && contextParas.length > 0 && (
-              <div style={{ marginTop: "0.7rem", padding: "0.5rem 0.6rem", border: "1px dashed #d6c79f", borderRadius: 6,
-                            background: "rgba(0,0,0,.02)" }}>
-                <div style={{ fontSize: "0.72rem", color: "#9A8A70", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.3rem" }}>
-                  Context (verses, Glory/Both now, headings — not sung)
-                </div>
-                {contextParas.map((p, i) => (
-                  <div key={i} style={{ fontSize: "0.84rem", color: "#6b5942", padding: "0.1rem 0" }}>{p.text}</div>
-                ))}
-              </div>
-            )}
-
-            {/* truthing / encoding panel */}
-            <div style={{ marginTop: "0.7rem" }}>
-              <button style={btn} onClick={() => setEncodeOpen((v) => !v)}>
-                {encodeOpen ? "Hide text encoding ▾" : "Show text encoding ▸"}
-              </button>
-              {encodeOpen && (
-                <div style={{ marginTop: "0.6rem" }}>
-                  <div style={{ display: "flex", gap: "0.7rem", alignItems: "center", flexWrap: "wrap", marginBottom: "0.5rem" }}>
-                    <span style={{ fontSize: "0.78rem", color: "#5b4a33" }}>accent marker:</span>
-                    <div style={{ display: "inline-flex", border: `1.5px solid ${gold}`, borderRadius: 6, overflow: "hidden" }}>
-                      {[["[]", "[accent]"], ["*", "*accent*"]].map(([val, lbl]) => (
-                        <button key={val} onClick={() => setMarker(val)}
-                          style={{ border: "none", background: marker === val ? gold : "transparent", color: marker === val ? "#fff" : gold,
-                                   padding: "4px 11px", cursor: "pointer", fontFamily: "Georgia, serif", fontSize: "0.78rem" }}>
-                          {lbl}
-                        </button>
-                      ))}
-                    </div>
-                    <span style={{ flex: 1 }} />
-                    <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }} onClick={copyEncoded}>
-                      {copied ? "Copied ✓" : "Copy"}
-                    </button>
-                  </div>
-                  <textarea readOnly value={encodedAll} rows={14}
-                    style={{ width: "100%", fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "0.82rem",
-                             lineHeight: 1.5, border: "1px solid #d6c79f", borderRadius: 6, padding: "0.6rem",
-                             background: "#fbf6ea", color: ink, resize: "vertical" }} />
-                  <div style={{ marginTop: "0.4rem", fontSize: "0.72rem", color: "#6b5942", fontStyle: "italic" }}>
-                    Full stichera, blocks separated by a blank line. Line ends marked with <b>|</b> ; the OCA
-                    <b> //</b> (penultimate-line marker) is kept verbatim ; the final line of each sticheron has no marker.
-                  </div>
-                </div>
-              )}
+              verify the grouping (shown only under “show all paragraphs”). Expand a block for its context, its
+              lines, and its copy-paste encoding. “point ▸” loads a Tone 1 sticheron into the pointer with full
+              A·B·C·D·…·Final rotation and scrolls to it; other tones convert but aren’t pointed yet.
             </div>
           </>
         )}
