@@ -1,6 +1,6 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.1.0** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.2.0** | Component: `src/components/tone-trainer.jsx`
 
 *Independent version line, decoupled from the Orthodox Hours Tool version. This
 sub-project iterates on its own cadence; its churn does not bump the hours-tool
@@ -92,6 +92,50 @@ syllables un-emphasized by the melody, forcing a choice.
 
 ---
 
+## docx ingest & the converter format contract (v0.2.0)
+
+OCA distributes the day's service text as a formatted `.docx` with accented
+syllables **underlined** (the OCA does not publish a Menaion; these daily service
+texts are where pre-accented English is released over time). Underline in a docx
+is real run-level formatting (`<w:u>`), so it extracts **losslessly** — no OCR,
+no guessing. Verified against the Feb 2 2026 Meeting of the Lord service text:
+the third "Lord, I call" sticheron round-trips exactly.
+
+The trainer now ingests such a file entirely **client-side** (JSZip unzips in the
+browser; nothing uploads). It lists every underlined verse, detects each verse's
+**tone** (scanning upward to the nearest heading; OCA marks tone above the first
+paragraph of a group and the rest inherit it — inherited tones are flagged with
+`*`), and emits a copy-paste **encoding** through a collapsible truthing panel.
+
+**Converter output format — the contract for the future hours-tool Menaion-update
+tool that will consume these verses:**
+- Accents: `[accent]` or `*accent*` (user toggle).
+- Ordinary line end: ` |` (pipe). Chosen because it never occurs in liturgical
+  English and is visually distinct from `//`, so an encoder can split on it with
+  zero false positives and it survives paste-mangling.
+- Penultimate-line marker: `//` kept **verbatim** — it is the OCA monk's own
+  marker meaning "the final line follows" (i.e. the next line takes the Final
+  Phrase). We do not add `|` to a line already ending in `//`.
+- Final line: **no marker** (verse ends; nothing follows).
+
+Tone 1 verses can be sent into the pointer to sing from these real OCA accents
+(tier-1 truth, bypassing auto-accent). Non-Tone-1 verses convert fully but are
+not pointed/sung yet (pointing is Tone 1 only).
+
+## Three-tier accent truth hierarchy (design direction)
+
+1. **OCA-provided accents** — extracted from service `.docx` files. Ground truth.
+2. **Encoded accents** — stored once in the hours-tool Menaion data (entered from
+   OCA docx via a future Menaion-update tool) and passed to the trainer as truth.
+3. **Auto-predicted accents** — fallback for text never seen via tiers 1–2.
+
+The eventual hours-tool **Menaion-update / edit mode** is the downstream consumer
+of this converter's `|` / `//` / `[accent]` output: paste pre-accented verses to
+correct the St. Sergius-sourced text toward OCA renders and to store real accents.
+That work is a separate, later session with its own spec; the format contract is
+documented here and in the trainer's release notes so both ends agree before it
+is built.
+
 ## Known limitations / honest caveats
 
 - **Auto-accent is a draft.** The heuristic stresses the first syllable of
@@ -109,9 +153,13 @@ syllables un-emphasized by the melody, forcing a choice.
 1. Verify the corrected anchor rule against director-supplied marked samples.
 2. Decide auto-accent philosophy after A1 is answered (dictionary-driven vs.
    marked-text-primary).
-3. Marked-text paste mode (read bold/underline/acute directly).
+3. ~~Marked-text paste mode (read bold/underline/acute directly).~~ **Done in
+   v0.2.0** via docx ingest (reads underline directly from the OCA `.docx`).
+   Possible follow-on: also accept paste of already-encoded `[accent]`/`*accent*`
+   text, and read OCA-supplied accents into a Tone 1 verse for direct practice.
 4. SATB mode using the real four-part page + recorded isolated-voice MP3s.
-5. Define the hours-tool → trainer data contract.
+5. Define the hours-tool → trainer data contract (format now drafted: see the
+   converter contract above).
 6. Only then: propagate the proven method to Tone 2 (note: rotation differs per
    tone — Tone 2 uses A once then B C D rotating; Tones 5/6 use A B C; Tone 6 adds
    B′; Tone 8 uses A′ — so phrase structure must be per-tone data).
