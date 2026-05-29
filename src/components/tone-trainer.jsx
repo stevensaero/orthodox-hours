@@ -8,8 +8,35 @@
 // Component version is tracked independently of the hours-tool version.
 // ──────────────────────────────────────────────────────────────────────────────
 import React, { useState, useMemo, useRef } from "react";
+import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.1.0";
+export const TONE_TRAINER_VERSION = "v0.2.0";
+
+// Release notes for the trainer's clickable version badge (mirrors hours-tool).
+// Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
+const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.2.0",
+    date: "May 2026",
+    summary: "Service .docx ingest — extract OCA underline-marked accents as copy-paste truth",
+    items: [
+      "feat: Open a day's OCA service .docx in the browser (JSZip, fully client-side — nothing uploads). Extracts every paragraph containing underlined accents and reconstructs the verse with marks intact.",
+      "feat: Truthing panel (collapsible) emits copy-paste-ready encoded text: accents as [accent] or *accent* (toggle), ordinary line ends as | , the OCA penultimate-line marker // kept verbatim, final line bare. Copy button included.",
+      "feat: Per-verse tone detection — scans upward for the nearest tone heading and labels each verse, flagging when a tone is inherited from a preceding block (no heading of its own).",
+      "feat: Tone 1 verses can be sent straight into the pointer to sing from real OCA accents (bypasses auto-accent). Non-Tone-1 verses convert fully but decline to sing, with a clear note (pointing is Tone 1 only for now).",
+      "note: converter output format (| / // / [accent]) is the contract for the future hours-tool Menaion-update tool that will consume these encoded verses.",
+    ],
+  },
+  {
+    version: "v0.1.0",
+    date: "May 2026",
+    summary: "Initial Tone 1 Obikhod stichera pointing trainer",
+    items: [
+      "feat: syllabify a line, mark accents, map each syllable to its reciting-tone / prep / cadence pitch, and sing via Web Audio.",
+      "feat: corrected pointing engine — cadence anchors on the last INTERNAL accent with one-syllable-final-word backup (Drillock & Ealy). Phrase B cadence do→re→ti; prep-on-ti specific to Phrase A.",
+    ],
+  },
+];
 
 // ── PITCH / SOLFEGE ───────────────────────────────────────────────────────────
 // Semitone offset from moveable "do". Tone 1 home base is "re" (one step above do).
@@ -117,6 +144,115 @@ function presetToLines() {
     phrase: ph,
     words: ws.map(([d, ss]) => ({ display: d, sylls: ss.map(([t, a]) => ({ text: t, accent: !!a })) })),
   }));
+}
+
+// ── DOCX INGEST (client-side, via JSZip) ───────────────────────────────────────
+// A .docx is a ZIP; word/document.xml holds the text. Each run (<w:r>) carries
+// its own run-properties (<w:rPr>), where <w:u> marks underline. OCA service
+// texts store each underlined fragment as its own run, so underline is extracted
+// losslessly (verified against the Feb 2 Meeting of the Lord service text).
+const W_NS = "w";
+// Detect a tone heading line, e.g. "Tone 1", "Tone 6", "in Tone 5", "Tone V".
+const TONE_HEADING = /\bTone\s+([1-8]|[IVX]+)\b/i;
+const ROMAN = { I: 1, II: 2, III: 3, IV: 4, V: 5, VI: 6, VII: 7, VIII: 8 };
+function parseToneLabel(s) {
+  const m = s.match(TONE_HEADING);
+  if (!m) return null;
+  const raw = m[1];
+  const n = /^[0-9]$/.test(raw) ? parseInt(raw, 10) : (ROMAN[raw.toUpperCase()] || null);
+  return n;
+}
+
+// Parse the docx XML string into an ordered list of paragraphs.
+// Each paragraph => { text, runs:[{text,underline}], toneHeading:int|null }.
+function parseDocxParagraphs(xmlString) {
+  const doc = new DOMParser().parseFromString(xmlString, "application/xml");
+  // namespace-agnostic: match local name "p"
+  const allP = Array.from(doc.getElementsByTagName("*")).filter(
+    (el) => el.localName === "p"
+  );
+  const paras = [];
+  for (const p of allP) {
+    const runs = [];
+    const rEls = Array.from(p.getElementsByTagName("*")).filter((el) => el.localName === "r");
+    for (const r of rEls) {
+      // underline?
+      let underline = false;
+      const rpr = Array.from(r.children).find((c) => c.localName === "rPr");
+      if (rpr) {
+        const u = Array.from(rpr.children).find((c) => c.localName === "u");
+        if (u) {
+          const val = u.getAttribute("w:val") || u.getAttributeNS?.(null, "val") || u.getAttribute("val");
+          underline = val !== "none";
+        }
+      }
+      // text (concatenate all <w:t> descendants)
+      const tEls = Array.from(r.getElementsByTagName("*")).filter((el) => el.localName === "t");
+      const txt = tEls.map((t) => t.textContent || "").join("");
+      if (txt) runs.push({ text: txt, underline });
+    }
+    const text = runs.map((x) => x.text).join("").trim();
+    if (text) paras.push({ text, runs, toneHeading: parseToneLabel(text) });
+  }
+  return paras;
+}
+
+// Determine effective tone per paragraph by carrying the last heading downward.
+// A paragraph that IS a bare heading isn't a verse; verses inherit the tone above.
+function assignTones(paras) {
+  let current = null;
+  let inherited = false;
+  return paras.map((p) => {
+    // a "bare heading" paragraph is short and matches the tone pattern with little else
+    const isBareHeading =
+      p.toneHeading != null && p.text.replace(TONE_HEADING, "").replace(/[^A-Za-z]/g, "").length <= 4;
+    if (isBareHeading) {
+      current = p.toneHeading;
+      inherited = false;
+      return { ...p, effectiveTone: current, isHeading: true, inheritedTone: false };
+    }
+    // inline tone on a content line still updates current
+    if (p.toneHeading != null) {
+      current = p.toneHeading;
+      inherited = false;
+      return { ...p, effectiveTone: current, isHeading: false, inheritedTone: false };
+    }
+    const wasInherited = current != null; // had to fall through from a previous block
+    return { ...p, effectiveTone: current, isHeading: false, inheritedTone: wasInherited };
+  });
+}
+
+// Encode one paragraph's runs as marked text. accent marker: "[]" or "*".
+// Underlined fragments are wrapped; everything else passes through verbatim.
+function encodeRuns(runs, marker) {
+  const open = marker === "*" ? "*" : "[";
+  const close = marker === "*" ? "*" : "]";
+  let out = "";
+  for (const r of runs) {
+    out += r.underline ? `${open}${r.text}${close}` : r.text;
+  }
+  return out.replace(/\s+/g, " ").trim();
+}
+
+// Build the copy-paste block for a set of verse paragraphs.
+// Line ends: "|" for ordinary lines; the OCA "//" is already inside the text and
+// is kept verbatim (we do NOT add "|" to a line that already ends with "//");
+// the final line gets no marker.
+function encodeVerseBlock(verses, marker) {
+  const lines = verses.map((v) => encodeRuns(v.runs, marker));
+  return lines
+    .map((ln, i) => {
+      const isLast = i === lines.length - 1;
+      if (isLast) return ln;                 // verse end: no marker
+      if (/\/\/\s*$/.test(ln)) return ln;    // OCA penultimate marker already present
+      return ln + " |";                      // ordinary line end
+    })
+    .join("\n");
+}
+
+// Escape text for safe innerHTML use in the verse preview (underline rendering).
+function escapeHtml(s) {
+  return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 }
 
 // ── POINTING ENGINE ─────────────────────────────────────────────────────────
@@ -249,6 +385,15 @@ export default function ToneTrainer() {
   const [lines, setLines] = useState(presetToLines);
   const [playingLine, setPlayingLine] = useState(null);
   const [editOpen, setEditOpen] = useState({});
+  const [showReleaseNotes, setShowReleaseNotes] = useState(false);
+  // docx ingest state
+  const [docName, setDocName] = useState(null);
+  const [docParas, setDocParas] = useState([]);     // assignTones output
+  const [docError, setDocError] = useState(null);
+  const [showAllParas, setShowAllParas] = useState(false);
+  const [marker, setMarker] = useState("[]");        // "[]" | "*"
+  const [encodeOpen, setEncodeOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
   const { ac, tone } = useAudio();
 
   const freq = (sol) => doHz * Math.pow(2, OFF[sol] / 12);
@@ -344,6 +489,83 @@ export default function ToneTrainer() {
     else setLines([]);
   };
 
+  // ── docx ingest handlers ──────────────────────────────────────────────────
+  const onDocxFile = async (file) => {
+    if (!file) return;
+    setDocError(null);
+    setDocName(file.name);
+    setDocParas([]);
+    try {
+      const buf = await file.arrayBuffer();
+      const zip = await JSZip.loadAsync(buf);
+      const docXml = zip.file("word/document.xml");
+      if (!docXml) throw new Error("Not a Word .docx (no word/document.xml found).");
+      const xml = await docXml.async("string");
+      const paras = assignTones(parseDocxParagraphs(xml));
+      setDocParas(paras);
+      if (!paras.some((p) => p.runs.some((r) => r.underline))) {
+        setDocError("No underlined (accented) text found in this document.");
+      }
+    } catch (e) {
+      setDocError(e.message || String(e));
+    }
+  };
+
+  // Verses to show: those with underlines (unless showAll), excluding bare headings.
+  const docVerses = useMemo(
+    () => docParas.filter((p) => !p.isHeading && (showAllParas || p.runs.some((r) => r.underline))),
+    [docParas, showAllParas]
+  );
+
+  const encodedAll = useMemo(() => {
+    if (!docVerses.length) return "";
+    return encodeVerseBlock(docVerses, marker);
+  }, [docVerses, marker]);
+
+  const copyEncoded = async () => {
+    try {
+      await navigator.clipboard.writeText(encodedAll);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1400);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  // Load a single docx verse into the pointer (Tone 1 only). Uses the real
+  // OCA underline accents as truth — no auto-accent guessing.
+  const sendVerseToPointer = (verse) => {
+    if (verse.effectiveTone !== 1) return; // guarded in UI; defensive here
+    // Build a single-line "lines" model from the runs, marking underlined
+    // fragments as accented syllables.
+    const words = [];
+    // Reconstruct words by splitting on spaces while tracking underline per fragment.
+    // Each run may contain partial words; we segment by whitespace.
+    let curWord = null;
+    const pushSyl = (text, accent) => {
+      if (!curWord) curWord = { display: "", sylls: [] };
+      curWord.sylls.push({ text, accent });
+      curWord.display += text;
+    };
+    const flushWord = () => { if (curWord) { words.push(curWord); curWord = null; } };
+    for (const r of verse.runs) {
+      const parts = r.text.split(/(\s+)/); // keep separators
+      for (const part of parts) {
+        if (part === "") continue;
+        if (/^\s+$/.test(part)) { flushWord(); continue; }
+        pushSyl(part.replace(/[^A-Za-z'’-]/g, "") || part, r.underline);
+      }
+    }
+    flushWord();
+    // single phrase line; rotation not meaningful for one line → treat as Final
+    // only if it is the verse's last line. Here we just use Phrase A as a single
+    // demonstrative line unless it ends with no continuation.
+    const line = { phrase: "A", words: words.filter((w) => w.sylls.length) };
+    setMode("custom");
+    setLines([line]);
+    // scroll pointer into view implicitly by switching mode; user can re-point.
+  };
+
   // shared styles
   const gold = "#8B6914";
   const ink = "#2a2118";
@@ -369,8 +591,126 @@ export default function ToneTrainer() {
       <div style={{ textAlign: "center", fontStyle: "italic", color: "#5b4a33", marginBottom: "0.3rem" }}>
         Syllables → accents → reciting tone &amp; cadence · then sing it
       </div>
-      <div style={{ textAlign: "center", fontSize: "0.7rem", color: "#9A8A70", marginBottom: "1.4rem" }}>
-        {TONE_TRAINER_VERSION}
+      <div style={{ textAlign: "center", marginBottom: "1.4rem" }}>
+        <button
+          onClick={() => setShowReleaseNotes((v) => !v)}
+          style={{ background: "transparent", border: `1px solid ${gold}`, color: gold,
+                   borderRadius: 3, padding: "2px 10px", fontSize: "0.7rem", letterSpacing: "0.06em",
+                   cursor: "pointer", fontFamily: "Georgia, serif" }}
+          title="Release notes"
+        >
+          {TONE_TRAINER_VERSION} ▾
+        </button>
+        {showReleaseNotes && (
+          <div style={{ maxWidth: 560, margin: "0.6rem auto 0", textAlign: "left",
+                        border: "1px solid #d6c79f", borderRadius: 8, background: "rgba(255,255,255,.6)",
+                        padding: "0.8rem 1rem" }}>
+            {TRAINER_RELEASE_NOTES.map((rel) => (
+              <div key={rel.version} style={{ marginBottom: "0.8rem" }}>
+                <div style={{ fontWeight: 600, color: "#7a2418" }}>
+                  {rel.version} <span style={{ color: "#9A8A70", fontWeight: 400, fontSize: "0.8rem" }}>· {rel.date}</span>
+                </div>
+                <div style={{ fontStyle: "italic", color: "#5b4a33", fontSize: "0.85rem", marginBottom: "0.3rem" }}>{rel.summary}</div>
+                <ul style={{ margin: 0, paddingLeft: "1.1rem", fontSize: "0.8rem", color: ink }}>
+                  {rel.items.map((it, i) => <li key={i} style={{ marginBottom: "0.2rem" }}>{it}</li>)}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ── DOCX INGEST ─────────────────────────────────────────────────── */}
+      <div style={{ border: "1px solid #d6c79f", borderRadius: 8, padding: "0.8rem 0.9rem", marginBottom: "1.1rem", background: "rgba(40,58,92,.03)" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.7rem", alignItems: "center" }}>
+          <label style={{ ...btn, display: "inline-block" }}>
+            Open service .docx
+            <input type="file" accept=".docx" style={{ display: "none" }}
+              onChange={(e) => onDocxFile(e.target.files && e.target.files[0])} />
+          </label>
+          {docName && <span style={{ fontSize: "0.8rem", color: "#5b4a33" }}>{docName}</span>}
+          {docVerses.length > 0 && (
+            <>
+              <span style={{ flex: 1 }} />
+              <label style={{ fontSize: "0.78rem", color: "#5b4a33", display: "inline-flex", alignItems: "center", gap: 5 }}>
+                <input type="checkbox" checked={showAllParas} onChange={(e) => setShowAllParas(e.target.checked)} />
+                show all paragraphs
+              </label>
+            </>
+          )}
+        </div>
+        {docError && <div style={{ marginTop: "0.5rem", color: "#7a2418", fontSize: "0.82rem" }}>{docError}</div>}
+        {!docName && (
+          <div style={{ marginTop: "0.5rem", fontSize: "0.8rem", color: "#6b5942", fontStyle: "italic" }}>
+            Reads the file in your browser only — nothing is uploaded. Extracts the OCA underline-marked
+            accents from a day's service text.
+          </div>
+        )}
+
+        {docVerses.length > 0 && (
+          <>
+            <div style={{ marginTop: "0.8rem", display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+              {docVerses.map((v, i) => {
+                const t1 = v.effectiveTone === 1;
+                return (
+                  <div key={i} style={{ display: "flex", alignItems: "baseline", gap: "0.5rem", flexWrap: "wrap",
+                                        borderBottom: "1px dotted #d6c79f", paddingBottom: "0.3rem" }}>
+                    <span style={{ fontSize: "0.7rem", color: "#fff", background: v.effectiveTone ? "#283a5c" : "#9A8A70",
+                                   borderRadius: 4, padding: "1px 7px", whiteSpace: "nowrap" }}>
+                      {v.effectiveTone ? `Tone ${v.effectiveTone}` : "no tone"}{v.inheritedTone ? "*" : ""}
+                    </span>
+                    <span style={{ flex: 1, fontSize: "0.95rem" }}
+                      dangerouslySetInnerHTML={{ __html: v.runs.map((r) => r.underline
+                        ? `<u style="text-decoration-color:#7a2418">${escapeHtml(r.text)}</u>` : escapeHtml(r.text)).join("") }} />
+                    {t1 && (
+                      <button style={{ ...btn, padding: "2px 9px", fontSize: "0.72rem" }}
+                        onClick={() => sendVerseToPointer(v)}>point ▸</button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ marginTop: "0.5rem", fontSize: "0.72rem", color: "#6b5942", fontStyle: "italic" }}>
+              * tone inherited from a preceding block (no heading on this line). “point ▸” loads a Tone 1 verse
+              into the pointer below using the document’s real accents. Other tones convert but aren’t pointed yet.
+            </div>
+
+            {/* truthing / encoding panel */}
+            <div style={{ marginTop: "0.7rem" }}>
+              <button style={btn} onClick={() => setEncodeOpen((v) => !v)}>
+                {encodeOpen ? "Hide text encoding ▾" : "Show text encoding ▸"}
+              </button>
+              {encodeOpen && (
+                <div style={{ marginTop: "0.6rem" }}>
+                  <div style={{ display: "flex", gap: "0.7rem", alignItems: "center", flexWrap: "wrap", marginBottom: "0.5rem" }}>
+                    <span style={{ fontSize: "0.78rem", color: "#5b4a33" }}>accent marker:</span>
+                    <div style={{ display: "inline-flex", border: `1.5px solid ${gold}`, borderRadius: 6, overflow: "hidden" }}>
+                      {[["[]", "[accent]"], ["*", "*accent*"]].map(([val, lbl]) => (
+                        <button key={val} onClick={() => setMarker(val)}
+                          style={{ border: "none", background: marker === val ? gold : "transparent", color: marker === val ? "#fff" : gold,
+                                   padding: "4px 11px", cursor: "pointer", fontFamily: "Georgia, serif", fontSize: "0.78rem" }}>
+                          {lbl}
+                        </button>
+                      ))}
+                    </div>
+                    <span style={{ flex: 1 }} />
+                    <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }} onClick={copyEncoded}>
+                      {copied ? "Copied ✓" : "Copy"}
+                    </button>
+                  </div>
+                  <textarea readOnly value={encodedAll} rows={Math.min(16, docVerses.length + 1)}
+                    style={{ width: "100%", fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "0.82rem",
+                             lineHeight: 1.5, border: "1px solid #d6c79f", borderRadius: 6, padding: "0.6rem",
+                             background: "#fbf6ea", color: ink, resize: "vertical" }} />
+                  <div style={{ marginTop: "0.4rem", fontSize: "0.72rem", color: "#6b5942", fontStyle: "italic" }}>
+                    Line ends marked with <b>|</b> ; the OCA <b>//</b> (penultimate-line marker) is kept verbatim ;
+                    the final line has no marker. Paste-ready for encoding.
+                  </div>
+                </div>
+              )}
+            </div>
+          </>
+        )}
       </div>
 
       {/* controls */}
