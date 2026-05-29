@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.5.3** | Last synced: May 26, 2026
+**Tool version: v0.6.0** | Last synced: May 29, 2026
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
@@ -9,6 +9,23 @@ specific section of Fekula & Williams, *The Order of Divine Services* (2009).
 
 **Primary audience:** Readers and laity — the tool is as much a teaching aid as
 an assembly tool. Every movable element is annotated with its rubrical source.
+
+## Companion Tools — read before starting a session
+
+This repo now contains **two distinct tools**. A new session should ask:
+**"Which tool are we working on today — the Hours assembler or the Tone Trainer?"**
+
+1. **Hours assembler** (this document) — `src/components/hours-tool.jsx` + the
+   Menaion/Pentecostarion data. Version badge = `RELEASE_NOTES[0].version`.
+2. **Tone Trainer** — `src/components/tone-trainer.jsx`, notes in
+   `tone_trainer_notes.md`. A **standalone sub-project**: a Tone 1 Obikhod
+   stichera pointing trainer that renders a verse singable (reciting tone +
+   cadence) with audio. It is **not** wired to the assembler's data yet; it is
+   reachable from the footer nav ("Tone Trainer") and at `/orthodox-hours/tone-trainer`.
+   It carries its **own independent version line** (see its notes) so its churn
+   does not bump the hours-tool version. **Eventual integration goal:** the
+   hours-tool emits pointed, tone-tagged verses that the trainer consumes so a
+   chanter can rehearse their SATB or unison part for a given day's Hours.
 
 **Versioning:** Project notes are versioned in sync with the tool. The version
 number in the notes header must match the v0.x.x badge in the tool header.
