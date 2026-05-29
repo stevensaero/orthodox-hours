@@ -7946,6 +7946,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.6.0",
+    date: "May 2026",
+    summary: "Tone Trainer — Tone 1 Obikhod stichera pointing trainer (standalone sub-project)",
+    items: [
+      "feat: Tone Trainer component (src/components/tone-trainer.jsx) — interactive Tone 1 (Common Chant / Obikhod) stichera pointing trainer. Syllabifies a line, marks accents, maps each syllable to its reciting-tone / prep / cadence pitch, and sings the result via Web Audio. Reachable from the footer nav (Tone Trainer) and at /orthodox-hours/tone-trainer",
+      "feat: corrected pointing engine — cadence anchors on the last INTERNAL accent of the phrase, with explicit one-syllable-final-word backup (e.g. 'Law', 'saw', 'Him'), per Drillock & Ealy. Trailing unaccented syllables ride the anchor pitch to the final syllable",
+      "fix: Tone 1 phrase figures reconciled to the printed score — Phrase B cadence do→re→ti; prep-on-ti kept specific to Phrase A; Phrase A lands on do",
+      "note: standalone sub-project, not yet wired to assembler data. Independent version line (v0.1.0) tracked in tone_trainer_notes.md. Eventual goal: hours-tool emits pointed, tone-tagged verses the trainer consumes for SATB/unison practice",
+    ],
+  },
+  {
     version: "v0.5.3",
     date: "May 2026",
     summary: "Temple dedication selector · localStorage persistence · hybrid UI for parish config",
@@ -9958,6 +9969,16 @@ export default function App() {
                      display: "inline-block" }}
           >
             Scripture
+          </a>
+          <a
+            href="/orthodox-hours/tone-trainer?from=tool"
+            style={{ background: "transparent", border: "1px solid #8B6914",
+                     color: "#8B6914", borderRadius: "3px", padding: "5px 14px",
+                     fontSize: "0.78rem", letterSpacing: "0.08em", cursor: "pointer",
+                     fontFamily: "Georgia, serif", textDecoration: "none",
+                     display: "inline-block" }}
+          >
+            Tone Trainer
           </a>
         </div>
 
