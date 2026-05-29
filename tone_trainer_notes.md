@@ -179,6 +179,43 @@ That work is a separate, later session with its own spec; the format contract is
 documented here and in the trainer's release notes so both ends agree before it
 is built.
 
+## Syllabifier & lexicon generator (build-time)
+
+**Decision (after extensive prototyping): syllable count + stress come from the CMU
+Pronouncing Dictionary by lookup; boundaries from TeX hyphenation reconciled to
+CMU's count; rules are only a last-ditch fallback.** Pure rule-based syllabification
+was tried and abandoned — English syllable/stress isn't rule-governable (voice=1 but
+rejoice=2; Savior=2 but Creator=3), and every rule that fixed one class broke two
+others. CMU is authoritative and is a **build-time** resource only — it never ships
+to the browser (verified: trainer bundle stays ~37 KB gzipped; dict packages are in
+devDependencies).
+
+Measured coverage on two varied services (Meeting of the Lord 2/2, Pentecost 5/31):
+**~94% of words are in CMU** (count+stress by lookup), leaving a **~6% residue** of
+proper names, liturgical-technical terms, and archaic forms that need human stress
+verification. The residue converges fast (Pentecost added only ~23 new residue words
+over 2/2's ~31) — the liturgical corpus is closed and repetitive, as expected.
+
+**Generator:** `tools/build_syllable_lexicon.mjs` (build-time, not shipped). Takes
+unpacked OCA service `.docx` dirs, accumulates across runs (builds on the last), and
+writes to `tools/lexicon-out/`:
+- `syllable-table.json` — resolved words: `{word, sylls, stressIdx, src}` where src ∈
+  {tex, reconciled, count-only, archaic}. `count-only` = count+stress known but
+  boundary placement uncertain (flagged lowConfidence).
+- `name-residue.json` — not-in-CMU words with **best-guess** sylls/stress,
+  `confirmed:false`, awaiting human review.
+- `name-review.md` — human-readable bulk-review sheet (check boundaries AND stress).
+
+**Workflow:** generate → review `name-review.md` (with choir director for the
+Greek/Slavonic name stress) → corrections folded back into a confirmed lexicon →
+that confirmed lexicon (small) gets wired into the trainer. The dictionary stays
+server-side; only the lean table + confirmed lexicon ship. Archaic `-est/-eth`
+endings are handled by rule (their own final syllable).
+
+**Status:** generator built and run on 2/2 + Pentecost (892 table entries, 51 residue
+awaiting verification). Residue stress is best-guess/unconfirmed until the director
+review pass (a future session).
+
 ## Known limitations / honest caveats
 
 - **Auto-accent is a draft.** The heuristic stresses the first syllable of
