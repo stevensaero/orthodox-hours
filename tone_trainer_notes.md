@@ -1,6 +1,6 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.2.0** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.3.0** | Component: `src/components/tone-trainer.jsx`
 
 *Independent version line, decoupled from the Orthodox Hours Tool version. This
 sub-project iterates on its own cadence; its churn does not bump the hours-tool
@@ -121,6 +121,29 @@ tool that will consume these verses:**
 Tone 1 verses can be sent into the pointer to sing from these real OCA accents
 (tier-1 truth, bypassing auto-accent). Non-Tone-1 verses convert fully but are
 not pointed/sung yet (pointing is Tone 1 only).
+
+### Sticheron segmentation (v0.3.0)
+
+The ingest groups the document into **stichera**, not individual lines (the v0.2.0
+behavior of one button per line was wrong — a line only knows its rotational
+phrase from its position within its sticheron). Rules, verified against the Feb 2
+service text (23 blocks, all closed by `//`):
+
+- A sticheron = a maximal run of consecutive **underline-bearing** paragraphs.
+  (Underline presence is the signal; the opening "Lord, I call / Hear me, O Lord"
+  framing refrains ARE underlined in OCA files and so segment as their own blocks
+  — recognizable by incipit. The `V.`-prefixed psalm verses are NOT underlined and
+  stay out as context.)
+- Within a run, the line ending in `//` is the penultimate line; the **next** line
+  is the Final and closes the block.
+- Headings and non-underlined paragraphs (V. verses, Glory/Both now — confirmed
+  NOT underlined — blanks) separate stichera.
+- A run with **no `//`** is flagged `suspect`: still grouped (last line → Final),
+  but hidden unless "show all paragraphs" is ticked, so a missing marker surfaces
+  rather than silently mis-rendering.
+- Picker shows each block collapsed (incipit + tone once); expand to see lines
+  with their phase labels; block-level "point ▸" loads the whole sticheron with
+  A·B·C·D·…·Final rotation and scrolls to the pointer.
 
 ## Three-tier accent truth hierarchy (design direction)
 
