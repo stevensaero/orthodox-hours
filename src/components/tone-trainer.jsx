@@ -189,11 +189,13 @@ const TRAINER_RELEASE_NOTES = [
 // Semitone offset from moveable "do". Tone 1 home base is "re" (one step above do).
 const OFF = { la: -3, ti: -1, do: 0, re: 2, mi: 4 };
 const DO_OPTIONS = [
-  { label: "A (low)", hz: 220.0 },
+  { label: "F", hz: 174.61 },
+  { label: "G", hz: 196.00 },
+  { label: "A", hz: 220.0 },
   { label: "B", hz: 246.94 },
   { label: "C", hz: 261.63 },
   { label: "D", hz: 293.66 },
-  { label: "E (high)", hz: 329.63 },
+  { label: "E", hz: 329.63 },
 ];
 
 // ── PHRASE DEFINITIONS (Tone 1, corrected against Drillock & Ealy) ──────────────
