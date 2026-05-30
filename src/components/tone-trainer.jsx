@@ -1668,15 +1668,6 @@ export default function ToneTrainer() {
             <span style={{ minWidth: "3.8em", textAlign: "right" }}>{bpm} BPM</span>
           </label>
           <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }} onClick={playAll}>▶ Sing all</button>
-          <button
-            onClick={() => setEditMode(v => !v)}
-            style={{ ...btn,
-                     background: editMode ? gold : "transparent",
-                     color: editMode ? "#fff" : gold,
-                     fontSize: "0.78rem", padding: "5px 12px" }}
-            title={editMode ? "Edit machine mode on — click machine chips or edit syllables" : "Enable to edit machine accent and syllable breakdown"}>
-            ✎ edit machine
-          </button>
           {lexiconError && <span style={{ fontSize: "0.72rem", color: "#7a2418", fontStyle: "italic" }}>{lexiconError}</span>}
           {!lexicon && !lexiconError && <span style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic" }}>loading lexicon…</span>}
         </div>
@@ -1800,6 +1791,16 @@ export default function ToneTrainer() {
                 </button>
               ))}
             </div>
+            {/* edit machine toggle — lives in the harness where it's used */}
+            <button
+              onClick={() => setEditMode(v => !v)}
+              style={{ ...btn,
+                       background: editMode ? gold : "transparent",
+                       color: editMode ? "#fff" : gold,
+                       fontSize: "0.75rem", padding: "4px 11px" }}
+              title={editMode ? "Edit mode on — click machine chips or edit syllables" : "Enable to edit machine accent and syllable breakdown"}>
+              ✎ edit machine
+            </button>
             <span style={{ flex: 1 }} />
             {/* show source ⓘ — moved here from controls bar */}
             <div style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
