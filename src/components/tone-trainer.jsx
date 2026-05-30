@@ -934,7 +934,7 @@ function useAudio() {
 // ── COMPONENT ─────────────────────────────────────────────────────────────────
 export default function ToneTrainer() {
   const [doHz, setDoHz] = useState(261.63);
-  const [bpm, setBpm] = useState(80); // half note = 1 beat per tutorial
+  const [bpm, setBpm] = useState(70); // half note = 1 beat per tutorial
   const [mode, setMode] = useState("preset"); // 'preset' | 'custom'
   const [text, setText] = useState("");
   const [lines, setLines] = useState(presetToLines);
@@ -1604,6 +1604,7 @@ export default function ToneTrainer() {
               {DO_OPTIONS.map((o) => <option key={o.label} value={o.hz}>{o.label}</option>)}
             </select>
           </label>
+          <button style={btn} onClick={playScale}>scale</button>
           <label style={{ fontSize: "0.82rem", color: "#5b4a33", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}
             title="Half note = 1 beat (Drillock &amp; Ealy). Range: 40–120 BPM.">
             tempo
@@ -1612,7 +1613,6 @@ export default function ToneTrainer() {
               style={{ width: 72, cursor: "pointer", accentColor: gold }} />
             <span style={{ minWidth: "3.8em", textAlign: "right" }}>{bpm} BPM</span>
           </label>
-          <button style={btn} onClick={playScale}>scale</button>
           <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }} onClick={playAll}>▶ Sing all</button>
           {lexiconError && <span style={{ fontSize: "0.72rem", color: "#7a2418", fontStyle: "italic" }}>{lexiconError}</span>}
           {!lexicon && !lexiconError && <span style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic" }}>loading lexicon…</span>}
