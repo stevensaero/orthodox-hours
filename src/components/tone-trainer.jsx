@@ -1485,7 +1485,7 @@ export default function ToneTrainer() {
             <div style={{ marginTop: "0.5rem", fontSize: "0.72rem", color: "#6b5942", fontStyle: "italic" }}>
               Each block is one sticheron (lines grouped, closing after the line that follows <b>//</b>).
               <b> *</b> = tone inherited from a preceding heading. <b>⚠ no //</b> = no penultimate marker found;
-              verify the grouping (shown only under “show all paragraphs”). Expand a block for its context, its
+              verify the grouping (revealed by “show suspect blocks” above). Expand a block for its context, its
               lines, and its copy-paste encoding. “point ▸” loads a Tone 1 sticheron into the pointer with full
               A·B·C·D·…·Final rotation and scrolls to it; other tones convert but aren’t pointed yet.
             </div>
