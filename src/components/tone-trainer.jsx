@@ -1650,7 +1650,7 @@ export default function ToneTrainer() {
             </button>
           ))}
         </div>
-        <div style={{ display: "flex", gap: "0.6rem", alignItems: "center" }}>
+        <div style={{ display: "flex", gap: "0.6rem", alignItems: "center", flexWrap: "wrap" }}>
           <label style={{ fontSize: "0.82rem", color: "#5b4a33" }}>
             do ={" "}
             <select value={doHz} onChange={(e) => setDoHz(parseFloat(e.target.value))}
