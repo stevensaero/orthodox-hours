@@ -10,11 +10,23 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.5.3";
+export const TONE_TRAINER_VERSION = "v0.5.4";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.5.4",
+    date: "May 2026",
+    summary: "Comparison mode becomes the full singing view — sung display hidden, per-line Sing added",
+    items: [
+      "feat: sung display (phrase blocks at bottom) hidden when comparison harness is active — eliminates scrolling and duplicate information.",
+      "feat: 'Sing all' button added to comparison harness header — plays director or machine version per the sing toggle.",
+      "feat: per-line '▶ Sing' button in each comparison line header.",
+      "feat: playing line highlights gold with dark-red left bracket in comparison harness, matching the sung display behavior.",
+      "feat: the singing row (director or machine) gets an amber highlight while playing so the singer knows which version they're hearing.",
+    ],
+  },
   {
     version: "v0.5.3",
     date: "May 2026",
@@ -1617,6 +1629,12 @@ export default function ToneTrainer() {
                 </button>
               ))}
             </div>
+            {/* Sing all — plays activeLines() per singWhich */}
+            <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none",
+                             fontSize: "0.75rem", padding: "4px 13px" }}
+              onClick={playAll}>
+              ▶ Sing all
+            </button>
             {/* JSON export */}
             <button
               onClick={() => {
@@ -1654,12 +1672,18 @@ export default function ToneTrainer() {
 
           {/* Per-line side-by-side comparison */}
           <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-            {compareData.lines.map((cl, li) => (
+            {compareData.lines.map((cl, li) => {
+              const isPlaying = playingLine === li;
+              return (
               <div key={li} style={{ borderRadius: 5, overflow: "hidden",
-                                     border: cl.anchorMatch ? "1px solid rgba(90,122,60,.35)" : "1px solid rgba(180,80,40,.35)" }}>
+                                     background: isPlaying ? "rgba(255,250,238,.95)" : "transparent",
+                                     borderTop: cl.anchorMatch ? "1px solid rgba(90,122,60,.35)" : "1px solid rgba(180,80,40,.35)",
+                                     borderRight: cl.anchorMatch ? "1px solid rgba(90,122,60,.35)" : "1px solid rgba(180,80,40,.35)",
+                                     borderBottom: cl.anchorMatch ? "1px solid rgba(90,122,60,.35)" : "1px solid rgba(180,80,40,.35)",
+                                     borderLeft: isPlaying ? "4px solid #7a2418" : cl.anchorMatch ? "4px solid rgba(90,122,60,.45)" : "4px solid rgba(180,80,40,.35)" }}>
                 {/* Line header */}
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.25rem 0.6rem",
-                              background: cl.anchorMatch ? "rgba(90,122,60,.08)" : "rgba(180,80,40,.07)",
+                              background: isPlaying ? "rgba(255,243,220,.8)" : cl.anchorMatch ? "rgba(90,122,60,.08)" : "rgba(180,80,40,.07)",
                               fontSize: "0.72rem" }}>
                   <span style={{ background: cl.phrase === "Final" ? "#7a2418" : "#283a5c", color: "#fff",
                                  borderRadius: 3, padding: "1px 7px" }}>{cl.phrase}</span>
@@ -1669,13 +1693,24 @@ export default function ToneTrainer() {
                   <span style={{ color: "#9A8A70", fontStyle: "italic" }}>
                     {cl.syllables.filter(s => s.agree).length}/{cl.syllables.length} syllables agree
                   </span>
+                  <span style={{ flex: 1 }} />
+                  <button style={{ border: `1px solid ${isPlaying ? "#7a2418" : gold}`, background: "transparent",
+                                   color: isPlaying ? "#7a2418" : gold, borderRadius: 3,
+                                   padding: "1px 9px", cursor: "pointer", fontFamily: "Georgia, serif",
+                                   fontSize: "0.7rem" }}
+                    onClick={() => playLine(li)}>
+                    {isPlaying ? "▶" : "▶"} Sing
+                  </button>
                 </div>
 
                 {/* Two-row chip display: director on top, machine below */}
-                {["truth", "machine"].map((which) => (
+                {["truth", "machine"].map((which) => {
+                  const rowSinging = isPlaying && singWhich === which;
+                  return (
                   <div key={which} style={{ display: "flex", flexWrap: "wrap", gap: "2px 2px",
                                             alignItems: "flex-end", padding: "0.35rem 0.6rem",
-                                            background: which === "truth" ? "rgba(255,255,255,.6)" : "rgba(245,245,245,.6)",
+                                            background: rowSinging ? "rgba(255,236,180,.55)"
+                                              : which === "truth" ? "rgba(255,255,255,.6)" : "rgba(245,245,245,.6)",
                                             borderTop: "1px solid rgba(0,0,0,.05)" }}>
                     <span style={{ fontSize: "0.6rem", color: "#9A8A70", minWidth: "3.2em",
                                    alignSelf: "center", fontStyle: "italic" }}>
@@ -1711,9 +1746,11 @@ export default function ToneTrainer() {
                       );
                     })}
                   </div>
-                ))}
+                  );
+                })}
               </div>
-            ))}
+              );
+            })}
           </div>
 
           <div style={{ marginTop: "0.5rem", fontSize: "0.72rem", color: "#6b5942", fontStyle: "italic" }}>
@@ -1722,13 +1759,13 @@ export default function ToneTrainer() {
         </div>
       )}
 
-      {/* legend */}
+      {/* legend + sung display — hidden in comparison mode */}
+      {!(compareMode && compareData) && (
       <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap", fontSize: "0.78rem", color: "#6b5942", marginBottom: "1rem" }}>
         <span>reciting tone</span><span>· prep (ti)</span><span>· cadence</span><span>· ´ = accent</span>
       </div>
-
-      {/* lines */}
-      {lines.map((line, li) => {
+      )}
+      {!(compareMode && compareData) && lines.map((line, li) => {
         const roles = pointLine(line);
         const isFin = line.phrase === "Final";
         let fi = -1;
