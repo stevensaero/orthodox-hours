@@ -1705,14 +1705,7 @@ export default function ToneTrainer() {
             <label style={{ fontSize: "0.85rem", color: "#5b4a33", flex: 1 }}>
               Type or paste the sticheron — one line per line. Phrases rotate A·B·C·D; the last line is the Final Phrase.
             </label>
-            {hasTruth && (
-              <span style={{ fontSize: "0.72rem", background: "rgba(90,122,60,.12)", border: "1px solid rgba(90,122,60,.5)",
-                             borderRadius: 3, color: "#3a6020", padding: "1px 7px", whiteSpace: "nowrap",
-                             flexShrink: 0 }}
-                title="Director Pointing active — [accent] brackets override the machine engine">
-                Director Pointing ✓
-              </span>
-            )}
+
           </div>
           <textarea value={text} onChange={(e) => { setText(e.target.value); setHasTruth(parseBracketedText(e.target.value).hasBrackets); }} rows={5}
             placeholder={"Machine Pointing (plain text):\nCome, let us also go to meet Christ with divine songs!\n\nDirector Pointing (with [accent] marks):\n[Lord], I call up[on] Thee, [hear] me! |\n[Hear] me, O Lord!"}
@@ -1807,7 +1800,7 @@ export default function ToneTrainer() {
                            border: `1px solid ${isDir ? "rgba(90,122,60,.45)" : "rgba(139,105,20,.3)"}`,
                            color: isDir ? "#3a6020" : "#5b4a33",
                            borderRadius: 3, padding: "1px 8px", whiteSpace: "nowrap" }}>
-              {isDir ? "Director Pointing" : "Machine Pointing"}
+              {isDir ? "Director Pointing ✓" : "Machine Pointing"}
             </span>
           );
         })()}
