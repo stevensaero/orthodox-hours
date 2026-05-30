@@ -1474,7 +1474,7 @@ export default function ToneTrainer() {
     setMachineLines(mLines);
     setCompareData(cmp);
     setHasTruth(true);
-    setCompareMode(true);
+    setCompareMode(false); // user must hit "show comparison ▸" explicitly
     setSingWhich("truth");
     setTimeout(() => {
       if (pointerRef.current) pointerRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1703,18 +1703,6 @@ export default function ToneTrainer() {
               ? <>Director Pointing mode — [accent] brackets override the machine. | = line end · // = penultimate line.</>
               : <>Machine Pointing mode — lexicon + phrase-structural heuristic. Analyze &amp; point to render. "point ▸" on an ingested sticheron loads encoded director marks.</>
             }
-          </div>
-          <div style={{ marginTop: "0.6rem", display: "flex", gap: "0.6rem", alignItems: "center", flexWrap: "wrap" }}>
-            <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }} onClick={analyze}>
-              Analyze &amp; point
-            </button>
-            {compareData && (
-              <button
-                style={{ ...btn, background: "transparent", fontSize: "0.75rem" }}
-                onClick={() => setCompareMode((v) => !v)}>
-                {compareMode ? "hide comparison ▾" : "show comparison ▸"}
-              </button>
-            )}
           </div>
       </div>
 
@@ -1953,7 +1941,21 @@ export default function ToneTrainer() {
       )}
 
       {/* ── PLAY BAR ─────────────────────────────────────────────────────── */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.7rem", alignItems: "center", justifyContent: "flex-end", border: "1px solid #d6c79f", borderRadius: 8, padding: "0.7rem 0.9rem", marginBottom: "1.1rem" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.7rem", alignItems: "center", justifyContent: "space-between", border: "1px solid #d6c79f", borderRadius: 8, padding: "0.7rem 0.9rem", marginBottom: "1.1rem" }}>
+        {/* Left: analyze + comparison toggle */}
+        <div style={{ display: "flex", gap: "0.6rem", alignItems: "center", flexWrap: "wrap" }}>
+          <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }} onClick={analyze}>
+            Analyze &amp; point
+          </button>
+          {compareData && (
+            <button
+              style={{ ...btn, background: "transparent", fontSize: "0.75rem" }}
+              onClick={() => setCompareMode((v) => !v)}>
+              {compareMode ? "hide comparison ▾" : "show comparison ▸"}
+            </button>
+          )}
+        </div>
+        {/* Right: playback controls */}
         <div style={{ display: "flex", gap: "0.6rem", alignItems: "center", flexWrap: "wrap" }}>
           <label style={{ fontSize: "0.82rem", color: "#5b4a33" }}>
             do ={" "}
