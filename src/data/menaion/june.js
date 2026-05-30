@@ -431,6 +431,10 @@ const JUNE_MENAION = {
   // Fekula §2B: kontakion_ode3 (Hilarion T2, Matins Ode III) → 1st & 6th Hours;
   //             kontakion_ode6 (Bessarion T2, Matins Ode VI) → 3rd & 9th Hours.
   // Joint troparion used at all Hours.
+  // AT LITURGY: no proper Epistle/Gospel/prokeimenon — §2B, feast_e: null confirmed.
+  // LIC Glory/Both now: Menaion Theotokion T4 ("Rejoice, O beam of solar radiance…")
+  //   PDF rubric: "from the Pentecostarion, or this Theotokion in Tone IV".
+  // Aposticha: Octoechos (§2B — no Menaion aposticha in PDF). Session: May 29 2026.
 
   "06-06": {
     saint: "Ven. Bessarion the Wonderworker & Ven. Hilarion the New",
@@ -473,7 +477,21 @@ const JUNE_MENAION = {
       { tone: 4, text: "Thou wast an earthly angel and a heavenly man, O venerable one, a well-spring of compunction, a torrent of mercy, an abyss of miracles, a surety for sinners, a truly fruitful olive-tree of God, anointing with the oil of thy works the faces of those who praise thee with faith, O wondrous Hilarion.", saint: "Hilarion" },
       { tone: 4, text: "Thy mind shining with divine understanding, thou didst transcend the passions of the flesh, unconfused by things below, bearing the lineaments and depicting the beauty of God within thyself, and known as wholly luminous through the activity of the Spirit, O Hilarion our father, thou adornment of monastics.", saint: "Hilarion" },
     ],
-    stichera_glory: null, // §2B — Glory/Both now goes to Theotokion
+    stichera_lord_i_call_count: 6, // 3 Bessarion T8 + 3 Hilarion T4
+    // LIC Glory…Both now…: Menaion Theotokion T4 (or from the Pentecostarion per PDF rubric)
+    // Source: 06-06.pdf — "Glory…Both now…, from the Pentecostarion, or this Theotokion in Tone IV"
+    stichera_glory: null, // §2B: no doxasticon; Glory/Both now → lic_theotokion below
+    lic_theotokion: {
+      tone: 4,
+      text: "Rejoice, O beam of solar radiance, " +
+            "throne of the never-setting Sun, " +
+            "having shone forth the ineffable Sun! " +
+            "Rejoice, O mind shining with divine splendor, " +
+            "flash of lightning illumining the ends of the earth, " +
+            "true luster of gold. " +
+            "O most comely and most immaculate one " +
+            "who hath caused the unwaning Light to shine upon the faithful!",
+    },
   },
 
   // ── June 1 — Holy Martyr Justin the Philosopher & those with him ──────────
