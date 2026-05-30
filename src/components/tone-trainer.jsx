@@ -1730,7 +1730,7 @@ export default function ToneTrainer() {
           <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }}
             onClick={analyze}
             title="Syllabify and point the sticheron — assigns reciting tone, prep, and cadence roles">
-            Point
+            Point Verses
           </button>
         </div>
 
