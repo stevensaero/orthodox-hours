@@ -269,7 +269,7 @@ function syllabifyRules(word) {
 
 const STOP = new Set(
   ("the a an of to and in on for with is am are be by at from as us him her them we i you " +
-   "he she it our your his my that this whose whom who which but or nor so yet o").split(/\s+/)
+   "he she it our your his my thy thine that this whose whom who which but or nor so yet o").split(/\s+/)
 );
 
 // Heuristic stress fallback — only used for words not in the lexicon.
