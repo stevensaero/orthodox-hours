@@ -1,6 +1,35 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.5.2** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.7.0** | Component: `src/components/tone-trainer.jsx`
+
+---
+
+## Session summary (May 30 2026 — v0.7.0 UI polish, lexicon fixes, bug fixes)
+
+### UI restructuring
+- **Info bar** made permanently visible — renders above the comparison harness regardless of mode. Contains color-coded legend pills (matching chip `roleBg`), live mode badge (reflects `singWhich` in A/B mode), Director vs. Machine toggle, pitch height toggle (hidden in A/B mode).
+- **Director vs. Machine** toggle moved from helper-text row to info bar, styled as pill button matching legend buttons.
+- **Point → "Point Verses"**; no longer auto-opens comparison window on click.
+- **Duplicate Director Pointing badge** in textarea header removed; ✓ added to info bar badge instead.
+- **Pitch selector** extended: F (174.61 Hz) and G (196.00 Hz) added below A. Full range F·G·A·B·C·D·E.
+- **BPM slider** disabled and greyed during playback (`playingLine !== null`). Tooltip updates to "Stop playback to change tempo."
+
+### Bug fixes
+- **`applyEdit` silent re-pointer**: was setting all accents to `false` then leaving them, so hitting apply without changes reset pointing to last-syllable fallback. Fixed: now re-runs `autoAccentLine` after syllabification change.
+- **`edit syllables` in Director mode**: button now hidden when `hasTruth` — edit panel would discard director bracket marks.
+- **`isPlaying` ReferenceError**: used a loop-local variable at component scope → React crash (blank screen). Fixed: `playingLine !== null`.
+
+### Lexicon fixes
+- `incense`: `stressIdx` 1→0 (noun form IN-cense).
+- `arise`: syllabification `["a","ri","se"]` → `["a","rise"]` (CMU: AH0 R AY1 Z, 2 syllables).
+- `thy`, `thine`: added to STOP list (archaic possessives, same category as `my`, `his`, `our`).
+
+### Polysyllabic final word trap — research and disposition
+Examined using JSON fixture export (`tone-trainer-comparison(8).json`). Confirmed: for "This is He Whom David announced," director anchor = `Da` (idx 4), machine anchor = `nounced` (idx 7). The machine picks the last stressed syllable; the director treats the entire final verb as trailing.
+
+**Conclusion:** the one-syllable backup rule cannot be extended to polysyllabic finals without breaking correctly-handled cases (e.g. `announced` is genuinely the anchor in other phrases). The class of trailing polysyllabic past-tense verbs is a known AUTO mode limitation. Director Pointing handles them cleanly. **Not worth a rule change; document and accept.**
+
+Liturgical `-ed` syllabification discussion: only genuinely phonological `-ed` words (bless·ed, learn·ed) warrant lexicon extension. Non-syllabic `-ed` (announced, proclaimed, revealed) are 2-syllable in actual pronunciation even in chant.
 
 ---
 
@@ -409,34 +438,15 @@ best-guess; `confirmed:false` entries surfaced by the "show source" toggle with
 
 ## Backlog
 
-1. Verify the corrected anchor rule against director-supplied marked samples.
-2. Decide auto-accent philosophy after A1 is answered (dictionary-driven vs.
-   marked-text-primary).
-3. ~~Marked-text paste mode (read bold/underline/acute directly).~~ **Done in
-   v0.2.0** via docx ingest (reads underline directly from the OCA `.docx`).
-4. SATB mode using the real four-part page + recorded isolated-voice MP3s.
-5. Define the hours-tool → trainer data contract (format now drafted: see the
-   converter contract above).
-6. **Encoding-aware "your own text" field + A/B comparison harness (v0.5.0 — next).**
-   Full spec in SYLLABIFIER_SPEC.md §7.
-7. **Rhythm durations — quarter vs. half vs. whole note values in audio playback.**
-   Currently `lineToNotes` uses heuristic durations (~0.45s per syllable) with no
-   concept of actual note values from the score. The tutorial specifies the rules
-   explicitly (Drillock & Ealy, Common Chant introduction):
-   - **Reciting tone** = quarter notes, grouped in twos or threes by accent.
-     An accented syllable starting a beat group gets a full beat; unaccented
-     syllables are individual quarter notes. Derivable from the accent array
-     already computed by the pointing engine — no new data needed.
-   - **Cadence notes** = half notes (the "held" pulse). Anchor and all subsequent
-     cadence syllables are half notes.
-   - **Final note** = whole note (last syllable of the sticheron).
-   - **Intonation** = half note on the first accented syllable of the phrase.
-   Duration follows role almost entirely. Verified against the LIC score:
-   "Re·ceive the voice of my prayer" = Re(quarter)·ceive(half)·the(half)·
-   voice(half)·of(quarter)·my(quarter)·prayer(half). "Re" is a quarter because
-   it is an unaccented reciting-tone syllable; "ceive" is a half note because it
-   is the cadence anchor. Implementation: replace the heuristic duration constants
-   in `lineToNotes` with role-based values derived from the tutorial rules.
-8. Only then: propagate the proven method to Tone 2 (note: rotation differs per
-   tone — Tone 2 uses A once then B C D rotating; Tones 5/6 use A B C; Tone 6 adds
-   B′; Tone 8 uses A′ — so phrase structure must be per-tone data).
+1. ~~Verify the corrected anchor rule against director-supplied marked samples.~~ **Done v0.5.2–v0.7.0** — 92%+ anchor match confirmed across fixture corpus.
+2. ~~Decide auto-accent philosophy.~~ **Resolved: Director Pointing primary; AUTO mode is a draft starting point.**
+3. ~~Marked-text paste mode.~~ **Done v0.2.0.**
+4. ~~Rhythm durations.~~ **Done v0.6.0** — tutorial-faithful quarter/half/whole note values.
+5. ~~A/B comparison harness.~~ **Done v0.5.0.**
+6. **Tone 2–8 propagation** — phrase rotation differs per tone. Tone 1 proven; engine ready to extend. Requires per-tone phrase structure data and a director-marked Tone 2 .docx fixture. **Next major work item.** Tone selector (1–8 pill buttons above textarea) needed alongside this work.
+7. **Moving dot chip highlight** — designed (per-chip setTimeout + `playingChip` state + gold dot `position:absolute; top:-0.7em`), not yet built. Off by default, opt-in toggle. Deferred to audio engine session.
+8. **Dynamic BPM during playback** — requires lookahead scheduler (Web Audio API pattern). Currently BPM is locked during playback (greyed slider). Deferred to audio engine session.
+9. **SATB mode** — real four-part notes + OCA isolated-voice MP3s.
+10. **Hours tool → Trainer pass-in** — data contract drafted; implementation not built.
+11. **aloud, himself anchor misses** — accepted as AUTO mode limitations; Director Pointing resolves them. No rule change planned.
+

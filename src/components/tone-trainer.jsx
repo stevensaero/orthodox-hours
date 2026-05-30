@@ -10,11 +10,30 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.6.2";
+export const TONE_TRAINER_VERSION = "v0.7.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.7.0",
+    date: "May 2026",
+    summary: "Info bar, UI polish, lexicon fixes, bug fixes",
+    items: [
+      "feat: persistent info bar — always visible above comparison harness. Color-coded legend pills match chip roleBg (reciting=blue-grey, prep=amber, cadence=burgundy). Mode badge reflects singWhich live in A/B mode.",
+      "feat: Director vs. Machine toggle in info bar; pitch height hidden in A/B mode; info bar now renders above comparison harness (correct render order).",
+      "feat: Point button renamed to 'Point Verses'; Point no longer auto-opens comparison window.",
+      "feat: pitch selector extended — F (174.61 Hz) and G (196.00 Hz) added below A. Full range: F·G·A·B·C·D·E.",
+      "feat: BPM slider greyed out and disabled while playing (playingLine !== null). Cursor becomes not-allowed; opacity 0.4.",
+      "fix: applyEdit now re-runs autoAccentLine after syllabification change — previously zeroed all accents, causing anchor to fall back to last syllable even with no text changes.",
+      "fix: 'edit syllables' button hidden in Director Pointing mode — edit panel would silently discard director bracket marks.",
+      "fix: isPlaying ReferenceError (local variable only in harness map) replaced with playingLine !== null at component level.",
+      "fix: incense lexicon stressIdx 1→0 (noun form IN-cense, not verb in-CENSE).",
+      "fix: arise syllabification 3→2 (a·ri·se → a·rise, per CMU AH0 R AY1 Z).",
+      "fix: thy and thine added to STOP list (archaic possessives = your/your — same category as my, his, our already in STOP).",
+      "research: polysyllabic final word trap analyzed in depth using JSON fixture export. Director anchor on 'Da' (David) confirmed; 'announced' trailing behavior documented. Liturgical -ed syllabification discussion — only genuinely syllabic -ed words warrant lexicon changes. aloud/himself accepted as Director Pointing territory.",
+    ],
+  },
   {
     version: "v0.6.2",
     date: "May 2026",
