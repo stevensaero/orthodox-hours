@@ -1701,13 +1701,14 @@ export default function ToneTrainer() {
       {/* ── POINTER (textarea + comparison) — above the play bar ────────── */}
       <div ref={pointerRef} style={{ marginBottom: "1.1rem" }}>
           {/* Label adapts to whether brackets are detected in the text. */}
-          <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem", marginBottom: "0.4rem", flexWrap: "wrap" }}>
-            <label style={{ fontSize: "0.85rem", color: "#5b4a33" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.4rem" }}>
+            <label style={{ fontSize: "0.85rem", color: "#5b4a33", flex: 1 }}>
               Type or paste the sticheron — one line per line. Phrases rotate A·B·C·D; the last line is the Final Phrase.
             </label>
             {hasTruth && (
               <span style={{ fontSize: "0.72rem", background: "rgba(90,122,60,.12)", border: "1px solid rgba(90,122,60,.5)",
-                             borderRadius: 3, color: "#3a6020", padding: "1px 7px", whiteSpace: "nowrap" }}
+                             borderRadius: 3, color: "#3a6020", padding: "1px 7px", whiteSpace: "nowrap",
+                             flexShrink: 0 }}
                 title="Director Pointing active — [accent] brackets override the machine engine">
                 Director Pointing ✓
               </span>
@@ -1719,8 +1720,16 @@ export default function ToneTrainer() {
                      lineHeight: 1.6, border: `1px solid ${hasTruth ? "rgba(90,122,60,.6)" : "#d6c79f"}`,
                      borderRadius: 6, padding: "8px", resize: "vertical",
                      background: hasTruth ? "rgba(90,122,60,.03)" : "transparent" }} />
-          <div style={{ marginTop: "0.45rem", fontSize: "0.75rem", color: "#9A8A70", fontStyle: "italic" }}>
-            {hasTruth && <>Director Pointing mode — [accent] brackets override the machine. | = line end · // = penultimate line.</>}
+          <div style={{ marginTop: "0.45rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span style={{ fontSize: "0.75rem", color: "#9A8A70", fontStyle: "italic", flex: 1 }}>
+              {hasTruth && <>Director Pointing mode — [accent] brackets override the machine. | = line end · // = penultimate line.</>}
+            </span>
+            {compareData && (
+              <button style={{ ...btn, background: "transparent", fontSize: "0.75rem", flexShrink: 0 }}
+                onClick={() => setCompareMode((v) => !v)}>
+                {compareMode ? "hide comparison ▾" : "show comparison ▸"}
+              </button>
+            )}
           </div>
       </div>
 
@@ -1730,7 +1739,7 @@ export default function ToneTrainer() {
                     border: "1px solid #d6c79f", borderRadius: 8,
                     padding: "0.55rem 0.9rem", marginBottom: "1.1rem" }}>
 
-        {/* Col 1 — left: Point + comparison toggle */}
+        {/* Col 1 — left: Point */}
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center",
                       justifyContent: "flex-start" }}>
           <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }}
@@ -1738,12 +1747,6 @@ export default function ToneTrainer() {
             title="Syllabify and point the sticheron — assigns reciting tone, prep, and cadence roles">
             Point
           </button>
-          {compareData && (
-            <button style={{ ...btn, background: "transparent", fontSize: "0.75rem" }}
-              onClick={() => setCompareMode((v) => !v)}>
-              {compareMode ? "hide comparison ▾" : "show comparison ▸"}
-            </button>
-          )}
         </div>
 
         {/* Col 2 — center: audio controls bracketed by | dividers */}
