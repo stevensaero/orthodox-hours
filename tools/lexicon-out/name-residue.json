@@ -484,5 +484,168 @@
     ],
     "stressIdx": 1,
     "confirmed": false
+  },
+  "vanquisher": {
+    "word": "Vanquisher",
+    "sylls": [
+      "Van",
+      "quisher"
+    ],
+    "stressIdx": 0,
+    "confirmed": false
+  },
+  "hosanna": {
+    "word": "Hosanna",
+    "sylls": [
+      "Ho",
+      "san",
+      "na"
+    ],
+    "stressIdx": 1,
+    "confirmed": false
+  },
+  "philippians": {
+    "word": "Philippians",
+    "sylls": [
+      "Philip",
+      "pi",
+      "ans"
+    ],
+    "stressIdx": 1,
+    "confirmed": false
+  },
+  "gladness": {
+    "word": "gladness",
+    "sylls": [
+      "glad",
+      "ness"
+    ],
+    "stressIdx": 0,
+    "confirmed": false
+  },
+  "octoechos": {
+    "word": "Octoechos",
+    "sylls": [
+      "Oc",
+      "toe",
+      "chos"
+    ],
+    "stressIdx": 1,
+    "confirmed": false
+  },
+  "lenten": {
+    "word": "Lenten",
+    "sylls": [
+      "Len",
+      "ten"
+    ],
+    "stressIdx": 0,
+    "confirmed": false
+  },
+  "triodion": {
+    "word": "Triodion",
+    "sylls": [
+      "Tri",
+      "o",
+      "dion"
+    ],
+    "stressIdx": 1,
+    "confirmed": false
+  },
+  "mystically": {
+    "word": "mystically",
+    "sylls": [
+      "mys",
+      "ti",
+      "cally"
+    ],
+    "stressIdx": 1,
+    "confirmed": false
+  },
+  "theotokion": {
+    "word": "Theotokion",
+    "sylls": [
+      "The",
+      "o",
+      "to",
+      "ki",
+      "on"
+    ],
+    "stressIdx": 1,
+    "confirmed": false
+  },
+  "dogmatikon": {
+    "word": "Dogmatikon",
+    "sylls": [
+      "Dog",
+      "matikon"
+    ],
+    "stressIdx": 0,
+    "confirmed": false
+  },
+  "gladsome": {
+    "word": "Gladsome",
+    "sylls": [
+      "Glad",
+      "some"
+    ],
+    "stressIdx": 0,
+    "confirmed": false
+  },
+  "deeps": {
+    "word": "deeps",
+    "sylls": [
+      "deeps"
+    ],
+    "stressIdx": 0,
+    "confirmed": false
+  },
+  "edom": {
+    "word": "Edom",
+    "sylls": [
+      "E",
+      "dom"
+    ],
+    "stressIdx": 0,
+    "confirmed": false
+  },
+  "zephaniah": {
+    "word": "Zephaniah",
+    "sylls": [
+      "Zepha",
+      "niah"
+    ],
+    "stressIdx": 0,
+    "confirmed": false
+  },
+  "ananiah": {
+    "word": "Ananiah",
+    "sylls": [
+      "Ana",
+      "niah"
+    ],
+    "stressIdx": 0,
+    "confirmed": false
+  },
+  "azariah": {
+    "word": "Azariah",
+    "sylls": [
+      "A",
+      "za",
+      "ri",
+      "ah"
+    ],
+    "stressIdx": 1,
+    "confirmed": false
+  },
+  "mishael": {
+    "word": "Mishael",
+    "sylls": [
+      "Mis",
+      "ha",
+      "el"
+    ],
+    "stressIdx": 1,
+    "confirmed": false
   }
 }
