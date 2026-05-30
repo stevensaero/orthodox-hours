@@ -1268,13 +1268,16 @@ export default function ToneTrainer() {
   };
 
   const applyEdit = (li, val) => {
+    // Re-accent via autoAccentLine after syllabification change —
+    // otherwise anchorIndex gets all-false accents and falls back to last syllable.
     setLines((prev) => {
       const copy = prev.map((l) => ({ ...l, words: l.words.map((w) => ({ ...w, sylls: w.sylls.map((s) => ({ ...s })) })) }));
-      const words = val.trim().split(/\s+/).map((tok) => {
+      const phrase = copy[li].phrase;
+      const rawWords = val.trim().split(/\s+/).map((tok) => {
         const ss = tok.split(/[·\-]/).filter(Boolean);
         return { display: ss.join(""), sylls: ss.map((t) => ({ text: t, accent: false })) };
       });
-      copy[li].words = words;
+      copy[li].words = autoAccentLine(rawWords, phrase);
       return copy;
     });
   };
@@ -2108,7 +2111,7 @@ export default function ToneTrainer() {
             </div>
             <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginTop: "0.6rem", flexWrap: "wrap" }}>
               <button style={btn} onClick={() => playLine(li)}>▶ Sing this line</button>
-              {editMode && <button style={btn} onClick={() => setEditOpen((o) => ({ ...o, [li]: !o[li] }))}>edit syllables</button>}
+              {editMode && !hasTruth && <button style={btn} onClick={() => setEditOpen((o) => ({ ...o, [li]: !o[li] }))}>edit syllables</button>}
             </div>
             {editMode && editOpen[li] && (
               <div style={{ marginTop: "0.5rem", display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
