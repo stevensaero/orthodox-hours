@@ -1781,7 +1781,7 @@ export default function ToneTrainer() {
       <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap",
                     fontSize: "0.78rem", color: "#6b5942", marginBottom: "1rem" }}>
         {/* Color-coded legend — pill backgrounds match chip roleBg colors */}
-        <span style={{ flex: 1, display: "flex", gap: "0.6rem", justifyContent: "center",
+        <span style={{ flex: 1, display: "flex", gap: "0.6rem", justifyContent: "flex-start",
                        flexWrap: "wrap", alignItems: "center" }}>
           <span style={{ background: "rgba(40,58,92,.08)", color: "#283a5c",
                          borderRadius: 4, padding: "1px 7px" }}>reciting tone</span>
