@@ -1825,7 +1825,8 @@ export default function ToneTrainer() {
             {compareMode ? "Director vs. Machine ✓" : "Director vs. Machine"}
           </button>
         )}
-        {/* Pitch height toggle */}
+        {/* Pitch height toggle — only in sing view, not A/B mode */}
+        {!(compareMode && compareData) && (
         <button
           onClick={() => setPitchHeight(v => !v)}
           style={{ marginLeft: "0.5rem", fontSize: "0.72rem", flexShrink: 0,
@@ -1837,6 +1838,7 @@ export default function ToneTrainer() {
           title="Show chip height and text position scaled to solfege pitch">
           {pitchHeight ? "pitch height ✓" : "pitch height"}
         </button>
+        )}
       </div>
 
       {/* ── COMPARISON HARNESS (Feature B) ───────────────────────────────── */}
