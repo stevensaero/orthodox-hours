@@ -4311,6 +4311,7 @@ const PENTECOSTARION_DATA = {
     matins_format: "god_is_the_lord",
     menaion_set_aside: true,
     has_great_doxology: false,
+    has_litya: false,  // Apodosis — Litiya not carried over per 86.pdf rubric
     stichera_lord_i_call_count: 10,
     stichera_lord_i_call_note: "Apodosis of Pentecost: chant everything as on the Feast of Pentecost (86.pdf). Stichera identical to P+49.",
     stichera_lord_i_call: [
