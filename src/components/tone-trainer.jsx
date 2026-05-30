@@ -1106,7 +1106,7 @@ export default function ToneTrainer() {
                           {s.text}
                         </span>
                         <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: "0.72rem", color: roleColor[r.role] }}>{pis}</span>
-                        {showAccentSource && s.source && s.source !== "table" && s.source !== "archaic" && s.source !== "truth" && s.source !== "reconciled" && s.source !== "count-only" && (
+                        {showAccentSource && s.source && s.source !== "table" && s.source !== "archaic" && s.source !== "truth" && s.source !== "reconciled" && s.source !== "count-only" && !STOP.has(s.text.toLowerCase()) && (
                           <span style={{ fontSize: "0.6rem", color: s.source === "residue" ? "#8a6a14" : "#9A8A70",
                                          lineHeight: 1, marginTop: "1px" }} title={s.source === "residue" ? "unconfirmed (best-guess)" : "rule fallback"}>
                             {s.source === "residue" ? "?" : "~"}
