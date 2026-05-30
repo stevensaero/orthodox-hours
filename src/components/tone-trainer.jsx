@@ -2095,18 +2095,7 @@ export default function ToneTrainer() {
                                  background: roleBg[r.role],
                                  border: r.anchor ? "1px solid #7a2418" : "1px solid transparent",
                                  minWidth: "2em" }}>
-                        {/* HEIGHT MODE: accent floats above chip border */}
-                        {s.accent && pitchHeight && (
-                          <span style={{ position: "absolute", top: "-1em", left: "50%",
-                                         transform: "translateX(-50%)", color: "#7a2418",
-                                         fontSize: "1.1rem", lineHeight: 1,
-                                         pointerEvents: "none", userSelect: "none" }}>´</span>
-                        )}
                         <span style={{ fontSize: "1.1rem", fontWeight: s.accent ? 600 : 400, position: "relative" }}>
-                          {/* FLAT MODE: accent stays inline as before */}
-                          {s.accent && !pitchHeight
-                            ? <span style={{ position: "absolute", top: "-0.55em", left: "50%", transform: "translateX(-50%)", color: "#7a2418" }}>´</span>
-                            : null}
                           {s.text}
                         </span>
                         <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: "0.72rem", color: roleColor[r.role] }}>{pis}</span>
