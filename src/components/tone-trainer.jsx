@@ -1375,12 +1375,13 @@ export default function ToneTrainer() {
               onChange={(e) => onDocxFile(e.target.files && e.target.files[0])} />
           </label>
           {docName && <span style={{ fontSize: "0.8rem", color: "#5b4a33" }}>{docName}</span>}
-          {blocks.length > 0 && (
+          {blocks.some(b => b.suspect) && (
             <>
               <span style={{ flex: 1 }} />
-              <label style={{ fontSize: "0.78rem", color: "#5b4a33", display: "inline-flex", alignItems: "center", gap: 5 }}>
+              <label style={{ fontSize: "0.78rem", color: "#7a2418", display: "inline-flex", alignItems: "center", gap: 5 }}
+                title="Show stichera blocks where no // penultimate marker was found — verify these groupings">
                 <input type="checkbox" checked={showAllParas} onChange={(e) => setShowAllParas(e.target.checked)} />
-                show all paragraphs
+                show suspect blocks
               </label>
             </>
           )}
@@ -1548,8 +1549,8 @@ export default function ToneTrainer() {
             {hasTruth && (
               <span style={{ fontSize: "0.72rem", background: "rgba(90,122,60,.12)", border: "1px solid rgba(90,122,60,.5)",
                              borderRadius: 3, color: "#3a6020", padding: "1px 7px", whiteSpace: "nowrap" }}
-                title="[accent] marks detected — brackets are authoritative over the lexicon">
-                TRUTH MODE ✓
+                title="Director's accent marks detected — brackets override the auto-accent engine">
+                Director's Notes ✓
               </span>
             )}
           </div>
@@ -1561,7 +1562,7 @@ export default function ToneTrainer() {
                      background: hasTruth ? "rgba(90,122,60,.03)" : "transparent" }} />
           <div style={{ marginTop: "0.45rem", fontSize: "0.75rem", color: "#9A8A70", fontStyle: "italic" }}>
             {hasTruth
-              ? <>[accent] marks present — TRUTH mode: brackets override the lexicon for accent placement. | = line end · // = penultimate line.</>
+              ? <>[accent] marks present — using director's notes: brackets override the auto-accent engine. | = line end · // = penultimate line.</>
               : <>Plain text — AUTO mode: lexicon + heuristic accent. Click any syllable chip to correct. "point ▸" on an ingested sticheron populates this field with encoded truth.</>
             }
           </div>
@@ -1569,7 +1570,7 @@ export default function ToneTrainer() {
             <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }} onClick={analyze}>
               Analyze &amp; point
             </button>
-            {compareMode && compareData && (
+            {compareData && (
               <button
                 style={{ ...btn, background: "transparent", fontSize: "0.75rem" }}
                 onClick={() => setCompareMode((v) => !v)}>
