@@ -10,11 +10,21 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.5.0";
+export const TONE_TRAINER_VERSION = "v0.5.1";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.5.1",
+    date: "May 2026",
+    summary: "Phrase-structural AUTO accent engine — replaces word-stress heuristic",
+    items: [
+      "fix: AUTO mode now places exactly 1-2 accent marks per phrase using tutorial phrase logic, not word-stress marking. Anchor = last internally stressed syllable (existing rule). Intonation = first stressed syllable (Phrases A and C only). Everything else unaccented.",
+      "fix: autoEncodeLines (machine column in comparison harness) uses the same phrase-structural engine — comparison now reflects the correct machine logic.",
+      "note: accuracy ceiling is lexicon quality. Known cases: 'me' is lexicon-stressed so short Phrase B lines may anchor one syllable late; 'when' as a phrase opener may land the intonation one word early. These are lexicon improvement targets, not logic errors.",
+    ],
+  },
   {
     version: "v0.5.0",
     date: "May 2026",
@@ -717,13 +727,52 @@ function parseTruthLines(rawText, lexicon) {
 // Strip accents from a line set and re-encode with the auto-accenter (lexicon+heuristic).
 // Returns a parallel [{phrase, words}] array — the "machine" version for comparison.
 function autoEncodeLines(truthLines, lexicon) {
+  // NOTE: autoAccentLine is a component-scoped arrow function (it closes over
+  // nothing from the component, but is defined inside it for co-location).
+  // autoEncodeLines is a module-level pure function so we replicate the logic
+  // inline here to avoid a dependency on the component scope.
+  //
+  // Phrase-structural accent engine (mirrors autoAccentLine inside the component):
+  const applyPhraseAccent = (words, phrase) => {
+    const flat = [];
+    words.forEach((w, wi) => {
+      w.sylls.forEach((s, si) => {
+        flat.push({ stressed: s.accent, single: w.sylls.length === 1, wi, si });
+      });
+    });
+    if (!flat.length) return words;
+    const lastIdx = flat.length - 1;
+    const sIdxs = flat.map((s, i) => (s.stressed ? i : -1)).filter((i) => i >= 0);
+    let anchorIdx = lastIdx;
+    if (sIdxs.length > 0) {
+      let c = sIdxs[sIdxs.length - 1];
+      if (c === lastIdx && flat[lastIdx].single && sIdxs.length >= 2)
+        c = sIdxs[sIdxs.length - 2];
+      anchorIdx = c;
+    }
+    let intonIdx = -1;
+    if ((phrase === "A" || phrase === "C") && sIdxs.length > 0) {
+      const first = sIdxs[0];
+      if (first !== anchorIdx) intonIdx = first;
+    }
+    const accentSet = new Set([anchorIdx]);
+    if (intonIdx >= 0) accentSet.add(intonIdx);
+    let fi = 0;
+    return words.map((w) => ({
+      ...w,
+      sylls: w.sylls.map((s) => ({ ...s, accent: accentSet.has(fi++) })),
+    }));
+  };
+
   return truthLines.map((line) => {
-    const cleanWords = line.words.map((w) => {
+    const rawWords = line.words.map((w) => {
       // Reconstruct the display text from the syllables (brackets already stripped).
       const display = w.display.replace(/[\[\]]/g, "");
       return wordFromDisplay(display, lexicon);
     }).filter(Boolean);
-    return { phrase: line.phrase, words: cleanWords };
+    // Apply phrase-structural engine to the machine column.
+    const words = applyPhraseAccent(rawWords, line.phrase);
+    return { phrase: line.phrase, words };
   });
 }
 
@@ -916,6 +965,64 @@ export default function ToneTrainer() {
   const playScale = () =>
     playNotes(["la", "ti", "do", "re", "mi"].map((s) => ({ sol: s, dur: 0.4 })));
 
+  // ── PHRASE-STRUCTURAL AUTO ACCENT ENGINE (v0.5.1) ──────────────────────────
+  // Takes a words array already syllabified by wordFromDisplay (lexicon has done
+  // its job), and the phrase type. Reads the existing `accent` flag as a STRESS
+  // CANDIDATE signal (is this syllable naturally stressed?), then applies the
+  // tutorial's phrase structural rules to mark exactly the right 1-2 syllables:
+  //
+  //   Anchor    (all phrases)    : last internally stressed syllable
+  //                                (with the existing monosyllable-final backup)
+  //   Intonation (Phrases A + C) : first stressed syllable
+  //
+  // Everything else gets accent = false.
+  // Accuracy ceiling = lexicon quality. Logic is phrase-structural, not word-level.
+  const autoAccentLine = (words, phrase) => {
+    // Build flat syllable list, reading accent as "stressed" candidate.
+    const flat = [];
+    words.forEach((w, wi) => {
+      w.sylls.forEach((s, si) => {
+        flat.push({ stressed: s.accent, single: w.sylls.length === 1, wi, si });
+      });
+    });
+    if (!flat.length) return words;
+
+    const lastIdx = flat.length - 1;
+    const stressedIdxs = flat
+      .map((s, i) => (s.stressed ? i : -1))
+      .filter((i) => i >= 0);
+
+    // ── Anchor: last internally stressed syllable ──────────────────────────
+    let anchorIdx = lastIdx; // fallback: use last syllable if nothing is stressed
+    if (stressedIdxs.length > 0) {
+      let c = stressedIdxs[stressedIdxs.length - 1];
+      // Last-internal backup: final stressed monosyllable → step back one.
+      if (c === lastIdx && flat[lastIdx].single && stressedIdxs.length >= 2) {
+        c = stressedIdxs[stressedIdxs.length - 2];
+      }
+      anchorIdx = c;
+    }
+
+    // ── Intonation: first stressed syllable (Phrases A and C only) ─────────
+    let intonIdx = -1;
+    if ((phrase === "A" || phrase === "C") && stressedIdxs.length > 0) {
+      const first = stressedIdxs[0];
+      // Don't double-mark: if only one stressed syllable in the phrase it serves
+      // as the anchor; no separate intonation mark.
+      if (first !== anchorIdx) intonIdx = first;
+    }
+
+    // ── Rebuild words: accent = true only at anchor + intonation ───────────
+    const accentSet = new Set([anchorIdx]);
+    if (intonIdx >= 0) accentSet.add(intonIdx);
+
+    let fi = 0;
+    return words.map((w) => ({
+      ...w,
+      sylls: w.sylls.map((s) => ({ ...s, accent: accentSet.has(fi++) })),
+    }));
+  };
+
   const analyze = () => {
     if (!text.trim()) { setLines([]); return; }
     const { hasBrackets } = parseBracketedText(text);
@@ -932,14 +1039,17 @@ export default function ToneTrainer() {
       setCompareMode(true);
       setSingWhich("truth");
     } else {
-      // AUTO MODE: lexicon + heuristic, unchanged from v0.4.0.
+      // AUTO MODE: syllabify via lexicon, then apply phrase-structural accent engine.
       const raw = text.split("\n").map((s) => s.trim()).filter(Boolean);
       const next = raw.map((ln, i) => {
-        const words = ln.split(/\s+/)
+        const phrase = phraseForLine(i, raw.length);
+        const rawWords = ln.split(/\s+/)
           .filter((w) => /[A-Za-z]/.test(w))   // skip pure-punctuation tokens (commas, etc.)
           .map((w) => wordFromDisplay(w, lexicon))
           .filter(Boolean);                      // drop null returns (whole-punctuation tokens)
-        return { phrase: phraseForLine(i, raw.length), words };
+        // Apply phrase-structural engine: anchor + intonation only, not all word stress.
+        const words = autoAccentLine(rawWords, phrase);
+        return { phrase, words };
       });
       setLines(next);
       setHasTruth(false);
