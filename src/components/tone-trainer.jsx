@@ -1746,6 +1746,7 @@ export default function ToneTrainer() {
                     fi += 1;
                     const r = roles[fi];
                     const myFi = fi;
+                    const pis = r.pitches.join("-");
                     // Source indicator — computed before return, not via IIFE
                     const NOSRC_S = ["table","archaic","truth","reconciled","count-only","auto"];
                     const srcChar = (s.source && !NOSRC_S.includes(s.source) && !STOP.has(s.text.toLowerCase()))
