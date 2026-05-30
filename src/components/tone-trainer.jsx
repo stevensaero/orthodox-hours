@@ -977,9 +977,8 @@ function useAudio() {
 export default function ToneTrainer() {
   const [doHz, setDoHz] = useState(261.63);
   const [bpm, setBpm] = useState(70); // half note = 1 beat per tutorial
-  const [mode, setMode] = useState("preset"); // 'preset' | 'custom'
   const [text, setText] = useState("");
-  const [lines, setLines] = useState(presetToLines);
+  const [lines, setLines] = useState([]);
   const [playingLine, setPlayingLine] = useState(null);
   const [playingWhich, setPlayingWhich] = useState(null); // "truth"|"machine" while a line plays
   const [editOpen, setEditOpen] = useState({});
@@ -1293,12 +1292,6 @@ export default function ToneTrainer() {
     setCompareData(buildComparison(lines, newML));
   };
 
-  const switchMode = (m) => {
-    setMode(m);
-    if (m === "preset") setLines(presetToLines());
-    else setLines([]);
-  };
-
   // ── docx ingest handlers ──────────────────────────────────────────────────
   const onDocxFile = async (file) => {
     if (!file) return;
@@ -1474,7 +1467,6 @@ export default function ToneTrainer() {
     // When the user hits "Analyze & point" it will re-run in TRUTH mode.
     const encoded = encodeBlock(block);
     setText(encoded);
-    setMode("custom");
     setLines(next);
     // The block's OCA-underline accents ARE truth — set hasTruth and build comparison.
     const mLines = autoEncodeLines(next, lexicon);
@@ -1685,41 +1677,8 @@ export default function ToneTrainer() {
         )}
       </div>
 
-      {/* controls */}
-      <div ref={pointerRef} style={{ display: "flex", flexWrap: "wrap", gap: "0.7rem", alignItems: "center", justifyContent: "space-between", border: "1px solid #d6c79f", borderRadius: 8, padding: "0.7rem 0.9rem", marginBottom: "1.1rem" }}>
-        <div style={{ display: "inline-flex", border: `1.5px solid ${gold}`, borderRadius: 6, overflow: "hidden" }}>
-          {["preset", "custom"].map((m) => (
-            <button key={m} onClick={() => switchMode(m)}
-              style={{ border: "none", background: mode === m ? gold : "transparent", color: mode === m ? "#fff" : gold, padding: "7px 14px", cursor: "pointer", fontFamily: "Georgia, serif", fontSize: "0.85rem" }}>
-              {m === "preset" ? "Meeting of the Lord" : "Your own text"}
-            </button>
-          ))}
-        </div>
-        <div style={{ display: "flex", gap: "0.6rem", alignItems: "center", flexWrap: "wrap" }}>
-          <label style={{ fontSize: "0.82rem", color: "#5b4a33" }}>
-            do ={" "}
-            <select value={doHz} onChange={(e) => setDoHz(parseFloat(e.target.value))}
-              style={{ fontFamily: "Georgia, serif", border: "1px solid #d6c79f", borderRadius: 6, padding: "4px 8px" }}>
-              {DO_OPTIONS.map((o) => <option key={o.label} value={o.hz}>{o.label}</option>)}
-            </select>
-          </label>
-          <button style={btn} onClick={playScale}>scale</button>
-          <label style={{ fontSize: "0.82rem", color: "#5b4a33", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}
-            title="Half note = 1 beat (Drillock &amp; Ealy). Range: 40–120 BPM.">
-            tempo
-            <input type="range" min={40} max={120} step={1} value={bpm}
-              onChange={(e) => setBpm(parseInt(e.target.value, 10))}
-              style={{ width: 72, cursor: "pointer", accentColor: gold }} />
-            <span style={{ minWidth: "3.8em", textAlign: "right" }}>{bpm} BPM</span>
-          </label>
-          <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }} onClick={playAll}>▶ Sing all</button>
-          {lexiconError && <span style={{ fontSize: "0.72rem", color: "#7a2418", fontStyle: "italic" }}>{lexiconError}</span>}
-          {!lexicon && !lexiconError && <span style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic" }}>loading lexicon…</span>}
-        </div>
-      </div>
-
-      {mode === "custom" && (
-        <div style={{ marginBottom: "1.1rem" }}>
+      {/* ── POINTER (textarea + comparison) — above the play bar ────────── */}
+      <div ref={pointerRef} style={{ marginBottom: "1.1rem" }}>
           {/* Label adapts to whether brackets are detected in the text. */}
           <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem", marginBottom: "0.4rem", flexWrap: "wrap" }}>
             <label style={{ fontSize: "0.85rem", color: "#5b4a33" }}>
@@ -1757,8 +1716,7 @@ export default function ToneTrainer() {
               </button>
             )}
           </div>
-        </div>
-      )}
+      </div>
 
       {/* ── COMPARISON HARNESS (Feature B) ───────────────────────────────── */}
       {compareMode && compareData && (
@@ -1993,6 +1951,31 @@ export default function ToneTrainer() {
           </div>
         </div>
       )}
+
+      {/* ── PLAY BAR ─────────────────────────────────────────────────────── */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.7rem", alignItems: "center", justifyContent: "flex-end", border: "1px solid #d6c79f", borderRadius: 8, padding: "0.7rem 0.9rem", marginBottom: "1.1rem" }}>
+        <div style={{ display: "flex", gap: "0.6rem", alignItems: "center", flexWrap: "wrap" }}>
+          <label style={{ fontSize: "0.82rem", color: "#5b4a33" }}>
+            do ={" "}
+            <select value={doHz} onChange={(e) => setDoHz(parseFloat(e.target.value))}
+              style={{ fontFamily: "Georgia, serif", border: "1px solid #d6c79f", borderRadius: 6, padding: "4px 8px" }}>
+              {DO_OPTIONS.map((o) => <option key={o.label} value={o.hz}>{o.label}</option>)}
+            </select>
+          </label>
+          <button style={btn} onClick={playScale}>scale</button>
+          <label style={{ fontSize: "0.82rem", color: "#5b4a33", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}
+            title="Half note = 1 beat (Drillock &amp; Ealy). Range: 40–120 BPM.">
+            tempo
+            <input type="range" min={40} max={120} step={1} value={bpm}
+              onChange={(e) => setBpm(parseInt(e.target.value, 10))}
+              style={{ width: 72, cursor: "pointer", accentColor: gold }} />
+            <span style={{ minWidth: "3.8em", textAlign: "right" }}>{bpm} BPM</span>
+          </label>
+          <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }} onClick={playAll}>▶ Sing all</button>
+          {lexiconError && <span style={{ fontSize: "0.72rem", color: "#7a2418", fontStyle: "italic" }}>{lexiconError}</span>}
+          {!lexicon && !lexiconError && <span style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic" }}>loading lexicon…</span>}
+        </div>
+      </div>
 
       {/* legend + sung display — hidden in comparison mode */}
       {!(compareMode && compareData) && (
