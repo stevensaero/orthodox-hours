@@ -488,18 +488,21 @@ function pointLine(line) {
 }
 
 // Distribute a cadence pitch figure across the cadence syllables.
-// Per the tutorial score: the anchor (first cadence syllable) always carries
-// exactly ONE note — the held half-note that starts the cadence. Remaining
-// notes distribute forward across the following syllables. When there are more
-// notes than syllables in the tail, a middle syllable carries a melisma.
-// E.g. Phrase D (ti-do-re-do-ti) with "voice·of·my·prayer" (4 syllables):
-//   voice=ti, of=do, my=re-do, prayer=ti  (not voice=ti-do as a melisma)
+// Per the tutorial score and OCA recording analysis:
+// - The anchor always carries the first (held) note of the figure.
+// - When count == n: one note per syllable.
+// - When count > n: first and last syllables get their notes; middle syllables
+//   repeat the penultimate note to fill gaps.
+// - When count < n: take the first `count` notes of the figure sequentially —
+//   the trailing notes of the figure simply don't appear. Verified from the OCA
+//   Tone 1 unison recording: Phrase D "this·is·He·Who·spoke·in·the·Proph·ets"
+//   shows cadence in·the·Proph·ets = ti·do·re·do (4 notes for 4 syllables,
+//   the final ti of the 5-note figure belongs to the next phrase, not this one).
 function distribute(figure, count) {
   const n = figure.length;
-  if (count <= 1) return [figure.slice()];        // one syllable carries the whole figure
-  if (count === n) return figure.map((f) => [f]);  // one note per syllable
-  if (count > n) {                                 // more syllables than notes
-    // anchor + one note each where available, first syllable gets anchor note
+  if (count <= 1) return [figure.slice()];         // one syllable carries the whole figure
+  if (count === n) return figure.map((f) => [f]);   // one note per syllable — exact fit
+  if (count > n) {                                  // more syllables than notes
     const out = [[figure[0]]];
     const mid = figure.slice(1, n - 1);
     const ms = count - 2;
@@ -507,35 +510,9 @@ function distribute(figure, count) {
     out.push([figure[n - 1]]);
     return out;
   }
-  // count < n: anchor gets exactly one note (figure[0]), remaining notes
-  // distribute across the remaining (count-1) syllables. The last syllable
-  // gets the final note; everything in between shares the middle notes.
-  const out = [[figure[0]]];                       // anchor = first note only
-  const tail = figure.slice(1);                    // remaining notes
-  const tailCount = count - 1;                     // remaining syllables
-  if (tailCount === 1) {
-    out.push(tail.slice());                        // single tail syllable gets all remaining
-  } else {
-    // last syllable = last note; first tail syllable = first tail note;
-    // middle syllables share middle notes (melisma on middle when extras exist)
-    out.push([tail[0]]);                           // first tail syllable = first tail note
-    const mid = tail.slice(1, tail.length - 1);    // middle notes
-    const midSlots = tailCount - 2;               // middle syllables
-    if (midSlots <= 0) {
-      // only 2 tail syllables: first gets first tail note, second gets rest
-      out.push(tail.slice(1));
-    } else {
-      const extra = mid.length - midSlots;
-      let ni = 0;
-      for (let i = 0; i < midSlots; i++) {
-        const take = (i === Math.floor(midSlots / 2) && extra > 0) ? 1 + extra : 1;
-        out.push(mid.slice(ni, ni + take));
-        ni += take;
-      }
-      out.push([tail[tail.length - 1]]);           // last tail syllable = last note
-    }
-  }
-  return out;
+  // count < n: take the first `count` notes sequentially — one per syllable.
+  // Trailing notes of the figure are unused (they belong to the next phrase).
+  return figure.slice(0, count).map((f) => [f]);
 }
 
 // ── AUDIO ───────────────────────────────────────────────────────────────────
