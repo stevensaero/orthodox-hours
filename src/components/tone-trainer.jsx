@@ -7,14 +7,25 @@
 //
 // Component version is tracked independently of the hours-tool version.
 // ──────────────────────────────────────────────────────────────────────────────
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.3.1";
+export const TONE_TRAINER_VERSION = "v0.4.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.4.0",
+    date: "May 2026",
+    summary: "Lexicon-driven syllabification + stress — replaces the first-syllable heuristic",
+    items: [
+      "feat: syllabification and accent placement now lookup-first from a generated lexicon (CMU Pronouncing Dictionary + TeX hyphenation, built at build-time from the OCA service corpus). 1,151 resolved words + 68 best-guess residue entries. Rules remain as a last-ditch fallback for off-table words.",
+      "feat: 'show accent source' toggle in the pointing controls (off by default). When on, each syllable shows a small indicator: no marker = CMU-confirmed table entry; ? = unconfirmed residue (best-guess stress, director review pending); ~ = rule fallback (off-table).",
+      "note: 68 residue words (proper names, liturgical-technical terms) carry best-guess stress marked confirmed:false. Used now; director corrections improve accuracy by updating name-residue.json — no re-wiring needed.",
+      "note: lexicon served from public/lexicon/ (same pattern as psalter/scripture), fetched at component mount.",
+    ],
+  },
   {
     version: "v0.3.1",
     date: "May 2026",
@@ -89,8 +100,23 @@ const ROT = ["A", "B", "C", "D"];
 const phraseForLine = (i, total) => (i === total - 1 ? "Final" : ROT[i % 4]);
 const PNAME = { A: "Phrase A", B: "Phrase B", C: "Phrase C", D: "Phrase D", Final: "Final Phrase" };
 
-// ── SYLLABIFIER (heuristic; user can correct via "edit syllables") ──────────────
-function syllabify(word) {
+// ── LEXICON LOOKUP ────────────────────────────────────────────────────────────
+// The lexicon is fetched from public/lexicon/ at component mount (same pattern
+// as psalter/scripture). It merges syllable-table.json (CMU+TeX resolved) and
+// name-residue.json (best-guess, confirmed:false). Lookup is by lowercased
+// alpha-only key. Falls back to rules when a word is not in the lexicon.
+//
+// entry.src values: "tex"|"reconciled"|"count-only"|"archaic" = CMU-confirmed
+//                   missing src = residue entry (best-guess, confirmed:false)
+//                   undefined = rule fallback (not in lexicon at all)
+//
+// Source indicators for the toggle (shown when showAccentSource is on):
+//   (no marker) = CMU-confirmed table entry
+//   ?           = unconfirmed residue (best-guess, director review pending)
+//   ~           = rule fallback (word not in lexicon)
+
+// ── SYLLABIFIER (rule fallback — used only for words not in the lexicon) ─────
+function syllabifyRules(word) {
   const m = word.match(/[A-Za-z']+/);
   if (!m) return [word];
   const core = m[0];
@@ -140,12 +166,79 @@ const STOP = new Set(
   ("the a an of to and in on for with is am are be by at from as us him her them we i you " +
    "he she it our your his my that this whose whom who which but or nor so yet o").split(/\s+/)
 );
-// Heuristic stress guess — explicitly a DRAFT. The accent that matters most
-// (the phrase-final / last-internal accent) should be verified by the singer.
-function guessAccent(wordDisplay, sylls, idx) {
+
+// Heuristic stress fallback — only used for words not in the lexicon.
+function guessStressHeuristic(wordDisplay, sylls, idx) {
   const lw = wordDisplay.toLowerCase().replace(/[^a-z]/g, "");
   if (sylls.length === 1) return idx === 0 ? !STOP.has(lw) : false;
-  return idx === 0; // rough: first syllable of polysyllabic words
+  return idx === 0;
+}
+
+// lookupWord: returns {sylls, stressIdx, src, confirmed} or null.
+// lexicon is the merged table+residue object passed from component state.
+function lookupWord(word, lexicon) {
+  if (!lexicon) return null;
+  const key = word.toLowerCase().replace(/[^a-z]/g, "");
+  if (!key) return null;
+  const entry = lexicon[key];
+  if (!entry) return null;
+  return {
+    sylls: entry.sylls,
+    stressIdx: entry.stressIdx ?? 0,
+    src: entry.src || "residue",
+    confirmed: entry.confirmed !== false,
+  };
+}
+
+// syllabifyWithSource: returns {sylls, stressIdx, source} where source ∈
+// "table" (CMU-confirmed) | "residue" (unconfirmed) | "archaic" | "rule"
+function syllabifyWithSource(wordDisplay, lexicon) {
+  const m = wordDisplay.match(/[A-Za-z']+/);
+  const core = m ? m[0] : wordDisplay;
+  const lead = m ? wordDisplay.slice(0, m.index) : "";
+  const trail = m ? wordDisplay.slice(m.index + core.length) : "";
+  // 1. Lexicon lookup
+  const entry = lookupWord(core, lexicon);
+  if (entry) {
+    const sylls = entry.sylls.map((s, i) => {
+      if (i === 0) return lead + s;
+      if (i === entry.sylls.length - 1) return s + trail;
+      return s;
+    });
+    const src = (entry.src === "residue" || !entry.confirmed) ? "residue" : "table";
+    return { sylls, stressIdx: entry.stressIdx, source: src };
+  }
+  // 2. Archaic -est/-eth rule
+  if (/[^aeiouy](est|eth)$/i.test(core)) {
+    const stem = core.slice(0, -3);
+    const suf = core.slice(-3);
+    const stemSylls = syllabifyRules(stem);
+    const sylls = [...stemSylls, suf];
+    if (sylls.length > 0) {
+      sylls[0] = lead + sylls[0];
+      sylls[sylls.length - 1] += trail;
+    }
+    return { sylls, stressIdx: 0, source: "archaic" };
+  }
+  // 3. Rule fallback
+  const sylls = syllabifyRules(wordDisplay);
+  return { sylls, stressIdx: null, source: "rule" };
+}
+
+// Build a word object from display text using the lexicon (or rules).
+// Returns {display, sylls:[{text, accent}]} where accent comes from stressIdx.
+function wordFromDisplay(wordDisplay, lexicon) {
+  const { sylls, stressIdx, source } = syllabifyWithSource(wordDisplay, lexicon);
+  return {
+    display: wordDisplay,
+    sylls: sylls.map((t, i) => ({
+      text: t.replace(/[^A-Za-z''-]/g, "") || t,
+      accent: stressIdx !== null
+        ? i === stressIdx
+        : guessStressHeuristic(wordDisplay, sylls, i),
+      source, // carries through for the toggle indicator
+    })),
+  };
 }
 
 // ── PRESET: Meeting of the Lord, "Lord, I Call", 3rd sticheron (hand-pointed) ───
@@ -326,6 +419,7 @@ function flatten(line) {
       flat.push({
         text: s.text,
         accent: s.accent,
+        source: s.source,          // carries lexicon source for the toggle indicator
         single: w.sylls.length === 1,
         wordLast: si === w.sylls.length - 1,
       })
@@ -371,7 +465,7 @@ function pointLine(line) {
     let pitch = def.recite;
     if (i === 0 && def.inton) role = "inton";
     if (def.prep && i === body.length - 1) { role = "prep"; pitch = def.prep; }
-    roles.push({ role, pitches: [pitch], accent: s.accent, text: s.text });
+    roles.push({ role, pitches: [pitch], accent: s.accent, text: s.text, source: s.source });
   });
 
   const dist = distribute(def.cad, cad.length);
@@ -381,6 +475,7 @@ function pointLine(line) {
       pitches: dist[i] || [def.cad[def.cad.length - 1]],
       accent: s.accent,
       text: s.text,
+      source: s.source,
       anchor: i === 0,
     })
   );
@@ -448,6 +543,21 @@ export default function ToneTrainer() {
   const [playingLine, setPlayingLine] = useState(null);
   const [editOpen, setEditOpen] = useState({});
   const [showReleaseNotes, setShowReleaseNotes] = useState(false);
+  // lexicon (fetched from public/lexicon/ at mount, same pattern as psalter/scripture)
+  const [lexicon, setLexicon] = useState(null);
+  const [lexiconError, setLexiconError] = useState(null);
+  const [showAccentSource, setShowAccentSource] = useState(false);
+
+  // Fetch both lexicon files at mount and merge.
+  useEffect(() => {
+    const base = "/orthodox-hours/lexicon/";
+    Promise.all([
+      fetch(base + "syllable-table.json").then((r) => r.json()),
+      fetch(base + "name-residue.json").then((r) => r.json()),
+    ])
+      .then(([table, residue]) => setLexicon({ ...table, ...residue }))
+      .catch(() => setLexiconError("Lexicon unavailable — using rules only"));
+  }, []);
   // docx ingest state
   const [docName, setDocName] = useState(null);
   const [docParas, setDocParas] = useState([]);     // assignTones output
@@ -511,13 +621,7 @@ export default function ToneTrainer() {
     const raw = text.split("\n").map((s) => s.trim()).filter(Boolean);
     if (!raw.length) { setLines([]); return; }
     const next = raw.map((ln, i) => {
-      const words = ln.split(/\s+/).map((w) => {
-        const ss = syllabify(w);
-        return {
-          display: w,
-          sylls: ss.map((tt, k) => ({ text: tt.replace(/[^A-Za-z']/g, "") || tt, accent: guessAccent(w, ss, k) })),
-        };
-      });
+      const words = ln.split(/\s+/).map((w) => wordFromDisplay(w, lexicon));
       return { phrase: phraseForLine(i, raw.length), words };
     });
     setLines(next);
@@ -615,7 +719,8 @@ export default function ToneTrainer() {
     let curWord = null;
     const pushSyl = (text, accent) => {
       if (!curWord) curWord = { display: "", sylls: [] };
-      curWord.sylls.push({ text, accent });
+      // source "truth" = OCA underline from docx (authoritative, not guessed)
+      curWord.sylls.push({ text, accent, source: "truth" });
       curWord.display += text;
     };
     const flushWord = () => { if (curWord) { words.push(curWord); curWord = null; } };
@@ -846,6 +951,13 @@ export default function ToneTrainer() {
           </label>
           <button style={btn} onClick={playScale}>scale</button>
           <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }} onClick={playAll}>▶ Sing all</button>
+          <label style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: "0.78rem", color: "#5b4a33", cursor: "pointer" }}
+            title="Show which syllables come from unconfirmed or rule-fallback sources">
+            <input type="checkbox" checked={showAccentSource} onChange={(e) => setShowAccentSource(e.target.checked)} />
+            show source
+          </label>
+          {lexiconError && <span style={{ fontSize: "0.72rem", color: "#7a2418", fontStyle: "italic" }}>{lexiconError}</span>}
+          {!lexicon && !lexiconError && <span style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic" }}>loading lexicon…</span>}
         </div>
       </div>
 
@@ -900,6 +1012,12 @@ export default function ToneTrainer() {
                           {s.text}
                         </span>
                         <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: "0.72rem", color: roleColor[r.role] }}>{pis}</span>
+                        {showAccentSource && s.source && s.source !== "table" && s.source !== "archaic" && (
+                          <span style={{ fontSize: "0.6rem", color: s.source === "residue" ? "#8a6a14" : "#9A8A70",
+                                         lineHeight: 1, marginTop: "1px" }} title={s.source === "residue" ? "unconfirmed (best-guess)" : "rule fallback"}>
+                            {s.source === "residue" ? "?" : "~"}
+                          </span>
+                        )}
                       </span>
                     );
                   })}
