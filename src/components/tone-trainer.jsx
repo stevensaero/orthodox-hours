@@ -10,11 +10,22 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.5.5";
+export const TONE_TRAINER_VERSION = "v0.6.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.6.0",
+    date: "May 2026",
+    summary: "Tutorial-faithful rhythm — quarter/half/whole note durations + adjustable BPM",
+    items: [
+      "feat: lineToNotes now uses tutorial-specified note values. Reciting tone = quarter notes. Intonation accented syllable = half note; unaccented lead-ins = quarter. Prep = quarter. Cadence anchor = half note; middle cadence syllables = quarter; last cadence syllable = half (whole for Final Phrase). Verified against Drillock & Ealy.",
+      "feat: adjustable tempo — range slider 40–120 BPM (default 80). Half note = 1 beat per tutorial. At 80 BPM: quarter = 0.375s, half = 0.75s, whole = 1.5s.",
+      "feat: multi-pitch melisma durations divide the syllable's full note value evenly across pitches.",
+      "feat: inter-phrase gap in Sing all scales with BPM (1 quarter note of silence).",
+    ],
+  },
   {
     version: "v0.5.5",
     date: "May 2026",
@@ -923,6 +934,7 @@ function useAudio() {
 // ── COMPONENT ─────────────────────────────────────────────────────────────────
 export default function ToneTrainer() {
   const [doHz, setDoHz] = useState(261.63);
+  const [bpm, setBpm] = useState(80); // half note = 1 beat per tutorial
   const [mode, setMode] = useState("preset"); // 'preset' | 'custom'
   const [text, setText] = useState("");
   const [lines, setLines] = useState(presetToLines);
@@ -976,16 +988,52 @@ export default function ToneTrainer() {
   const lineToNotes = (line) => {
     const roles = pointLine(line);
     const notes = [];
-    roles.forEach((r, i) => {
-      const last = i === roles.length - 1;
-      r.pitches.forEach((p, k) => {
-        let dur = 0.45;
-        let peak = 0.2;
-        if (r.role === "recite" || r.role === "inton") dur = r.accent ? 0.6 : 0.45;
-        if (r.role === "prep") dur = 0.5;
-        if (r.role === "cad") { dur = r.pitches.length > 1 ? 0.42 : 0.55; if (r.accent) peak = 0.27; }
-        if (last && k === r.pitches.length - 1) dur = 1.0;
-        notes.push({ sol: p, dur, peak });
+    const isFinal = line.phrase === "Final";
+
+    // Tutorial-faithful note values (Drillock & Ealy, Common Chant Introduction).
+    // Half note = 1 beat (the predominant pulse). BPM = half notes per minute.
+    const H = 60 / bpm;        // half note — intonation, cadence anchor, final cadence
+    const Q = H / 2;           // quarter note — reciting tone, prep, middle cadence
+    const W = H * 2;           // whole note — last syllable of Final Phrase only
+
+    // Precompute cadence syllable positions for first/middle/last logic.
+    const cadIdxs = roles.map((r, i) => r.role === "cad" ? i : -1).filter(i => i >= 0);
+
+    roles.forEach((r, ri) => {
+      // Syllable duration per tutorial:
+      //   inton accented → H (half note intonation)
+      //   inton unaccented → Q (quarter note lead-in on same pitch)
+      //   recite / prep → Q (quarter note always)
+      //   cad anchor (first) → H; cad middle → Q; cad last → H or W (Final only)
+      let syllDur;
+      if (r.role === "inton") {
+        syllDur = r.accent ? H : Q;
+      } else if (r.role === "recite" || r.role === "prep") {
+        syllDur = Q;
+      } else if (r.role === "cad") {
+        const cadPos = cadIdxs.indexOf(ri);
+        const isFirst = cadPos === 0;
+        const isLast  = cadPos === cadIdxs.length - 1;
+        if (isFirst && isLast) {
+          // Only one cadence syllable — serves as both anchor and final.
+          syllDur = isFinal ? W : H;
+        } else if (isFirst) {
+          syllDur = H; // anchor always half note
+        } else if (isLast) {
+          syllDur = isFinal ? W : H; // whole note only for Final Phrase
+        } else {
+          syllDur = Q; // middle cadence syllables = quarter notes
+        }
+      } else {
+        syllDur = Q;
+      }
+
+      // Multi-pitch melisma: divide syllable duration evenly across pitches.
+      const pitchDur = syllDur / r.pitches.length;
+      const peak = (r.role === "cad" && r.anchor) ? 0.27 : 0.2;
+
+      r.pitches.forEach((p) => {
+        notes.push({ sol: p, dur: pitchDur, peak });
       });
     });
     return notes;
@@ -1028,7 +1076,7 @@ export default function ToneTrainer() {
       const start = t;
       setTimeout(() => setPlayingLine(li), (start - c.currentTime) * 1000);
       notes.forEach((n) => { tone(freq(n.sol), t, n.dur, n.peak); t += n.dur; });
-      t += 0.35;
+      t += (60 / bpm) / 2; // one quarter note of silence between phrases
     });
     setTimeout(() => { setPlayingLine(null); setPlayingWhich(null); }, (t - c.currentTime) * 1000 + 40);
   };
@@ -1555,6 +1603,14 @@ export default function ToneTrainer() {
               style={{ fontFamily: "Georgia, serif", border: "1px solid #d6c79f", borderRadius: 6, padding: "4px 8px" }}>
               {DO_OPTIONS.map((o) => <option key={o.label} value={o.hz}>{o.label}</option>)}
             </select>
+          </label>
+          <label style={{ fontSize: "0.82rem", color: "#5b4a33", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}
+            title="Half note = 1 beat (Drillock &amp; Ealy). Range: 40–120 BPM.">
+            tempo
+            <input type="range" min={40} max={120} step={1} value={bpm}
+              onChange={(e) => setBpm(parseInt(e.target.value, 10))}
+              style={{ width: 72, cursor: "pointer", accentColor: gold }} />
+            <span style={{ minWidth: "3.8em", textAlign: "right" }}>{bpm} BPM</span>
           </label>
           <button style={btn} onClick={playScale}>scale</button>
           <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }} onClick={playAll}>▶ Sing all</button>
