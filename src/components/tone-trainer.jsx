@@ -1691,8 +1691,8 @@ export default function ToneTrainer() {
             {hasTruth && (
               <span style={{ fontSize: "0.72rem", background: "rgba(90,122,60,.12)", border: "1px solid rgba(90,122,60,.5)",
                              borderRadius: 3, color: "#3a6020", padding: "1px 7px", whiteSpace: "nowrap" }}
-                title="Director's accent marks detected — brackets override the auto-accent engine">
-                Director's Notes ✓
+                title="Director Pointing active — [accent] brackets override the machine engine">
+                Director Pointing ✓
               </span>
             )}
           </div>
@@ -1959,9 +1959,19 @@ export default function ToneTrainer() {
 
       {/* legend + sung display — hidden in comparison mode */}
       {!(compareMode && compareData) && (
-      <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap",
+      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap",
                     fontSize: "0.78rem", color: "#6b5942", marginBottom: "1rem" }}>
-        <span>reciting tone</span><span>· prep (ti)</span><span>· cadence</span><span>· ´ = accent</span>
+        <span style={{ flex: 1, display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
+          <span>reciting tone</span><span>· prep (ti)</span><span>· cadence</span><span>· ´ = accent</span>
+        </span>
+        {/* Pointing mode indicator */}
+        <span style={{ fontSize: "0.72rem", flexShrink: 0,
+                       background: hasTruth ? "rgba(90,122,60,.12)" : "rgba(139,105,20,.08)",
+                       border: `1px solid ${hasTruth ? "rgba(90,122,60,.45)" : "rgba(139,105,20,.3)"}`,
+                       color: hasTruth ? "#3a6020" : "#5b4a33",
+                       borderRadius: 3, padding: "1px 8px", whiteSpace: "nowrap" }}>
+          {hasTruth ? "Director Pointing" : "Machine Pointing"}
+        </span>
       </div>
       )}
       {!(compareMode && compareData) && lines.map((line, li) => {
@@ -1973,7 +1983,7 @@ export default function ToneTrainer() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap", marginBottom: "0.5rem" }}>
               <span style={{ background: isFin ? "#7a2418" : "#283a5c", color: "#fff", borderRadius: 5, padding: "2px 10px", fontSize: "0.78rem" }}>{PNAME[line.phrase]}</span>
               <span style={{ fontSize: "0.76rem", color: "#6b5942", fontStyle: "italic" }}>
-                reciting on <b>{PH[line.phrase].recite}</b>{PH[line.phrase].prep ? <> · prep on <b>ti</b></> : null} · click syllables to set accents
+                reciting on <b>{PH[line.phrase].recite}</b>{PH[line.phrase].prep ? <> · prep on <b>ti</b></> : null}
               </span>
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "3px 2px", alignItems: "flex-end" }}>
