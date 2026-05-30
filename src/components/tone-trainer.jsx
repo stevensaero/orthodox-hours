@@ -10,11 +10,24 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.4.0";
+export const TONE_TRAINER_VERSION = "v0.5.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.5.0",
+    date: "May 2026",
+    summary: "Feature B: encoding-aware text field + A/B comparison harness",
+    items: [
+      "feat: the 'your own text' textarea is now encoding-aware. Paste text with [accent] marks + | line-ends + // → TRUTH mode: brackets are authoritative over the lexicon. Plain text → AUTO mode: lexicon + heuristic unchanged.",
+      "feat: both whole-word ([Lord], [hear]) and mid-word (Re[ceive], up[on]) bracket cases handled. Mid-word brackets map to syllables via vowel-nucleus overlap (SYLLABIFIER_SPEC §7).",
+      "feat: 'point ▸' on an ingested sticheron now populates the textarea with the block's encoded text, making it the single channel for both ingested and hand-typed text.",
+      "feat: comparison harness — after analyzing encoded text, a side-by-side director vs. machine view appears below the pointer. Anchor-level (headline) and syllable-level (detail) agreement metrics shown.",
+      "feat: sing toggle in the harness — switch between truth and machine version to hear what the wrong accent sounds like.",
+      "feat: JSON export — downloads per-line, per-syllable comparison detail (truth accents, machine accents, anchor-match bool) for the improvement loop.",
+    ],
+  },
   {
     version: "v0.4.0",
     date: "May 2026",
@@ -515,6 +528,271 @@ function distribute(figure, count) {
   return figure.slice(0, count).map((f) => [f]);
 }
 
+// ── FEATURE B: BRACKET-AWARE PARSING + COMPARISON HARNESS ───────────────────
+// See SYLLABIFIER_SPEC.md §7 for full design decisions.
+//
+// Bracket formats that occur in OCA materials:
+//   Whole-word:  [Lord], [hear], [Hear]  — entire word bracketed
+//   Mid-word:    up[on], Re[ceive]       — bracket covers a character span
+//
+// In TRUTH mode (brackets present), brackets are authoritative over the lexicon.
+// The lexicon still drives syllabification; accent position comes from the bracket.
+
+// Detect whether a raw text block contains [accent] marks.
+function parseBracketedText(rawText) {
+  return { hasBrackets: /\[[A-Za-z''-]+\]/.test(rawText) };
+}
+
+// Map a bracket character span within `core` to a syllable index using
+// vowel-nucleus overlap (SYLLABIFIER_SPEC §7 algorithm).
+// Returns the syllable index that contains the first underlined vowel nucleus,
+// or -1 if no match (caller should fallback to overlap count).
+function bracketSpanToSyllIdx(core, bracketStart, bracketEnd, sylls) {
+  const isVowel = (c) => "aeiouy".includes(c.toLowerCase());
+  // Build syllable character ranges within `core`.
+  const syllRanges = [];
+  let pos = 0;
+  for (const s of sylls) {
+    syllRanges.push({ start: pos, end: pos + s.length - 1 });
+    pos += s.length;
+  }
+  // Find nuclei (first char of each vowel run) in the bracket span.
+  let k = bracketStart;
+  while (k <= bracketEnd) {
+    if (isVowel(core[k])) {
+      // This is a nucleus — find which syllable it belongs to.
+      const idx = syllRanges.findIndex((r) => k >= r.start && k <= r.end);
+      if (idx >= 0) return idx;
+      while (k <= bracketEnd && isVowel(core[k])) k++;
+    } else k++;
+  }
+  // No nucleus in bracket span — fallback: syllable with most overlapping chars.
+  let max = 0, best = 0;
+  syllRanges.forEach((r, si) => {
+    const lo = Math.max(r.start, bracketStart);
+    const hi = Math.min(r.end, bracketEnd);
+    const ov = Math.max(0, hi - lo + 1);
+    if (ov > max) { max = ov; best = si; }
+  });
+  return best;
+}
+
+// Parse one word token that may contain [bracket] marks.
+// Returns {cleanWord, accentIdx, bracketType} where:
+//   bracketType: "none" | "whole" | "mid"
+//   accentIdx:   syllable index (into lexicon-syllabified syllables), or -1 (no bracket)
+// cleanWord is the alphabetic core with brackets stripped.
+function parseBracketWord(token, lexicon) {
+  const hasBracket = /\[/.test(token);
+  if (!hasBracket) {
+    return { cleanWord: token, accentIdx: -1, bracketType: "none" };
+  }
+
+  // Strip brackets to get clean token, recording bracket span positions.
+  // e.g. "up[on]" → clean="upon", bracketStart=2, bracketEnd=3
+  // e.g. "[Lord]," → clean="Lord,", bracketStart=0, bracketEnd=3
+  // e.g. "[Hear]" → clean="Hear", bracketStart=0, bracketEnd=3
+  let clean = "";
+  let bracketStart = -1, bracketEnd = -1;
+  let inBracket = false;
+  for (let i = 0; i < token.length; i++) {
+    if (token[i] === "[") { inBracket = true; bracketStart = clean.length; continue; }
+    if (token[i] === "]") { inBracket = false; bracketEnd = clean.length - 1; continue; }
+    clean += token[i];
+  }
+
+  // Extract alpha core from clean token (strips leading punctuation like commas)
+  const alphaMatch = clean.match(/[A-Za-z''-]+/);
+  if (!alphaMatch) return { cleanWord: token.replace(/[\[\]]/g, ""), accentIdx: -1, bracketType: "none" };
+  const core = alphaMatch[0];
+  const coreOffset = alphaMatch.index;
+
+  // Syllabify via lexicon.
+  const entry = lookupWord(core, lexicon);
+  const rawSylls = entry
+    ? entry.sylls
+    : syllabifyRules(core);
+  const stressIdx = entry ? (entry.stressIdx ?? 0) : 0;
+
+  // Adjust bracket positions to be relative to the alpha core.
+  const adjStart = bracketStart - coreOffset;
+  const adjEnd = bracketEnd - coreOffset;
+
+  // Whole-word bracket: [Lord], [Hear], [Receive] (entire core is bracketed).
+  // bracketStart..bracketEnd spans the whole core (adjusted positions cover 0..core.length-1)
+  const wholeWord = adjStart <= 0 && adjEnd >= core.length - 1;
+
+  if (wholeWord) {
+    // Director marked the whole word — use lexicon stressIdx as tiebreaker.
+    return {
+      cleanWord: clean,
+      accentIdx: stressIdx,
+      bracketType: "whole",
+      sylls: rawSylls,
+    };
+  }
+
+  // Mid-word bracket: up[on], Re[ceive] — character span to syllable mapping.
+  const clampedStart = Math.max(0, adjStart);
+  const clampedEnd = Math.min(core.length - 1, adjEnd);
+  const idx = bracketSpanToSyllIdx(core, clampedStart, clampedEnd, rawSylls);
+
+  return {
+    cleanWord: clean,
+    accentIdx: Math.max(0, idx),
+    bracketType: "mid",
+    sylls: rawSylls,
+  };
+}
+
+// Parse a [accent]-marked text block into the same [{phrase, words}] structure
+// that analyze() produces, but with brackets as accent authority (TRUTH mode).
+//
+// Input format:
+//   "[Lord], I call upon Thee, [hear] me! | [Hear] me, O Lord! | ... // [Hear] [me], O Lord!"
+//   Lines separated by newlines. Trailing " |" marks ordinary line ends.
+//   "//" is the OCA penultimate marker; the line containing it is penultimate,
+//   the NEXT line (or the text after // on the same line) is the Final.
+//
+// Phrase rotation is rebuilt from the line structure (same as analyze()).
+function parseTruthLines(rawText, lexicon) {
+  // Split into lines, strip trailing | markers.
+  const rawLines = rawText
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .map((l) => l.replace(/\s*\|\s*$/, "").trim())
+    .filter(Boolean);
+
+  if (!rawLines.length) return [];
+  const total = rawLines.length;
+
+  return rawLines.map((ln, i) => {
+    const phrase = phraseForLine(i, total);
+    // Tokenize on whitespace; each token may contain [bracket] marks.
+    const tokens = ln.split(/\s+/).filter(Boolean);
+    const words = tokens
+      .map((tok) => {
+        const { cleanWord, accentIdx, bracketType, sylls: rawSylls } = parseBracketWord(tok, lexicon);
+        if (!cleanWord) return null;
+
+        // Syllabify the clean word for chip display.
+        const { sylls: displaySylls, stressIdx: lexStress } = syllabifyWithSource(
+          cleanWord.replace(/[^A-Za-z''-]/g, "") || cleanWord,
+          lexicon
+        );
+
+        // Build syllable objects.
+        // If bracket present: accentIdx (from bracket) is authoritative.
+        // If no bracket: no accent (non-bracketed words in TRUTH mode are unaccented).
+        const mappedSylls = displaySylls
+          .map((t, si) => {
+            const cleanT = t.replace(/[^A-Za-z''-]/g, "");
+            if (!cleanT) return null;
+            let accent = false;
+            if (bracketType !== "none") {
+              // Bracket is authoritative.
+              if (bracketType === "whole") {
+                // Whole-word: use lexicon stressIdx (passed through accentIdx)
+                accent = si === accentIdx;
+              } else {
+                // Mid-word: bracket span → syllable index from parseBracketWord
+                accent = si === accentIdx;
+              }
+            }
+            // In TRUTH mode, non-bracketed words have no accent (silence = unaccented).
+            return { text: cleanT, accent, source: bracketType !== "none" ? "truth" : "auto" };
+          })
+          .filter(Boolean);
+
+        if (!mappedSylls.length) return null;
+        return { display: cleanWord, sylls: mappedSylls };
+      })
+      .filter(Boolean);
+
+    return { phrase, words };
+  });
+}
+
+// Strip accents from a line set and re-encode with the auto-accenter (lexicon+heuristic).
+// Returns a parallel [{phrase, words}] array — the "machine" version for comparison.
+function autoEncodeLines(truthLines, lexicon) {
+  return truthLines.map((line) => {
+    const cleanWords = line.words.map((w) => {
+      // Reconstruct the display text from the syllables (brackets already stripped).
+      const display = w.display.replace(/[\[\]]/g, "");
+      return wordFromDisplay(display, lexicon);
+    }).filter(Boolean);
+    return { phrase: line.phrase, words: cleanWords };
+  });
+}
+
+// Build a per-line, per-syllable comparison between truth and machine encodings.
+// Returns { lines: [...], anchorMatchCount, totalLines, syllMatchCount, totalSylls }
+// Each line entry: { truthRoles, machineRoles, truthAnchor, machineAnchor, anchorMatch,
+//                    syllables: [{text, truthAccent, machineAccent, agree}] }
+function buildComparison(truthLines, machineLines) {
+  let anchorMatchCount = 0;
+  let syllMatchCount = 0;
+  let totalSylls = 0;
+
+  const lines = truthLines.map((tLine, li) => {
+    const mLine = machineLines[li] || { phrase: tLine.phrase, words: [] };
+
+    // Flatten syllables from each.
+    const flatSylls = (words) => {
+      const out = [];
+      words.forEach((w) => w.sylls.forEach((s) => out.push({ text: s.text, accent: s.accent, source: s.source })));
+      return out;
+    };
+    const tFlat = flatSylls(tLine.words);
+    const mFlat = flatSylls(mLine.words);
+
+    // Compute anchors.
+    const truthAnchor = anchorIndex(tFlat);
+    const machineAnchor = anchorIndex(mFlat);
+    const anchorMatch = truthAnchor === machineAnchor;
+    if (anchorMatch) anchorMatchCount++;
+
+    // Per-syllable comparison (align by index — same text since same words).
+    const maxLen = Math.max(tFlat.length, mFlat.length);
+    const syllables = [];
+    for (let si = 0; si < maxLen; si++) {
+      const ts = tFlat[si];
+      const ms = mFlat[si];
+      const agree = ts && ms ? ts.accent === ms.accent : false;
+      if (agree) syllMatchCount++;
+      totalSylls++;
+      syllables.push({
+        text: ts?.text || ms?.text || "?",
+        truthAccent: ts?.accent ?? false,
+        machineAccent: ms?.accent ?? false,
+        agree,
+        isAnchor: si === truthAnchor,
+        isMachineAnchor: si === machineAnchor,
+      });
+    }
+
+    return {
+      phrase: tLine.phrase,
+      truthLine: tLine,
+      machineLine: mLine,
+      truthAnchor,
+      machineAnchor,
+      anchorMatch,
+      syllables,
+    };
+  });
+
+  return {
+    lines,
+    anchorMatchCount,
+    totalLines: truthLines.length,
+    syllMatchCount,
+    totalSylls,
+  };
+}
+
 // ── AUDIO ───────────────────────────────────────────────────────────────────
 function useAudio() {
   const ctxRef = useRef(null);
@@ -557,6 +835,12 @@ export default function ToneTrainer() {
   const [lexicon, setLexicon] = useState(null);
   const [lexiconError, setLexiconError] = useState(null);
   const [showAccentSource, setShowAccentSource] = useState(false);
+  // Feature B: encoding-aware field + comparison harness
+  const [hasTruth, setHasTruth] = useState(false);      // textarea contains [accent] marks?
+  const [compareMode, setCompareMode] = useState(false); // show comparison harness?
+  const [compareData, setCompareData] = useState(null);  // buildComparison() result
+  const [singWhich, setSingWhich] = useState("truth");   // harness sing toggle: "truth"|"machine"
+  const [machineLines, setMachineLines] = useState(null); // auto-encoded parallel lines
 
   // Fetch both lexicon files at mount and merge.
   useEffect(() => {
@@ -606,15 +890,20 @@ export default function ToneTrainer() {
     if (onDone) setTimeout(onDone, (t - c.currentTime) * 1000 + 40);
   };
 
+  // In TRUTH mode with a comparison harness open, singWhich controls whether
+  // playLine/playAll sings the director truth or the machine version.
+  const activeLines = () =>
+    compareMode && singWhich === "machine" && machineLines ? machineLines : lines;
+
   const playLine = (li) => {
     setPlayingLine(li);
-    playNotes(lineToNotes(lines[li]), () => setPlayingLine(null));
+    playNotes(lineToNotes(activeLines()[li]), () => setPlayingLine(null));
   };
 
   const playAll = () => {
     const c = ac();
     let t = c.currentTime + 0.06;
-    lines.forEach((line, li) => {
+    activeLines().forEach((line, li) => {
       const notes = lineToNotes(line);
       const start = t;
       setTimeout(() => setPlayingLine(li), (start - c.currentTime) * 1000);
@@ -628,16 +917,36 @@ export default function ToneTrainer() {
     playNotes(["la", "ti", "do", "re", "mi"].map((s) => ({ sol: s, dur: 0.4 })));
 
   const analyze = () => {
-    const raw = text.split("\n").map((s) => s.trim()).filter(Boolean);
-    if (!raw.length) { setLines([]); return; }
-    const next = raw.map((ln, i) => {
-      const words = ln.split(/\s+/)
-        .filter((w) => /[A-Za-z]/.test(w))   // skip pure-punctuation tokens (commas, etc.)
-        .map((w) => wordFromDisplay(w, lexicon))
-        .filter(Boolean);                      // drop null returns (whole-punctuation tokens)
-      return { phrase: phraseForLine(i, raw.length), words };
-    });
-    setLines(next);
+    if (!text.trim()) { setLines([]); return; }
+    const { hasBrackets } = parseBracketedText(text);
+    if (hasBrackets) {
+      // TRUTH MODE: brackets are authoritative over the lexicon.
+      const tLines = parseTruthLines(text, lexicon);
+      if (!tLines.length) { setLines([]); return; }
+      const mLines = autoEncodeLines(tLines, lexicon);
+      const cmp = buildComparison(tLines, mLines);
+      setLines(tLines);
+      setMachineLines(mLines);
+      setCompareData(cmp);
+      setHasTruth(true);
+      setCompareMode(true);
+      setSingWhich("truth");
+    } else {
+      // AUTO MODE: lexicon + heuristic, unchanged from v0.4.0.
+      const raw = text.split("\n").map((s) => s.trim()).filter(Boolean);
+      const next = raw.map((ln, i) => {
+        const words = ln.split(/\s+/)
+          .filter((w) => /[A-Za-z]/.test(w))   // skip pure-punctuation tokens (commas, etc.)
+          .map((w) => wordFromDisplay(w, lexicon))
+          .filter(Boolean);                      // drop null returns (whole-punctuation tokens)
+        return { phrase: phraseForLine(i, raw.length), words };
+      });
+      setLines(next);
+      setHasTruth(false);
+      setCompareData(null);
+      setMachineLines(null);
+      setCompareMode(false);
+    }
   };
 
   const toggleAccent = (li, fi) => {
@@ -840,8 +1149,20 @@ export default function ToneTrainer() {
     if (block.tone !== 1) return; // guarded in UI; defensive here
     const n = block.lines.length;
     const next = block.lines.map((p, i) => paraToPointerLine(p, blockLinePhrase(i, n)));
+    // Also populate the textarea with the encoded text (Feature B: [accent]/|// format).
+    // When the user hits "Analyze & point" it will re-run in TRUTH mode.
+    const encoded = encodeBlock(block);
+    setText(encoded);
     setMode("custom");
     setLines(next);
+    // The block's OCA-underline accents ARE truth — set hasTruth and build comparison.
+    const mLines = autoEncodeLines(next, lexicon);
+    const cmp = buildComparison(next, mLines);
+    setMachineLines(mLines);
+    setCompareData(cmp);
+    setHasTruth(true);
+    setCompareMode(true);
+    setSingWhich("truth");
     setTimeout(() => {
       if (pointerRef.current) pointerRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 60);
@@ -1062,17 +1383,171 @@ export default function ToneTrainer() {
 
       {mode === "custom" && (
         <div style={{ marginBottom: "1.1rem" }}>
-          <label style={{ display: "block", marginBottom: "0.4rem", fontSize: "0.85rem", color: "#5b4a33" }}>
-            Type the sticheron — one text line per line. Phrases rotate A·B·C·D; the last line uses the Final Phrase.
-          </label>
-          <textarea value={text} onChange={(e) => setText(e.target.value)} rows={4}
-            placeholder={"Come, let us also go to meet Christ with divine songs!\nLet us receive Him Whose salvation Simeon saw!\nThis is He Whom David announced;\nLet us worship Him!"}
-            style={{ width: "100%", fontFamily: "Georgia, serif", fontSize: "0.95rem", lineHeight: 1.6, border: "1px solid #d6c79f", borderRadius: 6, padding: "8px", resize: "vertical" }} />
+          {/* Label adapts to whether brackets are detected in the text. */}
+          <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem", marginBottom: "0.4rem", flexWrap: "wrap" }}>
+            <label style={{ fontSize: "0.85rem", color: "#5b4a33" }}>
+              Type or paste the sticheron — one line per line. Phrases rotate A·B·C·D; the last line is the Final Phrase.
+            </label>
+            {hasTruth && (
+              <span style={{ fontSize: "0.72rem", background: "rgba(90,122,60,.12)", border: "1px solid rgba(90,122,60,.5)",
+                             borderRadius: 3, color: "#3a6020", padding: "1px 7px", whiteSpace: "nowrap" }}
+                title="[accent] marks detected — brackets are authoritative over the lexicon">
+                TRUTH MODE ✓
+              </span>
+            )}
+          </div>
+          <textarea value={text} onChange={(e) => { setText(e.target.value); setHasTruth(parseBracketedText(e.target.value).hasBrackets); }} rows={5}
+            placeholder={"Plain text (AUTO mode):\nCome, let us also go to meet Christ with divine songs!\n\nWith [accent] marks (TRUTH mode):\n[Lord], I call up[on] Thee, [hear] me! |\n[Hear] me, O Lord!"}
+            style={{ width: "100%", fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "0.88rem",
+                     lineHeight: 1.6, border: `1px solid ${hasTruth ? "rgba(90,122,60,.6)" : "#d6c79f"}`,
+                     borderRadius: 6, padding: "8px", resize: "vertical",
+                     background: hasTruth ? "rgba(90,122,60,.03)" : "transparent" }} />
+          <div style={{ marginTop: "0.45rem", fontSize: "0.75rem", color: "#9A8A70", fontStyle: "italic" }}>
+            {hasTruth
+              ? <>[accent] marks present — TRUTH mode: brackets override the lexicon for accent placement. | = line end · // = penultimate line.</>
+              : <>Plain text — AUTO mode: lexicon + heuristic accent. Click any syllable chip to correct. "point ▸" on an ingested sticheron populates this field with encoded truth.</>
+            }
+          </div>
           <div style={{ marginTop: "0.6rem", display: "flex", gap: "0.6rem", alignItems: "center", flexWrap: "wrap" }}>
-            <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }} onClick={analyze}>Analyze &amp; point</button>
-            <span style={{ fontSize: "0.78rem", color: "#6b5942", fontStyle: "italic" }}>
-              Auto-accent is a draft — click any syllable to fix its accent; the phrase-final accent is the one that matters most.
+            <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }} onClick={analyze}>
+              Analyze &amp; point
+            </button>
+            {compareMode && compareData && (
+              <button
+                style={{ ...btn, background: "transparent", fontSize: "0.75rem" }}
+                onClick={() => setCompareMode((v) => !v)}>
+                {compareMode ? "hide comparison ▾" : "show comparison ▸"}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── COMPARISON HARNESS (Feature B) ───────────────────────────────── */}
+      {compareMode && compareData && (
+        <div style={{ border: "1px solid rgba(90,122,60,.5)", borderRadius: 8, padding: "0.8rem 0.9rem",
+                      marginBottom: "1.1rem", background: "rgba(90,122,60,.04)" }}>
+          {/* Header row: aggregate stats + sing toggle + JSON export */}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.7rem", flexWrap: "wrap", marginBottom: "0.7rem" }}>
+            <span style={{ fontSize: "0.78rem", fontWeight: 600, color: "#3a6020" }}>
+              Director vs. Machine
             </span>
+            {/* Anchor-level headline */}
+            <span style={{ fontSize: "0.78rem", color: "#3a6020",
+                           background: "rgba(90,122,60,.12)", border: "1px solid rgba(90,122,60,.3)",
+                           borderRadius: 3, padding: "1px 8px" }}>
+              anchor: {compareData.anchorMatchCount}/{compareData.totalLines} lines match
+              {" "}({Math.round(compareData.anchorMatchCount / Math.max(1, compareData.totalLines) * 100)}%)
+            </span>
+            {/* Syllable-level */}
+            <span style={{ fontSize: "0.78rem", color: "#5b4a33",
+                           background: "rgba(139,105,20,.08)", border: "1px solid rgba(139,105,20,.25)",
+                           borderRadius: 3, padding: "1px 8px" }}>
+              syllable: {compareData.syllMatchCount}/{compareData.totalSylls}
+              {" "}({Math.round(compareData.syllMatchCount / Math.max(1, compareData.totalSylls) * 100)}%)
+            </span>
+            <span style={{ flex: 1 }} />
+            {/* Sing toggle */}
+            <div style={{ display: "inline-flex", border: "1.5px solid #8B6914", borderRadius: 5, overflow: "hidden" }}>
+              {["truth", "machine"].map((w) => (
+                <button key={w} onClick={() => setSingWhich(w)}
+                  style={{ border: "none", background: singWhich === w ? "#8B6914" : "transparent",
+                           color: singWhich === w ? "#fff" : "#8B6914",
+                           padding: "4px 11px", cursor: "pointer", fontFamily: "Georgia, serif",
+                           fontSize: "0.75rem", letterSpacing: "0.04em" }}>
+                  {w === "truth" ? "Sing director" : "Sing machine"}
+                </button>
+              ))}
+            </div>
+            {/* JSON export */}
+            <button
+              onClick={() => {
+                const payload = {
+                  generated: new Date().toISOString(),
+                  trainerVersion: TONE_TRAINER_VERSION,
+                  anchorMatchPct: Math.round(compareData.anchorMatchCount / Math.max(1, compareData.totalLines) * 100),
+                  syllMatchPct: Math.round(compareData.syllMatchCount / Math.max(1, compareData.totalSylls) * 100),
+                  lines: compareData.lines.map((l) => ({
+                    phrase: l.phrase,
+                    anchorMatch: l.anchorMatch,
+                    truthAnchorIdx: l.truthAnchor,
+                    machineAnchorIdx: l.machineAnchor,
+                    syllables: l.syllables.map((s) => ({
+                      text: s.text,
+                      truthAccent: s.truthAccent,
+                      machineAccent: s.machineAccent,
+                      agree: s.agree,
+                      isAnchor: s.isAnchor,
+                      isMachineAnchor: s.isMachineAnchor,
+                    })),
+                  })),
+                };
+                const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url; a.download = "tone-trainer-comparison.json"; a.click();
+                URL.revokeObjectURL(url);
+              }}
+              style={{ ...btn, fontSize: "0.74rem", padding: "3px 11px" }}
+            >
+              Export JSON ↓
+            </button>
+          </div>
+
+          {/* Per-line side-by-side comparison */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+            {compareData.lines.map((cl, li) => (
+              <div key={li} style={{ borderRadius: 5, overflow: "hidden",
+                                     border: cl.anchorMatch ? "1px solid rgba(90,122,60,.35)" : "1px solid rgba(180,80,40,.35)" }}>
+                {/* Line header */}
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.25rem 0.6rem",
+                              background: cl.anchorMatch ? "rgba(90,122,60,.08)" : "rgba(180,80,40,.07)",
+                              fontSize: "0.72rem" }}>
+                  <span style={{ background: cl.phrase === "Final" ? "#7a2418" : "#283a5c", color: "#fff",
+                                 borderRadius: 3, padding: "1px 7px" }}>{cl.phrase}</span>
+                  <span style={{ color: cl.anchorMatch ? "#3a6020" : "#8a3010", fontWeight: 600 }}>
+                    {cl.anchorMatch ? "anchor ✓" : "anchor ✗"}
+                  </span>
+                  <span style={{ color: "#9A8A70", fontStyle: "italic" }}>
+                    {cl.syllables.filter(s => s.agree).length}/{cl.syllables.length} syllables agree
+                  </span>
+                </div>
+
+                {/* Two-row chip display: director on top, machine below */}
+                {["truth", "machine"].map((which) => (
+                  <div key={which} style={{ display: "flex", flexWrap: "wrap", gap: "2px 2px",
+                                            alignItems: "flex-end", padding: "0.35rem 0.6rem",
+                                            background: which === "truth" ? "rgba(255,255,255,.6)" : "rgba(245,245,245,.6)",
+                                            borderTop: "1px solid rgba(0,0,0,.05)" }}>
+                    <span style={{ fontSize: "0.6rem", color: "#9A8A70", minWidth: "3.2em",
+                                   alignSelf: "center", fontStyle: "italic" }}>
+                      {which === "truth" ? "director" : "machine"}
+                    </span>
+                    {cl.syllables.map((s, si) => {
+                      const accent = which === "truth" ? s.truthAccent : s.machineAccent;
+                      const disagree = !s.agree;
+                      const isAnchorThis = which === "truth" ? s.isAnchor : s.isMachineAnchor;
+                      return (
+                        <span key={si}
+                          style={{ display: "inline-flex", flexDirection: "column", alignItems: "center",
+                                   padding: "2px 5px 1px", borderRadius: 5, minWidth: "1.8em",
+                                   background: disagree ? "rgba(200,100,40,.12)" : "rgba(40,58,92,.05)",
+                                   border: isAnchorThis ? "1px solid #7a2418" : disagree ? "1px solid rgba(200,100,40,.4)" : "1px solid transparent" }}>
+                          <span style={{ fontSize: "1rem", fontWeight: accent ? 600 : 400, position: "relative", color: accent ? "#1c1008" : "#9A8A70" }}>
+                            {accent && <span style={{ position: "absolute", top: "-0.5em", left: "50%", transform: "translateX(-50%)", color: "#7a2418", fontSize: "0.9em" }}>´</span>}
+                            {s.text}
+                          </span>
+                        </span>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+
+          <div style={{ marginTop: "0.5rem", fontSize: "0.72rem", color: "#6b5942", fontStyle: "italic" }}>
+            Amber chips = syllable-level disagreement. Boxed chip = cadence anchor. "Sing director / machine" plays the selected version.
           </div>
         </div>
       )}
