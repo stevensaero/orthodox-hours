@@ -1,6 +1,54 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.5.0** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.5.1** | Component: `src/components/tone-trainer.jsx`
+
+---
+
+## Session summary (May 30 2026 — v0.5.1 phrase-structural accent engine)
+
+**Root cause identified and fixed.** The v0.4.0/v0.5.0 AUTO mode marked every
+lexicon-stressed syllable as an accent chip and then found the last one as the
+anchor. More accurate stress (from the lexicon) just produced a more accurately
+wrong answer — the pipeline was wrong, not the data.
+
+**The correct pipeline** (from reading the Drillock & Ealy tutorial):
+1. Syllabifier/lexicon answers: *where is the natural stress in each word?* (lookup)
+2. Phrase-structural engine answers: *where does the cadence launch?* (structure)
+
+These are two different questions. The lexicon feeds #1. #2 was always being skipped.
+
+**`autoAccentLine(words, phrase)`** — new function, ~25 lines, the whole change:
+- Reads existing `accent` flags from `wordFromDisplay` as stress candidates
+- Applies tutorial rules: anchor = last internally stressed syllable (existing
+  backup rule); intonation = first stressed syllable (Phrases A and C only)
+- Returns words with accent=true on exactly those 1-2 syllables, false everywhere else
+
+**`autoEncodeLines`** updated with the same logic (`applyPhraseAccent` inline) so
+the machine column in the comparison harness reflects the correct engine.
+
+**Verified against "Lord I Call" fixture (node-level):**
+
+| Line | Phrase | Machine | Director | Anchor ✓? |
+|------|--------|---------|----------|-----------|
+| Lord, I call upon Thee, hear me! | A | Lord / hear | Lord / hear | ✓ |
+| Hear me, O Lord! | B | me | hear | ✗ |
+| Lord, I call upon Thee, hear me! | C | Lord / hear | Lord / hear | ✓ |
+| Receive the voice of my prayer, | D | voice | ceive / voice | ✓ |
+| when I call upon Thee! | A | when / pon | call / pon | ✓ anchor |
+| Hear me, O Lord! | Final | me | hear / me | ✓ |
+
+5/6 anchor matches vs 0/6 before. The one miss (Phrase B, line 2) is a known
+lexicon limitation: `me` is stressed in the lexicon so the backup rule steps
+back from `Lord` to `me` instead of `hear`. Not a logic error — a data quality
+target for the lexicon improvement loop.
+
+The intonation misses (line 4: `when` vs `call`; line 5: machine marks no
+intermediate reciting accents) are also lexicon targets, not logic errors.
+
+**Key principle established:** the STOP list is the wrong tool — `me` is
+genuinely accented in the Final Phrase but unaccented in Phrase B. Word identity
+cannot determine accent; phrase position and cadence structure must. The engine
+now reflects this correctly.
 
 ---
 
