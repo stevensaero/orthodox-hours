@@ -1010,11 +1010,17 @@ export default function ToneTrainer() {
       .catch(() => setLexiconError("Lexicon unavailable — using rules only"));
   }, []);
 
-  // Auto-scroll the active phrase block into view while singing (non-comparison mode).
+  // Auto-scroll the active block into view while singing — centers in the window.
+  // Works for both the sung display (phrase-block-N) and the comparison harness
+  // (compare-block-N). Using block:"center" keeps the active verse mid-screen
+  // rather than just barely in view.
   useEffect(() => {
-    if (playingLine === null || (compareMode && compareData)) return;
-    const el = document.getElementById(`phrase-block-${playingLine}`);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    if (playingLine === null) return;
+    const id = (compareMode && compareData)
+      ? `compare-block-${playingLine}`
+      : `phrase-block-${playingLine}`;
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
   }, [playingLine]);
 
   // docx ingest state
@@ -1855,7 +1861,7 @@ export default function ToneTrainer() {
             {compareData.lines.map((cl, li) => {
               const isPlaying = playingLine === li;
               return (
-              <div key={li} style={{ borderRadius: 5, overflow: "hidden",
+              <div key={li} id={`compare-block-${li}`} style={{ borderRadius: 5, overflow: "hidden",
                                      background: isPlaying ? "rgba(255,250,238,.95)" : "transparent",
                                      borderTop: cl.anchorMatch ? "1px solid rgba(90,122,60,.35)" : "1px solid rgba(180,80,40,.35)",
                                      borderRight: cl.anchorMatch ? "1px solid rgba(90,122,60,.35)" : "1px solid rgba(180,80,40,.35)",
