@@ -449,6 +449,7 @@ const JUNE_MENAION = {
     magnificat_sung: false,
     matins_format: "god_is_the_lord", // No Alleluia conditional in PDF; standard double service format
     feast_e: null, // AT LITURGY: troparion and both kontakia only, no proper epistle/gospel
+    feast_g: null, // §2B confirmed — no AT LITURGY section in PDF
     aposticha_source: "octoechos", // §2B — no Menaion aposticha in PDF
     note: "Double service: two venerable fathers in one compiled service. Joint troparion. " +
           "Per Fekula §2B: 3rd & 9th Hours use second saint's kontakion (Bessarion, Ode VI). " +

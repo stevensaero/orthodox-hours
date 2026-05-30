@@ -119,8 +119,8 @@ export const FIELD_REGISTRY = [
   {
     field: 'prokeimenon_text', category: 'liturgy', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') return entry.rank !== 'simple';
-      // Pentecostarion: required for all entries that have feast propers
+      // feast_e: null means §2A/§2B with no AT LITURGY propers — not required
+      if (type === 'menaion') return entry.rank !== 'simple' && entry.feast_e !== null;
       return isPresent(entry, 'feast_e') && entry.feast_e !== null;
     },
     description: 'Prokeimenon text',
@@ -128,7 +128,7 @@ export const FIELD_REGISTRY = [
   {
     field: 'prokeimenon_tone', category: 'liturgy', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') return entry.rank !== 'simple';
+      if (type === 'menaion') return entry.rank !== 'simple' && entry.feast_e !== null;
       return isPresent(entry, 'feast_e') && entry.feast_e !== null;
     },
     description: 'Prokeimenon tone',
@@ -136,7 +136,7 @@ export const FIELD_REGISTRY = [
   {
     field: 'prokeimenon_stichos', category: 'liturgy', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') return entry.rank !== 'simple';
+      if (type === 'menaion') return entry.rank !== 'simple' && entry.feast_e !== null;
       return isPresent(entry, 'feast_e') && entry.feast_e !== null;
     },
     description: 'Prokeimenon stichos verse',
@@ -144,7 +144,7 @@ export const FIELD_REGISTRY = [
   {
     field: 'alleluia_verse', category: 'liturgy', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') return entry.rank !== 'simple';
+      if (type === 'menaion') return entry.rank !== 'simple' && entry.feast_e !== null;
       return isPresent(entry, 'feast_e') && entry.feast_e !== null;
     },
     description: 'Alleluia verse',
@@ -152,7 +152,7 @@ export const FIELD_REGISTRY = [
   {
     field: 'alleluia_stichos', category: 'liturgy', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') return entry.rank !== 'simple';
+      if (type === 'menaion') return entry.rank !== 'simple' && entry.feast_e !== null;
       return isPresent(entry, 'feast_e') && entry.feast_e !== null;
     },
     description: 'Alleluia stichos verse',
@@ -160,7 +160,7 @@ export const FIELD_REGISTRY = [
   {
     field: 'communion_verse', category: 'liturgy', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') return entry.rank !== 'simple';
+      if (type === 'menaion') return entry.rank !== 'simple' && entry.feast_e !== null;
       return isPresent(entry, 'feast_e') && entry.feast_e !== null;
     },
     description: 'Communion verse',
@@ -198,9 +198,13 @@ export const FIELD_REGISTRY = [
       }
       return entry.menaion_set_aside === true;
     },
-    description: 'LIC Glory doxasticon (tone + text)',
-    check: (entry) => isPresent(entry, 'stichera_glory') &&
-      (typeof entry.stichera_glory === 'object' ? !!(entry.stichera_glory.text) : true),
+    description: 'LIC Glory doxasticon (tone + text, or null if §2B no doxasticon)',
+    // null is a valid explicit value for §2B doubles (no doxasticon; Glory → theotokion)
+    check: (entry) => {
+      if (!('stichera_glory' in entry)) return false;
+      if (entry.stichera_glory === null) return true; // explicitly absent — valid for §2B
+      return typeof entry.stichera_glory === 'object' ? !!(entry.stichera_glory.text) : true;
+    },
   },
 
   // ── VESPERS: LITIYA ────────────────────────────────────────────────────────
