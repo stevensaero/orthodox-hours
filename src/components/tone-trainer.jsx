@@ -561,10 +561,18 @@ function pointLine(line) {
   const cad = flat.slice(a);
   const roles = [];
 
+  // For phrases with intonation, find the first accented body syllable.
+  // That syllable is the tutorial's intonation half note (role="inton", accent=true → H).
+  // Unaccented syllables before it are lead-ins on the same pitch (role="recite" → Q).
+  // Fallback: if no accented body syllable exists, body[0] gets the inton role.
+  const intonIdx = def.inton
+    ? (body.findIndex(s => s.accent) >= 0 ? body.findIndex(s => s.accent) : 0)
+    : -1;
+
   body.forEach((s, i) => {
     let role = "recite";
     let pitch = def.recite;
-    if (i === 0 && def.inton) role = "inton";
+    if (def.inton && i === intonIdx) role = "inton";
     if (def.prep && i === body.length - 1) { role = "prep"; pitch = def.prep; }
     roles.push({ role, pitches: [pitch], accent: s.accent, text: s.text, source: s.source });
   });
@@ -1689,15 +1697,15 @@ export default function ToneTrainer() {
             )}
           </div>
           <textarea value={text} onChange={(e) => { setText(e.target.value); setHasTruth(parseBracketedText(e.target.value).hasBrackets); }} rows={5}
-            placeholder={"Plain text (AUTO mode):\nCome, let us also go to meet Christ with divine songs!\n\nWith [accent] marks (TRUTH mode):\n[Lord], I call up[on] Thee, [hear] me! |\n[Hear] me, O Lord!"}
+            placeholder={"Machine Pointing (plain text):\nCome, let us also go to meet Christ with divine songs!\n\nDirector Pointing (with [accent] marks):\n[Lord], I call up[on] Thee, [hear] me! |\n[Hear] me, O Lord!"}
             style={{ width: "100%", fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "0.88rem",
                      lineHeight: 1.6, border: `1px solid ${hasTruth ? "rgba(90,122,60,.6)" : "#d6c79f"}`,
                      borderRadius: 6, padding: "8px", resize: "vertical",
                      background: hasTruth ? "rgba(90,122,60,.03)" : "transparent" }} />
           <div style={{ marginTop: "0.45rem", fontSize: "0.75rem", color: "#9A8A70", fontStyle: "italic" }}>
             {hasTruth
-              ? <>[accent] marks present — using director's notes: brackets override the auto-accent engine. | = line end · // = penultimate line.</>
-              : <>Plain text — AUTO mode: lexicon + heuristic accent. Click any syllable chip to correct. "point ▸" on an ingested sticheron populates this field with encoded truth.</>
+              ? <>Director Pointing mode — [accent] brackets override the machine. | = line end · // = penultimate line.</>
+              : <>Machine Pointing mode — lexicon + phrase-structural heuristic. Analyze &amp; point to render. "point ▸" on an ingested sticheron loads encoded director marks.</>
             }
           </div>
           <div style={{ marginTop: "0.6rem", display: "flex", gap: "0.6rem", alignItems: "center", flexWrap: "wrap" }}>
