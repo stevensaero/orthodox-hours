@@ -18,6 +18,8 @@ const JUNE_MENAION = {
       magnificat_sung: false,
       matins_format: "god_is_the_lord", // PDF: "if Alleluia is to be chanted instead of God is the Lord" — god_is_the_lord is the norm
       feast_e: null,
+    feast_g: null,
+      feast_g: null,
       aposticha_source: "octoechos", // §2A — no Menaion aposticha in PDF
       note: "Also: Martyrs Kyriaka, Valeria & Maria (OCA secondary, Polyeleos service, 06-07.pdf). " +
             "3 stichera Tone I confirmed §2A.",
@@ -49,6 +51,8 @@ const JUNE_MENAION = {
       magnificat_sung: false,
       matins_format: "god_is_the_lord", // Implied by Great Vespers structure
       feast_e: null, // AT LITURGY: troparion and kontakion only, no proper epistle/gospel
+      feast_g: null,
+    feast_g: null,
       aposticha_source: "octoechos", // "Stichera from the Oktoechos; Glory..., of the holy martyrs"
       note: "The Holy Martyrs Kyriaka, Valeria and Maria appear on the OCA calendar as secondary " +
             "commemorations on June 7. The OCA primary is HM Theodotus of Ancyra. " +
@@ -364,6 +368,7 @@ const JUNE_MENAION = {
     magnificat_sung: false,
     matins_format: "god_is_the_lord", // §2A — standard format; no Alleluia conditional in PDF
     feast_e: null, // AT LITURGY: troparion and kontakia only, no proper epistle/gospel
+    feast_g: null,
     aposticha_source: "octoechos", // §2A — no Menaion aposticha in PDF
     note: "Also: Sts Mary and Martha, sisters of St Lazarus. Two kontakia in PDF: " +
           "Ode III Tone II governs 1st & 6th Hours; Ode VI Tone IV governs 3rd & 9th Hours. " +
@@ -406,6 +411,7 @@ const JUNE_MENAION = {
     magnificat_sung: false,
     matins_format: "god_is_the_lord", // PDF: "if Alleluia is to be chanted instead of God is the Lord" — god_is_the_lord is the norm
     feast_e: null, // AT LITURGY: troparion and kontakion only, no proper epistle/gospel
+    feast_g: null,
     aposticha_source: "octoechos", // §2C — no Menaion aposticha in PDF
     note: "Dorotheus served 107 years as a pastor before martyrdom under Julian the Apostate. " +
           "6 stichera (3 texts, each doubled) Tone VIII confirmed §2C.",
@@ -512,6 +518,7 @@ const JUNE_MENAION = {
     magnificat_sung: false,
     matins_format: "god_is_the_lord", // PDF: "if Alleluia is to be chanted instead of God is the Lord" — confirming god_is_the_lord is the norm
     feast_e: null,
+    feast_g: null,
     aposticha_source: "octoechos", // PDF: "On the Aposticha, the Stichera from the Oktoechos"
     note: "Also: Blessed Agapitos the Unmercenary of Pechersk (not on OCA calendar). " +
           "3 stichera Tone II confirmed §2A.",
@@ -549,6 +556,8 @@ const JUNE_MENAION = {
       magnificat_sung: false,
       matins_format: "god_is_the_lord", // §2C — no Alleluia conditional in PDF; Kontakion after Ode VI confirms God is the Lord
       feast_e: null, // AT LITURGY: troparion and kontakion only, no proper epistle/gospel
+      feast_g: null,
+    feast_g: null,
       aposticha_source: "octoechos", // §2C — no Menaion aposticha printed in PDF
       note: "6 stichera (3 Tone IV + 3 Tone VIII) confirmed §2C. AT LITURGY has troparion and kontakion only.",
       troparion: {
@@ -634,6 +643,7 @@ const JUNE_MENAION = {
     magnificat_sung: false,
     matins_format: "god_is_the_lord", // PDF: "if Alleluia is to be chanted instead of God is the Lord" — god_is_the_lord is the norm
     feast_e: null,
+    feast_g: null,
     aposticha_source: "octoechos", // §2A — no Menaion aposticha in PDF
     note: "Companions: venerable Paula and four unnamed children martyrs. " +
           "3 stichera Tone I confirmed §2A. Troparion/kontakion from OCA troparia page (not in St. Sergius PDF).",
@@ -1062,6 +1072,7 @@ const JUNE_MENAION = {
     magnificat_sung: false,
     matins_format: "god_is_the_lord", // PDF: "if Alleluia is to be chanted instead of God is the Lord" — god_is_the_lord is the norm
     feast_e: null,
+    feast_g: null,
     feast_g: null,
     aposticha_source: "octoechos", // §2A — no Menaion aposticha in PDF
     note: "Bishop of Prussia martyred for the faith. Also: St John of Tobolsk (separate service). " +
