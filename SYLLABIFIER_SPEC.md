@@ -244,18 +244,73 @@ side-by-side comparison view of director truth vs. machine auto-accent.
 
 Accepts text containing `[accent]` marks + `|` line-ends + `//`:
 - If `[accent]` marks are present → treat as TRUTH, rebuild lines/rotation from
-  markers, no auto-guessing for marked syllables
+  markers, **brackets are authoritative over the lexicon**
 - If no marks → run auto-accent draft as before
 
 "point ▸" on an ingested sticheron populates this field with the block's encoded
 text (`[accent]` / `|` / `//`), making it the single channel through which both
 ingested and hand-typed text flow.
 
+### CRITICAL: current behavior vs. intended behavior
+
+**Current behavior (v0.4.0, pre-B):** brackets are silently stripped by the
+`/[^A-Za-z''-]/g` regex in `wordFromDisplay`. The alpha content is preserved and
+syllabified/accented correctly by the lexicon. So `up[on]` → the match finds
+`upon` as the alphabetic core → lexicon returns `u·pon` with stress on `pon` →
+*looks correct* because the lexicon agrees with the director. But the bracket is
+carrying no weight — the lexicon is driving the accent, not the director's mark.
+A case where the director's bracket *disagrees* with the lexicon (e.g. `[up]on`
+for a specific musical reason) would silently place the wrong accent.
+
+**Intended behavior (Feature B):** the bracket IS the accent signal. When
+`[accent]` marks are present, they override the lexicon entirely for accent
+placement. The lexicon still drives syllabification (word splitting), but
+accent position comes from the bracket.
+
+### Bracket parsing — whole-word and mid-word cases
+
+Both cases occur in OCA-distributed texts and must be handled:
+
+**Whole-word bracket:** `[Lord]`, `[hear]`, `[Hear]` — the entire word is
+bracketed. The accented syllable is whichever syllable the lexicon/rules identify
+as the primary stress. In practice, bracket the whole word = mark the word as
+carrying a tonic accent; the specific syllable within it follows the lexicon.
+
+**Mid-word bracket:** `up[on]`, `Re[ceive]`, `[voice]` — the bracket covers only
+part of the word. This is common in OCA materials. The bracket spans a *character
+range* within the word, and the accented syllable is the one whose **vowel nucleus**
+falls within that range. This is the character-span-to-syllable mapping problem.
+
+**Mapping rule (confirmed from analysis of the 2/2 OCA file):** a syllable is
+accented if the bracketed character span contains that syllable's vowel nucleus.
+Analysis of the real corpus showed director brackets consistently land on single
+spoken syllables — there were no cases of a bracket intentionally spanning two
+nuclei. When a bracket appears to cover two vowel nuclei, that is a
+syllabification error (the syllabifier split wrong), not director intent. Such
+cases should be flagged with the existing `?` unconfirmed indicator.
+
+**Algorithm for bracket → syllable mapping:**
+1. Strip the brackets from the word to get the clean text: `up[on]` → `upon`
+2. Record the character range of the bracketed content: chars 2-3 (`on`)
+3. Syllabify the clean word via the lexicon: `upon` → `[u, pon]`
+4. Map syllable boundaries back to character positions in the clean word
+5. The accented syllable is the one whose character range overlaps the bracket range
+6. If the bracket range spans two syllables: flag as suspect, accent the one
+   containing the primary vowel of the bracket range
+
+**The `[Hear] [me]` case:** two consecutive bracketed single-syllable words.
+Both are accented. This is valid — on the Final Phrase's last line both words
+can carry accent (the director marks them both). The anchor rule (last *internal*
+accent) still applies: if `[me]` is the last word and is a single accented
+syllable, back off to `[Hear]` as the cadence anchor.
+
 ### The comparison harness
 
-1. **Parse** the encoded (truth) text into syllables with accent positions
+1. **Parse** the encoded (truth) text into syllables with accent positions,
+   using the bracket-to-syllable mapping above
 2. **Strip** the marks while preserving line positions → clean text
-3. **Re-encode** the stripped text using the auto-accenter → machine version
+3. **Re-encode** the stripped text using the auto-accenter (lexicon + heuristic)
+   → machine version
 4. **Compare** truth vs. machine, per syllable, per line
 5. **Display** side by side: director vs. machine, with disagreements highlighted
 
@@ -287,12 +342,15 @@ failures.
 
 ## 8. Pending work priority order
 
-1. **Wire lexicon into trainer (v0.4.0)** — bundled import, lookup-first
-   syllabify/accent, unconfirmed toggle. Use unconfirmed entries now; director
-   corrections improve accuracy later without re-wiring. ← NEXT SESSION
+1. ~~**Wire lexicon into trainer (v0.4.0)**~~ **DONE** — fetches from `public/lexicon/`,
+   lookup-first syllabify/accent, unconfirmed toggle, punctuation phantom-chip fixes.
 2. **Director review of name-review.md** — corrections folded into name-residue.json,
-   `confirmed:true` set, committed. Can happen in parallel with or after #1.
-3. **Feature B: encoding-aware field + A/B comparison harness (v0.5.0)**
+   `confirmed:true` set, copy to `public/lexicon/`, commit. No component re-wiring.
+3. **Feature B: encoding-aware field + A/B comparison harness (v0.5.0)** ← NEXT
+   Key implementation detail: bracket parsing must map character spans to syllable
+   nuclei (see §7). Both whole-word `[Lord]` and mid-word `up[on]` brackets occur
+   in OCA materials and must be handled. Current v0.4.0 silently strips brackets —
+   the bracket carries no accent weight yet. Feature B makes brackets authoritative.
 4. **SATB mode** — real S/A/T/B notes from tutorial PDF four-part page +
    recorded OCA isolated-part MP3s as audio reference. SATB preview mockup
    approved; wiring real note data is the build step.
