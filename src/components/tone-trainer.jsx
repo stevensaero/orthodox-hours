@@ -1496,7 +1496,7 @@ export default function ToneTrainer() {
     setMachineLines(mLines);
     setCompareData(cmp);
     setHasTruth(true);
-    setCompareMode(false); // user must hit "show comparison ▸" explicitly
+    setCompareMode(false); // user must hit "Show Director vs. Machine ▸" explicitly
     setSingWhich("truth");
     setTimeout(() => {
       if (pointerRef.current) pointerRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1727,7 +1727,7 @@ export default function ToneTrainer() {
             {compareData && (
               <button style={{ ...btn, background: "transparent", fontSize: "0.75rem", flexShrink: 0 }}
                 onClick={() => setCompareMode((v) => !v)}>
-                {compareMode ? "hide comparison ▾" : "show comparison ▸"}
+                {compareMode ? "Hide Director vs. Machine ▾" : "Show Director vs. Machine ▸"}
               </button>
             )}
           </div>
