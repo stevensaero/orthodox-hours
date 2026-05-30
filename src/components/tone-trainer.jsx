@@ -1674,8 +1674,8 @@ export default function ToneTrainer() {
                      background: editMode ? gold : "transparent",
                      color: editMode ? "#fff" : gold,
                      fontSize: "0.78rem", padding: "5px 12px" }}
-            title={editMode ? "Edit mode on — click chips to change accents" : "Edit mode off — enable to adjust accents and syllables"}>
-            ✎ edit
+            title={editMode ? "Edit machine mode on — click machine chips or edit syllables" : "Enable to edit machine accent and syllable breakdown"}>
+            ✎ edit machine
           </button>
           {lexiconError && <span style={{ fontSize: "0.72rem", color: "#7a2418", fontStyle: "italic" }}>{lexiconError}</span>}
           {!lexicon && !lexiconError && <span style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic" }}>loading lexicon…</span>}
@@ -1828,8 +1828,7 @@ export default function ToneTrainer() {
             {compareData.lines.map((cl, li) => {
               const isPlaying = playingLine === li;
               return (
-              <React.Fragment key={li}>
-              <div style={{ borderRadius: 5, overflow: "hidden",
+              <div key={li} style={{ borderRadius: 5, overflow: "hidden",
                                      background: isPlaying ? "rgba(255,250,238,.95)" : "transparent",
                                      borderTop: cl.anchorMatch ? "1px solid rgba(90,122,60,.35)" : "1px solid rgba(180,80,40,.35)",
                                      borderRight: cl.anchorMatch ? "1px solid rgba(90,122,60,.35)" : "1px solid rgba(180,80,40,.35)",
@@ -1853,12 +1852,18 @@ export default function ToneTrainer() {
                 {["truth", "machine"].map((which) => {
                   // rowSinging follows playingWhich (set by playLineAs) not the global toggle
                   const rowSinging = isPlaying && playingWhich === which;
+                  // Machine edit vars — hoisted so they're available in JSX without an IIFE
+                  const mLine = which === "machine" ? (machineLines || [])[li] : null;
+                  const mDefaultVal = mLine
+                    ? mLine.words.map(w => w.sylls.map(s => s.text).join("\u00b7")).join(" ")
+                    : "";
+                  const mInputId = `medit-${li}`;
                   return (
-                  <div key={which} style={{ display: "flex", alignItems: "center",
-                                            padding: "0.35rem 0.6rem",
-                                            background: rowSinging ? "rgba(255,236,180,.55)"
+                  <div key={which} style={{ background: rowSinging ? "rgba(255,236,180,.55)"
                                               : which === "truth" ? "rgba(255,255,255,.6)" : "rgba(245,245,245,.6)",
                                             borderTop: "1px solid rgba(0,0,0,.05)" }}>
+                    {/* Chips + play button row */}
+                    <div style={{ display: "flex", alignItems: "center", padding: "0.35rem 0.6rem" }}>
                     <span style={{ fontSize: "0.6rem", color: "#9A8A70", minWidth: "3.2em",
                                    flexShrink: 0, fontStyle: "italic" }}>
                       {which === "truth" ? "director" : "machine"}
@@ -1910,39 +1915,29 @@ export default function ToneTrainer() {
                                flexShrink: 0, marginLeft: "0.5rem", alignSelf: "center" }}>
                       ▶
                     </button>
+                    </div>{/* end chips row */}
+                    {/* Machine edit panel — inside the machine row when editMode on */}
+                    {which === "machine" && editMode && (
+                      <div style={{ padding: "0.3rem 0.6rem 0.45rem", borderTop: "1px solid rgba(0,0,0,.08)",
+                                     background: "rgba(235,235,235,.5)" }}>
+                        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
+                          <input id={mInputId} defaultValue={mDefaultVal}
+                            style={{ flex: 1, minWidth: 200, fontFamily: "Georgia, serif", fontSize: "0.85rem",
+                                     border: "1px solid #d6c79f", borderRadius: 6, padding: "3px 7px" }} />
+                          <button style={btn}
+                            onClick={() => applyMachineEdit(li, document.getElementById(mInputId).value)}>
+                            apply
+                          </button>
+                          <span style={{ fontSize: "0.7rem", color: "#6b5942", fontStyle: "italic" }}>
+                            · separates syllables, space separates words
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   );
                 })}
               </div>
-              {/* Machine edit syllables — visible in edit mode */}
-              {editMode && (
-                <div style={{ padding: "0.25rem 0.6rem 0.4rem", borderTop: "1px solid rgba(0,0,0,.05)",
-                               background: "rgba(245,245,245,.5)" }}>
-                  <button style={{ ...btn, fontSize: "0.7rem", padding: "2px 9px" }}
-                    onClick={() => setMachineEditOpen(o => ({ ...o, [li]: !o[li] }))}>
-                    {machineEditOpen[li] ? "close ▾" : "edit machine syllables ▸"}
-                  </button>
-                  {machineEditOpen[li] && (() => {
-                    const mLine = (machineLines || [])[li];
-                    const defaultVal = mLine ? mLine.words.map(w => w.sylls.map(s => s.text).join("·")).join(" ") : "";
-                    const inputId = `medit-${li}`;
-                    return (
-                      <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginTop: "0.35rem", flexWrap: "wrap" }}>
-                        <input id={inputId} defaultValue={defaultVal}
-                          style={{ flex: 1, minWidth: 220, fontFamily: "Georgia, serif", fontSize: "0.88rem",
-                                   border: "1px solid #d6c79f", borderRadius: 6, padding: "4px 7px" }} />
-                        <button style={btn} onClick={() => applyMachineEdit(li, document.getElementById(inputId).value)}>
-                          apply
-                        </button>
-                        <span style={{ fontSize: "0.72rem", color: "#6b5942", fontStyle: "italic" }}>
-                          · separates syllables, space separates words
-                        </span>
-                      </div>
-                    );
-                  })()}
-                </div>
-              )}
-              </React.Fragment>
               );
             })}
           </div>
