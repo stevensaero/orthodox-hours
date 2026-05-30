@@ -229,16 +229,21 @@ function syllabifyWithSource(wordDisplay, lexicon) {
 // Returns {display, sylls:[{text, accent}]} where accent comes from stressIdx.
 function wordFromDisplay(wordDisplay, lexicon) {
   const { sylls, stressIdx, source } = syllabifyWithSource(wordDisplay, lexicon);
-  return {
-    display: wordDisplay,
-    sylls: sylls.map((t, i) => ({
-      text: t.replace(/[^A-Za-z''-]/g, "") || t,
-      accent: stressIdx !== null
-        ? i === stressIdx
-        : guessStressHeuristic(wordDisplay, sylls, i),
-      source, // carries through for the toggle indicator
-    })),
-  };
+  const mappedSylls = sylls
+    .map((t, i) => {
+      const clean = t.replace(/[^A-Za-z''-]/g, "");
+      if (!clean) return null;   // drop pure-punctuation fragments
+      return {
+        text: clean,
+        accent: stressIdx !== null
+          ? i === stressIdx
+          : guessStressHeuristic(wordDisplay, sylls, i),
+        source,
+      };
+    })
+    .filter(Boolean);
+  if (!mappedSylls.length) return null;  // whole token was punctuation
+  return { display: wordDisplay, sylls: mappedSylls };
 }
 
 // ── PRESET: Meeting of the Lord, "Lord, I Call", 3rd sticheron (hand-pointed) ───
@@ -621,7 +626,10 @@ export default function ToneTrainer() {
     const raw = text.split("\n").map((s) => s.trim()).filter(Boolean);
     if (!raw.length) { setLines([]); return; }
     const next = raw.map((ln, i) => {
-      const words = ln.split(/\s+/).map((w) => wordFromDisplay(w, lexicon));
+      const words = ln.split(/\s+/)
+        .filter((w) => /[A-Za-z]/.test(w))   // skip pure-punctuation tokens (commas, etc.)
+        .map((w) => wordFromDisplay(w, lexicon))
+        .filter(Boolean);                      // drop null returns (whole-punctuation tokens)
       return { phrase: phraseForLine(i, raw.length), words };
     });
     setLines(next);
