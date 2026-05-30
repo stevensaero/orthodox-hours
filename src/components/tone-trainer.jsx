@@ -10,11 +10,30 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.7.0";
+export const TONE_TRAINER_VERSION = "v0.8.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.8.0",
+    date: "May 2026",
+    summary: "Tone 2 — Common Chant Obikhod, full phrase support",
+    items: [
+      "feat: Tone 2 (Common Chant) fully implemented — all five phrases (A B C D Final) with correct Drillock & Ealy pitch figures, intonation rules, prep notes, and cadence distributions.",
+      "feat: Tone selector — pill buttons 1–8 above the textarea. Tones 1 and 2 active; 3–8 disabled pending implementation.",
+      "feat: PH → PH_DEFS keyed by tone number. Active phrase table derived from activeTone state: const PH = PH_DEFS[activeTone]. All downstream functions (pointLine, anchorIndex, distribute, lineToNotes) are tone-agnostic and required no changes.",
+      "feat: Phrase A Tone 2 — reciting re, no intonation (inton:false), cadence fa→mi→re. Verified against OCA corpus (20 instances, all single-mark anchor only) and Tone 2 Obikhod unison recording (fa=H, mi=Q, re=H confirmed).",
+      "feat: Phrases B and D — cadence di→re (di = chromatic raised do, new pitch). Both notes half notes. Verified from recording (di=H, re=H).",
+      "feat: Phrase C — reciting re, intonation true, prep ti (NOT la — la is the soprano harmony note; unison melody descends to ti). Cadence lands on do. Critical correction from audio analysis: SATB score showed soprano 'la' which is a harmony note a third above the melody.",
+      "feat: Final Phrase — prep ti, cadence do→re→do→ti (ti = whole note). Pre-slur rule: when the syllable immediately before the prep is a single accented monosyllable, it receives pitches [re,ti] as two quarter notes. Confirmed from OCA corpus: 'Hear me O Lord' and 'Pray to Christ God for us all!'",
+      "feat: New solfège pitches di (semitone above do, offset +1), fa (perfect fourth, offset +5), sol (perfect fifth, offset +7) added to OFF table and PITCH_SCALE.",
+      "feat: autoAccentLine intonation condition changed from hardcoded (phrase==='A'||phrase==='C') to PH_DEFS[activeTone][phrase].inton — so Tone 2 Phrase A correctly gets no intonation mark. Same fix applied to applyPhraseAccent in autoEncodeLines.",
+      "feat: docx ingest 'point ▸' guard updated from block.tone!==1 to !PH_DEFS[block.tone] — Tone 2 blocks now pointable.",
+      "feat: Tone 2 preset sticheron — 'Come, let us worship the Word of God' (Resurrectional 1, 6 lines). Hand-verified against OCA Feb 8 2026 service text.",
+      "feat: Subtitle and info bar prep legend update dynamically with activeTone.",
+    ],
+  },
   {
     version: "v0.7.0",
     date: "May 2026",
@@ -187,7 +206,10 @@ const TRAINER_RELEASE_NOTES = [
 
 // ── PITCH / SOLFEGE ───────────────────────────────────────────────────────────
 // Semitone offset from moveable "do". Tone 1 home base is "re" (one step above do).
-const OFF = { la: -3, ti: -1, do: 0, re: 2, mi: 4 };
+// di = chromatic raised do (one semitone above do) — used in Tone 2 Phrases B and D.
+// fa = perfect fourth above do — used in Tone 2 Phrase A cadence.
+// sol = perfect fifth above do — in scale for completeness; not yet used in cadences.
+const OFF = { la: -3, ti: -1, do: 0, di: 1, re: 2, mi: 4, fa: 5, sol: 7 };
 const DO_OPTIONS = [
   { label: "F", hz: 174.61 },
   { label: "G", hz: 196.00 },
@@ -198,30 +220,49 @@ const DO_OPTIONS = [
   { label: "E", hz: 329.63 },
 ];
 
-// ── PHRASE DEFINITIONS (Tone 1, corrected against Drillock & Ealy) ──────────────
+// ── PHRASE DEFINITIONS (keyed by tone number) ────────────────────────────────
 // recite : reciting-tone pitch
 // inton  : phrase opens with an intonation note on the reciting pitch
-// prep   : preparatory note before the cadence (Phrase A only, on ti)
+// prep   : preparatory note before the cadence
 // cad    : cadence pitch figure, hung on the last INTERNAL accent
 //
-// Corrections from the prior heuristic build:
+// Tone 1 (Drillock & Ealy, corrected):
 //  - Phrase B cadence is do → re → ti (hold do, up a tone to re, down a third to ti)
 //  - prep on ti belongs to Phrase A specifically (not a general rule)
 //  - anchor is the last INTERNAL accent (see pointLine), not merely the last accent
-const PH = {
-  A:     { recite: "re", inton: true,  prep: "ti", cad: ["do"] },
-  B:     { recite: "do", inton: false, prep: null, cad: ["do", "re", "ti"] },
-  C:     { recite: "re", inton: true,  prep: null, cad: ["do", "ti"] },
-  D:     { recite: "do", inton: false, prep: null, cad: ["ti", "do", "re", "do", "ti"] },
-  Final: { recite: "re", inton: false, prep: null, cad: ["do", "ti", "la"] },
+//
+// Tone 2 (Obikhod Common Chant, verified against OCA corpus + unison recording):
+//  - Phrase A: no intonation, cadence fa→mi→re (fa=H, mi=Q, re=H — audio confirmed)
+//  - Phrases B+D: cadence di→re (di = chromatic #do; both half notes)
+//  - Phrase C: inton true, prep TI (not la — la is soprano harmony; unison uses ti),
+//              cadence lands on do. SATB soprano 'la' is a harmony note, not the melody.
+//  - Final: prep ti, cadence do→re→do→ti (ti=whole note)
+//  - Pre-slur rule: see pointLine() — a stressed monosyllable before the prep
+//    receives [re,ti] two quarter notes. Confirmed: "Hear me O Lord", "Christ God".
+const PH_DEFS = {
+  1: {
+    A:     { recite: "re", inton: true,  prep: "ti", cad: ["do"] },
+    B:     { recite: "do", inton: false, prep: null, cad: ["do", "re", "ti"] },
+    C:     { recite: "re", inton: true,  prep: null, cad: ["do", "ti"] },
+    D:     { recite: "do", inton: false, prep: null, cad: ["ti", "do", "re", "do", "ti"] },
+    Final: { recite: "re", inton: false, prep: null, cad: ["do", "ti", "la"] },
+  },
+  2: {
+    A:     { recite: "re", inton: false, prep: null,  cad: ["fa", "mi", "re"]      },
+    B:     { recite: "re", inton: false, prep: null,  cad: ["di", "re"]            },
+    C:     { recite: "re", inton: true,  prep: "ti",  cad: ["do"]                  },
+    D:     { recite: "do", inton: false, prep: null,  cad: ["di", "re"]            },
+    Final: { recite: "re", inton: false, prep: "ti",  cad: ["do", "re", "do", "ti"] },
+  },
 };
 const ROT = ["A", "B", "C", "D"];
 const phraseForLine = (i, total) => (i === total - 1 ? "Final" : ROT[i % 4]);
 const PNAME = { A: "Phrase A", B: "Phrase B", C: "Phrase C", D: "Phrase D", Final: "Final Phrase" };
 
 // ── PITCH HEIGHT (sung display) ───────────────────────────────────────────────
-// la is the lowest pitch in Tone 1 cadences. Each scale step adds CHIP_STEP_H px.
-const PITCH_SCALE = ["la", "ti", "do", "re", "mi", "fa", "sol"];
+// la is the lowest pitch in cadences. Each scale step adds CHIP_STEP_H px.
+// di sits between do and re (chromatic); fa and sol extend the upper range for Tone 2.
+const PITCH_SCALE = ["la", "ti", "do", "di", "re", "mi", "fa", "sol"];
 const CHIP_BASE_H = 36;   // la = 36px
 const CHIP_STEP_H = 10;   // +10px per scale degree → re = 66px
 const chipH = (sol) => CHIP_BASE_H + Math.max(0, PITCH_SCALE.indexOf(sol)) * CHIP_STEP_H;
@@ -376,7 +417,7 @@ function wordFromDisplay(wordDisplay, lexicon) {
 // Accents hand-verified against the printed score in the tutorial.
 // Tutorial-faithful: intonation syllable + cadence anchor only (1–2 marks per phrase).
 // Old v0.1.0 preset marked all natural word stresses — corrected per Drillock & Ealy.
-const PRESET = [
+const PRESET_T1 = [
   // Phrase A — Come = intonation (H); vine = cadence anchor (H); songs trails (H)
   ["A", [["Come,",[["Come",1]]],["let",[["let",0]]],["us",[["us",0]]],["also",[["al",0],["so",0]]],["go",[["go",0]]],["to",[["to",0]]],["meet",[["meet",0]]],["Christ",[["Christ",0]]],["with",[["with",0]]],["divine",[["di",0],["vine",1]]],["songs!",[["songs",0]]]]],
   // Phrase B — no intonation; Sim = anchor (backup from final monosyllable saw)
@@ -390,8 +431,30 @@ const PRESET = [
   // Final — wor = anchor; Him trails
   ["Final", [["Let",[["Let",0]]],["us",[["us",0]]],["worship",[["wor",1],["ship",0]]],["Him!",[["Him",0]]]]],
 ];
-function presetToLines() {
-  return PRESET.map(([ph, ws]) => ({
+
+// ── PRESET: "Come, let us worship the Word of God" — Tone 2 Resurrectional 1 ──
+// Accents hand-verified against OCA Feb 8 2026 service text (run-level underline).
+// 6-line sticheron: A B C D A Final.
+const PRESET_T2 = [
+  // Phrase A — no intonation; Word = anchor (single mark)
+  ["A", [["Come,",[["Come",0]]],["let",[["let",0]]],["us",[["us",0]]],["worship",[["wor",0],["ship",0]]],["the",[["the",0]]],["Word",[["Word",1]]],["of",[["of",0]]],["God",[["God",0]]]]],
+  // Phrase B — a = anchor (backup from "ages", polysyllabic — 'a' is the stressed syllable)
+  ["B", [["begotten",[["be",0],["got",0],["ten",0]]],["of",[["of",0]]],["the",[["the",0]]],["Father",[["Fa",0],["ther",0]]],["before",[["be",0],["fore",0]]],["all",[["all",0]]],["ages,",[["a",1],["ges",0]]]]],
+  // Phrase C — car = intonation; Mar = anchor
+  ["C", [["and",[["and",0]]],["incarnate",[["in",0],["car",1],["nate",0]]],["of",[["of",0]]],["the",[["the",0]]],["Virgin",[["Vir",0],["gin",0]]],["Mary!",[["Mar",1],["y",0]]]]],
+  // Phrase D — dured = anchor (one mark)
+  ["D", [["Having",[["Hav",0],["ing",0]]],["endured",[["en",0],["dured",1]]],["the",[["the",0]]],["Cross,",[["Cross",0]]]]],
+  // Phrase A — self = anchor (backup from "desired", penultimate stressed syllable)
+  ["A", [["He",[["He",0]]],["was",[["was",0]]],["buried",[["bur",0],["ied",0]]],["as",[["as",0]]],["He",[["He",0]]],["Himself",[["Him",0],["self",1]]],["desired.//",[["de",0],["sired",0]]]]],
+  // Final — er = anchor (erring)
+  ["Final", [["And",[["And",0]]],["having",[["hav",0],["ing",0]]],["risen",[["ris",0],["en",0]]],["from",[["from",0]]],["the",[["the",0]]],["dead,",[["dead",0]]],["He",[["He",0]]],["saved",[["saved",0]]],["me,",[["me",0]]],["an",[["an",0]]],["erring",[["er",1],["ring",0]]],["man.",[["man",0]]]]],
+];
+
+const PRESETS = { 1: PRESET_T1, 2: PRESET_T2 };
+
+function presetToLines(toneNum) {
+  const preset = PRESETS[toneNum] || PRESETS[1];
+  return preset.map(([ph, ws]) => ({
     phrase: ph,
     words: ws.map(([d, ss]) => ({ display: d, sylls: ss.map(([t, a]) => ({ text: t, accent: !!a })) })),
   }));
@@ -591,13 +654,31 @@ function anchorIndex(flat) {
   return a;
 }
 
-function pointLine(line) {
-  const def = PH[line.phrase];
+// pointLine: maps a line's syllables to roles (recite/inton/prep/cad/preslur).
+// phDefs: the active tone's phrase definition table (e.g. PH_DEFS[1] or PH_DEFS[2]).
+// Pass PH (the component-derived active table) when calling from inside the component.
+function pointLine(line, phDefs) {
+  const def = phDefs[line.phrase];
   const flat = flatten(line);
   const a = anchorIndex(flat);
   const body = flat.slice(0, a);
   const cad = flat.slice(a);
   const roles = [];
+
+  // Pre-slur detection (Tone 2 Final Phrase rule, but structure-agnostic):
+  // If the phrase has a prep note AND the syllable immediately before the prep
+  // is a single accented monosyllable, that syllable gets role="preslur" with
+  // pitches [recite, prep] as two quarter notes (re→ti for Tone 2 Final).
+  // Confirmed from OCA corpus: "Hear me O Lord" (Hear→me), "Pray to Christ God for us all!" (Christ→God).
+  // The preslur check applies to ANY tone/phrase with def.prep set — but only
+  // fires when body.length >= 1 and the last body syllable is a single accented monosyllable.
+  let preslurIdx = -1; // index within body where pre-slur fires (the syllable before prep)
+  if (def.prep && body.length >= 1) {
+    const candidate = body[body.length - 1];
+    if (candidate.single && candidate.accent) {
+      preslurIdx = body.length - 1;
+    }
+  }
 
   // For phrases with intonation, find the first accented body syllable.
   // That syllable is the tutorial's intonation half note (role="inton", accent=true → H).
@@ -611,7 +692,13 @@ function pointLine(line) {
     let role = "recite";
     let pitch = def.recite;
     if (def.inton && i === intonIdx) role = "inton";
-    if (def.prep && i === body.length - 1) { role = "prep"; pitch = def.prep; }
+    // Pre-slur fires on the body syllable just before prep; its pitches are [recite, prep].
+    if (preslurIdx >= 0 && i === preslurIdx) {
+      role = "preslur";
+      roles.push({ role, pitches: [def.recite, def.prep], accent: s.accent, text: s.text, source: s.source });
+      return;
+    }
+    if (def.prep && i === body.length - 1 && preslurIdx < 0) { role = "prep"; pitch = def.prep; }
     roles.push({ role, pitches: [pitch], accent: s.accent, text: s.text, source: s.source });
   });
 
@@ -844,8 +931,9 @@ function parseTruthLines(rawText, lexicon) {
 }
 
 // Strip accents from a line set and re-encode with the auto-accenter (lexicon+heuristic).
+// activePH: the active tone's phrase definition table (PH_DEFS[activeTone]).
 // Returns a parallel [{phrase, words}] array — the "machine" version for comparison.
-function autoEncodeLines(truthLines, lexicon) {
+function autoEncodeLines(truthLines, lexicon, activePH) {
   // NOTE: autoAccentLine is a component-scoped arrow function (it closes over
   // nothing from the component, but is defined inside it for co-location).
   // autoEncodeLines is a module-level pure function so we replicate the logic
@@ -873,7 +961,8 @@ function autoEncodeLines(truthLines, lexicon) {
       anchorIdx = c;
     }
     let intonIdx = -1;
-    if ((phrase === "A" || phrase === "C") && sIdxs.length > 0) {
+    // Use activePH to determine if this phrase has intonation — tone-agnostic.
+    if (activePH && activePH[phrase] && activePH[phrase].inton && sIdxs.length > 0) {
       const first = sIdxs[0];
       if (first !== anchorIdx) intonIdx = first;
     }
@@ -1023,7 +1112,11 @@ export default function ToneTrainer() {
   const [compareMode, setCompareMode] = useState(false); // show comparison harness?
   const [compareData, setCompareData] = useState(null);  // buildComparison() result
   const [singWhich, setSingWhich] = useState("truth");   // harness sing toggle: "truth"|"machine"
-  const [machineLines, setMachineLines] = useState(null); // auto-encoded parallel lines
+  const [machineLines, setMachineLines] = useState(null);
+  const [activeTone, setActiveTone] = useState(1);
+  // Active phrase definition table — derived from activeTone.
+  // All pointing functions receive PH; none read PH_DEFS directly.
+  const PH = PH_DEFS[activeTone] || PH_DEFS[1]; // auto-encoded parallel lines
 
   // Fetch both lexicon files at mount and merge.
   useEffect(() => {
@@ -1065,7 +1158,7 @@ export default function ToneTrainer() {
   const freq = (sol) => doHz * Math.pow(2, OFF[sol] / 12);
 
   const lineToNotes = (line) => {
-    const roles = pointLine(line);
+    const roles = pointLine(line, PH);
     const notes = [];
     const isFinal = line.phrase === "Final";
 
@@ -1083,11 +1176,12 @@ export default function ToneTrainer() {
       //   inton accented → H (half note intonation)
       //   inton unaccented → Q (quarter note lead-in on same pitch)
       //   recite / prep → Q (quarter note always)
+      //   preslur → Q (two Q notes split across the two pitches via melisma logic)
       //   cad anchor (first) → H; cad middle → Q; cad last → H or W (Final only)
       let syllDur;
       if (r.role === "inton") {
         syllDur = r.accent ? H : Q;
-      } else if (r.role === "recite" || r.role === "prep") {
+      } else if (r.role === "recite" || r.role === "prep" || r.role === "preslur") {
         syllDur = Q;
       } else if (r.role === "cad") {
         const cadPos = cadIdxs.indexOf(ri);
@@ -1108,6 +1202,8 @@ export default function ToneTrainer() {
       }
 
       // Multi-pitch melisma: divide syllable duration evenly across pitches.
+      // Pre-slur has two pitches [recite, prep] → each gets Q/2 = eighth note.
+      // This matches tutorial intent: the slur is a quick two-note pickup.
       const pitchDur = syllDur / r.pitches.length;
       const peak = (r.role === "cad" && r.anchor) ? 0.27 : 0.2;
 
@@ -1221,9 +1317,9 @@ export default function ToneTrainer() {
       anchorIdx = c;
     }
 
-    // ── Intonation: first stressed syllable (Phrases A and C only) ─────────
+    // ── Intonation: first stressed syllable (only for phrases where inton:true) ──
     let intonIdx = -1;
-    if ((phrase === "A" || phrase === "C") && stressedIdxs.length > 0) {
+    if (PH[phrase] && PH[phrase].inton && stressedIdxs.length > 0) {
       const first = stressedIdxs[0];
       // Don't double-mark: if only one stressed syllable in the phrase it serves
       // as the anchor; no separate intonation mark.
@@ -1248,7 +1344,7 @@ export default function ToneTrainer() {
       // TRUTH MODE: brackets are authoritative over the lexicon.
       const tLines = parseTruthLines(text, lexicon);
       if (!tLines.length) { setLines([]); return; }
-      const mLines = autoEncodeLines(tLines, lexicon);
+      const mLines = autoEncodeLines(tLines, lexicon, PH);
       const cmp = buildComparison(tLines, mLines);
       setLines(tLines);
       setMachineLines(mLines);
@@ -1506,7 +1602,10 @@ export default function ToneTrainer() {
     // Load a whole sticheron block into the pointer with correct A-B-C-D-…-Final
   // rotation across its lines, then scroll to the pointer. Tone 1 only.
   const sendBlockToPointer = (block) => {
-    if (block.tone !== 1) return; // guarded in UI; defensive here
+    if (!PH_DEFS[block.tone]) return; // guarded in UI; defensive here — only point tones we know
+    const blockPH = PH_DEFS[block.tone];
+    // Sync the active tone to match the block being pointed.
+    setActiveTone(block.tone);
     const n = block.lines.length;
     const next = block.lines.map((p, i) => paraToPointerLine(p, blockLinePhrase(i, n)));
     // Also populate the textarea with the encoded text (Feature B: [accent]/|// format).
@@ -1515,7 +1614,7 @@ export default function ToneTrainer() {
     setText(encoded);
     setLines(next);
     // The block's OCA-underline accents ARE truth — set hasTruth and build comparison.
-    const mLines = autoEncodeLines(next, lexicon);
+    const mLines = autoEncodeLines(next, lexicon, blockPH);
     const cmp = buildComparison(next, mLines);
     setMachineLines(mLines);
     setCompareData(cmp);
@@ -1540,13 +1639,14 @@ export default function ToneTrainer() {
   const roleBg = {
     recite: "rgba(40,58,92,.06)", inton: "rgba(40,58,92,.10)",
     prep: "rgba(180,137,43,.16)", cad: "rgba(122,36,24,.10)",
+    preslur: "rgba(180,137,43,.22)",  // slightly stronger amber — two-note pickup before prep
   };
-  const roleColor = { recite: "#283a5c", inton: "#283a5c", prep: "#8a6a14", cad: "#7a2418" };
+  const roleColor = { recite: "#283a5c", inton: "#283a5c", prep: "#8a6a14", cad: "#7a2418", preslur: "#8a6a14" };
 
   return (
     <div style={{ maxWidth: 820, margin: "0 auto", padding: "2rem 1rem 4rem", fontFamily: "Georgia, serif", color: ink }}>
       <div style={{ textAlign: "center", marginBottom: "0.4rem", letterSpacing: "0.28em", textTransform: "uppercase", fontSize: "0.7rem", color: gold }}>
-        Common Chant · Obikhod · Tone 1
+        Common Chant · Obikhod · Tone {activeTone}
       </div>
       <h1 style={{ textAlign: "center", color: "#7a2418", fontWeight: 600, fontSize: "2rem", margin: "0.1em 0" }}>
         Tone Trainer — Pointing
@@ -1626,7 +1726,7 @@ export default function ToneTrainer() {
           <>
             <div style={{ marginTop: "0.8rem", display: "flex", flexDirection: "column", gap: "0.4rem" }}>
               {visibleBlocks.map((b, i) => {
-                const t1 = b.tone === 1;
+                const canPoint = !!PH_DEFS[b.tone];
                 const open = !!expandedBlocks[i];
                 return (
                   <div key={i} style={{ border: "1px solid #d6c79f", borderRadius: 6, background: "rgba(255,255,255,.45)" }}>
@@ -1647,7 +1747,7 @@ export default function ToneTrainer() {
                                  fontFamily: "Georgia, serif", fontSize: "0.98rem", color: ink, padding: 0 }}>
                         {open ? "▾ " : "▸ "}{b.incipit}… <span style={{ color: "#9A8A70", fontSize: "0.8rem" }}>({b.lines.length} lines)</span>
                       </button>
-                      {t1 && (
+                      {canPoint && (
                         <button style={{ ...btn, padding: "3px 11px", fontSize: "0.74rem" }}
                           onClick={() => sendBlockToPointer(b)}>point ▸</button>
                       )}
@@ -1715,10 +1815,66 @@ export default function ToneTrainer() {
               Each block is one sticheron (lines grouped, closing after the line that follows <b>//</b>).
               <b> *</b> = tone inherited from a preceding heading. <b>⚠ no //</b> = no penultimate marker found;
               verify the grouping (revealed by “show suspect blocks” above). Expand a block for its context, its
-              lines, and its copy-paste encoding. “point ▸” loads a Tone 1 sticheron into the pointer with full
-              A·B·C·D·…·Final rotation and scrolls to it; other tones convert but aren’t pointed yet.
+              lines, and its copy-paste encoding. “point ▸” loads a Tone 1 or Tone 2 sticheron into the pointer with full
+              A·B·C·D·…·Final rotation and scrolls to it; Tones 3–8 convert but aren’t pointed yet.
             </div>
           </>
+        )}
+      </div>
+
+      {/* ── TONE SELECTOR ────────────────────────────────────────────────── */}
+      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.7rem", flexWrap: "wrap" }}>
+        <span style={{ fontSize: "0.78rem", color: "#5b4a33" }}>Tone:</span>
+        {[1,2,3,4,5,6,7,8].map((t) => {
+          const available = !!PH_DEFS[t];
+          const active = activeTone === t;
+          return (
+            <button key={t}
+              disabled={!available}
+              onClick={() => {
+                setActiveTone(t);
+                setLines([]);
+                setText("");
+                setHasTruth(false);
+                setCompareData(null);
+                setMachineLines(null);
+                setCompareMode(false);
+              }}
+              title={available ? `Switch to Tone ${t}` : `Tone ${t} — coming soon`}
+              style={{
+                fontFamily: "Georgia, serif",
+                fontSize: "0.82rem",
+                padding: "3px 11px",
+                borderRadius: 4,
+                cursor: available ? "pointer" : "default",
+                border: active ? `1px solid ${gold}` : "1px solid #d6c79f",
+                background: active ? gold : available ? "transparent" : "rgba(0,0,0,.03)",
+                color: active ? "#fff" : available ? gold : "#c0b090",
+                opacity: available ? 1 : 0.5,
+                transition: "all 0.15s",
+              }}>
+              {t}
+            </button>
+          );
+        })}
+        {PRESETS[activeTone] && (
+          <button
+            onClick={() => {
+              const pLines = presetToLines(activeTone);
+              setLines(pLines);
+              setHasTruth(false);
+              setCompareData(null);
+              setMachineLines(null);
+              setCompareMode(false);
+              setText("");
+              setTimeout(() => {
+                if (pointerRef.current) pointerRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+              }, 60);
+            }}
+            style={{ ...btn, marginLeft: "0.5rem", fontSize: "0.74rem", padding: "3px 11px" }}
+            title={`Load the hand-pointed Tone ${activeTone} example sticheron`}>
+            try example
+          </button>
         )}
       </div>
 
@@ -1814,7 +1970,9 @@ export default function ToneTrainer() {
           <span style={{ background: "rgba(40,58,92,.08)", color: "#283a5c",
                          borderRadius: 4, padding: "1px 7px" }}>reciting tone</span>
           <span style={{ background: "rgba(180,137,43,.18)", color: "#8a6a14",
-                         borderRadius: 4, padding: "1px 7px" }}>prep (ti)</span>
+                         borderRadius: 4, padding: "1px 7px" }}>
+            prep ({[...new Set(Object.values(PH).map(d => d.prep).filter(Boolean))].join("/") || "—"})
+          </span>
           <span style={{ background: "rgba(122,36,24,.11)", color: "#7a2418",
                          borderRadius: 4, padding: "1px 7px" }}>cadence</span>
           <span>· ´ = accent</span>
@@ -2092,7 +2250,7 @@ export default function ToneTrainer() {
 
       {/* legend + sung display — hidden in comparison mode */}
       {!(compareMode && compareData) && lines.map((line, li) => {
-        const roles = pointLine(line);
+        const roles = pointLine(line, PH);
         const isFin = line.phrase === "Final";
         let fi = -1;
         return (
@@ -2100,7 +2258,7 @@ export default function ToneTrainer() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap", marginBottom: "0.5rem" }}>
               <span style={{ background: isFin ? "#7a2418" : "#283a5c", color: "#fff", borderRadius: 5, padding: "2px 10px", fontSize: "0.78rem" }}>{PNAME[line.phrase]}</span>
               <span style={{ fontSize: "0.76rem", color: "#6b5942", fontStyle: "italic" }}>
-                reciting on <b>{PH[line.phrase].recite}</b>{PH[line.phrase].prep ? <> · prep on <b>ti</b></> : null}
+                reciting on <b>{PH[line.phrase].recite}</b>{PH[line.phrase].prep ? <> · prep on <b>{PH[line.phrase].prep}</b></> : null}
               </span>
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "3px 2px", alignItems: "flex-end" }}>
