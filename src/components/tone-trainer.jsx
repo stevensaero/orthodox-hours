@@ -1025,6 +1025,7 @@ export default function ToneTrainer() {
 
   // docx ingest state
   const [docName, setDocName] = useState(null);
+  const [docPanelOpen, setDocPanelOpen] = useState(true); // collapse/expand when docx loaded
   const [docParas, setDocParas] = useState([]);     // assignTones output
   const [docError, setDocError] = useState(null);
   const [showAllParas, setShowAllParas] = useState(false);
@@ -1550,9 +1551,21 @@ export default function ToneTrainer() {
           <label style={{ ...btn, display: "inline-block" }}>
             Open service .docx
             <input type="file" accept=".docx" style={{ display: "none" }}
-              onChange={(e) => onDocxFile(e.target.files && e.target.files[0])} />
+              onChange={(e) => { onDocxFile(e.target.files && e.target.files[0]); setDocPanelOpen(true); }} />
           </label>
-          {docName && <span style={{ fontSize: "0.8rem", color: "#5b4a33" }}>{docName}</span>}
+          {docName && (
+            <>
+              <span style={{ fontSize: "0.8rem", color: "#5b4a33", flex: 1 }}>{docName}</span>
+              <button
+                onClick={() => setDocPanelOpen(v => !v)}
+                style={{ border: "1px solid #d6c79f", background: "transparent", borderRadius: 4,
+                         padding: "2px 10px", cursor: "pointer", fontFamily: "Georgia, serif",
+                         fontSize: "0.78rem", color: "#6b5942" }}
+                title={docPanelOpen ? "Collapse service file panel" : "Expand service file panel"}>
+                {docPanelOpen ? "▾ collapse" : "▸ expand"}
+              </button>
+            </>
+          )}
           {blocks.some(b => b.suspect) && (
             <>
               <span style={{ flex: 1 }} />
@@ -1572,7 +1585,7 @@ export default function ToneTrainer() {
           </div>
         )}
 
-        {blocks.length > 0 && (
+        {docPanelOpen && blocks.length > 0 && (
           <>
             <div style={{ marginTop: "0.8rem", display: "flex", flexDirection: "column", gap: "0.4rem" }}>
               {visibleBlocks.map((b, i) => {
