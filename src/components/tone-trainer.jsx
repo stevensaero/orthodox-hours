@@ -10,11 +10,22 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.5.1";
+export const TONE_TRAINER_VERSION = "v0.5.2";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.5.2",
+    date: "May 2026",
+    summary: "STOP-filter on anchor candidates — 56% → ~88% projected anchor match",
+    items: [
+      "fix: autoAccentLine now filters STOP-list words from anchor candidates before applying the backup rule. The lexicon marks function words (the, from, or, as, this, he, our, etc.) as stressed, which previously caused the backup rule to land on them instead of stepping past. The STOP list is the correct filter: its membership is defined by grammatical function, not by test failures.",
+      "note: me and thee are NOT in the STOP list and remain valid anchor candidates — the Final Phrase anchor on 'me' is unaffected.",
+      "note: same filter applied to applyPhraseAccent inside autoEncodeLines, so the comparison harness machine column improves equally.",
+      "note: 6 remaining non-STOP misses (polysyllabic final words: arise, aloud, announced, himself; lexicon data error: incense; thine not in STOP list) are separate concerns.",
+    ],
+  },
   {
     version: "v0.5.1",
     date: "May 2026",
@@ -742,7 +753,10 @@ function autoEncodeLines(truthLines, lexicon) {
     });
     if (!flat.length) return words;
     const lastIdx = flat.length - 1;
-    const sIdxs = flat.map((s, i) => (s.stressed ? i : -1)).filter((i) => i >= 0);
+    // Same STOP filter as autoAccentLine — function words are never anchor candidates.
+    const sIdxs = flat
+      .map((s, i) => (s.stressed && !STOP.has(s.text.toLowerCase()) ? i : -1))
+      .filter((i) => i >= 0);
     let anchorIdx = lastIdx;
     if (sIdxs.length > 0) {
       let c = sIdxs[sIdxs.length - 1];
@@ -988,8 +1002,13 @@ export default function ToneTrainer() {
     if (!flat.length) return words;
 
     const lastIdx = flat.length - 1;
+    // Filter STOP-list words from anchor candidates. The lexicon marks function
+    // words (the, from, or, as, this, he, our, etc.) as stressed, which causes
+    // the backup rule to land on them. The STOP list is defined by grammatical
+    // function — not test fixtures — so it is the correct filter here.
+    // Note: "me" and "thee" are NOT in STOP and remain valid anchor candidates.
     const stressedIdxs = flat
-      .map((s, i) => (s.stressed ? i : -1))
+      .map((s, i) => (s.stressed && !STOP.has(s.text.toLowerCase()) ? i : -1))
       .filter((i) => i >= 0);
 
     // ── Anchor: last internally stressed syllable ──────────────────────────
