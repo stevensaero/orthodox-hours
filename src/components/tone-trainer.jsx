@@ -1584,8 +1584,7 @@ export default function ToneTrainer() {
         {docError && <div style={{ marginTop: "0.5rem", color: "#7a2418", fontSize: "0.82rem" }}>{docError}</div>}
         {!docName && (
           <div style={{ marginTop: "0.5rem", fontSize: "0.8rem", color: "#6b5942", fontStyle: "italic" }}>
-            Reads the file in your browser only — nothing is uploaded. Extracts the OCA underline-marked
-            accents from a day's service text, grouped by sticheron.
+            Extracts the OCA underline-marked accents from a day's service text, grouped by sticheron.
           </div>
         )}
 
@@ -1711,10 +1710,7 @@ export default function ToneTrainer() {
                      borderRadius: 6, padding: "8px", resize: "vertical",
                      background: hasTruth ? "rgba(90,122,60,.03)" : "transparent" }} />
           <div style={{ marginTop: "0.45rem", fontSize: "0.75rem", color: "#9A8A70", fontStyle: "italic" }}>
-            {hasTruth
-              ? <>Director Pointing mode — [accent] brackets override the machine. | = line end · // = penultimate line.</>
-              : <>Machine Pointing mode — lexicon + phrase-structural heuristic. Analyze &amp; point to render. "point ▸" on an ingested sticheron loads encoded director marks.</>
-            }
+            {hasTruth && <>Director Pointing mode — [accent] brackets override the machine. | = line end · // = penultimate line.</>}
           </div>
       </div>
 
@@ -1724,8 +1720,9 @@ export default function ToneTrainer() {
                     padding: "0.55rem 0.9rem", marginBottom: "1.1rem",
                     overflowX: "auto" }}>
         <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none",
-                         flexShrink: 0 }} onClick={analyze}>
-          Analyze &amp; point
+                         flexShrink: 0 }} onClick={analyze}
+          title="Syllabify and point the sticheron — assigns reciting tone, prep, and cadence roles">
+          Point
         </button>
         {compareData && (
           <button style={{ ...btn, background: "transparent", fontSize: "0.75rem",
@@ -1754,9 +1751,11 @@ export default function ToneTrainer() {
           <span style={{ minWidth: "3.5em", textAlign: "right" }}>{bpm} BPM</span>
         </label>
         <button
-          style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none", flexShrink: 0 }}
-          onClick={playingLine !== null ? stopAll : playAll}>
-          {playingLine !== null ? "◼ Stop" : "▶ Sing all"}
+          style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none",
+                   flexShrink: 0, fontSize: "1rem", padding: "5px 10px" }}
+          onClick={playingLine !== null ? stopAll : playAll}
+          title={playingLine !== null ? "Stop playback" : "Sing all lines"}>
+          {playingLine !== null ? "◼" : "▶"}
         </button>
         {lexiconError && <span style={{ fontSize: "0.72rem", color: "#7a2418",
                                         fontStyle: "italic", flexShrink: 0 }}>{lexiconError}</span>}
