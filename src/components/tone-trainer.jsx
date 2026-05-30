@@ -336,13 +336,21 @@ function wordFromDisplay(wordDisplay, lexicon) {
 
 // ── PRESET: Meeting of the Lord, "Lord, I Call", 3rd sticheron (hand-pointed) ───
 // Accents hand-verified against the printed score in the tutorial.
+// Tutorial-faithful: intonation syllable + cadence anchor only (1–2 marks per phrase).
+// Old v0.1.0 preset marked all natural word stresses — corrected per Drillock & Ealy.
 const PRESET = [
-  ["A", [["Come,",[["Come",1]]],["let",[["let",0]]],["us",[["us",0]]],["also",[["al",1],["so",0]]],["go",[["go",0]]],["to",[["to",0]]],["meet",[["meet",1]]],["Christ",[["Christ",1]]],["with",[["with",0]]],["divine",[["di",0],["vine",1]]],["songs!",[["songs",1]]]]],
-  ["B", [["Let",[["Let",0]]],["us",[["us",0]]],["receive",[["re",0],["ceive",1]]],["Him",[["Him",0]]],["Whose",[["Whose",0]]],["salvation",[["sal",0],["va",1],["tion",0]]],["Simeon",[["Sim",1],["e",0],["on",0]]],["saw!",[["saw",1]]]]],
+  // Phrase A — Come = intonation (H); vine = cadence anchor (H); songs trails (H)
+  ["A", [["Come,",[["Come",1]]],["let",[["let",0]]],["us",[["us",0]]],["also",[["al",0],["so",0]]],["go",[["go",0]]],["to",[["to",0]]],["meet",[["meet",0]]],["Christ",[["Christ",0]]],["with",[["with",0]]],["divine",[["di",0],["vine",1]]],["songs!",[["songs",0]]]]],
+  // Phrase B — no intonation; Sim = anchor (backup from final monosyllable saw)
+  ["B", [["Let",[["Let",0]]],["us",[["us",0]]],["receive",[["re",0],["ceive",0]]],["Him",[["Him",0]]],["Whose",[["Whose",0]]],["salvation",[["sal",0],["va",0],["tion",0]]],["Simeon",[["Sim",1],["e",0],["on",0]]],["saw!",[["saw",0]]]]],
+  // Phrase C — Da = intonation; nounced = anchor
   ["C", [["This",[["This",0]]],["is",[["is",0]]],["He",[["He",0]]],["Whom",[["Whom",0]]],["David",[["Da",1],["vid",0]]],["announced;",[["an",0],["nounced",1]]]]],
-  ["D", [["this",[["this",0]]],["is",[["is",0]]],["He",[["He",0]]],["Who",[["Who",0]]],["spoke",[["spoke",1]]],["in",[["in",0]]],["the",[["the",0]]],["Prophets,",[["Proph",1],["ets",0]]]]],
-  ["A", [["Who,",[["Who",0]]],["for",[["for",0]]],["our",[["our",0]]],["sakes,",[["sakes",1]]],["has",[["has",0]]],["taken",[["tak",1],["en",0]]],["flesh",[["flesh",1]]],["and",[["and",0]]],["Who",[["Who",0]]],["speaks",[["speaks",1]]],["through",[["through",0]]],["the",[["the",0]]],["Law.",[["Law",1]]]]],
-  ["Final", [["Let",[["Let",0]]],["us",[["us",0]]],["worship",[["wor",1],["ship",0]]],["Him!",[["Him",1]]]]],
+  // Phrase D — no intonation; Proph = anchor (ets trails)
+  ["D", [["this",[["this",0]]],["is",[["is",0]]],["He",[["He",0]]],["Who",[["Who",0]]],["spoke",[["spoke",0]]],["in",[["in",0]]],["the",[["the",0]]],["Prophets,",[["Proph",1],["ets",0]]]]],
+  // Phrase A — Who = intonation; speaks = anchor (backup from final monosyllable Law)
+  ["A", [["Who,",[["Who",1]]],["for",[["for",0]]],["our",[["our",0]]],["sakes,",[["sakes",0]]],["has",[["has",0]]],["taken",[["tak",0],["en",0]]],["flesh",[["flesh",0]]],["and",[["and",0]]],["Who",[["Who",0]]],["speaks",[["speaks",1]]],["through",[["through",0]]],["the",[["the",0]]],["Law.",[["Law",0]]]]],
+  // Final — wor = anchor; Him trails
+  ["Final", [["Let",[["Let",0]]],["us",[["us",0]]],["worship",[["wor",1],["ship",0]]],["Him!",[["Him",0]]]]],
 ];
 function presetToLines() {
   return PRESET.map(([ph, ws]) => ({
