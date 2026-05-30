@@ -736,7 +736,9 @@ export default function ToneTrainer() {
       for (const part of r.text.split(/(\s+)/)) {
         if (part === "") continue;
         if (/^\s+$/.test(part)) { flushWord(); continue; }
-        pushSyl(part.replace(/[^A-Za-z'’-]/g, "") || part, r.underline);
+        const clean = part.replace(/[^A-Za-z'‘’]/g, '');
+        if (!clean) continue;                    // skip pure-punctuation (commas, etc.)
+        pushSyl(clean, r.underline);
       }
     }
     flushWord();
