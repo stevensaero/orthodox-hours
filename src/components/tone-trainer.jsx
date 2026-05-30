@@ -10,11 +10,22 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.5.2";
+export const TONE_TRAINER_VERSION = "v0.5.3";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.5.3",
+    date: "May 2026",
+    summary: "show source: uniform chip height, hover legend, comparison harness, auto-source fix",
+    items: [
+      "fix: 'auto' source tag (non-bracketed syllables in TRUTH mode) excluded from indicators — was causing false ~ flood after Analyze & point with encoded text.",
+      "fix: chips now always reserve space for the source indicator row (uniform height). Previously chips grew taller when ? or ~ appeared, causing layout shift.",
+      "feat: source indicators (? / ~) now appear on machine-row chips in the A/B comparison harness when 'show source' is on.",
+      "feat: 'show source' toggle now has a hover legend explaining no-marker = CMU-confirmed, ? = unconfirmed best-guess, ~ = rule fallback.",
+    ],
+  },
   {
     version: "v0.5.2",
     date: "May 2026",
@@ -830,6 +841,7 @@ function buildComparison(truthLines, machineLines) {
         text: ts?.text || ms?.text || "?",
         truthAccent: ts?.accent ?? false,
         machineAccent: ms?.accent ?? false,
+        machineSource: ms?.source || null,
         agree,
         isAnchor: si === truthAnchor,
         isMachineAnchor: si === machineAnchor,
@@ -898,6 +910,7 @@ export default function ToneTrainer() {
   const [lexicon, setLexicon] = useState(null);
   const [lexiconError, setLexiconError] = useState(null);
   const [showAccentSource, setShowAccentSource] = useState(false);
+  const [sourceTooltip, setSourceTooltip] = useState(false); // hover legend for show source
   // Feature B: encoding-aware field + comparison harness
   const [hasTruth, setHasTruth] = useState(false);      // textarea contains [accent] marks?
   const [compareMode, setCompareMode] = useState(false); // show comparison harness?
@@ -1500,11 +1513,26 @@ export default function ToneTrainer() {
           </label>
           <button style={btn} onClick={playScale}>scale</button>
           <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }} onClick={playAll}>▶ Sing all</button>
-          <label style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: "0.78rem", color: "#5b4a33", cursor: "pointer" }}
-            title="Show which syllables come from unconfirmed or rule-fallback sources">
-            <input type="checkbox" checked={showAccentSource} onChange={(e) => setShowAccentSource(e.target.checked)} />
-            show source
-          </label>
+          <div style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
+            <label style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: "0.78rem", color: "#5b4a33", cursor: "pointer" }}
+              onMouseEnter={() => setSourceTooltip(true)} onMouseLeave={() => setSourceTooltip(false)}>
+              <input type="checkbox" checked={showAccentSource} onChange={(e) => setShowAccentSource(e.target.checked)} />
+              show source ⓘ
+            </label>
+            {sourceTooltip && (
+              <div style={{ position: "absolute", bottom: "calc(100% + 8px)", right: 0, zIndex: 100,
+                             background: "#FAF6EE", border: "1px solid #D4C49A", borderRadius: 5,
+                             padding: "0.55rem 0.75rem", width: 220, boxShadow: "0 3px 12px rgba(0,0,0,.13)",
+                             fontSize: "0.72rem", color: "#3D3020", lineHeight: 1.6,
+                             pointerEvents: "none" }}>
+                <div style={{ fontWeight: 600, marginBottom: "0.3rem", color: "#5C4A1E" }}>Accent source legend</div>
+                <div><span style={{ fontFamily: "monospace" }}>no marker</span> — CMU-confirmed (table entry)</div>
+                <div><span style={{ fontFamily: "monospace", color: "#8a6a14" }}>?</span> — unconfirmed best-guess (word not in CMU; stress estimated)</div>
+                <div><span style={{ fontFamily: "monospace", color: "#9A8A70" }}>~</span> — rule fallback (word completely off-table)</div>
+                <div style={{ marginTop: "0.35rem", color: "#9A8A70", fontStyle: "italic" }}>Appears in sung display and machine row of A/B comparison.</div>
+              </div>
+            )}
+          </div>
           {lexiconError && <span style={{ fontSize: "0.72rem", color: "#7a2418", fontStyle: "italic" }}>{lexiconError}</span>}
           {!lexicon && !lexiconError && <span style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic" }}>loading lexicon…</span>}
         </div>
@@ -1656,6 +1684,11 @@ export default function ToneTrainer() {
                       const accent = which === "truth" ? s.truthAccent : s.machineAccent;
                       const disagree = !s.agree;
                       const isAnchorThis = which === "truth" ? s.isAnchor : s.isMachineAnchor;
+                      // Source indicator — only on machine row, only when showAccentSource on.
+                      const NOSRC = ["table","archaic","truth","reconciled","count-only","auto"];
+                      const mSrc = s.machineSource;
+                      const mSrcChar = (which === "machine" && mSrc && !NOSRC.includes(mSrc))
+                        ? (mSrc === "residue" ? "?" : "~") : null;
                       return (
                         <span key={si}
                           style={{ display: "inline-flex", flexDirection: "column", alignItems: "center",
@@ -1665,6 +1698,13 @@ export default function ToneTrainer() {
                           <span style={{ fontSize: "1rem", fontWeight: accent ? 600 : 400, position: "relative", color: accent ? "#1c1008" : "#9A8A70" }}>
                             {accent && <span style={{ position: "absolute", top: "-0.5em", left: "50%", transform: "translateX(-50%)", color: "#7a2418", fontSize: "0.9em" }}>´</span>}
                             {s.text}
+                          </span>
+                          {/* Uniform-height indicator row — always present */}
+                          <span style={{ fontSize: "0.6rem", lineHeight: 1, marginTop: "1px",
+                                         color: mSrcChar === "?" ? "#8a6a14" : "#9A8A70",
+                                         visibility: (showAccentSource && mSrcChar) ? "visible" : "hidden" }}
+                                title={mSrcChar === "?" ? "unconfirmed best-guess" : "rule fallback"}>
+                            {mSrcChar || " "}
                           </span>
                         </span>
                       );
@@ -1676,7 +1716,7 @@ export default function ToneTrainer() {
           </div>
 
           <div style={{ marginTop: "0.5rem", fontSize: "0.72rem", color: "#6b5942", fontStyle: "italic" }}>
-            Amber chips = syllable-level disagreement. Boxed chip = cadence anchor. "Sing director / machine" plays the selected version.
+            Amber chips = syllable-level disagreement. Boxed chip = cadence anchor. "Sing director / machine" plays the selected version. "Show source" reveals ? / ~ on machine chips.
           </div>
         </div>
       )}
@@ -1706,7 +1746,10 @@ export default function ToneTrainer() {
                     fi += 1;
                     const r = roles[fi];
                     const myFi = fi;
-                    const pis = r.pitches.join("-");
+                    // Source indicator — computed before return, not via IIFE
+                    const NOSRC_S = ["table","archaic","truth","reconciled","count-only","auto"];
+                    const srcChar = (s.source && !NOSRC_S.includes(s.source) && !STOP.has(s.text.toLowerCase()))
+                      ? (s.source === "residue" ? "?" : "~") : null;
                     return (
                       <span key={si} onClick={() => toggleAccent(li, myFi)}
                         style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", padding: "3px 6px 2px", borderRadius: 6, cursor: "pointer", background: roleBg[r.role], border: r.anchor ? "1px solid #7a2418" : "1px solid transparent", minWidth: "2em" }}>
@@ -1715,12 +1758,13 @@ export default function ToneTrainer() {
                           {s.text}
                         </span>
                         <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: "0.72rem", color: roleColor[r.role] }}>{pis}</span>
-                        {showAccentSource && s.source && s.source !== "table" && s.source !== "archaic" && s.source !== "truth" && s.source !== "reconciled" && s.source !== "count-only" && !STOP.has(s.text.toLowerCase()) && (
-                          <span style={{ fontSize: "0.6rem", color: s.source === "residue" ? "#8a6a14" : "#9A8A70",
-                                         lineHeight: 1, marginTop: "1px" }} title={s.source === "residue" ? "unconfirmed (best-guess)" : "rule fallback"}>
-                            {s.source === "residue" ? "?" : "~"}
-                          </span>
-                        )}
+                        {/* Always rendered — preserves uniform chip height */}
+                        <span style={{ fontSize: "0.6rem", lineHeight: 1, marginTop: "1px",
+                                       color: srcChar === "?" ? "#8a6a14" : "#9A8A70",
+                                       visibility: (showAccentSource && srcChar) ? "visible" : "hidden" }}
+                              title={srcChar === "?" ? "unconfirmed best-guess" : "rule fallback"}>
+                          {srcChar || " "}
+                        </span>
                       </span>
                     );
                   })}
