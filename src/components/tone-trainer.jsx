@@ -970,7 +970,13 @@ function useAudio() {
     o.start(t0);
     o.stop(t0 + dur);
   };
-  return { ac, tone };
+  const stop = () => {
+    if (ctxRef.current) {
+      try { ctxRef.current.close(); } catch (_) {}
+      ctxRef.current = null;
+    }
+  };
+  return { ac, tone, stop };
 }
 
 // ── COMPONENT ─────────────────────────────────────────────────────────────────
@@ -1032,7 +1038,7 @@ export default function ToneTrainer() {
   const [copiedBlock, setCopiedBlock] = useState(null);   // block index just copied
   const [expandedBlocks, setExpandedBlocks] = useState({}); // block index -> bool
   const pointerRef = useRef(null);
-  const { ac, tone } = useAudio();
+  const { ac, tone, stop } = useAudio();
 
   const freq = (sol) => doHz * Math.pow(2, OFF[sol] / 12);
 
@@ -1130,6 +1136,12 @@ export default function ToneTrainer() {
       t += (60 / bpm) / 2; // one quarter note of silence between phrases
     });
     setTimeout(() => { setPlayingLine(null); setPlayingWhich(null); }, (t - c.currentTime) * 1000 + 40);
+  };
+
+  const stopAll = () => {
+    stop();
+    setPlayingLine(null);
+    setPlayingWhich(null);
   };
 
   const playScale = () =>
@@ -1741,8 +1753,11 @@ export default function ToneTrainer() {
             style={{ width: 64, cursor: "pointer", accentColor: gold }} />
           <span style={{ minWidth: "3.5em", textAlign: "right" }}>{bpm} BPM</span>
         </label>
-        <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none",
-                         flexShrink: 0 }} onClick={playAll}>▶ Sing all</button>
+        <button
+          style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none", flexShrink: 0 }}
+          onClick={playingLine !== null ? stopAll : playAll}>
+          {playingLine !== null ? "◼ Stop" : "▶ Sing all"}
+        </button>
         {lexiconError && <span style={{ fontSize: "0.72rem", color: "#7a2418",
                                         fontStyle: "italic", flexShrink: 0 }}>{lexiconError}</span>}
         {!lexicon && !lexiconError && <span style={{ fontSize: "0.72rem", color: "#9A8A70",
@@ -1805,14 +1820,8 @@ export default function ToneTrainer() {
               Export JSON ↓
             </button>
           </div>
-          {/* Header row 2: Sing all | Sing director/machine toggle | spacer | show source */}
+          {/* Header row 2: Sing director/machine toggle | edit machine | spacer | show source */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap", marginBottom: "0.7rem" }}>
-            {/* Sing all */}
-            <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none",
-                             fontSize: "0.75rem", padding: "4px 13px" }}
-              onClick={playAll}>
-              ▶ Sing all
-            </button>
             {/* Sing director / machine toggle */}
             <div style={{ display: "inline-flex", border: "1.5px solid #8B6914", borderRadius: 5, overflow: "hidden" }}>
               {["truth", "machine"].map((w) => (
