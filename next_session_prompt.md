@@ -3,7 +3,7 @@
 ## Project
 Orthodox Hours Tool — `stevensaero/orthodox-hours` (GitHub, private)
 **Hours tool version:** v0.6.0
-**Tone Trainer version:** v0.4.0 (battle-tested) → building v0.5.0 (Feature B)
+**Tone Trainer version:** v0.5.0 (Feature B shipped) → next: SATB mode or Tone 2+ propagation
 **Key files:**
 - `src/components/tone-trainer.jsx` — the trainer component
 - `tone_trainer_notes.md` — canonical trainer notes (READ THIS)
@@ -31,13 +31,12 @@ Orthodox Hours Tool — `stevensaero/orthodox-hours` (GitHub, private)
   no melisma). In moveable-do Obikhod absolute pitch is irrelevant; solfege
   relationships are fixed regardless of key
 
-## CRITICAL distinction for Feature B
-In v0.4.0, [accent] brackets are SILENTLY STRIPPED by the alpha-only regex —
-the lexicon drives stress, not the bracket. This looks correct when they agree
-but fails silently when the director's mark disagrees with the lexicon. Feature
-B makes brackets authoritative over the lexicon.
+## Feature B status: SHIPPED (v0.5.0)
+Brackets are now authoritative. Both whole-word ([Lord]) and mid-word (Re[ceive],
+up[on]) cases handled. Comparison harness live. See tone_trainer_notes.md for
+full session summary and test fixture verification.
 
-## What to build: Feature B (v0.5.0)
+## What was built: Feature B (v0.5.0) — DONE
 Full spec in SYLLABIFIER_SPEC.md §7. Summary:
 
 ### Encoding-aware text field

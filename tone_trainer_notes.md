@@ -1,6 +1,55 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.4.0** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.5.0** | Component: `src/components/tone-trainer.jsx`
+
+---
+
+## Session summary (May 30 2026 — v0.5.0 Feature B)
+
+**Feature B shipped.** The "your own text" textarea is now encoding-aware. Three
+interlocking pieces:
+
+**1. TRUTH mode vs AUTO mode detection.** `parseBracketedText()` scans for `[accent]`
+marks on every keystroke and after every "Analyze & point". If brackets present →
+TRUTH mode (green badge visible); if absent → AUTO mode (v0.4.0 behavior, unchanged).
+
+**2. Bracket-authoritative parsing (`parseTruthLines`).** Handles both cases from
+OCA materials:
+- *Whole-word:* `[Lord]`, `[hear]`, `[Hear]` — entire word bracketed. Lexicon
+  `stressIdx` picks the specific syllable within it (on single-syllable words this
+  is always idx 0).
+- *Mid-word:* `up[on]`, `Re[ceive]` — bracket covers a character span. Vowel-nucleus
+  mapping (SYLLABIFIER_SPEC §7 algorithm): find the first vowel nucleus within the
+  bracket span, map it to its syllable. Falls back to max-overlap if no nucleus found.
+- Non-bracketed words carry no accent in TRUTH mode (absence of bracket = unaccented).
+
+**3. Comparison harness.** After TRUTH mode analysis, a side-by-side director vs.
+machine panel appears:
+- Headline: anchor agreement N/M lines (%) — anchor is what matters for singing
+- Per-line: two rows of chips (director / machine); amber = syllable disagreement;
+  boxed chip = cadence anchor
+- Sing toggle: "Sing director" / "Sing machine" — plays the selected version
+  via the existing audio engine (playAll/playLine both respect `singWhich`)
+- JSON export: per-line, per-syllable detail for the improvement loop
+
+**"point ▸" now populates the textarea.** `sendBlockToPointer` now calls
+`setText(encodeBlock(block))` before `setLines(next)`, making the textarea the
+single channel for both ingested and hand-typed text. The block's OCA underline
+accents are already truth, so the comparison harness opens immediately with the
+correct director vs. machine contrast.
+
+**Test fixture verified (node-level):**
+`[Lord], I call upon Thee, [hear] me! | [Hear] me, O Lord! | [Lord], I call upon Thee, [hear] me! | Re[ceive] the [voice] of my prayer, | when I [call] up[on] Thee!// [Hear] [me], O Lord!`
+- `[Lord]` → whole-word, single syllable, accent idx 0 ✓
+- `up[on]` → mid-word, `upon` → `[u, pon]`, bracket span `on` (chars 2-3), nucleus `o` → syllable 1 `pon` ✓
+- `Re[ceive]` → mid-word, `Receive` → `[Re, ceive]` (lexicon), bracket span `ceive`, nucleus `ei` → syllable 1 ✓
+- `[Hear] [me]` final line → both accented; anchor backs off from final monosyllable `me` → `Hear` is cadence anchor ✓
+
+**Build clean.** `vite build` passes; tone-trainer chunk 135 KB gzipped (41 KB).
+
+---
+
+## Session summary (May 30 2026 — v0.4.0 + post-deploy fixes)
 
 *Independent version line, decoupled from the Orthodox Hours Tool version. This
 sub-project iterates on its own cadence; its churn does not bump the hours-tool
