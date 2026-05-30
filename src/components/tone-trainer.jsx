@@ -719,33 +719,95 @@ export default function ToneTrainer() {
 
   const toggleEnc = (i) => setEncOpenBlocks((o) => ({ ...o, [i]: !o[i] }));
 
-  // Convert one docx paragraph's runs into a pointer "line" {phrase, words},
-  // marking underlined fragments as accented syllables. phrase is supplied by
-  // the block rotation.
+  // Convert one docx paragraph's runs into a pointer "line" {phrase, words}.
+  // Uses lexicon syllabification (so "upon" → u·pon, not one chip), then maps
+  // OCA underline spans onto syllables by vowel-nucleus overlap (SYLLABIFIER_SPEC §7).
+  // Underline is authoritative over the lexicon stress guess when present.
   const paraToPointerLine = (para, phrase) => {
-    const words = [];
-    let curWord = null;
-    const pushSyl = (text, accent) => {
-      if (!curWord) curWord = { display: "", sylls: [] };
-      // source "truth" = OCA underline from docx (authoritative, not guessed)
-      curWord.sylls.push({ text, accent, source: "truth" });
-      curWord.display += text;
-    };
-    const flushWord = () => { if (curWord) { words.push(curWord); curWord = null; } };
+    // Step 1: build a char-level representation with per-char underline flags.
+    let charText = "";
+    const charUnderline = [];
     for (const r of para.runs) {
-      for (const part of r.text.split(/(\s+)/)) {
-        if (part === "") continue;
-        if (/^\s+$/.test(part)) { flushWord(); continue; }
-        const clean = part.replace(/[^A-Za-z'‘’]/g, '');
-        if (!clean) continue;                    // skip pure-punctuation (commas, etc.)
-        pushSyl(clean, r.underline);
+      for (const ch of r.text) {
+        charText += ch;
+        charUnderline.push(!!r.underline);
       }
     }
-    flushWord();
-    return { phrase, words: words.filter((w) => w.sylls.length) };
+
+    // Step 2: tokenize into words on whitespace, preserving char offsets.
+    const wordTokens = [];
+    let i = 0;
+    while (i < charText.length) {
+      if (/\s/.test(charText[i])) { i++; continue; }
+      let j = i;
+      while (j < charText.length && !/\s/.test(charText[j])) j++;
+      const raw = charText.slice(i, j);
+      const ulSlice = charUnderline.slice(i, j);
+      const alphaMatch = raw.match(/[A-Za-z]+/);
+      if (alphaMatch) {
+        wordTokens.push({ display: raw, core: alphaMatch[0],
+                          coreStart: alphaMatch.index, ulSlice });
+      }
+      i = j;
+    }
+
+    // Step 3: syllabify via lexicon, then map underline spans to syllables.
+    const isVowel = (c) => "aeiouy".includes(c.toLowerCase());
+    const nucleusPositions = (s) => {
+      const pos = []; let k = 0;
+      while (k < s.length) {
+        if (isVowel(s[k])) { pos.push(k); while (k < s.length && isVowel(s[k])) k++; }
+        else k++;
+      }
+      return pos;
+    };
+
+    const words = wordTokens.map(({ display, core, coreStart, ulSlice }) => {
+      const wordObj = wordFromDisplay(core, lexicon);
+      if (!wordObj) return null;
+      const sylls = wordObj.sylls;
+      const coreUl = ulSlice.slice(coreStart, coreStart + core.length);
+      const anyUnderlined = coreUl.some(Boolean);
+
+      if (!anyUnderlined) return { display, sylls };  // lexicon stress unchanged
+
+      // Map underline to syllable by vowel-nucleus overlap.
+      let pos = 0;
+      const syllRanges = sylls.map((s) => {
+        const start = pos; pos += s.text.length; return { start, end: pos - 1 };
+      });
+      const ulPositions = new Set(
+        coreUl.map((u, idx) => u ? idx : -1).filter(idx => idx >= 0)
+      );
+      const nuclei = nucleusPositions(core);
+      let accentIdx = -1;
+      for (let n = 0; n < nuclei.length; n++) {
+        if (ulPositions.has(nuclei[n])) {
+          accentIdx = syllRanges.findIndex(r => nuclei[n] >= r.start && nuclei[n] <= r.end);
+          if (accentIdx >= 0) break;
+        }
+      }
+      // Fallback: syllable with most overlapping underlined chars.
+      if (accentIdx < 0) {
+        let max = 0;
+        syllRanges.forEach((r, si) => {
+          let ov = 0;
+          for (let c = r.start; c <= r.end; c++) { if (ulPositions.has(c)) ov++; }
+          if (ov > max) { max = ov; accentIdx = si; }
+        });
+      }
+      return {
+        display,
+        sylls: sylls.map((s, si) => ({
+          ...s, accent: si === accentIdx, source: "truth",
+        })),
+      };
+    }).filter(Boolean);
+
+    return { phrase, words };
   };
 
-  // Load a whole sticheron block into the pointer with correct A-B-C-D-…-Final
+    // Load a whole sticheron block into the pointer with correct A-B-C-D-…-Final
   // rotation across its lines, then scroll to the pointer. Tone 1 only.
   const sendBlockToPointer = (block) => {
     if (block.tone !== 1) return; // guarded in UI; defensive here
