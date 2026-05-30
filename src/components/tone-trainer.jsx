@@ -1803,32 +1803,9 @@ export default function ToneTrainer() {
 
       {/* legend + sung display — hidden in comparison mode */}
       {!(compareMode && compareData) && (
-      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", fontSize: "0.78rem",
-                    color: "#6b5942", marginBottom: "1rem" }}>
-        <span style={{ flex: 1, display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
-          <span>reciting tone</span><span>· prep (ti)</span><span>· cadence</span><span>· ´ = accent</span>
-        </span>
-        {/* show source toggle — same state as the one in the A/B harness */}
-        <div style={{ position: "relative", display: "inline-flex", alignItems: "center", flexShrink: 0 }}>
-          <label style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: "0.78rem",
-                           color: "#5b4a33", cursor: "pointer" }}
-            onMouseEnter={() => setSourceTooltip(true)} onMouseLeave={() => setSourceTooltip(false)}>
-            <input type="checkbox" checked={showAccentSource} onChange={(e) => setShowAccentSource(e.target.checked)} />
-            show source ⓘ
-          </label>
-          {sourceTooltip && (
-            <div style={{ position: "absolute", bottom: "calc(100% + 8px)", right: 0, zIndex: 100,
-                           background: "#FAF6EE", border: "1px solid #D4C49A", borderRadius: 5,
-                           padding: "0.55rem 0.75rem", width: 220, boxShadow: "0 3px 12px rgba(0,0,0,.13)",
-                           fontSize: "0.72rem", color: "#3D3020", lineHeight: 1.6,
-                           pointerEvents: "none" }}>
-              <div style={{ fontWeight: 600, marginBottom: "0.3rem", color: "#5C4A1E" }}>Accent source legend</div>
-              <div><span style={{ fontFamily: "monospace" }}>no marker</span> — CMU-confirmed (table entry)</div>
-              <div><span style={{ fontFamily: "monospace", color: "#8a6a14" }}>?</span> — unconfirmed best-guess (word not in CMU; stress estimated)</div>
-              <div><span style={{ fontFamily: "monospace", color: "#9A8A70" }}>~</span> — rule fallback (word completely off-table)</div>
-            </div>
-          )}
-        </div>
+      <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap",
+                    fontSize: "0.78rem", color: "#6b5942", marginBottom: "1rem" }}>
+        <span>reciting tone</span><span>· prep (ti)</span><span>· cadence</span><span>· ´ = accent</span>
       </div>
       )}
       {!(compareMode && compareData) && lines.map((line, li) => {
@@ -1851,10 +1828,6 @@ export default function ToneTrainer() {
                     const r = roles[fi];
                     const myFi = fi;
                     const pis = r.pitches.join("-");
-                    // Source indicator — computed before return, not via IIFE
-                    const NOSRC_S = ["table","archaic","truth","reconciled","count-only","auto"];
-                    const srcChar = (s.source && !NOSRC_S.includes(s.source) && !STOP.has(s.text.toLowerCase()))
-                      ? (s.source === "residue" ? "?" : "~") : null;
                     return (
                       <span key={si} onClick={() => toggleAccent(li, myFi)}
                         style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", padding: "3px 6px 2px", borderRadius: 6, cursor: "pointer", background: roleBg[r.role], border: r.anchor ? "1px solid #7a2418" : "1px solid transparent", minWidth: "2em" }}>
@@ -1863,13 +1836,6 @@ export default function ToneTrainer() {
                           {s.text}
                         </span>
                         <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: "0.72rem", color: roleColor[r.role] }}>{pis}</span>
-                        {/* Always rendered — preserves uniform chip height */}
-                        <span style={{ fontSize: "0.6rem", lineHeight: 1, marginTop: "1px",
-                                       color: srcChar === "?" ? "#8a6a14" : "#9A8A70",
-                                       visibility: (showAccentSource && srcChar) ? "visible" : "hidden" }}
-                              title={srcChar === "?" ? "unconfirmed best-guess" : "rule fallback"}>
-                          {srcChar || " "}
-                        </span>
                       </span>
                     );
                   })}
