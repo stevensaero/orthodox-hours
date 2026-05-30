@@ -1181,8 +1181,12 @@ export default function ToneTrainer() {
       let syllDur;
       if (r.role === "inton") {
         syllDur = r.accent ? H : Q;
-      } else if (r.role === "recite" || r.role === "prep" || r.role === "preslur") {
+      } else if (r.role === "recite" || r.role === "prep") {
         syllDur = Q;
+      } else if (r.role === "preslur") {
+        // Pre-slur = two quarter notes (re + ti) as a pickup before the prep.
+        // Assign H so the melisma division (syllDur / pitches.length = H/2) yields Q+Q.
+        syllDur = H;
       } else if (r.role === "cad") {
         const cadPos = cadIdxs.indexOf(ri);
         const isFirst = cadPos === 0;
