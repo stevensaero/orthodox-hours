@@ -3763,6 +3763,9 @@ const PENTECOSTARION_DATA = {
   // Great Feast. O Heavenly King RESTORED (first time since P+39).
   // Trisagion replaced at Liturgy. Magnificat not sung. Great Doxology. Polyeleos.
   // Three OT paroemias at Great Vespers: Numbers, Joel, Ezekiel.
+  // Vespers fully encoded: 10 LIC stichera, stichera_glory, Litiya (3 stichera T2 +
+  // Glory T8 + Both Now T8), Aposticha (3 stichera T6 with Ps.50 verses +
+  // Glory T8 + Both Now T8). Session: May 29 2026.
   49: {
     name: "Holy Pentecost — Sunday",
     source_file: "80.pdf",
@@ -3830,8 +3833,117 @@ const PENTECOSTARION_DATA = {
       { tone: 1, text: "Let us praise the consubstantial Trinity: the Father and the Son, with the Holy Spirit; for thus did all the prophets and apostles preach, with the martyrs." },
     ],
     stichera_glory: { tone: 8, text: "Come, O ye peoples, let us worship the Godhead in three Hypostases: the Son in the Father, with the Holy Spirit; for the Father timelessly begat the Son, Who is co-eternal and of one throne; and the Holy Spirit was in the Father, glorified with the Son; one Might, one Essence, one Godhead, which we all worship, saying: Holy God, Who didst create all things through the Son, with the co-operation of the Holy Spirit. Holy Mighty, through Whom we have known the Father, and through Whom the Holy Spirit came to the world. Holy Immortal, the Comforting Spirit, Who proceedest from the Father and restest in the Son. O Holy Trinity, glory be to Thee." },
+    // ── AT VESPERS: LITIYA ────────────────────────────────────────────────────
+    // Source: 80.pdf. Three stichera at Litiya, Tone II.
+    // Glory…Both now…, Tone VIII (separate text from LIC Glory).
+    litya_stichera: [
+      { tone: 2,
+        text: "In the prophets Thou didst proclaim unto us the way of salvation, " +
+              "and the grace of Thy Spirit hath shone in the apostles, O our Savior; " +
+              "Thou art God Who art from the beginning, " +
+              "and for time to come, and unto the ages, Thou art our God." },
+      { tone: 2,
+        text: "In Thy courts shall I praise Thee, the Savior of the world, " +
+              "and bending my knee I shall worship Thine invincible might. " +
+              "In the evening, in the morn, at midday, " +
+              "and at all times shall I bless Thee, O Lord." },
+      { tone: 2,
+        text: "In Thy courts, O Lord, as we the faithful " +
+              "bend the knee of the soul and the body, " +
+              "we praise Thee, the beginningless Father, " +
+              "the co-beginningless Son, " +
+              "and the co-eternal and Most holy Spirit, " +
+              "Who dost enlighten and sanctify our souls." },
+    ],
+    litya_glory: {
+      tone: 8,
+      text: "When Thou didst send down Thy Spirit, O Lord, " +
+            "while the apostles were seated, " +
+            "the children of the Jews beheld and were astonished with amazement; " +
+            "for they heard them speaking in other, foreign tongues, " +
+            "according as the Spirit bestowed on them; " +
+            "for though they were unlearned, they were made wise; " +
+            "and in catching and bringing the nations to the Faith, " +
+            "they preached of things divine. " +
+            "Wherefore, we also cry to Thee: " +
+            "O Thou Who wast seen on earth and didst save us from error, " +
+            "O Lord, glory be to Thee.",
+    },
+    litya_both_now: {
+      tone: 8,
+      text: "When Thou didst send down Thy Spirit, O Lord, " +
+            "while the apostles were seated, " +
+            "the children of the Jews beheld and were astonished with amazement; " +
+            "for they heard them speaking in other, foreign tongues, " +
+            "according as the Spirit bestowed on them; " +
+            "for though they were unlearned, they were made wise; " +
+            "and in catching and bringing the nations to the Faith, " +
+            "they preached of things divine. " +
+            "Wherefore, we also cry to Thee: " +
+            "O Thou Who wast seen on earth and didst save us from error, " +
+            "O Lord, glory be to Thee.",
+      note: "PDF prints Glory and Both Now as the same text at the Litiya (80.pdf).",
+    },
+
+    // ── AT VESPERS: APOSTICHA ─────────────────────────────────────────────────
+    // Source: 80.pdf. Three stichera Tone VI with Psalm 50 verses.
+    // Glory…Both now…, Tone VIII.
+    // Kneeling prayers (Vespers of Pentecost) follow immediately after Both now.
+    stichera_aposticha: [
+      { tone: 6,
+        text: "Being ignorant of the power of Thy most holy Spirit, " +
+              "which was come unto Thine apostles, O Lord, " +
+              "the heathen imagined the diversity of tongues to be drunkenness. " +
+              "But we who are established by them speak thus unceasingly: " +
+              "Take not Thy Holy Spirit from us, we pray, " +
+              "O Lover of mankind." },
+      { tone: 6,
+        verse: "Create in me a clean heart, O God, " +
+               "and renew a right spirit within me.",
+        text: "O Lord, the descent of the Holy Spirit, " +
+              "which enveloped Thine apostles, " +
+              "made them to speak with other tongues. " +
+              "Hence, the strange wonder was thought to be drunkenness by the unbelievers, " +
+              "but to the believers it was a cause of salvation. " +
+              "Wherefore, we beseech Thee to grant us also His illumination, " +
+              "O Lover of mankind." },
+      { tone: 6,
+        verse: "Cast me not away from Thy presence, " +
+               "and take not Thy Holy Spirit from me.",
+        text: "Heavenly King, Comforter, Spirit of Truth, " +
+              "Who art everywhere present and fillest all things, " +
+              "Treasury of good gifts and Giver of life: " +
+              "come and abide in us, " +
+              "and cleanse us of all impurity, " +
+              "and save our souls, O good One." },
+    ],
+    aposticha_glory: {
+      tone: 8,
+      text: "Of old the tongues were confounded " +
+            "because of the audacity in the building of the tower, " +
+            "but now the tongues are made wise " +
+            "because of the glory of divine knowledge. " +
+            "There God condemned the impious because of their offense, " +
+            "and here Christ hath enlightened the fishermen by the Spirit. " +
+            "At that time the confusion of tongues was wrought for punishment, " +
+            "but now the concord of tongues hath been inaugurated " +
+            "for the salvation of our souls.",
+    },
+    aposticha_both_now: {
+      tone: 8,
+      text: "Of old the tongues were confounded " +
+            "because of the audacity in the building of the tower, " +
+            "but now the tongues are made wise " +
+            "because of the glory of divine knowledge. " +
+            "There God condemned the impious because of their offense, " +
+            "and here Christ hath enlightened the fishermen by the Spirit. " +
+            "At that time the confusion of tongues was wrought for punishment, " +
+            "but now the concord of tongues hath been inaugurated " +
+            "for the salvation of our souls.",
+      note: "PDF prints Glory and Both Now as the same text at the Aposticha (80.pdf).",
+    },
     aposticha_source: "pentecostarion",
-    aposticha_note: "Great Vespers aposticha from Pentecostarion; kneeling prayers follow immediately.",
+    aposticha_note: "Great Vespers aposticha from Pentecostarion (80.pdf); kneeling prayers follow immediately after Both now.",
 
   },
 
@@ -4154,6 +4266,9 @@ const PENTECOSTARION_DATA = {
   // PDF rubric: "except for the Readings, the Polyeleos, and the Antiphons,
   // we chant everything as set forth on the Feast of Pentecost."
   // Feast texts govern exclusively. Same troparion/kontakion as Pentecost.
+  // Vespers stichera (LIC, stichera_glory, aposticha, aposticha_glory) all
+  // inherited from P+49 per apodosis rubric. No Litiya (apodosis, not feast).
+  // Session: May 29 2026.
   55: {
     name: "Saturday of the Eighth Week — Apodosis of Pentecost",
     source_file: "86.pdf",
@@ -4211,8 +4326,65 @@ const PENTECOSTARION_DATA = {
       { tone: 1, text: "Let us praise the consubstantial Trinity: the Father and the Son, with the Holy Spirit; for thus did all the prophets and apostles preach, with the martyrs." },
     ],
     stichera_glory: { tone: 8, text: "Come, O ye peoples, let us worship the Godhead in three Hypostases: the Son in the Father, with the Holy Spirit; for the Father timelessly begat the Son, Who is co-eternal and of one throne; and the Holy Spirit was in the Father, glorified with the Son; one Might, one Essence, one Godhead, which we all worship, saying: Holy God, Who didst create all things through the Son, with the co-operation of the Holy Spirit. Holy Mighty, through Whom we have known the Father, and through Whom the Holy Spirit came to the world. Holy Immortal, the Comforting Spirit, Who proceedest from the Father and restest in the Son. O Holy Trinity, glory be to Thee." },
+    // ── AT VESPERS: APOSTICHA ─────────────────────────────────────────────────
+    // Inherited from P+49 (Holy Pentecost) per apodosis rubric in 86.pdf:
+    // "except for the Readings, the Polyeleos, and the Antiphons,
+    //  we chant everything as set forth on the Feast of Pentecost."
+    stichera_aposticha: [
+      { tone: 6,
+        text: "Being ignorant of the power of Thy most holy Spirit, " +
+              "which was come unto Thine apostles, O Lord, " +
+              "the heathen imagined the diversity of tongues to be drunkenness. " +
+              "But we who are established by them speak thus unceasingly: " +
+              "Take not Thy Holy Spirit from us, we pray, " +
+              "O Lover of mankind." },
+      { tone: 6,
+        verse: "Create in me a clean heart, O God, " +
+               "and renew a right spirit within me.",
+        text: "O Lord, the descent of the Holy Spirit, " +
+              "which enveloped Thine apostles, " +
+              "made them to speak with other tongues. " +
+              "Hence, the strange wonder was thought to be drunkenness by the unbelievers, " +
+              "but to the believers it was a cause of salvation. " +
+              "Wherefore, we beseech Thee to grant us also His illumination, " +
+              "O Lover of mankind." },
+      { tone: 6,
+        verse: "Cast me not away from Thy presence, " +
+               "and take not Thy Holy Spirit from me.",
+        text: "Heavenly King, Comforter, Spirit of Truth, " +
+              "Who art everywhere present and fillest all things, " +
+              "Treasury of good gifts and Giver of life: " +
+              "come and abide in us, " +
+              "and cleanse us of all impurity, " +
+              "and save our souls, O good One." },
+    ],
+    aposticha_glory: {
+      tone: 8,
+      text: "Of old the tongues were confounded " +
+            "because of the audacity in the building of the tower, " +
+            "but now the tongues are made wise " +
+            "because of the glory of divine knowledge. " +
+            "There God condemned the impious because of their offense, " +
+            "and here Christ hath enlightened the fishermen by the Spirit. " +
+            "At that time the confusion of tongues was wrought for punishment, " +
+            "but now the concord of tongues hath been inaugurated " +
+            "for the salvation of our souls.",
+    },
+    aposticha_both_now: {
+      tone: 8,
+      text: "Of old the tongues were confounded " +
+            "because of the audacity in the building of the tower, " +
+            "but now the tongues are made wise " +
+            "because of the glory of divine knowledge. " +
+            "There God condemned the impious because of their offense, " +
+            "and here Christ hath enlightened the fishermen by the Spirit. " +
+            "At that time the confusion of tongues was wrought for punishment, " +
+            "but now the concord of tongues hath been inaugurated " +
+            "for the salvation of our souls.",
+      note: "Same text as Glory per 80.pdf (Pentecost); inherited by apodosis rubric.",
+    },
     aposticha_source: "pentecostarion",
-    aposticha_note: "Apodosis: all Vespers/Matins texts same as Feast of Pentecost (P+49). Liturgy readings differ — see feast_e/feast_g.",
+    aposticha_note: "Apodosis: all aposticha texts same as Feast of Pentecost (P+49), per 86.pdf rubric. Liturgy readings differ — see feast_e/feast_g.",
 
   },
 

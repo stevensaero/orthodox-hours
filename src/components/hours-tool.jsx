@@ -7946,6 +7946,19 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.6.1",
+    date: "May 2026",
+    summary: "P+49 Vespers fully encoded · unified audit registry covering both Menaion and Pentecostarion",
+    items: [
+      "encoding: P+49 (Holy Pentecost) — added litya_stichera (3 stichera T2), litya_glory (T8), litya_both_now (T8), stichera_aposticha (3 stichera T6 with Ps.50 verses), aposticha_glory (T8), aposticha_both_now (T8). Source: 80.pdf.",
+      "encoding: P+55 (Apodosis of Pentecost) — added stichera_aposticha, aposticha_glory, aposticha_both_now inherited from P+49 per apodosis rubric in 86.pdf: 'we chant everything as set forth on the Feast of Pentecost'.",
+      "audit: rebuilt src/lib/audit.js with a unified FIELD_REGISTRY — single array of field descriptors with appliesTo ('both'|'menaion_only'|'pentecostarion_only'), category, required(entry,type) predicate, and optional custom check(). Replaces flat MENAION_REQUIRED/PENT_REQUIRED lists.",
+      "audit: auditEntry(entry, type) is now the canonical function; auditMenaionEntry() and auditPentecostarionEntry() remain as thin backward-compatible wrappers. Added FIELD_CATEGORIES and fieldsByCategory() exports for future gap-report UI.",
+      "audit: scripts/audit.js CLI updated with conditional field groups — MENAION_REQUIRED_WITH_PROPERS (§2C+), MENAION_REQUIRED_HIGH_RANK (§2D+), MENAION_REQUIRED_POLYELEOS (§2E/§2F), PENT_REQUIRED_WITH_PROPERS, PENT_REQUIRED_GREAT_FEAST — surfacing real gaps in both data stores. Audit now reports 36 complete / 38 incomplete vs prior false 23/23.",
+      "audit: added placeholder pattern 'aposticha stichera not yet' and 'pending encoding' to both src/lib/audit.js and scripts/audit.js.",
+    ],
+  },
+  {
     version: "v0.6.0",
     date: "May 2026",
     summary: "Tone Trainer — Tone 1 Obikhod stichera pointing trainer (standalone sub-project)",

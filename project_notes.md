@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.6.0** | Last synced: May 29, 2026
+**Tool version: v0.6.1** | Last synced: May 29, 2026
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
@@ -1659,7 +1659,41 @@ Badge must correctly identify section even though assembly is the same.
 
 ---
 
-*Last updated: May 24, 2026 · Notes v0.3.23 · Synced to tool v0.4.0*
+## Session Notes — May 29, 2026 (v0.6.1)
+
+### P+49 Vespers encoding completed
+
+All missing Vespers fields added to P+49 (Holy Pentecost) from 80.pdf:
+
+- **Litiya**: 3 stichera Tone II ("In the prophets...", "In Thy courts shall I praise Thee...", "In Thy courts, O Lord...") + Glory Tone VIII ("When Thou didst send down Thy Spirit...") + Both Now (same text per PDF).
+- **Aposticha**: 3 stichera Tone VI with Psalm 50 verses ("Being ignorant...", "O Lord, the descent of the Holy Spirit...", "Heavenly King, Comforter...") + Glory Tone VIII ("Of old the tongues were confounded...") + Both Now (same text per PDF).
+
+P+55 (Apodosis of Pentecost) updated with same aposticha fields (inherited from P+49 per apodosis rubric in 86.pdf). Comment and `aposticha_note` updated to cite the rubric explicitly. No Litiya on P+55 — apodosis, not feast.
+
+### Unified audit registry
+
+`src/lib/audit.js` rebuilt with a `FIELD_REGISTRY` — single array of field descriptors covering both Menaion and Pentecostarion entries. Each entry has: `field`, `category`, `appliesTo` ('both'|'menaion_only'|'pentecostarion_only'), `required(entry, type)` predicate, `description`, and optional `check(entry)`. Categories: identity | hours | liturgy | vespers_lic | vespers_litya | vespers_aposticha | matins | flags.
+
+`auditEntry(entry, type)` is the new canonical function. `auditMenaionEntry()` and `auditPentecostarionEntry()` remain as backward-compatible wrappers. Added `FIELD_CATEGORIES` and `fieldsByCategory()` exports for future gap-report UI.
+
+`scripts/audit.js` (CLI) updated with conditional field groups replacing the old flat lists. Now surfaces real gaps.
+
+### Audit results (post-fix)
+
+Previous state: 23/23 complete (false positive — Vespers fields not checked).
+New state: **36 complete / 38 incomplete** — real gaps now visible.
+
+Key gaps surfaced:
+- **May**: 05-24, 05-25, 05-27 missing `stichera_lord_i_call_count` and aposticha fields
+- **June**: 20 of 30 entries incomplete — most missing `fekula_section`, `matins_format`, `magnificat_sung`, `has_litya`, `has_paroemias` (pre-v2.1 encoding era); §2E/§2F entries also missing vespers stichera fields
+- **July**: 4 of 5 entries incomplete — same v2.1 gaps
+- **Pentecostarion**: 11 entries with gaps — P+19 missing `menaion_set_aside` and liturgy propers; P+35/P+39 missing `litya_glory`/`litya_both_now`; P+47 missing aposticha fields; P+50–P+55 missing `has_litya`; P+52–P+54 missing `magnificat_sung`; P+56 missing `menaion_set_aside`, `alleluia_stichos`, litya fields
+
+These gaps are the backlog for future encoding sessions. The audit will now catch them correctly.
+
+*Last updated: May 29, 2026 · Tool v0.6.1*
+
+
 ---
 
 ## Data Architecture — Dynamic Monthly Modules (v0.3.9)
