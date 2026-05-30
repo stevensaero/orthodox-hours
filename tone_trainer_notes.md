@@ -9,6 +9,45 @@ version. The hours-tool `RELEASE_NOTES` records only the integration milestones
 
 ---
 
+## Session summary (May 30 2026 — v0.4.0 + post-deploy fixes)
+
+**Lexicon wired (v0.4.0):** syllabification and stress now lookup-first from the
+generated CMU+TeX lexicon (1,151 table entries + 68 residue). Fetched from
+`public/lexicon/` at mount, matching the psalter/scripture pattern. Rules remain
+as last-ditch fallback.
+
+**"show source" toggle:** `?` = unconfirmed residue, `~` = rule fallback (suppressed
+on single-syllable function words — I, O, the, of, etc.). No indicator for table,
+reconciled, count-only, archaic, or truth (OCA underline).
+
+**paraToPointerLine rewrite:** the docx "point ▸" path now uses lexicon
+syllabification (so "upon" → u·pon instead of one chip), then maps OCA underline
+spans to syllables by vowel-nucleus overlap (SYLLABIFIER_SPEC §7). Two cases:
+whole-word bracket → lexicon stressIdx picks the specific syllable;
+mid-word bracket (Re[ceive], up[on]) → first underlined vowel nucleus is the
+accent. Non-underlined words carry no accent (lexicon stress was wrongly leaking
+through — fixed). Source tagged "truth" for all underline-driven accents.
+
+**Punctuation phantom chips fixed:** the `|| part` fallback in both
+`wordFromDisplay` and `paraToPointerLine` was keeping pure-punctuation fragments
+(commas, etc.) as syllable chips. Both paths now drop empty-after-strip fragments.
+
+**distribute() fix — verified from score:** the `count < figure.length` case now
+takes the first N notes of the figure sequentially (one per syllable, no melisma).
+Verified from the OCA LIC sheet music (t1-lic-obikhod-tt.pdf): "Re·ceive the
+voice·of·my·prayer" shows four half notes, one per cadence syllable — voice=ti,
+of=do, my=re, prayer=do. The final ti of the 5-note Phrase D figure belongs to
+the *next* phrase's intonation, not this cadence. Pitch calibration from audio
+was a detour — in moveable-do Obikhod, absolute pitch is irrelevant; the solfege
+relationships are fixed regardless of key.
+
+**Key insight captured in SYLLABIFIER_SPEC §7:** brackets currently carry no
+accent weight in v0.4.0 (they're stripped and lexicon stress drives the result).
+Feature B makes brackets authoritative. The current behavior looks correct when
+lexicon agrees with the director but fails silently when they disagree.
+
+---
+
 ## What this is
 
 A standalone trainer that takes a sticheron text + tone and renders it singable:
