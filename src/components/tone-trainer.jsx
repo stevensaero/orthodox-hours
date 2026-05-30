@@ -1724,28 +1724,18 @@ export default function ToneTrainer() {
                   // rowSinging follows playingWhich (set by playLineAs) not the global toggle
                   const rowSinging = isPlaying && playingWhich === which;
                   return (
-                  <div key={which} style={{ display: "flex", flexWrap: "wrap", gap: "2px 2px",
-                                            alignItems: "center", padding: "0.35rem 0.6rem",
+                  <div key={which} style={{ display: "flex", alignItems: "center",
+                                            padding: "0.35rem 0.6rem",
                                             background: rowSinging ? "rgba(255,236,180,.55)"
                                               : which === "truth" ? "rgba(255,255,255,.6)" : "rgba(245,245,245,.6)",
                                             borderTop: "1px solid rgba(0,0,0,.05)" }}>
                     <span style={{ fontSize: "0.6rem", color: "#9A8A70", minWidth: "3.2em",
-                                   alignSelf: "center", fontStyle: "italic" }}>
+                                   flexShrink: 0, fontStyle: "italic" }}>
                       {which === "truth" ? "director" : "machine"}
                     </span>
-                    {/* Spacer pushes row ▶ button to the right */}
-                    <span style={{ flex: 1, minWidth: "0.5rem" }} />
-                    {/* Per-row play button */}
-                    <button
-                      onClick={() => playLineAs(li, which)}
-                      style={{ border: `1px solid ${rowSinging ? "#7a2418" : gold}`,
-                               background: rowSinging ? "rgba(122,36,24,.08)" : "transparent",
-                               color: rowSinging ? "#7a2418" : gold,
-                               borderRadius: 3, padding: "1px 8px", cursor: "pointer",
-                               fontFamily: "Georgia, serif", fontSize: "0.68rem",
-                               alignSelf: "center", flexShrink: 0, marginLeft: "0.3rem" }}>
-                      ▶
-                    </button>
+                    {/* Inner chips container — wraps freely, grows to fill available space */}
+                    <div style={{ flex: 1, display: "flex", flexWrap: "wrap", gap: "2px 2px",
+                                  alignItems: "flex-end" }}>
                     {cl.syllables.map((s, si) => {
                       const accent = which === "truth" ? s.truthAccent : s.machineAccent;
                       const disagree = !s.agree;
@@ -1775,6 +1765,18 @@ export default function ToneTrainer() {
                         </span>
                       );
                     })}
+                    </div>{/* end inner chips container */}
+                    {/* Per-row play button — outside the chips container, anchored right */}
+                    <button
+                      onClick={() => playLineAs(li, which)}
+                      style={{ border: `1px solid ${rowSinging ? "#7a2418" : gold}`,
+                               background: rowSinging ? "rgba(122,36,24,.08)" : "transparent",
+                               color: rowSinging ? "#7a2418" : gold,
+                               borderRadius: 3, padding: "2px 9px", cursor: "pointer",
+                               fontFamily: "Georgia, serif", fontSize: "0.68rem",
+                               flexShrink: 0, marginLeft: "0.5rem", alignSelf: "center" }}>
+                      ▶
+                    </button>
                   </div>
                   );
                 })}
