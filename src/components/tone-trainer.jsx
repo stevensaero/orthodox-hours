@@ -769,9 +769,31 @@ export default function ToneTrainer() {
       const coreUl = ulSlice.slice(coreStart, coreStart + core.length);
       const anyUnderlined = coreUl.some(Boolean);
 
-      if (!anyUnderlined) return { display, sylls };  // lexicon stress unchanged
+      // No underline → no director accent mark on this word. Set all syllables
+      // unaccented. (Lexicon stress is only used in the auto-analyze path, not
+      // here where underline = OCA truth and absence of underline = unaccented.)
+      if (!anyUnderlined) {
+        return { display, sylls: sylls.map(s => ({ ...s, accent: false })) };
+      }
 
       // Map underline to syllable by vowel-nucleus overlap.
+      // If the entire core is underlined (whole-word bracket like [Lord], [hear],
+      // [Receive]), the director marked the word as a whole, not a specific syllable.
+      // Use the lexicon's stressIdx as the tiebreaker — it knows re-CEIVE not RE-ceive.
+      const wholeWordUnderlined = coreUl.every(Boolean);
+      if (wholeWordUnderlined) {
+        const stressIdx = wordObj.sylls.findIndex(s => s.accent);
+        const accentIdx = stressIdx >= 0 ? stressIdx : 0;
+        return {
+          display,
+          sylls: sylls.map((s, si) => ({
+            ...s, accent: si === accentIdx, source: "truth",
+          })),
+        };
+      }
+
+      // Partial underline (mid-word bracket like up[on], Re[ceive]) — map
+      // the underlined span to a syllable by vowel-nucleus overlap.
       let pos = 0;
       const syllRanges = sylls.map((s) => {
         const start = pos; pos += s.text.length; return { start, end: pos - 1 };
