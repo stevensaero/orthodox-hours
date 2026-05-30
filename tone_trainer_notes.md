@@ -1,6 +1,6 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.3.1** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.4.0** | Component: `src/components/tone-trainer.jsx`
 
 *Independent version line, decoupled from the Orthodox Hours Tool version. This
 sub-project iterates on its own cadence; its churn does not bump the hours-tool
@@ -212,9 +212,14 @@ that confirmed lexicon (small) gets wired into the trainer. The dictionary stays
 server-side; only the lean table + confirmed lexicon ship. Archaic `-est/-eth`
 endings are handled by rule (their own final syllable).
 
-**Status:** generator built and run on 2/2 + Pentecost (892 table entries, 51 residue
-awaiting verification). Residue stress is best-guess/unconfirmed until the director
-review pass (a future session).
+**Status:** generator built and run on 4 services (2/2, Pentecost, Palm Sunday,
+Holy Saturday). 1,151 table entries, 68 residue words. Holy Saturday hit zero
+new words — common vocabulary is saturated. Lexicon now **wired into the trainer
+(v0.4.0)**: fetched from `public/lexicon/` at component mount, replaces the
+first-syllable heuristic for all in-lexicon words. Residue entries used as
+best-guess; `confirmed:false` entries surfaced by the "show source" toggle with
+`?` indicator. Director corrections to `name-review.md` can be folded into
+`name-residue.json` and redeployed without any component re-wiring.
 
 ## Known limitations / honest caveats
 
