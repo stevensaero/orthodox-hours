@@ -10,11 +10,22 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.5.4";
+export const TONE_TRAINER_VERSION = "v0.5.5";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.5.5",
+    date: "May 2026",
+    summary: "Per-row sing buttons — director and machine rows each have their own ▶",
+    items: [
+      "feat: each row (director / machine) in the comparison harness now has its own ▶ play button, right-aligned. Clicking a row's ▶ plays that line in that version — no need to change the global toggle first.",
+      "feat: Sing all in the harness header continues to use the Sing director / Sing machine toggle for batch playback.",
+      "feat: playingWhich state tracks which version (director/machine) is currently sounding — amber row highlight follows the actual playing row, not the global toggle.",
+      "change: per-line Sing button removed from line header (superseded by the per-row buttons).",
+    ],
+  },
   {
     version: "v0.5.4",
     date: "May 2026",
@@ -916,6 +927,7 @@ export default function ToneTrainer() {
   const [text, setText] = useState("");
   const [lines, setLines] = useState(presetToLines);
   const [playingLine, setPlayingLine] = useState(null);
+  const [playingWhich, setPlayingWhich] = useState(null); // "truth"|"machine" while a line plays
   const [editOpen, setEditOpen] = useState({});
   const [showReleaseNotes, setShowReleaseNotes] = useState(false);
   // lexicon (fetched from public/lexicon/ at mount, same pattern as psalter/scripture)
@@ -983,14 +995,26 @@ export default function ToneTrainer() {
   const activeLines = () =>
     compareMode && singWhich === "machine" && machineLines ? machineLines : lines;
 
+  // playLineAs: play a specific line in a specific version (truth/machine)
+  // without changing the global singWhich — used by per-row ▶ buttons.
+  const playLineAs = (li, which) => {
+    const src = which === "machine" && machineLines ? machineLines : lines;
+    setPlayingLine(li);
+    setPlayingWhich(which);
+    playNotes(lineToNotes(src[li]), () => { setPlayingLine(null); setPlayingWhich(null); });
+  };
+
   const playLine = (li) => {
     setPlayingLine(li);
-    playNotes(lineToNotes(activeLines()[li]), () => setPlayingLine(null));
+    setPlayingWhich(singWhich);
+    playNotes(lineToNotes(activeLines()[li]), () => { setPlayingLine(null); setPlayingWhich(null); });
   };
 
   const playAll = () => {
     const c = ac();
     let t = c.currentTime + 0.06;
+    const which = compareMode && machineLines ? singWhich : "truth";
+    setPlayingWhich(which);
     activeLines().forEach((line, li) => {
       const notes = lineToNotes(line);
       const start = t;
@@ -998,7 +1022,7 @@ export default function ToneTrainer() {
       notes.forEach((n) => { tone(freq(n.sol), t, n.dur, n.peak); t += n.dur; });
       t += 0.35;
     });
-    setTimeout(() => setPlayingLine(null), (t - c.currentTime) * 1000 + 40);
+    setTimeout(() => { setPlayingLine(null); setPlayingWhich(null); }, (t - c.currentTime) * 1000 + 40);
   };
 
   const playScale = () =>
@@ -1693,22 +1717,15 @@ export default function ToneTrainer() {
                   <span style={{ color: "#9A8A70", fontStyle: "italic" }}>
                     {cl.syllables.filter(s => s.agree).length}/{cl.syllables.length} syllables agree
                   </span>
-                  <span style={{ flex: 1 }} />
-                  <button style={{ border: `1px solid ${isPlaying ? "#7a2418" : gold}`, background: "transparent",
-                                   color: isPlaying ? "#7a2418" : gold, borderRadius: 3,
-                                   padding: "1px 9px", cursor: "pointer", fontFamily: "Georgia, serif",
-                                   fontSize: "0.7rem" }}
-                    onClick={() => playLine(li)}>
-                    {isPlaying ? "▶" : "▶"} Sing
-                  </button>
                 </div>
 
                 {/* Two-row chip display: director on top, machine below */}
                 {["truth", "machine"].map((which) => {
-                  const rowSinging = isPlaying && singWhich === which;
+                  // rowSinging follows playingWhich (set by playLineAs) not the global toggle
+                  const rowSinging = isPlaying && playingWhich === which;
                   return (
                   <div key={which} style={{ display: "flex", flexWrap: "wrap", gap: "2px 2px",
-                                            alignItems: "flex-end", padding: "0.35rem 0.6rem",
+                                            alignItems: "center", padding: "0.35rem 0.6rem",
                                             background: rowSinging ? "rgba(255,236,180,.55)"
                                               : which === "truth" ? "rgba(255,255,255,.6)" : "rgba(245,245,245,.6)",
                                             borderTop: "1px solid rgba(0,0,0,.05)" }}>
@@ -1716,6 +1733,19 @@ export default function ToneTrainer() {
                                    alignSelf: "center", fontStyle: "italic" }}>
                       {which === "truth" ? "director" : "machine"}
                     </span>
+                    {/* Spacer pushes row ▶ button to the right */}
+                    <span style={{ flex: 1, minWidth: "0.5rem" }} />
+                    {/* Per-row play button */}
+                    <button
+                      onClick={() => playLineAs(li, which)}
+                      style={{ border: `1px solid ${rowSinging ? "#7a2418" : gold}`,
+                               background: rowSinging ? "rgba(122,36,24,.08)" : "transparent",
+                               color: rowSinging ? "#7a2418" : gold,
+                               borderRadius: 3, padding: "1px 8px", cursor: "pointer",
+                               fontFamily: "Georgia, serif", fontSize: "0.68rem",
+                               alignSelf: "center", flexShrink: 0, marginLeft: "0.3rem" }}>
+                      ▶
+                    </button>
                     {cl.syllables.map((s, si) => {
                       const accent = which === "truth" ? s.truthAccent : s.machineAccent;
                       const disagree = !s.agree;
@@ -1754,7 +1784,7 @@ export default function ToneTrainer() {
           </div>
 
           <div style={{ marginTop: "0.5rem", fontSize: "0.72rem", color: "#6b5942", fontStyle: "italic" }}>
-            Amber chips = syllable-level disagreement. Boxed chip = cadence anchor. "Sing director / machine" plays the selected version. "Show source" reveals ? / ~ on machine chips.
+            Amber chips = syllable-level disagreement. Boxed chip = cadence anchor. "Sing all" plays per the Sing director / machine toggle. Each row has its own ▶ to play that version directly. "Show source" reveals ? / ~ on machine chips.
           </div>
         </div>
       )}
