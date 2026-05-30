@@ -1233,7 +1233,7 @@ export default function ToneTrainer() {
       setMachineLines(mLines);
       setCompareData(cmp);
       setHasTruth(true);
-      setCompareMode(true);
+      setCompareMode(false); // user must explicitly open Director vs. Machine
       setSingWhich("truth");
     } else {
       // AUTO MODE: syllabify via lexicon, then apply phrase-structural accent engine.
@@ -1720,16 +1720,8 @@ export default function ToneTrainer() {
                      lineHeight: 1.6, border: `1px solid ${hasTruth ? "rgba(90,122,60,.6)" : "#d6c79f"}`,
                      borderRadius: 6, padding: "8px", resize: "vertical",
                      background: hasTruth ? "rgba(90,122,60,.03)" : "transparent" }} />
-          <div style={{ marginTop: "0.45rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <span style={{ fontSize: "0.75rem", color: "#9A8A70", fontStyle: "italic", flex: 1 }}>
-              {hasTruth && <>Director Pointing mode — [accent] brackets override the machine. | = line end · // = penultimate line.</>}
-            </span>
-            {compareData && (
-              <button style={{ ...btn, background: "transparent", fontSize: "0.75rem", flexShrink: 0 }}
-                onClick={() => setCompareMode((v) => !v)}>
-                {compareMode ? "Hide Director vs. Machine ▾" : "Show Director vs. Machine ▸"}
-              </button>
-            )}
+          <div style={{ marginTop: "0.45rem", fontSize: "0.75rem", color: "#9A8A70", fontStyle: "italic" }}>
+            {hasTruth && <>Director Pointing mode — [accent] brackets override the machine. | = line end · // = penultimate line.</>}
           </div>
       </div>
 
@@ -2020,8 +2012,7 @@ export default function ToneTrainer() {
         </div>
       )}
 
-      {/* legend + sung display — hidden in comparison mode */}
-      {!(compareMode && compareData) && (
+      {/* ── INFO BAR — always visible ──────────────────────────────────────── */}
       <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap",
                     fontSize: "0.78rem", color: "#6b5942", marginBottom: "1rem" }}>
         <span style={{ flex: 1, display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
@@ -2035,6 +2026,20 @@ export default function ToneTrainer() {
                        borderRadius: 3, padding: "1px 8px", whiteSpace: "nowrap" }}>
           {hasTruth ? "Director Pointing" : "Machine Pointing"}
         </span>
+        {/* Show / Hide Director vs. Machine — always accessible */}
+        {compareData && (
+          <button
+            onClick={() => setCompareMode(v => !v)}
+            style={{ marginLeft: "0.5rem", fontSize: "0.72rem", flexShrink: 0,
+                     background: compareMode ? "rgba(90,122,60,.12)" : "transparent",
+                     border: `1px solid ${compareMode ? "rgba(90,122,60,.45)" : "#d6c79f"}`,
+                     color: compareMode ? "#3a6020" : "#9A8A70",
+                     borderRadius: 3, padding: "1px 8px", cursor: "pointer",
+                     fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}
+            title="Show or hide the Director vs. Machine comparison harness">
+            {compareMode ? "Director vs. Machine ✓" : "Director vs. Machine"}
+          </button>
+        )}
         {/* Pitch height toggle */}
         <button
           onClick={() => setPitchHeight(v => !v)}
@@ -2048,7 +2053,8 @@ export default function ToneTrainer() {
           {pitchHeight ? "pitch height ✓" : "pitch height"}
         </button>
       </div>
-      )}
+
+      {/* legend + sung display — hidden in comparison mode */}
       {!(compareMode && compareData) && lines.map((line, li) => {
         const roles = pointLine(line);
         const isFin = line.phrase === "Final";
