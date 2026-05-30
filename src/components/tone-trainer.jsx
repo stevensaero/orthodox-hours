@@ -1550,26 +1550,6 @@ export default function ToneTrainer() {
           </label>
           <button style={btn} onClick={playScale}>scale</button>
           <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }} onClick={playAll}>▶ Sing all</button>
-          <div style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
-            <label style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: "0.78rem", color: "#5b4a33", cursor: "pointer" }}
-              onMouseEnter={() => setSourceTooltip(true)} onMouseLeave={() => setSourceTooltip(false)}>
-              <input type="checkbox" checked={showAccentSource} onChange={(e) => setShowAccentSource(e.target.checked)} />
-              show source ⓘ
-            </label>
-            {sourceTooltip && (
-              <div style={{ position: "absolute", bottom: "calc(100% + 8px)", right: 0, zIndex: 100,
-                             background: "#FAF6EE", border: "1px solid #D4C49A", borderRadius: 5,
-                             padding: "0.55rem 0.75rem", width: 220, boxShadow: "0 3px 12px rgba(0,0,0,.13)",
-                             fontSize: "0.72rem", color: "#3D3020", lineHeight: 1.6,
-                             pointerEvents: "none" }}>
-                <div style={{ fontWeight: 600, marginBottom: "0.3rem", color: "#5C4A1E" }}>Accent source legend</div>
-                <div><span style={{ fontFamily: "monospace" }}>no marker</span> — CMU-confirmed (table entry)</div>
-                <div><span style={{ fontFamily: "monospace", color: "#8a6a14" }}>?</span> — unconfirmed best-guess (word not in CMU; stress estimated)</div>
-                <div><span style={{ fontFamily: "monospace", color: "#9A8A70" }}>~</span> — rule fallback (word completely off-table)</div>
-                <div style={{ marginTop: "0.35rem", color: "#9A8A70", fontStyle: "italic" }}>Appears in sung display and machine row of A/B comparison.</div>
-              </div>
-            )}
-          </div>
           {lexiconError && <span style={{ fontSize: "0.72rem", color: "#7a2418", fontStyle: "italic" }}>{lexiconError}</span>}
           {!lexicon && !lexiconError && <span style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic" }}>loading lexicon…</span>}
         </div>
@@ -1621,19 +1601,17 @@ export default function ToneTrainer() {
       {compareMode && compareData && (
         <div style={{ border: "1px solid rgba(90,122,60,.5)", borderRadius: 8, padding: "0.8rem 0.9rem",
                       marginBottom: "1.1rem", background: "rgba(90,122,60,.04)" }}>
-          {/* Header row: aggregate stats + sing toggle + JSON export */}
-          <div style={{ display: "flex", alignItems: "center", gap: "0.7rem", flexWrap: "wrap", marginBottom: "0.7rem" }}>
+          {/* Header row 1: title | stats | spacer | Export JSON */}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.7rem", flexWrap: "wrap", marginBottom: "0.4rem" }}>
             <span style={{ fontSize: "0.78rem", fontWeight: 600, color: "#3a6020" }}>
               Director vs. Machine
             </span>
-            {/* Anchor-level headline */}
             <span style={{ fontSize: "0.78rem", color: "#3a6020",
                            background: "rgba(90,122,60,.12)", border: "1px solid rgba(90,122,60,.3)",
                            borderRadius: 3, padding: "1px 8px" }}>
               anchor: {compareData.anchorMatchCount}/{compareData.totalLines} lines match
               {" "}({Math.round(compareData.anchorMatchCount / Math.max(1, compareData.totalLines) * 100)}%)
             </span>
-            {/* Syllable-level */}
             <span style={{ fontSize: "0.78rem", color: "#5b4a33",
                            background: "rgba(139,105,20,.08)", border: "1px solid rgba(139,105,20,.25)",
                            borderRadius: 3, padding: "1px 8px" }}>
@@ -1641,25 +1619,7 @@ export default function ToneTrainer() {
               {" "}({Math.round(compareData.syllMatchCount / Math.max(1, compareData.totalSylls) * 100)}%)
             </span>
             <span style={{ flex: 1 }} />
-            {/* Sing toggle */}
-            <div style={{ display: "inline-flex", border: "1.5px solid #8B6914", borderRadius: 5, overflow: "hidden" }}>
-              {["truth", "machine"].map((w) => (
-                <button key={w} onClick={() => setSingWhich(w)}
-                  style={{ border: "none", background: singWhich === w ? "#8B6914" : "transparent",
-                           color: singWhich === w ? "#fff" : "#8B6914",
-                           padding: "4px 11px", cursor: "pointer", fontFamily: "Georgia, serif",
-                           fontSize: "0.75rem", letterSpacing: "0.04em" }}>
-                  {w === "truth" ? "Sing director" : "Sing machine"}
-                </button>
-              ))}
-            </div>
-            {/* Sing all — plays activeLines() per singWhich */}
-            <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none",
-                             fontSize: "0.75rem", padding: "4px 13px" }}
-              onClick={playAll}>
-              ▶ Sing all
-            </button>
-            {/* JSON export */}
+            {/* JSON export — top right */}
             <button
               onClick={() => {
                 const payload = {
@@ -1692,6 +1652,48 @@ export default function ToneTrainer() {
             >
               Export JSON ↓
             </button>
+          </div>
+          {/* Header row 2: Sing all | Sing director/machine toggle | spacer | show source */}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap", marginBottom: "0.7rem" }}>
+            {/* Sing all */}
+            <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none",
+                             fontSize: "0.75rem", padding: "4px 13px" }}
+              onClick={playAll}>
+              ▶ Sing all
+            </button>
+            {/* Sing director / machine toggle */}
+            <div style={{ display: "inline-flex", border: "1.5px solid #8B6914", borderRadius: 5, overflow: "hidden" }}>
+              {["truth", "machine"].map((w) => (
+                <button key={w} onClick={() => setSingWhich(w)}
+                  style={{ border: "none", background: singWhich === w ? "#8B6914" : "transparent",
+                           color: singWhich === w ? "#fff" : "#8B6914",
+                           padding: "4px 11px", cursor: "pointer", fontFamily: "Georgia, serif",
+                           fontSize: "0.75rem", letterSpacing: "0.04em" }}>
+                  {w === "truth" ? "Sing director" : "Sing machine"}
+                </button>
+              ))}
+            </div>
+            <span style={{ flex: 1 }} />
+            {/* show source ⓘ — moved here from controls bar */}
+            <div style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
+              <label style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: "0.78rem", color: "#5b4a33", cursor: "pointer" }}
+                onMouseEnter={() => setSourceTooltip(true)} onMouseLeave={() => setSourceTooltip(false)}>
+                <input type="checkbox" checked={showAccentSource} onChange={(e) => setShowAccentSource(e.target.checked)} />
+                show source ⓘ
+              </label>
+              {sourceTooltip && (
+                <div style={{ position: "absolute", bottom: "calc(100% + 8px)", right: 0, zIndex: 100,
+                               background: "#FAF6EE", border: "1px solid #D4C49A", borderRadius: 5,
+                               padding: "0.55rem 0.75rem", width: 220, boxShadow: "0 3px 12px rgba(0,0,0,.13)",
+                               fontSize: "0.72rem", color: "#3D3020", lineHeight: 1.6,
+                               pointerEvents: "none" }}>
+                  <div style={{ fontWeight: 600, marginBottom: "0.3rem", color: "#5C4A1E" }}>Accent source legend</div>
+                  <div><span style={{ fontFamily: "monospace" }}>no marker</span> — CMU-confirmed (table entry)</div>
+                  <div><span style={{ fontFamily: "monospace", color: "#8a6a14" }}>?</span> — unconfirmed best-guess (word not in CMU; stress estimated)</div>
+                  <div><span style={{ fontFamily: "monospace", color: "#9A8A70" }}>~</span> — rule fallback (word completely off-table)</div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Per-line side-by-side comparison */}
