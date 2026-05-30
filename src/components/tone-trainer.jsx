@@ -1725,53 +1725,69 @@ export default function ToneTrainer() {
       </div>
 
       {/* ── PLAY BAR ─────────────────────────────────────────────────────── */}
-      <div style={{ display: "flex", flexWrap: "nowrap", gap: "0.5rem", alignItems: "center",
+      <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr",
+                    alignItems: "center", gap: "0.5rem",
                     border: "1px solid #d6c79f", borderRadius: 8,
-                    padding: "0.55rem 0.9rem", marginBottom: "1.1rem",
-                    overflowX: "auto" }}>
-        <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none",
-                         flexShrink: 0 }} onClick={analyze}
-          title="Syllabify and point the sticheron — assigns reciting tone, prep, and cadence roles">
-          Point
-        </button>
-        {compareData && (
-          <button style={{ ...btn, background: "transparent", fontSize: "0.75rem",
-                           flexShrink: 0 }}
-            onClick={() => setCompareMode((v) => !v)}>
-            {compareMode ? "hide comparison ▾" : "show comparison ▸"}
+                    padding: "0.55rem 0.9rem", marginBottom: "1.1rem" }}>
+
+        {/* Col 1 — left: Point + comparison toggle */}
+        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center",
+                      justifyContent: "flex-start" }}>
+          <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }}
+            onClick={analyze}
+            title="Syllabify and point the sticheron — assigns reciting tone, prep, and cadence roles">
+            Point
           </button>
-        )}
-        <span style={{ color: "#d6c79f", margin: "0 0.25rem", flexShrink: 0 }}>|</span>
-        <label style={{ fontSize: "0.82rem", color: "#5b4a33", flexShrink: 0 }}>
-          do ={" "}
-          <select value={doHz} onChange={(e) => setDoHz(parseFloat(e.target.value))}
-            style={{ fontFamily: "Georgia, serif", border: "1px solid #d6c79f",
-                     borderRadius: 6, padding: "3px 6px" }}>
-            {DO_OPTIONS.map((o) => <option key={o.label} value={o.hz}>{o.label}</option>)}
-          </select>
-        </label>
-        <button style={{ ...btn, flexShrink: 0 }} onClick={playScale}>scale</button>
-        <label style={{ fontSize: "0.82rem", color: "#5b4a33", display: "inline-flex",
-                        alignItems: "center", gap: "0.3rem", flexShrink: 0 }}
-          title="Half note = 1 beat (Drillock &amp; Ealy). Range: 40–120 BPM.">
-          tempo
-          <input type="range" min={40} max={120} step={1} value={bpm}
-            onChange={(e) => setBpm(parseInt(e.target.value, 10))}
-            style={{ width: 64, cursor: "pointer", accentColor: gold }} />
-          <span style={{ minWidth: "3.5em", textAlign: "right" }}>{bpm} BPM</span>
-        </label>
-        <button
-          style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none",
-                   flexShrink: 0, fontSize: "1rem", padding: "5px 10px" }}
-          onClick={playingLine !== null ? stopAll : playAll}
-          title={playingLine !== null ? "Stop playback" : "Sing all lines"}>
-          {playingLine !== null ? "◼" : "▶"}
-        </button>
-        {lexiconError && <span style={{ fontSize: "0.72rem", color: "#7a2418",
-                                        fontStyle: "italic", flexShrink: 0 }}>{lexiconError}</span>}
-        {!lexicon && !lexiconError && <span style={{ fontSize: "0.72rem", color: "#9A8A70",
-                                                      fontStyle: "italic", flexShrink: 0 }}>loading lexicon…</span>}
+          {compareData && (
+            <button style={{ ...btn, background: "transparent", fontSize: "0.75rem" }}
+              onClick={() => setCompareMode((v) => !v)}>
+              {compareMode ? "hide comparison ▾" : "show comparison ▸"}
+            </button>
+          )}
+        </div>
+
+        {/* Col 2 — center: audio controls bracketed by | dividers */}
+        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+          <span style={{ color: "#d6c79f" }}>|</span>
+          <label style={{ fontSize: "0.82rem", color: "#5b4a33" }}>
+            do ={" "}
+            <select value={doHz} onChange={(e) => setDoHz(parseFloat(e.target.value))}
+              style={{ fontFamily: "Georgia, serif", border: "1px solid #d6c79f",
+                       borderRadius: 6, padding: "3px 6px" }}>
+              {DO_OPTIONS.map((o) => <option key={o.label} value={o.hz}>{o.label}</option>)}
+            </select>
+          </label>
+          <button style={btn} onClick={playScale}>scale</button>
+          <label style={{ fontSize: "0.82rem", color: "#5b4a33", display: "inline-flex",
+                          alignItems: "center", gap: "0.3rem" }}
+            title="Half note = 1 beat (Drillock &amp; Ealy). Range: 40–120 BPM.">
+            tempo
+            <input type="range" min={40} max={120} step={1} value={bpm}
+              onChange={(e) => setBpm(parseInt(e.target.value, 10))}
+              style={{ width: 64, cursor: "pointer", accentColor: gold }} />
+            <span style={{ minWidth: "3.5em", textAlign: "right" }}>{bpm} BPM</span>
+          </label>
+          <span style={{ color: "#d6c79f" }}>|</span>
+        </div>
+
+        {/* Col 3 — right: play/stop icon + lexicon status */}
+        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center",
+                      justifyContent: "flex-end" }}>
+          {lexiconError && <span style={{ fontSize: "0.72rem", color: "#7a2418",
+                                          fontStyle: "italic" }}>{lexiconError}</span>}
+          {!lexicon && !lexiconError && <span style={{ fontSize: "0.72rem", color: "#9A8A70",
+                                                        fontStyle: "italic" }}>loading lexicon…</span>}
+          <button
+            style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none",
+                     fontSize: "1rem", padding: "5px 10px" }}
+            onClick={playingLine !== null ? stopAll : playAll}
+            title={playingLine !== null ? "Stop playback" : "Sing all lines"}>
+            {playingLine !== null ? "◼" : "▶"}
+          </button>
+        </div>
+
       </div>
+
 
       {/* ── COMPARISON HARNESS (Feature B) ───────────────────────────────── */}
       {compareMode && compareData && (
