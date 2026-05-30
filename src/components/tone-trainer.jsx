@@ -10,11 +10,21 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.6.1";
+export const TONE_TRAINER_VERSION = "v0.6.2";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.6.2",
+    date: "May 2026",
+    summary: "Pitch height mode — chip height and text position reflect solfege pitch",
+    items: [
+      "feat: pitch height toggle in legend row. Off by default. When on: chip height scales with pitch (la=36px base, +10px per scale degree → re=66px). Chips bottom-align so taller chips extend upward, creating a melody contour.",
+      "feat: in pitch height mode, syllable text rises to the top of each chip (rises and falls with pitch). The solfege label stays pinned at the bottom.",
+      "feat: in pitch height mode, accent mark (´) floats above the chip border via position:absolute on the chip container (overflow:visible). Phrase block top padding increases to 1.4rem to give accent marks headroom.",
+    ],
+  },
   {
     version: "v0.6.1",
     date: "May 2026",
@@ -187,6 +197,13 @@ const PH = {
 const ROT = ["A", "B", "C", "D"];
 const phraseForLine = (i, total) => (i === total - 1 ? "Final" : ROT[i % 4]);
 const PNAME = { A: "Phrase A", B: "Phrase B", C: "Phrase C", D: "Phrase D", Final: "Final Phrase" };
+
+// ── PITCH HEIGHT (sung display) ───────────────────────────────────────────────
+// la is the lowest pitch in Tone 1 cadences. Each scale step adds CHIP_STEP_H px.
+const PITCH_SCALE = ["la", "ti", "do", "re", "mi", "fa", "sol"];
+const CHIP_BASE_H = 36;   // la = 36px
+const CHIP_STEP_H = 10;   // +10px per scale degree → re = 66px
+const chipH = (sol) => CHIP_BASE_H + Math.max(0, PITCH_SCALE.indexOf(sol)) * CHIP_STEP_H;
 
 // ── LEXICON LOOKUP ────────────────────────────────────────────────────────────
 // The lexicon is fetched from public/lexicon/ at component mount (same pattern
@@ -967,6 +984,7 @@ export default function ToneTrainer() {
   const [playingWhich, setPlayingWhich] = useState(null); // "truth"|"machine" while a line plays
   const [editOpen, setEditOpen] = useState({});
   const [editMode, setEditMode] = useState(false); // gates all accent/syllable editing
+  const [pitchHeight, setPitchHeight] = useState(false); // chip height reflects solfege pitch
   const [machineEditOpen, setMachineEditOpen] = useState({}); // comparison machine edit lines
   const [showReleaseNotes, setShowReleaseNotes] = useState(false);
   // lexicon (fetched from public/lexicon/ at mount, same pattern as psalter/scripture)
@@ -1972,6 +1990,18 @@ export default function ToneTrainer() {
                        borderRadius: 3, padding: "1px 8px", whiteSpace: "nowrap" }}>
           {hasTruth ? "Director Pointing" : "Machine Pointing"}
         </span>
+        {/* Pitch height toggle */}
+        <button
+          onClick={() => setPitchHeight(v => !v)}
+          style={{ marginLeft: "0.5rem", fontSize: "0.72rem", flexShrink: 0,
+                   background: pitchHeight ? "rgba(40,58,92,.12)" : "transparent",
+                   border: `1px solid ${pitchHeight ? "rgba(40,58,92,.5)" : "#d6c79f"}`,
+                   color: pitchHeight ? "#283a5c" : "#9A8A70",
+                   borderRadius: 3, padding: "1px 8px", cursor: "pointer",
+                   fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}
+          title="Show chip height and text position scaled to solfege pitch">
+          {pitchHeight ? "pitch height ✓" : "pitch height"}
+        </button>
       </div>
       )}
       {!(compareMode && compareData) && lines.map((line, li) => {
@@ -1979,7 +2009,7 @@ export default function ToneTrainer() {
         const isFin = line.phrase === "Final";
         let fi = -1;
         return (
-          <div key={li} id={`phrase-block-${li}`} style={{ background: playingLine === li ? "rgba(255,250,238,.9)" : "rgba(255,255,255,.5)", border: "1px solid #d6c79f", borderLeft: `5px solid ${playingLine === li ? "#7a2418" : gold}`, borderRadius: 8, padding: "0.7rem 0.9rem", marginBottom: "0.8rem" }}>
+          <div key={li} id={`phrase-block-${li}`} style={{ background: playingLine === li ? "rgba(255,250,238,.9)" : "rgba(255,255,255,.5)", border: "1px solid #d6c79f", borderLeft: `5px solid ${playingLine === li ? "#7a2418" : gold}`, borderRadius: 8, padding: pitchHeight ? "1.4rem 0.9rem 0.7rem" : "0.7rem 0.9rem", marginBottom: "0.8rem" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap", marginBottom: "0.5rem" }}>
               <span style={{ background: isFin ? "#7a2418" : "#283a5c", color: "#fff", borderRadius: 5, padding: "2px 10px", fontSize: "0.78rem" }}>{PNAME[line.phrase]}</span>
               <span style={{ fontSize: "0.76rem", color: "#6b5942", fontStyle: "italic" }}>
@@ -1996,9 +2026,28 @@ export default function ToneTrainer() {
                     const pis = r.pitches.join("-");
                     return (
                       <span key={si} onClick={editMode ? () => toggleAccent(li, myFi) : undefined}
-                        style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", padding: "3px 6px 2px", borderRadius: 6, cursor: editMode ? "pointer" : "default", background: roleBg[r.role], border: r.anchor ? "1px solid #7a2418" : "1px solid transparent", minWidth: "2em" }}>
+                        style={{ position: "relative", display: "inline-flex", flexDirection: "column",
+                                 alignItems: "center",
+                                 justifyContent: pitchHeight ? "space-between" : "flex-end",
+                                 height: pitchHeight ? chipH(r.pitches[0]) : undefined,
+                                 overflow: "visible",
+                                 padding: "3px 6px 2px", borderRadius: 6,
+                                 cursor: editMode ? "pointer" : "default",
+                                 background: roleBg[r.role],
+                                 border: r.anchor ? "1px solid #7a2418" : "1px solid transparent",
+                                 minWidth: "2em" }}>
+                        {/* HEIGHT MODE: accent floats above chip border */}
+                        {s.accent && pitchHeight && (
+                          <span style={{ position: "absolute", top: "-1em", left: "50%",
+                                         transform: "translateX(-50%)", color: "#7a2418",
+                                         fontSize: "1.1rem", lineHeight: 1,
+                                         pointerEvents: "none", userSelect: "none" }}>´</span>
+                        )}
                         <span style={{ fontSize: "1.1rem", fontWeight: s.accent ? 600 : 400, position: "relative" }}>
-                          {s.accent ? <span style={{ position: "absolute", top: "-0.55em", left: "50%", transform: "translateX(-50%)", color: "#7a2418" }}>´</span> : null}
+                          {/* FLAT MODE: accent stays inline as before */}
+                          {s.accent && !pitchHeight
+                            ? <span style={{ position: "absolute", top: "-0.55em", left: "50%", transform: "translateX(-50%)", color: "#7a2418" }}>´</span>
+                            : null}
                           {s.text}
                         </span>
                         <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: "0.72rem", color: roleColor[r.role] }}>{pis}</span>
