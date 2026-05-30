@@ -1784,6 +1784,61 @@ export default function ToneTrainer() {
       </div>
 
 
+      {/* ── INFO BAR — always visible ──────────────────────────────────────── */}
+      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap",
+                    fontSize: "0.78rem", color: "#6b5942", marginBottom: "1rem" }}>
+        {/* Color-coded legend — pill backgrounds match chip roleBg colors */}
+        <span style={{ flex: 1, display: "flex", gap: "0.6rem", justifyContent: "center",
+                       flexWrap: "wrap", alignItems: "center" }}>
+          <span style={{ background: "rgba(40,58,92,.08)", color: "#283a5c",
+                         borderRadius: 4, padding: "1px 7px" }}>reciting tone</span>
+          <span style={{ background: "rgba(180,137,43,.18)", color: "#8a6a14",
+                         borderRadius: 4, padding: "1px 7px" }}>prep (ti)</span>
+          <span style={{ background: "rgba(122,36,24,.11)", color: "#7a2418",
+                         borderRadius: 4, padding: "1px 7px" }}>cadence</span>
+          <span>· ´ = accent</span>
+        </span>
+        {/* Pointing mode indicator — reflects singWhich in A/B mode */}
+        {(() => {
+          const isDir = (compareMode && compareData) ? singWhich === "truth" : hasTruth;
+          return (
+            <span style={{ fontSize: "0.72rem", flexShrink: 0,
+                           background: isDir ? "rgba(90,122,60,.12)" : "rgba(139,105,20,.08)",
+                           border: `1px solid ${isDir ? "rgba(90,122,60,.45)" : "rgba(139,105,20,.3)"}`,
+                           color: isDir ? "#3a6020" : "#5b4a33",
+                           borderRadius: 3, padding: "1px 8px", whiteSpace: "nowrap" }}>
+              {isDir ? "Director Pointing" : "Machine Pointing"}
+            </span>
+          );
+        })()}
+        {/* Show / Hide Director vs. Machine */}
+        {compareData && (
+          <button
+            onClick={() => setCompareMode(v => !v)}
+            style={{ marginLeft: "0.5rem", fontSize: "0.72rem", flexShrink: 0,
+                     background: compareMode ? "rgba(90,122,60,.12)" : "transparent",
+                     border: `1px solid ${compareMode ? "rgba(90,122,60,.45)" : "#d6c79f"}`,
+                     color: compareMode ? "#3a6020" : "#9A8A70",
+                     borderRadius: 3, padding: "1px 8px", cursor: "pointer",
+                     fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}
+            title="Show or hide the Director vs. Machine comparison harness">
+            {compareMode ? "Director vs. Machine ✓" : "Director vs. Machine"}
+          </button>
+        )}
+        {/* Pitch height toggle */}
+        <button
+          onClick={() => setPitchHeight(v => !v)}
+          style={{ marginLeft: "0.5rem", fontSize: "0.72rem", flexShrink: 0,
+                   background: pitchHeight ? "rgba(40,58,92,.12)" : "transparent",
+                   border: `1px solid ${pitchHeight ? "rgba(40,58,92,.5)" : "#d6c79f"}`,
+                   color: pitchHeight ? "#283a5c" : "#9A8A70",
+                   borderRadius: 3, padding: "1px 8px", cursor: "pointer",
+                   fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}
+          title="Show chip height and text position scaled to solfege pitch">
+          {pitchHeight ? "pitch height ✓" : "pitch height"}
+        </button>
+      </div>
+
       {/* ── COMPARISON HARNESS (Feature B) ───────────────────────────────── */}
       {compareMode && compareData && (
         <div style={{ border: "1px solid rgba(90,122,60,.5)", borderRadius: 8, padding: "0.8rem 0.9rem",
@@ -2011,48 +2066,6 @@ export default function ToneTrainer() {
           </div>
         </div>
       )}
-
-      {/* ── INFO BAR — always visible ──────────────────────────────────────── */}
-      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap",
-                    fontSize: "0.78rem", color: "#6b5942", marginBottom: "1rem" }}>
-        <span style={{ flex: 1, display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
-          <span>reciting tone</span><span>· prep (ti)</span><span>· cadence</span><span>· ´ = accent</span>
-        </span>
-        {/* Pointing mode indicator */}
-        <span style={{ fontSize: "0.72rem", flexShrink: 0,
-                       background: hasTruth ? "rgba(90,122,60,.12)" : "rgba(139,105,20,.08)",
-                       border: `1px solid ${hasTruth ? "rgba(90,122,60,.45)" : "rgba(139,105,20,.3)"}`,
-                       color: hasTruth ? "#3a6020" : "#5b4a33",
-                       borderRadius: 3, padding: "1px 8px", whiteSpace: "nowrap" }}>
-          {hasTruth ? "Director Pointing" : "Machine Pointing"}
-        </span>
-        {/* Show / Hide Director vs. Machine — always accessible */}
-        {compareData && (
-          <button
-            onClick={() => setCompareMode(v => !v)}
-            style={{ marginLeft: "0.5rem", fontSize: "0.72rem", flexShrink: 0,
-                     background: compareMode ? "rgba(90,122,60,.12)" : "transparent",
-                     border: `1px solid ${compareMode ? "rgba(90,122,60,.45)" : "#d6c79f"}`,
-                     color: compareMode ? "#3a6020" : "#9A8A70",
-                     borderRadius: 3, padding: "1px 8px", cursor: "pointer",
-                     fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}
-            title="Show or hide the Director vs. Machine comparison harness">
-            {compareMode ? "Director vs. Machine ✓" : "Director vs. Machine"}
-          </button>
-        )}
-        {/* Pitch height toggle */}
-        <button
-          onClick={() => setPitchHeight(v => !v)}
-          style={{ marginLeft: "0.5rem", fontSize: "0.72rem", flexShrink: 0,
-                   background: pitchHeight ? "rgba(40,58,92,.12)" : "transparent",
-                   border: `1px solid ${pitchHeight ? "rgba(40,58,92,.5)" : "#d6c79f"}`,
-                   color: pitchHeight ? "#283a5c" : "#9A8A70",
-                   borderRadius: 3, padding: "1px 8px", cursor: "pointer",
-                   fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}
-          title="Show chip height and text position scaled to solfege pitch">
-          {pitchHeight ? "pitch height ✓" : "pitch height"}
-        </button>
-      </div>
 
       {/* legend + sung display — hidden in comparison mode */}
       {!(compareMode && compareData) && lines.map((line, li) => {
