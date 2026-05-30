@@ -151,24 +151,42 @@ trainer auto-improves on next build.
 
 ### How the table gets into the browser
 
-**Decision: bundled Vite import.** The syllabification table (~89 KB raw, ~25 KB
-gzipped) is imported as a JSON asset in `tone-trainer.jsx`. Vite bundles it into
-the trainer's lazy-loaded chunk. The trainer chunk grows from ~37 KB to ~62 KB
-gzipped — still well under 200 KB, loads with the component, no separate fetch,
-no loading state. This is simpler and more reliable than a runtime fetch.
+**Decision: fetch from `public/` at runtime, matching the Psalter and Scripture
+tool pattern.** Both the Psalter (`public/psalter/`) and Scripture (`public/bible/`)
+serve their data as JSON files fetched at runtime when the component needs them.
+The lexicon follows the same pattern for consistency.
 
-Import pattern:
+**Deployment:** copy `tools/lexicon-out/syllable-table.json` and
+`tools/lexicon-out/name-residue.json` to `public/lexicon/` as part of the build
+process (or manually when the generator is re-run). These files are served
+statically from GitHub Pages alongside the other public data assets.
+
+**In the component:** fetch both files when the pointing view is first used
+(lazy, not on mount), merge into a single `LEXICON` lookup, show a brief loading
+state. A simple `useEffect` + `useState` pattern matching how scripture.jsx
+handles its data loading.
+
 ```javascript
-import syllableTable from '../../tools/lexicon-out/syllable-table.json';
-import nameResidue from '../../tools/lexicon-out/name-residue.json';
+const [lexicon, setLexicon] = useState(null);
+
+useEffect(() => {
+  Promise.all([
+    fetch('/orthodox-hours/lexicon/syllable-table.json').then(r => r.json()),
+    fetch('/orthodox-hours/lexicon/name-residue.json').then(r => r.json()),
+  ]).then(([table, residue]) => {
+    setLexicon({ ...table, ...residue }); // residue entries override on key collision
+  });
+}, []);
 ```
 
-Both are merged into a single lookup at module load:
-```javascript
-const LEXICON = { ...syllableTable, ...nameResidue }; // residue overrides if key collision
-```
+Lookup is by `word.toLowerCase()` against the merged object.
 
-Lookup is by `word.toLowerCase()`.
+**Why this is better than bundled import:** consistent with the established pattern
+in the tool, keeps the component chunk clean, and means lexicon files can be
+updated (new services run through generator, director corrections applied) without
+touching component code or triggering a Vite rebuild of the component itself.
+The lexicon files are data, not code — they belong in `public/` with the other
+data assets.
 
 ### Replacing syllabify() and guessAccent()
 
