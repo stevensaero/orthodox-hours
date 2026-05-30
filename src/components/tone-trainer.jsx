@@ -1749,13 +1749,17 @@ export default function ToneTrainer() {
             </select>
           </label>
           <button style={btn} onClick={playScale}>scale</button>
-          <label style={{ fontSize: "0.82rem", color: "#5b4a33", display: "inline-flex",
-                          alignItems: "center", gap: "0.3rem" }}
-            title="Half note = 1 beat (Drillock &amp; Ealy). Range: 40–120 BPM.">
+          <label style={{ fontSize: "0.82rem", color: isPlaying ? "#b0a080" : "#5b4a33",
+                          display: "inline-flex", alignItems: "center", gap: "0.3rem",
+                          transition: "color 0.2s" }}
+            title={isPlaying ? "Stop playback to change tempo" : "Half note = 1 beat (Drillock & Ealy). Range: 40–120 BPM."}>
             tempo
             <input type="range" min={40} max={120} step={1} value={bpm}
+              disabled={isPlaying}
               onChange={(e) => setBpm(parseInt(e.target.value, 10))}
-              style={{ width: 64, cursor: "pointer", accentColor: gold }} />
+              style={{ width: 64, cursor: isPlaying ? "not-allowed" : "pointer",
+                       accentColor: gold, opacity: isPlaying ? 0.4 : 1,
+                       transition: "opacity 0.2s" }} />
             <span style={{ minWidth: "3.5em", textAlign: "right" }}>{bpm} BPM</span>
           </label>
           <span style={{ color: "#d6c79f" }}>|</span>
