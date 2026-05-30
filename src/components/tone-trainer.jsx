@@ -1038,6 +1038,7 @@ export default function ToneTrainer() {
   const [copiedBlock, setCopiedBlock] = useState(null);   // block index just copied
   const [expandedBlocks, setExpandedBlocks] = useState({}); // block index -> bool
   const pointerRef = useRef(null);
+  const timerIdsRef = useRef([]); // all active setTimeout IDs — cleared by stopAll
   const { ac, tone, stop } = useAudio();
 
   const freq = (sol) => doHz * Math.pow(2, OFF[sol] / 12);
@@ -1100,7 +1101,10 @@ export default function ToneTrainer() {
     const c = ac();
     let t = c.currentTime + 0.06;
     notes.forEach((n) => { tone(freq(n.sol), t, n.dur, n.peak); t += n.dur; });
-    if (onDone) setTimeout(onDone, (t - c.currentTime) * 1000 + 40);
+    if (onDone) {
+      const id = setTimeout(onDone, (t - c.currentTime) * 1000 + 40);
+      timerIdsRef.current.push(id);
+    }
   };
 
   // In TRUTH mode with a comparison harness open, singWhich controls whether
@@ -1124,6 +1128,8 @@ export default function ToneTrainer() {
   };
 
   const playAll = () => {
+    timerIdsRef.current.forEach(id => clearTimeout(id));
+    timerIdsRef.current = [];
     const c = ac();
     let t = c.currentTime + 0.06;
     const which = compareMode && machineLines ? singWhich : "truth";
@@ -1131,14 +1137,18 @@ export default function ToneTrainer() {
     activeLines().forEach((line, li) => {
       const notes = lineToNotes(line);
       const start = t;
-      setTimeout(() => setPlayingLine(li), (start - c.currentTime) * 1000);
+      const id1 = setTimeout(() => setPlayingLine(li), (start - c.currentTime) * 1000);
+      timerIdsRef.current.push(id1);
       notes.forEach((n) => { tone(freq(n.sol), t, n.dur, n.peak); t += n.dur; });
       t += (60 / bpm) / 2; // one quarter note of silence between phrases
     });
-    setTimeout(() => { setPlayingLine(null); setPlayingWhich(null); }, (t - c.currentTime) * 1000 + 40);
+    const id2 = setTimeout(() => { setPlayingLine(null); setPlayingWhich(null); }, (t - c.currentTime) * 1000 + 40);
+    timerIdsRef.current.push(id2);
   };
 
   const stopAll = () => {
+    timerIdsRef.current.forEach(id => clearTimeout(id));
+    timerIdsRef.current = [];
     stop();
     setPlayingLine(null);
     setPlayingWhich(null);
