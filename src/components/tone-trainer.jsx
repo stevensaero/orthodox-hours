@@ -748,7 +748,7 @@ function autoEncodeLines(truthLines, lexicon) {
     const flat = [];
     words.forEach((w, wi) => {
       w.sylls.forEach((s, si) => {
-        flat.push({ stressed: s.accent, single: w.sylls.length === 1, wi, si });
+        flat.push({ text: s.text, stressed: s.accent, single: w.sylls.length === 1, wi, si });
       });
     });
     if (!flat.length) return words;
@@ -996,7 +996,7 @@ export default function ToneTrainer() {
     const flat = [];
     words.forEach((w, wi) => {
       w.sylls.forEach((s, si) => {
-        flat.push({ stressed: s.accent, single: w.sylls.length === 1, wi, si });
+        flat.push({ text: s.text, stressed: s.accent, single: w.sylls.length === 1, wi, si });
       });
     });
     if (!flat.length) return words;
