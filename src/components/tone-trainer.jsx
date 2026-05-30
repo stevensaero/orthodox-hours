@@ -1014,7 +1014,7 @@ export default function ToneTrainer() {
                     const pis = r.pitches.join("-");
                     return (
                       <span key={si} onClick={() => toggleAccent(li, myFi)}
-                        style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", padding: "3px 5px 2px", borderRadius: 6, cursor: "pointer", background: roleBg[r.role], border: r.anchor ? "1px solid #7a2418" : "1px solid transparent", minWidth: "1.6em" }}>
+                        style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", padding: "3px 6px 2px", borderRadius: 6, cursor: "pointer", background: roleBg[r.role], border: r.anchor ? "1px solid #7a2418" : "1px solid transparent", minWidth: "2em" }}>
                         <span style={{ fontSize: "1.1rem", fontWeight: s.accent ? 600 : 400, position: "relative" }}>
                           {s.accent ? <span style={{ position: "absolute", top: "-0.55em", left: "50%", transform: "translateX(-50%)", color: "#7a2418" }}>´</span> : null}
                           {s.text}
