@@ -1,6 +1,44 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.5.1** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.5.2** | Component: `src/components/tone-trainer.jsx`
+
+---
+
+## Session summary (May 30 2026 — v0.5.2 STOP-filter on anchor candidates)
+
+**56% → 92% anchor match across 6 stichera fixtures (48 lines).**
+
+The core finding from the fixture corpus: 15 of 21 misses (71%) were cases
+where the machine anchored on a STOP-list word — `the`, `from`, `or`, `as`,
+`this`, `he`, `our`, etc. The lexicon marks these as stressed (CMU records some
+stress for them in isolation), which caused the backup rule to land on them
+instead of stepping past to the real anchor.
+
+**The fix:** one line in both `autoAccentLine` and `applyPhraseAccent` — filter
+STOP-list words from stressed anchor candidates before applying the backup rule:
+
+```javascript
+const stressedIdxs = flat
+  .map((s, i) => (s.stressed && !STOP.has(s.text.toLowerCase()) ? i : -1))
+  .filter(i => i >= 0);
+```
+
+**Why STOP list and not ANCHOR_EXCLUDE:** the STOP list is defined by grammatical
+function (words that are never phrase-structurally significant in English), not
+by test failures. This is the key distinction from the ANCHOR_EXCLUDE approach
+we previously rejected. Critically: `me` and `thee` are NOT in the STOP list,
+so the Final Phrase anchor on `me` is unaffected.
+
+**Remaining 4 misses (separate concerns):**
+- `ri` (arise) — polysyllabic final word, backup rule doesn't fire (single=false)
+- `cense` (incense) — lexicon has verb-form stress (second syllable), should be noun-form (first)
+- `thine` — archaic possessive, not in STOP list; could add it
+- `God` (file 7 PhA) — requires further analysis
+
+**Key principle confirmed by corpus:** the STOP list is the correct filter for
+anchor candidacy. Not one of the 48 director-chosen anchors was a STOP word.
+The machine's wrong choices were almost exclusively STOP words that the lexicon
+falsely promoted to stressed status.
 
 ---
 
