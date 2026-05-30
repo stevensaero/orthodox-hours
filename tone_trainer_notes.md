@@ -279,25 +279,29 @@ best-guess; `confirmed:false` entries surfaced by the "show source" toggle with
    marked-text-primary).
 3. ~~Marked-text paste mode (read bold/underline/acute directly).~~ **Done in
    v0.2.0** via docx ingest (reads underline directly from the OCA `.docx`).
-   Possible follow-on: also accept paste of already-encoded `[accent]`/`*accent*`
-   text, and read OCA-supplied accents into a Tone 1 verse for direct practice.
 4. SATB mode using the real four-part page + recorded isolated-voice MP3s.
 5. Define the hours-tool → trainer data contract (format now drafted: see the
    converter contract above).
-5b. **Encoding-aware "your own text" field + A/B comparison harness (next major).**
-   Make the pointer's text input understand `[accent]` + `|` + `//`: if marks are
-   present, trust them as truth and rebuild lines/rotation from the markers (no
-   guessing); if absent, run the auto-draft. "point ▸" would populate this field
-   with the encoded sticheron. The deeper purpose (Bill's intent): use it as a
-   **comparison harness** — take the director's `[accent]` encoding as ground
-   truth, strip the marks while keeping line positions, run the fallback
-   auto-encoder over the stripped text, and show **director vs. machine accents
-   side by side, line by line**. This (a) lets us vet pre-encoded texts from any
-   source, and (b) turns every director-marked docx into a labeled test case that
-   measures auto-accent accuracy empirically — telling us where the heuristic
-   fails and whether a pronouncing dictionary is worth it. Verification to nail:
-   an ingested block pushed through the field must re-parse to the identical
-   pointing as the direct block→pointer path.
-6. Only then: propagate the proven method to Tone 2 (note: rotation differs per
+6. **Encoding-aware "your own text" field + A/B comparison harness (v0.5.0 — next).**
+   Full spec in SYLLABIFIER_SPEC.md §7.
+7. **Rhythm durations — quarter vs. half vs. whole note values in audio playback.**
+   Currently `lineToNotes` uses heuristic durations (~0.45s per syllable) with no
+   concept of actual note values from the score. The tutorial specifies the rules
+   explicitly (Drillock & Ealy, Common Chant introduction):
+   - **Reciting tone** = quarter notes, grouped in twos or threes by accent.
+     An accented syllable starting a beat group gets a full beat; unaccented
+     syllables are individual quarter notes. Derivable from the accent array
+     already computed by the pointing engine — no new data needed.
+   - **Cadence notes** = half notes (the "held" pulse). Anchor and all subsequent
+     cadence syllables are half notes.
+   - **Final note** = whole note (last syllable of the sticheron).
+   - **Intonation** = half note on the first accented syllable of the phrase.
+   Duration follows role almost entirely. Verified against the LIC score:
+   "Re·ceive the voice of my prayer" = Re(quarter)·ceive(half)·the(half)·
+   voice(half)·of(quarter)·my(quarter)·prayer(half). "Re" is a quarter because
+   it is an unaccented reciting-tone syllable; "ceive" is a half note because it
+   is the cadence anchor. Implementation: replace the heuristic duration constants
+   in `lineToNotes` with role-based values derived from the tutorial rules.
+8. Only then: propagate the proven method to Tone 2 (note: rotation differs per
    tone — Tone 2 uses A once then B C D rotating; Tones 5/6 use A B C; Tone 6 adds
    B′; Tone 8 uses A′ — so phrase structure must be per-tone data).
