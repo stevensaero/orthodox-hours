@@ -10,11 +10,20 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.6.0";
+export const TONE_TRAINER_VERSION = "v0.6.1";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.6.1",
+    date: "May 2026",
+    summary: "Edit mode toggle — clean singing view by default, editing gated",
+    items: [
+      "feat: global edit mode toggle (✎ edit button in controls bar). Off by default — singing view is clean. When on: chip click-to-accent, edit syllables, and machine row editing are all enabled.",
+      "feat: comparison harness machine row is editable in edit mode — click a machine chip to toggle its accent, or use 'edit syllables' to re-break a line. Changes recompute the comparison immediately.",
+    ],
+  },
   {
     version: "v0.6.0",
     date: "May 2026",
@@ -941,6 +950,8 @@ export default function ToneTrainer() {
   const [playingLine, setPlayingLine] = useState(null);
   const [playingWhich, setPlayingWhich] = useState(null); // "truth"|"machine" while a line plays
   const [editOpen, setEditOpen] = useState({});
+  const [editMode, setEditMode] = useState(false); // gates all accent/syllable editing
+  const [machineEditOpen, setMachineEditOpen] = useState({}); // comparison machine edit lines
   const [showReleaseNotes, setShowReleaseNotes] = useState(false);
   // lexicon (fetched from public/lexicon/ at mount, same pattern as psalter/scripture)
   const [lexicon, setLexicon] = useState(null);
@@ -1204,6 +1215,41 @@ export default function ToneTrainer() {
       copy[li].words = words;
       return copy;
     });
+  };
+
+  // Toggle accent on a machine syllable in the comparison harness.
+  // Mutates machineLines and recomputes compareData immediately.
+  const toggleMachineAccent = (li, si) => {
+    if (!machineLines) return;
+    const newML = machineLines.map((line, lineIdx) => {
+      if (lineIdx !== li) return line;
+      let count = 0;
+      const words = line.words.map((w) => ({
+        ...w,
+        sylls: w.sylls.map((s) => {
+          const result = { ...s, accent: count === si ? !s.accent : s.accent };
+          count++;
+          return result;
+        }),
+      }));
+      return { ...line, words };
+    });
+    setMachineLines(newML);
+    setCompareData(buildComparison(lines, newML));
+  };
+
+  // Re-syllabify a machine line from text (same format as applyEdit: syll·syll word).
+  const applyMachineEdit = (li, val) => {
+    if (!machineLines) return;
+    const words = val.trim().split(/\s+/).map((tok) => {
+      const sylls = tok.split(/[·\-]/).filter(Boolean);
+      return { display: sylls.join(""), sylls: sylls.map((t) => ({ text: t, accent: false, source: "rule" })) };
+    });
+    const newML = machineLines.map((line, lineIdx) =>
+      lineIdx === li ? { ...line, words } : line
+    );
+    setMachineLines(newML);
+    setCompareData(buildComparison(lines, newML));
   };
 
   const switchMode = (m) => {
@@ -1614,6 +1660,15 @@ export default function ToneTrainer() {
             <span style={{ minWidth: "3.8em", textAlign: "right" }}>{bpm} BPM</span>
           </label>
           <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }} onClick={playAll}>▶ Sing all</button>
+          <button
+            onClick={() => setEditMode(v => !v)}
+            style={{ ...btn,
+                     background: editMode ? gold : "transparent",
+                     color: editMode ? "#fff" : gold,
+                     fontSize: "0.78rem", padding: "5px 12px" }}
+            title={editMode ? "Edit mode on — click chips to change accents" : "Edit mode off — enable to adjust accents and syllables"}>
+            ✎ edit
+          </button>
           {lexiconError && <span style={{ fontSize: "0.72rem", color: "#7a2418", fontStyle: "italic" }}>{lexiconError}</span>}
           {!lexicon && !lexiconError && <span style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic" }}>loading lexicon…</span>}
         </div>
@@ -1765,7 +1820,8 @@ export default function ToneTrainer() {
             {compareData.lines.map((cl, li) => {
               const isPlaying = playingLine === li;
               return (
-              <div key={li} style={{ borderRadius: 5, overflow: "hidden",
+              <React.Fragment key={li}>
+              <div style={{ borderRadius: 5, overflow: "hidden",
                                      background: isPlaying ? "rgba(255,250,238,.95)" : "transparent",
                                      borderTop: cl.anchorMatch ? "1px solid rgba(90,122,60,.35)" : "1px solid rgba(180,80,40,.35)",
                                      borderRight: cl.anchorMatch ? "1px solid rgba(90,122,60,.35)" : "1px solid rgba(180,80,40,.35)",
@@ -1811,10 +1867,13 @@ export default function ToneTrainer() {
                       const mSrc = s.machineSource;
                       const mSrcChar = (which === "machine" && mSrc && !NOSRC.includes(mSrc))
                         ? (mSrc === "residue" ? "?" : "~") : null;
+                      const machineClickable = editMode && which === "machine";
                       return (
                         <span key={si}
+                          onClick={machineClickable ? () => toggleMachineAccent(li, si) : undefined}
                           style={{ display: "inline-flex", flexDirection: "column", alignItems: "center",
                                    padding: "2px 5px 1px", borderRadius: 5, minWidth: "1.8em",
+                                   cursor: machineClickable ? "pointer" : "default",
                                    background: disagree ? "rgba(200,100,40,.12)" : "rgba(40,58,92,.05)",
                                    border: isAnchorThis ? "1px solid #7a2418" : disagree ? "1px solid rgba(200,100,40,.4)" : "1px solid transparent" }}>
                           <span style={{ fontSize: "1rem", fontWeight: accent ? 600 : 400, position: "relative", color: accent ? "#1c1008" : "#9A8A70" }}>
@@ -1847,6 +1906,35 @@ export default function ToneTrainer() {
                   );
                 })}
               </div>
+              {/* Machine edit syllables — visible in edit mode */}
+              {editMode && (
+                <div style={{ padding: "0.25rem 0.6rem 0.4rem", borderTop: "1px solid rgba(0,0,0,.05)",
+                               background: "rgba(245,245,245,.5)" }}>
+                  <button style={{ ...btn, fontSize: "0.7rem", padding: "2px 9px" }}
+                    onClick={() => setMachineEditOpen(o => ({ ...o, [li]: !o[li] }))}>
+                    {machineEditOpen[li] ? "close ▾" : "edit machine syllables ▸"}
+                  </button>
+                  {machineEditOpen[li] && (() => {
+                    const mLine = (machineLines || [])[li];
+                    const defaultVal = mLine ? mLine.words.map(w => w.sylls.map(s => s.text).join("·")).join(" ") : "";
+                    const inputId = `medit-${li}`;
+                    return (
+                      <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginTop: "0.35rem", flexWrap: "wrap" }}>
+                        <input id={inputId} defaultValue={defaultVal}
+                          style={{ flex: 1, minWidth: 220, fontFamily: "Georgia, serif", fontSize: "0.88rem",
+                                   border: "1px solid #d6c79f", borderRadius: 6, padding: "4px 7px" }} />
+                        <button style={btn} onClick={() => applyMachineEdit(li, document.getElementById(inputId).value)}>
+                          apply
+                        </button>
+                        <span style={{ fontSize: "0.72rem", color: "#6b5942", fontStyle: "italic" }}>
+                          · separates syllables, space separates words
+                        </span>
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+              </React.Fragment>
               );
             })}
           </div>
@@ -1885,8 +1973,8 @@ export default function ToneTrainer() {
                     const myFi = fi;
                     const pis = r.pitches.join("-");
                     return (
-                      <span key={si} onClick={() => toggleAccent(li, myFi)}
-                        style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", padding: "3px 6px 2px", borderRadius: 6, cursor: "pointer", background: roleBg[r.role], border: r.anchor ? "1px solid #7a2418" : "1px solid transparent", minWidth: "2em" }}>
+                      <span key={si} onClick={editMode ? () => toggleAccent(li, myFi) : undefined}
+                        style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", padding: "3px 6px 2px", borderRadius: 6, cursor: editMode ? "pointer" : "default", background: roleBg[r.role], border: r.anchor ? "1px solid #7a2418" : "1px solid transparent", minWidth: "2em" }}>
                         <span style={{ fontSize: "1.1rem", fontWeight: s.accent ? 600 : 400, position: "relative" }}>
                           {s.accent ? <span style={{ position: "absolute", top: "-0.55em", left: "50%", transform: "translateX(-50%)", color: "#7a2418" }}>´</span> : null}
                           {s.text}
@@ -1901,9 +1989,9 @@ export default function ToneTrainer() {
             </div>
             <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginTop: "0.6rem", flexWrap: "wrap" }}>
               <button style={btn} onClick={() => playLine(li)}>▶ Sing this line</button>
-              <button style={btn} onClick={() => setEditOpen((o) => ({ ...o, [li]: !o[li] }))}>edit syllables</button>
+              {editMode && <button style={btn} onClick={() => setEditOpen((o) => ({ ...o, [li]: !o[li] }))}>edit syllables</button>}
             </div>
-            {editOpen[li] && (
+            {editMode && editOpen[li] && (
               <div style={{ marginTop: "0.5rem", display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
                 <input defaultValue={line.words.map((w) => w.sylls.map((s) => s.text).join("·")).join(" ")}
                   id={`edit-${li}`}
