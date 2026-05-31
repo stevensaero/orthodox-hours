@@ -1005,7 +1005,7 @@ function parseBracketWord(token, lexicon) {
   const core = alphaMatch[0];
   const coreOffset = alphaMatch.index;
 
-  // Syllabify via lexicon.
+  // Syllabify via lexicon (used as fallback and for whole-word stress).
   const entry = lookupWord(core, lexicon);
   const rawSylls = entry
     ? entry.sylls
@@ -1030,11 +1030,44 @@ function parseBracketWord(token, lexicon) {
     };
   }
 
-  // Mid-word bracket: up[on], Re[ceive] — character span to syllable mapping.
+  // Mid-word bracket: up[on], Re[deem]er, in[car]nate, Re[ceive]
+  //
+  // DIRECTOR-AUTHORITATIVE SPLIT: when the bracket has a non-empty prefix and/or
+  // suffix, the bracket boundaries themselves define the syllable structure.
+  // e.g. "Re[deem]er" → prefix="Re", bracketed="deem", suffix="er" → 3 syllables.
+  // e.g. "up[on]" → prefix="up", bracketed="on", no suffix → 2 syllables.
+  // e.g. "in[car]nate" → prefix="in", bracketed="car", suffix="nate" → 3 syllables.
+  //
+  // This is more reliable than the lexicon/rule-engine because the director has
+  // explicitly shown where the syllable break is. We only fall back to the
+  // lexicon-derived mapping when the bracket sits at the very start of the word
+  // (no prefix) and there's ambiguity about how many syllables follow.
   const clampedStart = Math.max(0, adjStart);
-  const clampedEnd = Math.min(core.length - 1, adjEnd);
-  const idx = bracketSpanToSyllIdx(core, clampedStart, clampedEnd, rawSylls);
+  const clampedEnd   = Math.min(core.length - 1, adjEnd);
+  const prefix   = core.slice(0, clampedStart);         // "" if bracket at word start
+  const bracketed = core.slice(clampedStart, clampedEnd + 1);
+  const suffix   = core.slice(clampedEnd + 1);          // "" if bracket at word end
 
+  const hasPrefix = prefix.length > 0;
+  const hasSuffix = suffix.length > 0;
+
+  if (hasPrefix || hasSuffix) {
+    // Build syllable array directly from the bracket-defined segments.
+    // Segments with content become syllables; empty segments are omitted.
+    const directorSylls = [prefix, bracketed, suffix].filter(s => s.length > 0);
+    // Accent falls on the bracketed segment, which is always present (index depends
+    // on whether prefix exists).
+    const accentIdx = hasPrefix ? 1 : 0;
+    return {
+      cleanWord: clean,
+      accentIdx,
+      bracketType: "mid",
+      sylls: directorSylls,
+    };
+  }
+
+  // Fallback: bracket at word start with no prefix — map via vowel nucleus.
+  const idx = bracketSpanToSyllIdx(core, clampedStart, clampedEnd, rawSylls);
   return {
     cleanWord: clean,
     accentIdx: Math.max(0, idx),
