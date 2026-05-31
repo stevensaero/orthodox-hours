@@ -1,0 +1,162 @@
+{
+  "Re[deem]er.": {
+    "desc": "mid: prefix+suffix",
+    "bracket": [
+      "Re",
+      "deem•",
+      "er"
+    ],
+    "underline": [
+      "Re",
+      "deem•",
+      "er"
+    ],
+    "match": true
+  },
+  "up[on]": {
+    "desc": "mid: prefix only",
+    "bracket": [
+      "up",
+      "on•"
+    ],
+    "underline": [
+      "up",
+      "on•"
+    ],
+    "match": true
+  },
+  "in[car]nate": {
+    "desc": "mid: prefix+suffix",
+    "bracket": [
+      "in",
+      "car•",
+      "nate"
+    ],
+    "underline": [
+      "in",
+      "car•",
+      "nate"
+    ],
+    "match": true
+  },
+  "[ang]els": {
+    "desc": "mid: suffix only (no prefix)",
+    "bracket": [
+      "ang•",
+      "els"
+    ],
+    "underline": [
+      "ang•",
+      "els"
+    ],
+    "match": true
+  },
+  "Arch[ang]els": {
+    "desc": "mid: prefix+suffix",
+    "bracket": [
+      "Arch",
+      "ang•",
+      "els"
+    ],
+    "underline": [
+      "Arch",
+      "ang•",
+      "els"
+    ],
+    "match": true
+  },
+  "Resur[rec]tion": {
+    "desc": "mid: prefix+suffix",
+    "bracket": [
+      "Resur",
+      "rec•",
+      "tion"
+    ],
+    "underline": [
+      "Resur",
+      "rec•",
+      "tion"
+    ],
+    "match": true
+  },
+  "[Lord],": {
+    "desc": "whole word",
+    "bracket": [
+      "Lord•"
+    ],
+    "underline": [
+      "Lord•"
+    ],
+    "match": true
+  },
+  "[Hear]": {
+    "desc": "whole word no punct",
+    "bracket": [
+      "hear•"
+    ],
+    "underline": [
+      "hear•"
+    ],
+    "match": true
+  },
+  "[Sav]ior": {
+    "desc": "mid: suffix only",
+    "bracket": [
+      "Sav•",
+      "ior"
+    ],
+    "underline": [
+      "Sav•",
+      "ior"
+    ],
+    "match": true
+  },
+  "[pow]er//": {
+    "desc": "mid: suffix only",
+    "bracket": [
+      "pow•",
+      "er"
+    ],
+    "underline": [
+      "pow•",
+      "er"
+    ],
+    "match": true
+  },
+  "Re[ceive]": {
+    "desc": "mid: prefix only",
+    "bracket": [
+      "Re",
+      "ceive•"
+    ],
+    "underline": [
+      "Re",
+      "ceive•"
+    ],
+    "match": true
+  },
+  "be[fore]": {
+    "desc": "mid: prefix only",
+    "bracket": [
+      "be",
+      "fore•"
+    ],
+    "underline": [
+      "be",
+      "fore•"
+    ],
+    "match": true
+  },
+  "a[gainst]": {
+    "desc": "mid: prefix only",
+    "bracket": [
+      "a",
+      "gainst•"
+    ],
+    "underline": [
+      "a",
+      "gainst•"
+    ],
+    "match": true
+  }
+}

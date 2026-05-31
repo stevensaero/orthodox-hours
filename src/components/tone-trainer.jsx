@@ -980,99 +980,93 @@ function bracketSpanToSyllIdx(core, bracketStart, bracketEnd, sylls) {
 //   bracketType: "none" | "whole" | "mid"
 //   accentIdx:   syllable index (into lexicon-syllabified syllables), or -1 (no bracket)
 // cleanWord is the alphabetic core with brackets stripped.
+// syllabifyWithDirectorMark — shared core of both pointing paths.
+//
+// Both paths reduce to the same question:
+//   "Given a word core and a marked span (start..end char offsets), what are
+//    the syllables and which one carries the accent?"
+//
+// The bracket path derives markStart/markEnd from [ ] positions.
+// The underline path derives markStart/markEnd from firstUl/lastUl positions.
+// Both call this function with those offsets.
+//
+// Rules (same as both callers previously implemented independently):
+//   1. If prefix (chars before mark) or suffix (chars after mark) is non-empty:
+//      syllables = [prefix, marked, suffix].filter(Boolean), accent on marked.
+//      → director's notation directly encodes the split, no lexicon needed.
+//   2. If whole word marked (no prefix, no suffix):
+//      syllables from lexicon, accent on lexicon stressIdx.
+//   3. If mark at word start with no prefix but suffix exists:
+//      covered by rule 1 (suffix non-empty).
+//   4. Fallback — mark at word start, no suffix (shouldn't occur in practice):
+//      use bracketSpanToSyllIdx on lexicon/rule sylls.
+//
+// Returns { sylls: string[], accentIdx: number }
+function syllabifyWithDirectorMark(core, markStart, markEnd, lexicon) {
+  const entry   = lookupWord(core, lexicon);
+  const rawSylls = entry ? entry.sylls : syllabifyRules(core);
+  const stressIdx = entry ? (entry.stressIdx ?? 0) : 0;
+
+  const clampedStart = Math.max(0, markStart);
+  const clampedEnd   = Math.min(core.length - 1, markEnd);
+
+  const prefix    = core.slice(0, clampedStart);
+  const marked    = core.slice(clampedStart, clampedEnd + 1);
+  const suffix    = core.slice(clampedEnd + 1);
+  const hasPrefix = prefix.length > 0;
+  const hasSuffix = suffix.length > 0;
+  const wholeWord = !hasPrefix && !hasSuffix;
+
+  if (wholeWord) {
+    // Whole word marked — lexicon knows best stress position.
+    return { sylls: rawSylls, accentIdx: stressIdx };
+  }
+
+  if (hasPrefix || hasSuffix) {
+    // Director's mark boundaries ARE the syllable split.
+    const dirSylls = [prefix, marked, suffix].filter(s => s.length > 0);
+    const accentIdx = hasPrefix ? 1 : 0;
+    return { sylls: dirSylls, accentIdx };
+  }
+
+  // Fallback: mark at word start with no suffix — nucleus mapping on lexicon sylls.
+  const idx = bracketSpanToSyllIdx(core, clampedStart, clampedEnd, rawSylls);
+  return { sylls: rawSylls, accentIdx: Math.max(0, idx) };
+}
+
 function parseBracketWord(token, lexicon) {
   const hasBracket = /\[/.test(token);
   if (!hasBracket) {
     return { cleanWord: token, accentIdx: -1, bracketType: "none" };
   }
 
-  // Strip brackets to get clean token, recording bracket span positions.
+  // Strip brackets, recording span positions in the clean string.
   // e.g. "up[on]" → clean="upon", bracketStart=2, bracketEnd=3
-  // e.g. "[Lord]," → clean="Lord,", bracketStart=0, bracketEnd=3
-  // e.g. "[Hear]" → clean="Hear", bracketStart=0, bracketEnd=3
-  let clean = "";
-  let bracketStart = -1, bracketEnd = -1;
-  let inBracket = false;
+  let clean = "", bracketStart = -1, bracketEnd = -1, inBracket = false;
   for (let i = 0; i < token.length; i++) {
     if (token[i] === "[") { inBracket = true; bracketStart = clean.length; continue; }
     if (token[i] === "]") { inBracket = false; bracketEnd = clean.length - 1; continue; }
     clean += token[i];
   }
 
-  // Extract alpha core from clean token (strips leading punctuation like commas)
+  // Extract alpha core (strips leading/trailing punctuation).
   const alphaMatch = clean.match(/[A-Za-z''-]+/);
   if (!alphaMatch) return { cleanWord: token.replace(/[\[\]]/g, ""), accentIdx: -1, bracketType: "none" };
   const core = alphaMatch[0];
   const coreOffset = alphaMatch.index;
 
-  // Syllabify via lexicon (used as fallback and for whole-word stress).
-  const entry = lookupWord(core, lexicon);
-  const rawSylls = entry
-    ? entry.sylls
-    : syllabifyRules(core);
-  const stressIdx = entry ? (entry.stressIdx ?? 0) : 0;
-
-  // Adjust bracket positions to be relative to the alpha core.
+  // Adjust bracket positions relative to the alpha core, then delegate.
   const adjStart = bracketStart - coreOffset;
-  const adjEnd = bracketEnd - coreOffset;
-
-  // Whole-word bracket: [Lord], [Hear], [Receive] (entire core is bracketed).
-  // bracketStart..bracketEnd spans the whole core (adjusted positions cover 0..core.length-1)
+  const adjEnd   = bracketEnd   - coreOffset;
   const wholeWord = adjStart <= 0 && adjEnd >= core.length - 1;
 
-  if (wholeWord) {
-    // Director marked the whole word — use lexicon stressIdx as tiebreaker.
-    return {
-      cleanWord: clean,
-      accentIdx: stressIdx,
-      bracketType: "whole",
-      sylls: rawSylls,
-    };
-  }
+  const { sylls, accentIdx } = syllabifyWithDirectorMark(core, adjStart, adjEnd, lexicon);
 
-  // Mid-word bracket: up[on], Re[deem]er, in[car]nate, Re[ceive]
-  //
-  // DIRECTOR-AUTHORITATIVE SPLIT: when the bracket has a non-empty prefix and/or
-  // suffix, the bracket boundaries themselves define the syllable structure.
-  // e.g. "Re[deem]er" → prefix="Re", bracketed="deem", suffix="er" → 3 syllables.
-  // e.g. "up[on]" → prefix="up", bracketed="on", no suffix → 2 syllables.
-  // e.g. "in[car]nate" → prefix="in", bracketed="car", suffix="nate" → 3 syllables.
-  //
-  // This is more reliable than the lexicon/rule-engine because the director has
-  // explicitly shown where the syllable break is. We only fall back to the
-  // lexicon-derived mapping when the bracket sits at the very start of the word
-  // (no prefix) and there's ambiguity about how many syllables follow.
-  const clampedStart = Math.max(0, adjStart);
-  const clampedEnd   = Math.min(core.length - 1, adjEnd);
-  const prefix   = core.slice(0, clampedStart);         // "" if bracket at word start
-  const bracketed = core.slice(clampedStart, clampedEnd + 1);
-  const suffix   = core.slice(clampedEnd + 1);          // "" if bracket at word end
-
-  const hasPrefix = prefix.length > 0;
-  const hasSuffix = suffix.length > 0;
-
-  if (hasPrefix || hasSuffix) {
-    // Build syllable array directly from the bracket-defined segments.
-    // Segments with content become syllables; empty segments are omitted.
-    const directorSylls = [prefix, bracketed, suffix].filter(s => s.length > 0);
-    // Accent falls on the bracketed segment, which is always present (index depends
-    // on whether prefix exists).
-    const accentIdx = hasPrefix ? 1 : 0;
-    return {
-      cleanWord: clean,
-      accentIdx,
-      bracketType: "mid",
-      sylls: directorSylls,
-    };
-  }
-
-  // Fallback: bracket at word start with no prefix — map via vowel nucleus.
-  const idx = bracketSpanToSyllIdx(core, clampedStart, clampedEnd, rawSylls);
   return {
     cleanWord: clean,
-    accentIdx: Math.max(0, idx),
-    bracketType: "mid",
-    sylls: rawSylls,
+    accentIdx,
+    bracketType: wholeWord ? "whole" : "mid",
+    sylls,
   };
 }
 
@@ -1902,101 +1896,30 @@ export default function ToneTrainer() {
       i = j;
     }
 
-    // Step 3: syllabify via lexicon, then map underline spans to syllables.
-    const isVowel = (c) => "aeiouy".includes(c.toLowerCase());
-    const nucleusPositions = (s) => {
-      const pos = []; let k = 0;
-      while (k < s.length) {
-        if (isVowel(s[k])) { pos.push(k); while (k < s.length && isVowel(s[k])) k++; }
-        else k++;
-      }
-      return pos;
-    };
-
+    // Step 3: for each word, derive syllables and accent from underline span.
+    // Delegates to syllabifyWithDirectorMark — same logic as the bracket path.
     const words = wordTokens.map(({ display, core, coreStart, ulSlice }) => {
       const coreUl = ulSlice.slice(coreStart, coreStart + core.length);
       const anyUnderlined = coreUl.some(Boolean);
 
-      // No underline → no director accent mark on this word.
+      // No underline → unaccented; syllabify for display only.
       if (!anyUnderlined) {
-        // Still need syllabification for display — use lexicon/rules.
         const wordObj = wordFromDisplay(core, lexicon);
         if (!wordObj) return null;
         return { display, sylls: wordObj.sylls.map(s => ({ ...s, accent: false })) };
       }
 
-      // Find the contiguous underlined span within the core.
-      const firstUl = coreUl.indexOf(true);
-      const lastUl  = coreUl.lastIndexOf(true);
-      const prefix    = core.slice(0, firstUl);
-      const underlined = core.slice(firstUl, lastUl + 1);
-      const suffix    = core.slice(lastUl + 1);
+      // Derive markStart/markEnd from underline flags, then delegate.
+      const markStart = coreUl.indexOf(true);
+      const markEnd   = coreUl.lastIndexOf(true);
+      const { sylls, accentIdx } = syllabifyWithDirectorMark(core, markStart, markEnd, lexicon);
 
-      const hasPrefix = prefix.length > 0;
-      const hasSuffix = suffix.length > 0;
-
-      // DIRECTOR-AUTHORITATIVE SPLIT: when the underlined span has a non-empty
-      // prefix or suffix, the underline boundaries define the syllable structure —
-      // same principle as mid-word brackets. No lexicon needed.
-      // e.g. "Redeemer" with "deem" underlined → Re / deem / er, accent on deem.
-      // e.g. "Archangels" with "an" underlined → Arch / an / gels, accent on an.
-      if (hasPrefix || hasSuffix) {
-        const dirSylls = [prefix, underlined, suffix].filter(s => s.length > 0);
-        const accentIdx = hasPrefix ? 1 : 0;
-        return {
-          display,
-          sylls: dirSylls.map((t, si) => ({
-            text: t, accent: si === accentIdx, source: "truth",
-          })),
-        };
-      }
-
-      // Whole-word underlined OR underline at word start with no prefix:
-      // fall back to lexicon syllabification + nucleus mapping.
-      const wordObj = wordFromDisplay(core, lexicon);
-      if (!wordObj) return null;
-      const sylls = wordObj.sylls;
-
-      const wholeWordUnderlined = coreUl.every(Boolean);
-      if (wholeWordUnderlined) {
-        const stressIdx = wordObj.sylls.findIndex(s => s.accent);
-        const accentIdx = stressIdx >= 0 ? stressIdx : 0;
-        return {
-          display,
-          sylls: sylls.map((s, si) => ({ ...s, accent: si === accentIdx, source: "truth" })),
-        };
-      }
-
-      // Partial underline (mid-word bracket like up[on], Re[ceive]) — map
-      // the underlined span to a syllable by vowel-nucleus overlap.
-      let pos = 0;
-      const syllRanges = sylls.map((s) => {
-        const start = pos; pos += s.text.length; return { start, end: pos - 1 };
-      });
-      const ulPositions = new Set(
-        coreUl.map((u, idx) => u ? idx : -1).filter(idx => idx >= 0)
-      );
-      const nuclei = nucleusPositions(core);
-      let accentIdx = -1;
-      for (let n = 0; n < nuclei.length; n++) {
-        if (ulPositions.has(nuclei[n])) {
-          accentIdx = syllRanges.findIndex(r => nuclei[n] >= r.start && nuclei[n] <= r.end);
-          if (accentIdx >= 0) break;
-        }
-      }
-      // Fallback: syllable with most overlapping underlined chars.
-      if (accentIdx < 0) {
-        let max = 0;
-        syllRanges.forEach((r, si) => {
-          let ov = 0;
-          for (let c = r.start; c <= r.end; c++) { if (ulPositions.has(c)) ov++; }
-          if (ov > max) { max = ov; accentIdx = si; }
-        });
-      }
       return {
         display,
-        sylls: sylls.map((s, si) => ({
-          ...s, accent: si === accentIdx, source: "truth",
+        sylls: sylls.map((t, si) => ({
+          text: typeof t === "string" ? t : t.text,
+          accent: si === accentIdx,
+          source: "truth",
         })),
       };
     }).filter(Boolean);
