@@ -853,3 +853,218 @@ to the testing workflow:
 
 *§10 added May 30 2026 following v0.7.0 session.*
 
+
+---
+
+## 11. Addendum — May 2026 (post Tone 2 build, v0.8.0)
+
+This section records what the Tone 2 build revealed about the Tone 1 document —
+what was missing, what was underspecified, and what cross-tone findings will
+help the Tone 3 builder orient faster. Read this alongside
+`tone_trainer_tone2_analysis.md`.
+
+---
+
+### 11.1 What the Tone 1 document got right that helped
+
+The following sections transferred cleanly to Tone 2 with no correction needed:
+
+- **§4 (`distribute()`)** — the truncation rule (take first N notes, drop
+  trailing) and the `count > n` penultimate-repeat rule both carried over
+  unchanged. The Tone 2 corpus confirmed them.
+- **§5 note durations** — the H/Q/W role table is universal. Every role for
+  every Tone 2 phrase verified against the unison recording matched the Tone 1
+  table exactly. No changes to `lineToNotes()` were needed.
+- **§3.3 STOP list** — transferred unchanged. No new STOP words were needed for
+  Tone 2 liturgical vocabulary.
+- **§6 docx ingest** — the `<w:u>` underline mechanism, vowel-nucleus overlap
+  mapping, and sticheron segmentation all carried over without modification. The
+  architecture is genuinely tone-independent.
+- **§3.4 `anchorIndex()` implementation** — the monosyllabic backup rule is
+  confirmed universal across Tone 1 and Tone 2.
+
+---
+
+### 11.2 What the Tone 1 document was missing that would have helped Tone 2
+
+**Missing: the SATB soprano trap warning.**
+
+The Tone 1 document notes that the SATB recording was unreliable for *automated
+pitch extraction* (§1, key lesson) but does not warn that reading pitches
+directly from the SATB *score* is also unreliable. For Tone 2 Phrase C, reading
+the SATB soprano line from the tutorial score gave prep=`la`, cad=`["re"]` —
+both wrong. The unison melody actually uses prep=`ti`, cad=`["do"]`. The soprano
+sings a third above the melody throughout.
+
+**Rule to add to §8 for future tone builders:**
+> When the tutorial provides a 4-part SATB score, do NOT read phrase pitches from
+> the soprano line. Always extract melody from the **tenor/unison** line. Better
+> still, confirm against the unison MP3 before finalizing any phrase definition.
+> The soprano harmony frequently sings a third or sixth above the melody, and
+> every prep and cadence pitch will look different in each voice.
+
+This is now the first warning in `tone_trainer_tone2_analysis.md §1.1` and
+should be the first warning in any future tone's analysis doc.
+
+---
+
+**Missing: the `inton` flag per phrase, and its interaction with `autoAccentLine`.**
+
+The Tone 1 document describes intonation at the phrase level (§2, §5) but
+doesn't document that the `autoAccentLine` function had the intonation condition
+hardcoded as `phrase === "A" || phrase === "C"`. This was a latent bug that only
+became visible in Tone 2, where Phrase A has no intonation at all. The fix was
+a one-line change: replace the hardcoded phrase names with `PH[phrase].inton`.
+
+For future tone builders: **verify whether each phrase has intonation
+independently per tone.** Do not assume the Tone 1 pattern (A and C have
+intonation, B and D do not) applies to other tones. The `PH_DEFS` structure
+now captures this as a per-tone flag. The same fix applies to `applyPhraseAccent`
+inside `autoEncodeLines` (the module-level function — also had the hardcoded
+check and needed the same correction).
+
+---
+
+**Missing: explicit documentation of the pre-slur rule.**
+
+The Tone 1 document covers note durations and cadence distribution in detail but
+never mentions the pre-slur. The pre-slur is present in Tone 1's Final Phrase
+data — "Hear me, O Lord!" has two director marks on the Final Phrase in the LIC
+framing — but it was not identified as a structural rule during the Tone 1 build.
+It was rediscovered empirically from the Tone 2 corpus (78 instances, 2 confirmed
+pre-slur Finals) and then found to also exist in the Tone 1 corpus data.
+
+The pre-slur rule: **when the syllable immediately before the prep note is a
+single accented monosyllable, that syllable receives pitches `[recite, prep]`
+as two quarter notes** before the normal prep. In practice this is role `preslur`
+with `syllDur = H` so the melisma split yields Q + Q. Confirmed corpus examples:
+- "**[Hear]** **[me]**, O Lord!" — `Hear` is the pre-slur word (Tone 1 and 2 Final)
+- "Pray to **[Christ]** **[God]** for us all!" — `Christ` is the pre-slur word (Tone 2)
+
+The `pointLine()` function in v0.8.0 detects this structurally and is
+tone-agnostic: it fires on any phrase with `def.prep` set when the pre-anchor
+body syllable is an accented monosyllable. It is already active for both Tone 1
+and Tone 2 Final Phrases.
+
+---
+
+**Missing: explicit phrase rotation confirmation per tone.**
+
+The Tone 1 document describes the rotation (A·B·C·D repeating, Final last) but
+also lists different rotations for other tones in §8:
+> "Tone 2: A (once only) · B · C · D (repeating), Final last"
+
+**This is incorrect.** The Tone 2 corpus — 78 phrase instances across 12+
+stichera — confirms that Tone 2 uses **the same A·B·C·D rotation as Tone 1**,
+not "A once only." The `phraseForLine(i, total)` function is unchanged between
+tones, and no corpus exception was found. The Tone 1 document's §8 rotation
+table for non-Tone-1 tones was a guess and should not be trusted.
+
+**For Tone 3 and beyond:** verify the rotation empirically from the docx corpus
+before assuming anything. Do not rely on the §8 table.
+
+---
+
+**Missing: quantitative corpus methodology.**
+
+The Tone 1 document describes a corpus of 4 OCA service files and mentions
+anchor accuracy (67% on 6 lines in §10.2) but does not describe the systematic
+phrase-by-phrase counting methodology that produced the 92%+ figure cited in
+`tone_trainer_notes.md`. The Tone 2 build used a structured approach: 78 phrase
+instances counted by phrase label, mark count per instance (1-mark vs 2-mark),
+and per-class anomaly analysis.
+
+For future tones, the minimum corpus standard is: **40+ phrase instances across
+4+ stichera**, with mark count tabulated per phrase label. Below 40 instances,
+anomalies and patterns are indistinguishable. The table format from
+`tone_trainer_tone2_analysis.md §5.2` should be reproduced for each new tone.
+
+---
+
+### 11.3 What Tone 2 confirmed that Tone 1 had assumed
+
+The following Tone 1 assumptions were **confirmed by the Tone 2 build**:
+
+- **Anchor rule is tone-independent.** Verified across 78 Tone 2 instances. The
+  last-internally-accented-syllable rule with monosyllabic backup is universal.
+- **STOP list is tone-independent.** No new STOP words were needed. The same
+  grammatically-defined filter works for Tone 2 liturgical vocabulary.
+- **`distribute()` truncation is correct.** The Tone 2 cadence figures (2-note
+  B/D, 3-note A, 1-note C, 4-note Final) all work correctly with the existing
+  truncation and penultimate-repeat logic.
+- **Note duration roles are universal.** H/Q/W assignments verified from the
+  Tone 2 unison recording — identical to Tone 1.
+- **Docx ingest is tone-independent.** The `<w:u>` extraction and sticheron
+  segmentation work identically for Tone 2 OCA files.
+
+---
+
+### 11.4 New open questions surfaced by Tone 2
+
+**Q: Does the pre-slur fire on phrases other than Final?**
+
+The pre-slur was implemented in `pointLine()` for any phrase with `def.prep`
+set — not just Final. This means it could theoretically fire on Tone 1 Phrase A
+(which has `prep:"ti"`) or Tone 2 Phrase C (which has `prep:"ti"`). No corpus
+examples of pre-slur on non-Final phrases have been observed. But the structural
+condition (accented monosyllable immediately before the last body syllable) could
+occur. Monitor in AUTO mode testing. If it fires incorrectly on a non-Final
+phrase, the detection condition may need to be narrowed to `phrase === "Final"`.
+
+**Q: Does Tone 2 Phrase A `distribute()` hold on `fa` or descend to `mi` for
+extra middle syllables?**
+
+For Phrase A with more cadence syllables than the 3-note figure `[fa,mi,re]`,
+`distribute()` repeats `mi` (the penultimate note) for middle syllables. The
+tutorial says "syllables between are quarter notes" without specifying the pitch.
+Only one 3-syllable Phrase A cadence was observed in the tutorial sticheron
+(exact fit, no surplus). A longer example is needed to confirm whether `mi`
+repeat or `fa` hold is correct. This is worth a listening test against the OCA
+recording if a longer Phrase A line can be located.
+
+**Q: What is the correct `distribute()` behavior for Tone 2 Phrase B/D with
+more than 2 cadence syllables?**
+
+Phrases B and D use `[di, re]` — a 2-note figure. When there are 3+ cadence
+syllables (`count > n`), `distribute()` repeats the penultimate note (`di`) for
+all middle syllables and then lands on `re`. Example: anchor + 2 trailing =
+`[[di],[di],[re]]`. This was not verified against the recording because no
+3+-syllable B/D cadence occurred in the tutorial sticheron. Verify from corpus
+if a Phrase B/D line with a polysyllabic anchor word occurs.
+
+---
+
+### 11.5 Checklist for the Tone 3 builder
+
+Use this as a starting checklist alongside `tone_trainer_tone2_analysis.md §10`:
+
+**Before writing any code:**
+- [ ] Download the Tone 3 tutorial PDF from Drive. Read the phrase descriptions.
+- [ ] Identify reciting tone, `inton` flag, prep note, and cadence figure for
+      each of the 5 phrase types (A, B, C, D, Final).
+- [ ] Do NOT read phrase pitches from the SATB soprano line.
+- [ ] Download the Tone 3 Obikhod Unison MP3. Run `librosa.pyin`.
+- [ ] Establish the recording key (dominant reciting pitch in Hz → map to solfège).
+- [ ] Verify each phrase's cadence end notes from the audio.
+- [ ] Get at least one OCA Sunday service `.docx` in Tone 3. Extract phrase instances.
+- [ ] Tabulate mark counts by phrase (1-mark vs 2-mark, minimum 40 instances).
+- [ ] Verify phrase rotation from the corpus (do NOT assume A·B·C·D — check it).
+
+**During coding:**
+- [ ] Add `PH_DEFS[3]` with verified phrase table (no guesses).
+- [ ] The `inton` flag per phrase — look this up per tone, do NOT copy from Tone 1.
+- [ ] Check whether any new solfège pitches are needed beyond
+      `{la, ti, do, di, re, mi, fa, sol}`. After Tone 2 the full scale is
+      represented; further tones likely need no additions.
+- [ ] Test `distribute()` against the new tone's cadence figures with both
+      `count < n` and `count > n` cases.
+- [ ] Verify the pre-slur detection is not firing falsely on non-Final phrases.
+
+**Validation:**
+- [ ] Run the JSON fixture export on 3+ stichera. Target ≥ 75% anchor match.
+- [ ] Check the edit panel (apply on unmodified line → pointing unchanged).
+- [ ] Listen to the played output on the Tone 3 preset and verify it sounds right.
+
+---
+
+*§11 added May 2026 following Tone 2 build (v0.8.0).*
