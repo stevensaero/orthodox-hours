@@ -513,3 +513,104 @@ Short-line stichera may need special handling in the segmentation logic.
 ---
 
 *End of Tone 2 research notes. For Tone 1 notes see `tone_trainer_notes.md`.*
+
+---
+
+## 13. Post-build review — cross-examination against Tone 1 analysis document
+
+*Added after reading `tone_trainer_tone1_analysis.md` in full and comparing it
+against the v0.8.0 implementation. This is a look-back assessment, not a change
+record.*
+
+---
+
+### 13.1 What was found in the Tone 1 document
+
+**A documentation inconsistency in the Tone 1 `PHRASES` table (not a Tone 2
+issue, but worth recording).** The Tone 1 analysis document shows Phrase A as
+`cad: ["do","ti"]`. The actual code has `prep: "ti", cad: ["do"]`. These are
+the same musical content — the `ti` was the prep note, which was correctly
+separated from the cadence array at some point during the Tone 1 build. The
+document was never updated to reflect that refactoring. The code is correct;
+the document is stale. This is not a Tone 2 issue.
+
+**The Tone 1 "honest admission" on H/Q cadence boundary applies to Tone 2.**
+Section §5 of the Tone 1 document explicitly acknowledges that the rule
+"cadence anchor = H, middle = Q, last = H" was verified only against the
+`voice·of·my·prayer` example and "may not generalize to all configurations."
+This same uncertainty carries forward to Tone 2.
+
+---
+
+### 13.2 The one genuine open question surfaced
+
+**Tone 2 Phrase C with exactly 2 cadence syllables.**
+
+Phrase C has `cad: ["do"]` — a single-pitch figure. When there are 2 cadence
+syllables (anchor + one trailing), `distribute(["do"], 2)` produces
+`[[do],[do]]`. The `isFirst/isLast` logic in `lineToNotes()` assigns:
+- syllable 0: `isFirst` → **H**
+- syllable 1: `isLast`, `isFinal=false` → **H**
+
+Result: both syllables get a half note on `do`. Example: "re**[call]**ing Thy
+cre**[at]**ion" → `call=H(do), at=H(do)` — four beats held on `do`.
+
+**Is this right?** Musically it is plausible — in chant, lingering on the
+cadence pitch across two syllables is normal, and H+H for two adjacent notes on
+the same pitch is how the harmonized setting sustains. It is consistent with
+the Tone 1 established convention. But it was **not verified against the Tone 2
+unison recording** because no Phrase C line with exactly 2 cadence syllables
+appeared in the tutorial sticheron's measurable portion.
+
+**Disposition:** accept as-is. If singers report that a 2-syllable Phrase C
+cadence sounds too heavy or long on the trailing syllable, the fix is to treat
+all trailing syllables after the anchor as Q rather than promoting the last one
+to H. That would require a special case in `lineToNotes()` for single-pitch
+cadence figures — worth revisiting if listening confirms the issue. Not a
+correctness concern worth blocking over.
+
+---
+
+### 13.3 What the Tone 1 document confirmed about Tone 2
+
+Reading the Tone 1 document found **no correctness issues** with the Tone 2
+implementation. Specifically:
+
+- The `distribute()` truncation and penultimate-repeat logic, as described in
+  the Tone 1 document §4, is confirmed correct for Tone 2's cadence figures.
+  The Tone 2 corpus verified it for 2-note (Phrases B/D) and 3-note (Phrase A)
+  figures. The 1-note (Phrase C) and 4-note (Final) figures are structurally
+  consistent with the same logic.
+
+- The H/Q/W role table from §5 maps identically to Tone 2. No note duration
+  changes were needed, and the audio analysis confirmed the assignments.
+
+- The pre-slur fix (syllable duration H, not Q, so re+ti each get Q via melisma
+  split) is consistent with the Tone 1 H/Q/W framework: the pre-slur occupies
+  a half-note slot that is then divided into two quarter notes.
+
+- The STOP list, anchor rule, and `anchorIndex()` implementation are confirmed
+  universal — no Tone 2 corpus examples contradicted them.
+
+---
+
+### 13.4 Overall implementation assessment
+
+**Tone 2 as shipped in v0.8.0 (with the pre-slur duration fix in the hotfix
+commit) is correct and complete.** The phrase definitions are verified against
+three independent sources (tutorial prose, OCA docx corpus of 78 instances, and
+unison MP3 audio analysis). The one Tone 1-to-Tone-2 mistake that was caught
+before shipping — reading Phrase C pitches from the SATB soprano — was corrected
+by audio analysis before any code was written. The pre-slur duration bug (eighth
+notes instead of quarter notes) was caught from live testing immediately after
+deployment and fixed in the same session.
+
+The remaining uncertainty (Phrase C 2-syllable cadence duration, Phrase A long
+trailing syllable pitch) is at the level of nuance that can only be settled by
+a director listening to the output and correcting via Director Pointing mode.
+The engine gives a structurally correct result; the exact duration weighting in
+edge cases is a refinement, not a structural error.
+
+---
+
+*§13 added May 2026 following cross-examination against `tone_trainer_tone1_analysis.md`.*
