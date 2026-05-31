@@ -10,11 +10,23 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.9.1";
+export const TONE_TRAINER_VERSION = "v0.9.2";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.9.2",
+    date: "May 2026",
+    summary: "Tone 2 rotation bug fix — A fires once only, then B·C·D cycle",
+    items: [
+      "fix: Tone 2 phrase rotation corrected per Drillock & Ealy tutorial p.1: 'The first phrase (A) is only used for the first textual line of the sticheron. Phrases B, C, and D are then sung in rotation.' Previous implementation cycled A·B·C·D·A·B·C·D which is wrong for any sticheron longer than 5 lines.",
+      "fix: ROT_DEFS[2] changed from a flat array to a function: i=0 → A, i≥1 → ['B','C','D'][(i-1)%3]. 9-line example: A B C D B C D B Final. Matches tutorial exactly.",
+      "fix: phraseForLine() and blockLinePhrase() updated to accept either an array or a function as the rotation argument. Tones 1 and 3 continue using arrays; Tone 2 uses a function.",
+      "fix: Tone 2 preset line 5 (index 4) relabeled from 'A' to 'B' — the hand-pointed 'Come let us worship' sticheron was also using the wrong phrase label on that line.",
+      "note: the corpus anomalies previously documented as 'Phrase A two-mark long lines' and 'Phrase B two-mark anomalies' in the LIC framing are now correctly explained — those were Phrase C lines (inton:true) that were mislabeled under the wrong rotation. The corpus analysis in tone_trainer_tone2_analysis.md should be updated to reflect the corrected labels.",
+    ],
+  },
   {
     version: "v0.9.1",
     date: "May 2026",
@@ -315,15 +327,27 @@ const PH_DEFS = {
 };
 // Per-tone phrase rotation. Tones 1 and 2 use the standard 4-phrase rotation;
 // Tone 3 uses only A and B (no C or D). Add entries here as tones are added.
+// ROT_DEFS: keyed by tone number. Each entry is either:
+//   - an array: simple cycle (e.g. Tone 1, 3)
+//   - a function (i, total) => phrase: for tones with non-uniform rotation
+//
+// Tone 2 rule (Drillock & Ealy tutorial p.1):
+//   "The first phrase (A) is only used for the first textual line of the sticheron.
+//    Phrases B, C, and D are then sung in rotation."
+//   9-line example: A B C D B C D B Final
+//   i=0 → A; i≥1 → BCD cycle: ["B","C","D"][(i-1) % 3]
 const ROT_DEFS = {
   1: ["A", "B", "C", "D"],
-  2: ["A", "B", "C", "D"],
+  2: (i, total) => i === total - 1 ? "Final" : i === 0 ? "A" : ["B","C","D"][(i - 1) % 3],
   3: ["A", "B"],
 };
-// phraseForLine: accepts active rotation array as third argument so each tone
-// can have its own cycle length. Last line is always Final.
-const phraseForLine = (i, total, rot) =>
-  i === total - 1 ? "Final" : rot[i % rot.length];
+// phraseForLine: accepts active rotation (array OR function) as third argument.
+// Last line is always Final.
+const phraseForLine = (i, total, rot) => {
+  if (i === total - 1) return "Final";
+  if (typeof rot === "function") return rot(i, total);
+  return rot[i % rot.length];
+};
 const PNAME = { A: "Phrase A", B: "Phrase B", C: "Phrase C", D: "Phrase D", Final: "Final Phrase" };
 
 // ── PITCH HEIGHT (sung display) ───────────────────────────────────────────────
@@ -511,8 +535,9 @@ const PRESET_T2 = [
   ["C", [["and",[["and",0]]],["incarnate",[["in",0],["car",1],["nate",0]]],["of",[["of",0]]],["the",[["the",0]]],["Virgin",[["Vir",0],["gin",0]]],["Mary!",[["Mar",1],["y",0]]]]],
   // Phrase D — dured = anchor (one mark)
   ["D", [["Having",[["Hav",0],["ing",0]]],["endured",[["en",0],["dured",1]]],["the",[["the",0]]],["Cross,",[["Cross",0]]]]],
-  // Phrase A — self = anchor (backup from "desired", penultimate stressed syllable)
-  ["A", [["He",[["He",0]]],["was",[["was",0]]],["buried",[["bur",0],["ied",0]]],["as",[["as",0]]],["He",[["He",0]]],["Himself",[["Him",0],["self",1]]],["desired.//",[["de",0],["sired",0]]]]],
+  // Phrase B (line 5, index 4 — NOT Phrase A; A only appears once per tutorial)
+  // self = anchor; desired trails
+  ["B", [["He",[["He",0]]],["was",[["was",0]]],["buried",[["bur",0],["ied",0]]],["as",[["as",0]]],["He",[["He",0]]],["Himself",[["Him",0],["self",1]]],["desired.//",[["de",0],["sired",0]]]]],
   // Final — er = anchor (erring)
   ["Final", [["And",[["And",0]]],["having",[["hav",0],["ing",0]]],["risen",[["ris",0],["en",0]]],["from",[["from",0]]],["the",[["the",0]]],["dead,",[["dead",0]]],["He",[["He",0]]],["saved",[["saved",0]]],["me,",[["me",0]]],["an",[["an",0]]],["erring",[["er",1],["ring",0]]],["man.",[["man",0]]]]],
 ];
@@ -667,8 +692,10 @@ function encodeBlock(block) {
 }
 // Phrase for line i within a block of n lines (A B C D rotating, Final last).
 function blockLinePhrase(i, n, rot) {
+  if (i === n - 1) return "Final";
   const r = rot || ["A", "B", "C", "D"];
-  return i === n - 1 ? "Final" : r[i % r.length];
+  if (typeof r === "function") return r(i, n);
+  return r[i % r.length];
 }
 
 // Encode one paragraph's runs as marked text. Accents wrapped in [brackets];
