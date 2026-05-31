@@ -10,13 +10,23 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.9.6";
+export const TONE_TRAINER_VERSION = "v0.9.7";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
   {
-    version: "v0.9.6",
+    version: "v0.9.7",
+    date: "May 2026",
+    summary: "Remove machine edit feature from A/B comparison harness",
+    items: [
+      "removed: ✎ edit machine button and all edit mode infrastructure — editMode state, editOpen state, toggleAccent, toggleMachineAccent, applyEdit, applyMachineEdit functions all removed.",
+      "removed: machine edit panel (syllable input field + apply button) from comparison harness machine row.",
+      "removed: edit syllables button and director edit panel from sing view.",
+      "removed: chip onClick/cursor editMode handlers from both director chips (sing view) and machine chips (comparison harness).",
+    ],
+  },
+  {
     date: "May 2026",
     summary: "Lexicon merge collision fix — redeemer machine anchor and ??? source indicators resolved",
     items: [
@@ -1447,10 +1457,7 @@ export default function ToneTrainer() {
   const [lines, setLines] = useState([]);
   const [playingLine, setPlayingLine] = useState(null);
   const [playingWhich, setPlayingWhich] = useState(null); // "truth"|"machine" while a line plays
-  const [editOpen, setEditOpen] = useState({});
-  const [editMode, setEditMode] = useState(false); // gates all accent/syllable editing
   const [pitchHeight, setPitchHeight] = useState(false); // chip height reflects solfege pitch
-  const [machineEditOpen, setMachineEditOpen] = useState({}); // comparison machine edit lines
   const [showReleaseNotes, setShowReleaseNotes] = useState(false);
   // lexicon (fetched from public/lexicon/ at mount, same pattern as psalter/scripture)
   const [lexicon, setLexicon] = useState(null);
@@ -1778,86 +1785,6 @@ export default function ToneTrainer() {
       setCompareMode(false);
       setSingView("director");
     }
-  };
-
-  const toggleAccent = (li, fi) => {
-    setLines((prev) => {
-      const copy = prev.map((l) => ({ phrase: l.phrase, words: l.words.map((w) => ({ display: w.display, sylls: w.sylls.map((s) => ({ ...s })) })) }));
-      let count = 0;
-      for (const w of copy[li].words) {
-        for (const s of w.sylls) { if (count === fi) s.accent = !s.accent; count++; }
-      }
-      return copy;
-    });
-  };
-
-  const applyEdit = (li, val) => {
-    // Re-accent via autoAccentLine after syllabification change —
-    // otherwise anchorIndex gets all-false accents and falls back to last syllable.
-    setLines((prev) => {
-      const copy = prev.map((l) => ({ ...l, words: l.words.map((w) => ({ ...w, sylls: w.sylls.map((s) => ({ ...s })) })) }));
-      const phrase = copy[li].phrase;
-      const rawWords = val.trim().split(/\s+/).map((tok) => {
-        const ss = tok.split(/[·\-]/).filter(Boolean);
-        return { display: ss.join(""), sylls: ss.map((t) => ({ text: t, accent: false })) };
-      });
-      copy[li].words = autoAccentLine(rawWords, phrase);
-      return copy;
-    });
-  };
-
-  // Toggle accent on a machine syllable in the comparison harness.
-  // Mutates machineLines and recomputes compareData immediately.
-  const toggleMachineAccent = (li, si) => {
-    if (!machineLines) return;
-    const newML = machineLines.map((line, lineIdx) => {
-      if (lineIdx !== li) return line;
-      let count = 0;
-      const words = line.words.map((w) => ({
-        ...w,
-        sylls: w.sylls.map((s) => {
-          const result = { ...s, accent: count === si ? !s.accent : s.accent };
-          count++;
-          return result;
-        }),
-      }));
-      return { ...line, words };
-    });
-    setMachineLines(newML);
-    setCompareData(buildComparison(lines, newML, PH, activeTone));
-  };
-
-  // Re-syllabify a machine line from text (same format as applyEdit: syll·syll word).
-  // Re-runs autoAccentLine so a no-op apply doesn't strip all machine accents.
-  const applyMachineEdit = (li, val) => {
-    if (!machineLines) return;
-    const phrase = machineLines[li].phrase;
-    // Parse syllable text and accent from the edit field.
-    // Format: "syl·lá·ble word´ next" where ´ (U+00B4) marks the accented syllable.
-    // If no ´ is present in a word, fall back to autoAccentLine for that word only.
-    const rawWords = val.trim().split(/\s+/).map((tok) => {
-      const sylls = tok.split(/[·\-]/).filter(Boolean);
-      const hasAccentMark = sylls.some(t => t.includes("\u00b4"));
-      return {
-        display: sylls.map(t => t.replace(/\u00b4/g, "")).join(""),
-        sylls: sylls.map((t) => ({
-          text: t.replace(/\u00b4/g, ""),
-          accent: hasAccentMark ? t.includes("\u00b4") : false,
-          source: "rule",
-        })),
-      };
-    });
-    // Only run autoAccentLine for words where the user supplied no accent mark.
-    // For words with an explicit ´, honour the user's placement as-is.
-    const hasAnyAccent = rawWords.some(w => w.sylls.some(s => s.accent));
-    const words = hasAnyAccent
-      ? rawWords  // user placed accents explicitly — trust them
-      : autoAccentLine(rawWords, phrase);  // no marks at all — auto-accent
-    const newML = machineLines.map((line, lineIdx) =>
-      lineIdx === li ? { ...line, words } : line
-    );
-    setMachineLines(newML);
-    setCompareData(buildComparison(lines, newML, PH, activeTone));
   };
 
   // ── docx ingest handlers ──────────────────────────────────────────────────
@@ -2497,7 +2424,7 @@ export default function ToneTrainer() {
               Export JSON ↓
             </button>
           </div>
-          {/* Header row 2: Sing director/machine toggle | edit machine | spacer | show source */}
+          {/* Header row 2: Sing director/machine toggle | spacer | show source */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap", marginBottom: "0.7rem" }}>
             {/* Sing director / machine toggle */}
             <div style={{ display: "inline-flex", border: "1.5px solid #8B6914", borderRadius: 5, overflow: "hidden" }}>
@@ -2511,16 +2438,6 @@ export default function ToneTrainer() {
                 </button>
               ))}
             </div>
-            {/* edit machine toggle — lives in the harness where it's used */}
-            <button
-              onClick={() => setEditMode(v => !v)}
-              style={{ ...btn,
-                       background: editMode ? gold : "transparent",
-                       color: editMode ? "#fff" : gold,
-                       fontSize: "0.75rem", padding: "4px 11px" }}
-              title={editMode ? "Edit mode on — click machine chips or edit syllables" : "Enable to edit machine accent and syllable breakdown"}>
-              ✎ edit machine
-            </button>
             <span style={{ flex: 1 }} />
             {/* show source ⓘ — moved here from controls bar */}
             <div style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
@@ -2573,12 +2490,6 @@ export default function ToneTrainer() {
                 {["truth", "machine"].map((which) => {
                   // rowSinging follows playingWhich (set by playLineAs) not the global toggle
                   const rowSinging = isPlaying && playingWhich === which;
-                  // Machine edit vars — hoisted so they're available in JSX without an IIFE
-                  const mLine = which === "machine" ? (machineLines || [])[li] : null;
-                  const mDefaultVal = mLine
-                    ? mLine.words.map(w => w.sylls.map(s => s.text + (s.accent ? "\u00b4" : "")).join("\u00b7")).join(" ")
-                    : "";
-                  const mInputId = `medit-${li}`;
                   return (
                   <div key={which} style={{ background: rowSinging ? "rgba(255,236,180,.55)"
                                               : which === "truth" ? "rgba(255,255,255,.6)" : "rgba(245,245,245,.6)",
@@ -2601,13 +2512,10 @@ export default function ToneTrainer() {
                       const mSrc = s.machineSource;
                       const mSrcChar = (which === "machine" && mSrc && !NOSRC.includes(mSrc))
                         ? (mSrc === "residue" ? "?" : "~") : null;
-                      const machineClickable = editMode && which === "machine";
                       return (
                         <span key={si}
-                          onClick={machineClickable ? () => toggleMachineAccent(li, si) : undefined}
                           style={{ display: "inline-flex", flexDirection: "column", alignItems: "center",
                                    padding: "2px 5px 1px", borderRadius: 5, minWidth: "1.8em",
-                                   cursor: machineClickable ? "pointer" : "default",
                                    background: disagree ? "rgba(200,100,40,.12)" : "rgba(40,58,92,.05)",
                                    border: isAnchorThis ? "1px solid #7a2418" : disagree ? "1px solid rgba(200,100,40,.4)" : "1px solid transparent" }}>
                           <span style={{ fontSize: "1rem", fontWeight: accent ? 600 : 400, position: "relative", color: accent ? "#1c1008" : "#9A8A70" }}>
@@ -2637,24 +2545,6 @@ export default function ToneTrainer() {
                       ▶
                     </button>
                     </div>{/* end chips row */}
-                    {/* Machine edit panel — inside the machine row when editMode on */}
-                    {which === "machine" && editMode && (
-                      <div style={{ padding: "0.3rem 0.6rem 0.45rem", borderTop: "1px solid rgba(0,0,0,.08)",
-                                     background: "rgba(235,235,235,.5)" }}>
-                        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
-                          <input id={mInputId} defaultValue={mDefaultVal}
-                            style={{ flex: 1, minWidth: 200, fontFamily: "Georgia, serif", fontSize: "0.85rem",
-                                     border: "1px solid #d6c79f", borderRadius: 6, padding: "3px 7px" }} />
-                          <button style={btn}
-                            onClick={() => applyMachineEdit(li, document.getElementById(mInputId).value)}>
-                            apply
-                          </button>
-                          <span style={{ fontSize: "0.7rem", color: "#6b5942", fontStyle: "italic" }}>
-                            · separates syllables, ´ marks accent, space separates words
-                          </span>
-                        </div>
-                      </div>
-                    )}
                   </div>
                   );
                 })}
@@ -2691,14 +2581,13 @@ export default function ToneTrainer() {
                     const myFi = fi;
                     const pis = r.pitches.join("-");
                     return (
-                      <span key={si} onClick={editMode ? () => toggleAccent(li, myFi) : undefined}
+                      <span key={si}
                         style={{ position: "relative", display: "inline-flex", flexDirection: "column",
                                  alignItems: "center",
                                  justifyContent: pitchHeight ? "space-between" : "flex-end",
                                  height: pitchHeight ? chipH(r.pitches[0]) : undefined,
                                  overflow: "visible",
                                  padding: "3px 6px 2px", borderRadius: 6,
-                                 cursor: editMode ? "pointer" : "default",
                                  background: roleBg[r.role],
                                  border: r.anchor ? "1px solid #7a2418" : "1px solid transparent",
                                  minWidth: "2em" }}>
@@ -2715,17 +2604,7 @@ export default function ToneTrainer() {
             </div>
             <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginTop: "0.6rem", flexWrap: "wrap" }}>
               <button style={btn} onClick={() => playLine(li)}>▶ Sing this line</button>
-              {editMode && !hasTruth && <button style={btn} onClick={() => setEditOpen((o) => ({ ...o, [li]: !o[li] }))}>edit syllables</button>}
             </div>
-            {editMode && editOpen[li] && (
-              <div style={{ marginTop: "0.5rem", display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
-                <input defaultValue={line.words.map((w) => w.sylls.map((s) => s.text).join("·")).join(" ")}
-                  id={`edit-${li}`}
-                  style={{ flex: 1, minWidth: 240, fontFamily: "Georgia, serif", fontSize: "0.9rem", border: "1px solid #d6c79f", borderRadius: 6, padding: "5px 8px" }} />
-                <button style={btn} onClick={() => applyEdit(li, document.getElementById(`edit-${li}`).value)}>apply</button>
-                <span style={{ fontSize: "0.74rem", color: "#6b5942", fontStyle: "italic" }}>separate syllables with · or - ; spaces separate words</span>
-              </div>
-            )}
           </div>
         );
       })}
@@ -2734,8 +2613,7 @@ export default function ToneTrainer() {
         Structural pointing (reciting run vs. cadence, anchored on the last internal accent, with the
         one-syllable-final-word backup) follows Drillock &amp; Ealy, <i>Tutorial for Learning the Church
         Tones — Common Chant</i> (OCA). The exact note-to-syllable distribution inside a cadence is the
-        trainer's best reading; verify against the printed staves. Auto-syllabification of free text is
-        heuristic — correct it with "edit syllables."
+        trainer's best reading; verify against the printed staves.
       </div>
     </div>
   );
