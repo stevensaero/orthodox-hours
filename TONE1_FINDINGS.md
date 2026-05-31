@@ -193,46 +193,49 @@ simple truncation. This history is worth knowing for future tones.
 
 ## 5. Note durations (rhythm)
 
-### Current state (v0.4.0)
-The `lineToNotes` function uses heuristic durations: ~0.45s per reciting tone
-syllable, ~0.55s per cadence syllable, 1.0s for the final note. These are
-**not** derived from the score's actual note values.
+### Current state (v0.6.0 — tutorial-faithful rhythm implemented)
+`lineToNotes` was rewritten in v0.6.0 to use role-based durations derived directly
+from Drillock & Ealy and verified against the LIC score. The heuristic constants
+(~0.45s per syllable) were replaced entirely.
 
 ### What the tutorial and score say
 **From Drillock & Ealy and verified from the LIC score:**
 
-| Role | Note value | Duration relative to quarter |
+| Role | Note value | Duration at 70 BPM |
 |------|-----------|------------------------------|
 | Reciting tone (unaccented) | quarter note | 1 beat |
-| Reciting tone (accented, beat group) | effectively half note | 2 beats |
-| Cadence notes | half notes | 2 beats |
-| Final note | whole note | 4 beats |
-| Intonation | half note | 2 beats |
+| Reciting tone (intonation, first accented syllable) | half note | 2 beats |
+| Prep note (ti before cadence) | quarter note | 1 beat |
+| Cadence anchor | half note | 2 beats |
+| Cadence middle syllables | quarter note | 1 beat |
+| Cadence last syllable | half note | 2 beats |
+| Final note (last syllable of entire sticheron) | whole note | 4 beats |
 
-The reciting tone groups unaccented syllables in pairs or triples under an
-accent — the accented syllable "owns" the beat and the following unaccented
-syllable(s) attach to it. This is the quarternote grouping rule.
+The **intonation note** (Phrase A and C in Tone 1) receives a half note on the
+first *accented* body syllable — not always the first syllable of the phrase.
+This distinction was important: early implementations assigned intonation to
+`body[0]` unconditionally, which mis-assigned duration when the phrase opened
+with an unaccented syllable. Fixed in v0.6.2 by scanning for the first accented
+body syllable: `intonIdx = body.findIndex(s => s.accent)`.
 
 Verified from the LIC score: Re(quarter)·ceive(half)·the(half)·voice(half)·
 of(quarter)·my(quarter)·prayer(half). "Re" is an unaccented reciting-tone
 syllable (quarter); "ceive" is the cadence anchor (half); "of" and "my" are
 unaccented cadence syllables (quarter each); "prayer" is the phrase-final
-cadence note (half). Note that "of" and "my" are cadence syllables carrying
-do and re but notated as quarter notes — the cadence figure's notes are
-all half notes in the *general* case but become quarter notes when there are
-many cadence syllables and the line needs to fit a standard musical phrase length.
+cadence note (half).
 
-**Honest admission:** the quarter/half distinction within the cadence figure
-(when to use quarters vs. halves for cadence syllables) is not fully resolved
-from the score analysis alone. The general rule from the tutorial is half notes,
-but the score shows quarter notes on "of" and "my." This may be a function of
-the overall tempo and phrase length rather than a fixed rule. Needs further
-investigation.
+### Honest admission: quarter/half within cadence figure
+When a cadence figure has many syllables, the score shows some cadence syllables
+as quarter notes. The boundary condition — when does a cadence note become a
+quarter vs. a half — is not fully resolved. The current implementation uses:
+cadence anchor = half, middle syllables = quarter, final cadence syllable = half.
+This matches the "voice·of·my·prayer" example from the LIC score but may not
+generalize to all configurations. Needs further investigation with a wider corpus.
 
-### Implementation path (backlog item #7)
-Replace heuristic constants in `lineToNotes` with role-based duration multipliers
-derived from the tutorial rules. The accent array and role assignments are already
-computed by the pointing engine — no new data structures needed.
+### BPM slider
+Adjustable 40–120 BPM via slider, default 70. Slider is disabled and greyed
+during playback (v0.7.0) — cannot change tempo mid-phrase. Dynamic BPM using
+a Web Audio lookahead scheduler is a backlog item for a future audio engine session.
 
 ---
 
@@ -414,7 +417,7 @@ confirmed by the director.
 
 **A3 — Completeness of marking:** are all phrase-final accents marked in the OCA
 docx files, or only the ambiguous ones? If some accents are omitted as "obvious,"
-the docx underlines are not a complete truth set and the comparison harness (B)
+the docx underlines are not a complete truth set and the comparison harness
 needs to account for this.
 
 **B1 — Physical marking convention in hand-outs:** for parish print materials
@@ -424,18 +427,231 @@ ingest hand-marked materials.
 
 **Quarter vs. half within cadence figure:** when a cadence figure has many
 syllables, the score shows some cadence syllables as quarter notes rather than
-half notes (see §5). The boundary condition — when does a cadence note become
-a quarter vs. a half — is not fully resolved. May be a function of the total
-phrase length in measures rather than a fixed rule.
+half notes (see §5). The boundary condition is not fully resolved. Current
+implementation (anchor=half, middle=quarter, final=half) matches the LIC score
+example but may not generalize.
 
 **Phrase D final ti:** the fifth note of Phrase D's cadence figure (ti·do·re·do·ti)
 appears when there are 5+ cadence syllables but is dropped for fewer. Whether the
 final ti ever appears in common sticheron lines, or whether it is effectively always
 dropped, was not systematically verified across the corpus.
 
+~~**Polysyllabic final word trap (aloud, himself):**~~ **Closed — see §10.4.**
+Disposition: accept as Director Pointing territory. No algorithmic fix planned.
+
 ---
 
-*This document reflects what was actually discovered, what was assumed, and where
-honest uncertainty remains. It is not a polished theory document — it is a working
-record. Future sessions should update it as new evidence resolves the open questions
-or as new tones are built.*
+## 10. Session addendum — May 30 2026 (v0.7.0)
+
+This section records the specific corrections, confirmations, and new findings
+from the v0.7.0 session — a focused testing, refinement, and bug-fix session
+that included extensive A/B comparison harness work against real docx and JSON
+fixtures.
+
+---
+
+### 10.1 Note on what this session was
+
+This was the first session with the full A/B comparison harness operational
+and actively used to test the machine engine against director-marked text.
+Several engine assumptions from prior sessions were validated or corrected.
+The JSON fixture export tool was first used here, enabling systematic
+phrase-by-phrase analysis rather than visual inspection alone.
+
+---
+
+### 10.2 Corpus tested — Simeon sticheron (Meeting of the Lord, Tone 1)
+
+**Fixture file:** `2026-0202-texts-tt.docx`
+**Exported JSON:** `tone-trainer-comparison(8).json`
+
+The sticheron tested was:
+
+> Come, let us also go to meet Christ with divine songs, |
+> Let us receive Him Whose salvation Simeon saw, |
+> This is He Whom David announced, |
+> This is He Who spoke in the Prophets, |
+> Who for our sakes has taken flesh and Who speaks through the Law, //
+> Let us worship Him!
+
+**Results from JSON fixture (v0.6.2 engine):**
+- Anchor match: 4/6 lines (67%)
+- Syllable accent match: 73/82 (89%)
+
+**Line-by-line findings:**
+
+| Phrase | Result | Director anchor | Machine anchor | Notes |
+|--------|--------|----------------|----------------|-------|
+| A | ✓ match | `vine` (divine) | `vine` | Perfect agreement |
+| B | ✓ match | `Si` (Simeon) | `Si` | Perfect agreement |
+| C | ✗ miss | `Da` (David) | `nounced` | Machine picks last stressed syllable of "announced"; director backs off to subject |
+| D | ✓ match | `Prop` (Prophets) | `Prop` | Perfect agreement |
+| A (2nd) | ✗ miss | `speaks` | `through` | Machine picks wrong syllable after "through the Law" |
+| Final | ✓ match | `wor` (worship) | `wor` | Perfect agreement |
+
+---
+
+### 10.3 Lexicon corrections confirmed this session
+
+**`incense` — stressIdx 1→0**
+- Error: lexicon had `stressIdx:1` (in-CENSE, verb form)
+- Correct: `stressIdx:0` (IN-cense, noun form)
+- In liturgical texts "incense" always appears as a noun ("as incense before Thee")
+- Fix: `public/lexicon/syllable-table.json`, one-character change
+
+**`arise` — 3→2 syllables**
+- Error: lexicon had `["a","ri","se"]` (3 syllables), source: `count-only`, `lowConfidence:true`
+- Correct: `["a","rise"]` (2 syllables), per CMU Pronouncing Dictionary: `AH0 R AY1 Z`
+- The 3-syllable form was a bad parse artifact from the count-only heuristic
+- Fix: `public/lexicon/syllable-table.json`, corrected entry
+
+**`thy` and `thine` — added to STOP list**
+- Missing: archaic second-person possessives were not in the STOP list
+- Correct: `thy` = archaic `your` (possessive determiner before consonant)
+  and `thine` = archaic `your/yours` (before vowels, or standalone) are pure
+  grammatical function words, same class as `my`, `his`, `our`, `your`
+- Possessive modifiers never carry phrase accent — the noun they modify is
+  always the anchor
+- Fix: STOP constant in `tone-trainer.jsx`
+- Note: `thee` was deliberately left OUT of STOP — it is the accusative object
+  of `thou` and frequently appears as the phrase-final theological focus
+  ("...praise Thee," "...upon Thee"). Direct objects can be cadence anchors.
+
+---
+
+### 10.4 Polysyllabic final word trap — full analysis and disposition
+
+#### The problem
+The anchor backup rule fires on single-syllable accented final words:
+```javascript
+if (a === lastIdx && last.single && last.accent && acc.length >= 2)
+```
+The `last.single` check means the backup never fires for polysyllabic final words.
+Machine picks the last *stressed* syllable even when the director treats the final
+word as trailing content.
+
+#### What the JSON fixture confirmed
+For "This is He Whom David **a**n**nounced**":
+- Director (truth): anchor = `Da` (index 4, David)
+- Machine: anchor = `nounced` (index 7, last stressed syllable)
+- JSON shows `"nounced": { truthAccent: false, machineAccent: true }` — the
+  director explicitly did NOT underline "nounced" at all.
+
+This is not a syllabification problem. The director treats "announced" as
+entirely trailing after "David." The machine correctly syllabifies the word
+(2 syllables: `an·nounced`) and correctly identifies `nounced` as stressed —
+but wrong in context.
+
+#### The attempted fix and why it doesn't work cleanly
+Extending the backup rule to all polysyllabic final words would fix "announced"
+— but would break phrases like "This is He Who spoke in the **Prophets**" where
+`Prop` IS correctly the machine's anchor and should remain so. Both "announced"
+and "Prophets" are polysyllabic final words; one is trailing, one is the anchor.
+The distinction is semantic, not structural.
+
+#### The -ed syllabification hypothesis
+During this session a hypothesis was raised that the director may have sung
+"announced" as 3 syllables (a-noun-ced) due to liturgical -ed convention.
+The JSON fixture disproved this: the director underlines were absent from
+"nounced" entirely, and the corpus edit-machine tool confirmed `an-noun-ced`
+as a 3-syllable edit did produce anchor match — but only because the unstressed
+`an` prefix happened to be in STOP, removing the word from candidacy by accident.
+
+**Conclusion on liturgical -ed:**
+Two distinct classes exist:
+1. **Genuinely syllabic -ed** (bless·ed, learn·ed, belov·ed): the stem ends in
+   a way that makes `-ed` a natural extra syllable. Hymn books mark these with
+   a grave accent (blessèd). These warrant a 3-syllable lexicon entry.
+2. **Non-syllabic -ed** (announced, proclaimed, revealed, confirmed): the `-ed`
+   is phonologically fused to the final consonant cluster. Not spoken as a
+   separate syllable even in liturgical English. These remain 2-syllable.
+
+**Disposition on the polysyllabic trap:**
+- `arise` — closed by lexicon fix (was misparsed as 3 syllables)
+- `announced` — closed as Director Pointing territory
+- `aloud`, `himself` — accepted as Director Pointing territory
+- No algorithmic rule change planned; the semantic distinction cannot be made
+  from syllabification alone
+- **When you encounter a phrase with a polysyllabic trailing verb at the end
+  (announced, proclaimed, fulfilled, revealed) use Director Pointing brackets
+  on the actual anchor word.**
+
+---
+
+### 10.5 Critical bug: applyEdit silent re-pointer
+
+**Bug found:** in the sung display "edit syllables" panel, hitting **Apply**
+without making any text changes reset the pointing. The anchor moved to the
+last syllable of the phrase regardless of director marks.
+
+**Root cause:** `applyEdit()` set `accent: false` on every syllable when
+rebuilding words from the edit box text, then stored the all-false array
+without re-running the accent heuristic. `anchorIndex()` received an empty
+`acc` array and fell back to `flat.length - 1` (last syllable) every time.
+
+**Discovery:** found during live testing with the Simeon sticheron. A phrase
+that was correctly pointed by Director marks became wrong after a no-op Apply.
+The before/after screenshots via A/B harness made the regression immediately visible.
+
+**Fix (v0.7.0):** `applyEdit` now calls `autoAccentLine(rawWords, phrase)` after
+rebuilding the word array, restoring correct accent marks from the lexicon.
+
+**Additional protection:** the "edit syllables" button is now hidden in Director
+Pointing mode entirely. The edit panel could silently discard director bracket
+marks (which live in the textarea, not the chip display). In Director mode, the
+textarea is the correct edit path.
+
+---
+
+### 10.6 A/B comparison harness — operational findings
+
+The comparison harness (Feature B) proved its value this session as a diagnostic
+tool, not just a training aid. Key behavioral findings:
+
+**JSON fixture export** provides the most reliable evidence for anchor analysis —
+it records exact syllable indices and accent flags without any visual ambiguity.
+The export button in the comparison harness produces this JSON. Use it for any
+systematic evaluation of anchor accuracy.
+
+**Anchor match vs. syllable match:** anchor match rate (67% in this corpus) and
+syllable accent match rate (89%) measure different things. High syllable match
+with lower anchor match means the machine is getting individual word stresses
+right but missing the phrase-level accent hierarchy. This is the expected failure
+mode: the engine knows English stress but not chant phrase structure.
+
+**The comparison harness's "Director vs. Machine" toggle** updates the mode badge
+in the info bar live (shows "Director Pointing ✓" or "Machine Pointing" based
+on `singWhich`). This was a bug fix in v0.7.0 — the badge was static and did not
+reflect which voice was currently singing.
+
+---
+
+### 10.7 For the next tone builder — what this session adds to the guide
+
+The §8 guide was written before the A/B harness was fully operational. Add these
+to the testing workflow:
+
+1. **Export a JSON fixture** from the comparison harness for at least 3 stichera
+   in the new tone. Compute anchor match rate. Target ≥ 75% before considering
+   Tone N complete for AUTO mode.
+
+2. **Watch for the polysyllabic final word trap.** Any phrase ending in a
+   polysyllabic content word where the director consistently anchors on the
+   prior word is this trap. No fix is planned in the engine — document them in
+   the tone's findings file and mark as Director Pointing territory.
+
+3. **Test the edit panel** (Machine mode only). Hit Apply on an unmodified line
+   and verify the pointing does not change. The v0.7.0 `autoAccentLine` fix
+   should hold for new tones, but verify.
+
+4. **The STOP list is tone-independent.** The archaic vocabulary additions (thy,
+   thine) apply to all tones. No per-tone STOP configuration is needed.
+
+5. **Lexicon errors surface through A/B testing.** The `incense` and `arise`
+   errors were invisible until the JSON fixture revealed exactly which syllables
+   the machine was placing accents on. Run the fixture export early in testing.
+
+---
+
+*§10 added May 30 2026 following v0.7.0 session.*
+
