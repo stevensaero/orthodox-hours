@@ -1108,10 +1108,15 @@ function parseTruthLines(rawText, lexicon, rot) {
         if (!cleanWord) return null;
 
         // Syllabify the clean word for chip display.
-        const { sylls: displaySylls, stressIdx: lexStress } = syllabifyWithSource(
-          cleanWord.replace(/[^A-Za-z''-]/g, "") || cleanWord,
-          lexicon
-        );
+        // For mid-word brackets, parseBracketWord already derived the syllable split
+        // directly from the bracket boundaries — use that authoritatively.
+        // For whole-word brackets and unbracketed words, use the lexicon/rule engine.
+        const displaySylls = (bracketType === "mid" && rawSylls && rawSylls.length > 0)
+          ? rawSylls
+          : syllabifyWithSource(
+              cleanWord.replace(/[^A-Za-z''-]/g, "") || cleanWord,
+              lexicon
+            ).sylls;
 
         // Build syllable objects.
         // If bracket present: accentIdx (from bracket) is authoritative.
