@@ -10,13 +10,22 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.9.5";
+export const TONE_TRAINER_VERSION = "v0.9.6";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
   {
-    version: "v0.9.5",
+    version: "v0.9.6",
+    date: "May 2026",
+    summary: "Lexicon merge collision fix — redeemer machine anchor and ??? source indicators resolved",
+    items: [
+      "fix: name-residue.json had stale 2-syllable Re/deemer entry that silently overwrote the correct 3-syllable entry in syllable-table.json on merge ({ ...table, ...residue }). Machine anchor was landing on Re (stressIdx=0) instead of deem (stressIdx=1), and machine chips showed ??? (residue source indicator) for all three syllables.",
+      "fix: same collision removed for unwedded — residue entry was redundant, correct entry already in syllable-table.json.",
+      "fix: zero overlapping keys between syllable-table.json and name-residue.json — merge is now collision-free.",
+    ],
+  },
+  {
     date: "May 2026",
     summary: "Director-authoritative pointing — both paths unified, machine anchor accuracy improved",
     items: [
