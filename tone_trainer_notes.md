@@ -546,3 +546,23 @@ best-guess; `confirmed:false` entries surfaced by the "show source" toggle with
 10. **Hours tool → Trainer pass-in** — data contract drafted; implementation not built.
 11. **aloud, himself anchor misses** — accepted as AUTO mode limitations; Director Pointing resolves them. No rule change planned.
 
+
+### Regression gate addendum (post-session)
+
+Tone 1 and Tone 2 regression diffs completed after session close using
+`2026-0202-texts-tt.docx` (Meeting of the Lord — Tone 1×7 blocks/54 lines,
+Tone 2×5 blocks/34 lines) and `2026-0329-texts-tt.docx` (Tone 1×13/75,
+Tone 2×5/32).
+
+Pre-patch snapshots generated with `cad1` scope guard disabled (`if false &&...`),
+post-patch with guard enabled. All four diffs:
+
+| Fixture | Tone | Lines | Anchor match | Diff |
+|---|---|---|---|---|
+| 0202 | 1 | 54 | 67% | **EMPTY** |
+| 0202 | 2 | 34 | 53% | **EMPTY** |
+| 0329 | 1 | 75 | 71% | **EMPTY** |
+| 0329 | 2 | 32 | 66% | **EMPTY** |
+
+Hard gate satisfied. Scope guard `activeTone === 3 && phrase === "Final"`
+confirmed to produce zero output changes on all Tone 1 and Tone 2 lines.
