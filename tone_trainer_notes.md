@@ -1,6 +1,24 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.9.6** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.9.7** | Component: `src/components/tone-trainer.jsx`
+
+---
+
+## Session summary (May 31 2026 — v0.9.7 edit machine removal)
+
+Removed the machine edit feature entirely from the A/B comparison harness. The feature
+was unreliable — syllable edits and accent placement were both lost on apply due to
+two compounding bugs in the apply pipeline. Rather than continue patching, the decision
+was made to remove cleanly.
+
+**Removed:** `editMode` and `editOpen` state; `toggleAccent`, `toggleMachineAccent`,
+`applyEdit`, `applyMachineEdit` functions; `✎ edit machine` button; machine edit panel
+(input field + apply button) in the harness machine row; `edit syllables` button and
+director edit panel in the sing view; all `onClick`/`cursor` editMode conditionals on
+chips in both views. 137 lines removed, zero dead references remaining.
+
+The A/B harness is now read-only — director and machine side by side, play buttons,
+show source, export JSON.
 
 ---
 
