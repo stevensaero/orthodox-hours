@@ -104,37 +104,185 @@ figures.
 
 ## 3. The anchor rule (cadence placement)
 
-### The rule as implemented
-The cadence begins on the **last internal accent** of the phrase. "Internal" means:
-if the final syllable of the phrase is an *accented monosyllable* (a single-syllable
-content word that carries an accent), back off to the previous accent as the anchor.
+### 3.1 What the anchor is
 
-Example: "hear me" — if "hear" and "me" are both accented monosyllables, the
-anchor is "hear" (backs off from "me").
-
-Example: "upon Thee" — the anchor is "pon" (the stressed syllable of "upon"),
-not "Thee" (which is unaccented in practice even though it's a content word).
-
-### Source of the rule
-**Drillock & Ealy tutorial**, worked examples section. The tutorial explicitly
-states the cadence "begins with an accented syllable" and the worked examples
-show the backup rule for monosyllabic final words.
-
-### What was tested
-The rule was verified by hand against the worked examples in the tutorial text
-and against the OCA docx materials (Lord I Call verses). The `[Hear] [me]` case
-(two consecutive accented monosyllables on the Final Phrase) was specifically
-verified — both carry accents, the anchor backs off to "Hear," and "me" rides
-the cadence figure's second note (do).
-
-### Honest uncertainty
-The backup rule fires on single-syllable *accented* final words. The definition
-of "accented" in this context is the OCA underline mark (from the docx), not
-the lexicon's stress guess. When auto-accentuating (no docx underline), the
-heuristic may misclassify a final word as accented or unaccented. This is a
-known gap that Feature B's comparison harness will surface empirically.
+The **cadence anchor** is the syllable where the melody breaks away from the
+reciting tone and begins the descending cadence figure. Everything before it
+recites on one pitch; from the anchor onward the melody moves through the
+cadence notes. Getting the anchor right is the most musically critical decision
+in the entire pointing process — one syllable wrong shifts the entire melodic
+shape of the phrase.
 
 ---
+
+### 3.2 The director's mental workflow — step by step
+
+This is how a director actually locates the anchor when looking at a phrase of
+text. It is a right-to-left scan with a series of filters.
+
+**Step 1: Read the phrase aloud naturally.**
+Let the natural English word-stress determine which syllables are stressed. Do
+not try to force stress onto function words. "Come, let us also go to meet Christ
+with divine songs" — the natural stresses land on *Come*, *go*, *meet*, *Christ*,
+*di-VINE*, *songs*.
+
+**Step 2: Build the candidate list — scan left to right, collect every accented
+(stressed) syllable that is NOT a function word.**
+
+The **function word filter** (STOP list) eliminates grammatical words that never
+carry phrase accent in chant:
+- Articles: *the, a, an*
+- Prepositions: *of, to, in, on, for, with, by, at, from, as*
+- Coordinating conjunctions: *and, but, or, nor, so, yet*
+- Personal pronouns: *we, i, you, he, she, it, us, him, her, them*
+- Possessives: *my, thy, thine, his, our, your* — critically: possessives never
+  anchor because the noun they modify is always more significant
+- Relative/demonstrative: *this, that, whose, whom, who, which*
+- Auxiliary verbs: *is, am, are, be*
+- Vocative particle: *o*
+
+After filtering, the remaining accented syllables are the candidates. For
+"Come, let us also go to meet Christ with divine songs":
+> Come (candidate) · go (candidate) · meet (candidate) · Christ (candidate) ·
+> di- (skip, unstressed) · **VINE** (candidate) · songs (candidate)
+
+**Step 3: Take the last candidate — that is the provisional anchor.**
+
+In the example above: **songs** is the last candidate → provisional anchor.
+
+**Step 4: Apply the monosyllabic backup rule.**
+
+If the provisional anchor is a *single-syllable* word AND it is the last word
+of the phrase, back off to the previous candidate.
+
+Why: a phrase-final monosyllabic content word (songs, God, Lord, Him, peace)
+is trailing content — the theological or semantic weight has already been
+expressed. The melody should begin descending on the last *internally significant*
+accent, not on the closing tag.
+
+"Come, let us also go to meet Christ with **divine** songs":
+- provisional anchor = `songs` (monosyllable, phrase-final) → BACKUP
+- previous candidate = `vine` (from *divine*)
+- **Final anchor = `vine`** ✓
+
+This matches the JSON fixture result: truthAnchorIdx=11, text=`vine`. Machine
+also placed the anchor on `vine` — a correctly handled case.
+
+**Step 5: For polysyllabic final words — the director uses judgment the machine
+cannot.**
+
+If the provisional anchor is a *polysyllabic* word at the end of the phrase,
+the machine does NOT back up (the current backup rule requires `last.single`).
+But the director often will — particularly when the final word is a trailing
+verb whose semantic content has already been established by the subject or object
+earlier in the phrase.
+
+"This is He Whom David **an·nounced**":
+- provisional anchor = `nounced` (stressed syllable of "announced," phrase-final)
+- Machine: stays on `nounced`
+- Director: backs off to `Da` (the first syllable of *David*)
+- Reason: "David" is the theological identification; "announced" is the verb
+  completing the thought. The director treats the entire word "announced" as
+  trailing, not just the unstressed suffix.
+
+This is the **polysyllabic trailing verb trap** — see §10.4 for full analysis.
+The machine cannot resolve it without semantic context. Director Pointing
+brackets handle it explicitly: `This is He Whom [Da]vid announced`.
+
+---
+
+### 3.3 The STOP list — what it is and why it matters
+
+The STOP list is not just a list of "unimportant words." It is the formalization
+of the observation that **certain grammatical categories never carry phrase accent
+in Byzantine/Obikhod chant**:
+
+- **Possessives** (my, thy, thine, his, our, your): the possessive determines
+  whose something is; the noun it modifies carries the weight. "In Thy sight" →
+  anchor is `sight`, not `Thy`.
+- **Prepositions**: they connect; the noun phrases they introduce carry weight.
+  "Through the Law" → anchor is upstream of `through`.
+- **Articles and conjunctions**: purely syntactic, zero semantic weight in chant.
+- **Personal pronouns**: in liturgical English pronouns usually follow the noun
+  they refer to (antecedent earlier in the text) — they carry identification but
+  the anchor almost never lands on them.
+
+**`thee` is deliberately NOT in STOP.** It is the accusative of `thou` (object
+case), and in liturgical chant it often appears as the phrase-final theological
+object: "...praise *Thee*," "...upon *Thee*," "...glorify *Thee*." Object
+pronouns at phrase-final position are anchor candidates. Contrast with `him`,
+`her`, `them`, `us` — these ARE in STOP because in the liturgical corpus they
+are rarely the semantic focus of the phrase.
+
+---
+
+### 3.4 The `anchorIndex()` function — implementation of the above
+
+```javascript
+// flat: array of {text, accent, wordLast, single} for all syllables in the line
+// acc:  indices of all accented (non-STOP, stressed) syllables
+// a:    current anchor candidate = acc[acc.length - 1] (last in list)
+
+// Monosyllabic backup rule:
+const last = flat[lastIdx];
+if (a === lastIdx && last.single && last.accent && acc.length >= 2) {
+  a = acc[acc.length - 2];  // back off to previous accent
+}
+```
+
+The `acc` array is built by `autoAccentLine` (machine mode) or from the director's
+brackets (Director Pointing mode). It contains only syllables that are:
+1. Stressed per the lexicon (`stressIdx` matches) or director-marked, AND
+2. Not in the STOP set
+
+`last.single` = `true` when the syllable belongs to a single-syllable word
+(i.e., the word has only one syllable in the lexicon). This is what limits the
+backup to monosyllabic final words — see §10.4 for the polysyllabic trap.
+
+---
+
+### 3.5 What was verified vs. assumed
+
+**Verified from Drillock & Ealy tutorial worked examples:**
+- The general rule: cadence begins on last internal accent
+- The monosyllabic backup: explicitly shown in worked examples
+- The `[Hear] [me]` case: two consecutive accented monosyllables, anchor = `Hear`
+
+**Verified from OCA docx fixtures (JSON fixture export, v0.7.0 session):**
+- "Come let us also go to meet Christ with divine songs" → anchor = `vine` ✓
+- "Let us receive Him Whose salvation Simeon saw" → anchor = `Si` ✓
+- "This is He Whom David announced" → director anchor = `Da`, machine = `nounced` ✗
+- "This is He Who spoke in the Prophets" → anchor = `Prop` ✓
+- "Who for our sakes has taken flesh and Who speaks through the Law" →
+  director = `speaks`, machine = `through` ✗
+- "Let us worship Him" → anchor = `wor` ✓
+
+Overall anchor accuracy against this corpus: **4/6 lines (67%)**. The two misses
+are both polysyllabic trailing content cases not covered by the backup rule.
+
+**Assumed (not independently verified):**
+- That the backup rule applies identically across all Tone 1 phrase types (A-D)
+  and the Final phrase. Only tested empirically on the Final phrase and Phrase A.
+- That the same anchor rule applies to Tone 2 and other tones. Believed
+  tone-independent; confirmed for Tone 2 in the tone2 analysis session.
+
+---
+
+### 3.6 Honest uncertainty (remaining)
+
+**Is the anchor rule definitively "last stressed content syllable, back off from
+monosyllabic trailing words"?** The Drillock & Ealy tutorial supports it and the
+corpus supports it. But a director may occasionally place the anchor one syllable
+earlier or later based on phrase phrasing, breath point, or semantic weight that
+the rule does not capture. The comparison harness exists precisely to surface
+these cases. **Director Pointing is always the override.**
+
+**Does the backup rule apply to polysyllabic function words at phrase end?**
+Function words are already filtered by STOP, so they never become the provisional
+anchor in the first place. The backup rule only needs to handle monosyllabic
+*content* words that slip through — which it does correctly.
+
+
 
 ## 4. Cadence note-to-syllable distribution
 
