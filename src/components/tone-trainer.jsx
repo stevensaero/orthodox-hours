@@ -1724,7 +1724,9 @@ export default function ToneTrainer() {
       setMachineLines(mLines);
       setCompareData(cmp);
       setHasTruth(true);
-      setCompareMode(false); // user must explicitly open Director vs. Machine
+      // Keep compareMode open if it was already open — user may be re-pointing
+      // with edits while watching the A/B harness. Only close it on first point.
+      if (!compareMode) setCompareMode(false);
       setSingView("director");
       setSingWhich("truth");
     } else {
@@ -1797,12 +1799,15 @@ export default function ToneTrainer() {
   };
 
   // Re-syllabify a machine line from text (same format as applyEdit: syll·syll word).
+  // Re-runs autoAccentLine so a no-op apply doesn't strip all machine accents.
   const applyMachineEdit = (li, val) => {
     if (!machineLines) return;
-    const words = val.trim().split(/\s+/).map((tok) => {
+    const phrase = machineLines[li].phrase;
+    const rawWords = val.trim().split(/\s+/).map((tok) => {
       const sylls = tok.split(/[·\-]/).filter(Boolean);
       return { display: sylls.join(""), sylls: sylls.map((t) => ({ text: t, accent: false, source: "rule" })) };
     });
+    const words = autoAccentLine(rawWords, phrase);
     const newML = machineLines.map((line, lineIdx) =>
       lineIdx === li ? { ...line, words } : line
     );
