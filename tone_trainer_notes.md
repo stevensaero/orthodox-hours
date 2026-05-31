@@ -1,6 +1,141 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.9.1** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.9.6** | Component: `src/components/tone-trainer.jsx`
+
+---
+
+## Session summary (May 31 2026 — v0.9.2 through v0.9.6 pointing overhaul)
+
+### Overview
+
+A sustained debugging session on the Director vs. Machine comparison harness, driven
+by live JSON exports from the deployed tool. The session produced six patch releases,
+each fixing a specific verified failure. Key discipline lesson: JSON exports are only
+reliable diagnostics when the version badge is bumped with every push — starting this
+session, that discipline is enforced.
+
+---
+
+### v0.9.2 — Tone 2 rotation bug fix
+
+**Bug:** Tone 2 rotation was cycling A·B·C·D·A·B·C·D (wrong). Tutorial says: Phrase A
+fires once only for the first line, then B·C·D repeat.
+
+**Fix:** `ROT_DEFS[2]` changed from a flat array to a function:
+`(i, total) => i === total-1 ? "Final" : i === 0 ? "A" : ["B","C","D"][(i-1) % 3]`
+`phraseForLine()` and `blockLinePhrase()` updated to accept array OR function.
+
+**Validation:** Exhaustive simulation across all sticheron lengths 2–14. Zero regressions
+on Tones 1 and 3. Three previously-anomalous "Phrase B two-mark" corpus lines turned out
+to be mislabeled Phrase C lines under the wrong rotation — after fix, zero genuine corpus
+anomalies across 78-instance corpus. Documented in `tone_trainer_tone2_analysis.md` §14.
+
+---
+
+### v0.9.3 — STOP filter whole-word guard
+
+**Bug:** STOP filter was matching syllable text fragments (e.g. `in` from `in·cense`,
+`or` from `glo·ry`) as function words, causing wrong anchor selection.
+
+**Fix:** Both STOP filter call sites changed from `!STOP.has(s.text.toLowerCase())` to
+`!(s.single && STOP.has(s.text.toLowerCase()))`. `s.single` is true only when the
+syllable IS the whole word. Standalone function words still blocked; polysyllabic
+fragments pass through correctly. Applied in both `autoAccentLine` (component-scoped)
+and `applyPhraseAccent` inside `autoEncodeLines` (module-scoped).
+
+---
+
+### v0.9.4 — Machine pointing view in sing window
+
+Director and Machine toggle buttons replace the old badge+button pattern in the sing
+display. `singView` state drives which lines render and which audio path fires.
+`singView` resets to `"director"` on fresh Point Verses.
+
+---
+
+### v0.9.5 — Director-authoritative pointing, both paths unified
+
+**Root problem:** The bracket path (textarea) and underline path (docx "point ▸") were
+two separate implementations of the same mark-to-syllable logic. Any fix to one didn't
+propagate to the other — this was the source of the `Re[deem]er` rendering as `Re·deemer`
+on the docx path even after the bracket path was fixed.
+
+**Fixes applied:**
+
+1. **`parseBracketWord`** — mid-word brackets now derive syllable split directly from
+   bracket boundaries. `Re[deem]er` → prefix=`Re`, bracketed=`deem`, suffix=`er` →
+   3 syllables. No lexicon needed for the split.
+
+2. **`parseTruthLines`** — was discarding `rawSylls` returned by `parseBracketWord` and
+   calling `syllabifyWithSource` again independently. Fixed to use `rawSylls` directly
+   for mid-word bracket display.
+
+3. **`paraToPointerLine`** — docx underline path now derives syllable split from underline
+   boundaries using the same prefix/marked/suffix logic as the bracket path.
+
+4. **`syllabifyWithDirectorMark` refactor** — extracted as a module-level pure function
+   containing the single implementation of the mark-to-syllable logic. Both
+   `parseBracketWord` and `paraToPointerLine` are now thin adapters that derive
+   `(markStart, markEnd)` from their input format and delegate to this function.
+   Future pointing bugs have exactly one location to fix.
+
+5. **`autoEncodeLines` stressIdx by text match** — machine column was applying
+   `entry.stressIdx` as a numeric index into the director's syllable array. When the
+   director split has different length than the lexicon split (e.g. `Resur[rec]tion` →
+   3 sylls vs lexicon's 4), the index was wrong (`tion` instead of `rec`). Fixed to find
+   the director syllable whose text matches the lexicon's stressed syllable text.
+
+6. **Lexicon audit** — added `incarnate`, `almighty`, `endured`, `desired`, `incarnation`,
+   `unwedded`, `habitation`, `appeared`; fixed `enlighten` syllabification.
+
+7. **A/B window preserved on re-point** — `setCompareMode(false)` was unconditional.
+   Changed to only close if the harness was already closed.
+
+8. **`applyMachineEdit` accent strip** — no-op apply was setting all accents to `false`.
+   Fixed to re-run `autoAccentLine` after parsing.
+
+9. **`point ▸` button guarded until lexicon loads** — `canPoint = !!PH_DEFS[b.tone] && !!lexicon`
+   prevents pointing before the async lexicon fetch resolves.
+
+10. **BPM slider step 1→10.**
+
+**Regression testing:** `tools/test_pointing_paths.mjs` + `tools/pointing_baseline.json`
+committed to repo. Exercises both bracket and underline paths against 13 known corpus
+cases. Run with `node tools/test_pointing_paths.mjs` before and after any pointing change.
+
+---
+
+### v0.9.6 — Lexicon merge collision fix
+
+**Bug:** `redeemer` and `unwedded` were present in both `syllable-table.json` (correct,
+fixed entries) and `name-residue.json` (stale, wrong entries). The component merges as
+`{ ...table, ...residue }` — **residue always wins for shared keys**. This meant:
+
+- `redeemer` was silently served as `['Re','deemer']` / `stressIdx=0` (residue) instead
+  of `['re','deem','er']` / `stressIdx=1` (table). Machine anchor landed on `Re`, not
+  `deem`. Machine chips showed `???` (residue source indicator) for all three syllables.
+- Every lexicon fix pushed to `syllable-table.json` was overwritten at merge time by the
+  stale residue entry — the bug survived multiple sessions of "fixes."
+
+**Fix:** Removed both stale keys from `name-residue.json`. Zero overlapping keys between
+the two files. The merge is now collision-free.
+
+**Lesson — lexicon merge order:** `{ ...table, ...residue }` means residue always
+overwrites table. When adding a word to `syllable-table.json`, **always check
+`name-residue.json` for a conflicting entry and remove it.** The `name-residue.json`
+file exists for proper names and specialist terms not in the CMU dictionary — if a word
+graduates to a confirmed entry in `syllable-table.json`, its residue entry must be deleted.
+
+**Lesson — version discipline:** JSON comparison exports include `trainerVersion` in the
+header. That field is only useful if the version is bumped with every push. Starting this
+session: every push that touches user-visible behavior gets a version bump. This makes
+exports genuinely useful as diagnostics — you can tell exactly which build an export came
+from.
+
+**Lesson — trust the data:** When a user reports a bug with a fresh-refresh export and
+the code simulation says it should work, the correct response is to ask questions and
+investigate further — not to attribute the discrepancy to CDN caching. The export was
+accurate both times.
 
 ---
 
