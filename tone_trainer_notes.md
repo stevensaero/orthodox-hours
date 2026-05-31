@@ -1,8 +1,68 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.9.0** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.9.1** | Component: `src/components/tone-trainer.jsx`
 
 ---
+
+## Session summary (May 31 2026 — v0.9.1 cad1 Final Phrase fix)
+
+### What was done
+
+**Closed the known v0.9.0 gap:** Tone 3 Final Phrase first anchor (anchor1) now renders
+as `cad1` role with `mi(H)·do(Q)·re(Q)` instead of falling through as reciting `fa(Q)`.
+
+### Changes made
+
+**`pointLine()` — new `cad1` split path (scope-guarded)**
+Signature updated to `pointLine(line, phDefs, activeTone)`.
+When `activeTone===3 && phrase==='Final' && acc.length >= 2`:
+- anchor1 = `acc[acc.length-2]` (same monosyllable backup as `anchorIndex()`)
+- `body` → recite; `cad1` → distribute(`['mi','do','re']`, count) with `role:'cad1'`;
+  `cad` → distribute(def.cad, count) with `role:'cad'`
+- Else: falls through to unchanged single-anchor logic
+
+**`lineToNotes()` — cad1 duration case added**
+`cad1` anchor (first) = `H`; subsequent `cad1` syllables = `Q`.
+Peak amplitude rule extended to `(role==='cad' || role==='cad1') && anchor`.
+
+**`buildComparison()` — extended**
+New signature: `buildComparison(truthLines, machineLines, phDefs, activeTone)`.
+Passes `activeTone` to `pointLine()` inside `computeRoles`. Adds `firstAnchorMatchCount`
+to summary stats. All four component call-sites updated.
+
+**Export payload extended** — `role`, `pitches`, `dur`, `machineRole`, `machinePitches`,
+`machineDur` per syllable; `truthFirstAnchorIdx`, `machineFirstAnchorIdx`,
+`firstAnchorMatch` per line; `firstAnchorMatchCount` in header.
+
+**UI — `cad1` chip color** `rgba(122,36,24,.05)` / `#9a3c2c` — lighter burgundy distinct
+from `cad` (Part 2). Info bar legend conditionally shows "cad. pt. 1" / "cad. pt. 2"
+pills when Tone 3 active; other tones show "cadence" as before.
+
+**`tools/snapshot_comparison.mjs` — new programmatic snapshot tool**
+Node script: reads `.docx`, runs `parseTruthLines + autoEncodeLines + buildComparison`
+without a browser. Includes the `cad1` fix. `npm run snapshot` entry in `package.json`.
+Scope guard verified: `--tone 1` and `--tone 2` on Tone 3 fixtures → 0 blocks, 0 lines.
+
+### Validation protocol results
+
+Pre-patch snapshots generated (before the fix was written):
+- `pre_cad1_t3_feb.json` — Meatfare Sunday, 14 blocks, 71 lines, 58% anchor match
+- `pre_cad1_t3_may.json` — 4th Sunday of Pascha, 15 blocks, 80 lines, 56% anchor match
+
+Post-patch snapshots generated:
+- `post_cad1_t3_feb.json` — 58% anchor match (unchanged — patch doesn't affect accent positions)
+- `post_cad1_t3_may.json` — 56% anchor match (unchanged)
+
+**Diff result — PASS:**
+- Feb: 12 Final-phrase lines changed, 0 non-Final changes
+- May: 11 Final-phrase lines changed, 0 non-Final changes
+- All changes: `recite fa Q` → `cad1 mi H` at anchor1; `recite fa Q` → `cad1 do Q`
+  for fill syllables between anchor1 and anchor2; everything else byte-identical
+- Tone 1/2 guard: both fixtures are pure Tone 3 services (0 Tone 1/2 blocks);
+  scope guard in `pointLine()` structurally prevents any Tone 1/2 code path execution
+
+---
+
 
 ## Session summary (May 30 2026 — v0.9.0 Tone 3 build-out)
 

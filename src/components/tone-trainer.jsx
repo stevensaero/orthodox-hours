@@ -10,11 +10,26 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.9.0";
+export const TONE_TRAINER_VERSION = "v0.9.1";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.9.1",
+    date: "May 2026",
+    summary: "Tone 3 Final Phrase — cad1 two-part cadence fix",
+    items: [
+      "fix: Tone 3 Final Phrase first anchor (Part 1 cadence) now renders as cad1 role — mi(H)·do(Q)·re(Q) — instead of falling through as reciting fa(Q). Closes the known gap documented in v0.9.0.",
+      "fix: pointLine() — new cad1 split path: scope-guarded to activeTone===3 && phrase==='Final' && two accent marks present. Finds anchor1 (second-to-last stressed syllable, same monosyllable backup as anchorIndex), splits body/cad1/cad, distributes Part 1 figure ['mi','do','re'] over cad1 syllables and Part 2 figure (def.cad) over cad syllables.",
+      "fix: lineToNotes() — cad1 duration case: anchor (first cad1 syllable) = H (half note); all subsequent cad1 syllables = Q (quarter note). Matches Drillock & Ealy Part 1 figure mi·H do·Q re·Q.",
+      "feat: cad1 chip color — rgba(122,36,24,.05), lighter burgundy distinct from cad (Part 2). Info bar legend conditionally shows 'cad. pt. 1' / 'cad. pt. 2' pills when Tone 3 is active; other tones show 'cadence' as before.",
+      "feat: buildComparison() extended — now accepts phDefs and activeTone params; computes role/pitches/dur per syllable via pointLine() and includes them in comparison output. firstAnchorMatchCount added to summary stats.",
+      "feat: Export JSON payload extended — role, pitches, dur (normalised), machineRole, machinePitches, machineDur added per syllable when phDefs present. truthFirstAnchorIdx, machineFirstAnchorIdx, firstAnchorMatch added per line.",
+      "feat: tools/snapshot_comparison.mjs — programmatic pre/post diff tool. Reads a .docx, runs parseTruthLines+autoEncodeLines+buildComparison in Node (no browser), writes extended JSON. npm run snapshot entry added to package.json.",
+      "test: pre-patch snapshots captured — pre_cad1_t3_feb.json (Meatfare Sunday, 71 lines, 14 blocks), pre_cad1_t3_may.json (4th Sunday of Pascha, 80 lines, 15 blocks). Scope guard verified: Tone 1/2 code path zero-blocks on same fixtures.",
+    ],
+  },
   {
     version: "v0.9.0",
     date: "May 2026",
@@ -730,12 +745,55 @@ function anchorIndex(flat) {
   return a;
 }
 
-// pointLine: maps a line's syllables to roles (recite/inton/prep/cad/preslur).
+// pointLine: maps a line's syllables to roles (recite/inton/prep/cad/cad1/preslur).
 // phDefs: the active tone's phrase definition table (e.g. PH_DEFS[1] or PH_DEFS[2]).
 // Pass PH (the component-derived active table) when calling from inside the component.
-function pointLine(line, phDefs) {
+//
+// Tone 3 Final Phrase two-part cadence:
+//   Part 1 (cad1): mi(H) do(Q) re(Q) — launches at anchor1 (first director mark)
+//   Part 2 (cad):  mi(Q) fa(Q) re(H) do(W) — launches at anchor2 (second director mark)
+// anchor1 = second-to-last stressed syllable (findFirstFinalAnchor); anchor2 = anchorIndex().
+// Scope guard: activeTone===3 && phrase==='Final' && two accented syllables present.
+// When guard is false, falls through to existing single-anchor logic unchanged.
+function pointLine(line, phDefs, activeTone) {
   const def = phDefs[line.phrase];
   const flat = flatten(line);
+
+  // ── Tone 3 Final Phrase: two-part cadence (cad1 + cad) ──────────────────
+  if (activeTone === 3 && line.phrase === "Final") {
+    const acc = flat.map((s, i) => s.accent ? i : -1).filter(i => i >= 0);
+    if (acc.length >= 2) {
+      const a2 = anchorIndex(flat); // anchor2 — unchanged, last internal accent
+      // anchor1: second-to-last stressed syllable (same monosyllable backup as anchorIndex).
+      const lastIdx = flat.length - 1;
+      let a1 = acc[acc.length - 2];
+      if (a1 === lastIdx && flat[lastIdx].single && acc.length >= 3)
+        a1 = acc[acc.length - 3];
+      if (a1 >= 0 && a1 < a2) {
+        // Valid two-part split found.
+        const body  = flat.slice(0, a1);
+        const cad1  = flat.slice(a1, a2);
+        const cad   = flat.slice(a2);
+        const roles = [];
+        // body → recite
+        body.forEach((s) => roles.push({ role: "recite", pitches: [def.recite], accent: s.accent, text: s.text, source: s.source }));
+        // cad1 → distribute Part 1 figure [mi, do, re]
+        const dist1 = distribute(["mi", "do", "re"], cad1.length);
+        cad1.forEach((s, i) =>
+          roles.push({ role: "cad1", pitches: dist1[i] || ["do"], accent: s.accent, text: s.text, source: s.source, anchor: i === 0 })
+        );
+        // cad → distribute Part 2 figure (def.cad)
+        const dist2 = distribute(def.cad, cad.length);
+        cad.forEach((s, i) =>
+          roles.push({ role: "cad", pitches: dist2[i] || [def.cad[def.cad.length - 1]], accent: s.accent, text: s.text, source: s.source, anchor: i === 0 })
+        );
+        return roles;
+      }
+      // a1 not valid (same as a2, or >= a2) — fall through to single-anchor logic.
+    }
+  }
+
+  // ── Standard single-anchor logic (all other tones/phrases) ──────────────
   const a = anchorIndex(flat);
   const body = flat.slice(0, a);
   const cad = flat.slice(a);
@@ -1067,8 +1125,14 @@ function autoEncodeLines(truthLines, lexicon, activePH) {
 // Returns { lines: [...], anchorMatchCount, totalLines, syllMatchCount, totalSylls }
 // Each line entry: { truthRoles, machineRoles, truthAnchor, machineAnchor, anchorMatch,
 //                    syllables: [{text, truthAccent, machineAccent, agree}] }
-function buildComparison(truthLines, machineLines) {
+// buildComparison: compare truth vs. machine per line.
+// phDefs: optional — the active tone's PH_DEFS entry (e.g. PH_DEFS[activeTone]).
+// When provided, role/pitches are computed via pointLine() and included in each
+// syllable entry. This enables pre/post diff to show pitch changes (e.g. cad1 fix).
+// When omitted, role/pitches are absent (legacy behaviour — UI still works fine).
+function buildComparison(truthLines, machineLines, phDefs, activeTone) {
   let anchorMatchCount = 0;
+  let firstAnchorMatchCount = 0;
   let syllMatchCount = 0;
   let totalSylls = 0;
 
@@ -1090,6 +1154,68 @@ function buildComparison(truthLines, machineLines) {
     const anchorMatch = truthAnchor === machineAnchor;
     if (anchorMatch) anchorMatchCount++;
 
+    // First-anchor match (Tone 3 Final Phrase — the cad1 anchor).
+    // For non-Final or non-two-anchor phrases this stays null.
+    let truthFirstAnchor = null;
+    let machineFirstAnchor = null;
+    let firstAnchorMatch = null;
+    if (phDefs) {
+      // Derive first anchor: second-to-last accented syllable (mirrors autoAccentLine logic).
+      const firstAnchorOf = (flat) => {
+        const acc = flat.map((s, i) => s.accent ? i : -1).filter(i => i >= 0);
+        if (acc.length < 2) return null;
+        const lastIdx = flat.length - 1;
+        let c = acc[acc.length - 2];
+        if (c === lastIdx && flat[lastIdx].single && acc.length >= 3)
+          c = acc[acc.length - 3];
+        const anchor2 = anchorIndex(flat);
+        return c !== anchor2 ? c : null;
+      };
+      truthFirstAnchor = firstAnchorOf(tFlat);
+      machineFirstAnchor = firstAnchorOf(mFlat);
+      if (truthFirstAnchor !== null && machineFirstAnchor !== null) {
+        firstAnchorMatch = truthFirstAnchor === machineFirstAnchor;
+        if (firstAnchorMatch) firstAnchorMatchCount++;
+      }
+    }
+
+    // Compute roles via pointLine() when phDefs provided.
+    // H=1 (normalised), Q=0.5, W=2, DH=1.5 — snapshot script uses these to compare
+    // relative durations; absolute values depend on BPM which belongs to the component.
+    let tRoles = null, mRoles = null;
+    if (phDefs) {
+      const H = 1, Q = 0.5, W = 2, DH = 1.5;
+      const computeRoles = (line) => {
+        const roles = pointLine(line, phDefs, activeTone);
+        const isFinal = line.phrase === "Final";
+        const phDef = phDefs[line.phrase];
+        const useAnchorDH = !!(phDef && phDef.anchorDH);
+        const cadIdxs = roles.map((r, i) => r.role === "cad" ? i : -1).filter(i => i >= 0);
+        const cad1Idxs = roles.map((r, i) => r.role === "cad1" ? i : -1).filter(i => i >= 0);
+        return roles.map((r, ri) => {
+          let dur;
+          if (r.role === "inton")        { dur = r.accent ? H : Q; }
+          else if (r.role === "recite" || r.role === "prep") { dur = Q; }
+          else if (r.role === "preslur") { dur = H; }
+          else if (r.role === "cad1") {
+            const pos = cad1Idxs.indexOf(ri);
+            dur = pos === 0 ? H : Q;
+          } else if (r.role === "cad") {
+            const cadPos = cadIdxs.indexOf(ri);
+            const isFirst = cadPos === 0;
+            const isLast  = cadPos === cadIdxs.length - 1;
+            if (isFirst && isLast)   dur = isFinal ? W : H;
+            else if (isFirst)        dur = (useAnchorDH && cadIdxs.length <= (phDef?.cad?.length ?? 99)) ? DH : H;
+            else if (isLast)         dur = isFinal ? W : H;
+            else                     dur = Q;
+          } else { dur = Q; }
+          return { role: r.role, pitches: r.pitches, dur };
+        });
+      };
+      tRoles = computeRoles(tLine);
+      mRoles = computeRoles(mLine);
+    }
+
     // Per-syllable comparison (align by index — same text since same words).
     const maxLen = Math.max(tFlat.length, mFlat.length);
     const syllables = [];
@@ -1099,7 +1225,7 @@ function buildComparison(truthLines, machineLines) {
       const agree = ts && ms ? ts.accent === ms.accent : false;
       if (agree) syllMatchCount++;
       totalSylls++;
-      syllables.push({
+      const syl = {
         text: ts?.text || ms?.text || "?",
         truthAccent: ts?.accent ?? false,
         machineAccent: ms?.accent ?? false,
@@ -1107,7 +1233,19 @@ function buildComparison(truthLines, machineLines) {
         agree,
         isAnchor: si === truthAnchor,
         isMachineAnchor: si === machineAnchor,
-      });
+      };
+      // Extended fields — present only when phDefs supplied.
+      if (tRoles && tRoles[si]) {
+        syl.role    = tRoles[si].role;
+        syl.pitches = tRoles[si].pitches;
+        syl.dur     = tRoles[si].dur;
+      }
+      if (mRoles && mRoles[si]) {
+        syl.machineRole    = mRoles[si].role;
+        syl.machinePitches = mRoles[si].pitches;
+        syl.machineDur     = mRoles[si].dur;
+      }
+      syllables.push(syl);
     }
 
     return {
@@ -1116,7 +1254,10 @@ function buildComparison(truthLines, machineLines) {
       machineLine: mLine,
       truthAnchor,
       machineAnchor,
+      truthFirstAnchor,
+      machineFirstAnchor,
       anchorMatch,
+      firstAnchorMatch,
       syllables,
     };
   });
@@ -1124,6 +1265,7 @@ function buildComparison(truthLines, machineLines) {
   return {
     lines,
     anchorMatchCount,
+    firstAnchorMatchCount,
     totalLines: truthLines.length,
     syllMatchCount,
     totalSylls,
@@ -1234,7 +1376,7 @@ export default function ToneTrainer() {
   const freq = (sol) => doHz * Math.pow(2, OFF[sol] / 12);
 
   const lineToNotes = (line) => {
-    const roles = pointLine(line, PH);
+    const roles = pointLine(line, PH, activeTone);
     const notes = [];
     const isFinal = line.phrase === "Final";
 
@@ -1259,6 +1401,7 @@ export default function ToneTrainer() {
       //   recite / prep → Q (quarter note always)
       //   preslur → Q (two Q notes split across the two pitches via melisma logic)
       //   cad anchor (first) → H (or DH when anchorDH:true); cad middle → Q; cad last → H or W (Final only)
+      //   cad1 anchor (first) → H; cad1 fills → Q  (Part 1 cadence: mi·H do·Q re·Q)
       let syllDur;
       if (r.role === "inton") {
         syllDur = r.accent ? H : Q;
@@ -1268,6 +1411,11 @@ export default function ToneTrainer() {
         // Pre-slur = two quarter notes (re + ti) as a pickup before the prep.
         // Assign H so the melisma division (syllDur / pitches.length = H/2) yields Q+Q.
         syllDur = H;
+      } else if (r.role === "cad1") {
+        // Part 1 cadence (Tone 3 Final Phrase only): mi(H) · do(Q) · re(Q).
+        // Anchor (first cad1 syllable) = half note; all subsequent cad1 syllables = quarter.
+        const cad1Idxs = roles.map((rr, ii) => rr.role === "cad1" ? ii : -1).filter(ii => ii >= 0);
+        syllDur = cad1Idxs.indexOf(ri) === 0 ? H : Q;
       } else if (r.role === "cad") {
         const cadPos = cadIdxs.indexOf(ri);
         const isFirst = cadPos === 0;
@@ -1294,7 +1442,7 @@ export default function ToneTrainer() {
       // Pre-slur has two pitches [recite, prep] → each gets Q/2 = eighth note.
       // This matches tutorial intent: the slur is a quick two-note pickup.
       const pitchDur = syllDur / r.pitches.length;
-      const peak = (r.role === "cad" && r.anchor) ? 0.27 : 0.2;
+      const peak = (r.role === "cad" || r.role === "cad1") && r.anchor ? 0.27 : 0.2;
 
       r.pitches.forEach((p) => {
         notes.push({ sol: p, dur: pitchDur, peak });
@@ -1450,7 +1598,7 @@ export default function ToneTrainer() {
       const tLines = parseTruthLines(text, lexicon, activeRot);
       if (!tLines.length) { setLines([]); return; }
       const mLines = autoEncodeLines(tLines, lexicon, PH);
-      const cmp = buildComparison(tLines, mLines);
+      const cmp = buildComparison(tLines, mLines, PH, activeTone);
       setLines(tLines);
       setMachineLines(mLines);
       setCompareData(cmp);
@@ -1522,7 +1670,7 @@ export default function ToneTrainer() {
       return { ...line, words };
     });
     setMachineLines(newML);
-    setCompareData(buildComparison(lines, newML));
+    setCompareData(buildComparison(lines, newML, PH, activeTone));
   };
 
   // Re-syllabify a machine line from text (same format as applyEdit: syll·syll word).
@@ -1536,7 +1684,7 @@ export default function ToneTrainer() {
       lineIdx === li ? { ...line, words } : line
     );
     setMachineLines(newML);
-    setCompareData(buildComparison(lines, newML));
+    setCompareData(buildComparison(lines, newML, PH, activeTone));
   };
 
   // ── docx ingest handlers ──────────────────────────────────────────────────
@@ -1721,7 +1869,7 @@ export default function ToneTrainer() {
     setLines(next);
     // The block's OCA-underline accents ARE truth — set hasTruth and build comparison.
     const mLines = autoEncodeLines(next, lexicon, blockPH);
-    const cmp = buildComparison(next, mLines);
+    const cmp = buildComparison(next, mLines, blockPH, block.tone);
     setMachineLines(mLines);
     setCompareData(cmp);
     setHasTruth(true);
@@ -1745,9 +1893,10 @@ export default function ToneTrainer() {
   const roleBg = {
     recite: "rgba(40,58,92,.06)", inton: "rgba(40,58,92,.10)",
     prep: "rgba(180,137,43,.16)", cad: "rgba(122,36,24,.10)",
+    cad1: "rgba(122,36,24,.05)",  // Part 1 cadence — lighter burgundy (visually distinct from cad Part 2)
     preslur: "rgba(180,137,43,.22)",  // slightly stronger amber — two-note pickup before prep
   };
-  const roleColor = { recite: "#283a5c", inton: "#283a5c", prep: "#8a6a14", cad: "#7a2418", preslur: "#8a6a14" };
+  const roleColor = { recite: "#283a5c", inton: "#283a5c", prep: "#8a6a14", cad: "#7a2418", cad1: "#9a3c2c", preslur: "#8a6a14" };
 
   return (
     <div style={{ maxWidth: 820, margin: "0 auto", padding: "2rem 1rem 4rem", fontFamily: "Georgia, serif", color: ink }}>
@@ -2079,8 +2228,12 @@ export default function ToneTrainer() {
                          borderRadius: 4, padding: "1px 7px" }}>
             prep ({[...new Set(Object.values(PH).map(d => d.prep).filter(Boolean))].join("/") || "—"})
           </span>
+          {activeTone === 3 && (
+            <span style={{ background: "rgba(122,36,24,.05)", color: "#9a3c2c",
+                           borderRadius: 4, padding: "1px 7px" }}>cad. pt. 1</span>
+          )}
           <span style={{ background: "rgba(122,36,24,.11)", color: "#7a2418",
-                         borderRadius: 4, padding: "1px 7px" }}>cadence</span>
+                         borderRadius: 4, padding: "1px 7px" }}>{activeTone === 3 ? "cad. pt. 2" : "cadence"}</span>
           <span>· ´ = accent</span>
         </span>
         {/* Pointing mode indicator — reflects singWhich in A/B mode */}
@@ -2155,20 +2308,30 @@ export default function ToneTrainer() {
                   generated: new Date().toISOString(),
                   trainerVersion: TONE_TRAINER_VERSION,
                   anchorMatchPct: Math.round(compareData.anchorMatchCount / Math.max(1, compareData.totalLines) * 100),
+                  firstAnchorMatchCount: compareData.firstAnchorMatchCount,
                   syllMatchPct: Math.round(compareData.syllMatchCount / Math.max(1, compareData.totalSylls) * 100),
                   lines: compareData.lines.map((l) => ({
                     phrase: l.phrase,
                     anchorMatch: l.anchorMatch,
                     truthAnchorIdx: l.truthAnchor,
                     machineAnchorIdx: l.machineAnchor,
-                    syllables: l.syllables.map((s) => ({
-                      text: s.text,
-                      truthAccent: s.truthAccent,
-                      machineAccent: s.machineAccent,
-                      agree: s.agree,
-                      isAnchor: s.isAnchor,
-                      isMachineAnchor: s.isMachineAnchor,
-                    })),
+                    truthFirstAnchorIdx: l.truthFirstAnchor ?? null,
+                    machineFirstAnchorIdx: l.machineFirstAnchor ?? null,
+                    firstAnchorMatch: l.firstAnchorMatch ?? null,
+                    syllables: l.syllables.map((s) => {
+                      const out = {
+                        text: s.text,
+                        truthAccent: s.truthAccent,
+                        machineAccent: s.machineAccent,
+                        agree: s.agree,
+                        isAnchor: s.isAnchor,
+                        isMachineAnchor: s.isMachineAnchor,
+                      };
+                      // Extended pitch/role fields — present when phDefs was passed to buildComparison.
+                      if (s.role     !== undefined) { out.role    = s.role;    out.pitches = s.pitches;    out.dur = s.dur; }
+                      if (s.machineRole !== undefined) { out.machineRole = s.machineRole; out.machinePitches = s.machinePitches; out.machineDur = s.machineDur; }
+                      return out;
+                    }),
                   })),
                 };
                 const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
@@ -2356,7 +2519,7 @@ export default function ToneTrainer() {
 
       {/* legend + sung display — hidden in comparison mode */}
       {!(compareMode && compareData) && lines.map((line, li) => {
-        const roles = pointLine(line, PH);
+        const roles = pointLine(line, PH, activeTone);
         const isFin = line.phrase === "Final";
         let fi = -1;
         return (
