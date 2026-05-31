@@ -1,10 +1,46 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.7.0** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.9.0** | Component: `src/components/tone-trainer.jsx`
 
 ---
 
-## Session summary (May 30 2026 — v0.7.0 UI polish, lexicon fixes, bug fixes)
+## Session summary (May 30 2026 — v0.9.0 Tone 3 build-out)
+
+### Source materials processed
+- Tutorial PDF: `Tutorial-Obikhod-Tone3-Explanation.pdf` (Drive ID `1wuGATRbkxcUxjIzZTpCHfeoX90uXXFLS`)
+- OCA Unison MP3: analyzed with `librosa.pyin`; reciting tone fa ≈ 179 Hz confirmed
+- OCA `.docx` fixtures: `2026-0215-texts-tt-.docx` (Meatfare Sunday) and `2026-0503-texts-tt.docx` (4th Sunday of Pascha / Paralytic), uploaded to chat
+- Combined corpus: **164 phrase instances across 31 stichera blocks**
+
+### Key findings
+
+**Tone 3 rotates A·B only (2 phrases).** No C or D anywhere in corpus. This required introducing `ROT_DEFS` keyed by tone number, and making `phraseForLine()`, `parseTruthLines()`, `blockLinePhrase()`, and the comparison harness render all accept an active rotation array instead of assuming 4 phrases.
+
+**Mark counts:** Phrase A = 73/74 one mark (1 director-cue anomaly on long phrase). Phrase B = 59/59 one mark — perfectly clean. Final = 31/31 **two marks** (both cadence anchors, 100% consistent).
+
+**Phrase A cadence uses `do` fill**, not `fa` repeat. Tutorial explicit: "unaccented syllables between the accented syllable and the final syllable are sung on do." `cad:['fa','do','mi']` ensures `distribute()` repeats `do` as the penultimate fill. Using `['fa','mi']` would have been wrong.
+
+**Dotted-half anchor on Phrase B.** Audio confirmed ~1.3s vs H_ref≈0.76s and dH_ref≈1.14s. `DH = H * 1.5` added to `lineToNotes()`; applied via `anchorDH: true` flag on `PH_DEFS[3].B`. Long-cadence rule (>3 cad syllables → dH→H, extras ride on mi) handled by existing `distribute()` logic.
+
+**Final Phrase two-part cadence.** Two internal accents always marked: first anchor (Part 1: `mi H do Q re Q`) and second anchor (Part 2: `mi Q fa Q re H do W`). `autoAccentLine()` extended for `activeTone===3 && phrase==='Final'` to mark both `acc[acc.length-2]` and `acc[acc.length-1]`.
+
+**Known gap — first Final anchor not yet rendered as cad role.** `anchorIndex()` returns the second anchor (last internal accent), so the first anchor falls in `body` and plays as reciting `fa(Q)` rather than `mi(H)`. The Part 2 cadence and whole-note final render correctly. Fix requires a new `cad1` role type in `pointLine()`; deferred to future session.
+
+### Architecture changes
+- `ROT_DEFS = { 1: ['A','B','C','D'], 2: ['A','B','C','D'], 3: ['A','B'] }` — new module-level constant
+- `phraseForLine(i, total, rot)` — now accepts rotation array as third param
+- `parseTruthLines(rawText, lexicon, rot)` — rot param added
+- `blockLinePhrase(i, n, rot)` — rot param added
+- `lineToNotes()` — `const DH = H * 1.5` added; anchor logic checks `useAnchorDH`
+- `autoAccentLine()` — two-anchor support for Tone 3 Final Phrase
+- `PRESETS[3]` — hand-pointed "By Thy Cross, O Christ our Savior" (5 lines)
+
+### Analysis document
+`tone_trainer_tone3_analysis.md` pushed to repo root before any code was written.
+
+---
+
+## Session summary (May 30 2026 — v0.8.0 Tone 2 build-out)
 
 ### UI restructuring
 - **Info bar** made permanently visible — renders above the comparison harness regardless of mode. Contains color-coded legend pills (matching chip `roleBg`), live mode badge (reflects `singWhich` in A/B mode), Director vs. Machine toggle, pitch height toggle (hidden in A/B mode).
@@ -443,7 +479,7 @@ best-guess; `confirmed:false` entries surfaced by the "show source" toggle with
 3. ~~Marked-text paste mode.~~ **Done v0.2.0.**
 4. ~~Rhythm durations.~~ **Done v0.6.0** — tutorial-faithful quarter/half/whole note values.
 5. ~~A/B comparison harness.~~ **Done v0.5.0.**
-6. **Tone 2–8 propagation** — phrase rotation differs per tone. Tone 1 proven; engine ready to extend. Requires per-tone phrase structure data and a director-marked Tone 2 .docx fixture. **Next major work item.** Tone selector (1–8 pill buttons above textarea) needed alongside this work.
+6. ~~**Tone 2–8 propagation** — Tone 2 complete (v0.8.0).~~ **Tone 3 complete (v0.9.0).** Next: Tone 4. Tone 4 has 6 phrases (A, B, C, D, E, F) with a one-time intro phrase A and D/E/F repeating rotation — read tutorial carefully before coding. Tone selector (1–8 pill buttons) already in place; tones without `PH_DEFS` entry are automatically greyed.
 7. **Moving dot chip highlight** — designed (per-chip setTimeout + `playingChip` state + gold dot `position:absolute; top:-0.7em`), not yet built. Off by default, opt-in toggle. Deferred to audio engine session.
 8. **Dynamic BPM during playback** — requires lookahead scheduler (Web Audio API pattern). Currently BPM is locked during playback (greyed slider). Deferred to audio engine session.
 9. **SATB mode** — real four-part notes + OCA isolated-voice MP3s.
