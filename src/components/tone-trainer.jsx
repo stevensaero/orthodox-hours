@@ -1204,7 +1204,27 @@ function autoEncodeLines(truthLines, lexicon, activePH) {
       // even for words missing from the lexicon.
       const display = w.display.replace(/[\[\]]/g, "");
       const entry = lookupWord(display.replace(/[^A-Za-z''-]/g, ""), lexicon);
-      const stressIdx = entry ? (entry.stressIdx ?? 0) : 0;
+      // Map lexicon stress to the director's syllable array by text match, not
+      // numeric index. The director split may differ in length from the lexicon
+      // split (e.g. Resur[rec]tion → 3 sylls vs lexicon's ['Res','ur','rec','tion']).
+      // Applying stressIdx=2 blindly to a 3-syll array gives 'tion' not 'rec'.
+      // Instead: find which director syllable contains the lexicon's stressed text.
+      let stressIdx = 0;
+      if (entry) {
+        const lexStressedText = (entry.sylls[entry.stressIdx] || "").toLowerCase();
+        const match = w.sylls.findIndex(s => s.text.toLowerCase() === lexStressedText);
+        if (match >= 0) {
+          stressIdx = match;
+        } else {
+          // Fallback: find director syll with most character overlap with stressed lex syll
+          let best = 0, bestScore = -1;
+          w.sylls.forEach((s, i) => {
+            const score = [...lexStressedText].filter(c => s.text.toLowerCase().includes(c)).length;
+            if (score > bestScore) { bestScore = score; best = i; }
+          });
+          stressIdx = best;
+        }
+      }
       const mappedSylls = w.sylls.map((s, i) => ({
         text: s.text,
         accent: i === stressIdx,
