@@ -2309,33 +2309,44 @@ export default function ToneTrainer() {
                          borderRadius: 4, padding: "1px 7px" }}>{activeTone === 3 ? "cad. pt. 2" : "cadence"}</span>
           <span>· ´ = accent</span>
         </span>
-        {/* Pointing mode indicator — reflects singView (or singWhich in A/B mode) */}
-        {(() => {
-          const isDir = (compareMode && compareData) ? singWhich === "truth" : singView === "director";
+        {/* Pointing mode — two toggle buttons: Director / Machine.
+             In sing view: always show Director; show Machine only when machineLines available.
+             In compare harness: neither shown (the harness has its own Sing director/machine toggle). */}
+        {!(compareMode && compareData) && (() => {
+          const dirActive = singView === "director";
+          const machActive = singView === "machine";
+          const btnBase = {
+            fontSize: "0.72rem", flexShrink: 0, borderRadius: 3,
+            padding: "1px 8px", cursor: "pointer",
+            fontFamily: "Georgia, serif", whiteSpace: "nowrap",
+          };
           return (
-            <span style={{ fontSize: "0.72rem", flexShrink: 0,
-                           background: isDir ? "rgba(90,122,60,.12)" : "rgba(139,105,20,.08)",
-                           border: `1px solid ${isDir ? "rgba(90,122,60,.45)" : "rgba(139,105,20,.3)"}`,
-                           color: isDir ? "#3a6020" : "#5b4a33",
-                           borderRadius: 3, padding: "1px 8px", whiteSpace: "nowrap" }}>
-              {isDir ? "Director Pointing ✓" : "Machine Pointing ✓"}
+            <span style={{ display: "inline-flex", gap: "0.3rem", flexShrink: 0 }}>
+              <button
+                onClick={() => setSingView("director")}
+                title="Show director-pointed verses"
+                style={{ ...btnBase,
+                  background: dirActive ? "rgba(90,122,60,.12)" : "transparent",
+                  border: `1px solid ${dirActive ? "rgba(90,122,60,.45)" : "#d6c79f"}`,
+                  color: dirActive ? "#3a6020" : "#9A8A70",
+                }}>
+                Director{dirActive ? " ✓" : ""}
+              </button>
+              {machineLines && (
+                <button
+                  onClick={() => setSingView("machine")}
+                  title="Show machine auto-pointed verses"
+                  style={{ ...btnBase,
+                    background: machActive ? "rgba(139,105,20,.15)" : "transparent",
+                    border: `1px solid ${machActive ? "rgba(139,105,20,.5)" : "#d6c79f"}`,
+                    color: machActive ? "#5b4a33" : "#9A8A70",
+                  }}>
+                  Machine{machActive ? " ✓" : ""}
+                </button>
+              )}
             </span>
           );
         })()}
-        {/* Machine Pointing toggle — shown in sing view when machine lines are available */}
-        {machineLines && !(compareMode && compareData) && (
-          <button
-            onClick={() => setSingView(v => v === "director" ? "machine" : "director")}
-            style={{ marginLeft: "0.5rem", fontSize: "0.72rem", flexShrink: 0,
-                     background: singView === "machine" ? "rgba(139,105,20,.15)" : "transparent",
-                     border: `1px solid ${singView === "machine" ? "rgba(139,105,20,.5)" : "#d6c79f"}`,
-                     color: singView === "machine" ? "#5b4a33" : "#9A8A70",
-                     borderRadius: 3, padding: "1px 8px", cursor: "pointer",
-                     fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}
-            title="Switch between director pointing and machine auto-pointing in the sing view">
-            {singView === "machine" ? "machine pointing ✓" : "machine pointing"}
-          </button>
-        )}
         {/* Show / Hide Director vs. Machine */}
         {compareData && (
           <button
