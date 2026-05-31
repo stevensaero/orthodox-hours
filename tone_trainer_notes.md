@@ -733,3 +733,217 @@ post-patch with guard enabled. All four diffs:
 
 Hard gate satisfied. Scope guard `activeTone === 3 && phrase === "Final"`
 confirmed to produce zero output changes on all Tone 1 and Tone 2 lines.
+
+---
+
+## Research session — Tone 2 Phrase A cadence (May 31 2026)
+
+### Finding: Phrase A cadence duration model is incomplete
+
+The current implementation uses `distribute(["fa","mi","re"], count)` for pitch
+assignment and the generic `lineToNotes()` cad duration logic (first=H, middle=Q,
+last=H). This is wrong for count=1/2/3 cases. The correct model, reverse-engineered
+from the tutorial scores, is:
+
+| Count | Anchor syllable | Trailing syllables | Total duration |
+|---|---|---|---|
+| 1 | `fa(H)·mi(H)·re(H·)` melisma | — | H+H+H· |
+| 2 | `fa(H)·mi(H)` melisma | `re(H·)` | H+H + H· |
+| 3 | `fa(H)` · `mi(H)` · `re(H·)` | — | H + H + H· |
+| 4+ | `fa(H)` · `mi(Q)`×n fills · `re(H)` | — | H + Q×n + H |
+
+### Key observations
+
+1. `re` is always a **dotted half note** in the 1/2/3 syllable cases — currently
+   coded as plain `H` (wrong).
+2. `fa` and `mi` are always **half notes** on the anchor until count reaches 4+,
+   at which point `mi` becomes the fill pitch at quarter note value.
+3. The **anchor syllable duration is not fixed** — it stretches to hold however
+   many half notes are assigned to it (count=1 gets three half notes, count=2 gets two).
+4. Count=3 is **not a special case** — it's the natural result of the same rule
+   with exactly enough syllables to separate all three pitches.
+5. There is **no explicit fa·mi binding rule in the tutorial prose** — this
+   behavior surfaces only in the scores and must be reverse-engineered from them.
+
+### Consequence for the code
+
+`distribute()` as currently written cannot model this — it has no concept of:
+- Stretching the anchor syllable to hold multiple half notes (melisma)
+- Dotted rhythms
+- Pitch-specific durations within a figure
+
+Phrase A needs its own duration logic, separate from the generic cadence handler
+in `lineToNotes()`. This is a known gap — fix deferred until all Tone 2 phrase
+cadence rules are confirmed from scores.
+
+### Source
+Tutorial scores: Drillock & Ealy, *Tutorial for Learning the Church Tones —
+Common Chant* (OCA). Score evidence:
+- Count=3: Annunciation Post-Gospel Sticheron at Matins ("Today Gabriel announces
+  the good tidings to her who is full of grace:")
+- Count=2: Tone 2 Lord I Call score ("Lord, I call u-pon thee [hear] me!")
+  — `hear` carries `fa(H)·mi(H)` melisma; `me` carries `re(H·)`
+
+---
+
+## Research session — Tone 2 Phrase B cadence (May 31 2026)
+
+### Phrase B cadence duration model
+
+Cadence figure: `[di, re]`. Tutorial explicitly states "two or more syllables."
+
+| Count | Shape | Notes |
+|---|---|---|
+| 2 | `di(H) · re(H)` | minimum case, one note per syllable |
+| 3 | `di(H) · di(H) · re(H)` | di fills at half note value |
+| 4+ | `di(H) · di(Q)×n · re(H)` | di fills at quarter note value |
+
+Example from tutorial: "pu-ri-ty" (count=3) → `pur(di/H) · ri(di/H) · ty(re/H)`
+Example (4+): 5 syllables → `di(H) · di(Q) · di(Q) · di(Q) · re(H)`
+
+### Critical edge case: final-word two-syllable cadence
+
+From Annunciation Post-Gospel Sticheron at Matins:
+"Re-joice, un-wed-ded Maid-en!"
+- Reciting tone: "Re-joice, un-wed-ded"
+- Cadence: "Maid-en!" (single two-syllable word, phrase-final)
+- Rendered: `Maid(di/H) · en!(re/W)` — **whole note on re**
+
+The final syllable of a phrase-ending word gets a **whole note**, not a half note.
+This is distinct from the count=2 case above where `re` is a half note — the
+difference appears to be whether the cadence word is **phrase-final** (last word
+of the sticheron line ends on a strong close).
+
+### Architectural conclusion
+
+Each phrase has its own logic scope. There is no universal cadence duration rule
+that can be applied across tones or even across phrase pairings within a tone.
+The generic `lineToNotes()` cad duration handler (first=H, middle=Q, last=H) is
+a rough approximation that fails in specific and predictable ways for each phrase.
+
+The correct architecture is **per-phrase cadence duration functions** — each
+phrase's cadence logic is self-contained and encodes its own count-dependent
+duration rules, informed directly by the tutorial scores.
+
+### Known gaps still to investigate
+- Phrase C cadence duration rules
+- Phrase D cadence duration rules  
+- Final Phrase cadence duration rules
+- Whether the whole-note final rule for phrase-ending words applies to other
+  phrases or is specific to Phrase B
+
+---
+
+## Research session — Tone 2 Phrase C cadence (May 31 2026)
+
+### Phrase C structure (four segments — score shows four, tutorial prose names three)
+
+The tutorial prose names intonation, reciting tone, and cadence — but the score
+bracket explicitly labels **prep** as its own fourth segment. The code's four-segment
+model (`inton:true, prep:"ti", cad:["do"]`) is more faithful to the score than
+the prose.
+
+| Segment | Pitch | Duration rule |
+|---|---|---|
+| intonation (unaccented lead-ins) | `re` | Q each |
+| intonation (first accented syllable) | `re` | H |
+| reciting tone | `re` | Q each |
+| prep | `ti` | Q |
+| cadence | `do` | see table below |
+
+### Phrase C cadence duration model
+
+Single pitch throughout — entire cadence stays on `do`.
+
+| Count | Context | Shape |
+|---|---|---|
+| 2 | single word fills cadence | `do(H) · do(H)` |
+| 3 | single word fills cadence | `do(H) · do(Q) · do(H)` |
+| 3 | final word in multi-word cadence | `do(H) · do(Q) · do(W)` |
+| 4+ | single word fills cadence | `do(H) · do(Q)×n · do(H)` |
+| 4+ | final word in multi-word cadence | `do(H) · do(Q)×n · do(W)` |
+
+**Whole note rule (Phrase C):** the whole note on the final syllable is triggered
+when the final word of the cadence is **not** the only word in the cadence —
+i.e. cadence syllables from a preceding word are present. This is a word-boundary
+rule, not a syllable-count rule.
+
+Score evidence:
+- "An-na" (single word, full cadence) → `do(H) · do(H)` — no whole note
+- "mys-ter-y" (single word, full cadence) → `do(H) · do(Q) · do(H)` — no whole note
+- "be a-fraid" (multi-word cadence, "be" + "a-fraid") → `do(Q) · do(W)` — whole note on "fraid"
+- "hands of her Son" (multi-word) → `do(H) · do(Q) · do(Q) · do(H)` — confirms fill rule
+
+Source: Drillock & Ealy tutorial scores including Annunciation Post-Gospel
+Sticheron at Matins ("Be not amazed at my strange appearance, nor be a-fraid.")
+
+### Current code status for Phrase C
+The generic `lineToNotes()` cad handler (first=H, middle=Q, last=H) **accidentally
+matches** the single-word cadence cases correctly. The multi-word whole note case
+is not implemented — `isFinal` in the current code is scoped to Final Phrase only
+and does not capture the Phrase C word-boundary trigger.
+
+---
+
+## Consolidated summary — Tone 2 Phrases A, B, C cadence rules (May 31 2026)
+
+### Phrase A — `cad: ["fa", "mi", "re"]`
+
+| Count | Anchor syllable | Trailing syllables | re duration |
+|---|---|---|---|
+| 1 | `fa(H)·mi(H)·re(H·)` melisma | — | H· |
+| 2 | `fa(H)·mi(H)` melisma | `re(H·)` | H· |
+| 3 | `fa(H)` · `mi(H)` · `re(H·)` | — | H· |
+| 4+ | `fa(H)` · `mi(Q)×n fills` · `re(H)` | — | H |
+
+Key: `re` is dotted half in count 1/2/3; plain half in count 4+.
+`fa·mi` binding to anchor is score-derived, not stated in tutorial prose.
+No whole note rule identified yet for Phrase A.
+
+### Phrase B — `cad: ["di", "re"]`
+
+| Count | Shape |
+|---|---|
+| 2 | `di(H) · re(H)` — unless single word fills cadence |
+| 2 (single word) | `di(H) · re(W)` — whole note on final syllable |
+| 3 | `di(H) · di(H) · re(H)` |
+| 4+ | `di(H) · di(Q)×n · re(H)` |
+
+Key: whole note rule fires when a **single word fills the entire cadence**.
+This is the opposite trigger from Phrase C.
+Score evidence: "Maid-en!" → `di(H) · re(W)`
+Tutorial explicit: "two or more syllables" minimum for Phrase B.
+
+### Phrase C — `cad: ["do"]`, `prep: "ti"`, `inton: true`
+
+| Count | Context | Shape |
+|---|---|---|
+| 2 | single word | `do(H) · do(H)` |
+| 3 | single word | `do(H) · do(Q) · do(H)` |
+| 3+ | multi-word | `do(H) · do(Q)×n · do(W)` |
+
+Key: whole note rule fires when cadence spans **multiple words**.
+Opposite trigger from Phrase B.
+
+### Architectural note
+Phrase B and Phrase C have **opposite whole note triggers**:
+- Phrase B: whole note when single word fills cadence
+- Phrase C: whole note when cadence spans multiple words
+
+This confirms that whole note logic is **phrase-specific** and cannot be
+generalized. Each tone/phrase pairing owns its own closing logic, documented
+from its own score evidence. Common patterns should only be refactored upward
+after confirmed evidence across multiple phrases.
+
+### What the current code gets wrong
+1. `re` in Phrase A cadence — coded H, should be H· for count 1/2/3
+2. `mi` in Phrase A count=2/3 — coded Q, should be H
+3. Phrase A anchor melisma for count=1/2 — not implemented
+4. Phrase B whole note for single-word cadence — not implemented
+5. Phrase C whole note for multi-word cadence — not implemented
+6. `isFinal` (whole note trigger) scoped to Final Phrase only — too narrow
+
+### Implementation requirement
+Per-phrase cadence duration functions with meaningful variable names that
+match the method (noted for implementation). Generic `lineToNotes()` cad
+handler is insufficient for correct duration modeling across phrases.
