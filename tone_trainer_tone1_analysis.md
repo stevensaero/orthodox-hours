@@ -89,13 +89,33 @@ tutorial text and encoded in the `PHRASES` object in `tone-trainer.jsx`.
 **The `PHRASES` object** (authoritative in the component) encodes:
 ```javascript
 {
-  A:     { recite: "re", prep: "ti",  cad: ["do","ti"] },
+  A:     { recite: "re", prep: "ti",  cad: ["do"] },
   B:     { recite: "do", prep: null,  cad: ["do","re","ti"] },
   C:     { recite: "re", prep: null,  cad: ["do","ti"] },
   D:     { recite: "do", prep: null,  cad: ["ti","do","re","do","ti"] },
   Final: { recite: "re", prep: null,  cad: ["do","ti","la"] },
 }
 ```
+
+**Critical distinction: `prep` and `cad` are structurally separate and fire
+through different timing paths in `lineToNotes`.** They must never be conflated:
+
+- `prep` is a single pitch note that fires **before the anchor** — one quarter
+  note on the prep pitch, immediately preceding the cadence. It belongs to no
+  cadence syllable; it is a melodic approach note.
+- `cad` is the array of pitches **distributed across the cadence syllables**
+  starting from the anchor. The `distribute()` function assigns these pitches to
+  syllables one-to-one.
+
+Phrase A has `prep: "ti"` and `cad: ["do"]` — the ti is a quarter-note approach,
+then the single cadence syllable (the anchor) gets do. An earlier version of this
+document incorrectly showed `cad: ["do","ti"]` for Phrase A — that was a
+documentation error, not a code error. The code was correct. If `ti` were placed
+inside `cad`, `distribute()` would try to assign it to a cadence syllable and
+produce wrong pitch distribution.
+
+**For future tones: encode prep notes in `prep`, never in `cad`.**
+
 For future tones: this object is the single point of truth for phrase definitions.
 Each tone needs its own equivalent object with its own reciting tones and cadence
 figures.
@@ -563,6 +583,13 @@ Tone2: {
   Final: { recite: "???", prep: null,  cad: ["???", "???", "???"] },
 }
 ```
+
+**⚠ prep and cad must never overlap.** `prep` is a single approach-note pitch
+that fires before the anchor via its own timing path (quarter note). `cad` is
+the array of pitches distributed across cadence syllables by `distribute()`.
+If a prep pitch appears inside `cad`, the engine will try to assign it to a
+cadence syllable, producing wrong note-to-syllable distribution. See §2 for the
+full structural explanation.
 
 Add the rotation sequence — Tone 2 is NOT the same as Tone 1. Known rotations:
 - Tone 1: A · B · C · D (repeating), Final last
