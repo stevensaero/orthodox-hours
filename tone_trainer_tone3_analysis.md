@@ -489,3 +489,121 @@ tutorial's short examples. Confirmed safe.
 ---
 
 *End of Tone 3 research notes.*
+
+---
+
+## 13. Post-build review — cad1 implementation session (v0.9.1, May 2026)
+
+*Added after the cad1 session. Records what was built, what went wrong, what was
+confirmed from primary sources, and what the next session needs to know.*
+
+---
+
+### 13.1 What was built (v0.9.1)
+
+**§11.1 closed.** The `cad1` role was implemented in `pointLine()` exactly as
+proposed. Scope guard: `activeTone === 3 && phrase === 'Final' && acc.length >= 2`.
+anchor1 = `acc[acc.length - 2]`, anchor2 = `anchorIndex()` as before.
+Body → recite, anchor1..anchor2 → `cad1`, anchor2.. → `cad`.
+
+**Melisma duration fix (v0.9.1 hotfix).** `lineToNotes()` cad1 block now emits
+`mi(H) · do(Q) · re(Q)` directly via `CAD1_DURS = [H, Q, Q]`, bypassing
+`syllDur / pitches.length`. This is correct and permanent — the Part 1 figure
+is a fixed musical definition, not a configurable variable. `distribute()` is
+intentionally not used for `cad1` pitch assignment (it would melismatize a
+single-syllable span incorrectly).
+
+**Regression gate fully satisfied.** 129 Tone 1 lines and 66 Tone 2 lines
+across four fixtures — all pre/post diffs empty. Scope guard confirmed airtight.
+
+**Snapshot tooling.** `tools/snapshot_comparison.mjs` and `npm run snapshot`
+added for future engine validation without a browser.
+
+---
+
+### 13.2 Confirmed from primary sources this session
+
+**Tutorial text (Drillock & Ealy, read directly this session):**
+
+> "The Final Phrase consists of a reciting tone on fa, and a **two-part cadence**,
+> which can be used with two or more internal accented syllables. The cadence
+> begins with a **half note on mi**, followed by a **quarter note on do** and a
+> **quarter note on re**; then the **second part of the cadence** begins with a
+> **quarter note on mi** and **quarter note on fa**, descending to a **half note
+> on re**, and concluding with a **whole note on do** for the final syllable."
+
+Tutorial terminology: **"two-part cadence"** and **"second part of the cadence."**
+The tutorial does not give shorthand names to Part 1 and Part 2. `cad1`/`cad`
+are implementation labels only.
+
+**Part 1 figure is fixed:** `mi · do · re` always. Not configurable. `CAD1_DURS`
+is a musical constant, same category as `W = H * 2`.
+
+**Score (Tone 3 LIC, alto line):** The melisma on "Hear" in the long Final Phrase
+shows **four noteheads** — three belonging to "Hear" (Part 1) and one to "me"
+(Part 2 anchor). Score appears to show `Q · H · Q` (half on `do`), which would
+contradict the tutorial's `H · Q · Q` (half on `mi`). **Deferred** — current
+implementation follows the tutorial text. A choir director should arbitrate.
+
+**Syllable-to-note mapping confirmed:**
+```
+Hear              me      O       Lord
+mi(H)·do(Q)·re(Q)  mi(Q)   fa(Q)   re(H)   do(W)
+← cad1 melisma →  ←——— cad (Part 2) distributed ———→
+```
+Every syllable gets one note except "Hear" which gets three as a melisma.
+`me` gets one note (mi·Q). `Lord` gets one note (do·W).
+
+---
+
+### 13.3 Wrong turns this session — read before touching cad1 again
+
+**1. "Remove cad1" was wrong.** After misreading the score, a claim was made
+that the two-anchor model should be removed entirely. This was retracted. The
+score confirmed two anchors; the tutorial confirmed the two-part cadence. Do not
+remove `cad1` based on score reading alone — always cross-check the tutorial.
+
+**2. The melisma fix was reverted correctly.** The first melisma fix replaced
+`distribute()` with `CAD1_FIGURE[i]` (one pitch per syllable, no melisma). This
+was wrong — the score shows "Hear" carries all three Part 1 notes as a melisma
+on one syllable. The revert was correct. The final fix (direct `CAD1_DURS`
+emission) is correct because it preserves the melisma while giving each pitch
+its own duration.
+
+**3. Score vs. SATB voice confusion.** At one point a Kievan Chant Tone 2 score
+was consulted — wrong tradition entirely. Always confirm: (a) correct tradition
+(Obikhod/Common Chant), (b) correct voice (alto = melody), (c) correct tone.
+
+**4. `distribute()` count≤1 behavior.** When a single syllable falls in the
+`cad1` span, `distribute(["mi","do","re"], 1)` returns `[["mi","do","re"]]` —
+the whole figure as a melisma. This is the correct behavior for `cad1` (one
+syllable should carry all three Part 1 notes). The `syllDur / pitches.length`
+path then compresses them equally — that was the problem, not `distribute()`.
+The fix is `CAD1_DURS` emission, not bypassing `distribute()`.
+
+---
+
+### 13.4 Open question carried forward
+
+**Score vs. tutorial duration order for Part 1:**
+Tutorial says `mi(H) · do(Q) · re(Q)`. Score appears to show `mi(Q) · do(H) · re(Q)`.
+Current implementation follows tutorial. If a choir director confirms the score
+reading, the fix is one character: `CAD1_DURS = [H, Q, Q]` → `[Q, H, Q]`.
+This is documented in `tone_trainer_notes.md` as a deferred item.
+
+---
+
+### 13.5 For the next session working on Final Phrase or cad1
+
+1. **Read §13.3 first.** The wrong turns are documented so you don't repeat them.
+2. **Read the tutorial text in §13.2.** It is quoted verbatim — no need to fetch
+   from Drive again for the Part 1/Part 2 cadence description.
+3. **The score question (H·Q·Q vs Q·H·Q)** is the one genuine open item. Get a
+   choir director to sing "Hear me O Lord" in Tone 3 and listen for which note
+   is held — the `mi` or the `do`.
+4. **`cad1` is correct and complete for Tone 3.** Do not redesign it without
+   evidence from a new tone that requires different behavior.
+5. **Tone 8 also has a two-part Final** (noted in §10, Lesson 3). When building
+   Tone 8, check whether its Part 1 figure matches Tone 3's `mi·do·re` or differs.
+   If it differs, `CAD1_DURS` will need to become tone-keyed.
+
