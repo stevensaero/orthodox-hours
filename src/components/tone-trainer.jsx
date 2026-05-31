@@ -1832,11 +1832,27 @@ export default function ToneTrainer() {
   const applyMachineEdit = (li, val) => {
     if (!machineLines) return;
     const phrase = machineLines[li].phrase;
+    // Parse syllable text and accent from the edit field.
+    // Format: "syl·lá·ble word´ next" where ´ (U+00B4) marks the accented syllable.
+    // If no ´ is present in a word, fall back to autoAccentLine for that word only.
     const rawWords = val.trim().split(/\s+/).map((tok) => {
       const sylls = tok.split(/[·\-]/).filter(Boolean);
-      return { display: sylls.join(""), sylls: sylls.map((t) => ({ text: t, accent: false, source: "rule" })) };
+      const hasAccentMark = sylls.some(t => t.includes("\u00b4"));
+      return {
+        display: sylls.map(t => t.replace(/\u00b4/g, "")).join(""),
+        sylls: sylls.map((t) => ({
+          text: t.replace(/\u00b4/g, ""),
+          accent: hasAccentMark ? t.includes("\u00b4") : false,
+          source: "rule",
+        })),
+      };
     });
-    const words = autoAccentLine(rawWords, phrase);
+    // Only run autoAccentLine for words where the user supplied no accent mark.
+    // For words with an explicit ´, honour the user's placement as-is.
+    const hasAnyAccent = rawWords.some(w => w.sylls.some(s => s.accent));
+    const words = hasAnyAccent
+      ? rawWords  // user placed accents explicitly — trust them
+      : autoAccentLine(rawWords, phrase);  // no marks at all — auto-accent
     const newML = machineLines.map((line, lineIdx) =>
       lineIdx === li ? { ...line, words } : line
     );
@@ -2560,7 +2576,7 @@ export default function ToneTrainer() {
                   // Machine edit vars — hoisted so they're available in JSX without an IIFE
                   const mLine = which === "machine" ? (machineLines || [])[li] : null;
                   const mDefaultVal = mLine
-                    ? mLine.words.map(w => w.sylls.map(s => s.text).join("\u00b7")).join(" ")
+                    ? mLine.words.map(w => w.sylls.map(s => s.text + (s.accent ? "\u00b4" : "")).join("\u00b7")).join(" ")
                     : "";
                   const mInputId = `medit-${li}`;
                   return (
@@ -2634,7 +2650,7 @@ export default function ToneTrainer() {
                             apply
                           </button>
                           <span style={{ fontSize: "0.7rem", color: "#6b5942", fontStyle: "italic" }}>
-                            · separates syllables, space separates words
+                            · separates syllables, ´ marks accent, space separates words
                           </span>
                         </div>
                       </div>
