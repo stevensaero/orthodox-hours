@@ -547,7 +547,21 @@ best-guess; `confirmed:false` entries surfaced by the "show source" toggle with
 11. **aloud, himself anchor misses** — accepted as AUTO mode limitations; Director Pointing resolves them. No rule change planned.
 
 
-### Regression gate addendum (post-session)
+### Melisma duration fix (post-session, same deploy)
+
+`cad1` note emission in `lineToNotes()` now bypasses `syllDur / pitches.length`
+and emits `mi(H) · do(Q) · re(Q)` directly with per-pitch durations. Tutorial
+text (Drillock & Ealy) is explicit: half note on mi, quarter on do, quarter on re.
+
+**Open question — score vs. tutorial duration order:**
+The Tone 3 LIC score (alto line, Final Phrase melisma on "Hear") appears to show
+`Q · H · Q` — half note on `do`, not `mi`. This contradicts the tutorial's `H · Q · Q`.
+Deferred for future investigation with a choir director or more careful score reading.
+Current implementation follows the tutorial text (H·Q·Q). If the score reading
+is confirmed correct, the fix is a one-line swap in `CAD1_DURS = [H, Q, Q]` →
+`CAD1_DURS = [Q, H, Q]`.
+
+
 
 Tone 1 and Tone 2 regression diffs completed after session close using
 `2026-0202-texts-tt.docx` (Meeting of the Lord — Tone 1×7 blocks/54 lines,

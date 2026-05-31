@@ -1401,7 +1401,7 @@ export default function ToneTrainer() {
       //   recite / prep → Q (quarter note always)
       //   preslur → Q (two Q notes split across the two pitches via melisma logic)
       //   cad anchor (first) → H (or DH when anchorDH:true); cad middle → Q; cad last → H or W (Final only)
-      //   cad1 anchor (first) → H; cad1 fills → Q  (Part 1 cadence: mi·H do·Q re·Q)
+      //   cad1 → H·Q·Q (mi·do·re) emitted directly with per-pitch durations — see cad1 block below
       let syllDur;
       if (r.role === "inton") {
         syllDur = r.accent ? H : Q;
@@ -1413,9 +1413,18 @@ export default function ToneTrainer() {
         syllDur = H;
       } else if (r.role === "cad1") {
         // Part 1 cadence (Tone 3 Final Phrase only): mi(H) · do(Q) · re(Q).
-        // Anchor (first cad1 syllable) = half note; all subsequent cad1 syllables = quarter.
-        const cad1Idxs = roles.map((rr, ii) => rr.role === "cad1" ? ii : -1).filter(ii => ii >= 0);
-        syllDur = cad1Idxs.indexOf(ri) === 0 ? H : Q;
+        // Tutorial-explicit note values (Drillock & Ealy): half note on mi,
+        // quarter on do, quarter on re. Emitted directly — bypasses syllDur/pitches.length
+        // because the three pitches have unequal durations that cannot be derived
+        // from a single syllable slot.
+        // NOTE: score reading suggests Q·H·Q (half on do, not mi) — deferred for
+        // further investigation. Tutorial text is H·Q·Q; implemented as such.
+        const CAD1_DURS = [H, Q, Q];
+        const peak1 = r.anchor ? 0.27 : 0.2;
+        r.pitches.forEach((p, pi) => {
+          notes.push({ sol: p, dur: CAD1_DURS[pi] ?? Q, peak: peak1 });
+        });
+        return; // note emission handled above — skip the standard pitchDur path
       } else if (r.role === "cad") {
         const cadPos = cadIdxs.indexOf(ri);
         const isFirst = cadPos === 0;
