@@ -614,3 +614,103 @@ edge cases is a refinement, not a structural error.
 ---
 
 *§13 added May 2026 following cross-examination against `tone_trainer_tone1_analysis.md`.*
+
+---
+
+## 14. Rotation bug fix — May 2026 (v0.9.2)
+
+### 14.1 The bug
+
+The original Tone 2 implementation used the same `ROT = ["A","B","C","D"]` cyclic
+rotation as Tone 1. This produces **A·B·C·D·A·B·C·D·…** for any sticheron length.
+
+The Drillock & Ealy tutorial (p.1) states explicitly:
+
+> "The first phrase (A) is only used for the first textual line of the sticheron.
+> Phrases B, C, and D are then sung in rotation."
+> 9-line example: A, B, C, D, B, C, D, B, and Final Phrase.
+
+The correct rotation is: **A once on line 0, then B·C·D cycling from line 1 onward.**
+
+The bug only manifests on stichera longer than 5 lines. For 4- and 5-line
+stichera (A B C Final and A B C D Final), the two rotations produce identical
+output and the bug is invisible.
+
+### 14.2 The fix (v0.9.2)
+
+`ROT_DEFS[2]` changed from a flat array to a function:
+
+```javascript
+2: (i, total) => i === total - 1 ? "Final" : i === 0 ? "A" : ["B","C","D"][(i - 1) % 3],
+```
+
+`phraseForLine()` and `blockLinePhrase()` updated to accept either an array
+or a function. Tones 1 and 3 continue using arrays — **zero regression**, proved
+by exhaustive comparison across all sticheron lengths 2–14.
+
+Verified outputs:
+
+| Lines | Sequence |
+|-------|----------|
+| 4 | A B C Final |
+| 5 | A B C D Final |
+| 6 | A B C D B Final |
+| 7 | A B C D B C Final |
+| 9 | A B C D B C D B Final ← matches tutorial exactly |
+
+### 14.3 Corpus anomalies resolved
+
+The original §5.2 mark-count analysis documented several "anomalies" — two-mark
+lines on phrases where `inton:false`, which should never produce two marks. These
+were flagged as unexplained director behavior.
+
+**After the rotation fix, all anomalies are explained.**
+
+Quantified from the 78-instance corpus:
+
+| | Old rotation | New rotation |
+|--|-------------|-------------|
+| Two-mark lines on Phrase C (expected) | 12 | 15 |
+| Two-mark lines on non-C phrases (anomalous) | 4 | 0* |
+
+*The one remaining case (LIC Final Phrase "Hear me O Lord!" with `[Hear,me]`)
+is the documented pre-slur rule — not an anomaly.
+
+**The three resolved anomalies:**
+
+| Sticheron | Line | Old label | New label | Why two marks |
+|-----------|------|-----------|-----------|----------------|
+| LIC framing | index 5: "Hear me, O Lord!" | B | C | inton + anchor ✓ |
+| LIC framing | index 8: "and let the lifting up of my hands" | A | C | inton + anchor ✓ |
+| Anatolius | index 5: "We worship Thee, O only immortal One" | B | C | inton + anchor ✓ |
+
+These were the "Phrase B two-mark anomaly" and "Phrase A long-line two-mark
+de-facto intonation" cases documented in §5.3. They were never anomalies —
+they were Phrase C lines (`inton:true`) that had been mislabeled under the wrong
+rotation. The OCA director was marking them correctly all along.
+
+### 14.4 Pointing accuracy impact
+
+The rotation bug had a secondary effect beyond wrong labels. Lines mislabeled as
+Phrase A (`inton:false`) were not getting an intonation half-note from the
+auto-accent engine. Under the correct rotation those lines are Phrase C
+(`inton:true`) and now correctly receive the intonation mark. This is a direct
+pointing accuracy improvement — confirmed by the increase in the Director vs.
+Machine match score observed in live testing after the fix.
+
+### 14.5 Lesson for future tones
+
+**Always verify the rotation rule from the tutorial text, not by analogy to a
+prior tone.** Tone 1 uses a simple 4-phrase cycle. Tone 2 uses A-once-then-BCD.
+Tone 3 uses A·B alternation. Each tone's tutorial introduction states the rule
+explicitly — read it before writing any rotation code.
+
+The `ROT_DEFS` architecture (introduced in v0.9.0 for Tone 3) supports both flat
+arrays and functions per tone. Future tones with non-uniform rotations should use
+a function. Future tones with simple cycles can use a flat array.
+
+---
+
+*§14 added May 2026 following rotation bug fix (v0.9.2). Corpus verification run*
+*confirms zero regressions on Tone 1 and 3, and resolves all documented Tone 2*
+*corpus anomalies.*
