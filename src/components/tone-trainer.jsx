@@ -2262,7 +2262,7 @@ export default function ToneTrainer() {
                           transition: "color 0.2s" }}
             title={playingLine !== null ? "Stop playback to change tempo" : "Half note = 1 beat (Drillock & Ealy). Range: 40–120 BPM."}>
             tempo
-            <input type="range" min={40} max={120} step={1} value={bpm}
+            <input type="range" min={40} max={120} step={10} value={bpm}
               disabled={playingLine !== null}
               onChange={(e) => setBpm(parseInt(e.target.value, 10))}
               style={{ width: 64, cursor: playingLine !== null ? "not-allowed" : "pointer",
