@@ -10,11 +10,25 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.8.0";
+export const TONE_TRAINER_VERSION = "v0.9.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.9.0",
+    date: "May 2026",
+    summary: "Tone 3 — Common Chant Obikhod, two-phrase rotation",
+    items: [
+      "feat: Tone 3 (Common Chant) fully implemented — two rotating phrases (A and B) plus Final, with correct Drillock & Ealy pitch figures and cadence distributions. Verified against tutorial PDF, OCA unison MP3 (librosa.pyin), and 164-instance corpus from two OCA service .docx fixtures.",
+      "feat: PH_DEFS[3] — Phrase A: recite=fa, cad=[fa,do,mi] (3-note figure; do fills extra syllables per tutorial). Phrase B: recite=fa, cad=[mi,re,do] with dotted-half anchor. Final: recite=fa, two-part cadence [mi,do,re,mi,fa,re,do] using two internal accents.",
+      "feat: ROT_DEFS — new module-level constant keying rotation arrays by tone number. Tones 1 and 2 keep [A,B,C,D]; Tone 3 uses [A,B]. phraseForLine() now accepts active rotation as parameter.",
+      "feat: DH = H * 1.5 (dotted half note) added to lineToNotes(). Applied to Phrase B cadence anchor via anchorDH:true flag on PH_DEFS[3].B. Tutorial-confirmed; audio analysis shows ~1.3s at H_ref≈0.76s.",
+      "feat: Final Phrase two-anchor support in autoAccentLine — when activeTone===3 and phrase==='Final', marks both the last internal accent (second anchor) and the second-to-last (first anchor), matching the 31/31 two-mark corpus pattern.",
+      "feat: Tone 3 preset sticheron — 'By Thy Cross, O Christ our Savior' (Resurrectional 1, 5 lines: A B A B Final). Hand-verified against OCA corpus accents.",
+      "note: First Final anchor (Part 1 cadence mi-do-re) not yet rendered as cad role — falls in body as reciting fa(Q). Known gap; full two-part cadence rendering requires new cad1 role type. Deferred to future session. Second anchor and trailing cadence render correctly.",
+    ],
+  },
   {
     version: "v0.8.0",
     date: "May 2026",
@@ -254,9 +268,47 @@ const PH_DEFS = {
     D:     { recite: "do", inton: false, prep: null,  cad: ["di", "re"]            },
     Final: { recite: "re", inton: false, prep: "ti",  cad: ["do", "re", "do", "ti"] },
   },
+  3: {
+    // Tone 3 Common Chant — two rotating phrases (A and B) only, no C or D.
+    // All three phrases share reciting tone fa. Phrase identity is determined
+    // solely by cadence, not reciting pitch.
+    // Source: Drillock & Ealy tutorial + 164-instance OCA corpus (2 services).
+    A: {
+      recite: "fa", inton: false, prep: null,
+      // 3-note figure: anchor=fa(H), middle fills=do(Q each), final=mi(H).
+      // Tutorial explicit: "unaccented syllables between accented and final are sung on do."
+      // Must be ['fa','do','mi'] not ['fa','mi'] — distribute() repeats penultimate (do),
+      // giving correct do fill for extra syllables; ['fa','mi'] would repeat fa (wrong).
+      cad: ["fa", "do", "mi"],
+    },
+    B: {
+      recite: "fa", inton: false, prep: null,
+      // anchorDH:true — cadence anchor is a DOTTED HALF NOTE (1.5×H), new for Tone 3.
+      // Audio-confirmed: anchor ~1.3s at H_ref≈0.76s, dH_ref≈1.14s.
+      // Long-cadence rule (>3 cad syllables): dH→H, extras ride on mi (distribute handles).
+      cad: ["mi", "re", "do"], anchorDH: true,
+    },
+    Final: {
+      recite: "fa", inton: false, prep: null,
+      // Two-part cadence. Tutorial: mi(H) do(Q) re(Q) | mi(Q) fa(Q) re(H) do(W).
+      // Director always marks two internal accents (31/31 corpus instances).
+      // anchor (anchorIndex) = last internal accent = second mi (position 3 in figure).
+      // First mi (position 0) currently falls in body as reciting fa(Q) — known gap v0.9.0.
+      cad: ["mi", "do", "re", "mi", "fa", "re", "do"],
+    },
+  },
 };
-const ROT = ["A", "B", "C", "D"];
-const phraseForLine = (i, total) => (i === total - 1 ? "Final" : ROT[i % 4]);
+// Per-tone phrase rotation. Tones 1 and 2 use the standard 4-phrase rotation;
+// Tone 3 uses only A and B (no C or D). Add entries here as tones are added.
+const ROT_DEFS = {
+  1: ["A", "B", "C", "D"],
+  2: ["A", "B", "C", "D"],
+  3: ["A", "B"],
+};
+// phraseForLine: accepts active rotation array as third argument so each tone
+// can have its own cycle length. Last line is always Final.
+const phraseForLine = (i, total, rot) =>
+  i === total - 1 ? "Final" : rot[i % rot.length];
 const PNAME = { A: "Phrase A", B: "Phrase B", C: "Phrase C", D: "Phrase D", Final: "Final Phrase" };
 
 // ── PITCH HEIGHT (sung display) ───────────────────────────────────────────────
@@ -450,7 +502,28 @@ const PRESET_T2 = [
   ["Final", [["And",[["And",0]]],["having",[["hav",0],["ing",0]]],["risen",[["ris",0],["en",0]]],["from",[["from",0]]],["the",[["the",0]]],["dead,",[["dead",0]]],["He",[["He",0]]],["saved",[["saved",0]]],["me,",[["me",0]]],["an",[["an",0]]],["erring",[["er",1],["ring",0]]],["man.",[["man",0]]]]],
 ];
 
-const PRESETS = { 1: PRESET_T1, 2: PRESET_T2 };
+// ── PRESET: "By Thy Cross, O Christ our Savior" — Tone 3 Resurrectional 1 ──
+// Accents hand-verified against OCA Feb 15 2026 and May 3 2026 service texts.
+// 5-line sticheron: A B A B Final.
+// Phrase A: anchor on [Sav]ior — one mark
+// Phrase B: anchor on [shat]tered — one mark
+// Phrase A: anchor on [lu]sion — one mark (mid-word: de·lu·sion)
+// Phrase B: anchor on [saved] — one mark
+// Final:    first anchor [of]fers, second anchor [Thee] — two marks
+const PRESET_T3 = [
+  // Phrase A — Sav = anchor (Savior)
+  ["A", [["By",[["By",0]]],["Thy",   [["Thy",0]]],["Cross,", [["Cross",0]]],["O",    [["O",0]]],["Christ",[["Christ",0]]],["our",  [["our",0]]],["Savior,", [["Sav",1],["ior,",0]]]]],
+  // Phrase B — shat = anchor (shattered); dotted-half on mi
+  ["B", [["death's",[["death's",0]]],["dominion",[["dom",0],["in",0],["ion",0]]],["has",  [["has",0]]],["been",  [["been",0]]],["shattered;",[["shat",1],["tered;",0]]]]],
+  // Phrase A — lu = anchor (delusion, mid-word)
+  ["A", [["the",   [["the",0]]],["devil's",[["dev",0],["il's",0]]],["delusion",[["de",0],["lu",1],["sion",0]]],["destroyed.",[["de",0],["stroyed.",0]]]]],
+  // Phrase B — saved = anchor; dotted-half on mi
+  ["B", [["The",   [["The",0]]],["race",   [["race",0]]],["of",    [["of",0]]],["man,",  [["man,",0]]],["being", [["be",0],["ing",0]]],["saved",  [["saved",1]]],["by",    [["by",0]]],["faith,//",[["faith,//",0]]]]],
+  // Final — two anchors: [of]fers (first, Part 1 mi) + [Thee] (second, Part 2 mi)
+  ["Final", [["always",[["al",0],["ways",0]]],["offers",[["of",1],["fers",0]]],["Thee",  [["Thee",1]]],["a",     [["a",0]]],["song.",  [["song.",0]]]]],
+];
+
+const PRESETS = { 1: PRESET_T1, 2: PRESET_T2, 3: PRESET_T3 };
 
 function presetToLines(toneNum) {
   const preset = PRESETS[toneNum] || PRESETS[1];
@@ -578,7 +651,10 @@ function encodeBlock(block) {
   return encodeVerseBlock(block.lines);
 }
 // Phrase for line i within a block of n lines (A B C D rotating, Final last).
-function blockLinePhrase(i, n) { return i === n - 1 ? "Final" : ["A", "B", "C", "D"][i % 4]; }
+function blockLinePhrase(i, n, rot) {
+  const r = rot || ["A", "B", "C", "D"];
+  return i === n - 1 ? "Final" : r[i % r.length];
+}
 
 // Encode one paragraph's runs as marked text. Accents wrapped in [brackets];
 // everything else passes through verbatim. (Bracket format chosen for readability
@@ -871,7 +947,7 @@ function parseBracketWord(token, lexicon) {
 //   the NEXT line (or the text after // on the same line) is the Final.
 //
 // Phrase rotation is rebuilt from the line structure (same as analyze()).
-function parseTruthLines(rawText, lexicon) {
+function parseTruthLines(rawText, lexicon, rot) {
   // Split into lines, strip trailing | markers.
   const rawLines = rawText
     .split("\n")
@@ -884,7 +960,7 @@ function parseTruthLines(rawText, lexicon) {
   const total = rawLines.length;
 
   return rawLines.map((ln, i) => {
-    const phrase = phraseForLine(i, total);
+    const phrase = phraseForLine(i, total, rot || ROT_DEFS[1]);
     // Tokenize on whitespace; each token may contain [bracket] marks.
     const tokens = ln.split(/\s+/).filter(Boolean);
     const words = tokens
@@ -1167,6 +1243,11 @@ export default function ToneTrainer() {
     const H = 60 / bpm;        // half note — intonation, cadence anchor, final cadence
     const Q = H / 2;           // quarter note — reciting tone, prep, middle cadence
     const W = H * 2;           // whole note — last syllable of Final Phrase only
+    const DH = H * 1.5;        // dotted half note — Tone 3 Phrase B anchor (audio-confirmed)
+
+    // Whether the active phrase uses a dotted-half anchor (Tone 3 Phrase B).
+    const phDef = PH[line.phrase];
+    const useAnchorDH = !!(phDef && phDef.anchorDH);
 
     // Precompute cadence syllable positions for first/middle/last logic.
     const cadIdxs = roles.map((r, i) => r.role === "cad" ? i : -1).filter(i => i >= 0);
@@ -1177,7 +1258,7 @@ export default function ToneTrainer() {
       //   inton unaccented → Q (quarter note lead-in on same pitch)
       //   recite / prep → Q (quarter note always)
       //   preslur → Q (two Q notes split across the two pitches via melisma logic)
-      //   cad anchor (first) → H; cad middle → Q; cad last → H or W (Final only)
+      //   cad anchor (first) → H (or DH when anchorDH:true); cad middle → Q; cad last → H or W (Final only)
       let syllDur;
       if (r.role === "inton") {
         syllDur = r.accent ? H : Q;
@@ -1195,7 +1276,11 @@ export default function ToneTrainer() {
           // Only one cadence syllable — serves as both anchor and final.
           syllDur = isFinal ? W : H;
         } else if (isFirst) {
-          syllDur = H; // anchor always half note
+          // Anchor: use DH (dotted half) when the phrase definition flags anchorDH.
+          // The long-cadence rule (more syllables than figure notes) causes distribute()
+          // to repeat the penultimate figure note for fill — in that case the anchor
+          // still starts on the figure's first note, but we use H to avoid over-holding.
+          syllDur = (useAnchorDH && cadIdxs.length <= (phDef?.cad?.length ?? 99)) ? DH : H;
         } else if (isLast) {
           syllDur = isFinal ? W : H; // whole note only for Final Phrase
         } else {
@@ -1330,9 +1415,24 @@ export default function ToneTrainer() {
       if (first !== anchorIdx) intonIdx = first;
     }
 
-    // ── Rebuild words: accent = true only at anchor + intonation ───────────
+    // ── Tone 3 Final Phrase: two-anchor cadence (first anchor + second anchor) ──
+    // The two-part cadence requires two internal accent marks (31/31 corpus instances).
+    // Mark the second-to-last stressed syllable as the first cadence anchor.
+    let firstAnchorIdx = -1;
+    if (activeTone === 3 && phrase === "Final" && stressedIdxs.length >= 2) {
+      let c = stressedIdxs[stressedIdxs.length - 2];
+      // Apply the same monosyllable backup: if this candidate is the very last syllable
+      // and a standalone monosyllable, step back once more.
+      if (c === lastIdx && flat[lastIdx].single && stressedIdxs.length >= 3) {
+        c = stressedIdxs[stressedIdxs.length - 3];
+      }
+      if (c !== anchorIdx) firstAnchorIdx = c;
+    }
+
+    // ── Rebuild words: accent = true only at anchor + intonation + first Final anchor ──
     const accentSet = new Set([anchorIdx]);
     if (intonIdx >= 0) accentSet.add(intonIdx);
+    if (firstAnchorIdx >= 0) accentSet.add(firstAnchorIdx);
 
     let fi = 0;
     return words.map((w) => ({
@@ -1344,9 +1444,10 @@ export default function ToneTrainer() {
   const analyze = () => {
     if (!text.trim()) { setLines([]); return; }
     const { hasBrackets } = parseBracketedText(text);
+    const activeRot = ROT_DEFS[activeTone] || ROT_DEFS[1];
     if (hasBrackets) {
       // TRUTH MODE: brackets are authoritative over the lexicon.
-      const tLines = parseTruthLines(text, lexicon);
+      const tLines = parseTruthLines(text, lexicon, activeRot);
       if (!tLines.length) { setLines([]); return; }
       const mLines = autoEncodeLines(tLines, lexicon, PH);
       const cmp = buildComparison(tLines, mLines);
@@ -1360,7 +1461,7 @@ export default function ToneTrainer() {
       // AUTO MODE: syllabify via lexicon, then apply phrase-structural accent engine.
       const raw = text.split("\n").map((s) => s.trim()).filter(Boolean);
       const next = raw.map((ln, i) => {
-        const phrase = phraseForLine(i, raw.length);
+        const phrase = phraseForLine(i, raw.length, activeRot);
         const rawWords = ln.split(/\s+/)
           .filter((w) => /[A-Za-z]/.test(w))   // skip pure-punctuation tokens (commas, etc.)
           .map((w) => wordFromDisplay(w, lexicon))
@@ -1603,15 +1704,16 @@ export default function ToneTrainer() {
     return { phrase, words };
   };
 
-    // Load a whole sticheron block into the pointer with correct A-B-C-D-…-Final
-  // rotation across its lines, then scroll to the pointer. Tone 1 only.
+    // Load a whole sticheron block into the pointer with correct A-B-…-Final
+  // rotation across its lines, then scroll to the pointer.
   const sendBlockToPointer = (block) => {
     if (!PH_DEFS[block.tone]) return; // guarded in UI; defensive here — only point tones we know
     const blockPH = PH_DEFS[block.tone];
+    const blockRot = ROT_DEFS[block.tone] || ROT_DEFS[1];
     // Sync the active tone to match the block being pointed.
     setActiveTone(block.tone);
     const n = block.lines.length;
-    const next = block.lines.map((p, i) => paraToPointerLine(p, blockLinePhrase(i, n)));
+    const next = block.lines.map((p, i) => paraToPointerLine(p, blockLinePhrase(i, n, blockRot)));
     // Also populate the textarea with the encoded text (Feature B: [accent]/|// format).
     // When the user hits "Analyze & point" it will re-run in TRUTH mode.
     const encoded = encodeBlock(block);
@@ -1772,7 +1874,7 @@ export default function ToneTrainer() {
                               <div key={j} style={{ display: "flex", gap: "0.5rem", alignItems: "baseline", fontSize: "0.92rem",
                                                     borderTop: "1px dotted #e7dcc0", paddingTop: "0.2rem" }}>
                                 <span style={{ fontSize: "0.66rem", color: "#283a5c", minWidth: "2.6em", fontStyle: "italic" }}>
-                                  {blockLinePhrase(j, b.lines.length)}
+                                  {blockLinePhrase(j, b.lines.length, ROT_DEFS[b.tone] || ROT_DEFS[1])}
                                 </span>
                                 <span style={{ flex: 1 }}
                                   dangerouslySetInnerHTML={{ __html: l.runs.map((r) => r.underline
