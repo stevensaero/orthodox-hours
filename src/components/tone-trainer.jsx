@@ -1201,9 +1201,22 @@ function autoEncodeLines(truthLines, lexicon, activePH) {
 
   return truthLines.map((line) => {
     const rawWords = line.words.map((w) => {
-      // Reconstruct the display text from the syllables (brackets already stripped).
+      // Re-use the truth syllable boundaries — same word shape as the director.
+      // Only re-apply stress marks via the lexicon (stressIdx); the syllable
+      // text and count come from w.sylls which were already correctly split
+      // by parseTruthLines (using director bracket boundaries for mid-word cases,
+      // or the lexicon for whole-word/unbracketed words).
+      // This ensures machine and director always operate on the same word shape
+      // even for words missing from the lexicon.
       const display = w.display.replace(/[\[\]]/g, "");
-      return wordFromDisplay(display, lexicon);
+      const entry = lookupWord(display.replace(/[^A-Za-z''-]/g, ""), lexicon);
+      const stressIdx = entry ? (entry.stressIdx ?? 0) : 0;
+      const mappedSylls = w.sylls.map((s, i) => ({
+        text: s.text,
+        accent: i === stressIdx,
+        source: entry ? (entry.src === "residue" ? "residue" : "table") : "rule",
+      }));
+      return { display, sylls: mappedSylls };
     }).filter(Boolean);
     // Apply phrase-structural engine to the machine column.
     const words = applyPhraseAccent(rawWords, line.phrase);
