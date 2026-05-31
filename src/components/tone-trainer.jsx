@@ -10,11 +10,21 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.9.2";
+export const TONE_TRAINER_VERSION = "v0.9.3";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.9.3",
+    date: "May 2026",
+    summary: "STOP filter: whole-word guard — syllable fragments no longer filtered",
+    items: [
+      "fix: STOP filter now guards on s.single before matching. Previously, any stressed syllable whose text happened to spell a STOP word was filtered out as a function word — even when it was a syllable fragment inside a polysyllabic content word. Example: 'in' from 'incense' (in·cense, stress on 'in') was incorrectly blocked, causing the machine to anchor on 'sight' instead of 'in' for 'in Thy sight as incense'. The fix: STOP.has() is only applied when s.single===true, i.e. the syllable IS the whole word.",
+      "note: other affected cases include any word whose first (stressed) syllable text happens to match a STOP entry — e.g. 'or' from 'glory', 'as' from 'Pascha', 'he' from 'heaven', 'by' from 'Byzantine'. All of these are now correctly passed through as anchor candidates.",
+      "note: the fix is applied at both STOP filter sites — autoAccentLine (component-scoped) and applyPhraseAccent inside autoEncodeLines (module-scoped). Both now use !(s.single && STOP.has(s.text.toLowerCase())) instead of !STOP.has(s.text.toLowerCase()).",
+    ],
+  },
   {
     version: "v0.9.2",
     date: "May 2026",
@@ -1111,8 +1121,12 @@ function autoEncodeLines(truthLines, lexicon, activePH) {
     if (!flat.length) return words;
     const lastIdx = flat.length - 1;
     // Same STOP filter as autoAccentLine — function words are never anchor candidates.
+    // Guard: s.single ensures we only filter monosyllabic words. A syllable whose text
+    // happens to spell a STOP word but belongs to a polysyllabic word (e.g. "in" from
+    // "incense", "or" from "glory") must NOT be filtered — it is a syllable fragment,
+    // not a function word.
     const sIdxs = flat
-      .map((s, i) => (s.stressed && !STOP.has(s.text.toLowerCase()) ? i : -1))
+      .map((s, i) => (s.stressed && !(s.single && STOP.has(s.text.toLowerCase())) ? i : -1))
       .filter((i) => i >= 0);
     let anchorIdx = lastIdx;
     if (sIdxs.length > 0) {
@@ -1575,8 +1589,12 @@ export default function ToneTrainer() {
     // the backup rule to land on them. The STOP list is defined by grammatical
     // function — not test fixtures — so it is the correct filter here.
     // Note: "me" and "thee" are NOT in STOP and remain valid anchor candidates.
+    // Guard: s.single ensures we only filter monosyllabic words. A syllable whose
+    // text happens to spell a STOP word but belongs to a polysyllabic word (e.g.
+    // "in" from "incense", "or" from "glory", "as" from "Pascha") must NOT be
+    // filtered — it is a syllable fragment, not a function word.
     const stressedIdxs = flat
-      .map((s, i) => (s.stressed && !STOP.has(s.text.toLowerCase()) ? i : -1))
+      .map((s, i) => (s.stressed && !(s.single && STOP.has(s.text.toLowerCase())) ? i : -1))
       .filter((i) => i >= 0);
 
     // ── Anchor: last internally stressed syllable ──────────────────────────
