@@ -104,7 +104,57 @@ figures.
 
 ## 3. The anchor rule (cadence placement)
 
-### 3.1 What the anchor is
+### The pointing pipeline — two distinct problems
+
+Before getting into the anchor rule specifically, it helps to see the full
+pointing pipeline and where the hard problems live:
+
+```
+syllabifier / lexicon
+      ↓
+  where is the stress in each word?          ← LOOKUP PROBLEM
+  (answered by syllable-table.json +
+   name-residue.json + CMU dictionary)
+      ↓
+  walk BACKWARD from phrase end —
+  find the last internally stressed
+  syllable (after STOP filtering)            ← STRUCTURAL PROBLEM
+      ↓
+  that is the ANCHOR — mark it
+  (cadence figure begins here)
+      ↓
+  walk FORWARD from phrase start —
+  find the first stressed syllable
+  [ Phrases A and C only ]                   ← STRUCTURAL PROBLEM
+      ↓
+  that is the INTONATION — mark it
+  (half-note on reciting pitch before
+   the body resumes)
+```
+
+The **lookup problem** and the **structural problems** fail independently:
+- A *lookup error* (wrong stress assignment in the lexicon) makes the wrong
+  syllable visible to the structural pass — e.g. `incense` with stressIdx=1
+  offered `cense` as a candidate when `in` was correct.
+- A *structural error* (wrong decision about which candidate to pick) can occur
+  even when every word's stress is correctly known — e.g. the polysyllabic
+  trailing verb trap where `announced` is correctly stressed on `nounced` but the
+  director backs off to `David` for phrase-structural reasons.
+
+These two error classes surface differently in the comparison harness: lookup
+errors show as a wrong syllable *within* the right word; structural errors show
+as the anchor landing on an entirely different word.
+
+The intonation pass is independent of the anchor pass — it runs forward while
+the anchor runs backward, and applies only to Phrases A and C (in Tone 1). In
+Tone 2, Phrase A has no intonation (`inton: false` in `PH_DEFS`) — the
+intonation condition is per-tone, not global. This was a bug in early versions
+(hardcoded `phrase==='A'||phrase==='C'`); fixed in v0.8.0 to use
+`PH_DEFS[activeTone][phrase].inton`.
+
+---
+
+
 
 The **cadence anchor** is the syllable where the melody breaks away from the
 reciting tone and begins the descending cadence figure. Everything before it
