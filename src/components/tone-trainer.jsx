@@ -1914,32 +1914,56 @@ export default function ToneTrainer() {
     };
 
     const words = wordTokens.map(({ display, core, coreStart, ulSlice }) => {
-      const wordObj = wordFromDisplay(core, lexicon);
-      if (!wordObj) return null;
-      const sylls = wordObj.sylls;
       const coreUl = ulSlice.slice(coreStart, coreStart + core.length);
       const anyUnderlined = coreUl.some(Boolean);
 
-      // No underline → no director accent mark on this word. Set all syllables
-      // unaccented. (Lexicon stress is only used in the auto-analyze path, not
-      // here where underline = OCA truth and absence of underline = unaccented.)
+      // No underline → no director accent mark on this word.
       if (!anyUnderlined) {
-        return { display, sylls: sylls.map(s => ({ ...s, accent: false })) };
+        // Still need syllabification for display — use lexicon/rules.
+        const wordObj = wordFromDisplay(core, lexicon);
+        if (!wordObj) return null;
+        return { display, sylls: wordObj.sylls.map(s => ({ ...s, accent: false })) };
       }
 
-      // Map underline to syllable by vowel-nucleus overlap.
-      // If the entire core is underlined (whole-word bracket like [Lord], [hear],
-      // [Receive]), the director marked the word as a whole, not a specific syllable.
-      // Use the lexicon's stressIdx as the tiebreaker — it knows re-CEIVE not RE-ceive.
+      // Find the contiguous underlined span within the core.
+      const firstUl = coreUl.indexOf(true);
+      const lastUl  = coreUl.lastIndexOf(true);
+      const prefix    = core.slice(0, firstUl);
+      const underlined = core.slice(firstUl, lastUl + 1);
+      const suffix    = core.slice(lastUl + 1);
+
+      const hasPrefix = prefix.length > 0;
+      const hasSuffix = suffix.length > 0;
+
+      // DIRECTOR-AUTHORITATIVE SPLIT: when the underlined span has a non-empty
+      // prefix or suffix, the underline boundaries define the syllable structure —
+      // same principle as mid-word brackets. No lexicon needed.
+      // e.g. "Redeemer" with "deem" underlined → Re / deem / er, accent on deem.
+      // e.g. "Archangels" with "an" underlined → Arch / an / gels, accent on an.
+      if (hasPrefix || hasSuffix) {
+        const dirSylls = [prefix, underlined, suffix].filter(s => s.length > 0);
+        const accentIdx = hasPrefix ? 1 : 0;
+        return {
+          display,
+          sylls: dirSylls.map((t, si) => ({
+            text: t, accent: si === accentIdx, source: "truth",
+          })),
+        };
+      }
+
+      // Whole-word underlined OR underline at word start with no prefix:
+      // fall back to lexicon syllabification + nucleus mapping.
+      const wordObj = wordFromDisplay(core, lexicon);
+      if (!wordObj) return null;
+      const sylls = wordObj.sylls;
+
       const wholeWordUnderlined = coreUl.every(Boolean);
       if (wholeWordUnderlined) {
         const stressIdx = wordObj.sylls.findIndex(s => s.accent);
         const accentIdx = stressIdx >= 0 ? stressIdx : 0;
         return {
           display,
-          sylls: sylls.map((s, si) => ({
-            ...s, accent: si === accentIdx, source: "truth",
-          })),
+          sylls: sylls.map((s, si) => ({ ...s, accent: si === accentIdx, source: "truth" })),
         };
       }
 
@@ -2110,7 +2134,7 @@ export default function ToneTrainer() {
           <>
             <div style={{ marginTop: "0.8rem", display: "flex", flexDirection: "column", gap: "0.4rem" }}>
               {visibleBlocks.map((b, i) => {
-                const canPoint = !!PH_DEFS[b.tone];
+                const canPoint = !!PH_DEFS[b.tone] && !!lexicon;
                 const open = !!expandedBlocks[i];
                 return (
                   <div key={i} style={{ border: "1px solid #d6c79f", borderRadius: 6, background: "rgba(255,255,255,.45)" }}>
