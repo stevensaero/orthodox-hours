@@ -10,20 +10,26 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.9.4";
+export const TONE_TRAINER_VERSION = "v0.9.5";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
   {
-    version: "v0.9.4",
+    version: "v0.9.5",
     date: "May 2026",
-    summary: "Machine pointing view in sing window — toggle between director and machine",
+    summary: "Director-authoritative pointing — both paths unified, machine anchor accuracy improved",
     items: [
-      "feat: 'machine pointing' pill button in the info bar, visible whenever machine lines are available and the comparison harness is not open. Clicking switches the sing display between director pointing and machine auto-pointing. The Director Pointing ✓ badge updates to reflect the active view.",
-      "feat: singView state ('director' | 'machine') drives which lines render in the sung display and which lines playLine/playAll use for audio. Pitch height chips apply equally to both — both paths go through the same pointLine() → chipH() pipeline.",
-      "feat: singView resets to 'director' whenever new lines are analyzed (truth mode, auto mode, or block point from docx ingest), so the director view is always the default after a fresh Point Verses.",
-      "note: in comparison harness mode the existing Sing director / Sing machine toggle continues to control playback as before. The new singView button is hidden in comparison mode.",
+      "fix: mid-word brackets now derive syllable split directly from bracket boundaries — Re[deem]er gives Re/deem/er without needing the lexicon (parseBracketWord).",
+      "fix: parseTruthLines was discarding the director syllable split — rawSylls from parseBracketWord now used directly for chip display instead of re-calling syllabifyWithSource.",
+      "fix: paraToPointerLine (docx path) now derives syllable split from underline boundaries — same director-authoritative logic as the bracket path, no lexicon needed for mid-word underlines.",
+      "fix: point ▸ button guarded until lexicon loads — prevents wordFromDisplay receiving null lexicon and falling to rule engine.",
+      "refactor: both pointing paths (bracket textarea and docx underline) unified through shared syllabifyWithDirectorMark function — pointing bugs now have one location to fix.",
+      "fix: machine column in autoEncodeLines reuses truth syllable boundaries (same word shape as director); stressIdx mapped by syllable text match not numeric index — fixes Resur[rec]tion machine anchoring on 'tion' instead of 'rec'.",
+      "fix: preserve A/B comparison window on re-point — harness no longer closes when Point Verses is clicked while watching the comparison.",
+      "fix: applyMachineEdit re-runs autoAccentLine after parsing — no-op apply no longer strips machine accent marks.",
+      "fix: lexicon audit — added incarnate, almighty, endured, desired, incarnation, unwedded, habitation, appeared; fixed enlighten syllabification.",
+      "fix: BPM slider step changed from 1 to 10.",
     ],
   },
   {
