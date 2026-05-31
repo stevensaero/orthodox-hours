@@ -205,8 +205,8 @@ function pointLine(line, phDefs, activeTone) {
         const cad   = flat.slice(a2);
         const roles = [];
         body.forEach(s => roles.push({ role: "recite", pitches: [def.recite], accent: s.accent, text: s.text, source: s.source }));
-        const CAD1_FIGURE = ["mi", "do", "re"];
-        cad1.forEach((s, i) => roles.push({ role: "cad1", pitches: [CAD1_FIGURE[i] ?? "re"], accent: s.accent, text: s.text, source: s.source, anchor: i === 0 }));
+        const dist1 = distribute(["mi", "do", "re"], cad1.length);
+        cad1.forEach((s, i) => roles.push({ role: "cad1", pitches: dist1[i] || ["do"], accent: s.accent, text: s.text, source: s.source, anchor: i === 0 }));
         const dist2 = distribute(def.cad, cad.length);
         cad.forEach((s, i) => roles.push({ role: "cad", pitches: dist2[i] || [def.cad[def.cad.length - 1]], accent: s.accent, text: s.text, source: s.source, anchor: i === 0 }));
         return roles;
