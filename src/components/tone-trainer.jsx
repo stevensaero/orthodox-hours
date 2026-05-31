@@ -382,9 +382,14 @@ const PH_DEFS = {
 //    Phrases B, C, and D are then sung in rotation."
 //   9-line example: A B C D B C D B Final
 //   i=0 → A; i≥1 → BCD cycle: ["B","C","D"][(i-1) % 3]
+//
+// CONTRACT for rotation functions: the caller (phraseForLine / blockLinePhrase)
+// always handles the Final case before invoking the function, so rotation
+// functions only ever receive non-final line indices. Do not add Final handling
+// inside a rotation function — it would be dead code.
 const ROT_DEFS = {
   1: ["A", "B", "C", "D"],
-  2: (i, total) => i === total - 1 ? "Final" : i === 0 ? "A" : ["B","C","D"][(i - 1) % 3],
+  2: (i, _total) => i === 0 ? "A" : ["B","C","D"][(i - 1) % 3],
   3: ["A", "B"],
 };
 // phraseForLine: accepts active rotation (array OR function) as third argument.
