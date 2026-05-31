@@ -10,11 +10,22 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.9.3";
+export const TONE_TRAINER_VERSION = "v0.9.4";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.9.4",
+    date: "May 2026",
+    summary: "Machine pointing view in sing window — toggle between director and machine",
+    items: [
+      "feat: 'machine pointing' pill button in the info bar, visible whenever machine lines are available and the comparison harness is not open. Clicking switches the sing display between director pointing and machine auto-pointing. The Director Pointing ✓ badge updates to reflect the active view.",
+      "feat: singView state ('director' | 'machine') drives which lines render in the sung display and which lines playLine/playAll use for audio. Pitch height chips apply equally to both — both paths go through the same pointLine() → chipH() pipeline.",
+      "feat: singView resets to 'director' whenever new lines are analyzed (truth mode, auto mode, or block point from docx ingest), so the director view is always the default after a fresh Point Verses.",
+      "note: in comparison harness mode the existing Sing director / Sing machine toggle continues to control playback as before. The new singView button is hidden in comparison mode.",
+    ],
+  },
   {
     version: "v0.9.3",
     date: "May 2026",
@@ -1370,6 +1381,7 @@ export default function ToneTrainer() {
   const [hasTruth, setHasTruth] = useState(false);      // textarea contains [accent] marks?
   const [compareMode, setCompareMode] = useState(false); // show comparison harness?
   const [compareData, setCompareData] = useState(null);  // buildComparison() result
+  const [singView, setSingView] = useState("director");  // sing display: "director" | "machine"
   const [singWhich, setSingWhich] = useState("truth");   // harness sing toggle: "truth"|"machine"
   const [machineLines, setMachineLines] = useState(null);
   const [activeTone, setActiveTone] = useState(1);
@@ -1513,8 +1525,12 @@ export default function ToneTrainer() {
 
   // In TRUTH mode with a comparison harness open, singWhich controls whether
   // playLine/playAll sings the director truth or the machine version.
-  const activeLines = () =>
-    compareMode && singWhich === "machine" && machineLines ? machineLines : lines;
+  // In sing view (no comparison), singView controls director vs. machine.
+  const activeLines = () => {
+    if (compareMode && singWhich === "machine" && machineLines) return machineLines;
+    if (!compareMode && singView === "machine" && machineLines) return machineLines;
+    return lines;
+  };
 
   // playLineAs: play a specific line in a specific version (truth/machine)
   // without changing the global singWhich — used by per-row ▶ buttons.
@@ -1658,6 +1674,7 @@ export default function ToneTrainer() {
       setCompareData(cmp);
       setHasTruth(true);
       setCompareMode(false); // user must explicitly open Director vs. Machine
+      setSingView("director");
       setSingWhich("truth");
     } else {
       // AUTO MODE: syllabify via lexicon, then apply phrase-structural accent engine.
@@ -1677,6 +1694,7 @@ export default function ToneTrainer() {
       setCompareData(null);
       setMachineLines(null);
       setCompareMode(false);
+      setSingView("director");
     }
   };
 
@@ -1928,6 +1946,7 @@ export default function ToneTrainer() {
     setCompareData(cmp);
     setHasTruth(true);
     setCompareMode(false); // user must hit "Show Director vs. Machine ▸" explicitly
+    setSingView("director");
     setSingWhich("truth");
     setTimeout(() => {
       if (pointerRef.current) pointerRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -2290,19 +2309,33 @@ export default function ToneTrainer() {
                          borderRadius: 4, padding: "1px 7px" }}>{activeTone === 3 ? "cad. pt. 2" : "cadence"}</span>
           <span>· ´ = accent</span>
         </span>
-        {/* Pointing mode indicator — reflects singWhich in A/B mode */}
+        {/* Pointing mode indicator — reflects singView (or singWhich in A/B mode) */}
         {(() => {
-          const isDir = (compareMode && compareData) ? singWhich === "truth" : hasTruth;
+          const isDir = (compareMode && compareData) ? singWhich === "truth" : singView === "director";
           return (
             <span style={{ fontSize: "0.72rem", flexShrink: 0,
                            background: isDir ? "rgba(90,122,60,.12)" : "rgba(139,105,20,.08)",
                            border: `1px solid ${isDir ? "rgba(90,122,60,.45)" : "rgba(139,105,20,.3)"}`,
                            color: isDir ? "#3a6020" : "#5b4a33",
                            borderRadius: 3, padding: "1px 8px", whiteSpace: "nowrap" }}>
-              {isDir ? "Director Pointing ✓" : "Machine Pointing"}
+              {isDir ? "Director Pointing ✓" : "Machine Pointing ✓"}
             </span>
           );
         })()}
+        {/* Machine Pointing toggle — shown in sing view when machine lines are available */}
+        {machineLines && !(compareMode && compareData) && (
+          <button
+            onClick={() => setSingView(v => v === "director" ? "machine" : "director")}
+            style={{ marginLeft: "0.5rem", fontSize: "0.72rem", flexShrink: 0,
+                     background: singView === "machine" ? "rgba(139,105,20,.15)" : "transparent",
+                     border: `1px solid ${singView === "machine" ? "rgba(139,105,20,.5)" : "#d6c79f"}`,
+                     color: singView === "machine" ? "#5b4a33" : "#9A8A70",
+                     borderRadius: 3, padding: "1px 8px", cursor: "pointer",
+                     fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}
+            title="Switch between director pointing and machine auto-pointing in the sing view">
+            {singView === "machine" ? "machine pointing ✓" : "machine pointing"}
+          </button>
+        )}
         {/* Show / Hide Director vs. Machine */}
         {compareData && (
           <button
@@ -2572,7 +2605,7 @@ export default function ToneTrainer() {
       )}
 
       {/* legend + sung display — hidden in comparison mode */}
-      {!(compareMode && compareData) && lines.map((line, li) => {
+      {!(compareMode && compareData) && (singView === "machine" && machineLines ? machineLines : lines).map((line, li) => {
         const roles = pointLine(line, PH, activeTone);
         const isFin = line.phrase === "Final";
         let fi = -1;
