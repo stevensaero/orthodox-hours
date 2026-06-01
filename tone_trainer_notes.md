@@ -995,3 +995,108 @@ Despite sharing the same cadence figure `[di, re]`:
 ### Current code status
 Same gaps as Phrase B — generic handler does not implement whole note trigger
 or correct fill durations. Per-phrase cadence duration function required.
+
+---
+
+## Research session — Tone 2 Final Phrase cadence (May 31 2026)
+
+### Final Phrase structure
+`Final: { recite: "re", inton: false, prep: "ti", cad: ["do", "re", "do", "ti"] }`
+
+Four segments: reciting tone (`re`), prep (`ti`), cadence (`do·re·do·ti`).
+No intonation. Pre-slur rule applies (see below).
+
+### Final Phrase cadence duration model — score confirmed
+
+| Count | Anchor syllable | Middle syllables | Final |
+|---|---|---|---|
+| 2 | `do(W)·re(H)·do(H)` melisma | — | `ti(W)` |
+| 3 | `do(W)·re(H)` melisma | `do(H)` | `ti(W)` |
+| 4 | `do(W)` | `re(H) · do(H)` | `ti(W)` |
+| 5+ | `do(W)` | `re(H) · do(H) · fills(?)` | `ti(W)` |
+
+**5+ case: UNCONFIRMED** — no score evidence available. Fill pitch and duration
+unknown. Do not implement assumed behavior; flag for future score investigation.
+
+Key observations:
+- `do` anchor is always a **whole note** regardless of count
+- `ti` final is always a **whole note** regardless of count
+- `re` and middle `do` are **half notes** when they have their own syllable (count=4)
+- Melisma peels off the anchor one pitch at a time as syllable count increases:
+  count=2 → three-pitch melisma; count=3 → two-pitch melisma; count=4 → no melisma
+- This is architecturally identical to Phrase A's anchor melisma behavior
+
+Score evidence:
+- "of the Fa-ther" (count=2) → `do(W)·re(H)·do(H)` melisma on "Fa" + `ti(W)` on "ther"
+- "Hear me, O Lord!" (count=3) → `do(W)·re(H)` melisma on "me" + `do(H)` on "O" + `ti(W)` on "Lord!"
+- "en-light-end the world" (count=4) → `do(W)` on "light" + `re(H)` on "end" + `do(H)` on "the" + `ti(W)` on "world"
+
+### Pre-slur rule
+When the syllable immediately before the cadence anchor is a **single accented
+monosyllable**, that syllable absorbs the prep — instead of a plain `re(Q)`
+reciting tone syllable it carries `re·ti` as a two-note melisma, effectively
+replacing the prep syllable entirely. "God," in "God, glo-ry to You!" is the
+canonical example.
+
+**Duration variation by position:**
+- Normal pre-slur: `re(Q)·ti(Q)` — equal quarters
+- Verse-opening pre-slur: `re(H)·ti(Q)` — re stretches to half note
+  Evidence: "Hear" in "Hear me, O Lord!" opens the verse → `re(H)·ti(Q)`
+
+Current code assigns `syllDur=H` divided evenly → always `Q+Q`. The
+verse-opening `re(H)·ti(Q)` case is **not implemented**.
+
+### Current code status
+`cad: ["do", "re", "do", "ti"]` — figure is correct.
+Release notes confirm `ti=W` was previously implemented. However:
+1. Anchor melisma for count=2 and count=3 — **not implemented**
+2. `do` anchor as whole note — needs verification against current code
+3. Verse-opening pre-slur duration `re(H)·ti(Q)` — **not implemented**
+4. 5+ fill behavior — **unconfirmed, do not implement**
+
+---
+
+## Consolidated summary — all five Tone 2 phrases (May 31 2026)
+
+### Architectural findings
+
+1. **Per-phrase cadence duration functions required** — the generic
+   `lineToNotes()` handler (first=H, middle=Q, last=H) is insufficient.
+   Each phrase has its own count-dependent duration logic.
+
+2. **Anchor melisma** — Phrase A (count=1/2) and Final Phrase (count=2/3)
+   both require multi-pitch melismas on the anchor syllable. Current code
+   has no mechanism for this.
+
+3. **Whole note triggers are phrase-specific and opposite in some cases:**
+   - Phrase B: whole note when single word fills entire cadence
+   - Phrase C: whole note when cadence spans multiple words
+   - Phrase D: whole note when cadence spans multiple words (same as C)
+   - Phrase A: whole note behavior unconfirmed
+   - Final: `ti` is always whole note regardless of context
+
+4. **Fill pitch and duration thresholds vary by phrase:**
+   - Phrase A: fill on `mi`, H-fill at count=3, Q-fill at count=4+
+   - Phrase B: fill on `di`, H-fill at count=3, Q-fill at count=4+
+   - Phrase C: fill on `do`, H-fill at count=2(?), Q-fill at count=3+
+   - Phrase D: fill on `di`, H-fill at count=3, Q-fill at count=4+
+   - Final: fill on `re·do`, H-fill confirmed at count=4, 5+ unconfirmed
+
+5. **Word boundary awareness required** — the pointing engine must track
+   word boundaries within the cadence to correctly apply whole note triggers
+   for Phrases C and D.
+
+6. **Variable naming** — implementation should use meaningful names matching
+   the method (e.g. `anchorMelisma`, `fillPitch`, `fillDur`, `closingDur`).
+
+### Known gaps in current code
+| Gap | Phrases affected |
+|---|---|
+| Anchor melisma | A (count 1/2), Final (count 2/3) |
+| `re` dotted half (count 1/2/3) | A |
+| `mi` half note (count 2/3) | A |
+| Whole note — single word trigger | B |
+| Whole note — multi-word trigger | C, D |
+| `isFinal` scoped too narrow | C, D (currently Final only) |
+| Verse-opening pre-slur `re(H)·ti(Q)` | Final |
+| 5+ fill behavior | Final (unconfirmed) |
