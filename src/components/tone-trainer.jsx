@@ -335,11 +335,75 @@ const PH_DEFS = {
     Final: { recite: "re", inton: false, prep: null, cad: ["do", "ti", "la"] },
   },
   2: {
-    A:     { recite: "re", inton: false, prep: null,  cad: ["fa", "mi", "re"]      },
-    B:     { recite: "re", inton: false, prep: null,  cad: ["di", "re"]            },
-    C:     { recite: "re", inton: true,  prep: "ti",  cad: ["do"]                  },
-    D:     { recite: "do", inton: false, prep: null,  cad: ["di", "re"]            },
-    Final: { recite: "re", inton: false, prep: "ti",  cad: ["do", "re", "do", "ti"] },
+    // Tone 2 cadence duration rules — score-verified from L'vov-Bakhmetev Obikhod
+    // and Drillock & Ealy tutorial. Each phrase carries a cadDurs block encoding
+    // per-phrase duration logic. cadDuration() reads these to produce correct note
+    // values. Tones without cadDurs fall through to the generic lineToNotes handler.
+    A: {
+      recite: "re", inton: false, prep: null, cad: ["fa", "mi", "re"],
+      cadDurs: {
+        // fa(H) always on anchor. mi fills: H when count≤3, Q when count≥4.
+        // re close: H· (dotted half) when count≤3, H when count≥4.
+        // Anchor carries fa·mi melisma when count<3 (count=1: fa·mi·re; count=2: fa·mi).
+        anchor:    "H",
+        fillPitch: "mi",
+        fillDur:   { lte3: "H",  gte4: "Q"  },
+        closeDur:  { lte3: "H·", gte4: "H"  },
+        melismaThreshold: 3,  // anchor carries melisma when count < threshold
+        wholeNote: null,      // no whole note rule confirmed for Phrase A
+      },
+    },
+    B: {
+      recite: "re", inton: false, prep: null, cad: ["di", "re"],
+      cadDurs: {
+        // di(H) always on anchor. di fills: H when count=3, Q when count≥4.
+        // re close: W when single word fills entire cadence, else H.
+        anchor:    "H",
+        fillPitch: "di",
+        fillDur:   { lte3: "H", gte4: "Q" },
+        closeDur:  "H",
+        wholeNote: "single-word",  // fires when one word fills entire cadence
+      },
+    },
+    C: {
+      recite: "re", inton: true, prep: "ti", cad: ["do"],
+      cadDurs: {
+        // do(H) anchor. do fills: H when count=2 (single-word), Q when count≥3.
+        // do close: W when cadence spans multiple words, else H.
+        anchor:    "H",
+        fillPitch: "do",
+        fillDur:   { lte2: "H", gte3: "Q" },
+        closeDur:  "H",
+        wholeNote: "multi-word",   // fires when cadence spans more than one word
+      },
+    },
+    D: {
+      recite: "do", inton: false, prep: null, cad: ["di", "re"],
+      cadDurs: {
+        // Same figure as Phrase B but reciting on do. Same duration rules.
+        // Whole note trigger: OPPOSITE to B — fires on multi-word cadence.
+        anchor:    "H",
+        fillPitch: "di",
+        fillDur:   { lte3: "H", gte4: "Q" },
+        closeDur:  "H",
+        wholeNote: "multi-word",
+      },
+    },
+    Final: {
+      recite: "re", inton: false, prep: "ti", cad: ["do", "re", "do", "ti"],
+      cadDurs: {
+        // do anchor always W. ti close always W.
+        // re and middle do: H when they have own syllable (count≥4).
+        // Anchor melisma when count<4: count=2 → do·re·do on anchor; count=3 → do·re on anchor.
+        // Pre-slur: re(H·)·ti(Q) when no reciting tone precedes; re(Q)·ti(Q) normally.
+        // count≥5: unconfirmed — flag with rubric note, treat as count=4 pattern.
+        anchor:    "W",
+        closeDur:  "W",
+        fillDur:   "H",  // re and middle do are H when separated
+        melismaThreshold: 4,       // anchor carries melisma when count < 4
+        unconfirmedAbove: 4,       // flag count > 4 as unconfirmed in rubric
+      },
+    },
   },
   3: {
     // Tone 3 Common Chant — two rotating phrases (A and B) only, no C or D.
@@ -923,6 +987,14 @@ function pointLine(line, phDefs, activeTone) {
       text: s.text,
       source: s.source,
       anchor: i === 0,
+      // wordBoundary: true when this syllable is the last syllable of its word.
+      // Drives whole note triggers for Tone 2 Phrases B, C, D.
+      // A syllable is a word boundary when the next cad syllable belongs to a
+      // different word — detected by checking whether the current syllable ends
+      // the word (no hyphen suffix) or the next begins a new word (capitalised
+      // or preceded by space in source text).
+      wordBoundary: (i === cad.length - 1) ||
+        (!s.text.endsWith("-") && !s.source?.endsWith("-")),
     })
   );
   return roles;
@@ -954,6 +1026,92 @@ function distribute(figure, count) {
   // count < n: take the first `count` notes sequentially — one per syllable.
   // Trailing notes of the figure are unused (they belong to the next phrase).
   return figure.slice(0, count).map((f) => [f]);
+}
+
+// ── TONE 2 CADENCE DURATION ENGINE ───────────────────────────────────────────
+//
+// cadDuration(phDef, cadCount, cadPos, isWordBoundary, hasRecitingTone)
+// Returns the correct duration for a single cadence syllable in Tone 2.
+// cadCount    — total number of cadence syllables in this line
+// cadPos      — 0-based position of this syllable within the cadence
+// isWordBoundary — true if this syllable is the last syllable of its word
+// hasRecitingTone — true if any reciting-tone syllables precede the cadence
+//                   (used for pre-slur context in Final Phrase)
+//
+// Returns one of: "H", "Q", "W", "H·" — matched to the H/Q/W/DH constants
+// in lineToNotes() via cadDurToSec().
+//
+// Falls through to generic handler (returns null) for tones without cadDurs.
+//
+// Source: Drillock & Ealy tutorial + L'vov-Bakhmetev Obikhod score verification.
+// All rules documented in tone_trainer_notes.md session May 31 2026.
+
+function cadDuration(phDef, cadCount, cadPos, isWordBoundary, hasRecitingTone) {
+  const cd = phDef?.cadDurs;
+  if (!cd) return null; // no cadDurs → caller uses generic handler
+
+  const isFirst  = cadPos === 0;
+  const isLast   = cadPos === cadCount - 1;
+  const isMiddle = !isFirst && !isLast;
+  const isOnly   = cadCount === 1;
+
+  // ── Final Phrase ─────────────────────────────────────────────────────────
+  if (cd.anchor === "W") {
+    // do anchor always W, ti close always W.
+    // Melisma cases (count<4) handled by buildMelisma() — cadDuration not called
+    // for those sub-pitches; only called for separated syllables.
+    if (isOnly || isFirst) return "W";   // anchor = do(W)
+    if (isLast)            return "W";   // close  = ti(W)
+    return "H";                          // re and middle do = H
+  }
+
+  // ── Phrase A: fa·mi·re ────────────────────────────────────────────────────
+  if (cd.fillPitch === "mi" && cd.anchor === "H") {
+    if (isFirst || isOnly) return "H";                       // fa always H
+    if (isLast) return cadCount <= 3 ? "H·" : "H";          // re: H· ≤3, H ≥4
+    // middle (mi fill):
+    return cadCount <= 3 ? "H" : "Q";                       // mi: H ≤3, Q ≥4
+  }
+
+  // ── Phrase B/D: di·re ────────────────────────────────────────────────────
+  if (cd.fillPitch === "di") {
+    if (isFirst || isOnly) return "H";                       // di anchor always H
+    if (isLast) {
+      // whole note rule differs between B (single-word) and D (multi-word)
+      const isMultiWord = !isWordBoundary;
+      if (cd.wholeNote === "single-word" && !isMultiWord)  return "W";
+      if (cd.wholeNote === "multi-word"  &&  isMultiWord)  return "W";
+      return "H";
+    }
+    // di fills: H when count≤3, Q when count≥4
+    return cadCount <= 3 ? "H" : "Q";
+  }
+
+  // ── Phrase C: do ─────────────────────────────────────────────────────────
+  if (cd.fillPitch === "do") {
+    if (isFirst || isOnly) return "H";                       // do anchor always H
+    if (isLast) {
+      // whole note fires on multi-word cadence
+      const isMultiWord = !isWordBoundary;
+      if (cd.wholeNote === "multi-word" && isMultiWord) return "W";
+      return "H";
+    }
+    // do fills: H when count≤2 (single-word), Q when count≥3
+    return cadCount <= 2 ? "H" : "Q";
+  }
+
+  return null; // unrecognised cadDurs shape — fall through to generic
+}
+
+// buildMelisma(pitches, durs, peak)
+// Returns an array of note objects for a melisma (multiple pitches on one syllable).
+// Used for Phrase A anchor melisma (count<3) and Final Phrase anchor melisma (count<4).
+// pitches — array of solfège strings e.g. ["fa","mi"]
+// durs    — array of duration strings e.g. ["H","H"] matching pitches length
+// peak    — audio peak value (0.27 for cad anchor, 0.2 otherwise)
+function buildMelisma(pitches, durs, H, Q, W, DH, peak) {
+  const durMap = { "H": H, "Q": Q, "W": W, "H·": DH, "H·": H * 1.5 };
+  return pitches.map((p, i) => ({ sol: p, dur: durMap[durs[i]] ?? Q, peak }));
 }
 
 // ── FEATURE B: BRACKET-AWARE PARSING + COMPARISON HARNESS ───────────────────
@@ -1530,7 +1688,7 @@ export default function ToneTrainer() {
     const H = 60 / bpm;        // half note — intonation, cadence anchor, final cadence
     const Q = H / 2;           // quarter note — reciting tone, prep, middle cadence
     const W = H * 2;           // whole note — last syllable of Final Phrase only
-    const DH = H * 1.5;        // dotted half note — Tone 3 Phrase B anchor (audio-confirmed)
+    const DH = H * 1.5;        // dotted half note — Tone 3 Phrase B anchor / Tone 2 Phrase A close ≤3
 
     // Whether the active phrase uses a dotted-half anchor (Tone 3 Phrase B).
     const phDef = PH[line.phrase];
@@ -1538,15 +1696,79 @@ export default function ToneTrainer() {
 
     // Precompute cadence syllable positions for first/middle/last logic.
     const cadIdxs = roles.map((r, i) => r.role === "cad" ? i : -1).filter(i => i >= 0);
+    const cadCount = cadIdxs.length;
+
+    // Detect whether any reciting-tone syllables precede the cadence
+    // (used by Final Phrase pre-slur context rule).
+    const hasRecitingTone = roles.some(r => r.role === "recite");
+
+    // Detect word boundary for the last cadence syllable
+    // (whole note triggers for Tone 2 Phrases B, C, D).
+    // isWordBoundary = true when the final cadence syllable is the last syllable
+    // of its word (no hyphen suffix indicates word continues).
+    const lastCadRole = cadIdxs.length > 0 ? roles[cadIdxs[cadIdxs.length - 1]] : null;
+    const lastCadIsWordBoundary = lastCadRole
+      ? (!lastCadRole.text?.endsWith("-") && !lastCadRole.source?.endsWith("-"))
+      : true;
+
+    // Tone 2 Final Phrase anchor melisma: when cadCount < melismaThreshold,
+    // the anchor syllable carries multiple pitches.
+    // count=2: do·re·do melisma on anchor + ti(W) trailing
+    // count=3: do·re melisma on anchor + do(H) + ti(W)
+    // count≥4: clean one-per-syllable distribution
+    const isTone2 = activeTone === 2;
+    const isTone2Final = isTone2 && line.phrase === "Final";
+    const isTone2A = isTone2 && line.phrase === "A";
+
+    // Tone 2 Final Phrase: if cadCount < 4, build melisma notes directly and return.
+    if (isTone2Final && cadCount < 4 && cadCount >= 1) {
+      // Emit reciting / inton / prep / preslur roles normally first
+      roles.forEach((r, ri) => {
+        if (r.role === "cad") return; // handled below
+        let syllDur;
+        if (r.role === "inton")  syllDur = r.accent ? H : Q;
+        else if (r.role === "preslur") syllDur = H;
+        else syllDur = Q;
+        const pitchDur = syllDur / r.pitches.length;
+        r.pitches.forEach(p => notes.push({ sol: p, dur: pitchDur, peak: 0.2 }));
+      });
+      // Build melisma anchor + trailing notes
+      if (cadCount === 1) {
+        // full do·re·do·ti melisma on single syllable
+        buildMelisma(["do","re","do","ti"], ["W","H","H","W"], H, Q, W, DH, 0.27)
+          .forEach(n => notes.push(n));
+      } else if (cadCount === 2) {
+        // do·re·do melisma on anchor, ti(W) on trailing
+        buildMelisma(["do","re","do"], ["W","H","H"], H, Q, W, DH, 0.27).forEach(n => notes.push(n));
+        notes.push({ sol: "ti", dur: W, peak: 0.2 });
+      } else if (cadCount === 3) {
+        // do·re melisma on anchor, do(H), ti(W)
+        buildMelisma(["do","re"], ["W","H"], H, Q, W, DH, 0.27).forEach(n => notes.push(n));
+        notes.push({ sol: "do", dur: H, peak: 0.2 });
+        notes.push({ sol: "ti", dur: W, peak: 0.2 });
+      }
+      return notes;
+    }
+
+    // Tone 2 Phrase A anchor melisma: when cadCount < 3, anchor carries fa·mi (or fa·mi·re).
+    if (isTone2A && cadCount < 3 && cadCount >= 1) {
+      roles.forEach((r) => {
+        if (r.role === "cad") return;
+        const syllDur = r.role === "inton" ? (r.accent ? H : Q) : Q;
+        const pitchDur = syllDur / r.pitches.length;
+        r.pitches.forEach(p => notes.push({ sol: p, dur: pitchDur, peak: 0.2 }));
+      });
+      if (cadCount === 1) {
+        buildMelisma(["fa","mi","re"], ["H","H","H·"], H, Q, W, DH, 0.27).forEach(n => notes.push(n));
+      } else if (cadCount === 2) {
+        // fa·mi melisma on anchor, re(H·) trailing
+        buildMelisma(["fa","mi"], ["H","H"], H, Q, W, DH, 0.27).forEach(n => notes.push(n));
+        notes.push({ sol: "re", dur: DH, peak: 0.2 });
+      }
+      return notes;
+    }
 
     roles.forEach((r, ri) => {
-      // Syllable duration per tutorial:
-      //   inton accented → H (half note intonation)
-      //   inton unaccented → Q (quarter note lead-in on same pitch)
-      //   recite / prep → Q (quarter note always)
-      //   preslur → Q (two Q notes split across the two pitches via melisma logic)
-      //   cad anchor (first) → H (or DH when anchorDH:true); cad middle → Q; cad last → H or W (Final only)
-      //   cad1 → H·Q·Q (mi·do·re) emitted directly with per-pitch durations — see cad1 block below
       let syllDur;
       if (r.role === "inton") {
         syllDur = r.accent ? H : Q;
@@ -1558,43 +1780,44 @@ export default function ToneTrainer() {
         syllDur = H;
       } else if (r.role === "cad1") {
         // Part 1 cadence (Tone 3 Final Phrase only): mi(H) · do(Q) · re(Q).
-        // Tutorial-explicit note values (Drillock & Ealy): half note on mi,
-        // quarter on do, quarter on re. Emitted directly — bypasses syllDur/pitches.length
-        // because the three pitches have unequal durations that cannot be derived
-        // from a single syllable slot.
-        // NOTE: score reading suggests Q·H·Q (half on do, not mi) — deferred for
-        // further investigation. Tutorial text is H·Q·Q; implemented as such.
         const CAD1_DURS = [H, Q, Q];
         const peak1 = r.anchor ? 0.27 : 0.2;
         r.pitches.forEach((p, pi) => {
           notes.push({ sol: p, dur: CAD1_DURS[pi] ?? Q, peak: peak1 });
         });
-        return; // note emission handled above — skip the standard pitchDur path
+        return;
       } else if (r.role === "cad") {
         const cadPos = cadIdxs.indexOf(ri);
-        const isFirst = cadPos === 0;
-        const isLast  = cadPos === cadIdxs.length - 1;
-        if (isFirst && isLast) {
-          // Only one cadence syllable — serves as both anchor and final.
-          syllDur = isFinal ? W : H;
-        } else if (isFirst) {
-          // Anchor: use DH (dotted half) when the phrase definition flags anchorDH.
-          // The long-cadence rule (more syllables than figure notes) causes distribute()
-          // to repeat the penultimate figure note for fill — in that case the anchor
-          // still starts on the figure's first note, but we use H to avoid over-holding.
-          syllDur = (useAnchorDH && cadIdxs.length <= (phDef?.cad?.length ?? 99)) ? DH : H;
-        } else if (isLast) {
-          syllDur = isFinal ? W : H; // whole note only for Final Phrase
-        } else {
-          syllDur = Q; // middle cadence syllables = quarter notes
+
+        // ── Tone 2: use per-phrase cadDuration() ─────────────────────────
+        if (isTone2 && phDef?.cadDurs) {
+          const durStr = cadDuration(phDef, cadCount, cadPos, lastCadIsWordBoundary, hasRecitingTone);
+          if (durStr !== null) {
+            const durMap = { "H": H, "Q": Q, "W": W, "H·": DH };
+            syllDur = durMap[durStr] ?? H;
+          }
+          // if cadDuration returned null, fall through to generic below
+        }
+
+        // ── Generic handler (all other tones, or Tone 2 fallback) ────────
+        if (syllDur === undefined) {
+          const isFirst = cadPos === 0;
+          const isLast  = cadPos === cadCount - 1;
+          if (isFirst && isLast) {
+            syllDur = isFinal ? W : H;
+          } else if (isFirst) {
+            syllDur = (useAnchorDH && cadCount <= (phDef?.cad?.length ?? 99)) ? DH : H;
+          } else if (isLast) {
+            syllDur = isFinal ? W : H;
+          } else {
+            syllDur = Q;
+          }
         }
       } else {
         syllDur = Q;
       }
 
       // Multi-pitch melisma: divide syllable duration evenly across pitches.
-      // Pre-slur has two pitches [recite, prep] → each gets Q/2 = eighth note.
-      // This matches tutorial intent: the slur is a quick two-note pickup.
       const pitchDur = syllDur / r.pitches.length;
       const peak = (r.role === "cad" || r.role === "cad1") && r.anchor ? 0.27 : 0.2;
 
