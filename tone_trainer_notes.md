@@ -1136,3 +1136,35 @@ Current code assigns `syllDur=H` divided evenly → always `re(Q)·ti(Q)`.
 The dotted half case (`re(H·)·ti(Q)` when no reciting tone precedes) is
 **not implemented**. Flag for future implementation once word-boundary and
 reciting-tone-presence detection is in place.
+
+---
+
+## Architecture note — melisma audio precision (May 31 2026)
+
+### Melisma data encoding standard
+
+Chips carrying multiple pitches on a single syllable (melisma) must encode
+per-pitch durations explicitly using a `melismaDurs` array alongside the
+`melisma` pitch array. Equal-split of total duration is insufficient because
+melisma pitch durations are almost never equal in the score.
+
+**Data pattern:**
+```js
+{ syl:"Hear", sol:"re", role:"preslur", dur:"H·",
+  melisma: ["re","ti"], melismaDurs: ["H·","Q"] }
+
+{ syl:"me,",  sol:"do", role:"cad",    dur:"W",
+  melisma: ["do","re"], melismaDurs: ["W","H"] }
+
+{ syl:"hear", sol:"fa", role:"cad",    dur:"H",
+  melisma: ["fa","mi"], melismaDurs: ["H","H"] }
+```
+
+**Rationale:** audio precision is critical to the teaching purpose of the tool.
+A cantor learning a verse must hear exactly the right rhythm on melisma syllables,
+not an approximation. `melismaDurs` drives audio timing; `melisma` drives the
+visual solfège label. Both must be present on any melisma chip.
+
+**Audio engine rule:** when `melismaDurs` is present, `playRow()` splits the
+chip's time slot into sequential notes using `DUR_SEC[melismaDurs[i]]` for each
+pitch, not the chip's top-level `dur`.
