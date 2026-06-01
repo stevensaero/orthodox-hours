@@ -1232,3 +1232,52 @@ encoding as authoritative. Encoded in sandbox as `DATA_BASS` for comparison.
 - **Filler:** most static part. Holds missing chord tone to complete triad.
   Derivable from bass line + melody once bass is verified.
   Changes only at cadence points.
+
+---
+
+## Bass part — score verification (May 31 2026)
+
+### Source
+L'vov-Bakhmetev Obikhod, arr. from OCA PDF (t2-lic-obikhod-tt.pdf).
+Bass notes read directly from bass clef staff positions — lines and spaces
+identified by position, mapped to concert pitch, then to solfège (do=Bb).
+
+### Bass clef reference (do=Bb)
+| Position | Concert | Solfège |
+|---|---|---|
+| Space 4 | G3 | `la` |
+| Line 4 | F3 | `sol` |
+| Space 3 | Eb3 | `fa` |
+| Line 3 | D3 | `mi` |
+| Space 2 | C3 | `re` |
+| Line 2 | B2 | `ti` |
+| Line 1 | G2 | `la` (lower octave) |
+
+### Corrected score-verified bass line
+
+| Line | Phrase | Reciting | Cadence | Close |
+|---|---|---|---|---|
+| 1 | A | `la(Q)×6` | `la·mi` melisma (H+H) | `la(H·)` |
+| 2 | B | `la(Q)` | `mi(H)·mi(H)` | `la(W)` |
+| 3 | C | `la(Q)×5` (inton la/H) | `re(Q)` prep → `sol(H)` | `sol(W)` |
+| 4 | D | `sol(Q)×3` | `mi(H)·mi(Q)·mi(Q)` | `la(W)` |
+| 5 | B | `la(Q)×2` | `mi(H)·mi(Q)·mi(Q)` | `la(H)` |
+| 6 | Final | preslur `la·re` melisma (H·+Q) | `sol·fa` melisma (W+H) · `sol(H)` | `re(W)` |
+
+### Key findings vs first-principles estimate
+- Bass home pitch is `la(G3)` — not `do(Bb)` or `ti` as initially guessed
+- Cadence dip pitch is `mi(D3)` — not `sol` as estimated
+- Phrase D reciting tone drops to `sol(F3)` — bass follows the melody down
+- Phrase C prep drops to `re(C3)` before rising to `sol(F3)` cadence
+- Final closes on `re(C3)` — open minor seventh against soprano `ti(Ab4)`
+  This is the characteristic Russian Orthodox unresolved modal close, not
+  a Western perfect cadence
+
+### Voice assignment correction
+The chant melody is carried by the **alto**, not the soprano:
+- Alto: chant melody (our DATA — reciting on Bb/re)
+- Soprano: descant (parallel third above melody)
+- Bass: harmonic foundation as documented above
+- Tenor: filler (inner voice completing the chord)
+
+Our DATA label should read "Alto (Melody)" not "Soprano (Melody)".
