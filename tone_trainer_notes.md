@@ -947,3 +947,51 @@ after confirmed evidence across multiple phrases.
 Per-phrase cadence duration functions with meaningful variable names that
 match the method (noted for implementation). Generic `lineToNotes()` cad
 handler is insufficient for correct duration modeling across phrases.
+
+---
+
+## Research session — Tone 2 Phrase D cadence (May 31 2026)
+
+### Phrase D structure
+Tutorial states explicitly: "reciting tone on do and a cadence, identical to the
+cadence of Phrase B." Code correctly reflects this:
+- `D: { recite: "do", inton: false, prep: null, cad: ["di", "re"] }`
+- `B: { recite: "re", inton: false, prep: null, cad: ["di", "re"] }`
+
+Only difference is reciting pitch (`do` vs `re`). Cadence figure identical.
+
+### Phrase D cadence duration model
+
+| Count | Context | Shape |
+|---|---|---|
+| 2 | single word fills cadence | `di(H) · re(H)` |
+| 3 | single word fills cadence | `di(H) · di(H) · re(H)` |
+| 3 | multi-word cadence | `di(H) · di(H) · re(W)` |
+| 4+ | single word fills cadence | `di(H) · di(Q)×n · re(H)` |
+| 4+ | multi-word cadence | `di(H) · di(Q)×n · re(W)` |
+
+### Whole note trigger for Phrase D
+Fires when the final word of the cadence is **not** the only word in the cadence
+— i.e. cadence spans multiple words. **Same trigger as Phrase C**, not Phrase B.
+
+Score evidence:
+- "Arch-an-gel" (single word, full cadence) → `di(H) · re(H)` — no whole note
+- "Re-ceive the voice of my prayer," (multi-word, 4 syllables) → `di(H) · di(Q) · di(Q) · re(H)` — no whole note (prayer is single-syllable closer, not phrase-final line)
+- "be an eve-ning sac-ri-fice!" (multi-word, 3 syllables in cadence) → `di(H) · di(H) · re(W)` — whole note confirmed
+
+### Fill duration rule
+- Count=3 with whole note: fill stays at **half note** (`di(H) · di(H) · re(W)`)
+- Count=4+ with whole note: fill drops to **quarter note** (`di(H) · di(Q)×n · re(W)`)
+- Threshold between H-fill and Q-fill is count=3 vs count=4+, consistent with
+  non-whole-note cases
+
+### Comparison: Phrase B vs Phrase D whole note triggers
+Despite sharing the same cadence figure `[di, re]`:
+- **Phrase B**: whole note fires when **single word fills entire cadence**
+- **Phrase D**: whole note fires when **cadence spans multiple words**
+- These are opposite triggers — confirms cadence logic is phrase-specific,
+  not figure-specific
+
+### Current code status
+Same gaps as Phrase B — generic handler does not implement whole note trigger
+or correct fill durations. Per-phrase cadence duration function required.
