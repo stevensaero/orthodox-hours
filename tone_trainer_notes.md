@@ -1281,3 +1281,52 @@ The chant melody is carried by the **alto**, not the soprano:
 - Tenor: filler (inner voice completing the chord)
 
 Our DATA label should read "Alto (Melody)" not "Soprano (Melody)".
+
+---
+
+## Bass derivation logic validated — Sticheron 2 (May 31 2026)
+
+### Test sticheron
+"Let my prayer arise / in Thy sight as incense, / and let the lifting up of my hands /
+be an evening sacrifice!// / Hear me, O Lord!"
+
+Phrase sequence: A B C D Final (5 lines)
+
+### Result
+Bass line derived algorithmically from the verified ruleset and confirmed
+correct against the L'vov-Bakhmetev Obikhod score by the user.
+
+### Validated bass derivation rules (Tone 2 Obikhod)
+
+**Reciting tone:**
+- Phrases A, B, C, Final → bass holds `la(G3)`
+- Phrase D → bass holds `sol(F3)`
+
+**Cadence rules by phrase:**
+- Phrase A: anchor=`la(H)`, fills=`mi(H or Q)`, close=`la(H·)`
+- Phrase B: anchor=`mi(H)`, close=`la(W)` single-word or `la(H)` non-final
+- Phrase C: prep=`re(Q)`, cad=`sol(H)`, fills=`sol(Q)`, close=`sol(W)`
+- Phrase D: anchor=`mi(H)`, fills=`mi(H or Q)`, close=`la(W or H)`
+- Final: preslur=`la·re(H·+Q)`, cad=`sol·fa(W+H)`, `sol(H)`, close=`re(W)`
+
+**Fill duration threshold (matches soprano):**
+- Count=3 → fills at H
+- Count=4+ → fills at Q
+
+**Whole note triggers (mirrors soprano rules):**
+- Phrase B: single word fills cadence → `la(W)`
+- Phrase D: multi-word cadence → `la(W)`
+- Phrase C: multi-word cadence → `sol(W)`
+
+### Practical encoding workflow
+1. Point soprano/alto text using phrase rules (tool already does this)
+2. Apply bass reciting tone per phrase
+3. Map cadence pitches using BASS_CADENCE_MAP
+4. Match note count and duration to soprano exactly
+5. Spot-check Final Phrase against score (most complex)
+
+### Architecture note
+`DATA_BASS` can be computed algorithmically from `DATA` (alto) using the
+validated ruleset. A `generateBass(DATA, phrase_sequence)` function is
+the natural next step — encoding bass becomes a derivation, not a manual
+transcription.

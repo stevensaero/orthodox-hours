@@ -288,6 +288,14 @@
   </div>
 
   <div class="ctrl-group">
+    <div class="ctrl-label">Sticheron</div>
+    <select id="sel-sticheron" style="background:#1a1510;border:1px solid #3a3020;border-radius:3px;color:#c8a84a;font-size:10px;padding:3px 6px;cursor:pointer;width:100%;">
+      <option value="1" selected>1 - Lord, I Call upon Thee</option>
+      <option value="2">2 - Let my prayer arise</option>
+    </select>
+  </div>
+
+  <div class="ctrl-group">
     <div class="ctrl-label">Timbre</div>
     <select id="sel-timbre" style="background:#1a1510;border:1px solid #3a3020;border-radius:3px;color:#c8a84a;font-size:10px;padding:3px 6px;cursor:pointer;width:100%;">
       <option value="piano" selected>Piano</option>
@@ -351,55 +359,55 @@
 </div>
 
 <!-- ── LORD I CALL VERSE ROWS ─────────────────────── -->
-<div class="phrase-section">
+<div class="phrase-section" id="section-row-1">
   <div class="phrase-header">
-    <div class="phrase-label" style="margin-bottom:0;">Line 1 · Phrase A · "Lord, I call u-pon Thee, hear me!"</div>
-    <button class="play-btn" id="play-row-1" onclick="playRow('row-1')">▶ Play</button>
+    <div class="phrase-label" id="label-row-1" style="margin-bottom:0;">Line 1 · Phrase A · "Lord, I call u-pon Thee, hear me!"</div>
+    <button class="play-btn" id="play-row-1" onclick="playRow('row-1')">&#9654; Play</button>
   </div>
   <div class="chip-row" id="row-1"></div>
 </div>
-<div class="divider"></div>
+<div class="divider" id="div-row-1"></div>
 
-<div class="phrase-section">
+<div class="phrase-section" id="section-row-2">
   <div class="phrase-header">
-    <div class="phrase-label" style="margin-bottom:0;">Line 2 · Phrase B · "Hear me, O Lord!"</div>
-    <button class="play-btn" id="play-row-2" onclick="playRow('row-2')">▶ Play</button>
+    <div class="phrase-label" id="label-row-2" style="margin-bottom:0;">Line 2 · Phrase B · "Hear me, O Lord!"</div>
+    <button class="play-btn" id="play-row-2" onclick="playRow('row-2')">&#9654; Play</button>
   </div>
   <div class="chip-row" id="row-2"></div>
 </div>
-<div class="divider"></div>
+<div class="divider" id="div-row-2"></div>
 
-<div class="phrase-section">
+<div class="phrase-section" id="section-row-3">
   <div class="phrase-header">
-    <div class="phrase-label" style="margin-bottom:0;">Line 3 · Phrase C · "Lord, I call u-pon Thee, hear me!" (intonation)</div>
-    <button class="play-btn" id="play-row-3" onclick="playRow('row-3')">▶ Play</button>
+    <div class="phrase-label" id="label-row-3" style="margin-bottom:0;">Line 3 · Phrase C · "Lord, I call u-pon Thee, hear me!" (intonation)</div>
+    <button class="play-btn" id="play-row-3" onclick="playRow('row-3')">&#9654; Play</button>
   </div>
   <div class="chip-row" id="row-3"></div>
 </div>
-<div class="divider"></div>
+<div class="divider" id="div-row-3"></div>
 
-<div class="phrase-section">
+<div class="phrase-section" id="section-row-4">
   <div class="phrase-header">
-    <div class="phrase-label" style="margin-bottom:0;">Line 4 · Phrase D · "Receive the voice of my prayer,"</div>
-    <button class="play-btn" id="play-row-4" onclick="playRow('row-4')">▶ Play</button>
+    <div class="phrase-label" id="label-row-4" style="margin-bottom:0;">Line 4 · Phrase D · "Receive the voice of my prayer,"</div>
+    <button class="play-btn" id="play-row-4" onclick="playRow('row-4')">&#9654; Play</button>
   </div>
   <div class="chip-row" id="row-4"></div>
 </div>
-<div class="divider"></div>
+<div class="divider" id="div-row-4"></div>
 
-<div class="phrase-section">
+<div class="phrase-section" id="section-row-5">
   <div class="phrase-header">
-    <div class="phrase-label" style="margin-bottom:0;">Line 5 · Phrase B · "when I call u-pon Thee!//"</div>
-    <button class="play-btn" id="play-row-5" onclick="playRow('row-5')">▶ Play</button>
+    <div class="phrase-label" id="label-row-5" style="margin-bottom:0;">Line 5 · Phrase B · "when I call u-pon Thee!//"</div>
+    <button class="play-btn" id="play-row-5" onclick="playRow('row-5')">&#9654; Play</button>
   </div>
   <div class="chip-row" id="row-5"></div>
 </div>
-<div class="divider"></div>
+<div class="divider" id="div-row-5"></div>
 
-<div class="phrase-section">
+<div class="phrase-section" id="section-row-6">
   <div class="phrase-header">
-    <div class="phrase-label" style="margin-bottom:0;">Line 6 · Final Phrase · "Hear me, O Lord!"</div>
-    <button class="play-btn" id="play-row-6" onclick="playRow('row-6')">▶ Play</button>
+    <div class="phrase-label" id="label-row-6" style="margin-bottom:0;">Line 6 · Final Phrase · "Hear me, O Lord!"</div>
+    <button class="play-btn" id="play-row-6" onclick="playRow('row-6')">&#9654; Play</button>
   </div>
   <div class="chip-row" id="row-6"></div>
 </div>
@@ -570,6 +578,97 @@ const DATA_BASS = {
     { syl:"Lord!", sol:"re",  role:"cad",     dur:"W"  },
   ],
 };
+
+const DATA2 = {
+  "row-1": [
+    { syl:"Let",    sol:"re", role:"recite", dur:"Q"  },
+    { syl:"my",     sol:"re", role:"recite", dur:"Q"  },
+    { syl:"prayer", sol:"fa", role:"cad",    dur:"H"  },
+    { syl:"a-",     sol:"mi", role:"cad",    dur:"H"  },
+    { syl:"rise",   sol:"re", role:"cad",    dur:"H·" },
+  ],
+  "row-2": [
+    { syl:"in",     sol:"re", role:"recite", dur:"Q" },
+    { syl:"Thy",    sol:"re", role:"recite", dur:"Q" },
+    { syl:"sight",  sol:"re", role:"recite", dur:"Q" },
+    { syl:"as",     sol:"re", role:"recite", dur:"Q" },
+    { syl:"in-",    sol:"di", role:"cad",    dur:"H" },
+    { syl:"cense,", sol:"re", role:"cad",    dur:"W" },
+  ],
+  "row-3": [
+    { syl:"and",   sol:"re", role:"recite", dur:"Q"  },
+    { syl:"let",   sol:"re", role:"inton",  dur:"H"  },
+    { syl:"the",   sol:"re", role:"recite", dur:"Q"  },
+    { syl:"lift-", sol:"re", role:"recite", dur:"Q"  },
+    { syl:"ing",   sol:"ti", role:"prep",   dur:"Q"  },
+    { syl:"up",    sol:"do", role:"cad",    dur:"H"  },
+    { syl:"of",    sol:"do", role:"cad",    dur:"Q"  },
+    { syl:"my",    sol:"do", role:"cad",    dur:"Q"  },
+    { syl:"hands", sol:"do", role:"cad",    dur:"W"  },
+  ],
+  "row-4": [
+    { syl:"be",    sol:"do", role:"recite", dur:"Q" },
+    { syl:"an",    sol:"do", role:"recite", dur:"Q" },
+    { syl:"eve-",  sol:"do", role:"recite", dur:"Q" },
+    { syl:"ning",  sol:"do", role:"recite", dur:"Q" },
+    { syl:"sac-",  sol:"di", role:"cad",    dur:"H" },
+    { syl:"ri-",   sol:"di", role:"cad",    dur:"H" },
+    { syl:"fice!", sol:"re", role:"cad",    dur:"W" },
+  ],
+  "row-5": [
+    { syl:"Hear",  sol:"re", role:"preslur", dur:"H·", melisma:["re","ti"], melismaDurs:["H·","Q"] },
+    { syl:"me,",   sol:"do", role:"cad",     dur:"W",  melisma:["do","re"], melismaDurs:["W","H"]  },
+    { syl:"O",     sol:"do", role:"cad",     dur:"H"  },
+    { syl:"Lord!", sol:"ti", role:"cad",     dur:"W"  },
+  ],
+};
+
+const DATA_BASS2 = {
+  "row-1": [
+    { syl:"Let",    sol:"la", role:"recite", dur:"Q"  },
+    { syl:"my",     sol:"la", role:"recite", dur:"Q"  },
+    { syl:"prayer", sol:"la", role:"cad",    dur:"H"  },
+    { syl:"a-",     sol:"mi", role:"cad",    dur:"H"  },
+    { syl:"rise",   sol:"la", role:"cad",    dur:"H·" },
+  ],
+  "row-2": [
+    { syl:"in",     sol:"la", role:"recite", dur:"Q" },
+    { syl:"Thy",    sol:"la", role:"recite", dur:"Q" },
+    { syl:"sight",  sol:"la", role:"recite", dur:"Q" },
+    { syl:"as",     sol:"la", role:"recite", dur:"Q" },
+    { syl:"in-",    sol:"mi", role:"cad",    dur:"H" },
+    { syl:"cense,", sol:"la", role:"cad",    dur:"W" },
+  ],
+  "row-3": [
+    { syl:"and",   sol:"la", role:"recite", dur:"Q"  },
+    { syl:"let",   sol:"la", role:"inton",  dur:"H"  },
+    { syl:"the",   sol:"la", role:"recite", dur:"Q"  },
+    { syl:"lift-", sol:"la", role:"recite", dur:"Q"  },
+    { syl:"ing",   sol:"re", role:"prep",   dur:"Q"  },
+    { syl:"up",    sol:"sol",role:"cad",    dur:"H"  },
+    { syl:"of",    sol:"sol",role:"cad",    dur:"Q"  },
+    { syl:"my",    sol:"sol",role:"cad",    dur:"Q"  },
+    { syl:"hands", sol:"sol",role:"cad",    dur:"W"  },
+  ],
+  "row-4": [
+    { syl:"be",    sol:"sol", role:"recite", dur:"Q" },
+    { syl:"an",    sol:"sol", role:"recite", dur:"Q" },
+    { syl:"eve-",  sol:"sol", role:"recite", dur:"Q" },
+    { syl:"ning",  sol:"sol", role:"recite", dur:"Q" },
+    { syl:"sac-",  sol:"mi",  role:"cad",    dur:"H" },
+    { syl:"ri-",   sol:"mi",  role:"cad",    dur:"H" },
+    { syl:"fice!", sol:"la",  role:"cad",    dur:"W" },
+  ],
+  "row-5": [
+    { syl:"Hear",  sol:"la",  role:"preslur", dur:"H·", melisma:["la","re"], melismaDurs:["H·","Q"] },
+    { syl:"me,",   sol:"sol", role:"cad",     dur:"W",  melisma:["sol","fa"], melismaDurs:["W","H"]  },
+    { syl:"O",     sol:"sol", role:"cad",     dur:"H"  },
+    { syl:"Lord!", sol:"re",  role:"cad",     dur:"W"  },
+  ],
+};
+
+let DATA_REF = DATA;
+let DATA_BASS_REF = DATA_BASS;
 
 // Active data set — switched by voice selector
 let ACTIVE_DATA = DATA;
@@ -896,7 +995,7 @@ function renderAll() {
       row.style.alignItems = 'flex-end';
 
       // alto chips (use DATA soprano data)
-      DATA[rowId].forEach(n => {
+      DATA_REF[rowId].forEach(n => {
         if (n.melisma && n.melismaDurs && n.melisma.length > 1) {
           row.appendChild(buildMelismaGroup(n));
         } else {
@@ -912,7 +1011,7 @@ function renderAll() {
         flex-wrap:wrap; margin-top:8px; margin-bottom:6px; position:relative;
       `;
 
-      DATA[rowId].forEach(n => {
+      DATA_REF[rowId].forEach(n => {
         const isMelisma = n.melisma && n.melismaDurs && n.melisma.length > 1;
         const w = isMelisma
           ? n.melisma.reduce((sum, _, i) => sum + chipW(n.role === 'preslur' ? 'prep' : n.role, n.melismaDurs[i]), 0) + Math.round(S.gap / 2) * (n.melisma.length - 1)
@@ -941,7 +1040,7 @@ function renderAll() {
       bassRowEl.style.cssText = `display:flex; gap:${S.gap}px; align-items:flex-start; flex-wrap:wrap; margin-top:0;`;
       bassRowEl.id = 'bass-row-' + rowId;
 
-      DATA_BASS[rowId].forEach(n => {
+      DATA_BASS_REF[rowId].forEach(n => {
         if (n.melisma && n.melismaDurs && n.melisma.length > 1) {
           bassRowEl.appendChild(buildMelismaGroup_bass(n));
         } else {
@@ -1081,9 +1180,69 @@ document.getElementById('sel-pitch').addEventListener('change', function() {
   if (isonNode) { stopIson(); setTimeout(startIson, 700); }
 });
 
+const STICHERON_LABELS = {
+  '1': {
+    'row-1': 'Line 1 · Alto · Phrase A · "Lord, I call u-pon Thee, hear me!"',
+    'row-2': 'Line 2 · Alto · Phrase B · "Hear me, O Lord!"',
+    'row-3': 'Line 3 · Alto · Phrase C · "Lord, I call u-pon Thee, hear me!" (intonation)',
+    'row-4': 'Line 4 · Alto · Phrase D · "Receive the voice of my prayer,"',
+    'row-5': 'Line 5 · Alto · Phrase B · "when I call u-pon Thee!//"',
+    'row-6': 'Line 6 · Alto · Final Phrase · "Hear me, O Lord!"',
+  },
+  '2': {
+    'row-1': 'Line 1 · Alto · Phrase A · "Let my prayer a-rise"',
+    'row-2': 'Line 2 · Alto · Phrase B · "in Thy sight as in-cense,"',
+    'row-3': 'Line 3 · Alto · Phrase C · "and let the lift-ing up of my hands"',
+    'row-4': 'Line 4 · Alto · Phrase D · "be an eve-ning sac-ri-fice!//"',
+    'row-5': 'Line 5 · Alto · Final Phrase · "Hear me, O Lord!"',
+    'row-6': null,
+  },
+};
+
+function switchSticheron(s) {
+  if (s === '2') {
+    DATA_REF = DATA2;
+    DATA_BASS_REF = DATA_BASS2;
+  } else {
+    DATA_REF = DATA;
+    DATA_BASS_REF = DATA_BASS;
+  }
+
+  // show/hide row-6 and its divider
+  const sec6 = document.getElementById('section-row-6');
+  const div5 = document.getElementById('div-row-5');
+  const div6 = document.getElementById('div-row-6');
+  if (s === '2') {
+    if (sec6) sec6.style.display = 'none';
+    if (div5) div5.style.display = 'none';
+    if (div6) div6.style.display = 'none';
+  } else {
+    if (sec6) sec6.style.display = '';
+    if (div5) div5.style.display = '';
+    if (div6) div6.style.display = '';
+  }
+
+  // update phrase labels
+  const labels = STICHERON_LABELS[s] || STICHERON_LABELS['1'];
+  Object.keys(labels).forEach(rowId => {
+    const lbl = document.getElementById('label-' + rowId);
+    if (lbl && labels[rowId]) lbl.textContent = labels[rowId];
+  });
+
+  const voice = document.getElementById('sel-voice')?.value || 'soprano';
+  ACTIVE_DATA = (voice === 'bass') ? DATA_BASS_REF : DATA_REF;
+  renderAll();
+}
+
+document.getElementById('sel-sticheron').addEventListener('change', function() {
+  stopAll();
+  window._activeSticheron = this.value;
+  switchSticheron(this.value);
+});
+
 document.getElementById('sel-voice').addEventListener('change', function() {
   stopAll();
-  ACTIVE_DATA = this.value === 'bass' ? DATA_BASS : DATA; // alto-bass uses DATA for display
+  ACTIVE_DATA = this.value === 'bass' ? DATA_BASS_REF : DATA_REF;
   // update phrase labels
   const labels = {
     soprano: [
@@ -1465,7 +1624,7 @@ function scheduleRow(rowId, ctx, t) {
   const isCombinedVoice = document.getElementById('sel-voice')?.value === 'alto-bass';
   const bassTimeMap = []; // [{t, dur}] per bass note (including melisma expansion)
 
-  if (isCombinedVoice && DATA_BASS[rowId]) {
+  if (isCombinedVoice && DATA_BASS_REF[rowId]) {
     // Pre-walk alto to compute timestamps for each note slot
     let tWalk = t;
     notes.forEach(n => {
@@ -1516,10 +1675,10 @@ function scheduleRow(rowId, ctx, t) {
   });
 
   // Schedule bass notes + highlights at pre-computed timestamps
-  if (isCombinedVoice && DATA_BASS[rowId]) {
+  if (isCombinedVoice && DATA_BASS_REF[rowId]) {
     let bassIdx = 0;
     let bassChipIdx = 0; // index into bassChips NodeList
-    DATA_BASS[rowId].forEach(n => {
+    DATA_BASS_REF[rowId].forEach(n => {
       const currentBassChipIdx = bassChipIdx++;
       if (n.melisma && n.melismaDurs) {
         // melisma — each pitch gets its own timestamp
