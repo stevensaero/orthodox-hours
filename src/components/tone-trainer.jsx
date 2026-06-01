@@ -250,8 +250,23 @@ const TRAINER_RELEASE_NOTES = [
     ],
   },
   {
-    version: "v0.3.1",
+    version: "v0.3.5",
     date: "May 2026",
+    summary: "Tone 2 per-phrase cadence duration engine",
+    items: [
+      "feat: Tone 2 cadence durations are now score-verified and phrase-specific. Each of the five Tone 2 phrases (A, B, C, D, Final) has its own duration logic derived from Drillock & Ealy tutorial and L'vov-Bakhmetev Obikhod score analysis.",
+      "feat: Phrase A — fa(H)·mi(H)·re(H·) at count≤3; fill mi drops to Q at count≥4; re close is dotted half at count≤3, plain H at count≥4. Anchor melisma at count<3.",
+      "feat: Phrase B — di(H) anchor, fills H≤3/Q≥4, whole note on re when single word fills entire cadence.",
+      "feat: Phrase C — do(H) anchor, fills H≤2/Q≥3, whole note on do when cadence spans multiple words.",
+      "feat: Phrase D — same figure as B but reciting on do, whole note fires on multi-word cadence (opposite trigger to B).",
+      "feat: Final Phrase — do(W) anchor always, ti(W) close always; anchor melisma at count<4 (count=2: do·re·do melisma; count=3: do·re melisma + do(H)).",
+      "feat: wordBoundary flag added to pointLine() cad output — drives whole note triggers without changing role assignment.",
+      "feat: cadDuration() — per-phrase duration function reads cadDurs metadata from PH_DEFS[2]. Falls through to generic handler for tones without cadDurs (Tones 1, 3 unchanged).",
+      "feat: buildMelisma() — emits multi-pitch melisma note arrays with explicit per-pitch durations, replacing even-split shortcut.",
+      "note: Phrase A whole note behavior unconfirmed; Final count≥5 fill behavior unconfirmed — both flagged in source.",
+    ],
+  },
+  {
     summary: "Per-sticheron encoding & context — simplified to [accent] only",
     items: [
       "change: dropped the *accent* option — encoding is now always [accent] (more readable, unambiguous to parse). Removed the marker toggle.",
