@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #1a1510;
+    color: #e8dfc8;
+    font-family: Georgia, serif;
+    padding: 20px 20px 40px;
+    min-height: 100vh;
+  }
+
+  h1 {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7a5a;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #3a3020;
+    padding-bottom: 8px;
+  }
+
+  /* ── CONTROLS PANEL ─────────────────────────────── */
+  .controls {
+    background: #100e0a;
+    border: 1px solid #2a2418;
+    border-radius: 6px;
+    padding: 16px 18px;
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px 24px;
+  }
+  .ctrl-group { display: flex; flex-direction: column; gap: 5px; }
+  .ctrl-label {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7a6040;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .ctrl-val {
+    font-size: 10px;
+    color: #c8a84a;
+    font-variant-numeric: tabular-nums;
+    min-width: 36px;
+    text-align: right;
+  }
+  input[type=range] {
+    width: 100%;
+    accent-color: #c8a84a;
+    height: 3px;
+    cursor: pointer;
+  }
+  input[type=number] {
+    width: 60px;
+    background: #1a1510;
+    border: 1px solid #3a3020;
+    border-radius: 3px;
+    color: #c8a84a;
+    font-size: 10px;
+    padding: 2px 5px;
+    text-align: right;
+  }
+  input[type=number]:focus { outline: 1px solid #c8a84a; }
+
+  .ctrl-row { display: flex; align-items: center; gap: 8px; }
+
+  /* ── TOGGLE BUTTONS ─────────────────────────────── */
+  .toggle-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .toggle-btn {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 3px;
+    border: 1px solid #3a3020;
+    background: #1a1510;
+    color: #6a5a3a;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .toggle-btn.on {
+    background: #3a3020;
+    border-color: #c8a84a;
+    color: #c8a84a;
+  }
+
+  /* ── PHRASE ROWS ─────────────────────────────────── */
+  .phrase-section { margin-bottom: 32px; }
+  .phrase-label {
+    font-size: 9px;
+    color: #4a3a22;
+    margin-bottom: 12px;
+    font-style: italic;
+    letter-spacing: 0.06em;
+  }
+  .chip-row {
+    display: flex;
+    gap: 2px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    min-height: 20px;
+  }
+
+  /* ── CHIPS ───────────────────────────────────────── */
+  .chip-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .chip {
+    border-radius: 4px;
+    position: relative;
+    overflow: visible;
+    transition: width 0.2s, height 0.2s;
+  }
+  /* recite — narrow marker */
+  .chip.recite {
+    background: #2a3545;
+    border: 1px solid #3a4a60;
+  }
+  .chip.inton {
+    background: #1a3a2a;
+    border: 1px solid #2a6a4a;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 5px 3px 4px;
+  }
+  .chip.prep {
+    background: #3a2e10;
+    border: 1px solid #6a5020;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 5px 3px 4px;
+  }
+  .chip.cad {
+    background: #3a1a1a;
+    border: 1px solid #6a2a2a;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 5px 3px 4px;
+  }
+  .chip .syl {
+    font-size: 11px;
+    color: #e8dfc8;
+    text-align: center;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+  .chip .sol {
+    font-size: 7px;
+    color: rgba(232,223,200,0.35);
+    text-align: center;
+    padding-top: 2px;
+  }
+  .chip .dur {
+    font-size: 7px;
+    color: rgba(200,168,74,0.5);
+    text-align: center;
+    font-style: italic;
+  }
+  /* floating text for recite chips */
+  .recite-text {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: max-content;
+  }
+  .recite-text .syl {
+    font-size: 11px;
+    color: #c8b888;
+    line-height: 1.2;
+  }
+  .recite-text .sol {
+    font-size: 7px;
+    color: rgba(232,223,200,0.28);
+  }
+
+  .divider { height: 1px; background: #1e1a12; margin: 24px 0; }
+
+  .phrase-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .play-btn {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 3px;
+    border: 1px solid #3a5030;
+    background: #1a2a1a;
+    color: #6a9a6a;
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .play-btn:hover { background: #2a3a2a; border-color: #7aba7a; color: #9aca9a; }
+  .play-btn.playing { background: #2a3a1a; border-color: #c8a84a; color: #c8a84a; }
+  .chip-wrap.active .chip { filter: brightness(1.6); }
+  .chip-wrap.active-sub .chip { filter: brightness(1.6); }
+  .melisma-subchip.active-sub { filter: brightness(1.6); }
+</style>
+</head>
+<body>
+
+<h1>Tone Trainer Sandbox · Tone 2 · Lord I Call</h1>
+
+<!-- ── CONTROLS ────────────────────────────────────── -->
+<div class="controls">
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Base chip height (px) <span class="ctrl-val" id="val-base">25</span></div>
+    <input type="range" id="sl-base" min="8" max="80" value="25" step="1">
+  </div>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Pitch amplitude (px) <span class="ctrl-val" id="val-step">2</span></div>
+    <input type="range" id="sl-step" min="0" max="24" value="10" step="1">
+  </div>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Pitch curve (1=linear · 3=steep) <span class="ctrl-val" id="val-curve">2.0</span></div>
+    <input type="range" id="sl-curve" min="0.5" max="4.0" value="2.0" step="0.1">
+  </div>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Recite marker width (px) <span class="ctrl-val" id="val-rw">18</span></div>
+    <input type="range" id="sl-rw" min="8" max="52" value="18" step="1">
+  </div>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Q width (px) <span class="ctrl-val" id="val-q">30</span></div>
+    <input type="range" id="sl-q" min="12" max="80" value="30" step="1">
+  </div>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">H width (px) <span class="ctrl-val" id="val-h">50</span></div>
+    <input type="range" id="sl-h" min="12" max="120" value="50" step="1">
+  </div>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">H· width (px) <span class="ctrl-val" id="val-hd">68</span></div>
+    <input type="range" id="sl-hd" min="12" max="140" value="68" step="1">
+  </div>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">W width (px) <span class="ctrl-val" id="val-w">90</span></div>
+    <input type="range" id="sl-w" min="12" max="160" value="90" step="1">
+  </div>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Chip gap (px) <span class="ctrl-val" id="val-gap">8</span></div>
+    <input type="range" id="sl-gap" min="0" max="12" value="8" step="1">
+  </div>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Voice part</div>
+    <select id="sel-voice" style="background:#1a1510;border:1px solid #3a3020;border-radius:3px;color:#c8a84a;font-size:10px;padding:3px 6px;cursor:pointer;width:100%;">
+      <option value="soprano" selected>Alto (Melody)</option>
+      <option value="bass">Bass</option>
+      <option value="alto-bass">Alto + Bass</option>
+    </select>
+  </div>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Timbre</div>
+    <select id="sel-timbre" style="background:#1a1510;border:1px solid #3a3020;border-radius:3px;color:#c8a84a;font-size:10px;padding:3px 6px;cursor:pointer;width:100%;">
+      <option value="piano" selected>Piano</option>
+      <option value="organ">Pipe Organ</option>
+      <option value="harmonium">Harmonium</option>
+      <option value="choir">Choir (Voice)</option>
+      <option value="cello">Cello / Strings</option>
+    </select>
+  </div>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Ison drone <span class="ctrl-val" id="val-ison" style="color:#7a9a7a;">30%</span></div>
+    <input type="range" id="sl-ison" min="0" max="100" value="30" step="1"
+      style="accent-color:#7a9a7a;">
+    <div style="font-size:8px;color:#4a5a3a;margin-top:2px;">0 = off · 100 = full drone</div>
+  </div>
+
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Starting pitch (do =) <span class="ctrl-val" id="val-pitch">Bb4</span></div>
+    <select id="sel-pitch" style="background:#1a1510;border:1px solid #3a3020;border-radius:3px;color:#c8a84a;font-size:10px;padding:3px 6px;cursor:pointer;width:100%;">
+      <option value="G3">G3</option>
+      <option value="Ab3">Ab3</option>
+      <option value="A3">A3</option>
+      <option value="Bb3">Bb3</option>
+      <option value="B3">B3</option>
+      <option value="C4">C4</option>
+      <option value="Db4">Db4</option>
+      <option value="D4">D4</option>
+      <option value="Eb4">Eb4</option>
+      <option value="E4">E4</option>
+      <option value="F4">F4</option>
+      <option value="Gb4">Gb4</option>
+      <option value="G4">G4</option>
+      <option value="Ab4">Ab4</option>
+      <option value="A4">A4</option>
+      <option value="Bb4" selected>Bb4</option>
+      <option value="B4">B4</option>
+      <option value="C5">C5</option>
+      <option value="D5">D5</option>
+      <option value="E5">E5</option>
+    </select>
+  </div>
+
+</div>
+
+<!-- ── DISPLAY TOGGLES ──────────────────────────────── -->
+<div class="toggle-row">
+  <button class="toggle-btn on" id="tog-pitch">Pitch height</button>
+  <button class="toggle-btn on" id="tog-durwidth">Duration width</button>
+  <button class="toggle-btn" id="tog-narrowrecite">Narrow recite</button>
+  <button class="toggle-btn on" id="tog-sol">Show solfège</button>
+  <button class="toggle-btn" id="tog-dur">Show dur label</button>
+</div>
+
+<div style="margin-bottom:20px;">
+  <button class="play-btn" id="play-all-btn" onclick="playAll()"
+    style="font-size:10px;padding:5px 16px;border-color:#4a6040;background:#1a2a1a;color:#7aaa7a;letter-spacing:0.12em;">
+    ▶ Play All Lines
+  </button>
+</div>
+
+<!-- ── LORD I CALL VERSE ROWS ─────────────────────── -->
+<div class="phrase-section">
+  <div class="phrase-header">
+    <div class="phrase-label" style="margin-bottom:0;">Line 1 · Phrase A · "Lord, I call u-pon Thee, hear me!"</div>
+    <button class="play-btn" id="play-row-1" onclick="playRow('row-1')">▶ Play</button>
+  </div>
+  <div class="chip-row" id="row-1"></div>
+</div>
+<div class="divider"></div>
+
+<div class="phrase-section">
+  <div class="phrase-header">
+    <div class="phrase-label" style="margin-bottom:0;">Line 2 · Phrase B · "Hear me, O Lord!"</div>
+    <button class="play-btn" id="play-row-2" onclick="playRow('row-2')">▶ Play</button>
+  </div>
+  <div class="chip-row" id="row-2"></div>
+</div>
+<div class="divider"></div>
+
+<div class="phrase-section">
+  <div class="phrase-header">
+    <div class="phrase-label" style="margin-bottom:0;">Line 3 · Phrase C · "Lord, I call u-pon Thee, hear me!" (intonation)</div>
+    <button class="play-btn" id="play-row-3" onclick="playRow('row-3')">▶ Play</button>
+  </div>
+  <div class="chip-row" id="row-3"></div>
+</div>
+<div class="divider"></div>
+
+<div class="phrase-section">
+  <div class="phrase-header">
+    <div class="phrase-label" style="margin-bottom:0;">Line 4 · Phrase D · "Receive the voice of my prayer,"</div>
+    <button class="play-btn" id="play-row-4" onclick="playRow('row-4')">▶ Play</button>
+  </div>
+  <div class="chip-row" id="row-4"></div>
+</div>
+<div class="divider"></div>
+
+<div class="phrase-section">
+  <div class="phrase-header">
+    <div class="phrase-label" style="margin-bottom:0;">Line 5 · Phrase B · "when I call u-pon Thee!//"</div>
+    <button class="play-btn" id="play-row-5" onclick="playRow('row-5')">▶ Play</button>
+  </div>
+  <div class="chip-row" id="row-5"></div>
+</div>
+<div class="divider"></div>
+
+<div class="phrase-section">
+  <div class="phrase-header">
+    <div class="phrase-label" style="margin-bottom:0;">Line 6 · Final Phrase · "Hear me, O Lord!"</div>
+    <button class="play-btn" id="play-row-6" onclick="playRow('row-6')">▶ Play</button>
+  </div>
+  <div class="chip-row" id="row-6"></div>
+</div>
+
+<script>
+// ── DATA ────────────────────────────────────────────
+const PITCH_SCALE = ["la","ti","do","di","re","mi","fa","sol"];
+
+// Lord I Call — Tone 2 Obikhod · 6 lines
+// A B C D B Final
+const DATA = {
+  // Line 1 — Phrase A
+  // "Lord, I call u-pon Thee, [hear] me!"
+  // Reciting re(Q) × 5, cadence anchor=hear: fa(H)·mi(H) melisma, me!=re(H·)
+  "row-1": [
+    { syl:"Lord,", sol:"re", role:"recite", dur:"Q"  },
+    { syl:"I",     sol:"re", role:"recite", dur:"Q"  },
+    { syl:"call",  sol:"re", role:"recite", dur:"Q"  },
+    { syl:"u-",    sol:"re", role:"recite", dur:"Q"  },
+    { syl:"pon",   sol:"re", role:"recite", dur:"Q"  },
+    { syl:"Thee,", sol:"re", role:"recite", dur:"Q"  },
+    { syl:"hear",  sol:"fa", role:"cad",    dur:"H",  melisma:["fa","mi"], melismaDurs:["H","H"] },
+    { syl:"me!",   sol:"re", role:"cad",    dur:"H·" },
+  ],
+
+  // Line 2 — Phrase B
+  // "Hear [me], O Lord!"
+  // "Hear"=recite re(Q), [me]=anchor di(H), O=di(H), Lord!=re(W) — count=3, multi-word → re(W)
+  "row-2": [
+    { syl:"Hear",  sol:"re", role:"recite", dur:"Q" },
+    { syl:"me,",   sol:"di", role:"cad",    dur:"H" },
+    { syl:"O",     sol:"di", role:"cad",    dur:"H" },
+    { syl:"Lord!", sol:"re", role:"cad",    dur:"W" },
+  ],
+
+  // Line 3 — Phrase C  (intonation)
+  // "[Lord], I call u-pon Thee, [hear] me!"
+  // Lord=inton re(H), recite re(Q)×5, prep ti on "Thee,", cad hear=do(H), me!=do(W) multi-word
+  "row-3": [
+    { syl:"Lord,", sol:"re", role:"inton",  dur:"H"  },
+    { syl:"I",     sol:"re", role:"recite", dur:"Q"  },
+    { syl:"call",  sol:"re", role:"recite", dur:"Q"  },
+    { syl:"u-",    sol:"re", role:"recite", dur:"Q"  },
+    { syl:"pon",   sol:"re", role:"recite", dur:"Q"  },
+    { syl:"Thee,", sol:"ti", role:"prep",   dur:"Q"  },
+    { syl:"hear",  sol:"do", role:"cad",    dur:"H"  },
+    { syl:"me!",   sol:"do", role:"cad",    dur:"W"  },
+  ],
+
+  // Line 4 — Phrase D  (reciting on do)
+  // "Receive the [voice] of my prayer,"
+  // reciting do(Q)×2, [voice]=anchor di(H), of=di(Q), my=di(Q), prayer=re(H) — count=4, multi-word → re(W)
+  "row-4": [
+    { syl:"Re-",    sol:"do", role:"recite", dur:"Q" },
+    { syl:"ceive",  sol:"do", role:"recite", dur:"Q" },
+    { syl:"the",    sol:"do", role:"recite", dur:"Q" },
+    { syl:"voice",  sol:"di", role:"cad",    dur:"H" },
+    { syl:"of",     sol:"di", role:"cad",    dur:"Q" },
+    { syl:"my",     sol:"di", role:"cad",    dur:"Q" },
+    { syl:"prayer,",sol:"re", role:"cad",    dur:"W" },
+  ],
+
+  // Line 5 — Phrase B (cycling)
+  // "when I [call] u-pon Thee!//"
+  // when=re(Q), I=re(Q), [call]=di(H), u=di(Q), pon=di(Q), Thee!=re(H) — count=4, single-word closer → no W
+  "row-5": [
+    { syl:"when",  sol:"re", role:"recite", dur:"Q" },
+    { syl:"I",     sol:"re", role:"recite", dur:"Q" },
+    { syl:"call",  sol:"di", role:"cad",    dur:"H" },
+    { syl:"u-",    sol:"di", role:"cad",    dur:"Q" },
+    { syl:"pon",   sol:"di", role:"cad",    dur:"Q" },
+    { syl:"Thee!", sol:"re", role:"cad",    dur:"H" },
+  ],
+
+  // Line 6 — Final Phrase
+  // "[Hear] [me], O Lord!"
+  // Hear=pre-slur re(H·)·ti(Q), me=anchor do(W)·re(H) melisma, O=do(H), Lord!=ti(W)
+  "row-6": [
+    { syl:"Hear",  sol:"re", role:"preslur", dur:"H·", melisma:["re","ti"], melismaDurs:["H·","Q"] },
+    { syl:"me,",   sol:"do", role:"cad",     dur:"W",  melisma:["do","re"], melismaDurs:["W","H"] },
+    { syl:"O",     sol:"do", role:"cad",     dur:"H"  },
+    { syl:"Lord!", sol:"ti", role:"cad",     dur:"W"  },
+  ],
+};
+
+// ── BASS DATA ────────────────────────────────────────────────────────────────
+// Bass part — first-principles from St. Tikhon's harmonization framework
+// Register: one octave below melody (do=Bb3 when soprano do=Bb4)
+// Reciting tone: do throughout (tonic root, drone-like)
+// Cadence voicing: root→fifth→root triad support
+// Note: sol here = F3 (fifth below do=Bb3, or fourth above do=Bb3)
+// DATA_BASS — score-verified from L'vov-Bakhmetev Obikhod (OCA PDF)
+// Key: Bb major, do=Bb. Bass clef positions read directly from score.
+// Pitch map: la=G3(sp4), mi=D3(ln3), re=C3(sp2), sol=F3(ln4), fa=Eb3(sp3)
+// Verified by reading note positions against bass clef staff lines/spaces.
+const DATA_BASS = {
+  // Line 1 — Phrase A
+  // Score: recite G3, hear=G3·D3 melisma, me!=G3
+  // Solfège: la(Q)×6 · la·mi melisma(H+H) · la(H·)
+  "row-1": [
+    { syl:"Lord,", sol:"la", role:"recite", dur:"Q"  },
+    { syl:"I",     sol:"la", role:"recite", dur:"Q"  },
+    { syl:"call",  sol:"la", role:"recite", dur:"Q"  },
+    { syl:"u-",    sol:"la", role:"recite", dur:"Q"  },
+    { syl:"pon",   sol:"la", role:"recite", dur:"Q"  },
+    { syl:"Thee,", sol:"la", role:"recite", dur:"Q"  },
+    { syl:"hear",  sol:"la", role:"cad",    dur:"H",  melisma:["la","mi"], melismaDurs:["H","H"] },
+    { syl:"me!",   sol:"la", role:"cad",    dur:"H·" },
+  ],
+
+  // Line 2 — Phrase B
+  // Score: Hear=G3, me=D3, O=D3, Lord!=G3
+  // Solfège: la(Q) · mi(H) · mi(H) · la(W)
+  "row-2": [
+    { syl:"Hear",  sol:"la", role:"recite", dur:"Q" },
+    { syl:"me,",   sol:"mi", role:"cad",    dur:"H" },
+    { syl:"O",     sol:"mi", role:"cad",    dur:"H" },
+    { syl:"Lord!", sol:"la", role:"cad",    dur:"W" },
+  ],
+
+  // Line 3 — Phrase C
+  // Score: recite G3, Thee=C3(prep), hear=F3, me!=F3
+  // Solfège: la(Q)×5 · re(Q prep) · sol(H) · sol(W)
+  "row-3": [
+    { syl:"Lord,", sol:"la", role:"inton",  dur:"H"  },
+    { syl:"I",     sol:"la", role:"recite", dur:"Q"  },
+    { syl:"call",  sol:"la", role:"recite", dur:"Q"  },
+    { syl:"u-",    sol:"la", role:"recite", dur:"Q"  },
+    { syl:"pon",   sol:"la", role:"recite", dur:"Q"  },
+    { syl:"Thee,", sol:"re", role:"prep",   dur:"Q"  },
+    { syl:"hear",  sol:"sol",role:"cad",    dur:"H"  },
+    { syl:"me!",   sol:"sol",role:"cad",    dur:"W"  },
+  ],
+
+  // Line 4 — Phrase D
+  // Score: recite F3, voice=D3, of=D3, my=D3, prayer=G3
+  // Solfège: sol(Q)×3 · mi(H) · mi(Q) · mi(Q) · la(W)
+  "row-4": [
+    { syl:"Re-",     sol:"sol", role:"recite", dur:"Q" },
+    { syl:"ceive",   sol:"sol", role:"recite", dur:"Q" },
+    { syl:"the",     sol:"sol", role:"recite", dur:"Q" },
+    { syl:"voice",   sol:"mi",  role:"cad",    dur:"H" },
+    { syl:"of",      sol:"mi",  role:"cad",    dur:"Q" },
+    { syl:"my",      sol:"mi",  role:"cad",    dur:"Q" },
+    { syl:"prayer,", sol:"la",  role:"cad",    dur:"W" },
+  ],
+
+  // Line 5 — Phrase B cycling
+  // Score: recite G3, call=D3, u-=D3, -on=D3, Thee!=G3
+  // Solfège: la(Q)×2 · mi(H) · mi(Q) · mi(Q) · la(H)
+  "row-5": [
+    { syl:"when",  sol:"la", role:"recite", dur:"Q" },
+    { syl:"I",     sol:"la", role:"recite", dur:"Q" },
+    { syl:"call",  sol:"mi", role:"cad",    dur:"H" },
+    { syl:"u-",    sol:"mi", role:"cad",    dur:"Q" },
+    { syl:"pon",   sol:"mi", role:"cad",    dur:"Q" },
+    { syl:"Thee!", sol:"la", role:"cad",    dur:"H" },
+  ],
+
+  // Line 6 — Final Phrase
+  // Score: Hear=G3·C3 melisma, me=F3·Eb3 melisma, O=F3, Lord!=C3
+  // Solfège: la·re melisma(H·+Q) · sol·fa melisma(W+H) · sol(H) · re(W)
+  // Closes on re(C3) — bass and soprano in open minor seventh (re vs ti)
+  "row-6": [
+    { syl:"Hear",  sol:"la",  role:"preslur", dur:"H·", melisma:["la","re"], melismaDurs:["H·","Q"] },
+    { syl:"me,",   sol:"sol", role:"cad",     dur:"W",  melisma:["sol","fa"], melismaDurs:["W","H"]  },
+    { syl:"O",     sol:"sol", role:"cad",     dur:"H"  },
+    { syl:"Lord!", sol:"re",  role:"cad",     dur:"W"  },
+  ],
+};
+
+// Active data set — switched by voice selector
+let ACTIVE_DATA = DATA;
+
+// ── SETTINGS STATE ───────────────────────────────────
+const S = {
+  baseH: 25, stepH: 2, curve: 2.0, reciteW: 18,
+  durW: { Q:30, H:50, "H·":68, W:90 },
+  gap: 8,
+  pitchHeight: true, durWidth: true,
+  narrowRecite: false, showSol: true, showDur: false,
+};
+
+// ── RENDER ───────────────────────────────────────────
+// Pitch order by concert pitch ascending — used for chip height.
+// Soprano/alto melody uses PITCH_SCALE index (solfège order matches concert pitch).
+// Bass uses BASS_PITCH_ORDER — different register, different ascending order.
+const BASS_PITCH_ORDER = { re:0, mi:1, fa:2, sol:3, la:4 };
+
+function chipH(sol) {
+  if (!S.pitchHeight) return S.baseH;
+  const voice = document.getElementById('sel-voice')?.value || 'soprano';
+  let idx;
+  if (voice === 'bass') {
+    idx = BASS_PITCH_ORDER[sol] !== undefined ? BASS_PITCH_ORDER[sol] : 0;
+  } else {
+    idx = PITCH_SCALE.indexOf(sol);
+    if (idx <= 0) return S.baseH;
+  }
+  return Math.round(S.baseH + S.stepH * Math.pow(idx, S.curve));
+}
+
+// Bass chip depth — lower pitch drops farther from text baseline.
+// BASS_PITCH_ORDER: re=0(lowest)…la=4(highest). Invert so re=4(deepest), la=0(shallowest).
+const BASS_MAX_IDX = 4;
+function chipH_bass(sol) {
+  if (!S.pitchHeight) return S.baseH;
+  const idx = BASS_PITCH_ORDER[sol] !== undefined ? BASS_PITCH_ORDER[sol] : 0;
+  const invertedIdx = BASS_MAX_IDX - idx; // lower pitch → higher inverted idx → deeper
+  if (invertedIdx <= 0) return S.baseH;
+  return Math.round(S.baseH + S.stepH * Math.pow(invertedIdx, S.curve));
+}
+
+function chipW(role, dur) {
+  if (role === 'recite') return S.narrowRecite ? S.reciteW : (S.durWidth ? S.durW['Q'] : S.durW['Q']);
+  return S.durWidth ? (S.durW[dur] || S.durW['Q']) : S.durW['Q'];
+}
+
+// Build a single solo chip element (no text inside chip)
+function buildSoloChip(n) {
+  const h = chipH(n.sol);
+  const w = chipW(n.role, n.dur);
+  const borderStyle = n.role === 'preslur' ? 'border-color:#8a6030;' : '';
+  const chipRole = n.role === 'preslur' ? 'prep' : n.role;
+  const wrap = document.createElement('div');
+  wrap.className = 'chip-wrap';
+  wrap.dataset.syl = n.syl;
+  wrap.dataset.sol = n.sol;
+  wrap.dataset.w = w;
+  wrap.style.cssText = `height:${h}px; width:${w}px; flex-shrink:0;`;
+  wrap.innerHTML = `
+    <div class="chip ${chipRole}" style="width:${w}px;height:${h}px;${borderStyle}">
+      ${S.showSol ? `<div class="sol" style="font-size:10px;color:#7a6a58;text-align:center;position:absolute;top:6px;left:0;right:0;">${n.sol}</div>` : ''}
+      ${S.showDur && n.role !== 'recite' ? `<div class="dur" style="font-size:7px;color:rgba(200,168,74,0.5);text-align:center;font-style:italic;">${n.dur}</div>` : ''}
+    </div>`;
+  return wrap;
+}
+
+// Build a melisma group — multiple chips with syllable text centered above
+function buildMelismaGroup(n) {
+  const melismaGap = Math.round(S.gap / 2);
+  const pitches = n.melisma;
+  const durs = n.melismaDurs;
+  const chipRole = n.role === 'preslur' ? 'prep' : n.role;
+  const borderStyle = n.role === 'preslur' ? 'border-color:#8a6030;' : '';
+
+  // compute individual chip dims
+  const chipDims = pitches.map((sol, i) => ({
+    sol,
+    dur: durs[i],
+    h: chipH(sol),
+    w: chipW(chipRole, durs[i]),
+  }));
+
+  // group total width
+  const totalW = chipDims.reduce((sum, c) => sum + c.w, 0) + melismaGap * (chipDims.length - 1);
+
+  // group height = height of first pitch (anchors syllable text position)
+  const anchorH = chipDims[0].h;
+
+  // outer group wrapper — bottom-aligned in the row, sized to tallest chip
+  const maxH = Math.max(...chipDims.map(c => c.h));
+  const group = document.createElement('div');
+  group.className = 'chip-wrap melisma-group';
+  group.style.cssText = `
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-shrink: 0;
+    height: ${maxH}px;
+    width: ${totalW}px;
+  `;
+
+  // store syl/sol on dataset for text baseline row
+  group.dataset.syl = n.syl;
+  group.dataset.sol = n.melisma.join('·');
+  group.dataset.w = totalW;
+
+  // inner row of chips — bottom-aligned
+  const chipRow = document.createElement('div');
+  chipRow.style.cssText = `
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    gap: ${melismaGap}px;
+    align-items: flex-end;
+  `;
+
+  chipDims.forEach((c) => {
+    const chipEl = document.createElement('div');
+    chipEl.className = `chip ${chipRole}`;
+    chipEl.style.cssText = `width:${c.w}px; height:${c.h}px; ${borderStyle}position:relative;`;
+
+    // solfège per chip
+    if (S.showSol) {
+      const solEl = document.createElement('div');
+      solEl.className = 'sol';
+      solEl.style.cssText = 'font-size:10px; color:#7a6a58; text-align:center; position:absolute; top:6px; left:0; right:0;';
+      solEl.textContent = c.sol;
+      chipEl.appendChild(solEl);
+    }
+    if (S.showDur) {
+      const durEl = document.createElement('div');
+      durEl.className = 'dur';
+      durEl.style.cssText = 'font-size:7px; color:rgba(200,168,74,0.5); text-align:center; font-style:italic;';
+      durEl.textContent = c.dur;
+      chipEl.appendChild(durEl);
+    }
+    chipEl.classList.add('melisma-subchip');
+    chipEl.dataset.melismaIdx = String(chipDims.indexOf(c));
+    chipRow.appendChild(chipEl);
+  });
+
+  group.appendChild(chipRow);
+
+  // melisma bracket bar — bold line below the chip row
+  const bar = document.createElement('div');
+  bar.style.cssText = `
+    position: absolute;
+    bottom: -18px;
+    left: 0;
+    width: ${totalW}px;
+    height: 3px;
+    background: #2a2a2a;
+    border-radius: 2px;
+    z-index: 1;
+  `;
+  group.appendChild(bar);
+
+  // expand group height to accommodate bar
+  group.style.height = (maxH + 28) + 'px';
+
+  return group;
+}
+
+// ── BASS RENDERING — chips hang below text baseline ─────────────────────────
+
+function buildSoloChip_bass(n) {
+  const h = chipH_bass(n.sol);
+  const w = chipW(n.role, n.dur);
+  const borderStyle = n.role === 'preslur' ? 'border-color:#8a6030;' : '';
+  const chipRole = n.role === 'preslur' ? 'prep' : n.role;
+  const wrap = document.createElement('div');
+  wrap.className = 'chip-wrap bass-chip-wrap';
+  wrap.dataset.syl = n.syl;
+  wrap.dataset.sol = n.sol;
+  wrap.dataset.w = w;
+  wrap.style.cssText = `width:${w}px; flex-shrink:0; display:flex; flex-direction:column; align-items:center;`;
+  const chipEl = document.createElement('div');
+  chipEl.className = `chip ${chipRole}`;
+  chipEl.style.cssText = `width:${w}px; height:${h}px; ${borderStyle}position:relative; flex-shrink:0;`;
+  if (S.showSol) {
+    const solEl = document.createElement('div');
+    solEl.style.cssText = 'font-size:10px; color:#7a6a58; text-align:center; position:absolute; bottom:6px; left:0; right:0;';
+    solEl.textContent = n.sol;
+    chipEl.appendChild(solEl);
+  }
+  wrap.appendChild(chipEl);
+  return wrap;
+}
+
+function buildMelismaGroup_bass(n) {
+  const melismaGap = Math.round(S.gap / 2);
+  const pitches = n.melisma;
+  const durs = n.melismaDurs;
+  const chipRole = n.role === 'preslur' ? 'prep' : n.role;
+  const borderStyle = n.role === 'preslur' ? 'border-color:#8a6030;' : '';
+
+  const chipDims = pitches.map((sol, i) => ({
+    sol, dur: durs[i],
+    h: chipH_bass(sol),
+    w: chipW(chipRole, durs[i]),
+  }));
+
+  const totalW = chipDims.reduce((sum, c) => sum + c.w, 0) + melismaGap * (chipDims.length - 1);
+  const maxH = Math.max(...chipDims.map(c => c.h));
+
+  const group = document.createElement('div');
+  group.className = 'chip-wrap melisma-group bass-chip-wrap';
+  group.dataset.syl = n.syl;
+  group.dataset.sol = n.melisma.join('·');
+  group.dataset.w = totalW;
+  group.style.cssText = `position:relative; display:inline-flex; flex-direction:column; align-items:flex-start; flex-shrink:0; width:${totalW}px; height:${maxH}px;`;
+
+  // chips top-aligned — hang down from text
+  const chipRow = document.createElement('div');
+  chipRow.style.cssText = `position:absolute; top:0; left:0; display:flex; gap:${melismaGap}px; align-items:flex-start;`;
+
+  chipDims.forEach(c => {
+    const chipEl = document.createElement('div');
+    chipEl.className = `chip ${chipRole} melisma-subchip`;
+    chipEl.style.cssText = `width:${c.w}px; height:${c.h}px; ${borderStyle}position:relative;`;
+    if (S.showSol) {
+      const solEl = document.createElement('div');
+      solEl.style.cssText = 'font-size:10px; color:#7a6a58; text-align:center; position:absolute; bottom:6px; left:0; right:0;';
+      solEl.textContent = c.sol;
+      chipEl.appendChild(solEl);
+    }
+    chipEl.dataset.melismaIdx = String(chipDims.indexOf(c));
+    chipRow.appendChild(chipEl);
+  });
+
+  group.appendChild(chipRow);
+  return group;
+}
+
+function renderAll() {
+  const voice = document.getElementById('sel-voice')?.value || 'soprano';
+  const isBass = voice === 'bass';
+  const isCombined = voice === 'alto-bass';
+
+  Object.keys(ACTIVE_DATA).forEach(rowId => {
+    const section = document.getElementById(rowId).parentElement;
+
+    // remove stale baseline
+    const stale = document.getElementById('baseline-' + rowId);
+    if (stale) stale.remove();
+
+    const row = document.getElementById(rowId);
+    row.style.gap = S.gap + 'px';
+    row.innerHTML = '';
+
+    if (isBass) {
+      // ── BASS: text line first, chips hang below ──────
+      row.style.alignItems = 'flex-start';
+
+      // text baseline — sits at top of row
+      const baseline = document.createElement('div');
+      baseline.id = 'baseline-' + rowId;
+      baseline.style.cssText = `
+        display: flex;
+        gap: ${S.gap}px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+        position: relative;
+      `;
+
+      // chip row below text
+      const chipRowEl = document.createElement('div');
+      chipRowEl.style.cssText = `display:flex; gap:${S.gap}px; align-items:flex-start; flex-wrap:wrap;`;
+
+      ACTIVE_DATA[rowId].forEach(n => {
+        // text label
+        const isMelisma = n.melisma && n.melismaDurs && n.melisma.length > 1;
+        const w = isMelisma
+          ? n.melisma.reduce((sum, _, i) => sum + chipW(n.role === 'preslur' ? 'prep' : n.role, n.melismaDurs[i]), 0) + Math.round(S.gap / 2) * (n.melisma.length - 1)
+          : chipW(n.role === 'preslur' ? 'prep' : n.role, n.dur);
+
+        const label = document.createElement('div');
+        label.style.cssText = `
+          width:${w}px; flex-shrink:0; text-align:center;
+          line-height:1.4; white-space:nowrap; position:relative;
+        `;
+
+        // melisma bar — inserted first, sits behind text span
+        if (isMelisma) {
+          const bar = document.createElement('div');
+          bar.style.cssText = `
+            position:absolute; top:50%; left:0; width:100%;
+            height:3px; background:#2a2a2a; border-radius:2px;
+            transform:translateY(-50%); z-index:0;
+          `;
+          label.appendChild(bar);
+        }
+
+        // text in a span with explicit stacking context above bar
+        const textSpan = document.createElement('span');
+        textSpan.style.cssText = `
+          position:relative; z-index:2;
+          font-size:12px; color:#e8dfc8;
+          background:transparent;
+        `;
+        textSpan.textContent = n.syl;
+        label.appendChild(textSpan);
+
+        baseline.appendChild(label);
+
+        // chip
+        const chip = isMelisma ? buildMelismaGroup_bass(n) : buildSoloChip_bass(n);
+        chipRowEl.appendChild(chip);
+      });
+
+      // insert text baseline before chip row
+      row.insertAdjacentElement('beforebegin', baseline);
+      row.appendChild(chipRowEl);
+
+    } else if (isCombined) {
+      // ── ALTO + BASS: alto chips above text, bass chips below ──
+      row.style.alignItems = 'flex-end';
+
+      // alto chips (use DATA soprano data)
+      DATA[rowId].forEach(n => {
+        if (n.melisma && n.melismaDurs && n.melisma.length > 1) {
+          row.appendChild(buildMelismaGroup(n));
+        } else {
+          row.appendChild(buildSoloChip(n));
+        }
+      });
+
+      // shared text line with melisma bar
+      const baseline = document.createElement('div');
+      baseline.id = 'baseline-' + rowId;
+      baseline.style.cssText = `
+        display:flex; gap:${S.gap}px; align-items:center;
+        flex-wrap:wrap; margin-top:8px; margin-bottom:6px; position:relative;
+      `;
+
+      DATA[rowId].forEach(n => {
+        const isMelisma = n.melisma && n.melismaDurs && n.melisma.length > 1;
+        const w = isMelisma
+          ? n.melisma.reduce((sum, _, i) => sum + chipW(n.role === 'preslur' ? 'prep' : n.role, n.melismaDurs[i]), 0) + Math.round(S.gap / 2) * (n.melisma.length - 1)
+          : chipW(n.role === 'preslur' ? 'prep' : n.role, n.dur);
+
+        const label = document.createElement('div');
+        label.style.cssText = `width:${w}px; flex-shrink:0; text-align:center; line-height:1.4; white-space:nowrap; position:relative;`;
+
+        if (isMelisma) {
+          const bar = document.createElement('div');
+          bar.style.cssText = `position:absolute; top:50%; left:0; width:100%; height:3px; background:#2a2a2a; border-radius:2px; transform:translateY(-50%); z-index:0;`;
+          label.appendChild(bar);
+        }
+
+        const textSpan = document.createElement('span');
+        textSpan.style.cssText = `position:relative; z-index:2; font-size:12px; color:#e8dfc8;`;
+        textSpan.textContent = n.syl;
+        label.appendChild(textSpan);
+        baseline.appendChild(label);
+      });
+
+      row.insertAdjacentElement('afterend', baseline);
+
+      // bass chip row below text
+      const bassRowEl = document.createElement('div');
+      bassRowEl.style.cssText = `display:flex; gap:${S.gap}px; align-items:flex-start; flex-wrap:wrap; margin-top:0;`;
+      bassRowEl.id = 'bass-row-' + rowId;
+
+      DATA_BASS[rowId].forEach(n => {
+        if (n.melisma && n.melismaDurs && n.melisma.length > 1) {
+          bassRowEl.appendChild(buildMelismaGroup_bass(n));
+        } else {
+          bassRowEl.appendChild(buildSoloChip_bass(n));
+        }
+      });
+
+      baseline.insertAdjacentElement('afterend', bassRowEl);
+
+    } else {
+      // ── ALTO: chips above, text below (existing behavior) ──
+      row.style.alignItems = 'flex-end';
+      ACTIVE_DATA[rowId].forEach(n => {
+        if (n.melisma && n.melismaDurs && n.melisma.length > 1) {
+          row.appendChild(buildMelismaGroup(n));
+        } else {
+          row.appendChild(buildSoloChip(n));
+        }
+      });
+
+      const baseline = document.createElement('div');
+      baseline.id = 'baseline-' + rowId;
+      baseline.style.cssText = `
+        display:flex; gap:${S.gap}px; align-items:flex-start;
+        flex-wrap:wrap; margin-top:8px;
+      `;
+
+      Array.from(row.children).forEach(child => {
+        const w = parseInt(child.dataset.w) || parseInt(child.style.width) || 30;
+        const label = document.createElement('div');
+        label.style.cssText = `
+          width:${w}px; flex-shrink:0; text-align:center;
+          font-size:12px; color:#e8dfc8; line-height:1.4;
+          white-space:nowrap; position:relative; z-index:5;
+        `;
+        label.textContent = child.dataset.syl || '';
+        baseline.appendChild(label);
+      });
+
+      row.insertAdjacentElement('afterend', baseline);
+    }
+  });
+}
+
+// ── SLIDERS ──────────────────────────────────────────
+function bindSlider(id, valId, key, subkey) {
+  const sl = document.getElementById(id);
+  const vl = document.getElementById(valId);
+  sl.addEventListener('input', () => {
+    const v = parseInt(sl.value);
+    vl.textContent = v;
+    if (subkey) S.durW[subkey] = v;
+    else S[key] = v;
+    renderAll();
+  });
+}
+
+bindSlider('sl-base', 'val-base', 'baseH');
+bindSlider('sl-step', 'val-step', 'stepH');
+
+// curve slider — float value, custom binding
+(function() {
+  const sl = document.getElementById('sl-curve');
+  const vl = document.getElementById('val-curve');
+  sl.addEventListener('input', () => {
+    S.curve = parseFloat(sl.value);
+    vl.textContent = S.curve.toFixed(1);
+    renderAll();
+  });
+})();
+bindSlider('sl-rw',   'val-rw',   'reciteW');
+bindSlider('sl-q',    'val-q',    null, 'Q');
+bindSlider('sl-h',    'val-h',    null, 'H');
+bindSlider('sl-hd',   'val-hd',   null, 'H·');
+bindSlider('sl-w',    'val-w',    null, 'W');
+bindSlider('sl-gap',  'val-gap',  'gap');
+
+// ── TOGGLES ──────────────────────────────────────────
+function bindToggle(id, key) {
+  const btn = document.getElementById(id);
+  btn.addEventListener('click', () => {
+    S[key] = !S[key];
+    btn.classList.toggle('on', S[key]);
+    renderAll();
+  });
+}
+bindToggle('tog-pitch',        'pitchHeight');
+bindToggle('tog-durwidth',     'durWidth');
+bindToggle('tog-narrowrecite', 'narrowRecite');
+bindToggle('tog-sol',          'showSol');
+bindToggle('tog-dur',          'showDur');
+
+// initial render
+renderAll();
+
+// ── AUDIO ENGINE ─────────────────────────────────────
+// Base frequencies for do=Bb4; transposed dynamically by buildFreqTable()
+// Solfège semitone offsets from do (Bb major scale + di chromatic)
+const SOL_SEMITONES = { la:-3, ti:-1, do:0, di:1, re:2, mi:4, fa:5, sol:7 };
+
+// Reference frequencies for named pitches (do positions)
+const DO_FREQ = {
+  G3:196.00, Ab3:207.65, A3:220.00, Bb3:233.08, B3:246.94,
+  C4:261.63, Db4:277.18, D4:293.66, Eb4:311.13, E4:329.63,
+  F4:349.23, Gb4:369.99, G4:392.00, Ab4:415.30, A4:440.00,
+  Bb4:466.16, B4:493.88, C5:523.25, D5:587.33, E5:659.25
+};
+
+let FREQ = {};
+let FREQ_BASS = {};
+// Per-pitch octave displacement for bass voice — each pitch mapped to its
+// correct bass register by dividing soprano frequency by 2 or 4.
+// Verified against L'vov-Bakhmetev score: la=G3, mi=D3, re=C3, sol=F3, fa=Eb3
+const BASS_OCTAVE_DIV = {
+  la:  2,   // G4 → G3  (1 octave down)
+  ti:  2,   // Ab4 → Ab3
+  do:  2,   // Bb4 → Bb3
+  di:  2,   // B4 → B3
+  re:  4,   // C5 → C3  (2 octaves down)
+  mi:  4,   // D5 → D3  (2 octaves down)
+  fa:  4,   // Eb5 → Eb3 (2 octaves down)
+  sol: 4,   // F5 → F3  (2 octaves down)
+};
+function buildFreqTable(doName) {
+  const doHz = DO_FREQ[doName] || DO_FREQ['Bb4'];
+  Object.entries(SOL_SEMITONES).forEach(([sol, semis]) => {
+    FREQ[sol] = doHz * Math.pow(2, semis / 12);
+    FREQ_BASS[sol] = FREQ[sol] / (BASS_OCTAVE_DIV[sol] || 2);
+  });
+  document.getElementById('val-pitch').textContent = doName;
+}
+buildFreqTable('Bb4');
+
+// pitch selector
+document.getElementById('sel-pitch').addEventListener('change', function() {
+  buildFreqTable(this.value);
+  if (isonNode) { stopIson(); setTimeout(startIson, 700); }
+});
+
+document.getElementById('sel-voice').addEventListener('change', function() {
+  stopAll();
+  ACTIVE_DATA = this.value === 'bass' ? DATA_BASS : DATA; // alto-bass uses DATA for display
+  // update phrase labels
+  const labels = {
+    soprano: [
+      'Line 1 · Alto · Phrase A · "Lord, I call u-pon Thee, hear me!"',
+      'Line 2 · Alto · Phrase B · "Hear me, O Lord!"',
+      'Line 3 · Alto · Phrase C · "Lord, I call u-pon Thee, hear me!" (intonation)',
+      'Line 4 · Alto · Phrase D · "Receive the voice of my prayer,"',
+      'Line 5 · Alto · Phrase B · "when I call u-pon Thee!//"',
+      'Line 6 · Alto · Final Phrase · "Hear me, O Lord!"',
+    ],
+    bass: [
+      'Line 1 · Bass · Phrase A · do root · do·sol cadence · re close',
+      'Line 2 · Bass · Phrase B · do root · holds through di · re(W) close',
+      'Line 3 · Bass · Phrase C · do root · sol prep · do(W) close',
+      'Line 4 · Bass · Phrase D · do root · sol fills · re(W) close',
+      'Line 5 · Bass · Phrase B · do root · sol fills · re close',
+      'Line 6 · Bass · Final · do root throughout · sol(W) open fifth close',
+    ],
+  };
+  const voice = this.value;
+  Object.keys(ACTIVE_DATA).forEach((rowId, i) => {
+    const section = document.getElementById(rowId)?.closest('.phrase-section');
+    if (section) {
+      const lbl = section.querySelector('.phrase-label');
+      if (lbl && labels[voice]) lbl.textContent = labels[voice][i] || '';
+    }
+  });
+  // disable ison for bass — occupies same register, muddy
+  const isSon = document.getElementById('sl-ison');
+  const isonLabel = document.getElementById('val-ison');
+  const isonGroup = isSon?.closest('.ctrl-group');
+  if (this.value === 'bass' || this.value === 'alto-bass') {
+    stopIson();
+    isonVolume = 0;
+    if (isSon) { isSon.value = 0; isSon.disabled = true; isSon.style.opacity = '0.3'; }
+    if (isonLabel) isonLabel.textContent = 'Off';
+    if (isonGroup) isonGroup.style.opacity = '0.4';
+  } else {
+    if (isSon) { isSon.disabled = false; isSon.style.opacity = '1'; }
+    if (isonGroup) isonGroup.style.opacity = '1';
+    // restore ison volume to slider position
+    isonVolume = parseInt(isSon?.value || 0) / 100;
+    if (isonLabel) isonLabel.textContent = isonVolume === 0 ? 'Off' : Math.round(isonVolume * 100) + '%';
+  }
+  renderAll();
+});
+
+// Duration in seconds (Q = 0.4s base tempo)
+const DUR_SEC = { Q: 0.4, H: 0.8, "H·": 1.2, W: 1.6 };
+
+let audioCtx = null;
+let playGen = 0;  // incremented on every stop to cancel stale highlight callbacks
+let isonNode = null;     // persistent drone oscillator
+let isonGain = null;     // drone gain node
+let isonVolume = 0.30;   // default 30% — starts when first line plays
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function activeFreq() {
+  const voice = document.getElementById('sel-voice')?.value || 'soprano';
+  return (voice === 'bass' || voice === 'alto-bass') ? FREQ_BASS : FREQ;
+}
+
+function currentTimbre() {
+  return document.getElementById('sel-timbre')?.value || 'piano';
+}
+
+// ── TIMBRE FUNCTIONS ──────────────────────────────────────────────────────────
+
+function playNote(freq, startTime, duration, ctx) {
+  const timbre = currentTimbre();
+  switch(timbre) {
+    case 'organ':     playOrganNote(freq, startTime, duration, ctx); break;
+    case 'harmonium': playHarmoniumNote(freq, startTime, duration, ctx); break;
+    case 'choir':     playChoirNote(freq, startTime, duration, ctx); break;
+    case 'cello':     playCelloNote(freq, startTime, duration, ctx); break;
+    default:          playPianoNote(freq, startTime, duration, ctx); break;
+  }
+}
+
+function playPianoNote(freq, startTime, duration, ctx) {
+  const gain = ctx.createGain();
+  gain.connect(ctx.destination);
+  [1, 2, 3, 4].forEach((h, i) => {
+    const osc = ctx.createOscillator();
+    const hg = ctx.createGain();
+    osc.connect(hg); hg.connect(gain);
+    osc.type = 'sine';
+    osc.frequency.value = freq * h;
+    hg.gain.value = [0.7, 0.15, 0.08, 0.04][i];
+    osc.start(startTime); osc.stop(startTime + duration + 0.3);
+  });
+  gain.gain.setValueAtTime(0, startTime);
+  gain.gain.linearRampToValueAtTime(0.35, startTime + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.12, startTime + 0.08);
+  gain.gain.setValueAtTime(0.12, startTime + duration - 0.05);
+  gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration + 0.25);
+}
+
+function playOrganNote(freq, startTime, duration, ctx) {
+  // Pipe organ: steady sustain, rich odd harmonics, clean cutoff
+  const gain = ctx.createGain();
+  gain.connect(ctx.destination);
+  [1, 2, 3, 4, 5, 6].forEach((h, i) => {
+    const osc = ctx.createOscillator();
+    const hg = ctx.createGain();
+    osc.connect(hg); hg.connect(gain);
+    osc.type = 'sine';
+    osc.frequency.value = freq * h;
+    hg.gain.value = [0.5, 0.25, 0.15, 0.08, 0.04, 0.02][i];
+    osc.start(startTime); osc.stop(startTime + duration + 0.05);
+  });
+  gain.gain.setValueAtTime(0, startTime);
+  gain.gain.linearRampToValueAtTime(0.3, startTime + 0.02);   // quick attack
+  gain.gain.setValueAtTime(0.3, startTime + duration - 0.02); // full sustain
+  gain.gain.linearRampToValueAtTime(0.001, startTime + duration + 0.04); // sharp cutoff
+}
+
+function playHarmoniumNote(freq, startTime, duration, ctx) {
+  // Harmonium/reed organ: breath attack, slight tremolo
+  const gain = ctx.createGain();
+  const tremoloGain = ctx.createGain();
+  const lfo = ctx.createOscillator();
+  const lfoGain = ctx.createGain();
+  lfo.frequency.value = 5.5;
+  lfoGain.gain.value = 0.018;
+  lfo.connect(lfoGain); lfoGain.connect(tremoloGain.gain);
+  gain.connect(tremoloGain); tremoloGain.connect(ctx.destination);
+  lfo.start(startTime); lfo.stop(startTime + duration + 0.1);
+  [1, 2, 3, 4, 5].forEach((h, i) => {
+    const osc = ctx.createOscillator();
+    const hg = ctx.createGain();
+    osc.connect(hg); hg.connect(gain);
+    osc.type = 'sawtooth';
+    osc.frequency.value = freq * h;
+    hg.gain.value = [0.3, 0.2, 0.12, 0.06, 0.03][i];
+    osc.start(startTime); osc.stop(startTime + duration + 0.1);
+  });
+  gain.gain.setValueAtTime(0, startTime);
+  gain.gain.linearRampToValueAtTime(0.28, startTime + 0.06);  // breath attack
+  gain.gain.setValueAtTime(0.28, startTime + duration - 0.04);
+  gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration + 0.08);
+}
+
+function playChoirNote(freq, startTime, duration, ctx) {
+  // Choir voice: formant filter on vowel 'ah', gentle vibrato
+  const gain = ctx.createGain();
+  gain.connect(ctx.destination);
+  // vibrato
+  const vib = ctx.createOscillator();
+  const vibGain = ctx.createGain();
+  vib.frequency.value = 5.2;
+  vibGain.gain.value = freq * 0.012; // ±12 cents at 440
+  vib.connect(vibGain);
+  vib.start(startTime + 0.12); // vibrato enters slightly after onset
+  vib.stop(startTime + duration + 0.2);
+  // formant layers: fundamental + ah formants (~800Hz, ~1200Hz brightening)
+  [[1, 0.6], [2, 0.2], [3, 0.1], [4, 0.05]].forEach(([h, amp]) => {
+    const osc = ctx.createOscillator();
+    const hg = ctx.createGain();
+    osc.connect(hg); hg.connect(gain);
+    osc.type = 'sine';
+    osc.frequency.value = freq * h;
+    vibGain.connect(osc.frequency); // apply vibrato
+    hg.gain.value = amp;
+    osc.start(startTime); osc.stop(startTime + duration + 0.2);
+  });
+  gain.gain.setValueAtTime(0, startTime);
+  gain.gain.linearRampToValueAtTime(0.3, startTime + 0.08);
+  gain.gain.setValueAtTime(0.3, startTime + duration - 0.08);
+  gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration + 0.18);
+}
+
+function playCelloNote(freq, startTime, duration, ctx) {
+  // Cello: slow bow attack, rich warm harmonics, slight vibrato
+  const gain = ctx.createGain();
+  gain.connect(ctx.destination);
+  const vib = ctx.createOscillator();
+  const vibGain = ctx.createGain();
+  vib.frequency.value = 4.8;
+  vibGain.gain.value = freq * 0.008;
+  vib.connect(vibGain);
+  vib.start(startTime + 0.15); vib.stop(startTime + duration + 0.2);
+  [[1,0.55],[2,0.25],[3,0.12],[4,0.06],[5,0.03]].forEach(([h, amp]) => {
+    const osc = ctx.createOscillator();
+    const hg = ctx.createGain();
+    osc.connect(hg); hg.connect(gain);
+    osc.type = 'sine';
+    osc.frequency.value = freq * h;
+    vibGain.connect(osc.frequency);
+    hg.gain.value = amp;
+    osc.start(startTime); osc.stop(startTime + duration + 0.2);
+  });
+  gain.gain.setValueAtTime(0, startTime);
+  gain.gain.linearRampToValueAtTime(0.32, startTime + 0.09); // bow attack
+  gain.gain.setValueAtTime(0.32, startTime + duration - 0.06);
+  gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration + 0.15);
+}
+
+// ── ISON DRONE ────────────────────────────────────────────────────────────────
+// Byzantine ison (isokratema) — sustained tonal foundation per tradition:
+//   Tone 2 home base = la (G). Lower tetrachord la–ti–do–re, upper re–mi–fa.
+//   Ison sits on la when melody is in lower tetrachord / at cadence.
+//   Ison shifts to re when melody ascends into upper tetrachord (Phrase A).
+//   Smooth crossfade between pitches at line boundaries, never cuts.
+//   Timbre: low-pass filtered sines + slight detuning for 'oo' vowel resonance.
+//   Octave doubling one octave below for depth.
+
+// Ison pitch per row — tetrachord-aware mapping for Tone 2 Lord I Call
+const ISON_MAP = {
+  'row-1': 're',   // Phrase A — home (re = 5th degree / reciting tone)
+  'row-2': 're',   // Phrase B — home, cadence di→re stays on re
+  'row-3': 'fa',   // Phrase C — cadence descends to do, shift to fa (4th) for tension
+  'row-4': 're',   // Phrase D — home, cadence resolves back to re
+  'row-5': 're',   // Phrase B — home
+  'row-6': 'fa',   // Final — deep descent do→re→do→ti, fa (4th) for cadence tension
+};
+
+// Returns true if the ison pitch changes between two rows
+function isonPitchChanges(fromRowId, toRowId) {
+  const from = ISON_MAP[fromRowId] || 'la';
+  const to   = ISON_MAP[toRowId]   || 'la';
+  return from !== to;
+}
+
+// Returns the next row id in sequence, or null if last
+function nextRowId(rowId) {
+  const ids = Object.keys(DATA);
+  const idx = ids.indexOf(rowId);
+  return idx >= 0 && idx < ids.length - 1 ? ids[idx + 1] : null;
+}
+
+let isonFilter = null;  // low-pass filter shared across oscillators
+
+function startIson(rowId) {
+  const ctx = getAudioCtx();
+  const targetSol = (rowId && ISON_MAP[rowId]) ? ISON_MAP[rowId] : 're';
+  // ison always sits one octave below the mapped pitch —
+  // keeps it anchored as a floor beneath the melody throughout
+  const targetFreq = FREQ[targetSol] / 2;
+
+  if (isonNode && isonGain) {
+    // already running — quick fade out, retune, fade back in
+    const now = ctx.currentTime;
+    isonGain.gain.setTargetAtTime(0.0001, now, 0.06); // fast fade out ~120ms
+    setTimeout(() => {
+      if (!isonNode) return;
+      isonNode.forEach(o => {
+        const ratio = o._isonRatio || 1;
+        o.frequency.value = targetFreq * ratio;
+      });
+      if (isonGain) {
+        const ctx2 = getAudioCtx();
+        isonGain.gain.setValueAtTime(0.0001, ctx2.currentTime);
+        isonGain.gain.linearRampToValueAtTime(isonVolume * 0.22, ctx2.currentTime + 0.15);
+      }
+    }, 130);
+    return;
+  }
+
+  // Build filter for 'oo' vowel — round, not bright
+  isonFilter = ctx.createBiquadFilter();
+  isonFilter.type = 'lowpass';
+  isonFilter.frequency.value = 600;
+  isonFilter.Q.value = 1.2;
+  isonFilter.connect(ctx.destination);
+
+  isonGain = ctx.createGain();
+  isonGain.connect(isonFilter);
+
+  isonNode = [];
+
+  // Three detuned unison oscillators — natural acoustic beating
+  [0, 1.2, -0.9].forEach((cents, i) => {
+    const osc = ctx.createOscillator();
+    const hg = ctx.createGain();
+    osc.connect(hg); hg.connect(isonGain);
+    osc.type = 'sine';
+    const ratio = Math.pow(2, cents / 1200);
+    osc._isonRatio = ratio;
+    osc.frequency.value = targetFreq * ratio;
+    hg.gain.value = [0.55, 0.28, 0.28][i];
+    osc.start();
+    isonNode.push(osc);
+  });
+
+  // Octave doubling — one octave below, very soft, adds depth
+  const octOsc = ctx.createOscillator();
+  const octGain = ctx.createGain();
+  octOsc.connect(octGain); octGain.connect(isonGain);
+  octOsc.type = 'sine';
+  octOsc._isonRatio = 0.5;
+  octOsc.frequency.value = targetFreq * 0.5;
+  octGain.gain.value = 0.18;
+  octOsc.start();
+  isonNode.push(octOsc);
+
+  // Gentle fifth — re above la, very quiet consonance
+  const fifthOsc = ctx.createOscillator();
+  const fifthGain = ctx.createGain();
+  fifthOsc.connect(fifthGain); fifthGain.connect(isonGain);
+  fifthOsc.type = 'sine';
+  const fifthRatio = Math.pow(2, 7/12); // perfect fifth
+  fifthOsc._isonRatio = fifthRatio;
+  fifthOsc.frequency.value = targetFreq * fifthRatio;
+  fifthGain.gain.value = 0.08;
+  fifthOsc.start();
+  isonNode.push(fifthOsc);
+
+  // Fade in slowly — like a breath
+  isonGain.gain.setValueAtTime(0, ctx.currentTime);
+  isonGain.gain.linearRampToValueAtTime(isonVolume * 0.22, ctx.currentTime + 1.2);
+}
+
+
+function stopIson() {
+  if (!isonNode || !isonGain) return;
+  const ctx = getAudioCtx();
+  isonGain.gain.setValueAtTime(isonGain.gain.value, ctx.currentTime);
+  isonGain.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + 0.8);
+  setTimeout(() => {
+    isonNode.forEach(o => { try { o.stop(); } catch(e) {} });
+    isonNode = null; isonGain = null; isonFilter = null;
+  }, 900);
+}
+
+function updateIsonVolume(v) {
+  isonVolume = v / 100;
+  document.getElementById('val-ison').textContent = v === 0 ? 'Off' : v + '%';
+  if (v === 0) {
+    stopIson();
+  } else if (isonNode && isonGain) {
+    // already playing — just adjust volume
+    const ctx = getAudioCtx();
+    isonGain.gain.setTargetAtTime(isonVolume * 0.22, ctx.currentTime, 0.1);
+  }
+  // if not playing yet, isonVolume is stored and ison will start when a line plays
+}
+
+document.getElementById('sl-ison').addEventListener('input', function() {
+  updateIsonVolume(parseInt(this.value));
+});
+
+
+
+// Clear all highlights in a row
+function clearRowHighlights(rowId) {
+  document.querySelectorAll('#' + rowId + ' .chip-wrap').forEach(c => {
+    c.classList.remove('active');
+    c.querySelectorAll('.melisma-subchip').forEach(sc => sc.classList.remove('active-sub'));
+  });
+}
+
+// Clear all highlights across all rows
+function clearAllHighlights() {
+  Object.keys(DATA).forEach(id => {
+    clearRowHighlights(id);
+    // also clear bass row chips
+    document.querySelectorAll('#bass-row-' + id + ' .bass-chip-wrap').forEach(c => {
+      c.classList.remove('active');
+      c.querySelectorAll('.melisma-subchip').forEach(sc => sc.classList.remove('active-sub'));
+    });
+  });
+}
+
+// Schedule audio + highlights for one row starting at ctx time t.
+// Returns the end time (t + row duration).
+function scheduleRow(rowId, ctx, t) {
+  // for alto-bass: notes = alto data; bass scheduled separately below
+  const notes = ACTIVE_DATA[rowId];
+  const chips = document.querySelectorAll('#' + rowId + ' .chip-wrap');
+  const bassChips = document.querySelectorAll('#bass-row-' + rowId + ' .bass-chip-wrap');
+
+  // Build a time map for bass: note index → scheduled start time
+  // We walk alto notes to get timing, then schedule bass at same times
+  const isCombinedVoice = document.getElementById('sel-voice')?.value === 'alto-bass';
+  const bassTimeMap = []; // [{t, dur}] per bass note (including melisma expansion)
+
+  if (isCombinedVoice && DATA_BASS[rowId]) {
+    // Pre-walk alto to compute timestamps for each note slot
+    let tWalk = t;
+    notes.forEach(n => {
+      if (n.melisma && n.melismaDurs) {
+        n.melismaDurs.forEach(d => {
+          bassTimeMap.push({ t: tWalk, dur: DUR_SEC[d] || DUR_SEC['Q'] });
+          tWalk += DUR_SEC[d] || DUR_SEC['Q'];
+        });
+      } else {
+        bassTimeMap.push({ t: tWalk, dur: DUR_SEC[n.dur] || DUR_SEC['Q'] });
+        tWalk += DUR_SEC[n.dur] || DUR_SEC['Q'];
+      }
+    });
+  }
+
+  notes.forEach((n, i) => {
+    if (n.melisma && n.melismaDurs) {
+      n.melisma.forEach((sol, mi) => {
+        const freq = activeFreq()[sol] || activeFreq()['re'];
+        const dur = DUR_SEC[n.melismaDurs[mi]] || DUR_SEC['Q'];
+        playNote(freq, t, dur, ctx);
+        const delay = (t - ctx.currentTime) * 1000;
+        const capturedGen1 = playGen;
+        setTimeout(() => {
+          if (playGen !== capturedGen1) return;
+          clearAllHighlights();
+          const group = chips[i];
+          if (group) {
+            const subChips = group.querySelectorAll('.melisma-subchip');
+            if (subChips[mi]) subChips[mi].classList.add('active-sub');
+          }
+        }, delay);
+        t += dur;
+      });
+    } else {
+      const freq = activeFreq()[n.sol] || activeFreq()['re'];
+      const dur = DUR_SEC[n.dur] || DUR_SEC['Q'];
+      playNote(freq, t, dur, ctx);
+      const delay = (t - ctx.currentTime) * 1000;
+      const capturedGen2 = playGen;
+      setTimeout(() => {
+        if (playGen !== capturedGen2) return;
+        clearAllHighlights();
+        if (chips[i]) chips[i].classList.add('active');
+      }, delay);
+      t += dur;
+    }
+  });
+
+  // Schedule bass notes + highlights at pre-computed timestamps
+  if (isCombinedVoice && DATA_BASS[rowId]) {
+    let bassIdx = 0;
+    let bassChipIdx = 0; // index into bassChips NodeList
+    DATA_BASS[rowId].forEach(n => {
+      const currentBassChipIdx = bassChipIdx++;
+      if (n.melisma && n.melismaDurs) {
+        // melisma — each pitch gets its own timestamp
+        const bassChipGroup = bassChips[currentBassChipIdx];
+        n.melisma.forEach((sol, mi) => {
+          const entry = bassTimeMap[bassIdx++];
+          if (!entry) return;
+          const freq = FREQ_BASS[sol] || FREQ_BASS['la'];
+          playNote(freq, entry.t, entry.dur, ctx);
+          // highlight the specific melisma sub-chip
+          const delay = (entry.t - ctx.currentTime) * 1000;
+          const capGen = playGen;
+          setTimeout(() => {
+            if (playGen !== capGen) return;
+            if (bassChipGroup) {
+              const subChips = bassChipGroup.querySelectorAll('.melisma-subchip');
+              // clear other bass sub-chips, highlight this one
+              subChips.forEach(sc => sc.classList.remove('active-sub'));
+              if (subChips[mi]) subChips[mi].classList.add('active-sub');
+            }
+          }, delay);
+        });
+      } else {
+        const entry = bassTimeMap[bassIdx++];
+        if (!entry) return;
+        const freq = FREQ_BASS[n.sol] || FREQ_BASS['la'];
+        playNote(freq, entry.t, entry.dur, ctx);
+        // highlight this bass chip
+        const delay = (entry.t - ctx.currentTime) * 1000;
+        const capGen = playGen;
+        setTimeout(() => {
+          if (playGen !== capGen) return;
+          // clear all bass chips, highlight current
+          bassChips.forEach(c => {
+            c.classList.remove('active');
+            c.querySelectorAll('.melisma-subchip').forEach(sc => sc.classList.remove('active-sub'));
+          });
+          if (bassChips[currentBassChipIdx]) bassChips[currentBassChipIdx].classList.add('active');
+        }, delay);
+      }
+    });
+  }
+
+  return t;
+}
+
+function playRow(rowId) {
+  const ctx = getAudioCtx();
+  const btn = document.getElementById('play-' + rowId);
+
+  btn.classList.add('playing');
+  btn.textContent = '◼ Stop';
+  btn.onclick = () => stopRow(rowId);
+
+  // shift ison to correct tetrachord for this phrase
+  if (isonVolume > 0) startIson(rowId);
+
+  const startT = ctx.currentTime + 0.05;
+  const endT = scheduleRow(rowId, ctx, startT);
+  const totalDur = endT - startT;
+
+  const rowEndGen = playGen;
+  setTimeout(() => {
+    if (playGen !== rowEndGen) return;
+    clearRowHighlights(rowId);
+    // stop ison — single row play always stops after the line
+    stopIson();
+    btn.classList.remove('playing');
+    btn.textContent = '▶ Play';
+    btn.onclick = () => playRow(rowId);
+  }, (totalDur + 0.4) * 1000);
+}
+
+// Play All — chains all rows sequentially with scroll-to-center
+function playAll() {
+  const ctx = getAudioCtx();
+  const allRowIds = Object.keys(ACTIVE_DATA);
+  const allBtn = document.getElementById('play-all-btn');
+
+  allBtn.textContent = '◼ Stop All';
+  allBtn.onclick = stopAll;
+
+  // mark all per-row play buttons
+  allRowIds.forEach(id => {
+    const b = document.getElementById('play-' + id);
+    if (b) { b.classList.add('playing'); b.textContent = '◼'; }
+  });
+
+  // ison intro — start drone immediately, wait one full measure before melody
+  const INTRO_SEC = isonVolume > 0 ? DUR_SEC['Q'] * 8 : 0; // two measures if ison on, instant if off
+  const GAP_SEC   = DUR_SEC['Q'];      // quarter note gap between lines
+
+  if (isonVolume > 0) {
+    startIson(Object.keys(ACTIVE_DATA)[0]); // start on first row's ison pitch
+  }
+
+  let t = ctx.currentTime + 0.05 + INTRO_SEC;
+  let cumulativeMs = 50 + (INTRO_SEC * 1000);
+
+  allRowIds.forEach((rowId, rowIndex) => {
+    const rowStartMs = cumulativeMs;
+    const endT = scheduleRow(rowId, ctx, t);
+    const rowDurMs = (endT - t) * 1000;
+
+    // scroll to this row and shift ison pitch when it starts
+    const capturedGen = playGen;
+    setTimeout(() => {
+      if (playGen !== capturedGen) return;
+      const rowEl = document.getElementById(rowId);
+      if (rowEl) {
+        rowEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      // shift ison only if pitch changes from previous row — otherwise let it hold
+      const prevId = nextRowId && Object.keys(DATA)[Object.keys(DATA).indexOf(rowId) - 1];
+      const pitchChanging = !prevId || isonPitchChanges(prevId, rowId);
+      if (isonVolume > 0) {
+        if (pitchChanging) {
+          startIson(rowId); // crossfade to new pitch
+        }
+        // if same pitch — ison continues uninterrupted through the gap
+      }
+      // highlight this row's play button as active
+      allRowIds.forEach(id => {
+        const b = document.getElementById('play-' + id);
+        if (b) b.style.opacity = id === rowId ? '1' : '0.4';
+      });
+    }, rowStartMs);
+
+    // add quarter note gap after each line (except last)
+    cumulativeMs += rowDurMs + (rowIndex < allRowIds.length - 1 ? GAP_SEC * 1000 : 0);
+    t = endT + (rowIndex < allRowIds.length - 1 ? GAP_SEC : 0);
+  });
+
+  const totalAllMs = cumulativeMs;
+
+  // reset everything after all lines finish
+  const allEndGen = playGen;
+  setTimeout(() => {
+    if (playGen !== allEndGen) return;
+    clearAllHighlights();
+    stopIson();
+    allBtn.textContent = '▶ Play All Lines';
+    allBtn.onclick = playAll;
+    allRowIds.forEach(id => {
+      const b = document.getElementById('play-' + id);
+      if (b) {
+        b.classList.remove('playing');
+        b.textContent = '▶ Play';
+        b.onclick = () => playRow(id);
+        b.style.opacity = '1';
+      }
+    });
+  }, totalAllMs + 400);
+}
+
+function stopAll() {
+  playGen++;  // invalidate all pending highlight callbacks
+  if (audioCtx) { audioCtx.close(); audioCtx = null; }
+  clearAllHighlights();
+  stopIson();
+  const allBtn = document.getElementById('play-all-btn');
+  allBtn.textContent = '▶ Play All Lines';
+  allBtn.onclick = playAll;
+  Object.keys(DATA).forEach(id => {
+    const b = document.getElementById('play-' + id);
+    if (b) {
+      b.classList.remove('playing');
+      b.textContent = '▶ Play';
+      b.onclick = () => playRow(id);
+      b.style.opacity = '1';
+    }
+  });
+}
+
+function stopRow(rowId) {
+  playGen++;  // invalidate all pending highlight callbacks
+  if (audioCtx) { audioCtx.close(); audioCtx = null; }
+  clearAllHighlights();
+  stopIson();
+  const btn = document.getElementById('play-' + rowId);
+  btn.classList.remove('playing');
+  btn.textContent = '▶ Play';
+  btn.onclick = () => playRow(rowId);
+}
+</script>
+</body>
+</html>
