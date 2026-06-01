@@ -816,9 +816,11 @@ function renderAll() {
   Object.keys(ACTIVE_DATA).forEach(rowId => {
     const section = document.getElementById(rowId).parentElement;
 
-    // remove stale baseline
+    // remove stale baseline and bass row from any previous render
     const stale = document.getElementById('baseline-' + rowId);
     if (stale) stale.remove();
+    const staleBass = document.getElementById('bass-row-' + rowId);
+    if (staleBass) staleBass.remove();
 
     const row = document.getElementById(rowId);
     row.style.gap = S.gap + 'px';
