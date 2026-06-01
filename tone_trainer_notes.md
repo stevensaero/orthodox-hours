@@ -1168,3 +1168,67 @@ visual solfège label. Both must be present on any melisma chip.
 **Audio engine rule:** when `melismaDurs` is present, `playRow()` splits the
 chip's time slot into sequential notes using `DUR_SEC[melismaDurs[i]]` for each
 pitch, not the chip's top-level `dur`.
+
+---
+
+## Bass part derivation — Tone 2 Lord I Call (May 31 2026)
+
+### Source authority
+Bass part derived from first principles using the St. Tikhon's harmonization
+framework documented at https://sainttikhonsmusic.com/how-to-harmonize/
+(taken from *A Common Book of Church Hymns: Divine Liturgy*, ed. B. Sheehan,
+STM Press, 2016). Cross-referenced against Reddit/Google search summary of
+L'vov-Bakhmetev Obikhod SATB conventions.
+
+### St. Tikhon's four-voice framework
+The Slavic Orthodox harmonization system has four voices:
+
+1. **Melody** (soprano) — always the primary voice, upper staff
+2. **Bass** — moves with melody, drone-like on reciting tone, shifts at cadences.
+   Provides the harmonic skeleton using basic triad structures.
+3. **Descant** — parallel third above or below melody (above most common).
+   Mostly parallel but with occasional cadence exceptions marked by courtesy notes.
+4. **Filler** — static inner voice completing the chord. Relatively immobile,
+   anchors the other voices. Sung by alto when soprano has melody and tenor
+   has descant; by tenor when alto has melody and soprano has descant.
+
+Simplest viable texture: melody + bass only.
+Three-part: melody + descant + bass (filler omitted — common in small ensembles).
+
+### Bass conventions applied
+- **Reciting tone:** `do` (tonic root, Bb3) throughout all lines — drone-like,
+  only shifts at cadence points or phrase endings
+- **Cadence voicing:** root→fifth→root triad support (parallel tenths, thirds,
+  and fifths between bass and soprano per L'vov-Bakhmetev convention)
+- **Register:** one octave below melody (do=Bb3 when soprano do=Bb4)
+- **Chromatic di:** bass holds `do` tonic through soprano's `di` (B natural)
+  creating tension, resolves to `re` root at cadence close
+- **Dominant approach:** bass moves to `sol` (fifth/F3) before `do` cadences
+  (Phrase C prep, Phrase D fills) — dominant-flavored approach
+- **Final close:** bass on `sol(W)` (open fifth) under soprano `ti(W)` —
+  characteristic Russian Orthodox open-fifth cadence close
+
+### Bass line summary per phrase
+
+| Line | Phrase | Reciting | Cadence bass | Close |
+|---|---|---|---|---|
+| 1 | A | `do(Q)×6` | `do·sol` melisma under fa·mi | `re(H·)` |
+| 2 | B | `do(Q)` | `do·do` holds through di | `re(W)` |
+| 3 | C | `do(Q)×5` | `sol` prep → `do·do` | `do(W)` |
+| 4 | D | `do(Q)×3` | `do·sol·sol` | `re(W)` |
+| 5 | B | `do(Q)×2` | `do·sol·sol` | `re(H)` |
+| 6 | Final | `do` throughout | `do·do·do` | `sol(W)` open fifth |
+
+### Status
+**Unverified against score** — first-principles derivation only. Needs
+comparison against OCA Tone 2 Lord I Call SATB score
+(https://www.oca.org/files/PDF/Music/Tone2/t2-lic-obikhod-tt.pdf) before
+encoding as authoritative. Encoded in sandbox as `DATA_BASS` for comparison.
+
+### Future voice parts
+- **Descant (Alto/Tenor):** largely algorithmic — `PITCH_SCALE[idx - 2]`
+  (parallel third below melody) with cadence exceptions where parallel third
+  creates awkward intervals. Exceptions need score verification.
+- **Filler:** most static part. Holds missing chord tone to complete triad.
+  Derivable from bass line + melody once bass is verified.
+  Changes only at cadence points.
