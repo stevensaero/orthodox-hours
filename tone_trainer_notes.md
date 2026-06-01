@@ -1100,3 +1100,39 @@ Release notes confirm `ti=W` was previously implemented. However:
 | `isFinal` scoped too narrow | C, D (currently Final only) |
 | Verse-opening pre-slur `re(H)·ti(Q)` | Final |
 | 5+ fill behavior | Final (unconfirmed) |
+
+---
+
+## Correction — Final Phrase pre-slur duration (May 31 2026)
+
+### Pre-slur rule (corrected)
+
+The pre-slur fires when the syllable immediately before the cadence anchor is a
+**single accented monosyllable**. That syllable absorbs the prep, carrying
+`re·ti` as a two-note melisma instead of a plain reciting tone quarter note.
+
+**`ti` is always `Q` in both confirmed examples.**
+
+**`re` duration is context-dependent — fills the space where reciting tone would be:**
+
+| Example | Reciting tone before pre-slur | `re` dur | `ti` dur |
+|---|---|---|---|
+| "God, glo-ry to You!" | present (normal length) | `Q` | `Q` |
+| "Hear me, O Lord!" | absent (Hear is first syllable) | `H·` | `Q` |
+
+**Rule:** `re` on the pre-slur stretches to fill the space where reciting tone
+would otherwise have been. When no reciting tone precedes the pre-slur syllable,
+`re` gets `H·` (dotted half). When normal reciting tone precedes it, `re` gets `Q`.
+
+### Correction to earlier notes
+Previous entry stated "verse-opening pre-slur: `re(H)·ti(Q)`" — this was
+incorrect on two counts:
+1. The `re` value is `H·` (dotted half), not `H` (half)
+2. The trigger is not "verse-opening position" but "no reciting tone precedes
+   the pre-slur syllable" — duration-by-context, not position-by-rule
+
+### Current code status
+Current code assigns `syllDur=H` divided evenly → always `re(Q)·ti(Q)`.
+The dotted half case (`re(H·)·ti(Q)` when no reciting tone precedes) is
+**not implemented**. Flag for future implementation once word-boundary and
+reciting-tone-presence detection is in place.
