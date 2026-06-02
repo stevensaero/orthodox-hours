@@ -3412,7 +3412,6 @@ export default function ToneTrainer() {
           const w = chipW(r);
           const isAnchor = r.anchor || (r.role === "cad" && i === 0);
           const bg = chipBg[role] ?? chipBg.recite;
-          // Per-chip highlight: positive index = alto chip, negative = bass chip
           const isActive = playingLine === li && (
             isBass ? playingBassIdx === i : playingAltoIdx === i
           );
@@ -3422,6 +3421,28 @@ export default function ToneTrainer() {
           const stripe = chipStripe[role] ?? chipStripe.recite;
           // Soprano chips display the mapped soprano pitch as the solfège label
           const sol = isSoprano ? (SOPRANO_MAP[r.pitches[0]] ?? r.pitches[0]) : r.pitches[0];
+
+          // Soprano chips: transparent body with faint border — only the stripe tab is solid.
+          // The alto chip underneath reads clearly; the soprano crown signals the upper voice.
+          if (isSoprano) {
+            return (
+              <div key={i} style={{
+                position: "relative", display: "inline-block", flexShrink: 0,
+                width: w, height: h,
+                background: "transparent",
+                border: `1px solid ${chipBorderColor[role] ?? chipBorderColor.recite}`,
+                borderRadius: 6,
+                overflow: "hidden",
+                opacity: isActive ? 1 : 0.85,
+              }}>
+                <div style={{
+                  position: "absolute", left: 0, right: 0, top: 0,
+                  height: 8, background: stripe,
+                  borderRadius: "5px 5px 0 0",
+                }} />
+              </div>
+            );
+          }
 
           return (
             <div key={i} style={{
