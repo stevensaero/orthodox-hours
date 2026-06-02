@@ -2164,7 +2164,7 @@ export default function ToneTrainer() {
 
     const playAlto    = voicePart === "alto" || voicePart === "alto-bass";
     const playBass    = (voicePart === "bass" || voicePart === "alto-bass") && bassNotes;
-    const playSoprano = voicePart === "soprano";
+    const playSoprano = voicePart === "soprano" || voicePart === "alto-bass";
 
     const scheduleAltoHighlights = (notes) => {
       let ht = startT;
@@ -2363,7 +2363,7 @@ export default function ToneTrainer() {
     const which = compareMode && machineLines ? singWhich : "truth";
     const playAlto      = voicePart === "alto" || voicePart === "alto-bass";
     const playBassVoice = voicePart === "bass" || voicePart === "alto-bass";
-    const playSoprano   = voicePart === "soprano";
+    const playSoprano   = voicePart === "soprano" || voicePart === "alto-bass";
     setPlayingWhich(which);
     activeLines().forEach((line, li) => {
       const altoNotes    = lineToNotes(line);
@@ -3368,12 +3368,13 @@ export default function ToneTrainer() {
           });
         })();
         const isFin = line.phrase === "Final";
-        const showAlto    = voicePart === "alto" || voicePart === "alto-bass";
-        const showBass    = (voicePart === "bass" || voicePart === "alto-bass") && bassRolesWD;
-        const showSoprano = voicePart === "soprano";
+        const showAlto       = voicePart === "alto" || voicePart === "alto-bass";
+        const showBass       = (voicePart === "bass" || voicePart === "alto-bass") && bassRolesWD;
+        const showSoprano    = voicePart === "soprano";
+        const showSopranoTab = voicePart === "alto-bass"; // soprano tab peeks above alto chips
 
         // Soprano rolesWD — same structure as alto, pitches mapped through SOPRANO_MAP
-        const sopranoRolesWD = showSoprano
+        const sopranoRolesWD = (showSoprano || showSopranoTab)
           ? rolesWD.map(r => ({ ...r, pitches: [SOPRANO_MAP[r.pitches[0]] ?? r.pitches[0]] }))
           : null;
 
@@ -3509,18 +3510,37 @@ export default function ToneTrainer() {
               </div>
             )}
 
-            {/* Alto chips — above text */}
+            {/* Alto chips — above text, with optional soprano tab peeking above */}
             {showAlto && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-end", marginBottom: 6 }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-end", marginBottom: 6,
+                            paddingTop: showSopranoTab ? 8 : 0 }}>
                 {groupedAlto.map((grp, gi) => {
-                  if (grp.entries.length === 1) {
-                    const {r, i} = grp.entries[0];
-                    return renderChip(r, i, false);
-                  }
-                  // melisma group — tight inner gap
+                  const entries = grp.entries;
+                  const role = entries[0].r.role === "preslur" ? "prep" : entries[0].r.role;
+                  const sopStripe = showSopranoTab ? (chipStripe[role] ?? chipStripe.recite) : null;
+                  const totalGrpW = entries.reduce((s, {r}) => s + chipW(r), 0)
+                    + (entries.length > 1 ? CHIP_MELISMA_GAP * (entries.length - 1) : 0);
+
+                  const chipContent = entries.length === 1
+                    ? renderChip(entries[0].r, entries[0].i, false)
+                    : (
+                      <div style={{ display: "inline-flex", gap: CHIP_MELISMA_GAP, alignItems: "flex-end" }}>
+                        {entries.map(({r, i}) => renderChip(r, i, false))}
+                      </div>
+                    );
+
+                  if (!sopStripe) return <React.Fragment key={gi}>{chipContent}</React.Fragment>;
+
                   return (
-                    <div key={gi} style={{ display: "inline-flex", gap: CHIP_MELISMA_GAP, alignItems: "flex-end" }}>
-                      {grp.entries.map(({r, i}) => renderChip(r, i, false))}
+                    <div key={gi} style={{ position: "relative", display: "inline-flex", alignItems: "flex-end" }}>
+                      <div style={{
+                        position: "absolute", top: -8, left: 0,
+                        width: totalGrpW, height: 6,
+                        background: sopStripe,
+                        borderRadius: "3px 3px 0 0",
+                        pointerEvents: "none",
+                      }} />
+                      {chipContent}
                     </div>
                   );
                 })}
