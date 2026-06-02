@@ -10,13 +10,13 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v1.0.0";
+export const TONE_TRAINER_VERSION = "v0.10.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
   {
-    version: "v1.0.0",
+    version: "v0.10.0",
     date: "May 2026",
     summary: "Architecture unification — audio and visual share one representation",
     items: [
