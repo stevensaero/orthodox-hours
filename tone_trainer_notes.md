@@ -1,6 +1,166 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.9.7** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.10.0** | Component: `src/components/tone-trainer.jsx`
+
+---
+
+## Session summary (Jun 2 2026 — v0.9.8 through v0.10.0 — SATB architecture, Tone 2 full voice verification)
+
+### Overview
+
+A deep verification and build-out session for Tone 2 Obikhod. Alto pointing was already implemented; this session established score-verified bass and soprano rules, built the full SATB voice architecture, wired all four voices into a unified audio/visual pipeline, and fixed several structural bugs. The session also added the copyright footer to both tools, the lexicon cache-busting mechanism, and multiple lexicon entries.
+
+**Key discipline established:** Alto is the single source of truth. Bass and soprano derive from `rolesWD` via 1:1 pitch substitution. No voice re-derives independently from `pointLine()`.
+
+---
+
+### Architecture: single source-of-truth pipeline (non-negotiable)
+
+```
+pointLine(line) → lineToRolesWithDuration(line) → rolesWD  ← alto source of truth
+                                                       │
+                              ┌────────────────────────┼─────────────────────┐
+                              ↓                        ↓                     ↓
+                        alto chips              soprano chips           bass chips
+                        alto audio              soprano audio           bass audio
+                    (rolesWD as-is)       (SOPRANO_MAP on altoPitch)  (BASS_RULES on role)
+```
+
+**Rule:** No voice re-derives from `pointLine()` independently. All three voices consume `rolesWD`. Durations in `rolesWD` are already correct — never recompute them downstream.
+
+- `lineToNotes_bass(line)` — consumes `rolesWD`, 1:1 pitch substitution via `BASS_RULES[tone][phrase][role]`, emits notes with `r.dur` directly.
+- `lineToNotes_soprano(line)` — consumes `rolesWD`, stores **alto pitch** in `n.sol`. `freq_soprano(altoPitch)` and `chipH_soprano(altoPitch)` handle the SOPRANO_MAP substitution internally. **Never pre-map the pitch before storing it.**
+- `generateBass()` was removed entirely. Dead code. Do not re-introduce it.
+
+**Critical soprano anti-pattern:**
+```js
+// WRONG — double maps: SOPRANO_MAP applied in lineToNotes_soprano AND again in freq_soprano
+notes.push({ sol: SOPRANO_MAP[altoPitch], ... });
+freq_soprano(n.sol); // n.sol is already soprano pitch — maps again → wrong note
+
+// CORRECT — alto pitch stored; freq_soprano maps once internally
+notes.push({ sol: altoPitch, ... });
+freq_soprano(n.sol); // n.sol is alto pitch → SOPRANO_MAP → octave correction → correct freq
+```
+
+---
+
+### Tone 2 Obikhod — score-verified
+
+**Alto phrases (Drillock & Ealy tutorial verified):**
+- Phrase A: recite `re`, cadence `fa·mi·re` (fa·mi melisma on anchor, re dotted-half close)
+- Phrase B: recite `re`, cadence `di·re`
+- Phrase C: inton `re`, recite `re`, prep `ti`, cadence `do`
+- Phrase D: recite `do`, cadence `di·re`
+- Final: recite `re`, preslur `re·ti`, cadence `do·re·do·ti`
+
+**Bass rules (score-verified, L'vov-Bakhmetev Obikhod):**
+```js
+BASS_RULES[2] = {
+  A:     { recite:"la", cadMap:{ fa:"la", mi:"mi", re:"la" } },
+  B:     { recite:"la", cadMap:{ di:"mi", re:"la" } },
+  C:     { recite:"la", cadMap:{ do:"sol" }, prepMap:{ ti:"re" } },
+  D:     { recite:"sol", cadMap:{ di:"mi", re:"la" } },
+  Final: { recite:"la", cadMap:{ do:"sol", re:"fa", ti:"re" },
+           preslurMap:{ re:"la", ti:"re" } },
+}
+```
+
+**Bass octave placement (`BASS_OCTAVE_DIV`):**
+- `la/ti/do/di` → divide by 2 (1 octave down from reference)
+- `re/mi/fa/sol` → divide by 4 (2 octaves down from reference)
+
+**Soprano rules (score-verified, Tone 2 only):**
+```js
+SOPRANO_MAP = {
+  la:"do", ti:"re", do:"mi", di:"mi",
+  re:"fa", mi:"sol", fa:"la", sol:"ti"
+}
+```
+Pure diatonic third above every alto pitch — one staff line up, mechanically, **no exceptions in Tone 2**. Duration identical to alto throughout. `di→mi` (not `di→fa`) because it is a positional third on the staff, not a chromatic third.
+
+**Soprano octave correction (`freq_soprano` / `chipH_soprano`):**
+```js
+// Soprano at same octave reference as alto; shift up one octave only when needed
+const freq_soprano = (sol) => {
+  const mapped = SOPRANO_MAP[sol] ?? sol;
+  const altoF  = freq(sol);
+  const sopF0  = freq(mapped);
+  return sopF0 > altoF ? sopF0 : sopF0 * 2;
+};
+```
+Pitches `re/mi/fa/sol` are already above their alto counterparts → no shift. Pitches `la/ti/do/di` sit below their mapped targets at base octave → shift up. **`la→do`**: alto `fa`(Eb5) → soprano `la`(G4) at base = below alto → shifts to G5 ✓.
+
+---
+
+### Voice part selector
+
+Dropdown order: `Soprano | Alto (Melody) | Tenor (coming, disabled) | Bass | ── | Alto + Bass | SATB`
+
+- **Soprano:** standalone soprano chips (full opaque, solfège labels, `chipH_soprano` heights)
+- **Alto (Melody):** alto only
+- **Tenor:** disabled, greyed — no rules established for any tone
+- **Bass:** standalone bass chips
+- **Alto+Bass:** alto + bass audio/visual only — **no soprano**
+- **SATB:** alto + bass + soprano. Soprano at 50% opacity, rendered behind alto at same baseline. Soprano chip tops protrude above alto by the interval height — this IS the pitch encoding, not a decoration.
+
+**Soprano gating:** `SOPRANO_TONES = new Set([2])` — soprano is fully suppressed (audio + visual) for all tones not in this set. Add a tone only after score verification of the Obikhod score for that tone.
+
+**Bass gating:** `BASS_RULES[tone][phrase]` returns `null` for unverified tones — bass suppressed automatically.
+
+---
+
+### Chip visual architecture
+
+- Alto chips: `chipH(altoPitch)` = `CHIP_BASE_H + PITCH_SCALE.indexOf(pitch) * CHIP_STEP_H`
+- Bass chips: `chipH_bass(bassPitch)` — inverted scale, grows downward
+- Soprano chips: `chipH_soprano(altoPitch)` — always above alto, octave-corrected; takes alto pitch as input (not soprano-mapped pitch)
+- Role stripe: 8px at top (alto/soprano), 8px at bottom (bass)
+- SATB soprano rendering: soprano row `position:absolute; bottom:0` behind alto row (`zIndex:1`). Container height = max soprano chip height in line. Soprano at 50% opacity.
+- In Alto+Bass mode: no soprano chips or tabs at all
+
+**Highlight state:** `playingAltoIdx` and `playingBassIdx` are **separate state variables** — never a single shared index. This was a deliberate fix to prevent React batching from racing when both fire simultaneously in SATB/Alto+Bass playback.
+
+---
+
+### Lexicon improvements this session
+
+- `evening` → `eve·ning` (2 sylls, stressIdx:0, reconciled) — was `e·ve·ning` (3 sylls, lowConfidence)
+- `universe` → `u·ni·verse` (3 sylls, stressIdx:0, reconciled)
+- `sacrifice` — was getting `sac·rifice` (2 sylls) despite lexicon having `sac·ri·fice` (3 sylls). Root cause: mid-word bracket path (`[sac]rifice`) was using bracket character boundaries as the syllable split, ignoring the lexicon. Fixed: when lexicon has >1 syllable, use lexicon syllables and map bracket span to accent index via `bracketSpanToSyllIdx`. Character-split fallback retained only when lexicon gives 1 syllable.
+
+**Lexicon cache-busting:** both lexicon files now fetch with `?v=${TONE_TRAINER_VERSION}`. Browser always fetches fresh after a version bump. **Always bump version when lexicon files change.**
+
+---
+
+### Other fixes this session
+
+**`lineToNotes_bass` refactor (v0.9.8 → architecture commit):**
+Replaced 130-line function (with separate melisma expansion, cadence-count branching, hardcoded pitch sequences) with a 32-line pure derivation from `rolesWD`. Audio and visual bass paths now both start from the same expanded representation.
+
+**Chip highlight racing fixed:**
+Split `playingChipIdx` into `playingAltoIdx` and `playingBassIdx`. In alto+bass mode both chips now highlight simultaneously without flickering.
+
+**Play button lockout:**
+All play buttons disabled (opacity 0.35, `not-allowed`, `disabled` attribute) while any audio is playing. Only the active line shows ◼ Stop.
+
+**Alto+Bass chip highlight fix:**
+Bass highlight scheduling was gated on `!playAlto` — in Alto+Bass mode bass chips never highlighted. Fixed to schedule bass highlights whenever bass is playing, regardless of alto.
+
+**Mid-word bracket lexicon fix (`[sac]rifice` → 3 sylls):**
+See lexicon section above.
+
+---
+
+### Copyright footers
+
+Both tools now have expandable copyright footers. Short form inline; "more" expands to full five-paragraph notice covering personal use grant, IP ownership, redistribution restrictions, and third-party materials.
+
+---
+
+### Sandbox status
+
+`tone_trainer_sandbox.html` in repo root is **no longer the reference implementation**. The live component (`tone-trainer.jsx`) diverged significantly during this session. The sandbox is a historical artifact; do not use it as ground truth for anything.
 
 ---
 
