@@ -2109,6 +2109,8 @@ export default function ToneTrainer() {
     const isTone2A = isTone2 && line.phrase === "A";
 
     // Tone 2 Final anchor melisma — same count logic as alto but bass pitches
+    // anchorPitches from generateBass only has single-pitch cad roles since
+    // pointLine gives single pitches — expand the sol·fa melisma explicitly.
     if (isTone2Final && cadCount < 4 && cadCount >= 1) {
       bassRoles.forEach(r => {
         if (r.role === "cad") return;
@@ -2125,19 +2127,20 @@ export default function ToneTrainer() {
         const syllDur = r.role === "inton" ? (r.accent ? H : Q) : Q;
         r.pitches.forEach(p => notes.push({ sol: p, dur: syllDur, peak: 0.35, bass: true }));
       });
-      // Collect all cad roles in order
+      // Collect non-anchor cad roles (index 1+) for middle and close
       const cadRoles = bassRoles.filter(r => r.role === "cad");
-      const anchorPitches = cadRoles[0]?.pitches ?? ["la"];  // may be melisma e.g. ["sol","fa"]
-
+      // Bass Final cadence (score-verified): sol·fa melisma on anchor, sol(H) middle, re(W) close
       if (cadCount === 1) {
-        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: W, peak: i===0?0.40:0.35, bass: true }));
+        notes.push({ sol: "sol", dur: W, peak: 0.40, bass: true });
+        notes.push({ sol: "fa",  dur: H, peak: 0.35, bass: true });
       } else if (cadCount === 2) {
-        // anchor pitches (melisma) then close
-        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: i===0?W:H, peak: i===0?0.40:0.35, bass: true }));
+        notes.push({ sol: "sol", dur: W, peak: 0.40, bass: true });
+        notes.push({ sol: "fa",  dur: H, peak: 0.35, bass: true });
         notes.push({ sol: cadRoles[1]?.pitches[0] ?? "re", dur: W, peak: 0.35, bass: true });
       } else if (cadCount === 3) {
-        // anchor pitches (melisma) + middle + close
-        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: i===0?W:H, peak: i===0?0.40:0.35, bass: true }));
+        // sol·fa on "me," (W+H), sol on "O" (H), re on "Lord!" (W)
+        notes.push({ sol: "sol", dur: W, peak: 0.40, bass: true });
+        notes.push({ sol: "fa",  dur: H, peak: 0.35, bass: true });
         notes.push({ sol: cadRoles[1]?.pitches[0] ?? "sol", dur: H, peak: 0.35, bass: true });
         notes.push({ sol: cadRoles[2]?.pitches[0] ?? "re",  dur: W, peak: 0.35, bass: true });
       }
@@ -2145,26 +2148,27 @@ export default function ToneTrainer() {
     }
 
     // Tone 2 Phrase A anchor melisma
+    // anchorPitches from generateBass only has the first mapped pitch since
+    // pointLine gives single-pitch cad roles — must expand using BASS_RULES.
     if (isTone2A && cadCount < 3 && cadCount >= 1) {
       bassRoles.forEach(r => {
         if (r.role === "cad") return;
         const syllDur = r.role === "inton" ? (r.accent ? H : Q) : Q;
         r.pitches.forEach(p => notes.push({ sol: p, dur: syllDur, peak: 0.35, bass: true }));
       });
-      // cadPitches: collect ALL pitches from the anchor cad role (may be melisma)
-      const anchorCadRole = bassRoles.find(r => r.role === "cad");
-      const anchorPitches = anchorCadRole ? anchorCadRole.pitches : ["la"];
-      const closeCadRoles = bassRoles.filter(r => r.role === "cad").slice(1);
-
+      const rules2A = BASS_RULES[2]?.A;
+      // Bass Phrase A: la(H)·mi(H) melisma on anchor, la(H·) on close
+      // This matches score: alto fa·mi → bass la·mi (H+H melisma), re → la (H·)
       if (cadCount === 1) {
-        // all pitches on anchor, then close
-        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: H, peak: i===0?0.40:0.35, bass: true }));
-        notes.push({ sol: anchorPitches[anchorPitches.length-1], dur: DH, peak: 0.35, bass: true });
+        // fa·mi·re all on anchor → bass la(H)·mi(H)·la(H·)
+        notes.push({ sol: "la", dur: H,  peak: 0.40, bass: true });
+        notes.push({ sol: "mi", dur: H,  peak: 0.35, bass: true });
+        notes.push({ sol: "la", dur: DH, peak: 0.35, bass: true });
       } else if (cadCount === 2) {
-        // anchor melisma pitches each at H, close at DH
-        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: H, peak: i===0?0.40:0.35, bass: true }));
-        const closeP = closeCadRoles[0]?.pitches[0] ?? anchorPitches[anchorPitches.length-1];
-        notes.push({ sol: closeP, dur: DH, peak: 0.35, bass: true });
+        // fa·mi on anchor, re on close → bass la(H)·mi(H) on anchor, la(H·) on close
+        notes.push({ sol: "la", dur: H,  peak: 0.40, bass: true });
+        notes.push({ sol: "mi", dur: H,  peak: 0.35, bass: true });
+        notes.push({ sol: "la", dur: DH, peak: 0.35, bass: true });
       }
       return notes;
     }
