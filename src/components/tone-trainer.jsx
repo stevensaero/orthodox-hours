@@ -533,7 +533,18 @@ const chipH_bass = (sol) => {
   return CHIP_BASE_H + Math.max(0, inv) * CHIP_STEP_H;
 };
 
-// ── LEXICON LOOKUP ────────────────────────────────────────────────────────────
+// Soprano chip height — always above the corresponding alto chip.
+// Maps alto pitch through SOPRANO_MAP, then ensures the result sits
+// above the alto in the display scale. When the mapped pitch would
+// render at or below the alto (e.g. la→do where la=idx0, do=idx2
+// but fa=idx6 so la<fa), shift up by one octave worth of steps.
+// This mirrors freq_soprano's same-logic audio correction.
+const chipH_soprano = (altoPitch) => {
+  const mapped = SOPRANO_MAP[altoPitch] ?? altoPitch;
+  const altoH  = chipH(altoPitch);
+  const sopH0  = chipH(mapped);
+  return sopH0 > altoH ? sopH0 : sopH0 + PITCH_SCALE.length * CHIP_STEP_H;
+};
 // The lexicon is fetched from public/lexicon/ at component mount (same pattern
 // as psalter/scripture). It merges syllable-table.json (CMU+TeX resolved) and
 // name-residue.json (best-guess, confirmed:false). Lookup is by lowercased
@@ -3520,34 +3531,41 @@ export default function ToneTrainer() {
             {/* Alto chips — above text, with optional soprano tab peeking above */}
             {showAlto && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-end", marginBottom: 6,
-                            paddingTop: showSopranoTab ? 8 : 0 }}>
+                            paddingTop: showSopranoTab ? 16 : 0 }}>
                 {groupedAlto.map((grp, gi) => {
                   const entries = grp.entries;
-                  const role = entries[0].r.role === "preslur" ? "prep" : entries[0].r.role;
-                  const sopStripe = showSopranoTab ? (chipStripe[role] ?? chipStripe.recite) : null;
-                  const totalGrpW = entries.reduce((s, {r}) => s + chipW(r), 0)
-                    + (entries.length > 1 ? CHIP_MELISMA_GAP * (entries.length - 1) : 0);
 
-                  const chipContent = entries.length === 1
-                    ? renderChip(entries[0].r, entries[0].i, false)
-                    : (
-                      <div style={{ display: "inline-flex", gap: CHIP_MELISMA_GAP, alignItems: "flex-end" }}>
-                        {entries.map(({r, i}) => renderChip(r, i, false))}
+                  const chipContent = (entry) => {
+                    const {r, i} = entry;
+                    const role = r.role === "preslur" ? "prep" : r.role;
+                    const tabH = showSopranoTab
+                      ? Math.max(4, chipH_soprano(r.pitches[0]) - chipH(r.pitches[0]))
+                      : 0;
+                    const stripe = chipStripe[role] ?? chipStripe.recite;
+                    const chip = renderChip(r, i, false);
+
+                    if (!showSopranoTab) return chip;
+                    return (
+                      <div style={{ position: "relative", display: "inline-block" }}>
+                        <div style={{
+                          position: "absolute",
+                          bottom: "100%", left: 0,
+                          width: chipW(r), height: tabH,
+                          background: stripe,
+                          borderRadius: "3px 3px 0 0",
+                          pointerEvents: "none",
+                        }} />
+                        {chip}
                       </div>
                     );
+                  };
 
-                  if (!sopStripe) return <React.Fragment key={gi}>{chipContent}</React.Fragment>;
-
+                  if (entries.length === 1) {
+                    return <React.Fragment key={gi}>{chipContent(entries[0])}</React.Fragment>;
+                  }
                   return (
-                    <div key={gi} style={{ position: "relative", display: "inline-flex", alignItems: "flex-end" }}>
-                      <div style={{
-                        position: "absolute", top: -8, left: 0,
-                        width: totalGrpW, height: 6,
-                        background: sopStripe,
-                        borderRadius: "3px 3px 0 0",
-                        pointerEvents: "none",
-                      }} />
-                      {chipContent}
+                    <div key={gi} style={{ display: "inline-flex", gap: CHIP_MELISMA_GAP, alignItems: "flex-end" }}>
+                      {entries.map(entry => chipContent(entry))}
                     </div>
                   );
                 })}
