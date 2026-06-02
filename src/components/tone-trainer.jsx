@@ -543,7 +543,7 @@ const chipH_bass = (sol) => {
 // Add a tone here only after researching the Obikhod score for that tone.
 const SOPRANO_TONES = new Set([2]);
 
-
+const chipH_soprano = (altoPitch) => {
   const mapped = SOPRANO_MAP[altoPitch] ?? altoPitch;
   const altoH  = chipH(altoPitch);
   const sopH0  = chipH(mapped);
