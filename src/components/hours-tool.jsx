@@ -9049,6 +9049,7 @@ export default function App() {
   const [showGlossary, setShowGlossary] = useState(false);
   const [showHowItWorks, setShowHowItWorks] = useState(false);
   const [contextOpen, setContextOpen] = useState(false);
+  const [copyrightExpanded, setCopyrightExpanded] = useState(false);
   const [selectedServiceKey, setSelectedServiceKey] = useState("vespers");
   // tbOpen: tracks whether the Typical Beginning is expanded on 1st/6th Hours.
   // When expanded, the Hour body shows O come let us worship (not Christ is risen)
@@ -10006,6 +10007,65 @@ export default function App() {
         )}
       </div>
       {/* ── END HOW IT WORKS ─────────────────────────────────────── */}
+
+      {/* ── COPYRIGHT FOOTER ─────────────────────────────────────── */}
+      <div style={{ marginTop: "1.5rem", borderTop: "1px solid #e8dfc8", paddingTop: "0.7rem",
+                    fontSize: "0.72rem", color: "#9A8A70", fontFamily: "Georgia, serif" }}>
+        {!copyrightExpanded ? (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", justifyContent: "space-between", alignItems: "baseline" }}>
+            <span>
+              © 2026 William Stevens. All Rights Reserved.{" "}
+              Orthodox Hours is free for personal liturgical use and study.{" "}
+              Program design, code, and logic remain the exclusive property of William Stevens.{" "}
+              Written permission required for redistribution or other uses.{" "}
+              Certain liturgical materials used with permission.{" "}
+              <button onClick={() => setCopyrightExpanded(true)}
+                style={{ background: "none", border: "none", padding: 0, cursor: "pointer",
+                         color: "#9A8A70", fontFamily: "Georgia, serif", fontSize: "0.72rem",
+                         textDecoration: "underline" }}>
+                more
+              </button>
+            </span>
+          </div>
+        ) : (
+          <div>
+            <p style={{ margin: "0 0 0.5rem" }}>
+              <strong>Copyright © 2026 William Stevens. All Rights Reserved.</strong>
+            </p>
+            <p style={{ margin: "0 0 0.5rem" }}>
+              Orthodox Hours is provided free of charge for personal liturgical use and study.
+            </p>
+            <p style={{ margin: "0 0 0.5rem" }}>
+              The program design, source code, service-assembly logic and algorithms, user interface
+              architecture, and all distinctive visual representations and stylings of liturgical
+              service organization are the exclusive intellectual property of William Stevens.
+            </p>
+            <p style={{ margin: "0 0 0.5rem" }}>
+              Permission is hereby granted to use Orthodox Hours for your own personal,
+              non-commercial liturgical prayer, study, and devotion.
+            </p>
+            <p style={{ margin: "0 0 0.5rem" }}>
+              Any other use — including redistribution (in whole or in part), modification,
+              adaptation, incorporation into other software or websites, commercial use, or public
+              display — requires the prior written permission of William Stevens.
+            </p>
+            <p style={{ margin: "0 0 0.7rem" }}>
+              This program incorporates certain copyrighted liturgical texts, rubrics, musical
+              settings, and other materials used with the express permission of their respective
+              copyright holders. These third-party materials remain the sole property of their
+              owners and are not covered by this notice.
+            </p>
+            <button onClick={() => setCopyrightExpanded(false)}
+              style={{ background: "none", border: "none", padding: 0, cursor: "pointer",
+                       color: "#9A8A70", fontFamily: "Georgia, serif", fontSize: "0.72rem",
+                       textDecoration: "underline" }}>
+              less
+            </button>
+          </div>
+        )}
+      </div>
+      {/* ── END COPYRIGHT FOOTER ─────────────────────────────────── */}
+
       </div>
     </div>
   );
