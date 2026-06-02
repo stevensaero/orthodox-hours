@@ -1842,6 +1842,7 @@ export default function ToneTrainer() {
   const [lines, setLines] = useState([]);
   const [playingLine, setPlayingLine] = useState(null);
   const [playingWhich, setPlayingWhich] = useState(null); // "truth"|"machine" while a line plays
+  const [playingChipIdx, setPlayingChipIdx] = useState(null); // index of currently playing chip
   const [pitchHeight, setPitchHeight] = useState(true); // always on in new sing view
   const [timbre, setTimbre] = useState("piano");         // audio timbre for sing view
   const [voicePart, setVoicePart] = useState("alto");    // alto | bass | alto-bass
@@ -2180,15 +2181,40 @@ export default function ToneTrainer() {
     }
   };
 
-  const playNotesWithBass = (altoNotes, bassNotes, onDone) => {
+  const playNotesWithBass = (altoNotes, bassNotes, onDone, li) => {
     const c = ac();
-    let t = c.currentTime + 0.06;
-    altoNotes.forEach((n) => { toneTimbre(freq(n.sol), t, n.dur, n.peak, timbre); t += n.dur; });
-    const totalDur = t - (c.currentTime + 0.06);
-    if (bassNotes && (voicePart === "bass" || voicePart === "alto-bass")) {
-      let tb = c.currentTime + 0.06;
+    const startT = c.currentTime + 0.06;
+    let t = startT;
+    let tb = startT;
+
+    const playAlto = voicePart === "alto" || voicePart === "alto-bass";
+    const playBass  = (voicePart === "bass" || voicePart === "alto-bass") && bassNotes;
+
+    // Schedule per-chip highlights using note timing
+    const scheduleHighlights = (notes, isBass) => {
+      let ht = startT;
+      notes.forEach((n, ni) => {
+        const delay = (ht - c.currentTime) * 1000;
+        const capturedNi = ni;
+        const capturedLi = li;
+        timerIdsRef.current.push(setTimeout(() => {
+          if (capturedLi !== null) setPlayingLine(capturedLi);
+          setPlayingChipIdx(isBass ? -(capturedNi + 1) : capturedNi); // negative = bass chip
+        }, delay));
+        ht += n.dur;
+      });
+    };
+
+    if (playAlto) {
+      scheduleHighlights(altoNotes, false);
+      altoNotes.forEach((n) => { toneTimbre(freq(n.sol), t, n.dur, n.peak, timbre); t += n.dur; });
+    }
+    if (playBass) {
+      if (!playAlto) scheduleHighlights(bassNotes, true);
       bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol), tb, n.dur, n.peak * 0.7, timbre); tb += n.dur; });
     }
+
+    const totalDur = Math.max(t, tb) - startT;
     if (onDone) {
       const id = setTimeout(onDone, totalDur * 1000 + 40);
       timerIdsRef.current.push(id);
@@ -2209,10 +2235,11 @@ export default function ToneTrainer() {
   const playLineAs = (li, which) => {
     const src = which === "machine" && machineLines ? machineLines : lines;
     setPlayingLine(li);
+    setPlayingChipIdx(null);
     setPlayingWhich(which);
     const altoNotes = lineToNotes(src[li]);
     const bassNotes = lineToNotes_bass(src[li]);
-    playNotesWithBass(altoNotes, bassNotes, () => { setPlayingLine(null); setPlayingWhich(null); });
+    playNotesWithBass(altoNotes, bassNotes, () => { setPlayingLine(null); setPlayingChipIdx(null); setPlayingWhich(null); }, li);
   };
 
   // lineToRolesWithDuration(line)
@@ -2311,36 +2338,39 @@ export default function ToneTrainer() {
 
   const playLine = (li) => {
     setPlayingLine(li);
+    setPlayingChipIdx(null);
     setPlayingWhich(singWhich);
     const altoNotes = lineToNotes(activeLines()[li]);
     const bassNotes = lineToNotes_bass(activeLines()[li]);
-    playNotesWithBass(altoNotes, bassNotes, () => { setPlayingLine(null); setPlayingWhich(null); });
+    playNotesWithBass(altoNotes, bassNotes, () => { setPlayingLine(null); setPlayingChipIdx(null); setPlayingWhich(null); }, li);
   };
 
   const playAll = () => {
     timerIdsRef.current.forEach(id => clearTimeout(id));
     timerIdsRef.current = [];
     const c = ac();
-    let t = c.currentTime + 0.06;
-    let tb = c.currentTime + 0.06; // bass start time — tracks in parallel
+    const startT = c.currentTime + 0.06;
+    let t = startT;
+    let tb = startT;
     const which = compareMode && machineLines ? singWhich : "truth";
+    const playAlto = voicePart === "alto" || voicePart === "alto-bass";
+    const playBassVoice = voicePart === "bass" || voicePart === "alto-bass";
     setPlayingWhich(which);
     activeLines().forEach((line, li) => {
       const altoNotes = lineToNotes(line);
       const bassNotes = lineToNotes_bass(line);
       const start = t;
-      const id1 = setTimeout(() => setPlayingLine(li), (start - c.currentTime) * 1000);
+      const id1 = setTimeout(() => { setPlayingLine(li); setPlayingChipIdx(null); }, (start - c.currentTime) * 1000);
       timerIdsRef.current.push(id1);
-      // Schedule alto
-      altoNotes.forEach((n) => { tone(freq(n.sol), t, n.dur, n.peak); t += n.dur; });
-      // Schedule bass simultaneously
-      if (bassNotes) {
-        bassNotes.forEach((n) => { tone(freq_bass(n.sol), tb, n.dur, n.peak * 0.7); tb += n.dur; });
-        tb += (60 / bpm) / 2; // matching gap
+      if (playAlto) altoNotes.forEach((n) => { toneTimbre(freq(n.sol), t, n.dur, n.peak, timbre); t += n.dur; });
+      if (playBassVoice && bassNotes) {
+        bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol), tb, n.dur, n.peak * 0.7, timbre); tb += n.dur; });
+        tb += (60 / bpm) / 2;
       }
-      t += (60 / bpm) / 2; // one quarter note of silence between phrases
+      if (playAlto) t += (60 / bpm) / 2;
     });
-    const id2 = setTimeout(() => { setPlayingLine(null); setPlayingWhich(null); }, (t - c.currentTime) * 1000 + 40);
+    const totalDur = Math.max(t, tb) - startT;
+    const id2 = setTimeout(() => { setPlayingLine(null); setPlayingChipIdx(null); setPlayingWhich(null); }, totalDur * 1000 + 40);
     timerIdsRef.current.push(id2);
   };
 
@@ -2349,6 +2379,7 @@ export default function ToneTrainer() {
     timerIdsRef.current = [];
     stop();
     setPlayingLine(null);
+    setPlayingChipIdx(null);
     setPlayingWhich(null);
   };
 
@@ -2967,8 +2998,10 @@ export default function ToneTrainer() {
         {/* Color-coded legend — pill backgrounds match chip roleBg colors */}
         <span style={{ flex: 1, display: "flex", gap: "0.6rem", justifyContent: "flex-start",
                        flexWrap: "wrap", alignItems: "center" }}>
-          <span style={{ background: "rgba(40,58,92,.08)", color: "#283a5c",
+          <span style={{ background: "rgba(40,58,92,.06)", color: "#283a5c",
                          borderRadius: 4, padding: "1px 7px" }}>reciting tone</span>
+          <span style={{ background: "rgba(40,58,92,.10)", color: "#283a5c",
+                         borderRadius: 4, padding: "1px 7px" }}>intonation</span>
           <span style={{ background: "rgba(180,137,43,.18)", color: "#8a6a14",
                          borderRadius: 4, padding: "1px 7px" }}>
             prep ({[...new Set(Object.values(PH).map(d => d.prep).filter(Boolean))].join("/") || "—"})
@@ -2979,7 +3012,6 @@ export default function ToneTrainer() {
           )}
           <span style={{ background: "rgba(122,36,24,.11)", color: "#7a2418",
                          borderRadius: 4, padding: "1px 7px" }}>{activeTone === 3 ? "cad. pt. 2" : "cadence"}</span>
-          <span>· ´ = accent</span>
         </span>
         {/* Pointing mode — two toggle buttons: Director / Machine.
              In sing view: always show Director; show Machine only when machineLines available.
@@ -3291,8 +3323,14 @@ export default function ToneTrainer() {
           const w = chipW(r);
           const isAnchor = r.anchor || (r.role === "cad" && i === 0);
           const bg = chipBg[role] ?? chipBg.recite;
-          const borderC = isAnchor ? "#7a2418" : (chipBorderColor[role] ?? chipBorderColor.recite);
-          const borderW = isAnchor ? "2px" : "1px";
+          // Per-chip highlight: positive index = alto chip, negative = bass chip
+          const isActive = playingLine === li && (
+            isBass ? playingChipIdx === -(i + 1) : playingChipIdx === i
+          );
+          const borderC = isActive ? "#7a2418"
+            : isAnchor ? "#7a2418"
+            : (chipBorderColor[role] ?? chipBorderColor.recite);
+          const borderW = isAnchor || isActive ? "2px" : "1px";
           const stripe = chipStripe[role] ?? chipStripe.recite;
           const sol = r.pitches[0];
 
@@ -3300,10 +3338,11 @@ export default function ToneTrainer() {
             <div key={i} style={{
               position: "relative", display: "inline-block", flexShrink: 0,
               width: w, height: h,
-              background: bg,
+              background: isActive ? (isBass ? "rgba(122,36,24,.22)" : "rgba(40,58,92,.18)") : bg,
               border: `${borderW} solid ${borderC}`,
               borderRadius: 6,
               overflow: "hidden",
+              transition: "background 0.05s",
             }}>
               {/* Role stripe bar */}
               <div style={{
