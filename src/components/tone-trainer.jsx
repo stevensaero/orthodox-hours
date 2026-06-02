@@ -2141,7 +2141,8 @@ export default function ToneTrainer() {
       altoNotes.forEach((n) => { toneTimbre(freq(n.sol), t, n.dur, n.peak, timbre); t += n.dur; });
     }
     if (playBass) {
-      if (!playAlto) scheduleHighlights(bassNotes, true);
+      // In bass-only mode: highlight bass chips. In alto+bass: highlight both simultaneously.
+      if (!playAlto || voicePart === "alto-bass") scheduleHighlights(bassNotes, true);
       bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol), tb, n.dur, n.peak * 1.1, timbre); tb += n.dur; });
     }
 
@@ -2322,9 +2323,9 @@ export default function ToneTrainer() {
         altoNotes.forEach((n) => { toneTimbre(freq(n.sol), t, n.dur, n.peak, timbre); t += n.dur; });
       }
 
-      // Schedule per-chip highlights for bass (only when bass-only — alto-bass uses alto highlights)
+      // Schedule per-chip highlights for bass (bass-only or alto+bass)
       if (playBassVoice && bassNotes) {
-        if (!playAlto) {
+        if (!playAlto || voicePart === "alto-bass") {
           let ht = tb;
           bassNotes.forEach((n, ni) => {
             const delay = (ht - c.currentTime) * 1000;
