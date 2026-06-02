@@ -2097,23 +2097,23 @@ export default function ToneTrainer() {
         const syllDur = r.role === "inton" ? (r.accent ? H : Q)
           : r.role === "preslur" ? H / r.pitches.length
           : Q;
-        r.pitches.forEach(p => notes.push({ sol: p, dur: syllDur, peak: 0.2, bass: true }));
+        r.pitches.forEach(p => notes.push({ sol: p, dur: syllDur, peak: 0.35, bass: true }));
       });
       // Collect all cad roles in order
       const cadRoles = bassRoles.filter(r => r.role === "cad");
       const anchorPitches = cadRoles[0]?.pitches ?? ["la"];  // may be melisma e.g. ["sol","fa"]
 
       if (cadCount === 1) {
-        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: W, peak: i===0?0.27:0.2, bass: true }));
+        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: W, peak: i===0?0.40:0.35, bass: true }));
       } else if (cadCount === 2) {
         // anchor pitches (melisma) then close
-        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: i===0?W:H, peak: i===0?0.27:0.2, bass: true }));
-        notes.push({ sol: cadRoles[1]?.pitches[0] ?? "re", dur: W, peak: 0.2, bass: true });
+        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: i===0?W:H, peak: i===0?0.40:0.35, bass: true }));
+        notes.push({ sol: cadRoles[1]?.pitches[0] ?? "re", dur: W, peak: 0.35, bass: true });
       } else if (cadCount === 3) {
         // anchor pitches (melisma) + middle + close
-        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: i===0?W:H, peak: i===0?0.27:0.2, bass: true }));
-        notes.push({ sol: cadRoles[1]?.pitches[0] ?? "sol", dur: H, peak: 0.2, bass: true });
-        notes.push({ sol: cadRoles[2]?.pitches[0] ?? "re",  dur: W, peak: 0.2, bass: true });
+        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: i===0?W:H, peak: i===0?0.40:0.35, bass: true }));
+        notes.push({ sol: cadRoles[1]?.pitches[0] ?? "sol", dur: H, peak: 0.35, bass: true });
+        notes.push({ sol: cadRoles[2]?.pitches[0] ?? "re",  dur: W, peak: 0.35, bass: true });
       }
       return notes;
     }
@@ -2123,7 +2123,7 @@ export default function ToneTrainer() {
       bassRoles.forEach(r => {
         if (r.role === "cad") return;
         const syllDur = r.role === "inton" ? (r.accent ? H : Q) : Q;
-        r.pitches.forEach(p => notes.push({ sol: p, dur: syllDur, peak: 0.2, bass: true }));
+        r.pitches.forEach(p => notes.push({ sol: p, dur: syllDur, peak: 0.35, bass: true }));
       });
       // cadPitches: collect ALL pitches from the anchor cad role (may be melisma)
       const anchorCadRole = bassRoles.find(r => r.role === "cad");
@@ -2132,13 +2132,13 @@ export default function ToneTrainer() {
 
       if (cadCount === 1) {
         // all pitches on anchor, then close
-        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: H, peak: i===0?0.27:0.2, bass: true }));
-        notes.push({ sol: anchorPitches[anchorPitches.length-1], dur: DH, peak: 0.2, bass: true });
+        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: H, peak: i===0?0.40:0.35, bass: true }));
+        notes.push({ sol: anchorPitches[anchorPitches.length-1], dur: DH, peak: 0.35, bass: true });
       } else if (cadCount === 2) {
         // anchor melisma pitches each at H, close at DH
-        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: H, peak: i===0?0.27:0.2, bass: true }));
+        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: H, peak: i===0?0.40:0.35, bass: true }));
         const closeP = closeCadRoles[0]?.pitches[0] ?? anchorPitches[anchorPitches.length-1];
-        notes.push({ sol: closeP, dur: DH, peak: 0.2, bass: true });
+        notes.push({ sol: closeP, dur: DH, peak: 0.35, bass: true });
       }
       return notes;
     }
@@ -2223,7 +2223,7 @@ export default function ToneTrainer() {
     }
     if (playBass) {
       if (!playAlto) scheduleHighlights(bassNotes, true);
-      bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol), tb, n.dur, n.peak * 0.7, timbre); tb += n.dur; });
+      bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol), tb, n.dur, n.peak * 0.9, timbre); tb += n.dur; });
     }
 
     const totalDur = Math.max(t, tb) - startT;
@@ -2296,8 +2296,13 @@ export default function ToneTrainer() {
     if (isTone2Final && cadCount < 4 && cadCount >= 1) {
       roles.forEach(r => {
         if (r.role === "cad") return;
-        const d = r.role === "inton" ? (r.accent ? H : Q) : (r.role === "preslur" ? H/2 : Q);
-        result.push({ ...r, dur: d, durKey: durKey(d) });
+        if (r.role === "preslur" && r.pitches.length > 1) {
+          // Split preslur into per-pitch melisma entries
+          r.pitches.forEach(p => result.push({ ...r, pitches: [p], dur: H/2, durKey: "Q", melisma: true }));
+        } else {
+          const d = r.role === "inton" ? (r.accent ? H : Q) : Q;
+          result.push({ ...r, dur: d, durKey: durKey(d) });
+        }
       });
       const cadRoles = roles.filter(r => r.role === "cad");
       if (cadCount === 1)      emitMelisma(cadRoles[0], ["do","re","do","ti"], [W,H,H,W]);
@@ -2404,7 +2409,7 @@ export default function ToneTrainer() {
             ht += n.dur;
           });
         }
-        bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol), tb, n.dur, n.peak * 0.7, timbre); tb += n.dur; });
+        bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol), tb, n.dur, n.peak * 0.9, timbre); tb += n.dur; });
         tb += (60 / bpm) / 2;
       }
       if (playAlto) t += (60 / bpm) / 2;
@@ -3339,10 +3344,55 @@ export default function ToneTrainer() {
       {!(compareMode && compareData) && (singView === "machine" && machineLines ? machineLines : lines).map((line, li) => {
         const rolesWD = lineToRolesWithDuration(line);
         const bassRolesWD = (() => {
-          const br = generateBass(pointLine(line, PH, activeTone), line.phrase, activeTone);
+          const altoRoles = pointLine(line, PH, activeTone);
+          const br = generateBass(altoRoles, line.phrase, activeTone);
           if (!br) return null;
-          // annotate bass roles with same dur structure
-          return rolesWD.map((r, i) => ({ ...(br[i] ?? r), dur: r.dur, durKey: r.durKey }));
+          // Build a parallel rolesWD using bass pitches directly
+          // Re-run the same melisma expansion logic as lineToRolesWithDuration
+          // but substituting bass pitches from br
+          const H2 = 60 / bpm; const Q2 = H2/2; const W2 = H2*2; const DH2 = H2*1.5;
+          const isTone2b = activeTone === 2;
+          const isFinalb = line.phrase === "Final";
+          const isAb = line.phrase === "A";
+          const cadIdxsB = br.map((r,i) => r.role==="cad"?i:-1).filter(i=>i>=0);
+          const cadCountB = cadIdxsB.length;
+          const durKeyB = (sec) => {
+            if (Math.abs(sec-W2)<0.01) return "W";
+            if (Math.abs(sec-DH2)<0.01) return "H·";
+            if (Math.abs(sec-H2)<0.01) return "H";
+            return "Q";
+          };
+          const res = [];
+          const emitB = (baseRole, pitches, durs) =>
+            pitches.forEach((p,i) => res.push({...baseRole, pitches:[p], dur:durs[i], durKey:durKeyB(durs[i]), melisma:true}));
+
+          if (isTone2b && isFinalb && cadCountB < 4 && cadCountB >= 1) {
+            br.forEach(r => {
+              if (r.role==="cad") return;
+              if (r.role==="preslur" && r.pitches.length > 1) {
+                r.pitches.forEach(p => res.push({...r, pitches:[p], dur:H2/2, durKey:"Q", melisma:true}));
+              } else {
+                const d = r.role==="inton" ? (r.accent?H2:Q2) : Q2;
+                res.push({...r, dur:d, durKey:durKeyB(d)});
+              }
+            });
+            const cadR = br.filter(r=>r.role==="cad");
+            const aP = cadR[0]?.pitches ?? ["la"];
+            if (cadCountB===1) emitB(cadR[0], aP, aP.map(()=>W2));
+            else if (cadCountB===2) { emitB(cadR[0], aP, [W2,...aP.slice(1).map(()=>H2)]); res.push({...cadR[1], pitches:[cadR[1].pitches[0]], dur:W2, durKey:"W"}); }
+            else if (cadCountB===3) { emitB(cadR[0], aP, [W2,...aP.slice(1).map(()=>H2)]); res.push({...cadR[1], pitches:[cadR[1].pitches[0]], dur:H2, durKey:"H"}); res.push({...cadR[2], pitches:[cadR[2].pitches[0]], dur:W2, durKey:"W"}); }
+            return res;
+          }
+          if (isTone2b && isAb && cadCountB < 3 && cadCountB >= 1) {
+            br.forEach(r => { if (r.role==="cad") return; res.push({...r, dur:Q2, durKey:"Q"}); });
+            const cadR = br.filter(r=>r.role==="cad");
+            const aP = cadR[0]?.pitches ?? ["la"];
+            if (cadCountB===1) emitB(cadR[0], aP, aP.map(()=>H2).concat([DH2]));
+            else if (cadCountB===2) { emitB(cadR[0], aP, aP.map(()=>H2)); res.push({...cadR[1], pitches:[cadR[1].pitches[0]], dur:DH2, durKey:"H·"}); }
+            return res;
+          }
+          // Standard path — match rolesWD structure but use bass pitches
+          return rolesWD.map((r, i) => ({ ...(br[i] ?? r), dur: r.dur, durKey: r.durKey, melisma: r.melisma }));
         })();
         const isFin = line.phrase === "Final";
         const showAlto = voicePart === "alto" || voicePart === "alto-bass";
@@ -3525,6 +3575,15 @@ export default function ToneTrainer() {
         one-syllable-final-word backup) follows Drillock &amp; Ealy, <i>Tutorial for Learning the Church
         Tones — Common Chant</i> (OCA). The exact note-to-syllable distribution inside a cadence is the
         trainer's best reading; verify against the printed staves.
+      </div>
+
+      <div style={{ marginTop: "1rem", fontSize: "0.72rem", color: "#9A8A70", borderTop: "1px solid #e8dfc8", paddingTop: "0.7rem", display: "flex", flexWrap: "wrap", gap: "0.4rem", justifyContent: "space-between" }}>
+        <span>
+          <b style={{ color: "#6b5942" }}>Tone Trainer</b> © 2026 William Stevens · All Rights Reserved.
+          Visual representations and stylings that capture pitch and note duration are the intellectual
+          property of the author. Reproduction and use by written permission only.
+        </span>
+        <span style={{ whiteSpace: "nowrap" }}>v{TONE_TRAINER_VERSION}</span>
       </div>
     </div>
   );
