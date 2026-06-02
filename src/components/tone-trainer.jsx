@@ -3344,68 +3344,23 @@ export default function ToneTrainer() {
       {!(compareMode && compareData) && (singView === "machine" && machineLines ? machineLines : lines).map((line, li) => {
         const rolesWD = lineToRolesWithDuration(line);
         const bassRolesWD = (() => {
-          const altoRoles = pointLine(line, PH, activeTone);
-          const br = generateBass(altoRoles, line.phrase, activeTone);
-          if (!br) return null;
-          const H2 = 60 / bpm, Q2 = H2/2, W2 = H2*2, DH2 = H2*1.5;
-          const isTone2b = activeTone === 2;
-          const isFinalb = line.phrase === "Final";
-          const isAb = line.phrase === "A";
-          const cadIdxsB = br.map((r,i) => r.role==="cad"?i:-1).filter(i=>i>=0);
-          const cadCountB = cadIdxsB.length;
-          const dkB = (sec) => Math.abs(sec-W2)<0.01?"W":Math.abs(sec-DH2)<0.01?"H·":Math.abs(sec-H2)<0.01?"H":"Q";
-          const res = [];
-          const emitB = (baseRole, pitches, durs) =>
-            pitches.forEach((p,i) => res.push({...baseRole, pitches:[p], dur:durs[i], durKey:dkB(durs[i]), melisma:true}));
-
-          // Tone 2 Final — melisma expansion using bass pitches
-          if (isTone2b && isFinalb && cadCountB < 4 && cadCountB >= 1) {
-            br.forEach(r => {
-              if (r.role==="cad") return;
-              if (r.role==="preslur" && r.pitches.length > 1)
-                r.pitches.forEach(p => res.push({...r, pitches:[p], dur:Q2, durKey:"Q", melisma:true}));
-              else res.push({...r, dur:Q2, durKey:"Q"});
-            });
-            const cadR = br.filter(r=>r.role==="cad");
-            const aP = cadR[0]?.pitches ?? ["la"];
-            if (cadCountB===1) { emitB(cadR[0], aP, aP.map(()=>W2)); }
-            else if (cadCountB===2) {
-              emitB(cadR[0], aP, [W2, ...aP.slice(1).map(()=>H2)]);
-              res.push({...cadR[1], pitches:[cadR[1].pitches[0]??cadR[1].pitches[0]], dur:W2, durKey:"W"});
-            } else if (cadCountB===3) {
-              emitB(cadR[0], aP, [W2, ...aP.slice(1).map(()=>H2)]);
-              res.push({...cadR[1], pitches:[cadR[1].pitches[0]], dur:H2, durKey:"H"});
-              res.push({...cadR[2], pitches:[cadR[2].pitches[0]], dur:W2, durKey:"W"});
-            }
-            return res;
-          }
-
-          // Tone 2 Phrase A — melisma expansion using bass pitches
-          if (isTone2b && isAb && cadCountB < 3 && cadCountB >= 1) {
-            br.forEach(r => { if (r.role==="cad") return; res.push({...r, dur:Q2, durKey:"Q"}); });
-            const cadR = br.filter(r=>r.role==="cad");
-            const aP = cadR[0]?.pitches ?? ["la"];
-            if (cadCountB===1) emitB(cadR[0], [...aP,"la"], [...aP.map(()=>H2), DH2]);
-            else if (cadCountB===2) {
-              emitB(cadR[0], aP, aP.map(()=>H2));
-              res.push({...cadR[1], pitches:[cadR[1].pitches[0]], dur:DH2, durKey:"H·"});
-            }
-            return res;
-          }
-
-          // Standard path — expand br the same way lineToRolesWithDuration expands alto roles
-          br.forEach((r, ri) => {
-            const matchingAlto = altoRoles[ri];
-            const matchingRolesWD = rolesWD.filter(rw => rw.text === r.text && rw.role === r.role);
-            if (r.role === "preslur" && r.pitches.length > 1) {
-              r.pitches.forEach(p => res.push({...r, pitches:[p], dur:Q2, durKey:"Q", melisma:true}));
+          const rules = BASS_RULES[activeTone]?.[line.phrase];
+          if (!rules) return null;
+          return rolesWD.map(r => {
+            let bassPitch;
+            if (r.role === "recite" || r.role === "inton") {
+              bassPitch = rules.recite;
+            } else if (r.role === "prep") {
+              bassPitch = rules.prepMap?.[r.pitches[0]] ?? r.pitches[0];
+            } else if (r.role === "preslur") {
+              bassPitch = rules.preslurMap?.[r.pitches[0]] ?? r.pitches[0];
+            } else if (r.role === "cad" || r.role === "cad1") {
+              bassPitch = rules.cadMap?.[r.pitches[0]] ?? r.pitches[0];
             } else {
-              // Find corresponding duration from rolesWD by text+role match
-              const rwd = matchingRolesWD[0] ?? { dur: Q2, durKey: "Q" };
-              res.push({...r, dur:rwd.dur, durKey:rwd.durKey, melisma: rwd.melisma});
+              bassPitch = r.pitches[0];
             }
+            return { ...r, pitches: [bassPitch] };
           });
-          return res;
         })();
         const isFin = line.phrase === "Final";
         const showAlto = voicePart === "alto" || voicePart === "alto-bass";
