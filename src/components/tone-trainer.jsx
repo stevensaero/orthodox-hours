@@ -2077,9 +2077,17 @@ export default function ToneTrainer() {
   // Keeps bass in the correct register regardless of starting pitch selection.
   const freq_bass = (sol) => freq(sol) / (BASS_OCTAVE_DIV[sol] ?? 2);
 
-  // Soprano frequency — diatonic third above alto, one octave above alto register.
-  // Alto plays at freq(sol). Soprano = freq(SOPRANO_MAP[sol]) * 2 (one octave up).
-  const freq_soprano = (sol) => freq(SOPRANO_MAP[sol] ?? sol) * 2;
+  // Soprano frequency — diatonic third above alto, always in the octave
+  // that places it just above the alto pitch (nearest third up on the staff).
+  // Strategy: compute soprano mapped pitch at same octave reference as alto,
+  // then if it's not higher than alto, shift up one octave.
+  const freq_soprano = (sol) => {
+    const mapped = SOPRANO_MAP[sol] ?? sol;
+    const altoF  = freq(sol);
+    const sopF0  = freq(mapped);          // soprano pitch at base octave
+    // If soprano at base octave is already above alto, use it; else shift up one octave.
+    return sopF0 > altoF ? sopF0 : sopF0 * 2;
+  };
 
   // lineToNotes_soprano(line)
   // Derives soprano audio notes from rolesWD — same expanded representation as
