@@ -1272,20 +1272,6 @@ const SOPRANO_MAP = {
   sol: "ti",   // F → Ab
 };
 
-// Soprano octave displacement: one octave above alto.
-// Alto pitches re/mi/fa/sol are already at /4 (2 octaves below soprano reference);
-// soprano is one octave above alto = half the displacement.
-const SOPRANO_OCTAVE_MULT = {
-  la:  4,    // G3 → G4  (soprano = alto octave × 2 = reference / 1)
-  ti:  4,
-  do:  4,
-  di:  4,
-  re:  8,    // C3 → C4
-  mi:  8,
-  fa:  8,
-  sol: 8,
-};
-
 // ── FEATURE B: BRACKET-AWARE PARSING + COMPARISON HARNESS ───────────────────
 // See SYLLABIFIER_SPEC.md §7 for full design decisions.
 //
@@ -2092,10 +2078,8 @@ export default function ToneTrainer() {
   const freq_bass = (sol) => freq(sol) / (BASS_OCTAVE_DIV[sol] ?? 2);
 
   // Soprano frequency — diatonic third above alto, one octave above alto register.
-  const freq_soprano = (sol) => {
-    const sMapped = SOPRANO_MAP[sol] ?? sol;
-    return freq(sMapped) * ((SOPRANO_OCTAVE_MULT[sMapped] ?? 4) / (BASS_OCTAVE_DIV[sMapped] ?? 2));
-  };
+  // Alto plays at freq(sol). Soprano = freq(SOPRANO_MAP[sol]) * 2 (one octave up).
+  const freq_soprano = (sol) => freq(SOPRANO_MAP[sol] ?? sol) * 2;
 
   // lineToNotes_soprano(line)
   // Derives soprano audio notes from rolesWD — same expanded representation as
