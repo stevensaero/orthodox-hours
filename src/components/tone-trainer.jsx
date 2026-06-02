@@ -3404,10 +3404,10 @@ export default function ToneTrainer() {
         // Build chip entries — one per role entry (melisma = one per pitch)
         const chipW = (r) => r.role === "recite" ? CHIP_W_RECITE : (CHIP_W[r.durKey] ?? CHIP_W.Q);
 
-        const renderChip = (r, i, isBass, isSoprano = false) => {
+        const renderChip = (r, i, isBass, isSoprano = false, isGhostSoprano = false) => {
           const role = r.role === "preslur" ? "prep" : r.role;
           const h = isBass ? chipH_bass(r.pitches[0])
-                  : isSoprano ? chipH_soprano(r.pitches[0])
+                  : (isSoprano || isGhostSoprano) ? chipH_soprano(r.pitches[0])
                   : chipH(r.pitches[0]);
           const w = chipW(r);
           const isAnchor = r.anchor || (r.role === "cad" && i === 0);
@@ -3419,12 +3419,10 @@ export default function ToneTrainer() {
             : (chipBorderColor[role] ?? chipBorderColor.recite);
           const borderW = isActive ? "2px" : "1px";
           const stripe = chipStripe[role] ?? chipStripe.recite;
-          // Soprano chips display the mapped soprano pitch as the solfège label
-          const sol = isSoprano ? (SOPRANO_MAP[r.pitches[0]] ?? r.pitches[0]) : r.pitches[0];
+          const sol = (isSoprano || isGhostSoprano) ? (SOPRANO_MAP[r.pitches[0]] ?? r.pitches[0]) : r.pitches[0];
 
-          // Soprano chips: transparent body with faint border — only the stripe tab is solid.
-          // The alto chip underneath reads clearly; the soprano crown signals the upper voice.
-          if (isSoprano) {
+          // Ghost soprano: transparent body, solid stripe crown only — used in alto+bass view
+          if (isGhostSoprano) {
             return (
               <div key={i} style={{
                 position: "relative", display: "inline-block", flexShrink: 0,
@@ -3461,7 +3459,7 @@ export default function ToneTrainer() {
                 height: 8, background: stripe,
                 borderRadius: isBass ? "0 0 5px 5px" : "5px 5px 0 0",
               }} />
-              {/* Solfège label */}
+              {/* Solfège label — shown for alto, bass, and standalone soprano */}
               <div style={{
                 position: "absolute", left: 0, right: 0, textAlign: "center",
                 ...(isBass ? { bottom: 10 } : { top: 10 }),
