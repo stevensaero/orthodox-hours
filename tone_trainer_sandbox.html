@@ -10,6 +10,11 @@
     font-family: Georgia, serif;
     padding: 20px 20px 40px;
     min-height: 100vh;
+    transition: background 0.2s, color 0.2s;
+  }
+  body.light {
+    background: #faf7f2;
+    color: #2a2118;
   }
 
   h1 {
@@ -155,6 +160,24 @@
     justify-content: space-between;
     padding: 5px 3px 4px;
   }
+
+  /* ── LIGHT THEME CHIP COLORS (matches tone-trainer.jsx roleBg/roleColor) ── */
+  body.light .chip.recite  { background: rgba(40,58,92,.06);   border-color: rgba(40,58,92,.18);  }
+  body.light .chip.inton   { background: rgba(40,58,92,.10);   border-color: rgba(40,58,92,.24);  }
+  body.light .chip.prep    { background: rgba(180,137,43,.16); border-color: rgba(180,137,43,.35);}
+  body.light .chip.cad     { background: rgba(122,36,24,.10);  border-color: rgba(122,36,24,.30); }
+  body.light .chip.recite-chip { background: rgba(40,58,92,.06); border-color: rgba(40,58,92,.18); }
+  body.light .controls     { background: rgba(255,255,255,0.7); border-color: #d6c79f; }
+  body.light .ctrl-label   { color: #5b4a33; }
+  body.light .ctrl-val     { color: #8B6914; }
+  body.light .toggle-btn   { border-color: #d6c79f; color: #5b4a33; background: transparent; }
+  body.light .toggle-btn.on { background: rgba(40,58,92,.08); border-color: #8B6914; color: #8B6914; }
+  body.light .play-btn     { border-color: #8B6914; background: transparent; color: #8B6914; }
+  body.light .play-btn.playing { border-color: #7a2418; color: #7a2418; background: rgba(122,36,24,.06); }
+  body.light .phrase-label { color: #8B6914; }
+  body.light .divider      { background: #d6c79f; }
+  body.light h1            { color: #7a2418; border-color: #d6c79f; }
+  body.light .subtitle     { color: #5b4a33; }
   .chip .syl {
     font-size: 11px;
     color: #e8dfc8;
@@ -193,6 +216,7 @@
     color: #c8b888;
     line-height: 1.2;
   }
+  body.light .recite-text .syl { color: #2a2118; }
   .recite-text .sol {
     font-size: 7px;
     color: rgba(232,223,200,0.28);
@@ -344,6 +368,7 @@
 
 <!-- ── DISPLAY TOGGLES ──────────────────────────────── -->
 <div class="toggle-row">
+  <button class="toggle-btn" id="tog-theme" onclick="toggleTheme()">Light Theme</button>
   <button class="toggle-btn on" id="tog-pitch">Pitch height</button>
   <button class="toggle-btn on" id="tog-durwidth">Duration width</button>
   <button class="toggle-btn" id="tog-narrowrecite">Narrow recite</button>
@@ -429,7 +454,7 @@ const DATA = {
     { syl:"u-",    sol:"re", role:"recite", dur:"Q"  },
     { syl:"pon",   sol:"re", role:"recite", dur:"Q"  },
     { syl:"Thee,", sol:"re", role:"recite", dur:"Q"  },
-    { syl:"hear",  sol:"fa", role:"cad",    dur:"H",  melisma:["fa","mi"], melismaDurs:["H","H"] },
+    { syl:"hear",  sol:"fa", role:"cad",    dur:"H",  melisma:["fa","mi"], melismaDurs:["H","H"], anchor:true },
     { syl:"me!",   sol:"re", role:"cad",    dur:"H·" },
   ],
 
@@ -438,7 +463,7 @@ const DATA = {
   // "Hear"=recite re(Q), [me]=anchor di(H), O=di(H), Lord!=re(W) — count=3, multi-word → re(W)
   "row-2": [
     { syl:"Hear",  sol:"re", role:"recite", dur:"Q" },
-    { syl:"me,",   sol:"di", role:"cad",    dur:"H" },
+    { syl:"me,",   sol:"di", role:"cad",    dur:"H", anchor:true },
     { syl:"O",     sol:"di", role:"cad",    dur:"H" },
     { syl:"Lord!", sol:"re", role:"cad",    dur:"W" },
   ],
@@ -453,7 +478,7 @@ const DATA = {
     { syl:"u-",    sol:"re", role:"recite", dur:"Q"  },
     { syl:"pon",   sol:"re", role:"recite", dur:"Q"  },
     { syl:"Thee,", sol:"ti", role:"prep",   dur:"Q"  },
-    { syl:"hear",  sol:"do", role:"cad",    dur:"H"  },
+    { syl:"hear",  sol:"do", role:"cad",    dur:"H",  anchor:true },
     { syl:"me!",   sol:"do", role:"cad",    dur:"W"  },
   ],
 
@@ -464,7 +489,7 @@ const DATA = {
     { syl:"Re-",    sol:"do", role:"recite", dur:"Q" },
     { syl:"ceive",  sol:"do", role:"recite", dur:"Q" },
     { syl:"the",    sol:"do", role:"recite", dur:"Q" },
-    { syl:"voice",  sol:"di", role:"cad",    dur:"H" },
+    { syl:"voice",  sol:"di", role:"cad",    dur:"H", anchor:true },
     { syl:"of",     sol:"di", role:"cad",    dur:"Q" },
     { syl:"my",     sol:"di", role:"cad",    dur:"Q" },
     { syl:"prayer,",sol:"re", role:"cad",    dur:"W" },
@@ -476,7 +501,7 @@ const DATA = {
   "row-5": [
     { syl:"when",  sol:"re", role:"recite", dur:"Q" },
     { syl:"I",     sol:"re", role:"recite", dur:"Q" },
-    { syl:"call",  sol:"di", role:"cad",    dur:"H" },
+    { syl:"call",  sol:"di", role:"cad",    dur:"H", anchor:true },
     { syl:"u-",    sol:"di", role:"cad",    dur:"Q" },
     { syl:"pon",   sol:"di", role:"cad",    dur:"Q" },
     { syl:"Thee!", sol:"re", role:"cad",    dur:"H" },
@@ -617,7 +642,7 @@ const DATA2 = {
   ],
   "row-5": [
     { syl:"Hear",  sol:"re", role:"preslur", dur:"H·", melisma:["re","ti"], melismaDurs:["H·","Q"] },
-    { syl:"me,",   sol:"do", role:"cad",     dur:"W",  melisma:["do","re"], melismaDurs:["W","H"]  },
+    { syl:"me,",   sol:"do", role:"cad",     dur:"W",  melisma:["do","re"], melismaDurs:["W","H"], anchor:true  },
     { syl:"O",     sol:"do", role:"cad",     dur:"H"  },
     { syl:"Lord!", sol:"ti", role:"cad",     dur:"W"  },
   ],
@@ -717,6 +742,19 @@ function chipW(role, dur) {
   return S.durWidth ? (S.durW[dur] || S.durW['Q']) : S.durW['Q'];
 }
 
+function toggleTheme() {
+  document.body.classList.toggle('light');
+  const btn = document.getElementById('tog-theme');
+  if (document.body.classList.contains('light')) {
+    btn.textContent = 'Dark Theme';
+    btn.classList.add('on');
+  } else {
+    btn.textContent = 'Light Theme';
+    btn.classList.remove('on');
+  }
+  renderAll(); // re-render to pick up color changes in JS-generated styles
+}
+
 // Build a single solo chip element (no text inside chip)
 function buildSoloChip(n) {
   const h = chipH(n.sol);
@@ -731,7 +769,7 @@ function buildSoloChip(n) {
   wrap.style.cssText = `height:${h}px; width:${w}px; flex-shrink:0;`;
   wrap.innerHTML = `
     <div class="chip ${chipRole}" style="width:${w}px;height:${h}px;${borderStyle}">
-      ${S.showSol ? `<div class="sol" style="font-size:10px;color:#7a6a58;text-align:center;position:absolute;top:6px;left:0;right:0;">${n.sol}</div>` : ''}
+      ${S.showSol ? `<div class="sol" style="font-size:10px;color:${document.body.classList.contains('light') ? 'rgba(40,58,92,0.45)' : '#7a6a58'};text-align:center;position:absolute;top:6px;left:0;right:0;">${n.sol}</div>` : ''}
       ${S.showDur && n.role !== 'recite' ? `<div class="dur" style="font-size:7px;color:rgba(200,168,74,0.5);text-align:center;font-style:italic;">${n.dur}</div>` : ''}
     </div>`;
   return wrap;
@@ -798,7 +836,7 @@ function buildMelismaGroup(n) {
     if (S.showSol) {
       const solEl = document.createElement('div');
       solEl.className = 'sol';
-      solEl.style.cssText = 'font-size:10px; color:#7a6a58; text-align:center; position:absolute; top:6px; left:0; right:0;';
+      solEl.style.cssText = 'font-size:10px; color:' + (document.body.classList.contains('light') ? 'rgba(40,58,92,0.45)' : '#7a6a58') + '; text-align:center; position:absolute; top:6px; left:0; right:0;';
       solEl.textContent = c.sol;
       chipEl.appendChild(solEl);
     }
@@ -824,8 +862,9 @@ function buildMelismaGroup(n) {
     left: 0;
     width: ${totalW}px;
     height: 3px;
-    background: #2a2a2a;
+    background: ${document.body.classList.contains('light') ? '#ddd0b8' : '#4a4540'};
     border-radius: 2px;
+    height: 5px;
     z-index: 1;
   `;
   group.appendChild(bar);
@@ -954,8 +993,8 @@ function renderAll() {
 
         const label = document.createElement('div');
         label.style.cssText = `
-          width:${w}px; flex-shrink:0; text-align:center;
-          line-height:1.4; white-space:nowrap; position:relative;
+          width:${w}px; flex-shrink:0; line-height:1.4; white-space:nowrap;
+          position:relative; display:flex; align-items:center; justify-content:center;
         `;
 
         // melisma bar — inserted first, sits behind text span
@@ -963,8 +1002,8 @@ function renderAll() {
           const bar = document.createElement('div');
           bar.style.cssText = `
             position:absolute; top:50%; left:0; width:100%;
-            height:3px; background:#2a2a2a; border-radius:2px;
-            transform:translateY(-50%); z-index:0;
+            height:5px; background:${document.body.classList.contains('light') ? '#ddd0b8' : '#4a4540'}; border-radius:2px;
+            transform:translateY(-50%); z-index:0; pointer-events:none;
           `;
           label.appendChild(bar);
         }
@@ -973,8 +1012,10 @@ function renderAll() {
         const textSpan = document.createElement('span');
         textSpan.style.cssText = `
           position:relative; z-index:2;
-          font-size:12px; color:#e8dfc8;
-          background:transparent;
+          font-size:12px; color:${document.body.classList.contains('light') ? '#2a2118' : '#e8dfc8'};
+          font-family:Georgia,serif;
+          background:${document.body.classList.contains('light') ? '#faf7f2' : '#1a1510'};
+          padding:0 3px;
         `;
         textSpan.textContent = n.syl;
         label.appendChild(textSpan);
@@ -1018,16 +1059,19 @@ function renderAll() {
           : chipW(n.role === 'preslur' ? 'prep' : n.role, n.dur);
 
         const label = document.createElement('div');
-        label.style.cssText = `width:${w}px; flex-shrink:0; text-align:center; line-height:1.4; white-space:nowrap; position:relative;`;
+        label.style.cssText = `
+          width:${w}px; flex-shrink:0; line-height:1.4; white-space:nowrap;
+          position:relative; display:flex; align-items:center; justify-content:center;
+        `;
 
         if (isMelisma) {
           const bar = document.createElement('div');
-          bar.style.cssText = `position:absolute; top:50%; left:0; width:100%; height:3px; background:#2a2a2a; border-radius:2px; transform:translateY(-50%); z-index:0;`;
+          bar.style.cssText = `position:absolute; top:50%; left:0; width:100%; height:5px; background:${document.body.classList.contains('light') ? '#ddd0b8' : '#4a4540'}; border-radius:2px; transform:translateY(-50%); z-index:0; pointer-events:none;`;
           label.appendChild(bar);
         }
 
         const textSpan = document.createElement('span');
-        textSpan.style.cssText = `position:relative; z-index:2; font-size:12px; color:#e8dfc8;`;
+        textSpan.style.cssText = `position:relative; z-index:2; font-size:12px; color:${document.body.classList.contains('light') ? '#2a2118' : '#e8dfc8'}; font-family:Georgia,serif; background:${document.body.classList.contains('light') ? '#faf7f2' : '#1a1510'}; padding:0 3px;`;
         textSpan.textContent = n.syl;
         label.appendChild(textSpan);
         baseline.appendChild(label);
@@ -1070,13 +1114,34 @@ function renderAll() {
 
       Array.from(row.children).forEach(child => {
         const w = parseInt(child.dataset.w) || parseInt(child.style.width) || 30;
+        const isMelismaLabel = child.classList.contains('melisma-group');
+        const isAccentLabel = child.dataset.accent === '1';
+        const isLight = document.body.classList.contains('light');
+
         const label = document.createElement('div');
         label.style.cssText = `
-          width:${w}px; flex-shrink:0; text-align:center;
-          font-size:12px; color:#e8dfc8; line-height:1.4;
-          white-space:nowrap; position:relative; z-index:5;
+          width:${w}px; flex-shrink:0; line-height:1.4; white-space:nowrap;
+          position:relative; display:flex; align-items:center; justify-content:center;
         `;
-        label.textContent = child.dataset.syl || '';
+
+        if (isMelismaLabel) {
+          const bar = document.createElement('div');
+          bar.style.cssText = `position:absolute; top:50%; left:0; width:100%; height:5px;
+            background:${isLight ? '#ddd0b8' : '#4a4540'}; border-radius:2px;
+            transform:translateY(-50%); z-index:0; pointer-events:none;`;
+          label.appendChild(bar);
+        }
+
+        const textSpan = document.createElement('span');
+        textSpan.style.cssText = `
+          position:relative; z-index:2;
+          font-size:12px; color:${isLight ? '#2a2118' : '#e8dfc8'};
+          font-family:Georgia,serif; font-weight:${isAccentLabel ? '600' : '400'};
+          background:${isMelismaLabel ? (isLight ? '#faf7f2' : '#1a1510') : 'transparent'};
+          padding:${isMelismaLabel ? '0 3px' : '0'};
+        `;
+        textSpan.textContent = child.dataset.syl || '';
+        label.appendChild(textSpan);
         baseline.appendChild(label);
       });
 
