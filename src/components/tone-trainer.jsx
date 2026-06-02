@@ -507,6 +507,7 @@ const chipH = (sol) => CHIP_BASE_H + Math.max(0, PITCH_SCALE.indexOf(sol)) * CHI
 const CHIP_W = { Q: 30, H: 50, "H·": 68, W: 90 };
 const CHIP_W_RECITE = 26; // narrow recite chips
 const CHIP_GAP = 10;      // gap between chips in px
+const CHIP_MELISMA_GAP = 1; // tight gap between melisma sub-chips
 
 // Bass pitch order for chip height (ascending concert pitch with do=Bb)
 // re(C3) < mi(D3) < fa(Eb3) < sol(F3) < la(G3)
@@ -1837,7 +1838,7 @@ function useAudio() {
 // ── COMPONENT ─────────────────────────────────────────────────────────────────
 export default function ToneTrainer() {
   const [doHz, setDoHz] = useState(261.63);
-  const [bpm, setBpm] = useState(70); // half note = 1 beat per tutorial
+  const [bpm, setBpm] = useState(80); // half note = 1 beat per tutorial
   const [text, setText] = useState("");
   const [lines, setLines] = useState([]);
   const [playingLine, setPlayingLine] = useState(null);
@@ -1875,12 +1876,13 @@ export default function ToneTrainer() {
       .catch(() => setLexiconError("Lexicon unavailable — using rules only"));
   }, []);
 
-  // Auto-scroll the active block into view while singing — centers in the window.
-  // Works for both the sung display (phrase-block-N) and the comparison harness
-  // (compare-block-N). Using block:"center" keeps the active verse mid-screen
-  // rather than just barely in view.
+  const isPlayAllRef = useRef(false); // true only during playAll — drives auto-scroll
+
+  // Auto-scroll the active block into view while singing all lines.
+  // Single-line play does NOT scroll — card stays in place.
   useEffect(() => {
     if (playingLine === null) return;
+    if (!isPlayAllRef.current) return; // only scroll during play all
     const id = (compareMode && compareData)
       ? `compare-block-${playingLine}`
       : `phrase-block-${playingLine}`;
@@ -2336,9 +2338,9 @@ export default function ToneTrainer() {
         }
       } else d = Q;
 
-      // For preslur with two pitches, emit one entry per pitch
+      // For preslur with two pitches, emit one entry per pitch — mark melisma for grouping
       if (r.role === "preslur" && r.pitches.length > 1) {
-        r.pitches.forEach(p => result.push({ ...r, pitches: [p], dur: H/2, durKey: "Q" }));
+        r.pitches.forEach(p => result.push({ ...r, pitches: [p], dur: H/2, durKey: "Q", melisma: true }));
       } else {
         result.push({ ...r, dur: d, durKey: durKey(d) });
       }
@@ -2347,6 +2349,7 @@ export default function ToneTrainer() {
   };
 
   const playLine = (li) => {
+    isPlayAllRef.current = false; // single line — no auto-scroll
     setPlayingLine(li);
     setPlayingChipIdx(null);
     setPlayingWhich(singWhich);
@@ -2358,6 +2361,7 @@ export default function ToneTrainer() {
   const playAll = () => {
     timerIdsRef.current.forEach(id => clearTimeout(id));
     timerIdsRef.current = [];
+    isPlayAllRef.current = true; // enable auto-scroll
     const c = ac();
     const startT = c.currentTime + 0.06;
     let t = startT;
@@ -2413,6 +2417,7 @@ export default function ToneTrainer() {
   const stopAll = () => {
     timerIdsRef.current.forEach(id => clearTimeout(id));
     timerIdsRef.current = [];
+    isPlayAllRef.current = false;
     stop();
     setPlayingLine(null);
     setPlayingChipIdx(null);
@@ -3036,7 +3041,7 @@ export default function ToneTrainer() {
                        flexWrap: "wrap", alignItems: "center" }}>
           <span style={{ background: "rgba(40,58,92,.06)", color: "#283a5c",
                          borderRadius: 4, padding: "1px 7px" }}>reciting tone</span>
-          <span style={{ background: "rgba(40,58,92,.10)", color: "#283a5c",
+          <span style={{ background: "rgba(40,120,60,.10)", color: "#1a6030",
                          borderRadius: 4, padding: "1px 7px" }}>intonation</span>
           <span style={{ background: "rgba(180,137,43,.18)", color: "#8a6a14",
                          borderRadius: 4, padding: "1px 7px" }}>
@@ -3344,9 +3349,9 @@ export default function ToneTrainer() {
         const showBass = (voicePart === "bass" || voicePart === "alto-bass") && bassRolesWD;
 
         // Role colors matching roleBg/roleColor
-        const chipBg = { recite:"rgba(40,58,92,.06)", inton:"rgba(40,58,92,.10)", prep:"rgba(180,137,43,.16)", cad:"rgba(122,36,24,.10)", cad1:"rgba(122,36,24,.05)", preslur:"rgba(180,137,43,.22)" };
-        const chipBorderColor = { recite:"rgba(40,58,92,.18)", inton:"rgba(40,58,92,.24)", prep:"rgba(180,137,43,.35)", cad:"rgba(122,36,24,.30)", cad1:"rgba(122,36,24,.20)", preslur:"rgba(180,137,43,.35)" };
-        const chipStripe = { recite:"rgba(40,58,92,.25)", inton:"rgba(40,58,92,.30)", prep:"rgba(180,137,43,.40)", cad:"rgba(122,36,24,.35)", cad1:"rgba(122,36,24,.25)", preslur:"rgba(180,137,43,.40)" };
+        const chipBg = { recite:"rgba(40,58,92,.06)", inton:"rgba(40,120,60,.10)", prep:"rgba(180,137,43,.16)", cad:"rgba(122,36,24,.10)", cad1:"rgba(122,36,24,.05)", preslur:"rgba(180,137,43,.22)" };
+        const chipBorderColor = { recite:"rgba(40,58,92,.18)", inton:"rgba(40,120,60,.30)", prep:"rgba(180,137,43,.35)", cad:"rgba(122,36,24,.30)", cad1:"rgba(122,36,24,.20)", preslur:"rgba(180,137,43,.35)" };
+        const chipStripe = { recite:"rgba(40,58,92,.25)", inton:"rgba(40,120,60,.40)", prep:"rgba(180,137,43,.40)", cad:"rgba(122,36,24,.35)", cad1:"rgba(122,36,24,.25)", preslur:"rgba(180,137,43,.40)" };
         const solColor = "rgba(40,58,92,0.45)";
         const melismaBarColor = "#ddd0b8";
         const pageColor = "transparent"; // ink text sits on page bg naturally
@@ -3455,10 +3460,21 @@ export default function ToneTrainer() {
               </button>
             </div>
 
-            {/* Alto chips — above text */}
+            {/* Alto chips — above text, melisma groups tightly spaced */}
             {showAlto && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-end", marginBottom: 6 }}>
-                {rolesWD.map((r, i) => renderChip(r, i, false))}
+                {groupedAlto.map((grp, gi) => {
+                  if (grp.entries.length === 1) {
+                    const {r, i} = grp.entries[0];
+                    return renderChip(r, i, false);
+                  }
+                  // melisma group — tight inner gap
+                  return (
+                    <div key={gi} style={{ display: "inline-flex", gap: CHIP_MELISMA_GAP, alignItems: "flex-end" }}>
+                      {grp.entries.map(({r, i}) => renderChip(r, i, false))}
+                    </div>
+                  );
+                })}
               </div>
             )}
 
@@ -3466,18 +3482,39 @@ export default function ToneTrainer() {
             <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "center", marginBottom: showBass ? 6 : 0 }}>
               {groupedAlto.map((grp, gi) => {
                 const isMel = grp.entries.length > 1;
-                const totalW = grp.entries.reduce((s, {r}) => s + chipW(r), 0) + (isMel ? CHIP_GAP/2 * (grp.entries.length-1) : 0);
+                const totalW = grp.entries.reduce((s, {r}) => s + chipW(r), 0) + (isMel ? CHIP_MELISMA_GAP * (grp.entries.length-1) : 0);
                 const isAnchor = grp.entries.some(({r}) => r.anchor);
                 return renderTextLabel(grp.entries[0].r, totalW, isAnchor, isMel);
               })}
             </div>
 
-            {/* Bass chips — below text */}
-            {showBass && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-start" }}>
-                {bassRolesWD.map((r, i) => renderChip(r, i, true))}
-              </div>
-            )}
+            {/* Bass chips — below text, melisma groups tightly spaced */}
+            {showBass && (() => {
+              // Group bass rolesWD by text same as alto
+              const groupedBass = [];
+              bassRolesWD.forEach((r, i) => {
+                if (r.melisma && groupedBass.length > 0 && groupedBass[groupedBass.length-1].text === r.text) {
+                  groupedBass[groupedBass.length-1].entries.push({ r, i });
+                } else {
+                  groupedBass.push({ text: r.text, entries: [{ r, i }] });
+                }
+              });
+              return (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-start" }}>
+                  {groupedBass.map((grp, gi) => {
+                    if (grp.entries.length === 1) {
+                      const {r, i} = grp.entries[0];
+                      return renderChip(r, i, true);
+                    }
+                    return (
+                      <div key={gi} style={{ display: "inline-flex", gap: CHIP_MELISMA_GAP, alignItems: "flex-start" }}>
+                        {grp.entries.map(({r, i}) => renderChip(r, i, true))}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
 
           </div>
         );
