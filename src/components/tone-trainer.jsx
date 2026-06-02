@@ -1380,7 +1380,14 @@ function syllabifyWithDirectorMark(core, markStart, markEnd, lexicon) {
   }
 
   if (hasPrefix || hasSuffix) {
-    // Director's mark boundaries ARE the syllable split.
+    // Mid-word bracket. Use lexicon syllables when available — the director
+    // mark boundary tells us WHICH syllable is accented, not where to split.
+    // bracketSpanToSyllIdx maps the bracket character span to a syllable index.
+    if (rawSylls.length > 1) {
+      const idx = bracketSpanToSyllIdx(core, clampedStart, clampedEnd, rawSylls);
+      return { sylls: rawSylls, accentIdx: Math.max(0, idx) };
+    }
+    // No lexicon entry and rule-based gave 1 syllable — fall back to character split.
     const dirSylls = [prefix, marked, suffix].filter(s => s.length > 0);
     const accentIdx = hasPrefix ? 1 : 0;
     return { sylls: dirSylls, accentIdx };
