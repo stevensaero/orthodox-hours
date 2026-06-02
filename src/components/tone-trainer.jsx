@@ -10,11 +10,25 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.9.8";
+export const TONE_TRAINER_VERSION = "v0.9.9";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.9.9",
+    date: "May 2026",
+    summary: "Algorithmic bass derivation engine — Tone 2 Obikhod",
+    items: [
+      "feat: Bass part algorithmically derived from alto pointing for Tone 2 (Russian Obikhod / L'vov-Bakhmetev). No separate encoding needed — bass stays in sync with alto automatically.",
+      "feat: BASS_RULES[2] — score-verified interval map per phrase (A/B/C/D/Final). Alto pitches substituted to bass register pitches using cadMap, prepMap, preslurMap per phrase.",
+      "feat: BASS_OCTAVE_DIV — per-pitch octave displacement: re/mi/fa/sol two octaves below soprano; la/ti/do/di one octave below. Score-verified against L'vov-Bakhmetev Obikhod.",
+      "feat: generateBass() — pure function deriving bass roles from alto roles. Preserves all role types, durations, wordBoundary flags. Returns null for tones without bass rules (Tones 1, 3 — not yet researched).",
+      "feat: lineToNotes_bass() — generates bass audio notes using same duration engine as alto. Handles Tone 2 anchor melisma cases.",
+      "feat: playNotesWithBass() — schedules alto and bass simultaneously. Bass peaks at 0.7× alto volume to sit beneath the melody in the mix.",
+      "note: Bass rules are setting-specific — BASS_RULES[2] is Obikhod only. Other settings/tones added as score evidence is gathered.",
+    ],
+  },
   {
     version: "v0.9.8",
     date: "May 2026",
