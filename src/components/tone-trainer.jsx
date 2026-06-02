@@ -10,11 +10,25 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.9.9";
+export const TONE_TRAINER_VERSION = "v1.0.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v1.0.0",
+    date: "May 2026",
+    summary: "Architecture unification — audio and visual share one representation",
+    items: [
+      "refactor: lineToNotes_bass now consumes rolesWD — the same fully-expanded alto roles used by the visual path. One source of truth feeds both audio and visual bass. generateBass() removed.",
+      "fix: bass Phrase A la·mi melisma now sounds correctly — mi was silent because the old audio path read single-pitch cad roles from pointLine() before melisma expansion.",
+      "fix: bass Final sol·fa melisma and re(W) close now sound correctly for the same reason.",
+      "fix: whole-note trigger (Phrases B/C/D) now correctly counts distinct words across the entire cadence using wordBoundary flags — previous check always returned the wrong value.",
+      "fix: Final Phrase preslur re(H·)·ti(Q) when no reciting tone precedes — was always Q+Q.",
+      "fix: bass volume raised to 1.1× in both solo and alto+bass modes.",
+      "ui: intonation moved first in the legend pill row.",
+    ],
+  },
   {
     version: "v0.9.9",
     date: "May 2026",
@@ -2128,7 +2142,7 @@ export default function ToneTrainer() {
     }
     if (playBass) {
       if (!playAlto) scheduleHighlights(bassNotes, true);
-      bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol), tb, n.dur, n.peak * 0.9, timbre); tb += n.dur; });
+      bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol), tb, n.dur, n.peak * 1.1, timbre); tb += n.dur; });
     }
 
     const totalDur = Math.max(t, tb) - startT;
@@ -2321,7 +2335,7 @@ export default function ToneTrainer() {
             ht += n.dur;
           });
         }
-        bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol), tb, n.dur, n.peak * 0.9, timbre); tb += n.dur; });
+        bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol), tb, n.dur, n.peak * 1.1, timbre); tb += n.dur; });
         tb += (60 / bpm) / 2;
       }
       if (playAlto) t += (60 / bpm) / 2;
@@ -2956,10 +2970,10 @@ export default function ToneTrainer() {
         {/* Color-coded legend — pill backgrounds match chip roleBg colors */}
         <span style={{ flex: 1, display: "flex", gap: "0.6rem", justifyContent: "flex-start",
                        flexWrap: "wrap", alignItems: "center" }}>
-          <span style={{ background: "rgba(40,58,92,.06)", color: "#283a5c",
-                         borderRadius: 4, padding: "1px 7px" }}>reciting tone</span>
           <span style={{ background: "rgba(40,120,60,.10)", color: "#1a6030",
                          borderRadius: 4, padding: "1px 7px" }}>intonation</span>
+          <span style={{ background: "rgba(40,58,92,.06)", color: "#283a5c",
+                         borderRadius: 4, padding: "1px 7px" }}>reciting tone</span>
           <span style={{ background: "rgba(180,137,43,.18)", color: "#8a6a14",
                          borderRadius: 4, padding: "1px 7px" }}>
             prep ({[...new Set(Object.values(PH).map(d => d.prep).filter(Boolean))].join("/") || "—"})
