@@ -2092,23 +2092,26 @@ export default function ToneTrainer() {
     if (isTone2Final && cadCount < 4 && cadCount >= 1) {
       bassRoles.forEach(r => {
         if (r.role === "cad") return;
-        const syllDur = r.role === "inton" ? (r.accent ? H : Q) : Q;
-        const pitchDur = syllDur / r.pitches.length;
-        r.pitches.forEach(p => notes.push({ sol: p, dur: pitchDur, peak: 0.2, bass: true }));
+        const syllDur = r.role === "inton" ? (r.accent ? H : Q)
+          : r.role === "preslur" ? H / r.pitches.length
+          : Q;
+        r.pitches.forEach(p => notes.push({ sol: p, dur: syllDur, peak: 0.2, bass: true }));
       });
-      const cadPitches = bassRoles.filter(r => r.role === "cad").map(r => r.pitches[0]);
+      // Collect all cad roles in order
+      const cadRoles = bassRoles.filter(r => r.role === "cad");
+      const anchorPitches = cadRoles[0]?.pitches ?? ["la"];  // may be melisma e.g. ["sol","fa"]
+
       if (cadCount === 1) {
-        [H, H, H, W].forEach((dur, i) => {
-          notes.push({ sol: cadPitches[0] ?? "la", dur, peak: i === 0 ? 0.27 : 0.2, bass: true });
-        });
+        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: W, peak: i===0?0.27:0.2, bass: true }));
       } else if (cadCount === 2) {
-        notes.push({ sol: cadPitches[0] ?? "la", dur: W,  peak: 0.27, bass: true });
-        notes.push({ sol: cadPitches[0] ?? "la", dur: H,  peak: 0.2,  bass: true });
-        notes.push({ sol: cadPitches[1] ?? "re", dur: W,  peak: 0.2,  bass: true });
+        // anchor pitches (melisma) then close
+        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: i===0?W:H, peak: i===0?0.27:0.2, bass: true }));
+        notes.push({ sol: cadRoles[1]?.pitches[0] ?? "re", dur: W, peak: 0.2, bass: true });
       } else if (cadCount === 3) {
-        notes.push({ sol: cadPitches[0] ?? "la", dur: W,  peak: 0.27, bass: true });
-        notes.push({ sol: cadPitches[1] ?? "la", dur: H,  peak: 0.2,  bass: true });
-        notes.push({ sol: cadPitches[2] ?? "re", dur: W,  peak: 0.2,  bass: true });
+        // anchor pitches (melisma) + middle + close
+        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: i===0?W:H, peak: i===0?0.27:0.2, bass: true }));
+        notes.push({ sol: cadRoles[1]?.pitches[0] ?? "sol", dur: H, peak: 0.2, bass: true });
+        notes.push({ sol: cadRoles[2]?.pitches[0] ?? "re",  dur: W, peak: 0.2, bass: true });
       }
       return notes;
     }
@@ -2120,13 +2123,20 @@ export default function ToneTrainer() {
         const syllDur = r.role === "inton" ? (r.accent ? H : Q) : Q;
         r.pitches.forEach(p => notes.push({ sol: p, dur: syllDur, peak: 0.2, bass: true }));
       });
-      const cadPitches = bassRoles.filter(r => r.role === "cad").map(r => r.pitches[0]);
+      // cadPitches: collect ALL pitches from the anchor cad role (may be melisma)
+      const anchorCadRole = bassRoles.find(r => r.role === "cad");
+      const anchorPitches = anchorCadRole ? anchorCadRole.pitches : ["la"];
+      const closeCadRoles = bassRoles.filter(r => r.role === "cad").slice(1);
+
       if (cadCount === 1) {
-        [H, H, DH].forEach((dur, i) => notes.push({ sol: cadPitches[0] ?? "la", dur, peak: i===0?0.27:0.2, bass: true }));
+        // all pitches on anchor, then close
+        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: H, peak: i===0?0.27:0.2, bass: true }));
+        notes.push({ sol: anchorPitches[anchorPitches.length-1], dur: DH, peak: 0.2, bass: true });
       } else if (cadCount === 2) {
-        notes.push({ sol: cadPitches[0] ?? "la", dur: H,  peak: 0.27, bass: true });
-        notes.push({ sol: cadPitches[0] ?? "la", dur: H,  peak: 0.2,  bass: true });
-        notes.push({ sol: cadPitches[1] ?? "la", dur: DH, peak: 0.2,  bass: true });
+        // anchor melisma pitches each at H, close at DH
+        anchorPitches.forEach((p, i) => notes.push({ sol: p, dur: H, peak: i===0?0.27:0.2, bass: true }));
+        const closeP = closeCadRoles[0]?.pitches[0] ?? anchorPitches[anchorPitches.length-1];
+        notes.push({ sol: closeP, dur: DH, peak: 0.2, bass: true });
       }
       return notes;
     }
@@ -3433,12 +3443,16 @@ export default function ToneTrainer() {
             borderRadius: 8, padding: "0.9rem", marginBottom: "0.8rem",
             transition: "border 0.1s",
           }}>
-            {/* Phrase label */}
+            {/* Phrase label — badge + context line + trailing play button */}
             <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap", marginBottom: "0.6rem" }}>
-              <span style={{ background: isFin ? "#7a2418" : "#283a5c", color: "#fff", borderRadius: 5, padding: "2px 10px", fontSize: "0.78rem" }}>{PNAME[line.phrase]}</span>
-              <span style={{ fontSize: "0.76rem", color: "#6b5942", fontStyle: "italic" }}>
-                reciting on <b>{PH[line.phrase].recite}</b>{PH[line.phrase].prep ? <> · prep on <b>{PH[line.phrase].prep}</b></> : null}
+              <span style={{ background: isFin ? "#7a2418" : "#283a5c", color: "#fff", borderRadius: 5, padding: "2px 10px", fontSize: "0.78rem", flexShrink: 0 }}>{PNAME[line.phrase]}</span>
+              <span style={{ fontSize: "0.76rem", color: "#6b5942", fontStyle: "italic", flex: 1 }}>
+                {voicePart === "bass" ? "Bass · " : "Alto · "}{PNAME[line.phrase]} · reciting on <b>{PH[line.phrase].recite}</b>{PH[line.phrase].prep ? <> · prep on <b>{PH[line.phrase].prep}</b></> : null}
               </span>
+              <button style={{ ...btn, padding: "2px 10px", fontSize: "0.74rem" }}
+                onClick={() => playingLine === li ? stopAll() : playLine(li)}>
+                {playingLine === li ? "◼ Stop" : "▶ Play"}
+              </button>
             </div>
 
             {/* Alto chips — above text */}
@@ -3465,12 +3479,6 @@ export default function ToneTrainer() {
               </div>
             )}
 
-            {/* Play/Stop button */}
-            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginTop: "0.6rem", flexWrap: "wrap" }}>
-              <button style={btn} onClick={() => playingLine === li ? stopAll() : playLine(li)}>
-                {playingLine === li ? "◼ Stop" : "▶ Sing this line"}
-              </button>
-            </div>
           </div>
         );
       })}
