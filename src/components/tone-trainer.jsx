@@ -502,6 +502,22 @@ const CHIP_BASE_H = 36;   // la = 36px
 const CHIP_STEP_H = 10;   // +10px per scale degree → re = 66px
 const chipH = (sol) => CHIP_BASE_H + Math.max(0, PITCH_SCALE.indexOf(sol)) * CHIP_STEP_H;
 
+// Chip width per duration key — matches sandbox DUR_SEC pixel equivalents
+// Widths are BPM-independent visual units (not seconds)
+const CHIP_W = { Q: 30, H: 50, "H·": 68, W: 90 };
+const CHIP_W_RECITE = 26; // narrow recite chips
+const CHIP_GAP = 10;      // gap between chips in px
+
+// Bass pitch order for chip height (ascending concert pitch with do=Bb)
+// re(C3) < mi(D3) < fa(Eb3) < sol(F3) < la(G3)
+const BASS_PITCH_ORDER = { re: 0, mi: 1, fa: 2, sol: 3, la: 4 };
+const BASS_MAX_IDX = 4;
+const chipH_bass = (sol) => {
+  const idx = BASS_PITCH_ORDER[sol] !== undefined ? BASS_PITCH_ORDER[sol] : 0;
+  const inv = BASS_MAX_IDX - idx;
+  return CHIP_BASE_H + Math.max(0, inv) * CHIP_STEP_H;
+};
+
 // ── LEXICON LOOKUP ────────────────────────────────────────────────────────────
 // The lexicon is fetched from public/lexicon/ at component mount (same pattern
 // as psalter/scripture). It merges syllable-table.json (CMU+TeX resolved) and
@@ -1729,28 +1745,93 @@ function useAudio() {
     if (ctxRef.current.state === "suspended") ctxRef.current.resume();
     return ctxRef.current;
   };
-  const tone = (f, t0, dur, peak = 0.22) => {
+
+  // Multi-timbre tone synthesis — matches sandbox implementations
+  const toneTimbre = (f, t0, dur, peak = 0.22, timbre = "piano") => {
     const c = ac();
-    const o = c.createOscillator();
-    const g = c.createGain();
-    o.type = "triangle";
-    o.frequency.value = f;
-    o.connect(g);
-    g.connect(c.destination);
-    g.gain.setValueAtTime(0, t0);
-    g.gain.linearRampToValueAtTime(peak, t0 + 0.035);
-    g.gain.setValueAtTime(peak, t0 + dur - 0.07);
-    g.gain.linearRampToValueAtTime(0, t0 + dur - 0.005);
-    o.start(t0);
-    o.stop(t0 + dur);
+    switch (timbre) {
+      case "organ":     playOrganNote(c, f, t0, dur, peak); break;
+      case "choir":     playChoirNote(c, f, t0, dur, peak); break;
+      case "cello":     playCelloNote(c, f, t0, dur, peak); break;
+      default:          playPianoNote(c, f, t0, dur, peak); break;
+    }
   };
+
+  function playPianoNote(c, f, t0, dur, peak) {
+    const g = c.createGain();
+    g.connect(c.destination);
+    [[1,0.7],[2,0.15],[3,0.08],[4,0.04]].forEach(([h,a]) => {
+      const o = c.createOscillator(); const hg = c.createGain();
+      o.connect(hg); hg.connect(g); o.type="sine"; o.frequency.value=f*h; hg.gain.value=a;
+      o.start(t0); o.stop(t0+dur+0.3);
+    });
+    g.gain.setValueAtTime(0,t0);
+    g.gain.linearRampToValueAtTime(peak,t0+0.01);
+    g.gain.exponentialRampToValueAtTime(peak*0.34,t0+0.08);
+    g.gain.setValueAtTime(peak*0.34,t0+dur-0.05);
+    g.gain.exponentialRampToValueAtTime(0.001,t0+dur+0.25);
+  }
+
+  function playOrganNote(c, f, t0, dur, peak) {
+    const g = c.createGain();
+    g.connect(c.destination);
+    [[1,0.5],[2,0.25],[3,0.15],[4,0.08],[5,0.04],[6,0.02]].forEach(([h,a]) => {
+      const o = c.createOscillator(); const hg = c.createGain();
+      o.connect(hg); hg.connect(g); o.type="sine"; o.frequency.value=f*h; hg.gain.value=a;
+      o.start(t0); o.stop(t0+dur+0.05);
+    });
+    g.gain.setValueAtTime(0,t0);
+    g.gain.linearRampToValueAtTime(peak,t0+0.02);
+    g.gain.setValueAtTime(peak,t0+dur-0.02);
+    g.gain.linearRampToValueAtTime(0.001,t0+dur+0.04);
+  }
+
+  function playChoirNote(c, f, t0, dur, peak) {
+    const g = c.createGain();
+    g.connect(c.destination);
+    const vib = c.createOscillator(); const vibG = c.createGain();
+    vib.frequency.value=5.2; vibG.gain.value=f*0.012;
+    vib.connect(vibG); vib.start(t0+0.12); vib.stop(t0+dur+0.2);
+    [[1,0.6],[2,0.2],[3,0.1],[4,0.05]].forEach(([h,a]) => {
+      const o = c.createOscillator(); const hg = c.createGain();
+      o.connect(hg); hg.connect(g); o.type="sine"; o.frequency.value=f*h;
+      vibG.connect(o.frequency); hg.gain.value=a;
+      o.start(t0); o.stop(t0+dur+0.2);
+    });
+    g.gain.setValueAtTime(0,t0);
+    g.gain.linearRampToValueAtTime(peak,t0+0.08);
+    g.gain.setValueAtTime(peak,t0+dur-0.08);
+    g.gain.exponentialRampToValueAtTime(0.001,t0+dur+0.18);
+  }
+
+  function playCelloNote(c, f, t0, dur, peak) {
+    const g = c.createGain();
+    g.connect(c.destination);
+    const vib = c.createOscillator(); const vibG = c.createGain();
+    vib.frequency.value=4.8; vibG.gain.value=f*0.008;
+    vib.connect(vibG); vib.start(t0+0.15); vib.stop(t0+dur+0.2);
+    [[1,0.55],[2,0.25],[3,0.12],[4,0.06],[5,0.03]].forEach(([h,a]) => {
+      const o = c.createOscillator(); const hg = c.createGain();
+      o.connect(hg); hg.connect(g); o.type="sine"; o.frequency.value=f*h;
+      vibG.connect(o.frequency); hg.gain.value=a;
+      o.start(t0); o.stop(t0+dur+0.2);
+    });
+    g.gain.setValueAtTime(0,t0);
+    g.gain.linearRampToValueAtTime(peak,t0+0.09);
+    g.gain.setValueAtTime(peak,t0+dur-0.06);
+    g.gain.exponentialRampToValueAtTime(0.001,t0+dur+0.15);
+  }
+
+  // Legacy simple tone kept for backward compat — used by comparison harness
+  const tone = (f, t0, dur, peak = 0.22) => playPianoNote(ac(), f, t0, dur, peak);
+
   const stop = () => {
     if (ctxRef.current) {
       try { ctxRef.current.close(); } catch (_) {}
       ctxRef.current = null;
     }
   };
-  return { ac, tone, stop };
+  return { ac, tone, toneTimbre, stop };
 }
 
 // ── COMPONENT ─────────────────────────────────────────────────────────────────
@@ -1761,7 +1842,9 @@ export default function ToneTrainer() {
   const [lines, setLines] = useState([]);
   const [playingLine, setPlayingLine] = useState(null);
   const [playingWhich, setPlayingWhich] = useState(null); // "truth"|"machine" while a line plays
-  const [pitchHeight, setPitchHeight] = useState(false); // chip height reflects solfege pitch
+  const [pitchHeight, setPitchHeight] = useState(true); // always on in new sing view
+  const [timbre, setTimbre] = useState("piano");         // audio timbre for sing view
+  const [voicePart, setVoicePart] = useState("alto");    // alto | bass | alto-bass
   const [showReleaseNotes, setShowReleaseNotes] = useState(false);
   // lexicon (fetched from public/lexicon/ at mount, same pattern as psalter/scripture)
   const [lexicon, setLexicon] = useState(null);
@@ -1815,7 +1898,7 @@ export default function ToneTrainer() {
   const [expandedBlocks, setExpandedBlocks] = useState({}); // block index -> bool
   const pointerRef = useRef(null);
   const timerIdsRef = useRef([]); // all active setTimeout IDs — cleared by stopAll
-  const { ac, tone, stop } = useAudio();
+  const { ac, tone, toneTimbre, stop } = useAudio();
 
   const freq = (sol) => doHz * Math.pow(2, OFF[sol] / 12);
 
@@ -2087,9 +2170,8 @@ export default function ToneTrainer() {
     const c = ac();
     let t = c.currentTime + 0.06;
     notes.forEach((n) => {
-      // bass notes use freq_bass; alto notes use freq
       const f = n.bass ? freq_bass(n.sol) : freq(n.sol);
-      tone(f, t, n.dur, n.peak);
+      toneTimbre(f, t, n.dur, n.peak, timbre);
       t += n.dur;
     });
     if (onDone) {
@@ -2098,19 +2180,14 @@ export default function ToneTrainer() {
     }
   };
 
-  // playNotesWithBass: combines alto + bass note streams, sorted by time offset,
-  // and plays both simultaneously. Bass notes carry a time offset matching their
-  // position in the bass sequence.
   const playNotesWithBass = (altoNotes, bassNotes, onDone) => {
     const c = ac();
     let t = c.currentTime + 0.06;
-    // Schedule alto
-    altoNotes.forEach((n) => { tone(freq(n.sol), t, n.dur, n.peak); t += n.dur; });
+    altoNotes.forEach((n) => { toneTimbre(freq(n.sol), t, n.dur, n.peak, timbre); t += n.dur; });
     const totalDur = t - (c.currentTime + 0.06);
-    // Schedule bass simultaneously (same start time, same timing structure)
-    if (bassNotes) {
+    if (bassNotes && (voicePart === "bass" || voicePart === "alto-bass")) {
       let tb = c.currentTime + 0.06;
-      bassNotes.forEach((n) => { tone(freq_bass(n.sol), tb, n.dur, n.peak * 0.7); tb += n.dur; });
+      bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol), tb, n.dur, n.peak * 0.7, timbre); tb += n.dur; });
     }
     if (onDone) {
       const id = setTimeout(onDone, totalDur * 1000 + 40);
@@ -2136,6 +2213,100 @@ export default function ToneTrainer() {
     const altoNotes = lineToNotes(src[li]);
     const bassNotes = lineToNotes_bass(src[li]);
     playNotesWithBass(altoNotes, bassNotes, () => { setPlayingLine(null); setPlayingWhich(null); });
+  };
+
+  // lineToRolesWithDuration(line)
+  // Returns roles array annotated with `dur` (seconds) and `durKey` ("Q"|"H"|"H·"|"W")
+  // per syllable — used by the chip render layer for duration-based chip widths.
+  // Mirrors lineToNotes() duration logic exactly but emits role objects not audio notes.
+  // For melisma syllables (multi-pitch), emits one entry per pitch with its own dur.
+  const lineToRolesWithDuration = (line) => {
+    const roles = pointLine(line, PH, activeTone);
+    const H = 60 / bpm;
+    const Q = H / 2;
+    const W = H * 2;
+    const DH = H * 1.5;
+    const phDef = PH[line.phrase];
+    const isFinal = line.phrase === "Final";
+    const isTone2 = activeTone === 2;
+    const isTone2Final = isTone2 && line.phrase === "Final";
+    const isTone2A = isTone2 && line.phrase === "A";
+    const cadIdxs = roles.map((r, i) => r.role === "cad" ? i : -1).filter(i => i >= 0);
+    const cadCount = cadIdxs.length;
+    const lastCadRole = cadCount > 0 ? roles[cadIdxs[cadCount - 1]] : null;
+    const lastCadIsWordBoundary = lastCadRole
+      ? (!lastCadRole.text?.endsWith("-") && !lastCadRole.source?.endsWith("-"))
+      : true;
+
+    const durKey = (sec) => {
+      if (Math.abs(sec - W)  < 0.01) return "W";
+      if (Math.abs(sec - DH) < 0.01) return "H·";
+      if (Math.abs(sec - H)  < 0.01) return "H";
+      return "Q";
+    };
+
+    const result = [];
+
+    // Tone 2 melisma anchor cases — emit multiple entries per syllable
+    const emitMelisma = (baseRole, pitches, durs) => {
+      pitches.forEach((p, i) => {
+        result.push({ ...baseRole, pitches: [p], dur: durs[i], durKey: durKey(durs[i]), melisma: true });
+      });
+    };
+
+    if (isTone2Final && cadCount < 4 && cadCount >= 1) {
+      roles.forEach(r => {
+        if (r.role === "cad") return;
+        const d = r.role === "inton" ? (r.accent ? H : Q) : (r.role === "preslur" ? H/2 : Q);
+        result.push({ ...r, dur: d, durKey: durKey(d) });
+      });
+      const cadRoles = roles.filter(r => r.role === "cad");
+      if (cadCount === 1)      emitMelisma(cadRoles[0], ["do","re","do","ti"], [W,H,H,W]);
+      else if (cadCount === 2) { emitMelisma(cadRoles[0], ["do","re","do"], [W,H,H]); result.push({...cadRoles[1], pitches:["ti"], dur:W, durKey:"W"}); }
+      else if (cadCount === 3) { emitMelisma(cadRoles[0], ["do","re"], [W,H]); result.push({...cadRoles[1], pitches:["do"], dur:H, durKey:"H"}); result.push({...cadRoles[2], pitches:["ti"], dur:W, durKey:"W"}); }
+      return result;
+    }
+
+    if (isTone2A && cadCount < 3 && cadCount >= 1) {
+      roles.forEach(r => {
+        if (r.role === "cad") return;
+        const d = r.role === "inton" ? (r.accent ? H : Q) : Q;
+        result.push({ ...r, dur: d, durKey: durKey(d) });
+      });
+      const cadRoles = roles.filter(r => r.role === "cad");
+      if (cadCount === 1)      emitMelisma(cadRoles[0], ["fa","mi","re"], [H,H,DH]);
+      else if (cadCount === 2) { emitMelisma(cadRoles[0], ["fa","mi"], [H,H]); result.push({...cadRoles[1], pitches:["re"], dur:DH, durKey:"H·"}); }
+      return result;
+    }
+
+    roles.forEach((r, ri) => {
+      let d;
+      if (r.role === "inton")                             d = r.accent ? H : Q;
+      else if (r.role === "recite" || r.role === "prep")  d = Q;
+      else if (r.role === "preslur")                      d = H / r.pitches.length; // Q per pitch
+      else if (r.role === "cad1")                         d = ri === cadIdxs[0] ? H : Q;
+      else if (r.role === "cad") {
+        const cadPos = cadIdxs.indexOf(ri);
+        if (isTone2 && phDef?.cadDurs) {
+          const ds = cadDuration(phDef, cadCount, cadPos, lastCadIsWordBoundary, true);
+          const dm = {"H":H,"Q":Q,"W":W,"H·":DH};
+          d = ds ? (dm[ds] ?? H) : undefined;
+        }
+        if (d === undefined) {
+          const isFirst = cadPos === 0; const isLast = cadPos === cadCount - 1;
+          d = (isFirst && isLast) ? (isFinal ? W : H)
+            : isFirst ? H : isLast ? (isFinal ? W : H) : Q;
+        }
+      } else d = Q;
+
+      // For preslur with two pitches, emit one entry per pitch
+      if (r.role === "preslur" && r.pitches.length > 1) {
+        r.pitches.forEach(p => result.push({ ...r, pitches: [p], dur: H/2, durKey: "Q" }));
+      } else {
+        result.push({ ...r, dur: d, durKey: durKey(d) });
+      }
+    });
+    return result;
   };
 
   const playLine = (li) => {
@@ -2862,19 +3033,30 @@ export default function ToneTrainer() {
             {compareMode ? "Director vs. Machine ✓" : "Director vs. Machine"}
           </button>
         )}
-        {/* Pitch height toggle — only in sing view, not A/B mode */}
+        {/* Voice Part selector — only in sing view */}
         {!(compareMode && compareData) && (
-        <button
-          onClick={() => setPitchHeight(v => !v)}
-          style={{ marginLeft: "0.5rem", fontSize: "0.72rem", flexShrink: 0,
-                   background: pitchHeight ? "rgba(40,58,92,.12)" : "transparent",
-                   border: `1px solid ${pitchHeight ? "rgba(40,58,92,.5)" : "#d6c79f"}`,
-                   color: pitchHeight ? "#283a5c" : "#9A8A70",
-                   borderRadius: 3, padding: "1px 8px", cursor: "pointer",
-                   fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}
-          title="Show chip height and text position scaled to solfege pitch">
-          {pitchHeight ? "pitch height ✓" : "pitch height"}
-        </button>
+          <select value={voicePart} onChange={e => setVoicePart(e.target.value)}
+            style={{ marginLeft: "0.5rem", fontSize: "0.72rem", flexShrink: 0,
+                     background: "transparent", border: "1px solid #d6c79f",
+                     borderRadius: 3, padding: "1px 6px", cursor: "pointer",
+                     fontFamily: "Georgia, serif", color: "#5b4a33" }}>
+            <option value="alto">Alto (Melody)</option>
+            <option value="bass">Bass</option>
+            <option value="alto-bass">Alto + Bass</option>
+          </select>
+        )}
+        {/* Timbre selector — only in sing view */}
+        {!(compareMode && compareData) && (
+          <select value={timbre} onChange={e => setTimbre(e.target.value)}
+            style={{ marginLeft: "0.4rem", fontSize: "0.72rem", flexShrink: 0,
+                     background: "transparent", border: "1px solid #d6c79f",
+                     borderRadius: 3, padding: "1px 6px", cursor: "pointer",
+                     fontFamily: "Georgia, serif", color: "#5b4a33" }}>
+            <option value="piano">Piano</option>
+            <option value="organ">Organ</option>
+            <option value="choir">Choir</option>
+            <option value="cello">Cello</option>
+          </select>
         )}
       </div>
 
@@ -3081,47 +3263,142 @@ export default function ToneTrainer() {
 
       {/* legend + sung display — hidden in comparison mode */}
       {!(compareMode && compareData) && (singView === "machine" && machineLines ? machineLines : lines).map((line, li) => {
-        const roles = pointLine(line, PH, activeTone);
+        const rolesWD = lineToRolesWithDuration(line);
+        const bassRolesWD = (() => {
+          const br = generateBass(pointLine(line, PH, activeTone), line.phrase, activeTone);
+          if (!br) return null;
+          // annotate bass roles with same dur structure
+          return rolesWD.map((r, i) => ({ ...(br[i] ?? r), dur: r.dur, durKey: r.durKey }));
+        })();
         const isFin = line.phrase === "Final";
-        let fi = -1;
+        const showAlto = voicePart === "alto" || voicePart === "alto-bass";
+        const showBass = (voicePart === "bass" || voicePart === "alto-bass") && bassRolesWD;
+
+        // Role colors matching roleBg/roleColor
+        const chipBg = { recite:"rgba(40,58,92,.06)", inton:"rgba(40,58,92,.10)", prep:"rgba(180,137,43,.16)", cad:"rgba(122,36,24,.10)", cad1:"rgba(122,36,24,.05)", preslur:"rgba(180,137,43,.22)" };
+        const chipBorderColor = { recite:"rgba(40,58,92,.18)", inton:"rgba(40,58,92,.24)", prep:"rgba(180,137,43,.35)", cad:"rgba(122,36,24,.30)", cad1:"rgba(122,36,24,.20)", preslur:"rgba(180,137,43,.35)" };
+        const chipStripe = { recite:"rgba(40,58,92,.25)", inton:"rgba(40,58,92,.30)", prep:"rgba(180,137,43,.40)", cad:"rgba(122,36,24,.35)", cad1:"rgba(122,36,24,.25)", preslur:"rgba(180,137,43,.40)" };
+        const solColor = "rgba(40,58,92,0.45)";
+        const melismaBarColor = "#ddd0b8";
+        const pageColor = "transparent"; // ink text sits on page bg naturally
+
+        // Build chip entries — one per role entry (melisma = one per pitch)
+        const chipW = (r) => r.role === "recite" ? CHIP_W_RECITE : (CHIP_W[r.durKey] ?? CHIP_W.Q);
+
+        const renderChip = (r, i, isBass) => {
+          const role = r.role === "preslur" ? "prep" : r.role;
+          const h = isBass ? chipH_bass(r.pitches[0]) : chipH(r.pitches[0]);
+          const w = chipW(r);
+          const isAnchor = r.anchor || (r.role === "cad" && i === 0);
+          const bg = chipBg[role] ?? chipBg.recite;
+          const borderC = isAnchor ? "#7a2418" : (chipBorderColor[role] ?? chipBorderColor.recite);
+          const borderW = isAnchor ? "2px" : "1px";
+          const stripe = chipStripe[role] ?? chipStripe.recite;
+          const sol = r.pitches[0];
+
+          return (
+            <div key={i} style={{
+              position: "relative", display: "inline-block", flexShrink: 0,
+              width: w, height: h,
+              background: bg,
+              border: `${borderW} solid ${borderC}`,
+              borderRadius: 6,
+              overflow: "hidden",
+            }}>
+              {/* Role stripe bar */}
+              <div style={{
+                position: "absolute", left: 0, right: 0,
+                ...(isBass ? { bottom: 0 } : { top: 0 }),
+                height: 8, background: stripe,
+                borderRadius: isBass ? "0 0 5px 5px" : "5px 5px 0 0",
+              }} />
+              {/* Solfège label */}
+              <div style={{
+                position: "absolute", left: 0, right: 0, textAlign: "center",
+                ...(isBass ? { bottom: 10 } : { top: 10 }),
+                fontSize: 9, color: solColor, fontStyle: "italic",
+                fontFamily: "Georgia, serif",
+              }}>{sol}</div>
+            </div>
+          );
+        };
+
+        // Build syllable text labels with melisma bar
+        const renderTextLabel = (r, w, isAnchor, isMelisma) => (
+          <div style={{
+            width: w, flexShrink: 0, textAlign: "center", position: "relative",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            lineHeight: 1.4, whiteSpace: "nowrap",
+          }}>
+            {isMelisma && (
+              <div style={{
+                position: "absolute", top: "50%", left: 0, width: "100%",
+                height: 5, background: melismaBarColor, borderRadius: 2,
+                transform: "translateY(-50%)", zIndex: 0, pointerEvents: "none",
+              }} />
+            )}
+            <span style={{
+              position: "relative", zIndex: 2,
+              fontSize: "0.85rem", fontFamily: "Georgia, serif",
+              fontWeight: isAnchor ? 600 : 400,
+              color: ink,
+              background: isMelisma ? "white" : "transparent",
+              padding: isMelisma ? "0 3px" : 0,
+            }}>{r.text}</span>
+          </div>
+        );
+
+        // Group rolesWD by original syllable (melisma entries share same text)
+        // We need to group consecutive entries with same text for the text label
+        const groupedAlto = [];
+        rolesWD.forEach((r, i) => {
+          if (r.melisma && groupedAlto.length > 0 && groupedAlto[groupedAlto.length-1].text === r.text) {
+            groupedAlto[groupedAlto.length-1].entries.push({ r, i });
+          } else {
+            groupedAlto.push({ text: r.text, entries: [{ r, i }] });
+          }
+        });
+
         return (
-          <div key={li} id={`phrase-block-${li}`} style={{ background: playingLine === li ? "rgba(255,250,238,.9)" : "rgba(255,255,255,.5)", border: "1px solid #d6c79f", borderLeft: `5px solid ${playingLine === li ? "#7a2418" : gold}`, borderRadius: 8, padding: pitchHeight ? "1.4rem 0.9rem 0.7rem" : "0.7rem 0.9rem", marginBottom: "0.8rem" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap", marginBottom: "0.5rem" }}>
+          <div key={li} id={`phrase-block-${li}`} style={{
+            background: playingLine === li ? "rgba(255,250,238,.9)" : "rgba(255,255,255,.5)",
+            border: "1px solid #d6c79f",
+            borderLeft: `5px solid ${playingLine === li ? "#7a2418" : gold}`,
+            borderRadius: 8, padding: "0.9rem", marginBottom: "0.8rem",
+          }}>
+            {/* Phrase label */}
+            <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap", marginBottom: "0.6rem" }}>
               <span style={{ background: isFin ? "#7a2418" : "#283a5c", color: "#fff", borderRadius: 5, padding: "2px 10px", fontSize: "0.78rem" }}>{PNAME[line.phrase]}</span>
               <span style={{ fontSize: "0.76rem", color: "#6b5942", fontStyle: "italic" }}>
                 reciting on <b>{PH[line.phrase].recite}</b>{PH[line.phrase].prep ? <> · prep on <b>{PH[line.phrase].prep}</b></> : null}
               </span>
             </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "3px 2px", alignItems: "flex-end" }}>
-              {line.words.map((w, wi) => (
-                <React.Fragment key={wi}>
-                  {w.sylls.map((s, si) => {
-                    fi += 1;
-                    const r = roles[fi];
-                    const myFi = fi;
-                    const pis = r.pitches.join("-");
-                    return (
-                      <span key={si}
-                        style={{ position: "relative", display: "inline-flex", flexDirection: "column",
-                                 alignItems: "center",
-                                 justifyContent: pitchHeight ? "space-between" : "flex-end",
-                                 height: pitchHeight ? chipH(r.pitches[0]) : undefined,
-                                 overflow: "visible",
-                                 padding: "3px 6px 2px", borderRadius: 6,
-                                 background: roleBg[r.role],
-                                 border: r.anchor ? "1px solid #7a2418" : "1px solid transparent",
-                                 minWidth: "2em" }}>
-                        <span style={{ fontSize: "1.1rem", fontWeight: s.accent ? 600 : 400, position: "relative" }}>
-                          {s.text}
-                        </span>
-                        <span style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: "0.72rem", color: roleColor[r.role] }}>{pis}</span>
-                      </span>
-                    );
-                  })}
-                  <span style={{ width: 7 }} />
-                </React.Fragment>
-              ))}
+
+            {/* Alto chips — above text */}
+            {showAlto && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-end", marginBottom: 6 }}>
+                {rolesWD.map((r, i) => renderChip(r, i, false))}
+              </div>
+            )}
+
+            {/* Text baseline — shared syllable labels with melisma bars */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "center", marginBottom: showBass ? 6 : 0 }}>
+              {groupedAlto.map((grp, gi) => {
+                const isMel = grp.entries.length > 1;
+                const totalW = grp.entries.reduce((s, {r}) => s + chipW(r), 0) + (isMel ? CHIP_GAP/2 * (grp.entries.length-1) : 0);
+                const isAnchor = grp.entries.some(({r}) => r.anchor);
+                return renderTextLabel(grp.entries[0].r, totalW, isAnchor, isMel);
+              })}
             </div>
+
+            {/* Bass chips — below text */}
+            {showBass && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-start" }}>
+                {bassRolesWD.map((r, i) => renderChip(r, i, true))}
+              </div>
+            )}
+
+            {/* Play button */}
             <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginTop: "0.6rem", flexWrap: "wrap" }}>
               <button style={btn} onClick={() => playLine(li)}>▶ Sing this line</button>
             </div>
