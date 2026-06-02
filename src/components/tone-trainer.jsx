@@ -2362,8 +2362,34 @@ export default function ToneTrainer() {
       const start = t;
       const id1 = setTimeout(() => { setPlayingLine(li); setPlayingChipIdx(null); }, (start - c.currentTime) * 1000);
       timerIdsRef.current.push(id1);
-      if (playAlto) altoNotes.forEach((n) => { toneTimbre(freq(n.sol), t, n.dur, n.peak, timbre); t += n.dur; });
+
+      // Schedule per-chip highlights for alto
+      if (playAlto) {
+        let ht = t;
+        altoNotes.forEach((n, ni) => {
+          const delay = (ht - c.currentTime) * 1000;
+          const capturedNi = ni; const capturedLi = li;
+          timerIdsRef.current.push(setTimeout(() => {
+            setPlayingLine(capturedLi); setPlayingChipIdx(capturedNi);
+          }, delay));
+          ht += n.dur;
+        });
+        altoNotes.forEach((n) => { toneTimbre(freq(n.sol), t, n.dur, n.peak, timbre); t += n.dur; });
+      }
+
+      // Schedule per-chip highlights for bass (only when bass-only — alto-bass uses alto highlights)
       if (playBassVoice && bassNotes) {
+        if (!playAlto) {
+          let ht = tb;
+          bassNotes.forEach((n, ni) => {
+            const delay = (ht - c.currentTime) * 1000;
+            const capturedNi = ni; const capturedLi = li;
+            timerIdsRef.current.push(setTimeout(() => {
+              setPlayingLine(capturedLi); setPlayingChipIdx(-(capturedNi + 1));
+            }, delay));
+            ht += n.dur;
+          });
+        }
         bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol), tb, n.dur, n.peak * 0.7, timbre); tb += n.dur; });
         tb += (60 / bpm) / 2;
       }
@@ -3012,6 +3038,7 @@ export default function ToneTrainer() {
           )}
           <span style={{ background: "rgba(122,36,24,.11)", color: "#7a2418",
                          borderRadius: 4, padding: "1px 7px" }}>{activeTone === 3 ? "cad. pt. 2" : "cadence"}</span>
+          {compareMode && compareData && <span>· ´ = accent</span>}
         </span>
         {/* Pointing mode — two toggle buttons: Director / Machine.
              In sing view: always show Director; show Machine only when machineLines available.
@@ -3400,10 +3427,11 @@ export default function ToneTrainer() {
 
         return (
           <div key={li} id={`phrase-block-${li}`} style={{
-            background: playingLine === li ? "rgba(255,250,238,.9)" : "rgba(255,255,255,.5)",
-            border: "1px solid #d6c79f",
+            background: "rgba(255,255,255,.5)",
+            border: `${playingLine === li ? "2px" : "1px"} solid ${playingLine === li ? "#7a2418" : "#d6c79f"}`,
             borderLeft: `5px solid ${playingLine === li ? "#7a2418" : gold}`,
             borderRadius: 8, padding: "0.9rem", marginBottom: "0.8rem",
+            transition: "border 0.1s",
           }}>
             {/* Phrase label */}
             <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap", marginBottom: "0.6rem" }}>
@@ -3437,9 +3465,11 @@ export default function ToneTrainer() {
               </div>
             )}
 
-            {/* Play button */}
+            {/* Play/Stop button */}
             <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginTop: "0.6rem", flexWrap: "wrap" }}>
-              <button style={btn} onClick={() => playLine(li)}>▶ Sing this line</button>
+              <button style={btn} onClick={() => playingLine === li ? stopAll() : playLine(li)}>
+                {playingLine === li ? "◼ Stop" : "▶ Sing this line"}
+              </button>
             </div>
           </div>
         );
