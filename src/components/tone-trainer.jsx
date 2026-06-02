@@ -1930,14 +1930,19 @@ export default function ToneTrainer() {
     // (used by Final Phrase pre-slur context rule).
     const hasRecitingTone = roles.some(r => r.role === "recite");
 
-    // Detect word boundary for the last cadence syllable
-    // (whole note triggers for Tone 2 Phrases B, C, D).
-    // isWordBoundary = true when the final cadence syllable is the last syllable
-    // of its word (no hyphen suffix indicates word continues).
-    const lastCadRole = cadIdxs.length > 0 ? roles[cadIdxs[cadIdxs.length - 1]] : null;
-    const lastCadIsWordBoundary = lastCadRole
-      ? (!lastCadRole.text?.endsWith("-") && !lastCadRole.source?.endsWith("-"))
-      : true;
+    // Word boundary analysis for the cadence:
+    // cadenceWordCount = number of distinct words in the cadence
+    // Used by: Phrase B (whole note when single word), Phrase C/D (whole note when multi-word)
+    const cadRolesList = roles.filter(r => r.role === "cad");
+    const cadenceWordCount = cadRolesList.reduce((count, r, i) => {
+      // A new word starts after a word boundary (unless it's the first syllable)
+      if (i === 0) return 1;
+      return cadRolesList[i-1].wordBoundary ? count + 1 : count;
+    }, 0);
+    const cadenceIsSingleWord = cadenceWordCount <= 1;
+    // Pass as isWordBoundary: true = single word (Phrase B whole note trigger)
+    // false = multi-word (Phrase C/D whole note trigger)
+    const lastCadIsWordBoundary = cadenceIsSingleWord;
 
     // Tone 2 Final Phrase anchor melisma: when cadCount < melismaThreshold,
     // the anchor syllable carries multiple pitches.
@@ -1954,9 +1959,21 @@ export default function ToneTrainer() {
       roles.forEach((r, ri) => {
         if (r.role === "cad") return; // handled below
         let syllDur;
-        if (r.role === "inton")  syllDur = r.accent ? H : Q;
-        else if (r.role === "preslur") syllDur = H;
-        else syllDur = Q;
+        if (r.role === "inton") syllDur = r.accent ? H : Q;
+        else if (r.role === "preslur") {
+          // Research notes: re(H·)·ti(Q) when no reciting tone precedes;
+          // re(Q)·ti(Q) when normal reciting tone precedes.
+          // ti is always Q; re fills the space where reciting tone would be.
+          if (!hasRecitingTone) {
+            // No reciting tone — re gets H· (dotted half), ti gets Q
+            notes.push({ sol: r.pitches[0], dur: DH, peak: 0.2 }); // re(H·)
+            notes.push({ sol: r.pitches[1] ?? "ti", dur: Q, peak: 0.2 }); // ti(Q)
+          } else {
+            // Normal: equal Q+Q
+            r.pitches.forEach(p => notes.push({ sol: p, dur: Q, peak: 0.2 }));
+          }
+          return;
+        } else syllDur = Q;
         const pitchDur = syllDur / r.pitches.length;
         r.pitches.forEach(p => notes.push({ sol: p, dur: pitchDur, peak: 0.2 }));
       });
@@ -2082,10 +2099,10 @@ export default function ToneTrainer() {
     const phDef = PH[line.phrase];
     const cadIdxs = bassRoles.map((r, i) => r.role === "cad" ? i : -1).filter(i => i >= 0);
     const cadCount = cadIdxs.length;
-    const lastCadRole = cadCount > 0 ? bassRoles[cadIdxs[cadCount - 1]] : null;
-    const lastCadIsWordBoundary = lastCadRole
-      ? (!lastCadRole.text?.endsWith("-") && !lastCadRole.source?.endsWith("-"))
-      : true;
+    const cadRolesListB = bassRoles.filter(r => r.role === "cad");
+    const cadenceWordCountB = cadRolesListB.reduce((count, r, i) =>
+      i === 0 ? 1 : cadRolesListB[i-1].wordBoundary ? count + 1 : count, 0);
+    const lastCadIsWordBoundary = cadenceWordCountB <= 1; // true = single word
     const hasRecitingTone = bassRoles.some(r => r.role === "recite");
     const isTone2 = activeTone === 2;
     const isTone2Final = isTone2 && line.phrase === "Final";
@@ -2095,9 +2112,17 @@ export default function ToneTrainer() {
     if (isTone2Final && cadCount < 4 && cadCount >= 1) {
       bassRoles.forEach(r => {
         if (r.role === "cad") return;
-        const syllDur = r.role === "inton" ? (r.accent ? H : Q)
-          : r.role === "preslur" ? H / r.pitches.length
-          : Q;
+        if (r.role === "preslur" && r.pitches.length > 1) {
+          if (!hasRecitingTone) {
+            // re(H·)·ti(Q) — no reciting tone precedes
+            notes.push({ sol: r.pitches[0], dur: DH, peak: 0.35, bass: true });
+            notes.push({ sol: r.pitches[1] ?? "re", dur: Q, peak: 0.35, bass: true });
+          } else {
+            r.pitches.forEach(p => notes.push({ sol: p, dur: Q, peak: 0.35, bass: true }));
+          }
+          return;
+        }
+        const syllDur = r.role === "inton" ? (r.accent ? H : Q) : Q;
         r.pitches.forEach(p => notes.push({ sol: p, dur: syllDur, peak: 0.35, bass: true }));
       });
       // Collect all cad roles in order
@@ -2273,10 +2298,10 @@ export default function ToneTrainer() {
     const isTone2A = isTone2 && line.phrase === "A";
     const cadIdxs = roles.map((r, i) => r.role === "cad" ? i : -1).filter(i => i >= 0);
     const cadCount = cadIdxs.length;
-    const lastCadRole = cadCount > 0 ? roles[cadIdxs[cadCount - 1]] : null;
-    const lastCadIsWordBoundary = lastCadRole
-      ? (!lastCadRole.text?.endsWith("-") && !lastCadRole.source?.endsWith("-"))
-      : true;
+    const cadRolesListR = roles.filter(r => r.role === "cad");
+    const cadenceWordCountR = cadRolesListR.reduce((count, r, i) =>
+      i === 0 ? 1 : cadRolesListR[i-1].wordBoundary ? count + 1 : count, 0);
+    const lastCadIsWordBoundary = cadenceWordCountR <= 1; // true = single word
 
     const durKey = (sec) => {
       if (Math.abs(sec - W)  < 0.01) return "W";
@@ -2295,11 +2320,18 @@ export default function ToneTrainer() {
     };
 
     if (isTone2Final && cadCount < 4 && cadCount >= 1) {
+      const hasRecitingToneR = roles.some(r => r.role === "recite");
       roles.forEach(r => {
         if (r.role === "cad") return;
         if (r.role === "preslur" && r.pitches.length > 1) {
-          // Split preslur into per-pitch melisma entries
-          r.pitches.forEach(p => result.push({ ...r, pitches: [p], dur: H/2, durKey: "Q", melisma: true }));
+          if (!hasRecitingToneR) {
+            // re(H·)·ti(Q) — verse-opening, no reciting tone precedes
+            result.push({ ...r, pitches: [r.pitches[0]], dur: DH, durKey: "H·", melisma: true });
+            result.push({ ...r, pitches: [r.pitches[1] ?? "ti"], dur: Q, durKey: "Q", melisma: true });
+          } else {
+            // Normal: Q+Q
+            r.pitches.forEach(p => result.push({ ...r, pitches: [p], dur: Q, durKey: "Q", melisma: true }));
+          }
         } else {
           const d = r.role === "inton" ? (r.accent ? H : Q) : Q;
           result.push({ ...r, dur: d, durKey: durKey(d) });
