@@ -2182,9 +2182,9 @@ export default function ToneTrainer() {
     let tb = startT;
     let ts = startT;
 
-    const playAlto    = voicePart === "alto" || voicePart === "alto-bass";
-    const playBass    = (voicePart === "bass" || voicePart === "alto-bass") && bassNotes;
-    const playSoprano = voicePart === "soprano" || voicePart === "alto-bass";
+    const playAlto    = voicePart === "alto" || voicePart === "alto-bass" || voicePart === "satb";
+    const playBass    = (voicePart === "bass" || voicePart === "alto-bass" || voicePart === "satb") && bassNotes;
+    const playSoprano = voicePart === "soprano" || voicePart === "alto-bass" || voicePart === "satb";
 
     const scheduleAltoHighlights = (notes) => {
       let ht = startT;
@@ -2381,9 +2381,9 @@ export default function ToneTrainer() {
     let tb = startT;
     let ts = startT;
     const which = compareMode && machineLines ? singWhich : "truth";
-    const playAlto      = voicePart === "alto" || voicePart === "alto-bass";
-    const playBassVoice = voicePart === "bass" || voicePart === "alto-bass";
-    const playSoprano   = voicePart === "soprano" || voicePart === "alto-bass";
+    const playAlto      = voicePart === "alto" || voicePart === "alto-bass" || voicePart === "satb";
+    const playBassVoice = voicePart === "bass" || voicePart === "alto-bass" || voicePart === "satb";
+    const playSoprano   = voicePart === "soprano" || voicePart === "alto-bass" || voicePart === "satb";
     setPlayingWhich(which);
     activeLines().forEach((line, li) => {
       const altoNotes    = lineToNotes(line);
@@ -2407,7 +2407,7 @@ export default function ToneTrainer() {
       }
 
       if (playBassVoice && bassNotes) {
-        if (!playAlto || voicePart === "alto-bass") {
+        if (!playAlto || voicePart === "alto-bass" || voicePart === "satb") {
           let ht = tb;
           bassNotes.forEach((n, ni) => {
             const delay = (ht - c.currentTime) * 1000;
@@ -3145,8 +3145,11 @@ export default function ToneTrainer() {
                      fontFamily: "Georgia, serif", color: "#5b4a33" }}>
             <option value="soprano">Soprano</option>
             <option value="alto">Alto (Melody)</option>
+            <option value="tenor" disabled style={{ color: "#bbb" }}>Tenor (coming)</option>
             <option value="bass">Bass</option>
+            <option disabled>──────────</option>
             <option value="alto-bass">Alto + Bass</option>
+            <option value="satb">SATB (no tenor yet)</option>
           </select>
         )}
         {/* Timbre selector — only in sing view */}
@@ -3391,10 +3394,10 @@ export default function ToneTrainer() {
           });
         })();
         const isFin = line.phrase === "Final";
-        const showAlto       = voicePart === "alto" || voicePart === "alto-bass";
-        const showBass       = (voicePart === "bass" || voicePart === "alto-bass") && bassRolesWD;
+        const showAlto       = voicePart === "alto" || voicePart === "alto-bass" || voicePart === "satb";
+        const showBass       = (voicePart === "bass" || voicePart === "alto-bass" || voicePart === "satb") && bassRolesWD;
         const showSoprano    = voicePart === "soprano";
-        const showSopranoTab = voicePart === "alto-bass"; // soprano tab peeks above alto chips
+        const showSopranoTab = voicePart === "alto-bass" || voicePart === "satb";
 
         // Soprano rolesWD — same structure as alto, alto pitches retained.
         // chipH_soprano(altoPitch) and freq_soprano(altoPitch) both expect alto pitch.
