@@ -1213,12 +1213,13 @@ const BASS_RULES = {
     },
     Final: {
       recite: "la",
-      // Cadence: do → la (bass holds la under anchor do·re·do melisma)
-      // re → re (bass re(C3) under soprano re(C5) — two octaves)
-      // ti → re (bass closes on re(W) under soprano ti(W) — open minor seventh)
-      cadMap: { do: "la", re: "re", ti: "re" },
+      // Score-verified (L'vov-Bakhmetev Obikhod):
+      // "me," alto = do·re melisma → bass = sol·fa (W+H)
+      // "O" alto = do → bass = sol (H)
+      // "Lord!" alto = ti → bass = re (W) — open minor seventh close
+      cadMap: { do: "sol", re: "fa", ti: "re" },
       prepMap: { ti: "re" },
-      // Pre-slur: soprano [re,ti] → bass [la,re]
+      // Pre-slur "Hear": soprano [re,ti] → bass [la,re]
       preslurMap: { re: "la", ti: "re" },
     },
   },
