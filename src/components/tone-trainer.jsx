@@ -3321,11 +3321,14 @@ export default function ToneTrainer() {
                     </div>{/* end inner chips container */}
                     {/* Per-row play button — outside the chips container, anchored right */}
                     <button
+                      disabled={playingLine !== null && !rowSinging}
                       onClick={() => playLineAs(li, which)}
                       style={{ border: `1px solid ${rowSinging ? "#7a2418" : gold}`,
                                background: rowSinging ? "rgba(122,36,24,.08)" : "transparent",
                                color: rowSinging ? "#7a2418" : gold,
-                               borderRadius: 3, padding: "2px 9px", cursor: "pointer",
+                               borderRadius: 3, padding: "2px 9px",
+                               cursor: playingLine !== null && !rowSinging ? "not-allowed" : "pointer",
+                               opacity: playingLine !== null && !rowSinging ? 0.35 : 1,
                                fontFamily: "Georgia, serif", fontSize: "0.68rem",
                                flexShrink: 0, marginLeft: "0.5rem", alignSelf: "center" }}>
                       ▶
@@ -3483,7 +3486,11 @@ export default function ToneTrainer() {
               <span style={{ fontSize: "0.76rem", color: "#6b5942", fontStyle: "italic", flex: 1 }}>
                 {voicePart === "bass" ? "Bass · " : voicePart === "soprano" ? "Soprano · " : "Alto · "}{PNAME[line.phrase]} · reciting on <b>{PH[line.phrase].recite}</b>{PH[line.phrase].prep ? <> · prep on <b>{PH[line.phrase].prep}</b></> : null}
               </span>
-              <button style={{ ...btn, padding: "2px 10px", fontSize: "0.74rem" }}
+              <button
+                disabled={playingLine !== null && playingLine !== li}
+                style={{ ...btn, padding: "2px 10px", fontSize: "0.74rem",
+                         opacity: playingLine !== null && playingLine !== li ? 0.35 : 1,
+                         cursor: playingLine !== null && playingLine !== li ? "not-allowed" : "pointer" }}
                 onClick={() => playingLine === li ? stopAll() : playLine(li)}>
                 {playingLine === li ? "◼ Stop" : "▶ Play"}
               </button>
