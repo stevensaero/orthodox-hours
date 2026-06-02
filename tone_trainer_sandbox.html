@@ -132,10 +132,30 @@
     transition: width 0.2s, height 0.2s;
   }
   /* recite — narrow marker */
+  /* Role stripe — alto: top 1/8 bar; bass: bottom 1/8 bar */
+  .chip { overflow: hidden; }
+  .chip::before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 8px;
+    border-radius: 5px 5px 0 0;
+    pointer-events: none;
+  }
+  /* Bass chips get stripe at bottom */
+  .bass-chip-wrap .chip::before {
+    top: auto;
+    bottom: 0;
+    border-radius: 0 0 5px 5px;
+  }
+
   .chip.recite {
     background: #2a3545;
     border: 1px solid #3a4a60;
   }
+  .chip.recite::before  { background: #3a4a60; }
+
   .chip.inton {
     background: #1a3a2a;
     border: 1px solid #2a6a4a;
@@ -144,6 +164,8 @@
     justify-content: space-between;
     padding: 5px 3px 4px;
   }
+  .chip.inton::before   { background: #2a6a4a; }
+
   .chip.prep {
     background: #3a2e10;
     border: 1px solid #6a5020;
@@ -152,6 +174,8 @@
     justify-content: space-between;
     padding: 5px 3px 4px;
   }
+  .chip.prep::before    { background: #6a5020; }
+
   .chip.cad {
     background: #3a1a1a;
     border: 1px solid #6a2a2a;
@@ -160,6 +184,13 @@
     justify-content: space-between;
     padding: 5px 3px 4px;
   }
+  .chip.cad::before     { background: #6a2a2a; }
+
+  /* Light theme stripes match border-color overrides */
+  body.light .chip.recite::before  { background: rgba(40,58,92,.25); }
+  body.light .chip.inton::before   { background: rgba(40,58,92,.30); }
+  body.light .chip.prep::before    { background: rgba(180,137,43,.40); }
+  body.light .chip.cad::before     { background: rgba(122,36,24,.35); }
 
   /* ── LIGHT THEME CHIP COLORS (matches tone-trainer.jsx roleBg/roleColor) ── */
   body.light .chip.recite  { background: rgba(40,58,92,.06);   border-color: rgba(40,58,92,.18);  }
@@ -320,19 +351,25 @@
   </div>
 
   <div class="ctrl-group">
+    <div class="ctrl-label">Tempo (BPM) <span class="ctrl-val" id="val-bpm">70</span></div>
+    <input type="range" id="sl-bpm" min="40" max="120" value="70" step="10"
+      style="accent-color:#c8a84a; width:100%;">
+    <div style="font-size:8px;color:#4a3a20;margin-top:2px;">half note = 1 beat · 40–120</div>
+  </div>
+
+  <div class="ctrl-group">
     <div class="ctrl-label">Timbre</div>
     <select id="sel-timbre" style="background:#1a1510;border:1px solid #3a3020;border-radius:3px;color:#c8a84a;font-size:10px;padding:3px 6px;cursor:pointer;width:100%;">
       <option value="piano" selected>Piano</option>
       <option value="organ">Pipe Organ</option>
-      <option value="harmonium">Harmonium</option>
       <option value="choir">Choir (Voice)</option>
       <option value="cello">Cello / Strings</option>
     </select>
   </div>
 
   <div class="ctrl-group">
-    <div class="ctrl-label">Ison drone <span class="ctrl-val" id="val-ison" style="color:#7a9a7a;">30%</span></div>
-    <input type="range" id="sl-ison" min="0" max="100" value="30" step="1"
+    <div class="ctrl-label">Ison drone <span class="ctrl-val" id="val-ison" style="color:#7a9a7a;">Off</span></div>
+    <input type="range" id="sl-ison" min="0" max="100" value="0" step="1"
       style="accent-color:#7a9a7a;">
     <div style="font-size:8px;color:#4a5a3a;margin-top:2px;">0 = off · 100 = full drone</div>
   </div>
@@ -373,7 +410,6 @@
   <button class="toggle-btn on" id="tog-durwidth">Duration width</button>
   <button class="toggle-btn" id="tog-narrowrecite">Narrow recite</button>
   <button class="toggle-btn on" id="tog-sol">Show solfège</button>
-  <button class="toggle-btn" id="tog-dur">Show dur label</button>
 </div>
 
 <div style="margin-bottom:20px;">
@@ -702,9 +738,9 @@ let ACTIVE_DATA = DATA;
 const S = {
   baseH: 25, stepH: 2, curve: 2.0, reciteW: 18,
   durW: { Q:30, H:50, "H·":68, W:90 },
-  gap: 8,
+  gap: 10,
   pitchHeight: true, durWidth: true,
-  narrowRecite: false, showSol: true, showDur: false,
+  narrowRecite: false, showSol: true,
 };
 
 // ── RENDER ───────────────────────────────────────────
@@ -769,8 +805,7 @@ function buildSoloChip(n) {
   wrap.style.cssText = `height:${h}px; width:${w}px; flex-shrink:0;`;
   wrap.innerHTML = `
     <div class="chip ${chipRole}" style="width:${w}px;height:${h}px;${borderStyle}">
-      ${S.showSol ? `<div class="sol" style="font-size:10px;color:${document.body.classList.contains('light') ? 'rgba(40,58,92,0.45)' : '#7a6a58'};text-align:center;position:absolute;top:6px;left:0;right:0;">${n.sol}</div>` : ''}
-      ${S.showDur && n.role !== 'recite' ? `<div class="dur" style="font-size:7px;color:rgba(200,168,74,0.5);text-align:center;font-style:italic;">${n.dur}</div>` : ''}
+      ${S.showSol ? `<div class="sol" style="font-size:10px;color:${document.body.classList.contains('light') ? 'rgba(40,58,92,0.45)' : '#7a6a58'};text-align:center;position:absolute;top:10px;left:0;right:0;">${n.sol}</div>` : ''}
     </div>`;
   return wrap;
 }
@@ -836,17 +871,11 @@ function buildMelismaGroup(n) {
     if (S.showSol) {
       const solEl = document.createElement('div');
       solEl.className = 'sol';
-      solEl.style.cssText = 'font-size:10px; color:' + (document.body.classList.contains('light') ? 'rgba(40,58,92,0.45)' : '#7a6a58') + '; text-align:center; position:absolute; top:6px; left:0; right:0;';
+      solEl.style.cssText = 'font-size:10px; color:' + (document.body.classList.contains('light') ? 'rgba(40,58,92,0.45)' : '#7a6a58') + '; text-align:center; position:absolute; top:14px; left:0; right:0;';
       solEl.textContent = c.sol;
       chipEl.appendChild(solEl);
     }
-    if (S.showDur) {
-      const durEl = document.createElement('div');
-      durEl.className = 'dur';
-      durEl.style.cssText = 'font-size:7px; color:rgba(200,168,74,0.5); text-align:center; font-style:italic;';
-      durEl.textContent = c.dur;
-      chipEl.appendChild(durEl);
-    }
+
     chipEl.classList.add('melisma-subchip');
     chipEl.dataset.melismaIdx = String(chipDims.indexOf(c));
     chipRow.appendChild(chipEl);
@@ -893,7 +922,7 @@ function buildSoloChip_bass(n) {
   chipEl.style.cssText = `width:${w}px; height:${h}px; ${borderStyle}position:relative; flex-shrink:0;`;
   if (S.showSol) {
     const solEl = document.createElement('div');
-    solEl.style.cssText = 'font-size:10px; color:#7a6a58; text-align:center; position:absolute; bottom:6px; left:0; right:0;';
+    solEl.style.cssText = 'font-size:10px; color:#7a6a58; text-align:center; position:absolute; bottom:10px; left:0; right:0;';
     solEl.textContent = n.sol;
     chipEl.appendChild(solEl);
   }
@@ -934,7 +963,7 @@ function buildMelismaGroup_bass(n) {
     chipEl.style.cssText = `width:${c.w}px; height:${c.h}px; ${borderStyle}position:relative;`;
     if (S.showSol) {
       const solEl = document.createElement('div');
-      solEl.style.cssText = 'font-size:10px; color:#7a6a58; text-align:center; position:absolute; bottom:6px; left:0; right:0;';
+      solEl.style.cssText = 'font-size:10px; color:#7a6a58; text-align:center; position:absolute; bottom:10px; left:0; right:0;';
       solEl.textContent = c.sol;
       chipEl.appendChild(solEl);
     }
@@ -1196,7 +1225,6 @@ bindToggle('tog-pitch',        'pitchHeight');
 bindToggle('tog-durwidth',     'durWidth');
 bindToggle('tog-narrowrecite', 'narrowRecite');
 bindToggle('tog-sol',          'showSol');
-bindToggle('tog-dur',          'showDur');
 
 // initial render
 renderAll();
@@ -1243,6 +1271,12 @@ buildFreqTable('Bb4');
 document.getElementById('sel-pitch').addEventListener('change', function() {
   buildFreqTable(this.value);
   if (isonNode) { stopIson(); setTimeout(startIson, 700); }
+});
+
+document.getElementById('sl-bpm').addEventListener('input', function() {
+  BPM = parseInt(this.value);
+  DUR_SEC = getDurSec();
+  document.getElementById('val-bpm').textContent = BPM;
 });
 
 const STICHERON_LABELS = {
@@ -1356,13 +1390,20 @@ document.getElementById('sel-voice').addEventListener('change', function() {
 });
 
 // Duration in seconds (Q = 0.4s base tempo)
-const DUR_SEC = { Q: 0.4, H: 0.8, "H·": 1.2, W: 1.6 };
+let BPM = 70;
+// DUR_SEC is derived from BPM — half note = 60/BPM seconds
+// matches live tool: H = 60/bpm, Q = H/2, W = H*2, H· = H*1.5
+function getDurSec() {
+  const H = 60 / BPM;
+  return { Q: H/2, H: H, 'H·': H*1.5, W: H*2 };
+}
+let DUR_SEC = getDurSec();
 
 let audioCtx = null;
 let playGen = 0;  // incremented on every stop to cancel stale highlight callbacks
 let isonNode = null;     // persistent drone oscillator
 let isonGain = null;     // drone gain node
-let isonVolume = 0.30;   // default 30% — starts when first line plays
+let isonVolume = 0;      // default off
 
 function getAudioCtx() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
