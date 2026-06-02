@@ -3554,51 +3554,60 @@ export default function ToneTrainer() {
               </div>
             )}
 
-            {/* Alto chips — above text, with optional soprano tab peeking above */}
-            {showAlto && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-end", marginBottom: 6,
-                            paddingTop: showSopranoTab ? 14 : 0 }}>
-                {groupedAlto.map((grp, gi) => {
-                  const entries = grp.entries;
-
-                  const chipContent = (entry) => {
-                    const {r, i} = entry;
-                    const role = r.role === "preslur" ? "prep" : r.role;
-                    const stripe = chipStripe[role] ?? chipStripe.recite;
-                    const chip = renderChip(r, i, false);
-
-                    if (!showSopranoTab) return chip;
-                    // Tab height encodes soprano elevation above alto — same scale as chip heights.
-                    // A diatonic third = 20-30px difference → tab ~10-15px (half scale for compactness).
-                    // Future deviations (unison, octave) read proportionally different.
-                    const elevation = chipH_soprano(r.pitches[0]) - chipH(r.pitches[0]);
-                    const tabH = Math.max(4, Math.round(elevation * 0.4));
+            {/* Alto chips — above text. In alto+bass mode, soprano chips render at same
+                baseline behind alto chips (soprano sets container height, alto overlays). */}
+            {showAlto && (() => {
+              const altoRow = (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-end" }}>
+                  {groupedAlto.map((grp, gi) => {
+                    const entries = grp.entries;
+                    if (entries.length === 1) {
+                      return <React.Fragment key={gi}>{renderChip(entries[0].r, entries[0].i, false)}</React.Fragment>;
+                    }
                     return (
-                      <div style={{ position: "relative", display: "inline-block" }}>
-                        <div style={{
-                          position: "absolute",
-                          bottom: "100%", left: 0,
-                          width: chipW(r), height: tabH,
-                          background: stripe,
-                          borderRadius: "3px 3px 0 0",
-                          pointerEvents: "none",
-                        }} />
-                        {chip}
+                      <div key={gi} style={{ display: "inline-flex", gap: CHIP_MELISMA_GAP, alignItems: "flex-end" }}>
+                        {entries.map(({r, i}) => renderChip(r, i, false))}
                       </div>
                     );
-                  };
+                  })}
+                </div>
+              );
 
-                  if (entries.length === 1) {
-                    return <React.Fragment key={gi}>{chipContent(entries[0])}</React.Fragment>;
-                  }
-                  return (
-                    <div key={gi} style={{ display: "inline-flex", gap: CHIP_MELISMA_GAP, alignItems: "flex-end" }}>
-                      {entries.map(entry => chipContent(entry))}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+              if (!showSopranoTab) return <div style={{ marginBottom: 6 }}>{altoRow}</div>;
+
+              // Soprano row — full chips rendered behind alto, same widths/gaps, same baseline.
+              // Soprano chips are always taller so their tops peek above alto naturally.
+              const sopranoRow = (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-end",
+                              position: "absolute", bottom: 0, left: 0 }}>
+                  {groupedAlto.map((grp, gi) => {
+                    const entries = grp.entries;
+                    if (entries.length === 1) {
+                      return <React.Fragment key={gi}>{renderChip(entries[0].r, entries[0].i, false, true)}</React.Fragment>;
+                    }
+                    return (
+                      <div key={gi} style={{ display: "inline-flex", gap: CHIP_MELISMA_GAP, alignItems: "flex-end" }}>
+                        {entries.map(({r, i}) => renderChip(r, i, false, true))}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+
+              // Container height driven by soprano (tallest chips).
+              // Alto row overlays absolutely at the bottom, always on top via zIndex.
+              const maxSopH = Math.max(...groupedAlto.flatMap(grp =>
+                grp.entries.map(({r}) => chipH_soprano(r.pitches[0]))
+              ));
+              return (
+                <div style={{ position: "relative", height: maxSopH, marginBottom: 6 }}>
+                  {sopranoRow}
+                  <div style={{ position: "absolute", bottom: 0, left: 0, zIndex: 1 }}>
+                    {altoRow}
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Text baseline — shared syllable labels with melisma bars */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "center", marginBottom: showBass ? 6 : 0 }}>
