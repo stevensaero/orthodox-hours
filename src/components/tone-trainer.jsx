@@ -3546,9 +3546,9 @@ export default function ToneTrainer() {
 
       <div style={{ marginTop: "1rem", fontSize: "0.72rem", color: "#9A8A70", borderTop: "1px solid #e8dfc8", paddingTop: "0.7rem", display: "flex", flexWrap: "wrap", gap: "0.4rem", justifyContent: "space-between" }}>
         <span>
-          <b style={{ color: "#6b5942" }}>Tone Trainer</b> © 2026 William Stevens · All Rights Reserved.
-          Visual representations and stylings that capture pitch and note duration are the intellectual
-          property of the author. Reproduction and use by written permission only.
+          © 2026 William Stevens. All Rights Reserved.{" "}
+          Tone Trainer and its distinctive visual representations of pitch and note duration are the intellectual property of the author.
+          Any reproduction or use requires prior written permission.
         </span>
         <span style={{ whiteSpace: "nowrap" }}>v{TONE_TRAINER_VERSION}</span>
       </div>
