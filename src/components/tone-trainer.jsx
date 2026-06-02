@@ -2107,9 +2107,11 @@ export default function ToneTrainer() {
     const rolesWD = lineToRolesWithDuration(line);
     const notes = [];
     rolesWD.forEach(r => {
-      const sPitch = SOPRANO_MAP[r.pitches[0]] ?? r.pitches[0];
+      // Store the ALTO pitch — freq_soprano(altoPitch) does the mapping + octave correction.
+      // Do NOT pre-map through SOPRANO_MAP here; freq_soprano expects the alto pitch.
+      const altoPitch = r.pitches[0];
       const peak = (r.role === "cad" || r.role === "cad1") && r.anchor ? 0.27 : 0.2;
-      notes.push({ sol: sPitch, dur: r.dur, peak, soprano: true });
+      notes.push({ sol: altoPitch, dur: r.dur, peak, soprano: true });
     });
     return notes;
   };
@@ -3387,10 +3389,9 @@ export default function ToneTrainer() {
         const showSoprano    = voicePart === "soprano";
         const showSopranoTab = voicePart === "alto-bass"; // soprano tab peeks above alto chips
 
-        // Soprano rolesWD — same structure as alto, pitches mapped through SOPRANO_MAP
-        const sopranoRolesWD = (showSoprano || showSopranoTab)
-          ? rolesWD.map(r => ({ ...r, pitches: [SOPRANO_MAP[r.pitches[0]] ?? r.pitches[0]] }))
-          : null;
+        // Soprano rolesWD — same structure as alto, alto pitches retained.
+        // chipH_soprano(altoPitch) and freq_soprano(altoPitch) both expect alto pitch.
+        const sopranoRolesWD = (showSoprano || showSopranoTab) ? rolesWD : null;
 
         // Role colors matching roleBg/roleColor
         const chipBg = { recite:"rgba(40,58,92,.06)", inton:"rgba(40,120,60,.10)", prep:"rgba(180,137,43,.16)", cad:"rgba(122,36,24,.10)", cad1:"rgba(122,36,24,.05)", preslur:"rgba(180,137,43,.22)" };
@@ -3403,9 +3404,11 @@ export default function ToneTrainer() {
         // Build chip entries — one per role entry (melisma = one per pitch)
         const chipW = (r) => r.role === "recite" ? CHIP_W_RECITE : (CHIP_W[r.durKey] ?? CHIP_W.Q);
 
-        const renderChip = (r, i, isBass) => {
+        const renderChip = (r, i, isBass, isSoprano = false) => {
           const role = r.role === "preslur" ? "prep" : r.role;
-          const h = isBass ? chipH_bass(r.pitches[0]) : chipH(r.pitches[0]);
+          const h = isBass ? chipH_bass(r.pitches[0])
+                  : isSoprano ? chipH_soprano(r.pitches[0])
+                  : chipH(r.pitches[0]);
           const w = chipW(r);
           const isAnchor = r.anchor || (r.role === "cad" && i === 0);
           const bg = chipBg[role] ?? chipBg.recite;
@@ -3417,7 +3420,8 @@ export default function ToneTrainer() {
             : (chipBorderColor[role] ?? chipBorderColor.recite);
           const borderW = isActive ? "2px" : "1px";
           const stripe = chipStripe[role] ?? chipStripe.recite;
-          const sol = r.pitches[0];
+          // Soprano chips display the mapped soprano pitch as the solfège label
+          const sol = isSoprano ? (SOPRANO_MAP[r.pitches[0]] ?? r.pitches[0]) : r.pitches[0];
 
           return (
             <div key={i} style={{
@@ -3507,21 +3511,17 @@ export default function ToneTrainer() {
               </button>
             </div>
 
-            {/* Soprano chips — above text, same layout as alto */}
+            {/* Soprano chips — above text, same layout as alto but soprano heights/labels */}
             {showSoprano && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-end", marginBottom: 6 }}>
                 {groupedAlto.map((grp, gi) => {
                   if (grp.entries.length === 1) {
                     const {r, i} = grp.entries[0];
-                    const sr = sopranoRolesWD[i];
-                    return renderChip(sr ?? r, i, false);
+                    return renderChip(r, i, false, true);
                   }
                   return (
                     <div key={gi} style={{ display: "inline-flex", gap: CHIP_MELISMA_GAP, alignItems: "flex-end" }}>
-                      {grp.entries.map(({r, i}) => {
-                        const sr = sopranoRolesWD[i];
-                        return renderChip(sr ?? r, i, false);
-                      })}
+                      {grp.entries.map(({r, i}) => renderChip(r, i, false, true))}
                     </div>
                   );
                 })}
