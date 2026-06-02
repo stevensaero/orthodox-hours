@@ -1857,7 +1857,8 @@ export default function ToneTrainer() {
   const [lines, setLines] = useState([]);
   const [playingLine, setPlayingLine] = useState(null);
   const [playingWhich, setPlayingWhich] = useState(null); // "truth"|"machine" while a line plays
-  const [playingChipIdx, setPlayingChipIdx] = useState(null); // index of currently playing chip
+  const [playingAltoIdx, setPlayingAltoIdx] = useState(null); // currently playing alto chip index
+  const [playingBassIdx, setPlayingBassIdx] = useState(null); // currently playing bass chip index
   const [pitchHeight, setPitchHeight] = useState(true); // always on in new sing view
   const [timbre, setTimbre] = useState("piano");         // audio timbre for sing view
   const [voicePart, setVoicePart] = useState("alto");    // alto | bass | alto-bass
@@ -2173,31 +2174,42 @@ export default function ToneTrainer() {
     const playBass    = (voicePart === "bass" || voicePart === "alto-bass") && bassNotes;
     const playSoprano = voicePart === "soprano";
 
-    // Schedule per-chip highlights using note timing
-    const scheduleHighlights = (notes, isBass) => {
+    const scheduleAltoHighlights = (notes) => {
       let ht = startT;
       notes.forEach((n, ni) => {
         const delay = (ht - c.currentTime) * 1000;
-        const capturedNi = ni;
-        const capturedLi = li;
+        const capturedNi = ni; const capturedLi = li;
         timerIdsRef.current.push(setTimeout(() => {
           if (capturedLi !== null) setPlayingLine(capturedLi);
-          setPlayingChipIdx(isBass ? -(capturedNi + 1) : capturedNi);
+          setPlayingAltoIdx(capturedNi);
+        }, delay));
+        ht += n.dur;
+      });
+    };
+
+    const scheduleBassHighlights = (notes) => {
+      let ht = startT;
+      notes.forEach((n, ni) => {
+        const delay = (ht - c.currentTime) * 1000;
+        const capturedNi = ni; const capturedLi = li;
+        timerIdsRef.current.push(setTimeout(() => {
+          if (capturedLi !== null) setPlayingLine(capturedLi);
+          setPlayingBassIdx(capturedNi);
         }, delay));
         ht += n.dur;
       });
     };
 
     if (playAlto) {
-      scheduleHighlights(altoNotes, false);
+      scheduleAltoHighlights(altoNotes);
       altoNotes.forEach((n) => { toneTimbre(freq(n.sol), t, n.dur, n.peak, timbre); t += n.dur; });
     }
     if (playBass) {
-      if (!playAlto || voicePart === "alto-bass") scheduleHighlights(bassNotes, true);
+      scheduleBassHighlights(bassNotes);
       bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol), tb, n.dur, n.peak * 1.1, timbre); tb += n.dur; });
     }
     if (playSoprano && sopranoNotes) {
-      scheduleHighlights(sopranoNotes, false);
+      scheduleAltoHighlights(sopranoNotes); // soprano uses alto chip row
       sopranoNotes.forEach((n) => { toneTimbre(freq_soprano(n.sol), ts, n.dur, n.peak, timbre); ts += n.dur; });
     }
 
@@ -2222,12 +2234,12 @@ export default function ToneTrainer() {
   const playLineAs = (li, which) => {
     const src = which === "machine" && machineLines ? machineLines : lines;
     setPlayingLine(li);
-    setPlayingChipIdx(null);
+    setPlayingAltoIdx(null); setPlayingBassIdx(null);
     setPlayingWhich(which);
     const altoNotes    = lineToNotes(src[li]);
     const bassNotes    = lineToNotes_bass(src[li]);
     const sopranoNotes = lineToNotes_soprano(src[li]);
-    playNotesWithBass(altoNotes, bassNotes, sopranoNotes, () => { setPlayingLine(null); setPlayingChipIdx(null); setPlayingWhich(null); }, li);
+    playNotesWithBass(altoNotes, bassNotes, sopranoNotes, () => { setPlayingLine(null); setPlayingAltoIdx(null); setPlayingBassIdx(null); setPlayingWhich(null); }, li);
   };
 
   // lineToRolesWithDuration(line)
@@ -2339,12 +2351,12 @@ export default function ToneTrainer() {
   const playLine = (li) => {
     isPlayAllRef.current = false;
     setPlayingLine(li);
-    setPlayingChipIdx(null);
+    setPlayingAltoIdx(null); setPlayingBassIdx(null);
     setPlayingWhich(singWhich);
     const altoNotes    = lineToNotes(activeLines()[li]);
     const bassNotes    = lineToNotes_bass(activeLines()[li]);
     const sopranoNotes = lineToNotes_soprano(activeLines()[li]);
-    playNotesWithBass(altoNotes, bassNotes, sopranoNotes, () => { setPlayingLine(null); setPlayingChipIdx(null); setPlayingWhich(null); }, li);
+    playNotesWithBass(altoNotes, bassNotes, sopranoNotes, () => { setPlayingLine(null); setPlayingAltoIdx(null); setPlayingBassIdx(null); setPlayingWhich(null); }, li);
   };
 
   const playAll = () => {
@@ -2366,7 +2378,7 @@ export default function ToneTrainer() {
       const bassNotes    = lineToNotes_bass(line);
       const sopranoNotes = lineToNotes_soprano(line);
       const start = t;
-      const id1 = setTimeout(() => { setPlayingLine(li); setPlayingChipIdx(null); }, (start - c.currentTime) * 1000);
+      const id1 = setTimeout(() => { setPlayingLine(li); setPlayingAltoIdx(null); setPlayingBassIdx(null); }, (start - c.currentTime) * 1000);
       timerIdsRef.current.push(id1);
 
       if (playAlto) {
@@ -2375,7 +2387,7 @@ export default function ToneTrainer() {
           const delay = (ht - c.currentTime) * 1000;
           const capturedNi = ni; const capturedLi = li;
           timerIdsRef.current.push(setTimeout(() => {
-            setPlayingLine(capturedLi); setPlayingChipIdx(capturedNi);
+            setPlayingLine(capturedLi); setPlayingAltoIdx(capturedNi);
           }, delay));
           ht += n.dur;
         });
@@ -2389,7 +2401,7 @@ export default function ToneTrainer() {
             const delay = (ht - c.currentTime) * 1000;
             const capturedNi = ni; const capturedLi = li;
             timerIdsRef.current.push(setTimeout(() => {
-              setPlayingLine(capturedLi); setPlayingChipIdx(-(capturedNi + 1));
+              setPlayingLine(capturedLi); setPlayingBassIdx(capturedNi);
             }, delay));
             ht += n.dur;
           });
@@ -2404,7 +2416,7 @@ export default function ToneTrainer() {
           const delay = (ht - c.currentTime) * 1000;
           const capturedNi = ni; const capturedLi = li;
           timerIdsRef.current.push(setTimeout(() => {
-            setPlayingLine(capturedLi); setPlayingChipIdx(capturedNi);
+            setPlayingLine(capturedLi); setPlayingAltoIdx(capturedNi);
           }, delay));
           ht += n.dur;
         });
@@ -2415,7 +2427,7 @@ export default function ToneTrainer() {
       if (playAlto) t += (60 / bpm) / 2;
     });
     const totalDur = Math.max(t, tb, ts) - startT;
-    const id2 = setTimeout(() => { setPlayingLine(null); setPlayingChipIdx(null); setPlayingWhich(null); }, totalDur * 1000 + 40);
+    const id2 = setTimeout(() => { setPlayingLine(null); setPlayingAltoIdx(null); setPlayingBassIdx(null); setPlayingWhich(null); }, totalDur * 1000 + 40);
     timerIdsRef.current.push(id2);
   };
 
@@ -2425,7 +2437,7 @@ export default function ToneTrainer() {
     isPlayAllRef.current = false;
     stop();
     setPlayingLine(null);
-    setPlayingChipIdx(null);
+    setPlayingAltoIdx(null); setPlayingBassIdx(null);
     setPlayingWhich(null);
   };
 
@@ -3392,7 +3404,7 @@ export default function ToneTrainer() {
           const bg = chipBg[role] ?? chipBg.recite;
           // Per-chip highlight: positive index = alto chip, negative = bass chip
           const isActive = playingLine === li && (
-            isBass ? playingChipIdx === -(i + 1) : playingChipIdx === i
+            isBass ? playingBassIdx === i : playingAltoIdx === i
           );
           const borderC = isActive ? "#7a2418"
             : (chipBorderColor[role] ?? chipBorderColor.recite);
