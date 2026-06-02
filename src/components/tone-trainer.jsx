@@ -1129,6 +1129,118 @@ function buildMelisma(pitches, durs, H, Q, W, DH, peak) {
   return pitches.map((p, i) => ({ sol: p, dur: durMap[durs[i]] ?? Q, peak }));
 }
 
+// ── BASS DERIVATION ENGINE ────────────────────────────────────────────────────
+//
+// Bass is algorithmically derived from the alto pointing using BASS_RULES.
+// Each tone/setting defines its own ruleset — no cross-tone generalization.
+// Tones without a BASS_RULES entry return null (bass unavailable).
+//
+// Source: L'vov-Bakhmetev Obikhod, score-verified May 31 2026.
+// Setting: Russian Obikhod (Tone 2 only currently).
+// See tone_trainer_notes.md for full derivation and score evidence.
+//
+// Structure per phrase:
+//   recite    — bass pitch on all reciting-tone syllables
+//   cadMap    — maps alto cadence pitch → bass cadence pitch
+//   prepMap   — maps alto prep pitch → bass prep pitch (empty if same as cadMap)
+//   preslurMap— maps each alto preslur pitch → bass preslur pitch
+
+const BASS_RULES = {
+  // ── Tone 2, Russian Obikhod (L'vov-Bakhmetev) ──────────────────────────
+  2: {
+    // setting: "Obikhod (L'vov-Bakhmetev)" — flag if other settings are added
+    A: {
+      recite: "la",
+      // Phrase A cadence: fa(soprano) → la(bass); mi → mi; re → la
+      // Bass holds la on anchor (fa), drops to mi on fill, returns la on close
+      cadMap: { fa: "la", mi: "mi", re: "la" },
+      prepMap: {},
+      preslurMap: {},
+    },
+    B: {
+      recite: "la",
+      // di(soprano) → mi(bass); re → la
+      // Bass holds la through recite, dips to mi on di cadence, returns la
+      cadMap: { di: "mi", re: "la" },
+      prepMap: {},
+      preslurMap: {},
+    },
+    C: {
+      recite: "la",
+      // Cadence do(soprano) → sol(bass)
+      // Prep ti(soprano) → re(bass) — dominant approach to sol
+      cadMap: { do: "sol" },
+      prepMap: { ti: "re" },
+      preslurMap: {},
+    },
+    D: {
+      recite: "sol",  // bass drops to sol when soprano recites on do
+      // di → mi; re → la (same cadence shape as Phrase B)
+      cadMap: { di: "mi", re: "la" },
+      prepMap: {},
+      preslurMap: {},
+    },
+    Final: {
+      recite: "la",
+      // Cadence: do → la (bass holds la under anchor do·re·do melisma)
+      // re → re (bass re(C3) under soprano re(C5) — two octaves)
+      // ti → re (bass closes on re(W) under soprano ti(W) — open minor seventh)
+      cadMap: { do: "la", re: "re", ti: "re" },
+      prepMap: { ti: "re" },
+      // Pre-slur: soprano [re,ti] → bass [la,re]
+      preslurMap: { re: "la", ti: "re" },
+    },
+  },
+  // Tones 1, 3, 4, 5, 6, 7, 8 — bass rules not yet researched.
+  // Add entries here as score evidence is gathered per tone/setting.
+};
+
+// Bass octave displacement — each solfège pitch mapped to its correct bass register.
+// Derived from score: bass concert pitches are 1–2 octaves below soprano.
+// do=Bb4 reference: soprano re=C5, bass la=G3, bass mi=D3, bass re=C3 etc.
+// Displacement factor: divide soprano FREQ by this value to get bass register.
+const BASS_OCTAVE_DIV = {
+  la:  2,   // G4 → G3  (1 octave down)
+  ti:  2,   // Ab4 → Ab3
+  do:  2,   // Bb4 → Bb3
+  di:  2,   // B4 → B3
+  re:  4,   // C5 → C3  (2 octaves down)
+  mi:  4,   // D5 → D3  (2 octaves down)
+  fa:  4,   // Eb5 → Eb3 (2 octaves down)
+  sol: 4,   // F5 → F3  (2 octaves down)
+};
+
+// generateBass(altoRoles, phrase, tone)
+// Derives bass roles from alto roles by substituting pitches using BASS_RULES.
+// Returns a roles array in identical shape to alto roles — same role types,
+// same durations, same wordBoundary flags — only pitches change.
+// Returns null if no bass rules exist for this tone.
+function generateBass(altoRoles, phrase, tone) {
+  const rules = BASS_RULES[tone]?.[phrase];
+  if (!rules) return null;
+
+  return altoRoles.map(r => {
+    // Map each pitch in the role using the appropriate rule map
+    let map;
+    if (r.role === "recite" || r.role === "inton") {
+      // All reciting/intonation pitches → bass reciting pitch
+      return { ...r, pitches: [rules.recite] };
+    } else if (r.role === "prep") {
+      map = rules.prepMap;
+    } else if (r.role === "preslur") {
+      map = rules.preslurMap;
+    } else if (r.role === "cad" || r.role === "cad1") {
+      map = rules.cadMap;
+    } else {
+      return { ...r }; // unknown role — pass through unchanged
+    }
+
+    // Substitute each pitch through the map; fall back to original if not mapped
+    const bassPitches = r.pitches.map(p => map[p] ?? p);
+    return { ...r, pitches: bassPitches };
+  });
+}
+
 // ── FEATURE B: BRACKET-AWARE PARSING + COMPARISON HARNESS ───────────────────
 // See SYLLABIFIER_SPEC.md §7 for full design decisions.
 //
@@ -1843,12 +1955,151 @@ export default function ToneTrainer() {
     return notes;
   };
 
+  // Bass frequency — one soprano frequency divided by BASS_OCTAVE_DIV per pitch.
+  // Keeps bass in the correct register regardless of starting pitch selection.
+  const freq_bass = (sol) => freq(sol) / (BASS_OCTAVE_DIV[sol] ?? 2);
+
+  // lineToNotes_bass(line)
+  // Derives bass notes from the alto pointing using generateBass().
+  // Returns null if no bass rules exist for the active tone (bass unavailable).
+  // Duration rules are identical to lineToNotes() — generateBass() preserves
+  // all role/duration/wordBoundary structure, only pitches change.
+  const lineToNotes_bass = (line) => {
+    const altoRoles = pointLine(line, PH, activeTone);
+    const bassRoles = generateBass(altoRoles, line.phrase, activeTone);
+    if (!bassRoles) return null;
+
+    // Re-use lineToNotes duration logic by temporarily replacing pitches.
+    // We pass the bass roles through the same note-building path by constructing
+    // a synthetic line with bass roles already resolved.
+    const notes = [];
+    const isFinal = line.phrase === "Final";
+    const H = 60 / bpm;
+    const Q = H / 2;
+    const W = H * 2;
+    const DH = H * 1.5;
+    const phDef = PH[line.phrase];
+    const cadIdxs = bassRoles.map((r, i) => r.role === "cad" ? i : -1).filter(i => i >= 0);
+    const cadCount = cadIdxs.length;
+    const lastCadRole = cadCount > 0 ? bassRoles[cadIdxs[cadCount - 1]] : null;
+    const lastCadIsWordBoundary = lastCadRole
+      ? (!lastCadRole.text?.endsWith("-") && !lastCadRole.source?.endsWith("-"))
+      : true;
+    const hasRecitingTone = bassRoles.some(r => r.role === "recite");
+    const isTone2 = activeTone === 2;
+    const isTone2Final = isTone2 && line.phrase === "Final";
+    const isTone2A = isTone2 && line.phrase === "A";
+
+    // Tone 2 Final anchor melisma — same count logic as alto but bass pitches
+    if (isTone2Final && cadCount < 4 && cadCount >= 1) {
+      bassRoles.forEach(r => {
+        if (r.role === "cad") return;
+        const syllDur = r.role === "inton" ? (r.accent ? H : Q) : Q;
+        const pitchDur = syllDur / r.pitches.length;
+        r.pitches.forEach(p => notes.push({ sol: p, dur: pitchDur, peak: 0.2, bass: true }));
+      });
+      const cadPitches = bassRoles.filter(r => r.role === "cad").map(r => r.pitches[0]);
+      if (cadCount === 1) {
+        [H, H, H, W].forEach((dur, i) => {
+          notes.push({ sol: cadPitches[0] ?? "la", dur, peak: i === 0 ? 0.27 : 0.2, bass: true });
+        });
+      } else if (cadCount === 2) {
+        notes.push({ sol: cadPitches[0] ?? "la", dur: W,  peak: 0.27, bass: true });
+        notes.push({ sol: cadPitches[0] ?? "la", dur: H,  peak: 0.2,  bass: true });
+        notes.push({ sol: cadPitches[1] ?? "re", dur: W,  peak: 0.2,  bass: true });
+      } else if (cadCount === 3) {
+        notes.push({ sol: cadPitches[0] ?? "la", dur: W,  peak: 0.27, bass: true });
+        notes.push({ sol: cadPitches[1] ?? "la", dur: H,  peak: 0.2,  bass: true });
+        notes.push({ sol: cadPitches[2] ?? "re", dur: W,  peak: 0.2,  bass: true });
+      }
+      return notes;
+    }
+
+    // Tone 2 Phrase A anchor melisma
+    if (isTone2A && cadCount < 3 && cadCount >= 1) {
+      bassRoles.forEach(r => {
+        if (r.role === "cad") return;
+        const syllDur = r.role === "inton" ? (r.accent ? H : Q) : Q;
+        r.pitches.forEach(p => notes.push({ sol: p, dur: syllDur, peak: 0.2, bass: true }));
+      });
+      const cadPitches = bassRoles.filter(r => r.role === "cad").map(r => r.pitches[0]);
+      if (cadCount === 1) {
+        [H, H, DH].forEach((dur, i) => notes.push({ sol: cadPitches[0] ?? "la", dur, peak: i===0?0.27:0.2, bass: true }));
+      } else if (cadCount === 2) {
+        notes.push({ sol: cadPitches[0] ?? "la", dur: H,  peak: 0.27, bass: true });
+        notes.push({ sol: cadPitches[0] ?? "la", dur: H,  peak: 0.2,  bass: true });
+        notes.push({ sol: cadPitches[1] ?? "la", dur: DH, peak: 0.2,  bass: true });
+      }
+      return notes;
+    }
+
+    // Standard path — same duration logic as lineToNotes()
+    bassRoles.forEach((r, ri) => {
+      let syllDur;
+      if (r.role === "inton")                           syllDur = r.accent ? H : Q;
+      else if (r.role === "recite" || r.role === "prep") syllDur = Q;
+      else if (r.role === "preslur")                    syllDur = H;
+      else if (r.role === "cad1") {
+        const CAD1_DURS = [H, Q, Q];
+        r.pitches.forEach((p, pi) => notes.push({ sol: p, dur: CAD1_DURS[pi] ?? Q, peak: r.anchor ? 0.27 : 0.2, bass: true }));
+        return;
+      } else if (r.role === "cad") {
+        const cadPos = cadIdxs.indexOf(ri);
+        if (isTone2 && phDef?.cadDurs) {
+          const durStr = cadDuration(phDef, cadCount, cadPos, lastCadIsWordBoundary, hasRecitingTone);
+          if (durStr !== null) {
+            const durMap = { "H": H, "Q": Q, "W": W, "H·": DH };
+            syllDur = durMap[durStr] ?? H;
+          }
+        }
+        if (syllDur === undefined) {
+          const isFirst = cadPos === 0;
+          const isLast  = cadPos === cadCount - 1;
+          syllDur = (isFirst && isLast) ? (isFinal ? W : H)
+                  : isFirst ? H
+                  : isLast  ? (isFinal ? W : H)
+                  : Q;
+        }
+      } else syllDur = Q;
+
+      const pitchDur = syllDur / r.pitches.length;
+      const peak = (r.role === "cad" || r.role === "cad1") && r.anchor ? 0.27 : 0.2;
+      r.pitches.forEach(p => notes.push({ sol: p, dur: pitchDur, peak, bass: true }));
+    });
+    return notes;
+  };
+
   const playNotes = (notes, onDone) => {
     const c = ac();
     let t = c.currentTime + 0.06;
-    notes.forEach((n) => { tone(freq(n.sol), t, n.dur, n.peak); t += n.dur; });
+    notes.forEach((n) => {
+      // bass notes use freq_bass; alto notes use freq
+      const f = n.bass ? freq_bass(n.sol) : freq(n.sol);
+      tone(f, t, n.dur, n.peak);
+      t += n.dur;
+    });
     if (onDone) {
       const id = setTimeout(onDone, (t - c.currentTime) * 1000 + 40);
+      timerIdsRef.current.push(id);
+    }
+  };
+
+  // playNotesWithBass: combines alto + bass note streams, sorted by time offset,
+  // and plays both simultaneously. Bass notes carry a time offset matching their
+  // position in the bass sequence.
+  const playNotesWithBass = (altoNotes, bassNotes, onDone) => {
+    const c = ac();
+    let t = c.currentTime + 0.06;
+    // Schedule alto
+    altoNotes.forEach((n) => { tone(freq(n.sol), t, n.dur, n.peak); t += n.dur; });
+    const totalDur = t - (c.currentTime + 0.06);
+    // Schedule bass simultaneously (same start time, same timing structure)
+    if (bassNotes) {
+      let tb = c.currentTime + 0.06;
+      bassNotes.forEach((n) => { tone(freq_bass(n.sol), tb, n.dur, n.peak * 0.7); tb += n.dur; });
+    }
+    if (onDone) {
+      const id = setTimeout(onDone, totalDur * 1000 + 40);
       timerIdsRef.current.push(id);
     }
   };
@@ -1868,13 +2119,17 @@ export default function ToneTrainer() {
     const src = which === "machine" && machineLines ? machineLines : lines;
     setPlayingLine(li);
     setPlayingWhich(which);
-    playNotes(lineToNotes(src[li]), () => { setPlayingLine(null); setPlayingWhich(null); });
+    const altoNotes = lineToNotes(src[li]);
+    const bassNotes = lineToNotes_bass(src[li]);
+    playNotesWithBass(altoNotes, bassNotes, () => { setPlayingLine(null); setPlayingWhich(null); });
   };
 
   const playLine = (li) => {
     setPlayingLine(li);
     setPlayingWhich(singWhich);
-    playNotes(lineToNotes(activeLines()[li]), () => { setPlayingLine(null); setPlayingWhich(null); });
+    const altoNotes = lineToNotes(activeLines()[li]);
+    const bassNotes = lineToNotes_bass(activeLines()[li]);
+    playNotesWithBass(altoNotes, bassNotes, () => { setPlayingLine(null); setPlayingWhich(null); });
   };
 
   const playAll = () => {
@@ -1882,14 +2137,22 @@ export default function ToneTrainer() {
     timerIdsRef.current = [];
     const c = ac();
     let t = c.currentTime + 0.06;
+    let tb = c.currentTime + 0.06; // bass start time — tracks in parallel
     const which = compareMode && machineLines ? singWhich : "truth";
     setPlayingWhich(which);
     activeLines().forEach((line, li) => {
-      const notes = lineToNotes(line);
+      const altoNotes = lineToNotes(line);
+      const bassNotes = lineToNotes_bass(line);
       const start = t;
       const id1 = setTimeout(() => setPlayingLine(li), (start - c.currentTime) * 1000);
       timerIdsRef.current.push(id1);
-      notes.forEach((n) => { tone(freq(n.sol), t, n.dur, n.peak); t += n.dur; });
+      // Schedule alto
+      altoNotes.forEach((n) => { tone(freq(n.sol), t, n.dur, n.peak); t += n.dur; });
+      // Schedule bass simultaneously
+      if (bassNotes) {
+        bassNotes.forEach((n) => { tone(freq_bass(n.sol), tb, n.dur, n.peak * 0.7); tb += n.dur; });
+        tb += (60 / bpm) / 2; // matching gap
+      }
       t += (60 / bpm) / 2; // one quarter note of silence between phrases
     });
     const id2 = setTimeout(() => { setPlayingLine(null); setPlayingWhich(null); }, (t - c.currentTime) * 1000 + 40);
