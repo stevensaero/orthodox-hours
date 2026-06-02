@@ -3582,9 +3582,10 @@ export default function ToneTrainer() {
 
               // Soprano row — full chips rendered behind alto, same widths/gaps, same baseline.
               // Soprano chips are always taller so their tops peek above alto naturally.
+              // 50% opacity so soprano reads as a secondary layer behind the alto.
               const sopranoRow = (
                 <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-end",
-                              position: "absolute", bottom: 0, left: 0 }}>
+                              position: "absolute", bottom: 0, left: 0, opacity: 0.5 }}>
                   {groupedAlto.map((grp, gi) => {
                     const entries = grp.entries;
                     if (entries.length === 1) {
