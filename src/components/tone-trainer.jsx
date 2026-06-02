@@ -1256,6 +1256,36 @@ const BASS_OCTAVE_DIV = {
   sol: 4,   // F5 → F3  (2 octaves down)
 };
 
+// ── SOPRANO DERIVATION ────────────────────────────────────────────────────────
+// Soprano is a pure diatonic third above alto throughout — one staff line up,
+// mechanically, every note. No exceptions in Tone 2 Obikhod (score-verified).
+// Duration is identical to alto for every syllable.
+// Source: L'vov-Bakhmetev Obikhod score, read positionally off the staff.
+const SOPRANO_MAP = {
+  la:  "do",   // G → Bb (one line up)
+  ti:  "re",   // Ab → C
+  do:  "mi",   // Bb → D
+  di:  "mi",   // B♮ → D (diatonic third, same line as mi)
+  re:  "fa",   // C → Eb
+  mi:  "sol",  // D → F
+  fa:  "la",   // Eb → G
+  sol: "ti",   // F → Ab
+};
+
+// Soprano octave displacement: one octave above alto.
+// Alto pitches re/mi/fa/sol are already at /4 (2 octaves below soprano reference);
+// soprano is one octave above alto = half the displacement.
+const SOPRANO_OCTAVE_MULT = {
+  la:  4,    // G3 → G4  (soprano = alto octave × 2 = reference / 1)
+  ti:  4,
+  do:  4,
+  di:  4,
+  re:  8,    // C3 → C4
+  mi:  8,
+  fa:  8,
+  sol: 8,
+};
+
 // ── FEATURE B: BRACKET-AWARE PARSING + COMPARISON HARNESS ───────────────────
 // See SYLLABIFIER_SPEC.md §7 for full design decisions.
 //
@@ -2060,6 +2090,26 @@ export default function ToneTrainer() {
   // Keeps bass in the correct register regardless of starting pitch selection.
   const freq_bass = (sol) => freq(sol) / (BASS_OCTAVE_DIV[sol] ?? 2);
 
+  // Soprano frequency — diatonic third above alto, one octave above alto register.
+  const freq_soprano = (sol) => {
+    const sMapped = SOPRANO_MAP[sol] ?? sol;
+    return freq(sMapped) * ((SOPRANO_OCTAVE_MULT[sMapped] ?? 4) / (BASS_OCTAVE_DIV[sMapped] ?? 2));
+  };
+
+  // lineToNotes_soprano(line)
+  // Derives soprano audio notes from rolesWD — same expanded representation as
+  // alto and bass. Pitches mapped through SOPRANO_MAP; durations identical to alto.
+  const lineToNotes_soprano = (line) => {
+    const rolesWD = lineToRolesWithDuration(line);
+    const notes = [];
+    rolesWD.forEach(r => {
+      const sPitch = SOPRANO_MAP[r.pitches[0]] ?? r.pitches[0];
+      const peak = (r.role === "cad" || r.role === "cad1") && r.anchor ? 0.27 : 0.2;
+      notes.push({ sol: sPitch, dur: r.dur, peak, soprano: true });
+    });
+    return notes;
+  };
+
   // lineToNotes_bass(line)
   // Derives bass audio notes from rolesWD — the same expanded representation
   // used by the visual path. Each entry already has the correct duration (r.dur)
@@ -2112,14 +2162,16 @@ export default function ToneTrainer() {
     }
   };
 
-  const playNotesWithBass = (altoNotes, bassNotes, onDone, li) => {
+  const playNotesWithBass = (altoNotes, bassNotes, sopranoNotes, onDone, li) => {
     const c = ac();
     const startT = c.currentTime + 0.06;
     let t = startT;
     let tb = startT;
+    let ts = startT;
 
-    const playAlto = voicePart === "alto" || voicePart === "alto-bass";
-    const playBass  = (voicePart === "bass" || voicePart === "alto-bass") && bassNotes;
+    const playAlto    = voicePart === "alto" || voicePart === "alto-bass";
+    const playBass    = (voicePart === "bass" || voicePart === "alto-bass") && bassNotes;
+    const playSoprano = voicePart === "soprano";
 
     // Schedule per-chip highlights using note timing
     const scheduleHighlights = (notes, isBass) => {
@@ -2130,7 +2182,7 @@ export default function ToneTrainer() {
         const capturedLi = li;
         timerIdsRef.current.push(setTimeout(() => {
           if (capturedLi !== null) setPlayingLine(capturedLi);
-          setPlayingChipIdx(isBass ? -(capturedNi + 1) : capturedNi); // negative = bass chip
+          setPlayingChipIdx(isBass ? -(capturedNi + 1) : capturedNi);
         }, delay));
         ht += n.dur;
       });
@@ -2141,12 +2193,15 @@ export default function ToneTrainer() {
       altoNotes.forEach((n) => { toneTimbre(freq(n.sol), t, n.dur, n.peak, timbre); t += n.dur; });
     }
     if (playBass) {
-      // In bass-only mode: highlight bass chips. In alto+bass: highlight both simultaneously.
       if (!playAlto || voicePart === "alto-bass") scheduleHighlights(bassNotes, true);
       bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol), tb, n.dur, n.peak * 1.1, timbre); tb += n.dur; });
     }
+    if (playSoprano && sopranoNotes) {
+      scheduleHighlights(sopranoNotes, false);
+      sopranoNotes.forEach((n) => { toneTimbre(freq_soprano(n.sol), ts, n.dur, n.peak, timbre); ts += n.dur; });
+    }
 
-    const totalDur = Math.max(t, tb) - startT;
+    const totalDur = Math.max(t, tb, ts) - startT;
     if (onDone) {
       const id = setTimeout(onDone, totalDur * 1000 + 40);
       timerIdsRef.current.push(id);
@@ -2169,9 +2224,10 @@ export default function ToneTrainer() {
     setPlayingLine(li);
     setPlayingChipIdx(null);
     setPlayingWhich(which);
-    const altoNotes = lineToNotes(src[li]);
-    const bassNotes = lineToNotes_bass(src[li]);
-    playNotesWithBass(altoNotes, bassNotes, () => { setPlayingLine(null); setPlayingChipIdx(null); setPlayingWhich(null); }, li);
+    const altoNotes    = lineToNotes(src[li]);
+    const bassNotes    = lineToNotes_bass(src[li]);
+    const sopranoNotes = lineToNotes_soprano(src[li]);
+    playNotesWithBass(altoNotes, bassNotes, sopranoNotes, () => { setPlayingLine(null); setPlayingChipIdx(null); setPlayingWhich(null); }, li);
   };
 
   // lineToRolesWithDuration(line)
@@ -2281,35 +2337,38 @@ export default function ToneTrainer() {
   };
 
   const playLine = (li) => {
-    isPlayAllRef.current = false; // single line — no auto-scroll
+    isPlayAllRef.current = false;
     setPlayingLine(li);
     setPlayingChipIdx(null);
     setPlayingWhich(singWhich);
-    const altoNotes = lineToNotes(activeLines()[li]);
-    const bassNotes = lineToNotes_bass(activeLines()[li]);
-    playNotesWithBass(altoNotes, bassNotes, () => { setPlayingLine(null); setPlayingChipIdx(null); setPlayingWhich(null); }, li);
+    const altoNotes    = lineToNotes(activeLines()[li]);
+    const bassNotes    = lineToNotes_bass(activeLines()[li]);
+    const sopranoNotes = lineToNotes_soprano(activeLines()[li]);
+    playNotesWithBass(altoNotes, bassNotes, sopranoNotes, () => { setPlayingLine(null); setPlayingChipIdx(null); setPlayingWhich(null); }, li);
   };
 
   const playAll = () => {
     timerIdsRef.current.forEach(id => clearTimeout(id));
     timerIdsRef.current = [];
-    isPlayAllRef.current = true; // enable auto-scroll
+    isPlayAllRef.current = true;
     const c = ac();
     const startT = c.currentTime + 0.06;
     let t = startT;
     let tb = startT;
+    let ts = startT;
     const which = compareMode && machineLines ? singWhich : "truth";
-    const playAlto = voicePart === "alto" || voicePart === "alto-bass";
+    const playAlto      = voicePart === "alto" || voicePart === "alto-bass";
     const playBassVoice = voicePart === "bass" || voicePart === "alto-bass";
+    const playSoprano   = voicePart === "soprano";
     setPlayingWhich(which);
     activeLines().forEach((line, li) => {
-      const altoNotes = lineToNotes(line);
-      const bassNotes = lineToNotes_bass(line);
+      const altoNotes    = lineToNotes(line);
+      const bassNotes    = lineToNotes_bass(line);
+      const sopranoNotes = lineToNotes_soprano(line);
       const start = t;
       const id1 = setTimeout(() => { setPlayingLine(li); setPlayingChipIdx(null); }, (start - c.currentTime) * 1000);
       timerIdsRef.current.push(id1);
 
-      // Schedule per-chip highlights for alto
       if (playAlto) {
         let ht = t;
         altoNotes.forEach((n, ni) => {
@@ -2323,7 +2382,6 @@ export default function ToneTrainer() {
         altoNotes.forEach((n) => { toneTimbre(freq(n.sol), t, n.dur, n.peak, timbre); t += n.dur; });
       }
 
-      // Schedule per-chip highlights for bass (bass-only or alto+bass)
       if (playBassVoice && bassNotes) {
         if (!playAlto || voicePart === "alto-bass") {
           let ht = tb;
@@ -2339,9 +2397,24 @@ export default function ToneTrainer() {
         bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol), tb, n.dur, n.peak * 1.1, timbre); tb += n.dur; });
         tb += (60 / bpm) / 2;
       }
+
+      if (playSoprano) {
+        let ht = ts;
+        sopranoNotes.forEach((n, ni) => {
+          const delay = (ht - c.currentTime) * 1000;
+          const capturedNi = ni; const capturedLi = li;
+          timerIdsRef.current.push(setTimeout(() => {
+            setPlayingLine(capturedLi); setPlayingChipIdx(capturedNi);
+          }, delay));
+          ht += n.dur;
+        });
+        sopranoNotes.forEach((n) => { toneTimbre(freq_soprano(n.sol), ts, n.dur, n.peak, timbre); ts += n.dur; });
+        ts += (60 / bpm) / 2;
+      }
+
       if (playAlto) t += (60 / bpm) / 2;
     });
-    const totalDur = Math.max(t, tb) - startT;
+    const totalDur = Math.max(t, tb, ts) - startT;
     const id2 = setTimeout(() => { setPlayingLine(null); setPlayingChipIdx(null); setPlayingWhich(null); }, totalDur * 1000 + 40);
     timerIdsRef.current.push(id2);
   };
@@ -3046,6 +3119,7 @@ export default function ToneTrainer() {
                      background: "transparent", border: "1px solid #d6c79f",
                      borderRadius: 3, padding: "1px 6px", cursor: "pointer",
                      fontFamily: "Georgia, serif", color: "#5b4a33" }}>
+            <option value="soprano">Soprano</option>
             <option value="alto">Alto (Melody)</option>
             <option value="bass">Bass</option>
             <option value="alto-bass">Alto + Bass</option>
@@ -3290,8 +3364,14 @@ export default function ToneTrainer() {
           });
         })();
         const isFin = line.phrase === "Final";
-        const showAlto = voicePart === "alto" || voicePart === "alto-bass";
-        const showBass = (voicePart === "bass" || voicePart === "alto-bass") && bassRolesWD;
+        const showAlto    = voicePart === "alto" || voicePart === "alto-bass";
+        const showBass    = (voicePart === "bass" || voicePart === "alto-bass") && bassRolesWD;
+        const showSoprano = voicePart === "soprano";
+
+        // Soprano rolesWD — same structure as alto, pitches mapped through SOPRANO_MAP
+        const sopranoRolesWD = showSoprano
+          ? rolesWD.map(r => ({ ...r, pitches: [SOPRANO_MAP[r.pitches[0]] ?? r.pitches[0]] }))
+          : null;
 
         // Role colors matching roleBg/roleColor
         const chipBg = { recite:"rgba(40,58,92,.06)", inton:"rgba(40,120,60,.10)", prep:"rgba(180,137,43,.16)", cad:"rgba(122,36,24,.10)", cad1:"rgba(122,36,24,.05)", preslur:"rgba(180,137,43,.22)" };
@@ -3396,7 +3476,7 @@ export default function ToneTrainer() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap", marginBottom: "0.6rem" }}>
               <span style={{ background: isFin ? "#7a2418" : "#283a5c", color: "#fff", borderRadius: 5, padding: "2px 10px", fontSize: "0.78rem", flexShrink: 0 }}>{PNAME[line.phrase]}</span>
               <span style={{ fontSize: "0.76rem", color: "#6b5942", fontStyle: "italic", flex: 1 }}>
-                {voicePart === "bass" ? "Bass · " : "Alto · "}{PNAME[line.phrase]} · reciting on <b>{PH[line.phrase].recite}</b>{PH[line.phrase].prep ? <> · prep on <b>{PH[line.phrase].prep}</b></> : null}
+                {voicePart === "bass" ? "Bass · " : voicePart === "soprano" ? "Soprano · " : "Alto · "}{PNAME[line.phrase]} · reciting on <b>{PH[line.phrase].recite}</b>{PH[line.phrase].prep ? <> · prep on <b>{PH[line.phrase].prep}</b></> : null}
               </span>
               <button style={{ ...btn, padding: "2px 10px", fontSize: "0.74rem" }}
                 onClick={() => playingLine === li ? stopAll() : playLine(li)}>
@@ -3404,7 +3484,28 @@ export default function ToneTrainer() {
               </button>
             </div>
 
-            {/* Alto chips — above text, melisma groups tightly spaced */}
+            {/* Soprano chips — above text, same layout as alto */}
+            {showSoprano && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-end", marginBottom: 6 }}>
+                {groupedAlto.map((grp, gi) => {
+                  if (grp.entries.length === 1) {
+                    const {r, i} = grp.entries[0];
+                    const sr = sopranoRolesWD[i];
+                    return renderChip(sr ?? r, i, false);
+                  }
+                  return (
+                    <div key={gi} style={{ display: "inline-flex", gap: CHIP_MELISMA_GAP, alignItems: "flex-end" }}>
+                      {grp.entries.map(({r, i}) => {
+                        const sr = sopranoRolesWD[i];
+                        return renderChip(sr ?? r, i, false);
+                      })}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Alto chips — above text */}
             {showAlto && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-end", marginBottom: 6 }}>
                 {groupedAlto.map((grp, gi) => {
