@@ -3557,16 +3557,13 @@ export default function ToneTrainer() {
             {/* Alto chips — above text, with optional soprano tab peeking above */}
             {showAlto && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-end", marginBottom: 6,
-                            paddingTop: showSopranoTab ? 16 : 0 }}>
+                            paddingTop: showSopranoTab ? 8 : 0 }}>
                 {groupedAlto.map((grp, gi) => {
                   const entries = grp.entries;
 
                   const chipContent = (entry) => {
                     const {r, i} = entry;
                     const role = r.role === "preslur" ? "prep" : r.role;
-                    const tabH = showSopranoTab
-                      ? Math.max(4, chipH_soprano(r.pitches[0]) - chipH(r.pitches[0]))
-                      : 0;
                     const stripe = chipStripe[role] ?? chipStripe.recite;
                     const chip = renderChip(r, i, false);
 
@@ -3576,7 +3573,7 @@ export default function ToneTrainer() {
                         <div style={{
                           position: "absolute",
                           bottom: "100%", left: 0,
-                          width: chipW(r), height: tabH,
+                          width: chipW(r), height: 6,
                           background: stripe,
                           borderRadius: "3px 3px 0 0",
                           pointerEvents: "none",
