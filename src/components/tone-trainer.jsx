@@ -3557,7 +3557,7 @@ export default function ToneTrainer() {
             {/* Alto chips — above text, with optional soprano tab peeking above */}
             {showAlto && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-end", marginBottom: 6,
-                            paddingTop: showSopranoTab ? 8 : 0 }}>
+                            paddingTop: showSopranoTab ? 14 : 0 }}>
                 {groupedAlto.map((grp, gi) => {
                   const entries = grp.entries;
 
@@ -3568,12 +3568,17 @@ export default function ToneTrainer() {
                     const chip = renderChip(r, i, false);
 
                     if (!showSopranoTab) return chip;
+                    // Tab height encodes soprano elevation above alto — same scale as chip heights.
+                    // A diatonic third = 20-30px difference → tab ~10-15px (half scale for compactness).
+                    // Future deviations (unison, octave) read proportionally different.
+                    const elevation = chipH_soprano(r.pitches[0]) - chipH(r.pitches[0]);
+                    const tabH = Math.max(4, Math.round(elevation * 0.4));
                     return (
                       <div style={{ position: "relative", display: "inline-block" }}>
                         <div style={{
                           position: "absolute",
                           bottom: "100%", left: 0,
-                          width: chipW(r), height: 6,
+                          width: chipW(r), height: tabH,
                           background: stripe,
                           borderRadius: "3px 3px 0 0",
                           pointerEvents: "none",
