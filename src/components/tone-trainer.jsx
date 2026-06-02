@@ -1885,11 +1885,13 @@ export default function ToneTrainer() {
   const PH = PH_DEFS[activeTone] || PH_DEFS[1]; // auto-encoded parallel lines
 
   // Fetch both lexicon files at mount and merge.
+  // Cache-busted by version string so browser always fetches fresh after a version bump.
   useEffect(() => {
     const base = "/orthodox-hours/lexicon/";
+    const v = `?v=${TONE_TRAINER_VERSION}`;
     Promise.all([
-      fetch(base + "syllable-table.json").then((r) => r.json()),
-      fetch(base + "name-residue.json").then((r) => r.json()),
+      fetch(base + "syllable-table.json" + v).then((r) => r.json()),
+      fetch(base + "name-residue.json" + v).then((r) => r.json()),
     ])
       .then(([table, residue]) => setLexicon({ ...table, ...residue }))
       .catch(() => setLexiconError("Lexicon unavailable — using rules only"));
@@ -2184,7 +2186,7 @@ export default function ToneTrainer() {
 
     const playAlto    = voicePart === "alto" || voicePart === "alto-bass" || voicePart === "satb";
     const playBass    = (voicePart === "bass" || voicePart === "alto-bass" || voicePart === "satb") && bassNotes;
-    const playSoprano = voicePart === "soprano" || voicePart === "alto-bass" || voicePart === "satb";
+    const playSoprano = voicePart === "soprano" || voicePart === "satb";
 
     const scheduleAltoHighlights = (notes) => {
       let ht = startT;
@@ -2383,7 +2385,7 @@ export default function ToneTrainer() {
     const which = compareMode && machineLines ? singWhich : "truth";
     const playAlto      = voicePart === "alto" || voicePart === "alto-bass" || voicePart === "satb";
     const playBassVoice = voicePart === "bass" || voicePart === "alto-bass" || voicePart === "satb";
-    const playSoprano   = voicePart === "soprano" || voicePart === "alto-bass" || voicePart === "satb";
+    const playSoprano   = voicePart === "soprano" || voicePart === "satb";
     setPlayingWhich(which);
     activeLines().forEach((line, li) => {
       const altoNotes    = lineToNotes(line);
@@ -3397,7 +3399,7 @@ export default function ToneTrainer() {
         const showAlto       = voicePart === "alto" || voicePart === "alto-bass" || voicePart === "satb";
         const showBass       = (voicePart === "bass" || voicePart === "alto-bass" || voicePart === "satb") && bassRolesWD;
         const showSoprano    = voicePart === "soprano";
-        const showSopranoTab = voicePart === "alto-bass" || voicePart === "satb";
+        const showSopranoTab = voicePart === "satb";
 
         // Soprano rolesWD — same structure as alto, alto pitches retained.
         // chipH_soprano(altoPitch) and freq_soprano(altoPitch) both expect alto pitch.
