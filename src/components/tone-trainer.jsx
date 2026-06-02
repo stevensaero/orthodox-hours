@@ -539,7 +539,11 @@ const chipH_bass = (sol) => {
 // render at or below the alto (e.g. la→do where la=idx0, do=idx2
 // but fa=idx6 so la<fa), shift up by one octave worth of steps.
 // This mirrors freq_soprano's same-logic audio correction.
-const chipH_soprano = (altoPitch) => {
+// Tones with score-verified soprano rules. Soprano is suppressed for all other tones.
+// Add a tone here only after researching the Obikhod score for that tone.
+const SOPRANO_TONES = new Set([2]);
+
+
   const mapped = SOPRANO_MAP[altoPitch] ?? altoPitch;
   const altoH  = chipH(altoPitch);
   const sopH0  = chipH(mapped);
@@ -2113,6 +2117,7 @@ export default function ToneTrainer() {
   // Derives soprano audio notes from rolesWD — same expanded representation as
   // alto and bass. Pitches mapped through SOPRANO_MAP; durations identical to alto.
   const lineToNotes_soprano = (line) => {
+    if (!SOPRANO_TONES.has(activeTone)) return null;
     const rolesWD = lineToRolesWithDuration(line);
     const notes = [];
     rolesWD.forEach(r => {
@@ -3396,10 +3401,11 @@ export default function ToneTrainer() {
           });
         })();
         const isFin = line.phrase === "Final";
+        const sopranoAvailable = SOPRANO_TONES.has(activeTone);
         const showAlto       = voicePart === "alto" || voicePart === "alto-bass" || voicePart === "satb";
         const showBass       = (voicePart === "bass" || voicePart === "alto-bass" || voicePart === "satb") && bassRolesWD;
-        const showSoprano    = voicePart === "soprano";
-        const showSopranoTab = voicePart === "satb";
+        const showSoprano    = sopranoAvailable && voicePart === "soprano";
+        const showSopranoTab = sopranoAvailable && voicePart === "satb";
 
         // Soprano rolesWD — same structure as alto, alto pitches retained.
         // chipH_soprano(altoPitch) and freq_soprano(altoPitch) both expect alto pitch.
