@@ -1242,37 +1242,6 @@ const BASS_OCTAVE_DIV = {
   sol: 4,   // F5 → F3  (2 octaves down)
 };
 
-// generateBass(altoRoles, phrase, tone)
-// Derives bass roles from alto roles by substituting pitches using BASS_RULES.
-// Returns a roles array in identical shape to alto roles — same role types,
-// same durations, same wordBoundary flags — only pitches change.
-// Returns null if no bass rules exist for this tone.
-function generateBass(altoRoles, phrase, tone) {
-  const rules = BASS_RULES[tone]?.[phrase];
-  if (!rules) return null;
-
-  return altoRoles.map(r => {
-    // Map each pitch in the role using the appropriate rule map
-    let map;
-    if (r.role === "recite" || r.role === "inton") {
-      // All reciting/intonation pitches → bass reciting pitch
-      return { ...r, pitches: [rules.recite] };
-    } else if (r.role === "prep") {
-      map = rules.prepMap;
-    } else if (r.role === "preslur") {
-      map = rules.preslurMap;
-    } else if (r.role === "cad" || r.role === "cad1") {
-      map = rules.cadMap;
-    } else {
-      return { ...r }; // unknown role — pass through unchanged
-    }
-
-    // Substitute each pitch through the map; fall back to original if not mapped
-    const bassPitches = r.pitches.map(p => map[p] ?? p);
-    return { ...r, pitches: bassPitches };
-  });
-}
-
 // ── FEATURE B: BRACKET-AWARE PARSING + COMPARISON HARNESS ───────────────────
 // See SYLLABIFIER_SPEC.md §7 for full design decisions.
 //
@@ -2078,133 +2047,39 @@ export default function ToneTrainer() {
   const freq_bass = (sol) => freq(sol) / (BASS_OCTAVE_DIV[sol] ?? 2);
 
   // lineToNotes_bass(line)
-  // Derives bass notes from the alto pointing using generateBass().
-  // Returns null if no bass rules exist for the active tone (bass unavailable).
-  // Duration rules are identical to lineToNotes() — generateBass() preserves
-  // all role/duration/wordBoundary structure, only pitches change.
+  // Derives bass audio notes from rolesWD — the same expanded representation
+  // used by the visual path. Each entry already has the correct duration (r.dur)
+  // and a single pitch (r.pitches[0]) after the 1:1 bass pitch substitution.
+  // This guarantees audio and visual are always structurally identical.
   const lineToNotes_bass = (line) => {
-    const altoRoles = pointLine(line, PH, activeTone);
-    const bassRoles = generateBass(altoRoles, line.phrase, activeTone);
-    if (!bassRoles) return null;
+    const rules = BASS_RULES[activeTone]?.[line.phrase];
+    if (!rules) return null;
 
-    // Re-use lineToNotes duration logic by temporarily replacing pitches.
-    // We pass the bass roles through the same note-building path by constructing
-    // a synthetic line with bass roles already resolved.
+    // Get the fully-expanded alto roles with durations
+    const rolesWD = lineToRolesWithDuration(line);
+
+    // Substitute pitches 1:1 using BASS_RULES — identical to bassRolesWD in render
+    const bassRolesWD = rolesWD.map(r => {
+      let bassPitch;
+      if (r.role === "recite" || r.role === "inton") {
+        bassPitch = rules.recite;
+      } else if (r.role === "prep") {
+        bassPitch = rules.prepMap?.[r.pitches[0]] ?? r.pitches[0];
+      } else if (r.role === "preslur") {
+        bassPitch = rules.preslurMap?.[r.pitches[0]] ?? r.pitches[0];
+      } else if (r.role === "cad" || r.role === "cad1") {
+        bassPitch = rules.cadMap?.[r.pitches[0]] ?? r.pitches[0];
+      } else {
+        bassPitch = r.pitches[0];
+      }
+      return { ...r, pitches: [bassPitch] };
+    });
+
+    // Emit audio notes directly from bassRolesWD — dur is already correct
     const notes = [];
-    const isFinal = line.phrase === "Final";
-    const H = 60 / bpm;
-    const Q = H / 2;
-    const W = H * 2;
-    const DH = H * 1.5;
-    const phDef = PH[line.phrase];
-    const cadIdxs = bassRoles.map((r, i) => r.role === "cad" ? i : -1).filter(i => i >= 0);
-    const cadCount = cadIdxs.length;
-    const cadRolesListB = bassRoles.filter(r => r.role === "cad");
-    const cadenceWordCountB = cadRolesListB.reduce((count, r, i) =>
-      i === 0 ? 1 : cadRolesListB[i-1].wordBoundary ? count + 1 : count, 0);
-    const lastCadIsWordBoundary = cadenceWordCountB <= 1; // true = single word
-    const hasRecitingTone = bassRoles.some(r => r.role === "recite");
-    const isTone2 = activeTone === 2;
-    const isTone2Final = isTone2 && line.phrase === "Final";
-    const isTone2A = isTone2 && line.phrase === "A";
-
-    // Tone 2 Final anchor melisma — same count logic as alto but bass pitches
-    // anchorPitches from generateBass only has single-pitch cad roles since
-    // pointLine gives single pitches — expand the sol·fa melisma explicitly.
-    if (isTone2Final && cadCount < 4 && cadCount >= 1) {
-      bassRoles.forEach(r => {
-        if (r.role === "cad") return;
-        if (r.role === "preslur" && r.pitches.length > 1) {
-          if (!hasRecitingTone) {
-            // re(H·)·ti(Q) — no reciting tone precedes
-            notes.push({ sol: r.pitches[0], dur: DH, peak: 0.35, bass: true });
-            notes.push({ sol: r.pitches[1] ?? "re", dur: Q, peak: 0.35, bass: true });
-          } else {
-            r.pitches.forEach(p => notes.push({ sol: p, dur: Q, peak: 0.35, bass: true }));
-          }
-          return;
-        }
-        const syllDur = r.role === "inton" ? (r.accent ? H : Q) : Q;
-        r.pitches.forEach(p => notes.push({ sol: p, dur: syllDur, peak: 0.35, bass: true }));
-      });
-      // Collect non-anchor cad roles (index 1+) for middle and close
-      const cadRoles = bassRoles.filter(r => r.role === "cad");
-      // Bass Final cadence (score-verified): sol·fa melisma on anchor, sol(H) middle, re(W) close
-      if (cadCount === 1) {
-        notes.push({ sol: "sol", dur: W, peak: 0.40, bass: true });
-        notes.push({ sol: "fa",  dur: H, peak: 0.35, bass: true });
-      } else if (cadCount === 2) {
-        notes.push({ sol: "sol", dur: W, peak: 0.40, bass: true });
-        notes.push({ sol: "fa",  dur: H, peak: 0.35, bass: true });
-        notes.push({ sol: cadRoles[1]?.pitches[0] ?? "re", dur: W, peak: 0.35, bass: true });
-      } else if (cadCount === 3) {
-        // sol·fa on "me," (W+H), sol on "O" (H), re on "Lord!" (W)
-        notes.push({ sol: "sol", dur: W, peak: 0.40, bass: true });
-        notes.push({ sol: "fa",  dur: H, peak: 0.35, bass: true });
-        notes.push({ sol: cadRoles[1]?.pitches[0] ?? "sol", dur: H, peak: 0.35, bass: true });
-        notes.push({ sol: cadRoles[2]?.pitches[0] ?? "re",  dur: W, peak: 0.35, bass: true });
-      }
-      return notes;
-    }
-
-    // Tone 2 Phrase A anchor melisma
-    // anchorPitches from generateBass only has the first mapped pitch since
-    // pointLine gives single-pitch cad roles — must expand using BASS_RULES.
-    if (isTone2A && cadCount < 3 && cadCount >= 1) {
-      bassRoles.forEach(r => {
-        if (r.role === "cad") return;
-        const syllDur = r.role === "inton" ? (r.accent ? H : Q) : Q;
-        r.pitches.forEach(p => notes.push({ sol: p, dur: syllDur, peak: 0.35, bass: true }));
-      });
-      const rules2A = BASS_RULES[2]?.A;
-      // Bass Phrase A: la(H)·mi(H) melisma on anchor, la(H·) on close
-      // This matches score: alto fa·mi → bass la·mi (H+H melisma), re → la (H·)
-      if (cadCount === 1) {
-        // fa·mi·re all on anchor → bass la(H)·mi(H)·la(H·)
-        notes.push({ sol: "la", dur: H,  peak: 0.40, bass: true });
-        notes.push({ sol: "mi", dur: H,  peak: 0.35, bass: true });
-        notes.push({ sol: "la", dur: DH, peak: 0.35, bass: true });
-      } else if (cadCount === 2) {
-        // fa·mi on anchor, re on close → bass la(H)·mi(H) on anchor, la(H·) on close
-        notes.push({ sol: "la", dur: H,  peak: 0.40, bass: true });
-        notes.push({ sol: "mi", dur: H,  peak: 0.35, bass: true });
-        notes.push({ sol: "la", dur: DH, peak: 0.35, bass: true });
-      }
-      return notes;
-    }
-
-    // Standard path — same duration logic as lineToNotes()
-    bassRoles.forEach((r, ri) => {
-      let syllDur;
-      if (r.role === "inton")                           syllDur = r.accent ? H : Q;
-      else if (r.role === "recite" || r.role === "prep") syllDur = Q;
-      else if (r.role === "preslur")                    syllDur = H;
-      else if (r.role === "cad1") {
-        const CAD1_DURS = [H, Q, Q];
-        r.pitches.forEach((p, pi) => notes.push({ sol: p, dur: CAD1_DURS[pi] ?? Q, peak: r.anchor ? 0.27 : 0.2, bass: true }));
-        return;
-      } else if (r.role === "cad") {
-        const cadPos = cadIdxs.indexOf(ri);
-        if (isTone2 && phDef?.cadDurs) {
-          const durStr = cadDuration(phDef, cadCount, cadPos, lastCadIsWordBoundary, hasRecitingTone);
-          if (durStr !== null) {
-            const durMap = { "H": H, "Q": Q, "W": W, "H·": DH };
-            syllDur = durMap[durStr] ?? H;
-          }
-        }
-        if (syllDur === undefined) {
-          const isFirst = cadPos === 0;
-          const isLast  = cadPos === cadCount - 1;
-          syllDur = (isFirst && isLast) ? (isFinal ? W : H)
-                  : isFirst ? H
-                  : isLast  ? (isFinal ? W : H)
-                  : Q;
-        }
-      } else syllDur = Q;
-
-      const pitchDur = syllDur / r.pitches.length;
-      const peak = (r.role === "cad" || r.role === "cad1") && r.anchor ? 0.27 : 0.2;
-      r.pitches.forEach(p => notes.push({ sol: p, dur: pitchDur, peak, bass: true }));
+    const peak = (r) => (r.role === "cad" || r.role === "cad1") && r.anchor ? 0.40 : 0.35;
+    bassRolesWD.forEach(r => {
+      notes.push({ sol: r.pitches[0], dur: r.dur, peak: peak(r), bass: true });
     });
     return notes;
   };
