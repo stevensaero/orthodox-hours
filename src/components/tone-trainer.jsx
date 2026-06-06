@@ -10,11 +10,22 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.1";
+export const TONE_TRAINER_VERSION = "v0.11.2";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.2",
+    date: "June 2026",
+    summary: "fix: chip width now always derived from durKey — CHIP_W_RECITE removed",
+    items: [
+      "fix: chipW() now always uses CHIP_W[r.durKey] — removed role=recite override that hardcoded CHIP_W_RECITE=26px regardless of duration.",
+      "fix: lineToRolesWithDuration() — Tone 1 Final Phrase accented reciting tone now emits durKey='H' (mirrors lineToNotes fix in v0.11.1).",
+      "refactor: CHIP_W_RECITE constant removed — was an artifact of reciting tone always being Q. Any future tone assigning non-Q duration to reciting tone syllables will automatically get correct chip width.",
+      "note: reciting tone chips across all tones now 30px wide (was 26px) — minor visual change, architecturally correct.",
+    ],
+  },
   {
     version: "v0.11.1",
     date: "June 2026",
@@ -628,7 +639,7 @@ const chipH = (sol) => CHIP_BASE_H + Math.max(0, PITCH_SCALE.indexOf(sol)) * CHI
 // Chip width per duration key — matches sandbox DUR_SEC pixel equivalents
 // Widths are BPM-independent visual units (not seconds)
 const CHIP_W = { Q: 30, H: 50, "H·": 68, W: 90 };
-const CHIP_W_RECITE = 26; // narrow recite chips
+// CHIP_W_RECITE removed — chip width always derived from durKey via CHIP_W.
 const CHIP_GAP = 10;      // gap between chips in px
 const CHIP_MELISMA_GAP = 1; // tight gap between melisma sub-chips
 
@@ -2565,7 +2576,10 @@ export default function ToneTrainer() {
     roles.forEach((r, ri) => {
       let d;
       if (r.role === "inton")                             d = r.accent ? H : Q;
-      else if (r.role === "recite" || r.role === "prep")  d = Q;
+      else if (r.role === "recite" || r.role === "prep")
+        // Tone 1 Final Phrase: accented reciting tone → H (score-verified, e.g. "Hear me, O Lord!").
+        // All other tones/phrases: reciting tone always Q per tutorial.
+        d = (isTone1Final && r.role === "recite" && r.accent) ? H : Q;
       else if (r.role === "preslur")                      d = H / r.pitches.length; // Q per pitch
       else if (r.role === "cad1")                         d = ri === cadIdxs[0] ? H : Q;
       else if (r.role === "cad") {
@@ -3645,7 +3659,11 @@ export default function ToneTrainer() {
         const pageColor = "transparent"; // ink text sits on page bg naturally
 
         // Build chip entries — one per role entry (melisma = one per pitch)
-        const chipW = (r) => r.role === "recite" ? CHIP_W_RECITE : (CHIP_W[r.durKey] ?? CHIP_W.Q);
+        // chipW: width always derived from durKey — no role-based override.
+        // CHIP_W_RECITE removed (was an artifact of reciting tone always being Q;
+        // Tone 1 Final Phrase accented reciting tone is now H, and future tones
+        // may differ further. durKey is the single source of truth for chip width).
+        const chipW = (r) => CHIP_W[r.durKey] ?? CHIP_W.Q;
 
         const renderChip = (r, i, isBass, isSoprano = false, isGhostSoprano = false) => {
           const role = r.role === "preslur" ? "prep" : r.role;
