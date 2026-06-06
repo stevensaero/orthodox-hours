@@ -10,11 +10,20 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.10";
+export const TONE_TRAINER_VERSION = "v0.11.11";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.11",
+    date: "June 2026",
+    summary: "fix: Phrase A prep reverted to Q — score says up=ti/Q; on=do/H confirmed correct in code",
+    items: [
+      "fix: Phrase A prep duration reverted to Q — score: up=ti/Q (was incorrectly changed to H in v0.11.10).",
+      "note: Phrase A cad anchor/fills=H, close=W logic is correct in code. If 'on' renders as Q, cache issue or upstream pointing problem.",
+    ],
+  },
   {
     version: "v0.11.10",
     date: "June 2026",
@@ -2451,8 +2460,7 @@ export default function ToneTrainer() {
         // Tone 1 Phrase A: prep note = H (score-verified: up=ti/H, Thee=ti/H).
         // All other tones/phrases: reciting tone always Q per tutorial.
         if (isTone1Final && r.role === "recite" && r.accent) syllDur = H;
-        else if (isTone1 && line.phrase === "A" && r.role === "prep") syllDur = H;
-        else syllDur = Q;
+        else syllDur = Q;  // reciting tone and prep always Q
       } else if (r.role === "preslur") {
         // Pre-slur = two quarter notes (re + ti) as a pickup before the prep.
         // Assign H so the melisma division (syllDur / pitches.length = H/2) yields Q+Q.
@@ -2865,7 +2873,6 @@ export default function ToneTrainer() {
         // Tone 1 Final Phrase: accented reciting tone → H (score-verified).
         // Tone 1 Phrase A: prep note → H (score-verified: up=ti/H, Thee=ti/H).
         if (isTone1Final && r.role === "recite" && r.accent) d = H;
-        else if (isTone1 && line.phrase === "A" && r.role === "prep") d = H;
         else d = Q;
       }
       else if (r.role === "preslur")                      d = H / r.pitches.length; // Q per pitch
