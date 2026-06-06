@@ -10,11 +10,20 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.15";
+export const TONE_TRAINER_VERSION = "v0.11.16";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.16",
+    date: "June 2026",
+    summary: "arch: per-tone per-phrase bass octave override (octaveDiv); fix Tone 1 Final re/mi register",
+    items: [
+      "arch: freq_bass() now accepts optional phraseRules arg. phraseRules.octaveDiv[pitch] takes precedence over global BASS_OCTAVE_DIV — per-tone per-phrase octave placement without cross-tone impact.",
+      "fix: Tone 1 Final Phrase re and mi were playing two octaves below the staff (div-4, ~69-73 Hz). Score shows they sit on the bass staff. Added octaveDiv:{re:2,mi:2} to BASS_RULES[1].Final — now plays at correct register (~139-147 Hz). Tone 2 re/mi at div-4 untouched.",
+    ],
+  },
   {
     version: "v0.11.15",
     date: "June 2026",
@@ -1617,6 +1626,10 @@ const BASS_RULES = {
       // Tenor si (raised 6th) confirms harmonic minor approach to la
       cadMap: { do: "mi", ti: "mi", la: "la" },
       preslurMap: {},
+      // re and mi sit on the bass staff (not below it) — override global div-4
+      // to div-2 for this phrase only. Tone 2 uses re/mi at div-4; this is
+      // per-tone per-phrase, so Tone 2 is untouched.
+      octaveDiv: { re: 2, mi: 2 },
     },
   },
   // ── Tone 2, Russian Obikhod (L'vov-Bakhmetev) ──────────────────────────
@@ -2680,7 +2693,10 @@ export default function ToneTrainer() {
 
   // Bass frequency — one soprano frequency divided by BASS_OCTAVE_DIV per pitch.
   // Keeps bass in the correct register regardless of starting pitch selection.
-  const freq_bass = (sol) => freq(sol) / (BASS_OCTAVE_DIV[sol] ?? 2);
+  // Optional phraseRules arg: if rules has an octaveDiv map, it takes precedence
+  // over the global BASS_OCTAVE_DIV — per-tone per-phrase octave placement.
+  const freq_bass = (sol, phraseRules) =>
+    freq(sol) / (phraseRules?.octaveDiv?.[sol] ?? BASS_OCTAVE_DIV[sol] ?? 2);
 
   // Soprano frequency — diatonic third above alto, always in the octave
   // that places it just above the alto pitch (nearest third up on the staff).
@@ -2744,7 +2760,7 @@ export default function ToneTrainer() {
     const notes = [];
     const peak = (r) => (r.role === "cad" || r.role === "cad1") && r.anchor ? 0.40 : 0.35;
     bassRolesWD.forEach(r => {
-      notes.push({ sol: r.pitches[0], dur: r.dur, peak: peak(r), bass: true });
+      notes.push({ sol: r.pitches[0], dur: r.dur, peak: peak(r), bass: true, phraseRules: rules });
     });
     return notes;
   };
@@ -2753,7 +2769,7 @@ export default function ToneTrainer() {
     const c = ac();
     let t = c.currentTime + 0.06;
     notes.forEach((n) => {
-      const f = n.bass ? freq_bass(n.sol) : freq(n.sol);
+      const f = n.bass ? freq_bass(n.sol, n.phraseRules) : freq(n.sol);
       toneTimbre(f, t, n.dur, n.peak, timbre);
       t += n.dur;
     });
@@ -2806,7 +2822,7 @@ export default function ToneTrainer() {
     }
     if (playBass) {
       scheduleBassHighlights(bassNotes);
-      bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol), tb, n.dur, n.peak * 1.1, timbre); tb += n.dur; });
+      bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol, n.phraseRules), tb, n.dur, n.peak * 1.1, timbre); tb += n.dur; });
     }
     if (playSoprano && sopranoNotes) {
       scheduleAltoHighlights(sopranoNotes); // soprano uses alto chip row
@@ -3128,7 +3144,7 @@ export default function ToneTrainer() {
             ht += n.dur;
           });
         }
-        bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol), tb, n.dur, n.peak * 1.1, timbre); tb += n.dur; });
+        bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol, n.phraseRules), tb, n.dur, n.peak * 1.1, timbre); tb += n.dur; });
         tb += (60 / bpm) / 2;
       }
 
