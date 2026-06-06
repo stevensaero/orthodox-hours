@@ -1360,13 +1360,230 @@ Score verification of this rule in Phrase B context still pending.
 
 ---
 
-### 12.4 Phrases C, D, Final — PENDING
+### 12.4 Phrase C — Deep Walkthrough
 
-Analysis continues in subsequent sessions. To be appended here.
+**Current code:**
+```js
+C: { recite: "re", inton: true, prep: null, cad: ["do", "ti"] }
+```
+
+All values confirmed correct ✅:
+- `recite: "re"` ✅
+- `inton: true` ✅ — same intonation rules as Phrase A
+- `prep: null` ✅ — no prep; cadence begins directly from reciting tone
+- `cad: ["do", "ti"]` ✅ — two descending pitches
+
+Unlike Phrase A, Phrase C has no prep — the cadence anchor is adjacent to the
+reciting tone with nothing between them. The anchor backup rule is therefore
+directly relevant (as in Phrase B).
+
+#### Intonation
+Same rules as Phrase A — first accented syllable gets `re(H)`, unaccented
+lead-ins get `re(Q)`. Dotted halves driven by rhythmic balancing (Gap A).
+
+#### Cadence — Fill Pitch Confirmed
+
+Tutorial explicit: *"unaccented syllables between the last internal accent and
+the final syllable are sung on the same pitch as the last internal accent, i.e. do"*
+
+All fill syllables stay on `do` — same pitch as anchor. No separate fill pitch.
+Close always lands on `ti`.
+
+#### Anchor Backup Rule
+
+Tutorial explicitly states for Phrase C: if last word is one syllable (e.g. "Law"),
+cadence begins on last internal accent. Unaccented syllables between anchor and
+final syllable stay on `do(Q)`.
+
+#### Cadence Duration Model — Score Verified
+
+| Count | Shape |
+|---|---|
+| 2 | `do(H)·ti(H)` default; `do(H)·ti(H·)` with rhythmic balancing |
+| 3 | `do(H)·do(H)·ti(H·)` — fills are `H` at count=3 |
+| 4 | `do(H)·do(Q)·do(Q)·ti(H)` default; `ti(H·)` or `ti(W)` with balancing |
+| 5 | `do(H)·do(Q)·do(Q)·do(Q)·ti(H)` default; `ti(H·)` with balancing |
+
+**Fill duration threshold:** fills are `H` at count≤3, `Q` at count≥4 — same
+threshold as Phrase B.
+
+**Close duration:** `H` default. Extends to `H·` or `W` via rhythmic balancing.
+Cannot be reliably predicted from syllable count, punctuation, phrase length, or
+word identity alone — combination of all factors through cantor's musical judgment.
+
+**Melisma:** None observed in Phrase C. Two-pitch figure `["do","ti"]` distributes
+cleanly across syllables — no melisma needed or observed.
+
+#### Score Examples
+
+- "the | Tem-ple" → `do(H)·ti(H)` — 2 syllables, tutorial snippet
+- "re-|ceives her" → `do(H)·ti(H)` — 2 syllables, tutorial snippet
+- "the | Tem-ple of the Law" → `do(H)·do(Q)·do(Q)·do(Q)·ti(H)` — 5 syllables
+- "This is He Whom Da-|vid an-nounced;" → `do(H)·do(Q)·do(Q)·ti(H)` — 4 syllables
+- "Lord, I call...| hear me!" → `do(H)·ti(H·)` — 2 syllables, short phrase
+- "and let the lift-ing | up of my hands" → `do(H)·do(Q)·do(Q)·ti(H)` — 4 syllables
+- "give glo-ry...| rose from the dead!" → `do(H)·do(Q)·do(Q)·ti(H·)` — 4 syllables
+- "glo-ri-fy-ing His Re-sur-| rec-tion from the dead!" → `do(H)·do(Q)·do(Q)·do(Q)·ti(H·)` — 5 syllables
+- "Sing in glad-ness, O | moun-tains!" → `do(H)·ti(H·)` — 2 syllables
+- "He suf-fered...| rose from the dead." → `do(H)·do(Q)·do(Q)·ti(W)` — 4 syllables, period
+- "Thou hast ac-cep-ted...O | sin-less One//" → `do(H)·do(H)·ti(H·)` — 3 syllables, `//`
+- "He in-eff-ab-ly...| vir-gin-al womb." → `do(H)·do(Q)·do(Q)·ti(H·)` — 4 syllables, period
+
+#### Punctuation / `//` Observations (Empirical — No Tutorial Authority)
+
+- Period `.` and `!` both observed with `H·` and `W` — no clean rule
+- `//` marker observed with `H·` ("sin-less One//") — does not guarantee `W`
+- Close duration appears driven by combination of phrase length, punctuation,
+  and word weight — rhythmic grouping engine required for accurate prediction
+- Punctuation hypothesis investigated and **not confirmed** as primary driver
+
+#### Phrase C Logic Chart
+
+| Element | Status | Finding |
+|---|---|---|
+| Pitch figure | ✅ confirmed | `cad: ["do", "ti"]` correct |
+| Reciting tone | ✅ confirmed | `re(Q)` |
+| Intonation | ✅ confirmed | same rules as Phrase A |
+| Prep | ✅ N/A | none |
+| Anchor detection | ⚠️ needs verification | backup rule tutorial-confirmed, score verification pending |
+| Anchor duration | ✅ confirmed | `H` |
+| Fill pitch | ✅ confirmed | `do` — same as anchor pitch |
+| Fill duration | ✅ confirmed | `H` at count≤3, `Q` at count≥4 |
+| Close duration | ✅ confirmed | `ti(H)` default |
+| Whole note trigger | 📋 empirical | rhythmic balancing — no clean rule from punctuation alone |
+| Dotted half trigger | 📋 empirical | rhythmic balancing — no clean rule |
+| Melisma | ✅ N/A | none observed; two-pitch figure distributes cleanly |
+| Pre-slur | ✅ N/A | no prep |
+| Rhythmic grouping engine | 🔴 missing | drives `H·` and `W` on close |
 
 ---
 
-### 12.5 Open Questions (June 2026)
+### 12.5 Phrase D — Deep Walkthrough
+
+**Current code:**
+```js
+D: { recite: "do", inton: false, prep: null, cad: ["ti", "do", "re", "do", "ti"] }
+```
+
+All values confirmed correct ✅:
+- `recite: "do"` ✅
+- `inton: false` ✅ — no intonation
+- `prep: null` ✅ — no prep
+- `cad: ["ti", "do", "re", "do", "ti"]` ✅ — five-note figure
+
+Tutorial notes "at least five notes" — figure can extend for longer cadences.
+
+#### CRITICAL ARCHITECTURAL FINDING — Per-Phrase Logic Required
+
+Phrase D **cannot** use the generic `distribute()` function. The five-note figure
+does not truncate for short cadences — instead it **collapses into melismas** to
+preserve all five structural positions regardless of syllable count. This is
+fundamentally incompatible with `distribute()`'s one-pitch-per-syllable model.
+
+**This confirms the principle that each tone/phrase requires its own self-contained
+pointing logic.** Shared distribution functions work coincidentally for simple cases
+but break completely for Phrase D.
+
+#### Two-Accent Architecture
+
+Phrase D has **two structural accent positions**:
+1. **Position 1** (`ti`) — cadence anchor, marked by director/machine
+2. **Position 3** (`re`) — secondary accent within cadence, marked by director/machine
+
+The director marks both positions explicitly (e.g. `[eve]ning [sac]rifice`).
+The machine must identify both accent positions within the cadence syllables to
+correctly place notes and melismas.
+
+This is structurally similar to Tone 3 Final Phrase which also uses two accent marks.
+
+#### Cadence Duration Model — Score Verified
+
+The five structural positions are always preserved. Distribution rules:
+
+| Count | Shape |
+|---|---|
+| 3 | `ti·do(H mel) · re·do(H mel) · ti(H)` — positions 1+2 melisma, 3+4 melisma |
+| 4 | `ti(H) · do(H) · re·do(H mel) · ti(W)` — positions 3+4 melisma |
+| 5 | `ti(H) · do(H) · re(H) · do(H) · ti(H or W)` — exact fit, all `H` |
+| 6 | `ti(H) · do(H) · re(H) · do(Q) · do(Q) · ti(H or W)` — extra fills at position 4 |
+| 7 | `ti(H) · do(Q) · do(Q) · do(Q) · re·do(H mel) · ti(H)` — extra fills at position 2 |
+
+**Key rules:**
+- Structural position notes always `H`
+- Extra fill notes always `Q`
+- Melisma notes always `H` each
+- Close `ti` defaults `H`; extends to `W` via rhythmic balancing / phrase finality
+- When count < 5: positions collapse into melismas on accented syllables
+- When count = 5: exact fit, all `H`
+- When count > 5: extra `do(Q)` fills inserted at position 2 or 4
+
+#### Melisma Placement is Accent-Driven
+
+The melisma lands on whichever syllable the director/machine places the accent.
+Confirmed from director-marked examples:
+- `[eve]ning [sac]rifice` → "eve" gets `ti`, "sac" gets `re` — no melisma (count=5 exact fit)
+- `[voice]` in "Re-ceive the voice of my prayer" → "voice" gets `re(H)` own syllable
+- "our" in "For He is our God" → "our" gets `re·do` melisma (count=4, position 3+4 collapse)
+
+#### Whole Note on Close — Empirical Observations
+
+| Verse | Punctuation | `//`? | Close |
+|---|---|---|---|
+| "sa-cri-fice!//" | `!` + `//` | yes | `W` |
+| "For He is our God,//" | `,` + `//` | yes | `W` (×2 confirmed) |
+| "Cross!" | `!` | no | `W` |
+| "Christ.//" | `.` + `//` | yes | `W` |
+| "sake." | `.` | no | `W` |
+| "lifting up of my hands" | none | no | `H` |
+| "He who spoke through the Law" | none | no | `H` |
+| "Re-ceive...prayer," | `,` | no | `H` |
+
+**Period punctuation** `.` consistently produces `W` in all observed cases.
+`//` marker appears in majority of `W` cases but not all ("Cross!", "sake.").
+No tutorial authority for any of these rules — empirical only.
+
+#### Score Examples
+
+- "di-|vine bright-ness" → `ti·do(H mel)·re·do(H mel)·ti(H)` — 3 syllables
+- "lift-ing | up his voice to cry" → `ti(H)·do(H)·re(H)·do(H)·ti(H)` — 5 syllables exact fit
+- "caught | up in a di-vine trance" → `ti(H)·do(Q)·do(Q)·do(Q)·re·do(H mel)·ti(H)` — 7 syllables
+- "is | He who spoke through the Law" → `ti(H)·do(H)·re(H)·do(Q)·do(Q)·ti(H)` — 6 syllables
+- "this is He Who | spoke in the Proph-ets" → `ti(H)·do(Q)·do(Q)·re·do(H mel)·ti(H)` — 6 syllables
+- "Re-ceive the | voice of my prayer," → `ti(H)·do(H)·re(H)·do(Q)·do(Q)·ti(H)` — 6 syllables
+- "be an | eve-ning sac-ri-fice!//" → `ti(H)·do(H)·re(H)·do(H)·ti(W)` — 5 syllables
+- "For He is our | God,//" → `ti(H)·do(H)·re·do(H mel)·ti(W)` — 4 syllables (×2)
+- "Be-hold Em-man-u-el has | nailed our sins to the Cross!" → `ti(H)·do(H)·re(H)·do(Q)·do(Q)·ti(W)` — 6 syllables
+- "By Orth-o-dox-y con-| firm Thy Church, O Christ.//" → `ti(H)·do(H)·re(H)·do(H)·ti(W)` — 5 syllables
+- "He free-ly ac-cep-ted the | Cross and death for our sake." → `ti(H)·do(H)·re(H)·do(Q)·do(Q)·ti(W)` — 6 syllables
+
+#### Phrase D Logic Chart
+
+| Element | Status | Finding |
+|---|---|---|
+| Pitch figure | ✅ confirmed | `cad: ["ti","do","re","do","ti"]` correct |
+| Reciting tone | ✅ confirmed | `do(Q)` |
+| Intonation | ✅ N/A | none |
+| Prep | ✅ N/A | none |
+| Anchor detection | ✅ confirmed | two accent positions — anchor (`ti`) + secondary (`re`) |
+| Anchor duration | ✅ confirmed | `H` always |
+| Secondary accent duration | ✅ confirmed | `H` always (own syllable) or melisma `H` each |
+| Fill duration | ✅ confirmed | `H` at positions 2/4 when exact fit; `Q` for extra fills |
+| Close duration | ✅ confirmed | `ti(H)` default |
+| Whole note trigger | 📋 empirical | period `.` consistently `W`; `//` strongly correlates; rhythmic balancing |
+| Melisma | ✅ confirmed | accent-driven; collapses adjacent positions when count < 5 |
+| distribute() | 🔴 incompatible | cannot model Phrase D — requires dedicated per-phrase logic |
+| Pre-slur | ✅ N/A | no prep |
+| Rhythmic grouping engine | 🔴 missing | drives `W` on close |
+
+---
+
+### 12.6 Final Phrase — PENDING
+
+Analysis continues in subsequent session. To be appended here.
+
+---
+
+### 12.7 Open Questions (June 2026)
 
 1. Does the whole note rule for Phrase A close follow the same rhythmic balancing
    pattern as Phrase B? (insufficient score evidence yet)
@@ -1376,7 +1593,14 @@ Analysis continues in subsequent sessions. To be appended here.
 3. What is the correct pre-slur duration for Tone 1 Phrase A? Currently `Q·Q` unverified.
 4. Does the anchor backup rule ever correctly fire in Phrase A given prep always
    separates body from cadence anchor?
-5. Do Phrases C, D, and Final have melisma behavior? To be determined from scores.
+5. Does period punctuation `.` reliably drive `W` on Phrase D close, or is this
+   a coincidence in our sample? Needs more score examples.
+6. Does the `//` penultimate line marker reliably drive `W` across all phrases,
+   or is it phrase-specific? Phrase C `//` produced `H·` while Phrase D `//`
+   produced `W`.
+7. What is the complete melisma architecture for count=2 in Phrase D? Only
+   count=3 observed; count=2 behavior unconfirmed.
+8. Final Phrase — all behavior unconfirmed, pending next session.
 
 ---
 
