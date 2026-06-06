@@ -10,11 +10,25 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.14";
+export const TONE_TRAINER_VERSION = "v0.11.15";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.15",
+    date: "June 2026",
+    summary: "feat: BASS_RULES[1] complete — all five Tone 1 phrases score-verified against Drillock & Ealy Four-Part Harmony tutorial",
+    items: [
+      "feat: BASS_RULES[1].A — intonation/reciting sol, prep sol, cadence do→do. Verified with Bill.",
+      "feat: BASS_RULES[1].B — reciting do, cadence do→do / re→sol / ti→sol. Verified with Bill.",
+      "feat: BASS_RULES[1].C — intonation/reciting sol, cadence do→do / ti→sol. Verified with Bill.",
+      "feat: BASS_RULES[1].D — reciting do, cadence ti→sol / do→do / re→ti. Verified with Bill.",
+      "feat: BASS_RULES[1].Final — reciting re, cadence do→mi / ti→mi / la→la. Verified with Bill.",
+      "arch: BASS_PITCH_ORDER extended to full 8-pitch set (re mi fa sol la ti do di). Previously only covered 5 pitches Tone 2 needed — any missing pitch fell back to index 0 (wrong chip height). Tone 1 introduces do and re as bass pitches not in the prior set.",
+      "docs: tone_trainer_notes.md — documented BASS_PITCH_ORDER requirement: must cover every pitch any tone BASS_RULES may emit before encoding new tone bass rules.",
+    ],
+  },
   {
     version: "v0.11.14",
     date: "June 2026",
@@ -766,8 +780,12 @@ const CHIP_MELISMA_GAP = 1; // tight gap between melisma sub-chips
 
 // Bass pitch order for chip height (ascending concert pitch with do=Bb)
 // re(C3) < mi(D3) < fa(Eb3) < sol(F3) < la(G3)
-const BASS_PITCH_ORDER = { re: 0, mi: 1, fa: 2, sol: 3, la: 4 };
-const BASS_MAX_IDX = 4;
+// Full pitch set in ascending bass-register order (re=C3 lowest, di=B3 highest).
+// re/mi/fa/sol are 2 octaves below soprano reference; la/ti/do/di are 1 octave below.
+// Must cover every pitch any tone's BASS_RULES may emit — add new pitches here
+// before encoding new tone bass rules, or chipH_bass() falls back to index 0.
+const BASS_PITCH_ORDER = { re: 0, mi: 1, fa: 2, sol: 3, la: 4, ti: 5, do: 6, di: 7 };
+const BASS_MAX_IDX = 7;
 const chipH_bass = (sol) => {
   const idx = BASS_PITCH_ORDER[sol] !== undefined ? BASS_PITCH_ORDER[sol] : 0;
   const inv = BASS_MAX_IDX - idx;
@@ -1564,10 +1582,42 @@ const BASS_RULES = {
       preslurMap: {},
     },
     // B, C, D, Final — pending phrase-by-phrase verification with Bill
-    B: null,
-    C: null,
-    D: null,
-    Final: null,
+    B: {
+      // No intonation in Phrase B
+      // Reciting alto=do → bass=do
+      recite: "do",
+      prepMap: {},
+      // Cadence: alto do→re→ti → bass do→sol→sol
+      cadMap: { do: "do", re: "sol", ti: "sol" },
+      preslurMap: {},
+    },
+    C: {
+      // Intonation and reciting alto=re → bass=sol
+      recite: "sol",
+      prepMap: {},
+      // Cadence: alto do→ti → bass do→sol
+      cadMap: { do: "do", ti: "sol" },
+      preslurMap: {},
+    },
+    D: {
+      // No intonation, no prep in Phrase D
+      // Reciting alto=do → bass=do
+      recite: "do",
+      prepMap: {},
+      // Cadence (5 syllables): alto ti→do→re→do→ti → bass sol→do→ti→do→sol
+      cadMap: { ti: "sol", do: "do", re: "ti" },
+      preslurMap: {},
+    },
+    Final: {
+      // No intonation, no prep in Final Phrase
+      // Reciting alto=re → bass=re
+      recite: "re",
+      prepMap: {},
+      // Cadence (3 syllables): alto do→ti→la → bass mi→mi→la
+      // Tenor si (raised 6th) confirms harmonic minor approach to la
+      cadMap: { do: "mi", ti: "mi", la: "la" },
+      preslurMap: {},
+    },
   },
   // ── Tone 2, Russian Obikhod (L'vov-Bakhmetev) ──────────────────────────
   2: {

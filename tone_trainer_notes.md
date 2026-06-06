@@ -154,7 +154,7 @@ Dropdown order: `Soprano | Alto (Melody) | Tenor (coming, disabled) | Bass | ─
 ### Chip visual architecture
 
 - Alto chips: `chipH(altoPitch)` = `CHIP_BASE_H + PITCH_SCALE.indexOf(pitch) * CHIP_STEP_H`
-- Bass chips: `chipH_bass(bassPitch)` — inverted scale, grows downward
+- Bass chips: `chipH_bass(bassPitch)` — inverted scale, grows downward. Lower bass pitches produce taller chips (drop further from the text line); higher pitches produce shorter chips. `BASS_PITCH_ORDER` must contain every pitch any tone's `BASS_RULES` may emit — full set in ascending register order: `re(0) mi(1) fa(2) sol(3) la(4) ti(5) do(6) di(7)`. Any pitch missing from the map falls back to index 0 (tallest chip, wrong height). Add new pitches to `BASS_PITCH_ORDER` **before** encoding new tone bass rules.
 - Soprano chips: `chipH_soprano(altoPitch)` — always above alto, octave-corrected; takes alto pitch as input (not soprano-mapped pitch)
 - Role stripe: 8px at top (alto/soprano), 8px at bottom (bass)
 - SATB soprano rendering: soprano row `position:absolute; bottom:0` behind alto row (`zIndex:1`). Container height = max soprano chip height in line. Soprano at 50% opacity.
