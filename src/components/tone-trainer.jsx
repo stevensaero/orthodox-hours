@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.12";
+export const TONE_TRAINER_VERSION = "v0.11.13";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.13",
+    date: "June 2026",
+    summary: "ux: rotation hint in textarea label now reflects active tone",
+    items: [
+      "ux: textarea label shows tone-specific phrase rotation — Tone 1: A·B·C·D·…·Final, Tone 2: A then B·C·D·…·Final, Tone 3: A·B·…·Final.",
+    ],
+  },
   {
     version: "v0.11.12",
     date: "June 2026",
@@ -3579,7 +3587,14 @@ export default function ToneTrainer() {
           {/* Label adapts to whether brackets are detected in the text. */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.4rem" }}>
             <label style={{ fontSize: "0.85rem", color: "#5b4a33", flex: 1 }}>
-              Type or paste the sticheron — one line per line. Phrases rotate A·B·C·D; the last line is the Final Phrase.
+              {(() => {
+                const rotDesc = {
+                  1: "A·B·C·D·…·Final",
+                  2: "A, then B·C·D·…·Final",
+                  3: "A·B·…·Final",
+                }[activeTone] ?? "A·B·C·D·…·Final";
+                return `Type or paste the sticheron — one line per line. Tone ${activeTone} rotates ${rotDesc}.`;
+              })()}
             </label>
 
           </div>
