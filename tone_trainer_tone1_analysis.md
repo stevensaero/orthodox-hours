@@ -1095,3 +1095,289 @@ Use this as a starting checklist alongside `tone_trainer_tone2_analysis.md §10`
 ---
 
 *§11 added May 2026 following Tone 2 build (v0.8.0).*
+
+---
+
+## 12. Deep-Dive Analysis — June 2026 (Tone 1 Logic Rewrite Session)
+
+This section documents a systematic phrase-by-phrase walkthrough of Tone 1 against
+the tutorial and real OCA scores, conducted June 2026. The goal is to bring Tone 1
+up to the same level of duration awareness as the Tone 2 rewrite — i.e. verified
+`cadDurs` blocks, score-confirmed duration rules, and explicit handling of all edge
+cases. **No code changes have been made yet.** This is the research record that
+must precede implementation.
+
+Sources used:
+- Drillock & Ealy tutorial PDF (Drive `1MCbcPSJMiZ43myLLEadQNWv8mY7SOFtJ`)
+- Tutorial SATB harmony table (rasterized pages 12–13)
+- St. Sergius Sunday Octoechos Tone 1 score, 1-1.pdf (rasterized, 38 pages)
+- OCA service scores walked through interactively with Bill
+
+---
+
+### 12.1 Cross-Cutting Architectural Gaps (All Tones)
+
+These issues were surfaced during Tone 1 analysis and affect all tones.
+
+#### Gap A — Rhythmic Grouping Engine (MISSING — High Priority)
+
+The tutorial introduction states: *"there is no time signature... The half note is
+the predominant pulse... The recitative section consists of quarter notes grouped
+in two's or three's depending upon the location of the accents... a two-syllable
+word with an accent on the first syllable will receive a full beat, while a
+three-syllable word with the accent on the first syllable will receive a full beat
+and a half."*
+
+This paragraph is in the **Introduction** — it applies to **all tones** of
+Common Chant. It describes a word-level rhythmic grouping system where:
+- Groups of two quarter notes = one beat
+- Groups of three quarter notes = one and a half beats (→ dotted half when
+  falling on a single syllable)
+
+Dotted halves and whole notes observed in real scores are driven by this rhythmic
+balancing principle. **Shorter phrases stretch note values to fill musical space;
+longer phrases do not.** The machine currently assigns durations role-by-role
+without phrase-level rhythmic context.
+
+**Three-layer architecture for duration assignment:**
+1. **Base layer** — tutorial rules as fallback: anchor=`H`, fills=`Q` at 4+, close=`H`
+2. **Rhythmic grouping engine** — approximates director judgment using phrase-level
+   context to determine when `H→H·` or `H→W`. Goal: machine aspires to match
+   director decisions as closely as possible, not just output mechanical defaults.
+3. **Director pointing layer** — overrides everything when director has explicitly
+   marked the text.
+
+**What we lack for the engine:**
+- Word boundary reconstruction from syllable array
+- Phrase-level rhythmic accounting (total beats per phrase)
+- Word-level duration units (two-grouping vs three-grouping detection)
+
+**Suggested architecture:** A `computeWordRhythm(words)` pre-pass that runs before
+role assignment, groups syllables by word, computes beat-unit counts, identifies
+three-groupings falling on single syllables (→ `H·`), and returns a duration map
+consumed by `lineToNotes()`.
+
+**Impact:** Duration modeling for reciting tone and cadence positions across all
+tones is incomplete without this engine. Per-phrase `cadDurs` blocks capture pitch
+figures correctly but are provisional on durations until the rhythmic engine is built.
+
+#### Gap B — Pre-Slur Logic Not Scoped Per Phrase
+
+Current pre-slur detection in `pointLine()` is generic — fires for any phrase with
+`def.prep` set, gated on `candidate.single && candidate.accent`. Originally built
+for Tone 2 Final Phrase.
+
+Issues:
+- Trigger condition (`single && accent`) may differ between Tone 1 Phrase A and
+  Tone 2 Final
+- Prep is **positional** in Tone 1 Phrase A (see §12.2) — the prep syllable need
+  not be accented or monosyllabic. The `single && accent` gate is therefore
+  too restrictive and may miss valid pre-slur candidates in Phrase A.
+- Pre-slur duration for Tone 1 Phrase A unverified (currently always `Q·Q`)
+- Future tones/phrases with prep inherit unverified behavior
+
+**Resolution:** Encode pre-slur as an explicit flag or rule in `PH_DEFS` per
+phrase so each phrase opts in with its own verified trigger condition.
+
+#### Gap C — Anchor Detection Backup Rule Needs Per-Phrase Verification
+
+`anchorIndex()` steps back from a single accented monosyllable at phrase end to
+find the last internal accent. Tutorial explicitly states this rule for Phrase B.
+For Phrase A, the prep always occupies the position before the cadence anchor,
+meaning the cadence anchor is never truly the final syllable of `flat` — the
+backup rule's interaction with Phrase A needs score verification.
+
+---
+
+### 12.2 Phrase A — Deep Walkthrough
+
+**Current code:**
+```js
+A: { recite: "re", inton: true, prep: "ti", cad: ["do"] }
+```
+
+#### Rotation and Intonation — Confirmed Correct
+- `inton: true` ✅ — first accented syllable gets `re(H)`, unaccented lead-ins get `re(Q)`
+- Fallback to `body[0]` when no accented syllable — flag for monitoring
+
+**Intonation examples confirmed from scores:**
+- "Lord," → `re(H)` — zero lead-ins
+- "Come," → `re(H)` — zero lead-ins
+- "To-day let" → "To"=`re(Q)`, "day"=`re(H)`
+- "The first fruit of" → "The"=`re(Q)`, "first"=`re(Q)`, "fruit"=`re(H)`, "of"=`re(Q)`
+- "Let my prayer a-rise" → "Let"=`re(Q)`, "my"=`re(Q)`, "prayer"=`re(H·)` (rhythmic balancing)
+- "Ac-cept our..." → "Ac"=`re(Q)`, "cept"=`re(H·)` (rhythmic balancing)
+- "En-cir-cle..." → "En"=`re(Q)`, "cir"=`re(H·)` (rhythmic balancing)
+- "Come, O peo-ple" → "Come"=`re(H·)` (rhythmic balancing — short phrase)
+
+Dotted halves on intonation note are **not** driven by lead-in count or any simple
+rule. They are rhythmic balancing (Gap A). Machine default = plain `H`.
+
+#### Prep — Confirmed Positional
+
+The prep is **positional** — the last body syllable before the cadence anchor always
+takes `ti(Q)` regardless of its stress or word identity. This has direct implications
+for Gap B (pre-slur logic).
+
+**Evidence:**
+- "of" (unaccented) → `ti(Q)` in "glory of Christ"
+- "O" (unaccented) → `ti(Q)` in "dance, O faith-ful"
+- "gin" (second syllable of "Virgin") → `ti(Q)` in "Vir-gin..."
+- "di" (accented first syllable of "divine") → `ti(Q)` in "di-vine songs!"
+
+Note: "di" is accented but takes the prep positionally. The pre-slur detection
+logic requiring `single && accent` would correctly fire on "di" (it IS accented)
+but would miss cases where the prep syllable is unaccented (e.g. "of", "O").
+Since the pre-slur should only fire on specific accented monosyllables, not all
+prep positions, this needs careful per-phrase specification.
+
+#### Cadence — Confirmed Pitch, Provisional Durations
+
+**Pitch:** `do` throughout — all syllables stay on `do`. Confirmed ✅.
+**Melisma:** N/A — single pitch cadence, no melisma possible. Confirmed ✅.
+
+**Anchor:** begins on the last accented syllable (tutorial default). Option to
+begin on last internal accent — director's choice driven by musical judgment
+(e.g. "Mother of God" where director chose "Moth" as anchor across 4 syllables).
+
+**Duration model — provisional (pending rhythmic grouping engine):**
+
+| Count | Anchor | Fills | Close |
+|---|---|---|---|
+| 1 | `do(H)` | — | — |
+| 2 | `do(H)` | — | `do(H)` or `do(W)` |
+| 3+ | `do(H)` | `do(Q)` | `do(H)` or `do(W)` |
+
+Close duration (`H` vs `H·` vs `W`) driven by rhythmic balancing at phrase level.
+No tutorial authority for specific trigger rules. Machine default = `H`.
+
+**Score examples:**
+- "glo-ry of Christ" → "Christ"=`do(H)` — single syllable
+- "dance, O faith-ful" → "faith"=`do(H)`, "ful"=`do(H)`
+- "Vir-gin Moth-er of God" → director choice (last internal accent): `do(H)·do(Q)·do(Q)·do(H)`
+- "Come...di-vine songs!" → "vine"=`do(H)`, "songs!"=`do(W)`
+- "Lord, I call...hear me!" → "hear"=`do(H)`, "me!"=`do(W)`
+- "Let my prayer a-rise" → "rise"=`do(H)` — single syllable
+- "We...suf-fer-ings" → "suf"=`do(H·)`, "fer"=`do(Q)`, "ings"=`do(W)`
+- "Ac-cept...O ho-ly Lord!" → "ho"=`do(H·)`, "ly"=`do(Q)`, "Lord!"=`do(W)`
+- "En-cir-cle...Zi-on" → "Zi"=`do(H)`, "on"=`do(H)`
+- "Come, O peo-ple," → "peo"=`do(H)`, "ple"=`do(W)`
+
+#### Phrase A Logic Chart
+
+| Element | Status | Finding |
+|---|---|---|
+| Pitch figure | ✅ confirmed | `cad: ["do"]` correct |
+| Reciting tone | ✅ confirmed | `re(Q)` |
+| Intonation | ✅ confirmed | first accented syllable `re(H)`, unaccented lead-ins `re(Q)` |
+| Prep | ✅ confirmed | positional, always `ti(Q)`, not accent-driven |
+| Anchor detection | ⚠️ flagged | backup rule interaction with prep needs per-phrase scoping |
+| Anchor duration | 📋 provisional | `H` default, `H·` via rhythmic balancing |
+| Fill duration | 📋 provisional | `Q` default |
+| Close duration | 📋 provisional | `H` default, `H·` or `W` via rhythmic balancing |
+| Whole note trigger | 📋 unresolved | rhythmic balancing, no tutorial authority |
+| Melisma | ✅ N/A | single pitch cadence, no melisma possible |
+| Pre-slur | ⚠️ flagged | needs per-phrase scoping; `single && accent` gate too narrow for positional prep |
+| Rhythmic grouping engine | 🔴 missing | drives dotted halves and whole notes |
+
+---
+
+### 12.3 Phrase B — Deep Walkthrough
+
+**Current code:**
+```js
+B: { recite: "do", inton: false, prep: null, cad: ["do", "re", "ti"] }
+```
+
+All three pitch values confirmed correct ✅. No intonation, no prep ✅.
+
+#### Cadence Duration Model — Score Verified
+
+**Tutorial statement:** anchor = half note on `do`; middle syllables on `re` =
+quarter notes ("half pulse"); close = half note on `ti`.
+
+**Score-verified duration table:**
+
+| Count | Shape |
+|---|---|
+| 2 | `do·re(H melisma) · ti(H)` |
+| 3 | `do(H) · re(H) · ti(H)` |
+| 4+ | `do(H) · re(Q)×n · ti(H)` |
+
+Key findings:
+- At count=2: `do` and `re` collapse into a **two-pitch melisma** on the anchor
+- Fill `re` is `H` at count=3, drops to `Q` at count≥4
+- Close `ti` defaults to `H`
+- Dotted halves and whole notes on close driven by rhythmic balancing (Gap A)
+
+#### Whole Note / Dotted Half on Close — Empirical (No Tutorial Authority)
+
+Investigated extensively through score examples. The punctuation hypothesis
+(`,`→`H·`, `!`→`W`) was **ruled out** — "let us hymn and fall down before Christ,"
+showed `W` despite comma, breaking the pattern.
+
+**Confirmed pattern:** longer reciting sections correlate with shorter close
+(`H·`); shorter reciting sections correlate with longer close (`W`). The cadence
+close extends to compensate for a short reciting section.
+
+| Verse | Reciting syllables | Close |
+|---|---|---|
+| "Hear me, O Lord!" | ~0 | `W` |
+| "and surround her, O peo-ple!" | ~5 | `W` |
+| "let us hymn and fall down be-fore Christ," | ~5 | `W` |
+| "Grant us re-mis-sion of sins," | ~3 | `H·` |
+| "Who vol-un-tar-i-ly...for our sake." | ~11 | `H·` |
+
+This is rhythmic balancing (Gap A) — cannot be computed from cadence syllables
+or punctuation alone. Machine default = `H`. Director pointing is authoritative.
+
+#### Anchor Backup Rule
+
+Tutorial explicitly states for Phrase B: *"If the last word of the text has only
+one syllable, then, as in Phrase A, the cadence begins on the last internal
+accented syllable."* Since Phrase B has no prep, the backup rule is directly
+relevant — the cadence anchor can genuinely be the final syllable of the phrase.
+Score verification of this rule in Phrase B context still pending.
+
+#### Phrase B Logic Chart
+
+| Element | Status | Finding |
+|---|---|---|
+| Pitch figure | ✅ confirmed | `cad: ["do", "re", "ti"]` correct |
+| Reciting tone | ✅ confirmed | `do(Q)` |
+| Intonation | ✅ N/A | none |
+| Prep | ✅ N/A | none |
+| Anchor detection | ⚠️ needs verification | backup rule tutorial-confirmed, score verification pending |
+| Anchor duration | ✅ confirmed | `H` |
+| Fill pitch | ✅ confirmed | `re` |
+| Fill duration | ✅ confirmed | `H` at count=3, `Q` at count≥4 |
+| Close duration | ✅ confirmed | `ti(H)` default |
+| Whole note trigger | 📋 empirical | shorter reciting → `W`; no tutorial authority |
+| Dotted half trigger | 📋 empirical | longer reciting → `H·`; no tutorial authority |
+| Melisma | ✅ confirmed | `do·re` two-pitch melisma on anchor at count=2 |
+| Pre-slur | ✅ N/A | no prep |
+| Rhythmic grouping engine | 🔴 missing | drives `H·` and `W` on close |
+
+---
+
+### 12.4 Phrases C, D, Final — PENDING
+
+Analysis continues in subsequent sessions. To be appended here.
+
+---
+
+### 12.5 Open Questions (June 2026)
+
+1. Does the whole note rule for Phrase A close follow the same rhythmic balancing
+   pattern as Phrase B? (insufficient score evidence yet)
+2. Does the pre-slur in Phrase A fire on accented prep syllables (like "di" in
+   "divine")? Currently `single && accent` would fire — but does it fire on
+   unaccented positional prep syllables too?
+3. What is the correct pre-slur duration for Tone 1 Phrase A? Currently `Q·Q` unverified.
+4. Does the anchor backup rule ever correctly fire in Phrase A given prep always
+   separates body from cadence anchor?
+5. Do Phrases C, D, and Final have melisma behavior? To be determined from scores.
+
+---
+
+*§12 added June 2026 — Phrases A and B complete, C/D/Final pending.*
