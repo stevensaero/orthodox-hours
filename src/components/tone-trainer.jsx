@@ -10,11 +10,22 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.7";
+export const TONE_TRAINER_VERSION = "v0.11.8";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.8",
+    date: "June 2026",
+    summary: "fix: Tone 1 Final Phrase duration — direct rules, cadDuration() bypassed",
+    items: [
+      "fix: Tone 1 Final Phrase cad duration now uses direct score-verified rules in both lineToNotes() and lineToRolesWithDuration(), bypassing cadDuration() entirely.",
+      "fix: cadDuration() was incorrectly matching Tone 1 Final Phrase cadDurs (fillPitch=do) to Tone 2 Phrase C branch, producing wrong Q fills and H close instead of H fills and W close.",
+      "fix: 'Hear me, O Lord!' — me=do(H), O=ti(H), Lord=la(W) now correct. Previously O got Q.",
+      "arch: cadDuration() is Tone 2 logic. Tone 1 Final Phrase must not route through it — prime directive.",
+    ],
+  },
   {
     version: "v0.11.7",
     date: "June 2026",
@@ -2421,8 +2432,22 @@ export default function ToneTrainer() {
       } else if (r.role === "cad") {
         const cadPos = cadIdxs.indexOf(ri);
 
+        // ── Tone 1 Final Phrase: direct duration rules (score-verified) ───
+        // do·ti·la figure. Bypasses cadDuration() entirely — prime directive.
+        // count=3 (exact fit): do(H) · ti(H) · la(W)
+        // count≥4: do(H) · do(Q) second position at count≥5 · ti(H/Q fills) · la(W)
+        // la close ALWAYS W. Anchor ALWAYS H (default; rhythmic engine TBD).
+        if (isTone1Final) {
+          const isFirst = cadPos === 0;
+          const isLast  = cadPos === cadCount - 1;
+          if (isLast)        syllDur = W;  // la always W
+          else if (isFirst)  syllDur = H;  // do anchor always H
+          else if (cadCount >= 5 && cadPos === 1) syllDur = Q; // do(Q) second position at count≥5
+          else               syllDur = (cadCount <= 3) ? H : Q; // ti fills: H≤3, Q≥4
+        }
+
         // ── Tone 2: use per-phrase cadDuration() ─────────────────────────
-        if ((isTone1 || isTone2) && phDef?.cadDurs) {
+        if (!isTone1Final && (isTone1 || isTone2) && phDef?.cadDurs) {
           const durStr = cadDuration(phDef, cadCount, cadPos, lastCadIsWordBoundary, hasRecitingTone);
           if (durStr !== null) {
             const durMap = { "H": H, "Q": Q, "W": W, "H·": DH };
@@ -2795,7 +2820,16 @@ export default function ToneTrainer() {
       else if (r.role === "cad1")                         d = ri === cadIdxs[0] ? H : Q;
       else if (r.role === "cad") {
         const cadPos = cadIdxs.indexOf(ri);
-        if ((isTone1 || isTone2) && phDef?.cadDurs) {
+        // ── Tone 1 Final Phrase: direct duration rules — bypasses cadDuration() ──
+        if (isTone1Final) {
+          const isFirst = cadPos === 0;
+          const isLast  = cadPos === cadCount - 1;
+          if (isLast)        d = W;
+          else if (isFirst)  d = H;
+          else if (cadCount >= 5 && cadPos === 1) d = Q;
+          else               d = (cadCount <= 3) ? H : Q;
+        }
+        if (!isTone1Final && (isTone1 || isTone2) && phDef?.cadDurs) {
           const ds = cadDuration(phDef, cadCount, cadPos, lastCadIsWordBoundary, true);
           const dm = {"H":H,"Q":Q,"W":W,"H·":DH};
           d = ds ? (dm[ds] ?? H) : undefined;
