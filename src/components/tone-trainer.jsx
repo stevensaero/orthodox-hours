@@ -10,11 +10,22 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.11";
+export const TONE_TRAINER_VERSION = "v0.11.12";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.12",
+    date: "June 2026",
+    summary: "fix: Phrase A intonation/anchor disambiguation — director-only-marks-inton case",
+    items: [
+      "fix: Phrase A pointLine() now distinguishes between director marking the intonation vs. the cadence anchor.",
+      "fix: When anchorIndex() returns the same syllable as the first accent (director only marked intonation), fall back to positional: last syllable = cad, second-to-last = prep.",
+      "fix: 'Let my [prayer] arise' now renders correctly: prayer=inton(re/H·), a=prep(ti/Q), rise=cad(do/H).",
+      "arch: Intonation (forward pass) and anchor (backward pass) are independent. When they agree on the same syllable, the director marked only the intonation — cadence position is determined structurally.",
+    ],
+  },
   {
     version: "v0.11.11",
     date: "June 2026",
@@ -1264,31 +1275,46 @@ function pointLine(line, phDefs, activeTone) {
 
   // ── Tone 1 Phrase A: anchor-driven cadence boundary ─────────────────────
   // Phrase A: recite(re) · inton(re·H) · ... · prep(ti) · cad(do)+
-  // Structure derived from score evidence:
-  //   - Cadence anchor = anchorIndex() — last internal accented syllable
-  //   - Prep           = syllable immediately before the anchor → ti
-  //   - Body           = everything before prep → recite/inton
-  //   - Cadence        = anchor + all remaining syllables → all do
-  //   - Intonation     = last accented body syllable (or body[0] if none)
-  // No pre-slur — no score evidence. Prime directive: tone/phrase-specific only.
+  // Structure:
+  //   - Intonation = first accented syllable (forward pass, body only)
+  //   - Anchor     = anchorIndex() — last internal accent (backward pass)
+  //   - IF anchor === intonation (director only marked the intonation, not the
+  //     cadence): fall back to last syllable as cad, second-to-last as prep.
+  //     Rationale: director marks intonation with bracket; cadence anchor is
+  //     structurally always the last stressed word — but in TRUTH mode the
+  //     director doesn't re-mark it. When both passes land on the same syllable,
+  //     the anchor is unknowable from director marks alone; use positional fallback.
+  //   - IF anchor ≠ intonation: anchor IS the cadence start (director marked both)
+  //   - Prep  = syllable immediately before cadence start → ti
+  //   - Cad   = cadence start + all remaining syllables → all do
   // Score examples:
-  //   "[Lord] I call up-on Thee [hear] me!" → body=Lord..Thee, prep=hear(?), NO
-  //   "[Lord] I call up-on Thee, [hear] me!" → anchor=hear, prep=Thee, cad=hear·me
-  //   "when I [call] up-[on] Thee!//" → anchor=on, prep=up, cad=on·Thee
-  //   "Let my [prayer] a-rise" → anchor=prayer(?), prep=a, cad=rise — wait:
-  //     score: prayer=inton(re·H), a=prep(ti), rise=cad(do·H)
-  //     anchorIndex finds "prayer" (last accented) → prep="a", cad="rise" ✅
+  //   "Let my [prayer] arise" → 1 accent (prayer=inton); anchor falls back to
+  //     last syll (rise); prep=a, cad=[rise] ✅
+  //   "[Lord]..Thee,[hear]me!" → 2 accents (Lord=inton, hear=anchor≠inton);
+  //     prep=Thee, cad=[hear,me!] ✅
+  //   "when I [call] up[on] Thee!//" → 2 accents (call=inton, on=anchor≠inton);
+  //     prep=up, cad=[on,Thee!] ✅
   if (activeTone === 1 && line.phrase === "A" && flat.length >= 2) {
-    const a       = anchorIndex(flat);     // cadence starts here
-    const prepIdx = a - 1;                 // prep is always one before anchor
-    const roles   = [];
+    const a        = anchorIndex(flat);   // last internal accent (backward pass)
+    const firstAcc = flat.findIndex(s => s.accent); // intonation candidate (forward pass)
+    const roles    = [];
+
+    // Determine cadence start:
+    // If anchor === intonation (or no accent at all), director only marked the
+    // intonation — fall back to positional: cad starts at last syllable,
+    // prep at second-to-last.
+    const cadStart = (firstAcc === -1 || a === firstAcc)
+      ? flat.length - 1   // positional fallback
+      : a;                // anchor is distinct from intonation — use it
+
+    const prepIdx = cadStart - 1;
 
     if (prepIdx < 0) {
       // Degenerate: no room for prep — fall through to standard logic
     } else {
       const body  = flat.slice(0, prepIdx);
       const prepS = flat[prepIdx];
-      const cad   = flat.slice(a);
+      const cad   = flat.slice(cadStart);
 
       // Intonation = last accented body syllable, fallback to body[0]
       const bodyAccIdxs = body.map((s, i) => s.accent ? i : -1).filter(i => i >= 0);
