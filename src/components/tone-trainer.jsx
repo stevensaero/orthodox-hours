@@ -10,11 +10,22 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.8";
+export const TONE_TRAINER_VERSION = "v0.11.9";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.9",
+    date: "June 2026",
+    summary: "fix: Tone 1 Phrase A cadence boundary — anchor-driven, multi-syllable cad supported",
+    items: [
+      "fix: Tone 1 Phrase A pointLine() now uses anchorIndex() for cadence boundary. Prep = syllable immediately before anchor. Cadence = anchor + all remaining syllables, all on do.",
+      "fix: previous assumption that prep=second-to-last was wrong for multi-syllable cadences (e.g. 'hear me!' = 2-syllable cad, 'Thee' = prep).",
+      "fix: Tone 1 Phrase A direct duration rules added to lineToNotes() and lineToRolesWithDuration(), bypassing cadDuration() — prime directive.",
+      "fix: score-verified: anchor=Q when multi-cad, close=W, fills=Q, single-cad=H.",
+    ],
+  },
   {
     version: "v0.11.8",
     date: "June 2026",
@@ -1232,42 +1243,55 @@ function pointLine(line, phDefs, activeTone) {
     // Fallback: single accent or invalid split — distribute() as machine best-effort
   }
 
-  // ── Tone 1 Phrase A: prep-position-driven cadence boundary ───────────────
-  // Phrase A has prep:"ti" always present as second-to-last syllable.
-  // Cadence = last syllable only (single do).
-  // Prep     = second-to-last syllable → ti.
-  // Body     = everything before prep.
-  // Intonation = last accented body syllable (or body[0] if none).
-  // Pre-slur = last body syllable if single && accent → re·ti melisma.
-  // This is structurally invariant — derived from Phrase A definition, not
-  // from any specific verse content.
+  // ── Tone 1 Phrase A: anchor-driven cadence boundary ─────────────────────
+  // Phrase A: recite(re) · inton(re·H) · ... · prep(ti) · cad(do)+
+  // Structure derived from score evidence:
+  //   - Cadence anchor = anchorIndex() — last internal accented syllable
+  //   - Prep           = syllable immediately before the anchor → ti
+  //   - Body           = everything before prep → recite/inton
+  //   - Cadence        = anchor + all remaining syllables → all do
+  //   - Intonation     = last accented body syllable (or body[0] if none)
+  // No pre-slur — no score evidence. Prime directive: tone/phrase-specific only.
+  // Score examples:
+  //   "[Lord] I call up-on Thee [hear] me!" → body=Lord..Thee, prep=hear(?), NO
+  //   "[Lord] I call up-on Thee, [hear] me!" → anchor=hear, prep=Thee, cad=hear·me
+  //   "when I [call] up-[on] Thee!//" → anchor=on, prep=up, cad=on·Thee
+  //   "Let my [prayer] a-rise" → anchor=prayer(?), prep=a, cad=rise — wait:
+  //     score: prayer=inton(re·H), a=prep(ti), rise=cad(do·H)
+  //     anchorIndex finds "prayer" (last accented) → prep="a", cad="rise" ✅
   if (activeTone === 1 && line.phrase === "A" && flat.length >= 2) {
-    const prepIdx = flat.length - 2;
-    const cadFlat = [flat[flat.length - 1]];
-    const body    = flat.slice(0, prepIdx);
-    const prepS   = flat[prepIdx];
+    const a       = anchorIndex(flat);     // cadence starts here
+    const prepIdx = a - 1;                 // prep is always one before anchor
     const roles   = [];
 
-    // Find intonation index in body — last accented syllable, fallback to body[0].
-    // No pre-slur in Tone 1 Phrase A — no score evidence exists for it.
-    // Pre-slur was incorrectly ported from Tone 2 logic; removed per prime directive
-    // (each tone/phrase gets only its own score-verified logic).
-    const bodyAccIdxs = body.map((s, i) => s.accent ? i : -1).filter(i => i >= 0);
-    const intonIdx = bodyAccIdxs.length > 0 ? bodyAccIdxs[bodyAccIdxs.length - 1] : (body.length > 0 ? 0 : -1);
+    if (prepIdx < 0) {
+      // Degenerate: no room for prep — fall through to standard logic
+    } else {
+      const body  = flat.slice(0, prepIdx);
+      const prepS = flat[prepIdx];
+      const cad   = flat.slice(a);
 
-    body.forEach((s, i) => {
-      const role = (i === intonIdx) ? "inton" : "recite";
-      roles.push({ role, pitches: [def.recite], accent: s.accent, text: s.text, source: s.source });
-    });
+      // Intonation = last accented body syllable, fallback to body[0]
+      const bodyAccIdxs = body.map((s, i) => s.accent ? i : -1).filter(i => i >= 0);
+      const intonIdx = bodyAccIdxs.length > 0
+        ? bodyAccIdxs[bodyAccIdxs.length - 1]
+        : (body.length > 0 ? 0 : -1);
 
-    // prep → ti
-    roles.push({ role: "prep", pitches: [def.prep], accent: prepS.accent, text: prepS.text, source: prepS.source });
+      body.forEach((s, i) => {
+        const role = (i === intonIdx) ? "inton" : "recite";
+        roles.push({ role, pitches: [def.recite], accent: s.accent, text: s.text, source: s.source });
+      });
 
-    // cadence → single do, anchor
-    cadFlat.forEach((s, i) =>
-      roles.push({ role: "cad", pitches: ["do"], accent: s.accent, text: s.text, source: s.source, anchor: true })
-    );
-    return roles;
+      // prep → ti (one syllable before cadence anchor)
+      roles.push({ role: "prep", pitches: [def.prep], accent: prepS.accent, text: prepS.text, source: prepS.source });
+
+      // cadence → all syllables from anchor onwards, all on do
+      // First syllable is anchor; remaining syllables are fills/close, also do
+      cad.forEach((s, i) =>
+        roles.push({ role: "cad", pitches: ["do"], accent: s.accent, text: s.text, source: s.source, anchor: i === 0 })
+      );
+      return roles;
+    }
   }
 
   // ── Standard single-anchor logic (all other tones/phrases) ──────────────
@@ -2432,6 +2456,21 @@ export default function ToneTrainer() {
       } else if (r.role === "cad") {
         const cadPos = cadIdxs.indexOf(ri);
 
+        // ── Tone 1 Phrase A: direct duration rules (score-verified) ────────
+        // All cadence syllables on do. Anchor H. Fills Q. Close W or H.
+        // Bypasses cadDuration() entirely — prime directive.
+        // Score: [Lord]..Thee,[hear]me! → hear=do(Q), me=do(W)
+        //        [call]up[on]Thee! → on=do(H), Thee=do(W)
+        //        [prayer]a-rise → rise=do(H) — single syllable, no fill
+        if (isTone1 && line.phrase === "A") {
+          const isFirst = cadPos === 0;
+          const isLast  = cadPos === cadCount - 1;
+          if (isFirst && isLast) syllDur = H;  // single cad syllable → H default
+          else if (isFirst)      syllDur = Q;  // anchor when multi-cad → Q
+          else if (isLast)       syllDur = W;  // close → W (score: me!, Thee!)
+          else                   syllDur = Q;  // middle fills → Q
+        }
+
         // ── Tone 1 Final Phrase: direct duration rules (score-verified) ───
         // do·ti·la figure. Bypasses cadDuration() entirely — prime directive.
         // count=3 (exact fit): do(H) · ti(H) · la(W)
@@ -2447,7 +2486,7 @@ export default function ToneTrainer() {
         }
 
         // ── Tone 2: use per-phrase cadDuration() ─────────────────────────
-        if (!isTone1Final && (isTone1 || isTone2) && phDef?.cadDurs) {
+        if (!isTone1Final && !(isTone1 && line.phrase === "A") && (isTone1 || isTone2) && phDef?.cadDurs) {
           const durStr = cadDuration(phDef, cadCount, cadPos, lastCadIsWordBoundary, hasRecitingTone);
           if (durStr !== null) {
             const durMap = { "H": H, "Q": Q, "W": W, "H·": DH };
@@ -2820,6 +2859,16 @@ export default function ToneTrainer() {
       else if (r.role === "cad1")                         d = ri === cadIdxs[0] ? H : Q;
       else if (r.role === "cad") {
         const cadPos = cadIdxs.indexOf(ri);
+        // ── Tone 1 Phrase A: direct duration rules — bypasses cadDuration() ────
+        if (isTone1 && line.phrase === "A") {
+          const isFirst = cadPos === 0;
+          const isLast  = cadPos === cadCount - 1;
+          if (isFirst && isLast) d = H;
+          else if (isFirst)      d = Q;
+          else if (isLast)       d = W;
+          else                   d = Q;
+        }
+
         // ── Tone 1 Final Phrase: direct duration rules — bypasses cadDuration() ──
         if (isTone1Final) {
           const isFirst = cadPos === 0;
@@ -2829,7 +2878,7 @@ export default function ToneTrainer() {
           else if (cadCount >= 5 && cadPos === 1) d = Q;
           else               d = (cadCount <= 3) ? H : Q;
         }
-        if (!isTone1Final && (isTone1 || isTone2) && phDef?.cadDurs) {
+        if (!isTone1Final && !(isTone1 && line.phrase === "A") && (isTone1 || isTone2) && phDef?.cadDurs) {
           const ds = cadDuration(phDef, cadCount, cadPos, lastCadIsWordBoundary, true);
           const dm = {"H":H,"Q":Q,"W":W,"H·":DH};
           d = ds ? (dm[ds] ?? H) : undefined;
