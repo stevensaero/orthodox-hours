@@ -10,11 +10,27 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.10.0";
+export const TONE_TRAINER_VERSION = "v0.11.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.0",
+    date: "June 2026",
+    summary: "Tone 1 duration logic rewrite — score-verified cadDurs for all five phrases",
+    items: [
+      "feat: PH_DEFS[1] — cadDurs blocks for all five Tone 1 phrases (A/B/C/D/Final), score-verified June 2026.",
+      "feat: Tone 1 Final Phrase — structural melisma at count<3 (do·ti); la close always W, tutorial-confirmed.",
+      "feat: Tone 1 Phrase B — do·re melisma at count=2; re fills H≤3 / Q≥4; close ti(H) default.",
+      "feat: Tone 1 Phrase C — do fills H≤3 / Q≥4; close ti(H) default; no melisma.",
+      "feat: Tone 1 Phrase D — dedicated two-accent architecture. Five structural positions ti·do·re·do·ti always preserved. Melisma collapses positions when count<5. distribute() bypassed.",
+      "feat: Tone 1 Phrase A — single-pitch cadence cadDurs (fills Q, close H); no melisma possible.",
+      "fix: pre-slur scoped to Tone 1 Phrase A only — removed generic def.prep firing.",
+      "feat: cadDuration() dispatch extended to Tone 1 alongside Tone 2.",
+      "note: rhythmic balancing (H·, extended W) requires rhythmic grouping engine — TBD.",
+    ],
+  },
   {
     version: "v0.10.0",
     date: "May 2026",
@@ -371,11 +387,96 @@ const DO_OPTIONS = [
 //    receives [re,ti] two quarter notes. Confirmed: "Hear me O Lord", "Christ God".
 const PH_DEFS = {
   1: {
-    A:     { recite: "re", inton: true,  prep: "ti", cad: ["do"] },
-    B:     { recite: "do", inton: false, prep: null, cad: ["do", "re", "ti"] },
-    C:     { recite: "re", inton: true,  prep: null, cad: ["do", "ti"] },
-    D:     { recite: "do", inton: false, prep: null, cad: ["ti", "do", "re", "do", "ti"] },
-    Final: { recite: "re", inton: false, prep: null, cad: ["do", "ti", "la"] },
+    // Tone 1 Common Chant (Obikhod) — L'vov-Bakhmetev, verified from Drillock & Ealy
+    // tutorial and OCA service scores. June 2026 deep-dive session.
+    // cadDurs blocks encode per-phrase duration logic; cadDuration() reads these.
+    // Rhythmic balancing (dotted halves, extended whole notes) requires the
+    // rhythmic grouping engine (not yet built) — machine defaults to plain H.
+    A: {
+      recite: "re", inton: true, prep: "ti", cad: ["do"],
+      cadDurs: {
+        // Single pitch cadence — no melisma possible (only one pitch).
+        // Anchor: H. Fills: Q. Close: H default.
+        // H· and W driven by rhythmic balancing (rhythmic grouping engine, TBD).
+        // Pre-slur: scoped to Tone 1 Phrase A only — see pointLine() guard.
+        anchor:    "H",
+        fillPitch: "do",
+        fillDur:   "Q",
+        closeDur:  "H",
+        wholeNote: null,   // unconfirmed — rhythmic grouping engine needed
+        melisma:   null,   // N/A — single pitch figure
+      },
+    },
+    B: {
+      recite: "do", inton: false, prep: null, cad: ["do", "re", "ti"],
+      cadDurs: {
+        // Score-verified: anchor do(H), fills re(H at count=3 / Q at count≥4),
+        // close ti(H) default. Melisma do·re on anchor at count=2.
+        // Whole note / dotted half on close driven by rhythmic balancing (TBD).
+        anchor:           "H",
+        fillPitch:        "re",
+        fillDur:          { lte3: "H", gte4: "Q" },
+        closeDur:         "H",
+        melismaThreshold: 3,   // count<3 → do·re melisma on anchor syllable
+        wholeNote:        null, // rhythmic grouping engine needed
+      },
+    },
+    C: {
+      recite: "re", inton: true, prep: null, cad: ["do", "ti"],
+      cadDurs: {
+        // Score-verified: anchor do(H), fills do(H at count≤3 / Q at count≥4),
+        // close ti(H) default. Fill pitch stays on do (same as anchor) throughout.
+        // No melisma observed. Whole note / dotted half driven by rhythmic balancing (TBD).
+        anchor:    "H",
+        fillPitch: "do",
+        fillDur:   { lte3: "H", gte4: "Q" },
+        closeDur:  "H",
+        melisma:   null,   // none observed — two-pitch figure distributes cleanly
+        wholeNote: null,   // rhythmic grouping engine needed
+      },
+    },
+    D: {
+      recite: "do", inton: false, prep: null, cad: ["ti", "do", "re", "do", "ti"],
+      // TWO-ACCENT architecture — anchor (ti, pos 1) + secondary accent (re, pos 3).
+      // Generic distribute() is INCOMPATIBLE — dedicated per-phrase logic required.
+      // Melisma collapses adjacent positions onto accented syllables when count<5.
+      // Melisma placement is accent-driven (director/machine marks both positions).
+      // Score-verified duration rules:
+      //   count=3: ti·do(H mel) · re·do(H mel) · ti(H)
+      //   count=4: ti(H) · do(H) · re·do(H mel) · ti(H or W)
+      //   count=5: ti(H) · do(H) · re(H) · do(H) · ti(H or W) — exact fit
+      //   count=6: ti(H) · do(H) · re(H) · do(Q) · do(Q) · ti(H or W)
+      //   count=7: ti(H) · do(Q)×n · re·do(H mel) · ti(H)
+      // Structural position notes always H; extra fills Q.
+      // Provisional: period '.' and '//' marker on close → W (empirical, not tutorial-confirmed).
+      cadDurs: {
+        twoAccent:          true,
+        structuralDur:      "H",   // all structural position notes
+        fillDur:            "Q",   // extra fills beyond count=5
+        melismaThreshold:   5,     // count<5 → collapse positions into melismas
+        wholeNote:          "period_or_doubleslash", // provisional — see note above
+      },
+    },
+    Final: {
+      recite: "re", inton: false, prep: null, cad: ["do", "ti", "la"],
+      // Score-verified: la close ALWAYS W (tutorial-stated, no exceptions observed).
+      // Structural melisma at count<3 preserves full do·ti·la figure.
+      // count=2: do·ti(H mel) · la(W)
+      // count=3: do(H) · ti(H) · la(W) — exact fit
+      // count≥5: do(Q) second position after anchor; ti fills remainder
+      // Anchor duration (H/H·/W) and ti fill duration (H/Q) driven by rhythmic
+      // balancing and available syllable count — rhythmic grouping engine needed.
+      // Pre-slur: N/A — no prep note in Tone 1 Final Phrase.
+      cadDurs: {
+        closeDur:                "W",    // la always W — tutorial-confirmed
+        melismaThreshold:        3,      // count<3 → do·ti melisma on anchor
+        secondPositionThreshold: 5,      // count≥5 → do(Q) second position after anchor
+        fillPitch:               "ti",   // remaining fills always on ti
+        fillDur:                 { lte5: "H", gte6: "Q" }, // strong inference
+        anchor:                  "H",   // default; H· or W via rhythmic grouping engine
+        preslur:                 null,   // N/A — no prep note
+      },
+    },
   },
   2: {
     // Tone 2 cadence duration rules — score-verified from L'vov-Bakhmetev Obikhod
@@ -1023,8 +1124,11 @@ function pointLine(line, phDefs, activeTone) {
   // Confirmed from OCA corpus: "Hear me O Lord" (Hear→me), "Pray to Christ God for us all!" (Christ→God).
   // The preslur check applies to ANY tone/phrase with def.prep set — but only
   // fires when body.length >= 1 and the last body syllable is a single accented monosyllable.
+  // SCOPED to Tone 1 Phrase A only — the only phrase where a pre-slur is structurally
+  // possible (prep: "ti") and has been verified. Tone 2 Final has its own pre-slur
+  // logic handled separately. Other tones/phrases with prep inherit no pre-slur behavior.
   let preslurIdx = -1; // index within body where pre-slur fires (the syllable before prep)
-  if (def.prep && body.length >= 1) {
+  if (activeTone === 1 && line.phrase === "A" && def.prep && body.length >= 1) {
     const candidate = body[body.length - 1];
     if (candidate.single && candidate.accent) {
       preslurIdx = body.length - 1;
@@ -1973,9 +2077,118 @@ export default function ToneTrainer() {
     // count=2: do·re·do melisma on anchor + ti(W) trailing
     // count=3: do·re melisma on anchor + do(H) + ti(W)
     // count≥4: clean one-per-syllable distribution
+    const isTone1 = activeTone === 1;
     const isTone2 = activeTone === 2;
+    const isTone1Final = isTone1 && line.phrase === "Final";
+    const isTone1B     = isTone1 && line.phrase === "B";
+    const isTone1D     = isTone1 && line.phrase === "D";
     const isTone2Final = isTone2 && line.phrase === "Final";
-    const isTone2A = isTone2 && line.phrase === "A";
+    const isTone2A     = isTone2 && line.phrase === "A";
+
+    // ── Tone 1 Final Phrase: structural melisma when cadCount < 3 ────────
+    // Preserves complete do·ti·la figure across available syllables.
+    // count=1: do·ti melisma on anchor + la(W) — single syllable takes both pitches
+    // count=2: do·ti melisma on anchor + la(W) — confirmed score-verified
+    // count≥3: clean one-per-syllable distribution (handled by generic path)
+    if (isTone1Final && cadCount < 3 && cadCount >= 1) {
+      roles.forEach((r) => {
+        if (r.role === "cad") return;
+        const syllDur = r.role === "inton" ? (r.accent ? H : Q) : Q;
+        const pitchDur = syllDur / r.pitches.length;
+        r.pitches.forEach(p => notes.push({ sol: p, dur: pitchDur, peak: 0.2 }));
+      });
+      if (cadCount === 1) {
+        // do·ti·la full melisma on single syllable
+        buildMelisma(["do","ti","la"], ["H","H","W"], H, Q, W, DH, 0.27).forEach(n => notes.push(n));
+      } else if (cadCount === 2) {
+        // do·ti melisma on anchor, la(W) on close
+        buildMelisma(["do","ti"], ["H","H"], H, Q, W, DH, 0.27).forEach(n => notes.push(n));
+        notes.push({ sol: "la", dur: W, peak: 0.2 });
+      }
+      return notes;
+    }
+
+    // ── Tone 1 Phrase B: do·re melisma on anchor when cadCount < 3 ───────
+    // Score-verified: count=2 → do·re(H mel) · ti(H)
+    if (isTone1B && cadCount < 3 && cadCount >= 1) {
+      roles.forEach((r) => {
+        if (r.role === "cad") return;
+        const syllDur = r.role === "inton" ? (r.accent ? H : Q) : Q;
+        const pitchDur = syllDur / r.pitches.length;
+        r.pitches.forEach(p => notes.push({ sol: p, dur: pitchDur, peak: 0.2 }));
+      });
+      if (cadCount === 1) {
+        // do·re·ti full melisma on single syllable
+        buildMelisma(["do","re","ti"], ["H","H","H"], H, Q, W, DH, 0.27).forEach(n => notes.push(n));
+      } else if (cadCount === 2) {
+        // do·re melisma on anchor, ti(H) on close
+        buildMelisma(["do","re"], ["H","H"], H, Q, W, DH, 0.27).forEach(n => notes.push(n));
+        notes.push({ sol: "ti", dur: H, peak: 0.2 });
+      }
+      return notes;
+    }
+
+    // ── Tone 1 Phrase D: two-accent architecture with melisma ─────────────
+    // The five-position figure ti·do·re·do·ti is always preserved.
+    // Two director/machine accent marks: anchor (ti, pos 1) + secondary (re, pos 3).
+    // When count<5: positions collapse into melismas on accented syllables.
+    // When count=5: exact fit, all H.
+    // When count>5: extra do(Q) fills inserted between re and final do.
+    // Generic distribute() is incompatible — dedicated logic here.
+    // Score-verified duration rules (June 2026 session).
+    if (isTone1D && cadCount >= 2) {
+      // Emit non-cad roles first
+      roles.forEach((r) => {
+        if (r.role === "cad") return;
+        const syllDur = r.role === "inton" ? (r.accent ? H : Q) : Q;
+        const pitchDur = syllDur / r.pitches.length;
+        r.pitches.forEach(p => notes.push({ sol: p, dur: pitchDur, peak: 0.2 }));
+      });
+
+      const cadSylls = roles.filter(r => r.role === "cad");
+      const n = cadSylls.length;
+
+      if (n <= 2) {
+        // count=2: ti·do(H mel) · re·do(H mel) · ti(H) — all three positions melisma
+        buildMelisma(["ti","do"], ["H","H"], H, Q, W, DH, 0.27).forEach(x => notes.push(x));
+        buildMelisma(["re","do"], ["H","H"], H, Q, W, DH, 0.27).forEach(x => notes.push(x));
+        notes.push({ sol: "ti", dur: H, peak: 0.2 });
+      } else if (n === 3) {
+        // count=3: ti·do(H mel) · re·do(H mel) · ti(H)
+        buildMelisma(["ti","do"], ["H","H"], H, Q, W, DH, 0.27).forEach(x => notes.push(x));
+        buildMelisma(["re","do"], ["H","H"], H, Q, W, DH, 0.27).forEach(x => notes.push(x));
+        notes.push({ sol: "ti", dur: H, peak: 0.2 });
+      } else if (n === 4) {
+        // count=4: ti(H) · do(H) · re·do(H mel) · ti(H)
+        notes.push({ sol: "ti", dur: H, peak: 0.27 }); // anchor
+        notes.push({ sol: "do", dur: H, peak: 0.2 });
+        buildMelisma(["re","do"], ["H","H"], H, Q, W, DH, 0.27).forEach(x => notes.push(x));
+        notes.push({ sol: "ti", dur: H, peak: 0.2 }); // close
+      } else if (n === 5) {
+        // count=5: exact fit ti(H)·do(H)·re(H)·do(H)·ti(H)
+        notes.push({ sol: "ti", dur: H, peak: 0.27 });
+        notes.push({ sol: "do", dur: H, peak: 0.2 });
+        notes.push({ sol: "re", dur: H, peak: 0.2 });
+        notes.push({ sol: "do", dur: H, peak: 0.2 });
+        notes.push({ sol: "ti", dur: H, peak: 0.2 });
+      } else if (n === 6) {
+        // count=6: ti(H)·do(H)·re(H)·do(Q)·do(Q)·ti(H)
+        notes.push({ sol: "ti", dur: H, peak: 0.27 });
+        notes.push({ sol: "do", dur: H, peak: 0.2 });
+        notes.push({ sol: "re", dur: H, peak: 0.2 });
+        // extra fills as Q
+        for (let i = 0; i < n - 4; i++) notes.push({ sol: "do", dur: Q, peak: 0.2 });
+        notes.push({ sol: "ti", dur: H, peak: 0.2 });
+      } else {
+        // count=7+: ti(H)·do(Q)×n·re·do(H mel)·ti(H)
+        notes.push({ sol: "ti", dur: H, peak: 0.27 });
+        // fills between anchor and re position
+        for (let i = 0; i < n - 4; i++) notes.push({ sol: "do", dur: Q, peak: 0.2 });
+        buildMelisma(["re","do"], ["H","H"], H, Q, W, DH, 0.27).forEach(x => notes.push(x));
+        notes.push({ sol: "ti", dur: H, peak: 0.2 });
+      }
+      return notes;
+    }
 
     // Tone 2 Final Phrase: if cadCount < 4, build melisma notes directly and return.
     if (isTone2Final && cadCount < 4 && cadCount >= 1) {
@@ -2059,7 +2272,7 @@ export default function ToneTrainer() {
         const cadPos = cadIdxs.indexOf(ri);
 
         // ── Tone 2: use per-phrase cadDuration() ─────────────────────────
-        if (isTone2 && phDef?.cadDurs) {
+        if ((isTone1 || isTone2) && phDef?.cadDurs) {
           const durStr = cadDuration(phDef, cadCount, cadPos, lastCadIsWordBoundary, hasRecitingTone);
           if (durStr !== null) {
             const durMap = { "H": H, "Q": Q, "W": W, "H·": DH };
@@ -2274,6 +2487,7 @@ export default function ToneTrainer() {
     const DH = H * 1.5;
     const phDef = PH[line.phrase];
     const isFinal = line.phrase === "Final";
+    const isTone1 = activeTone === 1;
     const isTone2 = activeTone === 2;
     const isTone2Final = isTone2 && line.phrase === "Final";
     const isTone2A = isTone2 && line.phrase === "A";
@@ -2345,7 +2559,7 @@ export default function ToneTrainer() {
       else if (r.role === "cad1")                         d = ri === cadIdxs[0] ? H : Q;
       else if (r.role === "cad") {
         const cadPos = cadIdxs.indexOf(ri);
-        if (isTone2 && phDef?.cadDurs) {
+        if ((isTone1 || isTone2) && phDef?.cadDurs) {
           const ds = cadDuration(phDef, cadCount, cadPos, lastCadIsWordBoundary, true);
           const dm = {"H":H,"Q":Q,"W":W,"H·":DH};
           d = ds ? (dm[ds] ?? H) : undefined;

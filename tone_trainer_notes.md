@@ -1,6 +1,47 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.10.0** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.11.0** | Component: `src/components/tone-trainer.jsx`
+
+---
+
+## Session summary (Jun 2026 — v0.11.0 — Tone 1 duration logic rewrite)
+
+### Overview
+
+A deep research and implementation session for Tone 1 Obikhod. The session consisted of:
+
+1. **Full phrase-by-phrase tutorial walkthrough** against Drillock & Ealy, confirming or correcting all five phrase definitions
+2. **Score walkthrough** against OCA service texts, establishing score-verified duration rules for all five phrases
+3. **Analysis document** written to `tone_trainer_tone1_analysis.md` (§12) — full research record with logic charts, open questions, and architectural findings
+4. **Code rewrite** implementing confirmed findings as `cadDurs` blocks and dedicated phrase logic
+
+### Key findings
+
+**Alto pointing (PH_DEFS[1]) — all five phrase definitions confirmed correct.** No pitch figure changes needed.
+
+**Architectural principle confirmed:** Each tone/phrase requires its own self-contained logic. Generic `distribute()` is incompatible with Phrase D's two-accent architecture. This principle now governs all future tone implementation.
+
+**Rhythmic grouping engine identified as a cross-cutting gap** affecting all tones. The tutorial introduction describes word-level rhythmic grouping (two-grouping / three-grouping) that drives dotted half notes and extended whole notes. This cannot be computed from role alone — requires a phrase-level pre-pass. Flagged for future implementation as a separate architectural layer above the current base defaults.
+
+**Pre-slur scoped to Tone 1 Phrase A only.** The generic `def.prep` gate was incorrectly firing for any phrase with a prep note. Pre-slur is now explicitly gated on `activeTone === 1 && phrase === "A"`.
+
+### Per-phrase summary
+
+| Phrase | Key finding | Status |
+|---|---|---|
+| A | Single pitch cadence; fills Q; prep positional; pre-slur scoped | ✅ cadDurs added |
+| B | do·re melisma at count=2; re fills H≤3/Q≥4; close ti(H) | ✅ cadDurs + melisma |
+| C | do fills H≤3/Q≥4; close ti(H); no melisma | ✅ cadDurs added |
+| D | Two-accent architecture; five positions always preserved; melisma when count<5 | ✅ dedicated logic |
+| Final | la always W; structural melisma at count<3; do(Q) second position at count≥5 | ✅ cadDurs + melisma |
+
+### Open questions carried forward
+
+1. Rhythmic grouping engine (dotted halves / whole notes) — all tones affected
+2. Tone 1 Phrase A pre-slur duration — currently Q·Q, unverified from score
+3. Phrase D whole note trigger — period/`//` pattern provisional, needs more score evidence
+4. Anchor detection backup rule in Phrase A — prep always separates body from cadence
+5. Count=4 Final Phrase `do(W)` — only "Lover of man" observed, needs independent evidence
 
 ---
 
