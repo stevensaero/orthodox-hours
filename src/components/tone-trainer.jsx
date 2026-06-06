@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.16";
+export const TONE_TRAINER_VERSION = "v0.11.17";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.17",
+    date: "June 2026",
+    summary: "feat: Tone 1 soprano enabled — pure diatonic third above alto, verified against tutorial",
+    items: [
+      "feat: Added 1 to SOPRANO_TONES. Tone 1 soprano is a pure diatonic third above alto throughout all 5 phrases — 21/21 notes verified against Drillock & Ealy Four-Part Harmony tutorial. Existing SOPRANO_MAP covers Tone 1 without modification.",
+    ],
+  },
   {
     version: "v0.11.16",
     date: "June 2026",
@@ -809,7 +817,9 @@ const chipH_bass = (sol) => {
 // This mirrors freq_soprano's same-logic audio correction.
 // Tones with score-verified soprano rules. Soprano is suppressed for all other tones.
 // Add a tone here only after researching the Obikhod score for that tone.
-const SOPRANO_TONES = new Set([2]);
+// Tone 1: pure diatonic third above alto — verified against Drillock & Ealy
+// Four-Part Harmony tutorial, all 5 phrases, 21/21 notes match SOPRANO_MAP.
+const SOPRANO_TONES = new Set([1, 2]);
 
 const chipH_soprano = (altoPitch) => {
   const mapped = SOPRANO_MAP[altoPitch] ?? altoPitch;
