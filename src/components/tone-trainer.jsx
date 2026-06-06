@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.0";
+export const TONE_TRAINER_VERSION = "v0.11.1";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.1",
+    date: "June 2026",
+    summary: "fix: Tone 1 Final Phrase accented reciting tone now H",
+    items: [
+      "fix: Tone 1 Final Phrase — accented reciting tone syllables now emit H not Q. Score-verified: 'Hear me, O Lord!' shows Hear=re(H), me=do(H), O=ti(H), Lord!=la(W). Scoped to isTone1Final only — all other tones/phrases reciting tone remains Q per tutorial.",
+    ],
+  },
   {
     version: "v0.11.0",
     date: "June 2026",
@@ -2255,7 +2263,10 @@ export default function ToneTrainer() {
       if (r.role === "inton") {
         syllDur = r.accent ? H : Q;
       } else if (r.role === "recite" || r.role === "prep") {
-        syllDur = Q;
+        // Tone 1 Final Phrase: accented reciting tone syllables get H (score-verified).
+        // "Hear me, O Lord!" — "Hear" is accented reciting tone → re(H).
+        // All other tones/phrases: reciting tone always Q per tutorial.
+        syllDur = (isTone1Final && r.role === "recite" && r.accent) ? H : Q;
       } else if (r.role === "preslur") {
         // Pre-slur = two quarter notes (re + ti) as a pickup before the prep.
         // Assign H so the melisma division (syllDur / pitches.length = H/2) yields Q+Q.
