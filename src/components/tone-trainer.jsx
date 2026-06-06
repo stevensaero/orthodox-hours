@@ -10,11 +10,20 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.17";
+export const TONE_TRAINER_VERSION = "v0.11.18";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.18",
+    date: "June 2026",
+    summary: "fix: bass chip heights respect per-phrase octaveDiv — Tone 1 Final re/mi now render at correct visual height",
+    items: [
+      "fix: chipH_bass() now accepts phraseRules. When octaveDiv places a pitch in a higher register than global, its index is shifted up so it renders shorter (higher) than globally-placed pitches. Mirrors freq_bass per-phrase octave logic.",
+      "fix: Tone 1 Final bass chips: la=tallest, re=medium, mi=shortest — correct. Tone 2 chip heights unchanged.",
+    ],
+  },
   {
     version: "v0.11.17",
     date: "June 2026",
@@ -803,9 +812,16 @@ const CHIP_MELISMA_GAP = 1; // tight gap between melisma sub-chips
 // before encoding new tone bass rules, or chipH_bass() falls back to index 0.
 const BASS_PITCH_ORDER = { re: 0, mi: 1, fa: 2, sol: 3, la: 4, ti: 5, do: 6, di: 7 };
 const BASS_MAX_IDX = 7;
-const chipH_bass = (sol) => {
-  const idx = BASS_PITCH_ORDER[sol] !== undefined ? BASS_PITCH_ORDER[sol] : 0;
-  const inv = BASS_MAX_IDX - idx;
+// Optional phraseRules: when a pitch's octaveDiv is lower than global (higher register),
+// shift its index up by BASS_MAX_IDX+1 so it renders shorter (higher) than all
+// globally-placed pitches. Mirrors the freq_bass per-phrase octave override logic.
+const chipH_bass = (sol, phraseRules) => {
+  let idx = BASS_PITCH_ORDER[sol] !== undefined ? BASS_PITCH_ORDER[sol] : 0;
+  // If this phrase places the pitch in a higher register than global, shift index up
+  const globalDiv = BASS_OCTAVE_DIV[sol] ?? 2;
+  const localDiv  = phraseRules?.octaveDiv?.[sol] ?? globalDiv;
+  if (localDiv < globalDiv) idx += (BASS_MAX_IDX + 1);
+  const inv = (BASS_MAX_IDX * 2 + 1) - idx;
   return CHIP_BASE_H + Math.max(0, inv) * CHIP_STEP_H;
 };
 
@@ -4175,7 +4191,7 @@ export default function ToneTrainer() {
 
         const renderChip = (r, i, isBass, isSoprano = false, isGhostSoprano = false) => {
           const role = r.role === "preslur" ? "prep" : r.role;
-          const h = isBass ? chipH_bass(r.pitches[0])
+          const h = isBass ? chipH_bass(r.pitches[0], r.phraseRules)
                   : (isSoprano || isGhostSoprano) ? chipH_soprano(r.pitches[0])
                   : chipH(r.pitches[0]);
           const w = chipW(r);
