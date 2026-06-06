@@ -1548,6 +1548,27 @@ function buildMelisma(pitches, durs, H, Q, W, DH, peak) {
 //   preslurMap— maps each alto preslur pitch → bass preslur pitch
 
 const BASS_RULES = {
+  // ── Tone 1, Russian Obikhod (L'vov-Bakhmetev) ──────────────────────────
+  // Verified phrase by phrase against Drillock & Ealy Four-Part Harmony tutorial.
+  // Logic structure mirrors Tone 2: recite covers inton+recite roles; prepMap and
+  // cadMap handle prep and cad roles; preslurMap handles preslur. Fallback ?? altoPitch
+  // passes through any unmapped pitch unchanged.
+  1: {
+    A: {
+      // Intonation alto=re → bass=sol; reciting alto=re → bass=sol
+      recite: "sol",
+      // Prep alto=ti → bass=sol
+      prepMap: { ti: "sol" },
+      // Cadence alto=do → bass=do
+      cadMap: { do: "do" },
+      preslurMap: {},
+    },
+    // B, C, D, Final — pending phrase-by-phrase verification with Bill
+    B: null,
+    C: null,
+    D: null,
+    Final: null,
+  },
   // ── Tone 2, Russian Obikhod (L'vov-Bakhmetev) ──────────────────────────
   2: {
     // setting: "Obikhod (L'vov-Bakhmetev)" — flag if other settings are added
