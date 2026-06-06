@@ -10,11 +10,21 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.5";
+export const TONE_TRAINER_VERSION = "v0.11.6";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.6",
+    date: "June 2026",
+    summary: "fix: remove pre-slur from Tone 1 Phrase A — no score evidence, violated prime directive",
+    items: [
+      "fix: pre-slur removed from Tone 1 Phrase A dedicated path entirely. No score evidence exists for a pre-slur in Tone 1 Phrase A. It was incorrectly ported from Tone 2 logic.",
+      "fix: pre-slur guard also removed from standard single-anchor path (was dead code after Phrase A got dedicated path, but retained incorrect assumption).",
+      "arch: prime directive encoded — each tone and each tone/phrase gets only its own score-verified logic. No logic ported from another tone/phrase without evidence.",
+    ],
+  },
   {
     version: "v0.11.5",
     date: "June 2026",
@@ -1215,19 +1225,14 @@ function pointLine(line, phDefs, activeTone) {
     const prepS   = flat[prepIdx];
     const roles   = [];
 
-    // Find intonation index in body — last accented syllable, fallback to body[0]
+    // Find intonation index in body — last accented syllable, fallback to body[0].
+    // No pre-slur in Tone 1 Phrase A — no score evidence exists for it.
+    // Pre-slur was incorrectly ported from Tone 2 logic; removed per prime directive
+    // (each tone/phrase gets only its own score-verified logic).
     const bodyAccIdxs = body.map((s, i) => s.accent ? i : -1).filter(i => i >= 0);
     const intonIdx = bodyAccIdxs.length > 0 ? bodyAccIdxs[bodyAccIdxs.length - 1] : (body.length > 0 ? 0 : -1);
 
-    // Pre-slur: last body syllable is single accented monosyllable
-    const preslurIdx = (body.length >= 1 && body[body.length - 1].single && body[body.length - 1].accent)
-      ? body.length - 1 : -1;
-
     body.forEach((s, i) => {
-      if (preslurIdx >= 0 && i === preslurIdx) {
-        roles.push({ role: "preslur", pitches: [def.recite, def.prep], accent: s.accent, text: s.text, source: s.source });
-        return;
-      }
       const role = (i === intonIdx) ? "inton" : "recite";
       roles.push({ role, pitches: [def.recite], accent: s.accent, text: s.text, source: s.source });
     });
@@ -1252,19 +1257,11 @@ function pointLine(line, phDefs, activeTone) {
   // If the phrase has a prep note AND the syllable immediately before the prep
   // is a single accented monosyllable, that syllable gets role="preslur" with
   // pitches [recite, prep] as two quarter notes (re→ti for Tone 2 Final).
-  // Confirmed from OCA corpus: "Hear me O Lord" (Hear→me), "Pray to Christ God for us all!" (Christ→God).
-  // The preslur check applies to ANY tone/phrase with def.prep set — but only
-  // fires when body.length >= 1 and the last body syllable is a single accented monosyllable.
-  // SCOPED to Tone 1 Phrase A only — the only phrase where a pre-slur is structurally
-  // possible (prep: "ti") and has been verified. Tone 2 Final has its own pre-slur
-  // logic handled separately. Other tones/phrases with prep inherit no pre-slur behavior.
-  let preslurIdx = -1; // index within body where pre-slur fires (the syllable before prep)
-  if (activeTone === 1 && line.phrase === "A" && def.prep && body.length >= 1) {
-    const candidate = body[body.length - 1];
-    if (candidate.single && candidate.accent) {
-      preslurIdx = body.length - 1;
-    }
-  }
+  // Pre-slur: Tone 1 Phrase A had a pre-slur guard here, removed — no score evidence.
+  // Per prime directive: each tone/phrase gets only its own score-verified logic.
+  // Tone 1 Phrase A now has a dedicated path above that returns before reaching here.
+  // Tone 2 Final pre-slur is handled in its own dedicated block.
+  let preslurIdx = -1; // retained for Tone 2 Final path compatibility — always -1 here
 
   // For phrases with intonation, find the first accented body syllable.
   // That syllable is the tutorial's intonation half note (role="inton", accent=true → H).
