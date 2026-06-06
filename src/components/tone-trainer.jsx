@@ -10,11 +10,26 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.18";
+export const TONE_TRAINER_VERSION = "v0.11.19";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.19",
+    date: "June 2026",
+    summary: "feat: Tenor voice — Tone 1 fully wired, SATB ghost over bass, standalone tenor view",
+    items: [
+      "feat: si (raised 6th, B♮ in D minor) added to OFF table at offset -2. Sounding tenor pitch in Tone 1 Final Phrase (tenor cadMap ti→si).",
+      "feat: TENOR_PITCH_ORDER, TENOR_MAX_IDX, TENOR_OCTAVE_DIV, chipH_tenor, TENOR_TONES, TENOR_RULES — mirror bass architecture exactly. Per-tone per-phrase logic; no cross-tone assumptions.",
+      "feat: TENOR_RULES[1] — all 5 phrases verified against Drillock & Ealy tutorial. A-D: recite=sol, cadMap all→sol. Final: recite=la, cadMap do→la / ti→si / la→mi.",
+      "feat: freq_tenor(), lineToNotes_tenor() — mirror freq_bass/lineToNotes_bass. phraseRules passed for per-phrase octaveDiv support.",
+      "feat: Tenor standalone view — chip row below text, inverted scale (lower pitch = taller chip), stripe at bottom, solfège label.",
+      "feat: SATB ghost tenor over bass — 50% opacity, flex-start, container height = max(bassChipH, tenorChipH). Mirrors soprano ghost over alto pattern.",
+      "feat: Tenor enabled in voice selector dropdown for tones in TENOR_TONES. SATB label updated.",
+      "arch: renderChip gains isTenor/isGhostTenor params; isDownward flag unifies bass+tenor stripe/label positioning.",
+    ],
+  },
   {
     version: "v0.11.18",
     date: "June 2026",
@@ -535,7 +550,7 @@ const TRAINER_RELEASE_NOTES = [
 // di = chromatic raised do (one semitone above do) — used in Tone 2 Phrases B and D.
 // fa = perfect fourth above do — used in Tone 2 Phrase A cadence.
 // sol = perfect fifth above do — in scale for completeness; not yet used in cadences.
-const OFF = { la: -3, ti: -1, do: 0, di: 1, re: 2, mi: 4, fa: 5, sol: 7 };
+const OFF = { la: -3, si: -2, ti: -1, do: 0, di: 1, re: 2, mi: 4, fa: 5, sol: 7 };
 const DO_OPTIONS = [
   { label: "F", hz: 174.61 },
   { label: "G", hz: 196.00 },
@@ -824,6 +839,28 @@ const chipH_bass = (sol, phraseRules) => {
   const inv = (BASS_MAX_IDX * 2 + 1) - idx;
   return CHIP_BASE_H + Math.max(0, inv) * CHIP_STEP_H;
 };
+
+// ── TENOR PITCH/CHIP ARCHITECTURE ───────────────────────────────────────────
+// Tenor sits one octave below soprano (div-2 throughout). si = raised 6th
+// (harmonic minor, B♮ in D minor context), offset -2 semitones from do.
+// Chip heights use inverted scale identical to bass: lower pitch = taller chip.
+// TENOR_PITCH_ORDER must cover every pitch any TENOR_RULES entry may emit.
+const TENOR_PITCH_ORDER = { la: 0, si: 1, ti: 2, do: 3, di: 4, re: 5, mi: 6, fa: 7, sol: 8 };
+const TENOR_MAX_IDX = 8;
+const TENOR_OCTAVE_DIV = {
+  la: 2, si: 2, ti: 2, do: 2, di: 2, re: 2, mi: 2, fa: 2, sol: 2,
+};
+const chipH_tenor = (sol, phraseRules) => {
+  let idx = TENOR_PITCH_ORDER[sol] !== undefined ? TENOR_PITCH_ORDER[sol] : 0;
+  const globalDiv = TENOR_OCTAVE_DIV[sol] ?? 2;
+  const localDiv  = phraseRules?.octaveDiv?.[sol] ?? globalDiv;
+  if (localDiv < globalDiv) idx += (TENOR_MAX_IDX + 1);
+  const inv = (TENOR_MAX_IDX * 2 + 1) - idx;
+  return CHIP_BASE_H + Math.max(0, inv) * CHIP_STEP_H;
+};
+
+// Tones with score-verified tenor rules. Tenor is suppressed for all other tones.
+const TENOR_TONES = new Set([1]);
 
 // Soprano chip height — always above the corresponding alto chip.
 // Maps alto pitch through SOPRANO_MAP, then ensures the result sits
@@ -1599,6 +1636,49 @@ function buildMelisma(pitches, durs, H, Q, W, DH, peak) {
 //   cadMap    — maps alto cadence pitch → bass cadence pitch
 //   prepMap   — maps alto prep pitch → bass prep pitch (empty if same as cadMap)
 //   preslurMap— maps each alto preslur pitch → bass preslur pitch
+
+const TENOR_RULES = {
+  // ── Tone 1, Russian Obikhod (L'vov-Bakhmetev) ──────────────────────────
+  // Verified phrase by phrase against Drillock & Ealy Four-Part Harmony tutorial.
+  1: {
+    A: {
+      // Intonation and reciting alto=re → tenor=sol; prep alto=ti → tenor=sol
+      recite: "sol",
+      prepMap: { ti: "sol" },
+      // Cadence: tenor holds sol throughout regardless of alto pitch
+      cadMap: { do: "sol", re: "sol", ti: "sol" },
+      preslurMap: {},
+    },
+    B: {
+      recite: "sol",
+      prepMap: {},
+      cadMap: { do: "sol", re: "sol", ti: "sol" },
+      preslurMap: {},
+    },
+    C: {
+      recite: "sol",
+      prepMap: {},
+      cadMap: { do: "sol", ti: "sol" },
+      preslurMap: {},
+    },
+    D: {
+      recite: "sol",
+      prepMap: {},
+      // 5-syllable cadence: tenor holds sol throughout
+      cadMap: { ti: "sol", do: "sol", re: "sol" },
+      preslurMap: {},
+    },
+    Final: {
+      // Reciting alto=re → tenor=la
+      recite: "la",
+      prepMap: {},
+      // Cadence: alto do→ti→la → tenor la→si→mi
+      // si = raised 6th (B♮ in D minor), harmonic minor approach to la close
+      cadMap: { do: "la", ti: "si", la: "mi" },
+      preslurMap: {},
+    },
+  },
+};
 
 const BASS_RULES = {
   // ── Tone 1, Russian Obikhod (L'vov-Bakhmetev) ──────────────────────────
@@ -2736,6 +2816,11 @@ export default function ToneTrainer() {
     return sopF0 > altoF ? sopF0 : sopF0 * 2;
   };
 
+  // Tenor frequency — one octave below soprano reference (div-2 throughout).
+  // Optional phraseRules arg for per-phrase octave override (same pattern as freq_bass).
+  const freq_tenor = (sol, phraseRules) =>
+    freq(sol) / (phraseRules?.octaveDiv?.[sol] ?? TENOR_OCTAVE_DIV[sol] ?? 2);
+
   // lineToNotes_soprano(line)
   // Derives soprano audio notes from rolesWD — same expanded representation as
   // alto and bass. Pitches mapped through SOPRANO_MAP; durations identical to alto.
@@ -2791,6 +2876,38 @@ export default function ToneTrainer() {
     return notes;
   };
 
+  // lineToNotes_tenor(line)
+  // Derives tenor audio notes from rolesWD — mirrors lineToNotes_bass exactly.
+  const lineToNotes_tenor = (line) => {
+    const rules = TENOR_RULES[activeTone]?.[line.phrase];
+    if (!rules) return null;
+
+    const rolesWD = lineToRolesWithDuration(line);
+
+    const tenorRolesWD = rolesWD.map(r => {
+      let tenorPitch;
+      if (r.role === "recite" || r.role === "inton") {
+        tenorPitch = rules.recite;
+      } else if (r.role === "prep") {
+        tenorPitch = rules.prepMap?.[r.pitches[0]] ?? r.pitches[0];
+      } else if (r.role === "preslur") {
+        tenorPitch = rules.preslurMap?.[r.pitches[0]] ?? r.pitches[0];
+      } else if (r.role === "cad" || r.role === "cad1") {
+        tenorPitch = rules.cadMap?.[r.pitches[0]] ?? r.pitches[0];
+      } else {
+        tenorPitch = r.pitches[0];
+      }
+      return { ...r, pitches: [tenorPitch] };
+    });
+
+    const notes = [];
+    const peak = (r) => (r.role === "cad" || r.role === "cad1") && r.anchor ? 0.38 : 0.33;
+    tenorRolesWD.forEach(r => {
+      notes.push({ sol: r.pitches[0], dur: r.dur, peak: peak(r), tenor: true, phraseRules: rules });
+    });
+    return notes;
+  };
+
   const playNotes = (notes, onDone) => {
     const c = ac();
     let t = c.currentTime + 0.06;
@@ -2805,16 +2922,18 @@ export default function ToneTrainer() {
     }
   };
 
-  const playNotesWithBass = (altoNotes, bassNotes, sopranoNotes, onDone, li) => {
+  const playNotesWithBass = (altoNotes, bassNotes, sopranoNotes, tenorNotes, onDone, li) => {
     const c = ac();
     const startT = c.currentTime + 0.06;
     let t = startT;
     let tb = startT;
     let ts = startT;
+    let tt = startT;
 
     const playAlto    = voicePart === "alto" || voicePart === "alto-bass" || voicePart === "satb";
     const playBass    = (voicePart === "bass" || voicePart === "alto-bass" || voicePart === "satb") && bassNotes;
     const playSoprano = voicePart === "soprano" || voicePart === "satb";
+    const playTenor   = (voicePart === "tenor" || voicePart === "satb") && tenorNotes;
 
     const scheduleAltoHighlights = (notes) => {
       let ht = startT;
@@ -2854,8 +2973,11 @@ export default function ToneTrainer() {
       scheduleAltoHighlights(sopranoNotes); // soprano uses alto chip row
       sopranoNotes.forEach((n) => { toneTimbre(freq_soprano(n.sol), ts, n.dur, n.peak, timbre); ts += n.dur; });
     }
+    if (playTenor) {
+      tenorNotes.forEach((n) => { toneTimbre(freq_tenor(n.sol, n.phraseRules), tt, n.dur, n.peak, timbre); tt += n.dur; });
+    }
 
-    const totalDur = Math.max(t, tb, ts) - startT;
+    const totalDur = Math.max(t, tb, ts, tt) - startT;
     if (onDone) {
       const id = setTimeout(onDone, totalDur * 1000 + 40);
       timerIdsRef.current.push(id);
@@ -2881,7 +3003,8 @@ export default function ToneTrainer() {
     const altoNotes    = lineToNotes(src[li]);
     const bassNotes    = lineToNotes_bass(src[li]);
     const sopranoNotes = lineToNotes_soprano(src[li]);
-    playNotesWithBass(altoNotes, bassNotes, sopranoNotes, () => { setPlayingLine(null); setPlayingAltoIdx(null); setPlayingBassIdx(null); setPlayingWhich(null); }, li);
+    const tenorNotes   = lineToNotes_tenor(src[li]);
+    playNotesWithBass(altoNotes, bassNotes, sopranoNotes, tenorNotes, () => { setPlayingLine(null); setPlayingAltoIdx(null); setPlayingBassIdx(null); setPlayingWhich(null); }, li);
   };
 
   // lineToRolesWithDuration(line)
@@ -3120,7 +3243,8 @@ export default function ToneTrainer() {
     const altoNotes    = lineToNotes(activeLines()[li]);
     const bassNotes    = lineToNotes_bass(activeLines()[li]);
     const sopranoNotes = lineToNotes_soprano(activeLines()[li]);
-    playNotesWithBass(altoNotes, bassNotes, sopranoNotes, () => { setPlayingLine(null); setPlayingAltoIdx(null); setPlayingBassIdx(null); setPlayingWhich(null); }, li);
+    const tenorNotes   = lineToNotes_tenor(activeLines()[li]);
+    playNotesWithBass(altoNotes, bassNotes, sopranoNotes, tenorNotes, () => { setPlayingLine(null); setPlayingAltoIdx(null); setPlayingBassIdx(null); setPlayingWhich(null); }, li);
   };
 
   const playAll = () => {
@@ -3132,15 +3256,18 @@ export default function ToneTrainer() {
     let t = startT;
     let tb = startT;
     let ts = startT;
+    let tt = startT;
     const which = compareMode && machineLines ? singWhich : "truth";
     const playAlto      = voicePart === "alto" || voicePart === "alto-bass" || voicePart === "satb";
     const playBassVoice = voicePart === "bass" || voicePart === "alto-bass" || voicePart === "satb";
     const playSoprano   = voicePart === "soprano" || voicePart === "satb";
+    const playTenorVoice = voicePart === "tenor" || voicePart === "satb";
     setPlayingWhich(which);
     activeLines().forEach((line, li) => {
       const altoNotes    = lineToNotes(line);
       const bassNotes    = lineToNotes_bass(line);
       const sopranoNotes = lineToNotes_soprano(line);
+      const tenorNotes   = lineToNotes_tenor(line);
       const start = t;
       const id1 = setTimeout(() => { setPlayingLine(li); setPlayingAltoIdx(null); setPlayingBassIdx(null); }, (start - c.currentTime) * 1000);
       timerIdsRef.current.push(id1);
@@ -3186,6 +3313,11 @@ export default function ToneTrainer() {
         });
         sopranoNotes.forEach((n) => { toneTimbre(freq_soprano(n.sol), ts, n.dur, n.peak, timbre); ts += n.dur; });
         ts += (60 / bpm) / 2;
+      }
+
+      if (playTenorVoice && tenorNotes) {
+        tenorNotes.forEach((n) => { toneTimbre(freq_tenor(n.sol, n.phraseRules), tt, n.dur, n.peak, timbre); tt += n.dur; });
+        tt += (60 / bpm) / 2;
       }
 
       if (playAlto) t += (60 / bpm) / 2;
@@ -3915,11 +4047,11 @@ export default function ToneTrainer() {
                      fontFamily: "Georgia, serif", color: "#5b4a33" }}>
             <option value="soprano">Soprano</option>
             <option value="alto">Alto (Melody)</option>
-            <option value="tenor" disabled style={{ color: "#bbb" }}>Tenor (coming)</option>
+            <option value="tenor" disabled={!TENOR_TONES.has(activeTone)} style={!TENOR_TONES.has(activeTone) ? { color: "#bbb" } : {}}>Tenor</option>
             <option value="bass">Bass</option>
             <option disabled>──────────</option>
             <option value="alto-bass">Alto + Bass</option>
-            <option value="satb">SATB (no tenor yet)</option>
+            <option value="satb">SATB</option>
           </select>
         )}
         {/* Timbre selector — only in sing view */}
@@ -4165,14 +4297,39 @@ export default function ToneTrainer() {
         })();
         const isFin = line.phrase === "Final";
         const sopranoAvailable = SOPRANO_TONES.has(activeTone);
+        const tenorAvailable   = TENOR_TONES.has(activeTone);
         const showAlto       = voicePart === "alto" || voicePart === "alto-bass" || voicePart === "satb";
         const showBass       = (voicePart === "bass" || voicePart === "alto-bass" || voicePart === "satb") && bassRolesWD;
         const showSoprano    = sopranoAvailable && voicePart === "soprano";
         const showSopranoTab = sopranoAvailable && voicePart === "satb";
+        const showTenor      = tenorAvailable && voicePart === "tenor";
+        const showTenorGhost = tenorAvailable && voicePart === "satb";
 
         // Soprano rolesWD — same structure as alto, alto pitches retained.
         // chipH_soprano(altoPitch) and freq_soprano(altoPitch) both expect alto pitch.
         const sopranoRolesWD = (showSoprano || showSopranoTab) ? rolesWD : null;
+
+        // Tenor rolesWD — derived from rolesWD via TENOR_RULES, mirrors bassRolesWD pattern.
+        const tenorRolesWD = (() => {
+          if (!showTenor && !showTenorGhost) return null;
+          const trules = TENOR_RULES[activeTone]?.[line.phrase];
+          if (!trules) return null;
+          return rolesWD.map(r => {
+            let tenorPitch;
+            if (r.role === "recite" || r.role === "inton") {
+              tenorPitch = trules.recite;
+            } else if (r.role === "prep") {
+              tenorPitch = trules.prepMap?.[r.pitches[0]] ?? r.pitches[0];
+            } else if (r.role === "preslur") {
+              tenorPitch = trules.preslurMap?.[r.pitches[0]] ?? r.pitches[0];
+            } else if (r.role === "cad" || r.role === "cad1") {
+              tenorPitch = trules.cadMap?.[r.pitches[0]] ?? r.pitches[0];
+            } else {
+              tenorPitch = r.pitches[0];
+            }
+            return { ...r, pitches: [tenorPitch], phraseRules: trules };
+          });
+        })();
 
         // Role colors matching roleBg/roleColor
         const chipBg = { recite:"rgba(40,58,92,.06)", inton:"rgba(40,120,60,.10)", prep:"rgba(180,137,43,.16)", cad:"rgba(122,36,24,.10)", cad1:"rgba(122,36,24,.05)", preslur:"rgba(180,137,43,.22)" };
@@ -4189,14 +4346,16 @@ export default function ToneTrainer() {
         // may differ further. durKey is the single source of truth for chip width).
         const chipW = (r) => CHIP_W[r.durKey] ?? CHIP_W.Q;
 
-        const renderChip = (r, i, isBass, isSoprano = false, isGhostSoprano = false) => {
+        const renderChip = (r, i, isBass, isSoprano = false, isGhostSoprano = false, isTenor = false, isGhostTenor = false) => {
           const role = r.role === "preslur" ? "prep" : r.role;
           const h = isBass ? chipH_bass(r.pitches[0], r.phraseRules)
+                  : (isTenor || isGhostTenor) ? chipH_tenor(r.pitches[0], r.phraseRules)
                   : (isSoprano || isGhostSoprano) ? chipH_soprano(r.pitches[0])
                   : chipH(r.pitches[0]);
           const w = chipW(r);
           const isAnchor = r.anchor || (r.role === "cad" && i === 0);
           const bg = chipBg[role] ?? chipBg.recite;
+          const isDownward = isBass || isTenor || isGhostTenor;
           const isActive = playingLine === li && (
             isBass ? playingBassIdx === i : playingAltoIdx === i
           );
@@ -4206,7 +4365,7 @@ export default function ToneTrainer() {
           const stripe = chipStripe[role] ?? chipStripe.recite;
           const sol = (isSoprano || isGhostSoprano) ? (SOPRANO_MAP[r.pitches[0]] ?? r.pitches[0]) : r.pitches[0];
 
-          // Ghost soprano: transparent body, solid stripe crown only — used in alto+bass view
+          // Ghost soprano: transparent body, solid stripe crown only
           if (isGhostSoprano) {
             return (
               <div key={i} style={{
@@ -4227,11 +4386,32 @@ export default function ToneTrainer() {
             );
           }
 
+          // Ghost tenor: transparent body, solid stripe at bottom — ghosted over bass
+          if (isGhostTenor) {
+            return (
+              <div key={i} style={{
+                position: "relative", display: "inline-block", flexShrink: 0,
+                width: w, height: h,
+                background: "transparent",
+                border: `1px solid ${chipBorderColor[role] ?? chipBorderColor.recite}`,
+                borderRadius: 6,
+                overflow: "hidden",
+                opacity: isActive ? 1 : 0.85,
+              }}>
+                <div style={{
+                  position: "absolute", left: 0, right: 0, bottom: 0,
+                  height: 8, background: stripe,
+                  borderRadius: "0 0 5px 5px",
+                }} />
+              </div>
+            );
+          }
+
           return (
             <div key={i} style={{
               position: "relative", display: "inline-block", flexShrink: 0,
               width: w, height: h,
-              background: isActive ? (isBass ? "rgba(122,36,24,.22)" : "rgba(40,58,92,.18)") : bg,
+              background: isActive ? (isDownward ? "rgba(122,36,24,.22)" : "rgba(40,58,92,.18)") : bg,
               border: `${borderW} solid ${borderC}`,
               borderRadius: 6,
               overflow: "hidden",
@@ -4240,14 +4420,14 @@ export default function ToneTrainer() {
               {/* Role stripe bar */}
               <div style={{
                 position: "absolute", left: 0, right: 0,
-                ...(isBass ? { bottom: 0 } : { top: 0 }),
+                ...(isDownward ? { bottom: 0 } : { top: 0 }),
                 height: 8, background: stripe,
-                borderRadius: isBass ? "0 0 5px 5px" : "5px 5px 0 0",
+                borderRadius: isDownward ? "0 0 5px 5px" : "5px 5px 0 0",
               }} />
-              {/* Solfège label — shown for alto, bass, and standalone soprano */}
+              {/* Solfège label */}
               <div style={{
                 position: "absolute", left: 0, right: 0, textAlign: "center",
-                ...(isBass ? { bottom: 10 } : { top: 10 }),
+                ...(isDownward ? { bottom: 10 } : { top: 10 }),
                 fontSize: 9, color: solColor, fontStyle: "italic",
                 fontFamily: "Georgia, serif",
               }}>{sol}</div>
@@ -4303,7 +4483,7 @@ export default function ToneTrainer() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap", marginBottom: "0.6rem" }}>
               <span style={{ background: isFin ? "#7a2418" : "#283a5c", color: "#fff", borderRadius: 5, padding: "2px 10px", fontSize: "0.78rem", flexShrink: 0 }}>{PNAME[line.phrase]}</span>
               <span style={{ fontSize: "0.76rem", color: "#6b5942", fontStyle: "italic", flex: 1 }}>
-                {voicePart === "bass" ? "Bass · " : voicePart === "soprano" ? "Soprano · " : "Alto · "}{PNAME[line.phrase]} · reciting on <b>{PH[line.phrase].recite}</b>{PH[line.phrase].prep ? <> · prep on <b>{PH[line.phrase].prep}</b></> : null}
+                {voicePart === "bass" ? "Bass · " : voicePart === "soprano" ? "Soprano · " : voicePart === "tenor" ? "Tenor · " : "Alto · "}{PNAME[line.phrase]} · reciting on <b>{PH[line.phrase].recite}</b>{PH[line.phrase].prep ? <> · prep on <b>{PH[line.phrase].prep}</b></> : null}
               </span>
               <button
                 disabled={playingLine !== null && playingLine !== li}
@@ -4398,9 +4578,36 @@ export default function ToneTrainer() {
               })}
             </div>
 
+            {/* Standalone tenor chips — below text, same layout as bass */}
+            {showTenor && tenorRolesWD && (() => {
+              const groupedTenor = [];
+              tenorRolesWD.forEach((r, i) => {
+                if (r.melisma && groupedTenor.length > 0 && groupedTenor[groupedTenor.length-1].text === r.text) {
+                  groupedTenor[groupedTenor.length-1].entries.push({ r, i });
+                } else {
+                  groupedTenor.push({ text: r.text, entries: [{ r, i }] });
+                }
+              });
+              return (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-start" }}>
+                  {groupedTenor.map((grp, gi) => {
+                    if (grp.entries.length === 1) {
+                      const {r, i} = grp.entries[0];
+                      return renderChip(r, i, false, false, false, true, false);
+                    }
+                    return (
+                      <div key={gi} style={{ display: "inline-flex", gap: CHIP_MELISMA_GAP, alignItems: "flex-start" }}>
+                        {grp.entries.map(({r, i}) => renderChip(r, i, false, false, false, true, false))}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+
             {/* Bass chips — below text, melisma groups tightly spaced */}
+            {/* In SATB mode, tenor ghosts over bass at 50% opacity, flex-start aligned */}
             {showBass && (() => {
-              // Group bass rolesWD by text same as alto
               const groupedBass = [];
               bassRolesWD.forEach((r, i) => {
                 if (r.melisma && groupedBass.length > 0 && groupedBass[groupedBass.length-1].text === r.text) {
@@ -4409,7 +4616,21 @@ export default function ToneTrainer() {
                   groupedBass.push({ text: r.text, entries: [{ r, i }] });
                 }
               });
-              return (
+
+              // Build groupedTenor for ghost overlay in SATB
+              const groupedTenorGhost = showTenorGhost && tenorRolesWD ? (() => {
+                const g = [];
+                tenorRolesWD.forEach((r, i) => {
+                  if (r.melisma && g.length > 0 && g[g.length-1].text === r.text) {
+                    g[g.length-1].entries.push({ r, i });
+                  } else {
+                    g.push({ text: r.text, entries: [{ r, i }] });
+                  }
+                });
+                return g;
+              })() : null;
+
+              const bassRow = (
                 <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-start" }}>
                   {groupedBass.map((grp, gi) => {
                     if (grp.entries.length === 1) {
@@ -4422,6 +4643,36 @@ export default function ToneTrainer() {
                       </div>
                     );
                   })}
+                </div>
+              );
+
+              if (!groupedTenorGhost) return bassRow;
+
+              // Ghost tenor over bass: container height = max chip height per syllable
+              const maxH = Math.max(
+                ...groupedBass.flatMap(grp => grp.entries.map(({r}) => chipH_bass(r.pitches[0], r.phraseRules))),
+                ...groupedTenorGhost.flatMap(grp => grp.entries.map(({r}) => chipH_tenor(r.pitches[0], r.phraseRules)))
+              );
+              const tenorGhostRow = (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-start",
+                              position: "absolute", top: 0, left: 0, opacity: 0.5 }}>
+                  {groupedTenorGhost.map((grp, gi) => {
+                    if (grp.entries.length === 1) {
+                      const {r, i} = grp.entries[0];
+                      return renderChip(r, i, false, false, false, false, true);
+                    }
+                    return (
+                      <div key={gi} style={{ display: "inline-flex", gap: CHIP_MELISMA_GAP, alignItems: "flex-start" }}>
+                        {grp.entries.map(({r, i}) => renderChip(r, i, false, false, false, false, true))}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+              return (
+                <div style={{ position: "relative", height: maxH }}>
+                  {bassRow}
+                  {tenorGhostRow}
                 </div>
               );
             })()}
