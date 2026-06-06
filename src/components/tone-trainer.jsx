@@ -10,11 +10,22 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.3";
+export const TONE_TRAINER_VERSION = "v0.11.4";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.4",
+    date: "June 2026",
+    summary: "feat: Tone 1 Phrase D two-accent cadence — director marks drive correct pitch assignment",
+    items: [
+      "feat: pointLine() — Tone 1 Phrase D now uses two-accent path when two director marks present. First accent = cadence boundary (ti anchor); last internal accent = secondary anchor (re). Fills between = do. Close = ti. Falls through to distribute() when fewer than 2 marks.",
+      "feat: autoAccentLine() — Tone 1 Phrase D now marks both primary anchor (first stressed syllable) and secondary anchor (last internal stressed) so machine sing path receives two marks and triggers two-accent path.",
+      "feat: applyPhraseAccent() — same Tone 1 Phrase D two-accent marking added to machine comparison row path, keyed on cadDurs.twoAccent flag.",
+      "fix: cadence boundary was incorrectly set at last internal accent ('voice') leaving 'Re ceive The' as reciting tone. Now correctly set at first director mark ('ceive').",
+    ],
+  },
   {
     version: "v0.11.3",
     date: "June 2026",
@@ -1138,6 +1149,46 @@ function pointLine(line, phDefs, activeTone) {
     }
   }
 
+  // ── Tone 1 Phrase D: two-accent cadence (ti · do fills · re · do fills · ti) ──
+  // Five structural positions driven by two director marks.
+  // Primary anchor (ti, pos 1)   = first accented syllable in the line → cadence boundary.
+  // Secondary anchor (re, pos 3) = last internal accented syllable (anchorIndex logic).
+  // Fills between positions = do. Close = ti.
+  // Fallback: if fewer than 2 accents, or secondary = close, fall through to distribute().
+  if (activeTone === 1 && line.phrase === "D") {
+    const acc = flat.map((s, i) => s.accent ? i : -1).filter(i => i >= 0);
+    if (acc.length >= 2) {
+      const a1 = acc[0];                          // first accent → cadence boundary, ti
+      const lastIdx = flat.length - 1;
+      // secondary = last internal accent (not the close syllable)
+      let a2 = acc[acc.length - 1];
+      if (a2 === lastIdx && flat[lastIdx].single && acc.length >= 3)
+        a2 = acc[acc.length - 2];
+      // Valid split: a1 is before a2, and a2 is not the close
+      if (a1 < a2 && a2 < lastIdx) {
+        const body = flat.slice(0, a1);
+        const cad  = flat.slice(a1);
+        const roles = [];
+        // body → recite
+        body.forEach(s => roles.push({ role: "recite", pitches: [def.recite], accent: s.accent, text: s.text, source: s.source }));
+        // secondary accent index within cad
+        const secIdxInCad = a2 - a1;
+        const cadLast = cad.length - 1;
+        cad.forEach((s, i) => {
+          let pitch;
+          if (i === 0)               pitch = "ti"; // anchor pos 1
+          else if (i < secIdxInCad)  pitch = "do"; // fills pos 2
+          else if (i === secIdxInCad) pitch = "re"; // secondary pos 3
+          else if (i < cadLast)      pitch = "do"; // fills pos 4
+          else                       pitch = "ti"; // close pos 5
+          roles.push({ role: "cad", pitches: [pitch], accent: s.accent, text: s.text, source: s.source, anchor: i === 0 });
+        });
+        return roles;
+      }
+    }
+    // Fallback: single accent or invalid split — distribute() as machine best-effort
+  }
+
   // ── Standard single-anchor logic (all other tones/phrases) ──────────────
   const a = anchorIndex(flat);
   const body = flat.slice(0, a);
@@ -1683,8 +1734,15 @@ function autoEncodeLines(truthLines, lexicon, activePH) {
       const first = sIdxs[0];
       if (first !== anchorIdx) intonIdx = first;
     }
+    // ── Tone 1 Phrase D: mark primary anchor (first stressed) for two-accent path ──
+    let phraseD1PrimaryIdxAE = -1;
+    if (activePH && activePH[phrase]?.cadDurs?.twoAccent && sIdxs.length >= 2) {
+      const c = sIdxs[0];
+      if (c !== anchorIdx) phraseD1PrimaryIdxAE = c;
+    }
     const accentSet = new Set([anchorIdx]);
     if (intonIdx >= 0) accentSet.add(intonIdx);
+    if (phraseD1PrimaryIdxAE >= 0) accentSet.add(phraseD1PrimaryIdxAE);
     let fi = 0;
     return words.map((w) => ({
       ...w,
@@ -2769,6 +2827,16 @@ export default function ToneTrainer() {
       if (first !== anchorIdx) intonIdx = first;
     }
 
+    // ── Tone 1 Phrase D: two-accent cadence (primary anchor + secondary accent) ──
+    // Primary anchor (ti) = first stressed syllable → drives cadence boundary.
+    // Secondary accent (re) = last internal stressed syllable (already anchorIdx).
+    // Both must be in accentSet so pointLine() sees two marks and uses two-accent path.
+    let phraseD1PrimaryIdx = -1;
+    if (activeTone === 1 && phrase === "D" && stressedIdxs.length >= 2) {
+      const c = stressedIdxs[0]; // first stressed syllable = primary anchor
+      if (c !== anchorIdx) phraseD1PrimaryIdx = c;
+    }
+
     // ── Tone 3 Final Phrase: two-anchor cadence (first anchor + second anchor) ──
     // The two-part cadence requires two internal accent marks (31/31 corpus instances).
     // Mark the second-to-last stressed syllable as the first cadence anchor.
@@ -2787,6 +2855,7 @@ export default function ToneTrainer() {
     const accentSet = new Set([anchorIdx]);
     if (intonIdx >= 0) accentSet.add(intonIdx);
     if (firstAnchorIdx >= 0) accentSet.add(firstAnchorIdx);
+    if (phraseD1PrimaryIdx >= 0) accentSet.add(phraseD1PrimaryIdx);
 
     let fi = 0;
     return words.map((w) => ({
