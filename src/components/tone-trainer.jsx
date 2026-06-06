@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.2";
+export const TONE_TRAINER_VERSION = "v0.11.3";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.3",
+    date: "June 2026",
+    summary: "fix: ReferenceError crash — isTone1Final/B/D declared in lineToRolesWithDuration",
+    items: [
+      "fix: isTone1Final, isTone1B, isTone1D were declared in lineToNotes() but missing from lineToRolesWithDuration() — caused ReferenceError crash (blank screen) when pointing any Tone 1 line from docx.",
+    ],
+  },
   {
     version: "v0.11.2",
     date: "June 2026",
@@ -2511,8 +2519,11 @@ export default function ToneTrainer() {
     const isFinal = line.phrase === "Final";
     const isTone1 = activeTone === 1;
     const isTone2 = activeTone === 2;
+    const isTone1Final = isTone1 && line.phrase === "Final";
+    const isTone1B     = isTone1 && line.phrase === "B";
+    const isTone1D     = isTone1 && line.phrase === "D";
     const isTone2Final = isTone2 && line.phrase === "Final";
-    const isTone2A = isTone2 && line.phrase === "A";
+    const isTone2A     = isTone2 && line.phrase === "A";
     const cadIdxs = roles.map((r, i) => r.role === "cad" ? i : -1).filter(i => i >= 0);
     const cadCount = cadIdxs.length;
     const cadRolesListR = roles.filter(r => r.role === "cad");
