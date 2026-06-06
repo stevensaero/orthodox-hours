@@ -10,11 +10,21 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.4";
+export const TONE_TRAINER_VERSION = "v0.11.5";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.5",
+    date: "June 2026",
+    summary: "feat: Tone 1 Phrase A prep-position-driven cadence boundary",
+    items: [
+      "feat: pointLine() — Tone 1 Phrase A now uses prep-position-driven cadence boundary. Prep note (ti) is structurally always second-to-last syllable; cadence is always last syllable only. Intonation = last accented body syllable. Pre-slur fires if last body syllable is single accented monosyllable.",
+      "fix: [prayer] in 'Let my [prayer] a-rise' was incorrectly treated as cadence anchor. Now correctly treated as intonation re(H·); 'a' = prep ti(Q); 'rise' = cadence do(H).",
+      "note: fix is structurally invariant for all Phrase A lines — derived from Phrase A definition (prep:ti always present), not from specific verse content.",
+    ],
+  },
   {
     version: "v0.11.4",
     date: "June 2026",
@@ -1187,6 +1197,49 @@ function pointLine(line, phDefs, activeTone) {
       }
     }
     // Fallback: single accent or invalid split — distribute() as machine best-effort
+  }
+
+  // ── Tone 1 Phrase A: prep-position-driven cadence boundary ───────────────
+  // Phrase A has prep:"ti" always present as second-to-last syllable.
+  // Cadence = last syllable only (single do).
+  // Prep     = second-to-last syllable → ti.
+  // Body     = everything before prep.
+  // Intonation = last accented body syllable (or body[0] if none).
+  // Pre-slur = last body syllable if single && accent → re·ti melisma.
+  // This is structurally invariant — derived from Phrase A definition, not
+  // from any specific verse content.
+  if (activeTone === 1 && line.phrase === "A" && flat.length >= 2) {
+    const prepIdx = flat.length - 2;
+    const cadFlat = [flat[flat.length - 1]];
+    const body    = flat.slice(0, prepIdx);
+    const prepS   = flat[prepIdx];
+    const roles   = [];
+
+    // Find intonation index in body — last accented syllable, fallback to body[0]
+    const bodyAccIdxs = body.map((s, i) => s.accent ? i : -1).filter(i => i >= 0);
+    const intonIdx = bodyAccIdxs.length > 0 ? bodyAccIdxs[bodyAccIdxs.length - 1] : (body.length > 0 ? 0 : -1);
+
+    // Pre-slur: last body syllable is single accented monosyllable
+    const preslurIdx = (body.length >= 1 && body[body.length - 1].single && body[body.length - 1].accent)
+      ? body.length - 1 : -1;
+
+    body.forEach((s, i) => {
+      if (preslurIdx >= 0 && i === preslurIdx) {
+        roles.push({ role: "preslur", pitches: [def.recite, def.prep], accent: s.accent, text: s.text, source: s.source });
+        return;
+      }
+      const role = (i === intonIdx) ? "inton" : "recite";
+      roles.push({ role, pitches: [def.recite], accent: s.accent, text: s.text, source: s.source });
+    });
+
+    // prep → ti
+    roles.push({ role: "prep", pitches: [def.prep], accent: prepS.accent, text: prepS.text, source: prepS.source });
+
+    // cadence → single do, anchor
+    cadFlat.forEach((s, i) =>
+      roles.push({ role: "cad", pitches: ["do"], accent: s.accent, text: s.text, source: s.source, anchor: true })
+    );
+    return roles;
   }
 
   // ── Standard single-anchor logic (all other tones/phrases) ──────────────
