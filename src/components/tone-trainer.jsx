@@ -10,11 +10,21 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.13";
+export const TONE_TRAINER_VERSION = "v0.11.14";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.14",
+    date: "June 2026",
+    summary: "arch: Tone 1 Phrases B and C get own direct duration handlers — cadDuration() fully excluded for all Tone 1 phrases",
+    items: [
+      "arch: Tone 1 Phrase B direct duration handler added to lineToNotes() and lineToRolesWithDuration(). anchor=H, fills re: H≤3/Q≥4, close ti=H.",
+      "arch: Tone 1 Phrase C direct duration handler added. anchor=H, fills do: H≤3/Q≥4, close ti=H. Previously matched Tone 2 Phrase C branch (wrong fill threshold ≤2 vs ≤3, wrong whole-note trigger).",
+      "arch: cadDuration() gate now excludes all Tone 1 phrases (A, B, C, Final) — prime directive. Tone 2 and Tone 3 behavior unchanged.",
+    ],
+  },
   {
     version: "v0.11.13",
     date: "June 2026",
@@ -2511,16 +2521,37 @@ export default function ToneTrainer() {
         const cadPos = cadIdxs.indexOf(ri);
 
         // ── Tone 1 Phrase A: direct duration rules (score-verified) ────────
-        // All cadence syllables on do. Anchor H. Fills Q. Close W or H.
+        // Anchor H. Middle fills H. Close W.
         // Bypasses cadDuration() entirely — prime directive.
-        // Score: [Lord]..Thee,[hear]me! → hear=do(Q), me=do(W)
-        //        [call]up[on]Thee! → on=do(H), Thee=do(W)
-        //        [prayer]a-rise → rise=do(H) — single syllable, no fill
         if (isTone1 && line.phrase === "A") {
+          const isLast = cadPos === cadCount - 1;
+          syllDur = isLast ? W : H;
+        }
+
+        // ── Tone 1 Phrase B: direct duration rules (score-verified) ────────
+        // do·re·ti figure. Anchor do(H). Fills re: H≤3, Q≥4. Close ti: H default.
+        // Melisma cases (count<3) handled by early-return path above.
+        // Bypasses cadDuration() entirely — prime directive.
+        if (isTone1 && line.phrase === "B") {
           const isFirst = cadPos === 0;
           const isLast  = cadPos === cadCount - 1;
-          if (isLast)   syllDur = W;  // close → W (score: me!, Thee!)
-          else          syllDur = H;  // anchor and middle fills → H (score-verified)
+          if (isFirst)  syllDur = H;                          // anchor do always H
+          else if (isLast) syllDur = H;                       // close ti always H (W by rhythmic engine TBD)
+          else          syllDur = cadCount <= 3 ? H : Q;      // re fills: H≤3, Q≥4
+        }
+
+        // ── Tone 1 Phrase C: direct duration rules (score-verified) ────────
+        // do·ti figure. Anchor do(H). Fills do: H≤3, Q≥4. Close ti: H default.
+        // Bypasses cadDuration() entirely — prime directive.
+        // Note: fillPitch=do caused Tone 1 C to incorrectly match Tone 2 C branch
+        // in cadDuration(), which has wrong fill threshold (≤2 vs ≤3) and wrong
+        // whole-note trigger. This direct handler corrects both.
+        if (isTone1 && line.phrase === "C") {
+          const isFirst = cadPos === 0;
+          const isLast  = cadPos === cadCount - 1;
+          if (isFirst)  syllDur = H;                          // anchor do always H
+          else if (isLast) syllDur = H;                       // close ti always H (W by rhythmic engine TBD)
+          else          syllDur = cadCount <= 3 ? H : Q;      // do fills: H≤3, Q≥4
         }
 
         // ── Tone 1 Final Phrase: direct duration rules (score-verified) ───
@@ -2538,7 +2569,7 @@ export default function ToneTrainer() {
         }
 
         // ── Tone 2: use per-phrase cadDuration() ─────────────────────────
-        if (!isTone1Final && !(isTone1 && line.phrase === "A") && (isTone1 || isTone2) && phDef?.cadDurs) {
+        if (!isTone1Final && !(isTone1 && line.phrase === "A") && !(isTone1 && line.phrase === "B") && !(isTone1 && line.phrase === "C") && (isTone1 || isTone2) && phDef?.cadDurs) {
           const durStr = cadDuration(phDef, cadCount, cadPos, lastCadIsWordBoundary, hasRecitingTone);
           if (durStr !== null) {
             const durMap = { "H": H, "Q": Q, "W": W, "H·": DH };
@@ -2915,10 +2946,26 @@ export default function ToneTrainer() {
         const cadPos = cadIdxs.indexOf(ri);
         // ── Tone 1 Phrase A: direct duration rules — bypasses cadDuration() ────
         if (isTone1 && line.phrase === "A") {
+          const isLast = cadPos === cadCount - 1;
+          d = isLast ? W : H;
+        }
+
+        // ── Tone 1 Phrase B: direct duration rules — bypasses cadDuration() ────
+        if (isTone1 && line.phrase === "B") {
           const isFirst = cadPos === 0;
           const isLast  = cadPos === cadCount - 1;
-          if (isLast) d = W;  // close → W
-          else        d = H;  // anchor and fills → H
+          if (isFirst)     d = H;
+          else if (isLast) d = H;
+          else             d = cadCount <= 3 ? H : Q;
+        }
+
+        // ── Tone 1 Phrase C: direct duration rules — bypasses cadDuration() ────
+        if (isTone1 && line.phrase === "C") {
+          const isFirst = cadPos === 0;
+          const isLast  = cadPos === cadCount - 1;
+          if (isFirst)     d = H;
+          else if (isLast) d = H;
+          else             d = cadCount <= 3 ? H : Q;
         }
 
         // ── Tone 1 Final Phrase: direct duration rules — bypasses cadDuration() ──
@@ -2930,7 +2977,7 @@ export default function ToneTrainer() {
           else if (cadCount >= 5 && cadPos === 1) d = Q;
           else               d = (cadCount <= 3) ? H : Q;
         }
-        if (!isTone1Final && !(isTone1 && line.phrase === "A") && (isTone1 || isTone2) && phDef?.cadDurs) {
+        if (!isTone1Final && !(isTone1 && line.phrase === "A") && !(isTone1 && line.phrase === "B") && !(isTone1 && line.phrase === "C") && (isTone1 || isTone2) && phDef?.cadDurs) {
           const ds = cadDuration(phDef, cadCount, cadPos, lastCadIsWordBoundary, true);
           const dm = {"H":H,"Q":Q,"W":W,"H·":DH};
           d = ds ? (dm[ds] ?? H) : undefined;
