@@ -1577,30 +1577,133 @@ No tutorial authority for any of these rules — empirical only.
 
 ---
 
-### 12.6 Final Phrase — PENDING
+### 12.6 Final Phrase — Deep Walkthrough
 
-Analysis continues in subsequent session. To be appended here.
+**Current code:**
+```js
+Final: { recite: "re", inton: false, prep: null, cad: ["do", "ti", "la"] }
+```
+
+All values confirmed correct ✅:
+- `recite: "re"` ✅
+- `inton: false` ✅ — no intonation
+- `prep: null` ✅ — no prep
+- `cad: ["do", "ti", "la"]` ✅ — three descending pitches
+
+#### Pre-Slur — N/A for Tone 1 Final Phrase
+
+Pre-slur is **structurally impossible** in Tone 1 Final Phrase — there is no prep
+note to slur into (`prep: null`). The pre-slur concept must not be imported from
+Tone 2 Final Phrase logic. Each tone/phrase has its own self-contained logic.
+
+Confirmed from score: "Hear me, O Lord!" — "Hear" gets plain `re(H)` on reciting
+tone, no pre-slur melisma fires despite director marking `[Hear] [me]`.
+
+#### Core Principle — Available Syllable Count Drives Distribution
+
+The figure `do·ti·la` must always be preserved across available syllables.
+Syllables fill through the figure sequentially:
+- `do` position: anchor + one trailing syllable when count allows
+- `ti` position: absorbs all remaining syllables before close
+- `la` position: always the close, always `W` — no exceptions
+
+#### Cadence Duration Model — Score Verified
+
+| Count | Shape |
+|---|---|
+| 2 | `do·ti(H mel)·la(W)` — structural melisma preserves figure |
+| 3 | `do(H)·ti(H)·la(W)` — exact fit |
+| 4 | `do(W)·ti(H)·ti(H)·la(W)` — provisional, "Lover of man" only |
+| 5 | `do(H·)·do(Q)·ti(H or Q)·ti(H or Q)·la(W)` |
+| 6+ | `do(H·)·do(Q)·ti(Q)×n·la(W)` — inferred from pattern + tutorial |
+
+**Confirmed rules:**
+- Close `la` = always `W` — tutorial-stated, no exceptions observed ✅
+- Count=2 → structural melisma `do·ti(H+H)` on anchor — preserves full figure ✅
+- Count=3 → exact fit, all `H` ✅
+- Anchor duration (`H`, `H·`, `W`) driven by rhythmic balancing and available syllables
+- `ti` fills = `H` or `Q` driven by rhythmic balancing
+
+**Count=2 melisma is structural, not rhythmic balancing:**
+The melisma on the anchor at count=2 exists to preserve the complete `do·ti·la`
+figure when only 2 syllables are available. It is not a balancing artifact.
+The melisma naturally carries two half notes (`H+H`) which may incidentally
+provide rhythmic weight, but its purpose is pitch preservation.
+
+**Count=4 provisional note:**
+All three count=4 examples are "Lover of man" — the same repeated liturgical
+formula. The `do(W)` anchor at count=4 may be driven by strong stress on "Lov"
+combined with available syllable count leaving no room for `do(Q)` second
+position. Insufficient independent evidence to confirm as universal rule.
+Machine default = `do(H)` at count=4; `do(W)` requires rhythmic grouping engine
+or director pointing.
+
+**`do(Q)` second position rule — provisional:**
+When count≥5, a `do(Q)` second position appears after the anchor. When count=4,
+it does not — the extra syllable fills on `ti` instead. The driving mechanism
+appears to be available syllable count: at count=4 there is only one extra
+syllable beyond the 3-pitch figure, which fills on `ti`; at count=5 there are
+two extra syllables, one fills on `do(Q)` and one on `ti`. Confirmed across
+4 independent count=5 examples.
+
+**`ti` fill duration:**
+- `Q` when reciting section is shorter / phrase has sufficient length
+- `H` when reciting section is very long — rhythmic balancing
+- Tutorial states "half note or two or more quarter notes" — confirms both are valid
+
+#### Score Examples
+
+- "His | Moth-er" → `do·ti(H mel)·la(W)` — count=2
+- "us | wor-ship Him!" → `do(H)·ti(H)·la(W)` — count=3
+- "[Hear] me, O Lord!" → `do(H)·ti(H)·la(W)` — count=3, "Hear"=`re(H)` reciting
+- "Lov-er of man" → `do(W)·ti(H)·ti(H)·la(W)` — count=4 (×3 confirmed, same phrase)
+- "sal-va-tion of our souls" → `do(H)·do(Q)·ti(Q)·ti(Q)·la(W)` — count=5
+- "res-ur-rec-tion to the world" → `do(H·)·do(Q)·ti(H)·ti(H)·la(W)` — count=5
+- "En-e-my's de-ceit!" → `do(H·)·do(Q)·ti(H)·ti(H)·la(W)` — count=5
+- "Sav-ior of our souls" → `do(H·)·do(Q)·ti(H)·ti(H)·la(W)` — count=5
+- "Who has de-liv-ered...trans-gres-sions!" → `do·ti(H mel)·la(W)` — count=2
+- "He has res-ur-rec-ted...Lov-er of man" → `do(W)·ti(H)·ti(H)·la(W)` — count=4
+- "Grant peace...Lov-er of man" → `do(W)·ti(H)·ti(H)·la(W)` — count=4
+- "to grant Res-ur-rec-tion...Lov-er of man" → `do(W)·ti(H)·ti(H)·la(W)` — count=4
+
+#### Final Phrase Logic Chart
+
+| Element | Status | Finding |
+|---|---|---|
+| Pitch figure | ✅ confirmed | `cad: ["do", "ti", "la"]` correct |
+| Reciting tone | ✅ confirmed | `re(Q)` |
+| Intonation | ✅ N/A | none |
+| Prep | ✅ N/A | none |
+| Pre-slur | ✅ N/A | structurally impossible — no prep note |
+| Anchor detection | ✅ confirmed | last accented syllable; backup rule applies |
+| Anchor duration | 📋 provisional | `H` default; `H·` or `W` via rhythmic balancing + syllable count |
+| `do(Q)` second position | 📋 provisional | appears at count≥5; absent at count≤4 |
+| `ti` fill duration | 📋 provisional | `H` or `Q` via rhythmic balancing |
+| Close duration | ✅ confirmed | `la(W)` always — tutorial-stated, no exceptions |
+| Count=2 melisma | ✅ confirmed | structural — preserves `do·ti·la` figure |
+| Count=6+ behavior | 📋 inferred | fills on `ti(Q)` — consistent with pattern + tutorial |
+| Rhythmic grouping engine | 🔴 missing | drives anchor `H·`/`W` and `ti` fill `H`/`Q` |
 
 ---
 
 ### 12.7 Open Questions (June 2026)
 
 1. Does the whole note rule for Phrase A close follow the same rhythmic balancing
-   pattern as Phrase B? (insufficient score evidence yet)
+   pattern as Phrases B, C, D? Insufficient score evidence yet.
 2. Does the pre-slur in Phrase A fire on accented prep syllables (like "di" in
-   "divine")? Currently `single && accent` would fire — but does it fire on
-   unaccented positional prep syllables too?
+   "divine")? The prep is positional in Phrase A — `single && accent` gate
+   may be too restrictive.
 3. What is the correct pre-slur duration for Tone 1 Phrase A? Currently `Q·Q` unverified.
 4. Does the anchor backup rule ever correctly fire in Phrase A given prep always
    separates body from cadence anchor?
-5. Does period punctuation `.` reliably drive `W` on Phrase D close, or is this
-   a coincidence in our sample? Needs more score examples.
+5. Does period punctuation `.` reliably drive `W` on Phrase D close, or coincidence
+   in our sample?
 6. Does the `//` penultimate line marker reliably drive `W` across all phrases,
-   or is it phrase-specific? Phrase C `//` produced `H·` while Phrase D `//`
-   produced `W`.
-7. What is the complete melisma architecture for count=2 in Phrase D? Only
-   count=3 observed; count=2 behavior unconfirmed.
-8. Final Phrase — all behavior unconfirmed, pending next session.
+   or is it phrase-specific?
+7. What is Phrase D melisma behavior at count=2? Only count=3+ observed.
+8. Count=4 Final Phrase `do(W)` — only "Lover of man" observed. Needs independent
+   score evidence to confirm as universal rule.
+9. `do(Q)` second position rule at count=4 — provisional, needs more examples.
 
 ---
 
