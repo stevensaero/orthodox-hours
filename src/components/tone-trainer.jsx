@@ -10,11 +10,23 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.6";
+export const TONE_TRAINER_VERSION = "v0.11.7";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.7",
+    date: "June 2026",
+    summary: "fix: Tone 1 melisma chips now render correctly — lineToRolesWithDuration mirrors lineToNotes",
+    items: [
+      "fix: lineToRolesWithDuration() was missing Tone 1 Final Phrase, Phrase B, and Phrase D early-return paths. Chips fell through to generic handler — no melisma expansion, wrong widths.",
+      "fix: Tone 1 Phrase B count=2 (e.g. 'in-cense') now shows do·re melisma chip on anchor.",
+      "fix: Tone 1 Final Phrase count<3 now shows do·ti melisma chip on anchor.",
+      "fix: Tone 1 Phrase D now shows correct pitch chips with melisma expansion at all counts.",
+      "arch: lineToNotes() and lineToRolesWithDuration() are a matched pair — all early-return paths must exist in both.",
+    ],
+  },
   {
     version: "v0.11.6",
     date: "June 2026",
@@ -2689,6 +2701,86 @@ export default function ToneTrainer() {
       const cadRoles = roles.filter(r => r.role === "cad");
       if (cadCount === 1)      emitMelisma(cadRoles[0], ["fa","mi","re"], [H,H,DH]);
       else if (cadCount === 2) { emitMelisma(cadRoles[0], ["fa","mi"], [H,H]); result.push({...cadRoles[1], pitches:["re"], dur:DH, durKey:"H·"}); }
+      return result;
+    }
+
+    // ── Tone 1 Final Phrase: structural melisma when cadCount < 3 ────────────
+    // Mirrors lineToNotes() Tone 1 Final Phrase melisma path exactly.
+    if (isTone1Final && cadCount < 3 && cadCount >= 1) {
+      roles.forEach(r => {
+        if (r.role === "cad") return;
+        const d = (r.role === "recite" && r.accent) ? H : r.role === "inton" ? (r.accent ? H : Q) : Q;
+        result.push({ ...r, dur: d, durKey: durKey(d) });
+      });
+      const cadRoles = roles.filter(r => r.role === "cad");
+      if (cadCount === 1) {
+        emitMelisma(cadRoles[0], ["do","ti","la"], [H,H,W]);
+      } else if (cadCount === 2) {
+        emitMelisma(cadRoles[0], ["do","ti"], [H,H]);
+        result.push({ ...cadRoles[1], pitches: ["la"], dur: W, durKey: "W" });
+      }
+      return result;
+    }
+
+    // ── Tone 1 Phrase B: do·re melisma on anchor when cadCount < 3 ───────────
+    // Mirrors lineToNotes() Tone 1 Phrase B melisma path exactly.
+    if (isTone1B && cadCount < 3 && cadCount >= 1) {
+      roles.forEach(r => {
+        if (r.role === "cad") return;
+        const d = r.role === "inton" ? (r.accent ? H : Q) : Q;
+        result.push({ ...r, dur: d, durKey: durKey(d) });
+      });
+      const cadRoles = roles.filter(r => r.role === "cad");
+      if (cadCount === 1) {
+        emitMelisma(cadRoles[0], ["do","re","ti"], [H,H,H]);
+      } else if (cadCount === 2) {
+        emitMelisma(cadRoles[0], ["do","re"], [H,H]);
+        result.push({ ...cadRoles[1], pitches: ["ti"], dur: H, durKey: "H" });
+      }
+      return result;
+    }
+
+    // ── Tone 1 Phrase D: two-accent architecture with melisma ─────────────────
+    // Mirrors lineToNotes() Tone 1 Phrase D path exactly.
+    if (isTone1D && cadCount >= 2) {
+      roles.forEach(r => {
+        if (r.role === "cad") return;
+        const d = r.role === "inton" ? (r.accent ? H : Q) : Q;
+        result.push({ ...r, dur: d, durKey: durKey(d) });
+      });
+      const cadRoles = roles.filter(r => r.role === "cad");
+      const n = cadRoles.length;
+      if (n <= 2) {
+        emitMelisma(cadRoles[0], ["ti","do"], [H,H]);
+        emitMelisma(cadRoles[1] ?? cadRoles[0], ["re","do"], [H,H]);
+        result.push({ ...(cadRoles[2] ?? cadRoles[n-1]), pitches: ["ti"], dur: H, durKey: "H" });
+      } else if (n === 3) {
+        emitMelisma(cadRoles[0], ["ti","do"], [H,H]);
+        emitMelisma(cadRoles[1], ["re","do"], [H,H]);
+        result.push({ ...cadRoles[2], pitches: ["ti"], dur: H, durKey: "H" });
+      } else if (n === 4) {
+        result.push({ ...cadRoles[0], pitches: ["ti"], dur: H, durKey: "H" });
+        result.push({ ...cadRoles[1], pitches: ["do"], dur: H, durKey: "H" });
+        emitMelisma(cadRoles[2], ["re","do"], [H,H]);
+        result.push({ ...cadRoles[3], pitches: ["ti"], dur: H, durKey: "H" });
+      } else if (n === 5) {
+        result.push({ ...cadRoles[0], pitches: ["ti"], dur: H, durKey: "H" });
+        result.push({ ...cadRoles[1], pitches: ["do"], dur: H, durKey: "H" });
+        result.push({ ...cadRoles[2], pitches: ["re"], dur: H, durKey: "H" });
+        result.push({ ...cadRoles[3], pitches: ["do"], dur: H, durKey: "H" });
+        result.push({ ...cadRoles[4], pitches: ["ti"], dur: H, durKey: "H" });
+      } else if (n === 6) {
+        result.push({ ...cadRoles[0], pitches: ["ti"], dur: H, durKey: "H" });
+        result.push({ ...cadRoles[1], pitches: ["do"], dur: H, durKey: "H" });
+        result.push({ ...cadRoles[2], pitches: ["re"], dur: H, durKey: "H" });
+        for (let i = 3; i < n - 1; i++) result.push({ ...cadRoles[i], pitches: ["do"], dur: Q, durKey: "Q" });
+        result.push({ ...cadRoles[n-1], pitches: ["ti"], dur: H, durKey: "H" });
+      } else {
+        result.push({ ...cadRoles[0], pitches: ["ti"], dur: H, durKey: "H" });
+        for (let i = 1; i < n - 3; i++) result.push({ ...cadRoles[i], pitches: ["do"], dur: Q, durKey: "Q" });
+        emitMelisma(cadRoles[n-3], ["re","do"], [H,H]);
+        result.push({ ...cadRoles[n-1], pitches: ["ti"], dur: H, durKey: "H" });
+      }
       return result;
     }
 
