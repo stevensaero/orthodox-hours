@@ -10,11 +10,21 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.9";
+export const TONE_TRAINER_VERSION = "v0.11.10";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.10",
+    date: "June 2026",
+    summary: "fix: Tone 1 Phrase A duration corrections + lexicon upon fix",
+    items: [
+      "fix: Phrase A cadence duration — anchor and fills now H (not Q). Score: hear=do/H, on=do/H. Close remains W.",
+      "fix: Phrase A prep duration — prep note now H (not Q). Score: up=ti/H, Thee=ti/H.",
+      "fix: lexicon 'upon' syllabification changed from u·pon to up·on to match liturgical usage and director split up[on].",
+    ],
+  },
   {
     version: "v0.11.9",
     date: "June 2026",
@@ -2438,9 +2448,11 @@ export default function ToneTrainer() {
         syllDur = r.accent ? H : Q;
       } else if (r.role === "recite" || r.role === "prep") {
         // Tone 1 Final Phrase: accented reciting tone syllables get H (score-verified).
-        // "Hear me, O Lord!" — "Hear" is accented reciting tone → re(H).
+        // Tone 1 Phrase A: prep note = H (score-verified: up=ti/H, Thee=ti/H).
         // All other tones/phrases: reciting tone always Q per tutorial.
-        syllDur = (isTone1Final && r.role === "recite" && r.accent) ? H : Q;
+        if (isTone1Final && r.role === "recite" && r.accent) syllDur = H;
+        else if (isTone1 && line.phrase === "A" && r.role === "prep") syllDur = H;
+        else syllDur = Q;
       } else if (r.role === "preslur") {
         // Pre-slur = two quarter notes (re + ti) as a pickup before the prep.
         // Assign H so the melisma division (syllDur / pitches.length = H/2) yields Q+Q.
@@ -2465,10 +2477,8 @@ export default function ToneTrainer() {
         if (isTone1 && line.phrase === "A") {
           const isFirst = cadPos === 0;
           const isLast  = cadPos === cadCount - 1;
-          if (isFirst && isLast) syllDur = H;  // single cad syllable → H default
-          else if (isFirst)      syllDur = Q;  // anchor when multi-cad → Q
-          else if (isLast)       syllDur = W;  // close → W (score: me!, Thee!)
-          else                   syllDur = Q;  // middle fills → Q
+          if (isLast)   syllDur = W;  // close → W (score: me!, Thee!)
+          else          syllDur = H;  // anchor and middle fills → H (score-verified)
         }
 
         // ── Tone 1 Final Phrase: direct duration rules (score-verified) ───
@@ -2851,10 +2861,13 @@ export default function ToneTrainer() {
     roles.forEach((r, ri) => {
       let d;
       if (r.role === "inton")                             d = r.accent ? H : Q;
-      else if (r.role === "recite" || r.role === "prep")
-        // Tone 1 Final Phrase: accented reciting tone → H (score-verified, e.g. "Hear me, O Lord!").
-        // All other tones/phrases: reciting tone always Q per tutorial.
-        d = (isTone1Final && r.role === "recite" && r.accent) ? H : Q;
+      else if (r.role === "recite" || r.role === "prep") {
+        // Tone 1 Final Phrase: accented reciting tone → H (score-verified).
+        // Tone 1 Phrase A: prep note → H (score-verified: up=ti/H, Thee=ti/H).
+        if (isTone1Final && r.role === "recite" && r.accent) d = H;
+        else if (isTone1 && line.phrase === "A" && r.role === "prep") d = H;
+        else d = Q;
+      }
       else if (r.role === "preslur")                      d = H / r.pitches.length; // Q per pitch
       else if (r.role === "cad1")                         d = ri === cadIdxs[0] ? H : Q;
       else if (r.role === "cad") {
@@ -2863,10 +2876,8 @@ export default function ToneTrainer() {
         if (isTone1 && line.phrase === "A") {
           const isFirst = cadPos === 0;
           const isLast  = cadPos === cadCount - 1;
-          if (isFirst && isLast) d = H;
-          else if (isFirst)      d = Q;
-          else if (isLast)       d = W;
-          else                   d = Q;
+          if (isLast) d = W;  // close → W
+          else        d = H;  // anchor and fills → H
         }
 
         // ── Tone 1 Final Phrase: direct duration rules — bypasses cadDuration() ──
