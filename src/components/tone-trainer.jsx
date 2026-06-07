@@ -4495,13 +4495,15 @@ export default function ToneTrainer() {
                 height: 8, background: stripe,
                 borderRadius: isDownward ? "0 0 5px 5px" : "5px 5px 0 0",
               }} />
-              {/* Solfège label */}
-              <div style={{
-                position: "absolute", left: 0, right: 0, textAlign: "center",
-                ...(isDownward ? { bottom: 10 } : { top: 10 }),
-                fontSize: 9, color: solColor, fontStyle: "italic",
-                fontFamily: "Georgia, serif",
-              }}>{sol}</div>
+              {/* Solfège label — hidden for ghost voices (S and T in SATB) */}
+              {!isGhostSoprano && !isGhostTenor && (
+                <div style={{
+                  position: "absolute", left: 0, right: 0, textAlign: "center",
+                  ...(isDownward ? { bottom: 10 } : { top: 10 }),
+                  fontSize: 9, color: solColor, fontStyle: "italic",
+                  fontFamily: "Georgia, serif",
+                }}>{sol}</div>
+              )}
             </div>
           );
         };
