@@ -3706,6 +3706,43 @@ export default function ToneTrainer() {
   };
   const roleColor = { recite: "#283a5c", inton: "#283a5c", prep: "#8a6a14", cad: "#7a2418", cad1: "#9a3c2c", preslur: "#8a6a14" };
 
+  // Global tone-wide height maps for bass and tenor.
+  // Computed once across all phrases so chip heights are consistent across
+  // phrase boundaries — e.g. sol (A–D reciting) and la/si/mi (Final Phrase)
+  // share the same scale rather than each phrase being independently normalised.
+  const buildGlobalVoiceMap = (rules, hzFn) => {
+    if (!rules) return null;
+    const pitchPrs = [];
+    ["A","B","C","D","Final"].forEach(ph => {
+      const pr = rules[ph];
+      if (!pr) return;
+      [pr.recite, ...Object.values(pr.cadMap||{}), ...Object.values(pr.prepMap||{})]
+        .forEach(p => p && pitchPrs.push({ sol: p, pr }));
+    });
+    const seen = new Map();
+    pitchPrs.forEach(({ sol, pr }) => {
+      const hz = hzFn(sol, pr);
+      const key = sol + "@" + Math.round(hz);
+      if (!seen.has(key)) seen.set(key, { sol, pr, hz });
+    });
+    const entries = [...seen.values()].sort((a, b) => a.hz - b.hz);
+    const n = entries.length;
+    const result = new Map();
+    entries.forEach((e, i) => {
+      const inv = (n - 1) - i;
+      const t = n > 1 ? inv / (n - 1) : 0;
+      result.set(e.sol + "@" + Math.round(e.hz), Math.round(H_VOICE_MIN + t * (H_VOICE_MAX - H_VOICE_MIN)));
+    });
+    return { map: result, hzFn };
+  };
+  const globalBassHeightMap  = buildGlobalVoiceMap(BASS_RULES[activeTone],  freq_bass);
+  const globalTenorHeightMap = buildGlobalVoiceMap(TENOR_RULES[activeTone], freq_tenor);
+  const globalChipH = (globalMap, sol, pr) => {
+    if (!globalMap) return H_VOICE_MIN;
+    const key = sol + "@" + Math.round(globalMap.hzFn(sol, pr));
+    return globalMap.map.get(key) ?? H_VOICE_MIN;
+  };
+
   return (
     <div style={{ maxWidth: 820, margin: "0 auto", padding: "2rem 1rem 4rem", fontFamily: "Georgia, serif", color: ink }}>
       <div style={{ textAlign: "center", marginBottom: "0.4rem", letterSpacing: "0.28em", textTransform: "uppercase", fontSize: "0.7rem", color: gold }}>
@@ -4375,11 +4412,13 @@ export default function ToneTrainer() {
         // Soprano rolesWD — same structure as alto, alto pitches retained.
         const sopranoRolesWD = (showSoprano || showSopranoTab) ? rolesWD : null;
 
-        // Bass height map — per-phrase frequency sort, H_VOICE_MIN to H_VOICE_MAX.
-        const bassHeightMap = bassRolesWD
-          ? buildVoiceHeightMap(bassRolesWD.map(r => r.pitches[0]), freq_bass,
-              BASS_RULES[activeTone]?.[line.phrase])
-          : null;
+        // Bass height map — uses global tone-wide map for cross-phrase consistency.
+        const bassHeightMap = bassRolesWD ? (() => {
+          const pr = BASS_RULES[activeTone]?.[line.phrase];
+          const map = {};
+          bassRolesWD.forEach(r => { map[r.pitches[0]] = globalChipH(globalBassHeightMap, r.pitches[0], pr); });
+          return map;
+        })() : null;
 
         // Tenor rolesWD — derived from rolesWD via TENOR_RULES, mirrors bassRolesWD pattern.
         const tenorRolesWD = (() => {
@@ -4403,11 +4442,13 @@ export default function ToneTrainer() {
           });
         })();
 
-        // Tenor height map — built after tenorRolesWD is available.
-        const tenorHeightMap = tenorRolesWD
-          ? buildVoiceHeightMap(tenorRolesWD.map(r => r.pitches[0]), freq_tenor,
-              TENOR_RULES[activeTone]?.[line.phrase])
-          : null;
+        // Tenor height map — uses global tone-wide map for cross-phrase consistency.
+        const tenorHeightMap = tenorRolesWD ? (() => {
+          const pr = TENOR_RULES[activeTone]?.[line.phrase];
+          const map = {};
+          tenorRolesWD.forEach(r => { map[r.pitches[0]] = globalChipH(globalTenorHeightMap, r.pitches[0], pr); });
+          return map;
+        })() : null;
 
         // Role colors matching roleBg/roleColor
         const chipBg = { recite:"rgba(40,58,92,.06)", inton:"rgba(40,120,60,.10)", prep:"rgba(180,137,43,.16)", cad:"rgba(122,36,24,.10)", cad1:"rgba(122,36,24,.05)", preslur:"rgba(180,137,43,.22)" };
