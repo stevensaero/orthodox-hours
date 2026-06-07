@@ -76,6 +76,17 @@ export const FIELD_REGISTRY = [
     required: () => true,
     description: 'Assembly engine signal (e.g. pentecostarion_weekday, pentecost)',
   },
+  {
+    field: 'oca_primary', category: 'identity', appliesTo: 'both',
+    required: () => true,
+    description: 'OCA calendar is primary source (boolean)',
+  },
+  {
+    field: 'note', category: 'identity', appliesTo: 'both',
+    required: () => true,
+    description: 'Encoding notes: OCA divergences, rubrical flags, never blank',
+    check: (entry) => typeof entry.note === 'string' && entry.note.trim().length > 0,
+  },
 
   // ── HOURS (troparia / kontakia) ────────────────────────────────────────────
   {
@@ -119,7 +130,6 @@ export const FIELD_REGISTRY = [
   {
     field: 'prokeimenon_text', category: 'liturgy', appliesTo: 'both',
     required: (entry, type) => {
-      // feast_e: null means §2A/§2B with no AT LITURGY propers — not required
       if (type === 'menaion') return entry.rank !== 'simple' && entry.feast_e !== null;
       return isPresent(entry, 'feast_e') && entry.feast_e !== null;
     },
@@ -155,7 +165,10 @@ export const FIELD_REGISTRY = [
       if (type === 'menaion') return entry.rank !== 'simple' && entry.feast_e !== null;
       return isPresent(entry, 'feast_e') && entry.feast_e !== null;
     },
-    description: 'Alleluia stichos verse',
+    // alleluia_stichos may legitimately be null (e.g. P+56 T8 alleluia has no stichos)
+    // The key must exist; null is an acceptable explicit value
+    check: (entry) => 'alleluia_stichos' in entry,
+    description: 'Alleluia stichos verse (or explicit null if absent in source)',
   },
   {
     field: 'communion_verse', category: 'liturgy', appliesTo: 'both',
@@ -171,10 +184,12 @@ export const FIELD_REGISTRY = [
     field: 'stichera_lord_i_call', category: 'vespers_lic', appliesTo: 'both',
     required: (entry, type) => {
       if (type === 'menaion') {
-        // Required for §2C and above; §2A/§2B use Octoechos (not encoded per-entry)
         return ['six_stichera', 'doxology', 'polyeleos', 'vigil'].includes(entry.rank);
       }
-      // Pentecostarion: required when menaion_set_aside (Great Feast owns all stichera)
+      // Pentecostarion: required for Great Feasts (menaion_set_aside).
+      // IMPORTANT: check the field VALUE not === true, so missing flag doesn't hide the requirement.
+      // If an entry has stichera_lord_i_call encoded, it should be correct regardless of flag.
+      // Require it when: menaion_set_aside is true OR when stichera are already present (consistency).
       return entry.menaion_set_aside === true;
     },
     description: 'Lord I Have Cried stichera array',
@@ -199,10 +214,9 @@ export const FIELD_REGISTRY = [
       return entry.menaion_set_aside === true;
     },
     description: 'LIC Glory doxasticon (tone + text, or null if §2B no doxasticon)',
-    // null is a valid explicit value for §2B doubles (no doxasticon; Glory → theotokion)
     check: (entry) => {
       if (!('stichera_glory' in entry)) return false;
-      if (entry.stichera_glory === null) return true; // explicitly absent — valid for §2B
+      if (entry.stichera_glory === null) return true;
       return typeof entry.stichera_glory === 'object' ? !!(entry.stichera_glory.text) : true;
     },
   },
@@ -227,14 +241,17 @@ export const FIELD_REGISTRY = [
 
   // ── VESPERS: APOSTICHA ─────────────────────────────────────────────────────
   {
+    field: 'aposticha_source', category: 'vespers_aposticha', appliesTo: 'both',
+    required: () => true,
+    description: 'Aposticha source: octoechos | menaion | pentecostarion',
+  },
+  {
     field: 'stichera_aposticha', category: 'vespers_aposticha', appliesTo: 'both',
     required: (entry, type) => {
       if (type === 'menaion') {
-        // Required for §2D and above; §2A/§2C use Octoechos aposticha
         return ['doxology', 'polyeleos', 'vigil'].includes(entry.rank);
       }
-      // Pentecostarion: required when entry is a Great Feast (menaion_set_aside)
-      // or an apodosis that inherits from one
+      // Pentecostarion: required for Great Feasts and their apodoses
       return entry.menaion_set_aside === true ||
              entry.hours_format === 'apodosis_pentecost' ||
              entry.hours_format === 'apodosis_ascension';
@@ -256,6 +273,20 @@ export const FIELD_REGISTRY = [
     check: (entry) => isPresent(entry, 'aposticha_glory') &&
       (typeof entry.aposticha_glory === 'object' ? !!(entry.aposticha_glory.text) : true),
   },
+  {
+    field: 'aposticha_both_now', category: 'vespers_aposticha', appliesTo: 'both',
+    required: (entry, type) => {
+      if (type === 'menaion') {
+        return ['doxology', 'polyeleos', 'vigil'].includes(entry.rank);
+      }
+      return entry.menaion_set_aside === true ||
+             entry.hours_format === 'apodosis_pentecost' ||
+             entry.hours_format === 'apodosis_ascension';
+    },
+    description: 'Aposticha Both Now theotokion (tone + text, or null if Octoechos governs)',
+    // null is valid: means the invariable Octoechos theotokion governs
+    check: (entry) => 'aposticha_both_now' in entry,
+  },
 
   // ── MATINS ─────────────────────────────────────────────────────────────────
   {
@@ -276,17 +307,33 @@ export const FIELD_REGISTRY = [
   {
     field: 'has_polyeleos', category: 'matins', appliesTo: 'both',
     required: (entry, type) => {
-      if (type === 'menaion') {
-        return ['polyeleos', 'vigil'].includes(entry.rank);
-      }
-      return false; // Pentecostarion: optional metadata
+      if (type === 'menaion') return ['polyeleos', 'vigil'].includes(entry.rank);
+      // Pentecostarion: required on all Sundays and Great Feasts
+      return entry.menaion_set_aside === true ||
+             (entry.hours_format || '').includes('sunday') ||
+             entry.hours_format === 'all_saints_sunday' ||
+             entry.hours_format === 'pentecost' ||
+             entry.hours_format === 'all_saints_sunday';
     },
-    description: 'Polyeleos sung at Matins (boolean, §2E/§2F)',
+    description: 'Polyeleos sung at Matins (boolean)',
   },
   {
     field: 'matins_gospel', category: 'matins', appliesTo: 'menaion_only',
     required: (entry) => ['polyeleos', 'vigil'].includes(entry.rank),
     description: 'Matins Gospel reading (§2E/§2F)',
+  },
+  {
+    field: 'beatitudes_troparia', category: 'matins', appliesTo: 'both',
+    required: (entry, type) => {
+      if (type === 'menaion') return ['polyeleos', 'vigil'].includes(entry.rank);
+      // Pentecostarion: required on Sundays and Great Feasts
+      return entry.menaion_set_aside === true ||
+             (entry.hours_format || '').includes('sunday') ||
+             entry.hours_format === 'all_saints_sunday' ||
+             entry.hours_format === 'pentecost';
+    },
+    description: 'Beatitudes troparia array (§2E/§2F; Pentecostarion Sundays and Great Feasts)',
+    check: (entry) => isNonEmptyArray(entry, 'beatitudes_troparia'),
   },
 
   // ── FLAGS ──────────────────────────────────────────────────────────────────
@@ -296,7 +343,7 @@ export const FIELD_REGISTRY = [
     description: 'Litiya served (boolean)',
   },
   {
-    field: 'has_paroemias', category: 'flags', appliesTo: 'menaion_only',
+    field: 'has_paroemias', category: 'flags', appliesTo: 'both',
     required: () => true,
     description: 'OT paroemias at Vespers (boolean)',
   },
@@ -308,7 +355,17 @@ export const FIELD_REGISTRY = [
   {
     field: 'menaion_set_aside', category: 'flags', appliesTo: 'pentecostarion_only',
     required: () => true,
-    description: 'Menaion entirely set aside (Great Feast)',
+    description: 'Menaion entirely set aside — Great Feast governs (boolean)',
+  },
+  {
+    field: 'heavenly_king_omitted', category: 'flags', appliesTo: 'pentecostarion_only',
+    required: () => true,
+    description: 'O Heavenly King omitted at Hours (Ascension through eve of Pentecost)',
+  },
+  {
+    field: 'it_is_truly_meet_suppressed', category: 'flags', appliesTo: 'pentecostarion_only',
+    required: () => true,
+    description: 'It Is Truly Meet suppressed; zadostoinik sung instead (Pascha through Pentecost)',
   },
 ];
 

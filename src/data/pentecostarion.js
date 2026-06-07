@@ -4545,7 +4545,115 @@ const PENTECOSTARION_DATA = {
     ],
     stichera_glory: { tone: 6, source: "menaion", text: "Ye are the pillars of the Church and the fulfillment of the Gospel, O divine ranks of martyrs. In deeds ye have fulfilled the sayings of the Savior; for through you the gates of Hades, which had been opened against the Church, have been closed; and the blood you shed hath dried up the oblation of idols. And having nourished the perfection of believers through your slaughter, ye astonished the bodiless ones, standing before Christ wearing your crowns. Wherefore, intercede ye ceaselessly with Him on behalf of our souls." },
     stichera_both_now: { tone: 8, source: "octoechos", text: "In His love for mankind, the King of heaven appeared on earth and dwelt among men; for He Who received flesh from the pure Virgin and cameth forth from her having received human nature, is the only Son of God, twofold in nature but not Hypostasis. Therefore, proclaiming Him to be truly perfect God and perfect man, we confess Christ our God. Him do thou beseech, O unwedded Mother, that our souls find mercy!" },
+    // Aposticha stichera — source: 90.pdf AT VESPERS / ON THE APOSTICHA
+    // Saturday Great Vespers uses the standard 3-verse Saturday sequence
     aposticha_source: "octoechos",
+    stichera_aposticha: [
+      { tone: 8, text: "O Christ, having descended from heaven, Thou didst ascend the Cross; " +
+          "O immortal Life, Thou didst descend into Hades; " +
+          "the true Light, unto those in darkness; " +
+          "the Resurrection unto all to those who had fallen. " +
+          "Our illumination and our Savior, glory be to Thee." },
+      { verse: "The Lord is King: He is clothed with majesty; " +
+          "The Lord is clothed with strength and He hath girt Himself.",
+        tone: 8, text: "Let us glorify Christ who didst rise from the dead: " +
+          "for having taken a body and a soul, He parted them one from another by the passion. " +
+          "For His soul didst descend into Hades, which He despoiled, " +
+          "while the holy body of the Redeemer of our souls knew not corruption in the tomb." },
+      { verse: "For He established the universe which shall not be shaken.",
+        tone: 8, text: "O Christ, in psalms and hymns we glorify Thy Resurrection from the dead. " +
+          "For through it Thou hast freed us from the tyranny of Hades, " +
+          "and as God Thou hast granted us life eternal, and Thy great mercy." },
+      { verse: "Holiness becometh Thy house, O Lord, unto length of days.",
+        tone: 8, text: "Thou, O Master of all things, art the incomprehensible Creator of heaven and earth, " +
+          "by suffering the Cross Thou hast become for me the source of immortality. " +
+          "Submitting to burial and arising in glory, " +
+          "Thou hast raised Adam with Thyself by Thine All-powerful hand. " +
+          "Glory to Thine arising on the third day, " +
+          "through which Thou hast granted us eternal life and the forgiveness of sins, " +
+          "as Thou alone art lovingly compassionate." },
+    ],
+    aposticha_glory: { tone: 6, text: "Come, ye believers, let us today stand in rank " +
+        "and celebrate with true worship; " +
+        "let us exalt with glorifications the memorial of the all-honored, all-revered saints, " +
+        "shouting, Rejoice, O glorious apostles, prophets, martyrs and Bishops! " +
+        "Rejoice, O company of the righteous and just! " +
+        "Rejoice, O rank of honored women! " +
+        "Entreat Christ to grant the orthodox victory over the godless, " +
+        "and our souls Great Mercy." },
+    aposticha_both_now: { tone: 6, text: "Christ the Lord, my Creator and Redeemer, " +
+        "Who came forth from thy womb, O all-pure one, and clothed Himself in my nature, " +
+        "hath freed Adam from the primal curse. " +
+        "Wherefore, like the angel we unceasingly cry out to thee, " +
+        "O most pure one, who art truly the Mother of God and Virgin: " +
+        "Rejoice!, O Sovereign Lady, the intercession, protection and salvation of our souls!" },
+
+    // Beatitudes — source: 90.pdf AT THE LITURGY
+    // 6 Resurrection verses + 4 All Saints from Ode VI of the All Saints canon
+    beatitudes_source: "6 Resurrection + 4 All Saints (Ode VI) — 90.pdf",
+    beatitudes_troparia: [
+      { text: "Remember us, O Christ, Thou Savior of the world, " +
+          "as Thou didst remember the thief upon the Cross; " +
+          "and account us all worthy of Thy heavenly kingdom, " +
+          "O Thou Who alone art compassionate.", source: "resurrection" },
+      { text: "Hearken, O Adam, and rejoice with Eve; " +
+          "for He who of old stripped you both naked, " +
+          "and by deception hath taken all of us captive, " +
+          "hath been set at naught by the Cross of Christ.", source: "resurrection" },
+      { text: "Nailed of Thine own will to the Tree, O our Savior, " +
+          "Thou didst deliver Adam from the curse which came through the tree, " +
+          "and hast rewarded that which is in Thine image with a dwelling in paradise, " +
+          "in that Thou art compassionate.", source: "resurrection" },
+      { text: "Today is Christ risen from the tomb, " +
+          "granting incorruption unto all the faithful; " +
+          "and He reneweth the joy of the myrrh-bearing women " +
+          "after His suffering and resurrection.", source: "resurrection" },
+      { text: "Girded with power Thou didst ascend the Cross " +
+          "and wrestled with the tyrant, and as God hurled him from on high; " +
+          "but Adam hast Thou raised up with Thine invincible hand.", source: "resurrection" },
+      { text: "Rejoice, O wise myrrh-bearing women, " +
+          "who were first to behold the resurrection of Christ, " +
+          "and who proclaimed to the apostles the glad tidings " +
+          "of the restoration of the whole world!", source: "resurrection" },
+      { text: "O Master, having found Thee to be a precious, choice and firmly set " +
+          "cornerstone in Sion, the Saints, like select stones, " +
+          "builded themselves thereupon, as though upon an unshakable foundation.",
+        source: "all_saints_ode6" },
+      { text: "When Thy side was pierced, the drops of blood fell together with the deifying water, " +
+          "and refashioned the world. " +
+          "And the divine host of all the Saints addressed Thee as Benefactor.",
+        source: "all_saints_ode6" },
+      { text: "We praise most reverently the God-inspired cloud of witnesses, " +
+          "who by grace were made luminous, " +
+          "and shine more resplendently in the royal purple of their blood " +
+          "and in the crimson of their steadfast contest.",
+        label: "Glory", source: "all_saints_ode6" },
+      { text: "We all know thee to be the all-true Mother of God, " +
+          "through whom the nature of women, having been given strength, " +
+          "contested for Christ, O all-immaculate one, " +
+          "and in godly manner became filled with every virtue.",
+        label: "Both now", source: "all_saints_ode6" },
+    ],
+
+    // Structural flags
+    menaion_set_aside: true,       // §4B17: All Saints Sunday — Menaion entirely displaced
+    has_paroemias: true,           // 3 OT lessons at Saturday Great Vespers (Isaiah, Wisdom ×2)
+    has_polyeleos: false,          // Polyeleos not sung (Sunday — Evlogitaria instead)
+    heavenly_king_omitted: false,  // P+56 is after Pentecost; O Heavenly King restored
+    it_is_truly_meet_suppressed: false,  // Zadostoinik period ended at Pentecost; It Is Truly Meet sung
+    oca_primary: true,             // All Saints Sunday is in full agreement with OCA calendar
+    note: "First Sunday After Pentecost. Tone 8 begins (new Octoechos cycle). " +
+      "Menaion entirely set aside (menaion_set_aside: true) — §4B17 governs exclusively. " +
+      "Two troparia at Vespers dismissal: Resurrection T8 (primary) + All Saints T4 (Glory). " +
+      "Kontakion not sung at Vespers (vespers_kontakion: false). " +
+      "LIC: 6 Octoechos (Resurrection T8, by Anatolius) + 4 All Saints (T6). " +
+      "Three OT paroemias at Saturday Great Vespers: Isaiah 43:9-14, Wisdom 3:1-9, Wisdom 5:15ff. " +
+      "Polyeleos not sung on Sunday (Evlogitaria sung instead; Megalynarion only if temple dedicated to All Saints). " +
+      "Magnificat sung. Great Doxology sung. Matins Gospel #1 (Resurrection). " +
+      "Two prokeimena at Liturgy (T8 Resurrection + T4 All Saints). " +
+      "Two alleluias at Liturgy (T8 no stichos + T4 with stichos). " +
+      "Beatitudes: 6 Resurrection + 4 All Saints from Ode VI. " +
+      "OCA and St. Sergius in full agreement on all texts.",
 
   },
 
