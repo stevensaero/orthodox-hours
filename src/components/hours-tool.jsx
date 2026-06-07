@@ -7923,6 +7923,7 @@ function HowItWorksPanel() {
             <><strong>Scripture viewer</strong> — Full-text epistle and gospel readings, linked from the liturgical context card and from within service elements.</>,
             <><strong>Menaion data browser</strong> (<a href="/orthodox-hours/menaion" style={{color: "#8B6914"}}>open</a>) — Inspect all encoded fixed-calendar entries with per-entry completeness auditing. Shows every field, flags missing data, and displays Litiya stichera and Beatitudes troparia.</>,
             <><strong>Pentecostarion data browser</strong> (<a href="/orthodox-hours/pentecostarion" style={{color: "#8B6914"}}>open</a>) — Same for Pascha-anchored entries, organized by liturgical period.</>,
+            <><strong>Octoechos data browser</strong> (<a href="/orthodox-hours/octoechos" style={{color: "#8B6914"}}>open</a>) — Browse encoded Octoechos vespers stichera and matins data by tone (1–8). Matins sections show Phase 3 stubs until encoded from N-1.pdf files.</>,
             <><strong>Reader mode</strong> — Substitutes lay reader responses for priest exclamations throughout.</>,
           ])}
         </div>

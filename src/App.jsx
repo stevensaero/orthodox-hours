@@ -7,6 +7,7 @@ import Scripture from './components/scripture.jsx';
 // Dev/truthing tools — lazy-loaded, URL-only access
 const MenaionBrowser = lazy(() => import('./components/menaion-browser.jsx'));
 const PentecostarionBrowser = lazy(() => import('./components/pentecostarion-browser.jsx'));
+const OctoechosBrowser = lazy(() => import('./components/octoechos-browser.jsx'));
 const ToneTrainer = lazy(() => import('./components/tone-trainer.jsx'));
 
 function LazyFallback() {
@@ -48,6 +49,7 @@ function App() {
         <Route path="/scripture/" element={<ErrorBoundary><Scripture /></ErrorBoundary>} />
         <Route path="/menaion" element={<Suspense fallback={<LazyFallback />}><MenaionBrowser /></Suspense>} />
         <Route path="/pentecostarion" element={<Suspense fallback={<LazyFallback />}><PentecostarionBrowser /></Suspense>} />
+        <Route path="/octoechos" element={<Suspense fallback={<LazyFallback />}><OctoechosBrowser /></Suspense>} />
         <Route path="/tone-trainer" element={<Suspense fallback={<LazyFallback />}><ToneTrainer /></Suspense>} />
       </Routes>
     </BrowserRouter>
