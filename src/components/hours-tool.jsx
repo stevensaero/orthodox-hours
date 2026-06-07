@@ -1951,7 +1951,13 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
   const isSunday = season === 'sunday' || season === 'pentecostarion_sunday' || isPentSundayFmt;
   const isOrdinarySunday = season === 'sunday';
   const christIsRisenActive = isPentecostarion && paschaOffset >= 7 && paschaOffset <= 38;
-  const heavenlyKingOmitted = isPentecostarion && paschaOffset > 38;
+  // O Heavenly King omitted P+39–P+48 (Ascension through eve of Pentecost). Restored P+49+.
+  // Read the explicit data flag when present; fall back to offset range for entries without it.
+  const heavenlyKingOmitted = isPentecostarion && (
+    pentEntry && pentEntry.heavenly_king_omitted !== undefined
+      ? pentEntry.heavenly_king_omitted
+      : (paschaOffset >= 39 && paschaOffset <= 48)
+  );
   const is3rdOr9th = hourKey === '3rd_hour' || hourKey === '9th_hour';
 
   // ── Fekula section for citations ─────────────────────────────────────────
@@ -7749,7 +7755,8 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
   const { paschaOffset, season } = liturgicalData;
   const isPentecostarion = season === 'pentecostarion' || season === 'brightweek';
   const christIsRisenActive = isPentecostarion && paschaOffset >= 7 && paschaOffset <= 38;
-  const heavenlyKingOmitted = isPentecostarion && paschaOffset > 38;
+  // O Heavenly King omitted P+39–P+48; restored P+49 (Pentecost) onward.
+  const heavenlyKingOmitted = isPentecostarion && paschaOffset >= 39 && paschaOffset <= 48;
 
   const containerStyle = {
     border: '1px solid #D4C49A',
