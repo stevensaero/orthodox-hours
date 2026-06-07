@@ -246,12 +246,14 @@ export const FIELD_REGISTRY = [
   {
     field: 'litya_glory', category: 'vespers_litya', appliesTo: 'both',
     required: (entry) => entry.has_litya === true,
-    description: 'Litiya Glory sticheron (tone + text, or null)',
+    description: 'Litiya Glory sticheron (tone + text, or null if PDF prints none)',
+    check: (entry) => 'litya_glory' in entry,  // null is valid — PDF may print no dedicated Glory
   },
   {
     field: 'litya_both_now', category: 'vespers_litya', appliesTo: 'both',
     required: (entry) => entry.has_litya === true,
-    description: 'Litiya Both Now theotokion (tone + text, or null)',
+    description: 'Litiya Both Now theotokion (tone + text, or null if PDF prints none)',
+    check: (entry) => 'litya_both_now' in entry,  // null is valid — PDF may print no dedicated Both now
   },
 
   // ── VESPERS: PROKEIMENON ───────────────────────────────────────────────────

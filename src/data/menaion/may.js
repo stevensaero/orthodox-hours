@@ -1457,25 +1457,9 @@ const MAY_MENAION = {
       // 05-27A.pdf: "At the Litiya, the Sticheron of the temple" — no dedicated
       // Menaion litiya stichera printed; temple sticheron + standard petitions.
       has_litya: true,
-      litya_stichera: [],  // no dedicated Menaion stichera — temple sticheron governs
-      litya_glory: { tone: 5,
-        text: "Let us hasten unto the present festival, O ye faithful; " +
-              "for there is set before us a spiritual banquet and a mystical wine-bowl, " +
-              "filled with the sweet food of joy, even the virtues of the martyrs. " +
-              "For these stout-hearted ones, from the ends of the earth, " +
-              "offered unto God as a rational sacrifice " +
-              "the varied torments and afflictions of their bodily members " +
-              "and the very prime of their years. " +
-              "Some were beheaded, others were dismembered of their arms " +
-              "and were sundered in every joint. " +
-              "All the Saints became sharers of the Passion of Christ. " +
-              "O Lord, Who didst grant them crowns as a reward for their afflictions, " +
-              "grant that we may live according to their example, since Thou lovest mankind.",
-        note: "FLAG: litya_glory text from P+56 All Saints — PDF does not print dedicated litiya glory for John the Russian. Verify against actual vigil rubric.",
-      },
-      litya_both_now: { source: "pentecostarion",
-        note: "05-27A.pdf: Both now at Litiya from Pentecostarion — assembled at runtime",
-      },
+      litya_stichera: [],  // no dedicated Menaion stichera — PDF: "At the Litiya, the Sticheron of the temple" only
+      litya_glory: null,   // 05-27A.pdf: no Glory sticheron printed at Litiya — temple sticheron + petitions only
+      litya_both_now: null, // 05-27A.pdf: no Both now printed at Litiya — follows immediately to petitions
 
       // ── VESPERS — APOSTICHA ────────────────────────────────────────────────────
       // 05-27A.pdf: 3 stichera Tone II + feast-specific verses
