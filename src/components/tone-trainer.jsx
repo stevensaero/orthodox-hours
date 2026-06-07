@@ -2423,6 +2423,7 @@ export default function ToneTrainer() {
   const [playingWhich, setPlayingWhich] = useState(null); // "truth"|"machine" while a line plays
   const [playingAltoIdx, setPlayingAltoIdx] = useState(null); // currently playing alto chip index
   const [playingBassIdx, setPlayingBassIdx] = useState(null); // currently playing bass chip index
+  const [playingTenorIdx, setPlayingTenorIdx] = useState(null); // currently playing tenor chip index
   const [pitchHeight, setPitchHeight] = useState(true); // always on in new sing view
   const [timbre, setTimbre] = useState("piano");         // audio timbre for sing view
   const [voicePart, setVoicePart] = useState("alto");    // alto | bass | alto-bass
@@ -2991,6 +2992,19 @@ export default function ToneTrainer() {
       sopranoNotes.forEach((n) => { toneTimbre(freq_soprano(n.sol), ts, n.dur, n.peak, timbre); ts += n.dur; });
     }
     if (playTenor) {
+      const scheduleTenorHighlights = (notes) => {
+        let ht = tt;
+        notes.forEach((n, ni) => {
+          const delay = (ht - c.currentTime) * 1000;
+          const capturedNi = ni; const capturedLi = li;
+          timerIdsRef.current.push(setTimeout(() => {
+            if (capturedLi !== null) setPlayingLine(capturedLi);
+            setPlayingTenorIdx(capturedNi);
+          }, delay));
+          ht += n.dur;
+        });
+      };
+      scheduleTenorHighlights(tenorNotes);
       tenorNotes.forEach((n) => { toneTimbre(freq_tenor(n.sol, n.phraseRules), tt, n.dur, n.peak, timbre); tt += n.dur; });
     }
 
@@ -3021,7 +3035,7 @@ export default function ToneTrainer() {
     const bassNotes    = lineToNotes_bass(src[li]);
     const sopranoNotes = lineToNotes_soprano(src[li]);
     const tenorNotes   = lineToNotes_tenor(src[li]);
-    playNotesWithBass(altoNotes, bassNotes, sopranoNotes, tenorNotes, () => { setPlayingLine(null); setPlayingAltoIdx(null); setPlayingBassIdx(null); setPlayingWhich(null); }, li);
+    playNotesWithBass(altoNotes, bassNotes, sopranoNotes, tenorNotes, () => { setPlayingLine(null); setPlayingAltoIdx(null); setPlayingBassIdx(null); setPlayingTenorIdx(null); setPlayingWhich(null); }, li);
   };
 
   // lineToRolesWithDuration(line)
@@ -3261,7 +3275,7 @@ export default function ToneTrainer() {
     const bassNotes    = lineToNotes_bass(activeLines()[li]);
     const sopranoNotes = lineToNotes_soprano(activeLines()[li]);
     const tenorNotes   = lineToNotes_tenor(activeLines()[li]);
-    playNotesWithBass(altoNotes, bassNotes, sopranoNotes, tenorNotes, () => { setPlayingLine(null); setPlayingAltoIdx(null); setPlayingBassIdx(null); setPlayingWhich(null); }, li);
+    playNotesWithBass(altoNotes, bassNotes, sopranoNotes, tenorNotes, () => { setPlayingLine(null); setPlayingAltoIdx(null); setPlayingBassIdx(null); setPlayingTenorIdx(null); setPlayingWhich(null); }, li);
   };
 
   const playAll = () => {
@@ -3333,6 +3347,15 @@ export default function ToneTrainer() {
       }
 
       if (playTenorVoice && tenorNotes) {
+        let ht = tt;
+        tenorNotes.forEach((n, ni) => {
+          const delay = (ht - c.currentTime) * 1000;
+          const capturedNi = ni; const capturedLi = li;
+          timerIdsRef.current.push(setTimeout(() => {
+            setPlayingLine(capturedLi); setPlayingTenorIdx(capturedNi);
+          }, delay));
+          ht += n.dur;
+        });
         tenorNotes.forEach((n) => { toneTimbre(freq_tenor(n.sol, n.phraseRules), tt, n.dur, n.peak, timbre); tt += n.dur; });
         tt += (60 / bpm) / 2;
       }
@@ -3340,7 +3363,7 @@ export default function ToneTrainer() {
       if (playAlto) t += (60 / bpm) / 2;
     });
     const totalDur = Math.max(t, tb, ts) - startT;
-    const id2 = setTimeout(() => { setPlayingLine(null); setPlayingAltoIdx(null); setPlayingBassIdx(null); setPlayingWhich(null); }, totalDur * 1000 + 40);
+    const id2 = setTimeout(() => { setPlayingLine(null); setPlayingAltoIdx(null); setPlayingBassIdx(null); setPlayingTenorIdx(null); setPlayingWhich(null); }, totalDur * 1000 + 40);
     timerIdsRef.current.push(id2);
   };
 
@@ -4374,7 +4397,9 @@ export default function ToneTrainer() {
           const bg = chipBg[role] ?? chipBg.recite;
           const isDownward = isBass || isTenor || isGhostTenor;
           const isActive = playingLine === li && (
-            isBass ? playingBassIdx === i : playingAltoIdx === i
+            isBass ? playingBassIdx === i
+            : (isTenor || isGhostTenor) ? playingTenorIdx === i
+            : playingAltoIdx === i
           );
           const borderC = isActive ? "#7a2418"
             : (chipBorderColor[role] ?? chipBorderColor.recite);
