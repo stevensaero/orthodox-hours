@@ -8007,6 +8007,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.6.5",
+    date: "June 2026",
+    summary: "Fix: O Heavenly King restored at Pentecost (P+49) and All Saints Sunday (P+56)",
+    items: [
+      "fix: O Heavenly King was incorrectly omitted on P+49 (Pentecost) through P+56 (All Saints Sunday). The condition 'paschaOffset > 38' had no upper bound, running all the way through the end of the Pentecostarion. Correct rubric: omit P+39–P+48 only; restore P+49 (Pentecost) onward. Fekula §4B11.",
+      "fix: assembleHour() now reads pentEntry.heavenly_king_omitted data flag when explicitly set, falling back to offset range 39–48. P+36–P+48 carry the flag (true); P+56 carries it (false); P+49–P+55 have no flag and the offset fallback correctly evaluates false.",
+      "fix: OrdinaryBeginning() component corrected to use offset range 39–48 (was '>38' with no upper bound).",
+    ],
+  },
+  {
     version: "v0.6.4",
     date: "June 2026",
     summary: "Ordinary Sunday resurrectional troparion and kontakion now assembled from Octoechos",
