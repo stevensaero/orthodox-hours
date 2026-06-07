@@ -78,10 +78,14 @@ git config user.name "Stevens Aero"
 #    Assembler changes: edit src/components/hours-tool.jsx
 #    Notes: edit project_notes.md
 
-# 4. Build to verify before committing
+# 4. Run skeleton gate — MANDATORY for any encoding session
+# Must exit 0 before committing. If it exits 1, resolve all gaps first.
+node scripts/check-skeleton.mjs all
+
+# 5. Build to verify before committing
 node_modules/.bin/vite build
 
-# 5. Stage, commit, push
+# 6. Stage, commit, push
 git add -A
 git commit -m "vX.X.X: brief summary"
 git push origin main 2>&1

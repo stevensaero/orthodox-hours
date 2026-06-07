@@ -612,6 +612,16 @@ Drive .txt records live alongside PDFs in `orthodox_liturgics/Pentecostarion/st-
 
 ### Encoding Workflow
 
+**MANDATORY: run the skeleton gate before every push that touches encoding data:**
+```
+node scripts/check-skeleton.mjs all
+```
+This must exit 0 (no gaps) before committing. If it exits 1, resolve all gaps first.
+A push with skeleton gaps is a protocol violation. The gate uses `FIELD_REGISTRY`
+in `src/lib/audit.js` — the same registry the browser data browser uses.
+
+The encoding spec is `encoding_rule_v2.md` in repo root — read it before encoding any date.
+
 Same as Menaion encoding — PDF → KEY FIELDS → .txt record on Drive → PENTECOSTARION entry.
 
 **KEY FIELDS template for Pentecostarion entries:**
