@@ -7014,6 +7014,19 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.7.1",
+    date: "June 2026",
+    summary: "How It Works corrections — reflect current assembler capabilities",
+    items: [
+      "docs: Vespers service inventory note updated — now correctly describes interleaved LIC stichera, Aposticha, and Litiya assembly (not just 'HTM spine').",
+      "docs: Matins service inventory note updated — 'planned' status retained but now describes data architecture in place: per-tone Octoechos files, P+56 All Saints feast canon encoded and browsable.",
+      "docs: Stale paragraph removed from §4 (How Services Are Assembled) — incorrectly stated that the interleaved stichera assembler was a 'future milestone'. The LIC assembler is complete and live.",
+      "docs: Menaion count corrected — May 16-31 is 16 entries (was 17). June framing clarified: 30 date keys, 36 service entries for multi-service dates.",
+      "docs: Field table corrections — stichera_lord_i_call, stichera_aposticha, stichera_glory/aposticha_glory changed from ⚠ future to ✓ active. has_great_doxology and magnificat_sung changed from ⚠ partial to ✓ encoded.",
+      "docs: §6 'Vespers stichera interleaving' limitation rewritten as capability — stichera are assembled for encoded dates; coverage gap documented accurately.",
+    ],
+  },
+  {
     version: "v0.7.0",
     date: "June 2026",
     summary: "Octoechos Phase 1 — data extracted to src/data/octoechos/; hours-tool.jsx -143KB",
@@ -7851,10 +7864,10 @@ function HowItWorksPanel() {
   // ── Built services inventory ──────────────────────────────────────────────
   const serviceInventory = [
     { name: "The Ordinary Beginning", status: "built", note: "Three seasonal variants (ordinary, Bright Week, Christ-is-risen period)" },
-    { name: "Vespers", status: "built", note: "Full HTM invariable spine with Menaion/Pentecostarion movable texts" },
+    { name: "Vespers", status: "built", note: "Full HTM skeleton + interleaved Lord I Have Cried stichera (Octoechos + Menaion by §4A/§4B rules), Aposticha, Litiya, Entrance; Menaion/Pentecostarion/Octoechos movable texts" },
     { name: "Compline (Apodeipnon)", status: "planned", note: "" },
     { name: "Midnight Office", status: "planned", note: "" },
-    { name: "Matins (Orthros)", status: "planned", note: "" },
+    { name: "Matins (Orthros)", status: "planned", note: "Data architecture built: per-tone Octoechos files (Phase 1), P+56 All Saints feast canon encoded and browsable. Assembler not yet built." },
     { name: "The First Hour", status: "built", note: "Including special close (O Christ the True Light)" },
     { name: "The Third Hour", status: "built", note: "" },
     { name: "The Sixth Hour", status: "built", note: "" },
@@ -8052,7 +8065,7 @@ function HowItWorksPanel() {
           {sub("Lord I Have Cried — how stichera are inserted at Vespers")}
           {p(<>At every Vespers, after the kathisma, the psalms <strong>Lord I Have Cried</strong> (Psalms 140, 141, 129, and 116) are chanted. The last several verses of these psalms serve as an <em>insertion scaffold</em> — a numbered countdown from verse 10 down to verse 1. The <strong>stichera</strong> (hymns appointed for the day) are inserted into this countdown, one sticheron after each verse, beginning at the verse that matches the stichera count.</>)}
           {p(<>The stichera count is determined by service rank: <strong>6 stichera</strong> for Simple, Six-Stichera, and Doxology rank (insertion begins at V.6); <strong>8 stichera</strong> for Polyeleos rank (insertion at V.8); <strong>10 stichera</strong> for Vigil rank (insertion at V.10, no plain verses). After V.1, the sequence closes with <em>Glory…</em> (the doxasticon) and <em>Now and ever…</em> (the theotokion).</>)}
-          {p(<>The current tool shows the full psalm texts with the stichera verse scaffold as a readable fallback. The interleaved assembler — inserting encoded stichera into the correct verse slots — is a future development milestone.</>)}
+          {p(<>For dates with encoded stichera, the tool fully assembles Lord I Have Cried — interleaving Octoechos resurrection stichera and Menaion saint stichera into the correct verse slots per Fekula §4A and §4B rules. Saturday evening uses 7 Octoechos resurrection stichera plus the feast Glory; ordinary weekdays follow the §4A1 rule (3 Pentecostarion + 3 Menaion or 6 Octoechos). Dates not yet encoded show the psalm scaffold as a readable fallback.</>)}
           {sub("The Kathisma schedule")}
           {p(<>At Vespers and Matins, one or more sections of the Psalter — called <strong>kathismas</strong> — are read in sequence throughout the week. The Psalter’s 150 psalms are divided into <strong>20 kathismas</strong>, each further subdivided into three stases (antiphons). The full Psalter is read through once per week in ordinary time; more frequently during Great Lent.</>)}
           {p(<>Which kathisma is appointed depends on two things: the <strong>day of the week</strong> and the <strong>period of the church year</strong>. The tool detects one of six periods: Summer/Winter, Autumn/Spring, Great Lent Weeks 1–4 and 6, Great Lent Week 5 (unique table), Passion Week (Monday–Wednesday only), and Bright Week (no kathisma at any service). Several override rules apply: great feasts of the Lord suppress the kathisma; Saturday evening and feasts of Polyeleos or Vigil rank always use Kathisma I (“Blessed is the Man”); Sunday evening has no kathisma.</>)}
@@ -8078,7 +8091,7 @@ function HowItWorksPanel() {
           {p(<>Encoded data is written directly into the tool’s monthly data files — <code>src/data/menaion/may.js</code>, <code>june.js</code>, <code>july.js</code>, etc. for fixed-calendar dates, and <code>src/data/pentecostarion.js</code> for dates keyed to Pascha. These files are the single point of truth. Git history is the version record.</>)}
           {sub("Currently encoded")}
           {ul([
-            <><strong>Menaion:</strong> May 16–31 (17 entries), June 1–30 (36 entries), July 1–15 (5 entries). Total: 58 entries across 51 calendar days.</>,
+            <><strong>Menaion:</strong> May 16–31 (16 entries), June 1–30 (30 date keys · 36 service entries for multi-service dates), July 1–15 (5 entries).</>,
             <><strong>Pentecostarion:</strong> P+19 through P+56 (23 entries). Covers Thomas Sunday week through All Saints of North America including Ascension, Pentecost, and the Saturdays of the Reposed.</>,
             <><strong>Pre-Communion Prayers:</strong> Complete (35 sections, Jordanville Prayer Book).</>,
             <><strong>Post-Communion Prayers:</strong> Complete (HTM order, adapts to liturgy type).</>,
@@ -8113,11 +8126,11 @@ function HowItWorksPanel() {
                 ["communion_verse", "Communion hymn text at Liturgy", "✓ encoded — Liturgy future"],
                 ["oca_primary", "Whether this is the OCA calendar’s primary commemoration", "✓ active — multi-service selector"],
                 ["service_file", "Source PDF filename (e.g. 06-09.pdf)", "⚠ partial"],
-                ["has_great_doxology", "Whether the Great Doxology is sung at Matins", "⚠ partial — Matins future"],
-                ["magnificat_sung", "Whether the Magnificat (Ode IX) is sung or omitted", "⚠ partial — Matins future"],
-                ["stichera_lord_i_call", "Vespers Lord I Call stichera texts and count", "⚠ future — Vespers stichera encoding"],
-                ["glory / doxasticon", "Vespers Glory sticheron text", "⚠ future"],
-                ["aposticha", "Vespers Aposticha stichera texts", "⚠ future"],
+                ["has_great_doxology", "Whether the Great Doxology is sung at Matins", "✓ encoded — all entries carry structural flags; Matins assembler not yet built"],
+                ["magnificat_sung", "Whether the Magnificat (Ode IX) is sung or omitted", "✓ encoded — all entries carry structural flags; Matins assembler not yet built"],
+                ["stichera_lord_i_call", "Vespers Lord I Call stichera texts and count", "✓ active — interleaved into Vespers for encoded dates (§4A/§4B rules)"],
+                ["stichera_glory / aposticha_glory", "Vespers doxastikon — Glory at LIC or Aposticha", "✓ active — rendered for §2E/§2F and encoded §2C entries"],
+                ["stichera_aposticha", "Vespers Aposticha stichera texts with verse inserts", "✓ active — fully assembled for §2E/§2F entries with encoded data"],
               ].map(([field, desc, used], i) => (
                 <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : "rgba(0,0,0,0.02)" }}>
                   <td style={{ padding: "4px 8px", borderBottom: "1px solid #EDE5CE", fontFamily: "monospace", fontSize: "0.72rem", color: "#3B4A6B", whiteSpace: "nowrap" }}>{field}</td>
@@ -8155,7 +8168,7 @@ function HowItWorksPanel() {
             <><strong>Great Lent and Triodion</strong> — Lenten services follow substantially different rubrical patterns (Lenten Hours with prostrations, Presanctified Liturgy, altered Vespers structure, Lenten kathisma tables). The calendar engine tracks these periods correctly, but the assembly rules and Triodion data have not been built yet. This is the next major development area.</>,
             <><strong>Compline, Midnight Office, and Matins</strong> are not yet assembled. These are large services with complex structure (especially Matins, which includes the canon, polyeleos, and other elements not present at the Hours).</>,
             <><strong>Divine Liturgy</strong> is not assembled. Epistle and Gospel references are shown in the context card, and Liturgy-specific fields (prokeimenon, alleluia, communion verse) are encoded in the data but not yet surfaced.</>,
-            <><strong>Vespers stichera interleaving</strong> — the Lord I Have Cried and Aposticha stichera texts are not yet encoded for most dates. The psalm scaffold is displayed, but the interleaved stichera assembly requires both Menaion stichera encoding and Octoechos stichera data for all 8 tones.</>,
+            <><strong>Vespers stichera coverage</strong> — Lord I Have Cried and Aposticha stichera are fully assembled for encoded dates. Menaion encoding currently covers May 16–July 15 and Pentecostarion P+19–P+56; dates outside this range show the psalm scaffold with a placeholder. Extending coverage requires reading and encoding additional Menaion months.</>,
             <><strong>Encoding coverage</strong> — only May 16–July 15 are encoded in the Menaion. Dates outside this range show the OCA calendar’s saint name but cannot supply troparion or kontakion texts. The Pentecostarion covers P+19–P+56.</>,
           ])}
           {sub("Translation note")}
