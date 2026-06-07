@@ -2302,89 +2302,148 @@ const JUNE_MENAION = {
     oca_primary: true,
     source_file: "06-29.pdf",
     rank: "vigil",
-    note: "Great Feast of the Holy Apostles Peter and Paul. One of the most solemn " +
-          "apostolic feasts. Full Vigil service. Peter martyred by crucifixion (inverted), " +
-          "Paul by beheading, both in Rome under Nero c. 67 AD. Troparion and kontakion " +
-          "encoded for reference; Hours assembly outside ordinary scope.",
-    troparion: {
-      tone: 4,
-      text: "O first enthroned among the apostles and teachers of the whole world: " +
-            "entreat the Master of all, that He grant peace to the world " +
-            "and great mercy to our souls.",
+    fekula_section: "2F",
+    has_great_doxology: true,
+    has_polyeleos: true,
+    has_litya: true,
+    has_paroemias: true,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    note: "Great Feast of the Holy Apostles Peter and Paul. Full Vigil service " +
+          "(Little Vespers + Great Vespers + Matins). Peter martyred by crucifixion (inverted), " +
+          "Paul by beheading, both in Rome c. 67 AD. " +
+          "N.B.: If feast falls on Wed or Fri, fish and wine permitted. " +
+          "If feast falls on Sunday, apostles' hymns take precedence over resurrection.",
     feast_e: "2 Corinthians 11:21-30 (§193)",
     feast_g: "Matthew 16:13-19 (§67)",
     prokeimenon_tone: 8,
-    prokeimenon_text: "Their sound hath gone forth into all the earth, " +
-      "and their words unto the ends of the world.",
-    prokeimenon_stichos: "The heavens declare the glory of God, " +
-      "and the firmament proclaimeth the work of His hands.",
+    prokeimenon_text: "Their sound hath gone forth into all the earth, and their words unto the ends of the world.",
+    prokeimenon_stichos: "The heavens declare the glory of God, and the firmament proclaimeth the work of His hands.",
     alleluia_tone: 1,
-    alleluia_verse: "The heavens shall confess Thy wonders, O Lord, " +
-      "and Thy truth in the congregation of saints.",
+    alleluia_verse: "The heavens shall confess Thy wonders, O Lord, and Thy truth in the congregation of saints.",
     alleluia_stichos: "God Who is glorified in the council of the saints.",
-    communion_verse: "Their sound hath gone forth into all the earth, " +
-      "and their words unto the ends of the world.",
-    paroemia_1: "1 Peter 1:1-9 — begotten again unto a lively hope; " +
-      "trial of faith more precious than gold",
-    paroemia_2: "1 Peter 1:10-16 — be ye holy for I am holy; " +
-      "redeemed with the precious blood of Christ",
-    paroemia_3: "1 Peter 2:11-24 — abstain from fleshly lusts; " +
-      "Christ also suffered for us, leaving us an example",
-    matins_gospel: "John 21:15-23 (§67) — Feed my lambs; " +
-      "signifying by what death he should glorify God",
-    has_litya: true,
-    has_polyeleos: true,
-    has_great_doxology: true,
+    communion_verse: "Their sound hath gone forth into all the earth, and their words unto the ends of the world.",
+    paroemia_1: "1 Peter 1:1-9 — begotten again unto a lively hope; trial of faith more precious than gold",
+    paroemia_2: "1 Peter 1:10-16 — be ye holy for I am holy; redeemed with the precious blood of Christ",
+    paroemia_3: "1 Peter 2:11-24 — abstain from fleshly lusts; Christ also suffered for us, leaving us an example",
+    matins_gospel: "John 21:15-23 (§67) — Feed my lambs; signifying by what death he should glorify God",
+    stichera_lord_i_call_count: 8,
+    stichera_lord_i_call: [
+      { tone: 2, text: "With what wreaths of praise shall we crown Peter and Paul, who were separate in body yet united in spirit, the foremost of the preachers of God, the one as leader of the apostles, and the other as the one who labored more than the rest? For Christ our God, Who hath great mercy, hath truly crowned them with diadems of glory as is meet." },
+      { tone: 2, text: "With what beauties of song shall we hymn Peter and Paul? They are the wings of divine knowledge who soared above the ends of the earth and were borne aloft to the heavens, the hands of the grace of the Gospel, the rivers of wisdom, the arms of the Cross, wherewith Christ, Who hath great mercy, hath cast down the pride of the demons." },
+      { tone: 2, text: "With what spiritual hymns shall we praise Peter and Paul? Who have closed the ever-gaping mouths of the ungodly, they are the dreadful swords of the Spirit, the splendid adornments of Rome, the nurturers of the whole world, the noetic and divinely graven tablets of the new covenant, whom Christ, Who hath great mercy, proclaimed in Sion." },
+    ],
+    stichera_glory: { tone: 4,
+      text: "By His thrice-repeated question, \"Peter, lovest thou Me?\", Christ set aright the three denials. Wherefore, Simon said to the Author of mysteries: \"Lord, Thou knowest all things, Thou understandest all things! Thou knowest that I love Thee!\" Wherefore, the Savior said unto him: \"Feed My lambs; feed My chosen ones; feed My sheep, which I have acquired for salvation by My blood!\" Him do thou beseech, O divinely blessed apostle, that He grant us great mercy.",
+    },
+    litya_stichera: [
+      { tone: 2, text: "Come, ye assemblies of the faithful, and with fitting praises let us crown today Peter and Paul, the right laudable and beautiful company the chosen artisans of grace, for they have abundantly sown the word for all. Therewith they have made rich the grace of the Spirit, and as branches of the true Vine they have put forth for us a ripe cluster gladdening our hearts. To them do we cry aloud with open countenance and a pure conscience, saying: Rejoice, destroyers of the irrational and servants of those endowed with reason! Rejoice, ye beauteous chosen ones of the Creator and Fashioner of all! Rejoice, mediators of good things and dispellers of that which is false! Let us beseech them, that they ever entreat the Creator and Teacher to grant sure peace unto the world and great mercy to our souls." },
+      { tone: 2, text: "Let us praise the preeminent Peter and Paul as intercessors for the whole world: the disciples of Christ and foundations of the Church, the pillars and ramparts of truth, the divine trumpets of the teachings and sufferings of Christ. For having traveled the breadth of the whole world, sowing thy Faith as with a plough, they planted divine knowledge for all, revealing the word of the Trinity. O Peter, thou rock and foundation! O Paul, thou chosen vessel! Yoked together by the bonds of Christ, they have drawn all to the knowledge of God: gentiles and Jews, cities and islands, they have led to Christ; and they pray that our souls be saved." },
+      { tone: 2, text: "O Peter, preeminent among the glorious apostles, rock of faith! O wondrous Paul, rhetor and luminary of the Holy Churches! Standing before the divine throne, pray ye to Christ for us. O blessed Paul, mouth of the Lord, foundation of doctrines, who wast once a persecutor of Jesus the Savior, thou art now among the foremost enthroned among the apostles. Wherefore, thou hast seen ineffable things, O wise one, ascending even unto the third heaven, and crying aloud: Come with me, and we shall not be deprived of any good thing!" },
+      { tone: 3, text: "The citizens of the heavenly Jerusalem, the rock of faith, the rhetor of the Church of Christ, the two servants of the Trinity, the fishers of the world: having forsaken that which is here on earth and departed unto God with suffering, beseech Him with boldness that our souls be saved." },
+    ],
+    litya_glory: { tone: 5,
+      text: "As the Wisdom of God, the consubstantial Word of the Father foretold in the Gospels, O all-praised apostles, ye are exceeding fruitful vines bearing ripe and comely clusters upon your branches, and we the faithful, eating thereof, delight in the taste thereof with gladness. O Peter, rock of faith, and Paul, boast of the whole world, make steadfast the flock which ye acquired by your teachings.",
+    },
+    litya_both_now: { tone: 5,
+      text: "We bless thee, O Virgin Theotokos, and we, the faithful, glorify thee as is meet, thou unassailable city, impregnable rampart, and steadfast intercession and refuge of our souls.",
+    },
+    aposticha_source: "menaion",
+    stichera_aposticha: [
+      { tone: 1, text: "Who can relate the bonds and tribulations thou didst endure in all cities, O glorious Apostle Paul, the labors, pangs and vigils, the oppression amid hunger and thirst, in wintertime and nakedness, the basket (in which thou madest thine escape), thy beating with staves and stones, thy journeys, and the time thou wast cast into the deep? Thou wast a spectacle for angels and all mankind. Wherefore, enduring all things for the sake of Christ Who strengthened thee, thou didst acquire the world for Jesus Christ thy Lord. Wherefore, we who honor thy memory with faith beseech thee: Pray thou unceasingly, that our souls be saved." },
+      { tone: 1, verse: "Their sound hath gone forth into all the earth, and their words unto the ends of the world.", text: "Who can tell of thine imprisonment and tribulations throughout all the cities, O glorious apostle? Or who can imagine the struggles and exertions wherewith thou didst labor to spread the glad tidings of Christ, that thou mightest obtain all and lead the Church to Christ? Yet pray thou that it preserve thy goodly confession even unto its final breath, O Paul, apostle and teacher of the Church." },
+      { tone: 1, verse: "The heavens declare the glory of God, and the firmament proclaimeth the work of His hands.", text: "Let us praise Peter and Paul, the luminaries of the Great Church, for they have shone forth in the firmament of the Faith more brightly than the sun, and with the rays of their preaching have led the nations up from ignorance. For the one, crucified upon a cross, made his journey to heaven, where he hath received from Christ the keys of the kingdom; and the other, beheaded by the sword, passed over to the Savior. Both are fittingly blessed, and both make proclamation unto Israel, who unjustly lifted up their hands against the Lord Himself. Wherefore, through their supplications, O Christ our God, cast down those who rage against us, and make steadfast the Orthodox Faith, in that Thou lovest mankind." },
+    ],
+    aposticha_glory: { tone: 6,
+      text: "A joyous feast hath shone forth today upon the ends of the earth: the most honored commemoration of the most wise and preeminent Apostles Peter and Paul. Wherefore, Rome, joining chorus, rejoiceth in hymns and songs; and we celebrate, O brethren, observing this most honored day, crying: Rejoice, O apostle Peter, thou true friend of thy Teacher, Jesus Christ our God! Rejoice, O most beloved Paul, thou preacher of the Faith and teacher of the whole world! As ye have boldness, O ye two holy and chosen ones, entreat Christ our God, that our souls be saved.",
+    },
+    aposticha_both_now: { tone: 6,
+      text: "Christ the Lord, my Creator and Redeemer, Who came forth from thy womb, O most pure one, and clothed Himself in my nature, hath freed Adam from the primal curse. Wherefore, like the angel we unceasingly cry out to thee, O most pure one, who art truly the Mother of God and Virgin: Rejoice!, O Sovereign Lady, the intercession, protection and salvation for our souls!",
+    },
+    beatitudes_source: "4 from Ode III of Peter canon + 4 from Ode VI of Paul canon (06-29.pdf, AT LITURGY)",
+    beatitudes_troparia: [
+      { text: "The sweet mouth of Christ God showed thee to be blessed and a sure treasure of the kingdom; wherefore, we hymn thee, O Apostle Peter." },
+      { text: "The sweet mouth of Christ God showed thee to be blessed and a sure treasure of the kingdom; wherefore, we hymn thee, O Apostle Peter.", label: "repeat" },
+      { text: "On the rock of thy theology hath Jesus the Master unshakably established the Church, and therein we glorify thee, O Apostle Peter." },
+      { text: "How much greater than the angels was Peter in the body! For Christ God said that at His radiant coming he would be a judge and would be co-enthroned." },
+      { text: "Spurning all the beautiful things of the world, thou wast wounded by the love of the Master and by the desire for the common salvation of mankind, wishing to bear witness unto Him, O blessed Paul. Pray thou now on behalf of the whole world." },
+      { text: "As an excellent emulator of the Master, clothed in Him, O Paul, thou wast truly all things to all men, that thou mightest acquire and save all the people; and pursuing the ends of the world for Christ, thou didst truly save them." },
+      { text: "As is meet Christ hath given thee life in the heavens, O Apostle Paul; for thou didst not desire a city which abideth here, O blessed one, but wast a faithful minister and celebrant of His mysteries." },
+      { label: "Theotokion", text: "The Lord looked down upon thee, restoring my nature, in that He is mighty; and doing mighty works, O all-immaculate Birthgiver of God, through thee my God hath saved me from corruption, in that He is full of loving-kindness." },
+    ],
+    troparion: {
+      tone: 4,
+      text: "O first enthroned among the apostles and teachers of the whole world: entreat the Master of all, that He grant peace to the world and great mercy to our souls.",
     },
     kontakion_ode6: {
       tone: 2,
-      text: "The steadfast and divinely eloquent preachers, the foremost of Thine apostles, " +
-            "O Lord, hast Thou received into the rest and delight of Thy good things; " +
-            "for Thou hast accepted their pangs and death as greater than any wholeburnt " +
-            "offering, O Thou Who alone knowest the hearts of all mankind.",
+      text: "The steadfast and divinely eloquent preachers, the foremost of Thine apostles, O Lord, hast Thou received into the rest and delight of Thy good things; for Thou hast accepted their pangs and death as greater than any wholeburnt offering, O Thou Who alone knowest the hearts of all mankind.",
     },
   },
-
-  // ── June 30 — Synaxis of the Holy, Glorious & All-Praised Twelve Apostles ───
-  // Source: St. Sergius 06-30.pdf. OCA and St. Sergius agree fully.
-  // Service rank: Six-Stichera (§2C) — 6 stichera (3 Peter & Paul + 3 twelve apostles).
-  // The troparion is the same as June 29 per OCA and St. Sergius.
-  // The kontakion is the Synaxis' own (T2) — distinct from June 29.
-  // Note: June 30 in 2026 falls during Pentecostarion (Pascha+79) — out of ordinary scope.
 
   "06-30": {
     saint: "Synaxis of the Holy, Glorious and All-Praised Twelve Apostles",
     oca_primary: true,
     source_file: "06-30.pdf",
     rank: "six_stichera",
+    fekula_section: "2C",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
     note: "The day after Peter & Paul, honoring all Twelve Apostles together. " +
           "Troparion is the same as June 29. The Synaxis has its own kontakion (T2). " +
-          "In 2026 this date falls in the Pentecostarion (ordinary assembly rules do not apply).",
+          "§2C confirmed — 6 stichera (3 Peter & Paul T2 + 3 Twelve Apostles T4). " +
+          "Menaion-dedicated aposticha stichera printed (3 T4 with verses). " +
+          "Note: In 2026 this date falls during Pentecostarion (Pascha+79).",
+    feast_e: "1 Corinthians 4:9-16 (§131)",
+    feast_g: "Mark 3:13-19 (§12)",
+    prokeimenon_tone: 8,
+    prokeimenon_text: "Their sound hath gone forth into all the earth, and their words unto the ends of the world.",
+    prokeimenon_stichos: "The heavens declare the glory of God, and the firmament proclaimeth the work of His hands.",
+    alleluia_tone: 1,
+    alleluia_verse: "The heavens shall confess Thy wonders, O Lord, and Thy truth in the congregation of saints.",
+    alleluia_stichos: "God Who is glorified in the council of the saints.",
+    communion_verse: "Their sound hath gone forth into all the earth, and their words unto the ends of the world.",
+    stichera_lord_i_call_count: 6,  // 3 T2 (Peter & Paul) + 3 T4 (Twelve Apostles) — 06-30.pdf
+    stichera_lord_i_call: [
+      { tone: 2, text: "With what wreaths of praise shall we crown Peter and Paul, who were separate in body yet united in spirit, the foremost of the preachers of God, the one as leader of the apostles, and the other as the one who labored more than the rest? For Christ our God, Who hath great mercy, hath truly crowned them with diadems of glory as is meet." },
+      { tone: 2, text: "With what beauties of song shall we hymn Peter and Paul? They are the wings of divine knowledge who soared above the ends of the earth and were borne aloft to the heavens, the hands of the grace of the Gospel, the rivers of wisdom, the arms of the Cross, wherewith Christ, Who hath great mercy, hath cast down the pride of the demons." },
+      { tone: 2, text: "With what spiritual hymns shall we praise Peter and Paul? Who have closed the ever-gaping mouths of the ungodly, they are the dreadful swords of the Spirit, the splendid adornments of Rome, the nurturers of the whole world, the noetic and divinely graven tablets of the new covenant, whom Christ, Who hath great mercy, proclaimed in Sion." },
+      { tone: 4, text: "As witnesses and beholders of the incarnation of the Word, ye are blessed, O most spiritually rich disciples; for ye have appeared to the world, as bright as lightning, pouring forth the sweetness of the noetic mountain. As separate and ever-flowing rivers of paradise ye irrigate the Churches of the nations with divine waters." },
+      { tone: 4, text: "Like rays shining with spiritual radiance ye were sent throughout the whole world, abundantly showing forth the working of miracles, O ye who were servants of the mysteries of Christ, divine graven tablets of the law ordained by God, inscribed by the grace of God, O most noetically rich initiates of divine mysteries." },
+      { tone: 4, text: "The pen of the fishermen hath effaced the arrogance of the philosophers and the prating of the orators, while manifestly setting forth the glad tidings of the good mysteries, the divinely wise teachings of the dogmas, the partaking of eternal nourishment, the delight of the angels, and everlasting glory." },
+    ],
+    stichera_glory: { tone: 6,
+      text: "The most honored feast of the apostles hath arrived for the Church of Christ, bringing salvation unto us all. Wherefore, mystically plaiting hymns for them, let us say: Rejoice, O lamps unto those who are in darkness, shedding forth rays of the noetic Sun! Rejoice, O Peter and Paul, ye unshakable foundations of the divine doctrines, friends of Christ, precious vessels! Come ye into our midst, vouchsafing immaterial gifts unto those who praise your feast with hymns.",
+    },
+    // Both now: Dogmaticon T6 — "Who doth not call thee blessed..." (06-30.pdf)
+    aposticha_source: "menaion",  // dedicated aposticha stichera T4 printed in 06-30.pdf
+    stichera_aposticha: [
+      { tone: 4, text: "Thine honored apostles hast Thou given to Thy Church, O Lord, as a boast, and therein shine forth the noetic luminaries Peter and Paul, as stars of the Word, illumining the whole world. By them hast Thou enlightened the darkness of the West, O Almighty Jesus, Thou Savior of our souls." },
+      { tone: 4, verse: "Their sound hath gone forth into all the earth, and their words unto the ends of the world.", text: "Thou hast granted confirmation unto Thy Church, O Lord: the steadfastness of Peter, the understanding and splendid wisdom of Paul, and the truly divine proclamation of them both, which dispelleth the deception of the Greeks. Wherefore, initiated into the mysteries by them both, we hymn Thee, O Almighty Jesus, Thou Savior of our souls." },
+      { tone: 4, verse: "The heavens declare the glory of God, and the firmament proclaimeth the work of His hands.", text: "Thou hast given to the sinful a model of repentance: Thy two apostles; for the one denied Thee at the time of Thy suffering, yet repented, while the other opposed the preaching of Thee, but later came to believe. And both are preeminent among the assembly of their peers, O Almighty Jesus, Thou Savior of our souls." },
+    ],
+    aposticha_glory: { tone: 6,
+      text: "A joyous feast hath shone forth today upon the ends of the earth: the most honored commemoration of the most wise and preeminent Apostles Peter and Paul. Wherefore, Rome, joining chorus, rejoiceth in hymns and songs; and we celebrate, O brethren, observing this most honored day, crying: Rejoice, O apostle Peter, thou true friend of thy Teacher, Jesus Christ our God! Rejoice, O most beloved Paul, thou preacher of the Faith and teacher of the whole world! As ye have boldness, O ye two holy and chosen ones, entreat Christ our God, that our souls be saved.",
+    },
+    aposticha_both_now: { tone: 6,
+      text: "Who doth not call thee blessed, O most holy Virgin? Who will not hymn thy most pure birthgiving? For the only-begotten Son Who hath shone forth timelessly from the Father, came forth, ineffably incarnate, from thee, O pure one; By nature he is God, by nature for our sakes, he hath become a man not divided into two Hypostases, but known in two natures without commingling. Him do thou beseech, O pure and most blessed one, that our souls find mercy!",
+      note: "06-30.pdf: Dogmaticon Tone VI at aposticha Both now",
+    },
     troparion: {
       tone: 4,
       text: "O first enthroned among the apostles and teachers of the whole world: " +
             "entreat the Master of all, that He grant peace to the world " +
             "and great mercy to our souls.",
       note: "Same troparion as June 29 (Feast of Peter & Paul) — confirmed by OCA and St. Sergius.",
-    feast_e: "1 Corinthians 4:9-16 (§131)",
-    feast_g: "Mark 3:13-19 (§12)",
-    prokeimenon_tone: 8,
-    prokeimenon_text: "Their sound hath gone forth into all the earth, " +
-      "and their words unto the ends of the world.",
-    prokeimenon_stichos: "The heavens declare the glory of God, " +
-      "and the firmament proclaimeth the work of His hands.",
-    alleluia_tone: 1,
-    alleluia_verse: "The heavens shall confess Thy wonders, O Lord, " +
-      "and Thy truth in the congregation of saints.",
-    alleluia_stichos: "God Who is glorified in the council of the saints.",
-    communion_verse: "Their sound hath gone forth into all the earth, " +
-      "and their words unto the ends of the world.",
     },
     kontakion_ode6: {
       tone: 2,
-      text: "Christ the Rock hath radiantly glorified the rock of Faith, " +
-            "the most excellent of His disciples, as He doth Paul and the assembly " +
-            "of the twelve today; and, faithfully celebrating their memory, " +
+      text: "Christ the Rock hath radiantly glorified the rock of Faith, the most excellent of His disciples, " +
+            "as He doth Paul and the assembly of the twelve today; and, faithfully celebrating their memory, " +
             "we glorify Him Who glorified them.",
     },
   },
