@@ -4369,7 +4369,20 @@ const PENTECOSTARION_DATA = {
       { tone: 3, verse: "Cast me not away from Thy presence and take not Thy Holy Spirit from me.", text: "Now the apostles of Christ are clothed with might from on high; for the Comforter doth renew them, working renewal in them with mystical newness of knowledge, which they proclaim to us by foreign voices and lofty words, and they teach us to reverence the eternal, simple, and tri-hypostatic nature of God, the Benefactor of all. Wherefore, illumined by their teachings, let us worship the Father with the Son and the Spirit, beseeching that our souls be saved." },
     ],
     aposticha_glory: { tone: 8, text: "Come, O ye peoples, let us worship the Godhead of three Hypostases: the Son in the Father, with the Holy Spirit; for the Father timelessly begat the Son, Who is co-eternal and of one throne; and the Holy Spirit was in the Father, glorified with the Son; one Might, one Essence, one Godhead, which we all worship, saying: Holy God, Who didst create all things through the Son, with the co-operation of the Holy Spirit. Holy Mighty, through Whom we have known the Father, and through Whom the Holy Spirit came into the world. Holy Immortal One, the Comforting Spirit, Who proceedest from the Father and restest in the Son. O Holy Trinity, glory be to Thee." },
-
+    aposticha_both_now: { tone: 8, text: "Come, O ye peoples, let us worship the Godhead of three Hypostases: the Son in the Father, with the Holy Spirit; for the Father timelessly begat the Son, Who is co-eternal and of one throne; and the Holy Spirit was in the Father, glorified with the Son; one Might, one Essence, one Godhead, which we all worship, saying: Holy God, Who didst create all things through the Son, with the co-operation of the Holy Spirit. Holy Mighty, through Whom we have known the Father, and through Whom the Holy Spirit came into the world. Holy Immortal One, the Comforting Spirit, Who proceedest from the Father and restest in the Son. O Holy Trinity, glory be to Thee." },
+    stichera_matins_aposticha: null,       // NOT YET ENCODED — source: 81.pdf Matins Aposticha
+    stichera_matins_aposticha_glory: null, // NOT YET ENCODED — source: 81.pdf
+    has_litya: false,
+    has_paroemias: false,  // Kneeling prayers at Vespers are not OT paroemias
+    has_polyeleos: false,
+    oca_primary: true,
+    note: "Holy Spirit Day — Monday of Eighth Week (§4B15). Feast of the Holy Spirit in its own right. " +
+          "Pentecost troparion/kontakion govern all services. Great Doxology chanted. Magnificat NOT sung. " +
+          "Kneeling Vespers on Sunday evening (P+49): kneeling prayers chanted; Great Prokeimenon T7. " +
+          "No Kathisma at Vespers (81.pdf). No Litiya, no Paroemias. " +
+          "zadostoinik continues (Irmos of Ode IX Canon 2 of Pentecost). " +
+          "O Heavenly King restored (chanted again from P+49 Pentecost onward). " +
+          "OCA and St. Sergius agree.",
   },
 
   // ── P+51 — Tuesday of the Eighth Week — Pentecost Afterfeast Day 2 ──────────
@@ -4433,7 +4446,18 @@ const PENTECOSTARION_DATA = {
       { tone: 2, verse: "Cast me not away from Thy presence, and take not Thy Holy Spirit from me.", text: "Foreigners stood amazed, upon hearing the apostles speak in every tongue, glorifying and magnifying God the Trinity." },
     ],
     aposticha_glory: { tone: 1, text: "Thou hast renewed Thy disciples with foreign tongues, O Christ, that they might therewith proclaim Thee, the immortal Word and God, Who granteth our souls great mercy." },
-
+    aposticha_both_now: { tone: 1, text: "Thou hast renewed Thy disciples with foreign tongues, O Christ, that they might therewith proclaim Thee, the immortal Word and God, Who granteth our souls great mercy." },
+    stichera_matins_aposticha: null,       // NOT YET ENCODED — source: 82.pdf Matins Aposticha
+    stichera_matins_aposticha_glory: null, // NOT YET ENCODED — source: 82.pdf
+    has_litya: false,
+    has_paroemias: false,
+    has_polyeleos: false,
+    oca_primary: true,
+    note: "File covers Monday evening Small Vespers (P+50 eve) + Tuesday Matins/Liturgy (P+51). " +
+          "Pentecost afterfeast Day 2. Weekday structure: Magnificat sung, Small Doxology read. " +
+          "Prokeimenon Tone IV (Monday evening), Alleluia Tone I (Tuesday morning). " +
+          "zadostoinik continues (Irmos of Ode IX Canon 2 of Pentecost). " +
+          "OCA and St. Sergius agree.",
   },
 
   // ── P+52 — Wednesday of the Eighth Week — Pentecost Afterfeast Day 3 ────────
@@ -4496,7 +4520,19 @@ const PENTECOSTARION_DATA = {
       { tone: 4, verse: "Cast me not away from Thy presence, and take not Thy Holy Spirit from me.", text: "On this day, O Savior, Thou hast poured forth the gifts of Thy Comforting Spirit, granting mortal-mankind to prophesy, as Thou didst once promise O Word, whereby Thou didst teach all to worship and adore the undivided Trinity. Wherefore we glorify Thy saving dispensation, O Jesus Almighty, the Savior of our souls." },
     ],
     aposticha_glory: { tone: 6, text: "O Lord, the descent of the Holy Spirit, which enveloped Thine apostles, made them to speak with other tongues. Hence, the strange wonder was thought to be drunkenness by the unbelievers, but to the believers it was a cause of salvation. Wherefore, we beseech Thee to grant us also His illumination, O Lover of mankind." },
-
+    aposticha_both_now: { tone: 6, text: "O Lord, the descent of the Holy Spirit, which enveloped Thine apostles, made them to speak with other tongues. Hence, the strange wonder was thought to be drunkenness by the unbelievers, but to the believers it was a cause of salvation. Wherefore, we beseech Thee to grant us also His illumination, O Lover of mankind." },
+    stichera_matins_aposticha: null,       // NOT YET ENCODED — source: 83.pdf Matins Aposticha
+    stichera_matins_aposticha_glory: null, // NOT YET ENCODED — source: 83.pdf
+    magnificat_sung: true,   // Standard weekday rule — Magnificat IS sung (83.pdf)
+    has_litya: false,
+    has_paroemias: false,
+    has_polyeleos: false,
+    oca_primary: true,
+    note: "File covers Tuesday evening Small Vespers (P+51 eve) + Wednesday Matins/Liturgy (P+52). " +
+          "Pentecost afterfeast Day 3. Weekday structure: Magnificat sung, Small Doxology read. " +
+          "Vespers prokeimenon Tone I (Tuesday evening). Alleluia Tone I (Wednesday morning). " +
+          "zadostoinik continues (Irmos of Ode IX Canon 2 of Pentecost). " +
+          "OCA and St. Sergius agree.",
   },
 
   // ── P+53 — Thursday of the Eighth Week — Pentecost Afterfeast, Day 4 ────────
