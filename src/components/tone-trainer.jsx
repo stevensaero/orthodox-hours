@@ -10,11 +10,26 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.24";
+export const TONE_TRAINER_VERSION = "v0.11.29";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.29",
+    date: "June 2026",
+    summary: "Tone 1 SATB complete — register fixes, unified chip heights, si detuning",
+    items: [
+      "fix: tenor si detuning (-100 cents) scoped to SATB only — tenor-solo plays true 220Hz so la→si step is clear; SATB detune suppresses beating vs alto ti 2nd harmonic.",
+      "fix: soprano SATB ghost rendered as isGhostSoprano=true — solfège labels now correctly suppressed on soprano chips in SATB.",
+      "fix: solfège label spacing tightened 10px→9px from stripe.",
+      "arch: unified bass+tenor height map (buildUnifiedVoiceMap) — both voices normalised together so bass always renders deeper than tenor in SATB.",
+      "fix: playNotes() tenor audio path — n.tenor notes now call freq_tenor(sol, phraseRules) instead of freq(sol).",
+      "fix: tenor Final Phrase register — octaveDiv:{la:1,si:1}; si detuned -100c in SATB to eliminate near-octave beating with alto ti.",
+      "fix: SATB container sized to maxBassH; tenor ghost at absolute top:0; bass extends below.",
+      "fix: global tone-wide chip heights — buildGlobalVoiceMap collects all phrases per voice.",
+    ],
+  },
   {
     version: "v0.11.24",
     date: "June 2026",
@@ -2867,10 +2882,11 @@ export default function ToneTrainer() {
   // Optional phraseRules arg for per-phrase octave override (same pattern as freq_bass).
   const freq_tenor = (sol, phraseRules) => {
     const base = freq(sol) / (phraseRules?.octaveDiv?.[sol] ?? TENOR_OCTAVE_DIV[sol] ?? 2);
-    // si at div-1 (220Hz): 2nd harmonic of alto ti (116.5Hz) = 233Hz, beating at 13Hz.
-    // Flatten si by 100 cents → 207.7Hz; beat vs 2nd harmonic of ti = 25Hz (inaudible).
-    // 100 cents is within normal choral intonation variation — si still reads clearly above la.
-    if (sol === "si" && phraseRules?.octaveDiv?.["si"] === 1) {
+    // si detuning — SATB only. In SATB the si (220Hz) beats against 2nd harmonic of
+    // alto ti (233Hz) at ~13Hz — audible flutter. Flattening by 100 cents → ~208Hz
+    // pushes beat rate to ~25Hz (inaudible). In tenor-solo mode the true pitch is used
+    // so the la→si melodic step sounds clear and intentional.
+    if (sol === "si" && phraseRules?.octaveDiv?.["si"] === 1 && voicePart === "satb") {
       return base * Math.pow(2, -100 / 1200);
     }
     return base;
