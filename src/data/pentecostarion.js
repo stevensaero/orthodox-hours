@@ -4030,6 +4030,29 @@ const PENTECOSTARION_DATA = {
     feast_e: "Acts 28:1-31",
     feast_g: "John 21:15-26",
     aposticha_source: "pentecostarion",
+    aposticha_both_now: { tone: 6,
+      text: "Who doth not call thee blessed, O most holy Virgin? " +
+            "Who will not hymn thy most pure birthgiving? " +
+            "For the only-begotten Son Who hath shone forth timelessly from the Father, " +
+            "came forth, ineffably incarnate, from thee, O pure one; " +
+            "By nature He is God, by nature for our sakes, He hath become a man " +
+            "not divided into two Hypostases, " +
+            "but known in two natures without commingling. " +
+            "Him do thou beseech, O pure and most blessed one, " +
+            "that our souls find mercy!",
+      source: "dogmatic_theotokion_tone6",
+      note: "Saturday of Reposed: Both now at aposticha = Dogmatic Theotokion T6 (76.pdf)",
+    },
+    has_polyeleos: false,  // Saturday of Reposed — Alleluia Matins; no Polyeleos
+    oca_primary: true,
+    note: "Ecumenical Memorial Saturday for all departed Orthodox Christians. " +
+          "Entirely unique structure — no Ascension afterfeast content. " +
+          "Alleluia Matins (matins_format: alleluia); no Magnificat; no Great Doxology. " +
+          "Vespers: Alleluia replaces Prokeimenon (vespers_alleluia_replaces_prokeimenon: true). " +
+          "TWO epistles + TWO gospels at Liturgy (For the Day + For the Reposed). " +
+          "Both now at aposticha: Dogmatic Theotokion T6 (not the reposed theotokion). " +
+          "O Heavenly King still omitted (pre-Pentecost). " +
+          "Fekula §4B14. OCA and St. Sergius agree.",
     // For the Reposed:
     reposed_e: "1 Thessalonians 4:13-17",
     reposed_g: "John 5:24-30",
