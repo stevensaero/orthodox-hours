@@ -1149,6 +1149,22 @@ function presetToLines(toneNum) {
   }));
 }
 
+// Reconstruct bracketed text from a pointed line (words array with accent flags).
+// Accented syllables are wrapped in [brackets]; words joined with spaces.
+// Used to show the encoding under each director/machine verse in compare mode.
+function lineToBracketedText(line) {
+  if (!line?.words) return "";
+  return line.words.map(w => {
+    const accentIdx = w.sylls.findIndex(s => s.accent);
+    if (accentIdx < 0) return w.display || w.sylls.map(s => s.text).join("");
+    const display = w.display || w.sylls.map(s => s.text).join("");
+    const accentText = w.sylls[accentIdx].text;
+    const idx = display.toLowerCase().indexOf(accentText.toLowerCase());
+    if (idx < 0) return display;
+    return display.slice(0, idx) + "[" + display.slice(idx, idx + accentText.length) + "]" + display.slice(idx + accentText.length);
+  }).join(" ");
+}
+
 // Reconstruct plain bracketed text from a preset so the text field shows
 // the example and the director pointing action runs on it in truth mode.
 // Each word's accented syllable is wrapped in [brackets] per the director format.
@@ -4417,6 +4433,21 @@ export default function ToneTrainer() {
                       ▶
                     </button>
                     </div>{/* end chips row */}
+                    {/* Bracketed encoding text — shows how this verse was pointed */}
+                    {(() => {
+                      const srcLine = which === "truth" ? lines[li] : machineLines?.[li];
+                      const bt = lineToBracketedText(srcLine);
+                      if (!bt) return null;
+                      return (
+                        <div style={{
+                          padding: "0.15rem 0.6rem 0.35rem",
+                          paddingLeft: "calc(0.6rem + 3.2em + 4px)",
+                          fontFamily: "monospace", fontSize: "0.72rem",
+                          color: "#9A8A70", letterSpacing: "0.01em",
+                          lineHeight: 1.4,
+                        }}>{bt}</div>
+                      );
+                    })()}
                   </div>
                   );
                 })}
