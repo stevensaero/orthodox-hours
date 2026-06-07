@@ -10,11 +10,20 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.21";
+export const TONE_TRAINER_VERSION = "v0.11.22";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.22",
+    date: "June 2026",
+    summary: "fix: Tone 1 Final Phrase bass cadence — mi_low distinguishes low and high mi",
+    items: [
+      "fix: BASS_RULES[1].Final cadMap updated: ti→mi_low (S4, lower octave) vs do→mi (L1, higher octave). Score shows two distinct mi positions.",
+      "feat: mi_low added to OFF (offset 4, same semitone as mi) and BASS_OCTAVE_DIV (div-4). Frequency sort: mi_low(78Hz) < la(104Hz) < re(139Hz) < mi(156Hz) matches staff positions S4 < L3 < S1 < L1.",
+    ],
+  },
   {
     version: "v0.11.21",
     date: "June 2026",
@@ -570,7 +579,7 @@ const TRAINER_RELEASE_NOTES = [
 // di = chromatic raised do (one semitone above do) — used in Tone 2 Phrases B and D.
 // fa = perfect fourth above do — used in Tone 2 Phrase A cadence.
 // sol = perfect fifth above do — in scale for completeness; not yet used in cadences.
-const OFF = { la: -3, si: -2, ti: -1, do: 0, di: 1, re: 2, mi: 4, fa: 5, sol: 7 };
+const OFF = { la: -3, si: -2, ti: -1, do: 0, di: 1, re: 2, mi: 4, mi_low: 4, fa: 5, sol: 7 };
 const DO_OPTIONS = [
   { label: "F", hz: 174.61 },
   { label: "G", hz: 196.00 },
@@ -1739,16 +1748,16 @@ const BASS_RULES = {
     },
     Final: {
       // No intonation, no prep in Final Phrase
-      // Reciting alto=re → bass=re
+      // Reciting alto=re → bass=re (at div-2 register, sits at S1 on bass staff)
       recite: "re",
       prepMap: {},
-      // Cadence (3 syllables): alto do→ti→la → bass mi→mi→la
+      // Cadence (3 syllables): alto do→ti→la → bass mi→mi_low→la
+      // mi (high) = L1 on bass staff; mi_low = S4 (lower octave); la = L3
       // Tenor si (raised 6th) confirms harmonic minor approach to la
-      cadMap: { do: "mi", ti: "mi", la: "la" },
+      cadMap: { do: "mi", ti: "mi_low", la: "la" },
       preslurMap: {},
-      // re and mi sit on the bass staff (not below it) — override global div-4
-      // to div-2 for this phrase only. Tone 2 uses re/mi at div-4; this is
-      // per-tone per-phrase, so Tone 2 is untouched.
+      // re and mi (high) sit above the bass staff — override global div-4 to div-2.
+      // mi_low uses global div-4 (lower octave). Tone 2 untouched.
       octaveDiv: { re: 2, mi: 2 },
     },
   },
@@ -1807,14 +1816,15 @@ const BASS_RULES = {
 // do=Bb4 reference: soprano re=C5, bass la=G3, bass mi=D3, bass re=C3 etc.
 // Displacement factor: divide soprano FREQ by this value to get bass register.
 const BASS_OCTAVE_DIV = {
-  la:  2,   // G4 → G3  (1 octave down)
-  ti:  2,   // Ab4 → Ab3
-  do:  2,   // Bb4 → Bb3
-  di:  2,   // B4 → B3
-  re:  4,   // C5 → C3  (2 octaves down)
-  mi:  4,   // D5 → D3  (2 octaves down)
-  fa:  4,   // Eb5 → Eb3 (2 octaves down)
-  sol: 4,   // F5 → F3  (2 octaves down)
+  la:    2,   // G4 → G3  (1 octave down)
+  ti:    2,   // Ab4 → Ab3
+  do:    2,   // Bb4 → Bb3
+  di:    2,   // B4 → B3
+  re:    4,   // C5 → C3  (2 octaves down)
+  mi:    4,   // D5 → D3  (2 octaves down)
+  mi_low: 4,  // D5 → D3  (2 octaves down) — lower octave mi, e.g. Tone 1 Final cad
+  fa:    4,   // Eb5 → Eb3 (2 octaves down)
+  sol:   4,   // F5 → F3  (2 octaves down)
 };
 
 // ── SOPRANO DERIVATION ────────────────────────────────────────────────────────
