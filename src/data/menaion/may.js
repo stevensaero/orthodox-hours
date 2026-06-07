@@ -1383,11 +1383,176 @@ const MAY_MENAION = {
               "Therefore, entreat Him that our souls may be saved.",
       },
       kontakion_ode6: {
-        tone: 4,
-        text: "O Righteous Father John, " +
-              "the holy memory of your illustrious contests has come today, " +
-              "gladdening the souls of those who honor you with reverence and faith.",
+        tone: 8,  // Ode VI kontakion — longer text, Tone VIII (05-27A.pdf AT LITURGY)
+        text: "On the day of thine honored commemoration, O saint, " +
+              "Russia, who raised thee in piety, is gladdened by thee, " +
+              "and Asia, where thou didst travel the narrow path of suffering, " +
+              "in captivity and ascetic struggles, " +
+              "doth now rejoice in thy healing relics. " +
+              "Thou hast been revealed to be a precious vessel of the grace of God, " +
+              "which do thou also beg for us who honor thee, " +
+              "that we may cry out to thee: " +
+              "Rejoice, O John, thou namesake of grace!",
       },
+      kontakion_ode3: {
+        tone: 4,  // Ode III kontakion — shorter, Tone IV (05-27A.pdf, marked ODE III)
+        text: "Today hath dawned the commemoration of thy holy deeds, " +
+              "O holy father John, " +
+              "gladdening the souls of the pious who honor thee with faith.",
+      },
+
+      // ── VESPERS — LORD I HAVE CRIED ───────────────────────────────────────────
+      // 8 stichera: 3 Pentecostarion + 5 Menaion (05-27A.pdf — §2F vigil)
+      stichera_lord_i_call_count: 8,
+      stichera_lord_i_call: [
+        { tone: 4, text: "The day of thy commemoration hath now shone forth, O righteous John, " +
+                         "illumining the hearts and minds of the faithful; " +
+                         "wherefore, we bless thee as one forbearing, unshaken in the right Faith, " +
+                         "adorned with the virtues, and glorified by incorruption and wonders. " +
+                         "And we earnestly beseech thee, O saint: " +
+                         "pray thou for the salvation of our souls." },
+        { tone: 4, text: "The day of thy commemoration hath now shone forth, O righteous John, " +
+                         "illumining the hearts and minds of the faithful; " +
+                         "wherefore, we bless thee as one forbearing, unshaken in the right Faith, " +
+                         "adorned with the virtues, and glorified by incorruption and wonders. " +
+                         "And we earnestly beseech thee, O saint: " +
+                         "pray thou for the salvation of our souls.",
+          repeatIndex: 0 },
+        { tone: 4, text: "Thou didst live on the earth like an angel, " +
+                         "causing thy body to wither through abstinence, " +
+                         "and coming to share in the divine mysteries through vigilance, " +
+                         "standing whole nights in prayer and the constant remembrance of death; " +
+                         "and, dedicating thyself to these things every Saturday, " +
+                         "thou wast shown to be well pleasing to God. " +
+                         "Pray thou that we also may be well pleasing to Him, " +
+                         "and that our souls may be saved." },
+        { tone: 4, text: "Thou wast tried like gold in the crucible of tribulations, O thou of valiant mind, " +
+                         "ill-treated by those who held thee captive; " +
+                         "wherefore, after thy repose thy holy soul came to dwell with the angels " +
+                         "and rejoiceth with them as is meet. " +
+                         "And thou dost gladden those who have recourse to thy relics with the gift of healings. " +
+                         "Therefore, gazing upon the beauty of the Master with the righteous, " +
+                         "pray thou for the salvation of our souls." },
+        { tone: 4, text: "Neon-Prokopion of Euboea possesseth thy holy relics as a great treasure, O John; " +
+                         "and, assembling to venerate them, we honor thy repose with hymns, crying out to thee: " +
+                         "Rejoice, O star who hath shone forth from Russia and illumined Asia with thy struggles! " +
+                         "Rejoice, boast and adornment of the faithful! " +
+                         "Rejoice, O thou who prayest for the salvation of our souls!" },
+      ],
+      stichera_glory: { tone: 1,
+        text: "How can we fail to praise the goodly courage thou didst show in the midst of bodily captivity, " +
+              "whereby thou didst put to shame the cause of spiritual captivity; " +
+              "the meekness, innocence and humility whereby thou didst cast down the enemy; " +
+              "the inner stillness and asceticism, and thy prayers which lasted for whole nights, " +
+              "in which thou didst bathe the pavement of the church's porch with the streams of thy tears, " +
+              "quenching the fire of the passions, " +
+              "and receiving the fire of divine love within thy heart, " +
+              "thereby becoming radiant through grace-bearing ascents? " +
+              "As thou now joinest chorus amid the splendors of the saints, O John, " +
+              "be thou mindful of those who remember thee.",
+      },
+      // Both now at LIC: Pentecostarion doxasticon (runtime) or Dogmaticon T1
+
+      // ── VESPERS — LITIYA ───────────────────────────────────────────────────────
+      // 05-27A.pdf: "At the Litiya, the Sticheron of the temple" — no dedicated
+      // Menaion litiya stichera printed; temple sticheron + standard petitions.
+      has_litya: true,
+      litya_stichera: [],  // no dedicated Menaion stichera — temple sticheron governs
+      litya_glory: { tone: 5,
+        text: "Let us hasten unto the present festival, O ye faithful; " +
+              "for there is set before us a spiritual banquet and a mystical wine-bowl, " +
+              "filled with the sweet food of joy, even the virtues of the martyrs. " +
+              "For these stout-hearted ones, from the ends of the earth, " +
+              "offered unto God as a rational sacrifice " +
+              "the varied torments and afflictions of their bodily members " +
+              "and the very prime of their years. " +
+              "Some were beheaded, others were dismembered of their arms " +
+              "and were sundered in every joint. " +
+              "All the Saints became sharers of the Passion of Christ. " +
+              "O Lord, Who didst grant them crowns as a reward for their afflictions, " +
+              "grant that we may live according to their example, since Thou lovest mankind.",
+        note: "FLAG: litya_glory text from P+56 All Saints — PDF does not print dedicated litiya glory for John the Russian. Verify against actual vigil rubric.",
+      },
+      litya_both_now: { source: "pentecostarion",
+        note: "05-27A.pdf: Both now at Litiya from Pentecostarion — assembled at runtime",
+      },
+
+      // ── VESPERS — APOSTICHA ────────────────────────────────────────────────────
+      // 05-27A.pdf: 3 stichera Tone II + feast-specific verses
+      aposticha_source: "menaion",
+      stichera_aposticha: [
+        { tone: 2,
+          text: "O divinely wise John, illumined by the grace of God " +
+                "and given wings by divine love, " +
+                "thou didst pass unhindered through the night of suffering " +
+                "of a slave's life in the midst of infidels, " +
+                "and didst attain unto the never-waning day " +
+                "of the freedom of paradise, " +
+                "enlightening the fullness of the faithful with the rays thereof." },
+        { tone: 2,
+          verse: "Many are the tribulations of the righteous, " +
+                 "and the Lord shall deliver them out of them all.",
+          text: "Made captive by Tartars and sold into bondage to Moslems, " +
+                "O most honored one, thou wast made to dwell in a horse's stall, " +
+                "as Job sat upon his dung-hill, afflicted and oppressed; " +
+                "wherefore, in accordance with the righteous judgment of God, " +
+                "thou hast found consolation in the bosom of Abraham after thy repose, " +
+                "where the abode of all those who rejoice is found." },
+        { tone: 2,
+          verse: "The righteous man shall flourish like a palm tree, " +
+                 "and like a cedar in Lebanon shall he be multiplied.",
+          text: "Having lived in a God-pleasing manner far from thine earthly native land, " +
+                "O blessed one, thou hast made thine abode in the heavenly homeland, " +
+                "adorned with the gifts of the Spirit. " +
+                "Be thou therefore a fervent mediator before the Lord " +
+                "for Russia and its people, and for this land; " +
+                "and by thy supplications free them all from sufferings and disease, " +
+                "O namesake of grace." },
+      ],
+      aposticha_glory: { tone: 6,
+        text: "Possessed of a goodly mind, a watchful heart and love unfeigned, " +
+              "and ever uniting himself to God in vigils of prayer, " +
+              "the righteous John received his blessed repose on this day: " +
+              "he soareth aloft in the purity of his soul " +
+              "to rejoice with the elect of the heavenly Father, " +
+              "but hath left us his holy relics for our consolation and sanctification. " +
+              "And hastening to them, we cry out to him: " +
+              "O God-pleaser, ask thou forgiveness of sins, peace and great mercy " +
+              "for those who hymn thee!",
+      },
+      // Both now at aposticha: Pentecostarion (runtime) or Theotokion T6
+      aposticha_both_now: { source: "pentecostarion",
+        note: "05-27A.pdf: 'Both now… Doxasticon from the Pentecostarion' — assembled at runtime",
+      },
+
+      // ── MATINS ────────────────────────────────────────────────────────────────
+      matins_format: "god_is_the_lord",
+      has_great_doxology: true,
+      has_polyeleos: true,
+      has_paroemias: true,  // 3 readings from Wisdom of Solomon at Great Vespers
+      magnificat_sung: false,  // §2F vigil — Magnificat not sung; Irmos of Ode IX governs
+      matins_gospel: "Luke 12:8-12 (§64)",
+
+      // ── BEATITUDES ────────────────────────────────────────────────────────────
+      // Pentecostarion period: 4 from appointed Ode of Pentecostarion canon + 4 from Ode III
+      // Apostles' Fast: 4 from Ode III + 4 from Ode VI of saint's canon
+      beatitudes_source: "4 from Pentecostarion Ode + 4 from Ode III of saint's canon (05-27A.pdf, AT LITURGY)",
+      beatitudes_troparia: [
+        // From Ode III of saint's canon (05-27A.pdf):
+        { text: "Thy holy life shone forth in Asia, O blessed one, resplendent with the light of miracles. " +
+                "Ask for us who honor thy memory the grace to desire, and to do good." },
+        { text: "Thou gavest no sleep to thine eyes until, by thine all-night vigils of prayer to the Lord, " +
+                "thou didst lull to sleep the movements of the flesh which rise up against the spirit, " +
+                "O right laudable one." },
+        { text: "Having vanquished the assaults of the demons by the invincible power of the Cross of Christ, " +
+                "thou hast been shown to be a cause of salvation for many, " +
+                "for thou art the helper of those who have recourse to thy relics." },
+        { label: "Theotokion",
+          text: "Thou hast been shown to be the Mother of the Bestower of all gifts, " +
+                "a greatly flourishing and fragrant orchard and garden, " +
+                "taking pity upon those who hymn thee with the fruits of the Spirit " +
+                "and perfuming them with grace." },
+      ],
     },
   ],
 
