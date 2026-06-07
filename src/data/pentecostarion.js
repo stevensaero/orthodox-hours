@@ -2930,7 +2930,7 @@ const PENTECOSTARION_DATA = {
             "Wherefore, following their divine doctrines and believing with assurance, " +
             "we worship, in one Godhead, the Father, Son and all-holy Spirit, the Trinity one in essence.",
     },
-    aposticha_theotokion: {
+    aposticha_both_now: {
       tone: 4,
       text: "O Lord, having fulfilled the mystery that was hidden from before the ages and from all generations, " +
             "as Thou art good Thou didst come with Thy disciples to the Mount of Olives, " +
@@ -3141,7 +3141,7 @@ const PENTECOSTARION_DATA = {
             "that we be delivered from their error, " +
             "and that our life be preserved blameless in the Faith.",
     },
-    aposticha_theotokion: {
+    aposticha_both_now: {
       tone: 4,  // Ascension Both now from 71.pdf
       text: "O Lord, having fulfilled the mystery that was hidden from before the ages and from all generations, " +
             "as Thou art good Thou didst come with Thy disciples to the Mount of Olives, " +
@@ -3157,7 +3157,7 @@ const PENTECOSTARION_DATA = {
     beatitudes_source: "6 verses from Ode VI of Ascension Canon (afterfeast pattern)",
     beatitudes_troparia: null,  // NOT YET ENCODED — source PDF (71.pdf) does not print beatitudes separately
 
-    // aposticha_both_now = aposticha_theotokion (Ascension Both now, Tone IV)
+    // aposticha_both_now: Ascension troparion T4 (serves as the Both now at the aposticha)
     aposticha_both_now: { tone: 4, text: "O Lord, having fulfilled the mystery that was hidden from before the ages and from all generations, " +
             "as Thou art good Thou didst come with Thy disciples to the Mount of Olives, " +
             "having together with Thyself her that gave birth unto Thee, the Creator and Fashioner of all things; " +
@@ -4030,7 +4030,7 @@ const PENTECOSTARION_DATA = {
             "in the land of the living, in the tabernacles of the righteous.",
       source: "reposed",
     },
-    aposticha_theotokion: {
+    aposticha_both_now: {
       tone: 6,
       text: "By the intercessions of her who gave birth to Thee, O Christ, " +
             "and of Thy martyrs and apostles, and of the prophets, and the holy-bishops, " +

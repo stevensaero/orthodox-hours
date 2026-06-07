@@ -384,10 +384,10 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
               label="Glory (Doxasticon)"
             />
           )}
-          {primary.aposticha_theotokion && (
+          {primary.aposticha_both_now && (
             <TextBlock
-              tone={primary.aposticha_theotokion.tone}
-              text={primary.aposticha_theotokion.text}
+              tone={primary.aposticha_both_now.tone}
+              text={primary.aposticha_both_now.text}
               label="Both now (Theotokion)"
             />
           )}

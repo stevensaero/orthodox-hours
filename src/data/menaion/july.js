@@ -89,7 +89,7 @@ const JULY_MENAION = {
             "Who granteth great mercy unto us.",
     },
     // Both Now: Theotokion or Stavrotheotokion in Tone VI (tone of the Glory).
-    aposticha_theotokion: "Octoechos (tone of glory — Tone 6)",
+    aposticha_both_now: "Octoechos (tone of glory — Tone 6)",
 
     // ── AT MATINS ──────────────────────────────────────────────────────────
     // Kontakion after Ode VI = same as kontakion_ode6 (confirmed from PDF)

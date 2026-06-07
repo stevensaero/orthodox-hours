@@ -337,10 +337,10 @@ function PentEntryCard({ offset, entry, audit, stickyTop }) {
               label="Glory (Doxasticon)"
             />
           )}
-          {entry.aposticha_theotokion && (
+          {entry.aposticha_both_now && (
             <TextBlock
-              tone={entry.aposticha_theotokion.tone}
-              text={entry.aposticha_theotokion.text}
+              tone={entry.aposticha_both_now.tone}
+              text={entry.aposticha_both_now.text}
               label="Both now (Theotokion)"
             />
           )}

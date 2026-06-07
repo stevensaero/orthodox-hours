@@ -4824,8 +4824,8 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
             fekula:{section:fekulaSection, note:"Aposticha Glory: doxasticon from Pentecostarion."}});
         }
         elements.push({id:"v-apost-bothnow", type:"fixed", label:"", text:"Now and ever, and unto the ages of ages. Amen.", source:"HTM Vespers"});
-        // Both now: aposticha_theotokion from pentEntry (e.g. Ascension troparion on P+42)
-        const pentApostTheot = pentEntry.aposticha_theotokion;
+        // Both now: aposticha_both_now from pentEntry (e.g. Ascension troparion on P+42)
+        const pentApostTheot = pentEntry.aposticha_both_now;
         if (pentApostTheot) {
           elements.push({id:"v-apost-theotokion", type:"movable", label:"Theotokion (Both now…)",
             rubric:"Tone "+(pentApostTheot.tone||tone)+":",
@@ -4939,8 +4939,8 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       }
       // Both Now
       elements.push({id:"v-apost-bothnow", type:"fixed", label:"", text:"Now and ever, and unto the ages of ages. Amen.", source:"HTM Vespers"});
-      if (menaionEntry.aposticha_theotokion) {
-        const at = menaionEntry.aposticha_theotokion;
+      if (menaionEntry.aposticha_both_now) {
+        const at = menaionEntry.aposticha_both_now;
         elements.push({id:"v-apost-theotokion", type:"movable", label:"Theotokion (Both now…)",
           rubric:"Tone "+(at.tone||"?")+":"  ,
           text: typeof at === "string" ? at : at.text,

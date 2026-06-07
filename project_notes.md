@@ -1684,9 +1684,9 @@ Badge must correctly identify section even though assembly is the same.
 
 ---
 
-## OPEN ARCHITECTURAL ISSUE — `aposticha_theotokion` vs `aposticha_both_now`
+## ~~OPEN ARCHITECTURAL ISSUE~~ RESOLVED — `aposticha_theotokion` → `aposticha_both_now`
 
-**Status: Unresolved — do not encode further Menaion `aposticha_both_now` fields until reconciled**
+**Status: RESOLVED June 2026 — Option B (clean rename everywhere)**
 
 ### Origin of the inconsistency
 

@@ -988,7 +988,7 @@ const MAY_MENAION = {
       attribution: "Germanus",
     },
     // Both now after aposticha: Stavrotheotokion Tone II (from PDF)
-    aposticha_theotokion: {
+    aposticha_both_now: {
       tone: 2,
       text: "The Ember which the glorious Isaiah foresaw of old hath become incarnate of the Mother " +
             "who knew not a man, springing forth at the behest of the Father, " +
@@ -1154,7 +1154,7 @@ const MAY_MENAION = {
     },
     // Both now after aposticha: Pentecostarion doxasticon during Pentecostarion;
     // Theotokion Tone II in Apostles' Fast (from PDF)
-    aposticha_theotokion: {
+    aposticha_both_now: {
       tone: 2,
       text: "O new wonder greater than all the wonders of old! " +
             "For who hath ever known a mother to give birth without having known a man, " +

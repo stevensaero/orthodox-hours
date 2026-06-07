@@ -1410,7 +1410,7 @@ const JUNE_MENAION = {
           tone: 8,
           text: "Today hath been fulfilled the saying of Isaiah the prophet concerning the birth of the greatest of the prophets; for he said: “Behold, I shall send mine angel before thy face, who shall make ready thy path before thee.” This warrior of the King of heaven, running ahead, truly made the paths straight for our God, being a man by nature, but an angel in his life: for, having utterly preserved his purity and chastity, he possessed them by nature; and avoiding that which is unnatural, he struggled supra-naturally. Emulating him in his virtues, O ye faithful, let us all pray, that he make entreaty for our souls to be saved."
       },
-      aposticha_theotokion: {
+      aposticha_both_now: {
           tone: 8,
           text: "Behold Elizabeth, who said to the Virgin Mary: “Whence is this to me, O Mother of my Lord? Thou bearest the King, I the warrior; thou the Law-giver, I the upholder of the law; thou the Word, I the voice which proclaimeth the kingdom of heaven!”"
       },
