@@ -2924,6 +2924,8 @@ export default function ToneTrainer() {
   // lineToNotes_tenor(line)
   // Derives tenor audio notes from rolesWD — mirrors lineToNotes_bass exactly.
   const lineToNotes_tenor = (line) => {
+    // TROUBLESHOOT: tenor suppressed on Final Phrase
+    if (line.phrase === "Final") return null;
     const rules = TENOR_RULES[activeTone]?.[line.phrase];
     if (!rules) return null;
 
@@ -4423,6 +4425,8 @@ export default function ToneTrainer() {
         // Tenor rolesWD — derived from rolesWD via TENOR_RULES, mirrors bassRolesWD pattern.
         const tenorRolesWD = (() => {
           if (!showTenor && !showTenorGhost) return null;
+          // TROUBLESHOOT: tenor suppressed on Final Phrase
+          if (line.phrase === "Final") return null;
           const trules = TENOR_RULES[activeTone]?.[line.phrase];
           if (!trules) return null;
           return rolesWD.map(r => {
