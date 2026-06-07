@@ -3745,9 +3745,19 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   // Source: OCA Litiya prayer (Drive: vespers/oca/OCA_prayer_for_litiya.txt)
   // Structural placement: HTM Vespers (htm_vespers.md)
   // Fekula: §2E (Polyeleos) or §2F (Vigil/Great Feast)
-  const hasLitya = menaionEntry && menaionEntry.has_litya === true;
+  // NOTE: must check BOTH menaionEntry and pentEntry — Pentecostarion feasts
+  // (P+35 Blind Man, P+39 Ascension, P+42 Holy Fathers, P+49 Pentecost,
+  //  P+56 All Saints) carry has_litya: true on the pentEntry, not the menaionEntry.
+  const menaionHasLitya = menaionEntry && menaionEntry.has_litya === true;
+  const pentHasLitya = pentEntry && pentEntry.has_litya === true;
+  const hasLitya = menaionHasLitya || pentHasLitya;
+  // Determine which entry supplies the Litiya texts:
+  // - Pentecostarion governs when: it has has_litya AND menaion is set aside,
+  //   OR the Menaion does not have its own Litiya (feast Litiya overrides saint Litiya)
+  const litEntryIsPent = pentHasLitya && (!menaionHasLitya || !!pentEntry.menaion_set_aside);
+  const litEntry = litEntryIsPent ? pentEntry : menaionEntry;
   if (hasLitya) {
-    const litSaint = (menaionEntry && menaionEntry.saint) || "the saint(s) of the day";
+    const litSaint = litEntry.saint || litEntry.name || "the feast of the day";
 
     // Processional rubric
     elements.push({id:"v-litiya-rubric", type:"fixed", label:"Litiya",
@@ -3757,8 +3767,11 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       fekula:{section:fekulaSection, note:"At a Vigil or Polyeleos, we chant the Litiya stichera as we go forth to the narthex for the Litiya. — HTM Vespers; Fekula " + fekulaSection}});
 
     // Temple sticheron — rendered by TempleSelector component
-    // On Great Feasts, all Litiya stichera are festal (no temple sticheron).
-    const isGreatFeast = rank === "great_feast";
+    // On Great Feasts of the Lord, all Litiya stichera are festal (no temple sticheron).
+    // rank === "great_feast" covers Menaion Great Feasts; hours_format covers Pentecostarion ones.
+    const greatFeastFormats = ['ascension', 'pentecost', 'apodosis_ascension', 'apodosis_pentecost'];
+    const isGreatFeast = rank === "great_feast" ||
+      (litEntryIsPent && greatFeastFormats.includes(pentEntry.hours_format));
     if (!isGreatFeast) {
       elements.push({id:"v-litiya-temple", type:"temple_selector",
         label:"Sticheron of the Temple",
@@ -3767,7 +3780,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     }
 
     // Litiya stichera from Menaion
-    const litStichera = menaionEntry.litya_stichera;
+    const litStichera = litEntry.litya_stichera;
     if (litStichera && litStichera.length > 0) {
       litStichera.forEach((s, i) => {
         elements.push({id:"v-litiya-stich-"+i, type:"movable",
@@ -3786,11 +3799,11 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     }
 
     // Glory
-    if (menaionEntry.litya_glory) {
+    if (litEntry.litya_glory) {
       elements.push({id:"v-litiya-glory-tag", type:"fixed", label:"",
         text:"Glory to the Father, and to the Son, and to the Holy Spirit.",
         source:"HTM Vespers"});
-      const lg = menaionEntry.litya_glory;
+      const lg = litEntry.litya_glory;
       elements.push({id:"v-litiya-glory", type:"movable", label:"Litiya Doxasticon (Glory…)",
         rubric: "Tone " + (lg.tone || "?") + ":",
         text: lg.text,
@@ -3799,11 +3812,11 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     }
 
     // Both Now
-    if (menaionEntry.litya_both_now) {
+    if (litEntry.litya_both_now) {
       elements.push({id:"v-litiya-bothnow-tag", type:"fixed", label:"",
         text:"Both now and ever, and unto the ages of ages. Amen.",
         source:"HTM Vespers"});
-      const lbn = menaionEntry.litya_both_now;
+      const lbn = litEntry.litya_both_now;
       elements.push({id:"v-litiya-bothnow", type:"movable", label:"Litiya Theotokion (Both now…)",
         rubric: "Tone " + (lbn.tone || "?") + ":",
         text: lbn.text,
@@ -7013,6 +7026,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.7.2",
+    date: "June 2026",
+    summary: "Fix: Pentecostarion Litiya now renders at Vespers for P+35, P+39, P+42, P+49, P+56",
+    items: [
+      "fix: Litiya gate was 'menaionEntry.has_litya === true' only — never checked pentEntry. Five Pentecostarion entries with has_litya: true (P+35 Blind Man, P+39 Ascension, P+42 Holy Fathers, P+49 Pentecost, P+56 All Saints) had fully encoded litya_stichera/glory/both_now but none of it rendered at Vespers.",
+      "fix: Litiya source entry is now pentEntry when pentEntry.has_litya is true and menaion is set aside (or Menaion has no Litiya of its own). litya_stichera, litya_glory, litya_both_now all read from litEntry (pent or menaion as appropriate).",
+      "fix: isGreatFeast extended to check hours_format for Pentecostarion Great Feasts of the Lord (ascension, pentecost) — these correctly suppress the temple sticheron selector at Litiya. P+35 and P+56 (not Great Feasts of the Lord) still show the temple sticheron selector.",
+    ],
+  },
   {
     version: "v0.7.1",
     date: "June 2026",
