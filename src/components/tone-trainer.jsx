@@ -10,11 +10,20 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.23";
+export const TONE_TRAINER_VERSION = "v0.11.24";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.24",
+    date: "June 2026",
+    summary: "fix: tenor audio register + SATB solfège label cleanup",
+    items: [
+      "fix: playNotes() tenor audio path — n.tenor notes were calling freq(sol) with no octave division instead of freq_tenor(sol, phraseRules). Final Phrase now plays la(208Hz) one step above prior sol(185Hz), then la si mi as scored.",
+      "fix: SATB view — solfège labels suppressed for ghost soprano and ghost tenor chips. Only alto and bass show labels. Standalone S and T views unaffected.",
+    ],
+  },
   {
     version: "v0.11.23",
     date: "June 2026",
