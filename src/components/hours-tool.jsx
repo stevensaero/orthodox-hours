@@ -885,9 +885,13 @@ function getLiturgicalData(date) {
 
   let tone;
   if (daysFromAllSaints < 0) {
+    // Pentecostarion / before All Saints: tone from weeks since Pascha
     tone = ((weeksSincePascha % 8) + 8) % 8 || 8;
   } else {
-    tone = (weeksFromAllSaints % 8) + 1;
+    // Ordinary time: Tone 1 begins the Sunday AFTER All Saints (week 1).
+    // All Saints Sunday itself is week 0 but is Pentecostarion Tone 8 —
+    // governed by the branch above. Subtract 1 so week 1 → Tone 1, week 2 → Tone 2, etc.
+    tone = ((weeksFromAllSaints - 1) % 8 + 8) % 8 + 1;
   }
 
   const dow = date.getDay();
