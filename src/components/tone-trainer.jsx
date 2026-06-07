@@ -10,11 +10,20 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.19";
+export const TONE_TRAINER_VERSION = "v0.11.20";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.20",
+    date: "June 2026",
+    summary: "fix: chipH_bass formula restored — Tone 2 chip heights correct, shifted pitches capped at minimum",
+    items: [
+      "fix: chipH_bass() was using (BASS_MAX_IDX*2+1)-idx after the octaveDiv extension, multiplying all chip heights globally. Restored original scale via BASS_CHIP_CEILING=4.",
+      "fix: Pitches overridden to a higher register via phraseRules.octaveDiv now return CHIP_BASE_H (minimum) — they sound above la so render as shortest chips. Tone 2 unchanged.",
+    ],
+  },
   {
     version: "v0.11.19",
     date: "June 2026",
@@ -821,22 +830,30 @@ const CHIP_MELISMA_GAP = 1; // tight gap between melisma sub-chips
 
 // Bass pitch order for chip height (ascending concert pitch with do=Bb)
 // re(C3) < mi(D3) < fa(Eb3) < sol(F3) < la(G3)
-// Full pitch set in ascending bass-register order (re=C3 lowest, di=B3 highest).
-// re/mi/fa/sol are 2 octaves below soprano reference; la/ti/do/di are 1 octave below.
+// Bass pitch order — ascending by sounding frequency in the default register.
+// re/mi/fa/sol sit 2 octaves below soprano (div-4); la/ti/do/di sit 1 octave below (div-2).
 // Must cover every pitch any tone's BASS_RULES may emit — add new pitches here
 // before encoding new tone bass rules, or chipH_bass() falls back to index 0.
 const BASS_PITCH_ORDER = { re: 0, mi: 1, fa: 2, sol: 3, la: 4, ti: 5, do: 6, di: 7 };
 const BASS_MAX_IDX = 7;
-// Optional phraseRules: when a pitch's octaveDiv is lower than global (higher register),
-// shift its index up by BASS_MAX_IDX+1 so it renders shorter (higher) than all
-// globally-placed pitches. Mirrors the freq_bass per-phrase octave override logic.
+// chipH_bass: lower pitch = taller chip (inverted scale, grows downward from text).
+// For pitches overridden to a higher register via phraseRules.octaveDiv, the pitch
+// sounds above its default-register neighbours. We cap those at CHIP_BASE_H so they
+// render as the shortest chips — they are the highest-sounding notes in the phrase.
+// This preserves Tone 2 chip heights exactly (no octaveDiv) while keeping Tone 1
+// Final visually sensible (la = tallest, shifted re/mi = minimum height).
+// BASS_CHIP_CEILING: the inversion ceiling for chip height — kept at the original
+// 4-pitch scale (re=0..la=4) so Tone 2 chip heights are unchanged from baseline.
+// BASS_PITCH_ORDER extends beyond 4 for freq lookup purposes but chip heights
+// only use the first 5 entries (re through la).
+const BASS_CHIP_CEILING = 4;
 const chipH_bass = (sol, phraseRules) => {
-  let idx = BASS_PITCH_ORDER[sol] !== undefined ? BASS_PITCH_ORDER[sol] : 0;
-  // If this phrase places the pitch in a higher register than global, shift index up
   const globalDiv = BASS_OCTAVE_DIV[sol] ?? 2;
   const localDiv  = phraseRules?.octaveDiv?.[sol] ?? globalDiv;
-  if (localDiv < globalDiv) idx += (BASS_MAX_IDX + 1);
-  const inv = (BASS_MAX_IDX * 2 + 1) - idx;
+  // Pitch overridden to higher register — sounds above la, render as minimum chip
+  if (localDiv < globalDiv) return CHIP_BASE_H;
+  const idx = BASS_PITCH_ORDER[sol] !== undefined ? BASS_PITCH_ORDER[sol] : 0;
+  const inv = BASS_CHIP_CEILING - idx;
   return CHIP_BASE_H + Math.max(0, inv) * CHIP_STEP_H;
 };
 
