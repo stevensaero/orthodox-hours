@@ -2886,6 +2886,13 @@ const PENTECOSTARION_DATA = {
             "which we have attained by Thine Ascension to the heavens, " +
             "and we glorify Thy great mercy toward us.",
     },
+    aposticha_both_now: { tone: 4, text: "O Lord, having fulfilled the mystery that was hidden from before the ages and from all generations, " +
+            "as Thou art good Thou didst come with Thy disciples to the Mount of Olives, " +
+            "having together with Thyself her that gave birth unto Thee, the Creator and Fashioner of all things; " +
+            "for it was meet that she who, as Thy Mother, suffered at Thy Passion more than all, " +
+            "should also enjoy the surpassing joy of the glorification of Thy flesh, O Master, " +
+            "which we have attained by Thine Ascension to the heavens, " +
+            "and we glorify Thy great mercy toward us." },
 
     // ── MATINS ────────────────────────────────────────────────────────────────
     matins_gospel: 10,  // 10th Resurrectional Gospel
@@ -2893,6 +2900,34 @@ const PENTECOSTARION_DATA = {
     // ── BEATITUDES (Sunday Liturgy) ───────────────────────────────────────────
     // 12 troparia: 4 Octoechos + 4 Ascension Ode IV + 4 Holy Fathers Ode VI
     beatitudes_source: "4 Octoechos + 4 Ascension Ode IV + 4 Holy Fathers Ode VI (70.pdf)",
+    beatitudes_troparia: [
+      // 4 Ascension Ode IV (from 64.pdf already read)
+      { source: "ascension_ode4", text: "Thou wast taken up in glory, O King of the angels, that Thou mightest send us the Comforter from the Father. Wherefore we cry: Glory to Thine Ascension, O Christ." },
+      { source: "ascension_ode4", text: "As the Savior ascended in the flesh unto the Father, the arrays of the angels were astonished at Him and cried aloud: Glory to Thine Ascension, O Christ." },
+      { source: "ascension_ode4", text: "The hosts of the angels cried unto those above: Lift up the gates for Christ our King; Him do we praise together with the Father and the Spirit." },
+      { source: "ascension_ode4", text: "Jesus, the Giver of life, taking those whom He loved, went up on the Mount of Olives, and blessed them; and riding on a cloud, He came to the Father's bosom, which He had in no wise left." },
+      // 4 Holy Fathers Ode VI (from 70.pdf)
+      { source: "holy_fathers_ode6", text: "O Master, having found Thee to be a precious, choice and firmly set cornerstone in Sion, the Saints, like select stones, builded themselves thereupon, as though upon an unshakable foundation." },
+      { source: "holy_fathers_ode6", text: "When Thy side was pierced, the drops of blood fell together with the deifying water, and refashioned the world. And the divine host of all the Saints addressed Thee as Benefactor." },
+      { source: "holy_fathers_ode6", label: "Glory", text: "We praise most reverently the God-inspired cloud of witnesses, who by grace were made luminous, and shine more resplendently in the royal purple of their blood and in the crimson of their steadfast contest." },
+      { source: "holy_fathers_ode6", label: "Both now", text: "We all know thee to be the all-true Mother of God, through whom the nature of women, having been given strength, contested for Christ, O all-immaculate one, and in godly manner became filled with every virtue." },
+    ],
+
+    // Matins aposticha — NOT YET ENCODED (Matins assembler not yet built; source: 70.pdf)
+    stichera_matins_aposticha: null,
+    stichera_matins_aposticha_glory: null,
+
+    // Structural flags
+    has_polyeleos: false,  // Sunday — Evlogitaria sung; Polyeleos replaced
+    oca_primary: true,
+    note: "Seventh Sunday of Pascha — Holy Fathers of the First Ecumenical Council. " +
+          "MOVABLE Sunday (P+42) — NOT fixed June 8. In 2026: May 24. " +
+          "§4B13: THREE troparia (Resurrection T6, Holy Fathers T8, Ascension T4) — hour-differentiated. " +
+          "Vigil structure: Litiya + Polyeleos at Matins, but Evlogitaria replaces Polyeleos on Sunday. " +
+          "Magnificat sung (per 70.pdf rubric). Matins Gospel #10. " +
+          "beatitudes_troparia: 4 Octoechos Tone 6 + 4 Ascension Ode IV + 4 Holy Fathers Ode VI. " +
+          "Instead of It Is Truly Meet: Ascension Ode IX Irmos (afterfeast continues). " +
+          "OCA and St. Sergius agree on all texts.",
 
     // ── LITURGY PROPERS ───────────────────────────────────────────────────────
     feast_e: "Acts 20:16-18, 28-36",
@@ -3066,6 +3101,28 @@ const PENTECOSTARION_DATA = {
     // ── BEATITUDES (Monday Liturgy) ───────────────────────────────────────────
     // Source: not separately printed in 71.pdf; pattern from afterfeast = Ode VI of Ascension Canon
     beatitudes_source: "6 verses from Ode VI of Ascension Canon (afterfeast pattern)",
+    beatitudes_troparia: null,  // NOT YET ENCODED — source PDF (71.pdf) does not print beatitudes separately
+
+    // aposticha_both_now = aposticha_theotokion (Ascension Both now, Tone IV)
+    aposticha_both_now: { tone: 4, text: "O Lord, having fulfilled the mystery that was hidden from before the ages and from all generations, " +
+            "as Thou art good Thou didst come with Thy disciples to the Mount of Olives, " +
+            "having together with Thyself her that gave birth unto Thee, the Creator and Fashioner of all things; " +
+            "for it was meet that she who, as Thy Mother, suffered at Thy Passion more than all, " +
+            "should also enjoy the surpassing joy of the glorification of Thy flesh, O Master, " +
+            "which we have attained by Thine Ascension to the heavens, " +
+            "and we glorify Thy great mercy toward us." },
+
+    stichera_lord_i_call_count: 6,  // §4A1: 3 Pentecostarion (Holy Fathers T6) + 3 Menaion
+    stichera_matins_aposticha: null,       // NOT YET ENCODED — source: 71.pdf Matins Aposticha
+    stichera_matins_aposticha_glory: null, // NOT YET ENCODED — source: 71.pdf
+
+    has_polyeleos: false,  // Weekday — no Polyeleos
+    oca_primary: true,
+    note: "File covers Sunday evening Small Vespers (P+42 eve) + Monday Matins/Liturgy (P+43). " +
+          "Ascension afterfeast Day 4. Weekday structure: Magnificat sung, Small Doxology read. " +
+          "Vespers uses Holy Fathers stichera (Tone VI) from 7th Week Sunday Evening (71.pdf). " +
+          "Prokeimenon Tone VII and Alleluia Tone II throughout Ascension afterfeast. " +
+          "Instead of It Is Truly Meet: Ascension Ode IX Irmos (afterfeast continues).",
 
     // ── LITURGY PROPERS ───────────────────────────────────────────────────────
     feast_e: "Acts 21:8-14",
@@ -3240,6 +3297,31 @@ const PENTECOSTARION_DATA = {
                                         "who ineffably in time hast given birth unto the Timeless One, " +
                                         "Thee do we the faithful magnify with one accord.",
     communion_verse: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
+
+    // aposticha_both_now — Ascension theotokion T4 (same as P+43; afterfeast rule governs)
+    aposticha_both_now: { tone: 4, text: "Thou hast renewed in Thyself Adam's nature, " +
+            "which had gone down into the lower parts of the earth, " +
+            "and Thou didst raise it up above every principality and authority today. " +
+            "For since Thou didst love it, Thou didst seat it together with Thyself; " +
+            "since Thou hast taken compassion on it, Thou didst unite it to Thyself; " +
+            "since Thou didst unite it to Thyself, Thou didst suffer with it; " +
+            "and enduring the Passion, though Thou art impassable, Thou didst glorify it. " +
+            "But the Bodiless ones said: Who is this comely man? " +
+            "But not only is He man, but God and man; that which is manifest is twofold. " +
+            "Wherefore, beside themselves, the angels, flying about clad in radiant vesture, " +
+            "cried unto the disciples: Ye men of Galilee, He that is gone from you, " +
+            "Jesus, Man and God, shall come again as the God-man to judge the living and the dead; " +
+            "and He granteth unto the faithful the forgiveness of sins and great mercy." },
+    stichera_lord_i_call_count: 6,  // §4A1: 3 Pentecostarion + 3 Menaion
+    stichera_matins_aposticha: null,       // NOT YET ENCODED — source: 72.pdf Matins Aposticha
+    stichera_matins_aposticha_glory: null, // NOT YET ENCODED — source: 72.pdf
+    has_polyeleos: false,
+    oca_primary: true,
+    note: "File covers Monday evening Small Vespers (P+43 eve) + Tuesday Matins/Liturgy (P+44). " +
+          "Ascension afterfeast Day 5. Weekday structure: Magnificat sung, Small Doxology read. " +
+          "Beatitudes from Ode VI of Ascension Canon 1 (72.pdf AT LITURGY). " +
+          "Prokeimenon Tone VII and Alleluia Tone II throughout Ascension afterfeast. " +
+          "Instead of It Is Truly Meet: Ascension Ode IX Irmos (afterfeast continues).",
   },
 
   // ── P+45 — Wednesday of the Seventh Week — Ascension Afterfeast, Day 6 ────
