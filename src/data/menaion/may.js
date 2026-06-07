@@ -1648,7 +1648,7 @@ const MAY_MENAION = {
     has_litya: false,
     has_paroemias: false,
     magnificat_sung: false,
-    matins_format: "alleluia",
+    matins_format: "god_is_the_lord",  // PDF also provides Alleluia stichera as alternate for fasting days — standard §2A pattern
     feast_e: null,  // §2A — readings from Octoechos
     feast_g: null,
     aposticha_source: "octoechos",
