@@ -1682,6 +1682,64 @@ Badge must correctly identify section even though assembly is the same.
 
 ---
 
+---
+
+## OPEN ARCHITECTURAL ISSUE — `aposticha_theotokion` vs `aposticha_both_now`
+
+**Status: Unresolved — do not encode further Menaion `aposticha_both_now` fields until reconciled**
+
+### Origin of the inconsistency
+
+`aposticha_theotokion` was the original field name coined when P+42 (Holy Fathers Sunday) was first encoded. At that time, the Both now at the aposticha was the Ascension troparion — technically not a theotokion at all. The name was chosen because the aposticha Both now slot is *usually* a theotokion, and no registry existed yet to enforce naming.
+
+The bug fix in the May 23 session (v0.3.11) added a render block to `assembleVespers()` for `pentEntry.aposticha_theotokion` — this is the moment the field name became load-bearing in the assembler.
+
+When `FIELD_REGISTRY` was built in the May 29 session (v0.6.1), the field was named `aposticha_both_now` — semantically correct, but the assembler was never updated to match.
+
+### Current state (as of June 2026)
+
+**Assembler (`src/components/hours-tool.jsx`):**
+- Line ~4828: Pentecostarion branch reads `pentEntry.aposticha_theotokion`
+- Line ~4942: Higher-rank Menaion branch reads `menaionEntry.aposticha_theotokion`
+- `aposticha_both_now` is **never read** by the assembler
+
+**Registry (`src/lib/audit.js`):**
+- `FIELD_REGISTRY` requires `aposticha_both_now` for polyeleos+ Menaion and all Pentecostarion entries
+- `aposticha_theotokion` is **not known** to the registry
+
+**Data:**
+- P+42: has `aposticha_theotokion` — read by assembler, invisible to registry
+- May 21 (`05-21`): has `aposticha_both_now` (added June 2026) — seen by registry, **never read by assembler**
+- May 24 (`05-24`): has `aposticha_theotokion` — read by assembler, invisible to registry
+
+### What this means
+
+The registry gate and the assembler are tracking two different fields. An entry can pass the gate (`aposticha_both_now` present) while the assembler silently reads nothing (`aposticha_theotokion` absent). Conversely, May 24 renders correctly in the tool but fails the registry gate.
+
+### Why it was not renamed earlier
+
+The May 23 session notes document the bug fix but note: *"The field name `aposticha_theotokion` is doing the work of the 'Both now' after the aposticha doxasticon — which is actually the Ascension troparion, not a strict theotokion. That's a naming issue in the data but the text is right."* The renaming was deferred without an explicit decision.
+
+### Reconciliation options
+
+**Option A — Update assembler to read `aposticha_both_now`, fall back to `aposticha_theotokion`:**
+- Forward-compatible: new entries use the correct name
+- Backward-compatible: existing `aposticha_theotokion` entries still render
+- Requires: one assembler change at lines ~4828 and ~4942
+- Requires: May 24 updated to add `aposticha_both_now` (or leave as fallback)
+
+**Option B — Rename `aposticha_theotokion` → `aposticha_both_now` everywhere:**
+- Clean and consistent
+- Requires: data rename on every entry that currently has `aposticha_theotokion`
+- Requires: assembler rename at both read sites
+- Risk: must audit all entries — any missed will silently break rendering
+
+**Recommended: Option A.** Minimal assembler change, no data migration needed, correct going forward.
+
+**Do not encode additional `aposticha_both_now` fields in new Menaion entries** until the assembler is updated to read that field name. Currently those fields are invisible to the assembler.
+
+---
+
 ## Session Notes — May 29, 2026 (v0.6.1)
 
 ### P+49 Vespers encoding completed
