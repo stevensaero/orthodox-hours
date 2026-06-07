@@ -119,6 +119,29 @@ Do NOT use `hours_kontakion` when two kontakia exist — the routing will not fi
 a Pentecostarion feast, the Menaion `kontakion_ode6` should appear at the 3rd & 9th
 Hours per §2G2. Flag this in the note field — the assembler does not yet implement it.
 
+**`fekula_section` vs `fekula_section_override`:**
+
+`fekula_section` is the canonical data field read by the registry gate and data browser.
+Every entry must have it.
+
+`fekula_section_override` is an **assembler escape hatch** — the assembler checks it first
+and uses it instead of deriving the Fekula section from `rank`. Use it only when the
+Fekula section cannot be derived from rank alone:
+
+- **§2G1–§2G4** (afterfeast with saint): `rank: "six_stichera"` does not communicate that
+  the Hours routing follows §2G rules. Set both fields:
+  ```
+  fekula_section: "2G1",           // registry + data browser
+  fekula_section_override: "2G1",  // assembler override path
+  ```
+- **Do NOT use `fekula_section_override` alone** — the registry never reads it.
+- **Do NOT use `fekula_section_override` for §2B double services** — rank already
+  encodes that information sufficiently; use `fekula_section: "2B"` only.
+
+The assembler reads `fekula_section_override` at two locations in `hours-tool.jsx`
+(the source citation function and the assembly rule derivation function). This was
+intentionally designed but the data field was inconsistently applied in early sessions.
+
 ---
 
 ## 5. MENAION SKELETON — ALL RANKS

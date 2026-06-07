@@ -1743,7 +1743,8 @@ const JUNE_MENAION = {
     oca_primary: true,
     source_file: "06-25.pdf",
     rank: "six_stichera",
-    fekula_section_override: "2G1",
+    fekula_section: "2G1",            // registry + data browser — §2G1 afterfeast with saint
+    fekula_section_override: "2G1",   // assembler override path (hours-tool.jsx checks this first)
     note: "Afterfeast of the Nativity of John the Forerunner. Per Fekula §2G1: troparion " +
           "of the feast at the Hours, Glory... of the saint; kontakion of the feast only " +
           "at all Hours (Febronia is not Doxology rank). Hours assembly out of ordinary " +
