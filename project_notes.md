@@ -2155,6 +2155,10 @@ node scripts/audit.js pentecostarion
 
 #### Audit module
 - Conditional Litiya check: when `has_litya === true`, requires `litya_stichera` (array, may be empty), `litya_glory`, `litya_both_now`. Null values pass (field present but no dedicated text). Dates with `has_litya: false` unaffected.
+  - `litya_glory: null` and `litya_both_now: null` are valid at any rank when the PDF prints no dedicated text. The assembler's `if (menaionEntry.litya_glory)` check skips the render block — no placeholder rendered in the service.
+  - Registry uses `'litya_glory' in entry` (key presence) rather than `isPresent()` to allow null.
+  - Confirmed case: 05-27A.pdf (John the Russian, §2F Vigil) — PDF only says "At the Litiya, the Sticheron of the temple." No Glory or Both now printed.
+  - **encoding_rule_v2.md §2F statement "always present in PDF for Vigil rank" was wrong** — corrected to reflect that null is valid and PDF must be read.
 
 #### Encoding — three dates updated
 - **June 24** (Nativity of the Baptist, great_feast §2F): full v2.1 encode, 39 fields. 3 Litiya stichera T1 + Glory T5 (Andrew of Crete) + Both Now T5 (Theotokion). All Glory/Both Now confirmed unique across LIC, Litiya, and Aposticha positions.

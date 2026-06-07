@@ -672,8 +672,20 @@ If has_litya: true AND Menaion prints Litya stichera → encode litya_stichera[]
 litya_glory, litya_both_now. If has_litya: true but no dedicated stichera in
 PDF → litya_stichera: [] (empty array) with note.
 
-**Add for §2F (Vigil):** all §2E fields + litya stichera (always present in PDF
-for Vigil rank). Encode litya_stichera[], litya_glory, litya_both_now.
+**Add for §2F (Vigil):** all §2E fields + litya fields. Most Vigil PDFs print
+dedicated Litiya stichera, Glory, and Both now — but not all. Read the PDF:
+
+- `litya_stichera: []` — empty array if PDF prints no dedicated Menaion stichera
+  (PDF may say only "At the Litiya, the Sticheron of the temple")
+- `litya_glory: null` — if PDF prints no Glory sticheron at the Litiya
+- `litya_both_now: null` — if PDF prints no Both now at the Litiya
+
+`null` is valid for `litya_glory` and `litya_both_now` at any rank when the PDF
+does not print those texts. The assembler's `if (menaionEntry.litya_glory)` check
+silently skips the render block — correct behavior, no placeholder rendered.
+
+Confirmed case: 05-27A.pdf (John the Russian, §2F) — no dedicated Litiya stichera,
+Glory, or Both now in PDF. Only "At the Litiya, the Sticheron of the temple."
 
 **Pentecostarion weekday afterfeast:**
 - [ ] Structural note and PDF boundary documented
