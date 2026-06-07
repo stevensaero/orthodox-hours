@@ -1671,8 +1671,16 @@ const JUNE_MENAION = {
     note: "Defender of Nicene Orthodoxy against Arianism. Martyred 380 when an Arian " +
           "woman struck him with a roof tile. Troparion not printed in PDF; sourced from OCA. " +
           "§2A confirmed — 3 stichera; PDF AT LITURGY has kontakion only, no Epistle/Gospel.",
-    feast_e: "absent — §2A, readings from Oktoechos",
-    feast_g: "absent — §2A, readings from Oktoechos",
+    fekula_section: "2A",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "octoechos",
+    feast_e: null,
+    feast_g: null,
     troparion: {
       tone: 4,
       text: "By sharing in the ways of the apostles, thou didst occupy their throne. " +
@@ -1706,8 +1714,16 @@ const JUNE_MENAION = {
       note: "Vladimir Icon of the Theotokos is also a full OCA commemoration on June 23 " +
             "(also May 21 & Aug 26). Agrippina listed first/primary by OCA. " +
             "§2A confirmed — 3 stichera; PDF AT LITURGY has troparion and kontakion only.",
-      feast_e: "absent — §2A, readings from Oktoechos",
-      feast_g: "absent — §2A, readings from Oktoechos",
+      fekula_section: "2A",
+      has_great_doxology: false,
+      has_polyeleos: false,
+      has_litya: false,
+      has_paroemias: false,
+      magnificat_sung: false,
+      matins_format: "god_is_the_lord",
+      aposticha_source: "octoechos",
+      feast_e: null,
+      feast_g: null,
       troparion: {
         tone: 4,
         text: "Thy ewe-lamb Agrippina, O Jesus crieth out with a loud voice: Thee do I love, " +
@@ -1757,6 +1773,62 @@ const JUNE_MENAION = {
       has_litya: true,
       has_polyeleos: true,
       has_great_doxology: true,
+      has_paroemias: true,
+      magnificat_sung: false,
+      matins_format: "god_is_the_lord",
+      fekula_section: "2E",
+      stichera_lord_i_call_count: 8,  // 5 T4 + 3 T8 (06-23A.pdf)
+      stichera_lord_i_call: [
+        { tone: 4, text: "Thou art like a luminous palace and a bower all of gold, O Lady Theotokos; for thou didst contain within thy womb the Word of God, giving birth for us to the never-setting Sun, the unwaning Light. And with goodly knowledge thou hast illumined our hearts which before languished in the darkness of ignorance, and hast dispelled the darkness of delusion." },
+        { tone: 4, text: "By thy birthgiving the might of Hades hath been destroyed, and all mankind hath been saved; and now, by thy supplications, do thou cast down the arrogance of our enemies and destroy their might, and grant victory over the foe to thy people, that all who do evil to thy servants may be put to shame." },
+        { tone: 4, text: "O Lady Theotokos, our mighty ally, strengthen our Orthodox hierarchs against all heresies, and as of old thou didst save the Imperial City from the incursions of pagans, so now save our land from the assaults of the enemy, from civil strife, famine and earthquake, O Virgin who knewest not wedlock. Wherefore, we glorify thee, the helper of mankind." },
+        { tone: 4, text: "The land of Russia now boasteth and rejoiceth in thee, having thee as an unashamed ally and an impregnable bulwark, an unshakable foundation for our city, a tireless guardian of our land. Cease thou not to offer entreaties, O Lady, that thy city and people may now be delivered from all misfortunes." },
+        { tone: 4, text: "Before thee, O Lady, do the company and councils of hierarchs fall down in homage, the assembly of all, kings and princes, and all the people, praying with compunction, bowing low before thee, and lovingly kissing thine image; and they pray, saying: From all misfortunes do thou ever save the city which honoreth thee!" },
+        { tone: 8, text: "O most glorious wonder! He Whom the heavens cannot contain, Who is glorified by the angels and hymned by the seraphim, descending into thy womb, dwelt therein, yet did not break the seal of thy virginity: He hath freed the whole human race, and given thee to us, O Lady, as an ally. Wherefore, cease thou never to preserve and save our souls, in that thou art compassionate." },
+        { tone: 8, text: "O most glorious wonder! Lo! our help hath come, and the opposition hath been cast down. Save thou our city, rout thou our enemies, and gladden us, thy servants, with thy mercy. O dwelling-place of the Word of God, from all misfortunes do thou save the human race, which ever honoreth thee." },
+        { tone: 8, text: "Grant consolation, O pure one, unto thy servants who are beset with perils, and exalt the horn of the faith. O Mary, Birthgiver of God, by thy supplications save thy city unharmed, cast down the arrogance of the barbarians, and save us, thy servants, who praise thee, O unwedded one." },
+      ],
+      stichera_glory: { tone: 8,
+        text: "Come, ye assemblies of Russia! Come, O ye companies of the faithful, to greet the divine Maiden and Queen! For, lo! the Queen cometh in her precious image, to save the city and people assailed by the pagan foe. O great and most glorious wonder which passeth understanding! O how the adversary hath been vanquished by the arrival of her precious image, the scepters of kings have been made steadfast, night hath been abolished and day hath drawn nigh! Wherefore, our nature receiveth thee as the cause of our salvation, and all creation hymneth thee, crying aloud: Rejoice, O intercessor, helper and salvation of our souls!",
+        note: "PDF: 'Glory...Both now..., in Tone VIII' — single doxasticon for both",
+      },
+      litya_stichera: [
+        { tone: 2, text: "As thine icon, O Theotokos, is truly more venerable than the ark of old before which David danced, having assembled the ranks of Israel, there now stand before it the councils of hierarchs with the ranks of the angels, kings and princes, and all the multitude of the Christian people; and they bless thee, the Mother of God; they glorify thee as befits servants, and honor and bow down before thee; and they pray to thee, after God, that thou grant the world peace in Orthodoxy, make steadfast the scepters of kings, and save thy servants from all evils, in that thou art blessed." },
+        { tone: 2, text: "Before thine image, O most pure Lady Theotokos, stand the company of hierarchs, kings and princes, and all the people, monastics and laity, who know thee truly to be a powerful and invincible helper; and they are moved to offer thee supplications with all their soul, and are impelled to pray to God, needful of thine aid, that thou mightest stretch forth thy God-bearing hands and pray for the world. Hearken thou and give ear, O Sovereign Lady, and grant consolation to thy servants, lest our heavy and grievous sins gain the victory over us; for we are all ever in need of thine assistance." },
+        { tone: 8, text: "When first thine icon was painted by Luke, the Evangelist of the mysteries of the Gospel, and was brought to thee, O Queen, that thou mightest make it thine own and impart to it the power to save those who honor thee, thou didst rejoice; and as thou art the merciful collaborator in our salvation, in that once thou didst conceive God in thy womb, thou didst chant a hymn to the icon, giving mouth and voice thereto: \"Behold, from henceforth all generations shall call me blessed!\", and, gazing at it thou didst say with authority: \"My grace and power are with this image!\" And we truly believe what thou didst say, O Lady, for in this image thou art with us. Wherefore, standing reverently before it, we thy servants bow down before thee. Visit us with thy maternal compassion." },
+        { tone: 7, text: "Thou art a great and most glorious mountain, O Theotokos, surpassing Mount Sinai. For, unable to bear the descent of the glory of God in types and shadows, it caught on fire, and thunder and lightning struck it; but thou, being all-divine light, didst bear the Word of God in thy womb without being consumed, and with the milk of thy breasts didst nurture Him Who holdeth all things in His hand. And now, as thou dost possess maternal boldness toward Him, O Sovereign Lady, help those who faithfully celebrate thine honored festival, and visiting us in thy mercy, forget us not; for thou hast received from God the gift of ordering and protecting the Christian flock, thy servants." },
+      ],
+      litya_glory: { tone: 6,
+        text: "To thee do all the generations of mankind offer gifts of praise, and they entreat thee as the Queen and Mother of God: the prophets proclaimed thee most wisely, the Levites blessed thee, the apostles and martyrs confessed thee, kings and princes bow down before thee, hierarchs proclaim thee, monks and layfolk render thee reverence, rich and poor, orphans and widows, and men of every age and station, old and young, flee beneath thy mighty protection with faith. By thy prayers, O Sovereign Lady, protect and preserve us, and save our souls from misfortunes.",
+      },
+      litya_both_now: { tone: 6,
+        text: "To thee do all the generations of mankind offer gifts of praise, and they entreat thee as the Queen and Mother of God: the prophets proclaimed thee most wisely, the Levites blessed thee, the apostles and martyrs confessed thee, kings and princes bow down before thee, hierarchs proclaim thee, monks and layfolk render thee reverence, rich and poor, orphans and widows, and men of every age and station, old and young, flee beneath thy mighty protection with faith. By thy prayers, O Sovereign Lady, protect and preserve us, and save our souls from misfortunes.",
+        note: "PDF: 'Glory...Both now..., in Tone VI' — Glory=Both now",
+      },
+      aposticha_source: "menaion",
+      stichera_aposticha: [
+        { tone: 8, text: "What shall we call thee, O Lady Theotokos? Root of Jesse, for Christ came forth to us through thee like a flower? Manna delighting the hearts of the faithful by thy birthgiving? Fleece of Gideon, for Christ descended upon thee like dew, and hath shown thee to us as a helper? Him do thou entreat, that He save our souls." },
+        { tone: 8, verse: "Hearken, O daughter, and see, and incline thine ear.", text: "O ye faithful, let us all praise her who hath given us such aid unashamed, an undefeatable and invincible triumph over the enemy, salvation to us all, a rampart and protection for our city, an unshakable foundation, an alliance with our pious Orthodox hierarchs and resounding victory over all heresies." },
+        { tone: 8, verse: "The Lord hath sworn in truth unto David, and He will not annul it.", text: "Meet it is for the human race to call thee blessed, O pure one, for thou dost save those who honor thee from all misfortunes. For thou, O pure Virgin Sovereign Lady, hast shown thyself to thy servants as a sure helper, a fervent advocate before God in the midst of the tribulations which assail us. By thee are the incursions of barbarians set at naught and the darts of the enemy destroyed. And we, thy servants, delivered from the woes which beset us, bless thee with hymns, O Mother of God." },
+      ],
+      aposticha_glory: { tone: 8,
+        text: "Let the assemblies of Russia rejoice, and let nature dance, O pure one, for our city hath been saved by the arrival of thy precious image, and thy servants, delivered from besetting want, cry aloud to thee, O pure one: Rejoice, thou cause of beauty, sure helper and salvation of our souls!",
+      },
+      aposticha_both_now: { tone: 8,
+        text: "Let the assemblies of Russia rejoice, and let nature dance, O pure one, for our city hath been saved by the arrival of thy precious image, and thy servants, delivered from besetting want, cry aloud to thee, O pure one: Rejoice, thou cause of beauty, sure helper and salvation of our souls!",
+        note: "PDF: 'Glory...Both now..., Idiomelon in Tone VIII' — Glory=Both now",
+      },
+      beatitudes_source: "4 from Ode III + 4 from Ode VI of the icon's canon (06-23A.pdf, AT LITURGY)",
+      beatitudes_troparia: [
+        { text: "Putting aside all earthly thought, O ye divinely wise, come ye to greet the most comely beam who holdeth the all-luminous Ray Who enlighteneth and enricheth the whole world with mercy." },
+        { text: "Having acquired thy most precious and wonder-working icon as a mighty ally and an impregnable rampart, O Mother of God, the princes of Russia pray to thee, that thou grant victory over all heresies to our pious Orthodox hierarchs." },
+        { text: "Thou hast been shown to be a radiant cloud washing clean the defilements of our bodies with the dew of grace, enlightening our souls, O thou who alone art all-hymned." },
+        { text: "Thou hast been revealed as a most fruitful tree delighting all with the food which perisheth not, and gladdening men's souls, O pure Bride of God. Pour forth goodly gifts upon all, and save us from violent tribulations." },
+        { text: "From thee, O Mother of God, hath a Torrent of sweetness issued forth, giving drink to all mankind and washing their souls clean of defilement. O Lady Theotokos, save all who with faith bow down before thy precious image." },
+        { text: "Having assembled together, let us all hymn the pure Virgin, the divinely chosen Maiden of Jacob, the fleece of Gideon, the mediatress of joy, the might and boast of those who are saved, the pure Theotokos." },
+        { text: "Behold, gladness now draweth nigh, and sorrow hath been destroyed! The faithful have been saved, drawing forth joy as from a well-spring, continually chanting in praise: Rejoice, O pure Sovereign Lady, thou inception of our salvation, bulwark and boast of all the faithful!" },
+        { text: "By thine entreaties grant us thine aid, O most pure Theotokos, for sorrows descend upon us, grievous circumstances have multiplied, and the enemy have arrayed themselves against us. Yet, interceding, O most pure one, deliver us: cast down the arrogance of our foes and grant us victory over our enemies, that all who do evil to thy servants may be put to shame." },
+      ],
       troparion: {
         tone: 4,
         text: "Today the most glorious city of Moscow is adorned, having received thy " +
@@ -2070,8 +2142,16 @@ const JUNE_MENAION = {
           "emulating the Stylites. Known for holding burning embers before the emperor " +
           "without being burned. §2A confirmed — 3 stichera; PDF AT LITURGY " +
           "has troparion and kontakion only, no Epistle/Gospel.",
-    feast_e: "absent — §2A, readings from Oktoechos",
-    feast_g: "absent — §2A, readings from Oktoechos",
+    fekula_section: "2A",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "octoechos",
+    feast_e: null,
+    feast_g: null,
     troparion: {
       tone: 8,
       text: "In thee, O father, the image of God was preserved, for taking up thy cross, " +
@@ -2102,7 +2182,14 @@ const JUNE_MENAION = {
           "Constantinople. Healed Emperor Justinian of a grave illness. Reposed c. 530. " +
           "§2A by stichera count (3); PDF includes full AT LITURGY section — " +
           "venerable saint service with proper Epistle and Gospel.",
-    feast_e: "Galatians 5:22-6:2 (§213)",
+    fekula_section: "2A",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "octoechos",    feast_e: "Galatians 5:22-6:2 (§213)",
     feast_g: "Luke 12:32-40 (§67)",
     prokeimenon_tone: 7,
     prokeimenon_text: "Precious in the sight of the Lord is the death of His saints.",
@@ -2138,6 +2225,13 @@ const JUNE_MENAION = {
     oca_primary: true,
     source_file: "06-28.pdf",
     rank: "six_stichera",
+    fekula_section: "2C",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
     note: "The translation of the relics of the Holy Unmercenaries Cyrus and John from " +
           "Canopus to Menouthis near Alexandria in the 5th century. Their primary feast " +
           "is January 31. Both were physician-martyrs: Cyrus a monk, John a soldier, " +
@@ -2156,6 +2250,34 @@ const JUNE_MENAION = {
       "life for evermore.",
     communion_verse: "Rejoice in the Lord, O ye righteous; " +
       "praise is meet for the upright.",
+    stichera_lord_i_call_count: 6,  // 3 stichera T4, each sung twice (06-28.pdf)
+    stichera_lord_i_call: [
+      { tone: 4,
+        text: "With hymns let us all honor Cyrus and with him the great John, the two martyrs " +
+              "who possessed the radiance of the Trinity, the foundation of the Faith, " +
+              "the flowers breathing forth the true fragrance of the understanding of Christ, " +
+              "for they pray unceasingly for us to the Lord." },
+      { tone: 4,
+        text: "With fasting and radiance of life thou didst shine forth, and later thou didst adorn " +
+              "thy soul with suffering, O glorious Cyrus. Thou didst forsake an earthly army, " +
+              "O wise John, and didst find the army of heaven. And, entreating the Savior, " +
+              "O blessed ones, ye both pray for those who bless your memory." },
+      { tone: 4,
+        text: "Ye were shown to be physicians of the infirm, O blessed ones, and never-waning " +
+              "luminaries of the divine Faith, uttering confession together and sharing in the " +
+              "lot of the martyrs. Having truly received crowns from Christ, O glorious Cyrus " +
+              "and wise John, unceasingly entreat the Savior on behalf of those who hymn you with faith." },
+    ],
+    stichera_glory: { tone: 8,
+      text: "Two martyrs have shone forth upon us today, healing the pangs of our souls: " +
+            "Cyrus and John, the wonder-workers. The one, embracing the angelic life and living " +
+            "it to the end, united himself to Christ by the blood of martyrdom; and the other, " +
+            "shining forth among the military ranks, is now enrolled in the armies of heaven. " +
+            "Wherefore, they impart healing to those who with faith celebrate their memory, " +
+            "praying for our souls.",
+    },
+    // Both now: Theotokion or Stavrotheotokion T8 (06-28.pdf — runtime from Octoechos)
+    aposticha_source: "octoechos",  // PDF: "the Stichera from the Oktoechos"
     troparion: {
       tone: 5,
       text: "O Christ God Who hast given us the miracles of Thy holy martyrs as an " +
