@@ -855,6 +855,7 @@ function getLiturgicalData(date) {
 
   const allSaintsSunday = new Date(relevantPascha);
   allSaintsSunday.setDate(allSaintsSunday.getDate() + 56);
+  allSaintsSunday.setHours(23, 59, 59, 999); // end-of-day: date <= comparison works for noon app dates
 
   const nextMeatfareSunday = new Date(followingPascha);
   nextMeatfareSunday.setDate(nextMeatfareSunday.getDate() - 56);
@@ -7951,7 +7952,21 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
-    version: "v0.6.2",
+    version: "v0.6.3",
+    date: "June 2026",
+    summary: "All Saints Sunday (P+56) fully working — season boundary midnight/noon fix",
+    items: [
+      "fix: allSaintsSunday boundary date was constructed at local midnight; app dates are noon. date <= allSaintsSunday was false for June 7 at noon even though they share the same calendar date. Fixed by setting allSaintsSunday to 23:59:59 so the <= comparison works correctly.",
+      "fix: all_saints_sunday hours_format now recognized as isSunday=true in assembleHour(), assembleVespers(), and buildDismissal() — was only checking pentecostarion_sunday, causing P+56 to use weekday skeleton, troparion structure, and dismissal formula.",
+      "fix: fekulaSection resolver returns §4B17 for all_saints_sunday (was §4A).",
+      "fix: P+56 season boundary changed from date < allSaintsSunday to date <= allSaintsSunday (v0.6.2 — superseded by midnight/noon fix above).",
+      "encoding: P+56 Litiya (3 stichera T1, Glory T5, Both Now T5), alleluia_stichos null, vespers_kontakion moved to top level.",
+      "encoding: P+56 full completion — aposticha (4 stichera T8 with Saturday Great Vespers verses), aposticha_glory T6, aposticha_both_now T6, beatitudes (6 Resurrection + 4 All Saints Ode VI), all structural flags, oca_primary, note.",
+      "refactor: scripts/audit.js unified — eliminated parallel field lists; CLI now calls auditEntry() from src/lib/audit.js directly.",
+      "audit: FIELD_REGISTRY expanded — added oca_primary, note, aposticha_source, aposticha_both_now, beatitudes_troparia, heavenly_king_omitted, it_is_truly_meet_suppressed; has_paroemias now applies to Pentecostarion entries.",
+    ],
+  },
+  {
     date: "June 2026",
     summary: "P+56 All Saints — season boundary fix · Litiya encoding · vespers_kontakion struct fix",
     items: [
