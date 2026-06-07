@@ -152,7 +152,101 @@ const JUNE_MENAION = {
       { tone: 1, text: "We glorify thy forethought, O Virgin Mother of God, for by the strange arrival of the divine Gabriel, O all-immaculate one, thou hast now taught us the truly wondrous beginning to thy hymn. Wherefore, falling down with faith, we call out to thee, crying aloud with him: \"Rejoice, O thou who art full of grace! The Lord is with thee, through thee granting the world great mercy!\"" },
       { tone: 1, text: "O wondrous miracle! The radiant Gabriel, in the guise of a monk, appeared to the monk who remained behind in his cell and miraculously received the amplification of thy hymnody, O all-immaculate one. And straightway with his finger he engraved what he had chanted upon a tablet of stone, and then vanished, leaving the astonished monk to glorify thee, O most hymned one." },
     ],
+    stichera_lord_i_call_count: 8,  // 4 stichera each ×2 per PDF (06-11.pdf)
     stichera_glory: { tone: 4, text: "Fitting was it that on Mount Athos, which hath thee as its intercessor, O Mother of God, that this, the hymn of the archangel to thee, was first chanted unto thee, O most hymned Virgin, and that from hence it hath passed to all the ends of the world, as the crown of the hymns of the Mother of God. Wherefore, we cry out to thee: O most glorious Theotokos, beseech thy Son, that our souls be saved!" },
+
+    // ── VESPERS — LITIYA ──────────────────────────────────────────────────────
+    // 06-11.pdf: "At Litiya, the Sticheron of the temple, and these Stichera"
+    litya_stichera: [
+      { tone: 1,
+        text: "Today is the triumph of the Virgin! Let Athos leap up, and let the Church join chorus! " +
+              "For the holy Theotokos hath summoned us to the annual feast of her wondrous hymnody, " +
+              "which the Archangel Gabriel hath taught us, the strange beginning of her divine hymn. " +
+              "For having thus appeared to the monk in like raiment, " +
+              "he magnified the Theotokos as the one who in the flesh bore Him Who is seated upon the cherubim. " +
+              "Through her supplications, O Christ God, save Thou our souls." },
+      { tone: 2,
+        text: "She who is more exalted than the heavens, who is more glorious than the cherubim " +
+              "and more honorable than all creation, who because of her great purity " +
+              "became the receptacle of the eternal Essence, " +
+              "is today magnified in her kellion by the angel with hymns. " +
+              "Thus all things are filled with joy, and great mercy hath been bestowed upon us. " +
+              "The all-immaculate Bride and Mother of the good pleasure of the Father, " +
+              "foreordained by God as a dwelling-place for Him, " +
+              "whom the incorporeal hosts unceasingly glorify, " +
+              "and whom we bless as the Theotokos, the truly ever-blessed and all-immaculate Mother of our God, " +
+              "today, through the archangel, giveth us hymnody strange to the ear." },
+    ],
+    litya_glory: { tone: 5,
+      text: "Ye people, hymn, O hymn the Mother of our God! " +
+            "For today the archangel sang to the solitary monk the new hymn of the all-immaculate Virgin, " +
+            "who is our helper, and whom it is incumbent on all to honor unceasingly.",
+    },
+    litya_both_now: { source: "pentecostarion",
+      note: "06-11.pdf: 'Both now... from the Pentecostarion, or this Theotokion in Tone V' — Pentecostarion governs when in season",
+    },
+
+    // ── VESPERS — APOSTICHA (GREAT VESPERS) ───────────────────────────────────
+    // 06-11.pdf: 3 stichera Tone I + feast-specific verses + Glory/Both now T4
+    stichera_aposticha: [
+      { tone: 1,
+        text: "Of old, God sent to thee the divine Gabriel, the prince of the ranks of heaven, " +
+              "O Virgin Maiden, to bear thee tidings of thine ineffable conception; " +
+              "and now he is first to teach us thy new hymnody." },
+      { tone: 1,
+        verse: "I shall commemorate thy name in every generation and generation.",
+        text: "O Virgin Maiden, who can worthily recount this strange miracle, which took place to thy glory? " +
+              "For the angel hath now appeared in the guise of a monk, " +
+              "providing a new beginning for thy hymn with wondrous praises unto thee, " +
+              "and telling all to chant thus." },
+      { tone: 1,
+        verse: "The rich among the people shall entreat thy countenance.",
+        text: "Meet it is, O Virgin, as the divine Gabriel truly chanted, " +
+              "to bless thee, the pure Theotokos, blessed and all-immaculate, " +
+              "who art in truth the Mother of God, and whom we magnify in hymns." },
+    ],
+    aposticha_glory: { tone: 4,
+      text: "The monk now heard a hymn which he had never known; " +
+            "for the archangel taught him the beginning of thy hymn, O Virgin. " +
+            "Wherefore, marveling, the monk asked him to set it down in writing. " +
+            "He therefore engraved it with his finger upon a tablet of stone, and then vanished, " +
+            "having ensured that in joy thou wouldst ever be hymned as the Theotokos.",
+    },
+    aposticha_both_now: { tone: 4,
+      text: "The monk now heard a hymn which he had never known; " +
+            "for the archangel taught him the beginning of thy hymn, O Virgin. " +
+            "Wherefore, marveling, the monk asked him to set it down in writing. " +
+            "He therefore engraved it with his finger upon a tablet of stone, and then vanished, " +
+            "having ensured that in joy thou wouldst ever be hymned as the Theotokos.",
+      note: "06-11.pdf: 'Glory…Both now…in the same melody' — Both now = Glory text repeated in T4",
+    },
+
+    // ── BEATITUDES ────────────────────────────────────────────────────────────
+    // 06-11.pdf: "8 Troparia: 4 from ODE III and 4 from ODE VI of the canon of the Theotokos"
+    beatitudes_source: "4 from Ode III + 4 from Ode VI of the Theotokos canon (06-11.pdf, AT LITURGY)",
+    beatitudes_troparia: [
+      // From Ode III:
+      { text: "When the time came for all the fathers to assemble in the Church of the Protaton, " +
+              "to celebrate praise throughout the night, then did the archangel chant thy divine hymn, O pure one." },
+      { text: "The elder of that novice went with the others; " +
+              "and to the one left behind the Archangel Gabriel appeared in similar guise, " +
+              "providing a beginning for thy hymn." },
+      { text: "Adding a phrase to the beginning of that hymn which Cosmas sang to thee of old, " +
+              "thy divine servant said that it was his habit to begin thy hymn thus." },
+      { text: "O thine awesome wonders, O divine Archangel Gabriel: " +
+              "how in the guise of a monk didst thou chant to the Mother of God on this day " +
+              "and didst magnify her as is fitting!" },
+      // From Ode VI:
+      { text: "With ineffable joy and gladness the priests and monastics, " +
+              "all the multitudes of the Holy Mountain, " +
+              "hastened to take up thine icon, O most pure one." },
+      { text: "Holding this thy divine icon with all reverence, all the fathers, weaving hymnody, " +
+              "bore it into thy divine temple with hymns and songs, O most pure one." },
+      { text: "O Virgin, they celebrated an all-night vigil, lovingly honoring thee " +
+              "and the archangel who proclaimed thy hymn; and we now likewise honor you together." },
+      { text: "After the celebration of the Mysteries, the godly fathers, chanting, " +
+              "took up thy divine icon, and with great reverence placed it within the sanctuary of thy temple." },
+    ],
   },
 
   // ── June 12 — Ven. Onuphrius the Great & Ven. Peter of Athos (Double §2B) ────
@@ -175,6 +269,7 @@ const JUNE_MENAION = {
     feast_e: "Galatians 5:22-6:2 (§213)",
     feast_g: "Matthew 11:27-30 (§43)",
     aposticha_source: "octoechos", // "Stichera from the Octoechos, and Glory..., Tone VI"
+    stichera_lord_i_call_count: 6,  // 3 Onuphrius T8 + 3 Peter T8 (06-12.pdf)
     note: "Double service: two venerable fathers in one compiled service. Joint troparion. " +
           "Per Fekula §2B: 3rd & 9th Hours use Onuphrius kontakion (Ode VI, Tone III). " +
           "6 stichera (3 Onuphrius Tone VIII + 3 Peter Tone VIII same melody) confirmed §2B. " +
@@ -229,13 +324,20 @@ const JUNE_MENAION = {
     oca_primary: true,
     source_file: "06-13.pdf",
     rank: "six_stichera",
-    fekula_section_override: "2B",
+    fekula_section: "2B",  // Double service: two saints, §2B (renamed from fekula_section_override)
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "octoechos",  // §2B/§2C — no Menaion aposticha in PDF
+    stichera_lord_i_call_count: 6,  // 3 Aquilina T4 + 3 Triphyllius T8 (06-13.pdf)
     note: "Double service: martyr and hierarch in one compiled service. Two separate troparia. " +
           "Per Fekula §2B: 9th Hour uses Triphyllius kontakion (second saint, Tone VIII). " +
-          "AT LITURGY section in PDF names Troparion/Kontakion only — no Prokeimenon, Epistle, " +
-          "Gospel, Alleluia, or Communion verse. §2B confirmed: readings from Oktoechos.",
-    feast_e: "absent — §2B/§2C, readings from Oktoechos",
-    feast_g: "absent — §2B/§2C, readings from Oktoechos",
+          "AT LITURGY section in PDF names Troparion/Kontakion only — §2B, readings from Oktoechos.",
+    feast_e: null,  // §2B — no proper epistle/gospel; readings from Octoechos
+    feast_g: null,
     troparion: {
       tone: 4,
       text: "Thy ewe-lamb Aquilina, O Jesus crieth out with a loud voice: Thee do I love, O my Bridegroom, and, seeking Thee, I endure suffering. In Thy baptism I am crucified and buried with Thee. I suffer for Thy sake, that I may reign with Thee; I die for Thee, that I may live with Thee. Accept me, who with love sacrifice myself for Thee, as an unblemished offering! By her supplications, in that Thou art merciful, save Thou our souls.",
@@ -258,6 +360,45 @@ const JUNE_MENAION = {
       text: "Having utterly purified thy soul with the beauties of thy virginity and attained the heights by martyrdom, O most honored Aquilina, wounded with the love of Christ Thy Bridegroom, thou standest before Him with the angels in gladness. With them cease thou never to pray on behalf of us all.",
       saint: "Aquilina",
     },
+    // ── VESPERS — LORD I HAVE CRIED ─────────────────────────────────────────
+    // 06-13.pdf: 6 stichera — 3 Aquilina Tone IV + 3 Triphyllius Tone VIII
+    stichera_lord_i_call: [
+      { tone: 4, saint: "Aquilina",
+        text: "Knowing thee to be an incorrupt bride adorned by the Holy Spirit, " +
+              "we celebrate thy holy memory, O passion-bearing martyr. " +
+              "We piously bow down before thy relics and holy shrine, " +
+              "and ever draw forth healing for our passions, " +
+              "honoring thee with faith, O all-praised Aquilina." },
+      { tone: 4, saint: "Aquilina",
+        text: "To thy Bridegroom, O most honored one, thou didst offer as a gift " +
+              "the dismemberment of thy limbs. Wherefore, having deemed thee worthy " +
+              "of the most radiant bridal chambers, the Transcendent One doth illumine thee " +
+              "with the light of divine glory. Before Him dost thou stand, rejoicing, " +
+              "O Aquilina, do thou earnestly entreat Him on behalf of us who with faith glorify thy suffering." },
+      { tone: 4, saint: "Aquilina",
+        text: "Held fast, O all-praised one, by the desire of thy Creator, " +
+              "thou didst depict His sufferings with thine own flesh, " +
+              "enduring each threefold wave of pain. And now thou livest in the heavens, " +
+              "wearing an imperishable crown and glory immune to pain, " +
+              "and beholding what the ranks of angels see, O divinely inspired Aquilina." },
+      { tone: 8, saint: "Triphyllius",
+        text: "O glorious father Triphyllius, excellently enlightened with many tears, " +
+              "thou didst take wing to the first Cause of the good, " +
+              "and wast shown to be a pillar of light, illumining with thy words and miracles " +
+              "all who with divinely dutiful thought ever approach thee. " +
+              "Wherefore, we honor thee and call thee blessed." },
+      { tone: 8, saint: "Triphyllius",
+        text: "O sacred father Triphyllius, honorably adorned like a second Aaron " +
+              "with the plumage of vestments, thou now beholdest the Holy of holies " +
+              "being within the second veil. O thine honored radiance which surpasseth the mind! " +
+              "O divine adornment of holy hierarchs! Thou hast partaken thereof." },
+      { tone: 8, saint: "Triphyllius",
+        text: "Possessed of a merciful soul, of pure thought, of a straightforward heart, " +
+              "an undefiled faith, an unfeigned love and the dignity of hierarchal rank, O father, " +
+              "thou art enrolled with honor in the choirs of the fathers. " +
+              "Wherefore, we all honor thee with sacred hymns and piously praise and call thee blessed." },
+    ],
+    stichera_glory: null,  // PDF: "Glory…Both now…Theotokion in Tone VIII" — no separate doxasticon
   },
 
     // ── June 8 — Translation of the Relics of Greatmartyr Theodore Stratelates
@@ -285,6 +426,7 @@ const JUNE_MENAION = {
     feast_e: "2 Timothy 2:1-10",
     feast_g: "Matthew 10:16-22 (§36)",
     aposticha_source: "octoechos", // "Stichera from the Oktoechos, and Glory..., Idiomelon Tone VIII"
+    stichera_lord_i_call_count: 6,  // 3 T2 + 3 T4 (06-08.pdf)
     note: "Also: St Theodore, first Bishop of Rostov; Relics of Sts Basil & Constantine " +
           "of Yaroslavl; St Ephraim of Antioch; Ven Zosimus of Phoenicia; " +
           "Yaroslavl Icon; White Lake Icon; HM Theodore of Kvelta. " +
@@ -340,6 +482,7 @@ const JUNE_MENAION = {
     feast_e: "Hebrews 13:7-16 (§334)",
     feast_g: "Matthew 5:14-19 (§11)",
     aposticha_source: "octoechos", // "Stichera from the Oktoechos; and Glory..., Tone VI"
+    stichera_lord_i_call_count: 6,  // 3 T4 (each ×2 per PDF) (06-09.pdf)
     note: "Pillar of Orthodoxy and defender of the title Theotokos at the Council of " +
           "Ephesus (431 AD). Authored extensive commentaries and theological treatises. " +
           "Matins canon acrostic: 'Cyril is the harp of divine visions' (Theophanes, Tone IV). " +
@@ -773,7 +916,15 @@ const JUNE_MENAION = {
     oca_primary: true,
     source_file: "06-14.pdf",
     rank: "six_stichera",
-    fekula_section_override: "2B",
+    fekula_section: "2B",  // Double service: two saints, §2B (renamed from fekula_section_override)
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "octoechos",  // PDF: "Aposticha from the Pentecostarion, or from the Octoechos"
+    stichera_lord_i_call_count: 6,  // 3 Elisha T8 + 3 Methodius T8 (06-14.pdf)
     note: "Double service. In 2026 this date falls on All Saints of North America " +
           "Sunday (Pascha+63); Sunday propers and the NA Saints synaxis take precedence. " +
           "Holy Fathers of the First Ecumenical Council = Pascha+42 = May 24 in 2026.",
@@ -823,6 +974,54 @@ const JUNE_MENAION = {
             "which truly befitted thee, O blessed Elisha; for thou wast the companion of " +
             "Elijah, and with him dost unceasingly entreat Christ God on behalf of us all.",
       saint: "Elisha",
+    },
+    // ── VESPERS — LORD I HAVE CRIED ─────────────────────────────────────────
+    // 06-14.pdf: 6 stichera — 3 Elisha T8 + 3 Methodius T8
+    stichera_lord_i_call: [
+      { tone: 8, saint: "Elisha",
+        text: "Rejoice, O most wise Elisha, for, having purified thy mind of the passions of the body, " +
+              "thou didst receive rays of the Spirit, O glorious one, " +
+              "which thou didst transmit unto all the rest, and wast revealed to be wholly radiant; " +
+              "wherefore, thou hast made thine abode amid never-waning light. " +
+              "Pray thou ever on behalf of us who praise thee." },
+      { tone: 8, saint: "Elisha",
+        text: "Elijah the zealot left thee resplendent in a twofold measure of grace, " +
+              "O blessed Elisha, when he was shown to be a truly airborne warrior. " +
+              "And emulating him, by grace thou didst halt the rushing torrent of the river, " +
+              "and didst pass over, O glorious one, joyfully adorning thyself and magnifying Christ." },
+      { tone: 8, saint: "Elisha",
+        text: "Of old, the prayer of the Shulamite woman's faith entrusted her child unto thee, " +
+              "and thou didst raise him up from the dead, as a divine prophet marvelous in sanctity; " +
+              "and again, through salt thou didst manifestly transform undrinkable water into potable. " +
+              "Thou workest countless miracles through the grace of the all-accomplishing Spirit, " +
+              "wherefore, we hymn thee, O blessed one." },
+      { tone: 8, saint: "Methodius",
+        text: "O divinely wise father Methodius, like a lion, by the roaring of thy most wise teachings " +
+              "thou didst terrify the sly fox John the Grammarian, " +
+              "for he could not endure thy denunciation, " +
+              "and the wicked wretch, was felled by a blow from thy noetic sword; " +
+              "wherefore, as a champion of the Orthodox people, thou didst not leave the flock of Christ to perish." },
+      { tone: 8, saint: "Methodius",
+        text: "O Methodius, thou art the confirmation of Orthodoxy, the shepherd of the Church, " +
+              "adornment of monks, a river full to overflowing with the waters of the Spirit, " +
+              "a cup pouring forth a drink of surpassing sweetness, " +
+              "a beacon illumining the ends of the world, " +
+              "a two-edged sword honed to sharpness by grace, which cutteth down hordes of the ungodly." },
+      { tone: 8, saint: "Methodius",
+        text: "O glorious Methodius, thou art a model of confession, the foundation of holy hierarchs, " +
+              "an instrument inspired by God, playing the melody of doctrine, full of piety, " +
+              "a dwelling-place of wisdom, and an abyss of love, " +
+              "an ever-flowing stream of mercy, like a bowl pouring forth the drink of compunction, " +
+              "a right flourishing garden of paradise." },
+    ],
+    stichera_glory: { tone: 2,
+      text: "Today the divine coming of the prophets hath shone forth, " +
+            "mystically calling out to the souls of those who love the feasts of the Church. " +
+            "He who mounted the chariot which traverseth the heavens, the star of the never-waning East, " +
+            "with Elisha, the wondrous man, doth broaden the streams of the new Jordan, " +
+            "making clear the proclamation of piety, and manifestly portraying by a double image " +
+            "the twofold blessing of the harmonious glory of the Old and the New " +
+            "for those who with faith celebrate their most festive memorial.",
     },
   },
 
