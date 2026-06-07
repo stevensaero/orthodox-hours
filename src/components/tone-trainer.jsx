@@ -3711,21 +3711,28 @@ export default function ToneTrainer() {
   // Computed once across all phrases so chip heights are consistent across
   // phrase boundaries — e.g. sol (A–D reciting) and la/si/mi (Final Phrase)
   // share the same scale rather than each phrase being independently normalised.
-  const buildGlobalVoiceMap = (rules, hzFn) => {
-    if (!rules) return null;
-    const pitchPrs = [];
-    ["A","B","C","D","Final"].forEach(ph => {
-      const pr = rules[ph];
-      if (!pr) return;
-      [pr.recite, ...Object.values(pr.cadMap||{}), ...Object.values(pr.prepMap||{})]
-        .forEach(p => p && pitchPrs.push({ sol: p, pr }));
-    });
+  // Unified bass+tenor height map — both voices normalised together across all phrases.
+  // Bass pitches (low register) sort to the tall end; tenor pitches (higher register)
+  // sort to the short end. One shared scale means bass always renders deeper than tenor
+  // in SATB without any per-voice offset or fighting between independent normalizations.
+  const buildUnifiedVoiceMap = () => {
     const seen = new Map();
-    pitchPrs.forEach(({ sol, pr }) => {
-      const hz = hzFn(sol, pr);
-      const key = sol + "@" + Math.round(hz);
-      if (!seen.has(key)) seen.set(key, { sol, pr, hz });
-    });
+    const addPitches = (rules, hzFn) => {
+      if (!rules) return;
+      ["A","B","C","D","Final"].forEach(ph => {
+        const pr = rules[ph];
+        if (!pr) return;
+        [pr.recite, ...Object.values(pr.cadMap||{}), ...Object.values(pr.prepMap||{})]
+          .forEach(p => {
+            if (!p) return;
+            const hz = hzFn(p, pr);
+            const key = p + "@" + Math.round(hz);
+            if (!seen.has(key)) seen.set(key, { sol: p, hz, bassHzFn: null, tenorHzFn: null });
+          });
+      });
+    };
+    addPitches(BASS_RULES[activeTone],  freq_bass);
+    addPitches(TENOR_RULES[activeTone], freq_tenor);
     const entries = [...seen.values()].sort((a, b) => a.hz - b.hz);
     const n = entries.length;
     const result = new Map();
@@ -3734,14 +3741,14 @@ export default function ToneTrainer() {
       const t = n > 1 ? inv / (n - 1) : 0;
       result.set(e.sol + "@" + Math.round(e.hz), Math.round(H_VOICE_MIN + t * (H_VOICE_MAX - H_VOICE_MIN)));
     });
-    return { map: result, hzFn };
+    return result;
   };
-  const globalBassHeightMap  = buildGlobalVoiceMap(BASS_RULES[activeTone],  freq_bass);
-  const globalTenorHeightMap = buildGlobalVoiceMap(TENOR_RULES[activeTone], freq_tenor);
-  const globalChipH = (globalMap, sol, pr) => {
-    if (!globalMap) return H_VOICE_MIN;
-    const key = sol + "@" + Math.round(globalMap.hzFn(sol, pr));
-    return globalMap.map.get(key) ?? H_VOICE_MIN;
+  const unifiedVoiceMap = buildUnifiedVoiceMap();
+  const globalBassHeightMap  = unifiedVoiceMap; // kept for lookup API compatibility
+  const globalTenorHeightMap = unifiedVoiceMap;
+  const globalChipH = (_, sol, pr, hzFn) => {
+    const key = sol + "@" + Math.round(hzFn(sol, pr));
+    return unifiedVoiceMap.get(key) ?? H_VOICE_MIN;
   };
 
   return (
@@ -4413,11 +4420,11 @@ export default function ToneTrainer() {
         // Soprano rolesWD — same structure as alto, alto pitches retained.
         const sopranoRolesWD = (showSoprano || showSopranoTab) ? rolesWD : null;
 
-        // Bass height map — uses global tone-wide map for cross-phrase consistency.
+        // Bass height map — unified bass+tenor map; bass pitches always deeper than tenor.
         const bassHeightMap = bassRolesWD ? (() => {
           const pr = BASS_RULES[activeTone]?.[line.phrase];
           const map = {};
-          bassRolesWD.forEach(r => { map[r.pitches[0]] = globalChipH(globalBassHeightMap, r.pitches[0], pr); });
+          bassRolesWD.forEach(r => { map[r.pitches[0]] = globalChipH(null, r.pitches[0], pr, freq_bass); });
           return map;
         })() : null;
 
@@ -4443,11 +4450,11 @@ export default function ToneTrainer() {
           });
         })();
 
-        // Tenor height map — uses global tone-wide map for cross-phrase consistency.
+        // Tenor height map — unified bass+tenor map; tenor pitches always shallower than bass.
         const tenorHeightMap = tenorRolesWD ? (() => {
           const pr = TENOR_RULES[activeTone]?.[line.phrase];
           const map = {};
-          tenorRolesWD.forEach(r => { map[r.pitches[0]] = globalChipH(globalTenorHeightMap, r.pitches[0], pr); });
+          tenorRolesWD.forEach(r => { map[r.pitches[0]] = globalChipH(null, r.pitches[0], pr, freq_tenor); });
           return map;
         })() : null;
 
@@ -4772,15 +4779,17 @@ export default function ToneTrainer() {
 
               if (!groupedTenorGhost) return bassRow;
 
-              // Ghost tenor overlaid on bass: tenor chips sit at top, bass chips extend below.
-              // Both rows share the same absolute container; bass renders first (behind),
-              // tenor ghost on top at 50% opacity. Container height = tallest bass chip.
+              // Mirror of soprano-over-alto pattern, inverted for below-text voices.
+              // Container height = tallest bass chip (bass defines the depth).
+              // Tenor ghost anchors at top:0 — shorter chips stay near text baseline.
+              // Bass row anchors at top:0 behind tenor — taller chips hang further below.
+              // Alto sits above text; tenor sits just below text; bass sinks below tenor.
               const maxBassH = Math.max(
                 ...groupedBass.flatMap(grp => grp.entries.map(({r}) => bassHeightMap?.[r.pitches[0]] ?? H_VOICE_MIN))
               );
               const tenorGhostRow = (
                 <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-start",
-                              position: "absolute", top: 0, left: 0, opacity: 0.5 }}>
+                              position: "absolute", top: 0, left: 0, opacity: 0.5, zIndex: 1 }}>
                   {groupedTenorGhost.map((grp, gi) => {
                     if (grp.entries.length === 1) {
                       const {r, i} = grp.entries[0];
@@ -4796,7 +4805,11 @@ export default function ToneTrainer() {
               );
               return (
                 <div style={{ position: "relative", height: maxBassH }}>
-                  {bassRow}
+                  {/* Bass behind — taller chips sink further below text */}
+                  <div style={{ position: "absolute", top: 0, left: 0 }}>
+                    {bassRow}
+                  </div>
+                  {/* Tenor ghost on top — shorter chips stay near text baseline */}
                   {tenorGhostRow}
                 </div>
               );
