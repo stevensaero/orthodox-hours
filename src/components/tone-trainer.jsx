@@ -1089,8 +1089,9 @@ const PRESET_T1 = [
   ["A", [["Come,",[["Come",1]]],["let",[["let",0]]],["us",[["us",0]]],["also",[["al",0],["so",0]]],["go",[["go",0]]],["to",[["to",0]]],["meet",[["meet",0]]],["Christ",[["Christ",0]]],["with",[["with",0]]],["divine",[["di",0],["vine",1]]],["songs!",[["songs",0]]]]],
   // Phrase B — no intonation; Sim = anchor (backup from final monosyllable saw)
   ["B", [["Let",[["Let",0]]],["us",[["us",0]]],["receive",[["re",0],["ceive",0]]],["Him",[["Him",0]]],["Whose",[["Whose",0]]],["salvation",[["sal",0],["va",0],["tion",0]]],["Simeon",[["Sim",1],["e",0],["on",0]]],["saw!",[["saw",0]]]]],
-  // Phrase C — Da = intonation; nounced = anchor
-  ["C", [["This",[["This",0]]],["is",[["is",0]]],["He",[["He",0]]],["Whom",[["Whom",0]]],["David",[["Da",1],["vid",0]]],["announced;",[["an",0],["nounced",1]]]]],
+  // Phrase C — He = intonation (H); Whom = reciting tone (Q); Da = cadence anchor (do/H);
+  // vid = do/Q fill; an = do/Q fill; nounced = ti/H close. Score: tutorial p.7.
+  ["C", [["This",[["This",0]]],["is",[["is",0]]],["He",[["He",1]]],["Whom",[["Whom",0]]],["David",[["Da",1],["vid",0]]],["announced;",[["an",0],["nounced",0]]]]],
   // Phrase D — no intonation; Proph = anchor (ets trails)
   ["D", [["this",[["this",0]]],["is",[["is",0]]],["He",[["He",0]]],["Who",[["Who",0]]],["spoke",[["spoke",0]]],["in",[["in",0]]],["the",[["the",0]]],["Prophets,",[["Proph",1],["ets",0]]]]],
   // Phrase A — Who = intonation; speaks = anchor (backup from final monosyllable Law)
