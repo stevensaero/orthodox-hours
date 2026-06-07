@@ -1932,7 +1932,9 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
 
   // ── Season flags ──────────────────────────────────────────────────────────
   const isPentecostarion = season === 'pentecostarion' || season === 'brightweek';
-  const isSunday = season === 'sunday' || season === 'pentecostarion_sunday';
+  const fmt = pentEntry ? pentEntry.hours_format : null;
+  const isPentSundayFmt = fmt === 'pentecostarion_sunday' || fmt === 'all_saints_sunday';
+  const isSunday = season === 'sunday' || season === 'pentecostarion_sunday' || isPentSundayFmt;
   const isOrdinarySunday = season === 'sunday';
   const christIsRisenActive = isPentecostarion && paschaOffset >= 7 && paschaOffset <= 38;
   const heavenlyKingOmitted = isPentecostarion && paschaOffset > 38;
@@ -3819,7 +3821,8 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   const elements = [];
   const { paschaOffset, tone, dayName, season, namedDay } = liturgicalData;
   const isPentecostarion = season === "pentecostarion" || season === "brightweek";
-  const isSunday = season === "sunday";
+  const _fmt = pentEntry ? pentEntry.hours_format : null;
+  const isSunday = season === "sunday" || _fmt === "pentecostarion_sunday" || _fmt === "all_saints_sunday";
   const christIsRisenActive = isPentecostarion && paschaOffset >= 7 && paschaOffset <= 38;
   const rank = (menaionEntry && menaionEntry.rank) || "simple";
   const isHighRank = rank === "polyeleos" || rank === "vigil" || rank === "great_feast";
@@ -5719,7 +5722,8 @@ const SUNDAY_RESURRECTIONAL_PROKEIMENON = {
 // Returns a single element ready to push into an elements array.
 function buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, idPrefix) {
   const { season, namedDay } = liturgicalData;
-  const isSunday = season === 'sunday' || season === 'pentecostarion_sunday';
+  const _fmt = pentEntry ? pentEntry.hours_format : null;
+  const isSunday = season === 'sunday' || season === 'pentecostarion_sunday' || _fmt === 'pentecostarion_sunday' || _fmt === 'all_saints_sunday';
 
   const open = "May Christ our true God, through the intercessions of His most pure Mother;";
   const close =
