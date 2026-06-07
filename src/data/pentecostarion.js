@@ -4122,6 +4122,7 @@ const PENTECOSTARION_DATA = {
     paroemia_1: "Numbers 11:16-17, 24-29",
     paroemia_2: "Joel 2:23-32",
     paroemia_3: "Ezekiel 36:24-28",
+    has_paroemias: true,  // Three OT readings at Great Vespers confirmed (80.pdf)
 
     magnificat_sung: false,
     menaion_set_aside: true,
@@ -4256,6 +4257,18 @@ const PENTECOSTARION_DATA = {
     aposticha_source: "pentecostarion",
     aposticha_note: "Great Vespers aposticha from Pentecostarion (80.pdf); kneeling prayers follow immediately after Both now.",
 
+    beatitudes_source: "Festal Antiphons (3 antiphons — not Beatitudes; 80.pdf AT LITURGY)",
+    beatitudes_troparia: null,  // Festal Antiphons replace Beatitudes at Liturgy (confirmed 80.pdf)
+    oca_primary: true,
+    note: "Great Feast of Holy Pentecost — §4B15. Great Vigil: Great Vespers with Litiya + Polyeleos Matins. " +
+          "O Heavenly King RESTORED (first time since P+38 Apodosis of Pascha). " +
+          "Three OT paroemias at Great Vespers: Numbers 11, Joel 2, Ezekiel 36. " +
+          "Festal Antiphons replace Typika/Beatitudes at Liturgy (same as Ascension). " +
+          "Instead of Trisagion: 'As many as have been baptized into Christ' (80.pdf). " +
+          "Instead of It Is Truly Meet: Irmos of Ode IX Canon 2 ('Rejoice, O Queen'). " +
+          "Kneeling prayers chanted immediately after Both now of Aposticha at Vespers. " +
+          "Magnificat NOT sung (no Ode IX refrain). " +
+          "OCA and St. Sergius in full agreement.",
   },
 
   // ── P+50 — Monday of the Eighth Week — Holy Spirit Day ──────────────────────
