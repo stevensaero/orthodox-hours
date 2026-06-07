@@ -5108,6 +5108,128 @@ const PENTECOSTARION_DATA = {
         label: "Both now", source: "all_saints_ode6" },
     ],
 
+    // ── MATINS — FEAST-SPECIFIC DATA (Octoechos canons sourced separately) ─────
+    // Source: 90.pdf AT MATINS
+    // The three Octoechos canons (Resurrection T8 / Cross&Resurrection / Theotokos)
+    // are NOT encoded here — they come from OCTOECHOS[8].matins.canons (octoechos.js).
+    // Only the fourth canon (All Saints, feast-specific) is encoded here.
+
+    matins_gospel_number: 1,       // 1st Sunday Resurrection Gospel (John 21:15-25 §116)
+
+    // Sessional hymn after Polyeleos / Evlogitaria (feast-specific)
+    matins_sessional_post_polyeleos: {
+      tone: 8,
+      text: "Keeping feast on the holy memorial of the forefathers, fathers, and patriarchs, apostles, and hierarchs, and martyrs, prophets, and righteous ones, the ascetics, and just, O Christ God, and of every name that is written in Thy Book of Life, we beseech them all to make intercession, and we pray: Grant Thy world peace through their prayers, O Lord, in that Thou lovest mankind, that we all may cry unto Thee: O Christ God, Who art glorified in the counsel of Thy Saints, lo, Thou art He Who as is meet hath now truly glorified their memory.",
+    },
+    matins_sessional_post_polyeleos_both_now: {
+      tone: 8,
+      text: "Let us all praise the heavenly gate and ark, the most holy mountain, the radiant cloud, the ladder to heaven's heights, that true spiritual paradise, the redemption of Eve, the great treasure of all the world; for through her was salvation enacted for all mankind, and complete forgiveness and remission of ancient offences. Thus, for this cause, let us all fervently cry aloud, and say unto her: Do thou entreat thy Son and our God that He grant forgiveness of transgressions to them that reverently worship thine all-holy Offspring.",
+    },
+
+    // All Saints Canon — the feast-specific 4th canon (6 troparia per ode)
+    // Octoechos canons 1–3 come from OCTOECHOS[8].matins.canons
+    matins_canon_feast: {
+      refrain: "All ye Saints of the Lord, pray to God for us",
+      source: "90.pdf",
+      odes: {
+        1: {
+          troparia: [
+            "While praising the ranks of Thy Saints, I ask that by their prayers I may be illumined in soul by Thy light; for Thou art the Unapproachable Light Who by Thy beams dost drive away the darkness of ignorance, O Christ, Thou Giver of Light and Word of God.",
+            "When Thou wast lifted up upon the Tree, Thou didst draw unto Thy knowledge the entire lot of the nations, O Master, and Thou didst illumine it with the light of the Holy Trinity through Thy holy apostles, through whom thou didst dispel error.",
+            "Being obedient unto Thy law, O Christ, Thine apostles piously laid aside all the things of the earth; and these glorious ones made the whole world radiant with the light of grace while proclaiming Thee in an evangelical manner.",
+          ],
+          gloria: "Rejoicing, the martyrs took up Thy Cross and unwaveringly imitated Thine august Passion. These valiant ones feared neither the threat of the tyrants, nor fire, nor sword, nor stripes, nor hunger, nor death.",
+          both_now: "Manifestly acquiring a manly disposition, the virgins unwaveringly endured the contests of martyrdom, O all-pure one. Rejoicing in a godly wise manner, they were brought after thee unto thy Son, the King of all, as is written in the psalms.",
+        },
+        3: {
+          troparia: [
+            "The priests and shepherds were clothed with the sacred priesthood, which they wisely governed and worthily adorned, O Christ, for they were truly endowed with the word of teaching from above.",
+            "Made comely with the beauty of that primal creation of beauty, ye appeared as unerring luminaries and made the Church of Christ a heaven, O Saints, adorning it in diverse manners, each one in his own land.",
+          ],
+          gloria: "Being obedient unto Thy law and made radiant by diverse virtues, the assemblies of the blessed inherited the heavenly mansions rejoicing. For they all worthily performed the virtues, one accomplishing one, and another accomplishing another.",
+          both_now: "O Mother of God, for our sake and from a virginal womb thou didst give birth unto God the Word Who came forth from God, Whom the pure maidens long for in a God-befitting manner, manifestly following after thee unto Him.",
+        },
+        4: {
+          troparia: [
+            "Made one with Thee by love, and purely and sincerely taking delight in Thee, the company of Thy Saints doth dance the perpetual dance with the angels in joy round about Thee, O Seer of all things, God and Lord of all.",
+            "O glorious hieromartyrs, with youthful vigor, ye put on the crown of the martyrs, having already been adorned with the divinely-effectual chrism of the priesthood. Wherefore, O most noetically rich ones, having rightly received twofold crowns, ye rejoice with Christ eternally.",
+            "Ye truly subjected the whole mind of the flesh unto the Spirit, O God-bearers, when by fasting ye utterly weakened its unruly impulses in an ascetical manner. And now, aflame with the light of passionlessness, ye have received the rewards of your labors.",
+          ],
+          gloria: "As martyrs of Christ, the First martyr, ye collectively endured torments with great steadfastness, contesting as though in the bodies of others, O glorious ones. And since ye have now been shown forth as heirs of the Kingdom, ye pour forth healings for the faithful.",
+          both_now: "Thou didst become the Bride of God, O Birthgiver of God, since for our sake thou didst give birth in the flesh, unto His Word Who is from before the ages. In Him women also have lived in a holy manner and have through thee adorned themselves with diverse contests, thereby setting aright the fall of our first mother.",
+        },
+        5: {
+          troparia: [
+            "Like the divine prophets, ye were deemed worthy to behold the things to come which ye longed for. In nobility of soul ye purified yourselves by an august manner of life, O God-bearers, being enlightened by the might of the Spirit.",
+            "The choir of the Saints is now adorned with divine gifts, even those who were before the Law, as well as the patriarchs, prophets, and apostles, and the assemblies of the martyrs, ascetics, and teachers, and the righteous together with the hieromartyrs.",
+            "Beholding the company of Thy Saints shining today with Thy radiance and with unquenchable lamps of grace, O Savior, we unceasingly praise Thy divine wealth and bountiful good things, O Lover of mankind.",
+          ],
+          gloria: null,  // no separate Gloria printed at Ode V in 90.pdf
+          both_now: "Since the all-modest women loved thy supremely wondrous Offspring, they accounted the delights of life as naught, O all-pure one; for with ardent love they desired His beauty and divine illumination alone.",
+        },
+        6: {
+          troparia: [
+            "O Master, having found Thee to be a precious, choice and firmly set cornerstone in Sion, the Saints, like select stones, builded themselves thereupon, as though upon an unshakable foundation.",
+            "When Thy side was pierced, the drops of blood fell together with the deifying water, and refashioned the world. And the divine host of all the Saints addressed Thee as Benefactor.",
+          ],
+          gloria: "We praise most reverently the God-inspired cloud of witnesses, who by grace were made luminous, and shine more resplendently in the royal purple of their blood and in the crimson of their steadfast contest.",
+          both_now: "We all know thee to be the all-true Mother of God, through whom the nature of women, having been given strength, contested for Christ, O all-immaculate one, and in godly manner became filled with every virtue.",
+          kontakion: {
+            tone: 8,
+            text: "To Thee, the Planter of creation, the world doth offer the God-bearing martyrs as the first-fruits of nature. By their supplications, preserve Thy Church in perfect peace, through the Theotokos, O Greatly-Merciful One.",
+          },
+          ikos: "Those who have borne witness in all the earth and thereby taken up their dwelling in the heavens, having imitated Christ's Passion and thereby taken away our passions, have assembled here today, showing that the Church of the first-born presenteth an arch-type of the Church on high, crying out to Christ: Thou art my God, do Thou preserve me through the pure Theotokos, O thou Who art greatly merciful.",
+        },
+        7: {
+          troparia: [
+            "The orders of the Saints now enjoy godly delight as they unceasingly praise Him Who resteth in the Saints. Rejoicing, they form a choir and chant: Blessed is the God of our fathers.",
+            "Made majestically radiant with the divine illuminations of the thrice-resplendent effulgence, the assemblies of the Saints piously speak with divine authority concerning the threefold Unity, even the co-beginningless Father, Son and Holy Spirit.",
+            "When Thou, O God, shalt be seen among gods in Thine ineffable glory bestowing due rewards and granting crowns unto each one, do Thou then deem us all worthy to chant unto Thee: Blessed is the God of our fathers.",
+          ],
+          gloria: "Let us joyously sing of the company of all the Saints, which is composed of every race, rank and way of life, and let us chant together with them: Blessed is the God of our fathers.",
+          both_now: "O all ye maidens, as ye together form a divine choir, cry out with a great voice: Be glad, O Mary, thou most pure and most holy Birthgiver of God, who didst make the Source of Joy to flow forth for us.",
+        },
+        8: {
+          troparia: [
+            "O ye martyrs, prophets, and apostles; august assembly of hieromartyrs, the just, and the righteous; divine choir of teachers, together with the myrrhbearing women, rejoice as ye chant: Bless Him, O ye children; praise Him O ye priests; and supremely exalt him O ye people, throughout all ages.",
+            "O ye Saints, who bear within yourselves the radiance that transcendeth the mind, and filled with divine gladness and joy, ye are called gods because of your nearness to God, standing in the presence of the deifying effulgence, ye have been enlightened with the rays of ineffable glory. Supremely exalt ye Christ throughout all ages.",
+            "Having appeared as luminaries of many lights, O Saints, ye make radiant the heaven of the Church with various gifts and diverse beauties, in righteousness, chastity, courage and prudence, and ye cry: Praise Christ, O ye priests, and supremely exalt Him, O ye people, throughout all ages.",
+          ],
+          gloria: null,  // Trinitarian refrain covers this slot in 90.pdf
+          both_now: "O all ye godly-minded women who have been perfected in Christ by the Spirit, as with gladness ye now encircle the immaculate Virgin and true Mother of God, who hath delivered us from the curse of our first mother Eve, praise ye now throughout the ages the Fruit that she hath borne.",
+        },
+        9: {
+          troparia: [
+            "Shielded with hope and love and fenced about with faith, the gathering of the chosen, even the foremost witnesses on behalf of the truth, nobly endured with rejoicing the tortures and stripes and all the threats of the tyrants, for they possessed Christ, Who bestoweth victory in contest.",
+            "As is meet, let us now acclaim as a haven of salvation the Baptist, the apostles, the prophets, the martyrs, the ascetics, the divine teachers, the priests, the assembly of patriarchs, the noble hieromartyrs, the God-loving women, the righteous and the just.",
+          ],
+          gloria: "Since ye have been tried in the fire of temptations and were not enticed by pleasures, O ye glorious saints, assembling now in the heavens, the looking glass taken away, and the shadow covering truth dispelled, ye rejoice sincerely as ye stand before the Master's throne of light.",
+          both_now: "Thou art seen to be the uniter of things which were separated, for through thee all have truly become fellow citizens with the angels in the heavens; and now the ranks of all the Saints bear witness together with them, as they praise with eternal songs Him Whom thou didst bear, O Virgin Theotokos.",
+        },
+      },
+    },
+
+    // Exapostilarion (feast-specific; Resurrection exapostilarion from OCTOECHOS[8].matins)
+    matins_exapostilarion_feast: {
+      text: "With hymns let us crown as is meet the Baptist and Forerunner, the prophets and apostles with the martyrs and wise hierarchs, ascetics and hieromartyrs, the women who loved God and the just ones and the righteous ones, with all the ranks of angels, and let us pray and make supplication that we may also attain unto the glory which they have with Christ the Savior.",
+    },
+    matins_exapostilarion_theotokion: {
+      text: "O most pure one, He Who is glorified on high by angels, hath ineffably descended to us without forsaking the bosom of the Father; for thou didst lend flesh to Him from thy pure blood in a manner transcending speech, thereby becoming the cause of our salvation. Beseech Him O pure one, that He grant remission of sins unto us thy servants.",
+    },
+
+    // Stichera on the Praises — feast stichera (added after 5 Resurrection stichera from Octoechos)
+    // 3 All Saints stichera T4 with verses
+    matins_praises_feast: [
+      { tone: 4, verse: "Praise Him with tuneful cymbals, praise Him with cymbals of jubilation. Let every breath praise the Lord.",
+        text: "The Lord hath made the Saints wondrous upon the Earth, for they received His wounds and sufferings in the flesh, with which they have been gloriously adorned, arrayed in divine beauty: Let us chant hymns unto them as unto un-withering flowers, as unerring luminaries of the Church, for their sufferings were voluntarily." },
+      { tone: 4, verse: "The righteous cried, and the Lord heard them, and He delivered them out of all their tribulations.",
+        text: "Let us offer praise with sacred hymns to the prophets, apostles, the hieromartyrs, and all the righteous, and the woman who suffered greatly, and those venerable ones who with love struggled in fasting, and the hosts of the righteous ones, for they have inherited the Kingdom on high, and they dwell now in Paradise." },
+      { tone: 4, verse: "Wondrous is God in His Saints, the God of Israel.",
+        text: "Unto the martyrs who rendered the earth heavenly with radiant virtues, emulating Christ's death and sufferings, and having traversed the path that leadeth to immortality, cleansing themselves of mortal passions by the activity of divine grace, they nobly contested throughout all the world, Let us offer them worthy hymns of praise." },
+    ],
+    // Praises Glory: 1st Resurrection Gospel sticheron (gospel_number 1 → RESURRECTION_GOSPEL_STICHERA[1])
+    matins_praises_glory: { source: "gospel_sticheron", gospel_number: 1 },
+
     // Structural flags
     menaion_set_aside: true,       // §4B17: All Saints Sunday — Menaion entirely displaced
     has_paroemias: true,           // 3 OT lessons at Saturday Great Vespers (Isaiah, Wisdom ×2)

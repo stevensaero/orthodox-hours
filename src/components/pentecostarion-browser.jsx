@@ -415,10 +415,166 @@ function PentEntryCard({ offset, entry, audit, stickyTop }) {
       )}
 
       {/* ── Matins ── */}
-      {entry.matins_gospel && (
+      {(entry.matins_gospel || entry.matins_gospel_number || entry.matins_canon_feast ||
+        entry.matins_sessional_post_polyeleos || entry.matins_exapostilarion_feast) && (
         <>
           <SectionHeader>Matins</SectionHeader>
-          <FieldRow label="matins_gospel" value={entry.matins_gospel} />
+          {entry.matins_gospel && <FieldRow label="matins_gospel" value={entry.matins_gospel} />}
+          {entry.matins_gospel_number !== undefined && (
+            <FieldRow label="matins_gospel_number" value={`#${entry.matins_gospel_number} (Sunday Resurrection Gospel)`} />
+          )}
+
+          {/* Sessional hymn after Polyeleos */}
+          {entry.matins_sessional_post_polyeleos && (
+            <>
+              <div style={{ fontSize: "0.78rem", color: C.inkLight, fontWeight: 600,
+                marginTop: "0.75rem", marginBottom: "0.35rem", letterSpacing: "0.06em" }}>
+                Sessional Hymn (after Polyeleos / Evlogitaria) — feast specific
+              </div>
+              <TextBlock tone={entry.matins_sessional_post_polyeleos.tone}
+                text={entry.matins_sessional_post_polyeleos.text} />
+              {entry.matins_sessional_post_polyeleos_both_now && (
+                <TextBlock
+                  tone={entry.matins_sessional_post_polyeleos_both_now.tone}
+                  text={entry.matins_sessional_post_polyeleos_both_now.text}
+                  label="Both now" />
+              )}
+            </>
+          )}
+
+          {/* Feast Canon */}
+          {entry.matins_canon_feast && (() => {
+            const canon = entry.matins_canon_feast;
+            const odeNums = Object.keys(canon.odes || {}).map(Number).sort((a, b) => a - b);
+            return (
+              <>
+                <div style={{ fontSize: "0.78rem", color: C.inkLight, fontWeight: 600,
+                  marginTop: "0.75rem", marginBottom: "0.35rem", letterSpacing: "0.06em" }}>
+                  Feast Canon — 4th canon (Octoechos canons 1–3 sourced from octoechos.js)
+                </div>
+                <div style={{ fontSize: "0.82rem", color: C.gold, marginBottom: "0.5rem" }}>
+                  Refrain: <em>{canon.refrain}</em>
+                  {canon.source && (
+                    <span style={{ color: C.inkLight, marginLeft: "0.75rem" }}>
+                      Source: {canon.source}
+                    </span>
+                  )}
+                </div>
+                {odeNums.map(odeNum => {
+                  const ode = canon.odes[odeNum];
+                  return (
+                    <div key={odeNum} style={{
+                      marginBottom: "1rem",
+                      borderLeft: `3px solid ${C.goldLight}`,
+                      paddingLeft: "0.75rem",
+                    }}>
+                      <div style={{ fontSize: "0.75rem", color: C.gold, fontWeight: 700,
+                        letterSpacing: "0.1em", textTransform: "uppercase",
+                        marginBottom: "0.4rem" }}>
+                        Ode {odeNum}
+                      </div>
+                      {(ode.troparia || []).map((t, ti) => (
+                        <div key={ti} style={{ marginBottom: "0.5rem" }}>
+                          <div style={{ fontSize: "0.72rem", color: C.inkLight, marginBottom: "0.15rem" }}>
+                            [{ti + 1}] Refrain: <em>{canon.refrain}</em>
+                          </div>
+                          <div style={{ fontSize: "0.87rem", color: C.ink, lineHeight: 1.6,
+                            fontFamily: "Georgia, 'Times New Roman', serif" }}>
+                            {t}
+                          </div>
+                        </div>
+                      ))}
+                      {ode.gloria && (
+                        <div style={{ marginBottom: "0.5rem" }}>
+                          <div style={{ fontSize: "0.72rem", color: C.inkLight, marginBottom: "0.15rem" }}>
+                            Glory...
+                          </div>
+                          <div style={{ fontSize: "0.87rem", color: C.ink, lineHeight: 1.6,
+                            fontFamily: "Georgia, 'Times New Roman', serif" }}>
+                            {ode.gloria}
+                          </div>
+                        </div>
+                      )}
+                      {ode.both_now && (
+                        <div style={{ marginBottom: "0.5rem" }}>
+                          <div style={{ fontSize: "0.72rem", color: C.inkLight, marginBottom: "0.15rem" }}>
+                            Both now...
+                          </div>
+                          <div style={{ fontSize: "0.87rem", color: C.ink, lineHeight: 1.6,
+                            fontFamily: "Georgia, 'Times New Roman', serif" }}>
+                            {ode.both_now}
+                          </div>
+                        </div>
+                      )}
+                      {ode.kontakion && (
+                        <div style={{
+                          marginTop: "0.4rem", padding: "0.4rem 0.6rem",
+                          background: C.goldFaint, borderRadius: "4px",
+                        }}>
+                          <div style={{ fontSize: "0.72rem", color: C.gold, fontWeight: 600,
+                            marginBottom: "0.2rem" }}>
+                            Kontakion (after Ode VI) — Tone {ode.kontakion.tone}
+                          </div>
+                          <div style={{ fontSize: "0.87rem", color: C.ink, lineHeight: 1.6,
+                            fontFamily: "Georgia, 'Times New Roman', serif" }}>
+                            {ode.kontakion.text}
+                          </div>
+                        </div>
+                      )}
+                      {ode.ikos && (
+                        <div style={{ marginTop: "0.4rem" }}>
+                          <div style={{ fontSize: "0.72rem", color: C.inkLight, marginBottom: "0.15rem" }}>
+                            Ikos
+                          </div>
+                          <div style={{ fontSize: "0.87rem", color: C.ink, lineHeight: 1.6,
+                            fontFamily: "Georgia, 'Times New Roman', serif" }}>
+                            {ode.ikos}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </>
+            );
+          })()}
+
+          {/* Exapostilaria */}
+          {(entry.matins_exapostilarion_feast || entry.matins_exapostilarion_theotokion) && (
+            <>
+              <div style={{ fontSize: "0.78rem", color: C.inkLight, fontWeight: 600,
+                marginTop: "0.75rem", marginBottom: "0.35rem", letterSpacing: "0.06em" }}>
+                Exapostilarion (feast specific; Resurrection exapostilarion from Octoechos)
+              </div>
+              {entry.matins_exapostilarion_feast && (
+                <TextBlock text={entry.matins_exapostilarion_feast.text} label="Feast" />
+              )}
+              {entry.matins_exapostilarion_theotokion && (
+                <TextBlock text={entry.matins_exapostilarion_theotokion.text} label="Theotokion" />
+              )}
+            </>
+          )}
+
+          {/* Stichera on the Praises — feast stichera */}
+          {entry.matins_praises_feast && entry.matins_praises_feast.length > 0 && (
+            <>
+              <div style={{ fontSize: "0.78rem", color: C.inkLight, fontWeight: 600,
+                marginTop: "0.75rem", marginBottom: "0.35rem", letterSpacing: "0.06em" }}>
+                Stichera on the Praises — feast (added after Resurrection stichera from Octoechos)
+              </div>
+              {entry.matins_praises_feast.map((s, i) => (
+                <TextBlock key={i} tone={s.tone} verse={s.verse} text={s.text} label={`[${i + 1}]`} />
+              ))}
+              {entry.matins_praises_glory && (
+                <div style={{ fontSize: "0.82rem", color: C.inkMid, marginTop: "0.25rem" }}>
+                  <FieldLabel>Glory</FieldLabel>{' '}
+                  {entry.matins_praises_glory.source === 'gospel_sticheron'
+                    ? `→ Resurrection Gospel Sticheron #${entry.matins_praises_glory.gospel_number} (from RESURRECTION_GOSPEL_STICHERA)`
+                    : entry.matins_praises_glory.text || '—'}
+                </div>
+              )}
+            </>
+          )}
         </>
       )}
 
