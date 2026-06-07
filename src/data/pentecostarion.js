@@ -1999,7 +1999,9 @@ const PENTECOSTARION_DATA = {
     matins_format: "god_is_the_lord",
     heavenly_king_omitted: true,  // Paschal period — omitted from Ascension through Pentecost eve
     menaion_set_aside: true,  // Great Feast of the Lord — Menaion saint entirely set aside
+    oca_primary: true,
     beatitudes_source: "Festal Antiphons (3 antiphons with Ps. 46, 47, 48 — not Beatitudes)",
+    beatitudes_troparia: null,  // Beatitudes not sung — Festal Antiphons replace Typika/Beatitudes at Liturgy
     note: "Great Feast. Full Vigil structure with Polyeleos. " +
           "Festal Antiphons replace Typika/Beatitudes at Liturgy. " +
           "Introit: God is gone up in jubilation. " +
@@ -2184,6 +2186,32 @@ const PENTECOSTARION_DATA = {
       text: "God is gone up in jubilation, the Lord with the voice of the trumpet, " +
             "to raise the fallen image of Adam, and to send the Comforting Spirit to sanctify our souls.",
     },
+    aposticha_both_now: { tone: 6, text: "God is gone up in jubilation, the Lord with the voice of the trumpet, " +
+            "to raise the fallen image of Adam, and to send the Comforting Spirit to sanctify our souls." },
+    // Litiya Glory and Both now — same text per 64.pdf rubric (repeat)
+    litya_glory: { tone: 4, text: "O Lord, having fulfilled the mystery that was hidden from before the ages " +
+            "and from all generations, as Thou art good Thou didst come with Thy disciples to the Mount of Olives, " +
+            "having together with Thyself her that gave birth unto Thee, the Creator and Fashioner of all things; " +
+            "for it was meet that she who, as Thy Mother, suffered at Thy Passion more than all, " +
+            "should also enjoy the surpassing joy of the glorification of Thy flesh, O Master, " +
+            "which we have attained by Thine Ascension to the heavens, " +
+            "and we glorify Thy great mercy toward us." },
+    litya_both_now: { tone: 4, text: "O Lord, having fulfilled the mystery that was hidden from before the ages " +
+            "and from all generations, as Thou art good Thou didst come with Thy disciples to the Mount of Olives, " +
+            "having together with Thyself her that gave birth unto Thee, the Creator and Fashioner of all things; " +
+            "for it was meet that she who, as Thy Mother, suffered at Thy Passion more than all, " +
+            "should also enjoy the surpassing joy of the glorification of Thy flesh, O Master, " +
+            "which we have attained by Thine Ascension to the heavens, " +
+            "and we glorify Thy great mercy toward us." },
+
+    it_is_truly_meet_suppressed: true,
+    matins_format: "god_is_the_lord",
+    heavenly_king_omitted: true,  // Paschal period — omitted from Ascension through Pentecost eve
+    has_polyeleos: true,           // Polyeleos chanted — Great Feast Vigil structure
+    menaion_set_aside: true,  // Great Feast of the Lord — Menaion saint entirely set aside
+    oca_primary: true,
+    beatitudes_source: "Festal Antiphons (3 antiphons with Ps. 46, 47, 48 — not Beatitudes)",
+    beatitudes_troparia: null,  // Beatitudes not sung — Festal Antiphons replace Typika/Beatitudes at Liturgy
   },
 
   // ── P+40 — Friday of the Sixth Week: First Day of Ascension Afterfeast ─────
@@ -2421,6 +2449,8 @@ const PENTECOSTARION_DATA = {
     it_is_truly_meet_suppressed: true,
     heavenly_king_omitted: true,
     menaion_set_aside: false,
+    oca_primary: true,
+    has_polyeleos: false,
     note: "Vespers opens P+40 week (Thursday evening). Great Prokeimenon Tone VII. " +
           "Ascension troparion replaces Resurrection troparion throughout. " +
           "Matins Aposticha uses 'O House of Ephratha' special melody (Tone II) — unique stichera captured. " +
@@ -2605,9 +2635,14 @@ const PENTECOSTARION_DATA = {
                                         "who ineffably in time hast given birth unto the Timeless One, " +
                                         "Thee do we the faithful magnify with one accord.",
     communion_verse: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
+    oca_primary: true,
+    has_polyeleos: false,
+    note: "File covers Friday evening Small Vespers (P+40 eve) + Saturday Matins/Liturgy (P+41). " +
+          "Ascension afterfeast Day 2. Menaion saint at Glory (§2G1 — feast governs Hours). " +
+          "Prokeimenon Tone VII and Alleluia Tone II govern throughout Ascension afterfeast. " +
+          "Instead of It is truly meet: Irmos of Ode IX Canon 1 chanted through afterfeast. " +
+          "Beatitudes from Ode III of Ascension Canon 2 (66.pdf AT LITURGY).",
   },
-
-  // ── P+42 — 7th Sunday of Pascha — Holy Fathers of the First Ecumenical Council ──
   // Source: 70.pdf. Drive record: P+42.txt. Fekula §4B13.
   // THREE troparia: Resurrection T6 (primary), Holy Fathers T8 (Glory), Ascension T4 (Both now).
   // NOTE: MOVABLE Sunday nearest June 8 (Pascha+42) — NOT fixed June 8 date.

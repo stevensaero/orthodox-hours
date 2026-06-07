@@ -381,8 +381,10 @@ export const FIELD_REGISTRY = [
              entry.hours_format === 'all_saints_sunday' ||
              entry.hours_format === 'pentecost';
     },
-    description: 'Beatitudes troparia array (§2E/§2F; Pentecostarion Sundays and Great Feasts)',
-    check: (entry) => isNonEmptyArray(entry, 'beatitudes_troparia'),
+    description: 'Beatitudes troparia array (§2E/§2F; Pentecostarion Sundays/Great Feasts; null = replaced by Festal Antiphons)',
+    // null is valid: means Festal Antiphons replace Beatitudes (e.g. Ascension, Pentecost).
+    // The key must be present; null explicitly documents the rubrical substitution.
+    check: (entry) => 'beatitudes_troparia' in entry,
   },
 
   // ── FLAGS ──────────────────────────────────────────────────────────────────
