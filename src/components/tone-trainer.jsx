@@ -4772,10 +4772,11 @@ export default function ToneTrainer() {
 
               if (!groupedTenorGhost) return bassRow;
 
-              // Ghost tenor over bass: container height = max chip height per syllable
-              const maxH = Math.max(
-                ...groupedBass.flatMap(grp => grp.entries.map(({r}) => bassHeightMap?.[r.pitches[0]] ?? H_VOICE_MIN)),
-                ...groupedTenorGhost.flatMap(grp => grp.entries.map(({r}) => tenorHeightMap?.[r.pitches[0]] ?? H_VOICE_MIN))
+              // Ghost tenor overlaid on bass: tenor chips sit at top, bass chips extend below.
+              // Both rows share the same absolute container; bass renders first (behind),
+              // tenor ghost on top at 50% opacity. Container height = tallest bass chip.
+              const maxBassH = Math.max(
+                ...groupedBass.flatMap(grp => grp.entries.map(({r}) => bassHeightMap?.[r.pitches[0]] ?? H_VOICE_MIN))
               );
               const tenorGhostRow = (
                 <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-start",
@@ -4794,7 +4795,7 @@ export default function ToneTrainer() {
                 </div>
               );
               return (
-                <div style={{ position: "relative", height: maxH }}>
+                <div style={{ position: "relative", height: maxBassH }}>
                   {bassRow}
                   {tenorGhostRow}
                 </div>
