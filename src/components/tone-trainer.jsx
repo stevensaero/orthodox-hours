@@ -2948,7 +2948,7 @@ export default function ToneTrainer() {
     const c = ac();
     let t = c.currentTime + 0.06;
     notes.forEach((n) => {
-      const f = n.bass ? freq_bass(n.sol, n.phraseRules) : freq(n.sol);
+      const f = n.bass ? freq_bass(n.sol, n.phraseRules) : n.tenor ? freq_tenor(n.sol, n.phraseRules) : freq(n.sol);
       toneTimbre(f, t, n.dur, n.peak, timbre);
       t += n.dur;
     });
