@@ -5978,6 +5978,91 @@ function FekulaBadge({ section, note }) {
 
 // ─── SERVICE BLOCK ────────────────────────────────────────────────────────────
 function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
+
+  // ── Major service movement headers ───────────────────────────────────────
+  // These IDs and label prefixes mark structural divisions in the service —
+  // the movements a choir director or reader uses to navigate the service.
+  // They get a larger, more prominent label than supporting sub-elements.
+  const MAJOR_SECTION_IDS = new Set([
+    'v-ps103',          // Psalm 103 (Vespers opening)
+    'v-gt-litany',      // Great Litany
+    'v-kathisma',       // Kathisma
+    'v-sm-lit',         // Small Litany
+    'v-lic',            // Lord I Have Cried
+    'v-ps140',          // Psalm 140
+    'v-ps141',          // Psalm 141 (LIC scaffold)
+    'v-gladsome',       // O Gladsome Light
+    'v-prok',           // Prokeimenon
+    'v-les-hdr',        // Old Testament Lessons
+    'v-aug',            // Augmented Litany
+    'v-vouchsafe',      // Vouchsafe, O Lord
+    'v-eve-lit',        // Evening Litany
+    'v-litiya-rubric',  // Litiya
+    'v-apost-stich',    // Aposticha Stichera
+    'v-nunc',           // Prayer of St. Symeon (Nunc Dimittis)
+    'v-trisagion',      // Trisagion Prayers
+    'v-trop-1',         // Troparion (primary)
+    'v-trop-vigil-1',   // Troparion of the Feast (Vigil)
+    'v-trop-none',      // Troparion (placeholder)
+    'v-diss-dismissal', // Dismissal
+    'v-diss-wisdom',    // Dismissal (Wisdom)
+    // Hours assembler IDs
+    'ordinary-beginning-blessing',
+    'typica-beatitudes',
+    'typica-gospel',
+    'typica-epistle',
+  ]);
+  // Also match by label prefix for dynamically IDed elements
+  const MAJOR_LABEL_PREFIXES = [
+    'PSALM',
+    'Lord I Have Cried',
+    'Great Litany',
+    'Small Litany',
+    'Kathisma',
+    'Gladsome Light',
+    'Prokeimenon',
+    'Old Testament',
+    'Augmented Litany',
+    'Vouchsafe',
+    'Evening Litany',
+    'Litiya',
+    'Aposticha Stichera',
+    'Prayer of St. Symeon',
+    'Trisagion',
+    'Troparion',
+    'Dismissal',
+    'God is the Lord',
+    'O Heavenly King',
+    'Alleluia',
+    'Kontakion',
+    'Beatitudes',
+    'Epistle',
+    'Gospel',
+  ];
+  const isMajorSection = element && (
+    MAJOR_SECTION_IDS.has(element.id) ||
+    (element.label && MAJOR_LABEL_PREFIXES.some(p => element.label.startsWith(p)))
+  );
+  // Label style — major movements get a larger, heavier header
+  const labelStyle = isMajorSection
+    ? {
+        fontSize: '0.82rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.14em',
+        fontFamily: 'Georgia, serif',
+        fontWeight: 'bold',
+        borderBottom: '1px solid rgba(139,105,20,0.25)',
+        paddingBottom: '2px',
+        marginBottom: '0.4rem',
+        display: 'block',
+      }
+    : {
+        fontSize: '0.7rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.12em',
+        fontFamily: 'Georgia, serif',
+        fontWeight: 'bold',
+      };
   // ── Temple selector — hybrid UI for parish dedication ──────────────────
   if (element.type === 'temple_selector') {
     const isKontakionMode = element.templeMode === "kontakion";
@@ -6145,9 +6230,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px',
           marginBottom: '0.3rem', flexWrap: 'wrap' }}>
           {element.label && (
-            <span style={{ fontSize: '0.7rem', textTransform: 'uppercase',
-              letterSpacing: '0.12em', color: '#5A7A8A',
-              fontFamily: 'Georgia, serif', fontWeight: 'bold' }}>
+            <span style={{ ...labelStyle, color: isMajorSection ? '#3D5A6A' : '#5A7A8A' }}>
               {element.label}
             </span>
           )}
@@ -6223,9 +6306,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px',
           marginBottom: '0.5rem', flexWrap: 'wrap' }}>
           {element.label && (
-            <span style={{ fontSize: '0.7rem', textTransform: 'uppercase',
-              letterSpacing: '0.12em', color: '#9A8A70',
-              fontFamily: 'Georgia, serif', fontWeight: 'bold' }}>
+            <span style={{ ...labelStyle, color: isMajorSection ? '#6B5214' : '#9A8A70' }}>
               {element.label}
             </span>
           )}
@@ -6308,10 +6389,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
       <div style={{ marginBottom: '1.4rem' }}>
         {element.rubric && <div style={rubrStyle}>{element.rubric}</div>}
         {element.label && (
-          <div style={{ fontSize: '0.7rem', textTransform: 'uppercase',
-            letterSpacing: '0.12em', color: '#9A8A70',
-            fontFamily: 'Georgia, serif', fontWeight: 'bold',
-            marginBottom: '0.4rem' }}>
+          <div style={{ ...labelStyle, color: isMajorSection ? '#6B5214' : '#9A8A70' }}>
             {element.label}
           </div>
         )}
@@ -6335,12 +6413,10 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
       <div style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "0.3rem", flexWrap: "wrap" }}>
         <span
           style={{
-            fontSize: "0.7rem",
-            textTransform: "uppercase",
-            letterSpacing: "0.12em",
-            color: isMovable ? "#8B6914" : "#9A8A70",
-            fontFamily: "Georgia, serif",
-            fontWeight: "bold",
+            ...labelStyle,
+            color: isMajorSection
+              ? (isMovable ? '#6B5214' : '#5A4010')
+              : (isMovable ? '#8B6914' : '#9A8A70'),
           }}
         >
           {element.label}
@@ -7026,6 +7102,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.7.3",
+    date: "June 2026",
+    summary: "Major service movements now rendered with larger, prominent section headers",
+    items: [
+      "feat: ServiceBlock now distinguishes major service movements (Psalm 103, Great Litany, Kathisma, Small Litany, Lord I Have Cried, O Gladsome Light, Prokeimenon, Old Testament Lessons, Augmented Litany, Vouchsafe O Lord, Evening Litany, Litiya, Aposticha Stichera, Prayer of St. Symeon, Trisagion, Troparion, Kontakion, Dismissal, God is the Lord, O Heavenly King, Alleluia, Beatitudes, Epistle, Gospel) from sub-labels (Doxasticon, Theotokion, individual stichera, etc.).",
+      "feat: Major section labels render at 0.82rem (was 0.7rem) with heavier letter-spacing and a subtle gold underline. Sub-element labels unchanged at 0.7rem. Detection by element ID set + label prefix matching — no element data changes required.",
+    ],
+  },
   {
     version: "v0.7.2",
     date: "June 2026",
