@@ -2320,3 +2320,31 @@ Full v2.1 encoding from 07-01.pdf. Previously had basic fields only (troparion, 
 **Noted for future sessions:**
 - Portrait tablet wrap bug: chip rows wrap independently — fix requires per-syllable column layout (S chip + text + B chip as one unit). Non-trivial render restructure.
 - SA chip height consistency: soprano/alto should use unified normalization like bass/tenor for proportional chip height relationship.
+
+---
+
+## Session addendum — June 7, 2026 (late session)
+
+### Additional fixes after v0.11.29
+
+**Tone 1 Phrase C preset — accent marks corrected (tutorial p.7):**
+- Previous preset had `Da(accent:true)` as anchor, leaving only `nounced` in the
+  cadence slice. `distribute(["do","ti"], 1)` crammed both pitches onto one syllable,
+  producing a phantom second audio note under "nounced" with no corresponding chip.
+- Correct reading per score: intonation bracket = `This is He` (He=H); reciting tone
+  bracket = `Whom`; cadence bracket = `Da-vid an-nounced` (Da=do/H, vid=do/Q,
+  an=do/Q, nounced=ti/H).
+- Fix: `He(accent:1)`, `Da(accent:1)`, `vid/an/nounced` all accent:0.
+- **Root cause was data, not logic.** `pointLine`, `distribute`, `lineToNotes` all
+  behaved correctly. Wrong bracket = wrong anchor = wrong syllable count = phantom note.
+  This validates the engine — errors reduce to text input stress mark placement.
+
+**Additional UX/pedagogical features this session:**
+- Try example: populates text field with bracketed stichera + runs `analyzeText()` —
+  Director vs. Machine now fully available on examples.
+- `analyzeText(txt)` extracted as shared helper; `analyze()` is a one-liner wrapper.
+- Director vs. Machine: bracketed encoding shown under each verse in monospace.
+- Play All button: green "Play ▶" at rest, red "◼ Stop" during playback.
+- Ghost soprano/tenor chips: labels restored, active highlight during playback.
+- Portrait tablet wrap bug noted for future session (chip rows wrap independently).
+- SA chip height consistency noted for future session.
