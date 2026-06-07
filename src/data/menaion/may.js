@@ -658,13 +658,22 @@ const MAY_MENAION = {
             "thou glory of Orthodox kings, whose shrine poureth forth healing. " +
             "O Constantine, equal of the apostles, pray thou for our souls.",
     },
-    // Aposticha Both Now: from Pentecostarion (handled at runtime by assembler)
+    // Both now at aposticha — from Pentecostarion: appointed Theotokion T2
+    // (Ascension-period theotokion per 05-21.pdf rubric; same text as P+39/P+40/P+41/P+42)
+    aposticha_both_now: { tone: 2,
+      text: "The shadow of the law hath passed now that grace hath come, " +
+            "for as the Bush wrapped in flame was not consumed, " +
+            "so didst thou bear a Child O Virgin and remained a Virgin; " +
+            "in place of a pillar of fire, the Sun of righteousness hath dawned, " +
+            "instead of Moses, Christ is come, the salvation of our souls.",
+    },
 
     // ── AT TYPICA: BEATITUDES ─────────────────────────────────────────────
     // Source: 05-21.pdf AT LITURGY — "8 Troparia: 4 from the appointed Ode of the
     // Pentecostarion canon, and 4 from Ode VI of the canon of the righteous ones."
     // The 4 Pentecostarion troparia come from the governing week's canon (P+19 = Ode IV).
     // The 4 Menaion troparia (Ode VI) are printed in the PDF and encoded here.
+    beatitudes_source: "4 from Pentecostarion Ode IV + 4 from Ode VI of Constantine & Helena canon (05-21.pdf)",
     beatitudes_ode: 6,  // Ode VI of the Menaion canon
     beatitudes_count: 4, // 4 from Menaion + 4 from Pentecostarion = 8 total
     beatitudes_troparia: [
