@@ -324,15 +324,24 @@ function parseSpanSegments(bookId, bookName, seg) {
   const cm = seg.match(/^(\d+):(.+)$/);
   if (!cm) return null;
   const chapter = parseInt(cm[1]);
-  const spans = cm[2].split(/,\s*/).map(s => {
-    const p = s.trim().match(/^(\d+)(?:-(\d+))?$/);
-    if (!p) return null;
+  const spans = [];
+  for (const s of cm[2].split(/,\s*/)) {
+    const part = s.trim();
+    // If this part contains a colon it's a new chapter reference (e.g. "19:27-30"
+    // following "10:32-33, 37-38, 19:27-30"). Recurse rather than drop it.
+    if (part.includes(':')) {
+      const sub = parseSpanSegments(bookId, bookName, part);
+      if (sub) spans.push(...sub);
+      continue;
+    }
+    const p = part.match(/^(\d+)(?:-(\d+))?$/);
+    if (!p) continue;
     const vs = parseInt(p[1]), ve = p[2] ? parseInt(p[2]) : vs;
     const rv = remapVerses(bookId, chapter, vs, ve);
     const remapped = rv.chapter !== chapter || rv.verseStart !== vs;
-    return { book: bookId, bookName, chapter: rv.chapter, verseStart: rv.verseStart, verseEnd: rv.verseEnd,
-      ...(remapped ? { origChapter: chapter, origVerseStart: vs, origVerseEnd: ve } : {}) };
-  }).filter(Boolean);
+    spans.push({ book: bookId, bookName, chapter: rv.chapter, verseStart: rv.verseStart, verseEnd: rv.verseEnd,
+      ...(remapped ? { origChapter: chapter, origVerseStart: vs, origVerseEnd: ve } : {}) });
+  }
   return spans.length ? spans : null;
 }
 

@@ -8007,6 +8007,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.6.6",
+    date: "June 2026",
+    summary: "Fix: scripture viewer now shows all verses for cross-chapter comma-delimited pericopes",
+    items: [
+      "fix: parseSpanSegments() in scripture.jsx silently dropped any cross-chapter reference following a comma (e.g. '19:27-30' in '10:32-33, 37-38, 19:27-30'). The comma-split loop checked each part against a digits-only regex; a part containing a colon never matched and was null-filtered. For P+56 All Saints Sunday gospel (Matthew 10:32-33,37-38; 19:27-30), Matthew 19:27-30 was never rendered.",
+      "fix: now detects colon in a comma-part and recurses into parseSpanSegments() for the new chapter reference, collecting all resulting spans. Both comma-delimited ('10:32-33, 37-38, 19:27-30') and semicolon-delimited ('10:32,33,37-38; 19:27-30') formats now produce all spans correctly.",
+    ],
+  },
+  {
     version: "v0.6.5",
     date: "June 2026",
     summary: "Fix: O Heavenly King restored at Pentecost (P+49) and All Saints Sunday (P+56)",
