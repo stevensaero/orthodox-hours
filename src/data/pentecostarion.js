@@ -4412,9 +4412,10 @@ const PENTECOSTARION_DATA = {
       source: "resurrection_tone_8",
     },
 
+    vespers_kontakion: false,  // §4B17: dismissal = Sunday + All Saints troparia; kontakion not sung at Vespers
+
     // Under Glory: All Saints troparion Tone 4
     troparion_2: {
-    vespers_kontakion: false,  // §4B17: dismissal = Sunday + All Saints troparia; kontakion not at Vespers
       tone: 4,
       text: "Adorned in the blood of Thy martyrs " +
             "throughout all the world as in purple and fine linen, " +
@@ -4449,6 +4450,7 @@ const PENTECOSTARION_DATA = {
     alleluia_tone: 8,
     alleluia_verse: "Come, let us rejoice in the Lord; " +
       "let us shout with jubilation unto God our Savior.",
+    alleluia_stichos: null,  // no stichos for T8 alleluia — confirmed absent in 90.pdf
     alleluia_2_tone: 4,
     alleluia_2_verse: "The righteous cried, and the Lord heard them.",
     alleluia_2_stichos: "Many are the tribulations of the righteous, " +
@@ -4460,6 +4462,68 @@ const PENTECOSTARION_DATA = {
     paroemia_1: "Isaiah 43:9-14",
     paroemia_2: "Wisdom of Solomon 3:1-9",
     paroemia_3: "Wisdom of Solomon 5:15ff",
+
+    // Litiya stichera — source: 90.pdf AT VESPERS / AT THE LITIYA
+    litya_stichera: [
+      { tone: 1, text: "In unison of faith, let us spiritually celebrate the universal festival " +
+          "of all those who have been pleasing unto God from all ages, " +
+          "the venerable order of Patriarchs, the assembly of prophets, the adornment of apostles, " +
+          "the gathering of martyrs, the boast of Ascetics, " +
+          "the memory of all the Saints; " +
+          "for they intercede unceasingly " +
+          "that peace be granted to the world, and great mercy to our souls." },
+      { tone: 1, text: "Come, all ye faithful, with psalms and hymns and spiritual odes, " +
+          "let us acclaim the all-glorious memory of all the Saints: " +
+          "the Baptist of the Savior, the apostles, prophets, and martyrs, " +
+          "the hierarchs, teachers, and righteous, " +
+          "the ascetics and the just, " +
+          "and the God-loving company of holy women; " +
+          "and let us cry out with one accord while we reverently acclaim them as blessed: " +
+          "O supremely good Christ our God, " +
+          "by their intercessions grant peace unto Thy churches, " +
+          "victory over heresy unto Thy Christ-loving hierarchs, " +
+          "and great mercy to our souls." },
+      { tone: 1, text: "Come, let us all rejoice spiritually with the memory of the Saints; " +
+          "for behold, it hath come bringing us bountiful gifts. " +
+          "Wherefore, let us cry out with a voice of rejoicing and with a pure conscience, saying: " +
+          "Rejoice, O assembly of prophets, who proclaimed the coming of Christ to the world, " +
+          "and who foresaw things afar off as though they were near. " +
+          "Rejoice, O choir of the apostles, ye fishers of men who caught the nations in your nets. " +
+          "Rejoice, O company of the martyrs, " +
+          "who were gathered from the ends of the earth into one Faith, " +
+          "and who for its sake endured the infliction of torments, " +
+          "and in a perfect manner received the crown of contest. " +
+          "Rejoice, O beehive of the Fathers, " +
+          "who wore down your own bodies in asceticism, " +
+          "and mortified the passions of the flesh; " +
+          "who by divine love took wing in mind and soared unto the heavens, " +
+          "and who rejoice with the angels and enjoy eternal good things. " +
+          "Wherefore, O ye prophets, apostles, and martyrs, " +
+          "together with the ascetics, fervently beseech Him Who hath crowned you, " +
+          "that He redeem from visible and invisible enemies " +
+          "those who with faith and love celebrate your ever-venerable memory." },
+    ],
+    litya_glory: { tone: 5, text: "Let us hasten unto the present festival, O ye faithful; " +
+        "for there is set before us a spiritual banquet and a mystical wine-bowl, " +
+        "filled with the sweet food of joy, even the virtues of the martyrs. " +
+        "For these stout-hearted ones, from the ends of the earth, " +
+        "offered unto God as a rational sacrifice " +
+        "the varied torments and afflictions of their bodily members " +
+        "and the very prime of their years. " +
+        "Some were beheaded, others were dismembered of their arms " +
+        "and were sundered in every joint. " +
+        "All the Saints became sharers of the Passion of Christ. " +
+        "O Lord, Who didst grant them crowns as a reward for their afflictions, " +
+        "grant that we may live according to their example, since Thou lovest mankind." },
+    litya_both_now: { tone: 5, text: "Thou art the temple and portal, " +
+        "the palace and throne of the King, O most honored Virgin, " +
+        "through whom Christ the Lord, my Redeemer, " +
+        "Who is the Sun of righteousness, " +
+        "hath revealed Himself unto those who sleep in darkness, " +
+        "deigning to enlighten those whom He hath fashioned in His image by His own hand. " +
+        "Wherefore, O all-hymned one, " +
+        "as thou hast acquired a mother's boldness before Him, " +
+        "entreat Him without ceasing, that our souls be saved." },
 
     magnificat_sung: true,
     matins_format: "god_is_the_lord",

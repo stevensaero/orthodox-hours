@@ -953,7 +953,7 @@ function getLiturgicalData(date) {
   } else if (date >= relevantPascha && date <= brightSaturday) {
     season = "brightweek";
     seasonNote = "Bright Week — Paschal Hours order applies";
-  } else if (date > brightSaturday && date < allSaintsSunday) {
+  } else if (date > brightSaturday && date <= allSaintsSunday) {
     season = "pentecostarion";
     seasonNote = "Pentecostarion — Fekula §4A rules apply";
   } else if (date >= nextFridayBeforeMeatfare && date < nextGreatLentStart) {
@@ -1945,6 +1945,7 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
       if (fmt === 'apodosis_pascha') return '§4B11';
       if (fmt === 'ascension')       return '§4B12';
       if (fmt === 'pentecostarion_sunday') return '§4B';
+      if (fmt === 'all_saints_sunday') return '§4B17';
       return '§4A';
     }
     if (!menaionEntry) return '§2A';
@@ -7946,7 +7947,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
-    version: "v0.6.1",
+    version: "v0.6.2",
+    date: "June 2026",
+    summary: "P+56 All Saints — season boundary fix · Litiya encoding · vespers_kontakion struct fix",
+    items: [
+      "fix: All Saints Sunday (P+56) was assigned season='sunday' instead of season='pentecostarion' — pentecostarion season boundary changed from date < allSaintsSunday to date <= allSaintsSunday, so P+56 now correctly routes through the Pentecostarion assembler and pulls troparion/kontakion from pentEntry.",
+      "fix: fekulaSection resolver now returns §4B17 for hours_format='all_saints_sunday' (was falling through to §4A).",
+      "fix: vespers_kontakion: false was incorrectly nested inside troparion_2: {} in the P+56 entry — moved to top level of the entry.",
+      "encoding: P+56 — added alleluia_stichos: null (T8 alleluia has no stichos per 90.pdf), litya_stichera (3 stichera Tone I), litya_glory (Tone V doxasticon), litya_both_now (Tone V theotokion). Source: 90.pdf.",
+    ],
+  },
+  {
     date: "May 2026",
     summary: "P+49 Vespers fully encoded · unified audit registry covering both Menaion and Pentecostarion",
     items: [
