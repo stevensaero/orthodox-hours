@@ -620,6 +620,19 @@ This must exit 0 (no gaps) before committing. If it exits 1, resolve all gaps fi
 A push with skeleton gaps is a protocol violation. The gate uses `FIELD_REGISTRY`
 in `src/lib/audit.js` — the same registry the browser data browser uses.
 
+**Why a Menaion simple rank entry shows "complete" with many fields absent:**
+This is correct, not a bug. `FIELD_REGISTRY` gates each field's `required()` on rank.
+For simple (§2A) entries, aposticha, prokeimenon, alleluia, matins aposticha, and
+beatitudes are absent because the Octoechos/weekly cycle governs those sections at
+runtime — the Menaion does not supply them. `null` is NOT used for these absent-by-rank
+fields; field absence on a simple entry means "Octoechos governs." The `rank` field
+itself carries this information for the assembler. Full rationale: `encoding_rule_v2.md` §5.
+
+**Pentecostarion uses `null` differently:** Pentecostarion entries have uniform
+structure with no `rank` signal. `null` = confirmed absent by a specific rubric
+(e.g. Festal Antiphons replace Beatitudes). This distinguishes confirmed-absent
+from not-yet-encoded. Do not apply this pattern to Menaion entries.
+
 The encoding spec is `encoding_rule_v2.md` in repo root — read it before encoding any date.
 
 Same as Menaion encoding — PDF → KEY FIELDS → .txt record on Drive → PENTECOSTARION entry.

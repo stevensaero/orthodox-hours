@@ -123,6 +123,47 @@ Hours per §2G2. Flag this in the note field — the assembler does not yet impl
 
 ## 5. MENAION SKELETON — ALL RANKS
 
+### Why a simple rank entry can pass the gate with many fields absent
+
+This is correct behavior, not a gap. The `FIELD_REGISTRY` in `src/lib/audit.js`
+gates each field's `required()` condition on rank:
+
+| Field | Required at rank |
+|---|---|
+| `stichera_aposticha`, `aposticha_glory`, `aposticha_both_now` | `doxology` and above |
+| `prokeimenon_text`, `alleluia_verse`, `communion_verse` | any rank with `feast_e` present |
+| `beatitudes_troparia` | `polyeleos` and above |
+| `stichera_matins_aposticha` | `polyeleos` and above (Menaion) |
+| `stichera_lord_i_call` | `six_stichera` and above |
+
+For a `simple` (§2A) entry, the Octoechos and weekly cycle govern aposticha,
+prokeimenon, alleluia, matins aposticha, and beatitudes at runtime. The Menaion
+entry does not supply those fields because it is not the source for them — the
+assembler draws them from the Octoechos by weekday and tone.
+
+**`null` is NOT used for Menaion absent-by-rank fields.** A field that is absent
+because of rank is simply omitted from the entry. This is distinct from:
+- `null` in Pentecostarion: used when a field would normally be present for that
+  entry type but is confirmed absent by a specific rubric (e.g. Festal Antiphons
+  replace Beatitudes on the Apodosis). Pentecostarion entries have uniform structure
+  with no `rank` signal, so `null` is necessary to distinguish confirmed-absent
+  from not-yet-encoded.
+- Menaion entries have `rank`, which already carries the information unambiguously.
+  The assembler checks `rank` before accessing rank-dependent fields. Field absence
+  on a simple rank entry means "Octoechos governs" — it is not an encoding gap.
+
+**A complete simple rank (§2A) entry has:**
+`saint`, `source_file`, `rank`, `fekula_section`, `oca_primary`, `note`,
+`troparion`, `kontakion_ode6`, `has_great_doxology`, `has_polyeleos`, `has_litya`,
+`has_paroemias`, `magnificat_sung`, `matins_format`, `feast_e`, `feast_g`,
+`stichera_lord_i_call` (3 stichera), `stichera_lord_i_call_count`, `stichera_glory`,
+`aposticha_source`, `lic_theotokion`.
+
+If the gate shows a simple rank entry as complete, it is complete.
+If you believe a field is missing that should be present, check the rank first.
+
+---
+
 The skeleton below is filled out for every Menaion date. Fields marked `[RANK]`
 are only required at the specified rank or higher. Fill every field. Write ABSENT,
 NOT IN PDF, or NOT YET ENCODED — never leave blank.
