@@ -230,8 +230,8 @@ function SmallTablesPanel({ tone }) {
 
       <SectionHeader>Resurrectional Troparion</SectionHeader>
       <SmallTableRow
-        label={`Tone ${toneNum}`}
-        value={RESURRECTIONAL_TROPARIA[toneNum]}
+        label={`Tone ${RESURRECTIONAL_TROPARIA[toneNum]?.tone ?? toneNum}`}
+        value={RESURRECTIONAL_TROPARIA[toneNum]?.text ?? RESURRECTIONAL_TROPARIA[toneNum]}
       />
 
       <SectionHeader>Sunday Kontakion</SectionHeader>
@@ -266,8 +266,14 @@ function SmallTablesPanel({ tone }) {
             label={`Tone ${SUNDAY_ALLELUIA[toneNum].tone}`}
             value={SUNDAY_ALLELUIA[toneNum].verse}
           />
-          {SUNDAY_ALLELUIA[toneNum].stichos && (
-            <SmallTableRow label="Stichos" value={SUNDAY_ALLELUIA[toneNum].stichos} />
+          {/* stichoi is an array in the original data; stichos is singular fallback */}
+          {(SUNDAY_ALLELUIA[toneNum].stichoi || SUNDAY_ALLELUIA[toneNum].stichos) && (
+            <SmallTableRow
+              label="Stichoi"
+              value={Array.isArray(SUNDAY_ALLELUIA[toneNum].stichoi)
+                ? SUNDAY_ALLELUIA[toneNum].stichoi.join(' / ')
+                : SUNDAY_ALLELUIA[toneNum].stichos}
+            />
           )}
         </>
       ) : <SmallTableRow label="—" value={null} />}
