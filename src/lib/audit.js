@@ -211,7 +211,8 @@ export const FIELD_REGISTRY = [
       if (type === 'menaion') {
         return ['six_stichera', 'doxology', 'polyeleos', 'vigil'].includes(entry.rank);
       }
-      return entry.menaion_set_aside === true;
+      // Required on ALL Pentecostarion entries
+      return true;
     },
     description: 'LIC stichera count (6 | 8 | 10; null = feast stichera govern on apodosis)',
     // null is valid: apodosis days where feast stichera govern and no count is needed
@@ -304,9 +305,8 @@ export const FIELD_REGISTRY = [
       if (type === 'menaion') {
         return ['doxology', 'polyeleos', 'vigil'].includes(entry.rank);
       }
-      return entry.menaion_set_aside === true ||
-             entry.hours_format === 'apodosis_pentecost' ||
-             entry.hours_format === 'apodosis_ascension';
+      // Required on ALL Pentecostarion entries — every day has a vespers Both now
+      return true;
     },
     description: 'Aposticha Both Now theotokion (tone + text, or null if Octoechos governs)',
     // null is valid: means the invariable Octoechos theotokion governs
@@ -349,12 +349,8 @@ export const FIELD_REGISTRY = [
     field: 'has_polyeleos', category: 'matins', appliesTo: 'both',
     required: (entry, type) => {
       if (type === 'menaion') return ['polyeleos', 'vigil'].includes(entry.rank);
-      // Pentecostarion: required on all Sundays and Great Feasts
-      return entry.menaion_set_aside === true ||
-             (entry.hours_format || '').includes('sunday') ||
-             entry.hours_format === 'all_saints_sunday' ||
-             entry.hours_format === 'pentecost' ||
-             entry.hours_format === 'all_saints_sunday';
+      // Required on ALL Pentecostarion entries
+      return true;
     },
     description: 'Polyeleos sung at Matins (boolean)',
   },

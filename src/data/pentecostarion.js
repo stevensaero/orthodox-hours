@@ -2428,6 +2428,17 @@ const PENTECOSTARION_DATA = {
     feast_e: "Acts 19:1-8",
     feast_g: "John 14:1-11",
     aposticha_source: "pentecostarion",
+    aposticha_glory: { tone: 6, text: "Having beheld Thine ascents on the holy mountains, O Christ, " +
+            "Thou effulgence of the Father's glory, " +
+            "we praise the radiant likeness of thy countenance. " +
+            "We worship Thy passion, we honor Thy Resurrection, " +
+            "and we glorify Thy glorious Ascension. Have mercy on us." },
+    aposticha_both_now: { tone: 6, text: "Having beheld Thine ascents on the holy mountains, O Christ, " +
+            "Thou effulgence of the Father's glory, " +
+            "we praise the radiant likeness of thy countenance. " +
+            "We worship Thy passion, we honor Thy Resurrection, " +
+            "and we glorify Thy glorious Ascension. Have mercy on us." },
+    stichera_lord_i_call_count: 6,  // §4A1: 3 Pentecostarion (Tone I) + 3 Menaion
 
     prokeimenon_tone: 7,
     prokeimenon_text: "Be Thou exalted above the heavens, O God, and Thy glory above all the earth.",
@@ -2567,8 +2578,12 @@ const PENTECOSTARION_DATA = {
             "and, on the other hand, rejoiced at their expectation of the Holy Spirit, " +
             "wherein do Thou make us steadfast, O Savior, and have mercy on us.",
     },
-
-    // ── MATINS APOSTICHA (Saturday Morning) ─────────────────────────────────
+    aposticha_both_now: { tone: 7, text: "Unto the Mount of Olives didst Thou come, Thou Who hast mercy on the race of mankind. " +
+            "And a cloud took Thee up out of the sight of Thy disciples, " +
+            "who, on one hand, trembled because of that which they beheld, " +
+            "and, on the other hand, rejoiced at their expectation of the Holy Spirit, " +
+            "wherein do Thou make us steadfast, O Savior, and have mercy on us." },
+    stichera_lord_i_call_count: 6,  // §4A1: 3 Pentecostarion (Tone IV) + 3 Menaion
     // Ascension stichera Tone II. Spec. Mel.: "O House of Ephratha"
     stichera_matins_aposticha: [
       { tone: 2, verse: null,
