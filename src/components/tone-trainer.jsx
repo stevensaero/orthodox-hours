@@ -4519,7 +4519,7 @@ export default function ToneTrainer() {
           const stripe = chipStripe[role] ?? chipStripe.recite;
           const sol = (isSoprano || isGhostSoprano) ? (SOPRANO_MAP[r.pitches[0]] ?? r.pitches[0]) : r.pitches[0];
 
-          // Ghost soprano: transparent body, solid stripe crown only
+          // Ghost soprano: transparent body, stripe crown, solfège label
           if (isGhostSoprano) {
             return (
               <div key={i} style={{
@@ -4536,11 +4536,16 @@ export default function ToneTrainer() {
                   height: 8, background: stripe,
                   borderRadius: "5px 5px 0 0",
                 }} />
+                <div style={{
+                  position: "absolute", left: 0, right: 0, textAlign: "center",
+                  top: 9, fontSize: 9, color: solColor, fontStyle: "italic",
+                  fontFamily: "Georgia, serif",
+                }}>{sol}</div>
               </div>
             );
           }
 
-          // Ghost tenor: transparent body, solid stripe at bottom — ghosted over bass
+          // Ghost tenor: transparent body, stripe at bottom, solfège label
           if (isGhostTenor) {
             return (
               <div key={i} style={{
@@ -4557,6 +4562,11 @@ export default function ToneTrainer() {
                   height: 8, background: stripe,
                   borderRadius: "0 0 5px 5px",
                 }} />
+                <div style={{
+                  position: "absolute", left: 0, right: 0, textAlign: "center",
+                  bottom: 9, fontSize: 9, color: solColor, fontStyle: "italic",
+                  fontFamily: "Georgia, serif",
+                }}>{sol}</div>
               </div>
             );
           }
@@ -4578,15 +4588,13 @@ export default function ToneTrainer() {
                 height: 8, background: stripe,
                 borderRadius: isDownward ? "0 0 5px 5px" : "5px 5px 0 0",
               }} />
-              {/* Solfège label — hidden for ghost voices (S and T in SATB) */}
-              {!isGhostSoprano && !isGhostTenor && (
-                <div style={{
-                  position: "absolute", left: 0, right: 0, textAlign: "center",
-                  ...(isDownward ? { bottom: 9 } : { top: 9 }),
-                  fontSize: 9, color: solColor, fontStyle: "italic",
-                  fontFamily: "Georgia, serif",
-                }}>{sol}</div>
-              )}
+              {/* Solfège label — always shown so each singer can read their note */}
+              <div style={{
+                position: "absolute", left: 0, right: 0, textAlign: "center",
+                ...(isDownward ? { bottom: 9 } : { top: 9 }),
+                fontSize: 9, color: solColor, fontStyle: "italic",
+                fontFamily: "Georgia, serif",
+              }}>{sol}</div>
             </div>
           );
         };
