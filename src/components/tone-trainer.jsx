@@ -10,11 +10,22 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.20";
+export const TONE_TRAINER_VERSION = "v0.11.21";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.21",
+    date: "June 2026",
+    summary: "arch: per-phrase frequency-based chip heights for bass and tenor",
+    items: [
+      "arch: chipH_bass and chipH_tenor replaced by buildVoiceHeightMap() — collects unique sounding pitches per phrase, sorts by actual sounding frequency, assigns chip heights linearly from H_VOICE_MIN=24px to H_VOICE_MAX=72px.",
+      "arch: chip heights now correctly reflect actual sounding pitch in all cases, including Tone 1 Final Phrase where re/mi octaveDiv overrides place them above la in the bass register.",
+      "arch: BASS_CHIP_CEILING, BASS_MAX_IDX, TENOR_MAX_IDX, BASS_PITCH_ORDER, TENOR_PITCH_ORDER removed — no longer needed.",
+      "arch: Tone 2 chip heights now scale correctly per phrase. Phrases with more unique pitches span the full 24-72px range.",
+    ],
+  },
   {
     version: "v0.11.20",
     date: "June 2026",
@@ -831,49 +842,35 @@ const CHIP_MELISMA_GAP = 1; // tight gap between melisma sub-chips
 // Bass pitch order for chip height (ascending concert pitch with do=Bb)
 // re(C3) < mi(D3) < fa(Eb3) < sol(F3) < la(G3)
 // Bass pitch order — ascending by sounding frequency in the default register.
-// re/mi/fa/sol sit 2 octaves below soprano (div-4); la/ti/do/di sit 1 octave below (div-2).
-// Must cover every pitch any tone's BASS_RULES may emit — add new pitches here
-// before encoding new tone bass rules, or chipH_bass() falls back to index 0.
-const BASS_PITCH_ORDER = { re: 0, mi: 1, fa: 2, sol: 3, la: 4, ti: 5, do: 6, di: 7 };
-const BASS_MAX_IDX = 7;
-// chipH_bass: lower pitch = taller chip (inverted scale, grows downward from text).
-// For pitches overridden to a higher register via phraseRules.octaveDiv, the pitch
-// sounds above its default-register neighbours. We cap those at CHIP_BASE_H so they
-// render as the shortest chips — they are the highest-sounding notes in the phrase.
-// This preserves Tone 2 chip heights exactly (no octaveDiv) while keeping Tone 1
-// Final visually sensible (la = tallest, shifted re/mi = minimum height).
-// BASS_CHIP_CEILING: the inversion ceiling for chip height — kept at the original
-// 4-pitch scale (re=0..la=4) so Tone 2 chip heights are unchanged from baseline.
-// BASS_PITCH_ORDER extends beyond 4 for freq lookup purposes but chip heights
-// only use the first 5 entries (re through la).
-const BASS_CHIP_CEILING = 4;
-const chipH_bass = (sol, phraseRules) => {
-  const globalDiv = BASS_OCTAVE_DIV[sol] ?? 2;
-  const localDiv  = phraseRules?.octaveDiv?.[sol] ?? globalDiv;
-  // Pitch overridden to higher register — sounds above la, render as minimum chip
-  if (localDiv < globalDiv) return CHIP_BASE_H;
-  const idx = BASS_PITCH_ORDER[sol] !== undefined ? BASS_PITCH_ORDER[sol] : 0;
-  const inv = BASS_CHIP_CEILING - idx;
-  return CHIP_BASE_H + Math.max(0, inv) * CHIP_STEP_H;
-};
+// ── BASS/TENOR CHIP HEIGHT — per-phrase frequency sort ───────────────────────
+// Chip heights are computed per phrase from the unique sounding pitches in that
+// phrase, sorted by actual sounding frequency. Lower frequency = taller chip.
+// Fixed range: H_VOICE_MIN (shortest chip) to H_VOICE_MAX (tallest chip), linear.
+// This correctly handles per-phrase octaveDiv overrides (e.g. Tone 1 Final bass)
+// without any index arithmetic or global pitch ordering assumptions.
+const H_VOICE_MIN = 24;   // shortest chip (highest sounding pitch in phrase)
+const H_VOICE_MAX = 72;   // tallest chip  (lowest sounding pitch in phrase)
 
-// ── TENOR PITCH/CHIP ARCHITECTURE ───────────────────────────────────────────
-// Tenor sits one octave below soprano (div-2 throughout). si = raised 6th
-// (harmonic minor, B♮ in D minor context), offset -2 semitones from do.
-// Chip heights use inverted scale identical to bass: lower pitch = taller chip.
-// TENOR_PITCH_ORDER must cover every pitch any TENOR_RULES entry may emit.
-const TENOR_PITCH_ORDER = { la: 0, si: 1, ti: 2, do: 3, di: 4, re: 5, mi: 6, fa: 7, sol: 8 };
-const TENOR_MAX_IDX = 8;
+// TENOR_OCTAVE_DIV: all tenor pitches at div-2 (one octave below soprano).
+// si = raised 6th (B♮ in D minor), offset -2 semitones from do.
 const TENOR_OCTAVE_DIV = {
   la: 2, si: 2, ti: 2, do: 2, di: 2, re: 2, mi: 2, fa: 2, sol: 2,
 };
-const chipH_tenor = (sol, phraseRules) => {
-  let idx = TENOR_PITCH_ORDER[sol] !== undefined ? TENOR_PITCH_ORDER[sol] : 0;
-  const globalDiv = TENOR_OCTAVE_DIV[sol] ?? 2;
-  const localDiv  = phraseRules?.octaveDiv?.[sol] ?? globalDiv;
-  if (localDiv < globalDiv) idx += (TENOR_MAX_IDX + 1);
-  const inv = (TENOR_MAX_IDX * 2 + 1) - idx;
-  return CHIP_BASE_H + Math.max(0, inv) * CHIP_STEP_H;
+
+// buildVoiceHeightMap: given the unique sounding pitches in a phrase and a
+// frequency function, returns { pitch → chipHeight } sorted by frequency.
+// Lowest frequency → H_VOICE_MAX; highest frequency → H_VOICE_MIN.
+const buildVoiceHeightMap = (pitches, hzFn, phraseRules) => {
+  const unique = [...new Set(pitches)];
+  const sorted = unique.sort((a, b) => hzFn(a, phraseRules) - hzFn(b, phraseRules));
+  const n = sorted.length;
+  const map = {};
+  sorted.forEach((p, i) => {
+    const inv = (n - 1) - i;  // 0 = highest pitch, n-1 = lowest pitch
+    const t = n > 1 ? inv / (n - 1) : 0;
+    map[p] = Math.round(H_VOICE_MIN + t * (H_VOICE_MAX - H_VOICE_MIN));
+  });
+  return map;
 };
 
 // Tones with score-verified tenor rules. Tenor is suppressed for all other tones.
@@ -4335,6 +4332,12 @@ export default function ToneTrainer() {
             return { ...r, pitches: [bassPitch] };
           });
         })();
+        // Tenor height map — same approach as bass.
+        const tenorHeightMap = tenorRolesWD
+          ? buildVoiceHeightMap(tenorRolesWD.map(r => r.pitches[0]), freq_tenor,
+              TENOR_RULES[activeTone]?.[line.phrase])
+          : null;
+
         const isFin = line.phrase === "Final";
         const sopranoAvailable = SOPRANO_TONES.has(activeTone);
         const tenorAvailable   = TENOR_TONES.has(activeTone);
@@ -4348,6 +4351,13 @@ export default function ToneTrainer() {
         // Soprano rolesWD — same structure as alto, alto pitches retained.
         // chipH_soprano(altoPitch) and freq_soprano(altoPitch) both expect alto pitch.
         const sopranoRolesWD = (showSoprano || showSopranoTab) ? rolesWD : null;
+
+        // Bass height map — per-phrase frequency sort, H_VOICE_MIN to H_VOICE_MAX.
+        // Built from unique sounding bass pitches in this phrase.
+        const bassHeightMap = bassRolesWD
+          ? buildVoiceHeightMap(bassRolesWD.map(r => r.pitches[0]), freq_bass,
+              BASS_RULES[activeTone]?.[line.phrase])
+          : null;
 
         // Tenor rolesWD — derived from rolesWD via TENOR_RULES, mirrors bassRolesWD pattern.
         const tenorRolesWD = (() => {
@@ -4388,8 +4398,8 @@ export default function ToneTrainer() {
 
         const renderChip = (r, i, isBass, isSoprano = false, isGhostSoprano = false, isTenor = false, isGhostTenor = false) => {
           const role = r.role === "preslur" ? "prep" : r.role;
-          const h = isBass ? chipH_bass(r.pitches[0], r.phraseRules)
-                  : (isTenor || isGhostTenor) ? chipH_tenor(r.pitches[0], r.phraseRules)
+          const h = isBass ? (bassHeightMap?.[r.pitches[0]] ?? H_VOICE_MIN)
+                  : (isTenor || isGhostTenor) ? (tenorHeightMap?.[r.pitches[0]] ?? H_VOICE_MIN)
                   : (isSoprano || isGhostSoprano) ? chipH_soprano(r.pitches[0])
                   : chipH(r.pitches[0]);
           const w = chipW(r);
@@ -4692,8 +4702,8 @@ export default function ToneTrainer() {
 
               // Ghost tenor over bass: container height = max chip height per syllable
               const maxH = Math.max(
-                ...groupedBass.flatMap(grp => grp.entries.map(({r}) => chipH_bass(r.pitches[0], r.phraseRules))),
-                ...groupedTenorGhost.flatMap(grp => grp.entries.map(({r}) => chipH_tenor(r.pitches[0], r.phraseRules)))
+                ...groupedBass.flatMap(grp => grp.entries.map(({r}) => bassHeightMap?.[r.pitches[0]] ?? H_VOICE_MIN)),
+                ...groupedTenorGhost.flatMap(grp => grp.entries.map(({r}) => tenorHeightMap?.[r.pitches[0]] ?? H_VOICE_MIN))
               );
               const tenorGhostRow = (
                 <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-start",
