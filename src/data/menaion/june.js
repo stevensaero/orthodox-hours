@@ -1941,6 +1941,73 @@ const JUNE_MENAION = {
     rank: "six_stichera",
     fekula_section: "2G1",            // registry + data browser — §2G1 afterfeast with saint
     fekula_section_override: "2G1",   // assembler override path (hours-tool.jsx checks this first)
+    has_great_doxology: false,   // §2G1 afterfeast weekday — Small Doxology
+    has_polyeleos: false,
+    has_litya: false,            // 06-25.pdf: no Litiya section — §2G1 afterfeast, not vigil
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    stichera_lord_i_call_count: 6,  // 3 Forerunner T4 + 3 Febronia T4 (06-25.pdf)
+    stichera_lord_i_call: [
+      { tone: 4, saint: "Forerunner",
+        text: "When John was born, he loosed the muteness of Zacharias, for it was not fitting for " +
+              "the father to be silent when the voice of the Word arrived. But since, when the priest " +
+              "had not believed in the beginning, his tongue was bound, so, when John appeared, he " +
+              "set his father free. To him was announced and born the voice of the Word, the forerunner " +
+              "of the Light, praying for our souls." },
+      { tone: 4, saint: "Forerunner",
+        text: "Today the voice of the Word looseth the voice of his father, which was restrained " +
+              "because of his unbelief, and showeth forth fruitfulness to the Church, loosing the " +
+              "bonds of his mother's barrenness. The lamp of the Light cometh forth; the splendor " +
+              "of the Sun of righteousness announceth His coming, for the edification of all and " +
+              "the salvation of our souls." },
+      { tone: 4, saint: "Forerunner",
+        text: "When the Word of God wished to be born of the Virgin, His angel, the highest of the " +
+              "prophets and greatest born of women, issued forth from elderly loins; for it was meet " +
+              "that he be the most glorious beginning of things divine: both an offspring produced " +
+              "past the age of fertility, and the conception accomplished without seed. " +
+              "O Thou Who workest miracles for our salvation, glory be to Thee!" },
+      { tone: 4, saint: "Febronia",
+        text: "Thou didst endure a twofold suffering in thy contest, O all-praised Febronia, " +
+              "mingling the blood of martyrdom with the sweat of thine ascetic endeavor; " +
+              "wherefore, the Benefactor hath given thee a twofold crown. And thou hast entered " +
+              "in unto Him, splendidly adorned, as an all-immaculate virgin and an invincible martyr." },
+      { tone: 4, saint: "Febronia",
+        text: "The divine beauties of thy soul came together with the comeliness of thy body, " +
+              "for thou dost shine forth like a white lily in the habitations of the venerable, " +
+              "empurpled by the streams of thy blood, O all-immaculate bride. Wherefore, the comely " +
+              "Bridegroom of heaven and the imperishable bridal-chamber have received thee as a " +
+              "virgin and martyr." },
+      { tone: 4, saint: "Febronia",
+        text: "O all-praised Febronia, the angel of deliverance hath come nigh to thee; " +
+              "for from childhood thou wast revealed to fear the Lord, and bringing thyself to the " +
+              "Almighty as a pure and cherished offering, thou didst trample underfoot the foolishness " +
+              "of Selenus, earnestly hastening to Christ, thy Bridegroom." },
+    ],
+    stichera_glory: { tone: 8,
+      text: "Behold Elizabeth, who said to the Virgin Mary: \"Whence is this to me, O Mother of my Lord? " +
+            "Thou bearest the King, I the warrior; thou the Law-giver, I the upholder of the law; " +
+            "thou the Word, I the voice which proclaimeth the kingdom of heaven!\"",
+      note: "PDF: 'Glory...Both now..., in Tone VIII' — single doxasticon for both Glory and Both now",
+    },
+    // Both now: same text as Glory (PDF prints 'Glory...Both now...' as one entry)
+    aposticha_source: "octoechos",  // PDF: "the Stichera from the Oktoechos"
+    stichera_aposticha: [],  // Octoechos governs; no dedicated Menaion aposticha stichera
+    aposticha_glory: { tone: 6,
+      text: "Elizabeth conceived the forerunner of grace, and the Virgin conceived the Lord of glory. " +
+            "Both mothers kissed each other, and the babe leapt up, for within her womb the servant " +
+            "praised the Master. And the mother of the forerunner marveled and cried aloud: " +
+            "\"Whence is this to me, that the Mother of my Lord should come to me? " +
+            "May He Who hath great mercy save a despairing people!\"",
+    },
+    aposticha_both_now: { tone: 6,
+      text: "Elizabeth conceived the forerunner of grace, and the Virgin conceived the Lord of glory. " +
+            "Both mothers kissed each other, and the babe leapt up, for within her womb the servant " +
+            "praised the Master. And the mother of the forerunner marveled and cried aloud: " +
+            "\"Whence is this to me, that the Mother of my Lord should come to me? " +
+            "May He Who hath great mercy save a despairing people!\"",
+      note: "PDF: 'Glory...Both now...' — Both now = Glory text",
+    },
     note: "Afterfeast of the Nativity of John the Forerunner. Per Fekula §2G1: troparion " +
           "of the feast at the Hours, Glory... of the saint; kontakion of the feast only " +
           "at all Hours (Febronia is not Doxology rank). Hours assembly out of ordinary " +
