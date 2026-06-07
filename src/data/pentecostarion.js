@@ -4594,7 +4594,18 @@ const PENTECOSTARION_DATA = {
       { tone: 1, verse: "Cast me not away from Thy presence, and take not Thy Holy Spirit from me.", text: "The Holy Spirit is God, equal in sovereignty and co-enthroned with the Father, and manifest through the Son, most supremely pure light shining forth from the Light, of the beginningless perfect Father, and proceeding from the Son. Unto Him do we cry aloud: O Life-giving Comforter, grant peace to Thy world." },
     ],
     aposticha_glory: { tone: 8, text: "When Thou didst send down Thy Spirit, O Lord, while the apostles were seated, the children of the Jews beheld and were astonished with amazement; for they heard them speaking in other, foreign tongues, according as the Spirit bestowed on them; for though they were unlearned, they were made wise; and in catching and bringing the nations to the Faith, they preached of things divine. Wherefore, we also cry to Thee: O Thou Who wast seen on earth and didst save us from error, O Lord, glory be to Thee." },
-
+    aposticha_both_now: { tone: 8, text: "When Thou didst send down Thy Spirit, O Lord, while the apostles were seated, the children of the Jews beheld and were astonished with amazement; for they heard them speaking in other, foreign tongues, according as the Spirit bestowed on them; for though they were unlearned, they were made wise; and in catching and bringing the nations to the Faith, they preached of things divine. Wherefore, we also cry to Thee: O Thou Who wast seen on earth and didst save us from error, O Lord, glory be to Thee." },
+    stichera_matins_aposticha: null,       // NOT YET ENCODED — source: 84.pdf Matins Aposticha
+    stichera_matins_aposticha_glory: null, // NOT YET ENCODED — source: 84.pdf
+    magnificat_sung: false,  // PDF rubric: "No Magnificat" (84.pdf)
+    has_litya: false,
+    has_paroemias: false,
+    has_polyeleos: false,
+    oca_primary: true,
+    note: "File covers Wednesday evening Small Vespers (P+52 eve) + Thursday Matins/Liturgy (P+53). " +
+          "Pentecost afterfeast Day 4. Magnificat NOT sung per 84.pdf rubric. " +
+          "zadostoinik continues (Irmos of Ode IX Canon 2 of Pentecost). " +
+          "OCA and St. Sergius agree.",
   },
 
   // ── P+54 — Friday of the Eighth Week — Pentecost Afterfeast, Day 5 ──────────
@@ -4657,7 +4668,18 @@ const PENTECOSTARION_DATA = {
       { tone: 1, verse: "Cast me not away from Thy presence, and take not Thy Holy Spirit from me.", text: "As Thou didst consecrate all the fiery bodiless ones, so with the Spirit's fire do Thou consecrate all who in material bodies now serve Thee, O God, Who ineffably assumed flesh. O how abundantly praised art Thou, and how wondrous art Thou in Thy works O Lover of mankind!" },
     ],
     aposticha_glory: { tone: 7, text: "The Comforter, having come from the Father through Christ God, hath come unto us on earth today, therefore with faith we worship the Holy Spirit." },
-
+    aposticha_both_now: { tone: 7, text: "The Comforter, having come from the Father through Christ God, hath come unto us on earth today, therefore with faith we worship the Holy Spirit." },
+    stichera_matins_aposticha: null,       // NOT YET ENCODED — source: 85.pdf Matins Aposticha
+    stichera_matins_aposticha_glory: null, // NOT YET ENCODED — source: 85.pdf
+    magnificat_sung: false,  // PDF rubric: "No Magnificat" (85.pdf)
+    has_litya: false,
+    has_paroemias: false,
+    has_polyeleos: false,
+    oca_primary: true,
+    note: "File covers Thursday evening Small Vespers (P+53 eve) + Friday Matins/Liturgy (P+54). " +
+          "Pentecost afterfeast Day 5. Magnificat NOT sung per 85.pdf rubric. " +
+          "zadostoinik continues (Irmos of Ode IX Canon 2 of Pentecost). " +
+          "OCA and St. Sergius agree.",
   },
 
   // ── P+55 — Saturday of the Eighth Week — Apodosis of Pentecost ──────────────
@@ -4786,6 +4808,58 @@ const PENTECOSTARION_DATA = {
     aposticha_source: "pentecostarion",
     aposticha_note: "Apodosis: all aposticha texts same as Feast of Pentecost (P+49), per 86.pdf rubric. Liturgy readings differ — see feast_e/feast_g.",
 
+    beatitudes_source: "8 troparia from Ode IX of both Festal Canons (86.pdf AT LITURGY)",
+    beatitudes_troparia: [
+      // Canon 1 Ode IX (Tone VII) — 4 troparia
+      { source: "pentecost_canon1_ode9",
+        text: "Borne in gladness upon a chariot of flaming fire, " +
+              "the fire-breathing zealot of old typified that radiant breath " +
+              "which now shone forth from above upon the apostles, " +
+              "and these, illumined, made known the Trinity to all." },
+      { source: "pentecost_canon1_ode9", label: "repeat",
+        text: "Borne in gladness upon a chariot of flaming fire, " +
+              "the fire-breathing zealot of old typified that radiant breath " +
+              "which now shone forth from above upon the apostles, " +
+              "and these, illumined, made known the Trinity to all." },
+      { source: "pentecost_canon1_ode9",
+        text: "Strange things were heard from the disciples, " +
+              "not in accordance with the law of their nature, " +
+              "for while only one voice spake, by the grace of the Spirit " +
+              "various peoples, tribes, and nations heard the great things of God, " +
+              "learning the knowledge of the Trinity." },
+      // Canon 2 Ode IX (Tone IV) — 4 troparia
+      { source: "pentecost_canon2_ode9",
+        text: "It is proper to hymn the maiden who giveth life; " +
+              "for she alone carried in her womb the Word " +
+              "that came to heal the diseased nature of man; " +
+              "and Who seated now on the right hand of the Father, " +
+              "hath sent down the grace of the Spirit." },
+      { source: "pentecost_canon2_ode9", label: "repeat",
+        text: "It is proper to hymn the maiden who giveth life; " +
+              "for she alone carried in her womb the Word " +
+              "that came to heal the diseased nature of man; " +
+              "and Who seated now on the right hand of the Father, " +
+              "hath sent down the grace of the Spirit." },
+      { source: "pentecost_canon2_ode9",
+        text: "Let all of us, on whom the divinely-poured grace hath breathed, " +
+              "shining, flashing, changed with a strange and most magnificent transformation, " +
+              "having come to know the Essence equal in might, indivisible, and wise, " +
+              "and thrice radiant, render glory." },
+      { source: "glory",
+        text: "Two canons — Glory and Both now from Canon 2 Ode IX per 86.pdf pattern." },
+      { source: "both_now", label: "Both now",
+        text: "Two canons — Glory and Both now from Canon 2 Ode IX per 86.pdf pattern." },
+    ],
+    has_paroemias: false,  // Apodosis — no OT paroemias (feast rubric: no Polyeleos)
+    has_polyeleos: false,  // Apodosis: "except for the Readings, the Polyeleos, and the Antiphons" — Polyeleos excluded
+    oca_primary: true,
+    note: "Apodosis (Leavetaking) of Pentecost. 86.pdf ruling: 'except for the Readings, the Polyeleos, " +
+          "and the Antiphons, we chant everything as set forth on the Feast of Pentecost.' " +
+          "Exception: Beatitudes replaced by 8 troparia from Ode IX of both Festal Canons. " +
+          "Polyeleos explicitly excluded. No Litiya (apodosis, not feast). " +
+          "Magnificat NOT sung (no Ode IX refrain — zadostoinik governs). " +
+          "Liturgy readings distinct from feast: Romans 1:7-12, Matthew 5:42-48. " +
+          "OCA and St. Sergius in full agreement on all texts.",
   },
 
   // ── P+56 — First Sunday After Pentecost — All Saints ────────────────────────
