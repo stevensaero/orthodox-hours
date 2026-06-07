@@ -4525,11 +4525,11 @@ export default function ToneTrainer() {
               <div key={i} style={{
                 position: "relative", display: "inline-block", flexShrink: 0,
                 width: w, height: h,
-                background: "transparent",
-                border: `1px solid ${chipBorderColor[role] ?? chipBorderColor.recite}`,
+                background: isActive ? "rgba(40,58,92,.18)" : "transparent",
+                border: isActive ? "2px solid #7a2418" : `1px solid ${chipBorderColor[role] ?? chipBorderColor.recite}`,
                 borderRadius: 6,
                 overflow: "hidden",
-                opacity: isActive ? 1 : 0.85,
+                opacity: isActive ? 1 : 0.5,
               }}>
                 <div style={{
                   position: "absolute", left: 0, right: 0, top: 0,
@@ -4551,11 +4551,11 @@ export default function ToneTrainer() {
               <div key={i} style={{
                 position: "relative", display: "inline-block", flexShrink: 0,
                 width: w, height: h,
-                background: "transparent",
-                border: `1px solid ${chipBorderColor[role] ?? chipBorderColor.recite}`,
+                background: isActive ? "rgba(122,36,24,.18)" : "transparent",
+                border: isActive ? "2px solid #7a2418" : `1px solid ${chipBorderColor[role] ?? chipBorderColor.recite}`,
                 borderRadius: 6,
                 overflow: "hidden",
-                opacity: isActive ? 1 : 0.85,
+                opacity: isActive ? 1 : 0.5,
               }}>
                 <div style={{
                   position: "absolute", left: 0, right: 0, bottom: 0,
