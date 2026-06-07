@@ -92,11 +92,13 @@ export const FIELD_REGISTRY = [
   {
     field: 'troparion', category: 'hours', appliesTo: 'both',
     required: () => true,
-    description: 'Primary troparion (tone + text)',
-    check: (entry) => isPresent(entry, 'troparion') &&
-      (typeof entry.troparion === 'object'
-        ? !!(entry.troparion.text)
-        : typeof entry.troparion === 'string'),
+    description: 'Primary troparion (tone + text, or array of troparia)',
+    check: (entry) => {
+      if (!('troparion' in entry) || entry.troparion === null || entry.troparion === undefined) return false;
+      if (Array.isArray(entry.troparion)) return entry.troparion.length > 0;
+      if (typeof entry.troparion === 'object') return !!(entry.troparion.text);
+      return typeof entry.troparion === 'string';
+    },
   },
   {
     field: 'kontakion_ode6', category: 'hours', appliesTo: 'menaion_only',

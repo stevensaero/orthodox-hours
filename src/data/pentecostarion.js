@@ -129,6 +129,33 @@ const PENTECOSTARION_DATA = {
           "Prokeimenon: Monday Tone IV from weekly table. " +
           "Christ is risen replaces usual opening throughout Bright/Myrrhbearers weeks.",
 
+    aposticha_both_now: { tone: 2, text: "Why mingle ye tears with the myrrh-oils, O ye women disciples? " +
+            "The stone hath been rolled away, the sepulcher hath been emptied. " +
+            "Behold corruption hath been trodden under by Life, " +
+            "the seals clearly bearing witness, the guards of the disobedient ones are fast asleep. " +
+            "Mortal nature hath been saved by the flesh of God, Hades is lamenting. " +
+            "Hasten ye with joy, and say unto the apostles: " +
+            "Christ, the Firstborn of the dead, Who caused death to die, " +
+            "goeth before you into Galilee." },
+
+    oca_primary: true,
+
+    vespers_prokeimenon: {
+      tone: 4,
+      text: "The Lord will hearken unto me when I cry unto Him.",
+      verses: ["When I called upon Thee, O God of my righteousness, Thou didst hearken unto me."],
+      type: "weekday_ordinary",
+      note: "Monday evening prokeimenon — Tone IV (32.pdf)",
+    },
+
+    prokeimenon_tone: 2,
+    prokeimenon_text: "The Lord is my strength and my song, and He is become my salvation.",
+    prokeimenon_stichos: "With chastisement hath the Lord chastened me, but He hath not given me over unto death.",
+    alleluia_tone: 2,
+    alleluia_verse: "The Lord hear thee in the day of affliction; the Name of the God of Jacob defend thee.",
+    alleluia_stichos: "O Lord, save the king, and hearken unto us in the day when we call upon Thee.",
+    communion_verse: "Praise the Lord from the heavens, praise Him in the highest.",
+
     // ── AT TYPICA: BEATITUDES ─────────────────────────────────────────────
     // Source: 32.pdf TUESDAY AT LITURGY — "For the Beatitudes, 6 verses from Ode IV of the Canon."
     // When combined with a §2E/§2F Menaion saint (e.g. 05-21), the split is:
@@ -633,6 +660,18 @@ const PENTECOSTARION_DATA = {
               "and the salvation of our souls!",
       },
     ],
+    litya_glory: { tone: 4, text: "The blind man, accounting all his life as though it were night, " +
+            "cried unto Thee, O Lord: Open mine eyes, O our Savior, " +
+            "Thou Son of David, that together with all mankind, " +
+            "I also may praise Thy power." },
+    litya_both_now: { tone: 4, text: "Mercifully regard the supplications of thy servants, " +
+            "O all-immaculate one, quelling the cruel uprisings of the demons against us, " +
+            "delivering us from every sorrow; for thee alone do we have as a steadfast and sure confirmation, " +
+            "and having acquired thine intercession; let not us who call upon thee be put to shame, " +
+            "O Sovereign Lady. Hasten thou to answer the entreaties of those who cry out to thee with faith: " +
+            "Rejoice, thou help, joy and protection of all, and the salvation of our souls!" },
+    has_polyeleos: false,  // Sunday of Blind Man — Evlogitaria sung; no Polyeleos
+    oca_primary: true,
 
     has_paroemias: false,
 
