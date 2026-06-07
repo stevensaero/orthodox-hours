@@ -1562,3 +1562,24 @@ to their actual pitch difference — mirroring the bass/tenor relationship.
 (116.5Hz × 2 = 233Hz) at ~13Hz. A -100 cent detune → 207.7Hz pushes the
 beat rate to ~25Hz (above perceptual threshold). Scoped to `sol === "si" &&
 phraseRules?.octaveDiv?.["si"] === 1` — only fires for Tone 1 Final Phrase.
+
+---
+
+## Responsive layout — portrait tablet wrap bug (noted, not yet fixed)
+
+**Symptom:** On a narrow viewport (tablet portrait), chip cards use `flexWrap: "wrap"`
+which causes mid-phrase wrapping. The three rows (soprano/alto chips above text,
+text label row, bass/tenor chips below text) wrap independently. The second row of
+chips wraps to a new line with no reference text above it — singers lose their
+syllable anchoring.
+
+**Root cause:** The three rows are separate flex containers. When they wrap, they
+do so independently rather than as a unit per syllable.
+
+**Correct fix:** Restructure the render so each syllable is a single vertical
+column (soprano chip + text label + bass chip stacked), and the columns wrap
+together. This way a wrapped syllable always carries its full context.
+
+**Priority:** Medium — affects tablet portrait use. Desktop and landscape unaffected.
+Do not attempt without a full render restructure plan. This is a non-trivial
+architectural change to the chip render loop.
