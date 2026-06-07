@@ -1149,6 +1149,27 @@ function presetToLines(toneNum) {
   }));
 }
 
+// Reconstruct plain bracketed text from a preset so the text field shows
+// the example and the director pointing action runs on it in truth mode.
+// Each word's accented syllable is wrapped in [brackets] per the director format.
+// Words with no accent are output as plain display text.
+// Phrase lines are joined with newlines.
+function presetToText(toneNum) {
+  const preset = PRESETS[toneNum] || PRESETS[1];
+  return preset.map(([ph, ws]) => {
+    return ws.map(([display, sylls]) => {
+      const accentIdx = sylls.findIndex(([, a]) => a);
+      if (accentIdx < 0) return display;
+      // Find the accented syllable text within the display string and bracket it.
+      const accentText = sylls[accentIdx][0];
+      // Case-insensitive search within display to preserve punctuation.
+      const idx = display.toLowerCase().indexOf(accentText.toLowerCase());
+      if (idx < 0) return display;
+      return display.slice(0, idx) + "[" + display.slice(idx, idx + accentText.length) + "]" + display.slice(idx + accentText.length);
+    }).join(" ");
+  }).join("\n");
+}
+
 // ── DOCX INGEST (client-side, via JSZip) ───────────────────────────────────────
 // A .docx is a ZIP; word/document.xml holds the text. Each run (<w:r>) carries
 // its own run-properties (<w:rPr>), where <w:u> marks underline. OCA service
@@ -3526,13 +3547,16 @@ export default function ToneTrainer() {
     }));
   };
 
-  const analyze = () => {
-    if (!text.trim()) { setLines([]); return; }
-    const { hasBrackets } = parseBracketedText(text);
+  // analyzeText(txt) — shared pointing logic used by both the Point button
+  // and the try example button. Takes text explicitly so it works regardless
+  // of React state update timing (setText is async; this is synchronous).
+  const analyzeText = (txt) => {
+    if (!txt.trim()) { setLines([]); return; }
+    const { hasBrackets } = parseBracketedText(txt);
     const activeRot = ROT_DEFS[activeTone] || ROT_DEFS[1];
     if (hasBrackets) {
       // TRUTH MODE: brackets are authoritative over the lexicon.
-      const tLines = parseTruthLines(text, lexicon, activeRot);
+      const tLines = parseTruthLines(txt, lexicon, activeRot);
       if (!tLines.length) { setLines([]); return; }
       const mLines = autoEncodeLines(tLines, lexicon, PH);
       const cmp = buildComparison(tLines, mLines, PH, activeTone);
@@ -3540,21 +3564,18 @@ export default function ToneTrainer() {
       setMachineLines(mLines);
       setCompareData(cmp);
       setHasTruth(true);
-      // Keep compareMode open if it was already open — user may be re-pointing
-      // with edits while watching the A/B harness. Only close it on first point.
       if (!compareMode) setCompareMode(false);
       setSingView("director");
       setSingWhich("truth");
     } else {
       // AUTO MODE: syllabify via lexicon, then apply phrase-structural accent engine.
-      const raw = text.split("\n").map((s) => s.trim()).filter(Boolean);
+      const raw = txt.split("\n").map((s) => s.trim()).filter(Boolean);
       const next = raw.map((ln, i) => {
         const phrase = phraseForLine(i, raw.length, activeRot);
         const rawWords = ln.split(/\s+/)
-          .filter((w) => /[A-Za-z]/.test(w))   // skip pure-punctuation tokens (commas, etc.)
+          .filter((w) => /[A-Za-z]/.test(w))
           .map((w) => wordFromDisplay(w, lexicon))
-          .filter(Boolean);                      // drop null returns (whole-punctuation tokens)
-        // Apply phrase-structural engine: anchor + intonation only, not all word stress.
+          .filter(Boolean);
         const words = autoAccentLine(rawWords, phrase);
         return { phrase, words };
       });
@@ -3566,6 +3587,8 @@ export default function ToneTrainer() {
       setSingView("director");
     }
   };
+
+  const analyze = () => analyzeText(text);
 
   // ── docx ingest handlers ──────────────────────────────────────────────────
   const onDocxFile = async (file) => {
@@ -3993,13 +4016,11 @@ export default function ToneTrainer() {
         {PRESETS[activeTone] && (
           <button
             onClick={() => {
-              const pLines = presetToLines(activeTone);
-              setLines(pLines);
-              setHasTruth(false);
-              setCompareData(null);
-              setMachineLines(null);
-              setCompareMode(false);
-              setText("");
+              // Populate text field with hand-pointed bracketed text, then
+              // run the same analyzeText path as the Point button uses.
+              const exText = presetToText(activeTone);
+              setText(exText);
+              analyzeText(exText);
               setTimeout(() => {
                 if (pointerRef.current) pointerRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
               }, 60);
