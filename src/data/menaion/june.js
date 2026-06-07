@@ -1039,8 +1039,16 @@ const JUNE_MENAION = {
       note: "OCA also lists Ven. Tikhon of Kaluga on June 16 (Polyeleos, 06-16A.pdf — OCA secondary). " +
             "§2A confirmed — 3 stichera; PDF has no AT LITURGY Epistle/Gospel section. " +
             "OCA troparion and kontakion (both Tone 3) corrected from oca.org — differ from St. Sergius.",
-      feast_e: "absent — §2A, readings from Oktoechos",
-      feast_g: "absent — §2A, readings from Oktoechos",
+      fekula_section: "2A",
+      has_great_doxology: false,
+      has_polyeleos: false,
+      has_litya: false,
+      has_paroemias: false,
+      magnificat_sung: false,
+      matins_format: "god_is_the_lord",
+      aposticha_source: "octoechos",
+      feast_e: null,  // §2A — no proper readings
+      feast_g: null,
       troparion: {
         tone: 3,
         text: "God called you to the sacred priesthood " +
@@ -1085,6 +1093,60 @@ const JUNE_MENAION = {
       matins_gospel: "Matthew 11:27-30 (§43)",
       has_litya: true,
       has_polyeleos: true,
+      fekula_section: "2E",
+      has_great_doxology: true,
+      has_polyeleos: true,
+      has_litya: true,
+      has_paroemias: true,  // 3 OT readings at Great Vespers (06-16A.pdf)
+      magnificat_sung: false,
+      matins_format: "god_is_the_lord",
+      stichera_lord_i_call_count: 8,  // 6 T6 (first 2 repeated per PDF) + no Pent merge (06-16A.pdf)
+      stichera_lord_i_call: [
+        { tone: 6, text: "Thou didst put aside all earthly things, and, setting thy mind on heavenly things, desired to follow after Christ alone, O our venerable father Tikhon. Wherefore, seeking to live in stillness, thou didst yearn for the wilderness; and struggling therein, didst attain to an angelic life. Therefore, as thou hast received from God the grace to heal divers ailments, O venerable one, entreat Him, that our souls find mercy." },
+        { tone: 6, text: "Thou didst set aside the tumults of the life of this world, O venerable one, and, arming thyself with fasting and prayer, didst endure many temptations, laying the foundations of the virtues; and didst thereby reach the heights of dispassion, and with humility didst bring the exalted state of thy mind unto God. And having received from Him the grace to heal divers ailments, O our blessed and venerable father Tikhon, pray to Him on behalf of our souls." },
+        { tone: 6, text: "Thou didst forsake thy homeland and all things, and, receiving the monastic habit in thine utter humility, thou didst make thy dwelling in the wilderness, wherein thou didst build a temple unto the divine Transfiguration and didst assemble a multitude of disciples, struggling in godly manner by fasting and abstinence; wherefore, God hath bestowed upon thee the gift of healing divers ailments. Unto Him do thou pray, O our venerable father Tikhon, that our souls be saved." },
+        { tone: 6, text: "The city of Kaluga, saved by God, is filled with divine joy and spiritual gladness on the radiant day of thy commemoration, O father Tikhon; and we, thy spiritual children, assembling with joy, celebrate with splendor, sending up divine glory unto God Who hath glorified thee. Unto Him do thou pray, O our venerable father, that He save our souls." },
+        { tone: 6, text: "Thou hast been revealed unto us, O our venerable father Tikhon, as a great beacon enlightening the land of Russia, with the beams of thine excellent miracles. For, lo! thou dost impart healings in abundance unto those who approach thy healing tomb with faith and celebrate with love. Entreat Christ God, that He grant forgiveness of offenses and great mercy to our souls." },
+        { tone: 6, text: "O divinely blessed and venerable father Tikhon, for thy strict life thou hast been deemed worthy to receive the divinely bestowed gift of gracious cures as the reward of thy labors. For, lo! those who approach thy healing tomb with faith receive healing. Wherefore, as thou hast boldness before the Lord, beseech Him to send down oneness of mind upon the Churches, health and steadfastness in the Faith to our hierarchs, and great mercy to our souls." },
+      ],
+      stichera_glory: { tone: 6,
+        text: "Come, O ye faithful of the Russian Orthodox Church, and standing round about the most precious shrine of our holy father Tikhon today, let us piously praise him, and, chanting joyfully, with love let us offer unto him the chanting of psalms, and, splendidly singing most festive hymns, let us say thus: Rejoice, most radiant beacon of the company of monastics! Rejoice, healer of the sick! Rejoice, fervent helper! Rejoice, confirmation and power of those who honor thee with faith! Rejoice, boast and defense of the city of Kaluga! O Tikhon our father, entreat Christ God on behalf of our nation. Grant it victory over its enemies. And leave us not orphaned, but abide with us, thy children, and pray for us to the Lord, that He save our souls.",
+      },
+      // Both now: Dogmatic Theotokion T6 — "Who doth not call thee blessed..." (06-16A.pdf)
+      litya_stichera: [
+        { tone: 2, text: "Come, O flock beloved of God, O company of monastics, and with the ranks of the Christian multitude who love the feasts of the Church, the people of the city of Kaluga beloved of God, let us praise the lover of Christ today, the dweller in the wilderness, the all-wise guide of monks, the boast of ascetics; and let us offer hymns of praise unto him, saying: Rejoice, thou who art full of divine zeal! Rejoice, for, struggling here in ascetic labors, thou didst manfully vanquish the enemy! Rejoice, for this God hath given thee the grace of healings! Him do thou entreat, O our venerable father Tikhon, that He save our souls." },
+        { tone: 2, text: "Thou didst enter the calm and tranquil harbor of stillness, where thou didst abide in silence with God alone; and thou didst lead an angelic life, adorning thyself well with ascetic labors, whereby thou didst gain the sight of the eternal light of Christ God. Him do thou unceasingly entreat, that from all evils He deliver us who celebrate thy most honored dormition, and that He save our souls." },
+        { tone: 2, text: "Having forsaken all earthly things, thou didst furnish thy mind with wings to soar aloft unto the things of heaven; and living all the days of thy life in tears and sighing, thou didst desire to behold noetic beauty. Wherefore, thou didst pass through each of the virtues and hast attained unto the heavenly abodes, where shineth the never-waning light of Christ our God. Unto Him do thou unceasingly pray, O our venerable father Tikhon, that our souls be saved." },
+      ],
+      litya_glory: { tone: 5,
+        text: "Rejoice and be glad in the Lord, O ye assembly of the pious, having the venerable father Tikhon as a beacon who enlightened the whole land of Russia with his most radiant life, and whom God hath glorified with miracles: for, lo! He granteth abundant healings unto all who approach him with faith. Wherefore, standing round about his most precious shrine, let us pray to him, saying: O most blessed Tikhon our father, unceasingly entreat Christ God, that He grant to our land victory and triumph over its enemies, and peace and great mercy to our souls.",
+      },
+      litya_both_now: { tone: 5,
+        text: "Thou art the temple and portal, the palace and throne of the King, O most honored Virgin, through whom Christ the Lord, my Redeemer, Who is the Sun of righteousness, hath revealed Himself unto those who sleep in darkness, deigning to enlighten those whom He hath fashioned in His image by His own hand. Wherefore, O all-hymned one, as thou hast acquired a mother's boldness before Him, entreat Him without ceasing, that our souls be saved.",
+      },
+      aposticha_source: "menaion",  // 06-16A.pdf: dedicated aposticha stichera printed
+      stichera_aposticha: [
+        { tone: 8, text: "O our venerable father Tikhon, from thy youth thou didst follow Christ, and, forsaking thy homeland, thou didst take up thine abode in the wilderness, where, rejecting all worldly understandings, thou didst please God with ascetic labors, making thy flesh subject to thy spirit. Wherefore, thou hast been deemed worthy to stand before the throne of the Master in the heavens. Him do thou beseech, O blessed one, on behalf of those who honor thy most precious memory with faith." },
+        { tone: 8, verse: "Precious in the sight of the Lord is the death of His saints.", text: "O venerable father Tikhon, having left a faraway land thou didst attain unto the wilderness, which thou didst water with the streams of thy tears, and therein didst grow the fruits of righteousness. And assembling a multitude of disciples, and struggling with them in a God-pleasing manner, thou wast illumined by the Holy Spirit, receiving from God the grace of healings. Him do thou entreat, that He save and enlighten our souls." },
+        { tone: 8, verse: "Blessed is the man that feareth the Lord; in His commandments shall he greatly delight.", text: "O our venerable father Tikhon, eagerly taking the yoke of Christ upon thy shoulder, in thine utter humility thou didst reach the summit of the virtues; and, foreseeing thy departure unto God, and having taught the disciples thou hadst assembled to care for their souls, thou didst pass over to the mansions of heaven. And even after thy departure thou pourest forth many healings from thy tomb upon those who approach it with faith and celebrate thy memory with love. Wherefore, beseech Christ God, that He grant us peace and great mercy." },
+      ],
+      aposticha_glory: { tone: 6,
+        text: "Be glad and rejoice, O holy wilderness beloved of God, who nurtured the right wondrous Tikhon our father, by whose life hath been hallowed the place wherein he served the Lord in this life with faith! For, lo! even after his repose he poureth forth abundant cures upon all who approach his healing tomb with faith and say: O most blessed Tikhon our father, unceasingly pray to Christ God, that He grant that our hierarchs may prevail over all heresies and schisms, and that peace and great mercy may be bestowed upon all Orthodox Christians.",
+      },
+      aposticha_both_now: { tone: 6,
+        text: "Christ the Lord, my Creator and Redeemer, Who came forth from thy womb, O most pure one, and clothed Himself in my nature, hath freed Adam from the primal curse. Wherefore, like the angel we unceasingly cry out to thee, O most pure one, who art truly the Mother of God and Virgin: Rejoice!, O Sovereign Lady, the intercession, protection and salvation for our souls!",
+      },
+      beatitudes_source: "4 from Ode III + 4 from Ode VI of the venerable's canon (06-16A.pdf, AT LITURGY)",
+      beatitudes_troparia: [
+        { text: "Through fasting and prayer thou hast acquired great boldness before God, O venerable Tikhon. Him do thou beseech, that He be merciful even unto us." },
+        { text: "Through fasting and prayer thou hast acquired great boldness before God, O venerable Tikhon. Him do thou beseech, that He be merciful even unto us.", label: "repeat" },
+        { text: "Spurning transitory things here below, the things above, which are exalted, didst thou love, setting thy God-loving soul afire with divine zeal; and having done the will of the Most High, thou hast received the good things of heaven." },
+        { text: "Desiring to enjoy the sweet things which are ever abiding, O venerable one, thou didst subsist on plants grown by thyself in the wilderness; and having thus reached the end of the struggle of thy life, thou dost now delight in everlasting good things." },
+        { text: "Thy precious body poureth forth great healing upon those who approach thy salutary tomb with faith, O Tikhon our father." },
+        { text: "By thine unceasing prayers unto God, O Tikhon our father, thou didst attain to the mansions of heaven, where the ineffable Light and the delight of the venerable are, with whom thou standest before the God of all, O father Tikhon." },
+        { text: "Thou didst consider night to be like day, O blessed one, for thou gavest no rest to thy body, nor sleep to thine eyes, nor slumber to thine eyelids, until thou didst reach the resting-place of heaven." },
+        { label: "Theotokion", text: "By thy supplications tear apart the record of my transgressions, and grant me release from the grief and sufferings which beset me, O Sovereign Lady." },
+      ],
       troparion: {
         tone: 4,
         text: "O Tikhon our venerable father, thou wast shown to be a most radiant beacon in " +
@@ -1118,6 +1180,14 @@ const JUNE_MENAION = {
     note: "Three Persian brothers martyred under Julian the Apostate (362). " +
           "§2A by stichera count (3); PDF includes full AT LITURGY section — " +
           "compiled martyrs' service with proper Epistle and Gospel.",
+    fekula_section: "2A",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "octoechos",
     feast_e: "Ephesians 6:10-17 (§233)",
     feast_g: "Luke 21:12-19 (§106)",
     prokeimenon_tone: 4,
@@ -1160,6 +1230,14 @@ const JUNE_MENAION = {
     note: "Roman soldier martyred at Tripoli in Phoenicia under Vespasian (c. 70 AD). " +
           "§2A by stichera count (3); PDF includes full AT LITURGY section — " +
           "compiled martyr service with proper Epistle and Gospel.",
+    fekula_section: "2A",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "octoechos",
     feast_e: "Acts 12:1-11 (§29)",
     feast_g: "John 15:17-16:2 (§52)",
     prokeimenon_tone: 7,
@@ -1215,6 +1293,14 @@ const JUNE_MENAION = {
           "Ven. Paisius the Great, St. John the Solitary of Jerusalem, " +
           "Ven. Paisius of Hilandar, Repose of St. Job Patriarch of Moscow. " +
           "St. John Maximovich (06-19.pdf/06-19A.pdf) belongs at July 2 N.S.",
+    fekula_section: "2A",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "octoechos",
     feast_e: "Jude 1-10",
     feast_g: "John 14:21-24",
     troparion: {
@@ -1247,8 +1333,16 @@ const JUNE_MENAION = {
       note: "§2A confirmed — 3 stichera; PDF has no AT LITURGY Epistle/Gospel section. " +
            "Troparion absent from PDF Vespers rubric — T2 generic prophet text sourced from OCA. " +
            "Kontakion T4 matches PDF exactly.",
-      feast_e: "absent — §2A, readings from Oktoechos",
-      feast_g: "absent — §2A, readings from Oktoechos",
+      fekula_section: "2A",
+      has_great_doxology: false,
+      has_polyeleos: false,
+      has_litya: false,
+      has_paroemias: false,
+      magnificat_sung: false,
+      matins_format: "god_is_the_lord",
+      aposticha_source: "octoechos",
+      feast_e: null,  // §2A — no proper readings
+      feast_g: null,
       troparion: {
         tone: 2,
         text: "We celebrate the memory of Thy prophet Amos, O Lord, and through him we beseech Thee: save our souls.",
@@ -1283,6 +1377,49 @@ const JUNE_MENAION = {
       matins_gospel: "Matthew 11:27-30 (§43)",
       has_litya: true,
       has_polyeleos: true,
+      fekula_section: "2E",
+      has_great_doxology: true,
+      has_polyeleos: true,
+      has_litya: false,   // 06-15A.pdf: no dedicated Litiya section printed
+      has_paroemias: true,  // 3 OT readings at Great Vespers (Wisdom of Solomon)
+      magnificat_sung: false,
+      matins_format: "god_is_the_lord",
+      stichera_lord_i_call_count: 6,  // 3 T1 + 3 T4 (06-15A.pdf)
+      stichera_lord_i_call: [
+        { tone: 1, text: "Having been deemed worthy of heavenly blessedness, the venerable Jerome, possessed of heavenly intelligence, prayeth with boldness to the one King of all on behalf of us who piously celebrate his memory." },
+        { tone: 1, text: "Adorned on thine honorable memorial, O father Jerome, we, the choirs of monastics, offer thee hymnody, asking thine intercession, whereof do thou not deprive us who honor thee with love." },
+        { tone: 1, text: "Knowing thee to be a wealth of divinely wise doctrines and a treasury of exalted insight, we cry aloud unto thee: Rejoice, O inhabitant of the city of God, who sharest the lot of the most wise preachers and the venerable who have shone forth in ascetic feats." },
+        { tone: 4, text: "Thou didst offer to thy Creator, O venerable one, uprightness of mind, purity, abstinence, concentrated prayer, the outpouring of tears, for whose sake thou hast been deemed worthy to behold the glory of God, upon which His most excellent servants gaze, and to sing the thrice-holy hymn, which is chanted in heaven by the angels, O divinely wise Jerome." },
+        { tone: 4, text: "Taking the cross upon thy shoulder, and valiantly enduring tribulations, thou wast well-pleasing unto God; and thou didst lead to Him a multitude of virgins, in that thou art the adornment of the venerable, the receptacle of the divine Spirit. Wherefore we, the faithful, celebrate thy yearly memorial, asking thine aid." },
+        { tone: 4, text: "Glorious Bethlehem, the city wherein the Lord was born in the flesh, received thy labors and the sweat of thine ascetic feats; and therein did thy repose take place. O divinely wise one. And, wholly illumined, O Jerome, thou hast taken thy stand in gladness before the Judge of the contest, the Savior of the world, entreating Him on our behalf." },
+      ],
+      stichera_glory: { tone: 2,
+        text: "Truly desiring the wisdom of God, thou didst diligently heed the words of the great Gregory, the rhetor and theologian; and thus learning that which was divine, thou didst struggle well, O venerable father, and to all thou wast shown to be honorable and pleasing unto Christ, as His sincere servant. Cease thou never to beseech Him on behalf of those who with faith and love cherish thine honored memory.",
+      },
+      // Both now: Dogmatic Theotokion T2 — "The shadow of the law hath passed..." (06-15A.pdf)
+      aposticha_source: "menaion",
+      stichera_aposticha: [
+        { tone: 5, text: "Rejoice, O pure intelligence, who received the effulgence of God, imparting it to the faithful who honor thy holy memory, O wise Jerome. For by thy most wise writings, O venerable one, thou movest all the rational to the praise of God, as a skillful teacher of the Christian people and their unshakable confirmation." },
+        { tone: 5, verse: "Precious in the sight of the Lord is the death of His saints.", text: "Rejoice, thou who wast made steadfast by the fear of God, for thereby thou didst come to recognize divine wisdom, and with love and tender compassion didst make thyself thy Creator's own, O Jerome, as one full of divine understanding, virtue and zeal. Wherefore, O all-blessed one, by thy supplications to the Lord free those who hymn thee from all want and sorrow." },
+        { tone: 5, verse: "Blessed is the man that feareth the Lord; in His commandments shall he greatly delight.", text: "Rejoice, O goodly scion of Dalmatia, who in holiness wast nurtured in the Holy Land, and who lived for many years in ascetic struggles, which thou didst undertake, laying waste to thyself. Wherefore, thou dost now rightly dwell in heaven, full of glory, as an initiate of the divine mysteries, as an heir to the kingdom of Christ." },
+      ],
+      aposticha_glory: { tone: 6,
+        text: "Though a lover of outward wisdom, thou wast deemed worthy of that which was greater and higher than it, O right glorious Jerome. Wherefore, when thou didst achieve excellence in both, thy God-pleasing life was recognized by all; for thy victories over the adversary proclaim thee a child of the light and a favorite of Christ, the Bestower of light, Who by thy supplications granteth enlightenment, peace and great mercy to our souls.",
+      },
+      aposticha_both_now: { tone: 6,
+        text: "O Theotokos, thou art the true vine that hast budded forth for us the Fruit of life. Thee do we entreat: Pray thou, O Lady, with the holy apostles, that He have mercy upon our souls.",
+      },
+      beatitudes_source: "4 from Ode III + 4 from Ode VI of the venerable's canon (06-15A.pdf, AT LITURGY)",
+      beatitudes_troparia: [
+        { text: "Adorned with beauty of character, thou wast loved by all, O venerable favorite of God, and one glorious among the saints, O all-blessed one." },
+        { text: "Adorned with beauty of character, thou wast loved by all, O venerable favorite of God, and one glorious among the saints, O all-blessed one.", label: "repeat" },
+        { text: "Enriched with a pure mind, thou didst study the wisdom of the Greeks, the Jews and the Latins, the Chaldeans and the Persians, O glorious one, yet didst commit thyself to Christ, Who is wisdom itself." },
+        { text: "Thou didst apply thyself to fasting and to every labor of abstinence out of love for Christ, for which sake thou wast divinely wise, a sweet savor unto God and a consolation unto all." },
+        { text: "The Lord hath glorified thee on earth, O holy one; for in thy divinely wise writings thou dost shine forth upon the ends of the world like the radiant sun, O Jerome." },
+        { text: "Mortifying the carnal passions by asceticism, O right wise one, thou didst write books and scrolls teaching and explaining the word of God." },
+        { text: "Splendid in fasting and great in wisdom, O divinely eloquent one, thou hast received the title of instructor of the faithful, and art now rightly praised by us." },
+        { label: "Theotokion", text: "Thou didst truly conceive the Word of God in thy womb, O most pure one, and hast given birth unto Him in a manner transcending nature. Render Him merciful unto us on the day of judgment." },
+      ],
       troparion: {
         tone: 3,
         text: "The assembly of the Orthodox hath thee as a great intercessor, O divinely wise one, " +
@@ -1326,6 +1463,49 @@ const JUNE_MENAION = {
       matins_gospel: "Matthew 11:27-30 (§43)",
       has_litya: true,
       has_polyeleos: true,
+      fekula_section: "2E",
+      has_great_doxology: true,
+      has_polyeleos: true,
+      has_litya: false,   // 06-15B.pdf: no dedicated Litiya section printed
+      has_paroemias: true,  // 3 OT readings at Great Vespers
+      magnificat_sung: false,
+      matins_format: "god_is_the_lord",
+      stichera_lord_i_call_count: 8,  // 4 T4 (each ×2) + 4 T4 = 8 (06-15B.pdf)
+      stichera_lord_i_call: [
+        { tone: 4, text: "When the divine calling came upon thee, O divinely wise Jonah, thou didst forsake the world and that which is in the world, and with unwavering resolve, follow after Christ. Hence, the all-seeing Eye, beholding thy good intentions, adorned thee with the episcopacy. Entreat Him and pray unto Him, that He save and enlighten our souls." },
+        { tone: 4, text: "When divine effulgence made its abode within thy heart, O holy hierarch Jonah, thou didst acquire most radiant joy and all-honorable glory. Wherefore, thou didst hold all things to be transitory, and with all thy heart thou didst cleave unto God alone. Entreat Him and pray unto Him, O thou who art great among hierarchs, that He save and enlighten our souls." },
+        { tone: 4, text: "When divine love came upon thee, O holy hierarch, inclining thyself wholly unto Christ the Master from thy youth, desiring Him, thou didst cleanse thyself of all the passions which drag us down. Wherefore, thou wast shown to be the abode and habitation of the most holy Spirit, working most glorious miracles. Entreat Christ, that He save and enlighten our souls." },
+        { tone: 4, text: "Having dwelt on earth like an angel, O all-blessed and holy hierarch Jonah, thou didst gain mastery over the passions, and didst make what is lower subject to that which is higher; wherefore, having passed over to the kingdom which passeth not away, ever pray that Christ send down cleansing of sins and great mercy upon those who honor thee with faith." },
+        { tone: 4, text: "By thy teachings thou didst nurture well with the grass of life the flock given thee by God, O holy hierarch Jonah; and having now passed over into never-waning radiance and everlasting gladness, be thou mindful, O most blessed one, of those who honor thine honorable repose, and pray that our souls be saved." },
+        { tone: 4, text: "Celebrating today the sacred memory of the blessed Jonah, the great hierarch, come, let us all honor with divine hymns, him who ever prayeth for us, that a multitude of compassions and salvation be sent down upon our souls." },
+      ],
+      stichera_glory: { tone: 6,
+        text: "The divine shrine of thy relics is redolent with sweet fragrance, O holy hierarch Jonah, imparting healing to the souls and bodies of all. Wherefore, we beseech thee to preserve thy God-given flock, our civil authorities and all of Orthodoxy in peace, that we may all unceasingly magnify thee as our true pastor and advocate before God.",
+      },
+      // Both now: Dogmatic Theotokion T6 (06-15B.pdf)
+      aposticha_source: "menaion",
+      stichera_aposticha: [
+        { tone: 1, text: "O divinely wise and holy hierarch Jonah, by thy prayers and fasting, and by keeping vigil and giving alms, thou didst unite thyself unto God; wherefore, thou wast shown to be the abode and dwelling of the most holy Spirit. As thou wast a hierarch of the Church of Christ, pray thou that our souls be saved." },
+        { tone: 1, verse: "My mouth shall speak wisdom, and the meditation of my heart shall be of understanding.", text: "Thou didst submit to the commandment of God Almighty, wherefore thou didst follow in His steps from thy youth, O holy hierarch; for this cause thou didst receive from Him the grace to work most glorious miracles and to expel evil spirits from all who honor thee with love." },
+        { tone: 1, verse: "Hear this, all ye nations; give ear, all ye that inhabit the earth.", text: "Thou didst remain meek and innocent throughout thy whole life, O holy hierarch Jonah; wherefore, as thou didst desire, thou didst find rest with the saints in the heavens. For this cause we honor thy divine memory, celebrating with faith, O divinely blessed and most honored one." },
+      ],
+      aposticha_glory: { tone: 4,
+        text: "When with God's aid, O holy hierarch, thou didst reach the Imperial City, thou wast received with honor by the patriarch, and from thence wast sent back to the lands of Russia, bearing with thee peace and blessing. Wherefore, the Russian land lovingly received thee as its father, and in accordance with the sovereign's will, thou wast most gloriously elevated upon the hierarchal cathedra, whereon thou didst remain for many years, until thy departure to the Lord. Him do thou entreat, that He save those who hymn thee.",
+      },
+      aposticha_both_now: { tone: 4,
+        text: "Mercifully regard the supplications of thy servants, O all-immaculate one, quelling the cruel uprisings of the demons against us, delivering us from every sorrow; for thee alone do we have as a steadfast and sure confirmation, and having acquired thine intercession; let not us who call upon thee be put to shame, O Sovereign Lady. Hasten thou to answer the entreaties of those who cry out to thee with faith: Rejoice, thou help, joy and protection of all, and the salvation of our souls!",
+      },
+      beatitudes_source: "4 from Ode III + 4 from Ode VI of the saint's canon (06-15B.pdf, AT LITURGY)",
+      beatitudes_troparia: [
+        { text: "Thou didst ascend to the summit of the virtues, O holy hierarch, and, receiving the sacred anointing of thy superior life, on an exalted cathedra thou didst serve God as a great high priest." },
+        { text: "Having acquired thee as a beacon, O most wise and holy hierarch, the Church of Christ is illumined by thy virtuous instructions, saying: Thou, O Lord, art my strength and confirmation!" },
+        { text: "Having cut off all carnal desire with divine desire, thou didst shine forth in a perfect life; wherefore, thou hast passed from hence into never-waning effulgence." },
+        { text: "As thou wast the successor of hierarchs O holy hierarch, thou didst strive in word, deed and upright teaching to emulate them; wherefore, we honor thee as a holy hierarch of Christ." },
+        { text: "Thou dost now shine, O holy hierarch, adorned with a crown of majesty; and as a true bishop, truly clothed in righteousness, thou hast preserved the inheritance of the Savior; wherefore, the voice of God cried out to thee: Enter into the joy of thy Lord!" },
+        { text: "Meek and innocent, thou didst follow in the steps of the Master and pass over from things corruptible to things eternal; wherefore, with the saints thou hast attained unto the land of the meek, for which cause the councils of the pious hymn thee." },
+        { text: "Because of thy great light and purity, Christ revealed thee to be a child of the light and of the day, and made thee a hierarch and pastor of His Church, which thou didst serve as an excellent shepherd before departing unto the heavenly mansions." },
+        { label: "Theotokion", text: "O Virgin Who hast given birth to the holy Word, our one God Who truly resteth in the saints, sanctify my soul, and as thou art merciful grant unto me an outpouring of compunction, O most immaculate one." },
+      ],
       troparion: {
         tone: 4,
         text: "Having dedicated thyself wholly to the Lord from thy youth, thou didst become a model " +
@@ -1400,8 +1580,16 @@ const JUNE_MENAION = {
     note: "Bishop of Patara in Lycia; refuted Origen. Martyred c. 311. " +
           "Distinct from Patriarch Methodius of Constantinople (June 14). " +
           "§2A confirmed — 3 stichera; PDF has no AT LITURGY Epistle/Gospel section.",
-    feast_e: "absent — §2A, readings from Oktoechos",
-    feast_g: "absent — §2A, readings from Oktoechos",
+    fekula_section: "2A",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "octoechos",
+    feast_e: null,  // §2A — no proper readings; readings from Octoechos
+    feast_g: null,
     troparion: {
       tone: 2,
       text: "Thy blood mystically crieth out to God from the earth, like that of Abel, " +
@@ -1433,6 +1621,14 @@ const JUNE_MENAION = {
           "sand and serpents. St. John Chrysostom composed an encomium in his honor. " +
           "§2A by stichera count (3); PDF includes full AT LITURGY section — " +
           "compiled martyr service with proper Epistle and Gospel.",
+    fekula_section: "2A",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "octoechos",
     feast_e: "Ephesians 6:10-17 (§233)",
     feast_g: "Luke 21:12-19 (§106)",
     prokeimenon_tone: 4,

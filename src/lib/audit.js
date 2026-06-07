@@ -59,7 +59,8 @@ export const FIELD_REGISTRY = [
   {
     field: 'source_file', category: 'identity', appliesTo: 'both',
     required: () => true,
-    description: 'Source PDF filename (e.g. 05-21.pdf)',
+    description: 'Source PDF filename (e.g. 05-21.pdf), or null for OCA-only entries with no PDF',
+    check: (entry) => 'source_file' in entry,  // null valid — OCA-only entries have no St. Sergius PDF
   },
   {
     field: 'rank', category: 'identity', appliesTo: 'menaion_only',
