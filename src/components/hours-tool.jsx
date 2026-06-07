@@ -6,6 +6,16 @@ import React, { useState, useEffect } from 'react';
 //   Great Feast dates and periods: Orthodox Typicon / OCA liturgical calendar
 //   Fekula §2G1-§2G4: forefeast/afterfeast/apodosis assembly rules
 
+// ── DATE PARSING ─────────────────────────────────────────────────────────────
+// Parse a YYYY-MM-DD string as a local calendar date at midnight.
+// This matches how all boundary dates (allSaintsSunday, brightSaturday, etc.)
+// are constructed — ensuring date comparisons are purely calendar-date based
+// with no time-of-day offset mismatches.
+function parseCalendarDate(dateStr) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
 // ── PASCHAL CALCULATION ──────────────────────────────────────────────────────
 function computePascha(year) {
   const a = year % 4;
@@ -855,7 +865,6 @@ function getLiturgicalData(date) {
 
   const allSaintsSunday = new Date(relevantPascha);
   allSaintsSunday.setDate(allSaintsSunday.getDate() + 56);
-  allSaintsSunday.setHours(23, 59, 59, 999); // end-of-day: date <= comparison works for noon app dates
 
   const nextMeatfareSunday = new Date(followingPascha);
   nextMeatfareSunday.setDate(nextMeatfareSunday.getDate() - 56);
@@ -9110,7 +9119,7 @@ export default function App() {
   // ── Data loading — preload month + Pentecostarion when date changes ─────────
   const [, setDataVersion] = useState(0);
   React.useEffect(() => {
-    const d = new Date(selectedDate + "T12:00:00");
+    const d = parseCalendarDate(selectedDate);
     const m = String(d.getMonth() + 1).padStart(2, "0");
     const prev = String(d.getMonth() === 0 ? 12 : d.getMonth()).padStart(2, "0");
     const next = String(d.getMonth() + 2 > 12 ? 1 : d.getMonth() + 2).padStart(2, "0");
@@ -9128,7 +9137,7 @@ export default function App() {
     ]).then(() => setDataVersion(v => v + 1));
   }, [selectedDate, templeDedication]);
 
-  const date = new Date(selectedDate + "T12:00:00");
+  const date = parseCalendarDate(selectedDate);
   const liturgicalData = getLiturgicalData(date);
   const dailyReading = getDailyReading(date);  // Lectionary: epistle & gospel for the day
   const rawMenaion = getMenaionEntry(date);
