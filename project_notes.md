@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.6.1** | **Tone Trainer: v0.11.29** | Last synced: May 31, 2026
+**Tool version: v0.6.1** | **Tone Trainer: v0.11.29** | Last synced: June 7, 2026
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
@@ -2290,3 +2290,33 @@ Full v2.1 encoding from 07-01.pdf. Previously had basic fields only (troparion, 
 - **Audit**: ✅ complete — passes all 14 required fields
 
 **Audit totals after session**: May 16/16 complete. June 0/30 (pre-v2.1). July 1/5 complete. Pentecostarion 23/23 complete.
+
+---
+
+## Session notes — June 7, 2026 (v0.11.23 → v0.11.29+)
+
+### Tone 1 SATB — completed this session
+
+**Bass/tenor register fixes:**
+- Tenor Final Phrase: `octaveDiv:{la:1,si:1}` — la/si lifted to div-1 to sit above prior sol
+- playNotes() tenor audio path fixed — was calling `freq()` instead of `freq_tenor()`, bypassing octave division entirely
+- si detuning: -100 cents in SATB only (`voicePart==='satb'`) to push beating vs alto ti 2nd harmonic above perceptual threshold. Tenor-solo plays true 220Hz.
+
+**Unified chip height map (v0.11.27):**
+- Bass and tenor now normalized together in `buildUnifiedVoiceMap`. Bass pitches (low register) always sort taller than tenor pitches — physics guarantees separation with no fighting between independent normalizations.
+
+**SATB visual fixes:**
+- Soprano ghost flag corrected: `isGhostSoprano=true` in SATB row (was `isSoprano=true`)
+- Solfège labels added back to ghost soprano and tenor chips (were accidentally suppressed)
+- Ghost soprano and tenor chips now highlight correctly during playback (active bg + border)
+- Container sized to maxBassH; tenor ghost overlays at top; bass extends below
+
+**UX / pedagogical improvements:**
+- Try example: now populates text field with bracketed stichera text and runs `analyzeText()` — same single pointing path as the Point button. Director vs. Machine fully available on examples.
+- `analyzeText(txt)` extracted as shared helper; `analyze()` is a one-liner wrapper.
+- Director vs. Machine: bracketed encoding shown under each verse row in monospace — director encoding above, machine encoding below. Teaching moment made explicit.
+- Play All button: green background, "Play ▶" label at rest; red "◼ Stop" during playback.
+
+**Noted for future sessions:**
+- Portrait tablet wrap bug: chip rows wrap independently — fix requires per-syllable column layout (S chip + text + B chip as one unit). Non-trivial render restructure.
+- SA chip height consistency: soprano/alto should use unified normalization like bass/tenor for proportional chip height relationship.
