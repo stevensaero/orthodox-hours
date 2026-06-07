@@ -50,9 +50,8 @@ const JUNE_MENAION = {
       has_paroemias: false, // No OT lessons in PDF
       magnificat_sung: false,
       matins_format: "god_is_the_lord", // Implied by Great Vespers structure
-      feast_e: null, // AT LITURGY: troparion and kontakion only, no proper epistle/gospel
+      feast_e: null, // AT LITURGY: troparion and kontakion only, no proper epistle/gospel in PDF
       feast_g: null,
-    feast_g: null,
       aposticha_source: "octoechos", // "Stichera from the Oktoechos; Glory..., of the holy martyrs"
       note: "The Holy Martyrs Kyriaka, Valeria and Maria appear on the OCA calendar as secondary " +
             "commemorations on June 7. The OCA primary is HM Theodotus of Ancyra. " +
@@ -73,6 +72,29 @@ const JUNE_MENAION = {
         { tone: 8, text: "O martyr Valeria, as thy name signifieth strength, stronger than adamantine didst thou remain in the endurance of martyrdom. Wounding the proud prince of darkness by the power of the Cross, and entering the heavenly mansions with honor, thou dost look down from the heavens upon those who struggle for the faith, granting them strength. Wherefore, we cry to thee: Rejoice, thou mighty champion of the faithful!" },
       ],
       stichera_glory: { tone: 6, text: "The most pure and precious lips of Christ have said: Blessed are they that are persecuted for righteousness' sake, for theirs is the Kingdom of Heaven; fear not those who kill the body, but are not able to kill the soul. Keeping these words of the Lord in your hearts, O all-praised martyrs Kyriaka, Valeria and Maria, ye bowed your necks beneath the sword in expectation of a crown from God and life eternal. Wherefore, your hope did not put you to shame; and now, delighting in the mansions of paradise, forget not us who with love hymn your sufferings, that by your bold mediation and fervent supplications we may find great mercy with Christ." },
+      // 8 total = (Thrice)+(Thrice)+(Twice) per PDF rubric; 3 Pentecostarion not encoded separately
+      stichera_lord_i_call_count: 8,  // 06-07.pdf: 8 stichera (Pentecostarion period) or 8 Menaion outside it
+      // ── VESPERS — APOSTICHA ──────────────────────────────────────────────────
+      // PDF: "Stichera from the Oktoechos; Glory..., of the holy martyrs, in Tone III"
+      // Aposticha body stichera from Octoechos; only the Glory is Menaion
+      stichera_aposticha: [],  // Octoechos governs body stichera; no dedicated Menaion stichera
+      aposticha_glory: { tone: 3,
+        text: "Come, ye that love the martyrs, let us hymn those who have been crowned with the diadem of suffering! " +
+              "Come, ye lovers of silence, let us glorify those who set a watch before their mouths! " +
+              "Come, ye virgins, with gladness let us praise those who preserved their virginity undefiled! " +
+              "Come, all ye faithful, let us honor the holy memory of those who endured suffering, " +
+              "crying out to them with heartfelt love: Rejoice, O Kyriaka, Valeria and Maria, ye brides of Christ!",
+      },
+      aposticha_both_now: { source: "octoechos",
+        note: "06-07.pdf: aposticha stichera from Oktoechos; Both now from Octoechos at runtime",
+      },
+      // ── MATINS / LITURGY — NOT IN PDF ────────────────────────────────────────
+      // 06-07.pdf has AT LITURGY with troparion and kontakion only — no gospel, beatitudes,
+      // prokeimenon, alleluia, or communion verse printed. Rank and flag fields require
+      // verification against a fuller rubrical source (e.g. OCA typikon for this date).
+      matins_gospel: null,  // NOT IN PDF — 06-07.pdf does not print a matins gospel
+      beatitudes_source: "NOT IN PDF — 06-07.pdf has no beatitudes section",
+      beatitudes_troparia: [],  // NOT IN PDF — empty array; requires future verification
     },
   ],
 
@@ -413,6 +435,7 @@ const JUNE_MENAION = {
     feast_e: null, // AT LITURGY: troparion and kontakion only, no proper epistle/gospel
     feast_g: null,
     aposticha_source: "octoechos", // §2C — no Menaion aposticha in PDF
+    stichera_lord_i_call_count: 6,  // 3 stichera each doubled = 6 total (06-05.pdf)
     note: "Dorotheus served 107 years as a pastor before martyrdom under Julian the Apostate. " +
           "6 stichera (3 texts, each doubled) Tone VIII confirmed §2C.",
     troparion: {
@@ -557,7 +580,7 @@ const JUNE_MENAION = {
       matins_format: "god_is_the_lord", // §2C — no Alleluia conditional in PDF; Kontakion after Ode VI confirms God is the Lord
       feast_e: null, // AT LITURGY: troparion and kontakion only, no proper epistle/gospel
       feast_g: null,
-    feast_g: null,
+      stichera_lord_i_call_count: 6,  // 3 Tone IV + 3 Tone VIII (06-02.pdf)
       aposticha_source: "octoechos", // §2C — no Menaion aposticha printed in PDF
       note: "6 stichera (3 Tone IV + 3 Tone VIII) confirmed §2C. AT LITURGY has troparion and kontakion only.",
       troparion: {
@@ -615,6 +638,7 @@ const JUNE_MENAION = {
       paroemia_2: "Wisdom of Solomon 5:15-6:3 (The righteous live for evermore — a beautiful crown from the Lord's hand)",
       paroemia_3: "Wisdom of Solomon 4:7-15 (Though the righteous be prevented with death — His grace and mercy is with His saints)",
       matins_gospel: "Luke 21:12-19 (§106)",
+      stichera_lord_i_call_count: 8,  // Pentecostarion: 3 Pent + 5 Menaion (each repeated per PDF); outside: 4×2=8
       stichera_lord_i_call: [
         { tone: 2, text: "With what good songs of praise shall we hymn John: the true warrior of the great King, the splendid champion, the most excellent spiritual athlete of Christ, who made the Faith steadfast, casting down deception, who was patient amid temptations and undaunted amid tortures the awesome denouncer of the ungodly and ardent helper of the pious, through whom Christ granteth us great mercy?" },
         { tone: 2, text: "With what wreaths of praise shall we crown John: the restoration of the martyrs, the skilled opponent, the champion of piety, who humbled the enemy, who sanctified the ground with his blood, who terrified the princes of the air and hath been reckoned with the angels of heaven, the pillar of gold which upholdeth all the lands of the north and by whom Christ, Who hath great mercy, doth vanquish all their enemies?" },
@@ -622,10 +646,84 @@ const JUNE_MENAION = {
         { tone: 2, text: "With what hymn and beauties shall we crown the wondrous John: who gave his flesh over to flogging for the sake of Him Who for our sake gave His shoulders over to wounds, and who unsparingly shed his blood for Him Who abased Himself even to assuming the form of a servant, astonishing the tyrant by his supra-natural endurance, putting him to shame by his mighty opposition, whom Christ God, Who hath great mercy, hath crowned with wreaths of immortality?" },
       ],
       stichera_glory: { tone: 8, text: "Today, the denizens of heaven celebrate an honorable festival, calling those on earth to gladness for the memorial of John the valiant struggler, the hard diamond; for the arms of those who flogged him became exhausted, and the judge became weary even considering his tortures; but he remained above them all standing like a lion in the midst of the arena and filling the tyrant with fear by his confession of Christ, for he right boldly cried out to him: \"Touch not my flesh, lest retribution overtake thee, O governor! For though thou hast inflicted many wounds, I shall be given crowns of incorruption by Christ; Whom I preach with the Father and the Holy Spirit!\"" },
+
+      // ── VESPERS — LITIYA ──────────────────────────────────────────────────────
+      // PDF: "At Litiya, these Stichera of the holy great martyr, in Tone I"
+      litya_stichera: [
+        { tone: 1, text: "Rejoice, all ye people of the north, and leap up in gladness, having in your midst the never-setting and greatly radiant star whose rays surpass those of the sun: John of great renown, the martyred branch of the root of piety, laden with choice fruit, who loved Christ greatly and was greatly loved of Him, and who asketh great mercy for us all!" },
+        { tone: 1, text: "O all ye generations of the pious, joining chorus in spirit, praise ye our common good on the designated day of this feast, having among you, like a right fragrant rose, the holy and much suffering body, now glorified with the glory of incorruption, of him who imparteth healings of the sufferings of men's souls and bodies." },
+        { tone: 1, text: "O ye people of the East, join chorus with those of the North, and think not over highly of yourselves, for another sun hath been shown forth here, making not his circuit toward the lands of the West and setting beyond the western horizon, but passing into the heavens from the earth, and making his abode with the immaterial intelligences; and from thence shining down, protecting and sanctifying us, and beseeching great mercy from Christ." },
+      ],
+      litya_glory: { tone: 5,
+        text: "Let us blow loudly upon the flute of the Spirit on the festive memorial of John, the warrior of valiant resolve, " +
+              "and gathering everyone around us with exalted preaching, let us say: " +
+              "Behold, he who suffered on earth doth now reign in the heavens! " +
+              "Come, brethren, and let us emulate him, and in imitation let us follow his zeal, becoming martyrs by volition! " +
+              "Come, ye kings and princes, and emulate him, the abundantly rich treasury of alms, that ye may acquire crowns like his! " +
+              "Ye rich and poor, ye healthy and infirm, draw forth healings in abundance from the sacred coffer, as from a wellspring of incorruption, " +
+              "unto the glory of God the Savior Who hath glorified the one who hath glorified Him.",
+      },
+      litya_both_now: { tone: 5,
+        text: "Thou art the temple and portal, the palace and throne of the King, O most honored Virgin, " +
+              "through whom Christ the Lord, my Redeemer, Who is the Sun of righteousness, " +
+              "hath revealed Himself unto those who sleep in darkness, " +
+              "deigning to enlighten those whom He hath fashioned in His image by His own hand. " +
+              "Wherefore, O all-hymned one, as thou hast acquired a mother's boldness before Him, " +
+              "entreat Him without ceasing, that our souls be saved.",
+      },
+
+      // ── VESPERS — APOSTICHA ────────────────────────────────────────────────────
+      // PDF: 3 stichera Tone IV with feast-specific verses + Glory T3 + Both now T3
+      stichera_aposticha: [
+        { tone: 4,
+          text: "Thou didst traverse the deep of the sea like a goodly sheep, " +
+                "offering thyself as a living and animate sacrifice unto the Lamb of God, Who was slain for our sake, O glorious one. " +
+                "Receiving from Him honors for thy labors, pray that those who celebrate " +
+                "thy most honorable memory with love may be delivered from corruption and misfortunes." },
+        { tone: 4,
+          verse: "The righteous man shall flourish like a palm-tree, and like a cedar in Lebanon shall he be multiplied.",
+          text: "Neither the savagery of the tyrant, nor beating with iron rods, nor the maiming of thy flesh, nor the torrents of thy blood, " +
+                "were able to turn thy steadfastness away from Christ; " +
+                "and thou didst cry out to those who tortured thee: " +
+                "'Try me by torments as in a crucible, that I may appear before my Creator like gold purified by fire!'" },
+        { tone: 4,
+          verse: "Those who are planted in the house of the Lord, in the courts of our God they shall blossom forth.",
+          text: "Neither the weight of chains, nor the stench of prison, nor the inhumanity of those who flayed thee, " +
+                "were able to shake thy constant loyalty to thy Master, O blessed one; " +
+                "for Christ's sake thou didst consider thy prison cell to be a splendid bridal-chamber, " +
+                "thy chains to be coins of gold, and thy bitter flaying to be a robe of royal purple." },
+      ],
+      aposticha_glory: { tone: 3,
+        text: "Hastening hither, O brethren, let us delight in the rays of the passion-bearer, which have shone forth; " +
+              "for John, the chosen warrior of Christ, having descended invisibly to us from the heavens " +
+              "hath set forth a spiritual banquet for us, satisfying in abundance every want. " +
+              "Let us fall down with faith, embracing his relics and crying out in supplication: " +
+              "O thrice-blessed and much suffering one, who hast been well-pleased to place thy precious relics in the church which thou hast loved, " +
+              "with thy boldness before God preserve and protect our leaders, who love thee.",
+      },
+      // Both now at aposticha: Pentecostarion or Theotokion T3
+      aposticha_both_now: { source: "pentecostarion",
+        note: "06-02A.pdf: 'Both now... from the Pentecostarion. Or this Theotokion, in Tone III' — Pentecostarion governs when in season",
+      },
+
+      // ── BEATITUDES ────────────────────────────────────────────────────────────
+      // Pentecostarion period: 4 from Pentecostarion + 4 from Ode VI
+      // Outside Pentecostarion: 4 from Ode III + 4 from Ode VI
+      beatitudes_source: "4 from Pentecostarion Ode + 4 from Ode VI of saint's canon (06-02A.pdf, AT LITURGY)",
+      beatitudes_troparia: [
+        // From Ode VI of saint's canon (06-02A.pdf):
+        { text: "In nowise could the savagery of him who issued the command, nor the beating with staves, nor wounds, " +
+                "nor a most violent death, shake the pillars of thy piety." },
+        { text: "The purity of thy mind was likened to the eyes of a cherub, for thou didst manfully endure tortures below, " +
+                "but on high hast come to stand before the Master, Who sent down upon thee a crown of victory." },
+        { text: "The choirs of the martyrs leapt up in splendor when they beheld thy boldness; " +
+                "and, descending with the angels, they invisibly strengthened thee for the contest." },
+        { label: "Theotokion",
+          text: "Gideon accepted the dewy fleece as an image prefiguring thy wonder, O Theotokos, " +
+                "for One of the Trinity, assuming flesh, descended into thy womb, like the dew upon the fleece." },
+      ],
     },
   ],
-
-  // ── June 3 — Holy Martyr Lucillian and those with him ───────────────────────
   // Source: St. Sergius 06-03.pdf. OCA and St. Sergius agree.
   // Service rank: Simple (§2A). 3 stichera on Lord I Call, Tone I.
   // Troparion/kontakion: NOT in PDF — sourced from OCA troparia page.

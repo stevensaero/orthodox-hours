@@ -370,7 +370,8 @@ export const FIELD_REGISTRY = [
   {
     field: 'matins_gospel', category: 'matins', appliesTo: 'menaion_only',
     required: (entry) => ['polyeleos', 'vigil'].includes(entry.rank),
-    description: 'Matins Gospel reading (§2E/§2F)',
+    description: 'Matins Gospel reading (§2E/§2F; null if not printed in PDF)',
+    check: (entry) => 'matins_gospel' in entry,  // null valid — PDF may not print matins gospel
   },
   {
     field: 'beatitudes_source', category: 'matins', appliesTo: 'both',
