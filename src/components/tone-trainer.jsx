@@ -4332,12 +4332,6 @@ export default function ToneTrainer() {
             return { ...r, pitches: [bassPitch] };
           });
         })();
-        // Tenor height map — same approach as bass.
-        const tenorHeightMap = tenorRolesWD
-          ? buildVoiceHeightMap(tenorRolesWD.map(r => r.pitches[0]), freq_tenor,
-              TENOR_RULES[activeTone]?.[line.phrase])
-          : null;
-
         const isFin = line.phrase === "Final";
         const sopranoAvailable = SOPRANO_TONES.has(activeTone);
         const tenorAvailable   = TENOR_TONES.has(activeTone);
@@ -4349,11 +4343,9 @@ export default function ToneTrainer() {
         const showTenorGhost = tenorAvailable && voicePart === "satb";
 
         // Soprano rolesWD — same structure as alto, alto pitches retained.
-        // chipH_soprano(altoPitch) and freq_soprano(altoPitch) both expect alto pitch.
         const sopranoRolesWD = (showSoprano || showSopranoTab) ? rolesWD : null;
 
         // Bass height map — per-phrase frequency sort, H_VOICE_MIN to H_VOICE_MAX.
-        // Built from unique sounding bass pitches in this phrase.
         const bassHeightMap = bassRolesWD
           ? buildVoiceHeightMap(bassRolesWD.map(r => r.pitches[0]), freq_bass,
               BASS_RULES[activeTone]?.[line.phrase])
@@ -4380,6 +4372,12 @@ export default function ToneTrainer() {
             return { ...r, pitches: [tenorPitch], phraseRules: trules };
           });
         })();
+
+        // Tenor height map — built after tenorRolesWD is available.
+        const tenorHeightMap = tenorRolesWD
+          ? buildVoiceHeightMap(tenorRolesWD.map(r => r.pitches[0]), freq_tenor,
+              TENOR_RULES[activeTone]?.[line.phrase])
+          : null;
 
         // Role colors matching roleBg/roleColor
         const chipBg = { recite:"rgba(40,58,92,.06)", inton:"rgba(40,120,60,.10)", prep:"rgba(180,137,43,.16)", cad:"rgba(122,36,24,.10)", cad1:"rgba(122,36,24,.05)", preslur:"rgba(180,137,43,.22)" };
