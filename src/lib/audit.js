@@ -285,7 +285,16 @@ export const FIELD_REGISTRY = [
              entry.hours_format === 'apodosis_ascension';
     },
     description: 'Aposticha stichera array (with interspersed psalm verses)',
-    check: (entry) => isNonEmptyArray(entry, 'stichera_aposticha'),
+    check: (entry) => {
+      // Empty array is valid when Octoechos supplies the aposticha body stichera
+      // and Menaion provides only the Glory (aposticha_source indicates this)
+      if (Array.isArray(entry.stichera_aposticha) &&
+          entry.stichera_aposticha.length === 0 &&
+          entry.aposticha_source && entry.aposticha_source.startsWith('octoechos')) {
+        return true;
+      }
+      return isNonEmptyArray(entry, 'stichera_aposticha');
+    },
   },
   {
     field: 'aposticha_glory', category: 'vespers_aposticha', appliesTo: 'both',

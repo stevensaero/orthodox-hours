@@ -858,6 +858,7 @@ const MAY_MENAION = {
     },
     // ── VESPERS — APOSTICHA ────────────────────────────────────────────────────
     // §2C: aposticha from Octoechos. No Menaion aposticha stichera for §2C.
+    stichera_lord_i_call_count: 6,  // 3 Pentecostarion + 3 Menaion (05-23.pdf)
     aposticha_source: "octoechos",
   },
 
@@ -925,6 +926,7 @@ const MAY_MENAION = {
     // ── VESPERS — LORD I HAVE CRIED ───────────────────────────────────────────
     // Source: 05-24.pdf. 6 stichera Tone VIII. Spec. Mel.: "O most glorious wonder"
     // PDF rubric: first and second stichera each sung twice (×2), third sung twice = 6 total.
+    stichera_lord_i_call_count: 6,  // 6 Menaion stichera (05-24.pdf — §2E, no Pentecostarion merge)
     stichera_lord_i_call: [
       { tone: 8, text: "Like an inscribed pillar, O most noetically rich Symeon, " +
                        "by visions and thine activity, thou didst give birth in thy soul to the fullness of the virtues; " +
@@ -1085,6 +1087,7 @@ const MAY_MENAION = {
     // Source: 05-25.pdf. 5 Menaion stichera Tone VIII. Spec. Mel.: "O most glorious wonder"
     // During Pentecostarion: 3 Pentecostarion + 5 Menaion = 8 total (PDF explicit).
     // During Apostles' Fast: 6 Menaion stichera (repeating as needed).
+    stichera_lord_i_call_count: 8,  // Pentecostarion period: 3 Pent + 5 Menaion (05-25.pdf)
     stichera_lord_i_call: [
       { tone: 8, text: "O blessed forerunner John, shedding rays brighter than those of the sun, " +
                        "thy head hath shone forth from the ground and illumined the faithful. " +
@@ -1120,9 +1123,18 @@ const MAY_MENAION = {
     // has_litya: true (Polyeleos §2E), but neither St. Sergius nor RLE PDF prints
     // dedicated Litiya stichera for this date. The Litiya petitions (fixed text) are
     // served; stichera at the Litiya reuse Lord I Have Cried hymns or temple sticheron.
-    litya_stichera: [],  // empty — no dedicated stichera in Menaion PDF
-    litya_glory: null,   // no dedicated Glory at Litiya in PDF
-    litya_both_now: null, // no dedicated Both Now at Litiya in PDF
+    litya_stichera: [],  // no dedicated Litiya stichera in 05-25.pdf — temple sticheron + Menaion only
+    litya_glory: { tone: 6,
+      text: "The divinely preserved head, a treasury of divine gifts, O forerunner, " +
+            "hath shone forth from the bosom of the earth; " +
+            "and we, faithfully receiving and bowing down before it, O glorious one, " +
+            "are enriched by thee with most glorious miracles and the forgiveness of our sins, " +
+            "O Baptist of Christ.",
+    },
+    // Both now at Litiya: "from the Pentecostarion" per 05-25.pdf rubric
+    litya_both_now: { source: "pentecostarion",
+      note: "05-25.pdf: 'Both now... from the Pentecostarion' — assembled at runtime",
+    },
     // ── VESPERS — APOSTICHA ─────────────────────────────────────────────────────
     // Source: 05-25.pdf. Aposticha stichera of the finding Tone I. Spec. Mel.: "Joy of the ranks..."
     stichera_aposticha: [
