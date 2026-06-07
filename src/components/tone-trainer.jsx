@@ -1718,8 +1718,9 @@ const TENOR_RULES = {
       preslurMap: {},
       // la and si sit one step above sol (the A-D reciting pitch) — div-1 keeps them
       // in the correct register. mi (Lord) sits below sol — stays at global div-2.
-      // la lifts to div-1 (one step above prior sol). si drops to div-2 (close harmony with alto ti).
-      octaveDiv: { la: 1 },
+      // la and si at div-1: la steps up from prior sol, si sits one step above la.
+      // si detuned +15 cents in audio only to push beating above perceptual threshold.
+      octaveDiv: { la: 1, si: 1 },
     },
   },
 };
@@ -2864,8 +2865,16 @@ export default function ToneTrainer() {
 
   // Tenor frequency — one octave below soprano reference (div-2 throughout).
   // Optional phraseRules arg for per-phrase octave override (same pattern as freq_bass).
-  const freq_tenor = (sol, phraseRules) =>
-    freq(sol) / (phraseRules?.octaveDiv?.[sol] ?? TENOR_OCTAVE_DIV[sol] ?? 2);
+  const freq_tenor = (sol, phraseRules) => {
+    const base = freq(sol) / (phraseRules?.octaveDiv?.[sol] ?? TENOR_OCTAVE_DIV[sol] ?? 2);
+    // si at div-1 (220Hz): 2nd harmonic of alto ti (116.5Hz) = 233Hz, beating at 13Hz.
+    // Flatten si by 100 cents → 207.7Hz; beat vs 2nd harmonic of ti = 25Hz (inaudible).
+    // 100 cents is within normal choral intonation variation — si still reads clearly above la.
+    if (sol === "si" && phraseRules?.octaveDiv?.["si"] === 1) {
+      return base * Math.pow(2, -100 / 1200);
+    }
+    return base;
+  };
 
   // lineToNotes_soprano(line)
   // Derives soprano audio notes from rolesWD — same expanded representation as
