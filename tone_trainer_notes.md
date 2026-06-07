@@ -1531,3 +1531,34 @@ correct against the L'vov-Bakhmetev Obikhod score by the user.
 validated ruleset. A `generateBass(DATA, phrase_sequence)` function is
 the natural next step — encoding bass becomes a derivation, not a manual
 transcription.
+
+---
+
+## SATB chip height architecture — unified normalization (v0.11.27–v0.11.28)
+
+### Chip height systems
+
+**Alto and soprano** use a fixed `chipH` / `chipH_soprano` scale based on
+`PITCH_SCALE` index × `CHIP_STEP_H`. Each scale degree maps to an absolute
+height regardless of what other pitches are present in the phrase. Soprano is
+always taller than alto because `chipH_soprano` explicitly enforces it.
+
+**Bass and tenor** now use a **unified normalization** (`buildUnifiedVoiceMap`)
+that collects all pitches from both `BASS_RULES` and `TENOR_RULES` for the
+active tone, computes actual sounding frequencies (respecting `octaveDiv`),
+and normalizes them together into one H_VOICE_MIN→H_VOICE_MAX scale. Because
+bass pitches are universally lower in frequency than tenor pitches, bass chips
+always render deeper than tenor chips — physics guarantees the separation.
+
+### Pending consistency item
+Soprano and alto currently use independent fixed scales rather than a unified
+normalization. For visual consistency with the bass/tenor approach, consider
+migrating S/A to a unified `buildUnifiedVoiceMap` covering both voices
+together. This would ensure soprano chips always rise above alto proportionally
+to their actual pitch difference — mirroring the bass/tenor relationship.
+
+### Tenor si detuning (v0.11.28)
+`si` at div-1 (220Hz) creates beating against the 2nd harmonic of alto `ti`
+(116.5Hz × 2 = 233Hz) at ~13Hz. A -100 cent detune → 207.7Hz pushes the
+beat rate to ~25Hz (above perceptual threshold). Scoped to `sol === "si" &&
+phraseRules?.octaveDiv?.["si"] === 1` — only fires for Tone 1 Final Phrase.
