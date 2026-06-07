@@ -152,6 +152,14 @@ export const FIELD_REGISTRY = [
     description: 'Prokeimenon stichos verse',
   },
   {
+    field: 'alleluia_tone', category: 'liturgy', appliesTo: 'both',
+    required: (entry, type) => {
+      if (type === 'menaion') return entry.rank !== 'simple' && entry.feast_e !== null;
+      return isPresent(entry, 'feast_e') && entry.feast_e !== null;
+    },
+    description: 'Alleluia tone number',
+  },
+  {
     field: 'alleluia_verse', category: 'liturgy', appliesTo: 'both',
     required: (entry, type) => {
       if (type === 'menaion') return entry.rank !== 'simple' && entry.feast_e !== null;
@@ -239,6 +247,19 @@ export const FIELD_REGISTRY = [
     description: 'Litiya Both Now theotokion (tone + text, or null)',
   },
 
+  // ── VESPERS: PROKEIMENON ───────────────────────────────────────────────────
+  {
+    field: 'vespers_prokeimenon', category: 'vespers_lic', appliesTo: 'pentecostarion_only',
+    required: (entry) => {
+      // Required on all Pentecostarion entries except those where alleluia replaces
+      // prokeimenon (Saturday of Reposed, vespers_alleluia_replaces_prokeimenon: true)
+      if (entry.vespers_alleluia_replaces_prokeimenon === true) return false;
+      return true;
+    },
+    description: 'Vespers prokeimenon (tone, text, verses, type)',
+    check: (entry) => 'vespers_prokeimenon' in entry,
+  },
+
   // ── VESPERS: APOSTICHA ─────────────────────────────────────────────────────
   {
     field: 'aposticha_source', category: 'vespers_aposticha', appliesTo: 'both',
@@ -288,6 +309,22 @@ export const FIELD_REGISTRY = [
     check: (entry) => 'aposticha_both_now' in entry,
   },
 
+  // ── MATINS: APOSTICHA ──────────────────────────────────────────────────────
+  // Required on all Pentecostarion entries. null is valid (NOT YET ENCODED marker
+  // when Matins assembler not yet built). The key must be present.
+  {
+    field: 'stichera_matins_aposticha', category: 'matins', appliesTo: 'pentecostarion_only',
+    required: () => true,
+    description: 'Matins aposticha stichera array (or null if NOT YET ENCODED)',
+    check: (entry) => 'stichera_matins_aposticha' in entry,
+  },
+  {
+    field: 'stichera_matins_aposticha_glory', category: 'matins', appliesTo: 'pentecostarion_only',
+    required: () => true,
+    description: 'Matins aposticha Glory doxasticon (or null if NOT YET ENCODED)',
+    check: (entry) => 'stichera_matins_aposticha_glory' in entry,
+  },
+
   // ── MATINS ─────────────────────────────────────────────────────────────────
   {
     field: 'matins_format', category: 'matins', appliesTo: 'both',
@@ -321,6 +358,18 @@ export const FIELD_REGISTRY = [
     field: 'matins_gospel', category: 'matins', appliesTo: 'menaion_only',
     required: (entry) => ['polyeleos', 'vigil'].includes(entry.rank),
     description: 'Matins Gospel reading (§2E/§2F)',
+  },
+  {
+    field: 'beatitudes_source', category: 'matins', appliesTo: 'both',
+    required: (entry, type) => {
+      if (type === 'menaion') return ['polyeleos', 'vigil'].includes(entry.rank);
+      return entry.menaion_set_aside === true ||
+             (entry.hours_format || '').includes('sunday') ||
+             entry.hours_format === 'all_saints_sunday' ||
+             entry.hours_format === 'pentecost';
+    },
+    description: 'Beatitudes source description (e.g. "6 verses from Ode VI")',
+    check: (entry) => typeof entry.beatitudes_source === 'string' && entry.beatitudes_source.length > 0,
   },
   {
     field: 'beatitudes_troparia', category: 'matins', appliesTo: 'both',

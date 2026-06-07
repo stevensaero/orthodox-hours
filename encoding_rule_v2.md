@@ -75,7 +75,14 @@ Every encoding session follows these steps in order:
    update the tool → commit (no push until 3 dates complete)
 4. **Before closing:** confirm every .txt artifact is produced; note any NOT YET ENCODED
    fields explicitly; bump version if session adds meaningful content
-5. **Push** — one push per session after version bump
+5. **Run the skeleton gate — MANDATORY before every push:**
+   ```
+   node scripts/check-skeleton.mjs all
+   ```
+   This must exit 0 (no gaps reported) before any push is made.
+   If it exits 1, resolve all gaps first. A push with skeleton gaps is a protocol violation.
+   The gate uses the same `FIELD_REGISTRY` as the browser audit — they are identical.
+6. **Push** — one push per session after version bump and gate passes
 
 ---
 
