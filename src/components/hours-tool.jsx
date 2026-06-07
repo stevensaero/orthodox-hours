@@ -2029,6 +2029,18 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
       secondaryTrop = effectiveMenaionTrop;
       secondaryTropSource = `Menaion — ${effectiveSaint}`;
     }
+  } else if (isOrdinarySunday) {
+    // Ordinary Sunday (post-Pentecostarion): resurrectional troparion is primary.
+    // Fekula §1A: resurrectional troparion of the tone, then Glory → Menaion saint troparion.
+    const resTrop = RESURRECTIONAL_TROPARIA[tone];
+    if (resTrop) {
+      primaryTrop = resTrop;
+      primaryTropSource = `Octoechos — Tone ${tone} (Sunday resurrectional)`;
+    }
+    if (effectiveMenaionTrop) {
+      secondaryTrop = effectiveMenaionTrop;
+      secondaryTropSource = `Menaion — ${effectiveSaint}`;
+    }
   } else if (effectiveMenaionTrop) {
     primaryTrop = effectiveMenaionTrop;
     primaryTropSource = `Menaion — ${effectiveSaint}`;
@@ -2074,8 +2086,27 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
       ? `Menaion — ${effectiveSaint} (Doxology+ rank)`
       : `Pentecostarion — ${pentEntry.name}`;
   } else {
-    kontakion = getKontakionForHour(menaionEntry, hourKey);
-    kontakionSource = `Menaion — ${effectiveSaint}`;
+    // Ordinary time (weekday or Sunday)
+    if (isOrdinarySunday) {
+      // Fekula §1A: Sunday kontakion of the tone at 1st & 6th Hours (after Ode III).
+      // At 3rd & 9th Hours (after Ode VI): Menaion saint kontakion if present,
+      // otherwise Sunday kontakion.
+      const sundayKont = SUNDAY_KONTAKIA[tone] || null;
+      const menaionKont = getKontakionForHour(menaionEntry, hourKey);
+      if (is3rdOr9th && menaionKont) {
+        kontakion = menaionKont;
+        kontakionSource = `Menaion — ${effectiveSaint}`;
+      } else if (sundayKont) {
+        kontakion = sundayKont;
+        kontakionSource = `Octoechos — Tone ${tone} (Sunday kontakion)`;
+      } else {
+        kontakion = menaionKont;
+        kontakionSource = `Menaion — ${effectiveSaint}`;
+      }
+    } else {
+      kontakion = getKontakionForHour(menaionEntry, hourKey);
+      kontakionSource = `Menaion — ${effectiveSaint}`;
+    }
     if (isOrdinarySunday && namedDay && namedDay.kontakion_ode6) {
       const useThirdOde = hourKey === '1st_hour' || hourKey === '6th_hour';
       kontakion = useThirdOde && namedDay.kontakion_ode3
@@ -7961,7 +7992,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
-    version: "v0.6.3",
+    version: "v0.6.4",
+    date: "June 2026",
+    summary: "Ordinary Sunday resurrectional troparion and kontakion now assembled from Octoechos",
+    items: [
+      "fix: RESURRECTIONAL_TROPARIA and SUNDAY_KONTAKIA tables were defined but never referenced in the assembler — ordinary Sundays (season='sunday') showed only the Menaion saint troparion with no resurrectional content. Now wired: resurrectional troparion of the tone is primary; Menaion saint troparion is Glory (secondary). Fekula §1A.",
+      "fix: Sunday kontakion now sourced from SUNDAY_KONTAKIA[tone] at 1st & 6th Hours; Menaion saint kontakion at 3rd & 9th Hours per the two-kontakia HTM rule. Falls back to Sunday kontakion if no Menaion kontakion present.",
+      "fix: parseCalendarDate() — user-selected dates now parsed as local midnight, matching all boundary date construction. Eliminates T12:00:00 noon offset that caused allSaintsSunday boundary comparison to fail.",
+    ],
+  },
+  {
     date: "June 2026",
     summary: "All Saints Sunday (P+56) fully working — season boundary midnight/noon fix",
     items: [
