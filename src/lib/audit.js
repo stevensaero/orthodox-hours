@@ -201,7 +201,9 @@ export const FIELD_REGISTRY = [
       return entry.menaion_set_aside === true;
     },
     description: 'Lord I Have Cried stichera array',
-    check: (entry) => isNonEmptyArray(entry, 'stichera_lord_i_call'),
+    // null is valid: means feast stichera govern (e.g. apodosis days where assembler
+    // pulls texts directly from the feast entry). Key must be present.
+    check: (entry) => 'stichera_lord_i_call' in entry,
   },
   {
     field: 'stichera_lord_i_call_count', category: 'vespers_lic', appliesTo: 'both',
@@ -211,7 +213,9 @@ export const FIELD_REGISTRY = [
       }
       return entry.menaion_set_aside === true;
     },
-    description: 'LIC stichera count (6 | 8 | 10)',
+    description: 'LIC stichera count (6 | 8 | 10; null = feast stichera govern on apodosis)',
+    // null is valid: apodosis days where feast stichera govern and no count is needed
+    check: (entry) => 'stichera_lord_i_call_count' in entry,
   },
   {
     field: 'stichera_glory', category: 'vespers_lic', appliesTo: 'both',

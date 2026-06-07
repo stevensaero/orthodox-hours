@@ -3461,6 +3461,21 @@ const PENTECOSTARION_DATA = {
                                         "who ineffably in time hast given birth unto the Timeless One, " +
                                         "Thee do we the faithful magnify with one accord.",
     communion_verse: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
+
+    aposticha_both_now: { tone: 5, text: "O Lord, as Thou wast being taken up, to there from whence Thou wast not separated, " +
+            "the hosts of angels and all the Bodiless Ones cried out rejoicing unto the Powers above: " +
+            "Lift up the gates, O ye princes, and the King of Glory shall enter therein. " +
+            "For the cherubic throne took Thee up in the flesh. O Lord, glory be to Thee." },
+    stichera_lord_i_call_count: 6,  // §4A1: 3 Pentecostarion + 3 Menaion
+    stichera_matins_aposticha: null,       // NOT YET ENCODED — source: 73.pdf Matins Aposticha
+    stichera_matins_aposticha_glory: null, // NOT YET ENCODED — source: 73.pdf
+    has_polyeleos: false,
+    oca_primary: true,
+    note: "File covers Tuesday evening Small Vespers (P+44 eve) + Wednesday Matins/Liturgy (P+45). " +
+          "Ascension afterfeast Day 6. Weekday structure: Magnificat sung, Small Doxology read. " +
+          "Beatitudes from Ode VII of Ascension Canon including Irmos (73.pdf AT LITURGY). " +
+          "Prokeimenon Tone VII and Alleluia Tone II throughout Ascension afterfeast. " +
+          "Instead of It Is Truly Meet: Ascension Ode IX Irmos (afterfeast continues).",
   },
 
   // ── P+46 — Thursday of the Seventh Week — Ascension Afterfeast, Day 7 ─────
@@ -3639,6 +3654,23 @@ const PENTECOSTARION_DATA = {
                                         "who ineffably in time hast given birth unto the Timeless One, " +
                                         "Thee do we the faithful magnify with one accord.",
     communion_verse: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
+
+    aposticha_both_now: { tone: 1, text: "Having ascended into the heavens, from whence Thou didst also descend, " +
+            "leave us not orphaned, O Lord; " +
+            "let Thy Spirit come, bringing peace unto the world; " +
+            "show Thou unto the sons of men the works of Thy might, " +
+            "O Lord and Lover of mankind." },
+    stichera_lord_i_call_count: 6,  // §4A1: 3 Pentecostarion + 3 Menaion
+    has_polyeleos: false,
+    oca_primary: true,
+    note: "File covers Wednesday evening Small Vespers (P+45 eve) + Thursday Matins/Liturgy (P+46). " +
+          "Ascension afterfeast Day 7 — last full afterfeast day before Apodosis. " +
+          "Weekday structure: Magnificat sung, Small Doxology read. " +
+          "New Pentecostarion stichera set Tone IV at Lord I Have Cried (distinct from prior days). " +
+          "Matins aposticha fully encoded (stichera_matins_aposticha / _glory). " +
+          "Beatitudes from Ode VIII of Ascension Canon including Irmos (74.pdf AT LITURGY). " +
+          "Prokeimenon Tone VII and Alleluia Tone II throughout Ascension afterfeast. " +
+          "Instead of It Is Truly Meet: Ascension Ode IX Irmos (afterfeast continues).",
   },
 
   // ── P+47 — Friday of the Seventh Week — Apodosis of the Ascension ──────────
@@ -3727,6 +3759,46 @@ const PENTECOSTARION_DATA = {
       "Thee do we the faithful magnify with one accord.",
     zadostoinik_refrain: "Magnify, O my soul, Christ the giver of life, Who ascended from earth to heaven.",
     communion_verse: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
+
+    // Apodosis: "we chant everything as set forth on the Feast of the Ascension" (75.pdf)
+    // Aposticha inherited from P+39 Ascension Vespers aposticha (same texts)
+    stichera_aposticha: [
+      { tone: 2, verse: null,
+        text: "Thou wast born as Thou Thyself didst will; Thou didst appear of Thine own choice; " +
+              "Thou didst suffer in the flesh, O our God. Thou didst arise from the dead, trampling down death; " +
+              "and Thou didst ascend in glory, O Thou Who fillest all things, " +
+              "and didst send unto us the divine Spirit, that we may praise and glorify Thy Divinity." },
+      { tone: 2, verse: "Clap your hands, all ye nations; shout unto God with a voice of rejoicing.",
+        text: "Beholding Thee being taken up from the Mount of Olives, O Christ, " +
+              "the Powers cried one to another: Who is this? And it was said unto them: " +
+              "This is He that is strong and mighty. This is He that is mighty in war. " +
+              "This is truly the King of Glory. And wherefore are His garments red? " +
+              "Because He cometh from Bozrah, which is the flesh. " +
+              "But Thou Thyself, being God, didst sit at the right hand of majesty " +
+              "and didst send unto us the Holy Spirit, that He may guide and save our souls." },
+      { tone: 2, verse: "God is gone up in jubilation, the Lord with the voice of the trumpet.",
+        text: "Thou wast taken up in glory from the Mount of Olives, O Christ God, " +
+              "in the presence of Thy disciples, and didst sit down at the right hand of the Father, " +
+              "O Thou Who dost fill all things with Thy Divinity; " +
+              "and Thou didst send unto them the Holy Spirit, " +
+              "Who doth illumine and strengthen and sanctify our souls." },
+    ],
+    aposticha_glory: { tone: 6, text: "God is gone up in jubilation, the Lord with the voice of the trumpet, " +
+            "to raise the fallen image of Adam, and to send the Comforting Spirit to sanctify our souls." },
+    aposticha_both_now: { tone: 6, text: "God is gone up in jubilation, the Lord with the voice of the trumpet, " +
+            "to raise the fallen image of Adam, and to send the Comforting Spirit to sanctify our souls." },
+    stichera_glory: null,  // Apodosis: feast stichera govern LIC; Glory = Ascension doxasticon from P+39
+    stichera_matins_aposticha: null,       // NOT YET ENCODED — source: 75.pdf (same as feast per rubric)
+    stichera_matins_aposticha_glory: null, // NOT YET ENCODED
+    has_polyeleos: false,
+    oca_primary: true,
+    note: "Apodosis (Leavetaking) of the Ascension. 75.pdf ruling: 'we chant everything as set forth " +
+          "on the Feast of the Ascension in Vespers, Matins, and at the Liturgy.' " +
+          "Exception: Beatitudes replaced by 8 troparia from Ode IX of both Festal Canons. " +
+          "stichera_lord_i_call: null — feast stichera govern (apodosis_ascension assembler handles). " +
+          "Aposticha inherited from P+39 Ascension Vespers per 75.pdf rubric. " +
+          "Prokeimenon Tone VII and Alleluia Tone II (same as Ascension). " +
+          "zadostoinik continues (instead of It Is Truly Meet) on the Apodosis day.",
   },
 
   // ── P+48 — Saturday of the Reposed — Before Pentecost ──────────────────────
