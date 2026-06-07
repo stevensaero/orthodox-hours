@@ -1871,6 +1871,9 @@ Canonical spec: `encoding_rule_v2.md` in repo root.
 `kontakion_ode6` → 3rd & 9th Hours; `kontakion_ode3` → 1st & 6th Hours;
 `hours_kontakion` → single-kontakion Pentecostarion weekday entries only.
 
+**`fekula_section` vs `fekula_section_override`:**
+Both may be present on the same entry. `fekula_section` is the canonical data field — the registry, gate, and data browser all read it. `fekula_section_override` is an assembler escape hatch — the assembler reads it first and uses it instead of deriving the section from `rank`. Use it only when the Fekula section cannot be derived from rank alone, specifically §2G entries (afterfeast with saint). For §2G entries, both fields must be set to the same value (e.g. `"2G1"`). Never use `fekula_section_override` alone — the registry won't see it. Never use it for §2B double services — rank is sufficient. Full rules in `encoding_rule_v2.md`.
+
 ---
 
 ## Encoding Status — May 23, 2026 Session

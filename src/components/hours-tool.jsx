@@ -1965,6 +1965,9 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
       return '§4A';
     }
     if (!menaionEntry) return '§2A';
+    // fekula_section_override: assembler escape hatch for entries where rank alone
+    // cannot derive the correct Fekula section — specifically §2G afterfeast entries.
+    // Must be set alongside fekula_section (registry reads fekula_section; assembler reads this).
     if (menaionEntry.fekula_section_override) return `§${menaionEntry.fekula_section_override}`;
     const r = menaionEntry.rank;
     return r === 'six_stichera' ? '§2C'
@@ -3880,6 +3883,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       return "§4A";
     }
     if (!menaionEntry) return "§2A";
+    // fekula_section_override: escape hatch for §2G afterfeast entries — see encoding_rule_v2.md
     if (menaionEntry.fekula_section_override) return "§" + menaionEntry.fekula_section_override;
     return rank === "six_stichera" ? "§2C" : rank === "doxology" ? "§2D"
          : rank === "polyeleos" ? "§2E" : rank === "vigil" ? "§2F"
