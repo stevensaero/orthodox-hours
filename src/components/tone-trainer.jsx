@@ -4127,11 +4127,14 @@ export default function ToneTrainer() {
           {!lexicon && !lexiconError && <span style={{ fontSize: "0.72rem", color: "#9A8A70",
                                                         fontStyle: "italic" }}>loading lexicon…</span>}
           <button
-            style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none",
-                     fontSize: "1rem", padding: "5px 10px" }}
+            style={{ ...btn,
+                     background: playingLine !== null ? "#7a2418" : "#3a6e28",
+                     color: "#f7ead0", border: "none",
+                     fontSize: "1rem", padding: "5px 14px",
+                     display: "inline-flex", alignItems: "center", gap: "0.35em" }}
             onClick={playingLine !== null ? stopAll : playAll}
             title={playingLine !== null ? "Stop playback" : "Sing all lines"}>
-            {playingLine !== null ? "◼" : "▶"}
+            {playingLine !== null ? <>◼ <span style={{ fontSize: "0.82rem" }}>Stop</span></> : <>Play <span>▶</span></>}
           </button>
         </div>
 
