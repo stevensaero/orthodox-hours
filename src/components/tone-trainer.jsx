@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.22";
+export const TONE_TRAINER_VERSION = "v0.11.23";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.11.23",
+    date: "June 2026",
+    summary: "fix: tenor Final Phrase register — la/si lifted to div-1 to sit above sol",
+    items: [
+      "fix: TENOR_RULES[1].Final octaveDiv:{la:1,si:1}. At div-2, la(104Hz) and si(110Hz) fell an octave below sol(185Hz) — heard as a dramatic drop. With div-1, la(208Hz) sits one step above sol and si(220Hz) a half-step above la, matching the score. mi(Lord) stays div-2(156Hz), one step below sol. Chip heights follow automatically via buildVoiceHeightMap.",
+    ],
+  },
   {
     version: "v0.11.22",
     date: "June 2026",
@@ -1699,6 +1707,9 @@ const TENOR_RULES = {
       // si = raised 6th (B♮ in D minor), harmonic minor approach to la close
       cadMap: { do: "la", ti: "si", la: "mi" },
       preslurMap: {},
+      // la and si sit one step above sol (the A-D reciting pitch) — div-1 keeps them
+      // in the correct register. mi (Lord) sits below sol — stays at global div-2.
+      octaveDiv: { la: 1, si: 1 },
     },
   },
 };
