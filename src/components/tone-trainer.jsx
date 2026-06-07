@@ -4566,7 +4566,7 @@ export default function ToneTrainer() {
               {!isGhostSoprano && !isGhostTenor && (
                 <div style={{
                   position: "absolute", left: 0, right: 0, textAlign: "center",
-                  ...(isDownward ? { bottom: 10 } : { top: 10 }),
+                  ...(isDownward ? { bottom: 9 } : { top: 9 }),
                   fontSize: 9, color: solColor, fontStyle: "italic",
                   fontFamily: "Georgia, serif",
                 }}>{sol}</div>
@@ -4682,11 +4682,11 @@ export default function ToneTrainer() {
                   {groupedAlto.map((grp, gi) => {
                     const entries = grp.entries;
                     if (entries.length === 1) {
-                      return <React.Fragment key={gi}>{renderChip(entries[0].r, entries[0].i, false, true)}</React.Fragment>;
+                      return <React.Fragment key={gi}>{renderChip(entries[0].r, entries[0].i, false, false, true)}</React.Fragment>;
                     }
                     return (
                       <div key={gi} style={{ display: "inline-flex", gap: CHIP_MELISMA_GAP, alignItems: "flex-end" }}>
-                        {entries.map(({r, i}) => renderChip(r, i, false, true))}
+                        {entries.map(({r, i}) => renderChip(r, i, false, false, true))}
                       </div>
                     );
                   })}
