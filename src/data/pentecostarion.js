@@ -1115,6 +1115,8 @@ const PENTECOSTARION_DATA = {
 
     // ── FLAGS ────────────────────────────────────────────────────────────────
     menaion_set_aside: false,
+    oca_primary: true,
+    has_polyeleos: false,
     matins_format: "god_is_the_lord",
     heavenly_king_omitted: true,
     it_is_truly_meet_suppressed: true,
@@ -1501,6 +1503,8 @@ const PENTECOSTARION_DATA = {
 
     // ── FLAGS ────────────────────────────────────────────────────────────────
     menaion_set_aside: false,
+    oca_primary: true,
+    has_polyeleos: false,
     matins_format: "god_is_the_lord",
     heavenly_king_omitted: true,
     it_is_truly_meet_suppressed: true,
@@ -1622,6 +1626,8 @@ const PENTECOSTARION_DATA = {
                "In a place of green pasture, there hath He made me to dwell."],
       type: "weekday_ordinary",
       note: "Tuesday evening prokeimenon — Tone I",
+    },
+
     // ── LORD I HAVE CRIED — from 63.pdf (Apodosis of Pascha) ──────────────
     // 6 stichera all from Pentecostarion — Blind Man texts
     // Glory/Both now: Tone VIII doxasticon printed in PDF
@@ -1689,10 +1695,17 @@ const PENTECOSTARION_DATA = {
               "let us forgive all things on the Resurrection, and thus let us cry out:" },
     aposticha_note: "Aposticha: 1 Resurrection sticheron (Tone V) + 3 Paschal stichera (Tone V). " +
               "Glory: Paschal doxasticon Tone V. The Paschal stichera texts come from the Paschal canon.",
-    },
+    aposticha_both_now: { tone: 5, text: "It is the Day of Resurrection, let us be radiant for the feast, " +
+              "and let us embrace one another. " +
+              "Let us say, Brethren, even to them that hate us, " +
+              "let us forgive all things on the Resurrection, and thus let us cry out: " +
+              "Christ is risen from the dead, trampling down death by death, " +
+              "and upon those in the tombs bestowing life." },
 
     has_litya: false,
     has_paroemias: false,
+    has_polyeleos: false,
+    oca_primary: true,
     menaion_set_aside: true,  // All 6 Vespers stichera from Pentecostarion; no Menaion at Vespers
 
     magnificat_sung: false,    // Ode IX uses Paschal Megalynarion refrains
@@ -1745,8 +1758,52 @@ const PENTECOSTARION_DATA = {
 
     communion_verse: "Receive ye the body of Christ, taste ye of the fountain of immortality.",
     beatitudes_source: "8 verses from Odes III and VI of Canon of Pascha",
-
-    it_is_truly_meet_suppressed: true,
+    beatitudes_troparia: [
+      { source: "pascha_ode3",
+        text: "O Christ, Thou art my strength, my God and my Lord! " +
+              "Thy holy Church doth sing to Thee and cry aloud: " +
+              "O Lord, glory be to Thee!" },
+      { source: "pascha_ode3",
+        text: "Come, let us drink a new drink, " +
+              "not one miraculously brought forth from a barren rock, " +
+              "but Christ's Incorruption, " +
+              "poured forth from the tomb, " +
+              "in Whom we are established." },
+      { source: "pascha_ode3",
+        text: "Now are all things filled with light: " +
+              "heaven and earth and the nether regions. " +
+              "Let all creation celebrate Christ's arising, " +
+              "in Whom it is established." },
+      { source: "pascha_ode3",
+        text: "Yesterday, O Christ, I was buried with Thee; " +
+              "today I arise with Thee in Thy Resurrection. " +
+              "Yesterday I was crucified with Thee; " +
+              "do Thou Thyself glorify me with Thee, " +
+              "O Savior, in Thy kingdom." },
+      { source: "pascha_ode6",
+        text: "Thou didst descend into the nethermost parts of the earth, " +
+              "and didst shatter the eternal bars that held fast the fettered, O Christ; " +
+              "and on the third day, " +
+              "like Jonah from the whale, " +
+              "Thou didst rise again from the tomb." },
+      { source: "pascha_ode6",
+        text: "Having kept the seals intact, " +
+              "Thou didst rise from the tomb, O Christ, " +
+              "Who didst not break the seal of the Virgin " +
+              "at Thy birth; " +
+              "and Thou hast opened to us the gates of Paradise." },
+      { source: "glory",
+        text: "O Christ, the great and most sacred Pascha! " +
+              "O Wisdom, Word and Power of God! " +
+              "Grant that we may more perfectly partake of Thee " +
+              "in the day of Thy Kingdom which knoweth no evening." },
+      { source: "theotokion",
+        text: "Rejoice, O Virgin, rejoice! " +
+              "Rejoice, O blessed one! Rejoice, O glorified one! " +
+              "For thy Son is risen from the grave on the third day, " +
+              "and hath raised the dead: " +
+              "ye people, be ye glad!" },
+    ],
     note: "Apodosis of Pascha — full Paschal ceremony restored at Vespers and Matins. " +
           "Three canons at Matins (14 troparia/ode). Great Doxology chanted. " +
           "Ode IX uses Paschal Megalynarion refrains throughout. " +
