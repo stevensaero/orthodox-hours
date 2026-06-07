@@ -908,6 +908,17 @@ const PENTECOSTARION_DATA = {
             "He is the Savior of our souls.",
       note: "Both now = same (rubric: Glory...Both now in Tone VIII)",
     },
+    aposticha_both_now: { tone: 8, text: "As Jesus passed by on His way from the temple, " +
+            "He found a man who was blind from his birth; " +
+            "and taking compassion on him, He put clay on his eyes and said unto him: " +
+            "Go and wash in the pool of Siloam. " +
+            "And he washed and gained his sight, and sent up praise to God. " +
+            "But his kinsmen said unto him: " +
+            "Who hath opened thine eyes, which none of those who see were able to heal? " +
+            "And he cried out and said: " +
+            "A man called Jesus; He told me: Wash in the pool of Siloam; and I gained my sight. " +
+            "He is truly Christ the Messiah, of Whom Moses spake in the Law. " +
+            "He is the Savior of our souls." },
 
     // ── MATINS APOSTICHA (Monday Morning) ────────────────────────────────────
     // From 61.pdf Matins Aposticha section
@@ -1205,6 +1216,7 @@ const PENTECOSTARION_DATA = {
     has_litya: false,
     has_paroemias: false,
 
+    stichera_lord_i_call_count: 6,  // §4A1: 3 Pentecostarion + 3 Menaion
     stichera_lord_i_call: [
       {
         tone: 5,
@@ -1306,6 +1318,14 @@ const PENTECOSTARION_DATA = {
             "since Thou alone art the bountiful Bestower of good gifts.",
       note: "Both now = same (rubric: Glory...Both now in Tone VIII)",
     },
+    aposticha_both_now: { tone: 8, text: "O Christ God, Who by Thy merciful compassion became incarnate, " +
+            "with Thy fingers which hath fashioned all things " +
+            "Thou didst touch clay to the eyes of him who from the womb was bereft of sight " +
+            "and didst thereby deem him worthy of divine brilliance " +
+            "by Thine ineffable compassion. " +
+            "And now do Thou Thyself, O Bestower of light, " +
+            "illumine also the senses of our souls, " +
+            "since Thou alone art the bountiful Bestower of good gifts." },
 
     // ── MATINS APOSTICHA (Tuesday Morning) ───────────────────────────────────
     // From 62.pdf Matins Aposticha section
@@ -1707,10 +1727,17 @@ const PENTECOSTARION_DATA = {
     has_polyeleos: false,
     oca_primary: true,
     menaion_set_aside: true,  // All 6 Vespers stichera from Pentecostarion; no Menaion at Vespers
+    heavenly_king_omitted: true,   // Paschal period — omitted until Pentecost eve
+    it_is_truly_meet_suppressed: true,  // Zadostoinik governs — see zadostoinik_refrain/irmos
 
     magnificat_sung: false,    // Ode IX uses Paschal Megalynarion refrains
     has_great_doxology: true,  // CHANTED — feast-level Matins
     matins_format: "god_is_the_lord",
+
+    // Matins aposticha — Paschal structure restored; specific stichera from 63.pdf
+    // NOT YET ENCODED — Matins assembler not yet built; source: 63.pdf Matins Aposticha section
+    stichera_matins_aposticha: null,
+    stichera_matins_aposticha_glory: null,
 
     ode9_refrain: "Magnify, O my soul, Him Who willingly suffered, " +
                   "and was buried, and arose from the grave on the third day.",
