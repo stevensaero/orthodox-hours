@@ -1718,7 +1718,8 @@ const TENOR_RULES = {
       preslurMap: {},
       // la and si sit one step above sol (the A-D reciting pitch) — div-1 keeps them
       // in the correct register. mi (Lord) sits below sol — stays at global div-2.
-      octaveDiv: { la: 1, si: 1 },
+      // la lifts to div-1 (one step above prior sol). si drops to div-2 (close harmony with alto ti).
+      octaveDiv: { la: 1 },
     },
   },
 };
@@ -2924,8 +2925,6 @@ export default function ToneTrainer() {
   // lineToNotes_tenor(line)
   // Derives tenor audio notes from rolesWD — mirrors lineToNotes_bass exactly.
   const lineToNotes_tenor = (line) => {
-    // TROUBLESHOOT: tenor suppressed on Final Phrase
-    if (line.phrase === "Final") return null;
     const rules = TENOR_RULES[activeTone]?.[line.phrase];
     if (!rules) return null;
 
@@ -4425,8 +4424,6 @@ export default function ToneTrainer() {
         // Tenor rolesWD — derived from rolesWD via TENOR_RULES, mirrors bassRolesWD pattern.
         const tenorRolesWD = (() => {
           if (!showTenor && !showTenorGhost) return null;
-          // TROUBLESHOOT: tenor suppressed on Final Phrase
-          if (line.phrase === "Final") return null;
           const trules = TENOR_RULES[activeTone]?.[line.phrase];
           if (!trules) return null;
           return rolesWD.map(r => {
