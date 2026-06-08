@@ -5121,7 +5121,8 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
       }
 
       // ── Alleluia — between Epistle and Gospel ──────────────────────────
-      // Routing: pentEntry > menaionEntry > weekday daily table
+      // Routing priority: pentEntry > menaionEntry (weekday) > Sunday resurrectional > weekday daily table
+      // Sunday + polyeleos/vigil Menaion saint: resurrectional FIRST, then festal second. — Fekula §4A3
       {
         const buildAlleluia = (a) => {
           const lines = ["Alleluia, Tone " + a.tone + ".\n\nV.: " + a.verse];
@@ -5133,32 +5134,54 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
 
         let alData = null;
         let alNote = null;
+        let alSource = 'weekly';  // for explainer badge
 
         if (pentEntry?.alleluia_verse) {
           alData = { tone: pentEntry.alleluia_tone, verse: pentEntry.alleluia_verse,
                      stichoi: pentEntry.alleluia_stichos ? [pentEntry.alleluia_stichos] : [] };
           alNote = "Pentecostarion proper Alleluia · Source: St. Sergius PDF";
+          alSource = 'pentecostarion';
+        } else if (isSunday) {
+          // Sunday: resurrectional Alleluia always comes first
+          const resAl = SUNDAY_ALLELUIA[tone] || SUNDAY_ALLELUIA[1];
+          elements.push({ id: "typica-alleluia-res",
+            label: "Alleluia (Resurrectional) · Tone " + tone,
+            text: buildAlleluia(resAl), type: "movable", source: src,
+            note: "Sunday resurrectional Alleluia, Tone " + tone + " · Source: St. Sergius Sunday Octoechos",
+            alleluiaSource: 'sunday_resurrectional', alleluiaDow: dowNumber, alleluiaRank: rank, alleluiaTone: tone });
+          // If polyeleos/vigil Menaion saint also has a festal Alleluia, add it second
+          if (menaionEntry?.alleluia_verse &&
+              (rank === 'polyeleos' || rank === 'vigil')) {
+            elements.push({ id: "typica-alleluia-feast",
+              label: "Alleluia (Festal) · Tone " + menaionEntry.alleluia_tone,
+              text: buildAlleluia({ tone: menaionEntry.alleluia_tone, verse: menaionEntry.alleluia_verse,
+                stichoi: menaionEntry.alleluia_stichos ? [menaionEntry.alleluia_stichos] : [] }),
+              type: "movable", source: src,
+              note: "Festal Alleluia · Menaion proper · " + (menaionEntry.saint || "saint of the day") + " · Fekula §4A3",
+              alleluiaSource: 'menaion_festal_sunday', alleluiaDow: dowNumber, alleluiaRank: rank, alleluiaTone: tone });
+          }
+          alData = null; // already pushed above
         } else if (menaionEntry?.alleluia_verse) {
           alData = { tone: menaionEntry.alleluia_tone, verse: menaionEntry.alleluia_verse,
                      stichoi: menaionEntry.alleluia_stichos ? [menaionEntry.alleluia_stichos] : [] };
           alNote = "Menaion proper Alleluia · Source: St. Sergius Menaion · " + (menaionEntry.saint || "saint of the day");
-        } else if (!isSunday) {
+          alSource = 'menaion_festal';
+        } else {
           const daily = TYPICA_WEEKDAY_ALLELUIA[dowNumber];
           if (daily) {
             alData = daily;
             alNote = ["","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dowNumber] +
                      " Alleluia, Tone " + daily.tone + " · Source: HTM daily file";
+            alSource = 'weekly';
           }
-        }
-        // Sunday without pentEntry: use resurrectional Alleluia by tone
-        if (!alData && isSunday) {
-          const a = SUNDAY_ALLELUIA[tone] || SUNDAY_ALLELUIA[1];
-          alData = a;
-          alNote = "Sunday resurrectional Alleluia, Tone " + tone + " · Source: St. Sergius Sunday Octoechos";
         }
 
         if (alData) {
-          movable("typica-alleluia", "Alleluia", buildAlleluia(alData), alNote);
+          elements.push({ id: "typica-alleluia",
+            label: "Alleluia · Tone " + alData.tone,
+            text: buildAlleluia(alData), type: "movable", source: src,
+            note: alNote,
+            alleluiaSource: alSource, alleluiaDow: dowNumber, alleluiaRank: rank, alleluiaTone: tone });
         }
       }
 
@@ -6656,6 +6679,14 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
         {(isMovable || element.showFekula) && element.fekula && (
           <FekulaBadge section={element.fekula.section} note={element.fekula.note} />
         )}
+        {element.alleluiaSource && (
+          <AlleluiaExplainer
+            alleluiaSource={element.alleluiaSource}
+            alleluiaDow={element.alleluiaDow}
+            alleluiaRank={element.alleluiaRank}
+            alleluiaTone={element.alleluiaTone}
+          />
+        )}
         {element.unresolved && (
           <span
             style={{
@@ -7291,6 +7322,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.7.7",
+    date: "June 2026",
+    summary: "Alleluia gap fix + Verse source explainer badge",
+    items: [
+      "fix: Sunday + Polyeleos/Vigil Menaion saint now correctly renders resurrectional Alleluia (Octoechos tone) FIRST, then festal Alleluia second. Previously menaionEntry.alleluia_verse was checked before the Sunday resurrectional branch, silently dropping the resurrectional. — Fekula §4A3",
+      "feat: AlleluiaExplainer 'Verse source ▾' badge on all Alleluia elements in Typica. Expands to show active source with explanation, four-level priority chain (Pentecostarion → Sunday resurrectional + optional festal → Menaion festal weekday → weekday daily table), and full weekday Alleluia table (HTM Horologion) with active row highlighted.",
+      "feat: alleluiaSource field on alleluia elements — 'weekly', 'sunday_resurrectional', 'menaion_festal', 'menaion_festal_sunday', 'pentecostarion'. Sunday dual-Alleluia case documented explicitly.",
+    ],
+  },
   {
     version: "v0.7.6",
     date: "June 2026",
@@ -8168,6 +8209,175 @@ function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
         <div style={{ fontSize: '0.72rem', color: '#9A8A70', marginTop: '0.5rem' }}>
           ★ Great Prokeimenon — 3 verses, sung 4×. Overridden by festal prokeimenon at Polyeleos/Vigil rank.
           Source: HTM Horologion (Jordanville, 1994); OCA Office of Vespers (2021).
+        </div>
+      </div>
+    </span>
+  );
+}
+
+// ─── ALLELUIA EXPLAINER ───────────────────────────────────────────────────────
+// Badge showing how the Alleluia verse and tone were selected.
+// Mirrors ProkeimenonExplainer in structure.
+
+const WEEKDAY_ALLELUIA_TABLE = [
+  { day: "Monday",    tone: 5, verse: "Praise the Lord, all ye His angels…" },
+  { day: "Tuesday",   tone: 4, verse: "The righteous man shall flourish…" },
+  { day: "Wednesday", tone: 8, verse: "Hearken, O daughter, and see…" },
+  { day: "Thursday",  tone: 1, verse: "The heavens shall confess Thy wonders…" },
+  { day: "Friday",    tone: 1, verse: "Remember Thy congregation…" },
+  { day: "Saturday",  tone: 4, verse: "The righteous cried, and the Lord heard them…" },
+];
+
+function AlleluiaExplainer({ alleluiaSource, alleluiaDow, alleluiaRank, alleluiaTone }) {
+  const [open, setOpen] = React.useState(false);
+
+  const badgeStyle = {
+    background: 'rgba(139,105,20,0.15)',
+    border: '1px solid #8B6914',
+    borderRadius: '3px',
+    color: '#8B6914',
+    fontSize: '0.68rem',
+    padding: '1px 6px',
+    cursor: 'pointer',
+    fontFamily: 'Georgia, serif',
+    letterSpacing: '0.03em',
+  };
+
+  const sourceLabel = alleluiaSource === 'sunday_resurrectional' ? 'Sunday Resurrectional (Octoechos)'
+    : alleluiaSource === 'menaion_festal' ? 'Festal (Menaion)'
+    : alleluiaSource === 'menaion_festal_sunday' ? 'Festal (Menaion) — Sunday addition'
+    : alleluiaSource === 'pentecostarion' ? 'Festal (Pentecostarion)'
+    : 'Weekly daily table';
+
+  if (!open) {
+    return (
+      <button style={badgeStyle} onClick={() => setOpen(true)}
+        title="How is this Alleluia verse determined?">
+        Verse source ▾
+      </button>
+    );
+  }
+
+  // Day label for weekday table highlight
+  const dowLabels = ["","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+  return (
+    <span style={{ display: 'inline-block', verticalAlign: 'top', position: 'relative' }}>
+      <button style={{ ...badgeStyle, background: 'rgba(139,105,20,0.25)' }}
+        onClick={() => setOpen(false)}>
+        Verse source ▴
+      </button>
+      <div style={{
+        position: 'absolute', zIndex: 100, marginTop: '4px',
+        background: '#FAF6EE', border: '1px solid #D4C49A', borderRadius: '5px',
+        padding: '0.9rem 1rem 1rem', width: '340px', maxWidth: '90vw',
+        boxShadow: '0 3px 12px rgba(0,0,0,0.12)',
+        fontSize: '0.8rem', lineHeight: '1.65', color: '#2C1F0A',
+        fontFamily: 'Georgia, serif',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between',
+          alignItems: 'baseline', marginBottom: '0.5rem' }}>
+          <span style={{ fontSize: '0.68rem', letterSpacing: '0.14em',
+            textTransform: 'uppercase', color: '#8B6914', fontWeight: 'bold',
+            fontFamily: 'Georgia, serif' }}>
+            Alleluia Verse — Explained
+          </span>
+          <span onClick={() => setOpen(false)}
+            style={{ cursor: 'pointer', color: '#9A8A70', fontSize: '0.8rem',
+              marginLeft: '8px' }}>×</span>
+        </div>
+
+        {/* Active source */}
+        <div style={{ background: 'rgba(139,105,20,0.07)', borderLeft: '3px solid #8B6914',
+          padding: '0.4rem 0.6rem', borderRadius: '0 3px 3px 0', marginBottom: '0.75rem' }}>
+          <strong>Active source:</strong> {sourceLabel}
+          {alleluiaSource === 'sunday_resurrectional' && (
+            <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
+              Sunday always uses the <strong>resurrectional Alleluia keyed by the weekly
+              Octoechos tone (Tone {alleluiaTone})</strong>. On Sundays with a Polyeleos or
+              Vigil Menaion saint, a second festal Alleluia follows. — St. Sergius Sunday
+              Octoechos; Fekula §4A3
+            </div>
+          )}
+          {alleluiaSource === 'menaion_festal_sunday' && (
+            <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
+              This <strong>{alleluiaRank}</strong> saint appoints a festal Alleluia from the
+              Menaion. On Sundays it is sung <em>after</em> the resurrectional Alleluia
+              (Tone {alleluiaTone}). — Fekula §4A3
+            </div>
+          )}
+          {alleluiaSource === 'menaion_festal' && (
+            <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
+              This <strong>{alleluiaRank}</strong> saint appoints a proper festal Alleluia
+              from the Menaion, replacing the weekday daily table entry. — Fekula §2E–§2F
+            </div>
+          )}
+          {alleluiaSource === 'pentecostarion' && (
+            <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
+              This Pentecostarion feast appoints its own Alleluia verse, overriding all
+              other sources. — St. Sergius Pentecostarion PDF; Fekula §4B
+            </div>
+          )}
+          {alleluiaSource === 'weekly' && (
+            <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
+              No feast overrides the ordinary table — the fixed Alleluia for this day of
+              the week applies. — HTM Horologion
+            </div>
+          )}
+        </div>
+
+        {/* Priority order */}
+        <div style={{ marginBottom: '0.75rem', fontSize: '0.78rem' }}>
+          <strong>Priority order:</strong>
+          <ol style={{ margin: '4px 0 0 1rem', padding: 0, color: '#3D3020' }}>
+            <li>Pentecostarion feast Alleluia (when in Pentecostarion season)</li>
+            <li>Sunday resurrectional Alleluia keyed by Octoechos tone</li>
+            <li style={{ marginLeft: '0.75rem', listStyle: 'disc', fontSize: '0.75rem', color: '#5C4A1E' }}>
+              + Menaion festal Alleluia appended after, when Polyeleos §2E or Vigil §2F on a Sunday — Fekula §4A3
+            </li>
+            <li>Menaion festal Alleluia — Polyeleos §2E or Vigil §2F rank (weekday)</li>
+            <li>Weekday daily table — keyed by day of week (HTM Horologion)</li>
+          </ol>
+        </div>
+
+        {/* Weekday table */}
+        <div style={{ fontSize: '0.75rem', color: '#5C4A1E', marginBottom: '0.4rem',
+          fontWeight: 'bold' }}>
+          Weekday Alleluia table (HTM Horologion):
+        </div>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.77rem' }}>
+          <thead>
+            <tr style={{ borderBottom: '1px solid #D4C49A' }}>
+              {['Day','Tone','Verse'].map(h => (
+                <th key={h} style={{ textAlign: h === 'Tone' ? 'center' : 'left',
+                  padding: '2px 6px 3px ' + (h === 'Day' ? '0' : ''),
+                  color: '#8B6914', fontWeight: 'bold', fontSize: '0.7rem',
+                  letterSpacing: '0.08em', textTransform: 'uppercase' }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {WEEKDAY_ALLELUIA_TABLE.map((row, i) => {
+              const dow = i + 1; // 1=Mon … 6=Sat
+              const isActive = alleluiaSource === 'weekly' && alleluiaDow === dow;
+              return (
+                <tr key={i} style={{
+                  background: isActive ? 'rgba(139,105,20,0.1)' : 'transparent',
+                  borderBottom: '1px solid #EDE5D0',
+                }}>
+                  <td style={{ padding: '3px 6px 3px 0', color: '#3D3020' }}>{row.day}</td>
+                  <td style={{ padding: '3px 6px', textAlign: 'center',
+                    color: '#8B6914', fontWeight: 'bold' }}>{row.tone}</td>
+                  <td style={{ padding: '3px 0 3px 6px', color: '#5C4A1E',
+                    fontStyle: 'italic' }}>{row.verse}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        <div style={{ fontSize: '0.72rem', color: '#9A8A70', marginTop: '0.5rem' }}>
+          Sunday resurrectional Alleluia tone follows the weekly Octoechos cycle (Tones 1–8).
+          Source: HTM Horologion (Jordanville, 1994); St. Sergius Sunday Octoechos.
         </div>
       </div>
     </span>
