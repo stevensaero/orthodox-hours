@@ -256,9 +256,14 @@ function renderScore(payload) {
 
     var lines = chunkLines; // shadow outer lines for the loop below
 
-    // Strip VexFlow inline height so print CSS width:100% scales via viewBox aspect ratio
+    // Fix VexFlow inline height: set explicit px height so container sizes correctly.
+    // Print CSS width:100% then scales proportionally via viewBox aspect ratio.
     var chunkSvg = pageDiv.querySelector('svg');
-    if (chunkSvg) chunkSvg.style.height = '';
+    var svgH = SH * chunkLines.length + titleOffset + 40;
+    if (chunkSvg) {
+      chunkSvg.style.width  = PW + 'px';
+      chunkSvg.style.height = svgH + 'px';
+    }
 
     // Render title + subtitle as SVG text on page 1
     if (chunkIdx === 0) {
