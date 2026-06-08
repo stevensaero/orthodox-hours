@@ -6021,7 +6021,7 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
   if (!elements || elements.length === 0) return null;
 
   // Only surface the outline for substantial services — not the individual Hours
-  const OUTLINE_SERVICES = new Set(['vespers', 'typica', 'matins', 'divine_liturgy']);
+  const OUTLINE_SERVICES = new Set(['vespers', 'typica', 'matins', 'liturgy']);
   if (!OUTLINE_SERVICES.has(currentService.key)) return null;
 
   // Build rows from assembled elements — in assembly order, deduplicated
@@ -9120,7 +9120,7 @@ export default function App() {
                   {currentService.label}
                 </h2>
                 {currentService.built && elements.length > 0 &&
-                  ['vespers','typica','matins','divine_liturgy'].includes(currentService.key) && (
+                  ['vespers','typica','matins','liturgy'].includes(currentService.key) && (
                   <button onClick={() => setOutlineOpen(o => !o)}
                     style={{ fontSize: '9px', color: '#8B6914', letterSpacing: '0.12em',
                       textTransform: 'uppercase', cursor: 'pointer',
