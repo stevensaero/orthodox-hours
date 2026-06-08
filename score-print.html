@@ -99,7 +99,7 @@ var TY=10, TH=40, LG=38, BY=TY+TH+LG, SH=BY+TH+30;
 
 // ── Render (only called after Vex is loaded) ───────────────────────────
 function renderScore(payload) {
-  var VF    = Vex.Flow;
+  var VF    = VexFlow;
   var lines = payload.lines;
   var grand = false;
   for (var i=0; i<lines.length; i++) { if (lines[i].bass) { grand=true; break; } }
@@ -232,7 +232,7 @@ function showScore(p) {
 // ── Try render: called whenever state changes ──────────────────────────
 // Renders only when BOTH payload has arrived AND Vex is loaded.
 function tryRender() {
-  if (rendered || !pending || typeof Vex === 'undefined') return;
+  if (rendered || !pending || typeof VexFlow === 'undefined') return;
   rendered = true;
   showScore(pending);
 }
