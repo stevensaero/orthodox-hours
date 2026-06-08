@@ -8033,13 +8033,16 @@ const WEEKLY_PROK_TABLE = [
 function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
   const [open, setOpen] = React.useState(false);
 
-  const iconStyle = {
-    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-    width: '15px', height: '15px', borderRadius: '50%',
-    border: '1px solid #8B6914', color: '#8B6914',
-    fontSize: '9px', fontWeight: 'bold', fontFamily: 'Georgia, serif',
-    cursor: 'pointer', userSelect: 'none', flexShrink: 0,
-    marginLeft: '5px', verticalAlign: 'middle',
+  const badgeStyle = {
+    background: 'rgba(139,105,20,0.15)',
+    border: '1px solid #8B6914',
+    borderRadius: '3px',
+    color: '#8B6914',
+    fontSize: '0.68rem',
+    padding: '1px 6px',
+    cursor: 'pointer',
+    fontFamily: 'Georgia, serif',
+    letterSpacing: '0.03em',
   };
 
   const sourceLabel = prokSource === 'saturday_great' ? 'Saturday Great Prokeimenon'
@@ -8049,14 +8052,19 @@ function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
 
   if (!open) {
     return (
-      <span style={iconStyle} onClick={() => setOpen(true)} title="How is this prokeimenon tone determined?">ⓘ</span>
+      <button style={badgeStyle} onClick={() => setOpen(true)}
+        title="How is this prokeimenon tone determined?">
+        Tone source ▾
+      </button>
     );
   }
 
   return (
-    <span style={{ display: 'inline-block', verticalAlign: 'top', marginLeft: '6px' }}>
-      <span style={{ ...iconStyle, background: 'rgba(139,105,20,0.12)' }}
-        onClick={() => setOpen(false)}>ⓘ</span>
+    <span style={{ display: 'inline-block', verticalAlign: 'top', position: 'relative' }}>
+      <button style={{ ...badgeStyle, background: 'rgba(139,105,20,0.25)' }}
+        onClick={() => setOpen(false)}>
+        Tone source ▴
+      </button>
       <div style={{
         position: 'absolute', zIndex: 100, marginTop: '4px',
         background: '#FAF6EE', border: '1px solid #D4C49A', borderRadius: '5px',
