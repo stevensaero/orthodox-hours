@@ -8849,31 +8849,15 @@ export default function App() {
             </div>
           </div>{/* end row two */}
         </div>{/* end maxWidth inner wrapper */}
-      </div>{/* end controls sticky bar */}
 
-      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '1.5rem 1rem 1.5rem 0',
-        display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-
-        {/* ── SERVICE OUTLINE (left sticky rail) ── */}
-        <ServiceOutline
-          elements={elements}
-          currentService={currentService}
-          outlineOpen={outlineOpen}
-          setOutlineOpen={setOutlineOpen}
-          activeSection={activeSection}
-          setActiveSection={setActiveSection}
-          serviceLabel={currentService ? currentService.label : ''}
-          mm={liturgicalData ? liturgicalData.mm : null}
-          dd={liturgicalData ? liturgicalData.dd : null}
-        />
-
-        {/* ── MAIN CONTENT COLUMN ── */}
-        <div style={{ flex: 1, minWidth: 0, padding: '0 1rem' }}>
-
-        {/* ── LITURGICAL CONTEXT BODY — controlled by sticky bar toggle ── */}
+        {/* ── LITURGICAL CONTEXT BODY — attached to sticky bar ── */}
         {contextOpen && (
-        <div style={{ background: "#EDE5D0", border: "1px solid #D4C49A", borderRadius: "6px", marginBottom: "1.5rem", fontSize: "0.85rem", lineHeight: "1.7", overflow: "hidden" }}>
-          <div style={{ padding: "0.75rem 1.2rem 1rem" }}>
+          <div style={{
+            borderTop: "1px solid #C4A84A",
+            background: "#EDE5D0",
+            padding: "0.75rem 1.2rem 1rem",
+            fontSize: "0.85rem", lineHeight: "1.7",
+          }}>
           <div>
             <strong>Date:</strong> {dayLabel}
             {liturgicalData.paschaOffset >= -101 && liturgicalData.paschaOffset <= 263 && (
@@ -9052,8 +9036,28 @@ export default function App() {
             </div>
           )}
           </div>
-        </div>
-        )}{/* end contextOpen */}
+        )}
+      </div>{/* end controls sticky bar */}
+
+      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '1.5rem 1rem 1.5rem 0',
+        display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+
+        {/* ── SERVICE OUTLINE (left sticky rail) ── */}
+        <ServiceOutline
+          elements={elements}
+          currentService={currentService}
+          outlineOpen={outlineOpen}
+          setOutlineOpen={setOutlineOpen}
+          activeSection={activeSection}
+          setActiveSection={setActiveSection}
+          serviceLabel={currentService ? currentService.label : ''}
+          mm={liturgicalData ? liturgicalData.mm : null}
+          dd={liturgicalData ? liturgicalData.dd : null}
+        />
+
+        {/* ── MAIN CONTENT COLUMN ── */}
+        <div style={{ flex: 1, minWidth: 0, padding: '0 1rem' }}>
+
 
         {/* ── OUT OF SCOPE WARNING ─────────────────────────── */}
         {!inScope && (
