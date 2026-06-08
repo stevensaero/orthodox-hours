@@ -3887,13 +3887,26 @@ export default function ToneTrainer() {
     const win = window.open("/orthodox-hours/score-print.html", "_blank");
     if (!win) { alert("Popup blocked — please allow popups for this site."); return; }
 
-    const handler = (e) => {
-      if (e.source === win && e.data === "score-print-ready") {
-        win.postMessage({ type: "SCORE_DATA", payload }, "*");
-        window.removeEventListener("message", handler);
+    // Retry loop: post the payload every 200ms until the tab acknowledges
+    // with "score-print-ack". This survives the race between window.open()
+    // returning and the new tab finishing its script/CDN load.
+    let ackReceived = false;
+    const ackHandler = (e) => {
+      if (e.source === win && e.data === "score-print-ack") {
+        ackReceived = true;
+        window.removeEventListener("message", ackHandler);
       }
     };
-    window.addEventListener("message", handler);
+    window.addEventListener("message", ackHandler);
+
+    let attempts = 0;
+    const send = () => {
+      if (ackReceived || win.closed || attempts > 30) return; // give up after 6s
+      attempts++;
+      try { win.postMessage({ type: "SCORE_DATA", payload }, "*"); } catch(_) {}
+      setTimeout(send, 200);
+    };
+    setTimeout(send, 200); // first attempt after 200ms
   };
 
   // Derive the default title when the modal opens:
