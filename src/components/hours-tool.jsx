@@ -9119,7 +9119,8 @@ export default function App() {
                   margin: "0", letterSpacing: "0.02em" }}>
                   {currentService.label}
                 </h2>
-                {currentService.built && elements.length > 0 && (
+                {currentService.built && elements.length > 0 &&
+                  ['vespers','typica','matins','divine_liturgy'].includes(currentService.key) && (
                   <button onClick={() => setOutlineOpen(o => !o)}
                     style={{ fontSize: '9px', color: '#8B6914', letterSpacing: '0.12em',
                       textTransform: 'uppercase', cursor: 'pointer',
