@@ -6,103 +6,37 @@
 <title>Score — Orthodox Hours</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: Georgia, 'Times New Roman', serif;
-    background: #f5f0e8;
-    color: #2a2118;
-    min-height: 100vh;
-  }
+  body { font-family: Georgia, 'Times New Roman', serif; background: #f5f0e8; color: #2a2118; min-height: 100vh; }
 
   #waiting {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    gap: 1rem;
-    color: #6b5942;
-    font-size: 1rem;
-    font-style: italic;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; min-height: 100vh; gap: 1rem;
+    color: #6b5942; font-size: 1rem; font-style: italic;
   }
 
   #toolbar {
-    display: none;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: #2a2118;
-    color: #f7ead0;
-    padding: 0.6rem 1.5rem;
-    align-items: center;
-    gap: 1rem;
-    font-size: 0.82rem;
-    letter-spacing: 0.04em;
+    display: none; position: sticky; top: 0; z-index: 100;
+    background: #2a2118; color: #f7ead0;
+    padding: 0.6rem 1.5rem; align-items: center; gap: 1rem;
+    font-size: 0.82rem; letter-spacing: 0.04em;
   }
-
   #toolbar button {
-    background: transparent;
-    border: 1px solid #d6c79f;
-    color: #d6c79f;
-    border-radius: 3px;
-    padding: 4px 14px;
-    font-family: Georgia, serif;
-    font-size: 0.78rem;
-    letter-spacing: 0.08em;
-    cursor: pointer;
+    background: transparent; border: 1px solid #d6c79f; color: #d6c79f;
+    border-radius: 3px; padding: 4px 14px; font-family: Georgia, serif;
+    font-size: 0.78rem; letter-spacing: 0.08em; cursor: pointer;
   }
-
   #toolbar button:hover { background: rgba(214,199,159,.15); }
-  #toolbar .sep { color: #6b5942; }
-  #toolbar .source-badge {
-    font-style: italic;
-    color: #9a8a6a;
-    font-size: 0.72rem;
-  }
+  #toolbar .src { font-style: italic; color: #9a8a6a; font-size: 0.72rem; }
 
-  #score-wrapper {
-    display: none;
-    padding: 1.5rem 2rem 3rem;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  #score-wrapper h1 {
-    font-size: 1.15rem;
-    font-weight: normal;
-    letter-spacing: 0.06em;
-    margin-bottom: 0.15rem;
-    text-align: center;
-  }
-
-  #score-wrapper .subtitle {
-    font-size: 0.72rem;
-    color: #6b5942;
-    text-align: center;
-    margin-bottom: 1.2rem;
-    font-style: italic;
-    letter-spacing: 0.04em;
-  }
-
-  #score-canvas svg {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
+  #score-wrapper { display: none; padding: 1.5rem 2rem 3rem; max-width: 900px; margin: 0 auto; }
+  #score-wrapper h1 { font-size: 1.15rem; font-weight: normal; letter-spacing: 0.06em; margin-bottom: 0.15rem; text-align: center; }
+  #score-wrapper .sub { font-size: 0.72rem; color: #6b5942; text-align: center; margin-bottom: 1.2rem; font-style: italic; }
+  #score-canvas svg { width: 100%; height: auto; display: block; }
 
   @media print {
     body { background: white; }
-    #toolbar { display: none !important; }
-    #waiting { display: none !important; }
-    #score-wrapper {
-      display: block !important;
-      padding: 0.4in 0.5in;
-      max-width: none;
-      width: 8.5in;
-      margin: 0;
-    }
-    #score-wrapper h1 { font-size: 13pt; }
-    #score-wrapper .subtitle { font-size: 8pt; }
+    #toolbar, #waiting { display: none !important; }
+    #score-wrapper { display: block !important; padding: 0.4in 0.5in; max-width: none; }
     #score-canvas svg { width: 7.5in !important; height: auto !important; }
     @page { size: letter portrait; margin: 0; }
   }
@@ -117,271 +51,181 @@
     <line x1="16" y1="16" x2="21" y2="20" stroke="#9a8a6a" stroke-width="1.5" stroke-linecap="round"/>
   </svg>
   Open this page from the Tone Trainer to render a score.
-  <pre id="dbg" style="font-size:0.7rem;color:#9a8a6a;max-width:600px;white-space:pre-wrap;text-align:left;margin-top:1rem;"></pre>
 </div>
 
 <div id="toolbar">
-  <strong id="toolbar-title" style="color:#f7ead0; font-weight:normal;"></strong>
-  <span class="sep">|</span>
-  <span class="source-badge" id="toolbar-source"></span>
+  <strong id="tb-title" style="color:#f7ead0;font-weight:normal;"></strong>
+  <span style="color:#6b5942">|</span>
+  <span class="src" id="tb-src"></span>
   <span style="flex:1"></span>
   <button onclick="window.print()">⎙ Print</button>
   <button onclick="window.close()">✕ Close</button>
 </div>
 
 <div id="score-wrapper">
-  <h1 id="score-title"></h1>
-  <div class="subtitle" id="score-subtitle"></div>
+  <h1 id="sc-title"></h1>
+  <div class="sub" id="sc-sub"></div>
   <div id="score-canvas"></div>
 </div>
 
+<script src="vexflow.js"></script>
 <script>
-// ── All code is inside this IIFE — nothing runs at parse time except
-//    loading VexFlow. renderScore() is only called after both the
-//    payload has arrived AND Vex is defined. ──────────────────────────
-
-// Pitch tables ─────────────────────────────────────────────────────────
+// Pitch helpers ────────────────────────────────────────────────────────
 const ALTO_PITCH = {
   la:'B/3', si:'C#/4', ti:'Cn/4', do:'D/4', di:'D#/4',
   re:'E/4', mi:'F#/4', fa:'G/4',  sol:'A/4',
 };
-
-const SOPRANO_MAP = {
-  la:'do', ti:'re', do:'mi', di:'mi',
-  re:'fa', mi:'sol', fa:'la', sol:'ti',
-};
-
-const SCALE_ORDER = ['la','ti','do','di','re','mi','fa','sol'];
+const SOPRANO_MAP = { la:'do',ti:'re',do:'mi',di:'mi',re:'fa',mi:'sol',fa:'la',sol:'ti' };
+const SCALE      = ['la','ti','do','di','re','mi','fa','sol'];
 
 function sopranoVFPitch(altoPitch) {
   const mapped = SOPRANO_MAP[altoPitch] ?? altoPitch;
-  const aIdx = SCALE_ORDER.indexOf(altoPitch);
-  const sIdx = SCALE_ORDER.indexOf(mapped);
-  const octave = sIdx <= aIdx ? 5 : 4;
-  return staveKey(mapped, octave);
+  const oct    = SCALE.indexOf(mapped) <= SCALE.indexOf(altoPitch) ? 5 : 4;
+  return staveKey(mapped, oct);
 }
-
-function staveKey(sol, octave) {
-  const L = {
-    la:'B', si:'C#', ti:'Cn', do:'D', di:'D#',
-    re:'E', mi:'F#', fa:'G',  sol:'A', mi_low:'F#',
-  };
-  return (L[sol] ?? 'D') + '/' + octave;
+function staveKey(sol, oct) {
+  const L = { la:'B',si:'C#',ti:'Cn',do:'D',di:'D#',re:'E',mi:'F#',fa:'G',sol:'A',mi_low:'F#' };
+  return (L[sol]??'D') + '/' + oct;
 }
-
-function bassVFPitch(sol, octaveDiv) {
-  const d = octaveDiv ?? 2;
-  const oct = d === 1 ? 4 : d === 2 ? 3 : 2;
-  return staveKey(sol, oct);
+function bassVFPitch(sol, div) {
+  return staveKey(sol, div===1 ? 4 : div===2 ? 3 : 2);
 }
+const DUR = { Q:'q', H:'h', 'H·':'h', W:'w' };
 
-const DUR_TO_VF = { Q:'q', H:'h', 'H·':'h', W:'w' };
+// Layout ───────────────────────────────────────────────────────────────
+const PW=780, ML=48, SW=PW-ML-18;
+const TY=10, TH=40, LG=38, BY=TY+TH+LG, SH=BY+TH+30;
 
-// Page geometry ────────────────────────────────────────────────────────
-const PAGE_W       = 780;
-const MARGIN_L     = 48;
-const STAVE_W      = PAGE_W - MARGIN_L - 18;
-const TREBLE_Y     = 10;
-const TREBLE_H     = 40;
-const LYRIC_GAP    = 38;
-const BASS_Y       = TREBLE_Y + TREBLE_H + LYRIC_GAP;
-const SYSTEM_H     = BASS_Y + TREBLE_H + 30;
-
-// Rendering ────────────────────────────────────────────────────────────
-// VF is set inside renderScore() — never at parse time.
+// Render ───────────────────────────────────────────────────────────────
 function renderScore(payload) {
-  const VF = Vex.Flow;  // safe: only called after Vex is loaded
+  const VF    = Vex.Flow;
+  const lines = payload.lines;
+  const grand = lines.some(l => l.bass !== null);
 
-  const lines    = payload.lines;
-  const hasGrand = lines.some(l => l.bass !== null);
-  const totalH   = SYSTEM_H * lines.length + 20;
+  const wrap = document.getElementById('score-canvas');
+  wrap.innerHTML = '';
 
-  const container = document.getElementById('score-canvas');
-  container.innerHTML = '';
+  const ren = new VF.Renderer(wrap, VF.Renderer.Backends.SVG);
+  ren.resize(PW, SH * lines.length + 20);
+  const ctx = ren.getContext();
 
-  const renderer = new VF.Renderer(container, VF.Renderer.Backends.SVG);
-  renderer.resize(PAGE_W, totalH);
-  const ctx = renderer.getContext();
-
-  function makeNote(pitch, durKey, stemDir) {
-    const dur    = DUR_TO_VF[durKey] ?? 'q';
-    const dotted = durKey === 'H·';
-    const note   = new VF.StaveNote({ keys:[pitch], duration:dur, auto_stem:false });
-    note.setStemDirection(stemDir);
-    if (dotted) VF.Dot.buildAndAttach([note]);
-    return note;
+  function note(pitch, durKey, stem) {
+    const n = new VF.StaveNote({ keys:[pitch], duration:DUR[durKey]??'q', auto_stem:false });
+    n.setStemDirection(stem);
+    if (durKey==='H·') VF.Dot.buildAndAttach([n]);
+    return n;
   }
-
-  function makeVoice(notes) {
+  function voice(notes) {
     const v = new VF.Voice({ numBeats:4, beatValue:4 });
     v.setMode(VF.Voice.Mode.SOFT);
     v.addTickables(notes);
     return v;
   }
 
-  lines.forEach((line, li) => {
-    const sysY    = li * SYSTEM_H + 10;
-    const trebleY = sysY + TREBLE_Y;
-    const bassY   = sysY + BASS_Y;
-    const isLast  = li === lines.length - 1;
+  lines.forEach(function(line, li) {
+    const sy = li*SH+10, isLast = li===lines.length-1;
 
-    // ── Treble ──────────────────────────────────────────────────────
-    const treble = new VF.Stave(MARGIN_L, trebleY, STAVE_W);
-    treble.addClef('treble').addKeySignature('D');
-    if (isLast) treble.setEndBarType(VF.Barline.type.END);
-    treble.setContext(ctx).draw();
+    // Treble
+    const tr = new VF.Stave(ML, sy+TY, SW);
+    tr.addClef('treble').addKeySignature('D');
+    if (isLast) tr.setEndBarType(VF.Barline.type.END);
+    tr.setContext(ctx).draw();
 
-    // Alto (stem down) — carries inter-stave lyrics via BOTTOM annotation
-    const altoNotes = line.alto.map((r, i) => {
-      const note = makeNote(ALTO_PITCH[r.pitch] ?? 'D/4', r.durKey, -1);
-      // First note of each syllable group gets the lyric
-      const prev = line.alto[i - 1];
-      const isCont = r.melisma && prev && r.text === prev.text;
-      if (r.text && !isCont) {
+    // Alto notes + inter-stave lyrics
+    const aN = line.alto.map(function(r,i) {
+      const n = note(ALTO_PITCH[r.pitch]??'D/4', r.durKey, -1);
+      const prev = line.alto[i-1];
+      if (r.text && !(r.melisma && prev && r.text===prev.text)) {
         const ann = new VF.Annotation(r.text);
         ann.setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
         ann.setFont('Georgia', 9);
-        note.addModifier(ann);
+        n.addModifier(ann);
       }
-      return note;
+      return n;
     });
 
-    const trebleVoices = [makeVoice(altoNotes)];
+    const tv = [voice(aN)];
 
-    // Soprano (stem up)
+    // Soprano
     if (line.soprano) {
-      const sopNotes = line.soprano.map((r, i) => {
-        const pitch = sopranoVFPitch(line.alto[i]?.pitch ?? 'do');
-        return makeNote(pitch, r.durKey, 1);
+      const sN = line.soprano.map(function(r,i) {
+        return note(sopranoVFPitch(line.alto[i]?.pitch??'do'), r.durKey, 1);
       });
-      trebleVoices.unshift(makeVoice(sopNotes));
+      tv.unshift(voice(sN));
     }
 
-    new VF.Formatter().joinVoices(trebleVoices).format(trebleVoices, STAVE_W - 10);
-    trebleVoices.forEach(v => v.draw(ctx, treble));
+    new VF.Formatter().joinVoices(tv).format(tv, SW-10);
+    tv.forEach(function(v){ v.draw(ctx, tr); });
 
-    // Alto melisma slurs
-    let melStart = null;
-    line.alto.forEach((r, i) => {
+    // Melisma slurs on alto
+    var ms = null;
+    line.alto.forEach(function(r,i) {
       if (r.melisma) {
-        const prev = line.alto[i - 1];
-        if (!prev || r.text !== prev.text) melStart = i;
-      } else {
-        if (melStart !== null && i > melStart) {
-          try {
-            new VF.Curve(altoNotes[melStart], altoNotes[i - 1], { invert:true })
-              .setContext(ctx).draw();
-          } catch(_) {}
-          melStart = null;
-        }
+        if (!line.alto[i-1] || r.text!==line.alto[i-1].text) ms=i;
+      } else if (ms!==null && i>ms) {
+        try { new VF.Curve(aN[ms],aN[i-1],{invert:true}).setContext(ctx).draw(); } catch(_){}
+        ms=null;
       }
     });
 
-    // ── Bass staff ────────────────────────────────────────────────
-    if (hasGrand) {
-      const bass = new VF.Stave(MARGIN_L, bassY, STAVE_W);
-      bass.addClef('bass').addKeySignature('D');
-      if (isLast) bass.setEndBarType(VF.Barline.type.END);
-      bass.setContext(ctx).draw();
+    if (!grand) return;
 
-      const bassVoices = [];
+    // Bass staff
+    const bs = new VF.Stave(ML, sy+BY, SW);
+    bs.addClef('bass').addKeySignature('D');
+    if (isLast) bs.setEndBarType(VF.Barline.type.END);
+    bs.setContext(ctx).draw();
 
-      if (line.bass) {
-        const bNotes = line.bass.map(r =>
-          makeNote(bassVFPitch(r.pitch, r.octaveDiv), r.durKey, -1)
-        );
-        bassVoices.push(makeVoice(bNotes));
-      }
-      if (line.tenor) {
-        const tNotes = line.tenor.map(r =>
-          makeNote(bassVFPitch(r.pitch, r.octaveDiv), r.durKey, 1)
-        );
-        bassVoices.unshift(makeVoice(tNotes));
-      }
+    const bv = [];
+    if (line.bass)  bv.push(voice(line.bass.map(function(r){ return note(bassVFPitch(r.pitch,r.octaveDiv),r.durKey,-1); })));
+    if (line.tenor) bv.unshift(voice(line.tenor.map(function(r){ return note(bassVFPitch(r.pitch,r.octaveDiv),r.durKey,1); })));
 
-      if (bassVoices.length) {
-        new VF.Formatter().joinVoices(bassVoices).format(bassVoices, STAVE_W - 10);
-        bassVoices.forEach(v => v.draw(ctx, bass));
-      }
-
-      new VF.StaveConnector(treble, bass)
-        .setType(VF.StaveConnector.type.BRACE).setContext(ctx).draw();
-      new VF.StaveConnector(treble, bass)
-        .setType(VF.StaveConnector.type.SINGLE_LEFT).setContext(ctx).draw();
+    if (bv.length) {
+      new VF.Formatter().joinVoices(bv).format(bv, SW-10);
+      bv.forEach(function(v){ v.draw(ctx,bs); });
     }
+
+    new VF.StaveConnector(tr,bs).setType(VF.StaveConnector.type.BRACE).setContext(ctx).draw();
+    new VF.StaveConnector(tr,bs).setType(VF.StaveConnector.type.SINGLE_LEFT).setContext(ctx).draw();
   });
 }
 
-// Show score ───────────────────────────────────────────────────────────
-function showScore(payload) {
-  document.getElementById('score-title').textContent    = payload.title ?? '';
-  document.getElementById('score-subtitle').textContent = payload.subtitle ?? '';
-  document.getElementById('toolbar-title').textContent  = payload.title ?? '';
-  document.getElementById('toolbar-source').textContent =
-    payload.toneLabel + ' · ' +
-    (payload.source === 'machine' ? 'Machine pointing' : 'Director pointing');
-
+// Show ─────────────────────────────────────────────────────────────────
+function showScore(p) {
+  document.getElementById('sc-title').textContent = p.title??'';
+  document.getElementById('sc-sub').textContent   = p.subtitle??'';
+  document.getElementById('tb-title').textContent = p.title??'';
+  document.getElementById('tb-src').textContent   = (p.toneLabel??'') + ' · ' +
+    (p.source==='machine' ? 'Machine pointing' : 'Director pointing');
   document.getElementById('waiting').style.display      = 'none';
   document.getElementById('toolbar').style.display      = 'flex';
   document.getElementById('score-wrapper').style.display = 'block';
-  document.title = (payload.title ?? 'Score') + ' — Score';
-
-  try {
-    renderScore(payload);
-  } catch(err) {
+  document.title = (p.title??'Score') + ' — Score';
+  try { renderScore(p); }
+  catch(err) {
     document.getElementById('score-canvas').innerHTML =
-      '<p style="color:#7a2418;padding:1rem;font-style:italic;">Render error: ' +
-      err.message + '<br><small>' + (err.stack ?? '').split('\n')[1] + '</small></p>';
+      '<p style="color:#7a2418;padding:1rem;font-style:italic;">Render error: '+err.message+'</p>';
   }
 }
 
 // Handshake ────────────────────────────────────────────────────────────
-// Opener retries postMessage every 200ms until we ack.
-// We defer rendering until VexFlow is confirmed loaded.
-let pendingPayload = null;
-let rendered       = false;
-
-function tryRender() {
-  if (rendered || !pendingPayload) return;
-  if (typeof Vex === 'undefined') return; // VexFlow not loaded yet — will retry
-  rendered = true;
-  showScore(pendingPayload);
-}
-
-function dbg(msg) {
-  var el = document.getElementById('dbg');
-  if (el) el.textContent += msg + '\n';
-}
+var pending  = null;
+var rendered = false;
 
 window.addEventListener('message', function(e) {
-  dbg('msg: origin=' + e.origin + ' type=' + (e.data && e.data.type) + ' hasOpener=' + !!window.opener);
-  if (e.data && e.data.type === 'SCORE_DATA') {
-    dbg('SCORE_DATA received, lines=' + (e.data.payload && e.data.payload.lines && e.data.payload.lines.length));
-    try { e.source.postMessage('score-print-ack', '*'); dbg('ack sent'); } catch(err) { dbg('ack err: ' + err); }
-    if (rendered) return;
-    pendingPayload = e.data.payload;
-    tryRender();
-  } else {
-    dbg('ignored: ' + JSON.stringify(e.data).slice(0, 80));
-  }
+  if (!e.data || e.data.type !== 'SCORE_DATA') return;
+  try { e.source.postMessage('score-print-ack','*'); } catch(_){}
+  if (rendered) return;
+  pending = e.data.payload;
+  if (typeof Vex !== 'undefined') { rendered=true; showScore(pending); }
+  // else: vexflow.js onload handler below will call showScore
 });
 
-// Also log vex poll state
-var vexLogDone = false;
-
-// Poll for VexFlow readiness every 100ms (handles CDN latency)
-var vexPoll = setInterval(function() {
-  if (typeof Vex !== 'undefined') {
-    clearInterval(vexPoll);
-    dbg('Vex loaded. pendingPayload=' + !!pendingPayload + ' rendered=' + rendered);
-    tryRender();
-  }
-}, 100);
-// Also show opener status on load
-dbg('page loaded. opener=' + !!window.opener + ' href=' + location.href);
+// vexflow.js is loaded synchronously above this script block,
+// but set an onload fallback via the script tag's own event just in case
+document.querySelector('script[src="vexflow.js"]').addEventListener('load', function() {
+  if (pending && !rendered) { rendered=true; showScore(pending); }
+});
 </script>
-
-<!-- VexFlow loaded AFTER the inline script so Vex is never referenced at parse time -->
-<script src="https://cdn.jsdelivr.net/npm/vexflow@5/build/cjs/vexflow.js"></script>
 </body>
 </html>
