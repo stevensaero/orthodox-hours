@@ -116,9 +116,19 @@ function staveKey(solName, oct, cfg) {
   return letter + '/' + oct;
 }
 
+// Bass staff notation octave — fixed per solfège, key-independent.
+// Derived from OCA score: bass reciting tone sol=C3 (2nd space bass clef, confirmed).
+// All other pitches sit in the same register, neighboring C3.
+// mi_low = one octave below mi (lower register mi used in Tone 1 Final cadence).
+var BASS_NOTATION_OCT = {
+  fa:2, sol:3, la:3, ti:3, do:3, re:3, mi:3, mi_low:2, di:3, si:3,
+};
+
 function bassVFPitch(sol, div, cfg) {
-  // div=1: bass register (sol→oct3, do→oct2); div=2 or lower → oct2
-  return staveKey(sol, div===1 ? 3 : 2, cfg);
+  // div (octaveDiv) is an audio-only concept — ignored for score notation.
+  // Use fixed notation octave table instead.
+  var oct = BASS_NOTATION_OCT[sol] || 3;
+  return staveKey(sol, oct, cfg);
 }
 var DUR = { Q:'q', H:'h', 'H·':'h', W:'w' };
 
@@ -126,11 +136,11 @@ var DUR = { Q:'q', H:'h', 'H·':'h', W:'w' };
 // One stave per system when only alto; two staves (grand staff) when bass present.
 // Single-stave system height = stave (40) + above space (40) + below gap (30)
 var PW=780, ML=48, SW=PW-ML-18;
-var TY=10, TH=40;
-// Grand staff: treble + lyric gap + bass + spacing between systems
-var LYRIC_GAP=42, BASS_Y=TY+TH+LYRIC_GAP, GRAND_SH=BASS_Y+TH+35;
+var TY=30, TH=40;
+// Grand staff: treble top (TY) + treble height (TH) + lyric gap + bass height + below padding
+var LYRIC_GAP=48, BASS_Y=TY+TH+LYRIC_GAP, GRAND_SH=BASS_Y+TH+50;
 // Solo treble only
-var SOLO_SH=TY+TH+50;
+var SOLO_SH=TY+TH+60;
 
 // ── Load fonts before rendering ────────────────────────────────────────
 function loadFonts(cb) {
