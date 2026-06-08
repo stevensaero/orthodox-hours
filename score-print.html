@@ -7,7 +7,6 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: Georgia, 'Times New Roman', serif; background: #f5f0e8; color: #2a2118; min-height: 100vh; }
-
   #waiting {
     display: flex; flex-direction: column; align-items: center;
     justify-content: center; min-height: 100vh; gap: 1rem;
@@ -67,8 +66,7 @@
 </div>
 
 <script>
-// ── State ──────────────────────────────────────────────────────────────
-var pending  = null;   // payload received before Vex loaded
+var pending  = null;
 var rendered = false;
 
 // ── Pitch helpers ──────────────────────────────────────────────────────
@@ -76,14 +74,6 @@ var ALTO_PITCH = {
   la:'B/3', si:'C#/4', ti:'Cn/4', do:'D/4', di:'D#/4',
   re:'E/4', mi:'F#/4', fa:'G/4',  sol:'A/4',
 };
-var SOPRANO_MAP = { la:'do',ti:'re',do:'mi',di:'mi',re:'fa',mi:'sol',fa:'la',sol:'ti' };
-var SCALE = ['la','ti','do','di','re','mi','fa','sol'];
-
-function sopranoVFPitch(altoPitch) {
-  var mapped = SOPRANO_MAP[altoPitch] || altoPitch;
-  var oct    = SCALE.indexOf(mapped) <= SCALE.indexOf(altoPitch) ? 5 : 4;
-  return staveKey(mapped, oct);
-}
 function staveKey(sol, oct) {
   var L = { la:'B',si:'C#',ti:'Cn',do:'D',di:'D#',re:'E',mi:'F#',fa:'G',sol:'A',mi_low:'F#' };
   return (L[sol] || 'D') + '/' + oct;
@@ -94,15 +84,47 @@ function bassVFPitch(sol, div) {
 var DUR = { Q:'q', H:'h', 'H·':'h', W:'w' };
 
 // ── Page geometry ──────────────────────────────────────────────────────
+// One stave per system when only alto; two staves (grand staff) when bass present.
+// Single-stave system height = stave (40) + above space (40) + below gap (30)
 var PW=780, ML=48, SW=PW-ML-18;
-var TY=10, TH=40, LG=38, BY=TY+TH+LG, SH=BY+TH+30;
+var TY=10, TH=40;
+// Grand staff: treble + lyric gap + bass + spacing between systems
+var LYRIC_GAP=42, BASS_Y=TY+TH+LYRIC_GAP, GRAND_SH=BASS_Y+TH+35;
+// Solo treble only
+var SOLO_SH=TY+TH+50;
 
-// ── Render (only called after Vex is loaded) ───────────────────────────
+// ── Load fonts before rendering ────────────────────────────────────────
+function loadFonts(cb) {
+  // Inject @font-face for Bravura and Academico pointing to local files.
+  // VexFlow uses FontFace API (document.fonts) to load them; we must ensure
+  // the browser has them available before the first renderText call.
+  var style = document.createElement('style');
+  style.textContent = [
+    "@font-face { font-family: 'Bravura'; src: url('/orthodox-hours/fonts/bravura/bravura.woff2') format('woff2'); font-weight: normal; font-style: normal; }",
+    "@font-face { font-family: 'Academico'; src: url('/orthodox-hours/fonts/academico/academico.woff2') format('woff2'); font-weight: normal; font-style: normal; }"
+  ].join('\n');
+  document.head.appendChild(style);
+
+  // Force the browser to load both fonts before we render
+  var bravura  = new FontFace('Bravura',   "url('/orthodox-hours/fonts/bravura/bravura.woff2')");
+  var academico = new FontFace('Academico', "url('/orthodox-hours/fonts/academico/academico.woff2')");
+  Promise.all([bravura.load(), academico.load()]).then(function(faces) {
+    faces.forEach(function(f) { document.fonts.add(f); });
+    cb();
+  }).catch(function(err) {
+    console.warn('Font load failed:', err, '— rendering anyway');
+    cb();
+  });
+}
+
+// ── Render (called after both VexFlow and fonts are ready) ─────────────
 function renderScore(payload) {
   var VF    = VexFlow;
   var lines = payload.lines;
   var grand = false;
   for (var i=0; i<lines.length; i++) { if (lines[i].bass) { grand=true; break; } }
+
+  var SH = grand ? GRAND_SH : SOLO_SH;
 
   var wrap = document.getElementById('score-canvas');
   wrap.innerHTML = '';
@@ -125,88 +147,78 @@ function renderScore(payload) {
   }
 
   for (var li=0; li<lines.length; li++) {
-    var line  = lines[li];
-    var sy    = li*SH + 10;
-    var isLast = li === lines.length-1;
+    var line   = lines[li];
+    var sy     = li * SH + 10;
+    var isLast = li === lines.length - 1;
 
-    // Treble stave
-    var tr = new VF.Stave(ML, sy+TY, SW);
+    // ── Treble stave — ALTO ONLY (no soprano voice on same stave) ─────
+    // Soprano is intentionally omitted to prevent two-voice stem collision.
+    // The OCA score shows only the alto melody line on the treble staff.
+    var tr = new VF.Stave(ML, sy + TY, SW);
     tr.addClef('treble').addKeySignature('D');
     if (isLast) tr.setEndBarType(VF.Barline.type.END);
     tr.setContext(ctx).draw();
 
-    // Alto (stem down) — BOTTOM annotation lands between the two staves
+    // Alto: stem UP (single voice = conventional stem direction for melody)
+    // Lyrics as BOTTOM annotation — lands in inter-stave gap when grand staff present
     var aN = [];
-    for (var ai=0; ai<line.alto.length; ai++) {
+    for (var ai = 0; ai < line.alto.length; ai++) {
       var r    = line.alto[ai];
-      var prev = line.alto[ai-1];
-      var n    = mkNote(ALTO_PITCH[r.pitch] || 'D/4', r.durKey, -1);
-      if (r.text && !(r.melisma && prev && r.text===prev.text)) {
+      var prev = line.alto[ai - 1];
+      // Single voice: stems up for melody, matching OCA score convention
+      var n = mkNote(ALTO_PITCH[r.pitch] || 'D/4', r.durKey, grand ? -1 : 1);
+      // Attach lyric on first note of each syllable
+      if (r.text && !(r.melisma && prev && r.text === prev.text)) {
         var ann = new VF.Annotation(r.text);
-        ann.setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
+        ann.setVerticalJustification(
+          grand ? VF.Annotation.VerticalJustify.BOTTOM
+                : VF.Annotation.VerticalJustify.BOTTOM
+        );
         ann.setFont('Georgia', 9);
         n.addModifier(ann);
       }
       aN.push(n);
     }
 
-    var tv = [mkVoice(aN)];
+    var altoVoice = mkVoice(aN);
+    new VF.Formatter().joinVoices([altoVoice]).format([altoVoice], SW - 10);
+    altoVoice.draw(ctx, tr);
 
-    // Soprano (stem up)
-    if (line.soprano) {
-      var sN = [];
-      for (var si2=0; si2<line.soprano.length; si2++) {
-        sN.push(mkNote(sopranoVFPitch(line.alto[si2] ? line.alto[si2].pitch : 'do'), line.soprano[si2].durKey, 1));
-      }
-      tv.unshift(mkVoice(sN));
-    }
-
-    new VF.Formatter().joinVoices(tv).format(tv, SW-10);
-    for (var vi=0; vi<tv.length; vi++) tv[vi].draw(ctx, tr);
-
-    // Melisma slurs
+    // Melisma slurs on alto
     var ms = null;
-    for (var mi2=0; mi2<line.alto.length; mi2++) {
+    for (var mi2 = 0; mi2 < line.alto.length; mi2++) {
       var ar = line.alto[mi2];
-      var ap = line.alto[mi2-1];
+      var ap = line.alto[mi2 - 1];
       if (ar.melisma) {
         if (!ap || ar.text !== ap.text) ms = mi2;
       } else if (ms !== null && mi2 > ms) {
-        try { new VF.Curve(aN[ms], aN[mi2-1], {invert:true}).setContext(ctx).draw(); } catch(e){}
+        try { new VF.Curve(aN[ms], aN[mi2 - 1], { invert: true }).setContext(ctx).draw(); } catch(e) {}
         ms = null;
       }
     }
 
     if (!grand) continue;
 
-    // Bass stave
-    var bs = new VF.Stave(ML, sy+BY, SW);
+    // ── Bass stave — BASS ONLY (no tenor voice) ────────────────────────
+    var bs = new VF.Stave(ML, sy + BASS_Y, SW);
     bs.addClef('bass').addKeySignature('D');
     if (isLast) bs.setEndBarType(VF.Barline.type.END);
     bs.setContext(ctx).draw();
 
-    var bv = [];
     if (line.bass) {
       var bN = [];
-      for (var bi=0; bi<line.bass.length; bi++) {
-        bN.push(mkNote(bassVFPitch(line.bass[bi].pitch, line.bass[bi].octaveDiv), line.bass[bi].durKey, -1));
+      for (var bi = 0; bi < line.bass.length; bi++) {
+        var br = line.bass[bi];
+        bN.push(mkNote(bassVFPitch(br.pitch, br.octaveDiv), br.durKey, -1));
       }
-      bv.push(mkVoice(bN));
-    }
-    if (line.tenor) {
-      var tN = [];
-      for (var ti2=0; ti2<line.tenor.length; ti2++) {
-        tN.push(mkNote(bassVFPitch(line.tenor[ti2].pitch, line.tenor[ti2].octaveDiv), line.tenor[ti2].durKey, 1));
-      }
-      bv.unshift(mkVoice(tN));
-    }
-    if (bv.length) {
-      new VF.Formatter().joinVoices(bv).format(bv, SW-10);
-      for (var bvi=0; bvi<bv.length; bvi++) bv[bvi].draw(ctx, bs);
+      var bassVoice = mkVoice(bN);
+      new VF.Formatter().joinVoices([bassVoice]).format([bassVoice], SW - 10);
+      bassVoice.draw(ctx, bs);
     }
 
-    new VF.StaveConnector(tr,bs).setType(VF.StaveConnector.type.BRACE).setContext(ctx).draw();
-    new VF.StaveConnector(tr,bs).setType(VF.StaveConnector.type.SINGLE_LEFT).setContext(ctx).draw();
+    // Grand staff connectors
+    new VF.StaveConnector(tr, bs).setType(VF.StaveConnector.type.BRACE).setContext(ctx).draw();
+    new VF.StaveConnector(tr, bs).setType(VF.StaveConnector.type.SINGLE_LEFT).setContext(ctx).draw();
   }
 }
 
@@ -216,42 +228,42 @@ function showScore(p) {
   document.getElementById('sc-sub').textContent   = p.subtitle || '';
   document.getElementById('tb-title').textContent = p.title || '';
   document.getElementById('tb-src').textContent   = (p.toneLabel || '') + ' · ' +
-    (p.source==='machine' ? 'Machine pointing' : 'Director pointing');
+    (p.source === 'machine' ? 'Machine pointing' : 'Director pointing');
   document.getElementById('waiting').style.display       = 'none';
   document.getElementById('toolbar').style.display       = 'flex';
   document.getElementById('score-wrapper').style.display = 'block';
   document.title = (p.title || 'Score') + ' — Score';
-  try {
-    renderScore(p);
-  } catch(err) {
-    document.getElementById('score-canvas').innerHTML =
-      '<p style="color:#7a2418;padding:1rem;font-style:italic;">Render error: ' + err.message + '</p>';
-  }
+
+  // Load fonts THEN render — guarantees Bravura is available for VexFlow
+  loadFonts(function() {
+    try { renderScore(p); }
+    catch(err) {
+      document.getElementById('score-canvas').innerHTML =
+        '<p style="color:#7a2418;padding:1rem;font-style:italic;">Render error: ' + err.message + '</p>';
+      console.error(err);
+    }
+  });
 }
 
-// ── Try render: called whenever state changes ──────────────────────────
-// Renders only when BOTH payload has arrived AND Vex is loaded.
-function tryRender() {
-  if (rendered || !pending || typeof VexFlow === 'undefined') return;
-  rendered = true;
-  showScore(pending);
-}
-
-// ── Message listener ───────────────────────────────────────────────────
+// ── Handshake ──────────────────────────────────────────────────────────
 window.addEventListener('message', function(e) {
   if (!e.data || e.data.type !== 'SCORE_DATA') return;
   try { e.source.postMessage('score-print-ack', '*'); } catch(err) {}
   if (rendered) return;
+  rendered = true;
   pending = e.data.payload;
-  tryRender();
+  if (typeof VexFlow !== 'undefined') {
+    showScore(pending);
+  }
+  // else: vfTag.onload will call showScore
 });
 
-// ── Load VexFlow dynamically — onload fires reliably ──────────────────
-// Injecting the script tag programmatically from within a script block
-// guarantees the onload callback is registered before the fetch begins.
+// Load VexFlow — callback fires after JS executes (Bravura fonts loaded separately)
 var vfTag = document.createElement('script');
 vfTag.src = 'vexflow.js';
-vfTag.onload = function() { tryRender(); };
+vfTag.onload = function() {
+  if (pending) showScore(pending);
+};
 vfTag.onerror = function() {
   document.getElementById('waiting').innerHTML +=
     '<p style="color:#7a2418;margin-top:1rem;">Failed to load vexflow.js</p>';
