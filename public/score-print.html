@@ -145,7 +145,8 @@ var DUR = { Q:'q', H:'h', 'H·':'h', W:'w' };
 var PW=780, ML=48, SW=PW-ML-18;
 var TY=30, TH=40;
 // Grand staff: treble top (TY) + treble height (TH) + lyric gap + bass height + below padding
-var LYRIC_GAP=48, BASS_Y=TY+TH+LYRIC_GAP, GRAND_SH=BASS_Y+TH+50;
+// LYRIC_GAP sized to give text comfortable room centered between the two staves
+var LYRIC_GAP=72, BASS_Y=TY+TH+LYRIC_GAP, GRAND_SH=BASS_Y+TH+50;
 // Solo treble only
 var SOLO_SH=TY+TH+60;
 
@@ -219,30 +220,36 @@ function renderScore(payload) {
     if (isLast) tr.setEndBarType(VF.Barline.type.END);
     tr.setContext(ctx).draw();
 
-    // Alto: stem UP (single voice = conventional stem direction for melody)
-    // Lyrics as BOTTOM annotation — lands in inter-stave gap when grand staff present
+    // Alto: stem down when grand staff (bass below), stem up when solo treble
     var aN = [];
     for (var ai = 0; ai < line.alto.length; ai++) {
-      var r    = line.alto[ai];
-      var prev = line.alto[ai - 1];
-      // Single voice: stems up for melody, matching OCA score convention
-      var n = mkNote(ALTO_PITCH[r.pitch] || cfg.names.fa+'/4', r.durKey, grand ? -1 : 1);
-      // Attach lyric on first note of each syllable
-      if (r.text && !(r.melisma && prev && r.text === prev.text)) {
-        var ann = new VF.Annotation(r.text);
-        ann.setVerticalJustification(
-          grand ? VF.Annotation.VerticalJustify.BOTTOM
-                : VF.Annotation.VerticalJustify.BOTTOM
-        );
-        ann.setFont('Georgia', 9);
-        n.addModifier(ann);
-      }
-      aN.push(n);
+      var r = line.alto[ai];
+      aN.push(mkNote(ALTO_PITCH[r.pitch] || cfg.names.fa+'/4', r.durKey, grand ? -1 : 1));
     }
 
     var altoVoice = mkVoice(aN);
     new VF.Formatter().joinVoices([altoVoice]).format([altoVoice], SW - 10);
     altoVoice.draw(ctx, tr);
+
+    // Draw lyrics at fixed y after formatting (note x-positions are valid post-format).
+    // Grand staff: centered in the gap between treble and bass staves.
+    // Solo treble: just below the stave bottom.
+    var lyricY = grand
+      ? sy + TY + TH + LYRIC_GAP / 2 + 5
+      : sy + TY + TH + 20;
+    ctx.save();
+    ctx.setFont('Georgia', 9);
+    ctx.setFillStyle('#1a1008');
+    var lyricPrev = null;
+    for (var ai2 = 0; ai2 < line.alto.length; ai2++) {
+      var r2 = line.alto[ai2];
+      var isMelismaRepeat = r2.melisma && lyricPrev && r2.text === lyricPrev.text;
+      if (r2.text && !isMelismaRepeat) {
+        ctx.fillText(r2.text, aN[ai2].getAbsoluteX(), lyricY);
+      }
+      lyricPrev = r2;
+    }
+    ctx.restore();
 
     // Melisma slurs on alto
     var ms = null;
