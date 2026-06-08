@@ -1844,9 +1844,9 @@ const BASS_RULES = {
       // Tenor si (raised 6th) confirms harmonic minor approach to la
       cadMap: { do: "mi", ti: "mi_low", la: "la" },
       preslurMap: {},
-      // re and mi (high) sit above the bass staff — override global div-4 to div-2.
-      // mi_low uses global div-4 (lower octave). Tone 2 untouched.
-      octaveDiv: { re: 2, mi: 2 },
+      // re and mi sit on the bass staff. At do=F4 global div-4 lands correctly;
+      // per-phrase override removed (was calibrated for do=C4). Tone 2 untouched.
+      octaveDiv: { re: 4, mi: 4 },
     },
   },
   // ── Tone 2, Russian Obikhod (L'vov-Bakhmetev) ──────────────────────────
@@ -1904,15 +1904,17 @@ const BASS_RULES = {
 // do=Bb4 reference: soprano re=C5, bass la=G3, bass mi=D3, bass re=C3 etc.
 // Displacement factor: divide soprano FREQ by this value to get bass register.
 const BASS_OCTAVE_DIV = {
-  la:    2,   // G4 → G3  (1 octave down)
-  ti:    2,   // Ab4 → Ab3
-  do:    2,   // Bb4 → Bb3
-  di:    2,   // B4 → B3
-  re:    4,   // C5 → C3  (2 octaves down)
-  mi:    4,   // D5 → D3  (2 octaves down)
-  mi_low: 4,  // D5 → D3  (2 octaves down) — lower octave mi, e.g. Tone 1 Final cad
-  fa:    4,   // Eb5 → Eb3 (2 octaves down)
-  sol:   4,   // F5 → F3  (2 octaves down)
+  // Recalibrated for do=F4 (349.23 Hz). All values ÷4 (2 octaves down).
+  // At do=C4 la/ti/do/di were ÷2; at do=F4 ÷2 puts them above E4 (out of bass range).
+  la:    4,   // D5 → D3
+  ti:    4,   // E5 → E3
+  do:    4,   // F5 → F3
+  di:    4,   // F#5 → F#3
+  re:    4,   // G4 → G3  (already ÷4, now lands correctly)
+  mi:    4,   // A4 → A3
+  mi_low: 4,  // A4 → A3
+  fa:    4,   // Bb4 → Bb3
+  sol:   4,   // C5 → C3  — bass reciting tone, confirmed from OCA score
 };
 
 // ── SOPRANO DERIVATION ────────────────────────────────────────────────────────
