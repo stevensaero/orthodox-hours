@@ -10,11 +10,24 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.11.29";
+export const TONE_TRAINER_VERSION = "v0.12.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.12.0",
+    date: "June 2026",
+    summary: "Score print — Score button opens SATB printable score in new tab",
+    items: [
+      "feat: Score button in controls bar (visible when sticheron is pointed).",
+      "feat: Score modal — editable title (auto-prefilled Tone N + first 4 words), director/machine source selector (shown when both available), Create Score button.",
+      "feat: buildScorePayload() — assembles per-line SATB payload via existing lineToRolesWithDuration + SOPRANO_MAP + BASS_RULES + TENOR_RULES. No new pointing logic.",
+      "feat: public/score-print.html — standalone VexFlow page. CDN-loaded (zero bundle impact). Grand staff: treble S+A, bass T+B. Inter-stave lyrics on alto BOTTOM annotation. Melisma slurs via VF.Curve.",
+      "feat: Reduced score for tones without full SATB (Tone 3 renders alto only).",
+      "arch: postMessage handshake — opener sends payload after score-print-ready signal.",
+    ],
+  },
   {
     version: "v0.11.29",
     date: "June 2026",
@@ -2510,6 +2523,9 @@ export default function ToneTrainer() {
   const [timbre, setTimbre] = useState("piano");         // audio timbre for sing view
   const [voicePart, setVoicePart] = useState("alto");    // alto | bass | alto-bass
   const [showReleaseNotes, setShowReleaseNotes] = useState(false);
+  const [showScoreModal, setShowScoreModal] = useState(false);
+  const [scoreTitle, setScoreTitle] = useState("");
+  const [scoreSource, setScoreSource] = useState("director"); // "director" | "machine"
   // lexicon (fetched from public/lexicon/ at mount, same pattern as psalter/scripture)
   const [lexicon, setLexicon] = useState(null);
   const [lexiconError, setLexiconError] = useState(null);
@@ -3777,6 +3793,123 @@ export default function ToneTrainer() {
   // phrase boundaries — e.g. sol (A–D reciting) and la/si/mi (Final Phrase)
   // share the same scale rather than each phrase being independently normalised.
   // Unified bass+tenor height map — both voices normalised together across all phrases.
+  // ── SCORE PRINT ────────────────────────────────────────────────────────────
+  // buildScorePayload(sourceLines, titleOverride)
+  // Assembles the serializable payload sent to score-print.html via postMessage.
+  // Uses existing voice derivation logic — no new pointing computations.
+  const buildScorePayload = (sourceLines, title, source) => {
+    const payload = {
+      version: "1.0",
+      toolVersion: TONE_TRAINER_VERSION,
+      tone: activeTone,
+      toneLabel: `Tone ${activeTone}`,
+      title: title || `Tone ${activeTone} Sticheron`,
+      subtitle: `Common Chant (Obikhod) · arr. from L'vov/Bakhmetev · Tone ${activeTone}`,
+      source: source || "director",
+      lines: [],
+    };
+
+    sourceLines.forEach((line, li) => {
+      const rolesWD = lineToRolesWithDuration(line);
+
+      // Alto: flat per-note array — melisma already expanded by lineToRolesWithDuration
+      const altoEntries = rolesWD.map(r => ({
+        text:    r.text,
+        pitch:   r.pitches[0],
+        durKey:  r.durKey,
+        role:    r.role,
+        melisma: r.melisma === true,
+      }));
+
+      // Soprano: 1:1 index-aligned with alto; pitch = SOPRANO_MAP[alto.pitch]
+      const sopranoEntries = SOPRANO_TONES.has(activeTone)
+        ? altoEntries.map(r => ({
+            pitch:  SOPRANO_MAP[r.pitch] ?? r.pitch,
+            durKey: r.durKey,
+          }))
+        : null;
+
+      // Bass: apply BASS_RULES substitution exactly as in lineToNotes_bass
+      const bassRules = BASS_RULES[activeTone]?.[line.phrase];
+      const bassEntries = bassRules ? rolesWD.map(r => {
+        let p;
+        const orig = r.pitches[0];
+        if (r.role === "recite" || r.role === "inton") p = bassRules.recite;
+        else if (r.role === "prep")    p = bassRules.prepMap?.[orig]   ?? orig;
+        else if (r.role === "preslur") p = bassRules.preslurMap?.[orig] ?? orig;
+        else                           p = bassRules.cadMap?.[orig]    ?? orig;
+        // Per-phrase octaveDiv overrides the global BASS_OCTAVE_DIV
+        const octaveDiv = bassRules.octaveDiv?.[p] ?? BASS_OCTAVE_DIV[p] ?? 2;
+        return { pitch: p, durKey: r.durKey, melisma: r.melisma === true, octaveDiv };
+      }) : null;
+
+      // Tenor: same substitution pattern as bass using TENOR_RULES
+      const tenorRules = TENOR_RULES[activeTone]?.[line.phrase];
+      const TENOR_OCTAVE_DIV_LOCAL = { la:1, si:1, ti:2, do:2, di:2, re:2, mi:2, fa:2, sol:2 };
+      const tenorEntries = tenorRules ? rolesWD.map(r => {
+        let p;
+        const orig = r.pitches[0];
+        if (r.role === "recite" || r.role === "inton") p = tenorRules.recite;
+        else if (r.role === "prep")    p = tenorRules.prepMap?.[orig]   ?? orig;
+        else if (r.role === "preslur") p = tenorRules.preslurMap?.[orig] ?? orig;
+        else                           p = tenorRules.cadMap?.[orig]    ?? orig;
+        const octaveDiv = tenorRules.octaveDiv?.[p] ?? TENOR_OCTAVE_DIV_LOCAL[p] ?? 2;
+        return { pitch: p, durKey: r.durKey, melisma: r.melisma === true, octaveDiv };
+      }) : null;
+
+      payload.lines.push({
+        phrase: line.phrase,
+        barlineAfter: li === sourceLines.length - 1 ? "final" : "single",
+        alto:    altoEntries,
+        soprano: sopranoEntries,
+        bass:    bassEntries,
+        tenor:   tenorEntries,
+      });
+    });
+
+    return payload;
+  };
+
+  // Opens score-print.html in a new tab and sends the payload via postMessage.
+  const openScorePrint = (title, source) => {
+    // Choose source lines: director if available and requested, else machine
+    const hasDirector = lines.length > 0;
+    const hasMachine  = !!machineLines?.length;
+    let sourceLines;
+    if (source === "director" && hasDirector) sourceLines = lines;
+    else if (source === "machine" && hasMachine)  sourceLines = machineLines;
+    else if (hasDirector)  sourceLines = lines;
+    else if (hasMachine)   sourceLines = machineLines;
+    else return; // nothing to render
+
+    const payload = buildScorePayload(sourceLines, title, source);
+
+    const win = window.open("/orthodox-hours/score-print.html", "_blank");
+    if (!win) { alert("Popup blocked — please allow popups for this site."); return; }
+
+    const handler = (e) => {
+      if (e.source === win && e.data === "score-print-ready") {
+        win.postMessage({ type: "SCORE_DATA", payload }, "*");
+        window.removeEventListener("message", handler);
+      }
+    };
+    window.addEventListener("message", handler);
+  };
+
+  // Derive the default title when the modal opens:
+  //   "Tone N — [first 4 words of sticheron]"
+  const defaultScoreTitle = () => {
+    const src = lines.length > 0 ? lines : machineLines ?? [];
+    if (!src.length) return `Tone ${activeTone} Sticheron`;
+    // Flatten first line words to get the opening words
+    const firstLine = src[0];
+    const words = (firstLine.words ?? []).map(w =>
+      w.display || (w.sylls ?? []).map(s => s.text).join("")
+    ).filter(Boolean);
+    const incipit = words.slice(0, 4).join(" ");
+    return incipit ? `Tone ${activeTone} — ${incipit}` : `Tone ${activeTone} Sticheron`;
+  };
+
   // Bass pitches (low register) sort to the tall end; tenor pitches (higher register)
   // sort to the short end. One shared scale means bass always renders deeper than tenor
   // in SATB without any per-voice offset or fighting between independent normalizations.
@@ -4127,6 +4260,21 @@ export default function ToneTrainer() {
                                           fontStyle: "italic" }}>{lexiconError}</span>}
           {!lexicon && !lexiconError && <span style={{ fontSize: "0.72rem", color: "#9A8A70",
                                                         fontStyle: "italic" }}>loading lexicon…</span>}
+          {/* Print Score button — opens modal to set title/source then renders */}
+          {(lines.length > 0 || !!machineLines?.length) && (
+            <button
+              style={{ ...btn, fontSize: "0.78rem", padding: "5px 12px",
+                       display: "inline-flex", alignItems: "center", gap: "0.3em" }}
+              onClick={() => {
+                setScoreTitle(defaultScoreTitle());
+                // Default source: director if available, else machine
+                setScoreSource(lines.length > 0 ? "director" : "machine");
+                setShowScoreModal(true);
+              }}
+              title="Open score in a new tab for printing">
+              ♩ Score
+            </button>
+          )}
           <button
             style={{ ...btn,
                      background: playingLine !== null ? "#7a2418" : "#3a6e28",
@@ -4140,6 +4288,118 @@ export default function ToneTrainer() {
         </div>
 
       </div>
+
+      {/* ── SCORE MODAL ────────────────────────────────────────────────────── */}
+      {showScoreModal && (
+        <div
+          onClick={(e) => { if (e.target === e.currentTarget) setShowScoreModal(false); }}
+          style={{
+            position: "fixed", inset: 0, zIndex: 999,
+            background: "rgba(30,22,14,.55)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+          <div style={{
+            background: "#faf6ee",
+            border: "1px solid #d6c79f",
+            borderRadius: 8,
+            padding: "1.6rem 1.8rem",
+            width: "min(440px, 92vw)",
+            boxShadow: "0 8px 32px rgba(0,0,0,.22)",
+            fontFamily: "Georgia, serif",
+          }}>
+            {/* Header */}
+            <div style={{ display: "flex", alignItems: "baseline",
+                          justifyContent: "space-between", marginBottom: "1.1rem" }}>
+              <span style={{ fontSize: "0.95rem", color: "#2a2118",
+                             letterSpacing: "0.04em" }}>Create Score</span>
+              <button
+                onClick={() => setShowScoreModal(false)}
+                style={{ background: "none", border: "none", color: "#9a8a6a",
+                         fontSize: "1rem", cursor: "pointer", lineHeight: 1 }}>✕</button>
+            </div>
+
+            {/* Title field */}
+            <label style={{ display: "block", fontSize: "0.72rem", color: "#6b5942",
+                            letterSpacing: "0.06em", textTransform: "uppercase",
+                            marginBottom: "0.35rem" }}>
+              Title
+            </label>
+            <input
+              type="text"
+              value={scoreTitle}
+              onChange={e => setScoreTitle(e.target.value)}
+              style={{
+                width: "100%", boxSizing: "border-box",
+                fontFamily: "Georgia, serif", fontSize: "0.9rem",
+                border: "1px solid #d6c79f", borderRadius: 4,
+                padding: "6px 10px", marginBottom: "1.1rem",
+                background: "#fff8ef", color: "#2a2118",
+                outline: "none",
+              }} />
+
+            {/* Source selector — only shown when both director and machine are available */}
+            {lines.length > 0 && !!machineLines?.length && (
+              <>
+                <label style={{ display: "block", fontSize: "0.72rem", color: "#6b5942",
+                                letterSpacing: "0.06em", textTransform: "uppercase",
+                                marginBottom: "0.5rem" }}>
+                  Pointing source
+                </label>
+                <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.2rem" }}>
+                  {[
+                    { key: "director", label: "Director" },
+                    { key: "machine",  label: "Machine"  },
+                  ].map(({ key, label }) => {
+                    const active = scoreSource === key;
+                    return (
+                      <button
+                        key={key}
+                        onClick={() => setScoreSource(key)}
+                        style={{
+                          fontFamily: "Georgia, serif",
+                          fontSize: "0.78rem",
+                          letterSpacing: "0.06em",
+                          border: `1px solid ${active ? "#5b7a3a" : "#d6c79f"}`,
+                          borderRadius: 3,
+                          padding: "4px 14px",
+                          cursor: "pointer",
+                          background: active ? "rgba(91,122,58,.12)" : "transparent",
+                          color: active ? "#3a6218" : "#6b5942",
+                          display: "inline-flex", alignItems: "center", gap: "0.4em",
+                        }}>
+                        {active && <span style={{ fontSize: "0.65rem" }}>✓</span>}
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+
+            {/* Actions */}
+            <div style={{ display: "flex", gap: "0.75rem", justifyContent: "flex-end" }}>
+              <button
+                onClick={() => setShowScoreModal(false)}
+                style={{ ...btn, fontSize: "0.78rem" }}>
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setShowScoreModal(false);
+                  openScorePrint(scoreTitle, scoreSource);
+                }}
+                style={{
+                  ...btn,
+                  background: "#3a6e28", color: "#f7ead0",
+                  border: "none", fontSize: "0.78rem",
+                  padding: "5px 18px",
+                }}>
+                Open Score ♩
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
 
       {/* ── INFO BAR — always visible ──────────────────────────────────────── */}
