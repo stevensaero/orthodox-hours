@@ -117,6 +117,7 @@
     <line x1="16" y1="16" x2="21" y2="20" stroke="#9a8a6a" stroke-width="1.5" stroke-linecap="round"/>
   </svg>
   Open this page from the Tone Trainer to render a score.
+  <pre id="dbg" style="font-size:0.7rem;color:#9a8a6a;max-width:600px;white-space:pre-wrap;text-align:left;margin-top:1rem;"></pre>
 </div>
 
 <div id="toolbar">
@@ -347,23 +348,37 @@ function tryRender() {
   showScore(pendingPayload);
 }
 
+function dbg(msg) {
+  var el = document.getElementById('dbg');
+  if (el) el.textContent += msg + '\n';
+}
+
 window.addEventListener('message', function(e) {
+  dbg('msg: origin=' + e.origin + ' type=' + (e.data && e.data.type) + ' hasOpener=' + !!window.opener);
   if (e.data && e.data.type === 'SCORE_DATA') {
-    // Ack immediately so the opener stops retrying
-    try { e.source.postMessage('score-print-ack', '*'); } catch(_) {}
+    dbg('SCORE_DATA received, lines=' + (e.data.payload && e.data.payload.lines && e.data.payload.lines.length));
+    try { e.source.postMessage('score-print-ack', '*'); dbg('ack sent'); } catch(err) { dbg('ack err: ' + err); }
     if (rendered) return;
     pendingPayload = e.data.payload;
     tryRender();
+  } else {
+    dbg('ignored: ' + JSON.stringify(e.data).slice(0, 80));
   }
 });
+
+// Also log vex poll state
+var vexLogDone = false;
 
 // Poll for VexFlow readiness every 100ms (handles CDN latency)
 var vexPoll = setInterval(function() {
   if (typeof Vex !== 'undefined') {
     clearInterval(vexPoll);
-    tryRender(); // render now if payload already arrived
+    dbg('Vex loaded. pendingPayload=' + !!pendingPayload + ' rendered=' + rendered);
+    tryRender();
   }
 }, 100);
+// Also show opener status on load
+dbg('page loaded. opener=' + !!window.opener + ' href=' + location.href);
 </script>
 
 <!-- VexFlow loaded AFTER the inline script so Vex is never referenced at parse time -->
