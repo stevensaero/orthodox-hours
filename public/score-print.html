@@ -344,23 +344,22 @@ function renderScore(payload) {
         }
         lyricPrev = r2;
       }
-    }
-
-    // Draw // penultimate marker above treble stave right-aligned to note content
-    if (barlineAfter === 'penultimate') {
-      var svgEl2 = wrap.querySelector('svg');
-      var lastNoteX = aN.length > 0 ? aN[aN.length - 1].getAbsoluteX() + 16 : ML + SW * 0.6;
-      var markerTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      markerTxt.setAttribute('x', lastNoteX);
-      markerTxt.setAttribute('y', sy + TY - 6);
-      markerTxt.setAttribute('font-family', 'Georgia, serif');
-      markerTxt.setAttribute('font-size', '13');
-      markerTxt.setAttribute('font-weight', 'normal');
-      markerTxt.setAttribute('font-style', 'italic');
-      markerTxt.setAttribute('text-anchor', 'end');
-      markerTxt.setAttribute('fill', '#2a2118');
-      markerTxt.textContent = '//';
-      svgEl2.appendChild(markerTxt);
+      // Append // marker in lyric row after last note for penultimate lines
+      if (barlineAfter === 'penultimate' && aN.length > 0) {
+        var lastX = aN[aN.length - 1].getAbsoluteX() + NOTE_W * 0.6;
+        var slashTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        slashTxt.setAttribute('x', lastX);
+        slashTxt.setAttribute('y', lyricY);
+        slashTxt.setAttribute('font-family', 'Georgia, serif');
+        slashTxt.setAttribute('font-size', '16');
+        slashTxt.setAttribute('font-weight', 'normal');
+        slashTxt.setAttribute('font-style', 'italic');
+        slashTxt.setAttribute('text-anchor', 'middle');
+        slashTxt.setAttribute('dominant-baseline', 'middle');
+        slashTxt.setAttribute('fill', '#2a2118');
+        slashTxt.textContent = '//';
+        svgEl.appendChild(slashTxt);
+      }
     }
 
     // Grand staff connectors
