@@ -28,8 +28,6 @@
   #toolbar button:hover { background: rgba(214,199,159,.15); }
   #toolbar .src { font-style: italic; color: #9a8a6a; font-size: 0.72rem; }
   #score-wrapper { display: block; padding: 0 2rem 2rem; max-width: 900px; margin: 0 auto; }
-  #score-wrapper h1 { font-size: 1.8rem; font-weight: normal; letter-spacing: 0.06em; margin-bottom: 0.1rem; text-align: center; }
-  #score-wrapper .sub { font-size: 0.72rem; color: #6b5942; text-align: center; margin-bottom: 0.15rem; font-style: italic; }
   #score-canvas { display: block; }
   .score-page { display: block; margin-bottom: 2rem; overflow-x: auto; }
   /* Ensure VexFlow barline rects render black */
@@ -47,8 +45,6 @@
       max-width: none;
       margin: 0;
     }
-    #score-wrapper h1 { margin: 0; font-size: 16pt; }
-    #score-wrapper .sub { margin: 0 0 6pt 0; }
     /* Each page chunk breaks cleanly */
     .score-page {
       display: block;
@@ -243,25 +239,51 @@ function renderScore(payload) {
     chunks.push(lines.slice(ci, ci + SYSTEMS_PER_PAGE));
   }
 
-  // Page 1: prepend title + subtitle inside the first score-page div
-  var titleHTML = '<h1 style="font-size:1.8rem;font-weight:300;letter-spacing:0.04em;text-align:center;margin:0 0 0.1rem 0;font-family:Inter, Helvetica Neue, Helvetica, Arial, sans-serif;">' +
-    (payload.title || '') + '</h1>' +
-    '<div style="font-size:0.72rem;color:#6b5942;text-align:center;margin-bottom:0.05rem;font-style:italic;font-family:Inter, Helvetica Neue, Helvetica, Arial, sans-serif;">' +
-    (payload.subtitle || '') + '</div>';
+  // TITLE_H: vertical space reserved at top of first SVG for title + subtitle
+  var TITLE_H = 52;
 
   chunks.forEach(function(chunkLines, chunkIdx) {
     var pageDiv = document.createElement('div');
     pageDiv.className = 'score-page';
-    if (chunkIdx === 0) pageDiv.innerHTML = titleHTML;
     canvas.appendChild(pageDiv);
 
     var wrap = pageDiv; // VexFlow renders into this div
 
     var ren = new VF.Renderer(wrap, VF.Renderer.Backends.SVG);
-    ren.resize(PW, SH * chunkLines.length + 40);
+    var titleOffset = (chunkIdx === 0) ? TITLE_H : 0;
+    ren.resize(PW, SH * chunkLines.length + titleOffset + 40);
     var ctx = ren.getContext();
 
     var lines = chunkLines; // shadow outer lines for the loop below
+
+    // Render title + subtitle as SVG text on page 1
+    if (chunkIdx === 0) {
+      var svgRoot = pageDiv.querySelector('svg');
+      var tTitle = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      tTitle.setAttribute('x', PW / 2);
+      tTitle.setAttribute('y', 22);
+      tTitle.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
+      tTitle.setAttribute('font-size', '20');
+      tTitle.setAttribute('font-weight', '300');
+      tTitle.setAttribute('text-anchor', 'middle');
+      tTitle.setAttribute('dominant-baseline', 'middle');
+      tTitle.setAttribute('fill', '#2a2118');
+      tTitle.textContent = payload.title || '';
+      svgRoot.appendChild(tTitle);
+
+      var tSub = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      tSub.setAttribute('x', PW / 2);
+      tSub.setAttribute('y', 42);
+      tSub.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
+      tSub.setAttribute('font-size', '11');
+      tSub.setAttribute('font-weight', '200');
+      tSub.setAttribute('font-style', 'italic');
+      tSub.setAttribute('text-anchor', 'middle');
+      tSub.setAttribute('dominant-baseline', 'middle');
+      tSub.setAttribute('fill', '#6b5942');
+      tSub.textContent = payload.subtitle || '';
+      svgRoot.appendChild(tSub);
+    }
 
   function mkNote(pitch, durKey, stem, clef) {
     var opts = { keys:[pitch], duration:DUR[durKey]||'q', auto_stem:false };
@@ -280,7 +302,7 @@ function renderScore(payload) {
 
   for (var li=0; li<lines.length; li++) {
     var line   = lines[li];
-    var sy     = li * SH + 10;
+    var sy     = li * SH + 10 + titleOffset;
     var barlineAfter = line.barlineAfter || (li === lines.length - 1 ? 'final' : 'single');
     var isLast = barlineAfter === 'final';
 
