@@ -103,10 +103,18 @@ function resolveKey(doHz) {
 // This matches the OCA score where fa=Bb/4 is the middle treble line.
 function buildAltoPitch(cfg) {
   var n = cfg.names;
+  // Anchored to fa=Bb/4 (middle treble line, confirmed OCA score).
+  // la/ti sit BELOW do in the scale — they belong at octave 4, not 5.
+  // sol and above cross into octave 5.
   return {
-    do: n.do+'/4', re: n.re+'/4', mi: n.mi+'/4', fa: n.fa+'/4',
-    sol: n.sol+'/5', la: n.la+'/5', ti: n.ti+'/5',
-    si: n.si+'/5', di: n.di+'/4', mi_low: n.mi_low+'/4',
+    la: n.la+'/4',  // D4 — below middle line
+    ti: n.ti+'/4',  // E4 — 1st line (below re=G4) ✓
+    do: n.do+'/4',  // F4 — 1st space
+    re: n.re+'/4',  // G4 — 2nd line (alto Phrase A/C reciting tone)
+    mi: n.mi+'/4',  // A4 — 2nd space
+    fa: n.fa+'/4',  // Bb4 — middle line (alto Phrase B/D reciting tone) ✓
+    sol: n.sol+'/5', // C5 — 3rd space
+    si: n.si+'/5',  di: n.di+'/4', mi_low: n.mi_low+'/4',
   };
 }
 
@@ -117,9 +125,8 @@ function staveKey(solName, oct, cfg) {
 }
 
 // Bass staff notation octave — fixed per solfège, key-independent.
-// Derived from OCA score: bass reciting tone sol=C3 (2nd space bass clef, confirmed).
-// All other pitches sit in the same register, neighboring C3.
-// mi_low = one octave below mi (lower register mi used in Tone 1 Final cadence).
+// sol=C/3 = 2nd space bass clef (OCA score confirmed). All neighboring pitches oct 3.
+// mi_low = one octave below mi (Tone 1 Final cadence lower register).
 var BASS_NOTATION_OCT = {
   fa:2, sol:3, la:3, ti:3, do:3, re:3, mi:3, mi_low:2, di:3, si:3,
 };
@@ -184,8 +191,10 @@ function renderScore(payload) {
   ren.resize(PW, SH * lines.length + 20);
   var ctx = ren.getContext();
 
-  function mkNote(pitch, durKey, stem) {
-    var n = new VF.StaveNote({ keys:[pitch], duration:DUR[durKey]||'q', auto_stem:false });
+  function mkNote(pitch, durKey, stem, clef) {
+    var opts = { keys:[pitch], duration:DUR[durKey]||'q', auto_stem:false };
+    if (clef) opts.clef = clef;
+    var n = new VF.StaveNote(opts);
     n.setStemDirection(stem);
     if (durKey==='H·') VF.Dot.buildAndAttach([n]);
     return n;
@@ -260,7 +269,7 @@ function renderScore(payload) {
       var bN = [];
       for (var bi = 0; bi < line.bass.length; bi++) {
         var br = line.bass[bi];
-        bN.push(mkNote(bassVFPitch(br.pitch, br.octaveDiv, cfg), br.durKey, -1));
+        bN.push(mkNote(bassVFPitch(br.pitch, br.octaveDiv, cfg), br.durKey, -1, 'bass'));
       }
       var bassVoice = mkVoice(bN);
       new VF.Formatter().joinVoices([bassVoice]).format([bassVoice], SW - 10);
