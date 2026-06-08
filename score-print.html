@@ -60,7 +60,7 @@
     .score-page svg {
       display: block;
       width: 100% !important;
-      /* height left as VexFlow inline value — do not override */
+      height: auto !important;  /* proportional scaling via viewBox */
     }
   }
 </style>
@@ -255,6 +255,10 @@ function renderScore(payload) {
     var ctx = ren.getContext();
 
     var lines = chunkLines; // shadow outer lines for the loop below
+
+    // Strip VexFlow inline height so print CSS width:100% scales via viewBox aspect ratio
+    var chunkSvg = pageDiv.querySelector('svg');
+    if (chunkSvg) chunkSvg.style.height = '';
 
     // Render title + subtitle as SVG text on page 1
     if (chunkIdx === 0) {
