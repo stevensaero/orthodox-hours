@@ -34,7 +34,7 @@
   .score-page { display: block; margin-bottom: 2rem; overflow-x: auto; }
   /* Ensure VexFlow barline rects render black */
   .vf-stavebarline rect { fill: black !important; }
-  .score-page svg { width: 780px; height: auto; display: block; }
+  .score-page svg { width: 780px; display: block; }
 
   @media print {
     @page { size: letter portrait; margin: 0.5in; }
@@ -64,7 +64,7 @@
     .score-page svg {
       display: block;
       width: 100% !important;
-      height: auto !important;
+      /* height left as VexFlow inline value — do not override */
     }
   }
 </style>
