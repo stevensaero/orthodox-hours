@@ -6,7 +6,7 @@
 <title>Score — Orthodox Hours</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: Georgia, 'Times New Roman', serif; background: #f5f0e8; color: #2a2118; min-height: 100vh; }
+  body { font-family: Georgia, 'Times New Roman', serif; background: #f5f0e8; color: #2a2118; }
   #waiting {
     display: flex; flex-direction: column; align-items: center;
     justify-content: center; min-height: 100vh; gap: 1rem;
@@ -25,9 +25,9 @@
   }
   #toolbar button:hover { background: rgba(214,199,159,.15); }
   #toolbar .src { font-style: italic; color: #9a8a6a; font-size: 0.72rem; }
-  #score-wrapper { display: none; padding: 1.5rem 2rem 3rem; max-width: 900px; margin: 0 auto; }
-  #score-wrapper h1 { font-size: 1.15rem; font-weight: normal; letter-spacing: 0.06em; margin-bottom: 0.15rem; text-align: center; }
-  #score-wrapper .sub { font-size: 0.72rem; color: #6b5942; text-align: center; margin-bottom: 1.2rem; font-style: italic; }
+  #score-wrapper { display: none; padding: 0.75rem 2rem 2rem; max-width: 900px; margin: 0 auto; }
+  #score-wrapper h1 { font-size: 1.5rem; font-weight: normal; letter-spacing: 0.06em; margin-bottom: 0.1rem; text-align: center; }
+  #score-wrapper .sub { font-size: 0.72rem; color: #6b5942; text-align: center; margin-bottom: 0.4rem; font-style: italic; }
   #score-canvas { overflow-x: auto; }
   /* Ensure VexFlow barline rects render black */
   .vf-stavebarline rect { fill: black !important; }
@@ -36,9 +36,9 @@
   @media print {
     body { background: white; }
     #toolbar, #waiting { display: none !important; }
-    #score-wrapper { display: block !important; padding: 0.4in 0.5in; max-width: none; }
+    #score-wrapper { display: block !important; padding: 0.2in 0.4in 0.4in; max-width: none; }
     #score-canvas svg { width: 7.5in !important; height: auto !important; }
-    @page { size: letter portrait; margin: 0; }
+    @page { size: letter portrait; margin: 0.4in; }
   }
 </style>
 </head>
