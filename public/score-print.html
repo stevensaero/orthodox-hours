@@ -9,7 +9,7 @@
   body { font-family: Georgia, 'Times New Roman', serif; background: white; color: #2a2118; }
   #waiting {
     display: flex; flex-direction: column; align-items: center;
-    justify-content: center; min-height: 100vh; gap: 1rem;
+    justify-content: center; gap: 1rem;
     color: #6b5942; font-size: 1rem; font-style: italic;
   }
   #toolbar {
@@ -25,8 +25,8 @@
   }
   #toolbar button:hover { background: rgba(214,199,159,.15); }
   #toolbar .src { font-style: italic; color: #9a8a6a; font-size: 0.72rem; }
-  #score-wrapper { display: block; padding: 0.1rem 2rem 2rem; max-width: 900px; margin: 0 auto; }
-  #score-wrapper h1 { font-size: 1.5rem; font-weight: normal; letter-spacing: 0.06em; margin-bottom: 0.1rem; text-align: center; }
+  #score-wrapper { display: block; padding: 0 2rem 2rem; max-width: 900px; margin: 0 auto; }
+  #score-wrapper h1 { font-size: 1.8rem; font-weight: normal; letter-spacing: 0.06em; margin-bottom: 0.1rem; text-align: center; }
   #score-wrapper .sub { font-size: 0.72rem; color: #6b5942; text-align: center; margin-bottom: 0.15rem; font-style: italic; }
   #score-canvas { overflow-x: auto; }
   /* Ensure VexFlow barline rects render black */
@@ -46,7 +46,7 @@
 </head>
 <body>
 
-<div id="waiting">
+<div id="waiting" style="display:none;">
   <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
     <circle cx="16" cy="16" r="13" stroke="#9a8a6a" stroke-width="1.5"/>
     <line x1="16" y1="8" x2="16" y2="16" stroke="#9a8a6a" stroke-width="1.5" stroke-linecap="round"/>
@@ -55,7 +55,7 @@
   Open this page from the Tone Trainer to render a score.
 </div>
 
-<div id="toolbar">
+<div id="toolbar" style="display:none;">
   <strong id="tb-title" style="color:#f7ead0;font-weight:normal;"></strong>
   <span style="color:#6b5942">|</span>
   <span class="src" id="tb-src"></span>
