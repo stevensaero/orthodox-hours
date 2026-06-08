@@ -152,6 +152,8 @@ var TY=30, TH=40;
 var LYRIC_GAP=72, BASS_Y=TY+TH+LYRIC_GAP, GRAND_SH=BASS_Y+TH+50;
 // Solo treble only
 var SOLO_SH=TY+TH+60;
+// Fixed note width — equal spacing regardless of duration, matching OCA score density (~20 notes/system)
+var NOTE_W = 36;
 
 // ── Load fonts before rendering ────────────────────────────────────────
 function loadFonts(cb) {
@@ -231,7 +233,7 @@ function renderScore(payload) {
     }
 
     var altoVoice = mkVoice(aN);
-    new VF.Formatter().joinVoices([altoVoice]).format([altoVoice], SW * 0.6);
+    new VF.Formatter().joinVoices([altoVoice]).format([altoVoice], aN.length * NOTE_W);
     altoVoice.draw(ctx, tr);
 
     // Draw lyrics — solo treble only (grand staff lyrics drawn after bass stave below)
@@ -297,7 +299,7 @@ function renderScore(payload) {
         bN.push(mkNote(bassVFPitch(br.pitch, br.octaveDiv, cfg), br.durKey, -1, 'bass'));
       }
       var bassVoice = mkVoice(bN);
-      new VF.Formatter().joinVoices([bassVoice]).format([bassVoice], SW * 0.6);
+      new VF.Formatter().joinVoices([bassVoice]).format([bassVoice], bN.length * NOTE_W);
       bassVoice.draw(ctx, bs);
     }
 
