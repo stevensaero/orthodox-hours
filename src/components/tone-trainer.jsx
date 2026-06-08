@@ -1840,9 +1840,8 @@ const BASS_RULES = {
       // Tenor si (raised 6th) confirms harmonic minor approach to la
       cadMap: { do: "mi", ti: "mi_low", la: "la" },
       preslurMap: {},
-      // re and mi sit on the bass staff. At do=F4 global div-4 lands correctly;
-      // per-phrase override removed (was calibrated for do=C4). Tone 2 untouched.
-      octaveDiv: { re: 4, mi: 4 },
+      // re÷2=G3 (4th space), mi÷2=A3 (top line) — correct staff positions per score.
+      // mi_low uses global ÷4 (A2, lower octave). No per-phrase override needed.
     },
   },
   // ── Tone 2, Russian Obikhod (L'vov-Bakhmetev) ──────────────────────────
@@ -1900,17 +1899,18 @@ const BASS_RULES = {
 // do=Bb4 reference: soprano re=C5, bass la=G3, bass mi=D3, bass re=C3 etc.
 // Displacement factor: divide soprano FREQ by this value to get bass register.
 const BASS_OCTAVE_DIV = {
-  // Recalibrated for do=F4 (349.23 Hz). All values ÷4 (2 octaves down).
-  // At do=C4 la/ti/do/di were ÷2; at do=F4 ÷2 puts them above E4 (out of bass range).
-  la:    4,   // D5 → D3
-  ti:    4,   // E5 → E3
-  do:    4,   // F5 → F3
-  di:    4,   // F#5 → F#3
-  re:    4,   // G4 → G3  (already ÷4, now lands correctly)
-  mi:    4,   // A4 → A3
-  mi_low: 4,  // A4 → A3
-  fa:    4,   // Bb4 → Bb3
-  sol:   4,   // C5 → C3  — bass reciting tone, confirmed from OCA score
+  // do=F4 (349.23 Hz). sol stays ÷4 (C3, confirmed OCA score 2nd space bass clef).
+  // All other pitches ÷2 — lands in D3–Bb3, solidly in bass vocal range.
+  // mi_low ÷4 = intentionally lower register variant of mi.
+  la:    2,   // D5 → D3  (147 Hz)
+  ti:    2,   // E5 → E3  (165 Hz)
+  do:    2,   // F5 → F3  (175 Hz)
+  di:    2,   // F#5 → F#3 (185 Hz)
+  re:    2,   // G5 → G3  (196 Hz)
+  mi:    2,   // A5 → A3  (220 Hz)
+  mi_low: 4,  // A5 → A2  (110 Hz) — lower octave mi, Tone 1 Final cadence
+  fa:    2,   // Bb5 → Bb3 (233 Hz)
+  sol:   4,   // C5 → C3  (131 Hz) — bass reciting tone, confirmed OCA score
 };
 
 // ── SOPRANO DERIVATION ────────────────────────────────────────────────────────
