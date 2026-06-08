@@ -626,13 +626,9 @@ const TRAINER_RELEASE_NOTES = [
 // sol = perfect fifth above do — in scale for completeness; not yet used in cadences.
 const OFF = { la: -3, si: -2, ti: -1, do: 0, di: 1, re: 2, mi: 4, mi_low: 4, fa: 5, sol: 7 };
 const DO_OPTIONS = [
-  { label: "F", hz: 349.23 },  // F4 — Tone 1 canonical pitch (OCA score, F major)
-  { label: "G", hz: 392.00 },
-  { label: "A", hz: 440.0 },
-  { label: "B", hz: 493.88 },
-  { label: "C", hz: 523.25 },
-  { label: "D", hz: 587.33 },
-  { label: "E", hz: 659.25 },
+  { label: "Eb", hz: 311.13 },  // one step below canonical — lower option
+  { label: "F",  hz: 349.23 },  // F4 — Tone 1 canonical (OCA score, F major)
+  { label: "G",  hz: 392.00 },  // one step above canonical — higher option
 ];
 
 // ── PHRASE DEFINITIONS (keyed by tone number) ────────────────────────────────
@@ -3486,8 +3482,18 @@ export default function ToneTrainer() {
     setPlayingWhich(null);
   };
 
-  const playScale = () =>
-    playNotes(["la", "ti", "do", "re", "mi"].map((s) => ({ sol: s, dur: 0.4 })));
+  // Pitch button — intones the reciting-tone pitch for each SATB part in sequence
+  // (soprano → alto → tenor → bass), giving singers their reference note.
+  // Tone 1 Phrase A reciting tones: alto=re, soprano=fa (SOPRANO_MAP[re]), tenor=sol, bass=sol.
+  const playPitch = () => {
+    const H = 0.7; // half-note feel — long enough to hear clearly
+    playNotes([
+      { sol: "fa",  dur: H, peak: 0.7 },                              // soprano
+      { sol: "re",  dur: H, peak: 0.7 },                              // alto
+      { sol: "sol", dur: H, peak: 0.7, tenor: true },                 // tenor (one octave above bass)
+      { sol: "sol", dur: H, peak: 0.8, bass: true },                  // bass
+    ]);
+  };
 
   // ── PHRASE-STRUCTURAL AUTO ACCENT ENGINE (v0.5.1) ──────────────────────────
   // Takes a words array already syllabified by wordFromDisplay (lexicon has done
@@ -4251,7 +4257,7 @@ export default function ToneTrainer() {
               {DO_OPTIONS.map((o) => <option key={o.label} value={o.hz}>{o.label}</option>)}
             </select>
           </label>
-          <button style={btn} onClick={playScale}>scale</button>
+          <button style={btn} onClick={playPitch}>pitch</button>
           <label style={{ fontSize: "0.82rem", color: playingLine !== null ? "#b0a080" : "#5b4a33",
                           display: "inline-flex", alignItems: "center", gap: "0.3rem",
                           transition: "color 0.2s" }}
