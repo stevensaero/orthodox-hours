@@ -7366,6 +7366,27 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.8.0",
+    date: "June 2026",
+    summary: "Session close-out: UI overhaul, service outline, explainer badges, data gap fixes",
+    items: [
+      "ui: Sticky control bar — DATE/SERVICE/Tone row fixed at top on scroll. Row two is a full-width liturgical context header bar: [Day · Tone] — LITURGICAL CONTEXT — [Reader's Service]. Day·Tone hides when context is expanded.",
+      "ui: ServiceOutline — sticky OUTLINE pill (left rail) for Vespers, Typica, Matins, Liturgy. Expands to panel listing all major service movements in assembly order with green (encoded) / red (placeholder) dots. IntersectionObserver tracks active section while scrolling. Click any row to jump.",
+      "ui: Major service movement headers (PSALM 103, LIC, LITIYA, APOSTICHA, etc.) now render at larger font with gold underline, distinct from sub-element labels.",
+      "ui: Service nav prev/next buttons removed — service dropdown is sufficient.",
+      "ui: Scripture reference text and kathisma text are now inline gold underline links (same target as Read in Scripture / Read in Psalter badge). Card body stays inert — only the ref text is tappable.",
+      "fix: Vespers prokeimenon — Menaion polyeleos/vigil festal prokeimenon now correctly overrides weekly table including Saturday Great Prokeimenon. (menaionEntry.prokeimenon_text was never consulted.) — Fekula §2E–§2F",
+      "fix: Typica alleluia — Sunday + polyeleos/vigil Menaion saint now renders resurrectional Alleluia first, festal Alleluia second. Previously menaion check preceded Sunday resurrectional branch. — Fekula §4A3",
+      "fix: Pentecostarion Litiya now renders at Vespers for P+35, P+39, P+42, P+49, P+56. Litiya gate only checked menaionEntry.has_litya — never checked pentEntry.",
+      "feat: ProkeimenonExplainer 'Tone source' badge on Vespers prokeimenon. Priority chain, active source explanation, weekly table with active row and festal override row highlighted.",
+      "feat: TypicaProkeimenonExplainer — separate explainer for Typica prokeimenon (different table, Sunday uses Octoechos tone, Saturday dual-prokeimenon, §2E/§2F appends).",
+      "feat: AlleluiaExplainer 'Verse source' badge on all Alleluia elements in Typica. Same structure. Weekday table with festal override row.",
+      "feat: Octoechos data browser at /orthodox-hours/octoechos — tone picker, Vespers stichera by day, Matins stubs, Index Tables.",
+      "feat: Octoechos browser Index Tables crash fixed (RESURRECTIONAL_TROPARIA is {tone,text} object not string).",
+      "fix: How It Works corrections — 10 stale items updated to reflect current assembler capabilities.",
+    ],
+  },
+  {
     version: "v0.7.8",
     date: "June 2026",
     summary: "Explainer improvements + Typica prokeimenon explainer",

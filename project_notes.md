@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.6.1** | **Tone Trainer: v0.11.29** | Last synced: June 7, 2026
+**Tool version: v0.8.0** | **Tone Trainer: v0.11.29** | Last synced: June 8, 2026
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
@@ -2351,3 +2351,47 @@ Full v2.1 encoding from 07-01.pdf. Previously had basic fields only (troparion, 
 - Ghost soprano/tenor chips: labels restored, active highlight during playback.
 - Portrait tablet wrap bug noted for future session (chip rows wrap independently).
 - SA chip height consistency noted for future session.
+
+---
+
+## Session Notes — June 8, 2026 (v0.7.x → v0.8.0)
+
+### UI Overhaul
+
+**Sticky control bar** — DATE/SERVICE row and the liturgical context header row are now `position: sticky, top: 0`. Row two is a full-width clickable header: `[Day · Tone N] — LITURGICAL CONTEXT ▼ — [Reader's Service]`. Day·Tone hides via `visibility: hidden` when context is expanded (preserves centering). Context body expands inside the sticky bar's `maxWidth: 720px` inner wrapper so it aligns with the control rows.
+
+**ServiceOutline** — sticky OUTLINE pill (left, 28px collapsed / 178px expanded). Shown only for `vespers`, `typica`, `matins`, `liturgy` keys. Derives rows from assembled `elements` array via `OUTLINE_MAJOR_IDS` and `OUTLINE_LABEL_PREFIXES`. Green dot = encoded, red dot = placeholder. `IntersectionObserver` in component's own `useEffect` with 80ms settle delay. Scroll offset: `getBoundingClientRect().top + window.scrollY - 128`. Panel closes first, 50ms delay, then scroll. Sticky `top: 120px` (clears sticky control bar).
+
+**Major section headers** — `MAJOR_SECTION_IDS` set + `MAJOR_LABEL_PREFIXES` array in `ServiceBlock` classify elements as major service movements. Major labels render at 0.82rem with gold underline. Sub-element labels unchanged at 0.7rem.
+
+**Nav buttons removed** — top and bottom prev/next service buttons removed. Service dropdown is sufficient.
+
+**Scripture/kathisma inline links** — when `element.scriptureHref` or `element.kathismaNum` is present, the last line of element.text renders as a gold underline `<a>` tag (same target as the badge button). Card body stays inert — no hover effects, no background changes.
+
+### Data Gap Fixes
+
+**Vespers prokeimenon (Fekula §2E–§2F)** — `menaionEntry.prokeimenon_text` was never consulted in `assembleVespers`. Now: `menaionProk` built from menaionEntry when rank is polyeleos/vigil; overrides both weekday table and Saturday Great Prokeimenon. `prokSource` field: `'weekly' | 'saturday_great' | 'menaion_festal' | 'pentecostarion'`. `isGreatFeast` extended to include `hours_format` checks (ascension, pentecost) so temple sticheron correctly suppressed.
+
+**Typica alleluia Sunday gap (Fekula §4A3)** — on Sunday + polyeleos/vigil Menaion saint, resurrectional Alleluia (Octoechos tone) now renders first, festal Alleluia second. Previously `menaionEntry.alleluia_verse` check preceded Sunday branch, dropping the resurrectional. Fixed by restructuring the `isSunday` branch first. `alleluiaSource` field: `'weekly' | 'sunday_resurrectional' | 'menaion_festal' | 'menaion_festal_sunday' | 'pentecostarion'`.
+
+**Pentecostarion Litiya gap** — Litiya gate was `menaionEntry.has_litya === true` only. Five Pentecostarion entries (P+35, P+39, P+42, P+49, P+56) had fully encoded litiya data never rendered. Fix: `hasLitya = menaionHasLitya || pentHasLitya`; `litEntry` selects pent or menaion. `isGreatFeast` extended for Pentecostarion Great Feasts via `hours_format`.
+
+### Explainer Badges
+
+Three new explainer components, all following the same pill-badge pattern as `FekulaBadge`:
+
+- **`ProkeimenonExplainer`** (`Tone source ▾`) — Vespers prokeimenon. Priority chain, active source box, weekly Vespers table (HTM Horologion) with active row highlighted. Festal override row appended when active.
+- **`TypicaProkeimenonExplainer`** (`Tone source ▾`) — Typica prokeimenon. Separate because: different weekday table (different tones/texts), Sunday uses Octoechos tone not DOW, Saturday has two prokeimena (All Saints T8 + Departed T6), §2E/§2F appends festal after daily. `typicaMode: true` on elements routes to this explainer.
+- **`AlleluiaExplainer`** (`Verse source ▾`) — all Typica alleluia elements. Priority chain including Sunday dual-alleluia rule, weekday table with festal override row.
+
+All three tables: active row highlights in gold when daily table governs; no highlight when festal overrides — only the festal row at the bottom highlights.
+
+### Octoechos Browser (Phase 2)
+
+`src/components/octoechos-browser.jsx` at `/orthodox-hours/octoechos`. Tone picker (1–8) lazy-loads per-tone files. Vespers: day tabs, LIC stichera, aposticha, dogmatikon. Matins: Phase 3 stubs. Index Tables: tone-independent data from index.js. Fixed crash: `RESURRECTIONAL_TROPARIA[tone]` is `{tone, text}` object — was passed directly as React child. Fixed `SUNDAY_ALLELUIA[tone].stichoi` (array, plural key).
+
+### Architecture Notes
+
+- `ServiceOutline` is a proper standalone module-scope React component — no closures over main component. `useEffect` for `IntersectionObserver` lives inside it. State (`outlineOpen`, `activeSection`) passed as props from main component's `useState` hooks (declared in hooks section, no forward refs — previous attempts caused TDZ crash in minified bundle).
+- `rank` is not declared in `assembleTypica` — new code must use `menaionEntry?.rank` not a bare `rank` reference.
+
