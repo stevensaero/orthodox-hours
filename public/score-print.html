@@ -186,12 +186,13 @@ var DUR = { Q:'q', H:'h', 'H·':'h', W:'w' };
 var PW=780, ML=48, SW=PW-ML-18;
 var TY=30, TH=40;
 // Grand staff: treble top (TY) + treble height (TH) + lyric gap + bass height + below padding
-// LYRIC_GAP sized to give text comfortable room centered between the two staves
-var LYRIC_GAP=72, BASS_Y=TY+TH+LYRIC_GAP, GRAND_SH=BASS_Y+TH+50;
+// LYRIC_GAP=125: wider text zone between treble and bass staves
+// GRAND_SH=235: zero below-padding keeps systems tight; 4 systems = 960px = exact page fit
+var LYRIC_GAP=125, BASS_Y=TY+TH+LYRIC_GAP, GRAND_SH=BASS_Y+TH+0;
 // Solo treble only
 var SOLO_SH=TY+TH+60;
 // Fixed note width — equal spacing regardless of duration, matching OCA score density (~20 notes/system)
-var NOTE_W = 47;  // spaced for 16px Inter lyric text
+var NOTE_W = 50;  // 50px per note
 
 // ── Load fonts before rendering ────────────────────────────────────────
 function loadFonts(cb) {
