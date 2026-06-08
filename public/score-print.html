@@ -191,7 +191,7 @@ var LYRIC_GAP=72, BASS_Y=TY+TH+LYRIC_GAP, GRAND_SH=BASS_Y+TH+50;
 // Solo treble only
 var SOLO_SH=TY+TH+60;
 // Fixed note width — equal spacing regardless of duration, matching OCA score density (~20 notes/system)
-var NOTE_W = 43;  // ~20% wider to accommodate 18px lyric text
+var NOTE_W = 47;  // spaced for 16px Inter lyric text
 
 // ── Load fonts before rendering ────────────────────────────────────────
 function loadFonts(cb) {
@@ -323,7 +323,7 @@ function renderScore(payload) {
           txt.setAttribute('fill', '#1a1008');
           txt.textContent = r2.text;
           // Measure text width then insert background rect before the text
-          var approxW = r2.text.length * 9 + 6;
+          var approxW = r2.text.length * 9 + 4;
           var bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
           bg.setAttribute('x', aN[ai2].getAbsoluteX() - approxW / 2);
           bg.setAttribute('y', lyricY - 12);
@@ -415,7 +415,7 @@ function renderScore(payload) {
           txt.setAttribute('fill', '#1a1008');
           txt.textContent = r2.text;
           // Measure text width then insert background rect before the text
-          var approxW = r2.text.length * 9 + 6;
+          var approxW = r2.text.length * 9 + 4;
           var bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
           bg.setAttribute('x', aN[ai2].getAbsoluteX() - approxW / 2);
           bg.setAttribute('y', lyricY - 12);
