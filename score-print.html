@@ -258,7 +258,7 @@ function renderScore(payload) {
     var wrap = pageDiv; // VexFlow renders into this div
 
     var ren = new VF.Renderer(wrap, VF.Renderer.Backends.SVG);
-    ren.resize(PW, SH * chunkLines.length + 20);
+    ren.resize(PW, SH * chunkLines.length + 60);
     var ctx = ren.getContext();
 
     var lines = chunkLines; // shadow outer lines for the loop below
