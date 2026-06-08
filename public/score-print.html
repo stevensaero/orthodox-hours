@@ -28,10 +28,11 @@
   #score-wrapper { display: block; padding: 0 2rem 2rem; max-width: 900px; margin: 0 auto; }
   #score-wrapper h1 { font-size: 1.8rem; font-weight: normal; letter-spacing: 0.06em; margin-bottom: 0.1rem; text-align: center; }
   #score-wrapper .sub { font-size: 0.72rem; color: #6b5942; text-align: center; margin-bottom: 0.15rem; font-style: italic; }
-  #score-canvas { overflow-x: auto; }
+  #score-canvas { display: block; }
+  .score-page { display: block; margin-bottom: 2rem; overflow-x: auto; }
   /* Ensure VexFlow barline rects render black */
   .vf-stavebarline rect { fill: black !important; }
-  #score-canvas svg { width: 780px; height: auto; display: block; }
+  .score-page svg { width: 780px; height: auto; display: block; }
 
   @media print {
     @page { size: letter portrait; margin: 0.5in; }
@@ -45,25 +46,23 @@
       margin: 0;
     }
     #score-wrapper h1 { margin: 0; font-size: 16pt; }
-    #score-wrapper .sub { margin: 0 0 4pt 0; }
-    #score-canvas {
+    #score-wrapper .sub { margin: 0 0 6pt 0; }
+    /* Each page chunk breaks cleanly */
+    .score-page {
       display: block;
       margin: 0;
       padding: 0;
-      overflow: visible !important;
-      /* Let SVG flow across pages naturally — no forced breaks */
+      page-break-after: always;
+      break-after: page;
     }
-    #score-canvas svg {
+    .score-page:last-child {
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+    .score-page svg {
       display: block;
       width: 100% !important;
       height: auto !important;
-      max-width: 100% !important;
-      /* Do NOT set break-inside:avoid — SVG is too tall, must flow across pages */
-    }
-    /* Ensure nothing forces a break BEFORE the canvas */
-    #score-wrapper h1, #score-wrapper .sub, #score-canvas {
-      page-break-after: avoid;
-      break-after: avoid;
     }
   }
 </style>
@@ -89,8 +88,6 @@
 </div>
 
 <div id="score-wrapper">
-  <h1 id="sc-title"></h1>
-  <div class="sub" id="sc-sub"></div>
   <div id="score-canvas"></div>
 </div>
 
@@ -219,6 +216,11 @@ function loadFonts(cb) {
 }
 
 // ── Render (called after both VexFlow and fonts are ready) ─────────────
+// Splits lines into SYSTEMS_PER_PAGE chunks. Each chunk renders into its own
+// .score-page div with a correctly-sized SVG. CSS page-break-after:always on
+// .score-page (except last) gives clean print pagination with no page break fighting.
+var SYSTEMS_PER_PAGE = 4;
+
 function renderScore(payload) {
   var VF    = VexFlow;
   var lines = payload.lines;
@@ -229,12 +231,34 @@ function renderScore(payload) {
 
   var SH = grand ? GRAND_SH : SOLO_SH;
 
-  var wrap = document.getElementById('score-canvas');
-  wrap.innerHTML = '';
+  var canvas = document.getElementById('score-canvas');
+  canvas.innerHTML = '';
 
-  var ren = new VF.Renderer(wrap, VF.Renderer.Backends.SVG);
-  ren.resize(PW, SH * lines.length + 20);
-  var ctx = ren.getContext();
+  // Split lines into page chunks
+  var chunks = [];
+  for (var ci = 0; ci < lines.length; ci += SYSTEMS_PER_PAGE) {
+    chunks.push(lines.slice(ci, ci + SYSTEMS_PER_PAGE));
+  }
+
+  // Page 1: prepend title + subtitle inside the first score-page div
+  var titleHTML = '<h1 style="font-size:1.8rem;font-weight:normal;letter-spacing:0.06em;text-align:center;margin:0 0 0.1rem 0;">' +
+    (payload.title || '') + '</h1>' +
+    '<div style="font-size:0.72rem;color:#6b5942;text-align:center;margin-bottom:0.3rem;font-style:italic;">' +
+    (payload.subtitle || '') + '</div>';
+
+  chunks.forEach(function(chunkLines, chunkIdx) {
+    var pageDiv = document.createElement('div');
+    pageDiv.className = 'score-page';
+    if (chunkIdx === 0) pageDiv.innerHTML = titleHTML;
+    canvas.appendChild(pageDiv);
+
+    var wrap = pageDiv; // VexFlow renders into this div
+
+    var ren = new VF.Renderer(wrap, VF.Renderer.Backends.SVG);
+    ren.resize(PW, SH * chunkLines.length + 20);
+    var ctx = ren.getContext();
+
+    var lines = chunkLines; // shadow outer lines for the loop below
 
   function mkNote(pitch, durKey, stem, clef) {
     var opts = { keys:[pitch], duration:DUR[durKey]||'q', auto_stem:false };
@@ -429,30 +453,21 @@ function renderScore(payload) {
     new VF.StaveConnector(tr, bs).setType(VF.StaveConnector.type.BRACE).setContext(ctx).draw();
     new VF.StaveConnector(tr, bs).setType(VF.StaveConnector.type.SINGLE_LEFT).setContext(ctx).draw();
   }
+  }); // end chunks.forEach
 }
 
 // ── Show score ─────────────────────────────────────────────────────────
 function showScore(p) {
-  document.getElementById('sc-title').textContent = p.title || '';
-  document.getElementById('sc-sub').textContent   = p.subtitle || '';
   document.getElementById('tb-title').textContent = p.title || '';
   document.getElementById('tb-src').textContent   = (p.toneLabel || '') + ' · ' +
     (p.source === 'machine' ? 'Machine pointing' : 'Director pointing');
-  document.getElementById('waiting').style.display       = 'none';
-  document.getElementById('toolbar').style.display       = 'flex';
-  // score-wrapper is display:block by default (needed for print CSS)
+  document.getElementById('waiting').style.display = 'none';
+  document.getElementById('toolbar').style.display = 'flex';
   document.title = (p.title || 'Score') + ' — Score';
 
-  // Load fonts THEN render — guarantees Bravura is available for VexFlow
   loadFonts(function() {
     try {
       renderScore(p);
-      // Strip VexFlow's inline width/height so print CSS (width:100%, height:auto) takes over
-      var svgEl = document.querySelector('#score-canvas svg');
-      if (svgEl) {
-        svgEl.style.width = '';
-        svgEl.style.height = '';
-      }
     } catch(err) {
       document.getElementById('score-canvas').innerHTML =
         '<p style="color:#7a2418;padding:1rem;font-style:italic;">Render error: ' + err.message + '</p>';
