@@ -3814,6 +3814,7 @@ export default function ToneTrainer() {
       title: title || `Tone ${activeTone} Sticheron`,
       subtitle: `Common Chant (Obikhod) · arr. from L'vov/Bakhmetev · Tone ${activeTone}`,
       source: source || "director",
+      doHz,    // current do= pitch — score renderer uses this to set key signature
       lines: [],
     };
 
