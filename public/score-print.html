@@ -51,12 +51,19 @@
       margin: 0;
       padding: 0;
       overflow: visible !important;
+      /* Let SVG flow across pages naturally — no forced breaks */
     }
     #score-canvas svg {
       display: block;
       width: 100% !important;
       height: auto !important;
       max-width: 100% !important;
+      /* Do NOT set break-inside:avoid — SVG is too tall, must flow across pages */
+    }
+    /* Ensure nothing forces a break BEFORE the canvas */
+    #score-wrapper h1, #score-wrapper .sub, #score-canvas {
+      page-break-after: avoid;
+      break-after: avoid;
     }
   }
 </style>
