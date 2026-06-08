@@ -8206,9 +8206,6 @@ function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
               <th style={{ textAlign: 'left', padding: '2px 0 3px 6px',
                 color: '#8B6914', fontWeight: 'bold', fontSize: '0.7rem',
                 letterSpacing: '0.08em', textTransform: 'uppercase' }}>Prokeimenon</th>
-              <th style={{ textAlign: 'left', padding: '2px 0 3px 8px',
-                color: '#8B6914', fontWeight: 'bold', fontSize: '0.7rem',
-                letterSpacing: '0.08em', textTransform: 'uppercase' }}>Override</th>
             </tr>
           </thead>
           <tbody>
@@ -8229,20 +8226,26 @@ function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
                   color: '#8B6914', fontWeight: 'bold' }}>{row.tone}</td>
                 <td style={{ padding: '3px 0 3px 6px', color: '#5C4A1E',
                   fontStyle: 'italic' }}>{row.text}</td>
-                <td style={{ padding: '3px 0 3px 8px', fontSize: '0.7rem',
-                  color: '#9A8A70', fontStyle: 'italic', minWidth: '60px' }}>
-                  {isActive && prokSource === 'menaion_festal'
-                    ? <span style={{ color: '#8B6914', fontWeight: 'bold' }}>← overridden by Menaion festal</span>
-                    : isActive && prokSource === 'saturday_great' && prokRank && (prokRank === 'polyeleos' || prokRank === 'vigil')
-                    ? <span style={{ color: '#8B6914', fontWeight: 'bold' }}>← overridden by festal ({prokRank})</span>
-                    : isActive
-                    ? <span style={{ color: '#2D6A2E' }}>← active</span>
-                    : null}
-                </td>
+
               </tr>
               );
             })}
           </tbody>
+          {/* Festal override row — shown when a feast replaces the daily */}
+          {(prokSource === 'menaion_festal' || prokSource === 'pentecostarion') && (
+            <tfoot>
+              <tr style={{ background: 'rgba(139,105,20,0.1)', borderTop: '1px solid #D4C49A' }}>
+                <td style={{ padding: '4px 6px 4px 0', color: '#5A4010', fontWeight: 'bold', fontSize: '0.75rem' }}>
+                  {prokSource === 'pentecostarion' ? 'Pentecostarion feast' : 'Menaion festal'}
+                </td>
+                <td style={{ padding: '4px 6px', textAlign: 'center', color: '#8B6914', fontWeight: 'bold' }}>—</td>
+                <td colSpan={1} style={{ padding: '4px 0 4px 6px', color: '#5A4010',
+                  fontStyle: 'italic', fontWeight: 'bold', fontSize: '0.75rem' }}>
+                  Festal prokeimenon — replaces the daily entry above ↑
+                </td>
+              </tr>
+            </tfoot>
+          )}
         </table>
         <div style={{ fontSize: '0.72rem', color: '#9A8A70', marginTop: '0.5rem' }}>
           ★ Great Prokeimenon — 3 verses, sung 4×. Overridden by festal prokeimenon at Polyeleos/Vigil rank.
@@ -8372,7 +8375,7 @@ function TypicaProkeimenonExplainer({ typicaProkSource, typicaProkDow, typicaTon
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.77rem' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid #D4C49A' }}>
-              {['Day','Tone','Prokeimenon','Override'].map(h => (
+              {['Day','Tone','Prokeimenon'].map(h => (
                 <th key={h} style={{
                   textAlign: h === 'Tone' ? 'center' : 'left',
                   padding: '2px 6px 3px ' + (h === 'Day' ? '0' : ''),
@@ -8397,17 +8400,28 @@ function TypicaProkeimenonExplainer({ typicaProkSource, typicaProkDow, typicaTon
                   <td style={{ padding: '3px 0 3px 6px', color: '#5C4A1E', fontStyle: 'italic' }}>
                     {row.text}{row.label ? <span style={{ color: '#9A8A70' }}> ({row.label})</span> : null}
                   </td>
-                  <td style={{ padding: '3px 0 3px 8px', fontSize: '0.7rem', minWidth: '60px' }}>
-                    {isActive && typicaProkSource === 'menaion_festal'
-                      ? <span style={{ color: '#8B6914', fontWeight: 'bold' }}>+ festal appended</span>
-                      : isActive
-                      ? <span style={{ color: '#2D6A2E' }}>← active</span>
-                      : null}
-                  </td>
+
                 </tr>
               );
             })}
           </tbody>
+          {/* Festal append/override row */}
+          {(typicaProkSource === 'menaion_festal' || typicaProkSource === 'pentecostarion') && (
+            <tfoot>
+              <tr style={{ background: 'rgba(139,105,20,0.1)', borderTop: '1px solid #D4C49A' }}>
+                <td style={{ padding: '4px 6px 4px 0', color: '#5A4010', fontWeight: 'bold', fontSize: '0.75rem' }}>
+                  {typicaProkSource === 'pentecostarion' ? 'Pentecostarion feast' : 'Menaion festal'}
+                </td>
+                <td style={{ padding: '4px 6px', textAlign: 'center', color: '#8B6914', fontWeight: 'bold' }}>—</td>
+                <td style={{ padding: '4px 0 4px 6px', color: '#5A4010',
+                  fontStyle: 'italic', fontWeight: 'bold', fontSize: '0.75rem' }}>
+                  {typicaProkSource === 'menaion_festal'
+                    ? 'Festal prokeimenon — appended after the daily entry above ↑'
+                    : 'Festal prokeimenon — replaces the daily entry above ↑'}
+                </td>
+              </tr>
+            </tfoot>
+          )}
         </table>
         <div style={{ fontSize: '0.72rem', color: '#9A8A70', marginTop: '0.5rem' }}>
           Sunday prokeimenon (not in table): Octoechos resurrectional, keyed by weekly tone 1–8.
@@ -8551,7 +8565,7 @@ function AlleluiaExplainer({ alleluiaSource, alleluiaDow, alleluiaRank, alleluia
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.77rem' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid #D4C49A' }}>
-              {['Day','Tone','Verse','Override'].map(h => (
+              {['Day','Tone','Verse'].map(h => (
                 <th key={h} style={{ textAlign: h === 'Tone' ? 'center' : 'left',
                   padding: '2px 6px 3px ' + (h === 'Day' ? '0' : ''),
                   color: '#8B6914', fontWeight: 'bold', fontSize: '0.7rem',
@@ -8573,20 +8587,26 @@ function AlleluiaExplainer({ alleluiaSource, alleluiaDow, alleluiaRank, alleluia
                     color: '#8B6914', fontWeight: 'bold' }}>{row.tone}</td>
                   <td style={{ padding: '3px 0 3px 6px', color: '#5C4A1E',
                     fontStyle: 'italic' }}>{row.verse}</td>
-                  <td style={{ padding: '3px 0 3px 8px', fontSize: '0.7rem',
-                    color: '#9A8A70', minWidth: '60px' }}>
-                    {isActive && alleluiaSource === 'menaion_festal'
-                      ? <span style={{ color: '#8B6914', fontWeight: 'bold' }}>← overridden by Menaion festal</span>
-                      : isActive && alleluiaSource === 'pentecostarion'
-                      ? <span style={{ color: '#8B6914', fontWeight: 'bold' }}>← overridden by Pentecostarion</span>
-                      : isActive
-                      ? <span style={{ color: '#2D6A2E' }}>← active</span>
-                      : null}
-                  </td>
+
                 </tr>
               );
             })}
           </tbody>
+          {/* Festal override row */}
+          {(alleluiaSource === 'menaion_festal' || alleluiaSource === 'pentecostarion') && (
+            <tfoot>
+              <tr style={{ background: 'rgba(139,105,20,0.1)', borderTop: '1px solid #D4C49A' }}>
+                <td style={{ padding: '4px 6px 4px 0', color: '#5A4010', fontWeight: 'bold', fontSize: '0.75rem' }}>
+                  {alleluiaSource === 'pentecostarion' ? 'Pentecostarion feast' : 'Menaion festal'}
+                </td>
+                <td style={{ padding: '4px 6px', textAlign: 'center', color: '#8B6914', fontWeight: 'bold' }}>—</td>
+                <td style={{ padding: '4px 0 4px 6px', color: '#5A4010',
+                  fontStyle: 'italic', fontWeight: 'bold', fontSize: '0.75rem' }}>
+                  Festal Alleluia — replaces the daily entry above ↑
+                </td>
+              </tr>
+            </tfoot>
+          )}
         </table>
         <div style={{ fontSize: '0.72rem', color: '#9A8A70', marginTop: '0.5rem' }}>
           Sunday resurrectional Alleluia tone follows the weekly Octoechos cycle (Tones 1–8).
