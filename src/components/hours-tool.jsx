@@ -5976,159 +5976,147 @@ function FekulaBadge({ section, note }) {
 }
 
 
-
 // ─── SERVICE OUTLINE ──────────────────────────────────────────────────────────
-// Sticky left rail showing present/missing/absent major service movements.
-// State derives from the assembled `elements` array — no separate data source.
+// Sticky left rail. All state received as props from the main component.
+// IntersectionObserver lives here so no hooks run outside a component.
 
-function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen, activeSection, liturgicalData }) {
+const OUTLINE_MAJOR_IDS = [
+  'v-ps103','v-gt-litany','v-kathisma','v-sm-lit','v-lic','v-ps140','v-ps141',
+  'v-gladsome','v-prok','v-les-hdr','v-aug','v-vouchsafe','v-eve-lit',
+  'v-litiya-rubric','v-apost-stich','v-nunc','v-trisagion',
+  'v-trop-1','v-trop-vigil-1','v-trop-none','v-diss-dismissal','v-diss-wisdom',
+];
+const OUTLINE_LABEL_PREFIXES = [
+  'PSALM','Lord I Have Cried','Great Litany','Small Litany','Kathisma',
+  'Gladsome Light','Prokeimenon','Old Testament','Augmented Litany',
+  'Vouchsafe','Evening Litany','Litiya','Aposticha Stichera',
+  'Prayer of St. Symeon','Trisagion','Troparion','Dismissal',
+  'God is the Lord','O Heavenly King','Alleluia','Kontakion','Beatitudes',
+  'Epistle','Gospel',
+];
+
+function isOutlineMajor(el) {
+  return OUTLINE_MAJOR_IDS.includes(el.id) ||
+    (el.label && OUTLINE_LABEL_PREFIXES.some(p => el.label.startsWith(p)));
+}
+
+function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
+                          activeSection, setActiveSection, serviceLabel, mm, dd }) {
+
+  // Wire IntersectionObserver here — legal because this is a component
+  React.useEffect(() => {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) setActiveSection(e.target.id); });
+    }, { threshold: 0.1, rootMargin: '-8% 0px -65% 0px' });
+    const t = setTimeout(() => {
+      OUTLINE_MAJOR_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) obs.observe(el);
+      });
+    }, 80);
+    return () => { clearTimeout(t); obs.disconnect(); };
+  }, [currentService, elements]);  // eslint-disable-line
+
   if (!currentService || !currentService.built) return null;
   if (!elements || elements.length === 0) return null;
 
-  // Build the ordered section list from MAJOR_SECTION_IDS (defined in ServiceBlock)
-  // We reproduce the set here to avoid scope issues
-  const MAJOR_IDS = [
-    'v-ps103', 'v-gt-litany', 'v-kathisma', 'v-sm-lit', 'v-lic', 'v-ps140', 'v-ps141',
-    'v-gladsome', 'v-prok', 'v-les-hdr', 'v-aug', 'v-vouchsafe', 'v-eve-lit',
-    'v-litiya-rubric', 'v-apost-stich', 'v-nunc', 'v-trisagion',
-    'v-trop-1', 'v-trop-vigil-1', 'v-trop-none', 'v-diss-dismissal', 'v-diss-wisdom',
-  ];
-  const MAJOR_LABEL_PREFIXES_OUT = [
-    'PSALM', 'Lord I Have Cried', 'Great Litany', 'Small Litany', 'Kathisma',
-    'Gladsome Light', 'Prokeimenon', 'Old Testament', 'Augmented Litany',
-    'Vouchsafe', 'Evening Litany', 'Litiya', 'Aposticha Stichera',
-    'Prayer of St. Symeon', 'Trisagion', 'Troparion', 'Dismissal',
-    'God is the Lord', 'O Heavenly King', 'Alleluia', 'Kontakion', 'Beatitudes',
-    'Epistle', 'Gospel',
-  ];
-
-  // Collect all major elements present in the assembled output, in order
-  const presentMajors = elements.filter(el =>
-    MAJOR_IDS.includes(el.id) ||
-    (el.label && MAJOR_LABEL_PREFIXES_OUT.some(p => el.label && el.label.startsWith(p)))
-  );
-
-  if (presentMajors.length === 0) return null;
-
-  // Determine state for each: present vs missing (placeholder text)
+  // Build rows from assembled elements — in assembly order, deduplicated
   const isPlaceholder = (el) =>
     el.type === 'placeholder' ||
-    (typeof el.text === 'string' && (
-      el.text.startsWith('[') ||
-      el.text.includes('not yet') ||
-      el.text.includes('not encoded')
-    ));
+    (typeof el.text === 'string' && (el.text.startsWith('[') || el.text.includes('not yet')));
 
-  // Build rows — deduplicated by ID (some IDs appear multiple times)
   const seen = new Set();
   const rows = [];
-  for (const el of presentMajors) {
+  for (const el of elements) {
+    if (!isOutlineMajor(el)) continue;
     const key = el.id || el.label;
-    if (seen.has(key)) continue;
+    if (!key || seen.has(key)) continue;
     seen.add(key);
-    rows.push({ id: el.id, label: el.label, state: isPlaceholder(el) ? 'missing' : 'present' });
+    rows.push({ id: el.id, label: el.label, missing: isPlaceholder(el) });
   }
+  if (rows.length === 0) return null;
 
-  // Context label for the outline header
-  const svcLabel = currentService.label || 'Service';
-  // liturgicalData has mm/dd (1-indexed month/day), not a .date property
-  const dateLabel = liturgicalData
-    ? `${new Date(2026, liturgicalData.mm - 1, liturgicalData.dd).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+  const dateLabel = (mm && dd)
+    ? new Date(2026, mm - 1, dd).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
     : '';
 
   const pillStyle = {
-    writingMode: 'vertical-rl',
-    transform: 'rotate(180deg)',
-    background: '#8B6914',
-    color: '#FAF6EE',
-    border: 'none',
-    borderRadius: '3px',
-    padding: '14px 7px',
-    fontSize: '9px',
-    letterSpacing: '0.15em',
-    textTransform: 'uppercase',
-    cursor: 'pointer',
-    fontFamily: 'Georgia, serif',
-    fontWeight: 'bold',
-    whiteSpace: 'nowrap',
-  };
-  const panelStyle = {
-    width: '178px',
-    background: '#FAF6EE',
-    border: '1px solid #D4C49A',
-    borderRadius: '4px',
-    overflow: 'hidden',
-    boxShadow: '2px 2px 10px rgba(0,0,0,0.07)',
-    maxHeight: 'calc(100vh - 48px)',
-    display: 'flex',
-    flexDirection: 'column',
-  };
-
-  const scrollTo = (id) => {
-    const el = id ? document.getElementById(id) : null;
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    setOutlineOpen(false);
+    writingMode: 'vertical-rl', transform: 'rotate(180deg)',
+    background: '#8B6914', color: '#FAF6EE', border: 'none', borderRadius: '3px',
+    padding: '14px 7px', fontSize: '9px', letterSpacing: '0.15em',
+    textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'Georgia, serif',
+    fontWeight: 'bold', whiteSpace: 'nowrap',
   };
 
   if (!outlineOpen) {
     return (
-      <div style={{ position: 'sticky', top: '12px', alignSelf: 'flex-start', width: '28px', flexShrink: 0, zIndex: 20 }}>
-        <button onClick={() => setOutlineOpen(true)} style={pillStyle} title="Service outline">
-          OUTLINE
-        </button>
+      <div style={{ position: 'sticky', top: '12px', alignSelf: 'flex-start',
+        width: '28px', flexShrink: 0, zIndex: 20 }}>
+        <button onClick={() => setOutlineOpen(true)} style={pillStyle}
+          title="Service outline">OUTLINE</button>
       </div>
     );
   }
 
   return (
-    <div style={{ position: 'sticky', top: '12px', alignSelf: 'flex-start', width: '178px', flexShrink: 0, zIndex: 20 }}>
-      <div style={panelStyle}>
+    <div style={{ position: 'sticky', top: '12px', alignSelf: 'flex-start',
+      width: '178px', flexShrink: 0, zIndex: 20 }}>
+      <div style={{
+        width: '178px', background: '#FAF6EE', border: '1px solid #D4C49A',
+        borderRadius: '4px', overflow: 'hidden', boxShadow: '2px 2px 10px rgba(0,0,0,0.07)',
+        maxHeight: 'calc(100vh - 48px)', display: 'flex', flexDirection: 'column',
+      }}>
         {/* Header */}
-        <div style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: '8px 10px 7px', borderBottom: '1px solid #E8DEC8',
-          background: 'rgba(139,105,20,0.06)', flexShrink: 0,
-        }}>
-          <span style={{ fontSize: '9px', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#8B6914', fontWeight: 'bold', fontFamily: 'Georgia, serif' }}>
+          background: 'rgba(139,105,20,0.06)', flexShrink: 0 }}>
+          <span style={{ fontSize: '9px', letterSpacing: '0.15em', textTransform: 'uppercase',
+            color: '#8B6914', fontWeight: 'bold', fontFamily: 'Georgia, serif' }}>
             Service outline
           </span>
-          <button onClick={() => setOutlineOpen(false)} style={{ fontSize: '13px', color: '#9A8A70', cursor: 'pointer', background: 'none', border: 'none', fontFamily: 'Georgia, serif', padding: '0 0 0 6px', lineHeight: 1 }}>
-            ×
-          </button>
+          <button onClick={() => setOutlineOpen(false)}
+            style={{ fontSize: '13px', color: '#9A8A70', cursor: 'pointer',
+              background: 'none', border: 'none', fontFamily: 'Georgia, serif',
+              padding: '0 0 0 6px', lineHeight: 1 }}>×</button>
         </div>
         {/* Context */}
         <div style={{ padding: '6px 10px', borderBottom: '1px solid #E8DEC8', flexShrink: 0 }}>
-          <div style={{ fontSize: '10px', fontWeight: 'bold', color: '#2C1F0A', marginBottom: '1px' }}>{svcLabel}</div>
-          <div style={{ fontSize: '9px', color: '#9A8A70', letterSpacing: '0.04em' }}>{dateLabel}</div>
+          <div style={{ fontSize: '10px', fontWeight: 'bold', color: '#2C1F0A',
+            marginBottom: '1px' }}>{serviceLabel || 'Service'}</div>
+          <div style={{ fontSize: '9px', color: '#9A8A70', letterSpacing: '0.04em' }}>
+            {dateLabel}
+          </div>
         </div>
         {/* Rows */}
         <div style={{ padding: '3px 0 4px', overflowY: 'auto', flex: 1 }}>
           {rows.map(row => {
             const isActive = activeSection === row.id;
-            const dotColor = row.state === 'present' ? '#2D6A2E' : '#A03030';
             return (
-              <div
-                key={row.id || row.label}
-                onClick={() => scrollTo(row.id)}
+              <div key={row.id || row.label}
+                onClick={() => {
+                  const el = row.id ? document.getElementById(row.id) : null;
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  setActiveSection(row.id);
+                  setOutlineOpen(false);
+                }}
                 style={{
                   display: 'flex', alignItems: 'center', gap: '7px',
                   padding: '4px 10px 4px 8px', cursor: 'pointer',
                   borderLeft: isActive ? '3px solid #8B6914' : '3px solid transparent',
                   background: isActive ? 'rgba(139,105,20,0.13)' : 'transparent',
-                  transition: 'background 0.1s',
                 }}
                 onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = 'rgba(139,105,20,0.07)'; }}
-                onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
+                onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = isActive ? 'rgba(139,105,20,0.13)' : 'transparent'; }}
               >
-                <div style={{ width: '6px', height: '6px', borderRadius: '50', background: dotColor, flexShrink: 0, marginLeft: '1px', borderRadius: '50%' }} />
+                <div style={{ width: '6px', height: '6px', borderRadius: '50%',
+                  background: row.missing ? '#A03030' : '#2D6A2E',
+                  flexShrink: 0, marginLeft: '1px' }} />
                 <span style={{
                   fontSize: '10px', letterSpacing: '0.07em', textTransform: 'uppercase',
                   fontFamily: 'Georgia, serif', lineHeight: 1.3, flex: 1,
-                  color: isActive ? '#5A4010' : (row.state === 'missing' ? '#8B3020' : '#2C1F0A'),
+                  color: isActive ? '#5A4010' : (row.missing ? '#8B3020' : '#2C1F0A'),
                   fontWeight: isActive ? 'bold' : 'normal',
-                }}>
-                  {row.label}
-                </span>
+                }}>{row.label}</span>
               </div>
             );
           })}
@@ -7269,11 +7257,10 @@ const RELEASE_NOTES = [
     date: "June 2026",
     summary: "Service outline — sticky left rail with position-aware navigation",
     items: [
-      "feat: ServiceOutline component — sticky left rail showing all major service movements for the assembled service. Collapsed to a gold 'OUTLINE' pill; expands to a panel listing all present sections with green (encoded) or red (placeholder/not encoded) dots.",
-      "feat: ▤ outline button in the service heading row opens the panel from the content area.",
-      "feat: IntersectionObserver tracks the active major section as user scrolls — the corresponding outline row highlights in real time. Click any row to jump to that section; panel closes after navigation.",
-      "feat: Three states per section: present (green dot, encoded data), missing (red dot, placeholder in assembled output), absent (not shown — section genuinely not part of this service at this rank).",
-      "arch: ServiceOutline derives all state from the assembled elements array — no separate data source. Placeholder detection checks element.type === 'placeholder' or bracketed text. MAJOR_SECTION_IDS set from v0.7.3 reused.",
+      "feat: ServiceOutline component — sticky left rail showing major service movements. Collapsed to 'OUTLINE' pill; expands to a panel in assembly order. Green dot = encoded, red dot = placeholder/not encoded.",
+      "feat: ▤ outline button next to service heading as second entry point.",
+      "feat: IntersectionObserver (inside ServiceOutline) tracks active section as user scrolls. Click any row to jump; panel closes after navigation.",
+      "arch: ServiceOutline is a proper standalone React component (not a closure). useEffect lives inside it — no hooks-ordering violation. State (outlineOpen, activeSection) passed as props from main component.",
     ],
   },
   {
@@ -8488,27 +8475,6 @@ export default function App() {
   const [readerMode, setReaderMode] = useState(false);
   const [outlineOpen, setOutlineOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(null);
-
-  // Track which major section is in view as user scrolls
-  React.useEffect(() => {
-    const MAJOR_IDS_OBS = [
-      'v-ps103','v-gt-litany','v-kathisma','v-sm-lit','v-lic','v-ps140','v-ps141',
-      'v-gladsome','v-prok','v-les-hdr','v-aug','v-vouchsafe','v-eve-lit',
-      'v-litiya-rubric','v-apost-stich','v-nunc','v-trisagion',
-      'v-trop-1','v-trop-vigil-1','v-trop-none','v-diss-dismissal','v-diss-wisdom',
-    ];
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) setActiveSection(e.target.id); });
-    }, { threshold: 0.1, rootMargin: '-8% 0px -65% 0px' });
-    const t = setTimeout(() => {
-      MAJOR_IDS_OBS.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) obs.observe(el);
-      });
-    }, 50);
-    return () => { clearTimeout(t); obs.disconnect(); };
-  }, [currentService?.key, selectedDate]);
-
   const [preCommunionData, setPreCommunionData] = useState(null);
 
   // ── Temple dedication — persisted in localStorage ─────────────────────────
@@ -8693,8 +8659,6 @@ export default function App() {
   })();
 
 
-
-
   const OUT_OF_SCOPE_NOTES = {
     lent: "Great Lent uses a different order at the Hours — the Lenten troparia, prostrations, and Prayer of St. Ephraim replace the ordinary structure. Lenten Hours are in active development.",
     brightweek: "Bright Week uses the Paschal Hours — 'Christ is Risen' replaces the ordinary opening, and special Paschal troparia are used throughout.",
@@ -8856,19 +8820,24 @@ export default function App() {
         </div>
       </div>
 
-      <div style={{ maxWidth: '780px', margin: '0 auto', padding: '1.5rem 2rem 1.5rem 0.5rem', display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-        {/* ── SERVICE OUTLINE RAIL (left, sticky) ─────────────── */}
+      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '1.5rem 1rem 1.5rem 0',
+        display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+
+        {/* ── SERVICE OUTLINE (left sticky rail) ── */}
         <ServiceOutline
           elements={elements}
           currentService={currentService}
           outlineOpen={outlineOpen}
           setOutlineOpen={setOutlineOpen}
           activeSection={activeSection}
-          liturgicalData={liturgicalData}
+          setActiveSection={setActiveSection}
+          serviceLabel={currentService ? currentService.label : ''}
+          mm={liturgicalData ? liturgicalData.mm : null}
+          dd={liturgicalData ? liturgicalData.dd : null}
         />
 
-        {/* ── MAIN CONTENT COLUMN ──────────────────────────────── */}
-        <div style={{ flex: 1, minWidth: 0 }}>
+        {/* ── MAIN CONTENT COLUMN ── */}
+        <div style={{ flex: 1, minWidth: 0, padding: '0 1rem' }}>
 
         {/* ── TOP NAVIGATION ─────────────────────────────────── */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
@@ -9160,25 +9129,21 @@ export default function App() {
             {/* Service title */}
             <div style={{ marginBottom: "1.5rem" }}>
               <div style={{ fontSize: "0.68rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#8B6914", marginBottom: "0.3rem" }}>Service</div>
-              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px', borderBottom: '1px solid #D4C49A', paddingBottom: '0.6rem', marginBottom: 0 }}>
-                <h2 id="service-heading" style={{ fontSize: "1.4rem", fontWeight: "normal", margin: "0", letterSpacing: "0.02em" }}>
+              <div style={{ display: 'flex', alignItems: 'baseline',
+                justifyContent: 'space-between', gap: '8px',
+                borderBottom: '1px solid #D4C49A', paddingBottom: '0.6rem' }}>
+                <h2 id="service-heading" style={{ fontSize: "1.4rem", fontWeight: "normal",
+                  margin: "0", letterSpacing: "0.02em" }}>
                   {currentService.label}
                 </h2>
                 {currentService.built && elements.length > 0 && (
-                  <button
-                    onClick={() => setOutlineOpen(o => !o)}
-                    style={{
-                      fontSize: '9px', color: '#8B6914', letterSpacing: '0.12em',
+                  <button onClick={() => setOutlineOpen(o => !o)}
+                    style={{ fontSize: '9px', color: '#8B6914', letterSpacing: '0.12em',
                       textTransform: 'uppercase', cursor: 'pointer',
                       border: '1px solid #D4C49A', borderRadius: '2px',
-                      padding: '3px 8px', background: 'none',
-                      fontFamily: 'Georgia, serif', fontWeight: 'bold',
-                      whiteSpace: 'nowrap', flexShrink: 0,
-                    }}
-                    title="Toggle service outline"
-                  >
-                    ▤ outline
-                  </button>
+                      padding: '3px 8px', background: 'none', fontFamily: 'Georgia, serif',
+                      fontWeight: 'bold', whiteSpace: 'nowrap', flexShrink: 0 }}
+                    title="Toggle service outline">▤ outline</button>
                 )}
               </div>
 
@@ -9428,9 +9393,8 @@ export default function App() {
             </div>
           </>
         )}
-
         </div>{/* end main content column */}
-      </div>{/* end flex row with outline rail */}
+      </div>{/* end flex row */}
 
       {/* ── HOW IT WORKS — always visible, below service content ── */}
       <div style={{ width: "100%", padding: "0 0 2rem",
