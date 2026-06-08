@@ -6020,6 +6020,10 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
   if (!currentService || !currentService.built) return null;
   if (!elements || elements.length === 0) return null;
 
+  // Only surface the outline for substantial services — not the individual Hours
+  const OUTLINE_SERVICES = new Set(['vespers', 'typica', 'matins', 'divine_liturgy']);
+  if (!OUTLINE_SERVICES.has(currentService.key)) return null;
+
   // Build rows from assembled elements — in assembly order, deduplicated
   const isPlaceholder = (el) =>
     el.type === 'placeholder' ||
