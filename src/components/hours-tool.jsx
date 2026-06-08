@@ -8804,7 +8804,6 @@ export default function App() {
             onClick={() => setContextOpen(v => !v)}
             style={{
               display: "flex", alignItems: "center",
-              background: contextOpen ? "rgba(139,105,20,0.08)" : "transparent",
               padding: "4px 10px 4px 12px",
               cursor: "pointer", userSelect: "none",
             }}
