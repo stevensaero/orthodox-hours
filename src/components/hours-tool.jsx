@@ -6785,6 +6785,15 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
                   onMouseEnter={e => e.currentTarget.style.background = 'rgba(139,105,20,0.08)'}
                   onMouseLeave={e => e.currentTarget.style.background = isMovable ? 'rgba(139,105,20,0.04)' : 'transparent'}
                 >{element.text}</a>
+              : element.kathismaNum
+              ? <a href={element.psalterHref || `/orthodox-hours/psalter?kathisma=${element.kathismaNum}`}
+                  style={{ ...bodyStyle, display: 'block',
+                    textDecoration: 'none', cursor: 'pointer',
+                    borderBottom: '1px dashed rgba(139,105,20,0.35)',
+                    transition: 'background 0.1s' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(139,105,20,0.08)'}
+                  onMouseLeave={e => e.currentTarget.style.background = isMovable ? 'rgba(139,105,20,0.04)' : 'transparent'}
+                >{element.text}</a>
               : <div style={bodyStyle}>{element.text}</div>)
           : null;
       })()}
