@@ -6776,7 +6776,17 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
             </div>
           );
         }
-        return element.text ? <div style={bodyStyle}>{element.text}</div> : null;
+        return element.text
+          ? (element.scriptureHref
+              ? <a href={element.scriptureHref} style={{ ...bodyStyle, display: 'block',
+                  textDecoration: 'none', cursor: 'pointer',
+                  borderBottom: '1px dashed rgba(139,105,20,0.35)',
+                  transition: 'background 0.1s' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(139,105,20,0.08)'}
+                  onMouseLeave={e => e.currentTarget.style.background = isMovable ? 'rgba(139,105,20,0.04)' : 'transparent'}
+                >{element.text}</a>
+              : <div style={bodyStyle}>{element.text}</div>)
+          : null;
       })()}
 
       {/* ── Post-communion T/K block ── */}
