@@ -8500,12 +8500,15 @@ export default function App() {
     const obs = new IntersectionObserver(entries => {
       entries.forEach(e => { if (e.isIntersecting) setActiveSection(e.target.id); });
     }, { threshold: 0.1, rootMargin: '-8% 0px -65% 0px' });
-    MAJOR_IDS_OBS.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) obs.observe(el);
-    });
-    return () => obs.disconnect();
-  }, [elements?.length, currentService?.key]);
+    const t = setTimeout(() => {
+      MAJOR_IDS_OBS.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) obs.observe(el);
+      });
+    }, 50);
+    return () => { clearTimeout(t); obs.disconnect(); };
+  }, [currentService?.key, selectedDate]);
+
   const [preCommunionData, setPreCommunionData] = useState(null);
 
   // ── Temple dedication — persisted in localStorage ─────────────────────────
@@ -8688,6 +8691,8 @@ export default function App() {
       return out;
     });
   })();
+
+
 
 
   const OUT_OF_SCOPE_NOTES = {
