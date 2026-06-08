@@ -626,13 +626,13 @@ const TRAINER_RELEASE_NOTES = [
 // sol = perfect fifth above do — in scale for completeness; not yet used in cadences.
 const OFF = { la: -3, si: -2, ti: -1, do: 0, di: 1, re: 2, mi: 4, mi_low: 4, fa: 5, sol: 7 };
 const DO_OPTIONS = [
-  { label: "F", hz: 174.61 },
-  { label: "G", hz: 196.00 },
-  { label: "A", hz: 220.0 },
-  { label: "B", hz: 246.94 },
-  { label: "C", hz: 261.63 },
-  { label: "D", hz: 293.66 },
-  { label: "E", hz: 329.63 },
+  { label: "F", hz: 349.23 },  // F4 — Tone 1 canonical pitch (OCA score, F major)
+  { label: "G", hz: 392.00 },
+  { label: "A", hz: 440.0 },
+  { label: "B", hz: 493.88 },
+  { label: "C", hz: 523.25 },
+  { label: "D", hz: 587.33 },
+  { label: "E", hz: 659.25 },
 ];
 
 // ── PHRASE DEFINITIONS (keyed by tone number) ────────────────────────────────
@@ -2510,7 +2510,7 @@ function useAudio() {
 
 // ── COMPONENT ─────────────────────────────────────────────────────────────────
 export default function ToneTrainer() {
-  const [doHz, setDoHz] = useState(261.63);
+  const [doHz, setDoHz] = useState(349.23);  // F4 — Tone 1 canonical default
   const [bpm, setBpm] = useState(80); // half note = 1 beat per tutorial
   const [text, setText] = useState("");
   const [lines, setLines] = useState([]);
