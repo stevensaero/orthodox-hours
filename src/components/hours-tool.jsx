@@ -8798,48 +8798,58 @@ export default function App() {
 
           </div>{/* end row one */}
 
-          {/* ── Row two: tone display (left) · context toggle (center) · Reader's Service (right) */}
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <span style={{ fontSize: "0.85rem", color: "#5C4A1E", flexShrink: 0 }}>
+
+          {/* ── Row two: full-width liturgical context header — click to expand ── */}
+          <div
+            onClick={() => setContextOpen(v => !v)}
+            style={{
+              display: "flex", alignItems: "center",
+              background: contextOpen ? "rgba(139,105,20,0.08)" : "transparent",
+              border: "1px solid #C4A84A", borderRadius: "4px",
+              padding: "4px 10px 4px 12px",
+              cursor: "pointer", userSelect: "none",
+            }}
+          >
+            {/* Left: Day · Tone */}
+            <span style={{ fontSize: "0.8rem", color: "#5C4A1E", flexShrink: 0, minWidth: "120px" }}>
               {liturgicalData.dayName} · Tone {liturgicalData.tone}
             </span>
-            {/* ── Liturgical Context toggle — centre */}
-            <button
-              onClick={() => setContextOpen(v => !v)}
-              style={{
-                margin: "0 auto",
-                background: contextOpen ? "rgba(139,105,20,0.1)" : "transparent",
-                border: "1px solid #C4A84A",
-                borderRadius: "3px", padding: "3px 14px",
-                fontSize: "0.68rem", letterSpacing: "0.15em",
-                textTransform: "uppercase", color: "#8B6914",
-                cursor: "pointer", fontFamily: "Georgia, serif",
-                display: "flex", alignItems: "center", gap: "6px",
-                flexShrink: 0,
-              }}
-              title="Toggle liturgical context"
+
+            {/* Centre: Liturgical Context label + chevron */}
+            <div style={{ flex: 1, textAlign: "center", display: "flex",
+              alignItems: "center", justifyContent: "center", gap: "6px" }}>
+              <span style={{ fontSize: "0.68rem", letterSpacing: "0.15em",
+                textTransform: "uppercase", color: "#8B6914", fontWeight: "bold",
+                fontFamily: "Georgia, serif" }}>
+                Liturgical Context
+              </span>
+              <span style={{ color: "#8B6914", fontSize: "0.7rem" }}>
+                {contextOpen ? "▲" : "▼"}
+              </span>
+            </div>
+
+            {/* Right: Reader's Service button — stopPropagation so it doesn't toggle context */}
+            <div style={{ flexShrink: 0, minWidth: "120px", display: "flex",
+              justifyContent: "flex-end" }}
+              onClick={e => e.stopPropagation()}
             >
-              Liturgical Context
-              <span style={{ fontSize: "0.7rem" }}>{contextOpen ? "▲" : "▼"}</span>
-            </button>
-            <div style={{ marginLeft: "auto", display: "flex", gap: "6px", flexShrink: 0 }}>
               <button
-                onClick={() => setReaderMode((v) => !v)}
+                onClick={() => setReaderMode(v => !v)}
                 style={{
                   background: readerMode ? "rgba(90,122,138,0.15)" : "transparent",
                   border: `1px solid ${readerMode ? "#5A7A8A" : "#8B6914"}`,
                   color: readerMode ? "#5A7A8A" : "#8B6914",
-                  borderRadius: "3px", padding: "4px 12px", fontSize: "0.75rem",
-                  letterSpacing: "0.08em", cursor: "pointer", fontFamily: "Georgia, serif",
+                  borderRadius: "3px", padding: "3px 10px", fontSize: "0.73rem",
+                  letterSpacing: "0.06em", cursor: "pointer", fontFamily: "Georgia, serif",
                 }}
-                title="Toggle Reader's Service mode (Fekula Chapter 10 — Services Without a Priest)"
+                title="Toggle Reader's Service mode (Fekula Chapter 10)"
               >
                 {readerMode ? "☩ Reader's Service" : "Reader's Service"}
               </button>
             </div>
           </div>{/* end row two */}
-        </div>
-      </div>
+        </div>{/* end maxWidth inner wrapper */}
+      </div>{/* end controls sticky bar */}
 
       <div style={{ maxWidth: '800px', margin: '0 auto', padding: '1.5rem 1rem 1.5rem 0',
         display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
