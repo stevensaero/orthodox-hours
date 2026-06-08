@@ -70,16 +70,20 @@ var pending  = null;
 var rendered = false;
 
 // ── Pitch helpers ──────────────────────────────────────────────────────
+// F major (1 flat): do=F, re=G, mi=A, fa=Bb, sol=C, la=D, ti=E
+// Alto reciting tone = fa = Bb/4 (middle line of treble staff) — confirmed from OCA score
+// Bass reciting tone = sol = C/3 (2nd space of bass staff) — confirmed from OCA score
 var ALTO_PITCH = {
-  la:'B/3', si:'C#/4', ti:'Cn/4', do:'D/4', di:'D#/4',
-  re:'E/4', mi:'F#/4', fa:'G/4',  sol:'A/4',
+  do:'F/4', re:'G/4', mi:'A/4', fa:'Bb/4', sol:'C/5',
+  la:'D/5', ti:'E/5', si:'C/5',
 };
 function staveKey(sol, oct) {
-  var L = { la:'B',si:'C#',ti:'Cn',do:'D',di:'D#',re:'E',mi:'F#',fa:'G',sol:'A',mi_low:'F#' };
-  return (L[sol] || 'D') + '/' + oct;
+  var L = { do:'F', re:'G', mi:'A', fa:'Bb', sol:'C', la:'D', ti:'E', si:'C#' };
+  return (L[sol] || 'F') + '/' + oct;
 }
 function bassVFPitch(sol, div) {
-  return staveKey(sol, div===1 ? 4 : div===2 ? 3 : 2);
+  // div=1: bass register (sol=C/3, do=F/2); div=2: lower; div=3: lowest
+  return staveKey(sol, div===1 ? 3 : div===2 ? 2 : 2);
 }
 var DUR = { Q:'q', H:'h', 'H·':'h', W:'w' };
 
@@ -155,7 +159,7 @@ function renderScore(payload) {
     // Soprano is intentionally omitted to prevent two-voice stem collision.
     // The OCA score shows only the alto melody line on the treble staff.
     var tr = new VF.Stave(ML, sy + TY, SW);
-    tr.addClef('treble').addKeySignature('D');
+    tr.addClef('treble').addKeySignature('F');
     if (isLast) tr.setEndBarType(VF.Barline.type.END);
     tr.setContext(ctx).draw();
 
@@ -166,7 +170,7 @@ function renderScore(payload) {
       var r    = line.alto[ai];
       var prev = line.alto[ai - 1];
       // Single voice: stems up for melody, matching OCA score convention
-      var n = mkNote(ALTO_PITCH[r.pitch] || 'D/4', r.durKey, grand ? -1 : 1);
+      var n = mkNote(ALTO_PITCH[r.pitch] || 'Bb/4', r.durKey, grand ? -1 : 1);
       // Attach lyric on first note of each syllable
       if (r.text && !(r.melisma && prev && r.text === prev.text)) {
         var ann = new VF.Annotation(r.text);
@@ -201,7 +205,7 @@ function renderScore(payload) {
 
     // ── Bass stave — BASS ONLY (no tenor voice) ────────────────────────
     var bs = new VF.Stave(ML, sy + BASS_Y, SW);
-    bs.addClef('bass').addKeySignature('D');
+    bs.addClef('bass').addKeySignature('F');
     if (isLast) bs.setEndBarType(VF.Barline.type.END);
     bs.setContext(ctx).draw();
 
