@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Score — Orthodox Hours</title>
 <style>
-  /* ── Screen styles ──────────────────────────────────────────────────── */
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
@@ -85,23 +84,16 @@
     letter-spacing: 0.04em;
   }
 
-  #score-canvas {
-    width: 100%;
-  }
-
   #score-canvas svg {
     width: 100%;
     height: auto;
     display: block;
   }
 
-  /* ── Print styles ───────────────────────────────────────────────────── */
   @media print {
     body { background: white; }
-
     #toolbar { display: none !important; }
     #waiting { display: none !important; }
-
     #score-wrapper {
       display: block !important;
       padding: 0.4in 0.5in;
@@ -109,26 +101,17 @@
       width: 8.5in;
       margin: 0;
     }
-
     #score-wrapper h1 { font-size: 13pt; }
     #score-wrapper .subtitle { font-size: 8pt; }
-
-    #score-canvas svg {
-      width: 7.5in !important;
-      height: auto !important;
-    }
-
-    @page {
-      size: letter portrait;
-      margin: 0;
-    }
+    #score-canvas svg { width: 7.5in !important; height: auto !important; }
+    @page { size: letter portrait; margin: 0; }
   }
 </style>
 </head>
 <body>
 
 <div id="waiting">
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
     <circle cx="16" cy="16" r="13" stroke="#9a8a6a" stroke-width="1.5"/>
     <line x1="16" y1="8" x2="16" y2="16" stroke="#9a8a6a" stroke-width="1.5" stroke-linecap="round"/>
     <line x1="16" y1="16" x2="21" y2="20" stroke="#9a8a6a" stroke-width="1.5" stroke-linecap="round"/>
@@ -152,348 +135,238 @@
 </div>
 
 <script>
-// ── Pitch tables (do = D4, key of D major) ──────────────────────────────────
-// These map solfège → VexFlow low-level pitch notation (LETTER/OCTAVE)
-// and → EasyScore string notation (LETTER+OCTAVE)
+// ── All code is inside this IIFE — nothing runs at parse time except
+//    loading VexFlow. renderScore() is only called after both the
+//    payload has arrived AND Vex is defined. ──────────────────────────
 
+// Pitch tables ─────────────────────────────────────────────────────────
 const ALTO_PITCH = {
-  la:     'B/3',  si:     'C#/4', ti:     'Cn/4',
-  do:     'D/4',  di:     'D#/4', re:     'E/4',
-  mi:     'F#/4', fa:     'G/4',  sol:    'A/4',
+  la:'B/3', si:'C#/4', ti:'Cn/4', do:'D/4', di:'D#/4',
+  re:'E/4', mi:'F#/4', fa:'G/4',  sol:'A/4',
 };
 
-// Soprano: one diatonic third above alto, same octave or bumped up.
-// Soprano pitches that map below their alto counterpart on the staff get +1 octave.
-// SOPRANO_MAP (from tone-trainer) applied first, then octave correction.
 const SOPRANO_MAP = {
-  la: 'do', ti: 're', do: 'mi', di: 'mi',
-  re: 'fa', mi: 'sol', fa: 'la', sol: 'ti',
+  la:'do', ti:'re', do:'mi', di:'mi',
+  re:'fa', mi:'sol', fa:'la', sol:'ti',
 };
 
-// After mapping through SOPRANO_MAP, the resulting solfège note may sit
-// below the alto on the same staff — apply octave bump in those cases.
-// Rule: scale degrees in ascending order la ti do di re mi fa sol
-// If soprano degree index <= alto degree index on same scale → bump up
 const SCALE_ORDER = ['la','ti','do','di','re','mi','fa','sol'];
 
 function sopranoVFPitch(altoPitch) {
   const mapped = SOPRANO_MAP[altoPitch] ?? altoPitch;
-  const altoIdx   = SCALE_ORDER.indexOf(altoPitch);
-  const sopranoIdx = SCALE_ORDER.indexOf(mapped);
-  // If soprano lands at same or lower scale degree → needs to be octave above
-  const needsBump = sopranoIdx <= altoIdx;
-  const octave = needsBump ? 5 : 4;
+  const aIdx = SCALE_ORDER.indexOf(altoPitch);
+  const sIdx = SCALE_ORDER.indexOf(mapped);
+  const octave = sIdx <= aIdx ? 5 : 4;
   return staveKey(mapped, octave);
 }
 
-// Build a VexFlow pitch key from solfège + octave
 function staveKey(sol, octave) {
-  const LETTER = {
-    la: 'B', si: 'C#', ti: 'Cn', do: 'D', di: 'D#',
-    re: 'E', mi: 'F#', fa: 'G', sol: 'A',
-    mi_low: 'F#',
+  const L = {
+    la:'B', si:'C#', ti:'Cn', do:'D', di:'D#',
+    re:'E', mi:'F#', fa:'G',  sol:'A', mi_low:'F#',
   };
-  return `${LETTER[sol] ?? 'D'}/${octave}`;
+  return (L[sol] ?? 'D') + '/' + octave;
 }
 
-// Bass pitch: uses octaveDiv from the payload to select register
-// BASS_OCTAVE_DIV reference: la=2, ti=2, do=2, di=2, re=4, mi=4, fa=4, sol=4
-// div-2 means 1 octave below soprano (octave 3 in our D=4 system)
-// div-4 means 2 octaves below soprano (octave 2)
 function bassVFPitch(sol, octaveDiv) {
-  const div = octaveDiv ?? 2;
-  // Map octaveDiv to concrete octave number
-  // div-1: soprano register (octave 4/5) — used for tenor high notes
-  // div-2: one below soprano → octave 3
-  // div-4: two below soprano → octave 2
-  let octave;
-  if (div === 1) octave = 4;
-  else if (div === 2) octave = 3;
-  else octave = 2; // div-4
-  return staveKey(sol, octave);
+  const d = octaveDiv ?? 2;
+  const oct = d === 1 ? 4 : d === 2 ? 3 : 2;
+  return staveKey(sol, oct);
 }
 
-// Tenor: same logic as bass, using tenorOctaveDiv
-function tenorVFPitch(sol, octaveDiv) {
-  return bassVFPitch(sol, octaveDiv ?? 2);
-}
+const DUR_TO_VF = { Q:'q', H:'h', 'H·':'h', W:'w' };
 
-// Duration map: our durKey → VexFlow StaveNote duration string
-const DUR_TO_VF = { Q: 'q', H: 'h', 'H·': 'h', W: 'w' };
-// Note: H· uses 'h' + Dot.buildAndAttach separately
+// Page geometry ────────────────────────────────────────────────────────
+const PAGE_W       = 780;
+const MARGIN_L     = 48;
+const STAVE_W      = PAGE_W - MARGIN_L - 18;
+const TREBLE_Y     = 10;
+const TREBLE_H     = 40;
+const LYRIC_GAP    = 38;
+const BASS_Y       = TREBLE_Y + TREBLE_H + LYRIC_GAP;
+const SYSTEM_H     = BASS_Y + TREBLE_H + 30;
 
-// ── Rendering ───────────────────────────────────────────────────────────────
-// VF is assigned on first renderScore() call, after VexFlow CDN has loaded.
-let VF = null;
-
-const PAGE_W = 780;     // SVG canvas width (fits in 8.5in print area)
-const MARGIN_L = 48;    // left margin (leaves room for brace + clef + key sig)
-const STAVE_W = PAGE_W - MARGIN_L - 18;  // usable stave width
-
-// Vertical layout per system:
-const TREBLE_Y_OFFSET = 10;   // top of treble stave within a system block
-const TREBLE_H = 40;           // 4 staff lines × 10px spacing
-const LYRIC_CLEARANCE = 38;   // space below treble bottom for lyrics between staves
-const BASS_Y_OFFSET = TREBLE_Y_OFFSET + TREBLE_H + LYRIC_CLEARANCE;
-const BASS_H = 40;
-const SYSTEM_HEIGHT = BASS_Y_OFFSET + BASS_H + 30;  // +30 gap between systems
-
-function buildNoteObjects(entries, pitchFn) {
-  const notes = [];
-  const slurGroups = []; // [{first, last}] for melisma slurs
-  let melismaStart = null;
-  let lastText = null;
-
-  entries.forEach((r, i) => {
-    const vfPitch = pitchFn(r);
-    const durStr  = DUR_TO_VF[r.durKey] ?? 'q';
-    const isDotted = r.durKey === 'H·';
-
-    const note = new VF.StaveNote({
-      keys: [vfPitch],
-      duration: durStr,
-      auto_stem: true,
-    });
-    if (isDotted) VF.Dot.buildAndAttach([note]);
-
-    note._scoreText  = r.text ?? null;   // used by attachLyrics
-    note._isMelisma  = r.melisma === true;
-
-    // Track melisma groups for slur drawing
-    if (r.melisma) {
-      if (r.text && r.text !== lastText) {
-        // New melisma group starts
-        if (melismaStart !== null) slurGroups.push({ first: melismaStart, last: notes.length - 1 });
-        melismaStart = notes.length;
-      }
-    } else {
-      if (melismaStart !== null) {
-        slurGroups.push({ first: melismaStart, last: notes.length - 1 });
-        melismaStart = null;
-      }
-    }
-    lastText = r.text;
-    notes.push(note);
-  });
-  if (melismaStart !== null) slurGroups.push({ first: melismaStart, last: notes.length - 1 });
-
-  return { notes, slurGroups };
-}
-
-function attachLyrics(vfNotes, entries) {
-  // Attach syllable text to ALTO notes only.
-  // First note of each syllable group gets annotation; melisma continuations do not.
-  let lastSyl = Symbol(); // unique sentinel
-  vfNotes.forEach((note, i) => {
-    const r = entries[i];
-    const syl = r.text;
-    const isContinuation = r.melisma === true && syl === entries[i - 1]?.text;
-    if (syl && !isContinuation) {
-      const ann = new VF.Annotation(syl);
-      ann.setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
-      ann.setFont('Georgia', 9);
-      note.addModifier(ann);
-    }
-  });
-}
-
-function makeVoice(notes) {
-  const v = new VF.Voice({ numBeats: 4, beatValue: 4 });
-  v.setMode(VF.Voice.Mode.SOFT);
-  v.addTickables(notes);
-  return v;
-}
-
+// Rendering ────────────────────────────────────────────────────────────
+// VF is set inside renderScore() — never at parse time.
 function renderScore(payload) {
-  if (!VF) VF = Vex.Flow; // assigned once after CDN load
-  const lines = payload.lines;
-  const hasBass   = lines.some(l => l.bass   !== null);
-  const hasGrand  = hasBass;  // grand staff only when bass/tenor present
+  const VF = Vex.Flow;  // safe: only called after Vex is loaded
 
-  // Calculate total SVG height
-  const totalHeight = SYSTEM_HEIGHT * lines.length + 20;
+  const lines    = payload.lines;
+  const hasGrand = lines.some(l => l.bass !== null);
+  const totalH   = SYSTEM_H * lines.length + 20;
 
-  // Set up container
   const container = document.getElementById('score-canvas');
   container.innerHTML = '';
 
   const renderer = new VF.Renderer(container, VF.Renderer.Backends.SVG);
-  renderer.resize(PAGE_W, totalHeight);
+  renderer.resize(PAGE_W, totalH);
   const ctx = renderer.getContext();
 
-  lines.forEach((line, li) => {
-    const sysY = li * SYSTEM_HEIGHT + 10;
-    const trebleY = sysY + TREBLE_Y_OFFSET;
-    const bassY   = sysY + BASS_Y_OFFSET;
+  function makeNote(pitch, durKey, stemDir) {
+    const dur    = DUR_TO_VF[durKey] ?? 'q';
+    const dotted = durKey === 'H·';
+    const note   = new VF.StaveNote({ keys:[pitch], duration:dur, auto_stem:false });
+    note.setStemDirection(stemDir);
+    if (dotted) VF.Dot.buildAndAttach([note]);
+    return note;
+  }
 
-    // ── Treble stave ─────────────────────────────────────────────────────
+  function makeVoice(notes) {
+    const v = new VF.Voice({ numBeats:4, beatValue:4 });
+    v.setMode(VF.Voice.Mode.SOFT);
+    v.addTickables(notes);
+    return v;
+  }
+
+  lines.forEach((line, li) => {
+    const sysY    = li * SYSTEM_H + 10;
+    const trebleY = sysY + TREBLE_Y;
+    const bassY   = sysY + BASS_Y;
+    const isLast  = li === lines.length - 1;
+
+    // ── Treble ──────────────────────────────────────────────────────
     const treble = new VF.Stave(MARGIN_L, trebleY, STAVE_W);
-    // Clef + key sig on every system (standard practice for chant sheets)
     treble.addClef('treble').addKeySignature('D');
-    // Final bar line on last system
-    if (li === lines.length - 1) treble.setEndBarType(VF.Barline.type.END);
+    if (isLast) treble.setEndBarType(VF.Barline.type.END);
     treble.setContext(ctx).draw();
 
-    // Build alto notes (syllable-bearing voice, stem down)
-    const { notes: altoNotes, slurGroups: altoSlurs } = buildNoteObjects(
-      line.alto,
-      r => ALTO_PITCH[r.pitch] ?? 'D/4'
-    );
-    altoNotes.forEach(n => n.setStemDirection(-1)); // stem down
-    attachLyrics(altoNotes, line.alto);
-
-    const altoVoice = makeVoice(altoNotes);
-    const trebleVoices = [altoVoice];
-
-    // Build soprano notes (stem up)
-    let sopranoSlurs = [];
-    if (line.soprano) {
-      const { notes: sopNotes, slurGroups: sopSlurs } = buildNoteObjects(
-        line.soprano,
-        r => sopranoVFPitch(line.alto[line.soprano.indexOf(r)]?.pitch ?? r.pitch)
-      );
-      sopNotes.forEach(n => n.setStemDirection(1)); // stem up
-      sopranoSlurs = sopSlurs;
-      // Rebuild with correct pitch fn now that we have the index
-      // (the soprano entries don't carry the original alto pitch — we need it for sopranoVFPitch)
-      // Correct approach: iterate by index, soprano[i] derives from alto[i]
-      const sopNotesCorrect = line.soprano.map((r, i) => {
-        const altoPitch = line.alto[i]?.pitch ?? 'do';
-        const vfPitch = sopranoVFPitch(altoPitch);
-        const durStr  = DUR_TO_VF[r.durKey] ?? 'q';
-        const isDotted = r.durKey === 'H·';
-        const note = new VF.StaveNote({ keys: [vfPitch], duration: durStr, auto_stem: false });
-        note.setStemDirection(1);
-        if (isDotted) VF.Dot.buildAndAttach([note]);
-        return note;
-      });
-      const sopVoice = makeVoice(sopNotesCorrect);
-      trebleVoices.unshift(sopVoice); // soprano first → renders on top
-    }
-
-    // Format and draw treble
-    new VF.Formatter()
-      .joinVoices(trebleVoices)
-      .format(trebleVoices, STAVE_W - 10);
-    trebleVoices.forEach(v => v.draw(ctx, treble));
-
-    // Draw alto melisma slurs
-    altoSlurs.forEach(s => {
-      try {
-        new VF.Curve(altoNotes[s.first], altoNotes[s.last], { invert: true })
-          .setContext(ctx).draw();
-      } catch(e) { /* slur draw failures are non-fatal */ }
+    // Alto (stem down) — carries inter-stave lyrics via BOTTOM annotation
+    const altoNotes = line.alto.map((r, i) => {
+      const note = makeNote(ALTO_PITCH[r.pitch] ?? 'D/4', r.durKey, -1);
+      // First note of each syllable group gets the lyric
+      const prev = line.alto[i - 1];
+      const isCont = r.melisma && prev && r.text === prev.text;
+      if (r.text && !isCont) {
+        const ann = new VF.Annotation(r.text);
+        ann.setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
+        ann.setFont('Georgia', 9);
+        note.addModifier(ann);
+      }
+      return note;
     });
 
-    // ── Bass stave (only when bass data present) ─────────────────────────
+    const trebleVoices = [makeVoice(altoNotes)];
+
+    // Soprano (stem up)
+    if (line.soprano) {
+      const sopNotes = line.soprano.map((r, i) => {
+        const pitch = sopranoVFPitch(line.alto[i]?.pitch ?? 'do');
+        return makeNote(pitch, r.durKey, 1);
+      });
+      trebleVoices.unshift(makeVoice(sopNotes));
+    }
+
+    new VF.Formatter().joinVoices(trebleVoices).format(trebleVoices, STAVE_W - 10);
+    trebleVoices.forEach(v => v.draw(ctx, treble));
+
+    // Alto melisma slurs
+    let melStart = null;
+    line.alto.forEach((r, i) => {
+      if (r.melisma) {
+        const prev = line.alto[i - 1];
+        if (!prev || r.text !== prev.text) melStart = i;
+      } else {
+        if (melStart !== null && i > melStart) {
+          try {
+            new VF.Curve(altoNotes[melStart], altoNotes[i - 1], { invert:true })
+              .setContext(ctx).draw();
+          } catch(_) {}
+          melStart = null;
+        }
+      }
+    });
+
+    // ── Bass staff ────────────────────────────────────────────────
     if (hasGrand) {
       const bass = new VF.Stave(MARGIN_L, bassY, STAVE_W);
       bass.addClef('bass').addKeySignature('D');
-      if (li === lines.length - 1) bass.setEndBarType(VF.Barline.type.END);
+      if (isLast) bass.setEndBarType(VF.Barline.type.END);
       bass.setContext(ctx).draw();
 
       const bassVoices = [];
 
       if (line.bass) {
-        const { notes: bassNotes } = buildNoteObjects(
-          line.bass,
-          r => bassVFPitch(r.pitch, r.octaveDiv)
+        const bNotes = line.bass.map(r =>
+          makeNote(bassVFPitch(r.pitch, r.octaveDiv), r.durKey, -1)
         );
-        bassNotes.forEach(n => n.setStemDirection(-1));
-        const bassVoice = makeVoice(bassNotes);
-        bassVoices.push(bassVoice);
+        bassVoices.push(makeVoice(bNotes));
       }
-
       if (line.tenor) {
-        const tenorNotes = line.tenor.map(r => {
-          const vfPitch = tenorVFPitch(r.pitch, r.octaveDiv);
-          const durStr  = DUR_TO_VF[r.durKey] ?? 'q';
-          const isDotted = r.durKey === 'H·';
-          const note = new VF.StaveNote({ keys: [vfPitch], duration: durStr, auto_stem: false });
-          note.setStemDirection(1);
-          if (isDotted) VF.Dot.buildAndAttach([note]);
-          return note;
-        });
-        const tenorVoice = makeVoice(tenorNotes);
-        bassVoices.unshift(tenorVoice);
+        const tNotes = line.tenor.map(r =>
+          makeNote(bassVFPitch(r.pitch, r.octaveDiv), r.durKey, 1)
+        );
+        bassVoices.unshift(makeVoice(tNotes));
       }
 
-      if (bassVoices.length > 0) {
-        new VF.Formatter()
-          .joinVoices(bassVoices)
-          .format(bassVoices, STAVE_W - 10);
+      if (bassVoices.length) {
+        new VF.Formatter().joinVoices(bassVoices).format(bassVoices, STAVE_W - 10);
         bassVoices.forEach(v => v.draw(ctx, bass));
       }
 
-      // Grand staff connectors
       new VF.StaveConnector(treble, bass)
-        .setType(VF.StaveConnector.type.BRACE)
-        .setContext(ctx).draw();
+        .setType(VF.StaveConnector.type.BRACE).setContext(ctx).draw();
       new VF.StaveConnector(treble, bass)
-        .setType(VF.StaveConnector.type.SINGLE_LEFT)
-        .setContext(ctx).draw();
+        .setType(VF.StaveConnector.type.SINGLE_LEFT).setContext(ctx).draw();
     }
   });
 }
 
-// ── postMessage handshake ────────────────────────────────────────────────────
-// Strategy: listen for SCORE_DATA from the opener. Each time we receive it,
-// send back "score-print-ack" so the opener stops retrying. The opener
-// retries every 200ms until ack — this survives the race between window.open()
-// and VexFlow finishing its CDN load.
-
-let rendered = false;
-
-function receivePayload(payload) {
-  if (rendered) return; // ignore duplicate sends from the retry loop
-  rendered = true;
-
-  // Populate header
-  document.getElementById('score-title').textContent = payload.title ?? '';
+// Show score ───────────────────────────────────────────────────────────
+function showScore(payload) {
+  document.getElementById('score-title').textContent    = payload.title ?? '';
   document.getElementById('score-subtitle').textContent = payload.subtitle ?? '';
-  document.getElementById('toolbar-title').textContent = payload.title ?? '';
+  document.getElementById('toolbar-title').textContent  = payload.title ?? '';
   document.getElementById('toolbar-source').textContent =
-    `${payload.toneLabel} · ${payload.source === 'machine' ? 'Machine pointing' : 'Director pointing'}`;
+    payload.toneLabel + ' · ' +
+    (payload.source === 'machine' ? 'Machine pointing' : 'Director pointing');
 
-  // Hide waiting, show content
-  document.getElementById('waiting').style.display  = 'none';
-  document.getElementById('toolbar').style.display  = 'flex';
+  document.getElementById('waiting').style.display      = 'none';
+  document.getElementById('toolbar').style.display      = 'flex';
   document.getElementById('score-wrapper').style.display = 'block';
-
-  document.title = payload.title ? `${payload.title} — Score` : 'Score';
+  document.title = (payload.title ?? 'Score') + ' — Score';
 
   try {
     renderScore(payload);
   } catch(err) {
     document.getElementById('score-canvas').innerHTML =
-      `<p style="color:#7a2418;padding:1rem;font-style:italic;">
-        Render error: ${err.message}<br>
-        <small>${err.stack?.split('\n')[1] ?? ''}</small>
-      </p>`;
+      '<p style="color:#7a2418;padding:1rem;font-style:italic;">Render error: ' +
+      err.message + '<br><small>' + (err.stack ?? '').split('\n')[1] + '</small></p>';
   }
 }
 
-window.addEventListener('message', (e) => {
-  if (e.data?.type === 'SCORE_DATA') {
-    // Always ack — lets the opener stop retrying whether or not we've rendered yet
-    if (window.opener) {
-      try { e.source.postMessage('score-print-ack', '*'); } catch(_) {}
-    }
-    // Wait for VexFlow CDN to finish loading before rendering
-    if (typeof Vex === 'undefined') {
-      // VexFlow not ready yet — wait for it
-      const waitForVex = setInterval(() => {
-        if (typeof Vex !== 'undefined') {
-          clearInterval(waitForVex);
-          receivePayload(e.data.payload);
-        }
-      }, 50);
-    } else {
-      receivePayload(e.data.payload);
-    }
+// Handshake ────────────────────────────────────────────────────────────
+// Opener retries postMessage every 200ms until we ack.
+// We defer rendering until VexFlow is confirmed loaded.
+let pendingPayload = null;
+let rendered       = false;
+
+function tryRender() {
+  if (rendered || !pendingPayload) return;
+  if (typeof Vex === 'undefined') return; // VexFlow not loaded yet — will retry
+  rendered = true;
+  showScore(pendingPayload);
+}
+
+window.addEventListener('message', function(e) {
+  if (e.data && e.data.type === 'SCORE_DATA') {
+    // Ack immediately so the opener stops retrying
+    try { e.source.postMessage('score-print-ack', '*'); } catch(_) {}
+    if (rendered) return;
+    pendingPayload = e.data.payload;
+    tryRender();
   }
 });
+
+// Poll for VexFlow readiness every 100ms (handles CDN latency)
+var vexPoll = setInterval(function() {
+  if (typeof Vex !== 'undefined') {
+    clearInterval(vexPoll);
+    tryRender(); // render now if payload already arrived
+  }
+}, 100);
 </script>
+
+<!-- VexFlow loaded AFTER the inline script so Vex is never referenced at parse time -->
 <script src="https://cdn.jsdelivr.net/npm/vexflow@5/build/cjs/vexflow.js"></script>
 </body>
 </html>
