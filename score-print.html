@@ -34,24 +34,22 @@
   #score-canvas svg { width: 780px; height: auto; display: block; }
 
   @media print {
-    @page { size: letter portrait; margin: 0; }
+    @page { size: letter portrait; margin: 0.5in; }
     body { background: white; margin: 0; padding: 0; }
-    #toolbar { display: none !important; height: 0 !important; overflow: hidden !important; }
+    #toolbar { display: none !important; }
     #waiting { display: none !important; }
     #score-wrapper {
       display: block !important;
-      padding: 0.4in 0.5in 0.4in;
+      padding: 0;
       max-width: none;
       margin: 0;
     }
-    #score-wrapper h1 { margin: 0 0 0.05in 0; }
-    #score-wrapper .sub { margin: 0 0 0.05in 0; }
+    #score-wrapper h1 { margin: 0; font-size: 16pt; }
+    #score-wrapper .sub { margin: 0 0 4pt 0; }
     #score-canvas {
       display: block;
       margin: 0;
       padding: 0;
-      page-break-before: avoid;
-      break-before: avoid;
     }
     #score-canvas svg {
       display: block;
@@ -81,7 +79,7 @@
   <span style="color:#6b5942">|</span>
   <span class="src" id="tb-src"></span>
   <span style="flex:1"></span>
-  <button onclick="window.print()">⎙ Print</button>
+  <button onclick="doPrint()">⎙ Print</button>
   <button onclick="window.close()">✕ Close</button>
 </div>
 
@@ -94,6 +92,19 @@
 <script>
 var pending  = null;
 var rendered = false;
+
+// Print helper — removes toolbar from DOM entirely before printing,
+// then restores it. position:sticky toolbars cause phantom page breaks in Chrome.
+function doPrint() {
+  var tb = document.getElementById('toolbar');
+  var parent = tb.parentNode;
+  var next = tb.nextSibling;
+  parent.removeChild(tb);
+  window.print();
+  // Restore toolbar after print dialog closes
+  if (next) parent.insertBefore(tb, next);
+  else parent.appendChild(tb);
+}
 
 // ── Pitch helpers ──────────────────────────────────────────────────────
 // Pitch map is derived from the doHz value sent in the payload.
