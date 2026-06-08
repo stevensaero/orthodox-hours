@@ -437,40 +437,62 @@ function renderScore(payload) {
 }
 
 // ── postMessage handshake ────────────────────────────────────────────────────
+// Strategy: listen for SCORE_DATA from the opener. Each time we receive it,
+// send back "score-print-ack" so the opener stops retrying. The opener
+// retries every 200ms until ack — this survives the race between window.open()
+// and VexFlow finishing its CDN load.
+
+let rendered = false;
+
+function receivePayload(payload) {
+  if (rendered) return; // ignore duplicate sends from the retry loop
+  rendered = true;
+
+  // Populate header
+  document.getElementById('score-title').textContent = payload.title ?? '';
+  document.getElementById('score-subtitle').textContent = payload.subtitle ?? '';
+  document.getElementById('toolbar-title').textContent = payload.title ?? '';
+  document.getElementById('toolbar-source').textContent =
+    `${payload.toneLabel} · ${payload.source === 'machine' ? 'Machine pointing' : 'Director pointing'}`;
+
+  // Hide waiting, show content
+  document.getElementById('waiting').style.display  = 'none';
+  document.getElementById('toolbar').style.display  = 'flex';
+  document.getElementById('score-wrapper').style.display = 'block';
+
+  document.title = payload.title ? `${payload.title} — Score` : 'Score';
+
+  try {
+    renderScore(payload);
+  } catch(err) {
+    document.getElementById('score-canvas').innerHTML =
+      `<p style="color:#7a2418;padding:1rem;font-style:italic;">
+        Render error: ${err.message}<br>
+        <small>${err.stack?.split('\n')[1] ?? ''}</small>
+      </p>`;
+  }
+}
+
 window.addEventListener('message', (e) => {
   if (e.data?.type === 'SCORE_DATA') {
-    const payload = e.data.payload;
-
-    // Populate header
-    document.getElementById('score-title').textContent = payload.title ?? '';
-    document.getElementById('score-subtitle').textContent = payload.subtitle ?? '';
-    document.getElementById('toolbar-title').textContent = payload.title ?? '';
-    document.getElementById('toolbar-source').textContent =
-      `${payload.toneLabel} · ${payload.source === 'machine' ? 'Machine pointing' : 'Director pointing'}`;
-
-    // Hide waiting, show content
-    document.getElementById('waiting').style.display  = 'none';
-    document.getElementById('toolbar').style.display  = 'flex';
-    document.getElementById('score-wrapper').style.display = 'block';
-
-    document.title = payload.title ? `${payload.title} — Score` : 'Score';
-
-    try {
-      renderScore(payload);
-    } catch(err) {
-      document.getElementById('score-canvas').innerHTML =
-        `<p style="color:#7a2418;padding:1rem;font-style:italic;">
-          Render error: ${err.message}<br>
-          <small>${err.stack?.split('\n')[1] ?? ''}</small>
-        </p>`;
+    // Always ack — lets the opener stop retrying whether or not we've rendered yet
+    if (window.opener) {
+      try { e.source.postMessage('score-print-ack', '*'); } catch(_) {}
+    }
+    // Wait for VexFlow CDN to finish loading before rendering
+    if (typeof Vex === 'undefined') {
+      // VexFlow not ready yet — wait for it
+      const waitForVex = setInterval(() => {
+        if (typeof Vex !== 'undefined') {
+          clearInterval(waitForVex);
+          receivePayload(e.data.payload);
+        }
+      }, 50);
+    } else {
+      receivePayload(e.data.payload);
     }
   }
 });
-
-// Signal to the opener that we are ready
-if (window.opener) {
-  window.opener.postMessage('score-print-ready', '*');
-}
 </script>
 </body>
 </html>
