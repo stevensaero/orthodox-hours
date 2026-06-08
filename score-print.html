@@ -231,29 +231,26 @@ function renderScore(payload) {
     new VF.Formatter().joinVoices([altoVoice]).format([altoVoice], SW * 0.5);
     altoVoice.draw(ctx, tr);
 
-    // Draw lyrics at fixed y after formatting (note x-positions are valid post-format).
-    // Grand staff: centered in the gap between treble and bass staves.
-    // Solo treble: just below the stave bottom.
-    // Uses direct SVG text injection to bypass VexFlow SVGContext font/position quirks.
-    var lyricY = grand
-      ? sy + BASS_Y - 18
-      : sy + TY + TH + 20;
-    var svgEl = wrap.querySelector('svg');
-    var lyricPrev = null;
-    for (var ai2 = 0; ai2 < line.alto.length; ai2++) {
-      var r2 = line.alto[ai2];
-      var isMelismaRepeat = r2.melisma && lyricPrev && r2.text === lyricPrev.text;
-      if (r2.text && !isMelismaRepeat) {
-        var txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        txt.setAttribute('x', aN[ai2].getAbsoluteX());
-        txt.setAttribute('y', lyricY);
-        txt.setAttribute('font-family', 'Georgia, serif');
-        txt.setAttribute('font-size', '9');
-        txt.setAttribute('fill', '#1a1008');
-        txt.textContent = r2.text;
-        svgEl.appendChild(txt);
+    // Draw lyrics — solo treble only (grand staff lyrics drawn after bass stave below)
+    if (!grand) {
+      var lyricY = sy + TY + TH + 20;
+      var svgEl = wrap.querySelector('svg');
+      var lyricPrev = null;
+      for (var ai2 = 0; ai2 < line.alto.length; ai2++) {
+        var r2 = line.alto[ai2];
+        var isMelismaRepeat = r2.melisma && lyricPrev && r2.text === lyricPrev.text;
+        if (r2.text && !isMelismaRepeat) {
+          var txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          txt.setAttribute('x', aN[ai2].getAbsoluteX());
+          txt.setAttribute('y', lyricY);
+          txt.setAttribute('font-family', 'Georgia, serif');
+          txt.setAttribute('font-size', '9');
+          txt.setAttribute('fill', '#1a1008');
+          txt.textContent = r2.text;
+          svgEl.appendChild(txt);
+        }
+        lyricPrev = r2;
       }
-      lyricPrev = r2;
     }
 
     // Melisma slurs on alto
@@ -286,6 +283,33 @@ function renderScore(payload) {
       var bassVoice = mkVoice(bN);
       new VF.Formatter().joinVoices([bassVoice]).format([bassVoice], SW * 0.5);
       bassVoice.draw(ctx, bs);
+    }
+
+    // Draw lyrics centered between treble bottom line and bass top line.
+    // Anchor to bs.getYForLine(0) — the actual bass top staff line in VexFlow coordinates.
+    // The gap runs from tr.getYForLine(4) (treble bottom) to bs.getYForLine(0) (bass top).
+    // Place text at the midpoint of that gap.
+    if (grand) {
+      var trebleBottomY = tr.getYForLine(4);
+      var bassTopY      = bs.getYForLine(0);
+      var lyricY = (trebleBottomY + bassTopY) / 2;
+      var svgEl = wrap.querySelector('svg');
+      var lyricPrev = null;
+      for (var ai2 = 0; ai2 < line.alto.length; ai2++) {
+        var r2 = line.alto[ai2];
+        var isMelismaRepeat = r2.melisma && lyricPrev && r2.text === lyricPrev.text;
+        if (r2.text && !isMelismaRepeat) {
+          var txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          txt.setAttribute('x', aN[ai2].getAbsoluteX());
+          txt.setAttribute('y', lyricY);
+          txt.setAttribute('font-family', 'Georgia, serif');
+          txt.setAttribute('font-size', '9');
+          txt.setAttribute('fill', '#1a1008');
+          txt.textContent = r2.text;
+          svgEl.appendChild(txt);
+        }
+        lyricPrev = r2;
+      }
     }
 
     // Grand staff connectors
