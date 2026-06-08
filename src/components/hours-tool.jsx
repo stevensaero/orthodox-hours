@@ -8054,7 +8054,7 @@ function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
     return (
       <button style={badgeStyle} onClick={() => setOpen(true)}
         title="How is this prokeimenon tone determined?">
-        Tone source [+]
+        Tone source ▾
       </button>
     );
   }
@@ -8063,7 +8063,7 @@ function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
     <span style={{ display: 'inline-block', verticalAlign: 'top', position: 'relative' }}>
       <button style={{ ...badgeStyle, background: 'rgba(139,105,20,0.25)' }}
         onClick={() => setOpen(false)}>
-        Tone source [-]
+        Tone source ▴
       </button>
       <div style={{
         position: 'absolute', zIndex: 100, marginTop: '4px',
