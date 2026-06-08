@@ -6050,7 +6050,7 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
 
   if (!outlineOpen) {
     return (
-      <div style={{ position: 'sticky', top: '100px', alignSelf: 'flex-start',
+      <div style={{ position: 'sticky', top: '110px', alignSelf: 'flex-start',
         width: '28px', flexShrink: 0, zIndex: 20 }}>
         <button onClick={() => setOutlineOpen(true)} style={pillStyle}
           title="Service outline">OUTLINE</button>
@@ -6059,7 +6059,7 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
   }
 
   return (
-    <div style={{ position: 'sticky', top: '100px', alignSelf: 'flex-start',
+    <div style={{ position: 'sticky', top: '110px', alignSelf: 'flex-start',
       width: '178px', flexShrink: 0, zIndex: 20 }}>
       <div style={{
         width: '178px', background: '#FAF6EE', border: '1px solid #D4C49A',
