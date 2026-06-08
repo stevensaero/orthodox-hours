@@ -245,7 +245,9 @@ function renderScore(payload) {
           txt.setAttribute('x', aN[ai2].getAbsoluteX());
           txt.setAttribute('y', lyricY);
           txt.setAttribute('font-family', 'Georgia, serif');
-          txt.setAttribute('font-size', '9');
+          txt.setAttribute('font-size', '11');
+          txt.setAttribute('font-weight', 'normal');
+          txt.setAttribute('text-anchor', 'middle');
           txt.setAttribute('fill', '#1a1008');
           txt.textContent = r2.text;
           svgEl.appendChild(txt);
@@ -304,7 +306,9 @@ function renderScore(payload) {
           txt.setAttribute('x', aN[ai2].getAbsoluteX());
           txt.setAttribute('y', lyricY);
           txt.setAttribute('font-family', 'Georgia, serif');
-          txt.setAttribute('font-size', '9');
+          txt.setAttribute('font-size', '11');
+          txt.setAttribute('font-weight', 'normal');
+          txt.setAttribute('text-anchor', 'middle');
           txt.setAttribute('fill', '#1a1008');
           txt.textContent = r2.text;
           svgEl.appendChild(txt);
