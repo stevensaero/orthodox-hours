@@ -246,7 +246,7 @@ function renderScore(payload) {
   // Page 1: prepend title + subtitle inside the first score-page div
   var titleHTML = '<h1 style="font-size:1.8rem;font-weight:300;letter-spacing:0.04em;text-align:center;margin:0 0 0.1rem 0;font-family:Inter, Helvetica Neue, Helvetica, Arial, sans-serif;">' +
     (payload.title || '') + '</h1>' +
-    '<div style="font-size:0.72rem;color:#6b5942;text-align:center;margin-bottom:0.3rem;font-style:italic;font-family:Inter, Helvetica Neue, Helvetica, Arial, sans-serif;">' +
+    '<div style="font-size:0.72rem;color:#6b5942;text-align:center;margin-bottom:0.05rem;font-style:italic;font-family:Inter, Helvetica Neue, Helvetica, Arial, sans-serif;">' +
     (payload.subtitle || '') + '</div>';
 
   chunks.forEach(function(chunkLines, chunkIdx) {
@@ -258,7 +258,7 @@ function renderScore(payload) {
     var wrap = pageDiv; // VexFlow renders into this div
 
     var ren = new VF.Renderer(wrap, VF.Renderer.Backends.SVG);
-    ren.resize(PW, SH * chunkLines.length + 60);
+    ren.resize(PW, SH * chunkLines.length + 40);
     var ctx = ren.getContext();
 
     var lines = chunkLines; // shadow outer lines for the loop below
