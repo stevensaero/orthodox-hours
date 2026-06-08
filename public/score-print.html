@@ -82,9 +82,12 @@ var rendered = false;
 //   349.23 Hz = F4  → F major  (1 flat)   ← canonical Tone 1
 //   392.00 Hz = G4  → G major  (1 sharp)
 var KEY_MAP = {
-  311.13: { vexKey:'Eb', names:{ do:'Eb', re:'F',  mi:'G',  fa:'Ab', sol:'Bb', la:'C',  ti:'D',  si:'C'  } },
-  349.23: { vexKey:'F',  names:{ do:'F',  re:'G',  mi:'A',  fa:'Bb', sol:'C',  la:'D',  ti:'E',  si:'C'  } },
-  392.00: { vexKey:'G',  names:{ do:'G',  re:'A',  mi:'B',  fa:'C',  sol:'D',  la:'E',  ti:'F#', si:'C#' } },
+  // mi_low = same letter as mi, lower register (octaveDiv handles the octave)
+  // di     = raised do (chromatic passing tone above do)
+  // si     = raised sol (chromatic, rare)
+  311.13: { vexKey:'Eb', names:{ do:'Eb', re:'F',  mi:'G',  fa:'Ab', sol:'Bb', la:'C',  ti:'D',  si:'Bn',  di:'En',  mi_low:'G'  } },
+  349.23: { vexKey:'F',  names:{ do:'F',  re:'G',  mi:'A',  fa:'Bb', sol:'C',  la:'D',  ti:'E',  si:'C#',  di:'F#',  mi_low:'A'  } },
+  392.00: { vexKey:'G',  names:{ do:'G',  re:'A',  mi:'B',  fa:'C',  sol:'D',  la:'E',  ti:'F#', si:'C#',  di:'G#',  mi_low:'B'  } },
 };
 
 // Resolve key config from payload.doHz; fall back to F major.
@@ -102,12 +105,15 @@ function buildAltoPitch(cfg) {
   var n = cfg.names;
   return {
     do: n.do+'/4', re: n.re+'/4', mi: n.mi+'/4', fa: n.fa+'/4',
-    sol: n.sol+'/5', la: n.la+'/5', ti: n.ti+'/5', si: n.si+'/5',
+    sol: n.sol+'/5', la: n.la+'/5', ti: n.ti+'/5',
+    si: n.si+'/5', di: n.di+'/4', mi_low: n.mi_low+'/4',
   };
 }
 
 function staveKey(solName, oct, cfg) {
-  return cfg.names[solName] + '/' + oct;
+  var letter = cfg.names[solName];
+  if (!letter) { console.warn('staveKey: unknown solfège name:', solName); letter = cfg.names.do; }
+  return letter + '/' + oct;
 }
 
 function bassVFPitch(sol, div, cfg) {
