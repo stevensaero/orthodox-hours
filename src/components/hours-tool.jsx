@@ -8798,12 +8798,31 @@ export default function App() {
 
           </div>{/* end row one */}
 
-          {/* ── Row two: tone display (left) + glossary toggle (right) */}
+          {/* ── Row two: tone display (left) · context toggle (center) · Reader's Service (right) */}
           <div style={{ display: "flex", alignItems: "center" }}>
-            <span style={{ fontSize: "0.85rem", color: "#5C4A1E" }}>
+            <span style={{ fontSize: "0.85rem", color: "#5C4A1E", flexShrink: 0 }}>
               {liturgicalData.dayName} · Tone {liturgicalData.tone}
             </span>
-            <div style={{ marginLeft: "auto", display: "flex", gap: "6px", flexWrap: "wrap", justifyContent: "flex-end" }}>
+            {/* ── Liturgical Context toggle — centre */}
+            <button
+              onClick={() => setContextOpen(v => !v)}
+              style={{
+                margin: "0 auto",
+                background: contextOpen ? "rgba(139,105,20,0.1)" : "transparent",
+                border: "1px solid #C4A84A",
+                borderRadius: "3px", padding: "3px 14px",
+                fontSize: "0.68rem", letterSpacing: "0.15em",
+                textTransform: "uppercase", color: "#8B6914",
+                cursor: "pointer", fontFamily: "Georgia, serif",
+                display: "flex", alignItems: "center", gap: "6px",
+                flexShrink: 0,
+              }}
+              title="Toggle liturgical context"
+            >
+              Liturgical Context
+              <span style={{ fontSize: "0.7rem" }}>{contextOpen ? "▲" : "▼"}</span>
+            </button>
+            <div style={{ marginLeft: "auto", display: "flex", gap: "6px", flexShrink: 0 }}>
               <button
                 onClick={() => setReaderMode((v) => !v)}
                 style={{
@@ -8841,20 +8860,10 @@ export default function App() {
         {/* ── MAIN CONTENT COLUMN ── */}
         <div style={{ flex: 1, minWidth: 0, padding: '0 1rem' }}>
 
-        {/* ── LITURGICAL CONTEXT CARD ─────────────────────── */}
+        {/* ── LITURGICAL CONTEXT BODY — controlled by sticky bar toggle ── */}
+        {contextOpen && (
         <div style={{ background: "#EDE5D0", border: "1px solid #D4C49A", borderRadius: "6px", marginBottom: "1.5rem", fontSize: "0.85rem", lineHeight: "1.7", overflow: "hidden" }}>
-          <div
-            onClick={() => setContextOpen(v => !v)}
-            style={{ display: "flex", justifyContent: "space-between", alignItems: "center",
-              padding: "0.6rem 1.2rem", cursor: "pointer", userSelect: "none",
-              borderBottom: contextOpen ? "1px solid #D4C49A" : "none" }}
-          >
-            <div style={{ fontSize: "0.68rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#8B6914" }}>
-              Liturgical Context
-            </div>
-            <span style={{ color: "#8B6914", fontSize: "0.8rem" }}>{contextOpen ? "▲" : "▼"}</span>
-          </div>
-          {contextOpen && <div style={{ padding: "0.75rem 1.2rem 1rem" }}>
+          <div style={{ padding: "0.75rem 1.2rem 1rem" }}>
           <div>
             <strong>Date:</strong> {dayLabel}
             {liturgicalData.paschaOffset >= -101 && liturgicalData.paschaOffset <= 263 && (
@@ -9032,8 +9041,9 @@ export default function App() {
               No <Tooltip term="menaion">Menaion</Tooltip> entry in library for this date (Phase 2 will add full content).
             </div>
           )}
-          </div>}{/* end contextOpen body */}
+          </div>
         </div>
+        )}{/* end contextOpen */}
 
         {/* ── OUT OF SCOPE WARNING ─────────────────────────── */}
         {!inScope && (
