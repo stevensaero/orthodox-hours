@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Score — Orthodox Hours</title>
-<script src="https://cdn.jsdelivr.net/npm/vexflow@5/build/cjs/vexflow.js"></script>
 <style>
   /* ── Screen styles ──────────────────────────────────────────────────── */
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -224,8 +223,8 @@ const DUR_TO_VF = { Q: 'q', H: 'h', 'H·': 'h', W: 'w' };
 // Note: H· uses 'h' + Dot.buildAndAttach separately
 
 // ── Rendering ───────────────────────────────────────────────────────────────
-
-const VF = Vex.Flow;
+// VF is assigned on first renderScore() call, after VexFlow CDN has loaded.
+let VF = null;
 
 const PAGE_W = 780;     // SVG canvas width (fits in 8.5in print area)
 const MARGIN_L = 48;    // left margin (leaves room for brace + clef + key sig)
@@ -306,6 +305,7 @@ function makeVoice(notes) {
 }
 
 function renderScore(payload) {
+  if (!VF) VF = Vex.Flow; // assigned once after CDN load
   const lines = payload.lines;
   const hasBass   = lines.some(l => l.bass   !== null);
   const hasGrand  = hasBass;  // grand staff only when bass/tenor present
@@ -494,5 +494,6 @@ window.addEventListener('message', (e) => {
   }
 });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/vexflow@5/build/cjs/vexflow.js"></script>
 </body>
 </html>
