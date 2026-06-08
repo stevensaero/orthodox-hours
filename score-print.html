@@ -213,19 +213,28 @@ var pending  = null;
 var rendered = false;
 
 window.addEventListener('message', function(e) {
+  console.log('[score] msg received type=' + (e.data&&e.data.type) + ' Vex=' + typeof Vex);
   if (!e.data || e.data.type !== 'SCORE_DATA') return;
-  try { e.source.postMessage('score-print-ack','*'); } catch(_){}
+  try { e.source.postMessage('score-print-ack','*'); } catch(err){ console.log('[score] ack err',err); }
   if (rendered) return;
   pending = e.data.payload;
+  console.log('[score] lines=' + (pending&&pending.lines&&pending.lines.length) + ' Vex=' + typeof Vex);
   if (typeof Vex !== 'undefined') { rendered=true; showScore(pending); }
-  // else: vexflow.js onload handler below will call showScore
+  else { console.log('[score] Vex not yet defined — waiting for load event'); }
 });
 
 // vexflow.js is loaded synchronously above this script block,
 // but set an onload fallback via the script tag's own event just in case
-document.querySelector('script[src="vexflow.js"]').addEventListener('load', function() {
-  if (pending && !rendered) { rendered=true; showScore(pending); }
-});
+var vfScript = document.querySelector('script[src="vexflow.js"]');
+if (vfScript) {
+  vfScript.addEventListener('load', function() {
+    console.log('[score] vexflow.js load event fired, pending=' + !!pending + ' rendered=' + rendered);
+    if (pending && !rendered) { rendered=true; showScore(pending); }
+  });
+} else {
+  console.log('[score] ERROR: vexflow.js script tag not found');
+}
+console.log('[score] inline script complete. Vex=' + typeof Vex + ' opener=' + !!window.opener);
 </script>
 </body>
 </html>
