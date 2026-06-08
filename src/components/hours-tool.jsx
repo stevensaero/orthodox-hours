@@ -5148,17 +5148,17 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
             label: "Alleluia (Resurrectional) · Tone " + tone,
             text: buildAlleluia(resAl), type: "movable", source: src,
             note: "Sunday resurrectional Alleluia, Tone " + tone + " · Source: St. Sergius Sunday Octoechos",
-            alleluiaSource: 'sunday_resurrectional', alleluiaDow: dowNumber, alleluiaRank: rank, alleluiaTone: tone });
+            alleluiaSource: 'sunday_resurrectional', alleluiaDow: dowNumber, alleluiaRank: menaionEntry?.rank || 'simple', alleluiaTone: tone });
           // If polyeleos/vigil Menaion saint also has a festal Alleluia, add it second
           if (menaionEntry?.alleluia_verse &&
-              (rank === 'polyeleos' || rank === 'vigil')) {
+              (menaionEntry?.rank === 'polyeleos' || menaionEntry?.rank === 'vigil')) {
             elements.push({ id: "typica-alleluia-feast",
               label: "Alleluia (Festal) · Tone " + menaionEntry.alleluia_tone,
               text: buildAlleluia({ tone: menaionEntry.alleluia_tone, verse: menaionEntry.alleluia_verse,
                 stichoi: menaionEntry.alleluia_stichos ? [menaionEntry.alleluia_stichos] : [] }),
               type: "movable", source: src,
               note: "Festal Alleluia · Menaion proper · " + (menaionEntry.saint || "saint of the day") + " · Fekula §4A3",
-              alleluiaSource: 'menaion_festal_sunday', alleluiaDow: dowNumber, alleluiaRank: rank, alleluiaTone: tone });
+              alleluiaSource: 'menaion_festal_sunday', alleluiaDow: dowNumber, alleluiaRank: menaionEntry?.rank || 'simple', alleluiaTone: tone });
           }
           alData = null; // already pushed above
         } else if (menaionEntry?.alleluia_verse) {
@@ -5181,7 +5181,7 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
             label: "Alleluia · Tone " + alData.tone,
             text: buildAlleluia(alData), type: "movable", source: src,
             note: alNote,
-            alleluiaSource: alSource, alleluiaDow: dowNumber, alleluiaRank: rank, alleluiaTone: tone });
+            alleluiaSource: alSource, alleluiaDow: dowNumber, alleluiaRank: menaionEntry?.rank || 'simple', alleluiaTone: tone });
         }
       }
 
