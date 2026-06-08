@@ -228,28 +228,33 @@ function renderScore(payload) {
     }
 
     var altoVoice = mkVoice(aN);
-    new VF.Formatter().joinVoices([altoVoice]).format([altoVoice], SW - 10);
+    new VF.Formatter().joinVoices([altoVoice]).format([altoVoice], SW * 0.5);
     altoVoice.draw(ctx, tr);
 
     // Draw lyrics at fixed y after formatting (note x-positions are valid post-format).
     // Grand staff: centered in the gap between treble and bass staves.
     // Solo treble: just below the stave bottom.
+    // Uses direct SVG text injection to bypass VexFlow SVGContext font/position quirks.
     var lyricY = grand
       ? sy + TY + TH + LYRIC_GAP / 2 + 5
       : sy + TY + TH + 20;
-    ctx.save();
-    ctx.setFont('Georgia', 9);
-    ctx.setFillStyle('#1a1008');
+    var svgEl = wrap.querySelector('svg');
     var lyricPrev = null;
     for (var ai2 = 0; ai2 < line.alto.length; ai2++) {
       var r2 = line.alto[ai2];
       var isMelismaRepeat = r2.melisma && lyricPrev && r2.text === lyricPrev.text;
       if (r2.text && !isMelismaRepeat) {
-        ctx.fillText(r2.text, aN[ai2].getAbsoluteX(), lyricY);
+        var txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        txt.setAttribute('x', aN[ai2].getAbsoluteX());
+        txt.setAttribute('y', lyricY);
+        txt.setAttribute('font-family', 'Georgia, serif');
+        txt.setAttribute('font-size', '9');
+        txt.setAttribute('fill', '#1a1008');
+        txt.textContent = r2.text;
+        svgEl.appendChild(txt);
       }
       lyricPrev = r2;
     }
-    ctx.restore();
 
     // Melisma slurs on alto
     var ms = null;
@@ -279,7 +284,7 @@ function renderScore(payload) {
         bN.push(mkNote(bassVFPitch(br.pitch, br.octaveDiv, cfg), br.durKey, -1, 'bass'));
       }
       var bassVoice = mkVoice(bN);
-      new VF.Formatter().joinVoices([bassVoice]).format([bassVoice], SW - 10);
+      new VF.Formatter().joinVoices([bassVoice]).format([bassVoice], SW * 0.5);
       bassVoice.draw(ctx, bs);
     }
 
