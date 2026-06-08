@@ -3877,7 +3877,7 @@ export default function ToneTrainer() {
 
       payload.lines.push({
         phrase: line.phrase,
-        barlineAfter: line.barlineAfter ?? (li === sourceLines.length - 1 ? "final" : (line.phrase === "Final" ? "penultimate" : "single")),
+        barlineAfter: line.barlineAfter ?? (li === sourceLines.length - 1 ? "final" : (sourceLines[li + 1]?.phrase === "Final" ? "penultimate" : "single")),
         alto:    altoEntries,
         soprano: sopranoEntries,
         bass:    bassEntries,

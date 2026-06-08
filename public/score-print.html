@@ -25,7 +25,7 @@
   }
   #toolbar button:hover { background: rgba(214,199,159,.15); }
   #toolbar .src { font-style: italic; color: #9a8a6a; font-size: 0.72rem; }
-  #score-wrapper { display: none; padding: 0.3rem 2rem 2rem; max-width: 900px; margin: 0 auto; }
+  #score-wrapper { display: block; padding: 0.1rem 2rem 2rem; max-width: 900px; margin: 0 auto; }
   #score-wrapper h1 { font-size: 1.5rem; font-weight: normal; letter-spacing: 0.06em; margin-bottom: 0.1rem; text-align: center; }
   #score-wrapper .sub { font-size: 0.72rem; color: #6b5942; text-align: center; margin-bottom: 0.15rem; font-style: italic; }
   #score-canvas { overflow-x: auto; }
@@ -288,6 +288,25 @@ function renderScore(payload) {
       }
     }
 
+    // // penultimate marker for SOLO treble (grand path handled after bass draw)
+    if (!grand && barlineAfter === 'penultimate' && aN.length > 0) {
+      var soloLyricY = sy + TY + TH + 20;
+      var svgElS = wrap.querySelector('svg');
+      var soloLastX = aN[aN.length - 1].getAbsoluteX() + NOTE_W * 0.6;
+      var soloSlash = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      soloSlash.setAttribute('x', soloLastX);
+      soloSlash.setAttribute('y', soloLyricY);
+      soloSlash.setAttribute('font-family', 'Georgia, serif');
+      soloSlash.setAttribute('font-size', '16');
+      soloSlash.setAttribute('font-weight', 'normal');
+      soloSlash.setAttribute('font-style', 'italic');
+      soloSlash.setAttribute('text-anchor', 'middle');
+      soloSlash.setAttribute('dominant-baseline', 'middle');
+      soloSlash.setAttribute('fill', '#2a2118');
+      soloSlash.textContent = '//';
+      svgElS.appendChild(soloSlash);
+    }
+
     if (!grand) continue;
 
     // ── Bass stave — BASS ONLY (no tenor voice) ────────────────────────
@@ -384,7 +403,7 @@ function showScore(p) {
     (p.source === 'machine' ? 'Machine pointing' : 'Director pointing');
   document.getElementById('waiting').style.display       = 'none';
   document.getElementById('toolbar').style.display       = 'flex';
-  document.getElementById('score-wrapper').style.display = 'block';
+  // score-wrapper is display:block by default (needed for print CSS)
   document.title = (p.title || 'Score') + ' — Score';
 
   // Load fonts THEN render — guarantees Bravura is available for VexFlow
