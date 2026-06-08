@@ -251,7 +251,7 @@ function renderScore(payload) {
           txt.setAttribute('x', aN[ai2].getAbsoluteX());
           txt.setAttribute('y', lyricY);
           txt.setAttribute('font-family', 'Georgia, serif');
-          txt.setAttribute('font-size', '18');
+          txt.setAttribute('font-size', '16');
           txt.setAttribute('font-weight', r2.accent ? 'bold' : 'normal');
           txt.setAttribute('text-anchor', 'middle');
           txt.setAttribute('dominant-baseline', 'middle');
@@ -324,7 +324,7 @@ function renderScore(payload) {
           txt.setAttribute('x', aN[ai2].getAbsoluteX());
           txt.setAttribute('y', lyricY);
           txt.setAttribute('font-family', 'Georgia, serif');
-          txt.setAttribute('font-size', '18');
+          txt.setAttribute('font-size', '16');
           txt.setAttribute('font-weight', r2.accent ? 'bold' : 'normal');
           txt.setAttribute('text-anchor', 'middle');
           txt.setAttribute('dominant-baseline', 'middle');
@@ -344,6 +344,23 @@ function renderScore(payload) {
         }
         lyricPrev = r2;
       }
+    }
+
+    // Draw // penultimate marker above treble stave right-aligned to note content
+    if (barlineAfter === 'penultimate') {
+      var svgEl2 = wrap.querySelector('svg');
+      var lastNoteX = aN.length > 0 ? aN[aN.length - 1].getAbsoluteX() + 16 : ML + SW * 0.6;
+      var markerTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      markerTxt.setAttribute('x', lastNoteX);
+      markerTxt.setAttribute('y', sy + TY - 6);
+      markerTxt.setAttribute('font-family', 'Georgia, serif');
+      markerTxt.setAttribute('font-size', '13');
+      markerTxt.setAttribute('font-weight', 'normal');
+      markerTxt.setAttribute('font-style', 'italic');
+      markerTxt.setAttribute('text-anchor', 'end');
+      markerTxt.setAttribute('fill', '#2a2118');
+      markerTxt.textContent = '//';
+      svgEl2.appendChild(markerTxt);
     }
 
     // Grand staff connectors
