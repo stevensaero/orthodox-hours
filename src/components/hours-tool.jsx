@@ -6002,11 +6002,6 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
     'Epistle', 'Gospel',
   ];
 
-  // Determine if an element is a major section header
-  const isMajor = (el) =>
-    MAJOR_IDS.has ? MAJOR_IDS.includes(el.id) : MAJOR_IDS.indexOf(el.id) !== -1 ||
-    (el.label && MAJOR_LABEL_PREFIXES_OUT.some(p => el.label.startsWith(p)));
-
   // Collect all major elements present in the assembled output, in order
   const presentMajors = elements.filter(el =>
     MAJOR_IDS.includes(el.id) ||
@@ -6036,8 +6031,9 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
 
   // Context label for the outline header
   const svcLabel = currentService.label || 'Service';
+  // liturgicalData has mm/dd (1-indexed month/day), not a .date property
   const dateLabel = liturgicalData
-    ? new Date(liturgicalData.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })
+    ? `${new Date(2026, liturgicalData.mm - 1, liturgicalData.dd).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
     : '';
 
   const pillStyle = {
@@ -8509,7 +8505,7 @@ export default function App() {
       if (el) obs.observe(el);
     });
     return () => obs.disconnect();
-  }, [elements, currentService?.key]);
+  }, [elements?.length, currentService?.key]);
   const [preCommunionData, setPreCommunionData] = useState(null);
 
   // ── Temple dedication — persisted in localStorage ─────────────────────────
