@@ -6800,8 +6800,6 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
               <a href={linkHref} style={{
                 color: '#8B6914',
                 textDecoration: 'underline',
-                textDecorationStyle: 'dotted',
-                textDecorationColor: 'rgba(139,105,20,0.5)',
                 cursor: 'pointer',
                 fontFamily: 'Georgia, serif',
               }}>{lastLine}</a>
