@@ -8855,9 +8855,10 @@ export default function App() {
           <div style={{
             borderTop: "1px solid #C4A84A",
             background: "#EDE5D0",
-            padding: "0.75rem 1.2rem 1rem",
+            padding: "0.75rem 2rem 1rem",
             fontSize: "0.85rem", lineHeight: "1.7",
           }}>
+          <div style={{ maxWidth: "720px", margin: "0 auto" }}>
           <div>
             <strong>Date:</strong> {dayLabel}
             {liturgicalData.paschaOffset >= -101 && liturgicalData.paschaOffset <= 263 && (
@@ -9035,6 +9036,7 @@ export default function App() {
               No <Tooltip term="menaion">Menaion</Tooltip> entry in library for this date (Phase 2 will add full content).
             </div>
           )}
+          </div>
           </div>
         )}
       </div>{/* end controls sticky bar */}
