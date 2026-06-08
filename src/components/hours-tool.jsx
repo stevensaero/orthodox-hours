@@ -6094,14 +6094,17 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
             return (
               <div key={row.id || row.label}
                 onClick={() => {
-                  const el = row.id ? document.getElementById(row.id) : null;
-                  if (el) {
-                    // Offset for sticky control bar (~96px) plus breathing room
-                    const offset = el.getBoundingClientRect().top + window.scrollY - 124;
-                    window.scrollTo({ top: offset, behavior: 'smooth' });
-                  }
-                  setActiveSection(row.id);
+                  const targetId = row.id;
+                  setActiveSection(targetId);
                   setOutlineOpen(false);
+                  // Wait for panel close / layout settle before scrolling
+                  setTimeout(() => {
+                    const el = targetId ? document.getElementById(targetId) : null;
+                    if (el) {
+                      const top = el.getBoundingClientRect().top + window.scrollY - 128;
+                      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+                    }
+                  }, 50);
                 }}
                 style={{
                   display: 'flex', alignItems: 'center', gap: '7px',
