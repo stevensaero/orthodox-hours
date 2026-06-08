@@ -8212,8 +8212,8 @@ function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
             {WEEKLY_PROK_TABLE.map((row, i) => {
               const isActive = (prokSource === 'weekly' || prokSource === 'saturday_great')
                 && ((row.day === 'Saturday' && prokDow === 6) ||
-                    (row.day !== 'Saturday' && i === prokDow));
-              const feasting = isActive && (prokSource === 'menaion_festal' || prokSource === 'saturday_great');
+                    (row.day !== 'Saturday' && i === prokDow))
+                && prokSource !== 'menaion_festal' && prokSource !== 'pentecostarion';
               return (
               <tr key={i} style={{
                 background: isActive ? 'rgba(139,105,20,0.1)' : 'transparent',
@@ -8388,7 +8388,7 @@ function TypicaProkeimenonExplainer({ typicaProkSource, typicaProkDow, typicaTon
             {TYPICA_PROK_TABLE_DATA.map((row, i) => {
               const dow = i + 1;
               const isActive = typicaProkDow === dow &&
-                (typicaProkSource === 'weekday' || typicaProkSource === 'menaion_festal' || typicaProkSource === 'saturday');
+                (typicaProkSource === 'weekday' || typicaProkSource === 'saturday');
               return (
                 <tr key={i} style={{
                   background: isActive ? 'rgba(139,105,20,0.1)' : 'transparent',
@@ -8576,7 +8576,7 @@ function AlleluiaExplainer({ alleluiaSource, alleluiaDow, alleluiaRank, alleluia
           <tbody>
             {WEEKDAY_ALLELUIA_TABLE.map((row, i) => {
               const dow = i + 1; // 1=Mon … 6=Sat
-              const isActive = alleluiaDow === dow && (alleluiaSource === 'weekly' || alleluiaSource === 'menaion_festal');
+              const isActive = alleluiaDow === dow && alleluiaSource === 'weekly';
               return (
                 <tr key={i} style={{
                   background: isActive ? 'rgba(139,105,20,0.1)' : 'transparent',
