@@ -8705,7 +8705,8 @@ export default function App() {
       </div>
 
       {/* ── CONTROLS ─────────────────────────────────────── */}
-      <div style={{ background: "#EDE5D0", borderBottom: "1px solid #D4C49A", padding: "1rem 2rem" }}>
+      <div style={{ background: "#EDE5D0", borderBottom: "1px solid #D4C49A", padding: "1rem 2rem",
+        position: "sticky", top: 0, zIndex: 40 }}>
         <div style={{ maxWidth: "720px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
 
           {/* ── Row one: DATE group + SERVICE group */}
