@@ -5000,7 +5000,7 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
   // Uses prokeimenon element type (same as Vespers) so ServiceBlock renders
   // "Reader: The Prokeimenon in Tone X: [text]" with verse exchange correctly.
   {
-    const buildProkEl = (id, p, sourceStr, noteStr) => ({
+    const buildProkEl = (id, p, sourceStr, noteStr, typicaProkSource = 'weekday', typicaProkDow = dowNumber) => ({
       id,
       type: "prokeimenon",
       typicaMode: true,
@@ -5017,6 +5017,10 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
       readerMode,
       source: sourceStr,
       fekula: { section: null, note: noteStr },
+      typicaProkSource,
+      typicaProkDow,
+      typicaTone: tone,
+      typicaRank: menaionEntry?.rank || 'simple',
     });
 
     // In reader mode the prokeimenon element itself handles the Ch10 pattern:
@@ -5026,13 +5030,13 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
       elements.push(buildProkEl("typica-prokeimenon",
         { tone: pentEntry.prokeimenon_tone, text: pentEntry.prokeimenon_text, stichos: pentEntry.prokeimenon_stichos },
         "Pentecostarion · " + (pentEntry.source_file || "St. Sergius PDF"),
-        "Pentecostarion proper prokeimenon."));
+        "Pentecostarion proper prokeimenon.", 'pentecostarion'));
       // Menaion feast-proper prokeimenon suppressed — Pentecostarion governs
     } else if (isSunday) {
       const p = SUNDAY_PROKEIMENON[tone] || SUNDAY_PROKEIMENON[1];
       elements.push(buildProkEl("typica-prokeimenon", p,
         "St. Sergius Sunday Octoechos",
-        "Sunday resurrectional prokeimenon, Tone " + tone + "."));
+        "Sunday resurrectional prokeimenon, Tone " + tone + ".", 'sunday'));
       // Menaion feast-proper prokeimenon suppressed on Sunday — resurrectional governs
     } else {
       const daily = TYPICA_WEEKDAY_PROKEIMENON[dowNumber];
@@ -5040,19 +5044,19 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
         daily.forEach((p, i) => elements.push(buildProkEl(
           "typica-prokeimenon-" + i, p,
           "HTM daily file",
-          "Saturday prokeimenon — " + p.label + ".")));
+          "Saturday prokeimenon — " + p.label + ".", 'saturday')));
       } else if (daily) {
         elements.push(buildProkEl("typica-prokeimenon", daily,
           "HTM daily file",
-          ["","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dowNumber] + " prokeimenon."));
+          ["","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dowNumber] + " prokeimenon.", 'weekday'));
       }
-      // Feast-proper prokeimenon only appended on weekdays for §2E/§2F rank
+      // Feast-proper prokeimenon appended after weekday for §2E/§2F rank
       if (menaionEntry?.prokeimenon_text &&
           (menaionEntry.rank === 'polyeleos' || menaionEntry.rank === 'vigil')) {
         elements.push(buildProkEl("typica-prokeimenon-feast",
           { tone: menaionEntry.prokeimenon_tone, text: menaionEntry.prokeimenon_text, stichos: menaionEntry.prokeimenon_stichos },
           "Menaion · " + (menaionEntry.saint || "saint of the day"),
-          "Feast proper prokeimenon for " + (menaionEntry.saint || "this commemoration") + "."));
+          "Feast proper prokeimenon for " + (menaionEntry.saint || "this commemoration") + ".", 'menaion_festal'));
       }
     }
   }
@@ -6523,7 +6527,15 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
           {element.fekula && (
             <FekulaBadge section={element.fekula.section} note={element.fekula.note} />
           )}
-          {element.prokSource && (
+          {element.typicaMode && element.typicaProkSource && (
+            <TypicaProkeimenonExplainer
+              typicaProkSource={element.typicaProkSource}
+              typicaProkDow={element.typicaProkDow}
+              typicaTone={element.typicaTone}
+              typicaRank={element.typicaRank}
+            />
+          )}
+          {!element.typicaMode && element.prokSource && (
             <ProkeimenonExplainer
               prokSource={element.prokSource}
               prokDow={element.prokDow}
@@ -7322,6 +7334,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.7.8",
+    date: "June 2026",
+    summary: "Explainer improvements + Typica prokeimenon explainer",
+    items: [
+      "feat: ProkeimenonExplainer and AlleluiaExplainer tables now include an Override column — when a festal entry supersedes the highlighted weekday row, the table shows '← overridden by Menaion festal' or '← active' directly in the row, making the substitution visible at a glance without needing to read the chip at the top.",
+      "feat: TypicaProkeimenonExplainer — separate explainer for Typica prokeimenon (Tone source badge). Typica uses different logic from Vespers: Sunday uses Octoechos tone (not day-of-week), weekday table has different tones/texts, Saturday has two prokeimena (All Saints + Departed), and Menaion festal at §2E/§2F appends after the daily rather than replacing it.",
+      "feat: Typica prokeimenon elements now carry typicaProkSource field — weekday | sunday | saturday | menaion_festal | pentecostarion. Badge routes to TypicaProkeimenonExplainer (typicaMode) vs ProkeimenonExplainer (Vespers) correctly.",
+    ],
+  },
   {
     version: "v0.7.7",
     date: "June 2026",
@@ -8184,15 +8206,20 @@ function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
               <th style={{ textAlign: 'left', padding: '2px 0 3px 6px',
                 color: '#8B6914', fontWeight: 'bold', fontSize: '0.7rem',
                 letterSpacing: '0.08em', textTransform: 'uppercase' }}>Prokeimenon</th>
+              <th style={{ textAlign: 'left', padding: '2px 0 3px 8px',
+                color: '#8B6914', fontWeight: 'bold', fontSize: '0.7rem',
+                letterSpacing: '0.08em', textTransform: 'uppercase' }}>Override</th>
             </tr>
           </thead>
           <tbody>
-            {WEEKLY_PROK_TABLE.map((row, i) => (
+            {WEEKLY_PROK_TABLE.map((row, i) => {
+              const isActive = (prokSource === 'weekly' || prokSource === 'saturday_great')
+                && ((row.day === 'Saturday' && prokDow === 6) ||
+                    (row.day !== 'Saturday' && i === prokDow));
+              const feasting = isActive && (prokSource === 'menaion_festal' || prokSource === 'saturday_great');
+              return (
               <tr key={i} style={{
-                background: (prokSource === 'weekly' || prokSource === 'saturday_great')
-                  && ((row.day === 'Saturday' && prokDow === 6) ||
-                      (row.day !== 'Saturday' && i === prokDow))
-                  ? 'rgba(139,105,20,0.1)' : 'transparent',
+                background: isActive ? 'rgba(139,105,20,0.1)' : 'transparent',
                 borderBottom: '1px solid #EDE5D0',
               }}>
                 <td style={{ padding: '3px 6px 3px 0', color: '#3D3020' }}>
@@ -8202,13 +8229,189 @@ function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
                   color: '#8B6914', fontWeight: 'bold' }}>{row.tone}</td>
                 <td style={{ padding: '3px 0 3px 6px', color: '#5C4A1E',
                   fontStyle: 'italic' }}>{row.text}</td>
+                <td style={{ padding: '3px 0 3px 8px', fontSize: '0.7rem',
+                  color: '#9A8A70', fontStyle: 'italic', minWidth: '60px' }}>
+                  {isActive && prokSource === 'menaion_festal'
+                    ? <span style={{ color: '#8B6914', fontWeight: 'bold' }}>← overridden by Menaion festal</span>
+                    : isActive && prokSource === 'saturday_great' && prokRank && (prokRank === 'polyeleos' || prokRank === 'vigil')
+                    ? <span style={{ color: '#8B6914', fontWeight: 'bold' }}>← overridden by festal ({prokRank})</span>
+                    : isActive
+                    ? <span style={{ color: '#2D6A2E' }}>← active</span>
+                    : null}
+                </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
         <div style={{ fontSize: '0.72rem', color: '#9A8A70', marginTop: '0.5rem' }}>
           ★ Great Prokeimenon — 3 verses, sung 4×. Overridden by festal prokeimenon at Polyeleos/Vigil rank.
           Source: HTM Horologion (Jordanville, 1994); OCA Office of Vespers (2021).
+        </div>
+      </div>
+    </span>
+  );
+}
+
+// ─── TYPICA PROKEIMENON EXPLAINER ────────────────────────────────────────────
+// Separate from ProkeimenonExplainer because the Typica prokeimenon uses
+// a different table (different tones/texts from Vespers), Sunday uses the
+// Octoechos tone (not DOW), and Saturday has two prokeimena.
+
+const TYPICA_PROK_TABLE_DATA = [
+  { day: "Monday",    tone: 4, text: "Who maketh His angels spirits…" },
+  { day: "Tuesday",   tone: 7, text: "The righteous man shall be glad in the Lord…" },
+  { day: "Wednesday", tone: 3, text: "My soul doth magnify the Lord…", label: "Song of the Theotokos" },
+  { day: "Thursday",  tone: 8, text: "Their sound hath gone forth into all the earth…" },
+  { day: "Friday",    tone: 7, text: "Exalt ye the Lord our God…" },
+  { day: "Saturday",  tone: '8 + 6', text: "All Saints (T8) · the Departed (T6)", saturday: true },
+];
+
+function TypicaProkeimenonExplainer({ typicaProkSource, typicaProkDow, typicaTone, typicaRank }) {
+  const [open, setOpen] = React.useState(false);
+
+  const badgeStyle = {
+    background: 'rgba(139,105,20,0.15)', border: '1px solid #8B6914',
+    borderRadius: '3px', color: '#8B6914', fontSize: '0.68rem',
+    padding: '1px 6px', cursor: 'pointer', fontFamily: 'Georgia, serif',
+    letterSpacing: '0.03em',
+  };
+
+  const sourceLabel = typicaProkSource === 'sunday' ? 'Sunday Resurrectional (Octoechos Tone ' + typicaTone + ')'
+    : typicaProkSource === 'pentecostarion' ? 'Festal (Pentecostarion)'
+    : typicaProkSource === 'menaion_festal' ? 'Festal (Menaion)'
+    : typicaProkSource === 'saturday' ? 'Saturday — two prokeimena (All Saints + Departed)'
+    : 'Weekday daily table';
+
+  if (!open) {
+    return (
+      <button style={badgeStyle} onClick={() => setOpen(true)}
+        title="How is this Typica prokeimenon determined?">
+        Tone source ▾
+      </button>
+    );
+  }
+
+  return (
+    <span style={{ display: 'inline-block', verticalAlign: 'top', position: 'relative' }}>
+      <button style={{ ...badgeStyle, background: 'rgba(139,105,20,0.25)' }}
+        onClick={() => setOpen(false)}>Tone source ▴</button>
+      <div style={{
+        position: 'absolute', zIndex: 100, marginTop: '4px',
+        background: '#FAF6EE', border: '1px solid #D4C49A', borderRadius: '5px',
+        padding: '0.9rem 1rem 1rem', width: '360px', maxWidth: '90vw',
+        boxShadow: '0 3px 12px rgba(0,0,0,0.12)',
+        fontSize: '0.8rem', lineHeight: '1.65', color: '#2C1F0A',
+        fontFamily: 'Georgia, serif',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between',
+          alignItems: 'baseline', marginBottom: '0.5rem' }}>
+          <span style={{ fontSize: '0.68rem', letterSpacing: '0.14em',
+            textTransform: 'uppercase', color: '#8B6914', fontWeight: 'bold' }}>
+            Typica Prokeimenon — Explained
+          </span>
+          <span onClick={() => setOpen(false)}
+            style={{ cursor: 'pointer', color: '#9A8A70', fontSize: '0.8rem', marginLeft: '8px' }}>×</span>
+        </div>
+
+        {/* Active source */}
+        <div style={{ background: 'rgba(139,105,20,0.07)', borderLeft: '3px solid #8B6914',
+          padding: '0.4rem 0.6rem', borderRadius: '0 3px 3px 0', marginBottom: '0.75rem' }}>
+          <strong>Active source:</strong> {sourceLabel}
+          {typicaProkSource === 'sunday' && (
+            <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
+              Sunday uses the <strong>resurrectional prokeimenon keyed by the weekly Octoechos
+              tone (Tone {typicaTone})</strong> — from the St. Sergius Sunday Octoechos.
+              Note: the Menaion festal prokeimenon is suppressed on Sundays — the resurrectional governs.
+            </div>
+          )}
+          {typicaProkSource === 'saturday' && (
+            <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
+              Saturday Typica has <strong>two prokeimena</strong>: first for All Saints (Tone 8),
+              then for the Departed (Tone 6). — HTM daily file
+            </div>
+          )}
+          {typicaProkSource === 'menaion_festal' && (
+            <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
+              This <strong>{typicaRank}</strong> saint appoints a proper festal prokeimenon
+              from the Menaion, which <em>appends</em> after the weekday daily entry
+              (both are sung). — Fekula §2E–§2F
+            </div>
+          )}
+          {typicaProkSource === 'pentecostarion' && (
+            <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
+              This Pentecostarion feast appoints its own prokeimenon, overriding the daily table. — Fekula §4B
+            </div>
+          )}
+          {typicaProkSource === 'weekday' && (
+            <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
+              No feast overrides — the fixed Typica prokeimenon for this day of the week applies.
+              At §2E/§2F rank, a second festal prokeimenon is appended after this one.
+            </div>
+          )}
+        </div>
+
+        {/* Priority order — note Typica differs from Vespers */}
+        <div style={{ marginBottom: '0.75rem', fontSize: '0.78rem' }}>
+          <strong>Priority order (Typica differs from Vespers):</strong>
+          <ol style={{ margin: '4px 0 0 1rem', padding: 0, color: '#3D3020' }}>
+            <li>Pentecostarion feast prokeimenon</li>
+            <li>Sunday resurrectional (Octoechos, keyed by <em>tone</em>, not day-of-week)</li>
+            <li>Weekday daily table + Menaion festal appended after at §2E/§2F rank</li>
+          </ol>
+          <div style={{ fontSize: '0.75rem', color: '#9A8A70', marginTop: '4px' }}>
+            Note: Vespers uses day-of-week for ordinary prokeimena; Typica uses Octoechos tone
+            on Sundays. The tables themselves differ — different tones and texts.
+          </div>
+        </div>
+
+        {/* Weekday table */}
+        <div style={{ fontSize: '0.75rem', color: '#5C4A1E', marginBottom: '0.4rem', fontWeight: 'bold' }}>
+          Typica weekday prokeimenon table (HTM Horologion):
+        </div>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.77rem' }}>
+          <thead>
+            <tr style={{ borderBottom: '1px solid #D4C49A' }}>
+              {['Day','Tone','Prokeimenon','Override'].map(h => (
+                <th key={h} style={{
+                  textAlign: h === 'Tone' ? 'center' : 'left',
+                  padding: '2px 6px 3px ' + (h === 'Day' ? '0' : ''),
+                  color: '#8B6914', fontWeight: 'bold', fontSize: '0.7rem',
+                  letterSpacing: '0.08em', textTransform: 'uppercase' }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {TYPICA_PROK_TABLE_DATA.map((row, i) => {
+              const dow = i + 1;
+              const isActive = typicaProkDow === dow &&
+                (typicaProkSource === 'weekday' || typicaProkSource === 'menaion_festal' || typicaProkSource === 'saturday');
+              return (
+                <tr key={i} style={{
+                  background: isActive ? 'rgba(139,105,20,0.1)' : 'transparent',
+                  borderBottom: '1px solid #EDE5D0',
+                }}>
+                  <td style={{ padding: '3px 6px 3px 0', color: '#3D3020' }}>{row.day}</td>
+                  <td style={{ padding: '3px 6px', textAlign: 'center',
+                    color: '#8B6914', fontWeight: 'bold' }}>{row.tone}</td>
+                  <td style={{ padding: '3px 0 3px 6px', color: '#5C4A1E', fontStyle: 'italic' }}>
+                    {row.text}{row.label ? <span style={{ color: '#9A8A70' }}> ({row.label})</span> : null}
+                  </td>
+                  <td style={{ padding: '3px 0 3px 8px', fontSize: '0.7rem', minWidth: '60px' }}>
+                    {isActive && typicaProkSource === 'menaion_festal'
+                      ? <span style={{ color: '#8B6914', fontWeight: 'bold' }}>+ festal appended</span>
+                      : isActive
+                      ? <span style={{ color: '#2D6A2E' }}>← active</span>
+                      : null}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        <div style={{ fontSize: '0.72rem', color: '#9A8A70', marginTop: '0.5rem' }}>
+          Sunday prokeimenon (not in table): Octoechos resurrectional, keyed by weekly tone 1–8.
+          Source: HTM Horologion (Jordanville, 1994); St. Sergius Sunday Octoechos.
         </div>
       </div>
     </span>
@@ -8348,7 +8551,7 @@ function AlleluiaExplainer({ alleluiaSource, alleluiaDow, alleluiaRank, alleluia
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.77rem' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid #D4C49A' }}>
-              {['Day','Tone','Verse'].map(h => (
+              {['Day','Tone','Verse','Override'].map(h => (
                 <th key={h} style={{ textAlign: h === 'Tone' ? 'center' : 'left',
                   padding: '2px 6px 3px ' + (h === 'Day' ? '0' : ''),
                   color: '#8B6914', fontWeight: 'bold', fontSize: '0.7rem',
@@ -8359,7 +8562,7 @@ function AlleluiaExplainer({ alleluiaSource, alleluiaDow, alleluiaRank, alleluia
           <tbody>
             {WEEKDAY_ALLELUIA_TABLE.map((row, i) => {
               const dow = i + 1; // 1=Mon … 6=Sat
-              const isActive = alleluiaSource === 'weekly' && alleluiaDow === dow;
+              const isActive = alleluiaDow === dow && (alleluiaSource === 'weekly' || alleluiaSource === 'menaion_festal');
               return (
                 <tr key={i} style={{
                   background: isActive ? 'rgba(139,105,20,0.1)' : 'transparent',
@@ -8370,6 +8573,16 @@ function AlleluiaExplainer({ alleluiaSource, alleluiaDow, alleluiaRank, alleluia
                     color: '#8B6914', fontWeight: 'bold' }}>{row.tone}</td>
                   <td style={{ padding: '3px 0 3px 6px', color: '#5C4A1E',
                     fontStyle: 'italic' }}>{row.verse}</td>
+                  <td style={{ padding: '3px 0 3px 8px', fontSize: '0.7rem',
+                    color: '#9A8A70', minWidth: '60px' }}>
+                    {isActive && alleluiaSource === 'menaion_festal'
+                      ? <span style={{ color: '#8B6914', fontWeight: 'bold' }}>← overridden by Menaion festal</span>
+                      : isActive && alleluiaSource === 'pentecostarion'
+                      ? <span style={{ color: '#8B6914', fontWeight: 'bold' }}>← overridden by Pentecostarion</span>
+                      : isActive
+                      ? <span style={{ color: '#2D6A2E' }}>← active</span>
+                      : null}
+                  </td>
                 </tr>
               );
             })}
