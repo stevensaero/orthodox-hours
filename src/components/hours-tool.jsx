@@ -6776,26 +6776,40 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
             </div>
           );
         }
-        return element.text
-          ? (element.scriptureHref
-              ? <a href={element.scriptureHref} style={{ ...bodyStyle, display: 'block',
-                  textDecoration: 'none', cursor: 'pointer',
-                  borderBottom: '1px dashed rgba(139,105,20,0.35)',
-                  transition: 'background 0.1s' }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(139,105,20,0.08)'}
-                  onMouseLeave={e => e.currentTarget.style.background = isMovable ? 'rgba(139,105,20,0.04)' : 'transparent'}
-                >{element.text}</a>
-              : element.kathismaNum
-              ? <a href={element.psalterHref || `/orthodox-hours/psalter?kathisma=${element.kathismaNum}`}
-                  style={{ ...bodyStyle, display: 'block',
-                    textDecoration: 'none', cursor: 'pointer',
-                    borderBottom: '1px dashed rgba(139,105,20,0.35)',
-                    transition: 'background 0.1s' }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(139,105,20,0.08)'}
-                  onMouseLeave={e => e.currentTarget.style.background = isMovable ? 'rgba(139,105,20,0.04)' : 'transparent'}
-                >{element.text}</a>
-              : <div style={bodyStyle}>{element.text}</div>)
-          : null;
+        if (!element.text) return null;
+
+        // Scripture/psalter: render the card body as normal text, but
+        // wrap just the reference text (last line / first line) in a gold link.
+        // This matches the liturgical context window treatment — the card stays
+        // inert; only the ref text itself is tappable.
+        const linkHref = element.scriptureHref || (element.kathismaNum
+          ? (element.psalterHref || `/orthodox-hours/psalter?kathisma=${element.kathismaNum}`)
+          : null);
+
+        if (linkHref) {
+          // Split into intro line(s) and the reference line.
+          // Pattern: "The reading is from X.\n\nRef 1:2-3" or just "Matthew 6:31"
+          const lines = element.text.split('\n').filter(l => l.trim());
+          const lastLine = lines[lines.length - 1];
+          const introLines = lines.slice(0, -1);
+          return (
+            <div style={bodyStyle}>
+              {introLines.map((l, i) => (
+                <div key={i} style={{ marginBottom: introLines.length > 1 ? '0.2rem' : 0 }}>{l}</div>
+              ))}
+              <a href={linkHref} style={{
+                color: '#8B6914',
+                textDecoration: 'underline',
+                textDecorationStyle: 'dotted',
+                textDecorationColor: 'rgba(139,105,20,0.5)',
+                cursor: 'pointer',
+                fontFamily: 'Georgia, serif',
+              }}>{lastLine}</a>
+            </div>
+          );
+        }
+
+        return <div style={bodyStyle}>{element.text}</div>;
       })()}
 
       {/* ── Post-communion T/K block ── */}
