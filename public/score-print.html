@@ -6,7 +6,7 @@
 <title>Score — Orthodox Hours</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: Georgia, 'Times New Roman', serif; background: #f5f0e8; color: #2a2118; }
+  body { font-family: Georgia, 'Times New Roman', serif; background: white; color: #2a2118; }
   #waiting {
     display: flex; flex-direction: column; align-items: center;
     justify-content: center; min-height: 100vh; gap: 1rem;
@@ -25,20 +25,22 @@
   }
   #toolbar button:hover { background: rgba(214,199,159,.15); }
   #toolbar .src { font-style: italic; color: #9a8a6a; font-size: 0.72rem; }
-  #score-wrapper { display: none; padding: 0.75rem 2rem 2rem; max-width: 900px; margin: 0 auto; }
+  #score-wrapper { display: none; padding: 0.3rem 2rem 2rem; max-width: 900px; margin: 0 auto; }
   #score-wrapper h1 { font-size: 1.5rem; font-weight: normal; letter-spacing: 0.06em; margin-bottom: 0.1rem; text-align: center; }
-  #score-wrapper .sub { font-size: 0.72rem; color: #6b5942; text-align: center; margin-bottom: 0.4rem; font-style: italic; }
+  #score-wrapper .sub { font-size: 0.72rem; color: #6b5942; text-align: center; margin-bottom: 0.15rem; font-style: italic; }
   #score-canvas { overflow-x: auto; }
   /* Ensure VexFlow barline rects render black */
   .vf-stavebarline rect { fill: black !important; }
   #score-canvas svg { width: 780px; height: auto; display: block; }
 
   @media print {
-    body { background: white; }
-    #toolbar, #waiting { display: none !important; }
-    #score-wrapper { display: block !important; padding: 0.2in 0.4in 0.4in; max-width: none; }
+    body { background: white; margin: 0; padding: 0; }
+    #toolbar { display: none !important; height: 0 !important; overflow: hidden !important; }
+    #waiting { display: none !important; }
+    #score-wrapper { display: block !important; padding: 0.15in 0.4in 0.4in; max-width: none;
+      page-break-before: avoid; break-before: avoid; }
     #score-canvas svg { width: 7.5in !important; height: auto !important; }
-    @page { size: letter portrait; margin: 0.4in; }
+    @page { size: letter portrait; margin: 0.5in; }
   }
 </style>
 </head>
@@ -344,22 +346,27 @@ function renderScore(payload) {
         }
         lyricPrev = r2;
       }
-      // Append // marker in lyric row after last note for penultimate lines
-      if (barlineAfter === 'penultimate' && aN.length > 0) {
-        var lastX = aN[aN.length - 1].getAbsoluteX() + NOTE_W * 0.6;
-        var slashTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        slashTxt.setAttribute('x', lastX);
-        slashTxt.setAttribute('y', lyricY);
-        slashTxt.setAttribute('font-family', 'Georgia, serif');
-        slashTxt.setAttribute('font-size', '16');
-        slashTxt.setAttribute('font-weight', 'normal');
-        slashTxt.setAttribute('font-style', 'italic');
-        slashTxt.setAttribute('text-anchor', 'middle');
-        slashTxt.setAttribute('dominant-baseline', 'middle');
-        slashTxt.setAttribute('fill', '#2a2118');
-        slashTxt.textContent = '//';
-        svgEl.appendChild(slashTxt);
-      }
+    }
+
+    // // penultimate marker — drawn in lyric row regardless of grand/solo
+    if (barlineAfter === 'penultimate' && aN.length > 0) {
+      var penultLyricY = grand
+        ? (tr.getYForLine(4) + bs.getYForLine(0)) / 2
+        : sy + TY + TH + 20;
+      var svgElP = wrap.querySelector('svg');
+      var lastX = aN[aN.length - 1].getAbsoluteX() + NOTE_W * 0.6;
+      var slashTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      slashTxt.setAttribute('x', lastX);
+      slashTxt.setAttribute('y', penultLyricY);
+      slashTxt.setAttribute('font-family', 'Georgia, serif');
+      slashTxt.setAttribute('font-size', '16');
+      slashTxt.setAttribute('font-weight', 'normal');
+      slashTxt.setAttribute('font-style', 'italic');
+      slashTxt.setAttribute('text-anchor', 'middle');
+      slashTxt.setAttribute('dominant-baseline', 'middle');
+      slashTxt.setAttribute('fill', '#2a2118');
+      slashTxt.textContent = '//';
+      svgElP.appendChild(slashTxt);
     }
 
     // Grand staff connectors
