@@ -3035,8 +3035,22 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   const dow = dowMap[dayName] !== undefined ? dowMap[dayName] : 0;
   const isFriEve = dow === 5; // Friday evening: Both Now = dogmatikon, not theotokion
   const weeklyProk = WEEKLY_VESPERS_PROKEIMENON[dow];
+  // Festal prokeimenon override: Menaion polyeleos/vigil saints have their own prokeimenon
+  // that replaces the weekly table entry (including the Saturday Great Prokeimenon).
+  // Source: Fekula §2E–§2F; HTM Vespers.
+  const menaionProk = (menaionEntry && menaionEntry.prokeimenon_text &&
+    (rank === 'polyeleos' || rank === 'vigil'))
+    ? { tone: menaionEntry.prokeimenon_tone, text: menaionEntry.prokeimenon_text,
+        verses: menaionEntry.prokeimenon_stichos ? [menaionEntry.prokeimenon_stichos] : [] }
+    : null;
   const vespProk = (isPentecostarion && pentEntry && pentEntry.vespers_prokeimenon)
-    ? pentEntry.vespers_prokeimenon : weeklyProk;
+    ? pentEntry.vespers_prokeimenon
+    : (menaionProk || weeklyProk);
+  // Track prokeimenon source for the explainer badge
+  const prokSource = (isPentecostarion && pentEntry && pentEntry.vespers_prokeimenon) ? 'pentecostarion'
+    : menaionProk ? 'menaion_festal'
+    : dow === 6 ? 'saturday_great'
+    : 'weekly';
   // Troparion / kontakion — same resolution as assembleHour
   // Troparion objects are { tone, text } — extract text and tone separately
   const mTropObj = menaionEntry && menaionEntry.troparion;
@@ -3655,13 +3669,20 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     : "Wisdom! The Prokeimenon.";
   const prokNote = isGreatProk
     ? "Great Prokeimenon: the deacon/priest announces the tone and text; the choir sings, then the deacon reads each verse and the choir repeats the prokeimenon after each (sung 4 times total). Served at Great Vespers on Saturday evenings and on the eves of certain Great Feasts. — OCA Office of Vespers (2021); HTM Vespers; Fekula §2"
-    : "Daily Prokeimenon: the deacon/priest announces the tone and text; the choir sings it twice, then the deacon reads the verse, then the choir sings it once more (3 times total). — OCA Office of Vespers (2021); HTM Vespers; Fekula §2";
+    : prokSource === 'menaion_festal'
+      ? "Festal Prokeimenon: this saint's Polyeleos or Vigil rank appoints a proper prokeimenon from the Menaion, which replaces the ordinary weekly prokeimenon (and the Saturday Great Prokeimenon if applicable). — Fekula §2E–§2F"
+      : "Daily Prokeimenon: the deacon/priest announces the tone and text; the choir sings it twice, then the deacon reads the verse, then the choir sings it once more (3 times total). — OCA Office of Vespers (2021); HTM Vespers; Fekula §2";
   elements.push({id:"v-prok",type:"prokeimenon",
     label:"Prokeimenon" + (isGreatProk ? " (Great)" : "") + " · Tone " + (vespProk ? vespProk.tone : ""),
     announcement: prokAnnouncement,
     exchanges: _buildProkExchanges(),
     readerMode: readerMode,
-    source:(isPentecostarion && pentEntry && pentEntry.vespers_prokeimenon) ? "Pentecostarion" : "HTM Vespers — daily",
+    prokSource: prokSource,
+    prokDow: dow,
+    prokRank: rank,
+    source:(isPentecostarion && pentEntry && pentEntry.vespers_prokeimenon) ? "Pentecostarion"
+      : menaionProk ? "Menaion · " + (menaionEntry.saint || "feast")
+      : "HTM Vespers — daily",
     fekula:{section:fekulaSection, note:prokNote}});
   // 10. OT LESSONS (§2E / §2F only)
   if (paroemias && paroemias.length > 0) {
@@ -6479,6 +6500,13 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
           {element.fekula && (
             <FekulaBadge section={element.fekula.section} note={element.fekula.note} />
           )}
+          {element.prokSource && (
+            <ProkeimenonExplainer
+              prokSource={element.prokSource}
+              prokDow={element.prokDow}
+              prokRank={element.prokRank}
+            />
+          )}
         </div>
         {/* Announcement — Deacon/Priest in normal mode; Reader (no Wisdom!) in reader mode */}
         {element.announcement && (
@@ -7264,6 +7292,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.7.6",
+    date: "June 2026",
+    summary: "Prokeimenon gap fix + ⓘ explainer badge with tone source and weekly table",
+    items: [
+      "fix: Vespers prokeimenon now correctly overrides the weekly table (including the Saturday Great Prokeimenon) when a Polyeleos §2E or Vigil §2F Menaion saint has an appointed festal prokeimenon. Previously menaionEntry.prokeimenon_text was never consulted in assembleVespers. — Fekula §2E–§2F",
+      "feat: ProkeimenonExplainer ⓘ badge appears next to the Fekula badge on the Prokeimenon element. Shows: active source with explanation, priority resolution order (Pentecostarion → Menaion festal → Saturday Great → weekly table), and full weekly tone table with the active row highlighted.",
+      "feat: prokSource field on prokeimenon elements — 'weekly', 'saturday_great', 'menaion_festal', 'pentecostarion'. Saturday Great → festal override rule documented inline.",
+    ],
+  },
+  {
     version: "v0.7.5",
     date: "June 2026",
     summary: "Remove service navigation buttons — service dropdown is sufficient",
@@ -7977,6 +8015,156 @@ const VESPERS_PAROEMIA_CASES = {
     suppressed: null,
   },
 };
+
+// ─── PROKEIMENON EXPLAINER ────────────────────────────────────────────────────
+// ⓘ badge that surfaces how the current prokeimenon tone was selected.
+// Rendered inline with the Fekula badge in the prokeimenon ServiceBlock.
+
+const WEEKLY_PROK_TABLE = [
+  { day: "Sunday eve",  tone: 8, text: "Behold now, bless ye the Lord…" },
+  { day: "Monday",      tone: 4, text: "The Lord will hearken unto me…" },
+  { day: "Tuesday",     tone: 1, text: "Thy mercy, O Lord, shall pursue me…" },
+  { day: "Wednesday",   tone: 5, text: "O God, in Thy name save me…" },
+  { day: "Thursday",    tone: 6, text: "My help cometh from the Lord…" },
+  { day: "Friday",      tone: 7, text: "O God, my helper art Thou…" },
+  { day: "Saturday",    tone: 6, text: "The Lord is King, He is clothed with majesty…", great: true },
+];
+
+function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
+  const [open, setOpen] = React.useState(false);
+
+  const iconStyle = {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    width: '15px', height: '15px', borderRadius: '50%',
+    border: '1px solid #8B6914', color: '#8B6914',
+    fontSize: '9px', fontWeight: 'bold', fontFamily: 'Georgia, serif',
+    cursor: 'pointer', userSelect: 'none', flexShrink: 0,
+    marginLeft: '5px', verticalAlign: 'middle',
+  };
+
+  const sourceLabel = prokSource === 'saturday_great' ? 'Saturday Great Prokeimenon'
+    : prokSource === 'menaion_festal' ? 'Festal (Menaion)'
+    : prokSource === 'pentecostarion' ? 'Festal (Pentecostarion)'
+    : 'Weekly daily table';
+
+  if (!open) {
+    return (
+      <span style={iconStyle} onClick={() => setOpen(true)} title="How is this prokeimenon tone determined?">ⓘ</span>
+    );
+  }
+
+  return (
+    <span style={{ display: 'inline-block', verticalAlign: 'top', marginLeft: '6px' }}>
+      <span style={{ ...iconStyle, background: 'rgba(139,105,20,0.12)' }}
+        onClick={() => setOpen(false)}>ⓘ</span>
+      <div style={{
+        position: 'absolute', zIndex: 100, marginTop: '4px',
+        background: '#FAF6EE', border: '1px solid #D4C49A', borderRadius: '5px',
+        padding: '0.9rem 1rem 1rem', width: '340px', maxWidth: '90vw',
+        boxShadow: '0 3px 12px rgba(0,0,0,0.12)',
+        fontSize: '0.8rem', lineHeight: '1.65', color: '#2C1F0A',
+        fontFamily: 'Georgia, serif',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between',
+          alignItems: 'baseline', marginBottom: '0.5rem' }}>
+          <span style={{ fontSize: '0.68rem', letterSpacing: '0.14em',
+            textTransform: 'uppercase', color: '#8B6914', fontWeight: 'bold' }}>
+            Prokeimenon Tone — How Determined
+          </span>
+          <span onClick={() => setOpen(false)}
+            style={{ cursor: 'pointer', color: '#9A8A70', fontSize: '0.8rem',
+              marginLeft: '8px' }}>×</span>
+        </div>
+
+        {/* Current source */}
+        <div style={{ background: 'rgba(139,105,20,0.07)', borderLeft: '3px solid #8B6914',
+          padding: '0.4rem 0.6rem', borderRadius: '0 3px 3px 0', marginBottom: '0.75rem' }}>
+          <strong>Active source:</strong> {sourceLabel}
+          {prokSource === 'menaion_festal' && (
+            <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
+              This saint's <strong>{prokRank}</strong> rank appoints a proper festal prokeimenon
+              from the Menaion, which overrides the weekly table — including the Saturday Great
+              Prokeimenon when serving falls on a Saturday evening. — Fekula §2E–§2F
+            </div>
+          )}
+          {prokSource === 'saturday_great' && (
+            <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
+              Saturday evening always uses the <strong>Great Prokeimenon in Tone 6</strong> (3 verses,
+              sung 4×). Replaced by a festal prokeimenon when a Polyeleos or Vigil saint is commemorated.
+              — HTM Vespers; Fekula §2
+            </div>
+          )}
+          {prokSource === 'pentecostarion' && (
+            <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
+              This Pentecostarion feast appoints its own prokeimenon, overriding the weekly table.
+              — Fekula §4B
+            </div>
+          )}
+          {prokSource === 'weekly' && (
+            <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
+              No feast overrides the ordinary table — the tone for this day of the week applies.
+            </div>
+          )}
+        </div>
+
+        {/* Resolution priority */}
+        <div style={{ marginBottom: '0.75rem', fontSize: '0.78rem' }}>
+          <strong>Priority order:</strong>
+          <ol style={{ margin: '4px 0 0 1rem', padding: 0, color: '#3D3020' }}>
+            <li>Pentecostarion feast prokeimenon (when in Pentecostarion season)</li>
+            <li>Menaion festal prokeimenon — Polyeleos §2E or Vigil §2F rank</li>
+            <li>Saturday Great Prokeimenon (Tone 6, 3 verses) — Saturday evening</li>
+            <li>Weekly daily table — keyed by day of week</li>
+          </ol>
+        </div>
+
+        {/* Weekly table */}
+        <div style={{ fontSize: '0.75rem', color: '#5C4A1E', marginBottom: '0.4rem',
+          fontWeight: 'bold' }}>
+          Weekly daily table (HTM Horologion):
+        </div>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.77rem' }}>
+          <thead>
+            <tr style={{ borderBottom: '1px solid #D4C49A' }}>
+              <th style={{ textAlign: 'left', padding: '2px 6px 3px 0',
+                color: '#8B6914', fontWeight: 'bold', fontSize: '0.7rem',
+                letterSpacing: '0.08em', textTransform: 'uppercase' }}>Day</th>
+              <th style={{ textAlign: 'center', padding: '2px 6px 3px',
+                color: '#8B6914', fontWeight: 'bold', fontSize: '0.7rem',
+                letterSpacing: '0.08em', textTransform: 'uppercase' }}>Tone</th>
+              <th style={{ textAlign: 'left', padding: '2px 0 3px 6px',
+                color: '#8B6914', fontWeight: 'bold', fontSize: '0.7rem',
+                letterSpacing: '0.08em', textTransform: 'uppercase' }}>Prokeimenon</th>
+            </tr>
+          </thead>
+          <tbody>
+            {WEEKLY_PROK_TABLE.map((row, i) => (
+              <tr key={i} style={{
+                background: (prokSource === 'weekly' || prokSource === 'saturday_great')
+                  && ((row.day === 'Saturday' && prokDow === 6) ||
+                      (row.day !== 'Saturday' && i === prokDow))
+                  ? 'rgba(139,105,20,0.1)' : 'transparent',
+                borderBottom: '1px solid #EDE5D0',
+              }}>
+                <td style={{ padding: '3px 6px 3px 0', color: '#3D3020' }}>
+                  {row.day}{row.great ? ' ★' : ''}
+                </td>
+                <td style={{ padding: '3px 6px', textAlign: 'center',
+                  color: '#8B6914', fontWeight: 'bold' }}>{row.tone}</td>
+                <td style={{ padding: '3px 0 3px 6px', color: '#5C4A1E',
+                  fontStyle: 'italic' }}>{row.text}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div style={{ fontSize: '0.72rem', color: '#9A8A70', marginTop: '0.5rem' }}>
+          ★ Great Prokeimenon — 3 verses, sung 4×. Overridden by festal prokeimenon at Polyeleos/Vigil rank.
+          Source: HTM Horologion (Jordanville, 1994); OCA Office of Vespers (2021).
+        </div>
+      </div>
+    </span>
+  );
+}
 
 function VespersLessonsExplainer({ rank, pentEntry, isPentecostarion, feastPeriod, paroemias }) {
   const [open, setOpen] = React.useState(false);
