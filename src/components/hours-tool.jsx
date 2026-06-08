@@ -8805,13 +8805,13 @@ export default function App() {
             style={{
               display: "flex", alignItems: "center",
               background: contextOpen ? "rgba(139,105,20,0.08)" : "transparent",
-              border: "1px solid #C4A84A", borderRadius: "4px",
               padding: "4px 10px 4px 12px",
               cursor: "pointer", userSelect: "none",
             }}
           >
-            {/* Left: Day · Tone */}
-            <span style={{ fontSize: "0.8rem", color: "#5C4A1E", flexShrink: 0, minWidth: "120px" }}>
+            {/* Left: Day · Tone — hidden when expanded (data visible in context body) */}
+            <span style={{ fontSize: "0.8rem", color: "#5C4A1E", flexShrink: 0,
+              minWidth: "120px", visibility: contextOpen ? "hidden" : "visible" }}>
               {liturgicalData.dayName} · Tone {liturgicalData.tone}
             </span>
 
