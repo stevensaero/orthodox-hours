@@ -236,7 +236,7 @@ function renderScore(payload) {
     // Solo treble: just below the stave bottom.
     // Uses direct SVG text injection to bypass VexFlow SVGContext font/position quirks.
     var lyricY = grand
-      ? sy + TY + TH + LYRIC_GAP / 2 + 5
+      ? sy + TY + TH + LYRIC_GAP * 0.65 + 5
       : sy + TY + TH + 20;
     var svgEl = wrap.querySelector('svg');
     var lyricPrev = null;
