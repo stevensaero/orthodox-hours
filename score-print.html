@@ -50,15 +50,13 @@
       display: block;
       margin: 0;
       padding: 0;
+      overflow: visible !important;
     }
     #score-canvas svg {
       display: block;
-      width: 7.5in !important;
+      width: 100% !important;
       height: auto !important;
-      page-break-before: avoid;
-      break-before: avoid;
-      page-break-inside: avoid;
-      break-inside: avoid;
+      max-width: 100% !important;
     }
   }
 </style>
@@ -440,8 +438,15 @@ function showScore(p) {
 
   // Load fonts THEN render — guarantees Bravura is available for VexFlow
   loadFonts(function() {
-    try { renderScore(p); }
-    catch(err) {
+    try {
+      renderScore(p);
+      // Strip VexFlow's inline width/height so print CSS (width:100%, height:auto) takes over
+      var svgEl = document.querySelector('#score-canvas svg');
+      if (svgEl) {
+        svgEl.style.width = '';
+        svgEl.style.height = '';
+      }
+    } catch(err) {
       document.getElementById('score-canvas').innerHTML =
         '<p style="color:#7a2418;padding:1rem;font-style:italic;">Render error: ' + err.message + '</p>';
       console.error(err);
