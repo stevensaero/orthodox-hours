@@ -229,7 +229,7 @@ function renderScore(payload) {
     }
 
     var altoVoice = mkVoice(aN);
-    new VF.Formatter().joinVoices([altoVoice]).format([altoVoice], SW * 0.5);
+    new VF.Formatter().joinVoices([altoVoice]).format([altoVoice], SW * 0.6);
     altoVoice.draw(ctx, tr);
 
     // Draw lyrics — solo treble only (grand staff lyrics drawn after bass stave below)
@@ -245,7 +245,7 @@ function renderScore(payload) {
           txt.setAttribute('x', aN[ai2].getAbsoluteX());
           txt.setAttribute('y', lyricY);
           txt.setAttribute('font-family', 'Georgia, serif');
-          txt.setAttribute('font-size', '13');
+          txt.setAttribute('font-size', '16');
           txt.setAttribute('font-weight', 'normal');
           txt.setAttribute('text-anchor', 'middle');
           txt.setAttribute('dominant-baseline', 'middle');
@@ -285,7 +285,7 @@ function renderScore(payload) {
         bN.push(mkNote(bassVFPitch(br.pitch, br.octaveDiv, cfg), br.durKey, -1, 'bass'));
       }
       var bassVoice = mkVoice(bN);
-      new VF.Formatter().joinVoices([bassVoice]).format([bassVoice], SW * 0.5);
+      new VF.Formatter().joinVoices([bassVoice]).format([bassVoice], SW * 0.6);
       bassVoice.draw(ctx, bs);
     }
 
@@ -307,7 +307,7 @@ function renderScore(payload) {
           txt.setAttribute('x', aN[ai2].getAbsoluteX());
           txt.setAttribute('y', lyricY);
           txt.setAttribute('font-family', 'Georgia, serif');
-          txt.setAttribute('font-size', '13');
+          txt.setAttribute('font-size', '16');
           txt.setAttribute('font-weight', 'normal');
           txt.setAttribute('text-anchor', 'middle');
           txt.setAttribute('dominant-baseline', 'middle');
