@@ -8848,18 +8848,16 @@ export default function App() {
               </button>
             </div>
           </div>{/* end row two */}
-        </div>{/* end maxWidth inner wrapper */}
 
-        {/* ── LITURGICAL CONTEXT BODY — attached to sticky bar ── */}
-        {contextOpen && (
-          <div style={{
-            borderTop: "1px solid #C4A84A",
-            background: "#EDE5D0",
-            padding: "0.75rem 2rem 1rem",
-            fontSize: "0.85rem", lineHeight: "1.7",
-          }}>
-          <div style={{ maxWidth: "720px", margin: "0 auto" }}>
-          <div>
+          {/* ── LITURGICAL CONTEXT BODY — inside maxWidth wrapper, aligns with rows ── */}
+          {contextOpen && (
+            <div style={{
+              borderTop: "1px solid #C4A84A",
+              paddingTop: "0.75rem",
+              paddingBottom: "0.5rem",
+              fontSize: "0.85rem", lineHeight: "1.7",
+            }}>
+            <div>
             <strong>Date:</strong> {dayLabel}
             {liturgicalData.paschaOffset >= -101 && liturgicalData.paschaOffset <= 263 && (
               <span style={{ fontSize: "0.72rem", color: "#9A8A70", marginLeft: "0.5rem", fontStyle: "italic" }}>
@@ -9037,8 +9035,8 @@ export default function App() {
             </div>
           )}
           </div>
-          </div>
-        )}
+          )}
+        </div>{/* end maxWidth inner wrapper */}
       </div>{/* end controls sticky bar */}
 
       <div style={{ maxWidth: '800px', margin: '0 auto', padding: '1.5rem 1rem 1.5rem 0',
