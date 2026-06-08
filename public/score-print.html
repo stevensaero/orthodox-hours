@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap" rel="stylesheet">
 <title>Score — Orthodox Hours</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: white; color: #2a2118; }
+  body { font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif; background: white; color: #2a2118; }
   #waiting {
     display: flex; flex-direction: column; align-items: center;
     justify-content: center; gap: 1rem;
@@ -20,7 +22,7 @@
   }
   #toolbar button {
     background: transparent; border: 1px solid #d6c79f; color: #d6c79f;
-    border-radius: 3px; padding: 4px 14px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    border-radius: 3px; padding: 4px 14px; font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 0.78rem; letter-spacing: 0.08em; cursor: pointer;
   }
   #toolbar button:hover { background: rgba(214,199,159,.15); }
@@ -241,9 +243,9 @@ function renderScore(payload) {
   }
 
   // Page 1: prepend title + subtitle inside the first score-page div
-  var titleHTML = '<h1 style="font-size:1.8rem;font-weight:300;letter-spacing:0.04em;text-align:center;margin:0 0 0.1rem 0;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;">' +
+  var titleHTML = '<h1 style="font-size:1.8rem;font-weight:300;letter-spacing:0.04em;text-align:center;margin:0 0 0.1rem 0;font-family:Inter, Helvetica Neue, Helvetica, Arial, sans-serif;">' +
     (payload.title || '') + '</h1>' +
-    '<div style="font-size:0.72rem;color:#6b5942;text-align:center;margin-bottom:0.3rem;font-style:italic;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;">' +
+    '<div style="font-size:0.72rem;color:#6b5942;text-align:center;margin-bottom:0.3rem;font-style:italic;font-family:Inter, Helvetica Neue, Helvetica, Arial, sans-serif;">' +
     (payload.subtitle || '') + '</div>';
 
   chunks.forEach(function(chunkLines, chunkIdx) {
@@ -313,9 +315,9 @@ function renderScore(payload) {
           var txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
           txt.setAttribute('x', aN[ai2].getAbsoluteX());
           txt.setAttribute('y', lyricY);
-          txt.setAttribute('font-family', 'Helvetica Neue, Helvetica, Arial, sans-serif');
+          txt.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
           txt.setAttribute('font-size', '16');
-          txt.setAttribute('font-weight', r2.accent ? 'bold' : 'normal');
+          txt.setAttribute('font-weight', r2.accent ? '600' : '300');
           txt.setAttribute('text-anchor', 'middle');
           txt.setAttribute('dominant-baseline', 'middle');
           txt.setAttribute('fill', '#1a1008');
@@ -357,7 +359,7 @@ function renderScore(payload) {
       var soloSlash = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       soloSlash.setAttribute('x', soloLastX);
       soloSlash.setAttribute('y', soloLyricY);
-      soloSlash.setAttribute('font-family', 'Helvetica Neue, Helvetica, Arial, sans-serif');
+      soloSlash.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
       soloSlash.setAttribute('font-size', '16');
       soloSlash.setAttribute('font-weight', 'normal');
       soloSlash.setAttribute('font-style', 'italic');
@@ -405,9 +407,9 @@ function renderScore(payload) {
           var txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
           txt.setAttribute('x', aN[ai2].getAbsoluteX());
           txt.setAttribute('y', lyricY);
-          txt.setAttribute('font-family', 'Helvetica Neue, Helvetica, Arial, sans-serif');
+          txt.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
           txt.setAttribute('font-size', '16');
-          txt.setAttribute('font-weight', r2.accent ? 'bold' : 'normal');
+          txt.setAttribute('font-weight', r2.accent ? '600' : '300');
           txt.setAttribute('text-anchor', 'middle');
           txt.setAttribute('dominant-baseline', 'middle');
           txt.setAttribute('fill', '#1a1008');
@@ -438,7 +440,7 @@ function renderScore(payload) {
       var slashTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       slashTxt.setAttribute('x', lastX);
       slashTxt.setAttribute('y', penultLyricY);
-      slashTxt.setAttribute('font-family', 'Helvetica Neue, Helvetica, Arial, sans-serif');
+      slashTxt.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
       slashTxt.setAttribute('font-size', '16');
       slashTxt.setAttribute('font-weight', 'normal');
       slashTxt.setAttribute('font-style', 'italic');
