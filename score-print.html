@@ -236,7 +236,7 @@ function renderScore(payload) {
     // Solo treble: just below the stave bottom.
     // Uses direct SVG text injection to bypass VexFlow SVGContext font/position quirks.
     var lyricY = grand
-      ? sy + TY + TH + LYRIC_GAP * 0.65 + 5
+      ? sy + TY + TH + LYRIC_GAP * 0.80
       : sy + TY + TH + 20;
     var svgEl = wrap.querySelector('svg');
     var lyricPrev = null;
@@ -318,6 +318,9 @@ function showScore(p) {
 }
 
 // ── Handshake ──────────────────────────────────────────────────────────
+// Reset rendered flag when page is focused so re-opening always refreshes
+window.addEventListener('focus', function() { rendered = false; });
+
 window.addEventListener('message', function(e) {
   if (!e.data || e.data.type !== 'SCORE_DATA') return;
   try { e.source.postMessage('score-print-ack', '*'); } catch(err) {}
