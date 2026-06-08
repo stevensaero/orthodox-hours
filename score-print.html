@@ -245,12 +245,22 @@ function renderScore(payload) {
           txt.setAttribute('x', aN[ai2].getAbsoluteX());
           txt.setAttribute('y', lyricY);
           txt.setAttribute('font-family', 'Georgia, serif');
-          txt.setAttribute('font-size', '16');
+          txt.setAttribute('font-size', '18');
           txt.setAttribute('font-weight', 'normal');
           txt.setAttribute('text-anchor', 'middle');
           txt.setAttribute('dominant-baseline', 'middle');
           txt.setAttribute('fill', '#1a1008');
           txt.textContent = r2.text;
+          // Measure text width then insert background rect before the text
+          var approxW = r2.text.length * 9 + 6;
+          var bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+          bg.setAttribute('x', aN[ai2].getAbsoluteX() - approxW / 2);
+          bg.setAttribute('y', lyricY - 10);
+          bg.setAttribute('width', approxW);
+          bg.setAttribute('height', 20);
+          bg.setAttribute('fill', '#f5f0e8');
+          bg.setAttribute('stroke', 'none');
+          svgEl.appendChild(bg);
           svgEl.appendChild(txt);
         }
         lyricPrev = r2;
@@ -307,12 +317,22 @@ function renderScore(payload) {
           txt.setAttribute('x', aN[ai2].getAbsoluteX());
           txt.setAttribute('y', lyricY);
           txt.setAttribute('font-family', 'Georgia, serif');
-          txt.setAttribute('font-size', '16');
+          txt.setAttribute('font-size', '18');
           txt.setAttribute('font-weight', 'normal');
           txt.setAttribute('text-anchor', 'middle');
           txt.setAttribute('dominant-baseline', 'middle');
           txt.setAttribute('fill', '#1a1008');
           txt.textContent = r2.text;
+          // Measure text width then insert background rect before the text
+          var approxW = r2.text.length * 9 + 6;
+          var bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+          bg.setAttribute('x', aN[ai2].getAbsoluteX() - approxW / 2);
+          bg.setAttribute('y', lyricY - 10);
+          bg.setAttribute('width', approxW);
+          bg.setAttribute('height', 20);
+          bg.setAttribute('fill', '#f5f0e8');
+          bg.setAttribute('stroke', 'none');
+          svgEl.appendChild(bg);
           svgEl.appendChild(txt);
         }
         lyricPrev = r2;
