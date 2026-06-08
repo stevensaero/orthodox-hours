@@ -215,14 +215,16 @@ function renderScore(payload) {
   for (var li=0; li<lines.length; li++) {
     var line   = lines[li];
     var sy     = li * SH + 10;
-    var isLast = li === lines.length - 1;
+    var barlineAfter = line.barlineAfter || (li === lines.length - 1 ? 'final' : 'single');
+    var isLast = barlineAfter === 'final';
 
     // ── Treble stave — ALTO ONLY (no soprano voice on same stave) ─────
     // Soprano is intentionally omitted to prevent two-voice stem collision.
     // The OCA score shows only the alto melody line on the treble staff.
     var tr = new VF.Stave(ML, sy + TY, SW);
     tr.addClef('treble').addKeySignature(cfg.vexKey);
-    if (isLast) tr.setEndBarType(VF.Barline.type.END);
+    if (barlineAfter === 'final') tr.setEndBarType(VF.Barline.type.END);
+    else tr.setEndBarType(VF.Barline.type.SINGLE);
     tr.setContext(ctx).draw();
 
     // Alto: stem down when grand staff (bass below), stem up when solo treble
@@ -250,7 +252,7 @@ function renderScore(payload) {
           txt.setAttribute('y', lyricY);
           txt.setAttribute('font-family', 'Georgia, serif');
           txt.setAttribute('font-size', '18');
-          txt.setAttribute('font-weight', 'normal');
+          txt.setAttribute('font-weight', r2.accent ? 'bold' : 'normal');
           txt.setAttribute('text-anchor', 'middle');
           txt.setAttribute('dominant-baseline', 'middle');
           txt.setAttribute('fill', '#1a1008');
@@ -289,7 +291,8 @@ function renderScore(payload) {
     // ── Bass stave — BASS ONLY (no tenor voice) ────────────────────────
     var bs = new VF.Stave(ML, sy + BASS_Y, SW);
     bs.addClef('bass').addKeySignature(cfg.vexKey);
-    if (isLast) bs.setEndBarType(VF.Barline.type.END);
+    if (barlineAfter === 'final') bs.setEndBarType(VF.Barline.type.END);
+    else bs.setEndBarType(VF.Barline.type.SINGLE);
     bs.setContext(ctx).draw();
 
     if (line.bass) {
@@ -322,7 +325,7 @@ function renderScore(payload) {
           txt.setAttribute('y', lyricY);
           txt.setAttribute('font-family', 'Georgia, serif');
           txt.setAttribute('font-size', '18');
-          txt.setAttribute('font-weight', 'normal');
+          txt.setAttribute('font-weight', r2.accent ? 'bold' : 'normal');
           txt.setAttribute('text-anchor', 'middle');
           txt.setAttribute('dominant-baseline', 'middle');
           txt.setAttribute('fill', '#1a1008');

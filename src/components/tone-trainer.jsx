@@ -2091,18 +2091,26 @@ function parseBracketWord(token, lexicon) {
 //
 // Phrase rotation is rebuilt from the line structure (same as analyze()).
 function parseTruthLines(rawText, lexicon, rot) {
-  // Split into lines, strip trailing | markers.
-  const rawLines = rawText
+  // Split into lines. Detect | and // markers BEFORE stripping — they carry
+  // barline metadata for the score renderer.
+  const rawLinesWithMarkers = rawText
     .split("\n")
     .map((l) => l.trim())
-    .filter(Boolean)
-    .map((l) => l.replace(/\s*\|\s*$/, "").trim())
     .filter(Boolean);
 
-  if (!rawLines.length) return [];
-  const total = rawLines.length;
+  // Annotate each raw line with its barline type before stripping markers.
+  const annotated = rawLinesWithMarkers.map((l) => {
+    const isPenultimate = /\/\//.test(l);
+    const clean = l.replace(/\/\//, "").replace(/\s*\|\s*$/, "").trim();
+    return { clean, isPenultimate };
+  }).filter(({ clean }) => clean.length > 0);
 
-  return rawLines.map((ln, i) => {
+  if (!annotated.length) return [];
+  const total = annotated.length;
+
+  return annotated.map(({ clean: ln, isPenultimate }, i) => {
+    const isLast = i === total - 1;
+    const barlineAfter = isLast ? "final" : isPenultimate ? "penultimate" : "single";
     const phrase = phraseForLine(i, total, rot || ROT_DEFS[1]);
     // Tokenize on whitespace; each token may contain [bracket] marks.
     const tokens = ln.split(/\s+/).filter(Boolean);
@@ -2150,7 +2158,7 @@ function parseTruthLines(rawText, lexicon, rot) {
       })
       .filter(Boolean);
 
-    return { phrase, words };
+    return { phrase, words, barlineAfter };
   });
 }
 
@@ -3828,6 +3836,7 @@ export default function ToneTrainer() {
         durKey:  r.durKey,
         role:    r.role,
         melisma: r.melisma === true,
+        accent:  r.accent === true,   // drives bold rendering in score
       }));
 
       // Soprano: 1:1 index-aligned with alto; pitch = SOPRANO_MAP[alto.pitch]
@@ -3868,7 +3877,7 @@ export default function ToneTrainer() {
 
       payload.lines.push({
         phrase: line.phrase,
-        barlineAfter: li === sourceLines.length - 1 ? "final" : "single",
+        barlineAfter: line.barlineAfter ?? (li === sourceLines.length - 1 ? "final" : (line.phrase === "Final" ? "penultimate" : "single")),
         alto:    altoEntries,
         soprano: sopranoEntries,
         bass:    bassEntries,
