@@ -8077,7 +8077,7 @@ function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
           alignItems: 'baseline', marginBottom: '0.5rem' }}>
           <span style={{ fontSize: '0.68rem', letterSpacing: '0.14em',
             textTransform: 'uppercase', color: '#8B6914', fontWeight: 'bold' }}>
-            Prokeimenon Tone — How Determined
+            Prokeimenon Tone — Explained
           </span>
           <span onClick={() => setOpen(false)}
             style={{ cursor: 'pointer', color: '#9A8A70', fontSize: '0.8rem',
