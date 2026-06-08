@@ -7253,6 +7253,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.7.5",
+    date: "June 2026",
+    summary: "Remove service navigation buttons — service dropdown is sufficient",
+    items: [
+      "remove: Top and bottom ← prev / next → navigation buttons removed from the service view. The service dropdown in the header provides all service navigation. Removed prevService, nextService, and navBtnStyle declarations.",
+    ],
+  },
+  {
     version: "v0.7.4",
     date: "June 2026",
     summary: "Service outline — sticky left rail with position-aware navigation",
@@ -8619,8 +8627,6 @@ export default function App() {
   // Current service metadata from registry
   const currentServiceIdx = SERVICE_REGISTRY.findIndex(s => s.key === selectedServiceKey);
   const currentService = SERVICE_REGISTRY[currentServiceIdx];
-  const prevService = currentServiceIdx > 0 ? SERVICE_REGISTRY[currentServiceIdx - 1] : null;
-  const nextService = currentServiceIdx < SERVICE_REGISTRY.length - 1 ? SERVICE_REGISTRY[currentServiceIdx + 1] : null;
 
   // Assemble elements for the current service
   // Assemble elements — single unified assembler for all seasons
@@ -8673,22 +8679,6 @@ export default function App() {
 
   const dayLabel = date.toLocaleDateString("en-US", {
     weekday: "long", year: "numeric", month: "long", day: "numeric",
-  });
-
-  const navBtnStyle = (disabled) => ({
-    background: "transparent",
-    border: `1px solid ${disabled ? "#D4C49A" : "#8B6914"}`,
-    borderRadius: "3px",
-    color: disabled ? "#C4B48A" : "#8B6914",
-    padding: "6px 14px",
-    fontSize: "0.82rem",
-    cursor: disabled ? "default" : "pointer",
-    fontFamily: "Georgia, serif",
-    letterSpacing: "0.04em",
-    display: "flex",
-    alignItems: "center",
-    gap: "6px",
-    opacity: disabled ? 0.5 : 1,
   });
 
   return (
@@ -8838,25 +8828,6 @@ export default function App() {
 
         {/* ── MAIN CONTENT COLUMN ── */}
         <div style={{ flex: 1, minWidth: 0, padding: '0 1rem' }}>
-
-        {/* ── TOP NAVIGATION ─────────────────────────────────── */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-          <button
-            onClick={() => prevService && setSelectedServiceKey(prevService.key)}
-            disabled={!prevService}
-            style={navBtnStyle(!prevService)}
-          >
-            ← {prevService ? prevService.label : ""}
-          </button>
-
-          <button
-            onClick={() => nextService && setSelectedServiceKey(nextService.key)}
-            disabled={!nextService}
-            style={navBtnStyle(!nextService)}
-          >
-            {nextService ? nextService.label : ""} →
-          </button>
-        </div>
 
         {/* ── LITURGICAL CONTEXT CARD ─────────────────────── */}
         <div style={{ background: "#EDE5D0", border: "1px solid #D4C49A", borderRadius: "6px", marginBottom: "1.5rem", fontSize: "0.85rem", lineHeight: "1.7", overflow: "hidden" }}>
@@ -9340,25 +9311,6 @@ export default function App() {
                 </div>
               </div>
             )}
-
-            {/* ── NAVIGATION ARROWS ─────────────────────────── */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "2.5rem", paddingTop: "1.5rem", borderTop: "1px solid #D4C49A" }}>
-              <button
-                onClick={() => prevService && setSelectedServiceKey(prevService.key)}
-                disabled={!prevService}
-                style={navBtnStyle(!prevService)}
-              >
-                ← {prevService ? prevService.label : ""}
-              </button>
-
-              <button
-                onClick={() => nextService && setSelectedServiceKey(nextService.key)}
-                disabled={!nextService}
-                style={navBtnStyle(!nextService)}
-              >
-                {nextService ? nextService.label : ""} →
-              </button>
-            </div>
 
             {/* ── FOOTER NOTE ───────────────────────────────── */}
             <div style={{ marginTop: "2rem", paddingTop: "1rem", borderTop: "1px solid #D4C49A", fontSize: "0.75rem", color: "#9A8A70", fontStyle: "italic", lineHeight: "1.8" }}>
