@@ -311,15 +311,58 @@ function renderScore(payload) {
   // centre of one syllable to the centre of the next same-word syllable. Pass 2 paints each
   // syllable's opaque white box + text ON TOP, so the boxes clip both ends of every hyphen:
   // the visible hyphen is exactly the gap between the two words — long across a melisma
-  // stretch, short when tight, gone entirely if the boxes touch. Returns the right edge of
-  // the last drawn syllable (for end-of-verse bar placement).
+  // stretch, short when tight, gone entirely if the boxes touch.
+  //
+  // For long reciting runs (4+ consecutive role:'recite'), intermediate syllables have no
+  // noteheads and their x positions are redistributed proportionally by measured glyph width
+  // in the space between the two visible anchor noteheads — natural sentence flow rather than
+  // fixed NOTE_W spacing. Returns the right edge of the last drawn syllable.
   function drawLyrics(svg, alto, aN, lyricY) {
+    // Build x-override map for intermediate reciting syllables.
+    var xOv = {};
+    var k = 0;
+    while (k < alto.length) {
+      if (alto[k].role !== 'recite') { k++; continue; }
+      var rs = k;
+      while (k < alto.length && alto[k].role === 'recite') k++;
+      var re = k - 1; // inclusive end of run
+      if (k - rs < 4) continue; // short run — no override
+      var firstX = aN[rs].getAbsoluteX();
+      var lastX  = aN[re].getAbsoluteX();
+      var nInt   = re - rs - 1;
+      if (nInt < 1) continue;
+      // Measure each intermediate syllable's glyph width.
+      var ws = [];
+      for (var mi = rs + 1; mi <= re - 1; mi++) {
+        var e = alto[mi];
+        ws.push(e.text ? measW(e.text, e.accent ? '500' : '200') : 0);
+      }
+      var GAP    = 6; // px between syllables
+      var naturalW = ws.reduce(function(s, w){ return s + w; }, 0) + (nInt - 1) * GAP;
+      var usable   = lastX - firstX - NOTE_W; // space between the two anchor noteheads
+      var cx;
+      if (naturalW <= usable) {
+        // Centre the proportional block in the usable space.
+        cx = firstX + NOTE_W * 0.5 + (usable - naturalW) / 2;
+        for (var mi = 0; mi < nInt; mi++) {
+          xOv[rs + 1 + mi] = cx + ws[mi] / 2;
+          cx += ws[mi] + GAP;
+        }
+      } else {
+        // Doesn't fit naturally — fall back to even distribution.
+        for (var mi = 0; mi < nInt; mi++) {
+          xOv[rs + 1 + mi] = firstX + (lastX - firstX) * (mi + 1) / (nInt + 1);
+        }
+      }
+    }
+
+    // Gather pass: collect drawn syllables with natural or overridden x.
     var drawn = [], prev = null;
     for (var i = 0; i < alto.length; i++) {
       var r = alto[i];
       var isRepeat = r.melisma && prev && r.text === prev.text;
       if (r.text && !isRepeat) {
-        var x = aN[i].getAbsoluteX();
+        var x = (xOv[i] !== undefined) ? xOv[i] : aN[i].getAbsoluteX();
         drawn.push({ x: x, w: measW(r.text, r.accent ? '500' : '200') + 4, text: r.text,
                      accent: r.accent === true, hyphenAfter: r.hyphenAfter === true });
       }
@@ -397,11 +440,29 @@ function renderScore(payload) {
     // stave's left line. Must run after draw() — VexFlow computes note start-X during draw.
     tr.setNoteStartX(tr.getNoteStartX() + EDGE_PAD);
 
-    // Alto: stem down when grand staff (bass below), stem up when solo treble
+    // Alto: stem down when grand staff (bass below), stem up when solo treble.
+    // Pre-scan for long reciting runs (4+ consecutive role:'recite'). Intermediate
+    // entries (positions 1..n-2 of the run) get transparent noteheads — first and
+    // last noteheads of the run stay visible as the isolated anchor notes (OCA convention).
+    var reciteIntermediate = new Set();
+    (function() {
+      var k = 0;
+      while (k < line.alto.length) {
+        if (line.alto[k].role !== 'recite') { k++; continue; }
+        var rs = k;
+        while (k < line.alto.length && line.alto[k].role === 'recite') k++;
+        if (k - rs >= 4) {
+          for (var mi = rs + 1; mi <= k - 2; mi++) reciteIntermediate.add(mi);
+        }
+      }
+    })();
+
     var aN = [];
     for (var ai = 0; ai < line.alto.length; ai++) {
       var r = line.alto[ai];
-      aN.push(mkNote(ALTO_PITCH[r.pitch] || cfg.names.fa+'/4', r.durKey, grand ? -1 : 1));
+      var an = mkNote(ALTO_PITCH[r.pitch] || cfg.names.fa+'/4', r.durKey, grand ? -1 : 1);
+      if (reciteIntermediate.has(ai)) an.setStyle({fillStyle:'transparent', strokeStyle:'transparent'});
+      aN.push(an);
     }
 
     var altoVoice = mkVoice(aN);
@@ -472,7 +533,9 @@ function renderScore(payload) {
       var bN = [];
       for (var bi = 0; bi < line.bass.length; bi++) {
         var br = line.bass[bi];
-        bN.push(mkNote(bassVFPitch(br.pitch, br.octaveDiv, cfg), br.durKey, -1, 'bass'));
+        var bn = mkNote(bassVFPitch(br.pitch, br.octaveDiv, cfg), br.durKey, -1, 'bass');
+        if (reciteIntermediate.has(bi)) bn.setStyle({fillStyle:'transparent', strokeStyle:'transparent'});
+        bN.push(bn);
       }
       var bassVoice = mkVoice(bN);
       new VF.Formatter().joinVoices([bassVoice]).format([bassVoice], bN.length * NOTE_W);
