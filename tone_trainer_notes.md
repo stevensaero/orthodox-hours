@@ -1,6 +1,6 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.15.0** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.15.1** | Component: `src/components/tone-trainer.jsx`
 
 ---
 
@@ -50,6 +50,13 @@ choir_director_review.md item 1 (CONFIRMED/CHANGED).
   `deriveTenorRolesWD`. Chips/audio need no alignment work — chip rows are independent flex rows (a
   collapsed entry is `melisma:false` → one chip at its durKey width, W=90px), audio plays fewer notes
   with summed durations.
+  - **v0.15.1 correction:** the held chip's *width* did need a fix. A collapsed entry is one chip
+    at its nominal durKey width (W=90, W·=120), which is narrower than the 2-/3-note alto melisma it
+    covers (e.g. [H,H] = 50+50+gap = 101), so the tenor column drifted left of the other SATB rows and
+    the ghost mis-registered over the bass. `chipW()` now widens a held chip (spanCount≥2) to the span
+    it covers — sum of underlying alto chip widths + intra-melisma gaps = exactly the alto group's
+    `totalW` (line ~5280). 2-note hold → 101px, 3-note → 152px. Guard self-isolates (only tenor entries
+    carry spanCount).
 - **Score-print** (`public/score-print.html`): dropped the `tenor.length === bass.length` gate;
   each tenor note anchors at `spacingT[spanStart]` (held note sits under the first melisma note);
   reciting-intermediate ghost-hiding keys off `spanStart` (alto column), not the tenor array index

@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.15.0";
+export const TONE_TRAINER_VERSION = "v0.15.1";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.15.1",
+    date: "June 2026",
+    summary: "Fix: held-tenor chip width now spans its melisma (chip view / SATB ghost alignment)",
+    items: [
+      "fix: a collapsed (held) tenor chip rendered at the nominal whole/dotted-whole width (90/120px), narrower than the 2- or 3-note alto melisma it covers, so the tenor column drifted left of the other SATB rows and the tenor ghost mis-registered over the bass. chipW() now widens a held chip (spanCount≥2) to the span it covers: sum of the underlying alto chip widths + the intra-melisma gaps — exactly the alto group's totalW — so a 2-note [H,H] hold is 101px (was 90) and a 3-note [H,H,H] hold is 152px (was 120). Guard is self-isolating: only collapsed tenor entries carry spanCount. Score render and audio were already correct; this is chip-view only.",
+    ],
+  },
   {
     version: "v0.15.0",
     date: "June 2026",
@@ -5037,7 +5045,22 @@ export default function ToneTrainer() {
         // CHIP_W_RECITE removed (was an artifact of reciting tone always being Q;
         // Tone 1 Final Phrase accented reciting tone is now H, and future tones
         // may differ further. durKey is the single source of truth for chip width).
-        const chipW = (r) => CHIP_W[r.durKey] ?? CHIP_W.Q;
+        const chipW = (r) => {
+          // A collapsed (held) tenor note covers a multi-note alto melisma. Its chip must be
+          // as wide as that melisma group — the sum of the underlying alto chip widths plus the
+          // intra-melisma gaps, i.e. exactly the alto group's totalW — so the held chip lines up
+          // across the melisma in every SATB row and the tenor ghost registers over the bass.
+          // Without this it renders at the nominal whole/dotted-whole width (90/120px) and is too
+          // narrow for the 2- or 3-note span. Only collapsed tenor entries carry spanCount≥2.
+          if (r.spanCount >= 2 && r.spanStart != null) {
+            let total = 0;
+            for (let k = r.spanStart; k < r.spanStart + r.spanCount; k++) {
+              total += CHIP_W[rolesWD[k]?.durKey] ?? CHIP_W.Q;
+            }
+            return total + (r.spanCount - 1) * CHIP_MELISMA_GAP;
+          }
+          return CHIP_W[r.durKey] ?? CHIP_W.Q;
+        };
 
         const renderChip = (r, i, isBass, isSoprano = false, isGhostSoprano = false, isTenor = false, isGhostTenor = false) => {
           const role = r.role === "preslur" ? "prep" : r.role;
