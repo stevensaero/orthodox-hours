@@ -191,6 +191,12 @@ var LYRIC_GAP=119, BASS_Y=TY+TH+LYRIC_GAP, GRAND_SH=BASS_Y+TH+8;
 var SOLO_SH=TY+TH+60;
 // Fixed note width — equal spacing regardless of duration, matching OCA score density (~20 notes/system)
 var NOTE_W = 50;  // 50px per note
+// Text-driven spacing: floor for any gap between two VISIBLE noteheads is NOTE_W; a gap
+// touching a transparent reciting intermediate may compress to RECITE_FLOOR. TEXT_GAP is the
+// minimum clearance (px) between adjacent lyric boxes; the spacing engine widens any pair whose
+// text needs more than the floor. See applyTextSpacing().
+var TEXT_GAP = 6;
+var RECITE_FLOOR = 30;
 // EDGE_PAD — buffer (px) by which note start-X is shifted right on every system so the
 // first syllable clears the stave's left line (and the clef on system 1). Applied equally
 // to treble and bass via Stave.setNoteStartX so the two staves stay column-aligned.
@@ -310,53 +316,17 @@ function renderScore(payload) {
   // Two-pass lyric render. Pass 1 lays down hyphen "centrelines". Pass 2 paints
   // opaque white boxes + text ON TOP to clip the hyphen ends.
   //
-  // For long reciting runs (4+), intermediate noteheads are transparent. Text positions
-  // are overridden via xOv: a proportional lb→rb distribution between the two visible
-  // anchor positions guarantees no syllable collisions and no orphaned last anchor.
+  // Note positions are already text-driven (see applyTextSpacing), so every syllable rides
+  // its own note's getAbsoluteX with guaranteed non-overlap — reciting intermediates included
+  // (their noteheads are transparent but their X positions are still text-spaced).
   function drawLyrics(svg, alto, aN, lyricY) {
-    // Build x-override map for intermediate reciting syllables.
-    var xOv = {};
-    var k = 0;
-    while (k < alto.length) {
-      if (alto[k].role !== 'recite') { k++; continue; }
-      var rs = k;
-      while (k < alto.length && alto[k].role === 'recite') k++;
-      var re = k - 1;
-      if (k - rs < 4) continue;
-      var nInt = re - rs - 1;
-      if (nInt < 1) continue;
-      // Half-widths of every syllable in the run (index 0 = first anchor, 1..nInt = intermediates, nInt+1 = last anchor)
-      var hw = [];
-      for (var mi = rs; mi <= re; mi++) {
-        var e = alto[mi];
-        hw.push(e.text ? (measW(e.text, e.accent ? '500' : '200') + 4) / 2 : 8);
-      }
-      var firstX = aN[rs].getAbsoluteX();
-      var lastX  = aN[re].getAbsoluteX();
-      // Distribute syllables proportionally between lb (just right of first anchor)
-      // and rb (just left of last anchor). Uniform gap = remaining_space / (nInt+1).
-      // This spans the full available zone — no orphaned last anchor, no overshoot.
-      var pos = [];
-      var lb = firstX + hw[0] + 2;
-      var rb = lastX - hw[nInt + 1] - 2;
-      var totalHW = 0;
-      for (var mi = 0; mi < nInt; mi++) totalHW += hw[mi + 1];
-      var gap = Math.max(0, (rb - lb - 2 * totalHW) / (nInt + 1));
-      var cx = lb + gap;
-      for (var mi = 0; mi < nInt; mi++) {
-        cx += hw[mi + 1];
-        pos.push(cx);
-        cx += hw[mi + 1] + gap;
-      }
-      for (var mi = 0; mi < nInt; mi++) xOv[rs + 1 + mi] = pos[mi];
-    }
     // Gather drawn syllables.
     var drawn = [], prev = null;
     for (var i = 0; i < alto.length; i++) {
       var r = alto[i];
       var isRepeat = r.melisma && prev && r.text === prev.text;
       if (r.text && !isRepeat) {
-        var x = (xOv[i] !== undefined) ? xOv[i] : aN[i].getAbsoluteX();
+        var x = aN[i].getAbsoluteX();
         drawn.push({ x: x, w: measW(r.text, r.accent ? '500' : '200') + 4, text: r.text,
                      accent: r.accent === true, hyphenAfter: r.hyphenAfter === true });
       }
@@ -411,6 +381,45 @@ function renderScore(payload) {
     return text.length * 9; // headless fallback
   }
 
+  // ── Text-driven note spacing ───────────────────────────────────────────
+  // VexFlow equalises same-duration notes regardless of setWidth, so we let it format
+  // normally then override each note's TickContext X. Spacing between adjacent notes is
+  // max(floor, textNeed): textNeed = halfW(prev)+TEXT_GAP+halfW(this) guarantees no lyric
+  // collision; floor is NOTE_W between two visible noteheads, RECITE_FLOOR when either side
+  // is a transparent reciting intermediate (no notehead to crowd → may pack tighter).
+  // Returns the target X array so the bass voice can mirror it for column alignment.
+  function applyTextSpacing(notes, alto, visible) {
+    if (!notes.length) return [];
+    var hw = alto.map(function(e) {
+      return e.text ? (measW(e.text, e.accent ? '500' : '200') + 4) / 2 : 10;
+    });
+    var T = [notes[0].getAbsoluteX()];
+    for (var i = 1; i < notes.length; i++) {
+      var bothVisible = visible[i - 1] && visible[i];
+      var floor = bothVisible ? NOTE_W : RECITE_FLOOR;
+      var need = hw[i - 1] + TEXT_GAP + hw[i];
+      T.push(T[i - 1] + Math.max(floor, need));
+    }
+    // Scale-to-fit guard: never overflow the stave right edge.
+    var maxX = ML + SW - NOTE_W;
+    if (T[T.length - 1] > maxX && T[T.length - 1] > T[0]) {
+      var s = (maxX - T[0]) / (T[T.length - 1] - T[0]);
+      for (var j = 1; j < T.length; j++) T[j] = T[0] + (T[j] - T[0]) * s;
+    }
+    setVoiceX(notes, T);
+    return T;
+  }
+  // Push a precomputed target-X array onto a voice's TickContexts (offset-calibrated so
+  // getAbsoluteX lands exactly on T[i], keeping lyric anchoring unchanged).
+  function setVoiceX(notes, T) {
+    if (!notes.length) return;
+    var off = notes[0].getAbsoluteX() - notes[0].getTickContext().getX();
+    for (var i = 0; i < notes.length; i++) {
+      if (T[i] === undefined) continue;
+      notes[i].getTickContext().setX(T[i] - off);
+    }
+  }
+
   for (var li=0; li<lines.length; li++) {
     var line   = lines[li];
     var sy     = li * SH + 10 + titleOffset;
@@ -451,10 +460,8 @@ function renderScore(payload) {
       }
     })();
 
-    // Uniform spacing: VexFlow equalises same-duration notes regardless of setWidth,
-    // so per-note width compression shrinks ALL note gaps, not just the reciting section.
-    // Keep full NOTE_W spacing throughout; xOv distributes reciting text within the
-    // anchor-bounded zone without touching note positions.
+    // Initial format width is just a hint — applyTextSpacing() overrides every note's X
+    // afterward via TickContext, so the exact value here only affects pre-override layout.
     var totalLineW = line.alto.length * NOTE_W;
 
     var aN = [];
@@ -467,6 +474,10 @@ function renderScore(payload) {
 
     var altoVoice = mkVoice(aN);
     new VF.Formatter().joinVoices([altoVoice]).format([altoVoice], totalLineW);
+    // Visibility: a note is "visible" unless it's a transparent reciting intermediate.
+    var visible = [];
+    for (var vi = 0; vi < line.alto.length; vi++) visible.push(!reciteIntermediate.has(vi));
+    var spacingT = applyTextSpacing(aN, line.alto, visible);
     altoVoice.draw(ctx, tr);
 
     // Draw lyrics — solo treble only (grand staff lyrics drawn after bass stave below)
@@ -539,6 +550,8 @@ function renderScore(payload) {
       }
       var bassVoice = mkVoice(bN);
       new VF.Formatter().joinVoices([bassVoice]).format([bassVoice], totalLineW);
+      // Mirror the alto's text-driven X positions so treble/bass columns stay aligned.
+      setVoiceX(bN, spacingT);
       bassVoice.draw(ctx, bs);
     }
 
