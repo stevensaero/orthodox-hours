@@ -10,11 +10,23 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.12.0";
+export const TONE_TRAINER_VERSION = "v0.12.1";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.12.1",
+    date: "June 2026",
+    summary: "Score print refinements — edge buffers, syllable hyphenation, end-of-verse barlines",
+    items: [
+      "fix: lyric/note edge buffer (EDGE_PAD) — note start-X shifted right on every system so the first syllable clears the stave's left line (and clef on system 1); via Stave.setNoteStartX after draw, lyrics/bars follow automatically.",
+      "feat: inter-syllable hyphenation — buildScorePayload tags each alto syllable with hyphenAfter (true when it is not the last syllable of its word), derived from line.words; renderer draws a centered hyphen to the next drawn syllable. No pointing-engine change.",
+      "feat: hyphen doubles as a melisma extender — a non-final syllable held across a melisma gets its hyphen at the midpoint of the held span, extending after the melisma toward the next syllable.",
+      "feat: end-of-verse barlines — a single vertical bar is drawn across the stave at each verse's content end (after its last note); grand staff spans treble-top to bass-bottom, solo spans the treble stave. Driven by the '|' verse delimiter (one payload line = one verse).",
+      "change: suppressed the detached stave-edge end-barline (was SINGLE/END at the far right of the full-width stave) in favour of the content-position verse bar; final verse now ends with a single bar per request (no thick terminal bar).",
+    ],
+  },
   {
     version: "v0.12.0",
     date: "June 2026",
@@ -3835,15 +3847,42 @@ export default function ToneTrainer() {
     sourceLines.forEach((line, li) => {
       const rolesWD = lineToRolesWithDuration(line);
 
+      // Authoritative word boundaries come from line.words (each word's syllables,
+      // in order). The non-melisma roles in rolesWD are exactly those syllables in
+      // the same order; melisma expansion repeats a syllable across notes. Walk both
+      // in lockstep to tag each drawn syllable with hyphenAfter: true when it is NOT
+      // the last syllable of its word, so the renderer connects it to the next
+      // syllable with a hyphen. Localized here — no pointing-engine change.
+      const flatSylls = [];
+      (line.words || []).forEach((w) => {
+        const ss = w.sylls || [];
+        ss.forEach((s, si) => flatSylls.push({ lastInWord: si === ss.length - 1 }));
+      });
+      let _sylPtr = 0;
+      let _prevText = null;
+
       // Alto: flat per-note array — melisma already expanded by lineToRolesWithDuration
-      const altoEntries = rolesWD.map(r => ({
-        text:    r.text,
-        pitch:   r.pitches[0],
-        durKey:  r.durKey,
-        role:    r.role,
-        melisma: r.melisma === true,
-        accent:  r.accent === true,   // drives bold rendering in score
-      }));
+      const altoEntries = rolesWD.map(r => {
+        // Mirror the renderer's melisma-repeat test: a melisma role whose text
+        // matches the previous role is a held continuation, not a new syllable.
+        const isMelismaRepeat = r.melisma === true && _prevText !== null && r.text === _prevText;
+        let hyphenAfter = false;
+        if (!isMelismaRepeat) {
+          const syl = flatSylls[_sylPtr];
+          hyphenAfter = syl ? !syl.lastInWord : false;
+          _sylPtr++;
+        }
+        _prevText = r.text;
+        return {
+          text:    r.text,
+          pitch:   r.pitches[0],
+          durKey:  r.durKey,
+          role:    r.role,
+          melisma: r.melisma === true,
+          accent:  r.accent === true,   // drives bold rendering in score
+          hyphenAfter,                  // true → connect to next drawn syllable (same word)
+        };
+      });
 
       // Soprano: 1:1 index-aligned with alto; pitch = SOPRANO_MAP[alto.pitch]
       const sopranoEntries = SOPRANO_TONES.has(activeTone)

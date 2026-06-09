@@ -191,6 +191,10 @@ var LYRIC_GAP=119, BASS_Y=TY+TH+LYRIC_GAP, GRAND_SH=BASS_Y+TH+8;
 var SOLO_SH=TY+TH+60;
 // Fixed note width — equal spacing regardless of duration, matching OCA score density (~20 notes/system)
 var NOTE_W = 50;  // 50px per note
+// EDGE_PAD — buffer (px) by which note start-X is shifted right on every system so the
+// first syllable clears the stave's left line (and the clef on system 1). Applied equally
+// to treble and bass via Stave.setNoteStartX so the two staves stay column-aligned.
+var EDGE_PAD = 16;
 
 // ── Load fonts before rendering ────────────────────────────────────────
 function loadFonts(cb) {
@@ -303,6 +307,30 @@ function renderScore(payload) {
     v.addTickables(notes);
     return v;
   }
+  // Draw a syllable-connecting hyphen at (x, y). Used both for in-word splits and
+  // as a melisma extender (placed at the midpoint between a held syllable and the next).
+  function mkHyphen(svg, x, y) {
+    var h = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    h.setAttribute('x', x);
+    h.setAttribute('y', y);
+    h.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
+    h.setAttribute('font-size', '16');
+    h.setAttribute('font-weight', '300');
+    h.setAttribute('text-anchor', 'middle');
+    h.setAttribute('dominant-baseline', 'middle');
+    h.setAttribute('fill', '#1a1008');
+    h.textContent = '-';
+    svg.appendChild(h);
+  }
+  // Draw a single vertical end-of-verse barline across the stave(s) at x, from y0 to y1.
+  function mkVerseBar(svg, x, y0, y1) {
+    var b = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    b.setAttribute('x1', x); b.setAttribute('x2', x);
+    b.setAttribute('y1', y0); b.setAttribute('y2', y1);
+    b.setAttribute('stroke', 'black');
+    b.setAttribute('stroke-width', '1.2');
+    svg.appendChild(b);
+  }
 
   for (var li=0; li<lines.length; li++) {
     var line   = lines[li];
@@ -315,9 +343,13 @@ function renderScore(payload) {
     // The OCA score shows only the alto melody line on the treble staff.
     var tr = new VF.Stave(ML, sy + TY, SW);
     if (chunkIdx === 0 && li === 0) tr.addClef('treble').addKeySignature(cfg.vexKey);
-    if (barlineAfter === 'final') tr.setEndBarType(VF.Barline.type.END);
-    else tr.setEndBarType(VF.Barline.type.SINGLE);
+    // End-of-verse bar is drawn explicitly at the content end (see mkVerseBar);
+    // suppress the stave's own far-right end-barline so it isn't detached from the notes.
+    tr.setEndBarType(VF.Barline.type.NONE);
     tr.setContext(ctx).draw();
+    // Edge buffer: push notes (and therefore lyrics, anchored to note X) right of the
+    // stave's left line. Must run after draw() — VexFlow computes note start-X during draw.
+    tr.setNoteStartX(tr.getNoteStartX() + EDGE_PAD);
 
     // Alto: stem down when grand staff (bass below), stem up when solo treble
     var aN = [];
@@ -335,12 +367,18 @@ function renderScore(payload) {
       var lyricY = sy + TY + TH + 20;
       var svgEl = wrap.querySelector('svg');
       var lyricPrev = null;
+      var prevDrawn = null;
       for (var ai2 = 0; ai2 < line.alto.length; ai2++) {
         var r2 = line.alto[ai2];
         var isMelismaRepeat = r2.melisma && lyricPrev && r2.text === lyricPrev.text;
         if (r2.text && !isMelismaRepeat) {
+          var sx = aN[ai2].getAbsoluteX();
+          // Hyphen to the previous drawn syllable of the same word. When that syllable
+          // was held across a melisma, the next drawn syllable is further away, so the
+          // midpoint naturally places the hyphen after the melisma.
+          if (prevDrawn && prevDrawn.hyphenAfter) mkHyphen(svgEl, (prevDrawn.x + sx) / 2, lyricY);
           var txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-          txt.setAttribute('x', aN[ai2].getAbsoluteX());
+          txt.setAttribute('x', sx);
           txt.setAttribute('y', lyricY);
           txt.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
           txt.setAttribute('font-size', '16');
@@ -352,7 +390,7 @@ function renderScore(payload) {
           // Measure text width then insert background rect before the text
           var approxW = r2.text.length * 9 + 4;
           var bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-          bg.setAttribute('x', aN[ai2].getAbsoluteX() - approxW / 2);
+          bg.setAttribute('x', sx - approxW / 2);
           bg.setAttribute('y', lyricY - 12);
           bg.setAttribute('width', approxW);
           bg.setAttribute('height', 24);
@@ -360,6 +398,7 @@ function renderScore(payload) {
           bg.setAttribute('stroke', 'none');
           svgEl.appendChild(bg);
           svgEl.appendChild(txt);
+          prevDrawn = { x: sx, hyphenAfter: r2.hyphenAfter === true };
         }
         lyricPrev = r2;
       }
@@ -397,14 +436,22 @@ function renderScore(payload) {
       svgElS.appendChild(soloSlash);
     }
 
+    // End-of-verse barline (solo): single vertical bar across the treble stave,
+    // just after the verse's last note.
+    if (!grand && aN.length > 0) {
+      var soloBarX = aN[aN.length - 1].getAbsoluteX() + NOTE_W * 0.5;
+      mkVerseBar(wrap.querySelector('svg'), soloBarX, tr.getYForLine(0), tr.getYForLine(4));
+    }
+
     if (!grand) continue;
 
     // ── Bass stave — BASS ONLY (no tenor voice) ────────────────────────
     var bs = new VF.Stave(ML, sy + BASS_Y, SW);
     if (chunkIdx === 0 && li === 0) bs.addClef('bass').addKeySignature(cfg.vexKey);
-    if (barlineAfter === 'final') bs.setEndBarType(VF.Barline.type.END);
-    else bs.setEndBarType(VF.Barline.type.SINGLE);
+    // End-of-verse bar drawn explicitly (mkVerseBar); suppress stave end-barline.
+    bs.setEndBarType(VF.Barline.type.NONE);
     bs.setContext(ctx).draw();
+    bs.setNoteStartX(bs.getNoteStartX() + EDGE_PAD);
 
     if (line.bass) {
       var bN = [];
@@ -427,12 +474,16 @@ function renderScore(payload) {
       var lyricY = (trebleBottomY + bassTopY) / 2;
       var svgEl = wrap.querySelector('svg');
       var lyricPrev = null;
+      var prevDrawn = null;
       for (var ai2 = 0; ai2 < line.alto.length; ai2++) {
         var r2 = line.alto[ai2];
         var isMelismaRepeat = r2.melisma && lyricPrev && r2.text === lyricPrev.text;
         if (r2.text && !isMelismaRepeat) {
+          var sx = aN[ai2].getAbsoluteX();
+          // Hyphen to the previous drawn syllable of the same word (and melisma extender).
+          if (prevDrawn && prevDrawn.hyphenAfter) mkHyphen(svgEl, (prevDrawn.x + sx) / 2, lyricY);
           var txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-          txt.setAttribute('x', aN[ai2].getAbsoluteX());
+          txt.setAttribute('x', sx);
           txt.setAttribute('y', lyricY);
           txt.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
           txt.setAttribute('font-size', '16');
@@ -444,7 +495,7 @@ function renderScore(payload) {
           // Measure text width then insert background rect before the text
           var approxW = r2.text.length * 9 + 4;
           var bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-          bg.setAttribute('x', aN[ai2].getAbsoluteX() - approxW / 2);
+          bg.setAttribute('x', sx - approxW / 2);
           bg.setAttribute('y', lyricY - 12);
           bg.setAttribute('width', approxW);
           bg.setAttribute('height', 24);
@@ -452,6 +503,7 @@ function renderScore(payload) {
           bg.setAttribute('stroke', 'none');
           svgEl.appendChild(bg);
           svgEl.appendChild(txt);
+          prevDrawn = { x: sx, hyphenAfter: r2.hyphenAfter === true };
         }
         lyricPrev = r2;
       }
@@ -481,6 +533,13 @@ function renderScore(payload) {
     // Grand staff connectors
     new VF.StaveConnector(tr, bs).setType(VF.StaveConnector.type.BRACE).setContext(ctx).draw();
     new VF.StaveConnector(tr, bs).setType(VF.StaveConnector.type.SINGLE_LEFT).setContext(ctx).draw();
+
+    // End-of-verse barline (grand): single vertical bar spanning treble top to bass
+    // bottom, just after the verse's last note.
+    if (aN.length > 0) {
+      var grandBarX = aN[aN.length - 1].getAbsoluteX() + NOTE_W * 0.5;
+      mkVerseBar(wrap.querySelector('svg'), grandBarX, tr.getYForLine(0), bs.getYForLine(4));
+    }
   }
   }); // end chunks.forEach
 
