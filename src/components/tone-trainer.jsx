@@ -10,11 +10,24 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.13.0";
+export const TONE_TRAINER_VERSION = "v0.14.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.14.0",
+    date: "June 2026",
+    summary: "Score print — full SATB (soprano + tenor), version on page, GhostNote reciting fix",
+    items: [
+      "feat: soprano rendered on the treble stave (SATB closed score) — soprano stems up, alto stems down. New buildSopranoPitch(cfg): the alto octave map with la/ti raised to octave 5, because soprano la/ti derive from alto fa/sol (top of the alto range) and SOPRANO_MAP is all diatonic thirds, so 'a third above alto' pins every octave. Soprano always renders above alto by construction.",
+      "feat: tenor rendered on the bass stave — tenor stems up, bass stems down. New tenorVFPitch(sol, div, cfg): octave derived from the verified BASS_NOTATION_OCT shifted by the audio ratio log2(BASS_OCTAVE_DIV / TENOR_OCTAVE_DIV) — sol ÷4 bass vs ÷2 tenor → tenor sol = C/4, one octave above bass C/3. Per-note octaveDiv then shifts by log2(2/div) so the Final phrase's ÷1 la/si rise an octave. Cross-checked against TENOR_RULES Final comments: sol=C/4, la=D/4 (step above sol), mi=A/3 (below sol).",
+      "feat: soprano melisma slurs — alto slur loop factored into drawMelismaSlurs(notes, altoEntries), grouped by alto melisma/text and drawn on each moving voice (alto + soprano). Tenor/bass intentionally unslurred (they hold rather than melodically melisma).",
+      "fix: reciting intermediates now render as VF.GhostNote across all four voices instead of transparent-styled StaveNotes. The transparent approach left ledger-line stubs visible on the tenor reciting run (ledger paths carry their own stroke that ignores the group's transparent style); GhostNotes draw no glyph at all while still holding tick + X position for text-driven spacing.",
+      "feat: tool version shown in the score-print toolbar header (on-screen cache check) and appended to the printed subtitle (so printed scores carry the producing version — the toolbar is stripped before printing). Both read payload.toolVersion, so they auto-follow the trainer badge.",
+      "note: tenor 'si' (Final cadence only) renders from cfg.names[si]; the source data has OFF[si] and cfg.names[si] disagreeing on register — flagged for score verification.",
+    ],
+  },
   {
     version: "v0.13.0",
     date: "June 2026",

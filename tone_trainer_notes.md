@@ -1,12 +1,59 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.13.0** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.14.0** | Component: `src/components/tone-trainer.jsx`
 
 ---
 
 ---
 
-## Session summary (Jun 8 2026 — v0.13.0 — Score print: text-driven note spacing + reciting-tone abbreviation)
+## Session summary (Jun 9 2026 — v0.14.0 — Score print: full SATB soprano + tenor, version on page, GhostNote reciting fix)
+
+Score-print-only changes (no engine logic touched); gate 13/13, build clean. All four S/A/T/B
+voices now render. Verified headless against `public/vexflow.js` (VexFlow 5.0.0).
+
+### Soprano (treble: S stems up, A stems down)
+`buildSopranoPitch(cfg)` = the alto octave map with **la/ti raised to octave 5**. SOPRANO_MAP is
+all diatonic thirds, so "a third above alto" pins every octave; soprano la/ti derive from alto
+fa/sol (top of the alto range) and therefore ride an octave above alto's la/4, ti/4. Soprano is
+above alto by construction. Two voices share TickContexts after joinVoices, so the alto's
+text-driven spacing automatically carries the soprano.
+
+### Tenor (bass: T stems up, B stems down)
+`tenorVFPitch(sol, div, cfg)` — octave anchored to the **verified** `BASS_NOTATION_OCT`, shifted up
+by the audio ratio `log2(BASS_OCTAVE_DIV / TENOR_OCTAVE_DIV)`: sol is bass ÷4 vs tenor ÷2 → +1
+octave over bass C/3 → **tenor sol = C/4**. Per-note `octaveDiv` (carried in the payload) then
+shifts by `log2(2/div)`, so the Final phrase's ÷1 la/si rise an octave.
+- `TENOR_NOTATION_OCT = { la:3, ti:3, do:3, di:3, re:3, mi:3, fa:2, sol:4, mi_low:3, si:3 }`
+- Cross-checked against `TENOR_RULES[1]` Final comments AND the `OFF` semitone table
+  (mi −8 < sol −5 < la −3 < si −2): sol=C/4, la=D/4 (whole step above sol), mi=A/3 (below sol). ✓
+- **OPEN: tenor `si`** (Final cadence only). `OFF[si] = −2` (a half-step above la) but
+  `cfg.names[si]` in key F is `C#` (a half-step *below* D = la). The configured letter and the
+  audio offset disagree on register; si can't be both C# and a step above D in one octave. Renders
+  as C#/4 for now — needs score verification of the correct si notation. Pre-existing data
+  inconsistency, not a rendering bug.
+
+### Soprano melisma slurs
+Alto slur loop factored into `drawMelismaSlurs(notes, altoEntries)`: group by alto melisma/text,
+draw the curve on whichever moving voice's notes are passed (alto + soprano). Tenor/bass are
+intentionally unslurred — they hold a reciting pitch rather than melodically melisma, so a slur
+over repeated identical pitches would read as a tie.
+
+### Reciting intermediates → GhostNote (ledger-dash fix)
+The OCA reciting abbreviation hides intermediate noteheads (only first/last of a 4+ run show).
+The earlier approach styled them transparent via `setStyle({fillStyle, strokeStyle:'transparent'})`,
+but **the ledger line is a separate `<path>` carrying its own `stroke="#444"`**, which ignores the
+group-level transparent style. On tenor (reciting sol = C/4, above the bass-clef top line) those
+ledger stubs rendered as visible dashes. Fix: reciting intermediates are now `VF.GhostNote` in all
+four voices — they draw **no notehead, stem, or ledger** while still reporting `getAbsoluteX` and
+accepting `TickContext.setX`, so text-driven spacing is unchanged. Probe-confirmed: ghosts produce
+zero `#444` ledger paths. The `setStyle` transparency hack is fully removed.
+
+### Version on the page
+`payload.toolVersion` (already shipped) is now shown in the score-print toolbar header (on-screen
+cache check) and appended to the **printed subtitle** — the toolbar is stripped before printing, so
+the subtitle is what carries the producing version onto paper. Both auto-follow the trainer badge.
+
+
 
 Score-print-only changes (no engine logic touched); gate 13/13. All spacing behaviour verified
 headless against `public/vexflow.js` (VexFlow 5.0.0).
@@ -1879,3 +1926,26 @@ Law": 0 collisions; "speaks"/"through" gap 68px (was overlapping under uniform 5
 **Follows note positions automatically (no extra work):** melisma slurs (`VF.Curve` reads note
 positions at draw), the `//` penultimate marker, and the end-of-verse barline (placed at
 `max(lastNoteEnd, lastSyllableRightEdge, slashRightEdge) + 8`).
+
+### Addendum (v0.14.0) — SATB rendering findings
+
+**Two voices per stave share TickContexts after `joinVoices`.** Probed: alto note `i` and soprano
+note `i` (same tick) return the *same* TickContext object. So the alto's text-driven `setVoiceX`
+already moves the soprano; the explicit `setVoiceX(sN, T)` is a harmless safety net (no-op when
+shared). Stem directions: soprano up / alto down on treble, tenor up / bass down on bass — standard
+SATB closed score. Probe confirmed soprano renders above alto in every column with X aligned.
+
+**Hiding a notehead: use `VF.GhostNote`, not transparent `setStyle`.** `setStyle({fillStyle,
+strokeStyle:'transparent'})` sets the *group's* fill/stroke, but a ledger line is a sibling `<path>`
+with its own hardcoded `stroke="#444"` that overrides the group — so a transparent off-staff note
+still shows its ledger stub. `VF.GhostNote` draws nothing (no notehead/stem/ledger) yet supports
+`getAbsoluteX` and `TickContext.setX`, so it works as a pure text-spacing spacer. This is the
+correct primitive for the reciting-abbreviation intermediates.
+
+**Tenor staff octave is determinate (not a guess).** Both bass and tenor sound at
+`freq(pitch) / octaveDiv`. The bass *notation* octave (`BASS_NOTATION_OCT`) is verified, so tenor's
+is `BASS_NOTATION_OCT[pitch] + log2(BASS_OCTAVE_DIV[pitch] / TENOR_OCTAVE_DIV[pitch])`, with a
+further per-note `log2(2/div)` for phrase octaveDiv overrides. The `OFF` semitone table
+(`la −3, si −2, ti −1, do 0, di 1, re 2, mi 4, fa 5, sol 7`) is the ground-truth pitch order for
+cross-checking. Caveat: `si` has an `OFF` vs `cfg.names` register disagreement — verify against the
+score before trusting si placement.
