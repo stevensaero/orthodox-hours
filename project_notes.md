@@ -1576,6 +1576,26 @@ Skeleton implemented. Open questions outstanding (see Pentecostarion Implementat
 Next steps: resolve HTM cross-check questions; test all six encoded dates; continue encoding
 remaining weeks in priority order.
 
+**FW-24: Service of the Psalter — reading + "For the Departed" mode (ACTIVE — design)**
+Specs written (repo root): `psalter_departed_spec.md` (Phase 1) and
+`psalter_typikon_kathisma_rule_spec.md` (Phase 2). Built as a service **in the
+hours-tool**, not the standalone — the standalone `psalter.jsx` stays a pure data viewer.
+Source authority: *A Psalter for Prayer* (Jordanville); psalm verses keep Brenton LXX.
+- **Phase 0 (prerequisite):** extract `PSALMS` + `KATHISMA_MAP` to `src/data/psalter.js`
+  (match menaion/pentecostarion/octoechos convention); standalone viewer unchanged.
+- **Phase 1:** normal + departed modes. Beginning reuses the tool's encoded ordinary
+  beginning (same prayer / different wording → reuse) and appends the three new Jordanville
+  parts (Tone VI troparia, LHM ×40, "Most Holy Trinity" pre-reading prayer). Departed-rite
+  dividers/conclusion from pp. 320–323. Four params: name, gender, Orthodox/non-Orthodox,
+  priest/reader (reuse §10 toggle). Per-kathisma paged rendering + kathisma tracker
+  (structurally required — 20 kathismata).
+- **Phase 2:** Typicon Ch. 17 kathisma distribution (date-driven; governs normal-mode
+  distribution). Uses the existing `computePascha` engine.
+- **OPEN (blocks encoding, not design):** non-Orthodox footnote scope — replace only the
+  long prayer (footnote 1) or also its accompanying Tone IV troparia (footnote 2)? And
+  whether the conclusion's dismissal prayers change for non-Orthodox. Confirm against the
+  printed book.
+
 ### HIGH PRIORITY
 
 **FW-23: Vespers Stichera — LIC and Aposticha Assembly (Phase 2)**
