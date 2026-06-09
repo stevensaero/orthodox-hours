@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.12.1";
+export const TONE_TRAINER_VERSION = "v0.12.2";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.12.2",
+    date: "June 2026",
+    summary: "Score print — end-of-verse bar breathing room (clears last note or syllable + 8px)",
+    items: [
+      "fix: end-of-verse barline now placed at max(last-note-end, last-syllable-right-edge) + 8px, so it clears a long final word (e.g. 'trembling') instead of crowding it. prevDrawn now carries the syllable's rightEdge; applied to both solo and grand paths.",
+    ],
+  },
   {
     version: "v0.12.1",
     date: "June 2026",
