@@ -10,11 +10,21 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.12.3";
+export const TONE_TRAINER_VERSION = "v0.12.4";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.12.4",
+    date: "June 2026",
+    summary: "Tone 1 Phrase D — secondary-accent-aware n=5 distribution + example text fix",
+    items: [
+      "fix: PRESET_T1 Phrase D example text — 'spoke' was unaccented (flag 0), causing single-accent fallback → count=2 → phantom duplicate 'ets'. Corrected to accented (flag 1), matching the actual director text '[spoke] in the [Proph]ets'.",
+      "fix: lineToRolesWithDuration + lineToNotes Phrase D n=5 branch — was positionally ti·do·re·do·ti (re on 'the', do on Proph, all-H, no melisma). Now secondary-accent-aware: locates the 're' pitch from pointLine's two-accent output. When secondary sits at n-2 (immediately before close, as in Proph-ets), fills are Q and secondary gets re·do melisma. When secondary at canonical pos 2, exact-fit all-H unchanged. Score-verified shape: ti(H)·do(Q)·do(Q)·re·do(H mel)·ti(H).",
+      "arch: n=3/4/≤2/6/7 branches untouched — per-count verification required before any changes.",
+    ],
+  },
   {
     version: "v0.12.3",
     date: "June 2026",
@@ -1138,8 +1148,9 @@ const PRESET_T1 = [
   // Phrase C — He = intonation (H); Whom = reciting tone (Q); Da = cadence anchor (do/H);
   // vid = do/Q fill; an = do/Q fill; nounced = ti/H close. Score: tutorial p.7.
   ["C", [["This",[["This",0]]],["is",[["is",0]]],["He",[["He",1]]],["Whom",[["Whom",0]]],["David",[["Da",1],["vid",0]]],["announced;",[["an",0],["nounced",0]]]]],
-  // Phrase D — no intonation; Proph = anchor (ets trails)
-  ["D", [["this",[["this",0]]],["is",[["is",0]]],["He",[["He",0]]],["Who",[["Who",0]]],["spoke",[["spoke",0]]],["in",[["in",0]]],["the",[["the",0]]],["Prophets,",[["Proph",1],["ets",0]]]]],
+  // Phrase D — no intonation; spoke = primary anchor (ti, cadence boundary);
+  // Proph = secondary anchor (re, pos 3); two-accent path
+  ["D", [["this",[["this",0]]],["is",[["is",0]]],["He",[["He",0]]],["Who",[["Who",0]]],["spoke",[["spoke",1]]],["in",[["in",0]]],["the",[["the",0]]],["Prophets,",[["Proph",1],["ets",0]]]]],
   // Phrase A — Who = intonation; speaks = anchor (backup from final monosyllable Law)
   ["A", [["Who,",[["Who",1]]],["for",[["for",0]]],["our",[["our",0]]],["sakes,",[["sakes",0]]],["has",[["has",0]]],["taken",[["tak",0],["en",0]]],["flesh",[["flesh",0]]],["and",[["and",0]]],["Who",[["Who",0]]],["speaks",[["speaks",1]]],["through",[["through",0]]],["the",[["the",0]]],["Law.",[["Law",0]]]]],
   // Final — wor = anchor; Him trails
@@ -2759,12 +2770,21 @@ export default function ToneTrainer() {
         buildMelisma(["re","do"], ["H","H"], H, Q, W, DH, 0.27).forEach(x => notes.push(x));
         notes.push({ sol: "ti", dur: H, peak: 0.2 }); // close
       } else if (n === 5) {
-        // count=5: exact fit ti(H)·do(H)·re(H)·do(H)·ti(H)
-        notes.push({ sol: "ti", dur: H, peak: 0.27 });
-        notes.push({ sol: "do", dur: H, peak: 0.2 });
-        notes.push({ sol: "re", dur: H, peak: 0.2 });
-        notes.push({ sol: "do", dur: H, peak: 0.2 });
-        notes.push({ sol: "ti", dur: H, peak: 0.2 });
+        // Mirror lineToRolesWithDuration: secondary-accent-aware.
+        // When secondary (re) is at n-2, fills are Q and secondary gets re·do melisma.
+        // When at canonical pos 2, exact fit all H.
+        const _s5 = cadSylls.findIndex((r, i) => i > 0 && i < n - 1 && r.pitches[0] === "re");
+        const s5n = _s5 >= 1 ? _s5 : 2;
+        notes.push({ sol: "ti", dur: H, peak: 0.27 }); // anchor
+        if (s5n === n - 2) {
+          for (let fi = 1; fi < s5n; fi++) notes.push({ sol: "do", dur: Q, peak: 0.2 });
+          buildMelisma(["re","do"], ["H","H"], H, Q, W, DH, 0.27).forEach(x => notes.push(x));
+        } else {
+          for (let fi = 1; fi < s5n; fi++) notes.push({ sol: "do", dur: H, peak: 0.2 });
+          notes.push({ sol: "re", dur: H, peak: 0.2 });
+          for (let fi = s5n + 1; fi < n - 1; fi++) notes.push({ sol: "do", dur: H, peak: 0.2 });
+        }
+        notes.push({ sol: "ti", dur: H, peak: 0.2 }); // close
       } else if (n === 6) {
         // count=6: ti(H)·do(H)·re(H)·do(Q)·do(Q)·ti(H)
         notes.push({ sol: "ti", dur: H, peak: 0.27 });
@@ -3328,11 +3348,27 @@ export default function ToneTrainer() {
         emitMelisma(cadRoles[2], ["re","do"], [H,H]);
         result.push({ ...cadRoles[3], pitches: ["ti"], dur: H, durKey: "H" });
       } else if (n === 5) {
-        result.push({ ...cadRoles[0], pitches: ["ti"], dur: H, durKey: "H" });
-        result.push({ ...cadRoles[1], pitches: ["do"], dur: H, durKey: "H" });
-        result.push({ ...cadRoles[2], pitches: ["re"], dur: H, durKey: "H" });
-        result.push({ ...cadRoles[3], pitches: ["do"], dur: H, durKey: "H" });
-        result.push({ ...cadRoles[4], pitches: ["ti"], dur: H, durKey: "H" });
+        // Find where pointLine placed the secondary accent ("re").
+        // When it sits at n-2 (immediately before the close), position-4 do has no separate
+        // syllable — it collapses onto the secondary as a re·do melisma. Fills before it: Q.
+        // Score-verified: "spoke in the Proph-ets" →
+        //   ti(H) · do(Q) · do(Q) · re·do(H mel) · ti(H)   [secIdx=3, n-2=3]
+        // When the secondary is at canonical position 2 (both fills have their own syllables),
+        // all positions are exact fit — unchanged all-H behaviour.
+        const secIdx5 = cadRoles.findIndex((r, i) => i > 0 && i < n - 1 && r.pitches[0] === "re");
+        const s5 = secIdx5 >= 1 ? secIdx5 : 2; // fallback to canonical pos 2
+        result.push({ ...cadRoles[0], pitches: ["ti"], dur: H, durKey: "H" }); // anchor
+        if (s5 === n - 2) {
+          // Secondary immediately before close → fills (Q) + re·do melisma
+          for (let fi = 1; fi < s5; fi++) result.push({ ...cadRoles[fi], pitches: ["do"], dur: Q, durKey: "Q" });
+          emitMelisma(cadRoles[s5], ["re", "do"], [H, H]);
+        } else {
+          // Exact fit — every position gets its own syllable, all H
+          for (let fi = 1; fi < s5; fi++) result.push({ ...cadRoles[fi], pitches: ["do"], dur: H, durKey: "H" });
+          result.push({ ...cadRoles[s5], pitches: ["re"], dur: H, durKey: "H" });
+          for (let fi = s5 + 1; fi < n - 1; fi++) result.push({ ...cadRoles[fi], pitches: ["do"], dur: H, durKey: "H" });
+        }
+        result.push({ ...cadRoles[n - 1], pitches: ["ti"], dur: H, durKey: "H" }); // close
       } else if (n === 6) {
         result.push({ ...cadRoles[0], pitches: ["ti"], dur: H, durKey: "H" });
         result.push({ ...cadRoles[1], pitches: ["do"], dur: H, durKey: "H" });

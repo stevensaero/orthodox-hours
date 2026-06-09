@@ -1,6 +1,6 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.12.3** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.12.4** | Component: `src/components/tone-trainer.jsx`
 
 ---
 
@@ -31,7 +31,7 @@ boxes clip both ends of every hyphen, so the visible hyphen is exactly the inter
 across a melisma stretch, short when tight, gone if the boxes touch. `drawLyrics` returns the last
 drawn syllable's right edge for bar placement. (Old glyph-based `mkHyphen` removed.)
 
-### OPEN — Tone 1 Phrase D count-2 cadence (e.g. "Prophets" = Prop + ets)
+### RESOLVED (v0.12.4) — Tone 1 Phrase D n=5 secondary-accent distribution
 
 Reported by Bill against the Tone 1 example "This is He Who spoke in The [Proph]ets,". With the
 reciting tone running through "The," the Phrase D cadence is only 2 syllables (Prop, ets) → the
