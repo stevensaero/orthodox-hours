@@ -320,7 +320,7 @@ function renderScore(payload) {
       var isRepeat = r.melisma && prev && r.text === prev.text;
       if (r.text && !isRepeat) {
         var x = aN[i].getAbsoluteX();
-        drawn.push({ x: x, w: r.text.length * 9 + 4, text: r.text,
+        drawn.push({ x: x, w: measW(r.text, r.accent ? '500' : '200') + 4, text: r.text,
                      accent: r.accent === true, hyphenAfter: r.hyphenAfter === true });
       }
       prev = r;
@@ -360,6 +360,18 @@ function renderScore(payload) {
     b.setAttribute('stroke', 'black');
     b.setAttribute('stroke-width', '1.2');
     svg.appendChild(b);
+  }
+  // Measure a syllable's pixel width at the score's lyric font (Inter 16px, weight w).
+  // Uses canvas measureText — accurate and font-aware. Called after loadFonts() so Inter
+  // is available. Falls back to char-count approximation if canvas is unavailable (headless).
+  var _mc = null;
+  function measW(text, weight) {
+    if (!_mc) { try { _mc = document.createElement('canvas').getContext('2d'); } catch(e) {} }
+    if (_mc) {
+      _mc.font = weight + ' 16px "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif';
+      return _mc.measureText(text).width;
+    }
+    return text.length * 9; // headless fallback
   }
 
   for (var li=0; li<lines.length; li++) {
@@ -435,7 +447,7 @@ function renderScore(payload) {
       soloSlash.setAttribute('fill', '#2a2118');
       soloSlash.textContent = '//';
       svgElS.appendChild(soloSlash);
-      slashRightEdge = soloLastX + 11; // // is 2 chars centred; ~11px half-width
+      slashRightEdge = soloLastX + measW("//", "200") / 2 + 2;
     }
 
     // End-of-verse barline (solo): single vertical bar across the treble stave, placed
@@ -493,7 +505,7 @@ function renderScore(payload) {
       slashTxt.setAttribute('fill', '#2a2118');
       slashTxt.textContent = '//';
       svgElP.appendChild(slashTxt);
-      slashRightEdge = lastX + 11; // // is 2 chars centred; ~11px half-width
+      slashRightEdge = lastX + measW("//", "200") / 2 + 2;
     }
 
     // Grand staff connectors
