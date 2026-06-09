@@ -83,6 +83,7 @@
   <span style="color:#6b5942">|</span>
   <span class="src" id="tb-src"></span>
   <span style="flex:1"></span>
+  <span class="src" id="tb-ver" style="margin-right:0.75rem;"></span>
   <button onclick="doPrint()">⎙ Print</button>
   <button onclick="window.close()">✕ Close</button>
 </div>
@@ -153,6 +154,25 @@ function buildAltoPitch(cfg) {
     mi: n.mi+'/4',  // A4 — 2nd space
     fa: n.fa+'/4',  // Bb4 — middle line (alto Phrase B/D reciting tone) ✓
     sol: n.sol+'/5', // C5 — 3rd space
+    si: n.si+'/5',  di: n.di+'/4', mi_low: n.mi_low+'/4',
+  };
+}
+
+// Build SOPRANO_PITCH map. Soprano is a diatonic third above alto (verified, all 5 Tone 1
+// phrases). Working from the alto anchor (fa=Bb/4), the note a third above each alto note
+// shares the alto octave EXCEPT la and ti: soprano la/ti derive from alto fa/sol (top of the
+// alto range), so they sit an octave above alto's la/4, ti/4 — i.e. la/5, ti/5. This guarantees
+// soprano always renders above alto. SOPRANO_MAP values only ever produce do/re/mi/fa/sol/la/ti.
+function buildSopranoPitch(cfg) {
+  var n = cfg.names;
+  return {
+    la: n.la+'/5',   // a third above alto fa (Bb4) → D5
+    ti: n.ti+'/5',   // a third above alto sol (C5) → E5
+    do: n.do+'/4',   // F4
+    re: n.re+'/4',   // G4
+    mi: n.mi+'/4',   // A4
+    fa: n.fa+'/4',   // Bb4
+    sol: n.sol+'/5', // C5
     si: n.si+'/5',  di: n.di+'/4', mi_low: n.mi_low+'/4',
   };
 }
@@ -237,6 +257,7 @@ function renderScore(payload) {
   var lines = payload.lines;
   var cfg   = resolveKey(payload.doHz);
   var ALTO_PITCH = buildAltoPitch(cfg);
+  var SOPRANO_PITCH = buildSopranoPitch(cfg);
   var grand = false;
   for (var i=0; i<lines.length; i++) { if (lines[i].bass) { grand=true; break; } }
 
@@ -295,7 +316,8 @@ function renderScore(payload) {
       tSub.setAttribute('text-anchor', 'middle');
       tSub.setAttribute('dominant-baseline', 'middle');
       tSub.setAttribute('fill', '#6b5942');
-      tSub.textContent = payload.subtitle || '';
+      tSub.textContent = (payload.subtitle || '') +
+        (payload.toolVersion ? ' · ' + payload.toolVersion : '');
       svgRoot.appendChild(tSub);
     }
 
@@ -430,9 +452,9 @@ function renderScore(payload) {
     var lastRightEdge = 0;
     var slashRightEdge = 0;
 
-    // ── Treble stave — ALTO ONLY (no soprano voice on same stave) ─────
-    // Soprano is intentionally omitted to prevent two-voice stem collision.
-    // The OCA score shows only the alto melody line on the treble staff.
+    // ── Treble stave — SOPRANO (stems up) + ALTO (stems down) ─────────
+    // Soprano renders as a second voice when the payload carries it (SATB closed score).
+    // Alto-only when no soprano present (e.g. tones without verified soprano rules).
     var tr = new VF.Stave(ML, sy + TY, SW);
     if (chunkIdx === 0 && li === 0) tr.addClef('treble').addKeySignature(cfg.vexKey);
     // End-of-verse bar is drawn explicitly at the content end (see mkVerseBar);
@@ -464,21 +486,42 @@ function renderScore(payload) {
     // afterward via TickContext, so the exact value here only affects pre-override layout.
     var totalLineW = line.alto.length * NOTE_W;
 
+    // Soprano rides the treble with alto when present (SATB closed score): soprano stems up,
+    // alto stems down. Alto flips to stem-down whenever soprano is on — not only in grand mode.
+    var hasSop = line.soprano && line.soprano.length === line.alto.length;
+    var altoStem = (grand || hasSop) ? -1 : 1;
+
     var aN = [];
     for (var ai = 0; ai < line.alto.length; ai++) {
       var r = line.alto[ai];
-      var an = mkNote(ALTO_PITCH[r.pitch] || cfg.names.fa+'/4', r.durKey, grand ? -1 : 1);
+      var an = mkNote(ALTO_PITCH[r.pitch] || cfg.names.fa+'/4', r.durKey, altoStem);
       if (reciteIntermediate.has(ai)) an.setStyle({fillStyle:'transparent', strokeStyle:'transparent'});
       aN.push(an);
     }
 
+    // Soprano notes (stems up). 1:1 index-aligned with alto; same reciting-intermediate hiding.
+    var sN = [];
+    if (hasSop) {
+      for (var si2 = 0; si2 < line.soprano.length; si2++) {
+        var sr = line.soprano[si2];
+        var sn = mkNote(SOPRANO_PITCH[sr.pitch] || cfg.names.la+'/5', sr.durKey, 1);
+        if (reciteIntermediate.has(si2)) sn.setStyle({fillStyle:'transparent', strokeStyle:'transparent'});
+        sN.push(sn);
+      }
+    }
+
     var altoVoice = mkVoice(aN);
-    new VF.Formatter().joinVoices([altoVoice]).format([altoVoice], totalLineW);
+    var trebleVoices = [altoVoice];
+    var sopVoice = null;
+    if (hasSop) { sopVoice = mkVoice(sN); trebleVoices.push(sopVoice); }
+    new VF.Formatter().joinVoices(trebleVoices).format(trebleVoices, totalLineW);
     // Visibility: a note is "visible" unless it's a transparent reciting intermediate.
     var visible = [];
     for (var vi = 0; vi < line.alto.length; vi++) visible.push(!reciteIntermediate.has(vi));
     var spacingT = applyTextSpacing(aN, line.alto, visible);
+    if (hasSop) setVoiceX(sN, spacingT);  // mirror alto positions (no-op if joinVoices shares TickContexts)
     altoVoice.draw(ctx, tr);
+    if (sopVoice) sopVoice.draw(ctx, tr);
 
     // Draw lyrics — solo treble only (grand staff lyrics drawn after bass stave below)
     if (!grand) {
@@ -617,6 +660,7 @@ function showScore(p) {
   document.getElementById('tb-title').textContent = p.title || '';
   document.getElementById('tb-src').textContent   = (p.toneLabel || '') + ' · ' +
     (p.source === 'machine' ? 'Machine pointing' : 'Director pointing');
+  document.getElementById('tb-ver').textContent   = p.toolVersion || '';
   document.getElementById('waiting').style.display = 'none';
   document.getElementById('toolbar').style.display = 'flex';
   document.title = (p.title || 'Score') + ' — Score';
