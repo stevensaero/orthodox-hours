@@ -342,6 +342,14 @@ function renderScore(payload) {
     if (durKey==='H·') VF.Dot.buildAndAttach([n]);
     return n;
   }
+  // Reciting intermediates render NOTHING (OCA abbreviation: only first/last noteheads of a
+  // long reciting run are shown). A GhostNote holds the tick + X position (so text still rides
+  // getAbsoluteX and text-driven spacing still applies) but draws no notehead, stem, OR ledger
+  // line. This replaces the earlier transparent-setStyle approach, which left ledger-line stubs
+  // visible (the ledger path carries its own stroke that ignores the group's transparent style).
+  function mkGhost(durKey) {
+    return new VF.GhostNote({ duration: DUR[durKey]||'q' });
+  }
   function mkVoice(notes) {
     var v = new VF.Voice({ numBeats:4, beatValue:4 });
     v.setMode(VF.Voice.Mode.SOFT);
@@ -353,7 +361,7 @@ function renderScore(payload) {
   //
   // Note positions are already text-driven (see applyTextSpacing), so every syllable rides
   // its own note's getAbsoluteX with guaranteed non-overlap — reciting intermediates included
-  // (their noteheads are transparent but their X positions are still text-spaced).
+  // (rendered as GhostNotes — no glyph — but their X positions are still text-spaced).
   function drawLyrics(svg, alto, aN, lyricY) {
     // Gather drawn syllables.
     var drawn = [], prev = null;
@@ -501,8 +509,8 @@ function renderScore(payload) {
 
     // Alto: stem down when grand staff (bass below), stem up when solo treble.
     // Pre-scan for long reciting runs (4+ consecutive role:'recite'). Intermediate
-    // entries (positions 1..n-2 of the run) get transparent noteheads — first and
-    // last noteheads of the run stay visible as the isolated anchor notes (OCA convention).
+    // entries (positions 1..n-2 of the run) render as GhostNotes — first and last
+    // noteheads of the run stay visible as the isolated anchor notes (OCA convention).
     var reciteIntermediate = new Set();
     (function() {
       var k = 0;
@@ -528,8 +536,9 @@ function renderScore(payload) {
     var aN = [];
     for (var ai = 0; ai < line.alto.length; ai++) {
       var r = line.alto[ai];
-      var an = mkNote(ALTO_PITCH[r.pitch] || cfg.names.fa+'/4', r.durKey, altoStem);
-      if (reciteIntermediate.has(ai)) an.setStyle({fillStyle:'transparent', strokeStyle:'transparent'});
+      var an = reciteIntermediate.has(ai)
+        ? mkGhost(r.durKey)
+        : mkNote(ALTO_PITCH[r.pitch] || cfg.names.fa+'/4', r.durKey, altoStem);
       aN.push(an);
     }
 
@@ -538,8 +547,9 @@ function renderScore(payload) {
     if (hasSop) {
       for (var si2 = 0; si2 < line.soprano.length; si2++) {
         var sr = line.soprano[si2];
-        var sn = mkNote(SOPRANO_PITCH[sr.pitch] || cfg.names.la+'/5', sr.durKey, 1);
-        if (reciteIntermediate.has(si2)) sn.setStyle({fillStyle:'transparent', strokeStyle:'transparent'});
+        var sn = reciteIntermediate.has(si2)
+          ? mkGhost(sr.durKey)
+          : mkNote(SOPRANO_PITCH[sr.pitch] || cfg.names.la+'/5', sr.durKey, 1);
         sN.push(sn);
       }
     }
@@ -609,9 +619,10 @@ function renderScore(payload) {
       var bN = [];
       for (var bi = 0; bi < line.bass.length; bi++) {
         var br = line.bass[bi];
-        // Bass stems down when tenor shares the stave (SATB closed score), else up-free.
-        var bn = mkNote(bassVFPitch(br.pitch, br.octaveDiv, cfg), br.durKey, -1, 'bass');
-        if (reciteIntermediate.has(bi)) bn.setStyle({fillStyle:'transparent', strokeStyle:'transparent'});
+        // Bass stems down when tenor shares the stave (SATB closed score).
+        var bn = reciteIntermediate.has(bi)
+          ? mkGhost(br.durKey)
+          : mkNote(bassVFPitch(br.pitch, br.octaveDiv, cfg), br.durKey, -1, 'bass');
         bN.push(bn);
       }
       // Tenor notes (stems up). 1:1 with bass index; same reciting-intermediate hiding.
@@ -619,8 +630,9 @@ function renderScore(payload) {
       if (hasTen) {
         for (var ti2 = 0; ti2 < line.tenor.length; ti2++) {
           var trn = line.tenor[ti2];
-          var tn = mkNote(tenorVFPitch(trn.pitch, trn.octaveDiv, cfg), trn.durKey, 1, 'bass');
-          if (reciteIntermediate.has(ti2)) tn.setStyle({fillStyle:'transparent', strokeStyle:'transparent'});
+          var tn = reciteIntermediate.has(ti2)
+            ? mkGhost(trn.durKey)
+            : mkNote(tenorVFPitch(trn.pitch, trn.octaveDiv, cfg), trn.durKey, 1, 'bass');
           tN.push(tn);
         }
       }
