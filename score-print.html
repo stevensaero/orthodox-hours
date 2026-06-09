@@ -398,7 +398,7 @@ function renderScore(payload) {
           bg.setAttribute('stroke', 'none');
           svgEl.appendChild(bg);
           svgEl.appendChild(txt);
-          prevDrawn = { x: sx, hyphenAfter: r2.hyphenAfter === true };
+          prevDrawn = { x: sx, hyphenAfter: r2.hyphenAfter === true, rightEdge: sx + approxW / 2 };
         }
         lyricPrev = r2;
       }
@@ -439,7 +439,9 @@ function renderScore(payload) {
     // End-of-verse barline (solo): single vertical bar across the treble stave,
     // just after the verse's last note.
     if (!grand && aN.length > 0) {
-      var soloBarX = aN[aN.length - 1].getAbsoluteX() + NOTE_W * 0.5;
+      var soloNoteEnd = aN[aN.length - 1].getAbsoluteX() + NOTE_W * 0.5;
+      // Bar clears whichever extends further — last note or last drawn syllable — plus 8px.
+      var soloBarX = Math.max(soloNoteEnd, prevDrawn ? prevDrawn.rightEdge : 0) + 8;
       mkVerseBar(wrap.querySelector('svg'), soloBarX, tr.getYForLine(0), tr.getYForLine(4));
     }
 
@@ -503,7 +505,7 @@ function renderScore(payload) {
           bg.setAttribute('stroke', 'none');
           svgEl.appendChild(bg);
           svgEl.appendChild(txt);
-          prevDrawn = { x: sx, hyphenAfter: r2.hyphenAfter === true };
+          prevDrawn = { x: sx, hyphenAfter: r2.hyphenAfter === true, rightEdge: sx + approxW / 2 };
         }
         lyricPrev = r2;
       }
@@ -537,7 +539,9 @@ function renderScore(payload) {
     // End-of-verse barline (grand): single vertical bar spanning treble top to bass
     // bottom, just after the verse's last note.
     if (aN.length > 0) {
-      var grandBarX = aN[aN.length - 1].getAbsoluteX() + NOTE_W * 0.5;
+      var grandNoteEnd = aN[aN.length - 1].getAbsoluteX() + NOTE_W * 0.5;
+      // Bar clears whichever extends further — last note or last drawn syllable — plus 8px.
+      var grandBarX = Math.max(grandNoteEnd, prevDrawn ? prevDrawn.rightEdge : 0) + 8;
       mkVerseBar(wrap.querySelector('svg'), grandBarX, tr.getYForLine(0), bs.getYForLine(4));
     }
   }
