@@ -310,12 +310,9 @@ function renderScore(payload) {
   // Two-pass lyric render. Pass 1 lays down hyphen "centrelines". Pass 2 paints
   // opaque white boxes + text ON TOP to clip the hyphen ends.
   //
-  // For long reciting runs (4+), the formatter gives equal spacing to same-duration notes
-  // regardless of setWidth, so wide syllables like "Christ" would collide with "meet".
-  // Fix: recompute text x positions using a left-anchored half-width chain that guarantees
-  // a 2px gap between every adjacent pair of boxes regardless of syllable widths.
-  // Note positions from setWidth still compress the total section footprint (staff + notes
-  // move together); text positions are then laid out precisely within that footprint.
+  // For long reciting runs (4+), intermediate noteheads are transparent. Text positions
+  // are overridden via xOv: a proportional lb→rb distribution between the two visible
+  // anchor positions guarantees no syllable collisions and no orphaned last anchor.
   function drawLyrics(svg, alto, aN, lyricY) {
     // Build x-override map for intermediate reciting syllables.
     var xOv = {};
@@ -336,30 +333,20 @@ function renderScore(payload) {
       }
       var firstX = aN[rs].getAbsoluteX();
       var lastX  = aN[re].getAbsoluteX();
-      // Left-anchored chain: begin just right of the first anchor's box edge.
+      // Distribute syllables proportionally between lb (just right of first anchor)
+      // and rb (just left of last anchor). Uniform gap = remaining_space / (nInt+1).
+      // This spans the full available zone — no orphaned last anchor, no overshoot.
       var pos = [];
-      var cx = firstX + hw[0] + 2;  // right edge of first anchor + 2px gap
+      var lb = firstX + hw[0] + 2;
+      var rb = lastX - hw[nInt + 1] - 2;
+      var totalHW = 0;
+      for (var mi = 0; mi < nInt; mi++) totalHW += hw[mi + 1];
+      var gap = Math.max(0, (rb - lb - 2 * totalHW) / (nInt + 1));
+      var cx = lb + gap;
       for (var mi = 0; mi < nInt; mi++) {
-        cx += hw[mi + 1];            // step to centre of this intermediate
+        cx += hw[mi + 1];
         pos.push(cx);
-        cx += hw[mi + 1] + 2;       // step past its right edge + 2px gap
-      }
-      // cx is now the left edge of the clearance zone before the last anchor.
-      // If we've overshot (very wide syllables), compress all inter-box gaps uniformly.
-      var maxLastCenter = lastX - hw[nInt + 1] - 2;
-      if (pos[nInt - 1] > maxLastCenter) {
-        // Recompute with scaled gaps: evenly share available space.
-        var totalBoxW = 0;
-        for (var mi = 0; mi < nInt; mi++) totalBoxW += hw[mi + 1] * 2;
-        var avail = (lastX - hw[nInt + 1] - (firstX + hw[0])) - totalBoxW;
-        var gapUnit = Math.max(0, avail / (nInt + 1));
-        cx = firstX + hw[0] + gapUnit;
-        pos = [];
-        for (var mi = 0; mi < nInt; mi++) {
-          cx += hw[mi + 1];
-          pos.push(cx);
-          cx += hw[mi + 1] + gapUnit;
-        }
+        cx += hw[mi + 1] + gap;
       }
       for (var mi = 0; mi < nInt; mi++) xOv[rs + 1 + mi] = pos[mi];
     }
@@ -464,35 +451,17 @@ function renderScore(payload) {
       }
     })();
 
-    // Per-note width: two-pass computation so adjacent boxes never overlap.
-    // Pass 1: measure every syllable's box half-width (measW + 4px total box / 2).
-    // Pass 2: for each intermediate reciting note, width = halfW(self) + 2px + halfW(next),
-    //         guaranteeing exactly 2px gap between the self box and the next box, whatever
-    //         the syllable widths are. First/last reciting anchors and cadence: NOTE_W.
-    var halfWidths = [];
-    for (var ai = 0; ai < line.alto.length; ai++) {
-      var hwR = line.alto[ai];
-      halfWidths.push(hwR.text ? (measW(hwR.text, hwR.accent ? '500' : '200') + 4) / 2 : 10);
-    }
-    var noteWidths = [], totalLineW = 0;
-    for (var ai = 0; ai < line.alto.length; ai++) {
-      var nw;
-      if (reciteIntermediate.has(ai)) {
-        var hwNext = ai + 1 < halfWidths.length ? halfWidths[ai + 1] : halfWidths[ai];
-        nw = Math.max(20, Math.ceil(halfWidths[ai] + 2 + hwNext));
-      } else {
-        nw = NOTE_W;
-      }
-      noteWidths.push(nw);
-      totalLineW += nw;
-    }
+    // Uniform spacing: VexFlow equalises same-duration notes regardless of setWidth,
+    // so per-note width compression shrinks ALL note gaps, not just the reciting section.
+    // Keep full NOTE_W spacing throughout; xOv distributes reciting text within the
+    // anchor-bounded zone without touching note positions.
+    var totalLineW = line.alto.length * NOTE_W;
 
     var aN = [];
     for (var ai = 0; ai < line.alto.length; ai++) {
       var r = line.alto[ai];
       var an = mkNote(ALTO_PITCH[r.pitch] || cfg.names.fa+'/4', r.durKey, grand ? -1 : 1);
       if (reciteIntermediate.has(ai)) an.setStyle({fillStyle:'transparent', strokeStyle:'transparent'});
-      an.setWidth(noteWidths[ai]);
       aN.push(an);
     }
 
@@ -566,7 +535,6 @@ function renderScore(payload) {
         var br = line.bass[bi];
         var bn = mkNote(bassVFPitch(br.pitch, br.octaveDiv, cfg), br.durKey, -1, 'bass');
         if (reciteIntermediate.has(bi)) bn.setStyle({fillStyle:'transparent', strokeStyle:'transparent'});
-        bn.setWidth(noteWidths[bi] || NOTE_W);
         bN.push(bn);
       }
       var bassVoice = mkVoice(bN);
