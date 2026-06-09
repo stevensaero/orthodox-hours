@@ -196,6 +196,19 @@ function bassVFPitch(sol, div, cfg) {
   var oct = BASS_NOTATION_OCT[sol] || 3;
   return staveKey(sol, oct, cfg);
 }
+
+// Tenor notation octave (÷2 baseline), derived from BASS_NOTATION_OCT shifted up by the
+// frequency ratio log2(BASS_OCTAVE_DIV / TENOR_OCTAVE_DIV) per pitch. sol: bass ÷4, tenor ÷2
+// → +1 octave over bass C/3 → tenor sol = C/4. All other pitches share the bass notation
+// octave (both ÷2). The payload carries each tenor note's octaveDiv; tenorVFPitch then shifts
+// by log2(2/div) so the Final phrase's ÷1 la/si rise one octave (la → one step above sol,
+// matching the score-verified TENOR_RULES Final shape).
+var TENOR_NOTATION_OCT = { la:3, ti:3, do:3, di:3, re:3, mi:3, fa:2, sol:4, mi_low:3, si:3 };
+function tenorVFPitch(sol, div, cfg) {
+  var base = (TENOR_NOTATION_OCT[sol] != null) ? TENOR_NOTATION_OCT[sol] : 4;
+  var shift = Math.round(Math.log2(2 / (div || 2)));  // ÷2→0, ÷1→+1, ÷4→-1
+  return staveKey(sol, base + shift, cfg);
+}
 var DUR = { Q:'q', H:'h', 'H·':'h', W:'w' };
 
 // ── Page geometry ──────────────────────────────────────────────────────
@@ -403,6 +416,27 @@ function renderScore(payload) {
     return text.length * 9; // headless fallback
   }
 
+  // Melisma slurs. A group is a maximal run of consecutive melisma notes with the SAME
+  // text. Close (draw) the open group's curve on any boundary — a non-melisma note, a
+  // different-text melisma note (back-to-back groups), or the end of the line. Grouping
+  // is driven by the alto entries (the syllable-level melisma/text source); the curve is
+  // drawn on whichever voice's notes are passed (alto or soprano — 1:1 index-aligned).
+  function drawMelismaSlurs(notes, altoEntries) {
+    var ms = null;
+    for (var i = 0; i < altoEntries.length; i++) {
+      var ar = altoEntries[i];
+      var inSameGroup = ms !== null && ar.melisma && ar.text === altoEntries[ms].text;
+      if (ms !== null && !inSameGroup) {
+        if (i - 1 > ms) { try { new VF.Curve(notes[ms], notes[i - 1], { invert: true }).setContext(ctx).draw(); } catch(e) {} }
+        ms = null;
+      }
+      if (ms === null && ar.melisma) ms = i;
+    }
+    if (ms !== null && altoEntries.length - 1 > ms) {
+      try { new VF.Curve(notes[ms], notes[altoEntries.length - 1], { invert: true }).setContext(ctx).draw(); } catch(e) {}
+    }
+  }
+
   // ── Text-driven note spacing ───────────────────────────────────────────
   // VexFlow equalises same-duration notes regardless of setWidth, so we let it format
   // normally then override each note's TickContext X. Spacing between adjacent notes is
@@ -528,22 +562,9 @@ function renderScore(payload) {
       lastRightEdge = drawLyrics(wrap.querySelector('svg'), line.alto, aN, sy + TY + TH + 20);
     }
 
-    // Melisma slurs on alto. A group is a maximal run of consecutive melisma notes with
-    // the SAME text. Close (draw) the open group's curve on any boundary — a non-melisma
-    // note, a different-text melisma note (back-to-back groups), or the end of the line.
-    var ms = null;
-    for (var mi2 = 0; mi2 < line.alto.length; mi2++) {
-      var ar = line.alto[mi2];
-      var inSameGroup = ms !== null && ar.melisma && ar.text === line.alto[ms].text;
-      if (ms !== null && !inSameGroup) {
-        if (mi2 - 1 > ms) { try { new VF.Curve(aN[ms], aN[mi2 - 1], { invert: true }).setContext(ctx).draw(); } catch(e) {} }
-        ms = null;
-      }
-      if (ms === null && ar.melisma) ms = mi2;
-    }
-    if (ms !== null && line.alto.length - 1 > ms) {
-      try { new VF.Curve(aN[ms], aN[line.alto.length - 1], { invert: true }).setContext(ctx).draw(); } catch(e) {}
-    }
+    // Melisma slurs — alto always; soprano too when present (1:1 with alto).
+    drawMelismaSlurs(aN, line.alto);
+    if (hasSop) drawMelismaSlurs(sN, line.alto);
 
     // // penultimate marker for SOLO treble (grand path handled after bass draw)
     if (!grand && barlineAfter === 'penultimate' && aN.length > 0) {
@@ -575,7 +596,7 @@ function renderScore(payload) {
 
     if (!grand) continue;
 
-    // ── Bass stave — BASS ONLY (no tenor voice) ────────────────────────
+    // ── Bass stave — TENOR (stems up) + BASS (stems down) ──────────────
     var bs = new VF.Stave(ML, sy + BASS_Y, SW);
     if (chunkIdx === 0 && li === 0) bs.addClef('bass').addKeySignature(cfg.vexKey);
     // End-of-verse bar drawn explicitly (mkVerseBar); suppress stave end-barline.
@@ -584,18 +605,35 @@ function renderScore(payload) {
     bs.setNoteStartX(bs.getNoteStartX() + EDGE_PAD);
 
     if (line.bass) {
+      var hasTen = line.tenor && line.tenor.length === line.bass.length;
       var bN = [];
       for (var bi = 0; bi < line.bass.length; bi++) {
         var br = line.bass[bi];
+        // Bass stems down when tenor shares the stave (SATB closed score), else up-free.
         var bn = mkNote(bassVFPitch(br.pitch, br.octaveDiv, cfg), br.durKey, -1, 'bass');
         if (reciteIntermediate.has(bi)) bn.setStyle({fillStyle:'transparent', strokeStyle:'transparent'});
         bN.push(bn);
       }
+      // Tenor notes (stems up). 1:1 with bass index; same reciting-intermediate hiding.
+      var tN = [];
+      if (hasTen) {
+        for (var ti2 = 0; ti2 < line.tenor.length; ti2++) {
+          var trn = line.tenor[ti2];
+          var tn = mkNote(tenorVFPitch(trn.pitch, trn.octaveDiv, cfg), trn.durKey, 1, 'bass');
+          if (reciteIntermediate.has(ti2)) tn.setStyle({fillStyle:'transparent', strokeStyle:'transparent'});
+          tN.push(tn);
+        }
+      }
       var bassVoice = mkVoice(bN);
-      new VF.Formatter().joinVoices([bassVoice]).format([bassVoice], totalLineW);
+      var bassVoices = [bassVoice];
+      var tenVoice = null;
+      if (hasTen) { tenVoice = mkVoice(tN); bassVoices.push(tenVoice); }
+      new VF.Formatter().joinVoices(bassVoices).format(bassVoices, totalLineW);
       // Mirror the alto's text-driven X positions so treble/bass columns stay aligned.
       setVoiceX(bN, spacingT);
+      if (hasTen) setVoiceX(tN, spacingT);
       bassVoice.draw(ctx, bs);
+      if (tenVoice) tenVoice.draw(ctx, bs);
     }
 
     // Draw lyrics centered between treble bottom line and bass top line.
