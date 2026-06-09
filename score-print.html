@@ -52,6 +52,8 @@
       padding: 0;
       page-break-after: always;
       break-after: page;
+      break-inside: avoid;
+      page-break-inside: avoid;
     }
     .score-page:last-child {
       page-break-after: avoid;
@@ -240,7 +242,7 @@ function renderScore(payload) {
   }
 
   // TITLE_H: vertical space reserved at top of first SVG for title + subtitle
-  var TITLE_H = 52;
+  var TITLE_H = 30;
 
   chunks.forEach(function(chunkLines, chunkIdx) {
     var pageDiv = document.createElement('div');
