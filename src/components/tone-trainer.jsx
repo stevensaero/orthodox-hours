@@ -10,11 +10,22 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.12.2";
+export const TONE_TRAINER_VERSION = "v0.12.3";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.12.3",
+    date: "June 2026",
+    summary: "Score print — back-to-back melisma slurs, // bar clearance, masked-centreline hyphens",
+    items: [
+      "fix: melisma slur loop now closes (draws) an open group on any boundary — a non-melisma note, a different-text melisma note (back-to-back groups), or end of line. Previously a melisma immediately followed by another melisma (e.g. Proph then ets) silently dropped the first slur.",
+      "fix: end-of-verse bar now clears the // penultimate marker too — // right edge folded into the bar's max(note, syllable, //) + 8px, so the bar no longer cuts through //. Solo and grand paths.",
+      "change: syllable hyphens are now masked centrelines, not glyphs — a thin rule drawn centre-to-centre BEHIND the syllables' opaque white boxes, which clip both ends. Visible hyphen = exactly the gap between words: long across a melisma stretch, short when tight, gone if boxes touch. Lyric rendering refactored into a shared two-pass drawLyrics() helper (hyphens behind, boxes+text in front) used by both solo and grand paths.",
+      "note: Tone 1 Phrase D count-2 cadence (e.g. 'Prophets' = Prop+ets) still emits a phantom duplicate close syllable — engine fix deferred pending a real score to verify the n=2 distribution (see tone_trainer_notes.md).",
+    ],
+  },
   {
     version: "v0.12.2",
     date: "June 2026",

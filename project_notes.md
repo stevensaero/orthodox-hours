@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.8.0** | **Tone Trainer: v0.12.1** | Last synced: June 8, 2026
+**Tool version: v0.8.0** | **Tone Trainer: v0.12.3** | Last synced: June 8, 2026
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,

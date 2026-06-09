@@ -1,10 +1,54 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.12.1** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.12.3** | Component: `src/components/tone-trainer.jsx`
 
 ---
 
 ---
+
+## Session summary (Jun 8 2026 — v0.12.3 — Score print: slurs, // bar clearance, masked hyphens; Phrase D bug recorded)
+
+Score-print-only changes (no engine logic touched); gate 13/13, build clean, all three verified
+headless against `public/vexflow.js` (VexFlow 5.0.0).
+
+**1 — Back-to-back melisma slurs.** The slur loop only drew a melisma group's curve when a
+NON-melisma note followed. When one melisma group was immediately followed by another (e.g.
+"Proph" melisma → "ets" melisma), it overwrote the group-start without drawing the first curve, so
+the Proph slur was lost. Rewrote the loop to treat a group as a maximal run of consecutive melisma
+notes with the SAME text, and to close (draw) the open group on ANY boundary — a non-melisma note,
+a different-text melisma note, or end of line. Verified: the Prophets case now draws 2 slurs.
+
+**2 — // clears the end-of-verse bar.** The bar cleared `max(last-note, last-syllable) + 8`, but
+the penultimate `//` marker is drawn further right (`lastNote + NOTE_W*0.6`), so the bar cut through
+it. Now `//`'s right edge (`slashX + 11`) is folded into the max → bar sits 8px past `//`. Both
+solo and grand paths. Verified headless: bar lands exactly 8px past the `//` right edge.
+
+**3 — Hyphens are masked centrelines (replaces the glyph).** Lyric rendering refactored into a
+shared two-pass `drawLyrics(svg, alto, aN, lyricY)` (used by both solo and grand): pass 1 draws each
+hyphen as a thin rule (stroke-width 1.3, at lyricY-1) from the CENTRE of one syllable to the centre
+of the next same-word syllable; pass 2 paints each syllable's opaque white box + text ON TOP. The
+boxes clip both ends of every hyphen, so the visible hyphen is exactly the inter-word gap — long
+across a melisma stretch, short when tight, gone if the boxes touch. `drawLyrics` returns the last
+drawn syllable's right edge for bar placement. (Old glyph-based `mkHyphen` removed.)
+
+### OPEN — Tone 1 Phrase D count-2 cadence (e.g. "Prophets" = Prop + ets)
+
+Reported by Bill against the Tone 1 example "This is He Who spoke in The [Proph]ets,". With the
+reciting tone running through "The," the Phrase D cadence is only 2 syllables (Prop, ets) → the
+`n <= 2` branch in `lineToRolesWithDuration` (and its mirror in `lineToNotes`, ~2734). That branch
+emits `ti·do` melisma on syll0, `re·do` melisma on syll1, then a closing `ti` that REUSES
+`cadRoles[n-1]` ("ets") and pushes it WITHOUT the melisma flag → the syllable text is re-printed
+(phantom duplicate "ets"), in chips, score, and audio. Root: count=2 was never score-verified — the
+§12.5 distribution table only defines counts 3–7; and the doc's own example for this verse (line
+1551) shows a LONGER cadence ("spoke in the Prophets"), suggesting the cadence may be meant to start
+~5 syllables back rather than at the lone `[Proph]` accent.
+
+Likely fix (UNVERIFIED — do not apply without score evidence): fold the closing `ti` into the ets
+melisma so `ets = re·do·ti` (one 3-note melisma), giving exactly two melismas (Prop, ets) and no
+duplicate — which matches Bill's verbal description. **Bill to locate a real score for this verse to
+confirm the n=2 distribution (pitches + durations, and whether the close ti joins ets or the cadence
+should start earlier) before any engine change.** PRIME DIRECTIVE: per-phrase/per-count rule must be
+score-verified.
 
 ## Session summary (Jun 8 2026 — v0.12.1 — Score print round 2: edge buffers, hyphenation, verse barlines)
 
