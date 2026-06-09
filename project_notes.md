@@ -22,6 +22,14 @@ This repo now contains **two distinct tools**. A new session should ask:
    stichera pointing trainer that renders a verse singable (reciting tone +
    cadence) with audio. It is **not** wired to the assembler's data yet; it is
    reachable from the footer nav ("Tone Trainer") and at `/orthodox-hours/tone-trainer`.
+   - **Score print** (`public/score-print.html`) uses a **self-hosted, frozen VexFlow 5.0.0**
+     (`public/vexflow.js`, committed to git, not an npm dependency — upstream releases cannot
+     reach the tool). Note positioning is **text-width-driven** via `TickContext.setX` (the only
+     reliable per-note override — `setWidth` and `setXShift` are dead ends for equal-duration
+     notes). Full mechanism, probe evidence, tuning constants, and a "re-probe on any VexFlow
+     upgrade" caveat live in `tone_trainer_notes.md` → *Architecture note — score-print note
+     positioning*.
+
    It carries its **own independent version line** (see its notes) so its churn
    does not bump the hours-tool version. **Eventual integration goal:** the
    hours-tool emits pointed, tone-tagged verses that the trainer consumes so a

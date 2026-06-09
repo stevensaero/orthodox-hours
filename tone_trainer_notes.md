@@ -1802,3 +1802,80 @@ together. This way a wrapped syllable always carries its full context.
 **Priority:** Medium — affects tablet portrait use. Desktop and landscape unaffected.
 Do not attempt without a full render restructure plan. This is a non-trivial
 architectural change to the chip render loop.
+
+---
+
+## Architecture note — score-print note positioning (VexFlow 5.0.0)
+
+**VexFlow is a frozen, self-hosted copy.** `public/vexflow.js` (~336 KB, VexFlow 5.0.0) is a
+static file loaded by `score-print.html` via a relative `<script src="vexflow.js">` (served at
+`/orthodox-hours/vexflow.js` on GitHub Pages). It is committed to git, is NOT in `package.json`,
+and is NOT touched by `npm install` / `npm run build` (the build only bundles `src/`). Upstream
+VexFlow releases cannot reach the tool — the file changes only by a deliberate manual swap +
+commit, and the old version stays in git history. **If VexFlow is ever upgraded, re-run the
+probes below** — `TickContext.setX` / `setWidth` / `setXShift` are undocumented internals whose
+behavior can shift between versions. What is documented here is what is deployed.
+
+**Problem.** Score-print note X-positions must be driven by lyric width: "through" needs more
+room than "of". Fixed-width spacing (one `NOTE_W` per note) cannot satisfy this — any width wide
+enough for the worst pair wastes space everywhere else; any narrower width collides on wide pairs.
+
+**Three mechanisms were probed headless against `public/vexflow.js`. Only the third works.**
+
+**1. `StaveNote.setWidth()` — does NOT control spacing for equal-duration notes.**
+Observed: formatting a voice of 11 quarter-notes with widths `[50,20,20,30,20,20,20,55,50,50,50]`
+produced *identical* positions to all-equal widths — gaps `38 37 38 37 …` in both cases. The
+formatter equalizes same-duration notes regardless of per-note `setWidth`. (Inferred, NOT verified
+from source: the justification pass distributes total width across tick-contexts by tick value, and
+equal-duration notes carry equal tick weight. Treat as observed behavior only.)
+
+**2. `StaveNote.setXShift()` — stored but ignored post-format.**
+Observed: after `format()`, `setXShift(30)` left `getAbsoluteX()` unchanged and the rendered
+notehead at its baseline X; `getXShift()` *did* return 30. The shift is retained on the object but
+the already-committed TickContext position wins at draw time.
+
+**3. `note.getTickContext().setX(value)` — the working override.**
+Observed: setting TickContext X after `format()`, before `draw()`, moves the rendered notehead
+exactly, and relative gaps are preserved precisely — requested gaps `[40,40,62,40,72]` rendered as
+exactly those gaps. Calibration: `getAbsoluteX() − tickContext.getX()` is a **constant offset** per
+voice (measured `0` in probes, but COMPUTE it rather than assume). Setting
+`tickContext.setX(target − offset)` makes `getAbsoluteX()` return `target` exactly — so existing
+lyric code that reads `getAbsoluteX()` needs no change.
+
+**The spacing model (`applyTextSpacing`).**
+```
+hw[i]  = (measW(text, weight) + 4) / 2          // half-width incl. 2px box padding each side
+T[0]   = notes[0].getAbsoluteX()                // anchor first note at its natural position
+T[i]   = T[i-1] + max(floor, hw[i-1] + TEXT_GAP + hw[i])
+floor  = NOTE_W      if both adjacent notes are visible
+       = RECITE_FLOOR if either is a transparent reciting intermediate
+```
+`hw[i-1] + TEXT_GAP + hw[i]` is the center-to-center distance leaving exactly `TEXT_GAP` px between
+the two boxes; the `max` with the floor keeps short words from crowding visible noteheads. Then
+offset-calibrate and write `T` onto every TickContext.
+
+**Grand-staff alignment (critical).** The bass voice must **reuse the alto's `T` array**, not
+recompute its own. Bass syllable widths differ from alto, so an independent computation would drift
+the columns. `setVoiceX(bN, spacingT)` applies the alto targets to the bass TickContexts, with the
+bass voice's own offset calibration.
+
+**Scale-to-fit guard.** If `T[last] > ML + SW − NOTE_W`, all offsets from `T[0]` scale down
+proportionally. This is the one case where spacing can drop *below* the floor (rare; many wide
+words on one line). Overflow/wrap was rejected — print pagination assumes fixed line width.
+
+**Constants (the only tuning knobs).** `TEXT_GAP = 6` (min px between adjacent boxes).
+`RECITE_FLOOR = 30` (reciting compression floor; → 0 for maximum compression, → 50 to match cadence
+density).
+
+**Evidence (end-to-end probe).** "Who | for our sakes has ta·ken flesh and Who | speaks through The
+Law": 0 collisions; "speaks"/"through" gap 68px (was overlapping under uniform 50px); reciting run
+323px vs 400px uniform (77px saved); last note 597 < maxX 712 (no overflow).
+
+**Reproducible probe recipe.** JSDOM + `global.document`; load `public/vexflow.js` via
+`new Function('module','exports','window','document', src)(...)`; `Voice` in `SOFT` mode;
+`format([v], N*NOTE_W)`; read positions via `getAbsoluteX()` and rendered noteheads via
+`svg.querySelector('.vf-notehead text').getAttribute('x')`.
+
+**Follows note positions automatically (no extra work):** melisma slurs (`VF.Curve` reads note
+positions at draw), the `//` penultimate marker, and the end-of-verse barline (placed at
+`max(lastNoteEnd, lastSyllableRightEdge, slashRightEdge) + 8`).
