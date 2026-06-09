@@ -1,10 +1,48 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.12.0** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.12.1** | Component: `src/components/tone-trainer.jsx`
 
 ---
 
 ---
+
+## Session summary (Jun 8 2026 — v0.12.1 — Score print round 2: edge buffers, hyphenation, verse barlines)
+
+Three refinements to the standalone score-print renderer (`public/score-print.html`), plus a
+localized payload change in `buildScorePayload`. No pointing-engine changes; regression gate
+stayed 13/13 and `npm run build` clean. All three verified headless against `public/vexflow.js`
+(VexFlow 5.0.0) before commit.
+
+**1 — Edge buffer (`EDGE_PAD=16`).** First syllable was crowding the stave's left line (and the
+clef on system 1) — confirmed from a user screenshot. Fix: after each stave's `draw()`, shift the
+note area right via `stave.setNoteStartX(getNoteStartX() + EDGE_PAD)`. Applied equally to treble
+and bass so the columns stay aligned. Lyrics and bars follow automatically because they anchor to
+`note.getAbsoluteX()`. **VexFlow gotcha:** `setNoteStartX` must run AFTER `draw()` (VexFlow
+computes the note start-X during draw); verified headless that +16 shifts `getAbsoluteX` by exactly
++16 for every note. Note: genuinely over-long verses (content wider than the interior) still
+overflow the right edge — that is the deferred continuous-flow / wrapping work, not solved here.
+
+**2 — Inter-syllable hyphenation + melisma extender.** The score payload did not carry word
+boundaries (roles flatten words → syllables before reaching `rolesWD`). Authoritative boundaries
+live in `line.words` (each word's `sylls`). `buildScorePayload` now walks `rolesWD` against a
+flattened `line.words`, mirroring the renderer's melisma-repeat test, and tags each alto syllable
+with `hyphenAfter` (true ⇔ not the last syllable of its word). The renderer draws a centered hyphen
+(`mkHyphen`) at the midpoint between a syllable with `hyphenAfter` and the next drawn syllable.
+Because melisma repeats are skipped in drawing, a non-final syllable held across a melisma gets its
+hyphen at the midpoint of the held span — i.e. the hyphen doubles as the melisma extender, per the
+user's request. Verified headless: "Si-me-on" → 2 hyphens; "bless"(melisma)+"ed" → hyphen after the
+held note; "Lord Lord" (two identical non-melisma words) → no spurious hyphen (melisma flag guards).
+
+**3 — End-of-verse barlines.** Each `|`-delimited verse = one rendered system. The stave's own
+end-barline (SINGLE / END) sat at the far right edge of the full-width stave, detached from where
+the notes actually end. Replaced it: the stave end bar is now `Barline.type.NONE`, and a single
+vertical bar (`mkVerseBar`) is drawn explicitly at the verse's content end (just after the last
+note, `+ NOTE_W*0.5`). Grand staff spans treble-top → bass-bottom (continuous, grand-staff
+convention); solo spans the treble stave. Drawing at the content position (not the stave edge)
+means the bars will land correctly at each `|` once wrapping puts multiple verses per system.
+Per the user's request every verse ends with a single bar, including the last (the previous thick
+terminal END bar was dropped). Trailing empty staff lines to the right of the bar are the accepted
+interim cost of deferring wrapping.
 
 ## Session summary (Jun 8 2026 — v0.12.0 — Score print feature: SATB grand-staff notation)
 
@@ -74,15 +112,19 @@ one page with no overflow and no clipping.
 `style.height` to the SVG during drawing. The height correction MUST run in a second
 `chunks.forEach` pass AFTER all drawing is complete, or it gets silently overwritten.
 
-### Final geometry (as deployed)
+### Final geometry (as deployed, v0.12.1)
 
 ```
 PW=780, ML=48, SW=714
 TY=30, TH=40
-LYRIC_GAP=119, BASS_Y=189, GRAND_SH=237
+LYRIC_GAP=119, BASS_Y=189, GRAND_SH=235
 TITLE_H=30, BOTTOM_PAD=90
-NOTE_W=47, SYSTEMS_PER_PAGE=4
+NOTE_W=50, SYSTEMS_PER_PAGE=4
+EDGE_PAD=16   (left/right note-area buffer, v0.12.1)
 ```
+
+(Earlier notes listed `NOTE_W=47` / `GRAND_SH=237`; the committed file has used 50 / 235 since
+v0.12.0 — corrected here.)
 
 ### On the horizon (score print)
 
