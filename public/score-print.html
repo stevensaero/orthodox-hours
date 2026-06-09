@@ -307,19 +307,69 @@ function renderScore(payload) {
     v.addTickables(notes);
     return v;
   }
-  // Two-pass lyric render. Pass 1 lays down hyphen "centrelines" — thin rules from the
-  // centre of one syllable to the centre of the next same-word syllable. Pass 2 paints each
-  // syllable's opaque white box + text ON TOP, so the boxes clip both ends of every hyphen.
-  // Note x positions come from getAbsoluteX(), which reflects the compressed formatter
-  // allocation for reciting-section notes — text and noteheads move together. Returns
-  // the right edge of the last drawn syllable (for end-of-verse bar placement).
+  // Two-pass lyric render. Pass 1 lays down hyphen "centrelines". Pass 2 paints
+  // opaque white boxes + text ON TOP to clip the hyphen ends.
+  //
+  // For long reciting runs (4+), the formatter gives equal spacing to same-duration notes
+  // regardless of setWidth, so wide syllables like "Christ" would collide with "meet".
+  // Fix: recompute text x positions using a left-anchored half-width chain that guarantees
+  // a 2px gap between every adjacent pair of boxes regardless of syllable widths.
+  // Note positions from setWidth still compress the total section footprint (staff + notes
+  // move together); text positions are then laid out precisely within that footprint.
   function drawLyrics(svg, alto, aN, lyricY) {
+    // Build x-override map for intermediate reciting syllables.
+    var xOv = {};
+    var k = 0;
+    while (k < alto.length) {
+      if (alto[k].role !== 'recite') { k++; continue; }
+      var rs = k;
+      while (k < alto.length && alto[k].role === 'recite') k++;
+      var re = k - 1;
+      if (k - rs < 4) continue;
+      var nInt = re - rs - 1;
+      if (nInt < 1) continue;
+      // Half-widths of every syllable in the run (index 0 = first anchor, 1..nInt = intermediates, nInt+1 = last anchor)
+      var hw = [];
+      for (var mi = rs; mi <= re; mi++) {
+        var e = alto[mi];
+        hw.push(e.text ? (measW(e.text, e.accent ? '500' : '200') + 4) / 2 : 8);
+      }
+      var firstX = aN[rs].getAbsoluteX();
+      var lastX  = aN[re].getAbsoluteX();
+      // Left-anchored chain: begin just right of the first anchor's box edge.
+      var pos = [];
+      var cx = firstX + hw[0] + 2;  // right edge of first anchor + 2px gap
+      for (var mi = 0; mi < nInt; mi++) {
+        cx += hw[mi + 1];            // step to centre of this intermediate
+        pos.push(cx);
+        cx += hw[mi + 1] + 2;       // step past its right edge + 2px gap
+      }
+      // cx is now the left edge of the clearance zone before the last anchor.
+      // If we've overshot (very wide syllables), compress all inter-box gaps uniformly.
+      var maxLastCenter = lastX - hw[nInt + 1] - 2;
+      if (pos[nInt - 1] > maxLastCenter) {
+        // Recompute with scaled gaps: evenly share available space.
+        var totalBoxW = 0;
+        for (var mi = 0; mi < nInt; mi++) totalBoxW += hw[mi + 1] * 2;
+        var avail = (lastX - hw[nInt + 1] - (firstX + hw[0])) - totalBoxW;
+        var gapUnit = Math.max(0, avail / (nInt + 1));
+        cx = firstX + hw[0] + gapUnit;
+        pos = [];
+        for (var mi = 0; mi < nInt; mi++) {
+          cx += hw[mi + 1];
+          pos.push(cx);
+          cx += hw[mi + 1] + gapUnit;
+        }
+      }
+      for (var mi = 0; mi < nInt; mi++) xOv[rs + 1 + mi] = pos[mi];
+    }
+    // Gather drawn syllables.
     var drawn = [], prev = null;
     for (var i = 0; i < alto.length; i++) {
       var r = alto[i];
       var isRepeat = r.melisma && prev && r.text === prev.text;
       if (r.text && !isRepeat) {
-        var x = aN[i].getAbsoluteX();
+        var x = (xOv[i] !== undefined) ? xOv[i] : aN[i].getAbsoluteX();
         drawn.push({ x: x, w: measW(r.text, r.accent ? '500' : '200') + 4, text: r.text,
                      accent: r.accent === true, hyphenAfter: r.hyphenAfter === true });
       }
