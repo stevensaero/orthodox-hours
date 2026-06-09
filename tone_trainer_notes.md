@@ -1,12 +1,55 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.12.4** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.13.0** | Component: `src/components/tone-trainer.jsx`
 
 ---
 
 ---
 
-## Session summary (Jun 8 2026 — v0.12.3 — Score print: slurs, // bar clearance, masked hyphens; Phrase D bug recorded)
+## Session summary (Jun 8 2026 — v0.13.0 — Score print: text-driven note spacing + reciting-tone abbreviation)
+
+Score-print-only changes (no engine logic touched); gate 13/13. All spacing behaviour verified
+headless against `public/vexflow.js` (VexFlow 5.0.0).
+
+### Reciting-tone abbreviation
+A run of 4+ consecutive `role:'recite'` notes renders with only its first and last noteheads
+visible; intermediate noteheads are styled transparent (`setStyle fill/stroke transparent`).
+OCA convention — the sustained recitation pitch is shown by the two framing noteheads, text between.
+
+### Text-driven note spacing (the headline change)
+Fixed-width note spacing (`NOTE_W` for every note) could not satisfy all word pairs: a uniform
+width wide enough for "speaks·through" wasted space everywhere else, and a narrow width collided
+on wide pairs. Genuine text-driven spacing was needed.
+
+**Key VexFlow findings (headless probes):**
+- `setWidth` is *ignored* by the formatter for equal-duration notes — varying widths produce
+  identical positions to equal widths. Dead end for per-note spacing. (Two probes confirmed.)
+- `setXShift` is *stored* (`getXShift` returns it) but the formatter ignores it post-format —
+  the notehead still renders at the baseline TickContext position. Also a dead end.
+- **`TickContext.setX()` is the working override.** Setting it post-format moves the rendered
+  notehead exactly; relative gaps are preserved precisely. `getAbsoluteX − tickContext.getX` is a
+  constant offset (0 in probes, but measured per-voice for safety), so positions can be set such
+  that `getAbsoluteX` lands exactly on the target — leaving lyric anchoring unchanged.
+
+**Engine (`applyTextSpacing` in score-print.html):**
+- Half-width per syllable `hw[i] = (measW(text, weight) + 4) / 2`.
+- Targets `T[0] = notes[0].getAbsoluteX()`, `T[i] = T[i-1] + max(floor, hw[i-1] + TEXT_GAP + hw[i])`.
+- Floor is `NOTE_W` (50) between two visible noteheads, `RECITE_FLOOR` (30) when either side is a
+  transparent reciting intermediate (no notehead to crowd → may pack tighter).
+- Scale-to-fit guard: if `T[last] > ML + SW − NOTE_W`, all offsets from `T[0]` scale down
+  proportionally so the system never overflows the stave.
+- `setVoiceX(notes, T)` applies offset-calibrated positions; the bass voice reuses the alto's `T`
+  so grand-staff columns stay aligned.
+
+**Tunable constants:** `TEXT_GAP = 6` (min clearance between boxes), `RECITE_FLOOR = 30`
+(reciting compression floor; → 0 for max compression, → 50 to match cadence density).
+
+**Cleanup:** removed the interim `xOv` lyric-distribution workaround (~40 lines, used across
+v0.12.x to compensate for fixed-width spacing). Syllables now ride their own text-spaced note
+positions via `getAbsoluteX` directly. Collisions impossible by construction, reciting and
+cadence alike.
+
+
 
 Score-print-only changes (no engine logic touched); gate 13/13, build clean, all three verified
 headless against `public/vexflow.js` (VexFlow 5.0.0).

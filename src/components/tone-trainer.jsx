@@ -10,11 +10,23 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.12.4";
+export const TONE_TRAINER_VERSION = "v0.13.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.13.0",
+    date: "June 2026",
+    summary: "Score print — text-driven note spacing + reciting-tone abbreviation",
+    items: [
+      "feat: reciting-tone abbreviation — a run of 4+ consecutive recitation notes now renders with only its first and last noteheads visible; the intermediate noteheads are transparent (OCA convention), with the recited text distributed across the run.",
+      "feat: text-driven note spacing — notes are no longer fixed-width. After VexFlow formats, each note's TickContext X is overridden to a text-aware target: spacing between any adjacent pair is max(floor, halfW(prev) + TEXT_GAP + halfW(this)). Floor is NOTE_W (50px) between two visible noteheads, RECITE_FLOOR (30px) when a transparent reciting intermediate is involved. Wide cadence pairs (e.g. 'speaks through') get exactly the room they need; reciting runs compress to text width. Lyric collisions are impossible by construction.",
+      "arch: VexFlow ignores per-note setWidth for equal-duration notes (proven by headless probe) — TickContext.setX is the only reliable per-note position override. The bass voice mirrors the alto's target-X array so grand-staff columns stay aligned.",
+      "change: scale-to-fit guard — if a line's text-driven width would overflow the stave, all offsets compress proportionally so the system never runs off the page.",
+      "cleanup: removed the interim xOv lyric-distribution workaround (~40 lines); syllables now ride their own text-spaced note positions directly via getAbsoluteX.",
+    ],
+  },
   {
     version: "v0.12.4",
     date: "June 2026",
