@@ -414,16 +414,25 @@ function renderScore(payload) {
       }
     })();
 
-    // Per-note width: intermediate reciting notes are sized to their syllable's measured
-    // glyph width (min 20px + 8px clearance) so the formatter compresses their allocation.
-    // First/last reciting notes and all cadence notes stay at NOTE_W. Treble and bass share
-    // the same noteWidths[] and totalLineW so grand-staff columns stay aligned.
+    // Per-note width: two-pass computation so adjacent boxes never overlap.
+    // Pass 1: measure every syllable's box half-width (measW + 4px total box / 2).
+    // Pass 2: for each intermediate reciting note, width = halfW(self) + 2px + halfW(next),
+    //         guaranteeing exactly 2px gap between the self box and the next box, whatever
+    //         the syllable widths are. First/last reciting anchors and cadence: NOTE_W.
+    var halfWidths = [];
+    for (var ai = 0; ai < line.alto.length; ai++) {
+      var hwR = line.alto[ai];
+      halfWidths.push(hwR.text ? (measW(hwR.text, hwR.accent ? '500' : '200') + 4) / 2 : 10);
+    }
     var noteWidths = [], totalLineW = 0;
     for (var ai = 0; ai < line.alto.length; ai++) {
-      var nwR = line.alto[ai];
-      var nw = reciteIntermediate.has(ai)
-        ? Math.max(20, (nwR.text ? Math.round(measW(nwR.text, nwR.accent ? '500' : '200')) : 0) + 8)
-        : NOTE_W;
+      var nw;
+      if (reciteIntermediate.has(ai)) {
+        var hwNext = ai + 1 < halfWidths.length ? halfWidths[ai + 1] : halfWidths[ai];
+        nw = Math.max(20, Math.ceil(halfWidths[ai] + 2 + hwNext));
+      } else {
+        nw = NOTE_W;
+      }
       noteWidths.push(nw);
       totalLineW += nw;
     }
