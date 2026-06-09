@@ -1,8 +1,98 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.11.0** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.12.0** | Component: `src/components/tone-trainer.jsx`
 
 ---
+
+---
+
+## Session summary (Jun 8 2026 — v0.12.0 — Score print feature: SATB grand-staff notation)
+
+### Overview
+
+Built out and refined the standalone score-print feature: the ♩ Score button in the
+trainer opens `public/score-print.html` in a new tab (payload passed via postMessage),
+rendering SATB grand-staff notation with VexFlow 5.0.0 using locally-hosted Bravura and
+Academico fonts. This is a static file in `dist/`, not bundled JS — edits go directly to
+`public/score-print.html`. Most of the session was spent resolving print pagination and a
+persistent bottom-stave clipping bug.
+
+### Features delivered
+
+**Page-chunked renderer.** `SYSTEMS_PER_PAGE = 4`; lines split into chunks, each rendered
+into its own `.score-page` div with its own VexFlow SVG. CSS `page-break-after: always`
+(except `:last-child`) plus `break-inside: avoid` gives clean pagination.
+
+**Title/subtitle as in-SVG text.** Title and subtitle are rendered as SVG `<text>`
+elements at the top of the first chunk's SVG (title y=22, subtitle y=42), NOT as separate
+HTML elements. This was the decisive fix for the title/page-1 break fighting — there are now
+zero HTML/SVG boundaries for Chrome to break across. `TITLE_H=30` reserves the top band and
+offsets systems down on chunk 0 only.
+
+**Equal note spacing.** `NOTE_W=47` fixed width per note regardless of duration (chant
+convention); formatter called with `noteCount × NOTE_W`.
+
+**Font.** Inter from Google Fonts (`wght@200;300;400`, `display=swap`) with fallback chain
+`'Inter','Helvetica Neue',Helvetica,Arial,sans-serif` — degrades gracefully offline. Lyric
+weight 200 (extralight), accented syllables 500 (medium). User found heavier weights "too
+bold"; 200 resolved it. Applied to body, toolbar, lyric text, // markers, and title/subtitle.
+
+**Clef/key gating.** Treble clef, bass clef, and key signature render ONLY on the first
+system of the first page (`chunkIdx===0 && li===0`); continuation systems start with a plain
+stave left barline, matching OCA score convention.
+
+**Barline + accent markup (two-path, never crosses).** Director path: `parseTruthLines`
+reads raw `[brackets]` (accent), `|` (single barline), `//` (penultimate marker) and
+annotates `barlineAfter` before stripping markers. Machine path: `buildScorePayload` derives
+`barlineAfter` from phrase structure (penultimate = line before the Final phrase). `//`
+rendered in the lyric row after the last note of the penultimate line (both grand and solo
+paths).
+
+### The clipping bug — root cause and resolution
+
+The bottom bass stave was clipped on EVERY page regardless of system count. The decisive
+clue was that a 2-system page clipped identically to a 4-system page — proving it was NOT a
+page-budget/overflow problem (a 2-system SVG is nowhere near the 960px page limit) but an
+**SVG-box clip**: the SVG height was drawn shorter than the content inside it. Bass note
+stems extend ~35px below the bottom staff line, and the old `+40` end buffer was entirely
+consumed by the stave's own geometry, leaving only ~3px of slack.
+
+**Fix:** introduced `BOTTOM_PAD=90` (named constant, used in both the `ren.resize` call and
+the post-draw height-correction pass so they can never drift). This gives 53px of real
+clearance below the last bass stave's stems on every page. Lyric gap was explicitly NOT
+touched — it is irrelevant to an SVG-box clip.
+
+### Print budget (8.5×11 letter)
+
+`@page margin 0.5in` → 7.5×10in printable = 720×960px @96dpi. SVG native width `PW=780`;
+print CSS `width:100%` scales to 720px and `height:auto` lets the viewBox aspect ratio set
+height proportionally. Page-1 budget with title: `GRAND_SH*4 + TITLE_H + BOTTOM_PAD` viewBox
+→ scales to ~942px, comfortably under 960. Verified in practice: 4 systems + title render on
+one page with no overflow and no clipping.
+
+**Critical VexFlow gotcha:** VexFlow's `draw()` re-applies its own inline `style.width`/
+`style.height` to the SVG during drawing. The height correction MUST run in a second
+`chunks.forEach` pass AFTER all drawing is complete, or it gets silently overwritten.
+
+### Final geometry (as deployed)
+
+```
+PW=780, ML=48, SW=714
+TY=30, TH=40
+LYRIC_GAP=119, BASS_Y=189, GRAND_SH=237
+TITLE_H=30, BOTTOM_PAD=90
+NOTE_W=47, SYSTEMS_PER_PAGE=4
+```
+
+### On the horizon (score print)
+
+- Latent 4-system+title print overflow is theoretically possible at worst-case note density
+  but did not manifest in practice. If it ever does, fix by system count (first/title page
+  holds 3 systems, others 4) — NOT by squeezing stave spacing.
+- True continuous-flow layout (multiple phrases per system with wrap at phrase boundaries,
+  fixed NOTE_W bin-packing) remains documented but unimplemented; the 4-systems-per-page
+  chunking is the current shipped approach.
+- Soprano voice on treble (stem up) and tenor on bass (stem down) not yet rendered in print.
 
 ## Session summary (Jun 2026 — v0.11.0 — Tone 1 duration logic rewrite)
 

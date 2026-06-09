@@ -26,6 +26,12 @@ const TRAINER_RELEASE_NOTES = [
       "feat: public/score-print.html — standalone VexFlow page. CDN-loaded (zero bundle impact). Grand staff: treble S+A, bass T+B. Inter-stave lyrics on alto BOTTOM annotation. Melisma slurs via VF.Curve.",
       "feat: Reduced score for tones without full SATB (Tone 3 renders alto only).",
       "arch: postMessage handshake — opener sends payload after score-print-ready signal.",
+      "fix: page-chunked renderer (SYSTEMS_PER_PAGE=4) — each chunk its own .score-page SVG; clean print pagination via page-break-after + break-inside:avoid.",
+      "fix: title/subtitle rendered as in-SVG text on page 1 — eliminates HTML/SVG page-break fighting.",
+      "fix: bottom bass-stave clipping resolved via BOTTOM_PAD=90 (SVG-box clearance below stems); SVG height corrected in post-draw pass (VexFlow overwrites inline style during draw).",
+      "fix: clef + key signature only on first system of first page; continuation systems plain.",
+      "style: Inter font (Google Fonts, offline fallback), lyric weight 200 / accent 500; equal note spacing NOTE_W=47.",
+      "style: print budget tuned to 8.5x11 letter (720x960px printable); 4 systems + title fit one page.",
     ],
   },
   {
