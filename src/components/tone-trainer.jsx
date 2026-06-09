@@ -10,11 +10,27 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.14.0";
+export const TONE_TRAINER_VERSION = "v0.15.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.15.0",
+    date: "June 2026",
+    summary: "Tenor melisma-hold — constant-pitch alto melisma collapses to one held tenor note (Tone 1); lexicon prophets fix",
+    items: [
+      "feat: tenor melisma-hold. When the alto sings a melisma (multiple notes on one syllable) and the tenor sits on a single constant pitch across it, the tenor renders as ONE held note rather than one note per alto note. Score-observed for Tone 1: a 2-note alto melisma (do·re = 2×H) → tenor holds one whole note. Wired identically through all three tenor consumers (audio, chips, score payload) via a shared deriveTenorRolesWD() so the paths cannot drift.",
+      "arch: shared module-scope helpers — mapTenorPitch() (the per-role pitch map, previously duplicated in all three sites) and deriveTenorRolesWD() (pitch-map + collapse). The collapse fires only when (a) consecutive melisma entries share the same syllable text, (b) the tenor pitch is constant across the span, and (c) the summed duration maps to a single representable note value. The maximal constant-pitch run is the decision unit: it collapses whole or not at all (never a sub-span).",
+      "decision: guard follows the choir director's two-question rule — the tenor sustains when neither its pitch nor the syllable changes, and rearticulates otherwise. Syllable change → new note even on the same pitch (handled by the same-syllable-text guard, so a held pitch across multiple syllables is NOT collapsed). Pitch change → the tenor's own melisma, never collapsed (Tone 1 Final do·ti·la → tenor la·si·mi stays three notes).",
+      "decision: Tone 1 Phrase B 3-note do·re·ti melisma (cadCount=1) is one syllable with constant tenor pitch (sol), so by the director's rule it SUSTAINS — rendered as a dotted whole note (W· = 3H), not three separate half notes. The harmony caveat (rearticulate if harmony moves) does not apply: the tenor's position is fixed to sol by our cadMap logic, so the bass moving the harmony beneath it produces no articulation the tenor would make. durKey carries W·; sumDurKeys works in half-note units so 3H → W· (dotted whole). Confirmed in choir_director_review.md.",
+      "feat: duration vocabulary extended with W· (dotted whole = 3H) — DURKEY_BEATS/BEATS_DURKEY (3), CHIP_W (120px), and score-print DUR ('wd', the duration that yields true 3H ticks; 'w'+Dot.buildAndAttach draws the dot but leaves ticks at a plain whole). Score-print renders W· as 'wd' + one dot glyph; verified headless to match a 3-note (3H) alto melisma in joinVoices/format.",
+      "feat: score-print SATB alignment for collapsed tenor. The columnar renderer no longer requires tenor.length === bass.length; each tenor entry carries spanStart (the alto column it begins on) + spanCount, and a held note anchors at spacingT[spanStart] so the whole note sits under the first note of the melisma it spans. Reciting-intermediate ghost-hiding now keys off spanStart (the alto column) rather than the tenor array index, which the collapse shifts. Verified headless: W-vs-(H,H) joinVoices+format+setVoiceX renders clean and anchors the held note at the first melisma column.",
+      "note: chips and audio needed no alignment work — chip rows are independent flex rows (a collapsed entry has melisma:false, so it renders as one chip at its durKey width, e.g. W → 90px), and audio simply plays fewer notes with summed durations.",
+      "arch: Tone-1 scoped by construction — TENOR_RULES only has [1], so the collapse only ever touches Tone 1 tenor entries. Per the prime directive it is NOT ported to other tones; tenor hold behaviour must be re-verified from each tone's own score before relying on it.",
+      "fix: lexicon — prophets/prophet syllabification corrected Prop·hets/Prop·het → Proph·ets/Proph·et (conventional boundary; same 2-syllable count and first-syllable stress, so pointing is unchanged). Build tool is additive (skips existing keys) so the hand-edit survives regeneration.",
+    ],
+  },
   {
     version: "v0.14.0",
     date: "June 2026",
@@ -956,7 +972,7 @@ const chipH = (sol) => CHIP_BASE_H + Math.max(0, PITCH_SCALE.indexOf(sol)) * CHI
 
 // Chip width per duration key — matches sandbox DUR_SEC pixel equivalents
 // Widths are BPM-independent visual units (not seconds)
-const CHIP_W = { Q: 30, H: 50, "H·": 68, W: 90 };
+const CHIP_W = { Q: 30, H: 50, "H·": 68, W: 90, "W·": 120 };
 // CHIP_W_RECITE removed — chip width always derived from durKey via CHIP_W.
 const CHIP_GAP = 10;      // gap between chips in px
 const CHIP_MELISMA_GAP = 1; // tight gap between melisma sub-chips
@@ -1858,6 +1874,86 @@ const TENOR_RULES = {
       octaveDiv: { la: 1, si: 1 },
     },
   },
+};
+
+// ── Tenor derivation: shared pitch-map + melisma-hold collapse ───────────────
+// Used by all three tenor consumers (audio lineToNotes_tenor, chip render,
+// score payload) so the three paths cannot drift. Scoped naturally to Tone 1
+// because TENOR_RULES only has [1]; the collapse only ever touches tenor entries.
+//
+// PRIME DIRECTIVE note: this is Tone-1 behaviour observed from score evidence
+// (two-note alto melisma → tenor holds one whole note). It is NOT ported to other
+// tones — when tenor rules are added for tones 2–8, re-verify hold behaviour from
+// that tone's own score before relying on this collapse.
+
+// Map one alto rolesWD entry's pitch to its tenor pitch per the phrase rules.
+const mapTenorPitch = (r, rules) => {
+  const orig = r.pitches[0];
+  if (r.role === "recite" || r.role === "inton") return rules.recite;
+  if (r.role === "prep")    return rules.prepMap?.[orig]    ?? orig;
+  if (r.role === "preslur") return rules.preslurMap?.[orig] ?? orig;
+  if (r.role === "cad" || r.role === "cad1") return rules.cadMap?.[orig] ?? orig;
+  return orig;
+};
+
+// Duration arithmetic in half-note units, so the collapse is bpm-independent
+// (every rolesWD entry already carries a durKey). sumDurKeys returns a single
+// representable durKey when the sum lands exactly on one note value (incl. the
+// dotted values H· = 1.5 and W· = dotted whole = 3), otherwise null. A sum with no
+// single value (e.g. 4×H = 2 whole notes) is left as separate notes; for Tone 1 the
+// only constant-pitch melisma sums are 2H → W and 3H → W·, so both collapse.
+const DURKEY_BEATS = { Q: 0.5, H: 1, "H·": 1.5, W: 2, "W·": 3 };
+const BEATS_DURKEY = { 0.5: "Q", 1: "H", 1.5: "H·", 2: "W", 3: "W·" };
+const sumDurKeys = (keys) => {
+  const total = keys.reduce((s, k) => s + (DURKEY_BEATS[k] ?? 0), 0);
+  return BEATS_DURKEY[total] ?? null;
+};
+
+// Build tenor rolesWD from alto rolesWD: 1:1 pitch-map, then collapse a constant-
+// pitch melisma span (same syllable text, same tenor pitch, ≥2 notes) into a single
+// held note. This is the choir director's rule: the tenor sustains when neither its
+// pitch nor the syllable changes; it rearticulates when the syllable changes (a new
+// syllable = a new note, even on the same pitch — handled by the same-text guard) or
+// when its pitch changes (the tenor's own melisma, e.g. Final la·si·mi — never
+// collapsed). The held note's duration is the sum: 2H → whole, 3H → dotted whole (W·).
+// Each returned entry carries spanStart (the alto column index where it begins) and
+// spanCount (how many alto notes it spans) so the columnar score renderer can anchor
+// a held note across the alto melisma. A sum with no single value (4H+, not present in
+// Tone 1) falls back to separate notes. See choir_director_review.md.
+const deriveTenorRolesWD = (rolesWD, rules) => {
+  const mapped = rolesWD.map((r, i) => ({ ...r, pitches: [mapTenorPitch(r, rules)], _idx: i }));
+  const out = [];
+  let i = 0;
+  while (i < mapped.length) {
+    const e = mapped[i];
+    if (e.melisma) {
+      // maximal run of melisma entries with the same syllable text AND same tenor pitch
+      let j = i;
+      while (j + 1 < mapped.length &&
+             mapped[j + 1].melisma &&
+             mapped[j + 1].text === e.text &&
+             mapped[j + 1].pitches[0] === e.pitches[0]) j++;
+      const spanCount = j - i + 1;
+      if (spanCount >= 2) {
+        // The maximal run is the decision unit: collapse it whole when its summed
+        // duration maps to a single representable value (incl. W· for 3H), otherwise
+        // emit every note in the run separately. (Never collapse a sub-span.)
+        const dk = sumDurKeys(mapped.slice(i, j + 1).map(x => x.durKey));
+        if (dk) {
+          const sumDur = mapped.slice(i, j + 1).reduce((s, x) => s + (x.dur || 0), 0);
+          out.push({ ...e, dur: sumDur, durKey: dk, melisma: false,
+                     spanStart: e._idx, spanCount });
+        } else {
+          for (let k = i; k <= j; k++) out.push({ ...mapped[k], spanStart: mapped[k]._idx, spanCount: 1 });
+        }
+        i = j + 1;
+        continue;
+      }
+    }
+    out.push({ ...e, spanStart: e._idx, spanCount: 1 });
+    i++;
+  }
+  return out;
 };
 
 const BASS_RULES = {
@@ -3097,21 +3193,8 @@ export default function ToneTrainer() {
 
     const rolesWD = lineToRolesWithDuration(line);
 
-    const tenorRolesWD = rolesWD.map(r => {
-      let tenorPitch;
-      if (r.role === "recite" || r.role === "inton") {
-        tenorPitch = rules.recite;
-      } else if (r.role === "prep") {
-        tenorPitch = rules.prepMap?.[r.pitches[0]] ?? r.pitches[0];
-      } else if (r.role === "preslur") {
-        tenorPitch = rules.preslurMap?.[r.pitches[0]] ?? r.pitches[0];
-      } else if (r.role === "cad" || r.role === "cad1") {
-        tenorPitch = rules.cadMap?.[r.pitches[0]] ?? r.pitches[0];
-      } else {
-        tenorPitch = r.pitches[0];
-      }
-      return { ...r, pitches: [tenorPitch] };
-    });
+    // Shared pitch-map + melisma-hold collapse (constant-pitch span → one held note).
+    const tenorRolesWD = deriveTenorRolesWD(rolesWD, rules);
 
     const notes = [];
     const peak = (r) => (r.role === "cad" || r.role === "cad1") && r.anchor ? 0.38 : 0.33;
@@ -3989,15 +4072,14 @@ export default function ToneTrainer() {
       // Tenor: same substitution pattern as bass using TENOR_RULES
       const tenorRules = TENOR_RULES[activeTone]?.[line.phrase];
       const TENOR_OCTAVE_DIV_LOCAL = { la:1, si:1, ti:2, do:2, di:2, re:2, mi:2, fa:2, sol:2 };
-      const tenorEntries = tenorRules ? rolesWD.map(r => {
-        let p;
-        const orig = r.pitches[0];
-        if (r.role === "recite" || r.role === "inton") p = tenorRules.recite;
-        else if (r.role === "prep")    p = tenorRules.prepMap?.[orig]   ?? orig;
-        else if (r.role === "preslur") p = tenorRules.preslurMap?.[orig] ?? orig;
-        else                           p = tenorRules.cadMap?.[orig]    ?? orig;
+      // Shared pitch-map + melisma-hold collapse. Collapsed (held) entries carry
+      // spanStart (alto column index) + spanCount so the columnar score renderer can
+      // anchor a held tenor note across the alto melisma it covers.
+      const tenorEntries = tenorRules ? deriveTenorRolesWD(rolesWD, tenorRules).map(r => {
+        const p = r.pitches[0];
         const octaveDiv = tenorRules.octaveDiv?.[p] ?? TENOR_OCTAVE_DIV_LOCAL[p] ?? 2;
-        return { pitch: p, durKey: r.durKey, melisma: r.melisma === true, octaveDiv };
+        return { pitch: p, durKey: r.durKey, melisma: r.melisma === true, octaveDiv,
+                 spanStart: r.spanStart, spanCount: r.spanCount };
       }) : null;
 
       payload.lines.push({
@@ -4930,21 +5012,8 @@ export default function ToneTrainer() {
           if (!showTenor && !showTenorGhost) return null;
           const trules = TENOR_RULES[activeTone]?.[line.phrase];
           if (!trules) return null;
-          return rolesWD.map(r => {
-            let tenorPitch;
-            if (r.role === "recite" || r.role === "inton") {
-              tenorPitch = trules.recite;
-            } else if (r.role === "prep") {
-              tenorPitch = trules.prepMap?.[r.pitches[0]] ?? r.pitches[0];
-            } else if (r.role === "preslur") {
-              tenorPitch = trules.preslurMap?.[r.pitches[0]] ?? r.pitches[0];
-            } else if (r.role === "cad" || r.role === "cad1") {
-              tenorPitch = trules.cadMap?.[r.pitches[0]] ?? r.pitches[0];
-            } else {
-              tenorPitch = r.pitches[0];
-            }
-            return { ...r, pitches: [tenorPitch], phraseRules: trules };
-          });
+          // Shared pitch-map + melisma-hold collapse; tag phraseRules for chip height/audio.
+          return deriveTenorRolesWD(rolesWD, trules).map(r => ({ ...r, phraseRules: trules }));
         })();
 
         // Tenor height map — unified bass+tenor map; tenor pitches always shallower than bass.

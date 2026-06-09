@@ -1,8 +1,69 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.14.0** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.15.0** | Component: `src/components/tone-trainer.jsx`
 
 ---
+
+---
+
+## Session summary (Jun 9 2026 — v0.15.0 — Tenor melisma-hold + lexicon prophets fix)
+
+Gate 13/13, build clean. Tenor now **holds** across a constant-pitch alto melisma instead of
+articulating one note per alto note. Wired identically through all three tenor consumers via a
+shared module-scope `deriveTenorRolesWD()` so the paths cannot drift.
+
+### Shared collapse (module scope, near TENOR_RULES)
+- `mapTenorPitch(r, rules)` — the per-role pitch map (recite/inton→recite, prep→prepMap,
+  preslur→preslurMap, cad/cad1→cadMap, else passthrough), previously duplicated verbatim in all
+  three sites.
+- `sumDurKeys(keys)` — duration arithmetic in **half-note units** (`DURKEY_BEATS = {Q:.5,H:1,H·:1.5,W:2}`),
+  returns a single durKey only when the sum lands exactly on one value, else **null**. This is why
+  2H→W collapses but 3H→null (no collapse). Avoids the `durKey` trap: `durKey` has no branch above
+  W and mis-maps 3H to "Q".
+- `deriveTenorRolesWD(rolesWD, rules)` — 1:1 pitch-map, then collapse a **maximal** run of melisma
+  entries with the same syllable text AND same tenor pitch when `sumDurKeys` is non-null. The run is
+  the decision unit: collapse whole or emit all separately — **never a sub-span** (a 3H run stays 3
+  notes; it does not become H + W). Each output entry carries `spanStart` (alto column index) +
+  `spanCount` for the columnar score renderer.
+
+### Guard = constant tenor pitch
+A span whose tenor pitch CHANGES is the tenor's own melisma → never collapsed. Tone 1 Final
+`do·ti·la` maps to tenor `la·si·mi` (moving) → three separate notes. The 2-note `do·re`/`re·do`/`ti·do`
+holds (constant sol, 2H) → one whole note. Verified against all four Tone 1 cases (B cadCount=2,
+B cadCount=1, D, Final).
+
+### 3-note do·re·ti (Phrase B cadCount=1) — sustains as a dotted whole (W·)
+Per the choir director's rule (received this session): the tenor sustains when neither its
+pitch nor the syllable changes. The `do·re·ti` melisma is one syllable with constant tenor
+pitch (sol), so it **sustains** — rendered as a **dotted whole note** (`W·` = 3H), not three
+separate half notes. The harmony caveat (rearticulate if harmony moves) does not apply: the
+tenor's position is fixed to sol by the cadMap logic, so the bass moving the harmony beneath
+it produces no articulation the tenor itself makes. Dotted whole is more accurate than tied
+W+H (no articulation to voice on the half); tied W+H is the fallback if W· ever fails to
+render (it does not). Duration vocabulary extended: `DURKEY_BEATS`/`BEATS_DURKEY` (W·=3),
+`CHIP_W` (W·=120px), score-print `DUR` (W·→`'wd'`, the duration that yields true 3H ticks —
+`'w'`+`Dot.buildAndAttach` draws the dot but leaves ticks at a plain whole). Resolves
+choir_director_review.md item 1 (CONFIRMED/CHANGED).
+
+### Consumers
+- **Audio** (`lineToNotes_tenor`), **chips** (tenor IIFE), **payload** (`buildScorePayload`): all call
+  `deriveTenorRolesWD`. Chips/audio need no alignment work — chip rows are independent flex rows (a
+  collapsed entry is `melisma:false` → one chip at its durKey width, W=90px), audio plays fewer notes
+  with summed durations.
+- **Score-print** (`public/score-print.html`): dropped the `tenor.length === bass.length` gate;
+  each tenor note anchors at `spacingT[spanStart]` (held note sits under the first melisma note);
+  reciting-intermediate ghost-hiding keys off `spanStart` (alto column), not the tenor array index
+  (which the collapse shifts). Verified headless: `W`-vs-`(H,H)` joinVoices+format+setVoiceX renders
+  clean, held note anchored at the first melisma column (X=165=bass col0).
+
+### Prime-directive scope
+Tone-1 only by construction — `TENOR_RULES` has only `[1]`, so the collapse only ever touches Tone 1
+tenor entries. NOT ported to other tones; re-verify per tone before relying on it.
+
+### Also
+- Lexicon: `prophets`/`prophet` corrected `Prop·hets`/`Prop·het` → `Proph·ets`/`Proph·et` (committed
+  separately as `6d77714`, no bump — folded into this version's notes). Same syllable count + stress,
+  pointing unchanged.
 
 ---
 

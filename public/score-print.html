@@ -209,7 +209,7 @@ function tenorVFPitch(sol, div, cfg) {
   var shift = Math.round(Math.log2(2 / (div || 2)));  // ÷2→0, ÷1→+1, ÷4→-1
   return staveKey(sol, base + shift, cfg);
 }
-var DUR = { Q:'q', H:'h', 'H·':'h', W:'w' };
+var DUR = { Q:'q', H:'h', 'H·':'h', W:'w', 'W·':'wd' };
 
 // ── Page geometry ──────────────────────────────────────────────────────
 // One stave per system when only alto; two staves (grand staff) when bass present.
@@ -339,7 +339,9 @@ function renderScore(payload) {
     if (clef) opts.clef = clef;
     var n = new VF.StaveNote(opts);
     n.setStemDirection(stem);
-    if (durKey==='H·') VF.Dot.buildAndAttach([n]);
+    // H· uses 'h' + dot (tick value is masked by SOFT mode + setVoiceX); W· uses the
+    // 'wd' duration above (true 3H ticks, matching a 3-note alto melisma) + this dot glyph.
+    if (durKey==='H·' || durKey==='W·') VF.Dot.buildAndAttach([n]);
     return n;
   }
   // Reciting intermediates render NOTHING (OCA abbreviation: only first/last noteheads of a
@@ -618,7 +620,10 @@ function renderScore(payload) {
     bs.setNoteStartX(bs.getNoteStartX() + EDGE_PAD);
 
     if (line.bass) {
-      var hasTen = line.tenor && line.tenor.length === line.bass.length;
+      // Tenor may be SHORTER than bass: a constant-pitch alto melisma collapses to one
+      // held tenor note (e.g. 2×H alto → one W tenor). Each tenor entry carries spanStart
+      // (the alto column it begins on) + spanCount, so it no longer maps 1:1 to bass index.
+      var hasTen = line.tenor && line.tenor.length > 0;
       var bN = [];
       for (var bi = 0; bi < line.bass.length; bi++) {
         var br = line.bass[bi];
@@ -628,12 +633,14 @@ function renderScore(payload) {
           : mkNote(bassVFPitch(br.pitch, br.octaveDiv, cfg), br.durKey, -1, 'bass');
         bN.push(bn);
       }
-      // Tenor notes (stems up). 1:1 with bass index; same reciting-intermediate hiding.
+      // Tenor notes (stems up). Reciting-intermediate hiding keys off the alto column
+      // (trn.spanStart), not the tenor array index, since the collapse shifts indices.
       var tN = [];
       if (hasTen) {
         for (var ti2 = 0; ti2 < line.tenor.length; ti2++) {
           var trn = line.tenor[ti2];
-          var tn = reciteIntermediate.has(ti2)
+          var tcol = (trn.spanStart != null) ? trn.spanStart : ti2;
+          var tn = reciteIntermediate.has(tcol)
             ? mkGhost(trn.durKey)
             : mkNote(tenorVFPitch(trn.pitch, trn.octaveDiv, cfg), trn.durKey, 1, 'bass');
           tN.push(tn);
@@ -646,7 +653,11 @@ function renderScore(payload) {
       new VF.Formatter().joinVoices(bassVoices).format(bassVoices, totalLineW);
       // Mirror the alto's text-driven X positions so treble/bass columns stay aligned.
       setVoiceX(bN, spacingT);
-      if (hasTen) setVoiceX(tN, spacingT);
+      // Tenor: a held (collapsed) note anchors at the alto column its span begins on
+      // (spanStart), so the whole note sits under the first note of the melisma it spans.
+      if (hasTen) setVoiceX(tN, line.tenor.map(function(e, k) {
+        return spacingT[(e.spanStart != null) ? e.spanStart : k];
+      }));
       bassVoice.draw(ctx, bs);
       if (tenVoice) tenVoice.draw(ctx, bs);
       // Bass melisma slurs — bass moves across pitches on a held syllable. Arc BELOW (invert
