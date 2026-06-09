@@ -243,6 +243,8 @@ function renderScore(payload) {
 
   // TITLE_H: vertical space reserved at top of first SVG for title + subtitle
   var TITLE_H = 30;
+  // BOTTOM_PAD: clearance below last bass stave so stems are never clipped by SVG box
+  var BOTTOM_PAD = 90;
 
   chunks.forEach(function(chunkLines, chunkIdx) {
     var pageDiv = document.createElement('div');
@@ -253,7 +255,7 @@ function renderScore(payload) {
 
     var ren = new VF.Renderer(wrap, VF.Renderer.Backends.SVG);
     var titleOffset = (chunkIdx === 0) ? TITLE_H : 0;
-    ren.resize(PW, SH * chunkLines.length + titleOffset + 40);
+    ren.resize(PW, SH * chunkLines.length + titleOffset + BOTTOM_PAD);
     var ctx = ren.getContext();
 
     var lines = chunkLines; // shadow outer lines for the loop below
@@ -486,7 +488,7 @@ function renderScore(payload) {
   // VexFlow re-applies inline style during draw() — must correct after.
   chunks.forEach(function(chunkLines, chunkIdx) {
     var titleOffset = (chunkIdx === 0) ? TITLE_H : 0;
-    var svgH = SH * chunkLines.length + titleOffset + 40;
+    var svgH = SH * chunkLines.length + titleOffset + BOTTOM_PAD;
     var pageDiv = canvas.children[chunkIdx];
     var svg = pageDiv ? pageDiv.querySelector('svg') : null;
     if (svg) {
