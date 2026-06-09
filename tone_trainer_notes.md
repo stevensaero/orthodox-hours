@@ -32,11 +32,12 @@ shifts by `log2(2/div)`, so the Final phrase's ÷1 la/si rise an octave.
   as C#/4 for now — needs score verification of the correct si notation. Pre-existing data
   inconsistency, not a rendering bug.
 
-### Soprano melisma slurs
-Alto slur loop factored into `drawMelismaSlurs(notes, altoEntries)`: group by alto melisma/text,
-draw the curve on whichever moving voice's notes are passed (alto + soprano). Tenor/bass are
-intentionally unslurred — they hold a reciting pitch rather than melodically melisma, so a slur
-over repeated identical pitches would read as a tie.
+### Melisma slurs
+Alto slur loop factored into `drawMelismaSlurs(notes, altoEntries, invert)`: group by alto
+melisma/text, draw the curve on whichever moving voice's notes are passed. Alto + soprano arc
+above (invert true); **bass arcs below** (invert false) as the bottom voice, clear of the tenor.
+Tenor is intentionally unslurred — it holds a reciting pitch rather than melodically melisma, so a
+slur over repeated identical pitches would read as a tie.
 
 ### Reciting intermediates → GhostNote (ledger-dash fix)
 The OCA reciting abbreviation hides intermediate noteheads (only first/last of a 4+ run show).

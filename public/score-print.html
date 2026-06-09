@@ -428,20 +428,23 @@ function renderScore(payload) {
   // text. Close (draw) the open group's curve on any boundary — a non-melisma note, a
   // different-text melisma note (back-to-back groups), or the end of the line. Grouping
   // is driven by the alto entries (the syllable-level melisma/text source); the curve is
-  // drawn on whichever voice's notes are passed (alto or soprano — 1:1 index-aligned).
-  function drawMelismaSlurs(notes, altoEntries) {
+  // drawn on whichever voice's notes are passed (alto/soprano/bass — 1:1 index-aligned).
+  // invert (default true) arcs the slur above; pass false for the bottom voice (bass) to
+  // arc below, clear of the voice above.
+  function drawMelismaSlurs(notes, altoEntries, invert) {
+    var inv = (invert === undefined) ? true : invert;
     var ms = null;
     for (var i = 0; i < altoEntries.length; i++) {
       var ar = altoEntries[i];
       var inSameGroup = ms !== null && ar.melisma && ar.text === altoEntries[ms].text;
       if (ms !== null && !inSameGroup) {
-        if (i - 1 > ms) { try { new VF.Curve(notes[ms], notes[i - 1], { invert: true }).setContext(ctx).draw(); } catch(e) {} }
+        if (i - 1 > ms) { try { new VF.Curve(notes[ms], notes[i - 1], { invert: inv }).setContext(ctx).draw(); } catch(e) {} }
         ms = null;
       }
       if (ms === null && ar.melisma) ms = i;
     }
     if (ms !== null && altoEntries.length - 1 > ms) {
-      try { new VF.Curve(notes[ms], notes[altoEntries.length - 1], { invert: true }).setContext(ctx).draw(); } catch(e) {}
+      try { new VF.Curve(notes[ms], notes[altoEntries.length - 1], { invert: inv }).setContext(ctx).draw(); } catch(e) {}
     }
   }
 
@@ -646,6 +649,10 @@ function renderScore(payload) {
       if (hasTen) setVoiceX(tN, spacingT);
       bassVoice.draw(ctx, bs);
       if (tenVoice) tenVoice.draw(ctx, bs);
+      // Bass melisma slurs — bass moves across pitches on a held syllable. Arc BELOW (invert
+      // false) since bass is the bottom voice; keeps the slur clear of the tenor above.
+      // Tenor is intentionally unslurred (it holds a reciting pitch rather than melisma-moving).
+      drawMelismaSlurs(bN, line.alto, false);
     }
 
     // Draw lyrics centered between treble bottom line and bass top line.
