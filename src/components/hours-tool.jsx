@@ -7368,6 +7368,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.8.7",
+    date: "June 2026",
+    summary: "UI — Liturgical Context expander refinements",
+    items: [
+      "ui: Liturgical Context label now has a triangle on both sides (▼ … ▼ collapsed, ▲ … ▲ expanded). When expanded, the label relocates to the bottom of the context window, the dividing bar is removed, and the bottom label is the sole control that collapses the view.",
+    ],
+  },
+  {
     version: "v0.8.6",
     date: "June 2026",
     summary: "Service of the Psalter — sticky kathisma outline tracker (Slice 5 of FW-24)",
@@ -10064,11 +10072,11 @@ export default function App() {
 
           {/* ── Row two: full-width liturgical context header — click to expand ── */}
           <div
-            onClick={() => setContextOpen(v => !v)}
+            onClick={contextOpen ? undefined : () => setContextOpen(true)}
             style={{
               display: "flex", alignItems: "center",
               padding: "4px 10px 4px 12px",
-              cursor: "pointer", userSelect: "none",
+              cursor: contextOpen ? "default" : "pointer", userSelect: "none",
             }}
           >
             {/* Left: Day · Tone — hidden when expanded (data visible in context body) */}
@@ -10077,17 +10085,20 @@ export default function App() {
               {liturgicalData.dayName} · Tone {liturgicalData.tone}
             </span>
 
-            {/* Centre: Liturgical Context label + chevron */}
+            {/* Centre: Liturgical Context label + triangles — collapsed only; relocates to the bottom of the window when expanded */}
             <div style={{ flex: 1, textAlign: "center", display: "flex",
               alignItems: "center", justifyContent: "center", gap: "6px" }}>
-              <span style={{ fontSize: "0.68rem", letterSpacing: "0.15em",
-                textTransform: "uppercase", color: "#8B6914", fontWeight: "bold",
-                fontFamily: "Georgia, serif" }}>
-                Liturgical Context
-              </span>
-              <span style={{ color: "#8B6914", fontSize: "0.7rem" }}>
-                {contextOpen ? "▲" : "▼"}
-              </span>
+              {!contextOpen && (
+                <>
+                  <span style={{ color: "#8B6914", fontSize: "0.7rem" }}>▼</span>
+                  <span style={{ fontSize: "0.68rem", letterSpacing: "0.15em",
+                    textTransform: "uppercase", color: "#8B6914", fontWeight: "bold",
+                    fontFamily: "Georgia, serif" }}>
+                    Liturgical Context
+                  </span>
+                  <span style={{ color: "#8B6914", fontSize: "0.7rem" }}>▼</span>
+                </>
+              )}
             </div>
 
             {/* Right: Reader's Service button — stopPropagation so it doesn't toggle context */}
@@ -10114,8 +10125,7 @@ export default function App() {
           {/* ── LITURGICAL CONTEXT BODY — inside maxWidth wrapper, aligns with rows ── */}
           {contextOpen && (
             <div style={{
-              borderTop: "1px solid #C4A84A",
-              paddingTop: "0.75rem",
+              paddingTop: "0.5rem",
               paddingBottom: "0.5rem",
               fontSize: "0.85rem", lineHeight: "1.7",
             }}>
@@ -10296,6 +10306,20 @@ export default function App() {
               No <Tooltip term="menaion">Menaion</Tooltip> entry in library for this date (Phase 2 will add full content).
             </div>
           )}
+          {/* Relocated Liturgical Context label — the sole close control when expanded */}
+          <div
+            onClick={() => setContextOpen(false)}
+            style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
+              cursor: "pointer", userSelect: "none", marginTop: "0.85rem" }}
+          >
+            <span style={{ color: "#8B6914", fontSize: "0.7rem" }}>▲</span>
+            <span style={{ fontSize: "0.68rem", letterSpacing: "0.15em",
+              textTransform: "uppercase", color: "#8B6914", fontWeight: "bold",
+              fontFamily: "Georgia, serif" }}>
+              Liturgical Context
+            </span>
+            <span style={{ color: "#8B6914", fontSize: "0.7rem" }}>▲</span>
+          </div>
           </div>
           )}
         </div>{/* end maxWidth inner wrapper */}
