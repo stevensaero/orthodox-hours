@@ -10,11 +10,20 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.21.3";
+export const TONE_TRAINER_VERSION = "v0.21.4";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.21.4",
+    date: "June 2026",
+    summary: "Printed score: SATB label text black; tempo glyph a step bolder",
+    items: [
+      "tweak: SATB label text (Soprano/Alto/Tenor/Bass) renders black, matching the rest of the notation.",
+      "tweak: the tempo-mark half-note glyph is one step bolder (stroke-width 4→5).",
+    ],
+  },
   {
     version: "v0.21.3",
     date: "June 2026",
