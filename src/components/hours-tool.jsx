@@ -7368,6 +7368,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.8.8",
+    date: "June 2026",
+    summary: "UI — Reader's Service moved into the Liturgical Context dropdown",
+    items: [
+      "ui: the Reader's Service toggle now lives inside the expanded Liturgical Context window (top-right) and is hidden when the context is collapsed. Row two is collapsed-only, so there is no empty header bar when the context is open.",
+    ],
+  },
+  {
     version: "v0.8.7",
     date: "June 2026",
     summary: "UI — Liturgical Context expander refinements",
@@ -10070,42 +10078,47 @@ export default function App() {
           </div>{/* end row one */}
 
 
-          {/* ── Row two: full-width liturgical context header — click to expand ── */}
+          {/* ── Row two: liturgical context header — collapsed only; click to expand ── */}
+          {!contextOpen && (
           <div
-            onClick={contextOpen ? undefined : () => setContextOpen(true)}
+            onClick={() => setContextOpen(true)}
             style={{
               display: "flex", alignItems: "center",
               padding: "4px 10px 4px 12px",
-              cursor: contextOpen ? "default" : "pointer", userSelect: "none",
+              cursor: "pointer", userSelect: "none",
             }}
           >
-            {/* Left: Day · Tone — hidden when expanded (data visible in context body) */}
-            <span style={{ fontSize: "0.8rem", color: "#5C4A1E", flexShrink: 0,
-              minWidth: "120px", visibility: contextOpen ? "hidden" : "visible" }}>
+            {/* Left: Day · Tone */}
+            <span style={{ fontSize: "0.8rem", color: "#5C4A1E", flexShrink: 0, minWidth: "120px" }}>
               {liturgicalData.dayName} · Tone {liturgicalData.tone}
             </span>
 
-            {/* Centre: Liturgical Context label + triangles — collapsed only; relocates to the bottom of the window when expanded */}
+            {/* Centre: Liturgical Context label + triangles */}
             <div style={{ flex: 1, textAlign: "center", display: "flex",
               alignItems: "center", justifyContent: "center", gap: "6px" }}>
-              {!contextOpen && (
-                <>
-                  <span style={{ color: "#8B6914", fontSize: "0.7rem" }}>▼</span>
-                  <span style={{ fontSize: "0.68rem", letterSpacing: "0.15em",
-                    textTransform: "uppercase", color: "#8B6914", fontWeight: "bold",
-                    fontFamily: "Georgia, serif" }}>
-                    Liturgical Context
-                  </span>
-                  <span style={{ color: "#8B6914", fontSize: "0.7rem" }}>▼</span>
-                </>
-              )}
+              <span style={{ color: "#8B6914", fontSize: "0.7rem" }}>▼</span>
+              <span style={{ fontSize: "0.68rem", letterSpacing: "0.15em",
+                textTransform: "uppercase", color: "#8B6914", fontWeight: "bold",
+                fontFamily: "Georgia, serif" }}>
+                Liturgical Context
+              </span>
+              <span style={{ color: "#8B6914", fontSize: "0.7rem" }}>▼</span>
             </div>
 
-            {/* Right: Reader's Service button — stopPropagation so it doesn't toggle context */}
-            <div style={{ flexShrink: 0, minWidth: "120px", display: "flex",
-              justifyContent: "flex-end" }}
-              onClick={e => e.stopPropagation()}
-            >
+            {/* Right: spacer to keep the label centred */}
+            <div style={{ flexShrink: 0, minWidth: "120px" }} />
+          </div>
+          )}{/* end row two */}
+
+          {/* ── LITURGICAL CONTEXT BODY — inside maxWidth wrapper, aligns with rows ── */}
+          {contextOpen && (
+            <div style={{
+              paddingTop: "0.5rem",
+              paddingBottom: "0.5rem",
+              fontSize: "0.85rem", lineHeight: "1.7",
+            }}>
+            {/* Reader's Service — relocated here; shows only when the context is expanded */}
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "0.5rem" }}>
               <button
                 onClick={() => setReaderMode(v => !v)}
                 style={{
@@ -10120,15 +10133,6 @@ export default function App() {
                 {readerMode ? "☩ Reader's Service" : "Reader's Service"}
               </button>
             </div>
-          </div>{/* end row two */}
-
-          {/* ── LITURGICAL CONTEXT BODY — inside maxWidth wrapper, aligns with rows ── */}
-          {contextOpen && (
-            <div style={{
-              paddingTop: "0.5rem",
-              paddingBottom: "0.5rem",
-              fontSize: "0.85rem", lineHeight: "1.7",
-            }}>
             <div>
             <strong>Date:</strong> {dayLabel}
             {liturgicalData.paschaOffset >= -101 && liturgicalData.paschaOffset <= 263 && (
