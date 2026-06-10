@@ -338,18 +338,21 @@ function renderScore(payload) {
     return { adv: T, hw: hw };
   }
 
-  // Per-slice visibility with the re-anchor rule (Phase 2). For columns [s0,s1) of a line, a
-  // reciting interior column is a ghost EXCEPT the slice's first column, which is always
-  // surfaced (the re-anchor) so a system never starts on a ghost. The run's true first/last
-  // noteheads stay visible via the global ghost set. Returns slice-local visible[] (length
-  // s1-s0) and a slice-local ghost-index Set. For a whole-phrase slice (s0=0) the re-anchor is
-  // a no-op (column 0 is never a ghost), so output matches the pre-slice renderer exactly.
-  function sliceVisibility(line, s0, s1) {
+  // Per-slice visibility with the anchor rules (Phase 2). For columns [s0,s1) of a line, a
+  // reciting interior column is a ghost EXCEPT: the run's true first/last (via the global ghost
+  // set), the slice's FIRST column (the re-anchor, so a system never starts on a ghost), and —
+  // on an OPEN (wrapped) slice — the slice's LAST column (the pre-break anchor, so a wrapped
+  // system never ENDS on a long un-anchored ghost tail). Both ends of each wrapped reciting span
+  // carry a visible notehead, the standard Obikhod look. Returns slice-local visible[] + ghost
+  // Set. For a whole-phrase slice (s0=0, not open) both extra clauses are no-ops, so output
+  // matches the pre-slice renderer exactly.
+  function sliceVisibility(line, s0, s1, isOpen) {
     var globalGhost = reciteIntermediateFor(line.alto);
-    var visible = [], rec = new Set();
-    for (var i = 0; i < s1 - s0; i++) {
+    var n = s1 - s0, visible = [], rec = new Set();
+    for (var i = 0; i < n; i++) {
       var ghost = globalGhost.has(s0 + i);
-      if (i === 0) ghost = false; // re-anchor: surface the slice's first column
+      if (i === 0) ghost = false;                 // re-anchor: surface the slice's first column
+      if (isOpen && i === n - 1) ghost = false;   // pre-break anchor: surface the column before a wrap
       visible.push(!ghost);
       if (ghost) rec.add(i);
     }
@@ -360,7 +363,7 @@ function renderScore(payload) {
   // its right-edge width. A phrase-end slice reserves BAR_PAD (+ // on the penultimate verse)
   // for its barline; an open (wrapped) slice reserves only WRAP_PAD past its last column.
   function sliceMetrics(line, s0, s1, isPhraseEnd) {
-    var sv = sliceVisibility(line, s0, s1);
+    var sv = sliceVisibility(line, s0, s1, !isPhraseEnd);
     var altoSlice = line.alto.slice(s0, s1);
     var ca = computeAdvances(altoSlice, sv.visible);
     var last = ca.adv.length - 1;
@@ -477,7 +480,7 @@ function renderScore(payload) {
   renderScore._lastSystems = systems.map(function(sy) {
     return sy.slices.map(function(sl) {
       return { s0: sl.s0, s1: sl.s1, isPhraseEnd: sl.isPhraseEnd, barlineAfter: sl.barlineAfter,
-        firstVisible: !sl.rec.has(0), ghostLocal: Array.from(sl.rec) };
+        firstVisible: !sl.rec.has(0), lastVisible: !sl.rec.has(sl.s1 - sl.s0 - 1), ghostLocal: Array.from(sl.rec) };
     });
   });
 

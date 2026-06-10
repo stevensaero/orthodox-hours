@@ -97,14 +97,20 @@ column is **visible** iff it is:
 
 - the reciting run's **true first** note, **or**
 - the reciting run's **true last** note, **or**
-- the **first column of a system** that falls within a reciting run (the *re-anchor*).
+- the **first column of a system** that falls within a reciting run (the *re-anchor*), **or**
+- the **last column of an OPEN (wrapped) slice** that falls within a reciting run (the
+  *pre-break anchor*).
 
-The third clause is the wrap-specific rule: when a break lands inside a ghosted reciting run,
-the note at the start of the next system is **surfaced**, and the notes after it stay ghosted
-until the run's true last note. Consequences: **a system never starts on a ghost** (the singer
-always has a visible reciting anchor at the line start); a system **may end on ghosts** (the
-visible reciting notehead earlier in the system covers the text that flows to the right edge —
-the standard reciting-tone look). All three clauses are pure index math over the slice bounds.
+The third and fourth clauses are the wrap-specific rules: when a break lands inside a ghosted
+reciting run, the note at the **start** of the next system is surfaced (re-anchor) **and** the
+note just **before** each wrap is surfaced (pre-break anchor). Consequences: **a system never
+starts on a ghost** and **a wrapped system never ends on a ghost** — each wrapped reciting span
+is bracketed by a visible notehead at both ends, and only the interior is ghosted. (Revised from
+the original design, which let a system end on ghosts: in practice a long ghost tail running to
+the right margin reads as un-anchored text — Bill's score-reading judgment is definitive here.)
+Surfacing the pre-break note changes no spacing — its floor to a ghosted predecessor stays
+`RECITE_FLOOR` — so break points and widths are unaffected. All clauses are pure index math over
+the slice bounds.
 
 ## 7. Per-system rendering
 

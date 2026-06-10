@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.17.0";
+export const TONE_TRAINER_VERSION = "v0.17.1";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.17.1",
+    date: "June 2026",
+    summary: "Printed score: wrapped reciting verses now anchored at BOTH ends (pre-break notehead)",
+    items: [
+      "fix: a wrapped reciting verse no longer ends a system on a long un-anchored ghost tail. The note just before each wrap is now surfaced as a visible notehead (the pre-break anchor), symmetric with the system-start re-anchor — so each wrapped reciting span is bracketed by a notehead at both ends, the truer Obikhod look. Verses that fit a system are unchanged; surfacing the pre-break note shifts no spacing, so break points stay identical.",
+    ],
+  },
   {
     version: "v0.17.0",
     date: "June 2026",
