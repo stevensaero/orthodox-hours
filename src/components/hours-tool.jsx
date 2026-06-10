@@ -7368,6 +7368,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.8.6",
+    date: "June 2026",
+    summary: "Service of the Psalter — sticky kathisma outline tracker (Slice 5 of FW-24)",
+    items: [
+      "feat: PsalterOutline — a sticky OUTLINE pill on the left rail (mirroring the Vespers/Typica/Matins outline) that expands to a panel listing all 20 kathismata with psalm ranges, highlights the current one, and jumps on click. Replaces the kathisma chip row formerly at the top of the reader; navigation is now the outline plus prev/next, with scroll-to-top on change.",
+    ],
+  },
+  {
     version: "v0.8.5",
     date: "June 2026",
     summary: "Service of the Psalter — whole-Psalter conclusion (Slice 4 of FW-24)",
@@ -9566,6 +9574,72 @@ function PsalterDepartedConclusion({ forms, readerMode }) {
   );
 }
 
+// Sticky kathisma tracker for the Service of the Psalter (FW-24, Slice 5).
+// Mirrors ServiceOutline's look (vertical pill → 178px panel) but navigates the 20
+// kathismata of the paged reader: shows current position, click to jump. Replaces the
+// chip row formerly at the top of the reader.
+function PsalterOutline({ kathisma, setKathisma, departed, open, setOpen }) {
+  const pillStyle = {
+    writingMode: 'vertical-rl', transform: 'rotate(180deg)',
+    background: '#8B6914', color: '#FAF6EE', border: 'none', borderRadius: '3px',
+    padding: '14px 7px', fontSize: '9px', letterSpacing: '0.15em',
+    textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'Georgia, serif',
+    fontWeight: 'bold', whiteSpace: 'nowrap',
+  };
+
+  if (!open) {
+    return (
+      <div style={{ position: 'sticky', top: '120px', alignSelf: 'flex-start', width: '28px', flexShrink: 0, zIndex: 20 }}>
+        <button onClick={() => setOpen(true)} style={pillStyle} title="Kathisma outline">OUTLINE</button>
+      </div>
+    );
+  }
+
+  const go = (n) => { setKathisma(n); setOpen(false); };
+
+  return (
+    <div style={{ position: 'sticky', top: '120px', alignSelf: 'flex-start', width: '178px', flexShrink: 0, zIndex: 20 }}>
+      <div style={{ width: '178px', background: '#FAF6EE', border: '1px solid #D4C49A', borderRadius: '4px', overflow: 'hidden', boxShadow: '2px 2px 10px rgba(0,0,0,0.07)', maxHeight: 'calc(100vh - 48px)', display: 'flex', flexDirection: 'column' }}>
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 10px 7px', borderBottom: '1px solid #E8DEC8', background: 'rgba(139,105,20,0.06)', flexShrink: 0 }}>
+          <span style={{ fontSize: '9px', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#8B6914', fontWeight: 'bold', fontFamily: 'Georgia, serif' }}>Kathismata</span>
+          <button onClick={() => setOpen(false)} style={{ fontSize: '13px', color: '#9A8A70', cursor: 'pointer', background: 'none', border: 'none', fontFamily: 'Georgia, serif', padding: '0 0 0 6px', lineHeight: 1 }}>×</button>
+        </div>
+        {/* Context */}
+        <div style={{ padding: '6px 10px', borderBottom: '1px solid #E8DEC8', flexShrink: 0 }}>
+          <div style={{ fontSize: '10px', fontWeight: 'bold', color: '#2C1F0A', marginBottom: '1px' }}>The Psalter</div>
+          <div style={{ fontSize: '9px', color: '#9A8A70', letterSpacing: '0.04em' }}>{departed ? 'For the Departed' : 'Normal reading'}</div>
+        </div>
+        {/* Rows */}
+        <div style={{ padding: '3px 0 4px', overflowY: 'auto', flex: 1 }}>
+          {Array.from({ length: 20 }, (_, i) => i + 1).map((n) => {
+            const isActive = kathisma === n;
+            return (
+              <div key={n}
+                onClick={() => go(n)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '7px',
+                  padding: '4px 10px 4px 8px', cursor: 'pointer',
+                  borderLeft: isActive ? '3px solid #8B6914' : '3px solid transparent',
+                  background: isActive ? 'rgba(139,105,20,0.13)' : 'transparent',
+                }}
+                onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = 'rgba(139,105,20,0.07)'; }}
+                onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = isActive ? 'rgba(139,105,20,0.13)' : 'transparent'; }}
+              >
+                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#2D6A2E', flexShrink: 0, marginLeft: '1px' }} />
+                <span style={{ fontSize: '10px', letterSpacing: '0.06em', textTransform: 'uppercase', fontFamily: 'Georgia, serif', lineHeight: 1.3, flex: 1, color: isActive ? '#5A4010' : '#2C1F0A', fontWeight: isActive ? 'bold' : 'normal' }}>
+                  Kathisma {n}
+                  <span style={{ display: 'block', fontSize: '8px', letterSpacing: '0.02em', textTransform: 'none', color: '#9A8A70', fontWeight: 'normal' }}>{getPsalmRange(n)}</span>
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function PsalterService({ mode, setMode, name, setName, gender, setGender, orthodox, setOrthodox, guideOpen, setGuideOpen, kathisma, setKathisma, readerMode, liturgicalData, beginOpen, setBeginOpen }) {
   const departed = mode === 'departed';
   const pill = (active) => ({
@@ -9631,14 +9705,6 @@ function PsalterService({ mode, setMode, name, setName, gender, setGender, ortho
           </div>
         </div>
       )}
-
-      {/* Kathisma selector */}
-      <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "1.5rem", flexWrap: "wrap" }}>
-        <span style={{ fontSize: "0.68rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "#9A8A70", marginRight: "0.2rem" }}>Kathisma</span>
-        {Array.from({ length: 20 }, (_, i) => i + 1).map((kk) => (
-          <button key={kk} onClick={() => setKathisma(kk)} style={chip(kathisma === kk)}>{kk}</button>
-        ))}
-      </div>
 
       {kathisma === 1 && (
         <PsalterBeginning liturgicalData={liturgicalData} readerMode={readerMode} open={beginOpen} setOpen={setBeginOpen} />
@@ -10250,6 +10316,15 @@ export default function App() {
           mm={liturgicalData ? liturgicalData.mm : null}
           dd={liturgicalData ? liturgicalData.dd : null}
         />
+        {currentService.key === 'psalter_service' && (
+          <PsalterOutline
+            kathisma={psalterKathisma}
+            setKathisma={setPsalterKathisma}
+            departed={psalterMode === 'departed'}
+            open={outlineOpen}
+            setOpen={setOutlineOpen}
+          />
+        )}
 
         {/* ── MAIN CONTENT COLUMN ── */}
         <div style={{ flex: 1, minWidth: 0, padding: '0 1rem' }}>
