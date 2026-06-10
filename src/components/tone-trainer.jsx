@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.16.3";
+export const TONE_TRAINER_VERSION = "v0.16.4";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.16.4",
+    date: "June 2026",
+    summary: "Fix (root cause): printed-score leading band was a DOUBLED clef+key offset — attach the stave before positioning",
+    items: [
+      "fix: found the real cause of the wide leading band. setVoiceX positions notes by absolute target X, but the notes had no stave attached when it ran (the stave was attached later, at voice.draw). With no stave, VexFlow's draw() then adds getNoteStartX() a SECOND time on top of our already-absolute T — so the first note landed at roughly 2x the clef+key offset (≈200px vs a ~40px glyph margin, i.e. the ~5x band observed). The old per-line renderer never hit this because it fed setVoiceX a RELATIVE first-note X (notes[0].getAbsoluteX() read while the notes were still stave-less), so draw() added getNoteStartX exactly once. Fix: attach the stave to every voice's notes BEFORE setVoiceX, so our absolute T is honored exactly once. Anchor is back to getNoteStartX() + first-system indent. This bug was invisible to the headless harness (getNoteStartX ≈ 5px without fonts, so doubling was negligible) and only doubled the real, font-driven width in a browser — which is why earlier anchor-tweaks couldn't move it.",
+    ],
+  },
   {
     version: "v0.16.3",
     date: "June 2026",
