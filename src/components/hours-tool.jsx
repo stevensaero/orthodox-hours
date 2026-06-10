@@ -6079,6 +6079,14 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
     el.type === 'placeholder' ||
     (typeof el.text === 'string' && (el.text.startsWith('[') || el.text.includes('not yet')));
 
+  const toneTag = (tn) => {
+    if (!tn) return null;
+    const s = tn.toLowerCase();
+    if (s.includes('choir') || s.includes('sung')) return 'Choir';
+    if (s.includes('reader') || s.includes('read')) return 'Reader';
+    return null;
+  };
+
   const seen = new Set();
   const rows = [];
   for (const el of elements) {
@@ -6086,7 +6094,7 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
     const key = el.id || el.label;
     if (!key || seen.has(key)) continue;
     seen.add(key);
-    rows.push({ id: el.id, label: el.label, missing: isPlaceholder(el) });
+    rows.push({ id: el.id, label: el.label, missing: isPlaceholder(el), tag: toneTag(el.toneNote) });
   }
   if (rows.length === 0) return null;
 
@@ -6178,6 +6186,16 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
                   color: isActive ? '#5A4010' : (row.missing ? '#8B3020' : '#2C1F0A'),
                   fontWeight: isActive ? 'bold' : 'normal',
                 }}>{row.label}</span>
+                {row.tag && (
+                  <span style={{
+                    fontSize: '7.5px', letterSpacing: '0.06em', textTransform: 'uppercase',
+                    fontWeight: 'bold', padding: '1px 4px', borderRadius: '2px', flexShrink: 0,
+                    fontFamily: 'Georgia, serif',
+                    border: `1px solid ${row.tag === 'Choir' ? 'rgba(139,105,20,0.5)' : 'rgba(90,122,138,0.5)'}`,
+                    color: row.tag === 'Choir' ? '#8B6914' : '#5A7A8A',
+                    background: row.tag === 'Choir' ? 'rgba(139,105,20,0.08)' : 'rgba(90,122,138,0.08)',
+                  }}>{row.tag}</span>
+                )}
               </div>
             );
           })}
@@ -7367,6 +7385,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.8.10",
+    date: "June 2026",
+    summary: "Service outline — Reader/Choir tags on sung/read movements",
+    items: [
+      "feat: the service outline now shows a small Reader / Choir pill on movements that carry a sung/read instruction (Psalm 103 and the Kathisma at Vespers), derived from the element's existing toneNote so it tracks the Great-vs-Daily Vespers condition. Reader in blue-grey, Choir in gold; tone-numbered movements are unaffected.",
+    ],
+  },
   {
     version: "v0.8.9",
     date: "June 2026",
