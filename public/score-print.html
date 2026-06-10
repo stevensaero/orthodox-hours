@@ -250,6 +250,9 @@ var EDGE_PAD = 16;
 var INDENT = 10;
 var INTER_PHRASE_GAP = 32;
 var SHOW_SATB_LABELS = true;
+// SHOW_PHRASE_NUMBERS: draw the verse number "(N)" (last verse "(F)") above the treble staff at
+// each verse's leading edge, like the Apostikha reference. Only on a phrase's first slice.
+var SHOW_PHRASE_NUMBERS = true;
 // LEAD_GAP: clearance between the clef+key (getNoteStartX) and the first note, applied on
 // EVERY system so notes never butt against the glyphs. The old per-line renderer got this for
 // free from the formatter's natural first-note padding; since we now position absolutely, we
@@ -389,11 +392,12 @@ function renderScore(payload) {
   }
 
   // Build a slice record. barlineAfter is null on an open (wrapped) slice; set on a phrase end.
-  function mkSlice(line, s0, s1, xStart, m, barlineAfter, isPhraseEnd, isLast) {
+  function mkSlice(line, s0, s1, xStart, m, barlineAfter, isPhraseEnd, isLast, phraseLabel) {
     return {
       line: line, s0: s0, s1: s1, xStart: xStart, width: m.width,
       adv: m.adv, visible: m.visible, rec: m.rec,
-      barlineAfter: barlineAfter, isPhraseEnd: isPhraseEnd, isLast: isLast
+      barlineAfter: barlineAfter, isPhraseEnd: isPhraseEnd, isLast: isLast,
+      phraseLabel: phraseLabel // verse number "(N)" / "(F)" — drawn only on the phrase's first slice
     };
   }
 
@@ -434,6 +438,7 @@ function renderScore(payload) {
       var line = allLines[i];
       var isLastPhrase = (i === allLines.length - 1);
       var phraseBar = line.barlineAfter || (isLastPhrase ? 'final' : 'single');
+      var phraseLabel = isLastPhrase ? 'F' : String(i + 1); // verse number (last verse = F)
       var n = line.alto.length;
       var whole = sliceMetrics(line, 0, n, true);
 
@@ -441,7 +446,7 @@ function renderScore(payload) {
       if (whole.width <= fullSystemWidth) {
         var fitsHere = !(cur.slices.length > 0 && (x + whole.width) > rightEdge);
         if (fitsHere) {
-          cur.slices.push(mkSlice(line, 0, n, x, whole, phraseBar, true, isLastPhrase));
+          cur.slices.push(mkSlice(line, 0, n, x, whole, phraseBar, true, isLastPhrase, phraseLabel));
           x += whole.width + INTER_PHRASE_GAP;
           continue;
         }
@@ -457,17 +462,17 @@ function renderScore(payload) {
           });
           if (dbest > 0) {
             var hms = sliceMetrics(line, 0, dbest, false);
-            cur.slices.push(mkSlice(line, 0, dbest, x, hms, null, false, false)); // head fills the blank (open)
+            cur.slices.push(mkSlice(line, 0, dbest, x, hms, null, false, false, phraseLabel)); // head fills the blank (open)
             flush();
             var tms = sliceMetrics(line, dbest, n, true);
-            cur.slices.push(mkSlice(line, dbest, n, x, tms, phraseBar, true, isLastPhrase)); // tail carries the bar
+            cur.slices.push(mkSlice(line, dbest, n, x, tms, phraseBar, true, isLastPhrase, null)); // tail: no number
             x += tms.width + INTER_PHRASE_GAP;
             continue;
           }
         }
         // No dense wrap (mode off, or no qualifying seam) → flush the whole phrase to the next line.
         flush();
-        cur.slices.push(mkSlice(line, 0, n, x, whole, phraseBar, true, isLastPhrase));
+        cur.slices.push(mkSlice(line, 0, n, x, whole, phraseBar, true, isLastPhrase, phraseLabel));
         x += whole.width + INTER_PHRASE_GAP;
         continue;
       }
@@ -478,8 +483,9 @@ function renderScore(payload) {
       var start = 0;
       while (start < n) {
         var rem = sliceMetrics(line, start, n, true);
+        var lbl = (start === 0) ? phraseLabel : null; // number only on the phrase's first slice
         if ((x + rem.width) <= rightEdge) {                       // remainder fits → final slice
-          cur.slices.push(mkSlice(line, start, n, x, rem, phraseBar, true, isLastPhrase));
+          cur.slices.push(mkSlice(line, start, n, x, rem, phraseBar, true, isLastPhrase, lbl));
           x += rem.width + INTER_PHRASE_GAP; start = n; break;
         }
         var best = -1;                                            // latest legal seam that fits at x
@@ -489,11 +495,11 @@ function renderScore(payload) {
           if ((x + m.width) <= rightEdge) best = Math.max(best, j);
         });
         if (best <= start) {                                      // no legal seam fits → fallback
-          cur.slices.push(mkSlice(line, start, n, x, rem, phraseBar, true, isLastPhrase));
+          cur.slices.push(mkSlice(line, start, n, x, rem, phraseBar, true, isLastPhrase, lbl));
           x += rem.width + INTER_PHRASE_GAP; start = n; break;    // scale-to-fit via J<1 at render
         }
         var ms = sliceMetrics(line, start, best, false);
-        cur.slices.push(mkSlice(line, start, best, x, ms, null, false, false));
+        cur.slices.push(mkSlice(line, start, best, x, ms, null, false, false, lbl));
         flush(); start = best;                                    // open slice ends its system
       }
     }
@@ -834,6 +840,18 @@ function renderScore(payload) {
         var y0 = tr.getYForLine(0), y1 = grand ? bs.getYForLine(4) : tr.getYForLine(4);
         mkVerseBar(svg, barX, y0, y1);
         if (slice.barlineAfter === 'final') mkVerseBar(svg, barX + 4.5, y0, y1, 3.5); // thin + thick final barline
+      }
+
+      // Verse number "(N)" / "(F)" — above the treble staff at the verse's leading edge. Only on
+      // the phrase's first slice (s0===0); wrapped tails / dense continuations carry no number.
+      if (SHOW_PHRASE_NUMBERS && slice.s0 === 0 && slice.phraseLabel && aN.length > 0) {
+        var num = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        num.setAttribute('x', T[0]); num.setAttribute('y', tr.getYForLine(0) - 11);
+        num.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
+        num.setAttribute('font-size', '11'); num.setAttribute('font-weight', '400');
+        num.setAttribute('text-anchor', 'middle'); num.setAttribute('dominant-baseline', 'alphabetic');
+        num.setAttribute('fill', '#6b5942'); num.textContent = '(' + slice.phraseLabel + ')';
+        svg.appendChild(num);
       }
     }
 

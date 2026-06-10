@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.19.0";
+export const TONE_TRAINER_VERSION = "v0.20.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.20.0",
+    date: "June 2026",
+    summary: "Printed score: verse numbers (N) / (F) above the treble staff at each verse's leading edge",
+    items: [
+      "feat: each verse is now numbered above the Soprano/Alto staff at its leading edge — (1), (2), (3)… with the final verse marked (F) — matching the Apostikha-style reference. Drawn only on a verse's first slice, so a verse wrapped across systems (or a dense continuation) is numbered once, at its start, with no number on the continuation. On by default (SHOW_PHRASE_NUMBERS).",
+    ],
+  },
   {
     version: "v0.19.0",
     date: "June 2026",
