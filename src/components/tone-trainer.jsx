@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.16.2";
+export const TONE_TRAINER_VERSION = "v0.16.3";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.16.3",
+    date: "June 2026",
+    summary: "Fix: printed-score leading band gone — anchor to the formatter's natural first-note placement (as the old renderer did)",
+    items: [
+      "fix: the wide leading band persisted because both getNoteStartX() (v0.16.1) and the clef/key modifier widths (v0.16.2) report VexFlow's note-start RESERVE, which in a real browser sits well right of where the formatter actually places the first note. The old per-line renderer never hit this: it anchored to notes[0].getAbsoluteX() — the formatter's own placement, tight against the glyphs. We now do the same: naturalStartX() formats a throwaway probe note on the (clef+key) stave and reads where VexFlow puts it, and that becomes the column origin (+ first-system indent). Confirmed against the pre-wrap screenshot where the single clef+key line was tight. (Headless inverts the natural-vs-getNoteStartX relationship only because it has no font glyph widths; the browser is the reverse, which is exactly the bug.)",
+    ],
+  },
   {
     version: "v0.16.2",
     date: "June 2026",
