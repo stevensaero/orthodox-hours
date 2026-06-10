@@ -847,20 +847,20 @@ function renderScore(payload) {
       // A white knockout box sits behind it so it cleanly cuts any graphics underneath.
       if (SHOW_PHRASE_NUMBERS && slice.s0 === 0 && slice.phraseLabel && aN.length > 0) {
         var pnTxt = '(' + slice.phraseLabel + ')';
-        var pnX = T[0] - 8;            // registered 8px left of the verse's first note
+        var pnX = T[0] - 12;           // registered 12px left of the verse's first note
         var pnY = tr.getYForLine(0) - 7; // 7px above the top staff line (close to the score)
-        var pnW = measW(pnTxt, '400') * (11 / 16);
+        var pnW = measW(pnTxt, '400') * (12 / 16);
         var pnBox = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        pnBox.setAttribute('x', pnX - pnW / 2 - 2); pnBox.setAttribute('y', pnY - 10);
-        pnBox.setAttribute('width', pnW + 4); pnBox.setAttribute('height', 13);
+        pnBox.setAttribute('x', pnX - pnW / 2 - 2); pnBox.setAttribute('y', pnY - 11);
+        pnBox.setAttribute('width', pnW + 4); pnBox.setAttribute('height', 14);
         pnBox.setAttribute('fill', 'white'); pnBox.setAttribute('stroke', 'none'); // no inherited border
         svg.appendChild(pnBox);
         var num = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         num.setAttribute('x', pnX); num.setAttribute('y', pnY);
         num.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
-        num.setAttribute('font-size', '11'); num.setAttribute('font-weight', '400');
+        num.setAttribute('font-size', '12'); num.setAttribute('font-weight', '400');
         num.setAttribute('text-anchor', 'middle'); num.setAttribute('dominant-baseline', 'alphabetic');
-        num.setAttribute('fill', '#6b5942'); num.setAttribute('stroke', 'none');
+        num.setAttribute('fill', '#000000'); num.setAttribute('stroke', 'none');
         num.textContent = pnTxt; svg.appendChild(num);
       }
     }
@@ -920,7 +920,7 @@ function renderScore(payload) {
         g.setAttribute('transform', 'translate(45.9,12.2) scale(0.14) translate(-107.56,-85.3217)');
         var pK = document.createElementNS(NSt, 'path'); // notehead + stem
         pK.setAttribute('d', 'M172.36,109.52C172.36,109.405 172.459,109.31 172.58,109.31L177.13,109.31C177.256,109.31 177.36,109.414 177.36,109.54C177.32,190.287 177.333,231.867 177.4,234.28C177.547,239.773 176.24,244.383 173.48,248.11C165.56,258.81 144.42,267.39 133.67,255.79C127.78,249.43 131.12,239.68 136.44,233.85C144.64,224.84 160.37,218 171.87,224.74C171.896,224.756 171.923,224.768 171.952,224.776C172.122,224.822 172.3,224.717 172.348,224.542C172.355,224.515 172.359,224.488 172.36,224.46L172.36,109.52Z');
-        pK.setAttribute('fill', '#2a2118'); pK.setAttribute('stroke', '#2a2118');
+        pK.setAttribute('fill', '#000000'); pK.setAttribute('stroke', '#000000');
         pK.setAttribute('stroke-width', '4'); pK.setAttribute('stroke-linejoin', 'round');
         pK.setAttribute('fill-rule', 'nonzero');
         g.appendChild(pK);
@@ -933,7 +933,7 @@ function renderScore(payload) {
         tq.setAttribute('x', 59); tq.setAttribute('y', 37);
         tq.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
         tq.setAttribute('font-size', '13'); tq.setAttribute('font-weight', '500');
-        tq.setAttribute('fill', '#2a2118'); tq.setAttribute('stroke', 'none'); tq.textContent = '= ' + payload.bpm;
+        tq.setAttribute('fill', '#000000'); tq.setAttribute('stroke', 'none'); tq.textContent = '= ' + payload.bpm;
         svg.appendChild(tq);
       }
 
