@@ -438,7 +438,7 @@ function renderScore(payload) {
       var line = allLines[i];
       var isLastPhrase = (i === allLines.length - 1);
       var phraseBar = line.barlineAfter || (isLastPhrase ? 'final' : 'single');
-      var phraseLabel = isLastPhrase ? 'F' : String(i + 1); // verse number (last verse = F)
+      var phraseLabel = isLastPhrase ? 'Final' : String(i + 1); // verse number (last verse = Final)
       var n = line.alto.length;
       var whole = sliceMetrics(line, 0, n, true);
 
@@ -842,15 +842,23 @@ function renderScore(payload) {
         if (slice.barlineAfter === 'final') mkVerseBar(svg, barX + 4.5, y0, y1, 3.5); // thin + thick final barline
       }
 
-      // Verse number "(N)" / "(F)" — above the treble staff at the verse's leading edge. Only on
-      // the phrase's first slice (s0===0); wrapped tails / dense continuations carry no number.
+      // Verse number "(N)" / "(Final)" — above the treble staff at the verse's leading edge. Only
+      // on the phrase's first slice (s0===0); wrapped tails / dense continuations carry no number.
+      // A white knockout box sits behind it so it cleanly cuts any graphics underneath.
       if (SHOW_PHRASE_NUMBERS && slice.s0 === 0 && slice.phraseLabel && aN.length > 0) {
+        var pnTxt = '(' + slice.phraseLabel + ')';
+        var pnY = tr.getYForLine(0) - 11;
+        var pnW = measW(pnTxt, '300') * (11 / 16);
+        var pnBox = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        pnBox.setAttribute('x', T[0] - pnW / 2 - 2); pnBox.setAttribute('y', pnY - 10);
+        pnBox.setAttribute('width', pnW + 4); pnBox.setAttribute('height', 13);
+        pnBox.setAttribute('fill', 'white'); svg.appendChild(pnBox);
         var num = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        num.setAttribute('x', T[0]); num.setAttribute('y', tr.getYForLine(0) - 11);
+        num.setAttribute('x', T[0]); num.setAttribute('y', pnY);
         num.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
-        num.setAttribute('font-size', '11'); num.setAttribute('font-weight', '400');
+        num.setAttribute('font-size', '11'); num.setAttribute('font-weight', '300');
         num.setAttribute('text-anchor', 'middle'); num.setAttribute('dominant-baseline', 'alphabetic');
-        num.setAttribute('fill', '#6b5942'); num.textContent = '(' + slice.phraseLabel + ')';
+        num.setAttribute('fill', '#6b5942'); num.textContent = pnTxt;
         svg.appendChild(num);
       }
     }
@@ -898,6 +906,29 @@ function renderScore(payload) {
         };
         mkLabel('Soprano', tr.getYForLine(1)); mkLabel('Alto', tr.getYForLine(3));
         if (grand) { mkLabel('Tenor', bs.getYForLine(1)); mkLabel('Bass', bs.getYForLine(3)); }
+      }
+
+      // Tempo mark — half-note glyph "= N" at the top-left of the first system (the trainer's BPM
+      // is half-notes-per-minute, so the beat unit is the half note). First global system only.
+      if (isFirstGlobal && payload.showTempo && payload.bpm) {
+        var TQX = ML, TQY = 34, NS = 'http://www.w3.org/2000/svg';
+        var head = document.createElementNS(NS, 'ellipse');     // open (hollow) slanted notehead
+        head.setAttribute('cx', TQX + 4); head.setAttribute('cy', TQY);
+        head.setAttribute('rx', 4.4); head.setAttribute('ry', 3.0);
+        head.setAttribute('transform', 'rotate(-24 ' + (TQX + 4) + ' ' + TQY + ')');
+        head.setAttribute('fill', '#ffffff'); head.setAttribute('stroke', '#2a2118');
+        head.setAttribute('stroke-width', '1.5'); svg.appendChild(head);
+        var stem = document.createElementNS(NS, 'line');        // upward stem
+        stem.setAttribute('x1', TQX + 7.8); stem.setAttribute('y1', TQY - 1.4);
+        stem.setAttribute('x2', TQX + 7.8); stem.setAttribute('y2', TQY - 16);
+        stem.setAttribute('stroke', '#2a2118'); stem.setAttribute('stroke-width', '1.3');
+        svg.appendChild(stem);
+        var tq = document.createElementNS(NS, 'text');
+        tq.setAttribute('x', TQX + 13); tq.setAttribute('y', TQY + 4);
+        tq.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
+        tq.setAttribute('font-size', '13'); tq.setAttribute('font-weight', '300');
+        tq.setAttribute('fill', '#2a2118'); tq.textContent = '= ' + payload.bpm;
+        svg.appendChild(tq);
       }
 
       // With the stave attached before setVoiceX (above), our absolute T is honored exactly,
