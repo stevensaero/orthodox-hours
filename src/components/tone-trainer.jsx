@@ -10,11 +10,20 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.16.7";
+export const TONE_TRAINER_VERSION = "v0.16.8";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.16.8",
+    date: "June 2026",
+    summary: "Printed score: thin+thick final barline + a touch more room after the penultimate bar",
+    items: [
+      "feat: the final-verse close is now a proper thin+thick final barline (thin 1.2px, thick 3.5px) rather than two equal thin lines — the standard end-of-stichera convention.",
+      "tweak: INTER_PHRASE_GAP 24→32px so the verse following a penultimate bar (e.g. 'hear') clears the bar with a little more breathing room.",
+    ],
+  },
   {
     version: "v0.16.7",
     date: "June 2026",
