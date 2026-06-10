@@ -10,11 +10,20 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.21.2";
+export const TONE_TRAINER_VERSION = "v0.21.3";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.21.3",
+    date: "June 2026",
+    summary: "Printed score: phrase markers + tempo mark render black; phrase markers 12px, further left",
+    items: [
+      "change: phrase markers and the tempo mark now render in black (matching the notation) instead of the brown accent — the printed score is black-and-white.",
+      "tweak: phrase markers bumped to 12px and registered 4px further left (12px total left of the verse's first note).",
+    ],
+  },
   {
     version: "v0.21.2",
     date: "June 2026",
