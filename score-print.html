@@ -240,9 +240,9 @@ var EDGE_PAD = 16;
 //   phrases on one system, beyond the verse bar. SHOW_SATB_LABELS: draw Soprano/Alto and
 //   Tenor/Bass labels in the left margin of the first system only (toggle, default on).
 // INDENT: uniform left indent applied to EVERY system. Originally a first-system-only 24px
-// choral indent; per Bill, split the difference so all systems' content lines up — system 1
-// comes left and systems 2..n go right to the same edge (24/2 = 12 on every system).
-var INDENT = 12;
+// choral indent; per Bill, split it so all systems' content lines up at the same edge, then
+// nudged to 10px by eye (slightly tighter than the exact 12px half).
+var INDENT = 10;
 var INTER_PHRASE_GAP = 32;
 var SHOW_SATB_LABELS = true;
 // LEAD_GAP: clearance between the clef+key (getNoteStartX) and the first note, applied on
