@@ -4,6 +4,7 @@ import {
   SUNDAY_KONTAKIA, SUNDAY_PROKEIMENON, SUNDAY_ALLELUIA,
   KATAVASIAE, RESURRECTION_GOSPEL_STICHERA,
 } from '../data/octoechos/index.js';
+import { PSALMS, KATHISMA_MAP, getPsalmRange } from '../data/psalter.js';
 
 
 // ─── CALENDAR ENGINE ────────────────────────────────────────────────────────
@@ -5723,6 +5724,7 @@ const SERVICE_REGISTRY = [
   { key: "pre_communion",  label: "Prayers Before Holy Communion", built: true  },
   { key: "post_communion", label: "Prayers After Holy Communion", built: true  },
   { key: "typica",         label: "The Order of the Typica",    built: true  },
+  { key: "psalter_service", label: "The Order of the Psalter",  built: true  },
 ];
 
 
@@ -7365,6 +7367,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.8.2",
+    date: "June 2026",
+    summary: "Service of the Psalter — scaffold (Slice 1 of FW-24)",
+    items: [
+      "feat: 'The Order of the Psalter' registered as a date-independent service (always in scope, like the Ordinary Beginning). Renders via its own branch, consuming the shared src/data/psalter.js data.",
+      "feat: Mode toggle (Normal reading / For the Departed) and a departed-parameters panel (name, gender, Orthodox/Non-Orthodox); priest/reader follows the existing Reader's Service toggle. Parameters are captured but not yet consumed — the proper beginning, dividers, and conclusion arrive in later slices.",
+      "feat: Collapsible pastoral guidance for reading the Psalter for the departed (A Psalter for Prayer, Jordanville, pp. 320–323).",
+      "feat: Kathisma paging (1–20, prev/next) rendering psalm text from the shared data, including the Kathisma 17 / Psalm 118 verse-range handling. Standalone psalter viewer unchanged.",
+    ],
+  },
   {
     version: "v0.8.1",
     date: "June 2026",
@@ -9175,6 +9188,181 @@ function HowItWorksPanel() {
     </div>
   );
 }
+// ─── SERVICE OF THE PSALTER (FW-24) ───────────────────────────────────────────
+// Slice 1 scaffold: registration, mode + departed parameters, pastoral guidance,
+// and kathisma paging over the shared src/data/psalter.js data. Liturgical
+// interleaving (beginning, departed dividers, conclusion) lands in later slices.
+// Kathisma render mirrors the standalone viewer (src/components/psalter.jsx);
+// kept self-contained here for the scaffold — may be DRY'd to a shared component later.
+const PS_GLORY = "Glory to the Father, and to the Son, and to the Holy Spirit; both now and ever and unto the ages of ages. Amen.";
+const PS_ALLELUIA = "Alleluia, alleluia, alleluia: Glory to Thee, O God.";
+const PS_LHM = "Lord, have mercy; Lord, have mercy; Lord, have mercy.";
+const PS_STASIS_NAMES = ["First Stasis", "Second Stasis", "Third Stasis"];
+const PS_ORDINALS = ['', 'FIRST', 'SECOND', 'THIRD', 'FOURTH', 'FIFTH', 'SIXTH', 'SEVENTH', 'EIGHTH', 'NINTH', 'TENTH', 'ELEVENTH', 'TWELFTH', 'THIRTEENTH', 'FOURTEENTH', 'FIFTEENTH', 'SIXTEENTH', 'SEVENTEENTH', 'EIGHTEENTH', 'NINETEENTH', 'TWENTIETH'];
+
+function PsalterVerses({ verses }) {
+  return (
+    <div style={{ fontSize: "0.97rem", lineHeight: "1.9", color: "#3D3020" }}>
+      {verses.map(([vn, text]) => (
+        <span key={vn}>
+          <sup style={{ fontSize: "0.62rem", color: "#8B6914", marginRight: "2px", verticalAlign: "super" }}>{vn}</sup>
+          {text}{" "}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function PsalterDivider({ isLast }) {
+  return (
+    <div style={{ margin: "1.25rem 0", padding: "0.75rem 1rem", borderLeft: "2px solid #D4C49A", borderRadius: "0 3px 3px 0", background: "rgba(139,105,20,0.06)", fontSize: "0.88rem", color: "#3D3020", lineHeight: "1.85", fontStyle: "italic" }}>
+      {PS_GLORY}<br />
+      <span style={{ color: "#9A8A70", fontSize: "0.83rem" }}>{PS_ALLELUIA}<br />{PS_ALLELUIA}<br />{PS_ALLELUIA}</span>
+      <br /><br />
+      {isLast ? "O Lord, our hope, glory to Thee." : <>{PS_LHM}<br /><br />{PS_GLORY}</>}
+    </div>
+  );
+}
+
+function PsalterKathisma({ k }) {
+  const info = KATHISMA_MAP[k];
+  if (!info) return null;
+  return (
+    <div>
+      <div style={{ marginBottom: "1.4rem", paddingBottom: "0.75rem", borderBottom: "1px solid #E8DEC8" }}>
+        <div style={{ fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#8B6914", marginBottom: "0.2rem" }}>Kathisma {k}</div>
+        <div style={{ fontSize: "0.75rem", color: "#9A8A70", fontStyle: "italic" }}>{getPsalmRange(k)}</div>
+      </div>
+      <div style={{ fontSize: "0.88rem", color: "#3D3020", lineHeight: "1.8", marginBottom: "1.25rem", fontStyle: "italic" }}>{PS_LHM}<br />{PS_GLORY}</div>
+      {info.stases.map((psalms, si) => {
+        const isLast = si === info.stases.length - 1;
+        return (
+          <div key={si}>
+            <div style={{ fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#8B6914", fontWeight: "bold", margin: "1.75rem 0 1rem", display: "flex", alignItems: "center", gap: "0.75rem" }}>
+              {PS_STASIS_NAMES[si]}
+              <span style={{ flex: 1, height: "1px", background: "#D4C49A", display: "block" }} />
+            </div>
+            {info.verseRanges ? (() => {
+              const [vStart, vEnd] = info.verseRanges[si];
+              const data = PSALMS[118];
+              const sliced = data ? data.v.filter(([vn]) => vn >= vStart && vn <= vEnd) : [];
+              return (
+                <div style={{ marginBottom: "1.5rem" }}>
+                  {si === 0 && <>
+                    <div style={{ fontSize: "0.68rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "#9A8A70", fontWeight: "bold", marginBottom: "0.25rem" }}>Psalm 118</div>
+                    {data?.sub && <div style={{ fontSize: "0.78rem", color: "#9A8A70", fontStyle: "italic", marginBottom: "0.35rem" }}>{data.sub}</div>}
+                  </>}
+                  <PsalterVerses verses={sliced} />
+                </div>
+              );
+            })() : psalms.filter(Boolean).map((n) => {
+              const data = PSALMS[n];
+              return (
+                <div key={n} style={{ marginBottom: "1.5rem" }}>
+                  <div style={{ fontSize: "0.68rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "#9A8A70", fontWeight: "bold", marginBottom: "0.25rem" }}>Psalm {n}</div>
+                  {data?.sub && <div style={{ fontSize: "0.78rem", color: "#9A8A70", fontStyle: "italic", marginBottom: "0.35rem" }}>{data.sub}</div>}
+                  {data ? <PsalterVerses verses={data.v} /> : <div style={{ fontSize: "0.88rem", color: "#D4C49A", fontStyle: "italic" }}>Psalm {n} text not encoded.</div>}
+                </div>
+              );
+            })}
+            <PsalterDivider isLast={isLast} />
+          </div>
+        );
+      })}
+      <div style={{ textAlign: 'center', margin: '2rem 0 0.5rem', paddingTop: '1rem', borderTop: '1px solid #D4C49A' }}>
+        <div style={{ fontFamily: 'Georgia, serif', fontSize: '0.8rem', fontWeight: 'bold', letterSpacing: '0.12em', color: '#5A4A2A' }}>
+          {`THE END OF THE ${PS_ORDINALS[k]} KATHISMA`}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PsalterService({ mode, setMode, name, setName, gender, setGender, orthodox, setOrthodox, guideOpen, setGuideOpen, kathisma, setKathisma, readerMode }) {
+  const departed = mode === 'departed';
+  const pill = (active) => ({
+    fontFamily: "Georgia, serif", fontSize: "0.82rem", padding: "5px 14px",
+    border: "1px solid #C4A84A", borderRadius: "3px", cursor: "pointer",
+    background: active ? "#8B6914" : "transparent", color: active ? "#FAF6EE" : "#8B6914",
+  });
+  const chip = (active) => ({
+    fontFamily: "Georgia, serif", fontSize: "0.78rem", padding: "3px 8px",
+    border: "1px solid #D4C49A", borderRadius: "3px", cursor: "pointer",
+    background: active ? "#8B6914" : "transparent", color: active ? "#FAF6EE" : "#8B6914",
+  });
+  return (
+    <div>
+      {/* Mode toggle */}
+      <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.25rem", flexWrap: "wrap", alignItems: "center" }}>
+        <span style={{ fontSize: "0.68rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "#9A8A70", marginRight: "0.2rem" }}>Mode</span>
+        <button style={pill(!departed)} onClick={() => setMode('normal')}>Normal reading</button>
+        <button style={pill(departed)} onClick={() => setMode('departed')}>For the Departed</button>
+      </div>
+
+      {/* Departed parameters */}
+      {departed && (
+        <div style={{ border: "1px solid #D4C49A", borderRadius: "6px", padding: "0.9rem 1.1rem", marginBottom: "1.25rem", background: "rgba(139,105,20,0.04)" }}>
+          <div style={{ fontSize: "0.68rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "#8B6914", fontWeight: "bold", marginBottom: "0.7rem" }}>For the Departed</div>
+          <div style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap", alignItems: "center" }}>
+            <label style={{ fontSize: "0.85rem", color: "#3D3020", display: "flex", alignItems: "center", gap: "0.4rem" }}>
+              Name
+              <input value={name} onChange={(e) => setName(e.target.value)} style={{ fontFamily: "Georgia, serif", fontSize: "0.9rem", padding: "3px 8px", border: "1px solid #C4A84A", borderRadius: "3px", background: "#FAF6EE", color: "#1C1008", width: "9rem" }} />
+            </label>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+              <span style={{ fontSize: "0.85rem", color: "#3D3020" }}>For</span>
+              <button style={chip(gender === 'm')} onClick={() => setGender('m')}>Servant</button>
+              <button style={chip(gender === 'f')} onClick={() => setGender('f')}>Handmaiden</button>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+              <span style={{ fontSize: "0.85rem", color: "#3D3020" }}>Status</span>
+              <button style={chip(orthodox)} onClick={() => setOrthodox(true)}>Orthodox</button>
+              <button style={chip(!orthodox)} onClick={() => setOrthodox(false)}>Non-Orthodox</button>
+            </div>
+          </div>
+          <div style={{ fontSize: "0.75rem", color: "#9A8A70", fontStyle: "italic", marginTop: "0.7rem" }}>
+            Priest / Reader follows the tool&rsquo;s Reader&rsquo;s Service toggle — currently <strong style={{ color: "#5C4A1E" }}>{readerMode ? "Reader (no priest)" : "Priest present"}</strong>. The proper beginning, dividers, and conclusion are added in upcoming releases.
+          </div>
+
+          {/* Pastoral guidance disclosure */}
+          <div style={{ marginTop: "0.9rem", borderTop: "1px solid #E8DEC8", paddingTop: "0.7rem" }}>
+            <button onClick={() => setGuideOpen((o) => !o)} style={{ background: "none", border: "none", color: "#8B6914", fontFamily: "Georgia, serif", fontSize: "0.8rem", cursor: "pointer", padding: 0, letterSpacing: "0.04em" }}>
+              {guideOpen ? "▾" : "▸"} Pastoral guidance for reading the Psalter for the departed
+            </button>
+            {guideOpen && (
+              <ul style={{ fontSize: "0.82rem", color: "#3D3020", lineHeight: "1.7", marginTop: "0.6rem", paddingLeft: "1.1rem" }}>
+                <li>The Psalter is read over the body of a departed deacon, monastic, or layperson. For a departed priest or bishop, the Four Gospels are read instead.</li>
+                <li>It is read standing, from a lectern at the west end of the coffin, the coffin so placed that the feet of the departed are toward the east.</li>
+                <li>The psalms are read continuously, except during a Pannykhida or Litia.</li>
+                <li>It is read from the conclusion of the Rite Following the Departure of the Soul from the Body until burial, and in memory after burial.</li>
+                <li>Any pious layperson may read the Psalter for the departed, and those who do so perform a good work.</li>
+              </ul>
+            )}
+            <div style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic", marginTop: "0.5rem" }}>
+              Source: A Psalter for Prayer (Holy Trinity Monastery, Jordanville), pp. 320&ndash;323.
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Kathisma selector */}
+      <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "1.5rem", flexWrap: "wrap" }}>
+        <span style={{ fontSize: "0.68rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "#9A8A70", marginRight: "0.2rem" }}>Kathisma</span>
+        {Array.from({ length: 20 }, (_, i) => i + 1).map((kk) => (
+          <button key={kk} onClick={() => setKathisma(kk)} style={chip(kathisma === kk)}>{kk}</button>
+        ))}
+      </div>
+
+      <PsalterKathisma k={kathisma} />
+
+      {/* prev / next */}
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "2rem", marginBottom: "1.5rem", paddingTop: "1rem", borderTop: "1px solid #E8DEC8" }}>
+        <button onClick={() => setKathisma(Math.max(1, kathisma - 1))} disabled={kathisma <= 1} style={{ fontFamily: "Georgia, serif", fontSize: "0.82rem", color: "#8B6914", background: "none", border: "1px solid #D4C49A", borderRadius: "3px", padding: "5px 14px", cursor: kathisma <= 1 ? "default" : "pointer", opacity: kathisma <= 1 ? 0.3 : 1 }}>{kathisma <= 1 ? "← Kathisma" : `← Kathisma ${kathisma - 1}`}</button>
+        <button onClick={() => setKathisma(Math.min(20, kathisma + 1))} disabled={kathisma >= 20} style={{ fontFamily: "Georgia, serif", fontSize: "0.82rem", color: "#8B6914", background: "none", border: "1px solid #D4C49A", borderRadius: "3px", padding: "5px 14px", cursor: kathisma >= 20 ? "default" : "pointer", opacity: kathisma >= 20 ? 0.3 : 1 }}>{kathisma >= 20 ? "Kathisma →" : `Kathisma ${kathisma + 1} →`}</button>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const today = new Date();
   const [selectedDate, setSelectedDate] = useState(
@@ -9191,6 +9379,13 @@ export default function App() {
   const [tbOpen, setTbOpen] = useState(false);
   const [voOpen, setVoOpen] = useState(false);
   const [readerMode, setReaderMode] = useState(false);
+  // Service of the Psalter (FW-24, Slice 1)
+  const [psalterMode, setPsalterMode] = useState('normal');   // 'normal' | 'departed'
+  const [departedName, setDepartedName] = useState('N.');
+  const [departedGender, setDepartedGender] = useState('m');  // 'm' | 'f'
+  const [departedOrthodox, setDepartedOrthodox] = useState(true);
+  const [departedGuideOpen, setDepartedGuideOpen] = useState(false);
+  const [psalterKathisma, setPsalterKathisma] = useState(1);
   const [outlineOpen, setOutlineOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(null);
   const [preCommunionData, setPreCommunionData] = useState(null);
@@ -9291,6 +9486,7 @@ export default function App() {
   const inScope = selectedServiceKey === 'post_communion'
     || selectedServiceKey === 'pre_communion'
     || selectedServiceKey === 'ordinary_beginning'
+    || selectedServiceKey === 'psalter_service'
     || ["ordinary", "sunday", "pentecostarion", "brightweek",
         "great_feast", "forefeast", "afterfeast", "apodosis"].includes(liturgicalData.season);
   const isSunday = liturgicalData.season === "sunday";
@@ -9343,6 +9539,7 @@ export default function App() {
   const elements = (() => {
     if (!inScope) return [];
     if (currentService.key === 'ordinary_beginning') return [];
+    if (currentService.key === 'psalter_service') return [];
     let els;
     if (currentService.key === 'vespers') {
       els = assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, readerMode, selectedDate);
@@ -9796,7 +9993,7 @@ export default function App() {
         {inScope && (
           <>
             {/* Feast-period informational banner */}
-            {["great_feast", "forefeast", "afterfeast", "apodosis"].includes(liturgicalData.season) && (
+            {currentService.key !== 'psalter_service' && ["great_feast", "forefeast", "afterfeast", "apodosis"].includes(liturgicalData.season) && (
               <div style={{
                 background: "rgba(139,105,20,0.07)",
                 border: "1px solid rgba(139,105,20,0.25)",
@@ -9892,7 +10089,11 @@ export default function App() {
                         Read After Holy Communion · Following {_ltLabel}
                       </div>
                     );
-                  })() : (
+                  })() : currentService.key === 'psalter_service' ? (
+                  <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
+                    A Psalter for Prayer (Jordanville) · Read continuously, kathisma by kathisma · {psalterMode === 'departed' ? 'For the Departed' : 'Normal reading'}
+                  </div>
+                ) : (
                 <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
                   <Tooltip term="horologion">Horologion</Tooltip> structure ·{" "}
                   {isSunday
@@ -9913,7 +10114,7 @@ export default function App() {
             </div>
 
             {/* Legend (only when service is built and not ordinary_beginning/pre_communion) */}
-            {currentService.built && currentService.key !== 'ordinary_beginning' && currentService.key !== 'pre_communion' && (
+            {currentService.built && currentService.key !== 'ordinary_beginning' && currentService.key !== 'pre_communion' && currentService.key !== 'psalter_service' && (
               <div style={{ display: "flex", gap: "1.2rem", marginBottom: "1.5rem", fontSize: "0.75rem", flexWrap: "wrap" }}>
                 <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                   <span style={{ width: "12px", height: "12px", borderRadius: "2px", background: "#9A8A70", display: "inline-block" }} />
@@ -9939,6 +10140,18 @@ export default function App() {
                 {currentService.key === "ordinary_beginning" && (
                   <OrdinaryBeginning liturgicalData={liturgicalData} open={true} setOpen={() => {}} readerMode={readerMode}
                     collapsible={false} />
+                )}
+                {/* Service of the Psalter (FW-24) */}
+                {currentService.key === "psalter_service" && (
+                  <PsalterService
+                    mode={psalterMode} setMode={setPsalterMode}
+                    name={departedName} setName={setDepartedName}
+                    gender={departedGender} setGender={setDepartedGender}
+                    orthodox={departedOrthodox} setOrthodox={setDepartedOrthodox}
+                    guideOpen={departedGuideOpen} setGuideOpen={setDepartedGuideOpen}
+                    kathisma={psalterKathisma} setKathisma={setPsalterKathisma}
+                    readerMode={readerMode}
+                  />
                 )}
                 {/* Ordinary Beginning — shown as collapsible for services that may follow another */}
                 {(currentService.key === "1st_hour") && (
