@@ -248,9 +248,12 @@ var SHOW_SATB_LABELS = true;
 // add it explicitly. The first system also gets INDENT on top (first-system indent + labels).
 var LEAD_GAP = 16;
 // BAR_PAD: clearance between a phrase's rightmost content (last note / last syllable / //
-// penultimate marker) and its end-of-verse bar. Folded into phraseMetrics width too, so a
+// penultimate marker) and its end-of-verse bar. Folded into sliceMetrics width too, so a
 // following packed phrase clears the bar.
 var BAR_PAD = 12;
+// WRAP_PAD: trailing clearance past the last column of an OPEN (wrapped) slice — no barline
+// is drawn there, so it needs only a little air before the system's right edge.
+var WRAP_PAD = 8;
 
 // ── Load fonts before rendering ────────────────────────────────────────
 function loadFonts(cb) {
@@ -335,42 +338,124 @@ function renderScore(payload) {
     return { adv: T, hw: hw };
   }
 
-  // Natural width of a phrase from its first note to its end-of-verse bar (draw-free).
-  function phraseMetrics(line) {
-    var rec = reciteIntermediateFor(line.alto);
-    var visible = line.alto.map(function(_, i) { return !rec.has(i); });
-    var ca = computeAdvances(line.alto, visible);
-    var last = ca.adv.length - 1;
-    if (last < 0) return { width: 0, adv: [], rec: rec, visible: visible };
-    // Rightmost content before the bar: last note, last syllable's right half, and (on the
-    // penultimate verse) the // marker's right edge — mirror of drawPhrase's bar placement.
-    var end = Math.max(ca.adv[last] + NOTE_W * 0.5, ca.adv[last] + ca.hw[last]);
-    if (line.barlineAfter === 'penultimate') {
-      end = Math.max(end, ca.adv[last] + NOTE_W * 0.6 + measW("//", "200") / 2 + 2);
+  // Per-slice visibility with the re-anchor rule (Phase 2). For columns [s0,s1) of a line, a
+  // reciting interior column is a ghost EXCEPT the slice's first column, which is always
+  // surfaced (the re-anchor) so a system never starts on a ghost. The run's true first/last
+  // noteheads stay visible via the global ghost set. Returns slice-local visible[] (length
+  // s1-s0) and a slice-local ghost-index Set. For a whole-phrase slice (s0=0) the re-anchor is
+  // a no-op (column 0 is never a ghost), so output matches the pre-slice renderer exactly.
+  function sliceVisibility(line, s0, s1) {
+    var globalGhost = reciteIntermediateFor(line.alto);
+    var visible = [], rec = new Set();
+    for (var i = 0; i < s1 - s0; i++) {
+      var ghost = globalGhost.has(s0 + i);
+      if (i === 0) ghost = false; // re-anchor: surface the slice's first column
+      visible.push(!ghost);
+      if (ghost) rec.add(i);
     }
-    return { width: end + BAR_PAD, adv: ca.adv, rec: rec, visible: visible };
+    return { visible: visible, rec: rec };
   }
 
-  // Greedy first-fit packing (Phase 1: break only at phrase boundaries). Each phrase either
-  // fits in the current system's remaining width or opens a new system.
+  // Natural metrics of a slice [s0,s1): slice-local advances (re-zeroed to the slice start) and
+  // its right-edge width. A phrase-end slice reserves BAR_PAD (+ // on the penultimate verse)
+  // for its barline; an open (wrapped) slice reserves only WRAP_PAD past its last column.
+  function sliceMetrics(line, s0, s1, isPhraseEnd) {
+    var sv = sliceVisibility(line, s0, s1);
+    var altoSlice = line.alto.slice(s0, s1);
+    var ca = computeAdvances(altoSlice, sv.visible);
+    var last = ca.adv.length - 1;
+    if (last < 0) return { width: 0, adv: [], visible: sv.visible, rec: sv.rec, hw: [] };
+    var end = Math.max(ca.adv[last] + NOTE_W * 0.5, ca.adv[last] + ca.hw[last]);
+    if (isPhraseEnd && line.barlineAfter === 'penultimate') {
+      end = Math.max(end, ca.adv[last] + NOTE_W * 0.6 + measW("//", "200") / 2 + 2);
+    }
+    var width = isPhraseEnd ? (end + BAR_PAD) : (ca.adv[last] + ca.hw[last] + WRAP_PAD);
+    return { width: width, adv: ca.adv, visible: sv.visible, rec: sv.rec, hw: ca.hw };
+  }
+
+  // Build a slice record. barlineAfter is null on an open (wrapped) slice; set on a phrase end.
+  function mkSlice(line, s0, s1, xStart, m, barlineAfter, isPhraseEnd, isLast) {
+    return {
+      line: line, s0: s0, s1: s1, xStart: xStart, width: m.width,
+      adv: m.adv, visible: m.visible, rec: m.rec,
+      barlineAfter: barlineAfter, isPhraseEnd: isPhraseEnd, isLast: isLast
+    };
+  }
+
+  // Legal break seams within a phrase: column indices j (1..n-1) where the phrase MAY wrap to
+  // the next system, breaking BETWEEN columns j-1 and j. A seam is legal iff it falls after a
+  // reciting note (within a reciting run, or a recite→cadence boundary — the elastic zones)
+  // AND it does not split a melisma group or a tenor held span (both unbreakable: the held
+  // notehead / slur would cross the system break). Phrase boundaries are handled separately.
+  function legalSeams(line) {
+    var n = line.alto.length, seams = new Set();
+    var spans = (line.tenor || []).map(function(t, k) {
+      var ss = (t.spanStart != null) ? t.spanStart : k;
+      var sc = (t.spanCount != null) ? t.spanCount : 1;
+      return [ss, ss + sc];
+    });
+    for (var j = 1; j < n; j++) {
+      if (line.alto[j - 1].role !== 'recite') continue;                 // only after a recite note
+      var contMelisma = line.alto[j].melisma && line.alto[j].text === line.alto[j - 1].text;
+      if (contMelisma) continue;                                        // inside a melisma group
+      var inSpan = spans.some(function(sp) { return sp[0] < j && sp[1] > j; });
+      if (inSpan) continue;                                             // inside a tenor held span
+      seams.add(j);
+    }
+    return seams;
+  }
+
+  // Greedy first-fit packing into systems of SLICES. A phrase that fits a full system is placed
+  // whole (Phase-1 behavior — packed after the previous phrase, or wrapped whole to a fresh
+  // system). A phrase WIDER than a full system is broken at legal seams into open slices (one
+  // per system) plus a final phrase-end slice that carries the barline. Per-slice ghosting with
+  // the re-anchor clause lives in sliceVisibility; this pass only chooses the column ranges.
   function packSystems(allLines, leftFirst, leftRest, rightEdge) {
-    var systems = [], cur = { phrases: [], left: leftFirst }, x = leftFirst;
+    var systems = [], cur = { slices: [], left: leftFirst }, x = leftFirst;
+    function flush() { if (cur.slices.length) { systems.push(cur); cur = { slices: [], left: leftRest }; x = leftRest; } }
+    var fullSystemWidth = rightEdge - leftRest;
+
     for (var i = 0; i < allLines.length; i++) {
       var line = allLines[i];
-      var m = phraseMetrics(line);
-      if (cur.phrases.length > 0 && (x + m.width) > rightEdge) {
-        systems.push(cur);
-        cur = { phrases: [], left: leftRest };
-        x = leftRest;
+      var isLastPhrase = (i === allLines.length - 1);
+      var phraseBar = line.barlineAfter || (isLastPhrase ? 'final' : 'single');
+      var n = line.alto.length;
+      var whole = sliceMetrics(line, 0, n, true);
+
+      // Whole phrase fits a system → place it whole (unchanged from Phase 1 / 2a).
+      if (whole.width <= fullSystemWidth) {
+        if (cur.slices.length > 0 && (x + whole.width) > rightEdge) flush();
+        cur.slices.push(mkSlice(line, 0, n, x, whole, phraseBar, true, isLastPhrase));
+        x += whole.width + INTER_PHRASE_GAP;
+        continue;
       }
-      cur.phrases.push({
-        line: line, xStart: x, adv: m.adv, rec: m.rec, visible: m.visible,
-        barlineAfter: line.barlineAfter || (i === allLines.length - 1 ? 'final' : 'single'),
-        isLast: i === allLines.length - 1
-      });
-      x += m.width + INTER_PHRASE_GAP;
+
+      // Wider than a full system → break into slices. A broken phrase starts a fresh system.
+      if (cur.slices.length > 0) flush();
+      var seams = legalSeams(line);
+      var start = 0;
+      while (start < n) {
+        var rem = sliceMetrics(line, start, n, true);
+        if ((x + rem.width) <= rightEdge) {                       // remainder fits → final slice
+          cur.slices.push(mkSlice(line, start, n, x, rem, phraseBar, true, isLastPhrase));
+          x += rem.width + INTER_PHRASE_GAP; start = n; break;
+        }
+        var best = -1;                                            // latest legal seam that fits at x
+        seams.forEach(function(j) {
+          if (j <= start || j >= n) return;
+          var m = sliceMetrics(line, start, j, false);
+          if ((x + m.width) <= rightEdge) best = Math.max(best, j);
+        });
+        if (best <= start) {                                      // no legal seam fits → fallback
+          cur.slices.push(mkSlice(line, start, n, x, rem, phraseBar, true, isLastPhrase));
+          x += rem.width + INTER_PHRASE_GAP; start = n; break;    // scale-to-fit via J<1 at render
+        }
+        var ms = sliceMetrics(line, start, best, false);
+        cur.slices.push(mkSlice(line, start, best, x, ms, null, false, false));
+        flush(); start = best;                                    // open slice ends its system
+      }
     }
-    if (cur.phrases.length) systems.push(cur);
+    if (cur.slices.length) systems.push(cur);
     return systems;
   }
 
@@ -387,6 +472,14 @@ function renderScore(payload) {
   var systemLeftFirst = systemLeftRest + INDENT;
   var contentRight    = ML + SW;
   var systems = packSystems(lines, systemLeftFirst, systemLeftRest, contentRight);
+  // Debug aid (no behavior change): expose the computed slice ranges so a headless harness can
+  // assert break seams / re-anchor without scraping the SVG. Holds only lightweight metadata.
+  renderScore._lastSystems = systems.map(function(sy) {
+    return sy.slices.map(function(sl) {
+      return { s0: sl.s0, s1: sl.s1, isPhraseEnd: sl.isPhraseEnd, barlineAfter: sl.barlineAfter,
+        firstVisible: !sl.rec.has(0), ghostLocal: Array.from(sl.rec) };
+    });
+  });
 
 
   var canvas = document.getElementById('score-canvas');
@@ -596,31 +689,35 @@ function renderScore(payload) {
     // anchor = this system's ACTUAL drawn note-start (real clef+key end, + indent on sys1).
     // packLeft = the system's pack-left (estimate used during packing) → relX = xStart-packLeft.
     // T[i] (absolute X) = anchor + J * (relX + phrase.adv[i]).
-    function drawPhrase(phrase, tr, bs, J, anchor, packLeft) {
-      var line = phrase.line;
-      var rec = phrase.rec, adv = phrase.adv;
-      var relX = phrase.xStart - packLeft;
+    function drawSlice(slice, tr, bs, J, anchor, packLeft) {
+      var line = slice.line, s0 = slice.s0, s1 = slice.s1;
+      var rec = slice.rec, adv = slice.adv;             // both slice-local (0-based within slice)
+      var relX = slice.xStart - packLeft;
       var T = adv.map(function(a) { return anchor + J * (relX + a); });
+      // Sliced, index-aligned voice arrays — lyrics/slurs/spacing all read these by local index.
+      var altoSlice = line.alto.slice(s0, s1);
       var hasSop = line.soprano && line.soprano.length === line.alto.length;
+      var sopSlice = hasSop ? line.soprano.slice(s0, s1) : null;
+      var bassSlice = line.bass ? line.bass.slice(s0, s1) : null;
       var altoStem = (grand || hasSop) ? -1 : 1;
       var lastRightEdge = 0, slashRightEdge = 0;
 
       // Treble — SOPRANO (stems up) + ALTO (stems down when soprano/grand present).
       var aN = [];
-      for (var ai = 0; ai < line.alto.length; ai++) {
-        var r = line.alto[ai];
+      for (var ai = 0; ai < altoSlice.length; ai++) {
+        var r = altoSlice[ai];
         aN.push(rec.has(ai) ? mkGhost(r.durKey)
           : mkNote(ALTO_PITCH[r.pitch] || cfg.names.fa + '/4', r.durKey, altoStem));
       }
       var sN = [];
-      if (hasSop) for (var si2 = 0; si2 < line.soprano.length; si2++) {
-        var sr = line.soprano[si2];
+      if (hasSop) for (var si2 = 0; si2 < sopSlice.length; si2++) {
+        var sr = sopSlice[si2];
         sN.push(rec.has(si2) ? mkGhost(sr.durKey)
           : mkNote(SOPRANO_PITCH[sr.pitch] || cfg.names.la + '/5', sr.durKey, 1));
       }
       var altoVoice = mkVoice(aN), trebleVoices = [altoVoice], sopVoice = null;
       if (hasSop) { sopVoice = mkVoice(sN); trebleVoices.push(sopVoice); }
-      new VF.Formatter().joinVoices(trebleVoices).format(trebleVoices, line.alto.length * NOTE_W);
+      new VF.Formatter().joinVoices(trebleVoices).format(trebleVoices, altoSlice.length * NOTE_W);
       // Attach the stave BEFORE setVoiceX so our absolute T is honored exactly. (If the stave
       // is attached only at draw time, draw() adds getNoteStartX a SECOND time on top of our
       // already-absolute T — doubling the clef+key offset into a wide leading gap.)
@@ -631,48 +728,50 @@ function renderScore(payload) {
       altoVoice.draw(ctx, tr);
       if (sopVoice) sopVoice.draw(ctx, tr);
 
-      if (!grand) lastRightEdge = drawLyrics(svg, line.alto, aN, tr.getYForLine(4) + 20);
-      drawMelismaSlurs(aN, line.alto);
-      if (hasSop) drawMelismaSlurs(sN, line.alto);
+      if (!grand) lastRightEdge = drawLyrics(svg, altoSlice, aN, tr.getYForLine(4) + 20);
+      drawMelismaSlurs(aN, altoSlice);
+      if (hasSop) drawMelismaSlurs(sN, altoSlice);
 
-      // Bass — TENOR (stems up) + BASS (stems down). Tenor may be collapsed (held notes).
-      if (grand && line.bass) {
-        var hasTen = line.tenor && line.tenor.length > 0;
+      // Bass — TENOR (stems up) + BASS (stems down). Tenor may be collapsed (held notes); a
+      // tenor span never crosses a slice boundary (melismas are illegal break seams), so every
+      // tenor note whose anchor column falls in [s0,s1) is wholly inside this slice.
+      if (grand && bassSlice) {
         var bN = [];
-        for (var bi = 0; bi < line.bass.length; bi++) {
-          var br = line.bass[bi];
+        for (var bi = 0; bi < bassSlice.length; bi++) {
+          var br = bassSlice[bi];
           bN.push(rec.has(bi) ? mkGhost(br.durKey)
             : mkNote(bassVFPitch(br.pitch, br.octaveDiv, cfg), br.durKey, -1, 'bass'));
         }
-        var tN = [];
-        if (hasTen) for (var ti2 = 0; ti2 < line.tenor.length; ti2++) {
-          var trn = line.tenor[ti2];
-          var tcol = (trn.spanStart != null) ? trn.spanStart : ti2;
-          tN.push(rec.has(tcol) ? mkGhost(trn.durKey)
-            : mkNote(tenorVFPitch(trn.pitch, trn.octaveDiv, cfg), trn.durKey, 1, 'bass'));
-        }
+        var tenItems = [];
+        if (line.tenor && line.tenor.length > 0) line.tenor.forEach(function(trn, k) {
+          var col = (trn.spanStart != null) ? trn.spanStart : k;
+          if (col >= s0 && col < s1) tenItems.push({ trn: trn, lcol: col - s0 });
+        });
+        var hasTen = tenItems.length > 0;
+        var tN = tenItems.map(function(it) {
+          return rec.has(it.lcol) ? mkGhost(it.trn.durKey)
+            : mkNote(tenorVFPitch(it.trn.pitch, it.trn.octaveDiv, cfg), it.trn.durKey, 1, 'bass');
+        });
         var bassVoice = mkVoice(bN), bassVoices = [bassVoice], tenVoice = null;
         if (hasTen) { tenVoice = mkVoice(tN); bassVoices.push(tenVoice); }
-        new VF.Formatter().joinVoices(bassVoices).format(bassVoices, line.alto.length * NOTE_W);
+        new VF.Formatter().joinVoices(bassVoices).format(bassVoices, altoSlice.length * NOTE_W);
         bN.forEach(function(n) { n.setStave(bs); });
         if (hasTen) tN.forEach(function(n) { n.setStave(bs); });
         setVoiceX(bN, T);
-        if (hasTen) setVoiceX(tN, line.tenor.map(function(e, k) {
-          return T[(e.spanStart != null) ? e.spanStart : k];
-        }));
+        if (hasTen) setVoiceX(tN, tenItems.map(function(it) { return T[it.lcol]; }));
         bassVoice.draw(ctx, bs);
         if (tenVoice) tenVoice.draw(ctx, bs);
-        drawMelismaSlurs(bN, line.alto, false);
+        drawMelismaSlurs(bN, altoSlice, false);
       }
 
       // Lyrics (grand): centered between treble bottom line and bass top line.
       if (grand) {
         var lyricY = (tr.getYForLine(4) + bs.getYForLine(0)) / 2;
-        lastRightEdge = drawLyrics(svg, line.alto, aN, lyricY);
+        lastRightEdge = drawLyrics(svg, altoSlice, aN, lyricY);
       }
 
-      // // penultimate marker (grand or solo).
-      if (phrase.barlineAfter === 'penultimate' && aN.length > 0) {
+      // // penultimate marker — only at a phrase END (never at an open wrap point).
+      if (slice.isPhraseEnd && slice.barlineAfter === 'penultimate' && aN.length > 0) {
         var penultLyricY = grand ? (tr.getYForLine(4) + bs.getYForLine(0)) / 2 : (tr.getYForLine(4) + 20);
         var lastX = aN[aN.length - 1].getAbsoluteX() + NOTE_W * 0.6;
         var slashTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -685,15 +784,15 @@ function renderScore(payload) {
         slashRightEdge = lastX + measW("//", "200") / 2 + 2;
       }
 
-      // End-of-verse barline — BAR_PAD past whichever of (last note / last syllable / //) is
-      // furthest. The final verse of the stichera closes with a DOUBLE bar (two thin lines);
-      // all other verses get a single bar. Wrap points (no barlineAfter) draw nothing.
-      if (aN.length > 0) {
+      // End-of-verse barline — drawn ONLY at a phrase end (open at wrap points). BAR_PAD past
+      // whichever of (last note / last syllable / //) is furthest. The final verse of the
+      // stichera closes with a thin+thick final barline; other verses get a single bar.
+      if (slice.isPhraseEnd && aN.length > 0) {
         var noteEnd = aN[aN.length - 1].getAbsoluteX() + NOTE_W * 0.5;
         var barX = Math.max(noteEnd, lastRightEdge, slashRightEdge) + BAR_PAD;
         var y0 = tr.getYForLine(0), y1 = grand ? bs.getYForLine(4) : tr.getYForLine(4);
         mkVerseBar(svg, barX, y0, y1);
-        if (phrase.barlineAfter === 'final') mkVerseBar(svg, barX + 4.5, y0, y1, 3.5); // thin + thick final barline
+        if (slice.barlineAfter === 'final') mkVerseBar(svg, barX + 4.5, y0, y1, 3.5); // thin + thick final barline
       }
     }
 
@@ -748,19 +847,18 @@ function renderScore(payload) {
       // have no indent); without it they butt against the key signature.
       var anchor = tr.getNoteStartX() + LEAD_GAP + (isFirstGlobal ? INDENT : 0);
 
-      // Per-system justification: scale the content span so the last phrase's verse bar reaches
+      // Per-system justification: scale the content span so the last slice's right edge reaches
       // contentRight. Non-last systems justify (fill); the last system is ragged (J=1) unless its
-      // content overflows, in which case it compresses (J<1) — the over-wide-lone-phrase fallback.
-      var lastP = system.phrases[system.phrases.length - 1];
-      var lastM = phraseMetrics(lastP.line);
-      var naturalSpan = (lastP.xStart - sysLeft) + lastM.width;
+      // content overflows, in which case it compresses (J<1) — the over-wide fallback.
+      var lastSlice = system.slices[system.slices.length - 1];
+      var naturalSpan = (lastSlice.xStart - sysLeft) + lastSlice.width;
       var usable = contentRight - anchor;
       var isLastSystem = (globalSysIdx === systems.length - 1);
       var J = (naturalSpan > 0) ? (usable / naturalSpan) : 1;
       if (isLastSystem) J = Math.min(1, J);
       if (!isFinite(J) || J <= 0) J = 1;
 
-      system.phrases.forEach(function(phrase) { drawPhrase(phrase, tr, bs, J, anchor, sysLeft); });
+      system.slices.forEach(function(slice) { drawSlice(slice, tr, bs, J, anchor, sysLeft); });
       globalSysIdx++;
     });
 
