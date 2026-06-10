@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.16.5";
+export const TONE_TRAINER_VERSION = "v0.16.6";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.16.6",
+    date: "June 2026",
+    summary: "Printed score: white knockout behind SATB margin labels so they cut cleanly through the brace",
+    items: [
+      "fix: the first-system SATB labels (Soprano/Alto, Tenor/Bass) overprinted the brace/embellishment at the left of the system. Each label now draws an opaque white knockout box (2px padding) behind the text — same approach the lyric renderer uses — so the label visually cuts the brace instead of colliding with it. Pulling the labels left was rejected: they're already right-aligned near the page edge and 'Soprano' would clip.",
+    ],
+  },
   {
     version: "v0.16.5",
     date: "June 2026",

@@ -708,11 +708,21 @@ function renderScore(payload) {
 
       // SATB margin labels — first global system only (toggle).
       if (isFirstGlobal && SHOW_SATB_LABELS) {
+        var LABEL_FS = 10, LABEL_PAD = 2, LABEL_END = ML - 6;
         var mkLabel = function(txt, yy) {
+          // Width at 10px (measW measures at 16px → scale). White knockout box first so the
+          // label cleanly cuts the brace/embellishment behind it, then the text on top.
+          var w = measW(txt, '300') * (LABEL_FS / 16);
+          var box = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+          box.setAttribute('x', LABEL_END - w - LABEL_PAD);
+          box.setAttribute('y', yy - LABEL_FS / 2 - LABEL_PAD);
+          box.setAttribute('width', w + LABEL_PAD * 2);
+          box.setAttribute('height', LABEL_FS + LABEL_PAD * 2);
+          box.setAttribute('fill', '#ffffff'); svg.appendChild(box);
           var el = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-          el.setAttribute('x', ML - 6); el.setAttribute('y', yy);
+          el.setAttribute('x', LABEL_END); el.setAttribute('y', yy);
           el.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
-          el.setAttribute('font-size', '10'); el.setAttribute('font-weight', '300');
+          el.setAttribute('font-size', String(LABEL_FS)); el.setAttribute('font-weight', '300');
           el.setAttribute('text-anchor', 'end'); el.setAttribute('dominant-baseline', 'middle');
           el.setAttribute('fill', '#2a2118'); el.textContent = txt; svg.appendChild(el);
         };
