@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.16.0";
+export const TONE_TRAINER_VERSION = "v0.16.1";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.16.1",
+    date: "June 2026",
+    summary: "Fix: printed-score leading space — phrases now anchor to the real clef+key end (was an enormous left gap on every system)",
+    items: [
+      "fix: every system showed an enormous empty band between the key signature and the first note. Cause: the first-note position was built from a pre-measured clef+key width taken off a DETACHED, never-attached throwaway stave (plus a redundant EDGE_PAD and the first-system INDENT). An unattached-DOM stave returns an unreliable/inflated note-start in a real browser, so the computed left edge sat far right of the actual clef+key. Notes now anchor to each system's ACTUAL drawn getNoteStartX() (real clef+key end) + the indent on system 1 only; the throwaway measurement is used solely as a packing-width estimate, never for positioning. Leading space is now exactly clef+key, matching the printed reference. EDGE_PAD removed from the note position (kept only in the packing estimate).",
+    ],
+  },
   {
     version: "v0.16.0",
     date: "June 2026",

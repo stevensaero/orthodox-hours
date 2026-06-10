@@ -579,11 +579,14 @@ function renderScore(payload) {
     var svg = wrap.querySelector('svg');
 
     // Render one phrase onto the given system staves at justified positions.
-    // T[i] (absolute X) = sysLeft + J * (phrase.xStart - sysLeft + phrase.adv[i]).
-    function drawPhrase(phrase, tr, bs, J, sysLeft) {
+    // anchor = this system's ACTUAL drawn note-start (real clef+key end, + indent on sys1).
+    // packLeft = the system's pack-left (estimate used during packing) → relX = xStart-packLeft.
+    // T[i] (absolute X) = anchor + J * (relX + phrase.adv[i]).
+    function drawPhrase(phrase, tr, bs, J, anchor, packLeft) {
       var line = phrase.line;
       var rec = phrase.rec, adv = phrase.adv;
-      var T = adv.map(function(a) { return sysLeft + J * (phrase.xStart - sysLeft + a); });
+      var relX = phrase.xStart - packLeft;
+      var T = adv.map(function(a) { return anchor + J * (relX + a); });
       var hasSop = line.soprano && line.soprano.length === line.alto.length;
       var altoStem = (grand || hasSop) ? -1 : 1;
       var lastRightEdge = 0, slashRightEdge = 0;
@@ -680,7 +683,6 @@ function renderScore(payload) {
       tr.addClef('treble').addKeySignature(cfg.vexKey);
       tr.setEndBarType(VF.Barline.type.NONE);
       tr.setContext(ctx).draw();
-      tr.setNoteStartX(tr.getNoteStartX() + EDGE_PAD + (isFirstGlobal ? INDENT : 0));
 
       var bs = null;
       if (grand) {
@@ -688,7 +690,6 @@ function renderScore(payload) {
         bs.addClef('bass').addKeySignature(cfg.vexKey);
         bs.setEndBarType(VF.Barline.type.NONE);
         bs.setContext(ctx).draw();
-        bs.setNoteStartX(bs.getNoteStartX() + EDGE_PAD + (isFirstGlobal ? INDENT : 0));
         new VF.StaveConnector(tr, bs).setType(VF.StaveConnector.type.BRACE).setContext(ctx).draw();
         new VF.StaveConnector(tr, bs).setType(VF.StaveConnector.type.SINGLE_LEFT).setContext(ctx).draw();
       }
@@ -707,19 +708,24 @@ function renderScore(payload) {
         if (grand) { mkLabel('Tenor', bs.getYForLine(1)); mkLabel('Bass', bs.getYForLine(3)); }
       }
 
-      // Per-system justification: scale so the last phrase's verse bar reaches contentRight.
-      // Non-last systems justify (fill); the last system is ragged (J=1) unless its content
-      // overflows, in which case it compresses (J<1) — also the over-wide-lone-phrase fallback.
+      // Anchor columns to the ACTUAL drawn note-start (real clef+key end), plus the
+      // first-system indent. This is robust to clef/key glyph width (no pre-measured guess
+      // in the note position) so the leading space is exactly clef+key, like the reference.
+      var anchor = tr.getNoteStartX() + (isFirstGlobal ? INDENT : 0);
+
+      // Per-system justification: scale the content span so the last phrase's verse bar reaches
+      // contentRight. Non-last systems justify (fill); the last system is ragged (J=1) unless its
+      // content overflows, in which case it compresses (J<1) — the over-wide-lone-phrase fallback.
       var lastP = system.phrases[system.phrases.length - 1];
       var lastM = phraseMetrics(lastP.line);
-      var naturalSpan = (lastP.xStart + lastM.width) - sysLeft;
-      var usable = contentRight - sysLeft;
+      var naturalSpan = (lastP.xStart - sysLeft) + lastM.width;
+      var usable = contentRight - anchor;
       var isLastSystem = (globalSysIdx === systems.length - 1);
       var J = (naturalSpan > 0) ? (usable / naturalSpan) : 1;
       if (isLastSystem) J = Math.min(1, J);
       if (!isFinite(J) || J <= 0) J = 1;
 
-      system.phrases.forEach(function(phrase) { drawPhrase(phrase, tr, bs, J, sysLeft); });
+      system.phrases.forEach(function(phrase) { drawPhrase(phrase, tr, bs, J, anchor, sysLeft); });
       globalSysIdx++;
     });
 
