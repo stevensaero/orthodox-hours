@@ -10,11 +10,21 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.21.0";
+export const TONE_TRAINER_VERSION = "v0.21.1";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.21.1",
+    date: "June 2026",
+    summary: "Printed score: phrase-marker border fix + nudge; tempo mark uses the project half-note glyph",
+    items: [
+      "fix: phrase-marker boxes (and the SATB knockout boxes) no longer show a thin black border. They were inheriting VexFlow's black stroke from the root SVG; the knockout boxes now set stroke:none explicitly. White background is unchanged.",
+      "tweak: phrase markers sit 2px lower, closer to the tops of the staves.",
+      "tweak: the tempo mark now uses the project's half-note SVG glyph (hollow notehead + stem) instead of a hand-drawn one, so it matches the noteheads on the score.",
+    ],
+  },
   {
     version: "v0.21.0",
     date: "June 2026",
