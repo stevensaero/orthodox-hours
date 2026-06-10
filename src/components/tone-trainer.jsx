@@ -10,11 +10,21 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.21.1";
+export const TONE_TRAINER_VERSION = "v0.21.2";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.21.2",
+    date: "June 2026",
+    summary: "Printed score: phrase-marker + tempo-mark weight/placement polish; SATB boxes keep their border",
+    items: [
+      "tweak: phrase markers are a touch heavier (weight 400), sit 2px lower, and register 8px further left of the verse's first note.",
+      "tweak: the tempo mark is bolder — heavier half-note glyph and heavier '= N' text.",
+      "change: the SATB label boxes keep their (now explicit) thin black border — restored after the v0.21.1 border cleanup, which was only meant for the phrase markers.",
+    ],
+  },
   {
     version: "v0.21.1",
     date: "June 2026",

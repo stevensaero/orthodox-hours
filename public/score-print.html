@@ -847,17 +847,18 @@ function renderScore(payload) {
       // A white knockout box sits behind it so it cleanly cuts any graphics underneath.
       if (SHOW_PHRASE_NUMBERS && slice.s0 === 0 && slice.phraseLabel && aN.length > 0) {
         var pnTxt = '(' + slice.phraseLabel + ')';
-        var pnY = tr.getYForLine(0) - 9; // 9px above the top staff line (sits close to the score)
-        var pnW = measW(pnTxt, '300') * (11 / 16);
+        var pnX = T[0] - 8;            // registered 8px left of the verse's first note
+        var pnY = tr.getYForLine(0) - 7; // 7px above the top staff line (close to the score)
+        var pnW = measW(pnTxt, '400') * (11 / 16);
         var pnBox = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        pnBox.setAttribute('x', T[0] - pnW / 2 - 2); pnBox.setAttribute('y', pnY - 10);
+        pnBox.setAttribute('x', pnX - pnW / 2 - 2); pnBox.setAttribute('y', pnY - 10);
         pnBox.setAttribute('width', pnW + 4); pnBox.setAttribute('height', 13);
         pnBox.setAttribute('fill', 'white'); pnBox.setAttribute('stroke', 'none'); // no inherited border
         svg.appendChild(pnBox);
         var num = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        num.setAttribute('x', T[0]); num.setAttribute('y', pnY);
+        num.setAttribute('x', pnX); num.setAttribute('y', pnY);
         num.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
-        num.setAttribute('font-size', '11'); num.setAttribute('font-weight', '300');
+        num.setAttribute('font-size', '11'); num.setAttribute('font-weight', '400');
         num.setAttribute('text-anchor', 'middle'); num.setAttribute('dominant-baseline', 'alphabetic');
         num.setAttribute('fill', '#6b5942'); num.setAttribute('stroke', 'none');
         num.textContent = pnTxt; svg.appendChild(num);
@@ -897,7 +898,7 @@ function renderScore(payload) {
           box.setAttribute('y', yy - LABEL_FS / 2 - LABEL_PAD);
           box.setAttribute('width', w + LABEL_PAD * 2);
           box.setAttribute('height', LABEL_FS + LABEL_PAD * 2);
-          box.setAttribute('fill', '#ffffff'); box.setAttribute('stroke', 'none'); svg.appendChild(box);
+          box.setAttribute('fill', '#ffffff'); box.setAttribute('stroke', 'black'); box.setAttribute('stroke-width', '1'); svg.appendChild(box);
           var el = document.createElementNS('http://www.w3.org/2000/svg', 'text');
           el.setAttribute('x', LABEL_END); el.setAttribute('y', yy);
           el.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
@@ -919,7 +920,9 @@ function renderScore(payload) {
         g.setAttribute('transform', 'translate(45.9,12.2) scale(0.14) translate(-107.56,-85.3217)');
         var pK = document.createElementNS(NSt, 'path'); // notehead + stem
         pK.setAttribute('d', 'M172.36,109.52C172.36,109.405 172.459,109.31 172.58,109.31L177.13,109.31C177.256,109.31 177.36,109.414 177.36,109.54C177.32,190.287 177.333,231.867 177.4,234.28C177.547,239.773 176.24,244.383 173.48,248.11C165.56,258.81 144.42,267.39 133.67,255.79C127.78,249.43 131.12,239.68 136.44,233.85C144.64,224.84 160.37,218 171.87,224.74C171.896,224.756 171.923,224.768 171.952,224.776C172.122,224.822 172.3,224.717 172.348,224.542C172.355,224.515 172.359,224.488 172.36,224.46L172.36,109.52Z');
-        pK.setAttribute('fill', '#2a2118'); pK.setAttribute('stroke', 'none'); pK.setAttribute('fill-rule', 'nonzero');
+        pK.setAttribute('fill', '#2a2118'); pK.setAttribute('stroke', '#2a2118');
+        pK.setAttribute('stroke-width', '4'); pK.setAttribute('stroke-linejoin', 'round');
+        pK.setAttribute('fill-rule', 'nonzero');
         g.appendChild(pK);
         var pW = document.createElementNS(NSt, 'path'); // hollow centre of the notehead
         pW.setAttribute('d', 'M136.29,252.19C134.02,244.18 156.8,232.45 162.35,230.16C164.51,229.26 167.29,228.88 169.41,229.04C169.424,229.041 169.439,229.042 169.453,229.044C170.775,229.169 171.759,230.364 171.634,231.691C171.633,231.704 171.631,231.717 171.63,231.73C171.463,233.177 170.863,234.547 169.83,235.84C165.263,241.527 159.703,246.287 153.15,250.12C148.563,252.8 143.69,254.073 138.53,253.94C137.484,253.909 136.573,253.198 136.29,252.19Z');
@@ -929,7 +932,7 @@ function renderScore(payload) {
         var tq = document.createElementNS(NSt, 'text');
         tq.setAttribute('x', 59); tq.setAttribute('y', 37);
         tq.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
-        tq.setAttribute('font-size', '13'); tq.setAttribute('font-weight', '300');
+        tq.setAttribute('font-size', '13'); tq.setAttribute('font-weight', '500');
         tq.setAttribute('fill', '#2a2118'); tq.setAttribute('stroke', 'none'); tq.textContent = '= ' + payload.bpm;
         svg.appendChild(tq);
       }
