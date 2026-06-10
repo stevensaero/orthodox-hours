@@ -10,11 +10,21 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.18.0";
+export const TONE_TRAINER_VERSION = "v0.19.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.19.0",
+    date: "June 2026",
+    summary: "Printed score: optional Verse Packing — fill line-end blanks by wrapping a verse (toggle, default off)",
+    items: [
+      "feat: a 'Verse Packing' toggle in the Create Score window (default OFF). When on, a verse that doesn't fit the blank at the end of a line is wrapped into that blank at a legal seam (head fills the line, tail continues on the next) instead of dropping whole to a new line — a denser page. Off keeps one verse per line (the prior behavior, byte-identical).",
+      "guard: a wrapped head and its continuing tail must each be at least DENSE_MIN_FRAGMENT (3) columns, so a verse never starts or orphans on one or two notes; the break is a legal seam only (reciting run / recite→cadence), so melismas and cadence figures are never split. If no qualifying seam fits the blank, the verse drops whole as before.",
+      "internal: packSystems gains a dense flag (payload.densePack); reuses the Phase 2 open-slice + ghost re-anchor + pre-break anchor machinery, so wrapped heads/tails are anchored correctly.",
+    ],
+  },
   {
     version: "v0.18.0",
     date: "June 2026",
@@ -2834,6 +2844,7 @@ export default function ToneTrainer() {
   const [showScoreModal, setShowScoreModal] = useState(false);
   const [scoreTitle, setScoreTitle] = useState("");
   const [scoreSource, setScoreSource] = useState("director"); // "director" | "machine"
+  const [densePack, setDensePack] = useState(false); // Verse Packing: fill blanks by wrapping verses
   // lexicon (fetched from public/lexicon/ at mount, same pattern as psalter/scripture)
   const [lexicon, setLexicon] = useState(null);
   const [lexiconError, setLexiconError] = useState(null);
@@ -4229,7 +4240,7 @@ export default function ToneTrainer() {
   };
 
   // Opens score-print.html in a new tab and sends the payload via postMessage.
-  const openScorePrint = (title, source) => {
+  const openScorePrint = (title, source, dense) => {
     // Choose source lines: director if available and requested, else machine
     const hasDirector = lines.length > 0;
     const hasMachine  = !!machineLines?.length;
@@ -4241,6 +4252,7 @@ export default function ToneTrainer() {
     else return; // nothing to render
 
     const payload = buildScorePayload(sourceLines, title, source);
+    payload.densePack = !!dense; // Verse Packing toggle (default off)
 
     // Cache-bust by trainer version so a deployed score-print.html update is never served
     // stale from the browser cache (the in-page version label comes from the payload, so a
@@ -4753,6 +4765,28 @@ export default function ToneTrainer() {
               </>
             )}
 
+            {/* Verse Packing toggle — fill blank space by wrapping verses (default off) */}
+            <div
+              onClick={() => setDensePack(v => !v)}
+              style={{ display: "flex", alignItems: "flex-start", gap: "0.55rem",
+                       cursor: "pointer", marginBottom: "1.2rem", userSelect: "none" }}>
+              <span style={{
+                flex: "0 0 auto", width: 16, height: 16, marginTop: 2,
+                border: `1px solid ${densePack ? "#5b7a3a" : "#c9b88e"}`,
+                borderRadius: 3,
+                background: densePack ? "#3a6e28" : "#fff8ef",
+                color: "#f7ead0", fontSize: "0.7rem", lineHeight: "14px",
+                textAlign: "center",
+              }}>{densePack ? "✓" : ""}</span>
+              <span style={{ fontSize: "0.8rem", color: "#2a2118", lineHeight: 1.35 }}>
+                Verse Packing
+                <span style={{ display: "block", fontSize: "0.7rem", color: "#8a785c" }}>
+                  Fill blank space at line ends by wrapping a verse onto the next line.
+                  Off keeps one verse per line.
+                </span>
+              </span>
+            </div>
+
             {/* Actions */}
             <div style={{ display: "flex", gap: "0.75rem", justifyContent: "flex-end" }}>
               <button
@@ -4763,7 +4797,7 @@ export default function ToneTrainer() {
               <button
                 onClick={() => {
                   setShowScoreModal(false);
-                  openScorePrint(scoreTitle, scoreSource);
+                  openScorePrint(scoreTitle, scoreSource, densePack);
                 }}
                 style={{
                   ...btn,

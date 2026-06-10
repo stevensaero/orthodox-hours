@@ -262,6 +262,10 @@ var BAR_PAD = 12;
 // WRAP_PAD: trailing clearance past the last column of an OPEN (wrapped) slice — no barline
 // is drawn there, so it needs only a little air before the system's right edge.
 var WRAP_PAD = 8;
+// DENSE_MIN_FRAGMENT: in Verse Packing mode, the minimum columns a wrapped phrase's head (filling
+// a blank) and tail (continuing on the next line) must each have — guards against starting or
+// orphaning a verse on one or two notes. Tunable.
+var DENSE_MIN_FRAGMENT = 3;
 
 // ── Load fonts before rendering ────────────────────────────────────────
 function loadFonts(cb) {
@@ -421,7 +425,7 @@ function renderScore(payload) {
   // system). A phrase WIDER than a full system is broken at legal seams into open slices (one
   // per system) plus a final phrase-end slice that carries the barline. Per-slice ghosting with
   // the re-anchor clause lives in sliceVisibility; this pass only chooses the column ranges.
-  function packSystems(allLines, leftFirst, leftRest, rightEdge) {
+  function packSystems(allLines, leftFirst, leftRest, rightEdge, dense) {
     var systems = [], cur = { slices: [], left: leftFirst }, x = leftFirst;
     function flush() { if (cur.slices.length) { systems.push(cur); cur = { slices: [], left: leftRest }; x = leftRest; } }
     var fullSystemWidth = rightEdge - leftRest;
@@ -433,9 +437,36 @@ function renderScore(payload) {
       var n = line.alto.length;
       var whole = sliceMetrics(line, 0, n, true);
 
-      // Whole phrase fits a system → place it whole (unchanged from Phase 1 / 2a).
+      // Whole phrase fits a system.
       if (whole.width <= fullSystemWidth) {
-        if (cur.slices.length > 0 && (x + whole.width) > rightEdge) flush();
+        var fitsHere = !(cur.slices.length > 0 && (x + whole.width) > rightEdge);
+        if (fitsHere) {
+          cur.slices.push(mkSlice(line, 0, n, x, whole, phraseBar, true, isLastPhrase));
+          x += whole.width + INTER_PHRASE_GAP;
+          continue;
+        }
+        // Doesn't fit the blank on the current (non-empty) line.
+        if (dense) {
+          // Verse Packing: wrap the head into the blank at the latest legal seam whose head fits
+          // AND leaves both head and tail ≥ DENSE_MIN_FRAGMENT columns (no 1–2 note orphan).
+          var dseams = legalSeams(line), dbest = -1;
+          dseams.forEach(function(j) {
+            if (j < DENSE_MIN_FRAGMENT || (n - j) < DENSE_MIN_FRAGMENT) return;
+            var hm = sliceMetrics(line, 0, j, false);
+            if ((x + hm.width) <= rightEdge) dbest = Math.max(dbest, j);
+          });
+          if (dbest > 0) {
+            var hms = sliceMetrics(line, 0, dbest, false);
+            cur.slices.push(mkSlice(line, 0, dbest, x, hms, null, false, false)); // head fills the blank (open)
+            flush();
+            var tms = sliceMetrics(line, dbest, n, true);
+            cur.slices.push(mkSlice(line, dbest, n, x, tms, phraseBar, true, isLastPhrase)); // tail carries the bar
+            x += tms.width + INTER_PHRASE_GAP;
+            continue;
+          }
+        }
+        // No dense wrap (mode off, or no qualifying seam) → flush the whole phrase to the next line.
+        flush();
         cur.slices.push(mkSlice(line, 0, n, x, whole, phraseBar, true, isLastPhrase));
         x += whole.width + INTER_PHRASE_GAP;
         continue;
@@ -482,7 +513,7 @@ function renderScore(payload) {
   var systemLeftRest  = ML + clefKeyW + EDGE_PAD + INDENT;
   var systemLeftFirst = systemLeftRest; // uniform indent — all systems line up at the same edge
   var contentRight    = ML + SW;
-  var systems = packSystems(lines, systemLeftFirst, systemLeftRest, contentRight);
+  var systems = packSystems(lines, systemLeftFirst, systemLeftRest, contentRight, !!payload.densePack);
   // Debug aid (no behavior change): expose the computed slice ranges so a headless harness can
   // assert break seams / re-anchor without scraping the SVG. Holds only lightweight metadata.
   renderScore._lastSystems = systems.map(function(sy) {
