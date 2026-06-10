@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.17.2";
+export const TONE_TRAINER_VERSION = "v0.17.3";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.17.3",
+    date: "June 2026",
+    summary: "Printed score: system indent nudged 12px → 10px",
+    items: [
+      "tweak: uniform system indent reduced from 12px to 10px by eye.",
+    ],
+  },
   {
     version: "v0.17.2",
     date: "June 2026",
