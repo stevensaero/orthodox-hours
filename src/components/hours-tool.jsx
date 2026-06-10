@@ -7366,6 +7366,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.8.1",
+    date: "June 2026",
+    summary: "Refactor: psalter data extracted to a single source of truth (Phase 0 of the Service of the Psalter)",
+    items: [
+      "refactor: PSALMS, KATHISMA_MAP, and getPsalmRange moved verbatim from src/components/psalter.jsx to src/data/psalter.js, matching the src/data/{menaion,pentecostarion,octoechos} convention. Standalone psalter viewer behavior unchanged. Prepares the hours-tool Service of the Psalter (FW-24) to consume the same data. See psalter_departed_spec.md.",
+    ],
+  },
+  {
     version: "v0.8.0",
     date: "June 2026",
     summary: "Session close-out: UI overhaul, service outline, explainer badges, data gap fixes",
