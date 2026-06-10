@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.17.1";
+export const TONE_TRAINER_VERSION = "v0.17.2";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.17.2",
+    date: "June 2026",
+    summary: "Printed score: all systems share one indent (system 1 no longer juts right of the rest)",
+    items: [
+      "tweak: the first-system-only 24px choral indent is split into a uniform 12px indent on every system, so system 1 and systems 2..n line up at the same left edge (verified: all system starts land at the same X). Changed consistently in the packer's left-origin and the render anchor so justification is unaffected; the SATB margin labels are unchanged.",
+    ],
+  },
   {
     version: "v0.17.1",
     date: "June 2026",
