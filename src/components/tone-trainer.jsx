@@ -10,11 +10,21 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.20.0";
+export const TONE_TRAINER_VERSION = "v0.21.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.21.0",
+    date: "June 2026",
+    summary: "Printed score: optional tempo mark from the trainer BPM; phrase-number polish",
+    items: [
+      "feat: a 'Show tempo' toggle in the Create Score window (default off) prints the trainer's current tempo as a half-note tempo mark (half note = N) at the top-left of the score. The trainer's BPM is half-notes-per-minute, so the beat unit is the half note — singers can dial in a tempo on the slider and carry it onto the page.",
+      "tweak: verse numbers are now lighter weight (300) and sit on a white knockout box so they cleanly cut any staff line or graphic behind them.",
+      "change: the final verse marker is now (Final) instead of (F).",
+    ],
+  },
   {
     version: "v0.20.0",
     date: "June 2026",
@@ -2853,6 +2863,7 @@ export default function ToneTrainer() {
   const [scoreTitle, setScoreTitle] = useState("");
   const [scoreSource, setScoreSource] = useState("director"); // "director" | "machine"
   const [densePack, setDensePack] = useState(false); // Verse Packing: fill blanks by wrapping verses
+  const [showTempo, setShowTempo] = useState(false); // print the current BPM as a tempo mark
   // lexicon (fetched from public/lexicon/ at mount, same pattern as psalter/scripture)
   const [lexicon, setLexicon] = useState(null);
   const [lexiconError, setLexiconError] = useState(null);
@@ -4261,6 +4272,8 @@ export default function ToneTrainer() {
 
     const payload = buildScorePayload(sourceLines, title, source);
     payload.densePack = !!dense; // Verse Packing toggle (default off)
+    payload.showTempo = !!showTempo; // tempo mark toggle (default off)
+    payload.bpm = bpm; // current trainer tempo (half-notes per minute)
 
     // Cache-bust by trainer version so a deployed score-print.html update is never served
     // stale from the browser cache (the in-page version label comes from the payload, so a
@@ -4791,6 +4804,27 @@ export default function ToneTrainer() {
                 <span style={{ display: "block", fontSize: "0.7rem", color: "#8a785c" }}>
                   Fill blank space at line ends by wrapping a verse onto the next line.
                   Off keeps one verse per line.
+                </span>
+              </span>
+            </div>
+
+            {/* Show tempo toggle — prints the current BPM as a half-note tempo mark (default off) */}
+            <div
+              onClick={() => setShowTempo(v => !v)}
+              style={{ display: "flex", alignItems: "flex-start", gap: "0.55rem",
+                       cursor: "pointer", marginBottom: "1.2rem", userSelect: "none" }}>
+              <span style={{
+                flex: "0 0 auto", width: 16, height: 16, marginTop: 2,
+                border: `1px solid ${showTempo ? "#5b7a3a" : "#c9b88e"}`,
+                borderRadius: 3,
+                background: showTempo ? "#3a6e28" : "#fff8ef",
+                color: "#f7ead0", fontSize: "0.7rem", lineHeight: "14px",
+                textAlign: "center",
+              }}>{showTempo ? "✓" : ""}</span>
+              <span style={{ fontSize: "0.8rem", color: "#2a2118", lineHeight: 1.35 }}>
+                Show tempo
+                <span style={{ display: "block", fontSize: "0.7rem", color: "#8a785c" }}>
+                  Print the current tempo (half note = {bpm} BPM) at the top of the score.
                 </span>
               </span>
             </div>
