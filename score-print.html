@@ -239,7 +239,10 @@ var EDGE_PAD = 16;
 //   room beside the SATB margin labels). INTER_PHRASE_GAP: horizontal gap between packed
 //   phrases on one system, beyond the verse bar. SHOW_SATB_LABELS: draw Soprano/Alto and
 //   Tenor/Bass labels in the left margin of the first system only (toggle, default on).
-var INDENT = 24;
+// INDENT: uniform left indent applied to EVERY system. Originally a first-system-only 24px
+// choral indent; per Bill, split the difference so all systems' content lines up — system 1
+// comes left and systems 2..n go right to the same edge (24/2 = 12 on every system).
+var INDENT = 12;
 var INTER_PHRASE_GAP = 32;
 var SHOW_SATB_LABELS = true;
 // LEAD_GAP: clearance between the clef+key (getNoteStartX) and the first note, applied on
@@ -471,8 +474,8 @@ function renderScore(payload) {
     _ts.setContext(_tr.getContext()).draw();
     clefKeyW = _ts.getNoteStartX() - ML;
   } catch (e) { clefKeyW = 42; }
-  var systemLeftRest  = ML + clefKeyW + EDGE_PAD;
-  var systemLeftFirst = systemLeftRest + INDENT;
+  var systemLeftRest  = ML + clefKeyW + EDGE_PAD + INDENT;
+  var systemLeftFirst = systemLeftRest; // uniform indent — all systems line up at the same edge
   var contentRight    = ML + SW;
   var systems = packSystems(lines, systemLeftFirst, systemLeftRest, contentRight);
   // Debug aid (no behavior change): expose the computed slice ranges so a headless harness can
@@ -848,7 +851,7 @@ function renderScore(payload) {
       // so anchor to the stave's note-start (clef+key end) + LEAD_GAP clearance on every system,
       // + the first-system indent. LEAD_GAP keeps notes off the glyphs on systems 2..n (which
       // have no indent); without it they butt against the key signature.
-      var anchor = tr.getNoteStartX() + LEAD_GAP + (isFirstGlobal ? INDENT : 0);
+      var anchor = tr.getNoteStartX() + LEAD_GAP + INDENT; // uniform on every system
 
       // Per-system justification: scale the content span so the last slice's right edge reaches
       // contentRight. Non-last systems justify (fill); the last system is ragged (J=1) unless its
