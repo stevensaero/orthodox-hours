@@ -59,3 +59,14 @@ of the two is correct.
 
 (Tenor in the Final phrase *moves* — it is never collapsed into a hold — so this is purely
 a pitch-register question, not a duration/hold question.)
+
+**Reference-score finding (Jun 9 2026).** The printed Obikhod reference for "Lord, I Call,
+Tone 1" (Common Chant, arr. L'vov/Bakhmetev) shows a **cadential accidental (a sharp) on a
+lower-staff note near the cadence** in its third system — almost certainly this `si`. Our
+score renderer currently draws **no per-note accidental glyphs at all** (confirmed by headless
+probe: notes carry zero Accidental modifiers; the key signature is the only accidental marker).
+So if this cadential `si` is meant to carry a written accidental, **our output is missing it.**
+Two things to confirm together: (1) the correct register/pitch of `si` (the `OFF` vs `cfg.names`
+disagreement above), and (2) whether `si` should render with an explicit accidental glyph in the
+score — and if so, wire `Accidental.applyAccidentals` (or an explicit accidental) for that note.
+This is independent of the system-wrap work.
