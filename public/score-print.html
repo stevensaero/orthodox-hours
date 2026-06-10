@@ -242,6 +242,10 @@ var EDGE_PAD = 16;
 var INDENT = 24;
 var INTER_PHRASE_GAP = 24;
 var SHOW_SATB_LABELS = true;
+// LEAD_GAP: gap between the key signature's right edge and the first note. VexFlow's
+// getNoteStartX() reserves more than a hand-engraved score; we anchor to the actual
+// clef+key glyph right edge + this gap instead, for a tight reference-style leading.
+var LEAD_GAP = 12;
 
 // ── Load fonts before rendering ────────────────────────────────────────
 function loadFonts(cb) {
@@ -708,10 +712,28 @@ function renderScore(payload) {
         if (grand) { mkLabel('Tenor', bs.getYForLine(1)); mkLabel('Bass', bs.getYForLine(3)); }
       }
 
-      // Anchor columns to the ACTUAL drawn note-start (real clef+key end), plus the
-      // first-system indent. This is robust to clef/key glyph width (no pre-measured guess
-      // in the note position) so the leading space is exactly clef+key, like the reference.
-      var anchor = tr.getNoteStartX() + (isFirstGlobal ? INDENT : 0);
+      // Anchor columns to the actual RIGHT EDGE of the clef+key glyphs + LEAD_GAP, rather
+      // than to getNoteStartX() (which adds VexFlow's generous note-start reserve — fine for
+      // the one clef+key line the old per-line code drew, but a visible gap now that every
+      // system carries clef+key). clefKeyRight() reads the clef/key modifier geometry; if that
+      // yields no width (e.g. headless without fonts) it falls back to getNoteStartX().
+      var clefKeyRight = function(stave) {
+        var right = stave.getX();
+        try {
+          stave.getModifiers().forEach(function(m) {
+            var cat = m.getCategory ? m.getCategory() : '';
+            if (cat === 'Clef' || cat === 'KeySignature') {
+              var mx = (m.getX ? m.getX() : right), mw = (m.getWidth ? m.getWidth() : 0);
+              if (mx + mw > right) right = mx + mw;
+            }
+          });
+        } catch (e) {}
+        return right;
+      };
+      var ckR = clefKeyRight(tr);
+      if (grand) ckR = Math.max(ckR, clefKeyRight(bs));
+      if (ckR <= tr.getX() + 15) ckR = tr.getNoteStartX() - LEAD_GAP; // no glyph width → fall back
+      var anchor = ckR + LEAD_GAP + (isFirstGlobal ? INDENT : 0);
 
       // Per-system justification: scale the content span so the last phrase's verse bar reaches
       // contentRight. Non-last systems justify (fill); the last system is ragged (J=1) unless its

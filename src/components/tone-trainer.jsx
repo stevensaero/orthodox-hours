@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.16.1";
+export const TONE_TRAINER_VERSION = "v0.16.2";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.16.2",
+    date: "June 2026",
+    summary: "Fix: tighten printed-score leading — anchor to the clef+key glyph edge, not VexFlow's note-start reserve",
+    items: [
+      "fix: v0.16.1 reduced the leading gap only slightly because it anchored to getNoteStartX(), which adds VexFlow's generous note-start reserve beyond the clef+key glyphs. The old per-line renderer only ever paid that reserve on its single clef+key line (lines 2-4 had no clef/key and sat flush left), so it was never noticeable; now that every system carries clef+key, the reserve shows as a wide band on every system. Notes now anchor to the actual RIGHT EDGE of the clef+key modifiers + a small LEAD_GAP (12px), giving a tight reference-style start. Falls back to getNoteStartX() only when glyph widths are unavailable (e.g. headless without fonts).",
+    ],
+  },
   {
     version: "v0.16.1",
     date: "June 2026",
