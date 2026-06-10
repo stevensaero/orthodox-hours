@@ -126,7 +126,7 @@ For each emitted system slice:
 
 ## 8. Phasing
 
-- **Phase 1 — flow engine + inter-phrase packing.** Column model; greedy fill with
+- **Phase 1 — flow engine + inter-phrase packing.** ✅ **Implemented in v0.16.0.** Column model; greedy fill with
   **phrase-boundary breaks only** (rule 1); clef + key signature on every system; first-system
   indent + SATB labels (toggle); justify-filled / ragged-last; pagination of computed systems.
   Atomic phrases — a phrase wider than `SW` keeps today's scale-to-fit as fallback. **No

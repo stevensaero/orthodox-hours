@@ -10,11 +10,23 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.15.1";
+export const TONE_TRAINER_VERSION = "v0.16.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.16.0",
+    date: "June 2026",
+    summary: "Printed score — system wrap & phrase packing (Phase 1): phrases flow and pack across systems to save paper",
+    items: [
+      "feat: the printable score (public/score-print.html) is now a flowed, multi-system layout instead of one-phrase-per-system. Phrases of a stichera pack left-to-right into each system and wrap to the next system when the next phrase won't fit, minimizing systems (less paper in choir binders, less scrolling on a screen). Phase 1 breaks only at phrase boundaries (atomic phrases); mid-phrase wrap within reciting runs + the ghost re-anchor is Phase 2. Print-only — the trainer chip view is unchanged.",
+      "arch: three-pass engine. (1) computeAdvances(alto, visible) — the relative note-spacing math extracted out of applyTextSpacing as a pure function (lyric widths via measW + the visible/ghost floor), so a phrase's width is computed draw-free; measW + reciteIntermediateFor hoisted to renderScore scope for the pre-draw pass. (2) packSystems() — greedy first-fit: a phrase opens a new system when it overruns the current one. (3) render — one treble (+bass) stave per system, clef + key signature on EVERY system (matches the printed Obikhod reference), the phrases drawn at justified offsets.",
+      "feat: per-system justification — filled systems stretch so the last phrase's verse bar meets the right margin; the last system is left ragged (J=1) unless it overflows, in which case the same scale compresses it (this also absorbs the over-wide lone-phrase scale-to-fit fallback). Justification is a pure post-transform on the already-packed slice, so break decisions stay deterministic.",
+      "feat: first-system indent + Soprano/Alto, Tenor/Bass margin labels (SHOW_SATB_LABELS toggle, default on, first system only), matching the reference. Clef + key signature now restate on every system (the reference does; movable-do contour reading means notes carry no per-note accidentals — the key signature is the sole accidental marker). Pagination now chunks the COMPUTED systems by SYSTEMS_PER_PAGE, not the input lines.",
+      "note: barline behavior is preserved from the prior renderer (single verse bar drawn at the content end; // penultimate marker); wrap points are left open (no barline). Proper double-bar-at-final is a separate follow-up, not part of the wrap mechanics. Validated headless: a 5-phrase payload renders clean and packs to one page (vs two one-per-system).",
+    ],
+  },
   {
     version: "v0.15.1",
     date: "June 2026",

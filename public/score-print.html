@@ -234,6 +234,14 @@ var RECITE_FLOOR = 30;
 // first syllable clears the stave's left line (and the clef on system 1). Applied equally
 // to treble and bass via Stave.setNoteStartX so the two staves stay column-aligned.
 var EDGE_PAD = 16;
+// ── Phase 1: system wrap & phrase packing ──────────────────────────────
+// INDENT: first-system left note-start indent (classical first-system indent + breathing
+//   room beside the SATB margin labels). INTER_PHRASE_GAP: horizontal gap between packed
+//   phrases on one system, beyond the verse bar. SHOW_SATB_LABELS: draw Soprano/Alto and
+//   Tenor/Bass labels in the left margin of the first system only (toggle, default on).
+var INDENT = 24;
+var INTER_PHRASE_GAP = 24;
+var SHOW_SATB_LABELS = true;
 
 // ── Load fonts before rendering ────────────────────────────────────────
 function loadFonts(cb) {
@@ -276,21 +284,113 @@ function renderScore(payload) {
 
   var SH = grand ? GRAND_SH : SOLO_SH;
 
+  // ── Measurement + packing helpers (Phase 1) ──────────────────────────
+  // measW is hoisted here (was nested in the page loop) so the pre-draw packer can use it.
+  var _mc = null;
+  function measW(text, weight) {
+    if (!_mc) { try { _mc = document.createElement('canvas').getContext('2d'); } catch(e) {} }
+    if (_mc) {
+      _mc.font = weight + ' 16px "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif';
+      return _mc.measureText(text).width;
+    }
+    return text.length * 9; // headless fallback
+  }
+
+  // Reciting-run intermediates for one phrase's alto (OCA abbreviation): ghost the interior
+  // of any run of >=4 consecutive recite roles; the run's first and last noteheads stay
+  // visible. (Phase 1 computes this per phrase — no mid-phrase break, so no re-anchor yet.)
+  function reciteIntermediateFor(alto) {
+    var set = new Set(), k = 0;
+    while (k < alto.length) {
+      if (alto[k].role !== 'recite') { k++; continue; }
+      var rs = k;
+      while (k < alto.length && alto[k].role === 'recite') k++;
+      if (k - rs >= 4) for (var mi = rs + 1; mi <= k - 2; mi++) set.add(mi);
+    }
+    return set;
+  }
+
+  // Pure relative spacing: advance offsets from 0 per alto column, driven by lyric widths +
+  // the visible/ghost pattern. Extracted from applyTextSpacing; NO scale-to-fit (justification
+  // happens per system at render time). Returns { adv: [0,...], hw: [...] }.
+  function computeAdvances(alto, visible) {
+    var n = alto.length; if (!n) return { adv: [], hw: [] };
+    var hw = alto.map(function(e) { return e.text ? (measW(e.text, e.accent ? '500' : '200') + 4) / 2 : 10; });
+    var T = [0];
+    for (var i = 1; i < n; i++) {
+      var bothVisible = visible[i - 1] && visible[i];
+      var floor = bothVisible ? NOTE_W : RECITE_FLOOR;
+      var need = hw[i - 1] + TEXT_GAP + hw[i];
+      T.push(T[i - 1] + Math.max(floor, need));
+    }
+    return { adv: T, hw: hw };
+  }
+
+  // Natural width of a phrase from its first note to its verse bar (draw-free).
+  function phraseMetrics(line) {
+    var rec = reciteIntermediateFor(line.alto);
+    var visible = line.alto.map(function(_, i) { return !rec.has(i); });
+    var ca = computeAdvances(line.alto, visible);
+    var last = ca.adv.length - 1;
+    if (last < 0) return { width: 0, adv: [], rec: rec, visible: visible };
+    var trailing = Math.max(NOTE_W * 0.5, ca.hw[last]) + 12; // bar clearance past last note/lyric
+    return { width: ca.adv[last] + trailing, adv: ca.adv, rec: rec, visible: visible };
+  }
+
+  // Greedy first-fit packing (Phase 1: break only at phrase boundaries). Each phrase either
+  // fits in the current system's remaining width or opens a new system.
+  function packSystems(allLines, leftFirst, leftRest, rightEdge) {
+    var systems = [], cur = { phrases: [], left: leftFirst }, x = leftFirst;
+    for (var i = 0; i < allLines.length; i++) {
+      var line = allLines[i];
+      var m = phraseMetrics(line);
+      if (cur.phrases.length > 0 && (x + m.width) > rightEdge) {
+        systems.push(cur);
+        cur = { phrases: [], left: leftRest };
+        x = leftRest;
+      }
+      cur.phrases.push({
+        line: line, xStart: x, adv: m.adv, rec: m.rec, visible: m.visible,
+        barlineAfter: line.barlineAfter || (i === allLines.length - 1 ? 'final' : 'single'),
+        isLast: i === allLines.length - 1
+      });
+      x += m.width + INTER_PHRASE_GAP;
+    }
+    if (cur.phrases.length) systems.push(cur);
+    return systems;
+  }
+
+  // Measure the clef + key-signature note-start offset once (every system carries them).
+  var clefKeyW = 42;
+  try {
+    var _td = document.createElement('div');
+    var _tr = new VF.Renderer(_td, VF.Renderer.Backends.SVG); _tr.resize(220, 120);
+    var _ts = new VF.Stave(ML, 0, SW); _ts.addClef('treble').addKeySignature(cfg.vexKey);
+    _ts.setContext(_tr.getContext()).draw();
+    clefKeyW = _ts.getNoteStartX() - ML;
+  } catch (e) { clefKeyW = 42; }
+  var systemLeftRest  = ML + clefKeyW + EDGE_PAD;
+  var systemLeftFirst = systemLeftRest + INDENT;
+  var contentRight    = ML + SW;
+  var systems = packSystems(lines, systemLeftFirst, systemLeftRest, contentRight);
+
+
   var canvas = document.getElementById('score-canvas');
   canvas.innerHTML = '';
 
-  // Split lines into page chunks
-  var chunks = [];
-  for (var ci = 0; ci < lines.length; ci += SYSTEMS_PER_PAGE) {
-    chunks.push(lines.slice(ci, ci + SYSTEMS_PER_PAGE));
+  // Paginate the COMPUTED systems (not input lines) by SYSTEMS_PER_PAGE.
+  var pages = [];
+  for (var ci = 0; ci < systems.length; ci += SYSTEMS_PER_PAGE) {
+    pages.push(systems.slice(ci, ci + SYSTEMS_PER_PAGE));
   }
+  var globalSysIdx = 0; // running index across pages; 0 identifies the first global system
 
   // TITLE_H: vertical space reserved at top of first SVG for title + subtitle
   var TITLE_H = 30;
   // BOTTOM_PAD: clearance below last bass stave so stems are never clipped by SVG box
   var BOTTOM_PAD = 90;
 
-  chunks.forEach(function(chunkLines, chunkIdx) {
+  pages.forEach(function(pageSystems, pageIdx) {
     var pageDiv = document.createElement('div');
     pageDiv.className = 'score-page';
     canvas.appendChild(pageDiv);
@@ -298,14 +398,12 @@ function renderScore(payload) {
     var wrap = pageDiv; // VexFlow renders into this div
 
     var ren = new VF.Renderer(wrap, VF.Renderer.Backends.SVG);
-    var titleOffset = (chunkIdx === 0) ? TITLE_H : 0;
-    ren.resize(PW, SH * chunkLines.length + titleOffset + BOTTOM_PAD);
+    var titleOffset = (pageIdx === 0) ? TITLE_H : 0;
+    ren.resize(PW, SH * pageSystems.length + titleOffset + BOTTOM_PAD);
     var ctx = ren.getContext();
 
-    var lines = chunkLines; // shadow outer lines for the loop below
-
     // Render title + subtitle as SVG text on page 1
-    if (chunkIdx === 0) {
+    if (pageIdx === 0) {
       var svgRoot = pageDiv.querySelector('svg');
       var tTitle = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       tTitle.setAttribute('x', PW / 2);
@@ -413,18 +511,7 @@ function renderScore(payload) {
     b.setAttribute('stroke-width', '1.2');
     svg.appendChild(b);
   }
-  // Measure a syllable's pixel width at the score's lyric font (Inter 16px, weight w).
-  // Uses canvas measureText — accurate and font-aware. Called after loadFonts() so Inter
-  // is available. Falls back to char-count approximation if canvas is unavailable (headless).
-  var _mc = null;
-  function measW(text, weight) {
-    if (!_mc) { try { _mc = document.createElement('canvas').getContext('2d'); } catch(e) {} }
-    if (_mc) {
-      _mc.font = weight + ' 16px "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif';
-      return _mc.measureText(text).width;
-    }
-    return text.length * 9; // headless fallback
-  }
+  // Measure a syllable's pixel width — see hoisted measW() above (used by the packer too).
 
   // Melisma slurs. A group is a maximal run of consecutive melisma notes with the SAME
   // text. Close (draw) the open group's curve on any boundary — a non-melisma note, a
@@ -489,232 +576,161 @@ function renderScore(payload) {
     }
   }
 
-  for (var li=0; li<lines.length; li++) {
-    var line   = lines[li];
-    var sy     = li * SH + 10 + titleOffset;
-    var barlineAfter = line.barlineAfter || (li === lines.length - 1 ? 'final' : 'single');
-    var isLast = barlineAfter === 'final';
-    // Right edges of the last drawn syllable and the // marker (if any) — fed into the
-    // end-of-verse bar placement so the bar clears whichever extends furthest.
-    var lastRightEdge = 0;
-    var slashRightEdge = 0;
+    var svg = wrap.querySelector('svg');
 
-    // ── Treble stave — SOPRANO (stems up) + ALTO (stems down) ─────────
-    // Soprano renders as a second voice when the payload carries it (SATB closed score).
-    // Alto-only when no soprano present (e.g. tones without verified soprano rules).
-    var tr = new VF.Stave(ML, sy + TY, SW);
-    if (chunkIdx === 0 && li === 0) tr.addClef('treble').addKeySignature(cfg.vexKey);
-    // End-of-verse bar is drawn explicitly at the content end (see mkVerseBar);
-    // suppress the stave's own far-right end-barline so it isn't detached from the notes.
-    tr.setEndBarType(VF.Barline.type.NONE);
-    tr.setContext(ctx).draw();
-    // Edge buffer: push notes (and therefore lyrics, anchored to note X) right of the
-    // stave's left line. Must run after draw() — VexFlow computes note start-X during draw.
-    tr.setNoteStartX(tr.getNoteStartX() + EDGE_PAD);
+    // Render one phrase onto the given system staves at justified positions.
+    // T[i] (absolute X) = sysLeft + J * (phrase.xStart - sysLeft + phrase.adv[i]).
+    function drawPhrase(phrase, tr, bs, J, sysLeft) {
+      var line = phrase.line;
+      var rec = phrase.rec, adv = phrase.adv;
+      var T = adv.map(function(a) { return sysLeft + J * (phrase.xStart - sysLeft + a); });
+      var hasSop = line.soprano && line.soprano.length === line.alto.length;
+      var altoStem = (grand || hasSop) ? -1 : 1;
+      var lastRightEdge = 0, slashRightEdge = 0;
 
-    // Alto: stem down when grand staff (bass below), stem up when solo treble.
-    // Pre-scan for long reciting runs (4+ consecutive role:'recite'). Intermediate
-    // entries (positions 1..n-2 of the run) render as GhostNotes — first and last
-    // noteheads of the run stay visible as the isolated anchor notes (OCA convention).
-    var reciteIntermediate = new Set();
-    (function() {
-      var k = 0;
-      while (k < line.alto.length) {
-        if (line.alto[k].role !== 'recite') { k++; continue; }
-        var rs = k;
-        while (k < line.alto.length && line.alto[k].role === 'recite') k++;
-        if (k - rs >= 4) {
-          for (var mi = rs + 1; mi <= k - 2; mi++) reciteIntermediate.add(mi);
-        }
+      // Treble — SOPRANO (stems up) + ALTO (stems down when soprano/grand present).
+      var aN = [];
+      for (var ai = 0; ai < line.alto.length; ai++) {
+        var r = line.alto[ai];
+        aN.push(rec.has(ai) ? mkGhost(r.durKey)
+          : mkNote(ALTO_PITCH[r.pitch] || cfg.names.fa + '/4', r.durKey, altoStem));
       }
-    })();
-
-    // Initial format width is just a hint — applyTextSpacing() overrides every note's X
-    // afterward via TickContext, so the exact value here only affects pre-override layout.
-    var totalLineW = line.alto.length * NOTE_W;
-
-    // Soprano rides the treble with alto when present (SATB closed score): soprano stems up,
-    // alto stems down. Alto flips to stem-down whenever soprano is on — not only in grand mode.
-    var hasSop = line.soprano && line.soprano.length === line.alto.length;
-    var altoStem = (grand || hasSop) ? -1 : 1;
-
-    var aN = [];
-    for (var ai = 0; ai < line.alto.length; ai++) {
-      var r = line.alto[ai];
-      var an = reciteIntermediate.has(ai)
-        ? mkGhost(r.durKey)
-        : mkNote(ALTO_PITCH[r.pitch] || cfg.names.fa+'/4', r.durKey, altoStem);
-      aN.push(an);
-    }
-
-    // Soprano notes (stems up). 1:1 index-aligned with alto; same reciting-intermediate hiding.
-    var sN = [];
-    if (hasSop) {
-      for (var si2 = 0; si2 < line.soprano.length; si2++) {
+      var sN = [];
+      if (hasSop) for (var si2 = 0; si2 < line.soprano.length; si2++) {
         var sr = line.soprano[si2];
-        var sn = reciteIntermediate.has(si2)
-          ? mkGhost(sr.durKey)
-          : mkNote(SOPRANO_PITCH[sr.pitch] || cfg.names.la+'/5', sr.durKey, 1);
-        sN.push(sn);
+        sN.push(rec.has(si2) ? mkGhost(sr.durKey)
+          : mkNote(SOPRANO_PITCH[sr.pitch] || cfg.names.la + '/5', sr.durKey, 1));
       }
-    }
+      var altoVoice = mkVoice(aN), trebleVoices = [altoVoice], sopVoice = null;
+      if (hasSop) { sopVoice = mkVoice(sN); trebleVoices.push(sopVoice); }
+      new VF.Formatter().joinVoices(trebleVoices).format(trebleVoices, line.alto.length * NOTE_W);
+      setVoiceX(aN, T);
+      if (hasSop) setVoiceX(sN, T);
+      altoVoice.draw(ctx, tr);
+      if (sopVoice) sopVoice.draw(ctx, tr);
 
-    var altoVoice = mkVoice(aN);
-    var trebleVoices = [altoVoice];
-    var sopVoice = null;
-    if (hasSop) { sopVoice = mkVoice(sN); trebleVoices.push(sopVoice); }
-    new VF.Formatter().joinVoices(trebleVoices).format(trebleVoices, totalLineW);
-    // Visibility: a note is "visible" unless it's a transparent reciting intermediate.
-    var visible = [];
-    for (var vi = 0; vi < line.alto.length; vi++) visible.push(!reciteIntermediate.has(vi));
-    var spacingT = applyTextSpacing(aN, line.alto, visible);
-    if (hasSop) setVoiceX(sN, spacingT);  // mirror alto positions (no-op if joinVoices shares TickContexts)
-    altoVoice.draw(ctx, tr);
-    if (sopVoice) sopVoice.draw(ctx, tr);
+      if (!grand) lastRightEdge = drawLyrics(svg, line.alto, aN, tr.getYForLine(4) + 20);
+      drawMelismaSlurs(aN, line.alto);
+      if (hasSop) drawMelismaSlurs(sN, line.alto);
 
-    // Draw lyrics — solo treble only (grand staff lyrics drawn after bass stave below)
-    if (!grand) {
-      lastRightEdge = drawLyrics(wrap.querySelector('svg'), line.alto, aN, sy + TY + TH + 20);
-    }
-
-    // Melisma slurs — alto always; soprano too when present (1:1 with alto).
-    drawMelismaSlurs(aN, line.alto);
-    if (hasSop) drawMelismaSlurs(sN, line.alto);
-
-    // // penultimate marker for SOLO treble (grand path handled after bass draw)
-    if (!grand && barlineAfter === 'penultimate' && aN.length > 0) {
-      var soloLyricY = sy + TY + TH + 20;
-      var svgElS = wrap.querySelector('svg');
-      var soloLastX = aN[aN.length - 1].getAbsoluteX() + NOTE_W * 0.6;
-      var soloSlash = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      soloSlash.setAttribute('x', soloLastX);
-      soloSlash.setAttribute('y', soloLyricY);
-      soloSlash.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
-      soloSlash.setAttribute('font-size', '16');
-      soloSlash.setAttribute('font-weight', '200');
-      soloSlash.setAttribute('font-style', 'italic');
-      soloSlash.setAttribute('text-anchor', 'middle');
-      soloSlash.setAttribute('dominant-baseline', 'middle');
-      soloSlash.setAttribute('fill', '#2a2118');
-      soloSlash.textContent = '//';
-      svgElS.appendChild(soloSlash);
-      slashRightEdge = soloLastX + measW("//", "200") / 2 + 2;
-    }
-
-    // End-of-verse barline (solo): single vertical bar across the treble stave, placed
-    // 8px past whichever extends furthest — last note, last syllable, or the // marker.
-    if (!grand && aN.length > 0) {
-      var soloNoteEnd = aN[aN.length - 1].getAbsoluteX() + NOTE_W * 0.5;
-      var soloBarX = Math.max(soloNoteEnd, lastRightEdge, slashRightEdge) + 8;
-      mkVerseBar(wrap.querySelector('svg'), soloBarX, tr.getYForLine(0), tr.getYForLine(4));
-    }
-
-    if (!grand) continue;
-
-    // ── Bass stave — TENOR (stems up) + BASS (stems down) ──────────────
-    var bs = new VF.Stave(ML, sy + BASS_Y, SW);
-    if (chunkIdx === 0 && li === 0) bs.addClef('bass').addKeySignature(cfg.vexKey);
-    // End-of-verse bar drawn explicitly (mkVerseBar); suppress stave end-barline.
-    bs.setEndBarType(VF.Barline.type.NONE);
-    bs.setContext(ctx).draw();
-    bs.setNoteStartX(bs.getNoteStartX() + EDGE_PAD);
-
-    if (line.bass) {
-      // Tenor may be SHORTER than bass: a constant-pitch alto melisma collapses to one
-      // held tenor note (e.g. 2×H alto → one W tenor). Each tenor entry carries spanStart
-      // (the alto column it begins on) + spanCount, so it no longer maps 1:1 to bass index.
-      var hasTen = line.tenor && line.tenor.length > 0;
-      var bN = [];
-      for (var bi = 0; bi < line.bass.length; bi++) {
-        var br = line.bass[bi];
-        // Bass stems down when tenor shares the stave (SATB closed score).
-        var bn = reciteIntermediate.has(bi)
-          ? mkGhost(br.durKey)
-          : mkNote(bassVFPitch(br.pitch, br.octaveDiv, cfg), br.durKey, -1, 'bass');
-        bN.push(bn);
-      }
-      // Tenor notes (stems up). Reciting-intermediate hiding keys off the alto column
-      // (trn.spanStart), not the tenor array index, since the collapse shifts indices.
-      var tN = [];
-      if (hasTen) {
-        for (var ti2 = 0; ti2 < line.tenor.length; ti2++) {
+      // Bass — TENOR (stems up) + BASS (stems down). Tenor may be collapsed (held notes).
+      if (grand && line.bass) {
+        var hasTen = line.tenor && line.tenor.length > 0;
+        var bN = [];
+        for (var bi = 0; bi < line.bass.length; bi++) {
+          var br = line.bass[bi];
+          bN.push(rec.has(bi) ? mkGhost(br.durKey)
+            : mkNote(bassVFPitch(br.pitch, br.octaveDiv, cfg), br.durKey, -1, 'bass'));
+        }
+        var tN = [];
+        if (hasTen) for (var ti2 = 0; ti2 < line.tenor.length; ti2++) {
           var trn = line.tenor[ti2];
           var tcol = (trn.spanStart != null) ? trn.spanStart : ti2;
-          var tn = reciteIntermediate.has(tcol)
-            ? mkGhost(trn.durKey)
-            : mkNote(tenorVFPitch(trn.pitch, trn.octaveDiv, cfg), trn.durKey, 1, 'bass');
-          tN.push(tn);
+          tN.push(rec.has(tcol) ? mkGhost(trn.durKey)
+            : mkNote(tenorVFPitch(trn.pitch, trn.octaveDiv, cfg), trn.durKey, 1, 'bass'));
         }
+        var bassVoice = mkVoice(bN), bassVoices = [bassVoice], tenVoice = null;
+        if (hasTen) { tenVoice = mkVoice(tN); bassVoices.push(tenVoice); }
+        new VF.Formatter().joinVoices(bassVoices).format(bassVoices, line.alto.length * NOTE_W);
+        setVoiceX(bN, T);
+        if (hasTen) setVoiceX(tN, line.tenor.map(function(e, k) {
+          return T[(e.spanStart != null) ? e.spanStart : k];
+        }));
+        bassVoice.draw(ctx, bs);
+        if (tenVoice) tenVoice.draw(ctx, bs);
+        drawMelismaSlurs(bN, line.alto, false);
       }
-      var bassVoice = mkVoice(bN);
-      var bassVoices = [bassVoice];
-      var tenVoice = null;
-      if (hasTen) { tenVoice = mkVoice(tN); bassVoices.push(tenVoice); }
-      new VF.Formatter().joinVoices(bassVoices).format(bassVoices, totalLineW);
-      // Mirror the alto's text-driven X positions so treble/bass columns stay aligned.
-      setVoiceX(bN, spacingT);
-      // Tenor: a held (collapsed) note anchors at the alto column its span begins on
-      // (spanStart), so the whole note sits under the first note of the melisma it spans.
-      if (hasTen) setVoiceX(tN, line.tenor.map(function(e, k) {
-        return spacingT[(e.spanStart != null) ? e.spanStart : k];
-      }));
-      bassVoice.draw(ctx, bs);
-      if (tenVoice) tenVoice.draw(ctx, bs);
-      // Bass melisma slurs — bass moves across pitches on a held syllable. Arc BELOW (invert
-      // false) since bass is the bottom voice; keeps the slur clear of the tenor above.
-      // Tenor is intentionally unslurred (it holds a reciting pitch rather than melisma-moving).
-      drawMelismaSlurs(bN, line.alto, false);
+
+      // Lyrics (grand): centered between treble bottom line and bass top line.
+      if (grand) {
+        var lyricY = (tr.getYForLine(4) + bs.getYForLine(0)) / 2;
+        lastRightEdge = drawLyrics(svg, line.alto, aN, lyricY);
+      }
+
+      // // penultimate marker (grand or solo).
+      if (phrase.barlineAfter === 'penultimate' && aN.length > 0) {
+        var penultLyricY = grand ? (tr.getYForLine(4) + bs.getYForLine(0)) / 2 : (tr.getYForLine(4) + 20);
+        var lastX = aN[aN.length - 1].getAbsoluteX() + NOTE_W * 0.6;
+        var slashTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        slashTxt.setAttribute('x', lastX); slashTxt.setAttribute('y', penultLyricY);
+        slashTxt.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
+        slashTxt.setAttribute('font-size', '16'); slashTxt.setAttribute('font-weight', '200');
+        slashTxt.setAttribute('font-style', 'italic'); slashTxt.setAttribute('text-anchor', 'middle');
+        slashTxt.setAttribute('dominant-baseline', 'middle'); slashTxt.setAttribute('fill', '#2a2118');
+        slashTxt.textContent = '//'; svg.appendChild(slashTxt);
+        slashRightEdge = lastX + measW("//", "200") / 2 + 2;
+      }
+
+      // End-of-verse barline — single bar 8px past whichever extends furthest.
+      if (aN.length > 0) {
+        var noteEnd = aN[aN.length - 1].getAbsoluteX() + NOTE_W * 0.5;
+        var barX = Math.max(noteEnd, lastRightEdge, slashRightEdge) + 8;
+        if (grand) mkVerseBar(svg, barX, tr.getYForLine(0), bs.getYForLine(4));
+        else mkVerseBar(svg, barX, tr.getYForLine(0), tr.getYForLine(4));
+      }
     }
 
-    // Draw lyrics centered between treble bottom line and bass top line.
-    // The gap runs from tr.getYForLine(4) (treble bottom) to bs.getYForLine(0) (bass top).
-    if (grand) {
-      var lyricY = (tr.getYForLine(4) + bs.getYForLine(0)) / 2;
-      lastRightEdge = drawLyrics(wrap.querySelector('svg'), line.alto, aN, lyricY);
-    }
+    pageSystems.forEach(function(system, rowIdx) {
+      var sy = rowIdx * SH + 10 + titleOffset;
+      var isFirstGlobal = (globalSysIdx === 0);
+      var sysLeft = isFirstGlobal ? systemLeftFirst : systemLeftRest;
 
-    // // penultimate marker — drawn in lyric row regardless of grand/solo
-    if (barlineAfter === 'penultimate' && aN.length > 0) {
-      var penultLyricY = grand
-        ? (tr.getYForLine(4) + bs.getYForLine(0)) / 2
-        : sy + TY + TH + 20;
-      var svgElP = wrap.querySelector('svg');
-      var lastX = aN[aN.length - 1].getAbsoluteX() + NOTE_W * 0.6;
-      var slashTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      slashTxt.setAttribute('x', lastX);
-      slashTxt.setAttribute('y', penultLyricY);
-      slashTxt.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
-      slashTxt.setAttribute('font-size', '16');
-      slashTxt.setAttribute('font-weight', '200');
-      slashTxt.setAttribute('font-style', 'italic');
-      slashTxt.setAttribute('text-anchor', 'middle');
-      slashTxt.setAttribute('dominant-baseline', 'middle');
-      slashTxt.setAttribute('fill', '#2a2118');
-      slashTxt.textContent = '//';
-      svgElP.appendChild(slashTxt);
-      slashRightEdge = lastX + measW("//", "200") / 2 + 2;
-    }
+      // Treble stave — clef + key signature on EVERY system (matches printed Obikhod).
+      var tr = new VF.Stave(ML, sy + TY, SW);
+      tr.addClef('treble').addKeySignature(cfg.vexKey);
+      tr.setEndBarType(VF.Barline.type.NONE);
+      tr.setContext(ctx).draw();
+      tr.setNoteStartX(tr.getNoteStartX() + EDGE_PAD + (isFirstGlobal ? INDENT : 0));
 
-    // Grand staff connectors
-    new VF.StaveConnector(tr, bs).setType(VF.StaveConnector.type.BRACE).setContext(ctx).draw();
-    new VF.StaveConnector(tr, bs).setType(VF.StaveConnector.type.SINGLE_LEFT).setContext(ctx).draw();
+      var bs = null;
+      if (grand) {
+        bs = new VF.Stave(ML, sy + BASS_Y, SW);
+        bs.addClef('bass').addKeySignature(cfg.vexKey);
+        bs.setEndBarType(VF.Barline.type.NONE);
+        bs.setContext(ctx).draw();
+        bs.setNoteStartX(bs.getNoteStartX() + EDGE_PAD + (isFirstGlobal ? INDENT : 0));
+        new VF.StaveConnector(tr, bs).setType(VF.StaveConnector.type.BRACE).setContext(ctx).draw();
+        new VF.StaveConnector(tr, bs).setType(VF.StaveConnector.type.SINGLE_LEFT).setContext(ctx).draw();
+      }
 
-    // End-of-verse barline (grand): single vertical bar spanning treble top to bass bottom,
-    // placed 8px past whichever extends furthest — last note, last syllable, or the // marker.
-    if (aN.length > 0) {
-      var grandNoteEnd = aN[aN.length - 1].getAbsoluteX() + NOTE_W * 0.5;
-      var grandBarX = Math.max(grandNoteEnd, lastRightEdge, slashRightEdge) + 8;
-      mkVerseBar(wrap.querySelector('svg'), grandBarX, tr.getYForLine(0), bs.getYForLine(4));
-    }
-  }
+      // SATB margin labels — first global system only (toggle).
+      if (isFirstGlobal && SHOW_SATB_LABELS) {
+        var mkLabel = function(txt, yy) {
+          var el = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          el.setAttribute('x', ML - 6); el.setAttribute('y', yy);
+          el.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
+          el.setAttribute('font-size', '10'); el.setAttribute('font-weight', '300');
+          el.setAttribute('text-anchor', 'end'); el.setAttribute('dominant-baseline', 'middle');
+          el.setAttribute('fill', '#2a2118'); el.textContent = txt; svg.appendChild(el);
+        };
+        mkLabel('Soprano', tr.getYForLine(1)); mkLabel('Alto', tr.getYForLine(3));
+        if (grand) { mkLabel('Tenor', bs.getYForLine(1)); mkLabel('Bass', bs.getYForLine(3)); }
+      }
+
+      // Per-system justification: scale so the last phrase's verse bar reaches contentRight.
+      // Non-last systems justify (fill); the last system is ragged (J=1) unless its content
+      // overflows, in which case it compresses (J<1) — also the over-wide-lone-phrase fallback.
+      var lastP = system.phrases[system.phrases.length - 1];
+      var lastM = phraseMetrics(lastP.line);
+      var naturalSpan = (lastP.xStart + lastM.width) - sysLeft;
+      var usable = contentRight - sysLeft;
+      var isLastSystem = (globalSysIdx === systems.length - 1);
+      var J = (naturalSpan > 0) ? (usable / naturalSpan) : 1;
+      if (isLastSystem) J = Math.min(1, J);
+      if (!isFinite(J) || J <= 0) J = 1;
+
+      system.phrases.forEach(function(phrase) { drawPhrase(phrase, tr, bs, J, sysLeft); });
+      globalSysIdx++;
+    });
+
   }); // end chunks.forEach
 
   // Fix all SVG heights AFTER all VexFlow drawing is complete.
   // VexFlow re-applies inline style during draw() — must correct after.
-  chunks.forEach(function(chunkLines, chunkIdx) {
-    var titleOffset = (chunkIdx === 0) ? TITLE_H : 0;
-    var svgH = SH * chunkLines.length + titleOffset + BOTTOM_PAD;
-    var pageDiv = canvas.children[chunkIdx];
+  pages.forEach(function(pageSystems, pageIdx) {
+    var titleOffset = (pageIdx === 0) ? TITLE_H : 0;
+    var svgH = SH * pageSystems.length + titleOffset + BOTTOM_PAD;
+    var pageDiv = canvas.children[pageIdx];
     var svg = pageDiv ? pageDiv.querySelector('svg') : null;
     if (svg) {
       svg.style.width  = PW + 'px';
