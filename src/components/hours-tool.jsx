@@ -7368,6 +7368,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.8.9",
+    date: "June 2026",
+    summary: "UI — Reader's Service aligned into the context chip",
+    items: [
+      "ui: the Reader's Service toggle now sits on the first content line (right of the Date) inside the expanded Liturgical Context, so it reads as part of the context chip rather than floating in the control-bar band above it.",
+    ],
+  },
+  {
     version: "v0.8.8",
     date: "June 2026",
     summary: "UI — Reader's Service moved into the Liturgical Context dropdown",
@@ -10117,8 +10125,18 @@ export default function App() {
               paddingBottom: "0.5rem",
               fontSize: "0.85rem", lineHeight: "1.7",
             }}>
-            {/* Reader's Service — relocated here; shows only when the context is expanded */}
-            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "0.5rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem", flexWrap: "wrap" }}>
+              <div>
+                <strong>Date:</strong> {dayLabel}
+                {liturgicalData.paschaOffset >= -101 && liturgicalData.paschaOffset <= 263 && (
+                  <span style={{ fontSize: "0.72rem", color: "#9A8A70", marginLeft: "0.5rem", fontStyle: "italic" }}>
+                    {liturgicalData.paschaOffset >= 0
+                      ? `(P+${liturgicalData.paschaOffset})`
+                      : `(P${liturgicalData.paschaOffset})`}
+                  </span>
+                )}
+              </div>
+              {/* Reader's Service — right of the first content line, within the context chip */}
               <button
                 onClick={() => setReaderMode(v => !v)}
                 style={{
@@ -10127,22 +10145,13 @@ export default function App() {
                   color: readerMode ? "#5A7A8A" : "#8B6914",
                   borderRadius: "3px", padding: "3px 10px", fontSize: "0.73rem",
                   letterSpacing: "0.06em", cursor: "pointer", fontFamily: "Georgia, serif",
+                  flexShrink: 0,
                 }}
                 title="Toggle Reader's Service mode (Fekula Chapter 10)"
               >
                 {readerMode ? "☩ Reader's Service" : "Reader's Service"}
               </button>
             </div>
-            <div>
-            <strong>Date:</strong> {dayLabel}
-            {liturgicalData.paschaOffset >= -101 && liturgicalData.paschaOffset <= 263 && (
-              <span style={{ fontSize: "0.72rem", color: "#9A8A70", marginLeft: "0.5rem", fontStyle: "italic" }}>
-                {liturgicalData.paschaOffset >= 0
-                  ? `(P+${liturgicalData.paschaOffset})`
-                  : `(P${liturgicalData.paschaOffset})`}
-              </span>
-            )}
-          </div>
           {liturgicalData.namedDay && (
             <div style={{ marginTop: "0.2rem", marginBottom: "0.2rem", padding: "0.35rem 0.6rem", background: "rgba(139,105,20,0.1)", borderLeft: "3px solid #8B6914", borderRadius: "0 4px 4px 0" }}>
               <div style={{ fontWeight: "bold", color: "#1C1008", fontSize: "0.88rem" }}>{liturgicalData.namedDay.name}</div>
