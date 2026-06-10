@@ -7368,6 +7368,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.8.4",
+    date: "June 2026",
+    summary: "Service of the Psalter — departed dividers (Orthodox) + scroll-to-top on nav (Slice 3 of FW-24)",
+    items: [
+      "feat: For-the-Departed mode now interleaves the proper prayers (A Psalter for Prayer, Jordanville, pp. 320–323): after the 1st and 2nd stasis, the short 'Remember, O Lord, the soul…' prayer thrice (with bows) in place of the second Glory; after the 3rd stasis, the kathisma-end block — Trisagion → Lord's Prayer, the four Tone IV troparia, Lord have mercy ×40, and the long 'Remember, O Lord our God…' prayer — then 'O come, let us worship' into the next kathisma (omitted after the 20th; the whole-Psalter conclusion follows there in the next slice). Name and Servant/Handmaiden substitution applied throughout. Orthodox case; non-Orthodox substitutions still to come.",
+      "refactor: Trisagion-through-the-Lord's-Prayer factored into a shared helper used by both the beginning and the departed end-block.",
+      "fix: kathisma navigation (prev/next and the chips) now scrolls the new kathisma to the top, accounting for the sticky header, instead of leaving the reader at the bottom of the previous one. (Initial load at Kathisma 1 still shows the beginning.)",
+    ],
+  },
+  {
     version: "v0.8.3",
     date: "June 2026",
     summary: "Service of the Psalter — assembled beginning + end-of-kathisma cross (Slice 2 of FW-24)",
@@ -9210,6 +9220,105 @@ const PS_LHM = "Lord, have mercy; Lord, have mercy; Lord, have mercy.";
 const PS_STASIS_NAMES = ["First Stasis", "Second Stasis", "Third Stasis"];
 const PS_ORDINALS = ['', 'FIRST', 'SECOND', 'THIRD', 'FOURTH', 'FIFTH', 'SIXTH', 'SEVENTH', 'EIGHTH', 'NINTH', 'TENTH', 'ELEVENTH', 'TWELFTH', 'THIRTEENTH', 'FOURTEENTH', 'FIFTEENTH', 'SIXTEENTH', 'SEVENTEENTH', 'EIGHTEENTH', 'NINETEENTH', 'TWENTIETH'];
 
+// ── Shared psalter prayer styles + helpers (FW-24) ──
+const PS_RUBR = { fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#8B6914", marginBottom: "0.25rem", marginTop: "1.1rem" };
+const PS_TEXT = { fontSize: "1rem", lineHeight: "1.8", color: "#1C1008", marginBottom: "0.5rem", fontFamily: "Georgia, serif" };
+const PS_NOTE = { fontSize: "0.8rem", color: "#9A8A70", fontStyle: "italic", marginBottom: "0.5rem", lineHeight: 1.6 };
+const PS_PRIEST = { ...PS_TEXT, color: "#A89880", fontStyle: "italic" };
+function psBow(label) {
+  return <span style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic" }}> ({label})</span>;
+}
+// Gender/name substitution for the departed prayers.
+function psForms(gender, name) {
+  const f = gender === 'f';
+  return {
+    servant: f ? "handmaiden" : "servant",
+    him: f ? "her" : "him",
+    his: f ? "her" : "his",
+    he: f ? "she" : "he",
+    brother: f ? "sister" : "brother",
+    N: (name && name.trim()) ? name.trim() : "N.",
+  };
+}
+
+// Trisagion through the Lord's Prayer (shared by the beginning and the departed end-block).
+function PsalterTrisagionToLP({ readerMode }) {
+  return (
+    <>
+      <div style={PS_RUBR}>The Trisagion</div>
+      <div style={PS_TEXT}>Holy God, Holy Mighty, Holy Immortal, have mercy upon us. {psBow("Thrice, with bows")}</div>
+      <div style={PS_TEXT}>Glory be to the Father, and to the Son, and to the Holy Spirit; both now, and ever, and unto the ages of ages. Amen. {psBow("Bow")}</div>
+      <div style={PS_TEXT}>O Most Holy Trinity, have mercy upon us. O Lord, wash away our sins. O Master, pardon our transgressions. O Holy One, visit and heal our infirmities for Thy Name&rsquo;s sake.</div>
+      <div style={PS_TEXT}>Lord, have mercy. {psBow("Thrice")}</div>
+      <div style={PS_TEXT}>Glory be to the Father, and to the Son, and to the Holy Spirit; both now, and ever, and unto the ages of ages. Amen. {psBow("Bow")}</div>
+      <div style={PS_RUBR}>The Lord&rsquo;s Prayer</div>
+      <div style={PS_TEXT}>Our Father, Who art in heaven, hallowed be Thy Name. Thy kingdom come. Thy will be done, on earth as it is in heaven. Give us this day our daily bread. And forgive us our debts, as we forgive our debtors. And lead us not into temptation; but deliver us from the evil one.</div>
+      {readerMode ? (
+        <div style={PS_TEXT}>O Lord Jesus Christ, Son of God, have mercy upon us. Amen.</div>
+      ) : (
+        <>
+          <div style={PS_RUBR}>Priest:</div>
+          <div style={PS_PRIEST}>For Thine is the kingdom, the power, and the glory: of the Father, and of the Son, and of the Holy Spirit; now, and ever, and unto the ages of ages. Amen.</div>
+        </>
+      )}
+    </>
+  );
+}
+
+// Departed-mode divider. After stases 1 & 2: the short prayer thrice in place of the
+// second Glory. After stasis 3: the kathisma-end block (Trisagion → Lord's Prayer,
+// Tone IV troparia, Lord have mercy ×40, the long prayer), then O come into the next
+// kathisma (omitted after the final kathisma — the conclusion follows there, Slice 4).
+// Orthodox case only; non-Orthodox substitutions are Slice 6.
+function PsalterDepartedDivider({ isLast, forms, readerMode, showOCome }) {
+  const f = forms;
+  const dividerBox = { margin: "1.25rem 0", padding: "0.75rem 1rem", borderLeft: "2px solid #D4C49A", borderRadius: "0 3px 3px 0", background: "rgba(139,105,20,0.06)", fontSize: "0.88rem", color: "#3D3020", lineHeight: "1.85", fontStyle: "italic" };
+  if (!isLast) {
+    return (
+      <div style={dividerBox}>
+        {PS_GLORY}<br />
+        <span style={{ color: "#9A8A70", fontSize: "0.83rem" }}>{PS_ALLELUIA}<br />{PS_ALLELUIA}<br />{PS_ALLELUIA}</span>
+        <br /><br />
+        {PS_LHM}
+        <div style={{ marginTop: "1rem", fontStyle: "normal", color: "#1C1008", lineHeight: 1.75 }}>
+          <div style={{ fontSize: "0.68rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#8B6914", fontStyle: "italic", marginBottom: "0.4rem" }}>In place of the second Glory, thrice (a bow at each petition):</div>
+          Remember, O Lord, the soul of Thy departed {f.servant}, {f.N}. {psBow("Bow")}<br />
+          Have mercy upon {f.him}, for whatever sins {f.he} hath humanly committed, as Thou art a God Who lovest mankind. {psBow("Bow")}<br />
+          Deliver {f.him} from eternal torment. {psBow("Bow")}<br />
+          Make {f.him} a sharer of the Kingdom of Heaven. {psBow("Bow")}<br />
+          And do what is profitable for {f.his} soul. {psBow("Bow")}
+          <div style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic", marginTop: "0.4rem" }}>Thrice.</div>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div style={{ marginTop: "1.5rem" }}>
+      <PsalterTrisagionToLP readerMode={readerMode} />
+      <div style={PS_RUBR}>Troparia · Tone IV</div>
+      <div style={PS_TEXT}>With the souls of the righteous that have finished their course, give rest, O Savior, to the soul of Thy {f.servant}, keeping it in the blessed life which is with Thee, O Lover of mankind.</div>
+      <div style={PS_TEXT}>In the place of Thy rest, O Lord, where all Thy saints repose, give rest also to the soul of Thy {f.servant}, for Thou alone art the Lover of mankind.</div>
+      <div style={{ ...PS_RUBR, marginTop: "0.6rem" }}>Glory&hellip;</div>
+      <div style={PS_TEXT}>Thou art the God Who descended into hell and loosed the chains of the captives; do Thou Thyself give rest also to the soul of Thy {f.servant}.</div>
+      <div style={{ ...PS_RUBR, marginTop: "0.6rem" }}>Both now&hellip;</div>
+      <div style={PS_TEXT}>O only pure and immaculate Virgin, who without seed gavest birth unto God, pray that {f.his} soul be saved.</div>
+      <div style={{ ...PS_TEXT, marginTop: "0.75rem" }}>Lord, have mercy. {psBow("Forty times")}</div>
+      <div style={PS_RUBR}>Prayer for the Departed</div>
+      <div style={PS_TEXT}>Remember, O Lord our God, Thy {f.servant} who hath departed in the faith and hope of eternal life, our {f.brother}, {f.N}, and, as Thou art good and lovest mankind, pardon {f.his} sins and consume {f.his} unrighteousness; release, remit and forgive all {f.his} sins, voluntary and involuntary. Deliver {f.him} from eternal torment and from the fire of Gehenna, and grant unto {f.him} participation and enjoyment of Thine eternal blessings, prepared for them that love Thee. For if {f.he} sinned, yet {f.he} did not renounce Thee and believed undoubtingly in Thee as God: the Father, the Son, and the Holy Spirit, glorified in Trinity, and confessed the Unity in Trinity and the Trinity in Unity in Orthodox fashion, even until {f.his} last breath. Therefore, be merciful unto {f.him}, and impute {f.his} faith in Thee instead of deeds and, as One gracious, grant unto {f.him} rest with Thy saints. For there is no man who liveth and sinneth not, and Thou, alone, art without sin, and Thy righteousness is righteousness forever. For Thou alone art a God of mercy and compassion, and unto Thee do we ascribe glory, to the Father, and to the Son, and to the Holy Spirit; now, and ever, and unto the ages of ages. Amen.</div>
+      {showOCome && (
+        <>
+          <div style={PS_RUBR}>O Come, Let Us Worship</div>
+          <div style={PS_TEXT}>O come, let us worship God our King. {psBow("Bow")}</div>
+          <div style={PS_TEXT}>O come, let us worship and bow down before Christ, our King and God. {psBow("Bow")}</div>
+          <div style={PS_TEXT}>O come, let us worship and bow down before Christ Himself, our King and God. {psBow("Bow")}</div>
+          <div style={PS_NOTE}>The reading continues with the next kathisma.</div>
+        </>
+      )}
+    </div>
+  );
+}
+
+
 function PsalterVerses({ verses }) {
   return (
     <div style={{ fontSize: "0.97rem", lineHeight: "1.9", color: "#3D3020" }}>
@@ -9234,11 +9343,22 @@ function PsalterDivider({ isLast }) {
   );
 }
 
-function PsalterKathisma({ k }) {
+function PsalterKathisma({ k, departed, forms, readerMode }) {
+  const topRef = React.useRef(null);
+  const mountedRef = React.useRef(false);
+  React.useEffect(() => {
+    // Scroll the new kathisma to the top on navigation; skip the initial mount so the
+    // beginning panel stays visible when the service first loads at Kathisma 1.
+    if (!mountedRef.current) { mountedRef.current = true; return; }
+    const t = setTimeout(() => {
+      topRef.current?.scrollIntoView({ behavior: "instant", block: "start" });
+    }, 60);
+    return () => clearTimeout(t);
+  }, [k]);
   const info = KATHISMA_MAP[k];
   if (!info) return null;
   return (
-    <div>
+    <div ref={topRef} style={{ scrollMarginTop: "120px" }}>
       <div style={{ marginBottom: "1.4rem", paddingBottom: "0.75rem", borderBottom: "1px solid #E8DEC8" }}>
         <div style={{ fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#8B6914", marginBottom: "0.2rem" }}>Kathisma {k}</div>
         <div style={{ fontSize: "0.75rem", color: "#9A8A70", fontStyle: "italic" }}>{getPsalmRange(k)}</div>
@@ -9275,7 +9395,9 @@ function PsalterKathisma({ k }) {
                 </div>
               );
             })}
-            <PsalterDivider isLast={isLast} />
+            {departed
+              ? <PsalterDepartedDivider isLast={isLast} forms={forms} readerMode={readerMode} showOCome={k < 20} />
+              : <PsalterDivider isLast={isLast} />}
           </div>
         );
       })}
@@ -9344,25 +9466,8 @@ function PsalterBeginning({ liturgicalData, readerMode, open, setOpen }) {
         </>
       )}
 
-      {/* Trisagion */}
-      <div style={rubr}>The Trisagion</div>
-      <div style={text}>Holy God, Holy Mighty, Holy Immortal, have mercy upon us. {bow("Thrice, with bows")}</div>
-      <div style={text}>Glory be to the Father, and to the Son, and to the Holy Spirit; both now, and ever, and unto the ages of ages. Amen. {bow("Bow")}</div>
-      <div style={text}>O Most Holy Trinity, have mercy upon us. O Lord, wash away our sins. O Master, pardon our transgressions. O Holy One, visit and heal our infirmities for Thy Name&rsquo;s sake.</div>
-      <div style={text}>Lord, have mercy. {bow("Thrice")}</div>
-      <div style={text}>Glory be to the Father, and to the Son, and to the Holy Spirit; both now, and ever, and unto the ages of ages. Amen. {bow("Bow")}</div>
-
-      {/* Lord's Prayer */}
-      <div style={rubr}>The Lord&rsquo;s Prayer</div>
-      <div style={text}>Our Father, Who art in heaven, hallowed be Thy Name. Thy kingdom come. Thy will be done, on earth as it is in heaven. Give us this day our daily bread. And forgive us our debts, as we forgive our debtors. And lead us not into temptation; but deliver us from the evil one.</div>
-      {readerMode ? (
-        <div style={text}>O Lord Jesus Christ, Son of God, have mercy upon us. Amen.</div>
-      ) : (
-        <>
-          <div style={rubr}>Priest:</div>
-          <div style={priestText}>For Thine is the kingdom, the power, and the glory: of the Father, and of the Son, and of the Holy Spirit; now, and ever, and unto the ages of ages. Amen.</div>
-        </>
-      )}
+      {/* Trisagion through the Lord's Prayer (shared helper) */}
+      <PsalterTrisagionToLP readerMode={readerMode} />
 
       {/* Tone VI troparia */}
       <div style={rubr}>Troparia · Tone VI</div>
@@ -9484,7 +9589,7 @@ function PsalterService({ mode, setMode, name, setName, gender, setGender, ortho
         <PsalterBeginning liturgicalData={liturgicalData} readerMode={readerMode} open={beginOpen} setOpen={setBeginOpen} />
       )}
 
-      <PsalterKathisma k={kathisma} />
+      <PsalterKathisma k={kathisma} departed={departed} forms={psForms(gender, name)} readerMode={readerMode} />
 
       {/* prev / next */}
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: "2rem", marginBottom: "1.5rem", paddingTop: "1rem", borderTop: "1px solid #E8DEC8" }}>
