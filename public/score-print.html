@@ -242,10 +242,11 @@ var EDGE_PAD = 16;
 var INDENT = 24;
 var INTER_PHRASE_GAP = 24;
 var SHOW_SATB_LABELS = true;
-// LEAD_GAP: gap between the key signature's right edge and the first note. VexFlow's
-// getNoteStartX() reserves more than a hand-engraved score; we anchor to the actual
-// clef+key glyph right edge + this gap instead, for a tight reference-style leading.
-var LEAD_GAP = 12;
+// LEAD_GAP: clearance between the clef+key (getNoteStartX) and the first note, applied on
+// EVERY system so notes never butt against the glyphs. The old per-line renderer got this for
+// free from the formatter's natural first-note padding; since we now position absolutely, we
+// add it explicitly. The first system also gets INDENT on top (first-system indent + labels).
+var LEAD_GAP = 16;
 
 // ── Load fonts before rendering ────────────────────────────────────────
 function loadFonts(cb) {
@@ -720,9 +721,10 @@ function renderScore(payload) {
       }
 
       // With the stave attached before setVoiceX (above), our absolute T is honored exactly,
-      // so anchor to the stave's note-start (right after clef+key) + the first-system indent.
-      // This reproduces the old renderer's tight leading (its T_relative + getNoteStartX).
-      var anchor = tr.getNoteStartX() + (isFirstGlobal ? INDENT : 0);
+      // so anchor to the stave's note-start (clef+key end) + LEAD_GAP clearance on every system,
+      // + the first-system indent. LEAD_GAP keeps notes off the glyphs on systems 2..n (which
+      // have no indent); without it they butt against the key signature.
+      var anchor = tr.getNoteStartX() + LEAD_GAP + (isFirstGlobal ? INDENT : 0);
 
       // Per-system justification: scale the content span so the last phrase's verse bar reaches
       // contentRight. Non-last systems justify (fill); the last system is ragged (J=1) unless its

@@ -10,11 +10,20 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.16.4";
+export const TONE_TRAINER_VERSION = "v0.16.5";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.16.5",
+    date: "June 2026",
+    summary: "Printed score: LEAD_GAP clearance on every system (notes no longer touch the glyphs) + cache-bust score-print.html by version",
+    items: [
+      "fix: systems 2..n placed notes flush against the clef+key (only system 1 cleared, via its indent). The old renderer got a small clef-to-note gap for free from the formatter's natural first-note padding; now that we position absolutely (v0.16.4) we add it explicitly. LEAD_GAP (16px) is applied on every system's anchor; the first system still gets INDENT (24px) on top for the first-system indent + SATB labels.",
+      "fix: score-print.html is now opened with ?v=<trainer version> so a deployed update is never served stale from the browser cache. Previously the tab opened the bare URL, so the browser could run a cached old score-print.html while still showing the fresh version label (which comes from the postMessage payload, not the file) — making fixes look like no-ops until a manual hard refresh.",
+    ],
+  },
   {
     version: "v0.16.4",
     date: "June 2026",
@@ -4161,7 +4170,13 @@ export default function ToneTrainer() {
 
     const payload = buildScorePayload(sourceLines, title, source);
 
-    const win = window.open("/orthodox-hours/score-print.html", "_blank");
+    // Cache-bust by trainer version so a deployed score-print.html update is never served
+    // stale from the browser cache (the in-page version label comes from the payload, so a
+    // cached old file would otherwise render old logic under a fresh version string).
+    const win = window.open(
+      "/orthodox-hours/score-print.html?v=" + encodeURIComponent(TONE_TRAINER_VERSION),
+      "_blank"
+    );
     if (!win) { alert("Popup blocked — please allow popups for this site."); return; }
 
     // Retry loop: post the payload every 200ms until the tab acknowledges
