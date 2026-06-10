@@ -7368,6 +7368,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.8.3",
+    date: "June 2026",
+    summary: "Service of the Psalter — assembled beginning + end-of-kathisma cross (Slice 2 of FW-24)",
+    items: [
+      "feat: PsalterBeginning — the full beginning from A Psalter for Prayer (Jordanville), pp. 33–35, encoded verbatim: opening exclamation (priest/reader §10), O Heavenly King with date-driven Paschal/Ascension substitution, Trisagion through the Lord's Prayer, the Tone VI troparia, Lord have mercy ×40 with prostrations, the 'Most Holy Trinity, God and Creator' pre-reading prayer, O come, and the reading rubric. Shown as a collapsible panel before the First Kathisma in both modes. (Parish HTM-wording substitutions to be decided in-place during review.)",
+      "fix: end-of-kathisma marker now renders the Orthodox cross SVG, matching the standalone viewer and the other services.",
+      "fix: source attribution — psalm text credited to the Brenton Septuagint (public domain), distinct from the Jordanville order of reading; caption corrected and a Brenton footer added.",
+    ],
+  },
+  {
     version: "v0.8.2",
     date: "June 2026",
     summary: "Service of the Psalter — scaffold (Slice 1 of FW-24)",
@@ -9270,15 +9280,133 @@ function PsalterKathisma({ k }) {
         );
       })}
       <div style={{ textAlign: 'center', margin: '2rem 0 0.5rem', paddingTop: '1rem', borderTop: '1px solid #D4C49A' }}>
-        <div style={{ fontFamily: 'Georgia, serif', fontSize: '0.8rem', fontWeight: 'bold', letterSpacing: '0.12em', color: '#5A4A2A' }}>
+        <div style={{ fontFamily: 'Georgia, serif', fontSize: '0.8rem', fontWeight: 'bold', letterSpacing: '0.12em', color: '#5A4A2A', marginBottom: '1rem' }}>
           {`THE END OF THE ${PS_ORDINALS[k]} KATHISMA`}
         </div>
+          <svg width="46" height="66" viewBox="0 0 92 133" role="img" aria-label="Orthodox cross" style={{display:'inline-block'}}>
+                    <g transform="matrix(1,0,0,1,-188.023852,108.103825)">
+                      <path d="M247.237,-66.889C248.05,-71.423 251.98,-74.733 256.586,-74.764C261.193,-74.794 265.166,-71.537 266.039,-67.014C270.027,-65.763 272.741,-62.068 272.741,-57.889C272.741,-53.71 270.027,-50.015 266.039,-48.765C265.166,-44.242 261.193,-40.984 256.586,-41.014C251.98,-41.045 248.05,-44.355 247.237,-48.889L244.82,-48.889L244.82,-46.639L242.57,-46.639L242.57,-7.504C247.105,-6.691 250.415,-2.761 250.445,1.846C250.476,6.452 247.218,10.425 242.695,11.298C241.445,15.286 237.75,18 233.57,18C229.391,18 225.696,15.286 224.446,11.298C219.923,10.425 216.665,6.452 216.696,1.846C216.726,-2.761 220.036,-6.691 224.57,-7.504L224.57,-46.639L222.32,-46.639L222.32,-48.889L219.904,-48.889C219.091,-44.355 215.161,-41.045 210.554,-41.014C205.948,-40.984 201.975,-44.242 201.102,-48.765C197.114,-50.015 194.4,-53.71 194.4,-57.889C194.4,-62.068 197.114,-65.763 201.102,-67.014C201.975,-71.537 205.948,-74.794 210.554,-74.764C215.161,-74.733 219.091,-71.423 219.904,-66.889L222.32,-66.889L222.32,-69.139L224.57,-69.139L224.57,-76.224C220.036,-77.037 216.726,-80.967 216.696,-85.573C216.665,-90.179 219.923,-94.153 224.446,-95.026C225.696,-99.014 229.391,-101.728 233.57,-101.728C237.75,-101.728 241.445,-99.014 242.695,-95.026C247.218,-94.153 250.476,-90.179 250.445,-85.573C250.415,-80.967 247.105,-77.037 242.57,-76.224L242.57,-69.139L244.82,-69.139L244.82,-66.889L247.237,-66.889Z" fill="#B8A070"/>
+                    </g>
+                  </svg>
       </div>
     </div>
   );
 }
 
-function PsalterService({ mode, setMode, name, setName, gender, setGender, orthodox, setOrthodox, guideOpen, setGuideOpen, kathisma, setKathisma, readerMode }) {
+// Assembled beginning for the Service of the Psalter (FW-24, Slice 2).
+// Full text from A Psalter for Prayer (Jordanville), pp. 33-35, encoded verbatim
+// (priest/reader exclamations per Fekula §10). Parish HTM-wording substitutions, if
+// any, to be decided in-place during review. Said once, before the First Kathisma.
+function PsalterBeginning({ liturgicalData, readerMode, open, setOpen }) {
+  const paschaOffset = liturgicalData ? liturgicalData.paschaOffset : null;
+  const season = liturgicalData ? liturgicalData.season : null;
+  const isPent = season === 'pentecostarion' || season === 'brightweek';
+  const christIsRisen = isPent && paschaOffset >= 7 && paschaOffset <= 38;
+  const hkOmitted = isPent && paschaOffset >= 39 && paschaOffset <= 48;
+
+  const rubr = { fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#8B6914", marginBottom: "0.25rem", marginTop: "1.1rem" };
+  const text = { fontSize: "1rem", lineHeight: "1.8", color: "#1C1008", marginBottom: "0.5rem", fontFamily: "Georgia, serif" };
+  const note = { fontSize: "0.8rem", color: "#9A8A70", fontStyle: "italic", marginBottom: "0.5rem", lineHeight: 1.6 };
+  const priestText = { ...text, color: "#A89880", fontStyle: "italic" };
+  const bow = (label) => <span style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic" }}> ({label})</span>;
+  const readerBadge = (
+    <span style={{ fontSize: "0.62rem", background: "rgba(90,122,138,0.12)", border: "1px solid rgba(90,122,138,0.4)", borderRadius: "3px", padding: "1px 6px", marginLeft: "6px", color: "#5A7A8A", letterSpacing: "0.06em" }}>Reader&rsquo;s Service · §10</span>
+  );
+
+  const body = (
+    <div style={{ padding: "1rem 1.25rem 1.25rem" }}>
+      {/* Opening exclamation */}
+      {readerMode ? (
+        <>
+          <div style={rubr}>Reader{readerBadge}</div>
+          <div style={text}>Through the prayers of our holy fathers, O Lord Jesus Christ our God, have mercy upon us. Amen.</div>
+        </>
+      ) : (
+        <>
+          <div style={rubr}>Priest:</div>
+          <div style={priestText}>Blessed is our God, always; now, and ever, and unto the ages of ages. Amen.</div>
+        </>
+      )}
+
+      {/* O Heavenly King (seasonal) */}
+      {christIsRisen ? (
+        <>
+          <div style={note}>From Pascha until the Ascension, O Heavenly King is omitted; in its place the troparion of Pascha is said thrice:</div>
+          <div style={rubr}>Christ is Risen</div>
+          <div style={text}>Christ is risen from the dead, trampling down death by death, and upon those in the tombs bestowing life. {bow("Thrice")}</div>
+        </>
+      ) : hkOmitted ? (
+        <div style={note}>From the Ascension until Pentecost, O Heavenly King is omitted; one begins directly with the Trisagion.</div>
+      ) : (
+        <>
+          <div style={rubr}>O Heavenly King</div>
+          <div style={text}>O Heavenly King, the Comforter, the Spirit of Truth, Who art everywhere present and fillest all things, Treasury of blessings and Giver of life: Come and abide in us, and cleanse us from every impurity, and save our souls, O Good One. {bow("Bow")}</div>
+        </>
+      )}
+
+      {/* Trisagion */}
+      <div style={rubr}>The Trisagion</div>
+      <div style={text}>Holy God, Holy Mighty, Holy Immortal, have mercy upon us. {bow("Thrice, with bows")}</div>
+      <div style={text}>Glory be to the Father, and to the Son, and to the Holy Spirit; both now, and ever, and unto the ages of ages. Amen. {bow("Bow")}</div>
+      <div style={text}>O Most Holy Trinity, have mercy upon us. O Lord, wash away our sins. O Master, pardon our transgressions. O Holy One, visit and heal our infirmities for Thy Name&rsquo;s sake.</div>
+      <div style={text}>Lord, have mercy. {bow("Thrice")}</div>
+      <div style={text}>Glory be to the Father, and to the Son, and to the Holy Spirit; both now, and ever, and unto the ages of ages. Amen. {bow("Bow")}</div>
+
+      {/* Lord's Prayer */}
+      <div style={rubr}>The Lord&rsquo;s Prayer</div>
+      <div style={text}>Our Father, Who art in heaven, hallowed be Thy Name. Thy kingdom come. Thy will be done, on earth as it is in heaven. Give us this day our daily bread. And forgive us our debts, as we forgive our debtors. And lead us not into temptation; but deliver us from the evil one.</div>
+      {readerMode ? (
+        <div style={text}>O Lord Jesus Christ, Son of God, have mercy upon us. Amen.</div>
+      ) : (
+        <>
+          <div style={rubr}>Priest:</div>
+          <div style={priestText}>For Thine is the kingdom, the power, and the glory: of the Father, and of the Son, and of the Holy Spirit; now, and ever, and unto the ages of ages. Amen.</div>
+        </>
+      )}
+
+      {/* Tone VI troparia */}
+      <div style={rubr}>Troparia · Tone VI</div>
+      <div style={text}>Have mercy upon us, O God, have mercy upon us; for at a loss for any defense, this prayer do we sinners offer unto Thee, as Master: have mercy upon us!</div>
+      <div style={{ ...rubr, marginTop: "0.6rem" }}>Glory&hellip;</div>
+      <div style={text}>The Church hath shown forth the honored feast of Thy prophet, O Lord, to be as heaven, for thereon the angels join chorus with men. Through his prayers, O Christ God, guide our life in peace, that we may sing unto Thee: Alleluia!</div>
+      <div style={{ ...rubr, marginTop: "0.6rem" }}>Both now&hellip;</div>
+      <div style={text}>Unto thee have I fled, O pure Theotokos, in need of salvation from the many multitudes of my transgressions. Visit thou my suffering soul, and entreat thy Son and our God, that He grant me remission of the evil things I have done, O thou who alone art blessed.</div>
+
+      {/* Lord have mercy x40 */}
+      <div style={{ ...text, marginTop: "0.75rem" }}>Lord, have mercy. {bow("Forty times")}</div>
+      <div style={note}>And we make as many prostrations as we are able.</div>
+
+      {/* Pre-reading prayer */}
+      <div style={rubr}>Prayer to the Holy and Life-Creating Trinity</div>
+      <div style={text}>Most Holy Trinity, God and Creator of the whole world, come and direct my heart to begin with understanding and to end with good works this divinely inspired book, which the Holy Spirit uttered through the lips of David, and which I now desire to recite, unworthy though I am. Knowing well mine own ignorance, I fall down before Thee and pray, begging Thy help, O Lord; direct my mind, and make my heart steadfast, that I grow not weary because of the words which my lips read, but that I be gladdened with the understanding of what is read and myself prepared for the doing of the good works which I learn; and I say, Enlightened by good deeds, may I become a citizen of the land which is at Thy right hand, with all of Thine elect. And now, O Master, bless me, that, having sighed from my heart, I may sing with my tongue, saying:</div>
+
+      {/* O Come */}
+      <div style={rubr}>O Come, Let Us Worship</div>
+      <div style={text}>O come, let us worship God our King. {bow("Bow")}</div>
+      <div style={text}>O come, let us worship and bow down before Christ, our King and God. {bow("Bow")}</div>
+      <div style={text}>O come, let us worship and bow down before Christ Himself, our King and God. {bow("Bow")}</div>
+
+      {/* Reading rubric */}
+      <div style={{ ...note, marginTop: "0.9rem" }}>Stand a while, until all the senses are calm. Then begin, not rapidly, nor yet too slowly, but earnestly and with a contrite heart, saying Psalm 1, Blessed is the man, quietly, with understanding, and attentively, so that the mind may grasp what is being said.</div>
+
+      <div style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic", borderTop: "1px solid #E8DFC0", paddingTop: "0.6rem", marginTop: "0.9rem" }}>
+        A Psalter for Prayer (Holy Trinity Monastery, Jordanville), pp. 33&ndash;35. Priest/Reader exclamations per Fekula §10.
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ border: "1px solid #D4C49A", borderRadius: "6px", marginBottom: "2rem", overflow: "hidden" }}>
+      <div onClick={() => setOpen((o) => !o)} style={{ background: open ? "#F0E8D0" : "#FAF6EE", borderBottom: open ? "1px solid #D4C49A" : "none", padding: "0.75rem 1rem", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", userSelect: "none" }}>
+        <div style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#8B6914", fontFamily: "Georgia, serif", fontWeight: "bold" }}>&#9651; The Beginning &middot; said once, before the First Kathisma</div>
+        <span style={{ color: "#8B6914", fontSize: "1.1rem", marginLeft: "1rem", flexShrink: 0 }}>{open ? "▲" : "▼"}</span>
+      </div>
+      {open && body}
+    </div>
+  );
+}
+
+function PsalterService({ mode, setMode, name, setName, gender, setGender, orthodox, setOrthodox, guideOpen, setGuideOpen, kathisma, setKathisma, readerMode, liturgicalData, beginOpen, setBeginOpen }) {
   const departed = mode === 'departed';
   const pill = (active) => ({
     fontFamily: "Georgia, serif", fontSize: "0.82rem", padding: "5px 14px",
@@ -9352,12 +9480,20 @@ function PsalterService({ mode, setMode, name, setName, gender, setGender, ortho
         ))}
       </div>
 
+      {kathisma === 1 && (
+        <PsalterBeginning liturgicalData={liturgicalData} readerMode={readerMode} open={beginOpen} setOpen={setBeginOpen} />
+      )}
+
       <PsalterKathisma k={kathisma} />
 
       {/* prev / next */}
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: "2rem", marginBottom: "1.5rem", paddingTop: "1rem", borderTop: "1px solid #E8DEC8" }}>
         <button onClick={() => setKathisma(Math.max(1, kathisma - 1))} disabled={kathisma <= 1} style={{ fontFamily: "Georgia, serif", fontSize: "0.82rem", color: "#8B6914", background: "none", border: "1px solid #D4C49A", borderRadius: "3px", padding: "5px 14px", cursor: kathisma <= 1 ? "default" : "pointer", opacity: kathisma <= 1 ? 0.3 : 1 }}>{kathisma <= 1 ? "← Kathisma" : `← Kathisma ${kathisma - 1}`}</button>
         <button onClick={() => setKathisma(Math.min(20, kathisma + 1))} disabled={kathisma >= 20} style={{ fontFamily: "Georgia, serif", fontSize: "0.82rem", color: "#8B6914", background: "none", border: "1px solid #D4C49A", borderRadius: "3px", padding: "5px 14px", cursor: kathisma >= 20 ? "default" : "pointer", opacity: kathisma >= 20 ? 0.3 : 1 }}>{kathisma >= 20 ? "Kathisma →" : `Kathisma ${kathisma + 1} →`}</button>
+      </div>
+
+      <div style={{ marginTop: "2rem", paddingTop: "1rem", borderTop: "1px solid #E8DEC8", fontSize: "0.7rem", color: "#B8A882", fontStyle: "italic", textAlign: "center", lineHeight: 1.6 }}>
+        Psalm texts from the Brenton Septuagint (1851), public domain. The order of reading, the appointed prayers, and the rite for the departed are from A Psalter for Prayer (Holy Trinity Monastery, Jordanville).
       </div>
     </div>
   );
@@ -9386,6 +9522,7 @@ export default function App() {
   const [departedOrthodox, setDepartedOrthodox] = useState(true);
   const [departedGuideOpen, setDepartedGuideOpen] = useState(false);
   const [psalterKathisma, setPsalterKathisma] = useState(1);
+  const [psalterBeginOpen, setPsalterBeginOpen] = useState(true);
   const [outlineOpen, setOutlineOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(null);
   const [preCommunionData, setPreCommunionData] = useState(null);
@@ -10091,7 +10228,7 @@ export default function App() {
                     );
                   })() : currentService.key === 'psalter_service' ? (
                   <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
-                    A Psalter for Prayer (Jordanville) · Read continuously, kathisma by kathisma · {psalterMode === 'departed' ? 'For the Departed' : 'Normal reading'}
+                    Brenton Septuagint psalms (public domain) · Order of reading from A Psalter for Prayer (Jordanville) · {psalterMode === 'departed' ? 'For the Departed' : 'Normal reading'}
                   </div>
                 ) : (
                 <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
@@ -10151,6 +10288,8 @@ export default function App() {
                     guideOpen={departedGuideOpen} setGuideOpen={setDepartedGuideOpen}
                     kathisma={psalterKathisma} setKathisma={setPsalterKathisma}
                     readerMode={readerMode}
+                    liturgicalData={liturgicalData}
+                    beginOpen={psalterBeginOpen} setBeginOpen={setPsalterBeginOpen}
                   />
                 )}
                 {/* Ordinary Beginning — shown as collapsible for services that may follow another */}
