@@ -904,7 +904,7 @@ function renderScore(payload) {
           el.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
           el.setAttribute('font-size', String(LABEL_FS)); el.setAttribute('font-weight', '300');
           el.setAttribute('text-anchor', 'end'); el.setAttribute('dominant-baseline', 'middle');
-          el.setAttribute('fill', '#2a2118'); el.setAttribute('stroke', 'none'); el.textContent = txt; svg.appendChild(el);
+          el.setAttribute('fill', '#000000'); el.setAttribute('stroke', 'none'); el.textContent = txt; svg.appendChild(el);
         };
         mkLabel('Soprano', tr.getYForLine(1)); mkLabel('Alto', tr.getYForLine(3));
         if (grand) { mkLabel('Tenor', bs.getYForLine(1)); mkLabel('Bass', bs.getYForLine(3)); }
@@ -921,7 +921,7 @@ function renderScore(payload) {
         var pK = document.createElementNS(NSt, 'path'); // notehead + stem
         pK.setAttribute('d', 'M172.36,109.52C172.36,109.405 172.459,109.31 172.58,109.31L177.13,109.31C177.256,109.31 177.36,109.414 177.36,109.54C177.32,190.287 177.333,231.867 177.4,234.28C177.547,239.773 176.24,244.383 173.48,248.11C165.56,258.81 144.42,267.39 133.67,255.79C127.78,249.43 131.12,239.68 136.44,233.85C144.64,224.84 160.37,218 171.87,224.74C171.896,224.756 171.923,224.768 171.952,224.776C172.122,224.822 172.3,224.717 172.348,224.542C172.355,224.515 172.359,224.488 172.36,224.46L172.36,109.52Z');
         pK.setAttribute('fill', '#000000'); pK.setAttribute('stroke', '#000000');
-        pK.setAttribute('stroke-width', '4'); pK.setAttribute('stroke-linejoin', 'round');
+        pK.setAttribute('stroke-width', '5'); pK.setAttribute('stroke-linejoin', 'round');
         pK.setAttribute('fill-rule', 'nonzero');
         g.appendChild(pK);
         var pW = document.createElementNS(NSt, 'path'); // hollow centre of the notehead
