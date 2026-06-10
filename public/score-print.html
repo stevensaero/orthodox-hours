@@ -373,25 +373,87 @@ function renderScore(payload) {
     return { width: width, adv: ca.adv, visible: sv.visible, rec: sv.rec, hw: ca.hw };
   }
 
-  // Greedy first-fit packing. Each phrase becomes one or more SLICES (column ranges). In
-  // Phase 2a every phrase is a single whole-phrase slice [0,n) — packing is unchanged from
-  // Phase 1; the break-into-slices logic lands in 2b. A system holds an array of slices.
+  // Build a slice record. barlineAfter is null on an open (wrapped) slice; set on a phrase end.
+  function mkSlice(line, s0, s1, xStart, m, barlineAfter, isPhraseEnd, isLast) {
+    return {
+      line: line, s0: s0, s1: s1, xStart: xStart, width: m.width,
+      adv: m.adv, visible: m.visible, rec: m.rec,
+      barlineAfter: barlineAfter, isPhraseEnd: isPhraseEnd, isLast: isLast
+    };
+  }
+
+  // Legal break seams within a phrase: column indices j (1..n-1) where the phrase MAY wrap to
+  // the next system, breaking BETWEEN columns j-1 and j. A seam is legal iff it falls after a
+  // reciting note (within a reciting run, or a recite→cadence boundary — the elastic zones)
+  // AND it does not split a melisma group or a tenor held span (both unbreakable: the held
+  // notehead / slur would cross the system break). Phrase boundaries are handled separately.
+  function legalSeams(line) {
+    var n = line.alto.length, seams = new Set();
+    var spans = (line.tenor || []).map(function(t, k) {
+      var ss = (t.spanStart != null) ? t.spanStart : k;
+      var sc = (t.spanCount != null) ? t.spanCount : 1;
+      return [ss, ss + sc];
+    });
+    for (var j = 1; j < n; j++) {
+      if (line.alto[j - 1].role !== 'recite') continue;                 // only after a recite note
+      var contMelisma = line.alto[j].melisma && line.alto[j].text === line.alto[j - 1].text;
+      if (contMelisma) continue;                                        // inside a melisma group
+      var inSpan = spans.some(function(sp) { return sp[0] < j && sp[1] > j; });
+      if (inSpan) continue;                                             // inside a tenor held span
+      seams.add(j);
+    }
+    return seams;
+  }
+
+  // Greedy first-fit packing into systems of SLICES. A phrase that fits a full system is placed
+  // whole (Phase-1 behavior — packed after the previous phrase, or wrapped whole to a fresh
+  // system). A phrase WIDER than a full system is broken at legal seams into open slices (one
+  // per system) plus a final phrase-end slice that carries the barline. Per-slice ghosting with
+  // the re-anchor clause lives in sliceVisibility; this pass only chooses the column ranges.
   function packSystems(allLines, leftFirst, leftRest, rightEdge) {
     var systems = [], cur = { slices: [], left: leftFirst }, x = leftFirst;
+    function flush() { if (cur.slices.length) { systems.push(cur); cur = { slices: [], left: leftRest }; x = leftRest; } }
+    var fullSystemWidth = rightEdge - leftRest;
+
     for (var i = 0; i < allLines.length; i++) {
       var line = allLines[i];
       var isLastPhrase = (i === allLines.length - 1);
-      var barlineAfter = line.barlineAfter || (isLastPhrase ? 'final' : 'single');
-      var m = sliceMetrics(line, 0, line.alto.length, true);
-      if (cur.slices.length > 0 && (x + m.width) > rightEdge) {
-        systems.push(cur); cur = { slices: [], left: leftRest }; x = leftRest;
+      var phraseBar = line.barlineAfter || (isLastPhrase ? 'final' : 'single');
+      var n = line.alto.length;
+      var whole = sliceMetrics(line, 0, n, true);
+
+      // Whole phrase fits a system → place it whole (unchanged from Phase 1 / 2a).
+      if (whole.width <= fullSystemWidth) {
+        if (cur.slices.length > 0 && (x + whole.width) > rightEdge) flush();
+        cur.slices.push(mkSlice(line, 0, n, x, whole, phraseBar, true, isLastPhrase));
+        x += whole.width + INTER_PHRASE_GAP;
+        continue;
       }
-      cur.slices.push({
-        line: line, s0: 0, s1: line.alto.length, xStart: x, width: m.width,
-        adv: m.adv, visible: m.visible, rec: m.rec,
-        barlineAfter: barlineAfter, isPhraseEnd: true, isLast: isLastPhrase
-      });
-      x += m.width + INTER_PHRASE_GAP;
+
+      // Wider than a full system → break into slices. A broken phrase starts a fresh system.
+      if (cur.slices.length > 0) flush();
+      var seams = legalSeams(line);
+      var start = 0;
+      while (start < n) {
+        var rem = sliceMetrics(line, start, n, true);
+        if ((x + rem.width) <= rightEdge) {                       // remainder fits → final slice
+          cur.slices.push(mkSlice(line, start, n, x, rem, phraseBar, true, isLastPhrase));
+          x += rem.width + INTER_PHRASE_GAP; start = n; break;
+        }
+        var best = -1;                                            // latest legal seam that fits at x
+        seams.forEach(function(j) {
+          if (j <= start || j >= n) return;
+          var m = sliceMetrics(line, start, j, false);
+          if ((x + m.width) <= rightEdge) best = Math.max(best, j);
+        });
+        if (best <= start) {                                      // no legal seam fits → fallback
+          cur.slices.push(mkSlice(line, start, n, x, rem, phraseBar, true, isLastPhrase));
+          x += rem.width + INTER_PHRASE_GAP; start = n; break;    // scale-to-fit via J<1 at render
+        }
+        var ms = sliceMetrics(line, start, best, false);
+        cur.slices.push(mkSlice(line, start, best, x, ms, null, false, false));
+        flush(); start = best;                                    // open slice ends its system
+      }
     }
     if (cur.slices.length) systems.push(cur);
     return systems;
@@ -410,6 +472,14 @@ function renderScore(payload) {
   var systemLeftFirst = systemLeftRest + INDENT;
   var contentRight    = ML + SW;
   var systems = packSystems(lines, systemLeftFirst, systemLeftRest, contentRight);
+  // Debug aid (no behavior change): expose the computed slice ranges so a headless harness can
+  // assert break seams / re-anchor without scraping the SVG. Holds only lightweight metadata.
+  renderScore._lastSystems = systems.map(function(sy) {
+    return sy.slices.map(function(sl) {
+      return { s0: sl.s0, s1: sl.s1, isPhraseEnd: sl.isPhraseEnd, barlineAfter: sl.barlineAfter,
+        firstVisible: !sl.rec.has(0), ghostLocal: Array.from(sl.rec) };
+    });
+  });
 
 
   var canvas = document.getElementById('score-canvas');

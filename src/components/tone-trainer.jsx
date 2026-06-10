@@ -10,11 +10,22 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.16.8";
+export const TONE_TRAINER_VERSION = "v0.17.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.17.0",
+    date: "June 2026",
+    summary: "Printed score Phase 2: a single long verse can now wrap across systems (intra-phrase wrap)",
+    items: [
+      "feat: mid-phrase system wrap. A verse wider than one system is broken at legal seams — within a reciting run or at a recite→cadence boundary — into open slices (one per system) plus a final slice that carries the barline. Verses that fit a system are placed whole exactly as before (your six example lines render byte-identically; nothing that fits gets split).",
+      "feat: per-slice reciting ghosting with the re-anchor rule. Each system's first reciting column is surfaced as a real notehead, so a system never starts on a ghost; the run stays ghosted through the interior and re-anchors at each new system. Wrap points are open (no barline drawn mid-verse) — barlines remain semantic, only at phrase ends.",
+      "guard: melisma groups and tenor held spans are never split across a wrap (unbreakable seams), so slurs and held notes always stay within one system.",
+      "internal: phrase→slice refactor (a phrase is now one or more column-range slices). The whole-phrase path is geometry-identical to v0.16.8; renderScore._lastSystems exposes the computed slice ranges for headless validation.",
+    ],
+  },
   {
     version: "v0.16.8",
     date: "June 2026",
