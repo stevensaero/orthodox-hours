@@ -247,6 +247,10 @@ var SHOW_SATB_LABELS = true;
 // free from the formatter's natural first-note padding; since we now position absolutely, we
 // add it explicitly. The first system also gets INDENT on top (first-system indent + labels).
 var LEAD_GAP = 16;
+// BAR_PAD: clearance between a phrase's rightmost content (last note / last syllable / //
+// penultimate marker) and its end-of-verse bar. Folded into phraseMetrics width too, so a
+// following packed phrase clears the bar.
+var BAR_PAD = 12;
 
 // ── Load fonts before rendering ────────────────────────────────────────
 function loadFonts(cb) {
@@ -331,15 +335,20 @@ function renderScore(payload) {
     return { adv: T, hw: hw };
   }
 
-  // Natural width of a phrase from its first note to its verse bar (draw-free).
+  // Natural width of a phrase from its first note to its end-of-verse bar (draw-free).
   function phraseMetrics(line) {
     var rec = reciteIntermediateFor(line.alto);
     var visible = line.alto.map(function(_, i) { return !rec.has(i); });
     var ca = computeAdvances(line.alto, visible);
     var last = ca.adv.length - 1;
     if (last < 0) return { width: 0, adv: [], rec: rec, visible: visible };
-    var trailing = Math.max(NOTE_W * 0.5, ca.hw[last]) + 12; // bar clearance past last note/lyric
-    return { width: ca.adv[last] + trailing, adv: ca.adv, rec: rec, visible: visible };
+    // Rightmost content before the bar: last note, last syllable's right half, and (on the
+    // penultimate verse) the // marker's right edge — mirror of drawPhrase's bar placement.
+    var end = Math.max(ca.adv[last] + NOTE_W * 0.5, ca.adv[last] + ca.hw[last]);
+    if (line.barlineAfter === 'penultimate') {
+      end = Math.max(end, ca.adv[last] + NOTE_W * 0.6 + measW("//", "200") / 2 + 2);
+    }
+    return { width: end + BAR_PAD, adv: ca.adv, rec: rec, visible: visible };
   }
 
   // Greedy first-fit packing (Phase 1: break only at phrase boundaries). Each phrase either
@@ -676,12 +685,15 @@ function renderScore(payload) {
         slashRightEdge = lastX + measW("//", "200") / 2 + 2;
       }
 
-      // End-of-verse barline — single bar 8px past whichever extends furthest.
+      // End-of-verse barline — BAR_PAD past whichever of (last note / last syllable / //) is
+      // furthest. The final verse of the stichera closes with a DOUBLE bar (two thin lines);
+      // all other verses get a single bar. Wrap points (no barlineAfter) draw nothing.
       if (aN.length > 0) {
         var noteEnd = aN[aN.length - 1].getAbsoluteX() + NOTE_W * 0.5;
-        var barX = Math.max(noteEnd, lastRightEdge, slashRightEdge) + 8;
-        if (grand) mkVerseBar(svg, barX, tr.getYForLine(0), bs.getYForLine(4));
-        else mkVerseBar(svg, barX, tr.getYForLine(0), tr.getYForLine(4));
+        var barX = Math.max(noteEnd, lastRightEdge, slashRightEdge) + BAR_PAD;
+        var y0 = tr.getYForLine(0), y1 = grand ? bs.getYForLine(4) : tr.getYForLine(4);
+        mkVerseBar(svg, barX, y0, y1);
+        if (phrase.barlineAfter === 'final') mkVerseBar(svg, barX + 4, y0, y1);
       }
     }
 

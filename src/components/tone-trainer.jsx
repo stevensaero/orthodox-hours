@@ -10,11 +10,20 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.16.6";
+export const TONE_TRAINER_VERSION = "v0.16.7";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.16.7",
+    date: "June 2026",
+    summary: "Printed score: final-verse double bar + bar spacing (// clearance, next-verse clears the bar)",
+    items: [
+      "feat: the final verse of the stichera now closes with a DOUBLE bar (two thin lines) — the convention for the verse after the penultimate. The payload already tagged the last verse 'final'; Phase 1 deferred the double bar (mkVerseBar only drew a single line), so it had been rendering as a single. All other verses keep a single bar; wrap points stay open.",
+      "fix: bar spacing. (1) The end-of-verse bar now sits BAR_PAD (12px) past the rightmost of the last note / last syllable / // penultimate marker, so // no longer crowds the bar. (2) phraseMetrics now folds the // marker's right edge and BAR_PAD into a penultimate phrase's measured width, so a following packed phrase clears the bar instead of breaking through it (previously the next verse's first syllable could overlap the bar, e.g. 'hear' sitting on the barline).",
+    ],
+  },
   {
     version: "v0.16.6",
     date: "June 2026",
