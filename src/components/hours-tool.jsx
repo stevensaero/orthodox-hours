@@ -7368,6 +7368,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.8.5",
+    date: "June 2026",
+    summary: "Service of the Psalter — whole-Psalter conclusion (Slice 4 of FW-24)",
+    items: [
+      "feat: For-the-Departed mode now renders the conclusion after Kathisma 20 (A Psalter for Prayer, Jordanville, pp. 322–323): It Is Truly Meet (with prostration), then the priest-present form (Glory to Thee O Christ God… / 'O Christ our true God, Who didst rise from the dead…' / 'In a blessed falling asleep…' / Eternal memory ×3) or the layman form (no priest: 'O Lord Jesus Christ, through the prayers…' / 'To the servant of God, N., Eternal memory!' ×3), branching off the Reader's Service toggle. Name and gender substitution applied. Orthodox case; non-Orthodox handling is the remaining slice, gated on the footnote-scope review.",
+    ],
+  },
+  {
     version: "v0.8.4",
     date: "June 2026",
     summary: "Service of the Psalter — departed dividers (Orthodox) + scroll-to-top on nav (Slice 3 of FW-24)",
@@ -9511,6 +9519,53 @@ function PsalterBeginning({ liturgicalData, readerMode, open, setOpen }) {
   );
 }
 
+// Whole-Psalter conclusion for the departed (FW-24, Slice 4).
+// A Psalter for Prayer (Jordanville), pp. 322-323. Priest-present vs. layman (no priest)
+// branches off readerMode. Orthodox case; the non-Orthodox handling is Slice 6.
+function PsalterDepartedConclusion({ forms, readerMode }) {
+  const f = forms;
+  const layman = readerMode; // no priest present
+  return (
+    <div style={{ marginTop: "2.5rem", paddingTop: "1.25rem", borderTop: "2px solid #D4C49A" }}>
+      <div style={{ fontSize: "0.68rem", textTransform: "uppercase", letterSpacing: "0.14em", color: "#8B6914", fontWeight: "bold", marginBottom: "0.5rem" }}>
+        The Conclusion · after the whole Psalter
+      </div>
+
+      <div style={PS_RUBR}>It Is Truly Meet</div>
+      <div style={PS_TEXT}>It is truly meet to praise thee, O Theotokos, ever-blessed and most pure, and the Mother of our God. More honorable than the Cherubim, and incomparably more glorious than the Seraphim; who without corruption gavest birth to God the Word, the very Theotokos, thee do we magnify. {psBow("Prostration")}</div>
+
+      {layman ? (
+        <>
+          <div style={PS_TEXT}>Glory be to the Father, and to the Son, and to the Holy Spirit; both now, and ever, and unto the ages of ages. Amen.</div>
+          <div style={PS_TEXT}>Lord, have mercy. {psBow("Thrice")} Bless, O Lord.</div>
+          <div style={PS_RUBR}>Prayer</div>
+          <div style={PS_TEXT}>O Lord Jesus Christ, through the prayers of Thy most pure Mother, of our holy venerable and God-bearing fathers, and of all the saints, have mercy and grant rest unto the soul of Thy departed {f.servant}, {f.N}, unto unceasing ages, for Thou art good and lovest mankind. Amen.</div>
+          <div style={{ ...PS_RUBR, marginTop: "0.6rem" }}>Then is proclaimed, thrice:</div>
+          <div style={PS_TEXT}>To the {f.servant} of God, {f.N}, Eternal memory!</div>
+          <div style={{ ...PS_TEXT, fontWeight: "bold" }}>Eternal memory! {psBow("Thrice")}</div>
+        </>
+      ) : (
+        <>
+          <div style={PS_RUBR}>Priest:</div>
+          <div style={PS_PRIEST}>Glory to Thee, O Christ God, our hope, glory to Thee.</div>
+          <div style={PS_RUBR}>Choir (or Reader):</div>
+          <div style={PS_TEXT}>Glory be to the Father, and to the Son, and to the Holy Spirit; both now, and ever, and unto the ages of ages. Amen. Lord, have mercy. {psBow("Thrice")} Father, bless.</div>
+          <div style={PS_RUBR}>Priest:</div>
+          <div style={PS_PRIEST}>O Christ our true God, Who didst rise from the dead, through the prayers of Thy most pure Mother, of the holy, glorious, and all-praised apostles, of our venerable and God-bearing fathers, and of all the saints, commend Thou the soul of Thy {f.servant}, {f.N}, who hath departed from us, to the habitations of the righteous; grant {f.him} rest in the bosom of Abraham, number {f.him} with the righteous, and have mercy upon us, for Thou art good and lovest mankind.</div>
+          <div style={PS_TEXT}>Choir: Amen.</div>
+          <div style={PS_RUBR}>Priest (or Deacon):</div>
+          <div style={PS_PRIEST}>In a blessed falling asleep, grant, O Lord, eternal rest unto Thy departed {f.servant}, {f.N}, and make {f.his} memory to be eternal.</div>
+          <div style={{ ...PS_TEXT, fontWeight: "bold" }}>Choir: Eternal memory! {psBow("Thrice")}</div>
+        </>
+      )}
+
+      <div style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic", borderTop: "1px solid #E8DFC0", paddingTop: "0.6rem", marginTop: "0.9rem" }}>
+        A Psalter for Prayer (Holy Trinity Monastery, Jordanville), pp. 322&ndash;323.
+      </div>
+    </div>
+  );
+}
+
 function PsalterService({ mode, setMode, name, setName, gender, setGender, orthodox, setOrthodox, guideOpen, setGuideOpen, kathisma, setKathisma, readerMode, liturgicalData, beginOpen, setBeginOpen }) {
   const departed = mode === 'departed';
   const pill = (active) => ({
@@ -9590,6 +9645,10 @@ function PsalterService({ mode, setMode, name, setName, gender, setGender, ortho
       )}
 
       <PsalterKathisma k={kathisma} departed={departed} forms={psForms(gender, name)} readerMode={readerMode} />
+
+      {departed && kathisma === 20 && (
+        <PsalterDepartedConclusion forms={psForms(gender, name)} readerMode={readerMode} />
+      )}
 
       {/* prev / next */}
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: "2rem", marginBottom: "1.5rem", paddingTop: "1rem", borderTop: "1px solid #E8DEC8" }}>
