@@ -10,11 +10,22 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.17.3";
+export const TONE_TRAINER_VERSION = "v0.18.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.18.0",
+    date: "June 2026",
+    summary: "Printed score Phase 3: reciting-preferential justification — compressed reciting runs, ragged release valve",
+    items: [
+      "feat: justification slack is now absorbed by the reciting runs only, not by a proportional stretch of the whole system. Reciting gaps start at their natural (compressed, text-aware) width and expand by at most RECITE_STRETCH (20px) per gap to help fill the line; cadence, prep, and inter-phrase gaps stay rigid at natural width (a cadence is a fixed melodic figure, never stretched).",
+      "feat: ragged-right release valve. When the reciting runs can't absorb all the slack within the cap — or a system has no reciting run at all (e.g. a short cadence phrase stranded alone) — the system is left with a clean ragged right margin instead of over-spreading the text. This fixes the prior proportional stretch that smeared short phrases and over-spread long reciting runs.",
+      "keep: over-wide content (the rare no-legal-seam fallback) still compresses proportionally so it fits; the last system is never stretched (ragged-last).",
+      "internal: per-system positioning now computes an absolute X per column (reciting-gap slack distribution) instead of a single proportional J; drawSlice consumes it. renderScore._lastX exposes the justified X for headless validation.",
+    ],
+  },
   {
     version: "v0.17.3",
     date: "June 2026",

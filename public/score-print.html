@@ -230,6 +230,11 @@ var NOTE_W = 50;  // 50px per note
 // text needs more than the floor. See applyTextSpacing().
 var TEXT_GAP = 6;
 var RECITE_FLOOR = 30;
+// RECITE_STRETCH: max px a single reciting (interior) gap may expand beyond its natural width
+// when a filled system distributes justification slack. Reciting runs are the only elastic zone
+// (cadences/prep/inter-phrase stay rigid); past this cap the system is left ragged-right rather
+// than over-spread the reciting text. Tunable by eye.
+var RECITE_STRETCH = 20;
 // EDGE_PAD — buffer (px) by which note start-X is shifted right on every system so the
 // first syllable clears the stave's left line (and the clef on system 1). Applied equally
 // to treble and bass via Stave.setNoteStartX so the two staves stay column-aligned.
@@ -695,11 +700,10 @@ function renderScore(payload) {
     // anchor = this system's ACTUAL drawn note-start (real clef+key end, + indent on sys1).
     // packLeft = the system's pack-left (estimate used during packing) → relX = xStart-packLeft.
     // T[i] (absolute X) = anchor + J * (relX + phrase.adv[i]).
-    function drawSlice(slice, tr, bs, J, anchor, packLeft) {
+    function drawSlice(slice, tr, bs) {
       var line = slice.line, s0 = slice.s0, s1 = slice.s1;
-      var rec = slice.rec, adv = slice.adv;             // both slice-local (0-based within slice)
-      var relX = slice.xStart - packLeft;
-      var T = adv.map(function(a) { return anchor + J * (relX + a); });
+      var rec = slice.rec;                 // slice-local ghost set
+      var T = slice._X;                    // absolute X per column, from the justification pass
       // Sliced, index-aligned voice arrays — lyrics/slurs/spacing all read these by local index.
       var altoSlice = line.alto.slice(s0, s1);
       var hasSop = line.soprano && line.soprano.length === line.alto.length;
@@ -853,22 +857,60 @@ function renderScore(payload) {
       // have no indent); without it they butt against the key signature.
       var anchor = tr.getNoteStartX() + LEAD_GAP + INDENT; // uniform on every system
 
-      // Per-system justification: scale the content span so the last slice's right edge reaches
-      // contentRight. Non-last systems justify (fill); the last system is ragged (J=1) unless its
-      // content overflows, in which case it compresses (J<1) — the over-wide fallback.
+      // Per-system positioning. Compute an absolute X per column (slice._X) for every slice:
+      //   COMPRESS (slack < 0, the rare over-wide fallback): proportional shrink of ALL gaps
+      //     (J < 1) so the content fits — everything narrows together.
+      //   STRETCH (slack > 0, a filled non-last system): distribute the slack across RECITING
+      //     interior gaps only (both endpoints role 'recite'); cadence/prep/inter-phrase gaps
+      //     stay rigid at natural width. Each reciting gap grows by at most RECITE_STRETCH; any
+      //     slack the reciting runs can't absorb within that cap is left as a ragged right margin
+      //     rather than over-spreading the text. The last system is never stretched (ragged-last).
       var lastSlice = system.slices[system.slices.length - 1];
       var naturalSpan = (lastSlice.xStart - sysLeft) + lastSlice.width;
       var usable = contentRight - anchor;
       var isLastSystem = (globalSysIdx === systems.length - 1);
-      var J = (naturalSpan > 0) ? (usable / naturalSpan) : 1;
-      if (isLastSystem) J = Math.min(1, J);
-      if (!isFinite(J) || J <= 0) J = 1;
+      var slack = usable - naturalSpan;
+      function isRecGap(slice, i) {
+        var a0 = slice.line.alto[slice.s0 + i - 1], a1 = slice.line.alto[slice.s0 + i];
+        return a0 && a1 && a0.role === 'recite' && a1.role === 'recite';
+      }
+      if (slack < 0 && naturalSpan > 0) {
+        var J = usable / naturalSpan; // < 1, proportional compression
+        system.slices.forEach(function(slice) {
+          slice._X = slice.adv.map(function(a) { return anchor + J * ((slice.xStart - sysLeft) + a); });
+        });
+      } else {
+        var elasticCount = 0;
+        if (!isLastSystem && slack > 0) {
+          system.slices.forEach(function(slice) {
+            for (var i = 1; i < slice.adv.length; i++) if (isRecGap(slice, i)) elasticCount++;
+          });
+        }
+        var addPerGap = elasticCount > 0 ? Math.min(slack / elasticCount, RECITE_STRETCH) : 0;
+        var cum = 0; // running rightward shift from reciting-gap expansion (continuous across slices)
+        system.slices.forEach(function(slice) {
+          var xs = [];
+          for (var i = 0; i < slice.adv.length; i++) {
+            if (i > 0 && isRecGap(slice, i)) cum += addPerGap;
+            xs.push(anchor + (slice.xStart - sysLeft) + slice.adv[i] + cum);
+          }
+          slice._X = xs;
+        });
+      }
 
-      system.slices.forEach(function(slice) { drawSlice(slice, tr, bs, J, anchor, sysLeft); });
+      system.slices.forEach(function(slice) { drawSlice(slice, tr, bs); });
       globalSysIdx++;
     });
 
   }); // end chunks.forEach
+
+  // Debug aid (no behavior change): expose the final justified X per column so a headless harness
+  // can verify reciting-gap caps / cadence rigidity / ragged-vs-filled. Holds lightweight arrays.
+  renderScore._lastX = systems.map(function(sy) {
+    return sy.slices.map(function(sl) {
+      return { roles: sl.line.alto.slice(sl.s0, sl.s1).map(function(a) { return a.role; }), X: sl._X };
+    });
+  });
 
   // Fix all SVG heights AFTER all VexFlow drawing is complete.
   // VexFlow re-applies inline style during draw() — must correct after.

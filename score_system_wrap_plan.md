@@ -141,9 +141,12 @@ For each emitted system slice:
 - **Phase 2 — intra-phrase wrap.** Add break rules 2–3 (reciting/cadence boundary and within
   reciting run) and the per-slice ghosting with the re-anchor clause. The hard part; builds
   directly on Phase 1.
-- **Phase 3 — polish.** Justification refinements (e.g. distribute slack across gaps vs.
-  proportional scaling, so long reciting runs don't over-stretch), ragged-last tuning, and any
-  edge cases surfaced by real stichera.
+- **Phase 3 — polish.** DONE (v0.18.0). Justification slack is absorbed by reciting runs only,
+  each gap capped at `RECITE_STRETCH` (20px) beyond its natural width; cadence/prep/inter-phrase
+  gaps stay rigid; when reciting can't absorb the slack within the cap (or a system has no
+  reciting run) the system is left ragged-right rather than over-spread. Over-wide content still
+  compresses proportionally; the last system is never stretched. Per Bill: lean on the compressed
+  reciting reading, elastic in expansion only within reason.
 
 ## 9. Validation
 
@@ -158,8 +161,9 @@ For each emitted system slice:
 
 ## 10. Open items / risks
 
-- **Justification of reciting runs** — proportional scaling can over-stretch a long reciting
-  passage; Phase 3 may switch to distributing slack across inter-syllable gaps.
+- **Justification of reciting runs** — RESOLVED (v0.18.0): reciting-preferential capped slack
+  distribution with a ragged-right release valve (see Phase 3 above), replacing proportional
+  scaling. `RECITE_STRETCH` (20px) is the tuning dial.
 - **Forced-break fallback** for pathological phrases with no legal seam before overflow.
 - **Cadential `si` accidental** — the reference shows an accidental our renderer omits; tracked
   separately in `choir_director_review.md` item 2, not part of this work.
