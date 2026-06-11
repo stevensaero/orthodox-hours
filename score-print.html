@@ -242,6 +242,37 @@ var SHOW_SATB_LABELS = true;
 // SHOW_PHRASE_NUMBERS: draw the verse number "(N)" (last verse "(F)") above the treble staff at
 // each verse's leading edge, like the Apostikha reference. Only on a phrase's first slice.
 var SHOW_PHRASE_NUMBERS = true;
+// Copyright / permission footer, centered at the bottom of EVERY page (so any single sheet a
+// choir duplicates still carries it). Covers only the rendered score; underlying liturgical texts
+// belong to their cited sources. Date is the day the score is generated.
+var SHOW_COPYRIGHT = true;
+function copyrightLines() {
+  var d = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  return [
+    { t: '\u00A9 ' + d + ' \u00B7 Orthodox Tone Trainer \u00B7 William Stevens', size: 9, weight: 500 },
+    { t: 'Permission is granted to copy this score freely for educational, parish, and choir use. Not for sale or inclusion in any work offered for sale.', size: 8, weight: 400 },
+    { t: 'Liturgical texts remain the property of their cited sources; this notice covers only the rendering of the score. All other rights reserved.', size: 8, weight: 400 },
+  ];
+}
+function drawCopyright(svg, svgH) {
+  var lines = copyrightLines(), lineH = 12;
+  // Stack upward from the bottom of the page; bottom line ~16px from the SVG edge, all within the
+  // BOTTOM_PAD region and clear of the lowest bass stems.
+  var firstY = svgH - 16 - (lines.length - 1) * lineH;
+  lines.forEach(function(ln, i) {
+    var t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('x', PW / 2);
+    t.setAttribute('y', firstY + i * lineH);
+    t.setAttribute('text-anchor', 'middle');
+    t.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
+    t.setAttribute('font-size', ln.size);
+    t.setAttribute('font-weight', ln.weight);
+    t.setAttribute('fill', '#4a4a4a');
+    t.setAttribute('stroke', 'none'); // root <svg> sets stroke; filled text must opt out or it gets a 1px outline
+    t.textContent = ln.t;
+    svg.appendChild(t);
+  });
+}
 // LEAD_GAP: clearance between the clef+key (getNoteStartX) and the first note, applied on
 // EVERY system so notes never butt against the glyphs. The old per-line renderer got this for
 // free from the formatter's natural first-note padding; since we now position absolutely, we
@@ -1012,6 +1043,7 @@ function renderScore(payload) {
     if (svg) {
       svg.style.width  = PW + 'px';
       svg.style.height = svgH + 'px';
+      if (SHOW_COPYRIGHT) drawCopyright(svg, svgH);
     }
   });
 }
