@@ -7260,14 +7260,10 @@ function VespersDayInfo() {
             </div>
 
             <div style={{ ...headStyle, marginTop: 0 }}>The liturgical day</div>
-            <div>The liturgical day begins at Vespers the evening before. A Vespers served this evening therefore opens — and commemorates — the next day.</div>
+            <div>It is the general practice for Vespers to open the next liturgical day. Served this evening, it therefore commemorates tomorrow.</div>
 
             <div style={headStyle}>What follows the evening served</div>
             <div>The Octoechos cycle and the Friday dogmatikon (Both Now) follow the evening on which the service is sung, not the day it opens.</div>
-
-            <div style={{ marginTop: '0.7rem', paddingTop: '0.5rem', borderTop: '1px solid #E8DFC0', fontSize: '0.7rem', color: '#B8A882', fontStyle: 'italic' }}>
-              Fekula §FW-26 — Vespers date attribution
-            </div>
           </div>
         </div>
       )}
@@ -7545,6 +7541,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.10.1",
+    date: "June 2026",
+    summary: "Vespers note popover — plain-language wording, no spurious citation",
+    items: [
+      "fix: the 'Why Vespers shows the next day' popover no longer carries a 'Fekula §FW-26' footer. 'FW' is the project's internal ticket prefix (Fekula & Williams), not a section of the book, and the next-day practice is not a numbered Fekula rule. The popover now simply states it is the general practice for Vespers to open the next liturgical day.",
+    ],
+  },
   {
     version: "v0.10.0",
     date: "June 2026",
