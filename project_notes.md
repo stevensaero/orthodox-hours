@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.9.0** | **Tone Trainer: v0.23.1** | Last synced: June 11, 2026
+**Tool version: v0.10.0** | **Tone Trainer: v0.23.1** | Last synced: June 11, 2026
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
@@ -1633,9 +1633,14 @@ Octoechos tone now also preloaded (fixes the Sat→Sun new-tone resurrectional c
 already covered by the existing prev/m/next menaion preload. Gate 13/13, build green. **Open sub-point still
 unresolved:** Typika placement — implemented after the Ninth Hour per the reader's clock-order; OrthodoxWiki's
 Midday-with-Liturgy alternative remains flagged for the priest (one array position, zero logic impact).
-**Not yet addressed (follow-up):** the day-summary context card still shows D's paroemias/commemoration (it
-summarizes the selected calendar day); the Vespers header states the D→D+1 attribution, so the two are
-coherent, but a future pass may reconcile the card's Vespers references with the opened-day model.
+**Presentation pass (v0.10.0):** the context card now whole-swaps to D+1 when Vespers is displayed
+(commemoration/tone/season/readings/feast/saint advance; explicit banner "Today is [day] … served this
+evening for tomorrow — [next day]"; interactive multi-service saint selector suppressed under Vespers, shown
+read-only with co-commemorations listed). The dual-date note moved up under the Vespers subtitle (was an
+in-body `rubric` element). With the card collapsed, the top strip keeps step under Vespers — "[day] Vespers ·
+For [next day] · Tone [n]". Default landing service changed to First Hour so daily scrolling lands on today's
+context, not a D+1 Vespers case. All four consumers share one component-scope `vespersNext` bundle. This
+reconciles the card's Vespers references with the opened-day model (the earlier follow-up is now resolved).
 
 Full design in `vespers_date_attribution_spec.md` (repo root). Validated against the GOArch Digital
 Chant Stand (pick June 19 → it renders June 20 Vespers), OrthodoxWiki *Daily Cycle* (aggregates), and

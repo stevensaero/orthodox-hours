@@ -3147,24 +3147,6 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   const openedDow = dowMap[dayName] !== undefined ? dowMap[dayName] : 0;
   const dow = (openedDow + 6) % 7;
   const isFriEve = dow === 5; // Friday evening: Both Now = dogmatikon, not theotokion
-  // FW-26 dual-date header: states the served-evening / opened-day attribution.
-  {
-    const DOW_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-    const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-    const d1 = selectedDate ? new Date(selectedDate + "T12:00:00") : null; // opened day (D+1)
-    const d0 = d1 ? new Date(d1.getTime() - 86400000) : null;              // served evening (D)
-    const fmtMD = (dt) => dt ? MONTHS[dt.getMonth()] + " " + dt.getDate() : "";
-    const servedName = DOW_NAMES[dow];
-    const saintName = (menaionEntry && [menaionEntry.saint, menaionEntry.feast_e, menaionEntry.name]
-      .find(v => v && !String(v).startsWith("absent"))) || "";
-    const headerText =
-      "Served the evening of " + servedName + (d0 ? ", " + fmtMD(d0) : "") +
-      " — opens " + dayName + (d1 ? ", " + fmtMD(d1) : "") + ".\n" +
-      "Commemoration: " + (saintName || "—") + ".   Tone " + tone + ".";
-    elements.push({id:"v-fw26-attr", type:"rubric", label:"",
-      text: headerText, source:"",
-      fekula:{section:"FW-26", note:"Vespers belongs to the day it opens: served the evening before, it commemorates the next liturgical day. The Octoechos cycle and the Friday dogmatikon follow the evening on which the service is served. — FW-26 date-attribution"}});
-  }
   const weeklyProk = WEEKLY_VESPERS_PROKEIMENON[dow];
   // Festal prokeimenon override: Menaion polyeleos/vigil saints have their own prokeimenon
   // that replaces the weekly table entry (including the Saturday Great Prokeimenon).
@@ -7508,6 +7490,18 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.10.0",
+    date: "June 2026",
+    summary: "Vespers context presentation — note, context card, and top strip serve the opened day",
+    items: [
+      "feat: when Vespers is displayed, the Liturgical Context card now serves the NEXT day's context (the day Vespers opens) — commemoration, tone, season, readings, feast period, and saint all advance to D+1. An explicit banner heads the card: 'Today is [day]. The context below is for Vespers, as served this evening for tomorrow — [next day].' The interactive multi-service saint selector is suppressed under Vespers (the service always uses the OCA-primary), shown read-only with any co-commemorations listed.",
+      "change: the dual-date attribution note moved up to sit directly beneath the Vespers subtitle ('Served the evening of [day] — opens [next day]. Commemoration… Tone…'), with the rationale on an ⓘ hover. It is no longer an element inside the service body.",
+      "feat: with the context card collapsed, the top strip keeps step under Vespers — '[day] Vespers · For [next day] · Tone [n]' — so a reader scanning the header still sees what the service opens, without expanding.",
+      "change: the tool now opens to the First Hour by default instead of Vespers, so daily-context scanning lands on today's commemoration rather than a next-day Vespers case.",
+      "refactor: the next-day bundle (liturgical data, OCA-primary saint, paroemias, readings, labels) is computed once at component scope (vespersNext) and shared by the assembler call, the note, the context card, and the top strip.",
+    ],
+  },
+  {
     version: "v0.9.0",
     date: "June 2026",
     summary: "Vespers renders the next liturgical day (FW-26)",
@@ -9930,7 +9924,7 @@ export default function App() {
   const [showHowItWorks, setShowHowItWorks] = useState(false);
   const [contextOpen, setContextOpen] = useState(false);
   const [copyrightExpanded, setCopyrightExpanded] = useState(false);
-  const [selectedServiceKey, setSelectedServiceKey] = useState("vespers");
+  const [selectedServiceKey, setSelectedServiceKey] = useState("1st_hour");
   // tbOpen: tracks whether the Typical Beginning is expanded on 1st/6th Hours.
   // When expanded, the Hour body shows O come let us worship (not Christ is risen)
   // because Christ is risen was already said within the Typical Beginning.
@@ -10060,6 +10054,38 @@ export default function App() {
     ? getPentecostarionEntry(liturgicalData.paschaOffset)
     : null;
 
+  // FW-26: the Vespers service opens the NEXT liturgical day. Compute that day's
+  // full bundle once; reused by the Vespers assembler call, the dual-date note
+  // under the subtitle, the whole-card context swap, and the collapsed top strip.
+  const vespersNext = (() => {
+    const vDate = new Date(date);
+    vDate.setDate(vDate.getDate() + 1);
+    const pad = (n) => String(n).padStart(2, "0");
+    const vDateStr = vDate.getFullYear() + "-" + pad(vDate.getMonth() + 1) + "-" + pad(vDate.getDate());
+    const vLit = getLiturgicalData(vDate);
+    const vServices = getServices(getMenaionEntry(vDate));
+    const vOcaIdx = vServices.findIndex(s => s.oca_primary === true);
+    const vMenaion = vServices[vOcaIdx >= 0 ? vOcaIdx : 0] || null;
+    const vIsPent = vLit.season === "pentecostarion";
+    const vIsBright = vLit.season === "brightweek";
+    const vPent = (vIsPent || vIsBright) ? getPentecostarionEntry(vLit.paschaOffset) : null;
+    const vParoemias = computeVespersParoemias(vMenaion, vPent, vIsPent, vIsBright);
+    const vDailyReading = getDailyReading(vDate);
+    const vNamedDaySunday = !!(vLit.namedDay && vLit.namedDay.isSunday);
+    const vHasFeastE = vMenaion && vMenaion.feast_e && !vMenaion.feast_e.startsWith('absent');
+    const vHasFeastG = vMenaion && vMenaion.feast_g && !vMenaion.feast_g.startsWith('absent');
+    const vFeastReading = (!vNamedDaySunday && (vHasFeastE || vHasFeastG))
+      ? { e: vHasFeastE ? vMenaion.feast_e : null, g: vHasFeastG ? vMenaion.feast_g : null }
+      : null;
+    const vDayLabel = vDate.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+    const vMD = vDate.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+    const dMD = date.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+    const saintName = (vMenaion && [vMenaion.saint, vMenaion.feast_e, vMenaion.name].find(v => v && !String(v).startsWith("absent"))) || "";
+    return { vDate, vDateStr, vLit, vMenaion, vServices, vPent, vParoemias, vIsPent, vIsBright,
+             vDailyReading, vFeastReading, vNamedDaySunday, vDayLabel, vMD, dMD, saintName,
+             vIsSunday: vLit.season === "sunday", tone: vLit.tone, openedName: vLit.dayName };
+  })();
+
   // Paroemias — OT Vespers lessons (FW-21).
   // Rules per Fekula Chapter 2:
   // - §2E (Polyeleos) and §2F (Vigil) saints: always show Menaion paroemias
@@ -10084,28 +10110,9 @@ export default function App() {
     if (currentService.key === 'psalter_service') return [];
     let els;
     if (currentService.key === 'vespers') {
-      // FW-26: A Vespers served on the evening of the selected day (D) OPENS the
-      // next liturgical day (D+1), so it commemorates D+1. Advance commemoration,
-      // tone, season, festal context, and OT paroemias to D+1; the served-evening
-      // Octoechos day-key and Friday dogmatikon still derive from D inside
-      // assembleVespers. Saint = D+1's OCA-primary (matches the tool's date-change
-      // default). See vespers_date_attribution_spec.md.
-      const vDate = new Date(date);
-      vDate.setDate(vDate.getDate() + 1);
-      const vDateStr = vDate.getFullYear() + "-" +
-        String(vDate.getMonth() + 1).padStart(2, "0") + "-" +
-        String(vDate.getDate()).padStart(2, "0");
-      const vLit = getLiturgicalData(vDate);
-      const vServices = getServices(getMenaionEntry(vDate));
-      const vOcaIdx = vServices.findIndex(s => s.oca_primary === true);
-      const vMenaion = vServices[vOcaIdx >= 0 ? vOcaIdx : 0] || null;
-      const vIsPent = vLit.season === "pentecostarion";
-      const vIsBright = vLit.season === "brightweek";
-      const vPent = (vIsPent || vIsBright)
-        ? getPentecostarionEntry(vLit.paschaOffset)
-        : null;
-      const vParoemias = computeVespersParoemias(vMenaion, vPent, vIsPent, vIsBright);
-      els = assembleVespers(vLit, vMenaion, vPent, vParoemias, readerMode, vDateStr);
+      // FW-26: Vespers opens the next liturgical day; see vespersNext (component scope).
+      els = assembleVespers(vespersNext.vLit, vespersNext.vMenaion, vespersNext.vPent,
+        vespersNext.vParoemias, readerMode, vespersNext.vDateStr);
     } else if (currentService.key === 'typica') {
       els = assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode);
     } else if (currentService.key === 'pre_communion') {
@@ -10268,9 +10275,11 @@ export default function App() {
               cursor: "pointer", userSelect: "none",
             }}
           >
-            {/* Left: Day · Tone */}
+            {/* Left: Day · Tone — under Vespers, the D+1 framing so a collapsed card still informs */}
             <span style={{ fontSize: "0.8rem", color: "#5C4A1E", flexShrink: 0, minWidth: "120px" }}>
-              {liturgicalData.dayName} · Tone {liturgicalData.tone}
+              {currentService.key === 'vespers'
+                ? `${liturgicalData.dayName} Vespers · For ${vespersNext.vMD} · Tone ${vespersNext.vLit.tone}`
+                : `${liturgicalData.dayName} · Tone ${liturgicalData.tone}`}
             </span>
 
             {/* Centre: Liturgical Context label + triangles */}
@@ -10291,20 +10300,41 @@ export default function App() {
           )}{/* end row two */}
 
           {/* ── LITURGICAL CONTEXT BODY — inside maxWidth wrapper, aligns with rows ── */}
-          {contextOpen && (
+          {contextOpen && (() => {
+            const isVesp = currentService.key === 'vespers';
+            const cLit = isVesp ? vespersNext.vLit : liturgicalData;
+            const cMen = isVesp ? vespersNext.vMenaion : menaionEntry;
+            const cSelMen = isVesp ? vespersNext.vMenaion : selectedMenaionEntry;
+            const cReading = isVesp ? vespersNext.vDailyReading : dailyReading;
+            const cFeast = isVesp ? vespersNext.vFeastReading : feastReading;
+            const cParoem = isVesp ? vespersNext.vParoemias : paroemias;
+            const cPent = isVesp ? vespersNext.vPent : pentEntry;
+            const cIsPent = isVesp ? vespersNext.vIsPent : isPentecostarion;
+            const cIsSunday = isVesp ? vespersNext.vIsSunday : isSunday;
+            const cNamedSunday = isVesp ? vespersNext.vNamedDaySunday : namedDayIsSunday;
+            const cDayLabel = isVesp ? vespersNext.vDayLabel : dayLabel;
+            const cSelDate = isVesp ? vespersNext.vDateStr : selectedDate;
+            const cServices = isVesp ? vespersNext.vServices : services;
+            const cMulti = cServices.length > 1;
+            return (
             <div style={{
               paddingTop: "0.5rem",
               paddingBottom: "0.5rem",
               fontSize: "0.85rem", lineHeight: "1.7",
             }}>
+            {isVesp && (
+              <div style={{ marginBottom: "0.6rem", padding: "0.45rem 0.7rem", background: "rgba(139,105,20,0.1)", borderLeft: "3px solid #8B6914", borderRadius: "0 4px 4px 0", fontSize: "0.82rem", color: "#3C2E14", lineHeight: 1.5 }}>
+                <strong>Today is {vespersNext.dMD}.</strong> The context below is for <strong>Vespers, as served this evening for tomorrow — {vespersNext.vMD}</strong>.
+              </div>
+            )}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem", flexWrap: "wrap" }}>
               <div>
-                <strong>Date:</strong> {dayLabel}
-                {liturgicalData.paschaOffset >= -101 && liturgicalData.paschaOffset <= 263 && (
+                <strong>Date:</strong> {cDayLabel}
+                {cLit.paschaOffset >= -101 && cLit.paschaOffset <= 263 && (
                   <span style={{ fontSize: "0.72rem", color: "#9A8A70", marginLeft: "0.5rem", fontStyle: "italic" }}>
-                    {liturgicalData.paschaOffset >= 0
-                      ? `(P+${liturgicalData.paschaOffset})`
-                      : `(P${liturgicalData.paschaOffset})`}
+                    {cLit.paschaOffset >= 0
+                      ? `(P+${cLit.paschaOffset})`
+                      : `(P${cLit.paschaOffset})`}
                   </span>
                 )}
               </div>
@@ -10324,73 +10354,73 @@ export default function App() {
                 {readerMode ? "☩ Reader's Service" : "Reader's Service"}
               </button>
             </div>
-          {liturgicalData.namedDay && (
+          {cLit.namedDay && (
             <div style={{ marginTop: "0.2rem", marginBottom: "0.2rem", padding: "0.35rem 0.6rem", background: "rgba(139,105,20,0.1)", borderLeft: "3px solid #8B6914", borderRadius: "0 4px 4px 0" }}>
-              <div style={{ fontWeight: "bold", color: "#1C1008", fontSize: "0.88rem" }}>{liturgicalData.namedDay.name}</div>
-              <div style={{ fontSize: "0.76rem", color: "#5C4A1E", fontStyle: "italic", marginTop: "0.1rem" }}>{liturgicalData.namedDay.note}</div>
+              <div style={{ fontWeight: "bold", color: "#1C1008", fontSize: "0.88rem" }}>{cLit.namedDay.name}</div>
+              <div style={{ fontSize: "0.76rem", color: "#5C4A1E", fontStyle: "italic", marginTop: "0.1rem" }}>{cLit.namedDay.note}</div>
             </div>
           )}
           <div>
             <strong>Tone:</strong>{" "}
-            <Tooltip term="tone">Tone {liturgicalData.tone}</Tooltip>
+            <Tooltip term="tone">Tone {cLit.tone}</Tooltip>
             {" "}of the <Tooltip term="octoechos">Octoechos</Tooltip>
           </div>
           <div>
             <strong>Season:</strong>{" "}
-            {liturgicalData.seasonNote}
-            {liturgicalData.lentInfo && !liturgicalData.passionWeek && (
+            {cLit.seasonNote}
+            {cLit.lentInfo && !cLit.passionWeek && (
               <span style={{ marginLeft: "0.4rem", fontSize: "0.85rem", color: "#5C4A1E" }}>
                 {"— "}
-                {liturgicalData.lentInfo.sundayName
-                  ? liturgicalData.lentInfo.sundayName + " · " + liturgicalData.lentInfo.weekName
-                  : liturgicalData.lentInfo.weekName + " · " + liturgicalData.dayName}
+                {cLit.lentInfo.sundayName
+                  ? cLit.lentInfo.sundayName + " · " + cLit.lentInfo.weekName
+                  : cLit.lentInfo.weekName + " · " + cLit.dayName}
               </span>
             )}
-            {liturgicalData.pentecostWeekInfo && (
+            {cLit.pentecostWeekInfo && (
               <span style={{ marginLeft: "0.4rem", fontSize: "0.85rem", color: "#5C4A1E" }}>
-                {"— "}{liturgicalData.pentecostWeekInfo.label}
+                {"— "}{cLit.pentecostWeekInfo.label}
               </span>
             )}
           </div>
-          {dailyReading && (
+          {cReading && (
             <div style={{ marginTop: "0.4rem" }}>
-              <strong>{namedDayIsSunday ? "Sunday proper:" : "Readings:"}</strong>{" "}
+              <strong>{cNamedSunday ? "Sunday proper:" : "Readings:"}</strong>{" "}
               <span style={{ color: "#5C4A1E" }}>
                 Epistle:{" "}
-                {refToScriptureHref(dailyReading.e, currentService.key, selectedDate)
-                  ? <a href={refToScriptureHref(dailyReading.e, currentService.key, selectedDate)} style={{ color: "#8B6914" }}><em>{dailyReading.e}</em></a>
-                  : <em>{dailyReading.e}</em>}
+                {refToScriptureHref(cReading.e, currentService.key, cSelDate)
+                  ? <a href={refToScriptureHref(cReading.e, currentService.key, cSelDate)} style={{ color: "#8B6914" }}><em>{cReading.e}</em></a>
+                  : <em>{cReading.e}</em>}
                 {" · "}
                 Gospel:{" "}
-                {refToScriptureHref(dailyReading.g, currentService.key, selectedDate)
-                  ? <a href={refToScriptureHref(dailyReading.g, currentService.key, selectedDate)} style={{ color: "#8B6914" }}><em>{dailyReading.g}</em></a>
-                  : <em>{dailyReading.g}</em>}
+                {refToScriptureHref(cReading.g, currentService.key, cSelDate)
+                  ? <a href={refToScriptureHref(cReading.g, currentService.key, cSelDate)} style={{ color: "#8B6914" }}><em>{cReading.g}</em></a>
+                  : <em>{cReading.g}</em>}
               </span>
-              {dailyReading.lukanJump && (
+              {cReading.lukanJump && (
                 <span style={{ fontSize: "0.75rem", color: "#8B6914", marginLeft: "0.5rem" }}>
                   (Luke series)
                 </span>
               )}
-              {namedDayIsSunday && (
+              {cNamedSunday && (
                 <span style={{ fontSize: "0.72rem", color: "#8B7040", marginLeft: "0.4rem" }}>
-                  (proper for {liturgicalData.namedDay.name})
+                  (proper for {cLit.namedDay.name})
                 </span>
               )}
             </div>
           )}
-          {feastReading && (
+          {cFeast && (
             <div style={{ marginTop: "0.3rem" }}>
               <strong>Feast readings:</strong>{" "}
               <span style={{ color: "#5C4A1E" }}>
-                {feastReading.e && <><em>Epistle:</em>{" "}
-                  {refToScriptureHref(feastReading.e, currentService.key, selectedDate)
-                    ? <a href={refToScriptureHref(feastReading.e, currentService.key, selectedDate)} style={{ color: "#8B6914" }}>{feastReading.e}</a>
-                    : feastReading.e}</>}
-                {feastReading.e && feastReading.g && " · "}
-                {feastReading.g && <><em>Gospel:</em>{" "}
-                  {refToScriptureHref(feastReading.g, currentService.key, selectedDate)
-                    ? <a href={refToScriptureHref(feastReading.g, currentService.key, selectedDate)} style={{ color: "#8B6914" }}>{feastReading.g}</a>
-                    : feastReading.g}</>}
+                {cFeast.e && <><em>Epistle:</em>{" "}
+                  {refToScriptureHref(cFeast.e, currentService.key, cSelDate)
+                    ? <a href={refToScriptureHref(cFeast.e, currentService.key, cSelDate)} style={{ color: "#8B6914" }}>{cFeast.e}</a>
+                    : cFeast.e}</>}
+                {cFeast.e && cFeast.g && " · "}
+                {cFeast.g && <><em>Gospel:</em>{" "}
+                  {refToScriptureHref(cFeast.g, currentService.key, cSelDate)
+                    ? <a href={refToScriptureHref(cFeast.g, currentService.key, cSelDate)} style={{ color: "#8B6914" }}>{cFeast.g}</a>
+                    : cFeast.g}</>}
               </span>
               <span style={{ fontSize: "0.72rem", color: "#8B7040", marginLeft: "0.4rem" }}>
                 (proper for this commemoration)
@@ -10400,26 +10430,26 @@ export default function App() {
           <div style={{ marginTop: "0.3rem" }}>
             <strong>Vespers lessons</strong>{" "}
             <span style={{ fontSize: "0.72rem", color: "#8B7040" }}>
-              {paroemias ? "(OT paroemias at Great Vespers)" : "(not appointed at this rank)"}
+              {cParoem ? "(OT paroemias at Great Vespers)" : "(not appointed at this rank)"}
             </span>
             <VespersLessonsExplainer
-              rank={selectedMenaionEntry && selectedMenaionEntry.rank}
-              pentEntry={pentEntry}
-              isPentecostarion={isPentecostarion}
-              feastPeriod={liturgicalData && liturgicalData.feastPeriod}
-              paroemias={paroemias}
+              rank={cSelMen && cSelMen.rank}
+              pentEntry={cPent}
+              isPentecostarion={cIsPent}
+              feastPeriod={cLit && cLit.feastPeriod}
+              paroemias={cParoem}
             />
-            {paroemias && (
+            {cParoem && (
               <span style={{ color: "#5C4A1E", display: "block", marginTop: "0.15rem" }}>
-                {paroemias.map((p, i) => {
-                  const href = paroemiaToScriptureHref(p, currentService.key, selectedDate);
+                {cParoem.map((p, i) => {
+                  const href = paroemiaToScriptureHref(p, currentService.key, cSelDate);
                   return (
                     <span key={i}>
                       <em>{["I.", "II.", "III."][i]}</em>{" "}
                       {href
                         ? <a href={href} style={{ color: "#8B6914" }}>{p}</a>
                         : p}
-                      {i < paroemias.length - 1 && <br />}
+                      {i < cParoem.length - 1 && <br />}
                     </span>
                   );
                 })}
@@ -10427,66 +10457,71 @@ export default function App() {
             )}
           </div>
 
-          {liturgicalData.feastPeriod &&
-           !(liturgicalData.namedDay && liturgicalData.feastPeriod.periodType === "forefeast") && (
+          {cLit.feastPeriod &&
+           !(cLit.namedDay && cLit.feastPeriod.periodType === "forefeast") && (
             <div style={{ marginTop: "0.3rem", padding: "0.4rem 0.6rem", background: "rgba(139,105,20,0.08)", borderRadius: "4px", borderLeft: "3px solid #8B6914", fontSize: "0.82rem" }}>
               <strong>Feast period:</strong>{" "}
-              <Tooltip term={liturgicalData.feastPeriod.periodType === "feast" ? "great feast" : liturgicalData.feastPeriod.periodType}>
-                {liturgicalData.feastPeriod.periodType.charAt(0).toUpperCase() + liturgicalData.feastPeriod.periodType.slice(1)}
+              <Tooltip term={cLit.feastPeriod.periodType === "feast" ? "great feast" : cLit.feastPeriod.periodType}>
+                {cLit.feastPeriod.periodType.charAt(0).toUpperCase() + cLit.feastPeriod.periodType.slice(1)}
               </Tooltip>
-              {" "}of <em>{liturgicalData.feastPeriod.feast.name}</em>
-              <div style={{ fontSize: "0.76rem", color: "#5C4A1E", marginTop: "0.2rem", fontStyle: "italic" }}>{liturgicalData.feastPeriod.feast.note}</div>
+              {" "}of <em>{cLit.feastPeriod.feast.name}</em>
+              <div style={{ fontSize: "0.76rem", color: "#5C4A1E", marginTop: "0.2rem", fontStyle: "italic" }}>{cLit.feastPeriod.feast.note}</div>
             </div>
           )}
 
-          {/* Saint / multi-service selector */}
-          {services.length > 0 && !isMultiService && (
+          {/* Saint / multi-service selector — under Vespers, show D+1's OCA-primary read-only */}
+          {cServices.length > 0 && (!cMulti || isVesp) && (
             <div>
               <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "4px", lineHeight: "1.6" }}>
                 <strong>Saint:</strong>
-                <span>{(menaionEntry && menaionEntry.saint) || 'Saint of the day'} —{" "}
-                  <Tooltip term="service rank">{(RANK_EXPLANATIONS[menaionEntry && menaionEntry.rank] || RANK_EXPLANATIONS.simple).label} service</Tooltip>
+                <span>{(cMen && cMen.saint) || 'Saint of the day'} —{" "}
+                  <Tooltip term="service rank">{(RANK_EXPLANATIONS[cMen && cMen.rank] || RANK_EXPLANATIONS.simple).label} service</Tooltip>
                 </span>
-                <RankExplainer menaionEntry={menaionEntry} isSunday={isSunday} />
-                {menaionEntry.oca_primary === true && (
+                <RankExplainer menaionEntry={cMen} isSunday={cIsSunday} />
+                {cMen && cMen.oca_primary === true && (
                   <span style={{ fontSize: "0.68rem", letterSpacing: "0.08em", textTransform: "uppercase", background: "rgba(139,105,20,0.15)", border: "1px solid rgba(139,105,20,0.4)", borderRadius: "3px", padding: "1px 6px", color: "#6B4E10", fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}>OCA primary</span>
                 )}
               </div>
+              {isVesp && cMulti && (
+                <div style={{ fontSize: "0.76rem", color: "#8B7040", fontStyle: "italic", marginTop: "0.15rem" }}>
+                  Vespers uses the OCA-primary commemoration; also commemorated: {cServices.filter(s => s !== cMen).map(s => s.saint).filter(Boolean).join(" · ")}.
+                </div>
+              )}
             </div>
           )}
-          {isMultiService && (
+          {cMulti && !isVesp && (
             <div style={{ marginTop: "0.4rem" }}>
               <div style={{ fontSize: "0.72rem", letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B6914", marginBottom: "0.5rem" }}>
                 Multiple services available — select which to serve:
               </div>
-              {services.map((svc, idx) => (
+              {cServices.map((svc, idx) => (
                 <label key={idx} style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "0.35rem", cursor: "pointer", fontSize: "0.85rem", lineHeight: "1.5" }}>
                   <input type="radio" name="serviceSelector" checked={selectedServiceIndex === idx} onChange={() => setSelectedServiceIndex(idx)} style={{ marginTop: "2px", accentColor: "#8B6914", flexShrink: 0 }} />
                   <span>
                     <span style={{ color: "#1C1008" }}>{svc.saint}</span>
                     <span style={{ color: "#9A8A70", fontSize: "0.78rem", marginLeft: "6px" }}>(<Tooltip term="service rank">{(RANK_EXPLANATIONS[svc.rank] || RANK_EXPLANATIONS.simple).label}</Tooltip>)</span>
-                    <RankExplainer menaionEntry={svc} isSunday={isSunday} />
+                    <RankExplainer menaionEntry={svc} isSunday={cIsSunday} />
                     {svc.oca_primary === true && (
                       <span style={{ marginLeft: "8px", fontSize: "0.66rem", letterSpacing: "0.08em", textTransform: "uppercase", background: "rgba(139,105,20,0.15)", border: "1px solid rgba(139,105,20,0.4)", borderRadius: "3px", padding: "1px 5px", color: "#6B4E10" }}>OCA primary</span>
                     )}
                   </span>
                 </label>
               ))}
-              {menaionEntry && !menaionEntry.oca_primary && menaionEntry.note && (() => {
-                const isAbsent = (menaionEntry.note || '').toLowerCase().includes("not listed") || (menaionEntry.note || '').toLowerCase().includes("not on the oca");
+              {cMen && !cMen.oca_primary && cMen.note && (() => {
+                const isAbsent = (cMen.note || '').toLowerCase().includes("not listed") || (cMen.note || '').toLowerCase().includes("not on the oca");
                 return (
                   <div style={{ marginTop: "0.6rem", padding: "0.5rem 0.75rem", background: isAbsent ? "rgba(180,120,20,0.1)" : "rgba(139,105,20,0.07)", border: `1px solid ${isAbsent ? "rgba(180,120,20,0.4)" : "rgba(139,105,20,0.25)"}`, borderRadius: "4px", fontSize: "0.78rem", color: "#5C4A1E", lineHeight: "1.55" }}>
                     <span style={{ marginRight: "5px", color: "#8B6914" }}>ⓘ</span>
-                    {menaionEntry.note}
+                    {cMen.note}
                   </div>
                 );
               })()}
             </div>
           )}
-          {menaionEntry && !isMultiService && menaionEntry.note && (
-            <div style={{ fontSize: "0.78rem", color: "#5C4A1E", fontStyle: "italic", marginTop: "0.15rem" }}>{menaionEntry.note}</div>
+          {cMen && (!cMulti || isVesp) && cMen.note && (
+            <div style={{ fontSize: "0.78rem", color: "#5C4A1E", fontStyle: "italic", marginTop: "0.15rem" }}>{cMen.note}</div>
           )}
-          {services.length === 0 && inScope && (
+          {cServices.length === 0 && inScope && (
             <div style={{ color: "#B43C1E", fontStyle: "italic" }}>
               No <Tooltip term="menaion">Menaion</Tooltip> entry in library for this date (Phase 2 will add full content).
             </div>
@@ -10506,7 +10541,7 @@ export default function App() {
             <span style={{ color: "#8B6914", fontSize: "0.7rem" }}>▲</span>
           </div>
           </div>
-          )}
+          ); })()}
         </div>{/* end maxWidth inner wrapper */}
       </div>{/* end controls sticky bar */}
 
@@ -10697,6 +10732,18 @@ export default function App() {
                 </div>
               )}
             </div>
+
+            {/* FW-26: dual-date attribution — Vespers opens the next liturgical day */}
+            {currentService.key === 'vespers' && (
+              <div style={{ fontSize: "0.85rem", color: "#3C2E14", marginTop: "0.5rem", marginBottom: "1.2rem", lineHeight: 1.55 }}>
+                Served the evening of {vespersNext.dMD} — opens <strong>{vespersNext.vMD}</strong>.{" "}
+                Commemoration: {vespersNext.saintName || "—"}. Tone {vespersNext.vLit.tone}.
+                <span
+                  title="Vespers belongs to the day it opens: served the evening before, it commemorates the next liturgical day. The Octoechos cycle and the Friday dogmatikon follow the evening on which the service is served. (FW-26)"
+                  style={{ marginLeft: "6px", color: "#8B6914", cursor: "help", fontSize: "0.8rem" }}
+                >ⓘ</span>
+              </div>
+            )}
 
             {/* Legend (only when service is built and not ordinary_beginning/pre_communion) */}
             {currentService.built && currentService.key !== 'ordinary_beginning' && currentService.key !== 'pre_communion' && currentService.key !== 'psalter_service' && (
