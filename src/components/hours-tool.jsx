@@ -2999,9 +2999,92 @@ const LITIYA_PRIESTLY_BLESSING =
   "The blessing of the Lord be upon you, through His grace and love for mankind, " +
   "always, now and ever, and unto the ages of ages.";
 
+// ── Shared stichera repeat vocabulary (see stichera_repeat_spec.md) ──────────
+// Both the ordinary (§2A/§2C/§2D) and the Pentecostarion (§4A/§4B) paths speak
+// the same two operations so each is legible from the other:
+//   applyStichRepeat       — resolve a single per-item repeat marker (data-as-rubric)
+//   expandSticheraToCount  — expand a single source's printed texts to fill its
+//                            slot count (uniform doubling, logic; Fekula §2A "doubling each")
+
+// applyStichRepeat(stich, array, idx): if `stich` is a marker with no text of its
+// own, resolve it by copying text from another sticheron in `array`.
+//   repeatIndex: n  → copy item n (non-adjacent repeats, festal data)
+//   repeat (truthy) → copy the immediately preceding item (array[idx-1])
+// Returns a resolved copy tagged repeatNote, or the original stich unchanged.
+function applyStichRepeat(stich, array, idx) {
+  if (!stich || stich.text) return stich;
+  let sourceStich = null;
+  if (typeof stich.repeatIndex === "number") {
+    sourceStich = array[stich.repeatIndex];
+  } else if (stich.repeat) {
+    sourceStich = idx - 1 >= 0 ? array[idx - 1] : null;
+  }
+  if (sourceStich && sourceStich.text) {
+    return { ...stich, text: sourceStich.text, repeatNote: "(Repeat)" };
+  }
+  return stich;
+}
+
+// expandSticheraToCount(items, count, opts): expand one source's printed texts to
+// exactly `count` slots. Cases, in priority order (see spec §3.1):
+//   exact     items.length === count          → use as printed
+//   explicit  any item carries repeat markers  → honor via applyStichRepeat
+//   uniform   repeat count % length === 0      → repeat each in order ×(count/length)
+//             (Fekula §2A Friday "doubling each")
+//   mismatch  length>0, count%length!==0       → fill, flag remainder w/ diagnostic
+//   empty     length === 0                     → all unresolved (ordinary placeholder)
+// Returns a length-`count` array of {text,tone,source,resolved,repeatNote?,unresolved?,diagnostic?}.
+function expandSticheraToCount(items, count, opts = {}) {
+  const source = opts.source || "Menaion";
+  const out = [];
+  const n = items ? items.length : 0;
+
+  if (n === 0) {
+    for (let i = 0; i < count; i++) out.push({ text: null, source, resolved: false });
+    return out;
+  }
+
+  // Explicit per-item markers present (festal/Triodion data-as-rubric): the array is
+  // authored at full length with marker entries; resolve each in place.
+  const hasMarkers = items.some(s => s && (s.repeat || typeof s.repeatIndex === "number"));
+  if (hasMarkers || n === count) {
+    for (let i = 0; i < count; i++) {
+      const raw = items[i];
+      const stich = applyStichRepeat(raw, items, i);
+      out.push(stich && stich.text
+        ? { text: stich.text, tone: stich.tone, source, resolved: true, repeatNote: stich.repeatNote }
+        : { text: null, source, resolved: false });
+    }
+    return out;
+  }
+
+  if (n < count && count % n === 0) {
+    // Uniform doubling: one source owns all slots, count is a clean multiple.
+    const reps = count / n;
+    for (let i = 0; i < n; i++) {
+      for (let r = 0; r < reps; r++) {
+        out.push({
+          text: items[i].text, tone: items[i].tone, source, resolved: true,
+          repeatNote: r > 0 ? "(Repeat)" : undefined,
+        });
+      }
+    }
+    return out;
+  }
+
+  // Mismatch: fill what we have, flag the remainder with a precise diagnostic.
+  const diag = "[Stichera count " + count + " is not a multiple of " + n +
+    " provided text(s). Needs repeat markers or a corrected stichera_lord_i_call_count.]";
+  for (let i = 0; i < count; i++) {
+    if (i < n) out.push({ text: items[i].text, tone: items[i].tone, source, resolved: true });
+    else out.push({ text: null, source, resolved: false, diagnostic: diag });
+  }
+  return out;
+}
+
 // assembleVespers — all fixed texts from HTM Order of Vespers.
 // LIC and Aposticha stichera: §2A weekday/Saturday fully assembled from Octoechos (FW-23 Track A).
-// §2C Menaion slots and §2D+ stichera remain placeholders pending Track B encoding.
+// §2C/§2D Menaion stichera filled via expandSticheraToCount (uniform doubling); see stichera_repeat_spec.md.
 // Sources: Fekula §2A-§2F (Ch.2), §4A-§4B (Ch.4); HTM Vespers (htm_vespers.md).
 function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, readerMode = false, selectedDate = "") {
   const elements = [];
@@ -3346,13 +3429,10 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           : {text:null, source:"Menaion", resolved:false});
       }
     } else if (!isPentecostarion) {
-      // §2C/§2D/§2E/§2F: all Menaion
-      for (let i = 0; i < licCount; i++) {
-        const ms = menaionLicStichera[i];
-        licStichera.push(ms
-          ? {text: ms.text, source:"Menaion", resolved:true}
-          : {text:null, source:"Menaion", resolved:false});
-      }
+      // §2C/§2D/§2E/§2F: all Menaion. Fekula §2C/§2D say "six from the Menaion" —
+      // when the source prints fewer texts than the count (e.g. 3 texts ×2 = 6),
+      // expandSticheraToCount repeats each in order. See stichera_repeat_spec.md.
+      licStichera = expandSticheraToCount(menaionLicStichera, licCount, { source: "Menaion" });
     } else if (isPentecostarion && menaionLicStichera.length > 0) {
       // Pentecostarion + Menaion (§4A3 — Polyeleos/Vigil Menaion saint):
       // 3 slots from Pentecostarion Octoechos, remaining from Menaion.
@@ -3412,21 +3492,9 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         const slotIndex = licCount - v.n; // 0 = highest verse
         let stich = effectiveLicStichera[slotIndex - pentLicSlots];
         const isPentSlot = slotIndex < pentLicSlots;
-        // Handle repeat/repeatIndex — copy text from another sticheron in the array
-        if (stich && !stich.text) {
-          let sourceStich = null;
-          if (typeof stich.repeatIndex === 'number') {
-            // repeatIndex: explicit index into the array (for non-adjacent repeats)
-            sourceStich = effectiveLicStichera[stich.repeatIndex];
-          } else if (stich.repeat) {
-            // repeat: true — copy from immediately preceding sticheron
-            const prevIdx = (slotIndex - pentLicSlots) - 1;
-            sourceStich = prevIdx >= 0 ? effectiveLicStichera[prevIdx] : null;
-          }
-          if (sourceStich && sourceStich.text) {
-            stich = {...stich, text: sourceStich.text, repeatNote: "(Repeat)"};
-          }
-        }
+        // Resolve any per-item repeat marker via the shared helper (same grammar
+        // the ordinary §2C/§2D path uses). See stichera_repeat_spec.md.
+        stich = applyStichRepeat(stich, effectiveLicStichera, slotIndex - pentLicSlots);
 
         // Verse text — use feast verse from sticheron if present
         const verseText = (stich && stich.verse) ? stich.verse : v.text;
@@ -3545,14 +3613,18 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           text:"V. ("+v.n+") "+v.text, source:"HTM Vespers"});
         const stich = licStichera[licCount - v.n]; // stichera run V.licCount down; index 0 = V.licCount
         if (stich && stich.resolved) {
+          const stichSource = stich.source || "Octoechos";
+          const stichTone = stich.tone || tone;
           elements.push({id:"v-lic-stich-"+v.n, type:"movable", label:"",
-            rubric:"Tone "+tone+":",
-            text:stich.text, source:"Octoechos",
-            fekula:{section:fekulaSection, note:"Octoechos sticheron at V.("+v.n+"), Tone "+tone+"."}});
+            rubric:"Tone "+stichTone+(stich.repeatNote ? " "+stich.repeatNote : "")+":",
+            text:stich.text, source:stichSource,
+            fekula:{section:fekulaSection, note:stichSource+" sticheron at V.("+v.n+"), Tone "+stichTone+"."+(stich.repeatNote ? " Repeated to fill the appointed count (Fekula §2A/§2C)." : "")}});
         } else {
           elements.push({id:"v-lic-stich-"+v.n, type:"movable", label:"",
             unresolved:true,
-            text:"[Menaion sticheron "+(i+1)+" — not yet entered. Requires Track B data entry.]",
+            text: stich && stich.diagnostic
+              ? stich.diagnostic
+              : "[Menaion sticheron "+(i+1)+" — not yet entered. Requires Track B data entry.]",
             source:"Menaion",
             fekula:{section:fekulaSection, note:"Menaion sticheron at V.("+v.n+"). Enter stichera_lord_i_call in SAMPLE_MENAION to complete."}});
         }
@@ -7385,6 +7457,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.8.11",
+    date: "June 2026",
+    summary: "Stichera doubling at Lord I Have Cried (§2C/§2D)",
+    items: [
+      "fix: six-stichera (§2C) and doxology (§2D) days whose Menaion prints fewer texts than the appointed count now render correctly. Where one source owns all the slots and the count is a clean multiple of the texts (3 texts → 6, 4 → 8), each sticheron is repeated in order (Fekula §2A 'doubling each sticheron'). Fixes 06-09 (St. Cyril of Alexandria) and 06-11, which previously showed 'not yet entered' placeholders for the doubled slots.",
+      "refactor: the per-item repeat grammar (repeat / repeatIndex) is now a single shared helper (applyStichRepeat) used by both the ordinary and Pentecostarion paths; a new expandSticheraToCount helper owns the whole-set expansion. Repeated stichera are tagged '(Repeat)' for the reader, and a count/text mismatch now shows a precise diagnostic instead of a generic placeholder. Rationale and Fekula research: stichera_repeat_spec.md.",
+    ],
+  },
   {
     version: "v0.8.10",
     date: "June 2026",
