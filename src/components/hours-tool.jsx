@@ -7219,6 +7219,62 @@ function RankExplainer({ menaionEntry, isSunday }) {
   );
 }
 
+// ─── VESPERS DAY-ATTRIBUTION INFO ────────────────────────────────────────────
+// The ⓘ next to the dual-date note under the Vespers subtitle. Styled to match
+// RankExplainer (same panel/icon/head CSS) rather than a plain browser tooltip.
+function VespersDayInfo() {
+  const [open, setOpen] = React.useState(false);
+  const iconStyle = {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    width: '14px', height: '14px', borderRadius: '50%', border: '1px solid #8B6914',
+    color: '#8B6914', fontSize: '9px', fontStyle: 'normal', cursor: 'pointer',
+    marginLeft: '5px', lineHeight: 1, userSelect: 'none', flexShrink: 0,
+    fontFamily: 'Georgia, serif', fontWeight: 'bold',
+  };
+  const panelStyle = {
+    marginTop: '0.5rem', marginBottom: '0.5rem', width: '100%', maxWidth: '480px',
+    padding: '0.9rem 1rem', background: '#FAF6EE', border: '1px solid #D4C49A',
+    borderRadius: '5px', fontSize: '0.76rem', lineHeight: '1.6', color: '#3D3020',
+    boxShadow: '0 2px 12px rgba(0,0,0,0.10)',
+  };
+  const headStyle = {
+    fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em',
+    color: '#8B6914', fontFamily: 'Georgia, serif', fontWeight: 'bold',
+    marginBottom: '0.3rem', marginTop: '0.7rem',
+  };
+  return (
+    <React.Fragment>
+      <span style={{ display: 'inline-flex', alignItems: 'center', position: 'relative' }}>
+        <span style={iconStyle} onClick={() => setOpen(o => !o)} title='Why does Vespers show the next day?'>
+          i
+        </span>
+      </span>
+      {open && (
+        <div style={{ display: 'block', width: '100%' }}>
+          <div style={panelStyle}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#1C1008' }}>
+                Why Vespers shows the next day
+              </div>
+              <span onClick={() => setOpen(false)} style={{ cursor: 'pointer', color: '#9A8A70', fontSize: '1rem', lineHeight: 1, marginLeft: '1rem', flexShrink: 0 }}>✕</span>
+            </div>
+
+            <div style={{ ...headStyle, marginTop: 0 }}>The liturgical day</div>
+            <div>The liturgical day begins at Vespers the evening before. A Vespers served this evening therefore opens — and commemorates — the next day.</div>
+
+            <div style={headStyle}>What follows the evening served</div>
+            <div>The Octoechos cycle and the Friday dogmatikon (Both Now) follow the evening on which the service is sung, not the day it opens.</div>
+
+            <div style={{ marginTop: '0.7rem', paddingTop: '0.5rem', borderTop: '1px solid #E8DFC0', fontSize: '0.7rem', color: '#B8A882', fontStyle: 'italic' }}>
+              Fekula §FW-26 — Vespers date attribution
+            </div>
+          </div>
+        </div>
+      )}
+    </React.Fragment>
+  );
+}
+
 // ─── ORDINARY BEGINNING ──────────────────────────────────────────────────────
 // Shared component for the Typical (Ordinary) Beginning used by all services
 // when served independently. One source of truth for:
@@ -7494,11 +7550,10 @@ const RELEASE_NOTES = [
     date: "June 2026",
     summary: "Vespers context presentation — note, context card, and top strip serve the opened day",
     items: [
-      "feat: when Vespers is displayed, the Liturgical Context card now serves the NEXT day's context (the day Vespers opens) — commemoration, tone, season, readings, feast period, and saint all advance to D+1. An explicit banner heads the card: 'Today is [day]. The context below is for Vespers, as served this evening for tomorrow — [next day].' The interactive multi-service saint selector is suppressed under Vespers (the service always uses the OCA-primary), shown read-only with any co-commemorations listed.",
-      "change: the dual-date attribution note moved up to sit directly beneath the Vespers subtitle ('Served the evening of [day] — opens [next day]. Commemoration… Tone…'), with the rationale on an ⓘ hover. It is no longer an element inside the service body.",
-      "feat: with the context card collapsed, the top strip keeps step under Vespers — '[day] Vespers · For [next day] · Tone [n]' — so a reader scanning the header still sees what the service opens, without expanding.",
+      "feat: when Vespers is displayed, the Liturgical Context card now serves the NEXT day's context (the day Vespers opens) — commemoration, tone, season, readings, feast period, and saint all advance to D+1. An explicit banner heads the card: 'Vespers, as served this evening for tomorrow — [next day].' The interactive multi-service saint selector is suppressed under Vespers (the service always uses the OCA-primary), shown read-only with any co-commemorations listed.",
+      "change: the dual-date attribution note moved up to sit directly beneath the Vespers subtitle, highlighted with a left bar and soft background tint to draw the eye ('Served the evening of [day] — opens [next day]. Commemoration… Tone…'). Its ⓘ now opens a styled parchment popover ('Why Vespers shows the next day') matching the rank-explainer, rather than a plain browser tooltip. The note is no longer an element inside the service body.",
       "change: the tool now opens to the First Hour by default instead of Vespers, so daily-context scanning lands on today's commemoration rather than a next-day Vespers case.",
-      "refactor: the next-day bundle (liturgical data, OCA-primary saint, paroemias, readings, labels) is computed once at component scope (vespersNext) and shared by the assembler call, the note, the context card, and the top strip.",
+      "refactor: the next-day bundle (liturgical data, OCA-primary saint, paroemias, readings, labels) is computed once at component scope (vespersNext) and shared by the assembler call, the note, and the context card.",
     ],
   },
   {
@@ -10275,11 +10330,9 @@ export default function App() {
               cursor: "pointer", userSelect: "none",
             }}
           >
-            {/* Left: Day · Tone — under Vespers, the D+1 framing so a collapsed card still informs */}
+            {/* Left: Day · Tone */}
             <span style={{ fontSize: "0.8rem", color: "#5C4A1E", flexShrink: 0, minWidth: "120px" }}>
-              {currentService.key === 'vespers'
-                ? `${liturgicalData.dayName} Vespers · For ${vespersNext.vMD} · Tone ${vespersNext.vLit.tone}`
-                : `${liturgicalData.dayName} · Tone ${liturgicalData.tone}`}
+              {liturgicalData.dayName} · Tone {liturgicalData.tone}
             </span>
 
             {/* Centre: Liturgical Context label + triangles */}
@@ -10324,7 +10377,7 @@ export default function App() {
             }}>
             {isVesp && (
               <div style={{ marginBottom: "0.6rem", padding: "0.45rem 0.7rem", background: "rgba(139,105,20,0.1)", borderLeft: "3px solid #8B6914", borderRadius: "0 4px 4px 0", fontSize: "0.82rem", color: "#3C2E14", lineHeight: 1.5 }}>
-                <strong>Today is {vespersNext.dMD}.</strong> The context below is for <strong>Vespers, as served this evening for tomorrow — {vespersNext.vMD}</strong>.
+                <strong>Vespers</strong>, as served this evening for tomorrow — <strong>{vespersNext.vMD}</strong>.
               </div>
             )}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem", flexWrap: "wrap" }}>
@@ -10735,13 +10788,17 @@ export default function App() {
 
             {/* FW-26: dual-date attribution — Vespers opens the next liturgical day */}
             {currentService.key === 'vespers' && (
-              <div style={{ fontSize: "0.85rem", color: "#3C2E14", marginTop: "0.5rem", marginBottom: "1.2rem", lineHeight: 1.55 }}>
+              <div style={{
+                fontSize: "0.85rem", color: "#3C2E14", lineHeight: 1.55,
+                marginTop: "0.5rem", marginBottom: "1.2rem",
+                padding: "0.55rem 0.8rem",
+                background: "rgba(139,105,20,0.12)",
+                borderLeft: "4px solid #8B6914",
+                borderRadius: "0 4px 4px 0",
+              }}>
                 Served the evening of {vespersNext.dMD} — opens <strong>{vespersNext.vMD}</strong>.{" "}
                 Commemoration: {vespersNext.saintName || "—"}. Tone {vespersNext.vLit.tone}.
-                <span
-                  title="Vespers belongs to the day it opens: served the evening before, it commemorates the next liturgical day. The Octoechos cycle and the Friday dogmatikon follow the evening on which the service is served. (FW-26)"
-                  style={{ marginLeft: "6px", color: "#8B6914", cursor: "help", fontSize: "0.8rem" }}
-                >ⓘ</span>
+                <VespersDayInfo />
               </div>
             )}
 
