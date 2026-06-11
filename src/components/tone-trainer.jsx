@@ -10,11 +10,20 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.22.0";
+export const TONE_TRAINER_VERSION = "v0.22.1";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.22.1",
+    date: "June 2026",
+    summary: "Fix: printed score transposes cleanly at non-F tonics (Eb / G)",
+    items: [
+      "fix: selecting a do= pitch other than F (Eb or G) no longer renders the score wildly. The renderer hardcoded octave digits that were correct only for F major, so degrees crossing the C octave boundary (sol in Eb, fa in G) jumped an octave. Octaves are now computed from each note's transposed pitch, so the whole melody shifts up/down as a clean block for any tonic. F major output is unchanged.",
+      "fix: corrected the G-major spelling of 'si' (raised sol) from C# to D#.",
+    ],
+  },
   {
     version: "v0.22.0",
     date: "June 2026",

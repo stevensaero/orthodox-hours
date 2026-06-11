@@ -1,12 +1,42 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.22.0** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.22.1** | Component: `src/components/tone-trainer.jsx`
 
 ---
 
 ---
 
-## Session summary (Jun 10 2026 — v0.16.7 → v0.22.0 — Score system-wrap engine, verse numbers, tempo mark, punctuation)
+## Session summary (Jun 10 2026 — v0.22.1 — Score transposition fix for non-F tonics)
+
+**Bug:** picking a `do=` pitch other than F (Eb or G) in the trainer rendered the printed score
+"wild" — individual notes flew off by an octave instead of the melody shifting cleanly. Audio was
+fine (it uses continuous frequency); the bug was **notation-only**.
+
+**Root cause:** `score-print.html` hardcoded the **octave digit** per solfège degree (`buildAltoPitch`
+`sol: n.sol+'/5'`, `fa: n.fa+'/4'`, and the soprano/bass/tenor equivalents). Octave digits roll over
+at the C boundary, and which degree sits on that boundary moves with the key — so the hardcoded
+digits were correct **only for F**. In Eb, `sol`=Bb stays in octave 4 but was forced to `/5` (octave
+too high); in G, `fa`=C crosses to octave 5 but was forced to `/4` (octave too low).
+
+**Fix:** spell each note by **transposition from an F-major anchor**. Helpers `semiOf` / `midiOf` /
+`octForMidi` + `spell(sol, anchorOct, cfg)`: take the degree's F-major anchor octave, shift by the
+key's semitone transposition `T = midiOf(cfg.names.do,4) − midiOf('F',4)` (Eb −2, F 0, G +2), and
+respell with the key's letter + the octave implied by the resulting pitch. `cfg` already carries the
+key (`cfg.names.do`), so no call-site signatures changed. The four anchor tables
+(`ALTO_ANCHOR_OCT`, `SOPRANO_ANCHOR_OCT`, `BASS_NOTATION_OCT`, `TENOR_NOTATION_OCT`) are the F-major
+octaves; tenor still applies its `log2(2/div)` octaveDiv shift to the anchor before `spell`.
+
+**Verified:** F-major output byte-identical across all four voices (regression baseline); every voice
+× every degree shifts exactly ±2 semitones for Eb/G (clean block, no octave jumps); gate 13/13 +
+build. Also corrected a pre-existing **KEY_MAP data error**: G-major `si` (raised sol) was spelled
+`C#`, should be `D#` — latent (old + new both emitted C#/5 before the spelling fix) but it blocked
+clean transposition of `si`. **Note:** per-note accidental *glyphs* (e.g. the cadential `si` sharp)
+are still not drawn — that is the separate, pre-existing `choir_director_review.md` item; this fix is
+only about correct staff position/octave.
+
+---
+
+
 
 All work this arc is in **`public/score-print.html`** (the printable SATB score) plus small
 wiring in `tone-trainer.jsx`. Gate 13/13 + `npm run build` green at every push. Note: `npm run
