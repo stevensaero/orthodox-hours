@@ -1621,7 +1621,30 @@ Current status: None of these fields are in any SAMPLE_MENAION entry.
 All fields exist in Drive .txt encoding records for §2E/§2F entries —
 they were captured but not yet entered (see data-entry backlog).
 
-**FW-25: Stichera Repetition at "Lord I Have Cried" — uniform doubling + future gaps**
+**FW-26: Vespers Date Attribution — "Vespers renders the next day" (SPEC committed; prerequisite for FW-25a/§2G)**
+
+Full design in `vespers_date_attribution_spec.md` (repo root). Validated against the GOArch Digital
+Chant Stand (pick June 19 → it renders June 20 Vespers), OrthodoxWiki *Daily Cycle* (aggregates), and
+OCA *Hours, Compline and Nocturne*.
+
+The problem: a Vespers served on the evening of day D opens **D+1**, so the tool must render **V(D+1)**
+when the reader selects D. Today the assembler is a hybrid — the Octoechos day-key and the Friday
+dogmatikon already key off the *served evening* (correct), but the **Menaion commemoration, week tone,
+festal context, and heading stay on D** (wrong). The fix advances those four to **D+1** while leaving
+the Octoechos/dogmatikon frozen (Impl 1, surgical). The day-advance boundary is sunset/Vespers: the
+Ninth Hour and everything earlier stay on D; Vespers and Compline advance to D+1.
+
+Decisions (resolved): aggregate-grouped service order (Dawn / Midday / Evening), day-boundary inside
+the Evening Aggregate at Vespers; Impl 1; dual-date Vespers header (GOArch-style); picker stays on D
+and Vespers renders D+1. One open sub-point: Typika placement (Midday-with-Liturgy per OrthodoxWiki vs
+after-the-Ninth-Hour per OCA) — to confirm with the priest.
+
+Load-bearing: changes every date's Vespers commemoration; needs the full per-day regression matrix in
+the spec (weekdays + Saturday→Sunday tone boundary + season boundary + month boundary). Riskiest edge
+case: the resurrectional Great Vespers relocates from "select Saturday" to V(Sunday), so any `isSunday`
+branch in `assembleVespers` must re-key to "D+1 is Sunday." Implementation is its own focused pass.
+
+
 
 Full rationale and Fekula research in `stichera_repeat_spec.md` (repo root).
 
