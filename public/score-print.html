@@ -242,36 +242,30 @@ var SHOW_SATB_LABELS = true;
 // SHOW_PHRASE_NUMBERS: draw the verse number "(N)" (last verse "(F)") above the treble staff at
 // each verse's leading edge, like the Apostikha reference. Only on a phrase's first slice.
 var SHOW_PHRASE_NUMBERS = true;
-// Copyright / permission footer, centered at the bottom of EVERY page (so any single sheet a
-// choir duplicates still carries it). Covers only the rendered score; underlying liturgical texts
-// belong to their cited sources. Date is the day the score is generated.
+// Copyright / permission notice — a single concise line under the title block (page 1). The bottom
+// of the page is tuned for an exact 4-system sheet fit (no free space below the stems), so a footer
+// there either collides with low bass notes or adds height and forces a page wrap. The title reserve
+// always has room and never affects pagination. Covers only the rendered score; the liturgical texts
+// remain the property of their cited sources.
 var SHOW_COPYRIGHT = true;
-function copyrightLines() {
-  var d = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-  return [
-    { t: '\u00A9 ' + d + ' \u00B7 Orthodox Tone Trainer \u00B7 William Stevens', size: 9, weight: 500 },
-    { t: 'Permission is granted to copy this score freely for educational, parish, and choir use. Not for sale or inclusion in any work offered for sale.', size: 8, weight: 400 },
-    { t: 'Liturgical texts remain the property of their cited sources; this notice covers only the rendering of the score. All other rights reserved.', size: 8, weight: 400 },
-  ];
+function copyrightLine() {
+  var y = new Date().getFullYear();
+  return '\u00A9 ' + y + ' \u00B7 William Stevens \u00B7 Share freely, not for resale \u00B7 ' +
+         'Liturgical texts remain their cited sources\u2019';
 }
-function drawCopyright(svg, svgH) {
-  var lines = copyrightLines(), lineH = 12;
-  // Stack upward from the bottom of the page; bottom line ~16px from the SVG edge, all within the
-  // BOTTOM_PAD region and clear of the lowest bass stems.
-  var firstY = svgH - 16 - (lines.length - 1) * lineH;
-  lines.forEach(function(ln, i) {
-    var t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    t.setAttribute('x', PW / 2);
-    t.setAttribute('y', firstY + i * lineH);
-    t.setAttribute('text-anchor', 'middle');
-    t.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
-    t.setAttribute('font-size', ln.size);
-    t.setAttribute('font-weight', ln.weight);
-    t.setAttribute('fill', '#4a4a4a');
-    t.setAttribute('stroke', 'none'); // root <svg> sets stroke; filled text must opt out or it gets a 1px outline
-    t.textContent = ln.t;
-    svg.appendChild(t);
-  });
+function drawCopyright(svgRoot) {
+  // Sits between the subtitle (y=42) and the first staff (top ~70), centered.
+  var t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  t.setAttribute('x', PW / 2);
+  t.setAttribute('y', 57);
+  t.setAttribute('text-anchor', 'middle');
+  t.setAttribute('font-family', 'Inter, Helvetica Neue, Helvetica, Arial, sans-serif');
+  t.setAttribute('font-size', '8.5');
+  t.setAttribute('font-weight', '400');
+  t.setAttribute('fill', '#5a5a5a');
+  t.setAttribute('stroke', 'none'); // root <svg> sets stroke; filled text must opt out or it gets a 1px outline
+  t.textContent = copyrightLine();
+  svgRoot.appendChild(t);
 }
 // LEAD_GAP: clearance between the clef+key (getNoteStartX) and the first note, applied on
 // EVERY system so notes never butt against the glyphs. The old per-line renderer got this for
@@ -605,6 +599,8 @@ function renderScore(payload) {
       tSub.textContent = (payload.subtitle || '') +
         (payload.toolVersion ? ' · ' + payload.toolVersion : '');
       svgRoot.appendChild(tSub);
+
+      if (SHOW_COPYRIGHT) drawCopyright(svgRoot);
     }
 
   // Moveable-do accidental rule: a written accidental glyph appears ONLY on a chromatic-alteration
@@ -1043,7 +1039,6 @@ function renderScore(payload) {
     if (svg) {
       svg.style.width  = PW + 'px';
       svg.style.height = svgH + 'px';
-      if (SHOW_COPYRIGHT) drawCopyright(svg, svgH);
     }
   });
 }

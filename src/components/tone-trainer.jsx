@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.23.0";
+export const TONE_TRAINER_VERSION = "v0.23.1";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.23.1",
+    date: "June 2026",
+    summary: "Copyright notice moved to a single line under the title",
+    items: [
+      "change: the copyright/permission notice is now a single concise line under the subtitle (page 1) instead of a three-line bottom footer. The bottom of the page is tuned for an exact four-system sheet fit with no free space below the stems, so a footer there collided with low bass notes on dense pages and couldn't be dropped lower without adding height and forcing a page wrap. The title reserve always has room and never affects pagination. Line reads: © <year> · William Stevens · Share freely, not for resale · Liturgical texts remain their cited sources'.",
+    ],
+  },
   {
     version: "v0.23.0",
     date: "June 2026",
