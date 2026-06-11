@@ -624,8 +624,9 @@ function renderScore(payload) {
       var r = alto[i];
       var isRepeat = r.melisma && prev && r.text === prev.text;
       if (r.text && !isRepeat) {
+        var dispText = (r.disp != null && r.disp !== '') ? r.disp : r.text; // punctuation re-attached
         var x = aN[i].getAbsoluteX();
-        drawn.push({ x: x, w: measW(r.text, r.accent ? '500' : '200') + 4, text: r.text,
+        drawn.push({ x: x, w: measW(dispText, r.accent ? '500' : '200') + 4, text: dispText,
                      accent: r.accent === true, hyphenAfter: r.hyphenAfter === true });
       }
       prev = r;
