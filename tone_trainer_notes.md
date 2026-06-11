@@ -1,6 +1,6 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.22.2** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.22.3** | Component: `src/components/tone-trainer.jsx`
 
 ---
 

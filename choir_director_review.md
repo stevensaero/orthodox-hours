@@ -64,8 +64,12 @@ is the raised 6th, whereas this note is the raised 7th, C#.)
   the correct pitch, and it would otherwise corrupt C#4 down to C4). Verified: D4 → C#4 → A3.
 - **Blast radius:** `si` is used only in the Tone 1 Final tenor; nothing else is affected.
 
-**Still open (separate item):** the renderer draws **no per-note accidental glyphs**, so the score
-shows `si` on the C# line/space but without an explicit ♯ next to it (it reads C natural unless the
-singer knows the cadence). Wiring per-note accidentals (`Accidental.applyAccidentals` or explicit
-accidentals for chromatic degrees) remains the outstanding score-notation fix — tracked separately.
+**Accidental glyphs — RESOLVED (Jun 11 2026, v0.22.3).** Per-note accidentals are now drawn under a
+moveable-do rule: a written ♯/♭/♮ appears **only** on a chromatic-alteration degree (raised
+di/ri/fi/si/li, lowered ra/me/se/le/te); diatonic degrees are spelled by the key signature and carry
+no glyph. `mkNote` adds an explicit `Accidental` (glyph read from the note's spelling — si=C#→♯,
+di=En→♮) for those degrees only; we deliberately do **not** use `Accidental.applyAccidentals` (it is
+pitch-rule driven and would emit courtesy naturals / cancellations the convention doesn't want).
+Verified headless: each chromatic note adds exactly one accidental glyph, diatonic notes add none,
+across Eb/F/G. So the Tone 1 Final tenor `si` now shows its ♯, and Tone 2's `di` shows its accidental.
 

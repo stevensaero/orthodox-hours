@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.22.2";
+export const TONE_TRAINER_VERSION = "v0.22.3";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.22.3",
+    date: "June 2026",
+    summary: "Printed score: per-note accidentals for chromatic solfège degrees",
+    items: [
+      "feat: the printed score now draws accidental glyphs (sharp/flat/natural) on chromatic-alteration notes — raised di/ri/fi/si/li and lowered ra/me/se/le/te — and only on those. Diatonic degrees are spelled by the key signature and carry no glyph, the moveable-do convention. The Tone 1 Final tenor 'si' now shows its sharp, and Tone 2's 'di' shows its accidental. The glyph is read from the note's existing spelling (si=C#→sharp, di=En→natural), so it stays correct under transposition. Implemented with explicit per-note accidentals (not VexFlow's rule-driven applyAccidentals, which would add courtesy naturals we don't want).",
+    ],
+  },
   {
     version: "v0.22.2",
     date: "June 2026",

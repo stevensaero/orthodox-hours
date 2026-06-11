@@ -576,11 +576,25 @@ function renderScore(payload) {
       svgRoot.appendChild(tSub);
     }
 
-  function mkNote(pitch, durKey, stem, clef) {
+  // Moveable-do accidental rule: a written accidental glyph appears ONLY on a chromatic-alteration
+  // degree — raised di/ri/fi/si/li or lowered ra/me/se/le/te. Diatonic degrees (do re mi fa sol la
+  // ti) are spelled by the key signature and never carry an explicit accidental. The glyph itself is
+  // read from how the note is already spelled in the key (si=C# -> '#', di=En -> 'n', me=Eb -> 'b').
+  // We add it explicitly (NOT VexFlow's Accidental.applyAccidentals, which is pitch-rule driven and
+  // would also emit courtesy naturals / cancellations we don't want).
+  var CHROMATIC_SOLFEGE = { di:1, ri:1, fi:1, si:1, li:1, ra:1, me:1, se:1, le:1, te:1 };
+  function accidentalFor(pitchStr, sol) {
+    if (!CHROMATIC_SOLFEGE[sol]) return null;          // diatonic -> key signature handles it
+    var acc = String(pitchStr).split('/')[0].slice(1); // '#', 'b', 'n', '##', 'bb', or ''
+    return acc || null;                                // VexFlow Accidental code
+  }
+  function mkNote(pitch, durKey, stem, clef, sol) {
     var opts = { keys:[pitch], duration:DUR[durKey]||'q', auto_stem:false };
     if (clef) opts.clef = clef;
     var n = new VF.StaveNote(opts);
     n.setStemDirection(stem);
+    var acc = accidentalFor(pitch, sol); // chromatic degrees only
+    if (acc) n.addModifier(new VF.Accidental(acc), 0);
     // H· uses 'h' + dot (tick value is masked by SOFT mode + setVoiceX); W· uses the
     // 'wd' duration above (true 3H ticks, matching a 3-note alto melisma) + this dot glyph.
     if (durKey==='H·' || durKey==='W·') VF.Dot.buildAndAttach([n]);
@@ -744,13 +758,13 @@ function renderScore(payload) {
       for (var ai = 0; ai < altoSlice.length; ai++) {
         var r = altoSlice[ai];
         aN.push(rec.has(ai) ? mkGhost(r.durKey)
-          : mkNote(ALTO_PITCH[r.pitch] || ALTO_PITCH.fa, r.durKey, altoStem));
+          : mkNote(ALTO_PITCH[r.pitch] || ALTO_PITCH.fa, r.durKey, altoStem, null, r.pitch));
       }
       var sN = [];
       if (hasSop) for (var si2 = 0; si2 < sopSlice.length; si2++) {
         var sr = sopSlice[si2];
         sN.push(rec.has(si2) ? mkGhost(sr.durKey)
-          : mkNote(SOPRANO_PITCH[sr.pitch] || SOPRANO_PITCH.la, sr.durKey, 1));
+          : mkNote(SOPRANO_PITCH[sr.pitch] || SOPRANO_PITCH.la, sr.durKey, 1, null, sr.pitch));
       }
       var altoVoice = mkVoice(aN), trebleVoices = [altoVoice], sopVoice = null;
       if (hasSop) { sopVoice = mkVoice(sN); trebleVoices.push(sopVoice); }
@@ -777,7 +791,7 @@ function renderScore(payload) {
         for (var bi = 0; bi < bassSlice.length; bi++) {
           var br = bassSlice[bi];
           bN.push(rec.has(bi) ? mkGhost(br.durKey)
-            : mkNote(bassVFPitch(br.pitch, br.octaveDiv, cfg), br.durKey, -1, 'bass'));
+            : mkNote(bassVFPitch(br.pitch, br.octaveDiv, cfg), br.durKey, -1, 'bass', br.pitch));
         }
         var tenItems = [];
         if (line.tenor && line.tenor.length > 0) line.tenor.forEach(function(trn, k) {
@@ -787,7 +801,7 @@ function renderScore(payload) {
         var hasTen = tenItems.length > 0;
         var tN = tenItems.map(function(it) {
           return rec.has(it.lcol) ? mkGhost(it.trn.durKey)
-            : mkNote(tenorVFPitch(it.trn.pitch, it.trn.octaveDiv, cfg), it.trn.durKey, 1, 'bass');
+            : mkNote(tenorVFPitch(it.trn.pitch, it.trn.octaveDiv, cfg), it.trn.durKey, 1, 'bass', it.trn.pitch);
         });
         var bassVoice = mkVoice(bN), bassVoices = [bassVoice], tenVoice = null;
         if (hasTen) { tenVoice = mkVoice(tN); bassVoices.push(tenVoice); }
