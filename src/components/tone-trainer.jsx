@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.22.3";
+export const TONE_TRAINER_VERSION = "v0.23.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.23.0",
+    date: "June 2026",
+    summary: "Printed score: copyright / permission footer on every page",
+    items: [
+      "feat: every printed page now carries a centered footer at the bottom — a dated credit line (© <today's date> · Orthodox Tone Trainer · William Stevens) plus a permission grant: the score may be copied freely for educational, parish, and choir use, but not for sale or inclusion in any work offered for sale. A final line notes that the underlying liturgical texts remain the property of their cited sources and that the notice covers only the rendering of the score; all other rights reserved. The date is the day the score is generated. Drawn on every page so any single duplicated sheet still carries it; sits in the existing bottom pad, clear of the bass stems. Toggle via SHOW_COPYRIGHT in score-print.html.",
+    ],
+  },
   {
     version: "v0.22.3",
     date: "June 2026",
