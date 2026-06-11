@@ -46,27 +46,26 @@ figure one-note-per-syllable instead.
 
 ## 2. Tone 1 Final — tenor `si` register on `ti→si`
 
-**Status:** OPEN
+**Status:** CONFIRMED / CHANGED (Jun 11 2026 — director read the score; audio corrected; v0.22.2)
 
-**Context.** In the Tone 1 Final phrase the tenor `cadMap` moves `do→la, ti→si, la→mi`.
-The `si` is the raised 6th (B♮ in D minor), a harmonic-minor approach to the `la` close.
+**Resolution (Jun 11 2026).** The director read the four-part score: the tenor cadence note
+`si` sits on **C#4** (C-line + sharp accidental) — i.e. **raised sol** (tenor sol = C4 → C#4),
+the raised 7th / leading tone of D minor, a half-step **below** the tenor's `la` (D4). The
+tenor descends **D4 → C#4 → A3**. (Note on mode: the page is F-major key signature, but Tone 1
+closes on `la` = D, so the operative mode is **D minor**, its relative minor — hence the
+harmonic-minor leading-tone color. The old comment's "raised 6th / B♮" label was wrong; B♮
+is the raised 6th, whereas this note is the raised 7th, C#.)
 
-**What needs confirming.** The source data shows a register disagreement for `si` between
-the `OFF` semitone table (`OFF[si] = −2`) and the configured note name (`cfg.names[si] = "C#"`).
-The two imply different registers for `si`. Needs a score check of where the tenor `si`
-actually sits relative to the surrounding `la`/`mi` in the Final cadence, to confirm which
-of the two is correct.
+- **Score: already correct.** The renderer spells `si` from `cfg.names.si` (= C#) at the Final's
+  octave lift → C#4. No change was needed; output is unchanged.
+- **Audio: corrected.** `OFF[si]` was `−2`, which sounded **Eb4** (a half-step *above* la — wrong
+  direction), and a `−100¢` SATB "detune" hack had been dragging it down toward D to stop beating.
+  Changed `OFF[si]` to **−4** so the tenor sounds **C#4**, and removed the detune (unnecessary at
+  the correct pitch, and it would otherwise corrupt C#4 down to C4). Verified: D4 → C#4 → A3.
+- **Blast radius:** `si` is used only in the Tone 1 Final tenor; nothing else is affected.
 
-(Tenor in the Final phrase *moves* — it is never collapsed into a hold — so this is purely
-a pitch-register question, not a duration/hold question.)
+**Still open (separate item):** the renderer draws **no per-note accidental glyphs**, so the score
+shows `si` on the C# line/space but without an explicit ♯ next to it (it reads C natural unless the
+singer knows the cadence). Wiring per-note accidentals (`Accidental.applyAccidentals` or explicit
+accidentals for chromatic degrees) remains the outstanding score-notation fix — tracked separately.
 
-**Reference-score finding (Jun 9 2026).** The printed Obikhod reference for "Lord, I Call,
-Tone 1" (Common Chant, arr. L'vov/Bakhmetev) shows a **cadential accidental (a sharp) on a
-lower-staff note near the cadence** in its third system — almost certainly this `si`. Our
-score renderer currently draws **no per-note accidental glyphs at all** (confirmed by headless
-probe: notes carry zero Accidental modifiers; the key signature is the only accidental marker).
-So if this cadential `si` is meant to carry a written accidental, **our output is missing it.**
-Two things to confirm together: (1) the correct register/pitch of `si` (the `OFF` vs `cfg.names`
-disagreement above), and (2) whether `si` should render with an explicit accidental glyph in the
-score — and if so, wire `Accidental.applyAccidentals` (or an explicit accidental) for that note.
-This is independent of the system-wrap work.

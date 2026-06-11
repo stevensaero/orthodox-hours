@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.22.1";
+export const TONE_TRAINER_VERSION = "v0.22.2";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.22.2",
+    date: "June 2026",
+    summary: "Fix: Tone 1 Final tenor 'si' now sounds C#4 (matches the score)",
+    items: [
+      "fix: the Tone 1 Final tenor cadence note 'si' was sounding Eb4 (a half-step above la, the wrong direction) and a -100c detune hack was masking it. Corrected OFF[si] -2 -> -4 so it sounds C#4 — the raised 7th (leading tone) of D minor, a half-step below la, matching what the four-part score shows (director-confirmed). The tenor now descends D4 -> C#4 -> A3. Detune removed. The printed score was already correct (C#4) and is unchanged; only the audio moved. 'si' is used only here, so nothing else is affected.",
+    ],
+  },
   {
     version: "v0.22.1",
     date: "June 2026",
@@ -929,7 +937,10 @@ const TRAINER_RELEASE_NOTES = [
 // di = chromatic raised do (one semitone above do) — used in Tone 2 Phrases B and D.
 // fa = perfect fourth above do — used in Tone 2 Phrase A cadence.
 // sol = perfect fifth above do — in scale for completeness; not yet used in cadences.
-const OFF = { la: -3, si: -2, ti: -1, do: 0, di: 1, re: 2, mi: 4, mi_low: 4, fa: 5, sol: 7 };
+const OFF = { la: -3, si: -4, ti: -1, do: 0, di: 1, re: 2, mi: 4, mi_low: 4, fa: 5, sol: 7 };
+// si = C# = raised sol (sol −> sol#); the raised 7th (leading tone) of D minor, a half-step
+// BELOW la (D). Used only in the Tone 1 Final tenor (la·si·mi = D·C#·A). Was -2 (sounded Eb,
+// a half-step above la — wrong direction); corrected to -4 to match the score's C#4.
 const DO_OPTIONS = [
   { label: "Eb", hz: 311.13 },  // one step below canonical — lower option
   { label: "F",  hz: 349.23 },  // F4 — Tone 1 canonical (OCA score, F major)
@@ -2127,14 +2138,14 @@ const TENOR_RULES = {
       // Reciting alto=re → tenor=la
       recite: "la",
       prepMap: {},
-      // Cadence: alto do→ti→la → tenor la→si→mi
-      // si = raised 6th (B♮ in D minor), harmonic minor approach to la close
+      // Cadence: alto do→ti→la → tenor la→si→mi  (tenor: D · C# · A)
+      // si = C#, the raised 7th (leading tone) of D minor — harmonic-minor color approaching
+      // the la (D) close; = raised sol in moveable-do terms. Sits a half-step BELOW la.
       cadMap: { do: "la", ti: "si", la: "mi" },
       preslurMap: {},
-      // la and si sit one step above sol (the A-D reciting pitch) — div-1 keeps them
-      // in the correct register. mi (Lord) sits below sol — stays at global div-2.
-      // la and si at div-1: la steps up from prior sol, si sits one step above la.
-      // si detuned +15 cents in audio only to push beating above perceptual threshold.
+      // la (D4) and si (C#4) stay at div-1 to sit in the close register just below the
+      // reciting pitch; mi (Lord = A3) sits lower and stays at the global div-2.
+      // Tenor descends D4 → C#4 → A3 across the three cadence notes.
       octaveDiv: { la: 1, si: 1 },
     },
   },
@@ -3386,13 +3397,9 @@ export default function ToneTrainer() {
   // Optional phraseRules arg for per-phrase octave override (same pattern as freq_bass).
   const freq_tenor = (sol, phraseRules) => {
     const base = freq(sol) / (phraseRules?.octaveDiv?.[sol] ?? TENOR_OCTAVE_DIV[sol] ?? 2);
-    // si detuning — SATB only. In SATB the si (220Hz) beats against 2nd harmonic of
-    // alto ti (233Hz) at ~13Hz — audible flutter. Flattening by 100 cents → ~208Hz
-    // pushes beat rate to ~25Hz (inaudible). In tenor-solo mode the true pitch is used
-    // so the la→si melodic step sounds clear and intentional.
-    if (sol === "si" && phraseRules?.octaveDiv?.["si"] === 1 && voicePart === "satb") {
-      return base * Math.pow(2, -100 / 1200);
-    }
+    // (Former -100¢ si detune removed: it compensated for si sounding Eb a half-step above la.
+    //  At the corrected pitch — C#4, a half-step below la — there is no octave-beating against
+    //  the alto ti to suppress, and detuning would now corrupt the correct pitch.)
     return base;
   };
 
