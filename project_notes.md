@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.8.11** | **Tone Trainer: v0.23.1** | Last synced: June 11, 2026
+**Tool version: v0.9.0** | **Tone Trainer: v0.23.1** | Last synced: June 11, 2026
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
@@ -1621,7 +1621,21 @@ Current status: None of these fields are in any SAMPLE_MENAION entry.
 All fields exist in Drive .txt encoding records for §2E/§2F entries —
 they were captured but not yet entered (see data-entry backlog).
 
-**FW-26: Vespers Date Attribution — "Vespers renders the next day" (SPEC committed; prerequisite for FW-25a/§2G)**
+**FW-26: Vespers Date Attribution — "Vespers renders the next day" (IMPLEMENTED v0.9.0; prerequisite for FW-25a/§2G)**
+
+*Implemented (v0.9.0):* Vespers branch advances commemoration/tone/season/festal/paroemias to D+1 (OCA-primary
+saint); served-evening `dow` recomputed inside `assembleVespers` as `(openedDow+6)%7` ≡ D's dow, so the
+Octoechos day-key, Friday dogmatikon, weekly prokeimenon, and Saturday Great-Vespers checks are provably
+byte-identical to pre-FW-26. Dual-date `rubric` header pushed at top of Vespers. `computeVespersParoemias()`
+factored to module scope (used by both the day-summary context card on D and the Vespers service on D+1).
+`SERVICE_REGISTRY` reordered to clock order (Vespers/Compline after the selected-day services). D+1's
+Octoechos tone now also preloaded (fixes the Sat→Sun new-tone resurrectional case); month/year boundary
+already covered by the existing prev/m/next menaion preload. Gate 13/13, build green. **Open sub-point still
+unresolved:** Typika placement — implemented after the Ninth Hour per the reader's clock-order; OrthodoxWiki's
+Midday-with-Liturgy alternative remains flagged for the priest (one array position, zero logic impact).
+**Not yet addressed (follow-up):** the day-summary context card still shows D's paroemias/commemoration (it
+summarizes the selected calendar day); the Vespers header states the D→D+1 attribution, so the two are
+coherent, but a future pass may reconcile the card's Vespers references with the opened-day model.
 
 Full design in `vespers_date_attribution_spec.md` (repo root). Validated against the GOArch Digital
 Chant Stand (pick June 19 → it renders June 20 Vespers), OrthodoxWiki *Daily Cycle* (aggregates), and

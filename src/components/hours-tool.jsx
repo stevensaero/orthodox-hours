@@ -3086,6 +3086,30 @@ function expandSticheraToCount(items, count, opts = {}) {
 // LIC and Aposticha stichera: §2A weekday/Saturday fully assembled from Octoechos (FW-23 Track A).
 // §2C/§2D Menaion stichera filled via expandSticheraToCount (uniform doubling); see stichera_repeat_spec.md.
 // Sources: Fekula §2A-§2F (Ch.2), §4A-§4B (Ch.4); HTM Vespers (htm_vespers.md).
+// FW-26: Vespers OT paroemias. Pure function so it can be computed for the
+// selected day (day-summary context card) and the NEXT day (the Vespers service,
+// which opens the following liturgical day). Mirrors the original inline rule:
+//   §2E (Polyeleos)/§2F (Vigil) Menaion saints show their paroemias; Pentecostarion
+//   entries show their own unless a Great Feast of the Lord; otherwise none.
+function computeVespersParoemias(menaionEntry, pentEntry, isPent, isBright) {
+  if (isPent || isBright) {
+    if (!pentEntry || !pentEntry.paroemia_1) {
+      const rank = menaionEntry && menaionEntry.rank;
+      if (rank !== 'polyeleos' && rank !== 'vigil') return null;
+      if (!menaionEntry.paroemia_1) return null;
+      return [menaionEntry.paroemia_1, menaionEntry.paroemia_2, menaionEntry.paroemia_3].filter(Boolean);
+    }
+    const fmt = pentEntry.hours_format;
+    const isGreatFeastOfLord = fmt === 'ascension' || fmt === 'pentecost' || fmt === 'apodosis_ascension' || fmt === 'apodosis_pentecost' || fmt === 'holy_spirit_day';
+    if (isGreatFeastOfLord) return null;
+    return [pentEntry.paroemia_1, pentEntry.paroemia_2, pentEntry.paroemia_3].filter(Boolean);
+  }
+  const rank = menaionEntry && menaionEntry.rank;
+  if (rank !== 'polyeleos' && rank !== 'vigil') return null;
+  if (!menaionEntry.paroemia_1) return null;
+  return [menaionEntry.paroemia_1, menaionEntry.paroemia_2, menaionEntry.paroemia_3].filter(Boolean);
+}
+
 function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, readerMode = false, selectedDate = "") {
   const elements = [];
   const { paschaOffset, tone, dayName, season, namedDay } = liturgicalData;
@@ -3116,8 +3140,31 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     : (isPentecostarion ? "3 from Pentecostarion + 3 from Menaion" : "6 stichera: 3 Octoechos + 3 Menaion");
   const sticheraCount = isHighRank ? "8" : "6";
   const dowMap = {Sunday:0,Monday:1,Tuesday:2,Wednesday:3,Thursday:4,Friday:5,Saturday:6};
-  const dow = dowMap[dayName] !== undefined ? dowMap[dayName] : 0;
+  // FW-26: liturgicalData here is the NEXT liturgical day (the day this Vespers
+  // OPENS). The served-evening day-of-week (D = opened day − 1) drives the
+  // Octoechos day-key, Friday dogmatikon, weekly prokeimenon, and Saturday
+  // Great-Vespers checks — all properties of the evening on which Vespers is served.
+  const openedDow = dowMap[dayName] !== undefined ? dowMap[dayName] : 0;
+  const dow = (openedDow + 6) % 7;
   const isFriEve = dow === 5; // Friday evening: Both Now = dogmatikon, not theotokion
+  // FW-26 dual-date header: states the served-evening / opened-day attribution.
+  {
+    const DOW_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const d1 = selectedDate ? new Date(selectedDate + "T12:00:00") : null; // opened day (D+1)
+    const d0 = d1 ? new Date(d1.getTime() - 86400000) : null;              // served evening (D)
+    const fmtMD = (dt) => dt ? MONTHS[dt.getMonth()] + " " + dt.getDate() : "";
+    const servedName = DOW_NAMES[dow];
+    const saintName = (menaionEntry && [menaionEntry.saint, menaionEntry.feast_e, menaionEntry.name]
+      .find(v => v && !String(v).startsWith("absent"))) || "";
+    const headerText =
+      "Served the evening of " + servedName + (d0 ? ", " + fmtMD(d0) : "") +
+      " — opens " + dayName + (d1 ? ", " + fmtMD(d1) : "") + ".\n" +
+      "Commemoration: " + (saintName || "—") + ".   Tone " + tone + ".";
+    elements.push({id:"v-fw26-attr", type:"rubric", label:"",
+      text: headerText, source:"",
+      fekula:{section:"FW-26", note:"Vespers belongs to the day it opens: served the evening before, it commemorates the next liturgical day. The Octoechos cycle and the Friday dogmatikon follow the evening on which the service is served. — FW-26 date-attribution"}});
+  }
   const weeklyProk = WEEKLY_VESPERS_PROKEIMENON[dow];
   // Festal prokeimenon override: Menaion polyeleos/vigil saints have their own prokeimenon
   // that replaces the weekly table entry (including the Saturday Great Prokeimenon).
@@ -5783,19 +5830,22 @@ function assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMo
 }
 
 const SERVICE_REGISTRY = [
-  { key: "ordinary_beginning", label: "The Ordinary Beginning", built: true },
-  { key: "vespers",        label: "Vespers",                    built: true  },
-  { key: "compline",       label: "Compline (Apodeipnon)",      built: false },
+  // FW-26: dropdown follows the daily cycle by clock. Vespers and Compline open
+  // the NEXT liturgical day, so they sit after the selected-day services. The
+  // reference block (Ordinary Beginning, Communion prayers, Psalter) follows.
   { key: "midnight",       label: "Midnight Office",            built: false },
   { key: "matins",         label: "Matins (Orthros)",           built: false },
   { key: "1st_hour",       label: "The First Hour",             built: true  },
   { key: "3rd_hour",       label: "The Third Hour",             built: true  },
   { key: "6th_hour",       label: "The Sixth Hour",             built: true  },
-  { key: "9th_hour",       label: "The Ninth Hour",             built: true  },
   { key: "liturgy",        label: "Divine Liturgy",             built: false },
+  { key: "9th_hour",       label: "The Ninth Hour",             built: true  },
+  { key: "typica",         label: "The Order of the Typica",    built: true  },
+  { key: "vespers",        label: "Vespers",                    built: true  },
+  { key: "compline",       label: "Compline (Apodeipnon)",      built: false },
+  { key: "ordinary_beginning", label: "The Ordinary Beginning", built: true },
   { key: "pre_communion",  label: "Prayers Before Holy Communion", built: true  },
   { key: "post_communion", label: "Prayers After Holy Communion", built: true  },
-  { key: "typica",         label: "The Order of the Typica",    built: true  },
   { key: "psalter_service", label: "The Order of the Psalter",  built: true  },
 ];
 
@@ -7457,6 +7507,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.9.0",
+    date: "June 2026",
+    summary: "Vespers renders the next liturgical day (FW-26)",
+    items: [
+      "feat: Vespers is now assembled for the day it OPENS, not the calendar day selected. A Vespers served on the evening of a given day begins the next liturgical day, so selecting a date and opening Vespers shows the commemoration, tone, festal context, and OT paroemias of the following day. The Octoechos cycle, Friday dogmatikon, and weekly prokeimenon still follow the evening on which the service is served (the selected day). A dual-date header at the top of Vespers states the attribution: 'Served the evening of [day] — opens [next day].' Rationale and authorities: vespers_date_attribution_spec.md (FW-26).",
+      "feat: the Saturday-evening case now keys correctly — selecting Saturday opens Sunday, so Vespers becomes the resurrectional Great Vespers in the new week's tone with Sunday's commemoration. Sunday-evening Vespers opens Monday (weekday). Season, month, and year boundaries advance with the opened day; the next day's Menaion is loaded as needed.",
+      "change: the service dropdown now follows the daily cycle by clock — Midnight Office, Matins, the Hours, Divine Liturgy, Ninth Hour, Typica, then Vespers and Compline (which open the next day), followed by the Ordinary Beginning, Communion prayers, and Psalter. (Typica placement under the Midday aggregate vs. after the Ninth Hour remains flagged for the priest.)",
+      "refactor: the Vespers OT paroemia rule is now a shared computeVespersParoemias() helper, used by both the day-summary context card (selected day) and the Vespers service (next day).",
+    ],
+  },
   {
     version: "v0.8.11",
     date: "June 2026",
@@ -9923,10 +9984,15 @@ export default function App() {
     }
     // Pre-load the active Octoechos tone (and adjacent tones for week boundaries)
     const toneForDate = getLiturgicalData(d).tone || 1;
+    // FW-26: Vespers opens the NEXT day, which on Saturday evening begins a new
+    // week in a new tone — preload it so the resurrectional Great Vespers resolves.
+    const dNext = parseCalendarDate(selectedDate); dNext.setDate(dNext.getDate() + 1);
+    const toneForVespers = getLiturgicalData(dNext).tone || 1;
     Promise.all([
       ...[...new Set([prev, m, next, ...dedMonths])].map(mo => _loadMenaionMonth(mo)),
       _loadPentecostarion(),
       loadOctoechosTone(toneForDate),
+      loadOctoechosTone(toneForVespers),
     ]).then(() => setDataVersion(v => v + 1));
   }, [selectedDate, templeDedication]);
 
@@ -10003,31 +10069,9 @@ export default function App() {
   //   for Vespers reference only — NOT displayed here (Great Feast of the Lord,
   //   not a Polyeleos saint pattern)
   // - All other cases: no paroemias
-  const paroemias = (() => {
-    // Pentecostarion: show only if pentEntry explicitly carries paroemias
-    // AND it is not a Great Feast of the Lord (hours_format filters those out)
-    if (isPentecostarion || isBrightWeek) {
-      if (!pentEntry || !pentEntry.paroemia_1) {
-        // Fall through to check Menaion saint (§2E/§2F within afterfeast — §2G2)
-        const mEntry = selectedMenaionEntry;
-        const rank = mEntry && mEntry.rank;
-        if (rank !== 'polyeleos' && rank !== 'vigil') return null;
-        if (!mEntry.paroemia_1) return null;
-        return [mEntry.paroemia_1, mEntry.paroemia_2, mEntry.paroemia_3].filter(Boolean);
-      }
-      // pentEntry has paroemias — only show for non-Great-Feast-of-Lord entries
-      const fmt = pentEntry.hours_format;
-      const isGreatFeastOfLord = fmt === 'ascension' || fmt === 'pentecost' || fmt === 'apodosis_ascension' || fmt === 'apodosis_pentecost' || fmt === 'holy_spirit_day';
-      if (isGreatFeastOfLord) return null;
-      return [pentEntry.paroemia_1, pentEntry.paroemia_2, pentEntry.paroemia_3].filter(Boolean);
-    }
-    // Ordinary time: show Menaion paroemias for §2E and §2F only
-    const mEntry = selectedMenaionEntry;
-    const rank = mEntry && mEntry.rank;
-    if (rank !== 'polyeleos' && rank !== 'vigil') return null;
-    if (!mEntry.paroemia_1) return null;
-    return [mEntry.paroemia_1, mEntry.paroemia_2, mEntry.paroemia_3].filter(Boolean);
-  })();
+  // Selected-day (D) paroemias — feeds the day-summary context card. The Vespers
+  // SERVICE computes its own paroemias for the day it opens (D+1); see FW-26 below.
+  const paroemias = computeVespersParoemias(selectedMenaionEntry, pentEntry, isPentecostarion, isBrightWeek);
   // Current service metadata from registry
   const currentServiceIdx = SERVICE_REGISTRY.findIndex(s => s.key === selectedServiceKey);
   const currentService = SERVICE_REGISTRY[currentServiceIdx];
@@ -10040,7 +10084,28 @@ export default function App() {
     if (currentService.key === 'psalter_service') return [];
     let els;
     if (currentService.key === 'vespers') {
-      els = assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, readerMode, selectedDate);
+      // FW-26: A Vespers served on the evening of the selected day (D) OPENS the
+      // next liturgical day (D+1), so it commemorates D+1. Advance commemoration,
+      // tone, season, festal context, and OT paroemias to D+1; the served-evening
+      // Octoechos day-key and Friday dogmatikon still derive from D inside
+      // assembleVespers. Saint = D+1's OCA-primary (matches the tool's date-change
+      // default). See vespers_date_attribution_spec.md.
+      const vDate = new Date(date);
+      vDate.setDate(vDate.getDate() + 1);
+      const vDateStr = vDate.getFullYear() + "-" +
+        String(vDate.getMonth() + 1).padStart(2, "0") + "-" +
+        String(vDate.getDate()).padStart(2, "0");
+      const vLit = getLiturgicalData(vDate);
+      const vServices = getServices(getMenaionEntry(vDate));
+      const vOcaIdx = vServices.findIndex(s => s.oca_primary === true);
+      const vMenaion = vServices[vOcaIdx >= 0 ? vOcaIdx : 0] || null;
+      const vIsPent = vLit.season === "pentecostarion";
+      const vIsBright = vLit.season === "brightweek";
+      const vPent = (vIsPent || vIsBright)
+        ? getPentecostarionEntry(vLit.paschaOffset)
+        : null;
+      const vParoemias = computeVespersParoemias(vMenaion, vPent, vIsPent, vIsBright);
+      els = assembleVespers(vLit, vMenaion, vPent, vParoemias, readerMode, vDateStr);
     } else if (currentService.key === 'typica') {
       els = assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode);
     } else if (currentService.key === 'pre_communion') {
