@@ -10,11 +10,20 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.21.4";
+export const TONE_TRAINER_VERSION = "v0.22.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.22.0",
+    date: "June 2026",
+    summary: "Punctuation now shown on the trainer chips and the printed score",
+    items: [
+      "feat: word punctuation (commas, periods, semicolons, exclamation/question marks, quotes, parens, trailing apostrophes) now renders on both the syllable chips and the printed-score lyrics. Previously only the clean letters were shown.",
+      "note: syllable text stays clean internally — punctuation is re-attached for display only, so accents, director-vs-machine matching, the lexicon, and hyphenation are unchanged. The penultimate // marker remains structural (slashes are stripped from displayed punctuation, so it is never doubled).",
+    ],
+  },
   {
     version: "v0.21.4",
     date: "June 2026",
@@ -1374,6 +1383,53 @@ function wordFromDisplay(wordDisplay, lexicon) {
     .filter(Boolean);
   if (!mappedSylls.length) return null;  // whole token was punctuation
   return { display: wordDisplay, sylls: mappedSylls };
+}
+
+// ── DISPLAY PUNCTUATION (chips + score) ──────────────────────────────────────
+// Syllable `text` is kept clean (the canonical key for matching/STOP/lexicon/
+// hyphens). Real punctuation survives only at the word level in w.display
+// (e.g. "Come,", "announced;", "Law.", "desired.//"). These helpers re-attach a
+// word's leading/trailing punctuation to its first/last syllable FOR DISPLAY
+// ONLY — text is never mutated. The "//" phrase marker is drawn structurally, so
+// slashes are stripped here to avoid a doubled marker. Apostrophes and hyphens
+// are word-chars (the clean regex keeps them), so a trailing apostrophe such as
+// "Lords'" already lives in text and is never treated as an affix.
+function wordAffixes(display) {
+  var WORD = /[A-Za-z\u0027\u2019\-]/; // alpha + straight/curly apostrophe + hyphen (== clean regex's kept set)
+  var s = String(display == null ? "" : display);
+  var a = 0, b = s.length;
+  while (a < b && !WORD.test(s[a])) a++;        // leading punctuation run
+  while (b > a && !WORD.test(s[b - 1])) b--;    // trailing punctuation run
+  return {
+    lead:  s.slice(0, a).replace(/\//g, ""),    // strip slashes (// is structural)
+    trail: s.slice(b).replace(/\//g, ""),
+  };
+}
+
+// rolesDisplayText: returns an array aligned 1:1 with rolesWD, giving each note's
+// DISPLAY text (clean syllable + its leading/trailing punctuation). Melisma-held
+// repeats share the disp of the syllable they continue. Same lockstep the score
+// uses for hyphenAfter, so alignment matches exactly. Falls back to r.text.
+function rolesDisplayText(words, rolesWD) {
+  var flat = [];
+  (words || []).forEach(function (w) {
+    var ss = w.sylls || [];
+    var aff = wordAffixes(w.display || ss.map(function (s) { return s.text; }).join(""));
+    ss.forEach(function (s, si) {
+      flat.push({ lead: si === 0 ? aff.lead : "", trail: si === ss.length - 1 ? aff.trail : "" });
+    });
+  });
+  var ptr = 0, prev = null, cur = null, out = [];
+  rolesWD.forEach(function (r) {
+    var isRepeat = r.melisma === true && prev !== null && r.text === prev;
+    if (!isRepeat) {
+      var f = flat[ptr++];
+      cur = f ? (f.lead + r.text + f.trail) : r.text;
+    }
+    prev = r.text;
+    out.push(cur);
+  });
+  return out;
 }
 
 // ── PRESET: Meeting of the Lord, "Lord, I Call", 3rd sticheron (hand-pointed) ───
@@ -4226,7 +4282,8 @@ export default function ToneTrainer() {
       let _prevText = null;
 
       // Alto: flat per-note array — melisma already expanded by lineToRolesWithDuration
-      const altoEntries = rolesWD.map(r => {
+      const dispArr = rolesDisplayText(line.words, rolesWD); // per-note display text (punctuation re-attached)
+      const altoEntries = rolesWD.map((r, ri) => {
         // Mirror the renderer's melisma-repeat test: a melisma role whose text
         // matches the previous role is a held continuation, not a new syllable.
         const isMelismaRepeat = r.melisma === true && _prevText !== null && r.text === _prevText;
@@ -4239,6 +4296,7 @@ export default function ToneTrainer() {
         _prevText = r.text;
         return {
           text:    r.text,
+          disp:    dispArr[ri],         // display text with punctuation (renderer prefers this)
           pitch:   r.pitches[0],
           durKey:  r.durKey,
           role:    r.role,
@@ -5409,7 +5467,7 @@ export default function ToneTrainer() {
         };
 
         // Build syllable text labels with melisma bar
-        const renderTextLabel = (r, w, isAnchor, isMelisma) => (
+        const renderTextLabel = (r, w, isAnchor, isMelisma, dispText) => (
           <div style={{
             width: w, flexShrink: 0, textAlign: "center", position: "relative",
             display: "flex", alignItems: "center", justifyContent: "center",
@@ -5429,18 +5487,19 @@ export default function ToneTrainer() {
               color: ink,
               background: isMelisma ? "white" : "transparent",
               padding: isMelisma ? "0 3px" : 0,
-            }}>{r.text}</span>
+            }}>{dispText != null ? dispText : r.text}</span>
           </div>
         );
 
         // Group rolesWD by original syllable (melisma entries share same text)
         // We need to group consecutive entries with same text for the text label
+        const dispArr = rolesDisplayText(line.words, rolesWD); // display text per note (punctuation re-attached)
         const groupedAlto = [];
         rolesWD.forEach((r, i) => {
           if (r.melisma && groupedAlto.length > 0 && groupedAlto[groupedAlto.length-1].text === r.text) {
             groupedAlto[groupedAlto.length-1].entries.push({ r, i });
           } else {
-            groupedAlto.push({ text: r.text, entries: [{ r, i }] });
+            groupedAlto.push({ text: r.text, disp: dispArr[i], entries: [{ r, i }] });
           }
         });
 
@@ -5547,7 +5606,7 @@ export default function ToneTrainer() {
                 const isMel = grp.entries.length > 1;
                 const totalW = grp.entries.reduce((s, {r}) => s + chipW(r), 0) + (isMel ? CHIP_MELISMA_GAP * (grp.entries.length-1) : 0);
                 const isAnchor = grp.entries.some(({r}) => r.anchor);
-                return renderTextLabel(grp.entries[0].r, totalW, isAnchor, isMel);
+                return renderTextLabel(grp.entries[0].r, totalW, isAnchor, isMel, grp.disp);
               })}
             </div>
 
