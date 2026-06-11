@@ -127,7 +127,7 @@ var KEY_MAP = {
   // si     = raised sol (chromatic, rare)
   311.13: { vexKey:'Eb', names:{ do:'Eb', re:'F',  mi:'G',  fa:'Ab', sol:'Bb', la:'C',  ti:'D',  si:'Bn',  di:'En',  mi_low:'G'  } },
   349.23: { vexKey:'F',  names:{ do:'F',  re:'G',  mi:'A',  fa:'Bb', sol:'C',  la:'D',  ti:'E',  si:'C#',  di:'F#',  mi_low:'A'  } },
-  392.00: { vexKey:'G',  names:{ do:'G',  re:'A',  mi:'B',  fa:'C',  sol:'D',  la:'E',  ti:'F#', si:'C#',  di:'G#',  mi_low:'B'  } },
+  392.00: { vexKey:'G',  names:{ do:'G',  re:'A',  mi:'B',  fa:'C',  sol:'D',  la:'E',  ti:'F#', si:'D#',  di:'G#',  mi_low:'B'  } },
 };
 
 // Resolve key config from payload.doHz; fall back to F major.
@@ -137,44 +137,44 @@ function resolveKey(doHz) {
   return KEY_MAP[rounded] || KEY_MAP[349.23];
 }
 
-// Build ALTO_PITCH map for the given key config.
-// Alto sits in the upper-middle treble register:
-//   do/re/mi/fa in octave 4, sol/la/ti in octave 5.
-// This matches the OCA score where fa=Bb/4 is the middle treble line.
-function buildAltoPitch(cfg) {
-  var n = cfg.names;
-  // Anchored to fa=Bb/4 (middle treble line, confirmed OCA score).
-  // la/ti sit BELOW do in the scale — they belong at octave 4, not 5.
-  // sol and above cross into octave 5.
-  return {
-    la: n.la+'/4',  // D4 — below middle line
-    ti: n.ti+'/4',  // E4 — 1st line (below re=G4) ✓
-    do: n.do+'/4',  // F4 — 1st space
-    re: n.re+'/4',  // G4 — 2nd line (alto Phrase A/C reciting tone)
-    mi: n.mi+'/4',  // A4 — 2nd space
-    fa: n.fa+'/4',  // Bb4 — middle line (alto Phrase B/D reciting tone) ✓
-    sol: n.sol+'/5', // C5 — 3rd space
-    si: n.si+'/5',  di: n.di+'/4', mi_low: n.mi_low+'/4',
-  };
+// ── Pitch spelling by transposition (fixes non-F keys) ───────────────────────
+// Octave digits must roll over at the C boundary, and which solfège degree sits
+// on that boundary moves with the key — so octaves cannot be hardcoded per degree
+// (that was correct only for F major). Instead we anchor each voice's octave in F
+// major, shift every note by the key's semitone transposition (Eb −2, F 0, G +2),
+// and respell with the key's letter + the octave implied by the resulting pitch.
+// F major reproduces the prior output exactly (shift = 0).
+var SEMI = { C:0,'C#':1,Db:1,D:2,'D#':3,Eb:3,E:4,En:4,Fb:4,'E#':5,F:5,'F#':6,Gb:6,
+             G:7,'G#':8,Ab:8,A:9,'A#':10,Bb:10,B:11,Bn:11,Cb:11,'B#':0 };
+function semiOf(name) { return SEMI[name] != null ? SEMI[name] : (SEMI[name[0]] || 0); }
+function midiOf(letter, oct) { return 12 * (oct + 1) + semiOf(letter); }
+function octForMidi(letter, midi) { return Math.round((midi - semiOf(letter)) / 12) - 1; }
+
+var F_CFG = KEY_MAP[349.23]; // F-major reference (the anchor octaves are F-major octaves)
+
+// Spell a note: anchorOct is its F-major octave; cfg is the target key. Returns
+// "<letter>/<octave>" with the octave computed from the transposed pitch.
+function spell(sol, anchorOct, cfg) {
+  var letterF = F_CFG.names[sol]; if (letterF == null) return cfg.names.do + '/' + anchorOct;
+  var T = midiOf(cfg.names.do, 4) - midiOf('F', 4); // key transposition in semitones (do@oct4)
+  var newMidi = midiOf(letterF, anchorOct) + T;
+  var letter = cfg.names[sol] || letterF;
+  return letter + '/' + octForMidi(letter, newMidi);
 }
 
-// Build SOPRANO_PITCH map. Soprano is a diatonic third above alto (verified, all 5 Tone 1
-// phrases). Working from the alto anchor (fa=Bb/4), the note a third above each alto note
-// shares the alto octave EXCEPT la and ti: soprano la/ti derive from alto fa/sol (top of the
-// alto range), so they sit an octave above alto's la/4, ti/4 — i.e. la/5, ti/5. This guarantees
-// soprano always renders above alto. SOPRANO_MAP values only ever produce do/re/mi/fa/sol/la/ti.
+// F-major anchor octaves per voice (the registers verified against the OCA score).
+var ALTO_ANCHOR_OCT    = { la:4, ti:4, do:4, re:4, mi:4, fa:4, sol:5, si:5, di:4, mi_low:4 };
+var SOPRANO_ANCHOR_OCT = { la:5, ti:5, do:4, re:4, mi:4, fa:4, sol:5, si:5, di:4, mi_low:4 };
+
+// Alto sits in the upper-middle treble register (fa = Bb/4 middle line in F major);
+// la/ti sit below do. Octaves now transpose cleanly for any key.
+function buildAltoPitch(cfg) {
+  var m = {}; for (var k in ALTO_ANCHOR_OCT) m[k] = spell(k, ALTO_ANCHOR_OCT[k], cfg); return m;
+}
+// Soprano is a diatonic third above alto; la/ti are pushed an octave up so soprano
+// always renders above alto. (Same anchors as before, now transposition-aware.)
 function buildSopranoPitch(cfg) {
-  var n = cfg.names;
-  return {
-    la: n.la+'/5',   // a third above alto fa (Bb4) → D5
-    ti: n.ti+'/5',   // a third above alto sol (C5) → E5
-    do: n.do+'/4',   // F4
-    re: n.re+'/4',   // G4
-    mi: n.mi+'/4',   // A4
-    fa: n.fa+'/4',   // Bb4
-    sol: n.sol+'/5', // C5
-    si: n.si+'/5',  di: n.di+'/4', mi_low: n.mi_low+'/4',
-  };
+  var m = {}; for (var k in SOPRANO_ANCHOR_OCT) m[k] = spell(k, SOPRANO_ANCHOR_OCT[k], cfg); return m;
 }
 
 function staveKey(solName, oct, cfg) {
@@ -183,31 +183,20 @@ function staveKey(solName, oct, cfg) {
   return letter + '/' + oct;
 }
 
-// Bass staff notation octave — fixed per solfège, key-independent.
-// sol=C/3 = 2nd space bass clef (OCA score confirmed). All neighboring pitches oct 3.
-// mi_low = one octave below mi (Tone 1 Final cadence lower register).
-var BASS_NOTATION_OCT = {
-  fa:2, sol:3, la:3, ti:3, do:3, re:3, mi:3, mi_low:2, di:3, si:3,
-};
-
+// Bass staff notation octave (F-major anchor) — fa sits low; key-independent register.
+var BASS_NOTATION_OCT = { fa:2, sol:3, la:3, ti:3, do:3, re:3, mi:3, mi_low:2, di:3, si:3 };
 function bassVFPitch(sol, div, cfg) {
-  // div (octaveDiv) is an audio-only concept — ignored for score notation.
-  // Use fixed notation octave table instead.
-  var oct = BASS_NOTATION_OCT[sol] || 3;
-  return staveKey(sol, oct, cfg);
+  // div (octaveDiv) is audio-only — notation octave comes from the anchor table.
+  var oct = (BASS_NOTATION_OCT[sol] != null) ? BASS_NOTATION_OCT[sol] : 3;
+  return spell(sol, oct, cfg);
 }
 
-// Tenor notation octave (÷2 baseline), derived from BASS_NOTATION_OCT shifted up by the
-// frequency ratio log2(BASS_OCTAVE_DIV / TENOR_OCTAVE_DIV) per pitch. sol: bass ÷4, tenor ÷2
-// → +1 octave over bass C/3 → tenor sol = C/4. All other pitches share the bass notation
-// octave (both ÷2). The payload carries each tenor note's octaveDiv; tenorVFPitch then shifts
-// by log2(2/div) so the Final phrase's ÷1 la/si rise one octave (la → one step above sol,
-// matching the score-verified TENOR_RULES Final shape).
+// Tenor notation octave (F-major anchor, ÷2 baseline); div shifts by log2(2/div).
 var TENOR_NOTATION_OCT = { la:3, ti:3, do:3, di:3, re:3, mi:3, fa:2, sol:4, mi_low:3, si:3 };
 function tenorVFPitch(sol, div, cfg) {
   var base = (TENOR_NOTATION_OCT[sol] != null) ? TENOR_NOTATION_OCT[sol] : 4;
   var shift = Math.round(Math.log2(2 / (div || 2)));  // ÷2→0, ÷1→+1, ÷4→-1
-  return staveKey(sol, base + shift, cfg);
+  return spell(sol, base + shift, cfg);
 }
 var DUR = { Q:'q', H:'h', 'H·':'h', W:'w', 'W·':'wd' };
 
@@ -755,13 +744,13 @@ function renderScore(payload) {
       for (var ai = 0; ai < altoSlice.length; ai++) {
         var r = altoSlice[ai];
         aN.push(rec.has(ai) ? mkGhost(r.durKey)
-          : mkNote(ALTO_PITCH[r.pitch] || cfg.names.fa + '/4', r.durKey, altoStem));
+          : mkNote(ALTO_PITCH[r.pitch] || ALTO_PITCH.fa, r.durKey, altoStem));
       }
       var sN = [];
       if (hasSop) for (var si2 = 0; si2 < sopSlice.length; si2++) {
         var sr = sopSlice[si2];
         sN.push(rec.has(si2) ? mkGhost(sr.durKey)
-          : mkNote(SOPRANO_PITCH[sr.pitch] || cfg.names.la + '/5', sr.durKey, 1));
+          : mkNote(SOPRANO_PITCH[sr.pitch] || SOPRANO_PITCH.la, sr.durKey, 1));
       }
       var altoVoice = mkVoice(aN), trebleVoices = [altoVoice], sopVoice = null;
       if (hasSop) { sopVoice = mkVoice(sN); trebleVoices.push(sopVoice); }
