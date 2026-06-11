@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.8.10** | **Tone Trainer: v0.23.1** | Last synced: June 10, 2026
+**Tool version: v0.8.11** | **Tone Trainer: v0.23.1** | Last synced: June 11, 2026
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
@@ -1620,6 +1620,47 @@ Does not require Octoechos. Requires SAMPLE_MENAION entries to have:
 Current status: None of these fields are in any SAMPLE_MENAION entry.
 All fields exist in Drive .txt encoding records for §2E/§2F entries —
 they were captured but not yet entered (see data-entry backlog).
+
+**FW-25: Stichera Repetition at "Lord I Have Cried" — uniform doubling + future gaps**
+
+Full rationale and Fekula research in `stichera_repeat_spec.md` (repo root).
+
+Phase 1 (DONE — see release notes): §2C/§2D "six from the Menaion" where the Menaion
+prints fewer texts than the count (3 texts → 6, 4 → 8). The count lives in
+`stichera_lord_i_call_count`; the array stays the base texts; logic repeats each in order
+when one source owns all slots and `count % length === 0`. Cited to Fekula §2A Friday eve
+("doubling each sticheron"). Shared `applyStichRepeat` / `expandSticheraToCount` helpers
+unify the repeat vocabulary across the ordinary and Pentecostarion paths. Fixed 06-09, 06-11.
+
+**Open gaps / future work (carry forward):**
+
+- **FW-25a — §2A Friday evening composition.** Fekula §2A makes Friday-eve *simple* rank
+  all six from the Menaion, **doubling each** — NOT the 3 Octoechos + 3 Menaion the assembler
+  produces on every weekday. This is a *composition* change gated on day-of-week, distinct
+  from the Phase-1 fill change. Backlogged by decision so the §2C fix could be verified in
+  isolation. Reuses the uniform-doubling engine; must be regression-checked against current
+  Friday output. **Next pass after §2C/§2D is verified.**
+- **FW-25b — fixed-feast §2G Vespers interleaving (non-Pentecostarion).** §2G apportions
+  3 feast + 3 saint / 3 + 5 / 6 + 4. The tool interleaves feast + saint only on the
+  Pentecostarion path; a fixed-calendar afterfeast has no equivalent branch. The doubling
+  gate is written so it won't mis-fire once this is added.
+- **FW-25c — repeat-marker vocabulary drift in `pentecostarion.js`.** Data uses
+  `repeat: true`, `repeat: 2`, and `repeat: "Glory…"` for different intents. `applyStichRepeat`
+  standardizes *resolution*; the *data vocabulary* should be normalized to one grammar
+  (`repeat: true` = copy preceding, `repeatIndex: n` = copy item n) and string-valued
+  `repeat` usages migrated.
+- **FW-25d — count-mismatch diagnostic assumes honest data.** When `count % length !== 0`
+  the helper treats it as a data error (bad count / missing markers). True for ordinary
+  §2A–§2D; a genuine festal apportionment reaching the helper with mixed sources would also
+  trip it. The gate prevents that today; if §2G (FW-25b) is later routed through the helper,
+  the mismatch branch must learn the apportionment first.
+- **FW-25e — `stichera_lord_i_call_count` overloaded / non-authoritative on the ordinary
+  path.** Ordinary-path `licCount` is rank-derived, not data-driven. The field also means
+  different things by rank: for §2A simple it's the *Menaion-only* count (3, + 3 Octoechos);
+  for §2C+ it's the *total*. Making it authoritative everywhere (§2E/§2F "as provided")
+  needs the semantics normalized first (separate Menaion-portion vs. total, or a fixed
+  convention). Until then a §2E/§2F saint with a non-rank-default count would be mis-counted.
+  Rank default is correct for all currently-encoded §2C/§2D/§2E dates, so deferred.
 
 **FW-02: Daily Commemorations Display**
 Show all saints for the day. Source: oca.org/saints/lives/YYYY/MM/DD
