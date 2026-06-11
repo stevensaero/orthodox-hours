@@ -1,12 +1,111 @@
 # Tone Trainer — Notes
 
-**Trainer version: v0.15.1** | Component: `src/components/tone-trainer.jsx`
+**Trainer version: v0.22.0** | Component: `src/components/tone-trainer.jsx`
 
 ---
 
 ---
 
-## Session summary (Jun 9 2026 — v0.15.0 — Tenor melisma-hold + lexicon prophets fix)
+## Session summary (Jun 10 2026 — v0.16.7 → v0.22.0 — Score system-wrap engine, verse numbers, tempo mark, punctuation)
+
+All work this arc is in **`public/score-print.html`** (the printable SATB score) plus small
+wiring in `tone-trainer.jsx`. Gate 13/13 + `npm run build` green at every push. Note: `npm run
+build` does **not** validate `score-print.html` (Vite copies `public/` verbatim) — it is validated
+only by the headless jsdom/VexFlow harness + Bill's visual confirmation. A reusable rasterization
+check was added this session: render `renderScore` in jsdom → write `svg.outerHTML` → `cairosvg`
+to PNG → crop/upscale with Pillow. VexFlow noteheads use the Bravura font (absent headless, so they
+show as artifacts), but staff lines, boxes, lyric text, phrase numbers and the tempo glyph all
+rasterize faithfully — enough to confirm geometry, colour, and borders before pushing.
+
+### Score system-wrap / justification engine (v0.16.7 → v0.18.0)
+The renderer flows payload `lines` (phrases) into a multi-system page layout. Pipeline of pure
+functions, all module-scope in `score-print.html`:
+- **`computeAdvances(alto, visible)`** — per-column advance: gap floor = `NOTE_W` when both
+  endpoints have noteheads, else `RECITE_FLOOR`; widened to `hw[i-1]+TEXT_GAP+hw[i]` so lyrics never
+  collide. This is the compressed, text-aware reciting layout Bill perfected pre-wrap.
+- **`reciteIntermediateFor(alto)`** — interior notes of a reciting run ≥4 are ghosted (first+last
+  visible); the run reads as a beam with anchored ends.
+- **`sliceVisibility` / `sliceMetrics`** — a *slice* is a sub-range `[s0,s1)` of a phrase that fits
+  one system. On an OPEN slice (wraps to next system) the slice's last column is surfaced as a
+  visible notehead (v0.17.1 **pre-break anchor** — Bill overrode doc §6 "may end on ghosts" so a
+  wrapped reciting span is bracketed by noteheads both ends).
+- **`legalSeams(line)`** — columns where a break is legal: previous role is `recite`, not splitting
+  a melisma, not inside a tenor span.
+- **`packSystems(...)`** — greedy first-fit. Whole phrase fits → place it; else (Verse Packing on)
+  wrap the head into the line-end blank at the latest legal seam with head ≥ `DENSE_MIN_FRAGMENT`
+  and tail ≥ `DENSE_MIN_FRAGMENT`; phrase wider than a full system → mandatory breaks at legal seams.
+- **Justification (Phase 3, v0.18.0)** — per system: `slack = usable − naturalSpan`. Negative →
+  proportional compress (J<1) all gaps. Positive & not the last system → distribute across **reciting
+  interior gaps only** (both endpoints role `recite`), each capped at `+RECITE_STRETCH` (20px);
+  cadence/prep/inter-phrase gaps are rigid; leftover slack → ragged-right. **Last system is never
+  stretched.** Produces per-column absolute `_X`; `drawSlice` reads `_X` (no more J/anchor/relX).
+  Critical ordering: attach the stave to each voice **before** `setVoiceX`, else a doubled
+  leading-gap bug from `getNoteStartX`.
+- Tuning constants Bill may revisit: `NOTE_W` 50, `TEXT_GAP` 6, `RECITE_FLOOR` 30, `RECITE_STRETCH`
+  20, `INDENT` 10 (uniform per system — was first-system-only 24), `INTER_PHRASE_GAP` 32,
+  `BAR_PAD` 12, `DENSE_MIN_FRAGMENT` 3, `SYSTEMS_PER_PAGE` 4.
+
+### Verse Packing toggle (v0.19.0)
+`payload.densePack` (Create Score modal checkbox, default **off**). Off = byte-identical to v0.18.0
+(verified by a two-process diff). On = the head-into-blank wrap described above.
+
+### Verse numbers (v0.20.0)
+Each verse is numbered above the treble staff at its **leading edge** — `(1) (2) … (Final)` — like
+the Apostikha reference. Drawn only on a phrase's **first slice** (`s0===0`), so a verse wrapped
+across systems (or a dense continuation) is numbered once at its start. `phraseLabel` is threaded
+through `mkSlice`; the last phrase's label is `'Final'`. Current style (after Bill's tuning):
+**black**, 12px, weight 400, on a white knockout box, registered 12px left of the first note, 7px
+above the top staff line. `SHOW_PHRASE_NUMBERS` constant gates it (default on).
+
+### Tempo mark (v0.21.0 → v0.21.4)
+`payload.showTempo` (Create Score modal checkbox, default off) + `payload.bpm`. The trainer's BPM is
+**half-notes-per-minute** (confirmed at `tone-trainer.jsx` line ~2921, `const H = 60/bpm`), so the
+beat unit on the mark is the **half note**. Drawn top-left on the first system only. The glyph is
+**Bill's `half_note.svg`** (notehead + stem, hollow centre) inlined as two `<path>`s under
+`translate(45.9,12.2) scale(0.14) translate(-107.56,-85.3217)`, the black path stroked
+(`stroke-width:5`) for heft; followed by `= N`. Both glyph and text render **black**.
+
+### ⚠️ VexFlow inherited-stroke gotcha (root cause found v0.21.1 — important)
+VexFlow sets `stroke="black" stroke-width="1"` on the **root `<svg>`**, and SVG `stroke` is an
+**inherited** property. Any filled element we append (knockout boxes, phrase-number box, the tempo
+glyph's hollow path) that does not set its own `stroke` **inherits a 1px black border** — which
+*paints in the browser but shows no `stroke` attribute in jsdom* (jsdom doesn't paint), so it can
+look absent in headless dumps while clearly bordered in a real screenshot. **Rule: every filled
+element appended into the VexFlow SVG must set `stroke="none"` explicitly** (or an intentional
+stroke). The SATB label box's border is now set *explicitly* (`stroke="black" stroke-width="1"`,
+Bill's "happy accident" he asked to keep) rather than relying on inheritance.
+
+### Punctuation on chips + score (v0.22.0)
+Syllable `text` is deliberately kept **clean** (`[^A-Za-z''-]` stripped) because it is the canonical
+key for director-vs-machine matching, the STOP-word filter, lexicon lookup, and hyphen logic. Real
+punctuation survives only at the **word** level in `line.words[w].display` (true for both presets
+and the typed-text parse — the parse keeps `display: raw`). Two new module-scope helpers
+re-attach punctuation **for display only** (`text` is never mutated):
+- **`wordAffixes(display)`** — leading/trailing punctuation runs (chars NOT in `[A-Za-z'’-]`, so
+  apostrophes/hyphens are word-chars and a trailing `Lords'` is never doubled), **slashes stripped**
+  so the structural `//` penultimate marker is never duplicated into a lyric.
+- **`rolesDisplayText(words, rolesWD)`** — per-note display text aligned 1:1 with `rolesWD` using the
+  *same* melisma-repeat lockstep the score already uses for `hyphenAfter`; melisma-held repeats share
+  the held syllable's disp.
+
+Both consumers read one shared implementation: `buildScorePayload` tags each alto entry with `disp`
+and `drawLyrics` renders `r.disp || r.text` (white-box width measures the displayed string); the
+chip text row (`renderTextLabel`, fed from `groupedAlto[].disp`) shows the disp. Unit-verified
+7/7 affix cases (`Come,` `announced;→nounced;` `Law.` `desired.//→sired.` `Lords'` `(Come)`
+`well-spring→spring`) + a held melisma. **Possible follow-ups Bill flagged:** syllable centering
+(currently the whole `Come,` is centred on the note; could keep the vowel centred with punctuation
+hanging right) and chip-row width if a word+punctuation ever overflows a narrow chip.
+
+### Push hygiene reminder
+A parallel **psalter** stream (FW-24, hours-tool versions v0.8.x) advances `origin/main` frequently
+and independently; `git fetch` + `git rebase origin/main` (not merge) before every push — all
+rebases this arc were clean (psalter touches hours-tool/psalter; score work touches
+score-print.html + tone-trainer.jsx version/notes). The session's GitHub token was used inline
+across many pushes and is exposed in chat scrollback — **rotate when convenient.**
+
+---
+
+
 
 Gate 13/13, build clean. Tenor now **holds** across a constant-pitch alto melisma instead of
 articulating one note per alto note. Wired identically through all three tenor consumers via a
