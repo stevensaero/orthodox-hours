@@ -7612,6 +7612,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.15.6",
+    date: "June 2026",
+    summary: "How It Works: new Pointing/Chant/Score section, status refresh, table + footer width fixes",
+    items: [
+      "docs: How It Works gains a 'Pointing, Chant & Score' section documenting the pointed-hymnography notation (| line end, // cadence, [brackets] director emphasis), the ▶ Point / ♫ Score controls on every pointable verse, the Tone Trainer hand-off, and the self-hosted VexFlow four-part score (Tones 1–3 built).",
+      "docs: status refreshed — Octoechos Sunday Matins now encoded for Tones 1–2; Pentecostarion coverage corrected to include P+63 (All Saints of North America, 24 entries); Menaion coverage stated precisely (May 16–June 30 complete, plus July 1–3 and 14–15).",
+      "ui: the Data Record Fields table is constrained to the content width (fixed layout + wrapping cells) instead of overrunning, and the copyright footer is fenced to the same 800px width as the rest of the tool rather than spanning full-bleed.",
+    ],
+  },
+  {
     version: "v0.15.5",
     date: "June 2026",
     summary: "How It Works / Glossary panels constrained to the hours-tool content width",
@@ -9366,7 +9376,7 @@ function HowItWorksPanel() {
     { name: "Vespers", status: "built", note: "Full HTM skeleton + interleaved Lord I Have Cried stichera (Octoechos + Menaion by §4A/§4B rules), Aposticha, Litiya, Entrance; Menaion/Pentecostarion/Octoechos movable texts" },
     { name: "Compline (Apodeipnon)", status: "planned", note: "" },
     { name: "Midnight Office", status: "planned", note: "" },
-    { name: "Matins (Orthros)", status: "planned", note: "Data architecture built: per-tone Octoechos files (Phase 1), P+56 All Saints feast canon encoded and browsable. Assembler not yet built." },
+    { name: "Matins (Orthros)", status: "planned", note: "Data encoding underway: Octoechos Sunday Resurrectional Matins complete for Tones 1–2 (sessional hymns, songs of ascent, all three canons, praises); P+56 All Saints feast canon also encoded. Assembler not yet built." },
     { name: "The First Hour", status: "built", note: "Including special close (O Christ the True Light)" },
     { name: "The Third Hour", status: "built", note: "" },
     { name: "The Sixth Hour", status: "built", note: "" },
@@ -9435,7 +9445,7 @@ function HowItWorksPanel() {
             <><strong>Scripture viewer</strong> — Full-text epistle and gospel readings, linked from the liturgical context card and from within service elements.</>,
             <><strong>Menaion data browser</strong> (<a href="/orthodox-hours/menaion" style={{color: "#8B6914"}}>open</a>) — Inspect all encoded fixed-calendar entries with per-entry completeness auditing. Shows every field, flags missing data, and displays Litiya stichera and Beatitudes troparia.</>,
             <><strong>Pentecostarion data browser</strong> (<a href="/orthodox-hours/pentecostarion" style={{color: "#8B6914"}}>open</a>) — Same for Pascha-anchored entries, organized by liturgical period.</>,
-            <><strong>Octoechos data browser</strong> (<a href="/orthodox-hours/octoechos" style={{color: "#8B6914"}}>open</a>) — Browse encoded Octoechos vespers stichera and matins data by tone (1–8). Matins sections show Phase 3 stubs until encoded from N-1.pdf files.</>,
+            <><strong>Octoechos data browser</strong> (<a href="/orthodox-hours/octoechos" style={{color: "#8B6914"}}>open</a>) — Browse encoded Octoechos vespers and Sunday Matins data by tone (1–8). Tones 1–2 carry full Sunday Resurrectional Matins; the remaining tones show stubs until encoded from their N-1.pdf. The Matins view surfaces its day (Sunday) explicitly.</>,
             <><strong>Reader mode</strong> — Substitutes lay reader responses for priest exclamations throughout.</>,
           ])}
         </div>
@@ -9572,7 +9582,22 @@ function HowItWorksPanel() {
         </div>
       )}
 
-      {/* ── 5. Encoding Status ───────────────────────────────────────────── */}
+      {/* ── 5. Pointing, Chant & Score ──────────────────────────────────── */}
+      <div style={headerStyle} onClick={() => toggle("pointing")}>
+        <span>Pointing, Chant &amp; Score</span>{chevron(open.pointing)}
+      </div>
+      {open.pointing && (
+        <div style={panelStyle}>
+          {p(<>Beyond assembling the right texts, the tool can present hymnography <strong>as it is sung</strong>. Every pointable verse — a sticheron, troparion, or other hymn whose text carries chant pointing — can be opened for singing or rendered as a printed four-part score, directly from the assembled service and from all three data browsers.</>)}
+          {sub("Pointed hymnography")}
+          {p(<>Pointed text is stored as a single canonical marked string in the OCA dialect: <code>|</code> marks the end of a musical line, <code>//</code> marks the penultimate (cadence) line, and <code>[brackets]</code> mark a syllable for director emphasis — shown underlined. Source markers — the St. Sergius <code>*</code> and <code>**</code>, and underlines in director-pointed documents — are converted to this dialect <em>at encode time</em>, so the data carries one consistent notation. The markers are stripped at render: the assembled service shows clean line breaks and the emphasis underline, while the data browsers can show the raw marked string for verification.</>)}
+          {sub("Point & Score")}
+          {p(<>Any pointable verse shows a <strong>▶ Point</strong> and <strong>♫ Score</strong> control at its right edge. <strong>Point</strong> hands the verse to the <strong>Tone Trainer</strong>, which works out the syllabification and accent placement and renders it singable — reciting tone plus cadence — across all four voices (SATB) with audio. <strong>Score</strong> takes the same verse and produces a <strong>printed four-part score</strong>, engraved with a self-hosted, frozen build of VexFlow so the notation cannot drift with upstream releases.</>)}
+          {p(<>The controls are gold and active for the tones whose chant rules have been built and verified from score — <strong>Tones 1, 2, and 3</strong> today. For other tones they appear greyed with a tooltip noting the tone is not yet built, so the feature advertises its own coverage honestly. Each tone is encoded only after its melody and cadences are verified against the Obikhod score.</>)}
+        </div>
+      )}
+
+      {/* ── 6. Encoding Status ───────────────────────────────────────────── */}
       <div style={headerStyle} onClick={() => toggle("encoding")}>
         <span>Encoding Status</span>{chevron(open.encoding)}
       </div>
@@ -9591,19 +9616,19 @@ function HowItWorksPanel() {
           {sub("Currently encoded")}
           {ul([
             <><strong>Menaion:</strong> May 16–31 (16 entries), June 1–30 (30 date keys · 36 service entries for multi-service dates), July 1–15 (5 entries).</>,
-            <><strong>Pentecostarion:</strong> P+19 through P+56 (23 entries). Covers Thomas Sunday week through All Saints of North America including Ascension, Pentecost, and the Saturdays of the Reposed.</>,
+            <><strong>Pentecostarion:</strong> P+19, P+35–P+56, and P+63 (24 entries). Covers Thomas Sunday week through All Saints of North America, including Ascension, Pentecost, and the Saturdays of the Reposed.</>,
             <><strong>Pre-Communion Prayers:</strong> Complete (35 sections, Jordanville Prayer Book).</>,
             <><strong>Post-Communion Prayers:</strong> Complete (HTM order, adapts to liturgy type).</>,
           ])}
           {p("Dates not yet encoded are marked with a red border in the assembled service. The saint’s name appears from the OCA calendar, but troparion and kontakion texts cannot be supplied until the Menaion PDF has been read and encoded.", { fontStyle: "italic", color: "#5C4A1E" })}
           {sub("Data record fields")}
           {p("Every date that has been encoded carries some or all of the following fields. The Status column reflects the current state.")}
-          <table style={{ width: "100%", fontSize: "0.75rem", borderCollapse: "collapse", marginBottom: "0.8rem" }}>
+          <table style={{ width: "100%", tableLayout: "fixed", fontSize: "0.75rem", borderCollapse: "collapse", marginBottom: "0.8rem" }}>
             <thead>
               <tr style={{ background: "rgba(139,105,20,0.1)", textAlign: "left" }}>
-                <th style={{ padding: "4px 8px", borderBottom: "1px solid #D4C49A", color: "#5C4A1E" }}>Field</th>
-                <th style={{ padding: "4px 8px", borderBottom: "1px solid #D4C49A", color: "#5C4A1E" }}>What it contains</th>
-                <th style={{ padding: "4px 8px", borderBottom: "1px solid #D4C49A", color: "#5C4A1E" }}>Status</th>
+                <th style={{ width: "30%", padding: "4px 8px", borderBottom: "1px solid #D4C49A", color: "#5C4A1E" }}>Field</th>
+                <th style={{ width: "42%", padding: "4px 8px", borderBottom: "1px solid #D4C49A", color: "#5C4A1E" }}>What it contains</th>
+                <th style={{ width: "28%", padding: "4px 8px", borderBottom: "1px solid #D4C49A", color: "#5C4A1E" }}>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -9632,11 +9657,11 @@ function HowItWorksPanel() {
                 ["stichera_aposticha", "Vespers Aposticha stichera texts with verse inserts", "✓ active — fully assembled for §2E/§2F entries with encoded data"],
               ].map(([field, desc, used], i) => (
                 <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : "rgba(0,0,0,0.02)" }}>
-                  <td style={{ padding: "4px 8px", borderBottom: "1px solid #EDE5CE", fontFamily: "monospace", fontSize: "0.72rem", color: "#3B4A6B", whiteSpace: "nowrap" }}>{field}</td>
+                  <td style={{ padding: "4px 8px", borderBottom: "1px solid #EDE5CE", fontFamily: "monospace", fontSize: "0.72rem", color: "#3B4A6B", whiteSpace: "normal", overflowWrap: "break-word" }}>{field}</td>
                   <td style={{ padding: "4px 8px", borderBottom: "1px solid #EDE5CE", color: "#2C1F0A" }}>{desc}</td>
                   <td style={{ padding: "4px 8px", borderBottom: "1px solid #EDE5CE",
                     color: used.startsWith("✓ active") ? "#3A6B3A" : used.startsWith("✓ encoded") ? "#3A6B6B" : used.startsWith("⚠") ? "#8B6914" : "#9A8A70",
-                    whiteSpace: "nowrap" }}>
+                    whiteSpace: "normal" }}>
                     {used}
                   </td>
                 </tr>
@@ -9647,7 +9672,7 @@ function HowItWorksPanel() {
         </div>
       )}
 
-      {/* ── 6. What’s Here, What’s Coming & How to Help ──────────────────── */}
+      {/* ── 7. What’s Here, What’s Coming & How to Help ──────────────────── */}
       <div style={headerStyle} onClick={() => toggle("limits")}>
         <span>{"What’s Here, What’s Coming & How to Help"}</span>{chevron(open.limits)}
       </div>
@@ -9661,14 +9686,15 @@ function HowItWorksPanel() {
             <><strong>Reader mode</strong> replaces priest exclamations with lay reader responses throughout.</>,
             <><strong>Scripture viewer</strong> provides full-text epistle and gospel readings linked from the context card.</>,
             <><strong>Psalter reader</strong> shows full psalm texts for appointed kathismas, linked from Vespers.</>,
+            <><strong>Pointing &amp; chant</strong> — pointable verses can be opened in the Tone Trainer or rendered as a four-part VexFlow score (Tones 1–3).</>,
           ])}
           {sub("Known limitations")}
           {ul([
             <><strong>Great Lent and Triodion</strong> — Lenten services follow substantially different rubrical patterns (Lenten Hours with prostrations, Presanctified Liturgy, altered Vespers structure, Lenten kathisma tables). The calendar engine tracks these periods correctly, but the assembly rules and Triodion data have not been built yet. This is the next major development area.</>,
-            <><strong>Compline, Midnight Office, and Matins</strong> are not yet assembled. These are large services with complex structure (especially Matins, which includes the canon, polyeleos, and other elements not present at the Hours).</>,
+            <><strong>Compline, Midnight Office, and Matins</strong> are not yet assembled (though the Octoechos Sunday Matins data is now being encoded — Tones 1–2 complete). These are large services with complex structure (especially Matins, which includes the canon, polyeleos, and other elements not present at the Hours).</>,
             <><strong>Divine Liturgy</strong> is not assembled. Epistle and Gospel references are shown in the context card, and Liturgy-specific fields (prokeimenon, alleluia, communion verse) are encoded in the data but not yet surfaced.</>,
-            <><strong>Vespers stichera coverage</strong> — Lord I Have Cried and Aposticha stichera are fully assembled for encoded dates. Menaion encoding currently covers May 16–July 15 and Pentecostarion P+19–P+56; dates outside this range show the psalm scaffold with a placeholder. Extending coverage requires reading and encoding additional Menaion months.</>,
-            <><strong>Encoding coverage</strong> — only May 16–July 15 are encoded in the Menaion. Dates outside this range show the OCA calendar’s saint name but cannot supply troparion or kontakion texts. The Pentecostarion covers P+19–P+56.</>,
+            <><strong>Vespers stichera coverage</strong> — Lord I Have Cried and Aposticha stichera are fully assembled for encoded dates. Menaion encoding currently covers May 16–June 30 (complete) plus July 1–3 and 14–15, and Pentecostarion P+19–P+63; dates outside this range show the psalm scaffold with a placeholder. Extending coverage requires reading and encoding additional Menaion months.</>,
+            <><strong>Encoding coverage</strong> — the Menaion covers May 16–June 30 plus July 1–3 and 14–15. Dates outside this range show the OCA calendar’s saint name but cannot supply troparion or kontakion texts. The Pentecostarion covers P+19–P+63.</>,
           ])}
           {sub("Translation note")}
           {p("The tool primarily uses St. Sergius (Russian) Menaion texts. The OCA often uses a different English translation of the same prayer. These are the same prayer in a different rendering — not different prayers. Known divergences are flagged and will be corrected to OCA text in future updates.")}
@@ -11306,7 +11332,7 @@ export default function App() {
       {/* ── END HOW IT WORKS ─────────────────────────────────────── */}
 
       {/* ── COPYRIGHT FOOTER ─────────────────────────────────────── */}
-      <div style={{ marginTop: "1.5rem", borderTop: "1px solid #e8dfc8", paddingTop: "0.7rem",
+      <div style={{ maxWidth: "800px", margin: "1.5rem auto 0", borderTop: "1px solid #e8dfc8", padding: "0.7rem 1rem 0",
                     fontSize: "0.72rem", color: "#9A8A70", fontFamily: "Georgia, serif" }}>
         {!copyrightExpanded ? (
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", justifyContent: "space-between", alignItems: "baseline" }}>
