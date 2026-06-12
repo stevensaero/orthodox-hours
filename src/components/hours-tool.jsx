@@ -7655,6 +7655,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.14.1",
+    date: "June 2026",
+    summary: "Psalter footer button removed; kathisma links open focused",
+    items: [
+      "change: the Psalter button is gone from the tool footer — the Psalter is now reached through the service dropdown (Service of the Psalter, normal and departed readings). The Scripture and Tone Trainer footer buttons stay.",
+      "feat: kathisma links inside service texts now open the Psalter focused on just that kathisma, the way Scripture links open a single pericope. The 20-kathisma selector row and the prev/next kathisma nav are stripped in this mode; the back-to-Hours strip remains. Opening the Psalter without a specific kathisma still shows the full browsing nav.",
+    ],
+  },
+  {
     version: "v0.14.0",
     date: "June 2026",
     summary: "♫ Score control — printed score straight from a verse",
@@ -11235,16 +11244,6 @@ export default function App() {
           >
             {showGlossary ? "Hide Glossary" : "Glossary"}
           </button>
-          <a
-            href="/orthodox-hours/psalter?from=tool"
-            style={{ background: "transparent", border: "1px solid #8B6914",
-                     color: "#8B6914", borderRadius: "3px", padding: "5px 14px",
-                     fontSize: "0.78rem", letterSpacing: "0.08em", cursor: "pointer",
-                     fontFamily: "Georgia, serif", textDecoration: "none",
-                     display: "inline-block" }}
-          >
-            Psalter
-          </a>
           <a
             href="/orthodox-hours/scripture?from=tool"
             style={{ background: "transparent", border: "1px solid #8B6914",

@@ -79,7 +79,7 @@ function PsalmBlock({ num }) {
   );
 }
 
-function KathismaView({ k, onNav }) {
+function KathismaView({ k, onNav, hideNav }) {
   const topRef = useRef(null);
 
   useEffect(() => {
@@ -169,6 +169,7 @@ function KathismaView({ k, onNav }) {
         </svg>
       </div>
 
+      {!hideNav && (
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: "2rem", marginBottom: "1.5rem", paddingTop: "1rem", borderTop: `1px solid ${C.border}` }}>
         <button onClick={() => onNav(k - 1)} disabled={k <= 1}
           style={{ fontFamily: "Georgia, serif", fontSize: "0.82rem", color: C.gold, background: "none", border: `1px solid ${C.goldLight}`, borderRadius: "3px", padding: "5px 14px", cursor: k <= 1 ? "default" : "pointer", opacity: k <= 1 ? 0.3 : 1 }}>
@@ -179,6 +180,7 @@ function KathismaView({ k, onNav }) {
           Kathisma {k + 1} →
         </button>
       </div>
+      )}
     </div>
   );
 }
@@ -207,6 +209,13 @@ export default function Psalter() {
       : service === "typica" ? "Typica"
       : service.replace("_", " ").replace(/\b\w/g, c => c.toUpperCase());
     return { dayName, dateLabel, serviceLabel, href: "/orthodox-hours/" };
+  })();
+
+  // Focused (pericope-style) mode: opened pointed at a specific kathisma from a
+  // service-text link. Show only that kathisma — strip the kathisma selector and
+  // the prev/next nav, keeping the back-to-Hours strip. Bare browsing keeps the nav.
+  const focused = (() => {
+    try { return new URLSearchParams(window.location.search).get("kathisma") != null; } catch { return false; }
   })();
 
   const [currentK, setCurrentK] = useState(initialK);
@@ -252,6 +261,7 @@ export default function Psalter() {
           <span style={{ fontSize: "0.72rem", color: C.inkLight, fontStyle: "italic" }}>Brenton Septuagint · Public Domain</span>
         </div>
 
+        {!focused && (
         <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "1.75rem", flexWrap: "wrap" }}>
           <span style={{ fontSize: "0.68rem", textTransform: "uppercase", letterSpacing: "0.12em", color: C.inkLight, marginRight: "0.2rem" }}>Kathisma</span>
           {Array.from({ length: 20 }, (_, i) => i + 1).map(k => (
@@ -266,8 +276,9 @@ export default function Psalter() {
             </button>
           ))}
         </div>
+        )}
 
-        <KathismaView key={currentK} k={currentK} onNav={setCurrentK} />
+        <KathismaView key={currentK} k={currentK} onNav={setCurrentK} hideNav={focused} />
 
         {currentK === 20 && PSALMS[151] && (
           <div style={{ marginTop: "2rem", paddingTop: "1.5rem", borderTop: `1px solid ${C.border}` }}>
