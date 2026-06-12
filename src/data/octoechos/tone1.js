@@ -6,7 +6,7 @@
 
 export default {
   // Sections claimed complete for the drift gate (schema.js + validate_octoechos.mjs).
-  _encoded: ['vespers'],
+  _encoded: ['vespers', 'matins'],
 
   // ── VESPERS ────────────────────────────────────────────────────────────────
   // Migrated from OCTOECHOS_VESPERS[1] in hours-tool.jsx (Phase 1).
@@ -143,6 +143,289 @@ export default {
   // ── SUNDAY MATINS ──────────────────────────────────────────────────────────
   // STUB — to be encoded in Phase 3 from Drive: Octoechos/tone1/N-1.pdf
   // (Saturday Evening + Sunday Matins PDF for Tone 1)
-  matins: {},
+  matins: {
+    // Sunday Matins — Tone 1. Source: 1-1.pdf (St. Sergius). Markers per §3.3
+    // (* → |, ** → //). Canon troparia and the ikos are Tier-1 plain (solid prose
+    // in the source); irmoi/sessionals/songs/prokeimenon/praises/theotokia/doxology
+    // carry | and //. The God-is-the-Lord troparion, Hypakoë, and Matins kontakion
+    // are pulled from RESURRECTIONAL_TROPARIA / HYPAKOE / SUNDAY_KONTAKIA (index.js).
+    god_is_the_lord_theotokion: `When Gabriel announced to thee, "Rejoice!", O Virgin, | the Master of all became incarnate within thee, the holy tabernacle, | at his cry, as the righteous David said. Thou wast shown to be more spacious than the heavens, | having borne thy Creator. | Glory to Him Who made His abode within thee! | Glory to Him Who came forth from thee! // Glory to Him Who hath set us free by thy birthgiving.`,
+
+    sessional_kathisma2: {
+      hymn_1: { text: `While watching Thy grave, the soldiers | became as dead men from the lightning flash of the angel | who appeared and proclaimed to the Women the Resurrection. | We glorify Thee, the destroyer of corruption; | we fall down before Thee, | who hath risen from the grave // and who alone art our God.` },
+      hymn_2: {
+        verse: `Arise, O Lord my God, let Thy hands be lifted on high; | forget not Thy paupers to the end.`,
+        text: `Thou wast willingly nailed to the Cross, | O Compassionate one, | and laid in a tomb as a mortal, | O Giver of life. | By Thy death, O Powerful one, | Thou hast smashed its might; | for Hades' gatekeepers trembled before Thee; | Thou hast raised with Thee the dead from every age, // for Thou alone lovest mankind.`,
+      },
+      theotokion: `All we who with love flee for refuge to thy goodness | know thee to be the Mother of God | and after childbirth still truly Virgin; | for we sinners have thee as our protection; | we have thee as our salvation in misfortunes, // as the only All-immaculate one.`,
+    },
+
+    sessional_kathisma3: {
+      hymn_1: { text: `The women came to Thy tomb at dawn | and seeing a vision of an angel they trembled; | the tomb became resplendent with life; | and amazed by the miracle, | they returned to the disciples and proclaimed the Resurrection: | for Christ hath despoiled Hades, | as alone almighty and all powerful, | raising up those in corruption, | dispelling the fear of condemnation // by the power of the Cross.` },
+      hymn_2: {
+        verse: `I will confess Thee, O Lord, with my whole heart, | I will tell of all Thy wonders.`,
+        text: `O Life of all, Thou wast nailed to the Cross; | O immortal Lord, Thou wast numbered among the dead, | arising on the third day, O Savior, | raising Adam from corruption; | wherefore the heavenly Powers cried out to Thee: | "O Giver of life, | Glory to Thy sufferings, O Christ; | glory to Thy Resurrection; | glory to Thy condescension, // O only Lover of mankind."`,
+      },
+      theotokion: `O Mary, holy tabernacle of the Master, | raise us up who have fallen into the pit of wicked despair, | of transgressions and afflictions; | for thou art the salvation, | the help and the mighty protection of sinners, // and thou dost save thy servants.`,
+    },
+
+    // Songs of Ascent — 3 antiphons (Tone 1). Each: [stanza1, stanza2, Glory/Both-now].
+    songs_of_ascent: [
+      [
+        `When I am afflicted, | I cry unto Thee, O Lord, // hearken unto my pains.`,
+        `For those who dwell in the desert | the longing for God never ceases, // for they are far from the vanity of this world.`,
+        `To the Holy Spirit, as to the Father and the Son, | are due honor and glory; // thus let us sing to the Trinity, a single power.`,
+      ],
+      [
+        `Having lifted me up to the summit of Thy laws, | make me shine with virtues, O God, // that I may sing Thy praises.`,
+        `Take me with Thy right hand, O Word, | guard me and keep me, // lest the fire of sin scorch me.`,
+        `In the Holy Spirit all creation is made new | and hastens back to its original condition; // for He is equal in strength to the Father and the Word.`,
+      ],
+      [
+        `With those who said unto me: | "Let us journey to the courts of the Lord," // my Spirit was gladdened and my heart rejoiceth.`,
+        `In the house of David is great fear; | for when the thrones are set therein, // all the tribes and nations of the earth will be judged.`,
+        `To the Holy Spirit must be offered honor, adoration, glory and power, | as befits also the Father and the Son; // for the Trinity is a Unity, one in essence, but not in Hypostases.`,
+      ],
+    ],
+
+    matins_prokeimenon: {
+      tone: 1,
+      text: `Now will I arise, saith the Lord; I will establish them in salvation, | I will be manifest therein.`,
+      verse: `The words of the Lord are pure words, silver that is fired, tried in the earth, brought to sevenfold purity.`,
+    },
+
+    canons: {
+      // Resurrection canon — irmos + troparia + Theotokion per ode (Ode II omitted).
+      resurrection: {
+        odes: {
+          1: {
+            irmos: `Thy victorious right arm, | in a manner befitting God, | hath been glorified in strength, O Immortal One; | for in its infinite strength it shattered the enemy, | fashioning anew a path for the Israelites through the deep.`,
+            refrain: `Glory to Thy holy Resurrection O Lord.`,
+            troparia: [
+              `As God, working with immaculate hands, Thou hast fashioned me in the beginning from dust, and now stretching out those hands on the Cross, Thou didst recall from the earth my corruptible body, which Thou hast taken from the Virgin.`,
+              `He, who by divinely breathing upon me placed a soul in me, hath willingly submitted to be slain for me and thus delivering his soul to death hath freed my soul from the eternal bonds, raising it with Himself, and glorifying it with incorruption.`,
+            ],
+            theotokion: `Rejoice! source of grace, Rejoice! ladder and gate of heaven, Rejoice! lamp-stand and golden jar, the un-hewn mountain, that bore unto the world, Christ the Giver of life.`,
+          },
+          3: {
+            irmos: `Thou alone knowest the weakness of human nature | and in compassion hast assumed its form; | do Thou gird me with power from on high, | that I may cry unto Thee: // Holy is the animate temple of Thine ineffable glory, O Lover of mankind!`,
+            refrain: `Glory to Thy holy Resurrection O Lord.`,
+            troparia: [
+              `As Thou art my God, O Good one, Thou hast taken compassion upon me, fallen as I was, deigning to come down to me, and exalting me through Thy crucifixion that I may cry unto Thee: "Holy art Thou the Lord of glory, in goodness beyond compare!"`,
+              `O Christ, as the hypostatic Life and as compassionate God, Thou hast clothed Thyself with me, the corrupted one, descending, O Master, unto the dust of death, destroying the power of death, and arising on the third day, whereby Thou hast clothed me with incorruption.`,
+            ],
+            theotokion: `Having conceived God in thy womb, O Virgin, by the Most holy Spirit, thou hast remained unburned, like the bush that burnt before Moses the lawgiver yet remained unburned, clearly foretelling of thee who received the unendurable fire.`,
+          },
+          4: {
+            irmos: `Perceiving thee with prophetic eyes | as the mountain overshadowed by the grace of God, | Habbakuk proclaimed that the Holy One of Israel | would come forth from thee, // for our salvation and restoration.`,
+            refrain: `Glory to Thy holy Resurrection O Lord.`,
+            troparia: [
+              `Who is this Savior that cometh from Edom, wearing a crown of thorns, His garments reddened, and hanging on a tree? He is the Holy one of Israel, who hath come for our salvation and restoration.`,
+              `Behold, O ye disobedient people, and be ashamed! For He whom ye in your madness begged Pilate to hang upon a cross as a malefactor hath abolished the power of death, and in a manner befitting God, arisen from the tomb.`,
+            ],
+            theotokion: `We know thee to be the tree of life, O Virgin; for it was not the fruit which bringeth death that budded from thee, but rather the delight of eternal life and the salvation of us who hymn thee.`,
+          },
+          5: {
+            irmos: `Thou hast shone upon us with the radiance | of Thy coming O Christ, | and illumined the ends of the world with Thy Cross, | enlighten with the light of thine understanding // the hearts of those who with right worship hymn Thee.`,
+            refrain: `Glory to Thy holy Resurrection O Lord.`,
+            troparia: [
+              `The Jews put to death on the Tree of the Cross the great shepherd and Lord; but from death's might He hath rescued like sheep the dead buried in Hades.`,
+              `When Thou didst announce the glad tidings of peace by Thy cross and proclaimed deliverance for captives, O my Savior, then didst Thou, O Christ, put to shame him who held them captive revealing him as naked and destitute by Thy divine arising.`,
+            ],
+            theotokion: `O All-praised one, despise not the prayers of those who faithfully entreat thee, but accept them, O Pure one, and convey them to thy Son, our God and only benefactor; for in thee we have acquired a protectress.`,
+          },
+          6: {
+            irmos: `The deepest abyss hath surrounded us, | and there is none to deliver us, | yea we have been counted as sheep for the slaughter; | save Thy people O our God, // for Thou art the strength and restoration of the weak.`,
+            refrain: `Glory to Thy holy Resurrection O Lord.`,
+            troparia: [
+              `Through the transgression of the first-formed man, O Lord, we were grievously wounded; but by Thy wounds, by which Thou wast afflicted for our sakes, O Christ, we have been healed; for Thou art the strength and restoration of the feeble.`,
+              `Thou hast led us up from Hades, O Lord, by destroying the all-devouring whale of the deep, O All-powerful one, and destroying his power by Thy might; for Thou art the life and the light and the resurrection.`,
+            ],
+            theotokion: `The Forefathers of mankind rejoice in thee, immaculate Virgin, for through thee they regain Eden, which they had lost through transgression; for thou art pure both before child-bearing and after giving birth.`,
+          },
+          7: {
+            irmos: `We the faithful perceive thee, O Theotokos, | to be a noetic furnace; | for as He, the supremely exalted One, | saved the three children, | so hath He wholly refashioned fallen humanity, in thy womb, // O Thou praised and supremely glorified God of our fathers.`,
+            refrain: `Glory to Thy holy Resurrection O Lord.`,
+            troparia: [
+              `The earth did shudder, the sun was hidden, and light was enveloped in darkness, the sacred veil of the Temple was rent in twain and the rocks were rent asunder; for the Just One hath tasted death upon the cross; O Thou praised and supremely glorified God of our fathers.`,
+              `When Thou, the highly exalted one, didst willingly become as one helpless and slain among the dead for our sakes, Thou didst set us all free, and with a lofty arm, didst raise us up together with Thee, O Thou praised and supremely glorified God of our fathers.`,
+            ],
+            theotokion: `Rejoice, spring of eternal water! Rejoice, Paradise of delight! Rejoice, wall of the faithful! Rejoice, Bride who kneweth not wedlock! Rejoice, joy of all the world! through whom the God of our fathers hath dawned unto us, praised and glorified above all.`,
+          },
+          8: {
+            irmos: `In the furnace as in a fiery smelter | the Israelite children shone more brightly than gold | with the beauty of godliness, | as they exclaimed: Bless the Lord all ye his works, // hymn and exalt him supremely throughout all ages.`,
+            refrain: `Glory to Thy holy Resurrection O Lord.`,
+            troparia: [
+              `O Word of God, Thou Who by Thy will maketh and transformeth all things, by Thy Passion Thou hast transformed the shadow of death into everlasting life, wherefore we and all Thy works unceasingly praise Thee as Lord, and supremely exalt Thee throughout all ages.`,
+              `By rising on the third day, O Christ, Thou hast destroyed the misery and destruction within the gates and strongholds of Hades. Unceasingly all Thy works praise Thee as Lord, and supremely exalt Thee throughout all ages.`,
+            ],
+            theotokion: `Let us praise her who without seed and beyond nature brought forth Christ the precious pearl from the divine flesh crying: "All ye His works bless the Lord, praise and supremely exalt Him throughout all ages."`,
+          },
+          9: {
+            irmos: `The Bush, which burnt without being consumed, | prefigured thy pure birthgiving, O Theotokos. | Wherefore we now entreat Thee: | quench the raging furnace of temptations that beset us, // that we may unceasingly magnify Thee.`,
+            refrain: `Glory to Thy holy Resurrection O Lord.`,
+            troparia: [
+              `O how the lawless and disobedient people, having plotted evil, justified the ungodly malefactor, but condemned the Just Lord of glory to the Tree! Him we fittingly magnify.`,
+              `We glorify Thee O Savior, the blameless Lamb who taketh away the sins of the world, risen on the third day, and Who with the Father and the divine Spirit we acknowledge as God, and the Lord of glory, Thee do we magnify.`,
+            ],
+            theotokion: `Save Thy people, O Lord, whom Thou hast purchased with Thine own precious blood, strengthening all Orthodox Christians against enemies, and bestowing peace upon Thy Churches, O Lover of mankind, through the supplications of the Theotokos.`,
+          },
+        },
+      },
+      // Cross-Resurrection canon — shares the Resurrection irmoi; 2 troparia + Theotokion per ode.
+      cross_resurrection: {
+        refrain: `Glory to Thy precious Cross and Resurrection O Lord.`,
+        odes: {
+          1: {
+            troparia: [
+              `Christ's incarnation maketh me divine, Christ's humility exalteth me, and by suffering the passion in the flesh, Christ the Giver of life maketh me dispassionate, wherefore I sing a hymn of thanksgiving, for He hath been glorified.`,
+              `Having endured crucifixion, Christ exalteth me, having put death to death, Christ hath raised me up with himself, granting me life, wherefore I clap my hands in gladness singing a song of victory to the Savior, for gloriously hath He been glorified.`,
+            ],
+            theotokion: `Most pure Virgin, thou hast conceived God, and in virginity, thou hast given birth to Christ incarnate from thee, in person the one and only-begotten Son, known in two natures, for He is glorified.`,
+          },
+          3: {
+            troparia: [
+              `To Christ God, who took the wandering sheep upon his shoulders and through a tree destroyed his sin, let us cry aloud: "Thou Who hast exalted the horn of Thy faithful, Holy art thou, O Lord!"`,
+              `Unto Him who brought up from Hades Christ the great shepherd and by his priestly power, through the apostles, shepherded in wisdom all the nations, let us in truth by the divine Spirit give adoration.`,
+            ],
+            theotokion: `Unto the Son who without seed wast willingly incarnate from a Virgin, and who by his divine power kept her a pure Virgin after child-bearing, to the God of all, let us cry aloud: "Holy art thou, O Lord!"`,
+          },
+          4: {
+            troparia: [
+              `Who is this fair one from Edom, His garments dyed scarlet with the grapes of Bosor? He is as comely as God and as a mortal He hath reddened his robe with the blood of His flesh. To Him we the faithful sing: "Glory to Thy power, O Lord!"`,
+              `Christ, appearing as a high priest of the blessings to come, hath destroyed our sin, and showing a strange way by His blood, hath hastened unto a greater and more perfect tabernacle, and is thus our guide into that Holy Place.`,
+            ],
+            theotokion: `Thou didst pay the ancient debt of Eve, O All-praised one, by the new Adam who hath come forth for our sake. For uniting to himself from a pure conception rational and living flesh, Christ came forth from thee, as one Lord in both natures.`,
+          },
+          5: {
+            troparia: [
+              `O the riches and depth of the wisdom of God! The Lord who snareth the wise hath ransomed us from their trickery; for having suffered willingly in the feebleness of the flesh, He hath been raised from the dead by His own life-giving strength.`,
+              `Being God, Christ united Himself to flesh for our sake, and hath been crucified, and died, and hath been buried, and arisen again, ascending up to the Father with His own flesh, with which He will come again to save those who devoutly serve Him.`,
+            ],
+            theotokion: `O Pure Virgin, Holy of Holies, Thou hast given birth to the Holy one of the Holy, who sanctifieth all, Christ the Redeemer, wherefore we proclaim thee as the Queen and Sovereign Lady of all, as the Mother of the Creator of all that is.`,
+          },
+          6: {
+            troparia: [
+              `O Christ God, being dispassionate in mind and immaterial, Thou dost mingle with the human mind by the means of the divine nature and the coarseness of the flesh; and wast wholly united to the whole of me without change, that by being crucified Thou mightest hand salvation to the whole of me, who had fallen.`,
+              `Having tripped, Adam hath fallen and been crushed, cheated of his hope of deification, but the new Adam hath arisen, deified by the union of the Word, and by the Passion gaining dispassion, He is glorified as the Son enthroned with the Father and the Spirit.`,
+            ],
+            theotokion: `Not leaving the bosom of His Begetter, Who is without beginning, He lodgeth and cometh to rest in the womb of a pure maiden, He that is without a mother hath become incarnate without a father, the God of righteousness who reigneth as king, His fearful and ineffable generation is without genealogy.`,
+          },
+          7: {
+            troparia: [
+              `Of old the earth was cursed, made crimson with the blood of Abel by the murdering hand of a brother; but bedewed by Thy divine blood it is blessed and leaping for joy crieth out: "O God of our Fathers, blessed art Thou!"`,
+              `Let the people of the Jews, opposed to God, lament the reckless deed of putting Christ to death; but let the gentiles be glad and clap their hands and cry aloud: "O God of our Fathers, blessed art Thou!"`,
+            ],
+            theotokion: `Lo, the dazzling angel crieth out to the myrrh-bearing Women, "Come, see the tokens of Christ's Resurrection, the graves clothes and the tomb, and cry aloud: O God of our Fathers, blessed art Thou!"`,
+          },
+          8: {
+            troparia: [
+              `Come, O ye peoples, let us worship the place upon which stood Christ's immaculate feet, and where His divine, life-giving palms were stretched out on the Tree for the salvation of all mortals; and let us circle the tomb of life, singing, "Let all creation bless the Lord, and supremely exalt Him throughout all ages."`,
+              `The lawless slander of the Jews who slew God hath been refuted; for He Whom they called a deceiver, hath been raised as all-powerful, making a mockery of the seals of the lawless ones. Wherefore rejoicing let us sing: "Let all creation bless the Lord, and supremely exalt Him throughout all ages."`,
+            ],
+            theotokion: `The most pure seraphim, as they praise the glory of the one lordship in thrice-holy hymns, like free slaves glorify with fear the three-hypostatic Godhead. With them we also devoutly sing, "Let all creation bless the Lord, and supremely exalt Him throughout all ages."`,
+          },
+          9: {
+            troparia: [
+              `Thy Cross, O Lord, hath been glorified with ineffable power; for Thy weakness was revealed as transcending all power. Through it the powerful have been cast down to the earth, while paupers have been raised safely to heaven.`,
+              `Our froward death hath been slain, for when Thou didst appear to those in Hades, O Christ, Thou didst grant unto them resurrection from the dead, wherefore as the life, resurrection and hypostatic light, we magnify Thee in hymns.`,
+            ],
+            theotokion: `The nature that is beginningless and infinite is acknowledged in three single divine Hypostases; as one Godhead in Father, Son and Spirit, trusting in which the wise in God are saved.`,
+          },
+        },
+      },
+      // Theotokos canon — shares the Resurrection irmoi; troparia only (the whole canon is to the Theotokos).
+      theotokos: {
+        refrain: `Most holy Theotokos save us.`,
+        odes: {
+          1: {
+            troparia: [
+              `What hymn worthy of thee can our weakness offer unto thee? If not only the joyful one Gabriel revealed unto us: "Rejoice! O Theotokos, Virgin Mother who knewest not wedlock!"`,
+              `Unto the Ever-virgin and Mother of the King of the highest Powers, let us the faithful cry in spirit from hearts most pure: "Rejoice! O Theotokos, Virgin Mother who knewest not wedlock!"`,
+              `Immeasurable is the abyss of thine incomprehensible child-bearing, O all-pure one; therefore with undoubting faith we offer thee our song: "Rejoice! O Theotokos, Virgin Mother who knewest not wedlock!"`,
+            ],
+          },
+          3: {
+            troparia: [
+              `Truthfully, O Virgin, following the words of the prophet, we name thee the light cloud; for from thee the Lord hath come to overthrow the idols of Egypt, made by men, and to enlighten those who served them.`,
+              `The choir of prophets hath truly named thee the sealed fountain and the shut gate, clearly depicting for us the symbols of thy virginity, O All-praised one, which Thou didst preserve even after childbirth.`,
+              `O all-immaculate Virgin, Gabriel, enabled as far as is possible to know the mind of God, brought thee a message of great gladness, plainly disclosing the conception of the Word, and proclaiming thine ineffable childbirth.`,
+            ],
+          },
+          4: {
+            troparia: [
+              `Hear wonders, O heaven, take note, O earth, for a daughter of the earthly, fallen Adam hath been declared the Mother of God and of her Creator, for our salvation and restoration.`,
+              `We praise Thy great and awesome mystery; for unknown to the Commanders of the armies beyond this world, the One Who hath descended upon thee, like dew upon the fleece, O All-praised one, hath done so for our salvation and restoration.`,
+              `O All-praised Theotokos, Holy of Holies, expectation of the nations, and the salvation of the faithful, from thee hath dawned the Redeemer and Giver of life and our Lord. Entreat him that thy servants may be saved.`,
+            ],
+          },
+          5: {
+            troparia: [
+              `Beholding thee, the Powers of heaven are made glad, and with them rejoiceth the assemblies of mortals; for they have been united, O Virgin Theotokos, by thine offspring; whom we worthily glorify.`,
+              `Let every mortal tongue and mind be roused to the praise of mortal man's true adornment; the Virgin clearly standeth by the Lord, glorifying those who with faith sing the praises of her wonders.`,
+              `Every song and every praise of the wise offered to the Virgin and Theotokos is worthy of praise, for she hath become the temple of the most high glory of God; whom as is fitting, we glorify.`,
+            ],
+          },
+          6: {
+            troparia: [
+              `The heavenly Ranks stand beside thine Offspring like servants, fittingly struck with amazement at thy seedless child-bearing, O Ever-virgin; for thou art pure both before bearing child and after giving birth.`,
+              `The Word, who before was without flesh, and who made the universe by His will, who brought the armies of the Bodiless ones into being out of nothing, as All-powerful, became incarnate from thee, O Most pure one.`,
+              `The foe hath been slain by thy life-bearing fruit, and Hades hath been trampled under foot, O thou who art Full of God's grace, and we who were chained have been freed; wherefore I cry out: "Deliver me from the passions of my heart!"`,
+            ],
+          },
+          7: {
+            troparia: [
+              `Jacob prophetically discerned thee in the ladder, O Theotokos; for through thee the Highly Exalted was well-pleased to appear and make His abode among mankind: O Thou praised and supremely glorified God of our fathers.`,
+              `Rejoice, Adam's most revered fleece! The Shepherd, the highly exalted One, came forth from thee, truly clothed in my whole nature, through His ineffable compassion: O Thou praised and supremely glorified God of our fathers.`,
+              `God Who is before all ages hath truly become the new Adam from thy pure blood; beseech him now to make me, who am old and worn out, renewed as I cry: "O Thou praised and supremely glorified God of our fathers."`,
+            ],
+          },
+          8: {
+            troparia: [
+              `Let us all hymn the praise of the resplendent Bridal Chamber, from which Christ, the Master of all, came forth as a bridegroom, as we sing: "All ye His works bless the Lord, praise and supremely exalt Him throughout all ages."`,
+              `Rejoice!, glorious throne of God! Rejoice! wall of the faithful, through whom Christ, the light, hath dawned for those in darkness, who call Thee blest and cry: "All ye His works bless the Lord, praise and supremely exalt Him throughout all ages."`,
+              `Cause of our salvation, who bore the Lord, Virgin all-praised, intercede for all who devoutly cry: "All ye His works bless the Lord, praise and supremely exalt Him throughout all ages."`,
+            ],
+          },
+          9: {
+            troparia: [
+              `O Virgin, fulfilling prophecy, thou didst spring from David's root; yet in giving birth to the Lord of glory Who hath been foretold by the prophet David, and Whom we fittingly magnify, thou hast also glorified him.`,
+              `O most pure one, every law of praise is defeated by the majesty of thy glory; yet, O Lady, graciously accept from us Thine unworthy suppliants, O Theotokos, the praise we offer thee with love.`,
+              `O what wonders are Thy passing all understanding! For thou, O Virgin, alone brighter than the sun, hast granted unto all to contemplate the newest wonder of thine incomprehensible birth-giving O all-pure one, wherefore we all magnify thee.`,
+            ],
+          },
+        },
+      },
+    },
+
+    // Ikos (after Ode VI). The kontakion itself is SUNDAY_KONTAKIA[1] (index.js).
+    ikos: `Let us praise as God all-powerful the One who hath risen on the third day, smashing the gates of Hades and rousing the age-long dead from the grave, who hath appeared to the myrrh-bearers, as it was His good pleasure to say to them first: Rejoice! and thus revealing joy to the apostles, as alone the Giver of life. Therefore with faith the Women proclaim the tokens of victory to the Disciples; Hades groaneth, Death lamenteth, the world exulteth and all rejoice together; for Thou, O Christ, hast granted the Resurrection to all.`,
+
+    // Praises (Lauds) — 8 stichera (4 Resurrection + 4 by Anatolius). The Glory is
+    // the Eothinon Gospel sticheron (RESURRECTION_GOSPEL_STICHERA, by Gospel #);
+    // the Both-now is the fixed Tone 2 "Thou art most blessed" (same every Sunday).
+    praises: {
+      stichera: [
+        { verse: `To do among them the judgment that is written, | This glory shall be to all His saints.`,
+          text:  `We sing the praise of Thy saving Passion, | O Christ, // and we glorify Thy Resurrection.` },
+        { verse: `Praise ye God in His saints, | praise Him in the firmament of His power.`,
+          text:  `Having endured the Cross, | and destroyed death | and risen from the dead, | grant peace to our lives, O Lord, // as Thou alone art All-powerful.` },
+        { verse: `Praise Him for His mighty acts, | praise Him according to the multitude of His greatness.`,
+          text:  `Having despoiled Hades | and raised mankind by Thy Resurrection, O Christ, // grant that with pure hearts we may praise and glorify Thee.` },
+        { verse: `Praise Him with the sound of trumpet, | praise Him with the psaltery and harp.`,
+          text:  `As we glorify Thy divine condescension, | we praise Thee, O Christ: | For Thou wast born of a Virgin, | yet Thou wast not separated from the Father; | as man Thou didst suffer and willingly endure the Cross; | arising from the grave, | as though coming forth from Thy bridal chamber, | that Thou mightest save the world. // O Lord, glory be to Thee!` },
+        { verse: `Praise Him with timbrel and dance, | praise Him with strings and flute.`,
+          text:  `When Thou wast nailed to the Tree of the Cross, | then the might of the enemy was slain; | creation shook in fear of Thee, | and Hades was despoiled by Thy might. | Thou hast raised the dead from their tombs | and opened Paradise unto the Thief. // O Christ our God, glory be to Thee!` },
+        { verse: `Praise Him with tuneful cymbals, praise Him with cymbals of jubilation. | Let every breath praise the Lord.`,
+          text:  `Lamenting, the holy women came with haste to Thy grave; | but finding the tomb opened and learning from the angel | the new and marvelous wonder, | they announced to the apostles, // "The Lord hath arisen, granting the world His great mercy."` },
+        { verse: `Arise, O Lord my God, let Thy hands be lifted high; | forget not Thy paupers to the end.`,
+          text:  `We bow down before the divine stripes of Thy passion, | O Christ God, | and the royal sacrifice that took place divinely revealed in Zion at the end of the ages; | for Thou, the Sun of righteousness, | hast enlightened those who slept in darkness, | leading them to the never-setting radiance, // O Lord, glory be to Thee!` },
+        { verse: `I will confess Thee, O Lord, with my whole heart, | I will tell of all Thy wonders.`,
+          text:  `O Tumultuous race of the Jews, give ear. | Where are those who approached Pilate? | Let the soldiers who kept watch say, | where are the seals of the grave? | To where hath the one who was buried been moved? | Where hath the One who is not for sale been sold? | How hath the treasure been burgled? | O Lawless Jews, why do ye slander the Rising of the Crucified? | He hath arisen, as one free among the dead, // and granteth unto the world His great mercy.` },
+      ],
+    },
+
+    great_doxology_troparion: `Today is salvation come unto the world; | let us sing praises to Him that arose from the tomb, | and is the Author of our life. | For, having destroyed death by death, // He hath given us the victory and great mercy.`,
+  },
 
 };

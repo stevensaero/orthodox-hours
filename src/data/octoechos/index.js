@@ -188,3 +188,19 @@ export const KATAVASIAE = {};
 // Sung as "Glory" at Stichera on the Praises; also after Psalm 50 at Matins.
 // Populated in Phase 4 (HTM Horologion / St. Sergius source).
 export const RESURRECTION_GOSPEL_STICHERA = {};
+
+// The Resurrectional Verses (Evlogitaria) — sung at Sunday Matins after the
+// Polyeleos, the same every Sunday (tone-independent). Source: St. Sergius
+// Sunday Octoechos (1-1.pdf). Markers per §3.3 (* → |, ** → //). Each troparion
+// is preceded by the refrain.
+export const EVLOGITARIA = {
+  refrain: `Blessed art Thou, O Lord, | teach me Thy statutes.`,
+  troparia: [
+    `The assembly of angels was amazed, | beholding Thee numbered among the dead; | yet, O Savior, | destroying the stronghold of death, | and with Thyself raising up Adam, // Thou hast freed all from Hades.`,
+    `Why mingle ye myrrh with tears of pity, | O ye women disciples? | Thus said the radiant angel within the tomb | addressing the myrrh-bearing women; | behold the tomb and understand, // for the Savior hath arisen from the tomb.`,
+    `Very early | the myrrh-bearing women hastened | unto Thy tomb, lamenting, | but the angel stood before them and said: | the time for lamentation is passed, weep not, // but tell the apostles of the Resurrection.`,
+    `The myrrh-bearing women, | with myrrh came to Thy tomb, O Savior, bewailing, | but the angel addressed them, saying: | Why number ye the living among the dead, | for as God // He is risen from the tomb.`,
+  ],
+  glory: `Let us worship the Father, | and His Son, and the Holy Spirit, | the Holy Trinity, | one in essence, | crying with the seraphim: // Holy, Holy, Holy art Thou, O Lord.`,
+  both_now: `In bringing forth the Giver of life, | thou hast delivered Adam from sin, O Virgin, | and hast brought joy to Eve | instead of sorrow; | and those fallen from life | have thereunto been restored, // by Him Who of thee was incarnate, God and man.`,
+};

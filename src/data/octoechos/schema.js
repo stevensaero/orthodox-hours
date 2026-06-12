@@ -67,12 +67,14 @@ export const VESPERS_DAY = {
 export const MATINS = {
   known: [
     'god_is_the_lord_theotokion', 'sessional_kathisma2', 'sessional_kathisma3',
-    'songs_of_ascent', 'matins_prokeimenon', 'canons', 'kontakion_ikos',
+    'songs_of_ascent', 'matins_prokeimenon', 'canons', 'ikos',
     'praises', 'great_doxology_troparion',
   ],
+  // The Matins kontakion is the same hymn as SUNDAY_KONTAKIA[tone] (index.js), so
+  // only the ikos is stored here; the kontakion is pulled from that table.
   required: [
     'god_is_the_lord_theotokion', 'sessional_kathisma2', 'sessional_kathisma3',
-    'songs_of_ascent', 'matins_prokeimenon', 'canons', 'kontakion_ikos',
+    'songs_of_ascent', 'matins_prokeimenon', 'canons', 'ikos',
     'praises', 'great_doxology_troparion',
   ],
 };
