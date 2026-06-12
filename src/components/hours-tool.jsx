@@ -7612,6 +7612,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.15.7",
+    date: "June 2026",
+    summary: "How It Works: Order of the Psalter, Service outline, Vespers next-day rendering, open links",
+    items: [
+      "docs: the Order of the Psalter is now documented as a built service — a service inventory row and an enhanced Psalter reader entry covering the normal mode and the For-the-Departed mode (departed prayers, stasis dividers, whole-Psalter conclusion in priest or layman form). Service counts updated from 9-of-13 to 10-of-14, and the 'what works today' list now reads ten services.",
+      "docs: new 'Service outline' feature entry describing the collapsible outline card with jump button (Vespers, the Typica, and the Order of the Psalter).",
+      "docs: How Services Are Assembled gains a 'Vespers opens the next liturgical day' subsection — selecting a date and opening Vespers assembles the day it opens (commemoration, tone, season, feast period, paroemias advance to D+1, dual-date header), while the Octoechos tone, Friday dogmatikon, and weekly prokeimenon still follow the served evening (FW-26).",
+      "ui: the Psalter reader and Scripture viewer feature entries now carry (open) links, matching the three data browsers.",
+    ],
+  },
+  {
     version: "v0.15.6",
     date: "June 2026",
     summary: "How It Works: new Pointing/Chant/Score section, status refresh, table + footer width fixes",
@@ -9385,6 +9396,7 @@ function HowItWorksPanel() {
     { name: "Prayers Before Holy Communion", status: "built", note: "Full Jordanville Prayer Book order" },
     { name: "Prayers After Holy Communion", status: "built", note: "Adapts to Chrysostom, Basil, or Presanctified Liturgy" },
     { name: "The Order of the Typica", status: "built", note: "Read when no Divine Liturgy is celebrated" },
+    { name: "The Order of the Psalter", status: "built", note: "Reads the appointed kathismas as a service: a normal mode and a For-the-Departed mode with the departed prayers, stasis dividers, and the whole-Psalter conclusion (priest or layman form)." },
   ];
 
   // ── Annotated specimen ──────────────────────────────────────────────────────
@@ -9414,7 +9426,7 @@ function HowItWorksPanel() {
       {open.overview && (
         <div style={panelStyle}>
           {p(<>This is a liturgical assembly tool for <strong>OCA parishes following Russian usage</strong>. Given a date, it computes the liturgical season, looks up the appointed saint or feast, and assembles the correct movable parts of each service — with every decision traced to its rubrical source. It is as much a <strong>teaching aid</strong> as an assembly tool: every element is annotated with where it comes from and why it appears.</>)}
-          {p(<>The tool currently assembles <strong>9 of the 13 services</strong> in the daily cycle. It handles ordinary weekdays, Sundays (with Octoechos tone rotation), and the entire Pentecostarion season from Pascha through All Saints of North America. Great Lent and Triodion services are the next major development area.</>)}
+          {p(<>The tool currently assembles <strong>10 of the 14 services</strong> in the daily cycle. It handles ordinary weekdays, Sundays (with Octoechos tone rotation), and the entire Pentecostarion season from Pascha through All Saints of North America. Great Lent and Triodion services are the next major development area.</>)}
           {sub("Service inventory")}
           <div style={{ fontSize: "0.78rem", border: "1px solid #D4C49A", borderRadius: "4px",
                         overflow: "hidden", marginBottom: "0.8rem" }}>
@@ -9441,11 +9453,12 @@ function HowItWorksPanel() {
           </div>
           {sub("Additional features")}
           {ul([
-            <><strong>Psalter reader</strong> — Full text of all 20 kathismas, linked from Vespers kathisma assignments. Displays each stasis with psalm numbering.</>,
-            <><strong>Scripture viewer</strong> — Full-text epistle and gospel readings, linked from the liturgical context card and from within service elements.</>,
+            <><strong>Psalter reader &amp; the Order of the Psalter</strong> (<a href="/orthodox-hours/psalter" style={{color: "#8B6914"}}>open</a>) — Full text of all 20 kathismas with stasis and psalm numbering, reached from Vespers kathisma assignments; now also assembled as a full service, including a For-the-Departed mode with the departed prayers, stasis dividers, and the whole-Psalter conclusion.</>,
+            <><strong>Scripture viewer</strong> (<a href="/orthodox-hours/scripture?from=tool" style={{color: "#8B6914"}}>open</a>) — Full-text epistle and gospel readings, linked from the liturgical context card and from within service elements.</>,
             <><strong>Menaion data browser</strong> (<a href="/orthodox-hours/menaion" style={{color: "#8B6914"}}>open</a>) — Inspect all encoded fixed-calendar entries with per-entry completeness auditing. Shows every field, flags missing data, and displays Litiya stichera and Beatitudes troparia.</>,
             <><strong>Pentecostarion data browser</strong> (<a href="/orthodox-hours/pentecostarion" style={{color: "#8B6914"}}>open</a>) — Same for Pascha-anchored entries, organized by liturgical period.</>,
             <><strong>Octoechos data browser</strong> (<a href="/orthodox-hours/octoechos" style={{color: "#8B6914"}}>open</a>) — Browse encoded Octoechos vespers and Sunday Matins data by tone (1–8). Tones 1–2 carry full Sunday Resurrectional Matins; the remaining tones show stubs until encoded from their N-1.pdf. The Matins view surfaces its day (Sunday) explicitly.</>,
+            <><strong>Service outline</strong> — A collapsible outline card with a jump button that lists the sections of the current service and scrolls to any of them; available for Vespers, the Typica, and the Order of the Psalter, making a specific point in a long service easy to find.</>,
             <><strong>Reader mode</strong> — Substitutes lay reader responses for priest exclamations throughout.</>,
           ])}
         </div>
@@ -9520,6 +9533,8 @@ function HowItWorksPanel() {
           ])}
           {p(<>In parish practice the full cycle is rarely served in its entirety on weekdays. The most commonly served combination is the <strong>9th Hour → Vespers</strong> in the evening, and <strong>Matins → 1st Hour</strong> in the morning, followed by the Divine Liturgy. The <strong>Prayers Before Holy Communion</strong> are read privately in preparation, and the <strong>Prayers After Holy Communion</strong> are read privately afterward.</>)}
           {p(<>This tool assembles the services in their canonical daily order, beginning with Vespers. Each service is accessible from the service selector at the top of the page.</>)}
+          {sub("Vespers opens the next liturgical day")}
+          {p(<>Because the liturgical day begins at sunset, Vespers served this evening already belongs to <em>tomorrow</em>. So when you select a date and open Vespers, the tool assembles it for the <strong>day it opens</strong> — the commemoration, tone, season, feast period, and Old Testament paroemias all advance to the next day, under a dual-date header that states the attribution (<em>“Served the evening of [day] — opens [next day].”</em>). The parts that genuinely belong to the served evening — the Octoechos tone of the week, the Friday dogmatikon, and the weekly Vespers prokeimenon — still follow the selected day.</>)}
           {sub("Fixed and movable elements")}
           {p("A Daily Hour has two kinds of content. The colour coding below shows how they are distinguished in the assembled service.")}
 
@@ -9680,7 +9695,7 @@ function HowItWorksPanel() {
         <div style={panelStyle}>
           {sub("What works today")}
           {ul([
-            <><strong>Nine services</strong> fully assembled: Ordinary Beginning, Vespers, 1st/3rd/6th/9th Hours, Pre-Communion Prayers, Post-Communion Prayers, and the Typica.</>,
+            <><strong>Ten services</strong> fully assembled: Ordinary Beginning, Vespers, 1st/3rd/6th/9th Hours, Pre-Communion Prayers, Post-Communion Prayers, the Typica, and the Order of the Psalter.</>,
             <><strong>Ordinary time and Pentecostarion</strong> seasons are fully supported — the tool correctly handles Sundays with Octoechos tone rotation, weekdays with Menaion saint commemorations, and the complete Paschal cycle from Bright Week through All Saints of North America.</>,
             <><strong>Great Feasts</strong> of the Lord (Ascension, Pentecost) alter the service structure as prescribed by Fekula §4 and the HTM rubrics.</>,
             <><strong>Reader mode</strong> replaces priest exclamations with lay reader responses throughout.</>,
