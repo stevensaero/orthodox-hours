@@ -26,9 +26,10 @@ const PERIODS = [
   { label: "Thomas → Blind Man",        start: 7,  end: 35, note: "P+7 through P+35" },
   { label: "Post-Pascha / Ascension",   start: 36, end: 48, note: "P+36 through P+48" },
   { label: "Pentecost",                 start: 49, end: 56, note: "P+49 through P+56" },
+  { label: "2nd Sun. after Pentecost",  start: 63, end: 63, note: "All Saints of NA / Russia (P+63)" },
 ];
 
-const ALL_OFFSETS = Array.from({ length: 57 }, (_, i) => i); // P+0 through P+56
+const ALL_OFFSETS = [...Array.from({ length: 57 }, (_, i) => i), 63]; // P+0 through P+56, plus P+63
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -647,12 +648,16 @@ export default function PentecostarionBrowser() {
       : ALL_OFFSETS;
 
     for (const offset of offsets) {
-      const entry = pentData[offset];
-      if (entry) {
+      const raw = pentData[offset];
+      if (!raw) continue;
+      // Offset 63 (All Saints of NA / Russia) is an array of overlay services;
+      // render one card per entry. Single-entry offsets are wrapped to a 1-list.
+      const list = Array.isArray(raw) ? raw : [raw];
+      list.forEach((entry, subIdx) => {
         const audit = auditPentecostarionEntry(entry);
-        entries.push({ offset, entry, audit });
+        entries.push({ offset, entry, audit, subIdx });
         auditResults.push(audit);
-      }
+      });
     }
   }
 
@@ -660,7 +665,10 @@ export default function PentecostarionBrowser() {
   const allAudits = [];
   if (pentData) {
     for (const offset of ALL_OFFSETS) {
-      if (pentData[offset]) allAudits.push(auditPentecostarionEntry(pentData[offset]));
+      const raw = pentData[offset];
+      if (!raw) continue;
+      const list = Array.isArray(raw) ? raw : [raw];
+      list.forEach(e => allAudits.push(auditPentecostarionEntry(e)));
     }
   }
   const overallSummary = auditSummary(allAudits);
@@ -847,8 +855,8 @@ export default function PentecostarionBrowser() {
               No entries encoded for {activePeriod ? activePeriod.label : "the Pentecostarion"} yet.
             </div>
           )}
-          {entries.map(({ offset, entry, audit }) => (
-            <div key={offset} ref={el => entryRefs.current[offset] = el}>
+          {entries.map(({ offset, entry, audit, subIdx }) => (
+            <div key={`${offset}-${subIdx || 0}`} ref={el => { if (!subIdx) entryRefs.current[offset] = el; }}>
               <PentEntryCard offset={offset} entry={entry} audit={audit} stickyTop={headerHeight} />
             </div>
           ))}

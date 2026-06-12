@@ -7586,6 +7586,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.12.2",
+    date: "June 2026",
+    summary: "P+63 fixes — Vespers commemoration label and Pentecostarion browser",
+    items: [
+      "fix: the Vespers context line that opens All Saints of North America / Russia now names the commemoration (\"All Saints of North America\") instead of showing the Epistle reference (\"Hebrews 11:33-12:2\"). The name derivation no longer falls back to feast_e, which is a reading reference and never a commemoration name; overlay entries (which have no saint field) now resolve to their name.",
+      "fix: P+63 now appears in the Pentecostarion data browser. The browser previously enumerated only P+0–P+56 and could not render an offset whose value is an array of services; it now includes a \"2nd Sun. after Pentecost\" period and renders the two overlay entries (North America and Russia) as separate cards.",
+    ],
+  },
+  {
     version: "v0.12.1",
     date: "June 2026",
     summary: "P+63 polish — service-selector labels, corrected citation, and a schema-conformance gate",
@@ -10225,7 +10234,15 @@ export default function App() {
     const vDayLabel = vDate.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
     const vMD = vDate.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
     const dMD = date.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
-    const saintName = (vMenaion && [vMenaion.saint, vMenaion.feast_e, vMenaion.name].find(v => v && !String(v).startsWith("absent"))) || "";
+    const saintName = (() => {
+      if (!vMenaion) return "";
+      const s = vMenaion.saint;
+      if (s && !String(s).startsWith("absent")) return s;
+      // Overlay/pentecostarion entries have no `saint` — use the name (never feast_e,
+      // which is an Epistle reference, not a commemoration name).
+      if (vMenaion.name) return vMenaion.name.split("—").pop().trim();
+      return "";
+    })();
     return { vDate, vDateStr, vLit, vMenaion, vServices, vPent, vParoemias, vIsPent, vIsBright,
              vDailyReading, vFeastReading, vNamedDaySunday, vDayLabel, vMD, dMD, saintName,
              vIsSunday: vLit.season === "sunday", tone: vLit.tone, openedName: vLit.dayName };
