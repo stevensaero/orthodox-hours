@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.0** | **Tone Trainer: v0.24.2** | Last synced: June 11, 2026
+**Tool version: v0.15.0** | **Tone Trainer: v0.24.2** | Last synced: June 12, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -145,6 +145,55 @@ section is acceptable. Do not strip context to save space.
 | v0.3.21 | May 2026 | Tool v0.3.3: Prayers After Holy Communion assembler; getLiturgyType() Basil/Presanctified/Chrysostom detection; shared buildDismissal() helper; mm/dd added to liturgicalData; post_communion bypasses seasonal inScope gate |
 | v0.3.22 | May 2026 | Tool v0.3.4: Orthodox Psalter (all 20 kathismata, Brenton LXX embedded); Vespers kathisma link; context strip banner; history.back() scroll restoration; same-tab navigation |
 | v0.3.23 | May 2026 | Tool v0.4.0: Menaion & Pentecostarion data browsers (/menaion, /pentecostarion); shared audit module (src/lib/audit.js); lazy-loaded routes, URL-only access; beatitudes_troparia object-shape fix |
+| … | … | (v0.4.x–v0.12.x detail lives in the in-code RELEASE_NOTES / TRAINER_RELEASE_NOTES — Octoechos browser, P+63 All Saints of NA/Russia, schema-conformance gate, pointed-hymnography render, etc.) |
+| v0.13.0 | Jun 2026 | ▶ Point control — pointable Hours verses hand off to the Tone Trainer (sessionStorage + ?from=tool full-nav); trainer v0.23.2 back-link, v0.23.3 receiver (translate \| // → lines, keep [brackets], analyzeText) |
+| v0.13.1 | Jun 2026 | Point gating reads the tone from the verse's "Tone N:" rubric / toneNote / label (stichera carry no structured .tone) — elementTone() helper |
+| v0.13.2 | Jun 2026 | All Saints of NA/Russia usage selector now appears at the Sunday-opening Vespers (alternate usages, not co-commemorations); selected usage drives the Vespers assembly; trainer v0.23.4 lexicon corrections (glorifying 4 / pious 2 / nailed 1) |
+| v0.14.0 | Jun 2026 | ♫ Score control (Phase 2) — verse → printed SATB score, skipping the trainer UI; routes through the trainer headlessly (buildScorePayload → sessionStorage → location.replace to score-print.html, Back returns to Hours); trainer v0.24.0; score-print.html accepts a sessionStorage payload |
+| v0.14.1 | Jun 2026 | Psalter footer button removed (Psalter reached via the service dropdown); kathisma links open the Psalter focused on just that kathisma (selector + prev/next stripped, back strip kept), like Scripture pericopes |
+| v0.14.2 | Jun 2026 | ♫ glyph sizing; trainer v0.24.1: score hand-off uses the default title; print toolbar Close becomes "← Hours Tool" (browser-back) when from=tool |
+| v0.14.3 | Jun 2026 | ♫ larger + spacing; trainer v0.24.2: score title = "Tone N — [first 4 words]…" (defaultScoreTitle reused from the pointed lines) |
+| v0.15.0 | Jun 2026 | Point/Score controls added to the Menaion, Pentecostarion & Octoechos browsers; controls + hand-off factored into one shared component (point-score-controls.jsx) used by the Hours tool and all three browsers; browsers stay lazy, no trainer in the main bundle |
+
+---
+
+### Session — June 12, 2026 (Hours ↔ Tone Trainer Point/Score cross-tool feature)
+
+Built the full **Point/Score pathway** that links the Hours tool (and the data
+browsers) to the Tone Trainer and the printed score. Spec committed first
+(`hours_trainer_handoff_spec.md`).
+
+- **▶ Point** — every pointable verse (text with `|` / `//` marks) shows a control
+  at the right of the verse window. Active when the verse's tone is built in the
+  trainer (1–3 today), light grey + inert otherwise. Hands the verse off via
+  `sessionStorage['oht_handoff']` + a full-page nav to `…/tone-trainer?from=tool`;
+  the trainer applies the tone, translates the marks to lines (keeping
+  `[brackets]` so director verses point as truth), and points it via `analyzeText`.
+  Tone is read from the verse's rubric/toneNote/label (`elementTone`), since
+  stichera carry no structured `.tone`.
+- **♫ Score** — same gating; routes through the trainer headlessly (a brief
+  "Preparing…" screen), builds the score payload with the trainer's own
+  `buildScorePayload`, stashes it, and `location.replace`s to `score-print.html`
+  (which now also reads a sessionStorage payload). Same-tab, so a popup is never
+  opened and **Back returns to the Hours tool**. The print toolbar's Close becomes
+  "← Hours Tool" when `from=tool`. Title is the trainer's default,
+  "Tone N — [first four words]…".
+- **Back-link** — "← Hours Tool" surfaces in the trainer header + footer when
+  arrived from the tool (`?from=tool`).
+- **Shared component** — `src/components/point-score-controls.jsx` is the single
+  source of truth for the controls + hand-off; the Hours tool and all three data
+  browsers consume it (octoechos supplies the tone via a `ToneContext`). Gating
+  reads `AVAILABLE_TONES` from the lightweight `src/lib/available-tones.js`, so the
+  lazy trainer is never pulled into a viewer's bundle.
+
+Also this session: the **All Saints NA/Russia usage selector at Vespers** fix
+(alternate usages, not co-commemorations — the selected usage drives the Vespers
+assembly); director **lexicon corrections** (glorifying 4 / pious 2 / nailed 1;
+delivered already correct), applied to the served lexicon and the build
+accumulator with a version cache-bust; and the **Psalter** changes (footer button
+removed, kathisma links open focused like Scripture pericopes).
+
+Versions at close: **Hours tool v0.15.0 · Tone Trainer v0.24.2.**
 
 ---
 
