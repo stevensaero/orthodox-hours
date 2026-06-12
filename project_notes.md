@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.12.2** | **Tone Trainer: v0.23.2** | Last synced: June 11, 2026
+**Tool version: v0.13.0** | **Tone Trainer: v0.23.3** | Last synced: June 11, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 

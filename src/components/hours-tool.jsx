@@ -5,6 +5,7 @@ import {
   KATAVASIAE, RESURRECTION_GOSPEL_STICHERA,
 } from '../data/octoechos/index.js';
 import { PSALMS, KATHISMA_MAP, getPsalmRange } from '../data/psalter.js';
+import { AVAILABLE_TONES } from '../lib/available-tones.js';
 
 
 // ─── CALENDAR ENGINE ────────────────────────────────────────────────────────
@@ -899,6 +900,18 @@ function renderPointed(text) {
       </div>
     );
   });
+}
+
+function isPointable(text) {
+  return typeof text === 'string' && (/\s\|\s/.test(text) || /\s\/\/\s/.test(text));
+}
+
+// Point control (Hours → Tone Trainer): stash the verse + its tone, then full-page
+// navigate to the trainer carrying ?from=tool (so a plain browser-back returns
+// here, where you left off). The trainer reads oht_handoff on mount and points it.
+function pointVerse(text, tone) {
+  try { sessionStorage.setItem('oht_handoff', JSON.stringify({ verse: text, tone })); } catch { /* private mode */ }
+  window.location.href = '/orthodox-hours/tone-trainer?from=tool';
 }
 
 function getLiturgicalData(date) {
@@ -6975,7 +6988,42 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
           );
         }
 
-        return <div style={bodyStyle}>{renderPointed(element.text)}</div>;
+        if (!isPointable(element.text)) {
+          return <div style={bodyStyle}>{renderPointed(element.text)}</div>;
+        }
+        // Pointable verse → show the Point control inside the verse window at far
+        // right. Active when the verse's tone is built in the trainer; otherwise
+        // light grey and inert, with a tooltip explaining why.
+        const toneBuilt = element.tone != null && AVAILABLE_TONES.has(element.tone);
+        return (
+          <div style={{ ...bodyStyle, display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ flex: 1, minWidth: 0 }}>{renderPointed(element.text)}</div>
+            <div
+              role="button"
+              aria-label="Point this verse in the Tone Trainer"
+              onClick={toneBuilt ? () => pointVerse(element.text, element.tone) : undefined}
+              title={toneBuilt
+                ? 'Point this verse in the Tone Trainer'
+                : (element.tone != null
+                    ? `Tone ${element.tone} is not yet built in the Tone Trainer`
+                    : 'This verse has no tone assigned')}
+              style={{
+                flexShrink: 0,
+                alignSelf: 'stretch',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingLeft: '10px',
+                borderLeft: '1px solid #DDD2B6',
+                fontSize: '1.2rem',
+                lineHeight: 1,
+                userSelect: 'none',
+                cursor: toneBuilt ? 'pointer' : 'not-allowed',
+                color: toneBuilt ? '#8B6914' : '#CDC4AE',
+              }}
+            >▶</div>
+          </div>
+        );
       })()}
 
       {/* ── Post-communion T/K block ── */}
@@ -7585,6 +7633,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.13.0",
+    date: "June 2026",
+    summary: "Point control — hand a verse to the Tone Trainer",
+    items: [
+      "feat: every pointable verse (one with end-of-line marks) now shows a ▶ Point control inside the verse window at the far right. Tapping it opens that verse in the Tone Trainer, already loaded and pointed for singing, with the tone selected to match. The control is active only when the verse's tone has been built in the trainer (Tones 1–3 today); for an unbuilt tone it shows light grey and inert, with a tooltip saying which tone isn't ready yet. Returning from the trainer is a plain browser-back that lands you right where you left off. (A ♫ Score control that jumps straight to the printed score is the next step.)",
+    ],
+  },
   {
     version: "v0.12.2",
     date: "June 2026",

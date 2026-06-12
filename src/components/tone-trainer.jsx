@@ -9,12 +9,21 @@
 // ──────────────────────────────────────────────────────────────────────────────
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
+import { AVAILABLE_TONES } from "../lib/available-tones.js";
 
-export const TONE_TRAINER_VERSION = "v0.23.2";
+export const TONE_TRAINER_VERSION = "v0.23.3";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.23.3",
+    date: "June 2026",
+    summary: "Receives a verse handed over from the Hours tool",
+    items: [
+      "feat: when you tap Point on a verse in the Hours tool, the trainer now picks the verse up on arrival — it switches to the verse's tone, loads the text (the Hours line marks are translated to lines, with any director brackets kept), and points it, all without a manual paste. The handoff travels in sessionStorage and is consumed once. Pairs with the Hours tool's new Point control.",
+    ],
+  },
   {
     version: "v0.23.2",
     date: "June 2026",
@@ -2991,10 +3000,14 @@ function useAudio() {
 }
 
 // ── COMPONENT ─────────────────────────────────────────────────────────────────
-// Built tones — the single source of truth for which tones the trainer can point
-// and score. Derived from PH_DEFS so it stays in step as tones are added. The
-// Hours tool imports this to gate its Point/Score controls.
-export const AVAILABLE_TONES = new Set(Object.keys(PH_DEFS).map(Number));
+// AVAILABLE_TONES lives in src/lib/available-tones.js — a lightweight module the
+// Hours tool can import without pulling in this lazy-loaded trainer. Dev guard:
+// it must list exactly the tones that have a PH_DEFS entry.
+if (import.meta.env?.DEV) {
+  const defs = Object.keys(PH_DEFS).map(Number).sort((a, b) => a - b).join(",");
+  const list = [...AVAILABLE_TONES].sort((a, b) => a - b).join(",");
+  if (defs !== list) console.warn(`[tone-trainer] available-tones.js (${list}) is out of sync with PH_DEFS (${defs}) — update src/lib/available-tones.js`);
+}
 
 export default function ToneTrainer() {
   const [doHz, setDoHz] = useState(349.23);  // F4 — Tone 1 canonical default
@@ -4514,6 +4527,32 @@ export default function ToneTrainer() {
         || !!sessionStorage.getItem("oht_handoff");
     } catch { return false; }
   }, []);
+
+  // Hours-tool handoff (Point control): a verse arrives via sessionStorage. Apply
+  // its tone first; then, once activeTone reflects it, translate the line marks
+  // (| and //) to newlines — keeping any [director brackets] — and point it. The
+  // payload is consumed once.
+  const handoffRef = useRef(null);
+  const handoffDone = useRef(false);
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem("oht_handoff");
+      if (raw) {
+        sessionStorage.removeItem("oht_handoff");
+        const h = JSON.parse(raw);
+        if (h && h.verse) { handoffRef.current = h; if (h.tone) setActiveTone(h.tone); }
+      }
+    } catch { /* no handoff */ }
+  }, []);
+  useEffect(() => {
+    const h = handoffRef.current;
+    if (!h || handoffDone.current) return;
+    if (h.tone && activeTone !== h.tone) return; // wait until the tone has applied
+    handoffDone.current = true;
+    const txt = String(h.verse).replace(/\s*\/\/\s*/g, "\n").replace(/\s*\|\s*/g, "\n").trim();
+    setText(txt);
+    analyzeText(txt);
+  }, [activeTone]);
 
   return (
     <div style={{ maxWidth: 820, margin: "0 auto", padding: "2rem 1rem 4rem", fontFamily: "Georgia, serif", color: ink }}>
