@@ -868,6 +868,38 @@ function getServices(raw) {
   return Array.isArray(raw) ? raw : [raw];
 }
 
+// ── Forward-facing renderer for pointed hymnography (encoding_rule_v2.md §3) ──
+// Stored hymn text is ONE marked string in the OCA dialect: `|` line end,
+// `//` penultimate line, `[brackets]` director emphasis. Strip-at-render:
+//   • `|`  → line break (the symbol itself hidden)
+//   • `//` → kept visible at the end of the penultimate line (a chant cue)
+//   • `[x]` → reassembled into its word with the bracketed syllable underlined
+// A plain (Tier-1) string — or any prose/rubric without ` | `/` // ` markers —
+// passes straight through unchanged, so existing entries are unaffected.
+function renderPointed(text) {
+  if (typeof text !== 'string' || !text) return text;
+  if (!/\s\|\s/.test(text) && !/\s\/\/\s/.test(text)) return text; // not pointed → passthrough
+  const tokens = text.split(/(\s\/\/\s|\s\|\s)/); // [line0, sep0, line1, sep1, …, lineN]
+  const lines = [];
+  for (let i = 0; i < tokens.length; i += 2) {
+    lines.push({ content: tokens[i], sep: tokens[i + 1] });
+  }
+  return lines.map((ln, i) => {
+    const isPenult = !!ln.sep && ln.sep.indexOf('//') !== -1;
+    const segs = (ln.content || '').split(/(\[[^\]]*\])/); // keep [bracketed] spans
+    return (
+      <div key={i} style={{ marginBottom: '0.15rem' }}>
+        {segs.map((seg, j) =>
+          (seg.startsWith('[') && seg.endsWith(']') && seg.length > 2)
+            ? <u key={j}>{seg.slice(1, -1)}</u>
+            : <React.Fragment key={j}>{seg}</React.Fragment>
+        )}
+        {isPenult && <span style={{ color: '#B8A882' }}> //</span>}
+      </div>
+    );
+  });
+}
+
 function getLiturgicalData(date) {
   const year = date.getFullYear();
 
@@ -6931,7 +6963,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
           );
         }
 
-        return <div style={bodyStyle}>{element.text}</div>;
+        return <div style={bodyStyle}>{renderPointed(element.text)}</div>;
       })()}
 
       {/* ── Post-communion T/K block ── */}
@@ -7541,6 +7573,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.11.0",
+    date: "June 2026",
+    summary: "Pointed hymnography — forward-facing renderer (|/// [brackets] strip-at-render)",
+    items: [
+      "feat: hymn body text is now rendered from the canonical pointed-string format (encoding_rule_v2.md §3). A single marked string is stored per text — `|` line end, `//` penultimate line, `[brackets]` director emphasis — and rendered forward-facing: `|` becomes a line break (symbol hidden), `//` stays visible as a chant cue at the penultimate line, and a bracketed syllable is reassembled into its word and underlined (e.g. Resur[rec]tion shows 'rec' underlined). Plain (Tier-1) text and any prose or rubric without line markers pass through unchanged, so all existing entries are unaffected. This is the rendering half of the P+63 All Saints of North America / Russia work; the data and offset-63 surfacing follow.",
+    ],
+  },
   {
     version: "v0.10.1",
     date: "June 2026",
