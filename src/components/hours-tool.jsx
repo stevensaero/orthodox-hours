@@ -7612,6 +7612,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.15.5",
+    date: "June 2026",
+    summary: "How It Works / Glossary panels constrained to the hours-tool content width",
+    items: [
+      "ui: the How It Works accordion and the Glossary panel were rendering full-bleed; they are now constrained to the same 800px centered width as the service content, so their right edge aligns with the rest of the page instead of running edge-to-edge.",
+    ],
+  },
+  {
     version: "v0.15.4",
     date: "June 2026",
     summary: "Octoechos browser restyled to match Menaion/Pentecostarion + Sunday surfaced for Matins",
@@ -11242,8 +11250,8 @@ export default function App() {
       </div>{/* end flex row */}
 
       {/* ── HOW IT WORKS — always visible, below service content ── */}
-      <div style={{ width: "100%", padding: "0 0 2rem",
-                    textAlign: "center", marginTop: "1.5rem" }}>
+      <div style={{ width: "100%", maxWidth: "800px", margin: "1.5rem auto 0", padding: "0 1rem 2rem",
+                    textAlign: "center" }}>
         <div style={{ display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap" }}>
           <button
             onClick={() => setShowHowItWorks(v => !v)}
