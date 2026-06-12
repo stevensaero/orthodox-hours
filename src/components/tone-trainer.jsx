@@ -11,11 +11,19 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 
-export const TONE_TRAINER_VERSION = "v0.24.1";
+export const TONE_TRAINER_VERSION = "v0.24.2";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.24.2",
+    date: "June 2026",
+    summary: "Score hand-off title — Tone N + verse incipit",
+    items: [
+      "fix: a verse scored from the Hours tool now titles the page the way the trainer's own Score does — 'Tone N — [first four words of the verse]…' (e.g. 'Tone 2 — Come, let us assemble…') — instead of the bare 'Tone N Sticheron' fallback. The shared default-title helper now also appends an ellipsis when the opening line runs past four words.",
+    ],
+  },
   {
     version: "v0.24.1",
     date: "June 2026",
@@ -4495,10 +4503,13 @@ export default function ToneTrainer() {
     setTimeout(send, 200); // first attempt after 200ms
   };
 
-  // Derive the default title when the modal opens:
-  //   "Tone N — [first 4 words of sticheron]"
-  const defaultScoreTitle = () => {
-    const src = lines.length > 0 ? lines : machineLines ?? [];
+  // Derive the default title:
+  //   "Tone N — [first 4 words of sticheron]…"  (ellipsis when the line runs longer)
+  // Accepts an optional source-lines override so callers that have just pointed a
+  // verse (e.g. the Hours-tool Score hand-off) can title it without waiting for the
+  // lines state to settle.
+  const defaultScoreTitle = (srcOverride) => {
+    const src = srcOverride ?? (lines.length > 0 ? lines : machineLines ?? []);
     if (!src.length) return `Tone ${activeTone} Sticheron`;
     // Flatten first line words to get the opening words
     const firstLine = src[0];
@@ -4506,7 +4517,8 @@ export default function ToneTrainer() {
       w.display || (w.sylls ?? []).map(s => s.text).join("")
     ).filter(Boolean);
     const incipit = words.slice(0, 4).join(" ");
-    return incipit ? `Tone ${activeTone} — ${incipit}` : `Tone ${activeTone} Sticheron`;
+    if (!incipit) return `Tone ${activeTone} Sticheron`;
+    return `Tone ${activeTone} — ${incipit}${words.length > 4 ? "…" : ""}`;
   };
 
   // Bass pitches (low register) sort to the tall end; tenor pitches (higher register)
@@ -4591,7 +4603,7 @@ export default function ToneTrainer() {
       // sessionStorage, then replace this tab with the print page (Back → Hours).
       const sourceLines = analyzeText(txt);
       if (sourceLines && sourceLines.length) {
-        const payload = buildScorePayload(sourceLines, h.title, "director");
+        const payload = buildScorePayload(sourceLines, defaultScoreTitle(sourceLines), "director");
         payload.densePack = false;
         payload.showTempo = !!showTempo;
         payload.bpm = bpm;

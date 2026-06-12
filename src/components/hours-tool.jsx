@@ -7020,7 +7020,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '14px',
+              gap: '15px',
               paddingLeft: '10px',
               borderLeft: '1px solid #DDD2B6',
             }}>
@@ -7040,7 +7040,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
                 title={toneBuilt
                   ? 'Open the printed score for this verse'
                   : (vTone != null ? `Tone ${vTone} is not yet built in the Tone Trainer` : 'This verse has no tone assigned')}
-                style={{ fontSize: '1.38rem', lineHeight: 1, userSelect: 'none', cursor: toneBuilt ? 'pointer' : 'not-allowed', color: toneBuilt ? '#8B6914' : '#CDC4AE' }}
+                style={{ fontSize: '1.66rem', lineHeight: 1, userSelect: 'none', cursor: toneBuilt ? 'pointer' : 'not-allowed', color: toneBuilt ? '#8B6914' : '#CDC4AE' }}
               >♫</div>
             </div>
           </div>
@@ -7654,6 +7654,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.14.3",
+    date: "June 2026",
+    summary: "♫ Score glyph larger again + a touch more spacing",
+    items: [
+      "polish: the ♫ Score glyph is larger again (now 1.66rem) and the gap between the ▶/♫ controls is 15px.",
+    ],
+  },
   {
     version: "v0.14.2",
     date: "June 2026",
