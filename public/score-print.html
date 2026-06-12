@@ -1080,6 +1080,17 @@ window.addEventListener('message', function(e) {
   // else: vfTag.onload will call showScore
 });
 
+// Direct payload via sessionStorage — the Hours-tool Score hand-off navigates here
+// in the same tab (no opener to postMessage from). Consume once; render on VexFlow load.
+try {
+  var ssRaw = sessionStorage.getItem('oht_score_payload');
+  if (ssRaw && !rendered) {
+    sessionStorage.removeItem('oht_score_payload');
+    pending = JSON.parse(ssRaw);
+    rendered = true;
+  }
+} catch (ssErr) {}
+
 // Load VexFlow — callback fires after JS executes (Bravura fonts loaded separately)
 var vfTag = document.createElement('script');
 vfTag.src = 'vexflow.js';

@@ -11,11 +11,19 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 
-export const TONE_TRAINER_VERSION = "v0.23.4";
+export const TONE_TRAINER_VERSION = "v0.24.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.24.0",
+    date: "June 2026",
+    summary: "Receives Score hand-offs straight to the printed score",
+    items: [
+      "feat: the Hours tool's ♫ Score control hands a verse here with a 'score' flag. The trainer points it, builds the print payload (the same buildScorePayload used by its own Score button), stashes it for score-print.html, and redirects this tab to the printed score — no interactive UI in between. Because it redirects in place, browser-back returns straight to the Hours tool. A brief 'Preparing printable score…' screen covers the hand-off. analyzeText now returns its pointed lines so the payload can be built without a manual paste.",
+    ],
+  },
   {
     version: "v0.23.4",
     date: "June 2026",
@@ -4112,13 +4120,13 @@ export default function ToneTrainer() {
   // and the try example button. Takes text explicitly so it works regardless
   // of React state update timing (setText is async; this is synchronous).
   const analyzeText = (txt) => {
-    if (!txt.trim()) { setLines([]); return; }
+    if (!txt.trim()) { setLines([]); return []; }
     const { hasBrackets } = parseBracketedText(txt);
     const activeRot = ROT_DEFS[activeTone] || ROT_DEFS[1];
     if (hasBrackets) {
       // TRUTH MODE: brackets are authoritative over the lexicon.
       const tLines = parseTruthLines(txt, lexicon, activeRot);
-      if (!tLines.length) { setLines([]); return; }
+      if (!tLines.length) { setLines([]); return []; }
       const mLines = autoEncodeLines(tLines, lexicon, PH);
       const cmp = buildComparison(tLines, mLines, PH, activeTone);
       setLines(tLines);
@@ -4128,6 +4136,7 @@ export default function ToneTrainer() {
       if (!compareMode) setCompareMode(false);
       setSingView("director");
       setSingWhich("truth");
+      return tLines;
     } else {
       // AUTO MODE: syllabify via lexicon, then apply phrase-structural accent engine.
       const raw = txt.split("\n").map((s) => s.trim()).filter(Boolean);
@@ -4146,6 +4155,7 @@ export default function ToneTrainer() {
       setMachineLines(null);
       setCompareMode(false);
       setSingView("director");
+      return next;
     }
   };
 
@@ -4536,10 +4546,18 @@ export default function ToneTrainer() {
     } catch { return false; }
   }, []);
 
-  // Hours-tool handoff (Point control): a verse arrives via sessionStorage. Apply
-  // its tone first; then, once activeTone reflects it, translate the line marks
-  // (| and //) to newlines — keeping any [director brackets] — and point it. The
-  // payload is consumed once.
+  // True from the first render when the Hours tool handed a verse to Score, so we
+  // show a minimal "preparing" screen instead of flashing the full trainer UI
+  // before redirecting to the print page.
+  const [scorePreparing, setScorePreparing] = useState(() => {
+    try { const r = sessionStorage.getItem("oht_handoff"); return !!r && JSON.parse(r).mode === "score"; } catch { return false; }
+  });
+
+  // Hours-tool handoff (Point / Score controls): a verse arrives via sessionStorage.
+  // Apply its tone; once activeTone reflects it, translate the line marks (| and //)
+  // to newlines — keeping any [director brackets]. Point mode loads + points it for
+  // singing; Score mode builds the print payload and redirects to score-print.html
+  // (same tab, so Back returns to the Hours tool). Consumed once.
   const handoffRef = useRef(null);
   const handoffDone = useRef(false);
   useEffect(() => {
@@ -4556,11 +4574,38 @@ export default function ToneTrainer() {
     const h = handoffRef.current;
     if (!h || handoffDone.current) return;
     if (h.tone && activeTone !== h.tone) return; // wait until the tone has applied
+    if (!lexicon && !lexiconError) return;       // wait until the lexicon is ready (or failed)
     handoffDone.current = true;
     const txt = String(h.verse).replace(/\s*\/\/\s*/g, "\n").replace(/\s*\|\s*/g, "\n").trim();
+    if (h.mode === "score") {
+      // Build the print payload from the pointed lines, hand it to score-print via
+      // sessionStorage, then replace this tab with the print page (Back → Hours).
+      const sourceLines = analyzeText(txt);
+      if (sourceLines && sourceLines.length) {
+        const payload = buildScorePayload(sourceLines, h.title || `Tone ${activeTone} verse`, "director");
+        payload.densePack = false;
+        payload.showTempo = !!showTempo;
+        payload.bpm = bpm;
+        try { sessionStorage.setItem("oht_score_payload", JSON.stringify(payload)); } catch { /* ignore */ }
+        window.location.replace("/orthodox-hours/score-print.html?v=" + encodeURIComponent(TONE_TRAINER_VERSION));
+        return;
+      }
+      // No pointable lines — fall back to the interactive view with the verse loaded.
+      setText(txt);
+      setScorePreparing(false);
+      return;
+    }
     setText(txt);
     analyzeText(txt);
-  }, [activeTone]);
+  }, [activeTone, lexicon, lexiconError]);
+
+  if (scorePreparing) {
+    return (
+      <div style={{ maxWidth: 820, margin: "0 auto", padding: "5rem 1rem", fontFamily: "Georgia, serif", color: ink, textAlign: "center" }}>
+        <div style={{ color: gold, letterSpacing: "0.22em", textTransform: "uppercase", fontSize: "0.78rem" }}>Preparing printable score…</div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ maxWidth: 820, margin: "0 auto", padding: "2rem 1rem 4rem", fontFamily: "Georgia, serif", color: ink }}>

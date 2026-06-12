@@ -919,11 +919,12 @@ function elementTone(el) {
   return fromStr(el.rubric) ?? fromStr(el.toneNote) ?? fromStr(el.label) ?? null;
 }
 
-// Point control (Hours → Tone Trainer): stash the verse + its tone, then full-page
-// navigate to the trainer carrying ?from=tool (so a plain browser-back returns
-// here, where you left off). The trainer reads oht_handoff on mount and points it.
-function pointVerse(text, tone) {
-  try { sessionStorage.setItem('oht_handoff', JSON.stringify({ verse: text, tone })); } catch { /* private mode */ }
+// Hand a pointable verse to the Tone Trainer (Hours → Trainer). mode 'point' loads
+// and points it for singing; mode 'score' has the trainer build the print payload
+// and redirect to the printed score. Stash the verse + tone + mode, then full-page
+// navigate with ?from=tool (so a plain browser-back returns here, where you left off).
+function handoffVerse(text, tone, mode) {
+  try { sessionStorage.setItem('oht_handoff', JSON.stringify({ verse: text, tone, mode })); } catch { /* private mode */ }
   window.location.href = '/orthodox-hours/tone-trainer?from=tool';
 }
 
@@ -7012,30 +7013,36 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
         return (
           <div style={{ ...bodyStyle, display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{ flex: 1, minWidth: 0 }}>{renderPointed(element.text)}</div>
-            <div
-              role="button"
-              aria-label="Point this verse in the Tone Trainer"
-              onClick={toneBuilt ? () => pointVerse(element.text, vTone) : undefined}
-              title={toneBuilt
-                ? 'Point this verse in the Tone Trainer'
-                : (vTone != null
-                    ? `Tone ${vTone} is not yet built in the Tone Trainer`
-                    : 'This verse has no tone assigned')}
-              style={{
-                flexShrink: 0,
-                alignSelf: 'stretch',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingLeft: '10px',
-                borderLeft: '1px solid #DDD2B6',
-                fontSize: '1.2rem',
-                lineHeight: 1,
-                userSelect: 'none',
-                cursor: toneBuilt ? 'pointer' : 'not-allowed',
-                color: toneBuilt ? '#8B6914' : '#CDC4AE',
-              }}
-            >▶</div>
+            <div style={{
+              flexShrink: 0,
+              alignSelf: 'stretch',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              paddingLeft: '10px',
+              borderLeft: '1px solid #DDD2B6',
+            }}>
+              <div
+                role="button"
+                aria-label="Point this verse in the Tone Trainer"
+                onClick={toneBuilt ? () => handoffVerse(element.text, vTone, 'point') : undefined}
+                title={toneBuilt
+                  ? 'Point this verse in the Tone Trainer'
+                  : (vTone != null ? `Tone ${vTone} is not yet built in the Tone Trainer` : 'This verse has no tone assigned')}
+                style={{ fontSize: '1.15rem', lineHeight: 1, userSelect: 'none', cursor: toneBuilt ? 'pointer' : 'not-allowed', color: toneBuilt ? '#8B6914' : '#CDC4AE' }}
+              >▶</div>
+              <div
+                role="button"
+                aria-label="Open the printed score for this verse"
+                onClick={toneBuilt ? () => handoffVerse(element.text, vTone, 'score') : undefined}
+                title={toneBuilt
+                  ? 'Open the printed score for this verse'
+                  : (vTone != null ? `Tone ${vTone} is not yet built in the Tone Trainer` : 'This verse has no tone assigned')}
+                style={{ fontSize: '1.15rem', lineHeight: 1, userSelect: 'none', cursor: toneBuilt ? 'pointer' : 'not-allowed', color: toneBuilt ? '#8B6914' : '#CDC4AE' }}
+              >♫</div>
+            </div>
           </div>
         );
       })()}
@@ -7647,6 +7654,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.14.0",
+    date: "June 2026",
+    summary: "♫ Score control — printed score straight from a verse",
+    items: [
+      "feat: alongside ▶ Point, every pointable verse now shows a ♫ Score control in the verse window. It takes the verse straight to its printed SATB score (skipping the trainer's interactive view) — the trainer points the verse and builds the score behind a brief 'Preparing…' screen, then lands you on the print page. Browser-back returns to the Hours tool where you left off. Same tone gating as Point: active for built tones (1–3), light grey and inert otherwise.",
+    ],
+  },
   {
     version: "v0.13.2",
     date: "June 2026",
