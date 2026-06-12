@@ -11,11 +11,20 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 
-export const TONE_TRAINER_VERSION = "v0.24.0";
+export const TONE_TRAINER_VERSION = "v0.24.1";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.24.1",
+    date: "June 2026",
+    summary: "Score hand-off: default title + back-to-Hours on the print page",
+    items: [
+      "change: a verse scored from the Hours tool now uses the trainer's own default score title (Tone N Sticheron) rather than a custom label.",
+      "feat: when the printed score is reached from the Hours tool, the toolbar's Close control becomes a '← Hours Tool' back link (plain browser-back) — since the same-tab hand-off has no popup to close. The trainer's own Score button still opens a closeable tab.",
+    ],
+  },
   {
     version: "v0.24.0",
     date: "June 2026",
@@ -4582,12 +4591,12 @@ export default function ToneTrainer() {
       // sessionStorage, then replace this tab with the print page (Back → Hours).
       const sourceLines = analyzeText(txt);
       if (sourceLines && sourceLines.length) {
-        const payload = buildScorePayload(sourceLines, h.title || `Tone ${activeTone} verse`, "director");
+        const payload = buildScorePayload(sourceLines, h.title, "director");
         payload.densePack = false;
         payload.showTempo = !!showTempo;
         payload.bpm = bpm;
         try { sessionStorage.setItem("oht_score_payload", JSON.stringify(payload)); } catch { /* ignore */ }
-        window.location.replace("/orthodox-hours/score-print.html?v=" + encodeURIComponent(TONE_TRAINER_VERSION));
+        window.location.replace("/orthodox-hours/score-print.html?from=tool&v=" + encodeURIComponent(TONE_TRAINER_VERSION));
         return;
       }
       // No pointable lines — fall back to the interactive view with the verse loaded.
