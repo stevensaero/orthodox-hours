@@ -85,7 +85,7 @@
   <span style="flex:1"></span>
   <span class="src" id="tb-ver" style="margin-right:0.75rem;"></span>
   <button onclick="doPrint()">⎙ Print</button>
-  <button onclick="window.close()">✕ Close</button>
+  <button id="tb-close" onclick="doClose()">✕ Close</button>
 </div>
 
 <div id="score-wrapper">
@@ -95,6 +95,23 @@
 <script>
 var pending  = null;
 var rendered = false;
+
+// Close helper — when this page was reached from the Hours tool (same-tab
+// navigation, ?from=tool), there is no opener to close, so step back in history
+// to return to the Hours tool. Otherwise close the popup tab as before.
+var cameFromTool = false;
+try { cameFromTool = new URLSearchParams(window.location.search).get('from') === 'tool'; } catch (e) {}
+function doClose() {
+  if (cameFromTool) { window.history.back(); return; }
+  window.close();
+}
+// Relabel the close control as a back link when arriving from the Hours tool.
+try {
+  if (cameFromTool) {
+    var cb = document.getElementById('tb-close');
+    if (cb) cb.textContent = '\u2190 Hours Tool';
+  }
+} catch (e) {}
 
 // Print helper — removes toolbar from DOM entirely before printing,
 // then restores it. position:sticky toolbars cause phantom page breaks in Chrome.
