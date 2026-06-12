@@ -775,8 +775,9 @@ const MOVABLE_NAMED_DAYS = [
   { key: "all_saints_na_sunday", isSunday: true, offset: 63,
     name: "Sunday of All Saints of North America",
     note: "OCA-specific observance. The second Sunday after Pentecost. Glorifies all saints who have shone forth in North America.",
-    troparion: { tone: 8, text: "As the bountiful harvest of Your sowing of salvation, the lands of North America offer to You, O Lord, all the saints who have shone in them. By their prayers keep the Church and our land in abiding peace through the Theotokos, O most Merciful One." },
-    kontakion_ode6: { tone: 3, text: "Today the choir of Saints who were pleasing to God in the lands of North America now stands before us in the Church and invisibly prays to God for us. With them the angels glorify Him, and all the saints of the Church of Christ keep festival with them; and together they all pray for us to the Pre-Eternal God." },
+    // Troparion/kontakion now come from the P+63 pentecostarion overlay
+    // (pentecostarion.js offset 63, hours_format "all_saints_sunday"); the former
+    // inline stub was superseded when the full NA/Russia overlay was wired in.
   },
 ];
 
@@ -927,6 +928,10 @@ function getLiturgicalData(date) {
   const allSaintsSunday = new Date(relevantPascha);
   allSaintsSunday.setDate(allSaintsSunday.getDate() + 56);
 
+  // P+63 — Second Sunday after Pentecost (All Saints of North America / Russia).
+  const allSaintsNASunday = new Date(relevantPascha);
+  allSaintsNASunday.setDate(allSaintsNASunday.getDate() + 63);
+
   const nextMeatfareSunday = new Date(followingPascha);
   nextMeatfareSunday.setDate(nextMeatfareSunday.getDate() - 56);
 
@@ -1037,6 +1042,13 @@ function getLiturgicalData(date) {
   } else if (date >= nextMeatfareSunday && date < nextFridayBeforeMeatfare) {
     season = "prefasting";
     seasonNote = "Pre-Lenten period (Meatfare week) — Fekula §3A rules apply";
+  } else if (date.getTime() === allSaintsNASunday.getTime()) {
+    // P+63 — Second Sunday after Pentecost (All Saints of North America / Russia).
+    // Discrete single-date clause: classify as "pentecostarion" so the two-service
+    // overlay (hours_format "all_saints_sunday", menaion_set_aside) governs, exactly
+    // as P+56 does. This does NOT slide the season window — P+57–62 are untouched.
+    season = "pentecostarion";
+    seasonNote = "All Saints of North America (P+63) — Fekula §1A; All Saints overlay";
   } else if (date >= allSaintsSunday && date < nextMeatfareSunday) {
     if (dow === 0) {
       season = "sunday";
@@ -7574,6 +7586,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.12.0",
+    date: "June 2026",
+    summary: "All Saints of North America / Russia (P+63) — second Sunday after Pentecost now assembled",
+    items: [
+      "feat: the Second Sunday after Pentecost (Pascha+63) now assembles as a full service. It is a two-service overlay — All Saints of North America (OCA-primary) and All Saints of Russia (Russian usage) — fed through the same multi-service selector used for multi-saint days, defaulting to North America. Resurrection Tone 1 is shared from the Octoechos; each entry supplies the saint propers and the fourth canon. The day shares the established All Saints (P+56) assembler contract, so Lord-I-Call (4 Resurrection + 6 saints), the Hours troparia (Resurrection primary, saints secondary), kontakion, paroemias, and aposticha all assemble as for the first All Saints Sunday. The hymn texts render through the new pointed-hymnography format (line breaks, penultimate-line cue, underlined director emphasis).",
+      "feat: the fixed-calendar commemoration that falls on that date (Ss. Elisha & Methodius this year) is demoted — it appears among the day's commemorated saints for context but, with the overlay governing, contributes no service content.",
+      "feat: Saturday-evening Vespers correctly opens the feast, surfacing the OCA-primary (North America) overlay for the next day.",
+    ],
+  },
+  {
     version: "v0.11.0",
     date: "June 2026",
     summary: "Pointed hymnography — forward-facing renderer (|/// [brackets] strip-at-render)",
@@ -10093,7 +10115,14 @@ export default function App() {
   const liturgicalData = getLiturgicalData(date);
   const dailyReading = getDailyReading(date);  // Lectionary: epistle & gospel for the day
   const rawMenaion = getMenaionEntry(date);
-  const services = getServices(rawMenaion);
+  // P+63 (All Saints of North America / Russia): the day's services are the two
+  // pentecostarion overlay entries, fed through the SAME multi-service selector
+  // (oca_primary default = North America). The fixed Menaion (Ss. Elisha &
+  // Methodius) is demoted — it appears in the day's commemorated saints but,
+  // with menaion_set_aside on the overlay, fires no service content.
+  const rawPent63 = liturgicalData.paschaOffset === 63 ? getPentecostarionEntry(63) : null;
+  const isAllSaintsNA = Array.isArray(rawPent63) && rawPent63.length > 0;
+  const services = isAllSaintsNA ? rawPent63 : getServices(rawMenaion);
   const isMultiService = services.length > 1;
   const [selectedServiceIndex, setSelectedServiceIndex] = useState(0);
   const selectedMenaionEntry = services[selectedServiceIndex] || services[0];
@@ -10149,9 +10178,11 @@ export default function App() {
   const isSunday = liturgicalData.season === "sunday";
   const isPentecostarion = liturgicalData.season === "pentecostarion";
   const isBrightWeek = liturgicalData.season === "brightweek";
-  const pentEntry = (isPentecostarion || isBrightWeek)
-    ? getPentecostarionEntry(liturgicalData.paschaOffset)
-    : null;
+  const pentEntry = isAllSaintsNA
+    ? (services[selectedServiceIndex] || services[0])      // selected NA/Russia overlay
+    : ((isPentecostarion || isBrightWeek)
+        ? getPentecostarionEntry(liturgicalData.paschaOffset)
+        : null);
 
   // FW-26: the Vespers service opens the NEXT liturgical day. Compute that day's
   // full bundle once; reused by the Vespers assembler call, the dual-date note
@@ -10162,12 +10193,17 @@ export default function App() {
     const pad = (n) => String(n).padStart(2, "0");
     const vDateStr = vDate.getFullYear() + "-" + pad(vDate.getMonth() + 1) + "-" + pad(vDate.getDate());
     const vLit = getLiturgicalData(vDate);
-    const vServices = getServices(getMenaionEntry(vDate));
+    // P+63: Saturday-evening Vespers opens All Saints of NA / Russia — use the
+    // overlay array (OCA-primary = North America), mirroring the selected-day path.
+    const vRawPent63 = vLit.paschaOffset === 63 ? getPentecostarionEntry(63) : null;
+    const vIsAllSaintsNA = Array.isArray(vRawPent63) && vRawPent63.length > 0;
+    const vServices = vIsAllSaintsNA ? vRawPent63 : getServices(getMenaionEntry(vDate));
     const vOcaIdx = vServices.findIndex(s => s.oca_primary === true);
     const vMenaion = vServices[vOcaIdx >= 0 ? vOcaIdx : 0] || null;
     const vIsPent = vLit.season === "pentecostarion";
     const vIsBright = vLit.season === "brightweek";
-    const vPent = (vIsPent || vIsBright) ? getPentecostarionEntry(vLit.paschaOffset) : null;
+    const vPent = vIsAllSaintsNA ? vMenaion
+      : ((vIsPent || vIsBright) ? getPentecostarionEntry(vLit.paschaOffset) : null);
     const vParoemias = computeVespersParoemias(vMenaion, vPent, vIsPent, vIsBright);
     const vDailyReading = getDailyReading(vDate);
     const vNamedDaySunday = !!(vLit.namedDay && vLit.namedDay.isSunday);
