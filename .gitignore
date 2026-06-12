@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# scratch drafts / review artifacts (never commit)
+draft_*.js
+_review_*.md
