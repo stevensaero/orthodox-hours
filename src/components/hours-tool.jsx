@@ -7612,6 +7612,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.15.2",
+    date: "June 2026",
+    summary: "Tone 1 Sunday Matins encoded (three canons in full) + Evlogitaria",
+    items: [
+      "data: Tone 1 Sunday Matins is now fully encoded from St. Sergius — God-is-the-Lord theotokion, both sessional-hymn sets, the three Songs of Ascent antiphons, the Matins prokeimenon, all three canons (Resurrection, Cross-Resurrection, Theotokos) across odes 1 and 3-9 with irmoi, troparia and theotokia, the ikos, the eight Praises stichera, and the Great Doxology troparion. Canon troparia and the ikos are stored as plain prose (the source points only the irmoi and hymns); everything pointable carries its | and // markers. Tone 1 is the first tone to claim matins in the drift gate.",
+      "data: the Resurrectional Verses (Evlogitaria), sung the same way every Sunday, are encoded once as a tone-independent table. The matins kontakion, God-is-the-Lord troparion and Hypakoë are drawn from the existing tables rather than re-encoded.",
+    ],
+  },
+  {
     version: "v0.15.1",
     date: "June 2026",
     summary: "Octoechos drift gate + Tone 1 Saturday Vespers pointing captured",

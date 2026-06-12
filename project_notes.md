@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.1** | **Tone Trainer: v0.24.2** | Last synced: June 12, 2026
+**Tool version: v0.15.2** | **Tone Trainer: v0.24.2** | Last synced: June 12, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -99,15 +99,25 @@ the gate.
 > ("Now will I arise…") is stored as `matins.matins_prokeimenon`, distinct from the
 > existing `SUNDAY_PROKEIMENON` (Liturgy) table.
 
-> **Octoechos encoded status (v0.15.1):** all 8 tones `_encoded: ['vespers']`.
-> Tone 1 Saturday/Great Vespers stichera are now pointed from St. Sergius (7 LIC,
-> 4 aposticha, Dogmatic Theotokion — the last also points the identical Friday
-> dogmaticon). Marker-only pass: wording unchanged, machine-verified via
-> `strip(new) === old`. **Next: Tone 1 full Matins encode against the locked
-> schema, then flip Tone 1 to `['vespers','matins']`.** St. Sergius prints
-> quotation marks around the embedded cries in LIC 5 & 7 and aposticha 3 which the
-> current data omits — flagged as a separate fidelity item, not folded into the
-> marker pass.
+> **Octoechos encoded status (v0.15.2):** Tone 1 `_encoded: ['vespers','matins']`;
+> tones 2-8 `['vespers']`. Tone 1 Sunday Matins is fully encoded from `1-1.pdf`
+> (God-is-the-Lord theotokion, two sessional sets, 3 Songs of Ascent antiphons,
+> matins prokeimenon, all three canons odes 1/3-9, ikos, 8 Praises stichera, Great
+> Doxology troparion). Canon troparia + ikos are Tier-1 plain; irmoi/hymns/praises
+> are pointed. Schema field `kontakion_ikos` was renamed `ikos` — the matins
+> kontakion comes from `SUNDAY_KONTAKIA[tone]`, the God-is-the-Lord troparion from
+> `RESURRECTIONAL_TROPARIA[tone]`, and the Hypakoë from `HYPAKOE[tone]` (no
+> re-encoding). The Evlogitaria are encoded once, tone-independent, in
+> `index.js EVLOGITARIA`.
+>
+> **Still tone-independent + still empty (need a non-`N-1.pdf` source):**
+> `EXAPOSTILARIA` (11 Eothina) and `RESURRECTION_GOSPEL_STICHERA` (11 Gospel
+> stichera, sung as the Praises Glory). Both are taken by Resurrection Gospel
+> number, not by tone, so `1-1.pdf` gives only the rubric. **Next: surface an
+> Eothina source for these 11+11, then fill the two index.js tables; then Tone 2
+> Matins from `2-1.pdf`.** St. Sergius prints quotation marks around the embedded
+> cries in Tone 1 Vespers LIC 5 & 7 and aposticha 3 which the current data omits —
+> still flagged as a separate fidelity item.
 
 ---
 
