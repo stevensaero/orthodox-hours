@@ -112,12 +112,20 @@ const validator = new URL('../tools/validate_entries.mjs', import.meta.url);
 const conformance = spawnSync(process.execPath, [validator.pathname], { stdio: 'inherit' });
 const conformanceFailed = conformance.status !== 0;
 
-if (totalGaps === 0 && !conformanceFailed) {
+// ── Octoechos drift gate (tools/validate_octoechos.mjs) ──────────────────────
+// Nested per-tone schema (src/data/octoechos/schema.js): vocabulary guard +
+// required-per-section gated by each tone's _encoded marker + cross-tone uniformity.
+const octoValidator = new URL('../tools/validate_octoechos.mjs', import.meta.url);
+const octo = spawnSync(process.execPath, [octoValidator.pathname], { stdio: 'inherit' });
+const octoFailed = octo.status !== 0;
+
+if (totalGaps === 0 && !conformanceFailed && !octoFailed) {
   console.log('✅  All entries complete and conformant. Safe to commit.\n');
   process.exit(0);
 } else {
   if (totalGaps > 0) console.log(`❌  ${totalGaps} skeleton gaps found.`);
   if (conformanceFailed) console.log('❌  Schema conformance failed (see above).');
+  if (octoFailed) console.log('❌  Octoechos schema conformance failed (see above).');
   console.log('Resolve before committing.\n');
   process.exit(1);
 }

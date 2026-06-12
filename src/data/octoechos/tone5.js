@@ -5,6 +5,8 @@
 // Phase 3: matins data to be encoded from N-1.pdf (Saturday Eve + Sunday Matins).
 
 export default {
+  // Sections claimed complete for the drift gate (schema.js + validate_octoechos.mjs).
+  _encoded: ['vespers'],
 
   // ── VESPERS ────────────────────────────────────────────────────────────────
   // Migrated from OCTOECHOS_VESPERS[5] in hours-tool.jsx (Phase 1).

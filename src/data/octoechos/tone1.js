@@ -5,6 +5,8 @@
 // Phase 3: matins data to be encoded from N-1.pdf (Saturday Eve + Sunday Matins).
 
 export default {
+  // Sections claimed complete for the drift gate (schema.js + validate_octoechos.mjs).
+  _encoded: ['vespers'],
 
   // ── VESPERS ────────────────────────────────────────────────────────────────
   // Migrated from OCTOECHOS_VESPERS[1] in hours-tool.jsx (Phase 1).
@@ -13,22 +15,22 @@ export default {
   vespers: {  // Tone 1
     sat: {
       lic: [
-        `Receive our evening prayers, O Holy Lord, and grant us remission of sins; because Thou alone hast revealed the Resurrection to the world.`,
-        `Go around Zion, O ye peoples, and encompass her, and give glory to him who in her midst hath arisen from the dead; for he is our God, and hath delivered us from our iniquities.`,
-        `Come O ye peoples, let us hymn and worship Christ glorifying his Resurrection from the dead: for he is our God, who hath redeemed the world from the deception of the adversary.`,
-        `Rejoice, O ye heavens! Sound the trumpets O ye foundations of the earth! O ye mountains thunder forth your joy! for behold, Emmanuel hath nailed our sins to the Cross, and the giver of life, hath slain death raising up Adam, as He alone is the Lover of mankind.`,
-        `Let us sing the praise of him who was willingly crucified in the flesh for our sakes, suffered and was buried, and arose from the dead, as we cry: Establish Thy Church in Orthodox belief, O Christ, and grant peace unto our lives, as Thou alone art good and the Lover of mankind.`,
-        `As we the unworthy ones stand before Thy life-bearing tomb we offer a hymn of glory to thine ineffable compassion, O Christ our God; because Thou didst accept the Cross and death, O sinless one, that Thou mightest grant resurrection to the world, as Thou alone lovest mankind.`,
-        `Let us sing the praises of the Word, without beginning and co-eternal, with the Father, who came forth ineffably from a virgin womb, willingly accepting the Cross and Death for our sake and arose in glory, wherefore we cry aloud: Giver of life, O Lord, glory be to thee, the Savior of our souls.`
+        `Receive our evening prayers, | O Holy Lord, | and grant us remission of sins; | because Thou alone hast revealed // the Resurrection to the world.`,
+        `Go around Zion, O ye peoples, | and encompass her, | and give glory to him who in her midst hath arisen from the dead; | for he is our God, // and hath delivered us from our iniquities.`,
+        `Come O ye peoples, | let us hymn and worship Christ | glorifying his Resurrection from the dead: | for he is our God, // who hath redeemed the world from the deception of the adversary.`,
+        `Rejoice, O ye heavens! | Sound the trumpets O ye foundations of the earth! | O ye mountains thunder forth your joy! | for behold, Emmanuel hath nailed our sins to the Cross, | and the giver of life, hath slain death | raising up Adam, // as He alone is the Lover of mankind.`,
+        `Let us sing the praise of him | who was willingly crucified in the flesh for our sakes, | suffered and was buried, and arose from the dead, | as we cry: | Establish Thy Church in Orthodox belief, O Christ, | and grant peace unto our lives, // as Thou alone art good and the Lover of mankind.`,
+        `As we the unworthy ones stand before Thy life-bearing tomb | we offer a hymn of glory | to thine ineffable compassion, O Christ our God; | because Thou didst accept the Cross and death, | O sinless one, | that Thou mightest grant resurrection to the world, // as Thou alone lovest mankind.`,
+        `Let us sing the praises of the Word, | without beginning and co-eternal, with the Father, | who came forth ineffably from a virgin womb, | willingly accepting the Cross and Death for our sake | and arose in glory, | wherefore we cry aloud: | Giver of life, O Lord, glory be to thee, // the Savior of our souls.`
       ],
       aposticha: [
-        `By Thy Passion, O Christ, we have been set free from passions, and by Thy Resurrection we have been delivered from corruption. O Lord, glory be to thee.`,
-        `All ye His creation rejoice! let the heavens be glad, let the nations clap their hands with gladness; for Christ our Savior hath nailed our sins to the Cross and by slaying death hath granted us life eternal, raising all of the fallen race of Adam, as he alone is the Lover of mankind.`,
-        `Being the King of heaven and earth, O Incomprehensible one, Thou wast willingly crucified through Thy love for mankind; when Hades met thee he was vexed, while the souls of the righteous receiving thee below rejoiced, and Adam, seeing thee his Creator in the nethermost regions, rose again. O the wonder! How did the life of all taste death? Except that he wished to enlighten the world, which crieth out saying: O Thou who didst arise from the dead, O Lord glory be to thee!`,
-        `Carrying sweet spices the myrrh-bearing women reached Thy tomb with haste, lamenting; and not finding Thy most pure Body, but learning from the angel the new and marvelous wonder, spake unto the apostles saying: The Lord hath arisen, granting the world His great mercy.`
+        `By Thy Passion, O Christ, | we have been set free from passions, | and by Thy Resurrection we have been delivered from corruption. // O Lord, glory be to thee.`,
+        `All ye His creation rejoice! | let the heavens be glad, | let the nations clap their hands with gladness; | for Christ our Savior hath nailed our sins to the Cross | and by slaying death hath granted us life eternal, | raising all of the fallen race of Adam, // as he alone is the Lover of mankind.`,
+        `Being the King of heaven and earth, | O Incomprehensible one, | Thou wast willingly crucified through Thy love for mankind; | when Hades met thee he was vexed, | while the souls of the righteous receiving thee below rejoiced, | and Adam, seeing thee his Creator in the nethermost regions, rose again. | O the wonder! | How did the life of all taste death? | Except that he wished to enlighten the world, | which crieth out saying: | O Thou who didst arise from the dead, // O Lord glory be to thee!`,
+        `Carrying sweet spices the myrrh-bearing women | reached Thy tomb with haste, lamenting; | and not finding Thy most pure Body, | but learning from the angel the new and marvelous wonder, | spake unto the apostles saying: | The Lord hath arisen, // granting the world His great mercy.`
       ],
       aposticha_glory: `[Glory from Menaion if appointed]`,
-      dogmatikon: `Let us hymn the whole world's glory, who sprang forth from mankind and who gave birth to the Master, the Portal of heaven, Mary the Virgin, the hymn of the Bodiless Powers and adornment of the faithful; for she hath been revealed as the Heaven and Temple of the Godhead. By destroying the middle wall, she hath brought forth peace, and opened wide the Kingdom. Therefore, holding fast to her as a firm confirmation of the faith, we have as our champion the Lord born from her. Take courage therefore, take courage, O ye people of God; for as the Invincible one he shall conquer our adversaries.`
+      dogmatikon: `Let us hymn the whole world's glory, | who sprang forth from mankind and who gave birth to the Master, | the Portal of heaven, Mary the Virgin, | the hymn of the Bodiless Powers and adornment of the faithful; | for she hath been revealed as the Heaven and Temple of the Godhead. | By destroying the middle wall, she hath brought forth peace, | and opened wide the Kingdom. | Therefore, holding fast to her as a firm confirmation of the faith, | we have as our champion the Lord born from her. | Take courage therefore, take courage, O ye people of God; // for as the Invincible one he shall conquer our adversaries.`
     },
     sun_eve: {
       lic: [
@@ -104,7 +106,7 @@ export default {
         `The confession of faith that ye made at the tribunal, O ye saints, set at naught the strength of the demons, and set men free from error. As ye were beheaded ye cried aloud: May the sacrifice of our lives be acceptable in Thy sight, O Lord; for, desiring Thee the Lover of mankind, we have spurned this quickly passing life.`,
         `Wise was the trade that ye made, O saints! Giving your blood, and inheriting heaven as your reward; Having suffered tribulation for a time, ye now rejoice eternally. Truly wisely have ye traded: forsaking things corruptible, ye have received things incorruptible; and rejoicing with the choirs of angels ye now hymn eternally the praises of the consubstantial Trinity.`
       ],
-      lic_dogmatikon: `Let us hymn the whole world's glory, who sprang forth from mankind and who gave birth to the Master, the Portal of heaven, Mary the Virgin, the hymn of the Bodiless Powers and adornment of the faithful; for she hath been revealed as the Heaven and Temple of the Godhead. By destroying the middle wall, she hath brought forth peace, and opened wide the Kingdom. Therefore, holding fast to her as a firm confirmation of the faith, we have as our champion the Lord born from her. Take courage therefore, take courage, O ye people of God; for as the Invincible one he shall conquer our adversaries.`,
+      lic_dogmatikon: `Let us hymn the whole world's glory, | who sprang forth from mankind and who gave birth to the Master, | the Portal of heaven, Mary the Virgin, | the hymn of the Bodiless Powers and adornment of the faithful; | for she hath been revealed as the Heaven and Temple of the Godhead. | By destroying the middle wall, she hath brought forth peace, | and opened wide the Kingdom. | Therefore, holding fast to her as a firm confirmation of the faith, | we have as our champion the Lord born from her. | Take courage therefore, take courage, O ye people of God; // for as the Invincible one he shall conquer our adversaries.`,
       aposticha: [
         `O all-famed martyrs, the earth did not hide you, but heaven hath received you; the gates of Paradise were opened to you, and entering within ye have partaken of the tree of life. Pray ye to Christ that He grant peace and great mercy to our souls.`,
         `What sweet pleasure in this life remaineth untouched by grief? What glory endureth unchanged upon the earth? All is feebler than a shadow, more deceptive than a dream; for death in a single moment taketh away all these things. But in the light of Thy countenance, O Christ, and in the enjoyment of Thy beauty, grant rest to those whom Thou hast chosen, for Thou art the Lover of mankind.`,
