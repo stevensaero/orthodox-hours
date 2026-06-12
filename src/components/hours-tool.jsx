@@ -906,6 +906,19 @@ function isPointable(text) {
   return typeof text === 'string' && (/\s\|\s/.test(text) || /\s\/\/\s/.test(text));
 }
 
+// The chant tone of a rendered element. Stichera carry it in the "Tone N:" rubric
+// heading, troparia/kontakia in a toneNote or "· Tone N" label, and a few elements
+// in a structured .tone. Read whichever is present; null when none.
+function elementTone(el) {
+  if (el == null) return null;
+  if (el.tone != null) return el.tone;
+  const fromStr = (s) => {
+    const m = typeof s === 'string' ? s.match(/Tone\s+(\d+)/) : null;
+    return m ? parseInt(m[1], 10) : null;
+  };
+  return fromStr(el.rubric) ?? fromStr(el.toneNote) ?? fromStr(el.label) ?? null;
+}
+
 // Point control (Hours → Tone Trainer): stash the verse + its tone, then full-page
 // navigate to the trainer carrying ?from=tool (so a plain browser-back returns
 // here, where you left off). The trainer reads oht_handoff on mount and points it.
@@ -6994,18 +7007,19 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
         // Pointable verse → show the Point control inside the verse window at far
         // right. Active when the verse's tone is built in the trainer; otherwise
         // light grey and inert, with a tooltip explaining why.
-        const toneBuilt = element.tone != null && AVAILABLE_TONES.has(element.tone);
+        const vTone = elementTone(element);
+        const toneBuilt = vTone != null && AVAILABLE_TONES.has(vTone);
         return (
           <div style={{ ...bodyStyle, display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{ flex: 1, minWidth: 0 }}>{renderPointed(element.text)}</div>
             <div
               role="button"
               aria-label="Point this verse in the Tone Trainer"
-              onClick={toneBuilt ? () => pointVerse(element.text, element.tone) : undefined}
+              onClick={toneBuilt ? () => pointVerse(element.text, vTone) : undefined}
               title={toneBuilt
                 ? 'Point this verse in the Tone Trainer'
-                : (element.tone != null
-                    ? `Tone ${element.tone} is not yet built in the Tone Trainer`
+                : (vTone != null
+                    ? `Tone ${vTone} is not yet built in the Tone Trainer`
                     : 'This verse has no tone assigned')}
               style={{
                 flexShrink: 0,
@@ -7633,6 +7647,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.13.1",
+    date: "June 2026",
+    summary: "Point control now reads the tone from the verse's rubric",
+    items: [
+      "fix: the ▶ Point control was greyed with 'no tone assigned' on stichera (e.g. the Tone 1 'Lord, I Call' resurrection stichera at Vespers). Those verses carry their tone in the 'Tone N:' heading rather than a structured field, so the gate read nothing. It now reads the tone from whichever field holds it — the rubric heading, a tone note, or the label — so every pointable verse with a built tone is active.",
+    ],
+  },
   {
     version: "v0.13.0",
     date: "June 2026",
