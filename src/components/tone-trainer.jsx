@@ -11,11 +11,19 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 
-export const TONE_TRAINER_VERSION = "v0.23.3";
+export const TONE_TRAINER_VERSION = "v0.23.4";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.23.4",
+    date: "June 2026",
+    summary: "Lexicon corrections — director-verified syllabification",
+    items: [
+      "fix: syllable corrections from the choir director — glorifying is four syllables (glor·i·fy·ing), pious is two (pi·ous), and nailed is a single syllable. delivered was already correct at three (de·liv·ered). Applied to the served lexicon and the build accumulator so they survive a rebake; the version bump cache-busts the lexicon fetch so the corrections take effect immediately.",
+    ],
+  },
   {
     version: "v0.23.3",
     date: "June 2026",
