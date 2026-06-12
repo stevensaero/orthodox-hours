@@ -1048,7 +1048,7 @@ function getLiturgicalData(date) {
     // overlay (hours_format "all_saints_sunday", menaion_set_aside) governs, exactly
     // as P+56 does. This does NOT slide the season window — P+57–62 are untouched.
     season = "pentecostarion";
-    seasonNote = "All Saints of North America (P+63) — Fekula §1A; All Saints overlay";
+    seasonNote = "All Saints of North America (P+63) — 2nd Sunday after Pentecost; regional All Saints (the Russian All Saints rubric, §4B17, with the locally-proper saints). OCA-localized substitution.";
   } else if (date >= allSaintsSunday && date < nextMeatfareSunday) {
     if (dow === 0) {
       season = "sunday";
@@ -7586,6 +7586,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.12.1",
+    date: "June 2026",
+    summary: "P+63 polish — service-selector labels, corrected citation, and a schema-conformance gate",
+    items: [
+      "fix: on All Saints of North America / Russia the service selector now labels each option by name (\"All Saints of North America\" / \"All Saints of Russia\") instead of a blank name with a misleading \"(Simple)\" rank. The selector reads the overlay's name and suppresses the rank tag for entries that have no rank.",
+      "fix: the season note for P+63 no longer cites \"§1A\" (the simple one-saint Sunday rule). The day is a regional All Saints — the Russian All Saints rubric (§4B17) applied with the locally-proper saints, an OCA-localized substitution — which is also what the per-element citations already show.",
+      "dev: added a schema-conformance gate (tools/validate_entries.mjs) that rejects mis-named fields against the blessed field vocabulary and requires the full structural flag block on Sunday-overlay entries. Wired into both the pointing gate and the skeleton gate, so a divergent entry can no longer reach a push. This closes the gap that let the P+63 entries first ship with non-canonical field names.",
+    ],
+  },
+  {
     version: "v0.12.0",
     date: "June 2026",
     summary: "All Saints of North America / Russia (P+63) — second Sunday after Pentecost now assembled",
@@ -10631,9 +10641,15 @@ export default function App() {
                 <label key={idx} style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "0.35rem", cursor: "pointer", fontSize: "0.85rem", lineHeight: "1.5" }}>
                   <input type="radio" name="serviceSelector" checked={selectedServiceIndex === idx} onChange={() => setSelectedServiceIndex(idx)} style={{ marginTop: "2px", accentColor: "#8B6914", flexShrink: 0 }} />
                   <span>
-                    <span style={{ color: "#1C1008" }}>{svc.saint}</span>
-                    <span style={{ color: "#9A8A70", fontSize: "0.78rem", marginLeft: "6px" }}>(<Tooltip term="service rank">{(RANK_EXPLANATIONS[svc.rank] || RANK_EXPLANATIONS.simple).label}</Tooltip>)</span>
-                    <RankExplainer menaionEntry={svc} isSunday={cIsSunday} />
+                    <span style={{ color: "#1C1008" }}>
+                      {svc.saint || (svc.name ? svc.name.split("—").pop().trim() : "Service")}
+                    </span>
+                    {svc.saint && (
+                      <>
+                        <span style={{ color: "#9A8A70", fontSize: "0.78rem", marginLeft: "6px" }}>(<Tooltip term="service rank">{(RANK_EXPLANATIONS[svc.rank] || RANK_EXPLANATIONS.simple).label}</Tooltip>)</span>
+                        <RankExplainer menaionEntry={svc} isSunday={cIsSunday} />
+                      </>
+                    )}
                     {svc.oca_primary === true && (
                       <span style={{ marginLeft: "8px", fontSize: "0.66rem", letterSpacing: "0.08em", textTransform: "uppercase", background: "rgba(139,105,20,0.15)", border: "1px solid rgba(139,105,20,0.4)", borderRadius: "3px", padding: "1px 5px", color: "#6B4E10" }}>OCA primary</span>
                     )}

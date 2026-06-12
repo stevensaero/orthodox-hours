@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.12.0** | **Tone Trainer: v0.23.1** | Last synced: June 11, 2026
+**Tool version: v0.12.1** | **Tone Trainer: v0.23.1** | Last synced: June 11, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -54,6 +54,25 @@ number in the notes header must match the v0.x.x badge in the tool header.
 `project_notes.md` is edited directly in the cloned repo and committed (`docs:`
 prefix). No Drive snapshot, no versioned filename — git history is the version
 record. The authoritative live copy is the repo file at the root.
+
+**Data-integrity gate (added v0.12.1):** `tools/validate_entries.mjs` is a
+schema-conformance check that runs inside both the pointing gate
+(`node tools/test_pointing_paths.mjs`) and the skeleton gate
+(`node scripts/check-skeleton.mjs all`). It enforces two things the
+`FIELD_REGISTRY` coverage audit cannot: (1) an **unknown-field guard** — every
+entry key must be in the blessed `KNOWN_FIELDS` vocabulary, so a mis-named field
+fails loudly instead of reading as "canonical field absent"; (2) a
+**Sunday-overlay flag block** — `all_saints_sunday`/`pentecostarion_sunday`
+entries must carry `menaion_set_aside`, `has_paroemias`, `has_polyeleos`,
+`heavenly_king_omitted`, `it_is_truly_meet_suppressed`.
+
+> **Learning (v0.12.1):** the P+63 All Saints entries first shipped with
+> non-canonical field names (`litya_glory_both_now`, `exapostilarion_saints`,
+> `stichera_praises`, `praises_glory`) and a missing flag block. They were caught
+> by a manual diff against the P+56 exemplar, not by the gate, because the
+> coverage audit tolerates absent fields by design. **For any Sunday-overlay
+> entry, clone the field names and flag block from the P+56 All Saints entry
+> rather than naming fields fresh.** The conformance gate now enforces this.
 
 ---
 

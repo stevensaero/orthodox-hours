@@ -159,6 +159,17 @@ Every encoding session follows these steps in order:
    This must exit 0 (no gaps reported) before any push is made.
    If it exits 1, resolve all gaps first. A push with skeleton gaps is a protocol violation.
    The gate uses the same `FIELD_REGISTRY` as the browser audit — they are identical.
+   It now also runs the **schema-conformance check** (`tools/validate_entries.mjs`):
+   - **Unknown-field guard** — every entry key must be in the blessed vocabulary
+     (`KNOWN_FIELDS`). A mis-named field (e.g. `litya_glory_both_now` instead of
+     `litya_glory`) fails loudly. The `FIELD_REGISTRY` coverage check alone cannot
+     catch this — a mis-named field reads as "canonical field absent + extra key."
+   - **Sunday-overlay flag block** — `all_saints_sunday` / `pentecostarion_sunday`
+     entries must carry `menaion_set_aside`, `has_paroemias`, `has_polyeleos`,
+     `heavenly_king_omitted`, `it_is_truly_meet_suppressed`.
+   The same conformance check is also appended to the pointing gate
+   (`node tools/test_pointing_paths.mjs`), so either gate command enforces it.
+   To add a genuinely new field, extend `KNOWN_FIELDS` deliberately.
 6. **Push** — one push per session after version bump and gate passes
 
 ---
@@ -750,6 +761,10 @@ After the .txt skeleton is complete, these fields map to the tool data objects:
 Before committing any entry, confirm every section is present, every field has an
 explicit value (not blank), and:
 
+- [ ] Field names match the canonical vocabulary — no improvised names. The gate's
+      unknown-field guard (`tools/validate_entries.mjs`) enforces this; for a
+      Sunday overlay (`all_saints_sunday`/`pentecostarion_sunday`), clone the field
+      names from the P+56 All Saints entry rather than naming fields fresh.
 - [ ] Pointed text fields use the §3 marker dialect (`|` `//` `[brackets]`);
       source `*`/`**` and underlines converted; no invented `//`; `director: true`
       set where Tier-3 marks are present

@@ -102,10 +102,22 @@ for (const target of targets) {
 }
 
 console.log('\n─────────────────────────────────────────────────────────────');
-if (totalGaps === 0) {
-  console.log('✅  All entries complete. Safe to commit.\n');
+
+// ── Schema-conformance gate (tools/validate_entries.mjs) ─────────────────────
+// Complements the FIELD_REGISTRY coverage check above: catches mis-named fields
+// (which read as "canonical field absent" to a coverage check) and missing
+// Sunday-overlay flag blocks.
+const { spawnSync } = await import('node:child_process');
+const validator = new URL('../tools/validate_entries.mjs', import.meta.url);
+const conformance = spawnSync(process.execPath, [validator.pathname], { stdio: 'inherit' });
+const conformanceFailed = conformance.status !== 0;
+
+if (totalGaps === 0 && !conformanceFailed) {
+  console.log('✅  All entries complete and conformant. Safe to commit.\n');
   process.exit(0);
 } else {
-  console.log(`❌  ${totalGaps} skeleton gaps found. Resolve before committing.\n`);
+  if (totalGaps > 0) console.log(`❌  ${totalGaps} skeleton gaps found.`);
+  if (conformanceFailed) console.log('❌  Schema conformance failed (see above).');
+  console.log('Resolve before committing.\n');
   process.exit(1);
 }

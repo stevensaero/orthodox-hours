@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "snapshot": "node tools/snapshot_comparison.mjs",
+    "validate": "node tools/validate_entries.mjs",
+    "gate": "node tools/test_pointing_paths.mjs",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",

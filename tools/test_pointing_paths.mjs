@@ -320,3 +320,13 @@ if (writeBaseline) {
 } else {
   console.log("No baseline found — run with --write-baseline to create one");
 }
+
+// ── Entry schema-conformance gate (tools/validate_entries.mjs) ───────────────
+// Runs after the pointing checks above. Catches mis-named fields and missing
+// Sunday-overlay flag blocks so a divergent entry cannot reach a push.
+{
+  const { spawnSync } = await import('node:child_process');
+  const validator = new URL('./validate_entries.mjs', import.meta.url);
+  const v = spawnSync(process.execPath, [validator.pathname], { stdio: 'inherit' });
+  if (v.status !== 0) process.exit(v.status);
+}
