@@ -2,7 +2,12 @@
 // Dev/truthing tool for proofing encoded Octoechos tone data.
 // Route: /orthodox-hours/octoechos — URL-only access, not linked from main tool UI.
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext, createContext } from 'react';
+import { PointScoreControls } from './point-score-controls.jsx';
+
+// Current tone in view — provided by OctoechosBrowser, consumed by SticheronBlock
+// so its Point/Score controls know which tone the verse belongs to.
+const ToneContext = createContext(null);
 
 // ── Color constants — matches existing browsers ──────────────────────────────
 const C = {
@@ -75,6 +80,7 @@ function SubHeader({ children }) {
 }
 
 function SticheronBlock({ index, text, verse, label }) {
+  const tone = useContext(ToneContext);
   return (
     <div style={{
       marginBottom: "0.85rem",
@@ -98,11 +104,15 @@ function SticheronBlock({ index, text, verse, label }) {
           Verse: {verse}
         </div>
       )}
-      <div style={{
-        fontSize: "0.88rem", color: C.ink, lineHeight: 1.65,
-        fontFamily: "Georgia, 'Times New Roman', serif",
-      }}>
-        {text || <span style={{ color: C.goldLight, fontStyle: "italic" }}>—</span>}
+      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div style={{
+          flex: 1, minWidth: 0,
+          fontSize: "0.88rem", color: C.ink, lineHeight: 1.65,
+          fontFamily: "Georgia, 'Times New Roman', serif",
+        }}>
+          {text || <span style={{ color: C.goldLight, fontStyle: "italic" }}>—</span>}
+        </div>
+        <PointScoreControls text={text} tone={tone} />
       </div>
     </div>
   );
@@ -470,6 +480,7 @@ export default function OctoechosBrowser() {
   const matinsEncoded = toneData?.matins && Object.keys(toneData.matins).length > 0;
 
   return (
+    <ToneContext.Provider value={selectedTone}>
     <div style={{
       minHeight: "100vh",
       background: C.parchment,
@@ -666,5 +677,6 @@ export default function OctoechosBrowser() {
         </div>
       </div>
     </div>
+    </ToneContext.Provider>
   );
 }

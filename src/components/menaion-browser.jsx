@@ -4,6 +4,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { auditMenaionEntry, auditSummary } from '../lib/audit.js';
+import { PointScoreControls } from './point-score-controls.jsx';
 
 // ── Color constants — matches psalter.jsx / hours-tool.jsx ──────────────────
 const C = {
@@ -118,13 +119,18 @@ function TextBlock({ tone, text, specMel, label, verse, repeatIndex }) {
           [repeats sticheron #{repeatIndex + 1}]
         </div>
       )}
-      <div style={{
-        fontSize: "0.88rem",
-        color: C.ink,
-        lineHeight: 1.65,
-        fontFamily: "Georgia, 'Times New Roman', serif",
-      }}>
-        {text || <span style={{ color: C.goldLight, fontStyle: "italic" }}>—</span>}
+      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div style={{
+          flex: 1,
+          minWidth: 0,
+          fontSize: "0.88rem",
+          color: C.ink,
+          lineHeight: 1.65,
+          fontFamily: "Georgia, 'Times New Roman', serif",
+        }}>
+          {text || <span style={{ color: C.goldLight, fontStyle: "italic" }}>—</span>}
+        </div>
+        <PointScoreControls text={text} tone={tone} />
       </div>
     </div>
   );

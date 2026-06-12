@@ -5,7 +5,7 @@ import {
   KATAVASIAE, RESURRECTION_GOSPEL_STICHERA,
 } from '../data/octoechos/index.js';
 import { PSALMS, KATHISMA_MAP, getPsalmRange } from '../data/psalter.js';
-import { AVAILABLE_TONES } from '../lib/available-tones.js';
+import { PointScoreControls, isPointable } from './point-score-controls.jsx';
 
 
 // ─── CALENDAR ENGINE ────────────────────────────────────────────────────────
@@ -902,10 +902,6 @@ function renderPointed(text) {
   });
 }
 
-function isPointable(text) {
-  return typeof text === 'string' && (/\s\|\s/.test(text) || /\s\/\/\s/.test(text));
-}
-
 // The chant tone of a rendered element. Stichera carry it in the "Tone N:" rubric
 // heading, troparia/kontakia in a toneNote or "· Tone N" label, and a few elements
 // in a structured .tone. Read whichever is present; null when none.
@@ -917,15 +913,6 @@ function elementTone(el) {
     return m ? parseInt(m[1], 10) : null;
   };
   return fromStr(el.rubric) ?? fromStr(el.toneNote) ?? fromStr(el.label) ?? null;
-}
-
-// Hand a pointable verse to the Tone Trainer (Hours → Trainer). mode 'point' loads
-// and points it for singing; mode 'score' has the trainer build the print payload
-// and redirect to the printed score. Stash the verse + tone + mode, then full-page
-// navigate with ?from=tool (so a plain browser-back returns here, where you left off).
-function handoffVerse(text, tone, mode) {
-  try { sessionStorage.setItem('oht_handoff', JSON.stringify({ verse: text, tone, mode })); } catch { /* private mode */ }
-  window.location.href = '/orthodox-hours/tone-trainer?from=tool';
 }
 
 function getLiturgicalData(date) {
@@ -7009,40 +6996,10 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
         // right. Active when the verse's tone is built in the trainer; otherwise
         // light grey and inert, with a tooltip explaining why.
         const vTone = elementTone(element);
-        const toneBuilt = vTone != null && AVAILABLE_TONES.has(vTone);
         return (
           <div style={{ ...bodyStyle, display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{ flex: 1, minWidth: 0 }}>{renderPointed(element.text)}</div>
-            <div style={{
-              flexShrink: 0,
-              alignSelf: 'stretch',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '15px',
-              paddingLeft: '10px',
-              borderLeft: '1px solid #DDD2B6',
-            }}>
-              <div
-                role="button"
-                aria-label="Point this verse in the Tone Trainer"
-                onClick={toneBuilt ? () => handoffVerse(element.text, vTone, 'point') : undefined}
-                title={toneBuilt
-                  ? 'Point this verse in the Tone Trainer'
-                  : (vTone != null ? `Tone ${vTone} is not yet built in the Tone Trainer` : 'This verse has no tone assigned')}
-                style={{ fontSize: '1.15rem', lineHeight: 1, userSelect: 'none', cursor: toneBuilt ? 'pointer' : 'not-allowed', color: toneBuilt ? '#8B6914' : '#CDC4AE' }}
-              >▶</div>
-              <div
-                role="button"
-                aria-label="Open the printed score for this verse"
-                onClick={toneBuilt ? () => handoffVerse(element.text, vTone, 'score') : undefined}
-                title={toneBuilt
-                  ? 'Open the printed score for this verse'
-                  : (vTone != null ? `Tone ${vTone} is not yet built in the Tone Trainer` : 'This verse has no tone assigned')}
-                style={{ fontSize: '1.66rem', lineHeight: 1, userSelect: 'none', cursor: toneBuilt ? 'pointer' : 'not-allowed', color: toneBuilt ? '#8B6914' : '#CDC4AE' }}
-              >♫</div>
-            </div>
+            <PointScoreControls text={element.text} tone={vTone} />
           </div>
         );
       })()}
@@ -7654,6 +7611,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.15.0",
+    date: "June 2026",
+    summary: "Point/Score controls in the Menaion, Pentecostarion & Octoechos browsers",
+    items: [
+      "feat: the ▶ Point / ♫ Score controls now appear on pointable verses in the data browsers too — proof a Menaion, Pentecostarion, or Octoechos verse and jump straight to pointing it or to its printed score, with the same tone gating as the Hours tool (active for built tones, light grey otherwise).",
+      "refactor: the controls and their hand-off live in one shared component (point-score-controls.jsx) used by the Hours tool and all three browsers, so the look and behavior can't drift. No bundle impact — the browsers stay lazy-loaded and the component pulls in only the lightweight tone list, not the trainer.",
+    ],
+  },
   {
     version: "v0.14.3",
     date: "June 2026",
