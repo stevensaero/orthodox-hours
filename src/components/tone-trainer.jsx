@@ -10,11 +10,19 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 
-export const TONE_TRAINER_VERSION = "v0.23.1";
+export const TONE_TRAINER_VERSION = "v0.23.2";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.23.2",
+    date: "June 2026",
+    summary: "Back-link to the Hours tool when arriving from it",
+    items: [
+      "feat: when you reach the Tone Trainer from the Hours tool, a '← Hours Tool' link now appears in both the header and the footer. It is a plain browser-back, so it returns you to the Hours tool exactly where you left off. The link is shown only when arriving from the Hours tool (the entry carries ?from=tool); a direct visit or bookmark to the trainer shows no link. Groundwork for the forthcoming Point/Score controls that hand a verse from the Hours tool to the trainer.",
+    ],
+  },
   {
     version: "v0.23.1",
     date: "June 2026",
@@ -2983,6 +2991,11 @@ function useAudio() {
 }
 
 // ── COMPONENT ─────────────────────────────────────────────────────────────────
+// Built tones — the single source of truth for which tones the trainer can point
+// and score. Derived from PH_DEFS so it stays in step as tones are added. The
+// Hours tool imports this to gate its Point/Score controls.
+export const AVAILABLE_TONES = new Set(Object.keys(PH_DEFS).map(Number));
+
 export default function ToneTrainer() {
   const [doHz, setDoHz] = useState(349.23);  // F4 — Tone 1 canonical default
   const [bpm, setBpm] = useState(80); // half note = 1 beat per tutorial
@@ -4495,8 +4508,23 @@ export default function ToneTrainer() {
     return unifiedVoiceMap.get(key) ?? H_VOICE_MIN;
   };
 
+  const cameFromHours = useMemo(() => {
+    try {
+      return new URLSearchParams(window.location.search).get("from") === "tool"
+        || !!sessionStorage.getItem("oht_handoff");
+    } catch { return false; }
+  }, []);
+
   return (
     <div style={{ maxWidth: 820, margin: "0 auto", padding: "2rem 1rem 4rem", fontFamily: "Georgia, serif", color: ink }}>
+      {cameFromHours && (
+        <div style={{ marginBottom: "0.8rem" }}>
+          <a href="#" onClick={(e) => { e.preventDefault(); window.history.back(); }}
+             style={{ color: gold, textDecoration: "none", fontSize: "0.82rem", fontFamily: "Georgia, serif" }}>
+            ← Hours Tool
+          </a>
+        </div>
+      )}
       <div style={{ textAlign: "center", marginBottom: "0.4rem", letterSpacing: "0.28em", textTransform: "uppercase", fontSize: "0.7rem", color: gold }}>
         Common Chant · Obikhod · Tone {activeTone}
       </div>
@@ -5767,6 +5795,14 @@ export default function ToneTrainer() {
         trainer's best reading; verify against the printed staves.
       </div>
 
+      {cameFromHours && (
+        <div style={{ marginTop: "1.4rem", textAlign: "center" }}>
+          <a href="#" onClick={(e) => { e.preventDefault(); window.history.back(); }}
+             style={{ color: gold, textDecoration: "none", fontSize: "0.82rem", fontFamily: "Georgia, serif" }}>
+            ← Hours Tool
+          </a>
+        </div>
+      )}
       <div style={{ marginTop: "1rem", fontSize: "0.72rem", color: "#9A8A70", borderTop: "1px solid #e8dfc8", paddingTop: "0.7rem", display: "flex", flexWrap: "wrap", gap: "0.4rem", justifyContent: "space-between" }}>
         <span>
           © 2026 William Stevens. All Rights Reserved.{" "}
