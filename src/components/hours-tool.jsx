@@ -7648,6 +7648,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.13.2",
+    date: "June 2026",
+    summary: "All Saints NA/Russia usage selector now appears at Vespers",
+    items: [
+      "fix: at the Vespers that opens the Second Sunday after Pentecost (e.g. June 13 evening), the North America / Russia selector was missing — Vespers fell back to the read-only 'OCA-primary' treatment used for ordinary co-commemorated saints. But All Saints of NA and of Russia are two alternate usages of the same Sunday, not co-commemorations, and their Vespers stichera differ. The usage selector now appears at that Vespers, and choosing a usage re-assembles the Vespers propers (Lord-I-Call stichera, paroemias) for the selected usage. Ordinary multi-saint days still show the read-only OCA-primary at Vespers, unchanged.",
+    ],
+  },
+  {
     version: "v0.13.1",
     date: "June 2026",
     summary: "Point control now reads the tone from the verse's rubric",
@@ -10323,6 +10331,7 @@ export default function App() {
     })();
     return { vDate, vDateStr, vLit, vMenaion, vServices, vPent, vParoemias, vIsPent, vIsBright,
              vDailyReading, vFeastReading, vNamedDaySunday, vDayLabel, vMD, dMD, saintName,
+             vIsAllSaintsNA,
              vIsSunday: vLit.season === "sunday", tone: vLit.tone, openedName: vLit.dayName };
   })();
 
@@ -10351,8 +10360,15 @@ export default function App() {
     let els;
     if (currentService.key === 'vespers') {
       // FW-26: Vespers opens the next liturgical day; see vespersNext (component scope).
-      els = assembleVespers(vespersNext.vLit, vespersNext.vMenaion, vespersNext.vPent,
-        vespersNext.vParoemias, readerMode, vespersNext.vDateStr);
+      // All Saints NA/Russia overlay: Vespers offers a choice of usage, so assemble
+      // the selected overlay entry rather than the OCA-primary default.
+      let vMen = vespersNext.vMenaion, vPnt = vespersNext.vPent, vPar = vespersNext.vParoemias;
+      if (vespersNext.vIsAllSaintsNA) {
+        const sel = vespersNext.vServices[selectedServiceIndex] || vespersNext.vMenaion;
+        vMen = sel; vPnt = sel;
+        vPar = computeVespersParoemias(sel, sel, vespersNext.vIsPent, vespersNext.vIsBright);
+      }
+      els = assembleVespers(vespersNext.vLit, vMen, vPnt, vPar, readerMode, vespersNext.vDateStr);
     } else if (currentService.key === 'typica') {
       els = assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode);
     } else if (currentService.key === 'pre_communion') {
@@ -10554,6 +10570,9 @@ export default function App() {
             const cSelDate = isVesp ? vespersNext.vDateStr : selectedDate;
             const cServices = isVesp ? vespersNext.vServices : services;
             const cMulti = cServices.length > 1;
+            // All Saints NA/Russia is an alternate-usage overlay, not co-commemoration:
+            // its Vespers texts differ by usage, so the selector is offered at Vespers too.
+            const cAllSaintsOverlay = isVesp ? vespersNext.vIsAllSaintsNA : isAllSaintsNA;
             return (
             <div style={{
               paddingTop: "0.5rem",
@@ -10707,8 +10726,9 @@ export default function App() {
             </div>
           )}
 
-          {/* Saint / multi-service selector — under Vespers, show D+1's OCA-primary read-only */}
-          {cServices.length > 0 && (!cMulti || isVesp) && (
+          {/* Saint / multi-service selector — under Vespers, show D+1's OCA-primary read-only
+              (except the All Saints overlay, which offers the usage selector at Vespers too) */}
+          {cServices.length > 0 && (!cMulti || (isVesp && !cAllSaintsOverlay)) && (
             <div>
               <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "4px", lineHeight: "1.6" }}>
                 <strong>Saint:</strong>
@@ -10720,17 +10740,17 @@ export default function App() {
                   <span style={{ fontSize: "0.68rem", letterSpacing: "0.08em", textTransform: "uppercase", background: "rgba(139,105,20,0.15)", border: "1px solid rgba(139,105,20,0.4)", borderRadius: "3px", padding: "1px 6px", color: "#6B4E10", fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}>OCA primary</span>
                 )}
               </div>
-              {isVesp && cMulti && (
+              {isVesp && cMulti && !cAllSaintsOverlay && (
                 <div style={{ fontSize: "0.76rem", color: "#8B7040", fontStyle: "italic", marginTop: "0.15rem" }}>
                   Vespers uses the OCA-primary commemoration; also commemorated: {cServices.filter(s => s !== cMen).map(s => s.saint).filter(Boolean).join(" · ")}.
                 </div>
               )}
             </div>
           )}
-          {cMulti && !isVesp && (
+          {cMulti && (!isVesp || cAllSaintsOverlay) && (
             <div style={{ marginTop: "0.4rem" }}>
               <div style={{ fontSize: "0.72rem", letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B6914", marginBottom: "0.5rem" }}>
-                Multiple services available — select which to serve:
+                {isVesp ? "Select which usage to serve:" : "Multiple services available — select which to serve:"}
               </div>
               {cServices.map((svc, idx) => (
                 <label key={idx} style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "0.35rem", cursor: "pointer", fontSize: "0.85rem", lineHeight: "1.5" }}>
@@ -10762,7 +10782,7 @@ export default function App() {
               })()}
             </div>
           )}
-          {cMen && (!cMulti || isVesp) && cMen.note && (
+          {cMen && (!cMulti || (isVesp && !cAllSaintsOverlay)) && cMen.note && (
             <div style={{ fontSize: "0.78rem", color: "#5C4A1E", fontStyle: "italic", marginTop: "0.15rem" }}>{cMen.note}</div>
           )}
           {cServices.length === 0 && inScope && (
