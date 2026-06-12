@@ -492,28 +492,40 @@ export default function OctoechosBrowser() {
     }}>
       {/* ── Header ── */}
       <div style={{
-        background: C.ink,
-        color: C.parchment,
-        padding: "1.25rem 1.5rem",
-        borderBottom: `3px solid ${C.gold}`,
+        background: "#fff",
+        borderBottom: `2px solid ${C.border}`,
+        padding: "1rem 1.5rem",
+        position: "sticky",
+        top: 0,
+        zIndex: 100,
       }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: "1rem",
-          flexWrap: "wrap" }}>
-          <div style={{ fontSize: "1.1rem", letterSpacing: "0.04em", fontWeight: 400 }}>
-            Octoechos Data Browser
+        <div style={{ maxWidth: "960px", margin: "0 auto" }}>
+          <div style={{
+            display: "flex", alignItems: "baseline",
+            justifyContent: "space-between", flexWrap: "wrap", gap: "0.5rem",
+          }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: "1rem" }}>
+              <a href="/orthodox-hours/" style={{
+                fontSize: "0.82rem", color: C.gold, textDecoration: "none",
+                fontFamily: "Georgia, serif",
+              }}>← Hours Tool</a>
+              <h1 style={{
+                fontSize: "1.15rem", fontWeight: 700, color: C.gold,
+                margin: 0, letterSpacing: "0.04em",
+              }}>
+                Octoechos Data Browser
+              </h1>
+            </div>
+            <span style={{
+              fontSize: "0.72rem", color: C.inkLight, letterSpacing: "0.06em",
+            }}>
+              DEV / TRUTHING TOOL
+            </span>
           </div>
-          <div style={{ fontSize: "0.72rem", color: C.goldLight, letterSpacing: "0.1em",
-            textTransform: "uppercase" }}>
-            Phase 1 — vespers migrated · matins pending Phase 3
-          </div>
-        </div>
-        <div style={{ fontSize: "0.75rem", color: C.inkLight, marginTop: "0.35rem" }}>
-          <code style={{ color: C.goldLight }}>src/data/octoechos/</code>
-          {' '}— lazy-loaded per-tone files · index.js tone-independent tables
         </div>
       </div>
 
-      <div style={{ display: "flex", minHeight: "calc(100vh - 80px)" }}>
+      <div style={{ display: "flex", minHeight: "calc(100vh - 80px)", maxWidth: "960px", margin: "0 auto" }}>
 
         {/* ── Sidebar ── */}
         <div style={{
@@ -609,6 +621,34 @@ export default function OctoechosBrowser() {
               })}
             </>
           )}
+
+          {/* Day picker (matins → Sunday) */}
+          {activeView === 'matins' && (
+            <>
+              <div style={{ margin: "1rem 0.75rem 0.5rem", borderTop: `1px solid ${C.border}` }} />
+              <div style={{ padding: "0 0.75rem 0.5rem",
+                fontSize: "0.68rem", color: C.inkLight, letterSpacing: "0.1em",
+                textTransform: "uppercase", fontWeight: 600 }}>
+                Day
+              </div>
+              <button onClick={() => setActiveView('matins')} style={{
+                display: "block", width: "100%", textAlign: "left",
+                padding: "0.4rem 0.75rem",
+                background: C.goldMid,
+                color: C.gold,
+                border: "none", cursor: "pointer",
+                fontSize: "0.82rem", fontFamily: "Georgia, serif",
+              }}>
+                <span style={{
+                  display: "inline-block", width: "8px", height: "8px",
+                  borderRadius: "50%", marginRight: "0.4rem",
+                  background: matinsEncoded ? C.green : C.border,
+                  verticalAlign: "middle",
+                }} />
+                Sunday
+              </button>
+            </>
+          )}
         </div>
 
         {/* ── Main content ── */}
@@ -665,7 +705,17 @@ export default function OctoechosBrowser() {
           )}
 
           {!loading && toneData && activeView === 'matins' && (
-            <MatinsPanel tone={selectedTone} matinsData={toneData.matins} />
+            <>
+              <div style={{ fontSize: "0.82rem", color: C.inkLight, marginBottom: "1rem" }}>
+                <strong style={{ color: C.gold }}>
+                  Sunday — Resurrectional Matins
+                </strong>
+                <span style={{ marginLeft: "0.75rem" }}>
+                  — God is the Lord, sessional hymns, songs of ascent, canons, praises
+                </span>
+              </div>
+              <MatinsPanel tone={selectedTone} matinsData={toneData.matins} />
+            </>
           )}
 
           {!loading && activeView === 'small_tables' && (

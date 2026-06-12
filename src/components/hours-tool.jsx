@@ -7612,6 +7612,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.15.4",
+    date: "June 2026",
+    summary: "Octoechos browser restyled to match Menaion/Pentecostarion + Sunday surfaced for Matins",
+    items: [
+      "ui: the Octoechos data browser now matches the Menaion and Pentecostarion browsers — a white sticky header with a gold title, a back-link to the Hours Tool, the DEV / TRUTHING TOOL tag, and the same 960px centered content width and parchment palette (replacing the former full-bleed dark header).",
+      "ui: clicking Matins now surfaces a clickable \"Sunday\" entry in the Day picker (mirroring the weekday Vespers days) and labels the content \"Sunday — Resurrectional Matins,\" so the data is explicitly attributed to its day rather than appearing without one.",
+    ],
+  },
+  {
     version: "v0.15.3",
     date: "June 2026",
     summary: "Tone 2 Sunday Matins encoded (Resurrection Ode IX Trinitarion) + Saturday Vespers pointing",
