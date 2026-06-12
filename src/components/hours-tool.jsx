@@ -7612,6 +7612,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.15.3",
+    date: "June 2026",
+    summary: "Tone 2 Sunday Matins encoded (Resurrection Ode IX Trinitarion) + Saturday Vespers pointing",
+    items: [
+      "data: Tone 2 Sunday Matins is now fully encoded from St. Sergius (2-1.pdf) — God-is-the-Lord theotokion, both sessional-hymn sets, three Songs of Ascent antiphons, the Matins prokeimenon, all three canons across odes 1 and 3-9, the ikos, eight Praises stichera, and the Great Doxology troparion. Tone 2's structure was verified from its own source, not ported: the Resurrection canon's Ode IX closes with a Trinitarion in place of the Theotokion (a new schema field), the Cross-Resurrection canon is troparia-only with no per-ode theotokia (unlike Tone 1), and the Theotokos canon is troparia-only. Tone 2 is the second tone to claim matins in the drift gate.",
+      "data: Tone 2 Saturday (Great Vespers) stichera now carry their St. Sergius pointing across the 7 Lord-I-Have-Cried stichera, 4 aposticha, and the Dogmatic Theotokion — marker-only, machine-verified (strip equals prior wording).",
+      "fix: Tone 2 Saturday Great Vespers Lord-I-Have-Cried had a duplicated first sticheron and was missing the genuine 7th (\"Singing a hymn of salvation,\" by Anatolius); the duplicate was removed and the 7th restored from source.",
+    ],
+  },
+  {
     version: "v0.15.2",
     date: "June 2026",
     summary: "Tone 1 Sunday Matins encoded (three canons in full) + Evlogitaria",

@@ -89,7 +89,9 @@ export const CANONS = { known: ['resurrection', 'cross_resurrection', 'theotokos
 // Resurrection canon carries a per-ode irmos; the other two share its irmoi and
 // carry a single canon-level refrain. `refrain` is therefore optional at canon level.
 export const CANON = { known: ['refrain', 'odes'], required: ['odes'] };
-export const CANON_ODE = { known: ['irmos', 'refrain', 'troparia', 'theotokion'], required: ['troparia'] };
+// `trinitarion` (Ode IX, even tones — e.g. Tone 2 Resurrection canon closes with a
+// Trinitarion in place of the Theotokion). Verified per-tone from each N-1.pdf.
+export const CANON_ODE = { known: ['irmos', 'refrain', 'troparia', 'theotokion', 'trinitarion'], required: ['troparia'] };
 
 // songs_of_ascent: an array of antiphons; each antiphon an array of stanza
 // strings (final entry = Glory/Both-now). Antiphon count varies by tone (3 or 4)

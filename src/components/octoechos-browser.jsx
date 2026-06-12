@@ -416,6 +416,9 @@ function MatinsPanel({ tone, matinsData }) {
                     {odeData.theotokion && (
                       <SticheronBlock label="Theotokion" text={odeData.theotokion} />
                     )}
+                    {odeData.trinitarion && (
+                      <SticheronBlock label="Trinitarion" text={odeData.trinitarion} />
+                    )}
                   </div>
                 );
               })}
