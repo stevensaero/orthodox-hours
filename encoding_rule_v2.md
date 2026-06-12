@@ -1,6 +1,14 @@
-# ENCODING RULE v2.1 — Orthodox Hours Tool
+# ENCODING RULE v2.2 — Orthodox Hours Tool
 **Authority:** Fekula & Williams (2009) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** May 2026 · **Supersedes:** encoding_rule_v2.0, encoding_rule_complete_capture.md (v1.1 and all prior)
+**Updated:** June 2026 · **Supersedes:** v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+
+**v2.2 changes — POINTED HYMNOGRAPHY MARKERS (canonical):** Every pointed text
+field (stichera, troparia, kontakia, sessional hymns, exapostilaria, the Praises,
+irmoi — any text the choir points and sings) stores ONE marked string as the
+single source of truth, in the OCA marker dialect: `|` line end · `//` penultimate
+line · `[brackets]` director emphasis. Convert other sources' markers at encode
+time; never store them. Strip-at-render. Applies across menaion / pentecostarion /
+octoechos / triodion. See §3.
 
 **v2.1 changes:** Kontakion field names unified across Menaion and Pentecostarion —
 `kontakion_ode6` (3rd & 9th Hours) and `kontakion_ode3` (1st & 6th Hours) replace
@@ -44,37 +52,106 @@ St. Sergius, the OCA text and date govern. Record both versions, flag the diverg
 
 ---
 
-## 2. DRIVE FOLDER PATHS (canonical)
+## 2. DRIVE — SOURCE DELIVERY ONLY (PDF + docx)
 
-| Record type | Drive folder |
+Drive delivers source documents only. Nothing is written back to Drive, and no
+`.txt` records, project-notes snapshots, or versioned filenames live there. Two
+source kinds:
+
+- **PDF** — St. Sergius Menaion / Pentecostarion full service texts; HTM
+  Horologion; General Menaion fallbacks.
+- **docx** — OCA Dept. of Liturgical Music director-edited / pointed verses
+  (underline emphasis + `//` markers). These are the Tier-3 source for the §3
+  marker dialect; more will be added over time as they become available.
+
+| Source | Drive folder |
 |---|---|
-| Menaion .txt records | `orthodox_liturgics/Menaion/st-sergius-pdf/` |
-| Pentecostarion .txt records | `orthodox_liturgics/Pentecostarian/st-sergius-pdf/` |
+| Menaion PDFs | `orthodox_liturgics/Menaion/st-sergius-pdf/` |
 | General Menaion fallback PDFs | `orthodox_liturgics/Menaion/general-menaion/` |
+| Pentecostarion PDFs | `orthodox_liturgics/Pentecostarion/st-sergius-pdf/` |
+| Director-pointed docx | (added as available) |
 
-**Protocol:** Claude produces .txt records as chat artifacts. User places them in Drive.
-Claude does not write directly to Drive. Every tool update requires a corresponding
-Drive .txt record before the session closes — updating the tool without the .txt is
-a protocol violation.
-
-**File naming:**
-- Menaion: `MM-DD.txt` / `MM-DD-v2.txt` (re-encode)
-- Pentecostarion: `P+NN.txt` (e.g. `P+41.txt`)
-- Re-encode header: `SUPERSEDES: MM-DD.txt — reason`
-- Tool entry comment: `// vN — reason` on the line with the changed field
+**Workflow:** read the source from Drive → encode directly into the monthly data
+file (`src/data/menaion/{month}.js`, `src/data/pentecostarion.js`) → commit. Git
+history is the record. Claude never writes to Drive.
 
 ---
 
-## 3. SESSION WORKFLOW
+## 3. POINTED HYMNOGRAPHY — TONE MARKERS (canonical for every text field)
+
+Every text the choir points and sings — stichera, troparia, kontakia, sessional
+hymns, exapostilaria, the Praises, irmoi — is stored as ONE marked string. That
+marked string is the single source of truth. Nothing is stored twice; rendering
+strips or transforms the markers per context.
+
+### 3.1 The marker dialect (OCA)
+
+| Marker | Meaning | Notes |
+|---|---|---|
+| `\|`  | ordinary line end | one melodic line / phrase ends here |
+| `//` | penultimate line end | the second-to-last line; exactly one per sticheron |
+| `[brackets]` | director emphasis | the accented syllable(s) a choir director marks |
+
+Spacing: markers are space-padded — ` | ` and ` // ` — sitting between the text of
+two lines. Real hyphens inside words are left intact (e.g. `Life-bearing`).
+Bracketed emphasis may sit mid-word: `A[mer]ica`, `Resur[rec]tion`.
+
+### 3.2 Three tiers — capture what the source gives, never invent a mark
+
+- **Tier 1 — plain.** Source prints solid prose with no line structure (canon
+  troparia, an Ikos). Store one unmarked paragraph. The machine cannot point it;
+  that is a property of the source, not an error.
+- **Tier 2 — `|` (plus `//` if present).** Source breaks the text into lines.
+  Convert line breaks to `|`. Mark `//` ONLY if the source marks a penultimate
+  line; if it does not, do not add one (the Tone Trainer's "no //" QA flag is then
+  the expected, correct signal — not a bug).
+- **Tier 3 — `|` plus `//` plus `[brackets]`.** Source carries director pointing
+  (underlines in a formatted docx, or explicit accents). Capture all three.
+
+### 3.3 Normalizing source markers AT ENCODE TIME (store only the OCA dialect)
+
+- **St. Sergius `*` / `**`** → `*` becomes `|`; `**` becomes `//`. Convert `**`
+  FIRST, so a double asterisk never collapses to `||`.
+- **Formatted-docx underlines** → the underlined span becomes `[brackets]`; merge
+  adjacent underlined runs into one bracket (`A[mer]ica`, not `A[mer][ica]`).
+  These docx are delivered via Drive (see §2) and will grow over time.
+- **`//` already in the text** (OCA docx penultimate marker) → keep it, whether at
+  a line end or mid-line.
+
+Never store `*`/`**` or raw underline markup. Never count or hand-assign phrase
+roles (A/B/C/D) — the Tone Trainer derives roles from the line sequence. Record the
+end-of-line marks faithfully; that is all.
+
+### 3.4 Rendering (strip-at-render — store once, present per context)
+
+- **Data browsers** (Menaion / Pentecostarion / Octoechos viewers; the Tone Trainer
+  pipe): show the marked string VERBATIM — `|`, `//`, `[brackets]`, every punctuation
+  mark and syllable hyphen visible. This is the truthing view and the Tone Trainer's
+  native input.
+- **Hours-tool forward-facing verses:** `|` → line break (symbol hidden); bracketed
+  words reassembled whole with the bracketed syllable underlined (e.g. the "rec" of
+  `Resur[rec]tion`); `//` kept visible; punctuation and real hyphens kept. A Tier-1
+  plain string passes through as one paragraph.
+
+### 3.5 The `director: true` flag
+
+A field whose text carries Tier-3 director marks sets `director: true` beside
+`tone` / `text` / `source`, telling the Tone Trainer a director pointing exists
+(vs. machine-only). Tier-1 / Tier-2 fields omit the flag.
+
+---
+
+## 4. SESSION WORKFLOW
 
 Every encoding session follows these steps in order:
 
-1. **Read project notes** — confirm version badge matches `project_notes_vX.X.X.md`
+1. **Read project notes** — clone the repo and read `project_notes.md`; confirm its
+   version header matches the tool badge in `hours-tool.jsx`
 2. **Read this rule** — encoding_rule_v2.md is the single point of truth
-3. **For each date:** read the PDF → fill the skeleton → write the .txt artifact →
-   update the tool → commit (no push until 3 dates complete)
-4. **Before closing:** confirm every .txt artifact is produced; note any NOT YET ENCODED
-   fields explicitly; bump version if session adds meaningful content
+3. **For each date:** read the source (PDF or docx) from Drive → fill the skeleton →
+   encode directly into the monthly data file → commit
+4. **Before closing:** note any NOT YET ENCODED fields explicitly; bump version if
+   session adds meaningful content
 5. **Run the skeleton gate — MANDATORY before every push:**
    ```
    node scripts/check-skeleton.mjs all
@@ -86,7 +163,7 @@ Every encoding session follows these steps in order:
 
 ---
 
-## 4. KONTAKION ODE ROUTING
+## 5. KONTAKION ODE ROUTING
 
 The HTM rubric governs which kontakion is chanted at each Hour when two exist:
 
@@ -144,7 +221,7 @@ intentionally designed but the data field was inconsistently applied in early se
 
 ---
 
-## 5. MENAION SKELETON — ALL RANKS
+## 6. MENAION SKELETON — ALL RANKS
 
 ### Why a simple rank entry can pass the gate with many fields absent
 
@@ -367,7 +444,7 @@ LITURGY_TYPE: [chrysostom / basil / presanctified]
 
 ---
 
-## 6. PENTECOSTARION SKELETON — WEEKDAY AFTERFEAST
+## 7. PENTECOSTARION SKELETON — WEEKDAY AFTERFEAST
 
 ```
 ═══════════════════════════════════════════════════════════
@@ -508,7 +585,7 @@ COMMUNION_VERSE: [full text]
 
 ---
 
-## 7. PENTECOSTARION SKELETON — SUNDAY
+## 8. PENTECOSTARION SKELETON — SUNDAY
 
 ```
 ═══════════════════════════════════════════════════════════
@@ -540,7 +617,7 @@ TYPE: saturday_great_vespers
 
 ---
 
-## 8. PENTECOSTARION SKELETON — SPECIAL DAYS
+## 9. PENTECOSTARION SKELETON — SPECIAL DAYS
 
 **Apodosis of a Feast** (e.g. P+47 Apodosis of Ascension):
 ```
@@ -565,7 +642,7 @@ REPOSED_GOSPEL: [reference]
 
 ---
 
-## 9. TOOL SCHEMA MAPPING
+## 10. TOOL SCHEMA MAPPING
 
 After the .txt skeleton is complete, these fields map to the tool data objects:
 
@@ -629,7 +706,7 @@ After the .txt skeleton is complete, these fields map to the tool data objects:
 
 ---
 
-## 10. COMMON MISTAKES TO AVOID
+## 11. COMMON MISTAKES TO AVOID
 
 1. **Blank ≠ Absent** — ABSENT is deliberate; blank is an error. Always write one.
 
@@ -668,10 +745,14 @@ After the .txt skeleton is complete, these fields map to the tool data objects:
 
 ---
 
-## 11. PRE-SAVE CHECKLIST
+## 12. PRE-SAVE CHECKLIST
 
-Before saving any .txt artifact, confirm every section heading is present and
-every field under it has an explicit value (not blank):
+Before committing any entry, confirm every section is present, every field has an
+explicit value (not blank), and:
+
+- [ ] Pointed text fields use the §3 marker dialect (`|` `//` `[brackets]`);
+      source `*`/`**` and underlines converted; no invented `//`; `director: true`
+      set where Tier-3 marks are present
 
 **Menaion §2A:**
 - [ ] Calendar section complete

@@ -1,6 +1,20 @@
 # Orthodox Hours Tool — Project Notes
 **Tool version: v0.10.1** | **Tone Trainer: v0.23.1** | Last synced: June 11, 2026
 
+## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
+
+Every pointed text field stores ONE marked string (OCA dialect): `|` line end,
+`//` penultimate line, `[brackets]` director emphasis. Convert St. Sergius
+`*`/`**` (→ `|`/`//`, `**` first) and docx underlines (→ `[brackets]`) at encode
+time; never store source markers. Capture what the source gives — Tier 1 plain /
+Tier 2 `|` / Tier 3 director — and never invent a `//`. Strip-at-render: data
+browsers show the string verbatim; the hours tool converts `|`→line break and
+reassembles bracketed words (underlining the bracketed syllable). Full rule:
+encoding_rule_v2.md §3. Drive delivers PDF + director-pointed docx sources only;
+more pointed docx will be added over time. P+63 Russia + North America are the
+first entries encoded this way (drafts complete, pending integration into
+`src/data/pentecostarion.js`).
+
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
 the tool computes the liturgical context and assembles the correct movable parts of
@@ -37,57 +51,51 @@ This repo now contains **two distinct tools**. A new session should ask:
 
 **Versioning:** Project notes are versioned in sync with the tool. The version
 number in the notes header must match the v0.x.x badge in the tool header.
-When the tool version bumps, update both, then save a new Drive snapshot as
-`project_notes_vX.X.X.md`. Previous snapshots remain as historical record.
-The authoritative live copy is always `/mnt/user-data/outputs/project_notes.md`.
+`project_notes.md` is edited directly in the cloned repo and committed (`docs:`
+prefix). No Drive snapshot, no versioned filename — git history is the version
+record. The authoritative live copy is the repo file at the root.
 
 ---
 
 ## VERSIONING PROTOCOL — READ BEFORE EVERY SESSION
 
-### Step 1: Read Drive and confirm current version
-Search Drive for the highest-numbered `project_notes_vX.X.X.md` file. Read it.
-Echo its version number and file size back to the user before doing anything else:
+Project notes live ONLY in the repo (`project_notes.md` at the root). Git history
+is the version record — there is no Drive snapshot and no versioned filename.
 
-> "I found **project_notes_vX.X.X.md** (N bytes) on Drive. The tool badge reads
-> vX.X.X. They match — ready to proceed."
+### Step 1: Clone the repo and confirm current version
+Clone `stevensaero/orthodox-hours` (token required — ask the user) and read
+`project_notes.md` from the root. Confirm its version header matches the tool badge
+in `hours-tool.jsx`. Echo the version back before doing anything else:
 
-If the Drive version and tool badge differ, stop and flag the discrepancy.
-If the local file size differs from the Drive file size, stop and resolve before
-making any changes. Never work from the local file without first verifying it
-matches the Drive snapshot.
+> "project_notes.md reads vX.X.X and the tool badge reads vX.X.X. They match —
+> ready to proceed."
+
+If they differ, stop and flag the discrepancy before making any changes.
 
 ### Step 2: Queue changes — write only on explicit confirmation
-Do NOT write updates to the project notes piecemeal throughout a session.
-Accumulate all changes in a queue. When a meaningful checkpoint is reached,
-or when the user or Claude judges that significant new context should be captured,
-present a summary of queued changes and ask:
+Do NOT edit the project notes piecemeal throughout a session. Accumulate changes,
+and at a meaningful checkpoint present a summary and ask:
 
 > "I have the following queued changes to the project notes:
 > - [change 1]
 > - [change 2]
-> - ...
-> This will create **vX.X.X** (next version after the current vX.X.X).
-> Shall I proceed?"
+> This will bump the notes/tool to **vX.X.X**. Shall I commit these?"
 
 Wait for explicit confirmation before writing. A write always increments the
-version number — never re-use the current version number on a new write.
+version — never re-use the current version number.
 
-### Step 3: Session close-out checklist
+### Step 3: Session close-out
 When the session has meaningful changes to capture:
 1. Queue all pending changes and present them to the user
 2. Get explicit confirmation to proceed
 3. Decide the new version: patch (x.x.N) for encoding/fixes, minor (x.N.0) for features
-4. Write the updated notes to `/mnt/user-data/outputs/project_notes.md`
-5. Update the version header in the notes and the tool badge to match
-6. Save a new Drive snapshot named `project_notes_vX.X.X.md`
-7. Verify: read the new Drive snapshot back and confirm byte count matches local
-8. Previous snapshots remain on Drive as historical record — do not delete them
+4. Edit `project_notes.md` in the repo; update its version header and the tool badge to match
+5. Commit with a `docs:` prefix (e.g. `docs: project notes — [session summary]`); push
+6. Git history is the record — no Drive snapshot, no versioned filename
 
-### Notes file upload rule (STANDING — established v0.3.10)
-**Never condense the project notes file for Drive upload.** If the file exceeds
-tool call parameter limits, present it for manual upload instead. Condensing
-destroys historical context and violates the integrity of the record.
+### Notes file rule (STANDING — established v0.3.10)
+**Never condense the project notes.** The file is the historical record; a long
+section is acceptable. Do not strip context to save space.
 
 ### Version history
 | Version | Date | Summary |
