@@ -7612,6 +7612,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.15.1",
+    date: "June 2026",
+    summary: "Octoechos drift gate + Tone 1 Saturday Vespers pointing captured",
+    items: [
+      "feat: a strict data skeleton now guards the Octoechos, the way FIELD_REGISTRY + validate_entries.mjs already guard the Menaion/Pentecostarion. A canonical schema (src/data/octoechos/schema.js) and validator (tools/validate_octoechos.mjs) enforce a vocabulary guard, required-per-section checks gated by each tone's _encoded marker, cross-tone uniformity, and a placeholder guard — wired into the close-out gate (node scripts/check-skeleton.mjs all). Remaining Octoechos encoding (the Matins backlog across all 8 tones) is now drift-free by construction.",
+      "data: Tone 1 Saturday (Great Vespers) stichera now carry their St. Sergius pointing — the end-of-line and penultimate markers missed on the first encoding pass — across all 7 Lord-I-Have-Cried stichera, the 4 aposticha, and the Dogmatic Theotokion (which also points the identical Friday-evening dogmaticon). Marker-only: wording is unchanged, machine-verified.",
+    ],
+  },
+  {
     version: "v0.15.0",
     date: "June 2026",
     summary: "Point/Score controls in the Menaion, Pentecostarion & Octoechos browsers",

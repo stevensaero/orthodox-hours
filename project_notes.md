@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.0** | **Tone Trainer: v0.24.2** | Last synced: June 12, 2026
+**Tool version: v0.15.1** | **Tone Trainer: v0.24.2** | Last synced: June 12, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -73,6 +73,41 @@ entries must carry `menaion_set_aside`, `has_paroemias`, `has_polyeleos`,
 > coverage audit tolerates absent fields by design. **For any Sunday-overlay
 > entry, clone the field names and flag block from the P+56 All Saints entry
 > rather than naming fields fresh.** The conformance gate now enforces this.
+
+**Octoechos drift gate (added v0.15.1):** the Menaion/Pentecostarion skeleton above
+covers only the flat, date-keyed entries — the Octoechos (nested
+`tone → service → day → element-arrays`) had no enforcement. A canonical schema
+now lives in `src/data/octoechos/schema.js` and is enforced by
+`tools/validate_octoechos.mjs`, wired into `scripts/check-skeleton.mjs all`. Four
+checks: (A) **vocabulary guard** — every key at every level must be blessed in
+schema.js, so a typo/drifted name fails loudly; (B) **required-per-section**,
+**gated by each tone's `_encoded` marker** (`['vespers']` or
+`['vespers','matins']`) so partial progress never blocks a push — a section is
+only checked for completeness once the tone claims it; (C) **cross-tone
+uniformity** among claimed sections; (D) **placeholder guard** (the
+`[Glory from Menaion if appointed]` rubric is intentionally exempt). To add a new
+field, add it to the relevant `known` list in schema.js — that deliberate edit IS
+the gate.
+
+> **Placement decisions locked (v0.15.1)** — the drift-prone judgment calls for
+> the Matins encode, now fixed in schema.js: (1) **exapostilarion is
+> tone-independent** (taken from the Eothinon by Gospel #) → `index.js
+> EXAPOSTILARIA[1..11]`, NOT per-tone; (2) **evlogitaria** are the same every
+> Sunday → `index.js EVLOGITARIA`, tone-independent; (3) **songs of ascent**
+> antiphon count varies by tone (3 or 4) → validate SHAPE (array of antiphons,
+> each an array of stanza strings), never a fixed count; (4) **matins prokeimenon**
+> ("Now will I arise…") is stored as `matins.matins_prokeimenon`, distinct from the
+> existing `SUNDAY_PROKEIMENON` (Liturgy) table.
+
+> **Octoechos encoded status (v0.15.1):** all 8 tones `_encoded: ['vespers']`.
+> Tone 1 Saturday/Great Vespers stichera are now pointed from St. Sergius (7 LIC,
+> 4 aposticha, Dogmatic Theotokion — the last also points the identical Friday
+> dogmaticon). Marker-only pass: wording unchanged, machine-verified via
+> `strip(new) === old`. **Next: Tone 1 full Matins encode against the locked
+> schema, then flip Tone 1 to `['vespers','matins']`.** St. Sergius prints
+> quotation marks around the embedded cries in LIC 5 & 7 and aposticha 3 which the
+> current data omits — flagged as a separate fidelity item, not folded into the
+> marker pass.
 
 ---
 
