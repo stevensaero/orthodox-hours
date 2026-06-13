@@ -7716,6 +7716,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.15.22",
+    date: "June 2026",
+    summary: "Cross-platform close glyph; collapsed Tone advances with Vespers",
+    items: [
+      "fix: the panel's close control used U+1F5D9, which renders as an empty box on iOS. Replaced with a plain × (U+00D7) that renders everywhere.",
+      "ui: in the collapsed header, the Tone now advances with the service when a next-day service is selected — under Vespers (and Compline once built) it shows the tone of the day that service opens; any other service shows the selected civil date's tone.",
+    ],
+  },
+  {
     version: "v0.15.21",
     date: "June 2026",
     summary: "Orthodox Daily Hours title; desktop scroll-lock fixed; Date repositioned with a top close glyph; expand/collapse tags",
@@ -10867,7 +10876,7 @@ export default function App() {
 
             {/* Right: tone, justified right (balances the day name) */}
             <span style={{ fontSize: "0.8rem", color: "#5C4A1E", flex: "1 1 0", minWidth: 0, textAlign: "right", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-              Tone {liturgicalData.tone}
+              Tone {(currentService.key === 'vespers' || currentService.key === 'compline') ? vespersNext.vLit.tone : liturgicalData.tone}
             </span>
           </div>
           )}{/* end row two */}
@@ -10903,9 +10912,9 @@ export default function App() {
               <span
                 onClick={() => setContextOpen(false)}
                 role="button" aria-label="Collapse" title="Collapse"
-                style={{ cursor: "pointer", color: "#8B6914", fontSize: "1.15rem", lineHeight: 1, userSelect: "none", flexShrink: 0 }}
+                style={{ cursor: "pointer", color: "#8B6914", fontSize: "1.5rem", lineHeight: 1, userSelect: "none", flexShrink: 0 }}
               >
-                {"\u{1F5D9}"}
+                ×
               </span>
               {/* Reader's Service — right of the first content line, within the context chip */}
               <button

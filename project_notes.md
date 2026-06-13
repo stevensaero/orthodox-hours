@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.21** | **Tone Trainer: v0.25.12** | Last synced: June 13, 2026
+**Tool version: v0.15.22** | **Tone Trainer: v0.25.12** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -112,6 +112,13 @@ stripped, while the Director vs. Machine button (gated on `compareData`, set at 
 lingered. Note is now gated on `hasTruth || compareData`, so the note, the button, and the
 still-director chips all dwell until the stripped text is re-pointed, then clear together
 (`analyzeText` sets `compareData` on a director point, nulls it on a non-director one).
+
+**Close glyph + collapsed Tone follows Vespers (v0.15.22).** U+1F5D9 rendered as tofu on
+iOS → replaced the panel close control with `×` (U+00D7, fontSize 1.5rem). Collapsed-header
+Tone now reads `(currentService.key === 'vespers' || 'compline') ? vespersNext.vLit.tone :
+liturgicalData.tone` — advances to the opened day's tone for next-day services (vespersNext
+is computed unconditionally at component scope, so safe for compline once built), civil-date
+tone otherwise. Mirrors the expanded body's `isVesp ? vespersNext.vLit : liturgicalData`.
 
 **Title, desktop scroll-lock, Date move, expand/collapse tags (v0.15.21).** H1 →
 "Orthodox Daily Hours". The v0.15.20 panel cap caused a desktop scroll-lock (the panel
@@ -465,7 +472,7 @@ Versions at close: **Hours tool v0.15.0 · Tone Trainer v0.24.2.**
   — candidate is a chip-width/label scale-down below a breakpoint; needs real-device
   measurement before any code.
 
-Versions at close: **Hours tool v0.15.21 · Tone Trainer v0.25.12.**
+Versions at close: **Hours tool v0.15.22 · Tone Trainer v0.25.12.**
 
 ---
 
