@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  LIC_THEOTOKIA, HYPAKOE, RESURRECTIONAL_TROPARIA,
+  LIC_THEOTOKIA, HYPAKOE, RESURRECTIONAL_TROPARIA, RESURRECTIONAL_DISMISSAL_THEOTOKIA,
   SUNDAY_KONTAKIA, SUNDAY_PROKEIMENON, SUNDAY_ALLELUIA,
   KATAVASIAE, RESURRECTION_GOSPEL_STICHERA, LIC_OPENING_FALLBACK,
 } from '../data/octoechos/index.js';
@@ -3266,6 +3266,18 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       thirdTropTone = typeof t3 === "string" ? null : t3.tone;
       thirdSrc = "Pentecostarion — " + pentEntry.name;
     }
+  } else if (isSunday && !isPentecostarion) {
+    // §1A Sunday Vespers troparia (vigil served, as is usual in Russian use):
+    // the resurrectional troparion of the tone leads; Glory… the commemoration/saint.
+    // Fekula Ch.1 / Ch.6.
+    const _resTrop = RESURRECTIONAL_TROPARIA[tone];
+    if (_resTrop) {
+      primTrop = _resTrop.text; primTropTone = _resTrop.tone;
+      primSrc = "Octoechos — Resurrectional troparion, Tone " + tone;
+      if (effTrop) { secTrop = effTrop; secTropTone = effTropTone; secSrc = "Menaion — " + effSaint; }
+    } else if (effTrop) {
+      primTrop = effTrop; primTropTone = effTropTone; primSrc = "Menaion — " + effSaint;
+    }
   } else if (effTrop) {
     primTrop = effTrop; primTropTone = effTropTone; primSrc = "Menaion — " + effSaint;
   }
@@ -3380,7 +3392,11 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   // Routed through getKathismaForVespers() — full schedule with all seasonal rules.
   // Source: OCA oca.org/liturgics/outlines/kathisma-readings-at-vespers
   // FW-B: Full psalm texts to be fetched from Drive Psalter reference document.
-  const kathismaResult = getKathismaForVespers(liturgicalData, rank, false, pentEntry);
+  // FW-26 fix: getKathismaForVespers keys isSaturday/isSundayEve on dow. Post-FW-26
+  // liturgicalData is the OPENED day, so pass the SERVED-evening dow (computed above)
+  // — otherwise Saturday-evening Vespers (opens Sunday) is misread as Sunday-evening
+  // and "Blessed is the Man" is wrongly omitted.
+  const kathismaResult = getKathismaForVespers({ ...liturgicalData, dow }, rank, false, pentEntry);
 
   let kathLabel, kathText, kathFekula, kathSource, kathToneNote;
   if (kathismaResult.blessedIsMan) {
@@ -4485,7 +4501,24 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   // When true/absent, the kontakion appears unless a thirdTrop fills Both now.
   const vespersKontakionSuppressed = isPentecostarion && pentEntry && pentEntry.vespers_kontakion === false;
 
-  if (thirdTrop) {
+  // Sunday Vespers, Both now…: the dismissal theotokion in the tone of the last
+  // troparion chanted, from §I of The Common Theotokia (Fekula Ch.6). This replaces
+  // the kontakion at the Vespers troparia on ordinary (non-Pentecostarion) Sundays.
+  const _lastTropTone = secTropTone || primTropTone || tone;
+  const _sundayDismissalTheotokion = (isSunday && !isPentecostarion)
+    ? RESURRECTIONAL_DISMISSAL_THEOTOKIA[_lastTropTone] : null;
+
+  if (_sundayDismissalTheotokion) {
+    elements.push({id:"v-trop-bothnow",type:"fixed",label:"",
+      text:"Both now and ever, and unto the ages of ages. Amen.",
+      source:"HTM Vespers"});
+    elements.push({id:"v-trop-theotokion",type:"movable",
+      label:"Theotokion (Both now…) · Tone " + _lastTropTone,
+      rubric:"",
+      text:_sundayDismissalTheotokion.text,
+      source:"Common Theotokia §I (SJKP)",
+      fekula:{section:fekulaSection, note:"Sunday Vespers, Both now…: the resurrectional dismissal theotokion in the tone of the last troparion chanted, from §I of The Common Theotokia. — Fekula Chapter 6 (Sunday Vespers, troparia)"}});
+  } else if (thirdTrop) {
     // Both now… as standalone fixed element between troparion boxes
     elements.push({id:"v-trop-bothnow",type:"fixed",label:"",
       text:"Both now and ever, and unto the ages of ages. Amen.",
@@ -7716,6 +7749,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.15.25",
+    date: "June 2026",
+    items: [
+      "fix: Saturday-evening Great Vespers (which opens Sunday) once again shows 'Blessed is the Man.' getKathismaForVespers was reading the OPENED-day day-of-week (post-FW-26), so a Vespers opening Sunday was misread as Sunday-evening Vespers (which has no kathisma). It now receives the SERVED-evening day-of-week that the stichera already use.",
+      "fix: Sunday Vespers concluding troparia now follow Fekula §1A / Ch.6 — the resurrectional troparion of the tone leads, the commemoration drops to Glory…, and Both now… is the resurrectional Dismissal Theotokion in the tone of the last troparion chanted (Common Theotokia §I), replacing the kontakion that was wrongly filling that slot.",
+      "data: encoded the eight §I resurrectional Dismissal Theotokia (Common Theotokia, SJKP) in src/data/octoechos/index.js.",
+    ],
+    summary: "Saturday-evening kathisma + Sunday Vespers resurrectional troparion/Theotokion (Fekula Ch.6)",
+  },
   {
     version: "v0.15.24",
     date: "June 2026",

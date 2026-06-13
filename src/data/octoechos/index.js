@@ -97,6 +97,24 @@ export const RESURRECTIONAL_TROPARIA = {
   },
 };
 
+// Resurrectional Dismissal Theotokia — Common Theotokia §I (one per tone).
+// Source: The Common Theotokia (SJKP), §I "The Resurrectional Theotokia",
+// the "Dismissal Theotokion" of each tone. Drive: orthodox_liturgics/Octoechos/
+// common_theotokia/Theotokia.pdf. Selection rule: Fekula Ch.6 — at the Sunday
+// Vespers troparia (and "God is the Lord"), the dismissal theotokion in the tone
+// of the last troparion chanted, from §I. Stored as plain prose (OCA director-
+// pointed backfill is a separate pass; see project_notes).
+export const RESURRECTIONAL_DISMISSAL_THEOTOKIA = {
+  1: { tone: 1, text: `When Gabriel announced to thee, "Rejoice!", O Virgin, the Master of all became incarnate within thee, the holy tabernacle, at his cry, as the righteous David said. Thou wast shown to be more spacious than the heavens, having borne thy Creator. Glory to Him Who made His abode within thee! Glory to Him Who came forth from thee! Glory to Him Who hath set us free by thy birthgiving.` },
+  2: { tone: 2, text: `All of thy most glorious mysteries are beyond comprehension, O Theotokos; for, thy purity sealed and thy virginity intact, thou art known to be a true Mother, having given birth unto God. Him do thou entreat, that our souls be saved.` },
+  3: { tone: 3, text: `We hymn thee who hast mediated the salvation of our race, O Virgin Theotokos; for thy Son and our God, accepting suffering on the Cross in the flesh He had received of thee, hath delivered us from corruption, in that He is the Lover of mankind.` },
+  4: { tone: 4, text: `The mystery hidden from all ages and unknown to the ranks of angels, hath been revealed to those on earth through thee, O Theotokos: God incarnate in an uncommingled union, Who willingly accepted the Cross for our sake, and through it hath raised up the first-formed man, and saved our souls from death.` },
+  5: { tone: 5, text: `Rejoice, impassible portal of the Lord! Rejoice, rampart and protection of those who have recourse unto thee! Rejoice, haven untouched by storms, and who knowing not wedlock, didst bear in the flesh thy Creator and God. Cease not to intercede for those who praise and worship thine Offspring.` },
+  6: { tone: 6, text: `Gideon hath foretold of thy conception, and David hath revealed thine ineffable child-bearing, O Theotokos; for the Word descended like a dew upon the fleece of thy womb, and thou O Virgin full of grace, like unto a holy and fertile earth, budded forth without seed our salvation, Christ God.` },
+  7: { tone: 7, text: `As thou art the treasury of our resurrection, O all-hymned one, lead up from the pit and abyss of transgression those who place their trust in thee, for thou who hast given birth to our Salvation hast saved those who are subject to sin. Thou wast a Virgin before giving birth, and a virgin during child-bearing, and thou didst remain a Virgin even after birthgiving.` },
+  8: { tone: 8, text: `O Good One, Who for our sake wast born of the Virgin and, having endured crucifixion, cast down death by death, and as God revealed the resurrection: disdain not that which Thou hast fashioned with Thine own hand. Show forth Thy love for mankind, O Merciful One; Accept the supplications of the Theotokos who bore Thee, and save Thy despairing people, O our Savior!` },
+};
+
 export const SUNDAY_KONTAKIA = {
   1: {
     tone: 1,

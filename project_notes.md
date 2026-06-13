@@ -1,5 +1,34 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.24** | **Tone Trainer: v0.25.16** | Last synced: June 13, 2026
+**Tool version: v0.15.25** | **Tone Trainer: v0.25.16** | Last synced: June 13, 2026
+
+**Saturday-evening Vespers fixes + Sunday resurrectional troparion/Theotokion (v0.15.25).**
+Three errors were reported for Saturday-evening Great Vespers (the service that opens
+Sunday). Two are fixed in v0.15.25; the third (the priest's dismissal) is specced and
+pending implementation.
+- **Error 1 — "Blessed is the Man" missing.** `getKathismaForVespers` keyed
+  isSaturday/isSundayEve on `liturgicalData.dow`, but post-FW-26 Vespers receives the
+  OPENED day, so a Vespers opening Sunday read as Sunday-evening (no kathisma). Now it
+  receives the SERVED-evening `dow` that the stichera already compute. One-line fix; the
+  kathisma helper was the lone consumer still reading the day-level dow.
+- **Error 2 — resurrectional Theotokion missing at the troparia.** Sunday Vespers
+  concluding troparia now follow Fekula §1A / Ch.6: resurrectional troparion leads,
+  commemoration → Glory…, Both now… = §I resurrectional Dismissal Theotokion in the tone
+  of the last troparion chanted. Eight §I theotokia encoded in `src/data/octoechos/index.js`
+  (`RESURRECTIONAL_DISMISSAL_THEOTOKIA`). Source: Common Theotokia (SJKP),
+  Drive `orthodox_liturgics/Octoechos/common_theotokia/Theotokia.pdf`.
+- **Error 3 — malformed priest's dismissal (NEXT).** "Who rose from the dead" is being
+  inserted into the intercession list instead of as the front prefix on "Christ our true
+  God." Fix = the unified dismissal assembler in `dismissal_assembler_spec.md` (committed):
+  one `buildDismissal` for Vespers + Typica + Post-Communion, characteristic phrase as a
+  true prefix, Great/Little (vigil vs Vespers-alone, per Fekula), day-of-week intercession
+  sets (Antiochian wording, flagged for OCA migration), temple patron threaded from
+  `templeDedication` with an italic *(Temple Commemoration)* placeholder, saint-of-day, and
+  the Post-Communion celebrant clause (Chrysostom / Basil / Gregory).
+- **Backlog — full Ch.6 Theotokion engine.** v0.15.25 wires only §I for the Sunday case.
+  The full engine (§II following-doxastica, §III daily-dismissal by day-of-week incl.
+  stavrotheotokia, the Friday/Saturday tone-of-week exceptions, Matins slots) is to be
+  spec'd separately. Data already located in `Theotokia.pdf`.
+
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
