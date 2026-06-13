@@ -12,11 +12,20 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.12";
+export const TONE_TRAINER_VERSION = "v0.25.13";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.13",
+    date: "June 2026",
+    summary: "Cross-platform play/stop glyphs — plain ► triangle and × stop",
+    items: [
+      "fix: the play glyph rendered as a blue emoji on iOS (it used U+25B6 ▶, which has an emoji presentation). It is now a plain right-pointing triangle ► (U+25BA), which has no emoji form and renders monochrome everywhere. Applies to the Play-all button and the per-row / per-line sing buttons.",
+      "fix: the stop glyph (U+25FC ◼, an emoji-capable square) is now × (U+00D7), per request — renders consistently on every platform.",
+    ],
+  },
   {
     version: "v0.25.12",
     date: "June 2026",
@@ -5173,7 +5182,7 @@ export default function ToneTrainer() {
                      color: "#f7ead0", border: "none", fontSize: "0.95rem" }}
             onClick={playingLine !== null ? stopAll : playAll}
             title={playingLine !== null ? "Stop playback" : "Sing all lines"}>
-            {playingLine !== null ? <>◼ <span style={{ fontSize: "0.82rem" }}>Stop</span></> : <>Play <span>▶</span></>}
+            {playingLine !== null ? <>{"\u00D7"} <span style={{ fontSize: "0.82rem" }}>Stop</span></> : <>Play <span>{"\u25BA"}</span></>}
           </button>
         </div>
 
@@ -5624,7 +5633,7 @@ export default function ToneTrainer() {
                                opacity: playingLine !== null && !rowSinging ? 0.35 : 1,
                                fontFamily: "Georgia, serif", fontSize: "0.68rem",
                                flexShrink: 0, marginLeft: "0.5rem", alignSelf: "center" }}>
-                      ▶
+                      {"\u25BA"}
                     </button>
                     </div>{/* end chips row */}
                     {/* Bracketed encoding text — shows how this verse was pointed */}
@@ -5904,7 +5913,7 @@ export default function ToneTrainer() {
                          opacity: playingLine !== null && playingLine !== li ? 0.35 : 1,
                          cursor: playingLine !== null && playingLine !== li ? "not-allowed" : "pointer" }}
                 onClick={() => playingLine === li ? stopAll() : playLine(li)}>
-                {playingLine === li ? "◼ Stop" : "▶ Play"}
+                {playingLine === li ? "\u00D7 Stop" : "\u25BA Play"}
               </button>
             </div>
 

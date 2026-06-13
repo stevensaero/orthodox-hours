@@ -55,7 +55,7 @@ export function PointScoreControls({ text, tone, label }) {
         onClick={toneBuilt ? () => handoffVerse(text, tone, 'point') : undefined}
         title={tip('Point this verse in the Tone Trainer')}
         style={{ ...glyph, fontSize: '1.15rem' }}
-      >▶</div>
+      >{"\u25BA"}</div>
       <div
         role="button"
         aria-label="Open the printed score for this verse"

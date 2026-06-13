@@ -7716,6 +7716,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.15.23",
+    date: "June 2026",
+    summary: "Point control glyph renders cross-platform (plain ► instead of emoji ▶)",
+    items: [
+      "fix: the ▶ Point control (on pointable verses in the Hours tool and the data browsers) used U+25B6, which iOS renders as a blue emoji. It now uses a plain right-pointing triangle ► (U+25BA), which renders monochrome on every platform.",
+    ],
+  },
+  {
     version: "v0.15.22",
     date: "June 2026",
     summary: "Cross-platform close glyph; collapsed Tone advances with Vespers",

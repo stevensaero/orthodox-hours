@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.22** | **Tone Trainer: v0.25.12** | Last synced: June 13, 2026
+**Tool version: v0.15.23** | **Tone Trainer: v0.25.13** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -112,6 +112,14 @@ stripped, while the Director vs. Machine button (gated on `compareData`, set at 
 lingered. Note is now gated on `hasTruth || compareData`, so the note, the button, and the
 still-director chips all dwell until the stripped text is re-pointed, then clear together
 (`analyzeText` sets `compareData` on a director point, nulls it on a non-director one).
+
+**Cross-platform play/stop glyphs (Hours v0.15.23 / Trainer v0.25.13).** U+25B6 ▶ (play)
+and U+25FC ◼ (stop) are emoji-capable, so iOS rendered them as a blue triangle and a square.
+Play → ► (U+25BA, no emoji presentation, monochrome everywhere); stop → × (U+00D7). Render
+sites: `point-score-controls.jsx` Point glyph (Hours tool + data browsers); tone-trainer
+Play-all (5176), per-row sing button (5627), per-line button (5907). Caret/expander glyphs
+(▸ U+25B8, ▼/▲) were already safe and untouched. Note: U+25BA/U+25B8 have no emoji form, so
+no variation selector is needed.
 
 **Close glyph + collapsed Tone follows Vespers (v0.15.22).** U+1F5D9 rendered as tofu on
 iOS → replaced the panel close control with `×` (U+00D7, fontSize 1.5rem). Collapsed-header
@@ -472,7 +480,7 @@ Versions at close: **Hours tool v0.15.0 · Tone Trainer v0.24.2.**
   — candidate is a chip-width/label scale-down below a breakpoint; needs real-device
   measurement before any code.
 
-Versions at close: **Hours tool v0.15.22 · Tone Trainer v0.25.12.**
+Versions at close: **Hours tool v0.15.23 · Tone Trainer v0.25.13.**
 
 ---
 
