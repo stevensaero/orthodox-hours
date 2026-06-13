@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.12** | **Tone Trainer: v0.24.2** | Last synced: June 12, 2026
+**Tool version: v0.15.13** | **Tone Trainer: v0.24.2** | Last synced: June 12, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -220,6 +220,7 @@ section is acceptable. Do not strip context to save space.
 | v0.15.10 | Jun 2026 | Octoechos Tone 5 Matins (no trinitarians; cross-res theotokion every ode; theotokos 3–4 trop/ode) |
 | v0.15.11 | Jun 2026 | Irmos render fix — Point/Score controls suppressed on irmos across all three browsers (label-gated in PointScoreControls) |
 | v0.15.12 | Jun 2026 | Octoechos Tone 6 Sunday Matins (single Res-IX trinitarian like Tone 2; cross-res Ode VIII bare 3-trop; theotokos 4/ode except V,VI=3) |
+| v0.15.13 | Jun 2026 | Octoechos Tone 7 Sunday Matins (single Res-IX trinitarian; cross-res theotokion every ode; theotokos uniform 3/ode; god-is-the-Lord theotokion double-cadence flagged) |
 
 ---
 
