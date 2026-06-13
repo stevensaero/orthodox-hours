@@ -12,11 +12,22 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.3";
+export const TONE_TRAINER_VERSION = "v0.25.4";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.4",
+    date: "June 2026",
+    summary: "Play-bar reorder + uniform button heights; header/label copy refresh",
+    items: [
+      "ui: play bar reordered — Play moves to the left, Point Verses moves to the right ahead of ♩ Score (so the right group reads 'Point Verses · ♩ Score'). In embedded view Point Verses is still hidden, leaving Play on the left and Score on the right. The center do/pitch/tempo block is unchanged.",
+      "ui: all play-bar buttons (Play, pitch, Point Verses, Score) now share a fixed 32px height via a box-sizing:border-box style, so the borderless (Play, Point Verses) and larger-font (Play) buttons no longer render taller/shorter than the bordered pitch/Score.",
+      "copy: header reworked — eyebrow now reads 'Orthodox Daily Hours · Tone Trainer', the H1 reads 'Common Chant · Obikhod · Tone N' (tone tracks the selected tone), and the 'Syllables → accents…' subtitle is removed.",
+      "copy: the paste-box instruction now reads 'Load a Service .docx | Paste in a sticheron — one verse per line.' followed by the existing dynamic 'Tone N rotates …' rotation hint; the ingest button reads 'Load Service .docx'.",
+    ],
+  },
   {
     version: "v0.25.3",
     date: "June 2026",
@@ -4437,6 +4448,16 @@ export default function ToneTrainer() {
     borderRadius: "3px", padding: "5px 14px", fontSize: "0.78rem",
     letterSpacing: "0.08em", cursor: "pointer", fontFamily: "Georgia, serif",
   };
+  // Shared play-bar button: fixed height + border-box so the borderless (Play,
+  // Point Verses) and larger-font (Play) buttons match the bordered ones (pitch,
+  // Score) exactly. Padding is horizontal-only; height drives the vertical box.
+  const playBtn = {
+    height: 32, boxSizing: "border-box",
+    display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "0.3em",
+    background: "transparent", border: `1px solid ${gold}`, color: gold,
+    borderRadius: "3px", padding: "0 14px", fontSize: "0.78rem",
+    letterSpacing: "0.08em", cursor: "pointer", fontFamily: "Georgia, serif",
+  };
   const roleBg = {
     recite: "rgba(40,58,92,.06)", inton: "rgba(40,58,92,.10)",
     prep: "rgba(180,137,43,.16)", cad: "rgba(122,36,24,.10)",
@@ -4754,14 +4775,11 @@ export default function ToneTrainer() {
         </div>
       )}
       <div style={{ textAlign: "center", marginBottom: "0.4rem", letterSpacing: "0.28em", textTransform: "uppercase", fontSize: "0.7rem", color: gold }}>
-        Common Chant · Obikhod · Tone {activeTone}
+        Orthodox Daily Hours · Tone Trainer
       </div>
       <h1 style={{ textAlign: "center", color: "#7a2418", fontWeight: 600, fontSize: "2rem", margin: "0.1em 0" }}>
-        Tone Trainer — Pointing
+        Common Chant · Obikhod · Tone {activeTone}
       </h1>
-      <div style={{ textAlign: "center", fontStyle: "italic", color: "#5b4a33", marginBottom: "0.3rem" }}>
-        Syllables → accents → reciting tone &amp; cadence · then sing it
-      </div>
       <div style={{ textAlign: "center", marginBottom: "1.4rem" }}>
         <button
           onClick={() => setShowReleaseNotes((v) => !v)}
@@ -4797,7 +4815,7 @@ export default function ToneTrainer() {
       <div style={{ border: "1px solid #d6c79f", borderRadius: 8, padding: "0.8rem 0.9rem", marginBottom: "1.1rem", background: "rgba(40,58,92,.03)" }}>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "0.7rem", alignItems: "center" }}>
           <label style={{ ...btn, display: "inline-block" }}>
-            Open service .docx
+            Load Service .docx
             <input type="file" accept=".docx" style={{ display: "none" }}
               onChange={(e) => { onDocxFile(e.target.files && e.target.files[0]); setDocPanelOpen(true); }} />
           </label>
@@ -4999,7 +5017,7 @@ export default function ToneTrainer() {
                   2: "A, then B·C·D·…·Final",
                   3: "A·B·…·Final",
                 }[activeTone] ?? "A·B·C·D·…·Final";
-                return `Type or paste the sticheron — one line per line. Tone ${activeTone} rotates ${rotDesc}.`;
+                return `Load a Service .docx | Paste in a sticheron — one verse per line. Tone ${activeTone} rotates ${rotDesc}.`;
               })()}
             </label>
 
@@ -5022,16 +5040,17 @@ export default function ToneTrainer() {
                     border: "1px solid #d6c79f", borderRadius: 8,
                     padding: "0.55rem 0.9rem", marginBottom: "1.1rem" }}>
 
-        {/* Col 1 — left: Point */}
+        {/* Col 1 — left: Play / Stop */}
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center",
                       justifyContent: "flex-start" }}>
-          {!embeddedVerseView && (
-          <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }}
-            onClick={analyze}
-            title="Syllabify and point the sticheron — assigns reciting tone, prep, and cadence roles">
-            Point Verses
+          <button
+            style={{ ...playBtn,
+                     background: playingLine !== null ? "#7a2418" : "#3a6e28",
+                     color: "#f7ead0", border: "none", fontSize: "0.95rem" }}
+            onClick={playingLine !== null ? stopAll : playAll}
+            title={playingLine !== null ? "Stop playback" : "Sing all lines"}>
+            {playingLine !== null ? <>◼ <span style={{ fontSize: "0.82rem" }}>Stop</span></> : <>Play <span>▶</span></>}
           </button>
-          )}
         </div>
 
         {/* Col 2 — center: audio controls bracketed by | dividers */}
@@ -5045,7 +5064,7 @@ export default function ToneTrainer() {
               {DO_OPTIONS.map((o) => <option key={o.label} value={o.hz}>{o.label}</option>)}
             </select>
           </label>
-          <button style={btn} onClick={playPitch}>pitch</button>
+          <button style={playBtn} onClick={playPitch}>pitch</button>
           <label style={{ fontSize: "0.82rem", color: playingLine !== null ? "#b0a080" : "#5b4a33",
                           display: "inline-flex", alignItems: "center", gap: "0.3rem",
                           transition: "color 0.2s" }}
@@ -5062,18 +5081,24 @@ export default function ToneTrainer() {
           <span style={{ color: "#d6c79f" }}>|</span>
         </div>
 
-        {/* Col 3 — right: play/stop icon + lexicon status */}
+        {/* Col 3 — right: Point Verses (authoring) + Score */}
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center",
                       justifyContent: "flex-end" }}>
           {lexiconError && <span style={{ fontSize: "0.72rem", color: "#7a2418",
                                           fontStyle: "italic" }}>{lexiconError}</span>}
           {!lexicon && !lexiconError && <span style={{ fontSize: "0.72rem", color: "#9A8A70",
                                                         fontStyle: "italic" }}>loading lexicon…</span>}
+          {!embeddedVerseView && (
+          <button style={{ ...playBtn, background: "#7a2418", color: "#f7ead0", border: "none" }}
+            onClick={analyze}
+            title="Syllabify and point the sticheron — assigns reciting tone, prep, and cadence roles">
+            Point Verses
+          </button>
+          )}
           {/* Print Score button — opens modal to set title/source then renders */}
           {(lines.length > 0 || !!machineLines?.length) && (
             <button
-              style={{ ...btn, fontSize: "0.78rem", padding: "5px 12px",
-                       display: "inline-flex", alignItems: "center", gap: "0.3em" }}
+              style={playBtn}
               onClick={() => {
                 setScoreTitle(defaultScoreTitle());
                 // Default source: director if available, else machine
@@ -5084,16 +5109,6 @@ export default function ToneTrainer() {
               ♩ Score
             </button>
           )}
-          <button
-            style={{ ...btn,
-                     background: playingLine !== null ? "#7a2418" : "#3a6e28",
-                     color: "#f7ead0", border: "none",
-                     fontSize: "1rem", padding: "5px 14px",
-                     display: "inline-flex", alignItems: "center", gap: "0.35em" }}
-            onClick={playingLine !== null ? stopAll : playAll}
-            title={playingLine !== null ? "Stop playback" : "Sing all lines"}>
-            {playingLine !== null ? <>◼ <span style={{ fontSize: "0.82rem" }}>Stop</span></> : <>Play <span>▶</span></>}
-          </button>
         </div>
 
       </div>

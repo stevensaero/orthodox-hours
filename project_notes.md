@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.17** | **Tone Trainer: v0.25.3** | Last synced: June 13, 2026
+**Tool version: v0.15.17** | **Tone Trainer: v0.25.4** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -45,6 +45,15 @@ transport, the role chips, the **SATB voice-part picker**, and the Phrase cards.
 Gated on `embeddedVerseView` (true only when the handoff carries a `.verse`), so a
 bare `?from=tool` visit (e.g. the Hours footer link) still shows the full UI.
 Playback rides the default timbre (Piano).
+
+**Play-bar reorder + copy refresh (v0.25.4).** Play moved to the left of the play
+bar; Point Verses moved to the right ahead of ♩ Score (right group: "Point Verses ·
+♩ Score"). All four play-bar buttons share a fixed 32px `box-sizing:border-box`
+height so borderless/larger-font buttons match the bordered ones. Header: eyebrow
+"Orthodox Daily Hours · Tone Trainer", H1 "Common Chant · Obikhod · Tone N" (dynamic
+tone), subtitle removed. Paste-box instruction now leads with "Load a Service .docx
+| Paste in a sticheron — one verse per line." then the dynamic rotation hint; ingest
+button "Load Service .docx".
 
 **Irmos is pointed but NOT trainer-singable (v0.15.11).** A canon ode's Irmos
 has its own proper melody — it is never sung to the standard tone formula the
