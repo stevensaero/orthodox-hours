@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.17** | **Tone Trainer: v0.25.12** | Last synced: June 13, 2026
+**Tool version: v0.15.18** | **Tone Trainer: v0.25.12** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -112,6 +112,22 @@ stripped, while the Director vs. Machine button (gated on `compareData`, set at 
 lingered. Note is now gated on `hasTruth || compareData`, so the note, the button, and the
 still-director chips all dwell until the stripped text is re-pointed, then clear together
 (`analyzeText` sets `compareData` on a director point, nulls it on a non-director one).
+
+**Header + service selector + Dismissal (v0.15.18).** Header masthead simplified
+(eyebrow "A Liturgical Study Tool"; subheader "A Service Assembler | OCA Russian Usage";
+version badge now discrete inline text, far right on the eyebrow row — `VersionBadge`
+lost its border/background/caret). Fixed/Movable/Unresolved legend removed. "Day · Tone"
+left-padding zeroed to align with the DATE control. New `ServiceSelector` popover component
+(module scope, after `SERVICE_REGISTRY`) replaces the native `<select>`: built services
+tappable, unbuilt ones greyed+italic with a "soon" tag and non-selectable (fixes iOS Safari
+ignoring `<option disabled>` styling), faint divider before the reference block
+(`SERVICE_REF_KEYS`), closes on outside-tap/Esc. Controls row one is now `flexWrap`+
+`space-between`; the DATE/SERVICE word-labels carry class `hours-ctl-label`, hidden at
+≤480px via a rule in `src/index.css` (stepper + selector are self-describing; aria-labels kept).
+Dismissal dedupe: `v-diss-wisdom` relabeled "Dismissal" → "Conclusion of Vespers" (served
+Vespers had two "Dismissal"-labeled elements — outline + body both double-headed); the
+ServiceOutline row loop also gained `if (!el.label) continue;` so a blank-labeled major-by-id
+continuation line can't emit an empty row.
 
 **Pickup spacing + footer + print credit (v0.25.12).** `playNotes` gained an optional
 between-note `gap` (default 0); `playPitch` passes `0.25` so the four sequential intonation
@@ -420,7 +436,7 @@ Versions at close: **Hours tool v0.15.0 · Tone Trainer v0.24.2.**
   — candidate is a chip-width/label scale-down below a breakpoint; needs real-device
   measurement before any code.
 
-Versions at close: **Hours tool v0.15.17 · Tone Trainer v0.25.12.**
+Versions at close: **Hours tool v0.15.18 · Tone Trainer v0.25.12.**
 
 ---
 

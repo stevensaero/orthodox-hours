@@ -4555,7 +4555,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       fekula:{section:CH10,
         note:"The dismissal of Vespers without a priest: More honorable… Glory… Lord, have mercy. (thrice) Lord, bless! Through the prayers of our holy fathers, of (saints of the day and of the temple), and of all the saints, Lord Jesus Christ, Son of God, have mercy on us. Amen. — Fekula Chapter 10"}});
   } else {
-    elements.push({id:"v-diss-wisdom",type:"fixed",label:"Dismissal",rubric:"Deacon (or Priest):",
+    elements.push({id:"v-diss-wisdom",type:"fixed",label:"Conclusion of Vespers",rubric:"Deacon (or Priest):",
       text:"Wisdom!",
       source:"HTM Vespers"});
     elements.push({id:"v-diss-wisdom-chanters",type:"fixed",label:"",rubric:"Chanters:",
@@ -5913,8 +5913,88 @@ const SERVICE_REGISTRY = [
 ];
 
 
+// ─── SERVICE SELECTOR ────────────────────────────────────────────────────────
+// Custom popover dropdown (replaces a native <select>). Native <option disabled>
+// styling is ignored by iOS Safari, so unbuilt services looked selectable there
+// but did nothing. Here we fully control the rendering: built services are
+// tappable; unbuilt ones render greyed + italic with a "soon" tag and ignore taps.
+// A faint divider separates the daily cycle from the reference block.
+const SERVICE_REF_KEYS = new Set(["ordinary_beginning", "pre_communion", "post_communion", "psalter_service"]);
 
-// ─── TOOLTIP ─────────────────────────────────────────────────────────────────
+function ServiceSelector({ services, value, onChange }) {
+  const [open, setOpen] = React.useState(false);
+  const ref = React.useRef(null);
+
+  React.useEffect(() => {
+    if (!open) return;
+    const onDoc = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    const onKey = (e) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => { document.removeEventListener("mousedown", onDoc); document.removeEventListener("keydown", onKey); };
+  }, [open]);
+
+  const current = services.find(s => s.key === value);
+  const triggerLabel = current ? current.label : "Select…";
+
+  return (
+    <div ref={ref} style={{ position: "relative", minWidth: 0 }}>
+      <button
+        type="button"
+        aria-haspopup="listbox" aria-expanded={open} aria-label="Service"
+        onClick={() => setOpen(o => !o)}
+        style={{ display: "inline-flex", alignItems: "center", gap: "8px",
+          border: "1px solid #C4A84A", borderRadius: "3px", padding: "5px 9px",
+          background: "#FAF6EE", color: "#1C1008", fontFamily: "Georgia, serif",
+          fontSize: "0.9rem", cursor: "pointer", maxWidth: "100%", minWidth: 0 }}
+      >
+        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{triggerLabel}</span>
+        <span style={{ color: "#8B6914", flexShrink: 0, fontSize: "0.75rem" }}>{open ? "\u25B4" : "\u25BE"}</span>
+      </button>
+
+      {open && (
+        <div role="listbox" style={{ position: "absolute", zIndex: 50, top: "calc(100% + 6px)", right: 0,
+          width: "max-content", minWidth: "220px", maxWidth: "min(280px, 88vw)",
+          background: "#FAF6EE", border: "1px solid #D4C49A", borderRadius: "5px",
+          boxShadow: "0 6px 24px rgba(0,0,0,0.16)", maxHeight: "62vh", overflowY: "auto",
+          padding: "4px 0", WebkitOverflowScrolling: "touch" }}>
+          {services.map((svc, i) => {
+            const sel = svc.key === value;
+            const showDivider = SERVICE_REF_KEYS.has(svc.key) && i > 0 && !SERVICE_REF_KEYS.has(services[i - 1].key);
+            return (
+              <React.Fragment key={svc.key}>
+                {showDivider && <div style={{ height: "1px", background: "#E4DAC2", margin: "4px 0" }} />}
+                <div
+                  role="option" aria-selected={sel} aria-disabled={!svc.built}
+                  onClick={svc.built ? () => { onChange(svc.key); setOpen(false); } : undefined}
+                  onMouseEnter={svc.built ? (e) => { e.currentTarget.style.background = "#EDE0C0"; } : undefined}
+                  onMouseLeave={svc.built ? (e) => { e.currentTarget.style.background = sel ? "rgba(139,105,20,0.10)" : "transparent"; } : undefined}
+                  style={{ display: "flex", alignItems: "center", gap: "8px",
+                    padding: "10px 12px", fontSize: "0.9rem",
+                    cursor: svc.built ? "pointer" : "default",
+                    color: svc.built ? "#1C1008" : "#9A8A70",
+                    fontStyle: svc.built ? "normal" : "italic",
+                    fontWeight: sel ? "bold" : "normal",
+                    background: sel ? "rgba(139,105,20,0.10)" : "transparent",
+                    userSelect: "none" }}
+                >
+                  <span style={{ width: "14px", flexShrink: 0, color: "#8B6914" }}>{sel ? "\u2713" : ""}</span>
+                  <span>{svc.label}</span>
+                  {!svc.built && (
+                    <span style={{ marginLeft: "auto", flexShrink: 0, fontSize: "0.62rem",
+                      letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B6914",
+                      background: "rgba(139,105,20,0.12)", borderRadius: "3px", padding: "2px 6px",
+                      fontStyle: "normal" }}>soon</span>
+                  )}
+                </div>
+              </React.Fragment>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 function Tooltip({ term, children }) {
   const [visible, setVisible] = useState(false);
   const def = GLOSSARY[term.toLowerCase()];
@@ -6276,6 +6356,7 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
   const rows = [];
   for (const el of elements) {
     if (!isOutlineMajor(el)) continue;
+    if (!el.label) continue;            // continuation lines carry a blank label — never a row, even if major by id
     const key = el.id || el.label;
     if (!key || seen.has(key)) continue;
     seen.add(key);
@@ -6419,7 +6500,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
     'v-trop-vigil-1',   // Troparion of the Feast (Vigil)
     'v-trop-none',      // Troparion (placeholder)
     'v-diss-dismissal', // Dismissal
-    'v-diss-wisdom',    // Dismissal (Wisdom)
+    'v-diss-wisdom',    // Conclusion of Vespers (Wisdom! … Glory to Thee)
     // Hours assembler IDs
     'ordinary-beginning-blessing',
     'typica-beatitudes',
@@ -7635,6 +7716,19 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.15.18",
+    date: "June 2026",
+    summary: "Header refresh, custom service selector (iOS-safe), responsive controls, and a duplicate-Dismissal fix",
+    items: [
+      "ui: header simplified — the eyebrow now reads 'A Liturgical Study Tool' (was 'Personal Study Tool · Not for Liturgical Use'), the subheader reads 'A Service Assembler | OCA Russian Usage' (the 'Order of Divine Services (2009)' attribution moved out of the masthead), and the version badge is now discrete inline text on the eyebrow line, far right.",
+      "ui: removed the Fixed / Movable / Unresolved colour legend.",
+      "ui: the 'Day · Tone' line aligns to the left edge of the DATE control.",
+      "feat: the SERVICE picker is now a custom popover instead of a native <select>. Unbuilt services (Midnight Office, Matins, Divine Liturgy, Compline) render greyed + italic with a 'soon' tag and are not selectable — fixing iOS Safari, which ignored the old disabled-option styling and made them look tappable. A faint divider separates the daily cycle from the reference block; closes on outside-tap or Esc.",
+      "fix: the controls row no longer overflows narrow screens — it wraps, the selector shrinks, and at phone width the 'DATE' and 'SERVICE' word-labels drop (the stepper and selector are self-describing). Labels return at wider widths; both keep aria-labels.",
+      "fix: served-Vespers no longer lists 'Dismissal' twice. The concluding exclamations (Wisdom! … Glory to Thee) are now labeled 'Conclusion of Vespers'; 'Dismissal' is reserved for the priestly dismissal proper.",
+    ],
+  },
+  {
     version: "v0.15.17",
     date: "June 2026",
     summary: "Lord I Have Cried opening renders as movable propers — shaded card + Tone marker, matching the stichera",
@@ -8615,15 +8709,12 @@ function VersionBadge() {
     fontSize: "0.65rem",
     letterSpacing: "0.12em",
     textTransform: "uppercase",
-    color: open ? "#5C4A1E" : "#8B6914",
-    background: open ? "rgba(139,105,20,0.22)" : "rgba(139,105,20,0.12)",
-    border: "1px solid rgba(139,105,20,0.4)",
-    borderRadius: "3px",
-    padding: "2px 7px",
+    color: open ? "#C4A84A" : "#8B6914",
     fontFamily: "Georgia, serif",
     cursor: "pointer",
     userSelect: "none",
     display: "inline-block",
+    whiteSpace: "nowrap",
   };
 
   const panelStyle = {
@@ -8649,7 +8740,7 @@ function VersionBadge() {
     <div style={{ position: "relative", display: "inline-block" }}>
       <span style={badgeStyle} onClick={() => setOpen(o => !o)}
             title="Click to see release notes">
-        {RELEASE_NOTES[0].version}-beta {open ? "▴" : "▾"}
+        {RELEASE_NOTES[0].version}-beta
       </span>
 
       {open && (
@@ -10627,20 +10718,19 @@ export default function App() {
 
       {/* ── HEADER ─────────────────────────────────────────── */}
       <div style={{ background: "#1C1008", color: "#F5EDD6", padding: "2rem 2rem 1.5rem", borderBottom: "4px solid #8B6914" }}>
-        <div style={{ maxWidth: "720px", margin: "0 auto", display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
-          <div>
-          <div style={{ fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#8B6914", marginBottom: "0.4rem" }}>
-            Personal Study Tool · Not for Liturgical Use
+        <div style={{ maxWidth: "720px", margin: "0 auto" }}>
+          {/* Eyebrow row: tool descriptor (left) + discrete version (far right) */}
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "1rem", marginBottom: "0.4rem" }}>
+            <span style={{ fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#8B6914" }}>
+              A Liturgical Study Tool
+            </span>
+            <VersionBadge />
           </div>
           <h1 style={{ fontSize: "1.6rem", fontWeight: "normal", margin: "0 0 0.25rem", letterSpacing: "0.02em", lineHeight: "1.2" }}>
             Daily Hours
           </h1>
           <div style={{ fontSize: "0.85rem", color: "#C4A84A", fontStyle: "italic" }}>
-            OCA Russian Usage &nbsp;|&nbsp; Assembly guided by <em>The Order of Divine Services</em> (2009)
-          </div>
-          </div>{/* end left column */}
-          <div style={{ textAlign: "right", flexShrink: 0, marginLeft: "1rem", paddingTop: "0.15rem" }}>
-            <VersionBadge />
+            A Service Assembler &nbsp;|&nbsp; OCA Russian Usage
           </div>
         </div>
       </div>
@@ -10651,11 +10741,11 @@ export default function App() {
         <div style={{ maxWidth: "720px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
 
           {/* ── Row one: DATE group + SERVICE group */}
-          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "0.75rem" }}>
 
           {/* ── Group 1: DATE label + stepper (inseparable) */}
           <div style={{ display: "flex", alignItems: "center", gap: "6px", flexShrink: 0 }}>
-          <label style={{ fontSize: "0.8rem", color: "#5C4A1E", letterSpacing: "0.05em" }}>DATE</label>
+          <label className="hours-ctl-label" style={{ fontSize: "0.8rem", color: "#5C4A1E", letterSpacing: "0.05em", flexShrink: 0 }}>DATE</label>
           <div style={{ display: "flex", alignItems: "stretch",
                         border: "1px solid #C4A84A", borderRadius: "3px",
                         flexShrink: 0 }}>
@@ -10709,21 +10799,10 @@ export default function App() {
 
           </div>{/* end Group 1 */}
 
-          {/* ── Group 3: SERVICE label + select (inseparable) — pushed right */}
-          <div style={{ display: "flex", alignItems: "center", gap: "6px", flexShrink: 0, marginLeft: "auto" }}>
-          <label style={{ fontSize: "0.8rem", color: "#5C4A1E", letterSpacing: "0.05em" }}>SERVICE</label>
-          <select
-            value={selectedServiceKey}
-            onChange={(e) => setSelectedServiceKey(e.target.value)}
-            style={{ border: "1px solid #C4A84A", borderRadius: "3px", padding: "4px 8px", fontFamily: "Georgia, serif", fontSize: "0.9rem", background: "#FAF6EE", color: "#1C1008", cursor: "pointer", maxWidth: "220px" }}
-          >
-            {SERVICE_REGISTRY.map(svc => (
-              <option key={svc.key} value={svc.key} disabled={!svc.built}
-                style={{ color: svc.built ? "#1C1008" : "#9A8A70", fontStyle: svc.built ? "normal" : "italic" }}>
-                {svc.label}
-              </option>
-            ))}
-          </select>
+          {/* ── Group 3: SERVICE label + selector */}
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", minWidth: 0 }}>
+          <label className="hours-ctl-label" style={{ fontSize: "0.8rem", color: "#5C4A1E", letterSpacing: "0.05em", flexShrink: 0 }}>SERVICE</label>
+          <ServiceSelector services={SERVICE_REGISTRY} value={selectedServiceKey} onChange={setSelectedServiceKey} />
           </div>{/* end Group 3 */}
 
           </div>{/* end row one */}
@@ -10735,7 +10814,7 @@ export default function App() {
             onClick={() => setContextOpen(true)}
             style={{
               display: "flex", alignItems: "center",
-              padding: "4px 10px 4px 12px",
+              padding: "4px 10px 4px 0",
               cursor: "pointer", userSelect: "none",
             }}
           >
@@ -11221,25 +11300,7 @@ export default function App() {
               </div>
             )}
 
-            {/* Legend (only when service is built and not ordinary_beginning/pre_communion) */}
-            {currentService.built && currentService.key !== 'ordinary_beginning' && currentService.key !== 'pre_communion' && currentService.key !== 'psalter_service' && (
-              <div style={{ display: "flex", gap: "1.2rem", marginBottom: "1.5rem", fontSize: "0.75rem", flexWrap: "wrap" }}>
-                <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                  <span style={{ width: "12px", height: "12px", borderRadius: "2px", background: "#9A8A70", display: "inline-block" }} />
-                  Fixed text (Horologion)
-                </span>
-                <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                  <span style={{ width: "12px", height: "12px", borderRadius: "2px", background: "#8B6914", display: "inline-block" }} />
-                  Movable text (variable by date)
-                </span>
-                {currentService.key !== 'post_communion' && (
-                <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                  <span style={{ width: "12px", height: "12px", borderRadius: "2px", background: "#B43C1E", display: "inline-block" }} />
-                  Unresolved (Phase 2)
-                </span>
-                )}
-              </div>
-            )}
+            {/* Legend removed in v0.15.18 (Fixed/Movable/Unresolved swatches) */}
 
             {/* Service elements or placeholder */}
             {currentService.built ? (

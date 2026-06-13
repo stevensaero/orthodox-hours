@@ -4,3 +4,9 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
+
+/* Daily Hours controls: the DATE/SERVICE stepper and selector are self-describing,
+   so the word-labels are dropped on phone width to keep the row on one line. */
+@media (max-width: 480px) {
+  .hours-ctl-label { display: none; }
+}
