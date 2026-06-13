@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.17** | **Tone Trainer: v0.25.11** | Last synced: June 13, 2026
+**Tool version: v0.15.17** | **Tone Trainer: v0.25.12** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -112,6 +112,12 @@ stripped, while the Director vs. Machine button (gated on `compareData`, set at 
 lingered. Note is now gated on `hasTruth || compareData`, so the note, the button, and the
 still-director chips all dwell until the stripped text is re-pointed, then clear together
 (`analyzeText` sets `compareData` on a director point, nulls it on a non-director one).
+
+**Pickup spacing + footer + print credit (v0.25.12).** `playNotes` gained an optional
+between-note `gap` (default 0); `playPitch` passes `0.25` so the four sequential intonation
+pitches have 0.25s of silence between them. Footer "← Hours Tool" link left-justified (header
+link unchanged). score-print.html `copyrightLine()` reworded to
+`© <year> Orthodox Tone Trainer • Liturgical texts © their respective sources` (year dynamic).
 
 **Irmos is pointed but NOT trainer-singable (v0.15.11).** A canon ode's Irmos
 has its own proper melody — it is never sung to the standard tone formula the
@@ -414,7 +420,7 @@ Versions at close: **Hours tool v0.15.0 · Tone Trainer v0.24.2.**
   — candidate is a chip-width/label scale-down below a breakpoint; needs real-device
   measurement before any code.
 
-Versions at close: **Hours tool v0.15.17 · Tone Trainer v0.25.11.**
+Versions at close: **Hours tool v0.15.17 · Tone Trainer v0.25.12.**
 
 ---
 

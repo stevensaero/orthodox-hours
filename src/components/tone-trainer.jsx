@@ -12,11 +12,21 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.11";
+export const TONE_TRAINER_VERSION = "v0.25.12";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.12",
+    date: "June 2026",
+    summary: "Breathing room between pickup pitches; footer Hours-Tool link left-justified; score-print credit line reworded",
+    items: [
+      "audio: the pickup intonation pitches (sounded by the do readout) now have 0.25s of silence between them, so each starting pitch reads as its own note (playNotes gains an optional between-note gap; only the pickup uses it).",
+      "ui: the footer '← Hours Tool' back-link is now left-justified (was centered); the header link is unchanged.",
+      "print: the score-print credit line now reads '© <year> Orthodox Tone Trainer • Liturgical texts © their respective sources' (was the longer William Stevens / share-freely line). Year stays dynamic.",
+    ],
+  },
   {
     version: "v0.25.11",
     date: "June 2026",
@@ -3721,13 +3731,13 @@ export default function ToneTrainer() {
     return notes;
   };
 
-  const playNotes = (notes, onDone) => {
+  const playNotes = (notes, onDone, gap = 0) => {
     const c = ac();
     let t = c.currentTime + 0.06;
-    notes.forEach((n) => {
+    notes.forEach((n, i) => {
       const f = n.bass ? freq_bass(n.sol, n.phraseRules) : n.tenor ? freq_tenor(n.sol, n.phraseRules) : freq(n.sol);
       toneTimbre(f, t, n.dur, n.peak, timbre);
-      t += n.dur;
+      t += n.dur + (i < notes.length - 1 ? gap : 0);
     });
     if (onDone) {
       const id = setTimeout(onDone, (t - c.currentTime) * 1000 + 40);
@@ -4209,7 +4219,7 @@ export default function ToneTrainer() {
       { sol: "re",  dur: H, peak: 0.7 },                              // alto
       { sol: "sol", dur: H, peak: 0.7, tenor: true },                 // tenor (one octave above bass)
       { sol: "sol", dur: H, peak: 0.8, bass: true },                  // bass
-    ]);
+    ], undefined, 0.25);                                              // 0.25s silence between the intonation pitches (v0.25.12)
   };
 
   // Sound the pickup whenever the user picks a new pitch (the standalone 'pitch' button is
@@ -6101,7 +6111,7 @@ export default function ToneTrainer() {
       </div>
 
       {cameFromHours && (
-        <div style={{ marginTop: "1.4rem", textAlign: "center" }}>
+        <div style={{ marginTop: "1.4rem", textAlign: "left" }}>
           <a href="#" onClick={(e) => { e.preventDefault(); window.history.back(); }}
              style={{ color: gold, textDecoration: "none", fontSize: "0.82rem", fontFamily: "Georgia, serif" }}>
             ← Hours Tool
