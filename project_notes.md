@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.24** | **Tone Trainer: v0.25.14** | Last synced: June 13, 2026
+**Tool version: v0.15.24** | **Tone Trainer: v0.25.15** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -112,6 +112,16 @@ stripped, while the Director vs. Machine button (gated on `compareData`, set at 
 lingered. Note is now gated on `hasTruth || compareData`, so the note, the button, and the
 still-director chips all dwell until the stripped text is re-pointed, then clear together
 (`analyzeText` sets `compareData` on a director point, nulls it on a non-director one).
+
+**Mobile control-bar + popover SATB + info-bar + textarea (Trainer v0.25.15).** Added an
+`isNarrow` hook (`matchMedia (max-width:600px)` + listener). At ≤600px the control-bar Play/Stop
+renders as a bare ►/× glyph (transparent, no frame, green/burgundy color cue) and Score as a bare
+♫ glyph (gold, like point-score-controls); desktop keeps the full `playBtn` buttons. New module-scope
+`VoicePartSelector` popover (mirrors the Hours `ServiceSelector`: trigger + caret, options popover,
+Tenor greyed/non-selectable when `!TENOR_TONES.has(activeTone)`, divider before Alto+Bass/SATB) replaces
+the native `<select>`. Info bar restructured into two rows: row 1 = selector right-justified, row 2 =
+the legend (so the legend stops stacking against the selector on mobile). Paste textarea background →
+`rgba(255,255,255,.5)` (the phrase/chip-card white), border still greens in director mode.
 
 **Tone Trainer restyle + header/BPM/buttons + outline tap-close (Trainer v0.25.14 / Hours v0.15.24).**
 Trainer now matches the data browsers: outer wrapper `minHeight:100vh; background:#FAF6EE`, a
@@ -492,7 +502,7 @@ Versions at close: **Hours tool v0.15.0 · Tone Trainer v0.24.2.**
   — candidate is a chip-width/label scale-down below a breakpoint; needs real-device
   measurement before any code.
 
-Versions at close: **Hours tool v0.15.24 · Tone Trainer v0.25.14.**
+Versions at close: **Hours tool v0.15.24 · Tone Trainer v0.25.15.**
 
 ---
 

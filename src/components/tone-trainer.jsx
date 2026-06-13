@@ -12,11 +12,22 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.14";
+export const TONE_TRAINER_VERSION = "v0.25.15";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.15",
+    date: "June 2026",
+    summary: "Mobile control-bar cleanup, popover SATB selector, info-bar layout, textarea background",
+    items: [
+      "ui: on narrow screens (≤600px) the control-bar Play/Stop collapses to a bare ►/× glyph (no button frame), and Score collapses to the bare ♫ notes glyph used by the Hours-tool controls — a cleaner transport on phones. Desktop keeps the full buttons.",
+      "ui: the SATB voice-part picker is now a popover (matching the Hours service selector) instead of a native <select>; Tenor renders greyed + non-selectable on tones with no tenor line.",
+      "ui: the voice-part selector now sits on its own right-justified line above the intonation / reciting / prep / cadence legend, so the legend no longer stacks against it on mobile.",
+      "ui: the text-entry field now uses the same translucent-white background as the phrase (chip) cards.",
+    ],
+  },
   {
     version: "v0.25.14",
     date: "June 2026",
@@ -3232,8 +3243,85 @@ function PhraseScroller({ children, activeKey }) {
   );
 }
 
+// ─── VOICE-PART SELECTOR ──────────────────────────────────────────────────────
+// Popover dropdown matching the Hours tool's service selector. Tenor renders
+// greyed + non-selectable on tones with no tenor line (mirrors the service
+// selector's "unbuilt" rows). Avoids native <select> styling quirks on iOS.
+function VoicePartSelector({ value, onChange, tenorEnabled }) {
+  const [open, setOpen] = React.useState(false);
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    if (!open) return;
+    const onDoc = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    const onKey = (e) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => { document.removeEventListener("mousedown", onDoc); document.removeEventListener("keydown", onKey); };
+  }, [open]);
+
+  const gold = "#8B6914";
+  const OPTS = [
+    { key: "soprano",   label: "Soprano",       on: true },
+    { key: "alto",      label: "Alto (Melody)", on: true },
+    { key: "tenor",     label: "Tenor",         on: tenorEnabled },
+    { key: "bass",      label: "Bass",          on: true },
+    { key: "__sep__" },
+    { key: "alto-bass", label: "Alto + Bass",   on: true },
+    { key: "satb",      label: "SATB",          on: true },
+  ];
+  const current = OPTS.find((o) => o.key === value);
+  const triggerLabel = current ? current.label : "Voice part";
+
+  return (
+    <div ref={ref} style={{ position: "relative", flexShrink: 0 }}>
+      <button
+        type="button" aria-haspopup="listbox" aria-expanded={open} aria-label="Voice part"
+        onClick={() => setOpen((o) => !o)}
+        style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: "Georgia, serif",
+          fontSize: "0.72rem", border: "1px solid #d6c79f", borderRadius: 3, padding: "2px 8px",
+          background: "#fff", color: "#5b4a33", cursor: "pointer" }}>
+        <span>{triggerLabel}</span>
+        <span style={{ color: gold, fontSize: "0.7rem" }}>{open ? "\u25B4" : "\u25BE"}</span>
+      </button>
+      {open && (
+        <div role="listbox" style={{ position: "absolute", zIndex: 60, top: "calc(100% + 5px)", right: 0,
+          minWidth: 150, background: "#fff", border: "1px solid #d6c79f", borderRadius: 5,
+          boxShadow: "0 6px 22px rgba(0,0,0,0.14)", padding: "4px 0", maxHeight: "60vh", overflowY: "auto" }}>
+          {OPTS.map((o) => {
+            if (o.key === "__sep__") return <div key="sep" style={{ height: 1, background: "#ece2c8", margin: "4px 0" }} />;
+            const sel = o.key === value;
+            return (
+              <div key={o.key} role="option" aria-selected={sel} aria-disabled={!o.on}
+                onClick={o.on ? () => { onChange(o.key); setOpen(false); } : undefined}
+                onMouseEnter={o.on ? (e) => { e.currentTarget.style.background = "#f3ead6"; } : undefined}
+                onMouseLeave={o.on ? (e) => { e.currentTarget.style.background = sel ? "rgba(139,105,20,0.10)" : "transparent"; } : undefined}
+                style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 12px", fontSize: "0.78rem",
+                  cursor: o.on ? "pointer" : "default", color: o.on ? "#2a2118" : "#b8ab8e",
+                  fontStyle: o.on ? "normal" : "italic", fontWeight: sel ? "bold" : "normal",
+                  background: sel ? "rgba(139,105,20,0.10)" : "transparent", userSelect: "none" }}>
+                <span style={{ width: 12, flexShrink: 0, color: gold }}>{sel ? "\u2713" : ""}</span>
+                <span>{o.label}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function ToneTrainer() {
   const [doHz, setDoHz] = useState(349.23);  // F4 — Tone 1 canonical default
+  // Narrow-screen flag (≤600px): the control-bar Play/Score collapse to bare glyphs.
+  const [isNarrow, setIsNarrow] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(max-width: 600px)").matches
+  );
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 600px)");
+    const on = () => setIsNarrow(mq.matches);
+    mq.addEventListener ? mq.addEventListener("change", on) : mq.addListener(on);
+    return () => { mq.removeEventListener ? mq.removeEventListener("change", on) : mq.removeListener(on); };
+  }, []);
   const [bpm, setBpm] = useState(80); // half note = 1 beat per tutorial
   const [text, setText] = useState("");
   const [lines, setLines] = useState([]);
@@ -5161,7 +5249,7 @@ export default function ToneTrainer() {
             style={{ width: "100%", fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "0.88rem",
                      lineHeight: 1.6, border: `1px solid ${hasTruth ? "rgba(90,122,60,.6)" : "#d6c79f"}`,
                      borderRadius: 6, padding: "8px", resize: "vertical",
-                     background: hasTruth ? "rgba(90,122,60,.03)" : "transparent" }} />
+                     background: "rgba(255,255,255,.5)" }} />
           <div style={{ marginTop: "0.45rem", display: "flex", alignItems: "center", gap: "0.6rem" }}>
             <span style={{ flex: 1, fontSize: "0.75rem", color: "#9A8A70", fontStyle: "italic" }}>
               {(hasTruth || compareData) && <>Director Pointing mode — [accent] brackets override the machine. | = line end · // = penultimate line.</>}
@@ -5193,6 +5281,16 @@ export default function ToneTrainer() {
         {/* Col 1 — left: Play / Stop */}
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center",
                       justifyContent: "flex-start" }}>
+          {isNarrow ? (
+            <button
+              onClick={playingLine !== null ? stopAll : playAll}
+              title={playingLine !== null ? "Stop playback" : "Sing all lines"}
+              style={{ background: "transparent", border: "none", padding: 0, cursor: "pointer",
+                       fontFamily: "Georgia, serif", lineHeight: 1, fontSize: "1.35rem",
+                       color: playingLine !== null ? "#7a2418" : "#3a6e28" }}>
+              {playingLine !== null ? "\u00D7" : "\u25BA"}
+            </button>
+          ) : (
           <button
             style={{ ...playBtn,
                      background: playingLine !== null ? "#7a2418" : "#3a6e28",
@@ -5201,6 +5299,7 @@ export default function ToneTrainer() {
             title={playingLine !== null ? "Stop playback" : "Sing all lines"}>
             {playingLine !== null ? <>{"\u00D7"} <span style={{ fontSize: "0.82rem" }}>Stop</span></> : <>{"\u25BA"} <span style={{ fontSize: "0.82rem" }}>Play</span></>}
           </button>
+          )}
         </div>
 
         {/* Col 2 — center: audio controls bracketed by | dividers */}
@@ -5242,6 +5341,18 @@ export default function ToneTrainer() {
                                                         fontStyle: "italic" }}>loading lexicon…</span>}
           {/* Print Score button — opens modal to set title/source then renders */}
           {(lines.length > 0 || !!machineLines?.length) && (
+            isNarrow ? (
+              <span
+                role="button" aria-label="Open the printed score" title="Open score in a new tab for printing"
+                onClick={() => {
+                  setScoreTitle(defaultScoreTitle());
+                  setScoreSource(lines.length > 0 ? "director" : "machine");
+                  setShowScoreModal(true);
+                }}
+                style={{ cursor: "pointer", color: gold, fontSize: "1.5rem", lineHeight: 1, userSelect: "none" }}>
+                ♫
+              </span>
+            ) : (
             <button
               style={playBtn}
               onClick={() => {
@@ -5253,6 +5364,7 @@ export default function ToneTrainer() {
               title="Open score in a new tab for printing">
               ♩ Score
             </button>
+            )
           )}
         </div>
 
@@ -5417,11 +5529,16 @@ export default function ToneTrainer() {
 
       {/* ── INFO BAR — legend + controls; only once a verse is pointed ──────── */}
       {hasPointed && (
-      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap",
-                    fontSize: "0.78rem", color: "#6b5942", marginBottom: "1rem" }}>
-        {/* Color-coded legend — pill backgrounds match chip roleBg colors */}
-        <span style={{ flex: 1, display: "flex", gap: "0.6rem", justifyContent: "flex-start",
-                       flexWrap: "wrap", alignItems: "center" }}>
+      <div style={{ marginBottom: "1rem" }}>
+        {/* Row 1: voice-part selector on its own line, right-justified (so the legend never stacks against it) */}
+        {!(compareMode && compareData) && (
+          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "0.4rem" }}>
+            <VoicePartSelector value={voicePart} onChange={setVoicePart} tenorEnabled={TENOR_TONES.has(activeTone)} />
+          </div>
+        )}
+        {/* Row 2: color-coded legend — pill backgrounds match chip roleBg colors */}
+        <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap", alignItems: "center",
+                      fontSize: "0.78rem", color: "#6b5942" }}>
           <span style={{ background: "rgba(40,120,60,.10)", color: "#1a6030",
                          borderRadius: 4, padding: "1px 7px" }}>intonation</span>
           <span style={{ background: "rgba(40,58,92,.06)", color: "#283a5c",
@@ -5437,26 +5554,7 @@ export default function ToneTrainer() {
           <span style={{ background: "rgba(122,36,24,.11)", color: "#7a2418",
                          borderRadius: 4, padding: "1px 7px" }}>{activeTone === 3 ? "cad. pt. 2" : "cadence"}</span>
           {compareMode && compareData && <span>· ´ = accent</span>}
-        </span>
-        {/* Director / Machine sing-view pills removed (v0.25.9): the normal sing view is
-             always director; the Director vs. Machine toggle moved to the pointer note line. */}
-        {/* Voice Part selector — only in sing view */}
-        {!(compareMode && compareData) && (
-          <select value={voicePart} onChange={e => setVoicePart(e.target.value)}
-            style={{ marginLeft: "0.5rem", fontSize: "0.72rem", flexShrink: 0,
-                     background: "transparent", border: "1px solid #d6c79f",
-                     borderRadius: 3, padding: "1px 6px", cursor: "pointer",
-                     fontFamily: "Georgia, serif", color: "#5b4a33" }}>
-            <option value="soprano">Soprano</option>
-            <option value="alto">Alto (Melody)</option>
-            <option value="tenor" disabled={!TENOR_TONES.has(activeTone)} style={!TENOR_TONES.has(activeTone) ? { color: "#bbb" } : {}}>Tenor</option>
-            <option value="bass">Bass</option>
-            <option disabled>──────────</option>
-            <option value="alto-bass">Alto + Bass</option>
-            <option value="satb">SATB</option>
-          </select>
-        )}
-        {/* Timbre selector removed (v0.25.10) — Piano is the only timbre */}
+        </div>
       </div>
       )}
 
