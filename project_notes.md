@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.18** | **Tone Trainer: v0.25.12** | Last synced: June 13, 2026
+**Tool version: v0.15.19** | **Tone Trainer: v0.25.12** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -112,6 +112,15 @@ stripped, while the Director vs. Machine button (gated on `compareData`, set at 
 lingered. Note is now gated on `hasTruth || compareData`, so the note, the button, and the
 still-director chips all dwell until the stripped text is re-pointed, then clear together
 (`analyzeText` sets `compareData` on a director point, nulls it on a non-director one).
+
+**Day/Tone split, Vespers-note move, expand-lockout fix (v0.15.19).** Collapsed
+Liturgical Context header: day name left, tone right (both side spans `minWidth:120`,
+tone span `textAlign:right`) flanking the centered label. The conditional `isVesp`
+Vespers banner moved from the top of the expanded body to between the Date row and the
+`cLit.namedDay` card. Expand-lockout fix (Option B): the controls bar's `position` is now
+`contextOpen ? "static" : "sticky"` — dropping sticky while expanded lets the page scroll
+normally so the bottom collapse control is reachable on short screens; it re-pins when
+collapsed. (Option A, cap+internal-scroll, was considered but B was chosen for simplicity.)
 
 **Header + service selector + Dismissal (v0.15.18).** Header masthead simplified
 (eyebrow "A Liturgical Study Tool"; subheader "A Service Assembler | OCA Russian Usage";
@@ -436,7 +445,7 @@ Versions at close: **Hours tool v0.15.0 · Tone Trainer v0.24.2.**
   — candidate is a chip-width/label scale-down below a breakpoint; needs real-device
   measurement before any code.
 
-Versions at close: **Hours tool v0.15.18 · Tone Trainer v0.25.12.**
+Versions at close: **Hours tool v0.15.19 · Tone Trainer v0.25.12.**
 
 ---
 

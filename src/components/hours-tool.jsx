@@ -7716,6 +7716,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.15.19",
+    date: "June 2026",
+    summary: "Day/Tone split to opposite sides, Vespers note repositioned, and a fix for the expand-lockout on short screens",
+    items: [
+      "ui: the collapsed Liturgical Context header now shows the day name justified left and the tone justified right, flanking the centered 'Liturgical Context' label.",
+      "ui: the conditional Vespers note ('Vespers, as served this evening for tomorrow — …') now renders below the Date line and above the day-description card, instead of at the top of the panel.",
+      "fix: expanding the Liturgical Context on short phone screens no longer traps you. The controls bar drops its sticky positioning while the panel is open, so the page scrolls normally and the collapse control at the bottom is always reachable; it re-pins when collapsed.",
+    ],
+  },
+  {
     version: "v0.15.18",
     date: "June 2026",
     summary: "Header refresh, custom service selector (iOS-safe), responsive controls, and a duplicate-Dismissal fix",
@@ -10737,7 +10747,7 @@ export default function App() {
 
       {/* ── CONTROLS ─────────────────────────────────────── */}
       <div style={{ background: "#EDE5D0", borderBottom: "1px solid #D4C49A", padding: "1rem 2rem",
-        position: "sticky", top: 0, zIndex: 40 }}>
+        position: contextOpen ? "static" : "sticky", top: 0, zIndex: 40 }}>
         <div style={{ maxWidth: "720px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
 
           {/* ── Row one: DATE group + SERVICE group */}
@@ -10818,9 +10828,9 @@ export default function App() {
               cursor: "pointer", userSelect: "none",
             }}
           >
-            {/* Left: Day · Tone */}
+            {/* Left: day name, justified left */}
             <span style={{ fontSize: "0.8rem", color: "#5C4A1E", flexShrink: 0, minWidth: "120px" }}>
-              {liturgicalData.dayName} · Tone {liturgicalData.tone}
+              {liturgicalData.dayName}
             </span>
 
             {/* Centre: Liturgical Context label + triangles */}
@@ -10835,8 +10845,10 @@ export default function App() {
               <span style={{ color: "#8B6914", fontSize: "0.7rem" }}>▼</span>
             </div>
 
-            {/* Right: spacer to keep the label centred */}
-            <div style={{ flexShrink: 0, minWidth: "120px" }} />
+            {/* Right: tone, justified right (balances the day name) */}
+            <span style={{ fontSize: "0.8rem", color: "#5C4A1E", flexShrink: 0, minWidth: "120px", textAlign: "right" }}>
+              Tone {liturgicalData.tone}
+            </span>
           </div>
           )}{/* end row two */}
 
@@ -10866,11 +10878,6 @@ export default function App() {
               paddingBottom: "0.5rem",
               fontSize: "0.85rem", lineHeight: "1.7",
             }}>
-            {isVesp && (
-              <div style={{ marginBottom: "0.6rem", padding: "0.45rem 0.7rem", background: "rgba(139,105,20,0.1)", borderLeft: "3px solid #8B6914", borderRadius: "0 4px 4px 0", fontSize: "0.82rem", color: "#3C2E14", lineHeight: 1.5 }}>
-                <strong>Vespers</strong>, as served this evening for tomorrow — <strong>{vespersNext.vMD}</strong>.
-              </div>
-            )}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem", flexWrap: "wrap" }}>
               <div>
                 <strong>Date:</strong> {cDayLabel}
@@ -10898,6 +10905,11 @@ export default function App() {
                 {readerMode ? "☩ Reader's Service" : "Reader's Service"}
               </button>
             </div>
+            {isVesp && (
+              <div style={{ marginTop: "0.4rem", marginBottom: "0.4rem", padding: "0.45rem 0.7rem", background: "rgba(139,105,20,0.1)", borderLeft: "3px solid #8B6914", borderRadius: "0 4px 4px 0", fontSize: "0.82rem", color: "#3C2E14", lineHeight: 1.5 }}>
+                <strong>Vespers</strong>, as served this evening for tomorrow — <strong>{vespersNext.vMD}</strong>.
+              </div>
+            )}
           {cLit.namedDay && (
             <div style={{ marginTop: "0.2rem", marginBottom: "0.2rem", padding: "0.35rem 0.6rem", background: "rgba(139,105,20,0.1)", borderLeft: "3px solid #8B6914", borderRadius: "0 4px 4px 0" }}>
               <div style={{ fontWeight: "bold", color: "#1C1008", fontSize: "0.88rem" }}>{cLit.namedDay.name}</div>
