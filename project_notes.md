@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.2** | **Tone Trainer: v0.24.2** | Last synced: June 12, 2026
+**Tool version: v0.15.11** | **Tone Trainer: v0.24.2** | Last synced: June 12, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -14,6 +14,17 @@ encoding_rule_v2.md §3. Drive delivers PDF + director-pointed docx sources only
 more pointed docx will be added over time. P+63 Russia + North America are the
 first entries encoded this way (drafts complete, pending integration into
 `src/data/pentecostarion.js`).
+
+**Irmos is pointed but NOT trainer-singable (v0.15.11).** A canon ode's Irmos
+has its own proper melody — it is never sung to the standard tone formula the
+Tone Trainer knows. Irmos text is still pointed (`|`/`//`) for line breaks at
+render, but the ▶ Point / ♫ Score controls must never appear on it. This is
+enforced centrally: `PointScoreControls` (point-score-controls.jsx) returns null
+when its `label` matches `isIrmosLabel()` (`/\birmos\b/i`); every browser block
+passes its render `label` through. The three data browsers are covered. When the
+**Matins assembler** is eventually built in hours-tool.jsx, its irmos elements
+must likewise carry an "Irmos" label (or otherwise be flagged) so the same guard
+suppresses the controls there.
 
 ## Project Summary
 A liturgical assembly tool for OCA parishes (Russian usage). Given a date,
@@ -199,6 +210,15 @@ section is acceptable. Do not strip context to save space.
 | v0.14.2 | Jun 2026 | ♫ glyph sizing; trainer v0.24.1: score hand-off uses the default title; print toolbar Close becomes "← Hours Tool" (browser-back) when from=tool |
 | v0.14.3 | Jun 2026 | ♫ larger + spacing; trainer v0.24.2: score title = "Tone N — [first 4 words]…" (defaultScoreTitle reused from the pointed lines) |
 | v0.15.0 | Jun 2026 | Point/Score controls added to the Menaion, Pentecostarion & Octoechos browsers; controls + hand-off factored into one shared component (point-score-controls.jsx) used by the Hours tool and all three browsers; browsers stay lazy, no trainer in the main bundle |
+| v0.15.1–.2 | Jun 2026 | Octoechos schema/validator groundwork; Tone 1 Sunday Matins |
+| v0.15.3 | Jun 2026 | Octoechos Tone 2 Sunday Matins + Saturday Vespers pointing; `trinitarion` added to canon-ode schema + browser |
+| v0.15.4 | Jun 2026 | Octoechos browser restyle (white sticky header, 960px, palette C); Sunday surfaced in Matins view |
+| v0.15.5–.6 | Jun 2026 | How It Works: 800px width fences; new Pointing/Chant/Score section; status refresh |
+| v0.15.7 | Jun 2026 | How It Works: Order of the Psalter service, Service outline, Vespers next-day rendering, Psalter/Scripture open links (10-of-14) |
+| v0.15.8 | Jun 2026 | Octoechos Tone 3 Matins (two trinitarians Res VII/VIII; cross-res theotokia IV/VII + own irmos Ode V) |
+| v0.15.9 | Jun 2026 | Octoechos Tone 4 Matins (trinitarians in all three canons; cross-res five theotokia) |
+| v0.15.10 | Jun 2026 | Octoechos Tone 5 Matins (no trinitarians; cross-res theotokion every ode; theotokos 3–4 trop/ode) |
+| v0.15.11 | Jun 2026 | Irmos render fix — Point/Score controls suppressed on irmos across all three browsers (label-gated in PointScoreControls) |
 
 ---
 

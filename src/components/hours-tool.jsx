@@ -7612,6 +7612,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.15.11",
+    date: "June 2026",
+    summary: "Irmos verses no longer offer Point/Score — the Tone Trainer can't sing proper irmos melodies",
+    items: [
+      "fix: the ▶ Point / ♫ Score controls are now suppressed on every Irmos in the Octoechos, Pentecostarion, and Menaion data browsers. A canon ode's irmos has its own proper melody and is not sung to the standard tone formula the Tone Trainer knows, so handing it off would be incorrect. The irmos text stays pointed (for line breaks at render); only the trainer/score controls are hidden.",
+      "internal: the rule lives in one place — PointScoreControls returns null when its render label denotes an irmos (isIrmosLabel, /\\birmos\\b/i). Each browser block passes its label through. When the Matins assembler is built, its irmos elements must carry an 'Irmos' label so the same guard applies.",
+    ],
+  },
+  {
     version: "v0.15.10",
     date: "June 2026",
     summary: "Octoechos Tone 5 — full Sunday Resurrectional Matins + Saturday Great Vespers pointing",

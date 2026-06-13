@@ -112,7 +112,7 @@ function SticheronBlock({ index, text, verse, label }) {
         }}>
           {text || <span style={{ color: C.goldLight, fontStyle: "italic" }}>—</span>}
         </div>
-        <PointScoreControls text={text} tone={tone} />
+        <PointScoreControls text={text} tone={tone} label={label} />
       </div>
     </div>
   );

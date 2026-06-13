@@ -6,6 +6,14 @@ export function isPointable(text) {
   return typeof text === 'string' && (/\s\|\s/.test(text) || /\s\/\/\s/.test(text));
 }
 
+// The Irmos of a canon ode has its own proper melody — it is NOT sung to the
+// standard tone formula the Tone Trainer knows. So even though irmos text is
+// pointed (for line breaks at render), it must never be handed to the Trainer.
+// Detection is by the render label, which is "Irmos" wherever an irmos appears.
+export function isIrmosLabel(label) {
+  return typeof label === 'string' && /\birmos\b/i.test(label);
+}
+
 // Hand a pointable verse to the Tone Trainer. mode 'point' loads + points it for
 // singing; mode 'score' has the trainer build the print payload and redirect to the
 // printed score. Stash verse + tone + mode, then full-page navigate with ?from=tool
@@ -19,9 +27,11 @@ export function handoffVerse(text, tone, mode) {
 // The ▶ Point / ♫ Score control stack, shown at the right of a pointable verse.
 // Active (gold) when the verse's tone is built in the trainer (1–3 today); light
 // grey and inert otherwise, with a tooltip explaining why. Returns null for any
-// non-pointable text, so callers can drop it in unconditionally.
-export function PointScoreControls({ text, tone }) {
+// non-pointable text — and for any Irmos (proper melody, not trainer-singable) —
+// so callers can drop it in unconditionally, passing the render label through.
+export function PointScoreControls({ text, tone, label }) {
   if (!isPointable(text)) return null;
+  if (isIrmosLabel(label)) return null;
   const toneBuilt = tone != null && AVAILABLE_TONES.has(tone);
   const tip = (verb) => toneBuilt
     ? verb
