@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.17** | **Tone Trainer: v0.25.10** | Last synced: June 13, 2026
+**Tool version: v0.15.17** | **Tone Trainer: v0.25.11** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -101,6 +101,17 @@ paste box, far-right justified (note text `flex:1`, button `flex-shrink:0`); sho
 `playOrganNote`/`playChoirNote`/`playCelloNote` removed; `toneTimbre` always plays piano; the
 `timbre` state is now a `"piano"` constant (the 8 `toneTimbre(...)` call sites are unchanged).
 Piano is the only playback voice.
+
+**Pitch UX + note dwell (v0.25.11).** Removed the standalone 'pitch' button: selecting a
+pitch in the do-selector sounds it (guarded `useEffect` on `doHz` — skips mount, fires only on
+a deliberate change), and the 'do ♪' readout is click-to-replay (`onClick={playPitch}`) so the
+same pitch can be re-sounded without changing it. The pickup chord is held 0.5s longer
+(`playPitch` H 0.7 → 1.2). Note-dwell fix: the "Director Pointing mode — …" note was gated on
+the live `hasTruth` (textarea brackets) so it vanished the instant the `[ ]` marks were
+stripped, while the Director vs. Machine button (gated on `compareData`, set at point time)
+lingered. Note is now gated on `hasTruth || compareData`, so the note, the button, and the
+still-director chips all dwell until the stripped text is re-pointed, then clear together
+(`analyzeText` sets `compareData` on a director point, nulls it on a non-director one).
 
 **Irmos is pointed but NOT trainer-singable (v0.15.11).** A canon ode's Irmos
 has its own proper melody — it is never sung to the standard tone formula the
@@ -403,7 +414,7 @@ Versions at close: **Hours tool v0.15.0 · Tone Trainer v0.24.2.**
   — candidate is a chip-width/label scale-down below a breakpoint; needs real-device
   measurement before any code.
 
-Versions at close: **Hours tool v0.15.17 · Tone Trainer v0.25.10.**
+Versions at close: **Hours tool v0.15.17 · Tone Trainer v0.25.11.**
 
 ---
 

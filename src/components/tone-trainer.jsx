@@ -12,11 +12,21 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.10";
+export const TONE_TRAINER_VERSION = "v0.25.11";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.11",
+    date: "June 2026",
+    summary: "Pitch sounds on selection (button removed) + click-to-replay readout; longer pickup; Director note dwells with the button",
+    items: [
+      "ui/audio: removed the standalone 'pitch' button. Picking a pitch in the do-selector now sounds it automatically, and the 'do ♪' readout is click-to-replay so you can re-sound the same pitch without changing it.",
+      "audio: the pickup chord is held 0.5s longer (0.7s → 1.2s) — one sustained SATB pickup, long enough to take the pitch.",
+      "fix: the 'Director Pointing mode — …' note now dwells until re-point, matching the Director vs. Machine button. Both are keyed to the pointed-director state, so stripping the [ ] marks from the text no longer makes the note vanish while the button (and the still-director chips) remain — they now clear together when you re-point the stripped text. (Note shows on live brackets OR pointed-director; button on pointed-director.)",
+    ],
+  },
   {
     version: "v0.25.10",
     date: "June 2026",
@@ -4193,7 +4203,7 @@ export default function ToneTrainer() {
   // (soprano → alto → tenor → bass), giving singers their reference note.
   // Tone 1 Phrase A reciting tones: alto=re, soprano=fa (SOPRANO_MAP[re]), tenor=sol, bass=sol.
   const playPitch = () => {
-    const H = 0.7; // half-note feel — long enough to hear clearly
+    const H = 1.2; // sustained pickup chord (+0.5s, v0.25.11) — long enough to take the pitch
     playNotes([
       { sol: "fa",  dur: H, peak: 0.7 },                              // soprano
       { sol: "re",  dur: H, peak: 0.7 },                              // alto
@@ -4201,6 +4211,15 @@ export default function ToneTrainer() {
       { sol: "sol", dur: H, peak: 0.8, bass: true },                  // bass
     ]);
   };
+
+  // Sound the pickup whenever the user picks a new pitch (the standalone 'pitch' button is
+  // gone). Skips the initial mount; doHz only changes via the do-selector, so this fires only
+  // on a deliberate change. Replaying the SAME pitch is handled by the click-to-replay readout.
+  const pitchSelectMounted = useRef(false);
+  useEffect(() => {
+    if (!pitchSelectMounted.current) { pitchSelectMounted.current = true; return; }
+    playPitch();
+  }, [doHz]);
 
   // ── PHRASE-STRUCTURAL AUTO ACCENT ENGINE (v0.5.1) ──────────────────────────
   // Takes a words array already syllabified by wordFromDisplay (lexicon has done
@@ -5109,7 +5128,7 @@ export default function ToneTrainer() {
                      background: hasTruth ? "rgba(90,122,60,.03)" : "transparent" }} />
           <div style={{ marginTop: "0.45rem", display: "flex", alignItems: "center", gap: "0.6rem" }}>
             <span style={{ flex: 1, fontSize: "0.75rem", color: "#9A8A70", fontStyle: "italic" }}>
-              {hasTruth && <>Director Pointing mode — [accent] brackets override the machine. | = line end · // = penultimate line.</>}
+              {(hasTruth || compareData) && <>Director Pointing mode — [accent] brackets override the machine. | = line end · // = penultimate line.</>}
             </span>
             {compareData && (
               <button
@@ -5151,15 +5170,17 @@ export default function ToneTrainer() {
         {/* Col 2 — center: audio controls bracketed by | dividers */}
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
           <span style={{ color: "#d6c79f" }}>|</span>
-          <label style={{ fontSize: "0.82rem", color: "#5b4a33" }}>
-            do ={" "}
+          <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem", fontSize: "0.82rem", color: "#5b4a33" }}>
+            <span onClick={playPitch} title="Click to play / replay this pitch"
+                  style={{ cursor: "pointer", userSelect: "none", borderBottom: "1px dotted #c9bfa4" }}>
+              do ♪
+            </span>
             <select value={doHz} onChange={(e) => setDoHz(parseFloat(e.target.value))}
               style={{ fontFamily: "Georgia, serif", border: "1px solid #d6c79f",
                        borderRadius: 6, padding: "3px 6px" }}>
               {DO_OPTIONS.map((o) => <option key={o.label} value={o.hz}>{o.label}</option>)}
             </select>
-          </label>
-          <button style={playBtn} onClick={playPitch}>pitch</button>
+          </span>
           <label style={{ fontSize: "0.82rem", color: playingLine !== null ? "#b0a080" : "#5b4a33",
                           display: "inline-flex", alignItems: "center", gap: "0.3rem",
                           transition: "color 0.2s" }}
