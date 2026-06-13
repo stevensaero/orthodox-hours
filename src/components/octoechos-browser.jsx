@@ -42,6 +42,7 @@ const TONE_LOADERS = {
 import {
   LIC_THEOTOKIA, HYPAKOE, RESURRECTIONAL_TROPARIA,
   SUNDAY_KONTAKIA, SUNDAY_PROKEIMENON, SUNDAY_ALLELUIA,
+  LIC_OPENING_FALLBACK,
 } from '../data/octoechos/index.js';
 
 // ── Day labels ───────────────────────────────────────────────────────────────
@@ -162,7 +163,7 @@ function StubSection({ label, phase }) {
 }
 
 // ── Vespers day panel ────────────────────────────────────────────────────────
-function VespersDayPanel({ tone, dayKey, dayData }) {
+function VespersDayPanel({ tone, dayKey, dayData, licOpening }) {
   if (!dayData) {
     return (
       <div style={{ padding: "1rem", color: C.inkLight, fontStyle: "italic",
@@ -177,6 +178,12 @@ function VespersDayPanel({ tone, dayKey, dayData }) {
 
   return (
     <div>
+      {/* Lord I Have Cried — opening (Kekragarion, Ps 140:1-2), tone of the week */}
+      <SubHeader>Lord I Have Cried — Opening{(licOpening && licOpening.length) ? "" : " (unpointed fallback)"}</SubHeader>
+      {((licOpening && licOpening.length) ? licOpening : LIC_OPENING_FALLBACK).map((v, i) => (
+        <SticheronBlock key={"lic-open-" + i} index={i} text={hymnText(v)} />
+      ))}
+
       {/* Lord I Have Cried stichera */}
       <SubHeader>Lord I Have Cried — {lic.length} stichera</SubHeader>
       {lic.length > 0
@@ -700,6 +707,7 @@ export default function OctoechosBrowser() {
                 tone={selectedTone}
                 dayKey={activeDay}
                 dayData={toneData.vespers?.[activeDay]}
+                licOpening={toneData.lic_opening}
               />
             </>
           )}

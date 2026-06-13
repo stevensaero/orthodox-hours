@@ -2,6 +2,15 @@
 // Tone-independent Octoechos data — static import, always loaded.
 // Generated from hours-tool.jsx inlined tables — Phase 1 migration.
 
+// Lord-I-Have-Cried opening (Ps 140:1-2, the Kekragarion). The two opening verses are
+// sung to the tone of the week; the OCA points them per tone. Per-tone director-pointed
+// overlays live in octoechos/toneN.js as `lic_opening`; this is the unpointed OCA fallback
+// (one source of truth) used for any tone whose `lic_opening` is not yet encoded.
+export const LIC_OPENING_FALLBACK = [
+  "Lord, I call upon Thee, hear me! Hear me, O Lord! Lord, I call upon Thee, hear me! Receive the voice of my prayer, when I call upon Thee! Hear me, O Lord!",
+  "Let my prayer arise in Thy sight as incense, and let the lifting up of my hands be an evening sacrifice! Hear me, O Lord!",
+];
+
 export const LIC_THEOTOKIA = {
   1: "O all-hymned Virgin, in whom Moses beheld a mystery with prophetic eyes, the bush that burned yet remained unconsumed; for the fire of the Godhead did not burn thy womb, O pure one. Wherefore, we beseech thee, as the Mother of our God: beg thou peace and great mercy for the world.",
   2: "Tribulation, cruel assaults, and divers passions bestorm my lowly soul, O maiden who knewest not wedlock, Mother of Christ God. Show thyself to be my pilot on the sea of life, and still the tempest that assaileth me, steering me to the calm harbors of repentance and coolness, for I have made recourse to thy divine protection.",

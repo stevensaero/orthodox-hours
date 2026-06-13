@@ -116,6 +116,14 @@ export default {
     }
   },
 
+  // ── LORD I HAVE CRIED — opening (Kekragarion, Ps 140:1-2) ───────────────────
+  // Sung to the tone of the week; OCA director-pointed (Tier-3), preferred over the
+  // unpointed LIC_OPENING_FALLBACK in index.js. From OCA 2026-0614-texts-tt.docx.
+  lic_opening: [
+    { text: `[Lord], I call upon Thee, [hear] me! | [Hear] me, O Lord! | [Lord], I call upon Thee, [hear] me! | Re[ceive] the [voice] of my prayer, | when I [call] up[on] Thee! // [Hear] [me], O Lord!`, director: true, tradition: "OCA", pointing_source: "OCA 2026-0614-texts-tt.docx" },
+    { text: `Let my [prayer] arise | in Thy sight as [in]cense, | and [let] the lifting [up] of my hands | be an [eve]ning [sac]rifice! // [Hear] [me], O Lord!`, director: true, tradition: "OCA", pointing_source: "OCA 2026-0614-texts-tt.docx" },
+  ],
+
   // ── UNIVERSAL APOSTICHA VERSES ─────────────────────────────────────────────
   // Tone-independent; same every week. Migrated from OCTOECHOS_VESPERS[0].
   vespers_universal: {  // universal fixed verses

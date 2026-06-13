@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   LIC_THEOTOKIA, HYPAKOE, RESURRECTIONAL_TROPARIA,
   SUNDAY_KONTAKIA, SUNDAY_PROKEIMENON, SUNDAY_ALLELUIA,
-  KATAVASIAE, RESURRECTION_GOSPEL_STICHERA,
+  KATAVASIAE, RESURRECTION_GOSPEL_STICHERA, LIC_OPENING_FALLBACK,
 } from '../data/octoechos/index.js';
 import { PSALMS, KATHISMA_MAP, getPsalmRange } from '../data/psalter.js';
 import { hymnText, hymnProvenance } from '../lib/hymn-entry.js';
@@ -2780,6 +2780,12 @@ function getOctoechosUniversal(tone) {
   return _octoechosCache[tone]?.vespers_universal ?? null;
 }
 
+// Lord-I-Have-Cried opening (Kekragarion, Ps 140:1-2) — tone-of-week, OCA director-pointed
+// if encoded for the tone; null otherwise (caller falls back to LIC_OPENING_FALLBACK).
+function getOctoechosLicOpening(tone) {
+  return _octoechosCache[tone]?.lic_opening ?? null;
+}
+
 // ── Weekday LIC theotokia — Both Now after Glory at Lord I Have Cried ────────
 // Source: St. Sergius Octoechos, Monday Evening (N-3.pdf) for each tone.
 // Used at §2A weekday (Mon–Thu; also used at Fri when no lic_dogmatikon applies
@@ -3435,12 +3441,28 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       text:"For Thine is the dominion, and Thine is the kingdom, and the power, and the glory: of the Father, and of the Son, and of the Holy Spirit, now and ever, and unto the ages of ages.",
       source:"HTM Vespers"});
   }
-  // 6. LORD I HAVE CRIED
-  elements.push({id:"v-lic",type:"fixed",label:"Lord I Have Cried",rubric:"",
-    text:"Lord, I have cried unto Thee, hearken unto me. Hearken unto me, O Lord.\n" +
-      "Lord, I have cried unto Thee, hearken unto me; attend to the voice of my supplication, when I cry unto Thee. Hearken unto me, O Lord.\n\n" +
-      "Let my prayer be set forth as incense before Thee, the lifting up of my hands as an evening sacrifice. Hearken unto me, O Lord.",
-    source:"HTM Vespers"});
+  // 6. LORD I HAVE CRIED — opening verses (Kekragarion, Ps 140:1-2), sung to the tone of
+  // the week. Prefer the tone's OCA director-pointed lic_opening; else the unpointed OCA
+  // fallback. Emitted as two elements so each pointable verse gets its own Point/Score
+  // control; `tone` is set so PointScoreControls resolves (else it greys "no tone").
+  {
+    const licOpening = getOctoechosLicOpening(tone);
+    const openingVerses = licOpening
+      ? licOpening.map(v => ({ text: hymnText(v), ...hymnProvenance(v) }))
+      : LIC_OPENING_FALLBACK.map(t => ({ text: t }));
+    openingVerses.forEach((v, i) => {
+      elements.push({
+        id: "v-lic-" + (i + 1), type: "fixed",
+        label: i === 0 ? "Lord I Have Cried" : "",
+        rubric: "", tone,
+        text: v.text,
+        source: v.pointing_source ? "Octoechos (OCA)" : "Vespers (OCA)",
+        ...(v.director ? { director: true } : {}),
+        ...(v.tradition ? { tradition: v.tradition } : {}),
+        ...(v.pointing_source ? { pointing_source: v.pointing_source } : {}),
+      });
+    });
+  }
   elements.push({id:"v-ps140",type:"fixed",label:"PSALM 140",rubric:"",
     text:"Set a guard over my mouth, O Lord, keep watch over the door of my lips. " +
       "Incline not my heart to any evil, to busy myself with wicked deeds in company with men who work iniquity; " +
@@ -7612,6 +7634,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.15.16",
+    date: "June 2026",
+    summary: "Lord I Have Cried opening (Kekragarion) is now tone-of-week propers — OCA-pointed when encoded, OCA fallback otherwise",
+    items: [
+      "feat: the two opening verses at 'Lord I Have Cried' (Ps 140:1-2, the Kekragarion) are no longer a fixed string. They are sung to the tone of the week, so they now render the tone's OCA director-pointed `lic_opening` when encoded (Tone 1, from the 2026-0614 docx) and an unpointed OCA fallback otherwise. Each verse is its own element, so the Point / Score controls attach per verse for built tones. This also replaces the St. Sergius/HTM wording ('Lord, I have cried unto Thee, hearken unto me') with the OCA wording ('Lord, I call upon Thee, hear me') on every Vespers.",
+      "data: per-tone pointed openings live in octoechos/toneN.js as `lic_opening`; the single unpointed OCA fallback is LIC_OPENING_FALLBACK in octoechos/index.js (one source of truth). The Octoechos data browser now shows the opening above the 'Lord I Have Cried' stichera, labeled as the unpointed fallback when the tone is not yet encoded.",
+    ],
+  },
   {
     version: "v0.15.15",
     date: "June 2026",
