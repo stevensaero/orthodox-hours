@@ -10,3 +10,15 @@ body {
 @media (max-width: 480px) {
   .hours-ctl-label { display: none; }
 }
+
+/* Cap the expanded Liturgical Context panel only on mobile, where a panel taller
+   than the screen can trap you inside the sticky bar. On desktop it stays natural
+   height so the page scrolls through normally (no scroll-lock). */
+@media (max-width: 768px) {
+  .lit-context-body {
+    max-height: calc(100dvh - 100px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+}

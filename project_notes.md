@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.20** | **Tone Trainer: v0.25.12** | Last synced: June 13, 2026
+**Tool version: v0.15.21** | **Tone Trainer: v0.25.12** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -112,6 +112,16 @@ stripped, while the Director vs. Machine button (gated on `compareData`, set at 
 lingered. Note is now gated on `hasTruth || compareData`, so the note, the button, and the
 still-director chips all dwell until the stripped text is re-pointed, then clear together
 (`analyzeText` sets `compareData` on a director point, nulls it on a non-director one).
+
+**Title, desktop scroll-lock, Date move, expand/collapse tags (v0.15.21).** H1 →
+"Orthodox Daily Hours". The v0.15.20 panel cap caused a desktop scroll-lock (the panel
+became a scroll region with `overscroll-behavior:contain`, so the wheel didn't pass through
+to the page); fixed by moving the cap from inline style to class `.lit-context-body` and
+scoping it to `@media (max-width:768px)` in `index.css` — desktop is uncapped/natural height.
+Date line moved from the top flex row to below the `cLit.namedDay` card and above Tone; the
+top-left slot now holds a close glyph (U+1F5D9 🗙, `setContextOpen(false)`), Reader's Service
+stays top-right. Collapsed center tag "Liturgical Context" → "Expand"; expanded footer tag
+→ "Collapse".
 
 **Expand-lockout (final) + header overflow fix (v0.15.20).** v0.15.19's drop-sticky was
 the wrong call (reverted). Controls bar is `position:"sticky"` again; the expand-lockout is
@@ -455,7 +465,7 @@ Versions at close: **Hours tool v0.15.0 · Tone Trainer v0.24.2.**
   — candidate is a chip-width/label scale-down below a breakpoint; needs real-device
   measurement before any code.
 
-Versions at close: **Hours tool v0.15.20 · Tone Trainer v0.25.12.**
+Versions at close: **Hours tool v0.15.21 · Tone Trainer v0.25.12.**
 
 ---
 

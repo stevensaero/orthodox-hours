@@ -7716,6 +7716,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.15.21",
+    date: "June 2026",
+    summary: "Orthodox Daily Hours title; desktop scroll-lock fixed; Date repositioned with a top close glyph; expand/collapse tags",
+    items: [
+      "ui: the title is now 'Orthodox Daily Hours'.",
+      "fix: on desktop, an expanded Liturgical Context no longer locks page scrolling. The mobile height-cap (added in v0.15.20) is now scoped to phone widths only; on desktop the panel keeps its natural height and the page scrolls through normally.",
+      "ui: the Date line moved to below the day-notice card and above Tone. In its former spot (top-left of the panel) there is now a close glyph (🗙) that collapses the context; the Reader's Service button stays at top-right.",
+      "ui: the collapsed context tag now reads 'Expand' and the expanded tag reads 'Collapse'.",
+    ],
+  },
+  {
     version: "v0.15.20",
     date: "June 2026",
     summary: "Expand-lockout fix switched to capped/scrolling panel; fix Day/Tone header overflowing on iPhone",
@@ -10746,7 +10757,7 @@ export default function App() {
             <VersionBadge />
           </div>
           <h1 style={{ fontSize: "1.6rem", fontWeight: "normal", margin: "0 0 0.25rem", letterSpacing: "0.02em", lineHeight: "1.2" }}>
-            Daily Hours
+            Orthodox Daily Hours
           </h1>
           <div style={{ fontSize: "0.85rem", color: "#C4A84A", fontStyle: "italic" }}>
             A Service Assembler &nbsp;|&nbsp; OCA Russian Usage
@@ -10849,7 +10860,7 @@ export default function App() {
               <span style={{ fontSize: "0.68rem", letterSpacing: "0.15em",
                 textTransform: "uppercase", color: "#8B6914", fontWeight: "bold",
                 fontFamily: "Georgia, serif" }}>
-                Liturgical Context
+                Expand
               </span>
               <span style={{ color: "#8B6914", fontSize: "0.7rem" }}>▼</span>
             </div>
@@ -10882,24 +10893,20 @@ export default function App() {
             // its Vespers texts differ by usage, so the selector is offered at Vespers too.
             const cAllSaintsOverlay = isVesp ? vespersNext.vIsAllSaintsNA : isAllSaintsNA;
             return (
-            <div style={{
+            <div className="lit-context-body" style={{
               paddingTop: "0.5rem",
               paddingBottom: "0.5rem",
               fontSize: "0.85rem", lineHeight: "1.7",
-              maxHeight: "calc(100dvh - 100px)", overflowY: "auto",
-              overscrollBehavior: "contain", WebkitOverflowScrolling: "touch",
             }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem", flexWrap: "wrap" }}>
-              <div>
-                <strong>Date:</strong> {cDayLabel}
-                {cLit.paschaOffset >= -101 && cLit.paschaOffset <= 263 && (
-                  <span style={{ fontSize: "0.72rem", color: "#9A8A70", marginLeft: "0.5rem", fontStyle: "italic" }}>
-                    {cLit.paschaOffset >= 0
-                      ? `(P+${cLit.paschaOffset})`
-                      : `(P${cLit.paschaOffset})`}
-                  </span>
-                )}
-              </div>
+              {/* Close glyph — collapses the context (mirrors the bottom 'collapse' control) */}
+              <span
+                onClick={() => setContextOpen(false)}
+                role="button" aria-label="Collapse" title="Collapse"
+                style={{ cursor: "pointer", color: "#8B6914", fontSize: "1.15rem", lineHeight: 1, userSelect: "none", flexShrink: 0 }}
+              >
+                {"\u{1F5D9}"}
+              </span>
               {/* Reader's Service — right of the first content line, within the context chip */}
               <button
                 onClick={() => setReaderMode(v => !v)}
@@ -10927,6 +10934,17 @@ export default function App() {
               <div style={{ fontSize: "0.76rem", color: "#5C4A1E", fontStyle: "italic", marginTop: "0.1rem" }}>{cLit.namedDay.note}</div>
             </div>
           )}
+          {/* Date — moved below the day notice, above Tone */}
+          <div>
+            <strong>Date:</strong> {cDayLabel}
+            {cLit.paschaOffset >= -101 && cLit.paschaOffset <= 263 && (
+              <span style={{ fontSize: "0.72rem", color: "#9A8A70", marginLeft: "0.5rem", fontStyle: "italic" }}>
+                {cLit.paschaOffset >= 0
+                  ? `(P+${cLit.paschaOffset})`
+                  : `(P${cLit.paschaOffset})`}
+              </span>
+            )}
+          </div>
           <div>
             <strong>Tone:</strong>{" "}
             <Tooltip term="tone">Tone {cLit.tone}</Tooltip>
@@ -11110,7 +11128,7 @@ export default function App() {
             <span style={{ fontSize: "0.68rem", letterSpacing: "0.15em",
               textTransform: "uppercase", color: "#8B6914", fontWeight: "bold",
               fontFamily: "Georgia, serif" }}>
-              Liturgical Context
+              Collapse
             </span>
             <span style={{ color: "#8B6914", fontSize: "0.7rem" }}>▲</span>
           </div>
