@@ -1702,6 +1702,44 @@ encoded once globally. Only capture aposticha verses for §2D+.
   orthodox_liturgics/Octoechos/octoechos_vespers.txt
 
 ### ACTIVE
+**FW-24: Pentecostarion → Octoechos de-duplication (pull tone-of-week content from source)**
+The assembler should pull tone-of-week Resurrection content from its canonical source,
+not have feast entries carry their own copies. P+63 (All Saints of North America,
+`hours_format: "all_saints_sunday"`) currently EMBEDS OCA copies of seven tone-1
+Resurrection fields, each already tagged with its true origin:
+- `troparion`, `resurrection_kontakion` — `source:"resurrection_tone_1"`
+- `stichera_lord_i_call[0–3]` (the four Resurrection LIC stichera) and the LIC Both-Now
+  dogmatikon — `source:"octoechos"`
+- `stichera_aposticha` (Resurrection aposticha) — `aposticha_source:"octoechos"`
+
+Why it exists: sequencing. P+63 was encoded before the Octoechos was OCA director-pointed
+(Octoechos was all St. Sergius, zero `[brackets]`), so the only way to get OCA-pointed
+Resurrection text into the feast was to paste copies from the docx. The `source:` tags are
+the breadcrumb left for this cleanup. As of **v0.15.15** the Octoechos `tone1.js` carries
+the OCA Resurrection set (`vespers.sat.lic[0–3]`, the 4 aposticha, the dogmatikon), so the
+same text now lives in two places and the pull-from-source refactor is finally possible
+for tone 1.
+
+The fix:
+- Assembler resolver: a slot tagged `source:"octoechos"`/`"resurrection_tone_1"` with no
+  `text` is dereferenced to its canonical Octoechos location (`vespers.sat.lic[i]`,
+  `aposticha[i]`, `dogmatikon`; `RESURRECTIONAL_TROPARIA`/`SUNDAY_KONTAKIA` for the
+  troparion/kontakion). The mapping is positional; tags already exist.
+- Strip the embedded `text` from those seven P+63 slots, leaving references; keep
+  feast-proper slots as-is.
+- Make the `§4B17` Lord-I-call composition explicit (the data implies 4 Resurrection +
+  6 feast = 10) instead of relying on a hardcoded array. **Open question: confirm the
+  §4B17 LIC composition against Fekula before speccing.**
+
+Gate / proof: because the Octoechos text is byte-identical to the embedded copies today,
+switching `all_saints_sunday` to pull-from-source must produce a **zero-diff render for
+2026-06-14** — a clean behavior-preserving check.
+
+Caveat: pulling only renders OCA where the source tone is already backfilled; an
+all-saints-type feast in a not-yet-pointed tone would surface St. Sergius. So the resolver
+must be tone-scoped (tone 1 first) or guard on "is this source slot pointed." This ties the
+de-dup rollout to the tone-by-tone OCA backfill, which is acceptable.
+
 **FW-MENAION-BACKFILL: SAMPLE_MENAION data-entry backlog**
 Several fields captured in Drive .txt encoding records have not been entered into
 SAMPLE_MENAION entries. This is distinct from FW-23 (stichera) — these fields are
