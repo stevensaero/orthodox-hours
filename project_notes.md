@@ -1,5 +1,25 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.26** | **Tone Trainer: v0.25.16** | Last synced: June 13, 2026
+**Tool version: v0.15.27** | **Tone Trainer: v0.25.16** | Last synced: June 13, 2026
+
+**Dismissal unification — error 3 (v0.15.27).** The priest's dismissal is now one
+assembler (`buildDismissalText`) for Vespers + Typica + Post-Communion; the two old
+divergent builders are gone. Characteristic phrase is a true front prefix on "Christ our
+true God" (fixes the malformed Sunday/festal dismissal); Great vs Little keyed on
+vigil-vs-Vespers-alone (Fekula) with the Little day-of-week intercession set keyed on the
+opened/liturgical day; temple patron from the dedication selector (italic *(Temple
+Commemoration)* when unset); saint(s) of the day; Post-Communion celebrant clause
+(Chrysostom / Basil / Gregory via `getLiturgyType`). Wording is Antiochian — flagged for
+OCA migration. Spec: `dismissal_assembler_spec.md`. Verified with a source-extracted probe
+(Sunday/All-Saints-NA, weekday Little day-set, Post-Communion Basil).
+**Follow-ups (not in v0.15.27):** (a) surface a *name-only* temple selector at the dismissal
+itself — the existing `TempleSelector` previews a troparion, wrong in the dismissal context,
+so it needs a lightweight variant; the temple remains settable via Litiya/Typica meanwhile.
+(b) Vespers reader-mode dismissal still uses its own `_buildReaderDismissal` (unchanged);
+fold into the unified engine later. (c) Q2 (Cross on Wed+Fri) and Q4 (saint-of-day phrasing
+on named-day Sundays) proceeded on Antiochian/default, flagged for review. (d) OCA-migration
+of dismissal wording. (e) full Fekula Ch.6 Theotokion engine (§II/§III), spec §14.
+
+**Tool version (prior): v0.15.26**
 
 **Two pickups on the v0.15.25 work (v0.15.26).**
 - The resurrectional **Dismissal Theotokion** now fires at the Sunday Vespers troparia for

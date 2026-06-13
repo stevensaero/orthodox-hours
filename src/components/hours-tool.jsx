@@ -3175,7 +3175,7 @@ function computeVespersParoemias(menaionEntry, pentEntry, isPent, isBright) {
   return [menaionEntry.paroemia_1, menaionEntry.paroemia_2, menaionEntry.paroemia_3].filter(Boolean);
 }
 
-function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, readerMode = false, selectedDate = "") {
+function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, readerMode = false, selectedDate = "", templeDedication = null) {
   const elements = [];
   const { paschaOffset, tone, dayName, season, namedDay } = liturgicalData;
   const isPentecostarion = season === "pentecostarion" || season === "brightweek";
@@ -4648,49 +4648,17 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   //   Ordinary weekday:     saint of the day from menaionEntry.saint
   //   No saint known:       middle slot omitted
   // Source: HTM Vespers; OCA Order of Vespers (2021)
-  const _buildVespersDismissal = () => {
-    const open = "May Christ our true God, through the intercessions of His most pure Mother;";
-    const close = "of the holy, glorious, and all-praised apostles; " +
-      "of the holy, glorious, and victorious martyrs; " +
-      "of our holy and God-bearing fathers; " +
-      "of the holy and Righteous Ancestors of God Joachim and Anna, " +
-      "and of all the saints; have mercy on us and save us, " +
-      "for He is good and the Lover of mankind.";
-
-    let middle = "";
-    if (isSunday) {
-      middle = "Who rose from the dead;";
-    } else if (isPentecostarion && pentEntry) {
-      const fmt = pentEntry && pentEntry.hours_format;
-      if (fmt === "ascension" || fmt === "apodosis_ascension") {
-        middle = "Who ascended in glory into heaven;";
-      } else if (fmt === "pentecost" || fmt === "apodosis_pentecost" || fmt === "holy_spirit_day") {
-        middle = "Who sent down the Holy Spirit upon His holy apostles;";
-      } else {
-        // Pentecostarion weekday — use preceding Sunday tone reference
-        middle = "Who rose from the dead;";
-      }
-    } else if (menaionEntry && menaionEntry.saint) {
-      // Ordinary weekday/Saturday: insert saint name directly.
-      // menaionEntry.saint already contains the full title, e.g.
-      // "Holy Hieromartyr Timothy, Bishop of Prussia" — no prefix needed.
-      middle = `${menaionEntry.saint};`;
-    }
-
-    return middle
-      ? `${open} ${middle} ${close}`
-      : `${open} ${close}`;
-  };
+  const _vespersDismissalText = buildDismissalText({
+    liturgicalData, menaionEntry, pentEntry,
+    serviceContext: "vespers", templeDedication,
+  });
 
   elements.push({id:"v-diss-dismissal",type:"movable",label:"Dismissal",rubric:"Priest:",
-    text:_buildVespersDismissal(),
-    source:"HTM Vespers; OCA Order of Vespers (2021)",
+    text:_vespersDismissalText,
+    source:"OCA Order of Vespers (2021); Antiochian dismissal pattern",
+    dismissalHasPlaceholder: !resolveTempleName(templeDedication),
     fekula:{section:fekulaSection,
-      note:"The dismissal formula inserts the saint of the day after 'His most pure Mother.' " +
-           "On Sundays: 'Who rose from the dead.' " +
-           "During the Pentecostarion: feast-specific phrase. " +
-           "On ordinary weekdays: the commemorated saint by name. " +
-           "Source: HTM Order of Vespers; OCA Order of Vespers (2021)."}});
+      note:"Unified dismissal: characteristic phrase as the front prefix on 'Christ our true God'; Great vs Little (vigil vs Vespers-alone, Fekula); day-of-week intercession set keyed on the opened/liturgical day; temple patron, Ancestors, saint(s) of the day. Antiochian wording — flagged for OCA migration. — dismissal_assembler_spec.md"}});
   elements.push({id:"v-diss-amen",type:"fixed",label:"",rubric:null,
     text:"Amen.",
     source:"HTM Vespers"});
@@ -5122,38 +5090,132 @@ const TYPICA_WEEKDAY_ALLELUIA = {
 // Used by assembleTypica and assemblePostCommunion.
 // idPrefix: element id prefix ('typica' or 'pc')
 // Returns a single element ready to push into an elements array.
-function buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, idPrefix) {
-  const { season, namedDay } = liturgicalData;
-  const _fmt = pentEntry ? pentEntry.hours_format : null;
-  const isSunday = season === 'sunday' || season === 'pentecostarion_sunday' || _fmt === 'pentecostarion_sunday' || _fmt === 'all_saints_sunday';
+// ─── UNIFIED DISMISSAL (ОТПУСТ) TEXT ENGINE ──────────────────────────────────
+// One assembler for the priest's dismissal across Vespers, Typica, and
+// Post-Communion. Spec: dismissal_assembler_spec.md.
+//
+// Two independent axes: (1) the CHARACTERISTIC PHRASE — a front prefix on
+// "Christ our true God" that varies by occasion (resurrectional / Ascension /
+// Pentecost / none); (2) the INTERCESSION SET — Great (full) vs Little (a
+// day-of-week subset), keyed on the OPENED/liturgical day. The temple patron,
+// Ancestors, saint(s) of the day, and (after Liturgy) the celebrant of the
+// Liturgy are common slots. Wording is the Antiochian recension; flagged for a
+// future OCA migration. TODO(OCA-migration): swap to OCA wording + list.
 
-  const open = "May Christ our true God, through the intercessions of His most pure Mother;";
-  const close =
-    "of the holy, glorious, and all-praised apostles; " +
-    "of the holy, glorious, and victorious martyrs; " +
-    "of our holy and God-bearing fathers; " +
-    "of the holy and Righteous Ancestors of God Joachim and Anna, " +
-    "and of all the saints; have mercy on us and save us, " +
-    "for He is good and the Lover of mankind.";
+// Little Dismissal day-sets, keyed by OPENED/liturgical day-of-week (0=Sun…6=Sat).
+// Antiochian "[evening]/[morning]" pairs mapped onto the liturgical day they open.
+const DISMISSAL_LITTLE_DAYSETS = {
+  1: "by the protection of the honorable Bodiless Powers of heaven; ",                                   // Mon  (Sun eve)
+  2: "at the supplication of the honorable, glorious Prophet, Forerunner and Baptist John; ",            // Tue  (Mon eve)
+  3: "by the might of the precious and life-giving Cross; ",                                              // Wed  (Tue eve)
+  4: "of the holy, glorious, and all-laudable Apostles; at the supplication of our father among the saints, Nicholas the Wonder-worker, Archbishop of Myra in Lycia; ", // Thu (Wed eve)
+  5: "by the might of the precious and life-giving Cross; ",                                              // Fri  (Thu eve)
+  6: "at the supplication of the holy, glorious and right-victorious Martyrs; of our venerable and God-bearing Fathers; ", // Sat (Fri eve)
+  // 0 (Sun, opened by Saturday-evening Great Vespers) → Great (resurrectional)
+};
 
-  let middle = "";
-  if (isSunday) {
-    middle = "Who rose from the dead;";
-  } else if (pentEntry) {
-    const fmt = pentEntry.hours_format;
-    if (fmt === "ascension" || fmt === "apodosis_ascension") {
-      middle = "Who ascended in glory into heaven;";
-    } else if (fmt === "pentecost" || fmt === "apodosis_pentecost" || fmt === "holy_spirit_day") {
-      middle = "Who sent down the Holy Spirit upon His holy apostles;";
-    } else {
-      middle = "Who rose from the dead;";
-    }
-  } else if (menaionEntry?.saint) {
-    middle = menaionEntry.saint + ";";
+// Great Dismissal middle block (full fixed intercessions).
+const DISMISSAL_GREAT_MIDDLE =
+  "by the might of the precious and life-giving Cross; " +
+  "by the protection of the honorable Bodiless Powers of heaven; " +
+  "at the supplication of the honorable, glorious Prophet, Forerunner and Baptist John; " +
+  "of the holy, glorious, and all-laudable Apostles; " +
+  "of the holy, glorious and right-victorious Martyrs; " +
+  "of our venerable and God-bearing Fathers; ";
+
+// Post-Communion celebrant clause, by Liturgy served (getLiturgyType()).
+const DISMISSAL_LITURGY_AUTHOR = {
+  chrysostom:    "of our father among the saints, John Chrysostom, Archbishop of Constantinople; ",
+  basil:         "of our father among the saints, Basil the Great, Archbishop of Caesarea in Cappadocia; ",
+  presanctified: "of our father among the saints, Gregory the Dialogist, Pope of Rome; ",
+};
+
+// Placeholder when no temple dedication is selected. Parenthesized; rendered
+// italic by the UI (see ServiceBlock dismissal render).
+const DISMISSAL_TEMPLE_PLACEHOLDER = "(Temple Commemoration)";
+
+// Resolve a temple dedication id to its display name for the intercession list.
+function resolveTempleName(dedicationId) {
+  if (!dedicationId || dedicationId === "none") return null;
+  const ded = TEMPLE_DEDICATIONS.find(d => d.id === dedicationId);
+  return ded ? ded.label : null;
+}
+
+// Clean a commemoration name for the saint-of-day slot (Q4 — flagged for review).
+function _dismissalSaintName(menaionEntry, namedDay, isSunday) {
+  if (menaionEntry && menaionEntry.saint && !String(menaionEntry.saint).startsWith("absent")) {
+    return menaionEntry.saint;
   }
+  if (isSunday && namedDay && namedDay.name) {
+    let n = namedDay.name;
+    if (n.includes("—")) n = n.split("—").pop().trim();       // "… — All Saints of NA" → "All Saints of NA"
+    n = n.replace(/^Sunday of\s+/i, "");                       // "Sunday of All Saints…" → "All Saints…"
+    return n;
+  }
+  return null;
+}
 
-  const dismissalText = middle ? `${open} ${middle} ${close}` : `${open} ${close}`;
+// buildDismissalText — the unified priest's dismissal string.
+// opts: { liturgicalData, menaionEntry, pentEntry, serviceContext,
+//         templeDedication, liturgyAuthor }
+//   serviceContext: 'vespers' | 'typica' | 'post_communion'
+//   liturgyAuthor:  'chrysostom' | 'basil' | 'presanctified' (post_communion only)
+function buildDismissalText(opts) {
+  const { liturgicalData, menaionEntry, pentEntry, serviceContext,
+          templeDedication, liturgyAuthor } = opts;
+  const { season, namedDay, dow } = liturgicalData;
+  const _fmt = pentEntry ? pentEntry.hours_format : null;
+  const isSunday = season === 'sunday' || season === 'pentecostarion_sunday'
+    || _fmt === 'pentecostarion_sunday' || _fmt === 'all_saints_sunday';
+  const rank = (menaionEntry && menaionEntry.rank) || "simple";
+  const isHighRank = rank === "polyeleos" || rank === "vigil" || rank === "great_feast";
+  const isPostCommunion = serviceContext === "post_communion";
 
+  // (1) Characteristic phrase — front prefix on "Christ our true God".
+  let phrase = "";
+  if (isSunday) {
+    phrase = "rose from the dead";
+  } else if (pentEntry) {
+    const f = pentEntry.hours_format;
+    if (f === "ascension" || f === "apodosis_ascension") phrase = "ascended in glory into heaven";
+    else if (f === "pentecost" || f === "apodosis_pentecost" || f === "holy_spirit_day")
+      phrase = "sent down the Holy Spirit upon His holy apostles";
+  }
+  const opening = phrase
+    ? `May He Who ${phrase}, Christ our true God,`
+    : `May Christ our true God,`;
+
+  const theotokos = " through the intercessions of His all-immaculate and all-blameless holy Mother, ";
+
+  // (2) Form: Great vs Little (Fekula: vigil-vs-Vespers-alone). Sundays / Vigil /
+  // Polyeleos / great feast / after-Liturgy → Great; ordinary weekday → Little
+  // (keyed on the opened/liturgical day-of-week).
+  const isGreat = isSunday || isHighRank || isPostCommunion;
+  const middle = isGreat ? DISMISSAL_GREAT_MIDDLE : (DISMISSAL_LITTLE_DAYSETS[dow] || "");
+
+  // Liturgy author (Post-Communion only).
+  const author = (isPostCommunion && liturgyAuthor && DISMISSAL_LITURGY_AUTHOR[liturgyAuthor])
+    ? DISMISSAL_LITURGY_AUTHOR[liturgyAuthor] : "";
+
+  // Temple patron (or placeholder).
+  const templeName = resolveTempleName(templeDedication);
+  const temple = templeName
+    ? `of ${templeName}, the patron and protector of this holy community; `
+    : `${DISMISSAL_TEMPLE_PLACEHOLDER}; `;
+
+  const ancestors = "of the holy and righteous Ancestors of God, Joachim and Anna; ";
+
+  const saintName = _dismissalSaintName(menaionEntry, namedDay, isSunday);
+  const saint = saintName ? `and of ${saintName}, whose memory we celebrate, ` : "";
+
+  const closing = "and of all the Saints, have mercy upon us and save us, "
+    + "forasmuch as He is good and loveth mankind.";
+
+  return opening + theotokos + middle + author + temple + ancestors + saint + closing;
+}
+
+function buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, idPrefix,
+                        serviceContext = "typica", templeDedication = null, liturgyAuthor = null) {
   if (readerMode) {
     return {
       id: `${idPrefix}-dismissal`, type: "substitution", label: "Dismissal", rubric: "Reader:",
@@ -5161,14 +5223,14 @@ function buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, idP
       source: "Fekula Chapter 10",
       fekula: { section: "§10", note: "Reader's service: instead of the priest's dismissal, the reader says: Through the prayers of our holy fathers… — Fekula Chapter 10" },
     };
-  } else {
-    return {
-      id: `${idPrefix}-dismissal`, type: "fixed", label: "Dismissal", rubric: "Priest:",
-      text: dismissalText,
-      source: "HTM",
-      fekula: { section: null, note: "Dismissal formula: seasonal phrase inserted after 'His most pure Mother.' Sunday: 'Who rose from the dead.' Pentecostarion feast: feast phrase. Weekday: saint of the day by name." },
-    };
   }
+  return {
+    id: `${idPrefix}-dismissal`, type: "fixed", label: "Dismissal", rubric: "Priest:",
+    text: buildDismissalText({ liturgicalData, menaionEntry, pentEntry, serviceContext, templeDedication, liturgyAuthor }),
+    source: "OCA Order of Vespers (2021); Antiochian dismissal pattern",
+    dismissalHasPlaceholder: !resolveTempleName(templeDedication),
+    fekula: { section: null, note: "Unified dismissal: characteristic phrase as the front prefix on 'Christ our true God'; Great vs Little (vigil vs Vespers-alone, Fekula); day-of-week intercession set keyed on the opened/liturgical day; temple patron, Ancestors, saint(s) of the day, and (after Liturgy) the celebrant. Antiochian wording — flagged for OCA migration. — dismissal_assembler_spec.md" },
+  };
 }
 
 // ─── TYPICA ASSEMBLER ────────────────────────────────────────────────────────
@@ -5184,7 +5246,7 @@ function buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, idP
 // Readings slot: Prokeimenon and Epistle/Gospel rubric noted but not rendered
 //   (readings engine FW-19/20 not yet built).
 
-function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode = false) {
+function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode = false, templeDedication = null) {
   const { dow: dowNumber, tone } = liturgicalData;
   const isSunday = dowNumber === 0;
   const elements = [];
@@ -5694,7 +5756,7 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
     TYPICA_PSALM_33);
 
   // ── 16. Dismissal ────────────────────────────────────────────────────────
-  elements.push(buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, "typica"));
+  elements.push(buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, "typica", "typica", templeDedication));
 
   // ── End marker ──────────────────────────────────────────────────────────
   elements.push({id:"typica-end",type:"end_marker",label:"",text:"THE END OF THE TYPICA",source:"HTM, Order of the Typica"});
@@ -5844,7 +5906,7 @@ function assemblePreCommunion(data) {
 
 // ── Assembler ─────────────────────────────────────────────────────────────────
 
-function assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMode = false) {
+function assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMode = false, templeDedication = null) {
   const elements = [];
   const src = 'HTM, Prayers After Holy Communion';
   const liturgyType = getLiturgyType(liturgicalData);
@@ -5937,7 +5999,7 @@ function assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMo
   }
 
   // ── Dismissal ─────────────────────────────────────────────────────────────
-  elements.push(buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, "pc"));
+  elements.push(buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, "pc", "post_communion", templeDedication, liturgyType));
 
   // ── End marker ──────────────────────────────────────────────────────────
   elements.push({id:"pc-end",type:"end_marker",label:"",text:"THE END OF THE POST-COMMUNION PRAYERS",source:"HTM"});
@@ -7147,6 +7209,17 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
           );
         }
 
+        if (element.dismissalHasPlaceholder && element.text.includes('(Temple Commemoration)')) {
+          const parts = element.text.split('(Temple Commemoration)');
+          return (
+            <div style={bodyStyle}>
+              {parts[0]}
+              <em style={{ fontStyle: 'italic', color: '#8B6914' }}>(Temple Commemoration)</em>
+              {parts[1]}
+            </div>
+          );
+        }
+
         if (!isPointable(element.text)) {
           return <div style={bodyStyle}>{renderPointed(element.text)}</div>;
         }
@@ -7769,6 +7842,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.15.27",
+    date: "June 2026",
+    items: [
+      "feat: unified the priest's dismissal (отпуст) into a single assembler across Vespers, Typica, and Post-Communion (was two divergent builders with the same bug). The characteristic phrase is now a true FRONT PREFIX on 'Christ our true God' ('May He Who rose from the dead, Christ our true God, …') instead of being wrongly inserted into the intercession list after 'His most pure Mother' — this fixes the malformed Sunday/festal dismissal.",
+      "feat: the dismissal now distinguishes Great vs Little (Fekula: vigil-vs-Vespers-alone — Sundays/Vigil/Polyeleos/after-Liturgy → Great; ordinary weekday → Little), with the Little intercession set keyed by the opened/liturgical day of week (Antiochian recension, flagged for OCA migration). Post-Communion adds the celebrant of the Liturgy served (Chrysostom / Basil / Gregory the Dialogist).",
+      "feat: the dismissal commemorates the temple patron (resolved from the dedication selector) and the saint(s) of the day; when no temple is selected it renders an italic (Temple Commemoration) cue. Spec: dismissal_assembler_spec.md.",
+    ],
+    summary: "Unified dismissal assembler — characteristic phrase as front prefix, Great/Little, day-of-week sets, temple + saint + Liturgy author",
+  },
   {
     version: "v0.15.26",
     date: "June 2026",
@@ -10795,13 +10878,13 @@ export default function App() {
         vMen = sel; vPnt = sel;
         vPar = computeVespersParoemias(sel, sel, vespersNext.vIsPent, vespersNext.vIsBright);
       }
-      els = assembleVespers(vespersNext.vLit, vMen, vPnt, vPar, readerMode, vespersNext.vDateStr);
+      els = assembleVespers(vespersNext.vLit, vMen, vPnt, vPar, readerMode, vespersNext.vDateStr, templeDedication);
     } else if (currentService.key === 'typica') {
-      els = assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode);
+      els = assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode, templeDedication);
     } else if (currentService.key === 'pre_communion') {
       els = assemblePreCommunion(preCommunionData);
     } else if (currentService.key === 'post_communion') {
-      els = assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMode);
+      els = assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMode, templeDedication);
     } else {
       els = assembleHour(currentService.key, liturgicalData, menaionEntry, pentEntry, tbOpen, readerMode);
     }
