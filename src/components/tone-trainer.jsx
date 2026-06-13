@@ -11,11 +11,20 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 
-export const TONE_TRAINER_VERSION = "v0.24.2";
+export const TONE_TRAINER_VERSION = "v0.25.0";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.0",
+    date: "June 2026",
+    summary: "Service .docx → one-click \"Download parsed JSON\" (whole service, marks intact)",
+    items: [
+      "feat: a \"Download parsed JSON\" button next to \"Open service .docx\" exports the entire loaded service in document order as <same-root>.json (2026-0614-texts-tt.docx → 2026-0614-texts-tt.json). Fully client-side, nothing uploads. Every paragraph is emitted: contiguous underlined paragraphs become a director-pointed sticheron block carrying its tone, incipit, and an inline pointed string ( | line / // penultimate / [brackets] emphasis) built from the same encodeVerseBlock the trainer renders; every other paragraph (headings, V. verse cues, troparia, kontakia, prokeimena, theotokia, Glory/Both-now, rubrics) is emitted as its own block with its exact text.",
+      "note: the pointed text and marks are exact (reused from the trainer's own reconstructor, so no drift). Each non-sticheron block also gets a best-effort type label from headings/keywords — a review aid only; ambiguous blocks are typed 'text' rather than guessed. Non-underlined hymns are kept per-line (never auto-merged), so no two hymns are ever wrongly joined.",
+    ],
+  },
   {
     version: "v0.24.2",
     date: "June 2026",
@@ -1784,6 +1793,82 @@ function encodeVerseBlock(verses) {
       return ln + " |";                      // ordinary line end
     })
     .join("\n");
+}
+
+// Inline single-string form of a sticheron — the way pointed verses are stored in
+// the data files: lines joined with space-padded " | " (ordinary) and " // "
+// (penultimate) markers, [bracket] emphasis preserved. Built from encodeVerseBlock
+// so the marks are byte-for-byte what the trainer renders (no second parser).
+function encodeVerseInline(verses) {
+  return encodeVerseBlock(verses)
+    .replace(/\n/g, " ")
+    .replace(/\s*\/\/\s*/g, " // ")
+    .replace(/\s*\|\s*/g, " | ")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+// Best-effort block type for a non-sticheron paragraph. REVIEW AID ONLY — the text
+// and marks are always exact; the label is a heuristic from headings/keywords, and
+// anything unrecognized is typed "text" rather than guessed.
+function classifyParagraph(p) {
+  const t = (p.text || "").trim();
+  if (p.isHeading) return "heading";
+  if (/^v\.|^verse\b/i.test(t)) return "verse_cue";
+  if (/^glory to the father/i.test(t)) return "glory";
+  if (/^(both now|now and ever)/i.test(t)) return "both_now";
+  if (/\btroparion\b/i.test(t)) return "troparion_label";
+  if (/\bkontakion\b/i.test(t)) return "kontakion_label";
+  if (/\bprokeimenon\b/i.test(t)) return "prokeimenon_label";
+  if (/\b(theotokion|dogmatikon)\b/i.test(t)) return "theotokion_label";
+  if (/\b(epistle|gospel|reading|alleluia|communion|litya|litiya|aposticha)\b/i.test(t)) return "rubric";
+  return "text";
+}
+
+// Build the full-service export: every paragraph in document order. Contiguous
+// underlined paragraphs collapse into one director-pointed sticheron block (inline
+// pointed string); every other paragraph is emitted as its own block with its exact
+// text. Nothing is dropped, and non-underlined hymns are kept per-line (never
+// auto-merged) so two adjacent hymns are never wrongly joined.
+function buildServiceExport(docParas, docName, version) {
+  const blocks = [];
+  let cur = null, closeNext = false, sawSlash = false;
+  const flush = () => {
+    if (!cur || !cur.length) { cur = null; closeNext = false; sawSlash = false; return; }
+    blocks.push({
+      type: "sticheron",
+      tone: cur[0].effectiveTone ?? null,
+      incipit: cur[0].text.split(/\s+/).slice(0, 4).join(" "),
+      suspect: !sawSlash,
+      pointed: encodeVerseInline(cur),
+    });
+    cur = null; closeNext = false; sawSlash = false;
+  };
+  for (const p of docParas) {
+    if (!p.isHeading && hasUnderline(p)) {
+      if (!cur) { cur = []; closeNext = false; sawSlash = false; }
+      cur.push(p);
+      if (closeNext) { flush(); continue; }
+      if (/\/\/\s*$/.test(p.text)) { sawSlash = true; closeNext = true; }
+    } else {
+      flush();
+      blocks.push({
+        type: classifyParagraph(p),
+        tone: p.effectiveTone ?? null,
+        text: encodeRuns(p.runs),
+      });
+    }
+  }
+  flush();
+  const dm = (docName || "").match(/(\d{4})-(\d{2})(\d{2})/);
+  return {
+    source: docName || null,
+    exportedBy: "tone-trainer " + (version || ""),
+    date: dm ? `${dm[1]}-${dm[2]}-${dm[3]}` : null,
+    title: (docParas[0] && docParas[0].text) || null,
+    blockCount: blocks.length,
+    blocks,
+  };
 }
 
 // Escape text for safe innerHTML use in the verse preview (underline rendering).
@@ -4203,6 +4288,22 @@ export default function ToneTrainer() {
   // Segment the document into stichera blocks.
   const blocks = useMemo(() => segmentStichera(docParas), [docParas]);
 
+  // Export the WHOLE loaded service as <same-root>.json (client-side download,
+  // nothing uploads). Reuses the trainer's own reconstructor so marks match.
+  const downloadServiceJson = () => {
+    if (!docParas.length) return;
+    const data = buildServiceExport(docParas, docName, TONE_TRAINER_VERSION);
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = (docName || "service").replace(/\.docx$/i, "") + ".json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
   // Blocks shown in the picker: non-suspect by default; suspect ones only when
   // "show all" is ticked.
   const visibleBlocks = useMemo(
@@ -4684,6 +4785,12 @@ export default function ToneTrainer() {
             <input type="file" accept=".docx" style={{ display: "none" }}
               onChange={(e) => { onDocxFile(e.target.files && e.target.files[0]); setDocPanelOpen(true); }} />
           </label>
+          {docParas.length > 0 && (
+            <button onClick={downloadServiceJson} style={{ ...btn }}
+              title="Export the whole loaded service as <same-root>.json — every block in document order, marks intact">
+              Download parsed JSON
+            </button>
+          )}
           {docName && (
             <>
               <span style={{ fontSize: "0.8rem", color: "#5b4a33", flex: 1 }}>{docName}</span>

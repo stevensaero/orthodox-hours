@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.14** | **Tone Trainer: v0.24.2** | Last synced: June 12, 2026
+**Tool version: v0.15.14** | **Tone Trainer: v0.25.0** | Last synced: June 12, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -14,6 +14,20 @@ encoding_rule_v2.md §3. Drive delivers PDF + director-pointed docx sources only
 more pointed docx will be added over time. P+63 Russia + North America are the
 first entries encoded this way (drafts complete, pending integration into
 `src/data/pentecostarion.js`).
+
+**OCA service-docx → JSON pipeline (Tone Trainer v0.25.0).** The OCA propers
+live in Drive as director-pointed `.docx` (`OCA_service_documents/`, named
+`YYYY-MMDD-texts-tt.docx`). The Tone Trainer's "Download parsed JSON" button (next
+to "Open service .docx") exports the whole loaded service in document order as
+`<same-root>.json`, fully client-side. Underlined paragraph runs collapse into
+director-pointed `sticheron` blocks carrying tone, incipit, and an inline pointed
+string (`|` line / `//` penultimate / `[brackets]` emphasis) built from the
+trainer's own `encodeVerseBlock` (no second parser — `snapshot_comparison.mjs`'s
+Node twin stays in step). Every other paragraph is emitted as its own block with
+exact text and a best-effort type label (review aid only). This JSON is the intended
+review/encoding vehicle for backfilling data-file verses with OCA-pointed works,
+gradually replacing the St. Sergius texts. Non-underlined hymns are kept per-line
+(never auto-merged), so hymn grouping for troparia/kontakia is a possible follow-up.
 
 **Irmos is pointed but NOT trainer-singable (v0.15.11).** A canon ode's Irmos
 has its own proper melody — it is never sung to the standard tone formula the
