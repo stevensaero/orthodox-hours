@@ -12,11 +12,21 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.13";
+export const TONE_TRAINER_VERSION = "v0.25.14";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.14",
+    date: "June 2026",
+    summary: "Restyled to match the data browsers (light header on parchment); header copy, BPM control, slimmer play buttons",
+    items: [
+      "ui: the trainer now sits on a parchment-cream background with a light header band and a gold bottom border, matching the data browsers. The eyebrow now reads 'Common Chant · Trainer', the title reads 'Obikhod · Tone N'.",
+      "ui: the tempo control is relabeled 'BPM' (was 'tempo'), with the slider followed by the plain number.",
+      "ui: the control-bar play/stop button is slimmed to match the per-verse buttons and reads '► Play' (glyph first); the per-verse buttons read '► Verse'.",
+    ],
+  },
   {
     version: "v0.25.13",
     date: "June 2026",
@@ -4555,10 +4565,10 @@ export default function ToneTrainer() {
   // Point Verses) and larger-font (Play) buttons match the bordered ones (pitch,
   // Score) exactly. Padding is horizontal-only; height drives the vertical box.
   const playBtn = {
-    height: 32, boxSizing: "border-box",
+    height: 24, boxSizing: "border-box",
     display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "0.3em",
     background: "transparent", border: `1px solid ${gold}`, color: gold,
-    borderRadius: "3px", padding: "0 14px", fontSize: "0.78rem",
+    borderRadius: "3px", padding: "0 12px", fontSize: "0.78rem",
     letterSpacing: "0.08em", cursor: "pointer", fontFamily: "Georgia, serif",
   };
   const roleBg = {
@@ -4872,28 +4882,35 @@ export default function ToneTrainer() {
   const hasPointed = lines.length > 0 || !!machineLines?.length;
 
   return (
-    <div style={{ maxWidth: 820, margin: "0 auto", padding: "2rem 1rem 4rem", fontFamily: "Georgia, serif", color: ink }}>
-      {cameFromHours && (
-        <div style={{ marginBottom: "0.8rem" }}>
-          <a href="#" onClick={(e) => { e.preventDefault(); window.history.back(); }}
-             style={{ color: gold, textDecoration: "none", fontSize: "0.82rem", fontFamily: "Georgia, serif" }}>
-            ← Hours Tool
-          </a>
+    <div style={{ minHeight: "100vh", background: "#FAF6EE", fontFamily: "Georgia, serif", color: ink }}>
+      {/* ── HEADER BAND — light header on parchment, matching the data browsers ── */}
+      <div style={{ background: "#fff", borderBottom: "2px solid #E8DEC8", padding: "1rem 1.25rem" }}>
+        <div style={{ maxWidth: 820, margin: "0 auto" }}>
+          {cameFromHours && (
+            <div style={{ marginBottom: "0.45rem" }}>
+              <a href="#" onClick={(e) => { e.preventDefault(); window.history.back(); }}
+                 style={{ color: gold, textDecoration: "none", fontSize: "0.82rem", fontFamily: "Georgia, serif" }}>
+                ← Hours Tool
+              </a>
+            </div>
+          )}
+          <div style={{ textAlign: "center", marginBottom: "0.3rem", letterSpacing: "0.28em", textTransform: "uppercase", fontSize: "0.7rem", color: gold }}>
+            Common Chant · Trainer ·{" "}
+            <span
+              onClick={() => setShowReleaseNotes((v) => !v)}
+              title="Release notes"
+              style={{ cursor: "pointer" }}
+            >
+              {TONE_TRAINER_VERSION}
+            </span>
+          </div>
+          <h1 style={{ textAlign: "center", color: "#7a2418", fontWeight: 600, fontSize: "1.6rem", margin: 0 }}>
+            Obikhod · Tone {activeTone}
+          </h1>
         </div>
-      )}
-      <div style={{ textAlign: "center", marginBottom: "0.4rem", letterSpacing: "0.28em", textTransform: "uppercase", fontSize: "0.7rem", color: gold }}>
-        Orthodox Daily Hours · Tone Trainer ·{" "}
-        <span
-          onClick={() => setShowReleaseNotes((v) => !v)}
-          title="Release notes"
-          style={{ cursor: "pointer" }}
-        >
-          {TONE_TRAINER_VERSION}
-        </span>
       </div>
-      <h1 style={{ textAlign: "center", color: "#7a2418", fontWeight: 600, fontSize: "2rem", margin: "0.1em 0" }}>
-        Common Chant · Obikhod · Tone {activeTone}
-      </h1>
+      {/* ── CONTENT ── */}
+      <div style={{ maxWidth: 820, margin: "0 auto", padding: "1.4rem 1rem 4rem" }}>
       <div style={{ textAlign: "center", marginBottom: "1.4rem" }}>
         {showReleaseNotes && (
           <div style={{ maxWidth: 560, margin: "0.6rem auto 0", textAlign: "left",
@@ -5179,10 +5196,10 @@ export default function ToneTrainer() {
           <button
             style={{ ...playBtn,
                      background: playingLine !== null ? "#7a2418" : "#3a6e28",
-                     color: "#f7ead0", border: "none", fontSize: "0.95rem" }}
+                     color: "#f7ead0", border: "none" }}
             onClick={playingLine !== null ? stopAll : playAll}
             title={playingLine !== null ? "Stop playback" : "Sing all lines"}>
-            {playingLine !== null ? <>{"\u00D7"} <span style={{ fontSize: "0.82rem" }}>Stop</span></> : <>Play <span>{"\u25BA"}</span></>}
+            {playingLine !== null ? <>{"\u00D7"} <span style={{ fontSize: "0.82rem" }}>Stop</span></> : <>{"\u25BA"} <span style={{ fontSize: "0.82rem" }}>Play</span></>}
           </button>
         </div>
 
@@ -5204,14 +5221,14 @@ export default function ToneTrainer() {
                           display: "inline-flex", alignItems: "center", gap: "0.3rem",
                           transition: "color 0.2s" }}
             title={playingLine !== null ? "Stop playback to change tempo" : "Half note = 1 beat (Drillock & Ealy). Range: 40–120 BPM."}>
-            tempo
+            BPM
             <input type="range" min={40} max={120} step={10} value={bpm}
               disabled={playingLine !== null}
               onChange={(e) => setBpm(parseInt(e.target.value, 10))}
               style={{ width: 64, cursor: playingLine !== null ? "not-allowed" : "pointer",
                        accentColor: gold, opacity: playingLine !== null ? 0.4 : 1,
                        transition: "opacity 0.2s" }} />
-            <span style={{ minWidth: "3.5em", textAlign: "right" }}>{bpm} BPM</span>
+            <span style={{ minWidth: "2.2em", textAlign: "right" }}>{bpm}</span>
           </label>
           <span style={{ color: "#d6c79f" }}>|</span>
         </div>
@@ -5913,7 +5930,7 @@ export default function ToneTrainer() {
                          opacity: playingLine !== null && playingLine !== li ? 0.35 : 1,
                          cursor: playingLine !== null && playingLine !== li ? "not-allowed" : "pointer" }}
                 onClick={() => playingLine === li ? stopAll() : playLine(li)}>
-                {playingLine === li ? "\u00D7 Stop" : "\u25BA Play"}
+                {playingLine === li ? "\u00D7 Stop" : "\u25BA Verse"}
               </button>
             </div>
 
@@ -6135,6 +6152,7 @@ export default function ToneTrainer() {
         </span>
         <span style={{ whiteSpace: "nowrap" }}>v{TONE_TRAINER_VERSION}</span>
       </div>
+      </div>{/* end content */}
     </div>
   );
 }

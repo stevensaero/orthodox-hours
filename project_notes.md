@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.23** | **Tone Trainer: v0.25.13** | Last synced: June 13, 2026
+**Tool version: v0.15.24** | **Tone Trainer: v0.25.14** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -112,6 +112,18 @@ stripped, while the Director vs. Machine button (gated on `compareData`, set at 
 lingered. Note is now gated on `hasTruth || compareData`, so the note, the button, and the
 still-director chips all dwell until the stripped text is re-pointed, then clear together
 (`analyzeText` sets `compareData` on a director point, nulls it on a non-director one).
+
+**Tone Trainer restyle + header/BPM/buttons + outline tap-close (Trainer v0.25.14 / Hours v0.15.24).**
+Trainer now matches the data browsers: outer wrapper `minHeight:100vh; background:#FAF6EE`, a
+white header band (`borderBottom:2px solid #E8DEC8`, non-sticky to avoid eating mobile vertical
+space) holding the (centered, option-a) ← link + eyebrow + H1; content moved into an inner
+`maxWidth:820` div (extra closing div added at component end). Eyebrow "Orthodox Daily Hours ·
+Tone Trainer" → "Common Chant · Trainer"; H1 "Common Chant · Obikhod · Tone N" → "Obikhod · Tone N"
+(2rem→1.6rem). Tempo control relabeled "BPM" + number-only after the slider. `playBtn` height
+32→24 / padding 0 14px→0 12px to match the per-verse `btn` buttons; Play button lost its 0.95rem
+override and now reads "► Play" (glyph-first, mirroring "× Stop"); per-verse buttons read "► Verse".
+ServiceOutline open-header div got `onClick=setOutlineOpen(false)` + `cursor:pointer` so the whole
+title bar dismisses it (× retained as the cue).
 
 **Cross-platform play/stop glyphs (Hours v0.15.23 / Trainer v0.25.13).** U+25B6 ▶ (play)
 and U+25FC ◼ (stop) are emoji-capable, so iOS rendered them as a blue triangle and a square.
@@ -480,7 +492,7 @@ Versions at close: **Hours tool v0.15.0 · Tone Trainer v0.24.2.**
   — candidate is a chip-width/label scale-down below a breakpoint; needs real-device
   measurement before any code.
 
-Versions at close: **Hours tool v0.15.23 · Tone Trainer v0.25.13.**
+Versions at close: **Hours tool v0.15.24 · Tone Trainer v0.25.14.**
 
 ---
 

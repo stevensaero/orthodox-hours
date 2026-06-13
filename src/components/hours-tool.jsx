@@ -6394,10 +6394,11 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
         borderRadius: '4px', overflow: 'hidden', boxShadow: '2px 2px 10px rgba(0,0,0,0.07)',
         maxHeight: 'calc(100vh - 48px)', display: 'flex', flexDirection: 'column',
       }}>
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        {/* Header — whole bar taps to close (the × is the visual cue) */}
+        <div onClick={() => setOutlineOpen(false)}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: '8px 10px 7px', borderBottom: '1px solid #E8DEC8',
-          background: 'rgba(139,105,20,0.06)', flexShrink: 0 }}>
+          background: 'rgba(139,105,20,0.06)', flexShrink: 0, cursor: 'pointer' }}>
           <span style={{ fontSize: '9px', letterSpacing: '0.15em', textTransform: 'uppercase',
             color: '#8B6914', fontWeight: 'bold', fontFamily: 'Georgia, serif' }}>
             Service outline
@@ -7715,6 +7716,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.15.24",
+    date: "June 2026",
+    items: [
+      "ui: tapping anywhere on the Service Outline's title bar now closes it, not just the × — easier to dismiss on mobile.",
+    ],
+    summary: "Service Outline title bar taps to close",
+  },
   {
     version: "v0.15.23",
     date: "June 2026",
