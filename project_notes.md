@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.17** | **Tone Trainer: v0.25.5** | Last synced: June 13, 2026
+**Tool version: v0.15.17** | **Tone Trainer: v0.25.6** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -63,6 +63,22 @@ toggles the release notes. "Point Verses" moved to the tone row right of
 bar (legend + Director/Machine + voice-part + timbre) are gated on `hasPointed`
 (`lines.length > 0 || machineLines?.length`) — hidden until a verse is pointed,
 then they appear with the Phrase cards. Footer note + copyright stay visible.
+
+**Phrase chips scroll, don't wrap (v0.25.6).** The chip display broke on long
+verses and in Alto+Bass / SATB: the per-voice strips + syllable row were
+independent `flex-wrap` rows (wrapping desynced the columns) and the
+soprano-over-alto / tenor-over-bass overlays were fixed-height single-line
+containers, so a wrap spilled chips out of the phrase box (onto the footer in
+SATB). Fix: strips are now `nowrap` and share one `overflow-x:auto` viewport per
+phrase (`PhraseScroller`, module scope) with a single inline-flex column track —
+columns stay aligned, the box never overflows, and it's responsive for free. Soft
+left/right edge fades cue more content; the phrase label + Play stay fixed above
+the scroller; playback auto-centers the active chip (queried via
+`data-active="true"`, rect-based scroll). Decision: forced horizontal scroll was
+chosen over CSS wrapping — lower risk to the tuned chip rendering, musically
+truer (unbroken contour), and inherently responsive. FOLLOW-UP: a smaller chip
+render for phone-width screens (chip width / label size shrink below a
+breakpoint) — to be evaluated separately.
 
 **Irmos is pointed but NOT trainer-singable (v0.15.11).** A canon ode's Irmos
 has its own proper melody — it is never sung to the standard tone formula the

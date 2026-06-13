@@ -12,11 +12,20 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.5";
+export const TONE_TRAINER_VERSION = "v0.25.6";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.6",
+    date: "June 2026",
+    summary: "Phrase chips scroll horizontally instead of wrapping — fixes long-verse / multi-voice / small-screen breakage",
+    items: [
+      "fix: long verses and the Alto+Bass / SATB views no longer break the chip display. The voice strips and the syllable row used to wrap independently (desyncing the columns) and the fixed-height soprano-over-alto / tenor-over-bass overlays assumed a single line, so a wrap spilled chips outside the phrase box. The strips are now nowrap and share one horizontal scroll viewport per phrase, so columns stay aligned and nothing escapes the box.",
+      "ui: each phrase box scrolls horizontally on overflow with soft left/right edge fades cueing there's more; the phrase label + Play button stay fixed above the scroller. During playback the viewport auto-centers on the active chip (follow-the-note). Inherently responsive — narrow/phone screens just scroll. (A smaller chip render for phones is a planned follow-up.)",
+    ],
+  },
   {
     version: "v0.25.5",
     date: "June 2026",
@@ -3149,6 +3158,65 @@ if (import.meta.env?.DEV) {
   if (defs !== list) console.warn(`[tone-trainer] available-tones.js (${list}) is out of sync with PH_DEFS (${defs}) — update src/lib/available-tones.js`);
 }
 
+// Per-phrase horizontal scroll viewport. Keeps every voice strip + the syllable
+// row on one continuous, column-aligned track (no wrapping, so the fixed-height
+// soprano-over-alto / tenor-over-bass overlays stay correct). Overflow scrolls
+// horizontally; soft edge fades cue that there's more, and the active chip is
+// auto-centered during playback (activeKey changes per step → scroll-to).
+function PhraseScroller({ children, activeKey }) {
+  const ref = useRef(null);
+  const [fade, setFade] = useState({ left: false, right: false });
+
+  const update = () => {
+    const el = ref.current;
+    if (!el) return;
+    const left = el.scrollLeft > 2;
+    const right = el.scrollLeft + el.clientWidth < el.scrollWidth - 2;
+    setFade(prev => (prev.left === left && prev.right === right) ? prev : { left, right });
+  };
+
+  // Recheck edge fades on mount, content change, and container resize.
+  useEffect(() => {
+    update();
+    const el = ref.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [children]);
+
+  // Auto-center the active chip as playback advances.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || activeKey == null) return;
+    const chip = el.querySelector('[data-active="true"]');
+    if (!chip) return;
+    const er = el.getBoundingClientRect();
+    const cr = chip.getBoundingClientRect();
+    const center = (cr.left - er.left) + el.scrollLeft + cr.width / 2;
+    el.scrollTo({ left: Math.max(0, center - el.clientWidth / 2), behavior: "smooth" });
+  }, [activeKey]);
+
+  return (
+    <div style={{ position: "relative" }}>
+      <div ref={ref} onScroll={update}
+           style={{ overflowX: "auto", overflowY: "hidden", paddingBottom: 2 }}>
+        <div style={{ display: "inline-flex", flexDirection: "column" }}>
+          {children}
+        </div>
+      </div>
+      {fade.left && (
+        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 22, pointerEvents: "none",
+                      background: "linear-gradient(to right, rgba(255,255,255,.92), rgba(255,255,255,0))" }} />
+      )}
+      {fade.right && (
+        <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 22, pointerEvents: "none",
+                      background: "linear-gradient(to left, rgba(255,255,255,.92), rgba(255,255,255,0))" }} />
+      )}
+    </div>
+  );
+}
+
 export default function ToneTrainer() {
   const [doHz, setDoHz] = useState(349.23);  // F4 — Tone 1 canonical default
   const [bpm, setBpm] = useState(80); // half note = 1 beat per tutorial
@@ -5728,7 +5796,7 @@ export default function ToneTrainer() {
           // Ghost soprano: transparent body, stripe crown, solfège label
           if (isGhostSoprano) {
             return (
-              <div key={i} style={{
+              <div key={i} data-active={isActive ? "true" : undefined} style={{
                 position: "relative", display: "inline-block", flexShrink: 0,
                 width: w, height: h,
                 background: isActive ? "rgba(40,58,92,.18)" : "transparent",
@@ -5754,7 +5822,7 @@ export default function ToneTrainer() {
           // Ghost tenor: transparent body, stripe at bottom, solfège label
           if (isGhostTenor) {
             return (
-              <div key={i} style={{
+              <div key={i} data-active={isActive ? "true" : undefined} style={{
                 position: "relative", display: "inline-block", flexShrink: 0,
                 width: w, height: h,
                 background: isActive ? "rgba(122,36,24,.18)" : "transparent",
@@ -5778,7 +5846,7 @@ export default function ToneTrainer() {
           }
 
           return (
-            <div key={i} style={{
+            <div key={i} data-active={isActive ? "true" : undefined} style={{
               position: "relative", display: "inline-block", flexShrink: 0,
               width: w, height: h,
               background: isActive ? (isDownward ? "rgba(122,36,24,.22)" : "rgba(40,58,92,.18)") : bg,
@@ -5866,9 +5934,10 @@ export default function ToneTrainer() {
               </button>
             </div>
 
+            <PhraseScroller activeKey={playingLine === li ? `${playingAltoIdx}|${playingBassIdx}|${playingTenorIdx}` : null}>
             {/* Soprano chips — above text, same layout as alto but soprano heights/labels */}
             {showSoprano && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-end", marginBottom: 6 }}>
+              <div style={{ display: "flex", flexWrap: "nowrap", gap: CHIP_GAP, alignItems: "flex-end", marginBottom: 6 }}>
                 {groupedAlto.map((grp, gi) => {
                   if (grp.entries.length === 1) {
                     const {r, i} = grp.entries[0];
@@ -5887,7 +5956,7 @@ export default function ToneTrainer() {
                 baseline behind alto chips (soprano sets container height, alto overlays). */}
             {showAlto && (() => {
               const altoRow = (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-end" }}>
+                <div style={{ display: "flex", flexWrap: "nowrap", gap: CHIP_GAP, alignItems: "flex-end" }}>
                   {groupedAlto.map((grp, gi) => {
                     const entries = grp.entries;
                     if (entries.length === 1) {
@@ -5908,7 +5977,7 @@ export default function ToneTrainer() {
               // Soprano chips are always taller so their tops peek above alto naturally.
               // 50% opacity so soprano reads as a secondary layer behind the alto.
               const sopranoRow = (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-end",
+                <div style={{ display: "flex", flexWrap: "nowrap", gap: CHIP_GAP, alignItems: "flex-end",
                               position: "absolute", bottom: 0, left: 0, opacity: 0.5 }}>
                   {groupedAlto.map((grp, gi) => {
                     const entries = grp.entries;
@@ -5940,7 +6009,7 @@ export default function ToneTrainer() {
             })()}
 
             {/* Text baseline — shared syllable labels with melisma bars */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "center", marginBottom: showBass ? 6 : 0 }}>
+            <div style={{ display: "flex", flexWrap: "nowrap", gap: CHIP_GAP, alignItems: "center", marginBottom: showBass ? 6 : 0 }}>
               {groupedAlto.map((grp, gi) => {
                 const isMel = grp.entries.length > 1;
                 const totalW = grp.entries.reduce((s, {r}) => s + chipW(r), 0) + (isMel ? CHIP_MELISMA_GAP * (grp.entries.length-1) : 0);
@@ -5960,7 +6029,7 @@ export default function ToneTrainer() {
                 }
               });
               return (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-start" }}>
+                <div style={{ display: "flex", flexWrap: "nowrap", gap: CHIP_GAP, alignItems: "flex-start" }}>
                   {groupedTenor.map((grp, gi) => {
                     if (grp.entries.length === 1) {
                       const {r, i} = grp.entries[0];
@@ -6002,7 +6071,7 @@ export default function ToneTrainer() {
               })() : null;
 
               const bassRow = (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-start" }}>
+                <div style={{ display: "flex", flexWrap: "nowrap", gap: CHIP_GAP, alignItems: "flex-start" }}>
                   {groupedBass.map((grp, gi) => {
                     if (grp.entries.length === 1) {
                       const {r, i} = grp.entries[0];
@@ -6028,7 +6097,7 @@ export default function ToneTrainer() {
                 ...groupedBass.flatMap(grp => grp.entries.map(({r}) => bassHeightMap?.[r.pitches[0]] ?? H_VOICE_MIN))
               );
               const tenorGhostRow = (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: CHIP_GAP, alignItems: "flex-start",
+                <div style={{ display: "flex", flexWrap: "nowrap", gap: CHIP_GAP, alignItems: "flex-start",
                               position: "absolute", top: 0, left: 0, opacity: 0.5, zIndex: 1 }}>
                   {groupedTenorGhost.map((grp, gi) => {
                     if (grp.entries.length === 1) {
@@ -6054,6 +6123,7 @@ export default function ToneTrainer() {
                 </div>
               );
             })()}
+            </PhraseScroller>
 
           </div>
         );
