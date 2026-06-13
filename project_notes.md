@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.14** | **Tone Trainer: v0.25.1** | Last synced: June 12, 2026
+**Tool version: v0.15.14** | **Tone Trainer: v0.25.2** | Last synced: June 12, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -28,6 +28,12 @@ exact text and a best-effort type label (review aid only). This JSON is the inte
 review/encoding vehicle for backfilling data-file verses with OCA-pointed works,
 gradually replacing the St. Sergius texts. Non-underlined hymns are kept per-line
 (never auto-merged), so hymn grouping for troparia/kontakia is a possible follow-up.
+
+**docx tone-tag fix (v0.25.2).** The docx parser now reads tab/br/cr as whitespace
+and the tone-heading pattern reads a digit followed by a letter, fixing stale tone
+tags on tab-separated troparion/kontakion labels; tone + run helpers shared in
+`src/lib/docx-text.js` (one source of truth for the browser ingest and the Node
+snapshot twin).
 
 **Irmos is pointed but NOT trainer-singable (v0.15.11).** A canon ode's Irmos
 has its own proper melody — it is never sung to the standard tone formula the

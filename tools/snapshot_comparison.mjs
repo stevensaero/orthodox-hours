@@ -24,6 +24,7 @@ import { createRequire } from "module";
 import { DOMParser } from "@xmldom/xmldom";
 import path from "path";
 import { fileURLToPath } from "url";
+import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../src/lib/docx-text.js";
 
 const require = createRequire(import.meta.url);
 const JSZip = require("jszip");
@@ -394,16 +395,6 @@ function buildComparison(truthLines, machineLines, phDefs, activeTone) {
 
 // ── Docx parsing (Node-safe — uses @xmldom/xmldom instead of browser DOMParser) ─
 
-const TONE_HEADING = /\bTone\s+([1-8]|[IVX]+)\b/i;
-const ROMAN = { I:1, II:2, III:3, IV:4, V:5, VI:6, VII:7, VIII:8 };
-function parseToneLabel(s) {
-  const m = s.match(TONE_HEADING);
-  if (!m) return null;
-  const raw = m[1];
-  const n = /^[0-9]$/.test(raw) ? parseInt(raw, 10) : (ROMAN[raw.toUpperCase()] || null);
-  return n;
-}
-
 function parseDocxParagraphsNode(xmlString) {
   const doc = new DOMParser().parseFromString(xmlString, "application/xml");
   const allEls = Array.from(doc.getElementsByTagName("*"));
@@ -413,20 +404,8 @@ function parseDocxParagraphsNode(xmlString) {
     const runs = [];
     const rEls = Array.from(p.getElementsByTagName("*")).filter(el => el.localName === "r");
     for (const r of rEls) {
-      let underline = false;
-      const rprList = Array.from(r.childNodes).filter(c => c.localName === "rPr");
-      if (rprList.length) {
-        const rpr = rprList[0];
-        const uList = Array.from(rpr.childNodes).filter(c => c.localName === "u");
-        if (uList.length) {
-          const u = uList[0];
-          const val = u.getAttribute("w:val") || u.getAttribute("val") || "";
-          underline = val !== "none";
-        }
-      }
-      const tEls = Array.from(r.getElementsByTagName("*")).filter(el => el.localName === "t");
-      const txt = tEls.map(t => t.textContent || "").join("");
-      if (txt) runs.push({ text: txt, underline });
+      const txt = runText(r);
+      if (txt) runs.push({ text: txt, underline: runUnderline(r) });
     }
     const text = runs.map(x => x.text).join("").trim();
     if (text) paras.push({ text, runs, toneHeading: parseToneLabel(text), idx: paras.length });

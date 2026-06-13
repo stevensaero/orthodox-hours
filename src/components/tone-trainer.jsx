@@ -10,12 +10,22 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
+import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.1";
+export const TONE_TRAINER_VERSION = "v0.25.2";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.2",
+    date: "June 2026",
+    summary: "docx tone-tag fix (dropped tab/br whitespace + tone-heading boundary); collapse button restyled",
+    items: [
+      "fix: service-.docx tone labels authored with tabs glued (e.g. 'Tone 8Troparion') because run extraction read <w:t> only and dropped <w:tab>/<w:br>/<w:cr>; the tone-heading pattern's trailing word-boundary then could not read a tone digit followed by a letter, so troparia/kontakia/prokeimena inherited a stale tone (Tone 1 Resurrection Troparion read as Tone 4, Tone 3 All Saints Kontakion as Tone 1, etc). Run extraction now renders tab/br/cr as a single space, and the pattern uses (?![0-9]) instead of trailing \\b - both additive, so every correctly-spaced input is unchanged. Tone-reading + run helpers now live in one shared module (src/lib/docx-text.js) used by both the browser ingest and the Node snapshot tool, so the twins can't drift.",
+      "tweak: the service panel's collapse/expand control moved to the far right of the header row (right of 'show suspect blocks') and now matches the 'Open service .docx' button's size and style.",
+    ],
+  },
   {
     version: "v0.25.1",
     date: "June 2026",
@@ -1657,44 +1667,19 @@ function presetToText(toneNum) {
 // texts store each underlined fragment as its own run, so underline is extracted
 // losslessly (verified against the Feb 2 Meeting of the Lord service text).
 const W_NS = "w";
-// Detect a tone heading line, e.g. "Tone 1", "Tone 6", "in Tone 5", "Tone V".
-const TONE_HEADING = /\bTone\s+([1-8]|[IVX]+)\b/i;
-const ROMAN = { I: 1, II: 2, III: 3, IV: 4, V: 5, VI: 6, VII: 7, VIII: 8 };
-function parseToneLabel(s) {
-  const m = s.match(TONE_HEADING);
-  if (!m) return null;
-  const raw = m[1];
-  const n = /^[0-9]$/.test(raw) ? parseInt(raw, 10) : (ROMAN[raw.toUpperCase()] || null);
-  return n;
-}
 
 // Parse the docx XML string into an ordered list of paragraphs.
 // Each paragraph => { text, runs:[{text,underline}], toneHeading:int|null }.
 function parseDocxParagraphs(xmlString) {
   const doc = new DOMParser().parseFromString(xmlString, "application/xml");
-  // namespace-agnostic: match local name "p"
-  const allP = Array.from(doc.getElementsByTagName("*")).filter(
-    (el) => el.localName === "p"
-  );
+  const allP = Array.from(doc.getElementsByTagName("*")).filter((el) => el.localName === "p");
   const paras = [];
   for (const p of allP) {
     const runs = [];
     const rEls = Array.from(p.getElementsByTagName("*")).filter((el) => el.localName === "r");
     for (const r of rEls) {
-      // underline?
-      let underline = false;
-      const rpr = Array.from(r.children).find((c) => c.localName === "rPr");
-      if (rpr) {
-        const u = Array.from(rpr.children).find((c) => c.localName === "u");
-        if (u) {
-          const val = u.getAttribute("w:val") || u.getAttributeNS?.(null, "val") || u.getAttribute("val");
-          underline = val !== "none";
-        }
-      }
-      // text (concatenate all <w:t> descendants)
-      const tEls = Array.from(r.getElementsByTagName("*")).filter((el) => el.localName === "t");
-      const txt = tEls.map((t) => t.textContent || "").join("");
-      if (txt) runs.push({ text: txt, underline });
+      const txt = runText(r);
+      if (txt) runs.push({ text: txt, underline: runUnderline(r) });
     }
     const text = runs.map((x) => x.text).join("").trim();
     if (text) paras.push({ text, runs, toneHeading: parseToneLabel(text), idx: paras.length });
@@ -4794,27 +4779,23 @@ export default function ToneTrainer() {
               onChange={(e) => { onDocxFile(e.target.files && e.target.files[0]); setDocPanelOpen(true); }} />
           </label>
           {docName && (
-            <>
-              <span style={{ fontSize: "0.8rem", color: "#5b4a33", flex: 1 }}>{docName}</span>
-              <button
-                onClick={() => setDocPanelOpen(v => !v)}
-                style={{ border: "1px solid #d6c79f", background: "transparent", borderRadius: 4,
-                         padding: "2px 10px", cursor: "pointer", fontFamily: "Georgia, serif",
-                         fontSize: "0.78rem", color: "#6b5942" }}
-                title={docPanelOpen ? "Collapse service file panel" : "Expand service file panel"}>
-                {docPanelOpen ? "▾ collapse" : "▸ expand"}
-              </button>
-            </>
+            <span style={{ fontSize: "0.8rem", color: "#5b4a33" }}>{docName}</span>
           )}
+          <span style={{ flex: 1 }} />
           {blocks.some(b => b.suspect) && (
-            <>
-              <span style={{ flex: 1 }} />
-              <label style={{ fontSize: "0.78rem", color: "#7a2418", display: "inline-flex", alignItems: "center", gap: 5 }}
-                title="Show stichera blocks where no // penultimate marker was found — verify these groupings">
-                <input type="checkbox" checked={showAllParas} onChange={(e) => setShowAllParas(e.target.checked)} />
-                show suspect blocks
-              </label>
-            </>
+            <label style={{ fontSize: "0.78rem", color: "#7a2418", display: "inline-flex", alignItems: "center", gap: 5 }}
+              title="Show stichera blocks where no // penultimate marker was found — verify these groupings">
+              <input type="checkbox" checked={showAllParas} onChange={(e) => setShowAllParas(e.target.checked)} />
+              show suspect blocks
+            </label>
+          )}
+          {docName && (
+            <button
+              onClick={() => setDocPanelOpen(v => !v)}
+              style={{ ...btn }}
+              title={docPanelOpen ? "Collapse service file panel" : "Expand service file panel"}>
+              {docPanelOpen ? "▾ collapse" : "▸ expand"}
+            </button>
           )}
         </div>
         {docError && <div style={{ marginTop: "0.5rem", color: "#7a2418", fontSize: "0.82rem" }}>{docError}</div>}
