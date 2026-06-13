@@ -12,11 +12,19 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.2";
+export const TONE_TRAINER_VERSION = "v0.25.3";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.3",
+    date: "June 2026",
+    summary: "Embedded view: verses fired in from the Hours tool or a data browser hide the authoring chrome",
+    items: [
+      "feat: when a verse is handed in from the Hours tool or a data browser (the ▶ Point / ♫ Score controls, via the shared point-score-controls.jsx handoff), the trainer now shows a streamlined embedded view — it hides the docx ingest panel, the tone picker + 'try example', the paste box and its instruction/director-pointing captions, the 'Point Verses' button, the Director/Machine pills, the Director vs. Machine toggle, and the timbre selector. What stays: the header + version + '← Hours Tool' link, the do/pitch/tempo/Score/Play transport, the role chips (intonation · reciting tone · prep · cadence), the SATB voice-part picker, and the Phrase syllable cards. Gated on a new embeddedVerseView flag (true only when the handoff carries a .verse) — a bare ?from=tool visit such as the Hours footer's 'open Tone Trainer' link carries no verse and still shows the full authoring UI. Playback rides the default timbre (Piano).",
+    ],
+  },
   {
     version: "v0.25.2",
     date: "June 2026",
@@ -4668,6 +4676,19 @@ export default function ToneTrainer() {
     try { const r = sessionStorage.getItem("oht_handoff"); return !!r && JSON.parse(r).mode === "score"; } catch { return false; }
   });
 
+  // True when a verse was fired in from the Hours tool or a data browser (the
+  // shared point-score-controls.jsx handoff, which stashes oht_handoff with a
+  // .verse). In that "embedded" view the authoring chrome is hidden — docx
+  // ingest, tone picker, paste box, Point Verses, the Director/Machine toggles,
+  // and the timbre selector — leaving the pointed result + playback (the SATB
+  // voice-part picker stays). Read once at first render, before the handoff
+  // effect consumes oht_handoff. NOTE: deliberately NOT cameFromHours — a bare
+  // ?from=tool visit (e.g. the Hours footer's "open Tone Trainer" link) carries
+  // no verse and must show the full UI.
+  const embeddedVerseView = useMemo(() => {
+    try { const r = sessionStorage.getItem("oht_handoff"); return !!r && !!JSON.parse(r).verse; } catch { return false; }
+  }, []);
+
   // Hours-tool handoff (Point / Score controls): a verse arrives via sessionStorage.
   // Apply its tone; once activeTone reflects it, translate the line marks (| and //)
   // to newlines — keeping any [director brackets]. Point mode loads + points it for
@@ -4770,6 +4791,8 @@ export default function ToneTrainer() {
         )}
       </div>
 
+      {/* ── INPUT / AUTHORING CHROME — hidden in embedded view (verse fired in) ── */}
+      {!embeddedVerseView && (<>
       {/* ── DOCX INGEST ─────────────────────────────────────────────────── */}
       <div style={{ border: "1px solid #d6c79f", borderRadius: 8, padding: "0.8rem 0.9rem", marginBottom: "1.1rem", background: "rgba(40,58,92,.03)" }}>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "0.7rem", alignItems: "center" }}>
@@ -4991,6 +5014,7 @@ export default function ToneTrainer() {
             {hasTruth && <>Director Pointing mode — [accent] brackets override the machine. | = line end · // = penultimate line.</>}
           </div>
       </div>
+      </>)}
 
       {/* ── PLAY BAR ─────────────────────────────────────────────────────── */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr",
@@ -5001,11 +5025,13 @@ export default function ToneTrainer() {
         {/* Col 1 — left: Point */}
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center",
                       justifyContent: "flex-start" }}>
+          {!embeddedVerseView && (
           <button style={{ ...btn, background: "#7a2418", color: "#f7ead0", border: "none" }}
             onClick={analyze}
             title="Syllabify and point the sticheron — assigns reciting tone, prep, and cadence roles">
             Point Verses
           </button>
+          )}
         </div>
 
         {/* Col 2 — center: audio controls bracketed by | dividers */}
@@ -5253,7 +5279,7 @@ export default function ToneTrainer() {
         {/* Pointing mode — two toggle buttons: Director / Machine.
              In sing view: always show Director; show Machine only when machineLines available.
              In compare harness: neither shown (the harness has its own Sing director/machine toggle). */}
-        {!(compareMode && compareData) && (() => {
+        {!embeddedVerseView && !(compareMode && compareData) && (() => {
           const dirActive = singView === "director";
           const machActive = singView === "machine";
           const btnBase = {
@@ -5289,7 +5315,7 @@ export default function ToneTrainer() {
           );
         })()}
         {/* Show / Hide Director vs. Machine */}
-        {compareData && (
+        {!embeddedVerseView && compareData && (
           <button
             onClick={() => setCompareMode(v => !v)}
             style={{ marginLeft: "0.5rem", fontSize: "0.72rem", flexShrink: 0,
@@ -5318,8 +5344,8 @@ export default function ToneTrainer() {
             <option value="satb">SATB</option>
           </select>
         )}
-        {/* Timbre selector — only in sing view */}
-        {!(compareMode && compareData) && (
+        {/* Timbre selector — only in sing view; hidden in embedded view (defaults to Piano) */}
+        {!embeddedVerseView && !(compareMode && compareData) && (
           <select value={timbre} onChange={e => setTimbre(e.target.value)}
             style={{ marginLeft: "0.4rem", fontSize: "0.72rem", flexShrink: 0,
                      background: "transparent", border: "1px solid #d6c79f",

@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.17** | **Tone Trainer: v0.25.2** | Last synced: June 13, 2026
+**Tool version: v0.15.17** | **Tone Trainer: v0.25.3** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -34,6 +34,17 @@ and the tone-heading pattern reads a digit followed by a letter, fixing stale to
 tags on tab-separated troparion/kontakion labels; tone + run helpers shared in
 `src/lib/docx-text.js` (one source of truth for the browser ingest and the Node
 snapshot twin).
+
+**Embedded view (v0.25.3).** A verse fired in from the Hours tool or a data browser
+(▶ Point / ♫ Score, via `point-score-controls.jsx` → `oht_handoff`) renders the
+trainer in a streamlined "embedded" view: the authoring chrome is hidden — docx
+ingest panel, tone picker + try-example, paste box + its captions, Point Verses,
+the Director/Machine pills, Director-vs-Machine toggle, and the timbre selector.
+Kept: header + version + "← Hours Tool" link, the do/pitch/tempo/Score/Play
+transport, the role chips, the **SATB voice-part picker**, and the Phrase cards.
+Gated on `embeddedVerseView` (true only when the handoff carries a `.verse`), so a
+bare `?from=tool` visit (e.g. the Hours footer link) still shows the full UI.
+Playback rides the default timbre (Piano).
 
 **Irmos is pointed but NOT trainer-singable (v0.15.11).** A canon ode's Irmos
 has its own proper melody — it is never sung to the standard tone formula the
