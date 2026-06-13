@@ -7612,6 +7612,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.15.10",
+    date: "June 2026",
+    summary: "Octoechos Tone 5 — full Sunday Resurrectional Matins + Saturday Great Vespers pointing",
+    items: [
+      "feat: Tone 5 Sunday Matins encoded from source — God-is-the-Lord theotokion, both sessional sets, three Songs of Ascent, the Matins prokeimenon, all three canons, ikos, eight Praises stichera, and the Great Doxology troparion. The Octoechos browser now shows Tones 1–5 with full Matins.",
+      "note: Tone 5 has no trinitarians in the Matins canons (verified — the Trinity material lives in the Nocturns canon, which is not encoded). The Cross-Resurrection canon carries a Theotokion on every ode (the first tone to do so), with three troparia on Ode V; the Theotokos canon runs three or four troparia per ode (no ode has only two).",
+      "pointing: Tone 5 Saturday Great Vespers — Lord-I-Call (7), Aposticha (4), and the Dogmatikon now carry line/cadence pointing, verified text-identical under marker stripping.",
+    ],
+  },
+  {
     version: "v0.15.9",
     date: "June 2026",
     summary: "Octoechos Tone 4 — full Sunday Resurrectional Matins + Saturday Great Vespers pointing",
@@ -9407,7 +9417,7 @@ function HowItWorksPanel() {
     { name: "Vespers", status: "built", note: "Full HTM skeleton + interleaved Lord I Have Cried stichera (Octoechos + Menaion by §4A/§4B rules), Aposticha, Litiya, Entrance; Menaion/Pentecostarion/Octoechos movable texts" },
     { name: "Compline (Apodeipnon)", status: "planned", note: "" },
     { name: "Midnight Office", status: "planned", note: "" },
-    { name: "Matins (Orthros)", status: "planned", note: "Data encoding underway: Octoechos Sunday Resurrectional Matins complete for Tones 1–4 (sessional hymns, songs of ascent, all three canons, praises); P+56 All Saints feast canon also encoded. Assembler not yet built." },
+    { name: "Matins (Orthros)", status: "planned", note: "Data encoding underway: Octoechos Sunday Resurrectional Matins complete for Tones 1–5 (sessional hymns, songs of ascent, all three canons, praises); P+56 All Saints feast canon also encoded. Assembler not yet built." },
     { name: "The First Hour", status: "built", note: "Including special close (O Christ the True Light)" },
     { name: "The Third Hour", status: "built", note: "" },
     { name: "The Sixth Hour", status: "built", note: "" },
@@ -9477,7 +9487,7 @@ function HowItWorksPanel() {
             <><strong>Scripture viewer</strong> (<a href="/orthodox-hours/scripture?from=tool" style={{color: "#8B6914"}}>open</a>) — Full-text epistle and gospel readings, linked from the liturgical context card and from within service elements.</>,
             <><strong>Menaion data browser</strong> (<a href="/orthodox-hours/menaion" style={{color: "#8B6914"}}>open</a>) — Inspect all encoded fixed-calendar entries with per-entry completeness auditing. Shows every field, flags missing data, and displays Litiya stichera and Beatitudes troparia.</>,
             <><strong>Pentecostarion data browser</strong> (<a href="/orthodox-hours/pentecostarion" style={{color: "#8B6914"}}>open</a>) — Same for Pascha-anchored entries, organized by liturgical period.</>,
-            <><strong>Octoechos data browser</strong> (<a href="/orthodox-hours/octoechos" style={{color: "#8B6914"}}>open</a>) — Browse encoded Octoechos vespers and Sunday Matins data by tone (1–8). Tones 1–4 carry full Sunday Resurrectional Matins; the remaining tones show stubs until encoded from their N-1.pdf. The Matins view surfaces its day (Sunday) explicitly.</>,
+            <><strong>Octoechos data browser</strong> (<a href="/orthodox-hours/octoechos" style={{color: "#8B6914"}}>open</a>) — Browse encoded Octoechos vespers and Sunday Matins data by tone (1–8). Tones 1–5 carry full Sunday Resurrectional Matins; the remaining tones show stubs until encoded from their N-1.pdf. The Matins view surfaces its day (Sunday) explicitly.</>,
             <><strong>Service outline</strong> — A collapsible outline card with a jump button that lists the sections of the current service and scrolls to any of them; available for Vespers, the Typica, and the Order of the Psalter, making a specific point in a long service easy to find.</>,
             <><strong>Reader mode</strong> — Substitutes lay reader responses for priest exclamations throughout.</>,
           ])}
@@ -9726,7 +9736,7 @@ function HowItWorksPanel() {
           {sub("Known limitations")}
           {ul([
             <><strong>Great Lent and Triodion</strong> — Lenten services follow substantially different rubrical patterns (Lenten Hours with prostrations, Presanctified Liturgy, altered Vespers structure, Lenten kathisma tables). The calendar engine tracks these periods correctly, but the assembly rules and Triodion data have not been built yet. This is the next major development area.</>,
-            <><strong>Compline, Midnight Office, and Matins</strong> are not yet assembled (though the Octoechos Sunday Matins data is now being encoded — Tones 1–4 complete). These are large services with complex structure (especially Matins, which includes the canon, polyeleos, and other elements not present at the Hours).</>,
+            <><strong>Compline, Midnight Office, and Matins</strong> are not yet assembled (though the Octoechos Sunday Matins data is now being encoded — Tones 1–5 complete). These are large services with complex structure (especially Matins, which includes the canon, polyeleos, and other elements not present at the Hours).</>,
             <><strong>Divine Liturgy</strong> is not assembled. Epistle and Gospel references are shown in the context card, and Liturgy-specific fields (prokeimenon, alleluia, communion verse) are encoded in the data but not yet surfaced.</>,
             <><strong>Vespers stichera coverage</strong> — Lord I Have Cried and Aposticha stichera are fully assembled for encoded dates. Menaion encoding currently covers May 16–June 30 (complete) plus July 1–3 and 14–15, and Pentecostarion P+19–P+63; dates outside this range show the psalm scaffold with a placeholder. Extending coverage requires reading and encoding additional Menaion months.</>,
             <><strong>Encoding coverage</strong> — the Menaion covers May 16–June 30 plus July 1–3 and 14–15. Dates outside this range show the OCA calendar’s saint name but cannot supply troparion or kontakion texts. The Pentecostarion covers P+19–P+63.</>,
