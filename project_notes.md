@@ -1,5 +1,18 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.25** | **Tone Trainer: v0.25.16** | Last synced: June 13, 2026
+**Tool version: v0.15.26** | **Tone Trainer: v0.25.16** | Last synced: June 13, 2026
+
+**Two pickups on the v0.15.25 work (v0.15.26).**
+- The resurrectional **Dismissal Theotokion** now fires at the Sunday Vespers troparia for
+  the Pentecostarion/overlay Sundays. The overlay entries (All Saints of NA / Russia, Blind
+  Man, etc.) already carry an OCA-pointed `dismissal_theotokion`; the assembler now reads it
+  at Both now… (precedence), with the §I `RESURRECTIONAL_DISMISSAL_THEOTOKIA` table as the
+  fallback for ordinary non-Pentecostarion Sundays. The v0.15.25 §I gate (`!isPentecostarion`)
+  had excluded the overlay Sundays, which run through the Pentecostarion branch, so nothing
+  filled Both now… (the kontakion is suppressed there via `vespers_kontakion: false`).
+- "Blessed is the Man" no longer renders its last line as a stray psalter hyperlink. The
+  inline link treatment (for short kathisma *references*) was wrapping the final line of the
+  full kathisma; it is now gated off the full block via a `blessedIsMan` element flag. The
+  "Read in Psalter ↗" badge is retained.
 
 **Saturday-evening Vespers fixes + Sunday resurrectional troparion/Theotokion (v0.15.25).**
 Three errors were reported for Saturday-evening Great Vespers (the service that opens

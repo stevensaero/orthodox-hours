@@ -3439,6 +3439,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     toneNote: kathToneNote,
     source: kathSource,
     fekula: kathFekula,
+    blessedIsMan: !!kathismaResult.blessedIsMan,
     kathismaNum: kathismaResult.num || null});
 
   // Small Litany
@@ -4505,15 +4506,34 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   // troparion chanted, from §I of The Common Theotokia (Fekula Ch.6). This replaces
   // the kontakion at the Vespers troparia on ordinary (non-Pentecostarion) Sundays.
   const _lastTropTone = secTropTone || primTropTone || tone;
-  const _sundayDismissalTheotokion = (isSunday && !isPentecostarion)
+  // Both now…: resurrectional dismissal theotokion at the Sunday Vespers troparia.
+  // Priority: (1) an entry-encoded OCA-pointed dismissal_theotokion (the
+  // Pentecostarion/overlay Sundays — All Saints of NA, Blind Man, etc.); else
+  // (2) the §I Common Theotokia fallback on ordinary (non-Pentecostarion) Sundays,
+  // in the tone of the last troparion chanted. — Fekula Ch.6.
+  const _entryDismissalTheot = (pentEntry && pentEntry.dismissal_theotokion) || null;
+  const _sundayDismissalTheotokion = (!_entryDismissalTheot && isSunday && !isPentecostarion)
     ? RESURRECTIONAL_DISMISSAL_THEOTOKIA[_lastTropTone] : null;
 
-  if (_sundayDismissalTheotokion) {
+  if (_entryDismissalTheot) {
+    const _dt = _entryDismissalTheot;
+    const _dtText = typeof _dt === "string" ? _dt : _dt.text;
+    const _dtTone = (typeof _dt === "string" ? null : _dt.tone) || _lastTropTone;
     elements.push({id:"v-trop-bothnow",type:"fixed",label:"",
       text:"Both now and ever, and unto the ages of ages. Amen.",
       source:"HTM Vespers"});
     elements.push({id:"v-trop-theotokion",type:"movable",
-      label:"Theotokion (Both now…) · Tone " + _lastTropTone,
+      label:"Resurrectional Dismissal Theotokion · Tone " + _dtTone,
+      rubric:"",
+      text:_dtText,
+      source:(isPentecostarion && pentEntry) ? "Pentecostarion — " + pentEntry.name : "Octoechos",
+      fekula:{section:fekulaSection, note:"Sunday Vespers, Both now…: the resurrectional dismissal theotokion in the tone of the last troparion chanted. — Fekula Chapter 6 (Sunday Vespers, troparia)"}});
+  } else if (_sundayDismissalTheotokion) {
+    elements.push({id:"v-trop-bothnow",type:"fixed",label:"",
+      text:"Both now and ever, and unto the ages of ages. Amen.",
+      source:"HTM Vespers"});
+    elements.push({id:"v-trop-theotokion",type:"movable",
+      label:"Resurrectional Dismissal Theotokion · Tone " + _lastTropTone,
       rubric:"",
       text:_sundayDismissalTheotokion.text,
       source:"Common Theotokia §I (SJKP)",
@@ -7106,7 +7126,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
           ? (element.psalterHref || `/orthodox-hours/psalter?kathisma=${element.kathismaNum}`)
           : null);
 
-        if (linkHref) {
+        if (linkHref && !element.blessedIsMan) {
           // Split into intro line(s) and the reference line.
           // Pattern: "The reading is from X.\n\nRef 1:2-3" or just "Matthew 6:31"
           const lines = element.text.split('\n').filter(l => l.trim());
@@ -7749,6 +7769,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.15.26",
+    date: "June 2026",
+    items: [
+      "fix: the resurrectional Dismissal Theotokion now fires at the Sunday Vespers troparia (Both now…) for the Pentecostarion/overlay Sundays. The All Saints of NA / Russia entries already carried an OCA-pointed dismissal_theotokion (Tone 8), but the assembler never read it — it now takes precedence at Both now…, with the §I Common Theotokia table as the fallback for ordinary (non-Pentecostarion) Sundays. (Previously the slot was empty because the kontakion is suppressed on these Sundays.)",
+      "fix: 'Blessed is the Man' no longer renders its last line ('Alleluia… Glory to Thee, O God. (thrice)') as a stray hyperlink. The inline psalter-link treatment (meant for short kathisma references) was wrapping the final line of the full kathisma text; it is now suppressed for the full Blessed-is-the-Man block, which keeps the 'Read in Psalter ↗' badge.",
+    ],
+    summary: "Sunday resurrectional Dismissal Theotokion fires (OCA-pointed) + Blessed-is-the-Man stray link removed",
+  },
   {
     version: "v0.15.25",
     date: "June 2026",
