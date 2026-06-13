@@ -12,11 +12,19 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.7";
+export const TONE_TRAINER_VERSION = "v0.25.8";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.8",
+    date: "June 2026",
+    summary: "Horizontal scroll extended to Director vs. Machine compare mode (director/machine rows scroll in sync)",
+    items: [
+      "fix: the compare harness chip rows now scroll horizontally instead of wrapping, same as the main phrase view — so long verses no longer wrap and desync. The paired director and machine rows of a line scroll in lockstep (synced via data-compare-line) so the same syllable stays column-aligned across both rows while scrolling; lighter thin scrollbar to match. (Flex item gets min-width:0 so it bounds and scrolls rather than overflowing the block.)",
+    ],
+  },
   {
     version: "v0.25.7",
     date: "June 2026",
@@ -3844,6 +3852,17 @@ export default function ToneTrainer() {
 
   // playLineAs: play a specific line in a specific version (truth/machine)
   // without changing the global singWhich — used by per-row ▶ buttons.
+  // Compare mode: keep a line's director + machine chip strips scrolled in lockstep
+  // so the same syllable stays column-aligned across both rows while scrolling.
+  const syncCompareScroll = (e) => {
+    const el = e.currentTarget;
+    const li = el.dataset.compareLine;
+    if (li == null) return;
+    document.querySelectorAll(`[data-compare-line="${li}"]`).forEach((other) => {
+      if (other !== el && other.scrollLeft !== el.scrollLeft) other.scrollLeft = el.scrollLeft;
+    });
+  };
+
   const playLineAs = (li, which) => {
     const src = which === "machine" && machineLines ? machineLines : lines;
     setPlayingLine(li);
@@ -5614,9 +5633,12 @@ export default function ToneTrainer() {
                                    flexShrink: 0, fontStyle: "italic" }}>
                       {which === "truth" ? "director" : "machine"}
                     </span>
-                    {/* Inner chips container — wraps freely, grows to fill available space */}
-                    <div style={{ flex: 1, display: "flex", flexWrap: "wrap", gap: "2px 2px",
-                                  alignItems: "flex-end" }}>
+                    {/* Inner chips container — scrolls horizontally (synced with the
+                        paired row) instead of wrapping, mirroring the main phrase view */}
+                    <div data-compare-line={li} onScroll={syncCompareScroll}
+                         style={{ flex: 1, minWidth: 0, display: "flex", flexWrap: "nowrap", gap: "2px 2px",
+                                  alignItems: "flex-end", overflowX: "auto", overflowY: "hidden",
+                                  paddingBottom: 6, scrollbarWidth: "thin", scrollbarColor: "#d2cdbf transparent" }}>
                     {cl.syllables.map((s, si) => {
                       const accent = which === "truth" ? s.truthAccent : s.machineAccent;
                       const disagree = !s.agree;

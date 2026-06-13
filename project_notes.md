@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.17** | **Tone Trainer: v0.25.7** | Last synced: June 13, 2026
+**Tool version: v0.15.17** | **Tone Trainer: v0.25.8** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -79,6 +79,15 @@ chosen over CSS wrapping — lower risk to the tuned chip rendering, musically
 truer (unbroken contour), and inherently responsive. FOLLOW-UP: a smaller chip
 render for phone-width screens (chip width / label size shrink below a
 breakpoint) — to be evaluated separately.
+
+**Compare-mode scroll (v0.25.8).** The Director vs. Machine harness has its own simpler
+chip layout (two rows per line, `[label][chips][▶]`, no per-syllable active highlight —
+playback is row-level). Same wrap→scroll fix: the chips container is now `nowrap` +
+`overflow-x:auto` with `min-width:0` (so the `flex:1` item bounds and scrolls instead of
+overrunning the block). The paired director/machine rows scroll in lockstep
+(`syncCompareScroll` matches `scrollLeft` across elements sharing `data-compare-line`) so
+syllables stay column-aligned across both rows. No `PhraseScroller` reuse — its
+stacked-strip structure doesn't fit the label+chips+button row.
 
 **Irmos is pointed but NOT trainer-singable (v0.15.11).** A canon ode's Irmos
 has its own proper melody — it is never sung to the standard tone formula the
@@ -381,7 +390,7 @@ Versions at close: **Hours tool v0.15.0 · Tone Trainer v0.24.2.**
   — candidate is a chip-width/label scale-down below a breakpoint; needs real-device
   measurement before any code.
 
-Versions at close: **Hours tool v0.15.17 · Tone Trainer v0.25.7.**
+Versions at close: **Hours tool v0.15.17 · Tone Trainer v0.25.8.**
 
 ---
 
