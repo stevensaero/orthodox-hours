@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.13** | **Tone Trainer: v0.24.2** | Last synced: June 12, 2026
+**Tool version: v0.15.14** | **Tone Trainer: v0.24.2** | Last synced: June 12, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -110,16 +110,18 @@ the gate.
 > ("Now will I arise…") is stored as `matins.matins_prokeimenon`, distinct from the
 > existing `SUNDAY_PROKEIMENON` (Liturgy) table.
 
-> **Octoechos encoded status (v0.15.2):** Tone 1 `_encoded: ['vespers','matins']`;
-> tones 2-8 `['vespers']`. Tone 1 Sunday Matins is fully encoded from `1-1.pdf`
-> (God-is-the-Lord theotokion, two sessional sets, 3 Songs of Ascent antiphons,
-> matins prokeimenon, all three canons odes 1/3-9, ikos, 8 Praises stichera, Great
-> Doxology troparion). Canon troparia + ikos are Tier-1 plain; irmoi/hymns/praises
-> are pointed. Schema field `kontakion_ikos` was renamed `ikos` — the matins
-> kontakion comes from `SUNDAY_KONTAKIA[tone]`, the God-is-the-Lord troparion from
-> `RESURRECTIONAL_TROPARIA[tone]`, and the Hypakoë from `HYPAKOE[tone]` (no
-> re-encoding). The Evlogitaria are encoded once, tone-independent, in
-> `index.js EVLOGITARIA`.
+> **Octoechos encoded status (v0.15.14 — Sunday-Matins cycle COMPLETE):** all eight
+> tones `_encoded: ['vespers','matins']`. Every tone's Sunday Resurrectional Matins is
+> fully encoded from its own `N-1.pdf` (God-is-the-Lord theotokion, two sessional sets,
+> Songs of Ascent — 3 antiphons for Tones 1–7, 4 for Tone 8 — matins prokeimenon, all
+> three canons odes 1/3-9, ikos, 8 Praises stichera, Great Doxology troparion). Each
+> tone's canon shape (which odes carry trinitarians vs. theotokia, troparia counts) was
+> read from that tone's source and never ported. Canon troparia + ikos are Tier-1 plain;
+> irmoi/hymns/praises are pointed. The matins kontakion comes from `SUNDAY_KONTAKIA[tone]`,
+> the God-is-the-Lord troparion from `RESURRECTIONAL_TROPARIA[tone]`, and the Hypakoë from
+> `HYPAKOE[tone]` (no re-encoding). The Evlogitaria are encoded once, tone-independent, in
+> `index.js EVLOGITARIA`. (Browser fix v0.15.14: Songs of Ascent now index the antiphon
+> array positionally, so the section renders for every tone — it had been blank.)
 >
 > **Still tone-independent + still empty (need a non-`N-1.pdf` source):**
 > `EXAPOSTILARIA` (11 Eothina) and `RESURRECTION_GOSPEL_STICHERA` (11 Gospel
@@ -221,6 +223,7 @@ section is acceptable. Do not strip context to save space.
 | v0.15.11 | Jun 2026 | Irmos render fix — Point/Score controls suppressed on irmos across all three browsers (label-gated in PointScoreControls) |
 | v0.15.12 | Jun 2026 | Octoechos Tone 6 Sunday Matins (single Res-IX trinitarian like Tone 2; cross-res Ode VIII bare 3-trop; theotokos 4/ode except V,VI=3) |
 | v0.15.13 | Jun 2026 | Octoechos Tone 7 Sunday Matins (single Res-IX trinitarian; cross-res theotokion every ode; theotokos uniform 3/ode; god-is-the-Lord theotokion double-cadence flagged) |
+| v0.15.14 | Jun 2026 | Octoechos Tone 8 Sunday Matins — **Sunday-Matins cycle COMPLETE (all 8 tones)** (Res VII/VIII trinitarians but theotokion kept on IX; cross-res III single-trop, theotokion every ode; theotokos uniform 3/ode; 4 Songs of Ascent — antiphon-4 stanza-1 no penult; even-tone GD troparion) + songs_of_ascent browser render fix |
 
 ---
 
@@ -2644,7 +2647,7 @@ All three tables: active row highlights in gold when daily table governs; no hig
 
 ### Octoechos Browser (Phase 2)
 
-`src/components/octoechos-browser.jsx` at `/orthodox-hours/octoechos`. Tone picker (1–8) lazy-loads per-tone files. Vespers: day tabs, LIC stichera, aposticha, dogmatikon. Matins: Phase 3 stubs. Index Tables: tone-independent data from index.js. Fixed crash: `RESURRECTIONAL_TROPARIA[tone]` is `{tone, text}` object — was passed directly as React child. Fixed `SUNDAY_ALLELUIA[tone].stichoi` (array, plural key).
+`src/components/octoechos-browser.jsx` at `/orthodox-hours/octoechos`. Tone picker (1–8) lazy-loads per-tone files. Vespers: day tabs, LIC stichera, aposticha, dogmatikon. Matins: full Sunday Resurrectional Matins for all eight tones (sessional hymns, Songs of Ascent, all three canons, ikos, Praises, Great Doxology troparion). Index Tables: tone-independent data from index.js. Fixed crash: `RESURRECTIONAL_TROPARIA[tone]` is `{tone, text}` object — was passed directly as React child. Fixed `SUNDAY_ALLELUIA[tone].stichoi` (array, plural key).
 
 ### Architecture Notes
 

@@ -360,7 +360,7 @@ function MatinsPanel({ tone, matinsData }) {
       <SectionHeader>Songs of Ascent</SectionHeader>
       {songs_of_ascent ? (
         [1,2,3,4].map(n => {
-          const ant = songs_of_ascent[`antiphon_${n}`];
+          const ant = songs_of_ascent[n - 1];
           return ant ? (
             <div key={n} style={{ marginBottom: "0.75rem" }}>
               <SubHeader>Antiphon {n}</SubHeader>
