@@ -12,11 +12,21 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.4";
+export const TONE_TRAINER_VERSION = "v0.25.5";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.5",
+    date: "June 2026",
+    summary: "Discrete inline version; Point Verses next to try-example; controls/legend hidden until a verse is pointed",
+    items: [
+      "ui: the version badge is now an inline, borderless clickable label appended to the eyebrow ('Orthodox Daily Hours · Tone Trainer · v0.25.5'); clicking it still toggles these release notes. The bordered button below the title is gone.",
+      "ui: 'Point Verses' moved out of the play bar to the tone-selector row, just right of 'try example'. It renders greyed/inactive until the textarea has content and becomes the active maroon button once it does — covers both typed/pasted text and a verse loaded from a .docx block (which also fills the textarea).",
+      "ui: the play bar (Play / do / pitch / tempo / Score) and the info bar (the intonation·reciting·prep·cadence legend plus the Director/Machine, voice-part, and timbre controls) no longer render until a verse has actually been pointed (lines present). Before that you see only the header, ingest panel, tone row, and paste box; the bar, legend, and Phrase cards appear together on pointing. The footer note and copyright stay visible throughout.",
+    ],
+  },
   {
     version: "v0.25.4",
     date: "June 2026",
@@ -4764,6 +4774,10 @@ export default function ToneTrainer() {
     );
   }
 
+  // A verse has actually been pointed when there's a pointed result to control /
+  // describe. Until then the play bar + info-bar legend/controls don't render.
+  const hasPointed = lines.length > 0 || !!machineLines?.length;
+
   return (
     <div style={{ maxWidth: 820, margin: "0 auto", padding: "2rem 1rem 4rem", fontFamily: "Georgia, serif", color: ink }}>
       {cameFromHours && (
@@ -4775,21 +4789,19 @@ export default function ToneTrainer() {
         </div>
       )}
       <div style={{ textAlign: "center", marginBottom: "0.4rem", letterSpacing: "0.28em", textTransform: "uppercase", fontSize: "0.7rem", color: gold }}>
-        Orthodox Daily Hours · Tone Trainer
+        Orthodox Daily Hours · Tone Trainer ·{" "}
+        <span
+          onClick={() => setShowReleaseNotes((v) => !v)}
+          title="Release notes"
+          style={{ cursor: "pointer" }}
+        >
+          {TONE_TRAINER_VERSION}
+        </span>
       </div>
       <h1 style={{ textAlign: "center", color: "#7a2418", fontWeight: 600, fontSize: "2rem", margin: "0.1em 0" }}>
         Common Chant · Obikhod · Tone {activeTone}
       </h1>
       <div style={{ textAlign: "center", marginBottom: "1.4rem" }}>
-        <button
-          onClick={() => setShowReleaseNotes((v) => !v)}
-          style={{ background: "transparent", border: `1px solid ${gold}`, color: gold,
-                   borderRadius: 3, padding: "2px 10px", fontSize: "0.7rem", letterSpacing: "0.06em",
-                   cursor: "pointer", fontFamily: "Georgia, serif" }}
-          title="Release notes"
-        >
-          {TONE_TRAINER_VERSION} ▾
-        </button>
         {showReleaseNotes && (
           <div style={{ maxWidth: 560, margin: "0.6rem auto 0", textAlign: "left",
                         border: "1px solid #d6c79f", borderRadius: 8, background: "rgba(255,255,255,.6)",
@@ -5004,6 +5016,18 @@ export default function ToneTrainer() {
             try example
           </button>
         )}
+        <button
+          onClick={analyze}
+          disabled={!text.trim()}
+          style={{ ...btn, marginLeft: "0.5rem", fontSize: "0.74rem", padding: "3px 11px",
+                   background: text.trim() ? "#7a2418" : "transparent",
+                   color: text.trim() ? "#f7ead0" : "#b9a98c",
+                   border: text.trim() ? "none" : "1px solid #d6c79f",
+                   cursor: text.trim() ? "pointer" : "default",
+                   opacity: text.trim() ? 1 : 0.55 }}
+          title={text.trim() ? "Syllabify and point the sticheron — assigns reciting tone, prep, and cadence roles" : "Type or load a verse first"}>
+          Point Verses
+        </button>
       </div>
 
       {/* ── POINTER (textarea + comparison) — above the play bar ────────── */}
@@ -5034,7 +5058,8 @@ export default function ToneTrainer() {
       </div>
       </>)}
 
-      {/* ── PLAY BAR ─────────────────────────────────────────────────────── */}
+      {/* ── PLAY BAR — only once a verse is pointed ──────────────────────── */}
+      {hasPointed && (
       <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr",
                     alignItems: "center", gap: "0.5rem",
                     border: "1px solid #d6c79f", borderRadius: 8,
@@ -5081,20 +5106,13 @@ export default function ToneTrainer() {
           <span style={{ color: "#d6c79f" }}>|</span>
         </div>
 
-        {/* Col 3 — right: Point Verses (authoring) + Score */}
+        {/* Col 3 — right: Score */}
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center",
                       justifyContent: "flex-end" }}>
           {lexiconError && <span style={{ fontSize: "0.72rem", color: "#7a2418",
                                           fontStyle: "italic" }}>{lexiconError}</span>}
           {!lexicon && !lexiconError && <span style={{ fontSize: "0.72rem", color: "#9A8A70",
                                                         fontStyle: "italic" }}>loading lexicon…</span>}
-          {!embeddedVerseView && (
-          <button style={{ ...playBtn, background: "#7a2418", color: "#f7ead0", border: "none" }}
-            onClick={analyze}
-            title="Syllabify and point the sticheron — assigns reciting tone, prep, and cadence roles">
-            Point Verses
-          </button>
-          )}
           {/* Print Score button — opens modal to set title/source then renders */}
           {(lines.length > 0 || !!machineLines?.length) && (
             <button
@@ -5112,6 +5130,7 @@ export default function ToneTrainer() {
         </div>
 
       </div>
+      )}
 
       {/* ── SCORE MODAL ────────────────────────────────────────────────────── */}
       {showScoreModal && (
@@ -5269,7 +5288,8 @@ export default function ToneTrainer() {
       )}
 
 
-      {/* ── INFO BAR — always visible ──────────────────────────────────────── */}
+      {/* ── INFO BAR — legend + controls; only once a verse is pointed ──────── */}
+      {hasPointed && (
       <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap",
                     fontSize: "0.78rem", color: "#6b5942", marginBottom: "1rem" }}>
         {/* Color-coded legend — pill backgrounds match chip roleBg colors */}
@@ -5373,6 +5393,7 @@ export default function ToneTrainer() {
           </select>
         )}
       </div>
+      )}
 
       {/* ── COMPARISON HARNESS (Feature B) ───────────────────────────────── */}
       {compareMode && compareData && (

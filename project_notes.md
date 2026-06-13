@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.17** | **Tone Trainer: v0.25.4** | Last synced: June 13, 2026
+**Tool version: v0.15.17** | **Tone Trainer: v0.25.5** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -54,6 +54,15 @@ height so borderless/larger-font buttons match the bordered ones. Header: eyebro
 tone), subtitle removed. Paste-box instruction now leads with "Load a Service .docx
 | Paste in a sticheron — one verse per line." then the dynamic rotation hint; ingest
 button "Load Service .docx".
+
+**Progressive disclosure + inline version (v0.25.5).** Version badge is now an
+inline borderless clickable label on the eyebrow ("… · Tone Trainer · vN") that
+toggles the release notes. "Point Verses" moved to the tone row right of
+"try example", greyed until the textarea has content (covers typed text and a
+.docx block, which fills the textarea via `setText`). The play bar and the info
+bar (legend + Director/Machine + voice-part + timbre) are gated on `hasPointed`
+(`lines.length > 0 || machineLines?.length`) — hidden until a verse is pointed,
+then they appear with the Phrase cards. Footer note + copyright stay visible.
 
 **Irmos is pointed but NOT trainer-singable (v0.15.11).** A canon ode's Irmos
 has its own proper melody — it is never sung to the standard tone formula the
