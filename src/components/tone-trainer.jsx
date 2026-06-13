@@ -11,11 +11,19 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.0";
+export const TONE_TRAINER_VERSION = "v0.25.1";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.1",
+    date: "June 2026",
+    summary: "\"Download parsed JSON\" moved into the collapsible service panel",
+    items: [
+      "tweak: the \"Download parsed JSON\" button now lives at the bottom of the expandable service panel (below the block list and caption) instead of the always-visible header row, so it collapses and expands with the panel. Same export behavior — whole service in document order as <same-root>.json. It appears once a loaded doc has parsed blocks.",
+    ],
+  },
   {
     version: "v0.25.0",
     date: "June 2026",
@@ -4785,12 +4793,6 @@ export default function ToneTrainer() {
             <input type="file" accept=".docx" style={{ display: "none" }}
               onChange={(e) => { onDocxFile(e.target.files && e.target.files[0]); setDocPanelOpen(true); }} />
           </label>
-          {docParas.length > 0 && (
-            <button onClick={downloadServiceJson} style={{ ...btn }}
-              title="Export the whole loaded service as <same-root>.json — every block in document order, marks intact">
-              Download parsed JSON
-            </button>
-          )}
           {docName && (
             <>
               <span style={{ fontSize: "0.8rem", color: "#5b4a33", flex: 1 }}>{docName}</span>
@@ -4917,6 +4919,12 @@ export default function ToneTrainer() {
               verify the grouping (revealed by “show suspect blocks” above). Expand a block for its context, its
               lines, and its copy-paste encoding. “point ▸” loads a Tone 1 or Tone 2 sticheron into the pointer with full
               A·B·C·D·…·Final rotation and scrolls to it; Tones 3–8 convert but aren’t pointed yet.
+            </div>
+            <div style={{ marginTop: "0.7rem" }}>
+              <button onClick={downloadServiceJson} style={{ ...btn }}
+                title="Export the whole loaded service as <same-root>.json — every block in document order, marks intact">
+                Download parsed JSON
+              </button>
             </div>
           </>
         )}
