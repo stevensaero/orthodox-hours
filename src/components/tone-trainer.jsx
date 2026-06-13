@@ -12,11 +12,20 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.8";
+export const TONE_TRAINER_VERSION = "v0.25.9";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.9",
+    date: "June 2026",
+    summary: "Declutter sing view: drop Director/Machine pills; move Director vs. Machine toggle onto the pointer note line",
+    items: [
+      "ui: removed the Director / Machine sing-view pills from the info bar. The normal sing view is always director-pointed (singView is reset to director on every point and there's no longer a toggle to switch it); machine pointing is seen via the Director vs. Machine comparison view, which has always shown both rows.",
+      "ui: the 'Director vs. Machine' toggle moved out of the info bar onto the 'Director Pointing mode — …' note line beneath the paste box, justified to the far right (note text flexes left, button pinned right). It still appears only once a comparison exists (compareData) and is hidden in embedded view since the whole pointer block is.",
+    ],
+  },
   {
     version: "v0.25.8",
     date: "June 2026",
@@ -5148,8 +5157,23 @@ export default function ToneTrainer() {
                      lineHeight: 1.6, border: `1px solid ${hasTruth ? "rgba(90,122,60,.6)" : "#d6c79f"}`,
                      borderRadius: 6, padding: "8px", resize: "vertical",
                      background: hasTruth ? "rgba(90,122,60,.03)" : "transparent" }} />
-          <div style={{ marginTop: "0.45rem", fontSize: "0.75rem", color: "#9A8A70", fontStyle: "italic" }}>
-            {hasTruth && <>Director Pointing mode — [accent] brackets override the machine. | = line end · // = penultimate line.</>}
+          <div style={{ marginTop: "0.45rem", display: "flex", alignItems: "center", gap: "0.6rem" }}>
+            <span style={{ flex: 1, fontSize: "0.75rem", color: "#9A8A70", fontStyle: "italic" }}>
+              {hasTruth && <>Director Pointing mode — [accent] brackets override the machine. | = line end · // = penultimate line.</>}
+            </span>
+            {compareData && (
+              <button
+                onClick={() => setCompareMode(v => !v)}
+                style={{ flexShrink: 0, fontSize: "0.72rem",
+                         background: compareMode ? "rgba(90,122,60,.12)" : "transparent",
+                         border: `1px solid ${compareMode ? "rgba(90,122,60,.45)" : "#d6c79f"}`,
+                         color: compareMode ? "#3a6020" : "#9A8A70",
+                         borderRadius: 3, padding: "1px 8px", cursor: "pointer",
+                         fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}
+                title="Show or hide the Director vs. Machine comparison harness">
+                {compareMode ? "Director vs. Machine ✓" : "Director vs. Machine"}
+              </button>
+            )}
           </div>
       </div>
       </>)}
@@ -5407,58 +5431,8 @@ export default function ToneTrainer() {
                          borderRadius: 4, padding: "1px 7px" }}>{activeTone === 3 ? "cad. pt. 2" : "cadence"}</span>
           {compareMode && compareData && <span>· ´ = accent</span>}
         </span>
-        {/* Pointing mode — two toggle buttons: Director / Machine.
-             In sing view: always show Director; show Machine only when machineLines available.
-             In compare harness: neither shown (the harness has its own Sing director/machine toggle). */}
-        {!embeddedVerseView && !(compareMode && compareData) && (() => {
-          const dirActive = singView === "director";
-          const machActive = singView === "machine";
-          const btnBase = {
-            fontSize: "0.72rem", flexShrink: 0, borderRadius: 3,
-            padding: "1px 8px", cursor: "pointer",
-            fontFamily: "Georgia, serif", whiteSpace: "nowrap",
-          };
-          return (
-            <span style={{ display: "inline-flex", gap: "0.3rem", flexShrink: 0 }}>
-              <button
-                onClick={() => setSingView("director")}
-                title="Show director-pointed verses"
-                style={{ ...btnBase,
-                  background: dirActive ? "rgba(90,122,60,.12)" : "transparent",
-                  border: `1px solid ${dirActive ? "rgba(90,122,60,.45)" : "#d6c79f"}`,
-                  color: dirActive ? "#3a6020" : "#9A8A70",
-                }}>
-                Director{dirActive ? " ✓" : ""}
-              </button>
-              {machineLines && (
-                <button
-                  onClick={() => setSingView("machine")}
-                  title="Show machine auto-pointed verses"
-                  style={{ ...btnBase,
-                    background: machActive ? "rgba(139,105,20,.15)" : "transparent",
-                    border: `1px solid ${machActive ? "rgba(139,105,20,.5)" : "#d6c79f"}`,
-                    color: machActive ? "#5b4a33" : "#9A8A70",
-                  }}>
-                  Machine{machActive ? " ✓" : ""}
-                </button>
-              )}
-            </span>
-          );
-        })()}
-        {/* Show / Hide Director vs. Machine */}
-        {!embeddedVerseView && compareData && (
-          <button
-            onClick={() => setCompareMode(v => !v)}
-            style={{ marginLeft: "0.5rem", fontSize: "0.72rem", flexShrink: 0,
-                     background: compareMode ? "rgba(90,122,60,.12)" : "transparent",
-                     border: `1px solid ${compareMode ? "rgba(90,122,60,.45)" : "#d6c79f"}`,
-                     color: compareMode ? "#3a6020" : "#9A8A70",
-                     borderRadius: 3, padding: "1px 8px", cursor: "pointer",
-                     fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}
-            title="Show or hide the Director vs. Machine comparison harness">
-            {compareMode ? "Director vs. Machine ✓" : "Director vs. Machine"}
-          </button>
-        )}
+        {/* Director / Machine sing-view pills removed (v0.25.9): the normal sing view is
+             always director; the Director vs. Machine toggle moved to the pointer note line. */}
         {/* Voice Part selector — only in sing view */}
         {!(compareMode && compareData) && (
           <select value={voicePart} onChange={e => setVoicePart(e.target.value)}
