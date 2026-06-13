@@ -7716,6 +7716,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.15.20",
+    date: "June 2026",
+    summary: "Expand-lockout fix switched to capped/scrolling panel; fix Day/Tone header overflowing on iPhone",
+    items: [
+      "fix: reverted v0.15.19's drop-sticky approach to the expand-lockout. The controls bar is sticky again; instead the expanded Liturgical Context panel is now height-capped (≈ screen height) with its own internal scroll, so it can never exceed the screen and the collapse control stays reachable.",
+      "fix: the collapsed header's day name and tone no longer overflow the right edge on narrow phones (which forced horizontal scrolling). The two side cells are now flexible and equal rather than a fixed 120px, so they shrink to fit while keeping 'Liturgical Context' centered.",
+    ],
+  },
+  {
     version: "v0.15.19",
     date: "June 2026",
     summary: "Day/Tone split to opposite sides, Vespers note repositioned, and a fix for the expand-lockout on short screens",
@@ -10747,7 +10756,7 @@ export default function App() {
 
       {/* ── CONTROLS ─────────────────────────────────────── */}
       <div style={{ background: "#EDE5D0", borderBottom: "1px solid #D4C49A", padding: "1rem 2rem",
-        position: contextOpen ? "static" : "sticky", top: 0, zIndex: 40 }}>
+        position: "sticky", top: 0, zIndex: 40 }}>
         <div style={{ maxWidth: "720px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
 
           {/* ── Row one: DATE group + SERVICE group */}
@@ -10829,12 +10838,12 @@ export default function App() {
             }}
           >
             {/* Left: day name, justified left */}
-            <span style={{ fontSize: "0.8rem", color: "#5C4A1E", flexShrink: 0, minWidth: "120px" }}>
+            <span style={{ fontSize: "0.8rem", color: "#5C4A1E", flex: "1 1 0", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {liturgicalData.dayName}
             </span>
 
             {/* Centre: Liturgical Context label + triangles */}
-            <div style={{ flex: 1, textAlign: "center", display: "flex",
+            <div style={{ flex: "0 1 auto", minWidth: 0, textAlign: "center", display: "flex",
               alignItems: "center", justifyContent: "center", gap: "6px" }}>
               <span style={{ color: "#8B6914", fontSize: "0.7rem" }}>▼</span>
               <span style={{ fontSize: "0.68rem", letterSpacing: "0.15em",
@@ -10846,7 +10855,7 @@ export default function App() {
             </div>
 
             {/* Right: tone, justified right (balances the day name) */}
-            <span style={{ fontSize: "0.8rem", color: "#5C4A1E", flexShrink: 0, minWidth: "120px", textAlign: "right" }}>
+            <span style={{ fontSize: "0.8rem", color: "#5C4A1E", flex: "1 1 0", minWidth: 0, textAlign: "right", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               Tone {liturgicalData.tone}
             </span>
           </div>
@@ -10877,6 +10886,8 @@ export default function App() {
               paddingTop: "0.5rem",
               paddingBottom: "0.5rem",
               fontSize: "0.85rem", lineHeight: "1.7",
+              maxHeight: "calc(100dvh - 100px)", overflowY: "auto",
+              overscrollBehavior: "contain", WebkitOverflowScrolling: "touch",
             }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem", flexWrap: "wrap" }}>
               <div>

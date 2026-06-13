@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.19** | **Tone Trainer: v0.25.12** | Last synced: June 13, 2026
+**Tool version: v0.15.20** | **Tone Trainer: v0.25.12** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -112,6 +112,16 @@ stripped, while the Director vs. Machine button (gated on `compareData`, set at 
 lingered. Note is now gated on `hasTruth || compareData`, so the note, the button, and the
 still-director chips all dwell until the stripped text is re-pointed, then clear together
 (`analyzeText` sets `compareData` on a director point, nulls it on a non-director one).
+
+**Expand-lockout (final) + header overflow fix (v0.15.20).** v0.15.19's drop-sticky was
+the wrong call (reverted). Controls bar is `position:"sticky"` again; the expand-lockout is
+now solved by capping the expanded context body: `maxHeight: calc(100dvh - 100px)` +
+`overflowY:auto` + `overscrollBehavior:contain` + `WebkitOverflowScrolling:touch`, so the
+sticky bar never exceeds the screen and the bottom collapse control is reachable via the
+panel's own scroll. Also fixed: the collapsed-header Day/Tone cells used `flexShrink:0` +
+`minWidth:120px`, which on narrow iPhones summed wider than the viewport and forced
+horizontal scroll. Side cells are now `flex:"1 1 0"` + `minWidth:0` (+ nowrap/ellipsis) and
+the center is `flex:"0 1 auto"` + `minWidth:0`, so they shrink to fit while keeping the label centered.
 
 **Day/Tone split, Vespers-note move, expand-lockout fix (v0.15.19).** Collapsed
 Liturgical Context header: day name left, tone right (both side spans `minWidth:120`,
@@ -445,7 +455,7 @@ Versions at close: **Hours tool v0.15.0 · Tone Trainer v0.24.2.**
   — candidate is a chip-width/label scale-down below a breakpoint; needs real-device
   measurement before any code.
 
-Versions at close: **Hours tool v0.15.19 · Tone Trainer v0.25.12.**
+Versions at close: **Hours tool v0.15.20 · Tone Trainer v0.25.12.**
 
 ---
 
