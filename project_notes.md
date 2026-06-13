@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.16** | **Tone Trainer: v0.25.2** | Last synced: June 13, 2026
+**Tool version: v0.15.17** | **Tone Trainer: v0.25.2** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -246,6 +246,7 @@ section is acceptable. Do not strip context to save space.
 | v0.15.14 | Jun 2026 | Octoechos Tone 8 Sunday Matins — **Sunday-Matins cycle COMPLETE (all 8 tones)** (Res VII/VIII trinitarians but theotokion kept on IX; cross-res III single-trop, theotokion every ode; theotokos uniform 3/ode; 4 Songs of Ascent — antiphon-4 stanza-1 no penult; even-tone GD troparion) + songs_of_ascent browser render fix |
 | v0.15.15 | Jun 2026 | OCA director-pointed backfill begins — Octoechos Tone 1 Sunday Vespers Resurrection set (lic[0–3], 4 aposticha, dogmatikon) swapped from St. Sergius to OCA Tier-3 [brackets] from the 2026-0614 service docx (`pointing_source` + `tradition: "OCA"` + `director: true`); changes these verses for every Tone 1 Sunday. New shared `src/lib/hymn-entry.js` normalizer lets Octoechos slots be string-or-object (one read path for assembler + browser; still-string slots byte-identical) |
 | v0.15.16 | Jun 2026 | "Lord I Have Cried" opening (Ps 140:1-2 Kekragarion) is now tone-of-week propers: renders the tone's OCA director-pointed `lic_opening` when encoded (Tone 1) else the unpointed OCA `LIC_OPENING_FALLBACK` (index.js, single source); two elements so Point/Score attaches per verse. Replaces the St. Sergius "Lord, I have cried…hearken unto me" with OCA "Lord, I call upon…hear me" on every Vespers. Octoechos browser shows the opening above the LIC stichera |
+| v0.15.17 | Jun 2026 | LIC opening renders as movable propers (shaded card + gold left border + "Tone N:" marker) matching the stichera, instead of plain fixed text; Point/Score still per verse |
 
 ---
 

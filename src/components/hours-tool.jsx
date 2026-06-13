@@ -3452,9 +3452,9 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       : LIC_OPENING_FALLBACK.map(t => ({ text: t }));
     openingVerses.forEach((v, i) => {
       elements.push({
-        id: "v-lic-" + (i + 1), type: "fixed",
+        id: "v-lic-" + (i + 1), type: "movable",
         label: i === 0 ? "Lord I Have Cried" : "",
-        rubric: "", tone,
+        rubric: i === 0 ? ("Tone " + tone + ":") : "", tone,
         text: v.text,
         source: v.pointing_source ? "Octoechos (OCA)" : "Vespers (OCA)",
         ...(v.director ? { director: true } : {}),
@@ -7634,6 +7634,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.15.17",
+    date: "June 2026",
+    summary: "Lord I Have Cried opening renders as movable propers — shaded card + Tone marker, matching the stichera",
+    items: [
+      "fix: the 'Lord I Have Cried' opening verses now render with the movable-proper treatment (shaded card, gold left border, and a 'Tone N:' marker) instead of plain fixed text, since they are sung to the tone of the week. Point / Score still attach per verse for built tones; the unpointed-fallback tones get the same card and marker, just without controls.",
+    ],
+  },
   {
     version: "v0.15.16",
     date: "June 2026",
