@@ -7220,6 +7220,22 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
           );
         }
 
+        if (element.blessedIsMan) {
+          // Tighter inter-verse spacing: render each verse as its own paragraph
+          // with a small margin instead of pre-wrap blank lines (~1.7rem → 0.5rem).
+          const verses = element.text.split('\n\n').filter(v => v.trim());
+          return (
+            <div style={bodyStyle}>
+              {verses.map((v, i) => (
+                <div key={i} style={{
+                  marginBottom: i < verses.length - 1 ? '0.5rem' : 0,
+                  lineHeight: 1.6,
+                }}>{v}</div>
+              ))}
+            </div>
+          );
+        }
+
         if (!isPointable(element.text)) {
           return <div style={bodyStyle}>{renderPointed(element.text)}</div>;
         }
@@ -7842,6 +7858,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.15.28",
+    date: "June 2026",
+    items: [
+      "ui: tightened the inter-verse spacing in 'Blessed is the Man' — each verse now renders as its own paragraph with a small margin (~0.5rem) instead of full pre-wrap blank lines (~1.7rem). Verses still breathe, with less dead space.",
+    ],
+    summary: "Tighter inter-verse spacing in Blessed is the Man",
+  },
   {
     version: "v0.15.27",
     date: "June 2026",

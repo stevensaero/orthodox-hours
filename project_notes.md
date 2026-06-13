@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.27** | **Tone Trainer: v0.25.16** | Last synced: June 13, 2026
+**Tool version: v0.15.28** | **Tone Trainer: v0.25.16** | Last synced: June 13, 2026
 
 **Dismissal unification — error 3 (v0.15.27).** The priest's dismissal is now one
 assembler (`buildDismissalText`) for Vespers + Typica + Post-Communion; the two old
