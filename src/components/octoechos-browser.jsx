@@ -4,6 +4,7 @@
 
 import React, { useState, useEffect, useContext, createContext } from 'react';
 import { PointScoreControls } from './point-score-controls.jsx';
+import { hymnText, normalizeHymn } from '../lib/hymn-entry.js';
 
 // Current tone in view — provided by OctoechosBrowser, consumed by SticheronBlock
 // so its Point/Score controls know which tone the verse belongs to.
@@ -179,7 +180,7 @@ function VespersDayPanel({ tone, dayKey, dayData }) {
       {/* Lord I Have Cried stichera */}
       <SubHeader>Lord I Have Cried — {lic.length} stichera</SubHeader>
       {lic.length > 0
-        ? lic.map((text, i) => <SticheronBlock key={i} index={i} text={text} />)
+        ? lic.map((entry, i) => <SticheronBlock key={i} index={i} text={hymnText(entry)} />)
         : <div style={{ color: C.goldLight, fontStyle: "italic", fontSize: "0.85rem",
             marginBottom: "0.5rem" }}>—</div>
       }
@@ -188,7 +189,7 @@ function VespersDayPanel({ tone, dayKey, dayData }) {
       {lic_dogmatikon && (
         <>
           <SubHeader>LIC Theotokion (Friday dogmatikon)</SubHeader>
-          <SticheronBlock text={lic_dogmatikon} />
+          <SticheronBlock text={hymnText(lic_dogmatikon)} />
         </>
       )}
       {lic_theotokion && (
@@ -200,7 +201,7 @@ function VespersDayPanel({ tone, dayKey, dayData }) {
       {dogmatikon && (
         <>
           <SubHeader>Dogmatikon (Saturday Both Now)</SubHeader>
-          <SticheronBlock text={dogmatikon} label={`Tone ${tone} Dogmatikon`} />
+          <SticheronBlock text={hymnText(dogmatikon)} label={`Tone ${tone} Dogmatikon`} />
         </>
       )}
 
@@ -208,9 +209,8 @@ function VespersDayPanel({ tone, dayKey, dayData }) {
       <SubHeader>Aposticha — {aposticha.length} stichera</SubHeader>
       {aposticha.length > 0 ? (
         aposticha.map((s, i) => {
-          const text = typeof s === 'string' ? s : s.text;
-          const verse = typeof s === 'object' ? s.verse : null;
-          return <SticheronBlock key={i} index={i} text={text} verse={verse} />;
+          const h = normalizeHymn(s);
+          return <SticheronBlock key={i} index={i} text={h.text} verse={h.verse} />;
         })
       ) : (
         <div style={{ color: C.goldLight, fontStyle: "italic", fontSize: "0.85rem",

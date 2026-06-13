@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.14** | **Tone Trainer: v0.25.2** | Last synced: June 12, 2026
+**Tool version: v0.15.15** | **Tone Trainer: v0.25.2** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -244,6 +244,7 @@ section is acceptable. Do not strip context to save space.
 | v0.15.12 | Jun 2026 | Octoechos Tone 6 Sunday Matins (single Res-IX trinitarian like Tone 2; cross-res Ode VIII bare 3-trop; theotokos 4/ode except V,VI=3) |
 | v0.15.13 | Jun 2026 | Octoechos Tone 7 Sunday Matins (single Res-IX trinitarian; cross-res theotokion every ode; theotokos uniform 3/ode; god-is-the-Lord theotokion double-cadence flagged) |
 | v0.15.14 | Jun 2026 | Octoechos Tone 8 Sunday Matins — **Sunday-Matins cycle COMPLETE (all 8 tones)** (Res VII/VIII trinitarians but theotokion kept on IX; cross-res III single-trop, theotokion every ode; theotokos uniform 3/ode; 4 Songs of Ascent — antiphon-4 stanza-1 no penult; even-tone GD troparion) + songs_of_ascent browser render fix |
+| v0.15.15 | Jun 2026 | OCA director-pointed backfill begins — Octoechos Tone 1 Sunday Vespers Resurrection set (lic[0–3], 4 aposticha, dogmatikon) swapped from St. Sergius to OCA Tier-3 [brackets] from the 2026-0614 service docx (`pointing_source` + `tradition: "OCA"` + `director: true`); changes these verses for every Tone 1 Sunday. New shared `src/lib/hymn-entry.js` normalizer lets Octoechos slots be string-or-object (one read path for assembler + browser; still-string slots byte-identical) |
 
 ---
 

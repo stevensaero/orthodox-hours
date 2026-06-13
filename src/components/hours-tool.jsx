@@ -5,6 +5,7 @@ import {
   KATAVASIAE, RESURRECTION_GOSPEL_STICHERA,
 } from '../data/octoechos/index.js';
 import { PSALMS, KATHISMA_MAP, getPsalmRange } from '../data/psalter.js';
+import { hymnText, hymnProvenance } from '../lib/hymn-entry.js';
 import { PointScoreControls, isPointable } from './point-score-controls.jsx';
 
 
@@ -3507,7 +3508,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     if (!isPentecostarion && rank === "simple" && octoDay && octoDay.lic) {
       // §2A: first 3 from Octoechos
       const octoLic = octoDay.lic.slice(0, 3);
-      octoLic.forEach((text, i) => licStichera.push({text, source:"Octoechos", resolved:true}));
+      octoLic.forEach((entry, i) => licStichera.push({text: hymnText(entry), source:"Octoechos", resolved:true, ...hymnProvenance(entry)}));
       // Slots 4-6: Menaion — use encoded stichera if available, else unresolved
       for (let i = octoLic.length; i < 6; i++) {
         const ms = menaionLicStichera[i - octoLic.length];
@@ -3539,7 +3540,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         const octoResurrection = (octoSat && octoSat.lic) ? octoSat.lic.slice(0, 7) : [];
         const pentSundayStichera = (pentEntry && pentEntry.stichera_lord_i_call) || [];
         effectiveLicStichera = [
-          ...octoResurrection.map(text => ({tone, text, source: 'Octoechos'})),
+          ...octoResurrection.map(entry => ({tone, text: hymnText(entry), source: 'Octoechos', ...hymnProvenance(entry)})),
           ...pentSundayStichera,
         ];
       } else if (!allFromPent && pentEntry && pentEntry.stichera_lord_i_call && pentEntry.stichera_lord_i_call.length > 0) {
@@ -3739,13 +3740,13 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         // Friday evening §2A: Both Now = dogmatikon (not theotokion)
         elements.push({id:"v-lic-dogmatikon", type:"movable", label:"Dogmatikon (Friday)",
           rubric:"Tone "+tone+":",
-          text:octoDay.lic_dogmatikon, source:"Octoechos",
+          text:hymnText(octoDay.lic_dogmatikon), source:"Octoechos", ...hymnProvenance(octoDay.lic_dogmatikon),
           fekula:{section:fekulaSection, note:"Friday evening §2A: Both Now = dogmatikon in tone of week. Fekula §2A."}});
       } else if (octoDay && octoDay.dogmatikon) {
         // Saturday: dogmatikon
         elements.push({id:"v-lic-dogmatikon", type:"movable", label:"Dogmatikon",
           rubric:"Tone "+tone+":",
-          text:octoDay.dogmatikon, source:"Octoechos",
+          text:hymnText(octoDay.dogmatikon), source:"Octoechos", ...hymnProvenance(octoDay.dogmatikon),
           fekula:{section:fekulaSection, note:"Saturday §2A: Both Now = dogmatikon in tone of week. Fekula §2A."}});
       } else {
         // Weekday (Mon–Thu) theotokion from Octoechos
@@ -4177,14 +4178,14 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       }
     } else if (!isPentecostarion && (rank === "simple" || rank === "six_stichera") && apostOctoDay && apostOctoDay.aposticha) {
       // §2A: Octoechos stichera + universal verses — fully assembled
-      const apostStichera = apostOctoDay.aposticha; // array of 3 strings
+      const apostStichera = apostOctoDay.aposticha; // array of strings or {text,...} objects
       const verses = isSatEve ? satVerses : weekdayVerses;
 
-      apostStichera.forEach((stichText, i) => {
+      apostStichera.forEach((entry, i) => {
         // Sticheron first (Aposticha is inverted from LIC)
         elements.push({id:"v-apost-stich-"+i, type:"movable", label: i===0 ? "Aposticha" : "",
           rubric:"Tone "+tone+":",
-          text:stichText, source:"Octoechos",
+          text:hymnText(entry), source:"Octoechos", ...hymnProvenance(entry),
           fekula:{section:fekulaSection, note:"Aposticha sticheron "+(i+1)+" from Octoechos, Tone "+tone+". Fekula §2A."}});
         // Then its verse (if available)
         if (verses[i]) {
@@ -4222,12 +4223,12 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       if (isFriEve && apostOctoDay.lic_dogmatikon) {
         elements.push({id:"v-apost-dogmatikon", type:"movable", label:"Dogmatikon (Friday)",
           rubric:"Tone "+tone+":",
-          text:apostOctoDay.lic_dogmatikon, source:"Octoechos",
+          text:hymnText(apostOctoDay.lic_dogmatikon), source:"Octoechos", ...hymnProvenance(apostOctoDay.lic_dogmatikon),
           fekula:{section:fekulaSection, note:"Friday Aposticha Both Now = dogmatikon. Fekula §2A."}});
       } else if (isSatEve && apostOctoDay.dogmatikon) {
         elements.push({id:"v-apost-dogmatikon", type:"movable", label:"Dogmatikon",
           rubric:"Tone "+tone+":",
-          text:apostOctoDay.dogmatikon, source:"Octoechos",
+          text:hymnText(apostOctoDay.dogmatikon), source:"Octoechos", ...hymnProvenance(apostOctoDay.dogmatikon),
           fekula:{section:fekulaSection, note:"Saturday Aposticha Both Now = dogmatikon. Fekula §2A."}});
       } else {
         // Weekday Both Now: use aposticha_glory from Octoechos if available
@@ -7611,6 +7612,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.15.15",
+    date: "June 2026",
+    summary: "OCA director-pointed backfill — Octoechos Tone 1 Sunday Vespers (Resurrection)",
+    items: [
+      "feat: the Tone 1 Sunday Great Vespers Resurrection set (the first four 'Lord I have cried' stichera, all four aposticha, and the dogmatikon) is now the OCA director-pointed translation (Tier-3 [brackets]) from the OCA Dept. of Liturgical Music & Translations service docx (2026-0614), replacing the St. Sergius texts. First step of a gradual replacement of St. Sergius with OCA director-pointed works; it changes these verses for every Tone 1 Sunday. Each backfilled verse carries director: true, tradition: \"OCA\", and pointing_source naming the docx.",
+      "refactor: Octoechos hymn slots may now be a bare string (legacy) or an object carrying text + provenance. A shared normalizer (src/lib/hymn-entry.js — one read path for the assembler and the data browser) reads both shapes, so every still-string slot renders byte-identically while object slots surface provenance for a future OCA-source badge. The data browser's aposticha render now uses the shared normalizer instead of its own object/string check.",
+    ],
+  },
   {
     version: "v0.15.14",
     date: "June 2026",
