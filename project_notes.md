@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.17** | **Tone Trainer: v0.25.6** | Last synced: June 13, 2026
+**Tool version: v0.15.17** | **Tone Trainer: v0.25.7** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -332,6 +332,56 @@ accumulator with a version cache-bust; and the **Psalter** changes (footer butto
 removed, kathisma links open focused like Scripture pericopes).
 
 Versions at close: **Hours tool v0.15.0 · Tone Trainer v0.24.2.**
+
+---
+
+### Session — June 13, 2026 (OCA backfill + LIC opening; Tone Trainer UX overhaul)
+
+**Hours data / assembler**
+- **v0.25.2** docx tone-tag fix: run extraction renders `<w:tab>/<w:br>/<w:cr>` as a
+  space and the tone-heading pattern uses `(?![0-9])` instead of a trailing `\b`, fixing
+  stale tones on tab-glued labels (e.g. "Tone 8Troparion"). Tone/run helpers consolidated
+  into `src/lib/docx-text.js` (shared by the browser ingest and the Node snapshot twin).
+- **v0.15.15** Octoechos OCA backfill: `octoechos/tone1.js` Saturday-Vespers
+  `lic[0–3]` / `aposticha[0–3]` / `dogmatikon` converted from bare St. Sergius strings to
+  OCA Tier-3 director-pointed objects (`pointing_source` + `tradition:"OCA"` + `director`).
+  New `src/lib/hymn-entry.js` (`normalizeHymn`/`hymnText`/`hymnProvenance`) gives one
+  string-or-object read path used by the assembler and the octoechos browser.
+- **FW-24** documented: pentecostarion P+63 (`all_saints_sunday`) embeds its own OCA copies
+  of seven tone-1 Resurrection fields; the de-dup refactor (pull-from-source, zero-diff
+  render proof on 6/14) is now possible since the Octoechos carries the same OCA text.
+- **v0.15.16 / v0.15.17** LIC opening ("Lord I Have Cried", Ps 140:1-2 Kekragarion): was a
+  single hardcoded St. Sergius string emitted on every Vespers; now tone-of-week propers —
+  renders the tone's OCA `lic_opening` when encoded (tone 1) else the unpointed OCA
+  `LIC_OPENING_FALLBACK` (octoechos/index.js, single source), as two Point/Score-able
+  elements rendered as movable propers (shaded card + gold border + "Tone N:" marker).
+
+**Tone Trainer UX (v0.25.3 → v0.25.7)**
+- **v0.25.3** embedded view: a verse fired in from the Hours tool / a data browser
+  (`oht_handoff` carrying a `.verse`) hides the authoring chrome (ingest, tone picker,
+  paste box, Point Verses, Director/Machine toggles, timbre). Gated on `embeddedVerseView`,
+  NOT `cameFromHours` — a bare `?from=tool` footer visit still shows the full UI.
+- **v0.25.4** play-bar reorder (Play left; Point Verses + Score right) and uniform 32px
+  `box-sizing` button heights; header copy: eyebrow "Orthodox Daily Hours · Tone Trainer",
+  H1 "Common Chant · Obikhod · Tone N", subtitle removed; ingest button "Load Service .docx".
+- **v0.25.5** version is now an inline borderless clickable label on the eyebrow; Point
+  Verses moved to the tone row right of "try example", greyed until the textarea has
+  content; play bar + info-bar legend/controls gated on `hasPointed` (progressive disclosure).
+- **v0.25.6** phrase chips scroll horizontally instead of wrapping — the structural fix for
+  long-verse / Alto+Bass / SATB / small-screen breakage. The per-voice strips were
+  independent `flex-wrap` rows and the soprano-over-alto / tenor-over-bass overlays were
+  fixed-height single-line containers, so a wrap desynced columns and spilled chips out of
+  the box. Strips are now `nowrap` inside one `overflow-x:auto` viewport per phrase (new
+  `PhraseScroller`, inline-flex column track); edge fades cue overflow; playback auto-centers
+  the active chip (`data-active` + rect-based scroll). Decision: forced scroll over CSS wrap —
+  lower risk to the tuned chip render, musically truer, responsive for free.
+- **v0.25.7** scroller polish: bottom padding so chips don't sit flush against the scrollbar;
+  thin lighter warm-grey scrollbar (`scrollbar-color`/`scrollbar-width`).
+- **FW-25** logged: small-screen (phone ~375–430px) chip sizing still **under investigation**
+  — candidate is a chip-width/label scale-down below a breakpoint; needs real-device
+  measurement before any code.
+
+Versions at close: **Hours tool v0.15.17 · Tone Trainer v0.25.7.**
 
 ---
 
@@ -1786,6 +1836,17 @@ Caveat: pulling only renders OCA where the source tone is already backfilled; an
 all-saints-type feast in a not-yet-pointed tone would surface St. Sergius. So the resolver
 must be tone-scoped (tone 1 first) or guard on "is this source slot pointed." This ties the
 de-dup rollout to the tone-by-tone OCA backfill, which is acceptable.
+
+**FW-25: Tone Trainer small-screen (phone) chip rendering — UNDER INVESTIGATION**
+Phrase chips now scroll horizontally per phrase (v0.25.6) instead of wrapping, which fixed
+the long-verse / multi-voice / overflow breakage and is responsive in that narrow screens
+simply scroll. Open question: on phone-width viewports (~375–430px) a long phrase scrolls a
+lot, and the fixed chip widths (`CHIP_W`: Q30 / H50 / H·68 / W90 / W·120) plus the 0.85rem
+syllable labels may be larger than ideal. Candidate fix: a modest scale-down of chip width +
+label/solfège font (and possibly a tighter `CHIP_GAP`) below a breakpoint, so phrases need
+less scrolling on a phone without harming the desktop contour. Must be evaluated on a real
+device first — measure how aggressively phrases scroll at 375/390/430px and decide whether
+the shrink is worth the added complexity. Status: under investigation; no code yet.
 
 **FW-MENAION-BACKFILL: SAMPLE_MENAION data-entry backlog**
 Several fields captured in Drive .txt encoding records have not been entered into

@@ -12,11 +12,19 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.6";
+export const TONE_TRAINER_VERSION = "v0.25.7";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.7",
+    date: "June 2026",
+    summary: "Phrase scroller polish — breathing room above the scrollbar, lighter thin scrollbar",
+    items: [
+      "ui: added bottom padding inside each phrase scroller so the chips no longer sit flush against the horizontal scrollbar, and switched the scrollbar to a thin, lighter warm-grey (standard scrollbar-color/scrollbar-width; modern browsers). Small-screen chip sizing for phones is still under investigation.",
+    ],
+  },
   {
     version: "v0.25.6",
     date: "June 2026",
@@ -3200,7 +3208,8 @@ function PhraseScroller({ children, activeKey }) {
   return (
     <div style={{ position: "relative" }}>
       <div ref={ref} onScroll={update}
-           style={{ overflowX: "auto", overflowY: "hidden", paddingBottom: 2 }}>
+           style={{ overflowX: "auto", overflowY: "hidden", paddingBottom: 12,
+                    scrollbarWidth: "thin", scrollbarColor: "#d2cdbf transparent" }}>
         <div style={{ display: "inline-flex", flexDirection: "column" }}>
           {children}
         </div>
