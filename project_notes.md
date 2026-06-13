@@ -29,6 +29,44 @@ review/encoding vehicle for backfilling data-file verses with OCA-pointed works,
 gradually replacing the St. Sergius texts. Non-underlined hymns are kept per-line
 (never auto-merged), so hymn grouping for troparia/kontakia is a possible follow-up.
 
+**NEXT SESSION (data) — OCA director-pointed backfill: the JSON/diff loop.** The standing
+job is replacing bare St. Sergius hymn strings in the data files with OCA authoritative
+director-pointed verses, tone by tone, each change proven behaviour-preserving. The loop:
+
+1. **Source → JSON.** Load the OCA director-pointed `.docx` (Drive `OCA_service_documents/
+   YYYY-MMDD-texts-tt.docx`) in the Tone Trainer and hit **Download parsed JSON** — emits the
+   service in document order, each underlined work collapsed into a director-pointed block with
+   tone + incipit + the inline pointed string (`|` line, `//` penultimate, `[ ]` emphasis), built
+   from the trainer's own `encodeVerseBlock` (no second parser). This JSON is the *encoding
+   vehicle* (how we read the OCA pointing to hand-encode a slot), not a direct import.
+2. **Slot conversion.** In the data file (`octoechos/toneN.js` etc.), turn the target bare-string
+   slot into an OCA Tier-3 object `{ text, director:true, tradition:"OCA", pointing_source:…,
+   verse? }`. One slot = one unit of work. `src/lib/hymn-entry.js` (`normalizeHymn`/`hymnText`/
+   `hymnProvenance`) is the single string-or-object read path shared by the assembler and every
+   browser, so converted objects render with provenance while untouched string slots stay
+   byte-identical. Tone 1 Sat-Vespers `lic[0–3]`/`aposticha[0–3]`/`dogmatikon` is the worked
+   example (v0.15.15).
+3. **Audition.** Open the slot in its data browser (octoechos/menaion/pentecostarion) and fire it
+   into the Tone Trainer via the Point/Score handoff (`oht_handoff`, embedded view) to see/hear the
+   pointing. Browser = entry point; trainer = audition surface.
+4. **Diff / gate (every change), in `tools/`:** `test_pointing_paths.mjs` → ALL PASS + "No
+   regressions vs baseline ✓" (vs `pointing_baseline.json`) + entry-schema conformance;
+   `snapshot_comparison.mjs` → the Node twin of the browser ingest (shares `src/lib/docx-text.js`,
+   so the encode path can't drift between browser and Node); `validate_entries.mjs` /
+   `validate_octoechos.mjs` for schema/data; `npm run build` clean. A pure string→object conversion
+   of already-correct text should be a **zero-diff render** for the affected dates — treat any diff
+   as a regression to explain before committing.
+5. **De-dup follow-on (FW-24).** Once a tone is backfilled, feast embeds can pull from source
+   instead of carrying their own copy (pentecostarion P+63 `all_saints_sunday`'s seven tone-1
+   Resurrection fields → dereference to the Octoechos `vespers.sat.lic[i]`/`aposticha[i]`/
+   `dogmatikon`, `RESURRECTIONAL_TROPARIA`/`SUNDAY_KONTAKIA`). Resolver must be tone-scoped (only
+   de-dup pointed tones, else St. Sergius surfaces). Proof: zero-diff render for 2026-06-14. **Open
+   before speccing: confirm the §4B17 Lord-I-call composition (4 Resurrection + 6 feast) against
+   Fekula.**
+
+Next concrete targets: finish/verify tone 1 (incl. the FW-24 zero-diff de-dup), then carry the same
+loop into tone 2+.
+
 **docx tone-tag fix (v0.25.2).** The docx parser now reads tab/br/cr as whitespace
 and the tone-heading pattern reads a digit followed by a letter, fixing stale tone
 tags on tab-separated troparion/kontakion labels; tone + run helpers shared in
@@ -511,6 +549,15 @@ Versions at close: **Hours tool v0.15.0 · Tone Trainer v0.24.2.**
 - **FW-25** logged: small-screen (phone ~375–430px) chip sizing still **under investigation**
   — candidate is a chip-width/label scale-down below a breakpoint; needs real-device
   measurement before any code.
+
+**Tone Trainer + Hours UI overhaul (second June-13 session, v0.25.8 → v0.25.16 / v0.15.18 →
+v0.15.24)** — full detail in the dated prose notes at the top of this file. In brief: Hours masthead
++ iOS-safe `ServiceSelector` popover + Dismissal de-dup + responsive controls/context header +
+desktop scroll-lock fix + cross-platform play/stop glyphs; Tone Trainer restyled to match the data
+browsers, then a mobile pass — `isNarrow` (≤600px) bare-glyph transport, a reusable `PopoverSelect`
+now driving BOTH the SATB and pitch (do) pickers, two-row info bar (centered legend + full-width
+selector on mobile), chip-white textarea. **Next session is expected to be data work — see the
+"NEXT SESSION (data) — OCA director-pointed backfill" recipe near the top of this file.**
 
 Versions at close: **Hours tool v0.15.24 · Tone Trainer v0.25.16.**
 
