@@ -12,11 +12,21 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.15";
+export const TONE_TRAINER_VERSION = "v0.25.16";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.16",
+    date: "June 2026",
+    summary: "Mobile info-bar polish + pitch selector is now a popover too",
+    items: [
+      "ui: on narrow screens (≤600px) the intonation / reciting / prep / cadence legend now centers under the phrase chips instead of left-aligning.",
+      "ui: on narrow screens, more breathing room between the voice-part selector and the legend, and the SATB selector now spans the full width so it reads as the prominent control.",
+      "ui: the pitch (do) selector is now the same popover style as the SATB and service selectors — it was still a native <select>; no reason for the inconsistency, and the popover behaves better on iOS. (The popover is now a single shared PopoverSelect component used by both pickers.)",
+    ],
+  },
   {
     version: "v0.25.15",
     date: "June 2026",
@@ -3243,11 +3253,12 @@ function PhraseScroller({ children, activeKey }) {
   );
 }
 
-// ─── VOICE-PART SELECTOR ──────────────────────────────────────────────────────
-// Popover dropdown matching the Hours tool's service selector. Tenor renders
-// greyed + non-selectable on tones with no tenor line (mirrors the service
-// selector's "unbuilt" rows). Avoids native <select> styling quirks on iOS.
-function VoicePartSelector({ value, onChange, tenorEnabled }) {
+// ─── POPOVER SELECT ───────────────────────────────────────────────────────────
+// Reusable popover dropdown matching the Hours tool's service selector — used for
+// the SATB voice-part picker and the pitch (do) picker. Avoids native <select>
+// styling quirks on iOS. options: [{ value, label, disabled?, divider? }].
+// fullWidth makes the trigger span its container (used on narrow screens).
+function PopoverSelect({ value, onChange, options, ariaLabel, fullWidth, triggerStyle }) {
   const [open, setOpen] = React.useState(false);
   const ref = React.useRef(null);
   React.useEffect(() => {
@@ -3260,44 +3271,39 @@ function VoicePartSelector({ value, onChange, tenorEnabled }) {
   }, [open]);
 
   const gold = "#8B6914";
-  const OPTS = [
-    { key: "soprano",   label: "Soprano",       on: true },
-    { key: "alto",      label: "Alto (Melody)", on: true },
-    { key: "tenor",     label: "Tenor",         on: tenorEnabled },
-    { key: "bass",      label: "Bass",          on: true },
-    { key: "__sep__" },
-    { key: "alto-bass", label: "Alto + Bass",   on: true },
-    { key: "satb",      label: "SATB",          on: true },
-  ];
-  const current = OPTS.find((o) => o.key === value);
-  const triggerLabel = current ? current.label : "Voice part";
+  const current = options.find((o) => !o.divider && o.value === value);
+  const triggerLabel = current ? current.label : (ariaLabel || "Select");
 
   return (
-    <div ref={ref} style={{ position: "relative", flexShrink: 0 }}>
+    <div ref={ref} style={{ position: "relative", ...(fullWidth ? { width: "100%" } : { flexShrink: 0 }) }}>
       <button
-        type="button" aria-haspopup="listbox" aria-expanded={open} aria-label="Voice part"
+        type="button" aria-haspopup="listbox" aria-expanded={open} aria-label={ariaLabel}
         onClick={() => setOpen((o) => !o)}
         style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: "Georgia, serif",
           fontSize: "0.72rem", border: "1px solid #d6c79f", borderRadius: 3, padding: "2px 8px",
-          background: "#fff", color: "#5b4a33", cursor: "pointer" }}>
+          background: "#fff", color: "#5b4a33", cursor: "pointer",
+          ...(fullWidth ? { width: "100%", justifyContent: "space-between" } : {}),
+          ...triggerStyle }}>
         <span>{triggerLabel}</span>
         <span style={{ color: gold, fontSize: "0.7rem" }}>{open ? "\u25B4" : "\u25BE"}</span>
       </button>
       {open && (
         <div role="listbox" style={{ position: "absolute", zIndex: 60, top: "calc(100% + 5px)", right: 0,
-          minWidth: 150, background: "#fff", border: "1px solid #d6c79f", borderRadius: 5,
-          boxShadow: "0 6px 22px rgba(0,0,0,0.14)", padding: "4px 0", maxHeight: "60vh", overflowY: "auto" }}>
-          {OPTS.map((o) => {
-            if (o.key === "__sep__") return <div key="sep" style={{ height: 1, background: "#ece2c8", margin: "4px 0" }} />;
-            const sel = o.key === value;
+          minWidth: 140, maxWidth: "min(260px, 88vw)", background: "#fff", border: "1px solid #d6c79f",
+          borderRadius: 5, boxShadow: "0 6px 22px rgba(0,0,0,0.14)", padding: "4px 0",
+          maxHeight: "60vh", overflowY: "auto" }}>
+          {options.map((o, i) => {
+            if (o.divider) return <div key={`sep${i}`} style={{ height: 1, background: "#ece2c8", margin: "4px 0" }} />;
+            const sel = o.value === value;
+            const on = !o.disabled;
             return (
-              <div key={o.key} role="option" aria-selected={sel} aria-disabled={!o.on}
-                onClick={o.on ? () => { onChange(o.key); setOpen(false); } : undefined}
-                onMouseEnter={o.on ? (e) => { e.currentTarget.style.background = "#f3ead6"; } : undefined}
-                onMouseLeave={o.on ? (e) => { e.currentTarget.style.background = sel ? "rgba(139,105,20,0.10)" : "transparent"; } : undefined}
+              <div key={o.value} role="option" aria-selected={sel} aria-disabled={!on}
+                onClick={on ? () => { onChange(o.value); setOpen(false); } : undefined}
+                onMouseEnter={on ? (e) => { e.currentTarget.style.background = "#f3ead6"; } : undefined}
+                onMouseLeave={on ? (e) => { e.currentTarget.style.background = sel ? "rgba(139,105,20,0.10)" : "transparent"; } : undefined}
                 style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 12px", fontSize: "0.78rem",
-                  cursor: o.on ? "pointer" : "default", color: o.on ? "#2a2118" : "#b8ab8e",
-                  fontStyle: o.on ? "normal" : "italic", fontWeight: sel ? "bold" : "normal",
+                  cursor: on ? "pointer" : "default", color: on ? "#2a2118" : "#b8ab8e",
+                  fontStyle: on ? "normal" : "italic", fontWeight: sel ? "bold" : "normal",
                   background: sel ? "rgba(139,105,20,0.10)" : "transparent", userSelect: "none" }}>
                 <span style={{ width: 12, flexShrink: 0, color: gold }}>{sel ? "\u2713" : ""}</span>
                 <span>{o.label}</span>
@@ -5310,11 +5316,9 @@ export default function ToneTrainer() {
                   style={{ cursor: "pointer", userSelect: "none", borderBottom: "1px dotted #c9bfa4" }}>
               do ♪
             </span>
-            <select value={doHz} onChange={(e) => setDoHz(parseFloat(e.target.value))}
-              style={{ fontFamily: "Georgia, serif", border: "1px solid #d6c79f",
-                       borderRadius: 6, padding: "3px 6px" }}>
-              {DO_OPTIONS.map((o) => <option key={o.label} value={o.hz}>{o.label}</option>)}
-            </select>
+            <PopoverSelect
+              value={doHz} onChange={setDoHz} ariaLabel="Starting pitch"
+              options={DO_OPTIONS.map((o) => ({ value: o.hz, label: o.label }))} />
           </span>
           <label style={{ fontSize: "0.82rem", color: playingLine !== null ? "#b0a080" : "#5b4a33",
                           display: "inline-flex", alignItems: "center", gap: "0.3rem",
@@ -5532,12 +5536,23 @@ export default function ToneTrainer() {
       <div style={{ marginBottom: "1rem" }}>
         {/* Row 1: voice-part selector on its own line, right-justified (so the legend never stacks against it) */}
         {!(compareMode && compareData) && (
-          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "0.4rem" }}>
-            <VoicePartSelector value={voicePart} onChange={setVoicePart} tenorEnabled={TENOR_TONES.has(activeTone)} />
+          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: isNarrow ? "0.75rem" : "0.4rem" }}>
+            <PopoverSelect
+              value={voicePart} onChange={setVoicePart} ariaLabel="Voice part" fullWidth={isNarrow}
+              options={[
+                { value: "soprano",   label: "Soprano" },
+                { value: "alto",      label: "Alto (Melody)" },
+                { value: "tenor",     label: "Tenor", disabled: !TENOR_TONES.has(activeTone) },
+                { value: "bass",      label: "Bass" },
+                { divider: true },
+                { value: "alto-bass", label: "Alto + Bass" },
+                { value: "satb",      label: "SATB" },
+              ]} />
           </div>
         )}
-        {/* Row 2: color-coded legend — pill backgrounds match chip roleBg colors */}
+        {/* Row 2: color-coded legend — pill backgrounds match chip roleBg colors. Centered on mobile. */}
         <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap", alignItems: "center",
+                      justifyContent: isNarrow ? "center" : "flex-start",
                       fontSize: "0.78rem", color: "#6b5942" }}>
           <span style={{ background: "rgba(40,120,60,.10)", color: "#1a6030",
                          borderRadius: 4, padding: "1px 7px" }}>intonation</span>

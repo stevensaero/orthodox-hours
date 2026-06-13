@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.24** | **Tone Trainer: v0.25.15** | Last synced: June 13, 2026
+**Tool version: v0.15.24** | **Tone Trainer: v0.25.16** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -112,6 +112,16 @@ stripped, while the Director vs. Machine button (gated on `compareData`, set at 
 lingered. Note is now gated on `hasTruth || compareData`, so the note, the button, and the
 still-director chips all dwell until the stripped text is re-pointed, then clear together
 (`analyzeText` sets `compareData` on a director point, nulls it on a non-director one).
+
+**Mobile info-bar polish + pitch selector popover + shared PopoverSelect (Trainer v0.25.16).**
+Generalized `VoicePartSelector` into a reusable module-scope `PopoverSelect({value,onChange,options,
+ariaLabel,fullWidth,triggerStyle})` (options = `[{value,label,disabled?,divider?}]`; `fullWidth` →
+wrapper+trigger `width:100%` with `justify-content:space-between`). Used for BOTH the SATB picker and
+the pitch (do) picker (the do control was still a native `<select>` — converted for iOS consistency;
+`onChange={setDoHz}` receives the hz number directly, the `[doHz]` effect still sounds the pitch). At
+≤600px (`isNarrow`): the legend row centers (`justifyContent:center`), the selector row gets more
+bottom margin (0.4rem→0.75rem), and the SATB selector goes full-width (`fullWidth={isNarrow}`). Desktop
+unchanged.
 
 **Mobile control-bar + popover SATB + info-bar + textarea (Trainer v0.25.15).** Added an
 `isNarrow` hook (`matchMedia (max-width:600px)` + listener). At ≤600px the control-bar Play/Stop
@@ -502,7 +512,7 @@ Versions at close: **Hours tool v0.15.0 · Tone Trainer v0.24.2.**
   — candidate is a chip-width/label scale-down below a breakpoint; needs real-device
   measurement before any code.
 
-Versions at close: **Hours tool v0.15.24 · Tone Trainer v0.25.15.**
+Versions at close: **Hours tool v0.15.24 · Tone Trainer v0.25.16.**
 
 ---
 
