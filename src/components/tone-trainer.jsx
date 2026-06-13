@@ -12,11 +12,19 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.9";
+export const TONE_TRAINER_VERSION = "v0.25.10";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.10",
+    date: "June 2026",
+    summary: "Piano-only: deprecate the timbre selector and the organ/choir/cello voices",
+    items: [
+      "ui/audio: removed the timbre selector — Piano is now the only playback voice. The organ, choir, and cello synth paths (playOrganNote/playChoirNote/playCelloNote) are removed and toneTimbre always plays piano; the timbre state is now a constant.",
+    ],
+  },
   {
     version: "v0.25.9",
     date: "June 2026",
@@ -3085,16 +3093,8 @@ function useAudio() {
     return ctxRef.current;
   };
 
-  // Multi-timbre tone synthesis — matches sandbox implementations
-  const toneTimbre = (f, t0, dur, peak = 0.22, timbre = "piano") => {
-    const c = ac();
-    switch (timbre) {
-      case "organ":     playOrganNote(c, f, t0, dur, peak); break;
-      case "choir":     playChoirNote(c, f, t0, dur, peak); break;
-      case "cello":     playCelloNote(c, f, t0, dur, peak); break;
-      default:          playPianoNote(c, f, t0, dur, peak); break;
-    }
-  };
+  // Piano synthesis. Organ/choir/cello timbres deprecated v0.25.10 — Piano only.
+  const toneTimbre = (f, t0, dur, peak = 0.22) => playPianoNote(ac(), f, t0, dur, peak);
 
   function playPianoNote(c, f, t0, dur, peak) {
     const g = c.createGain();
@@ -3109,56 +3109,6 @@ function useAudio() {
     g.gain.exponentialRampToValueAtTime(peak*0.34,t0+0.08);
     g.gain.setValueAtTime(peak*0.34,t0+dur-0.05);
     g.gain.exponentialRampToValueAtTime(0.001,t0+dur+0.25);
-  }
-
-  function playOrganNote(c, f, t0, dur, peak) {
-    const g = c.createGain();
-    g.connect(c.destination);
-    [[1,0.5],[2,0.25],[3,0.15],[4,0.08],[5,0.04],[6,0.02]].forEach(([h,a]) => {
-      const o = c.createOscillator(); const hg = c.createGain();
-      o.connect(hg); hg.connect(g); o.type="sine"; o.frequency.value=f*h; hg.gain.value=a;
-      o.start(t0); o.stop(t0+dur+0.05);
-    });
-    g.gain.setValueAtTime(0,t0);
-    g.gain.linearRampToValueAtTime(peak,t0+0.02);
-    g.gain.setValueAtTime(peak,t0+dur-0.02);
-    g.gain.linearRampToValueAtTime(0.001,t0+dur+0.04);
-  }
-
-  function playChoirNote(c, f, t0, dur, peak) {
-    const g = c.createGain();
-    g.connect(c.destination);
-    const vib = c.createOscillator(); const vibG = c.createGain();
-    vib.frequency.value=5.2; vibG.gain.value=f*0.012;
-    vib.connect(vibG); vib.start(t0+0.12); vib.stop(t0+dur+0.2);
-    [[1,0.6],[2,0.2],[3,0.1],[4,0.05]].forEach(([h,a]) => {
-      const o = c.createOscillator(); const hg = c.createGain();
-      o.connect(hg); hg.connect(g); o.type="sine"; o.frequency.value=f*h;
-      vibG.connect(o.frequency); hg.gain.value=a;
-      o.start(t0); o.stop(t0+dur+0.2);
-    });
-    g.gain.setValueAtTime(0,t0);
-    g.gain.linearRampToValueAtTime(peak,t0+0.08);
-    g.gain.setValueAtTime(peak,t0+dur-0.08);
-    g.gain.exponentialRampToValueAtTime(0.001,t0+dur+0.18);
-  }
-
-  function playCelloNote(c, f, t0, dur, peak) {
-    const g = c.createGain();
-    g.connect(c.destination);
-    const vib = c.createOscillator(); const vibG = c.createGain();
-    vib.frequency.value=4.8; vibG.gain.value=f*0.008;
-    vib.connect(vibG); vib.start(t0+0.15); vib.stop(t0+dur+0.2);
-    [[1,0.55],[2,0.25],[3,0.12],[4,0.06],[5,0.03]].forEach(([h,a]) => {
-      const o = c.createOscillator(); const hg = c.createGain();
-      o.connect(hg); hg.connect(g); o.type="sine"; o.frequency.value=f*h;
-      vibG.connect(o.frequency); hg.gain.value=a;
-      o.start(t0); o.stop(t0+dur+0.2);
-    });
-    g.gain.setValueAtTime(0,t0);
-    g.gain.linearRampToValueAtTime(peak,t0+0.09);
-    g.gain.setValueAtTime(peak,t0+dur-0.06);
-    g.gain.exponentialRampToValueAtTime(0.001,t0+dur+0.15);
   }
 
   // Legacy simple tone kept for backward compat — used by comparison harness
@@ -3254,7 +3204,7 @@ export default function ToneTrainer() {
   const [playingBassIdx, setPlayingBassIdx] = useState(null); // currently playing bass chip index
   const [playingTenorIdx, setPlayingTenorIdx] = useState(null); // currently playing tenor chip index
   const [pitchHeight, setPitchHeight] = useState(true); // always on in new sing view
-  const [timbre, setTimbre] = useState("piano");         // audio timbre for sing view
+  const timbre = "piano";                                // Piano only (organ/choir/cello deprecated v0.25.10)
   const [voicePart, setVoicePart] = useState("alto");    // alto | bass | alto-bass
   const [showReleaseNotes, setShowReleaseNotes] = useState(false);
   const [showScoreModal, setShowScoreModal] = useState(false);
@@ -5449,19 +5399,7 @@ export default function ToneTrainer() {
             <option value="satb">SATB</option>
           </select>
         )}
-        {/* Timbre selector — only in sing view; hidden in embedded view (defaults to Piano) */}
-        {!embeddedVerseView && !(compareMode && compareData) && (
-          <select value={timbre} onChange={e => setTimbre(e.target.value)}
-            style={{ marginLeft: "0.4rem", fontSize: "0.72rem", flexShrink: 0,
-                     background: "transparent", border: "1px solid #d6c79f",
-                     borderRadius: 3, padding: "1px 6px", cursor: "pointer",
-                     fontFamily: "Georgia, serif", color: "#5b4a33" }}>
-            <option value="piano">Piano</option>
-            <option value="organ">Organ</option>
-            <option value="choir">Choir</option>
-            <option value="cello">Cello</option>
-          </select>
-        )}
+        {/* Timbre selector removed (v0.25.10) — Piano is the only timbre */}
       </div>
       )}
 

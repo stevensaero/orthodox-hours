@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.17** | **Tone Trainer: v0.25.9** | Last synced: June 13, 2026
+**Tool version: v0.15.17** | **Tone Trainer: v0.25.10** | Last synced: June 13, 2026
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
@@ -96,6 +96,11 @@ Machine comparison harness (which inherently shows both rows). The "Director vs.
 toggle moved out of the info bar onto the "Director Pointing mode — …" note line under the
 paste box, far-right justified (note text `flex:1`, button `flex-shrink:0`); shown only when
 `compareData` exists, and hidden in embedded view because the pointer block is.
+
+**Piano-only (v0.25.10).** Deprecated the timbre selector and the organ/choir/cello voices.
+`playOrganNote`/`playChoirNote`/`playCelloNote` removed; `toneTimbre` always plays piano; the
+`timbre` state is now a `"piano"` constant (the 8 `toneTimbre(...)` call sites are unchanged).
+Piano is the only playback voice.
 
 **Irmos is pointed but NOT trainer-singable (v0.15.11).** A canon ode's Irmos
 has its own proper melody — it is never sung to the standard tone formula the
@@ -398,7 +403,7 @@ Versions at close: **Hours tool v0.15.0 · Tone Trainer v0.24.2.**
   — candidate is a chip-width/label scale-down below a breakpoint; needs real-device
   measurement before any code.
 
-Versions at close: **Hours tool v0.15.17 · Tone Trainer v0.25.9.**
+Versions at close: **Hours tool v0.15.17 · Tone Trainer v0.25.10.**
 
 ---
 
