@@ -1,7 +1,41 @@
 # Orthodox Hours Tool — Project Notes
 **Tool version: v0.15.28** | **Tone Trainer: v0.25.16** | Last synced: June 13, 2026
 
-**Dismissal unification — error 3 (v0.15.27).** The priest's dismissal is now one
+**Kathisma spacing (v0.15.28).** "Blessed is the Man" now renders each verse as its own
+paragraph (margin ~0.5rem, line-height 1.6) instead of pre-wrap `\n\n` blank lines (~1.7rem).
+Contained to the `blessedIsMan`-flagged element; nothing else changed.
+
+**Weekday dismissal — findings & plan (next session).**
+Source review (Fekula Ch.6 + Ch.10, OCA 2021 Vespers, HTM Horologion) for the weekday отпуст:
+- **Q2 RESOLVED:** Fekula Ch.6 — stavrotheotokia (Cross) are used on **both Wed and Fri**.
+  So Cross-on-Wed-and-Fri in the Little day-sets is correct for Russian/OCA usage, not an
+  Antiochian artifact. The day-of-week *themes* (Mon Bodiless Powers, Tue Forerunner, Wed/Fri
+  Cross, Thu Apostles + St. Nicholas, Sat Martyrs/Fathers) are the universal Octoechos weekly
+  cycle — **the set is sound; only the *wording* differs by recension.**
+- **Reader-mode weekday form is fully specified (Fekula Ch.10):** "More honorable… / Glory…
+  Now and ever… Lord, have mercy (thrice), Lord, bless! / Through the prayers of our holy
+  fathers, *of (the saints of the day and of the temple)*, and of all the saints, Lord Jesus
+  Christ, Son of God, have mercy on us. Amen." Our current reader branch omits the saint+temple
+  insertion and the lead-in — concrete sourced fix.
+- **OCA wording migration is BLOCKED on a source:** the OCA 2021 Vespers text confirms the
+  dismissal *structure* but defers the variable text ("the priest pronounces *the appropriate
+  Dismissal*") — it does not print the day-of-week отпуст wording. Need an OCA Liturgikon /
+  priest's Service Book / dedicated OCA dismissals reference on Drive before migrating strings.
+  Antiochian wording stays until then (already flagged in-code).
+
+Planned work items (sourced; spec → code → probe → push), none blocked on the OCA source:
+1. Fold reader-mode weekday dismissal into the unified engine (Fekula Ch.10 — saint+temple+lead-in).
+2. Weekday afterfeast characteristic phrase: feast→phrase table (Theophany/Transfiguration/
+   Nativity/Meeting/Elevation etc.) keyed on the active feast period; front-prefix currently
+   only fires Sunday/Ascension/Pentecost.
+3. Great vs Little weekday edges: decide Doxology-rank weekday (Great or Little; `isHighRank`
+   currently = polyeleos/vigil only); confirm vigil-served trigger. `rank` field is present in
+   Menaion data (simple/six_stichera/doxology/polyeleos/vigil).
+4. Saturday set: verify inclusion of the departed / "all saints."
+Open questions for Bill: Doxology weekday Great-or-Little?; Saturday include the departed?;
+can he source an OCA Liturgikon/dismissals text for the wording migration?
+
+
 assembler (`buildDismissalText`) for Vespers + Typica + Post-Communion; the two old
 divergent builders are gone. Characteristic phrase is a true front prefix on "Christ our
 true God" (fixes the malformed Sunday/festal dismissal); Great vs Little keyed on
@@ -15,8 +49,9 @@ OCA migration. Spec: `dismissal_assembler_spec.md`. Verified with a source-extra
 itself — the existing `TempleSelector` previews a troparion, wrong in the dismissal context,
 so it needs a lightweight variant; the temple remains settable via Litiya/Typica meanwhile.
 (b) Vespers reader-mode dismissal still uses its own `_buildReaderDismissal` (unchanged);
-fold into the unified engine later. (c) Q2 (Cross on Wed+Fri) and Q4 (saint-of-day phrasing
-on named-day Sundays) proceeded on Antiochian/default, flagged for review. (d) OCA-migration
+fold into the unified engine later. (c) Q4 (saint-of-day phrasing
+on named-day Sundays) proceeded on default, flagged for review. (Q2 — Cross on Wed+Fri — now
+RESOLVED via Fekula Ch.6; see weekday-dismissal findings above.) (d) OCA-migration
 of dismissal wording. (e) full Fekula Ch.6 Theotokion engine (§II/§III), spec §14.
 
 **Tool version (prior): v0.15.26**
