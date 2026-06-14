@@ -12,8 +12,17 @@
 //             blessed vocabulary below). A typo or a non-canonical name fails loudly.
 //   Check B — Sunday-overlay flag block: all_saints_sunday / pentecostarion_sunday
 //             entries must carry the full structural flag set (encoding_rule_v2.md §12).
+//   Check C — Stichera completeness audit (Menaion only): an entry whose rank carries
+//             Lord-I-Call stichera (§2A–§2F) must actually have stichera_lord_i_call.
+//             This catches "skeleton" entries that passed the vocabulary guard while
+//             their LIC stichera were never filled (e.g. the June simple saints). It is
+//             a WARNING by default (non-fatal — it lists the gaps as a checklist); pass
+//             --strict to promote the warnings to failures. An entry may suppress the
+//             warning by carrying a stichera_lord_i_call_note documenting the source.
 //
-// Run: node tools/validate_entries.mjs   (exit 1 on any violation, 0 when clean)
+// Run: node tools/validate_entries.mjs [--strict]
+//   exit 1 on any Check A/B violation (always) or any Check C gap (only with --strict);
+//   exit 0 when clean (Check C gaps still print as warnings).
 //
 // To add a GENUINELY new field, add it to KNOWN_FIELDS deliberately — that is the
 // gate. The list was seeded from the union of all shipped Menaion + Pentecostarion
@@ -70,9 +79,18 @@ const REQUIRED_OVERLAY_FLAGS = [
   'heavenly_king_omitted', 'it_is_truly_meet_suppressed',
 ];
 
-const problems = [];
+// Check C — ranks whose Vespers carries Lord-I-Call stichera from the Menaion saint
+// (§2A simple → §2F vigil). great_feast is intentionally excluded: its propers have
+// varied sourcing (often menaion_set_aside / Pentecostarion) and don't fit one rule.
+const RANKS_REQUIRING_LIC = new Set(['simple', 'six_stichera', 'doxology', 'polyeleos', 'vigil']);
+const SIMPLE_MIN_LIC = 3; // §2A weekday = 3 Octoechos + 3 Menaion
 
-function checkEntry(label, entry) {
+const strict = process.argv.includes('--strict');
+
+const problems = [];
+const warnings = [];
+
+function checkEntry(label, entry, kind) {
   if (!entry || typeof entry !== 'object') return;
 
   // Check A — unknown-field guard
@@ -90,30 +108,61 @@ function checkEntry(label, entry) {
       }
     }
   }
+
+  // Check C — stichera completeness (Menaion entries only)
+  if (kind === 'menaion' && RANKS_REQUIRING_LIC.has(entry.rank)) {
+    // menaion_set_aside (a Great-Feast / overlay contract) sources stichera elsewhere.
+    // A stichera_lord_i_call_note documents a deliberate exception and suppresses the warning.
+    const exempt = entry.menaion_set_aside === true || typeof entry.stichera_lord_i_call_note === 'string';
+    const lic = entry.stichera_lord_i_call;
+    const n = Array.isArray(lic) ? lic.length : 0;
+    if (!exempt) {
+      if (n === 0) {
+        warnings.push(`${label}: rank "${entry.rank}" carries Lord-I-Call stichera, but stichera_lord_i_call is empty/absent (enter the stichera, or add a stichera_lord_i_call_note documenting the source).`);
+      } else if (entry.rank === 'simple' && n < SIMPLE_MIN_LIC) {
+        warnings.push(`${label}: simple/§2A entry has only ${n} Lord-I-Call sticheron(a); §2A expects ${SIMPLE_MIN_LIC} Menaion stichera.`);
+      }
+    }
+  }
 }
 
-function walk(name, data) {
+function walk(name, data, kind) {
   for (const key of Object.keys(data)) {
     const raw = data[key];
     const list = Array.isArray(raw) ? raw : [raw];
     list.forEach((entry, i) => {
       const label = list.length > 1 ? `${name}[${key}][${i}]` : `${name}[${key}]`;
-      checkEntry(label, entry);
+      checkEntry(label, entry, kind);
     });
   }
 }
 
-walk('Pentecostarion', PENT);
-walk('Menaion/may', MAY);
-walk('Menaion/june', JUNE);
-walk('Menaion/july', JULY);
+walk('Pentecostarion', PENT, 'pentecostarion');
+walk('Menaion/may', MAY, 'menaion');
+walk('Menaion/june', JUNE, 'menaion');
+walk('Menaion/july', JULY, 'menaion');
 
+// ── Report ───────────────────────────────────────────────────────────────────
 if (problems.length === 0) {
   console.log('✓ Entry schema conformance: all entries pass (unknown-field guard + Sunday-overlay flag block).');
-  process.exit(0);
 } else {
   console.error(`✗ Entry schema conformance: ${problems.length} violation(s):\n`);
   for (const p of problems) console.error('  • ' + p);
   console.error('\nFix the entries (or extend KNOWN_FIELDS deliberately) before pushing.');
-  process.exit(1);
 }
+
+if (warnings.length > 0) {
+  const tag = strict ? '✗' : '⚠';
+  console.error(`\n${tag} Stichera completeness (Check C): ${warnings.length} entr${warnings.length === 1 ? 'y' : 'ies'} missing Lord-I-Call stichera:\n`);
+  for (const w of warnings) console.error('  • ' + w);
+  console.error(
+    strict
+      ? '\n--strict: completeness gaps are treated as failures. Enter the stichera or add a stichera_lord_i_call_note.'
+      : '\nThese are warnings (non-fatal). Run with --strict to gate on them once the data is filled in.'
+  );
+} else if (problems.length === 0) {
+  console.log('✓ Stichera completeness (Check C): all rank-bearing Menaion entries carry Lord-I-Call stichera.');
+}
+
+const failed = problems.length > 0 || (strict && warnings.length > 0);
+process.exit(failed ? 1 : 0);
