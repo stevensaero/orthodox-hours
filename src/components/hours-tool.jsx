@@ -8053,6 +8053,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.16.5",
+    date: "June 2026",
+    summary: "Data: Sunday aposticha theotokia (P2) — all 8 tones filled from Common Theotokia source",
+    items: [
+      "data: SUNDAY_APOSTICHA_THEOTOKIA table now fully encoded for all 8 tones (sourced from St. Sergius Common Theotokia PDF, 'On Sunday evening at Vespers Aposticha' section). Sunday Vespers now renders the correct Both-now theotokion after the aposticha Glory rather than the unresolved placeholder. Three distinct theotokia tables (LIC dogmatikon / aposticha theotokion / dismissal theotokion) now all populated.",
+    ],
+  },
+  {
     version: "v0.16.4",
     date: "June 2026",
     summary: "Data: LIC stichera complete for all encoded June and July Menaion entries",

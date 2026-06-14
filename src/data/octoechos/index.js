@@ -124,7 +124,22 @@ export const RESURRECTIONAL_DISMISSAL_THEOTOKIA = {
 // P1 ships this as a null stub; the engine falls back + flags when a tone is null.
 // P2 fills the eight texts from the appendix.
 export const SUNDAY_APOSTICHA_THEOTOKIA = {
-  1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null,
+  // Source: St. Sergius Octoechos, Common Theotokia / Theotokia.pdf
+  // Section: "Theotokia in the Eight Tones, chanted when there is a Doxasticon for the Saint in the Menaion:
+  //   Both Now and Ever..., these Theotokia, according to the tone of the Doxasticon"
+  // Subsection per tone: "On Sunday evening at Vespers Aposticha, in Tone N:"
+  // Keyed by the tone of the aposticha Glory (not the week tone). Three distinct tables; see spec §7.
+  1: { tone: 1, text: "Joy of the ranks of heaven, * and mighty intercession for mankind on earth, * O most-pure Virgin: * save us who have recourse unto thee, * for in thee, after God, have we placed our hope, ** O Theotokos." },
+  2: { tone: 2, text: "Rejoice, O Theotokos Mary, * thou indestructible and surpassingly holy temple; * as the prophet crieth out: ** Holy is thy temple, wondrous in righteousness!" },
+  3: { tone: 3, text: "O Theotokos, * thou intercessor for all who pray to thee: * in thee do we have boldness, * in thee do we boast, * and in thee do we place all our hope. * Pray thou unto Him who was born from thee, ** on behalf of thine unprofitable servants." },
+  4: { tone: 4, text: "Rejoice, O cloud of Light! * Rejoice, radiant candlestick! * Rejoice, jar wherein the Manna was kept! * Rejoice, staff of Aaron! * Rejoice, bush un-burnt! * Rejoice, bridal-chamber! * Rejoice, thou throne! * Rejoice, holy mountain! * Rejoice, refuge! Rejoice, divine table! * Rejoice, mystic portal! ** Rejoice, thou joy of all!" },
+  5: { tone: 5, text: "O strange, awesome and great mystery! * The Un-circumscribable One hath made His abode within a womb, * and a Mother remaineth a Virgin even after birthgiving, * for from her she gave birth to God Incarnate. * To Him, then, let us cry aloud, * to Him let us raise a hymn, * chanting with the angels: * Holy art Thou, O Christ God, * Who wast incarnate for our sake! ** Glory be to Thee!" },
+  6: { tone: 6, text: "Like the Archangel, * let us the faithful hymn the bridal-chamber of heaven, * the portal truly sealed: * Rejoice, for whose sake hath budded forth unto us Christ the Savior of all, * the Bestower of life and God! * With thine arm O Lady * cast down the tyrants, our godless foes, * O most pure one, ** O thou hope of Christians!" },
+  7: { tone: 7, text: "With the angel we cry out to thee, Rejoice! O Bride of God, * calling thee the bridal-chamber and portal, * the fiery throne and unquarried mountain, ** and bush unconsumed." },
+  8: { tone: 8, text: "Taking up the cry of the Archangel Gabriel, let us say: * Rejoice, O Mother of God, * who hast given birth unto Christ, ** the bestower of life upon the world!" },
+  // Note: the spec quoted T8 as "O unwedded Virgin, who ineffably didst conceive God in the flesh..." — that text
+  // appears under "At the Aposticha" in the Resurrectional Theotokia section (used when there is NO saint doxasticon).
+  // The table above is the SAINT-DOXASTICON table, per the heading in Theotokia.pdf.
 };
 
 export const SUNDAY_KONTAKIA = {
