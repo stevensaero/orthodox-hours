@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.16.0** | **Tone Trainer: v0.25.16** | Last synced: June 14, 2026
+**Tool version: v0.16.4** | **Tone Trainer: v0.25.16** | Last synced: June 14, 2026
 
 **Sunday Vespers — unified engine (P0 signed off; P1 engine LANDED in v0.16.0).** `sunday_vespers_spec.md`
 (repo root) specs one engine for ALL resurrectional Sundays — ordinary Octoechos
@@ -29,9 +29,12 @@ Structural test: `tools/test_sunday_vespers.mjs`.
 to senior, Nov 9 2025 no-Glory) — out of P1, commemoration-as-a-list later. **OCA-primacy** logged
 (§3.2, Oct 9 2022 Tikhon over James + 7th-Council transfer).
 **Remaining (both out of P1):** §8.4 Great-Feast-on-Sunday precedence; §8.5 Pentecostarion-Sunday
-regression guard (P4). **Next:** P2 data backfill — fill `SUNDAY_APOSTICHA_THEOTOKIA` (8 texts) and
-encode the acceptance saints' stichera (Jun 21 Julian has none; Jun 28 needs a repeat marker so the
-4th commemoration slot fills rather than flags).
+regression guard (P4). **P2 data backfill status (v0.16.3–v0.16.4 session, June 14 2026):**
+- Check C (LIC stichera completeness) now passes with **zero warnings** across all encoded June and July entries.
+- June simples encoded (v0.16.4): 06-15 Amos T2, 06-16 Tichon T8, 06-17 Manuel/Sabel/Ismael T4+Glory T8, 06-18 Leontius T8+Glory T1, 06-19 Jude (no-PDF note), 06-20 Methodius T4, 06-21 Julian T4+Glory T6, 06-22 Eusebius T8, 06-23 Agrippina T4, 06-26 David T8+Glory T6, 06-27 Sampson T1+Glory T1. 06-28 Cyrus & John repeat marker added (first sticheron repeatIndex:0 for Sunday 4-slot fill).
+- July entries encoded (v0.16.4): 07-02 St John Maximovich vigil 8 stichera T6 (from 06-19.pdf), 07-03 Hyacinth T8, 07-14 Nicodemus polyeleos 6 stichera T4+T8 + Glory T6 + Both-now Dogmatic T6, 07-15 Juvenal T1+Glory T6.
+- Menaion browser (v0.16.3): secondary commemorations now render full hymnography via shared `EntryHymnography` component.
+- **Still open — SUNDAY_APOSTICHA_THEOTOKIA (8 stubs, tones 1–8):** sourced from St. Sergius Octoechos appendix. Texts not found in `octoechos_vespers.txt` (which covers weekday data only) or `octoechos-data.js`. Require the actual Sunday Vespers PDF appendix section. T8 text confirmed by spec ("O unwedded Virgin, who ineffably didst conceive God in the flesh…") — needs all 8. Stubbed null; engine falls back gracefully and flags.
 
 **Outline + Evening Litany fixes (v0.15.31).** (1) `isPlaceholder` in ServiceOutline no
 longer uses `text.startsWith('[')` — that collided with OCA director-pointed text (the Tone 1
