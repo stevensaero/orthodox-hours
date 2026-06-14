@@ -50,8 +50,7 @@ function pad2(n) { return String(n).padStart(2, '0'); }
 
 function statusColor(status) {
   if (status === 'complete') return C.green;
-  if (status === 'partial') return C.amber;
-  return C.red;
+  return C.red;  // partial and structural both red — any gap is an error
 }
 
 function statusIcon(status) {
@@ -472,11 +471,11 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
       {(audit.missing.length > 0 || audit.hasPlaceholder) && (
         <div style={{
           fontSize: "0.78rem",
-          color: audit.status === 'structural' ? C.red : C.amber,
-          background: audit.status === 'structural' ? "rgba(185,74,58,0.06)" : "rgba(166,124,0,0.06)",
+          color: C.red,
+          background: "rgba(185,74,58,0.06)",
           padding: "0.5rem 0.7rem",
           borderRadius: "4px",
-          borderLeft: `3px solid ${audit.status === 'structural' ? C.red : C.amber}`,
+          borderLeft: `3px solid ${C.red}`,
           marginBottom: "0.75rem",
         }}>
           <div style={{ fontWeight: 600, marginBottom: "0.3rem" }}>
@@ -490,8 +489,8 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
                 display: "inline-block",
                 fontSize: "0.72rem",
                 fontFamily: "monospace",
-                background: audit.status === 'structural' ? "rgba(185,74,58,0.1)" : "rgba(166,124,0,0.1)",
-                border: `1px solid ${audit.status === 'structural' ? "rgba(185,74,58,0.3)" : "rgba(166,124,0,0.3)"}`,
+                background: "rgba(185,74,58,0.1)",
+                border: `1px solid rgba(185,74,58,0.4)`,
                 borderRadius: "3px",
                 padding: "1px 6px",
               }}>
@@ -806,7 +805,7 @@ export default function MenaionBrowser() {
                 <>
                   <br />
                   <span style={{ color: C.green }}>{summary.complete} complete</span>
-                  {summary.partial > 0 && <> · <span style={{ color: C.amber }}>{summary.partial} partial</span></>}
+                  {summary.partial > 0 && <> · <span style={{ color: C.red }}>{summary.partial} partial</span></>}
                   {summary.structural > 0 && <> · <span style={{ color: C.red }}>{summary.structural} structural</span></>}
                 </>
               )}
