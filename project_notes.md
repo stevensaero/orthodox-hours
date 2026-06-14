@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.16.4** | **Tone Trainer: v0.25.16** | Last synced: June 14, 2026
+**Tool version: v0.16.5** | **Tone Trainer: v0.25.16** | Last synced: June 14, 2026
 
 **Sunday Vespers — unified engine (P0 signed off; P1 engine LANDED in v0.16.0).** `sunday_vespers_spec.md`
 (repo root) specs one engine for ALL resurrectional Sundays — ordinary Octoechos
@@ -35,6 +35,7 @@ regression guard (P4). **P2 data backfill status (v0.16.3–v0.16.4 session, Jun
 - July entries encoded (v0.16.4): 07-02 St John Maximovich vigil 8 stichera T6 (from 06-19.pdf), 07-03 Hyacinth T8, 07-14 Nicodemus polyeleos 6 stichera T4+T8 + Glory T6 + Both-now Dogmatic T6, 07-15 Juvenal T1+Glory T6.
 - Menaion browser (v0.16.3): secondary commemorations now render full hymnography via shared `EntryHymnography` component.
 - **Still open — SUNDAY_APOSTICHA_THEOTOKIA (8 stubs, tones 1–8):** sourced from St. Sergius Octoechos appendix. Texts not found in `octoechos_vespers.txt` (which covers weekday data only) or `octoechos-data.js`. Require the actual Sunday Vespers PDF appendix section. T8 text confirmed by spec ("O unwedded Virgin, who ineffably didst conceive God in the flesh…") — needs all 8. Stubbed null; engine falls back gracefully and flags.
+- **RESOLVED (v0.16.5):** `SUNDAY_APOSTICHA_THEOTOKIA` all 8 tones filled from `common_theotokia/Theotokia.pdf` (St. Sergius Common Theotokia). Source section: "Theotokia in the Eight Tones, chanted when there is a Doxasticon for the Saint in the Menaion: Both Now and Ever..., On Sunday evening at Vespers Aposticha, in Tone N." Note: the spec's T8 quote ("O unwedded Virgin…") is the Resurrectional Theotokion ("At the Aposticha", used when NO saint doxasticon) — a distinct text from the saint-doxasticon table now encoded. Sunday Vespers now renders fully with no unresolved placeholders.
 
 **Outline + Evening Litany fixes (v0.15.31).** (1) `isPlaceholder` in ServiceOutline no
 longer uses `text.startsWith('[')` — that collided with OCA director-pointed text (the Tone 1
