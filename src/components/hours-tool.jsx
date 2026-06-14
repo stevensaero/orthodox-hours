@@ -3660,15 +3660,36 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           fekula:{section:fekulaSection, note:"Glory: doxasticon."}});
       }
       elements.push({id:"v-lic-nowever", type:"fixed", label:"", text:"Now and ever and unto ages of ages. Amen.", source:"HTM Vespers"});
-      // Both Now theotokion: use pentEntry.lic_theotokion if encoded, else Octoechos weekday
+      // Both Now: appointed Pentecostarion theotokion if encoded; else, on a
+      // resurrectional Sunday overlay (all_saints_sunday), the tone's Dogmatikon
+      // (the Both Now of a Saturday-evening Great Vespers is the resurrectional
+      // Dogmatikon, a property of the tone + served evening — it is NOT the
+      // weekday theotokion). Otherwise fall back to the weekday theotokion.
+      // NOTE: pentecostarion_sunday (Thomas→Blind Man) is left on its existing
+      // path pending separate verification vs Fekula §4B.
       const pentLicTheot = pentEntry && pentEntry.lic_theotokion;
-      const licTheotPent = pentLicTheot ? pentLicTheot : { tone, text: LIC_THEOTOKIA[tone] };
-      if (licTheotPent && licTheotPent.text) {
+      const licIsResSunday = pentEntry && pentEntry.hours_format === 'all_saints_sunday';
+      const licSatDog = (!pentLicTheot && licIsResSunday) ? getOctoechosVespers(tone, 'sat') : null;
+      if (pentLicTheot && pentLicTheot.text) {
         elements.push({id:"v-lic-theotokion", type:"movable", label:"Theotokion",
-          rubric:"Tone "+licTheotPent.tone+":",
-          text:licTheotPent.text,
-          source: pentLicTheot ? "Pentecostarion" : "Octoechos",
-          fekula:{section:fekulaSection, note:"Both Now: " + (pentLicTheot ? "appointed Theotokion from Pentecostarion." : "weekday theotokion in tone of week. Fekula §2A/§4A.")}});
+          rubric:"Tone "+pentLicTheot.tone+":",
+          text:pentLicTheot.text,
+          source:"Pentecostarion",
+          fekula:{section:fekulaSection, note:"Both Now: appointed Theotokion from Pentecostarion."}});
+      } else if (licSatDog && licSatDog.dogmatikon) {
+        elements.push({id:"v-lic-dogmatikon", type:"movable", label:"Dogmatikon",
+          rubric:"Tone "+tone+":",
+          text:hymnText(licSatDog.dogmatikon), source:"Octoechos", ...hymnProvenance(licSatDog.dogmatikon),
+          fekula:{section:fekulaSection, note:"Both Now: resurrectional Dogmatikon in the tone of the week (Saturday-evening Great Vespers). Fekula §4B; Octoechos."}});
+      } else {
+        const licTheot = LIC_THEOTOKIA[tone];
+        if (licTheot) {
+          elements.push({id:"v-lic-theotokion", type:"movable", label:"Theotokion",
+            rubric:"Tone "+tone+":",
+            text:licTheot,
+            source:"Octoechos",
+            fekula:{section:fekulaSection, note:"Both Now: weekday theotokion in tone of week. Fekula §2A/§4A."}});
+        }
       }
       licRendered = true;
     } // end else if (isPentecostarion && menaionLicStichera.length > 0)
@@ -6425,8 +6446,23 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
 
   // Wire IntersectionObserver here — legal because this is a component
   React.useEffect(() => {
+    const visible = new Set();
+    const pickTopmost = () => {
+      let bestId = null, bestTop = Infinity;
+      visible.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const top = el.getBoundingClientRect().top;
+        if (top < bestTop) { bestTop = top; bestId = id; }
+      });
+      if (bestId) setActiveSection(bestId);
+    };
     const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) setActiveSection(e.target.id); });
+      entries.forEach(e => {
+        if (e.isIntersecting) visible.add(e.target.id);
+        else visible.delete(e.target.id);
+      });
+      pickTopmost();
     }, { threshold: 0.1, rootMargin: '-8% 0px -65% 0px' });
     const t = setTimeout(() => {
       OUTLINE_MAJOR_IDS.forEach(id => {
@@ -7002,7 +7038,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
       }
     });
     return (
-      <div style={{ marginBottom: '1.4rem' }}>
+      <div id={element.id} style={{ marginBottom: '1.4rem' }}>
         {element.rubric && <div style={rubrStyle}>{element.rubric}</div>}
         {element.label && (
           <div style={{ ...labelStyle, color: isMajorSection ? '#6B5214' : '#9A8A70' }}>
@@ -7848,6 +7884,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.15.30",
+    date: "June 2026",
+    items: [
+      "fix: at 'Lord I Have Cried,' the Both Now on the All Saints Sundays (the all_saints_sunday overlay — including the Second Sunday after Pentecost, All Saints of North America / Russia) now renders the resurrectional Dogmatikon in the tone of the week (e.g. Tone 1, 'Let us praise the Virgin Mary! The gate of heaven…'), not the weekday theotokion. The Dogmatikon is a property of the tone and the served evening (Saturday-evening Great Vespers); it was being dropped to the weekday theotokion because the Pentecostarion overlay branch had no dogmatikon path. (Paschal-season pentecostarion_sunday Both Now left unchanged pending separate verification vs Fekula §4B.)",
+      "fix: the service outline now scrolls to and highlights litanies — the Great, Small, Augmented, and Evening litanies were not navigable because their render branch carried no id.",
+      "fix: the outline's active-section highlight now tracks the topmost visible section rather than the last one to intersect, so e.g. selecting the Prayer of St. Symeon no longer scrolls to it while highlighting a different heading.",
+      "ui: the masthead subheader reads 'Service Assembler | OCA Russian Usage' (was 'A Service Assembler').",
+    ],
+    summary: "Lord-I-Call Both Now = resurrectional Dogmatikon on the All Saints Sundays; outline litany navigation + topmost-highlight; masthead wording",
+  },
   {
     version: "v0.15.29",
     date: "June 2026",
@@ -10966,7 +11013,7 @@ export default function App() {
             Orthodox Daily Hours
           </h1>
           <div style={{ fontSize: "0.85rem", color: "#C4A84A", fontStyle: "italic" }}>
-            A Service Assembler &nbsp;|&nbsp; OCA Russian Usage
+            Service Assembler &nbsp;|&nbsp; OCA Russian Usage
           </div>
         </div>
       </div>
