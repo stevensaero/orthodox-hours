@@ -156,6 +156,19 @@ const JULY_MENAION = {
     paroemia_1: "Proverbs — The memory of the just is praised (Prov 10:7; 3:13-16; 8:6, 34-35)",
     paroemia_2: "Proverbs — The mouth of the righteous droppeth wisdom (Prov 10:31-32; 11:2-12)",
     paroemia_3: "Wisdom of Solomon — Though the righteous be prevented with death (Wis 4:7-15)",
+    stichera_lord_i_call_count: 8,  // T6, 8 stichera (06-19.pdf = Bulgarian service); §2F vigil
+    stichera_lord_i_call: [
+      { tone: 6, text: "Thou wast a vessel filled to overflowing with grace, O John our most good master, wonderworker of all the world. Who then can say that there are now no grace-filled men in the world, that there are no longer any righteous men? O ye unbelievers, be ye sober of mind, and understand that God is with us who live in the darkness and deadly shadow of falsehoods. Beholding him who though in the tomb abideth in incorruption, be ye ashamed and turn to the true God, for God is with us and will remain inseparably with us until the end of the world.", repeatIndex: 0 },
+      { tone: 6, text: "Join chorus, O ye east and west, ye north and the sea! Rejoice, receiving a new angel, the divinely inspired man of prayer, the unmercenary pastor, the gracious healer, the prophet and herald, the all-good John our helper, a mighty surety for us at the judgment.", repeatIndex: 2 },
+      { tone: 6, text: "Shall not one who is beloved return that love? Wherefore, how can we not love thee who hast loved us utterly, O holy and guileless pastor, our true strengthener amid temptations and faithful mediator with the Theotokos before the throne of the most holy Trinity, who dost ask for the remission of sins of all of us who honor thee with love?" },
+      { tone: 6, text: "O the mystery of thy divine love! Thou hast truly been shown to be a son of our Father in the heavens, O John, wondrous and righteous; for the Father causeth His sun to shine upon both the wicked and the good, and the rain to fall upon the righteous and the unrighteous; and thou didst pray for thine enemies, vanquishing the devil, the one primeval enemy of all, showing forth the perfection of the virtues." },
+      { tone: 6, text: "Straightway after thy blessed repose thy sepulcher was revealed to be a fount of healings and an abundant wellspring of miracles. And how much more is it now, O most blessed father, when the Church Militant hath glorified thee, having uncovered thine incorrupt relics with compunction and enshrined them with honor in the church, where thou grantest joy to all who sorrow, in accordance with its name?" },
+      { tone: 6, text: "As a protector of Orthodoxy in America, thou didst truly fulfill the words of the apostle; for where sin hath multiplied grace hath abounded. Wherefore we, the unworthy, now beseech thee, O blessed wonderworker John: grant abundant grace unto our wretched and hardened hearts, and teach us to love one another as thou thyself didst love all." },
+    ],
+    stichera_glory: { tone: 5, text: "Rejoice, O little and persecuted Orthodox flock, hated by all, for God hath given thee a great treasure: a wondrous comforter amid sorrow, an incorrupt fragrance amid the fetor of the present corruption of morals, a calm island of hope unashamed amid an ocean of storms." },
+    // Note: 8 stichera = 6 unique; first two each marked ×2 (repeatIndex 0 and 2) per PDF rubric.
+    // Both-now: Dogmatic Theotokion T5 "In the Red Sea of old..." (06-19.pdf at Great Vespers)
+    lic_theotokion: null,  // §2F vigil — Both-now = tone-of-week Dogmatic Theotokion (T5 printed in PDF but runtime from Octoechos)
     troparion: {
       tone: 5,
       text: "Lo, thy care for thy flock in its sojourn prefigured the supplications which thou dost " +
@@ -188,6 +201,14 @@ const JULY_MENAION = {
           "OCA proper troparion and kontakion used; differ from St. Sergius generic martyr texts.",
     feast_e: "absent — §2A, readings from Oktoechos",
     feast_g: "absent — §2A, readings from Oktoechos",
+    stichera_lord_i_call_count: 3,  // T8, Spec. Mel. "O most glorious wonder" (07-03.pdf)
+    stichera_lord_i_call: [
+      { tone: 8, spec_mel: "O most glorious wonder", text: "The chosen Head Cornerstone * hath been set up in Sion, * the immovable Foundation * whereon the ranks of the martyrs have founded themselves. * With them doth the victorious Hyacinth * shine with heavenly luster. * O Thine ineffable loving-kindness, O Master! * Thereby, O Christ, save Thou our souls, ** in that Thou alone art merciful." },
+      { tone: 8, spec_mel: "O most glorious wonder", text: "Thou didst pass through Jerusalem, * the splendid city of God, * like a stone dyed with blood, * clad in the purple robe of suffering, * and now manifestly praying, * dancing and rejoicing, * do thou, by thy supplications, * save those who celebrate ** thy most glorious and sacred memory, O most blessed one." },
+      { tone: 8, spec_mel: "O most glorious wonder", text: "Possessed of right acceptable boldness * before Christ the Master, * as an invincible martyr, * and His well-given ear * as a lawful spiritual athlete, * cease not in thine entreaties, O right wondrous one, * to deliver from temptations and evil circumstances * those who keep thy memory, ** and hymn thee faithfully." },
+    ],
+    stichera_glory: null,   // §2A — no saint doxasticon; Theotokion T8 in PDF follows (Alleluia-Matins option)
+    lic_theotokion: null,   // §2A — Both-now = Octoechos theotokion (tone of week)
     troparion: {
       tone: 4,
       text: "Like a fragrant hyacinth of the Church of Christ, O all-blessed Hyacinth, " +
@@ -227,6 +248,18 @@ const JULY_MENAION = {
     paroemia_1: "Wisdom of Solomon — The souls of the righteous are in the hand of God (Wis 3:1-9)",
     paroemia_2: "Wisdom of Solomon — The righteous live for evermore (Wis 5:15-6:3)",
     paroemia_3: "Wisdom of Solomon — Though the righteous be prevented with death (Wis 4:7-15)",
+    stichera_lord_i_call_count: 6,  // 3 T4 + 3 T8; §2E polyeleos Great Vespers (07-01A.pdf)
+    stichera_lord_i_call: [
+      { tone: 4, spec_mel: "As one valiant among the martyrs", text: "As is meet, let us hymn * the divinely eloquent Nicodemus, * the dwelling-place of grace, * the divinely inspired interpreter * who was guided by the Holy Spirit, * the trumpet blown by God, * announcing the word of grace in the world, * the ineffable glory of God ** and immaterial gifts of life." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs", text: "O Nicodemus, * whose heart was enlightened by the divine Spirit, * from thy mouth thou didst pour forth * a sea of doctrines upon the Church, * and thereby abundantly irrigate its meadows * with the discourse of the grace given thee, O father, * as David hath said, * bringing joy to the assemblies of the pious ** by thy wisdom." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs", text: "Celebrating * thy most holy memory, O Nicodemus, * we hymn thee as a new and radiant lamp * illumining the Church with thy divine words, * as a teacher of piety, * as a divinely wise mouth * of miraculous virtues, * as a preacher of the higher life ** and a harp of most sweet hymns." },
+      { tone: 8, spec_mel: "O most glorious wonder", text: "The abundant grace of the most holy Spirit * dwelt within thy soul, O wise one; * and having first cleansed it * with the rewards of the virtues, * it made thee a divine vessel * and a divinely inspired word. * O thine all-wise teachings, * O Nicodemus, ** whereby we are all ever taught the loftier life!", repeatIndex: 3 },
+      { tone: 8, spec_mel: "O most glorious wonder", text: "Like a noetic wellspring * thou hast poured forth torrents of doctrines, * sweetening the hearts of the faithful * more than honey, O Nicodemus; * and by thine understandings and works * thou hast been revealed to be * a divinely effulgent coffer and treasury of supreme wisdom, * imparting correction unto all ** who piously follow thy teaching, O Father." },
+    ],
+    // Note: stichera 4 (T8 first, marked repeatIndex:3) is sung twice per PDF ("Twice") = 6 slots total with 5 unique texts
+    stichera_glory: { tone: 6, text: "Today the memorial of Nicodemus, the venerable and heavenly minded teacher, hath shone forth for us like a morning star, enlightening the Church. Come, therefore, ye who love his words, and in spirit and truth let us celebrate, crying out to him: Rejoice, thou who madest thy mind a habitation of the Holy Spirit by thy virtuous life! Rejoice, divinely inspired treasury of wisdom, wherein lieth an inexhaustible wealth of the most divers wisdom! Rejoice, godly scion of Naxos, adornment of the Holy Mountain, and divinely wise instructor of the whole Church! O father, intercede, we pray, on behalf of our souls!" },
+    lic_theotokion: { tone: 6, text: "Who doth not call thee blessed, O most holy Virgin? Who will not hymn thy most pure birthgiving? For the only-begotten Son Who hath shone forth timelessly from the Father, came forth, ineffably incarnate, from thee, O pure one; By nature he is God, by nature for our sakes, he hath become a man not divided into two Hypostases, but known in two natures without commingling. Him do thou beseech, O pure and most blessed one, that our souls find mercy!" },
+    // Both-now: Dogmatic Theotokion T6 "Who doth not call thee blessed..." printed explicitly in 07-01A.pdf at Great Vespers
     troparion: {
       tone: 3,
       text: "You were adorned with the charism of wisdom, O Father, and appeared as a trumpet of the Spirit, " +
@@ -265,6 +298,14 @@ const JULY_MENAION = {
           "Kontakion from St. Sergius — no OCA kontakion provided.",
     feast_e: "absent — §2A, readings from Oktoechos",
     feast_g: "absent — §2A, readings from Oktoechos",
+    stichera_lord_i_call_count: 3,  // T1 (no Spec. Mel. in 07-02.pdf); §2A simple
+    stichera_lord_i_call: [
+      { tone: 1, text: "With hymns let us honor the all-praised Juvenal, who was young in soul, but an elder in understanding, a pastor and teacher, the impregnable rampart of Orthodoxy, the all radiant star of the Church, the father and patriarch of the mother of the Churches." },
+      { tone: 1, text: "Thou didst proclaim unto the world the three-Sunned light of Orthodoxy, and thundering greatly against the heretics, thou didst suffer for the sake of the truth, O divinely wise Juvenal; wherefore, we praise thee as is meet." },
+      { tone: 1, text: "Having honed the sword of the Word of God to sharpness, thou didst put to shame the impiety of Nestorius, didst denounce the false teaching of Eusebius, and didst make clear the dogmas of Orthodoxy, O most sacred father Juvenal; wherefore, make us steadfast in the apostolic Faith." },
+    ],
+    stichera_glory: { tone: 6, text: "When the winds of contrary doctrines blew and storms of heresies rose up against the Church, thou wast like an unshakable pillar, O wondrous Juvenal; for, rejecting the false teaching of Eutyches, thou didst confess Christ to be the true God-man, and putting the impiety of Nestorius to shame, thou didst declare unto the world that the Ever-virgin Mary is the true Theotokos. Wherefore, instructed by thee, we cry out unceasingly unto God: Through the Theotokos, have mercy upon us!" },
+    lic_theotokion: null,   // §2A — Both-now = Octoechos theotokion (tone of week); Stavrotheotokion T6 in PDF is weekday Both-now option
     troparion: {
       tone: 4,
       text: "O successor of the Brother of the Lord on the archpastoral throne of the holy city of Jerusalem, " +

@@ -8053,6 +8053,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.16.4",
+    date: "June 2026",
+    summary: "Data: LIC stichera complete for all encoded June and July Menaion entries",
+    items: [
+      "data: Lord-I-Call stichera encoded for all 11 June simple entries (06-15 through 06-27) and all 4 July gap entries (07-02 St John Maximovich vigil 8 stichera, 07-03 Hyacinth, 07-14 Nicodemus polyeleos 6 stichera, 07-15 Juvenal). 06-19 Apostle Jude noted as no-PDF. 06-28 Cyrus & John repeat marker added for Sunday 4-slot fill. Check C now passes with zero warnings.",
+    ],
+  },
+  {
     version: "v0.16.3",
     date: "June 2026",
     summary: "Menaion browser: secondary commemorations now show full hymnography via a shared renderer",
