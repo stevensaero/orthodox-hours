@@ -174,7 +174,8 @@ function EntryHymnography({ entry }) {
   // Stichera count integrity: declared count vs. items in the array.
   // items.length === count → exact (data mirrors rubric slot-for-slot)
   // items.length < count, markers present → rubric-carrying (count = unique + repeats)
-  // items.length < count, no markers → mismatch (assembler will flag unresolved slots)
+  // items.length < count, count % n === 0 → Fekula uniform doubling (assembler repeats each)
+  // items.length < count, no markers, not divisible → mismatch
   // items.length > count → overcounting
   const licItems = Array.isArray(entry.stichera_lord_i_call) ? entry.stichera_lord_i_call : null;
   const licCount = entry.stichera_lord_i_call_count;
@@ -184,9 +185,14 @@ function EntryHymnography({ entry }) {
     const markerCount = licItems.filter(s => s && !s.text && (typeof s.repeatIndex === 'number' || s.repeat)).length;
     const textCount = n - markerCount;
     if (n === licCount) return { ok: true, note: `${n} items = count ✓` };
-    if (n < licCount && markerCount > 0) return { ok: true, note: `${textCount} unique + ${markerCount} repeat marker${markerCount > 1 ? 's' : ''} = ${n} items (count ${licCount}) ✓` };
-    if (n < licCount && markerCount === 0) return { ok: false, note: `${n} items, count ${licCount} — ${licCount - n} slot${licCount - n > 1 ? 's' : ''} unaccounted; add repeat markers or correct count` };
-    if (n > licCount) return { ok: false, note: `${n} items exceeds count ${licCount} — correct count or remove items` };
+    if (n < licCount && markerCount > 0 && n + markerCount === licCount)
+      return { ok: true, note: `${textCount} unique + ${markerCount} repeat marker${markerCount > 1 ? 's' : ''} = ${n} items (count ${licCount}) ✓` };
+    if (n < licCount && markerCount === 0 && licCount % n === 0)
+      return { ok: true, note: `${n} unique × ${licCount / n} = ${licCount} slots — Fekula uniform doubling (assembler repeats each in order) ✓` };
+    if (n < licCount)
+      return { ok: false, note: `${n} items, count ${licCount} — ${licCount - n} slot${licCount - n > 1 ? 's' : ''} unaccounted; add repeat markers or correct count` };
+    if (n > licCount)
+      return { ok: false, note: `${n} items exceeds count ${licCount} — correct count or remove items` };
     return null;
   })();
 

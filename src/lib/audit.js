@@ -465,7 +465,8 @@ export function auditEntry(entry, type) {
   // The registry confirms stichera_lord_i_call and stichera_lord_i_call_count
   // are present, but doesn't cross-check whether the array actually satisfies
   // the count. Check here: items.length must equal count, OR items.length <
-  // count with explicit repeat markers covering the gap.
+  // count with explicit repeat markers covering the gap, OR count is a clean
+  // multiple of items.length (Fekula uniform-doubling, e.g. 3→6, 4→8).
   const licItems = target.stichera_lord_i_call;
   const licCount = target.stichera_lord_i_call_count;
   if (Array.isArray(licItems) && typeof licCount === 'number') {
@@ -473,12 +474,18 @@ export function auditEntry(entry, type) {
     const markerCount = licItems.filter(
       s => s && !s.text && (typeof s.repeatIndex === 'number' || s.repeat)
     ).length;
-    const countOk = n === licCount || (n < licCount && n + markerCount === licCount) || (n < licCount && markerCount > 0 && n + markerCount >= licCount);
+    // Valid cases:
+    //   exact:          n === count
+    //   explicit repeat: markers account for the gap (n + markers === count)
+    //   Fekula doubling: count % n === 0 (assembler repeats each ×(count/n))
+    const countOk = n === licCount
+      || (markerCount > 0 && n + markerCount === licCount)
+      || (n > 0 && licCount % n === 0);
     if (!countOk) {
       gaps.push({
         field: 'stichera_lord_i_call_count',
         category: 'vespers_lic',
-        description: `LIC stichera count mismatch: ${n} item${n !== 1 ? 's' : ''} (${markerCount} marker${markerCount !== 1 ? 's' : ''}), declared count ${licCount}`,
+        description: `LIC stichera count mismatch: ${n} item${n !== 1 ? 's' : ''} (${markerCount} marker${markerCount !== 1 ? 's' : ''}), declared count ${licCount} — add repeat markers or correct count`,
         present: false,
         gap: true,
       });
