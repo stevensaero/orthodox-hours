@@ -1,9 +1,27 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.28** | **Tone Trainer: v0.25.16** | Last synced: June 13, 2026
+**Tool version: v0.15.29** | **Tone Trainer: v0.25.16** | Last synced: June 14, 2026
 
 **Kathisma spacing (v0.15.28).** "Blessed is the Man" now renders each verse as its own
 paragraph (margin ~0.5rem, line-height 1.6) instead of pre-wrap `\n\n` blank lines (~1.7rem).
 Contained to the `blessedIsMan`-flagged element; nothing else changed.
+
+**Dismissal — reader form SHIPPED (v0.15.29); Great/Little superseded by Hieratikon migration (§17).**
+The Reader's Service dismissal (Fekula Ch. 10) now flows through the unified
+`buildDismissalText` (reader-aware) across Vespers / First Hour / Typica / Post-Communion —
+fixes the ad-hoc Sunday "of our Lord, God, and Savior Jesus Christ" divergence (Ch. 10 has
+only the saint+temple slot) and the hardcoded `(and of the patron of this temple,)` that
+ignored the dedication selector (`templeDedication` now threaded into `assembleHour`).
+Probe `tools/probe_dismissal.mjs` 5/5; gate 13/13; build clean.
+Items 2/4 resolved against sources: festal afterfeast phrases fold into the Hieratikon
+migration; Saturday departed **CLOSED** (neither Hieratikon nor the churchmotherofgod OCA
+reference has a departed clause in the отпуст — it's the Octoechos/Liturgy kontakion).
+**Next pass = §17 Hieratikon dismissal migration:** adopt the Priest's Service Book model
+(per-day daily forms with Apostles every day + theme positioned by rank-order; festal
+overrides gated to feast-and-afterfeast; lesser dismissal for Compline/Midnight/First Hour;
+celebrant clause moved to right-after-Apostles), retiring the rank-driven Great/Little axis.
+Source files in Drive `Hieratikon/`. See `dismissal_assembler_spec.md` §16–§17.
+
+--- superseded plan below (historical) ---
 
 **Weekday dismissal — findings & plan (next session).**
 Source review (Fekula Ch.6 + Ch.10, OCA 2021 Vespers, HTM Horologion) for the weekday отпуст:

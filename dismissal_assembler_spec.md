@@ -359,3 +359,71 @@ weekday matrix can stage as a follow-on without blocking tonight.
    `Theotokia.pdf`; selection rule in §14.2. Troparion + §I Sunday theotokion can
    land tonight.
 3. **Malformed dismissal** — this spec (§1–§13).
+
+
+## 16. Weekday dismissal — reader form (shipped v0.15.29)
+
+**Status:** §16.1 IMPLEMENTED. §16.0 / §16.2 superseded or folded into §17. §16.3 closed.
+
+### 16.1 Reader-aware buildDismissalText — DONE (v0.15.29)
+Fulfils the §8.2 intent (reader form from the unified builder). `buildDismissalText`
+takes `readerMode`; when set it reuses the same `_dismissalSaintName` + `resolveTempleName`
+resolution and early-returns the Fekula Ch. 10 short form:
+
+> Through the prayers of our holy fathers, of (the saints of the day and of the
+> temple), and of all the saints, Lord Jesus Christ, Son of God, have mercy on us. Amen.
+
+All three reader sites route through it — Vespers, the First Hour (with
+`templeDedication` newly threaded into `assembleHour`), and the Typica/Post-Communion
+wrapper. Two bugs eliminated: the ad-hoc Sunday "of our Lord, God, and Savior Jesus
+Christ" (Q8 — Ch. 10 has no Christological phrase, only the saint+temple slot), and
+the hardcoded `(and of the patron of this temple,)` that ignored the dedication
+selector. Probe: `tools/probe_dismissal.mjs` (5/5).
+
+### 16.0 Great/Little correction — SUPERSEDED by §17
+Investigation: Fekula Ch. 2 General Outline keys the dismissal on whether the Great
+Doxology is sung (simple → First Hour; otherwise → the rest of the dismissal), and the
+decision was Little = §2A simple only. But adopting the Hieratikon structure (§17)
+retires the rank-driven Great/Little axis entirely — the book keys the dismissal on
+day-of-week + festal period, never on saint rank. So no Great/Little code change ships;
+the work moves into §17.
+
+### 16.2 Afterfeast phrase — FOLDED into §17
+The festal characteristic phrases are part of the Hieratikon festal block (sourced) and
+land with the §17 migration.
+
+### 16.3 Saturday departed — CLOSED, no change
+Neither the Hieratikon nor the churchmotherofgod OCA reference carries a departed clause
+in the Saturday dismissal ("With the saints give rest" is the Octoechos/Liturgy
+kontakion, not the отпуст). The engine's Saturday set (Martyrs + Fathers) already matches.
+
+---
+
+## 17. Hieratikon dismissal migration (next pass — source: Drive `Hieratikon/`)
+
+**Decision:** adopt the Priest's Service Book (Hieratikon) dismissal model as authoritative,
+replacing the current rank-driven Great/Little engine. The Hieratikon has no combined
+"Great middle"; it gives:
+
+1. **Daily forms, one per day-of-week** (Sat-eve/Sun-morn … Fri-eve/Sat-morn). Each:
+   Mother → that day's theme → **Apostles (every day)** → day-appropriate saints →
+   temple/day saint → Forebears (Joachim & Anna) → all saints → "have mercy … loveth man."
+   Theme is positioned **before** the Apostles for the heavenly intercessions (Bodiless
+   Powers, Forerunner, Cross) and **after** for the saintly ones (Nicholas Thu, Martyrs +
+   Fathers Sat). Our current `DISMISSAL_LITTLE_DAYSETS` omit the Apostles on all but Thu —
+   a real bug this fixes.
+2. **Festal overrides** on feasts of the Lord and **through their afterfeast/apodosis**
+   ("only on that festival and during the post-feast"). Phrases sourced verbatim
+   (Nativity, Circumcision, Theophany, Meeting, Transfiguration, Palm Sunday, Pascha,
+   Ascension, Pentecost, + Pentecost-Vespers long form). Elevation absent → likely the
+   Cross intercession, not a "Who…" prefix (verify).
+3. **Lesser dismissal** for Compline / Midnight Office / First Hour (short form; on Sunday
+   prefixed "May He who is risen from the dead…").
+4. **Celebrant clause position:** Hieratikon (and churchmotherogod) place it **right after
+   the Apostles** — current engine appends it after the whole middle. Reposition.
+
+**Retires:** the rank-driven `isGreat`/`isHighRank` Great/Little switch in `buildDismissalText`.
+**Register note:** the Hieratikon daily/festal register ("most pure"/"all-immaculate",
+"loveth man") differs from our current near-OCA Great form; settle one register during the
+migration. Read the full daily forms (Mon/Tue/Wed-evening are abbreviated with "…" in the
+source convention) from the Drive `Hieratikon/` folder before encoding.
