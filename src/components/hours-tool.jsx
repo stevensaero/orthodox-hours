@@ -8053,6 +8053,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.16.2",
+    date: "June 2026",
+    items: [
+      "feature: at Vespers, multi-commemoration days now offer a service selector instead of locking to the OCA-primary commemoration. On a day like June 15 (Prophet Amos, simple, OCA primary; St Jerome and St Jonah of Moscow, both polyeleos) you can now choose which to serve — selecting a polyeleos saint re-assembles the full Great Vespers. The default stays the OCA primary, and the selected service's note (including any 'not on the OCA calendar — verify with your priest' flag) shows beneath the choice.",
+    ],
+    summary: "Vespers: service selector for multi-commemoration days (not just the All Saints overlay)",
+  },
+  {
     version: "v0.16.1",
     date: "June 2026",
     items: [
@@ -11504,9 +11512,9 @@ export default function App() {
             </div>
           )}
 
-          {/* Saint / multi-service selector — under Vespers, show D+1's OCA-primary read-only
-              (except the All Saints overlay, which offers the usage selector at Vespers too) */}
-          {cServices.length > 0 && (!cMulti || (isVesp && !cAllSaintsOverlay)) && (
+          {/* Saint (read-only) — single-commemoration days only. Multi-commemoration
+              days (including the All Saints overlay) get the selector below. */}
+          {cServices.length > 0 && !cMulti && (
             <div>
               <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "4px", lineHeight: "1.6" }}>
                 <strong>Saint:</strong>
@@ -11518,17 +11526,12 @@ export default function App() {
                   <span style={{ fontSize: "0.68rem", letterSpacing: "0.08em", textTransform: "uppercase", background: "rgba(139,105,20,0.15)", border: "1px solid rgba(139,105,20,0.4)", borderRadius: "3px", padding: "1px 6px", color: "#6B4E10", fontFamily: "Georgia, serif", whiteSpace: "nowrap" }}>OCA primary</span>
                 )}
               </div>
-              {isVesp && cMulti && !cAllSaintsOverlay && (
-                <div style={{ fontSize: "0.76rem", color: "#8B7040", fontStyle: "italic", marginTop: "0.15rem" }}>
-                  Vespers uses the OCA-primary commemoration; also commemorated: {cServices.filter(s => s !== cMen).map(s => s.saint).filter(Boolean).join(" · ")}.
-                </div>
-              )}
             </div>
           )}
-          {cMulti && (!isVesp || cAllSaintsOverlay) && (
+          {cMulti && (
             <div style={{ marginTop: "0.4rem" }}>
               <div style={{ fontSize: "0.72rem", letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B6914", marginBottom: "0.5rem" }}>
-                {isVesp ? "Select which usage to serve:" : "Multiple services available — select which to serve:"}
+                {cAllSaintsOverlay ? "Select which usage to serve:" : isVesp ? "Select which service to serve:" : "Multiple services available — select which to serve:"}
               </div>
               {cServices.map((svc, idx) => (
                 <label key={idx} style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "0.35rem", cursor: "pointer", fontSize: "0.85rem", lineHeight: "1.5" }}>
@@ -11549,7 +11552,7 @@ export default function App() {
                   </span>
                 </label>
               ))}
-              {cMen && !cMen.oca_primary && cMen.note && (() => {
+              {cMen && cMen.note && (() => {
                 const isAbsent = (cMen.note || '').toLowerCase().includes("not listed") || (cMen.note || '').toLowerCase().includes("not on the oca");
                 return (
                   <div style={{ marginTop: "0.6rem", padding: "0.5rem 0.75rem", background: isAbsent ? "rgba(180,120,20,0.1)" : "rgba(139,105,20,0.07)", border: `1px solid ${isAbsent ? "rgba(180,120,20,0.4)" : "rgba(139,105,20,0.25)"}`, borderRadius: "4px", fontSize: "0.78rem", color: "#5C4A1E", lineHeight: "1.55" }}>
@@ -11560,7 +11563,7 @@ export default function App() {
               })()}
             </div>
           )}
-          {cMen && (!cMulti || (isVesp && !cAllSaintsOverlay)) && cMen.note && (
+          {cMen && !cMulti && cMen.note && (
             <div style={{ fontSize: "0.78rem", color: "#5C4A1E", fontStyle: "italic", marginTop: "0.15rem" }}>{cMen.note}</div>
           )}
           {cServices.length === 0 && inScope && (
