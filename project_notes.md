@@ -1,6 +1,22 @@
 # Orthodox Hours Tool — Project Notes
 **Tool version: v0.15.31** | **Tone Trainer: v0.25.16** | Last synced: June 14, 2026
 
+**Sunday Vespers — unified engine (SPEC, awaiting review).** `sunday_vespers_spec.md`
+(repo root) specs one engine for ALL resurrectional Sundays — ordinary Octoechos
+(post-Pentecost), overlay (`all_saints_sunday`), and Pentecostarion — replacing the current
+split (Pentecostarion branch + rank-based weekday branches) that makes ordinary Sundays with
+a non-simple saint render as weekday services (concrete break: June 28, Tone 3, Cyrus & John
+§2C). Grounded in the OCA `OCA_service_documents/*-tt` docs: LIC = resurrection + commemoration,
+split by rank (simple 7+3 / six-stichera 6+4, verified Jun 21 / Jun 28); LIC Both now =
+tone-of-week Dogmatikon (generalizes v0.15.30, no regression to Jun 14); aposticha Both now =
+theotokion in the tone of the aposticha Glory (NOT the dogmatikon); troparia Now-and-ever =
+resurrectional dismissal theotokion in the tone of the saint's troparion (§I mechanism).
+Director-pointed JSON is the canonical encoding source (per the established pipeline; Tone 1
+done in v0.15.15 from the 0614 docx). Phased migration P0–P4; acceptance set Jun 14/21/28,
+Jul 5. **Open questions in §8 to answer before code: polyeleos/vigil split (4+6?), no-Glory
+Sunday, aposticha-theotokion source, Great-Feast-on-Sunday precedence, Pentecostarion-Sunday
+regression.**
+
 **Outline + Evening Litany fixes (v0.15.31).** (1) `isPlaceholder` in ServiceOutline no
 longer uses `text.startsWith('[')` — that collided with OCA director-pointed text (the Tone 1
 Kekragarion begins "[Lord], I call upon Thee…"), falsely reddening the "Lord I Have Cried"
