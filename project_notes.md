@@ -1,33 +1,37 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.31** | **Tone Trainer: v0.25.16** | Last synced: June 14, 2026
+**Tool version: v0.16.0** | **Tone Trainer: v0.25.16** | Last synced: June 14, 2026
 
-**Sunday Vespers — unified engine (SPEC complete, awaiting P0 sign-off).** `sunday_vespers_spec.md`
+**Sunday Vespers — unified engine (P0 signed off; P1 engine LANDED in v0.16.0).** `sunday_vespers_spec.md`
 (repo root) specs one engine for ALL resurrectional Sundays — ordinary Octoechos
-(post-Pentecost), overlay (`all_saints_sunday`), and Pentecostarion — replacing the current
-split (Pentecostarion branch + rank-based weekday branches) that makes ordinary Sundays with
+(post-Pentecost), overlay (`all_saints_sunday`), and Pentecostarion — replacing the prior
+split (Pentecostarion branch + rank-based weekday branches) that made ordinary Sundays with
 a non-simple saint render as weekday services (concrete break: June 28, Tone 3, Cyrus & John
-§2C). Grounded in the OCA `OCA_service_documents/*-tt` docs. **Engine research COMPLETE** — every
-rank→split and all three theotokion rules confirmed from real OCA service docs:
-- LIC split fully confirmed: simple 7+3 (Jun 21), six-stichera 6+4 (Jun 28), **doxology 6+4
-  (Jul 8 2018, Procopius, T5)**, polyeleos 4+6 (Oct 9 2022 Tikhon; Oct 6 2019 Innocent), vigil
-  4+6 (Nov 30 Andrew). The tell separating 6+4 from 4+6 in the docs = presence of a Litya section.
-- Three DISTINCT theotokia tables, keyed differently, never conflate: LIC Both-now = tone-of-week
-  Dogmatikon; aposticha Both-now = theotokion in the aposticha-Glory tone (a FIXED per-tone 8-set
-  from the St. Sergius Octoechos appendix, not per-saint — four T8 docs print identical text);
-  troparia Now-and-ever = resurrectional dismissal theotokion in the saint-troparion tone (§I).
-Director-pointed JSON is the canonical encoding source (Tone 1 done in v0.15.15 from the 0614 docx).
-**§8.1/§8.2/§8.3 RESOLVED:** vigil/polyeleos 4+6 directly confirmed single-commemoration; no-Glory
-Sunday → no resurrectional Glory, "Glory… now and ever" sung together → tone-of-week Dogmatikon
-(Nov 9 2025); aposticha theotokion = the fixed 8-set. **§3.1 generalized:** multi-commemoration
-Sundays — Oct 26 (res + Earthquake + Demetrius, 3+3+4; the secondary "of the Lord/Theotokos"
-troparion takes Now-and-ever, displacing the dismissal theotokion) AND two-minor-commemoration 3+3
-(Nov 3 2019 + George dedication, Glory to the senior commem; Nov 9 2025 + Matrona, no-Glory) —
-commemoration modeled as a list; built in a later phase. **OCA-primacy** worked example logged
-(§3.2): Oct 9 2022 elevated St. Tikhon over Apostle James and transferred the 7th-Council Fathers
-to Oct 16. Phased migration P0–P4; P1 = single-commemoration ordinary Sundays (acceptance Jun 21/28,
-Jul 8 2018, Jul 5, Nov 30, Oct 6 2019, Oct 9 2022; Jun 14 overlay stays byte-identical). Only
-**§8.4 (Great-Feast-on-Sunday precedence)** and **§8.5 (Pentecostarion-Sunday regression guard,
-P4)** remain open — both out of P1.
+§2C). Grounded in the OCA `OCA_service_documents/*-tt` docs.
+**P1 SHIPPED (v0.16.0):** `assembleVespers` now has a dedicated `isSunday && !isPentecostarion`
+branch for LIC and aposticha. LIC = resurrection (Octoechos `sat.lic`, sliced 7/6/4 by rank) +
+commemoration (Menaion `stichera_lord_i_call`, via `expandSticheraToCount`); Glory = saint
+doxasticon or, if none, "Glory… now and ever" together (§8.2 no-Glory rule); Both-now = `sat.dogmatikon`
+always. Aposticha = 4 resurrection (`sat.aposticha`) + Glory (saint or Octoechos resurrectional) +
+Both-now = `SUNDAY_APOSTICHA_THEOTOKIA[gloryTone]` (NEW stub table in octoechos/index.js, blessed in
+schema; all 8 null → flagged until P2). Troparia (§5) were already correct (dismissal theotokion in
+saint-troparion tone). Resurrection renders fully from existing data; commemoration texts complete
+as Menaion saints are encoded. Pentecostarion/overlay branches untouched (Jun 14 byte-identical).
+Structural test: `tools/test_sunday_vespers.mjs`.
+**Research basis (all confirmed from real OCA docs):**
+- LIC split: simple 7+3 (Jun 21), six-stichera 6+4 (Jun 28), doxology 6+4 (Jul 8 2018 Procopius),
+  polyeleos 4+6 (Oct 9 2022 Tikhon; Oct 6 2019 Innocent), vigil 4+6 (Nov 30 Andrew). Litya present =
+  4+6; absent = 6+4/7+3.
+- Three DISTINCT theotokia tables, never conflate: LIC Both-now = tone-of-week Dogmatikon; aposticha
+  Both-now = theotokion in the aposticha-Glory tone (fixed per-tone 8-set, St. Sergius Octoechos
+  appendix); troparia Now-and-ever = dismissal theotokion in saint-troparion tone (§I).
+**§8.1/§8.2/§8.3 RESOLVED. §3.1 generalized** (multi-commem: Oct 26 3+3+4 with secondary
+"of-the-Lord" troparion displacing the dismissal theotokion; two-minor-commem 3+3 — Nov 3 2019 Glory
+to senior, Nov 9 2025 no-Glory) — out of P1, commemoration-as-a-list later. **OCA-primacy** logged
+(§3.2, Oct 9 2022 Tikhon over James + 7th-Council transfer).
+**Remaining (both out of P1):** §8.4 Great-Feast-on-Sunday precedence; §8.5 Pentecostarion-Sunday
+regression guard (P4). **Next:** P2 data backfill — fill `SUNDAY_APOSTICHA_THEOTOKIA` (8 texts) and
+encode the acceptance saints' stichera (Jun 21 Julian has none; Jun 28 needs a repeat marker so the
+4th commemoration slot fills rather than flags).
 
 **Outline + Evening Litany fixes (v0.15.31).** (1) `isPlaceholder` in ServiceOutline no
 longer uses `text.startsWith('[')` — that collided with OCA director-pointed text (the Tone 1
@@ -38,7 +42,8 @@ every real stub already carries. (2) The outline IntersectionObserver now observ
 Stichera/Doxasticon/Petitions) highlight on scroll, not just on click. (3) Evening Litany
 head-bowing now renders the Chanters' "And to thy spirit." after "Peace be unto all."
 NOTE: dialect — used "thy" to match the existing LITIYA_PEACE_RESPONSE constant and the
-adjacent "To Thee, O Lord"; flag if a global switch to contemporary "your" is wanted.
+adjacent "To Thee, O Lord". DECISION (this session): keep the thy/thou Slavonic-traditional
+dialect throughout; no global switch to "your". Settled — not an open question.
 
 **LIC Both Now = resurrectional Dogmatikon on the All Saints Sundays (v0.15.30).**
 The Second Sunday after Pentecost (P+63, All Saints of NA/Russia) is classified
