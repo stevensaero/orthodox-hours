@@ -207,7 +207,7 @@ const JULY_MENAION = {
       { tone: 8, spec_mel: "O most glorious wonder", text: "Thou didst pass through Jerusalem, * the splendid city of God, * like a stone dyed with blood, * clad in the purple robe of suffering, * and now manifestly praying, * dancing and rejoicing, * do thou, by thy supplications, * save those who celebrate ** thy most glorious and sacred memory, O most blessed one." },
       { tone: 8, spec_mel: "O most glorious wonder", text: "Possessed of right acceptable boldness * before Christ the Master, * as an invincible martyr, * and His well-given ear * as a lawful spiritual athlete, * cease not in thine entreaties, O right wondrous one, * to deliver from temptations and evil circumstances * those who keep thy memory, ** and hymn thee faithfully." },
     ],
-    stichera_glory: null,   // §2A — no saint doxasticon; Theotokion T8 in PDF follows (Alleluia-Matins option)
+    stichera_glory_absent: true,  // §2A — verified absent in 07-03.pdf; no saint doxasticon printed (Theotokion T8 follows for Alleluia-Matins option)
     lic_theotokion: null,   // §2A — Both-now = Octoechos theotokion (tone of week)
     troparion: {
       tone: 4,

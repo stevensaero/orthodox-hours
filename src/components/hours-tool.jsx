@@ -3844,17 +3844,28 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
             fekula:{section:fekulaSection, note:"Menaion sticheron at V.("+v.n+"). Enter stichera_lord_i_call in SAMPLE_MENAION to complete."}});
         }
       });
-      // Glory → doxasticon
-      elements.push({id:"v-lic-glory", type:"fixed", label:"", text:"Glory to the Father, and to the Son, and to the Holy Spirit.", source:"HTM Vespers"});
+      // Glory → doxasticon (Fekula: "if there be one"; stichera_glory_absent = verified absent in PDF)
       const doxasticonEntry = (isPentecostarion && pentEntry && pentEntry.menaion_set_aside && pentEntry.stichera_glory)
         ? pentEntry.stichera_glory
         : (menaionEntry && menaionEntry.stichera_glory);
+      const doxVerifiedAbsent = !!(menaionEntry && menaionEntry.stichera_glory_absent === true);
       if (doxasticonEntry) {
+        // Doxasticon present: Glory ... [doxasticon] / Now and ever ...
+        elements.push({id:"v-lic-glory", type:"fixed", label:"", text:"Glory to the Father, and to the Son, and to the Holy Spirit.", source:"HTM Vespers"});
         elements.push({id:"v-lic-doxasticon", type:"movable", label:"Doxasticon",
           rubric:"Tone "+(doxasticonEntry.tone||tone)+":",
           text:doxasticonEntry.text||doxasticonEntry, source:"Menaion",
           fekula:{section:fekulaSection, note:"Glory: doxasticon from Menaion."}});
+      } else if (doxVerifiedAbsent) {
+        // Verified absent in the Menaion PDF — Fekula §2A/§2C "if there be one":
+        // no doxasticon; Glory… now and ever sung together; fall through to dogmatikon/theotokion.
+        elements.push({id:"v-lic-glory", type:"fixed", label:"",
+          text:"Glory to the Father, and to the Son, and to the Holy Spirit, now and ever and unto ages of ages. Amen.",
+          source:"HTM Vespers",
+          fekula:{section:fekulaSection, note:"No doxasticon (verified absent in Menaion PDF). Glory and Both now sung together — Fekula §2A \"if there be one.\""}});
       } else {
+        // Not yet entered — flag as unresolved
+        elements.push({id:"v-lic-glory", type:"fixed", label:"", text:"Glory to the Father, and to the Son, and to the Holy Spirit.", source:"HTM Vespers"});
         elements.push({id:"v-lic-doxasticon", type:"movable", label:"Doxasticon",
           unresolved:true,
           text:"[Doxasticon — not yet entered. Enter stichera_glory in SAMPLE_MENAION.]",
@@ -3862,7 +3873,10 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           fekula:{section:fekulaSection, note:"Glory: doxasticon from Menaion (Track B)."}});
       }
       // Now and ever → theotokion or dogmatikon
-      elements.push({id:"v-lic-nowever", type:"fixed", label:"", text:"Now and ever and unto ages of ages. Amen.", source:"HTM Vespers"});
+      // (When doxVerifiedAbsent, "now and ever" was already included in the combined Glory line above)
+      if (!doxVerifiedAbsent) {
+        elements.push({id:"v-lic-nowever", type:"fixed", label:"", text:"Now and ever and unto ages of ages. Amen.", source:"HTM Vespers"});
+      }
       if (isFriEve && octoDay && octoDay.lic_dogmatikon) {
         // Friday evening §2A: Both Now = dogmatikon (not theotokion)
         elements.push({id:"v-lic-dogmatikon", type:"movable", label:"Dogmatikon (Friday)",
@@ -8053,6 +8067,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.16.6",
+    date: "June 2026",
+    summary: "Fix: Vespers service selector now changes the assembled service; stichera_glory_absent sentinel for verified-absent doxasticons",
+    items: [
+      "fix: at Vespers, selecting a secondary service (e.g. St Jonah on June 15) now re-assembles Vespers for that saint — previously the radio buttons updated the context card but the assembled service stayed locked to the OCA-primary. Root cause: vespersNext.vMenaion was always the OCA-primary; assembly and context card now read vespersNext.vServices[selectedServiceIndex].",
+      "fix: simple (§2A/§2C) Menaion entries whose doxasticon is verified absent in the PDF now carry stichera_glory_absent: true instead of stichera_glory: null. The assembler distinguishes verified-absent from not-yet-entered: absent entries render 'Glory… now and ever' together (Fekula §2A 'if there be one') without an unresolved placeholder. Affected entries: 06-15 Amos, 06-16 Tichon, 06-20 Methodius, 06-22 Eusebius, 06-23 Agrippina, 07-03 Hyacinth.",
+      "data: validate_entries.mjs Check D added — stichera_glory_absent must be boolean true, must not coexist with stichera_glory, and is only permitted on simple/six_stichera ranks.",
+    ],
+  },
+  {
     version: "v0.16.5",
     date: "June 2026",
     summary: "Data: Sunday aposticha theotokia (P2) — all 8 tones filled from Common Theotokia source",
@@ -11178,6 +11202,12 @@ export default function App() {
         const sel = vespersNext.vServices[selectedServiceIndex] || vespersNext.vMenaion;
         vMen = sel; vPnt = sel;
         vPar = computeVespersParoemias(sel, sel, vespersNext.vIsPent, vespersNext.vIsBright);
+      } else if (vespersNext.vServices.length > 1) {
+        // Ordinary multi-service day (e.g. June 15: Amos + Jerome + Jonah):
+        // apply selectedServiceIndex so radio selection actually changes what assembles.
+        const sel = vespersNext.vServices[selectedServiceIndex] || vespersNext.vMenaion;
+        vMen = sel;
+        vPar = computeVespersParoemias(sel, vPnt, vespersNext.vIsPent, vespersNext.vIsBright);
       }
       els = assembleVespers(vespersNext.vLit, vMen, vPnt, vPar, readerMode, vespersNext.vDateStr, templeDedication);
     } else if (currentService.key === 'typica') {
@@ -11358,8 +11388,11 @@ export default function App() {
           {contextOpen && (() => {
             const isVesp = currentService.key === 'vespers';
             const cLit = isVesp ? vespersNext.vLit : liturgicalData;
-            const cMen = isVesp ? vespersNext.vMenaion : menaionEntry;
-            const cSelMen = isVesp ? vespersNext.vMenaion : selectedMenaionEntry;
+            const _vEffective = isVesp
+              ? (vespersNext.vServices[selectedServiceIndex] || vespersNext.vMenaion)
+              : null;
+            const cMen = isVesp ? _vEffective : menaionEntry;
+            const cSelMen = isVesp ? _vEffective : selectedMenaionEntry;
             const cReading = isVesp ? vespersNext.vDailyReading : dailyReading;
             const cFeast = isVesp ? vespersNext.vFeastReading : feastReading;
             const cParoem = isVesp ? vespersNext.vParoemias : paroemias;

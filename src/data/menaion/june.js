@@ -1053,7 +1053,7 @@ const JUNE_MENAION = {
         { tone: 8, spec_mel: "What shall we call you", text: "Full of divine understanding, * thou wast revealed to be a most wise shepherd, * piously nurturing * the reason-endowed flock * on the grass of true doctrines; * wherefore, we honor now thy holy festival, * glorifying the Lord Who hath glorified thee. * O all-blessed and divinely wise Tichon, ** pray thou that our souls be saved." },
         { tone: 8, spec_mel: "What shall we call you", text: "God, Who ever glorifieth those who glorify Him, * hath glorified thee with miracles; * for during thine honored and divine commemoration, * O wise father, * ripe grapes are seen * by those who hymn the most glorious wonder. * And partaking thereof, * the faithful who glorify thee as is meet ** receive sanctification and profit." },
       ],
-      stichera_glory: null,   // §2A — no doxasticon; Both-now = Octoechos theotokion
+      stichera_glory_absent: true,  // §2A — verified absent in 06-16.pdf; no saint doxasticon printed
       lic_theotokion: null,   // §2A — Theotokion T8 in PDF is for Alleluia-Matins option only
       feast_e: null,  // §2A — no proper readings
       feast_g: null,
@@ -1372,7 +1372,7 @@ const JUNE_MENAION = {
         { tone: 2, spec_mel: "When from the Tree", text: "As the mouth of God, * following righteous teachings and divine judgments, * thou didst manifestly denounce * the doers of iniquity, * condemning them with an inescapable sentence, * O most noetically rich prophet. * Wherefore, seeing the fulfillment * of thy most wise words, O blessed one, ** we praise thee with hymns, as is meet." },
         { tone: 2, spec_mel: "When from the Tree", text: "Standing before the throne of the Master * filled with light, * and ineffable and divine glory, * and beholding the good things of heaven, * O divinely eloquent Amos, * be thou mindful of all who honor thee with faith, * asking that salvation of soul and forgiveness of sins * be granted unto them all, ** O thou who art acceptable to God." },
       ],
-      stichera_glory: null,   // §2A — no doxasticon in 06-15.pdf; Both-now = Octoechos theotokion
+      stichera_glory_absent: true,  // §2A — verified absent in 06-15.pdf; no saint doxasticon printed
       lic_theotokion: null,   // §2A — Octoechos theotokion (tone of week); Theotokion T2 in PDF is for Alleluia-Matins option only
       feast_e: null,  // §2A — no proper readings
       feast_g: null,
@@ -1627,7 +1627,7 @@ const JUNE_MENAION = {
       { tone: 4, spec_mel: "Thou hast given a sign", text: "By thy words thou hast enlightened the fullness of the Church, * O divinely revealed Methodius; * by thy sufferings and radiance * thou hast driven away the gloom of polytheism * and hast now passed over * to the never-waning light, O hieromartyr. * Wherefore, made luminous by piety, * we celebrate today ** thy most festive and luminous solemnity." },
       { tone: 4, spec_mel: "Thou hast given a sign", text: "With blood didst thou dye thy sacred vesture, * O God-bearing Methodius; * and therewith thou didst make thine abode * in the holy of holies, rejoicing, O blessed one; * thou dost radiantly behold * the divine effulgence of the Trinity, * instructed most manifestly by Him * Who is past understanding and comprehension, ** and fearing Him, O most excellent and noetically rich hierarch." },
     ],
-    stichera_glory: null,   // §2A — no doxasticon; Both-now = Octoechos theotokion
+    stichera_glory_absent: true,  // §2A — verified absent in 06-20.pdf; no saint doxasticon printed
     lic_theotokion: null,   // §2A — Theotokion T4 in PDF is for Alleluia-Matins option only
     feast_e: null,  // §2A — no proper readings; readings from Octoechos
     feast_g: null,
@@ -1734,7 +1734,7 @@ const JUNE_MENAION = {
       { tone: 8, spec_mel: "What shall we call you", text: "What shall we call thee, O holy hierarch? * A river which proceedeth from the noetic Eden, * watering the earth * with spiritual dews, * cup which is full of divine water * which drowneth the followers of Arius, * pillar of fire which guideth the new people * by divine grace. ** Pray thou that our souls be saved!" },
       { tone: 8, spec_mel: "What shall we call you", text: "What shall I call thee, O Eusebius? * Bestower of piety * and destroyer of impiety, * adornment of passion-bearers and joy of priests, * sickle which cutteth down the tares * and gathereth in the wheat of heaven, * ever-flowing fount of miracles * which relieveth the burning heat of infirmities. ** Pray thou that our souls be saved!" },
     ],
-    stichera_glory: null,   // §2A — no doxasticon; Both-now = Octoechos theotokion
+    stichera_glory_absent: true,  // §2A — verified absent in 06-22.pdf; no saint doxasticon printed
     lic_theotokion: null,   // §2A — Theotokion T8 in PDF is for Alleluia-Matins option only
     feast_e: null,
     feast_g: null,
@@ -1785,7 +1785,7 @@ const JUNE_MENAION = {
         { tone: 4, spec_mel: "Thou hast given a sign", text: "Christ our God hath given unto Sicily, * thee, who suffered in Rome, * as riches beyond measure; * and having arrived there, O glorious martyr, * thou didst drive away evil multitudes of demons * by thine intercession. * Wherefore, we bless thee * and celebrate thy suffering today, ** O much-suffering Agrippina." },
         { tone: 4, spec_mel: "Thou hast given a sign", text: "Bassa and Paula bore thee on their shoulders * at the command of Him Who upholdeth all things, * moving thee from place to place * and making a long journey over the deep, * working awesome miracles through divine grace, * O martyr Agrippina, * and having come to rest in the place * which God had appointed, ** thou didst become a place of rest for the heavy-laden, O all-praised one." },
       ],
-      stichera_glory: null,   // §2A — no doxasticon; Both-now = Octoechos theotokion (Stavrotheotokion in PDF is Alleluia-Matins option)
+      stichera_glory_absent: true,  // §2A — verified absent in 06-23.pdf; no saint doxasticon printed (Stavrotheotokion in PDF is Alleluia-Matins option)
       lic_theotokion: null,   // §2A — Both-now = Octoechos theotokion (tone of week)
       feast_e: null,
       feast_g: null,

@@ -62,7 +62,8 @@ const KNOWN_FIELDS = new Set([
   'resurrection_e', 'resurrection_g', 'resurrection_kontakion', 'saint',
   'sessional_hymn_kathisma2', 'sessional_hymn_ode3', 'sessional_hymn_ode3_both_now',
   'sessional_hymn_polyeleos', 'small_doxology_read', 'source_file', 'stichera_aposticha',
-  'stichera_both_now', 'stichera_glory', 'stichera_lord_i_call',
+  'stichera_both_now', 'stichera_glory', 'stichera_glory_absent',
+  'stichera_lord_i_call',
   'stichera_lord_i_call_count', 'stichera_lord_i_call_note', 'stichera_matins_aposticha',
   'stichera_matins_aposticha_both_now', 'stichera_matins_aposticha_glory',
   'stichera_praises_glory', 'theotokos_troparion', 'tone', 'trisagion_replacement',
@@ -106,6 +107,22 @@ function checkEntry(label, entry, kind) {
       if (!(flag in entry)) {
         problems.push(`${label}: hours_format "${entry.hours_format}" requires structural flag "${flag}" (encoding_rule_v2.md §12) — absent.`);
       }
+    }
+  }
+
+  // Check D — stichera_glory_absent integrity
+  // This field marks a verified-absent doxasticon (Fekula "if there be one").
+  // Must be boolean true; must not coexist with stichera_glory; only meaningful
+  // on §2A/§2C ranks (simple, six_stichera) where "if there be one" applies.
+  if ('stichera_glory_absent' in entry) {
+    if (entry.stichera_glory_absent !== true) {
+      problems.push(`${label}: stichera_glory_absent must be boolean true (not ${JSON.stringify(entry.stichera_glory_absent)}).`);
+    }
+    if (entry.stichera_glory != null) {
+      problems.push(`${label}: stichera_glory_absent is set but stichera_glory is also present — remove one.`);
+    }
+    if (entry.rank && !['simple', 'six_stichera'].includes(entry.rank)) {
+      problems.push(`${label}: stichera_glory_absent used on rank "${entry.rank}" — only valid for simple/six_stichera (§2A/§2C). Higher ranks always have a doxasticon.`);
     }
   }
 
