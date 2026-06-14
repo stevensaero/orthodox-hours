@@ -175,12 +175,16 @@ function EntryHymnography({ entry }) {
   // items.length === count → exact (data mirrors rubric slot-for-slot)
   // items.length < count, markers present → rubric-carrying (count = unique + repeats)
   // items.length < count, count % n === 0 → Fekula uniform doubling (assembler repeats each)
+  // stichera_lord_i_call_note present → seasonal conditional, note replaces integrity check
   // items.length < count, no markers, not divisible → mismatch
   // items.length > count → overcounting
   const licItems = Array.isArray(entry.stichera_lord_i_call) ? entry.stichera_lord_i_call : null;
   const licCount = entry.stichera_lord_i_call_count;
+  const licNote = entry.stichera_lord_i_call_note;
   const licIntegrity = (() => {
     if (!licItems || licCount === undefined) return null;
+    // Seasonal conditional: note supersedes count check
+    if (licNote) return { ok: 'note', note: licNote };
     const n = licItems.length;
     const markerCount = licItems.filter(s => s && !s.text && (typeof s.repeatIndex === 'number' || s.repeat)).length;
     const textCount = n - markerCount;
@@ -205,11 +209,15 @@ function EntryHymnography({ entry }) {
       )}
       {licIntegrity && (
         <div style={{ fontSize: "0.78rem", marginBottom: "0.4rem", padding: "2px 8px",
-          color: licIntegrity.ok ? "#4A7A3A" : "#B43C1E",
-          background: licIntegrity.ok ? "rgba(74,122,58,0.08)" : "rgba(180,60,30,0.08)",
-          border: `1px solid ${licIntegrity.ok ? "rgba(74,122,58,0.3)" : "rgba(180,60,30,0.3)"}`,
-          borderRadius: "3px" }}>
-          {licIntegrity.ok ? "✓" : "✗"} {licIntegrity.note}
+          color: licIntegrity.ok === 'note' ? C.amber
+               : licIntegrity.ok ? "#4A7A3A" : "#B43C1E",
+          background: licIntegrity.ok === 'note' ? "rgba(166,124,0,0.08)"
+                    : licIntegrity.ok ? "rgba(74,122,58,0.08)" : "rgba(180,60,30,0.08)",
+          border: `1px solid ${licIntegrity.ok === 'note' ? "rgba(166,124,0,0.35)"
+                              : licIntegrity.ok ? "rgba(74,122,58,0.3)" : "rgba(180,60,30,0.3)"}`,
+          borderRadius: "3px", lineHeight: 1.5 }}>
+          {licIntegrity.ok === 'note' ? "⚑ Rubrical conditional — " : licIntegrity.ok ? "✓ " : "✗ "}
+          {licIntegrity.note}
         </div>
       )}
       {entry.stichera_lord_i_call && Array.isArray(entry.stichera_lord_i_call) ? (

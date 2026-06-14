@@ -1086,8 +1086,12 @@ const MAY_MENAION = {
     // ── VESPERS — LORD I HAVE CRIED ────────────────────────────────────────────
     // Source: 05-25.pdf. 5 Menaion stichera Tone VIII. Spec. Mel.: "O most glorious wonder"
     // During Pentecostarion: 3 Pentecostarion + 5 Menaion = 8 total (PDF explicit).
-    // During Apostles' Fast: 6 Menaion stichera (repeating as needed).
+    // During Apostles' Fast: 6 Menaion stichera (repeating as needed = uniform doubling 3→6).
     stichera_lord_i_call_count: 8,  // Pentecostarion period: 3 Pent + 5 Menaion (05-25.pdf)
+    stichera_lord_i_call_note: "Seasonal conditional per 05-25.pdf: " +
+      "(A) Pentecostarion period — 8 stichera: 3 from Pentecostarion + 5 Menaion (items 0–2 unique, 3–4 repeatIndex markers). " +
+      "(B) Apostles' Fast — 6 stichera: all Menaion, 'repeating as necessary' = items 0–2 sung twice each (uniform doubling 3→6). " +
+      "Assembler currently handles path A via §4A3 Pentecostarion split. Path B not yet assembled.",
     stichera_lord_i_call: [
       { tone: 8, text: "O blessed forerunner John, shedding rays brighter than those of the sun, " +
                        "thy head hath shone forth from the ground and illumined the faithful. " +

@@ -462,14 +462,13 @@ export function auditEntry(entry, type) {
   const gaps = results.filter(r => r.gap);
 
   // ── Stichera count integrity (post-registry check) ───────────────────────
-  // The registry confirms stichera_lord_i_call and stichera_lord_i_call_count
-  // are present, but doesn't cross-check whether the array actually satisfies
-  // the count. Check here: items.length must equal count, OR items.length <
-  // count with explicit repeat markers covering the gap, OR count is a clean
-  // multiple of items.length (Fekula uniform-doubling, e.g. 3→6, 4→8).
+  // Suppressed when stichera_lord_i_call_note is present — the note documents a
+  // seasonal conditional or rubrical exception that cannot be expressed as a
+  // single count (e.g. 05-25: 8 in Pentecostarion, 6 in Apostles' Fast).
   const licItems = target.stichera_lord_i_call;
   const licCount = target.stichera_lord_i_call_count;
-  if (Array.isArray(licItems) && typeof licCount === 'number') {
+  if (Array.isArray(licItems) && typeof licCount === 'number'
+      && !target.stichera_lord_i_call_note) {
     const n = licItems.length;
     const markerCount = licItems.filter(
       s => s && !s.text && (typeof s.repeatIndex === 'number' || s.repeat)
