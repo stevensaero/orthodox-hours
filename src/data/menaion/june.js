@@ -1047,6 +1047,14 @@ const JUNE_MENAION = {
       magnificat_sung: false,
       matins_format: "god_is_the_lord",
       aposticha_source: "octoechos",
+      stichera_lord_i_call_count: 3,  // T8, Spec. Mel. "What shall we call you" (06-16.pdf)
+      stichera_lord_i_call: [
+        { tone: 8, spec_mel: "What shall we call you", text: "Possessed of a life equal to that of the angels, * by spurning pleasures * thou didst show thyself to be a vessel of God; * wherefore, O wise Tichon, as is meet * He ordained thee for the people * as a divine hierarch, * and showed thee to be a pillar and ground of the Faith, * O divinely inspired one, ** pasturing thy flock by the waters of Orthodoxy, O sacred one." },
+        { tone: 8, spec_mel: "What shall we call you", text: "Full of divine understanding, * thou wast revealed to be a most wise shepherd, * piously nurturing * the reason-endowed flock * on the grass of true doctrines; * wherefore, we honor now thy holy festival, * glorifying the Lord Who hath glorified thee. * O all-blessed and divinely wise Tichon, ** pray thou that our souls be saved." },
+        { tone: 8, spec_mel: "What shall we call you", text: "God, Who ever glorifieth those who glorify Him, * hath glorified thee with miracles; * for during thine honored and divine commemoration, * O wise father, * ripe grapes are seen * by those who hymn the most glorious wonder. * And partaking thereof, * the faithful who glorify thee as is meet ** receive sanctification and profit." },
+      ],
+      stichera_glory: null,   // §2A — no doxasticon; Both-now = Octoechos theotokion
+      lic_theotokion: null,   // §2A — Theotokion T8 in PDF is for Alleluia-Matins option only
       feast_e: null,  // §2A — no proper readings
       feast_g: null,
       troparion: {
@@ -1188,6 +1196,14 @@ const JUNE_MENAION = {
     magnificat_sung: false,
     matins_format: "god_is_the_lord",
     aposticha_source: "octoechos",
+    stichera_lord_i_call_count: 3,  // T4, Spec. Mel. "As one valiant among the martyrs" (06-17.pdf)
+    stichera_lord_i_call: [
+      { tone: 4, spec_mel: "As one valiant among the martyrs", text: "Like stars of surpassing splendor, * O all-famed passion-bearers, * ye illumine the ends of the world * with divine radiance, * dispelling the darkness of the demons, * the corrupting passions and misfortunes. * Wherefore, assembling today, O glorious ones, * we praise your luminous, ** light-bearing and holy festival." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs", text: "With sacred hymns * let the wondrous Manuel, * the blessed Sabel * and the most wise Ismael, be honored; * for, confessing the uncreated Trinity in a sacred manner * in the face of the enemy, * they extinguished the delusion of polytheism * with the outpouring of their blood, ** and have received the glory which fadeth not away." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs", text: "O blessed Manuel, Ismael and Sabel of great renown, * ye wisely put to shame * the lawless king * who iniquitously commanded you * to worship and render honor * to his mindless, inanimate gods; * and, having suffered patiently and lawfully, * ye have woven for yourselves wreaths of victory, ** praying for the world." },
+    ],
+    stichera_glory: { tone: 8, text: "The glorious martyrs, loving Thee in purity, O Word of God, having forsaken the worship of fire and spurned the land of Chaldea, were illumined by Thy light; and having armed themselves with the weaponry of faith, they put the tyrant Julian to shame. The glorious Manuel, the wondrous Sabel, and Ismael thrice rich, hymning Thee with the Father and the Spirit, pray ye that our souls be saved." },
+    lic_theotokion: null,   // §2A — Both-now = Octoechos theotokion (tone of week)
     feast_e: "Ephesians 6:10-17 (§233)",
     feast_g: "Luke 21:12-19 (§106)",
     prokeimenon_tone: 4,
@@ -1238,6 +1254,14 @@ const JUNE_MENAION = {
     magnificat_sung: false,
     matins_format: "god_is_the_lord",
     aposticha_source: "octoechos",
+    stichera_lord_i_call_count: 3,  // T8, Spec. Mel. "What shall we call you" (06-18.pdf)
+    stichera_lord_i_call: [
+      { tone: 8, spec_mel: "What shall we call you", text: "What shall we call thee, O glorious one? * Offering of Hellas, * in that thou didst hail therefrom? * Cleansing of Phoenicia, in that thou wast martyred there? * Lamp, for thou didst shine forth in the darkness? * Valiant one, in that thou wast not vanquished by those who beat thee? * Far-reaching is thy fame, * O most blessed Leontius! ** Pray thou, that our souls be saved." },
+      { tone: 8, spec_mel: "What shall we call you", text: "What shall we name thee, O passion-bearer? * Soldier of Christ, * in that thou wast a destroyer of the enemy? * Ruler of the passions, in that thou wast a spiritual athlete of piety? * Feeder of the hungry, in that thou didst love the poor? * righteous one, in that thou wast a zealot of heavenly wisdom? * Divers were thy sufferings * and most splendid thy contest. ** Pray thou, that our souls be saved." },
+      { tone: 8, spec_mel: "What shall we call you", text: "Who doth not marvel at thee, O Leontius? * For, receiving a well-spring of incorruption * as a dweller in paradise, * thou pourest forth rivers of benefaction upon the faithful, * without fee dost offer abundant gifts * to all those who thirst, * and dost gladden those who partake * of the waters of goodness. ** Pray thou, that our souls be saved." },
+    ],
+    stichera_glory: { tone: 1, text: "O all-famed spiritual athlete Leontius, neither fire, nor wounding, nor the sword were able to separate thee from the love of Christ; but, suffering manfully in the midst of the tormenters, thou didst abolish the offerings made to idols, O divinely wise crown-bearer, and now dost dance in the heavens. Earnestly pray thou for our souls." },
+    lic_theotokion: null,   // §2A — Both-now = Octoechos theotokion (tone of week); Stavrotheotokion T1 in PDF is for Alleluia-Matins option
     feast_e: "Acts 12:1-11 (§29)",
     feast_g: "John 15:17-16:2 (§52)",
     prokeimenon_tone: 7,
@@ -1301,6 +1325,7 @@ const JUNE_MENAION = {
     magnificat_sung: false,
     matins_format: "god_is_the_lord",
     aposticha_source: "octoechos",
+    stichera_lord_i_call_note: "No St. Sergius PDF for OCA June 19 (Apostle Jude). Stichera not yet sourced — use General Menaion for apostles or OCA website when available.",
     feast_e: "Jude 1-10",
     feast_g: "John 14:21-24",
     troparion: {
@@ -1341,6 +1366,14 @@ const JUNE_MENAION = {
       magnificat_sung: false,
       matins_format: "god_is_the_lord",
       aposticha_source: "octoechos",
+      stichera_lord_i_call_count: 3,  // T2, Spec. Mel. "When from the Tree" (06-15.pdf)
+      stichera_lord_i_call: [
+        { tone: 2, spec_mel: "When from the Tree", text: "The spiritual splendor of thy mind, * O most wondrous prophet, * hath disclosed a purity * which shineth clearly like a mirror, * illumining the world with the brilliant radiance * of divine knowledge. * And prefiguring images of the divine mysteries, * it causeth grace to be bestowed ** upon all mankind." },
+        { tone: 2, spec_mel: "When from the Tree", text: "As the mouth of God, * following righteous teachings and divine judgments, * thou didst manifestly denounce * the doers of iniquity, * condemning them with an inescapable sentence, * O most noetically rich prophet. * Wherefore, seeing the fulfillment * of thy most wise words, O blessed one, ** we praise thee with hymns, as is meet." },
+        { tone: 2, spec_mel: "When from the Tree", text: "Standing before the throne of the Master * filled with light, * and ineffable and divine glory, * and beholding the good things of heaven, * O divinely eloquent Amos, * be thou mindful of all who honor thee with faith, * asking that salvation of soul and forgiveness of sins * be granted unto them all, ** O thou who art acceptable to God." },
+      ],
+      stichera_glory: null,   // §2A — no doxasticon in 06-15.pdf; Both-now = Octoechos theotokion
+      lic_theotokion: null,   // §2A — Octoechos theotokion (tone of week); Theotokion T2 in PDF is for Alleluia-Matins option only
       feast_e: null,  // §2A — no proper readings
       feast_g: null,
       troparion: {
@@ -1588,6 +1621,14 @@ const JUNE_MENAION = {
     magnificat_sung: false,
     matins_format: "god_is_the_lord",
     aposticha_source: "octoechos",
+    stichera_lord_i_call_count: 3,  // T4, Spec. Mel. "Thou hast given a sign" (06-20.pdf)
+    stichera_lord_i_call: [
+      { tone: 4, spec_mel: "Thou hast given a sign", text: "Thy commemoration hath splendidly come, * O holy hierarch Methodius, * bringing unto us * the art of salvation. * Wherefore, we hymn thee thereon, * confessing the radiant struggles and battles * whereby thou didst best * the greatly-skilled evil one ** and, rejoicing, didst weave a wreath of victory." },
+      { tone: 4, spec_mel: "Thou hast given a sign", text: "By thy words thou hast enlightened the fullness of the Church, * O divinely revealed Methodius; * by thy sufferings and radiance * thou hast driven away the gloom of polytheism * and hast now passed over * to the never-waning light, O hieromartyr. * Wherefore, made luminous by piety, * we celebrate today ** thy most festive and luminous solemnity." },
+      { tone: 4, spec_mel: "Thou hast given a sign", text: "With blood didst thou dye thy sacred vesture, * O God-bearing Methodius; * and therewith thou didst make thine abode * in the holy of holies, rejoicing, O blessed one; * thou dost radiantly behold * the divine effulgence of the Trinity, * instructed most manifestly by Him * Who is past understanding and comprehension, ** and fearing Him, O most excellent and noetically rich hierarch." },
+    ],
+    stichera_glory: null,   // §2A — no doxasticon; Both-now = Octoechos theotokion
+    lic_theotokion: null,   // §2A — Theotokion T4 in PDF is for Alleluia-Matins option only
     feast_e: null,  // §2A — no proper readings; readings from Octoechos
     feast_g: null,
     troparion: {
@@ -1629,6 +1670,14 @@ const JUNE_MENAION = {
     magnificat_sung: false,
     matins_format: "god_is_the_lord",
     aposticha_source: "octoechos",
+    stichera_lord_i_call_count: 3,  // T4, Spec. Mel. "As one valiant among the martyrs" (06-21.pdf)
+    stichera_lord_i_call: [
+      { tone: 4, spec_mel: "As one valiant among the martyrs", text: "Perceiving thee, * O blessed martyr Julian, * as a brilliant sun * illumining the fullness of the world * with noetic splendors, * we celebrate thy radiant and divine memory, * and bow down * before the shrine of thy relics, ** drawing forth health for our souls." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs", text: "Beaten, wounded and grievously scourged, * imprisoned in a dungeon, O blessed one, * driven from place to place, * caged with wild beasts, * brought unto the abyss * and drowned in the sea, * thou didst receive a blessed end, * refusing to deny the Master of all, ** O most noetically rich glory of the martyrs." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs", text: "Cast up upon dry land * out of the bosom of the sea * by the action of the Spirit, * thou wast seen by an honorable woman, * who faithfully took thee up, O martyr Julian, * and committed to burial * thine immaculate and much-suffering body, * which had vanquished the tyranny of the devil ** through the workings of grace." },
+    ],
+    stichera_glory: { tone: 6, text: "Having drawn forth the inexhaustible drink of the immaculate Faith, O blessed one, thou didst extinguish the worship of idols, victoriously passing through the contest, made luminous with dew, and shining like a never-waning star of Christ, the ever-shining Sun; Emitting rays of martyrdom in each city, thou didst receive a blessed end in the sea, and didst come before the face of Christ as a crown-bearer. Him do thou beseech, O most glorious Julian, that He save those who celebrate thy memory with faith." },
+    lic_theotokion: null,   // §2A — Both-now = Octoechos theotokion (tone of week)
     feast_e: "Ephesians 6:10-17 (§233)",
     feast_g: "Luke 21:12-19 (§106)",
     prokeimenon_tone: 4,
@@ -1679,6 +1728,14 @@ const JUNE_MENAION = {
     magnificat_sung: false,
     matins_format: "god_is_the_lord",
     aposticha_source: "octoechos",
+    stichera_lord_i_call_count: 3,  // T8, Spec. Mel. "What shall we call you" (06-22.pdf)
+    stichera_lord_i_call: [
+      { tone: 8, spec_mel: "What shall we call you", text: "What shall we call thee, O glorious one? * True hierarch and sacred teacher, * confirmation of the Orthodox, * and eye of the Church, * beacon which shineth forth a noetic light, * one who wast glorious among the martyrs, * O champion of truth, * and great accuser of falsehood. ** Pray thou that our souls be saved!" },
+      { tone: 8, spec_mel: "What shall we call you", text: "What shall we call thee, O holy hierarch? * A river which proceedeth from the noetic Eden, * watering the earth * with spiritual dews, * cup which is full of divine water * which drowneth the followers of Arius, * pillar of fire which guideth the new people * by divine grace. ** Pray thou that our souls be saved!" },
+      { tone: 8, spec_mel: "What shall we call you", text: "What shall I call thee, O Eusebius? * Bestower of piety * and destroyer of impiety, * adornment of passion-bearers and joy of priests, * sickle which cutteth down the tares * and gathereth in the wheat of heaven, * ever-flowing fount of miracles * which relieveth the burning heat of infirmities. ** Pray thou that our souls be saved!" },
+    ],
+    stichera_glory: null,   // §2A — no doxasticon; Both-now = Octoechos theotokion
+    lic_theotokion: null,   // §2A — Theotokion T8 in PDF is for Alleluia-Matins option only
     feast_e: null,
     feast_g: null,
     troparion: {
@@ -1722,6 +1779,14 @@ const JUNE_MENAION = {
       magnificat_sung: false,
       matins_format: "god_is_the_lord",
       aposticha_source: "octoechos",
+      stichera_lord_i_call_count: 3,  // T4, Spec. Mel. "Thou hast given a sign" (06-23.pdf)
+      stichera_lord_i_call: [
+        { tone: 4, spec_mel: "Thou hast given a sign", text: "Rome putteth thee forward * as a blossoming rose of sweet fragrance, * perfuming the thoughts of the faithful * with the scent of the virtues, * ever dispelling the stench of the passions by grace, * O much-suffering Agrippina, * adornment of the martyrs, * confirmation of the Church, * boast of virgins ** and abyss of miracles." },
+        { tone: 4, spec_mel: "Thou hast given a sign", text: "Christ our God hath given unto Sicily, * thee, who suffered in Rome, * as riches beyond measure; * and having arrived there, O glorious martyr, * thou didst drive away evil multitudes of demons * by thine intercession. * Wherefore, we bless thee * and celebrate thy suffering today, ** O much-suffering Agrippina." },
+        { tone: 4, spec_mel: "Thou hast given a sign", text: "Bassa and Paula bore thee on their shoulders * at the command of Him Who upholdeth all things, * moving thee from place to place * and making a long journey over the deep, * working awesome miracles through divine grace, * O martyr Agrippina, * and having come to rest in the place * which God had appointed, ** thou didst become a place of rest for the heavy-laden, O all-praised one." },
+      ],
+      stichera_glory: null,   // §2A — no doxasticon; Both-now = Octoechos theotokion (Stavrotheotokion in PDF is Alleluia-Matins option)
+      lic_theotokion: null,   // §2A — Both-now = Octoechos theotokion (tone of week)
       feast_e: null,
       feast_g: null,
       troparion: {
@@ -2150,6 +2215,14 @@ const JUNE_MENAION = {
     magnificat_sung: false,
     matins_format: "god_is_the_lord",
     aposticha_source: "octoechos",
+    stichera_lord_i_call_count: 3,  // T8, Spec. Mel. "O most glorious wonder" (06-26.pdf)
+    stichera_lord_i_call: [
+      { tone: 8, spec_mel: "O most glorious wonder", text: "O all-blessed father David, * having eminently illumined thy mind with abstinence, * thou didst take wing * to the First Cause of good things * and wast shown to be a pillar of light, * with godly understanding * ever illumining with thy words and deeds * all who have recourse to thee. ** Wherefore, we honor and bless thee." },
+      { tone: 8, spec_mel: "O most glorious wonder", text: "Like a right melodious bird * thou didst establish thy shelter * in the branches of a tree, O father, * frozen by the cold * and burned by the heat; * whereby thou didst receive golden wings * of dispassion and perfection, * and hast made thine abode in the heights of heaven, ** ever praying for us who praise thee." },
+      { tone: 8, spec_mel: "O most glorious wonder", text: "Having utterly consumed the pleasures of the flesh * with the divine ember of dispassion, * thou didst remain unconsumed, O venerable one, * holding burning embers in thy hand * before the face of the emperor, * who was amazed at thy radiance. * Wherefore, great favor hath been given thee by God, * Who through grace hath made thee a great intercessor, ** O blessed one." },
+    ],
+    stichera_glory: { tone: 6, text: "O venerable father, word of thy corrections hath gone forth into all the earth; wherefore, thou hast obtained the reward of thy labors in the heavens, having destroyed legions of the demons, and attained unto the ranks of the angels, whose life thou didst blamelessly emulate. As thou hast boldness before Christ God, beg thou peace for our souls." },
+    lic_theotokion: null,   // §2A — Both-now = Octoechos theotokion (Stavrotheotokion in PDF is Alleluia-Matins option)
     feast_e: null,
     feast_g: null,
     troparion: {
@@ -2189,7 +2262,18 @@ const JUNE_MENAION = {
     has_paroemias: false,
     magnificat_sung: false,
     matins_format: "god_is_the_lord",
-    aposticha_source: "octoechos",    feast_e: "Galatians 5:22-6:2 (§213)",
+    aposticha_source: "octoechos",
+    stichera_lord_i_call_count: 3,  // T1, Spec. Mel. "O all-praised martyrs" (06-27.pdf)
+    stichera_lord_i_call: [
+      { tone: 1, spec_mel: "O all-praised martyrs", text: "Having made thine abode in the wilderness * like Elijah of old, * O all-famed father Sampson, * with the burnings of abstinence * thou didst cause the assaults of the flesh to wither up, * purifying thy mind with unceasing prostrations before God. * And now pray thou, that He grant our souls ** peace and great mercy." },
+      { tone: 1, spec_mel: "O all-praised martyrs", text: "O divinely wise father Sampson, * adorned with dispassion * thou wast numbered among the desert-dwellers, * thou didst make thine abode in a monastery of the venerable, * wherein was the never-waning light, * as also the tree of life. * And now, pray thou, that God grant unto our souls ** peace and great mercy." },
+      { tone: 1, spec_mel: "O all-praised martyrs", text: "O divinely inspired father Sampson, * thou wast a lamp * enlightening all the earth with the beams of thy miracles, * dispelling the darkness * of soul-destroying infirmities * and driving away the gloom of the demons. * And now, pray thou, that God grant unto our souls ** peace and great mercy." },
+    ],
+    stichera_glory: { tone: 1, spec_mel: "O all-praised martyrs", text: "Woe is me! What shall I do? * For I have defiled my mind, soul and body * with transgressions! * What shall I do? * How shall I escape the unbearable flame * and the unbreakable and everlasting bonds? * Yet, before the end * grant me forgiveness, ** O all-immaculate one!" },
+    // Note: Glory in PDF prints the Theotokion in the same T1 Spec. Mel. — not a doxasticon for the saint.
+    // §2A — Both-now = this Theotokion or Octoechos theotokion; no independent Both-now line follows in PDF.
+    lic_theotokion: null,   // Both-now = Octoechos theotokion (tone of week) — Glory above is a Theotokion, not a saint doxasticon
+    feast_e: "Galatians 5:22-6:2 (§213)",
     feast_g: "Luke 12:32-40 (§67)",
     prokeimenon_tone: 7,
     prokeimenon_text: "Precious in the sight of the Lord is the death of His saints.",
@@ -2250,9 +2334,9 @@ const JUNE_MENAION = {
       "life for evermore.",
     communion_verse: "Rejoice in the Lord, O ye righteous; " +
       "praise is meet for the upright.",
-    stichera_lord_i_call_count: 6,  // 3 stichera T4, each sung twice (06-28.pdf)
+    stichera_lord_i_call_count: 6,  // 3 stichera T4, each sung twice (06-28.pdf); on Sunday §2C takes 4 from Menaion — first repeats to fill 4th slot
     stichera_lord_i_call: [
-      { tone: 4,
+      { tone: 4, repeatIndex: 0,
         text: "With hymns let us all honor Cyrus and with him the great John, the two martyrs " +
               "who possessed the radiance of the Trinity, the foundation of the Faith, " +
               "the flowers breathing forth the true fragrance of the understanding of Christ, " +
