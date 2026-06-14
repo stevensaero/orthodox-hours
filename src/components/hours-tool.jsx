@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   LIC_THEOTOKIA, HYPAKOE, RESURRECTIONAL_TROPARIA, RESURRECTIONAL_DISMISSAL_THEOTOKIA,
-  SUNDAY_KONTAKIA, SUNDAY_PROKEIMENON, SUNDAY_ALLELUIA,
+  SUNDAY_KONTAKIA, SUNDAY_PROKEIMENON, SUNDAY_ALLELUIA, SUNDAY_APOSTICHA_THEOTOKIA,
   KATAVASIAE, RESURRECTION_GOSPEL_STICHERA, LIC_OPENING_FALLBACK,
 } from '../data/octoechos/index.js';
 import { PSALMS, KATHISMA_MAP, getPsalmRange } from '../data/psalter.js';
@@ -3534,7 +3534,84 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     ];
     let licStichera = [];
     let licRendered = false; // true when Pentecostarion branch renders directly
-    if (!isPentecostarion && rank === "simple" && octoDay && octoDay.lic) {
+    if (isSunday && !isPentecostarion) {
+      // ── Sunday Vespers LIC engine (ordinary Octoechos Sundays) ──────────────
+      // 10 stichera = resurrection (Octoechos, tone of week) + commemoration
+      // (Menaion saint), split by the commemoration's rank. See sunday_vespers_spec.md §3.
+      // resurrection N: simple 7 / six-stichera·doxology 6 / polyeleos·vigil 4.
+      const SUN_RES_N = { simple: 7, six_stichera: 6, doxology: 6, polyeleos: 4, vigil: 4, great_feast: 4 };
+      const resN = SUN_RES_N[rank] ?? 7;
+      const commN = 10 - resN;
+      const sunSat = getOctoechosVespers(tone, "sat");
+      const resStichera = (sunSat && sunSat.lic ? sunSat.lic.slice(0, resN) : [])
+        .map(entry => ({ text: hymnText(entry), tone, source: "Octoechos", resolved: true, ...hymnProvenance(entry) }));
+      // commemoration: expand the saint's printed texts to fill commN (the blessed
+      // expandSticheraToCount mechanism — repeats clean multiples, flags non-multiples
+      // for a repeat marker rather than guessing a doubling position).
+      const commStichera = expandSticheraToCount(menaionLicStichera, commN, { source: "Menaion" });
+      const sunStichera = [...resStichera, ...commStichera]; // length 10
+      const sunCount = 10;
+      const sunNote = resN + " resurrection (Octoechos, Tone " + tone + ") + " + commN +
+        " " + effSaint + " — Sunday Great Vespers. Fekula Ch.1 / §4B6; split by commemoration rank " + fekulaSection + ".";
+      // Verses V.10 → V.1, each followed by its sticheron
+      LIC_VERSES.forEach((v) => {
+        const slotIndex = sunCount - v.n; // 0 = V.10
+        const stich = sunStichera[slotIndex];
+        elements.push({ id: "v-lic-verse-" + v.n, type: "fixed", label: "",
+          text: "V. (" + v.n + ") " + v.text, source: "HTM Vespers" });
+        if (stich && stich.resolved && stich.text) {
+          const stichTone = stich.tone || tone;
+          elements.push({ id: "v-lic-stich-" + v.n, type: "movable", label: "",
+            rubric: "Tone " + stichTone + (stich.repeatNote ? " " + stich.repeatNote : "") + ":",
+            text: stich.text, source: stich.source,
+            fekula: { section: fekulaSection, note: stich.source + " sticheron at V.(" + v.n + "). " + sunNote } });
+        } else {
+          elements.push({ id: "v-lic-stich-" + v.n, type: "movable", label: "",
+            unresolved: true,
+            text: stich && stich.diagnostic
+              ? stich.diagnostic
+              : "[" + effSaint + " sticheron — not yet entered. Enter stichera_lord_i_call in the Menaion data (Track B / P2).]",
+            source: "Menaion",
+            fekula: { section: fekulaSection, note: "Commemoration sticheron at V.(" + v.n + ") pending encoding. " + sunNote } });
+        }
+      });
+      // Glory → doxasticon, OR no-Glory rule (§8.2): when the commemoration has no
+      // doxasticon, NO resurrectional Glory is substituted — "Glory… now and ever"
+      // are sung together and resolve straight to the Dogmatikon.
+      const sunDox = menaionEntry && menaionEntry.stichera_glory;
+      const sunDoxText = sunDox ? (typeof sunDox === "string" ? sunDox : sunDox.text) : null;
+      if (sunDoxText) {
+        elements.push({ id: "v-lic-glory", type: "fixed", label: "",
+          text: "Glory to the Father, and to the Son, and to the Holy Spirit.", source: "HTM Vespers" });
+        elements.push({ id: "v-lic-doxasticon", type: "movable", label: "Doxasticon",
+          rubric: "Tone " + ((typeof sunDox === "string" ? tone : sunDox.tone) || tone) + ":",
+          text: sunDoxText, source: "Menaion — " + effSaint,
+          fekula: { section: fekulaSection, note: "Glory: doxasticon of " + effSaint + "." } });
+        elements.push({ id: "v-lic-nowever", type: "fixed", label: "",
+          text: "Now and ever and unto ages of ages. Amen.", source: "HTM Vespers" });
+      } else {
+        elements.push({ id: "v-lic-glory-nowever", type: "fixed", label: "",
+          text: "Glory to the Father, and to the Son, and to the Holy Spirit, now and ever, and unto the ages of ages. Amen.",
+          source: "HTM Vespers",
+          fekula: { section: fekulaSection, note: "No commemoration doxasticon: Glory… now and ever sung together. — sunday_vespers_spec.md §8.2" } });
+      }
+      // Both now = the Dogmatikon in the tone of the week (always, every resurrectional Sunday).
+      if (sunSat && sunSat.dogmatikon) {
+        elements.push({ id: "v-lic-dogmatikon", type: "movable", label: "Dogmatikon",
+          rubric: "Tone " + tone + ":",
+          text: hymnText(sunSat.dogmatikon), source: "Octoechos", ...hymnProvenance(sunSat.dogmatikon),
+          fekula: { section: fekulaSection, note: "Both Now: resurrectional Dogmatikon in the tone of the week (Saturday-evening Great Vespers). Fekula §4B / Ch.6; Octoechos." } });
+      } else {
+        const licTheot = LIC_THEOTOKIA[tone];
+        elements.push({ id: "v-lic-theotokion", type: "movable", label: "Theotokion",
+          unresolved: !licTheot,
+          rubric: "Tone " + tone + ":",
+          text: licTheot || "[Dogmatikon — not found for Tone " + tone + "]",
+          source: "Octoechos",
+          fekula: { section: fekulaSection, note: "Both Now: tone-of-week Dogmatikon (fallback theotokion — Octoechos sat.dogmatikon absent)." } });
+      }
+      licRendered = true;
+    } else if (!isPentecostarion && rank === "simple" && octoDay && octoDay.lic) {
       // §2A: first 3 from Octoechos
       const octoLic = octoDay.lic.slice(0, 3);
       octoLic.forEach((entry, i) => licStichera.push({text: hymnText(entry), source:"Octoechos", resolved:true, ...hymnProvenance(entry)}));
@@ -4187,7 +4264,69 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
          "For He established the world which shall not be shaken.",
          "Holiness becometh Thy house, O Lord, unto length of days."];
 
-    if (isPentecostarion) {
+    if (isSunday && !isPentecostarion) {
+      // ── Sunday Vespers aposticha engine ─────────────────────────────────────
+      // 4 resurrection stichera (Octoechos sat) + Glory (commemoration doxasticon)
+      // + Both Now = theotokion in the tone of the aposticha Glory (the fixed per-tone
+      // 8-set SUNDAY_APOSTICHA_THEOTOKIA — NOT the dogmatikon). See spec §4 / §8.3.
+      const sunSatA = getOctoechosVespers(tone, "sat");
+      const sunApost = (sunSatA && sunSatA.aposticha) || [];
+      sunApost.forEach((entry, i) => {
+        elements.push({ id: "v-apost-stich-" + i, type: "movable", label: i === 0 ? "Aposticha" : "",
+          rubric: "Tone " + tone + ":",
+          text: hymnText(entry), source: "Octoechos", ...hymnProvenance(entry),
+          fekula: { section: fekulaSection, note: "Resurrection aposticha sticheron " + (i + 1) + " (Octoechos, Tone " + tone + "). Sunday Great Vespers." } });
+        if (satVerses[i]) {
+          elements.push({ id: "v-apost-verse-" + i, type: "fixed", label: "",
+            text: satVerses[i], source: "HTM Vespers" });
+        }
+      });
+      // Glory: commemoration doxasticon if encoded; else the Octoechos resurrectional
+      // aposticha Glory (tone of week); else no doxasticon (Glory… now and ever together).
+      const menAG = menaionEntry && menaionEntry.aposticha_glory;
+      const menAGText = menAG ? (typeof menAG === "string" ? menAG : menAG.text) : null;
+      const octoAG = sunSatA && sunSatA.aposticha_glory && !String(sunSatA.aposticha_glory).startsWith("[")
+        ? sunSatA.aposticha_glory : null;
+      let gloryTone = tone;
+      if (menAGText) {
+        gloryTone = (typeof menAG === "string" ? tone : menAG.tone) || tone;
+        elements.push({ id: "v-apost-glory", type: "fixed", label: "",
+          text: "Glory to the Father, and to the Son, and to the Holy Spirit.", source: "HTM Vespers" });
+        elements.push({ id: "v-apost-doxasticon", type: "movable", label: "Aposticha Doxasticon",
+          rubric: "Tone " + gloryTone + ":", text: menAGText, source: "Menaion — " + effSaint,
+          fekula: { section: fekulaSection, note: "Aposticha Glory: doxasticon of " + effSaint + "." } });
+      } else if (octoAG) {
+        elements.push({ id: "v-apost-glory", type: "fixed", label: "",
+          text: "Glory to the Father, and to the Son, and to the Holy Spirit.", source: "HTM Vespers" });
+        elements.push({ id: "v-apost-doxasticon", type: "movable", label: "Aposticha Doxasticon",
+          rubric: "Tone " + tone + ":", text: octoAG, source: "Octoechos",
+          fekula: { section: fekulaSection, note: "Aposticha Glory: resurrectional doxasticon (Octoechos, Tone " + tone + ")." } });
+      } else {
+        elements.push({ id: "v-apost-glory-nowever", type: "fixed", label: "",
+          text: "Glory to the Father, and to the Son, and to the Holy Spirit, now and ever, and unto the ages of ages. Amen.",
+          source: "HTM Vespers" });
+      }
+      if (menAGText || octoAG) {
+        elements.push({ id: "v-apost-nowever", type: "fixed", label: "",
+          text: "Now and ever and unto ages of ages. Amen.", source: "HTM Vespers" });
+      }
+      // Both Now: the Sunday aposticha theotokion in the tone of the Glory (fixed 8-set).
+      const sunApostTheot = SUNDAY_APOSTICHA_THEOTOKIA[gloryTone];
+      if (sunApostTheot && (sunApostTheot.text || typeof sunApostTheot === "string")) {
+        elements.push({ id: "v-apost-theotokion", type: "movable", label: "Theotokion (Both now…)",
+          rubric: "Tone " + ((sunApostTheot.tone) || gloryTone) + ":",
+          text: typeof sunApostTheot === "string" ? sunApostTheot : sunApostTheot.text,
+          source: "Octoechos",
+          fekula: { section: fekulaSection, note: "Aposticha Both Now: Sunday aposticha theotokion in the tone of the Glory (Tone " + gloryTone + "). Spec §4 / §8.3." } });
+      } else {
+        elements.push({ id: "v-apost-theotokion", type: "movable", label: "Theotokion (Both now…)",
+          unresolved: true,
+          rubric: "Tone " + gloryTone + ":",
+          text: "[Sunday aposticha theotokion, Tone " + gloryTone + " — pending P2 data (SUNDAY_APOSTICHA_THEOTOKIA, the fixed 8-set from the St. Sergius Octoechos appendix).]",
+          source: "Octoechos",
+          fekula: { section: fekulaSection, note: "Aposticha Both Now: theotokion in the tone of the Glory (Tone " + gloryTone + "); 8-set not yet encoded. Spec §4 / §8.3." } });
+      }
+    } else if (isPentecostarion) {
       // Pentecostarion Great Feast: use encoded stichera_aposticha if present
       if (pentEntry && pentEntry.stichera_aposticha && pentEntry.stichera_aposticha.length > 0) {
         const pentAposticha = pentEntry.stichera_aposticha;
@@ -7897,6 +8036,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.16.0",
+    date: "June 2026",
+    items: [
+      "feature: ordinary Octoechos Sundays (post-Pentecost) now assemble through a unified Sunday Vespers engine instead of falling through to the weekday rank branches. 'Lord I Have Cried' is built as the Sunday 10 — resurrection (Octoechos, tone of the week) + the commemoration (Menaion saint), split by the saint's rank (simple 7+3, six-stichera/doxology 6+4, polyeleos/vigil 4+6) — with the 'Both now' always the resurrectional Dogmatikon in the tone of the week. This fixes the case where a Sunday with a non-simple saint (e.g. June 28, Tone 3, Cyrus & John) rendered as a weekday service.",
+      "feature: when the commemoration has no doxasticon, 'Glory… now and ever' are sung together and resolve straight to the Dogmatikon (no substituted resurrectional Glory).",
+      "feature: the Sunday aposticha is now resurrection (4, Octoechos) + Glory (commemoration) + 'Both now' = the Sunday aposticha theotokion in the tone of the Glory (a distinct text from the Dogmatikon). The fixed per-tone theotokion set is stubbed pending data entry, so this slot is flagged until those eight texts are encoded.",
+      "Resurrection texts render fully from existing Octoechos data; commemoration texts complete as the Menaion saints are encoded. Pentecostarion and overlay Sundays are unchanged.",
+    ],
+    summary: "Unified Sunday Vespers engine — ordinary Octoechos Sundays (LIC split by rank, Both-now Dogmatikon, aposticha theotokion by Glory tone)",
+  },
   {
     version: "v0.15.31",
     date: "June 2026",

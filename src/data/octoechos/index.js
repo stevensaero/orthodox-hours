@@ -115,6 +115,18 @@ export const RESURRECTIONAL_DISMISSAL_THEOTOKIA = {
   8: { tone: 8, text: `O Good One, Who for our sake wast born of the Virgin and, having endured crucifixion, cast down death by death, and as God revealed the resurrection: disdain not that which Thou hast fashioned with Thine own hand. Show forth Thy love for mankind, O Merciful One; Accept the supplications of the Theotokos who bore Thee, and save Thy despairing people, O our Savior!` },
 };
 
+// ── Sunday aposticha theotokia — Both Now after the aposticha Glory ───────────
+// The resurrectional theotokion appended to the aposticha Glory at Saturday-evening
+// Great Vespers, keyed by the TONE OF THE APOSTICHA GLORY (not the tone of the week,
+// and NOT the LIC dogmatikon — these are three distinct tables; see
+// sunday_vespers_spec.md §7). A FIXED per-tone 8-set (confirmed §8.3: four T8 docs
+// print the identical text), sourced from the St. Sergius Octoechos appendix.
+// P1 ships this as a null stub; the engine falls back + flags when a tone is null.
+// P2 fills the eight texts from the appendix.
+export const SUNDAY_APOSTICHA_THEOTOKIA = {
+  1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null,
+};
+
 export const SUNDAY_KONTAKIA = {
   1: {
     tone: 1,

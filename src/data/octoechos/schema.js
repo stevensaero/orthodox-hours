@@ -103,6 +103,7 @@ export const INDEX = {
   toneKeyed: [
     'LIC_THEOTOKIA', 'HYPAKOE', 'RESURRECTIONAL_TROPARIA',
     'SUNDAY_KONTAKIA', 'SUNDAY_PROKEIMENON', 'SUNDAY_ALLELUIA',
+    'SUNDAY_APOSTICHA_THEOTOKIA',
   ],
   // Present-but-empty stubs to be filled later (not tone-keyed in the 1..8 sense).
   stubs: ['KATAVASIAE', 'RESURRECTION_GOSPEL_STICHERA'],
