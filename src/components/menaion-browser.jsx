@@ -172,12 +172,40 @@ function FieldRow({ label, value, mono }) {
 
 // ── Entry Hymnography (shared renderer for primary + secondary) ──────────────
 function EntryHymnography({ entry }) {
+  // Stichera count integrity: declared count vs. items in the array.
+  // items.length === count → exact (data mirrors rubric slot-for-slot)
+  // items.length < count, markers present → rubric-carrying (count = unique + repeats)
+  // items.length < count, no markers → mismatch (assembler will flag unresolved slots)
+  // items.length > count → overcounting
+  const licItems = Array.isArray(entry.stichera_lord_i_call) ? entry.stichera_lord_i_call : null;
+  const licCount = entry.stichera_lord_i_call_count;
+  const licIntegrity = (() => {
+    if (!licItems || licCount === undefined) return null;
+    const n = licItems.length;
+    const markerCount = licItems.filter(s => s && !s.text && (typeof s.repeatIndex === 'number' || s.repeat)).length;
+    const textCount = n - markerCount;
+    if (n === licCount) return { ok: true, note: `${n} items = count ✓` };
+    if (n < licCount && markerCount > 0) return { ok: true, note: `${textCount} unique + ${markerCount} repeat marker${markerCount > 1 ? 's' : ''} = ${n} items (count ${licCount}) ✓` };
+    if (n < licCount && markerCount === 0) return { ok: false, note: `${n} items, count ${licCount} — ${licCount - n} slot${licCount - n > 1 ? 's' : ''} unaccounted; add repeat markers or correct count` };
+    if (n > licCount) return { ok: false, note: `${n} items exceeds count ${licCount} — correct count or remove items` };
+    return null;
+  })();
+
   return (
     <>
       {/* ── Lord I Have Cried Stichera ── */}
       <SectionHeader>Vespers — Lord I Have Cried</SectionHeader>
       {entry.stichera_lord_i_call_count !== undefined && (
         <FieldRow label="stichera count" value={entry.stichera_lord_i_call_count} />
+      )}
+      {licIntegrity && (
+        <div style={{ fontSize: "0.78rem", marginBottom: "0.4rem", padding: "2px 8px",
+          color: licIntegrity.ok ? "#4A7A3A" : "#B43C1E",
+          background: licIntegrity.ok ? "rgba(74,122,58,0.08)" : "rgba(180,60,30,0.08)",
+          border: `1px solid ${licIntegrity.ok ? "rgba(74,122,58,0.3)" : "rgba(180,60,30,0.3)"}`,
+          borderRadius: "3px" }}>
+          {licIntegrity.ok ? "✓" : "✗"} {licIntegrity.note}
+        </div>
       )}
       {entry.stichera_lord_i_call && Array.isArray(entry.stichera_lord_i_call) ? (
         entry.stichera_lord_i_call.map((s, i) => (

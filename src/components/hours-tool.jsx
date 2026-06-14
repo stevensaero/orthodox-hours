@@ -8067,6 +8067,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.16.7",
+    date: "June 2026",
+    summary: "Data: 06-15B Jonah stichera correct 8-slot encoding; Menaion browser count integrity annotation",
+    items: [
+      "data: 06-15B St Jonah — LIC stichera reshaped to 8 explicit slots matching the PDF rubric: 6 unique texts with no-text repeatIndex markers at positions 1 and 5 (per PDF '(Twice)' on stichera 1 and 4). The existing assembler n===count path resolves cleanly. Previous encoding put repeatIndex on text-bearing items, which left 2 unresolved slots.",
+      "ui: Menaion browser now shows a count integrity annotation under the stichera count: green '✓ N unique + M repeat markers = count' when satisfied, red '✗ N items, count C — slots unaccounted' when not. Communicates whether the data is carrying the rubric explicitly or has a genuine gap.",
+    ],
+  },
+  {
     version: "v0.16.6",
     date: "June 2026",
     summary: "Fix: Vespers service selector now changes the assembled service; stichera_glory_absent sentinel for verified-absent doxasticons",
