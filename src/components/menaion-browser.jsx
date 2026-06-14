@@ -170,6 +170,177 @@ function FieldRow({ label, value, mono }) {
   );
 }
 
+// ── Entry Hymnography (shared renderer for primary + secondary) ──────────────
+function EntryHymnography({ entry }) {
+  return (
+    <>
+      {/* ── Lord I Have Cried Stichera ── */}
+      <SectionHeader>Vespers — Lord I Have Cried</SectionHeader>
+      {entry.stichera_lord_i_call_count !== undefined && (
+        <FieldRow label="stichera count" value={entry.stichera_lord_i_call_count} />
+      )}
+      {entry.stichera_lord_i_call && Array.isArray(entry.stichera_lord_i_call) ? (
+        entry.stichera_lord_i_call.map((s, i) => (
+          <TextBlock
+            key={i}
+            tone={s.tone}
+            text={s.text}
+            specMel={s.spec_mel}
+            label={`[${i + 1}]`}
+            repeatIndex={s.repeatIndex}
+          />
+        ))
+      ) : (
+        <div style={{ fontSize: "0.85rem", color: C.goldLight, fontStyle: "italic" }}>Not encoded</div>
+      )}
+      {entry.stichera_glory && (
+        <TextBlock
+          tone={entry.stichera_glory.tone}
+          text={entry.stichera_glory.text}
+          label="Glory (Doxasticon)"
+        />
+      )}
+      {entry.stichera_glory === null && <FieldRow label="stichera_glory" value={null} />}
+      {entry.lic_theotokion && (
+        <TextBlock
+          tone={entry.lic_theotokion.tone}
+          text={entry.lic_theotokion.text}
+          label="Both now (Theotokion)"
+        />
+      )}
+      {entry.lic_theotokion === null && <FieldRow label="lic_theotokion" value={null} />}
+
+      {/* ── Vespers Aposticha ── */}
+      {(entry.stichera_aposticha || entry.aposticha_glory) && (
+        <>
+          <SectionHeader>Vespers — Aposticha</SectionHeader>
+          {entry.stichera_aposticha && Array.isArray(entry.stichera_aposticha) && (
+            entry.stichera_aposticha.map((s, i) => (
+              <TextBlock key={i} tone={s.tone} text={s.text} verse={s.verse} label={`[${i + 1}]`} />
+            ))
+          )}
+          {entry.aposticha_glory && (
+            <TextBlock
+              tone={entry.aposticha_glory.tone}
+              text={entry.aposticha_glory.text}
+              label="Glory (Doxasticon)"
+            />
+          )}
+          {entry.aposticha_both_now && (
+            <TextBlock
+              tone={entry.aposticha_both_now.tone}
+              text={entry.aposticha_both_now.text}
+              label="Both now (Theotokion)"
+            />
+          )}
+        </>
+      )}
+
+      {/* ── Liturgy Propers ── */}
+      <SectionHeader>Liturgy Propers</SectionHeader>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem 1.5rem" }}>
+        <FieldRow label="feast_e" value={entry.feast_e} mono />
+        <FieldRow label="feast_g" value={entry.feast_g} mono />
+      </div>
+      <FieldRow label="prokeimenon_tone" value={entry.prokeimenon_tone} />
+      {entry.prokeimenon_text && <FieldRow label="prokeimenon_text" value={entry.prokeimenon_text} />}
+      {entry.prokeimenon_stichos && <FieldRow label="prokeimenon_stichos" value={entry.prokeimenon_stichos} />}
+      <FieldRow label="alleluia_tone" value={entry.alleluia_tone} />
+      {entry.alleluia_verse && <FieldRow label="alleluia_verse" value={entry.alleluia_verse} />}
+      {entry.alleluia_stichos && <FieldRow label="alleluia_stichos" value={entry.alleluia_stichos} />}
+      {entry.communion_verse && <FieldRow label="communion_verse" value={entry.communion_verse} />}
+
+      {/* ── Paroemias ── */}
+      {(entry.paroemia_1 || entry.paroemia_2 || entry.paroemia_3) && (
+        <>
+          <SectionHeader>Vespers — Paroemias</SectionHeader>
+          <FieldRow label="paroemia_1" value={entry.paroemia_1} />
+          <FieldRow label="paroemia_2" value={entry.paroemia_2} />
+          <FieldRow label="paroemia_3" value={entry.paroemia_3} />
+        </>
+      )}
+
+      {/* ── Vespers — Litiya ── */}
+      {entry.has_litya && (
+        <>
+          <SectionHeader>Vespers — Litiya</SectionHeader>
+          {entry.litya_stichera && Array.isArray(entry.litya_stichera) && entry.litya_stichera.length > 0 ? (
+            entry.litya_stichera.map((s, i) => (
+              <TextBlock key={i} tone={s.tone} text={s.text} label={`[${i + 1}]`} />
+            ))
+          ) : entry.litya_stichera && Array.isArray(entry.litya_stichera) && entry.litya_stichera.length === 0 ? (
+            <div style={{ fontSize: "0.85rem", color: C.goldLight, fontStyle: "italic" }}>
+              No dedicated Litiya stichera in Menaion PDF (Litiya petitions are fixed text)
+            </div>
+          ) : (
+            <div style={{ fontSize: "0.85rem", color: C.red, fontStyle: "italic" }}>
+              litya_stichera — not encoded (has_litya is true)
+            </div>
+          )}
+          {entry.litya_glory ? (
+            <TextBlock
+              tone={entry.litya_glory.tone}
+              text={entry.litya_glory.text}
+              label="Glory (Doxasticon)"
+            />
+          ) : entry.litya_stichera ? null : (
+            <div style={{ fontSize: "0.78rem", color: C.red, fontStyle: "italic", marginTop: "0.25rem" }}>
+              litya_glory — not encoded
+            </div>
+          )}
+          {entry.litya_both_now ? (
+            <TextBlock
+              tone={entry.litya_both_now.tone}
+              text={entry.litya_both_now.text}
+              label="Both now (Theotokion)"
+            />
+          ) : entry.litya_stichera ? null : (
+            <div style={{ fontSize: "0.78rem", color: C.red, fontStyle: "italic", marginTop: "0.25rem" }}>
+              litya_both_now — not encoded
+            </div>
+          )}
+        </>
+      )}
+
+      {/* ── Matins ── */}
+      {(entry.matins_gospel || entry.beatitudes_source) && (
+        <>
+          <SectionHeader>Matins</SectionHeader>
+          {entry.matins_gospel && <FieldRow label="matins_gospel" value={entry.matins_gospel} />}
+          {entry.beatitudes_source && <FieldRow label="beatitudes_source" value={entry.beatitudes_source} />}
+          {entry.beatitudes_troparia && Array.isArray(entry.beatitudes_troparia) && (
+            <div style={{ marginTop: "0.4rem" }}>
+              <div style={{ fontSize: "0.75rem", color: C.inkLight, marginBottom: "0.25rem" }}>
+                Beatitudes troparia ({entry.beatitudes_troparia.length})
+              </div>
+              {entry.beatitudes_troparia.map((t, i) => (
+                <div key={i} style={{
+                  fontSize: "0.84rem",
+                  color: typeof t === 'object' && t.repeat ? C.amber : C.ink,
+                  fontStyle: typeof t === 'object' && t.repeat ? "italic" : "normal",
+                  lineHeight: 1.6,
+                  fontFamily: "Georgia, serif",
+                  paddingLeft: "0.75rem",
+                  borderLeft: `2px solid ${C.border}`,
+                  marginBottom: "0.5rem",
+                }}>
+                  <span style={{ fontSize: "0.72rem", color: C.inkLight }}>
+                    [{i + 1}]{' '}
+                  </span>
+                  {typeof t === 'string' ? t
+                    : typeof t === 'object' && t.text ? t.text
+                    : typeof t === 'object' && t.repeat ? `[repeats previous]${t.note ? ' — ' + t.note : ''}`
+                    : JSON.stringify(t)}
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+    </>
+  );
+}
+
 // ── Entry Card ──────────────────────────────────────────────────────────────
 function EntryCard({ dateKey, entry, audit, stickyTop }) {
   // Handle array entries (double commemorations)
@@ -338,169 +509,7 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
         <FieldRow label="kontakion_ode3" value={null} />
       )}
 
-      {/* ── Lord I Have Cried Stichera ── */}
-      <SectionHeader>Vespers — Lord I Have Cried</SectionHeader>
-      {primary.stichera_lord_i_call_count !== undefined && (
-        <FieldRow label="stichera count" value={primary.stichera_lord_i_call_count} />
-      )}
-      {primary.stichera_lord_i_call && Array.isArray(primary.stichera_lord_i_call) ? (
-        primary.stichera_lord_i_call.map((s, i) => (
-          <TextBlock
-            key={i}
-            tone={s.tone}
-            text={s.text}
-            specMel={s.spec_mel}
-            label={`[${i + 1}]`}
-            repeatIndex={s.repeatIndex}
-          />
-        ))
-      ) : (
-        <div style={{ fontSize: "0.85rem", color: C.goldLight, fontStyle: "italic" }}>Not encoded</div>
-      )}
-      {primary.stichera_glory && (
-        <TextBlock
-          tone={primary.stichera_glory.tone}
-          text={primary.stichera_glory.text}
-          label="Glory (Doxasticon)"
-        />
-      )}
-      {primary.stichera_glory === null && <FieldRow label="stichera_glory" value={null} />}
-      {primary.lic_theotokion && (
-        <TextBlock
-          tone={primary.lic_theotokion.tone}
-          text={primary.lic_theotokion.text}
-          label="Both now (Theotokion)"
-        />
-      )}
-      {primary.lic_theotokion === null && <FieldRow label="lic_theotokion" value={null} />}
-
-      {/* ── Vespers Aposticha ── */}
-      {(primary.stichera_aposticha || primary.aposticha_glory) && (
-        <>
-          <SectionHeader>Vespers — Aposticha</SectionHeader>
-          {primary.stichera_aposticha && Array.isArray(primary.stichera_aposticha) && (
-            primary.stichera_aposticha.map((s, i) => (
-              <TextBlock key={i} tone={s.tone} text={s.text} verse={s.verse} label={`[${i + 1}]`} />
-            ))
-          )}
-          {primary.aposticha_glory && (
-            <TextBlock
-              tone={primary.aposticha_glory.tone}
-              text={primary.aposticha_glory.text}
-              label="Glory (Doxasticon)"
-            />
-          )}
-          {primary.aposticha_both_now && (
-            <TextBlock
-              tone={primary.aposticha_both_now.tone}
-              text={primary.aposticha_both_now.text}
-              label="Both now (Theotokion)"
-            />
-          )}
-        </>
-      )}
-
-      {/* ── Liturgy Propers ── */}
-      <SectionHeader>Liturgy Propers</SectionHeader>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem 1.5rem" }}>
-        <FieldRow label="feast_e" value={primary.feast_e} mono />
-        <FieldRow label="feast_g" value={primary.feast_g} mono />
-      </div>
-      <FieldRow label="prokeimenon_tone" value={primary.prokeimenon_tone} />
-      {primary.prokeimenon_text && <FieldRow label="prokeimenon_text" value={primary.prokeimenon_text} />}
-      {primary.prokeimenon_stichos && <FieldRow label="prokeimenon_stichos" value={primary.prokeimenon_stichos} />}
-      <FieldRow label="alleluia_tone" value={primary.alleluia_tone} />
-      {primary.alleluia_verse && <FieldRow label="alleluia_verse" value={primary.alleluia_verse} />}
-      {primary.alleluia_stichos && <FieldRow label="alleluia_stichos" value={primary.alleluia_stichos} />}
-      {primary.communion_verse && <FieldRow label="communion_verse" value={primary.communion_verse} />}
-
-      {/* ── Paroemias ── */}
-      {(primary.paroemia_1 || primary.paroemia_2 || primary.paroemia_3) && (
-        <>
-          <SectionHeader>Vespers — Paroemias</SectionHeader>
-          <FieldRow label="paroemia_1" value={primary.paroemia_1} />
-          <FieldRow label="paroemia_2" value={primary.paroemia_2} />
-          <FieldRow label="paroemia_3" value={primary.paroemia_3} />
-        </>
-      )}
-
-      {/* ── Vespers — Litiya ── */}
-      {primary.has_litya && (
-        <>
-          <SectionHeader>Vespers — Litiya</SectionHeader>
-          {primary.litya_stichera && Array.isArray(primary.litya_stichera) && primary.litya_stichera.length > 0 ? (
-            primary.litya_stichera.map((s, i) => (
-              <TextBlock key={i} tone={s.tone} text={s.text} label={`[${i + 1}]`} />
-            ))
-          ) : primary.litya_stichera && Array.isArray(primary.litya_stichera) && primary.litya_stichera.length === 0 ? (
-            <div style={{ fontSize: "0.85rem", color: C.goldLight, fontStyle: "italic" }}>
-              No dedicated Litiya stichera in Menaion PDF (Litiya petitions are fixed text)
-            </div>
-          ) : (
-            <div style={{ fontSize: "0.85rem", color: C.red, fontStyle: "italic" }}>
-              litya_stichera — not encoded (has_litya is true)
-            </div>
-          )}
-          {primary.litya_glory ? (
-            <TextBlock
-              tone={primary.litya_glory.tone}
-              text={primary.litya_glory.text}
-              label="Glory (Doxasticon)"
-            />
-          ) : primary.litya_stichera ? null : (
-            <div style={{ fontSize: "0.78rem", color: C.red, fontStyle: "italic", marginTop: "0.25rem" }}>
-              litya_glory — not encoded
-            </div>
-          )}
-          {primary.litya_both_now ? (
-            <TextBlock
-              tone={primary.litya_both_now.tone}
-              text={primary.litya_both_now.text}
-              label="Both now (Theotokion)"
-            />
-          ) : primary.litya_stichera ? null : (
-            <div style={{ fontSize: "0.78rem", color: C.red, fontStyle: "italic", marginTop: "0.25rem" }}>
-              litya_both_now — not encoded
-            </div>
-          )}
-        </>
-      )}
-
-      {/* ── Matins ── */}
-      {(primary.matins_gospel || primary.beatitudes_source) && (
-        <>
-          <SectionHeader>Matins</SectionHeader>
-          {primary.matins_gospel && <FieldRow label="matins_gospel" value={primary.matins_gospel} />}
-          {primary.beatitudes_source && <FieldRow label="beatitudes_source" value={primary.beatitudes_source} />}
-          {primary.beatitudes_troparia && Array.isArray(primary.beatitudes_troparia) && (
-            <div style={{ marginTop: "0.4rem" }}>
-              <div style={{ fontSize: "0.75rem", color: C.inkLight, marginBottom: "0.25rem" }}>
-                Beatitudes troparia ({primary.beatitudes_troparia.length})
-              </div>
-              {primary.beatitudes_troparia.map((t, i) => (
-                <div key={i} style={{
-                  fontSize: "0.84rem",
-                  color: typeof t === 'object' && t.repeat ? C.amber : C.ink,
-                  fontStyle: typeof t === 'object' && t.repeat ? "italic" : "normal",
-                  lineHeight: 1.6,
-                  fontFamily: "Georgia, serif",
-                  paddingLeft: "0.75rem",
-                  borderLeft: `2px solid ${C.border}`,
-                  marginBottom: "0.5rem",
-                }}>
-                  <span style={{ fontSize: "0.72rem", color: C.inkLight }}>
-                    [{i + 1}]{' '}
-                  </span>
-                  {typeof t === 'string' ? t
-                    : typeof t === 'object' && t.text ? t.text
-                    : typeof t === 'object' && t.repeat ? `[repeats previous]${t.note ? ' — ' + t.note : ''}`
-                    : JSON.stringify(t)}
-                </div>
-              ))}
-            </div>
-          )}
-        </>
-      )}
+      <EntryHymnography entry={primary} />
 
       {/* ── Notes ── */}
       {primary.note && (
@@ -541,8 +550,7 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
           {sec.kontakion_ode6 && (
             <TextBlock tone={sec.kontakion_ode6.tone} text={sec.kontakion_ode6.text} label="Kontakion (Ode VI)" />
           )}
-          {sec.feast_e && <FieldRow label="feast_e" value={sec.feast_e} mono />}
-          {sec.feast_g && <FieldRow label="feast_g" value={sec.feast_g} mono />}
+          <EntryHymnography entry={sec} />
           {sec.note && (
             <div style={{
               fontSize: "0.85rem", color: C.inkMid, lineHeight: 1.65, marginTop: "0.5rem",

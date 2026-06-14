@@ -8053,6 +8053,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.16.3",
+    date: "June 2026",
+    summary: "Menaion browser: secondary commemorations now show full hymnography via a shared renderer",
+    items: [
+      "feature: secondary commemorations in the Menaion browser now display their complete hymnography (LIC stichera, aposticha, liturgy propers, paroemias, litiya, matins) using the same shared EntryHymnography renderer as the primary entry. Previously only troparion, kontakion, and feast_e/feast_g were shown for secondary saints.",
+    ],
+  },
+  {
     version: "v0.16.2",
     date: "June 2026",
     items: [
