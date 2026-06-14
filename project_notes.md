@@ -1,5 +1,21 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.29** | **Tone Trainer: v0.25.16** | Last synced: June 14, 2026
+**Tool version: v0.15.30** | **Tone Trainer: v0.25.16** | Last synced: June 14, 2026
+
+**LIC Both Now = resurrectional Dogmatikon on the All Saints Sundays (v0.15.30).**
+The Second Sunday after Pentecost (P+63, All Saints of NA/Russia) is classified
+`season="pentecostarion"` so its overlay governs, hence `isPentecostarion===true` and the
+"Lord I Have Cried" Both Now renders through the Pentecostarion branch. That branch had no
+dogmatikon path: with no `pentEntry.lic_theotokion` encoded it fell to `LIC_THEOTOKIA[tone]`
+(the weekday theotokion — Tone 1 surfaced "O all-hymned Virgin… Moses… the bush…" instead of
+the Tone 1 Dogmatikon "Let us praise the Virgin Mary!"). Fix: when `hours_format ===
+'all_saints_sunday'` and no appointed `lic_theotokion`, the Both Now now reads the tone's
+resurrectional Dogmatikon from `getOctoechosVespers(tone,'sat').dogmatikon`. Scoped to
+`all_saints_sunday` (covers P+56 and P+63 in any tone). NOT yet applied to: (a) the Paschal-
+season `pentecostarion_sunday` Both Now — verify vs Fekula §4B; (b) the parallel non-overlay
+case where `octoDay` is gated null by a six-stichera+ Saturday saint on an ordinary-season
+Sunday (lines ~3766–3795 use the gated `octoDay`; should use an ungated
+`getOctoechosVespers(tone, licDayKey)` like the fix above) — that path also takes all-Menaion
+LIC stichera for such Sundays, hinting at a broader Sunday-with-saint issue to verify first.
 
 **Kathisma spacing (v0.15.28).** "Blessed is the Man" now renders each verse as its own
 paragraph (margin ~0.5rem, line-height 1.6) instead of pre-wrap `\n\n` blank lines (~1.7rem).
