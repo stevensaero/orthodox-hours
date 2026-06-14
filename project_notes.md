@@ -1,25 +1,33 @@
 # Orthodox Hours Tool — Project Notes
 **Tool version: v0.15.31** | **Tone Trainer: v0.25.16** | Last synced: June 14, 2026
 
-**Sunday Vespers — unified engine (SPEC, awaiting review).** `sunday_vespers_spec.md`
+**Sunday Vespers — unified engine (SPEC complete, awaiting P0 sign-off).** `sunday_vespers_spec.md`
 (repo root) specs one engine for ALL resurrectional Sundays — ordinary Octoechos
 (post-Pentecost), overlay (`all_saints_sunday`), and Pentecostarion — replacing the current
 split (Pentecostarion branch + rank-based weekday branches) that makes ordinary Sundays with
 a non-simple saint render as weekday services (concrete break: June 28, Tone 3, Cyrus & John
-§2C). Grounded in the OCA `OCA_service_documents/*-tt` docs: LIC = resurrection + commemoration,
-split by rank (simple 7+3 / six-stichera 6+4, verified Jun 21 / Jun 28); LIC Both now =
-tone-of-week Dogmatikon (generalizes v0.15.30, no regression to Jun 14); aposticha Both now =
-theotokion in the tone of the aposticha Glory (NOT the dogmatikon); troparia Now-and-ever =
-resurrectional dismissal theotokion in the tone of the saint's troparion (§I mechanism).
-Director-pointed JSON is the canonical encoding source (per the established pipeline; Tone 1
-done in v0.15.15 from the 0614 docx). Phased migration P0–P4; acceptance set Jun 14/21/28,
-Jul 5, **Nov 30 (vigil), Oct 26 (multi-commem)**. **§8.1 RESOLVED:** vigil = 4 res + 6 saint
-(Nov 30, St. Andrew); polyeleos same row. **NEW (§3.1):** multi-commemoration Sundays (Oct 26
-= resurrection + Earthquake + Demetrius, 3+3+4) need commemoration-as-a-list + the secondary
-"of the Lord/Theotokos" troparion taking the troparia Now-and-ever slot (displacing the
-dismissal theotokion) — modeled now, built in a later phase. Remaining §8 open before code:
-no-Glory Sunday, aposticha-theotokion data source, Great-Feast-on-Sunday precedence,
-Pentecostarion-Sunday regression.
+§2C). Grounded in the OCA `OCA_service_documents/*-tt` docs. **Engine research COMPLETE** — every
+rank→split and all three theotokion rules confirmed from real OCA service docs:
+- LIC split fully confirmed: simple 7+3 (Jun 21), six-stichera 6+4 (Jun 28), **doxology 6+4
+  (Jul 8 2018, Procopius, T5)**, polyeleos 4+6 (Oct 9 2022 Tikhon; Oct 6 2019 Innocent), vigil
+  4+6 (Nov 30 Andrew). The tell separating 6+4 from 4+6 in the docs = presence of a Litya section.
+- Three DISTINCT theotokia tables, keyed differently, never conflate: LIC Both-now = tone-of-week
+  Dogmatikon; aposticha Both-now = theotokion in the aposticha-Glory tone (a FIXED per-tone 8-set
+  from the St. Sergius Octoechos appendix, not per-saint — four T8 docs print identical text);
+  troparia Now-and-ever = resurrectional dismissal theotokion in the saint-troparion tone (§I).
+Director-pointed JSON is the canonical encoding source (Tone 1 done in v0.15.15 from the 0614 docx).
+**§8.1/§8.2/§8.3 RESOLVED:** vigil/polyeleos 4+6 directly confirmed single-commemoration; no-Glory
+Sunday → no resurrectional Glory, "Glory… now and ever" sung together → tone-of-week Dogmatikon
+(Nov 9 2025); aposticha theotokion = the fixed 8-set. **§3.1 generalized:** multi-commemoration
+Sundays — Oct 26 (res + Earthquake + Demetrius, 3+3+4; the secondary "of the Lord/Theotokos"
+troparion takes Now-and-ever, displacing the dismissal theotokion) AND two-minor-commemoration 3+3
+(Nov 3 2019 + George dedication, Glory to the senior commem; Nov 9 2025 + Matrona, no-Glory) —
+commemoration modeled as a list; built in a later phase. **OCA-primacy** worked example logged
+(§3.2): Oct 9 2022 elevated St. Tikhon over Apostle James and transferred the 7th-Council Fathers
+to Oct 16. Phased migration P0–P4; P1 = single-commemoration ordinary Sundays (acceptance Jun 21/28,
+Jul 8 2018, Jul 5, Nov 30, Oct 6 2019, Oct 9 2022; Jun 14 overlay stays byte-identical). Only
+**§8.4 (Great-Feast-on-Sunday precedence)** and **§8.5 (Pentecostarion-Sunday regression guard,
+P4)** remain open — both out of P1.
 
 **Outline + Evening Litany fixes (v0.15.31).** (1) `isPlaceholder` in ServiceOutline no
 longer uses `text.startsWith('[')` — that collided with OCA director-pointed text (the Tone 1
