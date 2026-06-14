@@ -6647,13 +6647,29 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
 
   const seen = new Set();
   const rows = [];
-  for (const el of elements) {
+  // First pass — collect each row's element and its index in assembly order.
+  const rowMeta = [];
+  for (let i = 0; i < elements.length; i++) {
+    const el = elements[i];
     if (!isOutlineMajor(el)) continue;
     if (!el.label) continue;            // continuation lines carry a blank label — never a row, even if major by id
     const key = el.id || el.label;
     if (!key || seen.has(key)) continue;
     seen.add(key);
-    rows.push({ id: el.id, label: el.label, missing: isPlaceholder(el), tag: toneTag(el.toneNote) });
+    rowMeta.push({ el, start: i });
+  }
+  // Second pass — a row is "missing" if its header OR any element in its section
+  // (from this row's element up to the next row's element) is a placeholder. This
+  // keeps "Psalm 141 — Stichera on N" red when its stichera/doxasticon are unresolved,
+  // instead of false-green off the resolved header alone.
+  for (let m = 0; m < rowMeta.length; m++) {
+    const { el, start } = rowMeta[m];
+    const end = m + 1 < rowMeta.length ? rowMeta[m + 1].start : elements.length;
+    let missing = false;
+    for (let k = start; k < end; k++) {
+      if (isPlaceholder(elements[k])) { missing = true; break; }
+    }
+    rows.push({ id: el.id, label: el.label, missing, tag: toneTag(el.toneNote) });
   }
   if (rows.length === 0) return null;
 
@@ -8036,6 +8052,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.16.1",
+    date: "June 2026",
+    items: [
+      "fix: the service outline now shows a section red when the hymns inside it are unresolved, not just when its header is. Previously a row like 'Psalm 141 — Stichera on N' stayed green (its header is fixed text) even though the stichera beneath it were unencoded placeholders. Each outline row now reflects every element in its section, so genuine gaps surface as red.",
+    ],
+    summary: "Outline: section rows turn red when their stichera/doxasticon are unresolved (not just the header)",
+  },
   {
     version: "v0.16.0",
     date: "June 2026",
