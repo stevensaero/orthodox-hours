@@ -2028,7 +2028,7 @@ const HTM_PRAYER_9TH_CLOSING =
 // ── Assembly function ────────────────────────────────────────────────────────
 
 
-function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen = false, readerMode = false) {
+function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen = false, readerMode = false, templeDedication = null) {
   const elements = [];
   const { paschaOffset, tone, dayName, season, namedDay } = liturgicalData;
 
@@ -2599,17 +2599,7 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
       });
       elements.push({
         id: '1st_hour-dismissal', type: 'substitution', label: 'Dismissal', rubric: 'Reader:',
-        text: (() => {
-          let saintPart = "";
-          if (isSunday) {
-            saintPart = "of our Lord, God, and Savior Jesus Christ; ";
-          } else if (menaionEntry && menaionEntry.saint) {
-            saintPart = `of ${menaionEntry.saint}; `;
-          }
-          return `Through the prayers of our holy fathers, ${saintPart}` +
-                 `(and of the patron of this temple,) and of all the saints, ` +
-                 `Lord Jesus Christ, Son of God, have mercy on us. Amen.`;
-        })(),
+        text: buildDismissalText({ liturgicalData, menaionEntry, pentEntry, serviceContext: "hours", templeDedication, readerMode: true }),
         source: 'Fekula Chapter 10',
         fekula: { section: '§10', note: 'The dismissal of the Hours without a priest: Through the prayers of our holy fathers, of (saints of the day and of the temple), and of all the saints, Lord Jesus Christ, Son of God, have mercy on us. Amen. (More honorable is not said since it has been said earlier.) — Fekula Chapter 10' },
       });
@@ -4582,28 +4572,8 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     elements.push({id:"v-diss-end",type:"fixed",label:"",rubric:null,
       text:"Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nLord, have mercy. (thrice) Lord, bless!",
       source:"HTM Vespers"});
-    // Build reader dismissal formula — same saint insertion logic as priest dismissal
-    const _buildReaderDismissal = () => {
-      let saintPart = "";
-      if (isSunday) {
-        saintPart = "of our Lord, God, and Savior Jesus Christ; ";
-      } else if (isPentecostarion && pentEntry) {
-        const fmt = pentEntry.hours_format;
-        if (fmt === "ascension" || fmt === "apodosis_ascension")
-          saintPart = "of our Lord, God, and Savior Jesus Christ Who ascended in glory; ";
-        else if (fmt === "pentecost" || fmt === "apodosis_pentecost" || fmt === "holy_spirit_day")
-          saintPart = "of our Lord, God, and Savior Jesus Christ Who sent down the Holy Spirit; ";
-        else
-          saintPart = "of our Lord, God, and Savior Jesus Christ; ";
-      } else if (menaionEntry && menaionEntry.saint) {
-        saintPart = `of ${menaionEntry.saint}; `;
-      }
-      return `Through the prayers of our holy fathers, ${saintPart}` +
-             `(and of the patron of this temple,) and of all the saints, ` +
-             `Lord Jesus Christ, Son of God, have mercy on us. Amen.`;
-    };
     elements.push({id:"v-diss-dismissal",type:"substitution",label:"Dismissal",rubric:"Reader:",
-      text:_buildReaderDismissal(),
+      text: buildDismissalText({ liturgicalData, menaionEntry, pentEntry, serviceContext: "vespers", templeDedication, readerMode: true }),
       source:"Fekula Chapter 10",
       fekula:{section:CH10,
         note:"The dismissal of Vespers without a priest: More honorable… Glory… Lord, have mercy. (thrice) Lord, bless! Through the prayers of our holy fathers, of (saints of the day and of the temple), and of all the saints, Lord Jesus Christ, Son of God, have mercy on us. Amen. — Fekula Chapter 10"}});
@@ -5155,14 +5125,16 @@ function _dismissalSaintName(menaionEntry, namedDay, isSunday) {
   return null;
 }
 
-// buildDismissalText — the unified priest's dismissal string.
+// buildDismissalText — the unified dismissal string (priest form, or the Fekula
+// Chapter 10 reader form when readerMode is set).
 // opts: { liturgicalData, menaionEntry, pentEntry, serviceContext,
-//         templeDedication, liturgyAuthor }
-//   serviceContext: 'vespers' | 'typica' | 'post_communion'
+//         templeDedication, liturgyAuthor, readerMode }
+//   serviceContext: 'vespers' | 'typica' | 'post_communion' | 'hours'
 //   liturgyAuthor:  'chrysostom' | 'basil' | 'presanctified' (post_communion only)
+//   readerMode:     true → Ch. 10 short form (saint + temple only)
 function buildDismissalText(opts) {
   const { liturgicalData, menaionEntry, pentEntry, serviceContext,
-          templeDedication, liturgyAuthor } = opts;
+          templeDedication, liturgyAuthor, readerMode } = opts;
   const { season, namedDay, dow } = liturgicalData;
   const _fmt = pentEntry ? pentEntry.hours_format : null;
   const isSunday = season === 'sunday' || season === 'pentecostarion_sunday'
@@ -5170,6 +5142,23 @@ function buildDismissalText(opts) {
   const rank = (menaionEntry && menaionEntry.rank) || "simple";
   const isHighRank = rank === "polyeleos" || rank === "vigil" || rank === "great_feast";
   const isPostCommunion = serviceContext === "post_communion";
+
+  // Reader's Service (Fekula Ch. 10): the priest's отпуст is replaced by the short
+  // form. Same saint-of-day + temple resolution as the priest form below — no
+  // characteristic prefix, no Great/Little middle, no Liturgy author, no Ancestors
+  // (the short form carries none of these). One variable slot per Ch. 10:
+  // "of (the saints of the day and of the temple)".
+  if (readerMode) {
+    const rTemple = resolveTempleName(templeDedication);
+    const rSaint = _dismissalSaintName(menaionEntry, namedDay, isSunday);
+    let slot;
+    if (rSaint && rTemple) slot = `of ${rSaint} and of ${rTemple}, `;
+    else if (rSaint)       slot = `of ${rSaint} (and of the temple), `;
+    else if (rTemple)      slot = `of ${rTemple}, `;
+    else                   slot = `(of the saints of the day and of the temple), `;
+    return `Through the prayers of our holy fathers, ${slot}`
+      + `and of all the saints, Lord Jesus Christ, Son of God, have mercy on us. Amen.`;
+  }
 
   // (1) Characteristic phrase — front prefix on "Christ our true God".
   let phrase = "";
@@ -5219,9 +5208,10 @@ function buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, idP
   if (readerMode) {
     return {
       id: `${idPrefix}-dismissal`, type: "substitution", label: "Dismissal", rubric: "Reader:",
-      text: "Through the prayers of our holy fathers, Lord Jesus Christ our God, have mercy on us and save us. Amen.",
+      text: buildDismissalText({ liturgicalData, menaionEntry, pentEntry, serviceContext, templeDedication, readerMode: true }),
       source: "Fekula Chapter 10",
-      fekula: { section: "§10", note: "Reader's service: instead of the priest's dismissal, the reader says: Through the prayers of our holy fathers… — Fekula Chapter 10" },
+      dismissalHasPlaceholder: !resolveTempleName(templeDedication),
+      fekula: { section: "§10", note: "Reader's service (Fekula Ch. 10): the priest's dismissal is replaced by the short form — 'Through the prayers of our holy fathers, of (the saints of the day and of the temple), and of all the saints, Lord Jesus Christ, Son of God, have mercy on us. Amen.' Saint + temple resolved identically to the priest form. — Fekula Chapter 10" },
     };
   }
   return {
@@ -7858,6 +7848,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.15.29",
+    date: "June 2026",
+    items: [
+      "fix: the Reader's Service dismissal (Fekula Ch. 10) is now produced by the unified buildDismissalText (reader-aware), so Vespers, the First Hour, Typica, and Post-Communion all draw the identical short form — 'Through the prayers of our holy fathers, of (the saints of the day and of the temple), and of all the saints, Lord Jesus Christ, Son of God, have mercy on us. Amen.' — with the saint of the day and temple resolved exactly as the priest form does.",
+      "fix: on a Sunday the reader form no longer says 'of our Lord, God, and Savior Jesus Christ' (an ad-hoc divergence); per Ch. 10 it names the saint(s) of the day, or holds the temple/placeholder when there is no named commemoration.",
+      "fix: the reader form now resolves the actual selected temple dedication instead of a hardcoded '(and of the patron of this temple,)'. templeDedication is threaded into assembleHour for the First Hour. When no temple is selected, a '(and of the temple)' reader cue is shown.",
+      "test: added tools/probe_dismissal.mjs (reader-form assertions, 5/5).",
+    ],
+    summary: "Reader's dismissal unified via buildDismissalText (Fekula Ch.10) — fixes Sunday wording + hardcoded temple",
+  },
   {
     version: "v0.15.28",
     date: "June 2026",
@@ -10910,7 +10911,7 @@ export default function App() {
     } else if (currentService.key === 'post_communion') {
       els = assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMode, templeDedication);
     } else {
-      els = assembleHour(currentService.key, liturgicalData, menaionEntry, pentEntry, tbOpen, readerMode);
+      els = assembleHour(currentService.key, liturgicalData, menaionEntry, pentEntry, tbOpen, readerMode, templeDedication);
     }
     // Patch psalterHref onto any element that has kathismaNum
     // Patch scriptureHref onto epistle/gospel elements (selectedDate in scope here)
