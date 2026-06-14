@@ -460,6 +460,30 @@ export function auditEntry(entry, type) {
     });
 
   const gaps = results.filter(r => r.gap);
+
+  // ── Stichera count integrity (post-registry check) ───────────────────────
+  // The registry confirms stichera_lord_i_call and stichera_lord_i_call_count
+  // are present, but doesn't cross-check whether the array actually satisfies
+  // the count. Check here: items.length must equal count, OR items.length <
+  // count with explicit repeat markers covering the gap.
+  const licItems = target.stichera_lord_i_call;
+  const licCount = target.stichera_lord_i_call_count;
+  if (Array.isArray(licItems) && typeof licCount === 'number') {
+    const n = licItems.length;
+    const markerCount = licItems.filter(
+      s => s && !s.text && (typeof s.repeatIndex === 'number' || s.repeat)
+    ).length;
+    const countOk = n === licCount || (n < licCount && n + markerCount === licCount) || (n < licCount && markerCount > 0 && n + markerCount >= licCount);
+    if (!countOk) {
+      gaps.push({
+        field: 'stichera_lord_i_call_count',
+        category: 'vespers_lic',
+        description: `LIC stichera count mismatch: ${n} item${n !== 1 ? 's' : ''} (${markerCount} marker${markerCount !== 1 ? 's' : ''}), declared count ${licCount}`,
+        present: false,
+        gap: true,
+      });
+    }
+  }
   const hasPlaceholder = containsPlaceholder(target);
 
   return { results, gaps, hasPlaceholder };
