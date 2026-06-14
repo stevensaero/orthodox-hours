@@ -74,13 +74,18 @@ Verified against the OCA docs:
 |-----------------------------|--------------------------|---------------|------------------------|
 | Simple (§2A, 3 stichera)    | 7                        | 3             | Jun 21 (Julian) 7+3    |
 | Six-stichera (§2C/§2B)      | 6                        | 4             | Jun 28 (C&J) 6+4       |
-| Doxology (§2D)              | 6                        | 4 *(verify)*  | —                      |
-| Polyeleos / Vigil (§2E/§2F) | 4                        | 6             | Nov 30 (Andrew, vigil) 4+6 ✓ |
+| Doxology (§2D)              | 6                        | 4             | Jul 8 2018 (Procopius, T5) 6+4 ✓ |
+| Polyeleos / Vigil (§2E/§2F) | 4                        | 6             | Oct 9 2022 (Tikhon) / Oct 6 2019 (Innocent) / Nov 30 (Andrew) 4+6 ✓ |
 | Overlay / great commem.     | per the overlay entry    | remainder     | Jun 14 (All Saints NA) |
 
-Confirmed splits: simple 7+3 (Jun 21), six-stichera 6+4 (Jun 28), vigil 4+6 (Nov 30).
-Polyeleos shares the vigil row (4+6) — same Typikon provision; Oct 26 (Demetrius) could not
-isolate it because a second commemoration shares the slots (see §3.1).
+Confirmed splits: simple 7+3 (Jun 21), six-stichera 6+4 (Jun 28), doxology 6+4 (Jul 8 2018,
+Procopius, Tone 5), polyeleos 4+6 (Oct 9 2022, Tikhon; Oct 6 2019, Innocent), vigil 4+6
+(Nov 30, Andrew). Polyeleos and vigil are now both **directly** confirmed at 4+6 from
+single-commemoration docs; the earlier "polyeleos shares the vigil row by inference" language
+is retired. The tell separating 6+4 from 4+6 in the OCA docs is the presence of a **Litya**
+section: Litya present → polyeleos/vigil (4+6); Litya absent → simple/six-stichera/doxology.
+Procopius (doxology) has no Litya and splits 6+4, which is what isolates doxology from the
+4+6 ranks.
 
 Rules:
 
@@ -92,8 +97,9 @@ Rules:
   remaining slots by **repeating in source order** to reach the count (June 28: 3 unique →
   4 slots, first doubled). This is the existing `expandSticheraToCount` behavior; reuse it.
 - **Glory** = the commemoration's `stichera_glory` (doxasticon), in its own tone (Jun 28:
-  Tone 8). If the commemoration has no Glory, the resurrectional Glory is used *(verify the
-  no-Glory Sunday case)*.
+  Tone 8). If the commemoration has **no** Glory (§8.2, RESOLVED Nov 9 2025): no resurrectional
+  Glory is substituted — "Glory… now and ever" are sung together and resolve straight to the
+  tone-of-week Dogmatikon (the Both-now below).
 - **Both now** = the **Dogmatikon in the tone of the week** (`getOctoechosVespers(tone,
   'sat').dogmatikon`). Always, regardless of commemoration rank. Confirmed Jun 21 → Tone 2,
   Jun 28 → Tone 3, Jun 14 → Tone 1. This is the generalization of the v0.15.30 fix.
@@ -122,10 +128,34 @@ Demetrius (polyeleos). Observed behavior:
 - Liturgy readings/troparia/kontakia are tripled (Resurrection + Earthquake + saint),
   combined per the doc's rubric ("read as one").
 
+**Two minor commemorations (3+3 share).** Two minor saints can instead share the
+non-resurrection slots evenly: 4 Resurrection + 3 + 3 = 10. Confirmed by **Nov 3, 2019**
+(Tone 3, Martyr Akepsimas et al. + the dedication of the church of St. George — LIC Glory to
+the *senior* commemoration, George) and **Nov 9, 2025** (Tone 5, Martyrs Onesiphorus &
+Porphyrius + St. Matrona — *no* commemoration Glory; "Glory… now and ever" sung together,
+resolving straight to the tone-of-week Dogmatikon; see §8.2). So when two minor commemorations
+co-occur, the saint slots split 3+3 and the LIC Glory attaches to the senior commemoration or
+is absent.
+
+Single-commemoration polyeleos is, separately, **directly** confirmed at 4+6 by **Oct 9, 2022**
+(Tikhon) and **Oct 6, 2019** (Innocent) — neither has a co-commemoration, so unlike Oct 26 they
+isolate the polyeleos split cleanly.
+
 Scope: the multi-commemoration variant is **out of P1**. P1 targets single-commemoration
 ordinary Sundays. This subsection is captured so the data model (commemoration as a list, not
 a scalar) and the troparia Now-and-ever exception are designed in from the start rather than
 retrofitted. Implement in a later phase with Oct 26 as its acceptance case.
+
+### 3.2 OCA calendar primacy (commemoration selection)
+
+*Which* commemoration(s) feed the engine is an **OCA-calendar** decision, upstream of the
+split logic, and OCA overrides the St. Sergius Menaion when they differ. Worked example —
+**Oct 9, 2022** (Tone 8): OCA elevated the Glorification of **St. Tikhon of Moscow,
+Enlightener of North America**, over the Menaion's Apostle James (demoted to "served whenever
+the Superior wishes") **and** transferred the Holy Fathers of the 7th Ecumenical Council to
+the following Sunday (Oct 16). The engine takes its `commemoration` from the OCA calendar;
+divergences from St. Sergius are flagged in the `note` field. This is the standing
+OCA-over-St.-Sergius behavior.
 
 ---
 
@@ -140,10 +170,14 @@ retrofitted. Implement in a later phase with Oct 26 as its acceptance case.
   and *NOT* necessarily the tone of the week (Jun 28: Tone 2 "A new miracle surpasses…",
   matching the Tone 2 Glory). This is the "theotokion to the tone of the Glory" rule and is
   distinct from the LIC "Both now."
-  - Data need: a per-tone table of the **Sunday aposticha theotokia** (the resurrectional
-    theotokia appended to the Glory by tone). Sourced from the OCA docs as each tone's
-    Sunday is encoded. Until a tone's entry exists, fall back to the weekday theotokion and
-    flag.
+  - Data need: a **fixed per-tone table of 8 Sunday aposticha theotokia** (the resurrectional
+    theotokia appended to the Glory, keyed by the **Glory's** tone). RESOLVED (§8.3): this set
+    is fixed and per-tone, **not** per-saint — confirmed because four different Sundays whose
+    aposticha Glory fell in Tone 8 (Jul 5, Oct 26, Oct 9 2022, Jul 8 2018) all print the
+    identical T8 theotokion ("O unwedded Virgin, who ineffably didst conceive God in the
+    flesh…"). Source: the St. Sergius Octoechos records already in Drive (the Octoechos
+    appendix); encode the fixed 8-set, do **not** scrape per-Sunday. Until a tone's entry
+    exists, fall back to the weekday theotokion and flag.
 
 ---
 
@@ -155,8 +189,9 @@ retrofitted. Implement in a later phase with Oct 26 as its acceptance case.
 - **Now and ever** = the **resurrectional Dismissal Theotokion in the tone of the
   commemoration's troparion** (Jun 28: Tone 5 "Rejoice, Impassable Gate…"). This is already
   handled by the §I `RESURRECTIONAL_DISMISSAL_THEOTOKIA` mechanism (project_notes §I); the
-  engine wires the tone = troparion-Glory tone and lets that table resolve it. Verify the
-  table is keyed by the *Glory troparion* tone, not the tone of the week.
+  engine wires the tone = troparion-Glory tone and lets that table resolve it. CONFIRMED keyed
+  by the *saint-troparion* tone (not the tone of the week): Jul 5 T8→T8, Oct 9 2022 T1→T1,
+  Jul 8 2018 T4→T4.
 
 (Vigil and Liturgy troparia/kontakia in the doc are out of Vespers scope but are the same
 commemoration/resurrection pairs; capture when the Liturgy assembler is touched.)
@@ -183,6 +218,18 @@ Per tone, the Octoechos `sat` entry must carry, as director-pointed objects
 4. Sunday **aposticha theotokion** (tone-of-Glory table; see §4).
 5. resurrectional **dismissal theotokion** (already in §I table).
 
+**Three distinct theotokia tables — never conflate.** Items 3–5 above are three *different*
+per-tone tables, keyed differently:
+- LIC "Both now" dogmatika (8) — keyed by **week tone** (already in octoechos data).
+- Aposticha theotokia (8) — keyed by **aposticha-Glory tone** (the fixed set from the
+  St. Sergius Octoechos appendix; see §4).
+- Resurrectional dismissal theotokia (8) — keyed by **saint-troparion tone** (§I mechanism,
+  already built).
+
+For a single tone these are three different texts (e.g. Tone 8: LIC "The King of heaven";
+aposticha "O unwedded Virgin"; dismissal "When Gabriel announced" / "For our sake Thou wast
+born"). Never reuse one set for another.
+
 Tone 1 was backfilled from `2026-0614-texts-tt` in v0.15.15. The remaining tones are
 backfilled the same way, tone by tone, from the OCA service-doc JSONs:
 
@@ -203,20 +250,27 @@ monthly Menaion data files per `encoding_rule_v2.md`, pointed from the same JSON
 
 ## 8. Open questions (resolve in spec review, before code)
 
-1. **Polyeleos / Vigil split** — RESOLVED: 4 resurrection + 6 saint. Confirmed by Nov 30,
+(§8.1–§8.3 are now RESOLVED from real OCA service docs; §8.4–§8.5 remain open and are both
+out of P1.)
+
+1. **§8.1 Polyeleos / Vigil split** — RESOLVED: 4 resurrection + 6 saint. Confirmed by Nov 30,
    2025 (Tone 8, St. Andrew, vigil) — 4 res + 6 Andrew (3 texts doubled), Glory of Andrew,
-   Tone 8 Dogmatikon at Both now. Polyeleos uses the same row; Oct 26 (Demetrius) couldn't
-   isolate it because the Earthquake co-commemoration shares the slots (§3.1). *Still want a
-   single-commemoration polyeleos doc to confirm 4+6 directly, but not blocking.*
-2. **No-Glory Sunday** (commemoration without an LIC/aposticha Glory) — does the
-   resurrectional Glory take that slot? Confirm.
-3. **Aposticha "Both now" source** — confirm the per-tone Sunday aposticha theotokion set
-   (tone-of-Glory) and where it lives in data.
-4. **Great Feast on a Sunday** (feast that supersedes the resurrection) — explicitly OUT of
-   this engine; keep the feast assembler. Define the precedence test.
-5. **Pentecostarion Sundays** (Thomas → All Saints) — these already carry their own
-   `lic_theotokion` etc.; confirm migrating them onto the engine reproduces their docs
-   before retiring their branch (regression guard).
+   Tone 8 Dogmatikon at Both now. Polyeleos is now **directly** confirmed single-commemoration
+   at 4+6 by Oct 9, 2022 (Tikhon) and Oct 6, 2019 (Innocent) — no longer inferred from the
+   vigil row. (Oct 26 / Demetrius could not isolate it because the Earthquake co-commemoration
+   shares the slots; §3.1.)
+2. **§8.2 No-Glory Sunday** — RESOLVED (Nov 9, 2025): when the commemoration provides no Glory
+   doxasticon, no resurrectional Glory is inserted; "Glory… now and ever" are sung together and
+   resolve straight to the **tone-of-week Dogmatikon**.
+3. **§8.3 Aposticha "Both now" source** — RESOLVED: the per-tone Sunday aposticha theotokion is
+   a **fixed 8-set keyed by the Glory's tone**, sourced from the St. Sergius Octoechos appendix
+   (not per-saint, not per-Sunday). Four T8 docs print the identical text. See §4 and the
+   three-tables note in §7.
+4. **§8.4 Great Feast on a Sunday** (feast that supersedes the resurrection) — explicitly OUT of
+   this engine; keep the feast assembler. Define the precedence test. **Out of P1.**
+5. **§8.5 Pentecostarion Sundays** (Thomas → All Saints) — these already carry their own
+   `lic_theotokion` etc.; confirm migrating them onto the engine reproduces their docs before
+   retiring their branch (regression guard). **P4; docs exist.**
 
 ---
 
@@ -224,8 +278,10 @@ monthly Menaion data files per `encoding_rule_v2.md`, pointed from the same JSON
 
 - **P0 — Spec sign-off.** This document reviewed and the §8 questions answered.
 - **P1 — Engine, ordinary Sundays only.** Add the Sunday gate (§2) and the LIC + aposticha
-  + troparia assembly (§§3–5) for `commemoration = Menaion saint`. Acceptance: June 21
-  (7+3) and June 28 (6+4) match their docs. Pentecostarion/overlay branches untouched.
+  + troparia assembly (§§3–5) for `commemoration = Menaion saint`. Acceptance (single-
+  commemoration, per the set below): Jun 21 (7+3), Jun 28 (6+4), Jul 8 2018 (doxology 6+4),
+  Jul 5 / Nov 30 (vigil 4+6), Oct 6 2019 / Oct 9 2022 (polyeleos 4+6); Jun 14 overlay stays
+  byte-identical. Pentecostarion/overlay branches untouched.
 - **P2 — Data backfill.** Encode T2/T3/T4 resurrection sets + dogmatika + aposticha
   theotokia from the Jun 21 / Jun 28 / Jul 5 JSONs. Acceptance: those Sundays render fully
   director-pointed.
@@ -237,11 +293,18 @@ monthly Menaion data files per `encoding_rule_v2.md`, pointed from the same JSON
 
 **Acceptance set (must match docs):**
 - single-commemoration (P1): June 21 (Tone 2, simple, 7+3), June 28 (Tone 3, six-stichera,
-  6+4), July 5 (Tone 4, with the alt Sergius/Athanasius docs), **Nov 30 (Tone 8, St. Andrew,
-  vigil, 4+6)**;
-- overlay (P3): June 14 (Tone 1, All Saints of NA);
+  6+4), **Jul 8 2018 (Tone 5, Procopius, doxology, 6+4)**, July 5 (Tone 4, with the alt
+  Sergius/Athanasius docs), **Nov 30 (Tone 8, St. Andrew, vigil, 4+6)**, **Oct 6 2019 (Tone 7,
+  Innocent, polyeleos, 4+6)**, **Oct 9 2022 (Tone 8, Tikhon, polyeleos, 4+6; OCA-primacy
+  example, §3.2)**;
+- overlay (P3): June 14 (Tone 1, All Saints of NA) — must stay byte-identical;
 - multi-commemoration (later phase, §3.1): **Oct 26 (Tone 3, Demetrius polyeleos + Earthquake,
-  3+3+4)**.
+  3+3+4)**, **Nov 3 2019 (Tone 3, Akepsimas + George dedication, 4+3+3)**, **Nov 9 2025 (Tone 5,
+  Onesiphorus & Porphyrius + Matrona, 4+3+3, no-Glory)**.
+
+Note: the four weekday reference docs (Jan 11 Theodosius / Apr 30 James / Aug 9 Herman /
+Jul 31 Eudocimus) carry afterfeast/paschal entanglement and are **not** Sunday acceptance
+tests; they were research references only.
 
 ---
 
