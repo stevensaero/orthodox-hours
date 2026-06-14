@@ -382,25 +382,21 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
 
   useEffect(() => {
     if (!isArray || entry.length < 2) return;
-    const els = subEntryRefs.current.filter(Boolean);
-    if (els.length === 0) return;
-    // Fire when the top ~40% of the viewport is occupied by a sub-entry
-    const observer = new IntersectionObserver(
-      (obs) => {
-        // Find the lowest-index entry that is intersecting
-        let topIdx = null;
-        obs.forEach(ob => {
-          if (ob.isIntersecting) {
-            const idx = parseInt(ob.target.dataset.subidx, 10);
-            if (topIdx === null || idx < topIdx) topIdx = idx;
-          }
-        });
-        if (topIdx !== null) setVisibleIdx(topIdx);
-      },
-      { rootMargin: "-" + stickyTop + "px 0px -50% 0px", threshold: 0 }
-    );
-    els.forEach(el => observer.observe(el));
-    return () => observer.disconnect();
+    const pick = () => {
+      const els = subEntryRefs.current.filter(Boolean);
+      if (els.length === 0) return;
+      const threshold = stickyTop + 8; // px below top of viewport to treat as "header cleared"
+      // Walk from last to first; the last one whose top is at or above threshold wins.
+      let idx = 0;
+      for (let i = 0; i < els.length; i++) {
+        const top = els[i].getBoundingClientRect().top;
+        if (top <= threshold) idx = i;
+      }
+      setVisibleIdx(idx);
+    };
+    pick(); // run once on mount
+    window.addEventListener('scroll', pick, { passive: true });
+    return () => window.removeEventListener('scroll', pick);
   }, [isArray, entry.length, stickyTop]);
 
   const visibleSaint = isArray ? (entry[visibleIdx]?.saint || primary.saint) : primary.saint;
@@ -462,7 +458,6 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
 
       {/* ── Card Body ── */}
       <div
-        data-subidx="0"
         ref={el => { subEntryRefs.current[0] = el; }}
         style={{
         background: "#fff",
@@ -591,7 +586,6 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
       {secondary.map((sec, idx) => (
         <div
           key={idx}
-          data-subidx={idx + 1}
           ref={el => { subEntryRefs.current[idx + 1] = el; }}
           style={{
           marginTop: "1.25rem",
