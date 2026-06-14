@@ -13,9 +13,13 @@ theotokion in the tone of the aposticha Glory (NOT the dogmatikon); troparia Now
 resurrectional dismissal theotokion in the tone of the saint's troparion (§I mechanism).
 Director-pointed JSON is the canonical encoding source (per the established pipeline; Tone 1
 done in v0.15.15 from the 0614 docx). Phased migration P0–P4; acceptance set Jun 14/21/28,
-Jul 5. **Open questions in §8 to answer before code: polyeleos/vigil split (4+6?), no-Glory
-Sunday, aposticha-theotokion source, Great-Feast-on-Sunday precedence, Pentecostarion-Sunday
-regression.**
+Jul 5, **Nov 30 (vigil), Oct 26 (multi-commem)**. **§8.1 RESOLVED:** vigil = 4 res + 6 saint
+(Nov 30, St. Andrew); polyeleos same row. **NEW (§3.1):** multi-commemoration Sundays (Oct 26
+= resurrection + Earthquake + Demetrius, 3+3+4) need commemoration-as-a-list + the secondary
+"of the Lord/Theotokos" troparion taking the troparia Now-and-ever slot (displacing the
+dismissal theotokion) — modeled now, built in a later phase. Remaining §8 open before code:
+no-Glory Sunday, aposticha-theotokion data source, Great-Feast-on-Sunday precedence,
+Pentecostarion-Sunday regression.
 
 **Outline + Evening Litany fixes (v0.15.31).** (1) `isPlaceholder` in ServiceOutline no
 longer uses `text.startsWith('[')` — that collided with OCA director-pointed text (the Tone 1

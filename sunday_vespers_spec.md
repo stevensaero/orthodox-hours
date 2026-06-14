@@ -75,8 +75,12 @@ Verified against the OCA docs:
 | Simple (§2A, 3 stichera)    | 7                        | 3             | Jun 21 (Julian) 7+3    |
 | Six-stichera (§2C/§2B)      | 6                        | 4             | Jun 28 (C&J) 6+4       |
 | Doxology (§2D)              | 6                        | 4 *(verify)*  | —                      |
-| Polyeleos / Vigil (§2E/§2F) | 4                        | 6 *(verify)*  | verify vs a doc        |
+| Polyeleos / Vigil (§2E/§2F) | 4                        | 6             | Nov 30 (Andrew, vigil) 4+6 ✓ |
 | Overlay / great commem.     | per the overlay entry    | remainder     | Jun 14 (All Saints NA) |
+
+Confirmed splits: simple 7+3 (Jun 21), six-stichera 6+4 (Jun 28), vigil 4+6 (Nov 30).
+Polyeleos shares the vigil row (4+6) — same Typikon provision; Oct 26 (Demetrius) could not
+isolate it because a second commemoration shares the slots (see §3.1).
 
 Rules:
 
@@ -96,6 +100,32 @@ Rules:
 
 Kekragarion opening (Ps 140:1-2) stays as today: tone-of-week `lic_opening` (director
 pointed where encoded), unchanged by this spec.
+
+### 3.1 Multi-commemoration Sundays (more complex — later phase)
+
+A Sunday can carry **more than one** non-resurrection commemoration. The base engine (§2)
+assumes a single `commemoration`; this case generalizes it to an ordered *list* of
+commemorations sharing the non-resurrection slots. Confirmed by **Oct 26, 2025** (Tone 3):
+resurrection + the Great Earthquake (a "of the Lord/Theotokos" commemoration) + Greatmartyr
+Demetrius (polyeleos). Observed behavior:
+
+- **LIC** = 3 Resurrection + 3 Earthquake + 4 Demetrius = 10 (the saint takes the larger
+  share; the secondary commemoration takes the middle slots). LIC "Both now" is still the
+  **Tone 3 Dogmatikon**.
+- **Aposticha** = Resurrection (4) + **Glory of Demetrius** (Tone 8) + **Both now = Theotokion
+  in the tone of that Glory** (Tone 8). The Earthquake does **not** appear in the aposticha —
+  only the primary saint does. So §4 is unchanged for the *primary* commemoration.
+- **Troparia** = Resurrection / Glory of Demetrius (Tone 3) / **Now and ever = the Earthquake
+  troparion** (Tone 8). The secondary "of the Lord/Theotokos" commemoration's troparion takes
+  the Now-and-ever slot, **displacing the resurrectional dismissal theotokion** (contrast the
+  single-saint rule in §5).
+- Liturgy readings/troparia/kontakia are tripled (Resurrection + Earthquake + saint),
+  combined per the doc's rubric ("read as one").
+
+Scope: the multi-commemoration variant is **out of P1**. P1 targets single-commemoration
+ordinary Sundays. This subsection is captured so the data model (commemoration as a list, not
+a scalar) and the troparia Now-and-ever exception are designed in from the start rather than
+retrofitted. Implement in a later phase with Oct 26 as its acceptance case.
 
 ---
 
@@ -173,8 +203,11 @@ monthly Menaion data files per `encoding_rule_v2.md`, pointed from the same JSON
 
 ## 8. Open questions (resolve in spec review, before code)
 
-1. **Polyeleos / Vigil split** (4+6?) — confirm against a doc (e.g. a Sunday with a
-   polyeleos saint) before encoding; do not assume.
+1. **Polyeleos / Vigil split** — RESOLVED: 4 resurrection + 6 saint. Confirmed by Nov 30,
+   2025 (Tone 8, St. Andrew, vigil) — 4 res + 6 Andrew (3 texts doubled), Glory of Andrew,
+   Tone 8 Dogmatikon at Both now. Polyeleos uses the same row; Oct 26 (Demetrius) couldn't
+   isolate it because the Earthquake co-commemoration shares the slots (§3.1). *Still want a
+   single-commemoration polyeleos doc to confirm 4+6 directly, but not blocking.*
 2. **No-Glory Sunday** (commemoration without an LIC/aposticha Glory) — does the
    resurrectional Glory take that slot? Confirm.
 3. **Aposticha "Both now" source** — confirm the per-tone Sunday aposticha theotokion set
@@ -202,8 +235,13 @@ monthly Menaion data files per `encoding_rule_v2.md`, pointed from the same JSON
 - **P4 — Fold in Pentecostarion Sundays.** Route Thomas…All Saints through the engine;
   confirm each against its doc; retire the remaining duplicated Sunday logic.
 
-**Acceptance set (must match docs):** June 14 (Tone 1, overlay), June 21 (Tone 2, simple),
-June 28 (Tone 3, six-stichera), July 5 (Tone 4, with the alt Sergius/Athanasius docs).
+**Acceptance set (must match docs):**
+- single-commemoration (P1): June 21 (Tone 2, simple, 7+3), June 28 (Tone 3, six-stichera,
+  6+4), July 5 (Tone 4, with the alt Sergius/Athanasius docs), **Nov 30 (Tone 8, St. Andrew,
+  vigil, 4+6)**;
+- overlay (P3): June 14 (Tone 1, All Saints of NA);
+- multi-commemoration (later phase, §3.1): **Oct 26 (Tone 3, Demetrius polyeleos + Earthquake,
+  3+3+4)**.
 
 ---
 
