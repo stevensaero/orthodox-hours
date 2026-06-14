@@ -1,5 +1,16 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.15.30** | **Tone Trainer: v0.25.16** | Last synced: June 14, 2026
+**Tool version: v0.15.31** | **Tone Trainer: v0.25.16** | Last synced: June 14, 2026
+
+**Outline + Evening Litany fixes (v0.15.31).** (1) `isPlaceholder` in ServiceOutline no
+longer uses `text.startsWith('[')` — that collided with OCA director-pointed text (the Tone 1
+Kekragarion begins "[Lord], I call upon Thee…"), falsely reddening the "Lord I Have Cried"
+row. It now keys on `el.unresolved === true` / `type==='placeholder'` (+ "not yet"), which
+every real stub already carries. (2) The outline IntersectionObserver now observes every row
+(mirroring the row dedup) instead of only `OUTLINE_MAJOR_IDS`, so label-derived rows (Litiya
+Stichera/Doxasticon/Petitions) highlight on scroll, not just on click. (3) Evening Litany
+head-bowing now renders the Chanters' "And to thy spirit." after "Peace be unto all."
+NOTE: dialect — used "thy" to match the existing LITIYA_PEACE_RESPONSE constant and the
+adjacent "To Thee, O Lord"; flag if a global switch to contemporary "your" is wanted.
 
 **LIC Both Now = resurrectional Dogmatikon on the All Saints Sundays (v0.15.30).**
 The Second Sunday after Pentecost (P+63, All Saints of NA/Russia) is classified
