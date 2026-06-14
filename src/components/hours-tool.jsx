@@ -3962,6 +3962,8 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   } else {
     elements.push({id:"v-peace",type:"fixed",label:"",rubric:"Priest:",
       text:"Peace be unto all.", source:"HTM Vespers"});
+    elements.push({id:"v-peace-response",type:"fixed",label:"",rubric:"Chanters:",
+      text:"And to thy spirit.", source:"HTM Vespers"});
     elements.push({id:"v-bow",type:"fixed",label:"",rubric:"Deacon (or Priest):",
       text:"Let us bow our heads unto the Lord.",
       source:"HTM Vespers"});
@@ -6465,10 +6467,20 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
       pickTopmost();
     }, { threshold: 0.1, rootMargin: '-8% 0px -65% 0px' });
     const t = setTimeout(() => {
-      OUTLINE_MAJOR_IDS.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) obs.observe(el);
-      });
+      // Observe every outline ROW (the same set that is clickable), not just the
+      // OUTLINE_MAJOR_IDS — otherwise label-derived rows (e.g. Litiya Stichera /
+      // Doxasticon / Petitions) link on click but never highlight on scroll.
+      // Mirror the row dedup below so the observed ids match the row ids exactly.
+      const seen = new Set();
+      for (const el of elements) {
+        if (!isOutlineMajor(el) || !el.label) continue;
+        const key = el.id || el.label;
+        if (!key || seen.has(key)) continue;
+        seen.add(key);
+        if (!el.id) continue;
+        const node = document.getElementById(el.id);
+        if (node) obs.observe(node);
+      }
     }, 80);
     return () => { clearTimeout(t); obs.disconnect(); };
   }, [currentService, elements]);  // eslint-disable-line
@@ -6483,7 +6495,8 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
   // Build rows from assembled elements — in assembly order, deduplicated
   const isPlaceholder = (el) =>
     el.type === 'placeholder' ||
-    (typeof el.text === 'string' && (el.text.startsWith('[') || el.text.includes('not yet')));
+    el.unresolved === true ||
+    (typeof el.text === 'string' && el.text.includes('not yet'));
 
   const toneTag = (tn) => {
     if (!tn) return null;
@@ -7884,6 +7897,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.15.31",
+    date: "June 2026",
+    items: [
+      "fix: the service outline no longer falsely flags 'Lord I Have Cried' as missing (red). The placeholder check keyed on text starting with '[', which now collides with OCA director-pointed text — the Tone 1 Kekragarion begins '[Lord], I call upon Thee…'. It now relies on the explicit unresolved/placeholder flags the assembler already sets, so genuine stubs stay red and director-pointed text renders normally.",
+      "fix: the outline now highlights the Litiya sub-sections (Litiya Stichera, Doxasticon, Petitions) as you scroll. They linked correctly on click but were never observed on scroll because the IntersectionObserver only watched the fixed major-id list; it now observes every outline row.",
+      "fix: the Evening Litany head-bowing sequence now includes the Chanters' response 'And to thy spirit.' after the Priest's 'Peace be unto all.' (was missing between the peace and 'Let us bow our heads').",
+    ],
+    summary: "Outline: stop false-flagging pointed 'Lord I Have Cried'; highlight Litiya sub-sections on scroll; Evening Litany 'And to thy spirit' response",
+  },
   {
     version: "v0.15.30",
     date: "June 2026",
