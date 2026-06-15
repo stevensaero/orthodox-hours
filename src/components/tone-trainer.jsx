@@ -12,11 +12,19 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.22";
+export const TONE_TRAINER_VERSION = "v0.25.23";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.23",
+    date: "June 2026",
+    summary: "iOS pop/delay fix — g.gain.value=0 made Android-only",
+    items: [
+      "fix: g.gain.value=0 at GainNode construction (v0.25.20) caused a pop and perceptible start delay on iOS Safari. The Web Audio spec says setting AudioParam.value directly is equivalent to a setValueAtTime at currentTime, but WebKit's implementation handles the interaction with subsequently-scheduled automation events differently from Chrome — the linearRamp anchored to the following setValueAtTime(0,t0) loses its correct start point, producing a pop and affecting the envelope. The default-gain (1.0) race condition this was solving does not affect iOS (WebKit processes gain events and oscillator starts in the same quantum reliably). g.gain.value=0 now guarded by /Android/i.test(navigator.userAgent) — Android keeps the race-condition fix, iOS/desktop use the original path.",
+    ],
+  },
   {
     version: "v0.25.22",
     date: "June 2026",
@@ -3190,13 +3198,12 @@ function useAudio() {
 
   function playPianoNote(c, f, t0, dur, peak) {
     const g = c.createGain();
-    g.gain.value = 0; // v0.25.20: zero gain immediately at construction (synchronous JS),
-                      // not via a scheduled event. GainNode default is 1.0; on Android
-                      // Chrome the audio thread may process o.start(t0) before it processes
-                      // the scheduled setValueAtTime(0,t0), producing a full-gain click at
-                      // every note onset. Setting g.gain.value=0 in JS guarantees silence
-                      // before any audio thread processing occurs. setValueAtTime(0,t0)
-                      // below stays as a belt-and-suspenders guard for the envelope.
+    // v0.25.20/v0.25.23: on Android, zero gain immediately at construction (synchronous JS)
+    // to prevent the default-gain (1.0) race condition click at note onset — the Android
+    // audio thread may process o.start(t0) before the scheduled setValueAtTime(0,t0).
+    // NOT applied on iOS: WebKit's AudioParam .value assignment with pending scheduled
+    // automation differs from Chrome's implementation and causes a pop + delay on iOS.
+    if (/Android/i.test(navigator.userAgent)) g.gain.value = 0;
     g.connect(c.destination);
     [[1,0.7],[2,0.15]].forEach(([h,a]) => {  // v0.25.18: 4→2 harmonics; partials 3+4 = 1.5% energy, inaudible; halves node count for Android
       const o = c.createOscillator(); const hg = c.createGain();
