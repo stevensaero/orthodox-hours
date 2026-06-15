@@ -1416,6 +1416,12 @@ const MAY_MENAION = {
       // ── VESPERS — LORD I HAVE CRIED ───────────────────────────────────────────
       // 8 stichera: 3 Pentecostarion + 5 Menaion (4 unique, first ×2 per PDF) — 05-27A.pdf
       stichera_lord_i_call_count: 8,
+      stichera_lord_i_call_note: "Seasonal conditional per 05-27A.pdf: " +
+        "(A) Pentecostarion period — 8 stichera: 3 from the Pentecostarion + 5 Menaion, " +
+        "'(Twice)' on first sticheron = 4 unique + 1 repeat marker (repeatIndex:0) = 5 Menaion items. " +
+        "licCount=8 from menaionEntry overrides afterfeast pentEntry count=6 via assembler licCount fix. " +
+        "(B) Ordinary time / Apostles' Fast — PDF appointment not yet verified from source. " +
+        "See project_notes.md dual LIC count evidence log.",
       stichera_lord_i_call: [
         { tone: 4, text: "The day of thy commemoration hath now shone forth, O righteous John, " +
                          "illumining the hearts and minds of the faithful; " +
