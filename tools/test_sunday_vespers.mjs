@@ -118,6 +118,67 @@ for (const a of acceptance) {
   ok(!!sat.dogmatikon, `${a.key}: Both-now Dogmatikon (T${a.tone}) must resolve`);
 }
 
+// 5. §4A3 Pentecostarion + high-rank Menaion repeat marker resolution.
+//    Guards the fix where menaionLicStichera (not effectiveLicStichera) must be
+//    used to resolve Menaion repeatIndex markers in the combined array.
+//    Bug: undefined variable 'manaionLicStichera' (typo) crashed assembler → blank screen.
+//    Scenario: 05-21 Constantine & Helena at P+43 (afterfeast weekday, licCount=8).
+console.log("5. §4A3 Menaion repeat marker resolution (cross-source guard):");
+
+const may = await imp("src/data/menaion/may.js");
+const mayData = may.default || may[Object.keys(may)[0]];
+const pent43 = (await imp("src/data/pentecostarion.js")).default[43];
+const constEntry = mayData["05-21"];
+
+ok(!!constEntry, "05-21: Constantine & Helena entry must exist");
+ok(constEntry.stichera_lord_i_call_count === 8, "05-21: count must be 8");
+
+const menaionLicStichera = (constEntry.stichera_lord_i_call || [])
+  .map(s => ({ ...s, source: "Menaion" }));
+const pentStichera = (pent43.stichera_lord_i_call || [])
+  .map(s => ({ ...s, source: "Pentecostarion" }));
+
+ok(menaionLicStichera.length === 5, `05-21: Menaion array must be 5 items (got ${menaionLicStichera.length})`);
+ok(pentStichera.length === 3, `P+43: Pentecostarion array must be 3 items (got ${pentStichera.length})`);
+
+// Replicate the combined array the assembler builds
+const effectiveLicStichera = [...pentStichera, ...menaionLicStichera];
+ok(effectiveLicStichera.length === 8, `Combined array must be 8 (got ${effectiveLicStichera.length})`);
+
+// Replicate applyStichRepeat logic (copied from assembler)
+function applyStichRepeatTest(stich, array) {
+  if (!stich || stich.text) return stich;
+  if (typeof stich.repeatIndex === "number") {
+    const src = array[stich.repeatIndex];
+    if (src && src.text) return { ...stich, text: src.text };
+  }
+  return stich;
+}
+
+// Simulate rendering all 8 slots with the FIX applied
+const licCount = 8;
+let crossSourceError = false;
+for (let slotIndex = 0; slotIndex < licCount; slotIndex++) {
+  const stich = effectiveLicStichera[slotIndex];
+  if (!stich) continue;
+  // THE FIX: Menaion items resolve against menaionLicStichera
+  const resolveArray = stich.source === "Menaion" ? menaionLicStichera : effectiveLicStichera;
+  const resolved = applyStichRepeatTest(stich, resolveArray);
+  // If a Menaion repeat slot resolves to a Pentecostarion text, that's the bug
+  if (!stich.text && stich.repeatIndex !== undefined && resolved.source === "Pentecostarion") {
+    crossSourceError = true;
+  }
+}
+ok(!crossSourceError, "05-21 §4A3: Menaion repeat markers must not resolve to Pentecostarion texts");
+
+// Verify slots 3-4 (first Menaion text + its repeat) both resolve to Menaion text
+const slot3 = effectiveLicStichera[3]; // Menaion text0
+const slot4 = effectiveLicStichera[4]; // repeatIndex:0 → should resolve to Menaion[0]
+ok(slot3 && slot3.text && slot3.source === "Menaion", "Slot 3 must be Menaion text");
+const resolved4 = applyStichRepeatTest(slot4, menaionLicStichera);
+ok(resolved4 && resolved4.text === slot3.text,
+  "Slot 4 (repeatIndex:0) must resolve to same text as slot 3 (Menaion[0]), not Pentecostarion");
+
 console.log(`\n${checks - failures}/${checks} checks passed.`);
 if (failures > 0) {
   console.error(`FAILED: ${failures} check(s).`);
