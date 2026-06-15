@@ -7472,14 +7472,16 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
         // right. Active when the verse's tone is built in the trainer; otherwise
         // light grey and inert, with a tooltip explaining why.
         const vTone = elementTone(element);
+        const hasBrackets = /\[.*?\]/.test(element.text);
         const isSergius = / \* /.test(element.text) || / \*\* /.test(element.text);
+        const isNotOCAPointed = !hasBrackets; // Tier 3 requires [] director emphasis
         return (
           <div style={{ ...bodyStyle, display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{ flex: 1, minWidth: 0 }}>
               {renderPointed(element.text)}
-              {isSergius && (
+              {isNotOCAPointed && (
                 <div style={{ fontSize: '0.72rem', color: '#A67C00', marginTop: '0.25rem', fontStyle: 'italic' }}>
-                  ⚑ St. Sergius source — not yet OCA pointed
+                  ⚑ Tier 2 — not OCA pointed{isSergius ? ' (St. Sergius source)' : ''}
                 </div>
               )}
             </div>
