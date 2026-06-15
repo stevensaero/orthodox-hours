@@ -12,11 +12,19 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.24";
+export const TONE_TRAINER_VERSION = "v0.25.25";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.25",
+    date: "June 2026",
+    summary: "Attack transient fix — exponential ramp replaces linear from zero",
+    items: [
+      "fix: residual attack click on Android after v0.25.24 JIT fix. The note onset used linearRampToValueAtTime(peak, t0+0.01) starting from setValueAtTime(0, t0). A linear ramp from exactly 0 has its maximum slope at the very start (slope = peak/0.01 = 22 gain/sec), producing the most aggressive possible onset. On Android's hardware speaker path this excites a transient click before the sustained note settles. Fix: setValueAtTime(0.0001, t0) + exponentialRampToValueAtTime(peak, t0+0.015). 0.0001 is -80dB — inaudible. An exponential ramp has zero initial slope, starts imperceptibly and accelerates to the target, eliminating the onset transient entirely. 15ms ramp vs 10ms — 2% of H at 80 BPM, inaudible as attack delay. The Android g.gain.value=0 guard (v0.25.23) remains and is still needed; the exponential ramp correctly overrides it.",
+    ],
+  },
   {
     version: "v0.25.24",
     date: "June 2026",
@@ -3218,8 +3226,13 @@ function useAudio() {
       o.connect(hg); hg.connect(g); o.type="sine"; o.frequency.value=f*h; hg.gain.value=a;
       o.start(t0); o.stop(t0+dur+0.3);
     });
-    g.gain.setValueAtTime(0,t0);
-    g.gain.linearRampToValueAtTime(peak,t0+0.01);
+    g.gain.setValueAtTime(0.0001,t0);                      // v0.25.25: near-silent (-80dB) at t0, not exactly 0,
+    g.gain.exponentialRampToValueAtTime(peak,t0+0.015);    // so exponentialRamp is valid (log(0) undefined).
+                                                           // Exponential ramp has zero initial slope — starts
+                                                           // imperceptibly and accelerates to peak, eliminating
+                                                           // the attack transient click that a linear ramp from 0
+                                                           // causes on Android (max slope at onset = aggressive).
+                                                           // 15ms ramp is 2% of H at 80 BPM — inaudible delay.
     g.gain.exponentialRampToValueAtTime(peak*0.34,t0+0.08);
     g.gain.setValueAtTime(peak*0.34,t0+dur-0.05);
     g.gain.exponentialRampToValueAtTime(0.001,t0+dur+0.25);
