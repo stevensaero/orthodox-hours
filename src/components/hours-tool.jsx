@@ -8098,6 +8098,21 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.16.11",
+    date: "June 2026",
+    summary: "Data integrity: pointing dialect validation, needsReview state, assembled service notes, repeat marker sweep",
+    items: [
+      "feat: validate_entries.mjs Check E — stichera marker well-formedness and intra-array consistency. If any text item in a stichera array carries pointing markers, all must. Malformed unspaced markers fail. Catches partial encoding before push.",
+      "feat: Menaion browser gold 'needs review' state — complete entries whose LIC or aposticha stichera have no pointing markers show amber dot, '⚑ review pointing' badge, and amber count in month summary. Separate from red partial/error state.",
+      "feat: assembled service shows '⚑ verse not pointed (source: St. Sergius)' in amber below any Tier 2 verse lacking [] director emphasis. Fires on both * /** and | // dialects. Suppressed when [] present (Tier 3 OCA pointed).",
+      "fix: Menaion browser TextBlock renders raw stored text — * /** not normalized to | // in truthing tool. Source provenance badge [St. Sergius] / [RLE/OCA] shown inline with tone.",
+      "data: sweep — 05-21 Constantine, 05-24 Symeon, 05-27 John the Russian, 06-28 Cyrus & John, 07-02 Maximovich, 07-14 Nicodemus — replaced repeat:true text duplicates and mixed repeatIndex/text items with canonical no-text repeatIndex markers.",
+      "fix: §4A3 Pentecostarion path — Menaion repeatIndex markers now resolve against Menaion-only array, not combined effectiveLicStichera. Prevented Pentecostarion stichera bleeding into Menaion repeat slots (e.g. Myrrhbearers appearing in Constantine & Helena slots on 05/20/2027).",
+      "test: gate section 5 — §4A3 cross-source repeat resolution guard (71/71 checks).",
+      "docs: encoding_rule_v2.md §6b — LIC repeat markers and stichera_lord_i_call_note fully documented for future encoding sessions.",
+    ],
+  },
+  {
     version: "v0.16.10",
     date: "June 2026",
     summary: "feat: St. Sergius dialect (* /**) now pointable — normalizeSergius helper bridges to Tone Trainer",

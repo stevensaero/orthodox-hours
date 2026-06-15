@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.16.5** | **Tone Trainer: v0.25.16** | Last synced: June 14, 2026
+**Tool version: v0.16.11** | **Tone Trainer: v0.25.16** | Last synced: June 14, 2026
 
 **Sunday Vespers — unified engine (P0 signed off; P1 engine LANDED in v0.16.0).** `sunday_vespers_spec.md`
 (repo root) specs one engine for ALL resurrectional Sundays — ordinary Octoechos
@@ -3212,3 +3212,29 @@ Do not implement until the evidence log below contains enough cases to confirm t
 
 ### Action threshold
 Implement `_ordinary` fields when **5 or more** confirmed entries appear in this log, or when an ordinary-time date is within 12 months of the current deployment date.
+
+---
+
+## Session Notes — June 15, 2026 (v0.16.6 → v0.16.11)
+
+### Vespers assembler fixes
+- **v0.16.6:** Vespers service selector radio buttons now re-assemble for the selected saint on multi-commemoration days (was always locked to OCA primary). `stichera_glory_absent: true` sentinel added — verified-absent doxasticons render "Glory… now and ever" combined per Fekula "if there be one." Check D added to `validate_entries.mjs`.
+- **licCount Menaion override (v0.16.8/v0.16.9):** High-rank Menaion feasts (polyeleos/vigil) whose PDF explicitly appoints more stichera than the Pentecostarion afterfeast default now have their count respected. Three-tier priority: Great Feast Pent → Menaion count when higher → afterfeast Pent → rank default. Affects 05-21, 05-25, 05-27, 06-02A.
+- **§4A3 repeat marker fix (v0.16.11):** Menaion `repeatIndex` markers in the combined `effectiveLicStichera` array were resolving against the wrong array — Pentecostarion stichera bled into Menaion repeat slots (e.g. Myrrhbearers appearing in Constantine & Helena positions on 05/20/2027). Fixed by resolving Menaion markers against `menaionLicStichera` only. Gate section 5 added to catch this class of bug (71/71).
+
+### Data corrections
+- **Repeat marker sweep:** 05-21 Constantine, 05-24 Symeon, 05-27 John the Russian, 06-28 Cyrus & John, 07-02 Maximovich, 07-14 Nicodemus — all had `repeat:true` text duplicates or `repeatIndex` on text-bearing items. Converted to canonical no-text `{ repeatIndex: N }` markers. `encoding_rule_v2.md §6b` documents the convention for future sessions.
+- **`stichera_lord_i_call_note` pattern established** for Pentecostarion seasonal conditionals (05-21, 05-25, 05-27, 06-02A). Dual LIC count evidence log in project_notes.md — threshold 5 entries before implementing `_ordinary` schema fields.
+- **Multi-commemoration audit bug fixed:** `auditMenaionEntry` previously only audited `entry[0]` for array days. Now audits all sub-entries and returns worst status. Calendar badge and summary now reflect any gap in any sub-entry.
+
+### Pointing dialect system (v0.16.10–v0.16.11)
+- **`normalizeSergius` helper:** converts `*`/`**` (St. Sergius) to `|`/`//` (OCA) at render/handoff time only. Stored data never mutated — `*`/`**` serves as source provenance signal. Three call sites: `isPointable`, `handoffVerse`, `renderPointed`.
+- **Three tiers:** Tier 1 = no markers (prose); Tier 2 = `*`/`**` or `|`/`//` (structural line breaks); Tier 3 = `|`/`//` + `[]` (OCA director emphasis). Assembled service shows `⚑ verse not pointed (source: St. Sergius)` on Tier 2 verses.
+- **Menaion browser:** `[St. Sergius]` / `[RLE/OCA]` dialect badge inline with tone. Raw text displayed (not normalized). Gold `⚑ review pointing` badge on entries with no pointing markers in LIC/aposticha stichera. Separate `needsReview` state in audit — amber dot/badge, not red error.
+- **Check E (validate_entries.mjs):** intra-array marker consistency — if any item has markers, all must. Malformed unspaced markers fail hard.
+
+### Open backlog from this session
+- **39 unpointed `spec_mel` stichera** (May 05-16–05-31, Tikhon of Kaluga, Jonah) — show gold review badge in browser. Require PDF review to add `*`/`**`. Not encoding errors; source markers simply not applied at encode time.
+- **P+35 Sunday of Blind Man stichera** — n=3, count=10, markers=1, `repeat:true` on item with text. Pre-existing broken encoding; needs reshaping to match Jonah/Constantine pattern.
+- **SUNDAY_APOSTICHA_THEOTOKIA no-saint-doxasticon set** (Resurrectional Theotokion "At the Aposticha") — distinct from the saint-doxasticon table encoded in v0.16.5. Not yet encoded.
+- **Token rotation** — overdue across multiple sessions.
