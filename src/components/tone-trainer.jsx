@@ -12,11 +12,19 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.18";
+export const TONE_TRAINER_VERSION = "v0.25.20";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.20",
+    date: "June 2026",
+    summary: "Android crackle fix — GainNode default-gain race condition",
+    items: [
+      "fix: root cause of Android crackle identified and fixed. GainNode is created with a default gain of 1.0 per the Web Audio spec. The previous code relied on a scheduled setValueAtTime(0, t0) to zero the gain before note onset, but on Android Chrome the audio thread (running at lower priority, processing in 85ms HAL buffer chunks) may process o.start(t0) before it processes the gain event, outputting full-volume audio for one 2.67ms quantum before the gain drops — producing a click/pop at every note onset. Symptoms: random clicks at each chip start on reciting tones, scratchy static throughout Play All, affects both individual verse and Play All, reproduces reliably on first play. Fix: set g.gain.value = 0 synchronously in JS immediately after createGain(), before any audio thread processing can occur. The scheduled setValueAtTime(0, t0) remains as a belt-and-suspenders guard for the envelope. One-line change in playPianoNote. Desktop Chrome and iOS were not affected because their audio threads process gain events and oscillator starts in the same quantum reliably.",
+    ],
+  },
   {
     version: "v0.25.18",
     date: "June 2026",
@@ -3174,6 +3182,13 @@ function useAudio() {
 
   function playPianoNote(c, f, t0, dur, peak) {
     const g = c.createGain();
+    g.gain.value = 0; // v0.25.20: zero gain immediately at construction (synchronous JS),
+                      // not via a scheduled event. GainNode default is 1.0; on Android
+                      // Chrome the audio thread may process o.start(t0) before it processes
+                      // the scheduled setValueAtTime(0,t0), producing a full-gain click at
+                      // every note onset. Setting g.gain.value=0 in JS guarantees silence
+                      // before any audio thread processing occurs. setValueAtTime(0,t0)
+                      // below stays as a belt-and-suspenders guard for the envelope.
     g.connect(c.destination);
     [[1,0.7],[2,0.15]].forEach(([h,a]) => {  // v0.25.18: 4→2 harmonics; partials 3+4 = 1.5% energy, inaudible; halves node count for Android
       const o = c.createOscillator(); const hg = c.createGain();
