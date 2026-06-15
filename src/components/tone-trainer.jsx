@@ -12,19 +12,11 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.21";
+export const TONE_TRAINER_VERSION = "v0.25.20";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
-  {
-    version: "v0.25.21",
-    date: "June 2026",
-    summary: "Android crackle fix — GainNode disconnect to reduce audio graph size",
-    items: [
-      "fix: Play All crackle caused by audio thread graph traversal overrun. The Web Audio rendering thread traverses the entire connected node graph every 128-sample quantum (2.67ms at 48kHz). With SATB Play All pre-creating ~1200 GainNodes simultaneously, traversal takes ~6ms — overrunning the 2.67ms quantum budget and causing buffer underruns (crackle). Single verse (~300 nodes) stays within budget, explaining why single verse crackles less than Play All. Fix: schedule g.disconnect() 50ms after each note's oscillator tail ends, removing the master GainNode (and making its upstream harmonic GainNodes eligible for GC) from the audio graph as notes finish. Live connected nodes drop from ~1200 to ~30-60 at any moment; traversal drops from ~6ms to ~0.15-0.3ms per quantum, giving 89% headroom. try/catch guards against stale disconnect if AudioContext already closed by stopAll(). Note: this fix was part of v0.25.19 but that version also introduced a scrollIntoView change that caused iOS double-note/sync regressions and was reverted. This version re-applies only the GainNode disconnect, leaving PhraseScroller unchanged.",
-    ],
-  },
   {
     version: "v0.25.20",
     date: "June 2026",
@@ -3208,16 +3200,6 @@ function useAudio() {
     g.gain.exponentialRampToValueAtTime(peak*0.34,t0+0.08);
     g.gain.setValueAtTime(peak*0.34,t0+dur-0.05);
     g.gain.exponentialRampToValueAtTime(0.001,t0+dur+0.25);
-    // v0.25.21: disconnect master GainNode 50ms after oscillator tail ends.
-    // The Web Audio thread traverses the ENTIRE connected node graph every
-    // 128-sample quantum (2.67ms). With ~1200 nodes pre-created for SATB
-    // Play All, traversal takes ~6ms — overrunning the 2.67ms quantum budget
-    // and causing buffer underruns (crackle). Disconnecting g removes it and
-    // its upstream harmonic GainNodes from the graph as each note finishes,
-    // keeping live nodes at ~30-60 instead of ~1200. try/catch guards against
-    // stale disconnect if AudioContext was already closed by stopAll().
-    const cleanupDelay = Math.max(0, (t0 + dur + 0.35 - c.currentTime)) * 1000;
-    setTimeout(() => { try { g.disconnect(); } catch(_) {} }, cleanupDelay);
   }
 
   // Legacy simple tone kept for backward compat — used by comparison harness
