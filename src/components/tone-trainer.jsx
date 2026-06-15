@@ -12,11 +12,19 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.20";
+export const TONE_TRAINER_VERSION = "v0.25.22";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.22",
+    date: "June 2026",
+    summary: "Platform-adaptive audio lookahead — restore iOS v0.25.17 behaviour",
+    items: [
+      "fix: AUDIO_LOOKAHEAD made platform-adaptive. v0.25.18 set a fixed 250ms lookahead to cover Android's slow (~110ms) Web Audio node-creation burst on the Galaxy S6 Lite (Exynos 9611). But 250ms is 4x more than iOS or desktop needs (~15-20ms burst on fast hardware), and on iOS Safari it introduced a perceptible 250ms silence before the first note on every Play press, plus occasional popping caused by a race between the async ctx.resume() call and note scheduling. iOS and desktop now use 0.06s (60ms) — identical to v0.25.17 behaviour. Android keeps 0.25s. Detection: /Android/i.test(navigator.userAgent). The harmonic reduction (2 partials, v0.25.18) and g.gain.value=0 (v0.25.20) remain in place on all platforms.",
+    ],
+  },
   {
     version: "v0.25.20",
     date: "June 2026",
@@ -3880,9 +3888,12 @@ export default function ToneTrainer() {
   // Must exceed the synchronous Web Audio node-creation burst on the slowest
   // supported device. Galaxy S6 Lite (Exynos 9611) takes ~85-110ms for a
   // full SATB playAll after the harmonic reduction in v0.25.18. 250ms gives
-  // a 2.3x safety margin. playNotes (pitch preview, 4 notes, ~2ms burst)
-  // keeps its own tight 0.06s so the do-selector tap sounds immediate.
-  const AUDIO_LOOKAHEAD = 0.25;
+  // a 2.3x safety margin on Android. iOS (CoreAudio, fast JS engine) needs
+  // only ~60ms — the 250ms value introduced a perceptible start delay and
+  // async-resume popping on iOS Safari. Desktop is also fine at 60ms.
+  // v0.25.22: platform-adaptive — Android gets 250ms, everything else 60ms.
+  // playNotes (pitch preview, 4 notes) keeps its own tight 0.06s.
+  const AUDIO_LOOKAHEAD = /Android/i.test(navigator.userAgent) ? 0.25 : 0.06;
 
   const playNotes = (notes, onDone, gap = 0) => {
     const c = ac();
