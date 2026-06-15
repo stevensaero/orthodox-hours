@@ -483,36 +483,57 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
 
       {/* ── Audit details ── */}
       {(audit.missing.length > 0 || audit.hasPlaceholder) && (
-        <div style={{
-          fontSize: "0.78rem",
-          color: C.red,
-          background: "rgba(185,74,58,0.06)",
-          padding: "0.5rem 0.7rem",
-          borderRadius: "4px",
-          borderLeft: `3px solid ${C.red}`,
-          marginBottom: "0.75rem",
-        }}>
-          <div style={{ fontWeight: 600, marginBottom: "0.3rem" }}>
-            {audit.status === 'structural' ? 'Structural — ' : ''}
-            {audit.missing.length} missing field{audit.missing.length !== 1 ? 's' : ''}
-            {audit.hasPlaceholder && ' · has placeholder text'}
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.25rem" }}>
-            {audit.missing.map(f => (
-              <span key={f} style={{
-                display: "inline-block",
-                fontSize: "0.72rem",
-                fontFamily: "monospace",
-                background: "rgba(185,74,58,0.1)",
-                border: `1px solid rgba(185,74,58,0.4)`,
-                borderRadius: "3px",
-                padding: "1px 6px",
+        audit.subAudits ? (
+          // Multi-entry: show per-sub-entry breakdown so gaps are attributed correctly
+          audit.subAudits.map((sub, idx) => {
+            if (sub.missing.length === 0 && !sub.hasPlaceholder) return null;
+            const e = isArray ? entry[idx] : entry;
+            return (
+              <div key={idx} style={{
+                fontSize: "0.78rem", color: C.red,
+                background: "rgba(185,74,58,0.06)", padding: "0.5rem 0.7rem",
+                borderRadius: "4px", borderLeft: `3px solid ${C.red}`,
+                marginBottom: "0.5rem",
               }}>
-                {f}
-              </span>
-            ))}
+                <div style={{ fontWeight: 600, marginBottom: "0.3rem" }}>
+                  [{idx + 1}] {e?.saint?.slice(0, 40)} — {sub.missing.length} missing field{sub.missing.length !== 1 ? 's' : ''}
+                  {sub.hasPlaceholder && ' · has placeholder text'}
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.25rem" }}>
+                  {sub.missing.map(f => (
+                    <span key={f} style={{
+                      display: "inline-block", fontSize: "0.72rem", fontFamily: "monospace",
+                      background: "rgba(185,74,58,0.1)", border: "1px solid rgba(185,74,58,0.4)",
+                      borderRadius: "3px", padding: "1px 6px",
+                    }}>{f}</span>
+                  ))}
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <div style={{
+            fontSize: "0.78rem", color: C.red,
+            background: "rgba(185,74,58,0.06)", padding: "0.5rem 0.7rem",
+            borderRadius: "4px", borderLeft: `3px solid ${C.red}`,
+            marginBottom: "0.75rem",
+          }}>
+            <div style={{ fontWeight: 600, marginBottom: "0.3rem" }}>
+              {audit.status === 'structural' ? 'Structural — ' : ''}
+              {audit.missing.length} missing field{audit.missing.length !== 1 ? 's' : ''}
+              {audit.hasPlaceholder && ' · has placeholder text'}
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.25rem" }}>
+              {audit.missing.map(f => (
+                <span key={f} style={{
+                  display: "inline-block", fontSize: "0.72rem", fontFamily: "monospace",
+                  background: "rgba(185,74,58,0.1)", border: "1px solid rgba(185,74,58,0.4)",
+                  borderRadius: "3px", padding: "1px 6px",
+                }}>{f}</span>
+              ))}
+            </div>
           </div>
-        </div>
+        )
       )}
 
       {/* ── Metadata ── */}

@@ -517,6 +517,27 @@ function deriveStatus(results, gaps, hasPlaceholder) {
  * Returns { status, missing, gaps, hasPlaceholder }
  */
 export function auditMenaionEntry(entry) {
+  // For multi-commemoration days (array), audit each sub-entry and return
+  // the worst status across all of them. The calendar badge must reflect
+  // any gap in any sub-entry, not just the primary (entry[0]).
+  if (Array.isArray(entry)) {
+    const results = entry.map(e => {
+      const { results, gaps, hasPlaceholder } = auditEntry(e, 'menaion');
+      const missing = gaps.map(g => g.field);
+      const status = deriveStatus(results, gaps, hasPlaceholder);
+      return { status, missing, gaps, hasPlaceholder };
+    });
+    // Worst status: structural > partial > complete
+    const rank = s => s === 'structural' ? 2 : s === 'partial' ? 1 : 0;
+    const worst = results.reduce((a, b) => rank(a.status) >= rank(b.status) ? a : b);
+    return {
+      status: worst.status,
+      missing: results.flatMap(r => r.missing),
+      gaps: results.flatMap(r => r.gaps),
+      hasPlaceholder: results.some(r => r.hasPlaceholder),
+      subAudits: results,  // exposed so the browser can render per-entry detail
+    };
+  }
   const { results, gaps, hasPlaceholder } = auditEntry(entry, 'menaion');
   const missing = gaps.map(g => g.field);
   const status = deriveStatus(results, gaps, hasPlaceholder);
