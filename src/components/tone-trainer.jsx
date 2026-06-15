@@ -12,11 +12,19 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.26";
+export const TONE_TRAINER_VERSION = "v0.25.27";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.27",
+    date: "June 2026",
+    summary: "Note-level JIT — eliminates crackle on long recitations",
+    items: [
+      "fix: crackle on long reciting-tone runs regardless of BPM. The root cause was IPC burst: createOscillator() sends a message to the Android audio thread to register the node. A long recitation = many sequential notes = many rapid IPC messages = audio thread stalls = crackle. Phrase-level JIT (v0.25.24/v0.25.26) deferred phrases but still created all of a phrase's notes in one synchronous burst. Note-level JIT creates each individual note just before it plays. Phase 1 builds a flat noteQueue[] of all notes (all phrases, all voices) sorted by t0, with freq pre-computed and zero toneTimbre calls. Phase 3 JIT rAF loop uses NOTE_WINDOW = AUDIO_LOOKAHEAD × 0.6 (150ms Android, 36ms iOS/desktop) — each frame creates only notes whose t0 ≤ now + NOTE_WINDOW. At steady state (80 BPM SATB): ~0.8 notes/frame → ~4 nodes/frame → <1ms per frame. A 10-syllable recitation creates at most ~1 note per voice per frame — never a burst. phraseTimings[], noteQueues[], and the li===0 synchronous branch from v0.25.24/v0.25.26 are removed. schedule[] and chip-highlight rAF unchanged.",
+    ],
+  },
   {
     version: "v0.25.26",
     date: "June 2026",
@@ -4344,27 +4352,27 @@ export default function ToneTrainer() {
     const playTenorVoice = voicePart === "tenor"   || voicePart === "satb";
     setPlayingWhich(which);
 
-    // ── PHASE 1: build schedule + note queues — NO audio nodes created yet ──────
+    // ── PHASE 1: build schedule[] + noteQueue[] — zero toneTimbre calls ────────────
     //
-    // JIT (just-in-time) node creation: the root cause of Android crackle was that
-    // all ~1200 AudioNodes for every phrase were created synchronously at play-start
-    // and stayed connected to the audio graph simultaneously. The Web Audio thread
-    // traverses the entire connected graph every 128-sample quantum (2.67ms at 48kHz);
-    // ~1200 nodes overruns that budget, causing buffer underruns (crackle). By the
-    // final phrase, earlier phrases' oscillators had stopped and were skipped — which
-    // is why only the last phrase played cleanly.
+    // Note-level JIT: instead of creating all audio nodes at play-start (which caused
+    // a burst of IPC messages to the Android audio thread, stalling it and producing
+    // crackle), each note's nodes are created just before that note is due to play via
+    // a second rAF loop. The creation window is NOTE_WINDOW = AUDIO_LOOKAHEAD × 0.6.
     //
-    // Fix: pre-compute all timing and note arrays at play-start (cheap, pure),
-    // then create each phrase's AudioNodes ~500ms before that phrase plays via a
-    // second rAF loop (jitRafRef). Max live nodes at any moment: ~300 (one phrase).
-    // Audio thread traversal drops from ~6ms to ~0.75ms per quantum (72% headroom).
+    //   Android: 0.25 × 0.6 = 0.15s → ~9 rAF frames of lead time
+    //   iOS/desktop: 0.06 × 0.6 = 0.036s → ~2 rAF frames of lead time
     //
-    // The chip-highlight schedule[] is still fully built at play-start so visual
-    // sync is identical — the schedule table knows all audioT values immediately.
+    // Per-frame node creation at steady state (80 BPM, SATB):
+    //   ~0.8 notes/frame → ~4 nodes/frame → <1ms — completely transparent.
+    // Even a long recitation (10 syllables × 4 voices = 40 sequential notes)
+    // only ever puts ~1 note per voice into the window per frame.
+    //
+    // The chip-highlight schedule[] is still fully built here so visual sync
+    // is identical — the schedule table has all audioT values from the start.
+    // noteQueue[] is a flat list of every note across all phrases, sorted by t0.
 
-    const schedule      = []; // chip-highlight entries { audioT, action } — complete at play-start
-    const phraseTimings = []; // per-phrase start times { t, tb, ts, tt } for JIT audio creation
-    const noteQueues    = []; // per-phrase pre-computed note arrays — passed to JIT creator
+    const schedule  = []; // chip-highlight { audioT, action } — complete at play-start
+    const noteQueue = []; // flat note list { t0, freq, dur, peak, peakMult } — consumed by JIT loop
 
     let t = startT, tb = startT, ts = startT, tt = startT;
 
@@ -4374,30 +4382,7 @@ export default function ToneTrainer() {
       const sopranoNotes = lineToNotes_soprano(line);
       const tenorNotes   = lineToNotes_tenor(line);
 
-      // Phrase 0 is created synchronously here in Phase 1 (before rAF loops launch)
-      // because JIT_WINDOW (0.5s) > AUDIO_LOOKAHEAD (0.25s on Android), which means
-      // phrase 0 would always trigger on the very first JIT rAF tick — a ~21ms node
-      // creation burst inside a 16ms frame budget at exactly the moment audio starts.
-      // Phrases 1+ are deferred to the JIT loop; their nodes are created ~500ms ahead.
-      // Phrase 0 oscillators will have stopped well before phrase 1 is due, so the
-      // graph stays at ~300 nodes throughout regardless.
-      if (li === 0) {
-        let pt = t, ptb = tb, pts = ts, ptt = tt;
-        if (playAlto)
-          altoNotes.forEach((n) => { toneTimbre(freq(n.sol), pt, n.dur, n.peak, timbre); pt += n.dur; });
-        if (playBassVoice && bassNotes)
-          bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol, n.phraseRules), ptb, n.dur, n.peak * 1.1, timbre); ptb += n.dur; });
-        if (playSoprano && sopranoNotes)
-          sopranoNotes.forEach((n) => { toneTimbre(freq_soprano(n.sol), pts, n.dur, n.peak, timbre); pts += n.dur; });
-        if (playTenorVoice && tenorNotes)
-          tenorNotes.forEach((n) => { toneTimbre(freq_tenor(n.sol, n.phraseRules), ptt, n.dur, n.peak, timbre); ptt += n.dur; });
-      } else {
-        // Phrases 1+ stored for JIT deferred creation
-        noteQueues.push({ li, altoNotes, bassNotes, sopranoNotes, tenorNotes });
-        phraseTimings.push({ li, t, tb, ts, tt });
-      }
-
-      // Chip-highlight schedule — complete at play-start for all phrases
+      // ── chip-highlight schedule (unchanged from pre-JIT) ──
       const lineStart = t;
       schedule.push({ audioT: lineStart, action: () => {
         setPlayingLine(li); setPlayingAltoIdx(null); setPlayingBassIdx(null);
@@ -4412,7 +4397,10 @@ export default function ToneTrainer() {
           }});
           ht += n.dur;
         });
-        altoNotes.forEach((n) => { t += n.dur; });
+        // Push to noteQueue with pre-computed freq — no toneTimbre call here
+        let pt = t;
+        altoNotes.forEach(n => { noteQueue.push({ t0: pt, freq: freq(n.sol), dur: n.dur, peak: n.peak, peakMult: 1.0 }); pt += n.dur; });
+        altoNotes.forEach(n => { t += n.dur; });
       }
 
       if (playBassVoice && bassNotes) {
@@ -4426,7 +4414,9 @@ export default function ToneTrainer() {
             ht += n.dur;
           });
         }
-        bassNotes.forEach((n) => { tb += n.dur; });
+        let ptb = tb;
+        bassNotes.forEach(n => { noteQueue.push({ t0: ptb, freq: freq_bass(n.sol, n.phraseRules), dur: n.dur, peak: n.peak, peakMult: 1.1 }); ptb += n.dur; });
+        bassNotes.forEach(n => { tb += n.dur; });
         tb += H / 2;
       }
 
@@ -4439,7 +4429,9 @@ export default function ToneTrainer() {
           }});
           ht += n.dur;
         });
-        sopranoNotes.forEach((n) => { ts += n.dur; });
+        let pts = ts;
+        sopranoNotes.forEach(n => { noteQueue.push({ t0: pts, freq: freq_soprano(n.sol), dur: n.dur, peak: n.peak, peakMult: 1.0 }); pts += n.dur; });
+        sopranoNotes.forEach(n => { ts += n.dur; });
         ts += H / 2;
       }
 
@@ -4452,14 +4444,18 @@ export default function ToneTrainer() {
           }});
           ht += n.dur;
         });
-        tenorNotes.forEach((n) => { tt += n.dur; });
+        let ptt = tt;
+        tenorNotes.forEach(n => { noteQueue.push({ t0: ptt, freq: freq_tenor(n.sol, n.phraseRules), dur: n.dur, peak: n.peak, peakMult: 1.0 }); ptt += n.dur; });
+        tenorNotes.forEach(n => { tt += n.dur; });
         tt += H / 2;
       }
 
       if (playAlto) t += H / 2;
     });
 
-    // ── PHASE 2: launch chip-highlight rAF (unchanged from pre-JIT) ──────────────
+    noteQueue.sort((a, b) => a.t0 - b.t0);
+
+    // ── PHASE 2: launch chip-highlight rAF (unchanged from v0.25.17) ──────────────
     schedule.sort((a, b) => a.audioT - b.audioT);
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     let cursor = 0;
@@ -4477,38 +4473,27 @@ export default function ToneTrainer() {
     };
     rafRef.current = requestAnimationFrame(tick);
 
-    // ── PHASE 3: launch JIT audio node creation loop ──────────────────────────────
-    // Creates each phrase's AudioNodes ~500ms before that phrase plays.
-    // Max concurrent live nodes: ~300 (one phrase) vs ~1200 (all phrases).
-    // try/catch guards against ctx.close() racing with a creation burst when
-    // stopAll() is called while a phrase is being created.
-    const JIT_WINDOW = 0.5; // seconds ahead of phrase start to create nodes
+    // ── PHASE 3: note-level JIT audio node creation loop ─────────────────────────
+    // Each rAF frame creates only the notes whose t0 falls within the next
+    // NOTE_WINDOW seconds. At steady state this is ~1 note per voice per frame —
+    // trivially small. The audio thread never receives more than ~20 IPC registration
+    // messages per 16ms window regardless of recitation length or voice count.
+    const NOTE_WINDOW = AUDIO_LOOKAHEAD * 0.6; // always < AUDIO_LOOKAHEAD on every platform
     if (jitRafRef.current) cancelAnimationFrame(jitRafRef.current);
     let jitCursor = 0;
     const jitTick = () => {
-      const now = c.currentTime;
-      while (jitCursor < phraseTimings.length) {
-        const timing = phraseTimings[jitCursor];
-        if (timing.t - now > JIT_WINDOW) break; // phrase too far ahead — wait
+      const horizon = c.currentTime + NOTE_WINDOW;
+      while (jitCursor < noteQueue.length && noteQueue[jitCursor].t0 <= horizon) {
+        const n = noteQueue[jitCursor];
         try {
-          const q = noteQueues[jitCursor];
-          let pt = timing.t, ptb = timing.tb, pts = timing.ts, ptt = timing.tt;
-          if (playAlto)
-            q.altoNotes.forEach((n) => { toneTimbre(freq(n.sol), pt, n.dur, n.peak, timbre); pt += n.dur; });
-          if (playBassVoice && q.bassNotes)
-            q.bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol, n.phraseRules), ptb, n.dur, n.peak * 1.1, timbre); ptb += n.dur; });
-          if (playSoprano && q.sopranoNotes)
-            q.sopranoNotes.forEach((n) => { toneTimbre(freq_soprano(n.sol), pts, n.dur, n.peak, timbre); pts += n.dur; });
-          if (playTenorVoice && q.tenorNotes)
-            q.tenorNotes.forEach((n) => { toneTimbre(freq_tenor(n.sol, n.phraseRules), ptt, n.dur, n.peak, timbre); ptt += n.dur; });
+          toneTimbre(n.freq, n.t0, n.dur, n.peak * n.peakMult);
         } catch(_) {
-          // Audio context closed by stopAll() mid-creation — safe to abort
           jitRafRef.current = null;
-          return;
+          return; // AudioContext closed by stopAll() — safe to abort
         }
         jitCursor++;
       }
-      if (jitCursor < phraseTimings.length) {
+      if (jitCursor < noteQueue.length) {
         jitRafRef.current = requestAnimationFrame(jitTick);
       } else {
         jitRafRef.current = null;
