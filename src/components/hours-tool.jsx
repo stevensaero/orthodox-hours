@@ -7481,7 +7481,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
               {renderPointed(element.text)}
               {isNotOCAPointed && (
                 <div style={{ fontSize: '0.72rem', color: '#A67C00', marginTop: '0.25rem', fontStyle: 'italic' }}>
-                  ⚑ Tier 2 — not OCA pointed{isSergius ? ' (St. Sergius source)' : ''}
+                  ⚑ verse not pointed{isSergius ? ' (source: St. Sergius)' : ''}
                 </div>
               )}
             </div>
