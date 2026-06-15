@@ -12,20 +12,11 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.19";
+export const TONE_TRAINER_VERSION = "v0.25.18";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
-  {
-    version: "v0.25.19",
-    date: "June 2026",
-    summary: "Android crackle fix — eliminate scroll reflow + GainNode disconnect",
-    items: [
-      "fix: PhraseScroller chip auto-centering replaced getBoundingClientRect (×2 per chip advance) with chip.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' }). getBoundingClientRect forces a synchronous JS-blocking layout reflow every time it is called; with React setState firing simultaneously on each chip advance, pending style changes always exist, making every reflow expensive. On Exynos 9611 this was 10-20ms of blocking layout work firing 60+ times per SATB playAll (600-1200ms total), periodically starving the Android audio HAL of CPU time and causing crackle after scrolls. scrollIntoView delegates geometry to the browser compositor — no JS-blocking reflow. block:nearest prevents unwanted vertical page scroll; inline:center centers the chip horizontally, same intent as before. Smooth scroll preserved.",
-      "fix: explicit GainNode disconnect in playPianoNote — 50ms after each note's oscillator tail ends, g.disconnect() is called. Disconnecting the master GainNode removes it and its upstream harmonic GainNodes (which have no remaining downstream after g is removed) from the audio graph, making them eligible for GC. Previously up to ~1200 GainNodes stayed connected simultaneously during SATB playAll, each processed by the audio thread every sample frame. After this fix: ~30-60 live nodes at any moment. Reduces audio thread processing load 20-40x during sustained playback. The cleanup setTimeout is long-delay and throttle-tolerant; not added to timerIdsRef (if the AudioContext is already closed, try/catch suppresses the stale disconnect).",
-    ],
-  },
   {
     version: "v0.25.18",
     date: "June 2026",
@@ -3194,12 +3185,6 @@ function useAudio() {
     g.gain.exponentialRampToValueAtTime(peak*0.34,t0+0.08);
     g.gain.setValueAtTime(peak*0.34,t0+dur-0.05);
     g.gain.exponentialRampToValueAtTime(0.001,t0+dur+0.25);
-    // v0.25.19: disconnect master GainNode 50ms after oscillator tail ends.
-    // Disconnecting g removes it (and the upstream harmonic GainNodes, which have
-    // no remaining downstream) from the audio graph, freeing the audio thread from
-    // processing up to ~1200 idle nodes simultaneously during SATB playAll.
-    const cleanupDelay = Math.max(0, (t0 + dur + 0.35 - c.currentTime)) * 1000;
-    setTimeout(() => { try { g.disconnect(); } catch(_) {} }, cleanupDelay);
   }
 
   // Legacy simple tone kept for backward compat — used by comparison harness
@@ -3252,17 +3237,15 @@ function PhraseScroller({ children, activeKey }) {
   }, [children]);
 
   // Auto-center the active chip as playback advances.
-  // v0.25.19: replaced getBoundingClientRect (forced synchronous reflow on every chip
-  // advance — blocked the Android audio thread, causing crackle) with scrollIntoView.
-  // The browser computes the scroll target compositor-side, not on the JS thread.
-  // block:"nearest" = no vertical scroll unless chip is already off-screen;
-  // inline:"center" = center chip horizontally — same intent as the old el.scrollTo path.
   useEffect(() => {
     const el = ref.current;
     if (!el || activeKey == null) return;
     const chip = el.querySelector('[data-active="true"]');
     if (!chip) return;
-    chip.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    const er = el.getBoundingClientRect();
+    const cr = chip.getBoundingClientRect();
+    const center = (cr.left - er.left) + el.scrollLeft + cr.width / 2;
+    el.scrollTo({ left: Math.max(0, center - el.clientWidth / 2), behavior: "smooth" });
   }, [activeKey]);
 
   return (
