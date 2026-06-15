@@ -12,11 +12,19 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.16";
+export const TONE_TRAINER_VERSION = "v0.25.17";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.17",
+    date: "June 2026",
+    summary: "rAF-based chip highlight sync — eliminates iOS audio/visual drift",
+    items: [
+      "fix: chip highlight scheduling moved from setTimeout to a requestAnimationFrame polling loop keyed to audioCtx.currentTime. Previously, all per-chip visual updates were registered as bulk setTimeout calls at play-start; iOS Safari throttles timers with long delays, causing the visual highlight to drift behind audio on mobile. The rAF loop reads the hardware audio clock every frame and advances the active chip index exactly when the audio clock says it is due — immune to timer throttling. Audio scheduling is unchanged; only the visual sync mechanism changed. stopAll() cancels the rAF loop via cancelAnimationFrame before clearing the remaining onDone timeout.",
+    ],
+  },
   {
     version: "v0.25.16",
     date: "June 2026",
@@ -3400,6 +3408,7 @@ export default function ToneTrainer() {
   const [expandedBlocks, setExpandedBlocks] = useState({}); // block index -> bool
   const pointerRef = useRef(null);
   const timerIdsRef = useRef([]); // all active setTimeout IDs — cleared by stopAll
+  const rafRef = useRef(null);   // rAF handle for chip-highlight polling loop — cancelled by stopAll
   const { ac, tone, toneTimbre, stop } = useAudio();
 
   const freq = (sol) => doHz * Math.pow(2, OFF[sol] / 12);
@@ -3871,60 +3880,78 @@ export default function ToneTrainer() {
     const playSoprano = voicePart === "soprano" || voicePart === "satb";
     const playTenor   = (voicePart === "tenor" || voicePart === "satb") && tenorNotes;
 
-    const scheduleAltoHighlights = (notes) => {
-      let ht = startT;
+    // Build a flat schedule table of { audioT, action } entries sorted ascending.
+    // The rAF loop polls audioCtx.currentTime each frame and fires actions as they
+    // become due — immune to iOS Safari setTimeout throttling on long delays.
+    const schedule = [];
+
+    const pushAltoHighlight = (notes, atT) => {
+      let ht = atT;
       notes.forEach((n, ni) => {
-        const delay = (ht - c.currentTime) * 1000;
         const capturedNi = ni; const capturedLi = li;
-        timerIdsRef.current.push(setTimeout(() => {
+        schedule.push({ audioT: ht, action: () => {
           if (capturedLi !== null) setPlayingLine(capturedLi);
           setPlayingAltoIdx(capturedNi);
-        }, delay));
+        }});
         ht += n.dur;
       });
     };
 
-    const scheduleBassHighlights = (notes) => {
-      let ht = startT;
+    const pushBassHighlight = (notes, atT) => {
+      let ht = atT;
       notes.forEach((n, ni) => {
-        const delay = (ht - c.currentTime) * 1000;
         const capturedNi = ni; const capturedLi = li;
-        timerIdsRef.current.push(setTimeout(() => {
+        schedule.push({ audioT: ht, action: () => {
           if (capturedLi !== null) setPlayingLine(capturedLi);
           setPlayingBassIdx(capturedNi);
-        }, delay));
+        }});
         ht += n.dur;
       });
     };
 
     if (playAlto) {
-      scheduleAltoHighlights(altoNotes);
+      pushAltoHighlight(altoNotes, startT);
       altoNotes.forEach((n) => { toneTimbre(freq(n.sol), t, n.dur, n.peak, timbre); t += n.dur; });
     }
     if (playBass) {
-      scheduleBassHighlights(bassNotes);
+      pushBassHighlight(bassNotes, startT);
       bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol, n.phraseRules), tb, n.dur, n.peak * 1.1, timbre); tb += n.dur; });
     }
     if (playSoprano && sopranoNotes) {
-      scheduleAltoHighlights(sopranoNotes); // soprano uses alto chip row
+      pushAltoHighlight(sopranoNotes, startT); // soprano uses alto chip row
       sopranoNotes.forEach((n) => { toneTimbre(freq_soprano(n.sol), ts, n.dur, n.peak, timbre); ts += n.dur; });
     }
     if (playTenor) {
-      const scheduleTenorHighlights = (notes) => {
-        let ht = tt;
-        notes.forEach((n, ni) => {
-          const delay = (ht - c.currentTime) * 1000;
-          const capturedNi = ni; const capturedLi = li;
-          timerIdsRef.current.push(setTimeout(() => {
-            if (capturedLi !== null) setPlayingLine(capturedLi);
-            setPlayingTenorIdx(capturedNi);
-          }, delay));
-          ht += n.dur;
-        });
-      };
-      scheduleTenorHighlights(tenorNotes);
+      let ht = tt;
+      tenorNotes.forEach((n, ni) => {
+        const capturedNi = ni; const capturedLi = li;
+        schedule.push({ audioT: ht, action: () => {
+          if (capturedLi !== null) setPlayingLine(capturedLi);
+          setPlayingTenorIdx(capturedNi);
+        }});
+        ht += n.dur;
+      });
       tenorNotes.forEach((n) => { toneTimbre(freq_tenor(n.sol, n.phraseRules), tt, n.dur, n.peak, timbre); tt += n.dur; });
     }
+
+    // Launch rAF polling loop — advances chip index by comparing audioCtx.currentTime
+    // against each entry's scheduled audioT. Cancellable via rafRef in stopAll().
+    schedule.sort((a, b) => a.audioT - b.audioT);
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    let cursor = 0;
+    const tick = () => {
+      const now = c.currentTime;
+      while (cursor < schedule.length && schedule[cursor].audioT <= now) {
+        schedule[cursor].action();
+        cursor++;
+      }
+      if (cursor < schedule.length) {
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        rafRef.current = null;
+      }
+    };
+    rafRef.current = requestAnimationFrame(tick);
 
     const totalDur = Math.max(t, tb, ts, tt) - startT;
     if (onDone) {
@@ -4239,23 +4266,31 @@ export default function ToneTrainer() {
     const playSoprano   = voicePart === "soprano" || voicePart === "satb";
     const playTenorVoice = voicePart === "tenor" || voicePart === "satb";
     setPlayingWhich(which);
+
+    // Build a flat schedule table of { audioT, action } entries for all lines/voices.
+    // The rAF loop polls audioCtx.currentTime each frame and fires actions as due —
+    // immune to iOS Safari setTimeout throttling on the long delays in multi-line playback.
+    const schedule = [];
+
     activeLines().forEach((line, li) => {
       const altoNotes    = lineToNotes(line);
       const bassNotes    = lineToNotes_bass(line);
       const sopranoNotes = lineToNotes_soprano(line);
       const tenorNotes   = lineToNotes_tenor(line);
-      const start = t;
-      const id1 = setTimeout(() => { setPlayingLine(li); setPlayingAltoIdx(null); setPlayingBassIdx(null); }, (start - c.currentTime) * 1000);
-      timerIdsRef.current.push(id1);
+      const lineStart = t;
+
+      // Line-level highlight: clear chip index when a new line begins
+      schedule.push({ audioT: lineStart, action: () => {
+        setPlayingLine(li); setPlayingAltoIdx(null); setPlayingBassIdx(null);
+      }});
 
       if (playAlto) {
         let ht = t;
         altoNotes.forEach((n, ni) => {
-          const delay = (ht - c.currentTime) * 1000;
           const capturedNi = ni; const capturedLi = li;
-          timerIdsRef.current.push(setTimeout(() => {
+          schedule.push({ audioT: ht, action: () => {
             setPlayingLine(capturedLi); setPlayingAltoIdx(capturedNi);
-          }, delay));
+          }});
           ht += n.dur;
         });
         altoNotes.forEach((n) => { toneTimbre(freq(n.sol), t, n.dur, n.peak, timbre); t += n.dur; });
@@ -4265,11 +4300,10 @@ export default function ToneTrainer() {
         if (!playAlto || voicePart === "alto-bass" || voicePart === "satb") {
           let ht = tb;
           bassNotes.forEach((n, ni) => {
-            const delay = (ht - c.currentTime) * 1000;
             const capturedNi = ni; const capturedLi = li;
-            timerIdsRef.current.push(setTimeout(() => {
+            schedule.push({ audioT: ht, action: () => {
               setPlayingLine(capturedLi); setPlayingBassIdx(capturedNi);
-            }, delay));
+            }});
             ht += n.dur;
           });
         }
@@ -4280,11 +4314,10 @@ export default function ToneTrainer() {
       if (playSoprano) {
         let ht = ts;
         sopranoNotes.forEach((n, ni) => {
-          const delay = (ht - c.currentTime) * 1000;
           const capturedNi = ni; const capturedLi = li;
-          timerIdsRef.current.push(setTimeout(() => {
+          schedule.push({ audioT: ht, action: () => {
             setPlayingLine(capturedLi); setPlayingAltoIdx(capturedNi);
-          }, delay));
+          }});
           ht += n.dur;
         });
         sopranoNotes.forEach((n) => { toneTimbre(freq_soprano(n.sol), ts, n.dur, n.peak, timbre); ts += n.dur; });
@@ -4294,11 +4327,10 @@ export default function ToneTrainer() {
       if (playTenorVoice && tenorNotes) {
         let ht = tt;
         tenorNotes.forEach((n, ni) => {
-          const delay = (ht - c.currentTime) * 1000;
           const capturedNi = ni; const capturedLi = li;
-          timerIdsRef.current.push(setTimeout(() => {
+          schedule.push({ audioT: ht, action: () => {
             setPlayingLine(capturedLi); setPlayingTenorIdx(capturedNi);
-          }, delay));
+          }});
           ht += n.dur;
         });
         tenorNotes.forEach((n) => { toneTimbre(freq_tenor(n.sol, n.phraseRules), tt, n.dur, n.peak, timbre); tt += n.dur; });
@@ -4307,12 +4339,32 @@ export default function ToneTrainer() {
 
       if (playAlto) t += (60 / bpm) / 2;
     });
+
+    // Launch rAF polling loop — cancellable via rafRef in stopAll()
+    schedule.sort((a, b) => a.audioT - b.audioT);
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    let cursor = 0;
+    const tick = () => {
+      const now = c.currentTime;
+      while (cursor < schedule.length && schedule[cursor].audioT <= now) {
+        schedule[cursor].action();
+        cursor++;
+      }
+      if (cursor < schedule.length) {
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        rafRef.current = null;
+      }
+    };
+    rafRef.current = requestAnimationFrame(tick);
+
     const totalDur = Math.max(t, tb, ts) - startT;
     const id2 = setTimeout(() => { setPlayingLine(null); setPlayingAltoIdx(null); setPlayingBassIdx(null); setPlayingTenorIdx(null); setPlayingWhich(null); }, totalDur * 1000 + 40);
     timerIdsRef.current.push(id2);
   };
 
   const stopAll = () => {
+    if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
     timerIdsRef.current.forEach(id => clearTimeout(id));
     timerIdsRef.current = [];
     isPlayAllRef.current = false;
