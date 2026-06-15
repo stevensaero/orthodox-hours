@@ -505,38 +505,31 @@ const MAY_MENAION = {
     // ── AT VESPERS: LORD I HAVE CRIED ──────────────────────────────────────
     // Structure: 3 from Pentecostarion + 5 from Menaion. §2E = 8 stichera total.
     // The 3 Pentecostarion stichera come from the Octoechos/Pentecostarion path.
-    // The 5 Menaion stichera are encoded here (slots 4-8 in the interleave).
-    // Texts: PDF gives 3 distinct texts; first two sung twice each = 5 total.
-    // Source: 05-21.pdf
+    // The 5 Menaion stichera: 3 unique texts, first two marked (Twice) per PDF — 05-21.pdf
+    // Pentecostarion §4A3 path: licCount=8, 3 Pent + 5 Menaion slots.
     stichera_lord_i_call_count: 8,
+    stichera_lord_i_call_note: "Seasonal conditional per 05-21.pdf: " +
+      "(A) Pentecostarion period — 8 stichera: 3 from the Pentecostarion + 5 Menaion, " +
+      "first two stichera each marked '(Twice)' = 3 unique + 2 repeat markers = 5 Menaion items. " +
+      "licCount=8 from menaionEntry overrides afterfeast pentEntry count via assembler licCount fix. " +
+      "(B) Ordinary time / Apostles' Fast — PDF appointment not yet verified. " +
+      "See project_notes.md dual LIC count evidence log.",
     stichera_lord_i_call: [
-      { tone: 4,
+      { tone: 4, spec_mel: "Thou hast given a sign",
         text: "Thou didst give a most mighty weapon to our emperor: Thy precious Cross, " +
               "whereby he reigned all the earth in righteousness, shining forth in piety, " +
               "and hath been deemed worthy of the kingdom of heaven by Thy loving-kindness. " +
               "And with him do we glorify Thy loving dispensation, O almighty Jesus, " +
               "Thou Savior of our souls." },
-      { tone: 4,
-        text: "Thou didst give a most mighty weapon to our emperor: Thy precious Cross, " +
-              "whereby he reigned all the earth in righteousness, shining forth in piety, " +
-              "and hath been deemed worthy of the kingdom of heaven by Thy loving-kindness. " +
-              "And with him do we glorify Thy loving dispensation, O almighty Jesus, " +
-              "Thou Savior of our souls.",
-        repeat: true },
-      { tone: 4,
+      { repeatIndex: 0 }, // (Twice) per PDF
+      { tone: 4, spec_mel: "Thou hast given a sign",
         text: "Thou didst give to thy pious favorite, O Lover of mankind, " +
               "the wisdom of Solomon, the meekness of David and the Orthodoxy of the apostles, " +
               "in that Thou art the King of kings and Lord of lords. " +
               "Wherefore, we glorify Thy loving dispensation, O almighty Jesus, " +
               "Thou Savior of our souls." },
-      { tone: 4,
-        text: "Thou didst give to thy pious favorite, O Lover of mankind, " +
-              "the wisdom of Solomon, the meekness of David and the Orthodoxy of the apostles, " +
-              "in that Thou art the King of kings and Lord of lords. " +
-              "Wherefore, we glorify Thy loving dispensation, O almighty Jesus, " +
-              "Thou Savior of our souls.",
-        repeat: true },
-      { tone: 4,
+      { repeatIndex: 2 }, // (Twice) per PDF
+      { tone: 4, spec_mel: "Thou hast given a sign",
         text: "Thou wast the first to subject the royal purple willingly to Christ, " +
               "O ever-memorable emperor, acknowledging Him as God, " +
               "the Benefactor of all Who reigneth over all, " +
