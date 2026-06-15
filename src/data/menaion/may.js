@@ -1090,17 +1090,14 @@ const MAY_MENAION = {
     // During Apostles' Fast: 6 Menaion stichera, "repeating as necessary" = uniform doubling 3→6.
     stichera_lord_i_call_count: 8,  // PDF slot count for §4A3 path (3 Pent + 5 Menaion); see note
     stichera_lord_i_call_note: "Seasonal conditional per 05-25.pdf: " +
-      "(A) Pentecostarion period — licCount governed by pentEntry.stichera_lord_i_call_count. " +
-      "In practice always 6 for afterfeast weekdays near P+43; §4A1 path yields 3 Pent + 3 Menaion. " +
-      "The §4A3 licCount=8 scenario (3 Pent + 5 Menaion) cannot occur: all high-count Pent days " +
-      "near P+43 have count=10 with menaion_set_aside (Ascension, Sunday of Holy Fathers, etc.), " +
-      "so the Forerunner service is never split against an 8-count afterfeast. " +
-      "stichera_lord_i_call_count=8 documents the PDF's stated appointment; prior repeatIndex markers " +
-      "at positions 3-4 were removed as dead code (the 8-slot path is calendar-impossible). " +
-      "(B) Apostles' Fast (isPentecostarion=false; Pascha ≤ ~April 5, placing May 25 at P+50+) — " +
-      "PDF appoints 6 stichera all Menaion, 'repeating as necessary' = uniform doubling 3→6. " +
-      "Assembler reads count=8 from menaionEntry (wrong for this path; should be 6). " +
-      "OPEN: requires stichera_lord_i_call_count_ordinary: 6 — deferred, next occurrence ~2067.",
+      "(A) Pentecostarion period (confirmed fires e.g. 2026 at P+43) — licCount=8 from menaionEntry " +
+      "overrides afterfeast pentEntry count=6 via assembler licCount fix. §4A3 path: 3 Pent + 5 Menaion. " +
+      "PDF: 'repeating as necessary' = items 0,1,2,0,1 for 5 Menaion slots. " +
+      "Repeat markers at positions 3-4 handle this. " +
+      "(B) Apostles' Fast (isPentecostarion=false; Pascha ≤ ~April 5) — PDF appoints 6 Menaion, " +
+      "'repeating as necessary' = uniform doubling 3→6. " +
+      "OPEN: assembler reads count=8 from menaionEntry for ordinary-time path (wrong; should be 6). " +
+      "Requires stichera_lord_i_call_count_ordinary: 6 — deferred, next occurrence ~2067.",
     stichera_lord_i_call: [
       { tone: 8, text: "O blessed forerunner John, shedding rays brighter than those of the sun, " +
                        "thy head hath shone forth from the ground and illumined the faithful. " +
@@ -1116,8 +1113,12 @@ const MAY_MENAION = {
                        "because of thy godly zeal. " +
                        "The ranks of the angels, the company of martyrs, the divine apostles and all the prophets " +
                        "rejoice in its discovery. With them be thou ever mindful of us, O thou forerunner of the Lord!" },
-      // 3 unique texts only. No repeat markers — the licCount=8 §4A3 scenario is calendar-impossible;
-      // the Apostles' Fast path uses uniform doubling (3→6) handled by expandSticheraToCount.
+      // Pentecostarion §4A3 path: licCount=8, 3 Pent + 5 Menaion slots. PDF: "repeating as necessary."
+      // 3 texts → 5 slots: text0, text1, text2, repeat0, repeat1 (order: 0,1,2,0,1).
+      // These markers are only reached when the §4A3 assembler iterates all 5 Menaion slots
+      // (licCount=8 from menaionEntry overriding pentEntry count=6).
+      { repeatIndex: 0 }, // 4th Menaion slot — "O blessed forerunner John..." repeated
+      { repeatIndex: 1 }, // 5th Menaion slot — "Pouring forth abundant grace..." repeated
     ],
     // Glory — doxasticon Tone VI (Menaion)
     stichera_glory: {
@@ -1413,7 +1414,7 @@ const MAY_MENAION = {
       },
 
       // ── VESPERS — LORD I HAVE CRIED ───────────────────────────────────────────
-      // 8 stichera: 3 Pentecostarion + 5 Menaion (05-27A.pdf — §2F vigil)
+      // 8 stichera: 3 Pentecostarion + 5 Menaion (4 unique, first ×2 per PDF) — 05-27A.pdf
       stichera_lord_i_call_count: 8,
       stichera_lord_i_call: [
         { tone: 4, text: "The day of thy commemoration hath now shone forth, O righteous John, " +
@@ -1422,13 +1423,7 @@ const MAY_MENAION = {
                          "adorned with the virtues, and glorified by incorruption and wonders. " +
                          "And we earnestly beseech thee, O saint: " +
                          "pray thou for the salvation of our souls." },
-        { tone: 4, text: "The day of thy commemoration hath now shone forth, O righteous John, " +
-                         "illumining the hearts and minds of the faithful; " +
-                         "wherefore, we bless thee as one forbearing, unshaken in the right Faith, " +
-                         "adorned with the virtues, and glorified by incorruption and wonders. " +
-                         "And we earnestly beseech thee, O saint: " +
-                         "pray thou for the salvation of our souls.",
-          repeatIndex: 0 },
+        { repeatIndex: 0 }, // (Twice) per PDF
         { tone: 4, text: "Thou didst live on the earth like an angel, " +
                          "causing thy body to wither through abstinence, " +
                          "and coming to share in the divine mysteries through vigilance, " +

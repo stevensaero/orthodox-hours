@@ -781,7 +781,17 @@ const JUNE_MENAION = {
       paroemia_2: "Wisdom of Solomon 5:15-6:3 (The righteous live for evermore — a beautiful crown from the Lord's hand)",
       paroemia_3: "Wisdom of Solomon 4:7-15 (Though the righteous be prevented with death — His grace and mercy is with His saints)",
       matins_gospel: "Luke 21:12-19 (§106)",
-      stichera_lord_i_call_count: 8,  // Pentecostarion: 3 Pent + 5 Menaion (each repeated per PDF); outside: 4×2=8
+      stichera_lord_i_call_count: 8,  // 06-02A.pdf explicit appointment
+      stichera_lord_i_call_note: "Seasonal conditional per 06-02A.pdf: " +
+        "(A) Pentecostarion period — 8 stichera: 3 from the Pentecostarion + 5 Menaion, " +
+        "'repeating the first Sticheron' (4 unique, item 0 sung twice = 5 Menaion slots). " +
+        "licCount=8 from menaionEntry overrides afterfeast default of 6 via assembler licCount fix. " +
+        "§4A3 path: assembler fills slots 0-2 from pentEntry, slots 3-7 from Menaion. " +
+        "OPEN: Menaion array encodes 4 unique texts (for ordinary-time uniform doubling); " +
+        "the first-repeat instruction for the Pentecostarion path is not yet expressed in data — " +
+        "assembler will render items 0-1-2-3 for the 5 Menaion slots with slot 4 unresolved. " +
+        "(B) Ordinary time (Apostles' Fast or later) — 4 stichera each repeated: 4×2=8. " +
+        "PDF: 'each of the 4 Stichera is repeated.' Handled by uniform doubling (8%4=0).",
       stichera_lord_i_call: [
         { tone: 2, text: "With what good songs of praise shall we hymn John: the true warrior of the great King, the splendid champion, the most excellent spiritual athlete of Christ, who made the Faith steadfast, casting down deception, who was patient amid temptations and undaunted amid tortures the awesome denouncer of the ungodly and ardent helper of the pious, through whom Christ granteth us great mercy?" },
         { tone: 2, text: "With what wreaths of praise shall we crown John: the restoration of the martyrs, the skilled opponent, the champion of piety, who humbled the enemy, who sanctified the ground with his blood, who terrified the princes of the air and hath been reckoned with the angels of heaven, the pillar of gold which upholdeth all the lands of the north and by whom Christ, Who hath great mercy, doth vanquish all their enemies?" },

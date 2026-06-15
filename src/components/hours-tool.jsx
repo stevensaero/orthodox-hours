@@ -3493,15 +3493,27 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     const octoDay = (!isPentecostarion && (rank === "simple" || !menaionEntry))
       ? getOctoechosVespers(tone, licDayKey) : null;
     // Stichera count: from pentEntry if Pentecostarion; else 6/8/10 by rank
-    // licCount: Pentecostarion → pentEntry governs; ordinary time high-rank → menaionEntry
-    // governs if encoded (PDF explicit appointment overrides rank default); simple/six_stichera
-    // always 6 (Fekula §2A/§2C unambiguous; encoded count=3 on simple entries means unique
-    // text count, not slot count — do not use it here).
-    const licCount = (isPentecostarion && pentEntry && pentEntry.stichera_lord_i_call_count)
-      ? pentEntry.stichera_lord_i_call_count
-      : (isHighRank && menaionEntry && menaionEntry.stichera_lord_i_call_count)
+    // licCount: Pentecostarion → pentEntry governs unless a high-rank Menaion feast explicitly
+    // appoints more stichera (PDF rubric on the Menaion entry is authoritative when higher).
+    // Ordinary time high-rank → menaionEntry count governs if encoded.
+    // Simple/six_stichera always 6 (Fekula §2A/§2C; encoded count=3 on simple = unique text count,
+    // not slot count — do not use it here).
+    const licCount = (isPentecostarion && pentEntry && pentEntry.menaion_set_aside)
+      // Great Feast: Pentecostarion governs entirely
+      ? (pentEntry.stichera_lord_i_call_count ?? (isHighRank ? (rank === "vigil" ? 10 : 8) : 6))
+      : (isPentecostarion && isHighRank && menaionEntry?.stichera_lord_i_call_count
+         && (!pentEntry?.stichera_lord_i_call_count
+             || menaionEntry.stichera_lord_i_call_count > pentEntry.stichera_lord_i_call_count))
+        // High-rank Menaion feast explicitly appoints more stichera than afterfeast default
         ? menaionEntry.stichera_lord_i_call_count
-        : (isHighRank ? (rank === "vigil" ? 10 : 8) : 6);
+        : (isPentecostarion && pentEntry?.stichera_lord_i_call_count)
+          // Normal Pentecostarion afterfeast default
+          ? pentEntry.stichera_lord_i_call_count
+          : (isHighRank && menaionEntry?.stichera_lord_i_call_count)
+            // Ordinary time: Menaion count governs for high-rank
+            ? menaionEntry.stichera_lord_i_call_count
+            // Rank-based default fallback
+            : (isHighRank ? (rank === "vigil" ? 10 : 8) : 6);
 
     // Psalm 141 prose body (no verse numbers — rendered as-is)
     elements.push({id:"v-ps141",type:"fixed",label:"PSALM 141" + (licCount ? " — Stichera on " + licCount : ""),rubric:"",
@@ -8072,6 +8084,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.16.9",
+    date: "June 2026",
+    summary: "Fix: licCount Menaion override for high-rank Pentecostarion feasts; data corrections for 05-25, 05-27, 06-02A",
+    items: [
+      "fix: licCount now correctly uses menaionEntry.stichera_lord_i_call_count when a high-rank feast (polyeleos/vigil) explicitly appoints more stichera than the Pentecostarion afterfeast default. Affects 05-25 Forerunner (P+43, licCount 6→8), 05-27 John the Russian (P+45, 6→8), 06-02A John the New (P+51, 6→8). Great Feast (menaion_set_aside) path unchanged.",
+      "data: 05-27 John the Russian — item 1 was a literal text duplicate of item 0 (encoder error); replaced with { repeatIndex: 0 } marker per PDF '(Twice)' instruction. Now correctly 4 unique texts + 1 marker = 5 Menaion items.",
+      "data: 05-25 Forerunner — repeatIndex markers at positions 3-4 restored; confirmed necessary for the Pentecostarion §4A3 path (licCount=8, 3 Pent + 5 Menaion, 'repeating as necessary' = items 0,1,2,0,1). Note updated to correct prior 'calendar-impossible' claim.",
+      "data: 06-02A John the New — stichera_lord_i_call_note added documenting the Pentecostarion/ordinary-time conditional. Ordinary-time uniform doubling (4×2=8) already works; Pentecostarion 'repeating the first Sticheron' path documented as open item.",
+    ],
+  },
   {
     version: "v0.16.8",
     date: "June 2026",
