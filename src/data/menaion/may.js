@@ -1089,13 +1089,15 @@ const MAY_MENAION = {
     // During Apostles' Fast: 6 Menaion stichera (repeating as needed = uniform doubling 3→6).
     stichera_lord_i_call_count: 8,  // Pentecostarion period: 3 Pent + 5 Menaion (05-25.pdf)
     stichera_lord_i_call_note: "Seasonal conditional per 05-25.pdf: " +
-      "(A) Pentecostarion period — licCount is governed by pentEntry.stichera_lord_i_call_count (e.g. 6 for an afterfeast weekday), NOT menaionEntry count. " +
-      "The §4A1 path fires: effectiveLicStichera = [pentEntry.lic (3)] + [menaionEntry.lic (5)] = 8 items, " +
-      "then sliced to licCount slots. For a licCount=6 afterfeast weekday this yields 3 Pentecostarion + 3 Menaion (items 0–2 only; repeatIndex markers at items 3–4 are never reached). " +
-      "For a licCount=8 afterfeast day all 5 Menaion slots would render (items 0–2 unique + markers 3–4 resolving to items 0–1). " +
-      "(B) Apostles' Fast (possible when Pascha ≤ ~April 5, making May 25 N.S. fall at P+50+) — " +
-      "6 stichera all Menaion, 'repeating as necessary': 3 unique texts sung twice = uniform doubling 3→6. " +
-      "Path B not yet handled by the assembler (no isPentecostarion=false branch for this rank/date combination reaches Apostles' Fast).",
+      "(A) Pentecostarion period — licCount governed by pentEntry.stichera_lord_i_call_count. " +
+      "§4A1 path: 3 Pent + up to 5 Menaion depending on pentEntry count. stichera_lord_i_call_count=8 " +
+      "represents the Pent-path slot count (3 Pent + 5 Menaion). " +
+      "(B) Apostles' Fast (isPentecostarion=false; possible when Pascha ≤ ~April 5) — " +
+      "PDF appoints 6 stichera all Menaion, 'repeating as necessary' (3 unique × 2). " +
+      "OPEN: stichera_lord_i_call_count=8 is correct for path A but wrong for path B (should be 6). " +
+      "The assembler now reads menaionEntry.stichera_lord_i_call_count for high-rank ordinary-time entries, " +
+      "so this entry would assemble 8 slots with 3 unresolved in path B. " +
+      "Fix requires stichera_lord_i_call_count_ordinary: 6 (new field) — deferred, extremely rare calendar edge case.",
     stichera_lord_i_call: [
       { tone: 8, text: "O blessed forerunner John, shedding rays brighter than those of the sun, " +
                        "thy head hath shone forth from the ground and illumined the faithful. " +

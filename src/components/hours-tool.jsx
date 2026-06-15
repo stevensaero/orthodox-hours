@@ -3493,9 +3493,15 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     const octoDay = (!isPentecostarion && (rank === "simple" || !menaionEntry))
       ? getOctoechosVespers(tone, licDayKey) : null;
     // Stichera count: from pentEntry if Pentecostarion; else 6/8/10 by rank
+    // licCount: Pentecostarion → pentEntry governs; ordinary time high-rank → menaionEntry
+    // governs if encoded (PDF explicit appointment overrides rank default); simple/six_stichera
+    // always 6 (Fekula §2A/§2C unambiguous; encoded count=3 on simple entries means unique
+    // text count, not slot count — do not use it here).
     const licCount = (isPentecostarion && pentEntry && pentEntry.stichera_lord_i_call_count)
       ? pentEntry.stichera_lord_i_call_count
-      : (isHighRank ? (rank === "vigil" ? 10 : 8) : 6);
+      : (isHighRank && menaionEntry && menaionEntry.stichera_lord_i_call_count)
+        ? menaionEntry.stichera_lord_i_call_count
+        : (isHighRank ? (rank === "vigil" ? 10 : 8) : 6);
 
     // Psalm 141 prose body (no verse numbers — rendered as-is)
     elements.push({id:"v-ps141",type:"fixed",label:"PSALM 141" + (licCount ? " — Stichera on " + licCount : ""),rubric:"",
