@@ -141,6 +141,35 @@ function checkEntry(label, entry, kind) {
       }
     }
   }
+
+  // Check E — pointing marker well-formedness and intra-array consistency.
+  // Rule: if any text item in a stichera array carries pointing markers
+  // (* /** or | //), ALL text items in that array must carry markers.
+  // A fully-unmarked array passes (source may have had no structured markers).
+  // A fully-marked array passes.
+  // A mixed array (some marked, some not) fails — indicates incomplete encoding.
+  // Also fails if markers appear without surrounding spaces (malformed).
+  function checkSticheraMarkers(items, fieldName) {
+    if (!Array.isArray(items)) return;
+    const textItems = items.filter(s => s && s.text);
+    if (textItems.length === 0) return;
+    // Malformed: * present but not as space-delimited ' * ' or ' ** '
+    textItems.forEach((s, i) => {
+      const stripped = s.text.replace(/ \*\* /g, ' ').replace(/ \* /g, ' ');
+      if (/\*/.test(stripped)) {
+        problems.push(`${label}: ${fieldName}[${i}] has unspaced marker character — use ' * ' and ' ** ' (space-delimited).`);
+      }
+    });
+    // Intra-array consistency
+    const hasMarker = (t) => / \* /.test(t) || / \*\* /.test(t) || /\s\|\s/.test(t) || /\s\/\/\s/.test(t);
+    const markedCount = textItems.filter(s => hasMarker(s.text)).length;
+    if (markedCount > 0 && markedCount < textItems.length) {
+      problems.push(`${label}: ${fieldName} — ${markedCount}/${textItems.length} items have pointing markers; all must match. Encode markers on unmarked items or confirm source had none.`);
+    }
+  }
+  checkSticheraMarkers(entry.stichera_lord_i_call, 'stichera_lord_i_call');
+  checkSticheraMarkers(entry.stichera_aposticha, 'stichera_aposticha');
+  checkSticheraMarkers(entry.stichera_matins_aposticha, 'stichera_matins_aposticha');
 }
 
 function walk(name, data, kind) {

@@ -188,6 +188,22 @@ function FieldRow({ label, value, mono }) {
 }
 
 // ── Entry Hymnography (shared renderer for primary + secondary) ──────────────
+
+// Returns pointing status for a stichera array:
+//   'pointed'   — at least one text item has markers (all should)
+//   'unpointed' — no text items have markers (gold review flag)
+//   null        — no text items at all (markers or empty)
+function sticheraPointingStatus(items) {
+  if (!Array.isArray(items)) return null;
+  const textItems = items.filter(s => s && s.text);
+  if (textItems.length === 0) return null;
+  const hasAnyMarker = textItems.some(s =>
+    / \* /.test(s.text) || / \*\* /.test(s.text) ||
+    /\s\|\s/.test(s.text) || /\s\/\/\s/.test(s.text)
+  );
+  return hasAnyMarker ? 'pointed' : 'unpointed';
+}
+
 function EntryHymnography({ entry }) {
   // Stichera count integrity: declared count vs. items in the array.
   // items.length === count → exact (data mirrors rubric slot-for-slot)
@@ -219,8 +235,7 @@ function EntryHymnography({ entry }) {
   })();
 
   return (
-    <>
-      {/* ── Lord I Have Cried Stichera ── */}
+    <>\n      {/* ── Lord I Have Cried Stichera ── */}
       <SectionHeader>Vespers — Lord I Have Cried</SectionHeader>
       {entry.stichera_lord_i_call_count !== undefined && (
         <FieldRow label="stichera count" value={entry.stichera_lord_i_call_count} />
@@ -239,16 +254,25 @@ function EntryHymnography({ entry }) {
         </div>
       )}
       {entry.stichera_lord_i_call && Array.isArray(entry.stichera_lord_i_call) ? (
-        entry.stichera_lord_i_call.map((s, i) => (
-          <TextBlock
-            key={i}
-            tone={s.tone}
-            text={s.text}
-            specMel={s.spec_mel}
-            label={`[${i + 1}]`}
-            repeatIndex={s.repeatIndex}
-          />
-        ))
+        <>
+          {sticheraPointingStatus(entry.stichera_lord_i_call) === 'unpointed' && (
+            <div style={{ fontSize: "0.78rem", marginBottom: "0.4rem", padding: "2px 8px",
+              color: C.amber, background: "rgba(166,124,0,0.07)",
+              border: "1px solid rgba(166,124,0,0.3)", borderRadius: "3px" }}>
+              ⚑ No pointing markers in any LIC sticheron — review PDF and add * /** or | // where source prints them
+            </div>
+          )}
+          {entry.stichera_lord_i_call.map((s, i) => (
+            <TextBlock
+              key={i}
+              tone={s.tone}
+              text={s.text}
+              specMel={s.spec_mel}
+              label={`[${i + 1}]`}
+              repeatIndex={s.repeatIndex}
+            />
+          ))}
+        </>
       ) : (
         <div style={{ fontSize: "0.85rem", color: C.goldLight, fontStyle: "italic" }}>Not encoded</div>
       )}
@@ -274,9 +298,18 @@ function EntryHymnography({ entry }) {
         <>
           <SectionHeader>Vespers — Aposticha</SectionHeader>
           {entry.stichera_aposticha && Array.isArray(entry.stichera_aposticha) && (
-            entry.stichera_aposticha.map((s, i) => (
-              <TextBlock key={i} tone={s.tone} text={s.text} verse={s.verse} label={`[${i + 1}]`} />
-            ))
+            <>
+              {sticheraPointingStatus(entry.stichera_aposticha) === 'unpointed' && (
+                <div style={{ fontSize: "0.78rem", marginBottom: "0.4rem", padding: "2px 8px",
+                  color: C.amber, background: "rgba(166,124,0,0.07)",
+                  border: "1px solid rgba(166,124,0,0.3)", borderRadius: "3px" }}>
+                  ⚑ No pointing markers in any aposticha sticheron — review PDF and add * /** or | // where source prints them
+                </div>
+              )}
+              {entry.stichera_aposticha.map((s, i) => (
+                <TextBlock key={i} tone={s.tone} text={s.text} verse={s.verse} label={`[${i + 1}]`} />
+              ))}
+            </>
           )}
           {entry.aposticha_glory && (
             <TextBlock
