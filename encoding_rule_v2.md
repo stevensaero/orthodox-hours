@@ -455,6 +455,79 @@ LITURGY_TYPE: [chrysostom / basil / presanctified]
 
 ---
 
+## 6b. LIC STICHERA — REPEAT MARKERS AND SEASONAL CONDITIONALS
+
+### Repeat markers (`repeatIndex`)
+
+When a PDF marks a sticheron "(Twice)", encode it positionally — the array mirrors the
+slot order the cantor actually sings. A no-text marker entry at the repeat position points
+back to the source item by index:
+
+```js
+stichera_lord_i_call: [
+  { tone: 4, text: "First sticheron text..." },  // index 0
+  { repeatIndex: 0 },                             // (Twice) — slot 1 repeats index 0
+  { tone: 4, text: "Second sticheron text..." }, // index 2
+  { tone: 4, text: "Third sticheron text..." },  // index 3
+]
+```
+
+**Rules:**
+- Markers have NO `text` field — `{ repeatIndex: N }` only. Adding `text` to a marker is wrong.
+- `repeatIndex` points to the array index of the source item (0-based).
+- Position the marker where the PDF places the repeat, not at the end of the array.
+- `stichera_lord_i_call_count` = total slots (unique + repeated). An 8-slot service with
+  4 unique + 1 repeat = array length 5; count = 8 is still wrong — array must be length 8
+  OR the Pentecostarion supplies the remaining slots (see seasonal conditionals below).
+- Uniform doubling (`3→6`, `4→8`) needs NO markers — `expandSticheraToCount` handles it
+  automatically when `count % n === 0` and no markers are present.
+- The browser integrity annotation verifies this. A green "✓ N unique + M repeat markers"
+  confirms the array satisfies the count in isolation.
+
+### When the PDF says "repeating as necessary"
+
+No positional instruction → uniform doubling applies. Leave 3 (or N) unique texts, set
+`stichera_lord_i_call_count` to the total slot count. No markers needed. The assembler
+doubles each item in order (0,0,1,1,2,2…).
+
+### Seasonal conditionals — `stichera_lord_i_call_note`
+
+Some high-rank feasts carry **two different LIC appointments** depending on season:
+
+> "If this day fall within the Pentecostarion: 8 stichera, 3 from the Pentecostarion
+> and 5 for the saint. But if this day fall within the Apostles' Fast: 6 stichera,
+> repeating as necessary."
+
+When the Menaion array cannot satisfy both paths simultaneously, add
+`stichera_lord_i_call_note` to document the conditional. This field:
+
+1. **Suppresses Check C** in `validate_entries.mjs` (missing-stichera warning)
+2. **Suppresses the count integrity check** in `audit.js` (count mismatch error)
+3. **Shows an amber "⚑ Rubrical conditional" banner** in the Menaion browser
+
+```js
+stichera_lord_i_call_count: 8,  // Pentecostarion appointment
+stichera_lord_i_call_note: "Seasonal conditional per MM-DD.pdf: " +
+  "(A) Pentecostarion period — 8 stichera: 3 Pent + 5 Menaion, [repeat rule]. " +
+  "(B) Ordinary time / Apostles' Fast — [N stichera, repeat rule]. " +
+  "See project_notes.md dual LIC count evidence log.",
+stichera_lord_i_call: [
+  // Pentecostarion path array (with repeat markers if needed)
+  // Ordinary-time path: documented in note; _ordinary fields deferred pending evidence
+],
+```
+
+**When to add this field:** whenever `stichera_lord_i_call_count` is the Pentecostarion
+appointment AND the ordinary-time appointment differs. Also add it when the Menaion
+supplies 5 items for a 3-Pent+5-Menaion split (count=8) — the audit sees the array in
+isolation and flags 3 slots unaccounted without the note.
+
+**Known instances:** 05-25 (Forerunner), 05-27 (John the Russian), 06-02A (John of Suceava).
+See `project_notes.md` § "Open Encoding Issue — Dual LIC Stichera Counts" for the evidence
+log and the action threshold for implementing `stichera_lord_i_call_count_ordinary`.
+
+---
+
 ## 7. PENTECOSTARION SKELETON — WEEKDAY AFTERFEAST
 
 ```
