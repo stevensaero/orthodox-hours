@@ -1085,19 +1085,22 @@ const MAY_MENAION = {
     },
     // ── VESPERS — LORD I HAVE CRIED ────────────────────────────────────────────
     // Source: 05-25.pdf. 5 Menaion stichera Tone VIII. Spec. Mel.: "O most glorious wonder"
-    // During Pentecostarion: 3 Pentecostarion + 5 Menaion = 8 total (PDF explicit).
-    // During Apostles' Fast: 6 Menaion stichera (repeating as needed = uniform doubling 3→6).
-    stichera_lord_i_call_count: 8,  // Pentecostarion period: 3 Pent + 5 Menaion (05-25.pdf)
+    // During Pentecostarion: licCount always 6 in practice (afterfeast weekdays near P+43);
+    // high-count Pent days (count=10) near P+43 all have menaion_set_aside, so §4A3 never fires.
+    // During Apostles' Fast: 6 Menaion stichera, "repeating as necessary" = uniform doubling 3→6.
+    stichera_lord_i_call_count: 8,  // PDF slot count for §4A3 path (3 Pent + 5 Menaion); see note
     stichera_lord_i_call_note: "Seasonal conditional per 05-25.pdf: " +
       "(A) Pentecostarion period — licCount governed by pentEntry.stichera_lord_i_call_count. " +
-      "§4A1 path: 3 Pent + up to 5 Menaion depending on pentEntry count. stichera_lord_i_call_count=8 " +
-      "represents the Pent-path slot count (3 Pent + 5 Menaion). " +
-      "(B) Apostles' Fast (isPentecostarion=false; possible when Pascha ≤ ~April 5) — " +
-      "PDF appoints 6 stichera all Menaion, 'repeating as necessary' (3 unique × 2). " +
-      "OPEN: stichera_lord_i_call_count=8 is correct for path A but wrong for path B (should be 6). " +
-      "The assembler now reads menaionEntry.stichera_lord_i_call_count for high-rank ordinary-time entries, " +
-      "so this entry would assemble 8 slots with 3 unresolved in path B. " +
-      "Fix requires stichera_lord_i_call_count_ordinary: 6 (new field) — deferred, extremely rare calendar edge case.",
+      "In practice always 6 for afterfeast weekdays near P+43; §4A1 path yields 3 Pent + 3 Menaion. " +
+      "The §4A3 licCount=8 scenario (3 Pent + 5 Menaion) cannot occur: all high-count Pent days " +
+      "near P+43 have count=10 with menaion_set_aside (Ascension, Sunday of Holy Fathers, etc.), " +
+      "so the Forerunner service is never split against an 8-count afterfeast. " +
+      "stichera_lord_i_call_count=8 documents the PDF's stated appointment; prior repeatIndex markers " +
+      "at positions 3-4 were removed as dead code (the 8-slot path is calendar-impossible). " +
+      "(B) Apostles' Fast (isPentecostarion=false; Pascha ≤ ~April 5, placing May 25 at P+50+) — " +
+      "PDF appoints 6 stichera all Menaion, 'repeating as necessary' = uniform doubling 3→6. " +
+      "Assembler reads count=8 from menaionEntry (wrong for this path; should be 6). " +
+      "OPEN: requires stichera_lord_i_call_count_ordinary: 6 — deferred, next occurrence ~2067.",
     stichera_lord_i_call: [
       { tone: 8, text: "O blessed forerunner John, shedding rays brighter than those of the sun, " +
                        "thy head hath shone forth from the ground and illumined the faithful. " +
@@ -1113,10 +1116,8 @@ const MAY_MENAION = {
                        "because of thy godly zeal. " +
                        "The ranks of the angels, the company of martyrs, the divine apostles and all the prophets " +
                        "rejoice in its discovery. With them be thou ever mindful of us, O thou forerunner of the Lord!" },
-      // §4A3: 5 stichera needed; PDF lists 3 with rubric "repeating as necessary"
-      // Standard repeat order: 1,2,3,1,2 — repeat from the beginning
-      { tone: 8, repeatIndex: 0 },  // repeat of sticheron 1 ("O blessed forerunner John...")
-      { tone: 8, repeatIndex: 1 },  // repeat of sticheron 2 ("Pouring forth abundant grace...")
+      // 3 unique texts only. No repeat markers — the licCount=8 §4A3 scenario is calendar-impossible;
+      // the Apostles' Fast path uses uniform doubling (3→6) handled by expandSticheraToCount.
     ],
     // Glory — doxasticon Tone VI (Menaion)
     stichera_glory: {
