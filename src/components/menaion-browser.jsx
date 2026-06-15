@@ -48,16 +48,18 @@ const MONTHS_WITH_DATA = {
 
 function pad2(n) { return String(n).padStart(2, '0'); }
 
-function statusColor(status) {
+function statusColor(status, needsReview) {
+  if (status === 'complete' && needsReview) return C.amber;  // complete but pointing review needed
   if (status === 'complete') return C.green;
-  return C.red;  // partial and structural both red — any gap is an error
+  return C.red;  // partial and structural both red
 }
 
-function statusIcon(status) {
-  if (status === 'complete') return '●';
-  if (status === 'partial') return '◐';
-  return '○';
+function statusIcon(status, needsReview) {
+  if (status === 'complete' && needsReview) return '⚑';
+  if (status === 'complete') return '•';
+  return '✗';
 }
+
 
 // ── Small caps label ────────────────────────────────────────────────────────
 function FieldLabel({ children }) {
@@ -512,10 +514,10 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
           <div style={{
             fontSize: "0.82rem",
             fontWeight: 600,
-            color: statusColor(audit.status),
+            color: statusColor(audit.status, audit.needsReview),
             whiteSpace: "nowrap",
           }}>
-            {statusIcon(audit.status)} {audit.status}
+            {statusIcon(audit.status, audit.needsReview)} {audit.status === 'complete' && audit.needsReview ? 'review pointing' : audit.status}
           </div>
         </div>
       </div>
@@ -891,6 +893,7 @@ export default function MenaionBrowser() {
                 <>
                   <br />
                   <span style={{ color: C.green }}>{summary.complete} complete</span>
+                  {summary.review > 0 && <> · <span style={{ color: C.amber }}>{summary.review} review</span></>}
                   {summary.partial > 0 && <> · <span style={{ color: C.red }}>{summary.partial} partial</span></>}
                   {summary.structural > 0 && <> · <span style={{ color: C.red }}>{summary.structural} structural</span></>}
                 </>
@@ -937,7 +940,7 @@ export default function MenaionBrowser() {
                         bottom: "1px",
                         right: "2px",
                         fontSize: "0.5rem",
-                        color: statusColor(entryInfo.audit.status),
+                        color: statusColor(entryInfo.audit.status, entryInfo.audit.needsReview),
                         lineHeight: 1,
                       }}>
                         ●

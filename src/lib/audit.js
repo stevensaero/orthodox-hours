@@ -516,6 +516,19 @@ function deriveStatus(results, gaps, hasPlaceholder) {
  * Audit a Menaion entry.
  * Returns { status, missing, gaps, hasPlaceholder }
  */
+// Returns true if any stichera array in the entry has text items but no pointing markers.
+// Drives the gold 'needs review' state — not an error, but requires human PDF check.
+function entryNeedsPointingReview(entry) {
+  function arrayUnpointed(items) {
+    if (!Array.isArray(items)) return false;
+    const textItems = items.filter(s => s && s.text);
+    if (textItems.length === 0) return false;
+    const hasMarker = t => / \* /.test(t) || / \*\* /.test(t) || /\s\|\s/.test(t) || /\s\/\/\s/.test(t);
+    return !textItems.some(s => hasMarker(s.text));
+  }
+  return arrayUnpointed(entry.stichera_lord_i_call) || arrayUnpointed(entry.stichera_aposticha);
+}
+
 export function auditMenaionEntry(entry) {
   // For multi-commemoration days (array), audit each sub-entry and return
   // the worst status across all of them. The calendar badge must reflect
@@ -525,23 +538,26 @@ export function auditMenaionEntry(entry) {
       const { results, gaps, hasPlaceholder } = auditEntry(e, 'menaion');
       const missing = gaps.map(g => g.field);
       const status = deriveStatus(results, gaps, hasPlaceholder);
-      return { status, missing, gaps, hasPlaceholder };
+      const needsReview = entryNeedsPointingReview(e);
+      return { status, missing, gaps, hasPlaceholder, needsReview };
     });
     // Worst status: structural > partial > complete
     const rank = s => s === 'structural' ? 2 : s === 'partial' ? 1 : 0;
     const worst = results.reduce((a, b) => rank(a.status) >= rank(b.status) ? a : b);
     return {
       status: worst.status,
+      needsReview: results.some(r => r.needsReview),
       missing: results.flatMap(r => r.missing),
       gaps: results.flatMap(r => r.gaps),
       hasPlaceholder: results.some(r => r.hasPlaceholder),
-      subAudits: results,  // exposed so the browser can render per-entry detail
+      subAudits: results,
     };
   }
   const { results, gaps, hasPlaceholder } = auditEntry(entry, 'menaion');
   const missing = gaps.map(g => g.field);
   const status = deriveStatus(results, gaps, hasPlaceholder);
-  return { status, missing, gaps, hasPlaceholder };
+  const needsReview = entryNeedsPointingReview(entry);
+  return { status, missing, gaps, hasPlaceholder, needsReview };
 }
 
 /**
@@ -559,13 +575,14 @@ export function auditPentecostarionEntry(entry) {
  * Summary stats for a set of audited entries.
  */
 export function auditSummary(auditResults) {
-  let complete = 0, partial = 0, structural = 0;
+  let complete = 0, review = 0, partial = 0, structural = 0;
   for (const r of auditResults) {
-    if (r.status === 'complete') complete++;
+    if (r.status === 'complete' && r.needsReview) review++;
+    else if (r.status === 'complete') complete++;
     else if (r.status === 'partial') partial++;
     else structural++;
   }
-  return { complete, partial, structural, total: auditResults.length };
+  return { complete, review, partial, structural, total: auditResults.length };
 }
 
 // ── FIELD REGISTRY EXPORTS ────────────────────────────────────────────────────
