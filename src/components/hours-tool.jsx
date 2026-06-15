@@ -8073,6 +8073,22 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.16.8",
+    date: "June 2026",
+    summary: "Fix: multi-commemoration audit bug; licCount reads Menaion for high-rank feasts; stichera integrity and browser polish",
+    items: [
+      "fix: auditMenaionEntry now audits all sub-entries for multi-commemoration days (array entries). Previously only entry[0] was audited — secondary saints with gaps showed green on the calendar badge and were invisible to the summary counts. Now returns worst status across all sub-entries; error banner attributes gaps to the correct saint by name.",
+      "fix: licCount now reads menaionEntry.stichera_lord_i_call_count for high-rank (polyeleos/doxology/vigil) ordinary-time entries. PDF-explicit stichera appointments (e.g. polyeleos printing 6 not 8, vigil printing 8 not 10) now govern correctly. Simple/six_stichera ranks unaffected.",
+      "fix: Fekula uniform doubling (3→6, 4→8) no longer flagged as a count mismatch in audit or browser. Browser shows '✓ N × reps = count — Fekula uniform doubling' explanation.",
+      "fix: stichera_glory_absent sentinel — verified-absent doxasticons render 'Glory… now and ever' combined rather than unresolved placeholder. Check D added to validate_entries.mjs.",
+      "fix: Vespers service selector (radio buttons) now re-assembles Vespers for the selected saint on multi-commemoration days.",
+      "data: 05-25 Forerunner — dead repeatIndex markers removed (licCount=8 §4A3 path is calendar-impossible); stichera_lord_i_call_note corrected with proof.",
+      "data: 06-15B Jonah, 06-16A Tikhon of Kaluga — reshaped to explicit 8-slot arrays with PDF-positional repeat markers.",
+      "ui: Menaion browser sticky header tracks current sub-entry saint name while scrolling multi-commemoration dates.",
+      "ui: All partial/missing field errors now render red throughout (badge, banner, chips, summary). Amber reserved for rubrical conditional notes.",
+    ],
+  },
+  {
     version: "v0.16.7",
     date: "June 2026",
     summary: "Data: 06-15B Jonah stichera correct 8-slot encoding; Menaion browser count integrity annotation",
