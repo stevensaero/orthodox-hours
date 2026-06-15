@@ -918,39 +918,30 @@ const MAY_MENAION = {
     },
     // ── VESPERS — LORD I HAVE CRIED ───────────────────────────────────────────
     // Source: 05-24.pdf. 6 stichera Tone VIII. Spec. Mel.: "O most glorious wonder"
-    // PDF rubric: first and second stichera each sung twice (×2), third sung twice = 6 total.
-    stichera_lord_i_call_count: 6,  // 6 Menaion stichera (05-24.pdf — §2E, no Pentecostarion merge)
+    // PDF rubric: all three stichera each marked (Twice) = 3 unique + 3 markers = 6 slots.
+    stichera_lord_i_call_count: 6,  // 6 Menaion stichera (05-24.pdf — §2E)
     stichera_lord_i_call: [
-      { tone: 8, text: "Like an inscribed pillar, O most noetically rich Symeon, " +
-                       "by visions and thine activity, thou didst give birth in thy soul to the fullness of the virtues; " +
-                       "and having vanquished the uprisings of the flesh " +
-                       "and arrayed thyself in life-bearing mortality, O venerable one; " +
-                       "thou didst become a luminary ever shining forth, " +
-                       "enlightening with grace all the ends of the earth." },
-      { tone: 8, text: "Like an inscribed pillar, O most noetically rich Symeon, " +
-                       "by visions and thine activity, thou didst give birth in thy soul to the fullness of the virtues; " +
-                       "and having vanquished the uprisings of the flesh " +
-                       "and arrayed thyself in life-bearing mortality, O venerable one; " +
-                       "thou didst become a luminary ever shining forth, " +
-                       "enlightening with grace all the ends of the earth." },
-      { tone: 8, text: "Taking wing with divine desire, while yet bearing the flesh and clad in dust, " +
-                       "thou didst manifestly become a dweller with the angels, " +
-                       "having forsaken earthly things and ascended to the heavenly, O father, " +
-                       "ever mounting to God on thy lofty pillar, and shining forth in thine ascents." },
-      { tone: 8, text: "Taking wing with divine desire, while yet bearing the flesh and clad in dust, " +
-                       "thou didst manifestly become a dweller with the angels, " +
-                       "having forsaken earthly things and ascended to the heavenly, O father, " +
-                       "ever mounting to God on thy lofty pillar, and shining forth in thine ascents." },
-      { tone: 8, text: "Having broken down the flesh by abstinence, O Symeon, " +
-                       "thou didst show forth thy soul as a receptacle of the Spirit, " +
-                       "mounting on high and drawing nigh unto God; " +
-                       "and by His power thou wast deemed worthy to work miracles transcending nature. " +
-                       "Wherefore, thy most divine activity hath surpassed all understanding and thought." },
-      { tone: 8, text: "Having broken down the flesh by abstinence, O Symeon, " +
-                       "thou didst show forth thy soul as a receptacle of the Spirit, " +
-                       "mounting on high and drawing nigh unto God; " +
-                       "and by His power thou wast deemed worthy to work miracles transcending nature. " +
-                       "Wherefore, thy most divine activity hath surpassed all understanding and thought." },
+      { tone: 8, spec_mel: "O most glorious wonder",
+        text: "Like an inscribed pillar, O most noetically rich Symeon, " +
+              "by visions and thine activity, thou didst give birth in thy soul to the fullness of the virtues; " +
+              "and having vanquished the uprisings of the flesh " +
+              "and arrayed thyself in life-bearing mortality, O venerable one; " +
+              "thou didst become a luminary ever shining forth, " +
+              "enlightening with grace all the ends of the earth." },
+      { repeatIndex: 0 }, // (Twice) per PDF
+      { tone: 8, spec_mel: "O most glorious wonder",
+        text: "Taking wing with divine desire, while yet bearing the flesh and clad in dust, " +
+              "thou didst manifestly become a dweller with the angels, " +
+              "having forsaken earthly things and ascended to the heavenly, O father, " +
+              "ever mounting to God on thy lofty pillar, and shining forth in thine ascents." },
+      { repeatIndex: 2 }, // (Twice) per PDF
+      { tone: 8, spec_mel: "O most glorious wonder",
+        text: "Having broken down the flesh by abstinence, O Symeon, " +
+              "thou didst show forth thy soul as a receptacle of the Spirit, " +
+              "mounting on high and drawing nigh unto God; " +
+              "and by His power thou wast deemed worthy to work miracles transcending nature. " +
+              "Wherefore, thy most divine activity hath surpassed all understanding and thought." },
+      { repeatIndex: 4 }, // (Twice) per PDF
     ],
     // Glory — Doxasticon, Tone VI (PDF: "Glory…in Tone VI")
     stichera_glory: {

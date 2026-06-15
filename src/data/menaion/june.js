@@ -2348,9 +2348,9 @@ const JUNE_MENAION = {
       "life for evermore.",
     communion_verse: "Rejoice in the Lord, O ye righteous; " +
       "praise is meet for the upright.",
-    stichera_lord_i_call_count: 6,  // 3 stichera T4, each sung twice (06-28.pdf); on Sunday §2C takes 4 from Menaion — first repeats to fill 4th slot
+    stichera_lord_i_call_count: 6,  // 3 stichera T4, each sung twice (06-28.pdf); uniform doubling 3→6
     stichera_lord_i_call: [
-      { tone: 4, repeatIndex: 0,
+      { tone: 4,
         text: "With hymns let us all honor Cyrus and with him the great John, the two martyrs " +
               "who possessed the radiance of the Trinity, the foundation of the Faith, " +
               "the flowers breathing forth the true fragrance of the understanding of Christ, " +
