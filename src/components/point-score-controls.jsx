@@ -1,9 +1,22 @@
 import React from 'react';
 import { AVAILABLE_TONES } from '../lib/available-tones.js';
 
-// A verse is pointable when its stored text carries end-of-line marks.
+// Normalize St. Sergius chant markers (* /**) to OCA pointing dialect (| //).
+// Applied at render and handoff time only — stored text is never mutated.
+// ** must be replaced before * to avoid producing '/ /' instead of '//'.
+// This preserves * /** as source-provenance signals in the data files while
+// making St. Sergius-dialect stichera pointable without re-encoding.
+export function normalizeSergius(text) {
+  if (typeof text !== 'string') return text;
+  return text.replace(/ \*\* /g, ' // ').replace(/ \* /g, ' | ');
+}
+
+// A verse is pointable when its stored text carries end-of-line marks
+// in either OCA dialect (| //) or St. Sergius dialect (* **).
 export function isPointable(text) {
-  return typeof text === 'string' && (/\s\|\s/.test(text) || /\s\/\/\s/.test(text));
+  if (typeof text !== 'string') return false;
+  const n = normalizeSergius(text);
+  return /\s\|\s/.test(n) || /\s\/\/\s/.test(n);
 }
 
 // The Irmos of a canon ode has its own proper melody — it is NOT sung to the
@@ -20,7 +33,8 @@ export function isIrmosLabel(label) {
 // (so a plain browser-back returns to where you left off). The trainer reads
 // oht_handoff on mount.
 export function handoffVerse(text, tone, mode) {
-  try { sessionStorage.setItem('oht_handoff', JSON.stringify({ verse: text, tone, mode })); } catch { /* private mode */ }
+  const normalized = normalizeSergius(text);
+  try { sessionStorage.setItem('oht_handoff', JSON.stringify({ verse: normalized, tone, mode })); } catch { /* private mode */ }
   window.location.href = '/orthodox-hours/tone-trainer?from=tool';
 }
 

@@ -6,7 +6,7 @@ import {
 } from '../data/octoechos/index.js';
 import { PSALMS, KATHISMA_MAP, getPsalmRange } from '../data/psalter.js';
 import { hymnText, hymnProvenance } from '../lib/hymn-entry.js';
-import { PointScoreControls, isPointable } from './point-score-controls.jsx';
+import { PointScoreControls, isPointable, normalizeSergius } from './point-score-controls.jsx';
 
 
 // ─── CALENDAR ENGINE ────────────────────────────────────────────────────────
@@ -881,8 +881,9 @@ function getServices(raw) {
 // passes straight through unchanged, so existing entries are unaffected.
 function renderPointed(text) {
   if (typeof text !== 'string' || !text) return text;
-  if (!/\s\|\s/.test(text) && !/\s\/\/\s/.test(text)) return text; // not pointed → passthrough
-  const tokens = text.split(/(\s\/\/\s|\s\|\s)/); // [line0, sep0, line1, sep1, …, lineN]
+  const normalized = normalizeSergius(text);
+  if (!/\s\|\s/.test(normalized) && !/\s\/\/\s/.test(normalized)) return text; // not pointed → passthrough
+  const tokens = normalized.split(/(\s\/\/\s|\s\|\s)/); // [line0, sep0, line1, sep1, …, lineN]
   const lines = [];
   for (let i = 0; i < tokens.length; i += 2) {
     lines.push({ content: tokens[i], sep: tokens[i + 1] });
@@ -8086,6 +8087,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.16.10",
+    date: "June 2026",
+    summary: "feat: St. Sergius dialect (* /**) now pointable — normalizeSergius helper bridges to Tone Trainer",
+    items: [
+      "feat: normalizeSergius() helper converts St. Sergius chant markers (* /**) to OCA pointing dialect (| //) at render and handoff time. Stored data is never mutated — * /** remains as source-provenance signal. Three call sites: isPointable() now recognizes both dialects; handoffVerse() normalizes before passing to Tone Trainer; renderPointed() normalizes before splitting into display lines. The Tone Trainer and pointing engine are untouched.",
+      "ui: Menaion browser TextBlock now shows dialect badge inline with tone: [St. Sergius] (amber) or [RLE/OCA] (green). St. Sergius texts render with line breaks (normalized for display). Tier 1 unpointed texts show no badge.",
+      "test: gate section 5 — §4A3 Menaion repeat marker cross-source guard (71 checks). Catches the menaionLicStichera typo class that caused blank screen.",
+    ],
+  },
   {
     version: "v0.16.9",
     date: "June 2026",

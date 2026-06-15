@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { auditMenaionEntry, auditSummary } from '../lib/audit.js';
-import { PointScoreControls } from './point-score-controls.jsx';
+import { PointScoreControls, normalizeSergius } from './point-score-controls.jsx';
 
 // ── Color constants — matches psalter.jsx / hours-tool.jsx ──────────────────
 const C = {
@@ -96,6 +96,16 @@ function BoolFlag({ label, value }) {
 
 // ── Text block (troparion, kontakion, sticheron, etc.) ──────────────────────
 function TextBlock({ tone, text, specMel, label, verse, repeatIndex }) {
+  // Detect pointing dialect for source badge
+  const hasSergius = typeof text === 'string' && (/ \* /.test(text) || / \*\* /.test(text));
+  const hasOCA = typeof text === 'string' && (/\s\|\s/.test(text) || /\s\/\/\s/.test(text));
+  const dialectBadge = hasSergius
+    ? { label: 'St. Sergius', color: C.amber }
+    : hasOCA
+      ? { label: 'RLE/OCA', color: C.green }
+      : null;
+  // Normalize for display — render line breaks regardless of dialect
+  const displayText = hasSergius ? normalizeSergius(text) : text;
   return (
     <div style={{
       marginBottom: "0.75rem",
@@ -106,6 +116,14 @@ function TextBlock({ tone, text, specMel, label, verse, repeatIndex }) {
       {tone !== undefined && tone !== null && (
         <div style={{ fontSize: "0.78rem", color: C.gold, marginBottom: "0.15rem" }}>
           Tone {tone}{specMel ? ` — Spec. Mel.: "${specMel}"` : ''}
+          {dialectBadge && (
+            <span style={{
+              marginLeft: "0.5rem", fontSize: "0.7rem", fontFamily: "monospace",
+              color: dialectBadge.color, opacity: 0.85,
+            }}>
+              [{dialectBadge.label}]
+            </span>
+          )}
         </div>
       )}
       {verse && (
@@ -127,7 +145,7 @@ function TextBlock({ tone, text, specMel, label, verse, repeatIndex }) {
           lineHeight: 1.65,
           fontFamily: "Georgia, 'Times New Roman', serif",
         }}>
-          {text || <span style={{ color: C.goldLight, fontStyle: "italic" }}>—</span>}
+          {displayText || <span style={{ color: C.goldLight, fontStyle: "italic" }}>—</span>}
         </div>
         <PointScoreControls text={text} tone={tone} label={label} />
       </div>
