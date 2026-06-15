@@ -3705,9 +3705,9 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         let stich = effectiveLicStichera[slotIndex - pentLicSlots];
         const isPentSlot = slotIndex < pentLicSlots;
         // Resolve repeat markers. Menaion items carry repeatIndex relative to the
-        // Menaion-only array; pass manaionLicStichera so repeatIndex:0 resolves to
+        // Menaion-only array; pass menaionLicStichera so repeatIndex:0 resolves to
         // Menaion[0], not the Pentecostarion item at position 0 of the combined array.
-        const resolveArray = (stich && stich.source === 'Menaion') ? manaionLicStichera : effectiveLicStichera;
+        const resolveArray = (stich && stich.source === 'Menaion') ? menaionLicStichera : effectiveLicStichera;
         stich = applyStichRepeat(stich, resolveArray, slotIndex - pentLicSlots);
 
         // Verse text — use feast verse from sticheron if present
