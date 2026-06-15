@@ -12,11 +12,19 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.17";
+export const TONE_TRAINER_VERSION = "v0.25.18";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.18",
+    date: "June 2026",
+    summary: "Android audio fix — harmonic reduction + lookahead increase",
+    items: [
+      "fix: on slow Android devices (e.g. Galaxy S6 Lite, Exynos 9611), SATB playAll produced silence on the first verse and garbled audio thereafter; alto-only playAll produced occasional crackling. Root cause: the synchronous Web Audio node-creation burst (~2160 nodes for SATB) took ~150-200ms on the Exynos 9611, exceeding the 60ms startT lookahead. Notes were scheduled in the past; the GainNode default gain of 1.0 fired instead of the intended zero-start envelope (click/crack), and the Android audio buffer (~85ms) committed the first buffer mid-burst (verse-1 silence). Two changes: (A) harmonics reduced from 4 to 2 in playPianoNote — partials 3+4 carry 1.5% of signal energy (18dB below combined output, 0.07dB total level difference, inaudible), cutting nodes per note from 9 to 5 and burst time to ~85-110ms; (B) AUDIO_LOOKAHEAD constant set to 0.25s in playNotesWithBass and playAll startT (2.3x safety margin over worst-case burst). onDone timeouts in both functions adjusted by +AUDIO_LOOKAHEAD to keep chip-highlight clearance in sync with audio end. playNotes (pitch preview, 4 notes) keeps its own tight 0.06s lookahead. rAF chip-highlight loop unchanged.",
+    ],
+  },
   {
     version: "v0.25.17",
     date: "June 2026",
@@ -3167,7 +3175,7 @@ function useAudio() {
   function playPianoNote(c, f, t0, dur, peak) {
     const g = c.createGain();
     g.connect(c.destination);
-    [[1,0.7],[2,0.15],[3,0.08],[4,0.04]].forEach(([h,a]) => {
+    [[1,0.7],[2,0.15]].forEach(([h,a]) => {  // v0.25.18: 4→2 harmonics; partials 3+4 = 1.5% energy, inaudible; halves node count for Android
       const o = c.createOscillator(); const hg = c.createGain();
       o.connect(hg); hg.connect(g); o.type="sine"; o.frequency.value=f*h; hg.gain.value=a;
       o.start(t0); o.stop(t0+dur+0.3);
@@ -3853,9 +3861,17 @@ export default function ToneTrainer() {
     return notes;
   };
 
+  // AUDIO_LOOKAHEAD: seconds between play-start and first scheduled note.
+  // Must exceed the synchronous Web Audio node-creation burst on the slowest
+  // supported device. Galaxy S6 Lite (Exynos 9611) takes ~85-110ms for a
+  // full SATB playAll after the harmonic reduction in v0.25.18. 250ms gives
+  // a 2.3x safety margin. playNotes (pitch preview, 4 notes, ~2ms burst)
+  // keeps its own tight 0.06s so the do-selector tap sounds immediate.
+  const AUDIO_LOOKAHEAD = 0.25;
+
   const playNotes = (notes, onDone, gap = 0) => {
     const c = ac();
-    let t = c.currentTime + 0.06;
+    let t = c.currentTime + 0.06; // tight — playNotes is pitch preview only (4 notes)
     notes.forEach((n, i) => {
       const f = n.bass ? freq_bass(n.sol, n.phraseRules) : n.tenor ? freq_tenor(n.sol, n.phraseRules) : freq(n.sol);
       toneTimbre(f, t, n.dur, n.peak, timbre);
@@ -3869,7 +3885,7 @@ export default function ToneTrainer() {
 
   const playNotesWithBass = (altoNotes, bassNotes, sopranoNotes, tenorNotes, onDone, li) => {
     const c = ac();
-    const startT = c.currentTime + 0.06;
+    const startT = c.currentTime + AUDIO_LOOKAHEAD;
     let t = startT;
     let tb = startT;
     let ts = startT;
@@ -3955,7 +3971,7 @@ export default function ToneTrainer() {
 
     const totalDur = Math.max(t, tb, ts, tt) - startT;
     if (onDone) {
-      const id = setTimeout(onDone, totalDur * 1000 + 40);
+      const id = setTimeout(onDone, totalDur * 1000 + AUDIO_LOOKAHEAD * 1000 + 40);
       timerIdsRef.current.push(id);
     }
   };
@@ -4255,7 +4271,7 @@ export default function ToneTrainer() {
     timerIdsRef.current = [];
     isPlayAllRef.current = true;
     const c = ac();
-    const startT = c.currentTime + 0.06;
+    const startT = c.currentTime + AUDIO_LOOKAHEAD;
     let t = startT;
     let tb = startT;
     let ts = startT;
@@ -4359,7 +4375,7 @@ export default function ToneTrainer() {
     rafRef.current = requestAnimationFrame(tick);
 
     const totalDur = Math.max(t, tb, ts) - startT;
-    const id2 = setTimeout(() => { setPlayingLine(null); setPlayingAltoIdx(null); setPlayingBassIdx(null); setPlayingTenorIdx(null); setPlayingWhich(null); }, totalDur * 1000 + 40);
+    const id2 = setTimeout(() => { setPlayingLine(null); setPlayingAltoIdx(null); setPlayingBassIdx(null); setPlayingTenorIdx(null); setPlayingWhich(null); }, totalDur * 1000 + AUDIO_LOOKAHEAD * 1000 + 40);
     timerIdsRef.current.push(id2);
   };
 
