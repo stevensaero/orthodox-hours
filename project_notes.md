@@ -3178,3 +3178,36 @@ All three tables: active row highlights in gold when daily table governs; no hig
 - `ServiceOutline` is a proper standalone module-scope React component — no closures over main component. `useEffect` for `IntersectionObserver` lives inside it. State (`outlineOpen`, `activeSection`) passed as props from main component's `useState` hooks (declared in hooks section, no forward refs — previous attempts caused TDZ crash in minified bundle).
 - `rank` is not declared in `assembleTypica` — new code must use `menaionEntry?.rank` not a bare `rank` reference.
 
+
+---
+
+## Open Encoding Issue — Dual LIC Stichera Counts (Seasonal Conditional)
+
+### Pattern
+Some high-rank Menaion feasts carry **two distinct LIC stichera appointments** depending on liturgical season. The Menaion PDF explicitly addresses both cases. The current schema supports only one `stichera_lord_i_call_count` and one `stichera_lord_i_call` array, which cannot cleanly express both paths simultaneously.
+
+### Proposed resolution (deferred pending evidence)
+Two new fields:
+```js
+stichera_lord_i_call_count_ordinary: N,   // Ordinary time / Apostles' Fast slot count
+stichera_lord_i_call_ordinary: [...],     // Ordinary-time array when repeat rules differ
+```
+`stichera_lord_i_call_count` and `stichera_lord_i_call` continue to hold the **Pentecostarion** appointment (since that is the path the assembler reads first). The assembler reads `_ordinary` fields when `!isPentecostarion && isHighRank`.
+
+Do not implement until the evidence log below contains enough cases to confirm the schema is worth the complexity.
+
+### Evidence log
+
+| Date | Saint | Rank | Pent path | Ordinary path | Notes |
+|------|-------|------|-----------|---------------|-------|
+| 05-25 | Third Finding of the Head of St John the Forerunner | polyeleos | 8 (3 Pent + 5 Menaion, "repeating as necessary" → items 0,1,2,0,1) | 6 Menaion (3 unique × 2, uniform doubling) | Pentecostarion path now handled correctly via licCount override. Ordinary path open — assembler reads count=8, produces 3 resolved + 5 unresolved instead of 6 clean. Next occurrence ~2067. |
+| 05-27 | Righteous Confessor John the Russian | vigil | 8 (3 Pent + 5 Menaion, first sticheron ×2) | 6 Menaion (4 unique? — PDF not yet read for fast path) | Pentecostarion path handled. Ordinary-time path not yet verified from PDF. |
+| 06-02A | Holy Greatmartyr John the New of Suceava | polyeleos | 8 (3 Pent + 5 Menaion, "repeating the first Sticheron") | 8 Menaion ("each of the 4 Stichera is repeated" = uniform doubling 4×2) | Ordinary-time path works via uniform doubling (no `_ordinary` field needed for count; only the array differs — Pent needs first-repeat marker, ordinary needs none). Pentecostarion 5th Menaion slot still unresolved. |
+
+### Current mitigations
+- `stichera_lord_i_call_note` on affected entries documents both paths and suppresses false audit errors.
+- `licCount` assembler fix (v0.16.9): when `isPentecostarion && isHighRank` and Menaion count exceeds pentEntry count, Menaion count governs. This correctly fires the 8-slot path for all three entries above.
+- Ordinary-time path for 05-25 and 05-27 remains open (wrong licCount used; unresolved slots emitted).
+
+### Action threshold
+Implement `_ordinary` fields when **5 or more** confirmed entries appear in this log, or when an ordinary-time date is within 12 months of the current deployment date.
