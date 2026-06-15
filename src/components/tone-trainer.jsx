@@ -12,11 +12,19 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.25";
+export const TONE_TRAINER_VERSION = "v0.25.26";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.26",
+    date: "June 2026",
+    summary: "JIT fix — phrase 0 created synchronously, not inside rAF",
+    items: [
+      "fix: residual crackle at Play All start after v0.25.24 JIT fix. JIT_WINDOW (0.5s) > AUDIO_LOOKAHEAD (0.25s on Android), so phrase 0 always satisfied the JIT condition (timing.t - now = 0.234s < 0.5s) on the very first rAF tick. This placed a ~21ms node-creation burst inside a 16ms rAF frame budget at exactly the moment audio starts playing — the main thread overrun caused crackle on the reciting tone of phrase 0 even though phrases 1+ were deferred correctly. Fix: phrase 0 is now created synchronously in Phase 1 (before rAF loops launch, inside the same play-start burst as scheduling), covered by the 250ms AUDIO_LOOKAHEAD. Phrases 1+ remain deferred to the JIT rAF loop. Phrase 0 oscillators stop well before phrase 1 is due, so the graph stays at ~300 nodes throughout.",
+    ],
+  },
   {
     version: "v0.25.25",
     date: "June 2026",
@@ -4366,11 +4374,30 @@ export default function ToneTrainer() {
       const sopranoNotes = lineToNotes_soprano(line);
       const tenorNotes   = lineToNotes_tenor(line);
 
-      // Store note arrays and phrase start times for JIT creation
-      noteQueues.push({ li, altoNotes, bassNotes, sopranoNotes, tenorNotes });
-      phraseTimings.push({ li, t, tb, ts, tt });
+      // Phrase 0 is created synchronously here in Phase 1 (before rAF loops launch)
+      // because JIT_WINDOW (0.5s) > AUDIO_LOOKAHEAD (0.25s on Android), which means
+      // phrase 0 would always trigger on the very first JIT rAF tick — a ~21ms node
+      // creation burst inside a 16ms frame budget at exactly the moment audio starts.
+      // Phrases 1+ are deferred to the JIT loop; their nodes are created ~500ms ahead.
+      // Phrase 0 oscillators will have stopped well before phrase 1 is due, so the
+      // graph stays at ~300 nodes throughout regardless.
+      if (li === 0) {
+        let pt = t, ptb = tb, pts = ts, ptt = tt;
+        if (playAlto)
+          altoNotes.forEach((n) => { toneTimbre(freq(n.sol), pt, n.dur, n.peak, timbre); pt += n.dur; });
+        if (playBassVoice && bassNotes)
+          bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol, n.phraseRules), ptb, n.dur, n.peak * 1.1, timbre); ptb += n.dur; });
+        if (playSoprano && sopranoNotes)
+          sopranoNotes.forEach((n) => { toneTimbre(freq_soprano(n.sol), pts, n.dur, n.peak, timbre); pts += n.dur; });
+        if (playTenorVoice && tenorNotes)
+          tenorNotes.forEach((n) => { toneTimbre(freq_tenor(n.sol, n.phraseRules), ptt, n.dur, n.peak, timbre); ptt += n.dur; });
+      } else {
+        // Phrases 1+ stored for JIT deferred creation
+        noteQueues.push({ li, altoNotes, bassNotes, sopranoNotes, tenorNotes });
+        phraseTimings.push({ li, t, tb, ts, tt });
+      }
 
-      // Chip-highlight schedule — identical to pre-JIT, complete at play-start
+      // Chip-highlight schedule — complete at play-start for all phrases
       const lineStart = t;
       schedule.push({ audioT: lineStart, action: () => {
         setPlayingLine(li); setPlayingAltoIdx(null); setPlayingBassIdx(null);
@@ -4385,7 +4412,6 @@ export default function ToneTrainer() {
           }});
           ht += n.dur;
         });
-        // Accumulate t WITHOUT calling toneTimbre — JIT will create nodes later
         altoNotes.forEach((n) => { t += n.dur; });
       }
 
