@@ -7472,9 +7472,17 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
         // right. Active when the verse's tone is built in the trainer; otherwise
         // light grey and inert, with a tooltip explaining why.
         const vTone = elementTone(element);
+        const isSergius = / \* /.test(element.text) || / \*\* /.test(element.text);
         return (
           <div style={{ ...bodyStyle, display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ flex: 1, minWidth: 0 }}>{renderPointed(element.text)}</div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              {renderPointed(element.text)}
+              {isSergius && (
+                <div style={{ fontSize: '0.72rem', color: '#A67C00', marginTop: '0.25rem', fontStyle: 'italic' }}>
+                  ⚑ St. Sergius source — not yet OCA pointed
+                </div>
+              )}
+            </div>
             <PointScoreControls text={element.text} tone={vTone} />
           </div>
         );
