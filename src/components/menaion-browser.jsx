@@ -147,7 +147,7 @@ function TextBlock({ tone, text, specMel, label, verse, repeatIndex }) {
           lineHeight: 1.65,
           fontFamily: "Georgia, 'Times New Roman', serif",
         }}>
-          {displayText || <span style={{ color: C.goldLight, fontStyle: "italic" }}>—</span>}
+          {text || <span style={{ color: C.goldLight, fontStyle: "italic" }}>—</span>}
         </div>
         <PointScoreControls text={text} tone={tone} label={label} />
       </div>
