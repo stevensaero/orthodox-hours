@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.16.11** | **Tone Trainer: v0.25.16** | Last synced: June 14, 2026
+**Tool version: v0.16.11** | **Tone Trainer: v0.25.17** | Last synced: June 15, 2026
 
 **Sunday Vespers — unified engine (P0 signed off; P1 engine LANDED in v0.16.0).** `sunday_vespers_spec.md`
 (repo root) specs one engine for ALL resurrectional Sundays — ordinary Octoechos
@@ -739,6 +739,51 @@ selector on mobile), chip-white textarea. **Next session is expected to be data 
 "NEXT SESSION (data) — OCA director-pointed backfill" recipe near the top of this file.**
 
 Versions at close: **Hours tool v0.15.24 · Tone Trainer v0.25.16.**
+
+---
+
+### Session — June 15, 2026 (Tone Trainer iOS playback sync fix — v0.25.17)
+
+**Investigation: audio/visual chip highlight lag on iPhone (intermittent)**
+
+Reported symptom: occasional visible lag between audio and chip highlight during
+playback on iPhone. Desktop playback has reliable sync. Intermittent on mobile only.
+
+Root cause confirmed from code inspection: all chip highlight updates were driven by
+`setTimeout` calls registered in bulk at play-start. For a 4-phrase SATB Sing All,
+~200–250 `setTimeout` calls were queued simultaneously, with delays ranging from
+near-zero up to 15–20 seconds. iOS Safari throttles timers with long delays (>1s),
+causing the visual highlight to drift behind the audio. The audio clock
+(`audioCtx.currentTime`) runs on a dedicated hardware thread and is immune to this
+throttling. The mismatch is intermittent because it depends on GC pauses, touch-event
+handling, and compositor load at the moment each timer fires.
+
+**Confirmed not a cache issue.** The behavior is runtime scheduling, not a code-version
+artifact. Smooth chip-follow scroll (`behavior: "smooth"` in `PhraseScroller`) was
+identified as a contributing stressor on mobile but retained by decision — it will only
+be revisited if the rAF fix alone proves insufficient.
+
+**Fix: rAF polling loop keyed to `audioCtx.currentTime` (v0.25.17)**
+
+Replaced all per-chip `setTimeout` highlight scheduling with a single
+`requestAnimationFrame` polling loop that reads the hardware audio clock each frame
+and fires highlight state updates exactly when due.
+
+Changes in `src/components/tone-trainer.jsx`:
+
+- **`rafRef`** added alongside `timerIdsRef` — holds the rAF handle, cancelled by `stopAll()`.
+- **`playNotesWithBass()`** — `scheduleAltoHighlights()`, `scheduleBassHighlights()`, and the inline tenor scheduling block replaced. All per-chip state updates now push `{ audioT, action }` entries into a local `schedule[]` array (absolute `audioCtx` timestamps, not wall-clock milliseconds). After all voices are scheduled, the array is sorted ascending by `audioT` and a single `tick()` rAF loop is launched that advances a cursor through the schedule as `c.currentTime` catches up.
+- **`playAll()`** — same treatment for the multi-line Sing All path. The per-chip and line-start `setTimeout` calls replaced by schedule-table pushes + a shared rAF tick loop.
+- **`stopAll()`** — `cancelAnimationFrame(rafRef.current)` added as the first line before the existing `timerIdsRef` clear.
+- **`onDone` cleanup `setTimeout`** (end-of-playback state reset) — unchanged in both `playNotesWithBass` and `playAll`. Single timer, 40ms grace buffer, already pushed to `timerIdsRef` and cancelled by `stopAll()` — not subject to the multi-timer throttle problem.
+
+Scope confirmed unchanged: audio scheduling (`toneTimbre` calls, note timing math),
+chip geometry (`chipW`, `chipH`, solfège labels), `PhraseScroller`, smooth follow-scroll,
+all React state shapes, and `timerIdsRef` (still used for `onDone`).
+
+Regression gate: 13/13 pass + `npm run build` clean before push.
+
+**Status: deployed. Monitoring in actual parish usage to confirm the iOS lag bug is resolved.**
 
 ---
 
