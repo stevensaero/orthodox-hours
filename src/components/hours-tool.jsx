@@ -3704,9 +3704,11 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         const slotIndex = licCount - v.n; // 0 = highest verse
         let stich = effectiveLicStichera[slotIndex - pentLicSlots];
         const isPentSlot = slotIndex < pentLicSlots;
-        // Resolve any per-item repeat marker via the shared helper (same grammar
-        // the ordinary §2C/§2D path uses). See stichera_repeat_spec.md.
-        stich = applyStichRepeat(stich, effectiveLicStichera, slotIndex - pentLicSlots);
+        // Resolve repeat markers. Menaion items carry repeatIndex relative to the
+        // Menaion-only array; pass manaionLicStichera so repeatIndex:0 resolves to
+        // Menaion[0], not the Pentecostarion item at position 0 of the combined array.
+        const resolveArray = (stich && stich.source === 'Menaion') ? manaionLicStichera : effectiveLicStichera;
+        stich = applyStichRepeat(stich, resolveArray, slotIndex - pentLicSlots);
 
         // Verse text — use feast verse from sticheron if present
         const verseText = (stich && stich.verse) ? stich.verse : v.text;
