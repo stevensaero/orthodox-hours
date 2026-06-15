@@ -1089,9 +1089,13 @@ const MAY_MENAION = {
     // During Apostles' Fast: 6 Menaion stichera (repeating as needed = uniform doubling 3→6).
     stichera_lord_i_call_count: 8,  // Pentecostarion period: 3 Pent + 5 Menaion (05-25.pdf)
     stichera_lord_i_call_note: "Seasonal conditional per 05-25.pdf: " +
-      "(A) Pentecostarion period — 8 stichera: 3 from Pentecostarion + 5 Menaion (items 0–2 unique, 3–4 repeatIndex markers). " +
-      "(B) Apostles' Fast — 6 stichera: all Menaion, 'repeating as necessary' = items 0–2 sung twice each (uniform doubling 3→6). " +
-      "Assembler currently handles path A via §4A3 Pentecostarion split. Path B not yet assembled.",
+      "(A) Pentecostarion period — licCount is governed by pentEntry.stichera_lord_i_call_count (e.g. 6 for an afterfeast weekday), NOT menaionEntry count. " +
+      "The §4A1 path fires: effectiveLicStichera = [pentEntry.lic (3)] + [menaionEntry.lic (5)] = 8 items, " +
+      "then sliced to licCount slots. For a licCount=6 afterfeast weekday this yields 3 Pentecostarion + 3 Menaion (items 0–2 only; repeatIndex markers at items 3–4 are never reached). " +
+      "For a licCount=8 afterfeast day all 5 Menaion slots would render (items 0–2 unique + markers 3–4 resolving to items 0–1). " +
+      "(B) Apostles' Fast (possible when Pascha ≤ ~April 5, making May 25 N.S. fall at P+50+) — " +
+      "6 stichera all Menaion, 'repeating as necessary': 3 unique texts sung twice = uniform doubling 3→6. " +
+      "Path B not yet handled by the assembler (no isPentecostarion=false branch for this rank/date combination reaches Apostles' Fast).",
     stichera_lord_i_call: [
       { tone: 8, text: "O blessed forerunner John, shedding rays brighter than those of the sun, " +
                        "thy head hath shone forth from the ground and illumined the faithful. " +
