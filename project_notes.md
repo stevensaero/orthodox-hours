@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.16.11** | **Tone Trainer: v0.25.17** | Last synced: June 15, 2026
+**Tool version: v0.16.11** | **Tone Trainer: v0.25.27** | Last synced: June 15, 2026
 
 **Sunday Vespers — unified engine (P0 signed off; P1 engine LANDED in v0.16.0).** `sunday_vespers_spec.md`
 (repo root) specs one engine for ALL resurrectional Sundays — ordinary Octoechos
@@ -739,6 +739,142 @@ selector on mobile), chip-white textarea. **Next session is expected to be data 
 "NEXT SESSION (data) — OCA director-pointed backfill" recipe near the top of this file.**
 
 Versions at close: **Hours tool v0.15.24 · Tone Trainer v0.25.16.**
+
+---
+
+### Session — June 15, 2026 (Tone Trainer iOS playback sync fix — v0.25.17)
+
+**Investigation: audio/visual chip highlight lag on iPhone (intermittent)**
+
+Reported symptom: occasional visible lag between audio and chip highlight during
+playback on iPhone. Desktop playback has reliable sync. Intermittent on mobile only.
+
+Root cause confirmed from code inspection: all per-chip visual updates were registered
+as bulk `setTimeout` calls at play-start. iOS Safari throttles timers with long delays
+(>1s), causing the visual highlight to drift behind audio. The audio clock
+(`audioCtx.currentTime`) runs on a dedicated hardware thread and is immune to this
+throttling.
+
+**Fix (v0.25.17):** Replace all per-chip `setTimeout` highlight scheduling with a single
+`requestAnimationFrame` polling loop keyed to `audioCtx.currentTime`. The rAF loop
+reads the hardware audio clock every frame and advances the active chip index exactly
+when the audio clock says it is due — immune to timer throttling. Audio scheduling
+unchanged; only the visual sync mechanism changed. `stopAll()` cancels the rAF loop via
+`cancelAnimationFrame`.
+
+**Status: deployed. Monitoring in actual parish usage to confirm the iOS lag bug is resolved.**
+
+---
+
+### Session — June 15, 2026 (Cross-platform audio fixes — v0.25.18 through v0.25.27)
+
+**Investigation: Android Galaxy S6 Lite (Exynos 9611, One UI 6.1, Chrome) audio crackle
+and iOS iPhone audio/visual regressions introduced during Android work.**
+
+This was an extended multi-iteration investigation. The final solution required
+understanding three distinct root causes at different layers of the Web Audio stack.
+Full diagnostic log below for future sessions.
+
+---
+
+**Root cause 1 — Scheduling burst overrun (fixed v0.25.18)**
+
+At play-start, `playAll` created all AudioNodes for all phrases and voices in one
+synchronous JS burst (~2160 nodes at 4 harmonics, ~1200 after harmonic reduction).
+On Exynos 9611 (~0.07ms/node), this burst took 120–200ms, exceeding the 60ms
+`startT` lookahead. Notes were scheduled in the past; the Android audio buffer (~85ms)
+committed the first buffer mid-burst, producing verse-1 silence and garbled audio.
+
+Fix: two-part. (A) Reduce harmonics from 4 to 2 in `playPianoNote` — partials 3+4
+carry 1.5% of signal energy (0.07dB level difference, inaudible), cutting nodes/note
+from 9 to 5. (B) `AUDIO_LOOKAHEAD` constant: `0.25s` on Android (via
+`/Android/i.test(navigator.userAgent)`), `0.06s` on iOS/desktop. The 250ms covers the
+~110ms post-harmonic-reduction burst with 2.3× margin. iOS/desktop use 60ms, identical
+to pre-v0.25.18 behaviour. All four `AUDIO_LOOKAHEAD` uses (two `startT`, two `onDone`
+offsets) adapt automatically from the single constant.
+
+**Root cause 2 — GainNode default-gain race condition (fixed v0.25.20/v0.25.23)**
+
+`GainNode` default `gain.value` is 1.0 per the Web Audio spec. The previous code
+zeroed it via a *scheduled* `setValueAtTime(0, t0)`, but on Android Chrome the audio
+thread may process `o.start(t0)` before that event, emitting full-gain audio for one
+2.67ms quantum before the gain drops — producing a click at every note onset.
+
+Fix: `g.gain.value = 0` synchronously in JS at construction time, before any audio
+thread processing. Guarded by `/Android/i.test(navigator.userAgent)` because WebKit's
+`AudioParam.value` assignment with pending scheduled automation differs from Chrome's
+implementation: on iOS it cancels pending automation and causes a pop and start delay.
+iOS uses the original path (no `g.gain.value = 0`).
+
+**Root cause 3 — Audio graph traversal overrun (fixed v0.25.24 → v0.25.27)**
+
+The Web Audio thread traverses the entire connected node graph every 128-sample quantum
+(2.67ms at 48kHz). With all ~1200 nodes pre-created and simultaneously connected,
+traversal took ~6ms — overrunning the 2.67ms quantum budget and causing buffer
+underruns (crackle). Confirmed by the diagnostic observation that the last phrase
+always played cleanly: by phrase 4, earlier phrases' oscillators had stopped and were
+skipped by Chrome's traversal, reducing effective graph size enough to fit within the
+quantum.
+
+Fix evolution:
+
+- **v0.25.24**: Phrase-level JIT — deferred each phrase's node creation to a second
+  rAF loop (`jitRafRef`) that created phrase N's nodes ~500ms before phrase N played.
+  Reduced max live nodes from ~1200 to ~300. Chip-highlight schedule built completely
+  at play-start (visual sync unchanged). Partially successful but crackle persisted on
+  long recitations.
+
+- **v0.25.26**: Phrase 0 forced synchronous (intermediate fix, superseded). Identified
+  that `JIT_WINDOW (0.5s) > AUDIO_LOOKAHEAD (0.25s)` meant phrase 0 always triggered
+  on the first rAF tick, placing a ~21ms burst inside a 16ms frame budget. Moved phrase
+  0 to synchronous creation. Still crackled on long recitations because entire phrases
+  were still burst-created.
+
+- **v0.25.27**: Note-level JIT — final and correct fix. `playAll` Phase 1 builds a
+  flat `noteQueue[]` of all notes (all phrases, all voices) sorted by `t0`, with `freq`
+  pre-computed and **zero `toneTimbre` calls**. Phase 3 JIT rAF loop uses
+  `NOTE_WINDOW = AUDIO_LOOKAHEAD × 0.6` (150ms Android, 36ms iOS/desktop) — each
+  frame creates only notes whose `t0 ≤ now + NOTE_WINDOW`. Steady-state per-frame
+  cost: ~4 nodes (<1ms). A 10-syllable recitation creates ~1 note/voice/frame —
+  never a burst regardless of recitation length. `phraseTimings[]`, `noteQueues[]`,
+  and the `li === 0` synchronous branch are removed.
+
+**Additional envelope fix (v0.25.25)**
+
+The linear attack ramp (`linearRampToValueAtTime(peak, t0+0.01)`) has maximum slope at
+t0 — the most aggressive possible onset. Replaced with exponential ramp from a
+near-zero starting value: `setValueAtTime(0.0001, t0)` + `exponentialRampToValueAtTime
+(peak, t0+0.015)`. Exponential ramp has zero initial slope, eliminating the attack
+transient click. 0.0001 = -80dB (inaudible). 15ms ramp is 2% of H at 80 BPM.
+
+**iOS regressions introduced and fixed during Android investigation:**
+
+Several Android fixes caused iOS regressions before being made platform-specific:
+
+- `g.disconnect()` (attempted in v0.25.19, v0.25.21): caused iOS double-note and sync
+  issues. Root cause not fully isolated; approach abandoned. `g.disconnect()` does NOT
+  appear in the final codebase.
+- `scrollIntoView({ block:"nearest", inline:"center" })` (v0.25.19): iOS Safari walked
+  the scroll ancestor chain and triggered unwanted page-level vertical scroll on chip
+  advance, corrupting visual sync. Reverted; `getBoundingClientRect + el.scrollTo`
+  path restored.
+- `g.gain.value = 0` (v0.25.20): on iOS, WebKit's `AudioParam.value` assignment with
+  pending automation differs from Chrome — caused pop and start delay. Made
+  Android-only via UA detection (v0.25.23).
+- `AUDIO_LOOKAHEAD = 0.25s` (v0.25.18): introduced 250ms start delay and async
+  resume popping on iOS. Made platform-adaptive (v0.25.22): Android 0.25s, iOS/desktop
+  0.06s.
+
+**Final state (v0.25.27): confirmed clean on Android Galaxy S6 Lite, iPhone, and**
+**Windows 11 desktop Chrome.**
+
+**Architecture of current `playAll` (v0.25.27):**
+- Phase 1 (synchronous): builds `schedule[]` (chip highlights, all audioT complete)
+  and `noteQueue[]` (flat sorted note list, freq pre-computed). Zero audio nodes.
+- Phase 2: chip-highlight rAF (`rafRef`) — identical to v0.25.17.
+- Phase 3: note-level JIT rAF (`jitRafRef`) — creates notes as they enter
+  `NOTE_WINDOW`. `stopAll()` cancels both rAF handles; `try/catch` handles
+  `ctx.close()` race.
 
 ---
 
