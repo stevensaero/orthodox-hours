@@ -1189,17 +1189,26 @@ const JUNE_MENAION = {
   ],
 
   // ── June 17 — Holy Martyrs Manuel, Sabel & Ismael ───────────────────────────
-  // Source: St. Sergius 06-17.pdf. OCA and St. Sergius agree.
+  // Source: RLE (Reader's Liturgical Edition, Lambertsen / Monk Joseph),
+  //   rle_0617 manuel_ sabel_ismael.pdf. Texts swapped from St. Sergius to RLE
+  //   on 2026-06-16 as the first RLE pilot entry; rubric (rank, tones, Matins
+  //   format) unchanged and confirmed by the RLE. OCA and St. Sergius agree.
+  //   First Menaion entry stored in the native OCA pointing dialect (| // [..]),
+  //   not St. Sergius * /**; all pointed fields carry director: true.
   // Service rank: Simple (§2A) — 3 stichera; both Oktoechos canons at Matins.
 
   "06-17": {
     saint: "Holy Martyrs Manuel, Sabel & Ismael",
     oca_primary: true,
-    source_file: "06-17.pdf",
+    source_file: "rle_0617 manuel_ sabel_ismael.pdf",
     rank: "simple",
     note: "Three Persian brothers martyred under Julian the Apostate (362). " +
           "§2A by stichera count (3); PDF includes full AT LITURGY section — " +
-          "compiled martyrs' service with proper Epistle and Gospel.",
+          "compiled martyrs' service with proper Epistle and Gospel. " +
+          "Texts are the RLE (Lambertsen) translation, swapped from St. Sergius " +
+          "on 2026-06-16 (RLE pilot); Tier-3 director pointing captured. " +
+          "lic_theotokion holds the RLE Now-and-ever Stavrotheotokion (data capture; " +
+          "the §2A assembler still renders the Octoechos tone-of-week Both-now).",
     fekula_section: "2A",
     has_great_doxology: false,
     has_polyeleos: false,
@@ -1208,14 +1217,17 @@ const JUNE_MENAION = {
     magnificat_sung: false,
     matins_format: "god_is_the_lord",
     aposticha_source: "octoechos",
-    stichera_lord_i_call_count: 3,  // T4, Spec. Mel. "As one valiant among the martyrs" (06-17.pdf)
+    stichera_lord_i_call_count: 3,  // T4, Spec. Mel. "As one valiant among the martyrs" (RLE)
     stichera_lord_i_call: [
-      { tone: 4, spec_mel: "As one valiant among the martyrs", text: "Like stars of surpassing splendor, * O all-famed passion-bearers, * ye illumine the ends of the world * with divine radiance, * dispelling the darkness of the demons, * the corrupting passions and misfortunes. * Wherefore, assembling today, O glorious ones, * we praise your luminous, ** light-bearing and holy festival." },
-      { tone: 4, spec_mel: "As one valiant among the martyrs", text: "With sacred hymns * let the wondrous Manuel, * the blessed Sabel * and the most wise Ismael, be honored; * for, confessing the uncreated Trinity in a sacred manner * in the face of the enemy, * they extinguished the delusion of polytheism * with the outpouring of their blood, ** and have received the glory which fadeth not away." },
-      { tone: 4, spec_mel: "As one valiant among the martyrs", text: "O blessed Manuel, Ismael and Sabel of great renown, * ye wisely put to shame * the lawless king * who iniquitously commanded you * to worship and render honor * to his mindless, inanimate gods; * and, having suffered patiently and lawfully, * ye have woven for yourselves wreaths of victory, ** praying for the world." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs", director: true, text: "You illumine the ends of the [un]iverse | O glorious passion-bearing [mar]tyrs | And being [stars] of surpassing [sple]ndor | You dispel the darkness of the [de]mons, | The corrupting passions, and all mis[for]tune, | Therefore, we have assembled today, O [glo]rious ones, // And we praise your bright, light-bearing and holy [fes]tival." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs", director: true, text: "Let us honor Manuel the wondrous with sacred [hymns] of praise, | Together with Sabel and [Is]mael: | For by [pi]ously confessing the uncreated Trinity before the face of the [en]emy | They extinguished the lies of i[do]latry | With the [flo]wing of their blood // And thus, have earned for themselves eternal [glo]ry." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs", director: true, text: "O blessed Manuel, Sabel, and [Is]mael, | Wisely you have put the lawless [king] to shame | Who [bra]zenly commanded you to worship his mindless and ina[ni]mate gods; | And for this you suffered patiently [un]der his law, | Thus, earning for yourselves crowns of [vic]tory // As you [pray]ed for the world." },
     ],
-    stichera_glory: { tone: 8, text: "The glorious martyrs, loving Thee in purity, O Word of God, having forsaken the worship of fire and spurned the land of Chaldea, were illumined by Thy light; and having armed themselves with the weaponry of faith, they put the tyrant Julian to shame. The glorious Manuel, the wondrous Sabel, and Ismael thrice rich, hymning Thee with the Father and the Spirit, pray ye that our souls be saved." },
-    lic_theotokion: null,   // §2A — Both-now = Octoechos theotokion (tone of week)
+    stichera_glory: { tone: 8, director: true, text: "The [glo]rious [mar]tyrs, | Loved Thee in purity, O [Word] of God, | For they were il[lu]mined [by] Thy Light. | And having forsaken the worship of fire and spurning the land of Chal[dæ]a | They armed themselves with the [weap]on of Faith | And put the [ty]rant [Ju]lian to shame. | O glorious Manuel, wondrous Sabel, and richly-bless’t Ismael, | We pray that you entreat the Father, Son and Holy [Spi]rit // That our [souls] may be saved." },
+    // Now and ever Stavrotheotokion (Tone 8, mel. "O most glorious wonder") — RLE supplies
+    // this; alternative is the Dogmatic Theotokion on a Resurrection service. Data capture
+    // for the Menaion browser; the §2A Vespers assembler renders the Octoechos Both-now.
+    lic_theotokion: { tone: 8, spec_mel: "O most glorious wonder", director: true, text: "“[Whát] is this [sight] that I see, | What do mine eyes behold, O [Mas]ter? | Thou, who sustainest all creation, lifted [up] [on] the Tree, | Dost die granting [life] to all,” | Cried the Theotokos, weeping, when she be[held] upon the Cross // The God-man Who had ineffably shone [forth] from her." },
     feast_e: "Ephesians 6:10-17 (§233)",
     feast_g: "Luke 21:12-19 (§106)",
     prokeimenon_tone: 4,
@@ -1232,17 +1244,14 @@ const JUNE_MENAION = {
       "praise is meet for the upright.",
     troparion: {
       tone: 4,
-      text: "In their sufferings, Thy martyrs O Lord, received imperishable crowns from " +
-            "Thee, our God; for, possessed of Thy might, they set at naught the tyrants " +
-            "and crushed the feeble audacity of the demons. By their supplications save " +
-            "Thou our souls.",
+      director: true,
+      text: "Thy holy martyrs Manuel, Sabel, and [Ís]mael, O Lord, | Through their sufferings received their incorruptible crown from [Thee], our God | For having Thy strength they laid low their [en]emies | And shattered the powerless boldness of [de]mons // Through their intercessions, O Christ God, [save] our souls.",
     },
     kontakion_ode6: {
       tone: 2,
-      text: "Wounded by the Faith of Christ, O most blessed one, and having faithfully " +
-            "drained the cup thereof, ye cast the worship and audacity of the Persians " +
-            "down to the ground, making supplications on behalf of us all, O ye who are " +
-            "equal in number to the Trinity.",
+      spec_mel: "Seeking the highest",
+      director: true,
+      text: "Being [woun]ded with faith in Christ, O [bles]sed ones, | And having drunk [faith]fully of His cup | You [cast] the vanity of the Persians’ [wor]ship to the ground | While praying on be[half] of us all, // O ye martyrs equal in [nu]mber to the [Tri]nity.",
     },
   },
 

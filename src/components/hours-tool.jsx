@@ -8098,6 +8098,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.16.12",
+    date: "June 2026",
+    summary: "data: June 17 (Manuel, Sabel & Ismael) — RLE translation swap, first director-pointed Menaion entry",
+    items: [
+      "data: 06-17 texts swapped from St. Sergius to the RLE (Lambertsen / Monk Joseph) translation — RLE pilot. First Menaion entry stored in the native OCA pointing dialect (| // [..]) rather than St. Sergius * /**.",
+      "data: 06-17 Tier-3 director pointing captured on all pointed fields (3 LIC stichera T4, Glory T8, troparion T4, kontakion T2), each carrying director: true. Underline spans verified at 300 dpi against the RLE PDF.",
+      "data: 06-17 lic_theotokion now holds the RLE Now-and-ever Stavrotheotokion (T8, mel. 'O most glorious wonder') as data capture for the Menaion browser; the §2A assembler continues to render the Octoechos tone-of-week Both-now.",
+      "data: 06-17 kontakion carries spec_mel 'Seeking the highest'; rank/tones/Matins format unchanged and confirmed by the RLE.",
+    ],
+  },
+  {
     version: "v0.16.11",
     date: "June 2026",
     summary: "Data integrity: pointing dialect validation, needsReview state, assembled service notes, repeat marker sweep",
