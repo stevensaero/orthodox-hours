@@ -3,7 +3,7 @@
 // inside an import.meta.env.DEV branch, so it is dead-code-eliminated from the
 // production build. Talks to the dev-only POST /__edit endpoint (tools/vite-edit-plugin.mjs).
 import { useState } from 'react';
-import { normalizeSergius } from './point-score-controls.jsx';
+import { renderPointed } from './point-score-controls.jsx';
 
 // Client lint — catches the cheap mistakes before a round-trip. Markers are content,
 // so they never break storage; this is encoding-rule hygiene only.
@@ -21,24 +21,8 @@ function lint(text) {
   return msgs;
 }
 
-// Strip-at-render preview: | and // become line breaks; [ ] emphasis renders bold.
-function PreviewLines({ text }) {
-  const norm = normalizeSergius(text);
-  const lines = norm.split(/\s\/\/\s|\s\|\s/).map((s) => s.trim()).filter(Boolean);
-  const renderBrackets = (line, k) => {
-    const parts = line.split(/(\[[^\]]*\])/g);
-    return (
-      <div key={k} style={{ lineHeight: 1.6 }}>
-        {parts.map((p, i) =>
-          p.startsWith('[') && p.endsWith(']')
-            ? <strong key={i}>{p.slice(1, -1)}</strong>
-            : <span key={i}>{p}</span>
-        )}
-      </div>
-    );
-  };
-  return <div style={{ fontFamily: "Georgia, serif", fontSize: '0.85rem', color: '#2C1F0A' }}>{lines.map(renderBrackets)}</div>;
-}
+// Strip-at-render preview is the shared renderPointed (point-score-controls.jsx),
+// so the editor shows exactly what the choir view produces.
 
 export default function FieldEditor({ datasetId, file, path, value, onClose, onSaved }) {
   const [text, setText] = useState(value ?? '');
@@ -88,8 +72,8 @@ export default function FieldEditor({ datasetId, file, path, value, onClose, onS
         }}
       />
       <div style={{ marginTop: '0.4rem', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#9A8A70' }}>Preview</div>
-      <div style={{ padding: '4px 8px', background: '#fff', border: '1px solid #EDE5CE', borderRadius: '3px' }}>
-        <PreviewLines text={text} />
+      <div style={{ padding: '4px 8px', background: '#fff', border: '1px solid #EDE5CE', borderRadius: '3px', fontFamily: 'Georgia, serif', fontSize: '0.85rem', color: '#2C1F0A' }}>
+        {renderPointed(text)}
       </div>
       {msgs.length > 0 && (
         <div style={{ marginTop: '0.4rem', fontSize: '0.76rem', color: '#B43C1E' }}>

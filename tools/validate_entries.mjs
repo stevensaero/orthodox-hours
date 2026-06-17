@@ -87,6 +87,11 @@ const RANKS_REQUIRING_LIC = new Set(['simple', 'six_stichera', 'doxology', 'poly
 const SIMPLE_MIN_LIC = 3; // §2A weekday = 3 Octoechos + 3 Menaion
 
 const strict = process.argv.includes('--strict');
+// --editor: per-save runs from the in-context editor. Downgrades Check E's
+// intra-array pointing-consistency violation to a warning so a stichera array can
+// be pointed one sticheron at a time. Malformed markers and Check A/B/D stay fatal.
+// The push gate (no flag) keeps it fatal — a half-pointed array must not be pushed.
+const editorMode = process.argv.includes('--editor');
 
 const problems = [];
 const warnings = [];
@@ -164,7 +169,7 @@ function checkEntry(label, entry, kind) {
     const hasMarker = (t) => / \* /.test(t) || / \*\* /.test(t) || /\s\|\s/.test(t) || /\s\/\/\s/.test(t);
     const markedCount = textItems.filter(s => hasMarker(s.text)).length;
     if (markedCount > 0 && markedCount < textItems.length) {
-      problems.push(`${label}: ${fieldName} — ${markedCount}/${textItems.length} items have pointing markers; all must match. Encode markers on unmarked items or confirm source had none.`);
+      (editorMode ? warnings : problems).push(`${label}: ${fieldName} — ${markedCount}/${textItems.length} items have pointing markers; all must match. Encode markers on unmarked items or confirm source had none.`);
     }
   }
   checkSticheraMarkers(entry.stichera_lord_i_call, 'stichera_lord_i_call');
@@ -199,11 +204,11 @@ if (problems.length === 0) {
 
 if (warnings.length > 0) {
   const tag = strict ? '✗' : '⚠';
-  console.error(`\n${tag} Stichera completeness (Check C): ${warnings.length} entr${warnings.length === 1 ? 'y' : 'ies'} missing Lord-I-Call stichera:\n`);
+  console.error(`\n${tag} Stichera warnings (completeness / pointing consistency): ${warnings.length}:\n`);
   for (const w of warnings) console.error('  • ' + w);
   console.error(
     strict
-      ? '\n--strict: completeness gaps are treated as failures. Enter the stichera or add a stichera_lord_i_call_note.'
+      ? '\n--strict: warnings are treated as failures. Enter the stichera, finish pointing the array, or add a stichera_lord_i_call_note.'
       : '\nThese are warnings (non-fatal). Run with --strict to gate on them once the data is filled in.'
   );
 } else if (problems.length === 0) {

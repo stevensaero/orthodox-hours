@@ -11,10 +11,15 @@ export function menaionFile(dateKey) {
   return month ? `src/data/menaion/${month}.js` : null;
 }
 
-// basePath = [dateKey, entryIndex] — entryIndex 0 = primary, 1+ = secondary commemorations
-export function menaionCtx(dateKey, entryIndex) {
+// basePath depends on how the date is stored:
+//   bare-object date (single commemoration) → [dateKey]
+//   array date (multi-commemoration)        → [dateKey, entryIndex]
+// entryIndex 0 = primary, 1+ = secondary commemorations (arrays only).
+export function menaionCtx(dateKey, entryIndex, isArray) {
   const file = menaionFile(dateKey);
-  return file ? { datasetId: 'menaion', file, basePath: [dateKey, entryIndex] } : null;
+  if (!file) return null;
+  const basePath = isArray ? [dateKey, entryIndex] : [dateKey];
+  return { datasetId: 'menaion', file, basePath };
 }
 
 // Build the full field path from a ctx + the field tail (e.g. 'troparion', 'text').

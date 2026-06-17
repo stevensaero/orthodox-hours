@@ -159,7 +159,7 @@ function TextBlock({ tone, text, specMel, label, verse, repeatIndex, editFile, e
             onClick={() => setEditing((v) => !v)}
             title="Edit this field (dev only)"
             style={{
-              flexShrink: 0, padding: '2px 8px', fontSize: '0.72rem', cursor: 'pointer',
+              flexShrink: 0, alignSelf: 'flex-start', padding: '2px 8px', fontSize: '0.72rem', cursor: 'pointer',
               border: '1px solid #C9BC9A', borderRadius: '3px',
               background: editing ? '#3B4A6B' : 'transparent', color: editing ? '#fff' : '#5C4A1E',
             }}
@@ -482,7 +482,7 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
   const isArray = Array.isArray(entry);
   const primary = isArray ? entry[0] : entry;
   const secondary = isArray ? entry.slice(1) : [];
-  const primaryCtx = menaionCtx(dateKey, 0); // in-context edit (dev-only)
+  const primaryCtx = import.meta.env.DEV ? menaionCtx(dateKey, 0, isArray) : null; // in-context edit (dev-only)
 
   // Track which sub-entry is currently scrolled into view (multi-entry dates only)
   const [visibleIdx, setVisibleIdx] = useState(0);
@@ -720,7 +720,7 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
 
       {/* ── Secondary entries (double commemorations) ── */}
       {secondary.map((sec, idx) => {
-        const secCtx = menaionCtx(dateKey, idx + 1);
+        const secCtx = import.meta.env.DEV ? menaionCtx(dateKey, idx + 1, true) : null;
         return (
         <div
           key={idx}

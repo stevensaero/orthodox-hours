@@ -6,7 +6,7 @@ import {
 } from '../data/octoechos/index.js';
 import { PSALMS, KATHISMA_MAP, getPsalmRange } from '../data/psalter.js';
 import { hymnText, hymnProvenance } from '../lib/hymn-entry.js';
-import { PointScoreControls, isPointable, normalizeSergius } from './point-score-controls.jsx';
+import { PointScoreControls, isPointable, normalizeSergius, renderPointed } from './point-score-controls.jsx';
 
 
 // ─── CALENDAR ENGINE ────────────────────────────────────────────────────────
@@ -871,38 +871,10 @@ function getServices(raw) {
   return Array.isArray(raw) ? raw : [raw];
 }
 
-// ── Forward-facing renderer for pointed hymnography (encoding_rule_v2.md §3) ──
-// Stored hymn text is ONE marked string in the OCA dialect: `|` line end,
-// `//` penultimate line, `[brackets]` director emphasis. Strip-at-render:
-//   • `|`  → line break (the symbol itself hidden)
-//   • `//` → kept visible at the end of the penultimate line (a chant cue)
-//   • `[x]` → reassembled into its word with the bracketed syllable underlined
-// A plain (Tier-1) string — or any prose/rubric without ` | `/` // ` markers —
-// passes straight through unchanged, so existing entries are unaffected.
-function renderPointed(text) {
-  if (typeof text !== 'string' || !text) return text;
-  const normalized = normalizeSergius(text);
-  if (!/\s\|\s/.test(normalized) && !/\s\/\/\s/.test(normalized)) return text; // not pointed → passthrough
-  const tokens = normalized.split(/(\s\/\/\s|\s\|\s)/); // [line0, sep0, line1, sep1, …, lineN]
-  const lines = [];
-  for (let i = 0; i < tokens.length; i += 2) {
-    lines.push({ content: tokens[i], sep: tokens[i + 1] });
-  }
-  return lines.map((ln, i) => {
-    const isPenult = !!ln.sep && ln.sep.indexOf('//') !== -1;
-    const segs = (ln.content || '').split(/(\[[^\]]*\])/); // keep [bracketed] spans
-    return (
-      <div key={i} style={{ marginBottom: '0.15rem' }}>
-        {segs.map((seg, j) =>
-          (seg.startsWith('[') && seg.endsWith(']') && seg.length > 2)
-            ? <u key={j}>{seg.slice(1, -1)}</u>
-            : <React.Fragment key={j}>{seg}</React.Fragment>
-        )}
-        {isPenult && <span style={{ color: '#B8A882' }}> //</span>}
-      </div>
-    );
-  });
-}
+// renderPointed (the forward-facing choir renderer for pointed hymnography,
+// encoding_rule_v2.md §3) now lives in point-score-controls.jsx as the single
+// source of truth, shared with the Menaion browser's editor preview. Imported above.
+
 
 // The chant tone of a rendered element. Stichera carry it in the "Tone N:" rubric
 // heading, troparia/kontakia in a toneNote or "· Tone N" label, and a few elements
@@ -8097,6 +8069,19 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.17.1",
+    date: "June 2026",
+    summary: "fix: in-context editor handles concatenated text + bare-object dates; faithful preview; lenient pointing gate",
+    items: [
+      "fix: bare-object (single-commemoration) dates now address correctly — the editor builds the path [dateKey, field, …] for bare objects and [dateKey, entryIndex, …] only for multi-commemoration arrays. Previously every single-commemoration entry (the common case) failed to locate.",
+      "feat: the edit engine now edits multi-line + string concatenations (the dominant storage form for long text). It evaluates the concatenation for compare-and-swap and splices the whole expression's source span with a freshly re-wrapped chain — marks (| // or * /**) split into chant lines kept verbatim, plain prose word-wrapped — leaving every comment and sibling field byte-identical. Round-trip verified that nothing but the target changed.",
+      "fix: editor preview now renders through the shared renderPointed (relocated to point-score-controls.jsx as the single source of truth), so it matches the choir view exactly: [word] underlined, penultimate // shown as a faint cue.",
+      "feat: pointing a stichera array one sticheron at a time no longer blocks the save. The per-save validator runs in --editor mode, which treats Check E's intra-array marker-consistency as a non-fatal warning (malformed markers and Check A/B/D stay fatal). The push gate (no flag) stays strict — a half-pointed array still fails before push.",
+      "fix: the save/preview diff shows only the changed region (common prefix/suffix trimmed) instead of the whole file when line counts shift; edit button top-aligns to the field.",
+      "docs: encoding_rule_v2.md → v2.3 and project_notes corrected — St. Sergius * /** are RETAINED verbatim as a source-provenance signal (normalized to | // only at render via normalizeSergius), reversing the prior convert-at-encode wording.",
+    ],
+  },
   {
     version: "v0.17.0",
     date: "June 2026",

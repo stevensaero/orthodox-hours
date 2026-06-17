@@ -38,7 +38,9 @@ function atomicWrite(absPath, content) {
 }
 
 function runValidator(root, datasetId) {
-  const r = spawnSync('node', [VALIDATOR(datasetId)], { cwd: root, encoding: 'utf8' }); // no --strict
+  const args = [VALIDATOR(datasetId)];
+  if (datasetId !== 'octoechos') args.push('--editor'); // lenient intra-array pointing consistency
+  const r = spawnSync('node', args, { cwd: root, encoding: 'utf8' }); // no --strict
   if (r.error) return { exitCode: -1, pass: false, output: 'spawn error: ' + r.error.message };
   const exitCode = r.status == null ? -1 : r.status;
   let output = ((r.stdout || '') + (r.stderr || '')).trim();

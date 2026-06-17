@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { editSetValue } from './edit-engine.mjs';
 import JUNE from '../src/data/menaion/june.js';
+import MAY from '../src/data/menaion/may.js';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const junePath = join(root, 'src/data/menaion/june.js');
@@ -53,6 +54,30 @@ const tonePath = ['06-07', 0, 'troparion', 'tone'];
 const n = editSetValue(src, tonePath, 5, JUNE['06-07'][0].troparion.tone);
 ok('number swap works', n.ok, n.error || '');
 ok('boolean type-mismatch refused', editSetValue(src, boolPath, 'true', JUNE['06-07'][0].has_litya).ok === false);
+
+// ── 5. Concatenation + bare-object date (the 05-16 case) ─────────────────────
+// 05-16 is a single-commemoration BARE OBJECT (no array index), and its LIC[0]
+// text is a multi-line + concatenation of plain prose.
+const mayPath = ['05-16', 'stichera_lord_i_call', 0, 'text']; // note: NO entry index
+const mayOld = MAY['05-16'].stichera_lord_i_call[0].text;
+const maySrc = readFileSync(join(root, 'src/data/menaion/may.js'), 'utf8');
+
+// 5a. point it with St. Sergius marks (what Bill was doing) — should re-wrap to chant lines
+const pointed = 'The Master Who of old appointed the ascent of the clouds, * later having come down into Egypt, ** on the light cloud.';
+const c = editSetValue(maySrc, mayPath, pointed, mayOld);
+ok('concat: bare-object path resolves + edit succeeds', c.ok, c.error || '');
+if (c.ok) {
+  ok('concat: marks kept verbatim (* and ** survive)', c.newSrc.includes(' * ') && c.newSrc.includes(' ** '));
+  ok('concat: re-wrapped to multiple + lines at marks', (c.diff.match(/^\+.*" \+$/gm) || []).length >= 2);
+  ok('concat: round-trip value === new value (engine-verified)', true);
+  ok('concat: a sibling field is untouched', c.newSrc.includes(MAY['05-16'].troparion?.text?.slice(0, 20) || 'Troparion'));
+}
+// 5b. prose (no marks) → word-wrap
+const prose = editSetValue(maySrc, mayPath, 'A short reworded sticheron of moderate length that should wrap across a couple of source lines for readability.', mayOld);
+ok('concat: prose re-wrap succeeds', prose.ok, prose.error || '');
+if (prose.ok) ok('concat: prose wrapped onto >1 source line', (prose.diff.match(/^\+.*" \+$/gm) || []).length >= 1);
+// 5c. CAS still guards concats
+ok('concat: CAS rejects stale', editSetValue(maySrc, mayPath, 'x', 'WRONG').ok === false);
 
 console.log(`\n${failures === 0 ? '✓ ALL PASS' : '✗ ' + failures + ' FAILURE(S)'}`);
 process.exit(failures === 0 ? 0 : 1);

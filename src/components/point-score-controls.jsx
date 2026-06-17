@@ -11,6 +11,36 @@ export function normalizeSergius(text) {
   return text.replace(/ \*\* /g, ' // ').replace(/ \* /g, ' | ');
 }
 
+// Canonical choir-facing render of a pointed verse. Single source of truth —
+// used by the Hours assembler and by the Menaion browser's in-context editor
+// preview, so what the editor shows is exactly what the choir sees.
+//   | = line end (break) · // = penultimate line (break + faint " //" shown)
+//   [bracketed] = director emphasis → underline
+export function renderPointed(text) {
+  if (typeof text !== 'string' || !text) return text;
+  const normalized = normalizeSergius(text);
+  if (!/\s\|\s/.test(normalized) && !/\s\/\/\s/.test(normalized)) return text; // not pointed → passthrough
+  const tokens = normalized.split(/(\s\/\/\s|\s\|\s)/); // [line0, sep0, line1, sep1, …, lineN]
+  const lines = [];
+  for (let i = 0; i < tokens.length; i += 2) {
+    lines.push({ content: tokens[i], sep: tokens[i + 1] });
+  }
+  return lines.map((ln, i) => {
+    const isPenult = !!ln.sep && ln.sep.indexOf('//') !== -1;
+    const segs = (ln.content || '').split(/(\[[^\]]*\])/); // keep [bracketed] spans
+    return (
+      <div key={i} style={{ marginBottom: '0.15rem' }}>
+        {segs.map((seg, j) =>
+          (seg.startsWith('[') && seg.endsWith(']') && seg.length > 2)
+            ? <u key={j}>{seg.slice(1, -1)}</u>
+            : <React.Fragment key={j}>{seg}</React.Fragment>
+        )}
+        {isPenult && <span style={{ color: '#B8A882' }}> //</span>}
+      </div>
+    );
+  });
+}
+
 // A verse is pointable when its stored text carries end-of-line marks
 // in either OCA dialect (| //) or St. Sergius dialect (* **).
 export function isPointable(text) {
