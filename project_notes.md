@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.17.0** | **Tone Trainer: v0.25.28** | Last synced: June 17, 2026
+**Tool version: v0.17.1** | **Tone Trainer: v0.25.28** | Last synced: June 17, 2026
 
 **Sunday Vespers — unified engine (P0 signed off; P1 engine LANDED in v0.16.0).** `sunday_vespers_spec.md`
 (repo root) specs one engine for ALL resurrectional Sundays — ordinary Octoechos
@@ -191,17 +191,21 @@ pending implementation.
 
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
-Every pointed text field stores ONE marked string (OCA dialect): `|` line end,
-`//` penultimate line, `[brackets]` director emphasis. Convert St. Sergius
-`*`/`**` (→ `|`/`//`, `**` first) and docx underlines (→ `[brackets]`) at encode
-time; never store source markers. Capture what the source gives — Tier 1 plain /
-Tier 2 `|` / Tier 3 director — and never invent a `//`. Strip-at-render: data
-browsers show the string verbatim; the hours tool converts `|`→line break and
+Every pointed text field stores ONE marked string in the source's dialect: `|` line
+end, `//` penultimate line, `[brackets]` director emphasis (RLE/OCA), or `*`/`**`
+(St. Sergius). **St. Sergius `*`/`**` are RETAINED verbatim as a source-provenance
+signal** — browsing the Menaion, the dialect itself tells you the text came from
+St. Sergius (vs. RLE/OCA `|`/`//`) without checking another field; the browser shows a
+`[St. Sergius]`/`[RLE/OCA]` badge. They are normalized to `|`/`//` only at render and
+Tone-Trainer handoff via `normalizeSergius`. Docx underlines DO convert to `[brackets]`
+at encode time. Capture what the source gives — Tier 1 plain / Tier 2 `|` / Tier 3
+director — and never invent a `//`. Strip-at-render: data browsers show the string
+verbatim; the hours tool normalizes `*`/`**`→`|`/`//`, converts `|`→line break, and
 reassembles bracketed words (underlining the bracketed syllable). Full rule:
-encoding_rule_v2.md §3. Drive delivers PDF + director-pointed docx sources only;
-more pointed docx will be added over time. P+63 Russia + North America are the
-first entries encoded this way (drafts complete, pending integration into
-`src/data/pentecostarion.js`).
+encoding_rule_v2.md §3 (v2.3 corrects the earlier convert-at-encode wording). Drive
+delivers PDF + director-pointed docx sources only; more pointed docx will be added over
+time. P+63 Russia + North America are the first entries encoded this way (drafts
+complete, pending integration into `src/data/pentecostarion.js`).
 
 **OCA service-docx → JSON pipeline (Tone Trainer v0.25.0).** The OCA propers
 live in Drive as director-pointed `.docx` (`OCA_service_documents/`, named
