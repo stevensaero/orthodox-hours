@@ -37,36 +37,44 @@ const MAY_MENAION = {
     aposticha_source: "octoechos",
     stichera_lord_i_call: [
       { tone: 6, spec_mel: "Having set all aside",
-        text: "The Master Who of old appointed " +
-              "the ascent of the clouds, " +
-              "later, having come down into Egypt on the light cloud, " +
-              "foretold that His chosen ones would shine forth, " +
-              "caught up on the clouds, in that they are divinely wise. " +
-              "And with them our father Theodore the sanctified, " +
-              "the unshakable pillar, steadfast in virtue, " +
-              "shining with the most radiant effulgence of Christ, " +
-              "doth pray with boldness on behalf of our souls." },
+        text: "The Master Who of old appointed * " +
+              "the ascent of the clouds, * " +
+              "later, having come down into Egypt on the light cloud, * " +
+              "foretold that His chosen ones would shine forth, * " +
+              "caught up on the clouds, * " +
+              "in that they are divinely wise. * " +
+              "And with them our father Theodore the sanctified, * " +
+              "the unshakable pillar, * " +
+              "steadfast in virtue, * " +
+              "shining with the most radiant effulgence of Christ, * " +
+              "doth pray with boldness ** " +
+              "on behalf of our souls." },
       { tone: 6, spec_mel: "Having set all aside",
-        text: "Egypt, which before was driven insane " +
-              "by demonic sacrifices and passions, " +
-              "is now adorned with ranks of fasters " +
-              "and revealed to be adorned with divers beauties and divine virtues. " +
-              "Among them hath shone forth the namesake of divine gifts, " +
-              "the venerable Theodore, " +
-              "who beheld and pleased God, " +
-              "and who, emulating Christ in wondrous humility, " +
-              "prayeth with boldness on behalf of our souls." },
+        text: "Egypt, which before was driven insane * " +
+              "by demonic sacrifices and passions, * " +
+              "is now adorned with ranks of fasters * " +
+              "and revealed to be adorned with divers beauties * " +
+              "and divine virtues. * " +
+              "Among them hath shone forth * " +
+              "the namesake of divine gifts, * " +
+              "the venerable Theodore, * " +
+              "who beheld and pleased God, * " +
+              "and who, emulating Christ in wondrous humility, * " +
+              "prayeth with boldness ** " +
+              "on behalf of our souls." },
       { tone: 6, spec_mel: "Having set all aside",
-        text: "From his youth, the wise Theodore, " +
-              "the great faster, the divinely wise one, " +
-              "showed forth asceticism, abstinence, " +
-              "humility, patience, the avoidance of evil " +
-              "and the acquisition of the virtues, " +
-              "in that he is a lover of divine love, " +
-              "and the wondrous one, rejoicing, hath transcended all things visible, " +
-              "being exalted by his manner of life; " +
-              "and, conversing with God, " +
-              "he now prayeth with boldness on behalf of our souls." },
+        text: "From his youth, the wise Theodore, * " +
+              "the great faster, * " +
+              "the divinely wise one, * " +
+              "showed forth asceticism, abstinence, * " +
+              "humility, patience, the avoidance of evil * " +
+              "and the acquisition of the virtues, * " +
+              "in that he is a lover of divine love, * " +
+              "and the wondrous one, rejoicing, hath transcended all things visible, * " +
+              "being exalted by his manner of life; * " +
+              "and, conversing with God, * " +
+              "he now prayeth with boldness ** " +
+              "on behalf of our souls." },
     ],
     stichera_lord_i_call_count: 3,
     stichera_glory: null,  // Glory/Both now from Pentecostarion (per PDF rubric)
