@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.17.1** | **Tone Trainer: v0.25.28** | Last synced: June 17, 2026
+**Tool version: v0.17.2** | **Tone Trainer: v0.25.28** | Last synced: June 17, 2026
 
 **Sunday Vespers — unified engine (P0 signed off; P1 engine LANDED in v0.16.0).** `sunday_vespers_spec.md`
 (repo root) specs one engine for ALL resurrectional Sundays — ordinary Octoechos
