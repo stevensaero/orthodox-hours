@@ -79,5 +79,17 @@ if (prose.ok) ok('concat: prose wrapped onto >1 source line', (prose.diff.match(
 // 5c. CAS still guards concats
 ok('concat: CAS rejects stale', editSetValue(maySrc, mayPath, 'x', 'WRONG').ok === false);
 
+// 5d. CRLF (Windows checkout) — node offsets are reported against an LF-normalized
+// copy, so the concat splice must anchor on loc, not node.start/.end. Edit the same
+// re-wrapped sticheron twice and confirm both succeed and line endings stay CRLF.
+const crlfSrc = maySrc.replace(/\n/g, '\r\n');
+const c1 = editSetValue(crlfSrc, mayPath, pointed, mayOld);
+ok('concat/CRLF: first edit succeeds (loc-anchored splice)', c1.ok, c1.error || '');
+if (c1.ok) {
+  ok('concat/CRLF: line endings stay CRLF (no lone LF injected)', /\r\n/.test(c1.newSrc) && !/[^\r]\n/.test(c1.newSrc));
+  const c2 = editSetValue(c1.newSrc, mayPath, pointed, pointed);
+  ok('concat/CRLF: re-editing the already-wrapped sticheron succeeds', c2.ok, c2.error || '');
+}
+
 console.log(`\n${failures === 0 ? '✓ ALL PASS' : '✗ ' + failures + ' FAILURE(S)'}`);
 process.exit(failures === 0 ? 0 : 1);

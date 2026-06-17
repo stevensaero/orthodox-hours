@@ -8070,6 +8070,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.17.2",
+    date: "June 2026",
+    summary: "fix: in-context editor corrupted text fields on Windows (CRLF) checkouts",
+    items: [
+      "fix: editing a concatenated text field on a CRLF (Windows) checkout produced 'round-trip reparse failed: Unexpected token' and was blocked. recast/@babel report node character offsets against an LF-normalized copy of the source, so on a CRLF file every splice landed one character too early per preceding line — cutting into the adjacent field. The concat splice now anchors on line/column (which survive line-ending normalization) instead of raw offsets, and re-wrapped lines are joined with the file's own line ending so CRLF files stay CRLF. LF checkouts are unaffected. Added a CRLF regression test to test_edit_engine.mjs.",
+    ],
+  },
+  {
     version: "v0.17.1",
     date: "June 2026",
     summary: "fix: in-context editor handles concatenated text + bare-object dates; faithful preview; lenient pointing gate",

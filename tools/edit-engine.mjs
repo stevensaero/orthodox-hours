@@ -127,7 +127,7 @@ export function collectLiterals(ast) {
 }
 
 function makeLineDiff(a, b) {
-  const al = a.split('\n'), bl = b.split('\n');
+  const al = a.split(/\r?\n/), bl = b.split(/\r?\n/);
   let p = 0;
   while (p < al.length && p < bl.length && al[p] === bl[p]) p++;
   let sa = al.length, sb = bl.length;
@@ -176,7 +176,10 @@ function rewrap(value) {
 }
 
 function nodeRange(node, src) {
-  if (typeof node.start === 'number' && typeof node.end === 'number') return [node.start, node.end];
+  // Compute offsets from loc against the RAW source. node.start/.end are offsets into
+  // a line-ending-normalized copy (recast/@babel collapse CRLF→LF before parsing), so
+  // on a CRLF file they are short by one char per preceding line and the splice cuts
+  // in the wrong place. loc (line/column) survives normalization, so it is reliable.
   const lineStarts = [0];
   for (let i = 0; i < src.length; i++) if (src[i] === '\n') lineStarts.push(i + 1);
   const off = (loc) => lineStarts[loc.line - 1] + loc.column;
@@ -202,8 +205,9 @@ function editConcat(src, ast, target, path, newValue, expectedOld) {
 
   const before = collectLiterals(ast);
   const indent = ' '.repeat(target.loc.start.column);
+  const nl = /\r\n/.test(src) ? '\r\n' : '\n'; // preserve the file's line ending
   const [start, end] = nodeRange(target, src);
-  const replacement = rewrap(newValue).map((s) => JSON.stringify(s)).join(' +\n' + indent);
+  const replacement = rewrap(newValue).map((s) => JSON.stringify(s)).join(' +' + nl + indent);
   const newSrc = src.slice(0, start) + replacement + src.slice(end);
 
   let ast2, t2;
