@@ -1,6 +1,6 @@
 # Local Editing Tool — Specification
 
-**Status:** Draft for review · **Targets:** Menaion (v1), Pentecostarion + Octoechos (follow-on), Triodion (reserved)
+**Status:** Phase 1 decision-complete (ready to build) · **Targets:** Menaion (v1), Pentecostarion + Octoechos (follow-on), Triodion (reserved)
 **Companion specs:** `encoding_rule_v2.md` (§3 markers, §6b repeat markers), `stichera_repeat_spec.md`
 
 ---
@@ -40,11 +40,11 @@ follow-ons), Triodion (reserved, dormant until its dataset exists). All four use
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  EDITOR SHELL  (dataset-agnostic, in-app)                    │
-│   · dataset picker → activates one adapter                   │
-│   · navigate via the dataset's existing browser              │
-│   · field list → textarea + strip-at-render preview          │
-│   · client lint → save → surface validator + diff result     │
+│  IN-CONTEXT EDIT  (dev-only branch in shared TextBlock)      │
+│   · dataset implicit (you are in that dataset's browser)     │
+│   · edit affordance on the field you are reading             │
+│   · textarea + strip-at-render preview + client lint         │
+│   · save / dryRun → surface validator + diff result          │
 └───────────────┬─────────────────────────────────────────────┘
                 │ POST {datasetId, file, path, op, value, expectedOld}
 ┌───────────────▼─────────────────────────────────────────────┐
@@ -57,8 +57,13 @@ follow-ons), Triodion (reserved, dormant until its dataset exists). All four use
         src/data/menaion/<month>.js   (or octoechos / pentecostarion)
 ```
 
-- **Core** (built once): the shell, the integrity pipeline, the operation vocabulary, the
-  recast engine, and the dev-only transport. None of it is dataset-specific.
+- **Core** (built once): a shared dataset-agnostic `<FieldEditor>` (textarea + preview +
+  lint + save), the integrity pipeline, the operation vocabulary, the recast engine, and
+  the dev-only transport. None of it is dataset-specific. The `<FieldEditor>` is mounted
+  **in-context** by the shared `TextBlock` / `FieldRow` components inside a compile-time
+  `import.meta.env.DEV` branch — so it lights up across every browser at once and is
+  **dead-code-eliminated from the production build** (see §9). There is no separate Editor
+  route and no dataset picker; you edit the field you are reading.
 - **Adapter** (one small declaration per dataset): `{ browser, fileResolver, pathGrammar,
   registry, validator, editableOps }`. Adding a dataset is writing an adapter, not a new
   editor.
@@ -93,11 +98,19 @@ operation).
 
 ## 5. Transport — Dev-Only Vite Plugin
 
-- A Vite plugin registers a dev-server middleware endpoint (e.g. `POST /__edit`).
-- It is **hard-gated to dev**: the handler is only installed under the dev server and
-  refuses to run in a production build. It is never bundled or shipped.
-- Request payload: `{ datasetId, file, path, op, value, expectedOld }`.
-- Response: `{ ok, written, validator: {pass, messages}, error? }`.
+- A dev-only Vite plugin registers a `configureServer` middleware at **`POST /__edit`** —
+  one endpoint, dispatched on the payload's `op` field, so Tier-2 ops are additive
+  handlers on the same route. The `/__` prefix marks it internal (no collision with
+  react-router paths or Vite's `/@vite`, `/@fs` internals).
+- It is **hard-gated to dev**: the middleware is only installed under the dev server and is
+  never bundled or shipped. (`base: '/orthodox-hours/'` does not apply to middleware, so the
+  endpoint is matched at server root; the app `fetch`es the absolute `/__edit`.)
+- **`dryRun` mode:** with `{ dryRun: true }` the plugin runs the full pipeline *except* the
+  final write and returns the would-be one-line diff + validator result, so the change can
+  be previewed before committing to it.
+- Request payload: `{ datasetId, file, path, op, value, expectedOld, dryRun? }`.
+- Response: `{ ok, written, diff, validator: {exitCode, pass, errors, warnings}, error? }`.
+- New **devDependencies**: `recast` + `@babel/parser` (dev-only; never in the prod bundle).
 
 ## 6. Edit Engine (recast)
 
@@ -137,10 +150,16 @@ independent layers:
    over the original (atomic on POSIX); a crash or full disk leaves either the intact old
    file or the complete new one. Re-stat and confirm the byte delta is consistent with a
    single value change.
-6. **Existing gate (pre-push, human).** Auto-run the dataset validator on the touched file
-   and surface results inline. The developer reviews `git diff`; the push gate
-   (`validate_entries.mjs` / `validate_octoechos.mjs`, clean `npm run build`) is the final
-   backstop.
+6. **Validator gate (per save / dryRun, severity-aware).** Each save and each `dryRun`
+   runs the dataset validator (`validate_entries.mjs`, or `validate_octoechos.mjs` for the
+   Octoechos adapter) on the whole corpus, folded into the plugin round-trip — a save is a
+   deliberate action, so this is once-per-save, not per-keystroke. **Do not pass
+   `--strict`.** Use the exit code as the block signal: **block the write on exit ≠ 0**
+   (Check A unknown-field / Check B overlay-flag — hard violations); **warn-and-allow on
+   Check C** completeness gaps (usually pre-existing elsewhere; surface as non-blocking
+   notices). A v1 string `setValue` cannot move any check, so it is effectively always a
+   pass; the gate earns its keep on scalar (`rank`/count) and Tier-2 edits. The developer
+   still reviews `git diff`; the push gate (clean `npm run build`) is the final backstop.
 
 ## 8. Director-Marker Handling
 
@@ -152,16 +171,28 @@ dialect — `|` line end, `//` penultimate line, `[ ]` director emphasis. The ed
   is visible while editing.
 - Enforces tier discipline in lint: capture what the source gives; never invent a `//`.
 
-## 9. UI (Option A — raw textarea + preview)
+## 9. UI (Option A — in-context, raw textarea + preview)
 
-1. **Dataset picker** → activates one adapter.
-2. **Navigate** using that dataset's existing browser (`menaion-browser.jsx`, etc.) to a
-   specific entry.
-3. **Field list** for the entry; editable string fields are selectable.
-4. **Editor:** raw textarea (the marked string) + live strip-at-render preview + inline
-   lint feedback.
-5. **Save:** POST to the dev plugin; surface validator result and a summary of the one-line
-   diff. Developer commits/pushes manually.
+Editing is **in-context**, not a separate surface. There is no Editor route and no dataset
+picker — dataset selection is implicit (you are in that dataset's browser). Every browser
+already renders hymnography through the shared `TextBlock` (and `FieldRow` for scalars),
+so the affordance is wired **once** there and lights up across Menaion, Pentecostarion,
+Octoechos, and Triodion together.
+
+1. **Read** an entry in its browser as today.
+2. In dev, `TextBlock` / `FieldRow` render an **edit affordance** on the field. The call
+   site supplies the field's path (`dateKey`, `entryIndex`, field, array index).
+3. **Editor:** clicking it mounts the shared `<FieldEditor>` — raw textarea (the marked
+   string) + live strip-at-render preview + inline lint feedback.
+4. **Save / dryRun:** POST to `/__edit`; surface the one-line diff + validator result.
+   Developer commits/pushes manually. The editor never runs git.
+
+**Production guarantee.** The affordance, `<FieldEditor>`, and its import all live inside a
+compile-time `import.meta.env.DEV` branch. Vite hard-codes that to `false` for
+`npm run build` and dead-code-eliminates the branch, so the editor is **absent from the
+shipped bundle** — not hidden, gone. There is also no `/__edit` endpoint off the dev
+machine (GitHub Pages is static), so editing is structurally impossible in production,
+twice over. The public sees `TextBlock` exactly as today.
 
 ## 10. Adapter Registry
 
@@ -246,12 +277,19 @@ The editor changes exactly the node pointed at — never more.
 - Version bump on the feature push that ships the editor (minor — new feature).
 - This spec commits separately from `project_notes.md`.
 
-## 16. Open Questions
+## 16. Resolved Decisions
 
-1. Editor entrypoint — a new top-level tab/route in the app, or an affordance inside each
-   existing browser?
-2. Dev-plugin endpoint name and whether to namespace it (`/__edit`).
-3. Gate policy — run the dataset validator on **every** save, or lint-on-save +
-   validator-on-demand before commit?
-4. Should the editor block save on validator failure, or warn-and-allow (developer owns
-   the commit)?
+1. **Entrypoint — in-context, no separate route.** Editing is surfaced through the shared
+   `TextBlock` / `FieldRow` in a compile-time `import.meta.env.DEV` branch; dataset
+   selection is implicit; production bundle excludes it entirely (§9).
+2. **Endpoint — `POST /__edit`, single op-dispatched**, via `configureServer`, matched at
+   server root, with a **`dryRun` preview** mode (§5). New devDependencies: recast +
+   @babel/parser.
+3. **Gate timing — validator on every save and dryRun**, folded into the plugin
+   round-trip (deliberate-action, not per-keystroke); whole-corpus tool, **no `--strict`**
+   (§7.6).
+4. **Gate policy — severity-aware: block on exit ≠ 0 (Check A/B), warn-and-allow on
+   Check C.** Octoechos adapter uses `validate_octoechos.mjs`'s own fatal/non-fatal split
+   (§7.6).
+
+Phase 1 is decision-complete.
