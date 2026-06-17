@@ -6,11 +6,12 @@
 const MAY_MENAION = {
   "05-16": {
     // ── May 16 — St. Theodore the Sanctified, Disciple of St. Pachomius ────
-    // No PDF in Drive — General Menaion fallback for Venerable (monastic) type.
-    // Troparion: General troparion for a venerable father (below — from OCA).
-    // Kontakion: General kontakion for a venerable father (below — from OCA).
-    // Stichera: General Menaion for a Venerable (O Glorious Wonder / desert-dweller type).
-    // Rank: §2A confirmed — OCA calendar lists Simple rank; no AT LITURGY section expected.
+    // Source: 05-16.pdf (St. Sergius Menaion). All propers below are from it.
+    // Troparion (Tone I) & Kontakion (Tone II): proper, from the PDF. The kontakion is
+    //   printed after Ode III and AT LITURGY (displaced from the Ode VI slot by the
+    //   Pentecostarion kontakion). Both confirmed against OCA, which agrees.
+    // Stichera (Tone VI, "Having set all aside"): 3 proper, from the PDF.
+    // Rank: §2A confirmed — 3 Menaion stichera; OCA calendar lists Simple rank.
     // Note: May 16 O.S. = May 29 N.S. OCA commemorates May 16 N.S. — DIVERGENCE; OCA governs.
     saint: "St. Theodore the Sanctified, Disciple of St. Pachomius the Great",
     source_file: "05-16.pdf",
@@ -25,8 +26,10 @@ const MAY_MENAION = {
     matins_format: "alleluia",
     note: "Source: 05-16.pdf. May 16 O.S. = May 29 N.S. — DIVERGENCE; OCA date governs. " +
           "§2A confirmed — 3 Menaion stichera (+ 3 from Pentecostarion = 6 total per §4A Pentecostarion pattern). " +
-          "Troparion Tone I from PDF (proper text); replaces OCA Tone VIII generic used in prior encoding. " +
-          "No AT LITURGY section — readings from Octoechos. " +
+          "Troparion (Tone I) and Kontakion (Tone II) are proper, both from 05-16.pdf; the kontakion is printed " +
+          "after Ode III and AT LITURGY (displaced from the Ode VI slot by the Pentecostarion kontakion). " +
+          "Confirmed against OCA (oca.org troparia 05-16), which agrees. " +
+          "AT LITURGY carries the troparion and kontakion; §2A has no proper epistle/gospel, so cycle readings govern. " +
           "Disciple of St. Pachomius; abbot of Tabennisi monastery in Egypt; d. 368.",
     feast_e: null,  // §2A — readings from Octoechos
     feast_g: null,
@@ -101,11 +104,11 @@ const MAY_MENAION = {
   },
 
   // ── May 17 — Sts Andronicus and Junia the Apostles ──────────────────────
-  // Retained from original sample data
 
   "05-17": {
     // ── May 17 — Holy Apostles Andronicus and Junia (of the Seventy) ────────
-    // No PDF in Drive — General Menaion fallback for Holy Apostles type.
+    // Source: 05-17.pdf (St. Sergius Menaion). Stichera, troparion, and kontakion are all proper, from it.
+    // Troparion (Tone III) & Kontakion (Tone II): from the PDF (kontakion after Ode III and AT LITURGY).
     // Note: May 17 O.S. = May 30 N.S. OCA commemorates May 17 N.S. — DIVERGENCE; OCA governs.
     // Rank: §2A confirmed — OCA calendar lists Simple rank.
     saint: "Holy Apostles Andronicus and Junia of the Seventy",
@@ -121,8 +124,9 @@ const MAY_MENAION = {
     matins_format: "alleluia",
     note: "Source: 05-17.pdf. May 17 O.S. = May 30 N.S. — DIVERGENCE; OCA date governs. " +
           "§2A confirmed — 3 stichera Tone VIII. Glory/Both now from Pentecostarion (per PDF rubric). " +
-          "Kontakion from PDF Tone II (proper text naming both Andronicus and Junia). " +
-          "Troparion Tone III matches OCA and PDF. No AT LITURGY section — readings from Octoechos. " +
+          "Kontakion (Tone II) proper, from the PDF (after Ode III and AT LITURGY), naming both Andronicus and Junia. " +
+          "TROPARION: PDF prints the plural common-apostles troparion (Tone III, 'O holy apostles … forgiveness of sins unto our souls'); now used, replacing a prior singular OCA generic (PDF proper > OCA generic). " +
+          "AT LITURGY carries the troparion and kontakion; §2A has no proper epistle/gospel, so cycle readings govern. " +
           "Andronicus: kinsman of St. Paul (Romans 16:7). Junia: his fellow laborer, named as apostle.",
     feast_e: null,  // §2A — readings from Octoechos
     feast_g: null,
@@ -132,47 +136,56 @@ const MAY_MENAION = {
     aposticha_source: "octoechos",
     stichera_lord_i_call: [
       { tone: 8, spec_mel: "O most glorious wonder",
-        text: "As a servant of the Word, " +
-              "a glorious minister, " +
-              "and most radiant luminary of the whole world, O divinely blessed one, " +
-              "thou didst bring an end " +
-              "to the irrational corruption of ungodliness by thy word; " +
-              "wherefore, with divine words we joyfully glorify and celebrate " +
-              "thy holy memory, offering praise to the Almighty." },
+        text: "As a servant of the Word, * " +
+              "a glorious minister, * " +
+              "and most radiant luminary of the whole world, * " +
+              "O divinely blessed one, * " +
+              "thou didst bring an end * " +
+              "to the irrational corruption of ungodliness by thy word; * " +
+              "wherefore, with divine words we joyfully glorify and celebrate * " +
+              "thy holy memory, ** " +
+              "offering praise to the Almighty." },
       { tone: 8, spec_mel: "O most glorious wonder",
-        text: "The divine Apostle Paul, " +
-              "splendidly praising you all with divine laudations, " +
-              "setting forth your valor before the faithful, " +
-              "speaking first of all to show that ye " +
-              "are divinely wise disciples of the Word of God and His true kinsmen, " +
-              "O glorious Junia and blessed Andronicus, ye favorites of God." },
+        text: "The divine Apostle Paul, * " +
+              "splendidly praising you all with divine laudations, * " +
+              "setting forth your valor before the faithful, * " +
+              "speaking first of all to show that ye * " +
+              "are divinely wise disciples of the Word of God * " +
+              "and His true kinsmen, * " +
+              "O glorious Junia * " +
+              "and blessed Andronicus, ** " +
+              "ye favorites of God." },
       { tone: 8, spec_mel: "O most glorious wonder",
-        text: "Illumining the whole earth " +
-              "with sacred preaching, " +
-              "ye dispelled the gloom of vainglory " +
-              "and have directed to the light of divine knowledge " +
-              "those who from of old were sunk in the darkness of ungodliness, " +
-              "O divine apostles, " +
-              "ye guides to salvation " +
-              "and intercessors for all who ever honor you with faith." },
+        text: "Illumining the whole earth * " +
+              "with sacred preaching, * " +
+              "ye dispelled the gloom of vainglory * " +
+              "and have directed to the light of divine knowledge * " +
+              "those who from of old were sunk in the darkness of ungodliness, * " +
+              "O divine apostles, * " +
+              "ye guides to salvation * " +
+              "and intercessors for all ** " +
+              "who ever honor you with faith." },
     ],
     stichera_lord_i_call_count: 3,
     stichera_glory: null,  // Glory/Both now from Pentecostarion (per PDF rubric)
     lic_theotokion: null,
     troparion: {
       tone: 3,
-      text: "O holy apostle Andronicus, " +
-            "entreat the merciful God " +
-            "to grant our souls forgiveness of transgressions.",
+      text: "O holy apostles, * " +
+            "entreat the merciful God, * " +
+            "that He grant forgiveness of sins ** " +
+            "unto our souls.",
+      note: "From 05-17.pdf — proper common-apostles troparion (plural, fits both saints). Replaces a prior singular OCA generic per resolution order (PDF proper > General Menaion > OCA generic).",
     },
     kontakion_ode6: {
       tone: 2,
       spec_mel: "Seeking the highest",
-      text: "Let us praise Andronicus, the apostle of Christ, " +
-            "the most radiant star who hath illumined the nations " +
-            "with the light of divine knowledge, " +
-            "and with him the most wise Junia, who shone forth in piety; " +
-            "and let us cry aloud: " +
+      text: "Let us praise Andronicus, the apostle of Christ, * " +
+            "the most radiant star who hath illumined the nations * " +
+            "with the light of divine knowledge, * " +
+            "and with him the most wise Junia, * " +
+            "who shone forth in piety; * " +
+            "and let us cry aloud: ** " +
             "Entreat Christ God without ceasing on behalf of our souls!",
       note: "From 05-17.pdf — proper text naming both Andronicus and Junia",
     },
@@ -189,7 +202,7 @@ const MAY_MENAION = {
     // Source: 05-18.pdf. May 18 O.S. = May 31 N.S. — DIVERGENCE; OCA date governs.
     // Six stichera §2C: 3 Theodotus/Virgins Tone I + 3 Peter/Dionysius Tone IV.
     // Glory/Both now from Pentecostarion (rubric in PDF; texts not printed).
-    // No AT LITURGY section → readings from Octoechos. Kontakion from Liturgy section.
+    // AT LITURGY: kontakion (Tone II) printed; no proper epistle/gospel — §2C cycle readings govern.
     saint: "Martyr Theodotus of Ancyra, the Seven Holy Virgins, and Martyrs Peter, Dionysius & companions",
     source_file: "05-18.pdf",
     oca_primary: true,
@@ -202,8 +215,9 @@ const MAY_MENAION = {
     magnificat_sung: false,
     matins_format: "alleluia",
     note: "May 18 O.S. = May 31 N.S. OCA commemorates May 18 N.S. — DIVERGENCE; OCA date governs. " +
-          "§2C Six-stichera confirmed from PDF. Primary: Martyr Theodotus of Ancyra (innkeeper) with Seven Virgins. " +
-          "Secondary: Martyrs Peter, Dionysius & companions. OCA and St. Sergius texts agree. " +
+          "§2C Six-stichera confirmed from 05-18.pdf (3 Theodotus/Virgins Tone I + 3 Peter/Dionysius Tone IV). " +
+          "Kontakion (Tone II) proper, from the PDF (after Ode VI and AT LITURGY). " +
+          "TROPARION: daily PDF prints none; uses the St. Sergius General Menaion 'Martyrs' troparion (Tone I, 'We beseech Thee O Lord …', traditional register) per the fallback chain. " +
           "Glory/Both now rubric: 'from the Pentecostarion' — texts assembled from Pentecostarion entry.",
     feast_e: null,  // §2C — readings from Octoechos
     feast_g: null,
@@ -213,72 +227,74 @@ const MAY_MENAION = {
     aposticha_source: "octoechos",
     stichera_lord_i_call: [
       { tone: 1, spec_mel: "Joy of the ranks of heaven",
-        text: "Adorned with a peaceful disposition, " +
-              "thou wast chosen in holiness to minister unto all, O most blessed Theodotus, " +
-              "and illumined with the crown of suffering, " +
-              "thou hast joined chorus in the heavens " +
-              "with those who suffered with thee. " +
+        text: "Adorned with a peaceful disposition, * " +
+              "thou wast chosen in holiness to minister unto all, O most blessed Theodotus, * " +
+              "and illumined with the crown of suffering, * " +
+              "thou hast joined chorus in the heavens * " +
+              "with those who suffered with thee. ** " +
               "With them pray thou, that we be saved." },
       { tone: 1, spec_mel: "Joy of the ranks of heaven",
-        text: "Having offered thyself to the Lord " +
-              "as a sacred vessel, submitting to His words, O divinely blessed one, " +
-              "thou didst generously give to the poor, O wise martyr, " +
-              "noetically laying up for thyself " +
-              "the riches of martyrdom, which cannot be taken away." },
+        text: "Having offered thyself to the Lord * " +
+              "as a sacred vessel, submitting to His words, O divinely blessed one, * " +
+              "thou didst generously give to the poor, O wise martyr, * " +
+              "noetically laying up for thyself * " +
+              "the riches of martyrdom, ** " +
+              "which cannot be taken away." },
       { tone: 1, spec_mel: "Joy of the ranks of heaven",
-        text: "Behold the river of salvation! Behold the living well-spring, " +
-              "which the company of holy virgins hath been shown to be! " +
-              "Wherefore, come ye fervently: " +
-              "Let us who are sick now draw forth healing, " +
-              "and let those in sorrow draw forth joy, " +
+        text: "Behold the river of salvation! Behold the living well-spring, * " +
+              "which the company of holy virgins hath been shown to be! * " +
+              "Wherefore, come ye fervently: * " +
+              "Let us who are sick now draw forth healing, * " +
+              "and let those in sorrow draw forth joy, ** " +
               "through the supplications of the holy brides of Christ!" },
       { tone: 4, spec_mel: "Thou hast given a sign",
-        text: "Illumined with the radiance " +
-              "of the three-Sunned Godhead, " +
-              "ye passed through the darkness of tortures " +
-              "and have been revealed to be brilliant stars, " +
-              "the divine confirmation of the Church, " +
-              "ever shedding light, O holy martyrs. " +
-              "Wherefore, bowing down before your relics " +
-              "and the dust of your bodies, " +
+        text: "Illumined with the radiance * " +
+              "of the three-Sunned Godhead, * " +
+              "ye passed through the darkness of tortures * " +
+              "and have been revealed to be brilliant stars, * " +
+              "the divine confirmation of the Church, * " +
+              "ever shedding light, O holy martyrs. * " +
+              "Wherefore, bowing down before your relics * " +
+              "and the dust of your bodies, ** " +
               "we celebrate your resplendent festival." },
       { tone: 4, spec_mel: "Thou hast given a sign",
-        text: "O ye faithful, with joy let us all now bless " +
-              "Peter and Dionysius, " +
-              "Paul, Andrew and Benedimus, " +
-              "who were valiant and firm, " +
-              "Christina, Heraclius and Paulinus, " +
-              "who suffered steadfastly, the three together, " +
-              "trampled underfoot all the wiles of the serpent " +
+        text: "O ye faithful, with joy let us all now bless * " +
+              "Peter and Dionysius, * " +
+              "Paul, Andrew and Benedimus, * " +
+              "who were valiant and firm, * " +
+              "Christina, Heraclius and Paulinus, * " +
+              "who suffered steadfastly, * " +
+              "the three together, * " +
+              "trampled underfoot all the wiles of the serpent ** " +
               "and dispelled the darkness of idolatry with grace." },
       { tone: 4, spec_mel: "Thou hast given a sign",
-        text: "With your blood, O blessed ones, " +
-              "ye purchased the unshakable kingdom of God, " +
-              "and ye attained unto the calm havens, " +
-              "having endured all the threefold waves of evils " +
-              "with manly mind, O ye divinely sanctified ones. " +
-              "Wherefore, ye are called blessed " +
-              "and are glorified by all, " +
-              "pray ye always, that we find mercy " +
+        text: "With your blood, O blessed ones, * " +
+              "ye purchased the unshakable kingdom of God, * " +
+              "and ye attained unto the calm havens, * " +
+              "having endured all the threefold waves of evils * " +
+              "with manly mind, O ye divinely sanctified ones. * " +
+              "Wherefore, ye are called blessed * " +
+              "and are glorified by all, * " +
+              "pray ye always, that we find mercy ** " +
               "on the day of judgment." },
     ],
     stichera_lord_i_call_count: 6,
     stichera_glory: null,  // §2C — Glory/Both now from Pentecostarion (per PDF rubric)
     lic_theotokion: null,  // Pentecostarion supplies Both now
     troparion: {
-      tone: 4,
-      text: "Your holy martyr Theodotus and his companions, O Lord, " +
-            "through their sufferings have received incorruptible crowns from You, our God. " +
-            "For having Your strength, they laid low their adversaries, " +
-            "and shattered the powerless boldness of demons. " +
-            "Through their intercessions, save our souls!",
+      tone: 1,
+      text: "We beseech Thee O Lord for the sake of the sufferings of Thy saints * " +
+            "which they endured on Thy behalf, * " +
+            "be compassionate unto us, ** " +
+            "and heal all our infirmities, O Lover of mankind.",
+      note: "From the St. Sergius General Menaion (Martyrs.pdf), Tone I — 05-18.pdf prints no proper troparion; general of many martyrs used per fallback chain (daily PDF > General Menaion > OCA).",
     },
     kontakion_ode6: {
       tone: 2,
       spec_mel: "Seeking the highest",
-      text: "Having struggled well as a spiritual athlete, O Theodotus, " +
-            "with the spiritual athletes and the passion-bearing virgins " +
-            "thou hast received crowns of honor. " +
+      text: "Having struggled well as a spiritual athlete, O Theodotus, * " +
+            "with the spiritual athletes and the passion-bearing virgins * " +
+            "thou hast received crowns of honor. ** " +
             "Wherefore, unceasingly entreat Christ God on behalf of us all.",
     },
   },
