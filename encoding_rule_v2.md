@@ -1,14 +1,21 @@
-# ENCODING RULE v2.2 — Orthodox Hours Tool
+# ENCODING RULE v2.3 — Orthodox Hours Tool
 **Authority:** Fekula & Williams (2009) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** June 2026 · **Supersedes:** v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+**Updated:** June 2026 · **Supersedes:** v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
 
-**v2.2 changes — POINTED HYMNOGRAPHY MARKERS (canonical):** Every pointed text
-field (stichera, troparia, kontakia, sessional hymns, exapostilaria, the Praises,
-irmoi — any text the choir points and sings) stores ONE marked string as the
-single source of truth, in the OCA marker dialect: `|` line end · `//` penultimate
-line · `[brackets]` director emphasis. Convert other sources' markers at encode
-time; never store them. Strip-at-render. Applies across menaion / pentecostarion /
-octoechos / triodion. See §3.
+**v2.3 changes — ST. SERGIUS MARKER PROVENANCE (corrects v2.2):** Earlier guidance
+said to convert St. Sergius `*` / `**` to `|` / `//` at encode time and never store
+them. That is reversed. `*` / `**` are now RETAINED VERBATIM in the stored data as a
+source-provenance signal — a reader browsing the Menaion sees the dialect and knows the
+text came from St. Sergius (vs. RLE/OCA `|` / `//`) without checking another field.
+They are normalized to `|` / `//` only at render and at Tone-Trainer handoff, via
+`normalizeSergius`. Underlines still convert to `[brackets]` at encode time.
+
+**Pointed hymnography (canonical):** Every pointed text field (stichera, troparia,
+kontakia, sessional hymns, exapostilaria, the Praises, irmoi — any text the choir
+points and sings) stores ONE marked string as the single source of truth, in the
+source's marker dialect: `|` line end · `//` penultimate line · `[brackets]` director
+emphasis (RLE/OCA), or `*` / `**` (St. Sergius). Applies across menaion /
+pentecostarion / octoechos / triodion. See §3.
 
 **v2.1 changes:** Kontakion field names unified across Menaion and Pentecostarion —
 `kontakion_ode6` (3rd & 9th Hours) and `kontakion_ode3` (1st & 6th Hours) replace
@@ -108,27 +115,36 @@ Bracketed emphasis may sit mid-word: `A[mer]ica`, `Resur[rec]tion`.
 - **Tier 3 — `|` plus `//` plus `[brackets]`.** Source carries director pointing
   (underlines in a formatted docx, or explicit accents). Capture all three.
 
-### 3.3 Normalizing source markers AT ENCODE TIME (store only the OCA dialect)
+### 3.3 Source markers at encode time — convert underlines, RETAIN St. Sergius `*` / `**`
 
-- **St. Sergius `*` / `**`** → `*` becomes `|`; `**` becomes `//`. Convert `**`
-  FIRST, so a double asterisk never collapses to `||`.
+- **St. Sergius `*` / `**`** → KEEP VERBATIM. They are a deliberate source-provenance
+  signal: a reader browsing the Menaion sees `*` / `**` and knows the text came from
+  St. Sergius without consulting another field, whereas RLE / OCA texts carry `|` / `//`.
+  Do NOT convert at encode time. Rendering and Tone-Trainer handoff normalize `*` → `|`
+  and `**` → `//` via `normalizeSergius` (`**` first, so a double asterisk never
+  collapses to `||`).
+- **RLE / OCA sources** → already use `|` / `//`; store verbatim.
 - **Formatted-docx underlines** → the underlined span becomes `[brackets]`; merge
   adjacent underlined runs into one bracket (`A[mer]ica`, not `A[mer][ica]`).
   These docx are delivered via Drive (see §2) and will grow over time.
 - **`//` already in the text** (OCA docx penultimate marker) → keep it, whether at
   a line end or mid-line.
 
-Never store `*`/`**` or raw underline markup. Never count or hand-assign phrase
-roles (A/B/C/D) — the Tone Trainer derives roles from the line sequence. Record the
-end-of-line marks faithfully; that is all.
+Store markers in the source's own dialect — `*` / `**` for St. Sergius, `|` / `//` for
+RLE/OCA — so the stored dialect itself records provenance; the Menaion browser shows a
+`[St. Sergius]` / `[RLE/OCA]` badge derived from the stored markers. Never count or
+hand-assign phrase roles (A/B/C/D) — the Tone Trainer derives roles from the line
+sequence. Record the end-of-line marks faithfully; that is all.
 
 ### 3.4 Rendering (strip-at-render — store once, present per context)
 
 - **Data browsers** (Menaion / Pentecostarion / Octoechos viewers; the Tone Trainer
-  pipe): show the marked string VERBATIM — `|`, `//`, `[brackets]`, every punctuation
-  mark and syllable hyphen visible. This is the truthing view and the Tone Trainer's
-  native input.
-- **Hours-tool forward-facing verses:** `|` → line break (symbol hidden); bracketed
+  pipe): show the marked string VERBATIM — `|`, `//`, `[brackets]` or St. Sergius
+  `*` / `**`, every punctuation mark and syllable hyphen visible, with a
+  `[St. Sergius]` / `[RLE/OCA]` dialect badge. This is the truthing view and the Tone
+  Trainer's native input.
+- **Hours-tool forward-facing verses:** St. Sergius `*` / `**` are first normalized to
+  `|` / `//` (via `normalizeSergius`); then `|` → line break (symbol hidden); bracketed
   words reassembled whole with the bracketed syllable underlined (e.g. the "rec" of
   `Resur[rec]tion`); `//` kept visible; punctuation and real hyphens kept. A Tier-1
   plain string passes through as one paragraph.
@@ -838,9 +854,9 @@ explicit value (not blank), and:
       unknown-field guard (`tools/validate_entries.mjs`) enforces this; for a
       Sunday overlay (`all_saints_sunday`/`pentecostarion_sunday`), clone the field
       names from the P+56 All Saints entry rather than naming fields fresh.
-- [ ] Pointed text fields use the §3 marker dialect (`|` `//` `[brackets]`);
-      source `*`/`**` and underlines converted; no invented `//`; `director: true`
-      set where Tier-3 marks are present
+- [ ] Pointed text fields use the §3 marker dialect — RLE/OCA `|` `//` `[brackets]`,
+      or St. Sergius `*`/`**` RETAINED verbatim (provenance); underlines converted to
+      `[brackets]`; no invented `//`; `director: true` set where Tier-3 marks are present
 
 **Menaion §2A:**
 - [ ] Calendar section complete
