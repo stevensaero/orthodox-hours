@@ -12,11 +12,19 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.27";
+export const TONE_TRAINER_VERSION = "v0.25.28";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.28",
+    date: "June 2026",
+    summary: "lexicon — director corrections: equal (e·qual), faithfully (faith·ful·ly)",
+    items: [
+      "fix: syllable corrections from the choir director — 'equal' is two syllables (e·qual), corrected from a low-confidence count-only 3-syllable split (e·qu·al). 'faithfully' added at three syllables (faith·ful·ly); it was absent from the lexicon and fell back to runtime rules. Both stress the first syllable (src: director), consistent with the director bracket on [faith]fully in the June 17 kontakion. Applied to the served lexicon (public/lexicon) and the build accumulator (tools/lexicon-out) so they survive a rebake; neither word is in name-residue, so the table↔residue merge stays collision-free. The version bump cache-busts the lexicon fetch so the corrections take effect immediately.",
+    ],
+  },
   {
     version: "v0.25.27",
     date: "June 2026",
