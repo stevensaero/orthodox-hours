@@ -1,15 +1,14 @@
-# ENCODING RULE v2.4 — Orthodox Hours Tool
+# ENCODING RULE v2.5 — Orthodox Hours Tool
 **Authority:** Fekula & Williams (2009) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** June 2026 · **Supersedes:** v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+**Updated:** June 2026 · **Supersedes:** v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
 
-**v2.4 changes — SOURCE-EXHAUSTION & PROVENANCE GATES (after the 05-16 kontakion error):**
-A prior encode declared St. Theodore's kontakion absent (it was printed after Ode III, not
-Ode VI), substituted a remembered generic, and mislabeled it "from OCA" with a false
-"No PDF in Drive" header. New guardrails: §5.x (search AT LITURGY + Ode VI + Ode III before
-calling any kontakion missing); §2.1 (the St. Sergius General Menaion saint-type files and
-the strict daily-PDF → General Menaion → OCA fallback order); §11 #11–#13 and the §12
-checklist (provenance must be verified not assumed; name the real source of every fallback;
-never fabricate a generic while a proper exists).
+**v2.5 changes — POINTING FIDELITY, NO-TROPARION FALLBACK, RESOLUTION ORDER (May 16–18 audit):**
+§11 #14 (if the source points a text with `*`/`**`, store it pointed — never flatten to
+prose; the most widespread defect), #15 (when the daily PDF prints no troparion, source it
+from the St. Sergius General Menaion by saint type, pointed, in traditional register, and
+record the file), #16 (resolution order daily-PDF proper > St. Sergius General Menaion >
+OCA; OCA overrides only with a saint-*specific* proper, never a generic over a printed
+proper; all texts conform to thou/thy) — with matching §12 checklist gates.
 
 **v2.3 changes — ST. SERGIUS MARKER PROVENANCE (corrects v2.2):** Earlier guidance
 said to convert St. Sergius `*` / `**` to `|` / `//` at encode time and never store
@@ -932,6 +931,26 @@ After the .txt skeleton is complete, these fields map to the tool data objects:
     wrong kontakion. Source order is absolute: daily PDF → St. Sergius General Menaion →
     OCA. Record which one supplied each text.
 
+14. **Pointing fidelity — if the source points it, store it pointed.** When the daily PDF
+    (or General Menaion) marks a text with `*`/`**`, the encoded field MUST retain those
+    markers verbatim (Tier-2). Flattening a pointed source text to plain prose is an
+    encoding gap, not a Tier-1 choice — Tier-1 is only for sources that print *no* line
+    structure. (Every May 16–18 hymn was wrongly flattened; this was the most widespread
+    defect found.)
+
+15. **"Daily PDF prints no troparion" handling.** Some §2A/§2C days print stichera and a
+    kontakion but no troparion (e.g. 05-18). Do NOT leave a remembered/OCA generic in
+    contemporary English. Source the troparion from the St. Sergius General Menaion by
+    saint type (Martyr/Martyrs/Venerable/Apostle…), pointed, in traditional register;
+    record the exact file in the field `note`. Check OCA only for a *saint-specific* proper.
+
+16. **Resolution order & register (OCA precedence, correctly applied).** The order is
+    **daily-PDF proper > St. Sergius General Menaion > OCA.** OCA precedence means OCA's
+    *saint-specific proper* overrides St. Sergius's — it does NOT license substituting an
+    OCA *generic* for a printed St. Sergius *proper* (the 05-31 error) nor a singular
+    generic for the PDF's printed troparion (05-17). All stored texts conform to the
+    tool's traditional thou/thy register; OCA contemporary wording is conformed, not pasted.
+
 ---
 
 ## 12. PRE-SAVE CHECKLIST
@@ -953,6 +972,10 @@ explicit value (not blank), and:
       URL); no daily-PDF text attributed to OCA or vice-versa.
 - [ ] Fallback order honored (§2.1, §11 #13): daily PDF → St. Sergius General Menaion →
       OCA; no remembered generic substituted while a proper exists.
+- [ ] Pointing fidelity (§11 #14): every text the source points with `*`/`**` is stored
+      pointed (Tier-2), markers verbatim — not flattened to plain prose.
+- [ ] Resolution order & register (§11 #15–16): troparion sourced correctly when the PDF
+      prints none; OCA overrides only with a saint-specific proper; all texts in thou/thy.
 
 **Menaion §2A:**
 - [ ] Calendar section complete
