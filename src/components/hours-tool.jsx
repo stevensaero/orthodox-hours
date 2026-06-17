@@ -8098,6 +8098,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.17.0",
+    date: "June 2026",
+    summary: "feat: in-context local editing of Menaion text fields (dev-only) — recast engine preserves comments byte-for-byte",
+    items: [
+      "feat: dev-only in-context editor — every hymnography text field in the Menaion browser gains a '✎ edit' control: LIC / aposticha / litya stichera and their Glory & Both-now, troparion 1/2/3, kontakion Ode VI & Ode III, across both primary and secondary commemorations. One field at a time, with a strip-at-render preview (| // → lines, [..] → emphasis) and client-side encoding-hygiene lint.",
+      "feat: recast edit engine (tools/edit-engine.mjs) performs a path-addressed setValue directly on the source .js module and reprints only the touched node, so every inline rubrical comment, all formatting, and every other entry are byte-preserved. Each edit is round-trip verified (exactly one literal changed at the target path) with compare-and-swap against the value the editor read; non-literal targets and type mismatches fail closed.",
+      "feat: dev-only Vite middleware POST /__edit (tools/vite-edit-plugin.mjs, apply:'serve') — allowlisted file paths, atomic write, and a whole-corpus validator run on every save and preview. Server-side gate: Check A/B failures revert the write and block; Check C warnings are kept (warn-and-allow). Preview (dryRun) writes, validates, then restores, leaving disk untouched.",
+      "chore: the entire editor is gated behind import.meta.env.DEV and dead-code-eliminated from the production build — verified absent from dist. New devDeps: recast, @babel/parser. Headless proof in tools/test_edit_engine.mjs.",
+    ],
+  },
+  {
     version: "v0.16.12",
     date: "June 2026",
     summary: "data: June 17 (Manuel, Sabel & Ismael) — RLE translation swap, first director-pointed Menaion entry",

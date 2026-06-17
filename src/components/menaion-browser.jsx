@@ -5,6 +5,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { auditMenaionEntry, auditSummary } from '../lib/audit.js';
 import { PointScoreControls, normalizeSergius } from './point-score-controls.jsx';
+import FieldEditor from './field-editor.jsx';
+import { menaionCtx, fieldPath } from './editor-adapters.js';
 
 // ── Color constants — matches psalter.jsx / hours-tool.jsx ──────────────────
 const C = {
@@ -97,7 +99,9 @@ function BoolFlag({ label, value }) {
 }
 
 // ── Text block (troparion, kontakion, sticheron, etc.) ──────────────────────
-function TextBlock({ tone, text, specMel, label, verse, repeatIndex }) {
+function TextBlock({ tone, text, specMel, label, verse, repeatIndex, editFile, editPath }) {
+  const [editing, setEditing] = useState(false);
+  const canEdit = import.meta.env.DEV && editFile && editPath && typeof text === 'string';
   // Detect pointing dialect for source badge
   const hasSergius = typeof text === 'string' && (/ \* /.test(text) || / \*\* /.test(text));
   const hasOCA = typeof text === 'string' && (/\s\|\s/.test(text) || /\s\/\/\s/.test(text));
@@ -150,7 +154,28 @@ function TextBlock({ tone, text, specMel, label, verse, repeatIndex }) {
           {text || <span style={{ color: C.goldLight, fontStyle: "italic" }}>—</span>}
         </div>
         <PointScoreControls text={text} tone={tone} label={label} />
+        {canEdit && (
+          <button
+            onClick={() => setEditing((v) => !v)}
+            title="Edit this field (dev only)"
+            style={{
+              flexShrink: 0, padding: '2px 8px', fontSize: '0.72rem', cursor: 'pointer',
+              border: '1px solid #C9BC9A', borderRadius: '3px',
+              background: editing ? '#3B4A6B' : 'transparent', color: editing ? '#fff' : '#5C4A1E',
+            }}
+          >✎ edit</button>
+        )}
       </div>
+      {canEdit && editing && (
+        <FieldEditor
+          datasetId="menaion"
+          file={editFile}
+          path={editPath}
+          value={text}
+          onClose={() => setEditing(false)}
+          onSaved={() => setEditing(false)}
+        />
+      )}
     </div>
   );
 }
@@ -206,7 +231,7 @@ function sticheraPointingStatus(items) {
   return hasAnyMarker ? 'pointed' : 'unpointed';
 }
 
-function EntryHymnography({ entry }) {
+function EntryHymnography({ entry, editCtx }) {
   // Stichera count integrity: declared count vs. items in the array.
   // items.length === count → exact (data mirrors rubric slot-for-slot)
   // items.length < count, markers present → rubric-carrying (count = unique + repeats)
@@ -272,6 +297,8 @@ function EntryHymnography({ entry }) {
               specMel={s.spec_mel}
               label={`[${i + 1}]`}
               repeatIndex={s.repeatIndex}
+              editFile={editCtx?.file}
+              editPath={fieldPath(editCtx, 'stichera_lord_i_call', i, 'text')}
             />
           ))}
         </>
@@ -283,6 +310,8 @@ function EntryHymnography({ entry }) {
           tone={entry.stichera_glory.tone}
           text={entry.stichera_glory.text}
           label="Glory (Doxasticon)"
+          editFile={editCtx?.file}
+          editPath={fieldPath(editCtx, 'stichera_glory', 'text')}
         />
       )}
       {entry.stichera_glory === null && <FieldRow label="stichera_glory" value={null} />}
@@ -291,6 +320,8 @@ function EntryHymnography({ entry }) {
           tone={entry.lic_theotokion.tone}
           text={entry.lic_theotokion.text}
           label="Both now (Theotokion)"
+          editFile={editCtx?.file}
+          editPath={fieldPath(editCtx, 'lic_theotokion', 'text')}
         />
       )}
       {entry.lic_theotokion === null && <FieldRow label="lic_theotokion" value={null} />}
@@ -309,7 +340,8 @@ function EntryHymnography({ entry }) {
                 </div>
               )}
               {entry.stichera_aposticha.map((s, i) => (
-                <TextBlock key={i} tone={s.tone} text={s.text} verse={s.verse} label={`[${i + 1}]`} />
+                <TextBlock key={i} tone={s.tone} text={s.text} verse={s.verse} label={`[${i + 1}]`}
+                  editFile={editCtx?.file} editPath={fieldPath(editCtx, 'stichera_aposticha', i, 'text')} />
               ))}
             </>
           )}
@@ -318,6 +350,8 @@ function EntryHymnography({ entry }) {
               tone={entry.aposticha_glory.tone}
               text={entry.aposticha_glory.text}
               label="Glory (Doxasticon)"
+              editFile={editCtx?.file}
+              editPath={fieldPath(editCtx, 'aposticha_glory', 'text')}
             />
           )}
           {entry.aposticha_both_now && (
@@ -325,6 +359,8 @@ function EntryHymnography({ entry }) {
               tone={entry.aposticha_both_now.tone}
               text={entry.aposticha_both_now.text}
               label="Both now (Theotokion)"
+              editFile={editCtx?.file}
+              editPath={fieldPath(editCtx, 'aposticha_both_now', 'text')}
             />
           )}
         </>
@@ -360,7 +396,8 @@ function EntryHymnography({ entry }) {
           <SectionHeader>Vespers — Litiya</SectionHeader>
           {entry.litya_stichera && Array.isArray(entry.litya_stichera) && entry.litya_stichera.length > 0 ? (
             entry.litya_stichera.map((s, i) => (
-              <TextBlock key={i} tone={s.tone} text={s.text} label={`[${i + 1}]`} />
+              <TextBlock key={i} tone={s.tone} text={s.text} label={`[${i + 1}]`}
+                editFile={editCtx?.file} editPath={fieldPath(editCtx, 'litya_stichera', i, 'text')} />
             ))
           ) : entry.litya_stichera && Array.isArray(entry.litya_stichera) && entry.litya_stichera.length === 0 ? (
             <div style={{ fontSize: "0.85rem", color: C.goldLight, fontStyle: "italic" }}>
@@ -376,6 +413,8 @@ function EntryHymnography({ entry }) {
               tone={entry.litya_glory.tone}
               text={entry.litya_glory.text}
               label="Glory (Doxasticon)"
+              editFile={editCtx?.file}
+              editPath={fieldPath(editCtx, 'litya_glory', 'text')}
             />
           ) : entry.litya_stichera ? null : (
             <div style={{ fontSize: "0.78rem", color: C.red, fontStyle: "italic", marginTop: "0.25rem" }}>
@@ -387,6 +426,8 @@ function EntryHymnography({ entry }) {
               tone={entry.litya_both_now.tone}
               text={entry.litya_both_now.text}
               label="Both now (Theotokion)"
+              editFile={editCtx?.file}
+              editPath={fieldPath(editCtx, 'litya_both_now', 'text')}
             />
           ) : entry.litya_stichera ? null : (
             <div style={{ fontSize: "0.78rem", color: C.red, fontStyle: "italic", marginTop: "0.25rem" }}>
@@ -441,6 +482,7 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
   const isArray = Array.isArray(entry);
   const primary = isArray ? entry[0] : entry;
   const secondary = isArray ? entry.slice(1) : [];
+  const primaryCtx = menaionCtx(dateKey, 0); // in-context edit (dev-only)
 
   // Track which sub-entry is currently scrolled into view (multi-entry dates only)
   const [visibleIdx, setVisibleIdx] = useState(0);
@@ -614,7 +656,8 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
       <SectionHeader>Troparion</SectionHeader>
       {primary.troparion ? (
         typeof primary.troparion === 'object' && !Array.isArray(primary.troparion) ? (
-          <TextBlock tone={primary.troparion.tone} text={primary.troparion.text} label="Troparion" />
+          <TextBlock tone={primary.troparion.tone} text={primary.troparion.text} label="Troparion"
+            editFile={primaryCtx?.file} editPath={fieldPath(primaryCtx, 'troparion', 'text')} />
         ) : Array.isArray(primary.troparion) ? (
           primary.troparion.map((t, i) => (
             <TextBlock key={i} tone={t.tone} text={t.text} label={`Troparion ${i + 1}`} />
@@ -624,10 +667,12 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
         <div style={{ fontSize: "0.85rem", color: C.goldLight, fontStyle: "italic" }}>Not encoded</div>
       )}
       {primary.troparion_2 && (
-        <TextBlock tone={primary.troparion_2.tone} text={primary.troparion_2.text} label="Troparion 2" />
+        <TextBlock tone={primary.troparion_2.tone} text={primary.troparion_2.text} label="Troparion 2"
+          editFile={primaryCtx?.file} editPath={fieldPath(primaryCtx, 'troparion_2', 'text')} />
       )}
       {primary.troparion_3 && (
-        <TextBlock tone={primary.troparion_3.tone} text={primary.troparion_3.text} label="Troparion 3" />
+        <TextBlock tone={primary.troparion_3.tone} text={primary.troparion_3.text} label="Troparion 3"
+          editFile={primaryCtx?.file} editPath={fieldPath(primaryCtx, 'troparion_3', 'text')} />
       )}
 
       {/* ── Kontakia ── */}
@@ -637,6 +682,8 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
           tone={primary.kontakion_ode6.tone}
           text={primary.kontakion_ode6.text}
           label="Kontakion (Ode VI → 3rd & 9th Hours)"
+          editFile={primaryCtx?.file}
+          editPath={fieldPath(primaryCtx, 'kontakion_ode6', 'text')}
         />
       ) : (
         <div style={{ fontSize: "0.85rem", color: C.goldLight, fontStyle: "italic" }}>kontakion_ode6 — not encoded</div>
@@ -646,12 +693,14 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
           tone={primary.kontakion_ode3.tone}
           text={primary.kontakion_ode3.text}
           label="Kontakion (Ode III → 1st & 6th Hours)"
+          editFile={primaryCtx?.file}
+          editPath={fieldPath(primaryCtx, 'kontakion_ode3', 'text')}
         />
       ) : (
         <FieldRow label="kontakion_ode3" value={null} />
       )}
 
-      <EntryHymnography entry={primary} />
+      <EntryHymnography entry={primary} editCtx={primaryCtx} />
 
       {/* ── Notes ── */}
       {primary.note && (
@@ -670,7 +719,9 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
       )}
 
       {/* ── Secondary entries (double commemorations) ── */}
-      {secondary.map((sec, idx) => (
+      {secondary.map((sec, idx) => {
+        const secCtx = menaionCtx(dateKey, idx + 1);
+        return (
         <div
           key={idx}
           ref={el => { subEntryRefs.current[idx + 1] = el; }}
@@ -690,12 +741,14 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
           <FieldRow label="rank" value={sec.rank} />
           <FieldRow label="fekula_section" value={sec.fekula_section} />
           {sec.troparion && (
-            <TextBlock tone={sec.troparion.tone} text={sec.troparion.text} label="Troparion" />
+            <TextBlock tone={sec.troparion.tone} text={sec.troparion.text} label="Troparion"
+              editFile={secCtx?.file} editPath={fieldPath(secCtx, 'troparion', 'text')} />
           )}
           {sec.kontakion_ode6 && (
-            <TextBlock tone={sec.kontakion_ode6.tone} text={sec.kontakion_ode6.text} label="Kontakion (Ode VI)" />
+            <TextBlock tone={sec.kontakion_ode6.tone} text={sec.kontakion_ode6.text} label="Kontakion (Ode VI)"
+              editFile={secCtx?.file} editPath={fieldPath(secCtx, 'kontakion_ode6', 'text')} />
           )}
-          <EntryHymnography entry={sec} />
+          <EntryHymnography entry={sec} editCtx={secCtx} />
           {sec.note && (
             <div style={{
               fontSize: "0.85rem", color: C.inkMid, lineHeight: 1.65, marginTop: "0.5rem",
@@ -705,7 +758,8 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
             </div>
           )}
         </div>
-      ))}
+        );
+      })}
       </div>{/* end card body */}
     </div>
   );
