@@ -81,21 +81,22 @@ const MAY_MENAION = {
     lic_theotokion: null,
     troparion: {
       tone: 1,
-      text: "A desert dweller, an angel in the flesh and a wonder-worker " +
-            "wast thou revealed to be, O our God-bearing father Theodore. " +
-            "Receiving heavenly gifts through fasting, vigils and prayers, " +
-            "thou healest the infirm and the souls of those who with faith have recourse unto thee. " +
-            "Glory to Him Who hath given thee strength! " +
-            "Glory to Him Who hath crowned thee! " +
+      text: "A desert dweller, an angel in the flesh and a wonder-worker * " +
+            "wast thou revealed to be, O our God-bearing father Theodore. * " +
+            "Receiving heavenly gifts through fasting, vigils and prayers, * " +
+            "thou healest the infirm and the souls of those who with faith have recourse unto thee. * " +
+            "Glory to Him Who hath given thee strength! * " +
+            "Glory to Him Who hath crowned thee! ** " +
             "Glory to Him Who through thee worketh healings for all!",
       note: "From 05-16.pdf AT LITURGY — proper Tone I text",
     },
     kontakion_ode6: {
       tone: 2,
-      text: "Having abandoned the tumult of life and subdued the passions of the flesh, " +
-            "thou didst take up thy cross and hasten to Christ. " +
-            "Thou wast a true disciple of the Master: a model for all who seek perfection. " +
-            "Therefore we cry to thee: Rejoice, O father Theodore, adornment of monastics!",
+      text: "Thou didst flourish in the house of God like a palm-tree, * " +
+            "and through excellent ascetic endeavor didst bring forth the fruit of the virtues for the Lord, * " +
+            "O venerable father; * " +
+            "wherefore, as one who standeth with the incorporeal hosts, ** " +
+            "thou art called blessed.",
     },
   },
 
