@@ -1,6 +1,15 @@
-# ENCODING RULE v2.3 — Orthodox Hours Tool
+# ENCODING RULE v2.4 — Orthodox Hours Tool
 **Authority:** Fekula & Williams (2009) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** June 2026 · **Supersedes:** v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+**Updated:** June 2026 · **Supersedes:** v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+
+**v2.4 changes — SOURCE-EXHAUSTION & PROVENANCE GATES (after the 05-16 kontakion error):**
+A prior encode declared St. Theodore's kontakion absent (it was printed after Ode III, not
+Ode VI), substituted a remembered generic, and mislabeled it "from OCA" with a false
+"No PDF in Drive" header. New guardrails: §5.x (search AT LITURGY + Ode VI + Ode III before
+calling any kontakion missing); §2.1 (the St. Sergius General Menaion saint-type files and
+the strict daily-PDF → General Menaion → OCA fallback order); §11 #11–#13 and the §12
+checklist (provenance must be verified not assumed; name the real source of every fallback;
+never fabricate a generic while a proper exists).
 
 **v2.3 changes — ST. SERGIUS MARKER PROVENANCE (corrects v2.2):** Earlier guidance
 said to convert St. Sergius `*` / `**` to `|` / `//` at encode time and never store
@@ -77,6 +86,37 @@ source kinds:
 | General Menaion fallback PDFs | `orthodox_liturgics/Menaion/general-menaion/` |
 | Pentecostarion PDFs | `orthodox_liturgics/Pentecostarion/st-sergius-pdf/` |
 | Director-pointed docx | (added as available) |
+
+### 2.1 The St. Sergius General Menaion (saint-type fallbacks) — READ THIS
+
+`orthodox_liturgics/Menaion/general-menaion/` holds the St. Sergius **General Menaion**:
+one PDF per saint *type*, used to supply propers (troparion, kontakion, stichera) when —
+and ONLY when — the daily Menaion PDF genuinely lacks them. Files present (singular =
+one saint, plural = several):
+
+`Angels.pdf` · `Apostle.pdf` / `Apostles.pdf` · `Fools.pdf` (fool-for-Christ) ·
+`Heirarch.pdf` / `Heirarchs.pdf` · `Hieromartyr.pdf` / `Heiromartyrs.pdf` ·
+`Martyress.pdf` / `Martyresses.pdf` · plus Venerable (monastic), Prophet, Martyr,
+and others — list the folder to confirm the current set, do not assume.
+(Note the source spellings "Heirarch" / "Heiromartyrs" — match the actual filenames.)
+
+**This is the St. Sergius General Menaion, in the same translation register and the same
+`*`/`**` pointing dialect as the daily PDFs.** It is the correct step-2 fallback — NOT
+the OCA website, and NOT a generic text typed from memory.
+
+**How to apply it (in strict order):**
+1. **Exhaust the daily PDF first** (`MM-DD.pdf`). Only if a proper is genuinely absent
+   there do you fall back. "I didn't see it at the position I expected" is NOT absence —
+   see §5.x before concluding anything is missing.
+2. **Pick the file by saint type** (Venerable, Hierarch, Martyr, Apostle, …) as given on
+   the OCA calendar / the daily PDF heading.
+3. **Substitute the name** into the `(Name)` / `(N.)` placeholders the General Menaion
+   prints; keep the `*`/`**` markers verbatim.
+4. **Record the true source** in the field's `note`: e.g.
+   `"Kontakion: General Menaion — Venerable.pdf, name-substituted (daily PDF prints none)."`
+   Never label a General-Menaion or OCA text as coming from the daily `MM-DD.pdf`.
+5. **Then, and only for the troparion/kontakion, check OCA** (oca.org/saints/troparia)
+   for a saint-specific text per §1's precedence rule.
 
 **Workflow:** read the source from Drive → encode directly into the monthly data
 file (`src/data/menaion/{month}.js`, `src/data/pentecostarion.js`) → commit. Git
@@ -245,6 +285,35 @@ Fekula section cannot be derived from rank alone:
 The assembler reads `fekula_section_override` at two locations in `hours-tool.jsx`
 (the source citation function and the assembly rule derivation function). This was
 intentionally designed but the data field was inconsistently applied in early sessions.
+
+### 5.x LOCATING THE SAINT'S KONTAKION IN THE DAILY PDF — search ALL positions
+
+**A saint's kontakion is almost never absent. Before falling back or (worse) inventing
+one, search the entire daily PDF.** The kontakion can sit in any of these places, and on
+a feast/afterfeast day it moves:
+
+- **AT LITURGY** — the most reliable place. If the PDF prints an "AT LITURGY" section, the
+  saint's proper troparion AND kontakion are listed there. Read it first. (Its presence
+  also disproves any "no AT LITURGY section" claim.)
+- **Matins canon, after Ode VI** — the *ordinary* slot for the kontakion + ikos.
+- **Matins canon, after Ode III** — where the kontakion is **displaced to** when the day
+  falls in a feast/afterfeast period: the Pentecostarion (or feast) kontakion takes the
+  Ode VI slot, so the saint's own kontakion is printed at the Ode III slot (where the
+  sessional hymn normally sits). **This is the trap.** Finding "Kontakion & Ikos from the
+  Pentecostarion" after Ode VI does NOT mean the saint has no kontakion — look at Ode III.
+
+**Hard rule:** you may not write a kontakion as absent, generic, or fallback until you
+have checked **AT LITURGY, Ode VI, *and* Ode III** in the daily PDF. A single saint
+kontakion found anywhere is stored in `kontakion_ode6` (the single-kontakion home) and
+the assembler routes it to all four Hours regardless of which Matins slot printed it —
+the canon position is a Matins-layout detail, not Hours routing, and OCA listing a lone
+kontakion without ode metadata is therefore expected, not a problem.
+
+**Root-cause case (05-16, St. Theodore the Sanctified):** the proper kontakion ("Thou
+didst flourish in the house of God like a palm-tree …") is printed after Ode III and again
+AT LITURGY, because the Pentecostarion kontakion held the Ode VI slot. An earlier encode
+looked only after Ode VI, declared none, and stored a generic monastic Common mislabeled
+"from OCA" — wrong on every count. This section exists to prevent a repeat.
 
 ---
 
@@ -843,6 +912,26 @@ After the .txt skeleton is complete, these fields map to the tool data objects:
     in the PDFs but the Matins assembler is not yet built. Write NOT YET ENCODED
     with a source reference, not ABSENT. ABSENT means it genuinely does not exist.
 
+11. **Kontakion "missing" after Ode VI** — it is almost certainly after Ode III (feast
+    displacement) or AT LITURGY. Never declare a saint's kontakion absent without checking
+    all three positions. See §5.x. Single kontakion → `kontakion_ode6` → all four Hours.
+
+12. **Provenance must be true, never assumed** — every source claim in a comment or `note`
+    must be verified, not inferred:
+    - Never write "No PDF in Drive" without actually searching Drive for `MM-DD.pdf`. The
+      PDF's absence is a fact to confirm, not a default.
+    - Never write "No AT LITURGY section" without reading the PDF's AT LITURGY section.
+    - A text taken from the General Menaion or OCA must say so and name the file/URL —
+      never attribute it to the daily `MM-DD.pdf`, and never attribute a daily-PDF text
+      to OCA. (05-16 carried both errors.)
+
+13. **Never fabricate a "generic" when a proper exists** — a generic Common-of-a-type
+    kontakion/troparion is a *last* resort, used only after the daily PDF (all positions,
+    §5.x) AND the St. Sergius General Menaion (§2.1) are exhausted. Reaching for a
+    remembered generic before exhausting the sources is the failure that produced 05-16's
+    wrong kontakion. Source order is absolute: daily PDF → St. Sergius General Menaion →
+    OCA. Record which one supplied each text.
+
 ---
 
 ## 12. PRE-SAVE CHECKLIST
@@ -857,6 +946,13 @@ explicit value (not blank), and:
 - [ ] Pointed text fields use the §3 marker dialect — RLE/OCA `|` `//` `[brackets]`,
       or St. Sergius `*`/`**` RETAINED verbatim (provenance); underlines converted to
       `[brackets]`; no invented `//`; `director: true` set where Tier-3 marks are present
+- [ ] Kontakion located by searching ALL daily-PDF positions — AT LITURGY, Ode VI, AND
+      Ode III (§5.x) — before any fallback. Not "missing" just because it's not at Ode VI.
+- [ ] Every source claim is verified, not assumed (§11 #12): no "No PDF"/"No AT LITURGY"
+      without checking; fallback texts name their real source (General Menaion file / OCA
+      URL); no daily-PDF text attributed to OCA or vice-versa.
+- [ ] Fallback order honored (§2.1, §11 #13): daily PDF → St. Sergius General Menaion →
+      OCA; no remembered generic substituted while a proper exists.
 
 **Menaion §2A:**
 - [ ] Calendar section complete
