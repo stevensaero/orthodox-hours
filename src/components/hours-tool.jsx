@@ -8070,6 +8070,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.17.3",
+    date: "June 2026",
+    summary: "editor: preview diff scrolls horizontally instead of wrapping long source lines",
+    items: [
+      "The in-context editor's preview/diff box no longer wraps long source lines (white-space: pre instead of pre-wrap), so each '+'/'-' row stays on one line and you scroll horizontally for the long ones. Keeps the per-line pointing structure truthful while reviewing.",
+    ],
+  },
+  {
     version: "v0.17.2",
     date: "June 2026",
     summary: "fix: in-context editor corrupted text fields on Windows (CRLF) checkouts",

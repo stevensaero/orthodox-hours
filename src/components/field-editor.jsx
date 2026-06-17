@@ -93,7 +93,7 @@ export default function FieldEditor({ datasetId, file, path, value, onClose, onS
           {result.diff && (
             <pre style={{
               marginTop: '0.35rem', padding: '6px 8px', background: '#1E1E1E', color: '#DDD',
-              fontSize: '0.72rem', lineHeight: 1.45, borderRadius: '3px', overflowX: 'auto', whiteSpace: 'pre-wrap',
+              fontSize: '0.72rem', lineHeight: 1.45, borderRadius: '3px', overflowX: 'auto', whiteSpace: 'pre',
             }}>{result.diff}</pre>
           )}
           {result.validator && (
