@@ -189,6 +189,52 @@ pending implementation.
   spec'd separately. Data already located in `Theotokia.pdf`.
 
 
+## MAY ENCODING AUDIT — GATE MONITORING (ongoing)
+
+**STANDING MANDATE:** Every encoding session monitors for new failure modes while encoding.
+Each new class of error must be codified into `encoding_rule_v2.md` AND a
+`tools/validate_entries.mjs` check AND logged here, before moving on. This role is
+continuous — it does not end with May.
+
+**GATE-IMPROVEMENT LOG:**
+- v2.4 provenance gates (§2.1 General Menaion fallback order; §5.x kontakion search Ode III/VI/
+  Liturgy; §11 #11–13 provenance honesty) — commit `0e1b1f0`.
+- v2.5 pointing fidelity (#14), no-troparion fallback (#15), resolution order & register (#16)
+  + §12 gates — commit `df8a8c5`.
+- v2.6 Check F register + provenance lint (#17–18) — commit `be81fc6`.
+
+**DEFECT TAXONOMY (May 16–22, recurring):**
+1. Pointing flattened to prose though the PDF points it — universal.
+2. False "No PDF" / "No AT LITURGY" provenance comments.
+3. OCA-contemporary "You/Your" register bleed in troparia/kontakia.
+4. A generic used where a daily-PDF or General-Menaion proper exists.
+5. Troparion synthesized by rewording the kontakion (05-19).
+6. Saint name diverging from St. Sergius (e.g. Thalaleus, not Thallelaios).
+
+**STANDING RESOLVED DECISIONS:**
+- Alleluia-service days print no troparion in the daily PDF → source from the St. Sergius General
+  Menaion by saint type, name-substituted: Martyr Tone IV "In his sufferings, Thy martyr (name)
+  …"; Hieromartyr Tone IV "As thou didst share in the ways of the apostles …".
+- OCA overrides St. Sergius only with a saint-SPECIFIC proper, never a generic over a printed
+  proper. Resolution order: daily-PDF proper > St. Sergius General Menaion > OCA.
+- Saint names follow St. Sergius.
+
+**BATCH STATUS:**
+- 05-16/17/18 — re-encoded under gates, pushed (`df8a8c5`).
+- 05-19/20/21 — researched and decided, NOT yet written (tool-drop). See the Batch 2 handoff:
+  05-19 troparion → General Menaion Hieromartyr Tone IV (name Patrick); 05-20 troparion →
+  General Menaion Martyr Tone IV (name Thalaleus), kontakion → PDF proper Tone III spec_mel
+  "Today the Virgin", rename to Thalaleus; 05-21 selective pointing only. Point all PDF-pointed
+  hymnography; leave prose idiomela Tier-1.
+- 05-22 — profiled (§2A Alleluia, Basiliscus; kontakion Tone VIII spec_mel "To thee, the
+  champion leader"; PDF prints no troparion → General Menaion Martyr Tone IV).
+- 05-23 → 05-31 — audit pending. Verify rank from source per day; do NOT assume. Known: 05-24
+  Symeon Stylites the Younger (likely higher rank); 05-25 Third Finding of the Forerunner's Head
+  (feast, expect Polyeleos + Pentecostarion split like 05-21); 05-27 + 05-27A (secondary —
+  confirm key vs overlay); 05-31 Hermias (kontakion OCA-contemporary vs PDF proper Tone VI;
+  troparion proper Tone IV — verify/point).
+
+
 ## Pointed Hymnography — Tone Markers (canonical — read before any encoding)
 
 Every pointed text field stores ONE marked string in the source's dialect: `|` line
