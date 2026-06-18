@@ -311,8 +311,10 @@ const MAY_MENAION = {
     rank: "simple",
     fekula_section: "2A",
     note: "May 19 O.S. = June 1 N.S. OCA commemorates May 19 N.S. — DIVERGENCE; OCA date governs. " +
-          "§2A simple confirmed — 3 stichera Tone VI. OCA primary troparion is the proper hieromartyr text. " +
-          "Kontakion matches St. Sergius. Glory/Both now: theotokion Tone VI printed in PDF.",
+          "§2A simple confirmed — 3 stichera Tone VI. PDF prints no troparion (Alleluia at Matins); " +
+          "troparion sourced from the St. Sergius General Menaion, One Hieromartyr, Tone IV (name → Patrick). " +
+          "Kontakion Tone IV is proper, printed at Ode VI and AT LITURGY. " +
+          "Glory/Both now: LIC theotokion Tone VI printed in PDF.",
     has_great_doxology: false,
     has_polyeleos: false,
     has_litya: false,
@@ -326,90 +328,104 @@ const MAY_MENAION = {
     // 3 stichera of the holy hieromartyrs, Tone VI, Spec. Mel.: "Having set all aside"
     stichera_lord_i_call: [
       { tone: 6, spec_mel: "Having set all aside",
-        text: "Steered by the Word " +
-              "the blessed hieromartyrs " +
-              "sailed easily across the threefold waves of the passions, " +
-              "and were entrusted with the task " +
-              "of healing the sufferings of mortals " +
-              "with the waters of fervor. " +
-              "Their relics were given sacred burial, " +
-              "and richly pour forth healings upon those in need. " +
-              "O ye faithful, let us unceasingly honor them as is meet, " +
-              "for they pray with boldness on behalf of our souls." },
+        text: "Steered by the Word * " +
+              "the blessed hieromartyrs * " +
+              "sailed easily across the threefold waves of the passions, * " +
+              "and were entrusted with the task * " +
+              "of healing the sufferings of mortals * " +
+              "with the waters of fervor. * " +
+              "Their relics were given sacred burial, * " +
+              "and richly pour forth healings upon those in need. * " +
+              "O ye faithful, let us unceasingly honor them * " +
+              "as is meet, * " +
+              "for they pray with boldness ** " +
+              "on behalf of our souls." },
       { tone: 6, spec_mel: "Having set all aside",
-        text: "Wearing purple robes " +
-              "dyed in the blood of martyrdom " +
-              "and wielding the precious Cross as a scepter, " +
-              "the godly martyrs reign with Christ rejoicing, " +
-              "having desired willingly to suffer for Him: " +
-              "Polyenus manifest in holiness, " +
-              "Acacius and Menander, and the divinely wise Patrick. " +
-              "And, rejoicing now, " +
-              "they stand before the throne of Christ, " +
-              "praying with boldness on behalf of our souls." },
+        text: "Wearing purple robes * " +
+              "dyed in the blood of martyrdom * " +
+              "and wielding the precious Cross as a scepter, * " +
+              "the godly martyrs reign with Christ rejoicing, * " +
+              "having desired willingly to suffer for Him: * " +
+              "Polyenus manifest in holiness, * " +
+              "Acacius and Menander, * " +
+              "and the divinely wise Patrick. * " +
+              "And, rejoicing now, * " +
+              "they stand before the throne of Christ, * " +
+              "praying with boldness ** " +
+              "on behalf of our souls." },
       { tone: 6, spec_mel: "Having set all aside",
-        text: "Desiring the kingdom of Christ, " +
-              "the blessed and valiant ones " +
-              "preferred a temporary death as though it were food, " +
-              "manfully enduring starvation and the pain of wounds. " +
-              "Wherefore, they have become the helpers of all the faithful, " +
-              "imparting health in abundance to their souls and bodies. " +
-              "O ye faithful, as is meet " +
-              "let us now joyfully hymn them, " +
-              "for they pray to the Lord on behalf of our souls." },
+        text: "Desiring the kingdom of Christ, * " +
+              "the blessed and valiant ones * " +
+              "preferred a temporary death * " +
+              "as though it were food, * " +
+              "manfully enduring starvation and the pain of wounds. * " +
+              "Wherefore, they have become the helpers of all the faithful, * " +
+              "imparting health in abundance * " +
+              "to their souls and bodies. * " +
+              "O ye faithful, * " +
+              "as is meet let us now joyfully hymn them, * " +
+              "for they pray to the Lord ** " +
+              "on behalf of our souls." },
     ],
     stichera_lord_i_call_count: 3,
     stichera_glory: null,  // §2A — Glory: theotokion from Menaion (Tone VI) printed in PDF
     lic_theotokion: {
       tone: 6,
-      text: "From the sea-monster's belly of wicked sin " +
-            "do thou lead me up, O Lady, " +
-            "who contained the Infinite One in thy womb. " +
-            "Deliver me from the cruel waves of temptations, " +
-            "and rescue me from the tempest of falls, O Maiden, " +
-            "drying up the abyss of mine iniquities, " +
-            "and repelling the present hordes of the demons " +
-            "by thy divine assistance, O pure one, " +
-            "that I may unceasingly glorify thee, the ever-blessed one.",
+      text: "From the sea-monster's belly of wicked sin * " +
+            "do thou lead me up, O Lady, * " +
+            "who contained the Infinite One in thy womb. * " +
+            "Deliver me * " +
+            "from the cruel waves of temptations, * " +
+            "and rescue me from the tempest of falls, * " +
+            "O Maiden, * " +
+            "drying up the abyss of mine iniquities, * " +
+            "and repelling the present hordes of the demons * " +
+            "by thy divine assistance, O pure one, * " +
+            "that I may unceasingly glorify thee, ** " +
+            "the ever-blessed one.",
       note: "Glory and Both now — printed in 05-19.pdf as LIC theotokion (§2A, no separate Glory sticheron)",
     },
     troparion: {
       tone: 4,
-      text: "You were arrayed in the beauty of the priesthood, O Patrick, and adorned with the blood " +
-            "of martyrdom. As you stand before Christ with those who suffered with you, remember us, " +
-            "for you are an honored passion-bearer.",
-    },
-    troparion_2: {
-      tone: 4,
-      text: "Your holy martyr Patrick and his companions, O Lord, through their sufferings have " +
-            "received incorruptible crowns from You, our God. For having Your strength, they laid low " +
-            "their adversaries, and shattered the powerless boldness of demons. " +
-            "Through their intercessions, save our souls!",
+      text: "As thou didst share in the ways of the apostles * " +
+            "and didst occupy their throne, * " +
+            "thou didst find thine activity to be a passage to divine vision, * " +
+            "O divinely inspired one. * " +
+            "Wherefore, ordering the word of truth, * " +
+            "thou didst suffer for the Faith even to the shedding of thy blood, ** " +
+            "O Hieromartyr Patrick, entreat Christ God, that our souls be saved.",
+      note: "PDF prints no troparion (Alleluia); sourced from the St. Sergius General Menaion, " +
+            "One Hieromartyr, Tone IV (name → Patrick).",
     },
     kontakion_ode6: {
       tone: 4,
-      text: "As one resplendent in the beauty of the priesthood and supremely adorned with the blood " +
-            "of martyrdom, standing before Christ with those who suffered with thee, O Patrick, " +
-            "be thou mindful of us, in that thou art an honored passion-bearer.",
+      spec_mel: "Thou hast appeared today",
+      text: "As one resplendent in the beauty of the priesthood * " +
+            "and supremely adorned with the blood of martyrdom, * " +
+            "standing before Christ with those who suffered with thee, * " +
+            "O Patrick, be thou mindful of us, ** " +
+            "in that thou art an honored passion-bearer.",
     },
   },
 
-  // ── May 20 — Holy Martyr Thallelaios (Unmercenary Physician) ─────────────
+  // ── May 20 — Holy Martyr Thalaleus (Unmercenary Physician) ─────────────
   // Source: St. Sergius 05-20.pdf. May 20 O.S. = June 2 N.S. — DIVERGENCE.
   // OCA commemorates May 20 N.S.; encoded at 05-20 per OCA primacy.
   // Service rank: Simple (§2A). OCA has proper troparion; differs from St. Sergius.
   // Note: in years when Ascension falls May 20, movable feast takes precedence automatically.
 
   "05-20": {
-    saint: "Holy Martyr Thallelaios, Unmercenary Physician of Aegae",
+    saint: "Holy Martyr Thalaleus, Unmercenary Physician of Aegae",
     oca_primary: true,
     source_file: "05-20.pdf",
     rank: "simple",
     fekula_section: "2A",
     note: "May 20 O.S. = June 2 N.S. OCA commemorates May 20 N.S. — DIVERGENCE; OCA date governs. " +
-          "§2A simple confirmed. OCA proper troparion used; differs from St. Sergius generic martyr text. " +
-          "Movable feast deconfliction (e.g. Ascension) handled automatically by the calendar engine. " +
-          "3 stichera Tone IV + Glory/Both now theotokion Tone IV from PDF.",
+          "§2A simple confirmed — 3 stichera Tone IV. PDF prints no troparion (Alleluia at Matins); " +
+          "troparion sourced from the St. Sergius General Menaion, One Martyr, Tone IV (name → Thalaleus). " +
+          "Kontakion Tone III is proper from the PDF (Spec. Mel. 'Today the Virgin'). " +
+          "Glory/Both now: LIC theotokion Tone IV printed in PDF. " +
+          "Movable feast deconfliction (e.g. Ascension) handled automatically by the calendar engine.",
     has_great_doxology: false,
     has_polyeleos: false,
     has_litya: false,
@@ -423,53 +439,69 @@ const MAY_MENAION = {
     // 3 stichera of the holy martyr, Tone IV, Spec. Mel.: "As one valiant among the martyrs"
     stichera_lord_i_call: [
       { tone: 4, spec_mel: "As one valiant among the martyrs",
-        text: "When the great turbulence of the lands under heaven " +
-              "laid hold of thee, " +
-              "and a storm smote thy soul, O all-glorious one, " +
-              "steered by thine exalted name as with a rudder " +
-              "thou didst traverse unharmed " +
-              "the abyss of greatly painful tortures; " +
-              "and having attained unto the harbors of the Most High, " +
-              "thou wast filled with everlasting calm, O martyr Thalaleus." },
+        text: "When the great turbulence of the lands under heaven * " +
+              "laid hold of thee, * " +
+              "and a storm smote thy soul, O all-glorious one, * " +
+              "steered by thine exalted name as with a rudder * " +
+              "thou didst traverse unharmed * " +
+              "the abyss of greatly painful tortures; * " +
+              "and having attained unto the harbors of the Most High, * " +
+              "thou wast filled with everlasting calm, ** " +
+              "O martyr Thalaleus." },
       { tone: 4, spec_mel: "As one valiant among the martyrs",
-        text: "Lifted up upon a tree, " +
-              "thy side lacerated by the savagery of the torturers, " +
-              "thou didst emulate the suffering of the Master of creation, O glorious one; " +
-              "and denounce their erroneous thought, " +
-              "reviling the delusion of idolatry " +
-              "and manifestly strengthening piety, O great-martyr Thalaleus." },
+        text: "Lifted up upon a tree, * " +
+              "thy side lacerated * " +
+              "by the savagery of the torturers, * " +
+              "thou didst emulate the suffering * " +
+              "of the Master of creation, O glorious one; * " +
+              "and denounce their erroneous thought, * " +
+              "reviling the delusion of idolatry * " +
+              "and manifestly strengthening piety, ** " +
+              "O great-martyr Thalaleus." },
       { tone: 4, spec_mel: "As one valiant among the martyrs",
-        text: "At the command of the tyrant " +
-              "thou wast committed to the depths of the sea, " +
-              "yet through divine grace remained un-drowned, O most wise one; " +
-              "and with the torrents of thy blood " +
-              "drowned the noetic Pharaoh and his army, O divinely wise one, " +
-              "wherefore, strengthened greatly by Christ, " +
+        text: "At the command of the tyrant * " +
+              "thou wast committed to the depths of the sea, * " +
+              "yet through divine grace * " +
+              "remained un-drowned, O most wise one; * " +
+              "and with the torrents of thy blood * " +
+              "drowned the noetic Pharaoh * " +
+              "and his army, O divinely wise one, * " +
+              "wherefore, strengthened greatly by Christ, ** " +
               "thou didst commit him to utter destruction." },
     ],
     stichera_lord_i_call_count: 3,
     stichera_glory: null,  // §2A — Glory: theotokion Tone IV from PDF
     lic_theotokion: {
       tone: 4,
-      text: "Tens of thousands of times have I promised " +
-            "to repent of mine offenses, O most pure one, " +
-            "yet the cherished habits of mine evil ways " +
-            "will not depart from me; " +
-            "wherefore, I cry unto thee and fall down, praying: " +
-            "O Sovereign Lady, rescue me from such tyranny, " +
-            "guiding me to things that are higher, which are nigh unto salvation.",
+      text: "Tens of thousands of times have I promised * " +
+            "to repent of mine offenses, O most pure one, * " +
+            "yet the cherished habits of mine evil ways * " +
+            "will not depart from me; * " +
+            "wherefore, I cry unto thee * " +
+            "and fall down, praying: * " +
+            "O Sovereign Lady, rescue me from such tyranny, * " +
+            "guiding me to things that are higher, ** " +
+            "which are nigh unto salvation.",
       note: "Glory and Both now — theotokion Tone IV printed in 05-20.pdf (§2A pattern)",
     },
     troparion: {
       tone: 4,
-      text: "O holy prize-winner and healer Thallelaios, intercede with the merciful God " +
-            "that He grant to our souls the forgiveness of our faults.",
+      text: "In his sufferings, Thy martyr Thalaleus O Lord, * " +
+            "received an imperishable crown from Thee, our God; * " +
+            "for, possessed of Thy might, * " +
+            "he set at naught the tyrants and crushed the feeble audacity of the demons. ** " +
+            "By his supplications save Thou our souls.",
+      note: "PDF prints no troparion (Alleluia); sourced from the St. Sergius General Menaion, " +
+            "One Martyr, Tone IV (name → Thalaleus).",
     },
     kontakion_ode6: {
       tone: 3,
-      text: "Revealed as a fellow contestant with the Martyrs, you were an excellent soldier " +
-            "of the King of Glory. Through your trials and torments you humbled the arrogance " +
-            "of the idolators. Therefore, we praise your august memory, O wise Thallelaios.",
+      spec_mel: "Today the Virgin",
+      text: "Shown forth to be a fellow sufferer and warrior with the martyrs, * " +
+            "thou wast an excellent warrior of the King of glory, * " +
+            "and by trials and torture didst trample underfoot the arrogance of the idolaters. * " +
+            "Wherefore, we hymn thine honored memory, ** " +
+            "O wise Thalaleus.",
     },
   },
 
@@ -515,15 +547,19 @@ const MAY_MENAION = {
     paroemia_3: "Isaiah 60:1-14 — Be enlightened O Jerusalem; kings shall walk in thy light",
     troparion: {
       tone: 8,
-      text: "Beholding the image of Thy Cross in the sky, and like Paul receiving a call not from men, " +
-            "Thine apostle among kings placed the imperial city in Thy hands, O Lord. " +
-            "Do Thou ever preserve it in peace, through the supplications of the Theotokos, " +
-            "O Thou Who alone lovest mankind.",
+      text: "Beholding the image of Thy Cross in the sky, * " +
+            "and like Paul receiving a call not from men, * " +
+            "Thine apostle among kings placed the imperial city in Thy hands, O Lord. * " +
+            "Do Thou ever preserve it in peace, ** " +
+            "through the supplications of the Theotokos, O Thou Who alone lovest mankind.",
     },
     kontakion_ode6: {
       tone: 3,
-      text: "Today Constantine and his mother Helena have revealed the Cross, the most precious Tree, " +
-            "which putteth to shame all the Jews and is the weapon of faithful kings against the adversary. " +
+      spec_mel: "Today the Virgin",
+      text: "Today Constantine and his mother Helena * " +
+            "have revealed the Cross, the most precious Tree, * " +
+            "which putteth to shame all the Jews * " +
+            "and is the weapon of faithful kings against the adversary. ** " +
             "For our sake the great standard hath appeared, terrible in battle.",
     },
 
@@ -541,26 +577,36 @@ const MAY_MENAION = {
       "See project_notes.md dual LIC count evidence log.",
     stichera_lord_i_call: [
       { tone: 4, spec_mel: "Thou hast given a sign",
-        text: "Thou didst give a most mighty weapon to our emperor: Thy precious Cross, " +
-              "whereby he reigned all the earth in righteousness, shining forth in piety, " +
-              "and hath been deemed worthy of the kingdom of heaven by Thy loving-kindness. " +
-              "And with him do we glorify Thy loving dispensation, O almighty Jesus, " +
+        text: "Thou didst give a most mighty weapon to our emperor: * " +
+              "Thy precious Cross, * " +
+              "whereby he reigned all the earth in righteousness, * " +
+              "shining forth in piety, * " +
+              "and hath been deemed worthy of the kingdom of heaven * " +
+              "by Thy loving-kindness. * " +
+              "And with him do we glorify Thy loving dispensation, * " +
+              "O almighty Jesus, ** " +
               "Thou Savior of our souls." },
       { repeatIndex: 0 }, // (Twice) per PDF
       { tone: 4, spec_mel: "Thou hast given a sign",
-        text: "Thou didst give to thy pious favorite, O Lover of mankind, " +
-              "the wisdom of Solomon, the meekness of David and the Orthodoxy of the apostles, " +
-              "in that Thou art the King of kings and Lord of lords. " +
-              "Wherefore, we glorify Thy loving dispensation, O almighty Jesus, " +
+        text: "Thou didst give to thy pious favorite, * " +
+              "O Lover of mankind, * " +
+              "the wisdom of Solomon, * " +
+              "the meekness of David and the Orthodoxy of the apostles, * " +
+              "in that Thou art the King of kings * " +
+              "and Lord of lords. * " +
+              "Wherefore, we glorify Thy loving dispensation, * " +
+              "O almighty Jesus, ** " +
               "Thou Savior of our souls." },
       { repeatIndex: 2 }, // (Twice) per PDF
       { tone: 4, spec_mel: "Thou hast given a sign",
-        text: "Thou wast the first to subject the royal purple willingly to Christ, " +
-              "O ever-memorable emperor, acknowledging Him as God, " +
-              "the Benefactor of all Who reigneth over all, " +
-              "the Victor over every principality, transcending all dominion. " +
-              "Wherefore, O thou who lovest Christ, " +
-              "Jesus Who is the Lover of mankind, the Savior of our souls, " +
+        text: "Thou wast the first to subject the royal purple * " +
+              "willingly to Christ, O ever-memorable emperor, * " +
+              "acknowledging Him as God, * " +
+              "the Benefactor of all Who reigneth over all, * " +
+              "the Victor over every principality, transcending all dominion. * " +
+              "Wherefore, O thou who lovest Christ, * " +
+              "Jesus Who is the Lover of mankind, * " +
+              "the Savior of our souls, ** " +
               "hath appointed thee as ruler." },
     ],
     stichera_glory: {
@@ -627,11 +673,11 @@ const MAY_MENAION = {
     },
     litya_both_now: {
       tone: 5,
-      text: "Rejoice holy mountain upon which God hath walked; " +
-            "Rejoice! living bush unconsumed by fire; " +
-            "Rejoice! O only bridge of creation to God, " +
-            "who leadeth mortals to eternal life; " +
-            "Rejoice! Maiden undefiled, " +
+      text: "Rejoice holy mountain upon which God hath walked; * " +
+            "Rejoice! living bush unconsumed by fire; * " +
+            "Rejoice! O only bridge of creation to God, * " +
+            "who leadeth mortals to eternal life; * " +
+            "Rejoice! Maiden undefiled, * " +
             "who hath born without wedlock the salvation of our souls.",
       note: "Theotokion — from Pentecostarion during Pentecostarion season",
     },
@@ -640,29 +686,37 @@ const MAY_MENAION = {
     // Source: 05-21.pdf — Tone II Spec. Mel. "When from the Tree..."
     stichera_aposticha: [
       { tone: 2,
-        text: "O Constantine, thou wast the first emperor among Christians " +
-              "to receive thy scepter from God; " +
-              "for the sign of salvation, which was hidden in the earth, " +
-              "was revealed to thee, whereby thou didst subdue all nations " +
-              "beneath the feet of the Romans, " +
-              "in that thou didst have the life-creating Cross " +
-              "as thine invincible weapon, O blessed one, " +
+        text: "O Constantine, thou wast the first emperor * " +
+              "among Christians * " +
+              "to receive thy scepter from God; * " +
+              "for the sign of salvation, which was hidden in the earth, * " +
+              "was revealed to thee, whereby thou didst subdue all nations * " +
+              "beneath the feet of the Romans, * " +
+              "in that thou didst have the life-creating Cross * " +
+              "as thine invincible weapon, O blessed one, ** " +
               "whereby thou wast brought to our God." },
       { tone: 2,
         verse: "I have raised up one chosen out of My people; I have found David My servant.",
-        text: "Truly blessed and hallowed is the womb which bore thee, " +
-              "O peace-loving emperor, divinely crowned Constantine, " +
-              "thou joy of Christians, glory of the Romans, " +
-              "wealth and champion of orphans and widows, " +
-              "protection of the lowly, correction of those who are in confusion and sorrow, " +
+        text: "Truly blessed and hallowed is the womb * " +
+              "which bore thee, * " +
+              "O peace-loving emperor, * " +
+              "divinely crowned Constantine, * " +
+              "thou joy of Christians, glory of the Romans, * " +
+              "wealth and champion of orphans and widows, * " +
+              "protection of the lowly, correction of those * " +
+              "who are in confusion and sorrow, ** " +
               "and true deliverance of captives." },
       { tone: 2,
         verse: "Wherefore God, thy God, hath anointed Thee with the oil of gladness.",
-        text: "Wounded by desire and love for Christ, the mother of the all-sweet offspring " +
-              "arrived with haste in holy Sion, at the holy place " +
-              "wherein our Savior was voluntarily crucified for our salvation; " +
-              "and there, taking up the Cross, she cried aloud, rejoicing: " +
-              "Glory to Him Who hath given me that for which I hoped!" },
+        text: "Wounded by desire and love for Christ, * " +
+              "the mother of the all-sweet offspring * " +
+              "arrived with haste in holy Sion, at the holy place * " +
+              "wherein our Savior * " +
+              "was voluntarily crucified for our salvation; * " +
+              "and there, taking up the Cross, * " +
+              "she cried aloud, rejoicing: * " +
+              "Glory to Him Who hath given me ** " +
+              "that for which I hoped!" },
     ],
     aposticha_glory: {
       tone: 8,
@@ -676,14 +730,17 @@ const MAY_MENAION = {
             "thou glory of Orthodox kings, whose shrine poureth forth healing. " +
             "O Constantine, equal of the apostles, pray thou for our souls.",
     },
-    // Both now at aposticha — from Pentecostarion: appointed Theotokion T2
-    // (Ascension-period theotokion per 05-21.pdf rubric; same text as P+39/P+40/P+41/P+42)
-    aposticha_both_now: { tone: 2,
-      text: "The shadow of the law hath passed now that grace hath come, " +
-            "for as the Bush wrapped in flame was not consumed, " +
-            "so didst thou bear a Child O Virgin and remained a Virgin; " +
-            "in place of a pillar of fire, the Sun of righteousness hath dawned, " +
-            "instead of Moses, Christ is come, the salvation of our souls.",
+    // Both now at aposticha — Menaion theotokion Tone VIII "O unwedded Virgin" (05-21.pdf).
+    // The PDF rubric: "from the Pentecostarion, or this Theotokion in Tone VIII" — the
+    // Pentecostarion theotokion governs in season; this is the Menaion option.
+    aposticha_both_now: { tone: 8,
+      text: "O unwedded Virgin! * " +
+            "thou who ineffably conceived God in the flesh, * " +
+            "Mother of God Most High: * " +
+            "accept the supplications of thy servants, O all-immaculate one, * " +
+            "granting unto all cleansing of transgressions; * " +
+            "and, accepting now our supplications, ** " +
+            "pray thou that we all be saved.",
     },
 
     // ── AT TYPICA: BEATITUDES ─────────────────────────────────────────────
