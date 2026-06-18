@@ -1,6 +1,12 @@
-# ENCODING RULE v2.5 — Orthodox Hours Tool
+# ENCODING RULE v2.6 — Orthodox Hours Tool
 **Authority:** Fekula & Williams (2009) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** June 2026 · **Supersedes:** v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+**Updated:** June 2026 · **Supersedes:** v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+
+**v2.6 changes — CHECK F (register + provenance lint):** after the May 16–22 audit found
+OCA-contemporary "You/Your" register bleeding into stored troparia/kontakia (05-19 troparion,
+05-20 kontakion, 05-31 kontakion) and false "No PDF" / "No AT LITURGY" provenance comments.
+Adds §11 #17 (register lint, Check F-1), #18 (provenance lint, Check F-2), and matching §12
+checklist gates — enforced by `tools/validate_entries.mjs` "Check F".
 
 **v2.5 changes — POINTING FIDELITY, NO-TROPARION FALLBACK, RESOLUTION ORDER (May 16–18 audit):**
 §11 #14 (if the source points a text with `*`/`**`, store it pointed — never flatten to
@@ -951,6 +957,18 @@ After the .txt skeleton is complete, these fields map to the tool data objects:
     generic for the PDF's printed troparion (05-17). All stored texts conform to the
     tool's traditional thou/thy register; OCA contemporary wording is conformed, not pasted.
 
+17. **Register lint (Check F-1).** Stored hymnography is traditional thou/thy register.
+    A hymn text field is flagged if: (a) it contains a capitalized standalone You / Your /
+    Yours (reverential capitalization for God, which traditional renders Thou/Thee/Thy), OR
+    (b) it contains lowercase you / your / yours AND contains none of thee/thou/thy/thine/ye.
+    Rule (b) is the discriminator: genuine traditional PLURAL address ("your blood … ye
+    purchased") always co-occurs with ye/thou/thy and passes; contemporary text uses only
+    you/your with no thou/thy/ye and flags.
+
+18. **Provenance lint (Check F-2).** Flag any entry whose header comments or note contain the
+    substring "No PDF" or "No AT LITURGY" (100% false-positive rate across the audit) for
+    re-verification.
+
 ---
 
 ## 12. PRE-SAVE CHECKLIST
@@ -976,6 +994,8 @@ explicit value (not blank), and:
       pointed (Tier-2), markers verbatim — not flattened to plain prose.
 - [ ] Resolution order & register (§11 #15–16): troparion sourced correctly when the PDF
       prints none; OCA overrides only with a saint-specific proper; all texts in thou/thy.
+- [ ] Check F-1 register: no contemporary You/Your in any hymn text (per §11 #17).
+- [ ] Check F-2 provenance: no "No PDF" / "No AT LITURGY" left in comments or note (§11 #18).
 
 **Menaion §2A:**
 - [ ] Calendar section complete
