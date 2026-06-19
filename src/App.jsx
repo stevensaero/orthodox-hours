@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import HoursTool from './components/hours-tool.jsx';
 import Psalter from './components/psalter.jsx';
 import Scripture from './components/scripture.jsx';
+import HoursReturnStrip from './components/hours-return-strip.jsx';
 
 // Dev/truthing tools — lazy-loaded, URL-only access
 const MenaionBrowser = lazy(() => import('./components/menaion-browser.jsx'));
@@ -47,9 +48,9 @@ function App() {
         <Route path="/psalter/:kathisma" element={<Psalter />} />
         <Route path="/scripture" element={<ErrorBoundary><Scripture /></ErrorBoundary>} />
         <Route path="/scripture/" element={<ErrorBoundary><Scripture /></ErrorBoundary>} />
-        <Route path="/menaion" element={<Suspense fallback={<LazyFallback />}><MenaionBrowser /></Suspense>} />
-        <Route path="/pentecostarion" element={<Suspense fallback={<LazyFallback />}><PentecostarionBrowser /></Suspense>} />
-        <Route path="/octoechos" element={<Suspense fallback={<LazyFallback />}><OctoechosBrowser /></Suspense>} />
+        <Route path="/menaion" element={<Suspense fallback={<LazyFallback />}><HoursReturnStrip /><MenaionBrowser /><HoursReturnStrip position="bottom" /></Suspense>} />
+        <Route path="/pentecostarion" element={<Suspense fallback={<LazyFallback />}><HoursReturnStrip /><PentecostarionBrowser /><HoursReturnStrip position="bottom" /></Suspense>} />
+        <Route path="/octoechos" element={<Suspense fallback={<LazyFallback />}><HoursReturnStrip /><OctoechosBrowser /><HoursReturnStrip position="bottom" /></Suspense>} />
         <Route path="/tone-trainer" element={<Suspense fallback={<LazyFallback />}><ToneTrainer /></Suspense>} />
       </Routes>
     </BrowserRouter>
