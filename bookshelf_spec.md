@@ -37,7 +37,9 @@ Consequence: in-shell and new-window books behave **identically** at this level 
 
 ## 3. Shelf inventory & context → entry-point mapping
 
-Seven books. Each book's "open to" value comes from the **existing engine/assembler**, never from bookshelf-local logic. Where the engine cannot resolve (date not yet encoded, distribution not yet wired), the preview shows a **placeholder slot** and the viewer opens to its own default.
+> **As-built (Phase 1, v0.18.x).** Six books shipped — **Horologion omitted** (no viewer exists; decision was to omit rather than stub). In-shell routes confirmed present: `/menaion`, `/pentecostarion`, `/octoechos`, `/psalter`, `/tone-trainer`. PSB intaken to `public/PriestsServiceBook.html` (new window) with its palette unified to the viewer theme. Books link out with `?date=…&tone/pascha/comm`, but **viewers open at the top, not yet positioned to the entry** — only the Psalter reads its param today; per-viewer deep-positioning is the next task. Coverage lines are **declared strings** (computed Menaion/Pentecostarion ranges deferred). The planning table below is kept as the design record; the omitted Horologion row is struck.
+
+Each book's "open to" value comes from the **existing engine/assembler**, never from bookshelf-local logic. Where the engine cannot resolve (date not yet encoded, distribution not yet wired), the preview shows a **placeholder slot** and the viewer opens to its own default.
 
 **Hosting verification (do at clone):** a book is a *live spine* only once it has a confirmed, deployed URL (in-shell route or served file). Unconfirmed books render as **visibly stubbed** rather than linking to nothing. The PSB hosting state is unknown until we inspect the repo — see note below.
 
@@ -46,9 +48,9 @@ Seven books. Each book's "open to" value comes from the **existing engine/assemb
 | Hymnography | Menaion | in-shell | fixed commemoration for `MM-DD` | fallback chain: daily PDF → General Menaion (by saint type) → OCA | `MM-DD` not encoded → slot; viewer opens to date anyway |
 | Hymnography | Pentecostarion | in-shell | Paschal day `P+N` | Pascha offset + `pentecostarion.js` | offset outside encoded P-range → slot |
 | Hymnography | Octoechos | in-shell | tone of the week | Octoechos cycle | Bright Week / Pentecost wk / post-All-Saints → **graceful label, never a guessed tone** |
-| Order & Psalmody | Horologion | in-shell | seasonal opening / Hour set | invariable order + opening rule | n/a (complete) |
+| ~~Order & Psalmody~~ | ~~Horologion~~ | — | — | — | **omitted in Phase 1 — no viewer exists** |
 | Order & Psalmody | Psalter | in-shell | appointed kathisma(ta) | daily kathisma distribution | distribution not yet wired → slot |
-| Order & Psalmody | Priest's Service Book (Royster) | new window* | service (default: Liturgy of St. John Chrysostom) | PSB browser | *hosting unverified — see note |
+| Order & Psalmody | Priest's Service Book (Royster) | new window | service (default: Liturgy of St. John Chrysostom) | `public/PriestsServiceBook.html` | intaken + palette unified (v0.18.x) |
 | Chant | Tone Trainer | in-shell | tone of the week | Octoechos cycle | no resolvable tone → "choose a tone" |
 
 **Honesty rule:** the tone-of-week is only computed in the well-defined regime (Pascha+7 … Pascha+48). Bright Week, Pentecost week, and the post-All-Saints resumption return a descriptive label, not a number. Any tone shown is correct or absent.
@@ -61,7 +63,7 @@ Seven books. Each book's "open to" value comes from the **existing engine/assemb
 
 **Phase 1a pilot — Reading-view source links, Troparion + Kontakion only.** The pilot narrows *only* the per-element "source of truth" links in the Hours tool (Reading view). The first pass wires just the **Troparion** and **Kontakion** links; every other element's source link stays display-only until those prove out, then we extend to stichera, doxasticon, and the rest.
 
-This does **not** touch the Library shelf. All seven books are fully date-aware and open to context from day one — the shelf remains the complete view of everything openable for the day. The pilot is purely about how the *element → source* jump behaves, validated on T/K (which already reach the Menaion, Octoechos, and Pentecostarion) before it's worth wiring everywhere.
+This does **not** touch the Library shelf. All six books are fully date-aware and open to context from day one — the shelf remains the complete view of everything openable for the day. The pilot is purely about how the *element → source* jump behaves, validated on T/K (which already reach the Menaion, Octoechos, and Pentecostarion) before it's worth wiring everywhere.
 
 The full param vocabulary below is defined now (so nothing gets renamed later); the shelf uses it in full immediately, and only the Reading-view element links are phased.
 
@@ -91,7 +93,7 @@ Reuse the Psalter pattern:
 Each spine's coverage line must read from a **single source of truth** so it never goes stale as encoding advances.
 
 - **Computed from data where possible:** Menaion coverage derived from the encoded date ranges in `src/data/menaion/*.js` (min/max encoded `MM-DD` per month). Pentecostarion from the encoded `P+N` range in `pentecostarion.js`.
-- **Declared where static:** Horologion, Psalter, Octoechos = "complete". PSB = "57 sections · 13 stubs". Tone Trainer = declared.
+- **Declared where static:** Psalter, Octoechos = "complete". PSB = "57 sections · Royster". Tone Trainer = declared. (Horologion omitted from the shelf in Phase 1.)
 - **Dot state:** gold = partial, green = complete, derived from the same source.
 
 ## 7. Settled by the mockup (not re-specified here)
