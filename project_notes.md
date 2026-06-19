@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.20.3** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
+**Tool version: v0.20.4** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
 
 **Liturgical Library — Phase 1 shelf LANDED (v0.18.0).** `bookshelf_spec.md` (repo root).
 A Reading ⇄ Library flip (single icon by SERVICE) toggles the Hours-tool body between the
@@ -74,6 +74,13 @@ date input (tap still opens the OS picker; `showPicker()` on click for desktop).
   removed from all three. **Hours-tool service change** now scrolls to the top of the service
   (`mainHeaderRef.offsetHeight`, controls bar pinned) instead of page-top, so switching service
   no longer re-reveals the masthead.
+- DONE (v0.20.4): How-It-Works "(open)" links for Psalter / Menaion / Pentecostarion / Octoechos
+  now carry `?from=tool` so they open with the return strip (Scripture already did). **Tone
+  Trainer adopted the unified `HoursReturnStrip`** — wrapped at its route in `App.jsx` (top +
+  bottom), and its own in-header/footer `← Hours Tool` links + the `cameFromHours` memo removed.
+  Safe because the Point/Score hand-off already navigates with `?from=tool`
+  (`point-score-controls.jsx`), so the strip shows on that path too; the Tone Trainer has no
+  sticky top bar, so no header offset was needed.
 - PARKED (spec §8): persistent context strip across viewers, live re-page on date change,
   manual-nav-vs-date override, PSB into the React shell, Tone Trainer verse-payload intake,
   Score Print conditional return.
