@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import {
   LIC_THEOTOKIA, HYPAKOE, RESURRECTIONAL_TROPARIA, RESURRECTIONAL_DISMISSAL_THEOTOKIA,
@@ -6271,31 +6272,44 @@ function ServiceSelector({ services, value, onChange }) {
   );
 }
 function Tooltip({ term, children }) {
-  const [visible, setVisible] = useState(false);
   const def = GLOSSARY[term.toLowerCase()];
+  const [visible, setVisible] = useState(false);
+  const [pos, setPos] = useState(null);
+  const anchorRef = React.useRef(null);
   if (!def) return <span>{children}</span>;
 
+  // Measure the term and render the popup in a portal at <body>, fixed-positioned
+  // above the term. This escapes the service body's will-change/perspective
+  // stacking context, which otherwise traps the tooltip below the sticky controls
+  // bar and clips it.
+  const show = () => {
+    const r = anchorRef.current && anchorRef.current.getBoundingClientRect();
+    if (r) setPos({ left: r.left + r.width / 2, top: r.top });
+    setVisible(true);
+  };
+  const hide = () => setVisible(false);
+
   return (
-    <span className="tooltip-wrap" style={{ position: "relative", display: "inline" }}>
+    <span ref={anchorRef} style={{ display: "inline" }}>
       <span
         style={{
           borderBottom: "1px dotted #8B6914",
           cursor: "help",
           color: "#8B6914",
         }}
-        onMouseEnter={() => setVisible(true)}
-        onMouseLeave={() => setVisible(false)}
-        onClick={() => setVisible((v) => !v)}
+        onMouseEnter={show}
+        onMouseLeave={hide}
+        onClick={() => (visible ? hide() : show())}
       >
         {children}
       </span>
-      {visible && (
+      {visible && pos && createPortal(
         <span
           style={{
-            position: "absolute",
-            bottom: "calc(100% + 6px)",
-            left: "50%",
-            transform: "translateX(-50%)",
+            position: "fixed",
+            left: pos.left + "px",
+            top: (pos.top - 6) + "px",
+            transform: "translate(-50%, -100%)",
             background: "#1C1008",
             color: "#F5EDD6",
             padding: "8px 12px",
@@ -6303,16 +6317,19 @@ function Tooltip({ term, children }) {
             fontSize: "0.78rem",
             lineHeight: "1.5",
             width: "240px",
-            zIndex: 100,
+            maxWidth: "calc(100vw - 16px)",
+            zIndex: 9999,
             boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
             fontFamily: "Georgia, serif",
             fontStyle: "italic",
             border: "1px solid #8B6914",
+            pointerEvents: "none",
           }}
         >
           <strong style={{ fontStyle: "normal", color: "#D4AA50" }}>{term}:</strong>{" "}
           {def}
-        </span>
+        </span>,
+        document.body
       )}
     </span>
   );
@@ -8070,6 +8087,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.20.6",
+    date: "June 2026",
+    summary: "Data browsers scroll sideways instead of breaking on phones; glossary tooltips no longer hide behind the date bar",
+    items: [
+      "On narrow screens the Menaion, Pentecostarion, and Octoechos browsers now keep their full layout and add a horizontal scrollbar instead of trying to reflow into a phone-width column — which is what was occasionally causing a blank screen in portrait. They are most comfortable in landscape on a small device.",
+      "When you open a Menaion day from the calendar, it now lands just below the month navigation instead of partly tucked behind it. The day sidebar and the date header it pins under also account for the return strip when one is shown.",
+      "Glossary tooltips (the dotted-underline terms) now float above everything, including the sticky date/service bar, instead of being clipped by it.",
+    ],
+  },
   {
     version: "v0.20.5",
     date: "June 2026",

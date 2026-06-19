@@ -48,9 +48,9 @@ function App() {
         <Route path="/psalter/:kathisma" element={<Psalter />} />
         <Route path="/scripture" element={<ErrorBoundary><Scripture /></ErrorBoundary>} />
         <Route path="/scripture/" element={<ErrorBoundary><Scripture /></ErrorBoundary>} />
-        <Route path="/menaion" element={<Suspense fallback={<LazyFallback />}><HoursReturnStrip /><MenaionBrowser /><HoursReturnStrip position="bottom" /></Suspense>} />
-        <Route path="/pentecostarion" element={<Suspense fallback={<LazyFallback />}><HoursReturnStrip /><PentecostarionBrowser /><HoursReturnStrip position="bottom" /></Suspense>} />
-        <Route path="/octoechos" element={<Suspense fallback={<LazyFallback />}><HoursReturnStrip /><OctoechosBrowser /><HoursReturnStrip position="bottom" /></Suspense>} />
+        <Route path="/menaion" element={<Suspense fallback={<LazyFallback />}><div style={{ minWidth: "760px" }}><HoursReturnStrip /><MenaionBrowser /><HoursReturnStrip position="bottom" /></div></Suspense>} />
+        <Route path="/pentecostarion" element={<Suspense fallback={<LazyFallback />}><div style={{ minWidth: "760px" }}><HoursReturnStrip /><PentecostarionBrowser /><HoursReturnStrip position="bottom" /></div></Suspense>} />
+        <Route path="/octoechos" element={<Suspense fallback={<LazyFallback />}><div style={{ minWidth: "760px" }}><HoursReturnStrip /><OctoechosBrowser /><HoursReturnStrip position="bottom" /></div></Suspense>} />
         <Route path="/tone-trainer" element={<Suspense fallback={<LazyFallback />}><HoursReturnStrip /><ToneTrainer /><HoursReturnStrip position="bottom" /></Suspense>} />
       </Routes>
     </BrowserRouter>

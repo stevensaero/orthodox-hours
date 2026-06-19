@@ -8,6 +8,17 @@ import { PointScoreControls, normalizeSergius } from './point-score-controls.jsx
 import FieldEditor from './field-editor.jsx';
 import { menaionCtx, fieldPath } from './editor-adapters.js';
 
+// Height (px) of the sticky "← Hours Tool" return strip when opened from the
+// tool, published as a CSS var by hours-return-strip.jsx (0 when no strip). The
+// menaion header pins below the strip, so sticky offsets and scroll targets must
+// clear strip + header, not just the header.
+function stripOffsetPx() {
+  try {
+    return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hours-return-strip-h')) || 0;
+  } catch { return 0; }
+}
+const STRIP_VAR = "var(--hours-return-strip-h, 0px)";
+
 // ── Color constants — matches psalter.jsx / hours-tool.jsx ──────────────────
 const C = {
   parchment: "#FAF6EE",
@@ -493,7 +504,7 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
     const pick = () => {
       const els = subEntryRefs.current.filter(Boolean);
       if (els.length === 0) return;
-      const threshold = stickyTop + 8; // px below top of viewport to treat as "header cleared"
+      const threshold = stickyTop + stripOffsetPx() + 8; // px below top of viewport to treat as "header cleared"
       // Walk from last to first; the last one whose top is at or above threshold wins.
       let idx = 0;
       for (let i = 0; i < els.length; i++) {
@@ -514,7 +525,7 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
       {/* ── Sticky Header ── */}
       <div style={{
         position: "sticky",
-        top: stickyTop + "px",
+        top: "calc(" + STRIP_VAR + " + " + stickyTop + "px)",
         zIndex: 10,
         background: C.parchment,
         paddingTop: "0.35rem",
@@ -841,7 +852,7 @@ export default function MenaionBrowser() {
     if (!el) return;
     const headerH = headerRef.current ? headerRef.current.getBoundingClientRect().height : 90;
     const elTop = el.getBoundingClientRect().top + window.scrollY;
-    window.scrollTo({ top: elTop - headerH - 8, behavior: 'smooth' });
+    window.scrollTo({ top: elTop - headerH - stripOffsetPx() - 8, behavior: 'smooth' });
   };
 
   // Fire the deep-positioning scroll once the dynamic month import has resolved
@@ -954,7 +965,7 @@ export default function MenaionBrowser() {
             flexShrink: 0,
             width: "200px",
             position: "sticky",
-            top: (headerHeight + 10) + "px",
+            top: "calc(" + STRIP_VAR + " + " + (headerHeight + 10) + "px)",
             alignSelf: "flex-start",
           }}>
             {/* Month summary */}
