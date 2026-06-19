@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.19.1** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
+**Tool version: v0.20.0** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
 
 **Liturgical Library — Phase 1 shelf LANDED (v0.18.0).** `bookshelf_spec.md` (repo root).
 A Reading ⇄ Library flip (single icon by SERVICE) toggles the Hours-tool body between the
@@ -21,7 +21,7 @@ compact `MM.DD.YYYY` on narrow screens (≤560px) to keep the bar on one line; m
 `Jun 19, 2026` on larger screens. Date is now a custom display over an invisible native
 date input (tap still opens the OS picker; `showPicker()` on click for desktop).
 
-**Library — completed / remaining (as of v0.19.0):**
+**Library — completed / remaining (as of v0.20.0):**
 - DONE: spec committed; PSB intaken to `public/` + palette unified; shelf built (flip toggle,
   date-aware previews from `liturgicalData`, links out with the context query). **7 books now**
   (Holy Scripture added in v0.19.0, Order & Psalmody). Fixes: flip animation (forced reflow),
@@ -31,10 +31,21 @@ date input (tap still opens the OS picker; `showPicker()` on click for desktop).
   the **Menaion/Octoechos/Pentecostarion browsers now carry the sticky ← Hours Tool strip**
   (shared `hours-return-strip.jsx`, wrapped at the route in `App.jsx`); Psalter / Scripture /
   Tone Trainer already had their own.
-- REMAINING: (1) per-viewer deep-positioning — each viewer reads `?date/tone/pascha/comm`
-  (and Scripture → the day's lectionary) and opens *to that entry* (only Psalter does today);
-  (2) Reading-view Troparion/Kontakion source-link pilot (in-text element→source jumps) — not
-  started; (3) coverage computed from data (Menaion/Pentecostarion ranges) vs declared strings.
+- DONE (v0.20.0): **per-viewer deep-positioning — all five remaining viewers open to the date**
+  (`phase2_deep_positioning_spec.md`, repo root). Menaion reads `?comm=MM-DD` → `setActiveMonth`
+  + a `[monthData]`-keyed effect fires the existing `scrollToEntry` once the dynamic month
+  import resolves; Octoechos `?tone=N` → `setSelectedTone`; Pentecostarion `?pascha=N` → a
+  `[pentData]`-keyed scroll via its existing offset `scrollToEntry`; Tone Trainer `?tone=N` →
+  `setActiveTone` gated on `!embeddedVerseView` (never touches the Point/Score handoff or its
+  score-print redirect). **Scripture is the single-click "Today's Readings" landing**: the shelf
+  resolves the day's E/G (cycle `getDailyReading` + menaion feast proper — the same source the
+  context card uses), stashes them in `sessionStorage` `oht_scripture_readings`, and navigates
+  `/scripture?from=tool&readings=today`; the viewer consumes-once and composes the passages
+  through the existing split-gospel `ReadingView` (no forked renderer), grouped Epistle-then-
+  Gospel, day reading first, native nav left live. null `tone`/`paschaOffset` omit the param.
+- REMAINING: (1) Reading-view Troparion/Kontakion source-link pilot (in-text element→source
+  jumps) — not started; (2) coverage computed from data (Menaion/Pentecostarion ranges) vs
+  declared strings.
 - PARKED (spec §8): persistent context strip across viewers, live re-page on date change,
   manual-nav-vs-date override, PSB into the React shell, Tone Trainer verse-payload intake,
   Score Print conditional return.
