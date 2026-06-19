@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.20.6** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
+**Tool version: v0.20.7** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
 
 **Liturgical Library — Phase 1 shelf LANDED (v0.18.0).** `bookshelf_spec.md` (repo root).
 A Reading ⇄ Library flip (single icon by SERVICE) toggles the Hours-tool body between the
@@ -114,6 +114,15 @@ date input (tap still opens the OS picker; `showPicker()` on click for desktop).
   these routes — it both prevents the blank screen and surfaces the error text for diagnosis,
   rather than masking it. Cheap to add; held back deliberately to keep v0.20.6 focused on the
   root-cause fix.
+- DONE (v0.20.7): **service-select from the Library returns to the Reading.** Picking a service
+  from the SERVICE selector while in Library view now flips back to the Reading for that service
+  (icon turns with it) and lands at the top of the service. Implemented by wrapping the
+  `ServiceSelector` `onChange` (capture `view === "library"` → `setSelectedServiceKey` →
+  `toggleView(false)`) plus a new `keepScroll` param on `toggleView`: when false the flip skips
+  its scroll-restore so the existing `[selectedServiceKey]` effect's scroll-to-service-top wins
+  instead of pinning the Library's offset. (Edge: re-picking the *same* service while in Library
+  flips to Reading but, since the service-change effect doesn't fire on an unchanged key, holds
+  the current offset rather than re-topping — accepted as a minor case.)
 - PARKED (spec §8): persistent context strip across viewers, live re-page on date change,
   manual-nav-vs-date override, PSB into the React shell, Tone Trainer verse-payload intake,
   Score Print conditional return.
