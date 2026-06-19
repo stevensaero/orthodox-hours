@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   LIC_THEOTOKIA, HYPAKOE, RESURRECTIONAL_TROPARIA, RESURRECTIONAL_DISMISSAL_THEOTOKIA,
   SUNDAY_KONTAKIA, SUNDAY_PROKEIMENON, SUNDAY_ALLELUIA, SUNDAY_APOSTICHA_THEOTOKIA,
@@ -8070,6 +8071,18 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.18.0",
+    date: "June 2026",
+    summary: "Liturgical Library — date-aware bookshelf flips from the reading view",
+    items: [
+      "Reading ⇄ Library flip toggle (single icon by SERVICE) added to the Hours tool; header, date, and context stay fixed while the body flips",
+      "Library face: three shelves (Hymnography / Order & Psalmody / Chant), six books, each opened to the page the date/tone/season calls for, fed from the live liturgicalData",
+      "Books link out to their own viewers with the date/context query: Menaion, Pentecostarion, Octoechos, Psalter, Tone Trainer (in-app routes); Priest's Service Book (new window)",
+      "Coverage line per spine (declared); Horologion omitted until it has a viewer",
+      "Phase 1 decoupled per bookshelf_spec.md: viewers open at their default position (per-viewer deep-positioning is a fast-follow); Reading-view T/K source links are next",
+    ],
+  },
+  {
     version: "v0.17.3",
     date: "June 2026",
     summary: "editor: preview diff scrolls horizontally instead of wrapping long source lines",
@@ -11091,6 +11104,146 @@ function PsalterService({ mode, setMode, name, setName, gender, setGender, ortho
   );
 }
 
+// ─── LITURGICAL LIBRARY (date-aware bookshelf) ────────────────────────────────
+// Phase 1 shelf. Books page from the live liturgicalData; each links out to its
+// own viewer (in-app route or new window) with the date/context query appended.
+// Deep-positioning inside each viewer is a per-viewer fast-follow (only the
+// Psalter reads its param today). Horologion omitted until it has a viewer.
+// Spec: bookshelf_spec.md.
+const LIBRARY_SHELVES = [
+  { name: "Hymnography", books: ["menaion", "pentecostarion", "octoechos"] },
+  { name: "Order & Psalmody", books: ["psalter", "psb"] },
+  { name: "Chant", books: ["toneTrainer"] },
+];
+
+function buildLibraryBooks(ld, selectedDate) {
+  const tone = ld && ld.tone;
+  const off = ld && typeof ld.paschaOffset === "number" ? ld.paschaOffset : null;
+  const dayName = (ld && ld.dayName) || "";
+  const mm = ld && ld.mm != null ? String(ld.mm).padStart(2, "0") : null;
+  const dd = ld && ld.dd != null ? String(ld.dd).padStart(2, "0") : null;
+  const comm = mm && dd ? mm + "-" + dd : null;
+  const toneTxt = tone ? "Tone " + tone : "—";
+  const dateQ = "date=" + encodeURIComponent(selectedDate);
+  return {
+    menaion: {
+      title: "The Menaion", spine: "#8B6914", host: "app",
+      to: "/menaion?" + dateQ + (comm ? "&comm=" + comm : ""),
+      lab: "Open to",
+      pv: (ld && ld.namedDay) ? ld.namedDay : (comm ? comm + " · commemoration of the day" : "commemoration of the day"),
+      cover: "May 18–31 · June complete", partial: true,
+    },
+    pentecostarion: {
+      title: "The Pentecostarion", spine: "#7A5A8A", host: "app",
+      to: "/pentecostarion?" + dateQ + (off != null ? "&pascha=" + off : ""),
+      lab: "Open to",
+      pv: off != null ? "Pascha + " + off : "Paschal cycle",
+      cover: "P+35 – P+56", partial: true,
+    },
+    octoechos: {
+      title: "The Octoechos", spine: "#4A7A4A", host: "app",
+      to: "/octoechos?" + dateQ + (tone ? "&tone=" + tone : ""),
+      lab: "Open to",
+      pv: tone ? toneTxt + (dayName ? " · " + dayName : "") : "resurrectional cycle",
+      cover: "Tones 1–8 · Vespers", partial: false,
+    },
+    psalter: {
+      title: "The Psalter", spine: "#7A8A5A", host: "app",
+      to: "/psalter?" + dateQ,
+      lab: "Appointed",
+      pv: dayName ? "kathismata for " + dayName : "kathismata",
+      cover: "Complete · Brenton LXX", partial: false,
+    },
+    psb: {
+      title: "Priest's Service Book", spine: "#9A4A30", host: "window",
+      to: "PriestsServiceBook.html",
+      lab: "Default",
+      pv: "Liturgy of St. John Chrysostom",
+      cover: "57 sections · Royster", partial: false,
+    },
+    toneTrainer: {
+      title: "The Tone Trainer", spine: "#4A6E7A", host: "app",
+      to: "/tone-trainer?" + dateQ + (tone ? "&tone=" + tone : ""),
+      lab: "Practice",
+      pv: tone ? toneTxt + " · matches the week" : "choose a tone",
+      cover: "Tones 1–8 · SATB", partial: false,
+    },
+  };
+}
+
+function LibraryBook({ b, onOpen }) {
+  const [hover, setHover] = React.useState(false);
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        position: "relative", display: "flex", background: "#FAF6EE", border: "1px solid #D4C49A",
+        borderRadius: "4px 5px 5px 4px", overflow: "hidden", cursor: "pointer", textAlign: "left",
+        width: "100%", fontFamily: "Georgia, serif", color: "inherit", padding: 0,
+        transform: hover ? "translateY(-3px)" : "none",
+        boxShadow: hover ? "0 8px 16px -8px rgba(60,40,10,0.45)" : "none",
+        transition: "transform 0.14s ease, box-shadow 0.14s ease",
+      }}
+    >
+      <span style={{ width: 8, flexShrink: 0, background: b.spine,
+        boxShadow: "inset -2px 0 0 rgba(0,0,0,0.18), inset 2px 0 0 rgba(255,255,255,0.14)" }} />
+      <span style={{ padding: "0.6rem 0.75rem 0.65rem", flex: 1, minWidth: 0 }}>
+        <span style={{ position: "absolute", top: "0.5rem", right: "0.55rem", fontSize: "0.55rem",
+          letterSpacing: "0.08em", textTransform: "uppercase", color: "#C4B48A" }}>
+          {b.host === "window" ? "↗ window" : "→ app"}
+        </span>
+        <span style={{ display: "block", fontSize: "0.92rem", color: "#1C1008", lineHeight: 1.2,
+          marginBottom: "0.4rem", paddingRight: "3.5rem" }}>{b.title}</span>
+        <span style={{ display: "block", background: "#FBF8F1", border: "1px solid #D4C49A",
+          borderLeft: "2px solid #8B6914", borderRadius: "0 3px 3px 0", padding: "0.4rem 0.55rem", minHeight: "2.7rem" }}>
+          <span style={{ display: "block", fontSize: "0.55rem", letterSpacing: "0.11em", textTransform: "uppercase",
+            color: "#8B6914", marginBottom: "0.12rem" }}>{b.lab}</span>
+          <span style={{ display: "block", fontSize: "0.8rem", color: "#1C1008", lineHeight: 1.4 }}>{b.pv}</span>
+        </span>
+        <span style={{ display: "flex", alignItems: "center", gap: "0.35rem", marginTop: "0.45rem",
+          fontSize: "0.64rem", color: "#C4B48A", fontStyle: "italic" }}>
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: b.partial ? "#8B6914" : "#4A7A4A", flexShrink: 0 }} />
+          {b.cover}
+        </span>
+      </span>
+    </button>
+  );
+}
+
+function LiturgicalLibrary({ liturgicalData, selectedDate, navigate }) {
+  const books = buildLibraryBooks(liturgicalData, selectedDate);
+  const open = (b) => {
+    if (b.host === "window") {
+      window.open((import.meta.env.BASE_URL || "/") + b.to, "_blank", "noopener");
+    } else {
+      navigate(b.to);
+    }
+  };
+  return (
+    <div style={{ padding: "0.5rem 0 1rem" }}>
+      <div style={{ fontSize: "0.72rem", color: "#9A8A70", fontStyle: "italic", textAlign: "center", marginBottom: "1rem" }}>
+        Each book opens to the page this date calls for{liturgicalData && liturgicalData.dayName ? " — " + liturgicalData.dayName : ""}.
+      </div>
+      {LIBRARY_SHELVES.map((shelf) => (
+        <div key={shelf.name} style={{ marginBottom: "1.4rem" }}>
+          <div style={{ fontSize: "0.62rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#8B6914", margin: "0 0 0.55rem 0.1rem" }}>
+            {shelf.name}
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "0.7rem",
+            paddingBottom: "0.6rem", borderBottom: "4px solid #C9B583", boxShadow: "0 5px 7px -6px rgba(60,40,10,0.35)" }}>
+            {shelf.books.map((key) => (
+              <LibraryBook key={key} b={books[key]} onOpen={() => open(books[key])} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function App() {
   const today = new Date();
   const [selectedDate, setSelectedDate] = useState(
@@ -11101,6 +11254,9 @@ export default function App() {
   const [contextOpen, setContextOpen] = useState(false);
   const [copyrightExpanded, setCopyrightExpanded] = useState(false);
   const [selectedServiceKey, setSelectedServiceKey] = useState("1st_hour");
+  const [view, setView] = useState("reading");          // 'reading' | 'library'
+  const bodyFlipRef = React.useRef(null);
+  const navigate = useNavigate();
   // tbOpen: tracks whether the Typical Beginning is expanded on 1st/6th Hours.
   // When expanded, the Hour body shows O come let us worship (not Christ is risen)
   // because Christ is risen was already said within the Typical Beginning.
@@ -11370,6 +11526,35 @@ export default function App() {
     weekday: "long", year: "numeric", month: "long", day: "numeric",
   });
 
+  // Reading ⇄ Library flip. Single-mount: rotate the body edge-on, swap the
+  // mounted face, rotate back — so the long service body keeps normal flow
+  // (no broken scroll/anchors) and the container is always the active height.
+  function toggleView() {
+    const next = view === "reading" ? "library" : "reading";
+    const el = bodyFlipRef.current;
+    const reduce = typeof window !== "undefined" && window.matchMedia
+      && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!el || reduce) { setView(next); window.scrollTo({ top: 0 }); return; }
+    el.style.transition = "transform 0.2s ease";
+    el.style.transform = "rotateY(90deg)";
+    window.setTimeout(() => {
+      setView(next);
+      window.scrollTo({ top: 0 });
+      requestAnimationFrame(() => {
+        const e = bodyFlipRef.current;
+        if (!e) return;
+        e.style.transition = "none";
+        e.style.transform = "rotateY(-90deg)";
+        requestAnimationFrame(() => {
+          const e2 = bodyFlipRef.current;
+          if (!e2) return;
+          e2.style.transition = "transform 0.2s ease";
+          e2.style.transform = "rotateY(0deg)";
+        });
+      });
+    }, 200);
+  }
+
   return (
     <div style={{ minHeight: "100vh", background: "#FAF6EE", fontFamily: "Georgia, serif", color: "#1C1008" }}>
 
@@ -11460,6 +11645,35 @@ export default function App() {
           <div style={{ display: "flex", alignItems: "center", gap: "6px", minWidth: 0 }}>
           <label className="hours-ctl-label" style={{ fontSize: "0.8rem", color: "#5C4A1E", letterSpacing: "0.05em", flexShrink: 0 }}>SERVICE</label>
           <ServiceSelector services={SERVICE_REGISTRY} value={selectedServiceKey} onChange={setSelectedServiceKey} />
+          <button
+            type="button"
+            onClick={toggleView}
+            aria-pressed={view === "library"}
+            title={view === "library" ? "Flip to the Reading" : "Flip to the Library"}
+            style={{ width: 40, height: 34, marginLeft: 6, padding: 0, background: "none", border: "none",
+              cursor: "pointer", perspective: "320px", flexShrink: 0 }}
+          >
+            <span style={{ display: "block", position: "relative", width: "100%", height: "100%",
+              transformStyle: "preserve-3d", transition: "transform 0.45s ease",
+              transform: view === "library" ? "rotateY(180deg)" : "rotateY(0deg)" }}>
+              <span style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center",
+                background: "rgba(139,105,20,0.12)", border: "1px solid #8B6914", borderRadius: 6,
+                backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B6914" strokeWidth="1.6" strokeLinecap="round">
+                  <rect x="5.5" y="3" width="13" height="18" rx="1.5" /><line x1="8.5" y1="8" x2="15.5" y2="8" />
+                  <line x1="8.5" y1="12" x2="15.5" y2="12" /><line x1="8.5" y1="16" x2="13" y2="16" />
+                </svg>
+              </span>
+              <span style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center",
+                background: "#8B6914", border: "1px solid #8B6914", borderRadius: 6,
+                backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(180deg)" }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FAF6EE" strokeWidth="1.6" strokeLinecap="round">
+                  <rect x="4" y="5" width="4" height="14" rx="1" /><rect x="9.5" y="5" width="4" height="14" rx="1" />
+                  <g transform="rotate(12 18 12)"><rect x="16" y="4" width="4" height="15" rx="1" /></g>
+                </svg>
+              </span>
+            </span>
+          </button>
           </div>{/* end Group 3 */}
 
           </div>{/* end row one */}
@@ -11788,7 +12002,11 @@ export default function App() {
         )}
 
         {/* ── MAIN CONTENT COLUMN ── */}
-        <div style={{ flex: 1, minWidth: 0, padding: '0 1rem' }}>
+        <div style={{ flex: 1, minWidth: 0, padding: '0 1rem', perspective: '2000px' }}>
+        <div ref={bodyFlipRef} style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}>
+        {view === 'library' ? (
+          <LiturgicalLibrary liturgicalData={liturgicalData} selectedDate={selectedDate} navigate={navigate} />
+        ) : (<>
 
 
         {/* ── OUT OF SCOPE WARNING ─────────────────────────── */}
@@ -12130,6 +12348,8 @@ export default function App() {
             </div>
           </>
         )}
+        </>)}
+        </div>{/* end body flip-inner */}
         </div>{/* end main content column */}
       </div>{/* end flex row */}
 
