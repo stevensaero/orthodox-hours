@@ -13,6 +13,26 @@ default position — per-viewer deep-positioning from the query is a fast-follow
 Psalter reads its param today). Next: Reading-view Troparion/Kontakion "source of truth"
 links (the in-text element→source pilot), then extend element by element.
 
+**Library follow-up fixes:** v0.18.1 — flip animation fixed (forced-reflow so the body
+actually rotates instead of snapping; the icon had been flipping alone) and the tool now
+remembers its view (reading vs library) in `sessionStorage`, so returning from a viewer
+lands back on the Library if that's where you left it. v0.18.2 — control-bar date renders
+compact `MM.DD.YYYY` on narrow screens (≤560px) to keep the bar on one line; medium
+`Jun 19, 2026` on larger screens. Date is now a custom display over an invisible native
+date input (tap still opens the OS picker; `showPicker()` on click for desktop).
+
+**Library — completed / remaining (as of v0.18.2):**
+- DONE: spec committed; PSB intaken to `public/` + palette unified; shelf built (flip toggle,
+  6 books, 3 shelves, date-aware previews from `liturgicalData`, links out with the context
+  query); flip + view-memory + mobile-date fixes.
+- REMAINING: (1) per-viewer deep-positioning — each browser reads `?date/tone/pascha/comm`
+  and opens *to that entry* (only Psalter does today); (2) Reading-view Troparion/Kontakion
+  source-link pilot (in-text element→source jumps) — not started; (3) coverage computed from
+  data (Menaion/Pentecostarion ranges) vs the declared strings shipped now.
+- PARKED (spec §8): persistent context strip across viewers, live re-page on date change,
+  manual-nav-vs-date override, PSB into the React shell, Tone Trainer verse-payload intake,
+  Score Print conditional return.
+
 **Sunday Vespers — unified engine (P0 signed off; P1 engine LANDED in v0.16.0).** `sunday_vespers_spec.md`
 (repo root) specs one engine for ALL resurrectional Sundays — ordinary Octoechos
 (post-Pentecost), overlay (`all_saints_sunday`), and Pentecostarion — replacing the prior
