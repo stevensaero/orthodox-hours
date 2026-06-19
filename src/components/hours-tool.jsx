@@ -8071,6 +8071,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.19.0",
+    date: "June 2026",
+    summary: "Scripture joins the Library; return banner in the data browsers; flip collapses context first",
+    items: [
+      "Holy Scripture added to the Library shelf (Order & Psalmody), opening the Scripture viewer to the daily readings (deep-positioning to the day's lectionary is a fast-follow)",
+      "Menaion / Octoechos / Pentecostarion browsers now show the sticky ← Hours Tool return strip (top and bottom) when opened from the tool, matching the Psalter / Scripture / Tone Trainer",
+      "Flip now collapses an expanded Liturgical Context panel first (brief pause) before animating, so on a phone the flip is visible above the fold instead of happening below a full-screen context panel",
+    ],
+  },
+  {
     version: "v0.18.4",
     date: "June 2026",
     summary: "Bookshelf links show the return banner (Psalter); flip header-bleed + cross-browser fix",
@@ -11148,7 +11158,7 @@ function PsalterService({ mode, setMode, name, setName, gender, setGender, ortho
 // Spec: bookshelf_spec.md.
 const LIBRARY_SHELVES = [
   { name: "Hymnography", books: ["menaion", "pentecostarion", "octoechos"] },
-  { name: "Order & Psalmody", books: ["psalter", "psb"] },
+  { name: "Order & Psalmody", books: ["psalter", "psb", "scripture"] },
   { name: "Chant", books: ["toneTrainer"] },
 ];
 
@@ -11196,6 +11206,13 @@ function buildLibraryBooks(ld, selectedDate) {
       lab: "Default",
       pv: "Liturgy of St. John Chrysostom",
       cover: "57 sections · Royster", partial: false,
+    },
+    scripture: {
+      title: "Holy Scripture", spine: "#5C6E8A", host: "app",
+      to: "/scripture?" + dateQ,
+      lab: "Open to",
+      pv: "‹ daily Epistle & Gospel ›",
+      cover: "Daily lectionary readings", partial: false,
     },
     toneTrainer: {
       title: "The Tone Trainer", spine: "#4A6E7A", host: "app",
@@ -11587,6 +11604,15 @@ export default function App() {
   // mounted face, rotate back — so the long service body keeps normal flow
   // (no broken scroll/anchors) and the container is always the active height.
   function toggleView() {
+    // If the Liturgical Context panel is expanded (can fill a phone screen),
+    // collapse it first so the flip happens above the fold and reads as an action.
+    if (contextOpen) {
+      setContextOpen(false);
+      window.setTimeout(runFlip, 480);
+    } else {
+      runFlip();
+    }
+    function runFlip() {
     const next = view === "reading" ? "library" : "reading";
     try { window.sessionStorage.setItem("hours.view", next); } catch (e) {}
     const el = bodyFlipRef.current;
@@ -11620,6 +11646,7 @@ export default function App() {
         }, 240);
       });
     }, 220);
+    }
   }
 
   return (
