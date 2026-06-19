@@ -8071,6 +8071,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.19.1",
+    date: "June 2026",
+    summary: "Flip no longer re-exposes the masthead; PSB opens same-tab with a ← Hours Tool strip",
+    items: [
+      "Flipping between Reading and Library now lands just below the masthead (the sticky date/controls bar pins to the top) instead of scrolling back up to re-expose the non-functional title + version header",
+      "Priest's Service Book now opens in the same tab (browser Back returns to the tool, restoring the Library) and carries its own sticky ← Hours Tool header and footer when opened from the tool",
+    ],
+  },
+  {
     version: "v0.19.0",
     date: "June 2026",
     summary: "Scripture joins the Library; return banner in the data browsers; flip collapses context first",
@@ -11246,7 +11255,7 @@ function LibraryBook({ b, onOpen }) {
       <span style={{ padding: "0.6rem 0.75rem 0.65rem", flex: 1, minWidth: 0 }}>
         <span style={{ position: "absolute", top: "0.5rem", right: "0.55rem", fontSize: "0.55rem",
           letterSpacing: "0.08em", textTransform: "uppercase", color: "#C4B48A" }}>
-          {b.host === "window" ? "↗ window" : "→ app"}
+          {b.host === "window" ? "→ page" : "→ app"}
         </span>
         <span style={{ display: "block", fontSize: "0.92rem", color: "#1C1008", lineHeight: 1.2,
           marginBottom: "0.4rem", paddingRight: "3.5rem" }}>{b.title}</span>
@@ -11270,7 +11279,12 @@ function LiturgicalLibrary({ liturgicalData, selectedDate, navigate }) {
   const books = buildLibraryBooks(liturgicalData, selectedDate);
   const open = (b) => {
     if (b.host === "window") {
-      window.open((import.meta.env.BASE_URL || "/") + b.to, "_blank", "noopener");
+      // Same tab so browser Back returns to the Hours tool (view-memory restores
+      // the Library). PSB is a standalone page outside the SPA, so this is a real
+      // navigation; from=tool reveals its ← Hours Tool strip.
+      const base = import.meta.env.BASE_URL || "/";
+      const sep = b.to.indexOf("?") === -1 ? "?" : "&";
+      window.location.href = base + b.to + sep + "from=tool";
     } else {
       navigate(b.to);
     }
@@ -11312,6 +11326,7 @@ export default function App() {
     catch (e) { return "reading"; }
   });
   const bodyFlipRef = React.useRef(null);
+  const mainHeaderRef = React.useRef(null);
   const navigate = useNavigate();
   const [isNarrow, setIsNarrow] = useState(
     () => typeof window !== "undefined" && window.matchMedia
@@ -11615,11 +11630,18 @@ export default function App() {
     function runFlip() {
     const next = view === "reading" ? "library" : "reading";
     try { window.sessionStorage.setItem("hours.view", next); } catch (e) {}
+    // After a flip, land just below the main header (title + version badge) so the
+    // sticky controls bar pins at the top. The header is non-functional once seen,
+    // so a flip shouldn't re-expose it when the user has scrolled past it.
+    const flipScrollTop = () => {
+      const h = mainHeaderRef.current ? mainHeaderRef.current.offsetHeight : 0;
+      window.scrollTo({ top: h });
+    };
     const el = bodyFlipRef.current;
     const parent = el && el.parentElement;
     const reduce = typeof window !== "undefined" && window.matchMedia
       && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!el || reduce) { setView(next); window.scrollTo({ top: 0 }); return; }
+    if (!el || reduce) { setView(next); flipScrollTop(); return; }
     // Clip the rotation to the body box during the flip so no 3D projection can
     // bleed over the sticky header; restore overflow afterward (tooltips need it).
     if (parent) parent.style.overflow = "hidden";
@@ -11642,7 +11664,7 @@ export default function App() {
           const e2 = bodyFlipRef.current;
           if (e2) { e2.style.transition = ""; e2.style.transform = ""; }
           if (parent) parent.style.overflow = "";
-          window.scrollTo({ top: 0 });
+          flipScrollTop();
         }, 240);
       });
     }, 220);
@@ -11653,7 +11675,7 @@ export default function App() {
     <div style={{ minHeight: "100vh", background: "#FAF6EE", fontFamily: "Georgia, serif", color: "#1C1008" }}>
 
       {/* ── HEADER ─────────────────────────────────────────── */}
-      <div style={{ background: "#1C1008", color: "#F5EDD6", padding: "2rem 2rem 1.5rem", borderBottom: "4px solid #8B6914" }}>
+      <div ref={mainHeaderRef} style={{ background: "#1C1008", color: "#F5EDD6", padding: "2rem 2rem 1.5rem", borderBottom: "4px solid #8B6914" }}>
         <div style={{ maxWidth: "720px", margin: "0 auto" }}>
           {/* Eyebrow row: tool descriptor (left) + discrete version (far right) */}
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "1rem", marginBottom: "0.4rem" }}>
