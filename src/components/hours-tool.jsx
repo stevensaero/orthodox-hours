@@ -8071,6 +8071,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.20.2",
+    date: "June 2026",
+    summary: "Flip keeps your place; Scripture & Tone Trainer footer buttons retired (both live in the Library)",
+    items: [
+      "Flipping between Reading and Library now preserves your scroll position instead of jumping to just below the masthead: if the title header is on screen it stays, and if you'd already scrolled past it the flip no longer changes that.",
+      "Removed the Scripture and Tone Trainer buttons from the footer — both are reached from the Library shelf (and Scripture from the context card / in-text links), so the footer keeps only How This Tool Works and Glossary.",
+    ],
+  },
+  {
     version: "v0.20.1",
     date: "June 2026",
     summary: "Library shelves reorganized; the Pentecostarion no longer promises a jump for dates outside its season",
@@ -11713,18 +11722,18 @@ export default function App() {
     function runFlip() {
     const next = view === "reading" ? "library" : "reading";
     try { window.sessionStorage.setItem("hours.view", next); } catch (e) {}
-    // After a flip, land just below the main header (title + version badge) so the
-    // sticky controls bar pins at the top. The header is non-functional once seen,
-    // so a flip shouldn't re-expose it when the user has scrolled past it.
-    const flipScrollTop = () => {
-      const h = mainHeaderRef.current ? mainHeaderRef.current.offsetHeight : 0;
-      window.scrollTo({ top: h });
-    };
+    // Preserve the scroll position across the flip so the masthead's visibility
+    // doesn't change: if it's on screen it stays put (nothing scrolls past it),
+    // and if it's already scrolled off it isn't re-revealed. The body swap changes
+    // height, so capture before and restore after (the browser clamps if the new
+    // face is shorter — the masthead still stays off in that case).
+    const prevScrollY = window.scrollY;
+    const restoreScroll = () => { window.scrollTo({ top: prevScrollY }); };
     const el = bodyFlipRef.current;
     const parent = el && el.parentElement;
     const reduce = typeof window !== "undefined" && window.matchMedia
       && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!el || reduce) { setView(next); flipScrollTop(); return; }
+    if (!el || reduce) { setView(next); requestAnimationFrame(restoreScroll); return; }
     // Clip the rotation to the body box during the flip so no 3D projection can
     // bleed over the sticky header; restore overflow afterward (tooltips need it).
     if (parent) parent.style.overflow = "hidden";
@@ -11747,7 +11756,7 @@ export default function App() {
           const e2 = bodyFlipRef.current;
           if (e2) { e2.style.transition = ""; e2.style.transform = ""; }
           if (parent) parent.style.overflow = "";
-          flipScrollTop();
+          restoreScroll();
         }, 240);
       });
     }, 220);
@@ -12580,26 +12589,6 @@ export default function App() {
           >
             {showGlossary ? "Hide Glossary" : "Glossary"}
           </button>
-          <a
-            href="/orthodox-hours/scripture?from=tool"
-            style={{ background: "transparent", border: "1px solid #8B6914",
-                     color: "#8B6914", borderRadius: "3px", padding: "5px 14px",
-                     fontSize: "0.78rem", letterSpacing: "0.08em", cursor: "pointer",
-                     fontFamily: "Georgia, serif", textDecoration: "none",
-                     display: "inline-block" }}
-          >
-            Scripture
-          </a>
-          <a
-            href="/orthodox-hours/tone-trainer?from=tool"
-            style={{ background: "transparent", border: "1px solid #8B6914",
-                     color: "#8B6914", borderRadius: "3px", padding: "5px 14px",
-                     fontSize: "0.78rem", letterSpacing: "0.08em", cursor: "pointer",
-                     fontFamily: "Georgia, serif", textDecoration: "none",
-                     display: "inline-block" }}
-          >
-            Tone Trainer
-          </a>
         </div>
 
         {showHowItWorks && (
