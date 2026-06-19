@@ -871,7 +871,7 @@ export default function MenaionBrowser() {
         borderBottom: `2px solid ${C.border}`,
         padding: "1rem 1.5rem",
         position: "sticky",
-        top: 0,
+        top: "var(--hours-return-strip-h, 0px)",
         zIndex: 100,
       }}>
         <div style={{
@@ -885,10 +885,6 @@ export default function MenaionBrowser() {
             marginBottom: "0.75rem",
           }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: "1rem" }}>
-              <a href="/orthodox-hours/" style={{
-                fontSize: "0.82rem", color: C.gold, textDecoration: "none",
-                fontFamily: "Georgia, serif",
-              }}>← Hours Tool</a>
               <h1 style={{
                 fontSize: "1.15rem",
                 fontWeight: 700,

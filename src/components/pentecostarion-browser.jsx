@@ -725,7 +725,7 @@ export default function PentecostarionBrowser() {
       {/* ── Header ── */}
       <div ref={headerRef} style={{
         background: "#fff", borderBottom: `2px solid ${C.border}`,
-        padding: "1rem 1.5rem", position: "sticky", top: 0, zIndex: 100,
+        padding: "1rem 1.5rem", position: "sticky", top: "var(--hours-return-strip-h, 0px)", zIndex: 100,
       }}>
         <div style={{ maxWidth: "960px", margin: "0 auto" }}>
           <div style={{
@@ -733,10 +733,6 @@ export default function PentecostarionBrowser() {
             marginBottom: "0.75rem",
           }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: "1rem" }}>
-              <a href="/orthodox-hours/" style={{
-                fontSize: "0.82rem", color: C.gold, textDecoration: "none",
-                fontFamily: "Georgia, serif",
-              }}>← Hours Tool</a>
               <h1 style={{
                 fontSize: "1.15rem", fontWeight: 700, color: C.gold,
                 margin: 0, letterSpacing: "0.04em",

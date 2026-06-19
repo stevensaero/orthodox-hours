@@ -8071,6 +8071,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.20.3",
+    date: "June 2026",
+    summary: "Service change lands at the service top; data-browser return strips stay put and line up",
+    items: [
+      "Changing service now scrolls to the top of the service (with the controls bar pinned) instead of all the way up to re-reveal the title header. If the header was already scrolled off, it stays off.",
+      "In the Menaion, Pentecostarion, and Octoechos browsers the sticky \"← Hours Tool\" strip now stays visible on scroll — the browser's own header pins just below it instead of riding up over it.",
+      "Removed the duplicate \"← Hours Tool\" link inside those browsers' headers (the sticky strip is the single return affordance, and it returns you to exactly where you left off rather than the tool's home), and the strip link now aligns with the left edge of the page content.",
+    ],
+  },
+  {
     version: "v0.20.2",
     date: "June 2026",
     summary: "Flip keeps your place; Scripture & Tone Trainer footer buttons retired (both live in the Library)",
@@ -11548,7 +11558,12 @@ export default function App() {
     if (from === "3rd_hour" && selectedServiceKey === "6th_hour") return;
     // Skip auto-scroll when transitioning 9th→Vespers; the Continue button handles it
     if (from === "9th_hour" && selectedServiceKey === "vespers") return;
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // Land at the top of the service (just below the masthead, with the sticky
+    // controls bar pinned) rather than the very top of the page — so changing
+    // service doesn't re-reveal the non-functional title header. If it's already
+    // scrolled off, it stays off.
+    const h = mainHeaderRef.current ? mainHeaderRef.current.offsetHeight : 0;
+    window.scrollTo({ top: h, behavior: "smooth" });
   }, [selectedServiceKey]);
   const menaionEntry = services.length > 0
     ? services[Math.min(selectedServiceIndex, services.length - 1)]
