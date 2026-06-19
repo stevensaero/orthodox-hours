@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.20.2** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
+**Tool version: v0.20.3** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
 
 **Liturgical Library — Phase 1 shelf LANDED (v0.18.0).** `bookshelf_spec.md` (repo root).
 A Reading ⇄ Library flip (single icon by SERVICE) toggles the Hours-tool body between the
@@ -63,6 +63,17 @@ date input (tap still opens the OS picker; `showPicker()` on click for desktop).
   Also **retired the footer Scripture / Tone Trainer buttons** — both are reached from the
   Library shelf (Scripture also from the context card / in-text links); footer keeps only How
   This Tool Works + Glossary.
+- DONE (v0.20.3): **data-browser return strips fixed across Menaion / Pentecostarion / Octoechos.**
+  The shared `hours-return-strip.jsx` now (a) publishes its height to a CSS var
+  `--hours-return-strip-h` (top strip only; `useLayoutEffect` + `ResizeObserver`, cleared on
+  unmount), and (b) centers its content in the browsers' 960px / 1.5rem column so the "← Hours
+  Tool" link aligns with the title and body left edge. Each browser's own sticky header changed
+  `top: 0` → `top: var(--hours-return-strip-h, 0px)` so it pins *below* the strip instead of
+  riding up over it (was: the strip disappeared on scroll). The redundant in-header
+  `<a href="/orthodox-hours/">← Hours Tool</a>` (a fresh nav to home, not history.back()) was
+  removed from all three. **Hours-tool service change** now scrolls to the top of the service
+  (`mainHeaderRef.offsetHeight`, controls bar pinned) instead of page-top, so switching service
+  no longer re-reveals the masthead.
 - PARKED (spec §8): persistent context strip across viewers, live re-page on date change,
   manual-nav-vs-date override, PSB into the React shell, Tone Trainer verse-payload intake,
   Score Print conditional return.
