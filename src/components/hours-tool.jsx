@@ -8071,6 +8071,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.18.3",
+    date: "June 2026",
+    summary: "Control bar fits on one line on narrow screens (no more wrap)",
+    items: [
+      "On narrow screens (≤560px): DATE/SERVICE text labels hidden, sticky-bar side padding trimmed (2rem→1rem), and the row set to nowrap so the service selector ellipsizes instead of wrapping to a second line",
+      "Wider screens unchanged (labels shown, original padding, wrap allowed)",
+    ],
+  },
+  {
     version: "v0.18.2",
     date: "June 2026",
     summary: "Compact numeric date on narrow screens so the control bar stays on one line",
@@ -11625,16 +11634,16 @@ export default function App() {
       </div>
 
       {/* ── CONTROLS ─────────────────────────────────────── */}
-      <div style={{ background: "#EDE5D0", borderBottom: "1px solid #D4C49A", padding: "1rem 2rem",
+      <div style={{ background: "#EDE5D0", borderBottom: "1px solid #D4C49A", padding: isNarrow ? "0.75rem 1rem" : "1rem 2rem",
         position: "sticky", top: 0, zIndex: 40 }}>
         <div style={{ maxWidth: "720px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
 
           {/* ── Row one: DATE group + SERVICE group */}
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "0.75rem" }}>
+          <div style={{ display: "flex", flexWrap: isNarrow ? "nowrap" : "wrap", alignItems: "center", justifyContent: "space-between", gap: isNarrow ? "0.5rem" : "0.75rem" }}>
 
           {/* ── Group 1: DATE label + stepper (inseparable) */}
           <div style={{ display: "flex", alignItems: "center", gap: "6px", flexShrink: 0 }}>
-          <label className="hours-ctl-label" style={{ fontSize: "0.8rem", color: "#5C4A1E", letterSpacing: "0.05em", flexShrink: 0 }}>DATE</label>
+          {!isNarrow && <label className="hours-ctl-label" style={{ fontSize: "0.8rem", color: "#5C4A1E", letterSpacing: "0.05em", flexShrink: 0 }}>DATE</label>}
           <div style={{ display: "flex", alignItems: "stretch",
                         border: "1px solid #C4A84A", borderRadius: "3px",
                         flexShrink: 0 }}>
@@ -11696,7 +11705,7 @@ export default function App() {
 
           {/* ── Group 3: SERVICE label + selector */}
           <div style={{ display: "flex", alignItems: "center", gap: "6px", minWidth: 0 }}>
-          <label className="hours-ctl-label" style={{ fontSize: "0.8rem", color: "#5C4A1E", letterSpacing: "0.05em", flexShrink: 0 }}>SERVICE</label>
+          {!isNarrow && <label className="hours-ctl-label" style={{ fontSize: "0.8rem", color: "#5C4A1E", letterSpacing: "0.05em", flexShrink: 0 }}>SERVICE</label>}
           <ServiceSelector services={SERVICE_REGISTRY} value={selectedServiceKey} onChange={setSelectedServiceKey} />
           <button
             type="button"
