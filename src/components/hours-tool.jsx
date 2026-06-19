@@ -8071,6 +8071,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.20.1",
+    date: "June 2026",
+    summary: "Library shelves reorganized; the Pentecostarion no longer promises a jump for dates outside its season",
+    items: [
+      "The Pentecostarion shelf card no longer advertises deep-positioning on dates outside its encoded range (e.g. after All Saints): the chip greys out, reads \"Out of scope · Opens at the start,\" and the link opens the book at its default position instead of a page that isn't there. In-season dates are unchanged.",
+      "Library shelves regrouped: \"Order & Psalmody\" is now \"Scripture & Psalmody\" (Holy Scripture + the Psalter), and the Priest's Service Book moves to its own \"Guides\" shelf.",
+    ],
+  },
+  {
     version: "v0.20.0",
     date: "June 2026",
     summary: "Library deep-positioning — all five viewers open to the date's content on entry",
@@ -11177,9 +11186,19 @@ function PsalterService({ mode, setMode, name, setName, gender, setGender, ortho
 // Spec: bookshelf_spec.md.
 const LIBRARY_SHELVES = [
   { name: "Hymnography", books: ["menaion", "pentecostarion", "octoechos"] },
-  { name: "Order & Psalmody", books: ["psalter", "psb", "scripture"] },
+  { name: "Scripture & Psalmody", books: ["scripture", "psalter"] },
   { name: "Chant", books: ["toneTrainer"] },
+  { name: "Guides", books: ["psb"] },
 ];
+
+// Pentecostarion offsets that are actually encoded (source of truth:
+// src/data/pentecostarion.js keys — keep in sync). Importing that 312 KB data
+// module here just to read its keys would merge it into the main bundle and
+// break the lazy split, so the in-scope set is mirrored. Outside it, the shelf
+// chip does not advertise deep-positioning; it greys and opens at the start.
+// (The Menaion is never "out of scope" — it governs every day; its partial
+// coverage is just unencoded data, not a seasonal book like the Pentecostarion.)
+const PENT_ENCODED_OFFSETS = new Set([19, 63, ...Array.from({ length: 22 }, (_, i) => 35 + i)]);
 
 // Abbreviate a LECTIONARY ref string for the Library card preview, e.g.
 // "Romans 5:1-10" -> "Rom 5:1–10". Falls back to the raw string if unparsed.
@@ -11205,6 +11224,10 @@ function buildLibraryBooks(ld, selectedDate, scriptureReadings) {
   const scrG = scriptureReadings && scriptureReadings.find(r => r.kind === "gospel");
   const scrPv = [scrE && abbrevRef(scrE.ref), scrG && abbrevRef(scrG.ref)]
     .filter(Boolean).join(" · ") || "daily Epistle & Gospel";
+  // The Pentecostarion only deep-positions when the day's Pascha offset is an
+  // encoded entry; otherwise the day is outside the book's encoded range (e.g.
+  // past All Saints), so we open it at the start and grey the chip.
+  const pentInScope = off != null && PENT_ENCODED_OFFSETS.has(off);
   return {
     menaion: {
       title: "The Menaion", spine: "#8B6914", host: "app",
@@ -11215,10 +11238,11 @@ function buildLibraryBooks(ld, selectedDate, scriptureReadings) {
     },
     pentecostarion: {
       title: "The Pentecostarion", spine: "#7A5A8A", host: "app",
-      to: "/pentecostarion?" + dateQ + (off != null ? "&pascha=" + off : ""),
-      lab: "Open to",
-      pv: off != null ? "Pascha + " + off : "Paschal cycle",
+      to: "/pentecostarion?" + dateQ + (pentInScope ? "&pascha=" + off : ""),
+      lab: pentInScope ? "Open to" : "Out of scope",
+      pv: pentInScope ? "Pascha + " + off : "Opens at the start",
       cover: "P+35 – P+56", partial: true,
+      outOfScope: !pentInScope,
     },
     octoechos: {
       title: "The Octoechos", spine: "#4A7A4A", host: "app",
@@ -11260,6 +11284,11 @@ function buildLibraryBooks(ld, selectedDate, scriptureReadings) {
 
 function LibraryBook({ b, onOpen }) {
   const [hover, setHover] = React.useState(false);
+  const oos = !!b.outOfScope;
+  const chipAccent = oos ? "#B0A488" : "#8B6914";
+  const chipLabel = oos ? "#9A8A70" : "#8B6914";
+  const chipText = oos ? "#7A7060" : "#1C1008";
+  const chipBg = oos ? "#F3F0E8" : "#FBF8F1";
   return (
     <button
       type="button"
@@ -11284,11 +11313,11 @@ function LibraryBook({ b, onOpen }) {
         </span>
         <span style={{ display: "block", fontSize: "0.92rem", color: "#1C1008", lineHeight: 1.2,
           marginBottom: "0.4rem", paddingRight: "3.5rem" }}>{b.title}</span>
-        <span style={{ display: "block", background: "#FBF8F1", border: "1px solid #D4C49A",
-          borderLeft: "2px solid #8B6914", borderRadius: "0 3px 3px 0", padding: "0.4rem 0.55rem", minHeight: "2.7rem" }}>
+        <span style={{ display: "block", background: chipBg, border: "1px solid #D4C49A",
+          borderLeft: "2px solid " + chipAccent, borderRadius: "0 3px 3px 0", padding: "0.4rem 0.55rem", minHeight: "2.7rem" }}>
           <span style={{ display: "block", fontSize: "0.55rem", letterSpacing: "0.11em", textTransform: "uppercase",
-            color: "#8B6914", marginBottom: "0.12rem" }}>{b.lab}</span>
-          <span style={{ display: "block", fontSize: "0.8rem", color: "#1C1008", lineHeight: 1.4 }}>{b.pv}</span>
+            color: chipLabel, marginBottom: "0.12rem" }}>{b.lab}</span>
+          <span style={{ display: "block", fontSize: "0.8rem", color: chipText, lineHeight: 1.4 }}>{b.pv}</span>
         </span>
         <span style={{ display: "flex", alignItems: "center", gap: "0.35rem", marginTop: "0.45rem",
           fontSize: "0.64rem", color: "#C4B48A", fontStyle: "italic" }}>
