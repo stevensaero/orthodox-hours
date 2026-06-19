@@ -8071,6 +8071,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.18.1",
+    date: "June 2026",
+    summary: "Library flip animation fix + tool remembers reading/library across navigation",
+    items: [
+      "Body flip now actually animates (forced-reflow fix) — previously the icon flipped but the reading↔library swap snapped without the flip",
+      "Tool remembers its view (reading vs library) in sessionStorage — returning from a viewer lands back on the Library if that's where you left it, not on the reading view",
+    ],
+  },
+  {
     version: "v0.18.0",
     date: "June 2026",
     summary: "Liturgical Library — date-aware bookshelf flips from the reading view",
@@ -11254,7 +11263,10 @@ export default function App() {
   const [contextOpen, setContextOpen] = useState(false);
   const [copyrightExpanded, setCopyrightExpanded] = useState(false);
   const [selectedServiceKey, setSelectedServiceKey] = useState("1st_hour");
-  const [view, setView] = useState("reading");          // 'reading' | 'library'
+  const [view, setView] = useState(() => {            // 'reading' | 'library'
+    try { return (typeof window !== "undefined" && window.sessionStorage.getItem("hours.view")) || "reading"; }
+    catch (e) { return "reading"; }
+  });
   const bodyFlipRef = React.useRef(null);
   const navigate = useNavigate();
   // tbOpen: tracks whether the Typical Beginning is expanded on 1st/6th Hours.
@@ -11531,11 +11543,18 @@ export default function App() {
   // (no broken scroll/anchors) and the container is always the active height.
   function toggleView() {
     const next = view === "reading" ? "library" : "reading";
+    try { window.sessionStorage.setItem("hours.view", next); } catch (e) {}
     const el = bodyFlipRef.current;
     const reduce = typeof window !== "undefined" && window.matchMedia
       && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!el || reduce) { setView(next); window.scrollTo({ top: 0 }); return; }
-    el.style.transition = "transform 0.2s ease";
+    // Commit a clean start frame, then animate edge-on, swap the mounted face,
+    // animate back in. The forced reflows (offsetWidth reads) are what make the
+    // CSS transitions actually fire instead of snapping.
+    el.style.transition = "none";
+    el.style.transform = "rotateY(0deg)";
+    void el.offsetWidth;
+    el.style.transition = "transform 0.22s ease";
     el.style.transform = "rotateY(90deg)";
     window.setTimeout(() => {
       setView(next);
@@ -11545,14 +11564,15 @@ export default function App() {
         if (!e) return;
         e.style.transition = "none";
         e.style.transform = "rotateY(-90deg)";
-        requestAnimationFrame(() => {
+        void e.offsetWidth;
+        e.style.transition = "transform 0.22s ease";
+        e.style.transform = "rotateY(0deg)";
+        window.setTimeout(() => {
           const e2 = bodyFlipRef.current;
-          if (!e2) return;
-          e2.style.transition = "transform 0.2s ease";
-          e2.style.transform = "rotateY(0deg)";
-        });
+          if (e2) { e2.style.transition = ""; e2.style.transform = ""; }
+        }, 260);
       });
-    }, 200);
+    }, 220);
   }
 
   return (
