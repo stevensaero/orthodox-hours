@@ -8071,6 +8071,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.18.4",
+    date: "June 2026",
+    summary: "Bookshelf links show the return banner (Psalter); flip header-bleed + cross-browser fix",
+    items: [
+      "Bookshelf in-app links now pass from=tool, so opening the Psalter (and other banner-aware viewers) shows the sticky ← Hours Tool return strip top and bottom",
+      "Flip: removed transform-style:preserve-3d from the body (it rendered descendants in shared 3D space, bleeding over the header on reader→library and compositing differently across browsers); rotation now clipped to the body box during the animation; page scroll moved to after the flip completes",
+    ],
+  },
+  {
     version: "v0.18.3",
     date: "June 2026",
     summary: "Control bar fits on one line on narrow screens (no more wrap)",
@@ -11151,7 +11160,7 @@ function buildLibraryBooks(ld, selectedDate) {
   const dd = ld && ld.dd != null ? String(ld.dd).padStart(2, "0") : null;
   const comm = mm && dd ? mm + "-" + dd : null;
   const toneTxt = tone ? "Tone " + tone : "—";
-  const dateQ = "date=" + encodeURIComponent(selectedDate);
+  const dateQ = "date=" + encodeURIComponent(selectedDate) + "&from=tool";
   return {
     menaion: {
       title: "The Menaion", spine: "#8B6914", host: "app",
@@ -11581,12 +11590,13 @@ export default function App() {
     const next = view === "reading" ? "library" : "reading";
     try { window.sessionStorage.setItem("hours.view", next); } catch (e) {}
     const el = bodyFlipRef.current;
+    const parent = el && el.parentElement;
     const reduce = typeof window !== "undefined" && window.matchMedia
       && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!el || reduce) { setView(next); window.scrollTo({ top: 0 }); return; }
-    // Commit a clean start frame, then animate edge-on, swap the mounted face,
-    // animate back in. The forced reflows (offsetWidth reads) are what make the
-    // CSS transitions actually fire instead of snapping.
+    // Clip the rotation to the body box during the flip so no 3D projection can
+    // bleed over the sticky header; restore overflow afterward (tooltips need it).
+    if (parent) parent.style.overflow = "hidden";
     el.style.transition = "none";
     el.style.transform = "rotateY(0deg)";
     void el.offsetWidth;
@@ -11594,10 +11604,9 @@ export default function App() {
     el.style.transform = "rotateY(90deg)";
     window.setTimeout(() => {
       setView(next);
-      window.scrollTo({ top: 0 });
       requestAnimationFrame(() => {
         const e = bodyFlipRef.current;
-        if (!e) return;
+        if (!e) { if (parent) parent.style.overflow = ""; return; }
         e.style.transition = "none";
         e.style.transform = "rotateY(-90deg)";
         void e.offsetWidth;
@@ -11606,7 +11615,9 @@ export default function App() {
         window.setTimeout(() => {
           const e2 = bodyFlipRef.current;
           if (e2) { e2.style.transition = ""; e2.style.transform = ""; }
-        }, 260);
+          if (parent) parent.style.overflow = "";
+          window.scrollTo({ top: 0 });
+        }, 240);
       });
     }, 220);
   }
@@ -12065,7 +12076,7 @@ export default function App() {
 
         {/* ── MAIN CONTENT COLUMN ── */}
         <div style={{ flex: 1, minWidth: 0, padding: '0 1rem', perspective: '2000px' }}>
-        <div ref={bodyFlipRef} style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}>
+        <div ref={bodyFlipRef} style={{ willChange: 'transform' }}>
         {view === 'library' ? (
           <LiturgicalLibrary liturgicalData={liturgicalData} selectedDate={selectedDate} navigate={navigate} />
         ) : (<>
