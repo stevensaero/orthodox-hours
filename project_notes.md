@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.20.4** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
+**Tool version: v0.20.5** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
 
 **Liturgical Library — Phase 1 shelf LANDED (v0.18.0).** `bookshelf_spec.md` (repo root).
 A Reading ⇄ Library flip (single icon by SERVICE) toggles the Hours-tool body between the
@@ -81,6 +81,16 @@ date input (tap still opens the OS picker; `showPicker()` on click for desktop).
   Safe because the Point/Score hand-off already navigates with `?from=tool`
   (`point-score-controls.jsx`), so the strip shows on that path too; the Tone Trainer has no
   sticky top bar, so no header offset was needed.
+- DONE (v0.20.5): three fixes. (a) **Refresh no longer scrolls the masthead off** — the
+  `[selectedServiceKey]` scroll effect was firing on initial mount too (regression from v0.20.3's
+  scroll-to-service-top); now guarded with `if (from === selectedServiceKey) return;` so it only
+  scrolls on an actual service change, not on load. (b) **Body flip ignores
+  `prefers-reduced-motion`** — Win11 with "Animation effects" off makes Chrome/Edge report
+  `reduce`, which snapped the JS body flip while the icon's CSS transition (ungated) kept
+  flipping; the `reduce` skip was removed so the body matches the icon. (Accessibility note: this
+  intentionally overrides the OS reduced-motion preference for this one ~0.44s transition, to
+  match the icon — revisit if both flips should honor it together.) (c) Context-collapse flip
+  delay trimmed 480ms → 250ms.
 - PARKED (spec §8): persistent context strip across viewers, live re-page on date change,
   manual-nav-vs-date override, PSB into the React shell, Tone Trainer verse-payload intake,
   Score Print conditional return.
