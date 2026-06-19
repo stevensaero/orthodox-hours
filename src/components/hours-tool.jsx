@@ -8088,6 +8088,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.20.7",
+    date: "June 2026",
+    summary: "Choosing a service from the Library flips back to the Reading for that service",
+    items: [
+      "While viewing the Library, picking a service from the SERVICE selector now flips back to the Reading view for that service (the flip icon turns with it) and lands at the top of the service, instead of staying on the bookshelf.",
+    ],
+  },
+  {
     version: "v0.20.6",
     date: "June 2026",
     summary: "Data browsers scroll sideways instead of breaking on phones; glossary tooltips no longer hide behind the date bar",
@@ -11776,7 +11784,7 @@ export default function App() {
   // Reading ⇄ Library flip. Single-mount: rotate the body edge-on, swap the
   // mounted face, rotate back — so the long service body keeps normal flow
   // (no broken scroll/anchors) and the container is always the active height.
-  function toggleView() {
+  function toggleView(keepScroll = true) {
     // If the Liturgical Context panel is expanded (can fill a phone screen),
     // collapse it first so the flip happens above the fold and reads as an action.
     if (contextOpen) {
@@ -11794,7 +11802,10 @@ export default function App() {
     // height, so capture before and restore after (the browser clamps if the new
     // face is shorter — the masthead still stays off in that case).
     const prevScrollY = window.scrollY;
-    const restoreScroll = () => { window.scrollTo({ top: prevScrollY }); };
+    // When keepScroll is false (e.g. a flip triggered by choosing a service from
+    // the Library), don't pin the old scroll position — let the service-change
+    // effect scroll to the top of the newly selected service instead.
+    const restoreScroll = keepScroll ? () => { window.scrollTo({ top: prevScrollY }); } : () => {};
     const el = bodyFlipRef.current;
     const parent = el && el.parentElement;
     // The body flip animates regardless of prefers-reduced-motion, to stay
@@ -11926,7 +11937,14 @@ export default function App() {
           {/* ── Group 3: SERVICE label + selector */}
           <div style={{ display: "flex", alignItems: "center", gap: "6px", minWidth: 0 }}>
           {!isNarrow && <label className="hours-ctl-label" style={{ fontSize: "0.8rem", color: "#5C4A1E", letterSpacing: "0.05em", flexShrink: 0 }}>SERVICE</label>}
-          <ServiceSelector services={SERVICE_REGISTRY} value={selectedServiceKey} onChange={setSelectedServiceKey} />
+          <ServiceSelector services={SERVICE_REGISTRY} value={selectedServiceKey} onChange={(key) => {
+            // Choosing a service from the Library returns you to the Reading for
+            // that service: set the service, then flip back (keepScroll=false so
+            // it lands at the top of the new service, not the Library's offset).
+            const wasLibrary = view === "library";
+            setSelectedServiceKey(key);
+            if (wasLibrary) toggleView(false);
+          }} />
           <button
             type="button"
             onClick={toggleView}
