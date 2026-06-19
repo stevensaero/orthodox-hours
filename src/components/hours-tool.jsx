@@ -8071,6 +8071,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.18.2",
+    date: "June 2026",
+    summary: "Compact numeric date on narrow screens so the control bar stays on one line",
+    items: [
+      "Control-bar date shows MM.DD.YYYY on small screens (was the wide native 'Jun 19, 2026'), keeping the bar from wrapping on mobile; medium format retained on larger screens",
+      "Date now renders as a custom display over an invisible native date input, so tapping still opens the OS picker (showPicker on click for desktop)",
+    ],
+  },
+  {
     version: "v0.18.1",
     date: "June 2026",
     summary: "Library flip animation fix + tool remembers reading/library across navigation",
@@ -11269,6 +11278,17 @@ export default function App() {
   });
   const bodyFlipRef = React.useRef(null);
   const navigate = useNavigate();
+  const [isNarrow, setIsNarrow] = useState(
+    () => typeof window !== "undefined" && window.matchMedia
+      ? window.matchMedia("(max-width: 560px)").matches : false
+  );
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const mq = window.matchMedia("(max-width: 560px)");
+    const fn = (e) => setIsNarrow(e.matches);
+    if (mq.addEventListener) mq.addEventListener("change", fn); else mq.addListener(fn);
+    return () => { if (mq.removeEventListener) mq.removeEventListener("change", fn); else mq.removeListener(fn); };
+  }, []);
   // tbOpen: tracks whether the Typical Beginning is expanded on 1st/6th Hours.
   // When expanded, the Hour body shows O come let us worship (not Christ is risen)
   // because Christ is risen was already said within the Typical Beginning.
@@ -11538,6 +11558,13 @@ export default function App() {
     weekday: "long", year: "numeric", month: "long", day: "numeric",
   });
 
+  // Control-bar date display: compact numeric (06.19.2026) on narrow screens to
+  // keep the control bar on one line; medium (Jun 19, 2026) otherwise.
+  const _dparts = selectedDate.split("-");
+  const dateDisplay = isNarrow && _dparts.length === 3
+    ? `${_dparts[1]}.${_dparts[2]}.${_dparts[0]}`
+    : date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+
   // Reading ⇄ Library flip. Single-mount: rotate the body edge-on, swap the
   // mounted face, rotate back — so the long service body keeps normal flow
   // (no broken scroll/anchors) and the container is always the active height.
@@ -11630,14 +11657,20 @@ export default function App() {
                 <polygon points="7,0 7,11 0,5.5" fill="#8B6914" />
               </svg>
             </button>
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              style={{ border: "none", outline: "none", padding: "4px 8px",
-                fontFamily: "Georgia, serif", fontSize: "0.9rem",
-                background: "#FAF6EE", color: "#1C1008", minWidth: 0 }}
-            />
+            <div style={{ position: "relative", display: "flex", alignItems: "center",
+              padding: "4px 8px", background: "#FAF6EE", minWidth: 0 }}>
+              <span style={{ fontFamily: "Georgia, serif", fontSize: "0.9rem", color: "#1C1008",
+                whiteSpace: "nowrap", pointerEvents: "none" }}>{dateDisplay}</span>
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                onClick={(e) => { try { if (e.currentTarget.showPicker) e.currentTarget.showPicker(); } catch (err) {} }}
+                aria-label="Select date"
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%",
+                  opacity: 0, border: "none", padding: 0, margin: 0, cursor: "pointer" }}
+              />
+            </div>
             {/* Right cap: solid triangle pointing RIGHT = step forward one day */}
             <button
               onClick={() => {
