@@ -1,5 +1,17 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.17.3** | **Tone Trainer: v0.25.28** | Last synced: June 17, 2026
+**Tool version: v0.18.0** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
+
+**Liturgical Library — Phase 1 shelf LANDED (v0.18.0).** `bookshelf_spec.md` (repo root).
+A Reading ⇄ Library flip (single icon by SERVICE) toggles the Hours-tool body between the
+assembled service and a date-aware bookshelf; header/date/context stay fixed. Six books on
+three shelves (Hymnography / Order & Psalmody / Chant), each paged from the live
+`liturgicalData` and linking to its own viewer with a `?date=…&tone/pascha/comm` query:
+Menaion, Pentecostarion, Octoechos, Psalter, Tone Trainer (in-app routes) and the Priest's
+Service Book (new window, `public/PriestsServiceBook.html`, palette unified to the viewer
+theme). Horologion omitted (no viewer yet). Phase 1 is decoupled: viewers open at their
+default position — per-viewer deep-positioning from the query is a fast-follow (only the
+Psalter reads its param today). Next: Reading-view Troparion/Kontakion "source of truth"
+links (the in-text element→source pilot), then extend element by element.
 
 **Sunday Vespers — unified engine (P0 signed off; P1 engine LANDED in v0.16.0).** `sunday_vespers_spec.md`
 (repo root) specs one engine for ALL resurrectional Sundays — ordinary Octoechos
