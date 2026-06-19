@@ -8071,6 +8071,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.20.4",
+    date: "June 2026",
+    summary: "How-It-Works \"open\" links show the return strip; Tone Trainer adopts the unified strip",
+    items: [
+      "The How This Tool Works \"(open)\" links for the Psalter, Menaion, Pentecostarion, and Octoechos now open those viewers with the sticky \"← Hours Tool\" return header and footer (they already worked from the Library shelf; now the How-It-Works links match).",
+      "The Tone Trainer now uses the same unified sticky \"← Hours Tool\" header and footer as the data browsers, and its own in-header and footer back-links have been removed. Reaching it from the Library or from a Point/Score hand-off shows the strip; a direct visit shows none.",
+    ],
+  },
+  {
     version: "v0.20.3",
     date: "June 2026",
     summary: "Service change lands at the service top; data-browser return strips stay put and line up",
@@ -10417,11 +10426,11 @@ function HowItWorksPanel() {
           </div>
           {sub("Additional features")}
           {ul([
-            <><strong>Psalter reader &amp; the Order of the Psalter</strong> (<a href="/orthodox-hours/psalter" style={{color: "#8B6914"}}>open</a>) — Full text of all 20 kathismas with stasis and psalm numbering, reached from Vespers kathisma assignments; now also assembled as a full service, including a For-the-Departed mode with the departed prayers, stasis dividers, and the whole-Psalter conclusion.</>,
+            <><strong>Psalter reader &amp; the Order of the Psalter</strong> (<a href="/orthodox-hours/psalter?from=tool" style={{color: "#8B6914"}}>open</a>) — Full text of all 20 kathismas with stasis and psalm numbering, reached from Vespers kathisma assignments; now also assembled as a full service, including a For-the-Departed mode with the departed prayers, stasis dividers, and the whole-Psalter conclusion.</>,
             <><strong>Scripture viewer</strong> (<a href="/orthodox-hours/scripture?from=tool" style={{color: "#8B6914"}}>open</a>) — Full-text epistle and gospel readings, linked from the liturgical context card and from within service elements.</>,
-            <><strong>Menaion data browser</strong> (<a href="/orthodox-hours/menaion" style={{color: "#8B6914"}}>open</a>) — Inspect all encoded fixed-calendar entries with per-entry completeness auditing. Shows every field, flags missing data, and displays Litiya stichera and Beatitudes troparia.</>,
-            <><strong>Pentecostarion data browser</strong> (<a href="/orthodox-hours/pentecostarion" style={{color: "#8B6914"}}>open</a>) — Same for Pascha-anchored entries, organized by liturgical period.</>,
-            <><strong>Octoechos data browser</strong> (<a href="/orthodox-hours/octoechos" style={{color: "#8B6914"}}>open</a>) — Browse encoded Octoechos vespers and Sunday Matins data by tone (1–8). All eight tones carry full Sunday Resurrectional Matins. The Matins view surfaces its day (Sunday) explicitly.</>,
+            <><strong>Menaion data browser</strong> (<a href="/orthodox-hours/menaion?from=tool" style={{color: "#8B6914"}}>open</a>) — Inspect all encoded fixed-calendar entries with per-entry completeness auditing. Shows every field, flags missing data, and displays Litiya stichera and Beatitudes troparia.</>,
+            <><strong>Pentecostarion data browser</strong> (<a href="/orthodox-hours/pentecostarion?from=tool" style={{color: "#8B6914"}}>open</a>) — Same for Pascha-anchored entries, organized by liturgical period.</>,
+            <><strong>Octoechos data browser</strong> (<a href="/orthodox-hours/octoechos?from=tool" style={{color: "#8B6914"}}>open</a>) — Browse encoded Octoechos vespers and Sunday Matins data by tone (1–8). All eight tones carry full Sunday Resurrectional Matins. The Matins view surfaces its day (Sunday) explicitly.</>,
             <><strong>Service outline</strong> — A collapsible outline card with a jump button that lists the sections of the current service and scrolls to any of them; available for Vespers, the Typica, and the Order of the Psalter, making a specific point in a long service easy to find.</>,
             <><strong>Reader mode</strong> — Substitutes lay reader responses for priest exclamations throughout.</>,
           ])}

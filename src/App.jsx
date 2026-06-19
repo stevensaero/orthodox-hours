@@ -51,7 +51,7 @@ function App() {
         <Route path="/menaion" element={<Suspense fallback={<LazyFallback />}><HoursReturnStrip /><MenaionBrowser /><HoursReturnStrip position="bottom" /></Suspense>} />
         <Route path="/pentecostarion" element={<Suspense fallback={<LazyFallback />}><HoursReturnStrip /><PentecostarionBrowser /><HoursReturnStrip position="bottom" /></Suspense>} />
         <Route path="/octoechos" element={<Suspense fallback={<LazyFallback />}><HoursReturnStrip /><OctoechosBrowser /><HoursReturnStrip position="bottom" /></Suspense>} />
-        <Route path="/tone-trainer" element={<Suspense fallback={<LazyFallback />}><ToneTrainer /></Suspense>} />
+        <Route path="/tone-trainer" element={<Suspense fallback={<LazyFallback />}><HoursReturnStrip /><ToneTrainer /><HoursReturnStrip position="bottom" /></Suspense>} />
       </Routes>
     </BrowserRouter>
   );

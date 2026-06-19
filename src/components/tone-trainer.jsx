@@ -5094,13 +5094,6 @@ export default function ToneTrainer() {
     return unifiedVoiceMap.get(key) ?? H_VOICE_MIN;
   };
 
-  const cameFromHours = useMemo(() => {
-    try {
-      return new URLSearchParams(window.location.search).get("from") === "tool"
-        || !!sessionStorage.getItem("oht_handoff");
-    } catch { return false; }
-  }, []);
-
   // True from the first render when the Hours tool handed a verse to Score, so we
   // show a minimal "preparing" screen instead of flashing the full trainer UI
   // before redirecting to the print page.
@@ -5114,9 +5107,9 @@ export default function ToneTrainer() {
   // ingest, tone picker, paste box, Point Verses, the Director/Machine toggles,
   // and the timbre selector — leaving the pointed result + playback (the SATB
   // voice-part picker stays). Read once at first render, before the handoff
-  // effect consumes oht_handoff. NOTE: deliberately NOT cameFromHours — a bare
-  // ?from=tool visit (e.g. the Hours footer's "open Tone Trainer" link) carries
-  // no verse and must show the full UI.
+  // effect consumes oht_handoff. NOTE: gated on a verse being present, NOT merely
+  // on arriving from the tool — a bare ?from=tool visit (e.g. the Library's Tone
+  // Trainer card) carries no verse and must show the full UI.
   const embeddedVerseView = useMemo(() => {
     try { const r = sessionStorage.getItem("oht_handoff"); return !!r && !!JSON.parse(r).verse; } catch { return false; }
   }, []);
@@ -5194,14 +5187,6 @@ export default function ToneTrainer() {
       {/* ── HEADER BAND — light header on parchment, matching the data browsers ── */}
       <div style={{ background: "#fff", borderBottom: "2px solid #E8DEC8", padding: "1rem 1.25rem" }}>
         <div style={{ maxWidth: 820, margin: "0 auto" }}>
-          {cameFromHours && (
-            <div style={{ marginBottom: "0.45rem" }}>
-              <a href="#" onClick={(e) => { e.preventDefault(); window.history.back(); }}
-                 style={{ color: gold, textDecoration: "none", fontSize: "0.82rem", fontFamily: "Georgia, serif" }}>
-                ← Hours Tool
-              </a>
-            </div>
-          )}
           <div style={{ textAlign: "center", marginBottom: "0.3rem", letterSpacing: "0.28em", textTransform: "uppercase", fontSize: "0.7rem", color: gold }}>
             Common Chant · Trainer ·{" "}
             <span
@@ -6463,14 +6448,6 @@ export default function ToneTrainer() {
         trainer's best reading; verify against the printed staves.
       </div>
 
-      {cameFromHours && (
-        <div style={{ marginTop: "1.4rem", textAlign: "left" }}>
-          <a href="#" onClick={(e) => { e.preventDefault(); window.history.back(); }}
-             style={{ color: gold, textDecoration: "none", fontSize: "0.82rem", fontFamily: "Georgia, serif" }}>
-            ← Hours Tool
-          </a>
-        </div>
-      )}
       <div style={{ marginTop: "1rem", fontSize: "0.72rem", color: "#9A8A70", borderTop: "1px solid #e8dfc8", paddingTop: "0.7rem", display: "flex", flexWrap: "wrap", gap: "0.4rem", justifyContent: "space-between" }}>
         <span>
           © 2026 William Stevens. All Rights Reserved.{" "}
