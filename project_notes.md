@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.18.4** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
+**Tool version: v0.19.0** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
 
 **Liturgical Library — Phase 1 shelf LANDED (v0.18.0).** `bookshelf_spec.md` (repo root).
 A Reading ⇄ Library flip (single icon by SERVICE) toggles the Hours-tool body between the
@@ -21,14 +21,20 @@ compact `MM.DD.YYYY` on narrow screens (≤560px) to keep the bar on one line; m
 `Jun 19, 2026` on larger screens. Date is now a custom display over an invisible native
 date input (tap still opens the OS picker; `showPicker()` on click for desktop).
 
-**Library — completed / remaining (as of v0.18.2):**
+**Library — completed / remaining (as of v0.19.0):**
 - DONE: spec committed; PSB intaken to `public/` + palette unified; shelf built (flip toggle,
-  6 books, 3 shelves, date-aware previews from `liturgicalData`, links out with the context
-  query); flip + view-memory + mobile-date fixes.
-- REMAINING: (1) per-viewer deep-positioning — each browser reads `?date/tone/pascha/comm`
-  and opens *to that entry* (only Psalter does today); (2) Reading-view Troparion/Kontakion
-  source-link pilot (in-text element→source jumps) — not started; (3) coverage computed from
-  data (Menaion/Pentecostarion ranges) vs the declared strings shipped now.
+  date-aware previews from `liturgicalData`, links out with the context query). **7 books now**
+  (Holy Scripture added in v0.19.0, Order & Psalmody). Fixes: flip animation (forced reflow),
+  view-memory (sessionStorage), mobile compact date, narrow control-bar fit (v0.18.3),
+  flip header-bleed/cross-browser via removing preserve-3d (v0.18.4), flip collapses an
+  expanded context panel first (v0.19.0). Return strip: bookshelf links pass `from=tool`, and
+  the **Menaion/Octoechos/Pentecostarion browsers now carry the sticky ← Hours Tool strip**
+  (shared `hours-return-strip.jsx`, wrapped at the route in `App.jsx`); Psalter / Scripture /
+  Tone Trainer already had their own.
+- REMAINING: (1) per-viewer deep-positioning — each viewer reads `?date/tone/pascha/comm`
+  (and Scripture → the day's lectionary) and opens *to that entry* (only Psalter does today);
+  (2) Reading-view Troparion/Kontakion source-link pilot (in-text element→source jumps) — not
+  started; (3) coverage computed from data (Menaion/Pentecostarion ranges) vs declared strings.
 - PARKED (spec §8): persistent context strip across viewers, live re-page on date change,
   manual-nav-vs-date override, PSB into the React shell, Tone Trainer verse-payload intake,
   Score Print conditional return.
