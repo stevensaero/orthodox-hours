@@ -775,6 +775,20 @@ export default function MenaionBrowser() {
   const headerRef = useRef(null);
   const [headerHeight, setHeaderHeight] = useState(90);
 
+  // Deep-positioning on entry (Phase 2): a ?comm=MM-DD link from the Library
+  // opens to that month and scrolls to the day's entry. The scroll can't fire on
+  // mount — the month data loads via a dynamic import, so entryRefs aren't
+  // populated yet. We stash the target here and fire it from the [monthData]
+  // effect once data resolves. A direct, no-param visit is unchanged.
+  const pendingComm = useRef(null);
+  useEffect(() => {
+    const comm = new URLSearchParams(window.location.search).get("comm");
+    if (comm && /^\d{2}-\d{2}$/.test(comm)) {
+      pendingComm.current = comm;
+      setActiveMonth(comm.slice(0, 2));
+    }
+  }, []);
+
   useEffect(() => {
     const el = headerRef.current;
     if (!el) return;
@@ -829,6 +843,20 @@ export default function MenaionBrowser() {
     const elTop = el.getBoundingClientRect().top + window.scrollY;
     window.scrollTo({ top: elTop - headerH - 8, behavior: 'smooth' });
   };
+
+  // Fire the deep-positioning scroll once the dynamic month import has resolved
+  // and the entry refs are populated (one rAF to let layout settle), then clear
+  // the pending target so a later manual month switch doesn't re-trigger it.
+  useEffect(() => {
+    if (!monthData || !pendingComm.current) return;
+    const target = pendingComm.current;
+    const id = requestAnimationFrame(() => {
+      scrollToEntry(target);
+      pendingComm.current = null;
+    });
+    return () => cancelAnimationFrame(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [monthData]);
 
   return (
     <div style={{

@@ -5121,6 +5121,16 @@ export default function ToneTrainer() {
     try { const r = sessionStorage.getItem("oht_handoff"); return !!r && !!JSON.parse(r).verse; } catch { return false; }
   }, []);
 
+  // Deep-positioning on entry (Phase 2): a bare ?tone=N visit from the Library
+  // (the Tone Trainer shelf card, no verse handoff) opens straight to that tone.
+  // Gated on !embeddedVerseView so it never fights the Point/Score handoff below,
+  // which sets the tone from the verse and may redirect to score-print.html.
+  useEffect(() => {
+    if (embeddedVerseView) return;
+    const t = parseInt(new URLSearchParams(window.location.search).get("tone"), 10);
+    if (t >= 1 && t <= 8) setActiveTone(t);
+  }, []);
+
   // Hours-tool handoff (Point / Score controls): a verse arrives via sessionStorage.
   // Apply its tone; once activeTone reflects it, translate the line marks (| and //)
   // to newlines — keeping any [director brackets]. Point mode loads + points it for

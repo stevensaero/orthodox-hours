@@ -624,6 +624,20 @@ export default function PentecostarionBrowser() {
   const headerRef = useRef(null);
   const [headerHeight, setHeaderHeight] = useState(90);
 
+  // Deep-positioning on entry (Phase 2): a ?pascha=N link from the Library opens
+  // and scrolls to the entry at that Pascha offset. Data loads async, so we stash
+  // the target and fire from the [pentData] effect once it resolves. Offset 0
+  // (Pascha) is valid, so guard with != null, not truthiness. Direct visit
+  // unchanged.
+  const pendingPascha = useRef(null);
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search).get("pascha");
+    if (p !== null && p !== "") {
+      const n = parseInt(p, 10);
+      if (Number.isFinite(n)) pendingPascha.current = n;
+    }
+  }, []);
+
   useEffect(() => {
     const el = headerRef.current;
     if (!el) return;
@@ -688,6 +702,20 @@ export default function PentecostarionBrowser() {
     const elTop = el.getBoundingClientRect().top + window.scrollY;
     window.scrollTo({ top: elTop - headerH - 8, behavior: 'smooth' });
   };
+
+  // Fire the deep-positioning scroll once the data import resolves and entry refs
+  // exist (one rAF for layout), then clear so a later period filter doesn't
+  // re-trigger it.
+  useEffect(() => {
+    if (!pentData || pendingPascha.current == null) return;
+    const target = pendingPascha.current;
+    const id = requestAnimationFrame(() => {
+      scrollToEntry(target);
+      pendingPascha.current = null;
+    });
+    return () => cancelAnimationFrame(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pentData]);
 
   return (
     <div style={{

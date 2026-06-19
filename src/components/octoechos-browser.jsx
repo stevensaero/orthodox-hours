@@ -468,6 +468,13 @@ export default function OctoechosBrowser() {
   // Active day within vespers view
   const [activeDay, setActiveDay] = useState('sat');
 
+  // Deep-positioning on entry (Phase 2): a ?tone=N link from the Library opens
+  // straight to that tone. Validate 1–8; a direct, no-param visit is unchanged.
+  useEffect(() => {
+    const t = parseInt(new URLSearchParams(window.location.search).get('tone'), 10);
+    if (t >= 1 && t <= 8) setSelectedTone(t);
+  }, []);
+
   useEffect(() => {
     setLoading(true);
     setToneData(null);

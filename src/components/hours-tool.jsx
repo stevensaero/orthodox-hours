@@ -8071,6 +8071,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.20.0",
+    date: "June 2026",
+    summary: "Library deep-positioning — all five viewers open to the date's content on entry",
+    items: [
+      "Opening a book from the Library now lands on the day itself: the Menaion scrolls to the day's commemoration, the Octoechos and Tone Trainer select the week's tone, and the Pentecostarion scrolls to the day's paschal entry. A direct visit with no link carries no change.",
+      "Holy Scripture's shelf card is a single click to a composed \"Today's Readings\" landing — the day's appointed Epistle and Gospel (plus any commemoration readings) shown as one continuous reading through the existing split-gospel view, grouped Epistle then Gospel, day reading first. The book and chapter selectors stay live to browse onward.",
+      "The Tone Trainer's tone-on-entry applies only to a plain shelf visit; it never disturbs the Point/Score verse handoff or its score-print redirect.",
+    ],
+  },
+  {
     version: "v0.19.1",
     date: "June 2026",
     summary: "Flip no longer re-exposes the masthead; PSB opens same-tab with a ← Hours Tool strip",
@@ -11171,7 +11181,17 @@ const LIBRARY_SHELVES = [
   { name: "Chant", books: ["toneTrainer"] },
 ];
 
-function buildLibraryBooks(ld, selectedDate) {
+// Abbreviate a LECTIONARY ref string for the Library card preview, e.g.
+// "Romans 5:1-10" -> "Rom 5:1–10". Falls back to the raw string if unparsed.
+function abbrevRef(ref) {
+  if (!ref) return ref;
+  const m = String(ref).match(/^((?:[1-4]\s+)?[A-Za-z][A-Za-z.\s]*?)\s+(\d.*)$/);
+  if (!m) return ref;
+  const book = SCRIPTURE_BOOK_ID[m[1].trim()] || m[1].trim();
+  return (book + " " + m[2]).replace(/-/g, "\u2013");
+}
+
+function buildLibraryBooks(ld, selectedDate, scriptureReadings) {
   const tone = ld && ld.tone;
   const off = ld && typeof ld.paschaOffset === "number" ? ld.paschaOffset : null;
   const dayName = (ld && ld.dayName) || "";
@@ -11180,6 +11200,11 @@ function buildLibraryBooks(ld, selectedDate) {
   const comm = mm && dd ? mm + "-" + dd : null;
   const toneTxt = tone ? "Tone " + tone : "—";
   const dateQ = "date=" + encodeURIComponent(selectedDate) + "&from=tool";
+  // Scripture preview: the day's cycle Epistle · Gospel, abbreviated.
+  const scrE = scriptureReadings && scriptureReadings.find(r => r.kind === "epistle");
+  const scrG = scriptureReadings && scriptureReadings.find(r => r.kind === "gospel");
+  const scrPv = [scrE && abbrevRef(scrE.ref), scrG && abbrevRef(scrG.ref)]
+    .filter(Boolean).join(" · ") || "daily Epistle & Gospel";
   return {
     menaion: {
       title: "The Menaion", spine: "#8B6914", host: "app",
@@ -11217,10 +11242,10 @@ function buildLibraryBooks(ld, selectedDate) {
       cover: "57 sections · Royster", partial: false,
     },
     scripture: {
-      title: "Holy Scripture", spine: "#5C6E8A", host: "app",
-      to: "/scripture?" + dateQ,
-      lab: "Open to",
-      pv: "‹ daily Epistle & Gospel ›",
+      title: "Holy Scripture", spine: "#5C6E8A", host: "app", handoff: "scripture",
+      to: "/scripture?" + dateQ + "&readings=today",
+      lab: "Today's readings",
+      pv: scrPv,
       cover: "Daily lectionary readings", partial: false,
     },
     toneTrainer: {
@@ -11275,9 +11300,23 @@ function LibraryBook({ b, onOpen }) {
   );
 }
 
-function LiturgicalLibrary({ liturgicalData, selectedDate, navigate }) {
-  const books = buildLibraryBooks(liturgicalData, selectedDate);
+function LiturgicalLibrary({ liturgicalData, selectedDate, navigate, scriptureReadings }) {
+  const books = buildLibraryBooks(liturgicalData, selectedDate, scriptureReadings);
   const open = (b) => {
+    if (b.handoff === "scripture") {
+      // Stash the day's readings (consumed once, like oht_handoff) and open the
+      // Scripture viewer's "Today's Readings" landing. The viewer stays "dumb":
+      // it renders exactly what it's handed, via the existing split-gospel path.
+      try {
+        if (scriptureReadings && scriptureReadings.length) {
+          sessionStorage.setItem("oht_scripture_readings", JSON.stringify(scriptureReadings));
+        } else {
+          sessionStorage.removeItem("oht_scripture_readings");
+        }
+      } catch { /* sessionStorage unavailable — viewer falls back to browse */ }
+      navigate("/scripture?from=tool&readings=today");
+      return;
+    }
     if (b.host === "window") {
       // Same tab so browser Back returns to the Hours tool (view-memory restores
       // the Library). PSB is a standalone page outside the SPA, so this is a real
@@ -11432,6 +11471,21 @@ export default function App() {
     ? { e: hasFeastE ? selectedMenaionEntry.feast_e : null,
         g: hasFeastG ? selectedMenaionEntry.feast_g : null }
     : null;
+
+  // Library → Scripture handoff payload (Phase 2). Same source the Typica
+  // assembler and context card use: dailyReading (cycle) + feastReading (menaion
+  // proper). Grouped Epistle-then-Gospel, day reading first then commemoration
+  // (Bill's locked order). Null when the day has no appointed E/G.
+  const scriptureReadings = (() => {
+    const saint = (selectedMenaionEntry && selectedMenaionEntry.saint &&
+      !String(selectedMenaionEntry.saint).startsWith("absent")) ? selectedMenaionEntry.saint : null;
+    const items = [];
+    if (dailyReading && dailyReading.e) items.push({ kind: "epistle", label: "Epistle", ref: dailyReading.e });
+    if (feastReading && feastReading.e) items.push({ kind: "epistle", label: saint ? "Epistle · " + saint : "Feast Epistle", ref: feastReading.e });
+    if (dailyReading && dailyReading.g) items.push({ kind: "gospel", label: "Gospel", ref: dailyReading.g });
+    if (feastReading && feastReading.g) items.push({ kind: "gospel", label: saint ? "Gospel · " + saint : "Feast Gospel", ref: feastReading.g });
+    return items.length ? items : null;
+  })();
 
 
   // Reset Typical Beginning when service changes
@@ -12127,7 +12181,7 @@ export default function App() {
         <div style={{ flex: 1, minWidth: 0, padding: '0 1rem', perspective: '2000px' }}>
         <div ref={bodyFlipRef} style={{ willChange: 'transform' }}>
         {view === 'library' ? (
-          <LiturgicalLibrary liturgicalData={liturgicalData} selectedDate={selectedDate} navigate={navigate} />
+          <LiturgicalLibrary liturgicalData={liturgicalData} selectedDate={selectedDate} navigate={navigate} scriptureReadings={scriptureReadings} />
         ) : (<>
 
 

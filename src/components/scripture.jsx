@@ -411,9 +411,9 @@ function SpanHeading({ label }) {
   );
 }
 
-function ReadingView({ spans, allBookData }) {
+function ReadingView({ spans, allBookData, autoScroll = true }) {
   const topRef = useRef(null);
-  useEffect(() => { topRef.current?.scrollIntoView({ behavior: "instant", block: "start" }); }, [spans]);
+  useEffect(() => { if (autoScroll) topRef.current?.scrollIntoView({ behavior: "instant", block: "start" }); }, [spans, autoScroll]);
   if (!spans || spans.length === 0) return null;
 
   const vStyle = { fontSize: "0.97rem", lineHeight: "1.9", color: C.inkMid, display: "block" };
@@ -463,6 +463,45 @@ function ReadingView({ spans, allBookData }) {
           {span.chapterStart !== undefined
             ? renderCross(span, allBookData[span.book])
             : renderSame(span, allBookData[span.book])}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── TODAY'S READINGS LANDING ─────────────────────────────────────────────────
+// Composed when the Library hands off the day's readings (sessionStorage
+// oht_scripture_readings). Each group carries a semantic label (Epistle / Gospel
+// / Epistle · Saint) and its parsed spans; spans render through the SAME
+// ReadingView split-gospel path used by ?ref= reading mode (no forked renderer).
+// Grouped Epistle-then-Gospel, day reading before commemoration, per the handoff
+// order. Native nav stays available (the book selector above remains live).
+function GroupHeading({ label }) {
+  return (
+    <div style={{
+      fontSize: "1rem", fontWeight: "bold", color: C.ink, fontFamily: "Georgia, serif",
+      marginTop: "2.25rem", marginBottom: "0.25rem", letterSpacing: "0.01em",
+    }}>
+      {label}
+    </div>
+  );
+}
+
+function TodayReadingsView({ groups, allBookData }) {
+  useEffect(() => { window.scrollTo(0, 0); }, []);
+  if (!groups || groups.length === 0) return null;
+  return (
+    <div>
+      <div style={{
+        fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase",
+        color: C.gold, fontWeight: "bold", marginBottom: "0.25rem",
+      }}>
+        Today's Readings
+      </div>
+      {groups.map((g, i) => (
+        <div key={i}>
+          <GroupHeading label={g.label} />
+          <ReadingView spans={g.spans} allBookData={allBookData} autoScroll={false} />
         </div>
       ))}
     </div>
@@ -687,10 +726,47 @@ export default function Scripture() {
   const [allBookData, setAllBookData] = useState({});
   const isReadingMode = !!(initState.refParam && parseRefString(initState.refParam));
 
+  // Library → Scripture handoff: the day's readings, stashed in sessionStorage
+  // and consumed ONCE here (mirrors the Tone Trainer's oht_handoff). Read in a
+  // useState initializer so it runs a single time and never re-reads on render.
+  // Each item becomes { label, kind, spans } via the existing parseRefString.
+  const [readingGroups] = useState(() => {
+    try {
+      const p = getParams();
+      if (p.get("from") !== "tool" || p.get("readings") !== "today") return null;
+      const raw = sessionStorage.getItem("oht_scripture_readings");
+      if (!raw) return null;
+      sessionStorage.removeItem("oht_scripture_readings");
+      const items = JSON.parse(raw);
+      if (!Array.isArray(items) || items.length === 0) return null;
+      return items
+        .map(it => ({ label: it.label, kind: it.kind, spans: parseRefString(it.ref) }))
+        .filter(g => g.spans && g.spans.length > 0);
+    } catch { return null; }
+  });
+  const isTodayReadings = !!(readingGroups && readingGroups.length > 0);
+
 
   // ── Load manifest + pericopes on mount ───────────────────────────────────
   useEffect(() => {
     window.scrollTo(0, 0);
+    if (isTodayReadings) {
+      // Today's Readings landing: load manifest + every book across all groups'
+      // spans, then render each group through ReadingView. Native nav (the book
+      // selector) stays live alongside.
+      const allSpans = readingGroups.flatMap(g => g.spans);
+      const uniqueBooks = [...new Set(allSpans.map(s => s.book))];
+      loadManifest().then(mf => {
+        setManifest(mf);
+        return Promise.all(uniqueBooks.map(bid => loadBook(bid).then(data => ({ bid, data }))));
+      }).then(results => {
+        const map = {};
+        results.forEach(({ bid, data }) => { map[bid] = data; });
+        setAllBookData(map);
+        setLoading(false);
+      }).catch(() => setLoading(false));
+      return;
+    }
     if (isReadingMode) {
       // Reading mode: load manifest + all books in the ref spans
       const spans = initState.refSpans;
@@ -869,6 +945,12 @@ export default function Scripture() {
           </div>
         )}
 
+        {/* Today's Readings landing (Library handoff) — composed via ReadingView.
+            Hidden once the reader navigates to a book (native nav stays live). */}
+        {isTodayReadings && !selectedBookId && !loading && (
+          <TodayReadingsView groups={readingGroups} allBookData={allBookData} />
+        )}
+
         {/* Browse mode */}
         {!isReadingMode && (
           <>
@@ -886,7 +968,7 @@ export default function Scripture() {
             )}
 
             {/* Welcome state */}
-            {!loading && !selectedBookId && (
+            {!loading && !selectedBookId && !isTodayReadings && (
               <div style={{
                 textAlign: "center", padding: "3rem 1rem",
                 color: C.inkLight, fontStyle: "italic",
