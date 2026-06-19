@@ -8071,6 +8071,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.20.5",
+    date: "June 2026",
+    summary: "Refresh keeps the masthead in view; the page flip animates on desktop; snappier flip",
+    items: [
+      "Refreshing the page no longer scrolls the masthead off to the date bar — the service view only scrolls on an actual service change now, not on load, so a refresh keeps the masthead in view if it was.",
+      "The Reading/Library flip now animates on desktop browsers that have system animations turned off (Windows \"Animation effects\"), matching the icon — previously the body snapped while the icon flipped.",
+      "Trimmed the brief pause before the flip when the Liturgical Context panel is open (0.5s → 0.25s).",
+    ],
+  },
+  {
     version: "v0.20.4",
     date: "June 2026",
     summary: "How-It-Works \"open\" links show the return strip; Tone Trainer adopts the unified strip",
@@ -11563,6 +11573,11 @@ export default function App() {
   React.useEffect(() => {
     const from = prevServiceKeyRef.current;
     prevServiceKeyRef.current = selectedServiceKey;
+    // Don't scroll on the initial mount / page refresh — only on an actual service
+    // change. On first render `from` equals the current key; scrolling here would
+    // push the masthead off on every load. Leaving it lets a refresh keep the
+    // masthead in view if it was.
+    if (from === selectedServiceKey) return;
     // Skip auto-scroll when transitioning 3rd→6th; the Continue button handles it
     if (from === "3rd_hour" && selectedServiceKey === "6th_hour") return;
     // Skip auto-scroll when transitioning 9th→Vespers; the Continue button handles it
@@ -11739,7 +11754,7 @@ export default function App() {
     // collapse it first so the flip happens above the fold and reads as an action.
     if (contextOpen) {
       setContextOpen(false);
-      window.setTimeout(runFlip, 480);
+      window.setTimeout(runFlip, 250);
     } else {
       runFlip();
     }
@@ -11755,9 +11770,11 @@ export default function App() {
     const restoreScroll = () => { window.scrollTo({ top: prevScrollY }); };
     const el = bodyFlipRef.current;
     const parent = el && el.parentElement;
-    const reduce = typeof window !== "undefined" && window.matchMedia
-      && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!el || reduce) { setView(next); requestAnimationFrame(restoreScroll); return; }
+    // The body flip animates regardless of prefers-reduced-motion, to stay
+    // consistent with the icon (a plain CSS transition, which the platform does
+    // not auto-disable). Windows 11 with "Animation effects" off reports reduce,
+    // which previously snapped the body while the icon kept flipping.
+    if (!el) { setView(next); requestAnimationFrame(restoreScroll); return; }
     // Clip the rotation to the body box during the flip so no 3D projection can
     // bleed over the sticky header; restore overflow afterward (tooltips need it).
     if (parent) parent.style.overflow = "hidden";
