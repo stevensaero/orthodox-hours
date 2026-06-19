@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.20.0** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
+**Tool version: v0.20.1** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
 
 **Liturgical Library — Phase 1 shelf LANDED (v0.18.0).** `bookshelf_spec.md` (repo root).
 A Reading ⇄ Library flip (single icon by SERVICE) toggles the Hours-tool body between the
@@ -46,6 +46,15 @@ date input (tap still opens the OS picker; `showPicker()` on click for desktop).
 - REMAINING: (1) Reading-view Troparion/Kontakion source-link pilot (in-text element→source
   jumps) — not started; (2) coverage computed from data (Menaion/Pentecostarion ranges) vs
   declared strings.
+- DONE (v0.20.1): shelves regrouped — **Hymnography · Scripture & Psalmody · Chant · Guides**
+  ("Order & Psalmody" renamed; PSB pulled into its own "Guides" shelf; Scripture + Psalter
+  together). **Pentecostarion out-of-scope chip**: the shelf advertises deep-positioning only
+  when the day's Pascha offset is an *encoded* entry (`PENT_ENCODED_OFFSETS` = {19, 35–56, 63},
+  mirrored in `hours-tool.jsx` to avoid pulling the 312 KB Pentecostarion chunk into the main
+  bundle). Otherwise (e.g. P+68, past All Saints) the chip greys, reads "Out of scope · Opens at
+  the start," and drops the `&pascha=` param so the viewer opens at its default. The Menaion is
+  deliberately NOT treated this way — it governs every day; its partial coverage is unencoded
+  data, not a seasonal book like the Pentecostarion/Triodion.
 - PARKED (spec §8): persistent context strip across viewers, live re-page on date change,
   manual-nav-vs-date override, PSB into the React shell, Tone Trainer verse-payload intake,
   Score Print conditional return.
