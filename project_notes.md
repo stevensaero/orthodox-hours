@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.20.5** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
+**Tool version: v0.20.6** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
 
 **Liturgical Library — Phase 1 shelf LANDED (v0.18.0).** `bookshelf_spec.md` (repo root).
 A Reading ⇄ Library flip (single icon by SERVICE) toggles the Hours-tool body between the
@@ -91,6 +91,19 @@ date input (tap still opens the OS picker; `showPicker()` on click for desktop).
   intentionally overrides the OS reduced-motion preference for this one ~0.44s transition, to
   match the icon — revisit if both flips should honor it together.) (c) Context-collapse flip
   delay trimmed 480ms → 250ms.
+- DONE (v0.20.6): three fixes. (a) **Data browsers no longer reflow into a phone-width column**
+  — each `/menaion`, `/pentecostarion`, `/octoechos` route is wrapped in a `min-width: 760px`
+  div in `App.jsx` (wrapping the return strip + browser together so a `width:100%` strip stays
+  aligned under horizontal scroll). Below 760 the page scrolls sideways as one piece; the month
+  tabs never wrap, so the header can't oscillate and trigger the "Maximum update depth" white
+  screen seen in portrait. 760 is a single tunable number. Tone Trainer stays fluid. (b)
+  **Menaion sticky-cutoff fix** — `scrollToEntry`, the day sidebar's sticky `top`, the EntryCard
+  date header's sticky `top`, and the sub-entry threshold now add the `--hours-return-strip-h`
+  strip height (module-level `stripOffsetPx()` / `STRIP_VAR`), so opening a day lands it below
+  the strip + month nav instead of behind them. (c) **Glossary tooltips render above the sticky
+  bar** — `Tooltip` now portals its popup to `document.body` (position: fixed at the term,
+  z 9999), escaping the service body's `will-change`/`perspective` stacking context that had
+  trapped it (z100) below the z40 controls bar.
 - PARKED (spec §8): persistent context strip across viewers, live re-page on date change,
   manual-nav-vs-date override, PSB into the React shell, Tone Trainer verse-payload intake,
   Score Print conditional return.
