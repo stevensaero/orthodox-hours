@@ -104,6 +104,16 @@ date input (tap still opens the OS picker; `showPicker()` on click for desktop).
   bar** — `Tooltip` now portals its popup to `document.body` (position: fixed at the term,
   z 9999), escaping the service body's `will-change`/`perspective` stacking context that had
   trapped it (z100) below the z40 controls bar.
+- KNOWN FRAGILITY / INSURANCE (noted v0.20.6, not yet implemented): the data-browser routes
+  (`/menaion`, `/pentecostarion`, `/octoechos`, `/tone-trainer`) have **no React error
+  boundary** — any render error white-screens with no message. The only `ErrorBoundary` in
+  `App.jsx` is hardcoded to "Scripture Error" and wraps only the Scripture routes. v0.20.6's
+  `min-width: 760px` fix targets the **known** crash trigger (narrow-width header oscillation →
+  "Maximum update depth"), and should resolve the portrait blank screen at its source. If
+  portrait still white-screens after this, the next step is a generic error boundary around
+  these routes — it both prevents the blank screen and surfaces the error text for diagnosis,
+  rather than masking it. Cheap to add; held back deliberately to keep v0.20.6 focused on the
+  root-cause fix.
 - PARKED (spec §8): persistent context strip across viewers, live re-page on date change,
   manual-nav-vs-date override, PSB into the React shell, Tone Trainer verse-payload intake,
   Score Print conditional return.
