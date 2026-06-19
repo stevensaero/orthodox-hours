@@ -82,6 +82,22 @@ section.svc i{color:inherit}
   main{padding:1.5rem 1.1rem 5rem}
   body{font-size:17px}
 }
+
+/* ← Hours Tool return strip — shown only when opened from the Hours tool (?from=tool) */
+.oht-return{display:none;position:fixed;left:0;right:0;z-index:1000;width:100%;
+  align-items:center;gap:.35rem;background:var(--paper);padding:.5rem 1.25rem;
+  border:0;text-align:left;cursor:pointer;font-family:Georgia,'Times New Roman',serif}
+.oht-return .oht-arrow{font-size:1.2rem;line-height:1;color:var(--nav-active)}
+.oht-return .oht-label{font-size:.95rem;color:var(--nav-active);margin-left:.3rem}
+.oht-return.oht-top{top:0;border-bottom:1px solid var(--rule)}
+.oht-return.oht-bottom{bottom:0;border-top:1px solid var(--rule)}
+body.from-tool .oht-return{display:flex}
+body.from-tool{padding-top:40px;padding-bottom:40px}
+body.from-tool nav{top:40px;height:calc(100vh - 40px)}
+body.from-tool .totop{bottom:52px}
+@media (max-width:880px){
+  body.from-tool nav{top:0;height:auto}
+}
 </style>
 <style id="psb-preset-styles">
 /* PSB editor presets (managed) */
@@ -96,6 +112,7 @@ hr.psb-rule,.svc hr{border-top-width:2px !important}
 hr.psb-rule,.svc hr{width:80% !important}
 </style></head>
 <body>
+<button type="button" class="oht-return oht-top" aria-label="Back to Hours Tool"><span class="oht-arrow">←</span><span class="oht-label">Hours Tool</span></button>
 <div class="wrap">
 <nav>
   <div class="brand">The Priest's Service Book
@@ -468,6 +485,7 @@ hr.psb-rule,.svc hr{width:80% !important}
 </main>
 </div>
 <a class="totop show" href="#" title="Back to top">↑</a>
+<button type="button" class="oht-return oht-bottom" aria-label="Back to Hours Tool"><span class="oht-arrow">←</span><span class="oht-label">Hours Tool</span></button>
 <script>
 const links=[...document.querySelectorAll('nav a[href^="#"]')];
 const map=new Map(links.map(a=>[a.getAttribute('href').slice(1),a]));
@@ -482,6 +500,14 @@ const tt=document.querySelector('.totop');
 addEventListener('scroll',()=>{tt.classList.toggle('show',scrollY>600)});
 const tog=document.querySelector('.navtoggle');
 if(tog){tog.addEventListener('click',()=>document.querySelector('nav').classList.toggle('collapsed'))}
+</script>
+<script>
+(function(){try{
+  if(new URLSearchParams(location.search).get('from')!=='tool')return;
+  document.body.classList.add('from-tool');
+  var back=function(){history.back();};
+  document.querySelectorAll('.oht-return').forEach(function(b){b.addEventListener('click',back);});
+}catch(e){}})();
 </script>
 
 
