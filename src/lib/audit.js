@@ -301,17 +301,24 @@ export const FIELD_REGISTRY = [
   },
   {
     field: 'aposticha_glory', category: 'vespers_aposticha', appliesTo: 'both',
+    // Declaration-aware — the audit twin of validator Check G / the §D runtime rule.
+    // For every Menaion rank that carries a Vespers aposticha, the doxasticon state must be
+    // DECLARED: aposticha_glory present, OR aposticha_glory_absent: true (verified none in the
+    // PDF). A bare absence is a red gap (status → partial) so the Menaion board lights up until
+    // an encoding pass examines the PDF and either encodes the Glory or sets _absent: true.
     required: (entry, type) => {
       if (type === 'menaion') {
-        return ['doxology', 'polyeleos', 'vigil'].includes(entry.rank);
+        return ['simple', 'six_stichera', 'doxology', 'polyeleos', 'vigil'].includes(entry.rank);
       }
       return entry.menaion_set_aside === true ||
              entry.hours_format === 'apodosis_pentecost' ||
              entry.hours_format === 'apodosis_ascension';
     },
-    description: 'Aposticha Glory doxasticon (tone + text)',
-    check: (entry) => isPresent(entry, 'aposticha_glory') &&
-      (typeof entry.aposticha_glory === 'object' ? !!(entry.aposticha_glory.text) : true),
+    description: 'Aposticha Glory doxasticon (tone + text), or aposticha_glory_absent: true',
+    check: (entry) =>
+      entry.aposticha_glory_absent === true ||
+      (isPresent(entry, 'aposticha_glory') &&
+        (typeof entry.aposticha_glory === 'object' ? !!(entry.aposticha_glory.text) : true)),
   },
   {
     field: 'aposticha_both_now', category: 'vespers_aposticha', appliesTo: 'both',

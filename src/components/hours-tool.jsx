@@ -8167,6 +8167,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.22.2",
+    date: "June 2026",
+    summary: "Menaion Data Browser now lights up red for entries whose aposticha Glory is unverified",
+    items: [
+      "Extends the aposticha-Glory safeguard to the completeness audit (src/lib/audit.js) that drives the Menaion Data Browser dots and the calendar day badges — the audit twin of validator Check G. aposticha_glory is now a declaration-aware required field for every aposticha-bearing Menaion rank (simple, six_stichera, doxology, polyeleos, vigil): an entry is satisfied only when it encodes aposticha_glory OR declares aposticha_glory_absent: true. A bare absence is now a red gap (status → partial), matching the §D runtime policy (b) \"unverified = red.\" Effect: the same 42 May/June/July entries the validator warns on now show red in the browser until a re-encoding pass examines each PDF (June goes from 8 complete / 20 review / 2 partial to 0 / 4 / 26). The gold \"needs review\" state is unchanged (it still flags unpointed stichera only).",
+    ],
+  },
+  {
     version: "v0.22.1",
     date: "June 2026",
     summary: "Aposticha Glory red-when-unverified now also covers the §2C+ Menaion-stichera path",
