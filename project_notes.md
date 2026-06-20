@@ -1,7 +1,7 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.22.3** | **Tone Trainer: v0.25.28** | Last synced: June 20, 2026
+**Tool version: v0.22.4** | **Tone Trainer: v0.25.28** | Last synced: June 20, 2026
 
-**Session June 20, 2026 — Aposticha-Glory safeguards + 06-21 encode (v0.22.0–v0.22.3).**
+**Session June 20, 2026 — Aposticha-Glory safeguards + 06-21 encode (v0.22.0–v0.22.4).**
 THEME: the 06-21 broken-Vespers bug was the first visible symptom of a systemic gap — the validator and the
 assembler verify that encoded data is well-FORMED, never that it is COMPLETE against the source PDF, so a
 silently-absent field reads as "valid." This session diagnosed it, shipped the first safeguard (Check G), the
@@ -54,6 +54,10 @@ runtime presence check — exactly the `*_absent` pattern Check G/§D use.
   options, verified NOT consumed by the Sunday assembler. Gospel kept Luke 21:12-19 (body + OCA; St. Sergius
   heading "12-18" noted inline). PDF read efficiently via Drive `read_file_content` (text + markers intact),
   not base64+image render.
+- **Viewer render** (`src/components/menaion-browser.jsx`, v0.22.4 patch): added per-field render rows for
+  the new `lic_stavrotheotokion` / `aposticha_stavrotheotokion` (the browser's `EntryHymnography` renderer is
+  explicit per-field — no catch-all loop — so a captured field stays invisible until it is wired in). The
+  Aposticha section condition now also fires when only a stavrotheotokion is present. Display-only.
 
 **Recovery note.** The previous session (also 06-20) diagnosed and scoped ALL of the above but lost its
 container working copy to a compaction tool-disconnect (Drive was down too); its recovery rode in three
