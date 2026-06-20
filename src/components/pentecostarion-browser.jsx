@@ -6,6 +6,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import { auditPentecostarionEntry, auditSummary } from '../lib/audit.js';
 import { PointScoreControls } from './point-score-controls.jsx';
 
+// Height (px) of the sticky "← Hours Tool" return strip when opened from the
+// tool, published as a CSS var by hours-return-strip.jsx (0 when no strip). The
+// header pins below the strip, so sticky offsets and scroll targets must clear
+// strip + header, not just the header. Mirrors menaion-browser.jsx.
+function stripOffsetPx() {
+  try {
+    return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hours-return-strip-h')) || 0;
+  } catch { return 0; }
+}
+const STRIP_VAR = "var(--hours-return-strip-h, 0px)";
+
 // ── Color constants — matches psalter.jsx / hours-tool.jsx ──────────────────
 const C = {
   parchment: "#FAF6EE",
@@ -142,7 +153,7 @@ function PentEntryCard({ offset, entry, audit, stickyTop }) {
       {/* ── Sticky Header ── */}
       <div style={{
         position: "sticky",
-        top: stickyTop + "px",
+        top: "calc(" + STRIP_VAR + " + " + stickyTop + "px)",
         zIndex: 10,
         background: C.parchment,
         paddingTop: "0.35rem",
@@ -700,7 +711,7 @@ export default function PentecostarionBrowser() {
     // ensuring the audit box is visible (not hidden behind the header).
     const headerH = headerRef.current ? headerRef.current.getBoundingClientRect().height : 90;
     const elTop = el.getBoundingClientRect().top + window.scrollY;
-    window.scrollTo({ top: elTop - headerH - 8, behavior: 'smooth' });
+    window.scrollTo({ top: elTop - headerH - stripOffsetPx() - 8, behavior: 'smooth' });
   };
 
   // Fire the deep-positioning scroll once the data import resolves and entry refs
@@ -795,7 +806,7 @@ export default function PentecostarionBrowser() {
         {/* ── Offset sidebar ── */}
         <div style={{
           flexShrink: 0, width: "200px", position: "sticky",
-          top: (headerHeight + 10) + "px", alignSelf: "flex-start",
+          top: "calc(" + STRIP_VAR + " + " + (headerHeight + 10) + "px)", alignSelf: "flex-start",
         }}>
           {/* Summary */}
           <div style={{

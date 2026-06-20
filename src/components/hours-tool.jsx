@@ -8088,6 +8088,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.20.8",
+    date: "June 2026",
+    summary: "Pentecostarion browser: day headings and offset picker no longer hide behind the sticky header",
+    items: [
+      "Applied the Menaion sticky-cutoff fix to the Pentecostarion Data Browser: opening an offset now lands it below the season nav, and the offset-picker sidebar and day-heading both account for the return strip, so nothing is clipped behind the sticky header.",
+    ],
+  },
+  {
     version: "v0.20.7",
     date: "June 2026",
     summary: "Choosing a service from the Library flips back to the Reading for that service",
