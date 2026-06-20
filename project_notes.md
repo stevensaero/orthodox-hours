@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.21.1** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
+**Tool version: v0.21.2** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
 
 **Liturgical Library — Phase 1 shelf LANDED (v0.18.0).** `bookshelf_spec.md` (repo root).
 A Reading ⇄ Library flip (single icon by SERVICE) toggles the Hours-tool body between the
