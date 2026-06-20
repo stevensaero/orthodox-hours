@@ -252,7 +252,8 @@ function PentEntryCard({ offset, entry, audit, stickyTop }) {
       </div>
 
       {/* ── Troparion ── */}
-      <div data-el="troparion"><SectionHeader>Troparion</SectionHeader></div>
+      <div data-el="troparion">
+      <SectionHeader>Troparion</SectionHeader>
       {entry.troparion ? (
         Array.isArray(entry.troparion) ? (
           entry.troparion.map((t, i) => (
@@ -277,9 +278,11 @@ function PentEntryCard({ offset, entry, audit, stickyTop }) {
           label="Both now (Theotokion)"
         />
       )}
+      </div>
 
       {/* ── Kontakia ── */}
-      <div data-el="kontakion"><SectionHeader>Kontakia</SectionHeader></div>
+      <div data-el="kontakion">
+      <SectionHeader>Kontakia</SectionHeader>
       {entry.hours_kontakion && (
         <TextBlock
           tone={entry.hours_kontakion.tone}
@@ -304,9 +307,11 @@ function PentEntryCard({ offset, entry, audit, stickyTop }) {
       {!entry.hours_kontakion && !entry.kontakion_ode6 && (
         <div style={{ fontSize: "0.85rem", color: C.goldLight, fontStyle: "italic" }}>Not encoded</div>
       )}
+      </div>
 
       {/* ── Lord I Have Cried Stichera ── */}
-      <div data-el="lic"><SectionHeader>Vespers — Lord I Have Cried</SectionHeader></div>
+      <div data-el="lic">
+      <SectionHeader>Vespers — Lord I Have Cried</SectionHeader>
       {entry.stichera_lord_i_call_count !== undefined && (
         <FieldRow label="stichera count" value={entry.stichera_lord_i_call_count} />
       )}
@@ -338,11 +343,13 @@ function PentEntryCard({ offset, entry, audit, stickyTop }) {
           label="Both now (Theotokion)"
         />
       )}
+      </div>
 
       {/* ── Vespers Aposticha ── */}
       {(entry.stichera_aposticha || entry.aposticha_glory) && (
         <>
-          <div data-el="aposticha"><SectionHeader>Vespers — Aposticha</SectionHeader></div>
+          <div data-el="aposticha">
+          <SectionHeader>Vespers — Aposticha</SectionHeader>
           {entry.stichera_aposticha && Array.isArray(entry.stichera_aposticha) && (
             entry.stichera_aposticha.map((s, i) => (
               <TextBlock key={i} tone={s.tone} text={s.text} verse={s.verse} label={`[${i + 1}]`} />
@@ -362,6 +369,7 @@ function PentEntryCard({ offset, entry, audit, stickyTop }) {
               label="Both now (Theotokion)"
             />
           )}
+          </div>
         </>
       )}
 

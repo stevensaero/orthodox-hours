@@ -8111,6 +8111,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.21.1",
+    date: "June 2026",
+    summary: "Source-link highlight now flashes the proper's text, not just its section header",
+    items: [
+      "When a Reading-view \"↗ source\" link lands in a data viewer, the brief gold highlight now covers the whole proper — its header and its verse text (and, for Lord-I-Have-Cried / Aposticha, the full section) — instead of only the section label above it. The data-el anchors in the Menaion, Octoechos, and Pentecostarion viewers were extended to enclose each section's body.",
+    ],
+  },
+  {
     version: "v0.21.0",
     date: "June 2026",
     summary: "Reading-view source links: every Menaion/Pentecostarion/Octoechos proper jumps to its place in the data viewer",

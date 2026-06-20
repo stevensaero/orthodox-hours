@@ -275,7 +275,8 @@ function EntryHymnography({ entry, editCtx }) {
 
   return (
     <>\n      {/* ── Lord I Have Cried Stichera ── */}
-      <div data-el="lic"><SectionHeader>Vespers — Lord I Have Cried</SectionHeader></div>
+      <div data-el="lic">
+      <SectionHeader>Vespers — Lord I Have Cried</SectionHeader>
       {entry.stichera_lord_i_call_count !== undefined && (
         <FieldRow label="stichera count" value={entry.stichera_lord_i_call_count} />
       )}
@@ -337,11 +338,13 @@ function EntryHymnography({ entry, editCtx }) {
         />
       )}
       {entry.lic_theotokion === null && <FieldRow label="lic_theotokion" value={null} />}
+      </div>
 
       {/* ── Vespers Aposticha ── */}
       {(entry.stichera_aposticha || entry.aposticha_glory) && (
         <>
-          <div data-el="aposticha"><SectionHeader>Vespers — Aposticha</SectionHeader></div>
+          <div data-el="aposticha">
+          <SectionHeader>Vespers — Aposticha</SectionHeader>
           {entry.stichera_aposticha && Array.isArray(entry.stichera_aposticha) && (
             <>
               {sticheraPointingStatus(entry.stichera_aposticha) === 'unpointed' && (
@@ -375,6 +378,7 @@ function EntryHymnography({ entry, editCtx }) {
               editPath={fieldPath(editCtx, 'aposticha_both_now', 'text')}
             />
           )}
+          </div>
         </>
       )}
 
@@ -665,7 +669,8 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
       </div>
 
       {/* ── Troparion ── */}
-      <div data-el="troparion"><SectionHeader>Troparion</SectionHeader></div>
+      <div data-el="troparion">
+      <SectionHeader>Troparion</SectionHeader>
       {primary.troparion ? (
         typeof primary.troparion === 'object' && !Array.isArray(primary.troparion) ? (
           <TextBlock tone={primary.troparion.tone} text={primary.troparion.text} label="Troparion"
@@ -686,9 +691,11 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
         <TextBlock tone={primary.troparion_3.tone} text={primary.troparion_3.text} label="Troparion 3"
           editFile={primaryCtx?.file} editPath={fieldPath(primaryCtx, 'troparion_3', 'text')} />
       )}
+      </div>
 
       {/* ── Kontakia ── */}
-      <div data-el="kontakion"><SectionHeader>Kontakia</SectionHeader></div>
+      <div data-el="kontakion">
+      <SectionHeader>Kontakia</SectionHeader>
       {primary.kontakion_ode6 ? (
         <TextBlock
           tone={primary.kontakion_ode6.tone}
@@ -711,6 +718,7 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
       ) : (
         <FieldRow label="kontakion_ode3" value={null} />
       )}
+      </div>
 
       <EntryHymnography entry={primary} editCtx={primaryCtx} />
 

@@ -246,23 +246,29 @@ function SmallTablesPanel({ tone }) {
         always loaded. Showing values for Tone {toneNum}.
       </div>
 
-      <div data-el="troparion"><SectionHeader>Resurrectional Troparion</SectionHeader></div>
+      <div data-el="troparion">
+      <SectionHeader>Resurrectional Troparion</SectionHeader>
       <SmallTableRow
         label={`Tone ${RESURRECTIONAL_TROPARIA[toneNum]?.tone ?? toneNum}`}
         value={RESURRECTIONAL_TROPARIA[toneNum]?.text ?? RESURRECTIONAL_TROPARIA[toneNum]}
       />
+      </div>
 
-      <div data-el="kontakion"><SectionHeader>Sunday Kontakion</SectionHeader></div>
+      <div data-el="kontakion">
+      <SectionHeader>Sunday Kontakion</SectionHeader>
       <SmallTableRow
         label={`Tone ${toneNum} — Tone ${SUNDAY_KONTAKIA[toneNum]?.tone}`}
         value={SUNDAY_KONTAKIA[toneNum]?.text}
       />
+      </div>
 
       <SectionHeader>Hypakoë (Sunday Matins / Typica)</SectionHeader>
       <SmallTableRow label={`Tone ${toneNum}`} value={HYPAKOE[toneNum]} />
 
-      <div data-el="lic"><SectionHeader>LIC Theotokion (Weekday Both Now)</SectionHeader></div>
+      <div data-el="lic">
+      <SectionHeader>LIC Theotokion (Weekday Both Now)</SectionHeader>
       <SmallTableRow label={`Tone ${toneNum}`} value={LIC_THEOTOKIA[toneNum]} />
+      </div>
 
       <SectionHeader>Sunday Matins Prokeimenon</SectionHeader>
       {SUNDAY_PROKEIMENON[toneNum] ? (
