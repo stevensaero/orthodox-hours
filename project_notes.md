@@ -1,7 +1,7 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.22.2** | **Tone Trainer: v0.25.28** | Last synced: June 20, 2026
+**Tool version: v0.22.3** | **Tone Trainer: v0.25.28** | Last synced: June 20, 2026
 
-**Session June 20, 2026 — Aposticha-Glory safeguards (validator Check G + §D runtime + browser audit, v0.22.0–v0.22.2).**
+**Session June 20, 2026 — Aposticha-Glory safeguards + 06-21 encode (validator Check G + §D runtime + browser audit, v0.22.0–v0.22.3).**
 Closed the silent-omission gap where a Menaion entry missing its aposticha doxasticon passed unflagged.
 - **Check G** (`tools/validate_entries.mjs`, tooling commit, no bump): encode-time declaration for the
   aposticha doxasticon, the twin of Check C/D for the LIC Glory. simple/§2A and six_stichera/§2C must
@@ -24,11 +24,20 @@ Closed the silent-omission gap where a Menaion entry missing its aposticha doxas
   `aposticha_glory_absent: true`). Undeclared → red `partial` (not gold `review`). The same 42 entries the
   validator warns on now light red in the browser (June: 8/20/2 → 0/4/26). The gold "needs review" state
   is unchanged — it still flags unpointed stichera only.
-- **Deliberately NOT done this session:** 06-21 (Holy Martyr Julian of Tarsus) was left un-encoded so the
-  red state is visible end-to-end; it now renders red on the Sunday-resurrectional path. The 06-21 encode
-  (add `aposticha_glory` Tone 6 "Come, ye who love the martyrs"; fix troparion/kontakion pointing; decisions
-  C.3.a/b/c pending) and the June-wide troparion/kontakion pointing re-encode (§3.3 marker-stripping defect)
-  remain open. Token rotation still overdue.
+- **06-21 encoded (v0.22.3, DATA + patch bump):** Holy Martyr Julian of Tarsus — the first end-to-end
+  resolution of an aposticha-Glory red. Added `aposticha_glory` (Tone VI doxasticon "Come, ye who love the
+  martyrs", prose); 06-21 now assembles fully (4 Octoechos resurrection stichera T2 → Julian's T6 doxasticon
+  → T6 theotokion from `SUNDAY_APOSTICHA_THEOTOKIA[6]`) and returns to green in the browser and calendar.
+  Re-pointed the troparion and kontakion (markers had been stripped). Captured both printed Stavrotheotokia
+  in two NEW fields — `lic_stavrotheotokion` and `aposticha_stavrotheotokion` (added to KNOWN_FIELDS,
+  tooling commit) — Tone VI Wed/Fri options, NOT consumed by the Sunday assembler (verified: no Menaion path
+  reads `lic_theotokion`; the Sunday aposticha uses the fixed 8-set, and 06-21 has no `stichera_aposticha`,
+  so the §2C path that reads `aposticha_both_now` never fires). Gospel kept at Luke 21:12-19 (matches the
+  printed pericope body + OCA; St. Sergius heading's "12-18" noted inline as a discrepancy). PDF read via
+  `read_file_content` (Drive text extraction, markers preserved) — not base64+image render.
+- **Still open:** the June-wide troparion/kontakion pointing re-encode (§3.3 marker-stripping defect, the
+  same class just fixed for 06-21) and the remaining ~41 aposticha-Glory backlog entries (each needs its PDF
+  examined → encode `aposticha_glory` or set `aposticha_glory_absent: true`). Token rotation still overdue.
 
 **Liturgical Library — Phase 1 shelf LANDED (v0.18.0).** `bookshelf_spec.md` (repo root).
 A Reading ⇄ Library flip (single icon by SERVICE) toggles the Hours-tool body between the
