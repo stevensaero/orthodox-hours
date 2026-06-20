@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.20.7** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
+**Tool version: v0.20.8** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
 
 **Liturgical Library — Phase 1 shelf LANDED (v0.18.0).** `bookshelf_spec.md` (repo root).
 A Reading ⇄ Library flip (single icon by SERVICE) toggles the Hours-tool body between the
@@ -123,6 +123,13 @@ date input (tap still opens the OS picker; `showPicker()` on click for desktop).
   instead of pinning the Library's offset. (Edge: re-picking the *same* service while in Library
   flips to Reading but, since the service-change effect doesn't fire on an unchanged key, holds
   the current offset rather than re-topping — accepted as a minor case.)
+- DONE (v0.20.8): **Pentecostarion browser sticky-cutoff fix** — mirrored the v0.20.6 Menaion
+  fix into `pentecostarion-browser.jsx` (same `stripOffsetPx()` / `STRIP_VAR` helper): the
+  `scrollToEntry` target, the offset-picker sidebar's sticky `top`, and the `PentEntryCard`
+  day-heading's sticky `top` now add `--hours-return-strip-h`, so opening an offset lands below
+  the season nav and nothing clips behind the sticky header. (Its header already pinned below the
+  strip.) NOTE: the Octoechos browser shares the same pattern and may want the same treatment if
+  the cutoff shows there too — not yet applied.
 - PARKED (spec §8): persistent context strip across viewers, live re-page on date change,
   manual-nav-vs-date override, PSB into the React shell, Tone Trainer verse-payload intake,
   Score Print conditional return.
