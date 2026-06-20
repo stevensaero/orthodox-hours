@@ -1701,8 +1701,18 @@ const JUNE_MENAION = {
     ],
     stichera_glory: { tone: 6, text: "Having drawn forth the inexhaustible drink of the immaculate Faith, O blessed one, thou didst extinguish the worship of idols, victoriously passing through the contest, made luminous with dew, and shining like a never-waning star of Christ, the ever-shining Sun; Emitting rays of martyrdom in each city, thou didst receive a blessed end in the sea, and didst come before the face of Christ as a crown-bearer. Him do thou beseech, O most glorious Julian, that He save those who celebrate thy memory with faith." },
     lic_theotokion: null,   // §2A — Both-now = Octoechos theotokion (tone of week)
+    // LIC Both-now prints "Theotokion, OR this Stavrotheotokion" (Tone VI, Spec. Mel. "Having
+    // set all aside"). Sunday uses the resurrectional dogmatikon; this is the Wed/Fri
+    // alternative — captured for the truthing view, not consumed by the assembler.
+    lic_stavrotheotokion: { tone: 6, spec_mel: "Having set all aside", text: "When, of old, the unblemished ewe-lamb and immaculate Sovereign Lady, * beheld her Lamb * upon the tree of the Cross, * she exclaimed maternally, and marveling cried aloud: * \"O my Child most sweet, * what is this new and most strange sight I see? * How hath the thankless synagogue * betrayed Thee to the judgment-seat of Pilate * and condemned Thee to death, * Who art the Life of all? * Yet do I hymn Thine ineffable condescension, ** O Word!\"" },
+    // Aposticha: stichera from the Octoechos; Glory = saint's doxasticon (Tone VI, prose — no
+    // pointing in source). This field resolves the §D unverified-doxasticon red for 06-21.
+    aposticha_glory: { tone: 6, text: "Come, ye who love the martyrs, let us piously glorify the glorious Julian, the spiritual athlete of Christ, the compatriot of Paul, who was shown to be his fellow mystagogue, and who likewise finished the race; for, entering the water, he crushed the head of the serpent with the aquatic beasts, sanctifying the earth with his blood and the sea by his passage, passing from things here to the eternal mansions, and receiving honor for his struggles from the hand of the Almighty; and he asketh cleansing for our souls and great mercy." },
+    // Aposticha Both-now prints a Stavrotheotokion (Tone VI, Spec. Mel. "On the third day").
+    // Wed/Fri option; Sunday pulls the theotokion from SUNDAY_APOSTICHA_THEOTOKIA[6]. Captured.
+    aposticha_stavrotheotokion: { tone: 6, spec_mel: "On the third day", text: "Standing with the virginal disciple before the Tree * during the crucifixion, * the Virgin cried out, weeping: * \"Woe is me! * How is it that Thou dost suffer, O Christ, ** since Thou art the dispassion of all?\"" },
     feast_e: "Ephesians 6:10-17 (§233)",
-    feast_g: "Luke 21:12-19 (§106)",
+    feast_g: "Luke 21:12-19 (§106)",  // St. Sergius heading reads Lk 21:12-18, but the printed pericope runs through v19 ("In your patience possess ye your souls"); OCA = 12-19. feast_g follows body + OCA.
     prokeimenon_tone: 4,
     prokeimenon_text: "In the saints that are in His earth hath the Lord been wondrous; " +
       "He hath wrought all His desires in them.",
@@ -1717,16 +1727,11 @@ const JUNE_MENAION = {
       "he shall not be afraid of evil tidings.",
     troparion: {
       tone: 4,
-      text: "In his sufferings, Thy martyr Julian O Lord, received an imperishable crown " +
-            "from Thee, our God; for, possessed of Thy might, he set at naught the tyrants " +
-            "and crushed the feeble audacity of the demons. By his supplications save Thou " +
-            "our souls.",
+      text: "In his sufferings, Thy martyr Julian O Lord, * received an imperishable crown from Thee, our God; * for, possessed of Thy might, * he set at naught the tyrants and crushed the feeble audacity of the demons. ** By his supplications save Thou our souls.",
     },
     kontakion_ode6: {
       tone: 2,
-      text: "As is meet, let us all praise Julian today, the invincible warrior of piety, " +
-            "the true counselor and soldier of the Truth, and let us cry aloud unto him: " +
-            "Entreat Christ God on behalf of us all!",
+      text: "As is meet, let us all praise Julian today, * the invincible warrior of piety, * the true counselor and soldier of the Truth, * and let us cry aloud unto him: ** Entreat Christ God on behalf of us all!",
     },
   },
 
