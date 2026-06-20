@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.20.8** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
+**Tool version: v0.21.0** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
 
 **Liturgical Library — Phase 1 shelf LANDED (v0.18.0).** `bookshelf_spec.md` (repo root).
 A Reading ⇄ Library flip (single icon by SERVICE) toggles the Hours-tool body between the
@@ -43,9 +43,23 @@ date input (tap still opens the OS picker; `showPicker()` on click for desktop).
   `/scripture?from=tool&readings=today`; the viewer consumes-once and composes the passages
   through the existing split-gospel `ReadingView` (no forked renderer), grouped Epistle-then-
   Gospel, day reading first, native nav left live. null `tone`/`paschaOffset` omit the param.
-- REMAINING: (1) Reading-view Troparion/Kontakion source-link pilot (in-text element→source
-  jumps) — not started; (2) coverage computed from data (Menaion/Pentecostarion ranges) vs
-  declared strings.
+- DONE (v0.21.0): **Reading-view element-level source links** (`phase3_element_source_links_spec.md`,
+  repo root). Every assembled movable proper whose text comes from an in-app data book —
+  Troparion, Kontakion, Lord-I-Have-Cried stichera/doxasticon/theotokion/dogmatikon, Aposticha
+  stichera/doxasticon/theotokion — carries a quiet "↗ source" link to the Menaion/Octoechos/
+  Pentecostarion viewer at that day/tone/offset, which flashes the targeted section. (Widened from
+  the original Troparion+Kontakion pilot at Bill's call.) Provenance resolves ONCE at assembly
+  (structured `sourceRef` + ready `sourceHref` stamped in the post-assembly map pass alongside
+  psalter/scripture hrefs; helpers `buildSourceRef`/`sourceLinkFor`/`elFromId`/`kindFromSource` in
+  `hours-tool.jsx`); the renderer never re-derives. Links reuse the Phase-2 deep-positioning
+  contract and add an `&el=` sub-anchor (`troparion|kontakion|lic|aposticha`); the three viewers
+  read it via the shared `src/lib/el-highlight.js` and flash the `[data-el=…]` section after the
+  Phase-2 scroll. **Vespers propers resolve against the NEXT liturgical day** (the day Vespers
+  opens). Mixed-source stichera runs link per-sticheron to their own book; unencoded placeholders
+  carry no link (resolved propers only); `general-menaion`/`oca` are guarded (defensive) but the
+  current T/K engine emits only Menaion/Octoechos/Pentecostarion. Next element types (canon, etc.)
+  inherit this for free once Matins is assembled.
+- REMAINING: coverage computed from data (Menaion/Pentecostarion ranges) vs declared strings.
 - DONE (v0.20.1): shelves regrouped — **Hymnography · Scripture & Psalmody · Chant · Guides**
   ("Order & Psalmody" renamed; PSB pulled into its own "Guides" shelf; Scripture + Psalter
   together). **Pentecostarion out-of-scope chip**: the shelf advertises deep-positioning only
