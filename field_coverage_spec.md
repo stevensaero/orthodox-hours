@@ -193,10 +193,10 @@ Each carries its citation; `verified` flips to true only on Bill's inspection.
 | `troparion` | 2 | stored | Always-present at the Hours; every rank carries a troparion (Hours rules table; Ch 1/2). The daily→General Menaion→OCA chain is *sourcing*, not a coverage state; "substitution" still yields a present value. No `*_absent`. |
 | `aposticha_glory`, `stichera_glory` | 1 → 2 | stored | "doxasticon from the Menaion, if there be one" (Ch 2:84, 2:89; Ch 6). `mandatory_when` = Doxology/Polyeleos/Vigil. Already Check G/§D. |
 | `exapostilarion` | 1 | stored | "If there be no exapostilarion in the Menaion… / If there be an…" (Ch 1:181/184; Ch 2:138/141). Needs `exapostilarion_absent`. |
-| `gospel_sticheron` | 3 | derived | "the *appointed* gospel sticheron" — eothinon by Matins-gospel number (Ch 1:391/664). Gate = Sunday/resurrectional Matins gospel. Data shows `{tone,text}` captured + selection via `matins_praises_glory:{source:'gospel_sticheron', gospel_number}`. Confirm derived → not a Menaion coverage field. |
+| `gospel_sticheron` | 3 | derived | **Confirmed runtime-derived.** Live selection = `matins_praises_glory:{source:'gospel_sticheron', gospel_number:N}` → `RESURRECTION_GOSPEL_STICHERA[N]` (eothinon by Gospel #, tone-independent; Ch 1:391/664). The assembler never reads a stored object → the stored `gospel_sticheron:{tone,text}` is an **orphan** (no consumer in `src/`) and is retired with `stichera_both_now`. Coverage-relevant field is `matins_praises_glory` (bucket 3, gate = Sunday/resurrectional Matins gospel). *Latent gap:* `RESURRECTION_GOSPEL_STICHERA` is an empty stub. |
 | Liturgy propers: `prokeimenon_*`, `alleluia_*`, `communion_verse`, `feast_e`/`feast_g`, `hours_kontakion` | 1 | stored | "For Sunday (and, if there be such, from the Menaion)" / "Communion Hymn… if there be one, from the Menaion" (Ch 1:221–223). Rank-gated: at Polyeleos/Vigil/feast the saint's propers shift to expected (Ch 1:427–428, 720–721) → `mandatory_when` = feast rank. Confirms these are NOT always-required. |
 | `lic_theotokion` | 1 | derived (Menaion) / stored (Pentecostarion) | Both-now slot always filled by rule (dogmaticon / daily theotokion / theotokion-in-tone-of-doxasticon / stavrotheotokion — Ch 6). In the Menaion it is **data-capture for the browser**; the §2A assembler renders the derived Octoechos Both-now (hours-tool.jsx ~3742; 06-17 note). In the Pentecostarion it is live assembler input. Canonical Both-now field. |
-| `aposticha_both_now`, `stichera_both_now` | 1 / retire | — | Now-and-ever slot is derived (Ch 6); a stored value exists only for a festal proper. **But** `stichera_both_now` as used (07-01) is a bare descriptive string, not a hymn, and renders nowhere → reclassify as `meta` or retire. `aposticha_both_now` keeps bucket 1, `slot_fill: derived`. |
+| `aposticha_both_now`, `stichera_both_now` | 1 / **retired** | derived | Now-and-ever slot is derived (Ch 6); a stored value exists only for a festal proper. `aposticha_both_now` → bucket 1, `slot_fill: derived`. `stichera_both_now` → **RETIRED** (resolved): bare descriptive string (07-01), not a hymn, renders nowhere. |
 
 Pending classification: the remaining ~115 `KNOWN_FIELDS` (the matins_*, sessional_*, canon, paroemia,
 megalynarion, zadostoinik, magnification families, etc.). These are STEP 2–3 execution against
@@ -207,30 +207,54 @@ guessed in this pass.
 
 ## 8. Sequencing / rollout (incremental; each phase independently committable)
 
-- **Phase 0 — this spec.** Committed, reviewed. (`docs:` commit, no version bump.)
-- **Phase 1 — registry data.** Encode the per-field registry from §7 + the full classification.
-  Reviewed `verified:false` rows confirmed by Bill before any consumer reads them. (`tooling:` commit.)
-- **Phase 2 — audit.** Registry-driven coverage check in `validate_entries.mjs`, alongside C/D/G
-  (§9 decision). Warnings default, fatal under `--strict`. (`tooling:` commit.)
-- **Phase 3 — capture.** Introduce `*_absent` twins for all bucket-1 fields; generalize the ~42-entry
-  aposticha backlog into a registry-wide declaration backfill. (`data:` + `docs:` to `encoding_rule_v2`.)
-- **Phase 4 — display.** Viewer per-field state markers + catch-all section. (`feature:` minor bump.)
+**Two distinct reviews — do not conflate.** Phase 1 is a one-time **classification review**: confirming
+each field's registry row (bucket / gate / slot_fill / citation) against Fekula. It is a schema decision,
+reviewed from the registry table itself — *no data viewer, no PDF-vs-data comparison*. The separate
+**coverage reconciliation** (filling values or declaring `*_absent` per date against the Menaion PDF) is a
+later, ongoing activity, and it is blocked until a reviewer can both *see* every field's state and *edit*
+every field. The order below front-loads that unblocking before any bulk reconciliation. Nothing here is
+an automated read of the PDF — per the encoding philosophy, green is earned by a human examining the
+source; automation may produce worklists, never declarations.
+
+- **Phase 0 — this spec.** Committed, reviewed. (`docs:`, no version bump.)
+- **Phase 1 — registry data + classification review.** Encode the per-field registry from §7 + the full
+  classification, every new row `verified:false`. Reviewed by Bill **from the registry table** (by service
+  section, risky rows on top — §9.4) before any consumer reads it. *Schema review only; no PDF, no UI.*
+  (`tooling:` commit.)
+- **Phase 2 — audit.** Registry-driven coverage check in `validate_entries.mjs`, **alongside** C/D/G
+  (§9.1). Resolves each field to GREEN / RED / N-A and emits the per-entry RED worklist machine-side
+  (CLI/build-time, independent of the UI). Warnings default, fatal under `--strict`. (`tooling:` commit.)
+- **Phase 3 — display + editor completeness (UNBLOCKS reconciliation).** Two halves, both required before
+  Phase 4:
+  - *Viewer:* registry-driven per-field state markers (filled / declared-absent / missing / N-A) + the
+    §6.3 catch-all, so every stored field and every registry gap is visible — the database-table view.
+  - *Editor:* extend the in-context editor beyond `setValue`-on-existing-literals to **add a missing
+    field** and **set an `*_absent: true` declaration** on an entry that lacks the key. Today the engine
+    can only modify an existing literal (`edit-engine.mjs` v1); reconciliation needs create + declare.
+  (`feature:` minor bump.)
+- **Phase 4 — capture / declaration backfill.** Now possible: per-entry reconciliation against the Menaion
+  PDF — fill values or set `*_absent` — surfaced by the Phase 2 worklist and actioned through the Phase 3
+  viewer + editor. Generalizes the ~42-entry aposticha backlog registry-wide. Introduce the `*_absent`
+  twins; codify the declaration discipline in `encoding_rule_v2.md`. (`data:` + `docs:`.)
 - **Phase 5 — optional consolidation.** Fold C/D/G into the registry once the alongside path is proven.
 
 ---
 
-## 9. Open decisions (Bill's to make)
+## 9. Decisions (resolved 2026-06-20)
 
-1. **Registry vs C/D/G — alongside or replace.** Recommendation: **alongside** for the first landing —
-   registry owns the long tail, C/D/G stay bespoke — but the audit walk written so each of C/D/G could be
-   re-expressed as registry rows later, making the fold-in (Phase 5) a clean switch, not a rewrite.
-   C/D/G work today; folding them in the same pass adds regression risk to an already-large change.
-2. **`stichera_both_now` disposition.** Reclassify as `meta`/`note`, or retire the key. It is a bare
-   string today, renders nowhere, and is the catch-all's first real catch.
-3. **`gospel_sticheron` confirm derived.** If runtime-derived by gospel number (as the data suggests),
-   it is `slot_fill: derived`, gated — and drops out of per-entry coverage entirely.
-4. **Per-field classification review.** The ~115 pending fields will land `verified:false`; confirm the
-   review cadence (batch by service section? by bucket?).
+1. **Registry vs C/D/G — RESOLVED: alongside.** Registry owns the long tail; C/D/G stay bespoke. The audit
+   walk is written so each of C/D/G could be re-expressed as registry rows later — Phase 5 fold-in is a
+   clean switch, not a rewrite.
+2. **`stichera_both_now` — RESOLVED: retire.** Bare string, renders nowhere, not a hymn. The orphan
+   `gospel_sticheron` stored object (no consumer; §7) is retired on the same grounds.
+3. **`gospel_sticheron` — RESOLVED: runtime-derived, confirmed.** Selection is
+   `matins_praises_glory:{source:'gospel_sticheron', gospel_number}` → `RESURRECTION_GOSPEL_STICHERA[N]`;
+   the assembler never reads a stored object. `slot_fill: derived`, gated — out of per-entry coverage. The
+   coverage-relevant field is `matins_praises_glory`. `RESURRECTION_GOSPEL_STICHERA` is presently an empty
+   stub — a latent constant-table gap for when Matins assembly lands.
+4. **Classification review cadence — RESOLVED: by service section, bucket-ordered within.** Vespers →
+   Matins → Liturgy, mirroring Fekula chapter order; within each section the bucket-1/3/derived rows sit on
+   top (need inspection), bucket-4/5 metadata bulk-approvable. One service section per pass.
 
 ---
 
