@@ -53,7 +53,7 @@ import JULY from '../src/data/menaion/july.js';
 const KNOWN_FIELDS = new Set([
   'alleluia_2_stichos', 'alleluia_2_tone', 'alleluia_2_verse', 'alleluia_stichos',
   'alleluia_tone', 'alleluia_verse', 'aposticha_both_now', 'aposticha_glory',
-  'aposticha_glory_absent',
+  'aposticha_glory_absent', 'aposticha_stavrotheotokion',
   'aposticha_note', 'aposticha_source', 'beatitudes_count', 'beatitudes_ode',
   'beatitudes_source', 'beatitudes_troparia', 'canons', 'communion_verse',
   'dismissal_theotokion', 'exapostilarion', 'feast_e', 'feast_e_pentecostarion',
@@ -62,7 +62,8 @@ const KNOWN_FIELDS = new Set([
   'has_polyeleos', 'heavenly_king_omitted', 'heavenly_king_restored', 'hours_format',
   'hours_kontakion', 'hours_kontakion_ikos', 'ikos', 'ikos_ode3', 'ikos_ode6',
   'instead_of_it_is_truly_meet_irmos', 'instead_of_it_is_truly_meet_refrain',
-  'it_is_truly_meet_suppressed', 'kontakion_ode3', 'kontakion_ode6', 'lic_theotokion',
+  'it_is_truly_meet_suppressed', 'kontakion_ode3', 'kontakion_ode6', 'lic_stavrotheotokion',
+  'lic_theotokion',
   'litya_both_now', 'litya_glory', 'litya_stichera', 'magnificat_sung', 'magnification',
   'magnification_selected_psalm', 'matins_canon_feast', 'matins_exapostilarion_feast',
   'matins_exapostilarion_theotokion', 'matins_format', 'matins_gospel',
