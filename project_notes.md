@@ -1,43 +1,102 @@
 # Orthodox Hours Tool — Project Notes
 **Tool version: v0.22.3** | **Tone Trainer: v0.25.28** | Last synced: June 20, 2026
 
-**Session June 20, 2026 — Aposticha-Glory safeguards + 06-21 encode (validator Check G + §D runtime + browser audit, v0.22.0–v0.22.3).**
-Closed the silent-omission gap where a Menaion entry missing its aposticha doxasticon passed unflagged.
-- **Check G** (`tools/validate_entries.mjs`, tooling commit, no bump): encode-time declaration for the
-  aposticha doxasticon, the twin of Check C/D for the LIC Glory. simple/§2A and six_stichera/§2C must
-  declare either `aposticha_glory` OR `aposticha_glory_absent: true` (verified none in the PDF); a bare
-  absence now warns. Doxology/Polyeleos/Vigil SHOULD carry `aposticha_glory` (always have a doxasticon,
-  Fekula); `aposticha_glory_absent` is rejected on those ranks. `aposticha_glory_absent` added to
-  KNOWN_FIELDS. Surfaced the full aposticha-Glory backlog (most May/June 2A dates warn).
-- **§D runtime hardening, policy (b) "unverified = red"** (`hours-tool.jsx`, v0.22.0 minor):
-  all three aposticha paths — Sunday-resurrectional, weekday §2A/§2C, and (v0.22.1 patch) the §2C+
-  Menaion-stichera-encoded path — now apply the same three-way rule. `aposticha_glory` present →
-  doxasticon (+sets gloryTone); `aposticha_glory_absent: true` → combined "Glory… now and ever"
-  rendering clean (no red); neither field declared → `unresolved: true` red placeholder
-  `[aposticha doxasticon — unverified against PDF]` for ALL ranks, which lights the Aposticha row red
-  in the Service Outline via `isPlaceholder`. Red = unverified/possibly-wrong, by design: every Menaion
-  date lacking both fields stays red until an encoding pass examines the PDF. The §2C+ encoded path
-  reds no currently-encoded entry (all carry an `aposticha_glory`); it's preventive.
-- **Browser audit twin** (`src/lib/audit.js`, v0.22.2 patch): the completeness audit that drives the
-  Menaion Data Browser dots and the calendar day badges now treats `aposticha_glory` as a
-  declaration-aware required field for every aposticha-bearing rank (satisfied by `aposticha_glory` OR
-  `aposticha_glory_absent: true`). Undeclared → red `partial` (not gold `review`). The same 42 entries the
-  validator warns on now light red in the browser (June: 8/20/2 → 0/4/26). The gold "needs review" state
-  is unchanged — it still flags unpointed stichera only.
-- **06-21 encoded (v0.22.3, DATA + patch bump):** Holy Martyr Julian of Tarsus — the first end-to-end
-  resolution of an aposticha-Glory red. Added `aposticha_glory` (Tone VI doxasticon "Come, ye who love the
-  martyrs", prose); 06-21 now assembles fully (4 Octoechos resurrection stichera T2 → Julian's T6 doxasticon
-  → T6 theotokion from `SUNDAY_APOSTICHA_THEOTOKIA[6]`) and returns to green in the browser and calendar.
-  Re-pointed the troparion and kontakion (markers had been stripped). Captured both printed Stavrotheotokia
-  in two NEW fields — `lic_stavrotheotokion` and `aposticha_stavrotheotokion` (added to KNOWN_FIELDS,
-  tooling commit) — Tone VI Wed/Fri options, NOT consumed by the Sunday assembler (verified: no Menaion path
-  reads `lic_theotokion`; the Sunday aposticha uses the fixed 8-set, and 06-21 has no `stichera_aposticha`,
-  so the §2C path that reads `aposticha_both_now` never fires). Gospel kept at Luke 21:12-19 (matches the
-  printed pericope body + OCA; St. Sergius heading's "12-18" noted inline as a discrepancy). PDF read via
-  `read_file_content` (Drive text extraction, markers preserved) — not base64+image render.
-- **Still open:** the June-wide troparion/kontakion pointing re-encode (§3.3 marker-stripping defect, the
-  same class just fixed for 06-21) and the remaining ~41 aposticha-Glory backlog entries (each needs its PDF
-  examined → encode `aposticha_glory` or set `aposticha_glory_absent: true`). Token rotation still overdue.
+**Session June 20, 2026 — Aposticha-Glory safeguards + 06-21 encode (v0.22.0–v0.22.3).**
+THEME: the 06-21 broken-Vespers bug was the first visible symptom of a systemic gap — the validator and the
+assembler verify that encoded data is well-FORMED, never that it is COMPLETE against the source PDF, so a
+silently-absent field reads as "valid." This session diagnosed it, shipped the first safeguard (Check G), the
+runtime policy (§D) and the browser-audit twin, encoded the trigger case (06-21), and scoped the
+generalization (a field-coverage registry — still spec-first / open; see NEXT below).
+
+**Root cause (06-21, Martyr Julian of Tarsus, §2A simple; `june.js`).** A missing `aposticha_glory` caused a
+double failure in the Sunday-resurrectional aposticha builder (`hours-tool.jsx` ~4290): (a) Julian's Tone VI
+doxasticon was never inserted — it fell through to the bare combined "Glory… now and ever"; and (b)
+`gloryTone` stayed at the resurrection Tone II default instead of being promoted to VI, so the Both-now
+theotokion came from `SUNDAY_APOSTICHA_THEOTOKIA[2]` not `[6]`. The assembler was sound; the data gap was the
+whole story.
+
+**Why nothing caught it.** Every safeguard was a presence/format check on encoded data; none compares the
+entry to the PDF. The assembler treats an absent `aposticha_glory` as a legitimate rubric (Glory… now and
+ever sung together) → no unresolved flag; the outline red dot fires only on `isPlaceholder`; the validator's
+only completeness check was Check C (LIC stichera). The architectural tell: the LIC Glory already
+distinguished verified-absent from not-encoded (`stichera_glory_absent` + Check D); the aposticha Glory had
+no equivalent. That asymmetry WAS the bug.
+
+**Fekula rubric (so the checks don't false-positive).** No blanket rank mandate — the governing rule is "if
+there be one": Doxology/Polyeleos/Vigil ALWAYS carry a doxasticon (mandatory, Check D); simple/§2A and
+six_stichera/§2C are source-determined (present only if the Menaion prints one — `sunday_vespers_spec.md`
+§8.2 "No-Glory Sunday"). So at the lower ranks the safeguard must be an encode-time DECLARATION, not a
+runtime presence check — exactly the `*_absent` pattern Check G/§D use.
+
+**Shipped this session (all committed + pushed to `main`):**
+- **Check G** (`tools/validate_entries.mjs`, tooling, no bump): encode-time declaration for the aposticha
+  doxasticon, twin of Check C/D. simple/§2A + six_stichera/§2C must declare `aposticha_glory` OR
+  `aposticha_glory_absent: true`; Doxology+ SHOULD carry `aposticha_glory` (and `_absent` is rejected on
+  those ranks). Exempt on `menaion_set_aside`/`aposticha_note`; `aposticha_source:"octoechos"` does NOT
+  exempt. WARNING (fatal under `--strict`; `_absent` integrity fatal). Surfaced the full §2A backlog.
+- **§D runtime "unverified = red"** (`hours-tool.jsx`, v0.22.0 minor; v0.22.1 patch for the third path):
+  all three aposticha paths (Sunday-resurrectional, weekday §2A/§2C, §2C+ Menaion-stichera-encoded) now
+  apply the three-way rule — present → doxasticon (+sets `gloryTone`); `_absent: true` → combined "Glory…
+  now and ever" clean; neither → `unresolved: true` red placeholder `[aposticha doxasticon — unverified
+  against PDF]` for ALL ranks, lighting the Aposticha outline row via `isPlaceholder`. Red = possibly-wrong
+  by design; green is earned by a positive declaration. Backlog goes red the moment §D ships — that's the
+  progress signal, not a bug.
+- **Browser-audit twin** (`src/lib/audit.js`, v0.22.2 patch): the completeness audit driving the Menaion
+  Data Browser dots and the calendar badges now treats `aposticha_glory` as a declaration-aware required
+  field for every aposticha-bearing rank. Undeclared → red `partial` (not gold `review`). The same 42
+  entries the validator warns on now light red in the browser (June: 8/20/2 → 0/4/26). Gold "needs review"
+  still flags unpointed stichera only.
+- **06-21 encoded** (v0.22.3, DATA + patch bump): added `aposticha_glory` (Tone VI doxasticon "Come, ye who
+  love the martyrs", prose) → 06-21 assembles fully (4 Octoechos resurrection stichera T2 → Julian's T6
+  doxasticon → T6 theotokion from `SUNDAY_APOSTICHA_THEOTOKIA[6]`) and returns to GREEN. Re-pointed the
+  troparion + kontakion (markers had been stripped). Captured both printed Stavrotheotokia in two NEW fields
+  `lic_stavrotheotokion` / `aposticha_stavrotheotokion` (added to KNOWN_FIELDS, tooling) — Tone VI Wed/Fri
+  options, verified NOT consumed by the Sunday assembler. Gospel kept Luke 21:12-19 (body + OCA; St. Sergius
+  heading "12-18" noted inline). PDF read efficiently via Drive `read_file_content` (text + markers intact),
+  not base64+image render.
+
+**Recovery note.** The previous session (also 06-20) diagnosed and scoped ALL of the above but lost its
+container working copy to a compaction tool-disconnect (Drive was down too); its recovery rode in three
+Gmail handoff drafts. This session re-applied Check G from handoff §A and implemented the rest cleanly — all
+on GitHub now. The PAT used remains UNROTATED and now sits in cleartext in both the Gmail drafts and the
+session chat. Rotate it.
+
+**NEXT — the generalization: a field-coverage registry (SPEC-FIRST, not yet specced).**
+`aposticha_glory` was the first caught instance of a general hole: any field the validator doesn't actively
+require can be silently absent. Policy (Bill): account for ALL fields — absent-without-cause → red; a field
+the encoder LOOKED at and confirmed absent in the PDF → green (declared, not overlooked). This needs a
+per-field registry sorting every `KNOWN_FIELDS` entry into three categories, because they are NOT all the
+same kind of "absent":
+  1. **Source-conditional propers** (`aposticha_glory`, `stichera_glory`, `lic_theotokion`, `litya_*`,
+     `exapostilarion`, `gospel_sticheron`, kontakion/ikos family…): may or may not exist per PDF → need a
+     positive `*_absent` declaration → red until verified. THIS is the set the red-dot policy covers.
+  2. **Always-required** (`rank`, saint/title, date, `fekula_section`, service prokeimenon/alleluia/
+     communion): absence = error; no `*_absent` makes sense; red until filled.
+  3. **Structurally-gated** (e.g. `sessional_hymn_polyeleos` gated by `has_polyeleos`; `litya_stichera` by
+     `has_litya`; forefeast troparia by flags; `instead_of_it_is_truly_meet_irmos` by rubric): required ONLY
+     when the gate is true; demanding `*_absent` here = noise/false positives.
+  CRITICAL: red-dotting all three identically floods category 3 with false positives and destroys the
+  signal. The registry records each field's category + trigger condition, cross-checked against Fekula +
+  `encoding_rule_v2.md`. Deliverable = the field-by-field spec; the validator generalization and runtime
+  red-dots then fall out mechanically (as Check G/§D fell out of the single-field analysis). **OPEN DECISION
+  for Bill:** does the registry REPLACE the ad-hoc Check C/D/G (one registry-driven mechanism — cleaner,
+  bigger refactor, risks disturbing working checks), or SIT ALONGSIDE them (registry handles the long tail,
+  bespoke checks remain — incremental, safer, two systems)?
+
+**Backlog / discipline.**
+- **Aposticha-Glory re-audit backlog:** ~41 May/June §2A entries remain (06-21 done) — each needs its PDF
+  examined → encode `aposticha_glory` or set `aposticha_glory_absent: true`. PAIR with the pointing pass
+  below: open each PDF once, fix pointing AND declare the aposticha-Glory state, the dot greens.
+- **June-wide troparion/kontakion pointing defect** (systematic §3.3 violation): all June trop/kontakia were
+  stored stripped of `*`/`**` (06-21 fixed as the first). §3 names them as pointed fields that keep markers
+  verbatim — a defect, not a convention (corrects an earlier wrong "it's convention" dismissal). Separate
+  re-encode pass, likely May too.
+- Octoechos `&el=` Phase-3 highlight fix still deferred (anchors in the non-default SmallTablesPanel;
+  Vespers-day propers unanchored).
+- Token rotation overdue (see Recovery note).
+- Discipline unchanged: separate commits (tooling / data / spec-docs); tooling/docs/data no bump, feature/fix
+  bump; explicit `git add`; gate (71/71 + `vite build`) before every push; push token-inline → scrub →
+  verify; `project_notes.md` header version must match the `hours-tool.jsx` badge.
 
 **Liturgical Library — Phase 1 shelf LANDED (v0.18.0).** `bookshelf_spec.md` (repo root).
 A Reading ⇄ Library flip (single icon by SERVICE) toggles the Hours-tool body between the
