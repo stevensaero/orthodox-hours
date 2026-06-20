@@ -4494,18 +4494,35 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           text:s.text, source:"Menaion — " + mSaint,
           fekula:{section:fekulaSection, note:"Aposticha sticheron "+(i+1)+" from Menaion. — Fekula " + fekulaSection}});
       });
-      // Glory
-      elements.push({id:"v-apost-glory", type:"fixed", label:"", text:"Glory to the Father, and to the Son, and to the Holy Spirit.", source:"HTM Vespers"});
-      if (menaionEntry.aposticha_glory) {
-        const ag = menaionEntry.aposticha_glory;
-        elements.push({id:"v-apost-doxasticon", type:"movable", label:"Aposticha Doxasticon",
-          rubric:"Tone "+(ag.tone||"?")+":"  ,
-          text: typeof ag === "string" ? ag : ag.text,
-          source:"Menaion — " + mSaint,
-          fekula:{section:fekulaSection, note:"Aposticha Glory: doxasticon from Menaion. — Fekula " + fekulaSection}});
+      // Glory → doxasticon (or unverified red); aposticha_glory_absent → combined "Glory…
+      // now and ever" sung together (clean). §D runtime hardening, policy (b) / Check G.
+      const apostGloryAbsent = !!(menaionEntry && menaionEntry.aposticha_glory_absent === true);
+      if (apostGloryAbsent) {
+        elements.push({id:"v-apost-glory-nowever", type:"fixed", label:"",
+          text:"Glory to the Father, and to the Son, and to the Holy Spirit, now and ever, and unto the ages of ages. Amen.",
+          source:"HTM Vespers"});
+      } else {
+        elements.push({id:"v-apost-glory", type:"fixed", label:"", text:"Glory to the Father, and to the Son, and to the Holy Spirit.", source:"HTM Vespers"});
+        if (menaionEntry.aposticha_glory) {
+          const ag = menaionEntry.aposticha_glory;
+          elements.push({id:"v-apost-doxasticon", type:"movable", label:"Aposticha Doxasticon",
+            rubric:"Tone "+(ag.tone||"?")+":"  ,
+            text: typeof ag === "string" ? ag : ag.text,
+            source:"Menaion — " + mSaint,
+            fekula:{section:fekulaSection, note:"Aposticha Glory: doxasticon from Menaion. — Fekula " + fekulaSection}});
+        } else {
+          // Neither aposticha_glory nor aposticha_glory_absent declared: doxasticon not
+          // checked against the PDF → red placeholder (all ranks) until an encoding pass
+          // encodes aposticha_glory or sets aposticha_glory_absent: true.
+          elements.push({id:"v-apost-doxasticon", type:"movable", label:"Aposticha Doxasticon",
+            unresolved:true,
+            text:"[aposticha doxasticon — unverified against PDF]",
+            source:"Menaion — " + mSaint,
+            fekula:{section:fekulaSection, note:"Aposticha Glory unverified: encode aposticha_glory, or set aposticha_glory_absent: true if the PDF prints none. (§D policy (b) / validator Check G)"}});
+        }
+        // Both Now
+        elements.push({id:"v-apost-bothnow", type:"fixed", label:"", text:"Now and ever, and unto the ages of ages. Amen.", source:"HTM Vespers"});
       }
-      // Both Now
-      elements.push({id:"v-apost-bothnow", type:"fixed", label:"", text:"Now and ever, and unto the ages of ages. Amen.", source:"HTM Vespers"});
       if (menaionEntry.aposticha_both_now) {
         const at = menaionEntry.aposticha_both_now;
         elements.push({id:"v-apost-theotokion", type:"movable", label:"Theotokion (Both now…)",
@@ -8149,6 +8166,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.22.1",
+    date: "June 2026",
+    summary: "Aposticha Glory red-when-unverified now also covers the §2C+ Menaion-stichera path",
+    items: [
+      "Extends the v0.22.0 aposticha-Glory hardening to the third aposticha path — the §2C and above branch that assembles from an encoded Menaion stichera_aposticha. It had the same blind spot: it emitted the doxasticon only when aposticha_glory was present and silently dropped it otherwise. Now it follows the same three-way rule as the other two paths: present → doxasticon; aposticha_glory_absent: true → combined \"Glory… now and ever\" clean; neither → unresolved red placeholder for all ranks. No currently-encoded entry changes (every encoded stichera_aposticha entry already carries an aposticha_glory); this closes the gap for future §2C+ encoding.",
+    ],
+  },
   {
     version: "v0.22.0",
     date: "June 2026",
