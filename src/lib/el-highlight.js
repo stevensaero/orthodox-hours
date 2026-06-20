@@ -14,10 +14,11 @@ export function getElParam() {
   return ["troparion", "kontakion", "lic", "aposticha"].includes(v) ? v : null;
 }
 
-// Mark the targeted node and center it into view. DEBUG MODE: instead of the
-// brief gold flash, paint a persistent bright-red wash behind the proper so the
-// &el= landing is unmistakable. Temporary — revert to the timed gold flash once
-// link targeting is verified. No-op on a missing node.
+// Mark the targeted node and center it into view. The proper that a "↗ source"
+// link points at gets a soft, persistent highlighter-yellow wash so you can see
+// exactly what you navigated to — it stays lit until the page reloads (no fade).
+// No-op on a missing node, so a section a given viewer doesn't render simply
+// does nothing (still landed at the entry per Phase 2).
 export function flashEl(node) {
   if (!node) return;
   try {
@@ -25,7 +26,7 @@ export function flashEl(node) {
   } catch (_) {
     node.scrollIntoView();
   }
-  node.style.backgroundColor = "rgba(255,0,0,0.45)";
+  node.style.backgroundColor = "rgba(245, 226, 110, 0.55)";
   node.style.borderRadius = node.style.borderRadius || "4px";
 }
 

@@ -8111,6 +8111,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.21.2",
+    date: "June 2026",
+    summary: "Source-link landing leaves the proper highlighted in a soft yellow instead of a brief flash",
+    items: [
+      "When a Reading-view \"↗ source\" link opens a data viewer, the targeted proper is now marked with a soft, persistent highlighter-yellow wash (it stays lit until the page reloads) rather than a brief flash, so it's easy to see exactly what you navigated to.",
+    ],
+  },
+  {
     version: "v0.21.1",
     date: "June 2026",
     summary: "Source-link highlight now flashes the proper's text, not just its section header",
