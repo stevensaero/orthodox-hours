@@ -779,6 +779,26 @@ When the session has meaningful changes to capture:
 **Never condense the project notes.** The file is the historical record; a long
 section is acceptable. Do not strip context to save space.
 
+### Deploy & cache propagation (STANDING — confirmed v0.20.8)
+Push to `main` auto-deploys. `.github/workflows/deploy.yml` triggers on every push
+to `main`: it runs `npm ci` → `npm run build` → copies `dist/index.html` to
+`404.html` (SPA routing) → publishes `dist/` to the `gh-pages` branch via
+`peaceiris/actions-gh-pages`. No manual `npm run deploy` is needed. Allow ~1–2 min
+for the Action plus CDN propagation.
+**The catch:** GitHub Pages serves `index.html` with a short cache (~10 min), and
+that HTML points at the hashed JS bundle. So for a few minutes after a push a
+browser can load the *old* `index.html` → *old* bundle, showing pre-fix behavior
+even though the fix is already live. Before concluding a just-shipped fix "didn't
+work," **hard-refresh** (Ctrl/Cmd-Shift-R) and/or wait out the cache.
+**Verifying a deploy from the container** (network allows `api.github.com` and
+`raw.githubusercontent.com`, NOT `*.github.io`): check the latest Action run via
+`api.github.com/repos/stevensaero/orthodox-hours/actions/runs`, and confirm the
+shipped code is actually in the deployed artifact by fetching
+`raw.githubusercontent.com/stevensaero/orthodox-hours/gh-pages/index.html`, reading
+the `assets/index-*.js` name, then grepping that bundle on the `gh-pages` branch for
+the fix. (Used this session to confirm the v0.20.6 tooltip-portal fix was live and
+the user was simply seeing cached HTML — no code change was warranted.)
+
 ### Version history
 | Version | Date | Summary |
 |---|---|---|
