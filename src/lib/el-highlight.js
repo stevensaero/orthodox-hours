@@ -14,9 +14,10 @@ export function getElParam() {
   return ["troparion", "kontakion", "lic", "aposticha"].includes(v) ? v : null;
 }
 
-// Brief background flash on a node, centered into view (block:'center' clears
-// the sticky header). No-op on a missing node, so a section a given viewer
-// doesn't render simply does nothing (still landed at the entry per Phase 2).
+// Mark the targeted node and center it into view. DEBUG MODE: instead of the
+// brief gold flash, paint a persistent bright-red wash behind the proper so the
+// &el= landing is unmistakable. Temporary — revert to the timed gold flash once
+// link targeting is verified. No-op on a missing node.
 export function flashEl(node) {
   if (!node) return;
   try {
@@ -24,19 +25,8 @@ export function flashEl(node) {
   } catch (_) {
     node.scrollIntoView();
   }
-  const prevTransition = node.style.transition;
-  const prevBg = node.style.backgroundColor;
-  const prevRadius = node.style.borderRadius;
-  node.style.transition = "background-color 0.25s ease";
-  node.style.borderRadius = prevRadius || "4px";
-  node.style.backgroundColor = "rgba(139,105,20,0.18)";
-  window.setTimeout(() => {
-    node.style.backgroundColor = prevBg || "transparent";
-    window.setTimeout(() => {
-      node.style.transition = prevTransition;
-      node.style.borderRadius = prevRadius;
-    }, 350);
-  }, 950);
+  node.style.backgroundColor = "rgba(255,0,0,0.45)";
+  node.style.borderRadius = node.style.borderRadius || "4px";
 }
 
 // Convenience: find the [data-el="<el>"] node within an optional scope (an entry
