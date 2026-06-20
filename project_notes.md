@@ -1,5 +1,28 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.21.3** | **Tone Trainer: v0.25.28** | Last synced: June 19, 2026
+**Tool version: v0.22.1** | **Tone Trainer: v0.25.28** | Last synced: June 20, 2026
+
+**Session June 20, 2026 — Aposticha-Glory safeguards (validator Check G + §D runtime, v0.22.0/v0.22.1).**
+Closed the silent-omission gap where a Menaion entry missing its aposticha doxasticon passed unflagged.
+- **Check G** (`tools/validate_entries.mjs`, tooling commit, no bump): encode-time declaration for the
+  aposticha doxasticon, the twin of Check C/D for the LIC Glory. simple/§2A and six_stichera/§2C must
+  declare either `aposticha_glory` OR `aposticha_glory_absent: true` (verified none in the PDF); a bare
+  absence now warns. Doxology/Polyeleos/Vigil SHOULD carry `aposticha_glory` (always have a doxasticon,
+  Fekula); `aposticha_glory_absent` is rejected on those ranks. `aposticha_glory_absent` added to
+  KNOWN_FIELDS. Surfaced the full aposticha-Glory backlog (most May/June 2A dates warn).
+- **§D runtime hardening, policy (b) "unverified = red"** (`hours-tool.jsx`, v0.22.0 minor):
+  all three aposticha paths — Sunday-resurrectional, weekday §2A/§2C, and (v0.22.1 patch) the §2C+
+  Menaion-stichera-encoded path — now apply the same three-way rule. `aposticha_glory` present →
+  doxasticon (+sets gloryTone); `aposticha_glory_absent: true` → combined "Glory… now and ever"
+  rendering clean (no red); neither field declared → `unresolved: true` red placeholder
+  `[aposticha doxasticon — unverified against PDF]` for ALL ranks, which lights the Aposticha row red
+  in the Service Outline via `isPlaceholder`. Red = unverified/possibly-wrong, by design: every Menaion
+  date lacking both fields stays red until an encoding pass examines the PDF. The §2C+ encoded path
+  reds no currently-encoded entry (all carry an `aposticha_glory`); it's preventive.
+- **Deliberately NOT done this session:** 06-21 (Holy Martyr Julian of Tarsus) was left un-encoded so the
+  red state is visible end-to-end; it now renders red on the Sunday-resurrectional path. The 06-21 encode
+  (add `aposticha_glory` Tone 6 "Come, ye who love the martyrs"; fix troparion/kontakion pointing; decisions
+  C.3.a/b/c pending) and the June-wide troparion/kontakion pointing re-encode (§3.3 marker-stripping defect)
+  remain open. Token rotation still overdue.
 
 **Liturgical Library — Phase 1 shelf LANDED (v0.18.0).** `bookshelf_spec.md` (repo root).
 A Reading ⇄ Library flip (single icon by SERVICE) toggles the Hours-tool body between the
