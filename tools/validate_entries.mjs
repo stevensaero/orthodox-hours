@@ -30,6 +30,10 @@
 //             substring "No PDF" or "No AT LITURGY" (100% false-positive in the audit).
 //             WARNING by default; fatal under --strict. Skipped entirely under --editor
 //             (per-sticheron save path) to keep that path quiet.
+//   Check G — Aposticha doxasticon declaration (Menaion only): for ranks that carry a
+//             Vespers aposticha, Doxology+ SHOULD have aposticha_glory; simple/six_stichera
+//             must declare aposticha_glory OR aposticha_glory_absent: true. Mirrors C/D for
+//             the LIC Glory. WARNING by default, fatal under --strict; _absent integrity fatal.
 //
 // Run: node tools/validate_entries.mjs [--strict] [--editor]
 //   exit 1 on any Check A/B violation (always) or any Check C/F gap (only with --strict);
@@ -49,6 +53,7 @@ import JULY from '../src/data/menaion/july.js';
 const KNOWN_FIELDS = new Set([
   'alleluia_2_stichos', 'alleluia_2_tone', 'alleluia_2_verse', 'alleluia_stichos',
   'alleluia_tone', 'alleluia_verse', 'aposticha_both_now', 'aposticha_glory',
+  'aposticha_glory_absent',
   'aposticha_note', 'aposticha_source', 'beatitudes_count', 'beatitudes_ode',
   'beatitudes_source', 'beatitudes_troparia', 'canons', 'communion_verse',
   'dismissal_theotokion', 'exapostilarion', 'feast_e', 'feast_e_pentecostarion',
@@ -232,6 +237,46 @@ function checkEntry(label, entry, kind, key, locPrefix, commentBlob) {
         warnings.push(`${label}: rank "${entry.rank}" carries Lord-I-Call stichera, but stichera_lord_i_call is empty/absent (enter the stichera, or add a stichera_lord_i_call_note documenting the source).`);
       } else if (entry.rank === 'simple' && n < SIMPLE_MIN_LIC) {
         warnings.push(`${label}: simple/§2A entry has only ${n} Lord-I-Call sticheron(a); §2A expects ${SIMPLE_MIN_LIC} Menaion stichera.`);
+      }
+    }
+  }
+
+  // Check G — aposticha doxasticon declaration (Fekula "if there be one" /
+  // "higher ranks always have a doxasticon"; the aposticha twin of Check C/D for
+  // the Lord-I-Call Glory). For ranks that carry a Vespers aposticha:
+  //   - Doxology / Polyeleos / Vigil: an aposticha_glory SHOULD be present —
+  //     these ranks always carry a doxasticon (Fekula); the warning says so.
+  //     aposticha_glory_absent is rejected here (integrity block below).
+  //   - Simple / Six-Stichera: "if there be one" — the entry must DECLARE the
+  //     state: aposticha_glory present, OR aposticha_glory_absent: true (the
+  //     encoder checked the PDF and there is none). A bare absence means the
+  //     aposticha was never examined at encode time — the silent-omission case
+  //     (e.g. 06-21 Julian, whose PDF prints a Tone VI Glory the entry dropped).
+  // aposticha_glory_absent integrity mirrors Check D for stichera_glory_absent.
+  if ('aposticha_glory_absent' in entry) {
+    if (entry.aposticha_glory_absent !== true) {
+      problems.push(`${label}: aposticha_glory_absent must be boolean true (not ${JSON.stringify(entry.aposticha_glory_absent)}).`);
+    }
+    if (entry.aposticha_glory != null) {
+      problems.push(`${label}: aposticha_glory_absent is set but aposticha_glory is also present — remove one.`);
+    }
+    if (entry.rank && !['simple', 'six_stichera'].includes(entry.rank)) {
+      problems.push(`${label}: aposticha_glory_absent used on rank "${entry.rank}" — only valid for simple/six_stichera (§2A/§2C). Higher ranks always have a doxasticon.`);
+    }
+  }
+  if (kind === 'menaion' && RANKS_REQUIRING_LIC.has(entry.rank)) {
+    // menaion_set_aside (Great-Feast / overlay) sources the aposticha elsewhere;
+    // an aposticha_note documents a deliberate exception and suppresses the warning.
+    // aposticha_source: "octoechos" does NOT exempt — the stichera come from the
+    // Octoechos but the Glory is still the saint's doxasticon (e.g. 06-21).
+    const exempt = entry.menaion_set_aside === true || typeof entry.aposticha_note === 'string';
+    const hasGlory = entry.aposticha_glory != null;
+    const declaredAbsent = entry.aposticha_glory_absent === true;
+    if (!exempt && !hasGlory && !declaredAbsent) {
+      if (['doxology', 'polyeleos', 'vigil'].includes(entry.rank)) {
+        warnings.push(`${label}: rank "${entry.rank}" should have an aposticha_glory — Doxology rank and above always carry an aposticha doxasticon (Fekula), but none is encoded.`);
+      } else {
+        warnings.push(`${label}: §2A/§2C entry declares no aposticha doxasticon — add aposticha_glory (the PDF prints one) or aposticha_glory_absent: true (verified none in the PDF). A bare absence means the aposticha was not examined.`);
       }
     }
   }
