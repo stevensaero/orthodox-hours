@@ -86,6 +86,14 @@ same kind of "absent":
   for Bill:** does the registry REPLACE the ad-hoc Check C/D/G (one registry-driven mechanism — cleaner,
   bigger refactor, risks disturbing working checks), or SIT ALONGSIDE them (registry handles the long tail,
   bespoke checks remain — incremental, safer, two systems)?
+  **VIEWER COROLLARY (found v0.22.4).** The generalization must cover the Menaion Data Browser too, not just
+  the validator/assembler. Its `EntryHymnography` renderer (`src/components/menaion-browser.jsx`) is EXPLICIT
+  PER-FIELD — there is NO catch-all field loop — so any field added to the data + `KNOWN_FIELDS` is stored,
+  valid, and INVISIBLE in the browser until a hand-written render row (a `<TextBlock>`) is added for it. Hit
+  directly this session: `lic_stavrotheotokion` / `aposticha_stavrotheotokion` were captured (v0.22.3) but
+  showed nothing until their render rows landed (v0.22.4). For the registry work this means the viewer must
+  be wired in lockstep — either a generic renderer DRIVEN OFF the registry, or a hard rule that every new
+  field gets a render row — otherwise "captured" and "visible" keep drifting apart.
 
 **Backlog / discipline.**
 - **Aposticha-Glory re-audit backlog:** ~41 May/June §2A entries remain (06-21 done) — each needs its PDF
