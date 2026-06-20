@@ -4291,31 +4291,50 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         }
       });
       // Glory: commemoration doxasticon if encoded; else the Octoechos resurrectional
-      // aposticha Glory (tone of week); else no doxasticon (Glory… now and ever together).
+      // aposticha Glory (tone of week); else verified-absent (Glory… now and ever together)
+      // ONLY when the entry declares aposticha_glory_absent. If neither field is present,
+      // the doxasticon is UNVERIFIED against the PDF → red placeholder for all ranks
+      // (§D runtime hardening, policy (b); the runtime twin of validator Check G).
       const menAG = menaionEntry && menaionEntry.aposticha_glory;
       const menAGText = menAG ? (typeof menAG === "string" ? menAG : menAG.text) : null;
       const octoAG = sunSatA && sunSatA.aposticha_glory && !String(sunSatA.aposticha_glory).startsWith("[")
         ? sunSatA.aposticha_glory : null;
+      const apostGloryAbsent = !!(menaionEntry && menaionEntry.aposticha_glory_absent === true);
       let gloryTone = tone;
+      let apostGloryStichos = false; // did we emit a separate "Glory → doxasticon" (vs. combined)?
       if (menAGText) {
         gloryTone = (typeof menAG === "string" ? tone : menAG.tone) || tone;
+        apostGloryStichos = true;
         elements.push({ id: "v-apost-glory", type: "fixed", label: "",
           text: "Glory to the Father, and to the Son, and to the Holy Spirit.", source: "HTM Vespers" });
         elements.push({ id: "v-apost-doxasticon", type: "movable", label: "Aposticha Doxasticon",
           rubric: "Tone " + gloryTone + ":", text: menAGText, source: "Menaion — " + effSaint,
           fekula: { section: fekulaSection, note: "Aposticha Glory: doxasticon of " + effSaint + "." } });
       } else if (octoAG) {
+        apostGloryStichos = true;
         elements.push({ id: "v-apost-glory", type: "fixed", label: "",
           text: "Glory to the Father, and to the Son, and to the Holy Spirit.", source: "HTM Vespers" });
         elements.push({ id: "v-apost-doxasticon", type: "movable", label: "Aposticha Doxasticon",
           rubric: "Tone " + tone + ":", text: octoAG, source: "Octoechos",
           fekula: { section: fekulaSection, note: "Aposticha Glory: resurrectional doxasticon (Octoechos, Tone " + tone + ")." } });
-      } else {
+      } else if (apostGloryAbsent) {
+        // Verified-absent in the PDF: Glory… now and ever sung together (no doxasticon).
         elements.push({ id: "v-apost-glory-nowever", type: "fixed", label: "",
           text: "Glory to the Father, and to the Son, and to the Holy Spirit, now and ever, and unto the ages of ages. Amen.",
           source: "HTM Vespers" });
+      } else {
+        // Neither aposticha_glory nor aposticha_glory_absent declared: the doxasticon has
+        // not been checked against the Menaion PDF. Surface a red placeholder (all ranks)
+        // until an encoding pass encodes aposticha_glory or sets aposticha_glory_absent: true.
+        apostGloryStichos = true;
+        elements.push({ id: "v-apost-glory", type: "fixed", label: "",
+          text: "Glory to the Father, and to the Son, and to the Holy Spirit.", source: "HTM Vespers" });
+        elements.push({ id: "v-apost-doxasticon", type: "movable", label: "Aposticha Doxasticon",
+          unresolved: true, rubric: "Tone " + gloryTone + ":",
+          text: "[aposticha doxasticon — unverified against PDF]", source: "Menaion — " + effSaint,
+          fekula: { section: fekulaSection, note: "Aposticha Glory unverified: encode aposticha_glory, or set aposticha_glory_absent: true if the PDF prints none. (§D policy (b) / validator Check G)" } });
       }
-      if (menAGText || octoAG) {
+      if (apostGloryStichos) {
         elements.push({ id: "v-apost-nowever", type: "fixed", label: "",
           text: "Now and ever and unto ages of ages. Amen.", source: "HTM Vespers" });
       }
@@ -4394,32 +4413,44 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         }
       });
 
-      // Glory → aposticha_glory (prefer Menaion if encoded, else Octoechos)
-      elements.push({id:"v-apost-glory", type:"fixed", label:"", text:"Glory to the Father, and to the Son, and to the Holy Spirit.", source:"HTM Vespers"});
+      // Glory → aposticha_glory (Menaion doxasticon if encoded, else Octoechos); when the
+      // entry declares aposticha_glory_absent, Glory… now and ever sung together (no red);
+      // if neither field is declared, the doxasticon is UNVERIFIED → red for all ranks
+      // (§D runtime hardening, policy (b) / validator Check G).
       const menaionApostGlory = menaionEntry && menaionEntry.aposticha_glory;
       const apostGlory = apostOctoDay.aposticha_glory;
-      if (menaionApostGlory && menaionApostGlory.text) {
-        // Menaion provides its own Glory doxasticon (§2C and above)
-        elements.push({id:"v-apost-doxasticon", type:"movable", label:"Aposticha Doxasticon",
-          rubric:"Tone "+(menaionApostGlory.tone||tone)+":",
-          text:menaionApostGlory.text, source:"Menaion — " + mSaint,
-          fekula:{section:fekulaSection, note:"Aposticha Glory: doxasticon from Menaion. — Fekula " + fekulaSection}});
-      } else if (apostGlory && !apostGlory.startsWith('[')) {
-        elements.push({id:"v-apost-doxasticon", type:"movable", label:"Aposticha Doxasticon",
-          rubric:"Tone "+tone+":",
-          text:apostGlory, source:"Octoechos",
-          fekula:{section:fekulaSection, note:"Aposticha Glory: doxasticon from Octoechos, Tone "+tone+"."}});
+      const apostGloryAbsent = !!(menaionEntry && menaionEntry.aposticha_glory_absent === true);
+      if (apostGloryAbsent) {
+        // Verified-absent in the PDF: Glory… now and ever sung together (no doxasticon).
+        elements.push({id:"v-apost-glory-nowever", type:"fixed", label:"",
+          text:"Glory to the Father, and to the Son, and to the Holy Spirit, now and ever, and unto the ages of ages. Amen.",
+          source:"HTM Vespers"});
       } else {
-        // Saturday: aposticha_glory = [Glory from Menaion if appointed] — unresolved
-        elements.push({id:"v-apost-doxasticon", type:"movable", label:"Aposticha Doxasticon",
-          unresolved:true,
-          text:"[Doxasticon from Menaion — enter aposticha_glory in SAMPLE_MENAION (Track B).]",
-          source:"Menaion",
-          fekula:{section:fekulaSection, note:"Saturday Aposticha Glory: supplied by Menaion. Fekula §2A Saturday."}});
+        elements.push({id:"v-apost-glory", type:"fixed", label:"", text:"Glory to the Father, and to the Son, and to the Holy Spirit.", source:"HTM Vespers"});
+        if (menaionApostGlory && menaionApostGlory.text) {
+          // Menaion provides its own Glory doxasticon (§2C and above)
+          elements.push({id:"v-apost-doxasticon", type:"movable", label:"Aposticha Doxasticon",
+            rubric:"Tone "+(menaionApostGlory.tone||tone)+":",
+            text:menaionApostGlory.text, source:"Menaion — " + mSaint,
+            fekula:{section:fekulaSection, note:"Aposticha Glory: doxasticon from Menaion. — Fekula " + fekulaSection}});
+        } else if (apostGlory && !apostGlory.startsWith('[')) {
+          elements.push({id:"v-apost-doxasticon", type:"movable", label:"Aposticha Doxasticon",
+            rubric:"Tone "+tone+":",
+            text:apostGlory, source:"Octoechos",
+            fekula:{section:fekulaSection, note:"Aposticha Glory: doxasticon from Octoechos, Tone "+tone+"."}});
+        } else {
+          // Neither aposticha_glory nor aposticha_glory_absent declared: doxasticon not
+          // checked against the PDF → red placeholder (all ranks) until an encoding pass
+          // encodes aposticha_glory or sets aposticha_glory_absent: true.
+          elements.push({id:"v-apost-doxasticon", type:"movable", label:"Aposticha Doxasticon",
+            unresolved:true,
+            text:"[aposticha doxasticon — unverified against PDF]",
+            source:"Menaion — " + mSaint,
+            fekula:{section:fekulaSection, note:"Aposticha Glory unverified: encode aposticha_glory, or set aposticha_glory_absent: true if the PDF prints none. (§D policy (b) / validator Check G)"}});
+        }
+        // Now and ever → theotokion/dogmatikon
+        elements.push({id:"v-apost-nowever", type:"fixed", label:"", text:"Now and ever and unto ages of ages. Amen.", source:"HTM Vespers"});
       }
-
-      // Now and ever → theotokion/dogmatikon
-      elements.push({id:"v-apost-nowever", type:"fixed", label:"", text:"Now and ever and unto ages of ages. Amen.", source:"HTM Vespers"});
       if (isFriEve && apostOctoDay.lic_dogmatikon) {
         elements.push({id:"v-apost-dogmatikon", type:"movable", label:"Dogmatikon (Friday)",
           rubric:"Tone "+tone+":",
@@ -8118,6 +8149,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.22.0",
+    date: "June 2026",
+    summary: "Aposticha Glory now flags red when the doxasticon is unverified against the Menaion PDF",
+    items: [
+      "Runtime hardening of the Vespers aposticha Glory on both the Sunday-resurrectional and the weekday §2A/§2C paths, using the aposticha_glory_absent convention (the runtime twin of validator Check G). Three states now: aposticha_glory present → the doxasticon renders (and sets the Glory tone); aposticha_glory_absent: true → \"Glory… now and ever\" sung together, rendering clean; neither field declared → the doxasticon slot renders as an unresolved red placeholder (\"[aposticha doxasticon — unverified against PDF]\") for ALL ranks, which lights the Aposticha row red in the Service Outline via isPlaceholder. Red = unverified/possibly-wrong, by design: every Menaion date lacking both fields stays red until an encoding pass examines the PDF and either encodes aposticha_glory or sets aposticha_glory_absent: true. Most of May/June lights red immediately — that is the backlog signal, not a bug. (Replaces the old weekday Saturday-only placeholder text.)",
+    ],
+  },
   {
     version: "v0.21.3",
     date: "June 2026",
