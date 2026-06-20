@@ -8167,6 +8167,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.22.4",
+    date: "June 2026",
+    summary: "Menaion Data Browser now displays the lic_stavrotheotokion / aposticha_stavrotheotokion fields",
+    items: [
+      "The v0.22.3 encode captured two new truthing fields (lic_stavrotheotokion, aposticha_stavrotheotokion) in the data and KNOWN_FIELDS, but the Menaion Data Browser's EntryHymnography renderer is explicit per-field (no catch-all loop), so they were stored-but-invisible. Added render rows mirroring the existing doxasticon/theotokion blocks: lic_stavrotheotokion under the Lord-I-Call section and aposticha_stavrotheotokion under the Aposticha section, each labeled as the Wed/Fri Stavrotheotokion with its Spec. Mel. folded into the label. The Aposticha section condition now also fires when only a stavrotheotokion is present. Display-only — no data or assembler change.",
+    ],
+  },
+  {
     version: "v0.22.3",
     date: "June 2026",
     summary: "06-21 (Holy Martyr Julian of Tarsus) encoded — aposticha Glory resolved, no longer red",

@@ -338,10 +338,19 @@ function EntryHymnography({ entry, editCtx }) {
         />
       )}
       {entry.lic_theotokion === null && <FieldRow label="lic_theotokion" value={null} />}
+      {entry.lic_stavrotheotokion && (
+        <TextBlock
+          tone={entry.lic_stavrotheotokion.tone}
+          text={entry.lic_stavrotheotokion.text}
+          label={`Both now (Stavrotheotokion — Wed/Fri)${entry.lic_stavrotheotokion.spec_mel ? ` · Spec. Mel. "${entry.lic_stavrotheotokion.spec_mel}"` : ''}`}
+          editFile={editCtx?.file}
+          editPath={fieldPath(editCtx, 'lic_stavrotheotokion', 'text')}
+        />
+      )}
       </div>
 
       {/* ── Vespers Aposticha ── */}
-      {(entry.stichera_aposticha || entry.aposticha_glory) && (
+      {(entry.stichera_aposticha || entry.aposticha_glory || entry.aposticha_stavrotheotokion) && (
         <>
           <div data-el="aposticha">
           <SectionHeader>Vespers — Aposticha</SectionHeader>
@@ -376,6 +385,15 @@ function EntryHymnography({ entry, editCtx }) {
               label="Both now (Theotokion)"
               editFile={editCtx?.file}
               editPath={fieldPath(editCtx, 'aposticha_both_now', 'text')}
+            />
+          )}
+          {entry.aposticha_stavrotheotokion && (
+            <TextBlock
+              tone={entry.aposticha_stavrotheotokion.tone}
+              text={entry.aposticha_stavrotheotokion.text}
+              label={`Stavrotheotokion (Wed/Fri)${entry.aposticha_stavrotheotokion.spec_mel ? ` · Spec. Mel. "${entry.aposticha_stavrotheotokion.spec_mel}"` : ''}`}
+              editFile={editCtx?.file}
+              editPath={fieldPath(editCtx, 'aposticha_stavrotheotokion', 'text')}
             />
           )}
           </div>
