@@ -8167,6 +8167,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.22.3",
+    date: "June 2026",
+    summary: "06-21 (Holy Martyr Julian of Tarsus) encoded — aposticha Glory resolved, no longer red",
+    items: [
+      "Encoded the 06-21 aposticha Glory (Tone VI doxasticon \"Come, ye who love the martyrs …\", prose) — the field whose absence the §D hardening had been flagging red. The Sunday-resurrectional aposticha now assembles fully: four Octoechos resurrection stichera (Tone II), Glory = Julian's Tone VI doxasticon, Now-and-ever = the Tone VI theotokion from the fixed 8-set (the Glory tone is now correctly promoted to 6). 06-21 returns to green in the Menaion browser and the calendar badge. Also re-pointed the troparion and kontakion (markers were stripped) and captured both printed Stavrotheotokia (LIC and aposticha, Tone VI, Wed/Fri options) in new lic_stavrotheotokion / aposticha_stavrotheotokion fields for the truthing view — neither is consumed by the Sunday assembler. Gospel kept at Luke 21:12-19 (matches the printed pericope body and OCA; the St. Sergius heading's \"12-18\" is noted as a discrepancy).",
+    ],
+  },
+  {
     version: "v0.22.2",
     date: "June 2026",
     summary: "Menaion Data Browser now lights up red for entries whose aposticha Glory is unverified",
