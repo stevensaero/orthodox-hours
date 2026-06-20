@@ -6601,9 +6601,17 @@ const OUTLINE_LABEL_PREFIXES = [
   'God is the Lord','O Heavenly King','Alleluia','Kontakion','Beatitudes',
   'Epistle','Gospel',
 ];
+// Exact-label majors. The Sunday Vespers engine (v0.16.0) emits the aposticha
+// as interleaved stichera whose first sticheron is id "v-apost-stich-<i>" and
+// label "Aposticha" — neither the exact id "v-apost-stich" nor the prefix
+// "Aposticha Stichera" the weekday path uses. Match the bare label exactly so
+// the Aposticha gets one outline row; a prefix would wrongly also grab
+// "Aposticha Doxasticon" as a second row (LIC shows no doxasticon row either).
+const OUTLINE_EXACT_LABELS = ['Aposticha'];
 
 function isOutlineMajor(el) {
   return OUTLINE_MAJOR_IDS.includes(el.id) ||
+    (el.label && OUTLINE_EXACT_LABELS.includes(el.label)) ||
     (el.label && OUTLINE_LABEL_PREFIXES.some(p => el.label.startsWith(p)));
 }
 
@@ -8110,6 +8118,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.21.3",
+    date: "June 2026",
+    summary: "Aposticha is back in the Service Outline on resurrectional (Sunday) Great Vespers",
+    items: [
+      "The Service Outline rail dropped the Aposticha row on services that use the Sunday Vespers engine (resurrectional Saturday-evening Great Vespers), because that engine emits the aposticha as interleaved stichera (id \"v-apost-stich-<i>\", label \"Aposticha\") which the outline's major-section detector didn't recognize — it only knew the weekday aggregate (id \"v-apost-stich\" / label \"Aposticha Stichera\"). The outline now matches the bare \"Aposticha\" label exactly, restoring the single Aposticha row without affecting the body header. Pre-existing since v0.16.0; unrelated to the source-link work.",
+    ],
+  },
   {
     version: "v0.21.2",
     date: "June 2026",
