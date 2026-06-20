@@ -1727,11 +1727,11 @@ const JUNE_MENAION = {
       "he shall not be afraid of evil tidings.",
     troparion: {
       tone: 4,
-      text: "In his sufferings, Thy martyr Julian O Lord, * received an imperishable crown from Thee, our God; * for, possessed of Thy might, * he set at naught the tyrants and crushed the feeble audacity of the demons. ** By his supplications save Thou our souls.",
+      text: "Thy martyr Julian O Lord, | through his sufferings has received an incorruptible crown from [Thee], our God. | For having Thy strength, he laid low his [ad]versaries, | and shattered the powerless boldness of [de]mons. // Through his intercession, [save] our souls!",
     },
     kontakion_ode6: {
       tone: 2,
-      text: "As is meet, let us all praise Julian today, * the invincible warrior of piety, * the true counselor and soldier of the Truth, * and let us cry aloud unto him: ** Entreat Christ God on behalf of us all!",
+      text: "Let us all [wor]thily praise [Jul]ian today, | the unconquerable pious warrior and [seek]er of truth; | To [him] let us [cry] out: // “Pray to [Christ] [God] for us all!”",
     },
   },
 
