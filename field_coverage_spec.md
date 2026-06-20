@@ -25,8 +25,21 @@ The three holes, named:
 The governing principle, applied at all three surfaces:
 
 > A field absent because nobody verified it = **RED** (unverified, possibly wrong).
-> A field absent because an encoder examined the PDF and confirmed nothing to encode = **GREEN**
-> (verified-absent, a positive declaration). Green is earned by a human looking, never assumed from silence.
+> A field absent because the source was examined and confirmed to hold nothing = **GREEN**
+> (verified-absent, a positive declaration). Green is earned by faithful adherence to the source, never
+> assumed from silence — and never by a human re-deciding logic the source already settled.
+
+**Two axes of adherence — different sources, neither a fresh human judgment.**
+- *Classification* (the registry: whether a field is conditional, always-required, gated, or derived) is
+  fixed by **Fekula's explicit logic**. Fekula is the rulemaker. A classification is green when it is a
+  faithful, traceable derivation from an explicit Fekula citation that *entails* the rule — not when a
+  second human approves it. Where Fekula is silent or ambiguous, the row is **unresolved**, escalated to
+  source, never settled by re-ordering the logic.
+- *Per-date coverage* (whether THIS date's Menaion prints the field) is **empirical — only the PDF knows**.
+  That green is earned by examining the date's PDF and either encoding the value or declaring `*_absent`.
+
+Each axis is fidelity to its own source — Fekula for the rule, the PDF for the datum. Neither admits
+inference from silence; neither is a human overriding the source.
 
 The target experience is the database-table one: for any entry, a reviewer holding the Menaion sees
 **every field the schema knows about**, each marked *filled* / *null-by-declaration* / *genuinely missing*
@@ -55,10 +68,14 @@ it mechanically. Change the registry, and all three surfaces follow.
 | `absent_twin` | bucket 1 only: the declaration field name (e.g. `aposticha_glory_absent`) |
 | `parent` | bucket 5 only: the field this sub-field validates with |
 | `display` | how the viewer renders it: `hymn` (tone+text block) \| `list` \| `string` \| `flag` \| `meta` |
-| `citation` | Fekula § / chapter + `encoding_rule_v2.md` § justifying the classification |
-| `verified` | has Bill confirmed the classification by inspection? default `false` → surfaced for review |
+| `citation` | the **exact** Fekula §/chapter (+ `encoding_rule_v2.md` §) whose text *entails* this classification. This is the proof of adherence, not a pointer — it must be checkable against the source. |
+| `status` | `fekula-entailed` (the citation explicitly establishes the rule → adherent/green) \| `unresolved` (Fekula silent or ambiguous → flagged, escalated to source, NOT green) |
 
-`verified: false` is itself an honesty mechanism: an un-reviewed classification is flagged, never hardened.
+`status` records adherence to Fekula, not human concurrence. `fekula-entailed` is green because the cited
+text settles it; the human role is a *fidelity check* — confirming the citation was read correctly, which
+the exact-citation requirement makes mechanically checkable — never a re-adjudication of the rule.
+`unresolved` is the only thing that genuinely needs escalation, and it is resolved by returning to the
+source (Fekula's logic, or the established resolution order), never by inventing a ruling.
 
 ---
 
@@ -186,7 +203,8 @@ a curated subset.
 
 ## 7. Worked classifications (Fekula-verified this session)
 
-Each carries its citation; `verified` flips to true only on Bill's inspection.
+Each row's `status` is `fekula-entailed`: the cited text explicitly establishes the classification. None
+here is `unresolved`. The citations are exact so the adherence is checkable, not taken on trust.
 
 | field | bucket | slot_fill | notes & citation |
 |---|---|---|---|
@@ -199,9 +217,9 @@ Each carries its citation; `verified` flips to true only on Bill's inspection.
 | `aposticha_both_now`, `stichera_both_now` | 1 / **retired** | derived | Now-and-ever slot is derived (Ch 6); a stored value exists only for a festal proper. `aposticha_both_now` → bucket 1, `slot_fill: derived`. `stichera_both_now` → **RETIRED** (resolved): bare descriptive string (07-01), not a hymn, renders nowhere. |
 
 Pending classification: the remaining ~115 `KNOWN_FIELDS` (the matins_*, sessional_*, canon, paroemia,
-megalynarion, zadostoinik, magnification families, etc.). These are STEP 2–3 execution against
-Fekula + `encoding_rule_v2.md`, to be classified and surfaced `verified:false` for inspection — *not*
-guessed in this pass.
+megalynarion, zadostoinik, magnification families, etc.). Each is derived from Fekula with its entailing
+citation and lands as `fekula-entailed` (adherent) or `unresolved` (Fekula silent/ambiguous → escalate to
+source). Nothing is guessed: a row without an entailing citation is `unresolved`, never a green default.
 
 ---
 
@@ -217,10 +235,12 @@ an automated read of the PDF — per the encoding philosophy, green is earned by
 source; automation may produce worklists, never declarations.
 
 - **Phase 0 — this spec.** Committed, reviewed. (`docs:`, no version bump.)
-- **Phase 1 — registry data + classification review.** Encode the per-field registry from §7 + the full
-  classification, every new row `verified:false`. Reviewed by Bill **from the registry table** (by service
-  section, risky rows on top — §9.4) before any consumer reads it. *Schema review only; no PDF, no UI.*
-  (`tooling:` commit.)
+- **Phase 1 — registry data (derived from Fekula).** Derive each field's row from Fekula, every row
+  citation-bound and stamped `fekula-entailed` or `unresolved` (§2.1). This is adherence to the source,
+  not a human re-deciding logic: the rule is fixed by the cited text. Presented by service section
+  (§9.4) for a **fidelity check** — confirming each citation was read correctly (mechanically checkable
+  against the exact citation) and triaging the `unresolved` rows to source. No re-adjudication of entailed
+  rules; no PDF, no UI. (`tooling:` commit.)
 - **Phase 2 — audit.** Registry-driven coverage check in `validate_entries.mjs`, **alongside** C/D/G
   (§9.1). Resolves each field to GREEN / RED / N-A and emits the per-entry RED worklist machine-side
   (CLI/build-time, independent of the UI). Warnings default, fatal under `--strict`. (`tooling:` commit.)
@@ -252,9 +272,11 @@ source; automation may produce worklists, never declarations.
    the assembler never reads a stored object. `slot_fill: derived`, gated — out of per-entry coverage. The
    coverage-relevant field is `matins_praises_glory`. `RESURRECTION_GOSPEL_STICHERA` is presently an empty
    stub — a latent constant-table gap for when Matins assembly lands.
-4. **Classification review cadence — RESOLVED: by service section, bucket-ordered within.** Vespers →
-   Matins → Liturgy, mirroring Fekula chapter order; within each section the bucket-1/3/derived rows sit on
-   top (need inspection), bucket-4/5 metadata bulk-approvable. One service section per pass.
+4. **Review cadence — RESOLVED: by service section, bucket-ordered within.** Vespers → Matins → Liturgy,
+   mirroring Fekula chapter order; within each section the bucket-1/3/derived rows on top (where a
+   misread citation costs most), bucket-4/5 metadata below. One section per pass. The review is a
+   **fidelity check** of each row's entailing citation plus triage of `unresolved` rows to source — not a
+   re-adjudication of rules Fekula already settles.
 
 ---
 
