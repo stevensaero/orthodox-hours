@@ -7309,6 +7309,29 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
             Read in Scripture ↗
           </a>
         )}
+        {/* Phase 3: element-level source link — quiet study aid, jumps to the
+            proper's place in the Menaion/Octoechos/Pentecostarion viewer.
+            Subordinate to the boxed Read-in links (borderless). Same-tab in-app
+            (Back + return strip work); external OCA opens a new tab. */}
+        {isMovable && element.sourceHref && (
+          <a
+            href={element.sourceHref}
+            target={element.sourceExternal ? "_blank" : undefined}
+            rel={element.sourceExternal ? "noopener noreferrer" : undefined}
+            title="Open this proper in its source viewer"
+            style={{
+              fontSize: "0.68rem",
+              color: "#9A8A70",
+              textDecoration: "none",
+              borderBottom: "1px dotted rgba(139,105,20,0.45)",
+              fontFamily: "Georgia, serif",
+              letterSpacing: "0.04em",
+              whiteSpace: "nowrap",
+            }}
+          >
+            ↗ source
+          </a>
+        )}
         {(isMovable || element.showFekula) && element.fekula && (
           <FekulaBadge section={element.fekula.section} note={element.fekula.note} />
         )}
@@ -8087,6 +8110,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.21.0",
+    date: "June 2026",
+    summary: "Reading-view source links: every Menaion/Pentecostarion/Octoechos proper jumps to its place in the data viewer",
+    items: [
+      "Each assembled movable proper whose text comes from an in-app data book — Troparion, Kontakion, Lord-I-Have-Cried stichera/doxasticon/theotokion/dogmatikon, and Aposticha stichera/doxasticon/theotokion — now carries a quiet \"↗ source\" link that opens the Menaion, Octoechos, or Pentecostarion viewer to that day/tone/offset and briefly highlights the section the proper came from.",
+      "Provenance is resolved once at assembly (a structured sourceRef stamped on the element) and never re-derived in the renderer. Links reuse the Phase-2 deep-positioning contract and add an &el= sub-anchor (troparion | kontakion | lic | aposticha) the viewers flash on arrival.",
+      "Vespers propers resolve against the next liturgical day (the day Vespers opens), so their source links point to the correct Menaion date, Octoechos tone, and Pentecostarion offset.",
+      "Mixed-source stichera runs are handled per-sticheron — an Octoechos sticheron and a Menaion sticheron in the same run each link to their own book. Unencoded placeholder slots carry no link (the link appears on resolved propers only). General-Menaion/OCA provenance is guarded for the future fallback chain but does not fire on current data.",
+    ],
+  },
   {
     version: "v0.20.8",
     date: "June 2026",
@@ -11363,6 +11397,76 @@ function buildLibraryBooks(ld, selectedDate, scriptureReadings) {
   };
 }
 
+// ── Phase 3: element-level source provenance ───────────────────────────────
+// Resolve once at assembly: stamp a structured `sourceRef` + a ready-to-use
+// `sourceHref` onto each movable proper whose text comes from an in-app data
+// book (Menaion / Octoechos / Pentecostarion). The renderer reads the href
+// only — it never re-derives provenance. `el` is the viewer SECTION the proper
+// belongs to (section-level anchor): troparion | kontakion | lic | aposticha.
+// A book proper with an unrecognized id still links (entry-level, no &el).
+function elFromId(id = "") {
+  if (/^v-trop/.test(id) || /-troparion(-|$)/.test(id)) return "troparion";
+  if (/-kontakion(-|$)/.test(id)) return "kontakion";
+  if (/^v-lic/.test(id) || id === "v-stichera") return "lic";
+  if (/^v-apost/.test(id)) return "aposticha";
+  return null;
+}
+function kindFromSource(source = "") {
+  if (source.startsWith("Menaion")) return "menaion-daily";
+  if (source.startsWith("Octoechos")) return "octoechos";
+  if (source.startsWith("Pentecostarion")) return "pentecostarion";
+  return null; // HTM / Fekula / not a book proper
+}
+// Build the structured locator from an assembled element + the service's own
+// day context (`lit` = the liturgicalData of the day the SERVICE belongs to —
+// for Vespers that is the NEXT day). Returns null for non-propers, fixed text,
+// unresolved placeholders, and anything not from an in-app book.
+function buildSourceRef(element, lit) {
+  if (!element || element.type !== "movable" || element.unresolved || !element.source) return null;
+  const kind = kindFromSource(element.source);
+  if (!kind) return null;
+  const el = elFromId(element.id);
+  const withEl = el ? { el } : {};
+  if (kind === "menaion-daily") {
+    const mm = lit && lit.mm != null ? String(lit.mm).padStart(2, "0") : null;
+    const dd = lit && lit.dd != null ? String(lit.dd).padStart(2, "0") : null;
+    if (!mm || !dd) return null;
+    return { kind, comm: mm + "-" + dd, ...withEl };
+  }
+  if (kind === "octoechos") {
+    const tone = lit && lit.tone;
+    if (!tone) return null;
+    return { kind, tone, ...withEl };
+  }
+  if (kind === "pentecostarion") {
+    const off = lit && typeof lit.paschaOffset === "number" ? lit.paschaOffset : null;
+    if (off == null) return null;
+    return { kind, pascha: off, ...withEl };
+  }
+  return null;
+}
+// Map a sourceRef to a same-tab in-app href (base-prefixed, matching the
+// Psalter/Scripture link convention) or an external OCA URL. Reuses the Phase 2
+// dateQ + per-book param; `&el=` is the only new param. general-menaion → no
+// link (provenance note only); oca → external.
+function sourceLinkFor(sourceRef, date) {
+  if (!sourceRef) return null;
+  const dateQ = "date=" + encodeURIComponent(date) + "&from=tool";
+  const elQ = sourceRef.el ? "&el=" + sourceRef.el : "";
+  switch (sourceRef.kind) {
+    case "menaion-daily":
+      return { href: "/orthodox-hours/menaion?" + dateQ + "&comm=" + sourceRef.comm + elQ, external: false };
+    case "octoechos":
+      return { href: "/orthodox-hours/octoechos?" + dateQ + "&tone=" + sourceRef.tone + elQ, external: false };
+    case "pentecostarion":
+      return { href: "/orthodox-hours/pentecostarion?" + dateQ + "&pascha=" + sourceRef.pascha + elQ, external: false };
+    case "oca":
+      return sourceRef.url ? { href: sourceRef.url, external: true } : null;
+    default:
+      return null; // general-menaion → note only
+  }
+}
+
 function LibraryBook({ b, onOpen }) {
   const [hover, setHover] = React.useState(false);
   const oos = !!b.outOfScope;
@@ -11748,6 +11852,13 @@ export default function App() {
     }
     // Patch psalterHref onto any element that has kathismaNum
     // Patch scriptureHref onto epistle/gospel elements (selectedDate in scope here)
+    // Phase 3: source links resolve against the day the SERVICE belongs to —
+    // for Vespers that is the next liturgical day (vespersNext), so its Menaion
+    // comm / Octoechos tone / Pentecostarion offset and the link's date all use
+    // the next-day context; every other service uses the current day.
+    const isVespers = currentService.key === 'vespers';
+    const srcLit = isVespers ? vespersNext.vLit : liturgicalData;
+    const srcDate = isVespers ? vespersNext.vDateStr : selectedDate;
     return els.map(el => {
       let out = el;
       if (el.kathismaNum) {
@@ -11760,6 +11871,12 @@ export default function App() {
         const ref = lines[lines.length - 1].trim();
         const href = refToScriptureHref(ref, currentService.key, selectedDate);
         if (href) out = { ...out, scriptureHref: href };
+      }
+      // Phase 3: stamp source provenance + a ready-to-use link on book propers.
+      const sourceRef = buildSourceRef(out, srcLit);
+      if (sourceRef) {
+        const link = sourceLinkFor(sourceRef, srcDate);
+        out = { ...out, sourceRef, ...(link ? { sourceHref: link.href, sourceExternal: link.external } : {}) };
       }
       return out;
     });

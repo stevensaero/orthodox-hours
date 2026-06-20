@@ -5,6 +5,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { auditPentecostarionEntry, auditSummary } from '../lib/audit.js';
 import { PointScoreControls } from './point-score-controls.jsx';
+import { getElParam, flashElIn } from '../lib/el-highlight.js';
 
 // Height (px) of the sticky "← Hours Tool" return strip when opened from the
 // tool, published as a CSS var by hours-return-strip.jsx (0 when no strip). The
@@ -251,7 +252,7 @@ function PentEntryCard({ offset, entry, audit, stickyTop }) {
       </div>
 
       {/* ── Troparion ── */}
-      <SectionHeader>Troparion</SectionHeader>
+      <div data-el="troparion"><SectionHeader>Troparion</SectionHeader></div>
       {entry.troparion ? (
         Array.isArray(entry.troparion) ? (
           entry.troparion.map((t, i) => (
@@ -278,7 +279,7 @@ function PentEntryCard({ offset, entry, audit, stickyTop }) {
       )}
 
       {/* ── Kontakia ── */}
-      <SectionHeader>Kontakia</SectionHeader>
+      <div data-el="kontakion"><SectionHeader>Kontakia</SectionHeader></div>
       {entry.hours_kontakion && (
         <TextBlock
           tone={entry.hours_kontakion.tone}
@@ -305,7 +306,7 @@ function PentEntryCard({ offset, entry, audit, stickyTop }) {
       )}
 
       {/* ── Lord I Have Cried Stichera ── */}
-      <SectionHeader>Vespers — Lord I Have Cried</SectionHeader>
+      <div data-el="lic"><SectionHeader>Vespers — Lord I Have Cried</SectionHeader></div>
       {entry.stichera_lord_i_call_count !== undefined && (
         <FieldRow label="stichera count" value={entry.stichera_lord_i_call_count} />
       )}
@@ -341,7 +342,7 @@ function PentEntryCard({ offset, entry, audit, stickyTop }) {
       {/* ── Vespers Aposticha ── */}
       {(entry.stichera_aposticha || entry.aposticha_glory) && (
         <>
-          <SectionHeader>Vespers — Aposticha</SectionHeader>
+          <div data-el="aposticha"><SectionHeader>Vespers — Aposticha</SectionHeader></div>
           {entry.stichera_aposticha && Array.isArray(entry.stichera_aposticha) && (
             entry.stichera_aposticha.map((s, i) => (
               <TextBlock key={i} tone={s.tone} text={s.text} verse={s.verse} label={`[${i + 1}]`} />
@@ -641,11 +642,15 @@ export default function PentecostarionBrowser() {
   // (Pascha) is valid, so guard with != null, not truthiness. Direct visit
   // unchanged.
   const pendingPascha = useRef(null);
+  const pendingEl = useRef(null);
   useEffect(() => {
     const p = new URLSearchParams(window.location.search).get("pascha");
     if (p !== null && p !== "") {
       const n = parseInt(p, 10);
-      if (Number.isFinite(n)) pendingPascha.current = n;
+      if (Number.isFinite(n)) {
+        pendingPascha.current = n;
+        pendingEl.current = getElParam(); // Phase 3: highlight this section after the scroll
+      }
     }
   }, []);
 
@@ -722,6 +727,12 @@ export default function PentecostarionBrowser() {
     const target = pendingPascha.current;
     const id = requestAnimationFrame(() => {
       scrollToEntry(target);
+      // Phase 3: flash the targeted section within this entry's card.
+      if (pendingEl.current) {
+        const el = pendingEl.current;
+        window.setTimeout(() => flashElIn(entryRefs.current[target], el), 450);
+        pendingEl.current = null;
+      }
       pendingPascha.current = null;
     });
     return () => cancelAnimationFrame(id);

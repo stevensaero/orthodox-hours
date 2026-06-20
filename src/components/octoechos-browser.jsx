@@ -2,9 +2,10 @@
 // Dev/truthing tool for proofing encoded Octoechos tone data.
 // Route: /orthodox-hours/octoechos — URL-only access, not linked from main tool UI.
 
-import React, { useState, useEffect, useContext, createContext } from 'react';
+import React, { useState, useEffect, useRef, useContext, createContext } from 'react';
 import { PointScoreControls } from './point-score-controls.jsx';
 import { hymnText, normalizeHymn } from '../lib/hymn-entry.js';
+import { getElParam, flashElIn } from '../lib/el-highlight.js';
 
 // Current tone in view — provided by OctoechosBrowser, consumed by SticheronBlock
 // so its Point/Score controls know which tone the verse belongs to.
@@ -245,13 +246,13 @@ function SmallTablesPanel({ tone }) {
         always loaded. Showing values for Tone {toneNum}.
       </div>
 
-      <SectionHeader>Resurrectional Troparion</SectionHeader>
+      <div data-el="troparion"><SectionHeader>Resurrectional Troparion</SectionHeader></div>
       <SmallTableRow
         label={`Tone ${RESURRECTIONAL_TROPARIA[toneNum]?.tone ?? toneNum}`}
         value={RESURRECTIONAL_TROPARIA[toneNum]?.text ?? RESURRECTIONAL_TROPARIA[toneNum]}
       />
 
-      <SectionHeader>Sunday Kontakion</SectionHeader>
+      <div data-el="kontakion"><SectionHeader>Sunday Kontakion</SectionHeader></div>
       <SmallTableRow
         label={`Tone ${toneNum} — Tone ${SUNDAY_KONTAKIA[toneNum]?.tone}`}
         value={SUNDAY_KONTAKIA[toneNum]?.text}
@@ -260,7 +261,7 @@ function SmallTablesPanel({ tone }) {
       <SectionHeader>Hypakoë (Sunday Matins / Typica)</SectionHeader>
       <SmallTableRow label={`Tone ${toneNum}`} value={HYPAKOE[toneNum]} />
 
-      <SectionHeader>LIC Theotokion (Weekday Both Now)</SectionHeader>
+      <div data-el="lic"><SectionHeader>LIC Theotokion (Weekday Both Now)</SectionHeader></div>
       <SmallTableRow label={`Tone ${toneNum}`} value={LIC_THEOTOKIA[toneNum]} />
 
       <SectionHeader>Sunday Matins Prokeimenon</SectionHeader>
@@ -470,10 +471,24 @@ export default function OctoechosBrowser() {
 
   // Deep-positioning on entry (Phase 2): a ?tone=N link from the Library opens
   // straight to that tone. Validate 1–8; a direct, no-param visit is unchanged.
+  const pendingEl = useRef(null);
   useEffect(() => {
     const t = parseInt(new URLSearchParams(window.location.search).get('tone'), 10);
-    if (t >= 1 && t <= 8) setSelectedTone(t);
+    if (t >= 1 && t <= 8) {
+      pendingEl.current = getElParam(); // Phase 3: highlight after the tone renders
+      setSelectedTone(t);
+    }
   }, []);
+
+  // Phase 3: once the tone's data has loaded/rendered, flash the targeted
+  // section (page-level — one tone shown at a time). No &el= → never fires.
+  useEffect(() => {
+    if (toneData && pendingEl.current) {
+      const el = pendingEl.current;
+      pendingEl.current = null;
+      window.setTimeout(() => flashElIn(null, el), 400);
+    }
+  }, [toneData]);
 
   useEffect(() => {
     setLoading(true);

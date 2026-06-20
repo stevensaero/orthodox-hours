@@ -7,6 +7,7 @@ import { auditMenaionEntry, auditSummary } from '../lib/audit.js';
 import { PointScoreControls, normalizeSergius } from './point-score-controls.jsx';
 import FieldEditor from './field-editor.jsx';
 import { menaionCtx, fieldPath } from './editor-adapters.js';
+import { getElParam, flashElIn } from '../lib/el-highlight.js';
 
 // Height (px) of the sticky "← Hours Tool" return strip when opened from the
 // tool, published as a CSS var by hours-return-strip.jsx (0 when no strip). The
@@ -274,7 +275,7 @@ function EntryHymnography({ entry, editCtx }) {
 
   return (
     <>\n      {/* ── Lord I Have Cried Stichera ── */}
-      <SectionHeader>Vespers — Lord I Have Cried</SectionHeader>
+      <div data-el="lic"><SectionHeader>Vespers — Lord I Have Cried</SectionHeader></div>
       {entry.stichera_lord_i_call_count !== undefined && (
         <FieldRow label="stichera count" value={entry.stichera_lord_i_call_count} />
       )}
@@ -340,7 +341,7 @@ function EntryHymnography({ entry, editCtx }) {
       {/* ── Vespers Aposticha ── */}
       {(entry.stichera_aposticha || entry.aposticha_glory) && (
         <>
-          <SectionHeader>Vespers — Aposticha</SectionHeader>
+          <div data-el="aposticha"><SectionHeader>Vespers — Aposticha</SectionHeader></div>
           {entry.stichera_aposticha && Array.isArray(entry.stichera_aposticha) && (
             <>
               {sticheraPointingStatus(entry.stichera_aposticha) === 'unpointed' && (
@@ -664,7 +665,7 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
       </div>
 
       {/* ── Troparion ── */}
-      <SectionHeader>Troparion</SectionHeader>
+      <div data-el="troparion"><SectionHeader>Troparion</SectionHeader></div>
       {primary.troparion ? (
         typeof primary.troparion === 'object' && !Array.isArray(primary.troparion) ? (
           <TextBlock tone={primary.troparion.tone} text={primary.troparion.text} label="Troparion"
@@ -687,7 +688,7 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
       )}
 
       {/* ── Kontakia ── */}
-      <SectionHeader>Kontakia</SectionHeader>
+      <div data-el="kontakion"><SectionHeader>Kontakia</SectionHeader></div>
       {primary.kontakion_ode6 ? (
         <TextBlock
           tone={primary.kontakion_ode6.tone}
@@ -792,10 +793,12 @@ export default function MenaionBrowser() {
   // populated yet. We stash the target here and fire it from the [monthData]
   // effect once data resolves. A direct, no-param visit is unchanged.
   const pendingComm = useRef(null);
+  const pendingEl = useRef(null);
   useEffect(() => {
     const comm = new URLSearchParams(window.location.search).get("comm");
     if (comm && /^\d{2}-\d{2}$/.test(comm)) {
       pendingComm.current = comm;
+      pendingEl.current = getElParam(); // Phase 3: highlight this section after the scroll
       setActiveMonth(comm.slice(0, 2));
     }
   }, []);
@@ -863,6 +866,13 @@ export default function MenaionBrowser() {
     const target = pendingComm.current;
     const id = requestAnimationFrame(() => {
       scrollToEntry(target);
+      // Phase 3: once landed on the entry, flash the targeted section (if any).
+      // Scoped to this entry's card so we don't match a section in another day.
+      if (pendingEl.current) {
+        const el = pendingEl.current;
+        window.setTimeout(() => flashElIn(entryRefs.current[target], el), 450);
+        pendingEl.current = null;
+      }
       pendingComm.current = null;
     });
     return () => cancelAnimationFrame(id);
