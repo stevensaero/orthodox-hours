@@ -1,7 +1,7 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.22.1** | **Tone Trainer: v0.25.28** | Last synced: June 20, 2026
+**Tool version: v0.22.2** | **Tone Trainer: v0.25.28** | Last synced: June 20, 2026
 
-**Session June 20, 2026 — Aposticha-Glory safeguards (validator Check G + §D runtime, v0.22.0/v0.22.1).**
+**Session June 20, 2026 — Aposticha-Glory safeguards (validator Check G + §D runtime + browser audit, v0.22.0–v0.22.2).**
 Closed the silent-omission gap where a Menaion entry missing its aposticha doxasticon passed unflagged.
 - **Check G** (`tools/validate_entries.mjs`, tooling commit, no bump): encode-time declaration for the
   aposticha doxasticon, the twin of Check C/D for the LIC Glory. simple/§2A and six_stichera/§2C must
@@ -18,6 +18,12 @@ Closed the silent-omission gap where a Menaion entry missing its aposticha doxas
   in the Service Outline via `isPlaceholder`. Red = unverified/possibly-wrong, by design: every Menaion
   date lacking both fields stays red until an encoding pass examines the PDF. The §2C+ encoded path
   reds no currently-encoded entry (all carry an `aposticha_glory`); it's preventive.
+- **Browser audit twin** (`src/lib/audit.js`, v0.22.2 patch): the completeness audit that drives the
+  Menaion Data Browser dots and the calendar day badges now treats `aposticha_glory` as a
+  declaration-aware required field for every aposticha-bearing rank (satisfied by `aposticha_glory` OR
+  `aposticha_glory_absent: true`). Undeclared → red `partial` (not gold `review`). The same 42 entries the
+  validator warns on now light red in the browser (June: 8/20/2 → 0/4/26). The gold "needs review" state
+  is unchanged — it still flags unpointed stichera only.
 - **Deliberately NOT done this session:** 06-21 (Holy Martyr Julian of Tarsus) was left un-encoded so the
   red state is visible end-to-end; it now renders red on the Sunday-resurrectional path. The 06-21 encode
   (add `aposticha_glory` Tone 6 "Come, ye who love the martyrs"; fix troparion/kontakion pointing; decisions
