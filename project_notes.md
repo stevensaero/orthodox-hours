@@ -1,5 +1,62 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.22.4** | **Tone Trainer: v0.25.28** | Last synced: June 20, 2026
+**Tool version: v0.22.4** | **Tone Trainer: v0.25.29** | Last synced: June 21, 2026
+
+**Session June 21, 2026 — Tone 2 SATB completed: tenor encoded + bass fifth-down correction (Tone Trainer v0.25.29).**
+THEME: a phrase-by-phrase, voice-by-voice verification walk against the director's LIC (Lord I Call) score
+finished Tone 2's four-part harmony. The tenor was the last missing voice; the pass also caught a systematic
+bass error. Method: verify Alto (melody) A/B/C/D/Final → Soprano → Bass → Tenor, each voice keyed off the
+verified alto, each phrase its own logic (prime directive). Alto and Soprano confirmed unchanged.
+
+**Bass — fifth-down pitch-class correction (`BASS_RULES[2]`).** The Tone 2 bass was encoded a uniform perfect
+fifth too high across all five phrases (la→re, mi→la, sol→do, re→sol, fa→ti) — a single transposition error,
+not scattered mistakes. Corrected against the LIC score (Phrase A and Final read directly off the director's
+score; B/C/D from the verified phrase chart): A recite re / cad re·la·re; B recite re / cad la·re; C recite re,
+prep sol, cad do; D recite do / cad la·re; Final recite re, prep sol, cad do·ti·do·sol. The Final **pre-slur**
+on "Hear" was wrong on both notes (had la·re) — corrected to **re·sol**, which is recite→prep (the bass leans
+from its reciting re into its prep sol). The bass pre-slur was NOT derivable from the cadence pattern; it took
+the score to fix, and it confirmed the generated-score divergence Bill had been seeing in the Final.
+
+**Tenor — encoded (`TENOR_RULES[2]`), the last missing voice.** All five phrases, LIC-verified: A/B recite la,
+cad all→la; C intone+recite la, prep sol, cad sol; D recite sol, cad la·la; Final recite la, prep sol, cad flat
+sol (la·la·la·la against alto do·re·do·ti). Intonation sounds on the reciting pitch (Phrase C tenor intones la).
+Final pre-slur = recite→prep (alto re·ti → tenor **la·sol**) — same recite→prep shape as the bass pre-slur; both
+lower voices lean recite-into-prep on that pickup, differing only by their recite/prep pitches. Tone 2 added to
+`TENOR_TONES`.
+
+**Tenor hold — verified FROM the Tone 2 score, gated (`TENOR_HOLD_TONES`).** The melisma-hold collapse in
+`deriveTenorRolesWD()` was previously Tone-1-only by accident (TENOR_RULES had one key). It is now gated behind
+`TENOR_HOLD_TONES = {1, 2}` and takes a `tone` arg (passed at all 3 call sites). Tone 2's hold is verified from
+the LIC score, NOT ported: Phrase A "hear" (alto fa·mi 2×H → tenor holds one **whole** on la) and Final "me"
+(alto do·re W+H → tenor holds a **dotted whole W·** on sol). A future tenor tone rearticulates by default until
+its own score is verified and it joins the set.
+
+**Soprano — guardrail comment added (no behaviour change).** Soprano stays a single global `SOPRANO_MAP` (pure
+diatonic third above alto), gated by `SOPRANO_TONES`. Agreed this is principled, not a shortcut: the structural
+asymmetry vs. bass/tenor (per-phrase tables) mirrors a real musical asymmetry (soprano = a constant parallel
+interval; bass/tenor move independently per phrase), and `SOPRANO_TONES` already provides the per-tone
+verification scope. Guardrail documents the boundary: a future tone whose soprano deviates per-phrase must get
+its own rules, not a new SOPRANO_MAP entry (di→mi is effectively Tone-2-only and is the canonical collision case).
+
+**Comment fix.** `BASS_RULES[2]` comments mislabeled the substitution keys as "(soprano)"; the maps key on the
+ALTO melody pitch. Corrected. No behaviour change.
+
+**Gate:** test_pointing_paths (only pre-existing F-1a/F-1b/F-2 register warnings) + test_sunday_vespers 71/71
+PASS; `vite build` clean.
+
+**OPEN / next pass (deferred deliberately, not silently resolved):**
+- **Note-length deviations.** Bill reports the generated score diverges from the director's score on note
+  *lengths* (durations), not pitch/slur assignments. This is the duration engine (`cadDurs` / `lineToNotes`),
+  a separate concern from today's pitch-map work — needs its own score-verification pass.
+- **Bass sounding register UNVERIFIED.** The fifth-down correction changes which octave each pitch lands in
+  under the global `BASS_OCTAVE_DIV`; the bass may need per-phrase `octaveDiv` overrides. Pitch CLASSES are
+  score-verified; octave placement is not. Flagged in code. Listen-pass with the note-length work.
+- **Tenor Final "me" hold grouping** — the `W·` collapse only fires if `deriveTenorRolesWD()` sees alto do·re
+  on "me" as one melisma run (matching `text` + melisma flag). Not yet runtime-confirmed for Tone 2; verify
+  rendering in the same pass. If the engine doesn't group it, flag — don't force.
+- **B/C/D bass + tenor** are phrase-chart-verified but not yet LIC-score-verified (only A and Final were read
+  on the score today). Confirm against the score in the follow-up.
+
+---
 
 **Session June 20, 2026 — Aposticha-Glory safeguards + 06-21 encode (v0.22.0–v0.22.4).**
 THEME: the 06-21 broken-Vespers bug was the first visible symptom of a systemic gap — the validator and the
