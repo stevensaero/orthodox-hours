@@ -12,11 +12,25 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.28";
+export const TONE_TRAINER_VERSION = "v0.25.29";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.29",
+    date: "June 2026",
+    summary: "Tone 2 SATB complete — tenor encoded, bass fifth-down correction (LIC-verified)",
+    items: [
+      "feat: TENOR_RULES[2] — Tone 2 tenor (the last missing voice) encoded, all five phrases verified against the LIC (Lord I Call) score. Alto→tenor substitution per phrase: A/B recite la, cad all→la; C intone+recite la, prep sol, cad sol; D recite sol, cad la·la; Final recite la, prep sol, cad flat sol. Intonation sounds on the reciting pitch; the Final pre-slur leans recite→prep (alto re·ti → tenor la·sol), the same recite→prep shape the bass pre-slur takes.",
+      "feat: Tone 2 added to TENOR_TONES — the tenor voice is now selectable for Tone 2 in the SATB / standalone tenor views.",
+      "arch: TENOR_HOLD_TONES gate on the melisma-hold collapse. deriveTenorRolesWD() now collapses a constant-pitch alto melisma into one held tenor note ONLY for tones whose hold behaviour is score-verified (currently {1, 2}), replacing the prior de-facto 'Tone 1 only because TENOR_RULES had one key' scoping. Tone 2's hold is verified FROM the Tone 2 LIC score — Phrase A 'hear' (alto fa·mi 2×H → held whole on la) and Final 'me' (alto do·re W+H → held dotted-whole W· on sol) — not ported from Tone 1. A future tenor tone rearticulates by default until its own score is verified and it is added here.",
+      "fix: BASS_RULES[2] pitch-class correction. The Tone 2 bass was encoded a perfect fifth too high across all five phrases (la→re, mi→la, sol→do, re→sol, fa→ti — a uniform transposition error). Corrected against the LIC score (Phrase A and Final verified directly on the director's score; B/C/D from the verified phrase chart): A recite re cad re·la·re; B recite re cad la·re; C recite re prep sol cad do; D recite do cad la·re; Final recite re prep sol cad do·ti·do·sol. Final pre-slur corrected to re·sol (recite→prep), replacing the prior incorrect la·re.",
+      "fix: BASS_RULES[2] comments mislabeled the substitution keys as '(soprano)'; the maps key on the ALTO melody pitch. Comments corrected. No behaviour change.",
+      "note: bass sounding register (BASS_OCTAVE_DIV octave placement) is UNVERIFIED after the fifth-down correction — pitch classes are score-verified, octave placement needs a listen-pass against the score and may require per-phrase octaveDiv overrides. Flagged in code; tracked with the note-length deviation pass.",
+      "docs: soprano guardrail comment at SOPRANO_TONES — membership asserts a verified pure diatonic third above alto; a future tone whose soprano deviates per-phrase must get its own rules (mirroring BASS_RULES/TENOR_RULES), not a new SOPRANO_MAP entry.",
+    ],
+  },
   {
     version: "v0.25.28",
     date: "June 2026",
@@ -1552,7 +1566,18 @@ const buildVoiceHeightMap = (pitches, hzFn, phraseRules) => {
 };
 
 // Tones with score-verified tenor rules. Tenor is suppressed for all other tones.
-const TENOR_TONES = new Set([1]);
+// Tone 1: Drillock & Ealy tutorial. Tone 2: LIC (Lord I Call) score, all 5 phrases.
+const TENOR_TONES = new Set([1, 2]);
+
+// Tones whose tenor MELISMA-HOLD behaviour is score-verified. The collapse in
+// deriveTenorRolesWD() (constant-pitch alto melisma → one held tenor note) fires
+// ONLY for these tones — gated, not inherited. Verified per tone from its own score:
+//   Tone 1 — director-confirmed (choir_director_review.md): 2-note melisma → held whole.
+//   Tone 2 — LIC score: Phrase A "hear" (fa·mi 2×H → held W on la) and Final "me"
+//            (do·re W+H → held W· on sol).
+// A tenor tone NOT listed here rearticulates every melisma note until its hold is
+// verified from that tone's own score. Per the prime directive, hold is never ported.
+const TENOR_HOLD_TONES = new Set([1, 2]);
 
 // Soprano chip height — always above the corresponding alto chip.
 // Maps alto pitch through SOPRANO_MAP, then ensures the result sits
@@ -1564,6 +1589,18 @@ const TENOR_TONES = new Set([1]);
 // Add a tone here only after researching the Obikhod score for that tone.
 // Tone 1: pure diatonic third above alto — verified against Drillock & Ealy
 // Four-Part Harmony tutorial, all 5 phrases, 21/21 notes match SOPRANO_MAP.
+// Tone 2: pure diatonic third above alto — verified against the LIC score, all 5 phrases.
+//
+// GUARDRAIL — membership here ASSERTS "soprano is a verified pure diatonic third above
+// the alto." Unlike bass/tenor (per-tone, per-phrase rule tables), soprano shares one
+// global SOPRANO_MAP because a diatonic third is a tone-independent interval and the
+// SOPRANO_TONES gate already scopes the per-tone verification. This is principled ONLY
+// while every member's soprano is genuinely a pure third. A future tone whose soprano
+// DEVIATES per phrase (a cadential suspension, contrary motion, a sixth) must NOT be
+// added here and must NOT get a new SOPRANO_MAP entry — it needs its own per-phrase rule
+// table mirroring BASS_RULES/TENOR_RULES. (Note: di→mi in SOPRANO_MAP is effectively
+// Tone-2-only in practice; Tone 1's alto never uses di. A future tone needing di to map
+// elsewhere is exactly the deviation case above — give it its own rules, not a remap.)
 const SOPRANO_TONES = new Set([1, 2]);
 
 const chipH_soprano = (altoPitch) => {
@@ -2512,6 +2549,61 @@ const TENOR_RULES = {
       octaveDiv: { la: 1, si: 1 },
     },
   },
+  // ── Tone 2, Russian Obikhod (L'vov-Bakhmetev) ──────────────────────────
+  // All five phrases verified against the LIC (Lord I Call) score, June 2026.
+  // Keys are the ALTO (melody) pitch per role; values are the tenor harmony pitch.
+  // Intonation sounds on the reciting pitch (la). Hold behaviour is verified FROM the
+  // Tone 2 score (Tone 2 ∈ TENOR_HOLD_TONES), NOT ported from Tone 1:
+  //   Phrase A "hear": alto fa·mi (2×H) → tenor holds one whole note on la.
+  //   Final   "me":   alto do·re (W+H) → tenor holds a dotted whole (W·) on sol.
+  2: {
+    A: {
+      // Intonation/reciting alto re → tenor la
+      recite: "la",
+      prepMap: {},
+      // Cadence alto fa·mi·re → tenor la·la·la (constant la; the fa·mi anchor melisma
+      // collapses to one held whole note on la via the TENOR_HOLD_TONES collapse).
+      cadMap: { fa: "la", mi: "la", re: "la" },
+      preslurMap: {},
+    },
+    B: {
+      // Reciting alto re → tenor la
+      recite: "la",
+      prepMap: {},
+      // Cadence alto di·re → tenor la·la
+      cadMap: { di: "la", re: "la" },
+      preslurMap: {},
+    },
+    C: {
+      // Intonation/reciting alto re → tenor la
+      recite: "la",
+      // Prep alto ti → tenor sol
+      prepMap: { ti: "sol" },
+      // Cadence alto do → tenor sol
+      cadMap: { do: "sol" },
+      preslurMap: {},
+    },
+    D: {
+      // Reciting alto do → tenor sol
+      recite: "sol",
+      prepMap: {},
+      // Cadence alto di·re → tenor la·la (same cadence shape as Phrase B)
+      cadMap: { di: "la", re: "la" },
+      preslurMap: {},
+    },
+    Final: {
+      // Reciting alto re → tenor la
+      recite: "la",
+      // Prep alto ti → tenor sol
+      prepMap: { ti: "sol" },
+      // Cadence alto do·re·do·ti → tenor sol throughout (flat hold on sol).
+      // The do·re melisma on "me" holds as a dotted whole (W·) on sol via the collapse.
+      cadMap: { do: "sol", re: "sol", ti: "sol" },
+      // Pre-slur "Hear": alto leans recite·prep (re·ti) → tenor recite·prep (la·sol),
+      // the same recite→prep shape the bass pre-slur takes.
+      preslurMap: { re: "la", ti: "sol" },
+    },
+  },
 };
 
 // ── Tenor derivation: shared pitch-map + melisma-hold collapse ───────────────
@@ -2547,18 +2639,20 @@ const sumDurKeys = (keys) => {
   return BEATS_DURKEY[total] ?? null;
 };
 
-// Build tenor rolesWD from alto rolesWD: 1:1 pitch-map, then collapse a constant-
-// pitch melisma span (same syllable text, same tenor pitch, ≥2 notes) into a single
-// held note. This is the choir director's rule: the tenor sustains when neither its
-// pitch nor the syllable changes; it rearticulates when the syllable changes (a new
-// syllable = a new note, even on the same pitch — handled by the same-text guard) or
-// when its pitch changes (the tenor's own melisma, e.g. Final la·si·mi — never
-// collapsed). The held note's duration is the sum: 2H → whole, 3H → dotted whole (W·).
-// Each returned entry carries spanStart (the alto column index where it begins) and
-// spanCount (how many alto notes it spans) so the columnar score renderer can anchor
-// a held note across the alto melisma. A sum with no single value (4H+, not present in
-// Tone 1) falls back to separate notes. See choir_director_review.md.
-const deriveTenorRolesWD = (rolesWD, rules) => {
+// Build tenor rolesWD from alto rolesWD: 1:1 pitch-map, then (for tones in
+// TENOR_HOLD_TONES) collapse a constant-pitch melisma span (same syllable text, same
+// tenor pitch, ≥2 notes) into a single held note. This is the choir director's rule:
+// the tenor sustains when neither its pitch nor the syllable changes; it rearticulates
+// when the syllable changes (a new syllable = a new note, even on the same pitch —
+// handled by the same-text guard) or when its pitch changes (the tenor's own melisma,
+// e.g. Tone 1 Final la·si·mi — never collapsed). The held note's duration is the sum:
+// 2H → whole, W+H → dotted whole (W·). Each returned entry carries spanStart (the alto
+// column index where it begins) and spanCount (how many alto notes it spans) so the
+// columnar score renderer can anchor a held note across the alto melisma. A sum with no
+// single value falls back to separate notes. The collapse is GATED by TENOR_HOLD_TONES
+// (verified per tone from its own score) — a tone not in that set rearticulates every
+// note. See choir_director_review.md (Tone 1) and the LIC verification (Tone 2).
+const deriveTenorRolesWD = (rolesWD, rules, tone) => {
   const mapped = rolesWD.map((r, i) => ({ ...r, pitches: [mapTenorPitch(r, rules)], _idx: i }));
   const out = [];
   let i = 0;
@@ -2572,7 +2666,7 @@ const deriveTenorRolesWD = (rolesWD, rules) => {
              mapped[j + 1].text === e.text &&
              mapped[j + 1].pitches[0] === e.pitches[0]) j++;
       const spanCount = j - i + 1;
-      if (spanCount >= 2) {
+      if (spanCount >= 2 && TENOR_HOLD_TONES.has(tone)) {
         // The maximal run is the decision unit: collapse it whole when its summed
         // duration maps to a single representable value (incl. W· for 3H), otherwise
         // emit every note in the run separately. (Never collapse a sub-span.)
@@ -2654,47 +2748,54 @@ const BASS_RULES = {
   // ── Tone 2, Russian Obikhod (L'vov-Bakhmetev) ──────────────────────────
   2: {
     // setting: "Obikhod (L'vov-Bakhmetev)" — flag if other settings are added
+    // PITCH CLASSES below are LIC-score verified (A & Final on the director's score;
+    // B/C/D from the verified phrase chart). SOUNDING REGISTER is NOT yet verified:
+    // the fifth-down correction changes which octave each pitch lands in under the
+    // global BASS_OCTAVE_DIV, so the bass may need per-phrase octaveDiv overrides.
+    // Tracked for the post-apply listen-pass (with the note-length deviations).
     A: {
-      recite: "la",
-      // Phrase A cadence: fa(soprano) → la(bass); mi → mi; re → la
-      // Bass holds la on anchor (fa), drops to mi on fill, returns la on close
-      cadMap: { fa: "la", mi: "mi", re: "la" },
+      recite: "re",
+      // Cadence alto fa·mi·re → bass re·la·re (LIC-score verified; "hear" anchor melisma
+      // fa·mi → bass re·la). Bass leaves re on the anchor, dips to la, returns re on close.
+      cadMap: { fa: "re", mi: "la", re: "re" },
       prepMap: {},
       preslurMap: {},
     },
     B: {
-      recite: "la",
-      // di(soprano) → mi(bass); re → la
-      // Bass holds la through recite, dips to mi on di cadence, returns la
-      cadMap: { di: "mi", re: "la" },
+      recite: "re",
+      // Cadence alto di·re → bass la·re (phrase chart; LIC-verify B/C/D in follow-up pass)
+      cadMap: { di: "la", re: "re" },
       prepMap: {},
       preslurMap: {},
     },
     C: {
-      recite: "la",
-      // Cadence do(soprano) → sol(bass)
-      // Prep ti(soprano) → re(bass) — dominant approach to sol
-      cadMap: { do: "sol" },
-      prepMap: { ti: "re" },
+      recite: "re",
+      // Cadence alto do → bass do
+      // Prep alto ti → bass sol — dominant approach to do
+      cadMap: { do: "do" },
+      prepMap: { ti: "sol" },
       preslurMap: {},
     },
     D: {
-      recite: "sol",  // bass drops to sol when soprano recites on do
-      // di → mi; re → la (same cadence shape as Phrase B)
-      cadMap: { di: "mi", re: "la" },
+      recite: "do",  // bass recites on do when the alto recites on do
+      // Cadence alto di·re → bass la·re (same cadence shape as Phrase B)
+      cadMap: { di: "la", re: "re" },
       prepMap: {},
       preslurMap: {},
     },
     Final: {
-      recite: "la",
-      // Score-verified (L'vov-Bakhmetev Obikhod):
-      // "me," alto = do·re melisma → bass = sol·fa (W+H)
-      // "O" alto = do → bass = sol (H)
-      // "Lord!" alto = ti → bass = re (W) — open minor seventh close
-      cadMap: { do: "sol", re: "fa", ti: "re" },
-      prepMap: { ti: "re" },
-      // Pre-slur "Hear": soprano [re,ti] → bass [la,re]
-      preslurMap: { re: "la", ti: "re" },
+      recite: "re",
+      // LIC-score verified (alto → bass):
+      //   "me" alto do·re melisma → bass do·ti (whole·to·half)
+      //   "O"  alto do → bass do
+      //   "Lord!" alto ti → bass sol (open close)
+      // Cadence alto do·re·do·ti → bass do·ti·do·sol.
+      cadMap: { do: "do", re: "ti", ti: "sol" },
+      // Prep alto ti → bass sol
+      prepMap: { ti: "sol" },
+      // Pre-slur "Hear": alto leans recite·prep (re·ti) → bass recite·prep (re·sol).
+      // LIC-verified: re descends to sol. (Was incorrectly la·re — both notes wrong.)
+      preslurMap: { re: "re", ti: "sol" },
     },
   },
   // Tones 1, 3, 4, 5, 6, 7, 8 — bass rules not yet researched.
@@ -3927,7 +4028,7 @@ export default function ToneTrainer() {
     const rolesWD = lineToRolesWithDuration(line);
 
     // Shared pitch-map + melisma-hold collapse (constant-pitch span → one held note).
-    const tenorRolesWD = deriveTenorRolesWD(rolesWD, rules);
+    const tenorRolesWD = deriveTenorRolesWD(rolesWD, rules, activeTone);
 
     const notes = [];
     const peak = (r) => (r.role === "cad" || r.role === "cad1") && r.anchor ? 0.38 : 0.33;
@@ -4969,7 +5070,7 @@ export default function ToneTrainer() {
       // Shared pitch-map + melisma-hold collapse. Collapsed (held) entries carry
       // spanStart (alto column index) + spanCount so the columnar score renderer can
       // anchor a held tenor note across the alto melisma it covers.
-      const tenorEntries = tenorRules ? deriveTenorRolesWD(rolesWD, tenorRules).map(r => {
+      const tenorEntries = tenorRules ? deriveTenorRolesWD(rolesWD, tenorRules, activeTone).map(r => {
         const p = r.pitches[0];
         const octaveDiv = tenorRules.octaveDiv?.[p] ?? TENOR_OCTAVE_DIV_LOCAL[p] ?? 2;
         return { pitch: p, durKey: r.durKey, melisma: r.melisma === true, octaveDiv,
@@ -6043,7 +6144,7 @@ export default function ToneTrainer() {
           const trules = TENOR_RULES[activeTone]?.[line.phrase];
           if (!trules) return null;
           // Shared pitch-map + melisma-hold collapse; tag phraseRules for chip height/audio.
-          return deriveTenorRolesWD(rolesWD, trules).map(r => ({ ...r, phraseRules: trules }));
+          return deriveTenorRolesWD(rolesWD, trules, activeTone).map(r => ({ ...r, phraseRules: trules }));
         })();
 
         // Tenor height map — unified bass+tenor map; tenor pitches always shallower than bass.
