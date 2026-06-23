@@ -1,6 +1,33 @@
 # Orthodox Hours Tool — Project Notes
 **Tool version: v0.22.4** | **Tone Trainer: v0.25.30** | Last synced: June 21, 2026
 
+**Session June 21, 2026 (cont.) — Pointing-engine extraction + role-test coverage (Pass 1 of 2; no version bump).**
+Follow-on to the Tone 2 Final pre-slur fix: that regression hid because the pointing logic had no test coverage
+at the role-assignment layer, and the existing `test_pointing_paths.mjs` only covers the upstream
+syllabification/bracket-parse layer (and does so via a *replicated copy* that must be hand-synced). To close the
+gap without recreating that drift hazard, the pointing engine and its data were extracted to shared pure modules
+that both the component and the new test import.
+
+- **`src/lib/pointing.js`** (new) — `flatten`, `anchorIndex`, `distribute`, `pointLine` lifted verbatim from
+  `tone-trainer.jsx` (pure sylls→roles logic, no React/state). Component imports them; all call sites unchanged.
+- **`src/lib/phrase-defs.js`** (new) — `PH_DEFS` (pure literal tone phrase data: recite/inton/prep/cad + cadDurs)
+  lifted out so the test uses the REAL defs, not a copy. Component + cadDuration import it back.
+- **`tools/test_pointing_roles.mjs`** (new) — imports the real `pointLine` + `PH_DEFS`; asserts role+pitch
+  sequences for curated lines per tone/phrase. Seeded with 6 fixtures incl. the pre-slur regression guard
+  ("Hear" → preslur[re·ti]), the reciting-precedes variant ("Christ" → preslur), a no-false-fire control
+  (pre-anchor unaccented → prep ti), Tone 2 A/B cadences, and Tone 1 A inton/prep/cad. Roles+pitches only;
+  durations are a separate (future) layer. Wired into the `gate` npm script.
+- Both extractions are pure moves — build clean, full gate green (pointing_paths warnings-only, sunday_vespers
+  71/71, pointing_roles 6/6). No behaviour change, so no version bump (arch + tooling).
+
+**Pass 2 (next):** absorb the pure syllabification/bracket-parse functions (`syllabifyRules` + `STOP`,
+`lookupWord`, `syllabifyWithSource`, `wordFromDisplay`, `parseBracketWord`, `bracketSpanToSyllIdx`) into a shared
+lib and rewrite `test_pointing_paths.mjs` to import them, retiring its replica. The underline path
+(`paraToPointerLine`, a component-scope closure the replica *simulates*) is lifted only if it proves free of
+component-local closure deps — decided by inspection, not forced.
+
+---
+
 **Session June 21, 2026 (cont.) — Tone 2 Final pre-slur rendering fix (Tone Trainer v0.25.30).**
 Bill reported the Final-phrase alto pre-slur on "Hear" ("[Hear] [me], O Lord!") rendering as a lone `ti(Q)`
 instead of the melisma `re(H·)·ti(Q)`. Investigation: `pointLine()` never emits the `preslur` role for Tone 2
