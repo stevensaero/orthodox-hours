@@ -176,11 +176,19 @@ will look different in each voice.
 **Pre-slur rule:** When the syllable immediately before the prep is a single
 **accented** monosyllable, that word gets two quarter notes `[re, ti]` before the
 normal prep `ti`. This is a singing-practice choice, not a director mark — the
-engine detects it structurally (see §5.3).
+engine detects it structurally (see §5.3). *(Harmony, §15.5: the pre-slur is
+recite→prep for every voice — alto `re·ti`, soprano `fa·re`, tenor `la·sol`, bass
+`re·sol`. The alto description here is correct and complete for the melody.)*
 
 ---
 
 ## 4. Note durations — confirmed rhythm table
+
+> **Caveat (June 21 2026, §15):** the melody durations below are confirmed, but
+> note-*length* deviations between the generated score and the director's LIC score
+> were identified this session (durations, not pitch/slur). They are deferred to a
+> duration-engine pass — treat this "confirmed rhythm table" as provisional pending
+> that pass. See §15.6.
 
 The existing `lineToNotes()` logic requires **no changes** for Tone 2.
 
@@ -714,3 +722,145 @@ a function. Future tones with simple cycles can use a flat array.
 *§14 added May 2026 following rotation bug fix (v0.9.2). Corpus verification run*
 *confirms zero regressions on Tone 1 and 3, and resolves all documented Tone 2*
 *corpus anomalies.*
+
+---
+
+## 15. Four-part harmony verification — June 21 2026 (v0.25.29)
+
+Tone 2's four-part harmony was verified phrase by phrase, voice by voice, against
+the choir director's **LIC (Lord I Call) score** — the authoritative four-part
+source. Method (per the prime directive: each tone and each phrase uses only its
+own score evidence, never analogy to another tone or phrase):
+
+1. **Alto** (the melody all other voices key off) — A/B/C/D/Final.
+2. **Soprano** — verified as a derivation of the alto.
+3. **Bass** — verified; a systematic error was found and corrected.
+4. **Tenor** — the last missing voice; encoded from the score.
+
+This session completes Tone 2 SATB. The tenor was the only voice with no encoding.
+
+### 15.1 Alto — confirmed unchanged
+
+The §3 `PH_DEFS[2]` table was confirmed correct against the LIC score for all five
+phrases. No change. It remains the single source of truth all other voices derive
+from (`pointLine() → lineToRolesWithDuration() → rolesWD`, computed once).
+
+### 15.2 Soprano — pure diatonic third, confirmed
+
+Soprano is a pure diatonic third above the alto, every note, via the global
+`SOPRANO_MAP` (gated by `SOPRANO_TONES`). Confirmed against the LIC score for all
+five phrases, including the two points worth flagging:
+
+- **`di → mi` in Phrases B and D** — over the alto's raised B♮ (`di`), the soprano
+  sits on D (`mi`), a third above on the same staff line, *not* rising chromatically
+  with it. Confirmed.
+- **Phrase C intonation** — soprano opens on its reciting pitch `fa` (the
+  intonation note sounds on the reciting pitch). Confirmed.
+
+**Representation decision (kept):** soprano stays a single global map rather than a
+per-phrase rule table like bass/tenor. This is principled, not a shortcut — the
+structural asymmetry mirrors a real musical asymmetry (soprano is a constant
+parallel interval; bass/tenor move independently per phrase), and `SOPRANO_TONES`
+already provides the per-tone verification scope. A guardrail comment was added at
+`SOPRANO_TONES`: membership asserts a verified pure third; a future tone whose
+soprano deviates per phrase gets its own rules, not a new `SOPRANO_MAP` entry.
+(`di→mi` is effectively Tone-2-only and is the canonical collision case.)
+
+### 15.3 Bass — systematic fifth-down correction (`BASS_RULES[2]`)
+
+**The encoded Tone 2 bass was a uniform perfect fifth too high across all five
+phrases** — a single transposition error, not scattered mistakes:
+
+| | encoded (wrong) | LIC score (correct) | interval |
+|---|---|---|---|
+| recite (A/B/C/Final) | la | re | −5th |
+| recite (D) | sol | do | −5th |
+| cadence pitches | la, mi, sol, re, fa | re, la, do, sol, ti | −5th each |
+
+Corrected per-phrase bass (alto → bass):
+
+| Phrase | recite | prep | cadence (bass) |
+|---|---|---|---|
+| A | re | — | re · la · re |
+| B | re | — | la · re |
+| C | re | sol | do |
+| D | do | — | la · re |
+| Final | re | sol | do · ti · do · sol |
+
+**Final pre-slur** on "Hear" was wrong on *both* notes (encoded `la·re`); corrected
+to **`re·sol`** — the bass leaning from its reciting `re` into its prep `sol`
+(recite→prep, see §15.5). This pre-slur was the specific source of the
+generated-score divergence in the Final that the director's score had been showing;
+it is *not* derivable from the cadence pattern and required the score to fix.
+
+Phrase A and Final were read directly on the director's LIC score; B/C/D from the
+verified phrase chart and pending a direct LIC read in the follow-up pass.
+
+A comment fix went in alongside: `BASS_RULES[2]` had mislabeled the substitution
+keys as `(soprano)`; the maps key on the **alto** melody pitch. No behaviour change.
+
+### 15.4 Tenor — encoded (`TENOR_RULES[2]`), the last missing voice
+
+All five phrases, LIC-verified (alto → tenor):
+
+| Phrase | inton | recite | prep | cadence (tenor) |
+|---|---|---|---|---|
+| A | — | la | — | la · la · la |
+| B | — | la | — | la · la |
+| C | la | la | sol | sol |
+| D | — | sol | — | la · la |
+| Final | — | la | sol | sol · sol · sol · sol |
+
+Intonation sounds on the reciting pitch (Phrase C tenor intones `la`). Tone 2 added
+to `TENOR_TONES`.
+
+**Tenor melisma-hold — verified FROM the Tone 2 score, gated.** Where the alto sings
+a constant-pitch tenor melisma, the tenor holds one note rather than rearticulating:
+
+- **Phrase A "hear"** — alto `fa·mi` (2×H) → tenor holds one **whole** note on `la`.
+- **Final "me"** — alto `do·re` (W+H) → tenor holds a **dotted whole (W·)** on `sol`.
+
+Both observed on the LIC score, *not* ported from Tone 1. The collapse in
+`deriveTenorRolesWD()` is now gated behind `TENOR_HOLD_TONES = {1, 2}` (and takes a
+`tone` arg, passed at all three call sites); a future tenor tone rearticulates by
+default until its own hold is score-verified and it joins the set.
+
+### 15.5 Pre-slur — generalized as recite→prep across all voices
+
+The Final pre-slur on "Hear" (the two-note pickup before the reciting tone leans
+into the prep) is not a memorized figure — each voice slurs from **its own reciting
+pitch to its own prep pitch**:
+
+| Voice | recite | prep | pre-slur |
+|---|---|---|---|
+| Alto | re | ti | re · ti |
+| Soprano | fa | re | fa · re |
+| Tenor | la | sol | la · sol |
+| Bass | re | sol | re · sol |
+
+This is why §3.4 / §5.3's alto description (`[re, ti]`) is correct and complete for
+the melody, and the harmony voices follow the same recite→prep logic with their own
+pitches. Both lower voices (tenor `la·sol`, bass `re·sol`) lean recite-into-prep;
+they differ only because their recite/prep pitches differ.
+
+### 15.6 Open items (deferred deliberately — not silently resolved)
+
+- **Note-length deviations.** The generated score diverges from the director's score
+  on note *lengths* (durations), not pitch/slur assignments. This is the duration
+  engine (`cadDurs` / `lineToNotes`), a separate concern from the pitch-map work — it
+  needs its own score-verification pass. See §4, which is now caveated accordingly.
+- **Bass sounding register UNVERIFIED.** The fifth-down correction changes which
+  octave each pitch lands in under the global `BASS_OCTAVE_DIV`; the bass may need
+  per-phrase `octaveDiv` overrides. Pitch *classes* are score-verified; octave
+  placement is not. Listen-pass with the note-length work.
+- **Tenor Final "me" hold grouping.** The `W·` collapse fires only if
+  `deriveTenorRolesWD()` sees alto `do·re` on "me" as one melisma run; not yet
+  runtime-confirmed for Tone 2. Verify rendering; if the engine doesn't group it,
+  flag — don't force.
+- **B/C/D bass + tenor** are phrase-chart-verified but not yet read on the LIC score
+  (only A and Final were on the score this session). Confirm in the follow-up.
+
+---
+
+*§15 added June 21 2026 (Tone Trainer v0.25.29). Tone 2 SATB complete: tenor*
+*encoded, bass corrected a fifth down, soprano/alto confirmed against the LIC score.*
