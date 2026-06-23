@@ -2,12 +2,12 @@
   "Re[deem]er.": {
     "desc": "mid: prefix+suffix",
     "bracket": [
-      "Re",
+      "re",
       "deem•",
       "er"
     ],
     "underline": [
-      "Re",
+      "re",
       "deem•",
       "er"
     ],
@@ -42,12 +42,12 @@
   "[ang]els": {
     "desc": "mid: suffix only (no prefix)",
     "bracket": [
-      "ang•",
-      "els"
+      "An•",
+      "gels"
     ],
     "underline": [
-      "ang•",
-      "els"
+      "An•",
+      "gels"
     ],
     "match": true
   },
@@ -55,25 +55,27 @@
     "desc": "mid: prefix+suffix",
     "bracket": [
       "Arch",
-      "ang•",
-      "els"
+      "an•",
+      "gels"
     ],
     "underline": [
       "Arch",
-      "ang•",
-      "els"
+      "an•",
+      "gels"
     ],
     "match": true
   },
   "Resur[rec]tion": {
     "desc": "mid: prefix+suffix",
     "bracket": [
-      "Resur",
+      "Res",
+      "ur",
       "rec•",
       "tion"
     ],
     "underline": [
-      "Resur",
+      "Res",
+      "ur",
       "rec•",
       "tion"
     ],
@@ -114,12 +116,12 @@
   "[pow]er//": {
     "desc": "mid: suffix only",
     "bracket": [
-      "pow•",
-      "er"
+      "Po•",
+      "wer"
     ],
     "underline": [
-      "pow•",
-      "er"
+      "Po•",
+      "wer"
     ],
     "match": true
   },
