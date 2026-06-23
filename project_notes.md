@@ -1,6 +1,35 @@
 # Orthodox Hours Tool — Project Notes
 **Tool version: v0.22.4** | **Tone Trainer: v0.25.30** | Last synced: June 21, 2026
 
+**Session June 21, 2026 (cont.) — Syllabify/bracket-parse extraction + test_pointing_paths rewrite (Pass 2 of 2; no version bump).**
+Completed the test-tooling tidy. The pure text→sylls + director-mark parse layer was extracted to a shared module
+and `test_pointing_paths.mjs` rewritten to import it, retiring its replica.
+
+- **`src/lib/syllabify.js`** (new) — `syllabifyRules`, `STOP`, `guessStressHeuristic`, `lookupWord`,
+  `syllabifyWithSource`, `wordFromDisplay` (text→sylls) + `bracketSpanToSyllIdx`, `syllabifyWithDirectorMark`,
+  `parseBracketWord` (director-mark → accented syllable). All pure (lexicon passed as arg); verified no component
+  closure deps. Component imports back `{STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWord,
+  syllabifyWithDirectorMark}` — the last because the docx underline path (`paraToPointerLine`) shares that core.
+- **`test_pointing_paths.mjs` rewritten** — the replicated functions are gone; it now imports the real ones. Both
+  the bracket wrapper and the underline-simulation wrapper route through the REAL `syllabifyWithDirectorMark` (the
+  shared core), so path agreement is now a property of the real code. KEY FINDING: the old replica was not a
+  faithful copy but a *divergent reimplementation* (cruder rule-based syllabifier, different `lookupWord` shape) —
+  so the prior baseline validated the wrong behavior. Rewriting surfaced the real (lexicon-based, authoritative)
+  syllabifications (e.g. Po·wer, An·gels, Res·ur·rec·tion vs the replica's pow·er, ang·els); all 13 cases verified
+  correct (accent on the director-marked syllable) and the baseline regenerated from real output. Both paths still
+  agree (ALL PASS).
+- **`paraToPointerLine` NOT lifted** (as planned, decided by inspection): it's a component-scope docx-integration
+  closure that walks `para.runs`. Lifting it wasn't needed — its *core* (`syllabifyWithDirectorMark`) is now shared,
+  so the test routes through the real core and the only test-local logic left is the underline-span derivation
+  (genuinely test-specific, simulating docx runs). The closure stays in the component.
+- Pure refactor: build clean, full gate green (test_pointing_paths ALL PASS + no baseline regressions,
+  sunday_vespers 71/71, pointing_roles 6/6). No version bump.
+
+**Pointing test coverage now complete across both layers:** `test_pointing_paths` (sylls + parse, real functions)
+and `test_pointing_roles` (role assignment, real `pointLine` + `PH_DEFS`) — no replicated copies remain in either.
+
+---
+
 **Session June 21, 2026 (cont.) — Pointing-engine extraction + role-test coverage (Pass 1 of 2; no version bump).**
 Follow-on to the Tone 2 Final pre-slur fix: that regression hid because the pointing logic had no test coverage
 at the role-assignment layer, and the existing `test_pointing_paths.mjs` only covers the upstream
