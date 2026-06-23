@@ -1,5 +1,24 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.22.4** | **Tone Trainer: v0.25.29** | Last synced: June 21, 2026
+**Tool version: v0.22.4** | **Tone Trainer: v0.25.30** | Last synced: June 21, 2026
+
+**Session June 21, 2026 (cont.) — Tone 2 Final pre-slur rendering fix (Tone Trainer v0.25.30).**
+Bill reported the Final-phrase alto pre-slur on "Hear" ("[Hear] [me], O Lord!") rendering as a lone `ti(Q)`
+instead of the melisma `re(H·)·ti(Q)`. Investigation: `pointLine()` never emits the `preslur` role for Tone 2
+Final — `preslurIdx` was hardcoded `-1` with a stale comment claiming a "dedicated block" that never existed.
+The generic standard-path pre-slur guard had been removed when Tone 1 Phrase A's (unsupported) pre-slur was
+removed; Tone 2 Final depended on that guard and has no dedicated early-return block, so it regressed. "Hear"
+(the last body syllable before the anchor) fell into the `prep` branch → single `ti`, dropping the `re`.
+Everything downstream was built and waiting: both `lineToNotes()` (audio) and `lineToRolesWithDuration()`
+(chips/score) already expand a `preslur` role to `re(H·)·ti(Q)` when no reciting tone precedes, and the harmony
+`preslurMap`s (tenor `{re:la, ti:sol}`, bass `{re:re, ti:sol}`) exist — all dead code because the role was never
+emitted. Fix: re-enable pre-slur detection scoped to Tone 2 Final only (prime directive) — last body syllable
+before the anchor is a single accented monosyllable → `role=preslur, pitches=[re, ti]`. Verified against the real
+`pointLine` (extracted to a harness): "[Hear] [me], O Lord!" → Hear=preslur[re·ti]; a Final line with no pre-slur
+word still renders the normal prep `ti` (no false firing). Note: `test_pointing_paths.mjs` replicates only the
+syllabification/bracket-parsing layer, not `pointLine`, so the gate doesn't cover this path — verified manually.
+Gate 71/71, build clean.
+
+---
 
 **Session June 21, 2026 — Tone 2 SATB completed: tenor encoded + bass fifth-down correction (Tone Trainer v0.25.29).**
 THEME: a phrase-by-phrase, voice-by-voice verification walk against the director's LIC (Lord I Call) score
