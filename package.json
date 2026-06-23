@@ -6,7 +6,7 @@
   "scripts": {
     "snapshot": "node tools/snapshot_comparison.mjs",
     "validate": "node tools/validate_entries.mjs",
-    "gate": "node tools/test_pointing_paths.mjs && node tools/test_sunday_vespers.mjs",
+    "gate": "node tools/test_pointing_paths.mjs && node tools/test_sunday_vespers.mjs && node tools/test_pointing_roles.mjs",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
