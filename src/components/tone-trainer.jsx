@@ -12,11 +12,19 @@ import JSZip from "jszip";
 import { AVAILABLE_TONES } from "../lib/available-tones.js";
 import { TONE_HEADING, ROMAN, parseToneLabel, runText, runUnderline } from "../lib/docx-text.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.29";
+export const TONE_TRAINER_VERSION = "v0.25.30";
 
 // Release notes for the trainer's clickable version badge (mirrors hours-tool).
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.30",
+    date: "June 2026",
+    summary: "fix: Tone 2 Final pre-slur regression — \"Hear\" now renders re(H·)·ti(Q), not a lone ti",
+    items: [
+      "fix: pointLine() never emitted the preslur role for Tone 2 Final, so the pre-slur word (a single accented monosyllable before the cadence anchor, e.g. \"Hear\" in \"[Hear] [me], O Lord!\") fell into the prep branch and rendered as a single ti(Q) — the re was dropped entirely. Root cause: the generic standard-path pre-slur guard (preslurIdx) was removed when Tone 1 Phrase A's unsupported pre-slur was removed; Tone 2 Final depends on it and has no dedicated early-return block, so it regressed (the 'handled in its own dedicated block' comment was stale — no such block existed). Fix: re-enable pre-slur detection scoped to Tone 2 Final only (prime directive) — when the last body syllable before the anchor is a single accented monosyllable, it gets role=preslur with pitches [re, ti]. The downstream duration engines (lineToNotes + lineToRolesWithDuration, both already present) expand it to re(H·)·ti(Q) when no reciting tone precedes, re(Q)·ti(Q) otherwise; the harmony preslurMaps (tenor, bass) were already in place. Verified on the real pointLine: \"[Hear] [me], O Lord!\" → Hear=preslur[re·ti]; a Final line without a pre-slur word still renders the normal prep ti (no false firing).",
+    ],
+  },
   {
     version: "v0.25.29",
     date: "June 2026",
@@ -2319,15 +2327,21 @@ function pointLine(line, phDefs, activeTone) {
   const cad = flat.slice(a);
   const roles = [];
 
-  // Pre-slur detection (Tone 2 Final Phrase rule, but structure-agnostic):
-  // If the phrase has a prep note AND the syllable immediately before the prep
-  // is a single accented monosyllable, that syllable gets role="preslur" with
-  // pitches [recite, prep] as two quarter notes (re→ti for Tone 2 Final).
-  // Pre-slur: Tone 1 Phrase A had a pre-slur guard here, removed — no score evidence.
-  // Per prime directive: each tone/phrase gets only its own score-verified logic.
-  // Tone 1 Phrase A now has a dedicated path above that returns before reaching here.
-  // Tone 2 Final pre-slur is handled in its own dedicated block.
-  let preslurIdx = -1; // retained for Tone 2 Final path compatibility — always -1 here
+  // Pre-slur detection. If the phrase has a prep note AND the syllable immediately
+  // before the cadence anchor is a single accented monosyllable, that syllable gets
+  // role="preslur" with pitches [recite, prep] (re→ti for Tone 2 Final). It leans the
+  // reciting tone into the prep on one word; the prep is the second note of the melisma.
+  // SCOPED to Tone 2 Final (prime directive). The generic standard-path guard was
+  // removed when Tone 1 Phrase A's (unsupported) pre-slur was removed; Tone 2 Final
+  // depends on it and has no dedicated early-return block, so it regressed to a lone
+  // prep ti. Downstream (lineToNotes + lineToRolesWithDuration, both) already expand the
+  // preslur role to re(H·)·ti(Q) when no reciting tone precedes; this just re-emits it.
+  // Tone 1 Phrase A has a dedicated path above that returns before reaching here.
+  let preslurIdx = -1;
+  if (activeTone === 2 && line.phrase === "Final" && def.prep && body.length >= 1) {
+    const cand = body[body.length - 1];
+    if (cand?.accent && cand?.single) preslurIdx = body.length - 1;
+  }
 
   // For phrases with intonation, find the first accented body syllable.
   // That syllable is the tutorial's intonation half note (role="inton", accent=true → H).
