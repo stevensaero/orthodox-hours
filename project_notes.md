@@ -1,5 +1,38 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.22.4** | **Tone Trainer: v0.25.30** | Last synced: June 21, 2026
+**Tool version: v0.22.4** | **Tone Trainer: v0.25.30** | Last synced: June 27, 2026
+
+**Session June 27, 2026 — 06-28 re-encode pass (data-only; no version bump).**
+Audit/re-encode of `06-28` (Translation of the Relics of the Unmercenaries Cyrus & John)
+against St. Sergius `06-28.pdf`. The existing entry passed the gate but was unfaithful to
+source on two counts: every hymn was stored flat (pointing-fidelity gap, §11 #14) and three
+printed Menaion fields were absent.
+
+- **Pointing fidelity:** re-pointed the 3 LIC stichera, troparion, and kontakion with
+  St. Sergius `*`/`**` retained verbatim (per §3.3 — the stored dialect records provenance;
+  the top-level project-prompt line about converting `*`→`|` at encode time is stale and
+  superseded by encoding_rule_v2 §3.3). `stichera_glory` and `aposticha_glory` are genuine
+  Tier-1 (source prints them as prose, no markers) and stay flat.
+- **Added** `spec_mel: "As one valiant among the martyrs"` to the LIC stichera;
+  `lic_stavrotheotokion` (T8, Spec. Mel. "O most glorious wonder");
+  `aposticha_glory` (T2 doxasticon — resolves the §D unverified-doxasticon red for this date);
+  `aposticha_stavrotheotokion` (T2, Spec. Mel. "When from the Tree"). Structure mirrors the
+  06-21 model (the existing pattern for octoechos-aposticha + Menaion Glory + stavrotheotokia).
+- **Provenance correction:** prior header comment claimed "OCA and St. Sergius agree." They do
+  not — OCA prints the same troparion/kontakion in a differing contemporary translation
+  (troparion: "strengthen the faith of the Orthodox Christians" vs St. Sergius "strengthen
+  right believing rulers"; kontakion: "your invisible surgery" vs "invisible skill"). Daily-PDF
+  proper retained (thou/thy register) per §11 #16; divergence now recorded in the comment.
+- **One normalization** (Bill-approved): aposticha stavrotheotokion source read "O Christ,?"
+  (stray comma); normalized to "O Christ?".
+- **Calendar note:** June 28 **2026 falls on a Sunday** (4th after Pentecost, Tone 3 per OCA
+  service-texts; a UAOC aggregator's "Tone 4" disregarded). The Menaion entry is date-fixed and
+  unchanged by this; the Sunday combination is a runtime concern for the (still-unbuilt) Sunday
+  Vespers engine, where the saint's Glory surfaces at the aposticha "Glory" over Octoechos T3.
+- Full gate green: test_pointing_paths ALL PASS (no regressions, schema conformance clean),
+  test_sunday_vespers 71/71, validate_entries exit 0, vite build clean. Pre-existing F-1a/F-1b
+  register warnings unrelated to 06-28. Data-only commit; no version bump.
+
+---
 
 **Session June 21, 2026 (cont.) — Syllabify/bracket-parse extraction + test_pointing_paths rewrite (Pass 2 of 2; no version bump).**
 Completed the test-tooling tidy. The pure text→sylls + director-mark parse layer was extracted to a shared module
