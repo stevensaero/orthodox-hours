@@ -2328,7 +2328,12 @@ const JUNE_MENAION = {
   },
 
   // ── June 28 — Translation of Relics of Holy Unmercenaries Cyrus & John ──────
-  // Source: St. Sergius 06-28.pdf. OCA and St. Sergius agree.
+  // ── June 28 — Translation of the Relics of the Unmercenaries Cyrus & John ────
+  // Source: St. Sergius 06-28.pdf. Daily-PDF proper governs (thou/thy register).
+  // OCA prints the same troparion & kontakion in a contemporary translation that
+  //   differs in wording — troparion: OCA "strengthen the faith of the Orthodox
+  //   Christians" vs St. Sergius "strengthen right believing rulers"; kontakion:
+  //   OCA "your invisible surgery" vs St. Sergius "invisible skill". Stored = daily PDF.
   // Service rank: Six-Stichera (§2C) — 6 stichera, both Oktoechos canons +
   //   6-troparion canon of the saints at Matins.
 
@@ -2364,21 +2369,9 @@ const JUNE_MENAION = {
       "praise is meet for the upright.",
     stichera_lord_i_call_count: 6,  // 3 stichera T4, each sung twice (06-28.pdf); uniform doubling 3→6
     stichera_lord_i_call: [
-      { tone: 4,
-        text: "With hymns let us all honor Cyrus and with him the great John, the two martyrs " +
-              "who possessed the radiance of the Trinity, the foundation of the Faith, " +
-              "the flowers breathing forth the true fragrance of the understanding of Christ, " +
-              "for they pray unceasingly for us to the Lord." },
-      { tone: 4,
-        text: "With fasting and radiance of life thou didst shine forth, and later thou didst adorn " +
-              "thy soul with suffering, O glorious Cyrus. Thou didst forsake an earthly army, " +
-              "O wise John, and didst find the army of heaven. And, entreating the Savior, " +
-              "O blessed ones, ye both pray for those who bless your memory." },
-      { tone: 4,
-        text: "Ye were shown to be physicians of the infirm, O blessed ones, and never-waning " +
-              "luminaries of the divine Faith, uttering confession together and sharing in the " +
-              "lot of the martyrs. Having truly received crowns from Christ, O glorious Cyrus " +
-              "and wise John, unceasingly entreat the Savior on behalf of those who hymn you with faith." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs", text: "With hymns let us all honor Cyrus * and with him the great John, * the two martyrs * who possessed the radiance of the Trinity, * the foundation of the Faith, * the flowers breathing forth * the true fragrance * of the understanding of Christ, ** for they pray unceasingly for us to the Lord." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs", text: "With fasting and radiance of life * thou didst shine forth, * and later thou didst adorn thy soul with suffering, * O glorious Cyrus. * Thou didst forsake an earthly army, * O wise John, * and didst find the army of heaven. * And, entreating the Savior, O blessed ones, ** ye both pray for those who bless your memory." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs", text: "Ye were shown to be physicians of the infirm, O blessed ones, * and never-waning luminaries * of the divine Faith, * uttering confession together * and sharing in the lot of the martyrs. * Having truly received crowns from Christ, * O glorious Cyrus and wise John, * unceasingly entreat the Savior ** on behalf of those who hymn you with faith." },
     ],
     stichera_glory: { tone: 8,
       text: "Two martyrs have shone forth upon us today, healing the pangs of our souls: " +
@@ -2388,20 +2381,25 @@ const JUNE_MENAION = {
             "Wherefore, they impart healing to those who with faith celebrate their memory, " +
             "praying for our souls.",
     },
-    // Both now: Theotokion or Stavrotheotokion T8 (06-28.pdf — runtime from Octoechos)
-    aposticha_source: "octoechos",  // PDF: "the Stichera from the Oktoechos"
+    lic_theotokion: null,   // Both-now = T8 Theotokion (dogmatikon) from Octoechos; on Sunday, the resurrectional dogmatikon of the tone of week.
+    // LIC Both-now prints "Theotokion, OR this Stavrotheotokion" (Tone VIII, Spec. Mel.
+    // "O most glorious wonder"). The Wed/Fri alternative — captured for the truthing
+    // view, not consumed by the assembler.
+    lic_stavrotheotokion: { tone: 8, spec_mel: "O most glorious wonder", text: "'I cannot bear O my child, to behold Thee, * Who dost grant life and health unto all, * hung upon the Tree; * for of old those who were lulled into the sleep of death * by the fruit of the transgression * have been awakened * and granted divine and salvific life and health by Thee', * thus said the Virgin weeping, ** whom we magnify." },
+    aposticha_source: "octoechos",  // PDF: "On the Aposticha, the Stichera from the Oktoechos"
+    // Aposticha: stichera from the Octoechos; Glory = saint's doxasticon (Tone II, prose —
+    // no pointing in source). Resolves the §D unverified-doxasticon red for 06-28.
+    aposticha_glory: { tone: 2, text: "Come, ye assembly of the faithful, and with hymns let us crown Cyrus and John today: the soldiers of grace and most generous fulfillers of petitions; for in manifold ways they have been shown unto all as most splendid physicians. Wherefore, they pray for our souls." },
+    // Aposticha Both-now prints a Stavrotheotokion (Tone II, Spec. Mel. "When from the Tree").
+    // Wed/Fri option; on Sunday the theotokion comes from SUNDAY_APOSTICHA_THEOTOKIA[2]. Captured.
+    aposticha_stavrotheotokion: { tone: 2, spec_mel: "When from the Tree", text: "When the unblemished ewe-lamb beheld her Lamb * willingly led as a man to the slaughter, * she said, weeping: * \"Dost Thou now hasten to leave me childless * who gave Thee birth O Christ? * What is this that Thou hast done, O Redeemer of all? * Even so I will hymn and glorify Thine extreme goodness, * which is beyond understanding and all telling, ** O Lover of mankind!\"" },
     troparion: {
       tone: 5,
-      text: "O Christ God Who hast given us the miracles of Thy holy martyrs as an " +
-            "invincible rampart, through their supplications set at naught the counsels " +
-            "of the heathen and strengthen right believing rulers, in that Thou alone art " +
-            "good and the Lover of mankind.",
+      text: "O Christ God Who hast given us the miracles * of Thy holy martyrs as an invincible rampart, * through their supplications set at naught the counsels of the heathen * and strengthen right believing rulers, * in that Thou alone art good ** and the Lover of mankind.",
     },
     kontakion_ode6: {
       tone: 3,
-      text: "Receiving the gift of miracles from divine grace, O saints, ye work wonders " +
-            "unceasingly, cutting down all our passions with invisible skill, O divinely " +
-            "wise Cyrus and glorious John; for ye are divine physicians.",
+      text: "Receiving the gift of miracles from divine grace, O saints, * ye work wonders unceasingly, * cutting down all our passions with invisible skill, * O divinely wise Cyrus and glorious John; ** for ye are divine physicians.",
     },
   },
   // ── June 29 — Holy Apostles Peter & Paul (Great Feast) ──────────────────────
