@@ -1,7 +1,35 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.23.2** | **Tone Trainer: v0.25.30** | Last synced: June 27, 2026
+**Tool version: v0.24.0** | **Tone Trainer: v0.25.30** | Last synced: June 27, 2026
 
-**Session June 27, 2026 (cont.) — LIC fill generalized, day-independent (v0.23.2).**
+**Session June 27, 2026 (cont.) — Octoechos browser render-gap audit + provenance (v0.24.0).**
+Triggered by the 06-28 aposticha-theotokion question: the common theotokia belong in the
+Octoechos, and they are (data lives in `src/data/octoechos/index.js`, not hardcoded in
+`hours-tool.jsx`), but the Octoechos *viewer* surfaced only one of three theotokia tables.
+Full audit of `octoechos-browser.jsx` vs the data module found these gaps, now all wired:
+
+- **Index tables that were hidden:** `SUNDAY_APOSTICHA_THEOTOKIA` (8 tones), `RESURRECTIONAL_DISMISSAL_THEOTOKIA` (8 tones), `EVLOGITARIA` (refrain + 4 troparia + Glory + Both-now). All three now render in the tone-independent panel.
+- **Matins fields that were hidden:** `god_is_the_lord_theotokion`, `ikos`, `great_doxology_troparion` — all carried text, none rendered. Now shown.
+- **Schema-drift bug:** the Matins panel destructured `kathisma_2/3` but the data keys are `sessional_kathisma2/3`, so the sessional hymns (present, with hymn_1/hymn_2/theotokion) were falling through to a "not yet encoded" stub. Fixed.
+- **Not a gap (left as-is):** per-tone octoechos `matins_prokeimenon` is dead/duplicate data (nothing reads it; the live source is the `SUNDAY_PROKEIMENON` table, used by the assembler at `hours-tool.jsx` ~5578 and already rendered). The two copies differ (the dead one is pointed, the live table one is plain prose). De-dup is a separate item (see "next").
+- **Empty stubs (no data):** `KATAVASIAE {}`, `RESURRECTION_GOSPEL_STICHERA {}` (Phase 4) — left out.
+
+**Provenance surfaced (was: none shown).** Per-entry: OCA director-pointed slots now show
+`tradition` + `pointing_source` (e.g. "OCA · 2026-0614-texts-tt.docx") via `hymnProvenance`
++ a new `ProvenanceCaption`. Per-table: new data-driven `TABLE_SOURCES` export in
+`octoechos/index.js` promotes each table's source from a code comment to a rendered
+"Source:" caption. Only documented sources listed (Dismissal/Aposticha Theotokia, Evlogitaria,
+LIC opening fallback); `HYPAKOE`, `SUNDAY_KONTAKIA`, `SUNDAY_PROKEIMENON`, `SUNDAY_ALLELUIA`,
+`LIC_THEOTOKIA`, `RESURRECTIONAL_TROPARIA` have no documented source field and show no
+caption — **backlog: confirm + add their sources.**
+
+- **Commits:** data (TABLE_SOURCES) separate from the v0.24.0 viewer feature; build clean,
+  gate green (sunday_vespers 71/71, pointing ALL PASS, validate non-fatal warnings only).
+- **Still open / next:** the 06-28 aposticha-theotokion divergence itself (OCA "A new miracle
+  surpasses…" vs St. Sergius `SUNDAY_APOSTICHA_THEOTOKIA[2]` "Rejoice, O Theotokos Mary…"),
+  same class as the deferred Tone VI item — awaiting decision on OCA replacement of the 8-set.
+  And item 7: de-dup the per-tone `matins_prokeimenon` vs the `SUNDAY_PROKEIMENON` table.
+
+
 Follow-on to v0.23.1. Bill reported 06-29 (Peter & Paul, vigil) Vespers — served 06-28
 evening, opening 06-29 — showing no LIC stichera: "count 8 is not a multiple of 3 provided
 texts." Root cause was the same flag-the-remainder branch, now on the weekday/vigil path
