@@ -1,7 +1,29 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.23.0** | **Tone Trainer: v0.25.30** | Last synced: June 27, 2026
+**Tool version: v0.23.1** | **Tone Trainer: v0.25.30** | Last synced: June 27, 2026
 
-**Session June 27, 2026 (cont.) — 06-29 Matins propers encode (Peter & Paul) + browser Matins rendering (v0.23.0).**
+**Session June 27, 2026 (cont.) — Sunday LIC final-sticheron fix (v0.23.1).**
+Bill reported the deployed assembler dropping the final "Lord I Have Cried" sticheron on 06-28
+(Sunday, Tone 3, Cyrus & John). Compared our entry against the OCA Dept. of Liturgical Music &
+Translations Sunday service doc (`OCA_service_documents/2026-0628-texts-tt.json`, fileId
+`1oR2ubpRWbQKXcoJqyM89zIpEMaIpy0au`).
+
+- **Root cause (assembler, not data):** the Sunday engine splits a six-stichera saint as 6
+  resurrection + **4 saint** (`commN = 10 - 6`). Our 06-28 entry prints **3** saint stichera. In
+  `expandSticheraToCount`, 4 is not a multiple of 3 and the texts carry no repeat markers, so it
+  hit the mismatch branch: filled slots 1-3, flagged slot 4 (verse V.1, the final) with a
+  diagnostic → empty final sticheron. Texts were also off by one vs the OCA doc.
+- **OCA rubric (confirmed by Bill, cited as source example):** the four saint slots are
+  `[#1, #1 (repeat), #2, #3]` — the **first** saint sticheron is doubled to fill 4 from 3.
+- **Fix:** added a `repeat-first` fill mode to `expandSticheraToCount`, opted into **only** by the
+  Sunday LIC engine. For `n < count < 2n` it doubles the first `(count - n)` stichera; 3 → 4 =
+  `[#1, #1, #2, #3]`. Weekday §2C/§2D clean-multiple doubling (3 → 6 = double each) and simple-saint
+  Sundays (3 into 3, exact) are untouched. Fixes 06-28 and every six-stichera/doxology saint that
+  falls on a Sunday.
+- **Verified in isolation:** 3 → 4 yields V.4 #1 / V.3 #1(Repeat) / V.2 #2 / V.1 #3 (matches the
+  OCA doc); 3 → 6 weekday path unchanged. Gate green (sunday_vespers 71/71, pointing_paths +
+  validate_entries no new warnings, vite build clean).
+
+
 First Menaion entry to carry full Matins propers (those fields previously lived only in
 `pentecostarion.js`). Encoded from St. Sergius `06-29.pdf`, following the `matins_*` feast
 vocabulary from the Pentecostarion All-Saints overlay entries.
