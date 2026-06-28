@@ -3062,8 +3062,9 @@ function applyStichRepeat(stich, array, idx) {
 //   uniform   repeat count % length === 0      → repeat each in order ×(count/length)
 //             (Fekula §2A Friday "doubling each")
 //   mismatch  length>0, count%length!==0       → fill, flag remainder w/ diagnostic
-//   repeat-first (opts.fillRule)  n<count<2n    → double the first (count-n) stichera
-//             (Sunday saint LIC; rubric per OCA service doc 2026-0628-texts-tt.json)
+//   repeat-first (opts.fillRule)  n<count      → front-loaded even fill: each sung
+//             floor(count/n)×, first (count mod n) once more (3→8 = [3,3,2]).
+//             (Sunday saint LIC + §2C–§2F; OCA docs 2026-0628 / 2026-0629)
 //   empty     length === 0                     → all unresolved (ordinary placeholder)
 // Returns a length-`count` array of {text,tone,source,resolved,repeatNote?,unresolved?,diagnostic?}.
 function expandSticheraToCount(items, count, opts = {}) {
@@ -3104,18 +3105,24 @@ function expandSticheraToCount(items, count, opts = {}) {
     return out;
   }
 
-  // Repeat-first fill (opt-in via opts.fillRule === 'repeat-first'). For a saint whose
-  // printed stichera (n) are fewer than the appointed slots (count) and count is NOT a
-  // clean multiple of n, fill by repeating the FIRST (count - n) stichera once each, then
-  // the remainder once: 3 -> 4 = [#1, #1, #2, #3]; 3 -> 5 = [#1, #1, #2, #2, #3].
-  // Rubric source: OCA Dept. of Liturgical Music & Translations Sunday service doc
-  // 2026-0628-texts-tt.json (Cyrus & John on a Sunday) doubles the first saint sticheron
-  // to fill the four LIC slots. Used by the Sunday Vespers engine only; the weekday
-  // §2C/§2D clean-multiple path above is unaffected.
-  if (opts.fillRule === "repeat-first" && n < count && count < 2 * n) {
-    const extra = count - n; // number of leading stichera that double
+  // Front-loaded even fill (opt-in via opts.fillRule === 'repeat-first'). When the printed
+  // stichera (n) are fewer than the appointed slots (count), distribute the slots across the
+  // texts as evenly as possible, front-loading the remainder: every sticheron is sung
+  // base = floor(count/n) times, and the first (count mod n) are sung once more.
+  //   3 -> 4 = [2,1,1] = [#1,#1,#2,#3]      (06-28 Cyrus & John on a Sunday)
+  //   3 -> 6 = [2,2,2]                       (clean multiple — same as uniform doubling)
+  //   3 -> 8 = [3,3,2] = [#1×3,#2×3,#3×2]    (06-29 Peter & Paul vigil, 8 LIC slots)
+  // Slot count is contextual (the weekday/vigil rank fixes it; the Sunday engine computes
+  // its own commN at runtime), so the fill must be derived here, not frozen into the data.
+  // Rubric source: OCA Dept. of Liturgical Music & Translations service docs
+  // 2026-0628-texts-tt.json and 2026-0629-texts-tt.json. Opted into by the Sunday Vespers
+  // engine and the §2C–§2F Menaion LIC path; callers without the flag still fall through to
+  // the clean-multiple branch above (or the mismatch diagnostic) unchanged.
+  if (opts.fillRule === "repeat-first" && n < count) {
+    const base = Math.floor(count / n);
+    const extra = count % n; // the first `extra` stichera are sung one extra time
     for (let i = 0; i < n; i++) {
-      const reps = i < extra ? 2 : 1;
+      const reps = base + (i < extra ? 1 : 0);
       for (let r = 0; r < reps; r++) {
         out.push({
           text: items[i].text, tone: items[i].tone, source, resolved: true,
@@ -3641,10 +3648,13 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           : {text:null, source:"Menaion", resolved:false});
       }
     } else if (!isPentecostarion) {
-      // §2C/§2D/§2E/§2F: all Menaion. Fekula §2C/§2D say "six from the Menaion" —
-      // when the source prints fewer texts than the count (e.g. 3 texts ×2 = 6),
-      // expandSticheraToCount repeats each in order. See stichera_repeat_spec.md.
-      licStichera = expandSticheraToCount(menaionLicStichera, licCount, { source: "Menaion" });
+      // §2C/§2D/§2E/§2F: all Menaion. The appointed count comes from the entry's rank
+      // (six-stichera/doxology 6, polyeleos 8, vigil 8/10). When the source prints fewer
+      // texts than the count, fill them front-loaded and evenly (3 texts ×2 = 6; 3 → 8 =
+      // [3,3,2], e.g. 06-29 Peter & Paul). fillRule 'repeat-first' derives that from the
+      // texts so the same data also serves the Sunday engine's runtime slot count.
+      // See stichera_repeat_spec.md; OCA docs 2026-0628 / 2026-0629.
+      licStichera = expandSticheraToCount(menaionLicStichera, licCount, { source: "Menaion", fillRule: "repeat-first" });
     } else if (isPentecostarion && menaionLicStichera.length > 0) {
       // Pentecostarion + Menaion (§4A3 — Polyeleos/Vigil Menaion saint):
       // 3 slots from Pentecostarion Octoechos, remaining from Menaion.
@@ -8191,6 +8201,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.23.2",
+    date: "June 2026",
+    summary: "Sunday LIC fix generalized to all 'fewer texts than slots' cases, on every day",
+    items: [
+      "v0.23.1 fixed the Sunday case (3 saint stichera into 4 slots) but only for n < count < 2n. A weekday/vigil saint whose printed stichera do not divide the appointed slot count cleanly still flagged: 06-29 (Peter & Paul, vigil) has 3 'Lord I Have Cried' idiomela for 8 slots, and 8 is not a multiple of 3, so Vespers (served 06-28 evening, opening 06-29) showed no stichera. Generalized expandSticheraToCount's 'repeat-first' mode to any n < count using a front-loaded even fill: each sticheron is sung floor(count/n) times and the first (count mod n) once more. 3 -> 8 = [3,3,2]; 3 -> 6 = [2,2,2]; 3 -> 4 = [2,1,1]. The §2C-§2F Menaion LIC path now opts into this fill too (the Sunday engine already did), so the same printed texts render correctly whether the day routes through the vigil path (fixed slot count from rank) or the Sunday engine (slot count computed at runtime). 06-29 renders [#1x3, #2x3, #3x2] on a weekday and [2,2,2] if it ever falls on a Sunday, from one 3-text source. Rubric per OCA service docs 2026-0628 and 2026-0629. Clean multiples and entries with explicit repeat markers are unchanged; callers without the flag still flag non-multiples. The Menaion browser's count-integrity line gains a matching green state showing the computed split (e.g. '3 unique -> 8 slots [3,3,2]'). Also surfaces 06-07's polyeleos sub-services (3 texts -> 8), which previously flagged; their split should be source-verified.",
+    ],
+  },
   {
     version: "v0.23.1",
     date: "June 2026",
