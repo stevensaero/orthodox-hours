@@ -1,7 +1,40 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.23.1** | **Tone Trainer: v0.25.30** | Last synced: June 27, 2026
+**Tool version: v0.23.2** | **Tone Trainer: v0.25.30** | Last synced: June 27, 2026
 
-**Session June 27, 2026 (cont.) — Sunday LIC final-sticheron fix (v0.23.1).**
+**Session June 27, 2026 (cont.) — LIC fill generalized, day-independent (v0.23.2).**
+Follow-on to v0.23.1. Bill reported 06-29 (Peter & Paul, vigil) Vespers — served 06-28
+evening, opening 06-29 — showing no LIC stichera: "count 8 is not a multiple of 3 provided
+texts." Root cause was the same flag-the-remainder branch, now on the weekday/vigil path
+(v0.23.1's repeat-first only covered the Sunday engine and only n<count<2n).
+
+- **OCA doc compared** (`OCA_service_documents/2026-0629-texts-tt.json`, fileId
+  `1YdzWYswcQojE1AtlIdOvIwYNGTFxDoJJ`): the 8 LIC slots are `[#1×3, #2×3, #3×2]` —
+  V.8-6 "With what wreaths of praise", V.5-3 "How shall we worthily" (= our "With what
+  beauties of song"), V.2-1 "With what spiritual songs/hymns". Our 3 idiomela are the
+  correct texts (St Sergius translation) and order; only the repeat structure was missing.
+- **Design — day-independence:** the slot count is contextual (vigil rank fixes it at 8; the
+  Sunday engine computes its own commN at runtime), so the fill must be derived by the
+  assembler from the unique texts, never frozen into the data array. Freezing 8 explicit
+  slots (the St-Jonah approach) would mis-serve a Sunday request for 6. So: keep the 3
+  canonical texts as the single source of truth; the assembler distributes.
+- **Fix:** generalized `expandSticheraToCount`'s `repeat-first` mode from `n<count<2n` to any
+  `n<count`, front-loaded even fill — each sung `floor(count/n)`×, first `(count mod n)` once
+  more. `3→8=[3,3,2]`, `3→6=[2,2,2]`, `3→4=[2,1,1]`. The §2C–§2F Menaion LIC path now opts in
+  (Sunday engine already did). **No 06-29 data change** — it was already 3 texts + count 8.
+- **Browser:** count-integrity line gains a green distribution state showing the computed
+  split (`3 unique → 8 slots [3,3,2]`) as a truthing aid, replacing the red "slots
+  unaccounted" for this case. Malformed marker arrays still flag red.
+- **Second beneficiary flagged — 06-07:** its polyeleos sub-services (3 texts → 8) previously
+  flagged and now render `[3,3,2]`. No OCA doc on file for 06-07; **Bill to source-verify**
+  the split against the St Sergius PDF (if the source doubles specific stichera rather than
+  front-loading, it needs explicit `repeatIndex` markers, St-Jonah style).
+- **Distinction recorded:** front-loaded even fill (derivable, flexes with slot count) →
+  assembler rule; source-specific repeat pattern (e.g. St Jonah 06-15B, stichera 1 & 4
+  doubled) → explicit `repeatIndex` markers in data. Peter & Paul is the former.
+- **Verified:** isolation (3→8/6/4 correct; non-fillRule callers unchanged, still flag).
+  Gate green (sunday_vespers 71/71, pointing_paths ALL PASS, validate_entries pass, build).
+
+
 Bill reported the deployed assembler dropping the final "Lord I Have Cried" sticheron on 06-28
 (Sunday, Tone 3, Cyrus & John). Compared our entry against the OCA Dept. of Liturgical Music &
 Translations Sunday service doc (`OCA_service_documents/2026-0628-texts-tt.json`, fileId
