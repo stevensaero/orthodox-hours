@@ -258,3 +258,16 @@ export const EVLOGITARIA = {
   glory: `Let us worship the Father, | and His Son, and the Holy Spirit, | the Holy Trinity, | one in essence, | crying with the seraphim: // Holy, Holy, Holy art Thou, O Lord.`,
   both_now: `In bringing forth the Giver of life, | thou hast delivered Adam from sin, O Virgin, | and hast brought joy to Eve | instead of sorrow; | and those fallen from life | have thereunto been restored, // by Him Who of thee was incarnate, God and man.`,
 };
+
+// ── Provenance captions for the common tables ────────────────────────────────
+// Surfaces, as data, the source each table is encoded from (previously only in
+// the section comments above). Keyed by export name; the Octoechos browser reads
+// this to show a "Source:" caption under each section. Only tables with a
+// documented source are listed; undocumented tables intentionally show no
+// caption (no fabricated attribution) until their source is confirmed.
+export const TABLE_SOURCES = {
+  RESURRECTIONAL_DISMISSAL_THEOTOKIA: "The Common Theotokia (SJKP), §I 'The Resurrectional Theotokia' — Dismissal Theotokion (Theotokia.pdf)",
+  SUNDAY_APOSTICHA_THEOTOKIA: "St. Sergius Octoechos, Common Theotokia — saint-doxasticon Aposticha table (Theotokia.pdf)",
+  EVLOGITARIA: "St. Sergius Sunday Octoechos (1-1.pdf)",
+  LIC_OPENING_FALLBACK: "OCA, unpointed fallback (per-tone director overlays live in toneN.lic_opening)",
+};
