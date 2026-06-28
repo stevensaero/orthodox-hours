@@ -2456,7 +2456,7 @@ const JUNE_MENAION = {
       text: "As the Wisdom of God, the consubstantial Word of the Father foretold in the Gospels, O all-praised apostles, ye are exceeding fruitful vines bearing ripe and comely clusters upon your branches, and we the faithful, eating thereof, delight in the taste thereof with gladness. O Peter, rock of faith, and Paul, boast of the whole world, make steadfast the flock which ye acquired by your teachings.",
     },
     litya_both_now: { tone: 5,
-      text: "We bless thee, O Virgin Theotokos, and we, the faithful, glorify thee as is meet, thou unassailable city, impregnable rampart, and steadfast intercession and refuge of our souls.",
+      text: "We bless thee, O Virgin Theotokos, * and we, the faithful, glorify thee as is meet, * thou unassailable city, * impregnable rampart, ** and steadfast intercession and refuge of our souls.",
     },
     aposticha_source: "menaion",
     stichera_aposticha: [
@@ -2468,7 +2468,7 @@ const JUNE_MENAION = {
       text: "A joyous feast hath shone forth today upon the ends of the earth: the most honored commemoration of the most wise and preeminent Apostles Peter and Paul. Wherefore, Rome, joining chorus, rejoiceth in hymns and songs; and we celebrate, O brethren, observing this most honored day, crying: Rejoice, O apostle Peter, thou true friend of thy Teacher, Jesus Christ our God! Rejoice, O most beloved Paul, thou preacher of the Faith and teacher of the whole world! As ye have boldness, O ye two holy and chosen ones, entreat Christ our God, that our souls be saved.",
     },
     aposticha_both_now: { tone: 6,
-      text: "Christ the Lord, my Creator and Redeemer, Who came forth from thy womb, O most pure one, and clothed Himself in my nature, hath freed Adam from the primal curse. Wherefore, like the angel we unceasingly cry out to thee, O most pure one, who art truly the Mother of God and Virgin: Rejoice!, O Sovereign Lady, the intercession, protection and salvation for our souls!",
+      text: "Christ the Lord, my Creator and Redeemer, * Who came forth from thy womb, O most pure one, * and clothed Himself in my nature, * hath freed Adam from the primal curse. * Wherefore, like the angel * we unceasingly cry out to thee, O most pure one, * who art truly the Mother of God and Virgin: * Rejoice!, O Sovereign Lady, ** the intercession, protection and salvation for our souls!",
     },
     beatitudes_source: "4 from Ode III of Peter canon + 4 from Ode VI of Paul canon (06-29.pdf, AT LITURGY)",
     beatitudes_troparia: [
@@ -2483,12 +2483,190 @@ const JUNE_MENAION = {
     ],
     troparion: {
       tone: 4,
-      text: "O first enthroned among the apostles and teachers of the whole world: entreat the Master of all, that He grant peace to the world and great mercy to our souls.",
+      text: "O first enthroned among the apostles * and teachers of the whole world: * entreat the Master of all, * that He grant peace to the world ** and great mercy to our souls.",
     },
     kontakion_ode6: {
       tone: 2,
-      text: "The steadfast and divinely eloquent preachers, the foremost of Thine apostles, O Lord, hast Thou received into the rest and delight of Thy good things; for Thou hast accepted their pangs and death as greater than any wholeburnt offering, O Thou Who alone knowest the hearts of all mankind.",
+      text: "The steadfast and divinely eloquent preachers, * the foremost of Thine apostles, O Lord, * hast Thou received into the rest and delight of Thy good things; * for Thou hast accepted their pangs and death as greater than any wholeburnt offering, ** O Thou Who alone knowest the hearts of all mankind.",
     },
+
+    // ══ MATINS PROPERS (reference/truthing — Matins assembler not yet built) ══
+    // Source: St. Sergius 06-29.pdf, AT MATINS. Pointing retained where source points.
+
+    // At "God is the Lord," the Both-now Theotokion (also at the blessing of loaves)
+    troparion_bothnow: { tone: 4, text: "The mystery hidden from all ages * and unknown to the ranks of Angels, * hath been revealed to those on earth through thee, O Theotokos: * God incarnate in an uncommingled union, * Who willingly accepted the Cross for our sake, * and through it hath raised up the first-formed man, ** and saved our souls from death." },
+
+    // After the 1st chanting of the Psalter
+    sessional_hymn_kathisma1: { tone: 8, spec_mel: "Of the Wisdom", text: "Forsaking the fishing of the deep, having received from the Father in heaven the divine revelation of the incarnation of the Son, with boldness thou didst cry out with faith to thy Creator: \"I know that Thou art the consubstantial Son of God!\" Wherefore, as is meet, thou wast truly shown to be a rock of faith and the key-bearer of grace. O Apostle Peter, entreat Christ God, that He grant remission of sins unto those who with love celebrate thy holy memory." },
+    sessional_hymn_kathisma1_glory: { tone: 1, spec_mel: "When the stone was sealed", text: "O ye faithful, as is meet, let us praise the champion Paul, the net of the world, and the all-praised Peter, the rock of the Church, in that he holdeth the keys of heaven: for the whole world hath been enlightened by them with the Faith of the Trinity. Glory to Him Who hath glorified you! Glory to Him Who hath strengthened you! Glory to Him Who because of you hath given us everlasting life!" },
+    sessional_hymn_kathisma1_both_now: { tone: 1, text: "Stretching forth thy divine arms, wherewith thou didst bear the Creator Who in His goodness hath become incarnate, O most pure virgin, beseech Him to deliver from temptations, sufferings and tribulations us who praise thee with love and cry aloud: Glory to Him Who made His abode within thee! Glory to Him Who issued forth from thee! Glory to Him Who hath delivered us by thy birthgiving!" },
+
+    // After the 2nd chanting of the Psalter
+    sessional_hymn_kathisma2: { tone: 8, spec_mel: "Of the Wisdom", text: "Receiving from Christ a calling from the heavens, thou wast shown to be a proclaimer of the light, illumining all with the teachings of grace; for having cast off the worship of the letter of the law, thou didst make plain to the faithful the understanding of the Spirit. Wherefore, thou wast fittingly caught up on high to the third heaven, and attained unto paradise. O Apostle Paul, entreat Christ God, that He grant forgiveness of sins unto those who with love celebrate thy holy memory." },
+    sessional_hymn_kathisma2_glory: { tone: 4, spec_mel: "Thou hast appeared today", text: "With luminous radiance ye enlighten the ends of the earth like stars with the doctrines of holy preaching, O apostles of the Lord, initiates of the mysteries of heaven." },
+    sessional_hymn_kathisma2_both_now: { tone: 4, text: "We, the faithful, bless the Theotokos, through whom we have been delivered from corruption: the fervent ally of those in tribulation, our helper and reconciliation with God." },
+
+    // Polyeleos
+    magnification: "We magnify you, O apostles of Christ, who enlightened the whole world with your teachings, and led all the ends of the earth unto Christ.",
+    magnification_selected_psalm: "The heavens declare the glory of God, and the firmament proclaimeth the work of His hands.",
+    matins_sessional_post_polyeleos: { tone: 8, spec_mel: "Of the Wisdom", text: "Let us praise Peter and the most wise Paul, who were shown to be preeminent among the disciples, the great and radiant luminaries; for shining forth with the fire of the divine Spirit, they burned away all the gloom of deception. Wherefore, they have fittingly been shown to be warriors of the kingdom on high, co-enthroned in grace. For this cause we cry aloud: O apostles of Christ God, ask forgiveness of transgressions for those who with love celebrate your holy memory." },
+    matins_sessional_post_polyeleos_both_now: { tone: 8, text: "As the all-immaculate Bride of the Creator, * Mother of the Redeemer, who knewest not a man, * and as the receptacle of the Comforter, O all-hymned one, * hasten thou to deliver me, * the vile abode of iniquity and noetic plaything of the demons, * from their evil machinations; * and make me the bright dwelling-place of the virtues, * O thou incorrupt light-bearing one. * Drive away the clouds of the passions and grant that, * by thy supplications, * I may receive a portion on high ** and share in the never-waning light." },
+
+    // Matins prokeimenon (T4 — distinct from the Liturgy prokeimenon T8)
+    matins_prokeimenon: { tone: 4, text: "Their sound hath gone forth into all the earth, * and their words unto the ends of the world.", stichos: "The heavens declare the glory of God, and the firmament proclaimeth the work of His hands." },
+    matins_gospel_number: "John §67",
+
+    // After Psalm 50, the Sticheron Idiomelon
+    gospel_sticheron: { tone: 6, text: "With hymns of praise let us honor the true preachers of piety, the most radiant stars of the Church: Peter, the rock of Faith, and Paul, the teacher of the Truth and initiate of the mysteries of Christ. For both of them, having sown the word of truth in the hearts of the faithful, beseech Christ God Who granteth fruitfulness unto all, that our souls be saved." },
+
+    // Two canons (John of Damascus): Peter T4, Paul T8. Irmoi pointed; troparia/theotokia Tier-1.
+    canons: [
+      {
+        name: "Canon of the Holy Apostle Peter",
+        tone: 4,
+        odes: {
+          "1": { irmos: "There is none like unto Thee, * O exceedingly glorious Lord; * for by Thy mighty arm * Thou didst deliver the people * whom Thou hast acquired, * O Lover of mankind.",
+            troparia: [
+              "With divinely inspired songs let us hymn today the preeminent of the apostles as the first called of Christ.",
+              "Having foreknown thee, O all-blessed Peter, the Pre-eternal One ordained thee from of old as the leader of His Church, to be the first-enthroned.",
+              "Neither flesh nor blood, but the Father inspired thee to theologize Christ as the true Son of God Most High, O apostle.",
+            ],
+            theotokion: "We hymn thee, the holy mountain, the most exalted chariot, the Mother of God and true Virgin." },
+          "3": { irmos: "Not in wisdom, nor in power do we glory, * but we glory in Thee O Christ, * the Hypostatic Wisdom of the Father, * for there is none more holy than Thee, O Lover of mankind.",
+            troparia: [
+              "The sweet mouth of Christ God showed thee to be blessed and a sure treasure of the kingdom; wherefore, we hymn thee, O Apostle Peter.",
+              "On the rock of thy theology hath Jesus the Master unshakably established the Church, and therein we glorify thee, O Apostle Peter.",
+              "How much greater than the angels was Peter in the body! For Christ God said that at His radiant coming he would be a judge and would be co-enthroned.",
+            ],
+            theotokion: "O thou who knewest not wedlock, who hast given birth unto God in the flesh: render me steadfast and unshaken by the assaults of the passions, for we have none other helper than thee, O pure one." },
+          "4": { irmos: "This is our God, Who hath become incarnate of the Virgin * and hath deified our nature! * Hymning Him, let us cry aloud: * Glory to Thy power, O Lord!",
+            troparia: [
+              "As He promised, Christ made thee a divine fisher of men for His Church, entrusting its helm to thee first.",
+              "Entreated by thee, O Peter, may Jesus, the Bestower of life, Who gaveth thee the authority to bind and to loose, be merciful unto me.",
+              "Pray thou earnestly, O Peter, that the kingdom of Christ be opened unto those who honor thy divine memory with unwavering faith.",
+            ],
+            theotokion: "O all-hymned Sovereign Lady, Birthgiver of God, having cleansed away mine evil thoughts by thy supplications, show me forth as fruitful, O Mother of the God of all." },
+          "5": { irmos: "Having acquired us the chosen people by Thy blood, O Lord, * do Thou grant us peace, * preserving Thy flock in oneness of mind.",
+            troparia: [
+              "He Who through love received boldness before God hath fittingly become wondrous, though he was an ignorant fisherman, and he now worketh most glorious wonders through grace.",
+              "Thy godly apostle, O Christ, having acquired neither gold nor silver for Thy sake, but rather virtue, hath been enriched by the power of miracles.",
+              "By thine effective word the feet and joints of the lame were set aright, for most glorious things were accomplished by the divine Spirit.",
+            ],
+            theotokion: "God became incarnate, O pure one, hypostatically united to the flesh He received from thee, yet remaining immutable, and incorporeal in His divine nature." },
+          "6": { irmos: "For three days O Christ, Jonah lay within the sea monster, * prefiguring Thee, the Immortal One, * for Thou didst willingly lay dead for three days * in the heart of the earth.",
+            troparia: [
+              "As of old with Thy right hand Thou didst save Peter who walked on foot upon the waters, O Christ, so do Thou save me, who am drowning amid the storm of cruel perils, in that Thou art full of loving-kindness.",
+              "Thou didst forsake things which were not essential, O Peter, and attain unto those things which are essential; and like a merchant thou didst manifestly search for Christ: the Pearl beyond price.",
+              "O Peter, thou didst slay those who mindlessly tried to tempt the most holy Spirit, Whom before thou hadst theologized, openly confessing Him as God, O all-blessed one.",
+            ],
+            theotokion: "Thou hast given birth for us to the incarnate Word of God Who transcendeth all nature; wherefore, with lips and soul we profess thee to be the Theotokos." },
+          "7": { irmos: "Blessed art Thou, O supremely exalted God of our fathers, * O only begotten Son and beginningless Word, * Who didst exist in the beginning * with the Father and the Spirit.",
+            troparia: [
+              "Chastised by the divine providence of Christ, thou wast permitted to emulate the Merciful One, O Peter, that thy distress over denying Him before His suffering might be assuaged.",
+              "Having risen from the dead, Christ appeared to thee, the first-called and exceeding beloved, as the right glorious one who was first to preside over the apostles.",
+              "The Master, healing thy threefold denial before His suffering, O Peter, confirmed thy love by a threefold divinely uttered question.",
+              "Thou didst call the all-seeing God the Word as witness to thy love for Christ, O Peter; wherefore, He entrusted the beloved flock to thee.",
+            ],
+            theotokion: "We all bless thee as the Mother of the God of all, who conceived in the flesh of thy womb the pre-eternal Word Who shone forth from God the Father." },
+          "8": { irmos: "Christ Who doth bear all things in His unapproachable glory, * bedewed the venerable children in the midst of the flame, * who cried aloud unto Him: * Bless the Lord, all ye works of the Lord!",
+            troparia: [
+              "The Master foretold thee: \"They shall stretch forth thine arms and bind thee to a cross,\" and commanded thee to follow Him; wherefore thou dost cry aloud: Bless the Lord, all ye works of the Lord!",
+              "Working wonders, by the word of grace thou didst heal Eneus who was grievously paralyzed, and didst raise up Tabitha from the dead; wherefore they cried: Bless the Lord, all ye works of the Lord!",
+              "O Christ Who announced unto Peter that the nations were cleansed, by spiritual radiance, do thou purify my thoughts, for I cry aloud: Bless the Lord, all ye works of the Lord!",
+            ],
+            theotokion: "O all-holy Virgin who hast given birth to God the Word in the flesh, driving away darkness from my soul by thy supplications, and illumine me who cry aloud: Bless the Lord, all ye works of the Lord!" },
+          "9": { irmos: "With hymns do we magnify thee, O most glorious Bride, * and all-holy Theotokos, * who hast given birth to the Creator of all things, * visible and invisible.",
+            troparia: [
+              "Thine excellent grace is rightly glorified, for thy very shadow dispelleth the sufferings of the sick, O Peter; wherefore, we magnify thee.",
+              "Blessed is Peter, who with ineffable divine power cast down Simon Magus, who through sorcery had soared into the heights of the air.",
+              "By thy supplications grant forgiveness of sins, enlightenment of heart and gladness of spirit unto those who hymn thy memory, O apostle.",
+              "O Peter, all thy words, relics and dust are full of glory, sanctity and miracles for those who with faith bow down with love before thy divine chains.",
+            ],
+            theotokion: "The Fruit of thy womb caused the heavenly chorister, who announced \"Rejoice!\" with a loud voice unto thee who hast given birth to joy, to hymn thy name." },
+        },
+      },
+      {
+        name: "Canon of the Holy Apostle Paul",
+        tone: 8,
+        odes: {
+          "1": { irmos: "That which had been hewn down divided the undivided, * and land unseen was seen by the sun; * water engulfed the cruel enemy, * and Israel traversed the impassable, chanting a hymn: * Let us sing unto the Lord, ** for gloriously hath He been glorified!",
+            troparia: [
+              "When Christ called things into existence out of non-existence, O all-blessed Paul, He chose thee from thy mother's womb to carry before the nations His divine name, which is above every name; for gloriously hath He been glorified.",
+              "Declaring to thee the coming effulgence of piety and the cleansing away of falsehood, O Paul, Christ, Who showed Himself to be as bright as lightning on the mountain, dimmed thy bodily eyes while enlightening the eyes of thy soul with the understanding of the Trinity: for gloriously hath He been glorified.",
+              "Performing circumcision on the eighth day, as a zealot of the traditions of thy fathers, O Paul, and showing thyself to be a legalistic Pharisee, a Jew by birth, of the tribe of Benjamin, thou didst come to consider all such things as but dung, and didst acquire Christ: for gloriously hath He been glorified.",
+            ],
+            theotokion: "O Sovereign Lady, pure Mother of almighty God, who sprang forth from royal stock and gavest birth in the flesh, in a manner transcending nature, to God Who alone reigneth over all: Save me from misfortunes, who chant unto thy Son: For gloriously hast Thou been glorified!" },
+          "3": { irmos: "O Lord, thou art the confirmation of those who flee to Thee, * Thou art the Light of those in darkness, * and my spirit doth hymn Thee.",
+            troparia: [
+              "Thou hast been set as a precious foundation stone for the souls of the faithful, a corner-stone of the Savior and Lord. O all-blessed Paul, pray thou that on thy foundations the splendors of most praiseworthy virtues may be set firmly.",
+              "Ever perfectly bearing the mortality of Jesus on thy body, O Paul, thou wast deemed worthy of true life.",
+            ],
+            theotokion: "Thee have we all of us Christians acquired as our rampart and refuge, and we glorify thee without ceasing, O thou who knewest not wedlock." },
+          "4": { irmos: "Thou didst mount Thy steeds O Lord, * Thine apostles, * and taking their bridles in Thy hands, * Thy chariot became salvation unto those who sing with faith: ** Glory to Thy power, O Lord!",
+            troparia: [
+              "Once Saul crouched like a lion, wrathfully destroyed the Church of Christ; but he was seized by the divine voice of the Lamb of God, Whom he had persecuted, and Who entrusted His flock to him as a shepherd.",
+              "He who would enlighten the whole world was struck blind; but Ananias was sent to him, imparting unto him enlightenment of soul and body through divine revelation, and showing him to be a chosen vessel.",
+              "As is meet, Damascus is given drink by Paul; for from him, as from the garden of paradise, a great well-spring of divine waters once issued forth and irrigated the whole earth abundantly with divine knowledge.",
+            ],
+            theotokion: "The Lord hath cast down the mighty from their thrones, as the Virgin Mother said, and with divine good things hath He filled the hungry, who cry aloud with faith: Glory to Thy power, O Lord!" },
+          "5": { irmos: "Illumine us O Lord with Thy commandments, * and with Thine arm raised on high * grant us Thy peace, * O Lover of mankind!",
+            troparia: [
+              "Thou didst choose true praise, O Apostle Paul, ever bearing the Cross of Christ the King as a trophy.",
+              "For thee to live is Christ, and to die is an excellent acquisition; for through love thou wast crucified with Him Who was crucified for our sake, O most glorious Paul.",
+              "Thou dost truly rejoice in the Lord, O honorable Paul, having departed from the body and passed over to Christ God, the Bestower of life.",
+            ],
+            theotokion: "Ever beseech thy Son and our God, O pure Mary who knewest not wedlock, that He send forth His mercy upon us, the faithful." },
+          "6": { irmos: "I will pour out my prayer unto the Lord, * and to Him will I proclaim my grief; * for my soul is filled with evils, * and my life unto Hades hath drawn nigh, * and like Jonah I pray unto Thee: ** Raise me up from corruption, O God.",
+            troparia: [
+              "Spurning all the beautiful things of the world, thou wast wounded by the love of the Master and by the desire for the common salvation of mankind, wishing to bear witness unto Him, O blessed Paul. Pray thou now on behalf of the whole world.",
+              "As an excellent emulator of the Master, clothed in Him, O Paul, thou wast truly all things to all men, that thou mightest acquire and save all the people; and pursuing the ends of the world for Christ, thou didst truly save them.",
+              "As is meet Christ hath given thee life in the heavens, O Apostle Paul; for thou didst not desire a city which abideth here, O blessed one, but wast a faithful minister and celebrant of His mysteries.",
+            ],
+            theotokion: "The Lord looked down upon thee, restoring my nature, in that He is mighty; and doing mighty works, O all-immaculate Birthgiver of God, through thee my God hath saved me from corruption, in that He is full of loving-kindness." },
+          "7": { irmos: "On the plain of Dura the tyrant once placed a furnace * to torment the God-bearers; * and therein the three youths chanted hymns unto the one God, * and the three together, chanted saying: ** O God of our fathers, blessed art Thou!",
+            troparia: [
+              "He who in latter times was called and surpassed all others in zeal, became the seal and crown of Thine apostles, O Christ. With him the people of the Church chant unto thee: O God of our fathers, blessed art Thou!",
+              "Even though Paul the prisoner first persecuted Thy Church, O Christ, yet he later replaced his former ferocity with zeal for Thee; and gathered together the nations, who chant: O God of our fathers, blessed art Thou!",
+              "Having from Jerusalem preached the Gospel unto all, thou didst take it round about the whole world, O Paul, teaching even unto the far ends of Illyricum, thou didst cry aloud: O God of our fathers, blessed art Thou!",
+              "Caught up in awe, thou didst attain unto the third heaven, O most noetically rich apostle; and didst hear ineffable words, and cry aloud: Glory to the transcendent Father and the Son, and to the equally-enthroned effulgence of the Spirit of God Who searcheth the depths!",
+            ],
+            theotokion: "Like rain upon the fleece Christ God descended upon thee, O Virgin, and issuing forth from thee in the flesh, He united those things that before were separate, thereby granting peace on earth and in heaven. O God of our fathers, blessed art Thou!" },
+          "8": { irmos: "Glorified in the holy mountain, * the Lord revealed the mystery of the Ever-Virgin unto Moses * in the flames of the burning bush: * praise ye and supremely exalt Him throughout all ages.",
+            troparia: [
+              "Paul was bound to thee by Thy love and underwent a goodly change; for the glorious one lived not for himself, O Compassionate One, but had Thee living within him throughout all ages.",
+              "Thou didst betroth the Church unto Christ, presenting it to Him as a bride; for thou wast shown to be its wedding-escort, O God-bearing Paul. Wherefore, it glorifieth thee throughout all ages.",
+              "Thou didst fight the good fight, and finishing thy race lawfully, didst preserve the treasure of the Faith. Wherefore, thou hast been deemed worthy of crowns of righteousness, O Paul.",
+            ],
+            theotokion: "Rejoice, O fiery throne of the Lord! Rejoice, O Virgin, unwedded Bride! Rejoice, cloud who shone forth the Sun of righteousness, Whom we supremely exalt throughout all ages!" },
+          "9": { irmos: "Thou hast passed the limits of nature, * having conceived the Maker and the Lord, * and didst become a door of salvation * unto the world; * wherefore we unceasingly magnify thee, O Theotokos.",
+            troparia: [
+              "We bow down before thy chains, which thou didst bear for Christ like a malefactor, O Paul, and we kiss the wounds which thou didst bear on thy glorious and victorious body.",
+              "Now thou hast departed unto Him Whom thou didst unceasingly desire, O apostle; and dwelling within as a servant, with unceasing entreaties draw thou thy servants to thyself.",
+              "No longer is Christ visible to thee in shadows or in a reflection, but thou dost gaze upon Him face to face, and He perfectly revealed to thee the understanding of the Godhead.",
+            ],
+            theotokion: "O most holy Mother of God, thou wast the boast of the apostles of Christ, the glory of the martyrs and the foundation of the prophets; wherefore, we all magnify thee as is meet." },
+        },
+      },
+    ],
+    // Ikos (after Ode VI; pairs with kontakion_ode6)
+    ikos: "Fill my tongue with light, O my Savior, and having enlarged my mouth and filled it, have pity on my heart, that I may speak, follow, and teach that which I should first do; for Thou didst say that he who doeth and teacheth is great. For if I speak only, and act not, I am accounted as sounding brass. Wherefore, grant that I may speak fitting things and do that which is profitable, O Thou Who alone knowest the hearts of all mankind.",
+
+    // Sessional after Ode III (single — no Glory/Both-now in source)
+    matins_sessional_post_ode3: { tone: 8, text: "What dungeon held thee not a prisoner? What Church had thee not as an orator? Damascus extolleth thee, O Paul, for it knew thee blinded by the light; and Rome, which received thy blood, boasteth in thee; but Tarsus rejoiceth yet more and loveth thee, honoring thine infancy. O Peter, rock of the Faith, and Paul, boast of the whole world, coming together from Rome make us steadfast." },
+
+    // Exapostilarion (sung twice) + Both-now Theotokion
+    matins_exapostilarion_feast: { spec_mel: "Hearken, ye women", text: "Let us all hymn the foremost among the apostles, the godly Peter and Paul, the universal luminaries, the preachers of the Faith, the divinely sounded trumpets, the speakers of dogmas, the pillars of the Church and destroyers of falsehood." },
+    matins_exapostilarion_theotokion: { text: "O divinely joyous Maiden, Mother of God and Virgin, great and most glorious is the mystery of thy birthgiving, did the prophets proclaim, the apostles teach and the martyrs confess; the angels hymn it, and men bow down before it." },
+
+    // On the Praises, 4 stichera (T4, Spec. Mel. "Called from on high") + Glory (T6) + Both-now (T6)
+    matins_praises_feast: [
+      { tone: 4, spec_mel: "Called from on high", text: "When the Savior put the question * to the twelve disciples and apostles: * \"Whom do men say that I am?\", * Peter, the foremost of the apostles, * receiving grace from heaven, * answered, theologizing, crying out clearly: * \"Thou art the Christ, the Son of the living God!\" * Wherefore, he is fittingly blessed * as one who received revelation from on high, * rightly receiving the authority ** to loose and to bind." },
+      { tone: 4, text: "When Christ, the Word of God * Who revealed Himself through the Father, * asked \"Whom do ye suppose that I am?\", * thou didst speak unto all with divine eloquence, and straightway cried aloud: * \"Thou art the Son of the living God!\" * Wherefore, thou didst receive as thy reward * the Savior's words: \"Blessed art thou, Simon, son of Jonah!\" * For God doth glorify those who glorify Him * and calleth them to a rich delight; * and He set thee as the rock unashamed, ** the foundation and ground of the Church." },
+      { tone: 4, text: "Called from on high, and not by mortals, * when an earthly darkness * covered thy bodily eyes, * thus putting an end * to thine ungodly plans, * a heavenly light illumined thy noetic eyes, * disclosing the beauty of piety. * Wherefore, thou didst recognize Christ our God * Who brought forth light out of darkness. * Him do thou beseech, ** that He save and enlighten our souls." },
+      { tone: 4, text: "As a preacher of Christ * bearing the boast of the Cross, * more than others didst thou discern * the most ardent divine love * which bindeth to the Desired One those who gaze upon it. * Wherefore, thou didst call thyself a prisoner of Christ, * who desired the burden of perils * as something sweeter than any food, * and who lived for thy Master. * Him do thou beseech, ** that He save and enlighten our souls." },
+    ],
+    matins_praises_glory: { tone: 6, source: "Cosmas the Monk", text: "The most honored feast of the apostles hath arrived for the Church of Christ, bringing salvation unto us all. Wherefore, mystically plaiting hymns for them, let us say: Rejoice, O lamps unto those who are in darkness, shedding forth rays of the noetic Sun! Rejoice, O Peter and Paul, ye unshakable foundations of the divine doctrines, friends of Christ, precious vessels! Come ye into our midst, vouchsafing immaterial gifts unto those who praise your feast with hymns." },
+    matins_praises_both_now: { tone: 6, text: "O Theotokos, thou art the true vine * that hast budded forth for us the Fruit of life. * Thee do we entreat: * Pray thou, O Lady, with the holy apostles, ** that He have mercy upon our souls." },
   },
 
   "06-30": {
