@@ -472,10 +472,150 @@ function EntryHymnography({ entry, editCtx }) {
       )}
 
       {/* ── Matins ── */}
-      {(entry.matins_gospel || entry.beatitudes_source) && (
+      {(entry.matins_gospel || entry.beatitudes_source || entry.troparion_bothnow ||
+        entry.sessional_hymn_kathisma1 || entry.sessional_hymn_kathisma2 || entry.magnification ||
+        entry.matins_sessional_post_polyeleos || entry.matins_prokeimenon || entry.gospel_sticheron ||
+        entry.canons || entry.ikos || entry.matins_sessional_post_ode3 ||
+        entry.matins_exapostilarion_feast || entry.matins_praises_feast) && (
         <>
           <SectionHeader>Matins</SectionHeader>
+          {entry.troparion_bothnow && (
+            <TextBlock tone={entry.troparion_bothnow.tone} text={entry.troparion_bothnow.text}
+              label="Both now at God is the Lord (Theotokion)"
+              editFile={editCtx?.file} editPath={fieldPath(editCtx, 'troparion_bothnow', 'text')} />
+          )}
+          {entry.sessional_hymn_kathisma1 && (
+            <TextBlock tone={entry.sessional_hymn_kathisma1.tone} text={entry.sessional_hymn_kathisma1.text}
+              specMel={entry.sessional_hymn_kathisma1.spec_mel} label="Sessional after 1st Kathisma"
+              editFile={editCtx?.file} editPath={fieldPath(editCtx, 'sessional_hymn_kathisma1', 'text')} />
+          )}
+          {entry.sessional_hymn_kathisma1_glory && (
+            <TextBlock tone={entry.sessional_hymn_kathisma1_glory.tone} text={entry.sessional_hymn_kathisma1_glory.text}
+              specMel={entry.sessional_hymn_kathisma1_glory.spec_mel} label="Glory (Sessional)"
+              editFile={editCtx?.file} editPath={fieldPath(editCtx, 'sessional_hymn_kathisma1_glory', 'text')} />
+          )}
+          {entry.sessional_hymn_kathisma1_both_now && (
+            <TextBlock tone={entry.sessional_hymn_kathisma1_both_now.tone} text={entry.sessional_hymn_kathisma1_both_now.text}
+              label="Both now (Theotokion)"
+              editFile={editCtx?.file} editPath={fieldPath(editCtx, 'sessional_hymn_kathisma1_both_now', 'text')} />
+          )}
+          {entry.sessional_hymn_kathisma2 && (
+            <TextBlock tone={entry.sessional_hymn_kathisma2.tone} text={entry.sessional_hymn_kathisma2.text}
+              specMel={entry.sessional_hymn_kathisma2.spec_mel} label="Sessional after 2nd Kathisma"
+              editFile={editCtx?.file} editPath={fieldPath(editCtx, 'sessional_hymn_kathisma2', 'text')} />
+          )}
+          {entry.sessional_hymn_kathisma2_glory && (
+            <TextBlock tone={entry.sessional_hymn_kathisma2_glory.tone} text={entry.sessional_hymn_kathisma2_glory.text}
+              specMel={entry.sessional_hymn_kathisma2_glory.spec_mel} label="Glory (Sessional)"
+              editFile={editCtx?.file} editPath={fieldPath(editCtx, 'sessional_hymn_kathisma2_glory', 'text')} />
+          )}
+          {entry.sessional_hymn_kathisma2_both_now && (
+            <TextBlock tone={entry.sessional_hymn_kathisma2_both_now.tone} text={entry.sessional_hymn_kathisma2_both_now.text}
+              label="Both now (Theotokion)"
+              editFile={editCtx?.file} editPath={fieldPath(editCtx, 'sessional_hymn_kathisma2_both_now', 'text')} />
+          )}
+          {entry.magnification && <FieldRow label="magnification" value={entry.magnification} />}
+          {entry.magnification_selected_psalm && <FieldRow label="selected psalm" value={entry.magnification_selected_psalm} />}
+          {entry.matins_sessional_post_polyeleos && (
+            <TextBlock tone={entry.matins_sessional_post_polyeleos.tone} text={entry.matins_sessional_post_polyeleos.text}
+              specMel={entry.matins_sessional_post_polyeleos.spec_mel} label="Sessional after Polyeleos"
+              editFile={editCtx?.file} editPath={fieldPath(editCtx, 'matins_sessional_post_polyeleos', 'text')} />
+          )}
+          {entry.matins_sessional_post_polyeleos_2 && (
+            <TextBlock tone={entry.matins_sessional_post_polyeleos_2.tone} text={entry.matins_sessional_post_polyeleos_2.text}
+              specMel={entry.matins_sessional_post_polyeleos_2.spec_mel} label="Sessional after Polyeleos (2)"
+              editFile={editCtx?.file} editPath={fieldPath(editCtx, 'matins_sessional_post_polyeleos_2', 'text')} />
+          )}
+          {entry.matins_sessional_post_polyeleos_glory && (
+            <TextBlock tone={entry.matins_sessional_post_polyeleos_glory.tone} text={entry.matins_sessional_post_polyeleos_glory.text}
+              label="Glory (Sessional)"
+              editFile={editCtx?.file} editPath={fieldPath(editCtx, 'matins_sessional_post_polyeleos_glory', 'text')} />
+          )}
+          {entry.matins_sessional_post_polyeleos_both_now && (
+            <TextBlock tone={entry.matins_sessional_post_polyeleos_both_now.tone} text={entry.matins_sessional_post_polyeleos_both_now.text}
+              label="Both now (Theotokion)"
+              editFile={editCtx?.file} editPath={fieldPath(editCtx, 'matins_sessional_post_polyeleos_both_now', 'text')} />
+          )}
+          {entry.matins_prokeimenon && (
+            <>
+              <FieldRow label="matins_prokeimenon" value={`Tone ${entry.matins_prokeimenon.tone}: ${entry.matins_prokeimenon.text}`} />
+              {entry.matins_prokeimenon.stichos && <FieldRow label="stichos" value={entry.matins_prokeimenon.stichos} />}
+            </>
+          )}
           {entry.matins_gospel && <FieldRow label="matins_gospel" value={entry.matins_gospel} />}
+          {entry.gospel_sticheron && (
+            <TextBlock tone={entry.gospel_sticheron.tone} text={entry.gospel_sticheron.text}
+              label="Sticheron after Psalm 50"
+              editFile={editCtx?.file} editPath={fieldPath(editCtx, 'gospel_sticheron', 'text')} />
+          )}
+          {Array.isArray(entry.canons) && entry.canons.length > 0 && (
+            <div style={{ marginTop: "0.5rem" }}>
+              <div style={{ fontSize: "0.8rem", color: C.gold, marginBottom: "0.3rem" }}>Canons</div>
+              {entry.canons.map((canon, ci) => (
+                <div key={ci} style={{ marginBottom: "0.6rem", paddingLeft: "0.5rem" }}>
+                  <div style={{ fontSize: "0.84rem", color: C.ink, fontWeight: 600, marginBottom: "0.2rem" }}>
+                    {canon.name}{canon.tone ? ` — Tone ${canon.tone}` : ''}
+                  </div>
+                  {canon.odes && Object.keys(canon.odes).map((on) => {
+                    const ode = canon.odes[on];
+                    return (
+                      <div key={on} style={{ marginLeft: "0.5rem", marginTop: "0.25rem" }}>
+                        <div style={{ fontSize: "0.74rem", color: C.inkLight }}>Ode {on}</div>
+                        {ode.irmos && <TextBlock text={ode.irmos} label="Irmos" />}
+                        {Array.isArray(ode.troparia) && ode.troparia.map((t, ti) => (
+                          <TextBlock key={ti} text={t} label={`Troparion ${ti + 1}`} />
+                        ))}
+                        {ode.theotokion && <TextBlock text={ode.theotokion} label="Theotokion" />}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          )}
+          {entry.ikos && (
+            <TextBlock text={entry.ikos} label="Ikos (after Ode VI)"
+              editFile={editCtx?.file} editPath={fieldPath(editCtx, 'ikos', 'text')} />
+          )}
+          {entry.matins_sessional_post_ode3 && (
+            <TextBlock tone={entry.matins_sessional_post_ode3.tone} text={entry.matins_sessional_post_ode3.text}
+              specMel={entry.matins_sessional_post_ode3.spec_mel} label="Sessional after Ode III"
+              editFile={editCtx?.file} editPath={fieldPath(editCtx, 'matins_sessional_post_ode3', 'text')} />
+          )}
+          {entry.matins_sessional_post_ode3_both_now && (
+            <TextBlock tone={entry.matins_sessional_post_ode3_both_now.tone} text={entry.matins_sessional_post_ode3_both_now.text}
+              label="Both now (Theotokion)"
+              editFile={editCtx?.file} editPath={fieldPath(editCtx, 'matins_sessional_post_ode3_both_now', 'text')} />
+          )}
+          {entry.matins_exapostilarion_feast && (
+            <TextBlock tone={entry.matins_exapostilarion_feast.tone} text={entry.matins_exapostilarion_feast.text}
+              specMel={entry.matins_exapostilarion_feast.spec_mel} label="Exapostilarion"
+              editFile={editCtx?.file} editPath={fieldPath(editCtx, 'matins_exapostilarion_feast', 'text')} />
+          )}
+          {entry.matins_exapostilarion_theotokion && (
+            <TextBlock tone={entry.matins_exapostilarion_theotokion.tone} text={entry.matins_exapostilarion_theotokion.text}
+              label="Exapostilarion Theotokion"
+              editFile={editCtx?.file} editPath={fieldPath(editCtx, 'matins_exapostilarion_theotokion', 'text')} />
+          )}
+          {Array.isArray(entry.matins_praises_feast) && entry.matins_praises_feast.length > 0 && (
+            <>
+              <div style={{ fontSize: "0.78rem", color: C.inkLight, marginTop: "0.4rem", marginBottom: "0.2rem" }}>Praises (Lauds)</div>
+              {entry.matins_praises_feast.map((s, i) => (
+                <TextBlock key={i} tone={s.tone} text={s.text} specMel={s.spec_mel} verse={s.verse} label={`[${i + 1}]`}
+                  editFile={editCtx?.file} editPath={fieldPath(editCtx, 'matins_praises_feast', i, 'text')} />
+              ))}
+            </>
+          )}
+          {entry.matins_praises_glory && (
+            <TextBlock tone={entry.matins_praises_glory.tone} text={entry.matins_praises_glory.text}
+              label="Glory (Doxasticon)"
+              editFile={editCtx?.file} editPath={fieldPath(editCtx, 'matins_praises_glory', 'text')} />
+          )}
+          {entry.matins_praises_both_now && (
+            <TextBlock tone={entry.matins_praises_both_now.tone} text={entry.matins_praises_both_now.text}
+              label="Both now (Theotokion)"
+              editFile={editCtx?.file} editPath={fieldPath(editCtx, 'matins_praises_both_now', 'text')} />
+          )}
           {entry.beatitudes_source && <FieldRow label="beatitudes_source" value={entry.beatitudes_source} />}
           {entry.beatitudes_troparia && Array.isArray(entry.beatitudes_troparia) && (
             <div style={{ marginTop: "0.4rem" }}>

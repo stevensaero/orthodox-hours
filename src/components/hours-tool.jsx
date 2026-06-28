@@ -8167,6 +8167,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.23.0",
+    date: "June 2026",
+    summary: "Menaion Data Browser now renders full Matins propers (sessionals, magnification, canons, exapostilarion, praises)",
+    items: [
+      "Adds Matins-feast support to the Menaion Data Browser's EntryHymnography renderer, which previously showed only matins_gospel and the Liturgy beatitudes. The Matins section now displays, in liturgical order: the God-is-the-Lord both-now theotokion, the two kathisma sessionals with their Glory and Both-now, the Polyeleos magnification and selected psalm, the post-Polyeleos sessional group, the Matins prokeimenon, the Psalm-50 gospel sticheron, the canons (each canon rendered ode-by-ode with irmos, troparia, and theotokion), the ikos, the post-Ode-III sessional, the exapostilarion and its theotokion, and the Praises stichera with Glory and Both-now. Six new field names (sessional_hymn_kathisma1 and its glory/both-now, sessional_hymn_kathisma2's glory/both-now, and matins_praises_both_now) were added to KNOWN_FIELDS to support kathisma-sessional and praises-both-now capture. First exercised by the 06-29 (Peter & Paul) encoding. Display + vocabulary only — no assembler change.",
+    ],
+  },
+  {
     version: "v0.22.4",
     date: "June 2026",
     summary: "Menaion Data Browser now displays the lic_stavrotheotokion / aposticha_stavrotheotokion fields",
