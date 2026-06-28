@@ -3062,6 +3062,8 @@ function applyStichRepeat(stich, array, idx) {
 //   uniform   repeat count % length === 0      → repeat each in order ×(count/length)
 //             (Fekula §2A Friday "doubling each")
 //   mismatch  length>0, count%length!==0       → fill, flag remainder w/ diagnostic
+//   repeat-first (opts.fillRule)  n<count<2n    → double the first (count-n) stichera
+//             (Sunday saint LIC; rubric per OCA service doc 2026-0628-texts-tt.json)
 //   empty     length === 0                     → all unresolved (ordinary placeholder)
 // Returns a length-`count` array of {text,tone,source,resolved,repeatNote?,unresolved?,diagnostic?}.
 function expandSticheraToCount(items, count, opts = {}) {
@@ -3092,6 +3094,28 @@ function expandSticheraToCount(items, count, opts = {}) {
     // Uniform doubling: one source owns all slots, count is a clean multiple.
     const reps = count / n;
     for (let i = 0; i < n; i++) {
+      for (let r = 0; r < reps; r++) {
+        out.push({
+          text: items[i].text, tone: items[i].tone, source, resolved: true,
+          repeatNote: r > 0 ? "(Repeat)" : undefined,
+        });
+      }
+    }
+    return out;
+  }
+
+  // Repeat-first fill (opt-in via opts.fillRule === 'repeat-first'). For a saint whose
+  // printed stichera (n) are fewer than the appointed slots (count) and count is NOT a
+  // clean multiple of n, fill by repeating the FIRST (count - n) stichera once each, then
+  // the remainder once: 3 -> 4 = [#1, #1, #2, #3]; 3 -> 5 = [#1, #1, #2, #2, #3].
+  // Rubric source: OCA Dept. of Liturgical Music & Translations Sunday service doc
+  // 2026-0628-texts-tt.json (Cyrus & John on a Sunday) doubles the first saint sticheron
+  // to fill the four LIC slots. Used by the Sunday Vespers engine only; the weekday
+  // §2C/§2D clean-multiple path above is unaffected.
+  if (opts.fillRule === "repeat-first" && n < count && count < 2 * n) {
+    const extra = count - n; // number of leading stichera that double
+    for (let i = 0; i < n; i++) {
+      const reps = i < extra ? 2 : 1;
       for (let r = 0; r < reps; r++) {
         out.push({
           text: items[i].text, tone: items[i].tone, source, resolved: true,
@@ -3538,10 +3562,11 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       const sunSat = getOctoechosVespers(tone, "sat");
       const resStichera = (sunSat && sunSat.lic ? sunSat.lic.slice(0, resN) : [])
         .map(entry => ({ text: hymnText(entry), tone, source: "Octoechos", resolved: true, ...hymnProvenance(entry) }));
-      // commemoration: expand the saint's printed texts to fill commN (the blessed
-      // expandSticheraToCount mechanism — repeats clean multiples, flags non-multiples
-      // for a repeat marker rather than guessing a doubling position).
-      const commStichera = expandSticheraToCount(menaionLicStichera, commN, { source: "Menaion" });
+      // commemoration: expand the saint's printed texts to fill commN. When the saint's
+      // count is not a clean multiple of commN (e.g. 3 stichera into 4 Sunday slots), the
+      // first sticheron is doubled per the OCA service doc (2026-0628 Cyrus & John):
+      // [#1, #1, #2, #3]. fillRule 'repeat-first' applies that; clean multiples still double each.
+      const commStichera = expandSticheraToCount(menaionLicStichera, commN, { source: "Menaion", fillRule: "repeat-first" });
       const sunStichera = [...resStichera, ...commStichera]; // length 10
       const sunCount = 10;
       const sunNote = resN + " resurrection (Octoechos, Tone " + tone + ") + " + commN +
@@ -8166,6 +8191,14 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.23.1",
+    date: "June 2026",
+    summary: "Fix: Sunday Vespers dropped the final commemoration sticheron at 'Lord I Have Cried'",
+    items: [
+      "On an ordinary Sunday, a six-stichera (or doxology) saint takes four of the ten LIC slots, and the Sunday engine expanded the saint's printed stichera to fill them. When the printed count was not a clean multiple of the slot count (e.g. 3 stichera into 4 slots), expandSticheraToCount hit its mismatch branch and flagged the last slot with a diagnostic instead of a text, so the final LIC sticheron (verse V.1) rendered empty. Added a 'repeat-first' fill mode, opted into only by the Sunday LIC engine, which doubles the first (count - n) stichera: 3 -> 4 becomes [#1, #1, #2, #3]. The rubric follows the OCA Dept. of Liturgical Music & Translations Sunday service document for 06-28 (Cyrus & John), which doubles the first saint sticheron to fill the four slots. The weekday clean-multiple path (3 -> 6 doubling each) and simple-saint Sundays (3 into 3, exact) are unchanged. Fixes 06-28 and every six-stichera/doxology saint that falls on a Sunday.",
+    ],
+  },
   {
     version: "v0.23.0",
     date: "June 2026",
