@@ -1,5 +1,32 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.22.4** | **Tone Trainer: v0.25.30** | Last synced: June 27, 2026
+**Tool version: v0.23.0** | **Tone Trainer: v0.25.30** | Last synced: June 27, 2026
+
+**Session June 27, 2026 (cont.) — 06-29 Matins propers encode (Peter & Paul) + browser Matins rendering (v0.23.0).**
+First Menaion entry to carry full Matins propers (those fields previously lived only in
+`pentecostarion.js`). Encoded from St. Sergius `06-29.pdf`, following the `matins_*` feast
+vocabulary from the Pentecostarion All-Saints overlay entries.
+
+- **aposticha_glory verified:** stored T6 "A joyous feast hath shone forth today..." (Ephraim of
+  Karyes) matches the Great Vespers aposticha Glory in source; Tier-1 prose; unchanged.
+- **Matins encoded (06-29):** God-is-the-Lord both-now theotokion; sessionals after the 1st and
+  2nd kathismata, each with Glory + Both-now; Polyeleos magnification + selected psalm; post-
+  Polyeleos sessional + Both-now; Matins prokeimenon (T4, distinct from the Liturgy prokeimenon T8);
+  Psalm-50 gospel sticheron (T6); **both canons in full** (Peter T4, Paul T8) ode-by-ode with irmos
+  + troparia + theotokion (`canons` plural, extended with `odes`); ikos; post-Ode-III sessional;
+  exapostilarion + theotokion; Praises stichera (T4) + Glory (T6) + Both-now (T6).
+- **Re-pointing:** troparion, kontakion_ode6, litya_both_now, aposticha_both_now were pointed in
+  source but stored flat; St. Sergius `*`/`**` restored (same gap as 06-28).
+- **Schema:** 6 field names added to `KNOWN_FIELDS` — `sessional_hymn_kathisma1` (+ `_glory`,
+  `_both_now`), `sessional_hymn_kathisma2_glory`, `sessional_hymn_kathisma2_both_now`,
+  `matins_praises_both_now`.
+- **Browser (v0.23.0):** `menaion-browser.jsx` EntryHymnography Matins section expanded from
+  matins_gospel-only to the full Matins-feast render (canons rendered ode-by-ode). Display +
+  vocabulary only; **Matins assembler still not built** — these are reference/truthing fields.
+- Commits separated by concern: tooling (KNOWN_FIELDS) → feature+version (browser + RELEASE_NOTES
+  v0.23.0) → data (06-29) → docs. Full gate green: pointing_paths ALL PASS (no regressions),
+  sunday_vespers 71/71, validate_entries exit 0, vite build clean.
+
+---
 
 **Session June 27, 2026 — 06-28 re-encode pass (data-only; no version bump).**
 Audit/re-encode of `06-28` (Translation of the Relics of the Unmercenaries Cyrus & John)
