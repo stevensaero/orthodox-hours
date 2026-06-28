@@ -8202,6 +8202,15 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.24.0",
+    date: "June 2026",
+    summary: "Octoechos browser: surface hidden reference data + show provenance",
+    items: [
+      "The Octoechos data browser was omitting several tables and fields that were already encoded. Wired them all up: the Sunday Aposticha Theotokion (Both Now) table, the Resurrectional Dismissal Theotokion table, and the Evlogitaria (Resurrectional Verses) now render in the tone-independent panel; the Sunday Matins panel now shows the 'God is the Lord' troparion theotokion, the Ikos, and the Great Doxology dismissal troparion. Also fixed a schema drift where the Matins sessional hymns (after Kathismata II and III) were keyed sessional_kathisma2/3 in the data but read as kathisma_2/3 by the panel, so they had been falling through to a 'not yet encoded' stub despite being present.",
+      "Provenance is now surfaced. Per-entry: OCA director-pointed slots show their tradition and pointing_source (e.g. 'OCA · 2026-0614-texts-tt.docx') beneath the text. Per-table: a new data-driven TABLE_SOURCES map in octoechos/index.js promotes the source from code comments to a rendered 'Source:' caption for the tables whose source is documented (Dismissal Theotokia, Aposticha Theotokia, Evlogitaria, LIC opening fallback). Tables without a documented source intentionally show no caption rather than a fabricated one.",
+    ],
+  },
+  {
     version: "v0.23.2",
     date: "June 2026",
     summary: "Sunday LIC fix generalized to all 'fewer texts than slots' cases, on every day",

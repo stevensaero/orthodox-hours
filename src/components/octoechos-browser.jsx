@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect, useRef, useContext, createContext } from 'react';
 import { PointScoreControls } from './point-score-controls.jsx';
-import { hymnText, normalizeHymn } from '../lib/hymn-entry.js';
+import { hymnText, normalizeHymn, hymnProvenance } from '../lib/hymn-entry.js';
 import { getElParam, flashElIn } from '../lib/el-highlight.js';
 
 // Current tone in view — provided by OctoechosBrowser, consumed by SticheronBlock
@@ -44,6 +44,8 @@ import {
   LIC_THEOTOKIA, HYPAKOE, RESURRECTIONAL_TROPARIA,
   SUNDAY_KONTAKIA, SUNDAY_PROKEIMENON, SUNDAY_ALLELUIA,
   LIC_OPENING_FALLBACK,
+  SUNDAY_APOSTICHA_THEOTOKIA, RESURRECTIONAL_DISMISSAL_THEOTOKIA, EVLOGITARIA,
+  TABLE_SOURCES,
 } from '../data/octoechos/index.js';
 
 // ── Day labels ───────────────────────────────────────────────────────────────
@@ -82,8 +84,37 @@ function SubHeader({ children }) {
   );
 }
 
-function SticheronBlock({ index, text, verse, label }) {
+// Per-entry provenance line (OCA director-pointed object slots carry
+// tradition / pointing_source; bare-string slots carry none and render nothing).
+function ProvenanceCaption({ tradition, pointing_source, director }) {
+  if (!tradition && !pointing_source && !director) return null;
+  const bits = [];
+  if (tradition) bits.push(tradition);
+  if (pointing_source) bits.push(pointing_source);
+  return (
+    <div style={{ fontSize: "0.66rem", color: C.inkLight, fontStyle: "italic",
+      marginTop: "0.2rem", letterSpacing: "0.02em" }}>
+      {director ? "✎ " : ""}{bits.join(" · ")}
+    </div>
+  );
+}
+
+// Section/table-level source caption (from TABLE_SOURCES).
+function SourceCaption({ source }) {
+  if (!source) return null;
+  return (
+    <div style={{ fontSize: "0.66rem", color: C.inkLight, fontStyle: "italic",
+      marginTop: "-0.35rem", marginBottom: "0.55rem" }}>
+      Source: {source}
+    </div>
+  );
+}
+
+function SticheronBlock({ index, entry, text, verse, label }) {
   const tone = useContext(ToneContext);
+  // Prefer `entry` (string or provenance-bearing object); fall back to bare `text`.
+  const displayText = entry !== undefined ? hymnText(entry) : text;
+  const prov = entry !== undefined ? hymnProvenance(entry) : null;
   return (
     <div style={{
       marginBottom: "0.85rem",
@@ -113,10 +144,13 @@ function SticheronBlock({ index, text, verse, label }) {
           fontSize: "0.88rem", color: C.ink, lineHeight: 1.65,
           fontFamily: "Georgia, 'Times New Roman', serif",
         }}>
-          {text || <span style={{ color: C.goldLight, fontStyle: "italic" }}>—</span>}
+          {displayText || <span style={{ color: C.goldLight, fontStyle: "italic" }}>—</span>}
         </div>
-        <PointScoreControls text={text} tone={tone} label={label} />
+        <PointScoreControls text={displayText} tone={tone} label={label} />
       </div>
+      {prov && (prov.tradition || prov.pointing_source || prov.director) && (
+        <ProvenanceCaption {...prov} />
+      )}
     </div>
   );
 }
@@ -182,13 +216,13 @@ function VespersDayPanel({ tone, dayKey, dayData, licOpening }) {
       {/* Lord I Have Cried — opening (Kekragarion, Ps 140:1-2), tone of the week */}
       <SubHeader>Lord I Have Cried — Opening{(licOpening && licOpening.length) ? "" : " (unpointed fallback)"}</SubHeader>
       {((licOpening && licOpening.length) ? licOpening : LIC_OPENING_FALLBACK).map((v, i) => (
-        <SticheronBlock key={"lic-open-" + i} index={i} text={hymnText(v)} />
+        <SticheronBlock key={"lic-open-" + i} index={i} entry={v} />
       ))}
 
       {/* Lord I Have Cried stichera */}
       <SubHeader>Lord I Have Cried — {lic.length} stichera</SubHeader>
       {lic.length > 0
-        ? lic.map((entry, i) => <SticheronBlock key={i} index={i} text={hymnText(entry)} />)
+        ? lic.map((entry, i) => <SticheronBlock key={i} index={i} entry={entry} />)
         : <div style={{ color: C.goldLight, fontStyle: "italic", fontSize: "0.85rem",
             marginBottom: "0.5rem" }}>—</div>
       }
@@ -197,19 +231,19 @@ function VespersDayPanel({ tone, dayKey, dayData, licOpening }) {
       {lic_dogmatikon && (
         <>
           <SubHeader>LIC Theotokion (Friday dogmatikon)</SubHeader>
-          <SticheronBlock text={hymnText(lic_dogmatikon)} />
+          <SticheronBlock entry={lic_dogmatikon} />
         </>
       )}
       {lic_theotokion && (
         <>
           <SubHeader>LIC Both Now (theotokion)</SubHeader>
-          <SticheronBlock text={lic_theotokion} />
+          <SticheronBlock entry={lic_theotokion} />
         </>
       )}
       {dogmatikon && (
         <>
           <SubHeader>Dogmatikon (Saturday Both Now)</SubHeader>
-          <SticheronBlock text={hymnText(dogmatikon)} label={`Tone ${tone} Dogmatikon`} />
+          <SticheronBlock entry={dogmatikon} label={`Tone ${tone} Dogmatikon`} />
         </>
       )}
 
@@ -218,7 +252,7 @@ function VespersDayPanel({ tone, dayKey, dayData, licOpening }) {
       {aposticha.length > 0 ? (
         aposticha.map((s, i) => {
           const h = normalizeHymn(s);
-          return <SticheronBlock key={i} index={i} text={h.text} verse={h.verse} />;
+          return <SticheronBlock key={i} index={i} entry={s} verse={h.verse} />;
         })
       ) : (
         <div style={{ color: C.goldLight, fontStyle: "italic", fontSize: "0.85rem",
@@ -228,7 +262,7 @@ function VespersDayPanel({ tone, dayKey, dayData, licOpening }) {
       {aposticha_glory && (
         <SticheronBlock
           label={aposticha_glory.startsWith('[') ? 'Glory (Menaion)' : 'Glory'}
-          text={aposticha_glory}
+          entry={aposticha_glory}
         />
       )}
     </div>
@@ -301,6 +335,45 @@ function SmallTablesPanel({ tone }) {
           )}
         </>
       ) : <SmallTableRow label="—" value={null} />}
+
+      {/* Sunday aposticha theotokion (Both Now, sung in the tone of the saint's
+          aposticha doxasticon). Previously stored but not surfaced here. */}
+      <SectionHeader>Sunday Aposticha Theotokion (Both Now — saint-doxasticon)</SectionHeader>
+      <SourceCaption source={TABLE_SOURCES.SUNDAY_APOSTICHA_THEOTOKIA} />
+      {SUNDAY_APOSTICHA_THEOTOKIA[toneNum] ? (
+        <SmallTableRow
+          label={`Tone ${SUNDAY_APOSTICHA_THEOTOKIA[toneNum].tone ?? toneNum}`}
+          value={SUNDAY_APOSTICHA_THEOTOKIA[toneNum].text ?? SUNDAY_APOSTICHA_THEOTOKIA[toneNum]}
+        />
+      ) : <SmallTableRow label="—" value={null} />}
+
+      {/* Resurrectional dismissal theotokion (Both Now at the dismissal troparion). */}
+      <SectionHeader>Resurrectional Dismissal Theotokion</SectionHeader>
+      <SourceCaption source={TABLE_SOURCES.RESURRECTIONAL_DISMISSAL_THEOTOKIA} />
+      {RESURRECTIONAL_DISMISSAL_THEOTOKIA[toneNum] ? (
+        <SmallTableRow
+          label={`Tone ${RESURRECTIONAL_DISMISSAL_THEOTOKIA[toneNum].tone ?? toneNum}`}
+          value={RESURRECTIONAL_DISMISSAL_THEOTOKIA[toneNum].text ?? RESURRECTIONAL_DISMISSAL_THEOTOKIA[toneNum]}
+        />
+      ) : <SmallTableRow label="—" value={null} />}
+
+      {/* Evlogitaria (Resurrectional Verses) — tone-independent, the same every
+          Sunday; shown once regardless of selected tone. */}
+      <SectionHeader>Evlogitaria (Resurrectional Verses) — tone-independent</SectionHeader>
+      <SourceCaption source={TABLE_SOURCES.EVLOGITARIA} />
+      {EVLOGITARIA ? (
+        <>
+          <div style={{ fontSize: "0.80rem", color: C.gold, marginBottom: "0.6rem",
+            fontStyle: "italic" }}>
+            Refrain: {EVLOGITARIA.refrain}
+          </div>
+          {(EVLOGITARIA.troparia || []).map((t, i) => (
+            <SticheronBlock key={"evlog-" + i} index={i} entry={t} />
+          ))}
+          {EVLOGITARIA.glory && <SticheronBlock label="Glory" entry={EVLOGITARIA.glory} />}
+          {EVLOGITARIA.both_now && <SticheronBlock label="Both now" entry={EVLOGITARIA.both_now} />}
+        </>
+      ) : <SmallTableRow label="—" value={null} />}
     </div>
   );
 }
@@ -336,33 +409,42 @@ function MatinsPanel({ tone, matinsData }) {
     );
   }
 
-  const { kathisma_2, kathisma_3, songs_of_ascent, canons,
-    exapostilarion, exapostilarion_theotokion, praises } = matinsData;
+  const { god_is_the_lord_theotokion, sessional_kathisma2, sessional_kathisma3,
+    songs_of_ascent, canons, ikos, exapostilarion, exapostilarion_theotokion,
+    praises, great_doxology_troparion } = matinsData;
 
   return (
     <div>
+      {/* God is the Lord — troparion theotokion (Both Now) */}
+      {god_is_the_lord_theotokion && (
+        <>
+          <SectionHeader>"God is the Lord" — Troparion Theotokion (Both now)</SectionHeader>
+          <SticheronBlock entry={god_is_the_lord_theotokion} />
+        </>
+      )}
+
       {/* Sessional hymns */}
-      {(kathisma_2 || kathisma_3) ? (
+      {(sessional_kathisma2 || sessional_kathisma3) ? (
         <>
           <SectionHeader>Sessional Hymns — after Kathisma II</SectionHeader>
-          {kathisma_2 ? (
+          {sessional_kathisma2 ? (
             <>
-              <SticheronBlock label="Hymn 1" text={kathisma_2.hymn_1?.text}
-                verse={kathisma_2.hymn_1?.verse} />
-              <SticheronBlock label="Hymn 2" text={kathisma_2.hymn_2?.text}
-                verse={kathisma_2.hymn_2?.verse} />
-              <SticheronBlock label="Theotokion" text={kathisma_2.theotokion} />
+              <SticheronBlock label="Hymn 1" entry={sessional_kathisma2.hymn_1}
+                verse={sessional_kathisma2.hymn_1?.verse} />
+              <SticheronBlock label="Hymn 2" entry={sessional_kathisma2.hymn_2}
+                verse={sessional_kathisma2.hymn_2?.verse} />
+              <SticheronBlock label="Theotokion" entry={sessional_kathisma2.theotokion} />
             </>
           ) : <StubSection label="Kathisma II sessional" phase="Phase 3" />}
 
           <SectionHeader>Sessional Hymns — after Kathisma III</SectionHeader>
-          {kathisma_3 ? (
+          {sessional_kathisma3 ? (
             <>
-              <SticheronBlock label="Hymn 1" text={kathisma_3.hymn_1?.text}
-                verse={kathisma_3.hymn_1?.verse} />
-              <SticheronBlock label="Hymn 2" text={kathisma_3.hymn_2?.text}
-                verse={kathisma_3.hymn_2?.verse} />
-              <SticheronBlock label="Theotokion" text={kathisma_3.theotokion} />
+              <SticheronBlock label="Hymn 1" entry={sessional_kathisma3.hymn_1}
+                verse={sessional_kathisma3.hymn_1?.verse} />
+              <SticheronBlock label="Hymn 2" entry={sessional_kathisma3.hymn_2}
+                verse={sessional_kathisma3.hymn_2?.verse} />
+              <SticheronBlock label="Theotokion" entry={sessional_kathisma3.theotokion} />
             </>
           ) : <StubSection label="Kathisma III sessional" phase="Phase 3" />}
         </>
@@ -441,13 +523,21 @@ function MatinsPanel({ tone, matinsData }) {
         })
       ) : <StubSection label="Canons (Resurrection, Cross/Resurrection, Theotokos)" phase="Phase 3" />}
 
+      {/* Ikos — follows the kontakion after Ode VI of the canon */}
+      {ikos && (
+        <>
+          <SectionHeader>Ikos (after the Kontakion / Ode VI)</SectionHeader>
+          <SticheronBlock entry={ikos} />
+        </>
+      )}
+
       {/* Exapostilaria */}
       <SectionHeader>Exapostilaria</SectionHeader>
       {exapostilarion ? (
         <>
-          <SticheronBlock label="Resurrectional Exapostilarion" text={exapostilarion} />
+          <SticheronBlock label="Resurrectional Exapostilarion" entry={exapostilarion} />
           {exapostilarion_theotokion && (
-            <SticheronBlock label="Theotokion" text={exapostilarion_theotokion} />
+            <SticheronBlock label="Theotokion" entry={exapostilarion_theotokion} />
           )}
         </>
       ) : <StubSection label="Exapostilaria" phase="Phase 3" />}
@@ -456,9 +546,17 @@ function MatinsPanel({ tone, matinsData }) {
       <SectionHeader>Stichera on the Praises</SectionHeader>
       {praises?.stichera?.length > 0 ? (
         praises.stichera.map((s, i) => (
-          <SticheronBlock key={i} index={i} text={s.text} verse={s.verse} />
+          <SticheronBlock key={i} index={i} entry={s} verse={s.verse} />
         ))
       ) : <StubSection label="Stichera on the Praises (5 resurrection stichera)" phase="Phase 3" />}
+
+      {/* Great Doxology dismissal troparion */}
+      {great_doxology_troparion && (
+        <>
+          <SectionHeader>Great Doxology — Dismissal Troparion</SectionHeader>
+          <SticheronBlock entry={great_doxology_troparion} />
+        </>
+      )}
     </div>
   );
 }
