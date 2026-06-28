@@ -266,6 +266,14 @@ function EntryHymnography({ entry, editCtx }) {
       return { ok: true, note: `${textCount} unique + ${markerCount} repeat marker${markerCount > 1 ? 's' : ''} = ${n} items (count ${licCount}) ✓` };
     if (n < licCount && markerCount === 0 && licCount % n === 0)
       return { ok: true, note: `${n} unique × ${licCount / n} = ${licCount} slots — Fekula uniform doubling (assembler repeats each in order) ✓` };
+    if (n < licCount && markerCount === 0) {
+      // Front-loaded even fill: assembler distributes the slots across the texts
+      // (each floor(count/n)×, first (count mod n) once more). See expandSticheraToCount.
+      const base = Math.floor(licCount / n);
+      const extra = licCount % n;
+      const split = Array.from({ length: n }, (_, i) => base + (i < extra ? 1 : 0)).join(',');
+      return { ok: true, note: `${n} unique → ${licCount} slots [${split}] — front-loaded fill (assembler distributes) ✓` };
+    }
     if (n < licCount)
       return { ok: false, note: `${n} items, count ${licCount} — ${licCount - n} slot${licCount - n > 1 ? 's' : ''} unaccounted; add repeat markers or correct count` };
     if (n > licCount)
