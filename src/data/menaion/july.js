@@ -2212,6 +2212,328 @@ const JULY_MENAION = {
             "Orthodoxy, denouncer of false doctrines, the universal teacher of the Truth.",
     },
   },
+
+  // ── July 16 — Hieromartyr Athenogenes & his Ten Disciples (Simple §2A) ───
+  // Source: St. Sergius 07-16.pdf. No troparion, no separate Aposticha, no Ikos, no
+  // Exapostilarion, and no AT LITURGY recap at all appear in the daily proper PDF — genuinely
+  // absent, not a fetch truncation (confirmed: text ends naturally at the Ode IX Theotokion).
+  // Per the fallback chain (daily proper → General Menaion → OCA), the troparion is sourced
+  // from OCA's troparia page for Jul 16, since the daily proper simply omits one.
+
+  "07-16": {
+    saint: "Hieromartyr Athenogenes & his Ten Disciples",
+    oca_primary: true,
+    source_file: "07-16.pdf",
+    rank: "simple",
+    fekula_section: "2A",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "octoechos",
+    note: "Simple §2A per encoding_rule_v2.md §1.1: 3 stichera at LIC, no Great Doxology/" +
+          "Polyeleos/Small Vespers in the PDF. Troparion NOT IN 07-16.pdf at all — no 'Troparion " +
+          "of the holy hieromartyr' heading anywhere, and no AT LITURGY recap either; the daily " +
+          "proper simply omits a troparion for this date. Per the fallback chain (daily proper " +
+          "→ General Menaion → OCA), sourced from oca.org/saints/troparia for Jul 16 instead of " +
+          "invented. The kontakion IS present in the daily proper and its wording independently " +
+          "matches OCA's version closely, cross-verified via web search. No separate Vespers " +
+          "Aposticha section, Ikos, or Exapostilarion in the PDF — verified absent. " +
+          "Re-encoded at corrected scope per v2.8 §6: full canon (Odes I/IV/V/VII/VIII/IX) " +
+          "present in PDF but not captured.",
+    feast_e: "absent — §2A, readings from Oktoechos",
+    feast_g: "absent — §2A, readings from Oktoechos",
+    stichera_lord_i_call_count: 3,
+    stichera_lord_i_call: [
+      { tone: 8, spec_mel: "O most glorious wonder",
+        text: "The glorious Athenogenes, * vested in the splendid raiment of the priesthood, * " +
+              "showed it to be yet more pure * when dyed in his blood * Entering into the holy " +
+              "temple therewith, * appearing before Him Who seeth all things * and ministering to " +
+              "Him with the immaterial ranks, * he is illumined with divine communion. ** Him do " +
+              "we call blessed." },
+      { tone: 8, spec_mel: "O most glorious wonder",
+        text: "The most wise Athenogenes * hath through faith led to Christ a choir of spiritual " +
+              "athletes * who suffered steadfastly * and finished the course. * And with them " +
+              "having vanquished the one of great craft, * he hath been received into the choir " +
+              "of martyrs, * deified by communion; * and he ever prayeth on behalf of us ** who " +
+              "ever keep his sacred memory." },
+      { tone: 8, spec_mel: "O most glorious wonder",
+        text: "The ten divinely elect disciples suffered, * bringing low the uprisings of the " +
+              "passions * by feats of fasting, * and they slew the serpent, * having acquired " +
+              "Athenogenes as a sacred instructor * through the power of God. * By their " +
+              "supplications, O Compassionate One, * save us who ever trust in Thee, ** O " +
+              "Supremely good One." },
+    ],
+    // Combined Glory/Both-now, same melody — this IS the doxasticon; same text also serves
+    // lic_theotokion.
+    stichera_glory: {
+      tone: 8,
+      text: "Save me, O most pure Lady, * who hast ineffably given birth to Christ the Savior; * " +
+            "for thee alone have I acquired as our intercessor, * an invincible rampart, * " +
+            "protection and joy, * and the divine consolation of my soul. * Wherefore, deliver " +
+            "me from the worm which sleepeth not * and from the everlasting fire, ** O Mother of Christ God.",
+      note: "Combined Glory/Both-now hymn per PDF ('in the same melody') — same text also serves lic_theotokion.",
+    },
+    lic_theotokion: {
+      tone: 8,
+      text: "Save me, O most pure Lady, * who hast ineffably given birth to Christ the Savior; * " +
+            "for thee alone have I acquired as our intercessor, * an invincible rampart, * " +
+            "protection and joy, * and the divine consolation of my soul. * Wherefore, deliver " +
+            "me from the worm which sleepeth not * and from the everlasting fire, ** O Mother of Christ God.",
+      note: "Same combined hymn as stichera_glory above.",
+    },
+    lic_stavrotheotokion: {
+      tone: 8,
+      text: "\"What is this sight which I see, * which mine eyes behold, O Master? * How is it " +
+            "that Thou Who dost sustain all creation, * art lifted up upon the Tree and diest, * " +
+            "granting life unto all?\" * thus said the Theotokos weeping, * upon seeing God and " +
+            "man * Who had shone forth ineffably from her ** hanging upon the Cross.",
+    },
+    aposticha_glory_absent: true,  // no separate Vespers Aposticha section in the PDF at all
+    // NOT IN PDF — sourced from OCA per the fallback chain (see note above). "you/your" below
+    // is verified as printed in OCA's own translation, not an encoding defect (same situation
+    // as 07-03/07-14's OCA-sourced propers).
+    troparion: {
+      tone: 2,
+      source: "OCA (oca.org/saints/troparia, Jul 16) — not in 07-16.pdf",
+      text: "Most blessed and wise Bishop and Martyr Athenogenes, you grew as a palm tree in " +
+            "the monastic life; towering as a cedar in your struggles, through your teachings " +
+            "you brought a number of martyrs to Christ. We honor them together with you.",
+    },
+    kontakion_ode6: {
+      tone: 4,
+      text: "Following the love of the Master, * as an excellent pastor thou didst lay down thy " +
+            "life for the sheep of Christ, * O hieromartyr Athenogenes; * for this cause we " +
+            "praise thee, * and the ten disciples who suffered with thee, * instructed by the " +
+            "fear of God and thy teaching. * Wherefore, with His life-creating right hand * the " +
+            "Master hath crowned you who pleased Him. ** Him do ye entreat on behalf of us all.",
+    },
+    kontakion_ode3: "same as kontakion_ode6",
+    ikos: null,           // NOT IN PDF
+    exapostilarion: null, // NOT IN PDF
+  },
+
+  // ── July 17 — Holy Great-Martyr Marina (Six-Stichera §2C) ────────────────
+  // Source: St. Sergius 07-17.pdf.
+
+  "07-17": {
+    saint: "Holy Great-Martyr Marina",
+    oca_primary: true,
+    source_file: "07-17.pdf",
+    rank: "six_stichera",
+    fekula_section: "2C",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "octoechos",
+    note: "Six-Stichera §2C per encoding_rule_v2.md §1.1: 6 stichera at LIC, single saint, no " +
+          "Great Doxology appointed in the PDF. Aposticha stichera from Octoechos; both Glory " +
+          "(Menaion) and a Stavrotheotokion alternative given at LIC and again at Aposticha — no " +
+          "plain Theotokion text given at either slot (only the Stavro alt), so lic_theotokion " +
+          "stays null (Octoechos-derived). Re-encoded at corrected scope per v2.8 §6: full canon " +
+          "(Odes I/IV/V/VII/VIII/IX) and sessional hymn present in PDF but not captured. " +
+          "Beatitudes: 4 Octoechos + 4 from Ode III of the great-martyr's canon, per the PDF's " +
+          "own explicit 'On the Beatitudes' heading; only the latter 4 captured (Octoechos " +
+          "portion sourced elsewhere, per convention).",
+    feast_e: "2 Corinthians 6:1-10 (§181)",
+    feast_g: "Luke 7:36-50 (§33)",
+    prokeimenon_tone: 4,
+    prokeimenon_text: "Wondrous is God in His saints, the God of Israel.",
+    prokeimenon_stichos: "In congregations bless ye God, the Lord from the well-springs of Israel.",
+    alleluia_tone: 1,
+    alleluia_verse: "With patience I waited patiently for the Lord, and He was attentive unto me, and He hearkened unto my supplication.",
+    alleluia_stichos: "And He brought me out of the pit of misery, and from the mire of clay.",
+    communion_verse: "In everlasting remembrance shall the righteous be; he shall not be afraid of evil tidings.",
+    stichera_lord_i_call_count: 6,
+    stichera_lord_i_call: [
+      { tone: 8, spec_mel: "O most glorious wonder",
+        text: "O most glorious wonder! * He who exalted himself in his pride * and said that he " +
+              "would destroy the earth and the sea * hast thou, a young and all-immaculate " +
+              "maiden, * humbled to the ground, * vanquishing his wiles. * O, the power of the " +
+              "Cross and grace * which hath manifestly made firm ** all weakness for us!" },
+      { tone: 8, spec_mel: "O most glorious wonder",
+        text: "O all-famed martyr Marina, * neither the fire of torment, nor the enjoyment of " +
+              "food, * nor the joys of this world, * nor the beauty of youth * were able to " +
+              "separate from thy love for Christ * thee who desired to obtain the beauty * of " +
+              "thine honored Bridegroom * which transcendeth understanding. ** And thou wast " +
+              "deemed worthy of it, O divinely blessed one." },
+      { tone: 8, spec_mel: "O most glorious wonder",
+        text: "O all-glorious martyr Marina, * who hast rightly made thine abode in the mansions " +
+              "of heaven * with the ranks of virgins * and the armies of the martyrs: * by thy " +
+              "prayers save those * who with faith keep thy memory * and faithfully have " +
+              "recourse to thy protection; * and ask of God remission of sins, ** deliverance and great mercy." },
+    ],
+    stichera_glory: {
+      tone: 2,
+      text: "Let us listen to the praise of the holy virgin who, having kept her lamp ever " +
+            "burning, hath made her abode in the city of our God, in His holy mountain. O the " +
+            "virginity of the Church of God! O virginity, glory of martyrs! O virginity, shared by the angels!",
+    },
+    lic_theotokion: null,  // §2C — no plain Theotokion text given, only the Stavro alt below
+    lic_stavrotheotokion: {
+      tone: 2, spec_mel: "When from the Tree",
+      text: "Beholding Thee nailed to the Tree of the Cross, O Jesus, * she that kneweth not " +
+            "wedlock said weeping: * \"O sweet Child, * why hast Thou abandoned me * who alone " +
+            "gave birth to Thee, * O unapproachable Light of the beginningless Father? * Hasten " +
+            "Thou, and glorify Thyself, * that those who glorify Thy divine sufferings ** may " +
+            "receive divine glory!\"",
+    },
+    aposticha_glory: {
+      tone: 2,
+      text: "With a voice of joy and an exclamation of psalmody let us hymn the martyr Marina; " +
+            "for she cast down to the earth the falsehood of idolatry and manfully trampled " +
+            "underfoot the adverse foe. Wherefore, in dying she hath taken wing to the heavens, " +
+            "bearing a crown upon her head and crying aloud: \"Thee do I desire, O my Bridegroom, " +
+            "and having the love of desire, I have committed my flesh to the fire for Thee, that " +
+            "I may dwell in Thine everlasting mansions, where the abode is of those who rejoice!\"",
+    },
+    aposticha_stavrotheotokion: {
+      tone: 2, spec_mel: "When from the Tree",
+      text: "When the unblemished ewe-lamb * beheld her Lamb * willingly led as a man to the " +
+            "slaughter, * she said, weeping: \"Dost Thou now hasten to leave me childless * who " +
+            "gave Thee birth O Christ? * What is this that Thou hast done, O Redeemer of all? * " +
+            "Even so I will hymn and glorify * Thine extreme goodness, which is beyond " +
+            "understanding and all telling, ** O Lover of mankind!\"",
+    },
+    troparion: {
+      tone: 4,
+      text: "Thy ewe-lamb Marina, O Jesus crieth out with a loud voice: * \"Thee do I love, O my " +
+            "Bridegroom, * and, seeking Thee, I endure suffering. * In Thy baptism I am " +
+            "crucified and buried with Thee. * I suffer for Thy sake, that I may reign with " +
+            "Thee; * I die for Thee, that I may live with Thee. * Accept me, who with love " +
+            "sacrifice myself for Thee, * as an unblemished offering!\" ** By her supplications, " +
+            "in that Thou art merciful, save Thou our souls.",
+    },
+    kontakion_ode6: {
+      tone: 3, spec_mel: "Today the Virgin",
+      text: "Arrayed in the beauties of virginity, * O virgin Marina, * thou wast crowned with " +
+            "imperishable crowns; * and stained with the blood of thy martyrdom, * O martyr, " +
+            "thou hast received the trophy of victory * for thy suffering, ** piously shining forth miracles of healing.",
+    },
+    kontakion_ode3: "same as kontakion_ode6",
+    ikos: "Afire from childhood with love in thy heart, thou didst hasten to Christ thy " +
+          "Bridegroom like a deer thirsting for ever-flowing springs of water, O honored virgin " +
+          "and martyr; and having preserved thyself incorrupt through thy suffering, O right " +
+          "glorious bride, thou didst arrive, adorned and arrayed, in the bridal chamber of thy " +
+          "Creator, wearing thy crown of victory and bearing thy lamp, receiving the incorrupt " +
+          "Bridegroom and accepting like gold the trophy of victory for thy suffering.",
+    exapostilarion: {
+      spec_mel: "Hearken, ye women",
+      text: "Strengthened by the Cross of thy Lord, O goodly virgin, thou didst destroy the " +
+            "pride of thy torturers, and suffering manfully O martyr, thou didst receive from " +
+            "Christ the trophies of victory, O all-wise Marina of lordly name, who ever prayest " +
+            "for those who honor thee with love.",
+    },
+    matins_exapostilarion_theotokion: {
+      text: "The divinely wise virgins who stand round about thee, O most pure Mary, Birthgiver " +
+            "of God, have been brought to thy Son, the King of all, as brides. Him do thou " +
+            "entreat on our behalf, O Virgin Maiden and Mother.",
+    },
+
+    // ── Beatitudes (AT LITURGY) ─────────────────────────────────────────────
+    beatitudes_troparia: [
+      { text: "Neither fire, nor wounds, nor beheading by the sword, neither the cruelty of the torturers, nor death, nor the savagery of wild beasts, was able to separate thee from the love of God, O all-praised one.",
+        source: "Ode III", label: "Ode III, 1" },
+      { text: "Thou wast an unshaken and unshakable pillar during thy trials, O all-glorious one, and a foundation of piety established firmly upon the rock of faith, O most blessed one.",
+        source: "Ode III", label: "Ode III, 2" },
+      { text: "Thou wast a virgin among the martyrs and an invincible martyr among virgins, O all-immaculate one, who betrothed thyself to Christ Who giveth thee a twofold crown.",
+        source: "Ode III", label: "Ode III, 3" },
+      { text: "Strengthened by grace, in oneness of mind we glorify thee, the Theotokos, who hast given birth to Him Who became the flesh which He giveth unto all; and thou hast restored the world.",
+        source: "Ode III", label: "Ode III, Theotokion" },
+    ],
+  },
+
+  // ── July 18 — Holy Martyr Emilian (Simple §2A) ───────────────────────────
+  // Source: St. Sergius 07-18.pdf.
+
+  "07-18": {
+    saint: "Holy Martyr Emilian",
+    oca_primary: true,
+    source_file: "07-18.pdf",
+    rank: "simple",
+    fekula_section: "2A",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "octoechos",
+    note: "Simple §2A per encoding_rule_v2.md §1.1: 3 stichera at LIC, no Great Doxology/" +
+          "Polyeleos/Small Vespers in the PDF. No separate Vespers Aposticha section, no Ikos, " +
+          "no Exapostilarion, and no Liturgy propers given at all — PDF ends after the Liturgy " +
+          "Troparion and Kontakion; Octoechos governs. Re-encoded at corrected scope per v2.8 " +
+          "§6: full canon (Odes I/IV/V/VII/VIII/IX) and sessional hymn present in PDF but not captured.",
+    feast_e: "absent — §2A, readings from Oktoechos",
+    feast_g: "absent — §2A, readings from Oktoechos",
+    stichera_lord_i_call_count: 3,
+    stichera_lord_i_call: [
+      { tone: 4, spec_mel: "As one valiant among the martyrs",
+        text: "The religion of the Greeks * didst thou grind fine as dust, * and through the " +
+              "grace of Christ our God, * O martyr Emilian, * thou didst erect an animate tower " +
+              "of divine knowledge, * a temple of sanctity, * and an immovable foundation of " +
+              "piety * for those who with godly wisdom ** honor thy valiant feats, O most " +
+              "noetically rich martyr." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs",
+        text: "Though devoured by the fire, * afflicted with wounds, imprisoned in dungeons, * " +
+              "and subjected to manifold tribulations, O glorious one, * thou didst not sacrifice " +
+              "to the idols, * nor didst thou deny Christ, * but didst remain invincible. * " +
+              "Wherefore, the Master, as the good Judge of the contest, * the immutable King, ** " +
+              "hath bestowed upon thee the crown of victory." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs",
+        text: "With thy blood * thou didst dye thy robe, * and, arrayed therewith, * thou hast " +
+              "entered the kingdom on high, * rejoicing, O glorious one; * and thou standest " +
+              "forever before God, * the King of all, * asking for peace, health and speedy " +
+              "deliverance from evils ** for those who honor thee with faith." },
+    ],
+    // Combined Glory/Both-now, same melody — this IS the doxasticon; same text also serves
+    // lic_theotokion.
+    stichera_glory: {
+      tone: 4,
+      text: "Bedew my mind * with showers of the Most holy Spirit, O most pure one, * who " +
+            "ineffably gaveth birth unto Christ * the drop Who with His compassions washeth away " +
+            "* the countless iniquities of mankind; * dry up the upwelling of my passions, * and " +
+            "grant unto me a torrent * of ever-living nourishment, ** by thy supplications.",
+      note: "Combined Glory/Both-now hymn per PDF ('in the same melody') — same text also serves lic_theotokion.",
+    },
+    lic_theotokion: {
+      tone: 4,
+      text: "Bedew my mind * with showers of the Most holy Spirit, O most pure one, * who " +
+            "ineffably gaveth birth unto Christ * the drop Who with His compassions washeth away " +
+            "* the countless iniquities of mankind; * dry up the upwelling of my passions, * and " +
+            "grant unto me a torrent * of ever-living nourishment, ** by thy supplications.",
+      note: "Same combined hymn as stichera_glory above.",
+    },
+    lic_stavrotheotokion: {
+      tone: 4,
+      text: "Beholding Thee * nailed to the Cross, O Lord, * the ewe-lamb Thy Mother marveled * " +
+            "and cried aloud: * \"What is this that I see, * O my Son most desired? How hast " +
+            "Thou been rewarded * by the unfaithful and iniquitous assembly * which hath enjoyed " +
+            "Thy many miracles? ** Yet glory to Thine ineffable condescension, O Master!\"",
+    },
+    aposticha_glory_absent: true,  // no separate Vespers Aposticha section in the PDF at all
+    troparion: {
+      tone: 4,
+      text: "In his sufferings, Thy martyr Emilian O Lord, * received an imperishable crown from " +
+            "Thee, our God; * for, possessed of Thy might, * he set at naught the tyrants and " +
+            "crushed the feeble audacity of the demons. ** By his supplications save Thou our souls.",
+    },
+    kontakion_ode6: {
+      tone: 3, spec_mel: "Of the divine Faith",
+      text: "Aflame with divine zeal, thou wast not afraid * of the ministering fire, * but " +
+            "fearlessly ascending of thine own will, * thou wast consumed by the kindled fire, * " +
+            "and didst offer thyself to the Master as a sacrifice. * O glorious martyr Emilian, " +
+            "** entreat Christ God, that He grant us great mercy.",
+    },
+    kontakion_ode3: "same as kontakion_ode6",
+    ikos: null,           // NOT IN PDF
+    exapostilarion: null, // NOT IN PDF
+  },
 };
 
 export default JULY_MENAION;
