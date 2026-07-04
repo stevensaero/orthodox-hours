@@ -56,7 +56,7 @@ const KNOWN_FIELDS = new Set([
   'aposticha_glory_absent', 'aposticha_stavrotheotokion',
   'aposticha_note', 'aposticha_source', 'beatitudes_count', 'beatitudes_ode',
   'beatitudes_source', 'beatitudes_troparia', 'canons', 'communion_verse',
-  'dismissal_theotokion', 'exapostilarion', 'feast_e', 'feast_e_pentecostarion',
+  'dismissal_theotokion', 'exapostilarion', 'exapostilarion_2', 'feast_e', 'feast_e_pentecostarion',
   'feast_g', 'fekula_section', 'fekula_section_override', 'gospel_sticheron',
   'great_doxology_troparion', 'has_great_doxology', 'has_litya', 'has_paroemias',
   'has_polyeleos', 'heavenly_king_omitted', 'heavenly_king_restored', 'hours_format',
