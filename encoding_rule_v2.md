@@ -1,6 +1,15 @@
-# ENCODING RULE v2.6 — Orthodox Hours Tool
-**Authority:** Fekula & Williams (2009) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** June 2026 · **Supersedes:** v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+# ENCODING RULE v2.7 — Orthodox Hours Tool
+**Authority:** Fekula & Williams (2009) · St. Ignatius Orthodox Press Anthologion (2024) · HTM Horologion · OCA calendar (oca.org)
+**Updated:** July 2026 · **Supersedes:** v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+
+**v2.7 changes — SERVICE RANK DETERMINATION (§1.1, new):** adds an explicit ordered
+test for rank, sourced from the St. Ignatius Orthodox Press Anthologion (2024)
+"Festal Rankings" table, cross-referenced against Fekula ch.1/ch.2 and the OCA
+calendar's Typikon-symbol classification. Resolves two standing ambiguities:
+(1) Fekula ch.2 §2C and §2D both call for 6 stichera at Lord I Have Cried — the
+actual disambiguator is whether the Great Doxology is explicitly appointed, not
+count; (2) a Double commemoration (2 saints × 3 stichera) also shows "6 at LIC"
+but is Simple rank, not Six-Stichera. See §1.1.
 
 **v2.6 changes — CHECK F (register + provenance lint):** after the May 16–22 audit found
 OCA-contemporary "You/Your" register bleeding into stored troparia/kontakia (05-19 troparion,
@@ -70,6 +79,61 @@ A blank field is never acceptable. Blank = encoding error.
 
 **OCA primacy rule:** When OCA troparion, kontakion, or commemoration date differs from
 St. Sergius, the OCA text and date govern. Record both versions, flag the divergence.
+
+---
+
+### 1.1 SERVICE RANK DETERMINATION (the waterfall test)
+
+**Authority:** St. Ignatius Orthodox Press, *Anthologion* (2024), "Festal Rankings"
+table (Drive: `Feasts/festal-calendar-saint-ignatius-orthodox-press-2024.pdf`) —
+cross-referenced against Fekula ch.1 (Sunday) / ch.2 (weekday) for what each rank's
+content entails, and the OCA calendar (oca.org/liturgics/outlines/classes-of-feasts)
+for a corroborating Typikon-symbol check.
+
+**Governing principle:** rank is a property of the saint's own commemoration as
+printed in the Menaion — not derived from stichera count alone, and not dependent
+on what weekday the fixed date happens to fall on in a given year. Read the day's
+PDF rubric and apply this test in strict order. Stop at the first match; each
+rank below requires the negative of every rank above it.
+
+1. **Great Feast (Class I/II)** — a closed, enumerated list, not a content test:
+   Great Feasts of the Master (Nativity, Theophany, Palm Sunday, Ascension,
+   Pentecost, Transfiguration) or of the Theotokos (her Nativity, Entrance into
+   the Temple, Meeting of the Lord, Annunciation, Dormition). Check identity,
+   not the PDF rubric.
+2. **Vigil Rank (Class III)** — the Menaion PDF provides a Small Vespers for
+   this saint. (Every Sunday is Vigil Rank independent of any Menaion saint —
+   a property of the day, not the saint; see note below.)
+3. **Polyeleos Rank (Class III)** — Matins explicitly appoints "the Polyeleos"
+   (with Magnification), and there is no Small Vespers.
+4. **Doxology Rank (Class IV)** — Matins explicitly appoints "the Great
+   Doxology" (sung), and neither Polyeleos nor Small Vespers is appointed.
+5. **Senary / Six-Stichera Rank (Class V)** — six stichera at Lord I Have Cried
+   for a single saint, and none of the above apply.
+6. **Simple Rank (Class VI)** — three stichera at LIC for one saint (or six,
+   split 3+3, for a double commemoration of two saints), and none of the above
+   apply.
+
+**Key disambiguations:**
+- "6 stichera at LIC" is never diagnostic by itself. It can mean Doxology rank
+  (Fekula §2D also prints 6 at LIC — resolved by whether the Great Doxology is
+  appointed), a non-vigil Polyeleos feast (§2E: "six or eight... as provided" —
+  resolved by whether Polyeleos is appointed), or a Double commemoration of two
+  saints at Simple rank (3+3 — resolved by checking one saint vs. two).
+- Great Doxology sung-vs-read is the primary weekday Doxology signal (Fekula
+  ch.2: read at §2C, sung at §2D+). **This does not transfer to Sunday** — the
+  Doxology is sung every Sunday regardless of the saint's own rank (Fekula
+  ch.1). On a Sunday date, rank the saint by Small Vespers / Polyeleos /
+  stichera count in the Menaion PDF, not by whether the Doxology is sung that
+  day.
+- The stichera-count test only ever disambiguates the bottom two tiers
+  (Simple vs. Senary), and even then requires knowing whether the day
+  commemorates one saint or two.
+
+**Cross-check:** the OCA calendar shows this same six-tier classification via
+colored Typikon symbols. When available, use it to corroborate the PDF-derived
+rank. If the two disagree, flag the divergence in the entry's `note` — do not
+silently pick one.
 
 ---
 
