@@ -8202,6 +8202,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.24.8",
+    date: "July 2026",
+    summary: "07-22, 07-23, 07-24 encoded — completes July 1-24",
+    items: [
+      "07-22 (Mary Magdalene & Hieromartyr Phocas of Sinope, Double §2B): both saints' kontakia and ikoi appear together after Ode VI, with no Ode III/VI split to determine Hours-routing from position (unlike 07-21) — followed title/troparion order instead (Mary Magdalene first throughout, no reversal). Introduced reusing exapostilarion_2 for a second saint's exapostilarion, distinct from its original use (a second exapostilarion for one saint at 07-20) — same field, different reason, noted inline.",
+      "07-23 (Icon of the Theotokos of Pochaev, Vigil §2F): repeated the combined-Glory/Both-now mistake from 07-08/07-12 in three places at once (LIC, Litya, Aposticha all print combined hymns) and caught all three via the same gate check before committing.",
+      "07-24 (Martyr Christina, Simple §2A): clean, complete entry — Ikos, Exapostilarion, and full Liturgy propers all present in the source.",
+      "Gate: 71/71 PASS, zero warnings on all three entries. July 1 through 24 now fully encoded.",
+    ],
+  },
+  {
     version: "v0.24.7",
     date: "July 2026",
     summary: "07-19, 07-20, 07-21 encoded — two major Vigil-rank feasts, exapostilarion_2 added",
