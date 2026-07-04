@@ -286,13 +286,21 @@ function checkEntry(label, entry, kind, key, locPrefix, commentBlob) {
     }
   }
 
-  // Check E — pointing marker well-formedness and intra-array consistency.
-  // Rule: if any text item in a stichera array carries pointing markers
-  // (* /** or | //), ALL text items in that array must carry markers.
-  // A fully-unmarked array passes (source may have had no structured markers).
-  // A fully-marked array passes.
-  // A mixed array (some marked, some not) fails — indicates incomplete encoding.
+  // Check E — pointing marker well-formedness and intra-group consistency.
+  // Rule: if any text item within a spec_mel sub-group carries pointing markers
+  // (* /** or | //), ALL text items in that SAME sub-group must carry markers.
+  // A fully-unmarked sub-group passes (source may have had no structured markers).
+  // A fully-marked sub-group passes.
+  // A mixed sub-group (some marked, some not) fails — indicates incomplete encoding.
   // Also fails if markers appear without surrounding spaces (malformed).
+  //
+  // Checked per spec_mel sub-group, not across the whole array: a single stichera set can
+  // legitimately combine two differently-sourced compositional groups with different pointing
+  // tiers — e.g. 07-08.pdf (Kazan Icon): 4 stichera under a labeled Spec. Mel., pointed Tier-2,
+  // plus 3 more under "And these Stichera" with no Spec. Mel. label, plain Tier-1 prose in the
+  // source. Items without spec_mel fall into a shared no-spec_mel group and are still checked
+  // for consistency among themselves, so a genuinely half-encoded single-source array (same
+  // spec_mel or none, some items marked and others simply forgotten) still fails as before.
   function checkSticheraMarkers(items, fieldName) {
     if (!Array.isArray(items)) return;
     const textItems = items.filter(s => s && s.text);
@@ -304,16 +312,27 @@ function checkEntry(label, entry, kind, key, locPrefix, commentBlob) {
         problems.push(`${label}: ${fieldName}[${i}] has unspaced marker character — use ' * ' and ' ** ' (space-delimited).`);
       }
     });
-    // Intra-array consistency
+    // Intra-group consistency, grouped by spec_mel
     const hasMarker = (t) => / \* /.test(t) || / \*\* /.test(t) || /\s\|\s/.test(t) || /\s\/\/\s/.test(t);
-    const markedCount = textItems.filter(s => hasMarker(s.text)).length;
-    if (markedCount > 0 && markedCount < textItems.length) {
-      (editorMode ? warnings : problems).push(`${label}: ${fieldName} — ${markedCount}/${textItems.length} items have pointing markers; all must match. Encode markers on unmarked items or confirm source had none.`);
+    const NO_SPEC_MEL = '\u0000__no_spec_mel__';
+    const groups = new Map();
+    textItems.forEach(s => {
+      const key = s.spec_mel || NO_SPEC_MEL;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(s);
+    });
+    for (const [key, group] of groups) {
+      const markedCount = group.filter(s => hasMarker(s.text)).length;
+      if (markedCount > 0 && markedCount < group.length) {
+        const groupLabel = key === NO_SPEC_MEL ? '(no spec_mel)' : `spec_mel "${key}"`;
+        (editorMode ? warnings : problems).push(`${label}: ${fieldName} ${groupLabel} — ${markedCount}/${group.length} items have pointing markers; all must match within a sub-group. Encode markers on unmarked items or confirm source had none.`);
+      }
     }
   }
   checkSticheraMarkers(entry.stichera_lord_i_call, 'stichera_lord_i_call');
   checkSticheraMarkers(entry.stichera_aposticha, 'stichera_aposticha');
   checkSticheraMarkers(entry.stichera_matins_aposticha, 'stichera_matins_aposticha');
+
 
   // Check F — register + provenance lint (skipped under --editor)
   if (!editorMode) {
