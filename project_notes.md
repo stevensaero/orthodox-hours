@@ -1,5 +1,27 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.24.5** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+**Tool version: v0.24.6** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+
+**Session July 4, 2026 (cont.) — 07-16, 07-17, 07-18 encoded (v0.24.6).**
+Fifth batch of the July encoding session, first genuinely new dates after 07-14/07-15
+(pre-existing) and the completed 07-01–13 run.
+
+- **07-16 (Hieromartyr Athenogenes & his Ten Disciples, Simple §2A)** turned up a first for
+  this project: the daily proper PDF has no troparion at all — confirmed genuine (the text
+  ends naturally at the Ode IX Theotokion, not a fetch truncation), and also no separate
+  Aposticha, Ikos, Exapostilarion, or AT LITURGY recap. Followed the fallback chain properly
+  this time: web-searched OCA's troparia page for Jul 16 rather than leaving the field null
+  or improvising. OCA's kontakion for this date independently matches the one already
+  present in the St. Sergius PDF closely, which is a good cross-check that the PDF's own
+  kontakion was transcribed correctly.
+- **07-17 (Great-Martyr Marina, Six-Stichera §2C)** — clean, full entry. Glory and
+  Stavrotheotokion given separately (not combined, unlike several recent Marian-icon and
+  simple-rank dates), Ikos and Exapostilarion both present, full Liturgy propers.
+- **07-18 (Martyr Emilian, Simple §2A)** — clean minimal entry, same shape as 07-09/07-10/
+  07-18: no Ikos, Exapostilarion, Aposticha, or Liturgy propers in the source.
+- Gate: 71/71 PASS. One expected register-lint warning on 07-16's OCA-sourced troparion
+  (annotated as verified source register, matching the 07-03/07-14 precedent for OCA propers).
+
+---
 
 **Session July 4, 2026 (cont.) — 07-10 through 07-13 encoded, completes July 1-13 (v0.24.5).**
 Fourth 3-day batch (came in as four dates) of the July encoding session.
