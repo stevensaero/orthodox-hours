@@ -191,9 +191,30 @@ const JULY_MENAION = {
     source_file: "06-19.pdf",
     rank: "vigil",
     fekula_section: "2F",
-    note: "Jun 19 O.S. = Jul 2 N.S. Vigil §2F confirmed — 8 stichera, Great Vespers with Litya, " +
-          "Polyeleos, three paroemias. OCA and St. Sergius texts in full agreement. " +
-          "Service composed at Holy Dormition Monastery, Sofia; full ROCOR service forthcoming.",
+    has_great_doxology: true,   // PDF: "Great Doxology. Troparion. Litanies. First Hour."
+    has_polyeleos: true,        // PDF: "Polyeleos, and this magnification: We magnify thee..."
+    has_litya: true,            // PDF: "At Litiya, the Sticheron of the temple, and these of the holy hierarch..."
+    has_paroemias: true,        // PDF: "Three Lessons" (Proverbs x2, Wisdom of Solomon)
+    magnificat_sung: true,      // Magnification text given with the Polyeleos
+    matins_format: "god_is_the_lord",
+    matins_gospel: "John 10:9-16 (§36)",
+    aposticha_source: "menaion",  // §2F: full Menaion Aposticha with verses (not Octoechos)
+    note: "Jun 19 O.S. = Jul 2 N.S. Vigil §2F reconfirmed per encoding_rule_v2.md §1.1: " +
+          "Great Doxology, Polyeleos, Litya, and paroemias all explicitly appointed in " +
+          "06-19.pdf — well above the Doxology/Polyeleos threshold. (The printed booklet " +
+          "moves directly to 'AT GREAT VESPERS' without a separately-printed Small Vespers " +
+          "text; this is a composed service for a recently-glorified saint, not evidence " +
+          "against Vigil rank given the Litya/Polyeleos/Doxology combination.) " +
+          "OCA and St. Sergius texts in full agreement. Service composed at Holy Dormition " +
+          "Monastery, Sofia; full ROCOR service forthcoming. " +
+          "Re-encoded at corrected scope per encoding_rule_v2.md v2.8 §6: filled in " +
+          "previously-missing standard fields (rank flags, Litya, Menaion Aposticha, ikos, " +
+          "exapostilarion, kontakion_ode3, beatitudes) and restored pointing on troparion/" +
+          "kontakion_ode6 (both were flattened to Tier-1 prose though the PDF marks them " +
+          "Tier-2 `*`/`**`). Full canon (Odes I/IV/V/VII/VIII/IX), sessional hymns (after " +
+          "Kathisma I, II, and after Polyeleos), Praises stichera, and the Psalm-50 sticheron " +
+          "are present in the PDF but intentionally NOT captured — out of scope by default " +
+          "(reserved for Great Feast rank on explicit request; this is Vigil, not Great Feast).",
     feast_e: "Hebrews 13:17-21",
     feast_g: "Luke 6:17-23",
     prokeimenon_tone: 7,
@@ -219,22 +240,90 @@ const JULY_MENAION = {
     ],
     stichera_glory: { tone: 5, text: "Rejoice, O little and persecuted Orthodox flock, hated by all, for God hath given thee a great treasure: a wondrous comforter amid sorrow, an incorrupt fragrance amid the fetor of the present corruption of morals, a calm island of hope unashamed amid an ocean of storms." },
     // Note: 8 stichera = 6 unique; first two each marked ×2 (repeatIndex 0 and 2) per PDF rubric.
-    // Both-now: Dogmatic Theotokion T5 "In the Red Sea of old..." (06-19.pdf at Great Vespers)
-    lic_theotokion: null,  // §2F vigil — Both-now = tone-of-week Dogmatic Theotokion (T5 printed in PDF but runtime from Octoechos)
+    // Both-now: Dogmatic Theotokion T5 (derived, Octoechos, tone of week — rendered by the
+    // assembler). PDF prints the full text ("In the Red Sea of old..."); not re-stored here
+    // since it's the standard Sunday-tone dogmatikon, not a saint-specific proper.
+    lic_theotokion: null,
+
+    // ── VESPERS — LITIYA ────────────────────────────────────────────────────
+    litya_stichera: [
+      { tone: 6, text: "When thou wast yet a little child, thou wast moved to compunction by the words whereby Christ called the holy apostles: \"Come, follow Me, and I will make you fishers of men!\" Yet as thou didst listen to these divine words, O humble-minded John, thou didst in nowise think thyself to be a choice like unto the latter messengers of God who were appointed to die (for Him). But Christ Himself, knowing thee, hath glorified thee. May thy crowning be for us a call to unfeigned repentance, and the salvation of our souls." },
+      { tone: 6, text: "With faith and love we all honor thy memory today, O heavenly man and earthly angel; for in the midst of this greatly tumultuous world thou wast a true desert-dweller and, having mortified all the passions, thou didst reach a spiritual height hard to contemplate, and wast truly a most splendid wonder amid the darkness of this age. Wherefore, we marvel at the great glory which thou hast obtained in heaven, and celebrate thy glorification with compunction." },
+      { tone: 6, text: "The love of the Lord is the most glorious wisdom, saith the son of Sirach; wherefore, thy divine love seemed as foolishness to the corrupt world, O blessed and holy hierarch John; for, as saith the apostle of the gentiles, the preaching of the Cross is to those who perish foolishness. But we, casting off the wisdom of this vain world, like children bless thee with purity, O John our beloved father." },
+    ],
+    // PDF gives a single combined "Glory..., Both now..." hymn (one text serving both slots),
+    // not separate Glory and Both-now hymns — common at Litya. Stored under litya_both_now.
+    litya_glory: null,
+    litya_both_now: {
+      tone: 8,
+      text: "O most pure Theotokos, good surety of sinners and most wondrous joy of all who sorrow: Before the end overtaketh us, turn us to repentance and deliver us from grievous torments throughout the ages.",
+      note: "Combined Glory/Both-now (single hymn serves both slots per PDF).",
+    },
+
+    // ── VESPERS — APOSTICHA ─────────────────────────────────────────────────
+    // §2F: full Aposticha from the Menaion (not Octoechos), 3 stichera with verses.
+    stichera_aposticha: [
+      { tone: 8, text: "O protector of infants and youths, make us wise with angelic purity, and preserve the children of the Church from the wickedness of this world, granting love of chastity unto all by thy supplications, O holy one who lovest God." },
+      { tone: 8, verse: "My mouth shall speak wisdom, * and the meditation of my heart shall be of understanding.",
+        text: "O John, wonderworker of San Francisco, light of monastics and joy of virgins, founder and protector of holy monasteries, fiery pillar of the Orthodox Church, faithful child of the holy fathers: Pray that we all be saved." },
+      { tone: 8, verse: "Hear this, all ye nations; give ear, * all ye that inhabit the world.",
+        text: "O preacher of the apostolic Church who art the peer of the apostles, divine instructor in Orthodoxy, zealous servant of the Gospel and good protector of the Orthodox: Entreat Christ God, that the world may be enlightened and all may be saved." },
+    ],
+    aposticha_glory: {
+      tone: 8,
+      text: "As one truly foreign to covetousness, thou didst utterly vanquish anger, and thy countenance was ever illumined with paschal joy. As a father full of abundant love for all, thine ascetic feats knew no bounds; for day and night thou didst immerse thyself in prayer. Wherefore, O father John, pray that we all be saved.",
+    },
+    aposticha_both_now: {
+      tone: 8,
+      text: "O Sovereign Lady, accept the supplication of thy servants, and deliver us from all want and grief.",
+    },
+
+    // ── AT MATINS ───────────────────────────────────────────────────────────
+    // Full canon (Odes I/IV/V/VII/VIII/IX), sessional hymns, and Praises stichera present in
+    // the PDF but OUT OF SCOPE per encoding_rule_v2.md v2.8 §6 (Vigil, not Great Feast; not
+    // requested). Ode III/VI captured below via beatitudes_troparia (Liturgy use).
+    // Kontakion after Ode VI given in PDF; no separate kontakion after Ode III — same as ode6.
+    kontakion_ode3: "same as kontakion_ode6",
+    ikos: "Truly such a hierarch, of whom the whole world hath been found to be unworthy, hath been found fitting for the Orthodox Church: a fiery minister of the divine Mysteries, possessed of great reverence, honorably and blamelessly observing the canons of the Church. For as a pastor he warmed our hearts and made us firm in the Faith; by his supplication he poured forth the dew of consolations upon the sorrowful, and taught piety to us all, that though we are weak, we also may be deemed worthy to join him in his abode in the kingdom of God.",
+    exapostilarion: "Who can understand the mystery of piety? Yet we approach thy shrine with faith and are enlightened, drawing forth never-fading grace with thanksgiving.",
+    matins_exapostilarion_theotokion: {
+      text: "Thou wast the Mother of the Light, O Virgin. Wherefore, we cry out to thee with compunction: Rejoice, O most radiant lamp who shone forth the Sun of salvation upon the world!",
+    },
+
+    // ── Beatitudes (AT LITURGY) ─────────────────────────────────────────────
+    // PDF: "8 Troparia: 4 from ODE III and 4 from ODE VI of the canon" (VI, not the usual IX).
+    beatitudes_troparia: [
+      { text: "Celebrating thy memory with gladness, O our archpastor and instructor, we bow down before thy precious and incorrupt relics.",
+        source: "Ode III", label: "Ode III, 1", note: "(Twice) per PDF" },
+      { text: "Thou didst receive the holy tonsure, putting on the full armor of God, arming thyself against the spirits of evil in high places, and vanquishing them.",
+        source: "Ode III", label: "Ode III, 2" },
+      { text: "Thou didst not give sufficient sleep to thine eyes, neither didst thou lie down upon a bed to take thy rest; and thus wast like the fathers of old, O ascetic.",
+        source: "Ode III", label: "Ode III, 3" },
+      { text: "Christ the Master revealed thee as an edifier and teacher of His Holy Church, O wondrous and holy hierarch, who wast graced with the gift of healings and consolations.",
+        source: "Ode VI", label: "Ode VI, 1" },
+      { text: "Thou didst hasten to the homes of the suffering, and to those lying afflicted in hospitals, of whom the Lord informed thee, as an imparter of His most pure Mysteries.",
+        source: "Ode VI", label: "Ode VI, 2" },
+      { text: "Thou wast shown to babes as the mediator of their healing, O holy John, transforming the sorrow of their parents into joy; and wast revealed to all from all ages as the helper they desired.",
+        source: "Ode VI", label: "Ode VI, 3" },
+      { text: "All the saints joyfully celebrate thee, O Virgin Theotokos, and we, thy greatly sinful servants, place our trust in thee. Be glad and rejoice, O Mother of Christ the Almighty!",
+        source: "Ode VI", label: "Ode VI, Theotokion" },
+    ],
+
+    // Pointing restored to Tier 2 per source; previously flattened.
     troparion: {
       tone: 5,
-      text: "Lo, thy care for thy flock in its sojourn prefigured the supplications which thou dost " +
-            "ever offer up for the whole world. Thus do we believe, having come to know thy love, " +
-            "O holy hierarch and wonderworker John. Wholly sanctified by God through the ministry " +
-            "of the most pure Mysteries, and thyself ever strengthened thereby, thou didst hasten " +
-            "to the suffering, O most gladsome healer. Hasten now also to the aid of us " +
+      text: "Lo, thy care for thy flock in its sojourn * prefigured the supplications which thou dost " +
+            "ever offer up for the whole world. * Thus do we believe, having come to know thy love, * " +
+            "O holy hierarch and wonderworker John. * Wholly sanctified by God through the ministry " +
+            "of the most pure Mysteries, * and thyself ever strengthened thereby, * thou didst hasten " +
+            "to the suffering, O most gladsome healer. * Hasten now also to the aid of us ** " +
             "who honor thee with all our heart.",
     },
     kontakion_ode6: {
       tone: 4,
-      text: "Thy heart hath gone out to all who entreat thee with love, O holy hierarch John, " +
-            "and who remember the struggle of thy whole industrious life, and thy painless and " +
-            "easy repose, O faithful servant of the most pure Directress.",
+      text: "Thy heart hath gone out to all who entreat thee with love, * O holy hierarch John, * " +
+            "and who remember the struggle of thy whole industrious life, * and thy painless and " +
+            "easy repose, ** O faithful servant of the most pure Directress.",
     },
   },
 
@@ -250,7 +339,19 @@ const JULY_MENAION = {
     rank: "simple",
     fekula_section: "2A",
     note: "Jul 3 O.S. = Jul 16 N.S. OCA commemorates Jul 3 N.S. — DIVERGENCE; OCA date governs. " +
-          "OCA proper troparion and kontakion used; differ from St. Sergius generic martyr texts.",
+          "OCA proper troparion and kontakion used; differ from St. Sergius generic martyr texts " +
+          "(troparion/kontakion_ode6 below are the OCA propers, not 07-03.pdf's own text — " +
+          "unpointed, per OCA's own source format, not a flattening defect). " +
+          "Rank reconfirmed per encoding_rule_v2.md §1.1: 3 stichera at LIC, single saint, no " +
+          "Great Doxology/Polyeleos/Small Vespers in PDF → Simple, §2A. " +
+          "Re-encoded at corrected scope per v2.8 §6: full canon (Odes I/IV/V/VII/VIII/IX) and " +
+          "the Ode III sessional hymn are present in 07-03.pdf but intentionally NOT captured " +
+          "(out of scope; not Great Feast rank). lic_theotokion/lic_stavrotheotokion now hold " +
+          "the actual printed St. Sergius text (both genuinely present, pointed, in the PDF) " +
+          "rather than a generic Octoechos-derived placeholder. aposticha_glory verified " +
+          "absent — 07-03.pdf has no separate Vespers Aposticha section at all (Octoechos " +
+          "governs entirely, consistent with the absent LIC Glory). ikos and exapostilarion " +
+          "verified absent — neither appears in the PDF (§2A does not always include either).",
     feast_e: "absent — §2A, readings from Oktoechos",
     feast_g: "absent — §2A, readings from Oktoechos",
     stichera_lord_i_call_count: 3,  // T8, Spec. Mel. "O most glorious wonder" (07-03.pdf)
@@ -259,8 +360,34 @@ const JULY_MENAION = {
       { tone: 8, spec_mel: "O most glorious wonder", text: "Thou didst pass through Jerusalem, * the splendid city of God, * like a stone dyed with blood, * clad in the purple robe of suffering, * and now manifestly praying, * dancing and rejoicing, * do thou, by thy supplications, * save those who celebrate ** thy most glorious and sacred memory, O most blessed one." },
       { tone: 8, spec_mel: "O most glorious wonder", text: "Possessed of right acceptable boldness * before Christ the Master, * as an invincible martyr, * and His well-given ear * as a lawful spiritual athlete, * cease not in thine entreaties, O right wondrous one, * to deliver from temptations and evil circumstances * those who keep thy memory, ** and hymn thee faithfully." },
     ],
-    stichera_glory_absent: true,  // §2A — verified absent in 07-03.pdf; no saint doxasticon printed (Theotokion T8 follows for Alleluia-Matins option)
-    lic_theotokion: null,   // §2A — Both-now = Octoechos theotokion (tone of week)
+    stichera_glory_absent: true,  // §2A — verified absent in 07-03.pdf; no saint doxasticon printed (combined Glory/Both-now/Theotokion follows)
+    // Both-now: single combined "Glory..., Both now..., Theotokion" hymn (no separate saint
+    // doxasticon) — genuinely printed and pointed in 07-03.pdf, not an Octoechos placeholder.
+    lic_theotokion: {
+      tone: 8,
+      text: "The pre-eternal God, * taking flesh from thy blood, * hath shown thee forth, O pure one, * " +
+            "as an intercessor for all mankind. * Wherefore, deliver thy servants * from all misfortune " +
+            "and every evil circumstance, * and grant that all who glorify * and bow down before thee ** " +
+            "be deemed worthy of the splendor of the elect.",
+    },
+    lic_stavrotheotokion: {
+      tone: 8,
+      text: "\"What is this sight which I see, * which mine eyes behold, O Master? * " +
+            "How is it that Thou Who dost sustain all creation, * art lifted up upon the Tree and diest, * " +
+            "granting life unto all?\" * thus said the Theotokos weeping, * upon seeing God and man * " +
+            "Who had shone forth ineffably from her ** hanging upon the Cross.",
+    },
+    // Vespers Aposticha verified absent — 07-03.pdf has no separate Aposticha section at all;
+    // Octoechos governs entirely at this rank (consistent with the absent LIC Glory above).
+    aposticha_glory_absent: true,
+    // Ikos and Exapostilarion verified absent — neither appears in 07-03.pdf.
+    ikos: null,
+    exapostilarion: null,
+    kontakion_ode3: "same as kontakion_ode6",
+    // "you/your" in troparion and kontakion_ode6 below are verified as printed in OCA's own
+    // composed propers for this saint (not 07-03.pdf's St. Sergius text, which uses traditional
+    // register but was set aside per OCA primacy). Check F-1 will still flag it — expected,
+    // not a defect; not silently "corrected" to invented Thee/Thou text OCA didn't write.
     troparion: {
       tone: 4,
       text: "Like a fragrant hyacinth of the Church of Christ, O all-blessed Hyacinth, " +
