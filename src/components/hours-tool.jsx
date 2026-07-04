@@ -8202,6 +8202,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.24.7",
+    date: "July 2026",
+    summary: "07-19, 07-20, 07-21 encoded — two major Vigil-rank feasts, exapostilarion_2 added",
+    items: [
+      "07-19 (Ven. Seraphim of Sarov, Vigil §2F) and 07-20 (Prophet Elijah, Vigil §2F): both print Little Vespers, confirming Vigil. Both extremely rich sources with two full canons each (not captured, per v2.8 scope); full Litya, Menaion Aposticha, Ikos, and Liturgy propers captured for both.",
+      "07-20 prints two separate Exapostilaria for the same feast ('Glory..., another Exapostilarion'). Added exapostilarion_2 to KNOWN_FIELDS deliberately — a genuinely new field, distinct from the existing troparion_2/kontakion multi-saint pattern since this is one saint with two exapostilaria, not two saints.",
+      "07-21 (Ven. Symeon Fool-for-Christ & Ven. John, Double §2B, + Prophet Ezekiel): a Double commemoration where the printed troparion order (Ezekiel first, Symeon/John second) is the reverse of the LIC stichera order and the title's own ordering (Symeon/John listed first). Resolved the Hours-routing question by kontakion position instead: Symeon & John's joint kontakion sits after Ode VI (kontakion_ode6, 1st/6th Hour) and Ezekiel's own sits after Ode III (kontakion_ode3, 3rd/9th Hour) — flagged the print-order reversal rather than silently reconciling it.",
+      "Gate: 71/71 PASS, zero warnings on all three entries.",
+    ],
+  },
+  {
     version: "v0.24.6",
     date: "July 2026",
     summary: "07-16, 07-17, 07-18 encoded",
