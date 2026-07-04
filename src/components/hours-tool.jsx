@@ -8202,6 +8202,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.24.3",
+    date: "July 2026",
+    summary: "07-04, 07-05, 07-06 encoded — first Double commemoration of the July batch",
+    items: [
+      "07-04 (Andrew of Crete & Ven. Martha, Double §2B) is a genuine two-saint commemoration: 6 stichera at LIC split 3+3 — the exact case the encoding_rule_v2.md §1.1 waterfall calls out as Simple rank, not Six-Stichera. Per Fekula §2B the two saints' kontakia route to different Hours (Andrew's after Ode VI to 1st/6th Hour, Martha's after Ode III to 3rd/9th Hour) rather than the usual single-saint 'kontakion_ode3 = same as kontakion_ode6' pattern. troparion_2 holds Martha's troparion.",
+      "07-05 (Athanasius of Athos) prints a Little Vespers section — the direct Vigil-rank signal per §1.1 (Small Vespers provided). Full Litya and Menaion Aposticha captured; Little Vespers content itself, along with full canon/sessional hymns, intentionally not captured (out of scope, same reasoning as v2.8's canon/sessional/Praises exclusion). One flagged discrepancy: the troparion's tone prints as III in two spots and VIII in a third for identical text; used Tone III (majority + text match) and noted the inconsistency rather than silently picking one.",
+      "07-06 (Juliana of Olshansk, Polyeleos §2E) — Great Doxology and Polyeleos both explicitly appointed, no Small Vespers in the PDF, confirming Polyeleos rank over Vigil. One field left honestly incomplete: the Matins exapostilarion theotokion has a rubric heading in the PDF but no text follows before the next section — recorded as not in PDF rather than invented.",
+      "All three at corrected scope per v2.8 §6: full canon (Odes I/IV/V/VII/VIII/IX) and sessional hymns not captured on any of the three. Gate: 71/71 PASS, zero warnings on all three new entries.",
+    ],
+  },
+  {
     version: "v0.24.2",
     date: "July 2026",
     summary: "07-02 (St John Maximovich) and 07-03 (Hyacinth) re-encoded at corrected scope",
