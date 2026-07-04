@@ -8202,6 +8202,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.24.9",
+    date: "July 2026",
+    summary: "07-25, 07-26, 07-27 encoded — completes July 1-27",
+    items: [
+      "07-25 (Dormition of Righteous Anna, Doxology §2D): 6 stichera at LIC but Great Doxology explicit, no Polyeleos — Doxology rank per §1.1, exactly the §2C/§2D count-ambiguity the waterfall test resolves. Also commemorated the same day: Holy Women Olympia & Euprakia, whose entire canon and stichera are assigned 'AT COMPLINE' in the source — a separate service from Vespers/Matins/Liturgy, structurally out of scope for this tool (not a v2.8 judgment call).",
+      "07-26 (Venerable Martyr Paraskeva, Polyeleos §2E): a single saint carrying two genuinely distinct kontakia, same pattern as 07-11 (Olga) — both captured directly.",
+      "07-27 (Seven Enlighteners of the Slavs & Bulgars, Vigil §2F): all seven saints treated as one collective commemoration throughout (shared stichera, troparion, kontakion, canon), not split into Doubles.",
+      "Gate: 71/71 PASS, zero warnings on all three entries on the first pass. July 1 through 27 now fully encoded.",
+    ],
+  },
+  {
     version: "v0.24.8",
     date: "July 2026",
     summary: "07-22, 07-23, 07-24 encoded — completes July 1-24",
