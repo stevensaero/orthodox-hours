@@ -4268,6 +4268,749 @@ const JULY_MENAION = {
         source: "Ode VI", label: "Theotokion" },
     ],
   },
+
+  // ── July 28 — Our Father Pitirim, Bishop of Tambov (Vigil §2F) ───────────
+  // Source: St. Sergius 07-28.pdf. Little Vespers printed → Vigil per §1.1.
+
+  "07-28": {
+    saint: "Our Father Pitirim, Bishop of Tambov",
+    oca_primary: true,
+    source_file: "07-28.pdf",
+    rank: "vigil",
+    fekula_section: "2F",
+    has_great_doxology: true,   // PDF: "Great Doxology. Troparion of the holy hierarch... Litanies, and dismissal."
+    has_polyeleos: true,        // PDF: "Polyeleos, and this magnification..."
+    has_litya: true,            // PDF: "At the Litiya, the Sticheron of the temple, and these Stichera"
+    has_paroemias: true,        // PDF: 3 readings (Proverbs x2, Wisdom of Solomon)
+    magnificat_sung: true,
+    matins_format: "god_is_the_lord",
+    matins_gospel: "John 10:9-16 (§36)",
+    aposticha_source: "menaion",
+    note: "Vigil §2F per encoding_rule_v2.md §1.1: Little Vespers explicitly printed, plus " +
+          "Litya, Polyeleos, Great Doxology, and 3 paroemias. Two full canons given (captured " +
+          "only for Beatitudes purposes per convention). Little Vespers content itself not " +
+          "captured — out of scope, same reasoning as prior Vigil-rank entries this session. " +
+          "Re-encoded at corrected scope per v2.8 §6: both full canons and sessional hymns " +
+          "present in PDF but not captured. Beatitudes (4 Ode III of Canon I + 4 Ode VI of " +
+          "Canon II) captured per the PDF's own explicit 'On the Beatitudes' heading.",
+    feast_e: "Hebrews 13:17-25 (§335)",
+    feast_g: "Luke 6:17-23 (§24)",
+    prokeimenon_tone: 7,
+    prokeimenon_text: "Precious in the sight of the Lord is the death of His saints.",
+    prokeimenon_stichos: "What shall I render unto the Lord for all that He hath rendered unto me?",
+    alleluia_tone: 6,
+    alleluia_verse: "Blessed is the man that feareth the Lord; in His commandments shall he greatly delight.",
+    alleluia_stichos: "His seed shall be mighty upon the earth.",
+    communion_verse: "In everlasting remembrance shall the righteous be; he shall not be afraid of evil tidings.",
+    paroemia_1: "Proverbs — The memory of the just is praised (Prov 10:7; 3:13-16; 8:6, 34-35)",
+    paroemia_2: "Proverbs — The mouth of the righteous droppeth wisdom (Prov 10:31-32; 11:2-12)",
+    paroemia_3: "Wisdom of Solomon — Though the righteous be prevented with death (Wis 4:7-15)",
+    // 8 stichera at Great Vespers: 4 T1 (Twice on first) + 4 T4 (no repeats shown).
+    stichera_lord_i_call_count: 8,
+    stichera_lord_i_call: [
+      { tone: 1, spec_mel: "O all-praised martyrs",
+        text: "A day of splendid festivity hath dawned; the angels join chorus in heaven; " +
+              "mortals rejoice on earth; and the whole assembly of the Church is glad, " +
+              "glorifying God Who is wondrous in His saints, Who hath revealed the holy " +
+              "hierarch Pitirim as a new wonderworker and intercessor for the Russian land." },
+      { repeatIndex: 0 }, // (Twice)
+      { tone: 1, spec_mel: "O all-praised martyrs",
+        text: "Rejoice, O land of Russia! Be glad, O city of Tambov! Adorn thyself, O assembly " +
+              "of the pious! For today the Master and Lord of all, our Savior, the heavenly " +
+              "High Priest, crowneth with an everlasting crown His faithful servant, the holy " +
+              "hierarch Pitirim, the good shepherd who prayeth fervently for his flock." },
+      { tone: 1, spec_mel: "O all-praised martyrs",
+        text: "Come, O ye pious people, and behold a multitude of miracles today: by the mere " +
+              "invocation of the holy hierarch of God the afflicted recover their health, the " +
+              "demons are driven away, the sorrowful receive assuagement, and the assembly of " +
+              "the faithful who have come together for his memorial is filled with joy." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs",
+        text: "Today the city of Tambov is glad as is meet, having the holy hierarch Pitirim as " +
+              "its helper, and with it the whole land of Russia rejoiceth in spirit; " +
+              "wherefore, O ye faithful, assembling to chant psalms and hymns, let us praise " +
+              "the most wondrous Pitirim, the treasure of mercy and purity, the most radiant " +
+              "beacon of the Church, the inexhaustible wellspring of miracles and dependable " +
+              "intercessor before God for those who honor his holy memory with faith and love." },
+      { repeatIndex: 4 }, // (Twice)
+      { tone: 4, spec_mel: "As one valiant among the martyrs",
+        text: "Thou wast shown to be a faithful keeper of the commandment of the Gospel not to " +
+              "lay up for thyself treasures upon the earth, O holy hierarch, wisely " +
+              "distributing thy possessions, building churches of God and monasteries, feeding " +
+              "the hungry and clothing the naked; wherefore, He Who beggared Himself for our " +
+              "sake hath received thee into the eternal mansions. Him do thou entreat, that He " +
+              "grant remission of sins unto those who with faith and love honor thy holy memory." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs",
+        text: "In the throes of death thou didst utter a mighty cry unto the Lord, and thou " +
+              "wast heard in thy reverence; for Christ Himself appeared to thee on a cloud, " +
+              "indicating with His blessing that thou art His faithful servant and imparting " +
+              "healing unto thee. Him do thou beseech, O holy hierarch who didst behold God, " +
+              "that we also may meet Him on the clouds with all the saints when He shall come " +
+              "in glory to judge the whole world." },
+    ],
+    stichera_glory: {
+      tone: 5,
+      text: "As in the days of the apostles the handkerchiefs and aprons of Paul wrought " +
+            "miracles, so today also the vestments of Pitirim, the holy hierarch of God, who " +
+            "was illumined with the spirit of the apostles, when placed upon the afflicted, " +
+            "impart the ability to walk unto the lame, the recovery of sight unto the blind, " +
+            "strength and power unto the paralyzed, consolation to those who weep, hope to the " +
+            "despairing, and great mercy to all the faithful.",
+    },
+    lic_theotokion: {
+      tone: 5,
+      text: "In the Red Sea of old * an image of the Bride who knew not wedlock was depicted. " +
+            "* There Moses was the one who parted the sea, * here Gabriel is the minister of " +
+            "the miracle. * At that time Israel marched dry-shod through the deep, * now the " +
+            "Virgin doth seedlessly give birth to Christ. * The sea after Israel's passage " +
+            "remained impassable; * the Immaculate one after bearing Emmanuel remained " +
+            "incorrupt. * O God, who doth exist and is pre-eternal, * and hath appeared as man, " +
+            "** have mercy upon us.",
+    },
+
+    // ── VESPERS — LITIYA ────────────────────────────────────────────────────
+    litya_stichera: [
+      { tone: 3, text: "Today the multitude of the faithful join chorus: the company of " +
+              "hierarchs and priests, the assembly of monastics and laity, the elderly and " +
+              "children, the young and the widowed, literate and simple alike, glorifying the " +
+              "Lord with mouth and heart; Who hath revealed the new intercessor and " +
+              "wonderworker and granteth great mercy to the world." },
+      { tone: 3, text: "Assembling today with faith and love, O brethren, let us praise the " +
+              "object of our festivity: Rejoice, O holy hierarch Pitirim, steadfast pillar of " +
+              "the Church! Rejoice, protector of the Russian land! Rejoice, splendid adornment " +
+              "of the city of Tambov! Rejoice, meek and merciful father! Rejoice, feeder of " +
+              "widows and orphans! Rejoice, quick intercessor for the oppressed! Rejoice, " +
+              "healer of the sick who exactest no fee! Rejoice, O thou who prayest fervently " +
+              "for us all!" },
+    ],
+    litya_glory: {
+      tone: 4,
+      text: "Wondrous things are wrought today in the city of Tambov: the blind recover their " +
+            "sight, the lame walk again, the mute speak, the deaf hear, the paralyzed arise " +
+            "and the poor prosper through the intercession of the holy hierarch and " +
+            "wonderworker Pitirim; and they cry aloud and say: Glory to God our Savior!",
+    },
+    litya_both_now: {
+      tone: 4,
+      text: "Mercifully regard the supplications of thy servants, * O all-immaculate one, * " +
+            "quelling the cruel uprisings of the demons against us, * delivering us from every " +
+            "sorrow; * for thee alone do we have as a steadfast and sure confirmation, * and " +
+            "having acquired thine intercession; * let not us who call upon thee be put to " +
+            "shame, * O Sovereign Lady. * Hasten thou to answer the entreaties of those who cry " +
+            "out to thee with faith: * Rejoice, thou help, joy and protection of all, ** and " +
+            "the salvation of our souls!",
+    },
+
+    // ── VESPERS — APOSTICHA ─────────────────────────────────────────────────
+    stichera_aposticha: [
+      { tone: 8, spec_mel: "O most glorious wonder",
+        text: "O venerable father Pitirim, * who now dost hymn the Holy Trinity * with the " +
+              "angels and the choirs of the saints, * and in thy love hast not withdrawn from " +
+              "us: * be thou mindful of the flock * which thou didst gather together, O wise " +
+              "one, * preserving it from the soul-destroying wolves, * and invisibly leading " +
+              "it ** into the fold of the kingdom of heaven." },
+      { tone: 8, spec_mel: "O most glorious wonder", verse: "Precious in the sight of the Lord * is the death of His saints.",
+        text: "In thy lifetime thou didst become a habitation of the Holy Spirit, * O Pitirim " +
+              "our father, * having first cleansed thyself by faith and love; * and, standing " +
+              "now before the throne of Christ, * the heavenly Master of the house, * pray " +
+              "thou earnestly to Him, * that He cleanse us of the passions which harm the soul " +
+              "* and make His abode in our hearts with the Father and the Spirit, ** and lead " +
+              "us to the kingdom of heaven." },
+      { tone: 8, spec_mel: "O most glorious wonder", verse: "Thy priests shall be clothed with righteousness, * and Thy righteous shall rejoice.",
+        text: "O Pitirim our father, * honored scion of the city of Vyazma, * which was " +
+              "transplanted by the right hand of God to the city of Tambov, * watered by the " +
+              "grace of the Holy Spirit * and adorned with the fruits of the virtues: * pray " +
+              "for us to Christ God, * that He not hew us down like the barren fig-tree, * but " +
+              "cause us to dwell ** where the light of His countenance doth shine." },
+    ],
+    aposticha_glory: {
+      tone: 6,
+      text: "Open wide the gates of heaven, O ye princes! Ye angels, bow your heads! For the " +
+            "King of heaven and earth Himself cometh forth and leadeth into celestial glory " +
+            "His faithful servant, the venerable Pitirim, the good shepherd and divinely wise " +
+            "teacher who, during his life, acquired angelic purity by much sweat and toil, and " +
+            "who spurned the corruptible glory of the world, desiring the kingdom of heaven.",
+    },
+    aposticha_both_now: {
+      tone: 6,
+      text: "Christ the Lord, my Creator and Redeemer, * Who came forth from thy womb, O most " +
+            "pure one, * and clothed Himself in my nature, * hath freed Adam from the primal " +
+            "curse. * Wherefore, like the angel * we unceasingly cry out to thee, * O all-pure " +
+            "one, * who art truly the Mother of God and Virgin: * Rejoice!, O Sovereign Lady, " +
+            "** the intercession, protection and salvation of our souls!",
+    },
+    troparion: {
+      tone: 4,
+      text: "Teacher of faith and piety, * beacon of the Church, * example for monastics, * O " +
+            "most wise and holy hierarch Pitirim: * piously hast thou tended thy flock and led " +
+            "it to Christ. * Wherefore, though adorned in the highest with a crown of glory, * " +
+            "thou dost abide with us on earth in spirit, * radiating miracles. ** Entreat " +
+            "Christ God, that our souls be saved.",
+    },
+    kontakion_ode6: {
+      tone: 8,
+      text: "Assembling together, let us hymn Pitirim: the excellent instructor of monks, * " +
+            "the holy hierarch who is merciful to all, * the most wondrous worker of miracles, " +
+            "* the tireless intercessor for us, ** the boast of the land of Tambov.",
+    },
+    kontakion_ode3: "same as kontakion_ode6",
+    ikos: "O ye faithful, in hymns and spiritual odes let us hymn today the great and holy " +
+          "hierarch: Rejoice, O God-bearing father Pitirim, thou most honored scion of the " +
+          "land of Smolensk, who by the grace of God wast planted in the city of Vyazma and " +
+          "blossomed like a lily, enriching the region of Tambov with the fruits of the " +
+          "virtues; Rejoice, good pastor who didst illumine the darkness of ungodliness with " +
+          "the light of piety and the planting of the true Faith! Rejoice, thou who didst " +
+          "convert many of the unbelieving and lead them to Christ through thy salvific labors " +
+          "and struggles; Rejoice, thou who didst leave to the city of Tambov as a legacy a " +
+          "miraculous icon of the Mother of God through which divers healings have poured " +
+          "forth! Rejoice, thou who with thine own hands didst dig a well of ever-abundant " +
+          "water, through which those who drink thereof receive healing of infirmities and " +
+          "release from soul-destroying passions! Rejoice, thou who didst make fragrant the " +
+          "vales and forests of Tambov by thy visitation with thy friends, the holy hierarch " +
+          "Metrophanes and the God-loving Basil! Rejoice, thou who didst thereby make a " +
+          "beginning for the monastic life in that place, and didst set an example of true " +
+          "friendship for those who live in the world! Rejoice, thou boast of the land of Tambov!",
+    exapostilarion: {
+      spec_mel: "Heaven with stars",
+      text: "He Who established the lights in the heavens hath revealed thee to His Church as " +
+            "a new and most radiant star, illumining us with the splendor of the Spirit and " +
+            "the brilliance of miracles, and putting the impious to shame, O holy hierarch, " +
+            "father Pitirim, our ever-vigilant intercessor.",
+    },
+    matins_exapostilarion_theotokion: {
+      text: "O most pure Mother who hast given birth to the ineffable Light: show us to be " +
+            "children of the Light, and grant that we behold the blessedness of heaven, that, " +
+            "rejoicing, we may cry out with thee and the venerable Pitirim: O Christ our God, " +
+            "Bestower of light, glory be to Thee!",
+    },
+
+    // ── Beatitudes (AT LITURGY) ─────────────────────────────────────────────
+    beatitudes_troparia: [
+      { text: "As the righteous Hannah of old gave up her child, thou didst give thyself as a gift to God, O father Pitirim. Establish me also upon the rock of His commandments, that I may cry: None is as holy as our God!",
+        source: "Canon I, Ode III", label: "1", note: "(Twice) per PDF" },
+      { text: "By thy supplications, O father Pitirim, establish our mind and heart in the Lord; exalt the horn of Orthodox Christians, that the mouths of the enemies of the Faith may be shut and we may rejoice in our salvation.",
+        source: "Canon I, Ode III", label: "2" },
+      { text: "On the feast of the new wonderworker let not the mighty one boast in his strength, nor let the wise man boast in his wisdom, nor yet the rich man boast in his wealth, but let him boast who boasteth of understanding and knowing the Lord and acquiring the riches of His grace.",
+        source: "Canon I, Ode III", label: "3" },
+      { text: "O good shepherd who instructed the people of Christ with divine teachings and edified them with the virtues of thy soul: leave us not to perish in our sins, but as thou thyself wast tempted as a man therein, help us now who are tempted.",
+        source: "Canon II, Ode VI", label: "1" },
+      { text: "O great wonder! The tomb of the holy hierarch hath become a common hospital for all, truly accessible and free of charge. Come, ye people, and with fear and faith freely receive health for your souls and bodies, glorifying the Lord and blessing His favored one.",
+        source: "Canon II, Ode VI", label: "2" },
+      { text: "Be thou an aid to thy city, O holy father, and with thine invincible intercession protect our whole country, that we may all cry out to thee with gladness: Rejoice, O ever-memorable Pitirim, thou boast of Tambov!",
+        source: "Canon II, Ode VI", label: "3" },
+      { text: "Beneath thy shelter all mortals flee, O Lady, and we cry out to thee with compunctionate souls: by thine almighty mediation, O Mother of God, render Christ our God, to Whom thou hast given birth in a most pure manner, merciful unto us.",
+        source: "Canon II, Ode VI", label: "Theotokion" },
+    ],
+  },
+
+  // ── July 29 — Holy Martyr Callinicus (Simple §2A) ────────────────────────
+  // Source: St. Sergius 07-29.pdf.
+
+  "07-29": {
+    saint: "Holy Martyr Callinicus",
+    oca_primary: true,
+    source_file: "07-29.pdf",
+    rank: "simple",
+    fekula_section: "2A",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "octoechos",
+    note: "Simple §2A per encoding_rule_v2.md §1.1: 3 stichera at LIC, no Great Doxology/" +
+          "Polyeleos/Small Vespers in the PDF. No separate Vespers Aposticha section, no " +
+          "Ikos, no Exapostilarion, and no Liturgy propers given at all — PDF ends after the " +
+          "Liturgy Troparion and Kontakion; Octoechos governs. Re-encoded at corrected scope " +
+          "per v2.8 §6: full canon (Odes I/IV/V/VII/VIII/IX) and sessional hymn present in PDF " +
+          "but not captured.",
+    feast_e: "absent — §2A, readings from Oktoechos",
+    feast_g: "absent — §2A, readings from Oktoechos",
+    stichera_lord_i_call_count: 3,
+    stichera_lord_i_call: [
+      { tone: 8, spec_mel: "O most glorious wonder",
+        text: "O divinely wise martyr Callinicus, * piously desiring to die * rather than to " +
+              "live, * thou didst truly present * an image of the death of Christ; * " +
+              "wherefore thou hast received immortality * and unwaning blessedness; * and, " +
+              "rejoicing, thou hast made thine abode, O glorious one, ** where the ranks of " +
+              "the angels and spiritual athletes dwell." },
+      { tone: 8, spec_mel: "O most glorious wonder",
+        text: "A light emitting healing, * a river full of true gifts, * a treatment which " +
+              "costeth naught, * a vessel of sanctity * hath the shrine of thy relics been " +
+              "shown to us, * whence let us who approach with faith * draw forth ever-living " +
+              "health, * O glorious martyr, ** for whose sake we glorify our wondrous God." },
+      { tone: 8, spec_mel: "O most glorious wonder",
+        text: "O most blessed martyr Callinicus, * possessing the invisible God * as an " +
+              "invincible aid * against the invisible foe, * thou didst raise the standard of " +
+              "immortality; * and having felled him who boasted * that he would destroy the " +
+              "earth * thou didst drown him in the streams of thy blood ** by the exercise of " +
+              "thy sufferings." },
+    ],
+    stichera_glory: {
+      tone: 8,
+      text: "With hymns let us honor today the wondrous Callinicus, the champion of piety and " +
+            "destroyer of the enemy, the converser with martyrs, who was a temple of the Holy " +
+            "Spirit, the warrior of Christ God, the truly inexhaustible treasury of healings, " +
+            "the confirmation of the faithful.",
+    },
+    lic_theotokion: {
+      tone: 8, spec_mel: "O most glorious wonder",
+      text: "The pre-eternal God, * taking flesh from thy blood, * hath shown thee forth, O " +
+            "pure one, * as an intercessor for all mankind. * Wherefore, deliver thy servants " +
+            "* from all misfortune and every evil circumstance, * and grant that all who " +
+            "glorify * and bow down before thee ** be deemed worthy of the splendor of the elect.",
+    },
+    lic_stavrotheotokion: {
+      tone: 8,
+      text: "\"What is this sight which I see, * which mine eyes behold, O Master? * How is it " +
+            "that Thou Who dost sustain all creation, * art lifted up upon the Tree and diest, " +
+            "* granting life unto all?\" * thus said the Theotokos weeping, * upon seeing God " +
+            "and man * Who had shone forth ineffably from her ** hanging upon the Cross.",
+    },
+    aposticha_glory_absent: true,  // no separate Vespers Aposticha section in the PDF at all
+    troparion: {
+      tone: 4,
+      text: "In his sufferings, Thy martyr Callinicus O Lord, * received an imperishable crown " +
+            "from Thee, our God; * for, possessed of Thy might, * he set at naught the " +
+            "tyrants and crushed the feeble audacity of the demons. ** By his supplications " +
+            "save Thou our souls.",
+    },
+    kontakion_ode6: {
+      tone: 2, spec_mel: "Seeking the highest",
+      text: "The beautiful things of heaven * hast thou now inherited as is meet; * for, " +
+            "greatly aflame with the love of Christ, * thou didst manfully brave the fire " +
+            "therewith, O Callinicus. ** Standing now before Him, cease not to pray on behalf " +
+            "of us all.",
+    },
+    kontakion_ode3: "same as kontakion_ode6",
+    ikos: null,           // NOT IN PDF
+    exapostilarion: null, // NOT IN PDF
+  },
+
+  // ── July 30 — Holy Martyr John the Warrior (Vigil §2F) ───────────────────
+  // Source: St. Sergius 07-30.pdf. No explicit "Little Vespers" heading, but Litya, Polyeleos,
+  // Great Doxology, and 3 paroemias are all explicit, plus the rubric itself notes "But if a
+  // vigil be celebrated..." at the Vespers Troparion — confirming Vigil is the intended rank.
+
+  "07-30": {
+    saint: "Holy Martyr John the Warrior",
+    oca_primary: true,
+    source_file: "07-30.pdf",
+    rank: "vigil",
+    fekula_section: "2F",
+    has_great_doxology: true,   // PDF: "Great Doxology. Litanies. Dismissal. First Hour."
+    has_polyeleos: true,        // PDF: "Polyeleos, and this magnification..."
+    has_litya: true,            // PDF: "At Litiya, the Sticheron of the temple; And these Stichera"
+    has_paroemias: true,        // PDF: 3 readings (Isaiah, Wisdom of Solomon x2)
+    magnificat_sung: true,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "menaion",
+    note: "Vigil §2F per encoding_rule_v2.md §1.1: Litya, Polyeleos, Great Doxology, and 3 " +
+          "paroemias all explicit; no 'AT LITTLE VESPERS' heading (starts 'AT VESPERS' with " +
+          "'Blessed is the man', the Great-Vespers antiphon), but the PDF's own rubric — 'But " +
+          "if a vigil be celebrated, we chant the first Troparion (Twice)' — confirms Vigil is " +
+          "the intended rank. Two Troparia given (used per the vigil/non-vigil rubric branch — " +
+          "only the first is captured here as the standard troparion field, per the 'if a " +
+          "vigil be celebrated' branch this entry follows); a second, 'Glory ..., another " +
+          "Troparion...' is also present in the source. Two Exapostilaria also given for this " +
+          "one saint, same pattern as 07-20. " +
+          "Re-encoded at corrected scope per v2.8 §6: both full canons and sessional hymns " +
+          "present in PDF but not captured. Beatitudes (4 Ode III of Canon I + 4 Ode VI of " +
+          "Canon II) captured per the PDF's own explicit 'On the Beatitudes' heading.",
+    feast_e: "Romans 15:1-7 (§116)",
+    feast_g: "Matthew 16:24-28 (§69)",
+    prokeimenon_tone: 7,
+    prokeimenon_text: "The righteous man shall be glad in the Lord, and shall hope in Him.",
+    prokeimenon_stichos: "Hearken, O God, unto my prayer, when I make supplication unto Thee.",
+    alleluia_tone: 4,
+    alleluia_verse: "The righteous cried, and the Lord heard them, and He delivered them out of all their tribulations.",
+    alleluia_stichos: "Many are the tribulations of the righteous, and the Lord shall deliver them out of them all.",
+    communion_verse: "In everlasting remembrance shall the righteous be; he shall not be afraid of evil tidings.",
+    paroemia_1: "Isaiah — Ye are My witnesses, saith the Lord (Is 43:9-14)",
+    paroemia_2: "Wisdom of Solomon — The souls of the righteous are in the hand of God (Wis 3:1-9)",
+    paroemia_3: "Wisdom of Solomon — Though the righteous be prevented with death (Wis 4:7-15)",
+    // 8 stichera at Great Vespers: 4 T2 (Twice on first) + 4 T2 (Twice on first, different melody).
+    stichera_lord_i_call_count: 8,
+    stichera_lord_i_call: [
+      { tone: 2, spec_mel: "When from the Tree",
+        text: "When on earth thou wast a soldier of a corrupt king, * thou wast a warrior " +
+              "faithful to God, O John, * and then, receiving help from Christ the King, * " +
+              "aiding the martyrs of Christ * thou didst vanquish the enemy, visible and " +
+              "invisible; * and now thou joinest chorus with the angelic hosts and the armies " +
+              "on high. * Wherefore, O blessed passion-bearer, * pray thou to the Savior of us " +
+              "all, ** that He save our souls." },
+      { repeatIndex: 0 }, // (Twice)
+      { tone: 2, spec_mel: "When from the Tree",
+        text: "Desiring to leave the earthly army, * thou didst take care * to please Christ " +
+              "the King of heaven; * for, having armed thyself * with faith in Him, * thou " +
+              "wast found to be a mighty warrior, O John, * protecting the martyrs of Christ * " +
+              "from the ungodly tyrant ** by thy prayers to God, O blessed one." },
+      { tone: 2, spec_mel: "When from the Tree",
+        text: "When by faith in Christ and by prayer * thou didst desire to obtain the " +
+              "portion of the righteous, * thou didst then aid those persecuted for their " +
+              "faith in Christ. * Therefore, Christ the Lord * hath enriched thee with gifts " +
+              "of miracles; * for unto those who call upon thee amid divers tribulations * " +
+              "thou showest thyself to be a speedy helper. * Wherefore, pray thou unto God ** " +
+              "on behalf of us who observe thy most honored memorial." },
+      { tone: 2, spec_mel: "With what crowns of praise",
+        text: "Come, ye who love what is holy, * let us all be glad in spirit and hold " +
+              "festival, * glorifying Christ our God, * for today He hath prepared a most " +
+              "abundant banquet for us, * the memorial of the glorious martyr and valiant " +
+              "warrior John, * a helper for all amid tribulations, * denouncer of evil deeds * " +
+              "and revealer of lost and hidden things ** for those who call upon his assistance." },
+      { repeatIndex: 4 }, // (Twice)
+      { tone: 2, spec_mel: "With what crowns of praise",
+        text: "O most blessed and right victorious John, * mighty warrior of our God, the " +
+              "Creator of all, * as one chosen by God * thou didst preserve thy nobility of " +
+              "soul; * and having disdained the vanity and deceptions of the world, * thou " +
+              "didst lovingly show sympathy for those in torment. * And now thou abidest " +
+              "sweetly with Christ in the heavens, * from whence look thou down upon and " +
+              "preserve all who call upon thee ** in time of battle and all manner of misfortunes." },
+      { tone: 2, spec_mel: "With what crowns of praise",
+        text: "What shall we offer unto Thee, O God our Creator? * What manner of thanks " +
+              "shall we give Thee? * For Thou hast given Thy people true grace, * the holy " +
+              "John, a pious warrior and bestower of alms, * a helper of soldiers in battle, * " +
+              "a consoler of sorrows, * who doth pray fervently to Thee for our salvation. * " +
+              "Wherefore, for the sake of Thy mercy, ** save us, O Master and Lover of mankind!" },
+    ],
+    stichera_glory: {
+      tone: 6,
+      text: "Having struggled zealously for Christ, O John, with the Christian martyrs, " +
+            "helping Christians in the pious Faith, thou wast an exemplary soldier of thy " +
+            "Master. Feeding the needy and preparing abundant alms for the poor, thou didst " +
+            "reject the commands of the iniquitous Emperor Julian; and, destroying the " +
+            "vessels of His tyranny, thou wast shown to be a victor excellent in thine " +
+            "Orthodoxy. Wherefore, thou hast passed over to the mansions of heaven, and there " +
+            "dost most joyously behold Christ, Who hath crowned thee with an imperishable " +
+            "crown. Him do thou unceasingly entreat, O most blessed one, that those who honor " +
+            "thee be deemed worthy of everlasting blessedness.",
+    },
+    lic_theotokion: {
+      tone: 6,
+      text: "Who doth not call thee blessed, O most holy Virgin? * Who will not hymn thy most " +
+            "pure birthgiving? * For the only-begotten Son Who hath shone forth timelessly " +
+            "from the Father, * came forth, ineffably incarnate, from thee, O pure one; * By " +
+            "nature he is God, by nature for our sakes, he hath become a man * not divided " +
+            "into two Hypostases, * but known in two natures without commingling. * Him do " +
+            "thou beseech, O pure and most blessed one, ** that our souls find mercy!",
+    },
+
+    // ── VESPERS — LITIYA ────────────────────────────────────────────────────
+    litya_stichera: [
+      { tone: 8, text: "O all-praised John, martyr of Christ, thou didst count as naught a " +
+              "violent death, and the assaults of the wicked and tyrannical emperor, having " +
+              "right boldly arrayed thyself for combat with manly wisdom. Wherefore, crowned " +
+              "with the glory of victory, thou hast been numbered among all the righteous; " +
+              "and, praising thee with them, we call thee blessed." },
+      { tone: 8, text: "O most blessed John, martyr of Christ, seeing the martyrs of Christ " +
+              "led to the slaughter, thou didst aid them with fraternal love. For, exhorting " +
+              "them to suffer even to the shedding of their blood and unto death, thou didst " +
+              "say: \"Our suffering here is naught compared to the reward which awaiteth us in " +
+              "the heavens!\" And thou didst thyself strive to suffer with them for the sake " +
+              "of thy Creator's love. Wherefore, having received the gift of miracles from " +
+              "Christ God, thou helpest those who suffer amid divers trials, rescuing from " +
+              "cruel misfortunes those who glorify the Lord and honor thy sacred sufferings " +
+              "with love." },
+      { tone: 8, text: "O invincible John, martyr of the Lord, bearing the name which " +
+              "signifieth grace, thou bestowest grace and mercy upon those who with faith call " +
+              "upon thee with prayer, bringing joy to the divinely wise people who with faith " +
+              "call upon thee for aid amid their trials and who honor thy memory with sacred " +
+              "joy. Wherefore, entreat Christ, that He save us from all misfortunes, in that " +
+              "He is omnipotent." },
+    ],
+    litya_glory: {
+      tone: 4,
+      text: "Who doth not marvel, who doth not render glory, who doth not hymn the miracles " +
+            "of John, the glorious warrior of Christ, who is wise in the faith? For even " +
+            "after his repose, he bestoweth a great many healings upon all who diligently " +
+            "have recourse unto him. For his precious and holy relics pour forth grace, " +
+            "abundantly fulfilling profitable requests. Wherefore, we piously cry out to him: " +
+            "Unceasingly beseech the Lord, that He save our Orthodox hierarchs and all who " +
+            "with faith have recourse to thy holy temple and ask thy fervent intercession " +
+            "before God: for thee do we have as an earnest mediator and intercessor for our souls.",
+    },
+    litya_both_now: {
+      tone: 4,
+      text: "Mercifully regard the supplications of thy servants, * O all-immaculate one, * " +
+            "quelling the cruel uprisings of the demons against us, * delivering us from " +
+            "every sorrow; * for thee alone do we have as a steadfast and sure confirmation, * " +
+            "and having acquired thine intercession; * let not us who call upon thee be put " +
+            "to shame, * O Lady. * Hasten thou to answer the entreaties of those who cry out " +
+            "to thee with faith: * Rejoice, thou help, joy and protection of all, ** and the " +
+            "salvation of our souls!",
+    },
+
+    // ── VESPERS — APOSTICHA ─────────────────────────────────────────────────
+    stichera_aposticha: [
+      { tone: 4, spec_mel: "As one valiant among the martyrs",
+        text: "The cruel tyrant * gave thy holy body over to be executed * by multifarious " +
+              "tortures; * yet thou, O John of godly mind, * didst not deny Christ, * nor " +
+              "didst thou sacrifice to idols, * but valiantly endured all, * trusting in the " +
+              "future reward ** of never-ending delight in the Lord." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs", verse: "The righteous man shall flourish like a palm-tree, * and like a cedar in Lebanon shall he be multiplied.",
+        text: "By thy virtuous life * thou didst spurn the world, * O wonder-worker John, * " +
+              "and, showing great loving-kindness for Christians * in the command of thine " +
+              "army, * thou didst set them at liberty. * And having thereafter suffered " +
+              "thyself for Christ God * in the Orthodox Faith, ** thou didst receive the " +
+              "inheritance of eternal blessedness." },
+      { tone: 4, spec_mel: "As one valiant among the martyrs", verse: "They that are planted in the house of the Lord, * in the courts of our God they shall blossom forth.",
+        text: "Thy relics, O glorious one, * pour forth the gift of healings * upon those who " +
+              "honor thee diligently, * drowning the passions * and curing ailments, O John; " +
+              "* putting hordes of wicked demons to flight, * and watering the hearts of the " +
+              "faithful, * producing the divine fruits of the virtues ** and the " +
+              "understanding of piety." },
+    ],
+    aposticha_glory: {
+      tone: 8,
+      text: "Come, ye Christ-loving people, and with understanding let us contemplate the " +
+            "good fight and generous courage attained upon the right path; for John, who is " +
+            "newly crowned, the great intercessor and martyr, crieth thus to the iniquitous " +
+            "Julian, an emperor loathsome to God: \"Thou canst not lure me with thy words of " +
+            "evil or by the luxury of this vain world, nor shalt thou separate me from the " +
+            "love of my God, the Creator of all! For, lo! I place my trust in Him, and on Him " +
+            "do I set all my desire, that I may become an heir to His heavenly kingdom!\" " +
+            "Wherefore, glorifying Christ the King, let us praise the martyr, and make " +
+            "earnest entreaty on this the day of his commemoration: O holy John, pray thou " +
+            "continually, that peace be granted to the world and great mercy to our souls.",
+    },
+    aposticha_both_now: {
+      tone: 8,
+      text: "O Sovereign Lady, accept the supplications of thy servants, and deliver us from " +
+            "all want and grief.",
+    },
+    // Two troparia given; this is the first, chanted per the PDF's own "if a vigil be
+    // celebrated" branch (see note).
+    troparion: {
+      tone: 4,
+      text: "O wonder-worker John, * thou hast been shown to be a right faithful servant and " +
+            "warrior of God, the supremely good King; * for, having manfully suffered for the " +
+            "Faith * and finished thy course in blessedness, * in the heavens thou dost most " +
+            "splendidly behold the Lord and Creator of all, * and helpest those who suffer " +
+            "amid all manner of trials. * Thou dost strengthen soldiers in battle, * rescuing " +
+            "them from capture by the enemy, * from wounds, sudden death and cruel " +
+            "misfortunes. * Wherefore, entreat Christ the Master, O ever-memorable one, * " +
+            "that He deal mercifully with us in every circumstance, * that He lead us not " +
+            "into temptations, ** but save our souls, in that He is the Lover of mankind.",
+    },
+    troparion_2: {
+      tone: 8,
+      note: "'Glory ..., another Troparion of the holy martyr' per PDF.",
+      text: "Loving the blessedness of the Gospel, O divinely wise John, * thou didst honor " +
+            "purity with virginity of heart; * wherefore, spurning the vanity of this world, " +
+            "thou didst hasten to behold God, * Who hath glorified thee with miracles in the " +
+            "healing of those who suffer divers ailments. * Therefore, we beseech thee: " +
+            "Entreat Christ God, * that He grant us deliverance from all tribulations, ** " +
+            "that we may receive the kingdom of heaven.",
+    },
+    kontakion_ode6: {
+      tone: 6,
+      text: "Let us right worthily praise John the warrior with hymns, * the pious soldier of " +
+            "Christ, * who with divine wisdom * vanquished enemies, spiritual and corporeal; " +
+            "* for working wonders, he bestoweth abundant healings * upon suffering people, * " +
+            "and he entreateth the Lord God * to save the Orthodox faithful, ** from all misfortunes.",
+    },
+    kontakion_ode3: "same as kontakion_ode6",
+    ikos: "Who can recount thy struggles and sufferings for thy faith in the Lord Jesus? With " +
+          "what praises can we crown thee for thy courageous stand in the law of the Lord and " +
+          "true piety? For, armed with chastity and all manner of good works, thou didst " +
+          "trample underfoot all the wiles of the soul-destroying foe; and hating wealth, " +
+          "glory and harmful lust, thou didst love poverty and affliction for Christ's sake, " +
+          "helping the suffering amid their tribulations. Wherefore, having made thine abode " +
+          "in the tabernacles of heaven, thou hast been enriched with the gifts of most " +
+          "glorious miracles. Therefore, O blessed one, watch over those who have recourse " +
+          "unto thee, rendering them aid, and saving the Orthodox from all misfortunes.",
+    exapostilarion: {
+      spec_mel: "With the disciples",
+      text: "O holy crown-bearer, standing before the throne of Christ with the angels, and " +
+            "filled with light therefrom, win peace for the world by thy supplications, O " +
+            "spiritual athlete, and salvation for us who piously celebrate thy memory and " +
+            "have recourse to thee amid tribulations, O spiritually rich John.",
+    },
+    exapostilarion_2: {
+      spec_mel: "Heaven with stars",
+      note: "'Glory ..., Another Exapostilarion' per PDF — a second exapostilarion for the same saint (same pattern as 07-20).",
+      text: "By knowing thyself, thou didst come to know God, the all-creating Cause, in Whom " +
+            "thou didst believe; and, having confessed Him, thou dost illumine the world with " +
+            "miracles, O divinely blessed John.",
+    },
+    matins_exapostilarion_theotokion: {
+      text: "Desiring to recall the perishing world out of corruption, O Theotokos, the Lord " +
+            "made His abode within thy womb, as thou didst know. Wherefore, having obtained " +
+            "salvation, we all cry out to thee: O most hymned Virgin who hast given birth to " +
+            "the Joy of the whole world, fill us with joy, ever preserving us from the evils " +
+            "committed by the enemy.",
+    },
+
+    // ── Beatitudes (AT LITURGY) ─────────────────────────────────────────────
+    beatitudes_troparia: [
+      { text: "Having acquired a sure faith with the martyrs, and become a soldier of Christ Jesus, O courageous one, thou wast enriched with the virtues. Wherefore, ever grant goodly enlightenment unto those who celebrate thine honored memory.",
+        source: "Canon I, Ode III", label: "1", note: "(Twice) per PDF" },
+      { text: "Thou hast revealed thyself to be an invisible persecutor of those who wickedly work evil, O martyr of Christ, exposing thefts which are done in secret. For thou hast received from God the power to do for everyone all things which are conducive to salvation.",
+        source: "Canon I, Ode III", label: "2" },
+      { text: "Possessed of a heart like an immovable pillar, O most honored John, thou didst show love for the martyrs of Christ, undaunted by the cruelty of the emperor. Wherefore, help us, that we be rendered steadfast in the love of the Lord.",
+        source: "Canon I, Ode III", label: "3" },
+      { text: "We will not cease to beseech Thee, the most compassionate Lord, moving Thy faithful warrior to pray with us: Rescuing us from sin, make us to dwell in heavenly life.",
+        source: "Canon II, Ode VI", label: "1" },
+      { text: "Thou dost praise God in the highest, O holy John, having served Him faithfully here on earth; wherefore, thou hast drawn nigh also unto us who praise thee, for our salvation.",
+        source: "Canon II, Ode VI", label: "2" },
+      { text: "Having endured sufferings for Christ's sake, O all-praised one, thou hast received most joyful blessedness; wherefore, accept thou our entreaties, and lead us into joy.",
+        source: "Canon II, Ode VI", label: "3" },
+      { text: "O most pure Virgin, who hast saved the world from pernicious corruption, deliver us from every evil circumstance.",
+        source: "Canon II, Ode VI", label: "Theotokion" },
+    ],
+  },
+
+  // ── July 31 — Forefeast of the Procession of the Precious Cross & Righteous Eudocimus (Double §2B) ──
+  // Source: St. Sergius 07-31.pdf. 6 stichera (3+3) → Simple rank per §1.1. Only ONE kontakion
+  // given (Eudocimus's; no separate Cross kontakion), so both Hours use it. Troparion print
+  // order is genuinely inconsistent across the service: Eudocimus first at Vespers, but the
+  // Cross first at Matins and the Liturgy recap (matching the title's own listing order) —
+  // flagged, not reconciled.
+
+  "07-31": {
+    saint: "Forefeast of the Procession of the Precious & Life-Creating Cross of the Lord & Righteous Eudocimus",
+    oca_primary: true,
+    source_file: "07-31.pdf",
+    rank: "simple",
+    fekula_section: "2B",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "octoechos",
+    note: "Double commemoration (§2B): 6 stichera at LIC (3 of the Cross T1 + 3 Eudocimus T8), " +
+          "confirmed Simple rank per encoding_rule_v2.md §1.1. Only ONE kontakion is given " +
+          "(Eudocimus's, positioned after Ode VI) — no separate Cross kontakion at all — so " +
+          "kontakion_ode3 = 'same as kontakion_ode6' per the single-kontakion convention, " +
+          "despite this being a Double. Troparion order is genuinely inconsistent across the " +
+          "PDF: at Vespers, Eudocimus's troparion is printed first and the Cross's second " +
+          "(Glory slot); at Matins and the Liturgy recap, the Cross's troparion is printed " +
+          "first and Eudocimus's second — the reverse. troparion here = the Cross's (matching " +
+          "the title's own listing order and the majority of positions, Matins + Liturgy); " +
+          "troparion_2 = Eudocimus's. Ikos is Eudocimus's only; the Cross has none. Vespers " +
+          "Aposticha stichera from Octoechos; Glory/Both-now given is the Cross's only " +
+          "(combined). A second 'On the Aposticha' occurrence appears later in the PDF, in the " +
+          "Matins-Aposticha position (after the Exapostilaria) — NOT YET ENCODED, deferred per " +
+          "the skeleton's own allowance, same as other Vespers/Matins-Aposticha distinctions " +
+          "made earlier this session. Re-encoded at corrected scope per v2.8 §6: both full " +
+          "canons present in PDF but not captured.",
+    feast_e: "Galatians 5:22-6:2 (§213)",
+    feast_g: "Matthew 11:27-30 (§43)",
+    prokeimenon_tone: 7,
+    prokeimenon_text: "Precious in the sight of the Lord is the death of His saints.",
+    prokeimenon_stichos: "What shall I render unto the Lord, for all that He hath rendered unto us?",
+    alleluia_tone: 4,
+    alleluia_verse: "Blessed is the man that feareth the Lord; in His commandments shall he greatly delight.",
+    alleluia_stichos: "His seed shall be mighty upon the earth.",
+    communion_verse: "In everlasting remembrance shall the righteous be; he shall not be afraid of evil tidings.",
+    stichera_lord_i_call_count: 6,
+    stichera_lord_i_call: [
+      { tone: 1, spec_mel: "Joy of the ranks of heaven", saint: "Cross (Forefeast)",
+        text: "Celebrating the forefeast now, * let all human nature leap up with joy; * for " +
+              "the Tree of the Cross, the sure healing * which giveth release from all " +
+              "infirmities and sufferings * and every affliction, ** shall be set before all " +
+              "the faithful." },
+      { tone: 1, spec_mel: "Joy of the ranks of heaven", saint: "Cross (Forefeast)",
+        text: "Come, O ye faithful, let us behold the strange wonder, * how the Tree of the " +
+              "Cross * quencheth the fever of every infirmity * and extinguisheth the burning " +
+              "heat of the passions * of those who celebrate its forefeast with faith ** and " +
+              "honor its festival." },
+      { tone: 1, spec_mel: "Joy of the ranks of heaven", saint: "Cross (Forefeast)",
+        text: "O ye who are living, * celebrate the forefeast with those who have died; * for " +
+              "the Tree of life which slew Hades, * is the protector of mankind, * the " +
+              "resurrection of the dead, and cometh now to impart true grace unto all ** and " +
+              "healings to mankind." },
+      { tone: 8, spec_mel: "O most glorious wonder", saint: "Eudocimus",
+        text: "O blessed and divinely wise Eudocimus, * thy pure soul, * shining with " +
+              "Orthodox understanding * and shedding the light of the radiance of the " +
+              "virtues, * illumineth the fullness of the faithful, * dispelling the darkness " +
+              "of the demons. * Wherefore, O right wondrous one, * we all honor thee with " +
+              "reverence ** as one who hath a share in never-waning grace." },
+      { tone: 8, spec_mel: "O most glorious wonder", saint: "Eudocimus",
+        text: "Possessed of a merciful soul, * a pure mind, a vigilant heart, * unwavering " +
+              "faith * and truly unfeigned love, * thou didst pass over from earth to the " +
+              "heavens * and made thine abode with the choirs of the righteous. * Wherefore, " +
+              "we all honor thee with sacred hymns * and piously call thee blessed, ** O " +
+              "blessed Eudocimus." },
+      { tone: 8, spec_mel: "O most glorious wonder", saint: "Eudocimus",
+        text: "Strengthened by divine doctrines, * thou didst drive carnal passions away from " +
+              "thy soul * and didst become a pure habitation of the Holy Trinity. * " +
+              "Wherefore, thou hast departed into divine delight * since God now preserveth * " +
+              "thy body incorrupt, O blessed one * by divine judgments * known to Him alone ** " +
+              "Who manifestly glorifieth thee, O Eudocimus." },
+    ],
+    stichera_glory: {
+      tone: 1, saint: "Eudocimus",
+      text: "How can we not marvel at thy prudence? How can we fail to praise thine angelic " +
+            "life, thy chastity of thought, thy meekness, humility and inner stillness, thy " +
+            "constant almsgiving, O venerable Eudocimus? For thou wast adorned with all the " +
+            "virtues, O blessed one. Wherefore, ineffable joy and the kingdom of heaven await thee.",
+    },
+    lic_theotokion: {
+      tone: 1, saint: "Cross (Forefeast)",
+      text: "The holy words of David truly reach their fulfillment today! For, lo! we " +
+            "publicly bow down before the footstool of Thy most pure feet and, placing our " +
+            "hope in the shelter of Thy pinions, we cry aloud to Thee, O Most Compassionate " +
+            "One: Let the light of Thy countenance be signed upon us! Exalt the horn of Thine " +
+            "Orthodox people in the exaltation of Thy precious Cross, O Christ, Thou greatly " +
+            "merciful One!",
+    },
+    aposticha_glory: {
+      tone: 2, saint: "Cross (Forefeast)",
+      text: "Thou art my mighty protection, O tripartite Cross of Christ! Sanctify me with " +
+            "thy power, that I may bow down and glorify Thee with faith and love!",
+      note: "Combined Glory/Both-now hymn per PDF (Cross's only; Aposticha stichera themselves from the Octoechos).",
+    },
+    // Print order: Cross's troparion is first at Matins and the Liturgy recap (matching the
+    // title's own order); Eudocimus's is first at Vespers only — see note.
+    troparion: {
+      tone: 1, saint: "Cross (Forefeast)",
+      text: "Save O Lord Thy people * and bless Thine inheritance, * grant now unto the " +
+            "faithful * victory over adversaries, * and by the power of Thy Cross ** do Thou " +
+            "preserve Thy commonwealth.",
+    },
+    troparion_2: {
+      tone: 4, saint: "Eudocimus",
+      text: "He Who hath summoned thee from earth * to the mansions of heaven * also " +
+            "preserveth thy body incorrupt after death, O holy Eudocimus; * for thou didst " +
+            "live in chastity and a pure life, * without defiling thy flesh, O blessed one. * " +
+            "Wherefore, entreat Christ God with boldness, ** that we may be saved.",
+    },
+    // Only one kontakion in the PDF (Eudocimus's) — no separate Cross kontakion at all.
+    kontakion_ode6: {
+      tone: 2, saint: "Eudocimus",
+      text: "Desiring higher things, and uniting thyself * with those on high, * thou didst " +
+            "make thy soul a fiery chariot * by the divine ascents of the virtues, * O most " +
+            "blessed Eudocimus; * and living on the earth like one of the incorporeal ones, " +
+            "** thou wast well pleasing to the Creator of all.",
+    },
+    kontakion_ode3: "same as kontakion_ode6",
+    // Ikos is Eudocimus's only; the Cross has none.
+    ikos: "By thy right faith, O blessed Eudocimus, thou didst show forth a twofold life, " +
+          "pleasing God in both. Wherefore, thou didst acquire the kingdom of God as thine " +
+          "inheritance and, living now with the saints, dost stand before the Master of all. " +
+          "But thou didst preserve thy body free from defilement and left it intact for those " +
+          "who honor thee with love; for, having lived a pure life, O glorious one, thou wast " +
+          "well pleasing to the Creator of all.",
+    // Exapostilarion from the Octoechos (main slot, not saint-specific); "Glory" slot is
+    // Eudocimus's own.
+    exapostilarion: {
+      note: "PDF: 'Exapostilarion from the Oktoechos; Glory ..., that of the righteous one' — main slot is Octoechos, not saint-specific; Eudocimus's is captured here as the Menaion-supplied portion.",
+      text: "Shining forth like the sun, thou dost emit rays of miracles, illuming the hearts " +
+            "of all, a thrice-blessed Eudocimus, and thou dost save those who with faith keep " +
+            "thy glorious memory.",
+    },
+    matins_exapostilarion_theotokion: {
+      spec_mel: "Hearken, ye women",
+      note: "PDF: 'Both now ..., that of the Cross' — this slot is the Cross's forefeast text, not a Theotokion proper.",
+      text: "The forefeast of the Cross is celebrated and the world is made new; the ranks of " +
+            "the angels hymn the One Who was crucified for our sake, and they keep festival " +
+            "and rejoice with us, crying out like David: Thou hast wrought salvation in the " +
+            "midst of the earth, O Master!",
+    },
+  },
 };
 
 export default JULY_MENAION;
