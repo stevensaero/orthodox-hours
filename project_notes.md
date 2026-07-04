@@ -1,5 +1,29 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.24.8** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+**Tool version: v0.24.9** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+
+**Session July 4, 2026 (cont.) — 07-25, 07-26, 07-27 encoded, completes July 1-27 (v0.24.9).**
+Eighth batch of the July encoding session.
+
+- **07-25 (Dormition of Righteous Anna, Doxology §2D)** — 6 stichera at LIC, but Great
+  Doxology is explicitly appointed and Polyeleos is not, so Doxology rank per §1.1, not
+  Six-Stichera — a live instance of exactly the §2C/§2D count-ambiguity the waterfall test
+  was built to resolve. Also commemorated the same day: Holy Women Olympia & Euprakia,
+  whose entire canon and stichera set are explicitly assigned "AT COMPLINE" in the source —
+  a genuinely different service from Vespers/Matins/Liturgy, not one this tool assembles.
+  Not captured; this is a structural exclusion, distinct from the v2.8 scope-boundary
+  judgment calls made elsewhere (full canon/sessional/Praises within the *same* service).
+- **07-26 (Venerable Martyr Paraskeva, Polyeleos §2E)** — a single saint with two genuinely
+  distinct kontakia (Ode III and Ode VI), same structural pattern already seen at 07-11
+  (Olga); both captured directly rather than defaulting to the "same as" shorthand.
+- **07-27 (Seven Enlighteners of the Slavs & Bulgars, Vigil §2F)** — Methodius, Cyril,
+  Clement, Nahum, Sabbas, Gorazd, and Angelarius are treated as a single collective
+  commemoration throughout (one set of stichera, one troparion, one kontakion, one canon),
+  not split into Doubles the way several earlier July dates were.
+- Gate: 71/71 PASS, zero warnings on all three entries on the first pass — no repeat of the
+  combined-Glory/Both-now `_absent` mistake this round.
+- **July 1 through 27 now fully encoded.** Four days remain: 07-28 through 07-31.
+
+---
 
 **Session July 4, 2026 (cont.) — 07-22, 07-23, 07-24 encoded, completes July 1-24 (v0.24.8).**
 Seventh batch of the July encoding session.
