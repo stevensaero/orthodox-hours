@@ -1,5 +1,41 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.24.9** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+**Tool version: v0.25.0** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+
+**Session July 4, 2026 (cont.) — 07-28 through 07-31 encoded. JULY FULLY COMPLETE (v0.25.0).**
+Ninth and final batch of the July encoding session — all 31 days now encoded, verified by
+direct count against `src/data/menaion/july.js`.
+
+- **07-28 (Pitirim, Bishop of Tambov, Vigil §2F)** and **07-30 (Martyr John the Warrior,
+  Vigil §2F)** — both rich sources with two full canons each, not captured per v2.8 scope
+  regardless of feast richness. 07-30 has no explicit "Little Vespers" heading, but its own
+  rubric text ("But if a vigil be celebrated...") confirms Vigil is the intended rank even
+  without the usual §1.1 heading signal — read the actual rubric, not just the section
+  title, when the heading alone is ambiguous. 07-30 also prints two Exapostilaria for the
+  one saint, reusing `exapostilarion_2` the same way as 07-20.
+- **07-29 (Martyr Callinicus, Simple §2A)** — clean minimal entry.
+- **07-31 (Forefeast of the Procession of the Cross & Righteous Eudocimus, Double §2B)** —
+  only one kontakion exists in the source (Eudocimus's; no separate kontakion for the Cross
+  at all), so `kontakion_ode3` stays "same as kontakion_ode6" despite this being a Double —
+  the single-kontakion convention takes precedence over the usual two-kontakia Double
+  pattern when the source simply doesn't provide a second one. Troparion print order is
+  genuinely inconsistent within the same PDF: Eudocimus first at Vespers, the Cross first
+  at Matins and the Liturgy recap (matching the title's own listing order) — flagged
+  explicitly rather than silently reconciled, consistent with how 07-21's similar reversal
+  was handled.
+- Gate: 71/71 PASS, zero warnings on all four entries, first pass.
+
+**JULY IS NOW FULLY ENCODED — all 31 days, 07-01 through 07-31.** Recurring patterns worth
+carrying into future months: the §1.1 rank waterfall (Great Feast → Vigil → Polyeleos →
+Doxology → Six-Stichera → Simple) resolved every rank question this month, including
+several genuine §2C/§2D and Simple-vs-Double count ambiguities predicted by the spec;
+combined "Glory...,Both now..." hymns recur often enough on Marian-icon feasts specifically
+that it's worth checking for that pattern before reaching for `_absent` on any rank above
+§2A/§2C; Double commemorations vary significantly in structure (shared vs. separate
+troparia, kontakia split by Ode position vs. both after the same Ode, one saint with none of
+the "if there be such" optional elements) and should be read fresh each time, not assumed
+from precedent.
+
+---
 
 **Session July 4, 2026 (cont.) — 07-25, 07-26, 07-27 encoded, completes July 1-27 (v0.24.9).**
 Eighth batch of the July encoding session.
