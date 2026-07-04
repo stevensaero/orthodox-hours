@@ -8202,6 +8202,18 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.24.4",
+    date: "July 2026",
+    summary: "07-07, 07-08, 07-09 encoded; validator fix for legitimately mixed-tier pointing",
+    items: [
+      "07-07 (Thomas of Mount Maleum & Acacius of Mount Sinai, Double §2B) shares a single joint troparion for both saints — the same stock 'Troparion of the Venerable Fathers' text already used at 06-12 — rather than two separate ones like 07-04. Each saint still keeps his own kontakion, routed to different Hours per Fekula §2B. No Ikos, Exapostilarion, Vespers Aposticha, or Liturgy propers anywhere in the source; all verified absent rather than assumed.",
+      "07-08 (Kazan Icon of the Theotokos, Polyeleos §2E) surfaced a real validator gap: its 8 LIC stichera combine two compositionally distinct groups — 4 under a labeled Spec. Mel., pointed in the source, and 3 more under an unlabeled heading, plain prose in the source. The validator previously required uniform pointing across an entire stichera array; fixed to check consistency per spec_mel sub-group instead, so a genuine source-level mix isn't forced into inventing markers or discarding real ones. A genuinely half-encoded array (same spec_mel, some items simply missed) still fails exactly as before.",
+      "07-09 (Hieromartyr Pancratius of Taormina, Simple §2A) is a clean, minimal Simple-rank entry: no Ikos, Exapostilarion, Aposticha, or Liturgy propers in the source, all correctly declared absent.",
+      "encoding_rule_v2.md bumped to v2.9 documenting the spec_mel sub-group pointing rule, in both the changelog and §3.2 directly.",
+      "Gate: 71/71 PASS. Zero warnings on all three new entries.",
+    ],
+  },
+  {
     version: "v0.24.3",
     date: "July 2026",
     summary: "07-04, 07-05, 07-06 encoded — first Double commemoration of the July batch",
