@@ -1,5 +1,29 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.24.6** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+**Tool version: v0.24.7** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+
+**Session July 4, 2026 (cont.) — 07-19, 07-20, 07-21 encoded (v0.24.7).**
+Sixth batch of the July encoding session — two major Vigil-rank feasts back to back.
+
+- **07-19 (Ven. Seraphim of Sarov) and 07-20 (Prophet Elijah)**, both Vigil §2F, both print
+  Little Vespers explicitly. Both are extremely rich sources with two full canons each —
+  neither captured, consistent with the v2.8 scope boundary regardless of how major the
+  feast is. Full Litya, full Menaion Aposticha, Ikos, and complete Liturgy propers captured
+  for both.
+- **07-20 prints two separate Exapostilaria for the same feast** ("Glory ..., another
+  Exapostilarion"). Added `exapostilarion_2` to KNOWN_FIELDS deliberately — this is a
+  genuinely new field shape, distinct from the multi-saint troparion_2/kontakion pattern
+  used elsewhere: one saint, two exapostilaria, not two saints each with one.
+- **07-21 (Ven. Symeon the Fool-for-Christ & Ven. John, Double §2B, plus Prophet Ezekiel)**
+  turned up a genuine structural quirk worth remembering: the printed troparion order puts
+  Ezekiel first and Symeon/John second, which is the *reverse* of both the LIC stichera
+  order and the title's own listing (Symeon/John named first). Resolved which saint is
+  "first" for Fekula's Hours-routing rule by kontakion *position* instead of troparion print
+  order — Symeon & John's joint kontakion sits after Ode VI (1st/6th Hour), Ezekiel's own
+  sits after Ode III (3rd/9th Hour) — and flagged the reversal explicitly rather than
+  silently reconciling the two orderings into one.
+- Gate: 71/71 PASS, zero warnings on all three entries.
+
+---
 
 **Session July 4, 2026 (cont.) — 07-16, 07-17, 07-18 encoded (v0.24.6).**
 Fifth batch of the July encoding session, first genuinely new dates after 07-14/07-15
