@@ -1,5 +1,27 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.24.7** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+**Tool version: v0.24.8** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+
+**Session July 4, 2026 (cont.) — 07-22, 07-23, 07-24 encoded, completes July 1-24 (v0.24.8).**
+Seventh batch of the July encoding session.
+
+- **07-22 (Mary Magdalene & Hieromartyr Phocas of Sinope, Double §2B)** — both saints' kontakia
+  and ikoi are printed together, both positioned after Ode VI, with no clean Ode III/VI split
+  to read Hours-routing from (unlike 07-21's reversal case). Followed title/troparion order
+  instead, which was internally consistent here (Mary Magdalene first throughout, no
+  reversal). Reused `exapostilarion_2` for Phocas's exapostilarion — same field as 07-20's
+  "second exapostilarion for one saint" case, but here for a genuinely different reason (second
+  saint's exapostilarion in a Double), noted inline rather than adding yet another field.
+- **07-23 (Icon of the Theotokos of Pochaev, Vigil §2F)** — repeated the combined-Glory/
+  Both-now `_absent` mistake in three places at once this time (LIC, Litya, and Aposticha all
+  print combined hymns). All three caught and fixed via the same gate check before
+  committing — this pattern (`stichera_glory_absent`/`aposticha_glory_absent`/an invented
+  `litya_glory_absent` that doesn't even exist in KNOWN_FIELDS) is clearly recurring
+  specifically on Marian icon feasts; worth remembering to check for combined hymns first on
+  any future icon-feast date before reaching for `_absent`.
+- **07-24 (Martyr Christina, Simple §2A)** — clean, complete entry.
+- Gate: 71/71 PASS throughout. **July 1 through 24 now fully encoded.**
+
+---
 
 **Session July 4, 2026 (cont.) — 07-19, 07-20, 07-21 encoded (v0.24.7).**
 Sixth batch of the July encoding session — two major Vigil-rank feasts back to back.
