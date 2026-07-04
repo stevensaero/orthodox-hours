@@ -1,5 +1,44 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.24.0** | **Tone Trainer: v0.25.30** | Last synced: June 27, 2026
+**Tool version: v0.24.1** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+
+**Session July 4, 2026 — encoding_rule_v2.md v2.7/v2.8 + 07-01 corrected-scope re-encode (v0.24.1).**
+Two spec additions and one data fix, prompted by starting a July encoding session on an
+entry (07-01) that turned out to already exist with gaps.
+
+- **§1.1 Service Rank Determination (v2.7).** Neither Fekula nor the OCA calendar page alone
+  gave a full rank test; the missing piece was the St. Ignatius Orthodox Press Anthologion
+  (2024) "Festal Rankings" table (Drive: `Feasts/festal-calendar-saint-ignatius-orthodox-press-2024.pdf`,
+  OCR'd — it's an image scan). Committed as an ordered waterfall: Great Feast (enumerated) →
+  Vigil (Small Vespers provided) → Polyeleos (appointed, no Small Vespers) → Doxology (Great
+  Doxology appointed, no Polyeleos) → Six-Stichera (6 at LIC, no Great Doxology) → Simple (3,
+  or 6 for a Double). Resolves two real ambiguities: Fekula §2C/§2D both print 6 stichera at
+  LIC (the actual test is whether Great Doxology is appointed, not count), and a Double
+  commemoration also shows "6" but is Simple rank. Also: Great Doxology is sung every Sunday
+  regardless of the saint's own rank — that signal doesn't transfer from weekday to Sunday.
+- **§6 Matins capture scope boundary (v2.8).** Caught myself about to capture full Matins
+  canon odes/sessional hymn/Praises stichera on 07-01 (Six-Stichera rank) by pattern-matching
+  06-29's depth (Peter & Paul, Great Feast — done "for reference," not a template). Corrected:
+  that depth is out of scope by default at every rank, reserved for Great Feast rank and only
+  on explicit per-date request. The skeleton's Hours-relevant Matins fields (troparion,
+  kontakion_ode3/ode6, ikos) are unaffected.
+- **07-01 re-encoded at corrected scope (v0.24.1).** Re-verifying against the full source PDF
+  also surfaced a real pointing-fidelity defect predating this session: LIC stichera,
+  troparion, and kontakion_ode6 were flattened to Tier-1 prose despite the PDF marking them
+  Tier-2 (`*`/`**`) — restored per §11 #14. Retired `stichera_both_now` / `aposticha_both_now`
+  (bare descriptive strings, field_coverage_spec.md's own cited anti-pattern example) in favor
+  of the canonical `lic_theotokion` (derived) plus captured `lic_stavrotheotokion` /
+  `aposticha_stavrotheotokion` alternatives. Added `matins_exapostilarion_theotokion`. Matins
+  Aposticha (post-Praises) marked NOT YET ENCODED, deferred per the skeleton's own allowance.
+  One verified source-register exception left as-is and annotated (`stichera_lord_i_call[5]`
+  prints "Your" in the source PDF itself, breaking from the piece's traditional register —
+  not an encoding artifact; not silently "corrected" to invented text).
+- **Project-instructions doc cleanup (Claude-side, not repo).** Several sections of Bill's
+  Claude Project instructions were mirroring `encoding_rule_v2.md` content that had since been
+  corrected upstream (pointing-marker direction reversed in v2.3; stale v2.1 version label).
+  Rewrote those sections as pointers to the repo spec instead of restated copies, so they
+  can't drift again. Not a repo change — noted here for continuity.
+
+---
 
 **Session June 27, 2026 (cont.) — Octoechos browser render-gap audit + provenance (v0.24.0).**
 Triggered by the 06-28 aposticha-theotokion question: the common theotokia belong in the
