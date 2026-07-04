@@ -8202,6 +8202,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.24.2",
+    date: "July 2026",
+    summary: "07-02 (St John Maximovich) and 07-03 (Hyacinth) re-encoded at corrected scope",
+    items: [
+      "07-02 (St John Maximovich, Abp of Shanghai & San Francisco, Vigil rank) was missing several standard-scope fields entirely: no rank flags (has_great_doxology/has_polyeleos/has_litya/has_paroemias), no Litya stichera, no Menaion Aposticha (this rank draws Aposticha from the Menaion, not the Octoechos), no ikos, no exapostilarion, no kontakion_ode3, no beatitudes. All added from the source PDF. Also restored Tier-2 pointing on troparion and kontakion_ode6, both previously flattened to prose.",
+      "07-03 (Holy Martyr Hyacinth, Simple rank) gets its troparion/kontakion from OCA propers (not St. Sergius) per OCA primacy — that was already correct and is unchanged. What was missing: aposticha_glory had no declared value or absence (07-03.pdf genuinely has no separate Vespers Aposticha section at this rank); ikos and exapostilarion were undeclared (both verified absent from the PDF). lic_theotokion and a new lic_stavrotheotokion now hold the actual printed, pointed St. Sergius text instead of a generic Octoechos placeholder.",
+      "Both entries: full Matins canon odes, sessional hymns, and Praises stichera are present in their source PDFs but intentionally not captured, per the v2.8 scope boundary (reserved for Great Feast rank on explicit request). A couple of remaining register-lint warnings (modern 'you/your' in specific spots) are annotated in the data as verified source readings, not encoding defects.",
+    ],
+  },
+  {
     version: "v0.24.1",
     date: "July 2026",
     summary: "07-01 (Cosmas & Damian) re-encoded: pointing fidelity fix + corrected scope",
