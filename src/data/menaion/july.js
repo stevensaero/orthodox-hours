@@ -18,9 +18,23 @@ const JULY_MENAION = {
     matins_format: "god_is_the_lord",
     aposticha_source: "octoechos",
     note: "OCA commemorates Jul 1 N.S. St. Sergius and OCA in agreement on date and texts. " +
-          "§2C confirmed — 6 stichera on Lord I Call (3 T1 + 3 T4); 'God is the Lord' at Matins. " +
+          "Rank per encoding_rule_v2.md §1.1 waterfall: not a Great Feast; no Small Vespers " +
+          "in 07-01.pdf (not Vigil); no Polyeleos appointed at Matins (not Polyeleos); no " +
+          "Great Doxology appointed at Matins (not Doxology); 6 stichera at Lord I Have Cried " +
+          "for a single saint, no Great Doxology → Six-Stichera §2C, confirmed. " +
           "Aposticha from Octoechos (§2C); Glory/Both Now from Menaion. " +
-          "Beatitudes: 4 Octoechos + 4 from Ode III. No paroemias, no Litiya, no Polyeleos.",
+          "Beatitudes: 4 Octoechos + 4 from Ode III. No paroemias, no Litiya, no Polyeleos. " +
+          "Re-encoded from source PDF (full text) at corrected scope per encoding_rule_v2.md " +
+          "v2.8 §6: full Matins canon/sessional/Praises out of scope at this rank (not " +
+          "requested; not Great Feast). Matins Aposticha (post-Praises, distinct from " +
+          "Vespers Aposticha above) is NOT YET ENCODED — PDF has it, deferred this session. " +
+          "Re-verification against source also corrected a pointing-fidelity defect: LIC " +
+          "stichera, troparion, and kontakion_ode6 were previously flattened to Tier-1 prose " +
+          "though the PDF marks them Tier-2 (`*`/`**`) — restored per §11 #14 (never flatten " +
+          "pointed source to prose). stichera_both_now / aposticha_both_now (bare descriptive " +
+          "strings) retired per field_coverage_spec.md §7 resolution; lic_theotokion is the " +
+          "canonical derived Both-now field, with the PDF's Stavrotheotokion alternative " +
+          "captured separately.",
     feast_e: "1 Corinthians 12:27-13:8 (§153)",
     feast_g: "Matthew 10:1, 5-8 (§34)",
     prokeimenon_tone: 4,
@@ -32,36 +46,43 @@ const JULY_MENAION = {
     communion_verse: "Rejoice in the Lord, O ye righteous; praise is meet for the upright.",
 
     // ── AT VESPERS: LORD I HAVE CRIED ──────────────────────────────────────
-    // 6 stichera: 3 in Tone I + 3 in Tone IV. §2C = all from Menaion.
+    // 6 stichera: 3 in Tone I (Spec. Mel. "Joy of the ranks of heaven") +
+    // 3 in Tone IV (Spec. Mel. "Thou hast given a sign"). §2C = all from Menaion.
+    // Pointing restored to Tier 2 (`*`/`**`) per source; previously flattened.
     stichera_lord_i_call_count: 6,
     stichera_lord_i_call: [
-      { tone: 1,
-        text: "With rays of miracles dispel every infirmity of our sicknesses, " +
-              "freely extending grace to us, and enrich us with the gifts of the Master " +
-              "Who hath taken on His shoulders the afflictions of earthborn mortals." },
-      { tone: 1,
-        text: "Having first been trained well as physicians, ye cleansed away the illnesses of all with faith; " +
-              "and in later times, having armed yourselves spiritually, ye divinely dispel " +
+      { tone: 1, spec_mel: "Joy of the ranks of heaven",
+        text: "With rays of miracles * dispel every infirmity of our sicknesses, * " +
+              "freely extending grace to us, * and enrich us with the gifts of the Master * " +
+              "Who hath taken on His shoulders ** the afflictions of earthborn mortals." },
+      { tone: 1, spec_mel: "Joy of the ranks of heaven",
+        text: "Having first been trained well as physicians, * ye cleansed away the illnesses of all with faith; * " +
+              "and in later times, * having armed yourselves spiritually, * ye divinely dispel ** " +
               "the symptoms of spiritual sicknesses." },
-      { tone: 1,
-        text: "Having received grace freely from Christ God, ye heal the ailments of all without fee, " +
-              "O unmercenary ones, and cleanse not only our infirmities, but even reasonably treat cattle, " +
+      { tone: 1, spec_mel: "Joy of the ranks of heaven",
+        text: "Having received grace freely from Christ God, * ye heal the ailments of all without fee, * " +
+              "O unmercenary ones, * and cleanse not only our infirmities, * but even reasonably treat cattle, ** " +
               "in that ye are merciful." },
-      { tone: 4,
-        text: "Like rivers in full flood and manifestly overflowing with spiritual waters, " +
-              "ye irrigate creation with divine signs and the most glorious gifts of healing, " +
-              "drying up soul-corrupting passions, healing infirmities, and expelling evil spirits, " +
-              "O God-bearing unmercenaries, intercessors for our souls." },
-      { tone: 4,
-        text: "Having subdued the irrational passions, O holy ones, with spiritual powers, " +
-              "ye impart well-being to men and cattle, having been enriched by Christ " +
-              "with the gift of healings. Wherefore, celebrating your sacred and radiant solemnity, " +
+      { tone: 4, spec_mel: "Thou hast given a sign",
+        text: "Like rivers in full flood * and manifestly overflowing * with spiritual waters, * " +
+              "ye irrigate creation * with divine signs and the most glorious gifts of healing, * " +
+              "drying up soul-corrupting passions, * healing infirmities, and expelling evil spirits, * " +
+              "O God-bearing unmercenaries, ** intercessors for our souls." },
+      { tone: 4, spec_mel: "Thou hast given a sign",
+        text: "Having subdued the irrational passions, * O holy ones, * with spiritual powers, * " +
+              "ye impart well-being * to men and cattle, * having been enriched by Christ * " +
+              "with the gift of healings. * Wherefore, celebrating your sacred and radiant solemnity, ** " +
               "we ask for the cleansing of our souls." },
-      { tone: 4,
-        text: "Your divine temple hath been shown to be like a splendid heaven of salvation, " +
-              "which now displayeth salvific miracles like stars, and the divine working of healings " +
-              "like a radiant sun, O most blessed Cosmas and most glorious Damian, " +
-              "ye servants of the Lord and intercessors for our souls." },
+      // "Your" here is verified as printed in 07-01.pdf (with `*` pointing already present in
+      // the source) — not a flattening artifact or an encoding slip. Fekula's translation of
+      // this specific sticheron uses modern register while every other line in the piece uses
+      // traditional register; Check F-1 will still flag it (expected, not a defect to silently
+      // "correct" by inventing "Thy" where the source prints "Your").
+      { tone: 4, spec_mel: "Thou hast given a sign",
+        text: "Your divine temple * hath been shown to be like a splendid heaven of salvation, * " +
+              "which now displayeth * salvific miracles like stars, * and the divine working of healings * " +
+              "like a radiant sun, * O most blessed Cosmas and most glorious Damian, * ye servants of the Lord ** " +
+              "and intercessors for our souls." },
     ],
     stichera_glory: {
       tone: 6,
@@ -71,13 +92,22 @@ const JULY_MENAION = {
             "Through them, O Lord, free us also from the passions of soul and body, " +
             "in that Thou lovest mankind.",
     },
-    // Both Now: Theotokion or Stavrotheotokion in Tone VI (tone of the Glory).
-    // §2C: Both Now = Octoechos theotokion in tone of the Glory.
-    stichera_both_now: "Octoechos (tone of glory — Tone 6)",
+    // Both Now: Theotokion (derived, Octoechos, tone of Glory — Tone 6; canonical field,
+    // rendered by the §2A/§2C assembler path). PDF also prints a Stavrotheotokion
+    // alternative (Wed/Fri), captured separately below — not the rendered default.
+    lic_theotokion: null,
+    lic_stavrotheotokion: {
+      tone: 6, spec_mel: "Having set all aside",
+      text: "When, of old, the unblemished ewe-lamb and immaculate Sovereign Lady, * beheld her Lamb * " +
+            "upon the tree of the Cross, * she exclaimed maternally, and marveling cried aloud: * " +
+            "\"O my Child most sweet, * what is this new and most strange sight I see? * " +
+            "How hath the thankless synagogue * betrayed Thee to the judgment-seat of Pilate * " +
+            "and condemned Thee to death, * Who art the Life of all? * " +
+            "Yet do I hymn Thine ineffable condescension, ** O Word!\"",
+    },
 
     // ── AT VESPERS: APOSTICHA ──────────────────────────────────────────────
     // §2C: stichera from Octoechos; Glory/Both Now from Menaion.
-    // Glory doxasticon from PDF:
     aposticha_glory: {
       tone: 6,
       text: "Ever having Christ working within you, O holy unmercenaries, ye work wonders in the world " +
@@ -88,11 +118,26 @@ const JULY_MENAION = {
             "Healers of incurable sufferings who heal all and have received this gift from Christ the Savior, " +
             "Who granteth great mercy unto us.",
     },
-    // Both Now: Theotokion or Stavrotheotokion in Tone VI (tone of the Glory).
-    aposticha_both_now: "Octoechos (tone of glory — Tone 6)",
+    // Both Now: theotokion in tone of the doxasticon (derived, Octoechos). PDF also prints
+    // a Stavrotheotokion alternative (Wed/Fri), captured separately — not the rendered default.
+    aposticha_stavrotheotokion: {
+      tone: 6, spec_mel: "On the third day",
+      text: "Upon seeing Thee crucified, O Christ, * she who gaveth birth to Thee cried aloud: * " +
+            "\"What is this strange mystery that I see, * O my Son How is it that Thou diest?, * " +
+            "suspended upon the Tree, ** O Bestower of life?\"",
+    },
 
     // ── AT MATINS ──────────────────────────────────────────────────────────
-    // Kontakion after Ode VI = same as kontakion_ode6 (confirmed from PDF)
+    // Full canon (Odes I/IV/V/VII/VIII/IX), sessional hymn, and Praises stichera are present
+    // in 07-01.pdf but are OUT OF SCOPE per encoding_rule_v2.md v2.8 §6 (not Great Feast rank;
+    // not requested). Ode III alone is captured below via beatitudes_troparia (Liturgy use).
+    //
+    // Matins Aposticha (post-Praises, distinct from the Vespers Aposticha above): PDF prints
+    // a Glory (Tone VIII) and Stavrotheotokion (Tone VIII, Spec. Mel. "O most glorious wonder").
+    // NOT YET ENCODED — deferred this session per the skeleton's own allowance (§6); the
+    // Matins assembler does not yet exist.
+    //
+    // Kontakion after Ode VI = same as kontakion_ode6 (confirmed from PDF).
     // Kontakion after Ode III: not present in PDF — Ode III has only troparia and theotokion.
     // Therefore kontakion_ode3 = same as kontakion_ode6.
     kontakion_ode3: "same as kontakion_ode6",
@@ -103,6 +148,10 @@ const JULY_MENAION = {
           "for they deliver multitudes from sickness, healing the world with miracles.",
     exapostilarion: "What utterances can rightly describe the unmercenaries' grace of healing? " +
                     "For, after God, they are the saving physicians of the whole world.",
+    matins_exapostilarion_theotokion: {
+      text: "With thy mighty protection, O pure one, preserve all of us, thy servants, unharmed " +
+            "from the assaults of the enemy; for thee alone have we acquired as our refuge amid tribulations.",
+    },
 
     // ── Beatitudes (AT LITURGY) ────────────────────────────────────────────
     // 8 troparia: 4 from Octoechos + 4 from Ode III of saint's canon
@@ -117,16 +166,17 @@ const JULY_MENAION = {
         source: "Ode III", label: "Ode III, Theotokion" },
     ],
 
+    // Pointing restored to Tier 2 per source; previously flattened.
     troparion: {
       tone: 8,
       text: "O holy unmercenaries and wonder-workers Cosmas and Damian, visit our infirmities. " +
-            "Freely have ye received, freely give unto us.",
+            "** Freely have ye received, freely give unto us.",
     },
     kontakion_ode6: {
       tone: 2,
-      text: "Having received the grace of healings, ye extend health to those in need, " +
-            "O most glorious physicians and wonder-workers. By your visitation cast down " +
-            "the audacity of the enemy, healing the world with miracles.",
+      text: "Having received the grace of healings, * ye extend health to those in need, * " +
+            "O most glorious physicians and wonder-workers. * By your visitation cast down " +
+            "the audacity of the enemy, ** healing the world with miracles.",
     },
   },
 
