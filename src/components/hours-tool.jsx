@@ -8202,6 +8202,16 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.24.1",
+    date: "July 2026",
+    summary: "07-01 (Cosmas & Damian) re-encoded: pointing fidelity fix + corrected scope",
+    items: [
+      "Re-verified 07-01 (Holy Unmercenaries Cosmas & Damian) against the full source PDF. Found the LIC stichera, troparion, and kontakion_ode6 had been flattened to plain prose in an earlier encoding pass even though the PDF marks them with `*`/`**` pointing — restored to Tier-2 pointed text per encoding_rule_v2.md §11 #14 (never flatten pointed source to prose). This affects choir-facing pointing and Tone Trainer handoff fidelity, not the assembled Hours text itself.",
+      "Retired the stichera_both_now / aposticha_both_now bare-descriptive-string fields per field_coverage_spec.md's own resolution (they render nowhere; 07-01 was the cited example of the anti-pattern). lic_theotokion is the canonical derived Both-now field going forward; the PDF's Stavrotheotokion alternatives are captured as lic_stavrotheotokion / aposticha_stavrotheotokion. Also added matins_exapostilarion_theotokion.",
+      "Scope correction: this pass captures the standard skeleton only (Vespers LIC/Aposticha, Hours propers, Beatitudes/Liturgy propers). Full Matins canon odes, sessional hymn, and Praises stichera — present in the PDF — are intentionally NOT captured, per the new v2.8 §6 boundary: that depth is reserved for Great Feast rank on explicit request, not ordinary Six-Stichera dates. Matins Aposticha (post-Praises) is marked NOT YET ENCODED, deferred per the skeleton's own allowance.",
+    ],
+  },
+  {
     version: "v0.24.0",
     date: "June 2026",
     summary: "Octoechos browser: surface hidden reference data + show provenance",
