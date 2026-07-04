@@ -1,5 +1,34 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.24.1** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+**Tool version: v0.24.2** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+
+**Session July 4, 2026 (cont.) — 07-02 and 07-03 re-encoded at corrected scope (v0.24.2).**
+Continuing the July 3-day-batch encoding session, applied the same corrected-scope process
+established on 07-01 to the next two dates.
+
+- **07-02 (St John Maximovich, Vigil §2F)** turned out to be a substantial existing entry
+  missing real standard-scope fields, not just missing depth: no rank flags at all
+  (has_great_doxology/has_polyeleos/has_litya/has_paroemias), no Litya stichera, no Menaion
+  Aposticha (this rank draws Aposticha from the Menaion, not Octoechos — a genuine gap, not
+  scope creep to add), no ikos, no exapostilarion, no kontakion_ode3, no beatitudes. All
+  filled in from the full source PDF (06-19.pdf, O.S./N.S. offset). Also found and fixed the
+  same pointing-flattening defect as 07-01, this time on troparion and kontakion_ode6. Full
+  canon (Odes I/IV/V/VII/VIII/IX), sessional hymns, and Praises stichera are present in the
+  PDF but intentionally not captured — out of scope per v2.8, Vigil rank does not qualify
+  (only Great Feast, Class I/II, does — and even then only on request).
+- **07-03 (Hyacinth, Simple §2A)** — troparion/kontakion are OCA's own composed propers
+  (correctly substituted for St. Sergius's generic martyr texts per OCA primacy; unchanged).
+  Filled real gaps: aposticha_glory had no declared value or absence (verified: 07-03.pdf has
+  no separate Vespers Aposticha section at this rank at all, Octoechos governs entirely);
+  ikos and exapostilarion were undeclared (verified absent from the PDF, neither is required
+  at every §2A date). lic_theotokion and new lic_stavrotheotokion now hold the actual printed
+  St. Sergius text (genuinely present and pointed) rather than a generic placeholder.
+- Both entries: one or two Check F-1 register-lint warnings remain, each annotated in the
+  data as verified source readings (OCA's own modern-register propers on 07-03; St.
+  Sergius's own modern-register sticheron on 07-01, found in the prior session) — not
+  encoding defects, not silently "corrected" to invented traditional-register text.
+- Gate: 71/71 PASS throughout.
+
+---
 
 **Session July 4, 2026 — encoding_rule_v2.md v2.7/v2.8 + 07-01 corrected-scope re-encode (v0.24.1).**
 Two spec additions and one data fix, prompted by starting a July encoding session on an
