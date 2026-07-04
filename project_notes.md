@@ -1,5 +1,36 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.24.3** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+**Tool version: v0.24.4** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+
+**Session July 4, 2026 (cont.) — 07-07, 07-08, 07-09 encoded + validator fix (v0.24.4).**
+Third 3-day batch of the July encoding session. Hit a genuine new failure mode partway
+through and fixed it rather than working around it.
+
+- **07-07 (Thomas of Mount Maleum & Acacius of Mount Sinai, Double §2B)** — a second Double
+  commemoration, but structurally different from 07-04: the two saints share one joint
+  troparion (same stock "Troparion of the Venerable Fathers" text as 06-12), not two
+  separate ones. Confirms troparion_2 is only used when the Menaion actually prints two;
+  Fekula's "if there be such" is a real conditional, not decorative. Each saint still keeps
+  a separate kontakion routed to a different Hour. Minimal source otherwise — no Ikos, no
+  Exapostilarion, no Aposticha, no Liturgy propers anywhere in the PDF; all verified absent.
+- **07-08 (Kazan Icon of the Theotokos, Polyeleos §2E) surfaced a real validator gap.** Its
+  8 LIC stichera combine two genuinely different compositional sources: 4 under a labeled
+  Spec. Mel., pointed Tier-2 in the PDF; 3 more under an unlabeled heading, plain Tier-1
+  prose in the PDF — checked the raw text twice, this is the source, not a transcription
+  slip. The validator's Check E previously required uniform pointing across an entire
+  stichera array, which would have forced either inventing markers on the second group or
+  discarding real markers from the first. Fixed `checkSticheraMarkers` in
+  `tools/validate_entries.mjs` to check consistency per `spec_mel` sub-group instead of the
+  whole array; a genuinely half-encoded single-source array still fails exactly as before.
+  Documented in `encoding_rule_v2.md` v2.9, both changelog and §3.2 directly. Also two
+  combined "Glory...,Both now..." hymns on this entry (LIC and Aposticha) needed the actual
+  text stored as stichera_glory/aposticha_glory rather than declared absent — Check D
+  correctly rejects `_absent` at Polyeleos+ rank, and a combined hymn is the doxasticon
+  Fekula expects here, not an absence.
+- **07-09 (Hieromartyr Pancratius of Taormina, Simple §2A)** — clean, minimal encoding.
+  No Ikos, Exapostilarion, Aposticha, or Liturgy propers in the source; all declared absent.
+- Gate: 71/71 PASS throughout, zero warnings on all three new entries.
+
+---
 
 **Session July 4, 2026 (cont.) — 07-04, 07-05, 07-06 encoded, first Double commemoration (v0.24.3).**
 Second 3-day batch of the July encoding session. First genuinely new (never-before-encoded)
