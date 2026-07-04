@@ -8202,6 +8202,18 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.24.5",
+    date: "July 2026",
+    summary: "07-10 through 07-13 encoded — completes July 1-13",
+    items: [
+      "07-10 (45 Martyrs of Nicopolis of Armenia, Simple §2A): clean minimal entry, no Ikos/Exapostilarion/Aposticha/Liturgy propers in the source.",
+      "07-11 (Holy Olga, Equal-to-the-Apostles, Polyeleos §2E): unusually rich source (Deborah/Judith/virtuous-woman paroemia typology). A single saint carrying two distinct kontakia (after Ode III and Ode VI) rather than the usual one — both captured directly, not the 'same as' shorthand.",
+      "07-12 (Icon of the Theotokos 'of the Three Hands', Vigil §2F): Little Vespers printed, confirming Vigil. Repeated the exact 07-08 mistake at first (stichera_glory_absent/aposticha_glory_absent on a rank where a combined Glory/Both-now hymn is still the doxasticon Fekula expects) and caught it via the same gate check before committing.",
+      "07-13 (Synaxis of Archangel Gabriel & Ven. Stephen the Sabbaite, Double §2B): an unusual Double where only the first-listed commemoration (Gabriel) has a troparion, any kontakion, or Beatitudes verses in the printed service at all — Stephen has none of these. Confirms Fekula's 'if there be such' conditionals for the second saint can all evaluate false at once, not just individually.",
+      "Gate: 71/71 PASS, zero warnings on all four entries. July 1 through 13 now fully encoded.",
+    ],
+  },
+  {
     version: "v0.24.4",
     date: "July 2026",
     summary: "07-07, 07-08, 07-09 encoded; validator fix for legitimately mixed-tier pointing",
