@@ -1,6 +1,14 @@
-# ENCODING RULE v2.7 — Orthodox Hours Tool
+# ENCODING RULE v2.8 — Orthodox Hours Tool
 **Authority:** Fekula & Williams (2009) · St. Ignatius Orthodox Press Anthologion (2024) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** July 2026 · **Supersedes:** v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+**Updated:** July 2026 · **Supersedes:** v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+
+**v2.8 changes — MATINS CAPTURE SCOPE BOUNDARY (§6, new subsection):** the skeleton's
+silence on full canon odes/sessional hymns/Praises stichera was being misread as
+"not yet captured" rather than "out of scope," leading to unrequested full-Matins
+capture on an ordinary Six-Stichera date (07-01 draft). Adds an explicit boundary:
+full Matins capture is reserved for Great Feast rank and only on explicit per-date
+request, never proactive, never at lower rank. 06-29 (Peter & Paul) is flagged as
+the sole existing exception, not a template.
 
 **v2.7 changes — SERVICE RANK DETERMINATION (§1.1, new):** adds an explicit ordered
 test for rank, sourced from the St. Ignatius Orthodox Press Anthologion (2024)
@@ -426,6 +434,31 @@ because of rank is simply omitted from the entry. This is distinct from:
 
 If the gate shows a simple rank entry as complete, it is complete.
 If you believe a field is missing that should be present, check the rank first.
+
+---
+
+### Out of scope by default: full Matins canon, sessional hymns, Praises stichera
+
+The skeleton below is the **complete** standard capture, at every rank. It has no section
+for full canon odes (I, III, IV, V, VI, VII, VIII, IX), sessional hymns, or Praises stichera
+because these are **not captured during ordinary encoding sessions, regardless of rank** —
+including Polyeleos and Vigil rank. The tool assembles the Hours (troparion /
+kontakion_ode3 / kontakion_ode6 / ikos), not a full Matins service. Capturing the rest is
+extra work with no current consumer: the `FIELD_REGISTRY` in `src/lib/audit.js` does not
+require it, and the assembler does not read it.
+
+**06-29 (Peter & Paul) is the single exception in the corpus**, and it carries a full
+canon/sessional/Praises capture. That entry's own header comment flags it as done "for
+reference," outside ordinary scope — it is **not a template**. Do not pattern-match its
+depth onto other dates; it is the one case that's supposed to look different, not a model
+of full capture to extend elsewhere.
+
+Full Matins capture (canon, sessional hymns, Praises) happens only when both are true:
+1. The date is Great Feast rank (Class I/II, §1.1), and
+2. The user explicitly requests it, by date, in that session.
+
+Never proactive — not even on a Great Feast — and never at Vigil/Polyeleos/Doxology/
+Six-Stichera/Simple rank, regardless of how much the source PDF's Matins section prints.
 
 ---
 
