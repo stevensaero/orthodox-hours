@@ -8202,6 +8202,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.24.6",
+    date: "July 2026",
+    summary: "07-16, 07-17, 07-18 encoded",
+    items: [
+      "07-16 (Hieromartyr Athenogenes & his Ten Disciples, Simple §2A): the daily proper PDF has no troparion at all, no separate Aposticha, no Ikos, no Exapostilarion, and no AT LITURGY recap — confirmed genuine, not a fetch truncation. Per the fallback chain, the troparion is sourced from OCA's troparia page for Jul 16 instead of left blank; the kontakion (present in the PDF) independently matches OCA's version closely, cross-checked via web search.",
+      "07-17 (Great-Martyr Marina, Six-Stichera §2C): clean full entry with Glory, Stavrotheotokion, Ikos, Exapostilarion, and full Liturgy propers all present in the source.",
+      "07-18 (Martyr Emilian, Simple §2A): clean minimal entry, no Ikos/Exapostilarion/Aposticha/Liturgy propers in the source.",
+      "Gate: 71/71 PASS, one expected register-lint warning (07-16's OCA-sourced troparion, annotated as verified source register, not a defect).",
+    ],
+  },
+  {
     version: "v0.24.5",
     date: "July 2026",
     summary: "07-10 through 07-13 encoded — completes July 1-13",
