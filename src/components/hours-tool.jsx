@@ -8202,6 +8202,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.25.0",
+    date: "July 2026",
+    summary: "07-28 through 07-31 encoded — July fully complete (all 31 days)",
+    items: [
+      "07-28 (Pitirim, Bishop of Tambov, Vigil §2F) and 07-30 (Martyr John the Warrior, Vigil §2F): both rich Vigil-rank sources with two full canons each, not captured per v2.8 scope. 07-30 has no explicit 'Little Vespers' heading but the PDF's own rubric ('But if a vigil be celebrated...') confirms Vigil is intended; also prints two Exapostilaria for the one saint (exapostilarion_2, same pattern as 07-20).",
+      "07-29 (Martyr Callinicus, Simple §2A): clean minimal entry, no Ikos/Exapostilarion/Aposticha/Liturgy propers in source.",
+      "07-31 (Forefeast of the Procession of the Cross & Righteous Eudocimus, Double §2B): only one kontakion in the source (Eudocimus's — no separate Cross kontakion), so kontakion_ode3 stays 'same as' despite being a Double. Troparion print order is genuinely inconsistent within the same PDF (Eudocimus first at Vespers, the Cross first at Matins/Liturgy) — flagged rather than reconciled.",
+      "Gate: 71/71 PASS, zero warnings on all four entries, first pass. All 31 days of July are now encoded — verified by direct count against the data file. Minor version bump (v0.24.9 → v0.25.0) marks the month's completion.",
+    ],
+  },
+  {
     version: "v0.24.9",
     date: "July 2026",
     summary: "07-25, 07-26, 07-27 encoded — completes July 1-27",
