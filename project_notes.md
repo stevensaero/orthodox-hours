@@ -1,5 +1,35 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.24.4** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+**Tool version: v0.24.5** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+
+**Session July 4, 2026 (cont.) — 07-10 through 07-13 encoded, completes July 1-13 (v0.24.5).**
+Fourth 3-day batch (came in as four dates) of the July encoding session.
+
+- **07-10 (45 Martyrs of Nicopolis of Armenia, Simple §2A)** — clean minimal entry, same
+  shape as 07-09: no Ikos, Exapostilarion, Aposticha, or Liturgy propers in the source.
+- **07-11 (Holy Olga, Equal-to-the-Apostles, Polyeleos §2E)** — very rich source (paroemia
+  typology: Deborah/Barak, Judith/Holofernes, the virtuous woman of Proverbs — all
+  female-deliverer readings, fitting the feast). Notable structural point: a *single* saint
+  here carries two genuinely distinct kontakia (Ode III and Ode VI, both Tone IV) rather
+  than the usual one — captured both directly rather than defaulting to "same as
+  kontakion_ode6," which would have silently dropped the Ode III text.
+- **07-12 (Icon of the Theotokos "of the Three Hands," Vigil §2F)** — Little Vespers
+  printed, confirming Vigil per §1.1. Repeated the exact 07-08 mistake on the first pass:
+  used `stichera_glory_absent`/`aposticha_glory_absent` for a combined Glory/Both-now hymn
+  at a rank where Check D correctly rejects `_absent`. Caught and fixed the same way as
+  07-08 (store the combined text as `stichera_glory`/`aposticha_glory` directly) before
+  committing — worth flagging as a pattern to watch for on every Marian-icon-feast date
+  going forward, since these combined-hymn Glory/Both-now constructions seem to recur on
+  that particular feast type.
+- **07-13 (Synaxis of Archangel Gabriel & Ven. Stephen the Sabbaite, Double §2B)** — an
+  unusual Double where only the first-listed commemoration (Gabriel) has a troparion, any
+  kontakion at all, or Beatitudes verses in the printed service — Stephen the Sabbaite has
+  none of these. Confirms Fekula's "if there be such" conditionals for the second saint can
+  all evaluate false simultaneously, not just one at a time as seen in earlier Doubles.
+- Gate: 71/71 PASS throughout, zero warnings on all four entries once the 07-12 fix landed.
+- **July 1 through 13 now fully encoded.** Next batch starts at 07-16 (07-14/07-15 already
+  existed from a prior session).
+
+---
 
 **Session July 4, 2026 (cont.) — 07-07, 07-08, 07-09 encoded + validator fix (v0.24.4).**
 Third 3-day batch of the July encoding session. Hit a genuine new failure mode partway
