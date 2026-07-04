@@ -1,5 +1,37 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.24.2** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+**Tool version: v0.24.3** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+
+**Session July 4, 2026 (cont.) — 07-04, 07-05, 07-06 encoded, first Double commemoration (v0.24.3).**
+Second 3-day batch of the July encoding session. First genuinely new (never-before-encoded)
+dates of the session, rather than re-encodes.
+
+- **07-04 (Andrew of Crete & Ven. Martha) is a Double commemoration (§2B)** — the exact case
+  called out in encoding_rule_v2.md §1.1: 6 stichera at LIC, split 3+3 between two saints, is
+  Simple rank, not Six-Stichera. Read Fekula ch.2 §2B directly for the Hours-routing rule: the
+  two saints' kontakia go to different Hours (first saint's, after Ode VI, to 1st/6th Hour;
+  second saint's, after Ode III, to 3rd/9th Hour) — this breaks the usual single-saint
+  "kontakion_ode3 = same as kontakion_ode6" shorthand used everywhere else. troparion_2 holds
+  the second saint's troparion. Cross-checked against an existing June §2B entry (06-12) and
+  found its inline comments state the opposite Hours-mapping to what Fekula's own ch.2 text
+  says — flagged as a likely error in that prior entry, not fixed today (out of scope for this
+  session), but worth a look before the next Double commemoration is encoded.
+- **07-05 (Athanasius of Athos, Vigil §2F)** — prints an explicit Little Vespers section, which
+  is the direct §1.1 Vigil signal (Small Vespers provided). Extremely rich source; captured
+  Great Vespers LIC, full Litya, full Menaion Aposticha, Hours propers, Beatitudes. Left
+  has_great_doxology false rather than assumed true from rank, since the available PDF text
+  doesn't print an explicit "Great Doxology" rubric before ending — flagged for confirmation
+  against a fuller copy of the service, not guessed. Found and flagged (not silently resolved)
+  a tone discrepancy on the troparion: III in two spots, VIII in a third, same text.
+- **07-06 (Juliana of Olshansk, Polyeleos §2E)** — straightforward Polyeleos-rank confirmation:
+  Great Doxology and Polyeleos both explicit, no Small Vespers heading, so Polyeleos not Vigil.
+  One honest gap: matins_exapostilarion_theotokion has a rubric heading with no text following
+  in the PDF before the next section starts — left null with a NOT IN PDF note.
+- All three at corrected scope per v2.8: no full canon/sessional hymns captured on any of them,
+  including the two Vigil/Polyeleos-rank dates (only Great Feast, Class I/II, would change that,
+  and only on request).
+- Gate: 71/71 PASS, zero warnings on all three new entries.
+
+---
 
 **Session July 4, 2026 (cont.) — 07-02 and 07-03 re-encoded at corrected scope (v0.24.2).**
 Continuing the July 3-day-batch encoding session, applied the same corrected-scope process
