@@ -1,6 +1,19 @@
-# ENCODING RULE v2.8 — Orthodox Hours Tool
+# ENCODING RULE v2.9 — Orthodox Hours Tool
 **Authority:** Fekula & Williams (2009) · St. Ignatius Orthodox Press Anthologion (2024) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** July 2026 · **Supersedes:** v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+**Updated:** July 2026 · **Supersedes:** v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+
+**v2.9 changes — POINTING CONSISTENCY CHECKED PER SPEC_MEL SUB-GROUP, NOT WHOLE ARRAY
+(§3, `tools/validate_entries.mjs` Check E):** 07-08 (Kazan Icon) surfaced a genuine source
+inconsistency the validator wasn't built for: a single 8-sticheron LIC set combining two
+differently-sourced compositional groups (4 stichera under a labeled Spec. Mel., pointed
+Tier-2 in the source; 3 more under an unlabeled "And these Stichera," plain Tier-1 prose
+in the source — verified against the PDF twice, not an encoding gap). The old rule required
+uniform marking across the *entire* array and would force either inventing markers that
+aren't in the source or flattening real markers that are. Fixed: consistency is now checked
+per `spec_mel` sub-group (items with no `spec_mel` form their own shared group). A
+genuinely half-encoded single-source array (same `spec_mel`, or none, with some items
+marked and others simply forgotten) still fails exactly as before — this only stops
+penalizing the case where the source itself legitimately mixes tiers across sub-groups.
 
 **v2.8 changes — MATINS CAPTURE SCOPE BOUNDARY (§6, new subsection):** the skeleton's
 silence on full canon odes/sessional hymns/Praises stichera was being misread as
@@ -231,6 +244,14 @@ Bracketed emphasis may sit mid-word: `A[mer]ica`, `Resur[rec]tion`.
   the expected, correct signal — not a bug).
 - **Tier 3 — `|` plus `//` plus `[brackets]`.** Source carries director pointing
   (underlines in a formatted docx, or explicit accents). Capture all three.
+
+**A single stichera array (LIC, Aposticha) can legitimately mix tiers across compositional
+sub-groups.** When a set combines stichera from two different sources — most visibly when
+one sub-group carries its own Spec. Mel. label and another does not — each sub-group is
+pointed independently; do not force one tier onto the other to make the array "look
+consistent." `tools/validate_entries.mjs` checks marker consistency per `spec_mel`
+sub-group, not across the whole array, precisely so this doesn't get flattened or
+fabricated to satisfy a uniformity the source itself doesn't have (v2.9; case: 07-08).
 
 ### 3.3 Source markers at encode time — convert underlines, RETAIN St. Sergius `*` / `**`
 
