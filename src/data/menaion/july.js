@@ -2534,6 +2534,585 @@ const JULY_MENAION = {
     ikos: null,           // NOT IN PDF
     exapostilarion: null, // NOT IN PDF
   },
+
+  // ── July 19 — Venerable Seraphim, Wonderworker of Sarov (Vigil §2F) ──────
+  // Source: St. Sergius 07-19.pdf. Little Vespers printed → Vigil per §1.1.
+
+  "07-19": {
+    saint: "Venerable Seraphim, Wonderworker of Sarov",
+    oca_primary: true,
+    source_file: "07-19.pdf",
+    rank: "vigil",
+    fekula_section: "2F",
+    has_great_doxology: true,   // PDF: "Great Doxology. Litanies. Dismissal."
+    has_polyeleos: true,        // PDF: "Polyeleos, and this Magnification..."
+    has_litya: true,            // PDF: "At the Litiya, the Sticheron of the temple, And these Stichera"
+    has_paroemias: true,        // PDF: 3 readings (Wisdom of Solomon x3)
+    magnificat_sung: true,
+    matins_format: "god_is_the_lord",
+    matins_gospel: "Matthew 11:27-30",
+    aposticha_source: "menaion",
+    note: "Vigil §2F per encoding_rule_v2.md §1.1: Little Vespers explicitly printed, plus " +
+          "Litya, Polyeleos, Great Doxology, and 3 paroemias. Two full canons given (both " +
+          "captured only for Beatitudes purposes per convention); single kontakion/ikos pair " +
+          "(no separate Ode III kontakion — kontakion_ode3 = same as kontakion_ode6). Little " +
+          "Vespers content itself not captured — out of scope, same reasoning as 07-05/07-12. " +
+          "Re-encoded at corrected scope per v2.8 §6: both full canons and sessional hymns " +
+          "present in PDF but not captured. Beatitudes (4 Ode III of Canon I + 4 Ode VI of " +
+          "Canon II) captured per the PDF's own explicit 'On the Beatitudes' heading.",
+    feast_e: "Galatians 5:22-6:2",
+    feast_g: "Luke 6:17-23",
+    prokeimenon_tone: 7,
+    prokeimenon_text: "Precious in the sight of the Lord is the death of His saints.",
+    prokeimenon_stichos: "What shall I render unto the Lord for all that He hath rendered unto me?",
+    alleluia_tone: 6,
+    alleluia_verse: "Blessed is the man that feareth the Lord; in His commandments shall he greatly delight.",
+    alleluia_stichos: "His seed shall be mighty upon the earth.",
+    communion_verse: "In everlasting remembrance shall the righteous be; he shall not be afraid of evil tidings.",
+    paroemia_1: "Wisdom of Solomon — The souls of the righteous are in the hand of God (Wis 3:1-9)",
+    paroemia_2: "Wisdom of Solomon — The righteous live for evermore (Wis 5:15-6:3)",
+    paroemia_3: "Wisdom of Solomon — Though the righteous be prevented with death (Wis 4:7-15)",
+    // 8 stichera at Great Vespers: 3 unique (Twice each) + 2 unique (once each) = 6+2 = 8.
+    stichera_lord_i_call_count: 8,
+    stichera_lord_i_call: [
+      { tone: 1, spec_mel: "O marvelous wonder",
+        text: "O most glorious wonder! * A struggler for piety is revealed at Sarov, * and the " +
+              "most wondrous Seraphim doth become a fervent intercessor for us before God. * " +
+              "Rejoice, O Monastery of Sarov, that dost hold within thyself the relics of the " +
+              "venerable one! * Leap for joy, O ye multitudes of the Orthodox, * who have the " +
+              "most wondrous Seraphim as a defender amid misfortune and who cry unto him: * " +
+              "Rejoice, thou light of the Russian land! * Utterly disperse the legions of our " +
+              "adversaries, ** and beseech the Lord to grant peace and great mercy to our souls." },
+      { repeatIndex: 0 }, // (Twice)
+      { tone: 1, spec_mel: "O marvelous wonder",
+        text: "O marvelous wonder! * In the Monastery of Sarov, * behold, the blessed Seraphim " +
+              "revealeth himself to us * as an unshakeable pillar of piety. * Wherefore, O ye " +
+              "assemblies of the divinely wise, * be ye exalted in the spirit to the heights, * " +
+              "crying to the venerable one: * O venerable father Seraphim, ** beseech the Lord to " +
+              "grant peace and great mercy to our souls!" },
+      { repeatIndex: 2 }, // (Twice)
+      { tone: 1, spec_mel: "O marvelous wonder",
+        text: "Wondrous are Thy mysteries, * O Christ our God, * for Thou hast given us a beacon " +
+              "in the venerable Seraphim, * a mighty champion for our right-believing hierarchs " +
+              "* against the adversary, * and intercessor for monks and all Orthodox Christians, " +
+              "* and the boast and foundation of his holy monastery, * who now doth entreat Thee, " +
+              "O Lord, ** to grant peace and great mercy unto our souls." },
+      { repeatIndex: 4 }, // (Twice)
+      { tone: 1, spec_mel: "O marvelous wonder",
+        text: "When thou didst enter the wilderness of Sarov, O venerable one, * having utterly " +
+              "cast off thine own will, * thou didst show steadfast obedience to all, * for thou " +
+              "didst joyously endure vexation and dishonor. * Thou didst receive blows and " +
+              "stripes from evil men, * for whom thou didst yet pray, O venerable one. * And " +
+              "glorifying thy most honored memory, * we beseech thee, O venerable one: ** Beg the " +
+              "Lord to grant peace to the world and great mercy to our souls." },
+      { tone: 1, spec_mel: "O marvelous wonder",
+        text: "Blessed is the Monastery of Sarov, * which hath thee, O venerable father Seraphim, " +
+              "as a treasury of virtues, * a vessel of purity and chastity, * a receptacle of " +
+              "grace, a fount of healings, * a physician who cureth the infirm without fee, * a " +
+              "true faster, a comforter of the afflicted, * and a calm haven for those who are " +
+              "tempest-tossed by the passions of life. * O venerable father Seraphim, pray that " +
+              "peace and great mercy be granted unto us ** that keep thine honored memory." },
+    ],
+    stichera_glory: {
+      tone: 8,
+      text: "Come, ye assemblies of the faithful, let us glorify our most wondrous father with " +
+            "songs of praise today, and let us cry thus unto him: O venerable father Seraphim, " +
+            "thou wast truly vouchsafed a godly life, receiving a crown of unfading glory from " +
+            "God. Wherefore, the Monastery of Sarov doth boast of thee, and the people, beholding " +
+            "the precious shrine of thy relics and the miracles that take place through thine " +
+            "intercession, glorify the Lord Who doth glorify thee. Beseech Him, O venerable " +
+            "father, that He grant peace and great mercy to our souls!",
+    },
+    lic_theotokion: {
+      tone: 8,
+      text: "In His love for mankind, the King of heaven appeared on earth * and dwelt among " +
+            "men; * for He Who received flesh from the pure Virgin * and cameth forth from her " +
+            "having received human nature, * is the only Son of God, * twofold in nature but not " +
+            "Hypostasis. * Therefore, proclaiming Him to be truly perfect God and perfect man, * " +
+            "we confess Christ our God. * Him do thou beseech, O unwedded Mother, ** that our " +
+            "souls find mercy!",
+    },
+
+    // ── VESPERS — LITIYA ────────────────────────────────────────────────────
+    litya_stichera: [
+      { tone: 1, text: "With what crowns of praise shall we crown the great ascetic, the " +
+              "venerable Seraphim? For he was shown to be a good guide in steadfast faith and " +
+              "virtue, instructing those who came unto him with divinely inspired teachings and " +
+              "by his angelic life. Wherefore, we cry unto him: O venerable one, beseech Christ " +
+              "to establish the Orthodox faith and to save our souls!" },
+      { tone: 1, text: "Come, O ye multitudes of monks, let us piously praise the venerable one " +
+              "today, the true disciple of the Savior, who hath trampled down the deception of " +
+              "the world, hath taken the yoke of Christ upon his shoulders, and put to shame the " +
+              "hosts of the demons. Let us cry thus unto him: O father Seraphim, forget not us " +
+              "who praise and honor thy holy memory!" },
+      { tone: 1, text: "O venerable Seraphim, thy radiant and godly memory hath struck kings, " +
+              "princes and hierarchs with wonder, for while yet in the flesh thou, like one of " +
+              "the bodiless hosts, didst put to shame the invisible enemies." },
+      { tone: 1, text: "The whole province of Tambov and the holy Monastery of Sarov rejoice, " +
+              "possessed of thy holy relics, through which health is granted unto all that draw " +
+              "nigh to thy precious reliquary in faith. Wherefore, enlightened by thee we cry " +
+              "unto thee, O venerable one: Pray thou that our souls be saved!" },
+    ],
+    litya_glory: {
+      tone: 5,
+      text: "O land of Russia, rejoice this day; and be thou glad, O holy Monastery of Sarov! Ye " +
+            "multitudes of the faithful who have hastened hither today, let us glorify our " +
+            "venerable father, pastor and teacher, the divinely wise guide of those astray, the " +
+            "ready healer of all the afflicted, the great adornment of the Russian land, whom " +
+            "praising thus we say: O venerable Seraphim, save us by thy prayers!",
+    },
+    litya_both_now: {
+      tone: 5,
+      text: "Thou art the temple and portal, * the palace and throne of the King, * O most " +
+            "honored Virgin, * through whom Christ the Lord, my Redeemer, * Who is the Sun of " +
+            "righteousness, * hath revealed Himself unto those who sleep in darkness, * deigning " +
+            "to enlighten those * whom He hath fashioned in His image by His own hand. * " +
+            "Wherefore, O all-hymned one, * as thou hast acquired a mother's boldness before " +
+            "Him, ** entreat Him without ceasing, that our souls be saved.",
+    },
+
+    // ── VESPERS — APOSTICHA ─────────────────────────────────────────────────
+    stichera_aposticha: [
+      { tone: 5, spec_mel: "Rejoice",
+        text: "Rejoice, converser with angels, O venerable Seraphim! Having lived piously on " +
+              "earth, thou didst teach the fear of the Lord unto the many who came to thee. " +
+              "Illumined by the grace of the most holy Spirit, thou didst behold as present " +
+              "things which were to come, and hast filled many that were suffering in spirit " +
+              "with compunction and joy. Wherefore, we beseech thee: Pray to the Lord on behalf " +
+              "of those who honor thee!" },
+      { tone: 5, spec_mel: "Rejoice", verse: "Precious in the sight of the Lord * is the death of His saints.",
+        text: "Rejoice, most wondrous instructor of the erring, who wast vouchsafed to behold in " +
+              "the temple Christ the Lord with angels and archangels. And now, O venerable one, " +
+              "who in the heavens dost take unceasing delight in the vision of Him, do thou pray " +
+              "for us who keep thy memory in faith." },
+      { tone: 5, spec_mel: "Rejoice", verse: "Blessed is the man that feareth the Lord; * in His commandments shall he greatly delight.",
+        text: "Rejoice, O venerable Seraphim, for thou hast commanded all to keep Christ's true " +
+              "faith; and, yearning for the life on high, thou didst disdain wealth, wherefore " +
+              "thou dost now behold the ineffable beauty of heaven and takest delight in the " +
+              "sweet hymnody of the angels. Entreat thou the Lord, that He grant us peace and " +
+              "great mercy." },
+    ],
+    aposticha_glory: {
+      tone: 6,
+      text: "O venerable father Seraphim, who can recount thy labors and sufferings? And what " +
+            "tongue can describe thy harsh life in the wilderness, thy vigils and fasting, yea, " +
+            "and thy life in seclusion, thy silence and unceasing prayer? Thou hast truly been " +
+            "shown to be the adornment of those who fast and a steadfast intercessor before God. " +
+            "Wherefore, we cry unto thee: Rejoice, O model of monastic life! Rejoice, great " +
+            "consolation amid misfortunes and sorrows, and fervent advocate for all! O venerable " +
+            "one, pray thou that our souls be saved!",
+    },
+    aposticha_both_now: {
+      tone: 6,
+      text: "Christ the Lord, my Creator and Redeemer, * Who came forth from thy womb, O most " +
+            "pure one, * and clothed Himself in my nature, * hath freed Adam from the primal " +
+            "curse. * Wherefore, like the angel * we unceasingly cry out to thee, * O most pure " +
+            "one, * who art truly the Mother of God and Virgin: * Rejoice!, O Sovereign Lady, ** " +
+            "the intercession, protection and salvation of our souls!",
+    },
+    troparion: {
+      tone: 4,
+      text: "From thy youth didst thou love Christ, O blessed one; * and, aflame with the desire " +
+            "to serve Him alone, * thou didst struggle in the wilderness in unceasing prayer and " +
+            "labor; * and with compunction of heart having acquired the love of Christ, * thou " +
+            "wast shown to be the beloved favorite of the Mother of God. * Wherefore, we cry unto " +
+            "thee: ** Save us by thy prayers, O our venerable father Seraphim.",
+    },
+    kontakion_ode6: {
+      tone: 2,
+      text: "Having forsaken the beauty of the world and the corruption therein, * thou didst " +
+            "take up thine abode in the Monastery of Sarov. * And having lived there as an " +
+            "angel, thou didst become a path for many to salvation. * Wherefore, Christ hath " +
+            "glorified thee, O father Seraphim, * enriching thee with the gift of healings and " +
+            "miracles. ** Therefore, we cry out to thee: Rejoice, O our venerable father Seraphim!",
+    },
+    kontakion_ode3: "same as kontakion_ode6",
+    ikos: "Having forsaken family and friends, and regarding riches as but dust, thou didst take " +
+          "up thine abode in the wilderness of Sarov; and having struggled against the passions " +
+          "like one of the bodiless hosts, thou wast deemed worthy to stand in the angelic " +
+          "choir. Wherefore, having received spiritual knowledge, grant even us, O venerable " +
+          "one, to chant this unto thee with understanding, saying: Rejoice, O blessed Seraphim, " +
+          "heavenly man and earthly angel! Rejoice, emulator of Christ in thy love! Rejoice, " +
+          "abode of the Holy Spirit! Rejoice, great joy of the despondent! Rejoice, source of " +
+          "healing! Rejoice, sweet consolation for sorrowful souls! Rejoice, calm haven for " +
+          "monks and most wise instructor! Rejoice, boast of the land of Russia! Rejoice, O our " +
+          "venerable father Seraphim!",
+    exapostilarion: {
+      spec_mel: "Hearken, ye women",
+      text: "Come, all ye faithful, let us praise with sacred hymns the venerable Seraphim, " +
+            "wondrous in miracles, the new beacon of the land of Russia, the converser with " +
+            "angels and fervent intercessor before God for those who honor his holy memory!",
+    },
+    matins_exapostilarion_theotokion: {
+      text: "O most pure Theotokos, placing our hope in thee after God, we pray: Beseech Him who " +
+            "was born of thee to grant peace and great mercy unto the world!",
+    },
+
+    // ── Beatitudes (AT LITURGY) ─────────────────────────────────────────────
+    beatitudes_troparia: [
+      { text: "Standing before God with the angels in thy prayer, O venerable one, pray thou for the whole world, that the assaults of the enemy be overcome and that Orthodox Christians be granted victory over their adversaries.",
+        source: "Canon I, Ode III", label: "1", note: "(Twice) per PDF" },
+      { text: "From thy youth thou didst cleave with faith and love unto the Master of the hosts on high, O venerable Seraphim; and, shining forth like the sun in the wilderness of Sarov, thou wast a comfort to those who approached thee in sorrow. Pray thou that we be saved!",
+        source: "Canon I, Ode III", label: "2" },
+      { text: "To those who pray unto thee, thou hast been revealed to be an unshakeable pillar and a refuge for those who have recourse unto the Monastery of Sarov, and abundant grace for those who receive healings.",
+        source: "Canon I, Ode III", label: "3" },
+      { text: "We are all full of sin, but thy prayers, O venerable Seraphim, ascend unto the Lord like fragrant incense. We now pray thee: Calm thou the raging storm of evil impiety in the land of Russia, and entreat the Lord for the salvation of our souls.",
+        source: "Canon II, Ode VI", label: "1" },
+      { text: "Truly blessed wast thou, O venerable Seraphim, having acquired riches through poverty, and through tears, joy, which thou didst abundantly bestow upon those who came to thee. And now emitting rays of miracles, thou dost heal all who have recourse unto thee in faith.",
+        source: "Canon II, Ode VI", label: "2" },
+      { text: "Having dug with thine own hands a well in the wilderness, O venerable one, thou didst give drink unto the thirsty that came unto thee. And now thou healest the diseases of the sick with the water of this well. Truly, the Master hath shown thee forth unto all as a miraculous intercessor and wonderworker, O venerable one.",
+        source: "Canon II, Ode VI", label: "3" },
+      { text: "We confess thee to be indeed the Mother of God, the true Theotokos, for by thy birthgiving we have been delivered from the curse of corruption, by the tender compassion of God, the Lover of mankind, and have been called to life incorruptible.",
+        source: "Canon II, Ode VI", label: "Theotokion" },
+    ],
+  },
+
+  // ── July 20 — Holy Glorious Prophet Elijah (Vigil §2F) ───────────────────
+  // Source: St. Sergius 07-20.pdf. Little Vespers printed → Vigil per §1.1.
+
+  "07-20": {
+    saint: "Holy Glorious Prophet Elijah",
+    oca_primary: true,
+    source_file: "07-20.pdf",
+    rank: "vigil",
+    fekula_section: "2F",
+    has_great_doxology: true,   // PDF: "Great Doxology and Dismissal."
+    has_polyeleos: true,        // PDF: "Polyeleos; and this Magnification..."
+    has_litya: true,            // PDF: "At the Litiya, the Sticheron of the temple..."
+    has_paroemias: true,        // PDF: 3 extensive readings (3 Kings x2, 4 Kings)
+    magnificat_sung: true,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "menaion",
+    note: "Vigil §2F per encoding_rule_v2.md §1.1: Little Vespers explicitly printed, plus " +
+          "Litya, Polyeleos, Great Doxology, and 3 extensive paroemias (3/4 Kingdoms narrative " +
+          "of Elijah's life). Two full canons given (captured only for Beatitudes purposes per " +
+          "convention). Two Exapostilaria given for the one saint (main + 'another " +
+          "Exapostilarion') — both captured. Little Vespers content itself not captured — out " +
+          "of scope, same reasoning as 07-05/07-12/07-19. " +
+          "Re-encoded at corrected scope per v2.8 §6: both full canons and sessional hymns " +
+          "present in PDF but not captured. Beatitudes (4 Ode III of Canon I + 4 Ode VI of " +
+          "Canon II) captured per the PDF's own explicit 'On the Beatitudes' heading.",
+    feast_e: "James 5:10-20",
+    feast_g: "Luke 4:22-30",
+    prokeimenon_tone: 4,
+    prokeimenon_text: "Thou art a priest forever, after the order of Melchizedek.",
+    prokeimenon_stichos: "The Lord said unto my Lord: Sit Thou at My right hand, until I make Thine enemies the footstool of Thy feet.",
+    alleluia_tone: 4,
+    alleluia_verse: "Moses and Aaron among His priests, and Samuel among them that call upon His name.",
+    alleluia_stichos: "A light hath dawned forth for the righteous man and gladness for the upright of heart.",
+    communion_verse: "In everlasting remembrance shall the righteous be; he shall not be afraid of evil tidings.",
+    paroemia_1: "3 Kingdoms — Elijah at the brook Cherith and the widow of Zarephath (3 Kgdms 17:1-24)",
+    paroemia_2: "3 Kingdoms — Elijah on Mt Carmel and at Horeb (3 Kgdms 18:1-19:16, excerpted)",
+    paroemia_3: "4 Kingdoms — Elisha's call and Elijah's ascent (4 Kgdms 2:1-15, excerpted)",
+    // 6 stichera at Great Vespers (3 T1 + 3 T2), then a separate note: "these 3" (T2 group) —
+    // matches "6 Stichera of the holy prophet, 3 in Tone I ... And these 3 ... in Tone II."
+    stichera_lord_i_call_count: 6,
+    stichera_lord_i_call: [
+      { tone: 1, spec_mel: "Joy of the ranks of heaven",
+        text: "O compassionate Word * Who translated Elijah the Tishbite * from the earth in a " +
+              "fiery chariot: * by his supplication save us * who glorify Thee in faith ** and " +
+              "celebrate his divine and salvific memory." },
+      { tone: 1, spec_mel: "Joy of the ranks of heaven",
+        text: "In the earthquake and the gentle breeze * thou didst perceive the coming of God * " +
+              "which of old enlightened thee, O divinely blessed Elijah; * and, seated in a " +
+              "chariot drawn by four steeds, * in amazement thou didst traverse the sky in a " +
+              "strange manner, ** O divinely inspired one." },
+      { tone: 1, spec_mel: "Joy of the ranks of heaven",
+        text: "Aflame with divine zeal, * thou didst slay the shameful priests with a knife; * " +
+              "and with thy tongue thou didst constrain the sky, * that it not rain upon the " +
+              "earth; * and thou didst fill Elisha with a twofold measure of divine grace, ** by " +
+              "the bestowal of thy mantle, O wise Elijah." },
+      { tone: 2, saint: "Elijah & Elisha",
+        text: "Two beacons have shone forth upon the world: the most radiant Elijah and Elisha! " +
+              "The one by the word of God shut up the drops of the rains of the sky, denounced " +
+              "the king, and was borne up to the heavens on a fiery chariot; the other cured " +
+              "bitter waters and, having received a double measure of grace, parted the Jordan's " +
+              "streams. And now, joining chorus with the angels, they pray for us, that our souls " +
+              "be saved." },
+      { tone: 2,
+        text: "The fiery chariot which caught thee up to the heavens on the air as in an " +
+              "earthquake, bestowed upon thee the fiery grace of miracles, O Elijah the Tishbite, " +
+              "rendering thee incorrupt, that thou not see death until thou hadst proclaimed the " +
+              "end to all. Wherefore, come thou, granting us the instruction of thy worthy deeds." },
+      { tone: 2,
+        text: "O inextinguishable beacon of the Church, aflame with divine zeal, prophet Elijah! " +
+              "Thou didst shut up the drops of heaven; and, fed by a raven, thou didst denounce " +
+              "the king, and put the priests to death; fire from heaven didst thou call down, " +
+              "and, having slain the two captains of fifty, thou didst sustain the widow with oil " +
+              "and a small handful of meal, and raise her son from the dead by thy prayer; thou " +
+              "didst kindle fire amid water; the streams of Jordan didst thou traverse on foot; " +
+              "thou didst ascend to the heavens on a fiery chariot, and didst bestow upon Elisha " +
+              "a double measure of grace. Pray thou unceasingly to God, that our souls be saved!" },
+    ],
+    stichera_glory: {
+      tone: 6,
+      text: "Come, ye assemblies of the Orthodox, and, gathering together in the most honored " +
+            "temple of the divinely eloquent prophets today, with psalmody let us chant an " +
+            "harmonious hymn unto Christ our God Who hath glorified them; and with joy and " +
+            "gladness let us cry out: Rejoice, O Elijah of great renown, earthly angel and " +
+            "heavenly man! Rejoice, O most honored Elisha, who received from God a double " +
+            "measure of grace! Rejoice, ye fervent helpers, intercessors and physicians of the " +
+            "souls and bodies of Christ-loving people! From every hostile attack and evil " +
+            "circumstance, deliver those who with faith celebrate your most solemn memory!",
+    },
+    lic_theotokion: {
+      tone: 6,
+      text: "Who doth not call thee blessed, O most holy Virgin? * Who will not hymn thy most " +
+            "pure birthgiving? * For the only-begotten Son Who hath shone forth timelessly from " +
+            "the Father, * came forth, ineffably incarnate, from thee, O pure one; * By nature " +
+            "he is God, by nature for our sakes, he hath become a man * not divided into two " +
+            "Hypostases, * but known in two natures without commingling. * Him do thou beseech, " +
+            "O pure and most blessed one, ** that our souls find mercy!",
+    },
+
+    // ── VESPERS — LITIYA ────────────────────────────────────────────────────
+    litya_stichera: [
+      { tone: 4, text: "O blessed prophet, thou wast a partaker of an incorrupt union in God my " +
+              "Savior; parting the Jordan by prayer, thou didst cross it as on dry land, and " +
+              "wast caught up on a fiery chariot to the heavens, leaving Elisha a double measure " +
+              "of grace. Wherefore, we beseech thee: though thou hast been caught up in the body, " +
+              "yet cut not asunder thyself from us in spirit, and ever entreat the Lord, that our " +
+              "souls be saved." },
+      { tone: 4, text: "O divine prophet, thou wast shown to be a luminous cloud, letting fall a " +
+              "shower of divine knowledge upon all the faithful, richly giving drink with the " +
+              "wine of gladness unto all who with faith have recourse to thy most divine temple. " +
+              "Wherefore, we entreat thee, O divine prophet and God-seer Elijah: grant health to " +
+              "our Orthodox hierarchs, and great mercy to our souls." },
+      { tone: 4, text: "Thou didst subject the flesh to the governing mind, O divine prophet " +
+              "Elijah, diligently ascending in thy heart as by steps. Wherefore, having " +
+              "denounced the unrighteous king, and pronounced the proscription of the wrath of " +
+              "God, with a knife thou didst destroy the shameful priests as unrighteous, and " +
+              "hast clearly taught all to cry aloud: \"Truly there is one God: Him that Elijah " +
+              "hath preached!\"" },
+    ],
+    litya_glory: {
+      tone: 6,
+      text: "O, the commands of the impious king! O, the fast full of blood and iniquity! for " +
+            "Jezebel proclaimed a fast, that she might commit murder, and straightway Naboth the " +
+            "Israelite was slain. And what didst thou say to these things, O prophet? \"Thus " +
+            "saith the Lord: Inasmuch as thou hast unjustly slain a man of Israel; thus shall thy " +
+            "blood also be spilled, and harlots shall wash themselves in thy blood!\" O Christ, " +
+            "by the prayers of Thy prophet and preacher, deliver our souls from such inhumanity, " +
+            "since Thou lovest mankind.",
+    },
+    litya_both_now: {
+      tone: 6,
+      text: "O Theotokos, thou art the true vine * that hast budded forth for us the Fruit of " +
+            "life. * Thee do we entreat: ** Pray thou, O Lady, with the holy apostles, that He " +
+            "have mercy upon our souls.",
+    },
+
+    // ── VESPERS — APOSTICHA ─────────────────────────────────────────────────
+    stichera_aposticha: [
+      { tone: 8, spec_mel: "O most glorious wonder",
+        text: "Elijah, the most wondrous prophet, * having illumined his mind with radiance, * " +
+              "became wholly divine, * and, beholding the unjust judgment of the impious king, * " +
+              "was greatly displeased. * Wherefore, by the judgment of God he sent condemnation " +
+              "upon him; * and likewise the queen, merciless and avaricious, * he committed to " +
+              "the judgment of God. ** By the prayers of Thy prophet Elijah, O Christ, save us, " +
+              "as Thou art merciful!" },
+      { tone: 8, spec_mel: "O most glorious wonder", verse: "Moses and Aaron among His priests, * and Samuel among those who call upon His name.",
+        text: "\"How long, O Lord, will the way of the impious prosper?\" * thou didst say, O " +
+              "prophet. * \"Thou hast planted, and they have uprooted, * and have brought forth " +
+              "the fruit of iniquity; * truly, they themselves have perished wickedly * through " +
+              "their impiety. * They cry to Thee, but Thou hearkenest not. * Why hast Thou shown " +
+              "me the godlessness of the judges ** that transgress the Law?\"" },
+      { tone: 8, spec_mel: "O most glorious wonder", verse: "Thou art a priest forever, * after the order of Melchizedek.",
+        text: "O great Elijah, * honored among the prophets, * by thy prayers deliver from " +
+              "misfortunes and tribulations, * and from the incursions of the pitiless foe, * " +
+              "those who celebrate * thine honored ascent; * that we, the Christian people, * " +
+              "may ever honor and bless thee, ** O most glorious prophet." },
+    ],
+    aposticha_glory: {
+      tone: 6,
+      text: "O prophet, preacher of Christ, thou dost never depart from the Throne of Majesty, " +
+            "and ever intercedest for everyone afflicted with sickness. Ministering in the " +
+            "Highest, glorified in all places: thou dost bless the whole world. Ask thou for the " +
+            "cleansing of our souls.",
+    },
+    aposticha_both_now: {
+      tone: 6,
+      text: "Christ the Lord, my Creator and Redeemer, * Who came forth from thy womb, O most " +
+            "pure one, * and clothed Himself in my nature, * hath freed Adam from the primal " +
+            "curse. * Wherefore, like the angel * we unceasingly cry out to thee, * O all-pure " +
+            "one, * who art truly the Mother of God and Virgin: * Rejoice!, O Sovereign Lady, ** " +
+            "the intercession, protection and salvation of our souls!",
+    },
+    troparion: {
+      tone: 4,
+      text: "The angel in the flesh, and foundation of the prophets, * the second forerunner of " +
+            "the Coming of Christ, * the glorious Elijah from on High * sent down grace upon " +
+            "Elisha * to dispel infirmities and to cleanse lepers. * Wherefore, he poureth forth " +
+            "healings ** upon those who honor him.",
+    },
+    kontakion_ode6: {
+      tone: 2,
+      text: "O prophet, foreseer of the mighty works of our God, * Elijah of great renown, * who " +
+            "by thy voice didst restrain the cloud of rain: * on our behalf entreat thou Him ** " +
+            "who alone is the Lover of mankind.",
+    },
+    kontakion_ode3: "same as kontakion_ode6",
+    ikos: "Beholding the great iniquity of mankind and the great love of God for them, the " +
+          "prophet Elijah was troubled and grew wroth; and he addressed pitiless words to the " +
+          "Merciful One, crying aloud: Be Thou angered against those who deny Thee, O righteous " +
+          "Judge! But he could not move the compassion of the Good One to torment those who " +
+          "deny Him, for He who alone is the Lover of mankind doth ever await the repentance of all.",
+    // Two Exapostilaria given for this one saint.
+    exapostilarion: {
+      spec_mel: "O immutable Light",
+      text: "The Light Who showed thee to be a charioteer traversing the sky on a fiery chariot " +
+            "drawn by four steeds, O Elijah, did not consume thee utterly; for with thy fiery " +
+            "tongue thou didst draw fire down and didst dry it up with showers.",
+    },
+    exapostilarion_2: {
+      note: "'Glory ..., another Exapostilarion' per PDF — a second exapostilarion for the same feast.",
+      text: "Thou wast caught up on a fiery chariot to the circles of heaven; whence looking " +
+            "down, as thou art close to the Light, grant noetic light unto us that now celebrate " +
+            "thy holy memory with faith.",
+    },
+    matins_exapostilarion_theotokion: {
+      text: "Thou wast the author of the blessings bestowed by God on the world, O Theotokos. " +
+            "And do thou now entreat the easily-placated God for the salvation of all.",
+    },
+
+    // ── Beatitudes (AT LITURGY) ─────────────────────────────────────────────
+    beatitudes_troparia: [
+      { text: "He, that alone sustaineth every living thing by His good will, through a raven provided thee with a banquet as a chosen guest, O Prophet. To Him do we all cry aloud: Thou art our God, and there is none holy save Thee, O Lord!",
+        source: "Canon I, Ode III", label: "1", note: "(Twice) per PDF" },
+      { text: "Grace be to the Benefactor and Guardian Who, in His ineffable providence, nourished the widow and the prophet. To Him do we all cry out: Thou art our God, and none is holy save Thee, O Lord!",
+        source: "Canon I, Ode III", label: "2" },
+      { text: "O thou who didst forbid the rain-laden clouds to pour forth, when the widow of Zarephath was deprived of food, thou didst cause the remnant of her food to increase continually; and didst cry aloud: None is holy save Thee, O Lord!",
+        source: "Canon I, Ode III", label: "3" },
+      { text: "A hymn of supplication do thou offer unto God, O most honored prophet, on behalf of all who have recourse to thy divine temple, that we may honor thee as a great helper.",
+        source: "Canon II, Ode VI", label: "1" },
+      { text: "The mortal mind doth not suffice to praise thy life as is meet, O prophet; for, beholding the transfiguration of Christ, thou wast exalted far above the noetic ranks.",
+        source: "Canon II, Ode VI", label: "2" },
+      { text: "He who is the Lord and Creator of all hath appeared to us in accordance with thy prophecy, O blessed Elijah, calling all to the knowledge of Him, for He is the Lover of mankind.",
+        source: "Canon II, Ode VI", label: "3" },
+      { text: "O Mary, pure vessel of virginity: cleanse thou my mind of the gloom of the passions, and fill my heart with righteousness, O all-immaculate one.",
+        source: "Canon II, Ode VI", label: "Theotokion" },
+    ],
+  },
+
+  // ── July 21 — Ven. Symeon Fool-for-Christ & Ven. John (Double §2B) + Prophet Ezekiel ──
+  // Source: St. Sergius 07-21.pdf. 6 stichera (3+3) → Simple rank per §1.1. Symeon & John
+  // share one joint troparion; Ezekiel has his own, separate troparion — but the PRINT ORDER
+  // at Vespers/Liturgy places Ezekiel's troparion first (main slot) and Symeon & John's
+  // second (Glory slot), the reverse of the LIC stichera order (Symeon & John's 3 first) and
+  // of the title's own ordering. Kontakion position confirms Symeon & John as "first saint"
+  // for Hours-routing (their joint kontakion sits after Ode VI); Ezekiel's own kontakion sits
+  // after Ode III. Flagged as printed, not silently reconciled.
+
+  "07-21": {
+    saint: "Ven. Symeon the Fool-for-Christ & Ven. John, his Companion, & Prophet Ezekiel",
+    oca_primary: true,
+    source_file: "07-21.pdf",
+    rank: "simple",
+    fekula_section: "2B",
+    has_great_doxology: false,
+    has_polyeleos: false,
+    has_litya: false,
+    has_paroemias: false,
+    magnificat_sung: false,
+    matins_format: "god_is_the_lord",
+    aposticha_source: "octoechos",
+    note: "Double commemoration (§2B) plus a third, separately-hymned prophet in the same " +
+          "service: 6 stichera at LIC (3 Symeon/John T4 + 3 Ezekiel T8), confirmed Simple rank " +
+          "per encoding_rule_v2.md §1.1. Troparion print order (Ezekiel main slot, Symeon/John " +
+          "Glory slot) is the REVERSE of the LIC stichera order and the title's own ordering " +
+          "(Symeon/John listed first) — flagged, not reconciled. Kontakion position settles the " +
+          "Hours-routing question: Symeon & John's joint kontakion sits after Ode VI (→ 1st/6th " +
+          "Hour, kontakion_ode6) and Ezekiel's own sits after Ode III (→ 3rd/9th Hour, " +
+          "kontakion_ode3) — genuinely distinct texts, not 'same as'. troparion = Ezekiel's " +
+          "(print-first); troparion_2 = Symeon & John's joint troparion (stock 'Troparion of " +
+          "the Venerable Fathers' text, same as 06-12/07-07). No separate Vespers Aposticha " +
+          "section, no Ikos for either commemoration, and no Liturgy propers at all — PDF ends " +
+          "after the Liturgy Troparia/Kontakia; Octoechos governs. " +
+          "Re-encoded at corrected scope per v2.8 §6: full canon present in PDF but not captured.",
+    feast_e: "absent — §2B, readings from Oktoechos",
+    feast_g: "absent — §2B, readings from Oktoechos",
+    stichera_lord_i_call_count: 6,
+    stichera_lord_i_call: [
+      { tone: 4, spec_mel: "Thou hast given a sign", saint: "Symeon & John",
+        text: "Having made your abode in the wilderness * in oneness of mind, O blessed ones, * " +
+              "by fasting, prayer and radiant visions * ye manifestly caused the uprisings * of " +
+              "the flesh to fall away, * and made your hearts splendid, * rendering them " +
+              "pleasing through spiritual surrender, * O Symeon and John, ** confirmation of monastics." },
+      { tone: 4, spec_mel: "Thou hast given a sign", saint: "Symeon",
+        text: "With foolish behavior * thou didst render foolish the malice of the wise, O " +
+              "blessed father, * working most glorious miracles, * causing signs to show forth, " +
+              "* expelling demons, * and illumining those who are caught in the night of sin. * " +
+              "And in the midst of tumults * thou didst preserve thy mind untroubled, O Symeon, " +
+              "** receiving dispassion from God." },
+      { tone: 4, spec_mel: "Thou hast given a sign", saint: "Symeon",
+        text: "Humble in wisdom and merciful, * God-loving and full of love * wast thou revealed " +
+              "to be, O divinely inspired one, * compunctionate and meek, * going about the " +
+              "earth like an angel, * possessed of a heavenly life. * Wherefore, the Father, the " +
+              "Son and the Holy Spirit * rested in thee, O blessed Symeon, ** as in a place of purity." },
+      { tone: 8, spec_mel: "O most glorious wonder", saint: "Ezekiel",
+        text: "O divinely blessed and wondrous Ezekiel, * having cleansed soul and body, * and " +
+              "thy mind with purity, * thou didst noetically behold * the ineffable glory of the " +
+              "Lord * which is more brilliant than a lightning-flash, * passing understanding, * " +
+              "for He surpasseth and exceedeth the divine seraphim, ** and is hymned by ten " +
+              "thousand mouths." },
+      { tone: 8, spec_mel: "O most glorious wonder", saint: "Ezekiel",
+        text: "O God-pleasing Ezekiel, * as an emulator of Christ * thou didst endure the " +
+              "oppression of the alien's debt, cruelly tortured, * prefiguring the salvation and " +
+              "deliverance * which were to come unto the world * through the precious Cross, * O " +
+              "thou who wast revealed by God. * Pray thou that all who hymn thee now ** may " +
+              "partake thereof." },
+      { tone: 8, spec_mel: "O most glorious wonder", saint: "Ezekiel",
+        text: "O divinely inspired Ezekiel, * receiving a scroll * from the hands of the " +
+              "Almighty, * thou didst become a God-seeing theologian, * manifest in sacred " +
+              "manner * and godly in appearance, O glorious one, * whose lips were truly sweeter " +
+              "than honey, * imparting wisdom ** unto the enraged synagogue." },
+    ],
+    stichera_glory: {
+      tone: 8,
+      text: "Rejoice, enlightenment of souls, * forgiveness of the sinful, * correction of the " +
+            "negligent! * Rejoice, consolation, joy and helper of the sorrowful! * Rejoice, O " +
+            "blessed one, * thou healing of the souls of the infirm! * Rejoice, mediator and " +
+            "reconciler of mankind to God, * O pure one who art more holy ** than all the seraphim!",
+    },
+    lic_stavrotheotokion: {
+      tone: 8,
+      text: "\"What is this sight which I see, * which mine eyes behold, O Master? * How is it " +
+            "that Thou Who dost sustain all creation, * art lifted up upon the Tree and diest, * " +
+            "granting life unto all?\" * thus said the Theotokos weeping, * upon seeing God and " +
+            "man * Who had shone forth ineffably from her ** hanging upon the Cross.",
+    },
+    aposticha_glory_absent: true,  // no separate Vespers Aposticha section in the PDF at all
+    // Print order: Ezekiel's troparion is in the main slot (first-printed); Symeon & John's
+    // joint troparion is in the Glory slot (second-printed) — see note re: the reversal.
+    troparion: {
+      tone: 2, saint: "Ezekiel",
+      text: "Celebrating the memory of Thy prophet Ezekiel, O Lord, * through him do we entreat " +
+            "Thee: ** Save Thou our souls!",
+    },
+    troparion_2: {
+      tone: 4, saint: "Symeon & John",
+      text: "O God of our fathers, * ever deal with us according to Thy meekness. * Take not Thy " +
+            "mercy from us, * but by the prayers of these saints ** direct our life in peace.",
+    },
+    // kontakion_ode6 = Symeon & John (joint, after Ode VI) → 1st & 6th Hour.
+    kontakion_ode6: {
+      tone: 2, saint: "Symeon & John",
+      spec_mel: "The steadfast",
+      text: "Let us praise the God-bearing Symeon, * the peer of the angels, * who appeared in " +
+            "the flesh as one incorporeal, * and with him the ever-memorable John: * for with " +
+            "faith and love * they entreat the Lord unceasingly ** on behalf of us all.",
+    },
+    // kontakion_ode3 = Ezekiel (after Ode III) → 3rd & 9th Hour. Genuinely distinct, not "same as".
+    kontakion_ode3: {
+      tone: 4, saint: "Ezekiel",
+      spec_mel: "Thou hast appeared today",
+      text: "Thou hast been revealed to be a prophet of God, * O wondrous Ezekiel, * and hast " +
+            "proclaimed unto all the incarnation of the Lord, * the Lamb and Creator, the Son of " +
+            "God ** Who hath revealed Himself throughout the ages.",
+    },
+    ikos: null,           // NOT IN PDF, for either commemoration
+    exapostilarion: null, // NOT IN PDF
+  },
 };
 
 export default JULY_MENAION;
