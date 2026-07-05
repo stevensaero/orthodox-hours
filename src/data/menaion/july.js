@@ -892,7 +892,13 @@ const JULY_MENAION = {
           "III); flagged rather than silently resolved. " +
           "Re-encoded at corrected scope per v2.8 §6: full canon (Odes I/IV/V/VII/VIII/IX) and " +
           "sessional hymns present in PDF but not captured. Beatitudes (4 Ode III + 4 Ode VI) " +
-          "captured per the PDF's own explicit 'On the Beatitudes' heading.",
+          "captured per the PDF's own explicit 'On the Beatitudes' heading. " +
+          "OCA primacy: oca.org's Lives-of-the-Saints page for July 5 lists Athanasius first, " +
+          "Sergius's Uncovering-of-Relics second — but OCA's own Lectionary of Daily Readings " +
+          "explicitly labels the shared Venerable-saint reading pair (Galatians 5:22-6:2 / Luke " +
+          "6:17-23) '(either Saint)', treating Athanasius and Sergius as co-equal alternatives " +
+          "rather than a strict primary/secondary. Both entries carry oca_primary: true here " +
+          "for that reason — see 07-05E's note for the same citation.",
     feast_e: "Galatians 5:22-6:2 (§213)",
     feast_g: "Luke 6:17-23 (§24)",
     prokeimenon_tone: 7,
@@ -1132,7 +1138,12 @@ const JULY_MENAION = {
           "service. A separate, more elaborate standalone Elizabeth-only proper is also printed " +
           "for this same date (07-05F, Vigil rank) — both are included as separate array " +
           "entries per source fidelity; which is actually used is Bill's rubrical decision. " +
-          "Re-encoded at corrected scope: full canon present in PDF but not captured.",
+          "Re-encoded at corrected scope: full canon present in PDF but not captured. " +
+          "OCA divergence: neither oca.org's Lives-of-the-Saints page nor its Lectionary of " +
+          "Daily Readings lists Elizabeth, Barbara, or the Alapaevsk martyrs for July 5, 2026 " +
+          "— this commemoration is present in the St. Sergius Menaion PDF but absent from " +
+          "OCA's own calendar for this date. oca_primary: false reflects that absence, not a " +
+          "ranking below Athanasius/Sergius (who are themselves co-equal — see their notes).",
     feast_e: "Romans 8:28-39 (§99)",
     feast_g: "Matthew 10:16-22 (§36)",
     prokeimenon_tone: 4,
@@ -1250,7 +1261,7 @@ const JULY_MENAION = {
     // this same feast within its own hymnography ("Today we celebrate the feast of the
     // venerable Sergius in honor of the translation of his relics").
     saint: "Uncovering of the Relics of Ven. Sergius of Radonezh",
-    oca_primary: false,
+    oca_primary: true,
     source_file: "07-05E.pdf",
     rank: "vigil",
     fekula_section: "2F",
@@ -1268,7 +1279,13 @@ const JULY_MENAION = {
           "Ode III kontakion. Little Vespers content itself not captured, consistent with " +
           "prior Vigil-rank entries this session. Re-encoded at corrected scope: full canon " +
           "present in PDF but not captured. Beatitudes (4 Ode III + 4 Ode VI) captured per the " +
-          "PDF's own explicit 'On the Beatitudes' heading.",
+          "PDF's own explicit 'On the Beatitudes' heading. " +
+          "OCA primacy corrected from oca_primary: false (originally set to defer to " +
+          "Athanasius per the Lives-of-the-Saints page listing order). oca.org's Lectionary of " +
+          "Daily Readings for July 5, 2026 labels the shared reading pair (Galatians 5:22-6:2 / " +
+          "Luke 6:17-23) '(either Saint)' rather than assigning it to one saint over the other " +
+          "— Athanasius and Sergius are co-equal alternatives on OCA's own calendar, not a " +
+          "primary/secondary pair. Both entries now carry oca_primary: true.",
     feast_e: "Galatians 5:22-6:2 (§213)",
     feast_g: "Luke 6:17-23 (§24)",
     prokeimenon_tone: 7,
@@ -1542,7 +1559,10 @@ const JULY_MENAION = {
           "Six-Stichera). Troparion and Kontakion are the same texts as 07-05B's Elizabeth " +
           "material. Re-encoded at corrected scope: two full canons present in PDF but not " +
           "captured. Beatitudes (4 Ode III of Canon I + 4 Ode VI of Canon II) captured per the " +
-          "PDF's own explicit 'On the Beatitudes' heading.",
+          "PDF's own explicit 'On the Beatitudes' heading. " +
+          "OCA divergence: same as 07-05B — Elizabeth is absent from oca.org's Lives-of-the-" +
+          "Saints page and Lectionary for July 5, 2026. oca_primary: false reflects that " +
+          "absence from OCA's calendar, not a ranking judgment relative to 07-05B.",
     feast_e: "Romans 8:28-39 (§99)",
     feast_g: "John 15:17-16:2 (§52)",
     prokeimenon_tone: 4,
