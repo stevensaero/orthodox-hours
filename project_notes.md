@@ -1,5 +1,33 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.25.5** | **Tone Trainer: v0.25.30** | Last synced: July 5, 2026
+**Tool version: v0.25.6** | **Tone Trainer: v0.25.30** | Last synced: July 5, 2026
+
+**Session July 5, 2026 (cont.) — Missed-commemoration audit, Batch 3 of N (v0.25.6).**
+07-24, 07-26, 07-27 — 6 more missed commemorations added.
+
+- **07-24** gains 07-24A (Holy Martyrs Boris & Gleb, Vigil §2F — the first canonized Russian
+  saints, a major miss) and 07-24B (New-Hieromartyr Maximus Sandovich, Vigil §2F — 20th-century
+  Lemko protomartyr, OCA status unverified) alongside the existing Martyr Christina.
+- **07-26** gains 07-26A (Ven. Moses of the Carpathians, Polyeleos §2E — two genuinely distinct
+  proper kontakia for one saint, both recorded) and 07-26B (Hieromartyr Hermolaus, Simple §2A —
+  found during this session's own Drive audit, not on the original list) alongside the existing
+  Ven. Martyr Paraskeva.
+- **07-27** gains 07-27A (Martyr & Unmercenary Healer Panteleimon, Six-Stichera §2C — one of
+  Orthodoxy's most widely venerated healing saints) alongside the existing Seven Enlighteners.
+
+**07-26B is a new finding, not from the original audit list:** while pulling 07-26's sources
+this batch, the Drive search surfaced Hermolaus (07-26B.pdf) alongside the already-known
+07-26A — a gap the original full-month sweep missed. Worth keeping in mind that the "13 dates
+affected" count from the original audit may still be a floor, not a ceiling, for dates not yet
+re-opened this closely.
+
+**Verified beyond gate+build again:** direct-loaded all three array structures — 07-24 3
+entries, 07-26 3 entries, 07-27 2 entries, matching expected counts exactly.
+
+**Remaining:** Batch 4 — 07-28 (last one). Then separately: 07-13's movable-feast architecture,
+and the same audit sweep for May and June (worth budgeting extra care given 07-26B's discovery
+that even "already audited" dates can still hide more).
+
+---
 
 **Session July 5, 2026 (cont.) — Missed-commemoration audit, Batch 2 of N (v0.25.5).**
 07-10, 07-14, 07-15 — 5 more missed commemorations added, continuing the batches-of-three plan.
