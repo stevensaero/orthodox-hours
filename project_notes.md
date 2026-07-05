@@ -1,5 +1,57 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.25.1** | **Tone Trainer: v0.25.30** | Last synced: July 5, 2026
+**Tool version: v0.25.2** | **Tone Trainer: v0.25.30** | Last synced: July 5, 2026
+
+**Session July 5, 2026 (cont.) — Vespers prokeimenon override bug + kathisma-suppression bug,
+same root cause, both fixed (v0.25.2).**
+Surfaced by Bill's question about why the multiple July 4 Vespers service options weren't all
+showing the Saturday Tone 6 prokeimenon. Root cause: `assembleVespers()` pulled
+`menaionEntry.prokeimenon_text` into the Vespers slot for any `rank === 'polyeleos' || 'vigil'`
+entry. That field is the **Divine Liturgy** prokeimenon (Fekula §2E: "Prokeimenon: From the
+Menaion, only" — under the Divine Liturgy heading, not Vespers); Fekula's Vespers sections for
+both Polyeleos (§2E) and Vigil (§2F) keep this generic (§2F says outright: "Prokeimenon of the
+day"). Confirmed empirically: zero Menaion entries across May/June/July carry a distinct
+Vespers-specific prokeimenon.
+
+**Correct rule** (OCA Liturgics, "Prokeimenon of the Day"; MCI, "The Entrance and Readings of
+Vespers"): the day's ordinary prokeimenon is replaced by a Great Prokeimenon only at Vespers on
+eight named Feasts of the Lord, and even then never on a Saturday evening — the Saturday Great
+Prokeimenon is never displaced, even by a genuine Feast of the Lord.
+
+**New data model:** `forLord` (boolean) and `greatProkeimenon` (object) added directly to the
+existing `FIXED_GREAT_FEASTS` / `MOVABLE_GREAT_FEASTS` tables in `hours-tool.jsx` — single
+source of truth, no parallel lookup list. Deliberately two distinct facts, not one: `forLord`
+is true for 9 feasts (Nativity, Theophany, Transfiguration, Elevation of the Cross,
+Circumcision/St Basil, Meeting of the Lord, Palm Sunday, Ascension, Pentecost), but
+`greatProkeimenon` is only set on 6 of those — Meeting of the Lord, Palm Sunday, and
+Circumcision/St Basil are genuinely Feasts of the Lord but confirmed absent from both
+enumerated Great Prokeimenon lists. Annunciation deliberately left unclassified (dual
+Lord/Theotokos; Fekula already flags it needs special Typicon handling).
+
+**Second bug found and fixed from the same root cause:** `getKathismaForVespers()`'s
+`isGreatFeastOfLord` flag was `season === "great_feast" || isPentKathismaSuppressed` — doesn't
+distinguish Lord from Theotokos feasts either (`rank: "great"` is set identically for both in
+the feast tables). The actual rubric (OCA Office of Vespers, 2021) is Lord-specific: "Blessed
+is the man...is not sung on the eves of great feasts of the Lord." Theotokos Great Feasts
+(Nativity of the Theotokos, Entry, Dormition) were very likely incorrectly suppressing the
+kathisma. Now gated on `feastPeriod.feast.forLord` too.
+
+**Known related gap, NOT fixed this session:** `isGreatFeastOfLordForVigil` (~line 4665,
+governs the ×3 vs ×2+1 troparion pattern at Vigil rank) is hardcoded to a `false` placeholder
+with a comment reading "will be refined when Lord-feast dates are encoded." That data now
+exists (`forLord`). Revisit when Vigil-rank Great Feasts of the Lord are actually encoded
+(August's Transfiguration will be the first test case).
+
+**Impact:** zero behavior change for May/June/July — no Great Feast of either kind falls in
+those three months, so both fixes are pure bug removal for already-reviewed dates. Matters
+starting with August (Transfiguration) and September (Elevation of the Cross; Nativity of the
+Theotokos for the kathisma fix specifically).
+
+**Gate:** `vite build` clean, pointing-paths and sunday-vespers 71/71 PASS, zero new warnings.
+`check-skeleton.mjs`'s pre-existing 58 Octoechos tone1 gaps confirmed unrelated to this change
+(identical failure with and without it, verified via `git stash`) — standing known issue,
+out of scope here.
+
+---
 
 **Session July 5, 2026 — MISSED-COMMEMORATION AUDIT & FIX, Batch 1 of N (v0.25.1).**
 A Drive audit (prompted by Bill's question about "4 files for 07-05") found that this whole
