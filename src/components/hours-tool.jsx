@@ -473,6 +473,32 @@ function refToScriptureHref(ref, service, date) {
 // Fixed feasts: month/day in the Gregorian (New Style) calendar
 // Movable feasts: offset in days from Pascha
 
+// ─── GREAT PROKEIMENA — Feasts of the Lord ─────────────────────────────────
+// Fixed, invariable texts — never saint-specific, never read from a per-date
+// Menaion field. Referenced via feastPeriod.feast.greatProkeimenon on the
+// FIXED_GREAT_FEASTS / MOVABLE_GREAT_FEASTS entries below (must be declared
+// first — these tables reference them at module init).
+// Source: OCA Liturgics, "Prokeimenon of the Day"
+// (oca.org/liturgics/outlines/prokeimenon-of-the-day); MCI, "The Entrance
+// and Readings of Vespers" (mci.archpitt.org).
+const GREAT_PROKEIMENON_CROSS_GROUP = {
+  tone: 7,
+  text: "But our God is in the heavens; He hath done whatsoever He hath willed.",
+  verses: [
+    "When Israel came out of Egypt, the house of Jacob from a barbarous people.",
+    "Judah became His sanctuary, Israel His dominion.",
+    "What aileth thee, O sea, that thou didst flee? And thou, Jordan, that thou wast driven back?",
+  ],
+  // Exaltation of the Cross, Theophany, Bright Monday, Ascension, Transfiguration
+};
+
+const GREAT_PROKEIMENON_PASCHA_GROUP = {
+  tone: 7,
+  text: "Who is so great a God as our God? Thou art the God Who alone doest wonders.",
+  verses: ["Thou hast made known Thy power among the peoples."],
+  // Nativity, Pascha, Thomas Sunday, Pentecost
+};
+
 const FIXED_GREAT_FEASTS = [
   // September
   {
@@ -483,6 +509,7 @@ const FIXED_GREAT_FEASTS = [
   {
     key: "elevation_cross", name: "Elevation of the Holy Cross",
     month: 9, day: 14, forefeast: 1, afterfeast: 7, rank: "great",
+    forLord: true, greatProkeimenon: GREAT_PROKEIMENON_CROSS_GROUP,
     note: "One of the Twelve Great Feasts. Forefeast: Sep 13. Apodosis: Sep 21."
   },
   // November
@@ -495,23 +522,27 @@ const FIXED_GREAT_FEASTS = [
   {
     key: "nativity_christ", name: "Nativity of Christ",
     month: 12, day: 25, forefeast: 5, afterfeast: 6, rank: "great",
+    forLord: true, greatProkeimenon: GREAT_PROKEIMENON_PASCHA_GROUP,
     note: "One of the Twelve Great Feasts. Forefeast: Dec 20-24. Apodosis: Dec 31."
   },
   // January
   {
     key: "circumcision", name: "Circumcision of the Lord / St Basil the Great",
     month: 1, day: 1, forefeast: 0, afterfeast: 0, rank: "vigil",
+    forLord: true, // no greatProkeimenon — absent from the enumerated OCA Liturgics list
     note: "Falls within the Nativity afterfeast period. Vigil rank. No forefeast or afterfeast of its own."
   },
   {
     key: "theophany", name: "Theophany (Epiphany)",
     month: 1, day: 6, forefeast: 4, afterfeast: 8, rank: "great",
+    forLord: true, greatProkeimenon: GREAT_PROKEIMENON_CROSS_GROUP,
     note: "One of the Twelve Great Feasts. Forefeast: Jan 2-5. Apodosis: Jan 14."
   },
   // February
   {
     key: "meeting_lord", name: "Meeting of the Lord (Presentation)",
     month: 2, day: 2, forefeast: 1, afterfeast: 7, rank: "great",
+    forLord: true, // no greatProkeimenon — absent from the enumerated OCA Liturgics list
     note: "One of the Twelve Great Feasts. Forefeast: Feb 1. Apodosis: Feb 9. " +
           "Apodosis may be curtailed if it conflicts with Lent."
   },
@@ -519,6 +550,9 @@ const FIXED_GREAT_FEASTS = [
   {
     key: "annunciation", name: "Annunciation",
     month: 3, day: 25, forefeast: 1, afterfeast: 1, rank: "great",
+    // Deliberately no forLord/greatProkeimenon — traditionally a dual Lord/Theotokos
+    // feast (the Incarnation, commemorated at Mary). Flag for Bill's rubrical
+    // decision if either classification ever becomes load-bearing here.
     note: "One of the Twelve Great Feasts. Forefeast: Mar 24. Apodosis: Mar 26. " +
           "ALWAYS falls in Lent in the current era. Special rules apply per Typicon. " +
           "If it falls on Holy Saturday or Bright Monday, the observance shifts. " +
@@ -528,6 +562,7 @@ const FIXED_GREAT_FEASTS = [
   {
     key: "transfiguration", name: "Transfiguration of the Lord",
     month: 8, day: 6, forefeast: 1, afterfeast: 7, rank: "great",
+    forLord: true, greatProkeimenon: GREAT_PROKEIMENON_CROSS_GROUP,
     note: "One of the Twelve Great Feasts. Forefeast: Aug 5. Apodosis: Aug 13."
   },
   {
@@ -563,18 +598,25 @@ const MOVABLE_GREAT_FEASTS = [
   {
     key: "palm_sunday", isSunday: true, name: "Palm Sunday (Entry into Jerusalem)",
     offset: -7, forefeast: 1, afterfeast: 0, rank: "great",
+    forLord: true, // no greatProkeimenon — absent from the enumerated OCA Liturgics list
     note: "One of the Twelve Great Feasts. Forefeast: Lazarus Saturday (Pascha−8). " +
           "No afterfeast — Holy Week begins immediately."
   },
   {
     key: "ascension", name: "Ascension of the Lord",
     offset: 39, forefeast: 1, afterfeast: 8, rank: "great",
+    forLord: true, greatProkeimenon: GREAT_PROKEIMENON_CROSS_GROUP,
+    // Documents the classification here; the Vespers runtime path for Ascension
+    // still goes through pentEntry.vespers_prokeimenon in pentecostarion.js,
+    // which already takes priority and is unchanged by this patch.
     note: "One of the Twelve Great Feasts. Forefeast: day before (Pascha+38). " +
           "Apodosis: Pascha+47 (Friday before Pentecost week)."
   },
   {
     key: "pentecost", name: "Pentecost (Holy Trinity)",
     offset: 49, forefeast: 1, afterfeast: 6, rank: "great",
+    forLord: true, greatProkeimenon: GREAT_PROKEIMENON_PASCHA_GROUP,
+    // Documentation only, same caveat as ascension above — pentEntry governs at runtime.
     note: "One of the Twelve Great Feasts. Forefeast: Pascha+48 (Saturday). " +
           "Apodosis: Pascha+55 (Friday before All Saints Sunday). " +
           "The week of All Saints begins the ordinary season."
@@ -1440,7 +1482,15 @@ function getKathismaForVespers(liturgicalData, rank, hadVigil = false, pentEntry
   const PENT_KATHISMA_SUPPRESSED = ["ascension"]; // Fekula §4B12
   const isPentKathismaSuppressed = pentEntry &&
     PENT_KATHISMA_SUPPRESSED.includes(pentEntry.hours_format);
-  const isGreatFeastOfLord = season === "great_feast" || isPentKathismaSuppressed;
+  // Was: season === "great_feast" || isPentKathismaSuppressed — but season
+  // === "great_feast" covers Theotokos Great Feasts identically to the
+  // Lord's (rank: "great" is set the same way for both in FIXED_GREAT_FEASTS),
+  // and the actual rubric is Lord-specific: "Blessed is the man... is not
+  // sung on the eves of great feasts of the Lord" (OCA Office of Vespers,
+  // 2021). Now gated on feastPeriod.feast.forLord as well.
+  const isGreatFeastOfLord = (season === "great_feast" &&
+    liturgicalData.feastPeriod && liturgicalData.feastPeriod.feast &&
+    liturgicalData.feastPeriod.feast.forLord) || isPentKathismaSuppressed;
   const SOURCE = "OCA — Psalter Readings at Vespers";
 
   // 1. Bright Week — no kathisma
@@ -3209,20 +3259,29 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   const dow = (openedDow + 6) % 7;
   const isFriEve = dow === 5; // Friday evening: Both Now = dogmatikon, not theotokion
   const weeklyProk = WEEKLY_VESPERS_PROKEIMENON[dow];
-  // Festal prokeimenon override: Menaion polyeleos/vigil saints have their own prokeimenon
-  // that replaces the weekly table entry (including the Saturday Great Prokeimenon).
-  // Source: Fekula §2E–§2F; HTM Vespers.
-  const menaionProk = (menaionEntry && menaionEntry.prokeimenon_text &&
-    (rank === 'polyeleos' || rank === 'vigil'))
-    ? { tone: menaionEntry.prokeimenon_tone, text: menaionEntry.prokeimenon_text,
-        verses: menaionEntry.prokeimenon_stichos ? [menaionEntry.prokeimenon_stichos] : [] }
+  // Great Feast of the Lord override — fixed-date case (movable case handled
+  // via pentEntry.vespers_prokeimenon below, which already takes priority).
+  // Never fires on rank (menaionEntry.prokeimenon_text is the Divine Liturgy
+  // prokeimenon only — Fekula §2E: "Prokeimenon: From the Menaion, only,"
+  // under the Divine Liturgy heading, not Vespers). Never fires on a
+  // Saturday evening — OCA Liturgics: the Saturday Great Prokeimenon is
+  // never replaced, even by a genuine Feast of the Lord. season ===
+  // "great_feast" confirms we're on the feast day itself, not its
+  // forefeast/afterfeast (feastPeriod.feast can still point to the same
+  // feast object during those periods).
+  // Source: OCA Liturgics, "Prokeimenon of the Day"; MCI, "The Entrance and
+  // Readings of Vespers."
+  const feastPeriod = liturgicalData.feastPeriod;
+  const greatFeastProk = (dow !== 6 && season === "great_feast" &&
+      feastPeriod && feastPeriod.feast && feastPeriod.feast.greatProkeimenon)
+    ? feastPeriod.feast.greatProkeimenon
     : null;
   const vespProk = (isPentecostarion && pentEntry && pentEntry.vespers_prokeimenon)
     ? pentEntry.vespers_prokeimenon
-    : (menaionProk || weeklyProk);
+    : (greatFeastProk || weeklyProk);
   // Track prokeimenon source for the explainer badge
   const prokSource = (isPentecostarion && pentEntry && pentEntry.vespers_prokeimenon) ? 'pentecostarion'
-    : menaionProk ? 'menaion_festal'
+    : greatFeastProk ? 'great_feast_of_the_lord'
     : dow === 6 ? 'saturday_great'
     : 'weekly';
   // Troparion / kontakion — same resolution as assembleHour
@@ -8201,6 +8260,54 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.25.2",
+    date: "July 2026",
+    summary: "fix: Vespers prokeimenon override was firing on Menaion rank, not Feast-of-the-Lord identity — plus a related kathisma-suppression bug found during the same investigation",
+    items: [
+      "Root cause: assembleVespers() pulled menaionEntry.prokeimenon_text into the Vespers slot for " +
+      "any rank === 'polyeleos' || 'vigil' entry. That field is the Divine Liturgy prokeimenon " +
+      "(Fekula §2E: \"Prokeimenon: From the Menaion, only\" — under the Divine Liturgy heading, not " +
+      "Vespers). Fekula's Vespers sections for both Polyeleos (§2E) and Vigil (§2F) keep this " +
+      "generic — §2F says it outright: \"Prokeimenon of the day.\" Confirmed empirically: zero " +
+      "Menaion entries across May/June/July carry a distinct Vespers-specific prokeimenon.",
+      "Correct rule (OCA Liturgics, \"Prokeimenon of the Day\"; MCI, \"The Entrance and Readings of " +
+      "Vespers\"): the day's ordinary prokeimenon is replaced by a Great Prokeimenon only at Vespers " +
+      "on eight named Feasts of the Lord, and even then never on a Saturday evening — the Saturday " +
+      "Great Prokeimenon is never displaced, even by a genuine Feast of the Lord.",
+      "New data model: forLord (boolean) and greatProkeimenon (object) added directly to the " +
+      "existing FIXED_GREAT_FEASTS / MOVABLE_GREAT_FEASTS tables — single source of truth, no " +
+      "parallel lookup list. The two are deliberately distinct: forLord is true for 9 feasts " +
+      "(Nativity, Theophany, Transfiguration, Elevation of the Cross, Circumcision/St Basil, " +
+      "Meeting of the Lord, Palm Sunday, Ascension, Pentecost), but greatProkeimenon is only set on " +
+      "6 of those — Meeting of the Lord, Palm Sunday, and Circumcision/St Basil are genuinely " +
+      "Feasts of the Lord but confirmed absent from both enumerated Great Prokeimenon lists. " +
+      "Annunciation deliberately left unclassified (dual Lord/Theotokos; Fekula already flags it " +
+      "needs special Typicon handling).",
+      "assembleVespers() now reads feastPeriod.feast.greatProkeimenon directly (gated on " +
+      "season === 'great_feast' to exclude forefeast/afterfeast, and dow !== 6 for the Saturday " +
+      "guard) instead of the old menaionEntry/rank check. prokeimenon_text stays exclusively the " +
+      "Divine Liturgy field, matching how it's been encoded all month.",
+      "Second bug found and fixed from the same root cause: getKathismaForVespers()'s " +
+      "isGreatFeastOfLord flag was season === 'great_feast' || isPentKathismaSuppressed — which " +
+      "doesn't distinguish Lord from Theotokos feasts either (rank: 'great' is set identically for " +
+      "both). The actual rubric (OCA Office of Vespers, 2021) is Lord-specific: \"Blessed is the " +
+      "man...is not sung on the eves of great feasts of the Lord.\" Theotokos Great Feasts (Nativity " +
+      "of the Theotokos, Entry, Dormition) were very likely incorrectly suppressing the kathisma. " +
+      "Now gated on feastPeriod.feast.forLord as well.",
+      "Zero behavior change for May/June/July: no Great Feast of either kind falls in those three " +
+      "months, so both fixes are pure bug removal for already-reviewed dates. Matters starting with " +
+      "August (Transfiguration) and September (Elevation of the Cross; Nativity of the Theotokos " +
+      "for the kathisma fix specifically).",
+      "Known related gap, NOT fixed here (out of scope for this session): assembleVespers()'s " +
+      "isGreatFeastOfLordForVigil (~line 4665, governs the ×3 vs ×2+1 troparion pattern at Vigil " +
+      "rank) is hardcoded to a false placeholder pending exactly this data. Now that forLord " +
+      "exists, this should be revisited.",
+      "Gate: vite build clean, pointing-paths and sunday-vespers 71/71 PASS, zero new warnings. " +
+      "check-skeleton.mjs's pre-existing 58 Octoechos tone1 gaps confirmed unrelated (identical " +
+      "failure with and without this change, verified via git stash).",
+    ],
+  },
   {
     version: "v0.25.1",
     date: "July 2026",
