@@ -25,8 +25,8 @@ Voice being mapped: **ALTO** (melody), consistent with Tones 1–3.
 | C | ✅ Structure fully resolved after two corrections during live research (8 examples, recategorized by which structural portion each snippet shows); fill-pitch and no-intonation "anomalies" both dissolved as misreadings, not genuine open items |
 | D | ✅ Structure and fill/duration patterns confirmed (6 examples); 2-syllable floor unconfirmed but not urgent |
 | E | 🔶 Structure confirmed (6 pitches); 7 worked examples covering full compression range; anchor rule differs from B/D (tracks multiple stress points, not single last-accent) |
-| F | 🔶 In progress — tutorial text captured; shares Phrase C's cadence exactly, simpler single-pitch intonation; awaiting worked examples |
-| Final | ⬜ Not yet started |
+| F | 🔶 In progress — intonation rule and no-intonation variant both confirmed with real examples; open question on when each fires |
+| Final | 🔶 Core structure confirmed; 7 worked examples; anchor rule, close=W, fill duration, and the anchor+fill slur compression pattern all confirmed with repeat examples |
 
 **No audio or OCA docx corpus work has been done yet this session.** Everything
 below comes from the tutorial text and Bill's direct sight-reading of the score
@@ -807,6 +807,187 @@ its stead") were both `Q`; Phrase D's single-fill-at-count-3 example
 pattern, not Phrase B/C's — despite Phrase F's cadence pitches being
 identical to C's. One data point; logged as an open question rather than a
 rule.
+
+---
+
+### 3.7 Final Phrase — IN PROGRESS
+
+**Tutorial text (verbatim, as printed — contains a known error, see below):**
+
+> "The Final Phrase for the sticheron begins directly with the reciting
+> tone (re) and concludes with a final cadence, beginning on the last
+> internal accented syllable. The cadence is prepared by two ascending
+> quarter notes, do and ti."
+
+**Corrected reading (Bill, confirmed against every example and score
+check):**
+
+> "...The cadence is prepared by two **descending** quarter notes, do and
+> ti."
+
+The printed pitches and their order (`do` then `ti`) are correct; only the
+tutorial's own word "ascending" is wrong. This is the first confirmed
+factual error in the tutorial's prose itself (as opposed to an ambiguity in
+Claude's reading of it) — worth keeping both the original and corrected
+text on record rather than silently replacing one with the other.
+
+**Structure:**
+- `recite: "re"` — same reciting pitch as Phrase B.
+- Anchor rule stated as "the last internal accented syllable" — the same
+  phrasing used for Phrases B and D, both of which turned out to follow the
+  standard single-anchor search (with Phrase B's one open "Rejoice"
+  exception). This is a different phrasing than Phrase E's tutorial text,
+  which never states a last-accent rule at all and turned out to track
+  multiple stress points instead. Worth watching whether the Final Phrase
+  actually behaves like B/D here, or like E, rather than assuming from the
+  phrasing alone.
+- **Prep notes:** "prepared by two ascending quarter notes, do and ti" —
+  the first two-note prep of any phrase in this tone (every other phrase's
+  prep, where one exists, has been a single note or a stepwise run building
+  toward an intonation, not a fixed two-note figure preparing a cadence
+  directly).
+
+**Prep note direction — corrected by Bill's direct score-checking, not
+assumed:** the tutorial's own text is simply wrong here. "Prepared by two
+ascending quarter notes, do and ti" states the pitches in the correct
+performed order (`do` then `ti`) but mislabels the direction — every
+example and score check confirms this is a **descent**, `do` down to `ti`,
+not an ascent. This is a different resolution than an earlier draft of
+this section proposed (which guessed the sequence itself might be reversed
+— performed as `ti` then `do` — to make "ascending" literally true).
+That guess is now known to be wrong: the sequence as written is correct;
+the tutorial's direction label is the error. Confirmed directly against
+the score, not inferred from pitch relationships elsewhere in the tone.
+
+`prep: ["do", "ti"]`, descending, both `Q`.
+
+**Cadence structure — confirmed by Bill:** `cad: ["do", "ti", "la"]` — a
+three-pitch figure: `do(H)` anchor, `ti` as the stretchy fill position
+(`H` when alone, expanding to repeated `ti(Q)` for extra syllables — the
+same anchor/fill/close template already established everywhere else in
+this tone), and `la(W)` as the close.
+
+**Two things worth drawing out now that the shape is settled:**
+
+1. **The prep previews the cadence's own opening motion.** `prep:["do","ti"]`
+   and the cadence's own first two pitches (`do`, then `ti`) are the same
+   descending pair, performed twice — quickly as the prep (`Q, Q`), then
+   again more slowly as the cadence proper (`H`, then the stretchy `ti`
+   fill) — before finally continuing down to `la`. No other phrase in this
+   tone has a prep that echoes the cadence's own opening interval this
+   directly.
+2. **The close should be reliably `W`, not an open question like every
+   other phrase's.** Every other phrase's H-vs-H·-vs-W question (§4.2) has
+   been tied to whether a *given instance* happens to land on the true
+   final line of a sticheron — which varies example to example. The Final
+   Phrase, by definition and by the confirmed rotation rule (§2), is
+   *always* the sticheron's actual last line. So its close isn't
+   probabilistically final the way another phrase's instance might be —
+   it's structurally guaranteed to be. Worth treating `la(W)` as the
+   expected default here, not as one more open duration question to
+   re-litigate the way A through F's closes have been.
+
+**Worked example:**
+
+| # | Text | Shape |
+|---|---|---|
+| 1 | "Chris-tians and save our souls." | Chris(re/Q — reciting) \| tians(do/Q — prep 1) and(ti/Q — prep 2) save(do/H — ANCHOR) our(ti/H — fill) souls(la/W — close) |
+| 2 | "the \| Theotokos" | the(re/Q — reciting) \| The(do/Q — prep 1) o(ti/Q — prep 2) to(do/H + ti/H — 2-note slur: cadence ANCHOR + fill merged onto one syllable) kos(la/W — close) |
+| 3 | "have joined together things on earth with those on high!" (Dormition) | have joined together things on (re/Q ×7 — reciting) \| earth(do/Q — prep 1) with(ti/Q — prep 2) those(do/H — ANCHOR) on(ti/H — fill) high!"(la/W — close) |
+| 4 | "[Hear] [me], O Lord!" (LIC) | Hear(re/H + do/Q + ti/Q — 3-note slur: reciting + BOTH prep notes merged onto one syllable, director-marked) \| me(do/H — ANCHOR, director-marked) O(ti/H — fill) Lord!(la/W — close) |
+| 5 | "for Thou art good and the [Lov]er of man." | for Thou art good (re/Q ×4 — reciting) \| and(do/Q — prep 1) the(ti/Q — prep 2) Lov(do/H — ANCHOR, director-marked) er(ti/Q — fill 1) of(ti/Q — fill 2) man.(la/W — close) |
+| 6 | "Glory to Thee, O all-[pow]erful Lord!" | Glory to Thee, (re/Q ×4 — reciting) \| O(do/Q — prep 1) all(ti/Q — prep 2) power(do/H — ANCHOR, director-marked) er(ti/Q — fill 1) ful(ti/Q — fill 2) Lord!"(la/W — close) |
+| 7 | "granting the world life, incorruption and great [mer]cy." | granting the world life, incorruption (re/Q ×9 — reciting) \| and(do/Q — prep 1) great(ti/Q — prep 2) mer(do/H + ti/H — 2-note slur: cadence ANCHOR + fill merged onto one syllable, director-marked) cy(la/W — close) |
+
+Example 7 repeats example 2's ("the Theotokos") exact compression shape —
+one syllable short of the full 6-position figure, with the cadence's own
+anchor and fill merging onto a single syllable via a slur, while the prep
+and close each keep their own syllable. Now confirmed twice, independently,
+which is meaningfully stronger evidence than one example alone that this is
+a real, repeatable compression strategy for this phrase rather than a
+one-off reading.
+
+Example 6 is a second confirming instance of the 2-fill shape (both `Q`,
+matching example 5), and the anchor rule again — "Lord!" is the true final
+word, monosyllabic, backs off cleanly to "power(ful)." No new findings
+here; a clean, straightforward reinforcement of what's already settled.
+
+Example 5 is the first Final Phrase example with the fill position
+appearing twice rather than once, and it confirms rather than complicates
+the established pattern: two fills, both `Q` — matching the same
+"single fill = H, multiple fills = Q each" shape already seen in Phrase D.
+The Final Phrase's fill behavior is now consistent across every count
+observed: one fill → `H` (examples 1, 3, 4), two fills → `Q` each (this
+example). Anchor rule checks out the same way again — "man." is the true
+final word, monosyllabic, backs off cleanly to "Lov(er)."
+
+Example 4 is the same stock LIC closing line used as a worked example for
+nearly every other phrase this session (A, B, D, and a variant for C) —
+good to see it complete the set for the Final Phrase too. It shows the
+figure's most compressed realization yet: the reciting tone and both prep
+notes (`re, do, ti`) all merge onto the single syllable "Hear," with the
+cadence proper (`do, ti, la`) playing out one note per syllable across
+"me, O, Lord!" Confirms the cadence cleanly against the corrected pattern
+(anchor `H`, fill `H`, close `W`) with no new wrinkle. The two director
+marks — on "Hear" and "me" — land on the two genuinely salient points: where
+the compressed opening material begins, and where the cadence itself
+launches.
+
+Example 2 is one syllable short of the full 5-position figure (`The-o-to-kos`
+= 4 syllables, where prep+cadence ideally wants 5), and shows where the
+compression lands: the cadence's own anchor and fill (`do`, `ti`) merge
+onto a single syllable (`to`) as a 2-note slur, while the prep (`The`, `o`)
+and the close (`kos`) each keep their own syllable. The anchor lands on
+"to," matching the natural liturgical stress of "Theotokos"
+(thee-oh-**TO**-kos) — consistent with the standard anchor search already
+confirmed in example 1, not a new exception.
+
+Example 3 repeats example 1's exact 5-position fit (prep, prep, anchor,
+fill, close, no compression needed) and confirms the anchor rule the same
+way — "high!" is the true final word, monosyllabic, and backs off cleanly
+to "those" via the standard rule, same category as example 1's
+"souls"→"save."
+
+**Fill duration confirmed, not contradictory.** An earlier draft of this
+section flagged an apparent contradiction here — example 1's fill
+originally logged as `Q`, example 3's as `H`, same structural position in
+the same phrase. That was a transcription typo in example 1 (corrected by
+Bill: "our" is `ti(H)`, not `ti(Q)`), not a real inconsistency. With the
+correction, both examples agree: the Final Phrase's single fill is `H`,
+matching Phrase D's and Phrase F's "childbearing" pattern, not Phrase B/C's
+`Q` pattern.
+
+An exact 5-position fit against `prep:["do","ti"] + cad:["do","ti","la"]`,
+no compression needed. Two things this confirms, one open item it settles,
+and one new data point:
+
+- **Anchor rule settled:** "souls" is the phrase's actual final word,
+  monosyllabic, and would carry its own natural stress — but it backs off
+  cleanly to "save" via the ordinary monosyllabic-backup rule (same
+  category as Phrase B's "earth"/"Lord," Phrase D's "God"/"all"). This
+  confirms the Final Phrase follows the standard B/D-style single-anchor
+  search, not Phrase E's multi-stress tracking — resolves the open
+  question raised when the tutorial text was first read.
+- **Close confirmed at `W`**, exactly as predicted from the structural
+  reasoning above (guaranteed finality, not a probabilistic question) —
+  good to see the reasoning hold up in a real example, not just in theory.
+- **Fill duration:** the fill (`our`) is `H` — matching Phrase D's and
+  Phrase F's "childbearing" single-fill pattern, not Phrase B/C's `Q`
+  pattern. (An earlier draft of this section had this logged as `Q` due to
+  a transcription typo, later corrected by Bill — see the note after
+  example 3's table entry.)
+
+**Note for the record:** an early, unverified synthesis of this tutorial —
+made before Bill began providing verified quotes, and already flagged
+several times in this document as a source to treat cautiously — described
+a two-note prep involving `do` and `ti` here, calling it "ascending." The
+two pitches involved were right; the direction was wrong, same as the
+tutorial's own text turned out to be. Worth stating plainly rather than
+counting this as a win: an early guess that repeats the source text's own
+error isn't independent confirmation of anything. The standing count
+remains what it was — this document has done better trusting Bill's direct
+score-checking over any of Claude's own early readings, whether from the
+tutorial's prose or from Claude's synthesis of it.
 
 ---
 
