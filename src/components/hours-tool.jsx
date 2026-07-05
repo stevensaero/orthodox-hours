@@ -8265,6 +8265,26 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.25.4",
+    date: "July 2026",
+    summary: "07-05: corrected oca_primary — OCA's own Lectionary treats Athanasius and Sergius as co-equal, not primary/secondary",
+    items: [
+      "Bill flagged that 07-05's oca_primary assignment looked wrong. Checked directly against " +
+      "oca.org: the Lives-of-the-Saints page for July 5, 2026 lists Athanasius of Athos first, " +
+      "Sergius's Uncovering-of-Relics second — but oca.org's own Lectionary of Daily Readings " +
+      "labels the shared Venerable-saint reading pair (Galatians 5:22-6:2 / Luke 6:17-23) " +
+      "'(either Saint)', meaning OCA treats the two as co-equal alternatives, not a ranked pair.",
+      "Sergius's oca_primary corrected from false to true, matching Athanasius (both true — " +
+      "the first such case; confirmed safe, since services.findIndex(s => s.oca_primary === " +
+      "true) only needs the first match and array order still determines the UI default).",
+      "07-05B (Elizabeth & Barbara & the Alapaevsk martyrs) and 07-05F (expanded standalone " +
+      "Elizabeth proper) notes strengthened: neither oca.org's Lives-of-the-Saints page nor its " +
+      "Lectionary lists this commemoration for July 5 at all — a genuine OCA-vs-Russian-Menaion " +
+      "divergence, not merely a lower-ranked OCA commemoration.",
+      "Gate: vite build clean, 71/71 pointing-paths + sunday-vespers, 6/6 pointing-roles.",
+    ],
+  },
+  {
     version: "v0.25.3",
     date: "July 2026",
     summary: "fix: ReferenceError broke every single Vespers date in v0.25.2 — leftover reference to a renamed variable",
