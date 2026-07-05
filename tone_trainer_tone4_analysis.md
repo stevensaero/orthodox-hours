@@ -22,10 +22,11 @@ Voice being mapped: **ALTO** (melody), consistent with Tones 1–3.
 | Rotation | ✅ Confirmed (verbatim tutorial quote, verified against the tutorial's own 9-line worked example) |
 | A | ✅ Tutorial-analysis level complete — 5 worked examples |
 | B | ✅ Tutorial-analysis level complete — 5 worked examples |
-| C | 🔶 Structure and cadence duration resolved (6 examples); two genuine anomalies and one fill-rule conflict still open |
+| C | ✅ Structure fully resolved after two corrections during live research (8 examples, recategorized by which structural portion each snippet shows); fill-pitch and no-intonation "anomalies" both dissolved as misreadings, not genuine open items |
 | D | ✅ Structure and fill/duration patterns confirmed (6 examples); 2-syllable floor unconfirmed but not urgent |
 | E | 🔶 Structure confirmed (6 pitches); 7 worked examples covering full compression range; anchor rule differs from B/D (tracks multiple stress points, not single last-accent) |
-| F, Final | ⬜ Not yet started |
+| F | 🔶 In progress — tutorial text captured; shares Phrase C's cadence exactly, simpler single-pitch intonation; awaiting worked examples |
+| Final | ⬜ Not yet started |
 
 **No audio or OCA docx corpus work has been done yet this session.** Everything
 below comes from the tutorial text and Bill's direct sight-reading of the score
@@ -36,6 +37,20 @@ important departure from the Tones 1–3 method, and is addressed directly in
 ---
 
 ## 1. Source materials
+
+**Scope note, added mid-session:** this document is specifically about the
+**sticheron melody** for Tone 4 (Phrases A–F plus the Final Phrase). A
+Tone 4 Troparion example was checked against this research and set aside
+deliberately, not overlooked: "Christ God is risen" recites on `re`, not
+`do`, and doesn't map onto any of Phrases A–F. This is consistent with how
+troparia and stichera commonly use entirely separate melodic formulas
+within "the same tone" in this chant tradition — the tone number
+identifies a modal/scalar family, not one unified tune shared across every
+hymn genre. Every example used to build Phrases A–F has come from
+stichera, aposticha, or LIC verses specifically; none from a troparion.
+If a future session takes up Tone 4's troparion melody, it should be
+treated as its own separate structure, not reconciled against this
+document's PH_DEFS.
 
 ### 1.1 Tutorial PDF
 
@@ -279,9 +294,9 @@ genuinely open:**
 
 ---
 
-### 3.3 Phrase C — resolved (unified model)
+### 3.3 Phrase C — resolved (corrected model, second revision)
 
-**Tutorial text (verbatim, both parts now reconciled):**
+**Tutorial text (verbatim, both parts):**
 
 > "The phrase begins with an intonation of a half note on mi, followed by a
 > quarter note on re, leading to the reciting tone of do. Preparatory notes
@@ -291,125 +306,122 @@ genuinely open:**
 > however, that the reciting tone, is do for Phrase C, as opposed to re for
 > Phrase B)"
 
-**Key correction from earlier in this research session:** an earlier draft of
-this document treated the intonation's `mi(H)→re(Q)` as leading into a
-separate "reciting tone `do`" section, with the cadence (if any) coming
-*after* that. Working through four short score images and examples with
-Bill directly, that model looked wrong — every short example seemed to go
-straight from the intonation into a cadence with no reciting body at all,
-and this document's next revision concluded the intonation's `re` and the
-cadence's `re` anchor were literally the same note doing double duty.
+**This section has been revised twice during live research, and the full
+history is kept here rather than erased, because each revision corrected a
+real error rather than just adding detail:**
 
-**That revision was also incomplete.** A fifth, genuinely long example
-("and when they saw you being taken from the earth to heaven," below)
-shows all three parts distinctly and separately: intonation, then an actual
-extended reciting body (`being taken from the earth to`, all `do/Q`), then a
-cadence with its own separate `re` anchor (`heav-`) well after the
-intonation's own `re` (`you`). **The correct model:** intonation and cadence
-are two structurally real, separate slots, each with its own `re` note — but
-the reciting body between them can be **zero syllables long**, in which case
-the intonation's `re` and the cadence's `re` sit immediately adjacent at the
-identical pitch and become audibly/structurally indistinguishable as "one
-note." They're not one note serving two roles; they're two real slots that
-happened to collapse to no distance apart in the four short examples.
+1. **First draft:** treated the intonation's `mi(H)→re(Q)` as leading into
+   a separate reciting-tone section, with a cadence (if any) after that.
+2. **First revision:** concluded, from four short examples that seemed to
+   go straight from intonation to a 1-note close, that the intonation's `re`
+   and a cadence anchor `re` were the same note doing double duty — no real
+   reciting section at all in short phrases.
+3. **Second revision (this one):** a Phrase F score image showed the
+   tutorial's dashed break-mark unambiguously separating *intonation* from
+   *reciting tone* in that phrase's schematic — not reciting from cadence.
+   Re-examining Phrase C's four short examples against that same convention,
+   and applying Bill's own principle that **no chanted phrase ends without a
+   cadence**, the correct reading is: **those four examples are partial
+   snippets showing only the intonation-into-reciting portion of a longer
+   verse. What this document had logged as their "cadence" was actually
+   their reciting tone.** Separately, "and Anna" and "bestowed in its
+   stead" — previously flagged as anomalies missing an intonation — are
+   the mirror case: snippets showing only the reciting-into-cadence tail of
+   a longer verse, with the intonation portion simply outside what was
+   transcribed. Nothing was ever missing; different snippets were
+   illustrating different parts of the same three-part structure.
 
-**Why this wasn't obvious from the text alone:** in Phrase B, the cadence
-anchor sits *on* the reciting pitch (both `re`) — duration change (Q→H) is
-the only signal the cadence has begun. In Phrase C, the reciting pitch is
-`do`, but the cadence anchor is `re` — a full step *above* the reciting
-tone. So the melody has to rise back up into the cadence rather than simply
-continuing at or below the reciting pitch. This is exactly the distinction
-the tutorial's parenthetical is calling out.
+**Why Phrases A and B never had this ambiguity:** neither has an intonation
+step at all — just reciting and cadence, two parts, one possible boundary.
+`|` could only ever mean one thing there, so every A and B example really
+was a complete verse. Phrase C is the first phrase with three parts, and
+introducing a third possible boundary is exactly where a single, undifferentiated
+break-mark starts getting reused for different things depending on which
+part of the structure a given snippet is illustrating.
 
-**Structure:**
+**What this correction resolves, not just relabels:**
+- **The "all-quarter-note cadence" puzzle in the four short examples** —
+  dissolved. Those weren't cadences at all, so there's no puzzle about why
+  they lacked an H-duration note; reciting tone is always `Q`, by definition.
+- **The fill-pitch "conflict"** — dissolved, not just decided. "Righteousness"
+  and "goodness" were never testing cadence fill behavior; they were
+  reciting-tone runs, correctly shown as repeated `do/Q`. The only example
+  that ever actually exercised real cadence fill was "bestowed in its
+  stead," and it showed `re`-fill — matching Phrase B's own fill behavior
+  exactly, and matching Phrase F's tutorial schematic (§3.6). There was
+  only ever one real data point; it was just misfiled.
+- **The "missing intonation" anomaly** — dissolved. "And Anna" and
+  "bestowed in its stead" aren't structurally incomplete; they're excerpts
+  that simply don't include the intonation portion of their (presumably
+  longer) source lines.
+
+**Structure, corrected:**
 - `recite: "do"`
-- `inton: true` — a genuine two-pitch approach (`mi(H) → re(Q)`), not a
-  duration change on the reciting pitch itself, structurally distinct from
-  Tones 1–3's intonations.
-- **Preparatory notes** (before the intonation, when the phrase opens with
-  unaccented lead-in syllables): the syllable immediately before the
-  intonation accent is always `re`; any additional earlier syllables repeat
-  `do`. Confirmed across three counts: 1 prep → `re`; 2 preps → `do, re`;
-  3 preps → `do, do, re`.
-- **Mi-extension:** an extra unaccented syllable falling between the
-  intonation accent and the `re` that closes the intonation extends the
-  `mi` rather than doubling the `re` (confirmed by Bill: "strange, but
-  that's the tutorial verbatim").
-- **Reciting body:** `do(Q)` per syllable, zero or more syllables, between
-  the intonation's `re` and the cadence's own `re` anchor. Zero-length in
-  every short example seen so far; genuinely present (6 syllables) in the
-  one long example seen so far.
-- `cad: ["re", "do"]` — **identical pitches to Phrase B**, per the tutorial's
-  explicit statement, now confirmed by score evidence. Fill behavior is
-  **not yet settled** — see the open conflict below.
-- **Cadence duration — resolved:** short examples (0-length reciting body)
-  are uniformly quarter notes; both long examples with a genuine reciting
-  body (example 5 "heaven," example 6 "Lord...hear me" below) close
-  `re(H) do(H·)` — identical shape in both. **Cadence duration tracks
-  whether the reciting body is present, not some inherent quality of Phrase
-  C's cadence figure.** When the reciting body collapses to zero (short
-  phrases), the cadence stays on quarter notes; when a real reciting body
-  exists, the cadence takes the same H-anchored template as Phrases A and B.
+- `inton: true` — genuine two-pitch approach (`mi(H) → re(Q)`), unchanged
+  from before.
+- **Preparatory notes** — unchanged, still confirmed: the syllable
+  immediately before the intonation accent is `re`; earlier syllables
+  repeat `do` (1 prep → `re`; 2 preps → `do, re`; 3 preps → `do, do, re`).
+- **Mi-extension** — unchanged, still confirmed: an extra unaccented
+  syllable between the intonation accent and its closing `re` extends the
+  `mi` rather than doubling the `re`.
+- **Reciting body:** `do(Q)` per syllable — now directly confirmed, not
+  just inferred, with a genuine range of lengths seen: 1 syllable ("arms,"
+  "fruit"), 2 ("goodness"), 3 ("Righteousness"), up to 6–3 in the two full
+  long verses. No confirmed example yet of a true *zero*-syllable reciting
+  body (intonation immediately adjacent to the cadence anchor with nothing
+  between) — every example so far has at least one reciting syllable, so
+  that particular edge case remains untested rather than confirmed either
+  way.
+- `cad: ["re", "do"]` — **identical to Phrase B, including fill behavior.**
+  Corrected from the prior claim that Phrase C used a different "fill
+  toward close" rule — that claim rested entirely on the now-reclassified
+  reciting-tone examples. The one genuine fill example ("bestowed in its
+  stead") fills on `re` (the anchor), exactly like Phrase B's
+  `distribute()`. Phrase C's cadence can reuse Phrase B's distribution
+  logic directly; it does not need its own dedicated fill rule.
+- **Cadence duration:** `H` at the anchor, `H` or `H·` at the close (open,
+  same unresolved rhythmic-balancing question as every other phrase — see
+  §4.2), `Q` for any fill syllables (matching Phrase B).
 
-**Worked examples:**
+**Worked examples, recategorized:**
 
 | # | Text | Shape |
 |---|---|---|
-| 1 | "held in your arms" | held(mi/H) in(mi/Q — extends mi) \| your(re/Q — ANCHOR, 0-syllable reciting body) arms(do/Q — close) |
-| 2 | "the Sun of Righteousness" | the(re/Q — prep) Sun(mi/H) \| of(re/Q — ANCHOR, 0-syllable reciting body) Right(do/Q) eous(do/Q) ness(do/Q — close, fill repeats do×2) |
-| 3 | "the most sacred fruit" | the(do/Q — prep) most(re/Q — prep) sa(mi/H) \| cred(re/Q — ANCHOR, 0-syllable reciting body) fruit(do/Q — close) |
-| 4 | "through the abundance of goodness" | through(do/Q) the(do/Q) a(re/Q) — 3 preps: do,do,re — bun(mi/H) dance(mi/Q — extends mi) \| of(re/Q — ANCHOR, 0-syllable reciting body) good(do/Q) ness(do/Q — close, fill repeats do×1) |
-| 5 | "and when they saw you being taken from the earth to heaven" | and(do/Q) when(do/Q) they(re/Q) — 3 preps: do,do,re — saw(mi/H) you(re/Q — intonation's own re, NOT the anchor this time) \| being taken from the earth to (do/Q ×6 — genuine reciting body) \| heav(re/H — ANCHOR, separate from intonation's re) en(do/H· — close) |
-| 6 | "[Lord], I call upon Thee, [hear] me!" (LIC) | Lord,(mi/H· — intonation accent, director-marked) I(re/Q — intonation's own re) \| call(do/Q) upon(do/Q) Thee,(do/Q) — genuine reciting body \| hear(re/H — ANCHOR, director-marked) me!(do/H· — close) |
+| 1 | "held in your [arms]" (intonation→reciting snippet) | held(mi/H) in(mi/Q — extends mi) your(re/Q — intonation's closing re) \| arms(do/Q — RECITING, not cadence; cadence not shown in this snippet) |
+| 2 | "the Sun of [Righteousness]" (intonation→reciting snippet) | the(re/Q — prep) Sun(mi/H) of(re/Q — intonation's closing re) \| Right(do/Q) eous(do/Q) ness(do/Q — RECITING, 3 syllables; cadence not shown) |
+| 3 | "the most sacred [fruit]" (intonation→reciting snippet) | the(do/Q — prep) most(re/Q — prep) sa(mi/H) cred(re/Q — intonation's closing re) \| fruit(do/Q — RECITING; cadence not shown) |
+| 4 | "through the abundance of [goodness]" (intonation→reciting snippet) | through(do/Q) the(do/Q) a(re/Q) — 3 preps: do,do,re — bun(mi/H) dance(mi/Q — extends mi) of(re/Q — intonation's closing re) \| good(do/Q) ness(do/Q — RECITING, 2 syllables; cadence not shown) |
+| 5 | "and [when they saw you] [being taken from the earth to] heaven" — full verse | and(do/Q) when(do/Q) they(re/Q) — 3 preps: do,do,re — saw(mi/H) you(re/Q — intonation's closing re) \| being taken from the earth to (do/Q ×6 — RECITING) \| heav(re/H — CADENCE ANCHOR) en(do/H· — close) |
+| 6 | "[Lord], I call upon Thee, [hear] me!" (LIC) — full verse | Lord,(mi/H· — intonation accent, director-marked) I(re/Q — intonation's closing re) \| call(do/Q) upon(do/Q) Thee,(do/Q) — RECITING \| hear(re/H — CADENCE ANCHOR, director-marked) me!(do/H· — close) |
+| 7 | "[and] Anna" (reciting→cadence snippet, intonation not shown) | and(do/Q — RECITING, tail of a longer line) \| An(re/H — CADENCE ANCHOR) na(do/H — close) |
+| 8 | "[be]stowed in its stead." (reciting→cadence snippet, intonation not shown) | be(do/Q — RECITING, tail of a longer line) \| stowed(re/H — CADENCE ANCHOR) in(re/Q — fill, repeats anchor) its(re/Q — fill, repeats anchor) stead.(do/H — close) |
 
-**Example 6 independently confirms example 5's cadence duration finding**
-(both close `re(H) do(H·)`, identical shape from two unrelated texts), and
-adds a clean confirmation of the two-slot model from the director's own
-markup: the two bracketed accents (`[Lord]`, `[hear]`) land exactly on the
-intonation accent and the cadence anchor — the two real structural points —
-the same two-mark pattern Tones 1–3 used for their own two-anchor Finals,
-here showing up in a different phrase entirely.
+Examples 1–4 now correctly read as intonation-plus-reciting evidence, not
+cadence evidence. Examples 5 and 6 remain the only two examples that show
+the complete three-part structure in one continuous verse, and both give
+clean 2-syllable exact-fit cadences (`re(H) do(H·)`). Examples 7 and 8 are
+reciting-plus-cadence evidence: 7 confirms a 2-syllable exact fit again
+(matching 5 and 6); 8 is the one example that exercises the fill position,
+and it fills on `re`, matching Phrase B exactly.
 
-**Note on the `|` mark itself:** Bill's original transcriptions placed `|`
-one note *later* than the structural boundary in examples 1–4 (e.g. "cred |
-fruit" rather than "\| cred fruit"). That's not a disagreement about where
-the cadence starts — it faithfully reproduces where the **tutorial's own
-printed score** marks its break/label, which is consistently one note after
-the actual cadence anchor in examples 1–4. Example 5 was given with no `|`
-marker at all by the tutorial, and its structure (with a real reciting body)
-makes the intonation/cadence boundary unambiguous without one. Worth keeping
-in mind for any future phrase: the tutorial's own typeset break position and
-the true structural cadence boundary are not guaranteed to be the same
-place, and the offset itself is a useful thing to check per phrase rather
-than assume.
+**Director-mark confirmation carried over from the prior draft:** in
+example 6, the two bracketed accents (`[Lord]`, `[hear]`) land exactly on
+the intonation accent and the cadence anchor — the two genuine structural
+points — the same two-mark pattern Tones 1–3 used for their own two-anchor
+Finals.
 
-**Two genuine anomalies, not yet resolved — flagged by Bill directly ("I
-don't follow this tutorial's logic very well for this phrase"):**
+**Note on the `|` mark, corrected:** this document previously treated
+Bill's `|` as marking one consistent boundary (the reciting/cadence split)
+offset by one note from the tutorial's own typeset break. That was wrong in
+the same way the rest of the section was wrong: the offset wasn't a
+one-note quirk — `|` was marking *two different boundaries* across these
+eight examples (intonation/reciting in 1–4, reciting/cadence in 7–8),
+because each snippet was illustrating a different part of the structure.
+The lesson for D, E, F, and the Final Phrase: don't assume a break-mark's
+meaning transfers between examples of the same phrase without checking
+what portion of the structure each example is actually showing.
 
-| Text | Shape |
-|---|---|
-| "and Anna" | and(do/Q) \| An(re/H) na(do/H) |
-| "bestowed in its stead" | be(do/Q) \| stowed(re/H) in(re/Q) its(re/Q) stead.(do/H) |
-
-Neither has a `mi(H)` intonation accent anywhere — the melody goes straight
-from a plain `do` lead-in into what appears to be the cadence anchor
-(`An`, `stowed`, both `re/H`). **Working hypothesis, not confirmed:** both
-are short enough that the accented syllable sits close to the phrase's end,
-possibly leaving no room for the full intonation figure before the cadence
-has to launch — the same kind of "not enough room" compression already
-established for the reciting body going to zero length, just applied to the
-intonation itself this time. Needs Bill's confirmation against the score;
-not treated as settled.
-
-**Genuine open conflict, unresolved — the fill pitch:** "Righteousness" and
-"goodness" (examples 2 and 4) both fill their extra cadence syllables on
-`do` (the close pitch). "Bestowed in its stead" fills its extra syllables
-(`in`, `its`) on `re` (the anchor pitch) instead — the opposite choice, with
-the same cadence figure and a similar syllable count. Not yet explained.
-Possibly connected to the missing-intonation anomaly above (i.e. whichever
-mechanism removes the intonation in "bestowed" may also change the fill
-rule), but this is speculation pending further examples or Bill's read of
-the score.
 
 ---
 
@@ -666,6 +678,138 @@ separated syllables, or fewer than the six pitches can comfortably fit.
 
 ---
 
+### 3.6 Phrase F — IN PROGRESS
+
+**Tutorial text (verbatim):**
+
+> "Phrase F begins with an intonation, a half note sung on do, on the first
+> accented syllable of the phrase. Unaccented syllables preceding are
+> quarter notes, also sung on do and the reciting tone is also do. The
+> cadence for Phrase F is identical with the cadence of Phrase C."
+>
+> "*In Bakhmetev's (Common Chant) arrangement Phrase F is considered a
+> variation of Phrase C."
+
+**Structure:**
+- `recite: "do"`
+- `inton: true` — but **single-pitch**, unlike Phrase C's two-pitch
+  `mi(H)→re(Q)` approach. Phrase F's intonation is `do(H)` on the first
+  accented syllable, with any preceding unaccented syllables also on `do`
+  but at `Q`. Structurally closer to how Tones 1–3's intonations worked (a
+  duration change on the reciting pitch itself) than to Phrase C's genuine
+  pitch-change approach.
+- `cad: ["re", "do"]` — **identical to Phrase C's cadence**, per the
+  tutorial's explicit statement, which itself was identical to Phrase B's.
+
+**Relationship to Phrase C:** the two phrases share both their reciting
+tone (`do`) and their cadence figure; the only structural difference is the
+intonation. The footnote confirms this isn't incidental — Bakhmetev's
+Common Chant arrangement treats Phrase F as a variation of Phrase C rather
+than a fully independent phrase.
+
+**Relationship to Phrase C's now-resolved items:** Phrase C's fill-pitch
+question and its two "missing intonation" examples both turned out to be
+artifacts of misreading intonation/reciting and reciting/cadence snippets
+as complete cadences (§3.3, second revision). With that correction, Phrase
+C's real cadence fill (`re`, from "bestowed in its stead") already matches
+Phrase F's own schematic below exactly — this isn't an open question to
+re-test in Phrase F, it's already consistent. Worth remembering the
+underlying lesson from that correction when reading Phrase F's own
+examples, though: check what portion of the structure each snippet is
+actually showing before treating a break-mark's position as fixed.
+
+**Three tutorial schematics (not yet worked text examples):**
+
+> Base case: intonation `do(H)` → reciting `do(Q)` → cadence `re(H) do(H)`
+>
+> With unaccented lead-ins: intonation `do(Q) do(Q) do(H)` → reciting
+> `do(Q)` → cadence `re(H) do(H)` (matches the stated rule exactly:
+> lead-ins at Q, same pitch, accent at H)
+>
+> Cadence fill case: `re(H)` anchor, then `re(Q)` filling extra space,
+> then `do(H)` close
+
+The third schematic fills on `re` (the anchor), consistent with Phrase C's
+now-corrected fill behavior (§3.3) and with Phrase B's own `distribute()`.
+Still worth a real Phrase F text example to confirm on its own terms rather
+than resting on a generic schematic alone.
+
+**Worked examples confirming the intonation side (from the tutorial's own
+labeled image, not yet full verses):**
+
+| # | Text | Shape |
+|---|---|---|
+| 1 | "O God \| made" | O(do/Q — 1 prep) God(do/H — accent) \| made(do/Q — RECITING) |
+| 2 | "for from heav- \| en" | for(do/Q) from(do/Q) — 2 preps — heav(do/H — accent) \| en(do/Q — RECITING) |
+
+Both confirm the intonation rule exactly as stated, with real text rather
+than only the generic schematic: unaccented lead-ins at `Q`, same pitch
+(`do`) as the accent, accent at `H`. Neither shows a cadence — consistent
+with the labeled image itself, which explicitly marks these spans as
+"intonation" and "reciting tone" only. Same situation as Phrase C's short
+snippets: valuable confirming evidence for the intonation side, even though
+they don't reach the cadence.
+
+**A genuinely new, tutorial-acknowledged variant — no intonation at all:**
+
+| Text | Shape |
+|---|---|
+| "since they were to be with you" | since they were to be with you (do/Q — all reciting, no intonation) |
+| "Rejoice, for you alone by your \| childbearing" (Dormition, full verse) | Rejoice, for you alone by your (do/Q ×8 — all reciting, no intonation) \| child(re/H — ANCHOR) bear(re/H — fill, repeats anchor) ing(do/H· — close) |
+| "since God was freely born of her without a \| [fa]ther." (Theotokian Dogmatikon, full verse) | since God was freely born of her without a (do/Q ×11 — all reciting, no intonation) \| fa(re/H — ANCHOR, director-marked) her.(do/H· — close) |
+| "What place can hold Thy life-bearing \| [bod]y?" (Sunday Octoechos Aposticha, full verse) | What place can hold Thy life-bearing (do/Q ×8 — all reciting, no intonation) \| bod(re/H — ANCHOR, director-marked) y?(do/H· — close) |
+| "and brought it to His \| [Fa]ther," (Theotokian Dogmatikon, full verse) | and brought it to His (do/Q ×5 — all reciting, no intonation) \| Fa(re/H — ANCHOR, director-marked) ther(do/H — close) |
+
+Unlike Phrase C's earlier "missing intonation" cases (which turned out to
+be ordinary snippets, not a real variant), the tutorial **explicitly states**
+that a variant of Phrase F exists which skips the intonation and begins
+directly on the reciting tone. What it does not state is when this variant
+is used.
+
+**Correction to the length hypothesis, and an honest re-assessment.** An
+earlier version of this table compared "reciting length" across all
+examples, but that comparison was flawed: for "O God \| made" and "for from
+heaven \| en," the counts logged (2 and 3) were actually the *intonation*
+portion's length, not the reciting portion's (which was only 1 syllable in
+each — "made," "en"). Worse, both of those are partial schematic snippets
+(per the tutorial's labeled image, showing only intonation-into-reciting),
+so their true total length before any cadence isn't actually known — they
+can't be fairly compared to a complete verse on this basis at all.
+
+Once the comparison is restricted to genuine full verses, the picture is
+more striking than "length correlates with the variant": **all four real,
+complete verse examples now logged — at 8, 11, 8, and 5 syllables — use
+the no-intonation variant. None of them show intonation.** The only
+evidence that the intonation variant exists at all comes from the
+tutorial's own generic illustrative schematic, not from any actual chanted
+text seen so far. The new 5-syllable example, shorter than the previous
+three, still skipping intonation, actually weakens rather than strengthens
+a length-threshold story — if length alone were the deciding factor, a
+threshold might be expected to show up somewhere in this range, and it
+hasn't. **Open question, stated plainly rather than resolved:** is the
+intonation variant a live option we simply haven't sampled yet in real
+chant, or is it closer to a documented-but-rarely-used case? A real,
+complete verse example that actually uses the intonation would settle this
+properly.
+
+**Cadence duration note:** "Father" (this example) closes on plain `H`,
+not `H·` — a fourth data point in the ongoing, still-unresolved H-vs-H·
+question tracked across every phrase (§4.2), not specific to Phrase F.
+
+**Cadence confirmed, with a duration wrinkle worth flagging rather than
+smoothing over:** the "childbearing" cadence maps cleanly onto
+`cad:["re","do"]` (anchor `re`, fill repeating the anchor `re`, close `do`)
+— consistent with Phrase C's corrected model. But the fill (`bear`) is `H`,
+not `Q`. Phrase B's single-fill-at-count-3 example ("mankind on **earth**")
+and Phrase C's corrected single-fill-at-count-4 example ("be**stowed** in
+its stead") were both `Q`; Phrase D's single-fill-at-count-3 example
+("pre-eternal **God**") was `H`. This example matches Phrase D's duration
+pattern, not Phrase B/C's — despite Phrase F's cadence pitches being
+identical to C's. One data point; logged as an open question rather than a
+rule.
+
+---
+
 ## 4. Cross-cutting findings (both phrases)
 
 ### 4.1 The anchor rule — semantic weight, not part of speech
@@ -728,23 +872,37 @@ rather than forcing a rule to fit a handful of points.
 
 ## 5. Open items carried forward
 
-- **The "Rejoice" anchor exception** (§3.2) — unresolved by agreement; may
-  clarify with more corpus evidence.
-- **H vs H· at cadence close** — no rule found; needs either more examples or
-  audio confirmation.
-- **`inton:false` for both A and B** — inferred by phrasing analogy to Tone 3,
-  not yet independently corpus- or audio-verified for Tone 4.
-- **Phrase C's preparatory-note pitch** for unaccented lead-ins — not yet
-  specified by the tutorial text quoted so far.
+- **The "Rejoice" anchor exception** (§3.2, Phrase B) — unresolved by
+  agreement; may clarify with more corpus evidence.
+- **H vs H· at cadence close** — no rule found across any phrase (A, B, C,
+  D, E all show both); needs either more examples or audio confirmation.
+  Tracked per-phrase in each section rather than restated here.
+- **`inton:false` for Phrases A and B** — inferred by phrasing analogy to
+  Tone 3, not yet independently corpus- or audio-verified for Tone 4.
 - **No audio or OCA docx corpus work done yet** (§1.3) — the Tone 4 MP3 set
   and a Tone 4 docx fixture still need to be gathered before this document
   reaches the same evidentiary standard as Tones 1–3.
-- **D, E, F, and Final Phrase** — not yet started. The tutorial's prose for
-  these (already scanned once, informally, before this document existed) —
-  particularly the Final Phrase's two-note prep (`do` then `ti`, ascending,
-  the first two-note prep of any tone so far) and Phrase E's six-pitch
-  cadence figure — should not be assumed from that earlier informal read;
-  they need the same example-by-example treatment as A and B.
+- **Phrase D's 2-syllable cadence floor** — the tutorial states "two or
+  more syllables" for the 3-pitch cadence, but every example given so far
+  has been either the 3-syllable exact fit or 4+-syllable expanded case.
+  Not urgent (per Bill), but genuinely untested.
+- **Phrase E's anchor-selection logic** — confirmed to differ from B/D:
+  tracks however many genuinely stressed content syllables fall within the
+  cadence's textual span (one melisma per stress point) rather than a
+  single last-internal-accent search. Well-evidenced (two independent
+  two-melisma examples, both triggered by "upon") but still worth treating
+  as an active finding rather than fully closed, given how much Phrase C's
+  own history in this document shows initial readings needing correction.
+- **Phrase F** — in progress. Cadence and reciting-tone rules inherited from
+  Phrase C should not be assumed identical in every particular (fill
+  behavior already looks consistent from the tutorial's own schematic, but
+  needs real text examples per the prime directive).
+- **Final Phrase** — not yet started. An early, informal scan of the
+  tutorial (before this document existed) suggested a two-note ascending
+  prep (`do` then `ti`) — the first two-note prep of any tone so far. Given
+  this document's own history of informal early reads needing correction
+  (Phrase C twice, Phrase E's pitch count once), this should be treated as
+  a hypothesis to check, not a finding to build on.
 
 ---
 
