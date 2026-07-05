@@ -8265,6 +8265,37 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.25.5",
+    date: "July 2026",
+    summary: "07-10, 07-14, 07-15 — added 5 missed commemorations (Batch 2 of the missed-commemoration audit)",
+    items: [
+      "07-10 gains two entries alongside the existing 45 Martyrs of Nicopolis: 07-10A, " +
+      "Deposition of the Robe of Christ (Vigil §2F — rubric confirms vigil intent, no explicit " +
+      "Little Vespers heading, same pattern as 07-30 this session), and 07-10B, Ven. Anthony " +
+      "of the Caves of Kiev, First of All the Monks of Russia (Vigil §2F — explicit Little " +
+      "Vespers section printed in full).",
+      "07-14 gains 07-14.pdf itself — a native July 14 file (Apostle Aquila & Martyrs Cyricus " +
+      "& Julitta, Simple §2B Double), genuinely separate from the existing Nicodemus entry " +
+      "(sourced via O.S./N.S. conversion from 07-01A.pdf). Kontakion Hours-routing by canon " +
+      "position, not title order: Martyrs' kontakion (Ode VI position) -> 3rd/9th Hour; " +
+      "Apostle's kontakion (Ode III position) -> 1st/6th Hour.",
+      "07-15 gains two entries alongside the existing Juvenal (also O.S./N.S.-converted, from " +
+      "07-02.pdf): 07-15.pdf itself, natively Blessed Augustine, Bishop of Hippo (Polyeleos " +
+      "§2E — titled 'Blessed' not 'Saint' per the source, reflecting Augustine's contested " +
+      "status in Eastern Orthodoxy; OCA's own commemoration of him on this date not yet " +
+      "verified, flagged rather than assumed), and 07-15A, St. Vladimir, Equal-of-the-Apostles " +
+      "(Polyeleos §2E, oca_primary: true — one of the most significant saints in the Russian " +
+      "calendar, a major miss). St. Vladimir's source explicitly states the Magnificat is " +
+      "chanted despite this not being a Theotokos feast — recorded as printed, flagged as unusual.",
+      "Gate: vite build clean, 71/71 pointing-paths + sunday-vespers, 6/6 pointing-roles. Data " +
+      "structures verified by direct load (not just build): 07-10 3 entries, 07-14 2 entries, " +
+      "07-15 3 entries, matching expected counts exactly.",
+      "Pre-existing gap surfaced, not fixed here: the unchanged Nicodemus entry (07-14[0]) " +
+      "lacks aposticha_glory, which the validator expects at Polyeleos rank and above — " +
+      "predates this session, flagged for a future pass.",
+    ],
+  },
+  {
     version: "v0.25.4",
     date: "July 2026",
     summary: "07-05: corrected oca_primary — OCA's own Lectionary treats Athanasius and Sergius as co-equal, not primary/secondary",
