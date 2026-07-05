@@ -8202,6 +8202,35 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.25.1",
+    date: "July 2026",
+    summary: "07-04, 07-05, 07-08 — added 5 missed commemorations found in a full-month Drive audit",
+    items: [
+      "Root cause: this session's July encoding used exact-match Drive searches (title = 'MM-DD.pdf') " +
+      "throughout the month, which never surfaced lettered-variant files (MM-DDA.pdf, MM-DDB.pdf, etc.) " +
+      "marking additional independent commemorations sharing a date. A full-month audit found 16 missed " +
+      "files across 13 dates. This batch fixes the first 3 dates (5 files); more follow in later batches.",
+      "Pattern used: the 06-23 precedent (Agrippina + Vladimir Icon) — when multiple independent, " +
+      "complete services share a date (not a combined §2B Double), the date key becomes an array of " +
+      "full entry objects, each self-contained with its own oca_primary flag, rank, and fields.",
+      "07-04 (existing Andrew of Crete & Martha Double, oca_primary unchanged) gains 07-04A, the Holy " +
+      "Royal Martyrs of Russia (Polyeleos §2E, oca_primary: false — OCA's own calendar order lists " +
+      "Andrew of Crete first for this date).",
+      "07-05 (existing Athanasius of Athos, oca_primary unchanged) gains three entries: 07-05B (Ven. " +
+      "Martyrs Elizabeth & Barbara & the Other Martyrs of Alapaevsk, Six-Stichera §2C), 07-05E " +
+      "(Uncovering of the Relics of Ven. Sergius of Radonezh, Vigil §2F), and 07-05F (an expanded " +
+      "standalone Elizabeth-only proper, Vigil §2F — richer than 07-05B's group treatment of the same " +
+      "saint). The Elizabeth kontakion is textually identical across 07-04A, 07-05B, and 07-05F.",
+      "07-08 (existing Kazan Icon, oca_primary unchanged) gains 07-08A, Greatmartyr Procopius " +
+      "(Six-Stichera §2C) — a clean, complete entry.",
+      "Gate: 71/71 PASS, zero new warnings. Two genuine miscounts caught and fixed during this batch: " +
+      "07-05E was missing a 4th repeat marker (all 4 stichera are marked 'Twice' in the source, not " +
+      "just 3); 07-05F's stichera_lord_i_call_count was corrected from the PDF's own labeled 8 down to " +
+      "the 7 actually printed — a source labeling discrepancy, flagged via stichera_lord_i_call_note " +
+      "rather than silently corrected or invented.",
+    ],
+  },
+  {
     version: "v0.25.0",
     date: "July 2026",
     summary: "07-28 through 07-31 encoded — July fully complete (all 31 days)",

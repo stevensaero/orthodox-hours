@@ -1,5 +1,48 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.25.0** | **Tone Trainer: v0.25.30** | Last synced: July 4, 2026
+**Tool version: v0.25.1** | **Tone Trainer: v0.25.30** | Last synced: July 5, 2026
+
+**Session July 5, 2026 — MISSED-COMMEMORATION AUDIT & FIX, Batch 1 of N (v0.25.1).**
+A Drive audit (prompted by Bill's question about "4 files for 07-05") found that this whole
+month's encoding used exact-match Drive searches (`title = 'MM-DD.pdf'`), which never
+surfaced lettered-variant files (`MM-DDA.pdf`, `MM-DDB.pdf`, etc.) marking additional
+independent commemorations sharing a date. Full sweep of all 31 July dates found **16 missed
+files across 13 dates** — several of them major (Royal Martyrs, Boris & Gleb, St. Vladimir,
+Anthony of the Caves, Panteleimon, Procopius). One (07-13A) is a movable Sunday feast
+(Holy Fathers of the First Six Ecumenical Councils, anchored to the Sunday on/around July 16)
+and needs separate architectural handling, not a same-date array fix.
+
+**Pattern used:** the 06-23 precedent (Agrippina + Vladimir Icon, both independent complete
+services on one date) — the date key becomes an **array** of full entry objects, each with
+its own `oca_primary` flag, `rank`, and complete field set. This is distinct from a §2B
+Double (one combined service, two saints sharing stichera/canon structure) — that stays a
+single object. The assembler already supports arrays (`Array.isArray(raw) ? raw : [raw]`,
+plus a `ded.arrayIndex` selector so the person using the tool can pick which commemoration
+to serve, defaulting to index 0).
+
+**Batch 1 (v0.25.1) — 07-04, 07-05, 07-08 (5 files):**
+- **07-04** gains 07-04A, Holy Royal Martyrs of Russia (Polyeleos §2E, `oca_primary: false`
+  — OCA's own calendar order lists Andrew of Crete first for this date; existing Andrew/
+  Martha Double entry unchanged).
+- **07-05** gains three entries: 07-05B (Ven. Martyrs Elizabeth & Barbara & the Other
+  Martyrs of Alapaevsk, Six-Stichera §2C), 07-05E (Uncovering of the Relics of Ven. Sergius
+  of Radonezh, Vigil §2F), and 07-05F (an expanded standalone Elizabeth-only proper, Vigil
+  §2F, richer than 07-05B's group treatment of the same saint — both included per source
+  fidelity; which is actually served is Bill's rubrical call). The Elizabeth kontakion is
+  textually identical across 07-04A, 07-05B, and 07-05F.
+- **07-08** gains 07-08A, Greatmartyr Procopius (Six-Stichera §2C) — clean, complete entry.
+- Gate: 71/71 PASS, zero new warnings. Two genuine miscounts caught during this batch: 07-05E
+  was missing a 4th repeat marker (all 4 stichera marked "Twice" in the source, not 3); 07-05F's
+  declared count was corrected from the PDF's own labeled 8 down to the 7 actually printed
+  (a source labeling discrepancy, flagged via `stichera_lord_i_call_note`, not invented).
+
+**Remaining batches (not yet done):** 07-10 (2 files: Deposition of the Robe of Christ,
+Anthony of the Caves of Kiev), 07-14 (native Aquila/Cyricus & Julitta file alongside the
+pre-existing Nicodemus entry sourced via O.S./N.S. conversion), 07-15 (St. Vladimir), 07-24
+(2 files: Boris & Gleb, New-Hieromartyr Maximus Sandovich), 07-26 (Moses of the Carpathians),
+07-27 (Panteleimon), 07-28 (Smolensk Icon). Then separately: 07-13's movable-feast handling,
+and a same-audit sweep of May and June (the root-cause search pattern applied there too).
+
+---
 
 **Session July 4, 2026 (cont.) — 07-28 through 07-31 encoded. JULY FULLY COMPLETE (v0.25.0).**
 Ninth and final batch of the July encoding session — all 31 days now encoded, verified by
