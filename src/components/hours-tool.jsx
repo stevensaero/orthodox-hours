@@ -8265,6 +8265,29 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.25.6",
+    date: "July 2026",
+    summary: "07-24, 07-26, 07-27 — added 6 missed commemorations (Batch 3 of the missed-commemoration audit)",
+    items: [
+      "07-24 gains two entries alongside the existing Martyr Christina: 07-24A, Holy Martyrs " +
+      "Boris & Gleb (Vigil §2F — the first canonized saints of the Russian Church, a major " +
+      "miss), and 07-24B, Holy New-Hieromartyr Maximus Sandovich, Protomartyr of the Lemko " +
+      "People (Vigil §2F — a 20th-century martyr, OCA calendar status not yet verified).",
+      "07-26 gains two entries alongside the existing Ven. Martyr Paraskeva: 07-26A, Ven. " +
+      "Moses of the Carpathians (Polyeleos §2E — two genuinely distinct proper kontakia for " +
+      "the same single saint, both recorded rather than 'same as'), and 07-26B, Holy " +
+      "Hieromartyr Hermolaus (Simple §2A — a minimal entry, found during this session's own " +
+      "Drive audit and not on the original missed-commemoration list, an additional gap on " +
+      "the same date).",
+      "07-27 gains one entry alongside the existing Seven Enlighteners of the Slavs & " +
+      "Bulgars: 07-27A, Holy Martyr & Unmercenary Healer Panteleimon (Six-Stichera §2C — one " +
+      "of the most widely venerated healing saints in Orthodoxy, a major miss).",
+      "Gate: vite build clean, 71/71 pointing-paths + sunday-vespers, 6/6 pointing-roles. Data " +
+      "structures verified by direct load: 07-24 3 entries, 07-26 3 entries, 07-27 2 entries, " +
+      "matching expected counts exactly.",
+    ],
+  },
+  {
     version: "v0.25.5",
     date: "July 2026",
     summary: "07-10, 07-14, 07-15 — added 5 missed commemorations (Batch 2 of the missed-commemoration audit)",
