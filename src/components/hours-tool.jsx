@@ -8265,6 +8265,27 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.25.7",
+    date: "July 2026",
+    summary: "07-28 — Smolensk Icon of the Theotokos added (Batch 4 of 4, closes the July missed-commemoration audit)",
+    items: [
+      "07-28 gains 07-28B, Smolensk Icon of Our Most Holy Lady, the Theotokos & Ever-Virgin " +
+      "Mary (Vigil §2F), alongside the existing Our Father Pitirim, Bishop of Tambov. Last " +
+      "file of the original 13-date/16-file missed-commemoration finding from the full-month " +
+      "Drive audit.",
+      "This closes the planned July batch work: all 16 originally-found missing files across " +
+      "13 dates are now encoded (07-04, 07-05 x3, 07-08, 07-10 x2, 07-14, 07-15, 07-24 x2, " +
+      "07-26, 07-27, 07-28), plus 07-26B (Hermolaus), a 14th file found mid-session that " +
+      "wasn't on the original list.",
+      "Remaining, tracked separately: 07-13's movable Sunday feast (Holy Fathers of the First " +
+      "Six Ecumenical Councils) needs its own architectural treatment, not a simple array " +
+      "addition. The same contains-search Drive audit that found all of July's gaps has not " +
+      "yet been run against May or June.",
+      "Gate: vite build clean, 71/71 pointing-paths + sunday-vespers, 6/6 pointing-roles. Data " +
+      "structure verified by direct load: 07-28 2 entries, matching expected count.",
+    ],
+  },
+  {
     version: "v0.25.6",
     date: "July 2026",
     summary: "07-24, 07-26, 07-27 — added 6 missed commemorations (Batch 3 of the missed-commemoration audit)",
