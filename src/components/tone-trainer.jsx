@@ -21,6 +21,15 @@ export const TONE_TRAINER_VERSION = "v0.25.30";
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
   {
+    version: "v0.25.31",
+    date: "July 2026",
+    summary: "fix: Tone 4 rotation logic — was silently falling back to Tone 1's flat A·B·C·D cycle",
+    items: [
+      "fix: ROT_DEFS had no entry for Tone 4, so both phraseForLine() and blockLinePhrase() fell back to ROT_DEFS[1] (a flat [\"A\",\"B\",\"C\",\"D\"] cycle) whenever Tone 4 was active — every line past the third was mislabeled, forcing manual tracking of the real rotation when encoding. Root cause: Tone 4's rotation (per the Drillock & Ealy Common Chant tutorial) has three one-time intro phrases before rotation starts — A, B, and C each used once, then D, E, and F rotating — a shape not covered by the existing array-or-simple-cycle entries. Fix: ROT_DEFS[4] added as a function, matching the CONTRACT already established for non-uniform tones (Tone 2's one-intro-phase pattern) — Final is handled by the caller, not inside the function. Verified against the tutorial's own 9-line worked example (A B C D E F D E Final). Also added the missing Phrase E / Phrase F entries to PNAME (previously would have rendered blank for any Tone 4 line past C), and a Tone 4 entry to the paste-box rotation hint (previously silently showed the generic Tone 1 hint text for Tone 4).",
+      "fix: tools/snapshot_comparison.mjs carries its own replica of ROT_DEFS and phraseForLine (not yet unified with the component — flagged for a future consolidation pass). While adding Tone 4 here, found its Tone 2 entry was also wrong (a flat array; the real rule is one intro phase then B·C·D rotating) and its phraseForLine had no function-type support at all, so a function-based ROT_DEFS entry would have silently misbehaved. Fixed both alongside the Tone 4 addition so the snapshot tool's Tone 2 and Tone 4 output actually matches the live component instead of drifting from it.",
+    ],
+  },
+  {
     version: "v0.25.30",
     date: "June 2026",
     summary: "fix: Tone 2 Final pre-slur regression — \"Hear\" now renders re(H·)·ti(Q), not a lone ti",
@@ -1305,6 +1314,12 @@ const ROT_DEFS = {
   1: ["A", "B", "C", "D"],
   2: (i, _total) => i === 0 ? "A" : ["B","C","D"][(i - 1) % 3],
   3: ["A", "B"],
+  // Tone 4 rule (Drillock & Ealy Common Chant tutorial):
+  //   "The first three phrases, A, B, and C are used only once, at the
+  //    beginning of a sticheron, then D, E, and F are sung in rotation up
+  //    to the last line of the text for the Final Phrase."
+  //   9-line example: A B C D E F D E Final
+  4: (i, _total) => i === 0 ? "A" : i === 1 ? "B" : i === 2 ? "C" : ["D","E","F"][(i - 3) % 3],
 };
 // phraseForLine: accepts active rotation (array OR function) as third argument.
 // Last line is always Final.
@@ -1313,7 +1328,7 @@ const phraseForLine = (i, total, rot) => {
   if (typeof rot === "function") return rot(i, total);
   return rot[i % rot.length];
 };
-const PNAME = { A: "Phrase A", B: "Phrase B", C: "Phrase C", D: "Phrase D", Final: "Final Phrase" };
+const PNAME = { A: "Phrase A", B: "Phrase B", C: "Phrase C", D: "Phrase D", E: "Phrase E", F: "Phrase F", Final: "Final Phrase" };
 
 // ── PITCH HEIGHT (sung display) ───────────────────────────────────────────────
 // la is the lowest pitch in cadences. Each scale step adds CHIP_STEP_H px.
@@ -4803,6 +4818,7 @@ export default function ToneTrainer() {
                   1: "A·B·C·D·…·Final",
                   2: "A, then B·C·D·…·Final",
                   3: "A·B·…·Final",
+                  4: "A, B, C, then D·E·F·…·Final",
                 }[activeTone] ?? "A·B·C·D·…·Final";
                 return `Load a Service .docx | Paste in a sticheron — one verse per line. Tone ${activeTone} rotates ${rotDesc}.`;
               })()}

@@ -90,14 +90,21 @@ const PH_DEFS = {
 
 const ROT_DEFS = {
   1: ["A", "B", "C", "D"],
-  2: ["A", "B", "C", "D"],
+  // Tone 2: was a flat ["A","B","C","D"] array here — wrong. Real rule (mirrors
+  // tone-trainer.jsx): A only on the first line, then B·C·D rotate.
+  2: (i, _total) => i === 0 ? "A" : ["B","C","D"][(i - 1) % 3],
   3: ["A", "B"],
+  // Tone 4: A, B, C used once each at the start, then D·E·F rotate.
+  4: (i, _total) => i === 0 ? "A" : i === 1 ? "B" : i === 2 ? "C" : ["D","E","F"][(i - 3) % 3],
 };
 
 // ── Helper functions (replicated from tone-trainer.jsx) ───────────────────────
 
-const phraseForLine = (i, total, rot) =>
-  i === total - 1 ? "Final" : rot[i % rot.length];
+const phraseForLine = (i, total, rot) => {
+  if (i === total - 1) return "Final";
+  if (typeof rot === "function") return rot(i, total);
+  return rot[i % rot.length];
+};
 
 function syllabifySimple(word) {
   // Minimal rule-based fallback — only used for words not in the lexicon.
