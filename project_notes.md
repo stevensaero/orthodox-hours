@@ -1,5 +1,27 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.25.3** | **Tone Trainer: v0.25.30** | Last synced: July 5, 2026
+**Tool version: v0.25.4** | **Tone Trainer: v0.25.30** | Last synced: July 5, 2026
+
+**Session July 5, 2026 (cont.) — 07-05 oca_primary corrected (v0.25.4).**
+Bill flagged that 07-05's `oca_primary` looked wrong. Checked directly against oca.org rather
+than trusting the earlier assumption: the Lives-of-the-Saints page for July 5, 2026 lists
+Athanasius of Athos first, Sergius's Uncovering-of-Relics second (matching what was originally
+encoded) — but oca.org's own Lectionary of Daily Readings labels the shared Venerable-saint
+reading pair (Galatians 5:22-6:2 / Luke 6:17-23) **"(either Saint)"**, meaning OCA treats the
+two as co-equal alternatives, not a primary/secondary pair. Sergius's `oca_primary` corrected
+from `false` to `true` — the first date this session with two `true` entries in one array,
+confirmed safe since `services.findIndex(s => s.oca_primary === true)` only needs the first
+match, and array order (Athanasius first) still determines the UI default.
+
+Also strengthened the notes on 07-05B (Elizabeth & Barbara & the Alapaevsk martyrs) and 07-05F
+(expanded standalone Elizabeth proper): neither commemoration appears on oca.org's
+Lives-of-the-Saints page or Lectionary for July 5 at all — a genuine OCA-vs-Russian-Menaion
+divergence per the project's own "flag all divergences" rule, not merely a lower OCA ranking.
+
+**Lesson:** don't assume a listing-page's display order equals true liturgical primacy —
+check the Lectionary (which reading set actually governs the day) for a stronger signal, since
+a CMS bio-page order can be arbitrary while the reading assignment reflects real precedence.
+
+---
 
 **Session July 5, 2026 (cont.) — INCIDENT: v0.25.2 broke every Vespers date, fixed in v0.25.3.**
 Deploy is automatic (GitHub Actions, confirmed this session — corrected an earlier wrong
