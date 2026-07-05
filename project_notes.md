@@ -1,5 +1,44 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.25.2** | **Tone Trainer: v0.25.30** | Last synced: July 5, 2026
+**Tool version: v0.25.3** | **Tone Trainer: v0.25.30** | Last synced: July 5, 2026
+
+**Session July 5, 2026 (cont.) — INCIDENT: v0.25.2 broke every Vespers date, fixed in v0.25.3.**
+Deploy is automatic (GitHub Actions, confirmed this session — corrected an earlier wrong
+assumption that it was manual). v0.25.2's rename (`menaionProk` → `greatFeastProk`, prokSource
+value `'menaion_festal'` → `'great_feast_of_the_lord'`) missed a leftover reference in the
+`ProkeimenonExplainer` badge-source logic (~line 4075), which runs unconditionally on every
+Vespers assembly. Referenced the removed variable → `ReferenceError: menaionProk is not
+defined` on every single date. No ErrorBoundary around Vespers (standing known fragility) →
+blank screen, not a caught/handled error.
+
+**Why the gate didn't catch it:** none of the three gate scripts actually call
+`assembleVespers()` — confirmed in their own comments, JSX can't be ESM-imported in a plain-
+node harness. `vite build` only transforms/bundles; it doesn't execute the code. An undefined-
+variable reference is a runtime `ReferenceError`, invisible to both.
+
+**How it was actually verified this time:** built a standalone test harness (vite library-mode
+build against a copy of `hours-tool.jsx` with the relevant functions exported, run in Node with
+a `require` shim for the externalized React import) and directly executed `assembleVespers`/
+`getKathismaForVespers` — not just built the code, ran it. Confirmed 0 failures across all 31
+July dates (including every array entry: 07-04's 2, 07-05's 4, 07-08's 2 — matching Batch 1's
+encoded counts exactly) and 0 failures across 6 Great Feast dates never before exercised in
+practice (Transfiguration, Elevation of the Cross, Nativity, Theophany — `forLord: true`,
+kathisma correctly omitted; Nativity of the Theotokos, Dormition — Theotokos feasts, kathisma
+correctly NOT omitted, confirming the kathisma fix is functionally correct, not just
+non-crashing).
+
+**Also fixed while in there:** several explanatory strings in the same `ProkeimenonExplainer`
+component still described the old rank-based behavior (`'Festal (Menaion)'`, "this saint's
+Polyeleos or Vigil rank...", "Overridden by festal prokeimenon at Polyeleos/Vigil rank") —
+wouldn't have crashed, but would show incorrect rubrical explanations to the reader once a real
+Feast of the Lord is encoded. Corrected to reflect the actual Feast-of-the-Lord/Saturday-always-
+wins rule.
+
+**Lesson for future sessions:** a clean `vite build` and passing gate scripts are necessary but
+not sufficient for a runtime change to `assembleVespers()`/`getKathismaForVespers()` — actually
+execute the changed function against real dates before considering a fix complete, especially
+across every array entry for multi-commemoration dates.
+
+---
 
 **Session July 5, 2026 (cont.) — Vespers prokeimenon override bug + kathisma-suppression bug,
 same root cause, both fixed (v0.25.2).**
