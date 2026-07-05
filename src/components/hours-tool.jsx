@@ -4060,8 +4060,12 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     : "Wisdom! The Prokeimenon.";
   const prokNote = isGreatProk
     ? "Great Prokeimenon: the deacon/priest announces the tone and text; the choir sings, then the deacon reads each verse and the choir repeats the prokeimenon after each (sung 4 times total). Served at Great Vespers on Saturday evenings and on the eves of certain Great Feasts. — OCA Office of Vespers (2021); HTM Vespers; Fekula §2"
-    : prokSource === 'menaion_festal'
-      ? "Festal Prokeimenon: this saint's Polyeleos or Vigil rank appoints a proper prokeimenon from the Menaion, which replaces the ordinary weekly prokeimenon (and the Saturday Great Prokeimenon if applicable). — Fekula §2E–§2F"
+    : prokSource === 'great_feast_of_the_lord'
+      ? "Great Prokeimenon: this is one of eight named Feasts of the Lord (Nativity, Theophany, " +
+        "Transfiguration, Elevation of the Cross, and the four Pentecostarion feasts), which replaces " +
+        "the ordinary weekly prokeimenon — but never on a Saturday evening, when the Saturday Great " +
+        "Prokeimenon always governs instead. — OCA Liturgics, \"Prokeimenon of the Day\"; MCI, \"The " +
+        "Entrance and Readings of Vespers\""
       : "Daily Prokeimenon: the deacon/priest announces the tone and text; the choir sings it twice, then the deacon reads the verse, then the choir sings it once more (3 times total). — OCA Office of Vespers (2021); HTM Vespers; Fekula §2";
   elements.push({id:"v-prok",type:"prokeimenon",
     label:"Prokeimenon" + (isGreatProk ? " (Great)" : "") + " · Tone " + (vespProk ? vespProk.tone : ""),
@@ -4072,7 +4076,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     prokDow: dow,
     prokRank: rank,
     source:(isPentecostarion && pentEntry && pentEntry.vespers_prokeimenon) ? "Pentecostarion"
-      : menaionProk ? "Menaion · " + (menaionEntry.saint || "feast")
+      : greatFeastProk ? "Feast of the Lord · " + ((feastPeriod && feastPeriod.feast && feastPeriod.feast.name) || "feast")
       : "HTM Vespers — daily",
     fekula:{section:fekulaSection, note:prokNote}});
   // 10. OT LESSONS (§2E / §2F only)
@@ -8261,6 +8265,40 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.25.3",
+    date: "July 2026",
+    summary: "fix: ReferenceError broke every single Vespers date in v0.25.2 — leftover reference to a renamed variable",
+    items: [
+      "v0.25.2's rename (menaionProk -> greatFeastProk, prokSource value 'menaion_festal' -> " +
+      "'great_feast_of_the_lord') missed a leftover reference in the ProkeimenonExplainer " +
+      "badge-source logic, which runs unconditionally on every Vespers assembly. Referencing " +
+      "the removed variable threw ReferenceError: menaionProk is not defined on every date. No " +
+      "ErrorBoundary around Vespers (standing known fragility) meant this rendered as a blank " +
+      "screen rather than a caught, handled error.",
+      "Root cause of why the gate and build didn't catch it: none of the three gate scripts " +
+      "actually call assembleVespers() (confirmed in their own comments — JSX can't be " +
+      "ESM-imported in a plain-node harness), and vite build only transforms/bundles, it " +
+      "doesn't execute the code. An undefined-variable reference is a runtime ReferenceError, " +
+      "invisible to both.",
+      "Verified this time by actually executing the code: built a standalone test harness " +
+      "(vite library-mode build against an export-augmented copy of hours-tool.jsx, run in " +
+      "Node with a require shim for the externalized React import) and directly called " +
+      "assembleVespers()/getKathismaForVespers(). 0 failures across all 31 July dates " +
+      "including every array entry (07-04's 2, 07-05's 4, 07-08's 2 — matching Batch 1's " +
+      "encoded counts). 0 failures across 6 Great Feast dates never before exercised in " +
+      "practice, since no Great Feast falls in May/June/July: Transfiguration, Elevation of " +
+      "the Cross, Nativity, Theophany (forLord: true, kathisma correctly omitted); Nativity of " +
+      "the Theotokos, Dormition (Theotokos feasts, kathisma correctly NOT omitted — confirms " +
+      "the v0.25.2 kathisma fix is functionally correct, not just non-crashing).",
+      "Also corrected several explanatory strings in the same ProkeimenonExplainer component " +
+      "that still described the old rank-based behavior ('Festal (Menaion)', \"this saint's " +
+      "Polyeleos or Vigil rank...\", \"Overridden by festal prokeimenon at Polyeleos/Vigil " +
+      "rank\") — non-crashing, but would have shown incorrect rubrical explanations once a " +
+      "real Feast of the Lord is encoded.",
+      "Gate: vite build clean, 71/71 pointing-paths + sunday-vespers, 6/6 pointing-roles.",
+    ],
+  },
+  {
     version: "v0.25.2",
     date: "July 2026",
     summary: "fix: Vespers prokeimenon override was firing on Menaion rank, not Feast-of-the-Lord identity — plus a related kathisma-suppression bug found during the same investigation",
@@ -10196,7 +10234,7 @@ function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
   };
 
   const sourceLabel = prokSource === 'saturday_great' ? 'Saturday Great Prokeimenon'
-    : prokSource === 'menaion_festal' ? 'Festal (Menaion)'
+    : prokSource === 'great_feast_of_the_lord' ? 'Great Prokeimenon (Feast of the Lord)'
     : prokSource === 'pentecostarion' ? 'Festal (Pentecostarion)'
     : 'Weekly daily table';
 
@@ -10238,18 +10276,19 @@ function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
         <div style={{ background: 'rgba(139,105,20,0.07)', borderLeft: '3px solid #8B6914',
           padding: '0.4rem 0.6rem', borderRadius: '0 3px 3px 0', marginBottom: '0.75rem' }}>
           <strong>Active source:</strong> {sourceLabel}
-          {prokSource === 'menaion_festal' && (
+          {prokSource === 'great_feast_of_the_lord' && (
             <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
-              This saint's <strong>{prokRank}</strong> rank appoints a proper festal prokeimenon
-              from the Menaion, which overrides the weekly table — including the Saturday Great
-              Prokeimenon when serving falls on a Saturday evening. — Fekula §2E–§2F
+              This is one of eight named <strong>Feasts of the Lord</strong> (Nativity, Theophany,
+              Transfiguration, Elevation of the Cross, and the four Pentecostarion feasts), which
+              replaces the ordinary weekly prokeimenon — but never on a Saturday evening. — OCA
+              Liturgics, "Prokeimenon of the Day"; MCI Vespers
             </div>
           )}
           {prokSource === 'saturday_great' && (
             <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
               Saturday evening always uses the <strong>Great Prokeimenon in Tone 6</strong> (3 verses,
-              sung 4×). Replaced by a festal prokeimenon when a Polyeleos or Vigil saint is commemorated.
-              — HTM Vespers; Fekula §2
+              sung 4×). Never replaced by anything else, not even a genuine Feast of the Lord.
+              — OCA Liturgics, "Prokeimenon of the Day"; HTM Vespers
             </div>
           )}
           {prokSource === 'pentecostarion' && (
@@ -10270,8 +10309,8 @@ function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
           <strong>Priority order:</strong>
           <ol style={{ margin: '4px 0 0 1rem', padding: 0, color: '#3D3020' }}>
             <li>Pentecostarion feast prokeimenon (when in Pentecostarion season)</li>
-            <li>Menaion festal prokeimenon — Polyeleos §2E or Vigil §2F rank</li>
-            <li>Saturday Great Prokeimenon (Tone 6, 3 verses) — Saturday evening</li>
+            <li>Saturday Great Prokeimenon (Tone 6, 3 verses) — Saturday evening, always, no exceptions</li>
+            <li>Great Feast of the Lord prokeimenon — only on the 8 named feasts, and only if not a Saturday evening</li>
             <li>Weekly daily table — keyed by day of week</li>
           </ol>
         </div>
@@ -10300,7 +10339,7 @@ function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
               const isActive = (prokSource === 'weekly' || prokSource === 'saturday_great')
                 && ((row.day === 'Saturday' && prokDow === 6) ||
                     (row.day !== 'Saturday' && i === prokDow))
-                && prokSource !== 'menaion_festal' && prokSource !== 'pentecostarion';
+                && prokSource !== 'great_feast_of_the_lord' && prokSource !== 'pentecostarion';
               return (
               <tr key={i} style={{
                 background: isActive ? 'rgba(139,105,20,0.1)' : 'transparent',
@@ -10319,11 +10358,11 @@ function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
             })}
           </tbody>
           {/* Festal override row — shown when a feast replaces the daily */}
-          {(prokSource === 'menaion_festal' || prokSource === 'pentecostarion') && (
+          {(prokSource === 'great_feast_of_the_lord' || prokSource === 'pentecostarion') && (
             <tfoot>
               <tr style={{ background: 'rgba(139,105,20,0.1)', borderTop: '1px solid #D4C49A' }}>
                 <td style={{ padding: '4px 6px 4px 0', color: '#5A4010', fontWeight: 'bold', fontSize: '0.75rem' }}>
-                  {prokSource === 'pentecostarion' ? 'Pentecostarion feast' : 'Menaion festal'}
+                  {prokSource === 'pentecostarion' ? 'Pentecostarion feast' : 'Feast of the Lord'}
                 </td>
                 <td style={{ padding: '4px 6px', textAlign: 'center', color: '#8B6914', fontWeight: 'bold' }}>—</td>
                 <td colSpan={1} style={{ padding: '4px 0 4px 6px', color: '#5A4010',
@@ -10335,8 +10374,9 @@ function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
           )}
         </table>
         <div style={{ fontSize: '0.72rem', color: '#9A8A70', marginTop: '0.5rem' }}>
-          ★ Great Prokeimenon — 3 verses, sung 4×. Overridden by festal prokeimenon at Polyeleos/Vigil rank.
-          Source: HTM Horologion (Jordanville, 1994); OCA Office of Vespers (2021).
+          ★ Great Prokeimenon — 3 verses, sung 4×. Never overridden by anything, not even a
+          genuine Feast of the Lord. Source: HTM Horologion (Jordanville, 1994); OCA Office of
+          Vespers (2021).
         </div>
       </div>
     </span>
