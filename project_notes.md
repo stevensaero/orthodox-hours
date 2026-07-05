@@ -1,5 +1,40 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.25.4** | **Tone Trainer: v0.25.30** | Last synced: July 5, 2026
+**Tool version: v0.25.5** | **Tone Trainer: v0.25.30** | Last synced: July 5, 2026
+
+**Session July 5, 2026 (cont.) — Missed-commemoration audit, Batch 2 of N (v0.25.5).**
+07-10, 07-14, 07-15 — 5 more missed commemorations added, continuing the batches-of-three plan.
+
+- **07-10** gains 07-10A (Deposition of the Robe of Christ, Vigil §2F — rubric-confirmed vigil
+  intent, same pattern as 07-30) and 07-10B (Ven. Anthony of the Caves of Kiev, Vigil §2F —
+  explicit Little Vespers section) alongside the existing 45 Martyrs of Nicopolis.
+- **07-14** gains 07-14.pdf itself (native July 14 file: Apostle Aquila & Martyrs Cyricus &
+  Julitta, Simple §2B Double) alongside the existing Nicodemus entry (O.S./N.S.-converted from
+  07-01A.pdf). Kontakion routing by canon position, not title order.
+- **07-15** gains two entries alongside the existing Juvenal (also O.S./N.S.-converted, from
+  07-02.pdf): 07-15.pdf natively (Blessed Augustine, Bishop of Hippo, Polyeleos §2E — "Blessed"
+  not "Saint" per source; OCA's own observance of him on this date not yet verified) and 07-15A
+  (St. Vladimir, Polyeleos §2E, oca_primary: true — a major miss, one of the most significant
+  saints in the Russian calendar). Vladimir's source explicitly states the Magnificat is
+  chanted despite not being a Theotokos feast — recorded as printed, flagged as unusual.
+
+**Verification this time went beyond gate+build:** given the v0.25.2 incident earlier this
+session (a clean build and passing gate still shipped a ReferenceError that broke every
+Vespers date, because none of the three gate scripts actually execute assembleVespers), the
+three new array structures were also directly loaded and checked — 07-10 confirmed 3 entries,
+07-14 confirmed 2, 07-15 confirmed 3, matching expected counts exactly. This is a pure data
+change (no hours-tool.jsx logic touched), so the risk profile is much lower than the v0.25.2
+incident, but the direct-load check is now standard practice for any new array-shaped date
+regardless.
+
+**Pre-existing gap surfaced, not fixed:** the unchanged Nicodemus entry (now 07-14[0]) lacks
+aposticha_glory, which the validator expects at Polyeleos rank and above. Predates this
+session — flagged for a future pass, not fixed here (scope creep beyond adding missed
+commemorations).
+
+**Remaining batches:** Batch 3 — 07-24, 07-26, 07-27. Batch 4 — 07-28 (last one). Then
+separately: 07-13's movable-feast architecture, and the same audit sweep for May and June.
+
+---
 
 **Session July 5, 2026 (cont.) — 07-05 oca_primary corrected (v0.25.4).**
 Bill flagged that 07-05's `oca_primary` looked wrong. Checked directly against oca.org rather
