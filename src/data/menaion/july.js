@@ -7321,7 +7321,8 @@ const JULY_MENAION = {
   // ── July 28 — Our Father Pitirim, Bishop of Tambov (Vigil §2F) ───────────
   // Source: St. Sergius 07-28.pdf. Little Vespers printed → Vigil per §1.1.
 
-  "07-28": {
+  "07-28": [
+    {
     saint: "Our Father Pitirim, Bishop of Tambov",
     oca_primary: true,
     source_file: "07-28.pdf",
@@ -7550,6 +7551,217 @@ const JULY_MENAION = {
         source: "Canon II, Ode VI", label: "Theotokion" },
     ],
   },
+  {
+    // ── July 28B — Smolensk Icon of Our Most Holy Lady, the Theotokos & Ever-Virgin Mary (Vigil §2F) ──
+    // Source: St. Sergius 07-28B.pdf. Discovered via full-month Drive audit (see 07-04B note),
+    // the last of the original 13-date/16-file finding list. Litya, Polyeleos, Great Doxology,
+    // and 3 paroemias (the standard Theotokos-icon set: Genesis/Jacob's Ladder, Ezekiel, Proverbs)
+    // all explicit; no Small Vespers heading. Uses "Directress" (Hodegetria) as its recurring
+    // epithet throughout, consistent with the Smolensk Icon's traditional type.
+    saint: "Smolensk Icon of Our Most Holy Lady, the Theotokos & Ever-Virgin Mary",
+    oca_primary: false,
+    source_file: "07-28B.pdf",
+    rank: "vigil",
+    fekula_section: "2F",
+    has_great_doxology: true,   // PDF: "Great Doxology. Troparia. Litanies. Dismissal. First Hour."
+    has_polyeleos: true,        // PDF: "Polyeleos, and this Magnification: It is meet to magnify thee, O Theotokos..."
+    has_litya: true,            // PDF: "At Litiya, the Sticheron of the temple, and these Stichera"
+    has_paroemias: true,        // PDF: 3 readings (Genesis, Ezekiel, Proverbs)
+    magnificat_sung: true,      // Theotokos icon feast, Polyeleos rank (not one of the Twelve Great
+                                 // Feasts) — Magnificat suppression is a Great-Feast-of-the-Theotokos-
+                                 // only rule; consistent with 07-08/07-12/07-23 this month.
+    matins_format: "god_is_the_lord",
+    aposticha_source: "menaion",
+    note: "Vigil §2F per encoding_rule_v2.md §1.1: Great Doxology, Litya, Polyeleos, and 3 " +
+          "paroemias all explicit; no Small Vespers heading. This is the last file of the " +
+          "original 13-date/16-file missed-commemoration finding — Batch 4, closing out the " +
+          "planned July audit (07-13's movable-feast case and the May/June sweep remain " +
+          "separately). Two kontakia given, but both are textually identical in content-type " +
+          "(standard 'protection of Christians' Theotokos kontakion) at Ode III and Ode VI " +
+          "positions — recorded distinctly per position, not collapsed, since Fekula's " +
+          "Hours-routing rule keys on canon position regardless of textual similarity. " +
+          "Re-encoded at corrected scope: full canon (9 odes) present in PDF but not " +
+          "captured. Beatitudes (4 Ode III + 4 Ode VI) captured per the PDF's own explicit " +
+          "'On the Beatitudes' heading.",
+    feast_e: "Hebrews 9:1-7 (§320)",
+    feast_g: "Luke 10:38-42, 11:27-28 (§54)",
+    prokeimenon_tone: 3,
+    prokeimenon_text: "My soul doth magnify the Lord, and my spirit hath rejoiced in God my Savior.",
+    prokeimenon_stichos: "For He hath looked upon the lowliness of His handmaiden; for behold, from henceforth all generations shall call me blessed.",
+    alleluia_tone: 8,
+    alleluia_verse: "Hearken, O daughter, and see, and incline thine ear.",
+    alleluia_stichos: "The rich among the people shall entreat thy countenance.",
+    communion_verse: "I will take the cup of salvation, and I will call upon the name of the Lord.",
+    paroemia_1: "Genesis — Jacob's Ladder (Gen 28:10-17)",
+    paroemia_2: "Ezekiel — The shut eastern gate of the sanctuary (Ez 43:27-44:4)",
+    paroemia_3: "Proverbs — Wisdom hath built a house for herself (Prov 9:1-11)",
+    // 8 stichera: 1 (Thrice) + 1 (Thrice) + 1 (Twice) + Glory + Both-now = 8 total.
+    stichera_lord_i_call_count: 8,
+    stichera_lord_i_call: [
+      { tone: 2, text: "O golden censer, jar and staff, radiant lamp, divine scroll whereon " +
+              "the Word was written by the finger of God, save us who magnify thee." },
+      { repeatIndex: 0 }, { repeatIndex: 0 }, // (Thrice)
+      { tone: 2, text: "Grant aid unto us who place our trust in thee, O Theotokos, thou " +
+              "refuge of the faithful. And deliver thy servants from misfortunes, O Virgin; " +
+              "for in thee, after God, do we set our hope." },
+      { repeatIndex: 3 }, { repeatIndex: 3 }, // (Thrice)
+      { tone: 2, text: "O Lady, Mother of the Redeemer, accept the supplication of thy " +
+              "servants who pray unto thee even though unworthily, that thou mayest pray " +
+              "for us unto Him Who was born of thee. O Sovereign Lady of the world, be thou " +
+              "our redeemer." },
+      { repeatIndex: 6 }, // (Twice)
+    ],
+    stichera_glory: {
+      tone: 6,
+      text: "O Virgin, who didst receive the joy of the angels and hast given birth to thy " +
+            "Creator: save those who magnify thee.",
+    },
+    lic_theotokion: {
+      tone: 8,
+      text: "O Sovereign Lady, accept the supplications of thy servants, and deliver us " +
+            "from all want and grief.",
+    },
+
+    // ── VESPERS — LITIYA ────────────────────────────────────────────────────
+    litya_stichera: [
+      { tone: 8, text: "O Good One, Who ridest upon the cherubim and art hymned by the " +
+              "seraphim, Thou didst descend from heaven as the prophets said, and made " +
+              "Thine abode in the womb of the pure divine Maiden, to whom the angels " +
+              "mystically sing: Rejoice, O joyous Virgin, who in a manner past all telling " +
+              "didst receive in thy womb God Who leadeth the world from unbelief unto " +
+              "faith. Glory to Thee, O Christ, Who alone art merciful and the Lover of mankind." },
+      { tone: 7, text: "Adorn thy chamber, O pure one, and receive thy King. Hearken to the " +
+              "salutation of the angel, O Virgin! For, lo! thou art the throne of the " +
+              "cherubim! Behold, thou hast received the King of all. Thou art a cloud of " +
+              "light, O Theotokos, having through the spirit received rays in thy soul. Thee " +
+              "doth the divine Gabriel proclaim aloud, crying out with joy: Thou shalt give " +
+              "birth to a Son, the Most High, through the wondrous coming of the Spirit of " +
+              "God! Adorn thyself, O holy chamber! O Gabriel, herald Christ the King! Greet " +
+              "Mary, the gateway of heaven! For she is the newly wrought throne of the " +
+              "cherubim; for she is worthy to receive the cry: Rejoice! The Virgin is seen " +
+              "to be a cloud of light, bearing Christ, the Sun of glory, the Master of life, " +
+              "of death, and of all, Whom the Spirit of God caused to dwell in her womb at " +
+              "thy word, O most glorious one." },
+      { tone: 7, text: "Gabriel came from heaven to announce unto the Virgin Him Who shone " +
+              "forth from the Father before time began, and in latter days became " +
+              "ineffably incarnate of His Mother; and he cried: Rejoice, O pure one! " +
+              "Rejoice, sacred and joyous Virgin who conceived Christ God in thy womb, Whom " +
+              "Moses when he beheld God on Mount Sinai foreseeing, rejoiced, and to Whom " +
+              "Symeon cried: Behold, the Light of the nations, the glory of Israel, and the " +
+              "Savior of our souls!" },
+    ],
+    litya_glory: {
+      tone: 8,
+      text: "Let us all hymn Mary the Theotokos, the Mother of God, chanting: Rejoice, O " +
+            "animate ladder! Rejoice, bush unconsumed! Rejoice, jar all of gold! Rejoice, " +
+            "flower of faith! Rejoice, staff which put forth branches! Rejoice, golden " +
+            "censer! Rejoice, O Virgin, thou divine mountain overshadowed! Rejoice, " +
+            "annulment of the curse of the first Eve! Rejoice, throne of the Lord! Rejoice, " +
+            "beauty of many names! Rejoice, O Sovereign Lady!",
+    },
+    litya_both_now: "same as litya_glory",
+
+    // ── VESPERS — APOSTICHA ─────────────────────────────────────────────────
+    stichera_aposticha: [
+      { tone: 2, spec_mel: "When from the Tree",
+        text: "Thou dost intercede for all * who with faith have recourse * to thy mighty " +
+              "protection, O good one, * for we sinners who ever find ourselves * in " +
+              "tribulations and sorrows * have no other deliverance before God, * weighed " +
+              "down as we are by many sins, O Mother of God Most High. * Wherefore, we fall " +
+              "down before thee: ** Deliver thy servants from every evil circumstance." },
+      { tone: 2, spec_mel: "When from the Tree", verse: "I shall commemorate thy name * in every generation and generation.",
+        text: "O most pure Mother of God Most High, * thou joy of all who sorrow, * helper " +
+              "of the oppressed, feeder of the hungry, * thou art the consolation of " +
+              "travelers, * haven for the tempest-tossed, * visitation of the sick, * " +
+              "protection and aid of the weak, * staff of old age. ** Hasten thou, we pray, " +
+              "that thy servants may be saved." },
+      { tone: 2, spec_mel: "When from the Tree", verse: "Hearken, O daughter, and see, * and incline thine ear.",
+        text: "Rejoice, O most pure Virgin! * Rejoice, precious scepter of Christ the King! " +
+              "* Rejoice, thou who gavest rise to the mystic Grape! * Rejoice, portal of " +
+              "heaven, bush unconsumed! * Rejoice, universal light! * Rejoice, joy of all! * " +
+              "Rejoice, salvation of the faithful! * Rejoice, O Lady, ** thou helper and " +
+              "refuge of all Christians!" },
+    ],
+    aposticha_glory: {
+      tone: 8,
+      text: "Rejoice, thou praise of the universe! Rejoice, temple of the Lord! Rejoice, " +
+            "mountain overshadowed! Rejoice, refuge of all! Rejoice, golden candlestick! " +
+            "Rejoice, honored glory of the Orthodox! Rejoice, Mary, Mother of Christ God! " +
+            "Rejoice, paradise! Rejoice, divine table! Rejoice, tabernacle! Rejoice, golden " +
+            "jar! Rejoice, thou hope of all!",
+    },
+    aposticha_both_now: "same as aposticha_glory",
+    troparion: {
+      tone: 4,
+      text: "To the Theotokos we, the sinful and lowly, now earnestly have recourse; * and " +
+            "we fall down in repentance, * crying out from the depths of our heart: * O " +
+            "Lady, take pity and have mercy upon us! * Hasten thou, for we are perishing in " +
+            "the multitude of our transgressions! * Turn not thy servants empty away, ** " +
+            "for thee do we have as our only hope!",
+    },
+    troparion_2: {
+      tone: 4,
+      note: "A second Theotokos troparion given in the same tone, printed alongside the first at Great Vespers and Matins.",
+      text: "We shall never cease to speak of thy power, * unworthy though we are, O " +
+            "Theotokos; * for if thou hadst not interceded, * who would have delivered us " +
+            "from so many misfortunes? * Who would have kept us free until this day? * We " +
+            "shall never depart from thee, O Lady, ** for thou ever savest thy servants from all evils.",
+    },
+    kontakion_ode6: {
+      tone: 6,
+      text: "O protection of Christians who cannot be put to shame, * mediation before the " +
+            "Creator unfailing! * Disdain not the suppliant voices of us sinners, * but as " +
+            "thou art good help us who cry unto thee: * Hasten thou to offer supplication, " +
+            "* and speed thou to entreaty, O Theotokos ** who ever intercedest for those who honor thee.",
+    },
+    kontakion_ode3: {
+      tone: 6,
+      note: "A second, distinctly-positioned Theotokos kontakion (Ode III), textually similar " +
+            "in theme to kontakion_ode6 but a separate printed text at a separate canon position.",
+      text: "We have no other help, we have no other hope than thee. * Help us O Lady. * " +
+            "For we place our trust in thee, * and in thee do we boast, for we are thy " +
+            "servants; ** let us not be put to shame.",
+    },
+    ikos: "Extend thy hands, wherein thou didst receive the Master of all as a babe, " +
+          "through the magnitude of His goodness; forsake us not who ever set our hope on " +
+          "thee, and in thy vigilant supplication and incalculable forgiveness take pity on " +
+          "us, and grant thy loving-kindness unto our souls, pouring it forth forever. For " +
+          "thee do we sinners have as a helper against the misfortunes and evils which " +
+          "assail us, and as thou dost possess compassions of loving-kindness, hasten thou " +
+          "to supplication, and speed thou to entreaty, O Theotokos who ever intercedest " +
+          "for those who honor thee.",
+    exapostilarion: {
+      text: "Let the most hymned Mother of God, who gave birth to Christ our God, be " +
+            "honored: the opening of the gates of paradise, the cleansing of the whole " +
+            "world, our restoration to life. This is what was spoken of by the prophets. " +
+            "Let us worship God, the Savior of our souls!",
+    },
+    matins_exapostilarion_theotokion: {
+      text: "Come, ye faithful, and with a pure conscience let us exalt the Mother of our " +
+            "God, who bore within her womb Christ, the divine infant Savior. As she hath " +
+            "maternal boldness before Him, she prayeth unceasingly for us, and granteth her " +
+            "servants rich mercy.",
+    },
+
+    // ── Beatitudes (AT LITURGY) ─────────────────────────────────────────────
+    beatitudes_troparia: [
+      { text: "Rejoice, O pure Directress, thou unshakable and animate palace of Christ, the King most high! Rejoice, rejoice, thou through whom our city is preserved undestroyed.",
+        source: "Ode III", label: "1" },
+      { text: "Him Whom creation is unable to contain didst thou bodily contain in thy womb which knew not wedlock, O Virgin Directress; wherefore, we chant unto thee: Rejoice!, magnifying thee as is meet.",
+        source: "Ode III", label: "2" },
+      { text: "O greatly hymned joy of the world, ever joyously hymning thee, we are deemed worthy of everlasting joy through thy maternal supplications unto Him Who was born of thee, O pure Directress.",
+        source: "Ode III", label: "3" },
+      { text: "We call upon thee, the golden jar, the lamp-stand, the staff, the table, O pure one, and we ever offer thee the cry, Rejoice!, while calling thee such things.",
+        source: "Ode III", label: "4" },
+      { text: "Receiving Christ, O pure Virgin Directress, thou didst hear the cry, Rejoice! And having ineffably given birth unto Him, thou dost ever hear from all, Rejoice! Thou hast filled all with joy, and hast united those above to those below, O Directress. Wherefore, heaven and all the earth now cry out to thee together.",
+        source: "Ode VI", label: "1" },
+      { text: "Rejoice, O most hymned Directress, consolation of widows and all orphans! Rejoice, thou who pourest forth inexhaustible riches upon all the people!",
+        source: "Ode VI", label: "2" },
+      { text: "Rejoice, O Directress, thou habitation of Christ, who art more lustrous than any gold and more radiant than the dawning of the sun! Rejoice, O Virgin! Rejoice, O unwedded Bride!",
+        source: "Ode VI", label: "3" },
+    ],
+  },
+  ],
 
   // ── July 29 — Holy Martyr Callinicus (Simple §2A) ────────────────────────
   // Source: St. Sergius 07-29.pdf.
