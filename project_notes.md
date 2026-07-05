@@ -1,5 +1,30 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.25.6** | **Tone Trainer: v0.25.30** | Last synced: July 5, 2026
+**Tool version: v0.25.7** | **Tone Trainer: v0.25.30** | Last synced: July 5, 2026
+
+**Session July 5, 2026 (cont.) — Missed-commemoration audit CLOSED for July, Batch 4 of 4 (v0.25.7).**
+07-28 gains 07-28B (Smolensk Icon of the Theotokos, Vigil §2F) alongside the existing Pitirim.
+This is the last file from the original 13-date/16-file full-month Drive audit.
+
+**July missed-commemoration audit — complete summary:**
+All 16 originally-found missing files are now encoded: 07-04 (+1), 07-05 (+3), 07-08 (+1),
+07-10 (+2), 07-14 (+1), 07-15 (+2), 07-24 (+2), 07-26 (+1), 07-27 (+1), 07-28 (+1) — plus
+07-26B (Hermolaus), a 14th file found mid-session (Batch 3) that wasn't on the original list,
+a reminder that the original count was a floor, not necessarily a ceiling.
+
+**Explicitly NOT part of this closure, tracked separately:**
+- **07-13** — Holy Fathers of the First Six Ecumenical Councils, a movable Sunday feast
+  (anchored to the Sunday on/around July 16) that displaces the day's saint to Compline. This
+  needs its own architectural design (how the tool represents a movable-Sunday feast keyed to
+  a fixed-date window), not a simple array addition like the other 13 dates. Still open.
+- **May and June** — the same contains-search Drive audit that found all of July's gaps has
+  never been run against either month. Given 07-26B surfaced mid-session in a date that had
+  *already* been audited once, budget for the possibility that May/June hide more than a
+  single pass will find.
+
+**Verified beyond gate+build again:** direct-loaded the 07-28 array structure, confirmed 2
+entries matching expectation.
+
+---
 
 **Session July 5, 2026 (cont.) — Missed-commemoration audit, Batch 3 of N (v0.25.6).**
 07-24, 07-26, 07-27 — 6 more missed commemorations added.
