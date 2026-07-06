@@ -15,11 +15,32 @@ import { flatten, anchorIndex, distribute, pointLine } from "../lib/pointing.js"
 import { PH_DEFS } from "../lib/phrase-defs.js";
 import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWord, syllabifyWithDirectorMark } from "../lib/syllabify.js";
 
-export const TONE_TRAINER_VERSION = "v0.25.30";
+// TONE_TRAINER_VERSION drives the clickable badge itself (see the render
+// call near "Common Chant · Trainer" below) AND the ?v= cache-busting
+// query strings on lexicon fetches and the score-print handoff. It is a
+// SEPARATE constant from TRAINER_RELEASE_NOTES[0].version below — the two
+// are NOT automatically kept in sync, and the comment that used to sit
+// here claiming "the badge reads TRAINER_RELEASE_NOTES[0].version" was
+// simply wrong (caught by Bill directly against the rendered badge, which
+// was frozen at v0.25.30 through five real version bumps in the release
+// notes array below). EVERY version bump must update BOTH this constant
+// AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
+// as happened for v0.25.31 through v0.25.35, silently leaves the actual
+// displayed badge and cache-busting queries on the old version.
+export const TONE_TRAINER_VERSION = "v0.25.36";
 
-// Release notes for the trainer's clickable version badge (mirrors hours-tool).
-// Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
+// Release notes for the trainer's clickable version badge's EXPANDED detail
+// panel (mirrors hours-tool). Newest entry first. The badge itself reads
+// TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.36",
+    date: "July 2026",
+    summary: "fix: the version badge itself was frozen at v0.25.30 through five real version bumps — a separate constant from the release-notes array, never updated alongside it",
+    items: [
+      "fix: TONE_TRAINER_VERSION is a standalone constant that drives the actual rendered badge text AND the ?v= cache-busting query strings on lexicon fetches and the score-print handoff — it is NOT read from TRAINER_RELEASE_NOTES[0].version, despite a comment at the top of this file claiming exactly that. Caught by Bill directly against the rendered badge (screenshot showed v0.25.30 in the badge while the expanded release-notes panel correctly showed v0.25.35) — the comment was simply wrong, and every version bump this session (v0.25.31 through v0.25.35) updated only the release-notes array, leaving the actual displayed version and cache-busting queries five versions stale. Fixed by updating TONE_TRAINER_VERSION to match, correcting the comment to describe what the code actually does, and bumping both together going forward.",
+    ],
+  },
   {
     version: "v0.25.35",
     date: "July 2026",
