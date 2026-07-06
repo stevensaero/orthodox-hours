@@ -1449,3 +1449,74 @@ fires on its own. This document is the reference for why that discipline is
 worth the extra code, not a claim that the discipline is now enforced by
 the architecture itself.
 
+---
+
+## 23. Bass and Tenor melisma-hold — confirmed, no new mechanism needed
+
+*Closes the last outstanding item from §18.5. Whether Tone 3's bass and
+tenor sustain through a constant-pitch alto melisma, or re-articulate each
+note, had never been checked. Now confirmed directly from the score.*
+
+### 23.1 The mechanism, unchanged
+
+`deriveBassRolesWD()`/`deriveTenorRolesWD()` already handle this generically
+for every tone: a maximal run of consecutive alto-melisma notes sharing the
+same syllable text *and* the same mapped voice pitch collapses into one held
+note, but only when the tone is a member of `BASS_HOLD_TONES`/
+`TENOR_HOLD_TONES`, and only when the summed duration lands on a single
+representable value (whole note, dotted whole, etc.). This is the same
+mechanism Tones 1/2/4 already use, gated per tone, never inherited. Nothing
+about the mechanism itself needed to change for Tone 3, only the membership
+question, confirmed from the score.
+
+### 23.2 Confirmed — LIC score, Final Phrase, "Hear" and "me"
+
+**Bass:**
+
+| Alto | Bass (per-note) | Result |
+|---|---|---|
+| fa (pickup) | fa | separate (different pitch from what follows) |
+| mi (cad1 anchor) | do | ⎫ |
+| do (cad1 mid) | do | ⎬ holds as one whole note (H+Q+Q) |
+| re (cad1 final) | do | ⎭ |
+| mi (cad Part 2 anchor) | do | ⎫ holds as one half note (Q+Q) |
+| fa (cad Part 2) | do | ⎭ |
+
+**Tenor:**
+
+| Alto | Tenor (per-note) | Result |
+|---|---|---|
+| fa (pickup) | do | ⎫ holds as one dotted-half note (Q+H) |
+| mi (cad1 anchor) | do | ⎭ |
+| do (cad1 mid) | sol | ⎫ holds as one half note (Q+Q) |
+| re (cad1 final) | sol | ⎭ |
+| mi (cad Part 2 anchor) | do | ⎫ holds as one half note (Q+Q) |
+| fa (cad Part 2) | do | ⎭ |
+
+Tenor's "Hear" is notably **two separate held notes**, not one, the run
+breaks exactly where the pitch changes from `do` to `sol`, which the
+existing run-detection already handles correctly without any special
+casing, the same way it already handled Tone 4's partial-hold cases.
+
+### 23.3 Fix
+
+`3` added to both `TENOR_HOLD_TONES` and `BASS_HOLD_TONES`. No changes to
+the collapse algorithm itself.
+
+### 23.4 Verification
+
+`npm run gate` — 71/71 Hours Tool checks, 24/24 pointing-role checks,
+neither exercises the hold-collapse layer directly. `vite build` clean.
+**Recommend live audio verification** before considering this fully closed,
+hold/collapse is an audible behavior, best confirmed by listening, the same
+standing caveat as every other harmony-voice fix this session.
+
+**Status: Tone 3 is now complete in every dimension addressed this
+session** — solfège pitch mapping for all four voices (§14-18), printed
+notation for all four voices (§19-21), and now melisma-hold behavior for
+bass and tenor (this section). Shipped as v0.25.55. Remaining Tone 3 items
+still open: Phrase B's untested overcount edge case is resolved (§17), the
+count===1 degenerate cases for Phrase A/B remain honest-fallback/untested
+(§16.3), and soprano's notation is derived rather than independently
+score-read (§21.1).
+
