@@ -21,6 +21,17 @@ export const TONE_TRAINER_VERSION = "v0.25.30";
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
   {
+    version: "v0.25.35",
+    date: "July 2026",
+    summary: "fix: score-print.html bass rendering — collapsed bass notes were misaligned and drew stray ties (caught by Bill against the printed score)",
+    items: [
+      "fix: the score-print renderer sliced line.bass using line.alto's own s0/s1 indices and positioned every bass note purely by array index — correct only when bass and alto have the same length, which was always true for Tones 1/2 (bass never collapses there) but breaks the moment bass can collapse (Tone 4, v0.25.34). A collapsed entry (e.g. \"Hear\"'s 3 alto notes → 1 bass note) shortens the bass array relative to alto, so every bass note AFTER a collapse was landing under the wrong syllable. Fixed using the exact same spanStart-based column lookup tenor's own (pre-existing) collapse already uses, rather than inventing a new approach — bass now finds its true alto column per entry instead of assuming index parity.",
+      "fix: drawMelismaSlurs(bN, altoSlice, false) was drawing slur curves by walking alto's melisma grouping and indexing into the (now potentially shorter) bass array — landing on the wrong or an adjacent bass note and drawing a stray tie, the \"dotted half on Call with a melisma to the same note\" / \"whole note but then a melisma there as well\" artifact caught directly against the printed score. A collapsed note already IS the held note; slurring on top of it double-represents the same sustain. Tenor's own collapsed voice never draws slurs on itself for the same reason — bass now skips the slur draw specifically when a line has a collapsed span, leaving Tones 1/2 (which never collapse) on the original slur-drawing behavior, unchanged.",
+      "fix: legalSeams() (system-break/line-wrap packing) only protected tenor's held spans from being split across a line break, not bass's — since bass can now hold too, an unprotected bass span could have let a wrap land inside a held bass note. Extended the same unbreakable-span check to cover both voices.",
+      "note: verified by manual trace against \"[Hear] [me], O Lord!\" (bass columns land at 0, 3, 4, 5 — correct — with the collapsed entry correctly suppressing its own slur draw) before shipping, but not yet visually confirmed against the actual rendered SVG output — Bill re-checking the printed score directly is the real verification step here, same as how this bug was originally caught.",
+    ],
+  },
+  {
     version: "v0.25.34",
     date: "July 2026",
     summary: "feat: Tone 4 bass harmony (BASS_RULES[4]) — all 7 phrases, plus a shared bass hold-collapse mechanism that fixes a real cross-consumer bug",
