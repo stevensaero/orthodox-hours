@@ -1,5 +1,14 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.27.0** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
+**Tool version: v0.27.1** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
+
+**Session July 6, 2026 (cont.) — fix: Scripture's book selector hidden on direct
+handoffs from the Hours tool (v0.27.0 → v0.27.1).** Already hidden for a single
+?ref= reading; now also hidden for the combined-readings landing (Today's
+Readings, and the Vespers OT-lessons combined link) — a direct handoff already
+carries a specific reading, so browsing isn't the point of that visit. Single
+render-condition change in scripture.jsx (BookSelector now excludes
+isTodayReadings too), plus two stale comments updated that referenced the
+selector staying live in this mode. Gate: 71/71, vite build clean.
 
 **Session July 6, 2026 (cont.) — Three fixes/features: Menaion/Octoechos cold-load
 race, Hours Tool position persistence, combined Vespers OT Lessons reading
