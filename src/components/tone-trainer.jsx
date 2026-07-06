@@ -27,12 +27,21 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.41";
+export const TONE_TRAINER_VERSION = "v0.25.42";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.42",
+    date: "July 2026",
+    summary: "fix: Tone 4 tenor si was computed at the wrong octave — an audible bug, not just a visual one (caught via the chip display rendering \"too low\")",
+    items: [
+      "fix: TENOR_RULES[4].Final was missing an explicit octaveDiv override for si. Without one, freq_tenor() (drives both audio and chip height) falls back to the GLOBAL TENOR_OCTAVE_DIV default (si:2), while the score-print payload builder falls back to a SEPARATE local default table (TENOR_OCTAVE_DIV_LOCAL, si:1) — the two disagree, and nothing forces them into sync except an explicit per-phrase override. Computed directly: at the wrong div:2, si came out to 138.6 Hz — actually BELOW bass's mi (220 Hz) at that position, the opposite of where it needs to sit; at div:1, si computes to 277.2 Hz, correctly above both tenor's own sol (261.6 Hz) and bass's mi. Caught by Bill against the chip display (\"the score renders properly, but the chips place the tone and visual too low\") — the score already looked right because it happened to use the OTHER table's default; this was never just a display quirk, since freq_tenor drives the actual audio pitch too, only silently different from the score-print builder's own path in this one case. Tone 1's own Final Phrase tenor already carries the equivalent override for the identical reason (its own si/la pair) — Tone 4 simply needed the same, not a different value.",
+      "fix: buildUnifiedVoiceMap()'s phrase list was hardcoded to [\"A\",\"B\",\"C\",\"D\",\"Final\"], predating any tone with more than 5 phrases. Extended to include E and F — didn't surface as a visible bug for Tone 4 specifically (every E/F pitch happens to already appear in A-D), but was a real gap worth fixing now rather than leaving for a future tone to trip over.",
+    ],
+  },
   {
     version: "v0.25.41",
     date: "July 2026",
@@ -2215,6 +2224,23 @@ const TENOR_RULES = {
       prepMap: { do: "sol", ti: "sol" },
       cadMap: { do: "sol", ti: "si", la: "mi" },
       preslurMap: {},
+      // octaveDiv:{si:1} — REQUIRED, not optional. Without an explicit
+      // per-phrase override here, freq_tenor() falls back to the GLOBAL
+      // TENOR_OCTAVE_DIV default (si:2), while the score-print payload
+      // builder falls back to its own SEPARATE local default table
+      // (TENOR_OCTAVE_DIV_LOCAL, si:1) — the two defaults disagree. That
+      // silently produced a real, audible bug, not just a visual one:
+      // computed at the wrong div:2, si came out at 138.6 Hz — BELOW
+      // bass's mi (220 Hz) at that same position, the exact opposite of
+      // where it needs to sit. Caught by Bill against the chip display
+      // ("the score renders properly, but the chips place the tone and
+      // visual too low"), confirmed by computing both values directly.
+      // At div:1, si computes to 277.2 Hz — correctly above both tenor's
+      // own sol (261.6 Hz) and bass's mi. Tone 1's own Final Phrase tenor
+      // already carries this same override for the identical reason
+      // (its own si/la pair) — Tone 4 needed it too and was simply
+      // missing it, not a case of the two tones needing different values.
+      octaveDiv: { si: 1 },
     },
   },
 };
@@ -4962,7 +4988,13 @@ export default function ToneTrainer() {
     const seen = new Map();
     const addPitches = (rules, hzFn) => {
       if (!rules) return;
-      ["A","B","C","D","Final"].forEach(ph => {
+      // E and F added alongside Tone 4's phrases — this list predated any
+      // tone with more than 5 phrases (A-D, Final), so it silently missed
+      // any pitch used ONLY in E/F and not shared with A-D/Final. Didn't
+      // surface as a visible bug for Tone 4 specifically (every E/F pitch
+      // here happens to already appear in A-D too), but real and worth
+      // fixing now rather than leaving for a future tone to trip over.
+      ["A","B","C","D","E","F","Final"].forEach(ph => {
         const pr = rules[ph];
         if (!pr) return;
         [pr.recite, ...Object.values(pr.cadMap||{}), ...Object.values(pr.prepMap||{})]
