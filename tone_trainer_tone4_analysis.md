@@ -1383,6 +1383,25 @@ standalone reproduction of "Hear" caught this directly (showing `re` split
 off from the `do·ti` pair instead of collapsing with them) before it could
 ship silently broken, mirroring exactly the same class of bug bass had.
 
+**A second real bug, found after initial shipping, not before:** `si` was
+computed at the wrong octave — an audible bug, not just a display one.
+Two separate default tables exist for tenor octave placement:
+`TENOR_OCTAVE_DIV` (drives `freq_tenor`, i.e. both audio and chip height)
+defaults `si` to `div:2`; `TENOR_OCTAVE_DIV_LOCAL` (inside
+`buildScorePayload`, drives the score-print payload only) defaults it to
+`div:1`. The two disagree, and nothing forces them into sync except an
+explicit per-phrase `octaveDiv` override — Tone 1's own Final Phrase
+already carries one for the identical reason. Tone 4's didn't. Computed
+directly: at the wrong `div:2`, `si` came out to 138.6 Hz — actually
+*below* bass's `mi` (220 Hz) at that same position, the opposite of where
+it needs to sit. Caught by Bill against the chip display ("the score
+renders properly, but the chips place the tone and visual too low") — the
+score only looked right because it happened to read from the other
+table's default; the actual tenor audio pitch was wrong too, not merely
+its visual height. Fixed with `octaveDiv: { si: 1 }` on
+`TENOR_RULES[4].Final`, matching Tone 1's own precedent exactly rather
+than needing a different value.
+
 With Tenor complete, **all four voices (Alto, Bass, Soprano, Tenor) are
 now built for Tone 4** — SATB is fully available, not just Alto/Bass/
 Soprano combinations.
