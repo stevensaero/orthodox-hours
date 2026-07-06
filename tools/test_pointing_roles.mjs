@@ -27,11 +27,14 @@ import { pointLine } from "../src/lib/pointing.js";
 import { PH_DEFS } from "../src/lib/phrase-defs.js";
 
 // ── line builders ────────────────────────────────────────────────────────────
-// A single-syllable word. accent defaults to false.
-const W = (text, accent = false) => ({ sylls: [{ text, accent, source: "test" }] });
+// A single-syllable word. accent defaults to false. Optional source override
+// (defaults to "test"; Tone 4 Phrase E fixtures need "truth" to simulate a
+// real director bracket, since its guard checks source==="truth" specifically).
+const W = (text, accent = false, source = "test") => ({ sylls: [{ text, accent, source }] });
 // A multi-syllable word: sylls = [["pray", false], ["er", false], ...]
+// Each entry may optionally include a third element for source override.
 const WS = (sylls) => ({
-  sylls: sylls.map(([text, accent]) => ({ text, accent: !!accent, source: "test" })),
+  sylls: sylls.map(([text, accent, source]) => ({ text, accent: !!accent, source: source ?? "test" })),
 });
 const line = (phrase, ...words) => ({ phrase, words });
 
@@ -107,6 +110,131 @@ const FIXTURES = [
       ["prayer", "inton", "re"],
       ["a", "prep", "ti"],
       ["rise", "cad", "do"],
+    ],
+  },
+
+  // ── Tone 4 — Obikhod Common Chant (July 2026 research session) ─────────
+  // Every fixture below is drawn directly from tone_trainer_tone4_analysis.md
+  // (repo root) — see that document for the full worked-example evidence,
+  // source citations, and open items behind each one.
+  {
+    name: "T4 A — single-pitch cadence ('of Your Cross')",
+    tone: 4, phrase: "A",
+    words: [W("of"), W("Your"), W("Cross", true)],
+    expect: [
+      ["of", "recite", "ti"],
+      ["Your", "recite", "ti"],
+      ["Cross", "cad", "do"],
+    ],
+  },
+  {
+    name: "T4 B — re·do cadence, anchor on reciting pitch ('of David')",
+    tone: 4, phrase: "B",
+    words: [W("of"), WS([["Da", true], ["vid", false]])],
+    expect: [
+      ["of", "recite", "re"],
+      ["Da", "cad", "re"],
+      ["vid", "cad", "do"],
+    ],
+  },
+  {
+    name: "T4 C — 1 prep, no cadence shown (short snippet: 'the Sun of Righteousness')",
+    tone: 4, phrase: "C",
+    words: [W("the"), W("Sun", true), W("of"), WS([["Right", false], ["eous", false], ["ness", false]])],
+    expect: [
+      ["the", "prep", "re"],
+      ["Sun", "inton", "mi"],
+      ["of", "inton", "re"],
+      ["Right", "recite", "do"],
+      ["eous", "recite", "do"],
+      ["ness", "recite", "do"],
+    ],
+  },
+  {
+    name: "T4 C — full verse with real cadence ('and when they saw you being taken from the earth to heaven')",
+    tone: 4, phrase: "C",
+    words: [
+      W("and"), W("when"), W("they"), W("saw", true), W("you"),
+      W("being"), W("taken"), W("from"), W("the"), W("earth"), W("to"),
+      WS([["heav", true, "truth"], ["en", false, "truth"]]),
+    ],
+    expect: [
+      ["and", "prep", "do"], ["when", "prep", "do"], ["they", "prep", "re"],
+      ["saw", "inton", "mi"], ["you", "inton", "re"],
+      ["being", "recite", "do"], ["taken", "recite", "do"], ["from", "recite", "do"],
+      ["the", "recite", "do"], ["earth", "recite", "do"], ["to", "recite", "do"],
+      ["heav", "cad", "re"], ["en", "cad", "do"],
+    ],
+  },
+  {
+    name: "T4 D — ti·do·re ascending cadence, exact fit ('pre-e-ternal God')",
+    tone: 4, phrase: "D",
+    words: [W("pre"), W("e"), WS([["ter", true], ["nal", false]]), W("God")],
+    expect: [
+      ["pre", "recite", "do"], ["e", "recite", "do"],
+      ["ter", "cad", "ti"], ["nal", "cad", "do"], ["God", "cad", "re"],
+    ],
+  },
+  {
+    name: "T4 D — expanded fill, count=4 ('creation of all.')",
+    tone: 4, phrase: "D",
+    words: [W("cre"), WS([["a", true], ["tion", false]]), W("of"), W("all")],
+    expect: [
+      ["cre", "recite", "do"],
+      ["a", "cad", "ti"], ["tion", "cad", "do"], ["of", "cad", "do"], ["all", "cad", "re"],
+    ],
+  },
+  {
+    name: "T4 E — 1 bracket, full melisma compression ('Apostles.')",
+    tone: 4, phrase: "E",
+    words: [W("A"), WS([["pos", true, "truth"], ["tles", false, "truth"]])],
+    expect: [
+      ["A", "recite", "re"],
+      ["pos", "cad", "do·re·mi·re·do"],
+      ["tles", "cad", "ti"],
+    ],
+  },
+  {
+    name: "T4 E — 2 brackets, fixed shape ('when I [call] up[on] Thee!')",
+    tone: 4, phrase: "E",
+    words: [
+      W("when"), W("I"), W("call", true, "truth"),
+      WS([["up", false, "truth"], ["on", true, "truth"]]), W("Thee"),
+    ],
+    expect: [
+      ["when", "recite", "re"], ["I", "recite", "re"],
+      ["call", "cad", "do·re"], ["up", "cad", "mi"], ["on", "cad", "re·do"], ["Thee", "cad", "ti"],
+    ],
+  },
+  {
+    name: "T4 F — no-intonation-only, re·do cadence with re-fill ('Rejoice...childbearing')",
+    tone: 4, phrase: "F",
+    words: [W("Rejoice"), W("for"), W("you"), W("alone"), W("by"), W("your"),
+      WS([["child", true], ["bear", false], ["ing", false]])],
+    expect: [
+      ["Rejoice", "recite", "do"], ["for", "recite", "do"], ["you", "recite", "do"],
+      ["alone", "recite", "do"], ["by", "recite", "do"], ["your", "recite", "do"],
+      ["child", "cad", "re"], ["bear", "cad", "re"], ["ing", "cad", "do"],
+    ],
+  },
+  {
+    name: "T4 Final — exact fit, single fill ('Chris-tians and save our souls.')",
+    tone: 4, phrase: "Final",
+    words: [WS([["Chris", false], ["tians", false]]), W("and"), W("save", true), W("our"), W("souls", true)],
+    expect: [
+      ["Chris", "recite", "re"], ["tians", "prep", "do"], ["and", "prep", "ti"],
+      ["save", "cad", "do"], ["our", "cad", "ti"], ["souls", "cad", "la"],
+    ],
+  },
+  {
+    name: "T4 Final — expanded fill, count=4 ('for Thou art good and the [Lov]er of man.')",
+    tone: 4, phrase: "Final",
+    words: [W("for"), W("Thou"), W("art"), W("good"), W("and"), W("the"),
+      WS([["Lov", true], ["er", false]]), W("of"), W("man", true)],
+    expect: [
+      ["for", "recite", "re"], ["Thou", "recite", "re"], ["art", "recite", "re"], ["good", "recite", "re"],
+      ["and", "prep", "do"], ["the", "prep", "ti"],
+      ["Lov", "cad", "do"], ["er", "cad", "ti"], ["of", "cad", "ti"], ["man", "cad", "la"],
     ],
   },
 ];

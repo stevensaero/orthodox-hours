@@ -216,4 +216,97 @@ export const PH_DEFS = {
       cad: ["mi", "do", "re", "mi", "fa", "re", "do"],
     },
   },
+  4: {
+    // Tone 4 Common Chant — Drillock & Ealy tutorial + live research session,
+    // July 2026 (see tone_trainer_tone4_analysis.md in repo root for full
+    // worked-example evidence behind every entry below). Rotation: A, B, C
+    // used once each at sticheron start, then D·E·F rotate — see ROT_DEFS[4].
+    //
+    // PHRASE E IS NOT YET FULLY GENERAL. Its dedicated pointLine() guard
+    // (below, in ../pointing.js) handles the confirmed 0/1/2-bracket cases;
+    // 3+ brackets falls through to distribute() on this cad figure as an
+    // honestly-labeled best-effort, same convention as Tone 1 Phrase D's own
+    // untested-case fallback. The director, per direct confirmation, never
+    // brackets more than two points per verse, so 3+ is expected to be
+    // theoretical, not a real gap — but it is not verified against any
+    // example and should not be treated as confirmed.
+    //
+    // PHRASE F IS INTENTIONALLY NO-INTONATION ONLY. The tutorial documents a
+    // with-intonation variant (do(H) accent, do(Q) lead-ins), but every real,
+    // complete verse example found this session (5 of 5) used the
+    // no-intonation variant instead; the with-intonation form was only ever
+    // seen in the tutorial's own generic schematic, never in real chant. The
+    // trigger condition for the with-intonation variant is unknown. If a
+    // future session finds a real verse that uses it, PH_DEFS[4].F will need
+    // to become a variant-aware entry (similar to how Phrase E needed
+    // dedicated logic) rather than the plain entry below.
+    A: {
+      recite: "ti", inton: false, prep: null,
+      // Single-pitch cadence: anchor + all trailing syllables on do.
+      // distribute(["do"], n) handles every count; duration template
+      // (H at count1/2, H-Q-H at count3) falls out of the standard engine.
+      cad: ["do"],
+    },
+    B: {
+      recite: "re", inton: false, prep: null,
+      // Anchor sits ON the reciting pitch (re) — duration change (Q→H) is
+      // the only signal the cadence has begun, same shape as Tone 1 B.
+      // Fill duration at count=3 is Q (not H) — confirmed different from
+      // Tone 1's Phrase B, which keeps fills at H through count=3. Real,
+      // tone-specific difference, not ported from Tone 1.
+      // KNOWN OPEN ITEM: "his greeting '[Rejoice.]'" — a non-monosyllabic,
+      // phrase-final stressed word not becoming the anchor. Director
+      // Pointing territory (semantic-weight override), not auto-detected —
+      // same disposition as Tone 1's own documented trailing-word cases.
+      cad: ["re", "do"],
+    },
+    // C is NOT a plain data entry — its intonation (variable-length stepping
+    // prep, mi-accent, optional mi-extension, variable-length reciting body)
+    // needs the dedicated pointLine() guard in ../pointing.js. This entry
+    // supplies recite/cad for that guard to use once it reaches the cadence,
+    // which reuses the shared distribute() exactly like every other phrase.
+    C: {
+      recite: "do", inton: true, prep: null,
+      cad: ["re", "do"], // identical to B's cadence, confirmed by score evidence
+    },
+    D: {
+      recite: "do", inton: false, prep: null,
+      // Ascending cadence — ti·do·re rises PAST the reciting tone (do),
+      // the only phrase in this tone whose cadence resolves above its own
+      // reciting pitch (Phrase E's is the mirror image, resolving below).
+      // distribute(["ti","do","re"], 4) → ti,do,do,re — verified against
+      // "creation of all." 2-syllable floor ("used for two or more
+      // syllables" per tutorial) is untested; not blocking.
+      cad: ["ti", "do", "re"],
+    },
+    // E is NOT a plain data entry — see the dedicated pointLine() guard.
+    // This cad figure is used both by that guard (for its 1-bracket and
+    // fallback cases, via the shared distribute()) and as the fallback
+    // figure for the untested 3+-bracket case.
+    E: {
+      recite: "re", inton: false, prep: null,
+      cad: ["do", "re", "mi", "re", "do", "ti"],
+    },
+    F: {
+      recite: "do", inton: false, prep: null,
+      // No-intonation only — see the header note above this block.
+      // Cadence identical to C/B. One duration data point ("childbearing")
+      // showed a single fill at H rather than Q; not yet enough evidence
+      // to treat as a settled rule, logged in the research doc as open.
+      cad: ["re", "do"],
+    },
+    // Final is NOT a plain data entry — its fixed two-note descending prep
+    // (do, ti) needs the dedicated pointLine() guard, since the standard
+    // path's prep mechanism only supports a single pitch. This entry
+    // supplies cad for that guard's shared distribute() call.
+    Final: {
+      recite: "re", inton: false, prep: null,
+      // do,ti prep is NOT encoded here — see the dedicated guard.
+      // Close is expected to reliably be W: the Final Phrase is, by the
+      // confirmed rotation rule, always the sticheron's actual last line,
+      // so unlike every other phrase's instance-by-instance finality
+      // question, its finality is structural, not probabilistic.
+      cad: ["do", "ti", "la"],
+    },
+  },
 };

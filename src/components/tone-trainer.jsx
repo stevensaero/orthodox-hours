@@ -21,6 +21,23 @@ export const TONE_TRAINER_VERSION = "v0.25.30";
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
   {
+    version: "v0.25.32",
+    date: "July 2026",
+    summary: "feat: Tone 4 Obikhod alto pointing — Phrases A, B, C, D, E, F, and Final Phrase all implemented and gate-tested",
+    items: [
+      "feat: PH_DEFS[4] added — recite/inton/prep/cad data for every phrase, built from a full live research session (see tone_trainer_tone4_analysis.md, repo root, for complete worked-example evidence). Phrases A, B, D, and F use the existing standard pointLine() path unchanged (shared distribute(), per the tone-isolation approach agreed this session — code shared only where it was already proven tone-agnostic, never assumed).",
+      "feat: dedicated pointLine() guard for Phrase C — variable-length stepping prep (confirmed: last prep syllable re, earlier ones do), mi-accent, an optional mi-extension (scoped to exactly the confirmed cases after testing disproved a broader 'always try 2' rule — see caught-bug note below), then a genuine reciting body of 0+ syllables before falling through to the shared distribute() for the cadence. Two real bugs were caught and fixed during implementation by direct testing against confirmed examples, not just code review: (1) a short snippet with no further director bracket was incorrectly getting a false 1-syllable cadence from anchorIndex()'s generic no-accent fallback — fixed by requiring a genuine bracket before any cadence role is emitted at all; (2) the intonation tail was incorrectly grabbing 2 syllables unconditionally, swallowing a real reciting syllable into a false mi-extension on a long verse — scoped back to exactly 1 tail syllable, matching every confirmed full-verse example with an actual cadence; the 2-syllable-tail cases only ever appeared in the tutorial's own short generic teaching snippets and have no confirmed trigger rule, so they're deliberately left unhandled with a flag for a future session rather than guessed at.",
+      "feat: dedicated pointLine() guard for Phrase E — melisma segmentation driven by director-bracketed accents specifically (checked via source===\"truth\", not the general lexicon-wide accent flag, which fires for nearly every stressed word and would badly over-count). 1 bracket: full 6-pitch figure compresses onto whatever syllables remain, with all excess piling onto the bracketed syllable. 2 brackets: fixed shape, confirmed independently twice (both triggered by \"upon\"). 0 or 3+ brackets falls through to the standard path as an honest best-effort, matching Tone 1 Phrase D's own untested-case convention — the director, per direct confirmation, never brackets more than two points per verse, so 3+ is expected to be theoretical.",
+      "feat: dedicated pointLine() guard for the Final Phrase — a fixed two-note descending prep (do, ti; the tutorial's own text says \"ascending,\" confirmed by Bill to be an error in the source itself, the first confirmed factual error in the tutorial's prose rather than an ambiguity in reading it), peeling the last two body syllables before falling through to the shared distribute() for the do·ti·la cadence.",
+      "fix: lineToNotes() + lineToRolesWithDuration() (matched pair, per existing convention) — added Tone 4 Phrase D/F fill-duration threshold (H at a single fill, Q at multiple — the existing generic handler only does Q always, which doesn't match either phrase), a Tone 4 Final Phrase equivalent, and a Tone 4 Final Phrase structural-melisma block for cadCount<3 mirroring Tone 1's own Final Phrase handling exactly (same do·ti·la figure) — distribute() truncates rather than compresses for under-count cadences, which would have silently dropped the close pitch entirely for a compressed line; caught by tracing through the confirmed \"Theotokos\" example before it could ship. Phrase E gets its own flattened positional duration rule (first pitch H, last pitch H, everything between Q) applied across the full cadence regardless of bracket count or syllable grouping — confirmed against every Phrase E example logged this session, including one that doesn't fit any per-syllable rule but fits this flattened one exactly.",
+      "feat: tools/test_pointing_roles.mjs extended with 11 Tone 4 fixtures (all tones now 17/17) — every fixture pulled directly from this session's confirmed research, covering every phrase including both the short-snippet and full-verse Phrase C cases and both the 1- and 2-bracket Phrase E cases. W/WS test builders extended with an optional source override, needed to simulate real director brackets for Phrase E's bracket-driven logic.",
+      "feat: AVAILABLE_TONES now includes 4 — Tone 4 alto pointing is live in the real Hours Tool's Point/Score controls, not just the Tone Trainer sandbox. Score (SATB harmony) has no Tone 4 BASS_RULES/TENOR_RULES/SOPRANO_MAP entries yet — same situation Tone 3 has been in since it was built, confirmed to gracefully return null/pass-through rather than break anything. Harmony work is the explicitly planned next session.",
+      "feat: visible in-app note for Tone 4 (paste-box area) documenting the Phrase E bracket-requirement and Phrase F no-intonation-only decisions for anyone using the tool, not just anyone reading source comments.",
+      "docs: Phrase F implemented no-intonation only — every real, complete verse example found this session (5 of 5) used the no-intonation variant; the with-intonation form only ever appeared in the tutorial's own generic schematic. If a future session finds a real verse using it, PH_DEFS[4].F will need to become variant-aware.",
+      "docs: Phrase E deliberately not held back for a separate session, per direct decision — sufficient real evidence exists for the confirmed 1- and 2-bracket cases (comparable to what went into Tone 1 Phrase D), and the untested 0/3+-bracket fallback follows the same established honest-fallback convention already used elsewhere rather than blocking on evidence that isn't coming.",
+    ],
+  },
+  {
     version: "v0.25.31",
     date: "July 2026",
     summary: "fix: Tone 4 rotation logic — was silently falling back to Tone 1's flat A·B·C·D cycle",
@@ -2917,11 +2934,14 @@ export default function ToneTrainer() {
     // count≥4: clean one-per-syllable distribution
     const isTone1 = activeTone === 1;
     const isTone2 = activeTone === 2;
+    const isTone4 = activeTone === 4;
     const isTone1Final = isTone1 && line.phrase === "Final";
     const isTone1B     = isTone1 && line.phrase === "B";
     const isTone1D     = isTone1 && line.phrase === "D";
     const isTone2Final = isTone2 && line.phrase === "Final";
     const isTone2A     = isTone2 && line.phrase === "A";
+    const isTone4Final = isTone4 && line.phrase === "Final";
+    const isTone4E     = isTone4 && line.phrase === "E";
 
     // ── Tone 1 Final Phrase: structural melisma when cadCount < 3 ────────
     // Preserves complete do·ti·la figure across available syllables.
@@ -2963,6 +2983,58 @@ export default function ToneTrainer() {
         buildMelisma(["do","re"], ["H","H"], H, Q, W, DH, 0.27).forEach(n => notes.push(n));
         notes.push({ sol: "ti", dur: H, peak: 0.2 });
       }
+      return notes;
+    }
+
+    // ── Tone 4 Final Phrase: structural melisma when cadCount < 3 ────────
+    // Same cad figure (do·ti·la) as Tone 1's own Final Phrase. distribute()
+    // truncates rather than compresses for cadCount<n, which would silently
+    // drop "la" for a compressed line (e.g. "the Theotokos") — this block
+    // bypasses that output entirely and rebuilds the melisma directly, same
+    // pattern as Tone 1 Final immediately above. count=2 confirmed
+    // score-verified ("the [Theo]tokos": do·ti melisma on the anchor
+    // syllable, la(W) on the close). count=1 extrapolated from the same
+    // shape — not independently confirmed.
+    if (isTone4Final && cadCount < 3 && cadCount >= 1) {
+      roles.forEach((r) => {
+        if (r.role === "cad") return;
+        const pitchDur = Q / r.pitches.length;
+        r.pitches.forEach(p => notes.push({ sol: p, dur: pitchDur, peak: 0.2 }));
+      });
+      if (cadCount === 1) {
+        buildMelisma(["do","ti","la"], ["H","H","W"], H, Q, W, DH, 0.27).forEach(n => notes.push(n));
+      } else if (cadCount === 2) {
+        buildMelisma(["do","ti"], ["H","H"], H, Q, W, DH, 0.27).forEach(n => notes.push(n));
+        notes.push({ sol: "la", dur: W, peak: 0.2 });
+      }
+      return notes;
+    }
+
+    // ── Tone 4 Phrase E: flattened positional duration ───────────────────
+    // Regardless of how many director brackets (1 or 2) shaped the cad
+    // roles' pitch groupings in pointLine(), duration follows one simple
+    // template across the FULL flattened 6-pitch sequence: first pitch H
+    // (anchor), last pitch H (close — same open finality question as every
+    // other phrase in this tone; W reserved for confirmed sticheron-final
+    // instances, not auto-detected here, matching the "close ti: H default
+    // (W by rhythmic engine TBD)" convention already used for Tone 1 B/C
+    // above), everything between Q. Confirmed across every Phrase E example
+    // logged this session, including both two-bracket cases and the
+    // three-syllable-per-anchor "Rejoice...Godhead" case, which does NOT
+    // fit a per-syllable rule but DOES fit this flattened one exactly.
+    if (isTone4E) {
+      roles.forEach((r) => {
+        if (r.role === "cad") return;
+        const pitchDur = Q / r.pitches.length;
+        r.pitches.forEach(p => notes.push({ sol: p, dur: pitchDur, peak: 0.2 }));
+      });
+      const flatPitches = [];
+      roles.filter(r => r.role === "cad").forEach(r => r.pitches.forEach(p => flatPitches.push(p)));
+      const nP = flatPitches.length;
+      flatPitches.forEach((p, i) => {
+        const dur = (i === 0 || i === nP - 1) ? H : Q;
+        notes.push({ sol: p, dur, peak: i === 0 ? 0.27 : 0.2 });
+      });
       return notes;
     }
 
@@ -3168,6 +3240,37 @@ export default function ToneTrainer() {
           else if (isFirst)  syllDur = H;  // do anchor always H
           else if (cadCount >= 5 && cadPos === 1) syllDur = Q; // do(Q) second position at count≥5
           else               syllDur = (cadCount <= 3) ? H : Q; // ti fills: H≤3, Q≥4
+        }
+
+        // ── Tone 4 Final Phrase: direct duration rules (cadCount≥3 here — ──
+        //     cadCount<3 handled by the dedicated melisma block above) ────
+        // do·ti·la figure. la close ALWAYS W — Final Phrase is, by the
+        // confirmed rotation rule, always the sticheron's actual last line,
+        // so finality is structural here, not probabilistic like every
+        // other phrase's close. Anchor do ALWAYS H. Fill ti: H at count=3
+        // (single fill, confirmed: "Christians and save our souls," "have
+        // joined...high"), Q at count≥4 (confirmed: "for Thou art
+        // good...man," "Glory to Thee...Lord").
+        if (isTone4Final) {
+          const isFirst = cadPos === 0;
+          const isLast  = cadPos === cadCount - 1;
+          if (isLast)        syllDur = W;
+          else if (isFirst)  syllDur = H;
+          else               syllDur = (cadCount <= 3) ? H : Q;
+        }
+
+        // ── Tone 4 Phrase D / Phrase F: direct duration rules ─────────────
+        // Both share the same fill-threshold shape: anchor H, close H,
+        // single fill (count=3) H — confirmed for D ("pre-eternal God")
+        // and F ("childbearing"). Multiple fills (count≥4) Q — confirmed
+        // for D ("creation of all"); F's count≥4 behavior is extrapolated
+        // from D's shape, not independently confirmed (single data point).
+        if (isTone4 && (line.phrase === "D" || line.phrase === "F")) {
+          const isFirst = cadPos === 0;
+          const isLast  = cadPos === cadCount - 1;
+          if (isFirst)       syllDur = H;
+          else if (isLast)   syllDur = H;
+          else               syllDur = (cadCount <= 3) ? H : Q;
         }
 
         // ── Tone 2: use per-phrase cadDuration() ─────────────────────────
@@ -3479,11 +3582,14 @@ export default function ToneTrainer() {
     const isFinal = line.phrase === "Final";
     const isTone1 = activeTone === 1;
     const isTone2 = activeTone === 2;
+    const isTone4 = activeTone === 4;
     const isTone1Final = isTone1 && line.phrase === "Final";
     const isTone1B     = isTone1 && line.phrase === "B";
     const isTone1D     = isTone1 && line.phrase === "D";
     const isTone2Final = isTone2 && line.phrase === "Final";
     const isTone2A     = isTone2 && line.phrase === "A";
+    const isTone4Final = isTone4 && line.phrase === "Final";
+    const isTone4E     = isTone4 && line.phrase === "E";
     const cadIdxs = roles.map((r, i) => r.role === "cad" ? i : -1).filter(i => i >= 0);
     const cadCount = cadIdxs.length;
     const cadRolesListR = roles.filter(r => r.role === "cad");
@@ -3577,6 +3683,46 @@ export default function ToneTrainer() {
         emitMelisma(cadRoles[0], ["do","re"], [H,H]);
         result.push({ ...cadRoles[1], pitches: ["ti"], dur: H, durKey: "H" });
       }
+      return result;
+    }
+
+    // ── Tone 4 Final Phrase: structural melisma when cadCount < 3 ────────────
+    // Mirrors lineToNotes() Tone 4 Final Phrase path exactly.
+    if (isTone4Final && cadCount < 3 && cadCount >= 1) {
+      roles.forEach(r => {
+        if (r.role === "cad") return;
+        const d = Q;
+        result.push({ ...r, dur: d, durKey: durKey(d) });
+      });
+      const cadRoles = roles.filter(r => r.role === "cad");
+      if (cadCount === 1) {
+        emitMelisma(cadRoles[0], ["do","ti","la"], [H,H,W]);
+      } else if (cadCount === 2) {
+        emitMelisma(cadRoles[0], ["do","ti"], [H,H]);
+        result.push({ ...cadRoles[1], pitches: ["la"], dur: W, durKey: "W" });
+      }
+      return result;
+    }
+
+    // ── Tone 4 Phrase E: flattened positional duration ───────────────────────
+    // Mirrors lineToNotes() Tone 4 Phrase E path exactly.
+    if (isTone4E) {
+      roles.forEach(r => {
+        if (r.role === "cad") return;
+        const d = Q;
+        result.push({ ...r, dur: d, durKey: durKey(d) });
+      });
+      const flatPitches = [];
+      roles.filter(r => r.role === "cad").forEach(r => r.pitches.forEach(p => flatPitches.push(p)));
+      const nP = flatPitches.length;
+      let pi = 0;
+      roles.filter(r => r.role === "cad").forEach(r => {
+        r.pitches.forEach(p => {
+          const d = (pi === 0 || pi === nP - 1) ? H : Q;
+          result.push({ ...r, pitches: [p], dur: d, durKey: durKey(d), melisma: r.pitches.length > 1 });
+          pi++;
+        });
+      });
       return result;
     }
 
@@ -3684,6 +3830,26 @@ export default function ToneTrainer() {
           if (isLast)        d = W;
           else if (isFirst)  d = H;
           else if (cadCount >= 5 && cadPos === 1) d = Q;
+          else               d = (cadCount <= 3) ? H : Q;
+        }
+
+        // ── Tone 4 Final Phrase: direct duration rules (cadCount≥3 here) ──
+        // Mirrors lineToNotes() Tone 4 Final Phrase path exactly.
+        if (isTone4Final) {
+          const isFirst = cadPos === 0;
+          const isLast  = cadPos === cadCount - 1;
+          if (isLast)        d = W;
+          else if (isFirst)  d = H;
+          else               d = (cadCount <= 3) ? H : Q;
+        }
+
+        // ── Tone 4 Phrase D / Phrase F: direct duration rules ─────────────
+        // Mirrors lineToNotes() Tone 4 Phrase D/F path exactly.
+        if (isTone4 && (line.phrase === "D" || line.phrase === "F")) {
+          const isFirst = cadPos === 0;
+          const isLast  = cadPos === cadCount - 1;
+          if (isFirst)       d = H;
+          else if (isLast)   d = H;
           else               d = (cadCount <= 3) ? H : Q;
         }
         if (!isTone1Final && !(isTone1 && line.phrase === "A") && !(isTone1 && line.phrase === "B") && !(isTone1 && line.phrase === "C") && (isTone1 || isTone2) && phDef?.cadDurs) {
@@ -4825,6 +4991,19 @@ export default function ToneTrainer() {
             </label>
 
           </div>
+          {activeTone === 4 && (
+            <div style={{ fontSize: "0.72rem", color: "#8a6a3a", background: "rgba(199,157,80,.12)",
+                          border: "1px solid rgba(199,157,80,.35)", borderRadius: 5, padding: "5px 9px",
+                          marginBottom: "0.5rem" }}>
+              Tone 4 open items: <b>Phrase E</b> melisma placement is director-bracket-driven —
+              lines needing a melisma split must have the relevant syllable(s) explicitly
+              bracketed, same as any Director Pointing case; unbracketed lines fall back to a
+              generic best-effort. <b>Phrase F</b> is implemented no-intonation only — the
+              tutorial documents a with-intonation variant, but no confirmed real verse uses
+              it. SATB harmony (bass/tenor/soprano) is not yet built for this tone. See
+              tone_trainer_tone4_analysis.md in the repo for full detail.
+            </div>
+          )}
           <textarea value={text} onChange={(e) => { setText(e.target.value); setHasTruth(parseBracketedText(e.target.value).hasBrackets); }} rows={5}
             placeholder={"Machine Pointing (plain text):\nCome, let us also go to meet Christ with divine songs!\n\nDirector Pointing (with [accent] marks):\n[Lord], I call up[on] Thee, [hear] me! |\n[Hear] me, O Lord!"}
             style={{ width: "100%", fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "0.88rem",
