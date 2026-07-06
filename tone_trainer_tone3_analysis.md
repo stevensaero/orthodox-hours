@@ -1587,3 +1587,90 @@ this fully closed, per standing practice.
 connecting slur bars for bass and tenor that alto/soprano already show,
 matching the score Bill read directly.**
 
+---
+
+## 25. Frequency system — tenor rendering below bass, root cause and fix
+
+*A deeper bug than it first appeared. Bill: "the tenor chips are rendering
+lower than the bass chips. This is both an audio issue and visual
+representation issue and occurs across all phrase forms." Both symptoms
+turned out to share one root cause, not two separate bugs.*
+
+### 25.1 First hypothesis, superseded
+
+Initial read: a missing `octaveDiv` differential between bass and tenor's
+shared default divisor tables. Computing actual numbers showed the gap was
+real (bass's `fa`, used constantly, computed at 233 Hz; tenor's `do`, also
+used constantly, at 175 Hz, backwards for SATB) but a divisor patch alone
+would have papered over a deeper problem underneath it.
+
+### 25.2 Bill's question exposed the actual root cause
+
+Bill: "if the piece is generally written in F major and fa falls on F4 for
+alto, shouldn't we aim to fit alto's fa to the actual pitch of F4 ... then
+everything else follows within the comfortable range?"
+
+That reframing found the real bug. The shared `freq()` function computes
+`doHz * 2^(OFF[sol]/12)`, where `OFF['do'] = 0`, an assumption that **"do"
+is the tonic of the notated key**. True for Tones 1/2/4. Confirmed wrong
+for Tone 3 back in §19: Tone 3's own `do` notates as C, the *dominant* of
+the printed F-major key, not the tonic (F, where `fa` actually sits). With
+the shared table, Tone 3's `do` was computing at the tonic pitch (349 Hz,
+F4) while its own already-confirmed notation places it at the dominant
+(262 Hz, C4). Every voice's audio pitch was built on this same wrong
+foundation, not just bass and tenor's registers relative to each other.
+
+### 25.3 Fix — anchor to the already-confirmed notation, not another guessed divisor
+
+**`TONE3_SEMI`**, a dedicated semitone table anchored to `fa` (the true
+tonic reference, 0) instead of `do`, built directly from `TONE3_ALTO_PITCH`
+(already confirmed, §19) rather than guessed:
+
+```js
+const TONE3_SEMI = { do: -5, re: -3, mi: -1, fa: 0, sol: 2, la: 4, ti: 6 };
+```
+
+`freq()` dispatches to this table when `activeTone === 3`; the shared `OFF`
+table, and every other tone, completely unchanged.
+
+**`TONE3_BASS_OCTAVE_DIV = { fa: 2, do: 2, sol: 4 }`** and
+**`TONE3_TENOR_OCTAVE_DIV = { do: 1, sol: 2, ti: 2 }`**, both derived
+directly from the already-confirmed `TONE3_BASS_PITCH`/`TONE3_TENOR_PITCH`
+notation tables (§20), wired in as `octaveDiv` on all three phrases of
+`BASS_RULES[3]`/`TENOR_RULES[3]` using the same per-phrase override
+mechanism every other tone already supports (no new mechanism needed, same
+principle as Tone 4's own `si` override, §16 of the Tone 4 doc).
+
+### 25.4 A finding, not assumed — this also fixes alto's own audio
+
+`freq_soprano`, `freq_bass`, and `freq_tenor` all call `freq()` internally.
+Fixing `freq()` at the source means alto's own audio pitch, which had the
+identical bug (playing "do" at 349 Hz instead of the confirmed 262 Hz), is
+corrected by the same change, even though Bill hadn't separately reported
+it. Worth naming explicitly rather than letting it pass silently: this was
+a real bug in alto's audio nobody had caught yet, closed as a side effect of
+tracing bass/tenor's symptom to its actual source.
+
+### 25.5 Verification
+
+Standalone numeric trace, not just reasoning through it:
+
+| Voice | Pitch | Computed | Confirmed notation | Match |
+|---|---|---|---|---|
+| Alto | do/re/mi/fa | 261.6/293.7/329.6/349.2 Hz | C4/D4/E4/F4 | ✓ |
+| Bass | fa/do/sol | 174.6/130.8/98.0 Hz | F3/C3/G2 | ✓ |
+| Tenor | do/sol/ti | 261.6/196.0/246.9 Hz | C4/G3/B3 | ✓ |
+
+All ten values match their already-confirmed notation exactly. Cross-check:
+bass's full range (98-175 Hz) now sits **entirely below** tenor's full
+range (196-262 Hz), clean separation, not merely reduced overlap.
+
+`npm run gate` — 71/71, 24/24. `vite build` clean. **Recommend live audio
+verification** before considering this fully closed, an audible register
+fix is best confirmed by listening, the same standing caveat as every other
+harmony-voice fix this session.
+
+**Status: shipped as v0.25.57. Tone 3's audio and chip-height frequency
+system is now internally consistent with its own confirmed notation, for
+all four voices, root cause fixed rather than patched at the symptom.**
+
