@@ -27,12 +27,23 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.58";
+export const TONE_TRAINER_VERSION = "v0.25.59";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.59",
+    date: "July 2026",
+    summary: "fix: score-print.html's printed notation was transposing with the performance-pitch selector for Tones 1/2/4 (and the key signature glyph itself for ALL tones, including Tone 3) — the printed page never transposes, only where the choir starts singing does; discovered as a direct follow-on from Tone 3's own notation fix (§19)",
+    items: [
+      "fix: renderScore()'s cfg was resolveKey(payload.doHz) — transposition-aware, so selecting a different 'do=' performance pitch (Eb/F/G) changed which actual letters got drawn for Tones 1/2/4's alto/soprano/bass/tenor (e.g. Tone 1 alto 'fa' would render as Ab, Bb, or C depending on the selector). Confirmed directly: DO_OPTIONS itself already labels F as canonical ('F4 — Tone 1 canonical (OCA score, F major)') with Eb/G as 'one step below/above canonical' — performance-pitch conveniences relative to one fixed printed page, not alternate real notations, the identical relationship already established for Tone 3 (§19.3). cfg is now always F_CFG (F major), for every tone, unconditionally — buildAltoPitch/buildSopranoPitch/bassVFPitch/tenorVFPitch are unchanged, transposition-aware functions, they just always receive the same fixed F-major cfg now.",
+      "fix: a second, more significant gap this closed — cfg.vexKey (the key signature GLYPH drawn at the clef, three separate call sites) was riding on payload.doHz for EVERY tone, including Tone 3, even after Tone 3's note letters were already fixed to a dedicated non-transposing table (§19). That meant Tone 3 could have shown a mismatched key signature (Eb or G's flats/sharps) next to correctly-fixed F-major note spellings, a real latent bug in the original Tone 3 notation fix, caught only by extending the fix universally rather than re-checking Tone 3 in isolation.",
+      "arch: resolveKey() is no longer called anywhere in renderScore() — kept defined in case a future feature wants to display the selected performance pitch as a label, but it no longer drives any part of the printed notation. payload.doHz is still sent (harmless, unused for notation now).",
+      "test: node --check on the extracted inline script. npm run gate — 71/71, 24/24, neither touches score-print.html. vite build clean. Recommend live verification against the deployed tool — select a non-default 'do=' option for Tone 1 or Tone 3, print the score, and confirm the notation and key signature stay in F major regardless.",
+    ],
+  },
   {
     version: "v0.25.58",
     date: "July 2026",

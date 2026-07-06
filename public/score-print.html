@@ -147,7 +147,12 @@ var KEY_MAP = {
   392.00: { vexKey:'G',  names:{ do:'G',  re:'A',  mi:'B',  fa:'C',  sol:'D',  la:'E',  ti:'F#', si:'D#',  di:'G#',  mi_low:'B'  } },
 };
 
-// Resolve key config from payload.doHz; fall back to F major.
+// Resolve key config from a doHz value; falls back to F major.
+// NOT currently called anywhere in renderScore() — the printed score always
+// uses F_CFG directly (see the comment in renderScore()), since the page
+// never transposes with the performance-pitch selector. Kept defined in case
+// a future feature wants to resolve/display the selected performance pitch
+// for some other purpose; it does not drive any part of the printed notation.
 function resolveKey(doHz) {
   // Round to 2 decimal places to avoid float comparison issues
   var rounded = Math.round((doHz || 349.23) * 100) / 100;
@@ -412,10 +417,32 @@ var SYSTEMS_PER_PAGE = 4;
 function renderScore(payload) {
   var VF    = VexFlow;
   var lines = payload.lines;
-  var cfg   = resolveKey(payload.doHz);
+  // The printed score NEVER transposes — it is always F major, the one
+  // canonical published key (see DO_OPTIONS in tone-trainer.jsx: "F4 — Tone
+  // 1 canonical (OCA score, F major)", Eb/G are explicitly labeled as
+  // performance-pitch options relative to that one fixed page, not
+  // alternate real notations). payload.doHz only ever meant "where the
+  // choir starts singing" — a purely aural transposition with zero effect
+  // on the printed page, the choir doesn't get new sheet music for a
+  // different starting pitch. This was already established and fixed for
+  // Tone 3's own dedicated tables (§19); this line extends the same
+  // principle to the shared buildAltoPitch/buildSopranoPitch/bassVFPitch/
+  // tenorVFPitch machinery Tones 1/2/4 run through, AND to the key
+  // signature GLYPH itself (cfg.vexKey, drawn at three call sites below) —
+  // that glyph was still riding on payload.doHz for every tone including
+  // Tone 3, a gap in the original Tone 3 fix: the note letters were already
+  // correctly fixed via TONE3_ALTO_PITCH, but the key signature at the clef
+  // could still have shown a mismatched key next to them. resolveKey() is
+  // no longer called here — kept defined below in case a future feature
+  // wants to display the selected performance pitch as a label, but it no
+  // longer drives any part of the printed notation.
+  var cfg   = F_CFG;
   // Tone 3 uses its own dedicated, non-transposing notation table — see
-  // TONE3_ALTO_PITCH above for why. Every other tone keeps the shared,
-  // transposition-aware buildAltoPitch(cfg).
+  // TONE3_ALTO_PITCH above for why. Every other tone now also renders with
+  // a fixed F-major cfg (see comment above) — buildAltoPitch/buildSopranoPitch
+  // are still transposition-AWARE functions (the machinery is unchanged),
+  // they just always receive the same fixed F-major cfg now, so they always
+  // produce F-major spelling regardless of the performance-pitch selector.
   var ALTO_PITCH = (payload.tone === 3) ? TONE3_ALTO_PITCH : buildAltoPitch(cfg);
   var SOPRANO_PITCH = (payload.tone === 3) ? TONE3_SOPRANO_PITCH : buildSopranoPitch(cfg);
   var grand = false;
