@@ -405,22 +405,23 @@ const SCRIPTURE_BOOK_ID = {
   "1 John": "1John", "2 John": "2John", "3 John": "3John",
   // OT
   "Genesis": "Gen", "Gen": "Gen",
-  "Exodus": "Ex", "Exod": "Ex",
+  "Exodus": "Ex", "Exod": "Ex", "Ex": "Ex",
   "Leviticus": "Lev", "Numbers": "Num", "Deuteronomy": "Deut",
-  "Joshua": "Josh", "Judges": "Judg", "Ruth": "Ruth",
+  "Joshua": "Josh", "Judges": "Judg", "Judg": "Judg", "Ruth": "Ruth",
   "1 Samuel": "1Sam", "2 Samuel": "2Sam",
   "1 Kings": "3Kgdm", "2 Kings": "4Kgdm",
   "3 Kings": "3Kgdm", "4 Kings": "4Kgdm",
+  "3 Kgdms": "3Kgdm", "4 Kgdms": "4Kgdm",
   "1 Chronicles": "1Chr", "2 Chronicles": "2Chr",
   "Ezra": "Ezra", "Nehemiah": "Neh",
-  "Tobit": "Tob", "Judith": "Jdt",
+  "Tobit": "Tob", "Judith": "Jdt", "Jdt": "Jdt",
   "Job": "Job",
   "Proverbs": "Prov", "Prov": "Prov",
   "Ecclesiastes": "Eccl",
   "Wisdom": "Wis", "Wis": "Wis",
   "Wisdom of Solomon": "Wis",
   "Sirach": "Sir", "Baruch": "Bar",
-  "Isaiah": "Isa", "Isa": "Isa",
+  "Isaiah": "Isa", "Isa": "Isa", "Is": "Isa",
   "Jeremiah": "Jer", "Lamentations": "Lam",
   "Ezekiel": "Ezek", "Ezek": "Ezek",
   "Daniel": "Dan",
@@ -8341,6 +8342,27 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.27.2",
+    date: "July 2026",
+    summary: "fix: SCRIPTURE_BOOK_ID gap — missing paroemia abbreviations + ambiguous 'Ez' normalized",
+    items: [
+      "SCRIPTURE_BOOK_ID was missing six abbreviation variants actually used in the " +
+      "paroemia data, so those specific lessons silently failed to resolve a ref: " +
+      "3 Kgdms, 4 Kgdms, bare Ex, Jdt, Judg, Is. All six added as safe, unambiguous " +
+      "aliases — each maps to exactly one book with no realistic collision.",
+      "07-28B (Smolensk Icon) was found encoding Ezekiel's shut-eastern-gate paroemia " +
+      "as 'Ez 43:27-44:4' — Ez collides with Ezra in standard biblical-abbreviation " +
+      "convention. Rather than add an Ez alias to the resolver (which would guess " +
+      "correctly today but silently mis-resolve the day a genuine Ezra paroemia is " +
+      "encoded the same way), the source data was corrected to 'Ezek' — the form " +
+      "used everywhere else in the corpus already.",
+      "encoding_rule_v2.md bumped to v2.10: new §11 #19 (paroemia abbreviations must " +
+      "be unambiguous) and a matching §12 pre-save checklist line, so this can't " +
+      "quietly recur.",
+      "Gate: 71/71 pointing-paths + sunday-vespers, vite build clean.",
+    ],
+  },
   {
     version: "v0.27.1",
     date: "July 2026",
