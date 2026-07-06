@@ -27,12 +27,22 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.57";
+export const TONE_TRAINER_VERSION = "v0.25.58";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.58",
+    date: "July 2026",
+    summary: "fix: bass/tenor chip UI rows drifted out of horizontal alignment with alto/soprano wherever a note collapsed — the exact same melisma===true-only grouping bug just fixed in score-print.html's drawMelismaSlurs (§24), this time in the chip-view's own grouping logic, three separate copies of it",
+    items: [
+      "fix: groupedTenor, groupedBass, and the tenor-ghost grouping block (three near-identical copies of the same grouping logic) all used r.melisma===true as the sole test for whether a chip continues the previous visual group (tight CHIP_MELISMA_GAP) or starts a new one (wide CHIP_GAP, as if it were a different syllable). A collapsed note correctly carries melisma:false, so it always started a new group even when it belonged to the same syllable as an adjacent note or adjacent collapsed group — extra wide gaps accumulated and drifted the whole row out of alignment with alto/soprano above it. Caught directly by Bill against the chip UI, Tone 3 Final Phrase: 'we need to align these bass/tenor chips with the sop/alto parts above — likely spacing issues influenced by the melisma slurs.'",
+      "fix: all three grouping blocks now use the same eligible = melisma===true || (spanCount>1) test already established in score-print.html's drawMelismaSlurs (§24) — a collapsed run stays grouped with its neighbor, a genuinely standalone note still starts its own group. groupedAlto (a fourth, similar-looking block) was left untouched — alto entries never carry spanCount, so it was never affected and doesn't need the change.",
+      "test: simulated the fixed grouping against both known Tone 3 Final Phrase shapes before shipping — bass 'Hear' (fa uncollapsed + do collapsed×3) and tenor 'Hear' (do collapsed×2 + sol collapsed×2) both now produce exactly one group per syllable (4 groups: Hear/me/O/Lord), matching alto's own grouping count exactly, where before each produced extra spurious groups. npm run gate — 71/71, 24/24. vite build clean. Recommend live verification against the deployed tool's chip view before considering this fully closed.",
+    ],
+  },
   {
     version: "v0.25.57",
     date: "July 2026",
@@ -6720,7 +6730,14 @@ export default function ToneTrainer() {
             {showTenor && tenorRolesWD && (() => {
               const groupedTenor = [];
               tenorRolesWD.forEach((r, i) => {
-                if (r.melisma && groupedTenor.length > 0 && groupedTenor[groupedTenor.length-1].text === r.text) {
+                // eligible: melisma===true OR a collapsed run (spanCount>1) — same fix as
+                // score-print.html's drawMelismaSlurs (§24). A collapsed entry correctly
+                // carries melisma:false (it genuinely is one note now), but it still needs
+                // to stay visually grouped (tight CHIP_MELISMA_GAP) with an adjacent note or
+                // adjacent collapsed group under the same syllable, not spaced apart at the
+                // wider inter-syllable CHIP_GAP as if it were a different word entirely.
+                const eligible = r.melisma === true || (r.spanCount != null && r.spanCount > 1);
+                if (eligible && groupedTenor.length > 0 && groupedTenor[groupedTenor.length-1].text === r.text) {
                   groupedTenor[groupedTenor.length-1].entries.push({ r, i });
                 } else {
                   groupedTenor.push({ text: r.text, entries: [{ r, i }] });
@@ -6748,7 +6765,10 @@ export default function ToneTrainer() {
             {showBass && (() => {
               const groupedBass = [];
               bassRolesWD.forEach((r, i) => {
-                if (r.melisma && groupedBass.length > 0 && groupedBass[groupedBass.length-1].text === r.text) {
+                // eligible: melisma===true OR a collapsed run (spanCount>1) — see the
+                // matching comment on groupedTenor above and drawMelismaSlurs (§24).
+                const eligible = r.melisma === true || (r.spanCount != null && r.spanCount > 1);
+                if (eligible && groupedBass.length > 0 && groupedBass[groupedBass.length-1].text === r.text) {
                   groupedBass[groupedBass.length-1].entries.push({ r, i });
                 } else {
                   groupedBass.push({ text: r.text, entries: [{ r, i }] });
@@ -6759,7 +6779,10 @@ export default function ToneTrainer() {
               const groupedTenorGhost = showTenorGhost && tenorRolesWD ? (() => {
                 const g = [];
                 tenorRolesWD.forEach((r, i) => {
-                  if (r.melisma && g.length > 0 && g[g.length-1].text === r.text) {
+                  // eligible: same fix as groupedTenor/groupedBass above and
+                  // drawMelismaSlurs (§24) — melisma===true OR spanCount>1.
+                  const eligible = r.melisma === true || (r.spanCount != null && r.spanCount > 1);
+                  if (eligible && g.length > 0 && g[g.length-1].text === r.text) {
                     g[g.length-1].entries.push({ r, i });
                   } else {
                     g.push({ text: r.text, entries: [{ r, i }] });
