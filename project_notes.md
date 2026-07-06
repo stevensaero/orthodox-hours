@@ -1,5 +1,54 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.28.0** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
+**Tool version: v0.29.0** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
+
+**Session July 6, 2026 (cont.) — Vespers OT Lessons: print context, quiet
+inline links, single-passage print (v0.28.0 → v0.29.0).**
+
+Three related additions to the combined Vespers OT Lessons reading feature
+(v0.27.0/v0.28.0):
+
+1. **Print/read anchor.** The combined "Read in Scripture" page and the
+   single-passage view both now show "Vespers · [commemoration] · [date]"
+   under the heading, on screen and in print, so the texts stay anchored to
+   a specific service. New `vespersPrintContext()` builds this once inside
+   `assembleVespers`, reusing `getPeekName()` (the same resolution already
+   driving the collapsed-header peek row) for the commemoration.
+
+2. **Quiet inline per-lesson links.** Each lesson's reference substring
+   (e.g. the "(Gen 28:10-17)" in "Genesis — Jacob's ladder (Gen 28:10-17)")
+   is now a subtle dotted-underline inline link, not a boxed badge — opening
+   that single passage alone (verses above/below stripped), same `?ref=`
+   mode the combined link's destination also uses. New `paroemiaLinkParts()`
+   splits the string into `{before, linkText, href, after}` using the same
+   regex already in `paroemiaToRef`, with the `d` (hasIndices) flag to
+   locate exact substring boundaries. Verified byte-for-byte reconstruction
+   (`before+linkText+after === original`) against real paroemia strings
+   pulled from the May/June/July data before wiring it in — caught and fixed
+   one issue in the process (Format 1's greedy `[^—]*` was absorbing a
+   trailing space into the link text; trimmed it into `after` instead so the
+   visible gap survives but the underline doesn't extend into blank space).
+
+3. **Single-passage (`?ref=`) view** gets a heading (the reference itself),
+   the same Print button, and the same context line as the combined
+   landing — factored into shared `PrintStyles`/`PrintButton`/
+   `ReadingContextLine` components in `scripture.jsx` rather than
+   duplicated. Context line only shows when arriving with service+date
+   (commemoration optional); a plain bookmarked `?ref=` visit still gets the
+   heading and print button.
+
+**Supporting changes:** `refToScriptureHref()`/`paroemiaToScriptureHref()`
+accept an optional `commemoration` param, encoded as a new `&commemoration=`
+URL param. `oht_scripture_readings` payload extended from a bare items array
+to `{ items, context }` — read side accepts either shape, so the Library's
+existing Today's Readings handoff (bare array, no context) keeps working
+unchanged. Context card: the "Read in Scripture ↗" link moved from below the
+three lesson lines onto the "Vespers lessons" heading row itself (matches an
+illustration Bill provided); each lesson line there gets the same quiet
+inline ref link as the assembled service.
+
+Gate: 71/71 pointing-paths + sunday-vespers, vite build clean; verified the
+commemoration param, `@page` counter rule, and "Read in Scripture" text are
+present in the built bundle.
 
 **Session July 6, 2026 (cont.) — fix: Outline tab scroll-to offset, feat: print
 button on combined Readings page (v0.27.2 → v0.28.0).**
