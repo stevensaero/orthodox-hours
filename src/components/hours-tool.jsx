@@ -8450,6 +8450,25 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.29.1",
+    date: "July 2026",
+    summary: "fix: combined 'Read in Scripture' page wasn't showing the print/read context line",
+    items: [
+      "v0.29.0 added the service/commemoration/date context line to the combined " +
+      "readings landing, but the render call site in scripture.jsx never actually " +
+      "passed the computed readingsContext value down to TodayReadingsView — the " +
+      "prop was added to the component's definition and its own rendering logic, " +
+      "and both sending paths (assembleVespers's badge, the context card's link) " +
+      "correctly wrote { items, context } to sessionStorage, but the receiving " +
+      "JSX simply never forwarded context={readingsContext} at the call site. " +
+      "Single-passage (?ref=) links were unaffected — they carry context via URL " +
+      "params, a separate code path that was wired correctly.",
+      "Fix: one line — pass context={readingsContext} at the TodayReadingsView " +
+      "call site.",
+      "Gate: 71/71 pointing-paths + sunday-vespers, vite build clean.",
+    ],
+  },
+  {
     version: "v0.29.0",
     date: "July 2026",
     summary: "Vespers OT Lessons: print context, quiet inline per-lesson links, single-passage print — new features",

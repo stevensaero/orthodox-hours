@@ -1091,7 +1091,7 @@ export default function Scripture() {
             No book selector in this mode (see above), so selectedBookId can
             only be set by a stray ?book= param; guarded defensively. */}
         {isTodayReadings && !selectedBookId && !loading && (
-          <TodayReadingsView groups={readingGroups} allBookData={allBookData} heading={readingsHeading} />
+          <TodayReadingsView groups={readingGroups} allBookData={allBookData} heading={readingsHeading} context={readingsContext} />
         )}
 
         {/* Browse mode */}
