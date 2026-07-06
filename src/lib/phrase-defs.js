@@ -192,35 +192,64 @@ export const PH_DEFS = {
     // All three phrases share reciting tone fa. Phrase identity is determined
     // solely by cadence, not reciting pitch.
     // Source: Drillock & Ealy tutorial + 164-instance OCA corpus (2 services).
+    //
+    // ARCHITECTURE (Jul 2026): every phrase below is handled by its own dedicated
+    // pointLine() branch in pointing.js — none of them route through shared
+    // distribute(). The cad arrays here are reference documentation of each
+    // phrase's fixed figure; the dedicated handlers hardcode the same values
+    // directly rather than reading these fields. This followed three separate
+    // bugs traced to shared distribute() being silently wrong for phrases it
+    // was never re-checked against (see tone_trainer_tone3_analysis.md §15).
     A: {
       recite: "fa", inton: false, prep: null,
-      // 3-note figure: anchor=fa(H), middle fills=fa(Q each), final=mi(H).
+      // 3-note figure: anchor=fa(H) fixed, middle fills=fa(Q each), final=mi(H) fixed.
+      // Anchor and final never drop, even in the dominant 2-syllable case (73/74
+      // corpus instances) where the fill note doesn't appear at all.
       // CORRECTED (Jul 2026): tutorial prose originally read as "...sung on do" —
       // Bill identified this as a tutorial typo. No example in the 164-instance
-      // corpus ever exercises the fill (73/74 Phrase A instances are 2-syllable
-      // cadences, anchor+final only), so the "do" value was never checked against
-      // a real example or a score. Direct score examination confirms fill=fa
-      // (continuing the reciting tone), not a jump to do. See
-      // tone_trainer_tone3_analysis.md §14 for full reasoning. Must be
-      // ['fa','fa','mi'] not ['fa','mi'] — distribute() repeats the penultimate
-      // note (fa) for extra fill syllables; collapsing to ['fa','mi'] would lose
-      // that repeat-fill behavior entirely.
+      // corpus ever exercises the fill, so the "do" value was never checked
+      // against a real example or a score. Direct score examination confirms
+      // fill=fa (continuing the reciting tone), not a jump to do. See
+      // tone_trainer_tone3_analysis.md §14 for full reasoning.
+      // ALSO CORRECTED (Jul 2026): shared distribute() was silently dropping the
+      // fixed final "mi" entirely in the 2-syllable case (returned fa,fa instead
+      // of fa,mi) — see §15. Now handled by a dedicated pointLine() branch.
       cad: ["fa", "fa", "mi"],
     },
     B: {
       recite: "fa", inton: false, prep: null,
       // anchorDH:true — cadence anchor is a DOTTED HALF NOTE (1.5×H), new for Tone 3.
       // Audio-confirmed: anchor ~1.3s at H_ref≈0.76s, dH_ref≈1.14s.
-      // Long-cadence rule (>3 cad syllables): dH→H, extras ride on mi (distribute handles).
+      // Anchor (mi) and final (do) are fixed and never drop, same shape as Phrase A.
+      // Long-cadence rule (>3 cad syllables): dH→H (confirmed).
+      // OPEN QUESTION (Jul 2026, flagged not resolved): this comment previously
+      // claimed ">3 syllable extras ride on mi" — matching the tutorial's own
+      // prose — but the shared distribute() code actually in use produced "re"
+      // (the exact-fit figure's own middle note) for that case, and nobody had
+      // verified which was actually correct. The new dedicated handler in
+      // pointing.js currently implements "re" (preserving what every prior
+      // session assumed was live), NOT "mi" (the tutorial's literal text) —
+      // this conflict is unresolved and needs Bill's confirmation before either
+      // value is trusted. See tone_trainer_tone3_analysis.md §16.
+      // CORRECTED (Jul 2026): shared distribute() was silently dropping the
+      // fixed final "do" in the 2-syllable case (returned mi,re instead of
+      // mi,do) — see §15. Now handled by a dedicated pointLine() branch.
       cad: ["mi", "re", "do"], anchorDH: true,
     },
     Final: {
       recite: "fa", inton: false, prep: null,
-      // Two-part cadence. Tutorial: mi(H) do(Q) re(Q) | mi(Q) fa(Q) re(H) do(W).
-      // Director always marks two internal accents (31/31 corpus instances).
-      // anchor (anchorIndex) = last internal accent = second mi (position 3 in figure).
-      // First mi (position 0) currently falls in body as reciting fa(Q) — known gap v0.9.0.
-      cad: ["mi", "do", "re", "mi", "fa", "re", "do"],
+      // Two-part cadence, two dedicated pointLine() branches (cad1, cad):
+      //   Part 1 (cad1): mi(H) do(Q) re(Q), fixed anchor(mi)/final(re).
+      //     CORRECTED (Jul 2026): when cad1's anchor is the line's very first
+      //     syllable (zero reciting syllables precede it), a reciting pickup
+      //     note (fa, Q) compresses onto that syllable as a leading note —
+      //     confirmed by Bill from direct score examination. See §15/§16.
+      //   Part 2 (cad): mi(Q) fa(Q) re(H) do(W), fixed anchor(mi)/final(do).
+      //     CORRECTED (Jul 2026): this field previously held the stale
+      //     pre-split 7-note combined array; the actual Part 2 figure is just
+      //     these four notes. The dedicated cad2 handler hardcodes this
+      //     directly and does not read this field. See §15.
+      cad: ["mi", "fa", "re", "do"],
     },
   },
   4: {

@@ -27,12 +27,26 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.48";
+export const TONE_TRAINER_VERSION = "v0.25.49";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.49",
+    date: "July 2026",
+    summary: "arch: Tone 3 moved entirely off shared distribute() — dedicated handlers for Phrase A, Phrase B, and the Final Phrase's two-part cadence, closing three bugs found in one session (chip-split bug, stale cad array, distribute() silently dropping the fixed final pitch for A/B's dominant case)",
+    items: [
+      "fix: Final Phrase chip display never split a cad1 melisma into separate note chips — lineToRolesWithDuration() had no equivalent to the split branches already present for preslur and Tone 4 Final's prep melisma. Audio (lineToNotes) always played it correctly; chips lumped all pitches into one entry with one (also miscomputed) duration. Both twin functions now read an explicit `durs` array attached directly by pointLine(), splitting into one chip per pitch with its own correct duration — the same fix closes both the missing split and the wrong duration in one pass.",
+      "fix: PH_DEFS[3].Final.cad was a stale pre-cad1-split array (the old combined 7-note figure). The dedicated cad2 handler now hardcodes the correct 4-note Part 2 figure [mi,fa,re,do] directly and doesn't read this field at all; the field is left updated for documentation only.",
+      "fix: shared distribute()'s undercount rule ('take the first N notes, drop the tail') was silently dropping the tutorial-mandated final pitch for Tone 3 Phrase A and B's dominant 2-syllable cadence (73/74 and most of 59/59 corpus instances respectively) — confirmed by direct testing: distribute(['fa','fa','mi'],2) → [fa,fa], not [fa,mi]; distribute(['mi','re','do'],2) → [mi,re], not [mi,do]. Likely live and audible since the original build.",
+      "feat: Tone 3 Final Phrase Part 1 (cad1) now includes a recite-pickup note — when the cad1 anchor is the line's very first syllable (zero reciting syllables precede it), a reciting fa(Q) compresses onto that syllable as a leading note in the melisma. Confirmed by Bill from direct score examination as a general rule; the tutorial itself is silent on this point.",
+      "arch: added distributeTone3FinalCad1() and distributeTone3FinalCad2() plus dedicated Phrase A / Phrase B pointLine() branches, all self-contained to Tone 3, none reading or calling shared distribute(). Excess syllables (fewer available than the fixed figure) compress onto the earliest syllable as a melisma in every case; the phrase's fixed anchor and final pitches never drop. Nothing shared changed — Tone 1, Tone 2, and Tone 4 untouched.",
+      "test: added 5 new Tone 3 fixtures to tools/test_pointing_roles.mjs (Phrase A 2-syllable and 3-syllable, Phrase B 2-syllable and 3-syllable exact-fit, Final Phrase two-part cadence with recite-pickup) — 23/23 pointing-role checks pass, zero regressions to Tone 1/2/4. npm run gate — 71/71 Hours Tool checks. vite build clean.",
+      "note: Phrase B's >3-syllable overcount fill pitch is flagged, not resolved — implemented as 're' (carried over from the exact-fit middle note, what every prior session assumed), but the tutorial's own prose for this specific overcount case says extras are 'sung on mi'. Never checked against a real example or score either way. See tone_trainer_tone3_analysis.md §16.",
+    ],
+  },
   {
     version: "v0.25.48",
     date: "July 2026",
@@ -3660,6 +3674,21 @@ export default function ToneTrainer() {
     }
 
     roles.forEach((r, ri) => {
+      // Explicit per-pitch durations attached directly by tone-specific pointLine()
+      // logic (Tone 3's dedicated Phrase A/B and Final cad1/cad2 handlers, added
+      // when Tone 3 moved off shared distribute() entirely — see
+      // tone_trainer_tone3_analysis.md §15/§16). This is a rendering pass-through,
+      // not domain logic: it doesn't decide what duration any phrase's cadence
+      // should have, it just plays back what the tone-specific pointing logic
+      // already decided. Authoritative when present — bypasses every generic/
+      // shared duration path below entirely.
+      if (r.durs) {
+        const dm = { "H": H, "Q": Q, "W": W, "H·": DH };
+        r.pitches.forEach((p, pi) => {
+          notes.push({ sol: p, dur: dm[r.durs[pi]] ?? Q, peak: (r.anchor && pi === 0) ? 0.27 : 0.2 });
+        });
+        return;
+      }
       let syllDur;
       if (r.role === "inton") {
         syllDur = r.accent ? H : Q;
@@ -3673,16 +3702,9 @@ export default function ToneTrainer() {
         // Pre-slur = two quarter notes (re + ti) as a pickup before the prep.
         // Assign H so the melisma division (syllDur / pitches.length = H/2) yields Q+Q.
         syllDur = H;
-      } else if (r.role === "cad1") {
-        // Part 1 cadence (Tone 3 Final Phrase only): mi(H) · do(Q) · re(Q).
-        const CAD1_DURS = [H, Q, Q];
-        const peak1 = r.anchor ? 0.27 : 0.2;
-        r.pitches.forEach((p, pi) => {
-          notes.push({ sol: p, dur: CAD1_DURS[pi] ?? Q, peak: peak1 });
-        });
-        return;
       } else if (r.role === "cad") {
         const cadPos = cadIdxs.indexOf(ri);
+
 
         // ── Tone 1 Phrase A: direct duration rules (score-verified) ────────
         // Anchor H. Middle fills H. Close W.
@@ -4278,6 +4300,21 @@ export default function ToneTrainer() {
     }
 
     roles.forEach((r, ri) => {
+      // Explicit per-pitch durations attached directly by tone-specific pointLine()
+      // logic (Tone 3's dedicated Phrase A/B and Final cad1/cad2 handlers). Mirrors
+      // the identical r.durs pass-through in lineToNotes() exactly — matched-pair
+      // convention. This is what closes the original bug: previously cad1's
+      // multi-pitch melisma was pushed as a single lumped chip with one (also
+      // miscomputed) duration; now every pitch gets its own chip entry with its
+      // own correct duration, same as preslur and Tone 4 Final's prep melisma.
+      if (r.durs) {
+        const dm = { "H": H, "Q": Q, "W": W, "H·": DH };
+        r.pitches.forEach((p, pi) => {
+          const pd = dm[r.durs[pi]] ?? Q;
+          result.push({ ...r, pitches: [p], dur: pd, durKey: durKey(pd), melisma: r.pitches.length > 1 });
+        });
+        return;
+      }
       let d;
       if (r.role === "inton")                             d = r.accent ? H : Q;
       else if (r.role === "recite" || r.role === "prep") {
@@ -4287,7 +4324,6 @@ export default function ToneTrainer() {
         else d = Q;
       }
       else if (r.role === "preslur")                      d = H / r.pitches.length; // Q per pitch
-      else if (r.role === "cad1")                         d = ri === cadIdxs[0] ? H : Q;
       else if (r.role === "cad") {
         const cadPos = cadIdxs.indexOf(ri);
         // ── Tone 1 Phrase A: direct duration rules — bypasses cadDuration() ────

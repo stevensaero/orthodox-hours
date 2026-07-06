@@ -49,21 +49,157 @@ export function anchorIndex(flat) {
   return a;
 }
 
+// ── Tone 3 dedicated distribution — see tone_trainer_tone3_analysis.md §15/§16 ──
+// Tone 3 no longer routes any phrase through shared distribute(). Three separate
+// bugs surfaced in one session from that shared function being silently wrong for
+// phrases it was never re-checked against (Phrase A/B's dominant 2-syllable case
+// dropping the fixed final pitch; the Final Phrase's stale pre-split cad array).
+// Each function below is self-contained to its one phrase context, verified
+// against tutorial and score, and never reused elsewhere.
+
+// Tone 3 Final Phrase, Part 1 (cad1). Fixed 3-note figure mi(H)·do(Q)·re(Q).
+// Anchor (mi) and final (re) are fixed positions and never drop; excess syllables
+// (fewer than 3 available) compress onto the FIRST syllable as a melisma.
+// needsPickup: when the cad1 anchor is the line's very first syllable (zero
+// reciting syllables precede it), a reciting pickup note (fa, Q) compresses onto
+// that same syllable as a leading note — confirmed by Bill from direct score
+// examination; the tutorial itself is silent on this point, but Bill confirmed it
+// as a general rule ("logically and melodically we shouldn't be dropping that fa"),
+// not inferred from one example alone.
+function distributeTone3FinalCad1(count, needsPickup) {
+  const FIG = ["mi", "do", "re"];
+  const DUR = ["H", "Q", "Q"];
+  const n = FIG.length;
+  let out;
+  if (count <= 1) {
+    out = [{ pitches: FIG.slice(), durs: DUR.slice() }];
+  } else if (count === n) {
+    out = FIG.map((f, i) => [{ pitches: [f], durs: [DUR[i]] }]).map(x => x[0]);
+  } else if (count > n) {
+    // Overcount: never observed in the corpus. Honest fallback, mirrors the
+    // established convention elsewhere in this file — anchor and final fixed,
+    // middle repeats the figure's own middle note (do) at Q.
+    const o = [{ pitches: [FIG[0]], durs: [DUR[0]] }];
+    for (let i = 0; i < count - 2; i++) o.push({ pitches: [FIG[1]], durs: [DUR[1]] });
+    o.push({ pitches: [FIG[n - 1]], durs: [DUR[n - 1]] });
+    out = o;
+  } else {
+    // count < n: excess compresses onto the first syllable; final always preserved.
+    const excess = n - count;
+    const o = [{ pitches: FIG.slice(0, 1 + excess), durs: DUR.slice(0, 1 + excess) }];
+    for (let i = 1; i < count; i++) o.push({ pitches: [FIG[i + excess]], durs: [DUR[i + excess]] });
+    out = o;
+  }
+  if (needsPickup && out.length > 0) {
+    out[0] = { pitches: ["fa", ...out[0].pitches], durs: ["Q", ...out[0].durs] };
+  }
+  return out;
+}
+
+// Tone 3 Final Phrase, Part 2 (cad). Fixed 4-note figure mi(Q)·fa(Q)·re(H)·do(W).
+// Bill, quoting the tutorial directly: every note in the two-part cadence lands
+// somewhere, concluding with a whole note on do for the final syllable — the
+// final note is fixed and must never drop. Excess syllables compress onto the
+// FIRST available syllable as a melisma (confirmed against "me/O/Lord" → me
+// carries mi·fa as a melisma, O carries re, Lord carries the fixed final do).
+function distributeTone3FinalCad2(count) {
+  const FIG = ["mi", "fa", "re", "do"];
+  const DUR = ["Q", "Q", "H", "W"];
+  const n = FIG.length;
+  if (count <= 1) return [{ pitches: FIG.slice(), durs: DUR.slice() }];
+  if (count === n) return FIG.map((f, i) => ({ pitches: [f], durs: [DUR[i]] }));
+  if (count > n) {
+    // Overcount: never observed. Honest fallback — anchor and final fixed,
+    // middle repeats the figure's own penultimate note (re) at Q.
+    const out = [{ pitches: [FIG[0]], durs: [DUR[0]] }];
+    for (let i = 0; i < count - 2; i++) out.push({ pitches: [FIG[n - 2]], durs: ["Q"] });
+    out.push({ pitches: [FIG[n - 1]], durs: [DUR[n - 1]] });
+    return out;
+  }
+  // count < n: excess compresses onto the first syllable, final always preserved.
+  const excess = n - count;
+  const out = [{ pitches: FIG.slice(0, 1 + excess), durs: DUR.slice(0, 1 + excess) }];
+  for (let i = 1; i < count; i++) out.push({ pitches: [FIG[i + excess]], durs: [DUR[i + excess]] });
+  return out;
+}
+
 // pointLine: maps a line's syllables to roles (recite/inton/prep/cad/cad1/preslur).
 // phDefs: the active tone's phrase definition table (e.g. PH_DEFS[1] or PH_DEFS[2]).
 // Pass PH (the component-derived active table) when calling from inside the component.
 //
 // Tone 3 Final Phrase two-part cadence:
-//   Part 1 (cad1): mi(H) do(Q) re(Q) — launches at anchor1 (first director mark)
-//   Part 2 (cad):  mi(Q) fa(Q) re(H) do(W) — launches at anchor2 (second director mark)
-// anchor1 = second-to-last stressed syllable (findFirstFinalAnchor); anchor2 = anchorIndex().
+//   Part 1 (cad1): mi(H) do(Q) re(Q), plus recite-pickup when body is empty.
+//   Part 2 (cad):  mi(Q) fa(Q) re(H) do(W)
+// anchor1 = second-to-last stressed syllable; anchor2 = anchorIndex().
 // Scope guard: activeTone===3 && phrase==='Final' && two accented syllables present.
 // When guard is false, falls through to existing single-anchor logic unchanged.
 export function pointLine(line, phDefs, activeTone) {
   const def = phDefs[line.phrase];
   const flat = flatten(line);
 
-  // ── Tone 3 Final Phrase: two-part cadence (cad1 + cad) ──────────────────
+  // ── Tone 3 Phrase A: dedicated handler, no shared distribute() ──────────
+  // Anchor (fa) and final (mi) are fixed positions and never drop. 2-syllable
+  // cadence (the dominant real-world shape, 73/74 corpus instances) = anchor +
+  // final only, no fill. 3+ syllables = fill repeats fa (§14.4 correction).
+  // count===1 (anchor and final syllable coincide) is never observed in the
+  // corpus; honest fallback below compresses both fixed pitches as a melisma.
+  if (activeTone === 3 && line.phrase === "A") {
+    const a = anchorIndex(flat);
+    const body = flat.slice(0, a);
+    const cad = flat.slice(a);
+    const roles = [];
+    body.forEach((s) => roles.push({ role: "recite", pitches: [def.recite], accent: s.accent, text: s.text, source: s.source }));
+    const cadLen = cad.length;
+    cad.forEach((s, i) => {
+      if (cadLen === 1) {
+        roles.push({ role: "cad", pitches: ["fa", "mi"], durs: ["H", "H"], accent: s.accent, text: s.text, source: s.source, anchor: true });
+        return;
+      }
+      let pitch, dur;
+      if (i === 0) { pitch = "fa"; dur = "H"; }
+      else if (i === cadLen - 1) { pitch = "mi"; dur = "H"; }
+      else { pitch = "fa"; dur = "Q"; }
+      roles.push({ role: "cad", pitches: [pitch], durs: [dur], accent: s.accent, text: s.text, source: s.source, anchor: i === 0 });
+    });
+    return roles;
+  }
+
+  // ── Tone 3 Phrase B: dedicated handler, no shared distribute() ──────────
+  // Anchor (mi, dotted-half unless long-cadence rule fires) and final (do) are
+  // fixed positions and never drop. 2-syllable cadence = anchor + final only,
+  // same shape as Phrase A. 3+ syllables = fill on re; >3 syllables collapses
+  // the dotted-half anchor to a plain half per the tutorial's own long-cadence
+  // rule (unchanged from the original build).
+  // OPEN QUESTION, flagged not silently resolved: the tutorial's own prose for
+  // the >3-syllable overcount case says extra syllables are "sung on mi" — but
+  // the exact-fit (count===3) case unambiguously has the middle syllable on
+  // "re" (mi·re·do). Whether the >3 overcount fill should repeat "re" (as
+  // implemented here, carried over from every prior session's assumption) or
+  // "mi" (a literal reading of the tutorial's own overcount sentence) has never
+  // been checked against a real example or score. Needs Bill's confirmation.
+  if (activeTone === 3 && line.phrase === "B") {
+    const a = anchorIndex(flat);
+    const body = flat.slice(0, a);
+    const cad = flat.slice(a);
+    const roles = [];
+    body.forEach((s) => roles.push({ role: "recite", pitches: [def.recite], accent: s.accent, text: s.text, source: s.source }));
+    const cadLen = cad.length;
+    const longCadence = cadLen > 3;
+    cad.forEach((s, i) => {
+      if (cadLen === 1) {
+        roles.push({ role: "cad", pitches: ["mi", "do"], durs: [longCadence ? "H" : "H·", "H"], accent: s.accent, text: s.text, source: s.source, anchor: true });
+        return;
+      }
+      let pitch, dur;
+      if (i === 0) { pitch = "mi"; dur = longCadence ? "H" : "H·"; }
+      else if (i === cadLen - 1) { pitch = "do"; dur = "H"; }
+      else { pitch = "re"; dur = "Q"; } // see OPEN QUESTION above
+      roles.push({ role: "cad", pitches: [pitch], durs: [dur], accent: s.accent, text: s.text, source: s.source, anchor: i === 0 });
+    });
+    return roles;
+  }
+
+  // ── Tone 3 Final Phrase: two-part cadence (cad1 + cad), dedicated distribution ──
   if (activeTone === 3 && line.phrase === "Final") {
     const acc = flat.map((s, i) => s.accent ? i : -1).filter(i => i >= 0);
     if (acc.length >= 2) {
@@ -81,15 +217,15 @@ export function pointLine(line, phDefs, activeTone) {
         const roles = [];
         // body → recite
         body.forEach((s) => roles.push({ role: "recite", pitches: [def.recite], accent: s.accent, text: s.text, source: s.source }));
-        // cad1 → distribute Part 1 figure [mi, do, re]
-        const dist1 = distribute(["mi", "do", "re"], cad1.length);
+        // cad1 → Part 1 figure, dedicated distribution, recite-pickup when body is empty
+        const dist1 = distributeTone3FinalCad1(cad1.length, body.length === 0);
         cad1.forEach((s, i) =>
-          roles.push({ role: "cad1", pitches: dist1[i] || ["do"], accent: s.accent, text: s.text, source: s.source, anchor: i === 0 })
+          roles.push({ role: "cad1", pitches: dist1[i]?.pitches || ["do"], durs: dist1[i]?.durs, accent: s.accent, text: s.text, source: s.source, anchor: i === 0 })
         );
-        // cad → distribute Part 2 figure (def.cad)
-        const dist2 = distribute(def.cad, cad.length);
+        // cad → Part 2 figure, dedicated distribution (no shared distribute(), no stale array)
+        const dist2 = distributeTone3FinalCad2(cad.length);
         cad.forEach((s, i) =>
-          roles.push({ role: "cad", pitches: dist2[i] || [def.cad[def.cad.length - 1]], accent: s.accent, text: s.text, source: s.source, anchor: i === 0 })
+          roles.push({ role: "cad", pitches: dist2[i]?.pitches || ["do"], durs: dist2[i]?.durs, accent: s.accent, text: s.text, source: s.source, anchor: i === 0 })
         );
         return roles;
       }

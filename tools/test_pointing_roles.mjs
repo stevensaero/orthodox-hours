@@ -113,6 +113,66 @@ const FIXTURES = [
     ],
   },
 
+  // ── Tone 3 — Common Chant, dedicated per-phrase handlers (Jul 2026) ─────
+  // No shared distribute() involved in any of these — see
+  // tone_trainer_tone3_analysis.md §15/§16 for the bugs that made that
+  // necessary (shared distribute() silently dropped the fixed final pitch
+  // for both Phrase A and B's dominant 2-syllable case).
+  {
+    name: "T3 A — 2-syllable cadence (dominant real-world shape): anchor+final only, no fill",
+    tone: 3, phrase: "A",
+    words: [W("Let"), W("us"), W("praise", true), W("Him")],
+    expect: [
+      ["Let", "recite", "fa"],
+      ["us", "recite", "fa"],
+      ["praise", "cad", "fa"],
+      ["Him", "cad", "mi"],
+    ],
+  },
+  {
+    name: "T3 A — 3-syllable cadence: fill repeats fa (Jul 2026 tutorial-typo fix, do→fa)",
+    tone: 3, phrase: "A",
+    words: [W("Let"), W("praise", true), W("be"), W("Thine")],
+    expect: [
+      ["Let", "recite", "fa"],
+      ["praise", "cad", "fa"],
+      ["be", "cad", "fa"],
+      ["Thine", "cad", "mi"],
+    ],
+  },
+  {
+    name: "T3 B — 2-syllable cadence: anchor+final only, no fill (regression guard: was dropping the fixed final do)",
+    tone: 3, phrase: "B",
+    words: [W("We"), W("call", true), W("Him")],
+    expect: [
+      ["We", "recite", "fa"],
+      ["call", "cad", "mi"],
+      ["Him", "cad", "do"],
+    ],
+  },
+  {
+    name: "T3 B — 3-syllable exact fit: anchor mi, fill re, final do",
+    tone: 3, phrase: "B",
+    words: [W("We"), W("call", true), W("up"), W("Thee")],
+    expect: [
+      ["We", "recite", "fa"],
+      ["call", "cad", "mi"],
+      ["up", "cad", "re"],
+      ["Thee", "cad", "do"],
+    ],
+  },
+  {
+    name: "T3 Final — two-part cadence with recite-pickup ('[Hear] [me], O Lord.') — Hear absorbs the pickup fa plus full cad1 melisma; me/O/Lord distribute the 4-note Part 2 figure with excess compressing onto 'me', final do always preserved",
+    tone: 3, phrase: "Final",
+    words: [W("Hear", true), W("me", true), W("O"), W("Lord")],
+    expect: [
+      ["Hear", "cad1", "fa·mi·do·re"],
+      ["me", "cad", "mi·fa"],
+      ["O", "cad", "re"],
+      ["Lord", "cad", "do"],
+    ],
+  },
+
   // ── Tone 4 — Obikhod Common Chant (July 2026 research session) ─────────
   // Every fixture below is drawn directly from tone_trainer_tone4_analysis.md
   // (repo root) — see that document for the full worked-example evidence,
