@@ -27,12 +27,21 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.45";
+export const TONE_TRAINER_VERSION = "v0.25.46";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.46",
+    date: "July 2026",
+    summary: "fix: Tone 2 tenor la was audibly too low throughout every phrase (confirmed by Bill against actual audio, not just chip display) — same octaveDiv gap Tone 1's Final Phrase already had fixed",
+    items: [
+      "fix: TENOR_RULES[2] uses la as its primary reciting/cadence pitch across every phrase (A, B, C, D, Final) with no octaveDiv override anywhere — at the default div:2, la computes to 146.8 Hz, more a bass/baritone register than tenor, and happened to collide with bass's own la (also 146.8 Hz at its own default), silently merging the two into one shared height-map entry. Tone 1's Final Phrase already needed the identical fix for the identical reason (its own la/si pair, documented in that phrase's own comment: 'la fell an octave below sol, heard as a dramatic drop') — Tone 2 simply never got it, and unlike Tone 1 where this only affected one phrase, Tone 2's la is used constantly, so the impact was pervasive rather than isolated. Confirmed directly by Bill against actual audio playback, not just the chip display: 'the score shows tenor in the right place, the audio for tenor is way too low throughout all phrases.' Fixed by adding octaveDiv:{la:1} to all five of Tone 2's tenor phrases — la now computes to 293.7 Hz, correctly a whole step above tenor's own sol (261.6 Hz), matching Tone 1's same established relationship exactly.",
+      "feat: preslurMap added to buildUnifiedVoiceMap()'s pitch collection, alongside the existing recite/cadMap/prepMap/cadPositional fields — the same class of gap as the cadPositional fix, but checked directly against Tone 1/2/4's real data first: every preslurMap output currently in use is already redundant with another already-collected source, so this closes a latent gap preventatively rather than fixing an active bug, the same way the E/F phrase-list gap was closed before it caused visible harm.",
+    ],
+  },
   {
     version: "v0.25.45",
     date: "July 2026",
@@ -2205,6 +2214,18 @@ const TENOR_RULES = {
       // collapses to one held whole note on la via the TENOR_HOLD_TONES collapse).
       cadMap: { fa: "la", mi: "la", re: "la" },
       preslurMap: {},
+      // octaveDiv:{la:1} — REQUIRED, not optional, same fix Tone 1's own
+      // Final Phrase already needed for this exact relationship. At the
+      // default div:2, la computes to 146.8 Hz — audibly too low (more a
+      // bass/baritone register than tenor), confirmed directly by Bill
+      // against the actual audio, not just the chip display ("the score
+      // shows tenor in the right place, the audio for tenor is way too
+      // low throughout all phrases of tone 2"). At div:1, la computes to
+      // 293.7 Hz, sitting properly a whole step above tenor's own sol
+      // (261.6 Hz) — the same relationship Tone 1's la:1 fix established.
+      // Every phrase in this tone uses la somewhere (recite or cadence/
+      // preslur output), so every phrase needs this override.
+      octaveDiv: { la: 1 },
     },
     B: {
       // Reciting alto re → tenor la
@@ -2213,6 +2234,7 @@ const TENOR_RULES = {
       // Cadence alto di·re → tenor la·la
       cadMap: { di: "la", re: "la" },
       preslurMap: {},
+      octaveDiv: { la: 1 }, // same fix as Phrase A — see that comment
     },
     C: {
       // Intonation/reciting alto re → tenor la
@@ -2222,6 +2244,7 @@ const TENOR_RULES = {
       // Cadence alto do → tenor sol
       cadMap: { do: "sol" },
       preslurMap: {},
+      octaveDiv: { la: 1 }, // same fix as Phrase A — see that comment
     },
     D: {
       // Reciting alto do → tenor sol
@@ -2230,6 +2253,7 @@ const TENOR_RULES = {
       // Cadence alto di·re → tenor la·la (same cadence shape as Phrase B)
       cadMap: { di: "la", re: "la" },
       preslurMap: {},
+      octaveDiv: { la: 1 }, // same fix as Phrase A — see that comment
     },
     Final: {
       // Reciting alto re → tenor la
@@ -2242,6 +2266,7 @@ const TENOR_RULES = {
       // Pre-slur "Hear": alto leans recite·prep (re·ti) → tenor recite·prep (la·sol),
       // the same recite→prep shape the bass pre-slur takes.
       preslurMap: { re: "la", ti: "sol" },
+      octaveDiv: { la: 1 }, // same fix as Phrase A — see that comment
     },
   },
   // ── Tone 4, Obikhod (L'vov-Bakhmetev) ────────────────────────────────────
@@ -5092,7 +5117,16 @@ export default function ToneTrainer() {
       ["A","B","C","D","E","F","Final"].forEach(ph => {
         const pr = rules[ph];
         if (!pr) return;
-        [pr.recite, ...Object.values(pr.cadMap||{}), ...Object.values(pr.prepMap||{}), ...(pr.cadPositional||[])]
+        // preslurMap added preventatively (July 2026) — the same class of
+        // gap as cadPositional above: checked directly against Tone 1/2/4's
+        // real data and confirmed every preslurMap output currently in use
+        // is already redundant with recite/cadMap/prepMap elsewhere, so
+        // this closes a latent gap rather than fixing an active bug — but
+        // it's the exact same shape of mistake (a legitimate output field
+        // this function doesn't know about), worth closing now rather than
+        // waiting for a future tone's preslurMap to introduce a genuinely
+        // unique pitch and silently repeat this.
+        [pr.recite, ...Object.values(pr.cadMap||{}), ...Object.values(pr.prepMap||{}), ...(pr.cadPositional||[]), ...Object.values(pr.preslurMap||{})]
           .forEach(p => {
             if (!p) return;
             const hz = hzFn(p, pr);
