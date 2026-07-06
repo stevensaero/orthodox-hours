@@ -7593,7 +7593,7 @@ const JULY_MENAION = {
     alleluia_stichos: "The rich among the people shall entreat thy countenance.",
     communion_verse: "I will take the cup of salvation, and I will call upon the name of the Lord.",
     paroemia_1: "Genesis — Jacob's Ladder (Gen 28:10-17)",
-    paroemia_2: "Ezekiel — The shut eastern gate of the sanctuary (Ez 43:27-44:4)",
+    paroemia_2: "Ezekiel — The shut eastern gate of the sanctuary (Ezek 43:27-44:4)",
     paroemia_3: "Proverbs — Wisdom hath built a house for herself (Prov 9:1-11)",
     // 8 stichera: 1 (Thrice) + 1 (Thrice) + 1 (Twice) + Glory + Both-now = 8 total.
     stichera_lord_i_call_count: 8,
