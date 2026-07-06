@@ -8352,6 +8352,35 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.28.0",
+    date: "July 2026",
+    summary: "Print button on the combined Readings page — new feature",
+    items: [
+      "A Print button now appears next to the heading on the combined-readings " +
+      "landing (Today's Readings, and the Vespers OT-lessons 'Read in Scripture' " +
+      "link). Calls window.print(); everything else on the page — top/bottom " +
+      "context strips, the site header, the on-page translation footer — is " +
+      "suppressed for print via a no-print class, so only the readings themselves " +
+      "print.",
+      "Footer with source/translation and page number via a native @page margin " +
+      "box (@bottom-center), not JavaScript — checked current browser support " +
+      "before building this: Chrome shipped @page margin-box counters " +
+      "(counter(page)/counter(pages)) in Chrome 131 (Nov 2024), Safari in 18.2 " +
+      "(Dec 2024). Firefox has not shipped it as of this writing (open Mozilla " +
+      "bug) — Firefox falls back to its own default print footer, which has its " +
+      "own unstyled page-number display rather than showing nothing.",
+      "Footer text reuses the app's existing translation attribution verbatim " +
+      "('Brenton Septuagint (OT) · KJV 2006 (NT)') rather than new wording.",
+      "Print CSS/button live scoped inside TodayReadingsView (only in the DOM " +
+      "when that view renders), even though the no-print class it defines also " +
+      "governs elements elsewhere in the tree — CSS rules are global regardless " +
+      "of where the <style> tag sits structurally, no Shadow DOM here.",
+      "Gate: 71/71 pointing-paths + sunday-vespers, vite build clean; verified " +
+      "no-print classes and the @page counter rule are present in the built " +
+      "bundle.",
+    ],
+  },
+  {
     version: "v0.27.3",
     date: "July 2026",
     summary: "fix: Outline tab scroll-to landed too far since the v0.26.0 peek row",

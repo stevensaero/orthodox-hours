@@ -505,11 +505,55 @@ function TodayReadingsView({ groups, allBookData, heading }) {
   if (!groups || groups.length === 0) return null;
   return (
     <div>
+      {/* Print CSS lives here rather than in the main component so it's only
+          in the DOM when this view is showing. Rules are global regardless of
+          where the <style> tag sits in the tree (no Shadow DOM here), so
+          .no-print on the site header / context strips elsewhere still works.
+          Page-number footer via native @page margin boxes: supported in
+          Chrome 131+ (Nov 2024) and Safari 18.2+ (Dec 2024); Firefox hasn't
+          shipped it as of this writing (tracked in an open Mozilla bug) — on
+          Firefox, its own default print footer shows instead, unstyled but
+          still page-numbered. */}
+      <style>{`
+        @media print {
+          .no-print { display: none !important; }
+          html, body { background: #fff !important; }
+        }
+        @page {
+          margin: 0.6in 0.6in 0.9in 0.6in;
+          @bottom-center {
+            content: "Brenton Septuagint (OT) \u00b7 KJV 2006 (NT)   \u00b7   Page " counter(page) " of " counter(pages);
+            font-family: Georgia, serif;
+            font-size: 9pt;
+            color: #7a6a4a;
+          }
+        }
+      `}</style>
       <div style={{
-        fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase",
-        color: C.gold, fontWeight: "bold", marginBottom: "0.25rem",
+        display: "flex", alignItems: "baseline", justifyContent: "space-between",
+        gap: "0.75rem", marginBottom: "0.25rem",
       }}>
-        {heading || "Today's Readings"}
+        <div style={{
+          fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase",
+          color: C.gold, fontWeight: "bold",
+        }}>
+          {heading || "Today's Readings"}
+        </div>
+        <button
+          type="button"
+          className="no-print"
+          onClick={() => window.print()}
+          style={{
+            fontSize: "0.68rem", color: C.gold, textDecoration: "none",
+            border: `1px solid rgba(139,105,20,0.35)`, borderRadius: "3px",
+            padding: "1px 7px", background: "rgba(139,105,20,0.07)",
+            fontFamily: "Georgia, serif", letterSpacing: "0.04em",
+            whiteSpace: "nowrap", cursor: "pointer",
+            WebkitAppearance: "none", appearance: "none", flexShrink: 0,
+          }}
+        >
+          Print
+        </button>
       </div>
       {groups.map((g, i) => (
         <div key={i}>
@@ -875,10 +919,12 @@ export default function Scripture() {
       <div style={{ maxWidth: "680px", margin: "0 auto", padding: "1.5rem 1.25rem 5rem" }}>
 
         {/* Context strip — top */}
-        <ContextStrip fromContext={fromContext} fromTool={fromTool} position="top" />
+        <div className="no-print">
+          <ContextStrip fromContext={fromContext} fromTool={fromTool} position="top" />
+        </div>
 
         {/* Site header */}
-        <div style={{
+        <div className="no-print" style={{
           display: "flex", alignItems: "baseline", justifyContent: "space-between",
           borderBottom: `2px solid ${C.goldLight}`,
           paddingBottom: "0.6rem", marginBottom: "1.5rem",
@@ -896,7 +942,7 @@ export default function Scripture() {
         </div>
 
         {/* Pericope header */}
-        {pericopeMeta && <PericopeHeader pericope={pericopeMeta} />}
+        {pericopeMeta && <div className="no-print"><PericopeHeader pericope={pericopeMeta} /></div>}
 
         {/* Book selector — hidden for any direct handoff from the Hours tool
             (single ?ref= reading, or the combined-readings landing): both
@@ -1008,10 +1054,12 @@ export default function Scripture() {
         )}
 
         {/* Context strip — bottom */}
-        <ContextStrip fromContext={fromContext} fromTool={fromTool} position="bottom" />
+        <div className="no-print">
+          <ContextStrip fromContext={fromContext} fromTool={fromTool} position="bottom" />
+        </div>
 
         {/* Footer */}
-        <div style={{
+        <div className="no-print" style={{
           marginTop: "3rem", paddingTop: "1rem",
           borderTop: `1px solid ${C.border}`,
           fontSize: "0.7rem", color: "#B8A882",
