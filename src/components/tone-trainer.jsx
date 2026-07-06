@@ -27,12 +27,23 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.51";
+export const TONE_TRAINER_VERSION = "v0.25.52";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.52",
+    date: "July 2026",
+    summary: "fix: Tone 3 alto printed score rendered a fourth too high (Bb/A/G/F instead of F/E/D/C) — the shared ALTO_ANCHOR_OCT table was silently reused from Tone 1's own verification and never independently checked against Tone 3's score",
+    items: [
+      "fix: score-print.html's ALTO_ANCHOR_OCT/buildAltoPitch (shared across every tone) assumes 'do' anchors to the notated key's tonic — true for Tones 1/2/4, but Bill caught directly that Tone 3's 'do' actually sits on the DOMINANT of the notated key (C, a fifth above the tonic F), not the tonic. Applying the shared table rendered fa as Bb4 when the real score has it on F4 — not an octave error, a different letter. Confirmed against the score: do=C/4, re=D/4, mi=E/4, fa=F/4, all natural, still inside the same one-flat F-major gamut Tones 1/2/4 use, Tone 3 just centers on a different degree of it.",
+      "arch: added TONE3_ALTO_PITCH, a dedicated, deliberately non-transposing table — Tone 3's printed notation does not move with the performance-pitch selector (doHz/cfg), because Orthodox chant notation isn't re-typeset when a director picks a different starting pitch, only where the choir starts singing moves, a purely aural transposition with zero effect on the printed page. This is a real difference from Tones 1/2/4, not a shortcut: those tones' shared table transposes with doHz because that's how they were built and verified. renderScore() now picks TONE3_ALTO_PITCH when payload.tone===3, shared buildAltoPitch(cfg) for everything else — nothing shared touched, Tones 1/2/4 unaffected.",
+      "note: Bass and Tenor's printed notation likely need the identical fix (same shared-anchor-table mechanism, same untested-per-tone gap), but that requires two more score-confirmed reference points (sol, ti) that haven't come back yet. Scoped to alto only for this ship; bass/tenor notation deferred to a following session. Their AUDIO pitch (solfège values from the harmony-voice interview, §14-18) is unaffected either way — this fix is notation-only.",
+      "test: node --check on the extracted inline script (syntax only, no browser available this session — recommend live verification against the deployed tool before considering this fully closed, per standing practice). npm run gate — 71/71 Hours Tool checks, 24/24 pointing-role checks (neither touches score-print.html, unaffected either way). vite build clean.",
+    ],
+  },
   {
     version: "v0.25.51",
     date: "July 2026",
