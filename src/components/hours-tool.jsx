@@ -6805,7 +6805,16 @@ function isOutlineMajor(el) {
 }
 
 function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
-                          activeSection, setActiveSection, serviceLabel, mm, dd }) {
+                          activeSection, setActiveSection, serviceLabel, mm, dd,
+                          headerOffset = 128 }) {
+  // stickyTop/scrollOffset derive from the sticky CONTROLS bar's live measured
+  // height (see controlsBarHeight in the main component) rather than a
+  // hardcoded pixel value — the collapsed-header peek row (v0.26.0) is
+  // conditional on peekName, so the bar's real height already varies day to
+  // day. Gap sizes (+8, +16) preserve the spacing the old hardcoded 120/128
+  // pair implied.
+  const stickyTop = headerOffset + 8;
+  const scrollOffset = headerOffset + 16;
 
   // Wire IntersectionObserver here — legal because this is a component
   React.useEffect(() => {
@@ -6909,7 +6918,7 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
 
   if (!outlineOpen) {
     return (
-      <div style={{ position: 'sticky', top: '120px', alignSelf: 'flex-start',
+      <div style={{ position: 'sticky', top: `${stickyTop}px`, alignSelf: 'flex-start',
         width: '28px', flexShrink: 0, zIndex: 20 }}>
         <button onClick={() => setOutlineOpen(true)} style={pillStyle}
           title="Service outline">OUTLINE</button>
@@ -6918,7 +6927,7 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
   }
 
   return (
-    <div style={{ position: 'sticky', top: '120px', alignSelf: 'flex-start',
+    <div style={{ position: 'sticky', top: `${stickyTop}px`, alignSelf: 'flex-start',
       width: '178px', flexShrink: 0, zIndex: 20 }}>
       <div style={{
         width: '178px', background: '#FAF6EE', border: '1px solid #D4C49A',
@@ -6961,7 +6970,7 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
                   setTimeout(() => {
                     const el = targetId ? document.getElementById(targetId) : null;
                     if (el) {
-                      const top = el.getBoundingClientRect().top + window.scrollY - 128;
+                      const top = el.getBoundingClientRect().top + window.scrollY - scrollOffset;
                       window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
                     }
                   }, 50);
@@ -8342,6 +8351,28 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.27.3",
+    date: "July 2026",
+    summary: "fix: Outline tab scroll-to landed too far since the v0.26.0 peek row",
+    items: [
+      "ServiceOutline's scroll-to-target math used a hardcoded -128 offset, and " +
+      "both ServiceOutline and PsalterOutline used a hardcoded top: 120px for their " +
+      "own sticky positioning — both calibrated to the sticky controls bar's height " +
+      "before the collapsed-header saint/feast peek row existed (v0.26.0).",
+      "The peek row is conditional on peekName, which is null on days with no " +
+      "encoded Menaion entry — so the controls bar's real height already varies day " +
+      "to day. A fixed offset bump would have been correct on encoded days and wrong " +
+      "(over-corrected) on unencoded ones.",
+      "Fix: the sticky CONTROLS bar is now measured directly via a ResizeObserver " +
+      "(controlsBarHeight, in the main component) and passed down as a headerOffset " +
+      "prop. Both outline components derive their sticky top and (for " +
+      "ServiceOutline) scroll offset from that measured value instead of a magic " +
+      "number, preserving the same spacing the old 120/128 pair implied. " +
+      "Self-corrects if the collapsed header's content ever changes again.",
+      "Gate: 71/71 pointing-paths + sunday-vespers, vite build clean.",
+    ],
+  },
   {
     version: "v0.27.2",
     date: "July 2026",
@@ -11937,7 +11968,9 @@ function PsalterDepartedConclusion({ forms, readerMode }) {
 // Mirrors ServiceOutline's look (vertical pill → 178px panel) but navigates the 20
 // kathismata of the paged reader: shows current position, click to jump. Replaces the
 // chip row formerly at the top of the reader.
-function PsalterOutline({ kathisma, setKathisma, departed, open, setOpen }) {
+function PsalterOutline({ kathisma, setKathisma, departed, open, setOpen, headerOffset = 128 }) {
+  // See ServiceOutline for why this is measured rather than a hardcoded 120px.
+  const stickyTop = headerOffset + 8;
   const pillStyle = {
     writingMode: 'vertical-rl', transform: 'rotate(180deg)',
     background: '#8B6914', color: '#FAF6EE', border: 'none', borderRadius: '3px',
@@ -11948,7 +11981,7 @@ function PsalterOutline({ kathisma, setKathisma, departed, open, setOpen }) {
 
   if (!open) {
     return (
-      <div style={{ position: 'sticky', top: '120px', alignSelf: 'flex-start', width: '28px', flexShrink: 0, zIndex: 20 }}>
+      <div style={{ position: 'sticky', top: `${stickyTop}px`, alignSelf: 'flex-start', width: '28px', flexShrink: 0, zIndex: 20 }}>
         <button onClick={() => setOpen(true)} style={pillStyle} title="Kathisma outline">OUTLINE</button>
       </div>
     );
@@ -11957,7 +11990,7 @@ function PsalterOutline({ kathisma, setKathisma, departed, open, setOpen }) {
   const go = (n) => { setKathisma(n); setOpen(false); };
 
   return (
-    <div style={{ position: 'sticky', top: '120px', alignSelf: 'flex-start', width: '178px', flexShrink: 0, zIndex: 20 }}>
+    <div style={{ position: 'sticky', top: `${stickyTop}px`, alignSelf: 'flex-start', width: '178px', flexShrink: 0, zIndex: 20 }}>
       <div style={{ width: '178px', background: '#FAF6EE', border: '1px solid #D4C49A', borderRadius: '4px', overflow: 'hidden', boxShadow: '2px 2px 10px rgba(0,0,0,0.07)', maxHeight: 'calc(100vh - 48px)', display: 'flex', flexDirection: 'column' }}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 10px 7px', borderBottom: '1px solid #E8DEC8', background: 'rgba(139,105,20,0.06)', flexShrink: 0 }}>
@@ -12417,6 +12450,29 @@ export default function App() {
     if (mq.addEventListener) mq.addEventListener("change", fn); else mq.addListener(fn);
     return () => { if (mq.removeEventListener) mq.removeEventListener("change", fn); else mq.removeListener(fn); };
   }, []);
+  // controlsBarHeight: live height of the sticky CONTROLS bar (date/service
+  // row + collapsed Expand row + the peek row when present). ServiceOutline
+  // and PsalterOutline use this instead of a hardcoded pixel offset for both
+  // their own sticky `top` and their scroll-to-target math — the peek row
+  // (v0.26.0) is conditional on peekName, so the bar's real height already
+  // varies day to day; a fixed magic number is right for one case and wrong
+  // for the other. Measuring it directly self-corrects if the header's
+  // content ever changes again.
+  const controlsBarRef = React.useRef(null);
+  const [controlsBarHeight, setControlsBarHeight] = useState(128);
+  useEffect(() => {
+    const el = controlsBarRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    // Re-read getBoundingClientRect (includes padding/border) rather than
+    // entry.contentRect (content-box only, excludes padding) — the latter
+    // would understate this bar's real height by its vertical padding.
+    const ro = new ResizeObserver(() => {
+      setControlsBarHeight(Math.ceil(el.getBoundingClientRect().height));
+    });
+    ro.observe(el);
+    setControlsBarHeight(Math.ceil(el.getBoundingClientRect().height));
+    return () => ro.disconnect();
+  }, []);
   // tbOpen: tracks whether the Typical Beginning is expanded on 1st/6th Hours.
   // When expanded, the Hour body shows O come let us worship (not Christ is risen)
   // because Christ is risen was already said within the Typical Beginning.
@@ -12824,7 +12880,7 @@ export default function App() {
       </div>
 
       {/* ── CONTROLS ─────────────────────────────────────── */}
-      <div style={{ background: "#EDE5D0", borderBottom: "1px solid #D4C49A", padding: isNarrow ? "0.75rem 1rem" : "1rem 2rem",
+      <div ref={controlsBarRef} style={{ background: "#EDE5D0", borderBottom: "1px solid #D4C49A", padding: isNarrow ? "0.75rem 1rem" : "1rem 2rem",
         position: "sticky", top: 0, zIndex: 40 }}>
         <div style={{ maxWidth: "720px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
 
@@ -13296,6 +13352,7 @@ export default function App() {
           serviceLabel={currentService ? currentService.label : ''}
           mm={liturgicalData ? liturgicalData.mm : null}
           dd={liturgicalData ? liturgicalData.dd : null}
+          headerOffset={controlsBarHeight}
         />
         {currentService.key === 'psalter_service' && (
           <PsalterOutline
@@ -13304,6 +13361,7 @@ export default function App() {
             departed={psalterMode === 'departed'}
             open={outlineOpen}
             setOpen={setOutlineOpen}
+            headerOffset={controlsBarHeight}
           />
         )}
 
