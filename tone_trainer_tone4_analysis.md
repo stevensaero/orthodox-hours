@@ -1168,16 +1168,31 @@ for Tone 2. Checking this directly against the Phrase E LIC score example
 > `ti→do` — two genuinely different pitches, confirmed to re-articulate
 > (slur with bass's own two notes), not hold.
 
-**This suggests hold isn't an independent rule requiring its own gate at
-all — it may simply be what happens automatically when two adjacent
-positions in bass's own line happen to share a pitch.** Same bass pitch at
-both positions → naturally sustained. Different bass pitch → bass has no
-choice but to move. This would be a more elegant finding than Tenor's
-(where hold was a genuine separate per-tone behavioral question), but it
-rests on exactly one confirmed phrase (E) so far — **not yet checked
-against the Final Phrase's own "Theotokos" 2-note slur**, which would be
-the test of whether this is a real general principle or specific to
-Phrase E. Left open, not assumed either way.
+**A third confirming data point, from the Final Phrase's own prep melisma**
+("[Hear] [me], O Lord!" — the same case whose alto pointing needed a real
+bug fix, see below): alto's `re(H)·do(Q)·ti(Q)` sums to 4 beats, exactly a
+whole note's duration, and every one of those three alto pitches maps to
+the identical bass pitch (`sol`, per the confirmed `recite` and `prepMap`
+entries) — no pitch change anywhere in bass across the whole span, so bass
+holds a single whole note, not three re-struck notes on the same pitch.
+
+**Confirmed as a real, settled principle now, not just a hypothesis: hold
+isn't an independent rule requiring its own gate at all — it's simply what
+happens automatically when adjacent positions in bass's own line happen to
+share a pitch.** Same bass pitch throughout → natural sustain. Different
+bass pitch → bass has no choice but to move. Three consistent data points
+across two different phrases (E's two cases, Final Phrase's one) is enough
+to treat this as settled rather than still-open.
+
+**A genuine prediction, not yet confirmed, follows for the one remaining
+open case:** the Final Phrase's "Theotokos" cadence slur (alto `do+ti` as a
+2-note slur on "to") has an already-confirmed bass mapping of `do→do,
+ti→mi` — **two different bass pitches**. If the hold principle holds here
+too, bass should **re-articulate** (`do→mi`) under that slur, not sustain —
+the opposite of the "Hear" case just confirmed. This is a real prediction
+from the principle, worth checking against the score directly rather than
+assuming it holds just because the general principle now looks solid.
+
 
 **Duration — bass appears to mirror alto's rhythmic value position-by-
 position.** Confirmed directly: alto's "Thee!" closing the LIC clause "when
@@ -1204,15 +1219,72 @@ all seven phrases; the Phrase C and Phrase E positional-mapping findings;
 the hold-behavior hypothesis (one confirmed phrase, Phrase E).
 
 **Still open:**
-- Hold behavior for the Final Phrase's "Theotokos" 2-note slur — needed to
-  confirm whether the same-pitch/different-pitch hold principle found in
-  Phrase E is a real general rule or specific to that phrase.
+- The hold principle is now confirmed (three data points), but its specific
+  **prediction** for the Final Phrase's "Theotokos" 2-note slur (bass should
+  re-articulate `do→mi`, not sustain) has not yet been checked against the
+  score directly.
 - The H-vs-H·-vs-W close-duration question, tone-wide, unresolved (as
   above) — affects bass identically to alto since bass's duration engine
   is designed to mirror alto's rhythmic value.
-- No implementation (`BASS_RULES[4]` in code) has been written yet — this
-  section is research only, matching how the alto phrase work was fully
-  researched before any `PH_DEFS[4]` code was touched.
+
+**Implementation — `BASS_RULES[4]` (added after the research above):**
+
+Written directly from the confirmed chart, with two real design decisions
+found only by tracing the code carefully rather than assumed safe:
+
+1. **Phrase E's cadence is encoded as `cadPositional`, a plain array indexed
+   by position within the six-pitch figure, not a pitch-keyed `cadMap`.**
+   A flat map cannot express alto's `re` getting two different bass answers
+   depending on where it falls in the figure — confirmed this was a real
+   requirement, not just a convenience, when the standard map-based
+   derivation was traced against the "call"/"on" example and gave the wrong
+   answer for the second `re`.
+2. **A real bug was caught while building this, not before:** the
+   compressed Final Phrase prep-melisma (the "[Hear] [me], O Lord!" case,
+   already a confirmed alto research example) labels all three of its notes
+   `role:"prep"` on the alto side, including the reciting-transition `re`
+   that got folded in when too few syllables were available. The generic
+   bass substitution looks up `prep` roles in `prepMap`, which only has
+   `do`/`ti` — so `re` fell through to an unmapped pass-through, giving the
+   wrong bass pitch. Fixed with a Tone-4-Final-specific check
+   (`role==="prep" && pitch==="re"` → use `recite` directly) rather than
+   restructuring the alto role system.
+
+**The hold question is resolved architecturally, not with a new rule.**
+Tenor already has a proven mechanism for exactly this situation —
+`deriveTenorRolesWD()` does a 1:1 pitch map, then collapses any run of
+notes sharing the same syllable text *and* the same resulting pitch into
+one held note, gated per tone (`TENOR_HOLD_TONES`) so it's never assumed
+without verification. Building an analogous `deriveBassRolesWD()` +
+`BASS_HOLD_TONES` (gated to Tone 4 only — bass hold has not been checked
+for Tones 1/2 and must not inherit tenor's verification) reproduces both
+confirmed hold cases automatically, with no special-casing beyond the
+shared collapse logic: once "Hear"'s three notes correctly resolve to the
+same bass pitch (`sol`), they collapse into one whole note on their own;
+"call" (bass `do·do`, same pitch) collapses into a dotted half; "on" (bass
+`ti·do`, different pitches) does not collapse, correctly re-articulating.
+Verified directly via a standalone reproduction of the collapse logic
+against both examples before wiring it into the component.
+
+**Also found and fixed while wiring this in:** two *other* copies of the
+same bass-substitution logic existed independently — one in the visual
+chip-rendering path, one in the score-print payload builder (`buildScorePayload`)
+— each a separate, manually-synced twin of the same mapping, exactly the
+kind of drift risk already documented for tenor. Neither had any
+hold-collapse logic at all, meaning even after fixing the audio path,
+"Hear" would have kept rendering wrong visually and in print. Consolidated
+all three consumers onto the single `deriveBassRolesWD()` function.
+
+**Not yet done:**
+- `TENOR_RULES[4]` and `SOPRANO_MAP` support — this session covered bass
+  only, per the explicit scope set when Tone 4 alto pointing shipped.
+- The score-print visual rendering of a held bass note (spanning multiple
+  alto positions, via the new `spanStart`/`spanCount` fields mirroring
+  tenor's own pattern) has not been visually verified end-to-end — only
+  the underlying data structure was updated to match tenor's existing
+  convention.
+- Comparing the actual rendered tool output against Bill's printed LIC
+  score, phrase by phrase — the explicit next step, not yet done.
 
 ---
 
