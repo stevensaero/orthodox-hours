@@ -8342,6 +8342,22 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.27.1",
+    date: "July 2026",
+    summary: "fix: Scripture's book selector no longer shows on direct handoffs from the Hours tool",
+    items: [
+      "The 'Select Book' dropdown was already hidden for a single ?ref= reading " +
+      "(?ref= reading mode) but still showed for the combined-readings landing " +
+      "(Library's 'Today's Readings' book, and the new Vespers OT-lessons 'Read in " +
+      "Scripture' link from v0.27.0) — a direct handoff already carries a specific " +
+      "reading, so browsing to another book isn't the point of that visit.",
+      "Fix: the selector's render condition now also excludes isTodayReadings, " +
+      "matching the reasoning already applied to ?ref= mode. Genuine browse visits " +
+      "(no reading handed in) are unaffected.",
+      "Gate: 71/71 pointing-paths + sunday-vespers, vite build clean.",
+    ],
+  },
+  {
     version: "v0.27.0",
     date: "July 2026",
     summary: "Combined 'Read in Scripture' for Vespers OT Lessons — new feature",

@@ -477,8 +477,10 @@ function ReadingView({ spans, allBookData, autoScroll = true }) {
 // parsed spans; spans render through the SAME ReadingView split-gospel path
 // used by ?ref= reading mode (no forked renderer). Order follows the handoff
 // order (day reading before commemoration for Epistle/Gospel; I/II/III for
-// paroemias). Native nav stays available (the book selector above remains
-// live). heading is resolved from the `readings` URL param (READINGS_LANDING_HEADINGS)
+// paroemias). No book selector in this mode — a direct handoff from the tool
+// already carries a specific reading, so browsing isn't the point of the
+// visit (same reasoning as ?ref= reading mode, which has never shown it).
+// heading is resolved from the `readings` URL param (READINGS_LANDING_HEADINGS)
 // so each handoff gets an accurate label rather than a reused one.
 // Heading text for the combined-readings landing, keyed by the `readings` URL
 // param value. Add an entry here for any future combined-reading handoff.
@@ -896,8 +898,12 @@ export default function Scripture() {
         {/* Pericope header */}
         {pericopeMeta && <PericopeHeader pericope={pericopeMeta} />}
 
-        {/* Book selector — browse mode only */}
-        {!isReadingMode && <BookSelector
+        {/* Book selector — hidden for any direct handoff from the Hours tool
+            (single ?ref= reading, or the combined-readings landing): both
+            already carry a specific reading, so browsing to another book
+            isn't the point of the visit. Shown only for a genuine browse
+            visit (no reading handed in). */}
+        {!isReadingMode && !isTodayReadings && <BookSelector
           manifest={manifest}
           selectedBookId={selectedBookId}
           onSelect={handleBookSelect}
@@ -960,8 +966,10 @@ export default function Scripture() {
           </div>
         )}
 
-        {/* Today's Readings landing (Library handoff) — composed via ReadingView.
-            Hidden once the reader navigates to a book (native nav stays live). */}
+        {/* Combined-readings landing (Library's Epistle/Gospel handoff, or a
+            Vespers's combined OT lessons link) — composed via ReadingView.
+            No book selector in this mode (see above), so selectedBookId can
+            only be set by a stray ?book= param; guarded defensively. */}
         {isTodayReadings && !selectedBookId && !loading && (
           <TodayReadingsView groups={readingGroups} allBookData={allBookData} heading={readingsHeading} />
         )}
