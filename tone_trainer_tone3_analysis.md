@@ -1148,3 +1148,95 @@ real tool, not code review or manual tracing alone.
 **Status: Tone 3 harmony voices (Bass, Tenor, Soprano) implemented and
 shipped, v0.25.51. Tone 3 is now feature-complete for SATB, same as Tone 4.**
 
+---
+
+## 19. Printed-score notation bug — alto rendering a fourth too high
+
+*A different layer entirely from everything in §14-18. Those sections are
+all about which SOLFÈGE NAME (fa/mi/re/do) each voice sings, this section is
+about which ACTUAL STAFF POSITION a solfège name renders at in the printed
+score. Bill caught this by looking at the actual printed output for the
+first time since bass/tenor/soprano landed.*
+
+### 19.1 Symptom
+
+Bill: "alto seems to be riding four positions too high in the score." Marked
+up a screenshot showing where each note should fall versus where it actually
+rendered.
+
+### 19.2 Root cause
+
+`score-print.html` has a single `ALTO_ANCHOR_OCT` table shared across every
+tone, verified once against Tone 1's own score and silently reused for every
+tone added since (Tone 2, Tone 4), without independent re-verification per
+tone. That happened to be safe for Tones 2 and 4. It was wrong for Tone 3.
+
+The table's implicit assumption: "do" anchors to the tonic of whatever key
+the score is notated in (F, in the default one-flat key). True for Tones
+1/2/4. Not true for Tone 3 — Bill confirmed directly against the printed
+score that Tone 3's `do` sits on the **dominant** of the notated key (C, a
+fifth above the tonic), not the tonic. Applying the shared table rendered
+`fa` as Bb4 (correct for the other tones) when Tone 3's actual score has it
+on F4 — not an octave discrepancy, a genuinely different letter.
+
+Confirmed reference points, all natural, no accidentals, still inside the
+same one-flat F-major gamut every other tone uses:
+
+| Solfège | Was rendering | Actually is |
+|---|---|---|
+| do | F4 | **C4** |
+| re | G4 | **D4** |
+| mi | A4 | **E4** |
+| fa | Bb4 | **F4** |
+
+Exactly a fourth lower across the board, matching Bill's original "four
+positions" call precisely.
+
+### 19.3 A second, separate finding along the way — notation doesn't transpose with performance pitch
+
+Raised and confirmed directly: Orthodox chant notation is not re-typeset
+when a director picks a different starting/performance pitch (`doHz` in this
+tool). The printed page a choir reads from is fixed, here, F major. Only
+where the choir starts singing moves, a purely aural transposition with no
+effect on note positions on the page. This meant Tone 3's new notation table
+should NOT use the shared `spell()`/`KEY_MAP` transposition machinery at
+all, it needed to be a flat, non-transposing table. (Whether Tones 1/2/4's
+own transposing behavior is itself correct is a separate question, not
+examined here, not touched.)
+
+### 19.4 Fix — dedicated, non-transposing Tone 3 alto table
+
+`TONE3_ALTO_PITCH = { do:"C/4", re:"D/4", mi:"E/4", fa:"F/4" }` in
+`score-print.html`, populated only with the four pitches Tone 3's alto ever
+uses (confirmed from `PH_DEFS[3]`). `renderScore()` picks this table when
+`payload.tone === 3`; every other tone keeps the shared, transposition-aware
+`buildAltoPitch(cfg)` untouched. Same "own logic per tone" principle as
+every pointing-engine fix earlier this session, now extended to the
+notation layer.
+
+### 19.5 Scope — alto only, this ship
+
+Bass and Tenor's printed notation almost certainly need the identical fix
+(same shared-anchor-table mechanism, same never-independently-verified-per-
+tone gap), but that requires two more score-confirmed reference points
+(`sol`, `ti`) not yet given. **Deferred to a following session**, scoped to
+alto only for now, per Bill's own direction ("let's target alto first").
+Their AUDIO pitch (the solfège values from the harmony-voice interview,
+§14-18) is entirely unaffected either way, this bug and fix are notation-
+only, a completely separate layer from the pitch-mapping work already
+closed.
+
+### 19.6 Verification
+
+`node --check` on the extracted inline script confirms valid syntax (no
+browser available this session for a live render check). `npm run gate` —
+71/71 Hours Tool checks, 24/24 pointing-role checks, neither exercises
+`score-print.html` so both are unaffected either way. `vite build` clean.
+**Recommend live verification against the deployed tool's printed score**
+before considering this fully closed, per standing practice, this class of
+bug (visual/notation) is caught by looking at the actual rendered page, not
+by code review or syntax checking alone.
+
+**Status: alto notation fix implemented and shipped, v0.25.52. Bass/Tenor
+notation open, pending `sol`/`ti` score confirmation.**
+
