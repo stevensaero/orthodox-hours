@@ -5442,6 +5442,25 @@ function _dismissalSaintName(menaionEntry, namedDay, isSunday) {
   return null;
 }
 
+// getPeekName — single-line name of the day's commemoration for the collapsed
+// liturgical-context header (the "peek" shown under ▼ Expand ▼ before opening
+// the full panel). Priority: namedDay (movable Sunday/feast) first — shown
+// unconditionally, unlike _dismissalSaintName's Sunday-only fallback, matching
+// how the expanded panel's namedDay box already displays regardless of day-of-
+// week — then the currently selected commemoration's saint, falling back to
+// the overlay/Pentecostarion .name tail for entries with no `saint` field
+// (same fallback vespersNext.saintName already uses). Truncation is handled
+// by CSS ellipsis at the call site, not here.
+function getPeekName(lit, men) {
+  if (lit && lit.namedDay && lit.namedDay.name) return lit.namedDay.name;
+  if (men) {
+    const s = men.saint;
+    if (s && !String(s).startsWith("absent")) return s;
+    if (men.name) return men.name.split("—").pop().trim();
+  }
+  return null;
+}
+
 // buildDismissalText — the unified dismissal string (priest form, or the Fekula
 // Chapter 10 reader form when readerMode is set).
 // opts: { liturgicalData, menaionEntry, pentEntry, serviceContext,
@@ -8264,6 +8283,31 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.26.0",
+    date: "July 2026",
+    summary: "Collapsed-header saint/feast peek — new feature",
+    items: [
+      "Row two-and-a-half added under the collapsed ▼ Expand ▼ header: a single-line, " +
+      "click-to-expand peek of the day's commemoration, visible without opening the full " +
+      "Liturgical Context panel.",
+      "New getPeekName() helper: named day (movable Sunday/feast) takes priority, shown " +
+      "unconditionally — unlike _dismissalSaintName's Sunday-only namedDay fallback — " +
+      "matching how the expanded panel's namedDay box already behaves. Otherwise falls " +
+      "back to the currently selected commemoration's saint, then the overlay/" +
+      "Pentecostarion .name tail for entries with no saint field (same fallback " +
+      "vespersNext.saintName already uses).",
+      "Vespers/Compline read vespersNext (the next liturgical day) for the peek, mirroring " +
+      "how the Tone display in the same row already switches context.",
+      "Multi-commemoration days show only the currently selected saint — no '+N more' " +
+      "indicator, by design.",
+      "Truncation is CSS ellipsis (overflow/textOverflow/whiteSpace), same technique " +
+      "already used for dayName and Tone in this row — dynamic to available width rather " +
+      "than a hardcoded character count.",
+      "Gate: 71/71 pointing-paths + sunday-vespers (pre-existing F-1a/F-1b warnings only), " +
+      "vite build clean.",
+    ],
+  },
   {
     version: "v0.25.7",
     date: "July 2026",
@@ -12386,6 +12430,15 @@ export default function App() {
   const currentServiceIdx = SERVICE_REGISTRY.findIndex(s => s.key === selectedServiceKey);
   const currentService = SERVICE_REGISTRY[currentServiceIdx];
 
+  // Collapsed-header peek name — mirrors the Tone display in the same row:
+  // Vespers/Compline read the next liturgical day (vespersNext), everything
+  // else reads the currently selected day/commemoration.
+  const peekIsVesperlike = currentService.key === 'vespers' || currentService.key === 'compline';
+  const peekName = getPeekName(
+    peekIsVesperlike ? vespersNext.vLit : liturgicalData,
+    peekIsVesperlike ? vespersNext.vMenaion : menaionEntry
+  );
+
   // Assemble elements for the current service
   // Assemble elements — single unified assembler for all seasons
   const elements = (() => {
@@ -12706,6 +12759,31 @@ export default function App() {
             </span>
           </div>
           )}{/* end row two */}
+
+          {/* ── Row two-and-a-half: collapsed saint/feast peek — click to expand.
+              Shows the currently selected commemoration only (no "+N more" for
+              multi-commemoration days); truncation is CSS ellipsis, dynamic to
+              the available width, same technique as dayName/Tone above. ── */}
+          {!contextOpen && peekName && (
+          <div
+            onClick={() => setContextOpen(true)}
+            style={{
+              padding: "0 10px 6px 0",
+              cursor: "pointer",
+              userSelect: "none",
+              textAlign: "center",
+              fontSize: "0.74rem",
+              fontStyle: "italic",
+              color: "#8B7040",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+            title={peekName}
+          >
+            {peekName}
+          </div>
+          )}{/* end row two-and-a-half */}
 
           {/* ── LITURGICAL CONTEXT BODY — inside maxWidth wrapper, aligns with rows ── */}
           {contextOpen && (() => {
