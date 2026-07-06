@@ -8284,6 +8284,33 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.26.2",
+    date: "July 2026",
+    summary: "fix: Hours Tool position not preserved when returning from any data browser/Scripture/Psalter/Tone Trainer",
+    items: [
+      "Root cause: every one of the six destinations (Scripture, Psalter, Menaion, " +
+      "Pentecostarion, Octoechos, Tone Trainer) already returns correctly via a " +
+      "consistent window.history.back() + ?from=tool convention — the problem was " +
+      "never any of them. React Router fully unmounts HoursTool the moment you " +
+      "navigate to any other route, and selectedDate/selectedServiceKey were seeded " +
+      "from hardcoded defaults (today / 1st Hour) every time, so no matter how you " +
+      "got back to /, you got a fresh instance with default state — e.g. leaving " +
+      "Vespers on July 7 and landing back on today's 1st Hour.",
+      "Fix: selectedDate and selectedServiceKey are now seeded from sessionStorage " +
+      "in their useState initializers (same pattern already used for the reading/" +
+      "library `view` state), with a write-through effect keeping sessionStorage " +
+      "current as either changes. Single-file change in hours-tool.jsx fixes all " +
+      "six return paths at once, since they all land back on /.",
+      "selectedServiceIndex (which saint on a multi-commemoration day) needs no " +
+      "equivalent persistence — it already recomputes to the OCA-primary default " +
+      "whenever selectedDate changes, which fires correctly on remount too.",
+      "Deliberately out of scope: exact scroll position within a service. Async " +
+      "data loads and late-settling content height make that a fussier, separate " +
+      "problem — left as a possible follow-up.",
+      "Gate: 71/71 pointing-paths + sunday-vespers, vite build clean.",
+    ],
+  },
+  {
     version: "v0.26.1",
     date: "July 2026",
     summary: "fix: Menaion/Octoechos data browsers blank on cold load (?comm=/?tone= race)",
@@ -12206,18 +12233,48 @@ function LiturgicalLibrary({ liturgicalData, selectedDate, navigate, scriptureRe
 
 export default function App() {
   const today = new Date();
-  const [selectedDate, setSelectedDate] = useState(
-    today.toISOString().slice(0, 10)
-  );
+  // selectedDate / selectedServiceKey persist across the SPA-unmount that
+  // happens every time the person leaves for a data browser, Scripture,
+  // Psalter, or the Tone Trainer — React Router fully unmounts this component
+  // on every route change, so without this, returning (whether via
+  // history.back() or a full navigation) always remounted fresh at today's
+  // date and the 1st Hour, regardless of where the person actually was. Same
+  // sessionStorage pattern already used for `view` below; selectedServiceIndex
+  // (which saint on a multi-commemoration day) needs no equivalent — it
+  // already recomputes to the OCA-primary default whenever selectedDate
+  // changes, which fires correctly on remount too.
+  const [selectedDate, setSelectedDate] = useState(() => {
+    try {
+      const stored = window.sessionStorage.getItem("hours.date");
+      if (stored && /^\d{4}-\d{2}-\d{2}$/.test(stored)) return stored;
+    } catch (e) { /* no-op — fall through to today */ }
+    return today.toISOString().slice(0, 10);
+  });
   const [showGlossary, setShowGlossary] = useState(false);
   const [showHowItWorks, setShowHowItWorks] = useState(false);
   const [contextOpen, setContextOpen] = useState(false);
   const [copyrightExpanded, setCopyrightExpanded] = useState(false);
-  const [selectedServiceKey, setSelectedServiceKey] = useState("1st_hour");
+  const [selectedServiceKey, setSelectedServiceKey] = useState(() => {
+    try {
+      const stored = window.sessionStorage.getItem("hours.serviceKey");
+      if (stored && SERVICE_REGISTRY.some(s => s.key === stored)) return stored;
+    } catch (e) { /* no-op — fall through to default */ }
+    return "1st_hour";
+  });
   const [view, setView] = useState(() => {            // 'reading' | 'library'
     try { return (typeof window !== "undefined" && window.sessionStorage.getItem("hours.view")) || "reading"; }
     catch (e) { return "reading"; }
   });
+  // Write-through for the two initializers above — keeps sessionStorage
+  // current every time either changes, so the next mount (return from any
+  // data browser/Scripture/Psalter/Tone Trainer) picks up exactly where the
+  // person left off.
+  useEffect(() => {
+    try { window.sessionStorage.setItem("hours.date", selectedDate); } catch (e) { /* no-op */ }
+  }, [selectedDate]);
+  useEffect(() => {
+    try { window.sessionStorage.setItem("hours.serviceKey", selectedServiceKey); } catch (e) { /* no-op */ }
+  }, [selectedServiceKey]);
   const bodyFlipRef = React.useRef(null);
   const mainHeaderRef = React.useRef(null);
   const navigate = useNavigate();
