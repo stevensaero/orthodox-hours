@@ -806,24 +806,45 @@ function renderScore(payload) {
   }
   // Measure a syllable's pixel width — see hoisted measW() above (used by the packer too).
 
-  // Melisma slurs. A group is a maximal run of consecutive melisma notes with the SAME
-  // text. Close (draw) the open group's curve on any boundary — a non-melisma note, a
-  // different-text melisma note (back-to-back groups), or the end of the line. Grouping
-  // is driven by the alto entries (the syllable-level melisma/text source); the curve is
-  // drawn on whichever voice's notes are passed (alto/soprano/bass — 1:1 index-aligned).
+  // Melisma slurs. A group is a maximal run of consecutive melisma-eligible notes
+  // with the SAME text. Close (draw) the open group's curve on any boundary — a
+  // non-eligible note, a different-text note (back-to-back groups), or the end of
+  // the line. Grouping is driven by the alto entries for alto/soprano (spanCount is
+  // never set there, so eligibility reduces to the plain melisma flag, unchanged
+  // behavior) and by the voice's OWN entries for bass/tenor (per v0.25.41).
   // invert (default true) arcs the slur above; pass false for the bottom voice (bass) to
   // arc below, clear of the voice above.
+  //
+  // CORRECTED (Jul 2026): a collapsed bass/tenor note (deriveBassRolesWD /
+  // deriveTenorRolesWD) correctly carries melisma:false — it genuinely is one
+  // note now, not several, and v0.25.35 correctly established that a fully-
+  // collapsed single note needs no slur around it (drawing one would double-
+  // represent the same sustain). But that same false flag was ALSO excluding
+  // a collapsed note from group membership entirely, so it could never be
+  // connected by a slur to an ADJACENT note or ADJACENT collapsed group under
+  // the same syllable — exactly Tone 3's Final Phrase "Hear": bass has an
+  // uncollapsed pickup note sitting next to one collapsed group, and tenor has
+  // two separate collapsed groups under the same syllable. Both need a
+  // connecting slur; neither could get one. Fixed by adding spanCount>1 (a
+  // collapsed group) as an alternate eligibility signal alongside melisma===true
+  // — a note is "melisma-eligible" if it was originally flagged as a melisma
+  // note OR it represents a collapsed run of more than one original note.
+  // A single note that is BOTH melisma:false AND spanCount<=1 (i.e. a plain,
+  // never-collapsed, standalone note) is still correctly never eligible, so a
+  // fully-collapsed syllable with nothing adjacent under the same text still
+  // draws no curve at all — v0.25.35's original fix is fully preserved.
   function drawMelismaSlurs(notes, altoEntries, invert) {
     var inv = (invert === undefined) ? true : invert;
     var ms = null;
+    var eligible = function(e) { return e.melisma === true || (e.spanCount != null && e.spanCount > 1); };
     for (var i = 0; i < altoEntries.length; i++) {
       var ar = altoEntries[i];
-      var inSameGroup = ms !== null && ar.melisma && ar.text === altoEntries[ms].text;
+      var inSameGroup = ms !== null && eligible(ar) && ar.text === altoEntries[ms].text;
       if (ms !== null && !inSameGroup) {
         if (i - 1 > ms) { try { new VF.Curve(notes[ms], notes[i - 1], { invert: inv }).setContext(ctx).draw(); } catch(e) {} }
         ms = null;
       }
-      if (ms === null && ar.melisma) ms = i;
+      if (ms === null && eligible(ar)) ms = i;
     }
     if (ms !== null && altoEntries.length - 1 > ms) {
       try { new VF.Curve(notes[ms], notes[altoEntries.length - 1], { invert: inv }).setContext(ctx).draw(); } catch(e) {}
