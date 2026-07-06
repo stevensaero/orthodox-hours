@@ -1,5 +1,27 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.25.7** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
+**Tool version: v0.26.0** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
+
+**Session July 6, 2026 (cont.) — Collapsed-header saint/feast peek (v0.25.7 → v0.26.0).**
+New single-line "peek" of the day's commemoration under the collapsed ▼ Expand ▼ header,
+click-to-expand, visible without opening the full Liturgical Context panel. Pure UI addition,
+no schema/assembler changes.
+
+New `getPeekName(lit, men)` helper (module scope, near `_dismissalSaintName`): named day
+(movable Sunday/feast) takes priority and is shown unconditionally — unlike
+`_dismissalSaintName`'s Sunday-only namedDay fallback, matching how the expanded panel's
+namedDay box already behaves regardless of day-of-week. Otherwise falls back to the
+currently selected commemoration's `saint`, then the overlay/Pentecostarion `.name` tail
+for entries with no `saint` field (same fallback `vespersNext.saintName` already uses).
+Vespers/Compline read `vespersNext` for the peek, mirroring how the Tone display in the
+same row already switches to the next liturgical day.
+
+Multi-commemoration days show only the currently selected saint — no "+N more" indicator,
+by design decision this session. Truncation is CSS ellipsis (`overflow`/`textOverflow`/
+`whiteSpace: nowrap`), the same technique already used for `dayName` and `Tone` in that row,
+chosen over a hardcoded character count so it degrades gracefully at any width.
+
+Gate: 71/71 pointing-paths + sunday-vespers (pre-existing F-1a/F-1b warnings only), vite
+build clean. Minor version bump per convention (new feature).
 
 **Session July 6, 2026 — Tone Trainer: Tone 4 complete across all four SATB
 voices (alto, bass, soprano, tenor); v0.25.30 → v0.25.47.**
