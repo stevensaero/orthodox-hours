@@ -227,6 +227,15 @@ const FIXTURES = [
     ],
   },
   {
+    name: "T4 Final — regression guard: prep melisma when body.length<3 ('[Hear] [me], O Lord!' — was dropping re and do, rendering ti alone)",
+    tone: 4, phrase: "Final",
+    words: [W("Hear", true), W("me,", true), W("O"), W("Lord!")],
+    expect: [
+      ["Hear", "prep", "re·do·ti"],
+      ["me,", "cad", "do"], ["O", "cad", "ti"], ["Lord!", "cad", "la"],
+    ],
+  },
+  {
     name: "T4 Final — expanded fill, count=4 ('for Thou art good and the [Lov]er of man.')",
     tone: 4, phrase: "Final",
     words: [W("for"), W("Thou"), W("art"), W("good"), W("and"), W("the"),

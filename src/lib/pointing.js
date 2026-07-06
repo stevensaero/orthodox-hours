@@ -290,28 +290,53 @@ export function pointLine(line, phDefs, activeTone) {
   // Standard prep mechanism only supports one pitch; this phrase needs two
   // (do, ti — descending, confirmed directly against the tutorial's own
   // printed "ascending," which Bill confirmed is an error in the source
-  // text itself). Peels the last two body syllables (if available) into
-  // this fixed pair; everything earlier is plain reciting. Cadence
-  // (do,ti,la) reuses the shared distribute() exactly like every other
-  // phrase in this tone — only the prep needed dedicated handling, since
-  // it's the first two-note prep of any phrase built so far.
+  // text itself). Cadence (do,ti,la) reuses the shared distribute() exactly
+  // like every other phrase in this tone — only the prep needed dedicated
+  // handling.
+  //
+  // CORRECTED (bug caught by Bill against the live tool's actual rendering,
+  // not just code review): the pre-cadence content has THREE conceptual
+  // positions, not two — the reciting-to-prep transition (re) plus the two
+  // fixed prep notes (do, ti). An earlier version of this guard only ever
+  // peeled the LAST 2 body syllables into the fixed prep pair and treated
+  // anything shorter as a lazy "ti alone" fallback, which silently dropped
+  // both the re and the do whenever fewer than 2 syllables existed before
+  // the anchor. Confirmed wrong directly against "[Hear] [me], O Lord!" —
+  // with only "Hear" available before the anchor ("me"), the real score
+  // compresses ALL THREE positions onto that one syllable as a melisma
+  // (re·do·ti), not just "ti" alone. Fixed using the same melisma-
+  // compression principle already used for Phrase E's single-bracket case:
+  // when fewer than 3 syllables are available, the earliest one(s) absorb
+  // the excess from the front of the [re,do,ti] figure.
   if (activeTone === 4 && line.phrase === "Final") {
     const a = anchorIndex(flat);
     const body = flat.slice(0, a);
     const cad = flat.slice(a);
     const roles = [];
 
-    const prepCount = Math.min(2, body.length);
-    const reciteBody = body.slice(0, body.length - prepCount);
-    const prep = body.slice(body.length - prepCount);
-
-    reciteBody.forEach(s => roles.push({ role: "recite", pitches: [def.recite], accent: s.accent, text: s.text, source: s.source }));
-    prep.forEach((s, i) => {
-      // Two-note case (confirmed): do then ti, descending. One-note case
-      // (degenerate, unconfirmed): ti alone, adjacent to the anchor.
-      const pitch = (prepCount === 2) ? (i === 0 ? "do" : "ti") : "ti";
-      roles.push({ role: "prep", pitches: [pitch], accent: s.accent, text: s.text, source: s.source });
-    });
+    const PREFIG = ["re", "do", "ti"];
+    if (body.length >= 3) {
+      // Confirmed shape for every 3+-syllable example: earliest syllables
+      // are plain reciting (re each), last two are the fixed prep pair.
+      const reciteBody = body.slice(0, body.length - 2);
+      const prep = body.slice(body.length - 2);
+      reciteBody.forEach(s => roles.push({ role: "recite", pitches: [def.recite], accent: s.accent, text: s.text, source: s.source }));
+      prep.forEach((s, i) => {
+        const pitch = i === 0 ? "do" : "ti";
+        roles.push({ role: "prep", pitches: [pitch], accent: s.accent, text: s.text, source: s.source });
+      });
+    } else {
+      // Fewer than 3 syllables before the anchor: melisma-compress the full
+      // [re,do,ti] figure, excess piling onto the earliest syllable.
+      // Confirmed at body.length===1 ("[Hear] [me], O Lord!" → re·do·ti on
+      // "Hear"). body.length===2 is an untested extrapolation of the same
+      // principle, not independently confirmed.
+      const excess = Math.max(0, PREFIG.length - body.length);
+      body.forEach((s, i) => {
+        const pitches = (i === 0) ? PREFIG.slice(0, 1 + excess) : [PREFIG[i + excess]];
+        roles.push({ role: "prep", pitches, accent: s.accent, text: s.text, source: s.source });
+      });
+    }
 
     const dist = distribute(def.cad, cad.length);
     cad.forEach((s, i) =>

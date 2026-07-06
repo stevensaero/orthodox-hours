@@ -21,6 +21,16 @@ export const TONE_TRAINER_VERSION = "v0.25.30";
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
   {
+    version: "v0.25.33",
+    date: "July 2026",
+    summary: "fix: Tone 4 Final Phrase — prep melisma was silently dropping notes when body.length<3 (caught by Bill against the live tool's actual rendering)",
+    items: [
+      "fix: pointLine()'s Tone 4 Final Phrase guard only ever peeled the last 2 body syllables into the fixed do·ti prep pair, falling back to a lazy 'ti alone' case whenever fewer than 2 syllables existed before the anchor — silently dropping both the reciting transition (re) and the first prep note (do) whenever a real verse compressed that far. Caught directly against \"[Hear] [me], O Lord!\" (already one of this tone's confirmed research examples): with only \"Hear\" available before the anchor (\"me\"), the tool was rendering a lone ti chip instead of the confirmed re·do·ti melisma. Root cause: the pre-cadence content has three conceptual positions (reciting-transition + two fixed prep notes), not two — an earlier pass at this guard treated the prep as always exactly 2 notes and never accounted for what happens when fewer syllables exist to carry them. Fixed using the same melisma-compression principle already used for Phrase E's single-bracket case: when fewer than 3 syllables are available, the earliest one absorbs the excess from the front of the [re,do,ti] figure. body.length===1 confirmed directly (3-note melisma on one syllable); body.length===2 is an extrapolation of the same principle, not independently confirmed.",
+      "fix: lineToNotes() + lineToRolesWithDuration() — added matching duration handling for this melisma (first note H, remaining notes Q each, confirmed against \"Hear-\" reading re/H·do/Q·ti/Q) — the generic path would otherwise have divided the syllable's duration evenly across all pitches once the pitch-mapping fix went in, giving three equal very-short notes instead of the confirmed H·Q·Q shape.",
+      "feat: tools/test_pointing_roles.mjs — added a permanent regression fixture for this exact case (now 18/18), the same way the original Tone 2 Final pre-slur regression got a standing guard rather than just a one-time fix.",
+    ],
+  },
+  {
     version: "v0.25.32",
     date: "July 2026",
     summary: "feat: Tone 4 Obikhod alto pointing — Phrases A, B, C, D, E, F, and Final Phrase all implemented and gate-tested",
@@ -3301,6 +3311,20 @@ export default function ToneTrainer() {
         syllDur = Q;
       }
 
+      // ── Tone 4 Final Phrase: prep-melisma duration (body.length<3 case) ──
+      // When the pre-cadence content compresses onto fewer than 3 syllables
+      // (pointing.js's Final Phrase guard), a "prep" role can carry 2 or 3
+      // pitches as a melisma. Confirmed shape at 3 pitches ("[Hear] [me], O
+      // Lord!"): first note H, remaining notes Q each — NOT an even split,
+      // which the generic path below would otherwise apply. 2-pitch case is
+      // the same untested extrapolation noted in pointing.js.
+      if (isTone4Final && r.role === "prep" && r.pitches.length > 1) {
+        r.pitches.forEach((p, pi) => {
+          notes.push({ sol: p, dur: pi === 0 ? H : Q, peak: pi === 0 ? 0.27 : 0.2 });
+        });
+        return;
+      }
+
       // Multi-pitch melisma: divide syllable duration evenly across pitches.
       const pitchDur = syllDur / r.pitches.length;
       const peak = (r.role === "cad" || r.role === "cad1") && r.anchor ? 0.27 : 0.2;
@@ -3863,6 +3887,16 @@ export default function ToneTrainer() {
             : isFirst ? H : isLast ? (isFinal ? W : H) : Q;
         }
       } else d = Q;
+
+      // ── Tone 4 Final Phrase: prep-melisma duration (body.length<3 case) ──
+      // Mirrors lineToNotes() Tone 4 Final Phrase prep-melisma path exactly.
+      if (isTone4Final && r.role === "prep" && r.pitches.length > 1) {
+        r.pitches.forEach((p, pi) => {
+          const pd = pi === 0 ? H : Q;
+          result.push({ ...r, pitches: [p], dur: pd, durKey: durKey(pd), melisma: true });
+        });
+        return;
+      }
 
       // For preslur with two pitches, emit one entry per pitch — mark melisma for grouping
       if (r.role === "preslur" && r.pitches.length > 1) {
