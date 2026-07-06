@@ -27,12 +27,22 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.54";
+export const TONE_TRAINER_VERSION = "v0.25.55";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.55",
+    date: "July 2026",
+    summary: "feat: Tone 3 bass and tenor melisma-hold behavior confirmed and added — Final Phrase's 'Hear'/'me' now hold correctly instead of re-articulating every note, no new mechanism needed, just the score-confirmed membership question",
+    items: [
+      "feat: 3 added to TENOR_HOLD_TONES and BASS_HOLD_TONES. Confirmed directly by Bill against the LIC score, Final Phrase: bass 'Hear' (alto fa·mi·do·re → bass fa·do·do·do) holds the trailing do·do·do (durations H+Q+Q, summing to a whole note) as one note, the leading fa (from the recite-pickup) sits at a different pitch and is never a candidate. 'me' (alto mi·fa → bass do·do) collapses to one held half note. Tenor 'Hear' (alto fa·mi·do·re → tenor do·do·sol·sol) holds as TWO notes, not one: the first pair sums to a dotted half, the second to a plain half. Tenor 'me' (alto mi·fa → tenor do·do) collapses to one held half note.",
+      "note: no changes to deriveBassRolesWD()/deriveTenorRolesWD() or the collapse algorithm itself — the existing mechanism (unchanged since Tone 4) already produces exactly this shape once a tone is a member of the two Sets. This was purely a score-confirmation question, not a new mechanism, consistent with how Tone 4's own hold behavior was added.",
+      "test: npm run gate — 71/71 Hours Tool checks, 24/24 pointing-role checks (neither exercises the hold-collapse layer directly, unaffected either way). vite build clean. Recommend live audio verification against the deployed tool before considering this fully closed, per standing practice — hold/collapse is an audible behavior best confirmed by listening, same as every other harmony-voice fix this session.",
+    ],
+  },
   {
     version: "v0.25.54",
     date: "July 2026",
@@ -1651,14 +1661,17 @@ const TENOR_TONES = new Set([1, 2, 3, 4]);
 //            never a genuine pitch change to force re-articulation. Final
 //            Phrase "Hear" (re·do·ti → held W), matching bass's own finding
 //            for the identical melisma.
-// Tone 3 deliberately NOT included yet — the pitch mapping is confirmed
-// (§14-17), but whether Tone 3's tenor sustains or re-articulates through an
-// alto melisma has never been checked against its own score. Per the prime
-// directive, hold is never ported just because it happens to be true for
-// other tones' constant-drone phrases.
-// A tenor tone NOT listed here rearticulates every melisma note until its hold is
-// verified from that tone's own score. Per the prime directive, hold is never ported.
-const TENOR_HOLD_TONES = new Set([1, 2, 4]);
+//   Tone 3 — LIC score, Final Phrase (Jul 2026): "Hear" (alto fa·mi·do·re →
+//            tenor do·do·sol·sol) holds as TWO separate notes, not one — the
+//            first pair (pickup fa + cad1 anchor mi, both tenor do, durations
+//            Q+H) sums to a dotted half; the second pair (cad1 mid do + final
+//            re, both tenor sol, durations Q+Q) sums to a plain half. "me"
+//            (alto mi·fa → tenor do·do, durations Q+Q) collapses to one held
+//            half note. Both confirmed directly by Bill against the score —
+//            not inferred from the pitch data alone, even though the existing
+//            generic collapse mechanism (unchanged) produces exactly this
+//            shape once Tone 3 is added here.
+const TENOR_HOLD_TONES = new Set([1, 2, 3, 4]);
 
 // Soprano chip height — always above the corresponding alto chip.
 // Maps alto pitch through SOPRANO_MAP, then ensures the result sits
@@ -2805,7 +2818,15 @@ const BASS_RULES = {
 // Tone 4 confirmed directly this session: "call" (bass do·do, same pitch)
 // holds; "on" (bass ti·do, different pitch) re-articulates; the Final
 // Phrase's "Hear" melisma (bass sol·sol·sol throughout) holds as one note.
-const BASS_HOLD_TONES = new Set([4]);
+// Tone 3 confirmed directly (Jul 2026), LIC score, Final Phrase: "Hear" (alto
+// fa·mi·do·re → bass fa·do·do·do) — the leading "fa" (from the recite-pickup)
+// sits at a different pitch and never enters the run; the trailing "do·do·do"
+// (durations H+Q+Q from the cad1 anchor/mid/final) sums to a whole note and
+// holds as one. "me" (alto mi·fa → bass do·do, durations Q+Q) collapses to
+// one held half note. Both score-confirmed, not inferred from the pitch data
+// alone, even though the existing generic collapse mechanism (unchanged)
+// produces exactly this shape once Tone 3 is added here.
+const BASS_HOLD_TONES = new Set([3, 4]);
 
 // ── Bass derivation: shared pitch-map + melisma-hold collapse ───────────────
 // Mirrors deriveTenorRolesWD exactly (see that function's comments for the
