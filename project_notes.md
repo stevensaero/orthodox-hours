@@ -1,5 +1,35 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.27.2** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
+**Tool version: v0.28.0** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
+
+**Session July 6, 2026 (cont.) — fix: Outline tab scroll-to offset, feat: print
+button on combined Readings page (v0.27.2 → v0.28.0).**
+
+**v0.27.3 — fix: Outline tab scroll-to landed too far.** Since v0.26.0's
+collapsed-header peek row, ServiceOutline's hardcoded -128 scroll offset and
+both ServiceOutline's/PsalterOutline's hardcoded top: 120px sticky position
+were calibrated to a header height that no longer matched — the peek row is
+conditional on peekName (null on unencoded days), so a fixed number would be
+right for one case and wrong for the other. Fixed by measuring the sticky
+CONTROLS bar's actual height via ResizeObserver (controlsBarHeight) and
+passing it down as headerOffset, replacing both magic numbers. Note:
+measuring via getBoundingClientRect() inside the observer callback, not
+entry.contentRect (which excludes padding) — same fix pattern already used in
+MenaionBrowser/PentecostarionBrowser's header tracking.
+
+**v0.28.0 — feat: print button on the combined Readings page.** A Print
+button next to the heading in TodayReadingsView calls window.print(); a
+no-print class (applied via a scoped <style> tag) hides everything else —
+context strips, site header, on-page translation footer — so only the
+readings print. Footer with source/translation + page number via a native
+@page margin box (@bottom-center), not JS: verified current browser support
+first — Chrome 131+ (Nov 2024) and Safari 18.2+ (Dec 2024) support @page
+margin-box counters natively; Firefox does not as of this writing (open
+Mozilla bug), so Firefox shows its own default print footer instead (still
+page-numbered, just unstyled) rather than nothing. Footer text reuses the
+app's existing "Brenton Septuagint (OT) · KJV 2006 (NT)" attribution verbatim.
+
+Gate for both: 71/71 pointing-paths + sunday-vespers, vite build clean;
+verified the print CSS/no-print classes are present in the built bundle.
 
 **Session July 6, 2026 (cont.) — fix: SCRIPTURE_BOOK_ID gap resolved, Ez -> Ezek
 normalized, encoding_rule_v2.md bumped to v2.10 (v0.27.1 → v0.27.2).** Follow-up
