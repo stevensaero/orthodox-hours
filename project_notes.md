@@ -1,6 +1,33 @@
 # Orthodox Hours Tool — Project Notes
 **Tool version: v0.30.1** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
 
+**Session July 6, 2026 (cont.) — tooling: validate_octoechos.mjs fixed for the
+Tier-3 OCA object shape; FW-24 de-dup deferred (no version bump — tooling-only).**
+Preparing to start the OCA director-pointed backfill loop on Tone 2 (per the
+existing recipe above — "carry the same loop into tone 2+") surfaced that
+`validate_octoechos.mjs` had never been updated for the Tier-3 object shape
+Tone 1's backfill introduced: `isNonEmptyArrayOfStrings` only accepted plain
+strings, so any `lic`/`aposticha` array containing a director-pointed object
+failed "must be a non-empty array of strings," even though `hymn-entry.js`'s
+shared read path already handled both shapes correctly at runtime. Fixed:
+`isHymnArrayEntry()` now accepts either a string or an object with a
+non-empty `.text`; `lic_opening` added to `schema.js`'s known top-level
+fields (optional, not required) with a real shape + placeholder check
+instead of just silencing the "unknown key" error. All 8 tones now pass.
+
+**FW-24 (Pentecostarion → Octoechos de-duplication) confirmed still open,
+deliberately deferred.** P+63 (All Saints of North America) embeds its own
+copies of seven Tone-1 Resurrection fields directly in `pentecostarion.js`
+rather than dereferencing `octoechos/tone1.js` — confirmed with Bill that
+this is exactly the current state (embedded, not referenced). This remains
+a distinct task with its own open question (§4B17 LIC composition needs
+confirming against Fekula before speccing the resolver) — not something to
+fold into the Tone 2 backfill. **No Pentecostarion entries touched this
+session.** Tracked here for a future session.
+
+Gate: 71/71 pointing-paths + sunday-vespers, validate_octoechos.mjs all 8
+tones pass, vite build clean.
+
 **Session July 6, 2026 (cont.) — fix: left-justify temple dedication
 change-select (v0.30.0 → v0.30.1).** The always-visible change dropdown
 added in v0.30.0 used `marginLeft: auto`, stranding it at the far right of
