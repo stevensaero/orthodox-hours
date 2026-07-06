@@ -27,12 +27,24 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.50";
+export const TONE_TRAINER_VERSION = "v0.25.51";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.51",
+    date: "July 2026",
+    summary: "feat: Tone 3 harmony voices complete — Bass, Tenor, and Soprano all added; SATB now genuinely available for Tone 3, not just alto",
+    items: [
+      "feat: BASS_RULES[3] and TENOR_RULES[3] added, all three phrases (A, B, Final), built from a direct phrase-by-phrase interview mirroring the Tone 4 sessions. Both bass and tenor are near-constant drones (bass on do/fa depending on phrase's own recite pitch — actually fa throughout, see rules; tenor on do) with departures confined to Phrase B's re fill and the Final Phrase's matching cad Part 2 re — cross-checked as the same alto→voice pair in both places, no conflict.",
+      "feat: 3 added to SOPRANO_TONES — confirmed as a pure diatonic third above alto (fa→la, mi→sol, re→fa, do→mi), no new SOPRANO_MAP entries needed, same shape as Tone 4's soprano close.",
+      "arch: Tone 3 Final Phrase's cad1 (Part 1) and cad (Part 2) needed separate maps in both mapBassPitch and mapTenorPitch — alto's own 're' resolves to a different bass/tenor pitch in each part (cad1 final re vs cad Part 2 re), the same class of positional ambiguity Tone 4 Phrase E's cadPositional already exists to solve. Added a dedicated cad1Map field on each voice's Final rule object, checked before the generic cad/cad1 combined lookup. The cad1Map also covers the recite-pickup fa (same value as the phrase's own recite pitch), since the pickup literally IS the reciting tone compressed onto the cad1 anchor — no extra special case needed.",
+      "feat: 3 added to TENOR_TONES and BASS_TONES (voice selectable in the UI). Deliberately NOT added to TENOR_HOLD_TONES or BASS_HOLD_TONES — melisma-hold behavior (whether Tone 3's bass/tenor sustain or re-articulate through an alto melisma) has never been checked against its own score, and the prime directive prohibits inheriting another tone's hold behavior just because it happens to share a similar drone shape.",
+      "note: verified by manually tracing the full derivation logic (mapBassPitch/mapTenorPitch → deriveBassRolesWD/deriveTenorRolesWD) against the flagship '[Hear] [me], O Lord.' example for both voices — bass sequence do·do·do·do·do·sol·do and tenor sequence do·sol·sol·do·do·ti·sol both match Bill's given data exactly. No automated test coverage exists for harmony-voice rules (test_pointing_roles.mjs is explicitly scoped to alto roles/pitches only); recommend live verification against the deployed tool before considering this fully closed, per the standing practice that bugs are caught by testing the real tool, not code review alone.",
+    ],
+  },
   {
     version: "v0.25.50",
     date: "July 2026",
@@ -1588,9 +1600,10 @@ const buildVoiceHeightMap = (pitches, hzFn, phraseRules) => {
 
 // Tones with score-verified tenor rules. Tenor is suppressed for all other tones.
 // Tone 1: Drillock & Ealy tutorial. Tone 2: LIC (Lord I Call) score, all 5 phrases.
-// Tone 4: direct interview (July 2026), all 7 phrases — see
-// tone_trainer_tone4_analysis.md §8.
-const TENOR_TONES = new Set([1, 2, 4]);
+// Tone 3: direct interview (July 2026), all 3 phrases — see
+// tone_trainer_tone3_analysis.md §14 onward. Tone 4: direct interview (July
+// 2026), all 7 phrases — see tone_trainer_tone4_analysis.md §8.
+const TENOR_TONES = new Set([1, 2, 3, 4]);
 
 // Tones whose tenor MELISMA-HOLD behaviour is score-verified. The collapse in
 // deriveTenorRolesWD() (constant-pitch alto melisma → one held tenor note) fires
@@ -1604,6 +1617,11 @@ const TENOR_TONES = new Set([1, 2, 4]);
 //            never a genuine pitch change to force re-articulation. Final
 //            Phrase "Hear" (re·do·ti → held W), matching bass's own finding
 //            for the identical melisma.
+// Tone 3 deliberately NOT included yet — the pitch mapping is confirmed
+// (§14-17), but whether Tone 3's tenor sustains or re-articulates through an
+// alto melisma has never been checked against its own score. Per the prime
+// directive, hold is never ported just because it happens to be true for
+// other tones' constant-drone phrases.
 // A tenor tone NOT listed here rearticulates every melisma note until its hold is
 // verified from that tone's own score. Per the prime directive, hold is never ported.
 const TENOR_HOLD_TONES = new Set([1, 2, 4]);
@@ -1642,7 +1660,7 @@ const TENOR_HOLD_TONES = new Set([1, 2, 4]);
 // table mirroring BASS_RULES/TENOR_RULES. (Note: di→mi in SOPRANO_MAP is effectively
 // Tone-2-only in practice; Tone 1's alto never uses di. A future tone needing di to map
 // elsewhere is exactly the deviation case above — give it its own rules, not a remap.)
-const SOPRANO_TONES = new Set([1, 2, 4]);
+const SOPRANO_TONES = new Set([1, 2, 3, 4]);
 
 // Tones with score-verified bass rules. Bass is suppressed for all other
 // tones. Mirrors TENOR_TONES/SOPRANO_TONES — added here after this exact
@@ -1650,8 +1668,9 @@ const SOPRANO_TONES = new Set([1, 2, 4]);
 // instead of being greyed out) was caught for Soprano/SATB on Tone 4 and
 // traced back to a missing gate. Tone 1: partial (Phrase A verified, B/C/D/
 // Final pending — see BASS_RULES[1] comments). Tone 2: LIC score, all 5
-// phrases. Tone 4: direct interview, all 7 phrases (July 2026 session).
-const BASS_TONES = new Set([1, 2, 4]);
+// phrases. Tone 3: direct interview (July 2026), all 3 phrases. Tone 4:
+// direct interview, all 7 phrases (July 2026 session).
+const BASS_TONES = new Set([1, 2, 3, 4]);
 
 const chipH_soprano = (altoPitch) => {
   const mapped = SOPRANO_MAP[altoPitch] ?? altoPitch;
@@ -2312,6 +2331,52 @@ const TENOR_RULES = {
       octaveDiv: { la: 1 }, // same fix as Phrase A — see that comment
     },
   },
+  // ── Tone 3, Common Chant (Obikhod) ──────────────────────────────────────
+  // Built from a direct phrase-by-phrase interview (July 2026), same method
+  // as every other tone this session — Bill reads the score directly,
+  // nothing ported from another tone or voice. See tone_trainer_tone3_analysis.md
+  // for the full record (harmony-voices session, §14 onward).
+  // Tenor is a near-constant do drone across all three phrases — the only
+  // departures from do are Phrase B's re→ti fill and the Final Phrase's
+  // matching cad (Part 2) re→ti, confirmed as the same alto→tenor pair in
+  // both places (cross-checked directly, no conflict).
+  3: {
+    A: {
+      recite: "do",
+      prepMap: {},
+      // Cadence alto fa(anchor)·fa(fill)·mi(final) → tenor do·do·do (constant).
+      // Confirmed only for the anchor/final pair directly; the fill (fa) shares
+      // the same alto pitch as the anchor and resolves to the same tenor value
+      // automatically once Phrase A's own fill-note correction (do→fa, §14.4)
+      // landed — no separate tenor evidence needed for that closure.
+      cadMap: { fa: "do", mi: "do" },
+      preslurMap: {},
+    },
+    B: {
+      recite: "do",
+      prepMap: {},
+      // Cadence alto mi(anchor)·re(fill)·do(final) → tenor do·ti·sol.
+      // re→ti is the one real departure from the constant do drone in this phrase.
+      cadMap: { mi: "do", re: "ti", do: "sol" },
+      preslurMap: {},
+    },
+    Final: {
+      recite: "do",
+      prepMap: {},
+      // Two-part cadence — cad1 (Part 1) and cad (Part 2) need SEPARATE maps,
+      // not one shared cadMap: alto's own "re" appears in both parts with
+      // different tenor answers (cad1 final re→sol; cad Part 2 re→ti) — the
+      // same class of positional ambiguity Tone 4 Phrase E's cadPositional
+      // already exists to solve, handled here with a dedicated cad1Map instead
+      // since cad1's figure is fixed-length (3 notes) rather than variable.
+      // cad1Map covers the recite-pickup fa too (same value as `recite` above,
+      // since the pickup literally IS the reciting tone compressed onto the
+      // cad1 anchor syllable — no separate case needed in mapTenorPitch).
+      cad1Map: { fa: "do", mi: "do", do: "sol", re: "sol" },
+      cadMap: { mi: "do", fa: "do", re: "ti", do: "sol" },
+      preslurMap: {},
+    },
+  },
   // ── Tone 4, Obikhod (L'vov-Bakhmetev) ────────────────────────────────────
   // Built from a direct phrase-by-phrase interview (July 2026), same method
   // as bass — Bill reads the score directly, nothing ported from bass or
@@ -2417,6 +2482,11 @@ const mapTenorPitch = (r, rules, tone, phrase) => {
   // fixed here the same way rather than waiting for it to surface again.
   if (tone === 4 && phrase === "Final" && r.role === "prep" && orig === "re") {
     return rules.recite;
+  }
+  if (tone === 3 && phrase === "Final" && r.role === "cad1") {
+    // cad1 (Part 1) and cad (Part 2) need separate maps — alto's own "re"
+    // resolves differently in each part. See TENOR_RULES[3].Final.
+    return rules.cad1Map?.[orig] ?? orig;
   }
   if (r.role === "recite" || r.role === "inton") return rules.recite;
   if (r.role === "prep")    return rules.prepMap?.[orig]    ?? orig;
@@ -2597,6 +2667,48 @@ const BASS_RULES = {
       preslurMap: { re: "re", ti: "sol" },
     },
   },
+  // ── Tone 3, Common Chant (Obikhod) ──────────────────────────────────────
+  // Built from a direct phrase-by-phrase interview (July 2026), same method
+  // as every other tone this session. See tone_trainer_tone3_analysis.md
+  // for the full record (harmony-voices session, §14 onward).
+  // Bass is a near-constant do drone across all three phrases — the only
+  // departures from do are Phrase B's re→sol fill and the Final Phrase's
+  // matching cad (Part 2) re→sol, confirmed as the same alto→bass pair in
+  // both places (cross-checked directly, no conflict).
+  3: {
+    A: {
+      recite: "fa",
+      prepMap: {},
+      // Cadence alto fa(anchor)·fa(fill)·mi(final) → bass fa·fa·do.
+      // Fill shares the same alto pitch as the anchor (fa), so it resolves
+      // to the same bass value automatically — no separate evidence needed
+      // once Phrase A's own fill-note correction (do→fa, §14.4) landed.
+      cadMap: { fa: "fa", mi: "do" },
+      preslurMap: {},
+    },
+    B: {
+      recite: "fa",
+      prepMap: {},
+      // Cadence alto mi(anchor)·re(fill)·do(final) → bass do·sol·do.
+      // re→sol is the one real departure from the constant do drone.
+      cadMap: { mi: "do", re: "sol", do: "do" },
+      preslurMap: {},
+    },
+    Final: {
+      recite: "fa",
+      prepMap: {},
+      // Two-part cadence — cad1 (Part 1) and cad (Part 2) need SEPARATE
+      // maps, not one shared cadMap: alto's own "re" appears in both parts
+      // with different bass answers (cad1 final re→do; cad Part 2 re→sol).
+      // cad1Map covers the recite-pickup fa too (same value as `recite`
+      // above, since the pickup literally IS the reciting tone compressed
+      // onto the cad1 anchor syllable — no separate case needed in
+      // mapBassPitch).
+      cad1Map: { fa: "fa", mi: "do", do: "do", re: "do" },
+      cadMap: { mi: "do", fa: "do", re: "sol", do: "do" },
+      preslurMap: {},
+    },
+  },
   // ── Tone 4, Obikhod (L'vov-Bakhmetev) ────────────────────────────────────
   // Built from a direct phrase-by-phrase interview (July 2026), mirroring the
   // Tone 2 tenor session's method exactly (Bill reads the score directly;
@@ -2646,11 +2758,9 @@ const BASS_RULES = {
       preslurMap: {},
     },
   },
-  // Tones 1, 3, 5, 6, 7, 8 — bass rules not yet researched for Tones 5-8;
-  // Tone 1's own entries above are partial (Phrase A verified, B/C/D/Final
-  // pending); Tone 3 not yet started. (Corrected stale comment — this used
-  // to list Tone 1 and Tone 4 here too, which was wrong even before Tone 4
-  // was added; Tone 1 has real partial content above.)
+  // Tones 5, 6, 7, 8 — bass rules not yet researched. Tone 1's own entries
+  // above are partial (Phrase A verified, B/C/D/Final pending). Tone 3
+  // completed July 2026 (see the Tone 3 section above, inserted before Tone 4).
   // Add entries here as score evidence is gathered per tone/setting.
 };
 
@@ -2691,6 +2801,11 @@ const mapBassPitch = (r, rules, tone, phrase, cadIdx) => {
   }
   if (tone === 4 && phrase === "C" && r.role === "inton" && orig === "re") {
     return rules.intonCloseRe ?? orig;
+  }
+  if (tone === 3 && phrase === "Final" && r.role === "cad1") {
+    // cad1 (Part 1) and cad (Part 2) need separate maps — alto's own "re"
+    // resolves differently in each part. See BASS_RULES[3].Final.
+    return rules.cad1Map?.[orig] ?? orig;
   }
   if (r.role === "recite" || r.role === "inton") return rules.recite;
   if (r.role === "prep")    return rules.prepMap?.[orig]    ?? orig;
