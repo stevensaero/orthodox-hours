@@ -1,5 +1,68 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.26.0** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
+**Tool version: v0.27.0** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
+
+**Session July 6, 2026 (cont.) — Three fixes/features: Menaion/Octoechos cold-load
+race, Hours Tool position persistence, combined Vespers OT Lessons reading
+(v0.26.0 → v0.27.0).**
+
+**v0.26.1 — fix: Menaion/Octoechos data browsers blank on cold load.** Both
+browsers seeded active-month/active-tone at a default, then set the real value
+from a ?comm=/?tone= URL param inside a separate mount effect. The data-loading
+effect (keyed on that state) fired once with the stale default before the
+update propagated, and again with the correct value, with no cancellation
+guard on either fetch — whichever resolved last won, non-deterministically. On
+a cold cache (new browser/session/cache-clear) this could leave monthData/
+toneData set to the wrong month/tone while the tab UI showed the right one,
+appearing blank; a refresh just changed the race's timing, which happened to
+land correctly. Fixed by seeding activeMonth/selectedTone synchronously from
+the URL in their useState initializers instead of via a later effect.
+Pentecostarion unaffected (single unconditional data load, no keyed dependency
+to race against).
+
+**v0.26.2 — fix: Hours Tool position not preserved on return from any
+sub-tool.** All six destinations (Scripture, Psalter, Menaion, Pentecostarion,
+Octoechos, Tone Trainer) already return correctly via window.history.back() +
+?from=tool — the problem was HoursTool itself: React Router fully unmounts it
+on every route change, and selectedDate/selectedServiceKey were seeded from
+hardcoded defaults (today, 1st Hour) every time. Fixed by seeding both from
+sessionStorage in their useState initializers (same pattern as the existing
+reading/library `view` state), with a write-through effect. Single-file fix
+covers all six return paths. selectedServiceIndex needs no equivalent — it
+already recomputes to the OCA-primary default when selectedDate changes.
+Scroll-position-within-a-service left out of scope (async data loads make it a
+separate, fussier problem).
+
+**v0.27.0 — feat: combined "Read in Scripture" for Vespers OT Lessons.** The
+3 paroemias each linked out independently; one combined link now opens all 3
+on one page. Reuses the Library's existing "Today's Readings" mechanism
+unchanged (oht_scripture_readings sessionStorage handoff, same reference-
+agnostic TodayReadingsView/ReadingView renderer) — no new renderer needed.
+New paroemiaToRef() extracted from paroemiaToScriptureHref() (same regex,
+returns the ref string); new paroemiaReadingGroups() builds the combined
+array. assembleVespers()'s OT Lessons header now carries one scriptureReadings
+array instead of each Lesson N carrying its own scriptureHref.
+scripture.jsx's readings-landing gate/heading broadened from hardcoded
+readings=today to a small lookup (READINGS_LANDING_HEADINGS) keyed by the
+readings param, so each handoff gets an accurate heading. Context card's
+Vespers-lessons preview gets the same consolidation.
+
+**Follow-up flagged, not fixed this session:** verifying paroemiaToRef against
+real paroemia_1/2/3 strings (May/June/July) confirmed the extraction itself is
+non-regressive, but surfaced a pre-existing gap in SCRIPTURE_BOOK_ID — several
+abbreviation variants actually used in the paroemia data aren't recognized
+keys: `3 Kgdms`, `4 Kgdms`, bare `Ex`, `Jdt`, `Judg`, `Is`. Those specific
+lessons silently fail to resolve a ref (same behavior as before this session —
+not a regression). Safe, unambiguous additions (3 Kgdms→3Kgdm, 4 Kgdms→4Kgdm,
+Ex→Ex, Jdt→Jdt, Judg→Judg, Is→Isa) were identified but deliberately not added
+without sign-off, since SCRIPTURE_BOOK_ID is shared, load-bearing resolution
+logic for Epistle/Gospel too, not just paroemias. One token (`Ez`, used for
+Ezekiel in this corpus) was deliberately excluded from the safe list — `Ez` is
+genuinely ambiguous with Ezra in general biblical-abbreviation convention, and
+guessing wrong would silently show the wrong book's text. Recommend either
+adding the safe aliases with sign-off, or normalizing the source data to
+consistently spell out full book names instead.
+
+Gate for all three: 71/71 pointing-paths + sunday-vespers, vite build clean.
 
 **Session July 6, 2026 (cont.) — Collapsed-header saint/feast peek (v0.25.7 → v0.26.0).**
 New single-line "peek" of the day's commemoration under the collapsed ▼ Expand ▼ header,
