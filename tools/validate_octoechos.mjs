@@ -39,8 +39,23 @@ function checkRequired(label, obj, required) {
   if (!obj || typeof obj !== 'object') return;
   for (const k of required) if (!(k in obj)) add(`${label}: required key "${k}" absent.`);
 }
+// Accepts either a plain non-empty string (legacy Tier-1/2 hymn text) OR a
+// Tier-3 OCA director-pointed object ({ text, director, tradition,
+// pointing_source, verse? } — see src/lib/hymn-entry.js, the shared read
+// path the assembler and every browser already use). This validator predates
+// the Tier-3 object shape (introduced by the OCA director-pointed backfill,
+// Tone 1) and was never updated for it, which is why every array of hymn
+// entries mixing in an object failed "must be a non-empty array of strings"
+// even though the actual data was correct and already rendering fine.
+function isHymnArrayEntry(s) {
+  if (typeof s === 'string') return s.trim().length > 0;
+  if (s && typeof s === 'object' && !Array.isArray(s)) {
+    return typeof s.text === 'string' && s.text.trim().length > 0;
+  }
+  return false;
+}
 function isNonEmptyArrayOfStrings(v) {
-  return Array.isArray(v) && v.length > 0 && v.every((s) => typeof s === 'string' && s.trim().length > 0);
+  return Array.isArray(v) && v.length > 0 && v.every(isHymnArrayEntry);
 }
 function scanPlaceholders(label, value) {
   if (typeof value === 'string') {
@@ -114,6 +129,12 @@ for (const t of S.TONES) {
 
   checkVocab(L, d, S.TOP.known);
   checkRequired(L, d, S.TOP.required);
+
+  // lic_opening is optional (see schema.js) — only validated when present.
+  if (d.lic_opening !== undefined) {
+    if (!isNonEmptyArrayOfStrings(d.lic_opening)) add(`${L}.lic_opening: must be a non-empty array of strings.`);
+    scanPlaceholders(`${L}.lic_opening`, d.lic_opening);
+  }
 
   const enc = Array.isArray(d._encoded) ? d._encoded : [];
   if (!Array.isArray(d._encoded)) add(`${L}: _encoded must be an array of ${JSON.stringify(S.ENCODABLE_SECTIONS)}.`);

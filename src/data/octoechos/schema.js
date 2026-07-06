@@ -35,7 +35,12 @@ export const ENCODABLE_SECTIONS = ['vespers', 'matins'];
 
 // ── Top level (toneN.js default export) ──────────────────────────────────────
 export const TOP = {
-  known: ['vespers', 'vespers_universal', 'matins', '_encoded'],
+  // lic_opening is OPTIONAL, not required: the Kekragarion (Ps 140:1-2) is
+  // tone-of-week OCA director-pointed data, encoded per tone only as each
+  // tone's backfill is done (Tone 1 first; see project_notes.md's OCA
+  // director-pointed backfill loop). Absent for any tone not yet backfilled —
+  // the assembler falls back to LIC_OPENING_FALLBACK (index.js) in that case.
+  known: ['vespers', 'vespers_universal', 'matins', '_encoded', 'lic_opening'],
   required: ['vespers', 'vespers_universal', 'matins', '_encoded'],
 };
 
