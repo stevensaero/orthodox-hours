@@ -27,12 +27,22 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.43";
+export const TONE_TRAINER_VERSION = "v0.25.44";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.44",
+    date: "July 2026",
+    summary: "feat: replaced the Tone 1/2/3 \"try example\" presets with matching LIC text (Bill-provided), same verse across all four tones with tone-specific director pointing",
+    items: [
+      "feat: PRESET_T1, PRESET_T2, PRESET_T3 replaced with a 6-line LIC (Lord, I Call) opening, matching Tone 4's own preset text — same underlying verse across all four tones, differing only in each tone's own director-pointing brackets, letting the four be compared directly. Phrase-per-line rotation for each tone verified directly from ROT_DEFS rather than assumed: Tone 1 (A,B,C,D,A,Final), Tone 2 (A,B,C,D,B,Final — A only once, matching this tone's own rotation rule), Tone 3 (A,B,A,B,A,Final).",
+      "note: Tone 1's Phrase D preset line carries two brackets (Re[ceive] + [voice]), exercising this tone's own two-accent Phrase D architecture directly — verified via pointLine() to produce the confirmed ti·do·re·do·do·ti count=6 shape before shipping, not assumed safe from the bracket pattern alone.",
+      "fix: caught by testing the text round-trip before shipping, not by inspection — an early draft of the Tone 1 preset split \"Receive\" into two separate word entries instead of one word with two syllables, which inserted an extra space (\"Re [ceive]\" instead of \"Re[ceive]\") in the reconstructed text. Fixed to match the established one-word-multiple-syllables convention used everywhere else in these presets.",
+    ],
+  },
   {
     version: "v0.25.43",
     date: "July 2026",
@@ -1656,40 +1666,53 @@ function rolesDisplayText(words, rolesWD) {
 // Accents hand-verified against the printed score in the tutorial.
 // Tutorial-faithful: intonation syllable + cadence anchor only (1–2 marks per phrase).
 // Old v0.1.0 preset marked all natural word stresses — corrected per Drillock & Ealy.
+// ── PRESET: "Lord, I call upon Thee..." — Tone 1 LIC (Lord, I Call) ──────────
+// Provided directly by Bill (July 2026), replacing the earlier
+// "Come, let us also go to meet Christ" example. 6-line sticheron:
+// A B C D A Final, per ROT_DEFS[1] = ["A","B","C","D"] cycling, with the
+// last line always Final regardless of the raw rotation position.
 const PRESET_T1 = [
-  // Phrase A — Come = intonation (H); vine = cadence anchor (H); songs trails (H)
-  ["A", [["Come,",[["Come",1]]],["let",[["let",0]]],["us",[["us",0]]],["also",[["al",0],["so",0]]],["go",[["go",0]]],["to",[["to",0]]],["meet",[["meet",0]]],["Christ",[["Christ",0]]],["with",[["with",0]]],["divine",[["di",0],["vine",1]]],["songs!",[["songs",0]]]]],
-  // Phrase B — no intonation; Sim = anchor (backup from final monosyllable saw)
-  ["B", [["Let",[["Let",0]]],["us",[["us",0]]],["receive",[["re",0],["ceive",0]]],["Him",[["Him",0]]],["Whose",[["Whose",0]]],["salvation",[["sal",0],["va",0],["tion",0]]],["Simeon",[["Sim",1],["e",0],["on",0]]],["saw!",[["saw",0]]]]],
-  // Phrase C — He = intonation (H); Whom = reciting tone (Q); Da = cadence anchor (do/H);
-  // vid = do/Q fill; an = do/Q fill; nounced = ti/H close. Score: tutorial p.7.
-  ["C", [["This",[["This",0]]],["is",[["is",0]]],["He",[["He",1]]],["Whom",[["Whom",0]]],["David",[["Da",1],["vid",0]]],["announced;",[["an",0],["nounced",0]]]]],
-  // Phrase D — no intonation; spoke = primary anchor (ti, cadence boundary);
-  // Proph = secondary anchor (re, pos 3); two-accent path
-  ["D", [["this",[["this",0]]],["is",[["is",0]]],["He",[["He",0]]],["Who",[["Who",0]]],["spoke",[["spoke",1]]],["in",[["in",0]]],["the",[["the",0]]],["Prophets,",[["Proph",1],["ets",0]]]]],
-  // Phrase A — Who = intonation; speaks = anchor (backup from final monosyllable Law)
-  ["A", [["Who,",[["Who",1]]],["for",[["for",0]]],["our",[["our",0]]],["sakes,",[["sakes",0]]],["has",[["has",0]]],["taken",[["tak",0],["en",0]]],["flesh",[["flesh",0]]],["and",[["and",0]]],["Who",[["Who",0]]],["speaks",[["speaks",1]]],["through",[["through",0]]],["the",[["the",0]]],["Law.",[["Law",0]]]]],
-  // Final — wor = anchor; Him trails
-  ["Final", [["Let",[["Let",0]]],["us",[["us",0]]],["worship",[["wor",1],["ship",0]]],["Him!",[["Him",0]]]]],
+  // Phrase A — Lord, = intonation accent; hear = cadence anchor; me! trails.
+  ["A", [["Lord,",[["Lord",1]]],["I",[["I",0]]],["call",[["call",0]]],["upon",[["up",0],["on",0]]],["Thee,",[["Thee,",0]]],["hear",[["hear",1]]],["me!",[["me!",0]]]]],
+  // Phrase B — Hear = cadence anchor; me,/O/Lord! trail.
+  ["B", [["Hear",[["Hear",1]]],["me,",[["me,",0]]],["O",[["O",0]]],["Lord!",[["Lord!",0]]]]],
+  // Phrase C — Lord, = intonation accent; hear = cadence anchor. Same
+  // shape as Phrase A above but Phrase C's own logic (different recite/
+  // cadence pitches) applies.
+  ["C", [["Lord,",[["Lord",1]]],["I",[["I",0]]],["call",[["call",0]]],["upon",[["up",0],["on",0]]],["Thee,",[["Thee,",0]]],["hear",[["hear",1]]],["me!",[["me!",0]]]]],
+  // Phrase D — TWO brackets: ceive (within Re-ceive) and voice. Matches
+  // this tone's own two-accent Phrase D architecture (a secondary accent
+  // within the cadence span, same shape as the tutorial's "spoke in the
+  // Proph-ets" example) — not simplified to one accent the way Tone 4's D is.
+  ["D", [["Receive",[["Re",0],["ceive",1]]],["the",[["the",0]]],["voice",[["voice",1]]],["of",[["of",0]]],["my",[["my",0]]],["prayer,",[["prayer,",0]]]]],
+  // Phrase A (cycle restart after D) — call = anchor; on (within up-on) = second accent.
+  ["A", [["when",[["when",0]]],["I",[["I",0]]],["call",[["call",1]]],["upon",[["up",0],["on",1]]],["Thee!//",[["Thee!//",0]]]]],
+  // Final — both Hear and me bracketed, same compressed-prep shape as Tone 4's identical case.
+  ["Final", [["Hear",[["Hear",1]]],["me,",[["me",1]]],["O",[["O",0]]],["Lord!",[["Lord!",0]]]]],
 ];
 
 // ── PRESET: "Come, let us worship the Word of God" — Tone 2 Resurrectional 1 ──
 // Accents hand-verified against OCA Feb 8 2026 service text (run-level underline).
 // 6-line sticheron: A B C D A Final.
+// ── PRESET: "Lord, I call upon Thee..." — Tone 2 LIC (Lord, I Call) ──────────
+// Provided directly by Bill (July 2026), replacing the earlier
+// "Come, let us worship the Word of God" example. 6-line sticheron:
+// A B C D B Final, per ROT_DEFS[2] (A once, then B·C·D cycling — line 5
+// restarts at B, not back to A, matching the tone's own rotation rule).
 const PRESET_T2 = [
-  // Phrase A — no intonation; Word = anchor (single mark)
-  ["A", [["Come,",[["Come",0]]],["let",[["let",0]]],["us",[["us",0]]],["worship",[["wor",0],["ship",0]]],["the",[["the",0]]],["Word",[["Word",1]]],["of",[["of",0]]],["God",[["God",0]]]]],
-  // Phrase B — a = anchor (backup from "ages", polysyllabic — 'a' is the stressed syllable)
-  ["B", [["begotten",[["be",0],["got",0],["ten",0]]],["of",[["of",0]]],["the",[["the",0]]],["Father",[["Fa",0],["ther",0]]],["before",[["be",0],["fore",0]]],["all",[["all",0]]],["ages,",[["a",1],["ges",0]]]]],
-  // Phrase C — car = intonation; Mar = anchor
-  ["C", [["and",[["and",0]]],["incarnate",[["in",0],["car",1],["nate",0]]],["of",[["of",0]]],["the",[["the",0]]],["Virgin",[["Vir",0],["gin",0]]],["Mary!",[["Mar",1],["y",0]]]]],
-  // Phrase D — dured = anchor (one mark)
-  ["D", [["Having",[["Hav",0],["ing",0]]],["endured",[["en",0],["dured",1]]],["the",[["the",0]]],["Cross,",[["Cross",0]]]]],
-  // Phrase B (line 5, index 4 — NOT Phrase A; A only appears once per tutorial)
-  // self = anchor; desired trails
-  ["B", [["He",[["He",0]]],["was",[["was",0]]],["buried",[["bur",0],["ied",0]]],["as",[["as",0]]],["He",[["He",0]]],["Himself",[["Him",0],["self",1]]],["desired.//",[["de",0],["sired",0]]]]],
-  // Final — er = anchor (erring)
-  ["Final", [["And",[["And",0]]],["having",[["hav",0],["ing",0]]],["risen",[["ris",0],["en",0]]],["from",[["from",0]]],["the",[["the",0]]],["dead,",[["dead",0]]],["He",[["He",0]]],["saved",[["saved",0]]],["me,",[["me",0]]],["an",[["an",0]]],["erring",[["er",1],["ring",0]]],["man.",[["man",0]]]]],
+  // Phrase A — no intonation; hear = anchor (single mark).
+  ["A", [["Lord,",[["Lord,",0]]],["I",[["I",0]]],["call",[["call",0]]],["upon",[["up",0],["on",0]]],["Thee,",[["Thee,",0]]],["hear",[["hear",1]]],["me!",[["me!",0]]]]],
+  // Phrase B — me = anchor (single mark).
+  ["B", [["Hear",[["Hear",0]]],["me,",[["me",1]]],["O",[["O",0]]],["Lord!",[["Lord!",0]]]]],
+  // Phrase C — Lord, = intonation; hear = anchor.
+  ["C", [["Lord,",[["Lord",1]]],["I",[["I",0]]],["call",[["call",0]]],["upon",[["up",0],["on",0]]],["Thee,",[["Thee,",0]]],["hear",[["hear",1]]],["me!",[["me!",0]]]]],
+  // Phrase D — voice = anchor (single mark).
+  ["D", [["Receive",[["Re",0],["ceive",0]]],["the",[["the",0]]],["voice",[["voice",1]]],["of",[["of",0]]],["my",[["my",0]]],["prayer,",[["prayer,",0]]]]],
+  // Phrase B (line 5, cycle restart after D — NOT Phrase A, which only
+  // appears once per this tone's rotation rule) — call = anchor.
+  ["B", [["when",[["when",0]]],["I",[["I",0]]],["call",[["call",1]]],["upon",[["up",0],["on",0]]],["Thee!//",[["Thee!//",0]]]]],
+  // Final — both Hear and me bracketed.
+  ["Final", [["Hear",[["Hear",1]]],["me,",[["me",1]]],["O",[["O",0]]],["Lord!",[["Lord!",0]]]]],
 ];
 
 // ── PRESET: "By Thy Cross, O Christ our Savior" — Tone 3 Resurrectional 1 ──
@@ -1700,17 +1723,23 @@ const PRESET_T2 = [
 // Phrase A: anchor on [lu]sion — one mark (mid-word: de·lu·sion)
 // Phrase B: anchor on [saved] — one mark
 // Final:    first anchor [of]fers, second anchor [Thee] — two marks
+// ── PRESET: "Lord, I call upon Thee..." — Tone 3 LIC (Lord, I Call) ──────────
+// Provided directly by Bill (July 2026), replacing the earlier
+// "By Thy Cross, O Christ our Savior" example. 6-line sticheron:
+// A B A B A Final, per ROT_DEFS[3] = ["A","B"] cycling.
 const PRESET_T3 = [
-  // Phrase A — Sav = anchor (Savior)
-  ["A", [["By",[["By",0]]],["Thy",   [["Thy",0]]],["Cross,", [["Cross",0]]],["O",    [["O",0]]],["Christ",[["Christ",0]]],["our",  [["our",0]]],["Savior,", [["Sav",1],["ior,",0]]]]],
-  // Phrase B — shat = anchor (shattered); dotted-half on mi
-  ["B", [["death's",[["death's",0]]],["dominion",[["dom",0],["in",0],["ion",0]]],["has",  [["has",0]]],["been",  [["been",0]]],["shattered;",[["shat",1],["tered;",0]]]]],
-  // Phrase A — lu = anchor (delusion, mid-word)
-  ["A", [["the",   [["the",0]]],["devil's",[["dev",0],["il's",0]]],["delusion",[["de",0],["lu",1],["sion",0]]],["destroyed.",[["de",0],["stroyed.",0]]]]],
-  // Phrase B — saved = anchor; dotted-half on mi
-  ["B", [["The",   [["The",0]]],["race",   [["race",0]]],["of",    [["of",0]]],["man,",  [["man,",0]]],["being", [["be",0],["ing",0]]],["saved",  [["saved",1]]],["by",    [["by",0]]],["faith,//",[["faith,//",0]]]]],
-  // Final — two anchors: [of]fers (first, Part 1 mi) + [Thee] (second, Part 2 mi)
-  ["Final", [["always",[["al",0],["ways",0]]],["offers",[["of",1],["fers",0]]],["Thee",  [["Thee",1]]],["a",     [["a",0]]],["song.",  [["song.",0]]]]],
+  // Phrase A — hear = anchor (single mark).
+  ["A", [["Lord,",[["Lord,",0]]],["I",[["I",0]]],["call",[["call",0]]],["upon",[["up",0],["on",0]]],["Thee,",[["Thee,",0]]],["hear",[["hear",1]]],["me.",[["me.",0]]]]],
+  // Phrase B — me = anchor (single mark).
+  ["B", [["Hear",[["Hear",0]]],["me,",[["me",1]]],["O",[["O",0]]],["Lord.",[["Lord.",0]]]]],
+  // Phrase A (cycle restart) — hear = anchor.
+  ["A", [["Lord,",[["Lord,",0]]],["I",[["I",0]]],["call",[["call",0]]],["upon",[["up",0],["on",0]]],["Thee,",[["Thee,",0]]],["hear",[["hear",1]]],["me.",[["me.",0]]]]],
+  // Phrase B (cycle restart) — voice = anchor.
+  ["B", [["Receive",[["Re",0],["ceive",0]]],["the",[["the",0]]],["voice",[["voice",1]]],["of",[["of",0]]],["my",[["my",0]]],["prayer,",[["prayer,",0]]]]],
+  // Phrase A (cycle restart) — call = anchor.
+  ["A", [["when",[["when",0]]],["I",[["I",0]]],["call",[["call",1]]],["upon",[["up",0],["on",0]]],["Thee.//",[["Thee.//",0]]]]],
+  // Final — both Hear and me bracketed.
+  ["Final", [["Hear",[["Hear",1]]],["me,",[["me",1]]],["O",[["O",0]]],["Lord.",[["Lord.",0]]]]],
 ];
 
 // ── PRESET: "Lord, I call upon Thee..." — Tone 4 LIC (Lord, I Call) ──────────
