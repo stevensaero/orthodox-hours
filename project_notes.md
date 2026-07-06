@@ -1,5 +1,32 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.29.0** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
+**Tool version: v0.30.0** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
+
+**Session July 6, 2026 (cont.) — fix: combined Read-in-Scripture page missing
+print context, feat: temple dedication always-visible change control
+(v0.29.0 → v0.30.0).**
+
+**v0.29.1 — fix: combined "Read in Scripture" page not showing print/read
+context.** v0.29.0 added the service/commemoration/date context line to the
+combined readings landing, but the render call site in scripture.jsx never
+actually passed the computed readingsContext value down to TodayReadingsView
+— caught by Bill comparing a working single-verse link (context showed
+correctly, since that path carries context via URL params) against the
+combined link (context missing) and spotting the gap. Both sending paths
+(assembleVespers's badge, the context card's link) were already correct;
+only the receiving JSX was missing `context={readingsContext}` at the call
+site. One-line fix.
+
+**v0.30.0 — feat: temple dedication always-visible change control.** Once a
+temple dedication was chosen, both post-selection states collapsed to a
+plain "(change)" text span — easy to miss, read as inert text rather than a
+control. Replaced with an actual, always-visible `<select>` dropdown showing
+the current choice as its value; picking a different option re-selects
+immediately, no "(change) → reveal the big picker → re-pick" round trip
+needed. Lists every dedication flattened together (not the first-time
+picker's staged primary/"more" disclosure, since this is a quick re-pick
+tool). The big first-time picker itself is unchanged.
+
+Gate for both: 71/71 pointing-paths + sunday-vespers, vite build clean.
 
 **Session July 6, 2026 (cont.) — Vespers OT Lessons: print context, quiet
 inline links, single-passage print (v0.28.0 → v0.29.0).**
