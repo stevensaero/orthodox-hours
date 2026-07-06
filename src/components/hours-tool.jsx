@@ -459,17 +459,62 @@ function paroemiaToRef(paroemia) {
   return null;
 }
 
-function paroemiaToScriptureHref(paroemia, service, date) {
+function paroemiaToScriptureHref(paroemia, service, date, commemoration) {
   const ref = paroemiaToRef(paroemia);
-  return ref ? refToScriptureHref(ref, service, date) : null;
+  return ref ? refToScriptureHref(ref, service, date, commemoration) : null;
 }
 
-function refToScriptureHref(ref, service, date) {
+function refToScriptureHref(ref, service, date, commemoration) {
   if (!ref) return null;
   const m = ref.trim().match(/^((?:\d\s+)?(?:[A-Za-z]+(?:\s+of\s+[A-Za-z]+)?|[A-Za-z]+(?:\s+[A-Za-z]+)?))\s+(\d+:\d+)/);
   if (!m) return null;
   if (!SCRIPTURE_BOOK_ID[m[1].trim()]) return null;
-  return `/orthodox-hours/scripture?ref=${encodeURIComponent(ref.trim())}&service=${service}&date=${date}`;
+  let href = `/orthodox-hours/scripture?ref=${encodeURIComponent(ref.trim())}&service=${service}&date=${date}`;
+  if (commemoration) href += `&commemoration=${encodeURIComponent(commemoration)}`;
+  return href;
+}
+
+// Split a paroemia string into { before, linkText, href, after } so only the
+// reference substring itself becomes a quiet inline link (e.g. just the
+// "(Gen 28:10-17)" in "Genesis — Jacob's ladder (Gen 28:10-17)") — the rest
+// of the sentence stays plain text. Returns null when no ref resolves (falls
+// back to plain text at the call site). Uses the `d` (hasIndices) regex flag
+// to locate exactly where the ref substring sits, since Format 1's overall
+// match can absorb a trailing em-dash that must stay in `after`, not
+// `linkText`. Links to the single-passage view (stripped of surrounding
+// verses) — the same ?ref= mode paroemiaToScriptureHref already builds.
+function paroemiaLinkParts(paroemia, service, date, commemoration) {
+  if (!paroemia) return null;
+  // Format 1: ref at start — "Isaiah 40:1-8, 10-11 — description"
+  const m1 = paroemia.match(/^((?:\d\s+)?(?:[A-Za-z]+(?:\s+of\s+[A-Za-z]+)?|[A-Za-z]+(?:\s+[A-Za-z]+)?))\s+(\d+:\d+[^—]*)(?:\s*—|$)/d);
+  if (m1 && SCRIPTURE_BOOK_ID[m1[1].trim()]) {
+    const ref = `${m1[1].trim()} ${m1[2].trim()}`;
+    const href = refToScriptureHref(ref, service, date, commemoration);
+    if (!href) return null;
+    // Group 2's [^—]* is greedy and swallows any trailing whitespace before
+    // the dash — trim it off the link text so the underline doesn't extend
+    // into blank space, but keep it in `after` so the visible gap survives.
+    const rawEnd = m1.indices[2][1];
+    const linkText = paroemia.slice(0, rawEnd).replace(/\s+$/, "");
+    return { before: "", linkText, href, after: paroemia.slice(linkText.length) };
+  }
+  // Format 2: ref in trailing parentheses — "Proverbs — desc (Prov 10:7; 3:13-16)"
+  const m2 = paroemia.match(/\(([A-Za-z]+(?:\s+[A-Za-z]+)?\s+\d+:\d+[^)]*)\)\s*$/);
+  if (m2) {
+    const firstRef = m2[1].split(/;/)[0].trim();
+    const mm = firstRef.match(/^([A-Za-z]+(?:\s+[A-Za-z]+)?)\s+(.+)$/);
+    if (mm && SCRIPTURE_BOOK_ID[mm[1].trim()]) {
+      const ref = `${mm[1].trim()} ${mm[2].trim()}`;
+      const href = refToScriptureHref(ref, service, date, commemoration);
+      if (!href) return null;
+      // Wrap the whole "(...)" parenthetical, matching the example given —
+      // m2.index/m2[0] already cover the parens themselves, no `d` flag needed.
+      const startIdx = m2.index;
+      const endIdx = startIdx + m2[0].length;
+      return { before: paroemia.slice(0, startIdx), linkText: paroemia.slice(startIdx, endIdx), href, after: paroemia.slice(endIdx) };
+    }
+  }
+  return null;
 }
 
 // Build the combined-reading array for all of a Vespers's OT lessons at once
@@ -483,6 +528,21 @@ function paroemiaReadingGroups(paroemias) {
     return ref ? { kind: "paroemia", label: ["I.", "II.", "III."][i] || `Lesson ${i + 1}`, ref } : null;
   }).filter(Boolean);
   return items.length ? items : null;
+}
+
+// Context info ("Vespers · [commemoration] · [date]") carried alongside the
+// combined-reading handoff, so the printed/on-screen page can anchor the
+// texts to a specific service without the reader needing to go back and
+// check. commemoration reuses getPeekName — the same resolution already
+// driving the collapsed-header peek row — so both surfaces always agree.
+function vespersPrintContext(liturgicalData, menaionEntry, dateStr) {
+  const commemoration = getPeekName(liturgicalData, menaionEntry);
+  let dateLabel = null;
+  try {
+    dateLabel = new Date(dateStr + "T12:00:00").toLocaleDateString("en-US",
+      { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+  } catch (e) { /* no-op — omitted if unparseable */ }
+  return { service: "Vespers", commemoration: commemoration || null, dateLabel };
 }
 
 // ── GREAT FEASTS DATA ────────────────────────────────────────────────────────
@@ -4103,16 +4163,26 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     fekula:{section:fekulaSection, note:prokNote}});
   // 10. OT LESSONS (§2E / §2F only)
   if (paroemias && paroemias.length > 0) {
+    const lessonsPrintContext = vespersPrintContext(liturgicalData, menaionEntry, selectedDate);
     elements.push({id:"v-les-hdr",type:"fixed",label:"Old Testament Lessons",rubric:"Deacon: Wisdom.",
       text:"Reader: The reading is from ___. Deacon: Let us attend.\n(Three lessons are read from the Menaion)",
       source:"HTM Vespers",
       // One combined "Read in Scripture" link for all lessons at once (see
       // paroemiaReadingGroups / oht_scripture_readings), rather than a
       // separate link per lesson requiring repeated back-and-forth.
-      scriptureReadings: paroemiaReadingGroups(paroemias)});
+      scriptureReadings: paroemiaReadingGroups(paroemias),
+      // Carried alongside the combined handoff so the destination page can
+      // show "Vespers · [commemoration] · [date]" without the reader needing
+      // to go back and check.
+      scriptureReadingsContext: lessonsPrintContext});
     paroemias.forEach((p,i) => {
+      // Quiet inline link on just the reference substring within the lesson
+      // text (e.g. the "(Gen 28:10-17)"), not a separate badge — clicking it
+      // opens that single passage alone (verses above/below stripped), same
+      // ?ref= mode the combined link's destination page also uses.
       elements.push({id:"v-les-"+(i+1),type:"movable",label:"Lesson "+(i+1),rubric:"",
         text:p, source:"Menaion",
+        refLink: paroemiaLinkParts(p, "vespers", selectedDate, lessonsPrintContext.commemoration),
         fekula:{section:fekulaSection, note:"After the Entrance and prokeimenon there are three readings appointed in the Menaion. — Fekula " + fekulaSection}});
     });
   }
@@ -7526,7 +7596,10 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
             type="button"
             onClick={() => {
               try {
-                sessionStorage.setItem("oht_scripture_readings", JSON.stringify(element.scriptureReadings));
+                sessionStorage.setItem("oht_scripture_readings", JSON.stringify({
+                  items: element.scriptureReadings,
+                  context: element.scriptureReadingsContext || null,
+                }));
               } catch (e) { /* no-op — viewer falls back to browse */ }
               const base = import.meta.env.BASE_URL || "/";
               window.location.href = base + "scripture?from=tool&readings=vespers-lessons";
@@ -7662,6 +7735,31 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
           );
         }
         if (!element.text) return null;
+
+        // Paroemia lessons: a quiet inline link on just the reference
+        // substring (e.g. "(Gen 28:10-17)"), not a boxed badge — the rest of
+        // the sentence stays plain text. Opens the single passage alone
+        // (verses above/below stripped), same ?ref= mode the combined
+        // "Read in Scripture" link's destination also uses. Matches the
+        // "↗ source" quiet-link treatment (dotted underline, muted color)
+        // rather than the more visible gold-underline treatment below, since
+        // this should read as naturally tappable text, not another badge.
+        if (element.refLink) {
+          const rl = element.refLink;
+          return (
+            <div style={bodyStyle}>
+              {rl.before}
+              <a href={rl.href} style={{
+                color: '#9A8A70',
+                textDecoration: 'none',
+                borderBottom: '1px dotted rgba(139,105,20,0.45)',
+                cursor: 'pointer',
+                fontFamily: 'Georgia, serif',
+              }}>{rl.linkText}</a>
+              {rl.after}
+            </div>
+          );
+        }
 
         // Scripture/psalter: render the card body as normal text, but
         // wrap just the reference text (last line / first line) in a gold link.
@@ -8351,6 +8449,47 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.29.0",
+    date: "July 2026",
+    summary: "Vespers OT Lessons: print context, quiet inline per-lesson links, single-passage print — new features",
+    items: [
+      "Print/read anchor: the combined 'Read in Scripture' page (and the single-" +
+      "passage view below) now show 'Vespers · [commemoration] · [date]' — e.g. " +
+      "'Vespers · Kazan Icon of the Most Holy Theotokos · Wednesday, July 8, 2026' " +
+      "— under the heading, on screen and in print, so the texts stay anchored to " +
+      "a specific service. New vespersPrintContext() builds this once inside " +
+      "assembleVespers, reusing getPeekName() (the same resolution already " +
+      "driving the collapsed-header peek row) for the commemoration.",
+      "Quiet inline per-lesson links: each lesson's reference substring (e.g. the " +
+      "'(Gen 28:10-17)' in 'Genesis — Jacob's ladder (Gen 28:10-17)') is now a " +
+      "subtle, dotted-underline inline link — not a separate boxed badge — " +
+      "opening that single passage alone (verses above/below stripped). New " +
+      "paroemiaLinkParts() splits the string into {before, linkText, href, " +
+      "after} using the same regex already in paroemiaToRef, with the `d` " +
+      "(hasIndices) flag to locate the exact substring boundaries. Verified " +
+      "byte-for-byte reconstruction (before+linkText+after === original) " +
+      "against real paroemia strings from the May/June/July data before wiring " +
+      "it in.",
+      "refToScriptureHref()/paroemiaToScriptureHref() now accept an optional " +
+      "commemoration param, encoded as a new &commemoration= URL param.",
+      "Single-passage (?ref=) view gets a heading (the reference itself), the " +
+      "same Print button, and the same context line as the combined landing — " +
+      "factored into shared PrintStyles/PrintButton/ReadingContextLine " +
+      "components in scripture.jsx rather than duplicated. Context line only " +
+      "shows when arriving with service+date (optionally commemoration); a " +
+      "plain bookmarked ?ref= visit still gets the heading and print button.",
+      "oht_scripture_readings payload shape extended from a bare items array to " +
+      "{ items, context } — read side accepts either, so the Library's existing " +
+      "Today's Readings handoff (bare array, no context) keeps working unchanged.",
+      "Context card: the 'Read in Scripture ↗' link moved from below the three " +
+      "lesson lines up onto the 'Vespers lessons' heading row itself, and each " +
+      "lesson line gets the same quiet inline ref link as the assembled service.",
+      "Gate: 71/71 pointing-paths + sunday-vespers, vite build clean; verified " +
+      "commemoration param, @page counter rule, and 'Read in Scripture' text " +
+      "present in the built bundle.",
+    ],
+  },
   {
     version: "v0.28.0",
     date: "July 2026",
@@ -13225,42 +13364,36 @@ export default function App() {
               </span>
             </div>
           )}
-          <div style={{ marginTop: "0.3rem" }}>
-            <strong>Vespers lessons</strong>{" "}
-            <span style={{ fontSize: "0.72rem", color: "#8B7040" }}>
-              {cParoem ? "(OT paroemias at Great Vespers)" : "(not appointed at this rank)"}
-            </span>
-            <VespersLessonsExplainer
-              rank={cSelMen && cSelMen.rank}
-              pentEntry={cPent}
-              isPentecostarion={cIsPent}
-              feastPeriod={cLit && cLit.feastPeriod}
-              paroemias={cParoem}
-            />
-            {cParoem && (
-              <span style={{ color: "#5C4A1E", display: "block", marginTop: "0.15rem" }}>
-                {cParoem.map((p, i) => (
-                  <span key={i}>
-                    <em>{["I.", "II.", "III."][i]}</em>{" "}
-                    {p}
-                    {i < cParoem.length - 1 && <br />}
+          {(() => {
+            const cPrintContext = cParoem ? vespersPrintContext(cLit, cMen, cSelDate) : null;
+            const cGroups = cParoem ? paroemiaReadingGroups(cParoem) : null;
+            return (
+              <div style={{ marginTop: "0.3rem" }}>
+                <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "6px" }}>
+                  <strong>Vespers lessons</strong>{" "}
+                  <span style={{ fontSize: "0.72rem", color: "#8B7040" }}>
+                    {cParoem ? "(OT paroemias at Great Vespers)" : "(not appointed at this rank)"}
                   </span>
-                ))}
-                {(() => {
-                  const groups = paroemiaReadingGroups(cParoem);
-                  if (!groups) return null;
-                  return (
+                  <VespersLessonsExplainer
+                    rank={cSelMen && cSelMen.rank}
+                    pentEntry={cPent}
+                    isPentecostarion={cIsPent}
+                    feastPeriod={cLit && cLit.feastPeriod}
+                    paroemias={cParoem}
+                  />
+                  {cGroups && (
                     <button
                       type="button"
                       onClick={() => {
                         try {
-                          sessionStorage.setItem("oht_scripture_readings", JSON.stringify(groups));
+                          sessionStorage.setItem("oht_scripture_readings", JSON.stringify({
+                            items: cGroups, context: cPrintContext,
+                          }));
                         } catch (e) { /* no-op — viewer falls back to browse */ }
                         const base = import.meta.env.BASE_URL || "/";
                         window.location.href = base + "scripture?from=tool&readings=vespers-lessons";
                       }}
                       style={{
-                        display: "inline-block", marginTop: "0.4rem",
                         fontSize: "0.68rem", color: "#8B6914", textDecoration: "none",
                         border: "1px solid rgba(139,105,20,0.35)", borderRadius: "3px",
                         padding: "1px 7px", background: "rgba(139,105,20,0.07)",
@@ -13271,11 +13404,34 @@ export default function App() {
                     >
                       Read in Scripture ↗
                     </button>
-                  );
-                })()}
-              </span>
-            )}
-          </div>
+                  )}
+                </div>
+                {cParoem && (
+                  <span style={{ color: "#5C4A1E", display: "block", marginTop: "0.15rem" }}>
+                    {cParoem.map((p, i) => {
+                      const rl = paroemiaLinkParts(p, "vespers", cSelDate, cPrintContext && cPrintContext.commemoration);
+                      return (
+                        <span key={i}>
+                          <em>{["I.", "II.", "III."][i]}</em>{" "}
+                          {rl ? (
+                            <React.Fragment>
+                              {rl.before}
+                              <a href={rl.href} style={{
+                                color: "#9A8A70", textDecoration: "none",
+                                borderBottom: "1px dotted rgba(139,105,20,0.45)",
+                              }}>{rl.linkText}</a>
+                              {rl.after}
+                            </React.Fragment>
+                          ) : p}
+                          {i < cParoem.length - 1 && <br />}
+                        </span>
+                      );
+                    })}
+                  </span>
+                )}
+              </div>
+            );
+          })()}
 
           {cLit.feastPeriod &&
            !(cLit.namedDay && cLit.feastPeriod.periodType === "forefeast") && (

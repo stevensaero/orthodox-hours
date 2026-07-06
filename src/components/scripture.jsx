@@ -500,35 +500,73 @@ function GroupHeading({ label }) {
   );
 }
 
-function TodayReadingsView({ groups, allBookData, heading }) {
+// Print CSS, shared by both the combined-readings landing and the single-
+// reading (?ref=) view — rendered once regardless of which is showing (rules
+// are inert until an actual print, so no harm doing this unconditionally).
+// Page-number footer via native @page margin boxes: supported in Chrome 131+
+// (Nov 2024) and Safari 18.2+ (Dec 2024); Firefox hasn't shipped it as of
+// this writing (tracked in an open Mozilla bug) — on Firefox, its own
+// default print footer shows instead, unstyled but still page-numbered.
+function PrintStyles() {
+  return (
+    <style>{`
+      @media print {
+        .no-print { display: none !important; }
+        html, body { background: #fff !important; }
+      }
+      @page {
+        margin: 0.6in 0.6in 0.9in 0.6in;
+        @bottom-center {
+          content: "Brenton Septuagint (OT) \u00b7 KJV 2006 (NT)   \u00b7   Page " counter(page) " of " counter(pages);
+          font-family: Georgia, serif;
+          font-size: 9pt;
+          color: #7a6a4a;
+        }
+      }
+    `}</style>
+  );
+}
+
+function PrintButton() {
+  return (
+    <button
+      type="button"
+      className="no-print"
+      onClick={() => window.print()}
+      style={{
+        fontSize: "0.68rem", color: C.gold, textDecoration: "none",
+        border: `1px solid rgba(139,105,20,0.35)`, borderRadius: "3px",
+        padding: "1px 7px", background: "rgba(139,105,20,0.07)",
+        fontFamily: "Georgia, serif", letterSpacing: "0.04em",
+        whiteSpace: "nowrap", cursor: "pointer",
+        WebkitAppearance: "none", appearance: "none", flexShrink: 0,
+      }}
+    >
+      Print
+    </button>
+  );
+}
+
+// "Vespers · Kazan Icon of the Most Holy Theotokos · Wednesday, July 8, 2026"
+// — anchors the printed/on-screen page to the specific service it belongs
+// to. Shown both on screen and in print (not .no-print) since it's useful
+// either place. Renders nothing if there's nothing to show.
+function ReadingContextLine({ service, commemoration, dateLabel }) {
+  const parts = [service, commemoration, dateLabel].filter(Boolean);
+  if (!parts.length) return null;
+  return (
+    <div style={{ fontSize: "0.85rem", color: C.inkLight, fontStyle: "italic", marginBottom: "1rem" }}>
+      {parts.join(" \u00b7 ")}
+    </div>
+  );
+}
+
+function TodayReadingsView({ groups, allBookData, heading, context }) {
   useEffect(() => { window.scrollTo(0, 0); }, []);
   if (!groups || groups.length === 0) return null;
   return (
     <div>
-      {/* Print CSS lives here rather than in the main component so it's only
-          in the DOM when this view is showing. Rules are global regardless of
-          where the <style> tag sits in the tree (no Shadow DOM here), so
-          .no-print on the site header / context strips elsewhere still works.
-          Page-number footer via native @page margin boxes: supported in
-          Chrome 131+ (Nov 2024) and Safari 18.2+ (Dec 2024); Firefox hasn't
-          shipped it as of this writing (tracked in an open Mozilla bug) — on
-          Firefox, its own default print footer shows instead, unstyled but
-          still page-numbered. */}
-      <style>{`
-        @media print {
-          .no-print { display: none !important; }
-          html, body { background: #fff !important; }
-        }
-        @page {
-          margin: 0.6in 0.6in 0.9in 0.6in;
-          @bottom-center {
-            content: "Brenton Septuagint (OT) \u00b7 KJV 2006 (NT)   \u00b7   Page " counter(page) " of " counter(pages);
-            font-family: Georgia, serif;
-            font-size: 9pt;
-            color: #7a6a4a;
-          }
-        }
-      `}</style>
+      <PrintStyles />
       <div style={{
         display: "flex", alignItems: "baseline", justifyContent: "space-between",
         gap: "0.75rem", marginBottom: "0.25rem",
@@ -539,22 +577,15 @@ function TodayReadingsView({ groups, allBookData, heading }) {
         }}>
           {heading || "Today's Readings"}
         </div>
-        <button
-          type="button"
-          className="no-print"
-          onClick={() => window.print()}
-          style={{
-            fontSize: "0.68rem", color: C.gold, textDecoration: "none",
-            border: `1px solid rgba(139,105,20,0.35)`, borderRadius: "3px",
-            padding: "1px 7px", background: "rgba(139,105,20,0.07)",
-            fontFamily: "Georgia, serif", letterSpacing: "0.04em",
-            whiteSpace: "nowrap", cursor: "pointer",
-            WebkitAppearance: "none", appearance: "none", flexShrink: 0,
-          }}
-        >
-          Print
-        </button>
+        <PrintButton />
       </div>
+      {context && (
+        <ReadingContextLine
+          service={context.service}
+          commemoration={context.commemoration}
+          dateLabel={context.dateLabel}
+        />
+      )}
       {groups.map((g, i) => (
         <div key={i}>
           <GroupHeading label={g.label} />
@@ -750,6 +781,7 @@ export default function Scripture() {
     const verseParam = parseInt(params.get("verse") || "0", 10) || null;
     const service = params.get("service");
     const date = params.get("date");
+    const commemorationParam = params.get("commemoration");
 
     let fromContext = null;
     if (service && date) {
@@ -761,7 +793,9 @@ export default function Scripture() {
         : service === "post_communion" ? "Prayers After Communion"
         : service === "typica" ? "Typica"
         : service.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-      fromContext = { dayName, dateLabel, serviceLabel };
+      // commemoration is optional — present on paroemia links (v0.29.0),
+      // absent on older Epistle/Gospel-style ?ref= links that don't carry it.
+      fromContext = { dayName, dateLabel, serviceLabel, commemoration: commemorationParam || null };
     }
 
     const fromTool = params.get("from") === "tool";
@@ -790,20 +824,31 @@ export default function Scripture() {
   // existing parseRefString. `readings` selects both the gate and the landing
   // heading (READINGS_LANDING_HEADINGS) — "today" for the Library's Epistle/
   // Gospel book, "vespers-lessons" for a Vespers's combined OT lessons link.
-  const [readingGroups] = useState(() => {
+  // Payload shape: accepts either a bare items array (the Library's Today's
+  // Readings handoff, unchanged) or the newer { items, context } envelope
+  // (Vespers OT lessons, v0.29.0) that also carries a service/commemoration/
+  // date anchor for display.
+  const [readingsPayload] = useState(() => {
     try {
       const p = getParams();
       if (p.get("from") !== "tool" || !READINGS_LANDING_HEADINGS[p.get("readings")]) return null;
       const raw = sessionStorage.getItem("oht_scripture_readings");
       if (!raw) return null;
       sessionStorage.removeItem("oht_scripture_readings");
-      const items = JSON.parse(raw);
-      if (!Array.isArray(items) || items.length === 0) return null;
-      return items
+      const parsed = JSON.parse(raw);
+      const items = Array.isArray(parsed) ? parsed
+        : (parsed && Array.isArray(parsed.items)) ? parsed.items : null;
+      const context = Array.isArray(parsed) ? null : (parsed && parsed.context) || null;
+      if (!items || items.length === 0) return null;
+      const groups = items
         .map(it => ({ label: it.label, kind: it.kind, spans: parseRefString(it.ref) }))
         .filter(g => g.spans && g.spans.length > 0);
+      if (!groups.length) return null;
+      return { groups, context };
     } catch { return null; }
   });
+  const readingGroups = readingsPayload ? readingsPayload.groups : null;
+  const readingsContext = readingsPayload ? readingsPayload.context : null;
   const isTodayReadings = !!(readingGroups && readingGroups.length > 0);
   const readingsHeading = READINGS_LANDING_HEADINGS[getParams().get("readings")] || "Today's Readings";
 
@@ -1002,9 +1047,38 @@ export default function Scripture() {
           </div>
         )}
 
-        {/* Reading mode — appointed verses only */}
+        {/* Reading mode — appointed verses only. Same heading/print/context
+            treatment as the combined-readings landing, reusing the shared
+            components rather than duplicating: heading is the reference
+            itself (accurate for both single and semicolon-joined multi-span
+            refs), context line only shows when fromContext is present
+            (arrived from the tool with service+date, optionally
+            commemoration — plain bookmarked/direct ?ref= visits show no
+            context line but still get the heading and print button). */}
         {isReadingMode && !loading && (
-          <ReadingView spans={refSpans} allBookData={allBookData} />
+          <div>
+            <PrintStyles />
+            <div style={{
+              display: "flex", alignItems: "baseline", justifyContent: "space-between",
+              gap: "0.75rem", marginBottom: "0.25rem",
+            }}>
+              <div style={{
+                fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase",
+                color: C.gold, fontWeight: "bold",
+              }}>
+                {initState.refParam}
+              </div>
+              <PrintButton />
+            </div>
+            {fromContext && (
+              <ReadingContextLine
+                service={fromContext.serviceLabel}
+                commemoration={fromContext.commemoration}
+                dateLabel={`${fromContext.dayName}, ${fromContext.dateLabel}`}
+              />
+            )}
+            <ReadingView spans={refSpans} allBookData={allBookData} />
+          </div>
         )}
         {isReadingMode && loading && (
           <div style={{ textAlign: "center", padding: "3rem", color: C.inkLight, fontStyle: "italic", fontSize: "0.9rem" }}>
