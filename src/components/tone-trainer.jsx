@@ -27,12 +27,20 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.37";
+export const TONE_TRAINER_VERSION = "v0.25.38";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.38",
+    date: "July 2026",
+    summary: "fix: Play All scrolled to the bottom phrase then snapped back — reproducible every time on any single-voice playback that isn't alto (bass-only reported directly)",
+    items: [
+      "fix: playAll()'s per-line chip-highlight marker (lineStart) always used t, alto's own advancing timeline — but t only advances inside the playAlto block, so it stays frozen at the play-start timestamp for the entire playback whenever alto isn't one of the selected voices. On bass-only playback (reported, reproducible every time), that froze every line's lineStart to the identical timestamp, so all of them fired in a rapid burst the instant playback began — cycling playingLine through every line almost instantly and scrolling to the last one, before the bass-specific per-note schedule entries (using tb, bass's own correctly-advancing timeline) caught up moments later and corrected it back to the real current line. Fixed by picking whichever voice's timeline is actually active for the current selection (t for alto/alto-bass/satb, tb for bass-only, ts for soprano-only, tt for tenor-only) instead of always defaulting to alto's. Soprano-only and Tenor-only would have hit the identical bug once selectable — not reported yet, but fixed proactively by the same change rather than waiting for a separate report.",
+    ],
+  },
   {
     version: "v0.25.37",
     date: "July 2026",
@@ -4152,7 +4160,18 @@ export default function ToneTrainer() {
       const tenorNotes   = lineToNotes_tenor(line);
 
       // ── chip-highlight schedule (unchanged from pre-JIT) ──
-      const lineStart = t;
+      // lineStart must reflect whichever voice's timeline is actually
+      // advancing for the current voicePart selection — t (alto's timeline)
+      // only advances inside the playAlto block below, so it stays frozen
+      // at startT for the WHOLE playback whenever alto isn't one of the
+      // selected voices (e.g. "bass" alone). That froze every line's
+      // lineStart to the same timestamp, causing every per-line marker to
+      // fire in rapid succession at play-start instead of at each line's
+      // real time — the "scrolls to the bottom then corrects itself" bug
+      // reported on bass-only playback, reproducible every time. Fixed by
+      // picking whichever active voice's timeline is actually meaningful,
+      // rather than always defaulting to alto's.
+      const lineStart = playAlto ? t : playBassVoice ? tb : playSoprano ? ts : playTenorVoice ? tt : t;
       schedule.push({ audioT: lineStart, action: () => {
         setPlayingLine(li); setPlayingAltoIdx(null); setPlayingBassIdx(null);
       }});
