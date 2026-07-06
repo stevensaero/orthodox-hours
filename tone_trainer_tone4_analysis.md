@@ -1306,7 +1306,86 @@ hold, melisma, and duration alto has — no separate soprano-specific
 derivation or hold-collapse logic needed, unlike bass and tenor. Tone 4
 added to `SOPRANO_TONES`; no new `SOPRANO_MAP` entries required.
 
-**Not yet done:** `TENOR_RULES[4]` — the last remaining voice.
+**Not yet done at the time this section was written:** `TENOR_RULES[4]` —
+see §8 below, completed in the same session.
+
+---
+
+## 8. Tenor Harmony
+
+Built the same way as bass and soprano — direct interview, phrase by
+phrase, mirroring the Tone 2 tenor session's method exactly.
+
+**Confirmed chart, all seven phrases:**
+
+| Phrase | prepMap | inton | recite | cadMap | preslurMap | hold |
+|---|---|---|---|---|---|---|
+| A | — | — | sol | do:sol | — | n/a (no melisma) |
+| B | — | — | sol | re:sol, do:sol | — | n/a |
+| C | do:sol, re:sol | mi:sol, re:sol | sol | re:sol, do:sol | — | n/a |
+| D | — | — | sol | ti:sol, do:sol, re:sol | — | n/a |
+| E | — | — | sol | do:sol, re:sol, mi:sol, ti:sol | — | confirmed — see below |
+| F | — | — | sol | re:sol, do:sol | — | n/a |
+| Final | do:sol, ti:sol | — | sol | do:sol, ti:si, la:mi | — | confirmed — see below |
+
+**The central finding: tenor is a constant `sol` drone through every phrase
+except the very last cadence.** Every alto pitch in Phrases A through F —
+reciting, prep, intonation, cadence, regardless of position — maps to the
+identical tenor pitch. This was confirmed independently phrase by phrase,
+not assumed after the first one or two; by Phrase D it was already a
+strong pattern, and Phrase E (whose cadence has real melodic movement,
+rising to a peak and back down) was treated as the genuine test case for
+whether the pattern would hold under real motion — it did, completely.
+
+**The pattern breaks exactly where it should, musically:** the Final
+Phrase's reciting and prep continue the constant-sol pattern, but its
+cadence genuinely moves — `do→sol` still matches, but `ti→si` and `la→mi`
+are real, different pitches. This is coherent rather than a contradiction:
+the Final Phrase's cadence is the true concluding cadence of the entire
+sticheron, not a recurring internal phrase, so it's the one place genuine
+voice-leading would be expected. `si` (a raised `sol`, functioning as the
+harmonic-minor leading tone into `la`) is independently confirmed directly
+against the score's `#` accidental — worth noting for the record that an
+early, explicitly-flagged-as-unreliable OCR pass of this tutorial, from
+before this document existed, had noticed a stray `#` near something
+reading "si" in this section. This confirmation is independent, direct,
+and from the real score, not that old guess turning out to be reliable;
+kept distinct rather than implying vindication of an untrustworthy source.
+`si` itself needed no new plumbing — it's an already-established pitch in
+this codebase from Tone 1's own tenor Final Phrase, with register and
+detuning work already done previously.
+
+**Hold behavior — confirmed directly, and it falls out of the constant-sol
+finding almost trivially:** since tenor's pitch never changes across
+Phrases A–F, there is no "different pitch" case to force re-articulation
+anywhere in those six phrases — every melisma should hold, and the two
+tested examples confirm exactly that:
+
+> Phrase E, "when I [call] up[on] Thee!": "call" (alto `do·re`) holds as a
+> dotted half; "on" (alto `re·do`) holds as a half note. Both hold — unlike
+> bass, which held under "call" but re-articulated under "on" (bass's pitch
+> genuinely changes there; tenor's doesn't).
+>
+> Final Phrase, "[Hear] [me], O Lord!": holds as a single whole note on
+> `sol`, matching bass's own finding for the identical melisma exactly.
+
+**Implementation:** `TENOR_RULES[4]` added, `deriveTenorRolesWD()`'s
+existing collapse mechanism (already proven for Tones 1/2) reused directly
+rather than duplicated — Tone 4 added to `TENOR_HOLD_TONES` since both
+test cases are genuinely confirmed here, not inherited from another tone.
+One real bug was caught by testing before shipping, not by inspection: the
+compressed Final Phrase prep-melisma (alto's folded reciting-transition
+`re`, labelled `role:"prep"` for rendering purposes, same as bass's
+identical case) wasn't resolving through `recite` — `mapTenorPitch` had the
+right special-case logic already written, but `deriveTenorRolesWD` wasn't
+passing `phrase` through to it, so the check never actually fired. A
+standalone reproduction of "Hear" caught this directly (showing `re` split
+off from the `do·ti` pair instead of collapsing with them) before it could
+ship silently broken, mirroring exactly the same class of bug bass had.
+
+With Tenor complete, **all four voices (Alto, Bass, Soprano, Tenor) are
+now built for Tone 4** — SATB is fully available, not just Alto/Bass/
+Soprano combinations.
 
 ---
 
