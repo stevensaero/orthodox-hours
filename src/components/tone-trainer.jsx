@@ -27,12 +27,22 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.55";
+export const TONE_TRAINER_VERSION = "v0.25.56";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.56",
+    date: "July 2026",
+    summary: "fix: score-print.html drawMelismaSlurs — a collapsed bass/tenor note (correctly melisma:false) was also being excluded from slur-GROUP membership entirely, so it could never be connected by a curve to an adjacent note or adjacent collapsed group under the same syllable — caught directly by Bill against the printed score, Tone 3 Final Phrase 'Hear'",
+    items: [
+      "fix: v0.25.35 correctly established that a fully-collapsed single note needs no slur drawn around it (would double-represent the same sustain) by giving collapsed notes melisma:false. That same flag was also the sole membership test for the group-detection loop, so a collapsed note dropped out of slur consideration entirely, not just self-slurring. Bill confirmed the collapse itself is correct (right pitches, right durations) but reported the connecting slur bar missing on bass 'Hear' (uncollapsed fa sitting next to one collapsed do-group) and tenor 'Hear' (two separate collapsed groups, do·do then sol·sol, under the same syllable) — both need a slur connecting their pieces, neither could get one under the old logic.",
+      "fix: drawMelismaSlurs() now treats a note as slur-group-eligible if melisma===true OR it represents a collapsed run (spanCount>1), rather than melisma===true alone. A note that is BOTH melisma:false and spanCount<=1 (a plain, never-collapsed standalone note) is still correctly ineligible, so a fully-collapsed syllable with nothing else adjacent under the same text still draws no curve — v0.25.35's original fix is fully preserved, verified directly rather than assumed: simulated the fixed logic against Tone 4's 'call' (fully collapsed, still draws nothing) and 'on' (2 uncollapsed notes, still draws its slur) before shipping, alongside the two new Tone 3 cases. Alto/soprano entries never carry spanCount at all, so this is a no-op for them, behavior unchanged.",
+      "test: node --check on the extracted inline script. Standalone logic simulation against all 4 known cases (Tone 4 call/on, Tone 3 bass/tenor Hear) plus a plain-reciting-run sanity check, all 5 produce the expected result. npm run gate — 71/71 Hours Tool checks, 24/24 pointing-role checks, neither touches score-print.html. vite build clean. Recommend live verification against the deployed tool's printed score before considering this fully closed, per standing practice.",
+    ],
+  },
   {
     version: "v0.25.55",
     date: "July 2026",
