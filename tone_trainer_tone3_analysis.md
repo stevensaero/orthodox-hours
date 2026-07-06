@@ -1240,3 +1240,78 @@ by code review or syntax checking alone.
 **Status: alto notation fix implemented and shipped, v0.25.52. Bass/Tenor
 notation open, pending `sol`/`ti` score confirmation.**
 
+---
+
+## 20. Bass and Tenor notation — closed, same root cause as §19, opposite direction
+
+*Closes the deferred item from §19.5. Bass and Tenor's printed notation had
+the identical shared-table-never-verified-per-tone problem alto did, but
+rendering the opposite way (too LOW, not too high).*
+
+### 20.1 Confirmed reference points
+
+| Solfège | Bass was | Bass now | Tenor was | Tenor now |
+|---|---|---|---|---|
+| do | F3 | **C3** | F3 | **C4** |
+| sol | C3 | **G2** | C4 | **G3** |
+| fa | Bb2 | **F3** | — | — |
+| ti | — | — | E3 | **B3** (natural) |
+
+All confirmed directly by Bill against the score, the same rigor as alto's
+four points in §19.
+
+### 20.2 Finding — all three voices share one tonal center
+
+Bass's `do` (C3) and Tenor's `do` (C4) both land on the same letter as
+Alto's already-confirmed `do` (C4), each simply at its own natural octave.
+Not assumed, a genuine cross-check that fell out of three independently
+confirmed tables landing on the same letter for the same solfège name. All
+three voices center on C, the dominant of the printed F-major key, each
+occupying its own register. This is what "SATB in one key" means in
+practice, three separate confirmations converging is good evidence the
+whole picture is internally consistent, not just three isolated fixes.
+
+### 20.3 A third bug, found while building this — the ti-natural accidental
+
+Tenor's `ti = B/3` is a diatonic degree (not one of the chromatic
+di/ri/fi/si/li/ra/me/se/le/te names), but the printed key (F major) defaults
+every `B` to `Bb` via its key signature. Without an explicit natural sign,
+this note would silently render as `Bb`, not `B`. The existing
+`accidentalFor()` function only emits an accidental for chromatic solfège
+names, on the assumption that diatonic degrees are always correctly spelled
+by the key signature alone, true for every case so far, not true for this
+one.
+
+**Not fixed by widening `accidentalFor()`.** That function's chromatic-only
+rule is exactly right for Tones 1/2/4 and for Tone 3's own alto/bass tables
+(none of which need a diatonic accidental). Widening it risks a regression
+everywhere else. Instead, `mkNote()` gained an optional `forceAcc` parameter,
+`undefined` for every existing caller (no behavior change), explicitly `"n"`
+only for this one Tone 3 tenor case via a small dedicated lookup
+(`TONE3_TENOR_FORCE_NATURAL`).
+
+### 20.4 Fix
+
+`TONE3_BASS_PITCH` and `TONE3_TENOR_PITCH` added, identical dedicated,
+non-transposing pattern as `TONE3_ALTO_PITCH` (§19.4), populated only with
+the pitches each voice's own `BASS_RULES[3]`/`TENOR_RULES[3]` actually uses.
+Wired in at the two bass/tenor note-construction call sites in
+`score-print.html`, conditional on `payload.tone === 3`. Every other tone
+keeps the shared, transposition-aware `bassVFPitch()`/`tenorVFPitch()`
+completely untouched.
+
+### 20.5 Verification
+
+Same caveats as §19.6 — `node --check` confirms syntax validity, no browser
+available this session for a live render check. `npm run gate` — 71/71
+Hours Tool checks, 24/24 pointing-role checks, neither exercises
+`score-print.html`. `vite build` clean. **Recommend live verification
+against the deployed tool's printed score** before considering this fully
+closed.
+
+**Status: Tone 3's printed SATB notation (alto §19, bass/tenor this
+section) is now fully closed, shipped as v0.25.53. Combined with §14-18's
+harmony-voice pitch work, Tone 3 is complete: correct solfège mapping for
+every voice, correct printed notation for every voice, all dedicated,
+nothing shared with Tones 1, 2, or 4.**
+
