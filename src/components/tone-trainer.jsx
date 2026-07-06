@@ -27,12 +27,20 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.38";
+export const TONE_TRAINER_VERSION = "v0.25.39";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.39",
+    date: "July 2026",
+    summary: "feat: Tone 4 soprano — added to SOPRANO_TONES, confirmed as a pure diatonic third above alto with no new SOPRANO_MAP entries needed",
+    items: [
+      "feat: SOPRANO_TONES now includes 4. Confirmed directly: three pairs named explicitly (ti→re, do→mi, re→fa), all matching the existing global SOPRANO_MAP exactly. The remaining pitches Tone 4's alto uses (mi→sol, la→do) weren't individually re-confirmed by name in this exchange — they're covered by the general \"clone of alto up two\" characterization and the map's existing Tone 1/2 verification, logged as such rather than overstated as independently confirmed per-pitch. Since lineToNotes_soprano() already transposes alto's fully-computed rolesWD directly through this map, soprano automatically inherits every hold/melisma/duration alto has — no separate soprano-specific derivation needed, unlike bass and tenor.",
+    ],
+  },
   {
     version: "v0.25.38",
     date: "July 2026",
@@ -1493,6 +1501,18 @@ const TENOR_HOLD_TONES = new Set([1, 2]);
 // Tone 1: pure diatonic third above alto — verified against Drillock & Ealy
 // Four-Part Harmony tutorial, all 5 phrases, 21/21 notes match SOPRANO_MAP.
 // Tone 2: pure diatonic third above alto — verified against the LIC score, all 5 phrases.
+// Tone 4: pure diatonic third above alto — confirmed directly (July 2026
+// session). Bill explicitly named three pairs (ti→re, do→mi, re→fa),
+// all matching the existing global SOPRANO_MAP exactly with no new data.
+// The remaining pitches Tone 4's alto uses (mi→sol, in Phrase C's
+// intonation accent and Phrase E's peak; la→do, in the Final Phrase's
+// cadence close) were not individually named in that exchange — they're
+// covered by Bill's general characterization ("a clone of alto up two,
+// follows all holds/melismas") and by the map's existing Tone 1/2
+// verification, not by a separate explicit per-pitch confirmation. Worth
+// keeping that distinction honest rather than implying every pitch was
+// individually re-confirmed. Tone 4 never uses di, so the di→mi caveat
+// below (Tone-2-specific in practice) doesn't apply here.
 //
 // GUARDRAIL — membership here ASSERTS "soprano is a verified pure diatonic third above
 // the alto." Unlike bass/tenor (per-tone, per-phrase rule tables), soprano shares one
@@ -1504,7 +1524,7 @@ const TENOR_HOLD_TONES = new Set([1, 2]);
 // table mirroring BASS_RULES/TENOR_RULES. (Note: di→mi in SOPRANO_MAP is effectively
 // Tone-2-only in practice; Tone 1's alto never uses di. A future tone needing di to map
 // elsewhere is exactly the deviation case above — give it its own rules, not a remap.)
-const SOPRANO_TONES = new Set([1, 2]);
+const SOPRANO_TONES = new Set([1, 2, 4]);
 
 // Tones with score-verified bass rules. Bass is suppressed for all other
 // tones. Mirrors TENOR_TONES/SOPRANO_TONES — added here after this exact
