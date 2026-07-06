@@ -1481,6 +1481,29 @@ area, also fixed `buildUnifiedVoiceMap()`'s phrase list, hardcoded to
 `["A","B","C","D","Final"]` and missing `E`/`F` entirely — a real gap
 that predated any tone with more than 5 phrases.
 
+**That E/F phrase-list fix was itself incomplete, found one session
+later:** it corrected the phrase *iteration* scope but never touched the
+pitch *extraction* logic, which only ever read `pr.cadMap`/`pr.prepMap`.
+Phrase E's bass mapping uses `cadPositional` (a plain array, not a
+pitch-keyed map — see the bass positional-mapping finding above), which
+was never read at all, iteration fix or not. Bass's `ti` — used only
+inside that array, nowhere in any `cadMap` across any phrase — was
+silently never added to the unified height map, so its lookup fell back
+to `H_VOICE_MIN`, the shortest possible value, shorter even than tenor's
+correctly-computed `sol` at the same "on" position. Since both chips
+anchor at the same top edge, the wrongly-short bass chip ended above
+where the taller tenor chip extended to — visually reading as if tenor's
+`sol` hung down below bass's `ti`, exactly where Bill caught it against
+the actual chip rendering (score and audio were both already correct;
+this was purely a visual-layer bug). Fixed by adding `cadPositional` to
+the same pitch-collection line (`v0.25.45`). Worth the explicit note: the
+underlying frequency-to-height math was never wrong for any pitch that
+*was* being collected — every height value checked directly by computing
+real frequencies was already correctly ordered. The bug was a pitch
+silently never entering the collection at all, not a miscalculation for
+one that did — a useful distinction that took an actual computed check,
+not just re-reading the code, to separate.
+
 **"Try example" presets — all four tones:** Tone 4 had no example button
 at all (Tones 1–3 already did). Added `PRESET_T4` using a 6-line LIC text
 Bill provided directly, then Bill provided matching LIC text (with
