@@ -898,6 +898,15 @@ function renderScore(payload) {
         // slurred correctly by bass's own text/melisma continuity — no
         // line-wide flag needed at all.
         drawMelismaSlurs(bN, bassItems.map(function(it) { return it.br; }), false);
+        // Tenor never had its OWN slur-drawing call at all — only alto,
+        // soprano, and bass did. A genuine tenor melisma (e.g. Tone 2's
+        // Final Phrase "Hear," a real 2-note la·sol slur, separate from
+        // bass's own "Hear" slur) was simply never drawn. Mirrors bass's
+        // own call exactly, grouped by tenor's own entries — a collapsed
+        // tenor note (e.g. "me" holding as one dotted-whole, no slur
+        // needed) already carries melisma:false the same way bass's does,
+        // so this needs no separate collapse-check either.
+        if (hasTen) drawMelismaSlurs(tN, tenItems.map(function(it) { return it.trn; }), true);
       }
 
       // Lyrics (grand): centered between treble bottom line and bass top line.

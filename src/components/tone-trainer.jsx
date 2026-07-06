@@ -27,12 +27,21 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.46";
+export const TONE_TRAINER_VERSION = "v0.25.47";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.47",
+    date: "July 2026",
+    summary: "fix: Tone 2 Final Phrase melisma slurs merging across \"Hear\" and \"me\" into one continuous line, plus tenor never having its own slur at all",
+    items: [
+      "fix: buildScorePayload()'s bassEntries and tenorEntries objects never included a text field at all — score-print.html's melisma-slur grouping (added earlier today for Tone 4's bass rendering) checks text continuity to decide where one melisma ends and the next begins, and undefined===undefined in JS, so with text missing entirely, ANY two adjacent melisma-flagged entries got treated as one continuous group regardless of which word they actually came from. That's exactly the bug Bill caught: Tone 2's Final Phrase \"Hear\" and \"me\" merging into one odd slur spanning both, instead of two separate melismas. My own earlier tests today never caught this, because they used hand-built fixtures where text was set directly rather than exercising the real buildScorePayload path — a real gap in how the earlier fix was verified, not just in the code. Fixed by adding text: r.text to both entry-construction sites.",
+      "fix: tenor never had its own melisma-slur-drawing call in score-print.html at all — only alto, soprano, and bass did. A genuine tenor melisma (Tone 2 Final Phrase's \"Hear,\" a real 2-note la·sol slur, independent of bass's own \"Hear\" slur) was simply never drawn. Added, mirroring bass's own call exactly — a collapsed tenor note (e.g. \"me\" holding as one dotted whole) already carries melisma:false the same way a collapsed bass note does, so no separate collapse-check was needed for tenor either.",
+    ],
+  },
   {
     version: "v0.25.46",
     date: "July 2026",
@@ -4991,8 +5000,18 @@ export default function ToneTrainer() {
         const p = r.pitches[0];
         // Per-phrase octaveDiv overrides the global BASS_OCTAVE_DIV
         const octaveDiv = bassRules.octaveDiv?.[p] ?? BASS_OCTAVE_DIV[p] ?? 2;
+        // text is REQUIRED, not cosmetic — score-print.html's melisma-slur
+        // grouping checks text continuity to decide where one melisma ends
+        // and the next begins. Omitting it meant every entry's text was
+        // undefined, and undefined===undefined in JS, so ANY two adjacent
+        // melisma-flagged entries got treated as one continuous group
+        // regardless of which word they actually belonged to — exactly
+        // the "Hear" and "me" melismas merging into one slur that Bill
+        // caught in Tone 2's Final Phrase. My own earlier tests never
+        // caught this because they used hand-built fixtures where text
+        // was set directly, not the real payload-building path.
         return { pitch: p, durKey: r.durKey, melisma: r.melisma === true, octaveDiv,
-                 spanStart: r.spanStart, spanCount: r.spanCount };
+                 spanStart: r.spanStart, spanCount: r.spanCount, text: r.text };
       }) : null;
 
       // Tenor: same substitution pattern as bass using TENOR_RULES
@@ -5004,8 +5023,9 @@ export default function ToneTrainer() {
       const tenorEntries = tenorRules ? deriveTenorRolesWD(rolesWD, tenorRules, activeTone, line.phrase).map(r => {
         const p = r.pitches[0];
         const octaveDiv = tenorRules.octaveDiv?.[p] ?? TENOR_OCTAVE_DIV_LOCAL[p] ?? 2;
+        // text required for the same reason as bassEntries above — see that comment.
         return { pitch: p, durKey: r.durKey, melisma: r.melisma === true, octaveDiv,
-                 spanStart: r.spanStart, spanCount: r.spanCount };
+                 spanStart: r.spanStart, spanCount: r.spanCount, text: r.text };
       }) : null;
 
       payload.lines.push({
