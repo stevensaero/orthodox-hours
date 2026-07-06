@@ -6641,6 +6641,52 @@ function TempleSelector({ availableDedications, onSelect, currentId, resolvedTro
   const moreGrouped = {};
   categories.forEach(cat => { moreGrouped[cat] = moreDeds.filter(d => d.category === cat); });
 
+  // Shared "change dedication" control for both post-selection states below.
+  // Was a plain "(change)" text span — easy to miss once a temple was
+  // already chosen, since it was the only affordance and read as inert text,
+  // not a control. Now an actual always-visible <select> whose displayed
+  // value IS the current choice (native <select> behavior), so it reads
+  // unmistakably as "this can be changed" rather than disappearing into a
+  // label. Picking a new option re-selects immediately — no separate
+  // "(change) → reveal the big picker → re-pick" round trip needed. Lists
+  // every dedication (primary + "more") flattened together rather than
+  // repeating the staged disclosure, since this is a quick re-pick tool, not
+  // the first-time browse experience the big picker below still handles.
+  const changeSelect = (
+    <span style={{ position: "relative", display: "inline-block", marginLeft: "auto" }}>
+      <select
+        value={currentId}
+        onChange={(e) => onSelect(e.target.value)}
+        aria-label="Change parish dedication"
+        style={{
+          fontSize: "0.72rem", fontFamily: "Georgia, serif",
+          color: "#5A4A2A", background: "#fff",
+          border: "1px solid rgba(139,105,20,0.35)",
+          borderRadius: "4px", padding: "3px 22px 3px 8px",
+          appearance: "none", WebkitAppearance: "none",
+          cursor: "pointer",
+        }}
+      >
+        <option value="none">Serving at home / no dedication</option>
+        {categories.map(cat => {
+          const items = [...(grouped[cat] || []), ...(moreGrouped[cat] || [])];
+          if (!items.length) return null;
+          return (
+            <optgroup key={cat} label={cat}>
+              {items.map(d => <option key={d.id} value={d.id}>{d.label}</option>)}
+            </optgroup>
+          );
+        })}
+      </select>
+      <div style={{
+        position: "absolute", right: "8px", top: "50%", transform: "translateY(-50%)",
+        width: 0, height: 0,
+        borderLeft: "4px solid transparent", borderRight: "4px solid transparent",
+        borderTop: "5px solid #9A8A70", pointerEvents: "none",
+      }}></div>
+    </span>
+  );
+
   // If already selected, show the resolved state
   if (currentId === "none") {
     return (
@@ -6654,9 +6700,7 @@ function TempleSelector({ availableDedications, onSelect, currentId, resolvedTro
             fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.12em",
             color: "#9A8A70", fontFamily: "Georgia, serif", fontWeight: "bold",
           }}>Serving at home / no temple dedication</span>
-          <span onClick={() => onSelect(null)} style={{
-            fontSize: "0.68rem", color: "#9A8A70", cursor: "pointer", marginLeft: "auto",
-          }}>(change)</span>
+          {changeSelect}
         </div>
         <div style={{
           fontFamily: "Georgia, serif", fontSize: "0.88rem", lineHeight: "1.6",
@@ -6684,9 +6728,7 @@ function TempleSelector({ availableDedications, onSelect, currentId, resolvedTro
                 ? "The Kontakion of the church is sung after the Kontakion of the day. — OCA Typica; HTM Horologion"
                 : "We always chant first the first Litiya sticheron of the temple, unless it be one of the great feasts. — HTM Vespers"} />
           )}
-          <span onClick={() => onSelect(null)} style={{
-            fontSize: "0.68rem", color: "#9A8A70", cursor: "pointer", marginLeft: "auto",
-          }}>(change)</span>
+          {changeSelect}
         </div>
         <div style={{
           fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em",
@@ -8449,6 +8491,32 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.30.0",
+    date: "July 2026",
+    summary: "Temple dedication: always-visible change control replaces the easy-to-miss (change) link",
+    items: [
+      "Once a temple dedication was chosen, both post-selection states (a " +
+      "specific saint, or 'serving at home / no dedication') collapsed to a " +
+      "plain '(change)' text span — the only affordance to alter the choice, but " +
+      "read as inert text rather than a control, making it easy to miss entirely.",
+      "Replaced with an actual, always-visible <select> dropdown whose displayed " +
+      "value IS the current choice (native <select> behavior) — unmistakably a " +
+      "working control, not a label. Picking a different option re-selects " +
+      "immediately; no separate '(change) → reveal the big picker → re-pick' " +
+      "round trip needed.",
+      "Lists every dedication (primary + \"more\") flattened together in one set " +
+      "of optgroups, rather than repeating the first-time picker's staged " +
+      "disclosure — this is a quick re-pick tool, not a browse experience.",
+      "The big first-time picker (descriptive prompt, primary/'More dedications' " +
+      "progressive disclosure) is unchanged — this only replaces the two " +
+      "post-selection states' affordance, which is where the discoverability " +
+      "problem actually was.",
+      "Same chevron-overlay technique already used on the first-time picker's " +
+      "own <select>, for visual consistency.",
+      "Gate: 71/71 pointing-paths + sunday-vespers, vite build clean.",
+    ],
+  },
   {
     version: "v0.29.1",
     date: "July 2026",
