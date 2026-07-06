@@ -6653,7 +6653,7 @@ function TempleSelector({ availableDedications, onSelect, currentId, resolvedTro
   // repeating the staged disclosure, since this is a quick re-pick tool, not
   // the first-time browse experience the big picker below still handles.
   const changeSelect = (
-    <span style={{ position: "relative", display: "inline-block", marginLeft: "auto" }}>
+    <span style={{ position: "relative", display: "inline-block" }}>
       <select
         value={currentId}
         onChange={(e) => onSelect(e.target.value)}
@@ -8491,6 +8491,19 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.30.1",
+    date: "July 2026",
+    summary: "fix: temple dedication change-select left-justified instead of stranded at far right",
+    items: [
+      "The v0.30.0 always-visible change dropdown used marginLeft: auto, pushing " +
+      "it to the far right of the header row — disconnected from the heading and " +
+      "Fekula badge it modifies, especially on longer commemoration names.",
+      "Removed the right-push; the control now flows immediately after the " +
+      "heading/badge in normal reading order.",
+      "Gate: 71/71 pointing-paths + sunday-vespers, vite build clean.",
+    ],
+  },
   {
     version: "v0.30.0",
     date: "July 2026",
