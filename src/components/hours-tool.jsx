@@ -430,18 +430,21 @@ const SCRIPTURE_BOOK_ID = {
   "Zechariah": "Zech", "Malachi": "Mal",
 };
 
-// Extract a scripture href from a paroemia string.
+// Extract the clean scripture reference from a paroemia string (the Menaion
+// field itself carries a typological annotation alongside the ref — see the
+// two formats below). Pure ref extraction, no href — used both by
+// paroemiaToScriptureHref (single-lesson link) and by the combined "Read in
+// Scripture" handoff for all of a Vespers's OT lessons at once.
 // Handles two formats:
 //   "Genesis 28:10-17 (description)"       → ref = "Genesis 28:10-17"
 //   "Proverbs — description (Prov 10:7)"   → ref extracted from parens
-function paroemiaToScriptureHref(paroemia, service, date) {
+function paroemiaToRef(paroemia) {
   if (!paroemia) return null;
   // Format 1: book ref at start — "Isaiah 40:1-8, 10-11 — description"
   // Capture everything up to " —" or end of string as the ref
   const m1 = paroemia.match(/^((?:\d\s+)?(?:[A-Za-z]+(?:\s+of\s+[A-Za-z]+)?|[A-Za-z]+(?:\s+[A-Za-z]+)?))\s+(\d+:\d+[^—]*)(?:\s*—|$)/);
   if (m1 && SCRIPTURE_BOOK_ID[m1[1].trim()]) {
-    const ref = `${m1[1].trim()} ${m1[2].trim()}`;
-    return refToScriptureHref(ref, service, date);
+    return `${m1[1].trim()} ${m1[2].trim()}`;
   }
   // Format 2: ref in trailing parentheses — "Proverbs — desc (Prov 10:7; 3:13-16)"
   const m2 = paroemia.match(/\(([A-Za-z]+(?:\s+[A-Za-z]+)?\s+\d+:\d+[^)]*)\)\s*$/);
@@ -449,10 +452,15 @@ function paroemiaToScriptureHref(paroemia, service, date) {
     const firstRef = m2[1].split(/;/)[0].trim();
     const mm = firstRef.match(/^([A-Za-z]+(?:\s+[A-Za-z]+)?)\s+(.+)$/);
     if (mm && SCRIPTURE_BOOK_ID[mm[1].trim()]) {
-      return refToScriptureHref(`${mm[1].trim()} ${mm[2].trim()}`, service, date);
+      return `${mm[1].trim()} ${mm[2].trim()}`;
     }
   }
   return null;
+}
+
+function paroemiaToScriptureHref(paroemia, service, date) {
+  const ref = paroemiaToRef(paroemia);
+  return ref ? refToScriptureHref(ref, service, date) : null;
 }
 
 function refToScriptureHref(ref, service, date) {
@@ -461,6 +469,19 @@ function refToScriptureHref(ref, service, date) {
   if (!m) return null;
   if (!SCRIPTURE_BOOK_ID[m[1].trim()]) return null;
   return `/orthodox-hours/scripture?ref=${encodeURIComponent(ref.trim())}&service=${service}&date=${date}`;
+}
+
+// Build the combined-reading array for all of a Vespers's OT lessons at once
+// (paroemias, up to 3), for the "Read in Scripture" handoff — same shape as
+// the Library's Epistle/Gospel scriptureReadings ({ kind, label, ref }), fed
+// through the same oht_scripture_readings sessionStorage mechanism.
+function paroemiaReadingGroups(paroemias) {
+  if (!paroemias || !paroemias.length) return null;
+  const items = paroemias.map((p, i) => {
+    const ref = paroemiaToRef(p);
+    return ref ? { kind: "paroemia", label: ["I.", "II.", "III."][i] || `Lesson ${i + 1}`, ref } : null;
+  }).filter(Boolean);
+  return items.length ? items : null;
 }
 
 // ── GREAT FEASTS DATA ────────────────────────────────────────────────────────
@@ -4083,12 +4104,14 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   if (paroemias && paroemias.length > 0) {
     elements.push({id:"v-les-hdr",type:"fixed",label:"Old Testament Lessons",rubric:"Deacon: Wisdom.",
       text:"Reader: The reading is from ___. Deacon: Let us attend.\n(Three lessons are read from the Menaion)",
-      source:"HTM Vespers"});
+      source:"HTM Vespers",
+      // One combined "Read in Scripture" link for all lessons at once (see
+      // paroemiaReadingGroups / oht_scripture_readings), rather than a
+      // separate link per lesson requiring repeated back-and-forth.
+      scriptureReadings: paroemiaReadingGroups(paroemias)});
     paroemias.forEach((p,i) => {
-      const pHref = paroemiaToScriptureHref(p, "vespers", selectedDate);
       elements.push({id:"v-les-"+(i+1),type:"movable",label:"Lesson "+(i+1),rubric:"",
         text:p, source:"Menaion",
-        ...(pHref ? {scriptureHref: pHref} : {}),
         fekula:{section:fekulaSection, note:"After the Entrance and prokeimenon there are three readings appointed in the Menaion. — Fekula " + fekulaSection}});
     });
   }
@@ -7482,6 +7505,41 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
             Read in Scripture ↗
           </a>
         )}
+        {/* Combined "Read in Scripture" for all of a Vespers's OT lessons at
+            once — not gated on isMovable since this sits on the "Old
+            Testament Lessons" header (a fixed element), not on each Lesson.
+            Stashes the readings array and does a full navigation (matching
+            every other scripture link in this app, which are plain hrefs,
+            not client-routed) rather than linking to each lesson separately. */}
+        {element.scriptureReadings && element.scriptureReadings.length > 0 && (
+          <button
+            type="button"
+            onClick={() => {
+              try {
+                sessionStorage.setItem("oht_scripture_readings", JSON.stringify(element.scriptureReadings));
+              } catch (e) { /* no-op — viewer falls back to browse */ }
+              const base = import.meta.env.BASE_URL || "/";
+              window.location.href = base + "scripture?from=tool&readings=vespers-lessons";
+            }}
+            style={{
+              fontSize: "0.68rem",
+              color: "#8B6914",
+              textDecoration: "none",
+              border: "1px solid rgba(139,105,20,0.35)",
+              borderRadius: "3px",
+              padding: "1px 7px",
+              background: "rgba(139,105,20,0.07)",
+              fontFamily: "Georgia, serif",
+              letterSpacing: "0.04em",
+              whiteSpace: "nowrap",
+              cursor: "pointer",
+              WebkitAppearance: "none",
+              appearance: "none",
+            }}
+          >
+            Read in Scripture ↗
+          </button>
+        )}
         {/* Phase 3: element-level source link — quiet study aid, jumps to the
             proper's place in the Menaion/Octoechos/Pentecostarion viewer.
             Subordinate to the boxed Read-in links (borderless). Same-tab in-app
@@ -8283,6 +8341,38 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.27.0",
+    date: "July 2026",
+    summary: "Combined 'Read in Scripture' for Vespers OT Lessons — new feature",
+    items: [
+      "Vespers's 3 OT lessons (paroemias) previously each linked out independently — " +
+      "read one, go back, click the next, go back again. One combined 'Read in " +
+      "Scripture ↗' link now opens all 3 lessons rendered together on one page.",
+      "Reuses the mechanism already built for the Library's 'Today's Readings' book " +
+      "(Epistle/Gospel): stash a { label, kind, ref } array to sessionStorage as " +
+      "oht_scripture_readings, then /scripture?from=tool&readings=... reads it once " +
+      "and renders every group through the existing, reference-agnostic " +
+      "TodayReadingsView/ReadingView path. No new renderer needed.",
+      "New paroemiaToRef() extracted from paroemiaToScriptureHref() — same " +
+      "extraction regex, returns the clean ref string instead of an href. New " +
+      "paroemiaReadingGroups() builds the combined array (labels I./II./III.) from " +
+      "a paroemias array, filtering out any that don't resolve to a parseable ref.",
+      "assembleVespers(): the 'Old Testament Lessons' header element now carries a " +
+      "single scriptureReadings array instead of each Lesson N element carrying its " +
+      "own scriptureHref. ServiceBlock renders the combined badge on scriptureReadings " +
+      "directly (not gated on isMovable, since the header is a fixed element).",
+      "scripture.jsx: the readings-landing gate and heading were hardcoded to " +
+      "readings=today / 'Today's Readings'. Broadened to a small lookup " +
+      "(READINGS_LANDING_HEADINGS) keyed by the readings param value — 'today' → " +
+      "\"Today's Readings\", 'vespers-lessons' → \"Old Testament Lessons\" — so the " +
+      "heading is accurate for each handoff rather than reused verbatim.",
+      "Context card's Vespers-lessons preview gets the same consolidation: the " +
+      "three individually-linked paroemia lines are now plain text with one combined " +
+      "link below, matching the assembled-service reading experience.",
+      "Gate: 71/71 pointing-paths + sunday-vespers, vite build clean.",
+    ],
+  },
   {
     version: "v0.26.2",
     date: "July 2026",
@@ -13026,18 +13116,40 @@ export default function App() {
             />
             {cParoem && (
               <span style={{ color: "#5C4A1E", display: "block", marginTop: "0.15rem" }}>
-                {cParoem.map((p, i) => {
-                  const href = paroemiaToScriptureHref(p, currentService.key, cSelDate);
+                {cParoem.map((p, i) => (
+                  <span key={i}>
+                    <em>{["I.", "II.", "III."][i]}</em>{" "}
+                    {p}
+                    {i < cParoem.length - 1 && <br />}
+                  </span>
+                ))}
+                {(() => {
+                  const groups = paroemiaReadingGroups(cParoem);
+                  if (!groups) return null;
                   return (
-                    <span key={i}>
-                      <em>{["I.", "II.", "III."][i]}</em>{" "}
-                      {href
-                        ? <a href={href} style={{ color: "#8B6914" }}>{p}</a>
-                        : p}
-                      {i < cParoem.length - 1 && <br />}
-                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        try {
+                          sessionStorage.setItem("oht_scripture_readings", JSON.stringify(groups));
+                        } catch (e) { /* no-op — viewer falls back to browse */ }
+                        const base = import.meta.env.BASE_URL || "/";
+                        window.location.href = base + "scripture?from=tool&readings=vespers-lessons";
+                      }}
+                      style={{
+                        display: "inline-block", marginTop: "0.4rem",
+                        fontSize: "0.68rem", color: "#8B6914", textDecoration: "none",
+                        border: "1px solid rgba(139,105,20,0.35)", borderRadius: "3px",
+                        padding: "1px 7px", background: "rgba(139,105,20,0.07)",
+                        fontFamily: "Georgia, serif", letterSpacing: "0.04em",
+                        whiteSpace: "nowrap", cursor: "pointer",
+                        WebkitAppearance: "none", appearance: "none",
+                      }}
+                    >
+                      Read in Scripture ↗
+                    </button>
                   );
-                })}
+                })()}
               </span>
             )}
           </div>

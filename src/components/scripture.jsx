@@ -469,13 +469,24 @@ function ReadingView({ spans, allBookData, autoScroll = true }) {
   );
 }
 
-// ─── TODAY'S READINGS LANDING ─────────────────────────────────────────────────
-// Composed when the Library hands off the day's readings (sessionStorage
-// oht_scripture_readings). Each group carries a semantic label (Epistle / Gospel
-// / Epistle · Saint) and its parsed spans; spans render through the SAME
-// ReadingView split-gospel path used by ?ref= reading mode (no forked renderer).
-// Grouped Epistle-then-Gospel, day reading before commemoration, per the handoff
-// order. Native nav stays available (the book selector above remains live).
+// ─── COMBINED READINGS LANDING ────────────────────────────────────────────────
+// Composed when the Hours tool hands off a group of readings (sessionStorage
+// oht_scripture_readings) — either the day's Epistle/Gospel (Library's "Today's
+// Readings" book) or a Vespers's OT lessons (paroemias, from the "Read in
+// Scripture" combined link). Each group carries a semantic label and its
+// parsed spans; spans render through the SAME ReadingView split-gospel path
+// used by ?ref= reading mode (no forked renderer). Order follows the handoff
+// order (day reading before commemoration for Epistle/Gospel; I/II/III for
+// paroemias). Native nav stays available (the book selector above remains
+// live). heading is resolved from the `readings` URL param (READINGS_LANDING_HEADINGS)
+// so each handoff gets an accurate label rather than a reused one.
+// Heading text for the combined-readings landing, keyed by the `readings` URL
+// param value. Add an entry here for any future combined-reading handoff.
+const READINGS_LANDING_HEADINGS = {
+  "today": "Today's Readings",
+  "vespers-lessons": "Old Testament Lessons",
+};
+
 function GroupHeading({ label }) {
   return (
     <div style={{
@@ -487,7 +498,7 @@ function GroupHeading({ label }) {
   );
 }
 
-function TodayReadingsView({ groups, allBookData }) {
+function TodayReadingsView({ groups, allBookData, heading }) {
   useEffect(() => { window.scrollTo(0, 0); }, []);
   if (!groups || groups.length === 0) return null;
   return (
@@ -496,7 +507,7 @@ function TodayReadingsView({ groups, allBookData }) {
         fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase",
         color: C.gold, fontWeight: "bold", marginBottom: "0.25rem",
       }}>
-        Today's Readings
+        {heading || "Today's Readings"}
       </div>
       {groups.map((g, i) => (
         <div key={i}>
@@ -726,14 +737,17 @@ export default function Scripture() {
   const [allBookData, setAllBookData] = useState({});
   const isReadingMode = !!(initState.refParam && parseRefString(initState.refParam));
 
-  // Library → Scripture handoff: the day's readings, stashed in sessionStorage
-  // and consumed ONCE here (mirrors the Tone Trainer's oht_handoff). Read in a
-  // useState initializer so it runs a single time and never re-reads on render.
-  // Each item becomes { label, kind, spans } via the existing parseRefString.
+  // Hours tool → Scripture handoff: a group of readings, stashed in
+  // sessionStorage and consumed ONCE here (mirrors the Tone Trainer's
+  // oht_handoff). Read in a useState initializer so it runs a single time and
+  // never re-reads on render. Each item becomes { label, kind, spans } via the
+  // existing parseRefString. `readings` selects both the gate and the landing
+  // heading (READINGS_LANDING_HEADINGS) — "today" for the Library's Epistle/
+  // Gospel book, "vespers-lessons" for a Vespers's combined OT lessons link.
   const [readingGroups] = useState(() => {
     try {
       const p = getParams();
-      if (p.get("from") !== "tool" || p.get("readings") !== "today") return null;
+      if (p.get("from") !== "tool" || !READINGS_LANDING_HEADINGS[p.get("readings")]) return null;
       const raw = sessionStorage.getItem("oht_scripture_readings");
       if (!raw) return null;
       sessionStorage.removeItem("oht_scripture_readings");
@@ -745,6 +759,7 @@ export default function Scripture() {
     } catch { return null; }
   });
   const isTodayReadings = !!(readingGroups && readingGroups.length > 0);
+  const readingsHeading = READINGS_LANDING_HEADINGS[getParams().get("readings")] || "Today's Readings";
 
 
   // ── Load manifest + pericopes on mount ───────────────────────────────────
@@ -948,7 +963,7 @@ export default function Scripture() {
         {/* Today's Readings landing (Library handoff) — composed via ReadingView.
             Hidden once the reader navigates to a book (native nav stays live). */}
         {isTodayReadings && !selectedBookId && !loading && (
-          <TodayReadingsView groups={readingGroups} allBookData={allBookData} />
+          <TodayReadingsView groups={readingGroups} allBookData={allBookData} heading={readingsHeading} />
         )}
 
         {/* Browse mode */}
