@@ -1286,6 +1286,28 @@ all three consumers onto the single `deriveBassRolesWD()` function.
 - Comparing the actual rendered tool output against Bill's printed LIC
   score, phrase by phrase — the explicit next step, not yet done.
 
+## 7. Soprano Harmony
+
+Much simpler than bass, and confirmed in one exchange: soprano uses a single
+global `SOPRANO_MAP` (a fixed diatonic third above alto) shared across every
+tone in this set, rather than a per-tone rule table like `BASS_RULES`/
+`TENOR_RULES`. Bill confirmed three pairs directly (`ti→re`, `do→mi`,
+`re→fa`), all matching the existing map exactly. The remaining pitches
+Tone 4's alto uses (`mi→sol`, needed for Phrase C's intonation accent and
+Phrase E's peak; `la→do`, needed for the Final Phrase's cadence close)
+weren't individually re-named in that exchange — logged here as covered by
+Bill's general characterization ("a clone of alto up two, follows all
+holds/melismas") and by the map's existing Tone 1/2 verification, not
+overstated as separately confirmed per-pitch.
+
+Because `lineToNotes_soprano()` transposes alto's already-fully-computed
+`rolesWD` directly through this map, soprano automatically inherits every
+hold, melisma, and duration alto has — no separate soprano-specific
+derivation or hold-collapse logic needed, unlike bass and tenor. Tone 4
+added to `SOPRANO_TONES`; no new `SOPRANO_MAP` entries required.
+
+**Not yet done:** `TENOR_RULES[4]` — the last remaining voice.
+
 ---
 
 *Document in progress — compiled from a live working session. Sections will
