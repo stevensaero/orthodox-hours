@@ -1315,3 +1315,54 @@ harmony-voice pitch work, Tone 3 is complete: correct solfège mapping for
 every voice, correct printed notation for every voice, all dedicated,
 nothing shared with Tones 1, 2, or 4.**
 
+---
+
+## 21. Soprano notation — closed, same bug as alto, same direction
+
+*Closes the last voice. Bill: soprano rendering too high "by the same
+factor as the original incorrect alto rendering" — a fourth, same direction
+as §19's original alto bug, not §20's bass/tenor (which were too low).*
+
+### 21.1 Derivation, not independent score confirmation
+
+Unlike alto/bass/tenor, this table was **derived**, not read directly off
+the score. Soprano is a confirmed constant diatonic third above alto
+(§18.4), so alto's own already-confirmed table (`do=C/4, re=D/4, mi=E/4,
+fa=F/4`) shifts up a third through `SOPRANO_MAP`'s alto→soprano solfège
+renaming (`do→mi, re→fa, mi→sol, fa→la`):
+
+| Alto (confirmed) | Soprano solfège | Soprano notation |
+|---|---|---|
+| do = C4 | mi | **E4** |
+| re = D4 | fa | **F4** |
+| mi = E4 | sol | **G4** |
+| fa = F4 | la | **A4** |
+
+All four are a plain third, no octave change, no accidentals. Cross-check:
+each value sits exactly a fourth below where the shared `SOPRANO_ANCHOR_OCT`
+table currently renders it, the same magnitude and direction as the
+original alto bug, matching Bill's description precisely.
+
+**Flagged, not treated as equal-confidence to the directly-read values.**
+Recommend a live check against the actual printed page before this is fully
+trusted the same way alto/bass/tenor's hand-confirmed points are.
+
+### 21.2 Fix
+
+`TONE3_SOPRANO_PITCH = { mi:"E/4", fa:"F/4", sol:"G/4", la:"A/4" }` in
+`score-print.html`, same dedicated non-transposing pattern as the other
+three voices. `renderScore()` picks it via `payload.tone === 3`; every
+other tone keeps the shared `buildSopranoPitch(cfg)` untouched.
+
+### 21.3 Verification
+
+`node --check` confirms syntax validity. `npm run gate` — 71/71 Hours Tool
+checks, 24/24 pointing-role checks, neither exercises `score-print.html`.
+`vite build` clean. **Recommend live verification against the deployed
+tool's printed score.**
+
+**Status: all four Tone 3 voices' printed notation (alto §19, bass/tenor
+§20, soprano this section) closed, shipped as v0.25.54. Tone 3 is complete:
+correct solfège for every voice, correct printed notation for every voice,
+all dedicated, nothing shared with Tones 1, 2, or 4.**
+
