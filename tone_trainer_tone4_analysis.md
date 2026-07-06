@@ -17,20 +17,27 @@ Voice being mapped: **ALTO** (melody), consistent with Tones 1–3.
 
 ## Status at time of writing
 
+**Alto pointing, all 7 phrases, and all four SATB voices are complete,
+implemented, gate-tested, and shipped (through v0.25.43).** This table is
+updated from its original "research in progress" state to reflect that.
+
 | Phrase | Status |
 |---|---|
 | Rotation | ✅ Confirmed (verbatim tutorial quote, verified against the tutorial's own 9-line worked example) |
-| A | ✅ Tutorial-analysis level complete — 5 worked examples |
-| B | ✅ Tutorial-analysis level complete — 5 worked examples |
-| C | ✅ Structure fully resolved after two corrections during live research (8 examples, recategorized by which structural portion each snippet shows); fill-pitch and no-intonation "anomalies" both dissolved as misreadings, not genuine open items |
-| D | ✅ Structure and fill/duration patterns confirmed (6 examples); 2-syllable floor unconfirmed but not urgent |
-| E | 🔶 Structure confirmed (6 pitches); 7 worked examples covering full compression range; anchor rule differs from B/D (tracks multiple stress points, not single last-accent) |
-| F | 🔶 In progress — intonation rule and no-intonation variant both confirmed with real examples; open question on when each fires |
-| Final | 🔶 Core structure confirmed; 7 worked examples; anchor rule, close=W, fill duration, and the anchor+fill slur compression pattern all confirmed with repeat examples |
-| Bass Harmony | 🔶 Research phase (§6) — full pitch-mapping chart confirmed for all 7 phrases via direct interview; hold-behavior principle found and confirmed for Phrase E, still open for Final Phrase; no code implementation yet |
+| A | ✅ Complete — implemented, gate-tested |
+| B | ✅ Complete — implemented, gate-tested |
+| C | ✅ Complete — implemented, gate-tested. Two real bugs caught and fixed by testing before shipping (§3): a false 1-syllable cadence on short snippets with no further bracket, and a false 2-syllable intonation tail swallowing a real reciting syllable |
+| D | ✅ Complete — implemented, gate-tested |
+| E | ✅ Complete — implemented, gate-tested. Bracket-driven melisma segmentation (1/2-bracket cases) |
+| F | ✅ Complete — implemented, gate-tested. No-intonation only (confirmed 5/5 real examples) |
+| Final | ✅ Complete — implemented, gate-tested. One real bug caught and fixed AFTER initial shipping (§3), not before: the compressed prep-melisma ("[Hear] [me], O Lord!") was silently dropping notes when body.length<3 — caught by Bill against the live tool's actual rendering |
+| Bass Harmony | ✅ Complete (§6) — `BASS_RULES[4]`, all 7 phrases, implemented and shipped. Phrase E required positional (not pitch-keyed) mapping. Hold-behavior mechanism (`deriveBassRolesWD`/`BASS_HOLD_TONES`) confirmed directly, not inherited |
+| Soprano Harmony | ✅ Complete (§7) — added to `SOPRANO_TONES`, confirmed as a pure diatonic third, no new `SOPRANO_MAP` entries needed |
+| Tenor Harmony | ✅ Complete (§8) — `TENOR_RULES[4]`, all 7 phrases. Constant `sol` drone through every phrase but the Final Phrase's cadence. One real bug (wrong-octave `si`, audible not just visual) caught and fixed after initial shipping |
 
 **No audio or OCA docx corpus work has been done yet this session.** Everything
 below comes from the tutorial text and Bill's direct sight-reading of the score
+
 alongside it, in real time, worked example by worked example. This is an
 important departure from the Tones 1–3 method, and is addressed directly in
 §1.3 below.
@@ -1408,5 +1415,95 @@ Soprano combinations.
 
 ---
 
-*Document in progress — compiled from a live working session. Sections will
-be added as Phrases C–F and the Final Phrase are worked through with Bill.*
+## 9. Session Log — Everything Else From This Session (July 2026)
+
+Beyond the alto/bass/soprano/tenor research and implementation above, this
+same session also produced a run of real bugs found and fixed, each caught
+by direct testing or by Bill checking the actual live tool against a real
+score, not by inspection alone. Logged here for a complete record, even
+where the fix touched shared infrastructure or another tone's data rather
+than Tone 4's own phrase logic specifically.
+
+**Score-print rendering (`public/score-print.html`):**
+- The renderer assumed bass and alto always had the same number of entries
+  (true for Tones 1/2, where bass never collapses) and sliced/positioned
+  bass notes by that assumption. The moment bass could collapse (Tone 4),
+  every bass note after a collapsed span landed under the wrong syllable.
+  Fixed using the same `spanStart`-based column lookup tenor's own
+  pre-existing collapse already used (`v0.25.35`).
+- A follow-on fix for the same area over-corrected: it skipped slur-drawing
+  for an *entire line* whenever *any* note in it had collapsed, which
+  wrongly suppressed the slur on a genuinely uncollapsed melisma ("on" in
+  "when I call upon Thee!") whenever another note in the same line *had*
+  collapsed ("call"). Fixed by grouping slurs from bass's own per-entry
+  `melisma`/`text` continuity instead of a line-wide flag (`v0.25.41`).
+- `legalSeams()` (system-break/line-wrap packing) only protected tenor's
+  held spans from being split across a page wrap, not bass's, once bass
+  could hold too. Extended to cover both voices (`v0.25.35`).
+
+**Version badge:** a separate constant, `TONE_TRAINER_VERSION`, drives the
+actual rendered badge and cache-busting queries — it is NOT read from
+`TRAINER_RELEASE_NOTES[0].version` despite a comment claiming exactly that.
+Every bump from `v0.25.31` through `v0.25.35` updated only the release-notes
+array, leaving the real displayed version frozen 5 versions stale. Fixed,
+and the stale comment corrected (`v0.25.36`).
+
+**Play All silent failure + voice gating:** Tenor was already greyed out
+for unsupported tones, but Soprano and SATB never had the same gate.
+Selecting either on Tone 4 called into a function that correctly returns
+`null`, but `playAll()`'s soprano block called `.forEach()` on that `null`
+without checking first — an uncaught exception silently killed playback
+mid-schedule-build. Added a proper `BASS_TONES` set (mirroring
+`TENOR_TONES`/`SOPRANO_TONES`, since Bass/Alto+Bass/SATB had no gating
+either) and fixed the same missing null-check pattern found in both
+playback functions, for both bass and tenor (`v0.25.37`).
+
+**Play All scroll-to-bottom bug:** the per-line chip-highlight marker
+always used alto's own timeline variable, which only advances inside the
+`playAlto` code path — frozen for the entire playback whenever alto isn't
+one of the selected voices (e.g. bass-only). Every line's marker collapsed
+to the same timestamp, firing in a rapid burst at play-start and cycling
+through every line almost instantly before the correctly-timed voice-
+specific schedule caught up and corrected it. Reproducible every time on
+bass-only playback; fixed by picking whichever voice's timeline is
+actually active (`v0.25.38`).
+
+**Tenor `si` wrong octave (audible bug, not just visual):** two separate
+default octave tables for tenor disagreed on `si`'s register — one drives
+audio and chip height, the other drives the score-print payload only.
+Tone 1's identical case already had an explicit per-phrase override
+forcing them into agreement; Tone 4's didn't. Computed directly: at the
+wrong default, tenor's `si` came out *below* bass's `mi` at the same
+position — the opposite of where it needs to sit. Caught by Bill against
+the chip display, not by listening first; the actual audio pitch was
+wrong too, not merely its visual height (`v0.25.42`). While in the same
+area, also fixed `buildUnifiedVoiceMap()`'s phrase list, hardcoded to
+`["A","B","C","D","Final"]` and missing `E`/`F` entirely — a real gap
+that predated any tone with more than 5 phrases.
+
+**"Try example" presets — all four tones:** Tone 4 had no example button
+at all (Tones 1–3 already did). Added `PRESET_T4` using a 6-line LIC text
+Bill provided directly, then Bill provided matching LIC text (with
+tone-specific director-pointing brackets) to replace the older, unrelated
+example texts for Tones 1–3 as well, for consistency across all four.
+Verified the phrase-per-line rotation for each tone directly from
+`ROT_DEFS` rather than assumed (Tone 1: A,B,C,D,A,Final; Tone 2: A,B,C,D,
+B,Final — A only once; Tone 3: A,B,A,B,A,Final). Two real bugs caught by
+testing the text round-trip before shipping, not after: a temporal-dead-
+zone ordering bug (`PRESETS` referencing `PRESET_T4` before its own
+declaration), and a bracket-placement bug (trailing punctuation getting
+swept inside a bracket, e.g. `[Lord,]` instead of the intended `[Lord],`)
+that an already-established convention elsewhere in the file (documented
+for `"songs!"`) simply hadn't been applied to consistently. Tone 1's
+Phrase D preset line also exercises this tone's own two-accent
+architecture directly (`Re[ceive]` + `[voice]`) — verified via `pointLine()`
+to produce the confirmed `ti·do·re·do·do·ti` count=6 shape before shipping,
+not assumed safe from the bracket pattern alone (`v0.25.43`).
+
+---
+
+*Compiled from a live working session (July 2026). Alto pointing (all 7
+phrases) and all four SATB voices (Alto, Bass, Soprano, Tenor) are
+complete, implemented, and shipped as of this document's last edit —
+see §9 for the full session log of everything else found and fixed
+along the way.*
