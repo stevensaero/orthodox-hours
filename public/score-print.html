@@ -879,17 +879,25 @@ function renderScore(payload) {
         if (hasTen) setVoiceX(tN, tenItems.map(function(it) { return T[it.lcol]; }));
         bassVoice.draw(ctx, bs);
         if (tenVoice) tenVoice.draw(ctx, bs);
-        // Melisma slurs only make sense on an UNCOLLAPSED voice (every alto
-        // note has its own bass note to slur between). A collapsed entry
-        // (spanCount>1) already IS the held note — drawing a slur on top of
-        // it double-represents the same sustain and was the source of the
-        // "extra tie to the same note" artifact. Tenor's own collapsed
-        // voice never draws slurs on itself for the same reason; bass now
-        // matches that, but only skips the slur when this line actually
-        // has a collapsed span (any bassItems entry with spanCount>1) —
-        // Tones 1/2, which never collapse, keep the original slur drawing.
-        var bassHasCollapse = bassItems.some(function(it) { return (it.br.spanCount || 1) > 1; });
-        if (!bassHasCollapse) drawMelismaSlurs(bN, altoSlice, false);
+        // Melisma slurs must be grouped by BASS's own entries, not alto's.
+        // CORRECTED: an earlier version of this fix skipped slur-drawing
+        // for the ENTIRE line whenever ANY bass note in it had collapsed
+        // (e.g. "call" holding as one note) — but that wrongly swept up
+        // OTHER, genuinely uncollapsed melismas in the same line too (e.g.
+        // "on", which never collapses since its two bass pitches differ,
+        // and still needs its slur drawn connecting those two notes,
+        // exactly the way alto's own slur connects two different pitches
+        // on one syllable). Caught directly against the printed score:
+        // "call"'s collapsed note correctly had no slur, but "on" lost its
+        // slur too, when only "call" should have. Fixed by passing bass's
+        // OWN entries (via bassItems, not altoSlice) as the grouping
+        // source — a collapsed entry already carries melisma:false (set
+        // by deriveBassRolesWD), so drawMelismaSlurs naturally skips it on
+        // its own, while genuinely uncollapsed multi-note melismas (same
+        // text, melisma:true, still separate entries) get grouped and
+        // slurred correctly by bass's own text/melisma continuity — no
+        // line-wide flag needed at all.
+        drawMelismaSlurs(bN, bassItems.map(function(it) { return it.br; }), false);
       }
 
       // Lyrics (grand): centered between treble bottom line and bass top line.

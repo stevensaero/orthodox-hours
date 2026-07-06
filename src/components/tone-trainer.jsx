@@ -27,12 +27,21 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.40";
+export const TONE_TRAINER_VERSION = "v0.25.41";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.41",
+    date: "July 2026",
+    summary: "fix: score-print.html bass slur drawing — v0.25.35's fix over-corrected, wrongly suppressing the slur on a genuinely uncollapsed melisma (\"on\") whenever ANY other note in the same line had collapsed (\"call\")",
+    items: [
+      "fix: v0.25.35 fixed a real bug (collapsed bass notes drawing a stray tie) by skipping slur-drawing for the whole line whenever any bass note in it had collapsed — but that check was line-wide, not per-melisma, so it also suppressed the slur on \"on\" (Phrase E, \"when I call upon Thee!\"), which never collapses since its two bass pitches genuinely differ (ti, do) and still needs its slur drawn connecting those two notes, the same way alto's own slur connects two different pitches on one syllable. Caught directly against the printed score: \"call\"'s collapsed note correctly had no slur, but \"on\" lost its slur too, when only \"call\" should have. Fixed by passing bass's OWN entries (not alto's) as the grouping source for drawMelismaSlurs — a collapsed entry already carries melisma:false (set by deriveBassRolesWD), so the function naturally skips it without needing a separate line-wide flag, while genuinely uncollapsed multi-note melismas (same text, still melisma:true, still separate entries) get grouped and slurred correctly by bass's own text/melisma continuity.",
+      "note: verified by manual trace against \"when I call upon Thee!\" before shipping (confirmed the collapsed \"call\" entry starts no slur group, while \"on\"'s two separate entries correctly group and draw a slur between exactly those two notes) — Bill re-checking the printed score directly is still the real verification, same as every other rendering fix this session.",
+    ],
+  },
   {
     version: "v0.25.40",
     date: "July 2026",
