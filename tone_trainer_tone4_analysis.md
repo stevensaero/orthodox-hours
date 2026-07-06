@@ -27,6 +27,7 @@ Voice being mapped: **ALTO** (melody), consistent with Tones 1–3.
 | E | 🔶 Structure confirmed (6 pitches); 7 worked examples covering full compression range; anchor rule differs from B/D (tracks multiple stress points, not single last-accent) |
 | F | 🔶 In progress — intonation rule and no-intonation variant both confirmed with real examples; open question on when each fires |
 | Final | 🔶 Core structure confirmed; 7 worked examples; anchor rule, close=W, fill duration, and the anchor+fill slur compression pattern all confirmed with repeat examples |
+| Bass Harmony | 🔶 Research phase (§6) — full pitch-mapping chart confirmed for all 7 phrases via direct interview; hold-behavior principle found and confirmed for Phrase E, still open for Final Phrase; no code implementation yet |
 
 **No audio or OCA docx corpus work has been done yet this session.** Everything
 below comes from the tutorial text and Bill's direct sight-reading of the score
@@ -899,6 +900,21 @@ this tone), and `la(W)` as the close.
 | 6 | "Glory to Thee, O all-[pow]erful Lord!" | Glory to Thee, (re/Q ×4 — reciting) \| O(do/Q — prep 1) all(ti/Q — prep 2) power(do/H — ANCHOR, director-marked) er(ti/Q — fill 1) ful(ti/Q — fill 2) Lord!"(la/W — close) |
 | 7 | "granting the world life, incorruption and great [mer]cy." | granting the world life, incorruption (re/Q ×9 — reciting) \| and(do/Q — prep 1) great(ti/Q — prep 2) mer(do/H + ti/H — 2-note slur: cadence ANCHOR + fill merged onto one syllable, director-marked) cy(la/W — close) |
 
+**Implementation note, added after code was written:** example 4's
+research-level record was always correct, but the first implementation of
+`PH_DEFS[4]`'s Final Phrase logic (§ code, `pointing.js`) got this specific
+case wrong — its guard only ever peeled the last 2 body syllables into the
+fixed prep pair, and fell back to a lazy single-`ti` case whenever fewer
+than 2 syllables existed before the anchor (as happens here, with only
+"Hear" available before "me"). Bill caught this directly against the live
+tool's actual rendering, not against this document — the tool was showing
+a lone `ti` chip instead of the confirmed `re·do·ti` melisma. Fixed in
+`v0.25.33` using the same melisma-compression principle Phrase E's
+single-bracket case already uses. Recorded here as a reminder that a
+correct research record doesn't guarantee a correct first implementation —
+worth re-checking code against confirmed examples directly, not just
+assuming a faithful port.
+
 Example 7 repeats example 2's ("the Theotokos") exact compression shape —
 one syllable short of the full 6-position figure, with the cadence's own
 anchor and fill merging onto a single syllable via a slur, while the prep
@@ -1053,8 +1069,8 @@ rather than forcing a rule to fit a handful of points.
 
 ## 5. Open items carried forward
 
-- **The "Rejoice" anchor exception** (§3.2, Phrase B) — unresolved by
-  agreement; may clarify with more corpus evidence.
+- **The "Rejoice" anchor exception** (§3.2, Phrase B) — unresolved by agreement; may
+  clarify with more corpus evidence.
 - **H vs H· at cadence close** — no rule found across any phrase (A, B, C,
   D, E all show both); needs either more examples or audio confirmation.
   Tracked per-phrase in each section rather than restated here.
@@ -1084,6 +1100,119 @@ rather than forcing a rule to fit a handful of points.
   this document's own history of informal early reads needing correction
   (Phrase C twice, Phrase E's pitch count once), this should be treated as
   a hypothesis to check, not a finding to build on.
+
+---
+
+## 6. Bass Harmony (BASS_RULES[4])
+
+**Method:** conducted as a direct interview, phrase by phrase, mirroring
+exactly how the Tone 2 tenor voice was built (see that session's precedent:
+prime directive applies to harmony voices just as much as to alto phrase
+logic — no cross-tone assumption, and "hold" behavior specifically requires
+its own independent verification per tone, never inherited just because a
+tone has a `BASS_RULES` entry at all). Bill read every value directly off
+the score (short tutorial snippets for the initial pass; the full LIC Tone 4
+score for the hold-behavior questions specifically, since the tutorial only
+gives snippets).
+
+**Confirmed chart, all seven phrases:**
+
+| Phrase | prepMap (→ inton) | inton | recite | prepMap (→ cad) / cadMap | preslurMap | hold |
+|---|---|---|---|---|---|---|
+| A | — | — | sol | do:do | — | n/a (no melisma in this phrase) |
+| B | — | — | sol | re:sol, do:do | — | n/a |
+| C | do:do, re:do | mi:do, re:ti | do | re:sol, do:do | — | n/a |
+| D | — | — | do | ti:sol, do:sol, re:sol | — | n/a |
+| E | — | — | sol | *positional* `do·do·do·ti·do·sol` under alto `do·re·mi·re·do·ti` | — | confirmed — see below |
+| F | — | — | do | re:sol, do:do | — | n/a |
+| Final | — | — | sol | **prep** `do:sol, ti:sol` → **cad** `do:do, ti:mi, la:la` | — | open (Theotokos case not yet checked) |
+
+**Key structural findings:**
+
+- **Phrase C's intonation needed splitting into two sub-mappings, not one.**
+  Alto `re` appears twice in Phrase C (once as the immediate prep before the
+  `mi` accent, once as the intonation's closing note after it), and bass
+  gives it two *different* pitches (`do` before, `ti` after). A flat
+  pitch-keyed map can't express this — confirmed the same "position matters,
+  not just which alto pitch is sounding" lesson the alto research already
+  learned the hard way.
+- **Phrase E's cadence is positional, not pitch-keyed, for the same reason,
+  more severely.** Alto `re` appears twice in the six-pitch figure (rising
+  to the peak, then descending from it) and bass gives each occurrence a
+  different pitch (`do` then `ti`). `cadMap` (a flat alto-pitch→bass-pitch
+  lookup) cannot represent this at all; Phrase E's bass, like its alto,
+  needs a positional sequence keyed to figure-position, not alto pitch
+  identity.
+- **Bass converges to unison with alto at both ends of the Final Phrase's
+  cadence** (`do` at the anchor, `la` at the close), diverging only at the
+  middle (`ti`→`mi`). Logged as an observation, not assumed to generalize.
+- **The Phrase B/F cadence bass mapping is identical** (`re:sol, do:do`)
+  despite the two phrases reciting on different pitches (`sol` vs `do`) —
+  suggesting the cadence bass may be tied to the cadence figure itself
+  rather than to the reciting pitch, though this is inference from two
+  data points, not independently confirmed.
+
+**Hold behavior — a real, confirmed principle, not a per-tone toggle:**
+
+Tone 2's tenor session treated "hold" (whether a voice sustains one note
+through an alto melisma rather than re-articulating) as needing its own
+independent per-tone gate, since Tone 1's hold behavior could not be assumed
+for Tone 2. Checking this directly against the Phrase E LIC score example
+"when I [call] up[on] Thee!" produced a cleaner answer than expected:
+
+> Under "call" (alto slur `do(H)·re(Q)`, positions 0–1 of the six-pitch
+> figure): bass is `do` at **both** positions — confirmed as a single
+> sustained dotted half, not two separate attacks.
+>
+> Under "on" (alto slur `re(Q)·do(Q)`, positions 3–4): bass moves
+> `ti→do` — two genuinely different pitches, confirmed to re-articulate
+> (slur with bass's own two notes), not hold.
+
+**This suggests hold isn't an independent rule requiring its own gate at
+all — it may simply be what happens automatically when two adjacent
+positions in bass's own line happen to share a pitch.** Same bass pitch at
+both positions → naturally sustained. Different bass pitch → bass has no
+choice but to move. This would be a more elegant finding than Tenor's
+(where hold was a genuine separate per-tone behavioral question), but it
+rests on exactly one confirmed phrase (E) so far — **not yet checked
+against the Final Phrase's own "Theotokos" 2-note slur**, which would be
+the test of whether this is a real general principle or specific to
+Phrase E. Left open, not assumed either way.
+
+**Duration — bass appears to mirror alto's rhythmic value position-by-
+position.** Confirmed directly: alto's "Thee!" closing the LIC clause "when
+I call upon Thee!" is a whole note (`W`), and Bill flagged that the tool's
+own duration engine was giving `H` there — checking, this was **not** a
+bass-specific bug; it's the same open, tone-wide "H vs H·  vs W at cadence
+close" question already logged throughout this document for every phrase's
+alto line (§4.2 and per-phrase notes), inherited by bass simply because
+bass's duration engine defaults every phrase's close the same conservative
+way Tone 1's own Phrase B/C code already does ("close: H default, W by
+rhythmic engine TBD"). Checked directly whether punctuation predicts it,
+since "Thee!" ends in an exclamation mark: it does not — "Lord, I call upon
+Thee, hear me!" (Phrase A) also ends in "!" and closes on plain `H`, while
+"Hear me, O Lord!" (Phrase B, the very next clause of the same LIC framing)
+also ends in "!" and closes on `W`. Same punctuation, opposite outcomes.
+Whatever actually determines this (genuine liturgical/textual completion,
+apparently, based on which clause is the true end of a larger unit) isn't
+derivable from the bare text alone — logged as still open, not a new
+problem specific to bass, per Bill's direction to note it and move on
+rather than force a resolution now.
+
+**Confirmed so far this session:** the full pitch-mapping chart above for
+all seven phrases; the Phrase C and Phrase E positional-mapping findings;
+the hold-behavior hypothesis (one confirmed phrase, Phrase E).
+
+**Still open:**
+- Hold behavior for the Final Phrase's "Theotokos" 2-note slur — needed to
+  confirm whether the same-pitch/different-pitch hold principle found in
+  Phrase E is a real general rule or specific to that phrase.
+- The H-vs-H·-vs-W close-duration question, tone-wide, unresolved (as
+  above) — affects bass identically to alto since bass's duration engine
+  is designed to mirror alto's rhythmic value.
+- No implementation (`BASS_RULES[4]` in code) has been written yet — this
+  section is research only, matching how the alto phrase work was fully
+  researched before any `PH_DEFS[4]` code was touched.
 
 ---
 
