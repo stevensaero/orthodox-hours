@@ -27,12 +27,22 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.36";
+export const TONE_TRAINER_VERSION = "v0.25.37";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.37",
+    date: "July 2026",
+    summary: "fix: Play All failed silently on Soprano/SATB for tones without full support — missing UI gating + missing null-checks, both now fixed (Soprano/Tenor/Bass all consistently gated)",
+    items: [
+      "fix: the voice-part selector greyed out Tenor for unsupported tones (TENOR_TONES) but never did the same for Soprano or SATB — selecting either on Tone 4 (no SOPRANO_MAP yet) called lineToNotes_soprano(), which correctly returns null, but playAll()'s soprano block called sopranoNotes.forEach(...) without checking for null first (unlike the tenor block right next to it, which already had the check). The resulting uncaught TypeError silently aborted playAll() mid-schedule-build with no visible error — exactly the \"fails silently on SATB/Soprano\" behavior reported. Added the missing null-check and greyed out Soprano/SATB in the selector using the existing SOPRANO_TONES/TENOR_TONES sets, so this combination can no longer be selected in the first place.",
+      "feat: added BASS_TONES (mirroring TENOR_TONES/SOPRANO_TONES), since Bass/Alto+Bass/SATB had no gating at all — selecting Bass on a tone without BASS_RULES (e.g. Tone 3) would hit the identical unguarded crash. Found and fixed the same missing null-check in playNotesWithBass() (the single-line preview player) for both bass and tenor — playAll() already had bass's check but not this second player function; tenor was missing it in both places until now.",
+      "note: a separate, newly-reported bug — the trainer scrolling to the bottom phrase then correcting itself when playing bass-only — is still open. Not yet root-caused; happens across tones, so not obviously tied to this session's bass-collapse work specifically, but not ruled out either. Needs more detail before attempting a fix rather than guessing at already-heavily-modified playback code.",
+    ],
+  },
   {
     version: "v0.25.36",
     date: "July 2026",
@@ -1487,6 +1497,15 @@ const TENOR_HOLD_TONES = new Set([1, 2]);
 // Tone-2-only in practice; Tone 1's alto never uses di. A future tone needing di to map
 // elsewhere is exactly the deviation case above — give it its own rules, not a remap.)
 const SOPRANO_TONES = new Set([1, 2]);
+
+// Tones with score-verified bass rules. Bass is suppressed for all other
+// tones. Mirrors TENOR_TONES/SOPRANO_TONES — added here after this exact
+// class of bug (an unavailable voice-part silently crashing playback
+// instead of being greyed out) was caught for Soprano/SATB on Tone 4 and
+// traced back to a missing gate. Tone 1: partial (Phrase A verified, B/C/D/
+// Final pending — see BASS_RULES[1] comments). Tone 2: LIC score, all 5
+// phrases. Tone 4: direct interview, all 7 phrases (July 2026 session).
+const BASS_TONES = new Set([1, 2, 4]);
 
 const chipH_soprano = (altoPitch) => {
   const mapped = SOPRANO_MAP[altoPitch] ?? altoPitch;
@@ -3677,7 +3696,7 @@ export default function ToneTrainer() {
       pushAltoHighlight(altoNotes, startT);
       altoNotes.forEach((n) => { toneTimbre(freq(n.sol), t, n.dur, n.peak, timbre); t += n.dur; });
     }
-    if (playBass) {
+    if (playBass && bassNotes) {
       pushBassHighlight(bassNotes, startT);
       bassNotes.forEach((n) => { toneTimbre(freq_bass(n.sol, n.phraseRules), tb, n.dur, n.peak * 1.1, timbre); tb += n.dur; });
     }
@@ -3685,7 +3704,7 @@ export default function ToneTrainer() {
       pushAltoHighlight(sopranoNotes, startT); // soprano uses alto chip row
       sopranoNotes.forEach((n) => { toneTimbre(freq_soprano(n.sol), ts, n.dur, n.peak, timbre); ts += n.dur; });
     }
-    if (playTenor) {
+    if (playTenor && tenorNotes) {
       let ht = tt;
       tenorNotes.forEach((n, ni) => {
         const capturedNi = ni; const capturedLi = li;
@@ -4170,7 +4189,7 @@ export default function ToneTrainer() {
         tb += H / 2;
       }
 
-      if (playSoprano) {
+      if (playSoprano && sopranoNotes) {
         let ht = ts;
         sopranoNotes.forEach((n, ni) => {
           const capturedNi = ni; const capturedLi = li;
@@ -5493,13 +5512,13 @@ export default function ToneTrainer() {
             <PopoverSelect
               value={voicePart} onChange={setVoicePart} ariaLabel="Voice part" fullWidth={isNarrow}
               options={[
-                { value: "soprano",   label: "Soprano" },
+                { value: "soprano",   label: "Soprano", disabled: !SOPRANO_TONES.has(activeTone) },
                 { value: "alto",      label: "Alto (Melody)" },
                 { value: "tenor",     label: "Tenor", disabled: !TENOR_TONES.has(activeTone) },
-                { value: "bass",      label: "Bass" },
+                { value: "bass",      label: "Bass", disabled: !BASS_TONES.has(activeTone) },
                 { divider: true },
-                { value: "alto-bass", label: "Alto + Bass" },
-                { value: "satb",      label: "SATB" },
+                { value: "alto-bass", label: "Alto + Bass", disabled: !BASS_TONES.has(activeTone) },
+                { value: "satb",      label: "SATB", disabled: !SOPRANO_TONES.has(activeTone) || !TENOR_TONES.has(activeTone) || !BASS_TONES.has(activeTone) },
               ]} />
           </div>
         )}
