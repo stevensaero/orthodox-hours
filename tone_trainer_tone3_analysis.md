@@ -19,6 +19,26 @@ corpus study, and the audio analysis — so that:
 
 ---
 
+## READ THIS FIRST if you are starting a new tone build or debugging Tones 1/2/4
+
+**§27 is the consolidated summary.** It's short, it's at the end of this
+document, and it exists specifically so a future session doesn't have to read
+sections 1–26 to find what's actually transferable. Everything below §27 is
+Tone 3's own detailed research trail — read it if you need the reasoning
+behind a specific finding, but §27 alone tells you:
+
+- Which two bugs fixed during Tone 3's build were genuinely shared-code bugs,
+  already fixing Tones 1/2/4 retroactively, no extra work needed there.
+- The frequency/notation build order that would have caught Tone 3's worst
+  bug (bass rendering above tenor) on day one instead of after the fact —
+  use this order for Tones 5–8 from the start.
+- One assumption (`do` = the notated key's tonic) that turned out false for
+  Tone 3 and has never actually been independently checked for Tones 1/2/4 —
+  it's probably fine there, but "probably fine" is exactly the kind of
+  assumption this whole document exists to stop making.
+
+---
+
 ## 1. Source materials processed
 
 ### 1.1 Tutorial PDF
@@ -1729,4 +1749,95 @@ underlying gap (a collapsed note's `melisma:false` correctly excluding it
 from further internal collapsing, but incorrectly also excluding it from
 group membership) in both places it appeared, the printed score and the
 chip UI.**
+
+---
+
+## 27. Cross-tone findings — what Tones 1/2/4 (and future 5–8) should take from this session
+
+*Consolidated summary. Written for a future session that has not read
+§1–26 and needs to know, quickly, what from Tone 3's build is actually
+relevant to a different tone. Pointed to from the top of this document.*
+
+### 27.1 Two bugs fixed here are shared-code bugs — already fixing Tones 1/2/4, no extra work needed
+
+Both live in genuinely shared functions, not Tone 3-specific code, and the
+fix was not tone-gated:
+
+- **`drawMelismaSlurs()`** (`score-print.html`, §24) — a collapsed note's
+  correct `melisma:false` flag was also excluding it from slur-*group*
+  membership, not just from further self-collapsing. Any tone with a
+  collapsed melisma sitting next to another note or another collapsed
+  group under the same syllable was affected. Tone 4 already has collapsed
+  melismas (Phrase E's "call", the Final Phrase's "Hear"); this fix applies
+  to Tone 4's existing rendering automatically. Worth a look at Tone 4's
+  printed score next time it's open, this may have been silently wrong
+  there too and simply never reported.
+- **Chip UI grouping** (`tone-trainer.jsx`, three near-identical blocks,
+  §26) — the identical bug, same root cause, different function. Same
+  applicability: any tone with a collapsed melisma benefits automatically.
+
+**Takeaway for future debugging:** if a future tone's bass/tenor chip row
+or printed slur looks wrong specifically at a collapsed note, this class of
+bug is already closed. Look elsewhere first.
+
+### 27.2 Frequency/notation build order — use this sequence for Tones 5–8
+
+Tone 3's harmony-voice work went pitch-mapping first (§14–18), notation
+second (§19–21), frequency system last (§25), and that order is exactly
+backwards. The frequency bug (bass rendering above tenor for most of the
+piece) existed the whole time the pitch-mapping and notation work was
+happening; it just wasn't visible until the chip UI and audio got
+exercised directly. Recommended order for a new tone's SATB build:
+
+1. **Confirm alto's own absolute notation first** — a handful of reference
+   pitches (do/re/mi/fa is enough, §19), read directly off the score.
+2. **Build the tone's frequency anchor immediately**, before any harmony
+   interview — determine which solfège degree is the notated key's actual
+   tonic (§25.2; do NOT assume it's "do" just because that's true for
+   Tones 1/2/4). If it isn't "do", build a dedicated semitone table
+   anchored to whichever degree actually is, the same way `TONE3_SEMI` is
+   built from `TONE3_ALTO_PITCH` rather than assumed.
+3. **Only then** do the bass/tenor/soprano pitch-mapping interview (§14–18
+   style) and their own notation confirmation (§20–21 style).
+4. **Derive octaveDiv values directly from each voice's own confirmed
+   notation** (§25.3), never guess a divisor and check whether it sounds
+   roughly right — every guessed divisor in this tone's history turned out
+   wrong or incomplete.
+
+Doing frequency-anchoring in step 2 means a register collision like Tone
+3's would surface as an immediate "these two voices are the same pitch"
+check, not a symptom someone has to notice by ear or by looking at
+misaligned chips much later.
+
+### 27.3 Open question, not yet checked — is "do" really the tonic for Tones 1/2/4?
+
+The shared `OFF` table (`tone-trainer.jsx`) and the shared
+`ALTO_ANCHOR_OCT`/`buildAltoPitch` (`score-print.html`) both assume "do" is
+the notated key's tonic. This has never caused a reported problem for
+Tones 1, 2, or 4, and was presumably verified correctly when those tones
+were originally built (via audio pitch-tracking and score-reading, per
+their own analysis documents). But it was *also* silently assumed correct
+for Tone 3 for months, until this session's harmony-voice and printed-score
+work exposed it as false. "Never reported wrong" is not the same as
+"independently verified" — this document exists specifically because that
+distinction cost real time on Tone 3. **Not flagged as broken, flagged as
+unverified.** Worth a direct check (a few reference pitches, the same way
+`TONE3_ALTO_PITCH` was confirmed) next time any of Tones 1/2/4 is open for
+other work, rather than assumed safe indefinitely on the strength of no
+complaints so far.
+
+### 27.4 The architecture principle this all sits on
+
+Every finding above, and everything in §1–26, traces back to one thing: **a
+value or a piece of logic built and verified for one tone, silently reused
+by another tone, never independently re-checked.** §22 is the full
+architecture note on what "isolated logic" means in this codebase and what
+it does and doesn't guarantee, worth reading in full before starting any
+new tone, not just skimming this summary. The short version: dedicated
+per-tone data and dedicated per-tone logic are not extra caution, they are
+the only thing that has ever actually caught these bugs. Every bug in this
+document was found by refusing to assume a shared value was correct for a
+tone it was never checked against, and by verifying against that tone's
+own tutorial, own score, and own choir director, not against another
+tone's already-confirmed data.
 
