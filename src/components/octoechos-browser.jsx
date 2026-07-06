@@ -563,7 +563,20 @@ function MatinsPanel({ tone, matinsData }) {
 
 // ── Main browser component ───────────────────────────────────────────────────
 export default function OctoechosBrowser() {
-  const [selectedTone, setSelectedTone] = useState(1);
+  // selectedTone is seeded synchronously from ?tone= at mount (same fix as
+  // MenaionBrowser's activeMonth — see that file for the full race
+  // explanation): without this, the tone-data-loading effect below (keyed on
+  // [selectedTone]) fires once for the "1" default and again for the URL's
+  // tone, with no cancellation guard, so whichever fetch resolves last wins
+  // non-deterministically on a cold cache. Seeding here means the data effect
+  // only ever runs once, with the right tone, from the very first render.
+  const [selectedTone, setSelectedTone] = useState(() => {
+    try {
+      const t = parseInt(new URLSearchParams(window.location.search).get('tone'), 10);
+      if (t >= 1 && t <= 8) return t;
+    } catch (e) { /* no-op — fall through to default */ }
+    return 1;
+  });
   const [toneData, setToneData] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -575,12 +588,13 @@ export default function OctoechosBrowser() {
 
   // Deep-positioning on entry (Phase 2): a ?tone=N link from the Library opens
   // straight to that tone. Validate 1–8; a direct, no-param visit is unchanged.
+  // selectedTone itself is now seeded above, synchronously — this effect only
+  // stashes the deep-highlight target, it no longer also sets selectedTone.
   const pendingEl = useRef(null);
   useEffect(() => {
     const t = parseInt(new URLSearchParams(window.location.search).get('tone'), 10);
     if (t >= 1 && t <= 8) {
       pendingEl.current = getElParam(); // Phase 3: highlight after the tone renders
-      setSelectedTone(t);
     }
   }, []);
 

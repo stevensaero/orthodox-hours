@@ -8284,6 +8284,33 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.26.1",
+    date: "July 2026",
+    summary: "fix: Menaion/Octoechos data browsers blank on cold load (?comm=/?tone= race)",
+    items: [
+      "Root cause: both browsers seeded their active-month/active-tone state at a " +
+      "default (May / Tone 1), then set the real value from a ?comm=/?tone= URL " +
+      "param inside a separate mount effect. The data-loading effect (keyed on that " +
+      "state) fired once with the stale default before the update propagated, and " +
+      "again with the correct value — with no cancellation guard on either fetch. " +
+      "Whichever resolved last won, non-deterministically. On a cold cache (new " +
+      "browser/session/cache-clear), with every chunk contending for connections at " +
+      "once, this could leave monthData/toneData set to the wrong month/tone while " +
+      "the tab UI showed the right one — appearing blank. A refresh didn't fix the " +
+      "race itself, it just changed the timing (chunks now partly cached from the " +
+      "failed attempt), which happened to land correctly.",
+      "Fix: MenaionBrowser's activeMonth and OctoechosBrowser's selectedTone are now " +
+      "seeded synchronously from the URL in their useState initializers, not via a " +
+      "later effect. The data-loading effect now only ever fires once, with the " +
+      "correct value, from the very first render. No race, no wasted fetch.",
+      "Pentecostarion is not affected — it loads its single data file unconditionally " +
+      "on mount, with no month/tone-keyed dependency for the ?pascha= effect to race " +
+      "against.",
+      "Gate: 71/71 pointing-paths + sunday-vespers (unaffected — data-browser-only " +
+      "change), vite build clean.",
+    ],
+  },
+  {
     version: "v0.26.0",
     date: "July 2026",
     summary: "Collapsed-header saint/feast peek — new feature",

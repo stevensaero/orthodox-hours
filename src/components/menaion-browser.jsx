@@ -953,7 +953,26 @@ function EntryCard({ dateKey, entry, audit, stickyTop }) {
 
 // ── Main Component ──────────────────────────────────────────────────────────
 export default function MenaionBrowser() {
-  const [activeMonth, setActiveMonth] = useState("05"); // start on May (first month with data)
+  // activeMonth is seeded synchronously from ?comm= at mount (not via a later
+  // effect) to avoid a cold-load race: the data-loading effect below is keyed
+  // on [activeMonth, hasData], and if activeMonth started at the "05" default
+  // and only changed to the URL's month a render later, the data effect would
+  // fire twice — once for "05" (stale, wasted fetch) and once for the correct
+  // month — with no cancellation guard on either. Whichever fetch resolved
+  // last won, non-deterministically, depending on network/cache timing: on a
+  // cold cache (new browser/session/cache-clear) with every chunk contending
+  // for connections at once, the smaller stale-month fetch could win, leaving
+  // monthData set to the wrong month while the tab UI showed the right one —
+  // "blank until you refresh" (a refresh just changes the race's timing).
+  // Seeding the initial state directly means the data effect only ever runs
+  // once, with the right month, from the very first render.
+  const [activeMonth, setActiveMonth] = useState(() => {
+    try {
+      const comm = new URLSearchParams(window.location.search).get("comm");
+      if (comm && /^\d{2}-\d{2}$/.test(comm)) return comm.slice(0, 2);
+    } catch (e) { /* no-op — fall through to default */ }
+    return "05"; // first month with data
+  });
   const [monthData, setMonthData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -966,6 +985,8 @@ export default function MenaionBrowser() {
   // mount — the month data loads via a dynamic import, so entryRefs aren't
   // populated yet. We stash the target here and fire it from the [monthData]
   // effect once data resolves. A direct, no-param visit is unchanged.
+  // activeMonth itself is now seeded above, synchronously — this effect only
+  // stashes the deep-scroll target, it no longer also sets activeMonth.
   const pendingComm = useRef(null);
   const pendingEl = useRef(null);
   useEffect(() => {
@@ -973,7 +994,6 @@ export default function MenaionBrowser() {
     if (comm && /^\d{2}-\d{2}$/.test(comm)) {
       pendingComm.current = comm;
       pendingEl.current = getElParam(); // Phase 3: highlight this section after the scroll
-      setActiveMonth(comm.slice(0, 2));
     }
   }, []);
 
