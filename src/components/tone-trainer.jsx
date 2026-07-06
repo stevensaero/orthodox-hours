@@ -27,12 +27,22 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.42";
+export const TONE_TRAINER_VERSION = "v0.25.43";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.43",
+    date: "July 2026",
+    summary: "feat: Tone 4 \"try example\" — added PRESET_T4 (LIC text provided directly by Bill), matching Tones 1-3's existing example feature",
+    items: [
+      "feat: PRESET_T4 added, a 6-line LIC (Lord, I Call) sticheron opening rotating A/B/C/D/E/Final — F not needed for a 6-line example. Every line maps onto a structure already confirmed this session; lines 5 and 6 are literally the exact \"call/upon\" (2-bracket Phrase E) and \"[Hear] [me], O Lord!\" (compressed Final Phrase prep melisma) examples already built, tested, and fixed earlier in this same session, not fresh guesses.",
+      "fix: caught by testing the round-trip before shipping, not by inspection — an early draft put PRESETS (which references PRESET_T4) BEFORE PRESET_T4's own declaration, a temporal-dead-zone ReferenceError waiting to fire the first time anyone clicked the button. Fixed by reordering so PRESET_T4 is declared first, matching how T1/T2/T3 are ordered.",
+      "fix: also caught by testing the round-trip — presetToText(4)'s reconstructed bracket placement initially came out as \"[Lord,]\" and \"[me,]\" (trailing punctuation swept inside the bracket) rather than Bill's actual \"[Lord],\" and \"[me],\". Fixed using an already-established convention elsewhere in this same file (\"songs!\" displays with its punctuation but its accented syllable-text is the bare \"songs\") that this preset simply hadn't applied consistently. Verified the full round-trip now matches Bill's original text byte-for-byte, and separately verified Phrase C's zero-prep edge case (accent on the very first word) and Phrase D's new wording both produce the correct structure directly through pointLine().",
+    ],
+  },
   {
     version: "v0.25.42",
     date: "July 2026",
@@ -1703,7 +1713,40 @@ const PRESET_T3 = [
   ["Final", [["always",[["al",0],["ways",0]]],["offers",[["of",1],["fers",0]]],["Thee",  [["Thee",1]]],["a",     [["a",0]]],["song.",  [["song.",0]]]]],
 ];
 
-const PRESETS = { 1: PRESET_T1, 2: PRESET_T2, 3: PRESET_T3 };
+// ── PRESET: "Lord, I call upon Thee..." — Tone 4 LIC (Lord, I Call) ──────────
+// Provided directly by Bill as the Tone 4 example text (July 2026). 6-line
+// sticheron: A B C D E Final — F not needed for a 6-line example, matching
+// the confirmed rotation (A, B, C each used once, then D·E·F·… rotating).
+// Every line here is one of this session's own confirmed worked examples,
+// not a fresh guess — lines 5 and 6 are the exact "call/upon" (2-bracket
+// Phrase E) and "[Hear] [me], O Lord!" (compressed Final Phrase prep
+// melisma) cases already built, tested, and fixed earlier this session.
+const PRESET_T4 = [
+  // Phrase A — hear = cadence anchor (do); me! trails as the close.
+  // Reciting body: Lord, I call up-on Thee, (6 syllables, all ti).
+  ["A", [["Lord,",[["Lord,",0]]],["I",[["I",0]]],["call",[["call",0]]],["upon",[["up",0],["on",0]]],["Thee,",[["Thee,",0]]],["hear",[["hear",1]]],["me!",[["me!",0]]]]],
+  // Phrase B — Hear = cadence anchor (re); me,/O/Lord! trail as fills/close.
+  // No reciting body — Hear is the first word, so the whole line is cadence.
+  ["B", [["Hear",[["Hear",1]]],["me,",[["me,",0]]],["O",[["O",0]]],["Lord!",[["Lord!",0]]]]],
+  // Phrase C — Lord, = intonation accent (mi, first word — zero preps here,
+  // a valid minimal case); I = intonation close (re); call up-on Thee, =
+  // reciting body (do, 4 syllables); hear = cadence anchor (re); me! = close (do).
+  ["C", [["Lord,",[["Lord",1]]],["I",[["I",0]]],["call",[["call",0]]],["upon",[["up",0],["on",0]]],["Thee,",[["Thee,",0]]],["hear",[["hear",1]]],["me!",[["me!",0]]]]],
+  // Phrase D — voice = cadence anchor (ti); of/my trail as do-fills; prayer, closes (re).
+  // Reciting body: Receive the (3 syllables, do).
+  ["D", [["Receive",[["Re",0],["ceive",0]]],["the",[["the",0]]],["voice",[["voice",1]]],["of",[["of",0]]],["my",[["my",0]]],["prayer,",[["prayer,",0]]]]],
+  // Phrase E — the confirmed 2-bracket case, unchanged from earlier this
+  // session: call = bracket 1 (do·re melisma); pon = bracket 2 (re·do
+  // melisma, only "pon" bracketed within "u-pon"); Thee!// closes (ti, W).
+  ["E", [["when",[["when",0]]],["I",[["I",0]]],["call",[["call",1]]],["upon",[["u",0],["pon",1]]],["Thee!//",[["Thee!//",0]]]]],
+  // Final — the confirmed compressed-prep case, unchanged from earlier this
+  // session: both Hear and me bracketed → 3-note prep melisma (re·do·ti) on
+  // "Hear" (body.length=1, nothing precedes it), me = cadence anchor (do),
+  // O = fill (ti), Lord! closes (la).
+  ["Final", [["Hear",[["Hear",1]]],["me,",[["me",1]]],["O",[["O",0]]],["Lord!",[["Lord!",0]]]]],
+];
+
+const PRESETS = { 1: PRESET_T1, 2: PRESET_T2, 3: PRESET_T3, 4: PRESET_T4 };
 
 function presetToLines(toneNum) {
   const preset = PRESETS[toneNum] || PRESETS[1];
