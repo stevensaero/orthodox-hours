@@ -1,6 +1,18 @@
-# ENCODING RULE v2.9 — Orthodox Hours Tool
+# ENCODING RULE v2.10 — Orthodox Hours Tool
 **Authority:** Fekula & Williams (2009) · St. Ignatius Orthodox Press Anthologion (2024) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** July 2026 · **Supersedes:** v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+**Updated:** July 2026 · **Supersedes:** v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+
+**v2.10 changes — PAROEMIA BOOK ABBREVIATIONS MUST BE UNAMBIGUOUS (§11, new #19):**
+07-28B (Smolensk Icon) was found encoding Ezekiel's shut-eastern-gate paroemia
+with the abbreviation `Ez`, which collides with Ezra in standard biblical-
+abbreviation convention. The tool's scripture resolver has no chapter-aware
+disambiguation — whichever book an abbreviation maps to is permanent and
+silent, so a bare `Ez` alias would resolve correctly today (only Ezekiel
+appears in this corpus) and silently mis-resolve the day a genuine Ezra
+paroemia is ever encoded the same way. Corrected to `Ezek` (the form used
+everywhere else in the corpus already) rather than teaching the resolver to
+guess. New rule: never introduce a bare abbreviation that collides with
+another book, even if only one of the two appears in the corpus today.
 
 **v2.9 changes — POINTING CONSISTENCY CHECKED PER SPEC_MEL SUB-GROUP, NOT WHOLE ARRAY
 (§3, `tools/validate_entries.mjs` Check E):** 07-08 (Kazan Icon) surfaced a genuine source
@@ -1087,6 +1099,15 @@ After the .txt skeleton is complete, these fields map to the tool data objects:
     substring "No PDF" or "No AT LITURGY" (100% false-positive rate across the audit) for
     re-verification.
 
+19. **Paroemia book abbreviations must be unambiguous** — a bare abbreviation
+    that collides with another book (e.g. `Ez`, standard shorthand for both
+    Ezekiel and Ezra) must never be used, even if only one of the two ever
+    appears in this corpus today. The scripture resolver has no chapter-aware
+    disambiguation; whichever book the abbreviation maps to is permanent and
+    silent. Use the full book name, or the tool's own established abbreviation
+    for that book (`SCRIPTURE_BOOK_ID` in `hours-tool.jsx`) — never introduce
+    a new short form without checking it doesn't collide.
+
 ---
 
 ## 12. PRE-SAVE CHECKLIST
@@ -1114,6 +1135,9 @@ explicit value (not blank), and:
       prints none; OCA overrides only with a saint-specific proper; all texts in thou/thy.
 - [ ] Check F-1 register: no contemporary You/Your in any hymn text (per §11 #17).
 - [ ] Check F-2 provenance: no "No PDF" / "No AT LITURGY" left in comments or note (§11 #18).
+- [ ] Paroemia references (§11 #19): no bare abbreviation that collides with
+      another book (e.g. `Ez`); full name or an existing unambiguous
+      `SCRIPTURE_BOOK_ID` form only.
 
 **Menaion §2A:**
 - [ ] Calendar section complete
