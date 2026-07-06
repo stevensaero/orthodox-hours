@@ -27,12 +27,23 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.53";
+export const TONE_TRAINER_VERSION = "v0.25.54";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.54",
+    date: "July 2026",
+    summary: "fix: Tone 3 soprano printed notation rendered a fourth too high, the same shared-table root cause and same direction as alto's original bug (v0.25.52) — closes the last voice",
+    items: [
+      "fix: SOPRANO_ANCHOR_OCT (shared across every tone) has the identical never-verified-per-tone problem as ALTO_ANCHOR_OCT/BASS_NOTATION_OCT/TENOR_NOTATION_OCT. Bill caught it the same way: soprano rendering a fourth too high, matching alto's original direction (not bass/tenor's too-low).",
+      "arch: TONE3_SOPRANO_PITCH added — DERIVED rather than independently read against the score, since soprano is a confirmed constant diatonic third above alto (§18.4): alto's own already-confirmed do/re/mi/fa (C/4, D/4, E/4, F/4) shifted up a third through SOPRANO_MAP's alto-to-soprano solfège renaming (do→mi, re→fa, mi→sol, fa→la) gives mi=E/4, fa=F/4, sol=G/4, la=A/4 — all plain thirds, no octave change, no accidentals. Internally consistent with Bill's report: each value sits exactly a fourth below where the shared table currently renders it, same magnitude and direction as the original alto bug. Flagged as derived, not independently confirmed the way alto/bass/tenor's reference points were; recommend a live check against the actual page before treating it as equal-confidence.",
+      "arch: renderScore() now picks TONE3_SOPRANO_PITCH when payload.tone===3, same dispatch pattern as ALTO_PITCH/BASS_PITCH/TENOR_PITCH before it — nothing shared touched, Tones 1/2/4 untouched. This closes all four voices' printed notation for Tone 3.",
+      "test: node --check on the extracted inline script (syntax only). npm run gate — 71/71 Hours Tool checks, 24/24 pointing-role checks, neither touches score-print.html. vite build clean. Recommend live verification against the deployed tool's printed score before considering this fully closed, per standing practice.",
+    ],
+  },
   {
     version: "v0.25.53",
     date: "July 2026",
