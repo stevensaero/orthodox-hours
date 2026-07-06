@@ -1,5 +1,51 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.25.7** | **Tone Trainer: v0.25.30** | Last synced: July 5, 2026
+**Tool version: v0.25.7** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
+
+**Session July 6, 2026 — Tone Trainer: Tone 4 complete across all four SATB
+voices (alto, bass, soprano, tenor); v0.25.30 → v0.25.47.**
+Full detail lives in `tone_trainer_tone4_analysis.md` (repo root); this is
+a status-level summary. Header line above was stale at v0.25.30 through
+this entire session (a recurrence of the same badge-freezes-separately-
+from-release-notes bug already documented at v0.25.36 below) — caught and
+fixed as part of this same update, per the Step-1 protocol.
+
+*Alto:* Phrase E and the Final Phrase completed and shipped (bracket-driven
+melisma segmentation for E; a fixed two-note descending prep for Final).
+Two real alto bugs caught by direct testing before shipping (Phrase C's
+false cadence on unbracketed short snippets; a false 2-syllable intonation
+tail), and one caught by Bill against the live tool afterward (the Final
+Phrase's compressed prep melisma silently dropping notes).
+
+*Bass, Soprano, Tenor:* all three built from scratch this session via
+direct phrase-by-phrase interview, mirroring the Tone 2 tenor session's
+original method. Soprano needed no new data at all (Tone 4 is a verified
+pure diatonic third, already covered by the existing global map). Bass
+required positional (not pitch-keyed) mapping for Phrase E. Tenor is a
+constant sol drone through every phrase but the Final Phrase's actual
+cadence. The bass/tenor melisma-hold mechanism (same-pitch-adjacent notes
+collapse into one sustained note) was found to fall out automatically from
+reusing the tenor architecture already proven for Tones 1/2, rather than
+needing a new rule.
+
+*Cross-cutting bugs found and fixed along the way* (several by Bill against
+the actual rendered tool or real audio, not caught by code review alone):
+score-print bass/tenor column alignment and melisma-slur grouping (two
+separate rounds — the second slur fix over-corrected the first); a missing
+`text` field silently merging two different words' melismas into one slur;
+tenor's own melismas never being drawn as slurs at all; the version badge
+constant freezing separately from the release-notes array (this exact
+class of bug, see above); Play All failing silently on Soprano/SATB for
+tones missing full voice support, plus a related scroll-to-bottom bug on
+any non-alto single-voice playback; Tone 4 tenor's `si` computing at the
+wrong octave (audible, not just visual); and — found by checking Tone 2 for
+the same class of issue after the Tone 4 work exposed it — Tone 2's tenor
+`la` had been audibly too low throughout every phrase, missing the same
+per-phrase octave override Tone 1's Final Phrase already had.
+
+All four tones now share matching "try example" presets (a 6-line LIC
+text, tone-specific director pointing).
+
+---
 
 **Session July 5, 2026 (cont.) — Missed-commemoration audit CLOSED for July, Batch 4 of 4 (v0.25.7).**
 07-28 gains 07-28B (Smolensk Icon of the Theotokos, Vigil §2F) alongside the existing Pitirim.
