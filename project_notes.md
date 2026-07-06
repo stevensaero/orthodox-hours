@@ -1,5 +1,12 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.30.0** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
+**Tool version: v0.30.1** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
+
+**Session July 6, 2026 (cont.) — fix: left-justify temple dedication
+change-select (v0.30.0 → v0.30.1).** The always-visible change dropdown
+added in v0.30.0 used `marginLeft: auto`, stranding it at the far right of
+the header row, away from the heading/Fekula badge it modifies. Removed the
+right-push so it flows immediately after them in normal reading order. Gate:
+71/71 pointing-paths + sunday-vespers, vite build clean.
 
 **Session July 6, 2026 (cont.) — fix: combined Read-in-Scripture page missing
 print context, feat: temple dedication always-visible change control
