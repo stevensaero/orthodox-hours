@@ -1366,3 +1366,86 @@ tool's printed score.**
 correct solfège for every voice, correct printed notation for every voice,
 all dedicated, nothing shared with Tones 1, 2, or 4.**
 
+---
+
+## 22. Architecture — what "isolated logic" actually means here
+
+*Written to be pointed to directly when justifying dedicated per-tone logic
+on future tones. States plainly what is fully isolated, what is not, and
+why the distinction still delivers on the isolation principle.*
+
+### 22.1 The principle, stated plainly
+
+Every bug found and fixed for Tone 3 in this session, the Phrase A fill
+typo, `distribute()`'s undercount rule, the stale `Final.cad` array, the
+Phrase B overcount fill, and all four voices' printed notation, traced back
+to one root cause: a value or a piece of logic built and verified for one
+tone, then silently reused by another tone that was never independently
+checked against it. Four separate instances of that exact pattern, in one
+session, on one tone. The fix in every case was the same: give the tone its
+own dedicated logic and its own dedicated data, verified from its own
+tutorial, its own score, nothing carried over from another tone or another
+voice on the strength of resemblance alone.
+
+### 22.2 What is fully isolated for Tone 3 — cannot be touched by any other tone's changes
+
+**Pointing (solfège pitch/role assignment), `src/lib/pointing.js`:**
+- Dedicated `pointLine()` branches for Phrase A, Phrase B, and the Final
+  Phrase (`cad1`/`cad`), none of them call shared `distribute()`.
+- Dedicated `distributeTone3FinalCad1()` / `distributeTone3FinalCad2()`
+  functions, used nowhere else.
+
+**Harmony voices, `src/components/tone-trainer.jsx`:**
+- `BASS_RULES[3]` / `TENOR_RULES[3]` — their own phrase-by-phrase maps,
+  including the dedicated `cad1Map` field that only Tone 3's Final Phrase
+  uses (§18.2).
+
+**Printed notation, `public/score-print.html`:**
+- `TONE3_ALTO_PITCH`, `TONE3_SOPRANO_PITCH`, `TONE3_BASS_PITCH`,
+  `TONE3_TENOR_PITCH` — four flat, non-transposing tables. No other tone
+  reads them, and Tone 3 no longer reads any of the shared anchor tables
+  (`ALTO_ANCHOR_OCT`, `SOPRANO_ANCHOR_OCT`, `BASS_NOTATION_OCT`,
+  `TENOR_NOTATION_OCT`) for anything.
+
+A change to any of the above, for any reason, on any other tone, cannot
+reach Tone 3. A change to Tone 3's own tables cannot reach any other tone.
+
+### 22.3 What is NOT isolated — the dispatch points, and why that's still sound
+
+The functions that DECIDE which table or branch to use are shared, because
+every tone has to pass through some common entry point (`pointLine()`,
+`mapBassPitch()`, `mapTenorPitch()`, `renderScore()`). What each of those
+functions contains for Tone 3 is a single, early, explicit check:
+
+```js
+if (activeTone === 3 && line.phrase === "Final") { /* Tone 3's own logic, return */ }
+// ...
+if (tone === 3 && phrase === "Final" && r.role === "cad1") { return rules.cad1Map?.[orig] ?? orig; }
+// ...
+var ALTO_PITCH = (payload.tone === 3) ? TONE3_ALTO_PITCH : buildAltoPitch(cfg);
+```
+
+This is the same shape `PH_DEFS[activeTone]` already had for every tone
+before today, a per-tone dispatch, not a per-tone file. One additional
+shared touch-point from this session: `mkNote()` gained an optional
+`forceAcc` parameter (§20.3), `undefined` for every existing caller, used
+only by Tone 3's tenor `ti`.
+
+**Why this still delivers the isolation principle, not just its appearance:**
+the failure mode that caused every bug this session was a tone *silently
+falling through* to another tone's already-built logic or data, with nobody
+re-checking that the fallthrough was actually correct. Once a tone has its
+own explicit branch and its own table, there is no fallthrough left for it
+to silently inherit from, it either matches its own `tone === N` check and
+hits its own dedicated logic, or it doesn't match and hits whatever tone
+that logic actually belongs to. The dispatch line has to exist somewhere;
+what matters is that nothing on either side of it is shared.
+
+**What this does NOT do automatically:** a future Tone 5 does not
+inherit any protection by default. Someone has to deliberately add its own
+`tone === 5` branch and its own dedicated table or function, the same
+discipline demonstrated across Tones 1-4, not a structural guarantee that
+fires on its own. This document is the reference for why that discipline is
+worth the extra code, not a claim that the discipline is now enforced by
+the architecture itself.
+
