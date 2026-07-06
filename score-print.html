@@ -434,21 +434,25 @@ function renderScore(payload) {
   // Legal break seams within a phrase: column indices j (1..n-1) where the phrase MAY wrap to
   // the next system, breaking BETWEEN columns j-1 and j. A seam is legal iff it falls after a
   // reciting note (within a reciting run, or a recite→cadence boundary — the elastic zones)
-  // AND it does not split a melisma group or a tenor held span (both unbreakable: the held
-  // notehead / slur would cross the system break). Phrase boundaries are handled separately.
+  // AND it does not split a melisma group or a tenor/bass held span (all three unbreakable: the
+  // held notehead / slur would cross the system break). Phrase boundaries are handled separately.
+  // Bass spans added alongside tenor's here — bass can now collapse too (Tone 4), and an
+  // unprotected bass span would let a system break land inside a held bass note exactly the
+  // way tenor's own held spans were already protected against.
   function legalSeams(line) {
     var n = line.alto.length, seams = new Set();
-    var spans = (line.tenor || []).map(function(t, k) {
+    var spanOf = function(t, k) {
       var ss = (t.spanStart != null) ? t.spanStart : k;
       var sc = (t.spanCount != null) ? t.spanCount : 1;
       return [ss, ss + sc];
-    });
+    };
+    var spans = (line.tenor || []).map(spanOf).concat((line.bass || []).map(spanOf));
     for (var j = 1; j < n; j++) {
       if (line.alto[j - 1].role !== 'recite') continue;                 // only after a recite note
       var contMelisma = line.alto[j].melisma && line.alto[j].text === line.alto[j - 1].text;
       if (contMelisma) continue;                                        // inside a melisma group
       var inSpan = spans.some(function(sp) { return sp[0] < j && sp[1] > j; });
-      if (inSpan) continue;                                             // inside a tenor held span
+      if (inSpan) continue;                                             // inside a tenor/bass held span
       seams.add(j);
     }
     return seams;
@@ -792,7 +796,9 @@ function renderScore(payload) {
       var altoSlice = line.alto.slice(s0, s1);
       var hasSop = line.soprano && line.soprano.length === line.alto.length;
       var sopSlice = hasSop ? line.soprano.slice(s0, s1) : null;
-      var bassSlice = line.bass ? line.bass.slice(s0, s1) : null;
+      // NOTE: bass is intentionally NOT sliced by s0/s1 here — see the bass
+      // rendering block below, which uses spanStart-based column lookup
+      // instead (bass can now be shorter than alto when it collapses).
       var altoStem = (grand || hasSop) ? -1 : 1;
       var lastRightEdge = 0, slashRightEdge = 0;
 
@@ -826,16 +832,34 @@ function renderScore(payload) {
       drawMelismaSlurs(aN, altoSlice);
       if (hasSop) drawMelismaSlurs(sN, altoSlice);
 
-      // Bass — TENOR (stems up) + BASS (stems down). Tenor may be collapsed (held notes); a
-      // tenor span never crosses a slice boundary (melismas are illegal break seams), so every
-      // tenor note whose anchor column falls in [s0,s1) is wholly inside this slice.
-      if (grand && bassSlice) {
-        var bN = [];
-        for (var bi = 0; bi < bassSlice.length; bi++) {
-          var br = bassSlice[bi];
-          bN.push(rec.has(bi) ? mkGhost(br.durKey)
-            : mkNote(bassVFPitch(br.pitch, br.octaveDiv, cfg), br.durKey, -1, 'bass', br.pitch));
-        }
+      // Bass — TENOR (stems up) + BASS (stems down). Both may be collapsed
+      // (held notes) for any tone/phrase where the respective HOLD_TONES
+      // gate fires — bass collapse added for Tone 4 (deriveBassRolesWD),
+      // mirroring tenor's own pre-existing collapse exactly. A collapsed
+      // span never crosses a slice boundary (melismas are illegal break
+      // seams), so every note whose anchor column falls in [s0,s1) is
+      // wholly inside this slice.
+      //
+      // CORRECTED: an earlier version of this block sliced line.bass with
+      // line.alto's own s0/s1 indices and positioned bass notes purely by
+      // array index — correct only when bass and alto are always the same
+      // length (true for Tones 1/2, which have never had bass collapse).
+      // Once bass can collapse (Tone 4), a collapsed entry (e.g. "Hear"'s
+      // 3 alto notes → 1 bass note) breaks that 1:1 correspondence, and
+      // every later bass note in the line was landing under the wrong
+      // syllable — caught directly against the printed score, not assumed
+      // safe. Fixed using the exact same spanStart-based column lookup
+      // tenor already uses, rather than inventing a new approach.
+      if (grand && line.bass) {
+        var bassItems = [];
+        line.bass.forEach(function(br, k) {
+          var col = (br.spanStart != null) ? br.spanStart : k;
+          if (col >= s0 && col < s1) bassItems.push({ br: br, lcol: col - s0 });
+        });
+        var bN = bassItems.map(function(it) {
+          return rec.has(it.lcol) ? mkGhost(it.br.durKey)
+            : mkNote(bassVFPitch(it.br.pitch, it.br.octaveDiv, cfg), it.br.durKey, -1, 'bass', it.br.pitch);
+        });
         var tenItems = [];
         if (line.tenor && line.tenor.length > 0) line.tenor.forEach(function(trn, k) {
           var col = (trn.spanStart != null) ? trn.spanStart : k;
@@ -851,11 +875,21 @@ function renderScore(payload) {
         new VF.Formatter().joinVoices(bassVoices).format(bassVoices, altoSlice.length * NOTE_W);
         bN.forEach(function(n) { n.setStave(bs); });
         if (hasTen) tN.forEach(function(n) { n.setStave(bs); });
-        setVoiceX(bN, T);
+        setVoiceX(bN, bassItems.map(function(it) { return T[it.lcol]; }));
         if (hasTen) setVoiceX(tN, tenItems.map(function(it) { return T[it.lcol]; }));
         bassVoice.draw(ctx, bs);
         if (tenVoice) tenVoice.draw(ctx, bs);
-        drawMelismaSlurs(bN, altoSlice, false);
+        // Melisma slurs only make sense on an UNCOLLAPSED voice (every alto
+        // note has its own bass note to slur between). A collapsed entry
+        // (spanCount>1) already IS the held note — drawing a slur on top of
+        // it double-represents the same sustain and was the source of the
+        // "extra tie to the same note" artifact. Tenor's own collapsed
+        // voice never draws slurs on itself for the same reason; bass now
+        // matches that, but only skips the slur when this line actually
+        // has a collapsed span (any bassItems entry with spanCount>1) —
+        // Tones 1/2, which never collapse, keep the original slur drawing.
+        var bassHasCollapse = bassItems.some(function(it) { return (it.br.spanCount || 1) > 1; });
+        if (!bassHasCollapse) drawMelismaSlurs(bN, altoSlice, false);
       }
 
       // Lyrics (grand): centered between treble bottom line and bass top line.
