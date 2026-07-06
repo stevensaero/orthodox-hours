@@ -27,12 +27,22 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.47";
+export const TONE_TRAINER_VERSION = "v0.25.48";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.48",
+    date: "July 2026",
+    summary: "fix: Tone 3 Phrase A cadence fill note was wrong (do instead of fa) — a tutorial typo that survived since the original May 2026 build because no corpus example or score ever exercised the fill",
+    items: [
+      "fix: PH_DEFS[3].A.cad changed from ['fa','do','mi'] to ['fa','fa','mi']. The original value came from a single prose sentence in the Drillock & Ealy tutorial (\"unaccented syllables between accented and final are sung on do\") and was never checked against a real example: 73/74 corpus instances for Phrase A are 2-syllable cadences (anchor+final only), so the fill note was structurally never exercised by any fixture. Caught this session when Bill, building the harmony-voice tables for Tone 3 (Bass/Tenor/Soprano), found no tenor or soprano example anywhere in the tutorial that included a fill note at all, then confirmed directly against physical scores that the fill continues on fa (the reciting tone), not do — concluded the tutorial prose itself has a typo. Fixed by correcting the cad array; distribute() still repeats the penultimate note (now fa) for any extra fill syllables.",
+      "note: this also closed two harmony-voice open items for Tone 3 without new evidence needed — tenor and soprano Phrase A fill notes were pending exactly this ambiguity, and both already had fa mapped (tenor fa→do, soprano fa→la) from confirmed anchor/recite data, so they resolve automatically now that the fill is known to be fa rather than an unconfirmed do.",
+      "test: npm run gate — 71/71 Hours Tool checks + 18/18 pointing-role checks, no regressions (no existing fixture ever exercised this fill note, as expected). vite build clean.",
+    ],
+  },
   {
     version: "v0.25.47",
     date: "July 2026",

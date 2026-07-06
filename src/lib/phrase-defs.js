@@ -194,11 +194,18 @@ export const PH_DEFS = {
     // Source: Drillock & Ealy tutorial + 164-instance OCA corpus (2 services).
     A: {
       recite: "fa", inton: false, prep: null,
-      // 3-note figure: anchor=fa(H), middle fills=do(Q each), final=mi(H).
-      // Tutorial explicit: "unaccented syllables between accented and final are sung on do."
-      // Must be ['fa','do','mi'] not ['fa','mi'] — distribute() repeats penultimate (do),
-      // giving correct do fill for extra syllables; ['fa','mi'] would repeat fa (wrong).
-      cad: ["fa", "do", "mi"],
+      // 3-note figure: anchor=fa(H), middle fills=fa(Q each), final=mi(H).
+      // CORRECTED (Jul 2026): tutorial prose originally read as "...sung on do" —
+      // Bill identified this as a tutorial typo. No example in the 164-instance
+      // corpus ever exercises the fill (73/74 Phrase A instances are 2-syllable
+      // cadences, anchor+final only), so the "do" value was never checked against
+      // a real example or a score. Direct score examination confirms fill=fa
+      // (continuing the reciting tone), not a jump to do. See
+      // tone_trainer_tone3_analysis.md §14 for full reasoning. Must be
+      // ['fa','fa','mi'] not ['fa','mi'] — distribute() repeats the penultimate
+      // note (fa) for extra fill syllables; collapsing to ['fa','mi'] would lose
+      // that repeat-fill behavior entirely.
+      cad: ["fa", "fa", "mi"],
     },
     B: {
       recite: "fa", inton: false, prep: null,
