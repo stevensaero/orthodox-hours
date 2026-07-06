@@ -607,3 +607,125 @@ This is documented in `tone_trainer_notes.md` as a deferred item.
    Tone 8, check whether its Part 1 figure matches Tone 3's `mi·do·re` or differs.
    If it differs, `CAD1_DURS` will need to become tone-keyed.
 
+---
+
+## 14. Harmony voices — Bass/Tenor/Soprano session (July 2026, in progress)
+
+*Added at the start of a session building `BASS_RULES[3]`, `TENOR_RULES[3]`, and
+`SOPRANO_TONES` entry for Tone 3. Data delivered by Bill directly from the tutorial
+and physical scores, interview-style, all voices at once, phrase by phrase. Not
+yet complete — bass has not been started. This section records what's confirmed
+so far and will be extended as the session continues.*
+
+### 14.1 Soprano — CLOSED, all phrases
+
+Confirmed as a constant diatonic third above alto, applying uniformly across every
+phrase (interval relationship, not phrase-specific harmony logic — same shape as
+the Tone 4 soprano close in §7 of the Tone 4 doc).
+
+| Alto | Soprano |
+|---|---|
+| fa | la |
+| mi | sol |
+| re | fa |
+| do | mi |
+
+These four are the only alto pitches Tone 3 uses across Phrase A, B, and Final
+(including the Final's cad1/cad split), so this single map closes soprano
+completely. `do → mi` was confirmed explicitly by Bill after an initial exchange
+where it had only been pattern-implied — flagged as unconfirmed until that
+explicit confirmation came through, per the prime directive's evidence standard.
+
+### 14.2 Tenor — CLOSED for Phrase A, B, and Final
+
+**Phrase A** (alto: recite `fa`, cad `[fa, fa, mi]` — anchor/fill/final, see §14.4
+for the fill correction):
+
+| Role | Alto | Tenor |
+|---|---|---|
+| recite | fa | do |
+| cad anchor | fa | do |
+| cad fill | fa | do (resolved automatically by the §14.4 fix — same alto pitch as anchor/recite) |
+| cad final | mi | do |
+
+**Phrase B** (alto: recite `fa`, cad `[mi, re, do]`, anchor is dotted-half):
+
+| Role | Alto | Tenor |
+|---|---|---|
+| recite | fa | do |
+| cad anchor (dH) | mi | do |
+| cad mid | re | ti |
+| cad final | do | sol |
+
+**Final Phrase** (alto: recite `fa`, cad1 `[mi, do, re]`, cad `[mi, fa, re, do]`):
+
+| Role | Alto | Tenor |
+|---|---|---|
+| recite | fa | do |
+| cad1 anchor | mi | do |
+| cad1 mid | do | sol |
+| cad1 final | re | sol |
+| cad anchor (part 2) | mi | do |
+| cad | fa | do |
+| cad | re | ti |
+| cad final | do | sol |
+
+Cross-check: alto `re→ti` and `do→sol` recur identically between Phrase B and
+the Final's cad (Part 2), same pitch pairs in both places, no conflict.
+
+Tenor for Tone 3 is now a near-constant `do` drone (matching the general pattern
+already seen in Tone 4's tenor — a constant reciting pitch through most phrases),
+with `re→ti` and `do→sol` as the only departures from `do`, both confined to
+cadence movement in Phrase B and the Final's second cadence part.
+
+### 14.3 Bass — NOT STARTED
+
+No data gathered yet for any phrase.
+
+### 14.4 Correction — Phrase A cadence fill was wrong (do → fa)
+
+**Finding:** While building the harmony tables above, no tutorial example or
+score for tenor or soprano ever showed a fill note for Phrase A's cadence — every
+example given landed only on the anchor and final pitches. This surfaced the
+question of what the alto fill (previously documented as `do`, see §3.1) was
+actually verified against.
+
+**Root cause:** The original `do` value (§3.1, §12 assumptions checklist) came
+from a single tutorial prose sentence — "unaccented syllables that fall between
+the accented syllable and the final syllable are sung on do" — and was never
+checked against a real example. The corpus statistics in §5.2 already show why:
+73/74 Phrase A instances in the 164-instance corpus are 2-syllable cadences
+(anchor + final only), so the fill note has never actually been sung in any
+fixture processed to date. The assumption was carried as "High confidence" in
+§12 on the strength of the tutorial prose alone, with no corpus or score
+cross-check possible.
+
+**Bill's correction:** Direct examination of physical scores confirms the fill
+continues on `fa` (the reciting tone), not a jump to `do`. Bill's assessment:
+the tutorial prose itself has a typo, "do" should read "fa." This is also the
+more idiomatic reading musically, continuing the reciting tone for extra
+unaccented syllables is the ordinary case for chant fill notes; introducing an
+unrelated pitch for a couple of syllables and then leaving it is the unusual case.
+
+**Fix applied:** `PH_DEFS[3].A.cad` changed from `["fa","do","mi"]` to
+`["fa","fa","mi"]` (`src/lib/phrase-defs.js`, v0.25.48). `distribute()` still
+repeats the penultimate note for any extra fill syllables, now correctly `fa`
+instead of `do`.
+
+**Side effect:** this closed two harmony-voice open items without new evidence
+needed. Tenor and soprano Phrase A fill notes were both pending on this exact
+ambiguity; since the fill pitch is alto `fa` (not `do`), and both tenor
+(`fa→do`) and soprano (`fa→la`) already had confirmed mappings for alto `fa`
+from the anchor/recite data, the fill resolves automatically — see §14.1–14.2.
+
+**Regression check:** `npm run gate` — 71/71 Hours Tool checks + 18/18
+pointing-role checks, no regressions (expected, since no existing fixture ever
+exercised the old fill value). `vite build` clean.
+
+**Lesson for future tones:** a value sourced from tutorial prose alone, with no
+corpus example or score to check it against, should be logged as an open
+verification item rather than "High confidence" — the confidence label in §12
+undersold how thin the evidence actually was. Watch for this pattern in Tones
+5–8: a prose-only claim with a corpus that happens to never test it is exactly
+the gap that let this sit unnoticed since the original May 2026 build.
+
