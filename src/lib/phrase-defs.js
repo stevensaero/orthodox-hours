@@ -221,16 +221,18 @@ export const PH_DEFS = {
       // anchorDH:true — cadence anchor is a DOTTED HALF NOTE (1.5×H), new for Tone 3.
       // Audio-confirmed: anchor ~1.3s at H_ref≈0.76s, dH_ref≈1.14s.
       // Anchor (mi) and final (do) are fixed and never drop, same shape as Phrase A.
+      // Exact fit (count===3): mi(anchor)·re(fill)·do(final).
       // Long-cadence rule (>3 cad syllables): dH→H (confirmed).
-      // OPEN QUESTION (Jul 2026, flagged not resolved): this comment previously
-      // claimed ">3 syllable extras ride on mi" — matching the tutorial's own
-      // prose — but the shared distribute() code actually in use produced "re"
-      // (the exact-fit figure's own middle note) for that case, and nobody had
-      // verified which was actually correct. The new dedicated handler in
-      // pointing.js currently implements "re" (preserving what every prior
-      // session assumed was live), NOT "mi" (the tutorial's literal text) —
-      // this conflict is unresolved and needs Bill's confirmation before either
-      // value is trusted. See tone_trainer_tone3_analysis.md §16.
+      // RESOLVED (Jul 2026): an earlier version of this comment claimed the
+      // >3-syllable overcount fill was "mi" (matching the tutorial), but the
+      // shared distribute() code actually in use at the time produced "re"
+      // instead, and nobody had checked which was correct — comment and code
+      // disagreed and neither had been verified. Bill quoted the tutorial
+      // directly: "these additional unaccented syllables are sung on mi." The
+      // base 3-note frame (mi·re·do) stays intact; extra syllables beyond it
+      // extend the anchor's own mi, with the single re passing tone always
+      // immediately preceding the final do. See tone_trainer_tone3_analysis.md
+      // §16.4/§17 for the full resolution.
       // CORRECTED (Jul 2026): shared distribute() was silently dropping the
       // fixed final "do" in the 2-syllable case (returned mi,re instead of
       // mi,do) — see §15. Now handled by a dedicated pointLine() branch.

@@ -27,12 +27,22 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.49";
+export const TONE_TRAINER_VERSION = "v0.25.50";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.50",
+    date: "July 2026",
+    summary: "fix: Tone 3 Phrase B's >3-syllable overcount fill was wrong (re instead of mi) — resolved by Bill quoting the tutorial directly, closing the open question flagged in v0.25.49",
+    items: [
+      "fix: Phrase B's dedicated handler previously repeated 're' for any cadence syllable beyond the fixed anchor(mi)/final(do), including the >3-syllable overcount case. Bill quoted the tutorial directly: \"If there are more than three syllables in the cadence, then these additional unaccented syllables are sung on mi, and the dotted half is changed to a half note.\" The base 3-note frame (mi anchor · re · do final) stays intact; extra syllables beyond it extend the anchor's own mi, with the single re passing tone always immediately preceding the final do. Fixed in pointing.js: only the syllable immediately before the final gets re, every other middle syllable gets mi.",
+      "note: this closes the open question flagged in v0.25.49/tone_trainer_tone3_analysis.md §16.4 — the original phrase-defs.js comment had actually claimed 'mi' all along (matching the tutorial), but the shared distribute() code once in use silently produced 're' instead, and nobody had checked which was actually live. Same class of gap as the Phrase A fill typo (§14.4) and the distribute() undercount bugs (§15.3): an assumption in a comment, never checked against the code that actually ran.",
+      "test: added a 5-syllable Tone 3 Phrase B overcount fixture to tools/test_pointing_roles.mjs — 24/24 pointing-role checks pass, zero regressions. npm run gate — 71/71 Hours Tool checks. vite build clean.",
+    ],
+  },
   {
     version: "v0.25.49",
     date: "July 2026",

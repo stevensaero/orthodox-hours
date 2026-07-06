@@ -162,6 +162,19 @@ const FIXTURES = [
     ],
   },
   {
+    name: "T3 B — 5-syllable overcount, long-cadence rule (Jul 2026 fix: extras on mi per direct tutorial quote, not re): anchor mi(H, dH collapsed), two extra mi fills, single fixed re just before final, final do",
+    tone: 3, phrase: "B",
+    words: [W("We"), W("call", true), W("up"), W("on"), W("Thee"), W("now")],
+    expect: [
+      ["We", "recite", "fa"],
+      ["call", "cad", "mi"],
+      ["up", "cad", "mi"],
+      ["on", "cad", "mi"],
+      ["Thee", "cad", "re"],
+      ["now", "cad", "do"],
+    ],
+  },
+  {
     name: "T3 Final — two-part cadence with recite-pickup ('[Hear] [me], O Lord.') — Hear absorbs the pickup fa plus full cad1 melisma; me/O/Lord distribute the 4-note Part 2 figure with excess compressing onto 'me', final do always preserved",
     tone: 3, phrase: "Final",
     words: [W("Hear", true), W("me", true), W("O"), W("Lord")],

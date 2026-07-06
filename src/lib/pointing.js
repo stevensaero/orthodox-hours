@@ -167,16 +167,19 @@ export function pointLine(line, phDefs, activeTone) {
   // ── Tone 3 Phrase B: dedicated handler, no shared distribute() ──────────
   // Anchor (mi, dotted-half unless long-cadence rule fires) and final (do) are
   // fixed positions and never drop. 2-syllable cadence = anchor + final only,
-  // same shape as Phrase A. 3+ syllables = fill on re; >3 syllables collapses
-  // the dotted-half anchor to a plain half per the tutorial's own long-cadence
-  // rule (unchanged from the original build).
-  // OPEN QUESTION, flagged not silently resolved: the tutorial's own prose for
-  // the >3-syllable overcount case says extra syllables are "sung on mi" — but
-  // the exact-fit (count===3) case unambiguously has the middle syllable on
-  // "re" (mi·re·do). Whether the >3 overcount fill should repeat "re" (as
-  // implemented here, carried over from every prior session's assumption) or
-  // "mi" (a literal reading of the tutorial's own overcount sentence) has never
-  // been checked against a real example or score. Needs Bill's confirmation.
+  // same shape as Phrase A. Exact-fit (count===3) = anchor mi, single fill re,
+  // final do. >3 syllables collapses the dotted-half anchor to a plain half
+  // (per the tutorial's long-cadence rule, unchanged from the original build).
+  // RESOLVED (Jul 2026): the >3-syllable overcount fill question flagged in
+  // §16.4 of the analysis doc is settled by Bill quoting the tutorial directly:
+  // "If there are more than three syllables in the cadence, then these
+  // additional unaccented syllables are sung on mi, and the dotted half is
+  // changed to a half note." The base 3-note frame (mi anchor · re · do final)
+  // stays intact; syllables beyond that frame extend the anchor's own mi
+  // pitch, with the single re passing tone always immediately preceding the
+  // final do. Confirmed NOT "re" repeating (the prior assumption, carried over
+  // from every session before today, itself a comment/code mismatch never
+  // checked against the tutorial text — the same class of gap as §14.4/§15.3).
   if (activeTone === 3 && line.phrase === "B") {
     const a = anchorIndex(flat);
     const body = flat.slice(0, a);
@@ -193,7 +196,8 @@ export function pointLine(line, phDefs, activeTone) {
       let pitch, dur;
       if (i === 0) { pitch = "mi"; dur = longCadence ? "H" : "H·"; }
       else if (i === cadLen - 1) { pitch = "do"; dur = "H"; }
-      else { pitch = "re"; dur = "Q"; } // see OPEN QUESTION above
+      else if (i === cadLen - 2) { pitch = "re"; dur = "Q"; } // the single fixed passing tone, always just before the final
+      else { pitch = "mi"; dur = "Q"; } // additional syllables beyond the base frame — tutorial-confirmed: sung on mi
       roles.push({ role: "cad", pitches: [pitch], durs: [dur], accent: s.accent, text: s.text, source: s.source, anchor: i === 0 });
     });
     return roles;
