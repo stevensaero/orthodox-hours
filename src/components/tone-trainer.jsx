@@ -27,12 +27,24 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.56";
+export const TONE_TRAINER_VERSION = "v0.25.57";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.57",
+    date: "July 2026",
+    summary: "fix: Tone 3's audio/chip-height frequency computation assumed 'do' is the notated key's tonic (true for Tones 1/2/4, confirmed wrong for Tone 3) — root cause of tenor rendering below bass across every phrase; fixed by anchoring to the already-confirmed notation instead of guessing octave divisors",
+    items: [
+      "fix: the shared freq() function computes doHz * 2^(OFF[sol]/12), where OFF['do']=0 assumes do is the tonic. True for Tones 1/2/4. Confirmed wrong for Tone 3 (§19): Tone 3's own do notates as C, the dominant, not the tonic (F, which is where fa actually sits). With the shared table, Tone 3's do was computing at the tonic pitch (349 Hz) while its own confirmed notation places it at the dominant (262 Hz) — a fundamental mismatch, not a missing divisor. Bill caught the downstream symptom directly: 'tenor chips are rendering lower than bass chips ... across all phrase forms' — bass's dominant note (fa) and tenor's dominant note (do), both using the wrong do-is-tonic reference with no compensating divisor, put bass's most-used note above tenor's most-used note for the bulk of every phrase.",
+      "arch: added TONE3_SEMI, a dedicated semitone-offset table anchored to fa (the true tonic reference) instead of do, built directly from the already-confirmed TONE3_ALTO_PITCH notation rather than guessed. freq() now dispatches to TONE3_SEMI when activeTone===3, the shared OFF table (and every other tone) completely unchanged.",
+      "arch: added TONE3_BASS_OCTAVE_DIV {fa:2, do:2, sol:4} and TONE3_TENOR_OCTAVE_DIV {do:1, sol:2, ti:2}, wired in as octaveDiv on all three phrases of BASS_RULES[3]/TENOR_RULES[3] — both derived directly from the confirmed TONE3_BASS_PITCH/TONE3_TENOR_PITCH notation tables (§20), not guessed, using the existing per-phrase octaveDiv mechanism every other tone already supports.",
+      "note: this also fixes alto's own audio pitch, which had the identical bug (playing 'do' at the tonic pitch, 349 Hz, instead of the confirmed 262 Hz) but hadn't been separately reported — same root cause as the bass/tenor symptom, closed by the same fix since freq_soprano/freq_bass/freq_tenor all build on freq() internally.",
+      "test: verified end-to-end with a standalone numeric trace (not just reasoned through) — all four alto values, all three bass values, and all three tenor values match their already-confirmed notation exactly (e.g. bass fa=174.6Hz/F3, tenor do=261.6Hz/C4). Cross-check: bass's full range (98-175 Hz) now sits entirely below tenor's full range (196-262 Hz), clean separation, not just reduced overlap. npm run gate — 71/71, 24/24. vite build clean. Recommend live audio verification against the deployed tool before considering this fully closed — this is an audible register fix, best confirmed by listening.",
+    ],
+  },
   {
     version: "v0.25.56",
     date: "July 2026",
@@ -1560,6 +1572,23 @@ const OFF = { la: -3, si: -4, ti: -1, do: 0, di: 1, re: 2, mi: 4, mi_low: 4, fa:
 // si = C# = raised sol (sol −> sol#); the raised 7th (leading tone) of D minor, a half-step
 // BELOW la (D). Used only in the Tone 1 Final tenor (la·si·mi = D·C#·A). Was -2 (sounded Eb,
 // a half-step above la — wrong direction); corrected to -4 to match the score's C#4.
+
+// ── Tone 3 — dedicated semitone table (Jul 2026) ────────────────────────────
+// OFF above assumes "do" is the tonic of the notated key — true for Tones
+// 1/2/4, confirmed wrong for Tone 3 (§19): Tone 3's own "do" notates as C,
+// the DOMINANT of the printed F-major key, not the tonic (F, which is where
+// Tone 3's "fa" actually sits). Using the shared OFF table for Tone 3 would
+// compute "do" at the tonic pitch (F) when the confirmed notation has it a
+// 4th lower, at the dominant (C) — the same root cause behind the bass/tenor
+// register bug Bill caught (bass's own "fa" and tenor's own "do", both using
+// OFF's do-is-tonic assumption with no compensating divisor, came out with
+// bass sitting ABOVE tenor for most of the piece).
+// Built directly from the already-confirmed Tone 3 notation tables
+// (TONE3_ALTO_PITCH: do=C/4, re=D/4, mi=E/4, fa=F/4) rather than guessed —
+// fa is the true tonic reference (0), every other degree computed as its
+// actual semitone distance from F within the one-flat F-major gamut.
+const TONE3_SEMI = { do: -5, re: -3, mi: -1, fa: 0, sol: 2, la: 4, ti: 6 };
+
 const DO_OPTIONS = [
   { label: "Eb", hz: 311.13 },  // one step below canonical — lower option
   { label: "F",  hz: 349.23 },  // F4 — Tone 1 canonical (OCA score, F major)
@@ -2271,6 +2300,17 @@ function buildMelisma(pitches, durs, H, Q, W, DH, peak) {
 //   prepMap   — maps alto prep pitch → bass prep pitch (empty if same as cadMap)
 //   preslurMap— maps each alto preslur pitch → bass preslur pitch
 
+// Tone 3 tenor octaveDiv — derived directly from the confirmed TONE3_TENOR_PITCH
+// notation (do=C/4, sol=G/3, ti=B/3), not guessed. Without this, freq_tenor()
+// fell through to the global TENOR_OCTAVE_DIV default (uniform div-2 for every
+// pitch), which — paired with Tone 3's own do-is-not-tonic correction
+// (TONE3_SEMI) — put tenor's dominant note (do) BELOW bass's dominant note
+// (fa) for most of the piece, exactly backwards for SATB. do needs NO division
+// at all (same octave as the TONE3_SEMI reference); sol and ti both sit one
+// octave down. Same value on all three phrases (A/B/Final), since the
+// confirmed register doesn't change between phrases.
+const TONE3_TENOR_OCTAVE_DIV = { do: 1, sol: 2, ti: 2 };
+
 const TENOR_RULES = {
   // ── Tone 1, Russian Obikhod (L'vov-Bakhmetev) ──────────────────────────
   // Verified phrase by phrase against Drillock & Ealy Four-Part Harmony tutorial.
@@ -2397,6 +2437,10 @@ const TENOR_RULES = {
   // departures from do are Phrase B's re→ti fill and the Final Phrase's
   // matching cad (Part 2) re→ti, confirmed as the same alto→tenor pair in
   // both places (cross-checked directly, no conflict).
+  //
+  // octaveDiv: see TONE3_TENOR_OCTAVE_DIV above (fixed the register bug
+  // Bill caught — tenor's do was computing below bass's fa for most of the
+  // piece). Same value on all three phrases.
   3: {
     A: {
       recite: "do",
@@ -2408,6 +2452,7 @@ const TENOR_RULES = {
       // landed — no separate tenor evidence needed for that closure.
       cadMap: { fa: "do", mi: "do" },
       preslurMap: {},
+      octaveDiv: TONE3_TENOR_OCTAVE_DIV,
     },
     B: {
       recite: "do",
@@ -2416,6 +2461,7 @@ const TENOR_RULES = {
       // re→ti is the one real departure from the constant do drone in this phrase.
       cadMap: { mi: "do", re: "ti", do: "sol" },
       preslurMap: {},
+      octaveDiv: TONE3_TENOR_OCTAVE_DIV,
     },
     Final: {
       recite: "do",
@@ -2432,6 +2478,7 @@ const TENOR_RULES = {
       cad1Map: { fa: "do", mi: "do", do: "sol", re: "sol" },
       cadMap: { mi: "do", fa: "do", re: "ti", do: "sol" },
       preslurMap: {},
+      octaveDiv: TONE3_TENOR_OCTAVE_DIV,
     },
   },
   // ── Tone 4, Obikhod (L'vov-Bakhmetev) ────────────────────────────────────
@@ -2614,6 +2661,17 @@ const deriveTenorRolesWD = (rolesWD, rules, tone, phrase) => {
   return out;
 };
 
+// Tone 3 bass octaveDiv — derived directly from the confirmed TONE3_BASS_PITCH
+// notation (fa=F/3, do=C/3, sol=G/2), not guessed. Without this, freq_bass()
+// fell through to the global BASS_OCTAVE_DIV default, which — paired with
+// Tone 3's own do-is-not-tonic correction (TONE3_SEMI) — put bass's dominant
+// note (fa) ABOVE tenor's dominant note (do) for most of the piece, exactly
+// backwards for SATB (caught by Bill: "tenor chips are rendering lower than
+// bass chips ... across all phrase forms"). fa and do both sit one octave
+// down from the TONE3_SEMI reference; sol sits two octaves down. Same value
+// on all three phrases (A/B/Final).
+const TONE3_BASS_OCTAVE_DIV = { fa: 2, do: 2, sol: 4 };
+
 const BASS_RULES = {
   // ── Tone 1, Russian Obikhod (L'vov-Bakhmetev) ──────────────────────────
   // Verified phrase by phrase against Drillock & Ealy Four-Part Harmony tutorial.
@@ -2732,6 +2790,10 @@ const BASS_RULES = {
   // departures from do are Phrase B's re→sol fill and the Final Phrase's
   // matching cad (Part 2) re→sol, confirmed as the same alto→bass pair in
   // both places (cross-checked directly, no conflict).
+  //
+  // octaveDiv: see TONE3_BASS_OCTAVE_DIV above (fixed the register bug Bill
+  // caught — bass's fa was computing above tenor's do for most of the
+  // piece). Same value on all three phrases.
   3: {
     A: {
       recite: "fa",
@@ -2742,6 +2804,7 @@ const BASS_RULES = {
       // once Phrase A's own fill-note correction (do→fa, §14.4) landed.
       cadMap: { fa: "fa", mi: "do" },
       preslurMap: {},
+      octaveDiv: TONE3_BASS_OCTAVE_DIV,
     },
     B: {
       recite: "fa",
@@ -2750,6 +2813,7 @@ const BASS_RULES = {
       // re→sol is the one real departure from the constant do drone.
       cadMap: { mi: "do", re: "sol", do: "do" },
       preslurMap: {},
+      octaveDiv: TONE3_BASS_OCTAVE_DIV,
     },
     Final: {
       recite: "fa",
@@ -2763,6 +2827,7 @@ const BASS_RULES = {
       // mapBassPitch).
       cad1Map: { fa: "fa", mi: "do", do: "do", re: "do" },
       cadMap: { mi: "do", fa: "do", re: "sol", do: "do" },
+      octaveDiv: TONE3_BASS_OCTAVE_DIV,
       preslurMap: {},
     },
   },
@@ -3581,7 +3646,11 @@ export default function ToneTrainer() {
   const jitRafRef = useRef(null); // rAF handle for JIT audio node creation loop — cancelled by stopAll
   const { ac, tone, toneTimbre, stop } = useAudio();
 
-  const freq = (sol) => doHz * Math.pow(2, OFF[sol] / 12);
+  // Tone 3 uses its own semitone table (TONE3_SEMI) — do is not the tonic for
+  // this tone (§19, and the note on TONE3_SEMI above). Every other tone keeps
+  // the shared OFF table (do-is-tonic), completely unchanged.
+  const freq = (sol) =>
+    doHz * Math.pow(2, (activeTone === 3 ? TONE3_SEMI[sol] : OFF[sol]) / 12);
 
   const lineToNotes = (line) => {
     const roles = pointLine(line, PH, activeTone);
