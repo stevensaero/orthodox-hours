@@ -21,6 +21,18 @@ export const TONE_TRAINER_VERSION = "v0.25.30";
 // Newest entry first; the badge reads TRAINER_RELEASE_NOTES[0].version.
 const TRAINER_RELEASE_NOTES = [
   {
+    version: "v0.25.34",
+    date: "July 2026",
+    summary: "feat: Tone 4 bass harmony (BASS_RULES[4]) — all 7 phrases, plus a shared bass hold-collapse mechanism that fixes a real cross-consumer bug",
+    items: [
+      "feat: BASS_RULES[4] added for all seven phrases, built from a direct phrase-by-phrase interview (mirroring the Tone 2 tenor session's method — Bill reads the score directly, nothing ported from another tone or voice). See tone_trainer_tone4_analysis.md §6 for the full research record.",
+      "feat: Phrase E's cadence encoded as cadPositional — a plain array indexed by position within the six-pitch figure — rather than a pitch-keyed cadMap, since alto's re gets two different bass answers depending on where it falls in the figure (confirmed against the \"call\"/\"on\" example; a flat map cannot express this at all).",
+      "fix: the compressed Final Phrase prep-melisma (\"[Hear] [me], O Lord!\") was resolving its reciting-transition re to the wrong bass pitch — the alto side labels all three notes of that melisma role:\"prep\" (including the folded-in re), and the generic bass substitution looked it up in prepMap, which only has do/ti, silently passing re through unmapped. Fixed with a Tone-4-Final-specific check rather than restructuring the alto role system.",
+      "feat: deriveBassRolesWD() + BASS_HOLD_TONES added, directly mirroring the proven deriveTenorRolesWD()/TENOR_HOLD_TONES architecture — a 1:1 pitch map followed by collapsing any run of notes sharing the same syllable text AND the same resulting bass pitch into one held note. Gated to Tone 4 only; bass hold has not been verified for Tones 1/2 and must not inherit tenor's verification. This reproduces both of this session's confirmed hold cases (the \"Hear\" melisma, \"call\" in Phrase E) automatically, and correctly leaves \"on\" (different bass pitches, confirmed to re-articulate) uncollapsed — verified via a standalone reproduction of the collapse logic against both examples before wiring it in.",
+      "fix: consolidated three separately-drifting copies of the bass-substitution logic (audio lineToNotes_bass, the visual chip-rendering path, and buildScorePayload's score-print path) onto the single deriveBassRolesWD() function. The latter two had no hold-collapse logic at all — even after fixing the audio path, \"Hear\" would have kept rendering wrong visually and in print. Same twin-drift risk already documented and fixed once for tenor; now fixed the same way for bass.",
+    ],
+  },
+  {
     version: "v0.25.33",
     date: "July 2026",
     summary: "fix: Tone 4 Final Phrase — prep melisma was silently dropping notes when body.length<3 (caught by Bill against the live tool's actual rendering)",
@@ -2229,8 +2241,144 @@ const BASS_RULES = {
       preslurMap: { re: "re", ti: "sol" },
     },
   },
-  // Tones 1, 3, 4, 5, 6, 7, 8 — bass rules not yet researched.
+  // ── Tone 4, Obikhod (L'vov-Bakhmetev) ────────────────────────────────────
+  // Built from a direct phrase-by-phrase interview (July 2026), mirroring the
+  // Tone 2 tenor session's method exactly (Bill reads the score directly;
+  // nothing ported from another tone or voice). See
+  // tone_trainer_tone4_analysis.md §6 for the full research record.
+  4: {
+    A: { recite: "sol", prepMap: {}, cadMap: { do: "do" }, preslurMap: {} },
+    B: { recite: "sol", prepMap: {}, cadMap: { re: "sol", do: "do" }, preslurMap: {} },
+    C: {
+      // Alto re appears twice in this phrase (immediate prep before the mi
+      // accent, and the intonation's own closing note after it) with
+      // DIFFERENT bass pitches each time — confirmed NOT expressible as a
+      // flat pitch-keyed map. prepMap covers the immediate-prep re; the
+      // intonation's closing re is handled by the mapping function's
+      // Tone-4-Phrase-C-specific check (role==="inton" && pitch==="re").
+      recite: "do",
+      prepMap: { do: "do", re: "do" },
+      intonCloseRe: "ti", // intonation's closing re (post-accent) → bass ti, distinct from prepMap's re→do
+      cadMap: { re: "sol", do: "do" },
+      preslurMap: {},
+    },
+    D: { recite: "do", prepMap: {}, cadMap: { ti: "sol", do: "sol", re: "sol" }, preslurMap: {} },
+    // E's cadence is POSITIONAL, not pitch-keyed — alto re appears twice in
+    // the six-pitch figure (rising to the peak, then descending from it)
+    // with different bass pitches each time. cadPositional is read by index
+    // within the cadence (0-5), not by alto pitch identity — see
+    // deriveBassRolesWD's Tone-4-Phrase-E branch.
+    E: {
+      recite: "sol",
+      prepMap: {},
+      cadPositional: ["do", "do", "do", "ti", "do", "sol"], // under alto do·re·mi·re·do·ti
+      preslurMap: {},
+    },
+    F: { recite: "do", prepMap: {}, cadMap: { re: "sol", do: "do" }, preslurMap: {} },
+    Final: {
+      recite: "sol",
+      // do/ti here are the two TRUE prep notes. The reciting-transition re
+      // that gets folded into this same melisma when body.length<3 (e.g.
+      // "[Hear] [me], O Lord!") is NOT looked up here — it resolves via
+      // `recite` directly, per deriveBassRolesWD's Tone-4-Final-specific
+      // check (role==="prep" && pitch==="re" → use rules.recite). Confirmed
+      // score-verified: all three (re, do, ti) map to sol in that case,
+      // which is why the melisma correctly holds as one note once the
+      // pitch is fixed — same bass pitch throughout, nothing to re-strike.
+      prepMap: { do: "sol", ti: "sol" },
+      cadMap: { do: "do", ti: "mi", la: "la" },
+      preslurMap: {},
+    },
+  },
+  // Tones 1, 3, 5, 6, 7, 8 — bass rules not yet researched for Tones 5-8;
+  // Tone 1's own entries above are partial (Phrase A verified, B/C/D/Final
+  // pending); Tone 3 not yet started. (Corrected stale comment — this used
+  // to list Tone 1 and Tone 4 here too, which was wrong even before Tone 4
+  // was added; Tone 1 has real partial content above.)
   // Add entries here as score evidence is gathered per tone/setting.
+};
+
+// Tones whose BASS hold behaviour (constant-pitch alto/bass melisma spans
+// collapsing into one held note) is score-verified. Mirrors TENOR_HOLD_TONES
+// exactly, gated separately per the prime directive — bass hold has NOT been
+// checked for Tones 1/2 and must not be assumed just because tenor's was.
+// Tone 4 confirmed directly this session: "call" (bass do·do, same pitch)
+// holds; "on" (bass ti·do, different pitch) re-articulates; the Final
+// Phrase's "Hear" melisma (bass sol·sol·sol throughout) holds as one note.
+const BASS_HOLD_TONES = new Set([4]);
+
+// ── Bass derivation: shared pitch-map + melisma-hold collapse ───────────────
+// Mirrors deriveTenorRolesWD exactly (see that function's comments for the
+// general rationale). Two Tone-4-specific cases needed handling beyond the
+// generic role→map lookup, both found by testing against real examples
+// rather than assumed from the data alone:
+//   - Phrase C: the intonation's CLOSING re (post-accent) needs a different
+//     bass pitch (ti) than the immediate-prep re (do, via prepMap) — same
+//     alto pitch, same role name possibilities, different structural point.
+//   - Final Phrase: when body.length<3 compresses the reciting-transition
+//     into the same melisma as the two true prep notes, all three get
+//     labelled role:"prep" on the alto side (for rendering purposes), but
+//     the reciting-transition re must resolve via `recite`, not `prepMap`
+//     (prepMap only has do/ti) — caught directly against "[Hear] [me], O
+//     Lord!" while building this function, not assumed safe beforehand.
+// Phrase E's cadence is positional, not pitch-keyed at all (see
+// cadPositional in BASS_RULES[4].E) — tracked via a running cad-entry index
+// as deriveBassRolesWD iterates, since alto's own re appears twice in that
+// phrase's figure with two different bass answers.
+const mapBassPitch = (r, rules, tone, phrase, cadIdx) => {
+  const orig = r.pitches[0];
+  if (tone === 4 && phrase === "E" && (r.role === "cad" || r.role === "cad1")) {
+    return rules.cadPositional?.[cadIdx] ?? orig;
+  }
+  if (tone === 4 && phrase === "Final" && r.role === "prep" && orig === "re") {
+    return rules.recite;
+  }
+  if (tone === 4 && phrase === "C" && r.role === "inton" && orig === "re") {
+    return rules.intonCloseRe ?? orig;
+  }
+  if (r.role === "recite" || r.role === "inton") return rules.recite;
+  if (r.role === "prep")    return rules.prepMap?.[orig]    ?? orig;
+  if (r.role === "preslur") return rules.preslurMap?.[orig] ?? orig;
+  if (r.role === "cad" || r.role === "cad1") return rules.cadMap?.[orig] ?? orig;
+  return orig;
+};
+
+const deriveBassRolesWD = (rolesWD, rules, tone, phrase) => {
+  let cadIdx = 0;
+  const mapped = rolesWD.map((r, i) => {
+    const p = mapBassPitch(r, rules, tone, phrase, cadIdx);
+    if (r.role === "cad" || r.role === "cad1") cadIdx++;
+    return { ...r, pitches: [p], _idx: i };
+  });
+  const out = [];
+  let i = 0;
+  while (i < mapped.length) {
+    const e = mapped[i];
+    if (e.melisma) {
+      // maximal run of melisma entries with the same syllable text AND same bass pitch
+      let j = i;
+      while (j + 1 < mapped.length &&
+             mapped[j + 1].melisma &&
+             mapped[j + 1].text === e.text &&
+             mapped[j + 1].pitches[0] === e.pitches[0]) j++;
+      const spanCount = j - i + 1;
+      if (spanCount >= 2 && BASS_HOLD_TONES.has(tone)) {
+        const dk = sumDurKeys(mapped.slice(i, j + 1).map(x => x.durKey));
+        if (dk) {
+          const sumDur = mapped.slice(i, j + 1).reduce((s, x) => s + (x.dur || 0), 0);
+          out.push({ ...e, dur: sumDur, durKey: dk, melisma: false,
+                     spanStart: e._idx, spanCount });
+        } else {
+          for (let k = i; k <= j; k++) out.push({ ...mapped[k], spanStart: mapped[k]._idx, spanCount: 1 });
+        }
+        i = j + 1;
+        continue;
+      }
+    }
+    out.push({ ...e, spanStart: e._idx, spanCount: 1 });
+    i++;
+  }
+  return out;
 };
 
 // Bass octave displacement — each solfège pitch mapped to its correct bass register.
@@ -3394,22 +3542,9 @@ export default function ToneTrainer() {
     // Get the fully-expanded alto roles with durations
     const rolesWD = lineToRolesWithDuration(line);
 
-    // Substitute pitches 1:1 using BASS_RULES — identical to bassRolesWD in render
-    const bassRolesWD = rolesWD.map(r => {
-      let bassPitch;
-      if (r.role === "recite" || r.role === "inton") {
-        bassPitch = rules.recite;
-      } else if (r.role === "prep") {
-        bassPitch = rules.prepMap?.[r.pitches[0]] ?? r.pitches[0];
-      } else if (r.role === "preslur") {
-        bassPitch = rules.preslurMap?.[r.pitches[0]] ?? r.pitches[0];
-      } else if (r.role === "cad" || r.role === "cad1") {
-        bassPitch = rules.cadMap?.[r.pitches[0]] ?? r.pitches[0];
-      } else {
-        bassPitch = r.pitches[0];
-      }
-      return { ...r, pitches: [bassPitch] };
-    });
+    // Shared pitch-map + melisma-hold collapse (constant-pitch span → one
+    // held note, gated by BASS_HOLD_TONES) — mirrors lineToNotes_tenor.
+    const bassRolesWD = deriveBassRolesWD(rolesWD, rules, activeTone, line.phrase);
 
     // Emit audio notes directly from bassRolesWD — dur is already correct
     const notes = [];
@@ -4524,18 +4659,16 @@ export default function ToneTrainer() {
           }))
         : null;
 
-      // Bass: apply BASS_RULES substitution exactly as in lineToNotes_bass
+      // Bass: shared pitch-map + melisma-hold collapse (mirrors lineToNotes_bass
+      // and the chip-render path — one source of truth, per the same
+      // twin-drift concern already documented for tenor).
       const bassRules = BASS_RULES[activeTone]?.[line.phrase];
-      const bassEntries = bassRules ? rolesWD.map(r => {
-        let p;
-        const orig = r.pitches[0];
-        if (r.role === "recite" || r.role === "inton") p = bassRules.recite;
-        else if (r.role === "prep")    p = bassRules.prepMap?.[orig]   ?? orig;
-        else if (r.role === "preslur") p = bassRules.preslurMap?.[orig] ?? orig;
-        else                           p = bassRules.cadMap?.[orig]    ?? orig;
+      const bassEntries = bassRules ? deriveBassRolesWD(rolesWD, bassRules, activeTone, line.phrase).map(r => {
+        const p = r.pitches[0];
         // Per-phrase octaveDiv overrides the global BASS_OCTAVE_DIV
         const octaveDiv = bassRules.octaveDiv?.[p] ?? BASS_OCTAVE_DIV[p] ?? 2;
-        return { pitch: p, durKey: r.durKey, melisma: r.melisma === true, octaveDiv };
+        return { pitch: p, durKey: r.durKey, melisma: r.melisma === true, octaveDiv,
+                 spanStart: r.spanStart, spanCount: r.spanCount };
       }) : null;
 
       // Tenor: same substitution pattern as bass using TENOR_RULES
@@ -5589,21 +5722,7 @@ export default function ToneTrainer() {
         const bassRolesWD = (() => {
           const rules = BASS_RULES[activeTone]?.[line.phrase];
           if (!rules) return null;
-          return rolesWD.map(r => {
-            let bassPitch;
-            if (r.role === "recite" || r.role === "inton") {
-              bassPitch = rules.recite;
-            } else if (r.role === "prep") {
-              bassPitch = rules.prepMap?.[r.pitches[0]] ?? r.pitches[0];
-            } else if (r.role === "preslur") {
-              bassPitch = rules.preslurMap?.[r.pitches[0]] ?? r.pitches[0];
-            } else if (r.role === "cad" || r.role === "cad1") {
-              bassPitch = rules.cadMap?.[r.pitches[0]] ?? r.pitches[0];
-            } else {
-              bassPitch = r.pitches[0];
-            }
-            return { ...r, pitches: [bassPitch] };
-          });
+          return deriveBassRolesWD(rolesWD, rules, activeTone, line.phrase);
         })();
         const isFin = line.phrase === "Final";
         const sopranoAvailable = SOPRANO_TONES.has(activeTone);
