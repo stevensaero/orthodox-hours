@@ -1520,3 +1520,70 @@ count===1 degenerate cases for Phrase A/B remain honest-fallback/untested
 (§16.3), and soprano's notation is derived rather than independently
 score-read (§21.1).
 
+---
+
+## 24. Melisma slur bar missing on collapsed bass/tenor notes
+
+*Bill: "the collapse is happening properly but the slur bars are not
+showing in the score." A precise, narrow bug, confirmed against the
+function's own documented history before touching it.*
+
+### 24.1 Root cause
+
+`drawMelismaSlurs()` in `score-print.html` groups consecutive same-text
+notes into a slur span using each entry's `melisma` flag as the sole
+membership test. `deriveBassRolesWD()`/`deriveTenorRolesWD()` correctly set
+`melisma: false` on a collapsed (held) note, it genuinely is one note now,
+not several, and v0.25.35 correctly established that a fully-collapsed
+single note needs no slur drawn around it. But that same flag was *also*
+the only signal `drawMelismaSlurs()` used for group membership, so a
+collapsed note dropped out of slur consideration entirely, not just
+self-slurring, it could never be connected by a curve to an adjacent note
+or an adjacent collapsed group under the same syllable.
+
+This is exactly Tone 3's Final Phrase "Hear":
+- **Bass:** the uncollapsed pickup `fa` sits next to one collapsed `do`
+  group (§23.2). Two genuinely separate noteheads, needing a connecting
+  slur, neither eligible under the old logic.
+- **Tenor:** two separate collapsed groups under the same syllable
+  (`do·do` then `sol·sol`). Both noteheads exist, both need a connecting
+  slur, neither eligible.
+
+### 24.2 Fix, verified against the function's own history first
+
+Before touching this function, re-read its two prior fixes (v0.25.35,
+v0.25.41) directly, since both were themselves corrections to earlier
+over/under-corrections in this exact area. `eligible(e) = e.melisma===true
+|| (e.spanCount > 1)`, replacing the old `ar.melisma`-only test. A note
+that is *both* `melisma:false` and `spanCount<=1` (a plain, never-collapsed
+standalone note) remains correctly ineligible, so a syllable that collapses
+into one single note with nothing else adjacent still draws no curve,
+v0.25.35's original intent fully preserved.
+
+Verified with a standalone logic simulation (not just reasoned through)
+against all four known cases before shipping:
+
+| Case | Entries | Curve drawn? |
+|---|---|---|
+| Tone 4 "call" (fully collapsed, 1 entry) | 1 | No — correct, unchanged |
+| Tone 4 "on" (2 uncollapsed, differing pitch) | 2 | Yes, 0→1 — correct, unchanged |
+| Tone 3 bass "Hear" (uncollapsed + 1 collapsed group) | 2 | Yes, 0→1 — new, fixed |
+| Tone 3 tenor "Hear" (2 collapsed groups) | 2 | Yes, 0→1 — new, fixed |
+| Sanity: plain reciting run, no melisma | 2 | No — no false positive |
+
+Alto and soprano entries never carry `spanCount` at all (only bass/tenor
+entries do, from the collapse derivation), so `eligible()` reduces to the
+plain `melisma===true` test for them, identical to the prior behavior, a
+verified no-op for those two voices.
+
+### 24.3 Verification
+
+`node --check` confirms syntax. `npm run gate` — 71/71, 24/24, neither
+touches `score-print.html`. `vite build` clean. **Recommend live
+verification against the deployed tool's printed score** before considering
+this fully closed, per standing practice.
+
+**Status: shipped as v0.25.56. Tone 3's Final Phrase now renders the same
+connecting slur bars for bass and tenor that alto/soprano already show,
+matching the score Bill read directly.**
+
