@@ -1034,3 +1034,117 @@ and now Phrase B's overcount fill (this section). Four for four, all
 resolved by moving Tone 3 off anything shared and checking each phrase
 directly against its own tutorial text and score.
 
+---
+
+## 18. Harmony voices — implemented, Tone 3 SATB complete
+
+*Closes §14's in-progress harmony session. Bass finished, code written for
+all three added voices (bass, tenor, soprano), gated, built, shipped as
+v0.25.51.*
+
+### 18.1 Bass — closed, all phrases
+
+| Role | Alto | Bass |
+|---|---|---|
+| Phrase A recite | fa | fa |
+| Phrase A cad anchor/fill | fa | fa |
+| Phrase A cad final | mi | do |
+| Phrase B recite | fa | fa |
+| Phrase B cad anchor | mi | do |
+| Phrase B cad fill | re | sol |
+| Phrase B cad final | do | do |
+| Final recite | fa | fa |
+| Final cad1 anchor | mi | do |
+| Final cad1 mid | do | do |
+| Final cad1 final | re | do |
+| Final cad (Part 2) anchor | mi | do |
+| Final cad (Part 2) | fa | do |
+| Final cad (Part 2) | re | sol |
+| Final cad (Part 2) final | do | do |
+
+Bass for Tone 3 is a near-constant `do`/`fa` drone (recite and Phrase A both
+sit on `fa`, everything else settles to `do`), with `re → sol` as the one
+real departure, confirmed identically in both Phrase B's fill and the
+Final's cad Part 2, cross-checked, no conflict.
+
+### 18.2 The cad1/cad `re` conflict — architecture decision
+
+Alto's own `re` maps to **`do`** in the Final Phrase's cad1 (Part 1, final
+position) but to **`sol`** in cad (Part 2, position 2). The existing
+generic derivation code resolves both `cad` and `cad1` roles through one
+shared `cadMap` keyed only by alto pitch name, which cannot represent two
+different answers for the same key. This is structurally the same problem
+Tone 4 Phrase E already solved with `cadPositional` (alto `re` appears twice
+in that phrase's six-pitch figure with two different bass answers), but
+Tone 3's cad1 figure is fixed-length (3 notes) rather than variable, so a
+dedicated `cad1Map` field (checked before the generic `cadMap` fallback) was
+simpler than adapting the positional-index approach. Added to
+`mapBassPitch` and `mapTenorPitch` identically. The recite-pickup `fa`
+(§15.4/§16.2) is covered by the same `cad1Map`, since it resolves to
+whatever the phrase's own `recite` value already is, no separate case
+needed.
+
+### 18.3 Tenor — closed, all phrases
+
+| Role | Alto | Tenor |
+|---|---|---|
+| Phrase A recite | fa | do |
+| Phrase A cad anchor/fill | fa | do |
+| Phrase A cad final | mi | do |
+| Phrase B recite | fa | do |
+| Phrase B cad anchor | mi | do |
+| Phrase B cad fill | re | ti |
+| Phrase B cad final | do | sol |
+| Final recite | fa | do |
+| Final cad1 anchor | mi | do |
+| Final cad1 mid | do | sol |
+| Final cad1 final | re | sol |
+| Final cad (Part 2) anchor | mi | do |
+| Final cad (Part 2) | fa | do |
+| Final cad (Part 2) | re | ti |
+| Final cad (Part 2) final | do | sol |
+
+Same near-constant-drone shape as bass, on `do` instead. `re → ti`
+(Phrase B fill and Final cad Part 2) is the one real departure, cross-
+checked identical in both places.
+
+### 18.4 Soprano — closed, all phrases
+
+Confirmed pure diatonic third above alto, all four alto pitches Tone 3 uses:
+`fa→la`, `mi→sol`, `re→fa`, `do→mi`. `SOPRANO_MAP` already covers all four
+— no new map entries needed, `3` simply added to `SOPRANO_TONES`, same shape
+as the Tone 4 soprano close.
+
+### 18.5 Gating
+
+`3` added to `TENOR_TONES`, `BASS_TONES`, `SOPRANO_TONES` — all three voices
+now selectable in the UI for Tone 3, SATB genuinely available.
+
+**Deliberately NOT added:** `TENOR_HOLD_TONES` / `BASS_HOLD_TONES`. Whether
+Tone 3's bass or tenor sustain through a constant-pitch alto melisma (versus
+re-articulating each note) has never been checked against its own score.
+Both drones share the "mostly constant" shape that made hold trivial to
+confirm for Tone 4, but per the prime directive that resemblance is not
+evidence, hold is never inherited from another tone's confirmation. Open
+item for a future session if it's worth checking.
+
+### 18.6 Verification
+
+No automated test exists for harmony-voice rules — `tools/test_pointing_roles.mjs`
+is explicitly scoped to alto roles/pitches only (per its own header comment).
+Verified by manually tracing the full derivation chain (`mapBassPitch`/
+`mapTenorPitch` → `deriveBassRolesWD`/`deriveTenorRolesWD`) against the
+flagship "[Hear] [me], O Lord." example for both bass and tenor:
+
+- Bass: `fa(pickup)·do·do·do·do·do·sol·do` — matches Bill's given data exactly.
+- Tenor: `do(pickup)·do·sol·sol·do·do·ti·sol` — matches exactly.
+
+`npm run gate` — 71/71 Hours Tool checks, 24/24 pointing-role checks (alto
+layer only, unaffected by this session's harmony work). `vite build` clean.
+**Recommend live verification against the deployed tool** before considering
+this fully closed — per standing practice, bugs are caught by testing the
+real tool, not code review or manual tracing alone.
+
+**Status: Tone 3 harmony voices (Bass, Tenor, Soprano) implemented and
+shipped, v0.25.51. Tone 3 is now feature-complete for SATB, same as Tone 4.**
+
