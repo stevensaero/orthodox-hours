@@ -180,11 +180,17 @@ function spell(sol, anchorOct, cfg) {
 }
 
 // F-major anchor octaves per voice (the registers verified against the OCA score).
+// CORRECTED SCOPE (Jul 2026): this table was built and verified against Tone 1's
+// score, then silently reused for every tone added since (Tone 2, Tone 4) without
+// being independently re-checked per tone. That happened to be safe for Tones
+// 2 and 4, but was wrong for Tone 3 — see TONE3_ALTO_PITCH below for why. This
+// table (and buildAltoPitch) is now Tones 1/2/4 ONLY; Tone 3 does not use it.
 var ALTO_ANCHOR_OCT    = { la:4, ti:4, do:4, re:4, mi:4, fa:4, sol:5, si:5, di:4, mi_low:4 };
 var SOPRANO_ANCHOR_OCT = { la:5, ti:5, do:4, re:4, mi:4, fa:4, sol:5, si:5, di:4, mi_low:4 };
 
 // Alto sits in the upper-middle treble register (fa = Bb/4 middle line in F major);
 // la/ti sit below do. Octaves now transpose cleanly for any key.
+// Tones 1/2/4 only — see TONE3_ALTO_PITCH below for Tone 3.
 function buildAltoPitch(cfg) {
   var m = {}; for (var k in ALTO_ANCHOR_OCT) m[k] = spell(k, ALTO_ANCHOR_OCT[k], cfg); return m;
 }
@@ -193,6 +199,32 @@ function buildAltoPitch(cfg) {
 function buildSopranoPitch(cfg) {
   var m = {}; for (var k in SOPRANO_ANCHOR_OCT) m[k] = spell(k, SOPRANO_ANCHOR_OCT[k], cfg); return m;
 }
+
+// ── Tone 3 — dedicated alto notation table (Jul 2026) ───────────────────────
+// NOT transposition-aware like buildAltoPitch/ALTO_ANCHOR_OCT above — this is a
+// deliberate difference, not an oversight. Two separate bugs were found and
+// fixed together here:
+//   1. The shared ALTO_ANCHOR_OCT table was silently applied to Tone 3 without
+//      ever being independently verified against Tone 3's own printed score.
+//      Bill caught it directly: fa was rendering as Bb4 (the shared table's
+//      value, correct for Tones 1/2/4) when it should render as F4 — not just
+//      a different octave, a different LETTER. Tone 3's "do" sits on the
+//      DOMINANT of the notated key (C, a fifth above the tonic F), not the
+//      TONIC the way Tones 1/2/4's "do" does — the shared table's implicit
+//      "do anchors to the key's tonic" assumption doesn't hold for this tone.
+//      Confirmed directly against the score: do=C/4, re=D/4, mi=E/4, fa=F/4,
+//      all natural, no accidentals, still inside the same one-flat F-major
+//      gamut Tones 1/2/4 use — Tone 3 just centers on a different degree of it.
+//   2. Orthodox chant notation is NOT re-typeset when a choir director picks a
+//      different starting/performance pitch — the printed page a choir reads
+//      from is fixed (here, F major); only where the choir starts singing
+//      moves, a purely aural transposition with no effect on note positions
+//      on the page. So unlike buildAltoPitch (which transposes with doHz/cfg
+//      because that's how Tones 1/2/4 were built), Tone 3's notation table is
+//      deliberately flat and ignores doHz/cfg entirely.
+// Only do/re/mi/fa are populated — confirmed as the only alto pitches Tone 3
+// ever uses, across all three phrases (see phrase-defs.js PH_DEFS[3]).
+var TONE3_ALTO_PITCH = { do: "C/4", re: "D/4", mi: "E/4", fa: "F/4" };
 
 function staveKey(solName, oct, cfg) {
   var letter = cfg.names[solName];
@@ -334,7 +366,10 @@ function renderScore(payload) {
   var VF    = VexFlow;
   var lines = payload.lines;
   var cfg   = resolveKey(payload.doHz);
-  var ALTO_PITCH = buildAltoPitch(cfg);
+  // Tone 3 uses its own dedicated, non-transposing notation table — see
+  // TONE3_ALTO_PITCH above for why. Every other tone keeps the shared,
+  // transposition-aware buildAltoPitch(cfg).
+  var ALTO_PITCH = (payload.tone === 3) ? TONE3_ALTO_PITCH : buildAltoPitch(cfg);
   var SOPRANO_PITCH = buildSopranoPitch(cfg);
   var grand = false;
   for (var i=0; i<lines.length; i++) { if (lines[i].bass) { grand=true; break; } }
