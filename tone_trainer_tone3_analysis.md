@@ -887,3 +887,102 @@ the prime directive.
 **Status: documented, not yet implemented.** Implementation, regression
 testing, and gate/build come next.
 
+---
+
+## 16. Implementation — Tone 3 off shared `distribute()` entirely
+
+*§15's plan, built. All four dedicated handlers plus the chip fix, described
+below with what changed and why.*
+
+### 16.1 Chip-split fix
+
+Both `lineToNotes()` and `lineToRolesWithDuration()` now check for an explicit
+`r.durs` array at the very top of their role-processing loop, before any
+role-type dispatch. When present, it's authoritative: each pitch in `r.pitches`
+is paired with its own duration from `r.durs` and pushed as its own note (audio)
+or chip entry (display), bypassing every generic/shared duration path entirely.
+This is a rendering pass-through, not domain logic, it doesn't decide what
+duration any phrase's cadence should have, it just plays back whatever the
+tone-specific `pointLine()` logic already decided. The old `cad1`-specific
+branch (which had the wrong duration comparison, `ri === cadIdxs[0]`, and no
+multi-pitch split at all) is gone, replaced by this one mechanism, used by all
+four of the new Tone 3 handlers below.
+
+### 16.2 `distributeTone3FinalCad1()` and `distributeTone3FinalCad2()`
+
+Two new functions in `pointing.js`, self-contained to Tone 3's Final Phrase,
+never calling shared `distribute()`. Each returns `{ pitches, durs }` pairs
+directly, so no downstream lookup or position-matching is needed.
+
+- **cad1 (Part 1):** fixed figure `mi(H)·do(Q)·re(Q)`. Excess syllables
+  compress onto the first available syllable; anchor and final positions
+  never drop. When the cad1 anchor is the line's first syllable (zero
+  reciting syllables precede it), a leading `fa(Q)` recite-pickup is
+  prepended to the melisma, per Bill's confirmation in §15.4.
+- **cad2 (Part 2):** fixed figure `mi(Q)·fa(Q)·re(H)·do(W)`. Same
+  excess-compresses-onto-first-syllable rule; the final `do(W)` is always
+  fixed and never drops, per the tutorial quote in §15.4.
+
+Verified directly against "[Hear] [me], O Lord.": `Hear` → `cad1`,
+`fa·mi·do·re` (pickup fires, body is empty). `me` → `cad`, `mi·fa` (2-note
+melisma, excess compression). `O` → `cad`, `re`. `Lord` → `cad`, `do` (fixed
+final, never drops). Matches Bill's reported score reading exactly.
+
+### 16.3 Dedicated Phrase A and Phrase B handlers
+
+Both now have their own `pointLine()` branch, checked before the generic
+single-anchor fallback, so neither ever reaches shared `distribute()` again.
+
+- **Phrase A:** anchor `fa` and final `mi` both fixed. 2-syllable cadence
+  (73/74 corpus instances) = anchor + final only, fill never appears. 3+
+  syllables = fill repeats `fa` (the corrected value from §14.4).
+- **Phrase B:** anchor `mi` (dotted-half unless the cadence is long) and
+  final `do` both fixed. 2-syllable cadence = anchor + final only, same
+  shape as Phrase A. 3+ syllables (exact fit) = fill on `re`. Long-cadence
+  rule (>3 syllables) collapses the dotted-half to a plain half, unchanged
+  from the original build.
+
+Both confirmed against direct `distribute()` testing from §15.3: the old
+shared-path behavior for a 2-syllable cadence dropped the fixed final pitch
+entirely (`[fa,fa]` instead of `[fa,mi]` for A; `[mi,re]` instead of
+`[mi,do]` for B). The dedicated handlers close this for both phrases.
+
+**count===1 edge case (anchor and final syllable coincide):** never observed
+in either phrase's corpus. Honest fallback in both handlers, melisma-
+compresses anchor+final onto the one available syllable, flagged in code
+comments as untested rather than silently picked one way or the other.
+
+### 16.4 Open question surfaced during implementation — Phrase B's overcount fill
+
+While writing Phrase B's dedicated handler, a fresh discrepancy surfaced that
+wasn't caught in §15's planning: the original `phrase-defs.js` comment for
+Phrase B explicitly stated *"extras ride on mi"* for the >3-syllable overcount
+case, matching a literal reading of the tutorial's own prose. But the shared
+`distribute()` code actually in use for that case computed the figure's own
+middle note (`re`), not `mi`, and nobody had ever checked which was actually
+correct, the comment's claim about what the code did was simply wrong,
+another instance of the same pattern documented in §14.4 and §15.3.
+
+**Not resolved either way.** The new dedicated handler implements `re`
+(carrying forward what every prior session assumed was live), not `mi` (the
+tutorial's literal text), and flags this explicitly in a code comment. This
+is a genuinely open question for Bill: does the >3-syllable overcount fill
+land on `re` or `mi`? Needs a real example or score check, not another
+assumption either direction. Practically low-urgency, this case requires a
+Phrase B cadence with 4+ syllables between the anchor and the end of the
+line, likely rare, but flagged rather than silently buried.
+
+### 16.5 Test results
+
+- `tools/test_pointing_roles.mjs` — 5 new Tone 3 fixtures added (Phrase A
+  2-syllable and 3-syllable, Phrase B 2-syllable and 3-syllable exact-fit,
+  the Final Phrase two-part cadence with recite-pickup). 23/23 pointing-role
+  checks pass.
+- `npm run gate` — 71/71 Hours Tool checks, no regressions (pre-existing
+  F-1a/F-1b warnings unrelated to this work).
+- `vite build` — clean.
+- Zero changes to Tone 1, Tone 2, or Tone 4 code paths. Nothing shared was
+  touched, per the architectural decision in §15.5.
+
+**Status: implemented, tested, gated, built.** Shipped as v0.25.49.
+
