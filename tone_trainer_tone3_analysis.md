@@ -1674,3 +1674,59 @@ harmony-voice fix this session.
 system is now internally consistent with its own confirmed notation, for
 all four voices, root cause fixed rather than patched at the symptom.**
 
+---
+
+## 26. Chip UI grouping — bass/tenor rows drifting out of alignment
+
+*Bill: "we need to align these bass/tenor chips with the sop/alto parts
+above — we are slightly out of alignment now — likely spacing issues
+influenced by the melisma slurs." Correct instinct, and the same root
+cause as §24, just in the chip-rendering path instead of the printed
+score.*
+
+### 26.1 Root cause — identical to §24, different function
+
+`groupedTenor`, `groupedBass`, and a third near-identical tenor-ghost
+grouping block all decide whether a chip continues the previous visual
+group (tight `CHIP_MELISMA_GAP`) or starts a new one (wide `CHIP_GAP`, the
+same spacing used between different syllables) using `r.melisma === true`
+alone. A collapsed note correctly carries `melisma: false`, so it always
+started a fresh group, even when it belonged to the same syllable as an
+adjacent note or an adjacent collapsed group. Each spurious extra group
+added a full inter-syllable gap where a tight intra-melisma gap belonged,
+and those extra gaps accumulated across the line, drifting the whole
+bass/tenor row out of horizontal sync with alto/soprano above it. Three
+separate copies of the identical bug, not one.
+
+### 26.2 Fix
+
+Same `eligible = melisma === true || (spanCount > 1)` test established in
+§24's `drawMelismaSlurs` fix, applied to all three grouping blocks.
+`groupedAlto` (a fourth, similar-looking block used for both the alto row
+and the shared text-baseline labels) was left untouched, alto entries never
+carry `spanCount`, so it was never affected.
+
+### 26.3 Verification
+
+Simulated the fixed grouping against both known Tone 3 Final Phrase shapes
+before shipping:
+
+| Voice | Shape | Groups produced |
+|---|---|---|
+| Bass | fa (uncollapsed) + do (collapsed×3), then me/O/Lord | 4 — Hear, me, O, Lord |
+| Tenor | do (collapsed×2) + sol (collapsed×2), then me/O/Lord | 4 — Hear, me, O, Lord |
+
+Both now produce exactly one group per syllable, matching alto's own
+4-syllable grouping count exactly, where before each produced extra
+spurious groups (2 for "Hear" alone in both cases, previously).
+
+`npm run gate` — 71/71, 24/24. `vite build` clean. **Recommend live
+verification against the deployed tool's chip view** before considering
+this fully closed.
+
+**Status: shipped as v0.25.58. §24 and §26 together close the same
+underlying gap (a collapsed note's `melisma:false` correctly excluding it
+from further internal collapsing, but incorrectly also excluding it from
+group membership) in both places it appeared, the printed score and the
+chip UI.**
+
