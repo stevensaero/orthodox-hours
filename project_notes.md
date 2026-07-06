@@ -1,5 +1,33 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.27.1** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
+**Tool version: v0.27.2** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
+
+**Session July 6, 2026 (cont.) — fix: SCRIPTURE_BOOK_ID gap resolved, Ez -> Ezek
+normalized, encoding_rule_v2.md bumped to v2.10 (v0.27.1 → v0.27.2).** Follow-up
+to the combined-Vespers-lessons work: verifying paroemiaToRef against real data
+had surfaced a gap where six abbreviation variants used in the paroemia fields
+(`3 Kgdms`, `4 Kgdms`, bare `Ex`, `Jdt`, `Judg`, `Is`) weren't recognized keys
+in `SCRIPTURE_BOOK_ID`, so those specific lessons silently failed to resolve a
+link. All six added as safe, unambiguous aliases (each maps to exactly one
+book, verified against the live map — no realistic collision).
+
+`Ez` was deliberately excluded from that list — it collides with Ezra in
+standard biblical-abbreviation convention. 07-28B (Smolensk Icon) was the one
+entry in the corpus using it (for Ezekiel's shut-eastern-gate paroemia);
+corrected the source data to `Ezek` instead of teaching the resolver to guess,
+since a resolver alias would work today (only Ezekiel appears in this corpus)
+and silently mis-resolve the day a genuine Ezra paroemia is ever encoded the
+same way.
+
+`encoding_rule_v2.md` bumped v2.9 → v2.10: new §11 #19 (paroemia book
+abbreviations must be unambiguous — full name or an existing unambiguous
+`SCRIPTURE_BOOK_ID` form only, never a new bare short form without checking
+collisions) and a matching §12 pre-save checklist line, so this can't quietly
+recur.
+
+Three separate commits per usual convention: data (07-28B), code
+(SCRIPTURE_BOOK_ID), docs (encoding_rule_v2.md). Gate: 71/71 pointing-paths +
+sunday-vespers, validate_entries.mjs (same pre-existing F-1/F-2 warnings only),
+vite build clean.
 
 **Session July 6, 2026 (cont.) — fix: Scripture's book selector hidden on direct
 handoffs from the Hours tool (v0.27.0 → v0.27.1).** Already hidden for a single
