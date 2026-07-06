@@ -986,3 +986,51 @@ line, likely rare, but flagged rather than silently buried.
 
 **Status: implemented, tested, gated, built.** Shipped as v0.25.49.
 
+---
+
+## 17. Resolution — Phrase B's overcount fill is `mi`, not `re`
+
+*Closes the open question from §16.4, same session, Bill quoting the
+tutorial directly.*
+
+Tutorial, verbatim: "Phrase B also begins directly with the reciting tone
+(fa) and concludes with the cadence, used to sing two or more syllables. The
+cadence begins with the last internal accented syllable, sung as a dotted
+half note on mi, followed by a quarter note on re, and concluding with the
+final syllable sung on do. If there are more than three syllables in the
+cadence, then these additional unaccented syllables are sung on mi, and the
+dotted half is changed to a half note."
+
+**Reading:** the base 3-note frame (`mi` anchor · `re` · `do` final) is the
+exact-fit shape for exactly 3 cadence syllables. "These additional unaccented
+syllables" (i.e. anything beyond that base frame, for cadences of 4+
+syllables) extend the anchor's own `mi` pitch. The single `re` passing tone
+stays fixed, always immediately preceding the final `do`, it doesn't
+disappear or get repeated, it just moves later in the sequence as more `mi`
+extensions get inserted before it.
+
+**What this replaces:** the dedicated Phrase B handler (§16.3) had
+implemented `re` for every middle syllable regardless of count, carried over
+from what the shared `distribute()` code happened to produce before today
+(it repeats the exact-fit figure's own middle note for overcount, a
+mechanical side effect nobody had verified against the tutorial). Fixed:
+only the syllable immediately before the final gets `re`; every other middle
+syllable gets `mi`.
+
+**Verified:** for a 5-syllable cadence (`call·up·on·Thee·now`), the corrected
+sequence is `mi(anchor,H)·mi·mi·re·do(final)` — two extra `mi` extensions,
+then the single fixed `re`, then `do`. New regression fixture locks this in.
+
+**Test results:** `tools/test_pointing_roles.mjs` — 24/24 pointing-role
+checks. `npm run gate` — 71/71 Hours Tool checks, zero regressions. `vite
+build` clean. Shipped as v0.25.50.
+
+**Pattern, once more:** this is the fourth instance in one session of the
+same root cause, a comment or assumption describing what shared code was
+believed to do, never checked against the code that actually ran or the
+tutorial it was supposed to be sourced from. Phrase A's fill typo (§14.4),
+`distribute()`'s undercount rule (§15.3), the stale `Final.cad` array (§15.2),
+and now Phrase B's overcount fill (this section). Four for four, all
+resolved by moving Tone 3 off anything shared and checking each phrase
+directly against its own tutorial text and score.
+
