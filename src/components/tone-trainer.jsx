@@ -27,12 +27,21 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.44";
+export const TONE_TRAINER_VERSION = "v0.25.45";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.45",
+    date: "July 2026",
+    summary: "fix: Phrase E chip heights — bass's ti was never collected into the unified voice-height map at all (cadPositional, not cadMap), silently falling back to the shortest possible height and inverting the visual stack against tenor",
+    items: [
+      "fix: buildUnifiedVoiceMap()'s pitch extraction only ever read pr.cadMap/pr.prepMap, never pr.cadPositional — a gap left behind by the earlier v0.25.42 fix, which corrected the PHRASE ITERATION list (adding E/F) but never touched the pitch EXTRACTION itself, so Phrase E's bass mapping (cadPositional, a plain array, not a pitch-keyed map — see BASS_RULES[4].E) was still silently skipped even after that fix. Bass's ti (used only inside that array, nowhere in any cadMap across any phrase) was never added to the unified height map at all, so its lookup fell back to H_VOICE_MIN — the shortest possible bucket. Computed directly: with the gap, bass's ti (height 24) rendered shorter than tenor's correctly-computed sol (height 32) at the same 'on' position — both chips anchor at the same top edge, so the wrongly-short bass chip ended above where the taller tenor chip extended to, visually reading as if tenor's sol hung down below bass's ti. Caught by Bill against the actual chip rendering, not by listening or reading the score (both were already correct) — this was purely a visual-layer bug. Fixed by adding cadPositional to the same pitch-collection line; ti now correctly computes to height 56, well below tenor's 32.",
+      "note: the underlying frequency-to-height math was never wrong for any pitch that WAS being collected — every previously-diagnosed height value (bass ti, tenor sol, etc., checked directly by computing real frequencies) was already correctly ordered. The bug was specifically a pitch silently never entering the collection at all, not a miscalculation for one that did.",
+    ],
+  },
   {
     version: "v0.25.44",
     date: "July 2026",
@@ -5062,14 +5071,28 @@ export default function ToneTrainer() {
       if (!rules) return;
       // E and F added alongside Tone 4's phrases — this list predated any
       // tone with more than 5 phrases (A-D, Final), so it silently missed
-      // any pitch used ONLY in E/F and not shared with A-D/Final. Didn't
-      // surface as a visible bug for Tone 4 specifically (every E/F pitch
-      // here happens to already appear in A-D too), but real and worth
-      // fixing now rather than leaving for a future tone to trip over.
+      // any pitch used ONLY in E/F and not shared with A-D/Final.
+      //
+      // CORRECTED — that earlier fix was itself incomplete: it fixed the
+      // phrase ITERATION scope but not the pitch EXTRACTION itself, which
+      // only ever read pr.cadMap/pr.prepMap. Phrase E's bass mapping uses
+      // cadPositional (a plain array, not a pitch-keyed map — see
+      // BASS_RULES[4].E), which was never read here at all, iteration fix
+      // or not. Bass's "ti" (used ONLY inside that array, nowhere else in
+      // any cadMap) was silently never added to the unified height map,
+      // so its lookup fell back to H_VOICE_MIN — the shortest possible
+      // value, shorter even than tenor's correctly-computed "sol" at that
+      // same position. That inverted the visual stacking exactly where
+      // Bill caught it: tenor's sol rendering as if it sat BELOW bass's
+      // ti, when the real frequencies (and the score) have it clearly
+      // above. Root cause was never a height-VALUE miscalculation for the
+      // pitches that WERE collected — those were always correctly
+      // ordered — it was a pitch that never got collected in the first
+      // place, silently defaulting to the shortest bucket.
       ["A","B","C","D","E","F","Final"].forEach(ph => {
         const pr = rules[ph];
         if (!pr) return;
-        [pr.recite, ...Object.values(pr.cadMap||{}), ...Object.values(pr.prepMap||{})]
+        [pr.recite, ...Object.values(pr.cadMap||{}), ...Object.values(pr.prepMap||{}), ...(pr.cadPositional||[])]
           .forEach(p => {
             if (!p) return;
             const hz = hzFn(p, pr);
