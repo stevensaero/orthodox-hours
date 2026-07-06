@@ -27,12 +27,24 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.52";
+export const TONE_TRAINER_VERSION = "v0.25.53";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.25.53",
+    date: "July 2026",
+    summary: "fix: Tone 3 bass and tenor printed notation both rendered a fourth too LOW (opposite direction from alto's too-high bug) — same shared-table-never-verified-per-tone root cause as v0.25.52, now closed for all three voices",
+    items: [
+      "fix: BASS_NOTATION_OCT and TENOR_NOTATION_OCT (shared across every tone) were silently applied to Tone 3 the same way ALTO_ANCHOR_OCT was. Bill confirmed directly against the score: both bass and tenor needed shifting UP a fourth. Confirmed reference points — bass: fa=F/3, do=C/3, sol=G/2; tenor: do=C/4, sol=G/3, ti=B/3.",
+      "feat: notable finding, not assumed — bass and tenor's own 'do' (C) matches alto's confirmed 'do' (C4) exactly, just at each voice's own octave. All three voices share one common tonal center (C, the dominant of the printed F-major key), each simply sitting in its own natural register — this is what 'SATB in one key' means, and it's a good cross-check that the three independently-confirmed tables are consistent with each other.",
+      "fix: tenor's ti=B/3 needs an explicit natural accidental — the printed key (F major) defaults every B to Bb via the key signature, but this specific note is B natural. accidentalFor() only fires for the CHROMATIC_SOLFEGE set (di/ri/fi/si/li/ra/me/se/le/te); 'ti' is an ordinary diatonic degree by that rule and would otherwise silently render with no accidental, inheriting the key's Bb. Added an optional forceAcc parameter to mkNote() rather than widening accidentalFor()'s chromatic-only rule, which Tones 1/2/4 correctly depend on staying exactly as narrow as it is.",
+      "arch: TONE3_BASS_PITCH and TONE3_TENOR_PITCH added, same dedicated non-transposing pattern as TONE3_ALTO_PITCH (v0.25.52) — flat lookup tables, ignore doHz/cfg entirely, populated only with the pitches each voice's own BASS_RULES[3]/TENOR_RULES[3] actually use. Wired in at the two bass/tenor note-construction call sites, conditional on payload.tone===3; every other tone keeps the shared, transposition-aware bassVFPitch()/tenorVFPitch() untouched.",
+      "test: node --check on the extracted inline script (syntax only, no browser available this session). npm run gate — 71/71 Hours Tool checks, 24/24 pointing-role checks, neither touches score-print.html. vite build clean. Recommend live verification against the deployed tool's printed score before considering this fully closed, per standing practice — this is a visual/notation bug class, caught by looking at the actual page, not by code review or syntax checking alone.",
+    ],
+  },
   {
     version: "v0.25.52",
     date: "July 2026",

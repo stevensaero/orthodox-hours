@@ -226,6 +226,32 @@ function buildSopranoPitch(cfg) {
 // ever uses, across all three phrases (see phrase-defs.js PH_DEFS[3]).
 var TONE3_ALTO_PITCH = { do: "C/4", re: "D/4", mi: "E/4", fa: "F/4" };
 
+// ── Tone 3 — dedicated bass and tenor notation tables (Jul 2026) ────────────
+// Same reasoning as TONE3_ALTO_PITCH — the shared BASS_NOTATION_OCT/
+// TENOR_NOTATION_OCT tables (built from Tone 1/2/4's own scores) were silently
+// applied to Tone 3 and never independently verified. Bill confirmed directly:
+// both were rendering four positions too LOW (opposite direction from alto's
+// four-too-high) and needed correcting up a fourth.
+//
+// Notable finding: bass and tenor's own "do" (C) matches alto's own confirmed
+// "do" (C4) exactly, just at each voice's own octave — all three voices share
+// ONE common tonal center (the letter C, the dominant of the printed F-major
+// key), each simply sitting in its own natural register. Not a coincidence;
+// this is what "SATB in one key" actually means.
+//
+// tenor's ti = B/3 is the one note in either table that needs an explicit
+// accidental: the printed key (F major) defaults every B to Bb via the key
+// signature, but this specific note is B NATURAL. accidentalFor() only fires
+// for the CHROMATIC_SOLFEGE set (di/ri/fi/si/li/ra/me/se/le/te) — "ti" is a
+// perfectly ordinary diatonic degree by that rule, so it would otherwise
+// render with no accidental at all and silently inherit the key's Bb. Handled
+// via mkNote's new optional forceAcc parameter (see mkNote below), NOT by
+// widening accidentalFor()'s chromatic-only rule, which Tones 1/2/4 correctly
+// depend on staying exactly as narrow as it is.
+var TONE3_BASS_PITCH  = { fa: "F/3", do: "C/3", sol: "G/2" };
+var TONE3_TENOR_PITCH = { do: "C/4", sol: "G/3", ti:  "B/3" };
+var TONE3_TENOR_FORCE_NATURAL = { ti: "n" }; // ti needs an explicit natural — see comment above
+
 function staveKey(solName, oct, cfg) {
   var letter = cfg.names[solName];
   if (!letter) { console.warn('staveKey: unknown solfège name:', solName); letter = cfg.names.do; }
@@ -670,12 +696,17 @@ function renderScore(payload) {
     var acc = String(pitchStr).split('/')[0].slice(1); // '#', 'b', 'n', '##', 'bb', or ''
     return acc || null;                                // VexFlow Accidental code
   }
-  function mkNote(pitch, durKey, stem, clef, sol) {
+  function mkNote(pitch, durKey, stem, clef, sol, forceAcc) {
     var opts = { keys:[pitch], duration:DUR[durKey]||'q', auto_stem:false };
     if (clef) opts.clef = clef;
     var n = new VF.StaveNote(opts);
     n.setStemDirection(stem);
-    var acc = accidentalFor(pitch, sol); // chromatic degrees only
+    // forceAcc bypasses the normal chromatic-solfège-only rule below — used
+    // only for Tone 3 tenor's ti (see TONE3_TENOR_FORCE_NATURAL), a diatonic
+    // degree that still needs an explicit accidental because its letter (B)
+    // conflicts with the printed key signature's default (Bb). Every other
+    // caller passes forceAcc undefined and gets the normal rule unchanged.
+    var acc = forceAcc || accidentalFor(pitch, sol); // chromatic degrees only
     if (acc) n.addModifier(new VF.Accidental(acc), 0);
     // H· uses 'h' + dot (tick value is masked by SOFT mode + setVoiceX); W· uses the
     // 'wd' duration above (true 3H ticks, matching a 3-note alto melisma) + this dot glyph.
@@ -892,8 +923,11 @@ function renderScore(payload) {
           if (col >= s0 && col < s1) bassItems.push({ br: br, lcol: col - s0 });
         });
         var bN = bassItems.map(function(it) {
-          return rec.has(it.lcol) ? mkGhost(it.br.durKey)
-            : mkNote(bassVFPitch(it.br.pitch, it.br.octaveDiv, cfg), it.br.durKey, -1, 'bass', it.br.pitch);
+          if (rec.has(it.lcol)) return mkGhost(it.br.durKey);
+          var bPitch = (payload.tone === 3)
+            ? (TONE3_BASS_PITCH[it.br.pitch] || TONE3_BASS_PITCH.do)
+            : bassVFPitch(it.br.pitch, it.br.octaveDiv, cfg);
+          return mkNote(bPitch, it.br.durKey, -1, 'bass', it.br.pitch);
         });
         var tenItems = [];
         if (line.tenor && line.tenor.length > 0) line.tenor.forEach(function(trn, k) {
@@ -902,8 +936,12 @@ function renderScore(payload) {
         });
         var hasTen = tenItems.length > 0;
         var tN = tenItems.map(function(it) {
-          return rec.has(it.lcol) ? mkGhost(it.trn.durKey)
-            : mkNote(tenorVFPitch(it.trn.pitch, it.trn.octaveDiv, cfg), it.trn.durKey, 1, 'bass', it.trn.pitch);
+          if (rec.has(it.lcol)) return mkGhost(it.trn.durKey);
+          var tPitch = (payload.tone === 3)
+            ? (TONE3_TENOR_PITCH[it.trn.pitch] || TONE3_TENOR_PITCH.do)
+            : tenorVFPitch(it.trn.pitch, it.trn.octaveDiv, cfg);
+          var forceAcc = (payload.tone === 3) ? TONE3_TENOR_FORCE_NATURAL[it.trn.pitch] : null;
+          return mkNote(tPitch, it.trn.durKey, 1, 'bass', it.trn.pitch, forceAcc);
         });
         var bassVoice = mkVoice(bN), bassVoices = [bassVoice], tenVoice = null;
         if (hasTen) { tenVoice = mkVoice(tN); bassVoices.push(tenVoice); }
