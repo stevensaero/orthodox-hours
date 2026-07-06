@@ -729,3 +729,161 @@ undersold how thin the evidence actually was. Watch for this pattern in Tones
 5–8: a prose-only claim with a corpus that happens to never test it is exactly
 the gap that let this sit unnoticed since the original May 2026 build.
 
+---
+
+## 15. Final Phrase melisma bugs, and the decision to drop shared `distribute()` for Tone 3 entirely
+
+*Added after Bill reported hearing a melisma in the alto audio for the Final
+Phrase example "[Hear] [me], O Lord." that the chip display didn't reflect.
+What started as one chip-rendering question surfaced three separate bugs, all
+traced to the same root cause: shared logic (`distribute()`, and `PH_DEFS[3].Final.cad`
+left over from before `cad1` was split out) silently drifting out of sync with
+the phrases actually depending on it. This section documents all three, the
+corrected rules Bill confirmed from the score and tutorial, and the resulting
+architectural decision.*
+
+### 15.1 Bug — chips never split a `cad1` melisma into separate notes
+
+`lineToNotes()` (audio path) correctly emits one note per pitch for `cad1`:
+```js
+r.pitches.forEach((p, pi) => notes.push({ sol: p, dur: CAD1_DURS[pi] ?? Q, peak: peak1 }));
+```
+`lineToRolesWithDuration()` (chip path) has no equivalent split. Its own header
+comment promises "for melisma syllables (multi-pitch), emits one entry per
+pitch with its own dur" — true for `preslur` and Tone 4 Final's prep melisma,
+each of which has an explicit `r.pitches.length > 1` branch, but `cad1` has no
+such branch. It falls through to the generic `result.push({ ...r, dur: d,
+durKey: durKey(d) })`, pushing all 3 pitches as one chip with one (also
+wrong, see below) duration. This is why Bill heard the melisma in audio but
+didn't see it described in the chips: the audio path handles it, the chip
+path was never given the equivalent code when `cad1` was added (v0.9.1).
+
+Also wrong even before the missing split: the duration computed for `cad1` at
+the top of the loop, `d = ri === cadIdxs[0] ? H : Q`, compares this role's
+absolute index against the index of the first **`cad`** role, not `cad1`. For
+a line where `cad1` precedes any `cad` entries (the normal case), this
+condition is essentially never true the way it's intended, so even the single
+lumped chip gets the wrong duration.
+
+**Fix needed:** add a `cad1`-specific split branch in `lineToRolesWithDuration()`
+mirroring the audio path's `CAD1_DURS` handling exactly, same convention as the
+existing preslur and Tone 4 Final prep branches.
+
+### 15.2 Bug — `PH_DEFS[3].Final.cad` is a stale pre-split array
+
+Still `["mi","do","re","mi","fa","re","do"]`, the full 7-note combined figure
+from before Part 1 (`cad1`) and Part 2 (`cad`) were split apart in v0.9.1.
+Part 2 alone should be `["mi","fa","re","do"]`. Confirmed by direct trace:
+`distribute()` running against the stale 7-element array for a 3-syllable
+Part 2 span (me/O/Lord) currently returns `[mi, do, re]` — coincidentally
+right at position 0, wrong at position 1 (`do` instead of `fa`), and silently
+dropping the tutorial-mandated final `do` at the whole-note conclusion of the
+entire line.
+
+### 15.3 Investigation — is `distribute()`'s undercount rule actually justified anywhere?
+
+While explaining the `cad` (Part 2) undercount problem, `distribute()`'s own
+"count < n: take the first `count` notes, trailing notes belong to the next
+phrase" rule was cited as justified by a Tone 1 Phrase D example in the
+function's doc comment. Bill asked directly what that Phrase D justification
+actually was. On inspection: **Phrase D does not use `distribute()` at all.**
+It has its own dedicated two-accent positional handler (`pointing.js` lines
+106–138, added for the same reason we're adding dedicated Tone 3 handlers
+now — generic `distribute()` couldn't represent its two-anchor shape). The
+comment in `distribute()` citing Phrase D is very likely a leftover from
+before that dedicated handler existed — the same class of problem as the
+Phrase A tutorial typo (§14.4): an assumption baked into a comment, never
+re-checked against the code that actually runs today.
+
+That question prompted directly testing `distribute()`'s undercount behavior
+against Tone 3's own phrases, which surfaced a much bigger problem:
+
+```
+distribute(["fa","fa","mi"], 2)   →  [[fa],[fa]]   — Tone 3 Phrase A, 2-syllable cadence
+distribute(["mi","re","do"], 2)   →  [[mi],[re]]   — Tone 3 Phrase B, 2-syllable cadence
+```
+
+Phrase A's tutorial-mandated final pitch (`mi`) and Phrase B's (`do`) both
+disappear entirely under `distribute()`'s "take the first `count` notes" rule
+— the function keeps the anchor and drops the *tail*, but for these phrases
+the tail contains the one note that must never be dropped, the phrase's
+concluding pitch. This is not an edge case: Phrase A's corpus is 73/74
+two-syllable cadences (§5.2), and Phrase B's is 59/59 single-mark instances
+whose most common shape is also anchor+final with no fill. If this has been
+live since the original build, most real Phrase A and Phrase B lines have
+been singing the wrong final pitch, landing on the fill/anchor pitch instead
+of the tutorial's specified descent.
+
+### 15.4 Corrected rules, confirmed by Bill against tutorial and score
+
+**Final Phrase, cad1 (Part 1) — recite-pickup addition.** When the cad1
+anchor is the line's very first syllable (zero body/reciting syllables before
+it), a reciting pickup note (`fa`, Q) compresses onto that same syllable as a
+leading note in the melisma, joining the existing `mi(H)·do(Q)·re(Q)` figure
+to give `fa(Q)·mi(H)·do(Q)·re(Q)`. Confirmed by Bill as a general rule: "it's
+a rule provable by score example but the tutorial is silent here. Logically
+and melodically we shouldn't be dropping that fa." Not inferred from one
+example alone, an explicit general confirmation.
+
+**Final Phrase, cad (Part 2) — no note ever drops.** Bill, quoting the
+tutorial directly: "the second part of the cadence begins with a quarter note
+on mi and quarter note on fa, descending to a half note on re, and concluding
+with a whole note on do for the final syllable of text... Accented syllables
+will fall on the half note mi in the first part of the cadence, and on the
+quarter note mi in the second part of the cadence." The tutorial is explicit
+that every note in the two-part cadence lands somewhere. For the 3-syllable
+case (me/O/Lord) against the corrected 4-note figure `[mi,fa,re,do]`: `me`
+absorbs the excess as a 2-note melisma (`mi,fa`), `O` gets `re`, `Lord` gets
+the fixed final `do`. General rule: excess compresses onto the *earliest*
+available syllable; the final note is always fixed and never drops.
+
+**Phrase A — anchor and final both fixed.** Anchor `fa`, final `mi`, both
+fixed regardless of cadence length. 2-syllable case = anchor + final only, no
+fill (drop the *fill*, never the final). 3+ syllable case = fill repeats `fa`
+(§14.4).
+
+**Phrase B — same shape.** Anchor `mi` (dotted-half), final `do`, both fixed.
+2-syllable case = anchor + final only. 3+ syllable case = fill on `re`, and
+the existing >3-syllable long-cadence rule (dotted-half collapses to plain
+half) is unaffected by this fix.
+
+### 15.5 Architectural decision — no shared `distribute()` fallback for Tone 3, ever
+
+Three separate bugs surfaced in a single session, all from the same root
+cause: shared logic relied on by multiple phrases/tones, never re-verified
+against each one individually as it was extended.
+
+1. `distribute()`'s undercount rule, apparently fine for whatever it was
+   originally built and tested against, silently broke Tone 3 Phrase A and B.
+2. `PH_DEFS[3].Final.cad` never got rebuilt when `cad1` was split out from it.
+3. `distribute()`'s own doc comment cited justifying evidence (Phrase D) that
+   the current code doesn't even use anymore.
+
+Bill's direction, stated plainly: every tone, every phrase, gets its own
+dedicated logic. Shared logic is treated as a standing risk to stability
+across what will eventually be 8 tones with many structurally distinct
+phrases, not a convenience worth the risk. This has been raised in prior
+sessions; today's chain of three bugs from one shared function is treated as
+the confirming case, not an exception.
+
+**Going forward for Tone 3, four dedicated handlers, replacing every call
+into shared `distribute()` for this tone:**
+
+1. **Phrase A** — own handler in `pointing.js`. Anchor/final fixed per §15.4,
+   fill only appears with 3+ syllables.
+2. **Phrase B** — own handler. Same shape as Phrase A, plus the existing
+   dotted-half collapse rule for >3 syllables.
+3. **Final Phrase, cad1 (Part 1)** — extend the existing dedicated cad1 split
+   (already self-contained, not shared) with the recite-pickup compression.
+4. **Final Phrase, cad (Part 2)** — new dedicated handler alongside cad1,
+   not routed through `distribute(def.cad, ...)` at all.
+
+Plus the independent chip-splitting fix (§15.1) in `lineToRolesWithDuration()`.
+
+None of this touches shared `distribute()`, Tone 1, Tone 2, or Tone 4 — the
+fixes are additive, scoped entirely to Tone 3's own dedicated code paths, per
+the prime directive.
+
+**Status: documented, not yet implemented.** Implementation, regression
+testing, and gate/build come next.
+
