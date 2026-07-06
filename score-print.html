@@ -252,6 +252,27 @@ var TONE3_BASS_PITCH  = { fa: "F/3", do: "C/3", sol: "G/2" };
 var TONE3_TENOR_PITCH = { do: "C/4", sol: "G/3", ti:  "B/3" };
 var TONE3_TENOR_FORCE_NATURAL = { ti: "n" }; // ti needs an explicit natural — see comment above
 
+// ── Tone 3 — dedicated soprano notation table (Jul 2026) ────────────────────
+// Bill flagged soprano rendering too high "by the same factor as the original
+// incorrect alto rendering" — a fourth, same direction as alto's original bug
+// (§19), before this fix. DERIVED, not independently read against the score
+// the way alto/bass/tenor's reference points were — soprano is a confirmed
+// constant diatonic third above alto (§18.4), so this table is alto's own
+// already-confirmed TONE3_ALTO_PITCH values (do=C/4, re=D/4, mi=E/4, fa=F/4)
+// shifted up a third through SOPRANO_MAP's own alto->soprano solfège renaming
+// (do->mi, re->fa, mi->sol, fa->la):
+//   alto do (C/4) -> soprano mi = E/4
+//   alto re (D/4) -> soprano fa = F/4
+//   alto mi (E/4) -> soprano sol = G/4
+//   alto fa (F/4) -> soprano la = A/4
+// All four are a plain third with no octave change and no accidentals —
+// internally consistent with the uniform-fourth-too-high symptom Bill
+// described (each value here sits exactly a fourth below where the shared
+// SOPRANO_ANCHOR_OCT table currently renders it). Flagged as derived rather
+// than independently score-confirmed; worth a live check against the actual
+// page rather than treated as equal-confidence to the read-directly values.
+var TONE3_SOPRANO_PITCH = { mi: "E/4", fa: "F/4", sol: "G/4", la: "A/4" };
+
 function staveKey(solName, oct, cfg) {
   var letter = cfg.names[solName];
   if (!letter) { console.warn('staveKey: unknown solfège name:', solName); letter = cfg.names.do; }
@@ -396,7 +417,7 @@ function renderScore(payload) {
   // TONE3_ALTO_PITCH above for why. Every other tone keeps the shared,
   // transposition-aware buildAltoPitch(cfg).
   var ALTO_PITCH = (payload.tone === 3) ? TONE3_ALTO_PITCH : buildAltoPitch(cfg);
-  var SOPRANO_PITCH = buildSopranoPitch(cfg);
+  var SOPRANO_PITCH = (payload.tone === 3) ? TONE3_SOPRANO_PITCH : buildSopranoPitch(cfg);
   var grand = false;
   for (var i=0; i<lines.length; i++) { if (lines[i].bass) { grand=true; break; } }
 
