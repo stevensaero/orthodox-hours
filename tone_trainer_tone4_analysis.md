@@ -1504,6 +1504,25 @@ silently never entering the collection at all, not a miscalculation for
 one that did — a useful distinction that took an actual computed check,
 not just re-reading the code, to separate.
 
+**Tone 2 tenor `la` audibly too low throughout (not Tone 4, but found the
+same day chasing the same class of bug):** while checking whether Tone 2
+had the same chip-height gaps Tone 4 did, `TENOR_RULES[2]`'s tenor `la` —
+used as the primary reciting/cadence pitch across every phrase, not an
+occasional note — turned out to have no `octaveDiv` override anywhere. At
+the default `div:2`, `la` computes to 146.8 Hz, and happened to collide
+exactly with bass's own `la` (also 146.8 Hz at its own default), silently
+merging into one shared map entry rather than two distinct ones. Tone 1's
+Final Phrase already needed the identical fix for the identical reason
+(documented in that phrase's own comment: "la fell an octave below sol,
+heard as a dramatic drop") — Tone 2 simply never got it, and since Tone
+2's `la` is constant rather than isolated to one phrase, the impact was
+pervasive, not narrow. Confirmed directly by Bill against actual audio
+playback, not just the chip display: "the score shows tenor in the right
+place, the audio for tenor is way too low throughout all phrases." Fixed
+with `octaveDiv:{la:1}` across all five phrases — `la` now computes to
+293.7 Hz, correctly a whole step above tenor's own `sol` (261.6 Hz),
+matching Tone 1's exact established relationship (`v0.25.46`).
+
 **"Try example" presets — all four tones:** Tone 4 had no example button
 at all (Tones 1–3 already did). Added `PRESET_T4` using a 6-line LIC text
 Bill provided directly, then Bill provided matching LIC text (with
