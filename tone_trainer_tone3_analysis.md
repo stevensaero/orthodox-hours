@@ -21,21 +21,27 @@ corpus study, and the audio analysis — so that:
 
 ## READ THIS FIRST if you are starting a new tone build or debugging Tones 1/2/4
 
-**§27 is the consolidated summary.** It's short, it's at the end of this
-document, and it exists specifically so a future session doesn't have to read
-sections 1–26 to find what's actually transferable. Everything below §27 is
-Tone 3's own detailed research trail — read it if you need the reasoning
-behind a specific finding, but §27 alone tells you:
+**§27–29 are the consolidated summary.** They're short, they're at the end of
+this document, and they exist specifically so a future session doesn't have
+to read sections 1–26 to find what's actually transferable. Everything
+before them is Tone 3's own detailed research trail — read it if you need
+the reasoning behind a specific finding, but §27–29 alone tell you:
 
 - Which two bugs fixed during Tone 3's build were genuinely shared-code bugs,
-  already fixing Tones 1/2/4 retroactively, no extra work needed there.
+  already fixing Tones 1/2/4 retroactively, no extra work needed there (§27.1).
 - The frequency/notation build order that would have caught Tone 3's worst
   bug (bass rendering above tenor) on day one instead of after the fact —
-  use this order for Tones 5–8 from the start.
-- One assumption (`do` = the notated key's tonic) that turned out false for
-  Tone 3 and has never actually been independently checked for Tones 1/2/4 —
-  it's probably fine there, but "probably fine" is exactly the kind of
-  assumption this whole document exists to stop making.
+  use this order for Tones 5–8 from the start (§27.2).
+- The `do`-is-tonic assumption was spot-checked against Tones 1/2/4 the same
+  session (§28) — none show Tone 3's actual bug, Tone 4 has the strongest
+  evidence (a whole scale confirmed from a photograph), Tone 2 the weakest
+  (no absolute-pitch reading at all, though the numbers still check out).
+  Reassuring, not exhaustively re-verified.
+- A real, confirmed bug **was** found and fixed this same session as a direct
+  result of asking that question: Tones 1/2/4's printed score was
+  transposing with the performance-pitch selector (§29), the same bug Tone 3
+  had, previously undetected there because nobody had asked the question of
+  those three tones until now. Already fixed, shipped v0.25.59.
 
 ---
 
@@ -1809,7 +1815,21 @@ Doing frequency-anchoring in step 2 means a register collision like Tone
 check, not a symptom someone has to notice by ear or by looking at
 misaligned chips much later.
 
-### 27.3 Open question, not yet checked — is "do" really the tonic for Tones 1/2/4?
+### 27.3 Open question — is "do" really the tonic for Tones 1/2/4?
+
+**UPDATE, same session: spot-checked, see §28.** The short version: none of
+Tones 1/2/4 show Tone 3's actual bug. Tone 4 has the strongest evidence (a
+whole diatonic scale confirmed from a photograph of the tutorial's key
+signature). Tone 1 has two independently confirmed points. Tone 2 has the
+weakest paper trail, no absolute-pitch reading exists for its alto at all,
+only role-confirmations ("re is the reciting tone"), though the computed
+numbers show no collision regardless. §28.4 has the full net assessment.
+**Reassuring, not exhaustively re-verified** — spot-checked, not rebuilt
+point-by-point the way Tone 3 was.
+
+The original open question below is left as written, since the reasoning
+behind why it needed asking is still the right lesson for future tones,
+even though it's now been answered for these three specifically.
 
 The shared `OFF` table (`tone-trainer.jsx`) and the shared
 `ALTO_ANCHOR_OCT`/`buildAltoPitch` (`score-print.html`) both assume "do" is
@@ -1840,4 +1860,135 @@ document was found by refusing to assume a shared value was correct for a
 tone it was never checked against, and by verifying against that tone's
 own tutorial, own score, and own choir director, not against another
 tone's already-confirmed data.
+
+---
+
+## 28. Spot-checking Tones 1/2/4 against §27.3's open question
+
+*Direct follow-up to §27.3, same session. Rather than leave "is do the
+tonic for Tones 1/2/4" as a permanently open question, spot-checked each
+tone's own alto register and its bass/tenor separation against the actual
+live code and each tone's own documentation.*
+
+### 28.1 Tone 1 — reciting tone `re`
+
+`freq('re')` (live code, default doHz) computes to exactly 392.00 Hz, G4.
+Two independent, score-confirmed data points already exist in
+`choir_director_review.md`: the director read the actual four-part score
+and confirmed the tenor's Final Phrase descends D4→C#4→A3 (`la`=D, `si`=C#,
+`mi`=A), all three consistent with `do`=F(tonic). `re`=G4 itself was not
+separately read off a physical score the same way, but it's consistent with
+every other confirmed point.
+
+**Bass/tenor register check:** Tone 1 Phrase A's bass and tenor both recite
+on their own "sol", but bass carries a deliberate, non-default divisor
+(`BASS_OCTAVE_DIV.sol = 4`, comment: *"confirmed OCA score 2nd space bass
+clef"*) while tenor uses the default (div-2). Result: bass sol=C3 (130.8
+Hz), tenor sol=C4 (261.6 Hz), a full octave apart, clean separation. This
+divisor was deliberately tuned once already; Tone 1 does not show Tone 3's
+collision pattern.
+
+### 28.2 Tone 2 — reciting tone `re`
+
+Same computed value as Tone 1 (392.00 Hz, G4), since Tone 2 shares the
+identical `OFF`/`ALTO_ANCHOR_OCT` tables. **Weaker evidence than Tone 1**:
+Tone 2's own document says `PH_DEFS[2]` and the soprano-third relationship
+were *"confirmed against the LIC score,"* but every instance of that phrase
+confirms a solfège *role* (that `re` is the reciting tone, that soprano
+sits a third above), never an absolute letter/octave the way Tone 1's
+`la`/`si` or Tone 3's four points were. `re`=G4 is what the code computes
+and it's consistent with the rest of the shared system, but it has not
+been independently read off Tone 2's own printed page.
+
+**Bass/tenor register check:** Tone 2's bass carries *zero* octaveDiv
+overrides (confirmed from code) and its own document flags this explicitly,
+§15.6: *"Bass sounding register UNVERIFIED... pitch classes are
+score-verified; octave placement is not... Tracked for the post-apply
+listen-pass"* — that listen-pass does not appear to have been written up.
+Tenor's `la` DID get an explicit fix in a prior session for the identical
+symptom found on Tone 3 today (Bill, at the time: *"the audio for tenor is
+way too low throughout all phrases of tone 2"*), corrected via
+`octaveDiv:{la:1}` on all five phrases. Running the actual current numbers:
+bass spans 130.8–196.0 Hz, tenor spans 261.6–293.7 Hz, clean separation,
+tenor's floor comfortably above bass's ceiling. No active collision, but
+unlike Tone 1's bass `sol`, this was never deliberately tuned, it happens to
+fall clear using the plain global defaults.
+
+### 28.3 Tone 4 — reciting tone `ti`
+
+Strongest evidence of the three. `freq('ti')` computes to 329.63 Hz, E4.
+Tone 4's own document (§1.2) has the *entire diatonic scale* independently
+confirmed at once, from an actual photograph of the tutorial's key
+signature: *"do=F, re=G, mi=A, fa=B♭, sol=C, la=D, ti=E."* `ti` is not a
+minor pitch here either, it's Phrase A's own reciting tone, sung at the
+start of every Tone 4 sticheron.
+
+### 28.4 Net assessment
+
+None of Tones 1/2/4 show evidence of Tone 3's actual bug (a wrong tonic
+assumption or an uncompensated register collision). Tone 4 has the
+strongest independent confirmation (whole scale, photographed). Tone 1 has
+partial confirmation (two points) plus one deliberately-tuned bass
+register. Tone 2 has the weakest paper trail (no absolute-pitch reading at
+all for alto, and bass's own document admits its register was never
+listen-tested) but the actual computed numbers show no collision regardless.
+**Status: reassuring, not exhaustively closed.** None of these were given
+Tone 3's full point-by-point rigor; they were spot-checked, not
+rebuilt from scratch. Worth the real listen-pass Tone 2's own document
+already asks for, next time that tone is open for other work.
+
+---
+
+## 29. Cross-tone fix — printed notation was transposing with the performance-pitch selector
+
+*A direct, concrete follow-on from §28's investigation, not just a finding
+this time — Bill asked the question, the answer confirmed a real bug
+affecting Tones 1, 2, and 4, and it was fixed the same session.*
+
+### 29.1 The question and what it confirmed
+
+Bill: *"can you confirm that tone 1/2/4 won't render in score anything
+other than F major, or are they re-rendering the score based on pitch."*
+Checked directly: selecting a different `do=` performance-pitch option
+(Eb/F/G) changed which actual letters got drawn on Tones 1/2/4's printed
+score. Tone 1's alto `fa`, for example, rendered as Ab, Bb, or C depending
+on the selector, a different notation, not just a different octave. This is
+the identical bug already found and fixed for Tone 3 (§19.3): the printed
+page is fixed to one canonical key, only where the choir starts singing
+should move. `DO_OPTIONS` itself already documents this relationship,
+labeling F as *"Tone 1 canonical (OCA score, F major)"* with Eb/G as *"one
+step below/above canonical."*
+
+### 29.2 A second gap this surfaced — the key signature glyph, for every tone including Tone 3
+
+`cfg.vexKey` (the actual flats/sharps glyph drawn at the clef, three
+separate call sites) was riding on `payload.doHz` for **every tone**,
+including Tone 3, even after Tone 3's note letters were already fixed to
+`TONE3_ALTO_PITCH` (§19). That meant Tone 3 could have shown a mismatched
+key signature (Eb or G's accidentals) next to correctly-spelled F-major
+notes, a real latent bug in the original Tone 3 fix that only surfaced by
+extending the check universally rather than re-examining Tone 3 alone.
+
+### 29.3 Fix
+
+`score-print.html`'s `renderScore()`: `cfg` is now always `F_CFG`,
+unconditionally, for every tone. `buildAltoPitch`/`buildSopranoPitch`/
+`bassVFPitch`/`tenorVFPitch` are unchanged, still transposition-*aware*
+functions, they simply always receive the same fixed F-major `cfg` now.
+`resolveKey()` is no longer called in `renderScore()`, kept defined in case
+a future feature wants to display the selected performance pitch as a
+label. `payload.doHz` is still sent, harmless, just unused for notation.
+
+### 29.4 Verification
+
+`node --check` confirms syntax. `npm run gate` — 71/71, 24/24, neither
+touches `score-print.html`. `vite build` clean. **Recommend live
+verification**: select a non-default `do=` option for Tone 1 or Tone 3,
+print the score, confirm the notation and key signature both stay in F
+major regardless.
+
+**Status: shipped as v0.25.59. Closes the cross-tone version of Tone 3's
+own notation bug, for Tones 1, 2, and 4's note spelling, and for every
+tone's key signature glyph, including a latent gap in Tone 3's own earlier
+fix.**
 
