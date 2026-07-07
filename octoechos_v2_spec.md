@@ -7,15 +7,19 @@ are listed in §9. **Do not begin Phase 1 scaffolding against this document unti
 Bill confirms the spec complete.**
 
 **Source material proven against so far:**
-1. Tone2.pdf, full chapter (St. Sergius): Saturday evening (Little Vespers,
-   Great Vespers) through Sunday Matins and Liturgy — scanned in full,
-   July 6 2026 session. One of eight per-tone chapters; covers Saturday
-   evening only. Weekday material lives elsewhere (not yet provided).
+1. **2-1.pdf** (St. Sergius, Drive; the canonical N-1 file for Tone 2):
+   Saturday evening Little Vespers + Great Vespers, **Saturday night
+   Compline**, **Sunday Nocturns**, Sunday Matins, Sunday Liturgy — scanned
+   in full, July 6 2026 session. An earlier same-session paste of the same
+   chapter ("Tone2.pdf") lacked the Compline and Nocturns sections and shows
+   at least one OCR-level variance against 2-1.pdf (§8, last row); **2-1.pdf
+   is the canonical encode source.**
 2. 2026-06-21 OCA docx JSON (one Sunday's booklet) — prior session; OCA
    layering is a later phase and does not drive this spec.
 
 **Still needed (§9):** weekday Vespers (Sun eve–Thu eve), Friday evening,
-Compline.
+weekday Compline, weekday Nocturns presence/absence — expected in the
+remaining per-tone Drive files (2-2 … 2-7 per the N-2…N-7 naming).
 
 ---
 
@@ -40,7 +44,7 @@ director-pointed backfill is a later phase, after cutover.
    static tables (RESURRECTIONAL_TROPARIA, SUNDAY_KONTAKIA, etc.) are the
    anti-pattern V2 exists to eliminate.
 2. **Verbatim per-position storage. No dereferencing between services.**
-   Evidence (Tone2.pdf, same chapter): the first aposticha sticheron reads
+   Evidence (2-1.pdf, same chapter): the first aposticha sticheron reads
    "hath enlightened the whole **inhabited world**; * **and by it** Thou
    hast called back" at Little Vespers but "hath enlightened the whole
    **universe**; * **and** Thou hast called back" at Great Vespers. Texts
@@ -53,18 +57,24 @@ director-pointed backfill is a later phase, after cutover.
    **taken captive** ... therefore **with hymns** we cry") and the Praises
    theotokion ("Thou art **most** blessed ... Hades hath been **captured**
    ... Therefore **in praise** we cry") are distinct texts a careless
-   encoder or validator would collapse. Validators must never flag
-   near-duplicates for merging.
+   encoder or validator would collapse. Likewise **irmoi repeat across the
+   chapter's three canons** (Ode 1 "In the deep of old" and Ode 6 "Whirled
+   about in the abyss" appear in all three; Ode 8 "In Babylon" in two) —
+   each canon stores its own irmoi as printed, no cross-canon references.
+   Validators must never flag near-duplicates or true duplicates across
+   positions for merging.
 4. **§3 of encoding_rule_v2.md governs pointing** (read live each session).
    St. Sergius `*` / `**` retained verbatim as source provenance;
    normalized only at render via `normalizeSergius`. Tier assignment per
-   source: this chapter's stichera/troparia/kontakion/sessionals/irmoi are
-   Tier 2 (`*`/`**`); canon troparia and the Ikos are Tier 1 prose (no
-   markers — a property of the source, not an error).
+   source: stichera/troparia/kontakion/sessionals/irmoi are Tier 2
+   (`*`/`**`); canon troparia (all three canons) and the Ikos are Tier 1
+   prose (no markers — a property of the source, not an error).
 5. **Every field carries provenance**, including the source's own label
    when it differs from our field name (e.g. St. Sergius labels the
    post-Evlogitaria hymn "The Sessional Hymn"; we store it as `hypakoe`
-   with `sourceLabel`).
+   with `sourceLabel`), and composer/acrostic metadata where the source
+   prints it (Nocturns canon: "the composition of Metrophanes of Smyrna",
+   acrostic "I hymn Thee, the threefold light of the Godhead").
 6. **Rubric text is data, not hymn text.** Printed rubrics (e.g. "10
    Stichera: 7 Resurrection and 3 of the saint, or 4 and 6 if Polyeleos")
    are stored verbatim in `rubric` fields on the section they govern —
@@ -72,7 +82,15 @@ director-pointed backfill is a later phase, after cutover.
    `aposticha_glory: "[Glory from Menaion if appointed]"` is the
    anti-pattern; the chapter prints a real fallback Theotokion, §4.3).
    Assembly *decisions* still trace to Fekula; the printed rubric is
-   source evidence beside it.
+   source evidence beside it. Invariable Horologion frames printed in the
+   chapter (Compline/Nocturns openings, psalm lists) are stored as
+   `frame_rubric` verbatim; the frame texts themselves are excluded (§5).
+7. **Repeats mirror the source's own device** (pending Bill, §9.4): where
+   the source prints a text out in full twice (Little Vespers LIC first
+   sticheron), store two positional entries; where the source prints a
+   "(Twice)" marker (Nocturns canon, Odes 6–8 first troparion), store
+   `repeat: 2` on the item — the Menaion repeatIndex analog. Never convert
+   one device into the other.
 
 ## 3. File layout
 
@@ -107,16 +125,18 @@ export default {
 
   little_vespers: {...},         // §4.2
   great_vespers: {...},          // §4.3
-  vespers_weekday: {...},        // §4.4 — GAP, awaiting source
-  matins: {...},                 // §4.5
-  liturgy: {...},                // §4.6
+  vespers_weekday: {...},        // §4.4 — GAP, awaiting 2-2…2-7
+  compline_saturday: {...},      // §4.5 — NEW (2-1.pdf)
+  nocturns: {...},               // §4.6 — NEW (2-1.pdf); Sunday
+  matins: {...},                 // §4.7
+  liturgy: {...},                // §4.8
 }
 ```
 
 Hymn value shape (every pointed or prose text): `{ text, source, tier,
-sourceLabel?, director? }` — `text` in the source's own marker dialect per
-§3.3 of encoding_rule_v2.md. Where a field is a bare string in the examples
-below, the full shape is still meant.
+sourceLabel?, spec_mel?, director?, repeat? }` — `text` in the source's own
+marker dialect per §3.3 of encoding_rule_v2.md. Where a field is a bare
+string in the examples below, the full shape is still meant.
 
 ### 4.1 Canonical tone-level hymns — the multi-site identity rule
 
@@ -129,10 +149,10 @@ field each, **but only after the encoder verifies every print site is
 identical**. Any wording divergence between sites is a finding: log it,
 flag for Bill, do not silently pick one.
 
-Tone 2 verification result (this scan): all four troparion sites agree on
+Tone 2 verification result (2-1.pdf): all four troparion sites agree on
 wording and pointing ("radiant brilliance"); punctuation-only variance
-exists (Little Vespers wraps the final line in quotation marks, Great
-Vespers does not). **OPEN DECISION (§9.5):** which site's punctuation is
+exists (Little Vespers wraps the final line in quotation marks, the other
+three sites do not). **OPEN DECISION (§9.5):** which site's punctuation is
 canonical for the stored text.
 
 ### 4.2 `little_vespers`
@@ -145,10 +165,8 @@ little_vespers: {
   lic: [s1, s1, s2, s3],        // FOUR positions AS PRINTED — the first
                                  // Resurrection sticheron is printed out in
                                  // full twice, under two different verses.
-                                 // Stored positionally, both copies, verbatim.
-                                 // (§9.4: repeatIndex-style compression is a
-                                 // Menaion convention for "(Twice)" markers;
-                                 // this source prints the text twice — OPEN.)
+                                 // Stored positionally, both copies, verbatim
+                                 // (§2.7 device rule; decision §9.4).
   lic_verses: [...4],            // "From the morning watch ..." set — printed
                                  // here; sharing hypothesis §5.
   lic_theotokion: "Contemplating the wonder of the great mystery! ...",
@@ -172,11 +190,10 @@ little_vespers: {
 
 **Finding:** Little Vespers contributes **two more distinct Theotokia**
 ("Contemplating the wonder" at LIC; "Who can worthily praise thee" at
-aposticha) beyond the three identified last session. Running Tone 2 total
-of distinct fixed Theotokia positions: LV-LIC, LV-aposticha, GV Dogmatikon,
-GV-aposticha, Dismissal, Kathisma II closer (Stavrotheotokion), Kathisma
-III closer, Praises, Beatitudes, plus per-ode canon Theotokia. One field
-per position, no reuse, ever.
+aposticha) beyond the three identified last session. Counting every fixed
+position (Kathisma closers, Beatitudes, Compline sessional, Nocturns
+sessional theotokia, per-ode canon Theotokia) the operative principle is:
+one field per position, no reuse, ever.
 
 ### 4.3 `great_vespers`
 
@@ -204,14 +221,83 @@ great_vespers: {
 
 ### 4.4 `vespers_weekday` — **GAP**
 
-Sunday evening through Friday evening. Structure unknown until Bill
-provides the weekday chapters. Expected per Fekula's Friday rule: Friday
+Sunday evening through Friday evening; expected in Drive files 2-2 … 2-7.
+Structure unknown until scanned. Expected per Fekula's Friday rule: Friday
 evening takes 6 stichera + the **week's dogmatikon** — whether that is the
 same text as `great_vespers.dogmatikon` or a distinct print site must be
 answered from source, not assumed (§2.2). Do not scaffold this section's
 shape until scanned.
 
-### 4.5 `matins`
+### 4.5 `compline_saturday` — NEW (2-1.pdf)
+
+Saturday-night Compline carries tone-keyed Octoechos content: a full canon
+of supplication to the Theotokos plus a mid-canon sessional. The invariable
+Compline frame (opening prayers, Pss 50/69/142, Doxology, Creed, "It is
+truly meet") is Horologion material — `frame_rubric` verbatim, texts
+excluded (§5).
+
+```js
+compline_saturday: {
+  frame_rubric: "The priest saith: Blessed is our God..., ... and the Symbol of Faith (I believe in one God...).",
+  canon: {                       // Shape B canon (§4.7.2)
+    title: "Canon of supplication to the most holy Theotokos",
+    odes: { 1: {...}, 3: {...}, … 9: {...} },
+                                 // each ode: irmos (Tier 2) + 4 items:
+                                 // 2 plain, 1 glory, 1 both_now (Tier 1)
+  },
+  after_ode6: {
+    rubric: "Lord, have mercy, (Thrice). Glory ..., Both now ...,",
+    sessional: "We earnestly cry out to thee, O Lady Theotokos ...",
+  },
+  closing_rubric: "Then, “It is truly meet ...,” and the rest as usual. Dismissal.",
+}
+```
+
+**Weekday Compline remains a GAP** — the Octoechos traditionally appoints
+different Theotokos canons per night; verify from 2-2 … 2-7, do not assume
+the Saturday shape.
+
+### 4.6 `nocturns` — NEW (2-1.pdf); Sunday
+
+An entire service category absent from V1 and from the planning-session
+gap list. Sunday Nocturns carries a tone-keyed canon to the Holy Trinity
+with composer + acrostic metadata, TWO mid-canon sessional pairs (both with
+a Spec. Mel. label), and closes with the hymn of Gregory the Sinaite
+(invariable — "chanted every Sunday after the canon" — lives in shared.js,
+§5).
+
+```js
+nocturns: {
+  frame_rubric: "The priest saith: “Blessed is our God ...,” ... Psalm 50 (Have mercy on me, O God ...,)",
+  canon: {                       // Shape B canon (§4.7.2)
+    title: "Canon to the Holy & Life-creating Trinity",
+    composer: "Metrophanes of Smyrna",
+    acrostic: "I hymn Thee, the threefold light of the Godhead",
+    odes: { 1: {...}, 3: {...}, … 9: {...} },
+                                 // Odes 1,3,4,5,9: 2 plain + glory + both_now.
+                                 // Odes 6,7,8: 1 plain marked "(Twice)"
+                                 // (repeat: 2, §2.7) + glory + both_now.
+                                 // Item counts are per-ode source facts.
+  },
+  after_ode3: {
+    sessional: { text: "When Thou didst form Adam in the beginning ...",
+                 spec_mel: "Of the loving-kindness ..." },
+    theotokion: "When God was well pleased to come unto us ...",
+  },
+  after_ode6: {
+    sessional: { text: "O merciful One, beginningless Trinity and Unity ...",
+                 spec_mel: "Of the loving-kindness ..." },
+    theotokion: "Thou art merciful, O good Theotokos ...",
+  },
+  // after the canon: shared.gregory_sinaite_hymn (§5)
+  closing_rubric: "The rest of Nocturns, and the Dismissal.",
+}
+```
+
+**Weekday Nocturns**: presence or absence of Octoechos content on weekdays
+is a GAP — answer from 2-2 … 2-7.
+
+### 4.7 `matins`
 
 ```js
 matins: {
@@ -232,8 +318,8 @@ matins: {
   hypakoe: { text: "The women coming to Thy grave ...",
              sourceLabel: "The Sessional Hymn" },   // St. Sergius's label; sung
                                  // after the Evlogitaria + small litany.
-  anabathmoi: [                  // Songs of Ascent — NEW category, absent from
-                                 // V1 and from the planning-session gap list.
+  anabathmoi: [                  // Songs of Ascent — absent from V1 and from
+                                 // the planning-session gap list.
     { troparia: [t1, t2], gloria: "To the Holy Spirit belongeth sovereignty ..." },
     { troparia: [t1, t2], gloria: "To the Holy Spirit belongeth the source of life ..." },
     { troparia: [t1, t2], gloria: "By the Holy Spirit all wisdom doth flow forth ..." },
@@ -245,7 +331,7 @@ matins: {
                                  // MATINS prokeimenon — a distinct field from
                                  // liturgy.prokeimenon. V1's single
                                  // SUNDAY_PROKEIMENON conflated these (§8).
-  canon: {...},                  // §4.5.1
+  canon: {...},                  // Shape A (§4.7.1)
   // kontakion + ikos: canonical fields, sung after Ode VI (position is
   // assembly knowledge; the data lives at tone level).
   exapostilarion_rubric: "... taken from the prescribed Eothinon according to the Resurrection Gospel ...",
@@ -268,7 +354,7 @@ matins: {
 }
 ```
 
-#### 4.5.1 `canon`
+#### 4.7.1 Canon Shape A — multi-canon block (Sunday Matins Resurrection canon)
 
 Nine-ode canon, Ode II absent as usual: keys `1,3,4,5,6,7,8,9`. Each ode:
 
@@ -295,11 +381,31 @@ Nine-ode canon, Ode II absent as usual: keys `1,3,4,5,6,7,8,9`. Each ode:
 }
 ```
 
-Katavasiae are **not** Octoechos content ("then the appointed Katavasia") —
-excluded, as is the Magnificat machinery (§5 exclusions). The Ode VIII
-"We praise, we bless, we worship the Lord ..." verse is invariable → shared.
+#### 4.7.2 Canon Shape B — single labeled canon (Compline, Nocturns)
 
-### 4.6 `liturgy`
+Same ode keys. **No printed refrains** — the ode is a flat item list with
+labels, matching the source's inline "Glory ...," / "Both now ...,"
+prefixes:
+
+```js
+{ irmos: {...},                  // Tier 2
+  items: [
+    { label: 'plain', text: ..., repeat?: 2 },   // repeat only where the
+    { label: 'plain', text: ... },               // source prints "(Twice)"
+    { label: 'glory', text: ... },
+    { label: 'both_now', text: ... },
+  ] }
+```
+
+Canon-level metadata (either shape): `title` (verbatim source heading),
+`composer?`, `acrostic?`. Mid-canon sessional insertions belong to the
+**service** section (`after_ode3` / `after_ode6`), not the canon object —
+they are positioned by ode but are not canon content. Katavasiae are
+**not** Octoechos content ("then the appointed Katavasia") — excluded, as
+is the Magnificat machinery (§5 exclusions). The Ode VIII "We praise, we
+bless, we worship the Lord ..." verse is invariable → shared.
+
+### 4.8 `liturgy`
 
 ```js
 liturgy: {
@@ -338,6 +444,9 @@ moves into the per-tone files**):
 - `polyeleos` — select verses + the pre-Lent Ps 136 note + the
   Megalynarion parish-practice rubric (verbatim rubric storage).
 - `ode8_hymn_verse` — "We praise, we bless, we worship the Lord ...".
+- `gregory_sinaite_hymn` — "It is truly meet to glorify Thee, the Word of
+  God ..." (7 stanzas, Tier 1); source note "(which is chanted every
+  Sunday after the canon)" at Nocturns. NEW (2-1.pdf).
 
 **Excluded from V2 entirely** (Horologion/other-book material printed in
 the chapter for convenience — record the exclusion so the audit trail shows
@@ -345,7 +454,8 @@ it was seen and deliberately not encoded here): "Having beheld the
 Resurrection", Psalm 50 troparia ("Through the prayers ...", Tone VI, +
 "Jesus having risen"), the Magnificat verses + "More honorable" refrain,
 Katavasiae, Exapostilaria/Eothina (Gospel-keyed 11-set — its own future
-table, not per-tone).
+table, not per-tone), the Compline frame (opening prayers, Pss 50/69/142,
+Doxology, Creed, "It is truly meet"), the Nocturns frame.
 
 `shared.js` is dynamically loaded like the tone files — nothing from V2 is
 ever statically imported into `hours-tool.jsx` (§2.1).
@@ -355,30 +465,39 @@ ever statically imported into `hours-tool.jsx` (§2.1).
 Designed alongside the fields, not bolted on (planning-session condition).
 
 - `_encoded` section claims, V1-style, gating REQUIRED shapes per section:
-  `little_vespers`, `great_vespers`, `vespers_weekday`, `matins`, `canon`,
-  `liturgy`, plus tone-level `core` (troparion / dismissal_theotokion /
-  kontakion / ikos).
+  `little_vespers`, `great_vespers`, `vespers_weekday`, `compline_saturday`,
+  `nocturns`, `matins`, `canon`, `liturgy`, plus tone-level `core`
+  (troparion / dismissal_theotokion / kontakion / ikos).
 - **Structural checks** (only for claimed sections): LV lic length 4 with
   parallel verses; GV lic 7 + 7 verses + 3 Menaion verses; aposticha 4 + 3
   verses; sessionals exactly 2 sets of `{hymns[2], verse, closer{type,text}}`;
   anabathmoi ≥ 3 antiphons of `{troparia[2], gloria}` (count per-tone, not
-  hard-coded 3); canon keys exactly `1,3,4,5,6,7,8,9`, three sub-canons per
-  ode, `closer.type === 'trinitarion'` required at Ode 9 / `'theotokion'`
-  elsewhere, troparia arrays non-empty; praises 8 + 8 verses + theotokion;
-  beatitudes 6 + gloria + theotokion; matins and liturgy prokeimena both
-  present and **not equal to each other** (the V1 conflation trap, §8).
+  hard-coded 3); Shape A canon keys exactly `1,3,4,5,6,7,8,9`, three
+  sub-canons per ode, `closer.type === 'trinitarion'` required at Ode 9 /
+  `'theotokion'` elsewhere, troparia arrays non-empty; Shape B canon same
+  ode keys, items non-empty with labels from `plain|glory|both_now`,
+  exactly one `glory` and one `both_now` per ode, `repeat` only valued 2
+  and only on `plain` items; Compline/Nocturns `after_odeN` insertions
+  present as speced; praises 8 + 8 verses + theotokion; beatitudes 6 +
+  gloria + theotokion; matins and liturgy prokeimena both present and
+  **not equal to each other** (the V1 conflation trap, §8).
 - **Pointing checks:** Tier-2 St. Sergius fields contain `*` and exactly one
   `**`, never `|`/`//` (dialect purity — the stored dialect IS the
-  provenance record, §3.3); Tier-1 fields (canon troparia, ikos) contain no
-  markers at all; no `[` brackets in any St. Sergius-dialect field.
+  provenance record, §3.3); Tier-1 fields (canon troparia in all three
+  canons, ikos, Gregory-the-Sinaite stanzas) contain no markers at all; no
+  `[` brackets in any St. Sergius-dialect field.
 - **Placeholder detection:** no bracketed placeholder strings in any hymn
-  text field; rubric prose only in `rubric` / `*_rubric` fields.
+  text field; rubric prose only in `rubric` / `*_rubric` / `frame_rubric`
+  fields.
 - **Anti-dedup guard:** the validator must NOT contain any near-duplicate
   detection that suggests merging (§2.3). A plain-equality check between
   the Kathisma III closer and the Praises theotokion (they must differ) is
-  the correct assertion for Tone 2.
+  the correct assertion for Tone 2; equality of Ode-1 irmoi across the
+  three canons (they must match, each stored separately) is likewise a
+  legitimate per-tone assertion — encoded facts, not dedup triggers.
 - Provenance required: every claimed section carries `source` (file) and
-  `sourceLabel` where our name differs from the source's.
+  `sourceLabel` where our name differs from the source's; canon
+  `composer`/`acrostic` where printed.
 
 Gate joins the standing sequence: `test_pointing_paths.mjs`,
 `test_sunday_vespers.mjs`, `validate_octoechos.mjs` (V1, still live),
@@ -389,11 +508,12 @@ Gate joins the standing sequence: `test_pointing_paths.mjs`,
 Purpose-built V2 browser before any real encoding. Requirements from the
 planning-session audit-gap finding: every field visible **under its service
 context** (no "Index Tables" burial — a tone's troparion/kontakion appear
-where they are sung: LV dismissal, GV, God-is-the-Lord, Liturgy), every
-field greppable, dialect badge per §3.4, and a V1↔V2 side-by-side view for
-the cutover comparison.
+where they are sung: LV dismissal, GV, God-is-the-Lord, Liturgy; Compline
+and Nocturns appear as services in their own right), every field greppable,
+dialect badge per §3.4, and a V1↔V2 side-by-side view for the cutover
+comparison.
 
-## 8. Tone 2 discrepancy register (V1 vs this chapter)
+## 8. Tone 2 discrepancy register (V1 vs 2-1.pdf)
 
 | V1 field | V1 reads | Chapter reads | Class |
 |---|---|---|---|
@@ -406,30 +526,33 @@ the cutover comparison.
 | `HYPAKOE[2]` | "The women coming to Thy grave ..." | identical | confirmed correct (source labels it "The Sessional Hymn") |
 | `tone2.js` `vespers.sat` lic + aposticha + dogmatikon | — | word-for-word match (spot-checked incl. sticheron 6 "terrified", the restored Anatolius 7th) | confirmed correct |
 | `tone2.js` `aposticha_glory` | `[Glory from Menaion if appointed]` placeholder | real fallback exists (see SUNDAY_APOSTICHA_THEOTOKIA row) | placeholder → real text in V2 |
+| — (source-vs-source) | earlier "Tone2.pdf" paste: "He hath arisen as **All-powerful**" (GV lic #4) | 2-1.pdf: "**all-powerful**" | OCR-level variance between two provisions of the same chapter; **2-1.pdf canonical**. Full byte-diff between a paste and a PDF extraction is impractical — encode from 2-1.pdf only. |
 
 ## 9. OPEN — gaps and decisions blocking spec completion
 
 1. **Weekday Vespers** (Sun eve opening Mon, through Thu eve opening Fri):
-   structure entirely unscanned. §4.4 is a stub.
+   structure entirely unscanned; expected in 2-2 … 2-7. §4.4 is a stub.
 2. **Friday evening**: 6 stichera + week dogmatikon per Fekula's Friday
    rule — same-text-or-distinct-print-site question (§4.4).
-3. **Compline**: tone-specific content, or confirmation it is fully
-   invariable (in which case it is recorded as a deliberate exclusion, §5).
-4. **LV lic repeat storage** (§4.2): store the twice-printed first
-   sticheron as two positional copies (verbatim-as-printed, recommended)
-   vs. a repeatIndex-style marker (Menaion convention for "(Twice)" — but
-   this source prints the text out twice, no marker). Bill's call.
+3. **Compline**: Saturday night RESOLVED (§4.5, 2-1.pdf). **Weekday
+   Compline still open** — per-night Theotokos canons expected; verify
+   from 2-2 … 2-7. **Weekday Nocturns** presence/absence likewise open.
+4. **Repeat devices** (§2.7): proposal on the table — mirror the source's
+   own device (full double print → two positional entries; "(Twice)" →
+   `repeat: 2`). Both devices now attested in 2-1.pdf (LV lic; Nocturns
+   Odes 6–8). Bill's confirmation needed.
 5. **Canonical-field punctuation** (§4.1): four troparion print sites agree
    on wording/pointing but differ in quotation marks. Which site is
    canonical for the stored string. Bill's call.
 6. **LV dismissal Theotokion** (§4.2): chapter marks the slot without
    printing a text. Resolve from Fekula/source at assembly-spec time; V2
    stores the rubric verbatim and no invented text.
-7. **Anabathmoi antiphon count** (§4.5): per-tone fact; gate must not
+7. **Anabathmoi antiphon count** (§4.7): per-tone fact; gate must not
    hard-code 3. Verify per tone as each chapter is scanned.
 8. **Shared-table scope boundary** (§5): confirm the proposed
    shared-vs-excluded split, especially Evlogitaria (currently V1
-   index.js) and the Polyeleos block.
+   index.js), the Polyeleos block, and `gregory_sinaite_hymn` (invariable
+   per its own source note, but printed inside a tone chapter).
 9. **Kathisma sessional verses**: possibly invariable across tones (the
    Tone 2 pair reappears as Praises verses 7–8); treat as per-tone until
    two more tones confirm or deny.
