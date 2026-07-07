@@ -23,12 +23,10 @@ v0.31.0.**
   paths PASS, sunday vespers 71/71, V1 octoechos validator ✓, V2 gate ✓,
   coverage gate ✓, vite build ✓.
 - `known_recurrences.js` seeded from EVERY §2.3 catalog pair (66 entries).
-  **FLAG FOR BILL:** a third relation `family` was added beyond the spec's
-  identical|variant, for pairs whose byte-status the spec prose does not pin
-  (chiefly the irmos-suite recurrences). `family` entries are informational
-  only; each is upgraded to identical/variant in the commit that encodes its
-  positions. If Bill prefers strict two-relation form, the six `family`
-  irmos entries need his identical/variant rulings instead.
+  **RULED (Bill, July 7 2026): `family` relation APPROVED (option a).**
+  §2.3a amended to record the three-relation vocabulary. `family` entries
+  are informational only; each is upgraded to identical/variant in the
+  same commit that encodes its positions; steady state is zero.
 - `sic_register.js` seeded with the complete §9.12 running list (20
   entries, incl. the absence-sic for the Thu-night Compline truncated
   closing rubric). Entries carry `approx: true` until their positions are
@@ -52,7 +50,6 @@ v0.31.0.**
 
 ### Next session
 
-- Bill reviews the `family` relation flag and the seeded registers.
 - On Bill's explicit go: §11 step 2 — shared day-keyed tables (small,
   source-proven, V1-comparable), under the §10 per-file protocol
   (scan_source review file to Bill first).

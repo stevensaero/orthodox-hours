@@ -308,6 +308,17 @@ director-pointed backfill is a later phase, after cutover.
    e.g. the ewe-lamb text whose duplicate prints share even their
    "O Christ,?" typo). New pairs discovered during encoding are added to
    the register in the same commit as the data that reveals them.
+   **Relation vocabulary amended (Bill, July 7 2026): `identical |
+   variant | family`.** `family` records a catalog pair whose byte-status
+   the scan prose did not pin (chiefly the irmos-suite recurrences —
+   "shares"/"reappear" attest same composition at both positions, not
+   character-level identity, and same-titled irmoi are proven capable of
+   differing: the Ode-9 and Habakkuk traps above). A `family` entry is
+   informational only — the gate makes no byte assertion — and MUST be
+   upgraded to `identical` or `variant` in the same commit that encodes
+   either position. Steady state is zero `family` entries; the relation
+   exists so seeding never fabricates a byte claim the source scan did
+   not make.
 4. **§3 of encoding_rule_v2.md governs pointing** (read live each session).
    St. Sergius `*` / `**` retained verbatim as source provenance;
    normalized only at render via `normalizeSergius`. Tier assignment per
