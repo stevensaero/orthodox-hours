@@ -8492,6 +8492,48 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.31.0",
+    date: "July 2026",
+    summary: "Octoechos V2 Phase 1 step 1: schema contract, drift gates, source scanner, registers, and the \u00a712 schema-driven auditable viewer (/octoechos-v2)",
+    items: [
+      "src/data/octoechos_v2/schema_v2.js \u2014 the single contract shared by " +
+      "validator, viewer, and coverage gate (octoechos_v2_spec.md \u00a76/\u00a712): \u00a74 " +
+      "shapes as a field manifest with kinds, \u00a74.11 label vocabulary (incl. " +
+      "for_the_reposed, refrain, compound labels), typed closers, the \u00a72.7 " +
+      "devices (repeat: 2 / incipit_ref), and mandatory src{file,locus} + tier " +
+      "on every text node (amendment D).",
+      "tools/validate_octoechos_v2.mjs \u2014 all \u00a76 gates live from day one: " +
+      "vocabulary/structure per claimed section, device checks with incipit " +
+      "prefix-match, closer types, provenance+tier hard-fail, charset hard-fail " +
+      "+ digit-zero pattern with every hit surfaced verbatim for Bill's review " +
+      "(\u00a79.10 as ruled \u2014 no automatic handling), recurrence-register and " +
+      "sic-register checks (amendments A + E), placeholder guard.",
+      "tools/scan_source.mjs \u2014 the \u00a710 step-1 source scanner: codepoint census, " +
+      "digit-zero pattern, sic candidates \u2192 review file for Bill before any " +
+      "encoding proceeds.",
+      "known_recurrences.js seeded with the full \u00a72.3 anti-dedup catalog (66 " +
+      "pairs; identical \u21d2 byte-match, variant \u21d2 must differ; approx positions " +
+      "pinned in the commit that encodes them). sic_register.js seeded with the " +
+      "complete \u00a79.12 running list (20 entries) \u2014 silent correction of a " +
+      "recorded sic is a hard fail.",
+      "NEW ROUTE /octoechos-v2 \u2014 the \u00a712 Viewer Auditability Contract: " +
+      "schema-driven generic rendering (never enumerates fields in component " +
+      "code), default-VISIBLE with a styled 'unregistered field' fallback, " +
+      "hiding only by declaration; audit-mode raw/rendered toggle per position " +
+      "(tier, dialect badge per \u00a73.4, src{file,locus}, Spec. Mel., devices); " +
+      "recurrence cross-links; ErrorBoundary-wrapped; nothing tone-keyed " +
+      "statically imported (loadOctoechosV2Tone/_v2Cache, multi-tone).",
+      "tools/validate_viewer_coverage.mjs \u2014 \u00a712.2: every schema field " +
+      "registered or hidden-with-reason (67/67), stale registry keys fail; plus " +
+      "the amendment-F no-display-copies lint (canonical fragments grepped out " +
+      "of component sources).",
+      "NO V2 liturgical data encoded \u2014 infrastructure before data (\u00a711 step 1); " +
+      "the viewer shows a 'not yet encoded' notice per tone until Tone 2 lands.",
+      "Gate: 71/71 pointing-paths + sunday-vespers, V1 octoechos validator, " +
+      "octoechos V2 gate, viewer coverage gate, vite build clean.",
+    ],
+  },
+  {
     version: "v0.30.1",
     date: "July 2026",
     summary: "fix: temple dedication change-select left-justified instead of stranded at far right",
