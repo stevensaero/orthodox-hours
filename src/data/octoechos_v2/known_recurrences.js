@@ -140,9 +140,9 @@ export default [
   { a: 'tone2.matins_weekday.thu.sessionals', b: 'tone2.liturgy_weekday.thu.prokeimenon.text',
     relation: 'variant', approx: true,
     note: '"unto the END of the world" (Thu Matins sessional verse) vs "unto the ENDS of the world" (Thu Liturgy prokeimenon AND koinonikon — same psalm verse, one day) (2-5).' },
-  { a: 'tone2.liturgy_weekday.thu.prokeimenon.text', b: 'tone2.liturgy_weekday.thu.communion',
-    relation: 'identical',
-    note: 'Thu koinonikon = Thu prokeimenon text ("Their sound hath gone forth …") — one psalm verse in two roles (2-5).' },
+  { a: 'shared.daily_liturgy_propers.thu.prokeimenon.text', b: 'shared.daily_liturgy_propers.thu.communion',
+    relation: 'variant',
+    note: 'Thu koinonikon and prokeimenon share one psalm verse (2-5) but the PRINTS differ by role: prokeimenon pointed ("earth, * and"), koinonikon unpointed — byte-verified from the raw layer July 7 2026 (was seeded identical from the catalog prose; refined at encoding per §2.3a).' },
 
   // ── the Wednesday↔Friday sessional recombination web (2-6) ─────────────────
   { a: 'tone2.matins_weekday.fri.sessionals[0].items[0]', b: 'tone2.matins_weekday.wed.sessionals[0].items[0]',
