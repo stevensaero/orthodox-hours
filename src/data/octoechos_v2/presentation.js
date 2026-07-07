@@ -132,6 +132,20 @@ R['liturgy_weekday.<day>.prokeimenon'] = { heading: 'Prokeimenon', order: 2 };
 R['liturgy_weekday.<day>.alleluia']    = { heading: 'Alleluia', order: 3 };
 R['liturgy_weekday.<day>.communion']   = { heading: 'Communion verse (koinonikon)', order: 4 };
 
+// §5 shared tables
+R['shared.daily_vespers_prokeimena']      = { heading: 'Daily Vespers prokeimena (by evening)', order: 1 };
+R['shared.weekday_aposticha_verses']      = { heading: 'Weekday aposticha verse sets (day-keyed)', order: 2 };
+R['shared.daily_liturgy_propers']         = { heading: 'Daily Liturgy propers (by day)', order: 3 };
+R['shared.saturday_vespers_prokeimenon']  = { heading: 'Saturday GV prokeimenon', order: 4 };
+R['shared.saturday_gv_aposticha_verses']  = { heading: 'Saturday GV aposticha verses', order: 5 };
+R['shared.lv_theotokos_aposticha_verses'] = { heading: 'LV Theotokos aposticha verses', order: 6 };
+R['shared.theotokos_virgin_rejoice']      = { heading: '“O Theotokos and Virgin, rejoice” + vigil rubric', order: 7 };
+R['shared.evlogitaria']                   = { heading: 'Resurrectional Evlogitaria', order: 8 };
+R['shared.polyeleos']                     = { heading: 'Polyeleos (select verses)', order: 9 };
+R['shared.praises_verse_ladder']          = { heading: 'Praises verse ladder', order: 10 };
+R['shared.ode8_hymn_verse']               = { heading: 'Ode VIII “We praise, we bless …”', order: 11 };
+R['shared.gregory_sinaite_hymn']          = { heading: 'Hymn of Gregory the Sinaite', order: 12 };
+
 export const REGISTRY = R;
 
 // Resolve a concrete data path (tone2.vespers_weekday.tue.lic.octoechos) to

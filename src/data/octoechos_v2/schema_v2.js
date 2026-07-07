@@ -247,6 +247,21 @@ export const FIELD_MANIFEST = [
   { path: 'liturgy_weekday.<day>.prokeimenon', kind: 'prokeimenon', section: 'liturgy_weekday.<day>', required: true, label: 'Weekday Liturgy prokeimenon (day cycle; shared-by-day hypothesis §5)' },
   { path: 'liturgy_weekday.<day>.alleluia',    kind: 'alleluia',    section: 'liturgy_weekday.<day>', required: true, label: 'Weekday Alleluia' },
   { path: 'liturgy_weekday.<day>.communion',   kind: 'text',        section: 'liturgy_weekday.<day>', required: true, label: 'Koinonikon (REQUIRED weekday, FORBIDDEN Sunday — §4.9/§4.10)' },
+
+  // §5 shared tables (shared.js — rendered by the viewer's Shared section;
+  // coverage-gated like every other field)
+  { path: 'shared.daily_vespers_prokeimena',      kind: 'group', section: 'shared', required: false, label: 'Daily Vespers prokeimena (keyed by evening; verify per tone §5)' },
+  { path: 'shared.weekday_aposticha_verses',      kind: 'group', section: 'shared', required: false, label: 'Weekday aposticha verse SETS (day-keyed; §9.13 Thursday as printed; departed sets 2-7)' },
+  { path: 'shared.daily_liturgy_propers',         kind: 'group', section: 'shared', required: false, label: 'Daily Liturgy propers (prokeimenon / alleluia / koinonikon per day; Saturday adds departed forms)' },
+  { path: 'shared.saturday_vespers_prokeimenon',  kind: 'group', section: 'shared', required: false, label: 'Saturday Great Vespers prokeimenon (Tone VI + 3 verses)' },
+  { path: 'shared.saturday_gv_aposticha_verses',  kind: 'text_array', section: 'shared', required: false, label: 'Saturday GV aposticha verses ("The Lord is King …" set)' },
+  { path: 'shared.lv_theotokos_aposticha_verses', kind: 'text_array', section: 'shared', required: false, label: 'Little Vespers Theotokos aposticha verses' },
+  { path: 'shared.theotokos_virgin_rejoice',      kind: 'group', section: 'shared', required: false, label: '"O Theotokos and Virgin, rejoice" (Tone IV) + vigil rubric' },
+  { path: 'shared.evlogitaria',                   kind: 'group', section: 'shared', required: false, label: 'The Resurrectional Evlogitaria (full print, 2-1; V1 comparison surface)' },
+  { path: 'shared.polyeleos',                     kind: 'group', section: 'shared', required: false, label: 'Polyeleos select verses + pre-Lent Ps 136 note + Megalynarion rubric' },
+  { path: 'shared.praises_verse_ladder',          kind: 'text_array', section: 'shared', required: false, label: 'Praises 8-verse ladder (Sunday Matins print site)' },
+  { path: 'shared.ode8_hymn_verse',               kind: 'group', section: 'shared', required: false, label: '"We praise, we bless …" Ode VIII verse + rubric' },
+  { path: 'shared.gregory_sinaite_hymn',          kind: 'group', section: 'shared', required: false, label: 'Hymn of Gregory the Sinaite (7 stanzas, Tier 1; "chanted every Sunday after the canon")' },
 ];
 
 // Top-level keys a tone file may carry (vocabulary guard).
@@ -319,7 +334,11 @@ export const CANON_B = {
 // prokeimenon-class texts ONLY (§9.8 ruling); everything hymnographic is
 // per-position.
 export const SHARED_TABLES = [
-  'lic_verse_ladder',
+  // 'lic_verse_ladder' — REMOVED July 7 2026: byte-comparison across the
+  // 2-1/2-2 print sites falsified the shared-ladder hypothesis ("patiently
+  // waited"/"waited patiently"; "with Him is"/"with Him there is"). Per §5's
+  // own rule the item moves per-position (§4 lic_verses fields). Finding
+  // recorded in project_notes.md.
   'saturday_gv_aposticha_verses',
   'lv_theotokos_aposticha_verses',
   'weekday_aposticha_verses',      // day-keyed verse SETS incl. departed set (§5, 2-7)

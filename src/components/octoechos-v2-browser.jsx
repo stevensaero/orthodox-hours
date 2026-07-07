@@ -173,7 +173,7 @@ function TextBlock({ node, path }) {
   );
 }
 
-const isTextNode = (v) => v && typeof v === 'object' && !Array.isArray(v) && 'text' in v;
+const isTextNode = (v) => v && typeof v === 'object' && !Array.isArray(v) && typeof v.text === 'string';
 
 // ── generic renderer — walks the data, never enumerates fields (§12.1) ───────
 function FieldHeading({ path, fallbackKey }) {
@@ -285,7 +285,9 @@ export default function OctoechosV2Browser() {
   const [recurrences, setRecurrences] = useState([]);
   const [audit, setAudit] = useState(false);
 
+  const [shared, setShared] = useState(null);
   useEffect(() => { loadRecurrences().then(setRecurrences).catch(() => setRecurrences([])); }, []);
+  useEffect(() => { loadOctoechosV2Shared().then(setShared).catch(() => setShared(null)); }, []);
   useEffect(() => {
     let live = true;
     setData(undefined);
@@ -342,6 +344,20 @@ export default function OctoechosV2Browser() {
               reference derivation and lands first.
             </div>
           </div>
+        )}
+
+        {shared && (
+          <AuditContext.Provider value={{ audit, recurrences, tonePrefix: '' }}>
+            <div style={{ margin: "14px 0", border: `1px solid ${C.border}`, borderRadius: "6px", padding: "10px 14px", background: "#fff" }}>
+              <div style={{ fontSize: "1rem", fontWeight: 700, color: C.ink }}>Shared tables (§5 — tone-independent, hypothesis re-verified per tone)</div>
+              {Object.keys(shared).map(k => (
+                <div key={k}>
+                  <FieldHeading path={`shared.${k}`} fallbackKey={k} />
+                  <Generic value={shared[k]} path={`shared.${k}`} fieldKey={k} />
+                </div>
+              ))}
+            </div>
+          </AuditContext.Provider>
         )}
 
         {data && (

@@ -107,7 +107,7 @@ function placeholderCheck(where, s) {
 }
 
 // ── G/H · text-node checks ───────────────────────────────────────────────────
-function isTextNode(v) { return v && typeof v === 'object' && !Array.isArray(v) && 'text' in v; }
+function isTextNode(v) { return v && typeof v === 'object' && !Array.isArray(v) && typeof v.text === 'string'; }
 
 function checkTextNode(where, n) {
   // G · provenance + tier — MANDATORY (amendment D)
@@ -170,10 +170,14 @@ function checkTextNode(where, n) {
     if (t.includes('|') || t.includes('//')) fail(`${where}: sergius-dialect field contains |or// — store the source's own markers (§3.3).`);
     if (t.includes('[')) fail(`${where}: bracket in sergius-dialect field (§6).`);
     if (n.tier === 2) {
+      // Sticheron-class Tier-2 prints carry exactly one **; verse/prokeimenon-
+      // class Tier-2 prints carry * with NO ** (source fact, shared.js July 7
+      // 2026) — so the gate requires at least one marker and at most one **,
+      // never more (§6 wording relaxed; flagged in session notes).
       const doubles = (t.match(/\*\*/g) ?? []).length;
       const singles = (t.match(/\*/g) ?? []).length - doubles * 2;
-      if (doubles !== 1) fail(`${where}: Tier-2 sergius text must carry exactly one \`**\` (found ${doubles}).`);
-      if (singles < 1) fail(`${where}: Tier-2 sergius text carries no \`*\` line marker.`);
+      if (doubles > 1) fail(`${where}: Tier-2 sergius text carries ${doubles} \`**\` markers — at most one.`);
+      if (singles + doubles < 1) fail(`${where}: Tier-2 sergius text carries no pointing markers — tier or text wrong.`);
     }
     if (n.tier === 1 && /[*]/.test(t)) fail(`${where}: Tier-1 text contains pointing markers — either the tier or the text is wrong (per-item source fact, §3.2).`);
   }

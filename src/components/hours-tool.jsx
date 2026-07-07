@@ -8492,6 +8492,44 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.31.2",
+    date: "July 2026",
+    summary: "Octoechos V2 \u00a711 step 2: shared day-keyed tables encoded from the raw text layers; viewer Shared section; two gate refinements",
+    items: [
+      "src/data/octoechos_v2/shared.js \u2014 FIRST V2 DATA: the \u00a75 tone-independent " +
+      "tables (daily Vespers prokeimena, weekday aposticha verse SETS incl. " +
+      "the \u00a79.13 Thursday anomaly as printed and the 2-7 departed sets, daily " +
+      "Liturgy propers with Saturday's departed forms, Saturday GV prokeimenon " +
+      "+ aposticha verses, LV Theotokos verses, 'O Theotokos and Virgin, " +
+      "rejoice' + vigil rubric, Evlogitaria, Polyeleos, Praises ladder, Ode " +
+      "VIII verse, Gregory-the-Sinaite hymn). GENERATED from the pdftotext " +
+      "layers by line markers \u2014 nothing hand-retyped; \u041e\u2192O normalized with " +
+      "per-node homoglyph_log; the one ruled digit-zero site (2-5 Alleluia) " +
+      "normalized with log; cross-file identity of the weekday verse pairs " +
+      "verified programmatically before storing once.",
+      "FINDING \u2014 lic_verse_ladder DROPPED from shared: byte-comparison across " +
+      "2-1/2-2 falsified the shared-ladder hypothesis ('patiently waited' vs " +
+      "'waited patiently'; 'with Him is' vs 'with Him there is'). LIC verses " +
+      "stay per-position per \u00a74, per \u00a75's own divergence rule.",
+      "Register refinement (\u00a72.3a same-commit rule): the Thursday " +
+      "prokeimenon/koinonikon pair \u2014 seeded 'identical' from catalog prose \u2014 " +
+      "is byte-VARIANT (prokeimenon pointed, koinonikon unpointed); entry " +
+      "pinned to exact shared paths and now live-checked by the gate (1 of 66 " +
+      "pairs checked, passing).",
+      "Viewer: Shared-tables section renders shared.js generically " +
+      "(coverage-gated: 79/79 manifest\u22c8registry); isTextNode hardened to " +
+      "string-text only.",
+      "Gate refinements, both flagged in notes: (1) Tier-2 pointing check " +
+      "relaxed \u2014 verse/prokeimenon-class Tier-2 prints carry * with NO ** " +
+      "(source fact); gate now requires \u22651 marker, \u22641 **. (2) Amendment-F " +
+      "lint: V1's own static tables (hours-tool.jsx, octoechos-data.js) " +
+      "report as non-fatal legacy warnings until Phase 5 cutover \u2014 31 hits, " +
+      "which incidentally byte-verify V1's prokeimena tables against the " +
+      "source.",
+      "Gate: 71/71 + V1 validator + V2 gate + coverage + vite build clean.",
+    ],
+  },
+  {
     version: "v0.31.1",
     date: "July 2026",
     summary: "fix: scan_source doubled-CURLY-quote sic class; sic register \u2018\u2018Accept bytes pinned from the raw text layer",

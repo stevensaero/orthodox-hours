@@ -76,13 +76,23 @@ for (const f of v2files) {
   }
 }
 
+// V1's own data layer legitimately duplicates source texts during the
+// parallel build (spec §1: V1 stays live and untouched until Phase 5
+// cutover; §8 inventories its static prokeimena tables as the comparison
+// surface). Hits in these files are REPORTED as warnings, not failures —
+// AT PHASE 5 CUTOVER this set must be emptied so they hard-fail like
+// every other component.
+const LEGACY_V1_SURFACES = new Set(['hours-tool.jsx', 'octoechos-data.js']);
+const legacyWarnings = [];
 if (fragments.length) {
   const componentFiles = readdirSync(COMPONENTS_DIR).filter(f => /\.(jsx|js)$/.test(f));
   for (const cf of componentFiles) {
     const src = readFileSync(join(COMPONENTS_DIR, cf), 'utf8');
     for (const { fragment, from } of fragments) {
       if (src.includes(fragment)) {
-        problems.push(`DISPLAY COPY (amendment F): src/components/${cf} contains a literal copy of canonical text from ${from} ("${fragment.slice(0, 40)}…") — components must read the canonical tables directly.`);
+        const msg = `DISPLAY COPY (amendment F): src/components/${cf} carries a literal copy of canonical text from ${from} ("${fragment.slice(0, 40)}…")`;
+        if (LEGACY_V1_SURFACES.has(cf)) legacyWarnings.push(msg + ' — V1 legacy surface, tolerated until Phase 5 cutover.');
+        else problems.push(msg + ' — components must read the canonical tables directly.');
       }
     }
   }
@@ -90,6 +100,11 @@ if (fragments.length) {
 
 // ── report ───────────────────────────────────────────────────────────────────
 console.log(`Viewer coverage gate — ${manifestPaths.size} manifest paths ⋈ ${Object.keys(REGISTRY).length} registry entries; ${fragments.length} canonical fragments linted against components.`);
+if (legacyWarnings.length) {
+  console.log(`${legacyWarnings.length} V1-legacy display-copy warning(s) (non-fatal until Phase 5 cutover; incidentally byte-verifies V1's static tables against the source):`);
+  for (const w of legacyWarnings.slice(0, 5)) console.log(`  ⚠ ${w}`);
+  if (legacyWarnings.length > 5) console.log(`  … and ${legacyWarnings.length - 5} more.`);
+}
 if (problems.length) {
   console.error(`\n✗ ${problems.length} VIOLATION(S):\n`);
   for (const p of problems) console.error(`  ✗ ${p}`);
