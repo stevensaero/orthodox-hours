@@ -18,11 +18,16 @@ Bill confirms the spec complete.**
    Establishes the weekday-day structure (§4.4–§4.6, §4.8–§4.9). **Text
    layer is contaminated with Cyrillic homoglyphs** (U+041E "О" for Latin
    "O") — §2.8, §9.10.
-3. 2026-06-21 OCA docx JSON (one Sunday's booklet) — prior session; OCA
+3. **2-3.pdf** (St. Sergius, Drive): Monday evening Vespers, Monday-night
+   Compline, Tuesday Matins, Tuesday Liturgy — scanned in full, July 6
+   2026. Confirms the 2-2 weekday template (no shape changes needed);
+   same Cyrillic-homoglyph contamination as 2-2. Identifies V1
+   `LIC_THEOTOKIA` as another weekday→Resurrection mis-slot (§8).
+4. 2026-06-21 OCA docx JSON (one Sunday's booklet) — prior session; OCA
    layering is a later phase and does not drive this spec.
 
-**Still needed (§9):** Monday evening through Friday evening (files
-2-3 … 2-7 expected), i.e. Tue–Sat Matins/Liturgy days, remaining Compline
+**Still needed (§9):** Tuesday evening through Friday evening (files
+2-4 … 2-7 expected), i.e. Wed–Sat Matins/Liturgy days, remaining Compline
 nights, the Friday-evening dogmatikon question, weekday exapostilarion
 texts, weekday Nocturns presence/absence.
 
@@ -68,9 +73,21 @@ director-pointed backfill is a later phase, after cutover.
      with a hyphenation variance (2-2). Each stored at its own position,
      variance and all.
    - Irmoi repeat across the chapter's canons (Ode 1 "In the deep of old"
-     in four canons now; Nocturns Odes 3/4/5/8/9 irmoi reappear in the
+     in five canons now; Nocturns Odes 3/4/5/8/9 irmoi reappear in the
      Sunday-night Compline canon) — each canon stores its own irmoi as
      printed, no cross-canon references.
+   - The recurring weekday aposticha compunction stichera vary between
+     days: Sunday evening "Have mercy **on** me, О God!" vs Monday evening
+     "Have mercy **upon** me, О God!" (2-3). Same-hymn-different-day is a
+     distinct print site; store per day.
+   - The Spec. Mel. label itself varies: Monday Matins set 3 "As **a**
+     wellspring of loving-kindness ..." vs Tuesday "As **the** wellspring
+     ..." (2-3) — labels stored verbatim per site.
+   - Ode 9 irmos, Sunday Matins Resurrection canon: "The **Son of the
+     beginningless Father**, God and Lord ..." vs Ode 9 irmos, Tuesday
+     Forerunner canon: "The **beginningless Son of God the Father** and
+     the Lord ..." (2-3) — two renderings of the same irmos at two
+     positions; the strongest dedup trap found so far.
    Validators must never flag duplicates across positions for merging.
 4. **§3 of encoding_rule_v2.md governs pointing** (read live each session).
    St. Sergius `*` / `**` retained verbatim as source provenance;
@@ -290,11 +307,28 @@ vespers_weekday: {
                                  // SUNDAY_APOSTICHA_THEOTOKIA[2] — §8
     closing_rubric: "Then, “Now lettest Thou Thy servant depart ...,” ... and Dismissal.",
   },
-  // mon … fri: GAP (2-3 … 2-7). Friday evening expected: 6 stichera + the
+  mon: { ... },                  // Monday evening (2-3): SAME shape as sun —
+                                 // the 2-2 template holds unchanged. Facts:
+                                 // fallback set is "of the holy forerunner"
+                                 // (Tuesday's theme); daily prokeimenon Tone
+                                 // IV "The Lord will hearken unto me";
+                                 // aposticha theotokion "All of my hope do I
+                                 // place on thee ..." (short, pointed).
+  // tue … fri: GAP (2-4 … 2-7). Friday evening expected: 6 stichera + the
   // week's dogmatikon per Fekula's Friday rule — same-text-or-distinct-
   // print-site question answered from source only (§2.2).
 }
 ```
+
+**Per-evening LIC Theotokia.** Each evening has its OWN Glory/Both-now LIC
+Theotokion (Sunday "With thrice-holy voices ..."; Monday "Tribulation,
+cruel assaults ..."): six per tone across the weekday evenings. V1 holds a
+single `LIC_THEOTOKIA[tone]` — see §8 for the mis-slot this produced.
+
+**Day-themed fallback sets.** The Menaion-absence fallback stichera follow
+the daily commemoration cycle (Sunday evening → incorporeal hosts; Monday
+evening → the Forerunner). Record the theme as printed in the rubric; the
+cycle itself is Fekula's domain at assembly time.
 
 ### 4.5 `compline` — night-keyed; per-night canons CONFIRMED different (2-2)
 
@@ -323,7 +357,13 @@ compline: {
     closing_rubric: "Then, “It is truly meet ...,” and a prostration. Trisagion through Our Father ..., And the rest as usual. Dismissal.",
                                  // closing rubrics differ per night — verbatim
   },
-  // mon … fri: GAP
+  mon: { ... },                  // 2-3: third distinct canon (different
+                                 // composition + partially different irmoi,
+                                 // incl. Ode VIII "God Who descended into the
+                                 // fiery furnace", first attestation); own
+                                 // after-Ode-VI sessional; closing rubric =
+                                 // Sunday night's.
+  // tue … fri: GAP
 }
 ```
 
@@ -459,9 +499,24 @@ matins_weekday: {
     aposticha_theotokion: "We have placed our trust in thee, O Theotokos ...",
     closing_rubric: "Then, “It is good to give thanks ...,” ... First Hour, and Dismissal.",
   },
-  // tue … sat: GAP
+  tue: { ... },                  // 2-3: SAME shape as mon — template holds.
+                                 // Facts: canons = repentance (Joseph,
+                                 // acrostic "Thou accedest to my lamentations,
+                                 // O Savior") + Forerunner (ALSO Joseph,
+                                 // acrostic "O Baptist, accept this entreaty")
+                                 // — composer varies per day per canon (Monday
+                                 // second canon was Theophanes); canon irmoi
+                                 // are day-specific compositions; Matins
+                                 // aposticha theotokion is "Rejoice, O
+                                 // Theotokos Mary ..." (§8 recurrence).
+  // wed … sat: GAP
 }
 ```
+
+**Sessional closers mix tiers within one day.** Tuesday set 1's theotokion
+is pointed Tier 2 ("We magnify thee ... * Thou art the un-burnt bush ..."),
+set 3's is Tier 1 prose — per §3.2 of encoding_rule_v2.md, tier is a
+per-item source fact; never force uniformity across a day's sets.
 
 ### 4.9 `liturgy` — Sunday (2-1)
 
@@ -502,7 +557,12 @@ liturgy_weekday: {
                                  // does not print. Day-of-week cycle; shared-
                                  // by-day hypothesis §5, verify per tone.
   },
-  // tue … sat: GAP
+  tue: { ... },                  // 2-3: same shape. Prokeimenon Tone VII "The
+                                 // righteous man shall be glad ..."; Alleluia
+                                 // Tone IV; Communion "In everlasting
+                                 // remembrance ...". Beatitudes include a
+                                 // day-theme (Forerunner) plain item.
+  // wed … sat: GAP
 }
 ```
 
@@ -647,7 +707,8 @@ comparison.
 | `RESURRECTIONAL_DISMISSAL_THEOTOKIA[2]` | — | word-for-word match | confirmed correct |
 | `SUNDAY_PROKEIMENON[2]` | "Arise, O Lord my God, let Thy hand be lifted high; forget not Thy poor forever" | Matins: "Arouse Thyself ..." (Ps 7); Liturgy: "The Lord is my strength and my song" (2-1) | **genuine error** — matches neither moment. The V1 text is (another translation of) the Kathisma-II sessional verse / Praises verse 7 — likely sourced from a psalm-verse table, not a prokeimenon. |
 | `SUNDAY_ALLELUIA[2]` | "O Lord, in Thy strength the king shall be glad ..." (Ps 20) | "The Lord hear thee in the day of affliction ... / O Lord, save the king ..." (Ps 19, 2-1) | **genuine error** — adjacent psalm, matches neither moment |
-| `SUNDAY_APOSTICHA_THEOTOKIA[2]` | "Rejoice, O Theotokos Mary, thou indestructible and surpassingly holy temple ..." | Saturday GV aposticha theotokion: "O new wonder ..." (2-1). The V1 text appears **word-for-word, pointing included, as the SUNDAY-EVENING weekday aposticha theotokion** (2-2). | **RESOLVED: mis-slotted, not fabricated.** V1's "Sunday" table holds the Sunday-*evening* (weekday cycle) text where the Saturday-evening (Resurrection cycle) text belongs. Directly confirms the suspected mis-sourcing; V2's day-keyed structure makes the slot collision impossible. |
+| `SUNDAY_APOSTICHA_THEOTOKIA[2]` | "Rejoice, O Theotokos Mary, thou indestructible and surpassingly holy temple ..." | Saturday GV aposticha theotokion: "O new wonder ..." (2-1). The V1 text appears **word-for-word, pointing included, as the SUNDAY-EVENING weekday aposticha theotokion** (2-2) — and again as the **Tuesday-morning Matins aposticha theotokion** (2-3): a text that legitimately recurs at multiple weekday positions. | **RESOLVED: mis-slotted, not fabricated.** V1's "Sunday" table holds a weekday-cycle text where the Saturday-evening (Resurrection cycle) text belongs. Directly confirms the suspected mis-sourcing; V2's day-keyed structure makes the slot collision impossible. |
+| `LIC_THEOTOKIA[2]` | "Tribulation, cruel assaults, and divers passions bestorm my lowly soul ..." (used at hours-tool.jsx:3771/3933/4065 as the **Saturday GV Dogmatikon fallback**) | The text is the **MONDAY-EVENING weekday LIC theotokion** (2-3, pointed Tier 2; V1 stores it unpointed). The source has SIX per-evening LIC theotokia per tone; the Saturday slot's proper text is the Dogmatikon itself (2-1). | **same failure class as the aposticha row** — weekday-cycle text mis-slotted into a Resurrection-cycle role, and a 6-way day distinction collapsed to one entry. V2: per-evening fields; no cross-cycle fallback in data. |
 | `HYPAKOE[2]` | "The women coming to Thy grave ..." | identical (2-1; source labels it "The Sessional Hymn") | confirmed correct |
 | `tone2.js` `vespers.sat` lic + aposticha + dogmatikon | — | word-for-word match (2-1, spot-checked) | confirmed correct |
 | `tone2.js` `aposticha_glory` | `[Glory from Menaion if appointed]` placeholder | real Saturday fallback exists ("O new wonder ...") | placeholder → real text in V2 |
@@ -656,13 +717,14 @@ comparison.
 
 ## 9. OPEN — gaps and decisions blocking spec completion
 
-1. **Weekday Vespers, Monday evening – Friday evening** (2-3 … 2-7): only
-   Sunday evening scanned. Day-keyed structure established; remaining days
+1. **Weekday Vespers, Tuesday evening – Friday evening** (2-4 … 2-7):
+   Sunday and Monday evenings scanned; template holding. Remaining days
    unproven.
 2. **Friday evening**: 6 stichera + week dogmatikon per Fekula's Friday
    rule — same-text-or-distinct-print-site question (§4.4).
-3. **Compline Mon–Fri nights** and **weekday Nocturns** presence/absence:
-   2-2 prints no Monday Nocturns content; not yet proof of a rule.
+3. **Compline Tue–Fri nights** and **weekday Nocturns** presence/absence:
+   neither 2-2 nor 2-3 prints weekday Nocturns content; still not proof of
+   a rule.
 4. **Repeat devices** (§2.7): proposal — mirror the source's device (full
    double print → two positional entries; "(Twice)" → `repeat: 2`). Both
    devices attested (2-1 LV lic; 2-1 Nocturns; 2-2 Monday canons). Bill's
