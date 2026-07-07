@@ -262,6 +262,11 @@ export const FIELD_MANIFEST = [
   { path: 'shared.praises_verse_ladder',          kind: 'text_array', section: 'shared', required: false, label: 'Praises 8-verse ladder (Sunday Matins print site)' },
   { path: 'shared.ode8_hymn_verse',               kind: 'group', section: 'shared', required: false, label: '"We praise, we bless …" Ode VIII verse + rubric' },
   { path: 'shared.gregory_sinaite_hymn',          kind: 'group', section: 'shared', required: false, label: 'Hymn of Gregory the Sinaite (7 stanzas, Tier 1; "chanted every Sunday after the canon")' },
+
+  // §4.12 Common Theotokia tables (theotokia.js — coverage-gated)
+  { path: 'theotokia.resurrectional_theotokia',    kind: 'group', section: 'theotokia', required: false, label: 'Part 1 — Resurrectional triplets per tone: Dogmaticon / At-the-Aposticha / Dismissal Theotokion' },
+  { path: 'theotokia.doxasticon_theotokia',        kind: 'group', section: 'theotokia', required: false, label: 'Part 2 — Both-now Theotokia in the doxasticon\'s tone, (day+slot) × tone' },
+  { path: 'theotokia.dismissal_theotokia_annual',  kind: 'group', section: 'theotokia', required: false, label: 'Part 3 — Dismissal Theotokia through the year, day-pair × tone (usage note stored verbatim, unclosed bracket sic)' },
 ];
 
 // Top-level keys a tone file may carry (vocabulary guard).

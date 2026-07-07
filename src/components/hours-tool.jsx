@@ -8492,6 +8492,38 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.31.4",
+    date: "July 2026",
+    summary: "Octoechos V2 \u00a711 step 3: Common Theotokia tables (\u00a74.12) \u2014 all eight tones, 184 print sites; 42 new byte-verified register pairs",
+    items: [
+      "src/data/octoechos_v2/theotokia.js \u2014 the three \u00a74.12 tables generated " +
+      "from Theotokia.pdf's raw text layer by heading-driven parsing (nothing " +
+      "hand-retyped; layer verified clean: 0 non-Latin codepoints, 0 " +
+      "digit-zero): Part 1 Resurrectional triplets (8\u00d73), Part 2 " +
+      "doxasticon-tone Both-now Theotokia (8\u00d78), Part 3 annual Dismissal " +
+      "Theotokia (8\u00d712). Every cell a print site with src{file,locus} and the " +
+      "printed row heading as sourceLabel.",
+      "42 recurrence pairs DISCOVERED and byte-verified at generation (\u00a72.3a " +
+      "same-commit rule): Part 1's dismissal column reprints at Part 3's " +
+      "Fri-Vespers/Sat-Matins row in SEVEN of eight tones; Tone IV alone " +
+      "diverges by one capital ('ranks of angels/Angels') \u2014 variant. Part 3 " +
+      "rows recombine heavily within each tone (34 internal identical pairs). " +
+      "10 seeded entries refined to exact table paths. Register now 107 " +
+      "pairs, 43 live-byte-checked.",
+      "Source anomalies kept verbatim, sic-registered (+6 entries, 7 now " +
+      "live-checked): the Part 3 usage note's '[Note:' bracket never closes; " +
+      "'dist give birth' (\u00d72, identical in duplicate prints); Tone VI " +
+      "'Tuesday-Vespers' hyphenated heading; Tone IV heads its Lauds row " +
+      "'Saturday Matins' (keyed positionally, heading preserved); and the " +
+      "Tone VII dismissal theotokion prints TWO ** markers \u2014 identically at " +
+      "BOTH its sites \u2014 so the gate now exempts sic-registered " +
+      "pointing_anomaly positions instead of 'correcting' them.",
+      "Viewer: Common Theotokia panel (all tones, tone-independent of the " +
+      "selector); coverage 82/82.",
+      "Gate: full suite green.",
+    ],
+  },
+  {
     version: "v0.31.3",
     date: "July 2026",
     summary: "V2 browser readability: ancestor-aware unregistered chips, tone badges, inline text/verse, day headings, clearer empty-state",

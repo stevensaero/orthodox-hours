@@ -43,6 +43,12 @@ import SICS from '../src/data/octoechos_v2/sic_register.js';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const V2_DIR = join(HERE, '..', 'src', 'data', 'octoechos_v2');
 
+// Sic-registered POINTING ANOMALIES (e.g. the Theotokia.pdf Tone VII doubled
+// **, printed identically at both sites): verbatim storage keeps them, so the
+// pointing check exempts exactly these registered positions (§9.12 — never
+// silently corrected, never silently passed elsewhere).
+const SIC_POINTING = new Set(SICS.filter(x => x.pointing_anomaly && x.path).map(x => x.path));
+
 const problems = [];
 const pending = [];
 const info = [];
@@ -176,7 +182,8 @@ function checkTextNode(where, n) {
       // never more (§6 wording relaxed; flagged in session notes).
       const doubles = (t.match(/\*\*/g) ?? []).length;
       const singles = (t.match(/\*/g) ?? []).length - doubles * 2;
-      if (doubles > 1) fail(`${where}: Tier-2 sergius text carries ${doubles} \`**\` markers — at most one.`);
+      if (doubles > 1 && !SIC_POINTING.has(where)) fail(`${where}: Tier-2 sergius text carries ${doubles} \`**\` markers — at most one (unless sic-registered as a pointing anomaly).`);
+      if (doubles > 1 && SIC_POINTING.has(where)) info.push(`${where}: doubled ** kept verbatim per sic register (pointing anomaly).`);
       if (singles + doubles < 1) fail(`${where}: Tier-2 sergius text carries no pointing markers — tier or text wrong.`);
     }
     if (n.tier === 1 && /[*]/.test(t)) fail(`${where}: Tier-1 text contains pointing markers — either the tier or the text is wrong (per-item source fact, §3.2).`);

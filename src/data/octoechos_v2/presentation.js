@@ -146,6 +146,10 @@ R['shared.praises_verse_ladder']          = { heading: 'Praises verse ladder', o
 R['shared.ode8_hymn_verse']               = { heading: 'Ode VIII “We praise, we bless …”', order: 11 };
 R['shared.gregory_sinaite_hymn']          = { heading: 'Hymn of Gregory the Sinaite', order: 12 };
 
+R['theotokia.resurrectional_theotokia']   = { heading: 'Resurrectional Theotokia (Part 1, per tone)', order: 1 };
+R['theotokia.doxasticon_theotokia']       = { heading: 'Doxasticon-tone Both-now Theotokia (Part 2)', order: 2 };
+R['theotokia.dismissal_theotokia_annual'] = { heading: 'Dismissal Theotokia through the year (Part 3)', order: 3 };
+
 export const REGISTRY = R;
 
 // Resolve a concrete data path (tone2.vespers_weekday.tue.lic.octoechos) to

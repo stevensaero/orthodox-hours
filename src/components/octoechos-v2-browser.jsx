@@ -323,8 +323,10 @@ export default function OctoechosV2Browser() {
   const [audit, setAudit] = useState(false);
 
   const [shared, setShared] = useState(null);
+  const [theotokia, setTheotokia] = useState(null);
   useEffect(() => { loadRecurrences().then(setRecurrences).catch(() => setRecurrences([])); }, []);
   useEffect(() => { loadOctoechosV2Shared().then(setShared).catch(() => setShared(null)); }, []);
+  useEffect(() => { loadV2Module('theotokia').then(setTheotokia).catch(() => setTheotokia(null)); }, []);
   useEffect(() => {
     let live = true;
     setData(undefined);
@@ -392,6 +394,20 @@ export default function OctoechosV2Browser() {
                 <div key={k}>
                   <FieldHeading path={`shared.${k}`} fallbackKey={k} />
                   <Generic value={shared[k]} path={`shared.${k}`} fieldKey={k} />
+                </div>
+              ))}
+            </div>
+          </AuditContext.Provider>
+        )}
+
+        {theotokia && (
+          <AuditContext.Provider value={{ audit, recurrences, tonePrefix: '' }}>
+            <div style={{ margin: "14px 0", border: `1px solid ${C.border}`, borderRadius: "6px", padding: "10px 14px", background: "#fff" }}>
+              <div style={{ fontSize: "1rem", fontWeight: 700, color: C.ink }}>Common Theotokia (§4.12) — Theotokia.pdf, all eight tones; each cell a print site</div>
+              {Object.keys(theotokia).map(k => (
+                <div key={k}>
+                  <FieldHeading path={`theotokia.${k}`} fallbackKey={k} />
+                  <Generic value={theotokia[k]} path={`theotokia.${k}`} fieldKey={k} />
                 </div>
               ))}
             </div>
