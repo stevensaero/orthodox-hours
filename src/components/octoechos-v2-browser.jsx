@@ -176,19 +176,34 @@ function TextBlock({ node, path }) {
 const isTextNode = (v) => v && typeof v === 'object' && !Array.isArray(v) && typeof v.text === 'string';
 
 // ── generic renderer — walks the data, never enumerates fields (§12.1) ───────
+const ROMAN = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV', 5: 'V', 6: 'VI', 7: 'VII', 8: 'VIII' };
+
+// A path is ALARMING only when neither it nor any ancestor is registered —
+// interior keys of a registered table are covered by their ancestor (§12.2's
+// unit of coverage is the schema-manifest field, not every nested key).
+function hasRegisteredAncestor(path) {
+  let p = path;
+  while (p.includes('.') || p.includes('[')) {
+    p = p.replace(/(\.[^.[]+|\[\d+\])$/, '');
+    if (registryLookup(p)) return true;
+    if (!/[.[]/.test(p)) break;
+  }
+  return false;
+}
+
 function FieldHeading({ path, fallbackKey }) {
   const entry = registryLookup(path);
   if (entry?.hidden) return null;
-  const unregistered = !entry;
+  const covered = entry || hasRegisteredAncestor(path);
   return (
     <div style={{
       fontFamily: "Georgia, serif", fontSize: "0.8rem", fontWeight: 700,
-      color: unregistered ? C.amber : C.gold, marginTop: "10px",
+      color: entry ? C.gold : covered ? C.inkMid : C.amber, marginTop: "10px",
       borderBottom: `1px solid ${C.border}`, paddingBottom: "1px",
     }}>
       {entry?.heading ?? fallbackKey}
-      {unregistered && (
-        <Badge color={C.amber} title="No presentation-registry entry — rendered by the §12.1 generic fallback; add a registry entry (coverage gate will demand it for schema fields)">
+      {!covered && (
+        <Badge color={C.amber} title="No presentation-registry entry on this field or any ancestor — rendered by the §12.1 generic fallback; the coverage gate demands registration for schema fields">
           unregistered field
         </Badge>
       )}
@@ -233,15 +248,37 @@ function Generic({ value, path, fieldKey }) {
   }
   if (value && typeof value === 'object') {
     const entries = Object.entries(value)
+      .filter(([k]) => k !== 'tone')
       .sort(([a], [b]) => (registryLookup(`${path}.${a}`)?.order ?? 99) - (registryLookup(`${path}.${b}`)?.order ?? 99));
+    const toneBadge = typeof value.tone === 'number'
+      ? <Badge color={C.gold} title="Tone, as printed">Tone {ROMAN[value.tone] ?? value.tone}</Badge> : null;
     return (
       <div style={{ paddingLeft: "6px" }}>
-        {entries.map(([k, v]) => (
-          <div key={k}>
-            <FieldHeading path={`${path}.${k}`} fallbackKey={k} />
-            <Generic value={v} path={`${path}.${k}`} fieldKey={k} />
-          </div>
-        ))}
+        {toneBadge && <div style={{ marginTop: "4px" }}>{toneBadge}</div>}
+        {entries.map(([k, v]) => {
+          const kidPath = `${path}.${k}`;
+          // 'text' inside a prokeimenon/alleluia-style group: render inline,
+          // no redundant heading row; 'verse'/'verses' get a muted inline label.
+          if (k === 'text' && isTextNode(v)) {
+            return <Generic key={k} value={v} path={kidPath} fieldKey={k} />;
+          }
+          if ((k === 'verse' && isTextNode(v)) || (k === 'verses' && Array.isArray(v) && !registryLookup(kidPath))) {
+            return (
+              <div key={k} style={{ marginLeft: "10px" }}>
+                <div style={{ fontSize: "0.68rem", color: C.inkLight, fontStyle: "italic", marginTop: "4px" }}>
+                  {k === 'verse' ? 'Verse' : 'Verses'}
+                </div>
+                <Generic value={v} path={kidPath} fieldKey={k} />
+              </div>
+            );
+          }
+          return (
+            <div key={k}>
+              <FieldHeading path={kidPath} fallbackKey={DAY_HEADINGS[k] ?? k} />
+              <Generic value={v} path={kidPath} fieldKey={k} />
+            </div>
+          );
+        })}
       </div>
     );
   }
@@ -336,12 +373,13 @@ export default function OctoechosV2Browser() {
             border: `1px dashed ${C.goldLight}`, borderRadius: "6px", padding: "16px",
             color: C.inkMid, background: "#fff", maxWidth: "620px",
           }}>
-            <b>Tone {tone} has no V2 data yet.</b>
+            <b>The Tone {tone} chapter file has no V2 data yet.</b>
             <div style={{ fontSize: "0.8rem", marginTop: "6px", color: C.inkLight }}>
-              Phase 1 infrastructure ships before encoding (spec §11/§12.6): the schema,
-              validators, registers, and this viewer are live so that every encoding
-              session is visually auditable the day it is committed. Tone 2 is the
-              reference derivation and lands first.
+              Per-tone chapter encoding is §11 steps 3–5; the schema, validators,
+              registers, and this viewer ship first (§12.6) so every encoding session
+              is visually auditable the day it is committed. Tone 2 is the reference
+              derivation and lands first. The tone-independent Shared tables below
+              are unaffected by the tone selector.
             </div>
           </div>
         )}
@@ -349,7 +387,7 @@ export default function OctoechosV2Browser() {
         {shared && (
           <AuditContext.Provider value={{ audit, recurrences, tonePrefix: '' }}>
             <div style={{ margin: "14px 0", border: `1px solid ${C.border}`, borderRadius: "6px", padding: "10px 14px", background: "#fff" }}>
-              <div style={{ fontSize: "1rem", fontWeight: 700, color: C.ink }}>Shared tables (§5 — tone-independent, hypothesis re-verified per tone)</div>
+              <div style={{ fontSize: "1rem", fontWeight: 700, color: C.ink }}>Shared tables (§5) — tone-independent; shown for every tone; each table re-verified per tone as encoding proceeds</div>
               {Object.keys(shared).map(k => (
                 <div key={k}>
                   <FieldHeading path={`shared.${k}`} fallbackKey={k} />

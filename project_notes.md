@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.31.2** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+**Tool version: v0.31.3** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
 
 **Session July 7, 2026 (cont. 2) — Octoechos V2 §11 STEP 2: shared day-keyed
 tables ENCODED (first V2 data), v0.31.2.** `shared.js` generated from the

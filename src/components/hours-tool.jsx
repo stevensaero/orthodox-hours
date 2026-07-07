@@ -8492,6 +8492,26 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.31.3",
+    date: "July 2026",
+    summary: "V2 browser readability: ancestor-aware unregistered chips, tone badges, inline text/verse, day headings, clearer empty-state",
+    items: [
+      "The amber 'unregistered field' chip now fires only when neither the " +
+      "field NOR ANY ANCESTOR is registered \u2014 interior keys of a registered " +
+      "table (day keys, tone/text/verse subfields) render plain, since \u00a712.2's " +
+      "unit of coverage is the schema-manifest field, not every nested key. " +
+      "Top-level surprises still flag loudly.",
+      "'tone' renders as a Tone-badge (Roman numerals, matching the source) on " +
+      "its parent block instead of a labeled row; 'text' inside " +
+      "prokeimenon-style groups renders inline without a redundant heading; " +
+      "'verse'/'verses' get a muted inline label; day keys render as day names.",
+      "Empty-state notice now says the TONE CHAPTER FILE is not yet encoded " +
+      "and points out that the Shared tables below are tone-independent \u2014 " +
+      "fixing the apparent 'no data / but there is data' contradiction.",
+      "Gate: full suite green.",
+    ],
+  },
+  {
     version: "v0.31.2",
     date: "July 2026",
     summary: "Octoechos V2 \u00a711 step 2: shared day-keyed tables encoded from the raw text layers; viewer Shared section; two gate refinements",
