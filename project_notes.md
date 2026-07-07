@@ -1,5 +1,54 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.30.1** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
+**Tool version: v0.30.1** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+
+**Session July 7, 2026 — Octoechos V2 Phase 0 spec-writing, part 3: no code
+changed, docs only. Files 2-4 through 2-7 scanned — ALL SEVEN Tone 2 source
+files are now in the spec; Phase 0 SCANNING is complete. §9.2 (Friday
+dogmatikon) RESOLVED from source. Spec is NOT yet complete; Phase 1 remains
+blocked on Bill's decision queue (§9.4, §9.5, §9.8, §9.10, §9.12, §9.13,
+§9.14) and the §9.11 exapostilarion source hunt.**
+
+### What was done
+
+- Four docs-only spec commits, one per file scanned (`5fb9aa4` 2-4,
+  `2a24fab` 2-5, `42cac49` 2-6, `b9dc126` 2-7); full gate run before each
+  commit (pointing paths ALL PASS, sunday vespers 71/71, octoechos
+  validator ✓, vite build ✓). No version bump (docs-only).
+- **§9.2 resolved (2-7):** the Friday-evening dogmatikon is a distinct
+  print site — wording and pointing IDENTICAL to the 2-1 Great Vespers
+  print, source label different per site ("Dogmatic Theotokion, in the
+  same tone"). Stored at both positions per §2.2.
+- **Weekday template held Mon–Fri without a shape change.** Friday evening
+  is the predicted 6-stichera no-fallback shape. Saturday Matins is a NEW
+  day-class (spec §4.8a): two sessional sets, conditional fallback canon
+  with per-item refrains, praises stichera, departed verse sets.
+- **Incipit-reference device discovered (2-4) and generalized (2-5/2-6/
+  2-7):** full-when-different / incipit-when-same, zero counterexamples;
+  attested in canon irmoi, sessional items, and the Friday-evening LIC.
+  Folded into the §9.4 device decision.
+- **V1 LIC→aposticha mis-slot pattern proven:** `tone2.js`
+  `vespers.{tue,wed,thu}.aposticha_glory` all hold LIC closers (sun/mon
+  correct). `fri.lic` device conversion, `fri.lic_dogmatikon` pointing
+  loss, `wed.aposticha[2]` mis-sourced (dropped in V2); `fri.aposticha[0]`
+  and the tue/thu item-2 variance VINDICATED as source-faithful.
+- **Anti-dedup catalog grew substantially** — crown jewel: the Friday-night
+  Compline canon is the Wednesday Matins Theotokos canon in another
+  rendering, ode by ode.
+- **New open items:** §9.13 Thursday Matins aposticha verse anomaly (4-of-5
+  mornings normal; suspected misprint, recorded as printed); §9.14
+  beatitudes opener (Wed–Sat attested; Mon/Tue re-check pending); §9.12
+  sic-list extended per file; §9.10 extended for the digit-zero homoglyph
+  ("0 Lord", 2-5). §9.3 CLOSED (Octoechos supplies Nocturns propers only
+  for Sunday).
+- Homoglyph attestation final: 2-1 clean; 2-2 … 2-7 all U+041E
+  contaminated.
+
+### Next session
+
+- Bill's rulings on the §9 decision queue, then spec-complete confirmation
+  → Phase 1 scaffolding (no files until then).
+- §9.11: locate weekday exapostilarion texts (appendix file?).
+- §9.14: re-check Mon/Tue beatitudes openers in 2-2/2-3.
 
 **Session July 6, 2026 (cont. 2) — Octoechos V2 Phase 0 spec-writing: no code
 changed, docs only. `octoechos_v2_spec.md` created at repo root and iterated
