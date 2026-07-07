@@ -1,5 +1,39 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.31.1** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+**Tool version: v0.31.2** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+
+**Session July 7, 2026 (cont. 2) — Octoechos V2 §11 STEP 2: shared day-keyed
+tables ENCODED (first V2 data), v0.31.2.** `shared.js` generated from the
+raw pdftotext layers by line-marker extraction — nothing hand-retyped; О→O
+per §9.10 with per-node homoglyph_log; the ruled 2-5 digit-zero normalized
+with log; weekday verse-pair identity across print sites verified
+programmatically before single storage (§9.8). Viewer gained the Shared
+section (coverage 79/79).
+
+### Findings & flags (Bill review)
+
+- **lic_verse_ladder FALSIFIED as shared, dropped:** 2-1 GV vs 2-2 prints
+  diverge at bytes — "my soul hath PATIENTLY WAITED" (2-1) vs "WAITED
+  PATIENTLY" (2-2); "with Him IS plenteous" (2-1/LV) vs "with Him THERE IS
+  plenteous" (2-2). Per §5's divergence rule LIC verses stay per-position
+  (§4 `lic_verses` fields). SHARED_TABLES entry commented out with the
+  evidence.
+- **Register refinement:** Thu prokeimenon/koinonikon seeded `identical`
+  from the catalog prose; raw bytes show prokeimenon POINTED, koinonikon
+  UNPOINTED → `variant`, exact shared paths, now live-gated (1/66 checked).
+- **§6 Tier-2 pointing check relaxed:** verse/prokeimenon-class Tier-2
+  prints carry `*` with NO `**` (source fact across all shared tables);
+  gate now requires ≥1 marker and ≤1 `**` instead of exactly one `**`. The
+  spec §6 wording ("exactly one **") was written for sticheron-class prints.
+- **Amendment-F lint vs V1 coexistence:** V1's static tables
+  (hours-tool.jsx prok tables, octoechos-data.js) match V2 canonical
+  fragments — 31 hits now WARN (non-fatal) as declared legacy surfaces
+  until Phase 5 cutover, when the allowlist MUST be emptied. Side value:
+  those V1 rows are byte-verified against the source.
+- **"(Thrice)" device:** `theotokos_virgin_rejoice` prints "(Thrice)" —
+  outside the §9.4 ruling (which covers "(Twice)"→repeat:2). Stored WITHOUT
+  a repeat field; the printed marker is recorded in provenance_note and the
+  vigil rubric (stored beside) governs the count. Bill may prefer a
+  repeat:3 extension of §9.4 — not done unilaterally.
 
 **Session July 7, 2026 (cont.) — Octoechos V2 PHASE 1 STEP 1: infrastructure
 before any data (spec §11). NO V2 liturgical data encoded. The full gate/
