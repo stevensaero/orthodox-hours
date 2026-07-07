@@ -1,5 +1,63 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.30.1** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+**Tool version: v0.31.0** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+
+**Session July 7, 2026 (cont.) — Octoechos V2 PHASE 1 STEP 1: infrastructure
+before any data (spec §11). NO V2 liturgical data encoded. The full gate/
+viewer stack is live: `schema_v2.js` (the single §6/§12 contract — kinded
+field manifest, §4.11 labels incl. compounds, typed closers, §2.7 devices,
+mandatory src{file,locus}+tier per amendment D), `validate_octoechos_v2.mjs`
+(all §6 gates; §9.10 charset+digit-zero hard-fail with every hit surfaced to
+Bill verbatim, no automatic handling; recurrence + sic register checks;
+green against zero data — PENDING, never pass, for unencoded positions),
+`tools/scan_source.mjs` (§10 step-1 scanner → review file), and the §12
+schema-driven viewer at /octoechos-v2 (default-visible, generic fallback for
+unregistered fields, audit-mode raw toggle, recurrence cross-links,
+ErrorBoundary; presentation registry carries hints only — amendment F lint
+enforced by `validate_viewer_coverage.mjs`, 67/67 manifest⋈registry).
+v0.31.0.**
+
+### What was done
+
+- Commits: schema+registers (c545b9a), gates+scanner (636e850), viewer+route
+  +version (a070104), this docs commit. Full gate before each: pointing
+  paths PASS, sunday vespers 71/71, V1 octoechos validator ✓, V2 gate ✓,
+  coverage gate ✓, vite build ✓.
+- `known_recurrences.js` seeded from EVERY §2.3 catalog pair (66 entries).
+  **FLAG FOR BILL:** a third relation `family` was added beyond the spec's
+  identical|variant, for pairs whose byte-status the spec prose does not pin
+  (chiefly the irmos-suite recurrences). `family` entries are informational
+  only; each is upgraded to identical/variant in the commit that encodes its
+  positions. If Bill prefers strict two-relation form, the six `family`
+  irmos entries need his identical/variant rulings instead.
+- `sic_register.js` seeded with the complete §9.12 running list (20
+  entries, incl. the absence-sic for the Thu-night Compline truncated
+  closing rubric). Entries carry `approx: true` until their positions are
+  encoded; gate rule: pin paths in the same commit as the data.
+- Loader contract per spec §3: `loadOctoechosV2Tone` / `loadOctoechosV2Shared`
+  with a multi-tone cache (God-is-the-Lord cross-tone lookup ready). The
+  dynamic-import form `import(`../data/octoechos_v2/${name}.js`)` keeps
+  the Vite glob rooted at the directory so builds stay green while tone
+  files land one by one.
+- Validators use pathToFileURL for dynamic imports (Windows-safe).
+
+### Carry-forwards (unchanged, do not act without Bill)
+
+- §9.11(b) weekday daily exapostilaria — await Bill's Horologion source;
+  fold in under §10.
+- §9.13 Thursday verse anomaly — encoded-as-printed when Tone 2 lands;
+  optional physical-chapter check open.
+- Tone-3 verification scan only after Phase 1 infrastructure (this session)
+  AND Bill's go for §11 step 2 (shared day-keyed tables) → step 3 (§4.12
+  Theotokia tables) → step 4 (Sat GV + Sunday cycle).
+
+### Next session
+
+- Bill reviews the `family` relation flag and the seeded registers.
+- On Bill's explicit go: §11 step 2 — shared day-keyed tables (small,
+  source-proven, V1-comparable), under the §10 per-file protocol
+  (scan_source review file to Bill first).
+
+
 
 **Session July 7, 2026 — Octoechos V2 Phase 0 spec-writing, part 3: no code
 changed, docs only. Files 2-4 through 2-7 scanned — ALL SEVEN Tone 2 source
