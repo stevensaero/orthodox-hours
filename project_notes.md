@@ -1,6 +1,65 @@
 # Orthodox Hours Tool — Project Notes
 **Tool version: v0.30.1** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
 
+**Session July 6, 2026 (cont. 2) — Octoechos V2 Phase 0 spec-writing: no code
+changed, docs only. `octoechos_v2_spec.md` created at repo root and iterated
+against three St. Sergius Tone 2 files (2-1, 2-2, 2-3.pdf). The spec is the
+canonical findings record — this entry is the pointer and summary. Spec is
+NOT complete; Phase 1 remains blocked on Bill's confirmation.**
+
+### What was done
+
+- `octoechos_v2_spec.md` drafted and revised across four docs-only commits
+  (6dc16f4, 264b698, ccbff7b, 665c8e2). Full field inventory, canon Shapes
+  A/B, drift-gate design, shared-table hypotheses, discrepancy register,
+  and open-gap/decision list all live THERE (§8/§9) — do not duplicate.
+- Sources scanned in full: **2-1.pdf** (Sat LV/GV, Sat Compline, Sun
+  Nocturns, Sun Matins, Sun Liturgy), **2-2.pdf** (Sun-eve Vespers, Sun
+  Compline, Mon Matins/Liturgy), **2-3.pdf** (Mon-eve Vespers, Mon
+  Compline, Tue Matins/Liturgy). 2-1 supersedes the earlier "Tone2.pdf"
+  paste (one OCR variance caught; 2-1 canonical).
+
+### Headline findings (details + evidence in the spec)
+
+- **Three V1 tables are weekday→Resurrection mis-slots, now source-proven:**
+  `SUNDAY_APOSTICHA_THEOTOKIA[2]` holds the Sunday-EVENING weekday
+  aposticha theotokion (recurs Tue Matins); `LIC_THEOTOKIA[2]` — consumed
+  as the Saturday Dogmatikon fallback at hours-tool.jsx:3771/3933/4065 —
+  holds the MONDAY-evening LIC theotokion (source has SIX per-evening
+  theotokia per tone); `SUNDAY_PROKEIMENON[2]`'s text is the Kathisma-II
+  sessional verse in another translation. The old "Theotokia.pdf
+  mis-sourcing" open item is RESOLVED by this.
+- **New service categories:** Nocturns (Trinity canon, composer+acrostic
+  metadata, Spec. Mel. sessional pairs, Gregory-Sinaite hymn) and
+  per-night Compline canons (Sat/Sun/Mon all different compositions).
+- **Weekday template established and confirmed across two days** (2-2 shape
+  held unchanged for 2-3): day-keyed Vespers with Octoechos-printed
+  Menaion-absence FALLBACK stichera sets (day-themed), daily prokeimena,
+  labeled aposticha (martyrs label); weekday Matins = 3 sessional sets +
+  TWO canons (own irmoi/composer/acrostic per canon per day) + its own
+  aposticha; weekday Liturgy adds the KOINONIKON field class.
+- **Anti-dedup evidence catalog** (spec §2.3): same-hymn cross-service
+  wording variance, hyphenation/article/on-upon micro-variance across
+  days, and two renderings of the same Ode-9 irmos at two positions.
+- **2-2/2-3 text layers are contaminated with Cyrillic О (U+041E)
+  homoglyphs** (2-1 is clean) — proposed normalize-at-encode-with-log +
+  validator hard-fail on non-Latin codepoints (spec §2.8, decision open).
+
+### Open decisions for Bill (spec §9)
+
+Homoglyph rule (§9.10); repeat-device rule (§9.4 — mirror the source's own
+device); canonical troparion punctuation site (§9.5); shared-vs-excluded
+boundary incl. day-keyed cycles (§9.8). None block the next scan round.
+
+### Next session
+
+Continue Phase 0: scan 2-4 … 2-7 (Tue-eve → Fri-eve; Friday dogmatikon
+question; remaining Compline nights; weekday exapostilarion source;
+weekday Nocturns presence). Then Bill reviews the spec for completeness
+before Phase 1 scaffolding. Image/PDF limit ended this chat.
+
+---
+
 **Session July 6, 2026 (cont.) — PLANNING SESSION, no code changed: Octoechos V2
 rebuild decided. Full rewrite of the Octoechos data layer, built clean and
 complete alongside the current system, with a proper truthing tool, before any
