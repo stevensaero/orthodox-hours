@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.31.0** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+**Tool version: v0.31.1** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
 
 **Session July 7, 2026 (cont.) — Octoechos V2 PHASE 1 STEP 1: infrastructure
 before any data (spec §11). NO V2 liturgical data encoded. The full gate/
@@ -17,6 +17,20 @@ enforced by `validate_viewer_coverage.mjs`, 67/67 manifest⋈registry).
 v0.31.0.**
 
 ### What was done
+
+- **§11 step 2 opened (Bill's go, July 7 2026): source delivery moved from
+  Drive to the private `stevensaero/orthodox-sources` repo** (byte-exact via
+  git; Drive-as-delivery superseded for Octoechos sources — update the
+  project custom instructions to match). Repo carries all 8 tones' chapters
+  + Theotokia.pdf + Music-Evangelical-Stichera.pdf.
+- §10 step-1 scans run on the RAW text layers of 2-1 … 2-7 (pdftotext):
+  census matches the spec attestations EXACTLY (2-1 clean; 2-4 ×143, 2-5
+  ×156, 2-6 ×144, 2-7 ×157 U+041E; 2-2/2-3 newly pinned ×139/×170; one
+  digit-zero "0 Lord" in 2-5). Review files delivered to Bill; encoding
+  waits on his review per the §9.10 ruling.
+- Scanner gap found & fixed (v0.31.1): 2-5's doubled-quote sic is doubled
+  CURLY quotes (U+2018 ×2 — ‘‘Accept); pattern extended, register verbatim
+  pinned to true bytes.
 
 - Commits: schema+registers (c545b9a), gates+scanner (636e850), viewer+route
   +version (a070104), this docs commit. Full gate before each: pointing
