@@ -52,7 +52,16 @@ Bill confirms the spec complete.**
    6-stichera no-fallback shape; Saturday Matins is a NEW day-class
    (§4.8a); Compline nights complete at seven distinct canons.
    Contaminated: U+041E ×157 (only non-Latin codepoint; no digit-zero).
-8. 2026-06-21 OCA docx JSON (one Sunday's booklet) — prior session; OCA
+8. **Theotokia.pdf** (St. Sergius, Drive, "The Common Theotokia", 30 pp,
+   packaged with the Octoechos set): inventoried July 7 2026. THREE table
+   families (§4.12): Part 1 per-tone Resurrectional triplets (Dogmaticon /
+   At-the-Aposticha / Dismissal Theotokion); Part 2 doxasticon-tone
+   Both-now theotokia (day+slot × tone); Part 3 Dismissal Theotokia
+   through the year (day-pair × tone). Confirms the
+   `SUNDAY_APOSTICHA_THEOTOKIA` provenance hypothesis (§8) and locates
+   the §9.6 dismissal-theotokion texts. Text layer CLEAN — no homoglyphs,
+   no digit-zero (like 2-1).
+9. 2026-06-21 OCA docx JSON (one Sunday's booklet) — prior session; OCA
    layering is a later phase and does not drive this spec.
 
 **ALL SEVEN SOURCE FILES SCANNED — Phase 0 scanning is complete.**
@@ -254,6 +263,30 @@ director-pointed backfill is a later phase, after cutover.
      Matins aposticha martyrs, 2-3) ↔ "taking up the Cross of Christ as
      an ENSIGN of victory" (Saturday praises, 2-7) — same hymn, two
      renderings, two positions.
+   - **Theotokia.pdf overlaps the chapter closers both ways (source 8):**
+     identical prints ("Like a fruitful olive tree" = Wed-eve closer;
+     "Save from misfortunes" = Fri-eve closer; "Through thee, O
+     Ever-virgin Theotokos" = Thu Matins set-2 closer; "cloud of the
+     unwaning Light" = Wed Matins set-1 closer) AND re-renderings: "All of
+     my hope do I SET on thee" (Part 2 Thu praises — a THIRD rendering
+     beside 2-3's "do I place on" and 2-5's "I place in"); "In thee have
+     we placed our trust ... That we not fall way" (Part 2 Mon praises)
+     vs 2-2's Monday Matins closer "We have placed our trust in thee ...
+     Let us not fall away"; "As thou art a well-spring of loving
+     COMPASSION ... a sinful people ... bodiless hosts" (Part 3) vs 2-2's
+     "loving-kindness ... people who have sinned ... incorporeal beings"
+     (the wellspring family again); "Come all ye, and let us glorify the
+     Mother of Light" (Part 2 Sat praises) vs 2-7's praises "Come, and
+     with unceasing hymns let us all glorify the Mother of the Light."
+   - INTERNAL same-file variance (Theotokia.pdf): "Rejoice, O Theotokos
+     Mary" prints twice within Part 2 Tone II — Sun-eve pointed
+     ("surpassingly holy") vs Tue praises unpointed ("surpassing holy").
+     One file, one hymn, two renderings and two tiers.
+   - **First CROSS-TONE trap:** "We magnify thee ... un-burnt bush ..."
+     sits in TONE IV's Part 3 rows (Tuesday Lauds; Saturday Matins) while
+     the Tone 2 chapters print it as the Tue Matins set-1 closer (2-3)
+     and Tue-night Compline sessional (2-4). Same hymn across tone
+     tables; per-position storage only.
    Validators must never flag duplicates across positions for merging.
 4. **§3 of encoding_rule_v2.md governs pointing** (read live each session).
    St. Sergius `*` / `**` retained verbatim as source provenance;
@@ -1115,6 +1148,38 @@ an assembly concern. Katavasiae are **not** Octoechos content — excluded,
 as is the Magnificat machinery (§5). The Ode VIII "We praise, we bless ..."
 verse is invariable → shared.
 
+### 4.12 Common Theotokia tables (Theotokia.pdf, source 8)
+
+Three first-class V2 tables mirroring the source's own table structure
+(per the §9.8 ruling these are hymnographic texts at KEYED POSITIONS —
+the table IS the print structure, so each cell is a print site):
+
+1. **`resurrectional_theotokia`** — tone-keyed triplet per tone:
+   `{dogmatikon, aposticha_theotokion, dismissal_theotokion}`. Tone II
+   verified against the chapters: the dogmatikon is a THIRD print site of
+   "The shadow of the law" (capitalizing "Bush" and "Virgin" where the
+   2-1/2-7 chapter prints have lowercase — agreeing with july.js's two
+   Menaion sites: two print-site families of one hymn); the
+   At-the-Aposticha text "O new wonder greater than all the wonders of
+   old" is IDENTICAL to 2-1's Great Vespers aposticha Both-now (verified
+   line-for-line) and has a third print site in may.js (Menaion); the
+   dismissal theotokion "All of thy most glorious mysteries" = 2-1's
+   post-troparion print.
+2. **`doxasticon_theotokia`** — Part 2, keyed (day+slot) × tone: the
+   Both-now theotokia used when a Menaion doxasticon precedes, in the
+   doxasticon's tone (slots: Sun-eve aposticha, Mon praises, Mon-eve
+   aposticha, Tue praises, Wed-eve aposticha, Thu praises, Fri-eve
+   aposticha, Sat praises). This is the CONFIRMED source of V1's
+   `SUNDAY_APOSTICHA_THEOTOKIA` (§8).
+3. **`dismissal_theotokia_annual`** — Part 3, keyed day-pair × tone
+   ("Sunday Vespers and Monday Matins", "Monday Lauds", …): the ferial
+   dismissal theotokia. Together with table 1's dismissal column this is
+   the §9.6 TEXT SOURCE; Fekula governs selection at assembly time.
+
+Encoding note: Parts 2/3 overlap the chapter closers as identical prints
+AND as re-renderings (§2.3) — per-position storage only; the gate never
+merges a table cell with a chapter position.
+
 ## 5. `shared.js` — tone-independent tables
 
 Every item below is printed in a Tone 2 file but hypothesized invariable
@@ -1239,7 +1304,7 @@ comparison.
 | `RESURRECTIONAL_DISMISSAL_THEOTOKIA[2]` | — | word-for-word match | confirmed correct |
 | `SUNDAY_PROKEIMENON[2]` | "Arise, O Lord my God, let Thy hand be lifted high; forget not Thy poor forever" | Matins: "Arouse Thyself ..." (Ps 7); Liturgy: "The Lord is my strength and my song" (2-1) | **genuine error** — matches neither moment. The V1 text is (another translation of) the Kathisma-II sessional verse / Praises verse 7 — likely sourced from a psalm-verse table, not a prokeimenon. |
 | `SUNDAY_ALLELUIA[2]` | "O Lord, in Thy strength the king shall be glad ..." (Ps 20) | "The Lord hear thee in the day of affliction ... / O Lord, save the king ..." (Ps 19, 2-1) | **genuine error** — adjacent psalm, matches neither moment |
-| `SUNDAY_APOSTICHA_THEOTOKIA[2]` | "Rejoice, O Theotokos Mary, thou indestructible and surpassingly holy temple ..." | Saturday GV aposticha theotokion: "O new wonder ..." (2-1). The V1 text appears **word-for-word, pointing included, as the SUNDAY-EVENING weekday aposticha theotokion** (2-2) — and again as the **Tuesday-morning Matins aposticha theotokion** (2-3): a text that legitimately recurs at multiple weekday positions. | **RESOLVED: mis-slotted, not fabricated.** V1's "Sunday" table holds a weekday-cycle text where the Saturday-evening (Resurrection cycle) text belongs. Directly confirms the suspected mis-sourcing; V2's day-keyed structure makes the slot collision impossible. |
+| `SUNDAY_APOSTICHA_THEOTOKIA[2]` | "Rejoice, O Theotokos Mary, thou indestructible and surpassingly holy temple ..." | Saturday GV aposticha theotokion: "O new wonder ..." (2-1). The V1 text appears **word-for-word, pointing included, as the SUNDAY-EVENING weekday aposticha theotokion** (2-2) — and again as the **Tuesday-morning Matins aposticha theotokion** (2-3): a text that legitimately recurs at multiple weekday positions. | **RESOLVED: mis-slotted, not fabricated — provenance CONFIRMED (Theotokia.pdf, July 7 2026).** V1's own table comment cites Theotokia.pdf, and the 8-set matches Part 2's "On Sunday evening at Vespers Aposticha" rows verbatim: genuine doxasticon-conditional SUNDAY-EVENING material consumed in the Saturday-GV Resurrection role. The correct GV text is Part 1's At-the-Aposticha ("O new wonder ...", three print sites: Theotokia.pdf Part 1, 2-1 GV, may.js Menaion). V2 separates the tables (§4.12) and the slot collision becomes impossible. |
 | `LIC_THEOTOKIA[2]` | "Tribulation, cruel assaults, and divers passions bestorm my lowly soul ..." (used at hours-tool.jsx:3771/3933/4065 as the **Saturday GV Dogmatikon fallback**) | The text is the **MONDAY-EVENING weekday LIC theotokion** (2-3, pointed Tier 2; V1 stores it unpointed). The source has SIX per-evening LIC theotokia per tone; the Saturday slot's proper text is the Dogmatikon itself (2-1). | **same failure class as the aposticha row** — weekday-cycle text mis-slotted into a Resurrection-cycle role, and a 6-way day distinction collapsed to one entry. V2: per-evening fields; no cross-cycle fallback in data. |
 | `HYPAKOE[2]` | "The women coming to Thy grave ..." | identical (2-1; source labels it "The Sessional Hymn") | confirmed correct |
 | `tone2.js` `vespers.sat` lic + aposticha + dogmatikon | — | word-for-word match (2-1, spot-checked) | confirmed correct |
@@ -1300,8 +1365,11 @@ comparison.
    canonical field stores the unquoted Great Vespers reading; the Little
    Vespers quotation-mark variance is recorded in the field's provenance
    note, not lost.
-6. **LV dismissal Theotokion** (§4.2): slot marked without text; resolve
-   from Fekula at assembly-spec time; no invented text.
+6. **LV dismissal Theotokion** (§4.2): slot marked without text. **TEXT
+   SOURCE FOUND (Theotokia.pdf, §4.12):** Part 1's per-tone dismissal
+   theotokion and Part 3's day-pair tables supply the texts; WHICH one a
+   given service uses is still resolved from Fekula at assembly-spec
+   time; no invented text.
 7. **Anabathmoi antiphon count** (§4.7): per-tone fact; gate must not
    hard-code 3.
 8. **Shared-table scope boundary — RULED (Bill, July 7 2026)**: CONFIRMED
@@ -1317,7 +1385,8 @@ comparison.
 10. **Homoglyph normalization** (§2.8): confirm normalize-at-encode-with-log
     + validator hard-fail. Attestation: 2-1 clean; 2-2, 2-3, 2-4, 2-5 all
     contaminated (2-4: U+041E ×143; 2-5: ×156; 2-6: ×144; 2-7: ×157 —
-    six of seven files contaminated, 2-1 alone clean).
+    six of seven chapter files contaminated, 2-1 alone clean;
+    Theotokia.pdf also CLEAN).
     **Scope extension (2-5):**
     2-5 also prints an ASCII digit zero as letter O ("0 Lord", Thursday
     Alleluia) — invisible to the non-Latin codepoint check; the validator
@@ -1366,7 +1435,9 @@ comparison.
     comma); "for They cry out" (mid-sentence capital); "the departed., the
     acrostic" (stray period in the canon-1 heading); "We Christians
     acquired thee have as" (word-order garble, Compline Ode IV); stray
-    mid-item `*` in Saturday sessional set-2 item 2.
+    mid-item `*` in Saturday sessional set-2 item 2. Theotokia.pdf
+    addition: "That we not fall way" (dropped "a", Part 2 Monday praises
+    Tone II).
 13. **Thursday Matins aposticha verse anomaly (NEW, 2-5)**: the first
     printed verse is "Unto Thee have I lifted up mine eyes ..." — the
     VESPERS pair's first verse — where Monday and Wednesday Matins print

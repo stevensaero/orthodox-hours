@@ -12,8 +12,12 @@ six non-Sunday days); §9.11 split — Sunday/Evangelical exapostilaria
 source FOUND (`Music-Evangelical-Stichera.pdf`, gospel-keyed 1–11,
 Lambertsen text; stichera pages are music scans), weekday daily
 exapostilaria await Bill's Horologion source, both to be stored in the V2
-data layer, never in code. Spec-complete call is now Bill's; Phase 1
-remains blocked until he makes it.**
+data layer, never in code. LATE ADDITION same session: `Theotokia.pdf`
+("The Common Theotokia") inventoried as spec source 8 / §4.12 — three
+table families; CONFIRMS the SUNDAY_APOSTICHA_THEOTOKIA provenance
+hypothesis (Part 2 consumed in a Part 1 role) and locates the §9.6
+dismissal-theotokion texts; text layer clean. Spec-complete call is now
+Bill's; Phase 1 remains blocked until he makes it.**
 
 ### What was done
 
