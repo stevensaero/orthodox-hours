@@ -1565,3 +1565,47 @@ Nothing textual is ever ported between tones.
 5. Weekday evenings → weekday mornings → Compline nights → Saturday
    day-class.
 Each chunk is independently gateable and independently auditable.
+
+## 12. Viewer Auditability Contract (amendment H, July 7 2026)
+
+V1's viewer was a whitelist: every field had to be explicitly rendered,
+so the default state of new data was INVISIBLE and audit coverage decayed
+whenever the data moved. V2 inverts the default. The schema is the single
+contract shared by validator, viewer, and coverage gate — data cannot
+exist outside it, and nothing inside it can be invisible.
+
+1. **Schema-driven rendering; visible by default, hidden only by
+   declaration.** The viewer never enumerates fields in component code.
+   It walks the validated data generically; a PRESENTATION REGISTRY —
+   keyed off the same `schema_v2.js` the validator enforces — supplies
+   rendering hints (order, grouping, styling) per field. Any field with
+   no registry entry renders through a GENERIC FALLBACK (label + raw
+   value, visibly styled as "unstyled field"): a new field can look
+   plain, but it can never be silently absent. Hiding is opt-in only —
+   `hidden: {reason}` in the registry, never omission.
+2. **Coverage is gated.** `validate_viewer_coverage.mjs` joins the schema
+   against the presentation registry: every schema field is either
+   registered or explicitly hidden-with-reason; any key present in data
+   but absent from the schema already fails the data validator. Runs in
+   the standing gate suite — a field added without viewer coverage is a
+   SAME-SESSION BUILD FAILURE, not a later audit discovery.
+3. **Audit mode.** Every rendered position carries a raw/rendered toggle
+   exposing the verbatim stored object: text, tier badge, sourceLabel,
+   `src {file, locus}`, Spec. Mel., composer/acrostic, `repeat` /
+   `incipit_ref`, sic and homoglyph-log badges. Reader view stays clean;
+   the auditor is one toggle from the bytes, and (per amendment D) every
+   position has real provenance to show — auditable locus-by-locus
+   against the open PDF.
+4. **Recurrence cross-links.** Each position links its
+   `known_recurrences` partners ("also printed at: … — identical /
+   variant") so a human can traverse the recombination web instead of
+   rediscovering it.
+5. **Canonical modules only.** The viewer reads the canonical tables
+   directly; amendment F's no-display-copies lint protects it.
+6. **The generic viewer ships in Phase 1 step 1, before bulk encoding**
+   (§11 sequencing). Because rendering is generic, the viewer is cheap to
+   build first — it does not need to know the data to display it. Every
+   encoding session is visually auditable the day it is committed;
+   presentation polish accumulates in the registry without ever gating
+   visibility. Folds in the standing ErrorBoundary hardening for
+   data-browser routes, which become the primary audit path.

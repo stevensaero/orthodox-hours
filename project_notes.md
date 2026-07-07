@@ -20,8 +20,10 @@ dismissal-theotokion texts; text layer clean. AMENDMENTS A–G folded in
 (Bill-approved): §2.3a recurrence register (normative), §10 per-file
 encoding protocol, §11 tone rollout + Phase 1 sequencing, §6 gates for
 provenance+tier / recurrence / sic / no-display-copies, §9.12 structured
-sic register, §4 tone-scope tagging convention. Viewer auditability
-contract (§12) proposed, pending Bill. Spec-complete call is now Bill's;
+sic register, §4 tone-scope tagging convention. §12 Viewer Auditability
+Contract APPROVED and added (schema-driven default-visible rendering,
+coverage gate, audit mode, recurrence cross-links, viewer ships first in
+Phase 1). Spec-complete call is now Bill's;
 Phase 1 remains blocked until he makes it.**
 
 ### What was done
