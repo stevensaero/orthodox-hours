@@ -69,8 +69,12 @@ Bill confirms the spec complete.**
 review-flag modification), §9.12, §9.13 ruled; §9.14 closed by re-check;
 §9.2 and §9.3 resolved from source; §9.11 split — Sunday/Evangelical
 cycle source found, weekday daily cycle awaits Bill's Horologion source.
-The spec-complete call is Bill's; Phase 1 remains blocked until he makes
-it.
+**SPEC DECLARED COMPLETE — Bill, July 7 2026. Phase 1 is UNBLOCKED**, to
+proceed per the §11 sequence (infrastructure first). Outstanding external
+material, neither blocking: (a) §9.11(b) weekday daily exapostilaria —
+fold in under the §10 protocol when Bill surfaces the Horologion source;
+(b) §9.13 optional physical-chapter check (encoded as printed; one-line
+reversal if a misprint is found).
 
 ---
 
