@@ -4,9 +4,16 @@
 **Session July 7, 2026 — Octoechos V2 Phase 0 spec-writing, part 3: no code
 changed, docs only. Files 2-4 through 2-7 scanned — ALL SEVEN Tone 2 source
 files are now in the spec; Phase 0 SCANNING is complete. §9.2 (Friday
-dogmatikon) RESOLVED from source. Spec is NOT yet complete; Phase 1 remains
-blocked on Bill's decision queue (§9.4, §9.5, §9.8, §9.10, §9.12, §9.13,
-§9.14) and the §9.11 exapostilarion source hunt.**
+dogmatikon) RESOLVED from source. DECISION QUEUE RESOLVED same session:
+§9.4, §9.5 (Great Vespers punctuation canonical), §9.8, §9.10 (with
+failure-review-by-Bill modification), §9.12, §9.13 (encode as printed)
+ruled; §9.14 closed by re-reading 2-2/2-3 from Drive (opener invariant all
+six non-Sunday days); §9.11 split — Sunday/Evangelical exapostilaria
+source FOUND (`Music-Evangelical-Stichera.pdf`, gospel-keyed 1–11,
+Lambertsen text; stichera pages are music scans), weekday daily
+exapostilaria await Bill's Horologion source, both to be stored in the V2
+data layer, never in code. Spec-complete call is now Bill's; Phase 1
+remains blocked until he makes it.**
 
 ### What was done
 

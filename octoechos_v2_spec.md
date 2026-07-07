@@ -55,9 +55,13 @@ Bill confirms the spec complete.**
 8. 2026-06-21 OCA docx JSON (one Sunday's booklet) — prior session; OCA
    layering is a later phase and does not drive this spec.
 
-**ALL SEVEN SOURCE FILES SCANNED — Phase 0 scanning is complete.** The
-spec's remaining opens are the decision queue in §9 (§9.4, §9.5, §9.8,
-§9.10, §9.12, §9.13, §9.14) plus the §9.11 exapostilarion source hunt.
+**ALL SEVEN SOURCE FILES SCANNED — Phase 0 scanning is complete.**
+**DECISION QUEUE RESOLVED (July 7 2026):** §9.4, §9.5, §9.8, §9.10 (with
+review-flag modification), §9.12, §9.13 ruled; §9.14 closed by re-check;
+§9.2 and §9.3 resolved from source; §9.11 split — Sunday/Evangelical
+cycle source found, weekday daily cycle awaits Bill's Horologion source.
+The spec-complete call is Bill's; Phase 1 remains blocked until he makes
+it.
 
 ---
 
@@ -238,6 +242,18 @@ director-pointed backfill is a later phase, after cutover.
      set-2's martyrs sessional (2-5): "blessed is the ground which was
      drenched in your blood" ↔ "blessed is the ground which drank your
      blood."
+   - The "shine brighter than gold" martyrs sessional in THREE renderings
+     (2-3/2-4/2-7): Tuesday set-2 "hast made Thy saints to shine with
+     greater luster than gold ... set their prayer before Thee like
+     incense"; Wednesday set-2 "hast made Thy saints shine more brightly
+     than gold ... set their supplication before Thee like incense";
+     Saturday set-2 "Thou hast made Thy saints to shine brighter than
+     gold, and in Thy love hast glorified Thy holy ones ...". One hymn,
+     three days, three renderings.
+   - "Taking up the Cross of Christ as a TROPHY of victory" (Tuesday
+     Matins aposticha martyrs, 2-3) ↔ "taking up the Cross of Christ as
+     an ENSIGN of victory" (Saturday praises, 2-7) — same hymn, two
+     renderings, two positions.
    Validators must never flag duplicates across positions for merging.
 4. **§3 of encoding_rule_v2.md governs pointing** (read live each session).
    St. Sergius `*` / `**` retained verbatim as source provenance;
@@ -363,8 +379,10 @@ sites is a finding: log it, flag for Bill, do not silently pick one.
 Tone 2 verification result (2-1.pdf): all four troparion sites agree on
 wording and pointing ("radiant brilliance"); punctuation-only variance
 exists (Little Vespers wraps the final line in quotation marks, the other
-three sites do not). **OPEN DECISION (§9.5):** which site's punctuation is
-canonical for the stored text.
+three sites do not). **RESOLVED (§9.5, Bill, July 7 2026):** the GREAT
+VESPERS print is canonical; the canonical field stores the unquoted final
+line, and the Little Vespers quotation-mark variance lives in the field's
+provenance note.
 
 ### 4.2 `little_vespers`
 
@@ -1269,18 +1287,30 @@ comparison.
    Ode VI AND Thursday sessional set 2, proving the device is not
    irmos-specific; 2-6 Friday canon-2 Odes III/VII — the
    full-when-different / incipit-when-same rule has zero counterexamples
-   across three days). Bill's confirmation needed — one decision covers
-   all three devices at all sites.
-5. **Canonical-field punctuation** (§4.1): which troparion print site's
-   punctuation is canonical. Bill's call.
+   across three days). **RULED (Bill, July 7 2026): CONFIRMED as
+   proposed** — mirror the source's device at every site; the one ruling
+   covers all three devices (`repeat: 2`, two positional entries, verbatim
+   incipit + positional `incipit_ref` with gate prefix-check).
+5. **Canonical-field punctuation — RESOLVED (Bill, July 7 2026)**: the
+   GREAT VESPERS print is canonical (§4.1). Verified variance from 2-1:
+   all four sites agree word-for-word and point-for-point; Little Vespers
+   alone wraps the final line in quotation marks ("O Life-giver, Christ
+   our God, glory be to Thee." — period inside the closing quote) where
+   Great Vespers, God-is-the-Lord, and Liturgy print it unquoted. The
+   canonical field stores the unquoted Great Vespers reading; the Little
+   Vespers quotation-mark variance is recorded in the field's provenance
+   note, not lost.
 6. **LV dismissal Theotokion** (§4.2): slot marked without text; resolve
    from Fekula at assembly-spec time; no invented text.
 7. **Anabathmoi antiphon count** (§4.7): per-tone fact; gate must not
    hard-code 3.
-8. **Shared-table scope boundary** (§5): confirm shared-vs-excluded split —
-   Evlogitaria, Polyeleos block, Gregory hymn, and now the day-keyed
-   cycles (daily Vespers prokeimena, daily Liturgy propers, weekday
-   aposticha verse pairs).
+8. **Shared-table scope boundary — RULED (Bill, July 7 2026)**: CONFIRMED
+   as proposed. Day-keyed shared tables for psalm-verse/prokeimenon-class
+   texts only (Evlogitaria, Polyeleos block, Gregory hymn, daily Vespers
+   prokeimena, daily Liturgy propers, day-keyed aposticha verse SETS
+   including the Friday/Saturday departed set). Everything hymnographic
+   (stichera, closers, sessionals, canons, troparia) is per-position —
+   the §2.3 catalog is the controlling evidence.
 9. **Kathisma sessional verses**: possible cross-tone invariance; treat as
    per-tone until two more tones confirm or deny. Note "O Lord, rebuke me
    not in Thine anger" repeats within Monday itself (sets 1 and 2).
@@ -1291,19 +1321,38 @@ comparison.
     **Scope extension (2-5):**
     2-5 also prints an ASCII digit zero as letter O ("0 Lord", Thursday
     Alleluia) — invisible to the non-Latin codepoint check; the validator
-    additionally flags `\b0\b` adjacent to a capitalized word. Bill's
-    confirmation needed for both.
-11. **Weekday exapostilarion texts**: every non-Sunday Matins post-canon
-    rubric (2-2 … 2-7, Saturday included) names the Exapostilarion without
-    printing it — six attestations; locate the source (appendix file?)
-    before the weekday assembler is specced. STILL OPEN.
+    additionally flags `\b0\b` adjacent to a capitalized word. **RULED
+    (Bill, July 7 2026): CONFIRMED with one modification** —
+    normalize-at-encode-with-log + validator hard-fail (both checks), and
+    EVERY flagged failure is surfaced to Bill for review before
+    resolution. No automatic or silent handling: document oddities may
+    need working through case by case.
+11. **Exapostilarion texts — SPLIT (July 7 2026)**: every non-Sunday
+    Matins post-canon rubric (2-2 … 2-7, Saturday included) names the
+    Exapostilarion without printing it — six attestations. Bill's ruling:
+    these are HOROLOGION material, not Octoechos; they will nonetheless be
+    STORED IN THE V2 OCTOECHOS DATA LAYER (never embedded in code), with
+    provenance = Horologion.
+    (a) **Sunday/Evangelical cycle — SOURCE FOUND**:
+    `Music-Evangelical-Stichera.pdf` (Drive, Holy Myrrh-bearers House
+    2026) supplies the Eleven Evangelical Exapostilaria WITH their
+    Theotokia (Lambertsen © 1992; clean text layer), keyed by MATINS
+    GOSPEL NUMBER 1–11, not by tone — which is why the cycle never
+    appears in the per-tone chapters. The same file carries the 11
+    Resurrectional Gospels (KJV) and the 11 Evangelical Stichera as
+    engraved music scans (Clader © 1991; no text layer on the sticheron
+    pages). Encode as a gospel-keyed table with full provenance.
+    (b) **Weekday daily cycle — STILL OPEN**: Bill to surface the
+    Horologion printing separately; the weekday assembler spec waits on
+    it.
 12. **OCR spelling artifacts — sic-list rule (NEW, 2-4)**: distinct from
     the §9.10 charset issue, 2-4's text layer carries spelling-level
     artifacts ("exeedingly"; "Wondrous art. Thou" with a stray period;
     "those Sick with corruption" mid-sentence capital). Proposal: charset
     normalizes per §9.10; spelling stays STRICT VERBATIM plus a logged
-    sic-list in the session analysis file — no silent correction. Bill's
-    confirmation needed. 2-5 additions to the running sic-list: "It is
+    sic-list in the session analysis file — no silent correction. **RULED
+    (Bill, July 7 2026): CONFIRMED as proposed.** 2-5 additions to the
+    running sic-list: "It is
     truly meet . ...," (stray period); "forgiveness offenses" (dropped
     "of"); "''Accept" (doubled quote opening the Nicholas acrostic).
     2-6 additions: "O Christ,?" (comma+question mark — recurs IDENTICALLY
@@ -1327,10 +1376,14 @@ comparison.
     The §5 Matins-pair hypothesis is annotated non-invariant until ruled.
     **2-6 strengthens the misprint reading:** Friday Matins prints the
     normal pair — 4 of 5 mornings normal, Thursday stands alone.
-14. **Weekday beatitudes opener (2-6, 2-7)**: "We offer Thee the cry of
-    the thief ..." opens the beatitudes on Wednesday, Thursday, Friday,
-    AND Saturday (2-4 … 2-7) — candidate invariable opener across
-    non-Sunday days. Monday's and Tuesday's beatitudes items were not
-    itemized in the 2-2/2-3 scans; re-check those files (no new scan
-    needed, both are on Drive) before encoding any shared-table
-    treatment.
+    **RULED (Bill, July 7 2026, blanket approval of the recommendation):
+    ENCODE AS PRINTED with the register note.** Reversible in one line if
+    Bill later verifies the physical chapter and finds a misprint.
+14. **Weekday beatitudes opener — CLOSED (July 7 2026)**: 2-2 and 2-3
+    re-read from Drive; Monday and Tuesday open with the IDENTICAL
+    troparion. "We offer Thee the cry of the thief, and we pray: In Thy
+    kingdom have mercy upon us, О Savior!" opens the beatitudes on ALL
+    SIX non-Sunday days, verified from all six files. Per the §9.8
+    ruling it is hymnographic text and stays PER-POSITION (six stored
+    positions); the invariance is a recorded source fact, not a shared
+    table.
