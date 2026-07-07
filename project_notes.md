@@ -1,6 +1,123 @@
 # Orthodox Hours Tool — Project Notes
 **Tool version: v0.30.1** | **Tone Trainer: v0.25.47** | Last synced: July 6, 2026
 
+**Session July 6, 2026 (cont.) — PLANNING SESSION, no code changed: Octoechos V2
+rebuild decided. Full rewrite of the Octoechos data layer, built clean and
+complete alongside the current system, with a proper truthing tool, before any
+cutover. This entry is the persistent record — the next session starts from
+here.**
+
+### Why: what this session's Tone 2 investigation found
+
+Started as "backfill Tone 2 with OCA-pointed text" (the established JSON/diff
+loop, same as Tone 1). Cross-referencing a Tone 2 OCA service-docx JSON
+(2026-06-21, a specific Sunday) against our `octoechos/tone2.js` and
+`octoechos/index.js` surfaced real discrepancies, and pulling in the full
+Tone2.pdf (the general Saturday-evening-through-Sunday-Liturgy Octoechos
+chapter, St. Sergius) surfaced more and confirmed others:
+
+- **`RESURRECTIONAL_TROPARIA[2]`** — three sources, three different wordings
+  for the same hymn's key phrase: ours "slay Hades with the **lightning** of
+  Thy Divinity"; Tone2.pdf (St. Sergius) "**radiant brilliance**"; the OCA
+  docx "**splendor**." Same pattern for `SUNDAY_KONTAKIA[2]` ("**terrified**"
+  vs. "**struck with fear**" vs. "**Hell became afraid**").
+- **`RESURRECTIONAL_DISMISSAL_THEOTOKIA[2]`** — confirmed correct, word for
+  word against Tone2.pdf.
+- **`SUNDAY_PROKEIMENON[2]`** and **`SUNDAY_ALLELUIA[2]`** — likely genuine
+  errors, not translation variants. Neither matches Tone2.pdf at *either*
+  liturgical moment where a Tone 2 prokeimenon/alleluia occurs (Matins:
+  "Arouse Thyself, O Lord my God, in the commandment..." Ps 7; Liturgy: "The
+  Lord is my strength and my song..." Ps 117/118) — confirmed independently
+  by Bill before the PDF arrived, then confirmed again by the PDF itself.
+  `SUNDAY_PROKEIMENON` feeds Typica specifically (assembleTypica routing,
+  not a live Liturgy) — see hours-tool.jsx ~line 5397-5404 for the routing
+  comment. Not yet fixed — flagged for the V2 rebuild rather than patched in
+  the old system.
+- **Menaion 06-21 (Martyr Julian)** — already essentially correct,
+  word-for-word matching the OCA docx (June was apparently originally
+  encoded from this same source). One tiny gap: `troparion.text` reads "Thy
+  **martyr** Julian O Lord," missing "holy" and a comma ("Thy **holy**
+  martyr Julian**,** O Lord,"). Not yet fixed.
+- **Bill's diagnosis, confirmed by checking actual usage in hours-tool.jsx**:
+  `RESURRECTIONAL_TROPARIA`/`SUNDAY_KONTAKIA`/`RESURRECTIONAL_DISMISSAL_THEOTOKIA`
+  etc. living in `octoechos/index.js` (a static top-level import, always
+  bundled into hours-tool.jsx's main chunk) rather than per-tone in
+  `toneN.js` (dynamically imported, genuinely separate from the tool) is
+  architecturally wrong per his stated principle: **liturgical data must
+  live apart from the tool, full stop — no exceptions for load-time
+  savings.** Confirmed the "right" pattern already exists half-built in this
+  same codebase: `getOctoechosLicOpening(tone)` reads from
+  `_octoechosCache[tone]?.lic_opening` — a lazily-loaded, cached, per-tone
+  value, nothing statically bundled — proving the infrastructure
+  (`loadOctoechosTone`, `_octoechosCache`, the `setDataVersion` preload-then-
+  rerender trigger already firing on every date change) already supports
+  this cleanly; it just was never extended past `lic_opening` to the older
+  index.js tables. The Octoechos browser was also found to bury this same
+  content behind a separate "Index Tables" tab, disconnected from "Vespers"
+  — confirmed as a real audit gap (you'd never think to look there for a
+  tone's own troparion/kontakion).
+- Tone2.pdf (the general chapter, not tied to one Sunday) also revealed
+  **entire categories of content our schema has no field for at all**:
+  Little Vespers as a whole separate service; the Great Vespers entrance
+  prokeimenon; the real aposticha-glory fallback text (we only store a
+  bracketed placeholder note today, not the actual fallback hymn); both
+  Kathisma sessional-hymn sets with their Stavrotheotokia; the full nine-ode
+  canon with Resurrection + Cross-Resurrection + Theotokos sub-canons;
+  Ikos; the Praises Theotokion (a *third*, distinct Tone 2 Theotokion,
+  separate from the Dismissal one and the Vespers Dogmatikon — needs its own
+  field name, not reuse of `theotokion`); the Great Doxology troparion; the
+  Liturgy Beatitudes troparia.
+
+### Decision: Octoechos V2, built clean alongside the current system
+
+Bill's call, and the right one given the above: **don't patch the old
+system tone-by-tone.** Build a complete, from-scratch Octoechos data layer
+(`octoechos_v2`) in parallel, with its own drift-gate schema and a purpose-
+built truthing/audit tool, encoded fully and verified before the hours-tool
+assembler is ever pointed at it. Only after all 8 tones are complete and
+verified does the assembler cut over; the old `octoechos/` system and browser
+are retired at that point, not before. This avoids breaking the live tool
+during the (large) rebuild.
+
+**Phased plan agreed:**
+- **Phase 0 — Spec** (`octoechos_v2_spec.md`, repo root, committed before any
+  code). Field names/structure for every category above, tone-independent vs.
+  tone-keyed tables explicitly separated (nothing tone-keyed statically
+  imported — dynamically-loaded-per-tone is the *only* pattern, matching the
+  `lic_opening` precedent, not an optimization to reconsider later), a V2
+  drift-gate schema designed alongside the fields rather than bolted on after.
+  **Bill's explicit condition: the spec is not "complete" until it has been
+  proven/revised against every piece of Tone 2 source material Bill has, not
+  just what's been scanned so far.** Scanned so far: the 2026-06-21 OCA docx
+  JSON (one Sunday's booklet — confirmed Great Vespers/Sunday-Liturgy
+  Resurrection content, silent on Little Vespers/full Matins canon/weekday);
+  Tone2.pdf (general Sat-eve-through-Liturgy chapter — the one just pasted,
+  St. Sergius). **Still needed from Bill before the spec can be called done:**
+  weekday Vespers (Sun eve opening Mon, through Thu evening opening Fri),
+  Friday evening specifically (6 stichera + week dogmatikon per Fekula's
+  Friday rule), and any tone-specific Compline material (or confirmation
+  Compline is fully invariable, no Octoechos content).
+  **This next session works from St. Sergius sources ONLY — the OCA
+  docx/JSON backfill work is explicitly deferred, not part of Phase 0.**
+- **Phase 1** — Scaffold: `src/data/octoechos_v2/toneN.js` × 8 + shared-tables
+  file, matching the spec, stubbed, validator wired and passing on stubs.
+- **Phase 2** — Truthing tool: purpose-built browser view for V2, every field
+  greppable/auditable, built *before* real encoding starts.
+- **Phase 3** — Pilot encode: Tone 2 in full (the proving ground for schema +
+  truthing tool both).
+- **Phase 4** — Remaining tones (1, 3–8), same process.
+- **Phase 5** — Cutover: assembler points at V2 exclusively only once all 8
+  tones are complete and verified; side-by-side render comparison across a
+  sample of dates/tones before retiring the old system.
+
+No files touched this session — pure planning/discovery. No version bump.
+
+**NEXT SESSION STARTS HERE:** continue Phase 0 — scan the remaining St.
+Sergius source material Bill provides (weekday Vespers, Friday evening,
+Compline) against the spec-in-progress above, revising field names/structure
+as needed, until Bill confirms the spec is complete for Tone 2. Do not begin
+Phase 1 scaffolding until that confirmation.
+
 **Session July 6, 2026 (cont.) — tooling: validate_octoechos.mjs fixed for the
 Tier-3 OCA object shape; FW-24 de-dup deferred (no version bump — tooling-only).**
 Preparing to start the OCA director-pointed backfill loop on Tone 2 (per the
