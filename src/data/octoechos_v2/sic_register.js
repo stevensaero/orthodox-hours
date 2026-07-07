@@ -43,8 +43,8 @@ export default [
     verbatim: 'forgiveness offenses',
     note: 'Dropped "of".' },
   { file: '2-5.pdf', locus: 'Nicholas canon acrostic heading', path: 'tone2.matins_weekday.thu.canons[1].acrostic', approx: true,
-    verbatim: "''Accept",
-    note: 'Doubled quote opening the Nicholas acrostic.' },
+    verbatim: "‘‘Accept",
+    note: 'Doubled curly quote (U+2018 x2) opening the Nicholas acrostic - true bytes pinned from the raw text layer, July 7 2026 scan.' },
 
   // ── 2-6 additions ────────────────────────────────────────────────────────
   { file: '2-6.pdf', locus: 'Thursday-evening LIC closer (ewe-lamb text, first print)',

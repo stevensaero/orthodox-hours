@@ -74,7 +74,7 @@ const CANDIDATE_PATTERNS = [
   [/[a-z]\.\s+[a-z]/g,             'period followed by lowercase (mid-phrase stray period?)'],
   [/\w+\.,|\.\.(?!\.)/g,           'period-comma / doubled period ("the departed., the acrostic")'],
   [/\w\*(?=[\s.,;!?]|$)/g,         'word-attached asterisk ("mercy*", "we praise thee*") — pointing markers are space-padded'],
-  [/''|``|""|“{2}|”{2}/g,          'doubled quote mark ("\'\'Accept")'],
+  [/''|``|""|“{2}|”{2}|‘{2}|’{2}/g,  'doubled quote mark ("‘‘Accept", 2-5)'],
   [/,\?|\?,|;\./g,                 'punctuation collision ("O Christ,?")'],
   [/\b(?:art|is|are|hath|doth|did|didst)\.\s+[A-Z]/g, 'verb + period + capital ("Wondrous art. Thou")'],
   [/[a-z],?\s+(?:Sick|They|Even)\b/g, 'mid-sentence capital on a known artifact word (§9.12 attested classes)'],

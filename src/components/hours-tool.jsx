@@ -8492,6 +8492,26 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.31.1",
+    date: "July 2026",
+    summary: "fix: scan_source doubled-CURLY-quote sic class; sic register \u2018\u2018Accept bytes pinned from the raw text layer",
+    items: [
+      "First run of tools/scan_source.mjs against the true byte stream (the " +
+      "seven Tone 2 chapter PDFs, now delivered via the private " +
+      "orthodox-sources repo) verified the \u00a79.10 attestations exactly \u2014 2-1 " +
+      "clean; U+041E \u00d7143/156/144/157 for 2-4\u20132-7 matching the spec's " +
+      "recorded counts; 2-2/2-3 newly pinned at \u00d7139/\u00d7170; the single 2-5 " +
+      "digit-zero (\"0 Lord\").",
+      "The scan exposed one scanner gap: the \u00a79.12 doubled-quote sic in 2-5 " +
+      "prints as DOUBLED CURLY quotes (U+2018 \u00d72, \u2018\u2018Accept), which the " +
+      "ASCII-quote pattern missed. Pattern extended to \u2018\u2018/\u2019\u2019 pairs.",
+      "sic_register.js verbatim for that entry corrected from the spec's " +
+      "ASCII rendering ''Accept to the true bytes \u2018\u2018Accept \u2014 the register " +
+      "now matches the byte stream it gates.",
+      "Gate: full suite green (71/71, V1+V2 validators, coverage, build).",
+    ],
+  },
+  {
     version: "v0.31.0",
     date: "July 2026",
     summary: "Octoechos V2 Phase 1 step 1: schema contract, drift gates, source scanner, registers, and the \u00a712 schema-driven auditable viewer (/octoechos-v2)",
