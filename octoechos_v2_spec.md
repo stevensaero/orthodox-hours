@@ -288,6 +288,22 @@ director-pointed backfill is a later phase, after cutover.
      and Tue-night Compline sessional (2-4). Same hymn across tone
      tables; per-position storage only.
    Validators must never flag duplicates across positions for merging.
+
+   **3a. The recurrence register — normative twin of this catalog
+   (amendment A, July 7 2026).** The prose catalog above is evidence; a
+   machine-checkable expectation table makes it a regression suite. Phase
+   1 creates `known_recurrences.js`: entries of the form
+   `{ a: <position>, b: <position>, relation: 'identical' | 'variant',
+   note }`, seeded from every pair in this catalog. Gate rule
+   (§6): every `identical` pair must BYTE-MATCH (text and pointing);
+   every `variant` pair must NOT byte-match. This catches the two
+   symmetric encoding failure modes the seven-file scan proved likely:
+   copy-paste of the wrong rendering into a slot where the source
+   re-renders (variance required, identity found), and a typo in a slot
+   where the source truly duplicates (identity required, variance found —
+   e.g. the ewe-lamb text whose duplicate prints share even their
+   "O Christ,?" typo). New pairs discovered during encoding are added to
+   the register in the same commit as the data that reveals them.
 4. **§3 of encoding_rule_v2.md governs pointing** (read live each session).
    St. Sergius `*` / `**` retained verbatim as source provenance;
    normalized only at render via `normalizeSergius`. Tier assignment per
@@ -358,6 +374,18 @@ the Tone of that from the Menaion)**") requires the assembler to fetch
 differs.
 
 ## 4. Per-tone file structure
+
+**Tone-scope convention (amendment C, July 7 2026).** Every structural
+claim in this section is `[T2-attested]` unless explicitly marked
+`[expected tone-invariant]`. Blanket status: the section templates
+(weekday Vespers/Matins/Liturgy shapes, Compline shape, the Saturday
+day-class, the device rules, the label vocabulary) are EXPECTED
+tone-invariant; every text, label variant, Spec. Mel. form, composer/
+acrostic combo, per-ode census, tier, and closer type is a T2 source
+fact. The tone-3 scan (§11) verifies the invariance expectations;
+promotion to `[tone-invariant]` happens only on that verification, never
+by assumption — the Tone Trainer PRIME DIRECTIVE applied to the data
+layer.
 
 ```js
 export default {
@@ -1270,6 +1298,23 @@ Designed alongside the fields, not bolted on (planning-session condition).
   silently, never at render. **Extension (2-5):** also flag the ASCII
   digit-zero-as-O pattern (`\b0\b` adjacent to a capitalized word: "0
   Lord", "0 God") — an artifact class the codepoint check cannot catch.
+- **Provenance + tier are mandatory on every text node (amendment D):**
+  every stored text carries `src: {file, locus}` drawn from the header
+  source list, and an explicit tier declaration. Absence of a tier field
+  is a hard-fail, not "unpointed" — the "absence of a field is not
+  verified absence" principle applied to pointing. This is what makes
+  V1-style provenance archaeology permanently unnecessary.
+- **Recurrence-register check (amendment A, §2.3a):** every `identical`
+  pair byte-matches; every `variant` pair does not.
+- **Sic-register check (amendment E, §9.12):** every entry in the
+  structured sic register byte-matches the stored text at its locus —
+  silent "correction" of a recorded sic is a hard-fail.
+- **No display copies (amendment F):** render, explainer, and badge
+  surfaces read the canonical tables directly; a literal copy of any
+  canonical text or table row inside a component is forbidden (the V1
+  Typica-explainer "it/He is holy" drift and the dual version-constant
+  class, generalized). Enforced by a lint that greps component sources
+  for canonical-table text fragments.
 - **Placeholder detection:** no bracketed placeholder strings in hymn text
   fields; rubric prose only in `rubric` / `*_rubric` / `frame_rubric`
   fields.
@@ -1438,6 +1483,12 @@ comparison.
     mid-item `*` in Saturday sessional set-2 item 2. Theotokia.pdf
     addition: "That we not fall way" (dropped "a", Part 2 Monday praises
     Tone II).
+    **Operationalization (amendment E, July 7 2026):** the running list
+    above becomes a structured register in Phase 1 —
+    `sic_register.js`, keyed `{file, locus, verbatim, note}` — and the
+    §6 gate verifies the stored data still matches each recorded sic
+    byte-for-byte. Guards the ruled behavior (strict verbatim, no silent
+    correction) against well-meaning fixes during encoding.
 13. **Thursday Matins aposticha verse anomaly (NEW, 2-5)**: the first
     printed verse is "Unto Thee have I lifted up mine eyes ..." — the
     VESPERS pair's first verse — where Monday and Wednesday Matins print
@@ -1458,3 +1509,59 @@ comparison.
     ruling it is hymnographic text and stays PER-POSITION (six stored
     positions); the invariance is a recorded source fact, not a shared
     table.
+
+## 10. Per-file encoding protocol (normative — amendment B, July 7 2026)
+
+The loop proven across all eight source files this pass, codified so no
+session reinvents it. Session startup (clone, badge check, live
+`encoding_rule_v2.md` §3, live spec) is unchanged and precedes this.
+
+1. **Source scan first** — `tools/scan_source.mjs` (Phase 1 tool):
+   codepoint census (non-Latin letters → §9.10 log), digit-zero pattern,
+   sic candidates (stray periods/asterisks, unclosed or doubled quotes,
+   mid-sentence capitals, dropped short words). Output is a review file;
+   per the §9.10 ruling every flagged item goes to Bill BEFORE encoding
+   proceeds.
+2. **Structural pass** against the §4 templates; any break is a finding,
+   presented before encoding, with the tone-scope tag updated (§4).
+3. **Device inventory**: full double print / "(Twice)" / incipit
+   reference — identify every instance before capturing items, then
+   store per §2.7 (never convert a device).
+4. **Per-item capture**, verbatim: text, tier, label (incl. compounds),
+   sourceLabel, Spec. Mel. form, composer/acrostic where printed,
+   refrains, `repeat` / `incipit_ref`, `src {file, locus}`.
+5. **Closer typing** per §4.4 (theotokion / stavrotheotokion / dogmatic
+   theotokion as the source labels it).
+6. **V1 cross-check** wherever a comparison surface exists (§8 inventory
+   rows); every mismatch is a register row, never a silent pick.
+7. **Recurrence register update** (§2.3a) — new identical/variant pairs
+   land in the same commit as the data revealing them.
+8. **Sic register update** (§9.12).
+9. **Full gate** (`test_pointing_paths`, `test_sunday_vespers` 71/71,
+   `validate_octoechos_v2`, `vite build`).
+10. **Commit by concern**; data-only commits take no version bump;
+    pushes may be held to batch end; token scrubbed after every push.
+
+## 11. Tone rollout and Phase 1 sequencing (amendments C + G, July 7 2026)
+
+**Tone rollout.** Tone 2 is the reference derivation. Tone 3 is a FULL
+VERIFICATION scan: every `[expected tone-invariant]` claim in §4 is
+checked against tone 3's own chapters before promotion to
+`[tone-invariant]`; every divergence demotes the claim to per-tone.
+If tone 3 confirms the skeleton, tones 4–8 (and tone 1) become
+DIFFERENTIAL scans — templates assumed, texts and per-tone facts
+captured fresh from each tone's own chapters, protocol §10 unchanged.
+Nothing textual is ever ported between tones.
+
+**Phase 1 sequencing (after Bill declares the spec complete):**
+1. Schema + validators FIRST (`schema_v2.js`,
+   `validate_octoechos_v2.mjs`, `scan_source.mjs`, recurrence + sic
+   register checks) — every encoding session thereafter runs against a
+   live gate from day one.
+2. Shared day-keyed tables (§5): small, source-proven, V1-comparable.
+3. Common Theotokia tables (§4.12): clean file, table-shaped, unlocks
+   closer cross-checks everywhere else.
+4. Saturday GV + Sunday cycle (highest traffic).
+5. Weekday evenings → weekday mornings → Compline nights → Saturday
+   day-class.
+Each chunk is independently gateable and independently auditable.

@@ -16,8 +16,13 @@ data layer, never in code. LATE ADDITION same session: `Theotokia.pdf`
 ("The Common Theotokia") inventoried as spec source 8 / §4.12 — three
 table families; CONFIRMS the SUNDAY_APOSTICHA_THEOTOKIA provenance
 hypothesis (Part 2 consumed in a Part 1 role) and locates the §9.6
-dismissal-theotokion texts; text layer clean. Spec-complete call is now
-Bill's; Phase 1 remains blocked until he makes it.**
+dismissal-theotokion texts; text layer clean. AMENDMENTS A–G folded in
+(Bill-approved): §2.3a recurrence register (normative), §10 per-file
+encoding protocol, §11 tone rollout + Phase 1 sequencing, §6 gates for
+provenance+tier / recurrence / sic / no-display-copies, §9.12 structured
+sic register, §4 tone-scope tagging convention. Viewer auditability
+contract (§12) proposed, pending Bill. Spec-complete call is now Bill's;
+Phase 1 remains blocked until he makes it.**
 
 ### What was done
 
