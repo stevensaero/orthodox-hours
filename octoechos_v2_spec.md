@@ -23,11 +23,17 @@ Bill confirms the spec complete.**
    2026. Confirms the 2-2 weekday template (no shape changes needed);
    same Cyrillic-homoglyph contamination as 2-2. Identifies V1
    `LIC_THEOTOKIA` as another weekday→Resurrection mis-slot (§8).
-4. 2026-06-21 OCA docx JSON (one Sunday's booklet) — prior session; OCA
+4. **2-4.pdf** (St. Sergius, Drive): Tuesday evening Vespers, Tuesday-night
+   Compline, Wednesday Matins, Wednesday Liturgy — scanned in full, July 6
+   2026. Template holds for a third day. Discovers the **incipit-abbreviated
+   irmos device** in the weekday double-canon (§2.7, §9.4) and proves a
+   V1 LIC→aposticha mis-slot at `tone2.js vespers.tue` (§8). Same Cyrillic
+   О (U+041E) contamination as 2-2/2-3 (×143; only non-Latin codepoint).
+5. 2026-06-21 OCA docx JSON (one Sunday's booklet) — prior session; OCA
    layering is a later phase and does not drive this spec.
 
-**Still needed (§9):** Tuesday evening through Friday evening (files
-2-4 … 2-7 expected), i.e. Wed–Sat Matins/Liturgy days, remaining Compline
+**Still needed (§9):** Wednesday evening through Friday evening (files
+2-5 … 2-7 expected), i.e. Thu–Sat Matins/Liturgy days, remaining Compline
 nights, the Friday-evening dogmatikon question, weekday exapostilarion
 texts, weekday Nocturns presence/absence.
 
@@ -88,6 +94,33 @@ director-pointed backfill is a later phase, after cutover.
      Forerunner canon: "The **beginningless Son of God the Father** and
      the Lord ..." (2-3) — two renderings of the same irmos at two
      positions; the strongest dedup trap found so far.
+   - **The "We magnify thee, O Theotokos" family (2-4):** three hymns, one
+     opening. (a) Tuesday Matins set-1 closer "... * Thou art the un-burnt
+     bush ..." (2-3) recurs, pointing included, as the Tuesday-NIGHT
+     Compline after-Ode-VI sessional (2-4) — same hymn, two positions.
+     (b) Wednesday Matins set-1 closer opens identically but continues
+     "... Rejoice, thou cloud of the unwaning Light ..." — a different
+     hymn. (c) Monday set-2 closer "... O cloud of the never-setting
+     Sun ..." (2-2) — similar imagery, third distinct text. The strongest
+     same-opening trap found so far.
+   - Cross-service irmos recurrence (2-4): the Wednesday Matins Theotokos
+     canon shares its Odes I/III/V/VI irmoi ("Come, O ye people"; "O Lord,
+     who didst slay sin upon the Tree"; "O Lord, Bestower of light";
+     "Whirled about in the abyss of sin") with the Tuesday-night Compline
+     canon; Tuesday-night Compline Ode VIII repeats Monday night's "God
+     Who descended into the fiery furnace" (second attestation). Each
+     stored at its own position.
+   - **Pointing-placement variance across print sites, both St. Sergius
+     (2-4 vs 07-24):** the stavrotheotokion "Having endured many pangs" is
+     printed at the Tuesday-evening Vespers aposticha (2-4) AND at July 24's
+     LIC (`july.js` `lic_stavrotheotokion`, encoded from the Menaion PDF) —
+     same hymn, same dialect, *different `*` line breaks* (Menaion breaks
+     after "pangs" but not after "Virgin,"; the Octoechos print the
+     reverse). Per-position storage keeps each site's own pointing.
+   - Incipit micro-variance inside the reference device itself (2-4): the
+     Wednesday Theotokos canon's Ode IX incipit reads "The Son of the
+     **B**eginningless Father ...," where canon 1's full print has
+     lowercase "beginningless" — verbatim storage preserves it.
    Validators must never flag duplicates across positions for merging.
 4. **§3 of encoding_rule_v2.md governs pointing** (read live each session).
    St. Sergius `*` / `**` retained verbatim as source provenance;
@@ -115,6 +148,15 @@ director-pointed backfill is a later phase, after cutover.
    double print (LV LIC first sticheron) → two positional entries;
    "(Twice)" marker (Nocturns Odes 6–8; Monday angels canon Odes 3/5/6/7/9)
    → `repeat: 2` on the item. Never convert one device into the other.
+   **Third device (NEW, 2-4): incipit-abbreviated irmos.** In the Wednesday
+   double-canon, the second canon prints its irmos in FULL where it differs
+   from canon 1's for that ode (Odes I, III, V, VI) but as an
+   incipit-plus-ellipsis reference where it is the same (Odes IV, VII,
+   VIII, IX: "Irmos: From a Virgin didst Thou come forth ...," etc.).
+   Proposed storage (pending Bill, §9.4): store the incipit string verbatim
+   with an explicit reference marker (`irmos_ref: 'canon1'`); the gate
+   verifies the incipit prefix-matches canon 1's irmos for that ode. Never
+   silently resolve the incipit into full text.
 8. **Homoglyph hygiene (NEW, 2-2.pdf).** The 2-2 text layer substitutes
    Cyrillic О (U+041E) for Latin O throughout ("О Lord", "О God"); 2-1
    does not. Proposed rule (§9.10, Bill's confirmation needed): normalize
@@ -314,11 +356,35 @@ vespers_weekday: {
                                  // IV "The Lord will hearken unto me";
                                  // aposticha theotokion "All of my hope do I
                                  // place on thee ..." (short, pointed).
-  // tue … fri: GAP (2-4 … 2-7). Friday evening expected: 6 stichera + the
+  tue: { ... },                  // Tuesday evening (2-4): SAME shape — third
+                                 // day the template holds. Facts: LIC = 3
+                                 // stichera of the precious Cross, Spec. Mel.
+                                 // "When from the Tree ..." (Tier 2); fallback
+                                 // set "of the most holy Theotokos" (Cross-day
+                                 // theme: the Virgin at the Cross), "in the
+                                 // same melody"; daily prokeimenon Tone I "Thy
+                                 // mercy, O Lord, shall pursue me"; aposticha
+                                 // ITEMS are Tier 1 prose while their psalm
+                                 // verses and both closers are Tier 2 — mixed
+                                 // tiers inside one section (§3.2 per-item
+                                 // rule); BOTH closers are labeled
+                                 // **Stavrotheotokion** (LIC: "The light of
+                                 // the sun and moon dimmed ..."; aposticha:
+                                 // "Having endured many pangs ...", Spec. Mel.
+                                 // "When from the Tree ...").
+  // wed … fri: GAP (2-5 … 2-7). Friday evening expected: 6 stichera + the
   // week's dogmatikon per Fekula's Friday rule — same-text-or-distinct-
   // print-site question answered from source only (§2.2).
 }
 ```
+
+**Closer typing (NEW, 2-4).** On Cross days the weekday closers are printed
+as Stavrotheotokia, not Theotokia. The weekday `lic_theotokion` /
+`aposticha_theotokion` fields therefore adopt the sessional-closer
+convention — `{type: 'theotokion' | 'stavrotheotokion', text, spec_mel?,
+...}` — recording exactly what the source labels the hymn rather than
+flattening the label into a field name. The same applies to the weekday
+Matins aposticha closer (§4.8).
 
 **Per-evening LIC Theotokia.** Each evening has its OWN Glory/Both-now LIC
 Theotokion (Sunday "With thrice-holy voices ..."; Monday "Tribulation,
@@ -363,7 +429,20 @@ compline: {
                                  // fiery furnace", first attestation); own
                                  // after-Ode-VI sessional; closing rubric =
                                  // Sunday night's.
-  // tue … fri: GAP
+  tue: { ... },                  // 2-4: FOURTH distinct canon (same title;
+                                 // 2 plain + glory + both_now per ode; own
+                                 // troparia throughout; Ode VIII irmos =
+                                 // Monday night's "God Who descended into the
+                                 // fiery furnace", second attestation). The
+                                 // after-Ode-VI sessional is Tier 2 POINTED —
+                                 // "We magnify thee, O Theotokos ... un-burnt
+                                 // bush ..." — and is the same hymn as the
+                                 // Tuesday Matins set-1 closer (§2.3);
+                                 // sessional tier is a per-night source fact.
+                                 // Closing rubric ≈ Sunday night's ("and
+                                 // prostration" vs "and a prostration" —
+                                 // verbatim per night).
+  // wed … fri: GAP
 }
 ```
 
@@ -483,8 +562,11 @@ matins_weekday: {
         composer: "Theophanes",
         acrostic: "I sing praise to the angelic choir",
         odes: {...} },           // Shape B; "(Twice)" repeat markers on several
-                                 // first items; EACH canon has its OWN irmos
-                                 // per ode — two irmoi per ode of the service
+                                 // first items; on Monday each canon has its
+                                 // own irmos per ode — but that is a PER-DAY
+                                 // SOURCE FACT, not a rule: Wednesday (2-4)
+                                 // shares 4 of 8 between its two canons via
+                                 // the incipit device (§2.7)
     ],
     magnificat_rubric: "We then chant the hymn of the Theotokos (the Magnificat), with the refrain: “More honorable than the cherubim ...,” and make prostrations.",
                                  // printed between Odes VIII and IX
@@ -509,7 +591,33 @@ matins_weekday: {
                                  // are day-specific compositions; Matins
                                  // aposticha theotokion is "Rejoice, O
                                  // Theotokos Mary ..." (§8 recurrence).
-  // wed … sat: GAP
+  wed: { ... },                  // 2-4: SAME shape — fourth day. Facts: ALL
+                                 // three sessional closers + the Matins
+                                 // aposticha closer are Stavrotheotokia
+                                 // (Cross day); sessional ITEMS Tier 1, their
+                                 // closers Tier 2 (mixed tiers again);
+                                 // sessional verses are day-themed ("Exalt ye
+                                 // the Lord our God ..."; "God is our King
+                                 // ...") with the martyrs verse "Wondrous is
+                                 // God in His saints" recurring; set-3 Spec.
+                                 // Mel. printed "As the wellspring ..."
+                                 // (= Tuesday's form, vs Monday's "As a
+                                 // wellspring"); canon 1 = precious Cross,
+                                 // heading prints acrostic BEFORE composer
+                                 // ("The setting up of the Cross is the fall
+                                 // of the demons", Joseph) and includes the
+                                 // tone; canon 2 = "Another canon, of the
+                                 // most holy Theotokos" — FIRST weekday canon
+                                 // with NO composer and NO acrostic printed
+                                 // (confirms both fields optional); canon-2
+                                 // items are unlabeled (all 'plain'), with
+                                 // "(Twice)" on the first item of Odes VII
+                                 // and IX; canon-2 irmoi use the incipit
+                                 // device for Odes IV/VII/VIII/IX (§2.7);
+                                 // Matins aposticha closer "Upon beholding
+                                 // the ripe Cluster ...", Spec. Mel. "When
+                                 // from the Tree ...".
+  // thu … sat: GAP
 }
 ```
 
@@ -562,7 +670,17 @@ liturgy_weekday: {
                                  // Tone IV; Communion "In everlasting
                                  // remembrance ...". Beatitudes include a
                                  // day-theme (Forerunner) plain item.
-  // wed … sat: GAP
+  wed: { ... },                  // 2-4: same shape. Day-explicit prokeimenon
+                                 // heading device: "On Wednesday, the
+                                 // Prokeimenon, in Tone III:" with the source
+                                 // label "the hymn of the Theotokos" — "My
+                                 // soul doth magnify the Lord" (Theotokos
+                                 // propers on the Cross day is the printed
+                                 // fact; record, do not rationalize).
+                                 // Alleluia Tone VIII "Hearken, O daughter
+                                 // ..."; Communion "I will take the cup of
+                                 // salvation ...".
+  // thu … sat: GAP
 }
 ```
 
@@ -660,7 +778,11 @@ Designed alongside the fields, not bolted on (planning-session condition).
   theotokion elsewhere, non-empty troparia; Shape B canon: same keys,
   non-empty labeled items, labels from the §4.11 vocabulary, `repeat`
   only 2 and only where the source device is "(Twice)"; weekday
-  `canons` length 2, each with irmos per ode; praises 8 + 8 + theotokion;
+  `canons` length 2, each with an irmos per ode — either full text or an
+  incipit reference (`irmos_ref`, §2.7) whose incipit prefix-matches the
+  first canon's irmos for that ode (never an empty or invented irmos);
+  weekday vespers and weekday Matins-aposticha closers carry `type` from
+  {theotokion, stavrotheotokion} per the source's own label (§4.4); praises 8 + 8 + theotokion;
   Sunday beatitudes 6 + gloria + theotokion / weekday beatitudes labeled
   items with exactly one glory + one both_now; matins and liturgy
   prokeimena both present and **not equal to each other** (V1 conflation
@@ -714,21 +836,27 @@ comparison.
 | `tone2.js` `aposticha_glory` | `[Glory from Menaion if appointed]` placeholder | real Saturday fallback exists ("O new wonder ...") | placeholder → real text in V2 |
 | — (source-vs-source) | earlier "Tone2.pdf" paste: "**All**-powerful" (GV lic #4) | 2-1.pdf: "**all**-powerful" | OCR-level variance between two provisions of the same chapter; **2-1.pdf canonical** |
 | — (source quality) | — | 2-2.pdf text layer: Cyrillic О (U+041E) for Latin O throughout | extractor homoglyph contamination — §2.8 rule + gate check; **not** source content |
+| `tone2.js` `vespers.tue.aposticha_glory` | "The light of the sun and moon dimmed ..." | Per 2-4 that text is the Tuesday-evening **LIC** Glory/Both-now Stavrotheotokion; the aposticha closer is "Having endured many pangs ..." (Stavrotheotokion, Spec. Mel. "When from the Tree ...") | **LIC→aposticha mis-slot** — same slot-collision class as the SUNDAY_APOSTICHA_THEOTOKIA / LIC_THEOTOKIA rows, now inside V1's own weekday block |
+| `tone2.js` `vespers.tue.aposticha[2]` (martyrs) | "We fight on behalf of the King of the powers on high; though ye give us up to fire and torment, we shall not deny ..." | 2-4: "We fight for the King of hosts! And even if ye have subjected us to fire and tortures, we will not reject ..." | wording variant — different translation of the same martyrs sticheron; V2 encodes St. Sergius (note V1's own `fri.lic` carries a third near-variant of this text) |
+| — (V1 inventory) | `tone2.js` `vespers` carries a full day-keyed weekday block (sun–fri: lic ×3, aposticha ×3, aposticha_glory; fri: 6 lic with the first printed twice + `lic_dogmatikon` = the GV dogmatikon text; all unpointed, no verses/fallback sets/prokeimena/closer types) previously uninventoried by this spec; `hours-tool.jsx` ~2828 also carries a static 7-day vespers-prokeimena table (anti-pattern location) whose sun/mon/tue rows match 2-2/2-3/2-4 exactly | — | V1 comparison surface for weekday Vespers and the daily-prokeimena shared table. The `fri` rows are **V1 state only, NOT evidence** for §9.2 — the Friday dogmatikon question is answered by 2-7 |
 
 ## 9. OPEN — gaps and decisions blocking spec completion
 
-1. **Weekday Vespers, Tuesday evening – Friday evening** (2-4 … 2-7):
-   Sunday and Monday evenings scanned; template holding. Remaining days
-   unproven.
+1. **Weekday Vespers, Wednesday evening – Friday evening** (2-5 … 2-7):
+   Sunday, Monday, and Tuesday evenings scanned; template holding across
+   three days. Remaining days unproven.
 2. **Friday evening**: 6 stichera + week dogmatikon per Fekula's Friday
    rule — same-text-or-distinct-print-site question (§4.4).
-3. **Compline Tue–Fri nights** and **weekday Nocturns** presence/absence:
-   neither 2-2 nor 2-3 prints weekday Nocturns content; still not proof of
-   a rule.
-4. **Repeat devices** (§2.7): proposal — mirror the source's device (full
-   double print → two positional entries; "(Twice)" → `repeat: 2`). Both
-   devices attested (2-1 LV lic; 2-1 Nocturns; 2-2 Monday canons). Bill's
-   confirmation needed.
+3. **Compline Wed–Fri nights** and **weekday Nocturns** presence/absence:
+   none of 2-2, 2-3, or 2-4 prints weekday Nocturns content (Mon, Tue, Wed
+   mornings — three consecutive absences); still not proof of a rule.
+4. **Repeat/reference devices** (§2.7): proposal — mirror the source's
+   device (full double print → two positional entries; "(Twice)" →
+   `repeat: 2`; incipit-abbreviated irmos → verbatim incipit string +
+   `irmos_ref: 'canon1'`, gate-checked prefix match). All three devices
+   attested (2-1 LV lic; 2-1 Nocturns; 2-2 Monday canons; 2-4 Wednesday
+   Theotokos canon Odes IV/VII/VIII/IX). Bill's confirmation needed —
+   one decision now covers all three.
 5. **Canonical-field punctuation** (§4.1): which troparion print site's
    punctuation is canonical. Bill's call.
 6. **LV dismissal Theotokion** (§4.2): slot marked without text; resolve
@@ -743,7 +871,17 @@ comparison.
    per-tone until two more tones confirm or deny. Note "O Lord, rebuke me
    not in Thine anger" repeats within Monday itself (sets 1 and 2).
 10. **Homoglyph normalization** (§2.8): confirm normalize-at-encode-with-log
-    + validator hard-fail. Bill's confirmation needed.
-11. **Weekday exapostilarion texts**: 2-2's Monday Matins rubric names the
-    Exapostilarion without printing it; locate the source (appendix file?)
-    before the weekday assembler is specced.
+    + validator hard-fail. Attestation: 2-1 clean; 2-2, 2-3, 2-4 all
+    contaminated (2-4: U+041E ×143, the only non-Latin codepoint). Bill's
+    confirmation needed.
+11. **Weekday exapostilarion texts**: the Monday, Tuesday, and Wednesday
+    Matins post-canon rubrics (2-2, 2-3, 2-4) all name the Exapostilarion
+    without printing it; locate the source (appendix file?) before the
+    weekday assembler is specced.
+12. **OCR spelling artifacts — sic-list rule (NEW, 2-4)**: distinct from
+    the §9.10 charset issue, 2-4's text layer carries spelling-level
+    artifacts ("exeedingly"; "Wondrous art. Thou" with a stray period;
+    "those Sick with corruption" mid-sentence capital). Proposal: charset
+    normalizes per §9.10; spelling stays STRICT VERBATIM plus a logged
+    sic-list in the session analysis file — no silent correction. Bill's
+    confirmation needed.
