@@ -1,5 +1,93 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.32.2** | **Tone Trainer: v0.25.47** | Last synced: July 8, 2026
+**Tool version: v0.32.3** | **Tone Trainer: v0.25.47** | Last synced: July 8, 2026
+
+**Session July 8, 2026 (cont. 4) — Octoechos V2 TONE-8 DIFFERENTIAL SCAN;
+tone8.js ENCODED, v0.32.3 — the SEVEN high tones (2–8) COMPLETE.** Scans of
+8-1…8-7 reviewed. Every §4 template held via the adapted tone-7 generators
+(committed: gen_tone8_sun / gen_weekday8 / verify_shared_t8 / postpass_t8).
+tone8.js ~1,287 nodes, 31 claims. Schema SOURCE_FILES + 8-x. Register
+244/241 live; sics 68/52. Reading-view pages live and sanity-checked.
+Only tone 1 remains to close the eight-tone cycle.
+
+### FIRSTS for tone 8
+
+- **8-1 is CONTAMINATED (U+041E О ×72) — BREAKS the N-1-clean pattern** that
+  held for six tones (2-1…7-1). The Sunday generator now normalizes-with-log
+  like the weekday walker (its "N-1 must be clean" assertion removed for this
+  tone; node() gained homoglyph normalization + per-node log; ode_of
+  normalizes before matching). Rubric strings normalized with a session count
+  (779). 8-3 prints "ОDE VI" (Cyrillic О) at a structural ode heading —
+  handled by the tone-6 wk_lib.ode_of fix. No NEW homoglyph class.
+- **anabathmoi = 4** (tone 8's four Songs of Ascent; the gate never hard-coded
+  3, §9.7). Shape A resurrection closers: trinitarion at odes 7 & 8,
+  theotokion at ode 9 (the known tone-8 distribution).
+- **",?" lament artifact RECURS** (8-4 "Whither hast Thou gone, O my Son,?")
+  — absent in tones 6 and 7; back in tone 8 (sic).
+- **Saturday Matins departed aposticha REVERTS to a THREE-verse set** (v1
+  "they", v3 "from generation to generation") after the 4-7…7-7 two-verse run.
+
+### GREGORY — per-tone from 8-1
+
+Tracks the tone-7 byte-state (Kingship / immutable / of the Virgin) but prints
+"Kingship" HYPHENATED across a line break ("King- ship") — kept verbatim + sic
+(line-break hyphenation, candidate for de-hyphenation on Bill's word).
+Divergences at stanzas 2, 5, 6, 7 (idx 1, 4, 5, 6). 7 register pairs pinned.
+
+### Parser fixes (committed with the generators)
+
+- Sunday generator node()/ode_of normalize homoglyphs (8-1 contamination).
+- gen_weekday8: the Saturday Matins sessional closer prints ".Glory ..., Both
+  now ..." with a STRAY LEADING PERIOD — the closer matcher now accepts the
+  ".Glory" variant (the loop had run past the praises heading). (wk_lib itself
+  UNCHANGED this tone — carries the tone-6/7 fixes already.)
+
+### Findings & flags (Bill review)
+
+- **§5 divergences (per-tone):** Tue-eve Vespers aposticha v2 drops a comma;
+  Wed-eve v1 comma-for-period; fri-eve departed v1 final period (7th tone in
+  the class); thu prokeimenon verse "*" (4-5…8-5 class); tue prokeimenon verse
+  "when I pray" (as tone 7); fri Liturgy Alleluia verse comma-for-semicolon;
+  thu Liturgy Alleluia digit-zero "0 Lord" (7th tone). Monday communion is not
+  reprinted in 8-2 (ref stands). standard Vespers otherwise, polyeleos,
+  virgin-rejoice match shared.
+- **Per-print heading facts (exact-variant guards):** virgin-rejoice with NO
+  "Tone IV:" heading; God-is-the-Lord "At" for "On"; "AT NOCTURNES" spelling;
+  Nocturns canon heading multi-line; Matins canon "Resurrection Canon Tone
+  VIII."; troparion LV site single "*" where GV prints "**" (pointing
+  provenance; GV canonical).
+- **Sics (pinned):** "King- ship" (Gregory s2, hyphenation); "O my Son,?"
+  (tue-eve LIC theotokion, comma+question-mark lament); GV dismissal theotokion
+  and GV aposticha[2] each carry TWO "**" (pointing-anomaly).
+
+### Cross-tone watch list — tone-8 status
+
+- N-1 clean pattern: **BROKEN** (8-1 contaminated ×72) — first tone.
+- digit-zero "0 Lord" Thu Liturgy Alleluia: HOLDS (7th tone, 8-5).
+- "Саnon" С+а homoglyph: DOES NOT RECUR (8-4 clean).
+- lament ",?" artifact: **RECURS** (8-4 "O my Son,?"); (tones 6,7 lacked it).
+- §9.13 Thursday Matins anomaly: NORMAL pair (8-5) — tone-2 anomaly alone
+  across 7 tones.
+- fri-eve departed v1 final period: RECURS.
+- thu Liturgy prokeimenon "*": RECURS.
+- Saturday Matins departed: **THREE-verse set** (reverts from the two-verse run).
+- LV s1 repeat device: FULL DOUBLE PRINT (tones 2/4/6/8 form).
+- Nocturns↔Matins irmos: VARIANT at ode 3, identical elsewhere (per-tone).
+- troparion §9.5 quote-site pattern: NONE (tones 3/5/6/7/8 form).
+
+### Next
+
+- Tone-1 differential scan on Bill's go (adapt the tone-8 generators) —
+  CLOSES the eight-tone Octoechos cycle.
+
+### Carry-forwards (unchanged, do not act without Bill)
+
+- §9.11(b) weekday daily exapostilaria; §9.13 physical-chapter check;
+  Menaion-external register pendings; amendment-F allowlist empties at Phase 5.
+- Reading-view Phases B–D parked pending Bill's side-by-side review.
+- Weekday canon-title truncation in tones 2–6 (tone 7/8 fixed) — future
+  corpus-wide cleanup candidate.
+- The "King- ship" (tone 8) and "glory to Thee"/"be"-drop (tone 6) sics await
+  Bill's ruling on whether to de-hyphenate / reconcile.
 
 **Session July 8, 2026 (cont. 3) — Octoechos V2 TONE-7 DIFFERENTIAL SCAN;
 tone7.js ENCODED, v0.32.2.** Scans of 7-1…7-7 reviewed: 7-1 clean, 7-2…7-7
