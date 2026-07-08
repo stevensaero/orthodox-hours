@@ -5,7 +5,15 @@ import re
 
 ROM2N = {'I':1,'II':2,'III':3,'IV':4,'V':5,'VI':6,'VII':7,'VIII':8,'IX':9}
 def ode_of(t):
-    m = re.match(r'^ODE(VIII|VII|VI|IX|IV|III|II|I|V)\.?$', t.replace(' ', ''))   # 4-2 prints 'ODE IX.' (trailing period — heading-sic class)
+    # §9.10 STRUCTURAL normalization: 6-7 prints 'ОDE IX' with a Cyrillic О
+    # (U+041E) as the leading letter — the homoglyph contaminates a STRUCTURAL
+    # ode heading, not just body text (tone-6 finding, Fri-night Compline). The
+    # known homoglyph class is normalized on a COPY for matching only; stored
+    # item nodes under the ode still keep raw bytes + per-node log via make_node.
+    tn = t
+    for _c, _r in HOMOGLYPHS.items():
+        if _c in tn: tn = tn.replace(_c, _r)
+    m = re.match(r'^ODE(VIII|VII|VI|IX|IV|III|II|I|V)\.?$', tn.replace(' ', ''))   # 4-2 prints 'ODE IX.' (trailing period — heading-sic class)
     return ROM2N[m.group(1)] if m else None
 
 VERSE_CLASS = re.compile(r'^(The )?Verse: |^Refrain: |^(The )?Prokeimenon|^Communion Verse: |^Alleluia, in Tone|^Spec\. Mel\.')

@@ -55,6 +55,13 @@ Scripts:
   Prokeimenon after a page break); the 'all ye peoples' missing-period
   verse guard. wk_lib formfeed rule now tone-wide (5-3/5-4/5-6/5-7 break
   pages mid-paragraph). START FROM THESE for tones 6–8/1.
+- `gen_tone6_sun.py` / `gen_weekday6.py` — the tone-6 variants: multi-line
+  Nocturns canon heading joined to its 'Tone VI:' terminator ('in'-less tone
+  marker); LITURGY kontakion heading word-order variant ('Kontakion of the
+  Resurrection' vs the Matins 'Resurrection Kontakion'); LV troparion 'be'-drop
+  guarded EXACTLY at the multi-site §4.1 check (GV canonical); LV s1 full double
+  print; Matins canon 'Resurrection Canons Tone VI.'. START FROM THESE for
+  tones 7–8/1.
 - `verify_shared_t3.py` / `postpass_t3.py` — §5 byte-verification against
   shared.js + per-tone storage of divergent items.
 - `verify_shared_t4.py` / `postpass_t4.py` — the tone-4 §5 pass. CAUTION:
@@ -68,7 +75,13 @@ Scripts:
 
 `wk_lib.py` carries the cumulative tolerances (tone-4 additions: HOMOGLYPHS
 С/а, indent ≥ 1, 'ODE IX.' trailing period, comma-ended-verse merge guard,
-'Both now...,' label variant). Tone-3 scripts import the same lib.
+'Both now...,' label variant). Tone-3 scripts import the same lib. Tone-6 addition:
+`ode_of` normalizes the known homoglyph class BEFORE structural matching (6-7
+prints a Cyrillic-О 'ОDE IX' at the Ode-IX heading — a structural-site
+homoglyph; stored item nodes keep raw bytes + per-node log). Tone-6 addition: `ode_of` normalizes the known
+homoglyph class BEFORE structural matching (6-7 prints a Cyrillic-О 'ОDE IX' at
+the Ode-IX heading — a structural-site homoglyph; stored nodes keep raw bytes
++ per-node log).
 
 Known per-print gotchas the walkers already handle: split headings
 ("OD E I", "AT M AT IN S"), canon-1 heading printed before OR after ODE I,
