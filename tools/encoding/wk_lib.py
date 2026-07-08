@@ -13,7 +13,7 @@ TERMINAL = re.compile(r'[.!?”’)]$|:$')
 BLOCK_START = re.compile(r'^((The )?Verse:|Refrain: |Alleluia, in Tone|Irmos: |Communion Verse: |Glory \.\.\.,|Both now \.\.\.,|Theotokion: |Trinitarion: |To the martyrs: |For the reposed: |Then the Stichera from the Menaion|Then, “|Vouchsafe, |On the Aposticha|Spec\. Mel\.)')
 
 def tokenize(path):
-    raw = open(path).read().replace('\x0c', '\n')
+    raw = open(path).read().replace('\x0c', '')   # tone-5: weekday files break pages MID-PARAGRAPH (5-3/5-4/5-6/5-7 ×1 each) — formfeed is a page separator, not a paragraph boundary (the 4-1 rule, now tone-wide)
     paras, cur = [], None
     for l in raw.split('\n'):
         stripped = l.strip()

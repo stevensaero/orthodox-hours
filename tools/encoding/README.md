@@ -47,12 +47,24 @@ Scripts:
   variants, the 4-7 'Repeat:'-labeled incipit device, split praises
   closer, Ode-I long sub-canon headings, fallback-tier Spec. Mel.
   START FROM THESE for tones 5–8/1.
+- `gen_tone5_sun.py` / `gen_weekday5.py` — the tone-5 variants: 'Repeat:'-
+  labeled incipit in LITTLE VESPERS (sun walker now handles the device);
+  incipit REFERENT resolved by prefix match (tone 5 repeats the set-2
+  opener at Friday-eve, not sticheron 1); heading forms ('Tone V.',
+  'Then, in Tone IV:', 'The Sessional Hymn, in Tone V:', col-0 Liturgy
+  Prokeimenon after a page break); the 'all ye peoples' missing-period
+  verse guard. wk_lib formfeed rule now tone-wide (5-3/5-4/5-6/5-7 break
+  pages mid-paragraph). START FROM THESE for tones 6–8/1.
 - `verify_shared_t3.py` / `postpass_t3.py` — §5 byte-verification against
   shared.js + per-tone storage of divergent items.
 - `verify_shared_t4.py` / `postpass_t4.py` — the tone-4 §5 pass. CAUTION:
   extraction markers can be SHADOWED by earlier same-text sites (4-7
   Saturday sessional verses shadowed the Liturgy Alleluia markers —
   re-scope with search_after before calling a divergence).
+- `verify_shared_t5.py` / `postpass_t5.py` — the tone-5 §5 pass: heaviest
+  divergence set yet (polyeleos pointed throughout, virgin-rejoice single-*,
+  Gregory ×3 stanzas, sun-eve 'mistress'); Gregory now stored per-tone in
+  EVERY tone (RULED July 8 2026).
 
 `wk_lib.py` carries the cumulative tolerances (tone-4 additions: HOMOGLYPHS
 С/а, indent ≥ 1, 'ODE IX.' trailing period, comma-ended-verse merge guard,
