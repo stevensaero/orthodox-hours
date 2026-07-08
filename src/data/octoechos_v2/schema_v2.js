@@ -62,6 +62,7 @@ export const SOURCE_FILES = [
   '2-1.pdf', '2-2.pdf', '2-3.pdf', '2-4.pdf', '2-5.pdf', '2-6.pdf', '2-7.pdf',
   'Theotokia.pdf',
   'Music-Evangelical-Stichera.pdf',
+  '3-1.pdf', '3-2.pdf', '3-3.pdf', '3-4.pdf', '3-5.pdf', '3-6.pdf', '3-7.pdf',
 ];
 
 // ── The universal text node (spec §4 hymn value shape + amendment D) ─────────
@@ -328,8 +329,11 @@ export const SECTION_RULES = {
 export const CANON_A = {
   odeKeys: CANON_ODES,
   subCanons: ['resurrection', 'cross_resurrection', 'theotokos'],
-  // resurrection sub-canon closer: theotokion at Odes 1–8, trinitarion at 9.
-  closerByOde: { default: 'theotokion', 9: 'trinitarion' },
+  // Closer-type distribution across odes is PER-TONE (tone-2: theotokion at
+  // 1–8 + trinitarion at 9; tone-3: trinitarion at 7, theotokion elsewhere —
+  // §4.11 claim demoted at the tone-3 verification, July 7 2026). The gate
+  // requires a typed closer per ode; the type census is a source fact.
+  closerByOde: null,
   known: ['title', 'composer', 'acrostic', 'odes'],
 };
 export const CANON_B = {

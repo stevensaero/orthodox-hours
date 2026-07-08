@@ -239,9 +239,11 @@ function checkCanonA(where, canon) {
     for (const sub of S.CANON_A.subCanons) {
       if (!o[sub]) { fail(`${W}: missing sub-canon "${sub}" (Shape A).`); continue; }
     }
-    const closer = o.resurrection?.closer;
-    const want = S.CANON_A.closerByOde[ode] ?? S.CANON_A.closerByOde.default;
-    if (closer && closer.type !== want) fail(`${W}: resurrection closer type "${closer?.type}" — Shape A requires "${want}" at Ode ${ode} (§4.11).`);
+    // Closer-type DISTRIBUTION across odes is a per-tone source fact (tone-3
+    // verification, July 7 2026: trinitarion at Ode 7, theotokion at Ode 9 —
+    // the §4.11 tone-2 distribution is demoted). Type validity is checked by
+    // the text-node gate; here we only require the closer to exist.
+    if (!o.resurrection?.closer) fail(`${W}: resurrection sub-canon missing its typed closer.`);
   }
 }
 

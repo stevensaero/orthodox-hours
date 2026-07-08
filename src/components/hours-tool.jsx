@@ -8492,6 +8492,42 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.31.7",
+    date: "July 2026",
+    summary: "Octoechos V2: TONE-3 VERIFICATION PASSED + tone3.js encoded (\u00a711) \u2014 skeleton confirmed, \u00a75 shared tables hold with 6 per-item exceptions, \u00a79.13 anomaly does NOT recur",
+    items: [
+      "The \u00a711 tone-3 verification scan ran all seven 3-x chapters against " +
+      "the \u00a74 templates using the tone-2-derived parsers: EVERY section " +
+      "template held without a shape change \u2014 the skeleton is confirmed and " +
+      "tones 4\u20138/1 become differential scans. tone3.js encoded in the same " +
+      "pass (~1,250 nodes, 31 claims).",
+      "\u00a75 shared-table verification: 97 tone-3 print sites byte-compared " +
+      "against shared.js \u2014 91 IDENTICAL (daily prokeimena, verse pairs, " +
+      "liturgy propers, Evlogitaria, Polyeleos, praises ladder, GV/LV verse " +
+      "sets, virgin-rejoice, ode-8 verse); 6 item-level divergences stored " +
+      "per-tone with register variant pairs (3-6 'works of our hand'; 3-7 " +
+      "departed wording/punctuation \u00d73; 3-6 'ages,'; Gregory hymn stanza 2 " +
+      "word order \u2014 hymn stays per the 2-1 print in shared with the " +
+      "divergence noted).",
+      "\u00a79.13: tone 3's Thursday Matins prints the NORMAL verse pair " +
+      "(byte-verified) \u2014 the tone-2 anomaly does not recur, strengthening " +
+      "Bill's misprint suspicion; ruling unchanged (encoded as printed).",
+      "Per-tone facts demoted at verification: Shape A closer distribution " +
+      "(tone 3: trinitarion at Ode VII \u2014 gate now requires a typed closer " +
+      "per ode, census is a source fact), \u00a79.5 quote pattern (no quoted site " +
+      "in tone 3), kontakion Spec. Mel. ('Today the Virgin'), Nocturns " +
+      "(Twice) distribution, Matins prokeimenon verse line, Nocturns\u2194Matins " +
+      "irmos sharing (tone 3: odes 1/3/9 vs tone 2's 1/6).",
+      "New homoglyph classes normalized-with-log per \u00a79.10: Cyrillic \u041c " +
+      "(3-6) and lowercase \u043e (3-7), beside the pervasive \u041e. The 3-5 " +
+      "digit-zero sits at the SAME Thursday Alleluia verse as 2-5's. New " +
+      "sics: 3-5 'our God. be upon us'; 3-6 'works of our hand'; 'AT M AT " +
+      "IN S' split heading (3-6).",
+      "Registers: 141 pairs / 138 live-byte-checked; 33 sics / 27 " +
+      "live-checked. Gate: full suite green.",
+    ],
+  },
+  {
     version: "v0.31.6",
     date: "July 2026",
     summary: "Octoechos V2 \u00a711 step 5: TONE 2 COMPLETE \u2014 weekday Vespers/Matins/Liturgy, all seven Compline nights, the Saturday day-class; register 133 pairs / 130 live-checked",
