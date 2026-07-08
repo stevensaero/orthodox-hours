@@ -1,5 +1,104 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.32.1** | **Tone Trainer: v0.25.47** | Last synced: July 8, 2026
+**Tool version: v0.32.2** | **Tone Trainer: v0.25.47** | Last synced: July 8, 2026
+
+**Session July 8, 2026 (cont. 3) — Octoechos V2 TONE-7 DIFFERENTIAL SCAN;
+tone7.js ENCODED, v0.32.2.** Scans of 7-1…7-7 reviewed: 7-1 clean, 7-2…7-7
+О ×143–167 — SIXTH tone with the N-1-clean pattern; no new homoglyph class,
+no structural-site homoglyph (unlike 6-7). Every §4 template held via the
+adapted tone-6 generators (committed: gen_tone7_sun / gen_weekday7 /
+verify_shared_t7 / postpass_t7). tone7.js ~1,282 nodes, 31 claims. Schema
+SOURCE_FILES + 7-x. Register 226/223 live; sics 65/49. Reading-view pages
+for tone 7 live and sanity-checked.
+
+### GREGORY — per-tone from 7-1 (NEW byte-state)
+
+A distinct byte-state. Stanza 2 reads "the one KINGSHIP and Dominion" — a
+lexical variant NO prior tone prints (all print "Sovereignty") — on the
+2-1/5-1 word-order side ("the Might … the one …"). Further divergences:
+s5 "I worship the beginningless God the Father" (word order); s6 "Thou
+Creator of all" (+ "immutable", matching shared, unlike 5-1/6-1); s7 "Who
+became ineffably incarnate" (word order; "of the Virgin" matches shared).
+7 register pairs pinned. Rubric CLEAN ("(which is chanted" — no comma).
+
+### Parser fixes (silent-drop class — committed with the generators)
+
+Three fixes, all backward-compatible (they only PREVENT incorrect merges /
+RECOVER dropped content; committed tone data is not regenerated):
+
+- **Non-terminal verse/refrain absorbing a structural unit.** The Ode-IX
+  "Refrain: We bless the Lord; Father, Son, and Holy Spirit" (no terminal
+  punctuation) was gluing the following "Trinitarian:" closer onto itself,
+  silently dropping the Ode-IX resurrection trinitarion. Fixed in both the
+  Sunday tokenizer and wk_lib: a paragraph that OPENS a structural unit
+  (Trinitari(on/an):/Theotokion:/Irmos:/Refrain:/Verse:/Glory/Both now/
+  Another) is never absorbed.
+- **Col-0 canon heading appended to a theotokion.** The Tuesday-morning
+  forerunner canon's Ode-I heading ("Another canon, of the holy prophet and
+  forerunner…") prints at col 0 and was being appended to the preceding
+  theotokion (which ends "…glorify thee", no period), corrupting the c2
+  heading and dropping canon-2 Ode I. Fixed: wk_lib BLOCK_START now treats
+  "Another canon"/"Another, of "/"Canon of "/"Canon to " as paragraph starts.
+- **Unlabeled irmos.** Tuesday-night Compline Ode III prints its irmos IN
+  FULL but WITHOUT the "Irmos:" label; the canon parser now promotes the
+  first plain stanza to irmos (locus records the omission).
+- Canon titles are now reconstructed through the centered "Tone VII:"
+  terminator (a pre-existing cosmetic truncation, e.g. titles ending "…in",
+  is thereby fixed for tone 7; earlier tones still carry the older truncated
+  titles — flagged as a possible future corpus-wide cleanup, NOT touched).
+
+### Findings & flags (Bill review)
+
+- **§5 divergences (per-tone):** Wednesday Matins aposticha v2 DROPS the "*"
+  shared prints (Wednesday only); Tuesday Liturgy prokeimenon verse "when I
+  pray unto Thee" (shared: "make supplication"); fri-eve departed v1 final
+  period (5th tone); thu Liturgy prokeimenon verse "*" (4-5/5-5/6-5 class);
+  Saturday Matins departed TWO-verse set ("those"; v1/v2 byte-match shared,
+  the MISSING v3 is the structural difference); thu Liturgy Alleluia
+  digit-zero "0 Lord" (6th tone). standard Vespers "mistress", polyeleos,
+  virgin-rejoice, evlogitaria, sat GV prok all MATCH shared this tone.
+- **Per-print heading facts (exact-variant guards):** GV dismissal-theotokion
+  heading "Resurrection Theotokion" (no "the"); God-is-the-Lord rubric "At"
+  for "On"; Liturgy troparion Matins site prints a single "*" where GV prints
+  "**" (pointing provenance; GV canonical, §9.5).
+- **Sics (pinned):** dismissal theotokion carries TWO "**" (extended
+  "virgin before / during / after birthgiving" — pointing-anomaly); Nocturns
+  Trinity-canon Ode III "forgiveness offenses" (dropped "of"); Thursday
+  sessional "to Him.." (doubled period).
+- **Marker-shadow (4-7 caution):** the Saturday Matins sessional "Many are
+  the tribulations … * and the Lord" shadowed the Saturday Liturgy Alleluia
+  marker; re-scoped after "AT LITURGY" the Liturgy verse = shared (ref
+  stands; cross-surface variant registered).
+
+### Cross-tone watch list — tone-7 status
+
+- N-1 clean / N-2…N-7 О-contaminated: HOLDS (6th tone).
+- digit-zero "0 Lord" Thu Liturgy Alleluia: HOLDS (6th tone, 7-5).
+- "Саnon" С+а homoglyph: DOES NOT RECUR (7-4 clean ASCII).
+- ewe-lamb/lament artifacts: DO NOT RECUR.
+- §9.13 Thursday Matins anomaly: NORMAL pair prints (7-5) — tone-2 anomaly
+  alone across 6 tones.
+- fri-eve departed v1 final period: RECURS (per-tone).
+- thu Liturgy prokeimenon "*": RECURS (per-tone).
+- Saturday Matins departed TWO-verse set: CONFIRMED.
+- LV s1 repeat device: FULL DOUBLE PRINT (tones 2/4/6 form).
+- Nocturns↔Matins irmos: VARIANT at odes 7 & 9, identical elsewhere
+  (per-tone; patterns so far 1/6 · 1/3/9 · 1/7/8 · all · all · 7,9-variant).
+- troparion §9.5 quote-site pattern: NONE (tones 3/5/6 form).
+
+### Next
+
+- Tone-8 differential scan on Bill's go (adapt the tone-7 generators);
+  after tone 8, tone 1 completes the eight-tone cycle.
+
+### Carry-forwards (unchanged, do not act without Bill)
+
+- §9.11(b) weekday daily exapostilaria — await Bill's Horologion source.
+- §9.13 physical-chapter check — optional, Bill's.
+- Menaion-external register pendings; amendment-F allowlist empties at
+  Phase 5 cutover.
+- Reading-view Phases B–D parked pending Bill's side-by-side review.
+- Weekday canon-title truncation in tones 2–6 (pre-existing cosmetic;
+  tone 7 fixed) — candidate for a future corpus-wide cleanup.
 
 **Session July 8, 2026 (cont. 2) — Octoechos V2 TONE-6 DIFFERENTIAL SCAN;
 tone6.js ENCODED, v0.32.1.** Scans of 6-1…6-7 delivered and reviewed
