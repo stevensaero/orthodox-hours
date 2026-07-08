@@ -30,6 +30,10 @@ import {
 import {
   TONES, VESPERS_EVENINGS, COMPLINE_NIGHTS, WEEKDAY_MORNINGS,
 } from '../data/octoechos_v2/schema_v2.js';
+import {
+  ReadingContext, DAY_SLOTS, SvcCanonical, RHeading, RRubric,
+} from './octoechos-v2-reading.jsx';
+import { getLiturgicalData } from './hours-tool.jsx';
 
 // ── Color constants — matches the existing data browsers ─────────────────────
 const C = {
@@ -62,6 +66,7 @@ async function loadV2Module(name) {
 export const loadOctoechosV2Tone = (tone) => loadV2Module(`tone${tone}`);
 export const loadOctoechosV2Shared = () => loadV2Module('shared');
 const loadRecurrences = () => loadV2Module('known_recurrences');
+const loadSics = () => loadV2Module('sic_register');
 
 const AuditContext = createContext({ audit: false, recurrences: [], tonePrefix: '' });
 
@@ -315,16 +320,25 @@ function ServiceSection({ sectionKey, value }) {
   );
 }
 
-// ── main component ───────────────────────────────────────────────────────────
+// ── main component — hosts the READING view (default) and the §12 AUDIT view ─
 export default function OctoechosV2Browser() {
   const [tone, setTone] = useState(2);
   const [data, setData] = useState(undefined);       // undefined=loading, null=absent
   const [recurrences, setRecurrences] = useState([]);
-  const [audit, setAudit] = useState(false);
+  const [sics, setSics] = useState([]);
+  const [view, setView] = useState('reading');       // 'reading' | 'audit'
+  const [slotId, setSlotId] = useState('sat_eve');
+  const [svcId, setSvcId] = useState(null);           // null = tone landing (canonical hymns)
+  const [mode, setMode] = useState(() => {
+    try { return localStorage.getItem('octoRdgMode') || 'printed'; } catch { return 'printed'; }
+  });
+  const setModePersist = (m) => { setMode(m); try { localStorage.setItem('octoRdgMode', m); } catch { /* private mode */ } };
+  const audit = view === 'audit';
 
   const [shared, setShared] = useState(null);
   const [theotokia, setTheotokia] = useState(null);
   useEffect(() => { loadRecurrences().then(setRecurrences).catch(() => setRecurrences([])); }, []);
+  useEffect(() => { loadSics().then(setSics).catch(() => setSics([])); }, []);
   useEffect(() => { loadOctoechosV2Shared().then(setShared).catch(() => setShared(null)); }, []);
   useEffect(() => { loadV2Module('theotokia').then(setTheotokia).catch(() => setTheotokia(null)); }, []);
   useEffect(() => {
@@ -336,9 +350,47 @@ export default function OctoechosV2Browser() {
     return () => { live = false; };
   }, [tone]);
 
-  // Core canonical fields + service sections, in registry order; anything
-  // else in the file (except housekeeping keys) renders too — nothing can be
-  // silently absent.
+  // deep-link anchors (spec §4): scroll once the page content is present
+  useEffect(() => {
+    if (!data) return;
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    if (!id) return;
+    const el = document.getElementById(id);
+    if (el) { el.scrollIntoView({ block: 'center' }); el.style.background = C.goldMid; }
+  }, [data, slotId, svcId, view]);
+
+  // sic index: exact-path lookup for footnote glyphs (reading mode)
+  const sicIndex = {};
+  for (const e of sics) {
+    if (e.path && !e.approx) (sicIndex[e.path] = sicIndex[e.path] ?? []).push(e);
+  }
+  const roots = { shared, theotokia, [`tone${tone}`]: data };
+  const encoded = new Set(data?._encoded ?? []);
+  const slot = DAY_SLOTS.find(sl => sl.id === slotId) ?? DAY_SLOTS[0];
+  const svc = svcId ? slot.services.find(x => x.id === svcId) : null;
+
+  const goToday = () => {
+    try {
+      const lit = getLiturgicalData(new Date());
+      const t = lit.tone || 1;
+      setTone(t);
+      const dow = new Date().getDay();       // 0=Sun … 6=Sat
+      const evening = new Date().getHours() >= 15;
+      const keys = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+      const k = keys[dow];
+      const id = evening ? (k === 'sat' ? 'sat_eve' : `${k}_eve`) : k;
+      if (DAY_SLOTS.some(sl => sl.id === id)) { setSlotId(id); setSvcId(null); }
+    } catch { /* calendar engine unavailable — stay put */ }
+  };
+
+  const navBtn = (active) => ({
+    fontFamily: "Georgia, serif", fontSize: "0.8rem", cursor: "pointer",
+    padding: "3px 10px", borderRadius: "4px",
+    border: `1px solid ${active ? C.gold : C.border}`,
+    background: active ? C.goldMid : "#fff",
+    color: active ? C.gold : C.inkMid, fontWeight: active ? 700 : 400,
+  });
+
   const coreKeys = ['troparion', 'dismissal_theotokion', 'kontakion', 'ikos'];
   const skip = new Set(['tone', '_encoded']);
 
@@ -346,103 +398,146 @@ export default function OctoechosV2Browser() {
     <AuditContext.Provider value={{ audit, recurrences, tonePrefix: `tone${tone}.` }}>
       <div style={{ background: C.parchment, minHeight: "100vh", padding: "18px 26px", fontFamily: "Georgia, serif" }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: "14px", flexWrap: "wrap" }}>
-          <h1 style={{ fontSize: "1.25rem", color: C.ink, margin: 0 }}>Octoechos V2 — Data Browser</h1>
+          <h1 style={{ fontSize: "1.25rem", color: C.ink, margin: 0 }}>The Octoechos</h1>
           <span style={{ fontSize: "0.7rem", color: C.inkLight }}>
-            §12 Viewer Auditability Contract · schema-driven, default-visible · truthing view (markers verbatim, §3.4)
+            {view === 'reading'
+              ? 'Reading view — the bound page, digitized (octoechos_reading_view_spec.md)'
+              : '§12 Viewer Auditability Contract · schema-driven, default-visible · truthing view (markers verbatim, §3.4)'}
+          </span>
+          <span style={{ marginLeft: "auto", display: "flex", gap: "6px" }}>
+            <button style={navBtn(view === 'reading')} onClick={() => setView('reading')}>Reading</button>
+            <button style={navBtn(view === 'audit')} onClick={() => setView('audit')} title="Raw objects, provenance, recurrence links (§12)">Audit</button>
           </span>
         </div>
 
-        <div style={{ margin: "10px 0", display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
+        <div style={{ margin: "10px 0 4px", display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
           {TONES.map(t => (
-            <button key={t} onClick={() => setTone(t)} style={{
-              fontFamily: "Georgia, serif", fontSize: "0.85rem", cursor: "pointer",
-              padding: "3px 10px", borderRadius: "4px",
-              border: `1px solid ${t === tone ? C.gold : C.border}`,
-              background: t === tone ? C.goldMid : "#fff",
-              color: t === tone ? C.gold : C.inkMid, fontWeight: t === tone ? 700 : 400,
-            }}>Tone {t}</button>
+            <button key={t} onClick={() => { setTone(t); setSvcId(null); }} style={navBtn(t === tone)}>Tone {t}</button>
           ))}
-          <label style={{ marginLeft: "12px", fontSize: "0.75rem", color: C.inkMid, cursor: "pointer" }}>
-            <input type="checkbox" checked={audit} onChange={e => setAudit(e.target.checked)} />
-            {' '}Audit mode (raw objects everywhere, §12.3)
-          </label>
+          <button onClick={goToday} style={{ ...navBtn(false), marginLeft: "10px" }} title="Open the current tone and day from the calendar engine">Today</button>
         </div>
 
-        {data === undefined && <div style={{ color: C.inkLight }}>Loading…</div>}
-
-        {data === null && (
-          <div style={{
-            border: `1px dashed ${C.goldLight}`, borderRadius: "6px", padding: "16px",
-            color: C.inkMid, background: "#fff", maxWidth: "620px",
-          }}>
-            <b>The Tone {tone} chapter file has no V2 data yet.</b>
-            <div style={{ fontSize: "0.8rem", marginTop: "6px", color: C.inkLight }}>
-              Per-tone chapter encoding is §11 steps 3–5; the schema, validators,
-              registers, and this viewer ship first (§12.6) so every encoding session
-              is visually auditable the day it is committed. Tone 2 is the reference
-              derivation and lands first. The tone-independent Shared tables below
-              are unaffected by the tone selector.
-            </div>
-          </div>
-        )}
-
-        {shared && (
-          <AuditContext.Provider value={{ audit, recurrences, tonePrefix: '' }}>
-            <div style={{ margin: "14px 0", border: `1px solid ${C.border}`, borderRadius: "6px", padding: "10px 14px", background: "#fff" }}>
-              <div style={{ fontSize: "1rem", fontWeight: 700, color: C.ink }}>Shared tables (§5) — tone-independent; shown for every tone; each table re-verified per tone as encoding proceeds</div>
-              {Object.keys(shared).map(k => (
-                <div key={k}>
-                  <FieldHeading path={`shared.${k}`} fallbackKey={k} />
-                  <Generic value={shared[k]} path={`shared.${k}`} fieldKey={k} />
-                </div>
-              ))}
-            </div>
-          </AuditContext.Provider>
-        )}
-
-        {theotokia && (
-          <AuditContext.Provider value={{ audit, recurrences, tonePrefix: '' }}>
-            <div style={{ margin: "14px 0", border: `1px solid ${C.border}`, borderRadius: "6px", padding: "10px 14px", background: "#fff" }}>
-              <div style={{ fontSize: "1rem", fontWeight: 700, color: C.ink }}>Common Theotokia (§4.12) — Theotokia.pdf, all eight tones; each cell a print site</div>
-              {Object.keys(theotokia).map(k => (
-                <div key={k}>
-                  <FieldHeading path={`theotokia.${k}`} fallbackKey={k} />
-                  <Generic value={theotokia[k]} path={`theotokia.${k}`} fieldKey={k} />
-                </div>
-              ))}
-            </div>
-          </AuditContext.Provider>
-        )}
-
-        {data && (
+        {view === 'reading' && (
           <>
-            <div style={{ fontSize: "0.72rem", color: C.inkLight, margin: "4px 0 10px" }}>
-              _encoded claims: {(data._encoded ?? []).length
-                ? (data._encoded ?? []).map(c => <Badge key={c} color={C.green}>{c}</Badge>)
-                : '(none yet)'}
-            </div>
-            <div style={{ margin: "14px 0", border: `1px solid ${C.border}`, borderRadius: "6px", padding: "10px 14px", background: "#fff" }}>
-              <div style={{ fontSize: "1rem", fontWeight: 700, color: C.ink }}>{SERVICE_HEADINGS.core}</div>
-              {coreKeys.filter(k => data[k] !== undefined).map(k => (
-                <div key={k}>
-                  <FieldHeading path={k} fallbackKey={k} />
-                  <Generic value={data[k]} path={k} fieldKey={k} />
-                </div>
+            <div style={{ margin: "6px 0 4px", display: "flex", gap: "6px", alignItems: "center", flexWrap: "wrap" }}>
+              {DAY_SLOTS.map(sl => (
+                <button key={sl.id} onClick={() => { setSlotId(sl.id); setSvcId(null); }} style={navBtn(sl.id === slotId)}>{sl.label}</button>
               ))}
             </div>
-            {SERVICE_ORDER.filter(s => s !== 'core' && data[s] !== undefined).map(s => (
-              <ServiceSection key={s} sectionKey={s} value={data[s]} />
-            ))}
-            {/* nothing can be silently absent: render any top-level key not
-                covered above through the generic fallback */}
-            {Object.keys(data)
-              .filter(k => !skip.has(k) && !coreKeys.includes(k) && !SERVICE_ORDER.includes(k))
-              .map(k => (
-                <div key={k}>
-                  <FieldHeading path={k} fallbackKey={k} />
-                  <Generic value={data[k]} path={k} fieldKey={k} />
-                </div>
+            <div style={{ margin: "4px 0 10px", display: "flex", gap: "6px", alignItems: "center", flexWrap: "wrap" }}>
+              {slot.services.map(x => (
+                <button key={x.id} onClick={() => setSvcId(x.id)} style={navBtn(svcId === x.id)}>{x.label}</button>
               ))}
+              <label style={{ marginLeft: "auto", fontSize: "0.72rem", color: C.inkMid, cursor: "pointer" }}
+                     title="As printed shows the * / ** pointing the bound page prints; clean reading sets one melodic line per row (§3.4)">
+                <input type="checkbox" checked={mode === 'clean'}
+                       onChange={e => setModePersist(e.target.checked ? 'clean' : 'printed')} />
+                {' '}Clean reading
+              </label>
+            </div>
+
+            {data === undefined && <div style={{ color: C.inkLight }}>Loading…</div>}
+            {data === null && (
+              <div style={{ border: `1px dashed ${C.goldLight}`, borderRadius: "6px", padding: "26px", background: "#fff", maxWidth: "640px", margin: "20px auto", textAlign: "center" }}>
+                <div style={{ fontSize: "1.05rem", color: C.ink, fontWeight: 700 }}>Tone {tone}</div>
+                <div style={{ fontSize: "0.85rem", color: C.inkMid, marginTop: "8px" }}>Not yet encoded — coming soon.</div>
+                <div style={{ fontSize: "0.72rem", color: C.inkLight, marginTop: "6px" }}>
+                  Tones are encoded chapter-by-chapter from the St. Sergius print (§11 differential scans). Encoded so far: 2, 3, 4, 5.
+                </div>
+              </div>
+            )}
+            {data && (
+              <ReadingContext.Provider value={{ mode, sics: sicIndex, roots, tonePrefix: `tone${tone}.` }}>
+                <div style={{ background: "#fff", border: `1px solid ${C.border}`, borderRadius: "6px", padding: "26px 34px", maxWidth: "720px", margin: "0 auto", boxShadow: "0 1px 3px rgba(60,40,10,0.08)" }}>
+                  <div style={{ textAlign: "center", fontFamily: "Georgia, serif", letterSpacing: "0.18em", color: C.gold, fontSize: "0.85rem" }}>TONE {tone}</div>
+                  <div style={{ textAlign: "center", fontSize: "0.78rem", color: C.inkLight, marginBottom: "8px" }}>{slot.label}{svc ? ` — ${svc.label}` : ''}</div>
+                  {!svc && <SvcCanonical d={data} />}
+                  {!svc && (
+                    <div style={{ textAlign: "center", fontSize: "0.78rem", color: C.inkLight, marginTop: "14px" }}>
+                      Choose a service above to open its page.
+                    </div>
+                  )}
+                  {svc && !encoded.has(svc.claim) && (
+                    <div style={{ textAlign: "center", padding: "20px 0" }}>
+                      <div style={{ fontSize: "0.9rem", color: C.inkMid }}>{svc.label} — not yet encoded for Tone {tone}.</div>
+                      <div style={{ fontSize: "0.72rem", color: C.inkLight, marginTop: "4px" }}>This section will appear when its chapter is encoded (coming soon).</div>
+                    </div>
+                  )}
+                  {svc && encoded.has(svc.claim) && svc.render(data)}
+                </div>
+              </ReadingContext.Provider>
+            )}
+          </>
+        )}
+
+        {view === 'audit' && (
+          <>
+            {data === undefined && <div style={{ color: C.inkLight }}>Loading…</div>}
+            {data === null && (
+              <div style={{ border: `1px dashed ${C.goldLight}`, borderRadius: "6px", padding: "16px", color: C.inkMid, background: "#fff", maxWidth: "620px" }}>
+                <b>The Tone {tone} chapter file has no V2 data yet.</b>
+                <div style={{ fontSize: "0.8rem", marginTop: "6px", color: C.inkLight }}>
+                  Per-tone chapter encoding is §11; the schema, validators, registers, and this
+                  viewer ship first (§12.6). The tone-independent Shared tables below are
+                  unaffected by the tone selector.
+                </div>
+              </div>
+            )}
+            {shared && (
+              <AuditContext.Provider value={{ audit, recurrences, tonePrefix: '' }}>
+                <div style={{ margin: "14px 0", border: `1px solid ${C.border}`, borderRadius: "6px", padding: "10px 14px", background: "#fff" }}>
+                  <div style={{ fontSize: "1rem", fontWeight: 700, color: C.ink }}>Shared tables (§5) — tone-independent; each table re-verified per tone as encoding proceeds</div>
+                  {Object.keys(shared).map(k => (
+                    <div key={k}>
+                      <FieldHeading path={`shared.${k}`} fallbackKey={k} />
+                      <Generic value={shared[k]} path={`shared.${k}`} fieldKey={k} />
+                    </div>
+                  ))}
+                </div>
+              </AuditContext.Provider>
+            )}
+            {theotokia && (
+              <AuditContext.Provider value={{ audit, recurrences, tonePrefix: '' }}>
+                <div style={{ margin: "14px 0", border: `1px solid ${C.border}`, borderRadius: "6px", padding: "10px 14px", background: "#fff" }}>
+                  <div style={{ fontSize: "1rem", fontWeight: 700, color: C.ink }}>Common Theotokia (§4.12) — Theotokia.pdf, all eight tones; each cell a print site</div>
+                  {Object.keys(theotokia).map(k => (
+                    <div key={k}>
+                      <FieldHeading path={`theotokia.${k}`} fallbackKey={k} />
+                      <Generic value={theotokia[k]} path={`theotokia.${k}`} fieldKey={k} />
+                    </div>
+                  ))}
+                </div>
+              </AuditContext.Provider>
+            )}
+            {data && (
+              <>
+                <div style={{ fontSize: "0.72rem", color: C.inkLight, margin: "4px 0 10px" }}>
+                  _encoded claims: {(data._encoded ?? []).length
+                    ? (data._encoded ?? []).map(c => <Badge key={c} color={C.green}>{c}</Badge>)
+                    : '(none yet)'}
+                </div>
+                <div style={{ margin: "14px 0", border: `1px solid ${C.border}`, borderRadius: "6px", padding: "10px 14px", background: "#fff" }}>
+                  <div style={{ fontSize: "1rem", fontWeight: 700, color: C.ink }}>{SERVICE_HEADINGS.core}</div>
+                  {coreKeys.filter(k => data[k] !== undefined).map(k => (
+                    <div key={k}>
+                      <FieldHeading path={k} fallbackKey={k} />
+                      <Generic value={data[k]} path={k} fieldKey={k} />
+                    </div>
+                  ))}
+                </div>
+                {SERVICE_ORDER.filter(x => x !== 'core' && data[x] !== undefined).map(x => (
+                  <ServiceSection key={x} sectionKey={x} value={data[x]} />
+                ))}
+                {Object.keys(data)
+                  .filter(k => !skip.has(k) && !coreKeys.includes(k) && !SERVICE_ORDER.includes(k))
+                  .map(k => (
+                    <div key={k}>
+                      <FieldHeading path={k} fallbackKey={k} />
+                      <Generic value={data[k]} path={k} fieldKey={k} />
+                    </div>
+                  ))}
+              </>
+            )}
           </>
         )}
       </div>

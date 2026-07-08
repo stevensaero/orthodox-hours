@@ -1015,7 +1015,7 @@ function elementTone(el) {
   return fromStr(el.rubric) ?? fromStr(el.toneNote) ?? fromStr(el.label) ?? null;
 }
 
-function getLiturgicalData(date) {
+export function getLiturgicalData(date) {   // exported for the Octoechos reading view's Today shortcut (v0.32.0)
   const year = date.getFullYear();
 
   // Compute Pascha for surrounding years
@@ -8491,6 +8491,41 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.32.0",
+    date: "July 2026",
+    summary: "The Octoechos READING VIEW \u2014 the bound page, digitized (octoechos_reading_view_spec.md Phase A): tone \u2192 day \u2192 service navigation, print typography, as-printed pointing, sic footnotes",
+    items: [
+      "New reading surface at /octoechos-v2 (now the DEFAULT view; the \u00a712 " +
+      "audit walker is unchanged behind an Audit toggle). Navigation follows " +
+      "Octoechos usage: Tone 1\u20138 \u2192 day of week (evenings distinct: Saturday " +
+      "Evening \u2026 Saturday) \u2192 service, plus a Today shortcut driven by the " +
+      "calendar engine (getLiturgicalData now exported).",
+      "Book typography: centered small-caps service and ode headings, italic " +
+      "rubrics, indented stichera with their PRINTED labels (Glory \u2026, Both " +
+      "now \u2026, To the martyrs:, Spec. Mel. lines, compound labels), verses " +
+      "interleaved with stichera as the page interleaves them (verse-first " +
+      "LIC ladders; unversed-first aposticha), canon odes with irmos labels " +
+      "and Shape A sub-canon groups, devices as printed ((Twice), Repeat:-" +
+      "labeled incipits with a quiet jump-to-referent link).",
+      "Pointing modes (RULED): default 'as printed' \u2014 the * / ** marks the " +
+      "bound St. Sergius page prints; per-user 'clean reading' toggle sets " +
+      "one melodic line per row with the penultimate mark kept visible " +
+      "(encoding_rule_v2 \u00a73.4). Stored strings untouched \u2014 two renderings.",
+      "Refs resolve invisibly: shared-table prokeimena/alleluias/verse sets " +
+      "render their text inline; the ref chain remains visible in audit " +
+      "mode. Sic-registered positions carry a \u203b footnote whose text comes " +
+      "from sic_register.js at runtime (no display copies, amendment F).",
+      "Every rendered position carries its schema path as its DOM id \u2014 the " +
+      "deep-link anchor grammar (spec \u00a74) that Phase B wires from assembled " +
+      "services; #hash links scroll and highlight now.",
+      "Unencoded tones (1, 6, 7, 8) render a title page: 'Not yet encoded " +
+      "\u2014 coming soon'; partially encoded sections placeholder per _encoded " +
+      "claim. Layout composition consumes known \u00a74 kinds; every unconsumed " +
+      "key still surfaces through a reading-styled fallback \u2014 nothing can " +
+      "be silently absent (\u00a712 visibility guarantee preserved in BOTH views).",
+    ],
+  },
   {
     version: "v0.31.9",
     date: "July 2026",
