@@ -1,5 +1,92 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.31.7** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+**Tool version: v0.31.8** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+
+**Session July 7, 2026 (cont. 7) — Octoechos V2 TONE-4 DIFFERENTIAL SCAN;
+tone4.js ENCODED, v0.31.8.** First §11 differential scan. Scans of 4-1…4-7
+delivered and reviewed (Bill's go): 4-1 clean; 4-2…4-7 О-contaminated
+×124–182; TWO NEW homoglyph classes — U+0421 С + U+0430 а in 4-4's "Саnon"
+heading (normalized-with-log; wk_lib HOMOGLYPHS extended); digit-zero
+"0 Lord" at the Thursday Liturgy Alleluia for the THIRD tone running
+(2-5/3-5/4-5 — per-print-site artifact pattern, register-noted). Every §4
+template parsed tone 4 unchanged via the adapted tone-3 generators
+(committed: gen_tone4_sun.py / gen_weekday4.py / verify_shared_t4.py /
+postpass_t4.py). tone4.js: ~1,258 nodes, 31 claims. Schema SOURCE_FILES +
+4-x (the code change behind this bump). Register 161/158 live; sics 51/37.
+
+### Findings & flags (Bill review)
+
+- **GREGORY STANZA 2 — CROSS-TONE FLAG, needs your ruling:** 4-1 prints
+  "the one Might in three Hypostases, the Sovereignty"; §5 comparison
+  diverges from shared (2-1: "the Might … the one Sovereignty") — and 3-1
+  prints the SAME variant as 4-1. Two tones against the 2-1 reading. The
+  tone-4 hymn is stored whole per-tone (7 register pairs, stanzas[1]
+  variant); tone3.js still REFS SHARED at that stanza (the cont.-6 release
+  note said "divergence noted" but no note or per-tone storage landed) —
+  tone-3 data left untouched without your word. Options: per-tone the
+  tone-3 hymn to its own 3-1 bytes, and/or re-examine the shared reading
+  when tone 5 prints.
+- **Tone-4 print-grammar facts** (walkers extended, never loosened):
+  single-space paragraph indents (all seven files); 4-1 alone breaks pages
+  MID-PARAGRAPH ×3 (formfeed = page separator now); Spec. Mel. label
+  variants ("Spec, Mel.:" 4-4, "Spec. Mel:" 4-1, "…... “:" 4-6) — these
+  had silently corrupted three closer captures (tue-eve LIC closer text,
+  thu-eve spec_mel, Nocturns after-Ode-III sessional) until SPECMEL_RE
+  accepted the exact attested forms; Glory/Both-now heading sics
+  ("Glory," / "..," / "Glory...,"); 4-7 praises closer prints Glory and
+  Both-now as SEPARATE sites; Ode-I sub-canon headings print long forms
+  ("Another Canon, of Cross and Resurrection:").
+- **§2.7 device — new printed form:** 4-7 Friday-eve LIC labels its
+  incipit repeat "Repeat: Emulating the sufferings of Christ ...," — the
+  label split to sourceLabel per §4.11, device mirrored (gate prefix-check
+  passes against sticheron 1).
+- **§5: 90 extractions, 83 byte-identical.** Marker-shadowing caution for
+  future tones: tone-4's DIFFERENT Saturday sessional verses ("Many are
+  the tribulations" pointed; "Blessed are they…" truncated) sit upstream
+  of the Saturday Liturgy Alleluia markers and shadowed them — re-scoped
+  with search_after, both Liturgy sites byte-MATCH shared; the two
+  sessional↔liturgy cross-surface pairs registered variant. Real per-tone
+  divergences: 4-7 fri-eve departed v1 final period (3-7's class); 4-5
+  thu prokeimenon verse gains a `*`; 4-6 "ages," (SAME site+class as
+  3-6); Saturday departed aposticha is a TWO-verse set ("they", pointed,
+  periods) where 2-7/3-7 print three — structural per-tone set.
+- **Per-tone facts recorded:** troparion quote-marked at ALL FOUR §4.1
+  sites (tone 2: LV only; tone 3: none — §9.5 pattern is per-tone);
+  K-II AND K-III sessional closers both theotokion (tone 2:
+  stavro/theo); Shape A resurrection closers theotokion 1–8 +
+  trinitarion at 9 (matches tone 2, still per-tone); Nocturns (Twice) at
+  odes 7/8/9; Nocturns↔Matins irmoi identical at odes 1/7/8 (third
+  distinct pattern); canon heading "Tone IV: A composition of St. John
+  of Damascus."; kontakion Spec. Mel. absent at the Matins site (tone 3
+  had one); Matins prokeimenon verse printed; anabathmoi = 3; LV s1 full
+  double print RETURNS (tone 3 lacked it) — register pair.
+- **Un-burnt bush:** tone-4 chapters do NOT print the hymn — the
+  cross-tone trap stays theotokia(IV-rows)↔tone2; nothing new to pin.
+  NEW cross-corpus variant instead: sun-eve aposticha theotokion
+  "bridal-chamber" (4-2) vs Theotokia.pdf "bridalchamber" (registered).
+- **True-dup class grows:** "crowns of glory.." doubled-period irmos
+  prints IDENTICALLY at 4-4 Tue-night Compline and 4-6 Friday Matins
+  (both sic-registered + identical register pair).
+- **§9.13:** tone-4 Thursday Matins prints the NORMAL pair
+  (byte-verified) — the tone-2 anomaly stands alone across three tones;
+  encode-as-printed ruling unchanged.
+- 22 О→O normalizations in RUBRIC strings (session count; text nodes
+  carry per-node homoglyph_log).
+- Full gate green before each commit: pointing paths PASS, sunday
+  vespers 71/71, V1 validator ✓, V2 gate ✓ (161 pairs/158 checked; 51
+  sics/37 checked), coverage gate ✓, vite build ✓.
+
+### Next
+
+- Tone-5 differential scan (sources in orthodox-sources tone5/) on
+  Bill's go; adapt the tone-4 generators.
+- Bill's Gregory ruling (above) before or with tone 5.
+
+### Carry-forwards (unchanged, do not act without Bill)
+
+- §9.11(b) weekday daily exapostilaria — await Bill's Horologion source.
+- §9.13 physical-chapter check — optional, Bill's.
+- Menaion-external register pendings; amendment-F allowlist empties at
+  Phase 5 cutover.
 
 **Session July 7, 2026 (cont. 6) — TONE-3 VERIFICATION PASSED; tone3.js
 ENCODED, v0.31.7.** Scans of 3-1…3-7 delivered (3-1 clean; 3-2…3-7
