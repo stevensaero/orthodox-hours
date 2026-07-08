@@ -1049,11 +1049,11 @@ export default {
           }
         },
         {
-          "text": "With divine songs let us all in godly manner hymn the Father, the Son and the Spirit divine, the Might in three Hypostases, the one King- ship and Dominion,",
+          "text": "With divine songs let us all in godly manner hymn the Father, the Son and the Spirit divine, the Might in three Hypostases, the one Kingship and Dominion,",
           "tier": 1,
           "src": {
             "file": "8-1.pdf",
-            "locus": "Nocturns, hymn of Gregory the Sinaite, stanza 2 — \"in godly manner\" (no article) + \"the one KING- SHIP and Dominion\" (Kingship, as tone 7, but hyphenated across a line break — sic); 2-1/5-1 word-order side (§5 per-tone)"
+            "locus": "Nocturns, hymn of Gregory the Sinaite, stanza 2 — \"in godly manner\" (no article) + \"the one KINGSHIP and Dominion\" (Kingship, as tone 7,; the print broke it across a line ('King- ship') — DE-HYPHENATED to 'Kingship' per Bill's ruling July 8 2026); 2-1/5-1 word-order side (§5 per-tone)"
           }
         },
         {
@@ -1104,7 +1104,7 @@ export default {
           }
         }
       ],
-      "provenance_note": "RULED (Bill, July 8 2026): Gregory stored PER-TONE in every tone. 8-1 tracks the tone-7 byte-state (Kingship / immutable / of the Virgin) but prints \"Kingship\" HYPHENATED across a line break (\"King- ship\") — kept verbatim + sic. Divergences at stanzas 2, 5, 6, 7. Shared table remains the 2-1 print."
+      "provenance_note": "RULED (Bill, July 8 2026): Gregory stored PER-TONE in every tone. 8-1 tracks the tone-7 byte-state (Kingship / immutable / of the Virgin) but prints \"Kingship\" (the source broke it across a line as \"King- ship\"; DE-HYPHENATED to \"Kingship\" per Bill’s ruling, July 8 2026). Divergences at stanzas 2, 5, 6, 7. Shared table remains the 2-1 print."
     },
     "closing_rubric": "The rest of Nocturnes, and the Dismissal."
   },

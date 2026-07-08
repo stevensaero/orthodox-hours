@@ -87,7 +87,7 @@ div={1:' — "in godly manner" (no article) + "the one KING- SHIP and Dominion" 
      6:' — "Who became ineffably incarnate" word order (shared "ineffably became"); "of the Virgin" matches shared (§5 per-tone, as tone 7)'}
 stanzas=[]
 for i2,st in enumerate(gr['stanzas']):
-    if i2==1: ext=extract('2-1','With divine songs let us all in','Dominion,')
+    if i2==1: ext=extract('2-1','With divine songs let us all in','Dominion,').replace('King- ship','Kingship')  # DE-HYPHENATED per Bill's ruling (July 8 2026)
     elif i2==4: ext=extract('2-1','I worship the beginningless God the Father',st[1])
     else: ext=extract('2-1',*st)
     stanzas.append(node(ext,'8-1.pdf',f'Nocturns, hymn of Gregory the Sinaite, stanza {i2+1}{div.get(i2,"")}',strip=False))

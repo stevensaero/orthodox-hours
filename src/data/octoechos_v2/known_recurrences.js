@@ -631,7 +631,7 @@ export default [
   { a: 'tone8.nocturns.gregory_rubric.stanzas[0]', b: 'shared.gregory_sinaite_hymn.stanzas[0]',
     relation: 'identical', note: 'Byte-verified identical to the shared table; stored per-tone per the July 8 2026 Gregory ruling.' },
   { a: 'tone8.nocturns.gregory_rubric.stanzas[1]', b: 'shared.gregory_sinaite_hymn.stanzas[1]',
-    relation: 'variant', note: '"the one KING- SHIP and Dominion" (8-1) — "Kingship" as in tone 7, but HYPHENATED across a line break (sic); plus "in godly manner" (no article). 2-1/5-1 word-order side.' },
+    relation: 'variant', note: '"the one Kingship and Dominion" (8-1) — "Kingship" as in tone 7 (source broke it across a line as "King- ship"; de-hyphenated per Bill ruling July 8 2026); plus "in godly manner" (no article). 2-1/5-1 word-order side.' },
   { a: 'tone8.nocturns.gregory_rubric.stanzas[2]', b: 'shared.gregory_sinaite_hymn.stanzas[2]',
     relation: 'identical', note: 'Byte-verified identical to the shared table; stored per-tone per the July 8 2026 Gregory ruling.' },
   { a: 'tone8.nocturns.gregory_rubric.stanzas[3]', b: 'shared.gregory_sinaite_hymn.stanzas[3]',
