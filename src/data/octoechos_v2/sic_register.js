@@ -150,4 +150,16 @@ export default [
     path: 'tone2.matins_weekday.wed.canons[1].odes.3.items[1]', approx: false,
     verbatim: 'cleansing offenses',
     note: 'Second print of the dropped-"of" artifact.' },
+  // ── tone-3 additions (July 7 2026 verification/encoding session) ─────────
+  { file: '3-5.pdf', locus: 'Thursday Matins aposticha, second verse',
+    path: 'tone3.matins_weekday.thu.aposticha.verses[1]', approx: false,
+    verbatim: 'our God. be upon us',
+    note: 'Stray period mid-verse — tone-3 print of the standard Matins pair.' },
+  { file: '3-6.pdf', locus: 'Friday Matins aposticha, second verse',
+    path: 'tone3.matins_weekday.fri.aposticha.verses[1]', approx: false,
+    verbatim: 'works of our hand do',
+    note: 'Dropped "s" ("works of our hand[s]") — §5 divergence vs the shared tone-2 print.' },
+  { file: '3-6.pdf', locus: 'Friday Matins service heading', path: null, approx: true,
+    verbatim: 'AT M AT IN S',
+    note: 'Extreme letter-spacing artifact in the AT MATINS heading (the "OD E I" class); structural heading, not stored text.' },
 ];

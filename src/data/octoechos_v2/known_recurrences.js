@@ -424,4 +424,22 @@ export default [
     relation: 'variant', note: 'NEW at encoding: Monday Matins aposticha martyrs ("Ye suffered for Christ even unto death …", 2-2) is a THIRD rendering beside Friday Matins\' martyrs and Saturday praises #1 (§2.3 family).' },
   { a: 'tone2.matins_weekday.sat.canons[1].odes.6.items[0]', b: 'tone2.matins_weekday.sat.canons[1].odes.6.items[1]',
     relation: 'identical', note: 'Saturday fallback canon Ode VI prints the SAME troparion twice in full under its two refrains (§2.7 full-double-print device; §4.8a) — byte-verified at encoding.' },
+
+  // ── tone-3 pairs (verification session, byte-verified July 7 2026) ─────────
+  { a: 'tone3.nocturns.canon.odes.1.irmos', b: 'tone3.matins.canon.odes.1.irmos',
+    relation: 'identical', note: 'Tone-3 Nocturns shares Odes 1/3/9 irmoi with the Matins Resurrection canon (tone 2 shared 1/6 — the sharing PATTERN is per-tone).' },
+  { a: 'tone3.nocturns.canon.odes.3.irmos', b: 'tone3.matins.canon.odes.3.irmos',
+    relation: 'identical', note: 'See odes.1 entry.' },
+  { a: 'tone3.nocturns.canon.odes.9.irmos', b: 'tone3.matins.canon.odes.9.irmos',
+    relation: 'identical', note: 'See odes.1 entry.' },
+  { a: 'tone3.matins_weekday.fri.aposticha.verses[1]', b: 'shared.weekday_aposticha_verses.sets.standard_matins[1]',
+    relation: 'variant', note: '§5 divergence: 3-6 "works of our hand" vs the shared (2-2) print "hands".' },
+  { a: 'tone3.matins_weekday.sat.aposticha.verses[2]', b: 'shared.weekday_aposticha_verses.sets.departed_matins_saturday[2]',
+    relation: 'variant', note: '§5 divergence: "from generation to generation" (3-7) vs "unto generation and generation" (2-7).' },
+  { a: 'tone3.matins_weekday.sat.aposticha.verses[0]', b: 'shared.weekday_aposticha_verses.sets.departed_matins_saturday[0]',
+    relation: 'variant', note: '§5 divergence: "they" (3-7) vs "those" (2-7) + trailing-period presence.' },
+  { a: 'tone3.vespers_weekday.fri.aposticha.verses[0]', b: 'shared.weekday_aposticha_verses.sets.departed_vespers[0]',
+    relation: 'variant', note: '§5 divergence: final period present in 3-7, absent in 2-7.' },
+  { a: 'tone3.liturgy_weekday.fri.alleluia.verses[0]', b: 'shared.daily_liturgy_propers.fri.alleluia.verses[0]',
+    relation: 'variant', note: '§5 divergence: "ages," (3-6) vs "ages;" (2-6).' },
 ];
