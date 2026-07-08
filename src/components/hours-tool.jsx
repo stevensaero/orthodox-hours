@@ -8492,6 +8492,21 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.33.2",
+    date: "July 2026",
+    summary: "Octoechos V2 browser: the sticky header no longer drifts a few pixels before catching — it stays anchored from load, pinned below the return strip",
+    items: [
+      "Removed the container's top padding (which scrolled away before the " +
+      "header caught at top:0) and moved that spacing inside the header, so " +
+      "the header box sits flush at the top and pins with zero pre-stick " +
+      "travel.",
+      "The header now pins at the HoursReturnStrip's published height " +
+      "(top: var(--hours-return-strip-h, 0px)) rather than a hard 0, so it " +
+      "sits below the return strip instead of hiding it; the rail's offset " +
+      "and max-height fold in the same variable.",
+    ],
+  },
+  {
     version: "v0.33.1",
     date: "July 2026",
     summary: "Octoechos V2 browser: the top header bar and the left navigation rail are now sticky — they stay in place while the reading (and audit) column scrolls",

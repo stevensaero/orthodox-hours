@@ -503,9 +503,9 @@ export default function OctoechosV2Browser() {
   // the rail lives inside an absolutely-positioned popup, so it stays static.
   const railStickyStyle = narrow ? {} : {
     position: "sticky",
-    top: headerH + 12,
+    top: `calc(var(--hours-return-strip-h, 0px) + ${headerH + 12}px)`,
     alignSelf: "flex-start",
-    maxHeight: `calc(100vh - ${headerH + 24}px)`,
+    maxHeight: `calc(100vh - var(--hours-return-strip-h, 0px) - ${headerH + 24}px)`,
     overflowY: "auto",
   };
 
@@ -550,8 +550,8 @@ export default function OctoechosV2Browser() {
 
   return (
     <AuditContext.Provider value={{ audit, recurrences, tonePrefix: `tone${tone}.` }}>
-      <div style={{ background: C.parchment, minHeight: "100vh", padding: narrow ? "12px" : "18px 26px", fontFamily: "Georgia, serif" }}>
-        <div ref={headerRef} style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", borderBottom: `1px solid ${C.border}`, paddingBottom: "8px", position: "sticky", top: 0, zIndex: 30, background: C.parchment }}>
+      <div style={{ background: C.parchment, minHeight: "100vh", padding: narrow ? "0 12px 12px" : "0 26px 18px", fontFamily: "Georgia, serif" }}>
+        <div ref={headerRef} style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", borderBottom: `1px solid ${C.border}`, paddingTop: narrow ? "12px" : "18px", paddingBottom: "8px", position: "sticky", top: "var(--hours-return-strip-h, 0px)", zIndex: 30, background: C.parchment }}>
           {narrow && view === 'reading' && (
             <button onClick={() => setRailOpen(o => !o)} style={{ ...navBtn(railOpen), padding: "3px 8px" }} title="Navigation">☰</button>
           )}
