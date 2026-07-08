@@ -207,8 +207,8 @@ export default [
     relation: 'variant',
     note: 'Theotokia.pdf Part 1 dogmatikon is a THIRD print site of "The shadow of the law", capitalizing "Bush" and "Virgin" where the 2-1/2-7 chapter prints have lowercase — agreeing with july.js\'s two Menaion sites (two print-site families of one hymn, §4.12).' },
   { a: 'theotokia.resurrectional_theotokia.2.aposticha_theotokion', b: 'tone2.great_vespers.aposticha_theotokion',
-    relation: 'identical',
-    note: '"O new wonder greater than all the wonders of old" — Part 1 At-the-Aposticha IDENTICAL to 2-1 GV aposticha Both-now, verified line-for-line (§4.12); a third print site exists in may.js (Menaion).' },
+    relation: 'variant',
+    note: '"O new wonder …" — wording and pointing IDENTICAL line-for-line (the spec\'s §4.12 verification), but the prints differ by ONE GLYPH: Theotokia.pdf "mother\'s" (straight U+0027) vs 2-1 "mother’s" (curly U+2019). Both files mix apostrophe glyphs internally, so the glyph is a per-print-site fact; byte-caught by the gate July 7 2026. A third print site exists in may.js (Menaion).' },
   { a: 'theotokia.resurrectional_theotokia.2.dismissal_theotokion', b: 'tone2.dismissal_theotokion',
     relation: 'identical',
     note: '"All of thy most glorious mysteries" — Part 1 dismissal column = 2-1 post-troparion print (§4.12).' },
@@ -373,4 +373,10 @@ export default [
     relation: 'identical', note: 'Byte-verified identical print at generation (Theotokia.pdf internal).' },
   { a: 'theotokia.resurrectional_theotokia.4.dismissal_theotokion', b: 'theotokia.dismissal_theotokia_annual.4.fri_vespers_sat_matins',
     relation: 'variant', note: 'Tone IV alone: Part 1 prints "ranks of angels", Part 3 "ranks of Angels" — one-capital micro-variance between the two print sites; every other tone byte-matches.' },
+
+  // ── discovered at tone-2 Sunday-cycle encoding (byte-verified, §2.3a) ──────
+  { a: 'tone2.nocturns.canon.odes.1.irmos', b: 'tone2.matins.canon.odes.1.irmos',
+    relation: 'identical', note: '"In the deep of old" — Nocturns and the Matins Resurrection canon share Ode 1 byte-identically (2-1); third+ sites in the Compline canons per the §2.3 five-canon family.' },
+  { a: 'tone2.nocturns.canon.odes.6.irmos', b: 'tone2.matins.canon.odes.6.irmos',
+    relation: 'identical', note: '"Whirled about in the abyss of sin" — Nocturns Ode 6 = Matins canon Ode 6 byte-identically (2-1). The other six Nocturns irmoi are DISTINCT compositions from the Matins suite.' },
 ];

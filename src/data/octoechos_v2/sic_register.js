@@ -131,4 +131,7 @@ export default [
     pointing_anomaly: true,
     verbatim: 'child-bearing, ** and thou didst remain a Virgin ** even after birthgiving',
     note: 'Same doubled ** recurs IDENTICALLY at the second print site — the shared anomaly is itself evidence of true duplication (the ewe-lamb "O Christ,?" class).' },
+  { file: '2-1.pdf', locus: 'Ode-heading typography: Compline "OD E I", Nocturns "OD E I" and "OD E V", Matins "OD E I"', path: null, approx: true,
+    verbatim: 'OD E',
+    note: 'The ODE heading prints with an intruded space at several sites — structural headings, not stored text; generator matches de-spaced forms. Recorded for the audit trail.' },
 ];
