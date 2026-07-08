@@ -255,4 +255,21 @@ export default [
     path: 'tone5.matins_weekday.fri.sessionals[2].closer', approx: false,
     verbatim: 'thieves.\u2019\u2019',
     note: 'Curly-doubled CLOSING quote ending the same lament.' },
+
+  // ── tone-6 additions (§11 tone-6 differential scan, July 8 2026) ───────────
+  { file: '6-1.pdf', locus: 'Little Vespers, LIC Glory/Both-now Theotokion',
+    path: 'tone6.little_vespers.lic_theotokion', approx: false,
+    verbatim: 'or nor the appearance',
+    note: 'Dropped/garbled word — "without changing in nature, or nor the appearance of dispensation" (should read "nor" or "or", not both). Encode-as-printed.' },
+  { file: '6-1.pdf', locus: 'Nocturns, Gregory-hymn rubric (source-note line)',
+    path: 'tone6.nocturns.gregory_rubric.rubric', approx: false,
+    verbatim: '(which, is chanted',
+    note: 'Stray comma after "which" — "(which, is chanted every Sunday after the canon)".' },
+  { file: '6-4.pdf', locus: 'Tuesday-evening Vespers, LIC Menaion-fallback sticheron 1 (Stavrotheotokion lament)',
+    path: 'tone6.vespers_weekday.tue.lic.menaion_fallback[0]', approx: false,
+    verbatim: 'crucifixion , the Virgin',
+    note: 'Space before comma — "… at the foot of the Cross during the crucifixion , the Virgin cried, weeping".' },
+  { file: '6-1.pdf', locus: 'Little Vespers, Resurrection Troparion print site (LV dismissal)', path: null, approx: true,
+    verbatim: 'glory to Thee',
+    note: 'DROPPED WORD — the LV troparion print reads "… glory to Thee" where the GV/Matins/Liturgy sites print "… glory be to Thee" (drops "be"). Word-level per-site divergence in a canonical §4.1 field; GV canonical (§9.5). Recorded in the troparion provenance_note; not stored as its own node (LV dismissal is text-less), hence path null / PENDING.' },
 ];

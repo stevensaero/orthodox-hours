@@ -1,0 +1,18008 @@
+// src/data/octoechos_v2/tone6.js
+// ─────────────────────────────────────────────────────────────────────────────
+// Octoechos V2 — Tone 6, DIFFERENTIAL scan (spec §11: templates assumed after
+// the tone-3 verification, texts and per-tone facts captured fresh from the
+// tone-6 chapters). THIS STEP: core §4.1 + Little Vespers + Great Vespers +
+// Nocturns + Sunday Matins + Sunday Liturgy from 6-1.pdf (text layer CLEAN,
+// scan July 8 2026); weekday sections merge in next.
+//
+// GENERATED from the raw pdftotext -layout text by paragraph-grammar walking
+// (adapted tone-5 generators, July 8 2026) — nothing hand-retyped. Canonical
+// §4.1 fields verified across ALL their print sites at generation. Psalm-verse
+// fields whose print site is already encoded in shared.js are stored as {ref}
+// — one print site, one encoding. Dynamically loaded only (§2.1).
+// ─────────────────────────────────────────────────────────────────────────────
+
+export default {
+  "tone": 6,
+  "_encoded": [
+    "core",
+    "little_vespers",
+    "great_vespers",
+    "nocturns",
+    "matins",
+    "liturgy",
+    "vespers_weekday.sun",
+    "vespers_weekday.mon",
+    "vespers_weekday.tue",
+    "vespers_weekday.wed",
+    "vespers_weekday.thu",
+    "vespers_weekday.fri",
+    "compline.sun",
+    "compline.mon",
+    "compline.tue",
+    "compline.wed",
+    "compline.thu",
+    "compline.fri",
+    "compline.sat",
+    "matins_weekday.mon",
+    "matins_weekday.tue",
+    "matins_weekday.wed",
+    "matins_weekday.thu",
+    "matins_weekday.fri",
+    "matins_weekday.sat",
+    "liturgy_weekday.mon",
+    "liturgy_weekday.tue",
+    "liturgy_weekday.wed",
+    "liturgy_weekday.thu",
+    "liturgy_weekday.fri",
+    "liturgy_weekday.sat"
+  ],
+  "troparion": {
+    "text": "The angelic hosts were before Thy tomb, * the guards became as dead men, * and Mary stood in the sepulcher looking for Thy pure body. * Thou didst despoil Hades, for Thou wast not tempted by it. * Thou didst come and meet the Virgin to give life. ** O Lord, Who didst rise from the dead, glory be to Thee.",
+    "tier": 2,
+    "src": {
+      "file": "6-1.pdf",
+      "locus": "Great Vespers, if-no-Vigil (CANONICAL print, §9.5 convention)"
+    },
+    "provenance_note": "Verified pointing-identical at all four print sites (LV dismissal, GV no-vigil, Matins God-is-the-Lord, Liturgy); quotation-mark variance at: none; word-level divergence: prints \"glory to Thee\" — drops \"be\" vs the GV/Matins/Liturgy \"glory be to Thee\" (candidate sic, dropped word). Canonical field stores the GV print per the §9.5 ruling."
+  },
+  "dismissal_theotokion": {
+    "text": "Gideon hath foretold of thy conception, * and David hath revealed thine ineffable child-bearing, * O Theotokos; * for the Word descended like a dew upon the fleece of thy womb, * and thou O Virgin Full of grace, * like unto a holy and fertile earth, ** budded forth without seed our salvation, Christ God.",
+    "tier": 2,
+    "src": {
+      "file": "6-1.pdf",
+      "locus": "Great Vespers, if-no-Vigil (verified identical at the Matins God-is-the-Lord site)"
+    }
+  },
+  "kontakion": {
+    "text": "Having raised all the dead from the valleys of darkness * by His life-giving hand, * Christ our God hath granted resurrection to the race of mankind. * For He is the Savior of all, * the Resurrection and the Life ** and the God of all.",
+    "tier": 2,
+    "src": {
+      "file": "6-1.pdf",
+      "locus": "Sunday Matins after Ode VI (verified identical at the Liturgy site)"
+    }
+  },
+  "ikos": {
+    "text": "We the faithful hymn and adore Thy Cross and burial, O Life-giver, for Thou, O Immortal One, as all-powerful God hast bound Hades and raised the dead together with Thee, shattering the gates of death and laying low the power of Hades; wherefore we, the earth-born, with love glorify Thee Who, as God of all, hath arisen, overthrowing the destructive dominion of the enemy, and raising all those who believed in Thee, delivering the world both from the darts of the serpent and the wiles of the adversary.",
+    "tier": 1,
+    "src": {
+      "file": "6-1.pdf",
+      "locus": "Sunday Matins, after Ode VI"
+    },
+    "sourceLabel": "Ikos"
+  },
+  "little_vespers": {
+    "rubric": "On “Lord, I have cried ...,” 4 Stichera:",
+    "lic": [
+      {
+        "text": "Victorious over Hades, O Christ, * Thou didst ascend the Cross * that Thou mightest raise up with Thyself * those who sat in the darkness of death; * free among the dead, * Thou didst pour forth life from Thine own light. ** O all- powerful Savior, have mercy upon us.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Little Vespers, LIC sticheron position 1"
+        }
+      },
+      {
+        "text": "Victorious over Hades, O Christ, * Thou didst ascend the Cross * that Thou mightest raise up with Thyself * those who sat in the darkness of death; * free among the dead, * Thou didst pour forth life from Thine own light. ** O all- powerful Savior, have mercy upon us.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Little Vespers, LIC sticheron position 2"
+        }
+      },
+      {
+        "text": "Today Christ, having trampled on death, * hath arisen as He foretold, * granting joy to the world, * that we may all shout aloud the hymn and say: * O Source of life, O unapproachable Light, * O all-powerful Savior, ** have mercy upon us.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Little Vespers, LIC sticheron position 3"
+        }
+      },
+      {
+        "text": "Where shall we sinners escape Thee, O Lord, * who art present in all creation? * In heaven? Thou dwellest there. * In Hades? There Thou didst trample on death. * In the depths of the sea? Thy hand is also there O Master. * To Thee we flee and falling down before Thee we implore: ** O Lord risen from the dead, have mercy upon us.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Little Vespers, LIC sticheron position 4"
+        }
+      }
+    ],
+    "lic_verses": [
+      {
+        "text": "From the morning watch until night, from the morning watch * let Israel hope in the Lord.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Little Vespers, LIC verse 1"
+        }
+      },
+      {
+        "text": "For with the Lord there is mercy, and with Him is plenteous redemption; * and He shall redeem Israel out of all his iniquities.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Little Vespers, LIC verse 2"
+        }
+      },
+      {
+        "text": "O praise the Lord, all ye nations; * praise Him, all ye peoples.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Little Vespers, LIC verse 3"
+        }
+      },
+      {
+        "text": "For He hath made His mercy to prevail over us, * and the truth of the Lord abideth forever.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Little Vespers, LIC verse 4"
+        }
+      }
+    ],
+    "lic_theotokion": {
+      "text": "Meet it is in truth to bless thee, the Theotokos. For the Creator of all, entering into thy most pure womb, became flesh, without changing in nature, or nor the appearance of dispensation, but having united Himself hypostatically and rationally to flesh with a soul, which He received from thee. Hence, we piously distinguish between both revealed natures. Him do thou entreat, O most pure and honored one, that He send down upon us peace and great mercy.",
+      "tier": 1,
+      "src": {
+        "file": "6-1.pdf",
+        "locus": "Little Vespers, LIC Glory/Both-now Theotokion"
+      }
+    },
+    "prokeimenon": {
+      "ref": "shared.saturday_vespers_prokeimenon",
+      "rubric": "The Prokeimenon: “The Lord is King ...,” with its verses."
+    },
+    "aposticha": {
+      "resurrection": [
+        {
+          "text": "Thy Resurrection O Christ our Savior, * The angels in the heavens hymn; * grant also unto us who are here on earth ** to glorify Thee with pure hearts.",
+          "tier": 2,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Little Vespers, aposticha Resurrection sticheron (as printed here — differs from the GV print, §2.2)"
+          }
+        }
+      ],
+      "theotokos": [
+        {
+          "text": "O most pure one, * thou who art the joy of all who are afflicted, * the protector of the wronged, the sustenance of those in need, * the staff of the blind, the visitation of the sick, * the shelter and assistance of the oppressed, the helper of orphans * and the Mother of the Most High. * Hasten, we beseech thee, ** to deliver thy servants.",
+          "tier": 2,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Little Vespers, aposticha Theotokos sticheron 1"
+          }
+        },
+        {
+          "text": "Without restraint I have committed every iniquity, * without limit every sin, * wretch that I am; * I have become worthy of every condemnation. * Grant me, O Virgin, the means of repentance, * that I may appear uncondemned. * For I have appointed thee as my intercessor, * and I call thee my protector. * Do thou not put me to shame, ** O Bride of God.",
+          "tier": 2,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Little Vespers, aposticha Theotokos sticheron 2"
+          }
+        },
+        {
+          "text": "We have no other refuge unto our Creator and Master but thee, * O pure Bride of God. * With thy fervent protection do not cast us away; * do not put us to shame ** who with love hasten under thy shelter.",
+          "tier": 2,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Little Vespers, aposticha Theotokos sticheron 3"
+          }
+        }
+      ],
+      "theotokos_verses": {
+        "ref": "shared.lv_theotokos_aposticha_verses"
+      }
+    },
+    "aposticha_theotokion": {
+      "text": "Come, all ye nations, and with voices of rejoicing let us praise the most holy Virgin and Theotokos, the crucible of human nature, the workshop of ineffable miracles; for new things have come to pass through her: the Beginningless hath taken on a beginning, the Word hath received substance, God hath become a man, that He might make man divine, not by altering nature, but through an Hypostatic union. For He alone proceedeth forth with, and is known in, two indivisible and differing natures, both perfect in will and activity, whereby Christ our God hath Himself given surety of the truth of the dispensation of salvation, granting the world cleansing, peace and great mercy.",
+      "tier": 1,
+      "src": {
+        "file": "6-1.pdf",
+        "locus": "Little Vespers, aposticha Theotokion"
+      }
+    },
+    "closing_rubric": "“Now lettest Thou Thy servant depart ...,” Trisagion. Then:",
+    "dismissal_rubric": "Glory ..., Both now ..., Theotokion: [marked WITHOUT a printed text — §9.6: resolution is an assembly question (Fekula/Theotokia tables), not a data gap]"
+  },
+  "great_vespers": {
+    "rubric": "On “Lord I have cried ...,” 10 Stichera: 7 Resurrection Stichera and 3 of the saint of the day, or 4 and 6 if the Menaion service is of Polyeleos rank.",
+    "lic": [
+      {
+        "text": "Victorious over Hades, O Christ, * Thou didst ascend the Cross * that Thou mightest raise up with Thyself * those who sat in the darkness of death; * free among the dead, * Thou didst pour forth life from Thine own light. ** O all- powerful Savior, have mercy upon us.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, LIC sticheron 1"
+        }
+      },
+      {
+        "text": "Today Christ, having trampled on death, * hath arisen as He foretold, * granting joy to the world, * that we may all shout aloud the hymn and say: * O Source of life, O unapproachable Light, * O all-powerful Savior, ** have mercy upon us.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, LIC sticheron 2"
+        }
+      },
+      {
+        "text": "Where shall we sinners escape Thee, O Lord, * who art present in all creation? * In heaven? Thou dwellest there. * In Hades? There Thou didst trample on death. * In the depths of the sea? Thy hand is also there O Master. * To Thee we flee and falling down before Thee we implore: ** O Lord risen from the dead, have mercy upon us.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, LIC sticheron 3"
+        }
+      },
+      {
+        "text": "We boast in Thy Cross, O Christ, * and we hymn and glorify Thy Resurrection; * for Thou art our God; ** we know none other besides Thee.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, LIC sticheron 4"
+        },
+        "provenance_note": "sub-group \"Other Stichera, by Anatolius\" (§4.3)"
+      },
+      {
+        "text": "Ever blessing the Lord * we hymn His Resurrection; * for having endured the Cross, ** He hath destroyed death by death.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, LIC sticheron 5"
+        },
+        "provenance_note": "sub-group \"Other Stichera, by Anatolius\" (§4.3)"
+      },
+      {
+        "text": "Glory to Thy power, O Lord, * for Thou hast destroyed the one that held the might of death; * Thou hast renewed us through Thy Cross, ** granting us life and incorruption.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, LIC sticheron 6"
+        },
+        "provenance_note": "sub-group \"Other Stichera, by Anatolius\" (§4.3)"
+      },
+      {
+        "text": "Thy burial, O Lord, * smashed and rent asunder the bonds of Hades; * Thy Resurrection from the dead hath enlightened the world. ** O Lord, glory be to Thee!",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, LIC sticheron 7"
+        },
+        "provenance_note": "sub-group \"Other Stichera, by Anatolius\" (§4.3)"
+      }
+    ],
+    "lic_verses": [
+      {
+        "text": "Bring my soul out of prison * that I may confess Thy name.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, LIC ladder verse 1"
+        }
+      },
+      {
+        "text": "The righteous shall wait patiently for me * until Thou shalt reward me.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, LIC ladder verse 2"
+        }
+      },
+      {
+        "text": "Out of the depths have I cried unto Thee, O Lord; * O Lord, hear my voice.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, LIC ladder verse 3"
+        }
+      },
+      {
+        "text": "Let Thine ears be attentive * to the voice of my supplication.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, LIC ladder verse 4"
+        }
+      },
+      {
+        "text": "If Thou shouldest mark iniquities, O Lord, O Lord, who shall stand? * For with Thee there is forgiveness.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, LIC ladder verse 5"
+        }
+      },
+      {
+        "text": "For Thy name’s sake have I patiently waited for Thee, O Lord; my soul hath patiently waited for Thy word, * my soul hath hoped in the Lord.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, LIC ladder verse 6"
+        }
+      },
+      {
+        "text": "From the morning watch until night, from the morning watch * let Israel hope in the Lord.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, LIC ladder verse 7"
+        }
+      }
+    ],
+    "lic_menaion_rubric": "Then the Stichera from the Menaion, with the following Verses:",
+    "lic_menaion_verses": [
+      {
+        "text": "For with the Lord there is mercy, and with Him is plenteous redemption; * and He shall redeem Israel out of all his iniquities.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, Menaion-stichera verse 1"
+        }
+      },
+      {
+        "text": "O praise the Lord, all ye nations; * praise Him, all ye peoples.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, Menaion-stichera verse 2"
+        }
+      },
+      {
+        "text": "For He hath made His mercy to prevail over us, * and the truth of the Lord abideth forever.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, Menaion-stichera verse 3"
+        }
+      }
+    ],
+    "dogmatikon_rubric": "Glory from the Menaion, if appointed. Otherwise: Glory ..., Both now ..., Theotokion Dogmatic:",
+    "dogmatikon": {
+      "text": "Who doth not call thee blessed, O most holy Virgin? * Who will not hymn thy most pure birthgiving? * For the only-begotten Son Who hath shone forth timelessly from the Father, * came forth, ineffably incarnate, from thee, O pure one; * By nature He is God, by nature for our sakes, He hath become a man * not divided into two Hypostases, * but known in two natures without commingling. * Him do thou beseech, O pure and most blessed one, ** that our souls find mercy!",
+      "tier": 2,
+      "src": {
+        "file": "6-1.pdf",
+        "locus": "Great Vespers, Glory/Both-now — Theotokion Dogmatic"
+      },
+      "sourceLabel": "Glory ..., Both now ..., Theotokion Dogmatic"
+    },
+    "prokeimenon": {
+      "ref": "shared.saturday_vespers_prokeimenon"
+    },
+    "aposticha": [
+      {
+        "text": "Thy Resurrection O Christ our Savior, * The angels in the heavens hymn; * grant also unto us who are here on earth ** to glorify Thee with pure hearts.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, aposticha sticheron 1 (unversed)"
+        }
+      },
+      {
+        "text": "Thou as all-powerful God hast smashed the gates of brass and shattered the bars of Hades, * and Thou hast raised the fallen human race. * Therefore with one accord we also cry out to Thee: ** O Lord, risen from the dead, glory be to Thee!",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, aposticha sticheron 2"
+        }
+      },
+      {
+        "text": "Wishing to restore us from our ancient fall, * Christ wast nailed to a Cross and placed in a tomb. * The myrrh-bearing women, as they sought Him with tears, said, lamenting: * Alas, O Savior of all, how is it that Thou deigned to dwell in a tomb? * How is it, that Thou who willingly dwelt there, hast been stolen? * How is it that Thou hast been moved? * What place hath hidden Thy life-bearing body? * O Master, as Thou hast promised, * do Thou appear unto us, and bring to an end our grieving and our tears. * But as they lamented an angel cried unto them saying: * End your lament! Go and tell the apostles that the Lord hath risen, ** granting the world pardon and great mercy.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, aposticha sticheron 3"
+        }
+      },
+      {
+        "text": "Thou wast willingly crucified O Christ, * and by Thy burial Thou hast despoiled death. * On the third day Thou didst rise as God in glory, ** granting the world everlasting life and Thy great mercy.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Great Vespers, aposticha sticheron 4"
+        }
+      }
+    ],
+    "aposticha_verses": {
+      "ref": "shared.saturday_gv_aposticha_verses"
+    },
+    "aposticha_glory_rubric": "Glory from the Menaion, if appointed, otherwise:",
+    "aposticha_theotokion": {
+      "text": "Christ the Lord, my Creator and Redeemer, * Who came forth from thy womb, O most pure one, * and clothed Himself in my nature, * hath freed Adam from the primal curse. * Wherefore, like the angel * we unceasingly cry out to thee, O all-pure one, * who art truly the Mother of God and Virgin: * Rejoice!, O Sovereign Lady, ** the intercession, protection and salvation for our souls!",
+      "tier": 2,
+      "src": {
+        "file": "6-1.pdf",
+        "locus": "Great Vespers, aposticha Theotokion — the REAL Saturday fallback (§4.3/§8)"
+      }
+    },
+    "vigil_rubric": {
+      "ref": "shared.theotokos_virgin_rejoice"
+    },
+    "no_vigil_rubric": "If a Vigil is not served, we chant (Once):"
+  },
+  "nocturns": {
+    "frame_rubric": "The priest saith: “Blessed is our God ...,” and we say: Amen. Glory to Thee, our God, glory to Thee. O heavenly King... Trisagion through Our Father ..., Priest: For Thine is the kingdom ..., And we say: Amen. Lord, have mercy (12 times), Glory..., Both now..., O come, let us worship (Thrice). Psalm 50 (Have mercy on me, O God...)",
+    "canon": {
+      "title": "Canon to the Holy & Life-creating Trinity",
+      "composer": "Metrophanes",
+      "acrostic": "I offer a sixth hymn unto Thee, O Godhead",
+      "heading_rubric": "And then, the Canon to the Holy & Life-creating Trinity, the acrostic whereof is “I offer a sixth hymn unto Thee, O Godhead,” the composition of Metrophanes, Tone VI:",
+      "odes": {
+        "1": {
+          "irmos": {
+            "text": "When Israel walked on foot in the sea as on dry land, * on seeing their pursuer Pharaoh drowned, * they cried: * Let us sing to God * a song of victory.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Nocturns, Trinity canon, Ode 1 irmos"
+            }
+          },
+          "items": [
+            {
+              "text": "Refrain: O most holy Trinity our God, glory be to Thee!",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 1, item 1"
+              },
+              "label": "plain"
+            },
+            {
+              "text": "We hymn the three divine Hypostases, the immutable form of the single nature, the good God and Lover of mankind, Who granteth us cleansing of our transgressions.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 1, item 2"
+              },
+              "label": "plain"
+            },
+            {
+              "text": "O transcendent One, O Lord thrice-resplendent in Thy characters, Who art in a single Godhead: Grant us understanding, and grant us Thy divine radiance.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 1, item 3"
+              },
+              "label": "plain"
+            },
+            {
+              "text": "Paul, who adorned the Church of the nations as it were a bride, hath taught us to worship Thee, the one God in three Hypostases, by Whom, through Whom and in Whom all things have come into being.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 1, item 4"
+              },
+              "label": "glory"
+            },
+            {
+              "text": "The noetic Sun issued forth from thy womb, O Theotokos, illumining us with the rays of the thrice-radiant Godhead; and hymning Him, we piously call thee blessed.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 1, item 5"
+              },
+              "label": "both_now"
+            }
+          ]
+        },
+        "3": {
+          "irmos": {
+            "text": "There is none as holy as Thou, * O Lord my God, * who hast exalted the horn of Thy faithful O good One, * and strengthened us upon the rock * of Thy confession.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Nocturns, Trinity canon, Ode 3 irmos"
+            }
+          },
+          "items": [
+            {
+              "text": "Having adorned the ranks of heaven, O thrice-radiant God, Thou didst appoint them to hymn Thee with thrice-holy voices. With them accept us also, who hymn Thy goodness.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 3, item 1"
+              },
+              "label": "plain"
+            },
+            {
+              "text": "Hymning the one, immutable, threefold, single Godhead, possessing the same form, we pray fervently unto Thee, that Thou now send down upon us forgiveness of our many sins.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 3, item 2"
+              },
+              "label": "plain"
+            },
+            {
+              "text": "O Father, beginningless Mind, O Word of God of like form with Him, and Thou, O Spirit, divine, good and upright: In that Thou art compassionate, preserve those who with faith hymn Thy might.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 3, item 3"
+              },
+              "label": "glory"
+            },
+            {
+              "text": "Having become human in nature within thy womb, O pure one, my God destroyed the field of death. He alone hath freed our forefathers and mothers from their former condemnation.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 3, item 4"
+              },
+              "label": "both_now"
+            },
+            {
+              "text": "Lord, have mercy! (Thrice)",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 3, item 5"
+              },
+              "label": "plain"
+            }
+          ]
+        },
+        "4": {
+          "irmos": {
+            "text": "Christ is my power, * my God and my Lord, * the holy Church divinely singeth, * crying with a pure mind, * keeping festival in the Lord.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Nocturns, Trinity canon, Ode 4 irmos"
+            }
+          },
+          "items": [
+            {
+              "text": "Elevating the thoughts of those who hymn Thee, O thrice-radiant Unity, quickly uplift also their soul and heart, and grant unto them Thy radiance and effulgence.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 4, item 1"
+              },
+              "label": "plain"
+            },
+            {
+              "text": "Change and transform me from all evil unto virtue, O only undepictable and immutable Trinity, and enlighten me with Thy rays.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 4, item 2"
+              },
+              "label": "plain"
+            },
+            {
+              "text": "Taking thought before, Thou didst wisely form the ranks of the angels, the ministers of Thy goodness, O Unity in three Hypostases; and with them accept my praise.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 4, item 3"
+              },
+              "label": "glory"
+            },
+            {
+              "text": "Assuming created human nature, God, Who by nature is uncreated and eternal, fashioned it anew in thy holy womb, O Ever-virgin Theotokos.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 4, item 4"
+              },
+              "label": "both_now"
+            }
+          ]
+        },
+        "5": {
+          "irmos": {
+            "text": "Illumine with Thy divine light, I pray, O good One, * the souls of those who with love rise early to pray to Thee, * that they may know Thee, O Word of God, * as the true God, * Who recalleth us from the darkness of sin.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Nocturns, Trinity canon, Ode 5 irmos"
+            }
+          },
+          "items": [
+            {
+              "text": "Pondering the essence of the Godhead, which is providential and salvific for all, which is thrice-radiant and One, O Master, we rise early unto Thee, asking forgiveness for our falls into sin.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 5, item 1"
+              },
+              "label": "plain"
+            },
+            {
+              "text": "O God, consubstantial Trinity - beginningless Father, equally eternal Son, and Holy Spirit - make steadfast those who hymn Thee, and deliver them from all peril and affliction.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 5, item 2"
+              },
+              "label": "plain"
+            },
+            {
+              "text": "Setting me aright with divine radiances, and ever guiding me to please Thy Godhead in three Hypostases, O Sun of glory, grant that I may share in the divine kingdom.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 5, item 3"
+              },
+              "label": "glory"
+            },
+            {
+              "text": "O immutable Word of God, Who beareth and preserveth all with Thine almighty arm, protect and preserve those who glorify Thee, through the supplications of the Mother of God, who gave birth to Thee.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 5, item 4"
+              },
+              "label": "both_now"
+            }
+          ]
+        },
+        "6": {
+          "irmos": {
+            "text": "Beholding the sea of life surging with the tempest of temptations, * I run to Thy calm haven, and cry to Thee: * Raise up my life from corruption, * O greatly merciful One.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Nocturns, Trinity canon, Ode 6 irmos"
+            }
+          },
+          "items": [
+            {
+              "text": "Grant wisdom and understanding unto those who hymn Thee, O thrice- radiant Godhead, and grant that all may be illumined by the rays of Thine illumining beauty and goodness.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 6, item 1"
+              },
+              "label": "plain",
+              "repeat": 2
+            },
+            {
+              "text": "O thrice-radiant, omnipotent and unapproachable Light, Who art indivisible in Thine essence, illumine the hearts of those who with faith praise Thy might, and give them wings to fly aloft to divine love.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 6, item 2"
+              },
+              "label": "glory"
+            },
+            {
+              "text": "In thee did the almighty Lord of all manifestly make His abode, O Ever-virgin; and He hath taught mankind to worship the one, thrice-radiant form of the Godhead.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 6, item 3"
+              },
+              "label": "both_now"
+            },
+            {
+              "text": "Lord, have mercy! (Thrice)",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 6, item 4"
+              },
+              "label": "plain"
+            }
+          ]
+        },
+        "7": {
+          "irmos": {
+            "text": "An angel made the furnace bedew the holy Children, * but the command of God consumed the Chaldeans * and prevailed upon the tyrant to cry: * “O God of our fathers, blessed art Thou.”",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Nocturns, Trinity canon, Ode 7 irmos"
+            }
+          },
+          "items": [
+            {
+              "text": "O thrice-radiant Unity of Hypostases, instill within me the firm resolve to keep and preserve Thy divine commandments, and to ever hymn Thee with faith, singing: O God of our fathers, blessed art Thou!",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 7, item 1"
+              },
+              "label": "plain"
+            },
+            {
+              "text": "O ineffably single God, Who art hymned in the infinity of Thy nature, yet bearest the number of a trinity of Hypostases, preserve us all from divers temptations and evil circumstances.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 7, item 2"
+              },
+              "label": "plain"
+            },
+            {
+              "text": "Manifestly and simply setting forth that which is distinct within the immutable Form, we glorify Thee, O Trinity, the consubstantial and co-eternal God, Who art one in essence and uncommingled in the characteristics of Thy Hypostases.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 7, item 3"
+              },
+              "label": "glory"
+            },
+            {
+              "text": "In His love for mankind, the transcendent God manifestly assumed our substance from thy womb, O most pure one, and hath taught all to cry: Blessed art Thou, O God of our fathers!",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 7, item 4"
+              },
+              "label": "both_now"
+            }
+          ]
+        },
+        "8": {
+          "irmos": {
+            "text": "Thou didst make flame bedew the holy children, * and didst burn the sacrifice of a righteous man with water. * For Thou alone, O Christ, dost do all as Thou willest, * Thee do we supremely exalt throughout all ages.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Nocturns, Trinity canon, Ode 8 irmos"
+            }
+          },
+          "items": [
+            {
+              "text": "Quickly grant me cleansing of transgressions and deliverance from multifarious passions, O Trinity one in nature, Unity in three Hypostases, that I may glorify Thee throughout all ages.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 8, item 1"
+              },
+              "label": "plain"
+            },
+            {
+              "text": "O thrice-radiant Unity, supremely good Trinity, in that Thou art a merciful God and art known as One Who willeth mercy, have mercy upon those who glorify Thy majesty.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 8, item 2"
+              },
+              "label": "plain"
+            },
+            {
+              "text": "With faith let us glorify the Word, the equally eternal Light begotten of eternal Light of the Father, together with the Spirit, the Light which proceedeth from Light; and let us exalt Him throughout all ages.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 8, item 3"
+              },
+              "label": "glory"
+            },
+            {
+              "text": "O most pure one, thou hast given birth to the almighty Word, Christ the Lord, the Physician of all, Who healeth the wounds of the first parents of all of us who supremely exalt Him throughout the ages.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 8, item 4"
+              },
+              "label": "both_now"
+            }
+          ]
+        },
+        "9": {
+          "irmos": {
+            "text": "It is impossible for mankind to see God * upon Whom the orders of angels dare not gaze; * but through thee, O all-pure one, * did the Word Incarnate become a man * and with the heavenly hosts, * Him we magnify and thee we call blessed.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Nocturns, Trinity canon, Ode 9 irmos"
+            }
+          },
+          "items": [
+            {
+              "text": "Unable to gaze upon the beauty of Thy glory, O Master, the ranks of the cherubim, covering themselves with their wings, unceasingly utter hymnody to the Trinity, glorifying the tri-Hypostatic might of Thy single Godhead.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 9, item 1"
+              },
+              "label": "plain"
+            },
+            {
+              "text": "O never-setting Sun, impart Thine effulgence unto the hearts of Thy servants, and enlighten their souls, and deliver them from their many transgressions, O Thou Who alone art All-merciful and in three Hypostases; and grant unto us Thine incorrupt life.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 9, item 2"
+              },
+              "label": "plain"
+            },
+            {
+              "text": "O Divinity Who art Light equal in honor, three-sunned and luminous, illumine those who hymn Thee with faith, deliver them from dark transgressions, and grant unto them Thy most splendid habitations, in that Thou art supremely good.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 9, item 3"
+              },
+              "label": "glory"
+            },
+            {
+              "text": "Thy Son wisely formed man in the beginning, O Virgin, and through thee renewed him who had become corrupt, O all-hymned one; and with the never-waning radiance of His divine light He hath filled all those who with faith glorify thee as the true Theotokos.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Nocturns, Trinity canon, Ode 9, item 4"
+              },
+              "label": "both_now"
+            }
+          ]
+        }
+      }
+    },
+    "after_ode3": {
+      "sessional": {
+        "text": "Look down from heaven, O God our Master, and behold our lowliness; and in that Thou art compassionate, O supremely good One Who lovest mankind, take pity on us: for from nowhere else can we hope to receive the forgiveness of the evils which we have committed. Wherefore, be Thou with us, and no one shall be against us.",
+        "tier": 1,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Nocturns, Trinity canon, sessional after Ode III"
+        },
+        "spec_mel": "Fulfilling the dispensation concerning us",
+        "sourceLabel": "Sessional Hymn"
+      },
+      "theotokion": {
+        "text": "O pure Lady Theotokos, look down and behold the pangs of our wounds; and take pity, most pure one, and heal the burning of our conscience, bedewing it with thy mercy, and crying out to thy servants: I am with you, and no one shall be against you!",
+        "tier": 1,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Nocturns, Trinity canon, sessional theotokion after Ode III"
+        },
+        "type": "theotokion"
+      }
+    },
+    "after_ode6": {
+      "sessional": {
+        "text": "O Father, Son and Holy Spirit, look down upon us who worship Thee with faith, and who, though we are clay, with the fiery beings glorify Thy might, O compassionate One; for we know no other God than Thee. And do Thou cry out unto those who hymn Thee: I am with you, and no one shall be against you!",
+        "tier": 1,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Nocturns, Trinity canon, sessional after Ode VI"
+        },
+        "spec_mel": "Fulfilling the dispensation concerning us",
+        "sourceLabel": "Sessional Hymn"
+      },
+      "theotokion": {
+        "text": "Look upon us, O all-hymned Theotokos, let enlightenment shine upon the hearts of the darkened, and illumine thy flock, O most pure one; for whatsoever thou desirest, thou canst do, in that thou art the Mother of thy Creator. And do thou cry out unto those who pray to thee: I am with you, and no one shall be against you!",
+        "tier": 1,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Nocturns, Trinity canon, sessional theotokion after Ode VI"
+        },
+        "type": "theotokion"
+      }
+    },
+    "gregory_rubric": {
+      "rubric": "Then, the hymn of Gregory the Sinaite: (which, is chanted every Sunday after the canon)",
+      "stanzas": [
+        {
+          "text": "It is truly meet to glorify Thee, the Word of God, before Whom the cherubim tremble and quake, and Whom the hosts of heaven glorify. And with fear we glorify Christ, the Bestower of life, Who rose from the tomb on the third day.",
+          "tier": 1,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Nocturns, hymn of Gregory the Sinaite, stanza 1"
+          }
+        },
+        {
+          "text": "With divine songs let us all in godly manner hymn the Father, the Son and the Spirit divine, the Might in three Hypostases, the one Sovereignty and Dominion,",
+          "tier": 1,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Nocturns, hymn of Gregory the Sinaite, stanza 2 — \"in godly manner\" (no article) + comma stanza-end; takes the 2-1/5-1 word-order side (\"the Might ... the one Sovereignty\") (§5 per-tone)"
+          }
+        },
+        {
+          "text": "Whom all mortals hymn and the hosts of heaven glorify, the essential Unity in three Hypostases, Who is worshipped with faith by all.",
+          "tier": 1,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Nocturns, hymn of Gregory the Sinaite, stanza 3"
+          }
+        },
+        {
+          "text": "We magnify Thee, the Godhead, the Lord of the cherubim, the incomparable divine Origin of the seraphim, the indivisible Trinity in Unity.",
+          "tier": 1,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Nocturns, hymn of Gregory the Sinaite, stanza 4"
+          }
+        },
+        {
+          "text": "I worship God: the beginningless Father, the Son Who is equally without beginning, and the Spirit. With hymns let us honor the one indivisible and unified Essence, the threefold Unity.",
+          "tier": 1,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Nocturns, hymn of Gregory the Sinaite, stanza 5"
+          }
+        },
+        {
+          "text": "Shine forth Thy dazzling lightning flashes upon me, O my God in three Hypostases, Creator of all, and show me to be a splendid, luminous and unshakable habitation of Thine unapproachable glory.",
+          "tier": 1,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Nocturns, hymn of Gregory the Sinaite, stanza 6 — \"unshakable\" (shared: \"immutable\"; §5 per-tone)"
+          }
+        },
+        {
+          "text": "With fear let us glorify Christ the Bestower of life, Who ineffably became incarnate from the Virgin, for the cherubim tremble and quake before Him, and the angelic armies glorify Him.",
+          "tier": 1,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Nocturns, hymn of Gregory the Sinaite, stanza 7 — \"incarnate from the Virgin\" (shared: \"of the Virgin\"; §5 per-tone)"
+          }
+        }
+      ],
+      "provenance_note": "RULED (Bill, July 8 2026): the Gregory hymn is stored PER-TONE in every tone. 6-1 tracks the 5-1 byte-state and takes the 2-1/5-1 word-order side at stanza 2; divergences from shared at stanzas 2, 6, 7 (see per-stanza loci). The shared table remains the 2-1 print."
+    },
+    "closing_rubric": "The rest of Nocturns, and the Dismissal."
+  },
+  "matins": {
+    "god_is_lord_rubric": "On “God is The Lord ...,” the Resurrection Troparion, in Tone VI: [troparion printed \"(Twice)\"] Glory ..., the Troparion from the Menaion, otherwise Glory ..., Both now ..., The Theotokion, in Tone VI, (or in the Tone of that from the Menaion):",
+    "sessionals": [
+      {
+        "rubric": "After the 1st chanting of the Psalter (Kathisma II), the Sessional Hymns of the Resurrection, in Tone VI:",
+        "items": [
+          {
+            "text": "While the tomb lay open and Hades lamented, * Mary, cried unto the apostles who were in hiding saying: * “Come forth, ye workers of the vineyard, * proclaim unto the world the word of the Resurrection, * for the Lord is risen, ** granting the world His great mercy!”",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins, Kathisma II, sessional 1"
+            },
+            "label": "plain"
+          },
+          {
+            "text": "Mary Magdalene stood by Thy tomb O Lord, * and mistaking Thee for the gardener, * weeping she cried aloud unto Thee: * “Where hast Thou hidden the Life eternal? * Where hast Thou placed He who sitteth on the cherubic throne? * For those who were guarding Him have become as dead men through fear. * Either give me my Lord or cry out with me: * O Thou Who wast numbered among the dead and hast raised the dead, ** glory be to Thee!”",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins, Kathisma II, sessional 2"
+            },
+            "label": "plain"
+          }
+        ],
+        "verses": [
+          {
+            "text": "Arise, O Lord my God, let Thy hands be lifted on high; * forget not Thy paupers to the end.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins, Kathisma II, sessional verse"
+            }
+          }
+        ],
+        "closer": {
+          "text": "Gideon hath foretold of thy conception, * and David hath revealed thine ineffable child-bearing, * O Theotokos; * for the Word descended like a dew upon the fleece of thy womb, * and thou O Virgin Full of grace, * like unto a holy and fertile earth, ** budded forth without seed our salvation, Christ God.",
+          "tier": 2,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Matins, Kathisma II, Glory/Both-now closer"
+          },
+          "type": "theotokion"
+        }
+      },
+      {
+        "rubric": "After the 2nd chanting of the Psalter (Kathisma III), the Sessional Hymns of the Resurrection, in Tone VI:",
+        "items": [
+          {
+            "text": "Life was laid in the tomb * and a seal was set upon the stone; * the soldiers stood guarding Christ like a sleeping King; ** and having invisibly struck His foes the Lord arose.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins, Kathisma III, sessional 1"
+            },
+            "label": "plain"
+          },
+          {
+            "text": "Jonah foretold of Thy tomb, and Symeon revealed Thy divine arising, * O immortal Lord; * for Thou didst descend as one dead into the tomb, * and having smashed the gates of Hades, * Thou didst arise without corruption as Master, for the salvation of all the world, * O Christ our God, ** enlightening those lying in darkness.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins, Kathisma III, sessional 2"
+            },
+            "label": "plain"
+          }
+        ],
+        "verses": [
+          {
+            "text": "I will confess Thee, O Lord, with my whole heart, * I will tell of all Thy wonders.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins, Kathisma III, sessional verse"
+            }
+          }
+        ],
+        "closer": {
+          "text": "O Virgin Theotokos, entreat thy Son Christ our God, * Who was willingly nailed upon the Cross, * and hath freed the world from deception, ** that He have mercy upon our souls!",
+          "tier": 2,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Matins, Kathisma III, Glory/Both-now closer"
+          },
+          "type": "theotokion"
+        }
+      }
+    ],
+    "polyeleos_rubric": {
+      "ref": "shared.polyeleos"
+    },
+    "evlogitaria_rubric": {
+      "ref": "shared.evlogitaria"
+    },
+    "hypakoe": {
+      "text": "By Thy voluntary and life-giving death, O Christ, * Thou hast shattered the gates of Hades, * and as God Thou hast opened unto us the paradise of old; * and by arising from the dead, ** Thou hast delivered our lives from corruption.",
+      "tier": 2,
+      "src": {
+        "file": "6-1.pdf",
+        "locus": "Sunday Matins, after the Evlogitaria"
+      },
+      "sourceLabel": "The Sessional Hymn"
+    },
+    "anabathmoi": [
+      {
+        "troparia": [
+          {
+            "text": "Unto heaven I raise my eyes, * even unto Thee, O Word; * do Thou have pity on me, ** that I may live for Thee.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins, Anabathmoi antiphon 1, troparion 1"
+            }
+          },
+          {
+            "text": "Have mercy upon us * who are filled with contempt O Word, * repairing Thy broken vessels ** that we may be found useful.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins, Anabathmoi antiphon 1, troparion 2"
+            }
+          }
+        ],
+        "gloria": {
+          "text": "In the Holy Spirit is the cause of all salvation, * if He seeth fit to breathe on one of His creatures, * He swiftly raiseth him from the things of this earth, and having given him wings, ** maketh him to flourish and raiseth him on high.",
+          "tier": 2,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Matins, Anabathmoi antiphon 1, Glory/Both-now"
+          }
+        }
+      },
+      {
+        "troparia": [
+          {
+            "text": "If the Lord had not dwelt among us, * none could have withstood the attacks of the enemy, * for those who are victorious ** are exalted by Him.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins, Anabathmoi antiphon 2, troparion 1"
+            }
+          },
+          {
+            "text": "Let not my soul be taken like a sparrow by their teeth, O Word; * Woe unto me! * how shall I, the lover of sin, ** be delivered from the power of the enemy?",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins, Anabathmoi antiphon 2, troparion 2"
+            }
+          }
+        ],
+        "gloria": {
+          "text": "In the Holy Spirit all find divine inspiration, * goodness, understanding, peace and blessing; * for He is equal in activity ** to the Father and the Word.",
+          "tier": 2,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Matins, Anabathmoi antiphon 2, Glory/Both-now"
+          }
+        }
+      },
+      {
+        "troparia": [
+          {
+            "text": "They that put their trust in the Lord * look upon high * and are thus fearful to their foes ** and wondrous to all mankind.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins, Anabathmoi antiphon 3, troparion 1"
+            }
+          },
+          {
+            "text": "Unto the pursuit of iniquities * the righteous stretch not the hands, * having Thee, O Savior, ** as their helper.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins, Anabathmoi antiphon 3, troparion 2"
+            }
+          }
+        ],
+        "gloria": {
+          "text": "In the Holy Spirit is sovereignty over all creation; * Him the armies of hosts above worship * and by everything that hath breath below ** is He worshiped.",
+          "tier": 2,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Matins, Anabathmoi antiphon 3, Glory/Both-now"
+          }
+        }
+      }
+    ],
+    "prokeimenon": {
+      "tone": 6,
+      "text": {
+        "text": "O Lord, stir up Thy might * and come to save us.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Sunday Matins prokeimenon"
+        }
+      },
+      "verse": {
+        "text": "O Shepherd of Israel, attend, Thou that leadest Joseph like a sheep.",
+        "tier": 1,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Sunday Matins prokeimenon verse"
+        }
+      }
+    },
+    "canon": {
+      "title": "Resurrection Canons Tone VI",
+      "heading_rubric": "After which: “O God, save Thy people ...,” Then the Canons: Resurrection Canons Tone VI.",
+      "odes": {
+        "1": {
+          "irmos": {
+            "text": "When Israel walked on foot in the sea as on dry land, * on seeing their pursuer Pharaoh drowned, * they cried: * Let us sing to God * a song of victory.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins canon, Ode 1 irmos"
+            }
+          },
+          "resurrection": {
+            "refrain": "Glory to Thy holy Resurrection O Lord.",
+            "troparia": [
+              {
+                "text": "With Thy hands stretched out upon the Cross, O most compassionate Jesus, Thou hast filled all things with the Father’s good will; wherefore we all sing to Thee a song of victory.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 1, resurrection troparion 1"
+                }
+              },
+              {
+                "text": "As a bidden slave, death approached Thee with fear and trembling, for Thou, O Sovereign Lord of life, hast granted unto us eternal life and resurrection.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 1, resurrection troparion 2"
+                }
+              }
+            ],
+            "closer": {
+              "text": "Having received thy Maker ineffably incarnate within thy seedless womb, as He Himself hath willed, thou hast been revealed, O pure one, as truly the Sovereign Lady of all creation.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Sunday Matins canon, Ode 1, resurrection closer"
+              },
+              "type": "theotokion",
+              "refrain": "Most holy Theotokos save us.",
+              "sourceLabel": "Theotokion"
+            }
+          },
+          "cross_resurrection": {
+            "refrain": "Glory to Thy precious Cross and Resurrection O Lord.",
+            "troparia": [
+              {
+                "text": "Standing voluntarily before Pilate’s judgment-seat, the Judge is unlawfully accused, and is smitten upon the face by a wicked hand as one condemned, He who is the God before Whom tremble both things on earth and those of heaven.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 1, cross_resurrection troparion 1"
+                }
+              },
+              {
+                "text": "Stretching Thy divine hands upon Thine incorrupt and life-bearing Cross, O Savior, Thou hast gathered together the nations who adore Thy glorious crucifixion, O Lord, unto a perfect knowledge of Thee.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 1, cross_resurrection troparion 2"
+                }
+              }
+            ],
+            "closer": {
+              "text": "At Thy Cross, O Savior, the all-immaculate one stood beholding the drops of blood falling from Thy side, and shedding fountains of tears she glorified Thine incomparable compassion, O Christ.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Sunday Matins canon, Ode 1, cross_resurrection closer"
+              },
+              "type": "theotokion",
+              "refrain": "Most holy Theotokos save us.",
+              "sourceLabel": "Theotokion"
+            }
+          },
+          "theotokos": {
+            "refrain": "Most holy Theotokos save us.",
+            "troparia": [
+              {
+                "text": "Partaking of the forbidden fruit in the garden, Eve brought about the curse, but O pure one, thou hast undone this by giving birth to Christ, the Origin of all blessings.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 1, theotokos troparion 1"
+                }
+              },
+              {
+                "text": "O pure one, having given birth to Christ, the brightness of the divine lightning, disperse thou by the light of thy radiance, the foggy mist of my passions and the confusion wrought by my transgressions.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 1, theotokos troparion 2"
+                }
+              },
+              {
+                "text": "God, the Hope of all the nations, whom Jacob contemplated with the noetic eyes of his mind, hath become incarnate of thee, delivering us by thine intercessions.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 1, theotokos troparion 3"
+                }
+              },
+              {
+                "text": "The princes of the tribe of Judah have disappeared, for thy Son and God, O most pure one, hath descended as Lord, and hath been truly enthroned as King over all the ends of the earth.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 1, theotokos troparion 4"
+                }
+              }
+            ]
+          },
+          "menaion_rubric": "The Troparia from the Menaion, then the appointed Katavasia."
+        },
+        "3": {
+          "irmos": {
+            "text": "There is none as holy as Thou, * O Lord my God, * who hast exalted the horn of Thy faithful O good One, * and strengthened us upon the rock * of Thy confession.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins canon, Ode 3 irmos"
+            }
+          },
+          "resurrection": {
+            "refrain": "Glory to Thy holy Resurrection O Lord.",
+            "troparia": [
+              {
+                "text": "Seeing God crucified in the flesh, all creation quaked from fear, but was held fast by the sustaining hand of Him Who was crucified for our sake.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 3, resurrection troparion 1"
+                }
+              },
+              {
+                "text": "Death, having been despoiled by death, doth lie miserably breathless, for unable to endure the revelation of divine Life, the mighty one hath been slain and resurrection hath been bestowed upon all.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 3, resurrection troparion 2"
+                }
+              }
+            ],
+            "closer": {
+              "text": "The wonder of thy divine childbirth, O pure one, surpasseth all that is natural, for above nature hast thou conceived God in thy womb, and in giving birth remained Ever-virgin.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Sunday Matins canon, Ode 3, resurrection closer"
+              },
+              "type": "theotokion",
+              "refrain": "Most holy Theotokos save us.",
+              "sourceLabel": "Theotokion"
+            }
+          },
+          "cross_resurrection": {
+            "refrain": "Glory to Thy precious Cross and Resurrection O Lord.",
+            "troparia": [
+              {
+                "text": "Remaining three days in the grave, Thou didst raise with Thy life-giving arising those that were slain from all ages, and now freed from condemnation, they joyously exult and cry aloud: “Behold, Thou O Lord hast come as our Redeemer.”",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 3, cross_resurrection troparion 1"
+                }
+              },
+              {
+                "text": "Glory to Thine awaking, O our Savior, for as All-powerful Thou hast delivered us from Hades, corruption, and death, wherefore hymning Thee we cry aloud: “There is none as holy as Thee, O Lord, Lover of mankind.”",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 3, cross_resurrection troparion 2"
+                }
+              }
+            ],
+            "closer": {
+              "text": "Seeing Him Who was born of thee pierced through with a lance, O most holy all-immaculate one, thy heart was also pierced, wherefore thou didst exclaim in bewilderment: “What hath this most wicked people rendered unto Thee, O Child?”",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Sunday Matins canon, Ode 3, cross_resurrection closer"
+              },
+              "type": "theotokion",
+              "refrain": "Most holy Theotokos save us.",
+              "sourceLabel": "Theotokion"
+            }
+          },
+          "theotokos": {
+            "refrain": "Most holy Theotokos save us.",
+            "troparia": [
+              {
+                "text": "Having ineffably taken my temporal and mortal flesh from thy womb, O all- pure Theotokos, the good One hath made it incorruptible, forever uniting it unto Himself.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 3, theotokos troparion 1"
+                }
+              },
+              {
+                "text": "Seeing God becoming incarnate of thee, O Virgin, the choirs of angels were amazed, and honor thee as the Theotokos in never-silent hymns.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 3, theotokos troparion 2"
+                }
+              },
+              {
+                "text": "The prophet Daniel was astonished when contemplating thee O Theotokos, the spiritual mount from which a stone hath been cut without hands, and which mightily despoileth the temples of the demons.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 3, theotokos troparion 3"
+                }
+              },
+              {
+                "text": "Neither the word, nor tongue of man, can worthily praise thee, O Virgin, for from thee, O most pure one, Christ the Giver of life hath deigned to become incarnate without seed.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 3, theotokos troparion 4"
+                }
+              }
+            ]
+          },
+          "menaion_rubric": "The Troparia from the Menaion, then the appointed Katavasia."
+        },
+        "4": {
+          "irmos": {
+            "text": "Christ is my power, * my God and my Lord, * the holy Church divinely singeth, * crying with a pure mind, * keeping festival in the Lord.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins canon, Ode 4 irmos"
+            }
+          },
+          "resurrection": {
+            "refrain": "Glory to Thy holy Resurrection O Lord.",
+            "troparia": [
+              {
+                "text": "The Tree hath blossomed forth with true life, O Christ, for the Cross hath been raised and soaked with the blood and water from Thine incorruptible side, sprouting forth life unto us.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 4, resurrection troparion 1"
+                }
+              },
+              {
+                "text": "No longer doth the serpent deceitfully entice me with false deification, for Christ, the divine Creator of human nature, hath now opened unto me without restriction the path of life.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 4, resurrection troparion 2"
+                }
+              }
+            ],
+            "closer": {
+              "text": "Truly unutterable and incomprehensible are the mysteries of thy divine birthgiving, O Theotokos, both unto those on earth and those in heaven, O Ever-virgin.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Sunday Matins canon, Ode 4, resurrection closer"
+              },
+              "type": "theotokion",
+              "refrain": "Most holy Theotokos save us.",
+              "sourceLabel": "Theotokion"
+            }
+          },
+          "cross_resurrection": {
+            "refrain": "Glory to Thy precious Cross and Resurrection O Lord.",
+            "troparia": [
+              {
+                "text": "We venerate Thine honorable Cross and nails, O Christ, and the holy spear, with the reed and the crown of thorns, by which we were delivered from the corruption of the Hades.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 4, cross_resurrection troparion 1"
+                }
+              },
+              {
+                "text": "O Savior, the grave didst accept Thee, Who for our sake didst willingly endure death, but it was not possible for it to hold Thee, O Word, for as God Thou hast arisen, saving our race.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 4, cross_resurrection troparion 2"
+                }
+              }
+            ],
+            "closer": {
+              "text": "O Ever-virgin Birthgiver of God, thou who hast brought forth Christ the Savior for mankind’s sake, do thou deliver from dangers and torments those who in faith have recourse to thy divine protection.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Sunday Matins canon, Ode 4, cross_resurrection closer"
+              },
+              "type": "theotokion",
+              "refrain": "Most holy Theotokos save us.",
+              "sourceLabel": "Theotokion"
+            }
+          },
+          "theotokos": {
+            "refrain": "Most holy Theotokos save us.",
+            "troparia": [
+              {
+                "text": "Thee do we hymn, O most pure one, for having been saved by thee, we sing unto thee crying aloud: “Blessed art thou, O Ever-virgin, who hath given birth to God.”",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 4, theotokos troparion 1"
+                }
+              },
+              {
+                "text": "O most blessed Virgin, who hath brought forth unto those lying in the gloomy darkness of life, the never-fading Light resplendent in the flesh, do thou grant unto those who hymn thee, O Ever-virgin, ever-flowing gladness.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 4, theotokos troparion 2"
+                }
+              },
+              {
+                "text": "Grace hath blossomed forth, and the law hath ceased through thee, O all-holy one; for thou art pure, and hast given birth to the Lord Who granteth us forgiveness, O Ever-virgin.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 4, theotokos troparion 3"
+                }
+              },
+              {
+                "text": "Partaking of the forbidden fruit in the garden brought death to me, O most pure one, but the Tree of life that issued forth from thee hath raised me up again, and made me an heir of the sweet things of paradise.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 4, theotokos troparion 4"
+                }
+              }
+            ]
+          },
+          "menaion_rubric": "The Troparia from the Menaion, then the appointed Katavasia."
+        },
+        "5": {
+          "irmos": {
+            "text": "Illumine with Thy divine light, I pray, O good One, * the souls of those who with love rise early to pray to Thee, * that they may know Thee, O Word of God, * as the true God, * Who recalleth us from the darkness of sin.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins canon, Ode 5 irmos"
+            }
+          },
+          "resurrection": {
+            "refrain": "Glory to Thy holy Resurrection O Lord.",
+            "troparia": [
+              {
+                "text": "Now the cherubim hinder me not, and the flaming sword, O Master, hath been turned back, since they saw Thee, the true God, O Word of God, making a way into paradise for the thief.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 5, resurrection troparion 1"
+                }
+              },
+              {
+                "text": "No longer do I fear returning unto the earth, O Master Christ; for in Thy great compassion Thou hast led me, the utterly forgotten one, from the lowest earth to the heights of incorruption, through Thy Resurrection.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 5, resurrection troparion 2"
+                }
+              }
+            ],
+            "closer": {
+              "text": "O blessed Sovereign Lady of the world, save those who from their soul confess thee to be the Theotokos; for in thee we possess an invincible protection, O true Mother of God.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Sunday Matins canon, Ode 5, resurrection closer"
+              },
+              "type": "theotokion",
+              "refrain": "Most holy Theotokos save us.",
+              "sourceLabel": "Theotokion"
+            }
+          },
+          "cross_resurrection": {
+            "refrain": "Glory to Thy precious Cross and Resurrection O Lord.",
+            "troparia": [
+              {
+                "text": "Tempted with the fruit of the tree in Eden, O exceedingly-good Lord, and disobeying Thy commandment, the forefather hath slid into corruption, but through Thy Cross Thou hast raised him up again to blessedness, O Savior, having been obedient to the Father.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 5, cross_resurrection troparion 1"
+                }
+              },
+              {
+                "text": "By Thy death, O good One, the dominion of death hath been destroyed, and the source of life hath issued forth, bestowing immortality upon us; wherefore in faith we adore Thy burial and resurrection, by which Thou, as God, hast enlightened the whole world.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 5, cross_resurrection troparion 2"
+                }
+              }
+            ],
+            "closer": {
+              "text": "Abiding in the heavens the Lord and Maker of all that is, ineffably entered thy womb, O all-immaculate one, glorifying thee as incomparably higher than the heavens and holier than all the bodiless powers; therefore we on earth, bless thee.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Sunday Matins canon, Ode 5, cross_resurrection closer"
+              },
+              "type": "theotokion",
+              "refrain": "Most holy Theotokos save us.",
+              "sourceLabel": "Theotokion"
+            }
+          },
+          "theotokos": {
+            "refrain": "Most holy Theotokos save us.",
+            "troparia": [
+              {
+                "text": "Radiant with purity O all-hymned one, thou didst become the divine dwelling of the Master, for thou alone hath been revealed as the Mother of God, having carried Him as an infant in thine arms.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 5, theotokos troparion 1"
+                }
+              },
+              {
+                "text": "Filled with the spiritual adornments of thine exceedingly comely soul, thou wast revealed as the Bride of God, sealed with the modesty of thy virginity and enlightening the world with the brightness of thy purity.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 5, theotokos troparion 2"
+                }
+              },
+              {
+                "text": "Let the assembly of the wicked lament, those who do not openly proclaim thee as the pure Mother of God, for thou hast appeared unto us as a radiant gate of divine light scattering the darkness of sins.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 5, theotokos troparion 3"
+                }
+              }
+            ]
+          },
+          "menaion_rubric": "The Troparia from the Menaion, then the appointed Katavasia."
+        },
+        "6": {
+          "irmos": {
+            "text": "Beholding the sea of life surging with the tempest of temptations, * I run to Thy calm haven, and cry to Thee: * Raise up my life from corruption, * O greatly merciful One.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins canon, Ode 6 irmos"
+            }
+          },
+          "resurrection": {
+            "refrain": "Glory to Thy holy Resurrection O Lord.",
+            "troparia": [
+              {
+                "text": "Crucified O Master, by the nails Thou hast annulled the curse that weighed upon us, and pierced with the lance in Thy side, Thou hast torn up the charges laid against Adam, thereby freeing the world.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 6, resurrection troparion 1"
+                }
+              },
+              {
+                "text": "Smitten deceitfully, Adam was led down to the bowels of Hades, but Thou Who by nature art both God and Compassionate, in Thy desire to recall him, didst carry him upon Thy shoulders, raising him up together with Thyself.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 6, resurrection troparion 2"
+                }
+              }
+            ],
+            "closer": {
+              "text": "O most holy Sovereign-Lady, who hath brought forth the Lord Pilot for the sake of all mankind, do thou calm the ever-changing and frightful surging of my passions and grant peace to my heart.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Sunday Matins canon, Ode 6, resurrection closer"
+              },
+              "type": "theotokion",
+              "refrain": "Most holy Theotokos save us.",
+              "sourceLabel": "Theotokion"
+            }
+          },
+          "cross_resurrection": {
+            "refrain": "Glory to Thy precious Cross and Resurrection O Lord.",
+            "troparia": [
+              {
+                "text": "The Hebrew multitude have been revealed as slayers of Christ and the prophets, for just as of old, they feared not to kill the prophets who revealed the mysterious emanations of truth, so now, carried away by envy, they have slain the Lord, Whom the prophets once preached, however His death hath become for us our life.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 6, cross_resurrection troparion 1"
+                }
+              },
+              {
+                "text": "Thou wast confined but not detained in the tomb, O Savior, for though willingly suffering death, O Word, Thou didst arise as God immortal, awakening together with Thee those held captive in Hades, and unto the women, exchanging their former sorrow for gladness.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 6, cross_resurrection troparion 2"
+                }
+              }
+            ],
+            "closer": {
+              "text": "At the time of Thy Passion Thy bodily nature appeared more shameful and disdainful than that of any man, but Thy divine nature wast revealed unto David as the fairest of all in comeliness, saying: “With the scepter of Thy kingdom the strength of Thine enemies hath been destroyed”; wherefore the most pure one spake unto Thee saying: “O my Son and God, arise from the grave.”",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Sunday Matins canon, Ode 6, cross_resurrection closer"
+              },
+              "type": "theotokion",
+              "refrain": "Most holy Theotokos save us.",
+              "sourceLabel": "Theotokion"
+            }
+          },
+          "theotokos": {
+            "refrain": "Most holy Theotokos save us.",
+            "troparia": [
+              {
+                "text": "Moses, the greatest amongst the prophets, described thee beforehand as an ark and table, a candlestick and golden pot, symbolizing the incarnation of the Most High from thee, O Virgin Mother.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 6, theotokos troparion 1"
+                }
+              },
+              {
+                "text": "As a consequence of their attack upon thine Offspring, O Sovereign Lady, death hath been slain, and corruption, the curse of Adam, hath been abolished, for thou hast given birth to the Life that delivereth from corruption those who hymn thee.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 6, theotokos troparion 2"
+                }
+              },
+              {
+                "text": "The law becometh powerless and the shadow of the law passeth away when, above all understanding and comprehension, the grace of the childbirth of our God and Savior hath appeared unto me, O greatly hymned Virgin.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 6, theotokos troparion 3"
+                }
+              }
+            ]
+          },
+          "menaion_rubric": "The Troparia from the Menaion, then the appointed Katavasia."
+        },
+        "7": {
+          "irmos": {
+            "text": "An angel made the furnace bedew the holy Children, * but the command of God consumed the Chaldeans * and prevailed upon the tyrant to cry: * “O God of our fathers, blessed art Thou.”",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins canon, Ode 7 irmos"
+            }
+          },
+          "resurrection": {
+            "refrain": "Glory to Thy holy Resurrection O Lord.",
+            "troparia": [
+              {
+                "text": "Lamenting Thy Passion, O Master, the sun wrapped itself in darkness casting gloom upon all the earth, which cried aloud: “O God of our fathers, blessed art Thou.”",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 7, resurrection troparion 1"
+                }
+              },
+              {
+                "text": "At Thy descent, O Christ, the lowest depths of Hades were encompassed with light, and the forefather, exalting and full of joy, sprung up crying: “O God of our fathers, blessed art Thou.”",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 7, resurrection troparion 2"
+                }
+              }
+            ],
+            "closer": {
+              "text": "Through thee, O Virgin Mother, the effulgent Light hath appeared unto all the world, for thou hast brought forth God the Creator of all; entreat Him, O most pure one, to send down upon us the faithful, great mercy.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Sunday Matins canon, Ode 7, resurrection closer"
+              },
+              "type": "theotokion",
+              "refrain": "Most holy Theotokos save us.",
+              "sourceLabel": "Theotokion"
+            }
+          },
+          "cross_resurrection": {
+            "refrain": "Glory to Thy precious Cross and Resurrection O Lord.",
+            "troparia": [
+              {
+                "text": "O strange spectacle! He Who hath delivered Israel from Pharaoh’s bondage is now of His own will crucified by them, loosing the bonds of sin; unto Him do we in faith sing: “O God the Redeemer, blessed art Thou.”",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 7, cross_resurrection troparion 1"
+                }
+              },
+              {
+                "text": "The children of the wicked one have crucified on Calvary the Savior who hath smashed the doorposts and gates of brass, for the salvation of us who sing: “O God the Redeemer, blessed art Thou.”",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 7, cross_resurrection troparion 2"
+                }
+              }
+            ],
+            "closer": {
+              "text": "Having wrought the deliverance of Eve, O pure Virgin, thou hast freed Adam from the ancient curse; wherefore together with the angels we hymn thee and thy Son, crying aloud: “O God the Redeemer, blessed art Thou.”",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Sunday Matins canon, Ode 7, cross_resurrection closer"
+              },
+              "type": "theotokion",
+              "refrain": "Most holy Theotokos save us.",
+              "sourceLabel": "Theotokion"
+            }
+          },
+          "theotokos": {
+            "refrain": "Most holy Theotokos save us.",
+            "troparia": [
+              {
+                "text": "The furnace did not harm the three youths, thus prefiguring thy childbirth; for the divine Fire dwelt within thee without consuming thee, teaching all to cry aloud: “O God of our fathers, blessed art Thou.”",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 7, theotokos troparion 1"
+                }
+              },
+              {
+                "text": "As thou didst prophesy, O all-pure Mother, the ends of the universe call thee blessed; for enlightened with the luminous beams of thy comeliness and grace, they make melody singing: “O God of our fathers, blessed art Thou.”",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 7, theotokos troparion 2"
+                }
+              },
+              {
+                "text": "The most cunning serpent hath plunged its destructive teeth into me, O Theotokos, but thy Son hath smashed them and given me the strength to cry aloud: “O God of our fathers, blessed art Thou.”",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 7, theotokos troparion 3"
+                }
+              },
+              {
+                "text": "Thou art the cleansing of our nature, O blessed of God, for having carried in thine arms God, Who sitteth on the shoulders of the cherubim, thou dost cry aloud: “O God of our fathers, blessed art Thou.”",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 7, theotokos troparion 4"
+                }
+              }
+            ]
+          },
+          "menaion_rubric": "The Troparia from the Menaion, then the appointed Katavasia."
+        },
+        "8": {
+          "irmos": {
+            "text": "Thou didst make flame bedew the holy children, * and didst burn the sacrifice of a righteous man with water. * For Thou alone, O Christ, dost do all as Thou willest, * Thee do we supremely exalt throughout all ages.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins canon, Ode 8 irmos"
+            }
+          },
+          "resurrection": {
+            "refrain": "Glory to Thy holy Resurrection O Lord.",
+            "troparia": [
+              {
+                "text": "The Jewish people who slew the prophets of old, from envy hath now made themselves slayers of God, raising upon the Cross O Word of God, Thee Whom we exalt throughout all ages.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 8, resurrection troparion 1"
+                }
+              },
+              {
+                "text": "Abandoning not the Heavenly realms, while descending into Hades, O Christ, Thou hast raised together with Thyself fallen mankind, who exalteth Thee throughout all ages.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 8, resurrection troparion 2"
+                }
+              }
+            ],
+            "closer": {
+              "text": "From Light thou hast conceived the Giver of Light, the Word of God, ineffably bringing Him forth, for the divine Spirit dwelt within thee, wherefore thou art glorified O maiden, and we magnify thee throughout all ages.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Sunday Matins canon, Ode 8, resurrection closer"
+              },
+              "type": "theotokion",
+              "refrain": "Most holy Theotokos save us.",
+              "sourceLabel": "Theotokion"
+            }
+          },
+          "cross_resurrection": {
+            "refrain": "Glory to Thy precious Cross and Resurrection O Lord.",
+            "troparia": [
+              {
+                "text": "Every ear doth tremble upon hearing how the Most High, by His Cross and burial, willingly descended to earth to destroy the dominion of Hades, awakening all therein that they may cry aloud: “O ye youths bless, ye priests hymn, and ye people, supremely exalt Him throughout all ages.”",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 8, cross_resurrection troparion 1"
+                }
+              },
+              {
+                "text": "The tyranny of Hades hath ceased and its dominion is now scorned, for the God of all having been set upon the earth on the Cross, hath laid low its power; “O ye youths bless, ye priests hymn, and ye people, supremely exalt Him throughout all ages.”",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 8, cross_resurrection troparion 2"
+                }
+              },
+              {
+                "text": "How ineffable is Thy love for mankind, O Christ, and how unutterable Thy loving-kindness! For seeing me imprisoned and perishing in Hades, Thou dost endure the Passion thereby setting me free. Wherefore we bless Thee, O Master of all, and supremely exalt Thee throughout all ages.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 8, cross_resurrection troparion 3"
+                }
+              }
+            ]
+          },
+          "theotokos": {
+            "refrain": "Most holy Theotokos save us.",
+            "troparia": [
+              {
+                "text": "With the illumination of the Spirit rendering thee resplendent as a Sovereign in golden vestments, thy Son hath placed thee, O most pure one, on His right hand; Him do we supremely exalt throughout all ages.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 8, theotokos troparion 1"
+                }
+              },
+              {
+                "text": "He who by His own will established the world, hath taken flesh from thine undefiled womb, fashioning it from above; Him do we supremely exalt throughout all ages.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 8, theotokos troparion 2"
+                }
+              },
+              {
+                "text": "Through the union of the Word with my nature, thou hast become an abode of the Divinity, O most pure one, shining resplendently with the radiance of virginity, wherefore we hymn thee throughout all ages.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 8, theotokos troparion 3"
+                }
+              },
+              {
+                "text": "The candlestick resplendent with gold prefigured thee who didst ineffably receive the Light unapproachable which illumineth all things with His knowledge. Wherefore we hymn thee, O pure one, throughout all ages.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 8, theotokos troparion 4"
+                }
+              }
+            ]
+          },
+          "menaion_rubric": "After the Troparia from the Menaion for ODE VIII, we chant:"
+        },
+        "9": {
+          "irmos": {
+            "text": "It is impossible for mankind to see God * upon Whom the orders of angels dare not gaze; * but through thee, O all-pure one, * did the Word Incarnate become a man * and with the heavenly hosts, * Him we magnify and thee we call blessed.",
+            "tier": 2,
+            "src": {
+              "file": "6-1.pdf",
+              "locus": "Sunday Matins canon, Ode 9 irmos"
+            }
+          },
+          "resurrection": {
+            "refrain": "Glory to Thy holy Resurrection O Lord.",
+            "troparia": [
+              {
+                "text": "Thou, O Word of God, didst remain dispassionate while dwelling in the passionate flesh, thereby freeing mankind from the passions, being Thyself a passion unto the passions, O our Savior, for Thou alone art passionless and All- powerful.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 9, resurrection troparion 1"
+                }
+              },
+              {
+                "text": "Suffering the corruption of death, O Master, Thou hast preserved Thy body from corruption, and leaving not Thy life-giving divine soul in Hades, Thou didst arise as from sleep, raising us up also.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 9, resurrection troparion 2"
+                }
+              }
+            ],
+            "closer": {
+              "text": "We, the race of mankind with pure lips glorify and honor God the Father, the co-beginningless Son, and the ineffable and most glorious power of the All-holy Spirit; for Thou alone art All-powerful, O Trinity indivisible.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Sunday Matins canon, Ode 9, resurrection closer"
+              },
+              "type": "trinitarion",
+              "refrain": "We bless the Lord; Father, Son and Holy Spirit.",
+              "sourceLabel": "Trinitarian"
+            }
+          },
+          "cross_resurrection": {
+            "refrain": "Glory to Thy precious Cross and Resurrection O Lord.",
+            "troparia": [
+              {
+                "text": "Although Thou didst descend into the grave as one dead, O Life-giver, Thou didst destroy the power of Hades, Thou didst raise together with Thyself, O Christ, those who were in bondage therein, and as God Thou dost grant resurrection unto all who with faith and love magnify Thee.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 9, cross_resurrection troparion 1"
+                }
+              },
+              {
+                "text": "Let creation rejoice, delighting and blossoming forth like a lily, for as God, Christ is risen from the dead; wherefore let us cry aloud: “Death! where is thy sting? and Hades where thy victory? For the compassionate One Who hath exalted our horn, hath cast thee to the ground.”",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 9, cross_resurrection troparion 2"
+                }
+              }
+            ],
+            "closer": {
+              "text": "Thou hast borne Him Who doth bear everything, O most pure Sovereign Lady, and held in thine arms as an infant, Him Who delivereth us from the hand of the warring enemy, and beheld lifted upon the Tree of the Cross Him Who hath raised us up from the pit of corruption.",
+              "tier": 1,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Sunday Matins canon, Ode 9, cross_resurrection closer"
+              },
+              "type": "theotokion",
+              "refrain": "Most holy Theotokos save us.",
+              "sourceLabel": "Theotokion"
+            }
+          },
+          "theotokos": {
+            "refrain": "Most holy Theotokos save us.",
+            "troparia": [
+              {
+                "text": "A star resplendent with the radiance of the Godhead hath arisen from Jacob unto those who were held in darkness, for through thee, O all-pure one, Christ God hath now become the incarnate Word; enlightened by Him, we, with the heavenly hosts, call thee blessed.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 9, theotokos troparion 1"
+                }
+              },
+              {
+                "text": "Strengthened by thy power and grace, I have set forth this hymn to thee from a fervent heart; do thou accept it, O pure Virgin, sending down in return from thine imperishable treasures, thy grace, O blessed one of God.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 9, theotokos troparion 2"
+                }
+              },
+              {
+                "text": "Thou, O Virgin, hast been revealed as a divine loom, upon which the Word hath woven a covering of flesh, making my nature God-like, and putting it on He hath saved all those who with a pure mind magnify thee.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 9, theotokos troparion 3"
+                }
+              },
+              {
+                "text": "Resurrection hath now been bestowed upon the dead through thine unspeakable and ineffable birthgiving, O all-pure Theotokos, for having assumed flesh from thee, Life hath shone forth unto all, revealing the destruction of the corruption of death.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Sunday Matins canon, Ode 9, theotokos troparion 4"
+                }
+              }
+            ]
+          },
+          "menaion_rubric": "The Troparia from the Menaion, then the appointed Katavasia."
+        }
+      }
+    },
+    "exapostilarion_rubric": "Exapostilarion (Svetilen). Note: The Exapostilarion is taken from the prescribed Eothinon according to the Resurrection Gospel, however, If the Menaion service is ‘feasted’ the Exapostilarion, with the appointed Theotokion, are taken from the Menaion.",
+    "praises": {
+      "rubric": "On the Praises: “Let every breath ...,” 8 Stichera of the Resurrection, however, if the service from the Menaion is ‘feasted’ sing the first 4 Stichera from the Resurrection, and the last 4 from the Menaion, with the appointed verses.",
+      "stichera": [
+        {
+          "text": "Thy Cross, O Lord, * is the Life and Resurrection of Thy people, * and trusting in it we sing Thy praises: ** O our risen God, have mercy upon us.",
+          "tier": 2,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Matins, Praises sticheron 1"
+          }
+        },
+        {
+          "text": "Thy burial, O Master, * hath opened paradise to mankind, * and thus delivered from corruption we sing Thy praises: ** O our risen God, have mercy upon us.",
+          "tier": 2,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Matins, Praises sticheron 2"
+          }
+        },
+        {
+          "text": "With the Father and the Spirit * let us hymn Christ risen from the dead, * and let us cry out to Him: ** “Thou art our Life and Resurrection, have mercy upon us.”",
+          "tier": 2,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Matins, Praises sticheron 3"
+          }
+        },
+        {
+          "text": "On the third day Thou didst arise from the tomb, O Christ, * as it was written, * raising together with Thyself our forefather; ** therefore the race of mankind doth glorify Thee, and hymn Thy Resurrection.",
+          "tier": 2,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Matins, Praises sticheron 4"
+          }
+        },
+        {
+          "text": "O Lord, great and fearful is the mystery of Thy Resurrection; * for Thou camest forth from the tomb * like unto a bridegroom from His marriage chamber, * overcoming death by death, * and redeeming Adam. * Wherefore angels exult in heaven * and mankind here on earth ** doth glorify Thy compassion towards us, O Lover of mankind.",
+          "tier": 2,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Matins, Praises sticheron 5"
+          },
+          "provenance_note": "sub-group \"Other Stichera of Anatolius\""
+        },
+        {
+          "text": "O ye wicked Jews!, where are the seals, * and the pieces of silver that you handed to the watchmen? * The treasure was not stolen, but hath arisen as One almighty; * and Ye have been put to shame, who denied Christ, * the Lord of glory, who suffered and was buried * and arose on the third day; ** Him let us worship and glorify.",
+          "tier": 2,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Matins, Praises sticheron 6"
+          },
+          "provenance_note": "sub-group \"Other Stichera of Anatolius\""
+        },
+        {
+          "text": "While the stone was sealed, how were you robbed, O Jews? * Since you set guards and placed seals. * Yet while the doors were shut the King came forth. * Either bring forth His body, or worship Him as God, * and along with us chant: ** “Glory, O Lord, to Thy Cross and holy Resurrection!”",
+          "tier": 2,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Matins, Praises sticheron 7"
+          },
+          "provenance_note": "sub-group \"Other Stichera of Anatolius\""
+        },
+        {
+          "text": "The myrrh-bearing women came lamenting to Thy life-bearing grave, O Lord, * carrying sweet smelling spices, * seeking to anoint Thy most pure body; * but instead they found a radiant angel seated upon the stone, * and He addressed them saying. * “Why weep ye for the One who hath poured forth life from His side for the world’s sake? * Why seek ye the immortal One as a mortal in a grave? * Rather run ye, and tell His disciples the universal joy of His glorious Resurrection; * with which Thou hast enlightened us also, O Savior, ** grant unto us pardon and great mercy.",
+          "tier": 2,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Matins, Praises sticheron 8"
+          },
+          "provenance_note": "sub-group \"Other Stichera of Anatolius\""
+        }
+      ],
+      "verses": {
+        "ref": "shared.praises_verse_ladder"
+      },
+      "gloria_rubric": "Glory ..., The Eothinon of the Resurrection Gospel Note: If the service from the Menaion is ‘feasted’ the Eothinon is taken from the Menaion, and the Eothinon of the Gospel is read at the end of Matins.",
+      "theotokion": {
+        "text": "Thou art most blessed, O Virgin Theotokos, * for through Him who took flesh from Thee, Hades hath been captured, * Adam recalled, the curse slain, Eve set free, * death put to death, and we have been given life. * Therefore in praise we cry: ** Blessed art thou, O Christ our God, who hast been thus well-pleased, glory be to Thee.",
+        "tier": 2,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Sunday Matins, Praises Both-now Theotokion"
+        }
+      }
+    },
+    "doxology_troparion": {
+      "text": "Having risen from the tomb, and having burst the bonds of Hades, * Thou hast destroyed the sentence of death, O Lord, * delivering all from the snares of the enemy. * Manifesting Thyself to Thine apostles, Thou didst send them forth to preach; * and through them hast granted Thy peace to the world, ** O Thou Who alone art greatly merciful.",
+      "tier": 2,
+      "src": {
+        "file": "6-1.pdf",
+        "locus": "Sunday Matins, troparion after the Great Doxology"
+      }
+    }
+  },
+  "liturgy": {
+    "beatitudes": {
+      "rubric": "Typika and Beatitudes.",
+      "troparia": [
+        {
+          "text": "Remember me, O God my Savior, when Thou comest in Thy kingdom, and save me, for Thou alone lovest mankind.",
+          "tier": 1,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Liturgy, Beatitude troparion 1"
+          }
+        },
+        {
+          "text": "Through a tree Adam was deceived; through the Tree of the Cross Thou hast saved Him again, the thief who cried, “Remember me, O Lord, in Thy kingdom.”",
+          "tier": 1,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Liturgy, Beatitude troparion 2"
+          }
+        },
+        {
+          "text": "Thou hast smashed the gates and bars of Hades, O Giver of life, and Thou hast raised all the dead, O Savior, as they cried, “Glory to Thine arising.”",
+          "tier": 1,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Liturgy, Beatitude troparion 3"
+          }
+        },
+        {
+          "text": "Thou didst despoil death by Thy burial and fillest all things with joy by Thy Resurrection. Remember me O Lord, as Thou art compassionate.",
+          "tier": 1,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Liturgy, Beatitude troparion 4"
+          }
+        },
+        {
+          "text": "Myrrh-bearing women came to the grave and heard an angel cry aloud, “Christ hath risen, enlightening all things.”",
+          "tier": 1,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Liturgy, Beatitude troparion 5"
+          }
+        },
+        {
+          "text": "Let us all with one accord praise Christ, who was nailed to the Tree of the Cross and delivered the world from error.",
+          "tier": 1,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Liturgy, Beatitude troparion 6"
+          }
+        }
+      ],
+      "gloria": {
+        "text": "We glorify the Father and the Son and the Holy Spirit, chanting, “O Holy Trinity, save our souls!”",
+        "tier": 1,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Sunday Liturgy, Beatitudes Gloria (Triadicon — final pre-Theotokion item)"
+        }
+      },
+      "theotokion": {
+        "text": "O Virgin, who didst conceive ineffably in the last times, and hast given birth to thine own Creator, save those who magnify Thee.",
+        "tier": 1,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Sunday Liturgy, Beatitudes Theotokion"
+        },
+        "sourceLabel": "Theotokion"
+      }
+    },
+    "prokeimenon": {
+      "tone": 6,
+      "text": {
+        "text": "Save, O Lord, Thy people; and bless Thine inheritance.",
+        "tier": 1,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Sunday Liturgy prokeimenon"
+        }
+      },
+      "verse": {
+        "text": "To Thee, O Lord, will I cry; O my God, keep Thou not silent toward me.",
+        "tier": 1,
+        "src": {
+          "file": "6-1.pdf",
+          "locus": "Sunday Liturgy prokeimenon verse"
+        }
+      }
+    },
+    "alleluia": {
+      "tone": 6,
+      "verses": [
+        {
+          "text": "He that dwelleth in the help of the Most High, under the shelter of the God of heaven shall abide.",
+          "tier": 1,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Liturgy Alleluia"
+          }
+        },
+        {
+          "text": "He shall say to the Lord, Thou art my succor, and my refuge, my God, and I shall hope in Him.",
+          "tier": 1,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Sunday Liturgy Alleluia verse 2"
+          }
+        }
+      ]
+    }
+  },
+  "vespers_weekday": {
+    "sun": {
+      "rubric": "On “Lord, I have cried ...,” 3 Stichera of repentance, The composition of Joseph, in Tone VI: Spec. Mel.: “The angelic hosts ...”:",
+      "lic": {
+        "octoechos": [
+          {
+            "text": "Through thought of contrition grant me tears of repentance, O Savior, that I may wash away the filth from my soul, which I have badly sullied, committing unrighteousness all the time, for it is for this that I have her who gave birth to Thee, and the angelic choirs, entreating Thy love for mankind,",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Sunday-evening Vespers, LIC Octoechos sticheron 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "The angelic hosts"
+          },
+          {
+            "text": "Come, O my soul, and repent of the many sins thou hast committed in this life, and entreat the multitude of the heavenly armies with sighs and tears, that time be given thee for repentance, lest thou be sent into the most accursed fire of Gehenna like the barren fig-tree.",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Sunday-evening Vespers, LIC Octoechos sticheron 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "The angelic hosts"
+          },
+          {
+            "text": "Not one of Thy commandments have I kept on earth. When Thou shalt sit upon Thy throne, how shall I give answer for myself, receiving condemnation for all that I have done in knowledge or in ignorance, O my Christ? Wherefore, I cry out to Thee: Through the supplications of Thy servants save me, the prodigal!",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Sunday-evening Vespers, LIC Octoechos sticheron 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "The angelic hosts"
+          }
+        ],
+        "octoechos_verses": [
+          {
+            "text": "If Thou shouldest mark iniquities, O Lord, O Lord, who shall stand? * For with Thee there is forgiveness.",
+            "tier": 2,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Sunday-evening Vespers, LIC ladder verse 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ]
+          },
+          {
+            "text": "For Thy name’s sake have I patiently waited for Thee, O Lord; my soul hath waited patiently for Thy word, * my soul hath hoped in the Lord.",
+            "tier": 2,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Sunday-evening Vespers, LIC ladder verse 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "text": "From the morning watch until night, from the morning watch * let Israel hope in the Lord.",
+            "tier": 2,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Sunday-evening Vespers, LIC ladder verse 3"
+            }
+          }
+        ],
+        "menaion_rubric": "Then the Stichera from the Menaion; or if there is no Menaion, these Stichera of the holy incorporeal angels, in the same tone: Spec. Mel.: “On the third day ...”:",
+        "menaion_fallback": [
+          {
+            "text": "Standing before Thy throne, the angelic hosts pray for the race of mankind, O Christ; wherefore, by their supplications grant peace unto all, and put down the audacity of the heathen.",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Sunday-evening Vespers, Menaion-fallback sticheron 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "On the third day"
+          },
+          {
+            "text": "O all ye ranks of the angels, who ever dance round about the throne of the King of all, preserve us who call upon you with faith, and deliver us from torments.",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Sunday-evening Vespers, Menaion-fallback sticheron 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "On the third day"
+          },
+          {
+            "text": "The Father Who is God over all, the only Word, and the Spirit, brought forth the hosts of heavenly intelligences, formless and immaterial, to hymn the glory of the triple Sun.",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Sunday-evening Vespers, Menaion-fallback sticheron 3"
+            },
+            "label": "plain",
+            "spec_mel": "On the third day"
+          }
+        ],
+        "menaion_verses": [
+          {
+            "text": "For with the Lord there is mercy, and with Him there is plenteous redemption; * and He shall redeem Israel out of all his iniquities.",
+            "tier": 2,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Sunday-evening Vespers, ladder tail verse 1"
+            }
+          },
+          {
+            "text": "O praise the Lord, all ye nations; * praise Him, all ye peoples.",
+            "tier": 2,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Sunday-evening Vespers, ladder tail verse 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "text": "For He hath made His mercy to prevail over us, * and the truth of the Lord abideth forever.",
+            "tier": 2,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Sunday-evening Vespers, ladder tail verse 3"
+            }
+          }
+        ]
+      },
+      "lic_theotokion": {
+        "text": "O Theotokos, who at the sound of the archangel’s voice conceived in thy womb the Word, Who with the Father and the Spirit is equally beginningless, thou hast been revealed to be more exalted than the cherubim, seraphim and thrones.",
+        "tier": 1,
+        "src": {
+          "file": "6-2.pdf",
+          "locus": "Sunday-evening Vespers, LIC Glory/Both-now closer"
+        },
+        "homoglyph_log": [
+          {
+            "from": "U+041E О (Cyrillic)",
+            "to": "O",
+            "count": 1
+          }
+        ],
+        "type": "theotokion"
+      },
+      "prokeimenon": {
+        "ref": "shared.daily_vespers_prokeimena.sun",
+        "rubric": "Then, “O Joyous Light ...,” the Prokeimenon, in Tone VIII:"
+      },
+      "aposticha": {
+        "rubric": "Vouchsafe, O Lord ..., Litany: Let us complete ..., Then: On the Aposticha, these Stichera of repentance, in Tone VI:",
+        "items": [
+          {
+            "text": "At Thy dread coming, O Christ, let us not hear “I know you not.” For we have set our hope upon Thee, O Savior. And even though in our neglect we have not kept Thy precepts, yet take pity on our souls, we pray.",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Sunday-evening Vespers, aposticha item 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Neither repentance nor tears have I acquired; wherefore, I beseech Thee, O Christ God: Convert me before the end, and grant me compunction, that I may be delivered from tortures.",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Sunday-evening Vespers, aposticha item 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Thy martyrs, O Lord, denied Thee not, nor did they forsake Thy commandments; by their intercessions have mercy upon us.",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Sunday-evening Vespers, aposticha item 3"
+            },
+            "label": "martyrs"
+          }
+        ],
+        "verses": [
+          {
+            "text": "Unto Thee have I lifted up mine eyes, unto Thee that dwellest in heaven. Behold, as the eyes of servants look unto the hands of their masters, as the eyes of the handmaid look unto the hands of her mistress, so do our eyes look unto the Lord our God, * until He take pity on us.",
+            "tier": 2,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Sun-evening Vespers aposticha verse 1 — \"her mistress\" lowercase (shared/2-x: \"Mistress\"; §5 per-tone — tone 6 diverges at every weekday evening)"
+            }
+          },
+          {
+            "text": "Have mercy on us, O Lord, have mercy on us, for greatly are we filled with abasement. Greatly hath our soul been filled therewith; let reproach come upon them that prosper, * and abasement on the proud.",
+            "tier": 2,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Sun-evening Vespers aposticha verse 2 (byte-matches shared; stored with its per-tone verse-1 partner)"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ]
+          }
+        ]
+      },
+      "aposticha_theotokion": {
+        "text": "Like the Archangel, * let us the faithful hymn the bridal-chamber of heaven, * the portal truly sealed: * Rejoice, for whose sake hath budded forth unto us Christ the Savior of all, * the Bestower of life and God! * With thine arm O Lady * cast down the tyrants, our godless foes, * O most pure one, ** O thou hope of Christians!",
+        "tier": 2,
+        "src": {
+          "file": "6-2.pdf",
+          "locus": "Sunday-evening Vespers, aposticha Glory/Both-now closer"
+        },
+        "type": "theotokion"
+      },
+      "closing_rubric": "Then, “Now lettest Thou Thy servant depart ...,” Trisagion through Our Father ..., Troparia. Litany: Have mercy on us ..., and Dismissal. SUNDAY NIGHT: TONE VI AT COMPLINE Canon of supplication to the most holy Theotokos"
+    },
+    "mon": {
+      "rubric": "On “Lord, I have cried ...,” 3 Stichera of repentance, The composition of Joseph, in Tone VI: Spec. Mel.: “For the wretchedness of life ...”:",
+      "lic": {
+        "octoechos": [
+          {
+            "text": "Who doth not weep for me, who in intemperance have broken the commandment of the Most High? I have come to dwell in Hades instead of paradise through the sight of the sweet food which brought about death, and because of it I have become a stranger to life and the glory of God. Yet accept me the penitent, O Lord, for the sake of Thy great mercy, in that Thou art merciful and the Lover of mankind.",
+            "tier": 1,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Monday-evening Vespers, LIC Octoechos sticheron 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "For the wretchedness of life"
+          },
+          {
+            "text": "Behold my sorrow and pain, and the countless multitude of my transgressions, the affliction of my soul and the delusion of my mind. Attend unto the cry of one who is accursed and condemned, O Lord, and grant me a contrite spirit and a humble heart; and in Thy great mercy give me a wellspring of tears and forgiveness for my many transgressions.",
+            "tier": 1,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Monday-evening Vespers, LIC Octoechos sticheron 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "For the wretchedness of life"
+          },
+          {
+            "text": "O God, Who desirest that all should be saved: Look down and hearken unto my supplication, and reject not my tears as shed in vain. For who having come to Thee weeping hath not been saved straightway? Who having cried out fervently unto Thee hath not been hearkened to straightway? O Master, be Thou quick to save all who entreat Thee, for Thou art invincible in mercy.",
+            "tier": 1,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Monday-evening Vespers, LIC Octoechos sticheron 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "For the wretchedness of life"
+          }
+        ],
+        "octoechos_verses": [
+          {
+            "text": "If Thou shouldest mark iniquities, O Lord, O Lord, who shall stand? * For with Thee there is forgiveness.",
+            "tier": 2,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Monday-evening Vespers, LIC ladder verse 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ]
+          },
+          {
+            "text": "For Thy name’s sake have I patiently waited for Thee, O Lord; my soul hath waited patiently for Thy word, * my soul hath hoped in the Lord.",
+            "tier": 2,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Monday-evening Vespers, LIC ladder verse 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "text": "From the morning watch until night, from the morning watch * let Israel hope in the Lord.",
+            "tier": 2,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Monday-evening Vespers, LIC ladder verse 3"
+            }
+          }
+        ],
+        "menaion_rubric": "Then the Stichera from the Menaion; or if there is no Menaion, these Stichera of the holy forerunner, in the same tone:",
+        "menaion_fallback": [
+          {
+            "text": "Disdain me not who have strayed from the path of life, O Forerunner of the Savior. I lift up mine eyes unto Thee, and cry: Set the feet of my soul upon the rock of repentance; show me how to walk the straight way which leadeth to the gates of salvation; and reject not the groaning of my sorrowful heart, O thou who art the greatest of all who have been born.",
+            "tier": 1,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Monday-evening Vespers, Menaion-fallback sticheron 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "O Baptist and Forerunner of the Savior: Be thou a helper unto me who have sunk in the mire of impure thoughts; extend to me the hand which touched the head of the Incorrupt One; strengthen me that I may valiantly do the works of repentance, which thou didst preach; and grant that I, thy servant, may enter into the kingdom, which thou wast the first to proclaim, O blessed one.",
+            "tier": 1,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Monday-evening Vespers, Menaion-fallback sticheron 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "O Baptist of Christ, who by thy birth didst loose thy mother’s barrenness and thy father’s tongue, rid thou my childless heart of fruitlessness, and quickly remove all the irrationality of my soul, for thou wast the voice of the Word, announcing repentance, which do thou grant that I may ever achieve, who in my slothfulness have withdrawn from God.",
+            "tier": 1,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Monday-evening Vespers, Menaion-fallback sticheron 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          }
+        ],
+        "menaion_verses": [
+          {
+            "text": "For with the Lord there is mercy, and with Him there is plenteous redemption; * and He shall redeem Israel out of all his iniquities.",
+            "tier": 2,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Monday-evening Vespers, ladder tail verse 1"
+            }
+          },
+          {
+            "text": "O praise the Lord, all ye nations; * praise Him, all ye peoples,",
+            "tier": 2,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Monday-evening Vespers, ladder tail verse 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "text": "For He hath made His mercy to prevail over us, * and the truth of the Lord abideth forever.",
+            "tier": 2,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Monday-evening Vespers, ladder tail verse 3"
+            }
+          }
+        ]
+      },
+      "lic_theotokion": {
+        "text": "O most holy Virgin, show forth upon me, the wretched one, the depths of thy love for mankind, the abyss of thy tender compassion, and the countless compassions of thy goodness. Mow down the stubble of sin, granting me chastity, and preserve my body and soul undefiled, O thou who hast given birth to the Savior.",
+        "tier": 1,
+        "src": {
+          "file": "6-3.pdf",
+          "locus": "Monday-evening Vespers, LIC Glory/Both-now closer"
+        },
+        "homoglyph_log": [
+          {
+            "from": "U+041E О (Cyrillic)",
+            "to": "O",
+            "count": 2
+          }
+        ],
+        "type": "theotokion"
+      },
+      "prokeimenon": {
+        "ref": "shared.daily_vespers_prokeimena.mon",
+        "rubric": "Then, “O Joyous Light ...,” the Prokeimenon, in Tone IV:"
+      },
+      "aposticha": {
+        "rubric": "Vouchsafe, O Lord ..., Litany: Let us complete ..., Then: On the Aposticha, these Stichera of repentance, in Tone VI:",
+        "items": [
+          {
+            "text": "At Thy fearful Coming, O Christ, * may we not hear the words: * “I know you not.” * For though, O Savior, we have put our trust in Thee, * from negligence we have not kept Thy commandments; * yet we entreat Thee, ** do Thou spare our souls.",
+            "tier": 2,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Monday-evening Vespers, aposticha item 1"
+            },
+            "label": "plain"
+          },
+          {
+            "text": "I have no repentance and I have no tears. * Wherefore I entreat Thee, O Christ God: * before the end is here * turn me back and grant me compunction, * that I may be delivered ** from the torments of Hades.",
+            "tier": 2,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Monday-evening Vespers, aposticha item 2"
+            },
+            "label": "plain"
+          },
+          {
+            "text": "O martyred passion-bearers, citizens of heaven, who suffered on the earth, ye endured many torments. By their supplications and entreaty, O Lord, preserve us all.",
+            "tier": 1,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Monday-evening Vespers, aposticha item 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ],
+            "label": "martyrs"
+          }
+        ],
+        "verses": [
+          {
+            "text": "Unto Thee have I lifted up mine eyes, unto Thee that dwellest in heaven. Behold, as the eyes of servants look unto the hands of their masters, as the eyes of the handmaid look unto the hands of her mistress, so do our eyes look unto the Lord our God, * until He take pity on us.",
+            "tier": 2,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Mon-evening Vespers aposticha verse 1 — \"her mistress\" lowercase (shared/2-x: \"Mistress\"; §5 per-tone — tone 6 diverges at every weekday evening)"
+            }
+          },
+          {
+            "text": "Have mercy on us, O Lord, have mercy on us, for greatly are we filled with abasement. Greatly hath our soul been filled therewith; let reproach come upon them that prosper, * and abasement on the proud.",
+            "tier": 2,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Mon-evening Vespers aposticha verse 2 (byte-matches shared; stored with its per-tone verse-1 partner)"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ]
+          }
+        ]
+      },
+      "aposticha_theotokion": {
+        "text": "No one that fleeth unto thee, O most pure Virgin Theotokos, * departeth from thee ashamed; * for those that asketh grace of thee, ** ever receiveth a gift for their profitable petition.",
+        "tier": 2,
+        "src": {
+          "file": "6-3.pdf",
+          "locus": "Monday-evening Vespers, aposticha Glory/Both-now closer"
+        },
+        "type": "theotokion"
+      },
+      "closing_rubric": "Then, “Now lettest Thou Thy servant depart ...,” Trisagion through Our"
+    },
+    "tue": {
+      "rubric": "On “Lord, I have cried ...,” 3 Stichera of the precious Cross, in Tone VI: Spec. Mel.: “On the third day ...”:",
+      "lic": {
+        "octoechos": [
+          {
+            "text": "When Thou wast crucified, O long-suffering Lord, Thou didst shake the whole earth, making steadfast the hearts of the faithful; wherefore, we hymn Thee and with love worship Thine unapproachable power.",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Tuesday-evening Vespers, LIC Octoechos sticheron 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "On the third day"
+          },
+          {
+            "text": "Spat upon and smitten on the cheek, O Savior, Thou didst smite the evil of the venomous foe, taking away the fall which Adam endured, who was abducted because of his transgression.",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Tuesday-evening Vespers, LIC Octoechos sticheron 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "On the third day"
+          },
+          {
+            "text": "The sun was darkened, the whole earth quaked, and the stones split asunder, when they beheld Thee suspended unjustly upon the Tree, setting aside Thine own will, O Savior.",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Tuesday-evening Vespers, LIC Octoechos sticheron 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "On the third day"
+          }
+        ],
+        "octoechos_verses": [
+          {
+            "text": "If Thou shouldest mark iniquities, O Lord, O Lord, who shall stand? * For with Thee there is forgiveness.",
+            "tier": 2,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Tuesday-evening Vespers, LIC ladder verse 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ]
+          },
+          {
+            "text": "For Thy name’s sake have I patiently waited for Thee, O Lord; my soul hath waited patiently for Thy word, * my soul hath hoped in the Lord.",
+            "tier": 2,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Tuesday-evening Vespers, LIC ladder verse 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "text": "From the morning watch until night, from the morning watch * let Israel hope in the Lord.",
+            "tier": 2,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Tuesday-evening Vespers, LIC ladder verse 3"
+            }
+          }
+        ],
+        "menaion_rubric": "Then the Stichera from the Menaion; or if there is no Menaion, these Stichera of the most holy Theotokos, in Tone VI, in the same melody:",
+        "menaion_fallback": [
+          {
+            "text": "Standing once with the virginal disciple at the foot of the Cross during the crucifixion , the Virgin cried, weeping: “Woe is me! How is it that Thou sufferest, O Christ, Thou dispassion of all?”",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Tuesday-evening Vespers, Menaion-fallback sticheron 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "“Mindful of Thy seedless conception and most pure birthgiving, I marvel greatly. How hast Thou been thus well-pleased to die like a malefactor, O Savior?”, the most pure one cried out.",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Tuesday-evening Vespers, Menaion-fallback sticheron 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "“I am crucified, nailed to the Tree like a man, and am placed in a tomb as one dead, O pure Virgin Mother. But as God I will rise again in glory on the third day!”",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Tuesday-evening Vespers, Menaion-fallback sticheron 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          }
+        ],
+        "menaion_verses": [
+          {
+            "text": "For with the Lord there is mercy, and with Him there is plenteous redemption; * and He shall redeem Israel out of all his iniquities.",
+            "tier": 2,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Tuesday-evening Vespers, ladder tail verse 1"
+            }
+          },
+          {
+            "text": "O praise the Lord, all ye nations; * praise Him, all ye peoples.",
+            "tier": 2,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Tuesday-evening Vespers, ladder tail verse 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "text": "For He hath made His mercy to prevail over us, * and the truth of the Lord abideth forever.",
+            "tier": 2,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Tuesday-evening Vespers, ladder tail verse 3"
+            }
+          }
+        ]
+      },
+      "lic_theotokion": {
+        "text": "Thy pure Virgin Mother, * beholding the most iniquitous people * who unjustly nailed Thee to the Tree, ** was wounded within, as Symeon foretold.",
+        "tier": 2,
+        "src": {
+          "file": "6-4.pdf",
+          "locus": "Tuesday-evening Vespers, LIC Glory/Both-now closer"
+        },
+        "type": "stavrotheotokion",
+        "sourceLabel": "Stavrotheotokion"
+      },
+      "prokeimenon": {
+        "ref": "shared.daily_vespers_prokeimena.tue",
+        "rubric": "Then, “O Joyous Light ...,” the Prokeimenon, in Tone I:"
+      },
+      "aposticha": {
+        "rubric": "Vouchsafe, O Lord ..., Litany: Let us complete ..., Then: On the Aposticha, these Stichera of the precious Cross, in Tone VI",
+        "items": [
+          {
+            "text": "Thy Cross is life and help for Thy people, O Lord; and trusting therein, we hymn Thee, our God Who wast crucified in the flesh. Have mercy on us!",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Tuesday-evening Vespers, aposticha item 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Thy Cross, O Lord, hath opened paradise to the race of mankind; and delivered from corruption, we hymn Thee, our God Who wast crucified in the flesh. Have mercy on us!",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Tuesday-evening Vespers, aposticha item 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "They who suffered for Thy sake, O Christ, endured many torments and have received perfect crowns in the heavens. May they pray on behalf of our souls.",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Tuesday-evening Vespers, aposticha item 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "martyrs"
+          }
+        ],
+        "verses": [
+          {
+            "text": "Unto Thee have I lifted up mine eyes, unto Thee that dwellest in heaven. Behold, as the eyes of servants look unto the hands of their masters, as the eyes of the handmaid look unto the hands of her mistress, so do our eyes look unto the Lord our God, * until He take pity on us.",
+            "tier": 2,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Tue-evening Vespers aposticha verse 1 — \"her mistress\" lowercase (shared/2-x: \"Mistress\"; §5 per-tone — tone 6 diverges at every weekday evening)"
+            }
+          },
+          {
+            "text": "Have mercy on us, O Lord, have mercy on us, for greatly are we filled with abasement. Greatly hath our soul been filled therewith; let reproach come upon them that prosper, * and abasement on the proud.",
+            "tier": 2,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Tue-evening Vespers aposticha verse 2 (byte-matches shared; stored with its per-tone verse-1 partner)"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ]
+          }
+        ]
+      },
+      "aposticha_theotokion": {
+        "text": "Upon beholding our Life suspended upon the Tree, * the all-immaculate Theotokos cried aloud, * maternally lamenting: ** O my Son and my God, save those who with love hymn Thee!",
+        "tier": 2,
+        "src": {
+          "file": "6-4.pdf",
+          "locus": "Tuesday-evening Vespers, aposticha Glory/Both-now closer"
+        },
+        "type": "stavrotheotokion",
+        "sourceLabel": "Stavrotheotokion"
+      },
+      "closing_rubric": "Then, “Now lettest Thou Thy servant depart ...,” Trisagion through Our"
+    },
+    "wed": {
+      "rubric": "On “Lord, I have cried ...,” 3 Stichera of the holy apostles, in Tone VI: Spec. Mel.: “On the third day ...”:",
+      "lic": {
+        "octoechos": [
+          {
+            "text": "Ye became ministers of the great mysteries of God, O theologians and God- beholding disciples, and having received the grace of healing, ye cure the diseases of all.",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Wednesday-evening Vespers, LIC Octoechos sticheron 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "On the third day"
+          },
+          {
+            "text": "Ye are the great refuge and protection of our souls and the expulsion of evil spirits, O God-beholding apostles of the Lord, wherefore, we ever honor you.",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Wednesday-evening Vespers, LIC Octoechos sticheron 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "On the third day"
+          },
+          {
+            "text": "From every evil circumstance, from harm wrought by the demons, from transgressions and wretched captivity, deliver those who honor you with faith, O divine and blessed apostles.",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Wednesday-evening Vespers, LIC Octoechos sticheron 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "On the third day"
+          }
+        ],
+        "octoechos_verses": [
+          {
+            "text": "If Thou shouldest mark iniquities, O Lord, O Lord, who shall stand? * For with Thee there is forgiveness.",
+            "tier": 2,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Wednesday-evening Vespers, LIC ladder verse 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ]
+          },
+          {
+            "text": "For Thy name’s sake have I patiently waited for Thee, O Lord; my soul hath waited patiently for Thy word, * my soul hath hoped in the Lord.",
+            "tier": 2,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Wednesday-evening Vespers, LIC ladder verse 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "text": "From the morning watch until night, from the morning watch * let Israel hope in the Lord.",
+            "tier": 2,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Wednesday-evening Vespers, LIC ladder verse 3"
+            }
+          }
+        ],
+        "menaion_rubric": "Then the Stichera from the Menaion; or if there is no Menaion, these Stichera of the holy hierarch Nicholas, the wonderworker, in the same melody:",
+        "menaion_fallback": [
+          {
+            "text": "O blessed Nicholas, have pity on me who fall prostrate, I beseech thee, and enlighten the eyes of my soul, that I may gaze with purity upon the compassionate Bestower of light.",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Wednesday-evening Vespers, Menaion-fallback sticheron 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "As thou hast boldness before God, O holy one, deliver me from the enemy who seeks to oppress me. O blessed hierarch Nicholas, save me from harm and deliver me from men of blood.",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Wednesday-evening Vespers, Menaion-fallback sticheron 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "We, the faithful, have now acquired thee as a calm haven, an unassailable rampart, a pillar of strength, a door to repentance, and the guide and bulwark of our souls, O holy hierarch.",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Wednesday-evening Vespers, Menaion-fallback sticheron 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          }
+        ],
+        "menaion_verses": [
+          {
+            "text": "For with the Lord there is mercy, and with Him there is plenteous redemption; * and He shall redeem Israel out of all his iniquities.",
+            "tier": 2,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Wednesday-evening Vespers, ladder tail verse 1"
+            }
+          },
+          {
+            "text": "O praise the Lord, all ye nations; * praise Him, all ye peoples.",
+            "tier": 2,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Wednesday-evening Vespers, ladder tail verse 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "text": "For He hath made His mercy to prevail over us, * and the truth of the Lord abideth forever.",
+            "tier": 2,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Wednesday-evening Vespers, ladder tail verse 3"
+            }
+          }
+        ]
+      },
+      "lic_theotokion": {
+        "text": "Envying thy flock, O most pure one, the wicked adversary ever striveth to make it his food; but do thou, O Theotokos, deliver us from his harm.",
+        "tier": 1,
+        "src": {
+          "file": "6-5.pdf",
+          "locus": "Wednesday-evening Vespers, LIC Glory/Both-now closer"
+        },
+        "homoglyph_log": [
+          {
+            "from": "U+041E О (Cyrillic)",
+            "to": "O",
+            "count": 2
+          }
+        ],
+        "type": "theotokion"
+      },
+      "prokeimenon": {
+        "ref": "shared.daily_vespers_prokeimena.wed",
+        "rubric": "Then, “O Joyous Light ...,” the Prokeimenon, in Tone V:"
+      },
+      "aposticha": {
+        "rubric": "Vouchsafe, O Lord ..., Litany: Let us complete ..., Then: On the Aposticha, these Stichera of the holy apostles, in Tone VI:",
+        "items": [
+          {
+            "text": "Once, the apostles trolled the depths of the sea with nets, O Lord, and likewise the heights of the kingdom for the sake of their doctrines. In the first, they skillfully tested the unfathomable depths; and in the other they attained through faith Thine infinite bosom, and they proclaimed Thy timeless Son to the world. By their supplications and those of all the saints, have mercy on us.",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Wednesday-evening Vespers, aposticha item 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Once, when Thy disciples were tempest-tossed in a boat, O Christ, they cried out: “O Master, save us! For we are perishing!” And we now cry aloud: We pray Thee O our Savior and Lover of mankind, deliver us from our tribulations!",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Wednesday-evening Vespers, aposticha item 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Thy Cross was the invincible weapon of the martyrs, O Lord; for they looked upon imminent death, foreseeing the life which is to come, and they were strengthened by hope in Thee. By their prayers have mercy upon us!",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Wednesday-evening Vespers, aposticha item 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "martyrs"
+          }
+        ],
+        "verses": [
+          {
+            "text": "Unto Thee have I lifted up mine eyes, unto Thee that dwellest in heaven. Behold, as the eyes of servants look unto the hands of their masters, as the eyes of the handmaid look unto the hands of her mistress, so do our eyes look unto the Lord our God, * until He take pity on us.",
+            "tier": 2,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Wed-evening Vespers aposticha verse 1 — \"her mistress\" lowercase (shared/2-x: \"Mistress\"; §5 per-tone — tone 6 diverges at every weekday evening)"
+            }
+          },
+          {
+            "text": "Have mercy on us, O Lord, have mercy on us, for greatly are we filled with abasement. Greatly hath our soul been filled therewith; let reproach come upon them that prosper, * and abasement on the proud.",
+            "tier": 2,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Wed-evening Vespers aposticha verse 2 (byte-matches shared; stored with its per-tone verse-1 partner)"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ]
+          }
+        ]
+      },
+      "aposticha_theotokion": {
+        "text": "The eye of my heart longingly seeketh thee, * O Lady; disdain not my feeble sigh. * At the hour when thy Son shall judge the world, ** be thou my protection and helper.",
+        "tier": 2,
+        "src": {
+          "file": "6-5.pdf",
+          "locus": "Wednesday-evening Vespers, aposticha Glory/Both-now closer"
+        },
+        "type": "theotokion"
+      },
+      "closing_rubric": "Then, “Now lettest Thou Thy servant depart ...,” Trisagion through Our"
+    },
+    "thu": {
+      "rubric": "On “Lord, I have cried ...,” 3 Stichera of the precious Cross, in Tone VI: Spec. Mel.: “On the third day ...”:",
+      "lic": {
+        "octoechos": [
+          {
+            "text": "O my long-suffering God and Lover of mankind, greatly merciful and compassionate, how didst Thou endure to be slain and put to death on the Tree for the race of mankind? I glorify Thy loving-kindness.",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Thursday-evening Vespers, LIC Octoechos sticheron 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "On the third day"
+          },
+          {
+            "text": "Thou didst endure smiting, crucifixion and mockery, O Long-suffering One, desiring to deliver all from the deceiver; and Thou didst bear them all, O only supremely good Bestower of life.",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Thursday-evening Vespers, LIC Octoechos sticheron 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "On the third day"
+          },
+          {
+            "text": "Thou didst ascend the Cross, O Shepherd, and stretch forth Thine arms, crying out: “Come unto me and be enlightened, O ye who have been darkened by deception, for I am the Light!” Glory be to Thee, O only Bestower of light!",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Thursday-evening Vespers, LIC Octoechos sticheron 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 3
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "On the third day"
+          }
+        ],
+        "octoechos_verses": [
+          {
+            "text": "If Thou shouldest mark iniquities, O Lord, O Lord, who shall stand? * For with Thee there is forgiveness.",
+            "tier": 2,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Thursday-evening Vespers, LIC ladder verse 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ]
+          },
+          {
+            "text": "For Thy name’s sake have I patiently waited for Thee, O Lord; my soul hath waited patiently for Thy word, * my soul hath hoped in the Lord.",
+            "tier": 2,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Thursday-evening Vespers, LIC ladder verse 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "text": "From the morning watch until night, from the morning watch * let Israel hope in the Lord.",
+            "tier": 2,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Thursday-evening Vespers, LIC ladder verse 3"
+            }
+          }
+        ],
+        "menaion_rubric": "Then the Stichera from the Menaion; or if there is no Menaion, these Stichera of the most holy Theotokos, in Tone VI: Spec. Mel.: “The accursed ...”:",
+        "menaion_fallback": [
+          {
+            "text": "Raise up my soul, which is bowed down and bent low under the heavy burden of my transgressions, O Virgin, for thou hast the Savior, Who ever raises up those who have been cast down, readily responding to thy maternal boldness. And in thy great mercy rend asunder the record of my sin by thy mediation.",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Thursday-evening Vespers, Menaion-fallback sticheron 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "The accursed"
+          },
+          {
+            "text": "Look upon me, who have been brought to despair by sins, am defiled by iniquities, and have spurned the precepts of God; and turn me not away from thy face, for thou, O Theotokos, art my hope and protection. Wherefore, hearken unto my supplications, and in thy great mercy cleanse me of all defilement.",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Thursday-evening Vespers, Menaion-fallback sticheron 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "The accursed"
+          },
+          {
+            "text": "Open unto me the gates of repentance, grant me a wellspring of tears, and bestow upon me compunction and a chaste heart, O most holy one; for thee alone do I call mine excellent intercession, and in thee do I place mine every hope. Reject me not, who am put to shame, O Lady, but in thy great mercy accept and save me.",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Thursday-evening Vespers, Menaion-fallback sticheron 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "The accursed"
+          }
+        ],
+        "menaion_verses": [
+          {
+            "text": "For with the Lord there is mercy, and with Him there is plenteous redemption; * and He shall redeem Israel out of all his iniquities.",
+            "tier": 2,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Thursday-evening Vespers, ladder tail verse 1"
+            }
+          },
+          {
+            "text": "O praise the Lord, all ye nations; * praise Him, all ye peoples.",
+            "tier": 2,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Thursday-evening Vespers, ladder tail verse 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "text": "For He hath made His mercy to prevail over us, * and the truth of the Lord abideth forever.",
+            "tier": 2,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Thursday-evening Vespers, ladder tail verse 3"
+            }
+          }
+        ]
+      },
+      "lic_theotokion": {
+        "text": "Seeing Thee nailed to the Tree, the most pure one cried out: “O my Son and God, what is this exceedingly glorious and strange report of Thee, that Thou dost endure in Thy great mercy?”",
+        "tier": 1,
+        "src": {
+          "file": "6-6.pdf",
+          "locus": "Thursday-evening Vespers, LIC Glory/Both-now closer"
+        },
+        "type": "stavrotheotokion",
+        "spec_mel": "On the third day",
+        "sourceLabel": "Stavrotheotokion"
+      },
+      "prokeimenon": {
+        "ref": "shared.daily_vespers_prokeimena.thu",
+        "rubric": "Then, “O Joyous Light ...,” the Prokeimenon, in Tone VI:"
+      },
+      "aposticha": {
+        "rubric": "Vouchsafe, O Lord ..., Litany: Let us complete ..., Then: On the Aposticha, these Stichera of the precious Cross, in Tone VI:",
+        "items": [
+          {
+            "text": "Thy Cross is the life and help of Thy people, O Lord; and trusting therein, we hymn Thee, our God Who wast crucified in the flesh. Have mercy on us!",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Thursday-evening Vespers, aposticha item 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Thy Cross, O Lord, hath opened paradise to the race of mankind; and delivered from corruption, we hymn Thee, our God Who wast crucified in the flesh. Have mercy on us!",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Thursday-evening Vespers, aposticha item 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Thy martyrs, O Lord, did not deny Thee nor depart from Thy commandments. By their supplications have mercy on us.",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Thursday-evening Vespers, aposticha item 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "martyrs"
+          }
+        ],
+        "verses": [
+          {
+            "text": "Unto Thee have I lifted up mine eyes, unto Thee that dwellest in heaven. Behold, as the eyes of servants look unto the hands of their masters, as the eyes of the handmaid look unto the hands of her mistress, so do our eyes look unto the Lord our God, * until He take pity on us.",
+            "tier": 2,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Thu-evening Vespers aposticha verse 1 — \"her mistress\" lowercase (shared/2-x: \"Mistress\"; §5 per-tone — tone 6 diverges at every weekday evening)"
+            }
+          },
+          {
+            "text": "Have mercy on us, O Lord, have mercy on us, for greatly are we filled with abasement. Greatly hath our soul been filled therewith; let reproach come upon them that prosper, * and abasement on the proud.",
+            "tier": 2,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Thu-evening Vespers aposticha verse 2 (byte-matches shared; stored with its per-tone verse-1 partner)"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ]
+          }
+        ]
+      },
+      "aposticha_theotokion": {
+        "text": "Standing with the virginal disciple before the Tree * during the crucifixion, * the Virgin cried out, weeping: * “Woe is me! * How is it that Thou dost suffer, O Christ, ** since Thou art the dispassion of all?”",
+        "tier": 2,
+        "src": {
+          "file": "6-6.pdf",
+          "locus": "Thursday-evening Vespers, aposticha Glory/Both-now closer"
+        },
+        "type": "stavrotheotokion",
+        "spec_mel": "On the third day",
+        "sourceLabel": "Stavrotheotokion"
+      },
+      "closing_rubric": "Then, “Now lettest Thou Thy servant depart ...,” Trisagion through Our Father ..., Troparia. Litany: Have mercy on us ..., and Dismissal. THURSDAY NIGHT: TONE VI AT COMPLINE Canon of supplication to the most holy Theotokos"
+    },
+    "fri": {
+      "rubric": "On “Lord, I have cried ...,” 3 Stichera of the righteous ones, in Tone VI: Spec. Mel.: “Having set aside ...”:",
+      "lic": {
+        "octoechos": [
+          {
+            "text": "Walking in the footsteps of the sufferings of Christ, the whole company of the martyrs mightily went forth to many struggles. They confessed Him as God before ungodly tyrants and iniquitous kings, and endured many tortures, in the hope of receiving heavenly honors. These they now behold, rejoicing, and standing before the Lord with the choirs of all the incorporeal hosts.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Friday-evening Vespers, LIC sticheron 1"
+            },
+            "label": "plain",
+            "provenance_note": "On “Lord, I have cried ...,” 3 Stichera of the righteous ones, in Tone VI: Spec. Mel.: “Having set aside ...”:"
+          },
+          {
+            "text": "O all-sacred shepherds, ye were emulators of the Christ, the Chief Shepherd, and preserved utterly unharmed the divinely chosen flock, the divine treasures of piety, driving away the wild wolves, and bringing them into the fold of heaven. As ye make your abode there, remember those who praise you with love, and pray ye with boldness unto Christ on behalf of our souls.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Friday-evening Vespers, LIC sticheron 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain",
+            "provenance_note": "On “Lord, I have cried ...,” 3 Stichera of the righteous ones, in Tone VI: Spec. Mel.: “Having set aside ...”:"
+          },
+          {
+            "text": "O all ye venerable fathers, who living in holiness, vanquished the demons; and extinguishing the torments of conscience, valiantly endured the burning of the passions, O blessed ones, and ye rejoice now with the heavenly hosts of incorporeal beings; for in the flesh ye emulated their life. With them entreat Christ, the supremely good God, that we who honor you may find deliverance from our falls.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Friday-evening Vespers, LIC sticheron 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ],
+            "label": "plain",
+            "provenance_note": "On “Lord, I have cried ...,” 3 Stichera of the righteous ones, in Tone VI: Spec. Mel.: “Having set aside ...”:"
+          },
+          {
+            "text": "Then the Stichera from the Menaion; or if there is no Menaion, these Stichera of",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Friday-evening Vespers, LIC sticheron 4"
+            },
+            "label": "plain",
+            "provenance_note": "On “Lord, I have cried ...,” 3 Stichera of the righteous ones, in Tone VI: Spec. Mel.: “Having set aside ...”:"
+          },
+          {
+            "text": "Thy martyrs, O Lord, denied Thee not, nor did they forsake Thy commandments; by their intercessions have mercy upon us.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Friday-evening Vespers, LIC sticheron 5"
+            },
+            "label": "plain",
+            "provenance_note": "the holy martyrs, in the same melody:"
+          },
+          {
+            "text": "Thy martyrs, O Lord ...,",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Friday-evening Vespers, LIC sticheron 6 (incipit repeat of sticheron 5, §2.7, printed with an explicit \"Repeat:\" label)"
+            },
+            "label": "plain",
+            "incipit_ref": "tone6.vespers_weekday.fri.lic.octoechos[4]",
+            "sourceLabel": "Repeat:",
+            "provenance_note": "the holy martyrs, in the same melody:"
+          },
+          {
+            "text": "O martyred passion-bearers, citizens of heaven, who suffered on the earth, ye endured many torments. By their prayers and intercessions, O Lord, preserve us all.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Friday-evening Vespers, LIC sticheron 7"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ],
+            "label": "plain",
+            "provenance_note": "the holy martyrs, in the same melody:"
+          }
+        ],
+        "octoechos_verses": [
+          {
+            "text": "If Thou shouldest mark iniquities, O Lord, O Lord, who shall stand? * For with Thee there is forgiveness.",
+            "tier": 2,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Friday-evening Vespers, LIC ladder verse 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ]
+          },
+          {
+            "text": "For Thy name’s sake have I patiently waited for Thee, O Lord; my soul hath waited patiently for Thy word, * my soul hath hoped in the Lord.",
+            "tier": 2,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Friday-evening Vespers, LIC ladder verse 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "text": "From the morning watch until night, from the morning watch * let Israel hope in the Lord.",
+            "tier": 2,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Friday-evening Vespers, LIC ladder verse 3"
+            }
+          },
+          {
+            "text": "For with the Lord there is mercy, and with Him there is plenteous redemption; * and He shall redeem Israel out of all his iniquities.",
+            "tier": 2,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Friday-evening Vespers, LIC ladder verse 4"
+            }
+          },
+          {
+            "text": "O praise the Lord, all ye nations; * praise Him, all ye peoples.",
+            "tier": 2,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Friday-evening Vespers, LIC ladder verse 5"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "text": "For He hath made His mercy to prevail over us, * and the truth of the Lord abideth forever.",
+            "tier": 2,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Friday-evening Vespers, LIC ladder verse 6"
+            }
+          }
+        ]
+      },
+      "lic_theotokion": {
+        "text": "Who doth not call thee blessed, O most holy Virgin? * Who will not hymn thy most pure birthgiving? * For the only-begotten Son Who hath shone forth timelessly from the Father, * came forth, ineffably incarnate, from thee, O pure one; * By nature He is God, by nature for our sakes, He hath become a man * not divided into two Hypostases, * but known in two natures without commingling. * Him do thou beseech, O pure and most blessed one, ** that our souls find mercy!",
+        "tier": 2,
+        "src": {
+          "file": "6-7.pdf",
+          "locus": "Friday-evening Vespers, LIC Glory/Both-now closer — the dogmatikon printed IN FULL as its own site (§9.2)"
+        },
+        "type": "dogmatic_theotokion",
+        "sourceLabel": "Glory ..., Both now ..., Dogmatic Theotokion:"
+      },
+      "prokeimenon": {
+        "ref": "shared.daily_vespers_prokeimena.fri",
+        "rubric": "Then, “O Joyous Light ...,” the Prokeimenon, in Tone VII:"
+      },
+      "aposticha": {
+        "rubric": "Vouchsafe, O Lord ..., Litany: Let us complete ..., Then: On the Aposticha, these Stichera, in Tone VI:",
+        "items": [
+          {
+            "text": "Those who suffered martyrdom for Thee, O Christ, endured a multitude of torments, and have received perfect crowns in the heavens, may they ever intercede on behalf of our souls.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Friday-evening Vespers, aposticha item 1"
+            },
+            "label": "martyrs"
+          },
+          {
+            "text": "Thy Cross O Lord, was the invincible weapon of the martyrs. They beheld impending death before them; but, foreseeing the life that is to come, they became strengthened with hope in Thee. By their intercessions have mercy on us.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Friday-evening Vespers, aposticha item 2"
+            },
+            "label": "martyrs"
+          },
+          {
+            "text": "Thy command was to me my beginning and foundation. For desiring to fashion me into a living creature from natures visible and invisible: Thou didst form my body from the earth, and given me a soul by Thy divine and quickening breath. Wherefore, O Christ, grant rest to Thy servants in the land of the living, in the habitations of the righteous.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Friday-evening Vespers, aposticha item 3"
+            },
+            "label": "for_the_reposed"
+          }
+        ],
+        "verses": [
+          {
+            "text": "Blessed are they whom Thou hast chosen * and taken to Thyself, O Lord.",
+            "tier": 2,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Friday-evening Vespers aposticha, departed verse 1 (final period present, unlike the shared/2-7 print — §5 per-tone; 3-7/4-7/5-7 diverged the same way)"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ]
+          },
+          {
+            "text": "Their souls * shall dwell among good things.",
+            "tier": 2,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Friday-evening Vespers aposticha, departed verse 2"
+            }
+          }
+        ]
+      },
+      "aposticha_theotokion": {
+        "text": "By the prayers of her that gaveth birth to Thee O Christ,* and of Thy martyrs and apostles, * the prophets and holy hierarchs, * the venerable, the righteous and of all the saints, ** grant rest to Thy departed servants.",
+        "tier": 2,
+        "src": {
+          "file": "6-7.pdf",
+          "locus": "Friday-evening Vespers, aposticha Glory/Both-now closer"
+        },
+        "type": "theotokion"
+      },
+      "closing_rubric": "Then, “Now lettest Thou Thy servant depart ...,” Trisagion through Our"
+    }
+  },
+  "compline": {
+    "sun": {
+      "canon": {
+        "title": "Canon of supplication to the most holy Theotokos",
+        "heading_rubric": "Canon of supplication to the most holy Theotokos",
+        "odes": {
+          "1": {
+            "irmos": {
+              "text": "When Israel walked on foot in the sea as on dry land, * on seeing their pursuer Pharaoh drowned, * they cried: * Let us sing to God * a song of victory.",
+              "tier": 2,
+              "src": {
+                "file": "6-2.pdf",
+                "locus": "Sunday-night Compline canon, Ode 1 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Drive the cloud of the passions from my mind, O pure one, and shine light upon me, O most pure one who hast given birth to the Son, the Effulgence of the Father, that I may hymn thee.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 1, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Come, ye people, and like Gabriel let us cry aloud to the Virgin with reverence of soul: Truly adorned art thou, O pure one who hast given birth to Joy! Rejoice, most pure one!",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 1, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "The Son Who was dispassionately begotten of the Father before all ages didst thou in latter days bear in thy womb, O most pure one, giving birth to Him as both God and man.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 1, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "Without corruption thou hast given birth to the one God, and didst remain a virgin after giving birth, as thou wast before birthgiving, O most pure one; wherefore, we, the faithful, cry out to thee: Rejoice!",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 1, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "3": {
+            "irmos": {
+              "text": "There is none as holy as Thou, * O Lord my God, * who hast exalted the horn of Thy faithful O good One, * and strengthened us upon the rock * of Thy confession.",
+              "tier": 2,
+              "src": {
+                "file": "6-2.pdf",
+                "locus": "Sunday-night Compline canon, Ode 3 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "There are none as immaculate as thee, O all- pure Theotokos, who hast given birth to the Creator and Master of all things; wherefore, all of us, the faithful, cry out to thee in thanksgiving: Rejoice!",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 3, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "The cruel waves of the passions buffet me, O pure one, and I am truly cast into the abyss of evils by my many bitter falls. O pure one, extend to me a helping hand, and save me.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 3, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Break through the darkness of my transgressions, O Virgin, and shine upon me the light of dispassion, O pure one who ineffably hast given birth to the intangible Sun.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 3, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "Having cleansed me of transgressions and defilement with the fire of the fear of God, O maiden, clothe me in the radiant vesture of the virtues and set me among the choirs of the saints.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 3, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "4": {
+            "irmos": {
+              "text": "Christ is my power, * my God and my Lord, * the holy Church divinely singeth, * crying with a pure mind, * keeping festival in the Lord.",
+              "tier": 2,
+              "src": {
+                "file": "6-2.pdf",
+                "locus": "Sunday-night Compline canon, Ode 4 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "With thy radiance dispel the gloom of my many transgressions, O most immaculate Lady who hast given birth to the Light, Who hast shone upon the faithful the Sun of righteousness.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 4, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "In mine affliction I now set my hope on thee, O most pure one. Let me not depart from thee untreated, but rather rejoicing, having received salvation.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 4, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "O most pure one, grant thy rich compassions unto us who with faith and love have recourse to thy temple, and deliver us from all temptations and sorrows.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 4, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "The Word made His abode within thee, O most pure Lady, delivering the world from the mindlessness of the passions, and granting the kingdom of heaven unto those who hymn thee.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 4, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "5": {
+            "irmos": {
+              "text": "Illumine with Thy divine light, I pray, O good One, * the souls of those who with love rise early to pray to Thee, * that they may know Thee, O Word of God, * as the true God, * Who recalleth us from the darkness of sin.",
+              "tier": 2,
+              "src": {
+                "file": "6-2.pdf",
+                "locus": "Sunday-night Compline canon, Ode 5 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "With the divine radiance of Him who shone forth from thy womb do thou illumine my soul which sleepeth in darkness, O Virgin, and drive away the darkness of sin, illumining me with thy light.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 5, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Heal thou my soul, which hath fallen among thieves, O good one, pouring forth the oil of mercy and the wine of thy tenderheartedness upon my wounds, granting me abundant understanding.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 5, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Heal thou the infirmities of flesh and soul of us who have recourse to thee, O all-hymned one; for thou art the strength of those who flee beneath the shelter of thy supplication, O Birthgiver of God.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 5, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "The Holy Spirit of God, dwelling within thy womb, O most pure one, and overshadowing thee, showed thee to be the habitation of the Trinity, for at the Father’s good pleasure thou didst conceive the Son and give birth unto Him.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 5, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "6": {
+            "irmos": {
+              "text": "Beholding the sea of life surging with the tempest of temptations, * I run to Thy calm haven, and cry to Thee: * Raise up my life from corruption, * O greatly merciful One.",
+              "tier": 2,
+              "src": {
+                "file": "6-2.pdf",
+                "locus": "Sunday-night Compline canon, Ode 6 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Dispel the gloom, of mine accursed soul, and shine upon me the light which shone forth from thy womb illumining all human nature, O most pure one.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 6, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Deliver me from the assaults of enemies visible and invisible, O pure one, and grant me the mighty shelter of thine aid; for to thee, O Virgin, have I now fled.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 6, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "He Who created all things became incarnate through thy holy womb in the latter days and, setting aright human nature, which had grievously fallen through Adam, He hath restored the world.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 6, item 3"
+                },
+                "label": "glory"
+              },
+              {
+                "text": "The majesty of the angels hymned thee, O most immaculate one, and I beseech thee: Drive from me the unseemly fantasies of the demons, preserving my heart in peace.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 6, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "7": {
+            "irmos": {
+              "text": "An angel made the furnace bedew the holy Children, * but the command of God consumed the Chaldeans * and prevailed upon the tyrant to cry: * “O God of our fathers, blessed art Thou.”",
+              "tier": 2,
+              "src": {
+                "file": "6-2.pdf",
+                "locus": "Sunday-night Compline canon, Ode 7 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Shedding unapproachable light upon me who am in the darkness of ignorance, O most pure one, guide me to the Light, that I may piously cry out to thy Son with faith: Blessed is the God of our fathers!",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 7, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Drive the cloud of gloom from my soul, O Birthgiver of God, illumining me with the light of the Creator of all; for thou art the receptacle of the pre-eternal Light Who shone forth dispassionately from the Father.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 7, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Incline thyself to our pleas, O pure Birthgiver of God, and in thy mercy be thou moved to entreat God, rendering Him merciful to us who ever place our hope in thee, O good one.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 7, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "Grant cleansing unto me who am defiled by the passions of wicked deeds, O pure one, and send me tear-drops to wash away the evil shame of my sin, the outpouring of filth.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 7, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "8": {
+            "irmos": {
+              "text": "Thou didst make flame bedew the holy children, * and didst burn the sacrifice of a righteous man with water. * For Thou alone, O Christ, dost do all as Thou willest, * Thee do we supremely exalt throughout all ages.",
+              "tier": 2,
+              "src": {
+                "file": "6-2.pdf",
+                "locus": "Sunday-night Compline canon, Ode 8 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "O maiden who hast given birth to the Master of all in the flesh, rescue me from the violence of the passions, and unite me to the Creator of all by love, that I may hymn Him throughout all ages.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 8, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "By thy visitation, O maiden, raise me up who lie upon the bed of pain, and grant health of body and soul unto me who hymn Christ throughout all ages.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 8, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "With the dew of thy supplications quench thou the flame of my pas- sions, O Lady, and save me, as before thy Son saved the children who supremely exalted Him.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 8, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "I fear not the treachery of the foe, setting my hope and expectation upon thee, O good one; for thou dost ever help, saving those who praise thee from misfortunes.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 8, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "9": {
+            "irmos": {
+              "text": "It is impossible for mankind to see God * upon Whom the orders of angels dare not gaze; * but through thee, O all-pure one, * did the Word Incarnate become a man * and with the heavenly hosts, * Him we magnify and thee we call blessed.",
+              "tier": 2,
+              "src": {
+                "file": "6-2.pdf",
+                "locus": "Sunday-night Compline canon, Ode 9 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "From all manner of evils deliver me who have recourse to thee with faith, O most pure Virgin, and grant health and deliverance from the wicked unto me who flee to thy protection, O maiden, that I may ever glorify thee with cries of thanksgiving.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 9, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Thou hast abolished the curse of grief, O pure one, and hast poured forth joy upon the world through thy birthgiving, having borne the Well-spring of blessing. Wherefore, praising thee, the all-hymned one, all of us, the faithful, ever bless thee with thanksgiving.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 9, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Thy womb became a receptacle of the Light Who shone forth from the Father before all ages, O all-hymned Birthgiver of God; wherefore, we all glorify thee, the Theotokos, and magnify Him as thy Son and God.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 9, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "When the divine Spirit had come upon thee, thou hast given birth in time to the timeless Son who shone forth from the Father; wherefore, with tongue and heart all of us, the faithful, confess thee to be the Theotokos who knewest not a man.",
+                "tier": 1,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Sunday-night Compline canon, Ode 9, item 4"
+                },
+                "label": "both_now"
+              }
+            ]
+          }
+        }
+      },
+      "after_ode6": {
+        "rubric": "Lord, have mercy, (Thrice). Glory ..., Both now ..., Sessional Hymn, in Tone VI:",
+        "sessional": {
+          "text": "The attacks of the adversary assail thine inheritance, O Lady. Set at naught their scheming, and cast their prideful arrogance down to the ground; for thou art the ally of those who entreat thee with faith.",
+          "tier": 1,
+          "src": {
+            "file": "6-2.pdf",
+            "locus": "Sunday-night Compline, sessional after Ode VI"
+          },
+          "homoglyph_log": [
+            {
+              "from": "U+041E О (Cyrillic)",
+              "to": "O",
+              "count": 1
+            }
+          ]
+        }
+      },
+      "closing_rubric": "Then, “It is truly meet ...,” and a prostration. Trisagion through Our Father ..., Troparion, and the rest as usual. Dismissal."
+    },
+    "mon": {
+      "canon": {
+        "title": "Canon of supplication to the most holy Theotokos",
+        "heading_rubric": "Canon of supplication to the most holy Theotokos",
+        "odes": {
+          "1": {
+            "irmos": {
+              "text": "When Israel walked on foot in the sea as on dry land, * on seeing their pursuer Pharaoh drowned, * they cried: * Let us sing to God * a song of victory.",
+              "tier": 2,
+              "src": {
+                "file": "6-3.pdf",
+                "locus": "Monday-night Compline canon, Ode 1 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Bent low by a multitude of temptations and grievous acts, I bow before thee the neck of my soul and body, O pure one, and cry out to thee with fervor: Do thou set me aright!",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 1, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "O all-immaculate maiden, mighty help of the faithful and hope of Christians: Free me from the carnal lusts and passions which war against me!",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 1, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "O most pure one, thou luminous guide of those in darkness, having given birth to the noetic Light, illumine my soul and sanctify my mind, dissolving the gloom of passions and transgressions.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 1, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "With the light of the holy commandments of Him Who became incarnate from thee, O Lady Theotokos, dispel the darkness of my soul, which hath been cast into darkness by the onslaughts of unseemly thoughts.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 1, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "3": {
+            "irmos": {
+              "text": "There is none as holy as Thou, * O Lord my God, * who hast exalted the horn of Thy faithful O good One, * and strengthened us upon the rock * of Thy confession.",
+              "tier": 2,
+              "src": {
+                "file": "6-3.pdf",
+                "locus": "Monday-night Compline canon, Ode 3 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "In thee have I placed my trust, O pure and most pure one. Let not my hope in thee be disappointed. In that thou art the merciful Mother of God and the Lover of mankind, deliver me from the snares of the enemy.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 3, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "O most pure Mary Mother of God, portal of salvation through which the Creator of all alone passed, open now unto me the divine gates of repentance.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 3, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "O pure one, be thou a refuge and haven for me who am ever tempest-tossed by the threefold waves of the passions on the sea of life, O only Ever-virgin.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 3, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "O Mary Mother of God, illumine my soul, which hath been grievously darkened by many sins, wounded by the darts of the evil one, and fallen ill.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 3, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "4": {
+            "irmos": {
+              "text": "Christ is my power, * my God and my Lord, * the holy Church divinely singeth, * crying with a pure mind, * keeping festival in the Lord.",
+              "tier": 2,
+              "src": {
+                "file": "6-3.pdf",
+                "locus": "Monday-night Compline canon, Ode 4 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "As thou art my strength, refuge, unassailable rampart and advocate before God, O most pure one, free me from everlasting flame and Gehenna.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 4, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "O all-pure Mary, dispel thou the tumult of the passions of my mind and the storm of temptations, in that thou hast given birth to the Source of dispassion, O Ever-virgin Mother.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 4, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "O pure and all-immaculate one, as thou wast the receptacle of purity which accommodated the habitation of God, do away with the defilement and impurity of my soul.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 4, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "O maiden, I pray thee, who alone art pure, who alone art undefiled: By thy prayers cleanse thou my soul, which hath been defiled and sullied by lustful passions.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 4, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "5": {
+            "irmos": {
+              "text": "Illumine with Thy divine light, I pray, O good One, * the souls of those who with love rise early to pray to Thee, * that they may know Thee, O Word of God, * as the true God, * Who recalleth us from the darkness of sin.",
+              "tier": 2,
+              "src": {
+                "file": "6-3.pdf",
+                "locus": "Monday-night Compline canon, Ode 5 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Defiled in mind and sullied by many falls, O Mother of God, I entreat thee, who alone art undefiled: Have pity and save me by thy mediation.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 5, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "With thy divine effulgence, O good one, illumine my soul, which hath been darkened by pleasures, and guide it to the path of salvation, O thou who alone hast given birth to Christ the Savior.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 5, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Loose thou the bonds of my sins by thy mediation and aid, O Virgin, and fill my wretched soul with divine tranquility, and deliver it from darkness.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 5, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "Having now acquired thee alone as my divine refuge, O good one, I cry to thee, falling down with faith: Thou art my help! Be thou also my shelter of salvation, O Sovereign Lady of the world, and save me.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 5, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "6": {
+            "irmos": {
+              "text": "Beholding the sea of life surging with the tempest of temptations, * I run to Thy calm haven, and cry to Thee: * Raise up my life from corruption, * O greatly merciful One.",
+              "tier": 2,
+              "src": {
+                "file": "6-3.pdf",
+                "locus": "Monday-night Compline canon, Ode 6 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Guilty of sin, wretch that I am, I have been grievously wounded. To thee who art merciful, O Mother of God, do I flee, praying: Set at naught my falls into transgressions.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 6, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "O portal of grace who hast opened unto the faithful the gates of heaven, open unto me the radiant door of repentance, and deliver me from the gates of death.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 6, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "O Mother of God who hast given birth to the Source of dispassion, render me steadfast, who am brought low by the passions and the assaults of the adversary; for unto thee have I fled, for thou art the comforter of my wretched soul.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 6, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "Look down upon me, the lowly one, O Lady, and beyond expectation save me; for thou art my hope and protection, the life and light of my heart, and my confirmation, O Theotokos.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 6, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "7": {
+            "irmos": {
+              "text": "An angel made the furnace bedew the holy Children, * but the command of God consumed the Chaldeans * and prevailed upon the tyrant to cry: * “O God of our fathers, blessed art Thou.”",
+              "tier": 2,
+              "src": {
+                "file": "6-3.pdf",
+                "locus": "Monday-night Compline canon, Ode 7 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "We ever have thee as our cleansing before God, O most immaculate one; wherefore, ask thou that all who confess thee to truly be the Theotokos be delivered from dread torments to come.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 7, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Raise me up, who am stuck fast in slothfulness, to the doing of godly works, O most pure one, strengthening me against the enemy who ever wages cruel war against me, and against those who would lead me astray with adverse thoughts.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 7, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Leave me not to perish, O Virgin, neither allow me to fall prey to the evil serpent who ever thirsteth for my destruction; but grant me thy rich mercy.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 7, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "Fail not in thy supplications before of our God and the Lover of mankind, O all-immaculate and pure one, that we may receive complete forgiveness, and obtain the good things of heaven prepared for the just, and the joy which cannot be taken away.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 7, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "8": {
+            "irmos": {
+              "text": "Thou didst make flame bedew the holy children, * and didst burn the sacrifice of a righteous man with water. * For Thou alone, O Christ, dost do all as Thou willest, * Thee do we supremely exalt throughout all ages.",
+              "tier": 2,
+              "src": {
+                "file": "6-3.pdf",
+                "locus": "Monday-night Compline canon, Ode 8 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Show forth my barren heart to be laden with the fruit of good works, O all- pure one, entreating God by thy birthgiving.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 8, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Pray unto God, O Virgin full of the grace of God, that He save our souls and deliver us from being accepting of the passions and from the evil temptations of the demons.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 8, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "I flee to thy protection, O all-immaculate one, and set thee forth as the intercessor for my life. Deliver me, O maiden, from dread condemnation, from trial and ever lasting fire.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 8, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "Make steadfast my soul, which hath been shaken by the evil of the foe, O pure Virgin, and rescue me from the fiery torment and the painful lot of the goats.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 8, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "9": {
+            "irmos": {
+              "text": "It is impossible for mankind to see God * upon Whom the orders of angels dare not gaze; * but through thee, O all-pure one, * did the Word Incarnate become a man * and with the heavenly hosts, * Him we magnify and thee we call blessed.",
+              "tier": 2,
+              "src": {
+                "file": "6-3.pdf",
+                "locus": "Monday-night Compline canon, Ode 9 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "The turbulence of the passions doth trouble and engulf me in pleasures, O most immaculate Virgin who hast given birth to Christ the Helmsman. Extend to me thy helping hand, and save me, O thou who alone art the salvation of those who with faith call thee blessed.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 9, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "O bridal-chamber and throne of Him Who reigneth, mountain of God, chosen city, garden of paradise, most radiant cloud of the Sun: illumine my soul, driving away the cloud of my many sins, O thou who art full of the grace of God.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 9, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "O pure and divine chosen Virgin, portal of the Light: open thou the gates of my soul, locking the door of sin, that the hand of the deceiver not seize me, and drag me cruelly into the dread torment of perdition.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 9, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "Arise, O my soul, and be thou watchful in prayer and in care for that which is most good, driving away the sleep of despondency, ever having the pure and most compassionate Mother of God as thy vigilant ally.",
+                "tier": 1,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Monday-night Compline canon, Ode 9, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          }
+        }
+      },
+      "after_ode6": {
+        "rubric": "Lord, have mercy, (Thrice). Glory ..., Both now ..., Sessional Hymn, in Tone VI:",
+        "sessional": {
+          "text": "O most holy Virgin Mother, thou art truly the strength of the helpless; wherefore, we, the lowly, are exalted by thee, and in thee are we borne aloft. Thou art the protection of all and their mediatress before God.",
+          "tier": 1,
+          "src": {
+            "file": "6-3.pdf",
+            "locus": "Monday-night Compline, sessional after Ode VI"
+          },
+          "homoglyph_log": [
+            {
+              "from": "U+041E О (Cyrillic)",
+              "to": "O",
+              "count": 1
+            }
+          ]
+        }
+      },
+      "closing_rubric": "Then, “It is truly meet ...,” and a prostration. Trisagion through Our Father ..., and the rest as usual. Dismissal."
+    },
+    "tue": {
+      "canon": {
+        "title": "Canon of supplication to the most holy Theotokos",
+        "heading_rubric": "Canon of supplication to the most holy Theotokos",
+        "odes": {
+          "1": {
+            "irmos": {
+              "text": "When Israel walked on foot in the sea as on dry land, * on seeing their pursuer Pharaoh drowned, * they cried: * Let us sing to God * a song of victory.",
+              "tier": 2,
+              "src": {
+                "file": "6-4.pdf",
+                "locus": "Tuesday-night Compline canon, Ode 1 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "In every way I lament my vile life and the multitude of mine abominable sins. How shall I confess to thee, O pure one? I am at a loss and filled with fear. Yet help me, O Lady.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 1, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "How shall I begin to speak of my wicked and grievous falls, plagued as I am by the passions? Woe is me! What shall I do? Yet before the end take pity on me, O Lady.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 1, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "I ever contemplate the hour of death and the dread tribunal, O most pure one, yet am I grievously led astray by my most wicked habits. But do thou help me.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 1, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "Both now .., The corrupter of the good, seeing me now stripped naked of godly virtues, fallen far away from God and become a stranger to Him, striveth to devour me. But do thou prevent him, O Lady.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 1, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              }
+            ]
+          },
+          "3": {
+            "irmos": {
+              "text": "There is none as holy as Thou, * O Lord my God, * who hast exalted the horn of Thy faithful O good One, * and strengthened us upon the rock * of Thy confession.",
+              "tier": 2,
+              "src": {
+                "file": "6-4.pdf",
+                "locus": "Tuesday-night Compline canon, Ode 3 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "I have vilely besmirched my soul with mine evil and abominable deeds, plagued as I am by the passions, O Lady Theotokos. Where then shall I go, who am wholly stuck fast in despondency?",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 3, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Though created in the image of God, I have sullied my prodigal self by mine haughty will, O pure one, and through my likeness, in works, in word and thought, I have committed unseemly deeds.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 3, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "There is no other man who hath committed such unseemly acts, nor any other born into the world as darkened in mind as I, O good one; for I have defiled my divine baptism.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 3, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "I have reached the end of mine evils, O most holy Virgin. Quickly help me, for heaven and earth cry out bitterly because of my vile and wicked deeds.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 3, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "4": {
+            "irmos": {
+              "text": "Christ is my power, * my God and my Lord, * the holy Church divinely singeth, * crying with a pure mind, * keeping festival in the Lord.",
+              "tier": 2,
+              "src": {
+                "file": "6-4.pdf",
+                "locus": "Tuesday-night Compline canon, Ode 4 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "The ranks of angels and the armies of the hosts of heaven are in awe of the might of thy Son, O pure one. But I am in despair, stuck fast in my lack of fear.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 4, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "All the earth hath been amazed and astonished, beholding me committing evil, wicked and vile acts, and it marvelleth at the great loving-kindness of thy Son.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 4, item 2"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "Glory ...,I have wickedly defiled the temple of my body, and the temple of the Lord which we enter with trembling; for although I am a prodigal, I enter it without shame. Woe is me!",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 4, item 3"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "O Lady, show me not, O show me not to have wandered away from the tabernacle of thy Son, though I am in every way unworthy, but wash me. clean of the defilement of my transgressions.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 4, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "5": {
+            "irmos": {
+              "text": "Illumine with Thy divine light, I pray, O good One, * the souls of those who with love rise early to pray to Thee, * that they may know Thee, O Word of God, * as the true God, * Who recalleth us from the darkness of sin.",
+              "tier": 2,
+              "src": {
+                "file": "6-4.pdf",
+                "locus": "Tuesday-night Compline canon, Ode 5 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "With thy divine effulgence, O good one, cure my soul of the passions which the corrupter hath sown therein, and deliver me from his bitter captivity, for he laughs me to scorn, beholding my helpless state.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 5, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Adam broke the only commandment of thy Son, O Virgin, and was driven into exile. How shall I lament the abyss of my transgressions, for I am a criminal and have fallen away from Him?",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 5, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Shown of old to be a murderer of his brother, Cain was cursed by God. What shall I do, who am most arrogant? I have now brought death upon my soul, and am not ashamed.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 5, item 3"
+                },
+                "label": "glory"
+              },
+              {
+                "text": "I have wholly emulated the cruel Esau in gluttony and eating to satiety, and have defiled my soul by drunkenness and my life with intemperance. Who will not weep for me, who am plagued by the passions? Woe is me!",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 5, item 4"
+                },
+                "label": "both_now"
+              }
+            ]
+          },
+          "6": {
+            "irmos": {
+              "text": "Beholding the sea of life surging with the tempest of temptations, * I run to Thy calm haven, and cry to Thee: * Raise up my life from corruption, * O greatly merciful One.",
+              "tier": 2,
+              "src": {
+                "file": "6-4.pdf",
+                "locus": "Tuesday-night Compline canon, Ode 6 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "My life is prodigal, my soul defiled, my way of living wholly accursed. I have grievously dishonored my whole body with evils. Wherefore, hasten thou to help me, O Virgin.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 6, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Mine end lieth before me, and I cannot bear it, O good one. My conscience denounces me, for all my wicked deeds and my prodigal life confront me, and I fear the judgment of thy Son, O pure one.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 6, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "The burning of my flesh, the dreadful river of fire which cannot be quenched, and the insatiable worm await me; but dispel them By thy prayers, O most pure one.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 6, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "I am held fast now by trembling, O good one, and I fear the pursuit of the evil one; for before the end the corrupter desires to slay me, holding me wholly captive, stripped naked of the virtues.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 6, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "7": {
+            "irmos": {
+              "text": "An angel made the furnace bedew the holy Children, * but the command of God consumed the Chaldeans * and prevailed upon the tyrant to cry: * “O God of our fathers, blessed art Thou.”",
+              "tier": 2,
+              "src": {
+                "file": "6-4.pdf",
+                "locus": "Tuesday-night Compline canon, Ode 7 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Seven times seven hath the evil one fanned a flame for me with the passions, ever striving to slay my heart with thoughts of fornication; wherefore, with the streams of my tears extinguish it, O Mother of God, and save me.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 7, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Despise me not who am dishonored with the mire of my transgressions, O good Lady, for, seeing me in despair, the most evil enemy mocketh me; but do thou thyself raise me up with thy mighty hand.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 7, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Awesome is the tribunal, O my numb soul which is art rife with passions, and endless and terrible are the torments; yet fall down now before the Mother of thy Judge and God, and be not downcast.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 7, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "A slave of the passions, I have been mired in a multitude of boundless evils and have defiled my soul, body and mind; wherefore, O most pure one, with the light of thy radiance quickly lead me to the sweetness of dispassion.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 7, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "8": {
+            "irmos": {
+              "text": "Thou didst make flame bedew the holy children, * and didst burn the sacrifice of a righteous man with water. * For Thou alone, O Christ, dost do all as Thou willest, * Thee do we supremely exalt throughout all ages.",
+              "tier": 2,
+              "src": {
+                "file": "6-4.pdf",
+                "locus": "Tuesday-night Compline canon, Ode 8 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Virgin Mother, who hast given birth to God Who is One of the Trinity and didst bear Him in thine arms, quench thou the fiery furnace of the passions, and bathe my soul in streams of tears.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 8, item 1"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "I fear the arrival of death, O most pure one, and am now wholly afraid of the judgment thereof, for I have committed evils and am in nowise ashamed. In thy prayers take pity on me before the end, O Virgin.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 8, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "O Lady, grant me unceasing groans and give me showers of tears to wash away my many transgressions and cleanse mine incurable sores, that I may inherit everlasting life.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 8, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "I confess to thee the multitude of mine evils, O Lady, for no one else in the world hath so angered thy God, Son and Lord; wherefore, quickly move Him to mercy toward me, O Virgin,",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 8, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "9": {
+            "irmos": {
+              "text": "It is impossible for mankind to see God * upon Whom the orders of angels dare not gaze; * but through thee, O all-pure one, * did the Word Incarnate become a man * and with the heavenly hosts, * Him we magnify and thee we call blessed.",
+              "tier": 2,
+              "src": {
+                "file": "6-4.pdf",
+                "locus": "Tuesday-night Compline canon, Ode 9 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Knowing the might of thy great supplication, O most pure one, lo! I approach thee with great fear and love; for thy maternal pleas to thy Son are truly able to accomplish much, for through His loving-kindness is He inclined to mercy.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 9, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Take the choirs of the archangels and the multitude of the heavenly armies of my Creator, the assemblies of apostles and prophets, the martyrs, the venerable and the hieromartyrs, O pure one, and pray for us to God.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 9, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Let me obtain thine aid now and at that hour when my spirit shall depart, O pure one, and, rescuing me quickly, deliver me from the tyranny of the demons, and leave me not in their clutches, O good and most immaculate one.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 9, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "I await the compassionate Judge, thy Son Who is the Lover of mankind, O pure one. Disdain me not, but render Him well-disposed towards me, that at His most pure tribunal He may set me on His right hand, O all-immaculate one, for I have set my hope on thee.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Tuesday-night Compline canon, Ode 9, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          }
+        }
+      },
+      "after_ode6": {
+        "rubric": "Lord, have mercy, (Thrice). Glory ..., Both now ..., Sessional Hymn, in Tone VI:",
+        "sessional": {
+          "text": "Thou art the hope, bulwark and refuge of thy people, O Virgin, from whom the Savior of all was born without pain, and thou hast saved those who set their hope on thee; for thou didst weep for thy Son at the foot of the Cross. Him do thou now beseech, that He deliver from corruption all who hymn thee.",
+          "tier": 1,
+          "src": {
+            "file": "6-4.pdf",
+            "locus": "Tuesday-night Compline, sessional after Ode VI"
+          },
+          "homoglyph_log": [
+            {
+              "from": "U+041E О (Cyrillic)",
+              "to": "O",
+              "count": 1
+            }
+          ]
+        }
+      },
+      "closing_rubric": "Then, “It is truly meet ...,” and a prostration. Trisagion through Our Father ..., Troparion, and the rest as usual. Dismissal."
+    },
+    "wed": {
+      "canon": {
+        "title": "Canon of supplication to the most holy Theotokos",
+        "heading_rubric": "Canon of supplication to the most holy Theotokos",
+        "odes": {
+          "1": {
+            "irmos": {
+              "text": "A helper and a protector * hath become unto me salvation. * My God, whom I will glorify, * the God of my fathers, * and I will exalt Him * for gloriously hath He been glorified.",
+              "tier": 2,
+              "src": {
+                "file": "6-5.pdf",
+                "locus": "Wednesday-night Compline canon, Ode 1 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "How can I, who am wholly sunk in the passions, wretch that I am, and am clothed in impurities, approach thee, O pure one? Yet, taking pity, save mine accursed soul, O most pure Birthgiver of God.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 1, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Arising out of the depths of shame, O my lowly soul, cry aloud with fervor to her who alone is pure: Have mercy upon me, O most immaculate and pure maiden, and deliver me from the passions!",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 1, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "I have been engulfed by a storm of perils and sins; but extend now thy helping hand unto me, O pure one, and deliver me from the indignity of the passions, that I may ever glorify thee.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 1, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "Deliver me from the cruel tempest of sin, whereby I have been wholly defiled, O Birthgiver of God. As I flee unto thee, lighten now the burden of my transgressions.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 1, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "3": {
+            "irmos": {
+              "text": "O Lord, upon the rock * of Thy commandments * make firm my heart, * for Thou alone art Holy and Lord.",
+              "tier": 2,
+              "src": {
+                "file": "6-5.pdf",
+                "locus": "Wednesday-night Compline canon, Ode 3 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "O most immaculate one, make me young who have aged through the shameful passions of sin, easing the bonds of my transgressions.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 3, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Cleanse me of the mire and filth of sin, O Theotokos, and make a divine temple of me who flee to thee who art pure.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 3, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Awake thou from the sleep of despondency, O my wretched soul, and lift up thine eyes to the divine Bride and maiden who alone saveth thee.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 3, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "In desperation and contrition, I hasten and fly to thy fervent supplication, O Lady: Save me, thy servant, O pure one!",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 3, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "4": {
+            "irmos": {
+              "text": "The prophet heard * of Thy coming, O Lord, * and he was afraid. * How wast Thou to be born of a virgin * and appear unto mankind? * and he said * “I have heard report of Thee and I am afraid”; * glory to Thy power, O Lord.",
+              "tier": 2,
+              "src": {
+                "file": "6-5.pdf",
+                "locus": "Wednesday-night Compline canon, Ode 4 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "I shall rightly be judged by thy Son for my words and deeds, O most immaculate Birthgiver of God. May I find thee at that hour to be a refuge and most mighty ally, saving me from all torments.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 4, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "My life is vile, my character is rendered impure through sins, and I am wholly sunk in the passions. O pure one, cleanse me of the defilement of my transgressions, and make me as white as snow by thy mediation before our tender- hearted God.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 4, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "I am bound all over by the bonds of mine offenses, and am unable to move toward the paths of repentance. Stretch forth thy hand, O most immaculate one, and direct me to the path which leadeth me to the way of salvation.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 4, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "By thy prayers free me from cruel torments, from the outermost darkness and Gehenna, O Virgin; for thou hast the will and power so to do, O thou who hast given birth to the Lord Who alone is supremely good.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 4, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "5": {
+            "irmos": {
+              "text": "Out of the night I seek Thee early, * enlighten me I pray Thee, O Lover of mankind, * and guide me in Thy commandments, * and teach me, O Savior, * to do Thy will.",
+              "tier": 2,
+              "src": {
+                "file": "6-5.pdf",
+                "locus": "Wednesday-night Compline canon, Ode 5 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "On the day of judgment reveal thyself, O Lady, and stand as an advocate for me, freeing me from torments and fire, that, saved, I may hymn thine invincible grace.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 5, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Seeing that I have wandered away from thy protection, O Lady, the enemy hath cast my soul into the depths of transgressions, and beholding me he laughs me to scorn; but do thou help me.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 5, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Make mine accursed and passion-plagued soul to arise, I beseech thee, O pure and most immaculate one, and remove from it the weight of its many sins.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 5, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "I offer thee entreaty from my defiled and impure lips, O most immaculate one: Take pity on me by thy prayers, I beseech thee.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 5, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "6": {
+            "irmos": {
+              "text": "With my whole heart, I cried * unto the tenderly compassionate God, * and he heard me * from the lowest depths of Hades; * and raised up my life from corruption.",
+              "tier": 2,
+              "src": {
+                "file": "6-5.pdf",
+                "locus": "Wednesday-night Compline canon, Ode 6 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Accept me who am prodigal and most accursed, O Master Christ, and free me from torments through the prayers of her who gave birth to Thee, and deliver me from standing on Thy left side.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 6, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "The dark fear of hell embraces me, O pure one, and the lot of the goats doth terrify me. Deliver me from such things, O most pure Theotokos, I pray thee.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 6, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Mortifying the passions of my flesh, O pure Lady Theotokos, impart life to my most wretched soul, and guide me to the straight path.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 6, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "Though I am a fool, yet I offer thee the supplication of a servant, and I flee to thy compassionate loving-kindness. Turn me not away ashamed, O pure one.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 6, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "7": {
+            "irmos": {
+              "text": "We have sinned, we have transgressed, * and we have done evil before Thee. * We have not kept nor followed * Thy commandments, but reject us not utterly, * O God of our fathers.",
+              "tier": 2,
+              "src": {
+                "file": "6-5.pdf",
+                "locus": "Wednesday-night Compline canon, Ode 7 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Knowing thee, to be the merciful and right loving Virgin Mother, and wholly pure, I flee to thee, wretch that I am. Turn me not away from thee ashamed, O all-immaculate one.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 7, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Awaken, O passion-plagued soul! Arise, O wretched one! Beat thou thy breast, and from thine innermost depths send forth fountains of tears, that the Mother of Christ God may have mercy upon thee who art accursed.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 7, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Of old I became a temple of God through divine baptism, but I have wholly defiled myself, wretch that I am, and am grievously brought low through terrible falls. Yet do thou raise me up, O most immaculate one, thou hope of the despairing.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 7, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "A dense cloud hath covered my heart, and darkness and gloom hath come upon my passion-plagued soul. O Bride of God, illumine me with rays of repentance, that I may glorify thee.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 7, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "8": {
+            "irmos": {
+              "text": "Him whom the hosts of heaven glorify, * and before whom tremble the cherubim and seraphim, * let every breath and all creation * praise, bless, and supremely exalt, * throughout all ages.",
+              "tier": 2,
+              "src": {
+                "file": "6-5.pdf",
+                "locus": "Wednesday-night Compline canon, Ode 8 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "The river of fire terrifies me, and thick darkness causes me to quake; the worm and the gnashing of teeth fill me with horror. Virgin, at that hour may I find thee to be a mighty ally.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 8, item 1"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "Let me not become fuel for the fire, O Lord, neither let me hear Thy voice pronounce sentence, for I have Thy pure Mother beseeching Thee. I cry to Thee: By her prayers have mercy upon me.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 8, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Make me to hear the divine voice, and show me to share a place with the elect, O Christ; let me not occupy a place of lamentation, for I have the Theotokos beseeching Thee for this.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 8, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "Send streams of tears now down upon me, and cause groaning to erupt within me from the depth of my soul, O pure one, that I may ever fall down before thy protection and receive the remission of my sins through thy prayer.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 8, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "9": {
+            "irmos": {
+              "text": "Ineffable is the birthgiving * of a seedless conception, * from a mother who knew not a man; * an undefiled childbearing. * For the birth of God hath renewed nature, * wherefore all generations rightly worship and magnify thee * as the Bride and Mother of God.",
+              "tier": 2,
+              "src": {
+                "file": "6-5.pdf",
+                "locus": "Wednesday-night Compline canon, Ode 9 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "The day of judgment terrifies me, O Virgin; the gnashing of teeth fills my heart with dread, and the place where the goats stand horrifies me; but let me find thee, the Theotokos, to be my help amid evils when I shall be judged.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 9, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Trembling doth now seize me, and the horror of Gehenna terrifies me. What shall I do? I know not, accursed and condemned as I am. Therefore, I flee unto thee and cry out with fervent compunction: Disdain me not, O most pure one!",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 9, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Beholding the judgment-seat, I think upon thy judgment, O my Christ, whereat I, who am condemned, shall be rightly judged for my deeds. Yet may I have as an advocate in that hour - Thy Mother, the divine Bride - entreating Thy great compassions.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 9, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "Noetically touching thy feet, O all-immaculate one, I beseech thee: Accept my lamentation, hearken to my hymnody, and grant me remission of transgressions through thy supplications, I pray thee, that I may magnify thee with love.",
+                "tier": 1,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Wednesday-night Compline canon, Ode 9, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          }
+        }
+      },
+      "after_ode6": {
+        "rubric": "Lord, have mercy, (Thrice). Glory ..., Both now ..., Sessional Hymn, in Tone VI:",
+        "sessional": {
+          "text": "I offer thee groaning from my heart and the depths of my being, O most immaculate one, asking thy right conciliatory aid. Have mercy upon my passionate soul, and move the greatly merciful God to pity, that He may deliver me from damnation and the lake of fire, O thou who alone art blessed.",
+          "tier": 1,
+          "src": {
+            "file": "6-5.pdf",
+            "locus": "Wednesday-night Compline, sessional after Ode VI"
+          },
+          "homoglyph_log": [
+            {
+              "from": "U+041E О (Cyrillic)",
+              "to": "O",
+              "count": 2
+            }
+          ]
+        }
+      },
+      "closing_rubric": "Then, “It is truly meet ...,” Trisagion through Our Father ..., Troparion, and the rest as usual. Dismissal."
+    },
+    "thu": {
+      "canon": {
+        "title": "Canon of supplication to the most holy Theotokos",
+        "heading_rubric": "Canon of supplication to the most holy Theotokos",
+        "odes": {
+          "1": {
+            "irmos": {
+              "text": "When Israel walked on foot in the sea as on dry land, * on seeing their pursuer Pharaoh drowned, * they cried: * Let us sing to God * a song of victory.",
+              "tier": 2,
+              "src": {
+                "file": "6-6.pdf",
+                "locus": "Thursday-night Compline canon, Ode 1 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "O Virgin, accept mine entreaty, which I make bold to offer to thee from an unworthy mouth and defiled lips; and shine thou the light of compunction upon thy servant, O pure one.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 1, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "By thy prayers grant me showers of tears, O pure Virgin Mother, that I may weep fervently for what I have done on earth, and through thee may escape every torment.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 1, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Reject not my lamentation, O thou who hast given birth to the Source of tender compassion, but look upon me with thy merciful eye, O good Theotokos, and cure the passions of my soul.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 1, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "Weep with groaning, O my soul, and bewail thyself in every way, falling down before the Mother of God and saying: Deliver me, the guilty one, from dreadful torment!",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 1, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "3": {
+            "irmos": {
+              "text": "There is none as holy as Thou, * O Lord my God, * who hast exalted the horn of Thy faithful O good One, * and strengthened us upon the rock * of Thy confession.",
+              "tier": 2,
+              "src": {
+                "file": "6-6.pdf",
+                "locus": "Thursday-night Compline canon, Ode 3 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "There is none that hath sinned as I have, becoming a slave to the evils of unbridled thoughts, O most holy and pure one; but, placing my hope in thee, I pray: Rescue me from them.!",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 3, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Behold, all the evils of the enemy that have rained upon me like wounds, weigh me down; rendering me fetid and causing my soul to fall.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 3, item 2"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "Many are my transgressions; wherefore, falling down before thee with faith, O most holy one, I, the lowly one, cry aloud: At the dread hour entreat Him to Whom thou hast given flesh.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 3, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "O holy Theotokos, as thou hast maternal boldness before God, rescue me who am deserving of all condemnation, and make me to dwell in His dwelling-place.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 3, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "4": {
+            "irmos": {
+              "text": "Christ is my power, * my God and my Lord, * the holy Church divinely singeth, * crying with a pure mind, * keeping festival in the Lord.",
+              "tier": 2,
+              "src": {
+                "file": "6-6.pdf",
+                "locus": "Thursday-night Compline canon, Ode 4 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Grant me a wellspring of tears, O Lady, that I may wash away the defilement of my lowly soul and regain the beauty which I have lost through the lying counsel of the serpent.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 4, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "O my compassionate God, O God Who lovest mankind and willest mercy, pour forth Thy mercy now upon me; for Thy Mother, my hope and ally, entreateth Thee.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 4, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Taking pity, O most immaculate one, save me, the terrible prodigal one, who have mindlessly and shamelessly sinned against thee; and free me from Gehenna.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 4, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "Having given birth to the Life of all, thou hast destroyed the field of death; wherefore, I cry out to thee: I have sinned! Save me, by thy maternal supplications, O pure one!",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 4, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "5": {
+            "irmos": {
+              "text": "Illumine with Thy divine light, I pray, O good One, * the souls of those who with love rise early to pray to Thee, * that they may know Thee, O Word of God, * as the true God, * Who recalleth us from the darkness of sin.",
+              "tier": 2,
+              "src": {
+                "file": "6-6.pdf",
+                "locus": "Thursday-night Compline canon, Ode 5 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "O pure one, have mercy on me who have placed all my hope in thee, and take pity, overlooking all the grievous passions of my soul, for I cry out to thee with faith.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 5, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Save me from the passions, from tribulation and harm, and from the wicked adversaries; and deliver my lowly soul from their treachery, O Virgin, that they may not say: We have prevailed over him!",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 5, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Having been revealed to be pure in body and soul, O most pure one, free thou my soul from defilement, granting me to live a pure life; and guide me in doing the divine will of the Lord.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 5, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "Thee alone do I have as a refuge and my reconciliation with God, I who have wasted my whole life in many transgressions.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 5, item 4"
+                },
+                "label": "both_now"
+              }
+            ]
+          },
+          "6": {
+            "irmos": {
+              "text": "Beholding the sea of life surging with the tempest of temptations, * I run to Thy calm haven, and cry to Thee: * Raise up my life from corruption, * O greatly merciful One.",
+              "tier": 2,
+              "src": {
+                "file": "6-6.pdf",
+                "locus": "Thursday-night Compline canon, Ode 6 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "O Lady, accept my sighs and the lifting up of my hands as a sacrifice of sweet savor, and grant that I may behold thy countenance with a pure conscience.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 6, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Disdain not my words of supplication, O good Lady, Mother of the merciful God Who shone forth from thy womb; but before the end grant me divine remission.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 6, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Utter wretch that I am, through fornication I have brought myself low and estranged myself from God. But do thou beseech Him to save me, O good one, for to thee have I fled. Clothe me in my former vesture.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 6, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "Jesus, Who is fire, did not consume thy womb when He issued forth from thee in the flesh, pray thou to Him, O pure one, that He deliver from fire and all manner of torment those who hymn thee with faith.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 6, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "7": {
+            "irmos": {
+              "text": "In Babylon the Children feared not the fiery furnace; * but cast into the midst of the flames * they were bedewed and sang: * ‘O Lord God of our fathers, Blessed art Thou.’",
+              "tier": 2,
+              "src": {
+                "file": "6-6.pdf",
+                "locus": "Thursday-night Compline canon, Ode 7 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "O my soul, awake from all the evils thou hast committed! Why sleepest thou still? Wherefore liest thou in the slumber of despondency? Cry aloud to the Theotokos: O all-holy one, help me!",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 7, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "I venerate the image of thy countenance, yet I dare not lift mine eyes unto thee, O most holy one. I pray that I may receive the forgiveness of my debts, and that in purity I may behold thy most pure icon.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 7, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "To thine aid, O Birthgiver of God, do I flee and fall prostrate, begging to receive forgiveness. Disdain me not, O Lady, but taking pity, save me.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 7, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "I have defiled my soul and mind with the many and various evils of the corrupter of souls, O most pure one, and I beseech thee: Disdain not thy servant, but rescue me from his temptations.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 7, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "8": {
+            "irmos": {
+              "text": "Suffering affliction for the sake of the laws of their fathers, * the blessed Children in Babylon * scorned the foolish decree of the King. * Standing together in the midst of the flames, they remained unharmed, * and sang a song fitting for almighty God: * ‘O ye works of the Lord, praise ye the Lord * and supremely exalt Him throughout all ages.’",
+              "tier": 2,
+              "src": {
+                "file": "6-6.pdf",
+                "locus": "Thursday-night Compline canon, Ode 8 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Having sinned beyond measure and defiled my body with sins, fool that I am, I consider the day of inexorable judgment, and at a loss and afraid, I am filled with fear and trembling, and fall down before thy compassion, O Lady. Spurn me not, but behold my sorrow, and deliver me from all condemnation and the many and varied torments.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 8, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Having spurned the divine law, wretch that I am, I lie wholly in slothfulness. But, looking upon me, arise quickly, O most pure one, and cause me to receive the portion of the saved; that, rejoicing, I may cry unto thee: Rejoice, O joy of the world, only intercessor for those who with faith invoke thy steadfast protection.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 8, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Woe is me, O my soul! How can I stand, in fear and trembling, before the dread tribunal, where even the angels shall be afraid and quake? But, as thou hast the Theotokos as a good ally, bend thy knees and lift up thy hands, crying: Direct thy merciful gaze upon me and have pity in that hour, O Virgin!",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 8, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "Show forth now the sure might of thine aid, for like one in thy debt, thy Son is moved by thy maternal pleas, O Virgin. Wherefore, come now in mine hour of need, that I not depart unprepared, but may live on, O all-hymned and pure Theotokos.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 8, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "9": {
+            "irmos": {
+              "text": "Weep not for Me, O Mother, * beholding in the tomb the Son Whom thou hast conceived * without seed in the womb; * for I shall arise and shall be glorified, * and as God I shall exalt with glory unceasing, * those that with faith and love magnify thee.",
+              "tier": 2,
+              "src": {
+                "file": "6-6.pdf",
+                "locus": "Thursday-night Compline canon, Ode 9 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "That I may receive the glory of heaven, I pray to thee, O Virgin: Absolve me, and deliver me from the debts of darkness, overlooking all that I have committed in knowledge or in ignorance, day or night, O most pure one; that, rejoicing, I may offer thee a hymn of thanksgiving.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 9, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Rescue me from all manner of tribulations, O maiden, and set my feet upon the rock of divine salvation; for, having acquired thee now as an invincible intercessor, I trust that I may pass freely through the wall of separation erected by disobedience when the fruit of the tree was eaten.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 9, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "I beseech thee, who hast given birth to the merciful Judge and Master: accept the boldness of my defiled lips and my wretched hymnody, and abhor me not, though I have sinned more than all others; for I, thy servant, have thee as my helper after God.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 9, item 3"
+                },
+                "label": "glory"
+              },
+              {
+                "text": "In that thou art more exalted than all creatures, thou didst conceive in thy womb the incarnate God, O Theotokos. Him do thou earnestly entreat, O pure one, that He release thy servant from all care, that I may freely glorify thee with praise.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Thursday-night Compline canon, Ode 9, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          }
+        }
+      },
+      "after_ode6": {
+        "rubric": "Lord, have mercy, (Thrice). Glory ..., Both now ..., Sessional Hymn, in Tone VI:",
+        "sessional": {
+          "text": "O pure and glorious Virgin, thou glory of the angels, who alone art blessed: when thou didst stand at the foot of the Cross of thy Son and God, unable to endure the malice of the enemy thou didst cry aloud, lamenting with sighs: How can He Who is the Lover of mankind endure the abuse of these men?",
+          "tier": 1,
+          "src": {
+            "file": "6-6.pdf",
+            "locus": "Thursday-night Compline, sessional after Ode VI"
+          },
+          "homoglyph_log": [
+            {
+              "from": "U+041E О (Cyrillic)",
+              "to": "O",
+              "count": 1
+            }
+          ]
+        }
+      },
+      "closing_rubric": "Then, “It is truly meet ..., “ and a prostration. Trisagion through Our Father... Troparion, and, the rest as usual. Dismissal."
+    },
+    "fri": {
+      "canon": {
+        "title": "Canon of supplication to the most holy Theotokos",
+        "heading_rubric": "Canon of supplication to the most holy Theotokos",
+        "odes": {
+          "1": {
+            "irmos": {
+              "text": "A helper and a protector * hath become unto me salvation. * My God, whom I will glorify, * the God of my fathers, * and I will exalt Him * for gloriously hath He been glorified.",
+              "tier": 2,
+              "src": {
+                "file": "6-7.pdf",
+                "locus": "Friday-night Compline canon, Ode 1 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Reject me not, O good one, neither abominate nor despise me who with fervor hasten beneath thy tender compassion, O pure one, but grant that I may share in the grace which resides in thee.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 1, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "O good Theotokos, helper of the sorrowful, accept the sighing which issueth forth from my soul, and deliver me from all the shameless evils I have grievously committed.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 1, item 2"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "Before thee do I fall down, O good one, thou intercessor for the troubled. From everlasting fire, from darkness and the abyss deliver me who have lived my whole life in evil.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 1, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "Woe is me! How can I who have immeasurably sinned before entreat Thee, O my Jesus? Yet I offer Thee as a mediatress the pure one who gave birth to Thee. Have mercy and save me!",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 1, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "3": {
+            "irmos": {
+              "text": "O Lord, upon the rock * of Thy commandments * make firm my heart, * for Thou alone art Holy and Lord.",
+              "tier": 2,
+              "src": {
+                "file": "6-7.pdf",
+                "locus": "Friday-night Compline canon, Ode 3 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "I fall down before thee, O Mother of the Word. In thy compassion accept me, and by thy fervent prayers grant forgiveness of sins unto me who beseech thee.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 3, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Have mercy upon me, O Lady, have mercy upon me, and deliver me from all wickedness, from the oppression of the demons and everlasting torment.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 3, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Restrain me who am smitten with the bitterness of lusts, O Lady, granting me the divine sobriety of repentance and saving conversion.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 3, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "O Birthgiver of God, who ineffably gave birth to the Lord and Creator of all things, entreat Him to save thy flock.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 3, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "4": {
+            "irmos": {
+              "text": "The prophet heard * of Thy coming, O Lord, * and he was afraid. * How wast Thou to be born of a virgin * and appear unto mankind? * and he said * “I have heard report of Thee and I am afraid”; * glory to Thy power, O Lord.",
+              "tier": 2,
+              "src": {
+                "file": "6-7.pdf",
+                "locus": "Friday-night Compline canon, Ode 4 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Constantly picking at the sores brought upon my soul by the love of sensuality, and in pain from the stripes they cause me, I lie lacking feeling and unhealed. O Birthgiver of God, have mercy and heal me, and save me By thy prayers.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 4, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "The darkness of sin hath covered my soul, O Birthgiver of God, such that I go about in the light as though it were night, not knowing the commandments of Christ. O thou who hast given birth to the divine Light, have mercy upon me and enlighten me, I pray.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 4, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "The Word of the living God descended into thy womb, O Virgin Mother and, receiving my substance through thy most pure blood, He came forth in two natures, but a single hypostasis. Him do thou beseech, that He save our souls.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 4, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "I have assiduously gone through the desires of the body and all pleasures, and have thereby become wholly corrupt, vile and abominable. O most pure Birthgiver of God, have mercy, and save me in thy tender compassion.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 4, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "5": {
+            "irmos": {
+              "text": "Out of the night I seek Thee early, * enlighten me I pray Thee, O Lover of mankind, * and guide me in Thy commandments, * and teach me, O Savior, * to do Thy will.",
+              "tier": 2,
+              "src": {
+                "file": "6-7.pdf",
+                "locus": "Friday-night Compline canon, Ode 5 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "I have kindled for myself the fire of Gehenna, doing that which is shameful, and have grievously brought upon myself the wrath of God. Help me, O pure one, and forsake me not.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 5, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Though I am ever asking for the remission of my transgressions, yet I never cease committing exceedingly wicked deeds, O most pure one, and I offend thee. O purification of the faithful, have pity on me!",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 5, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "O pure one, entreat Jesus, to Whom thou hast given birth through thy blood - perfect man and true God - that we be delivered from everlasting fire.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 5, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "O impassable gate, open unto me the portals of true repentance, I pray, and show me the path of penitence, O pure one, thou guide of all.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 5, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "6": {
+            "irmos": {
+              "text": "With my whole heart, I cried * unto the tenderly compassionate God, * and he heard me * from the lowest depths of Hades; * and raised my life up from corruption.",
+              "tier": 2,
+              "src": {
+                "file": "6-7.pdf",
+                "locus": "Friday-night Compline canon, Ode 6 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Waves of shameful thoughts now engulf me; yet do thou guide me to the calm harbor of true repentance by thy tender compassion, O Lady.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 6, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Having acquired thee as our hope and unassailable rampart, our steadfast intercessor, O maiden, we are delivered from transgressions and grievous passions, and from all harm.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 6, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "O pure Virgin Theotokos, I fall down before thee and cry out in lamentation: Deliver my wretched soul from the judgment which is to come, and from everlasting fire.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 6, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "In thy supplications thou art the strength of those who are faint of soul, O most pure one; wherefore, disdain me not, but heal me who am sick of soul.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 6, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "7": {
+            "irmos": {
+              "text": "We have sinned, we have transgressed, * and we have done evil before Thee. * We have not kept nor followed * Thy commandments, but reject us not utterly, * O God of our fathers.",
+              "tier": 2,
+              "src": {
+                "file": "6-7.pdf",
+                "locus": "Friday-night Compline canon, Ode 7 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "When mine accursed soul will have to endure separation from my body, there will be no one to deliver or comfort it; do thou then stand forth, O Lady, and deliver me from the oppression of the demons.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 7, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "I fall down before thee and offer thee fervent tears. I know thy love for mankind, I know thy long-suffering and guilelessness: have mercy upon me now, O pure one; forgive me and save me.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 7, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "O Virgin, have mercy on my wretched soul which is beset by the passions. Look upon the tumult of my passions, look upon the inconstant burning of my flesh, and grant me thy saving help and salvation.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 7, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "The Son and Word, Who is consubstantial and co-beginningless with the Father, received from thee flesh like thine, though immutably noetic and animate in a way He Himself knoweth; and therein He hath refashioned our nature into something higher, O pure Virgin,",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 7, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "8": {
+            "irmos": {
+              "text": "Him whom the hosts of heaven glorify, * and before whom tremble the cherubim and seraphim, * let every breath and all creation * praise, bless, and supremely exalt, * throughout all ages.",
+              "tier": 2,
+              "src": {
+                "file": "6-7.pdf",
+                "locus": "Friday-night Compline canon, Ode 8 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "I am at a loss when I consider my acts, and I tremble before the dread tribunal of the Judge. What answer shall I give at that time, wretch that I am? O Sovereign Lady of the world, be thou my helper.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 8, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "Turn not thy face away from me, O Lady, when I gaze upon thine image, but be merciful unto me, and avert from me the sentence which will be pronounced.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 8, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "O Mary, thou unwedded Bride of God, deliver me thy servant, from all the harm of the wicked one, I cry to thee, and at the coming trial stand before me as an advocate, O thou who alone art the intercessor for Christians.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 8, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "That He might deify mankind, O Lady, thy Son revealed Himself to be a perfect man through thee; wherefore, beseech Him, that He show me forth as wholly purified, and a partaker in His divine kingdom.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 8, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          },
+          "9": {
+            "irmos": {
+              "text": "O Virgin who received the angel’s salutation * and hast given birth to thine own Creator, * save those who magnify thee.",
+              "tier": 2,
+              "src": {
+                "file": "6-7.pdf",
+                "locus": "Friday-night Compline canon, Ode 9 irmos"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ]
+            },
+            "items": [
+              {
+                "text": "Thou alone art the intercessor for all mankind, O most pure one; thou art the bulwark of Christians, O pure one. Thee do I now set before Christ as a mediator for me, the lowly one, that By thy prayers He may have mercy on me, wretched as I am.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 9, item 1"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "I have committed deeds of the night, and the night of tortures should rightly now cover me, the vain one, and the retribution of hell should receive me; but as thou hast given birth to God the Judge, O pure Virgin, deliver me from all torment.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 9, item 2"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "plain"
+              },
+              {
+                "text": "I have wasted the time of my life in evils, I have drawn nigh unto the gates of Hades, but in nowise desire to enter therein. Help me, O good Theotokos, for I have placed my hope in thee.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 9, item 3"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "glory"
+              },
+              {
+                "text": "O right loving Lady, adornment of the angels and glory of the martyrs, with them pray that we find mercy and remission of our debts, and help us all to finish well the race of our life in the doing of good.",
+                "tier": 1,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Friday-night Compline canon, Ode 9, item 4"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ],
+                "label": "both_now"
+              }
+            ]
+          }
+        }
+      },
+      "after_ode6": {
+        "rubric": "Lord, have mercy, (Thrice). Glory ..., Both now ..., Sessional Hymn, in Tone VI:",
+        "sessional": {
+          "text": "In the loving-kindness of Thy compassions Thou didst come down to earth, O Christ, and became incarnate from the Virgin, sanctifying all on earth and calling them to heaven; wherefore, trusting in Thee, we no longer sin, but are freed from cares by Thee: for Thou art our Savior, Creator and God.",
+          "tier": 1,
+          "src": {
+            "file": "6-7.pdf",
+            "locus": "Friday-night Compline, sessional after Ode VI"
+          },
+          "homoglyph_log": [
+            {
+              "from": "U+041E О (Cyrillic)",
+              "to": "O",
+              "count": 1
+            }
+          ]
+        }
+      },
+      "closing_rubric": "Then, “It is truly meet ...,” and a prostration. Trisagion through Our Father ..., Troparion, and the rest as usual. Dismissal."
+    },
+    "sat": {
+      "frame_rubric": "The priest saith: Blessed is our God..., and we respond: Amen. Glory to Thee, our God, glory to Thee. O heavenly King..., Trisagion through Our Father. Lord, have mercy (12 times). Glory ..., Both now ..., O come, let us worship ..., (Thrice). Psalm 50 (Have mercy on me, O God...); Psalm 69 (O God, be attentive unto helping me...); and Psalm 142 (O Lord, hear my prayer...). Then, Glory to God in the highest..., and the Symbol of Faith (I believe in one God...).",
+      "canon": {
+        "title": "Canon of supplication to the most holy Theotokos, in Tone VI",
+        "heading_rubric": "Canon of supplication to the most holy Theotokos, in Tone VI:",
+        "odes": {
+          "1": {
+            "irmos": {
+              "text": "When Israel walked on foot in the sea as on dry land, * on seeing their pursuer Pharaoh drowned, * they cried: * Let us sing to God * a song of victory.",
+              "tier": 2,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Saturday-night Compline canon, Ode 1 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "In that thou art possessed of abundant divine grace, O Mother unwedded, disdain not those who have recourse unto thee, ever saving them from misfortunes and tribulations.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 1, item 1"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "Lo! the time of despair hath arrived for me. Arise, O most pure Lady, and extend unto me thy helping hand; for thou hast filled the world with divine gladness.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 1, item 2"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "As thou art our ally, O Birthgiver of God, quickly grant thy mighty protection unto me who am beset by perils, and preserve me unharmed by them.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 1, item 3"
+                },
+                "label": "glory"
+              },
+              {
+                "text": "Death rusheth headlong upon my soul, and the temptations of those who hate me have surrounded me like adders, to destroy me; but do thou save me, O Theotokos.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 1, item 4"
+                },
+                "label": "both_now"
+              }
+            ]
+          },
+          "3": {
+            "irmos": {
+              "text": "My mouth hath been enlarged against mine enemies, * for in the Lord * hath my heart been established.",
+              "tier": 2,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Saturday-night Compline canon, Ode 3 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "In that thou hast given birth to Life, O Theotokos, enliven my soul, which hath been slain by transgressions.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 3, item 1"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "From every temptation preserve those who have recourse unto thee, O Theotokos, our hope.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 3, item 2"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "Save me from those perils which rise up bitterly against me, O most immaculate Mother of my Lord.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 3, item 3"
+                },
+                "label": "glory"
+              },
+              {
+                "text": "O thou who by thy divine birthgiving dost grant salvation to the world, deliver me from misfortunes.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 3, item 4"
+                },
+                "label": "both_now"
+              }
+            ]
+          },
+          "4": {
+            "irmos": {
+              "text": "The prophet heard * of Thy coming, O Lord, * and he was afraid. * How wast Thou to be born of a virgin * and appear unto mankind? * and he said * “I have heard report of Thee and I am afraid”; * glory to Thy power, O Lord.",
+              "tier": 2,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Saturday-night Compline canon, Ode 4 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "The strength of my soul hath grown weak through poverty, O Birthgiver of God, and the cruel darkness which ariseth from transgressions hath fallen upon me; but as thou art the light-bearing cloud of God, look down and illumine me, I pray.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 4, item 1"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "As thou art a calm haven, O all-immaculate one, transform the storms of mine evil deeds and the tumult of my transgressions into the tranquility of salvation, for, roaring like lions, they seek to slay me. Deliver me from destruction by them, I pray.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 4, item 2"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "As thou art steadfast salvation and invincible protection day and night, on land and at sea, and in every place, O Theotokos, save me; for after God it is in thee that we Christians truly place our trust.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 4, item 3"
+                },
+                "label": "glory"
+              },
+              {
+                "text": "From great and divers transgressions and dangers thou dost ever save me; wherefore, I entreat thee who hast given birth to the Lord, and I hasten to thee, the invincible aid of the sorrowful; By thy prayers lead me up from misfortunes!",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 4, item 4"
+                },
+                "label": "both_now"
+              }
+            ]
+          },
+          "5": {
+            "irmos": {
+              "text": "O Christ Who shineth Thy light upon the world, * illumine my heart * for I cry out to Thee in the night, * and save me.",
+              "tier": 2,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Saturday-night Compline canon, Ode 5 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Unafraid of the assaults of men, we glorify thee, the shelter of salvation, O all- immaculate Mother of the Word.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 5, item 1"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "Having thee as an unassailable rampart, O most pure one, we are delivered from the uprisings of temptations and grief.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 5, item 2"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "Rescue me from the tongue of evil men, O pure one, for they have sharpened it like a razor, to wreak bitter destruction upon my soul.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 5, item 3"
+                },
+                "label": "glory"
+              },
+              {
+                "text": "Earnestly do I fall down before thee, praying: As thou art the Mother of my Creator, free me from the misfortunes which encompass me.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 5, item 4"
+                },
+                "label": "both_now"
+              }
+            ]
+          },
+          "6": {
+            "irmos": {
+              "text": "Slain by the sea-monster of sin, * I cry unto Thee, O Christ: * Free me from corruption, * as Thou didst the prophet.",
+              "tier": 2,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Saturday-night Compline canon, Ode 6 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Tasting bitterness, I have become a stranger to divine sweetness, O most pure one; wherefore, I cry unto thee: Grant me thy help.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 6, item 1"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "The darkness of the passions hath made me the slave of corruption; wherefore, free me, O Lady who hast given birth to the Light.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 6, item 2"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "With harmonious faith I confess thee, O most pure one, and, delivered from sorrow by thee, I offer thee sacrifice.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 6, item 3"
+                },
+                "label": "glory"
+              },
+              {
+                "text": "The mouths of the unjust have been opened against me, O Lady; wherefore, as thou art my helper, free me quickly from them.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 6, item 4"
+                },
+                "label": "both_now"
+              }
+            ]
+          },
+          "7": {
+            "irmos": {
+              "text": "An angel made the furnace bedew the holy Children, * but the command of God consumed the Chaldeans * and prevailed upon the tyrant to cry: * “O God of our fathers, blessed art Thou.”",
+              "tier": 2,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Saturday-night Compline canon, Ode 7 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "O most holy Virgin, do thou thyself free my soul from the temptations which have now surrounded it like fat bulls.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 7, item 1"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "Earnestly defending those in misfortune and grief, O Theotokos, ever grant them joy.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 7, item 2"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "As thou art an indestructible shelter for all, O Virgin, protect me who am wholly overcome by grief and despair for my deeds.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 7, item 3"
+                },
+                "label": "glory"
+              },
+              {
+                "text": "By thine intercession are we delivered from misfortunes and sorrows, and we find great riches which are inexhaustible.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 7, item 4"
+                },
+                "label": "both_now"
+              }
+            ]
+          },
+          "8": {
+            "irmos": {
+              "text": "Thou didst make flame bedew the holy children, * and didst burn the sacrifice of a righteous man with water. * For Thou alone, O Christ, dost do all as Thou willest, * Thee do we supremely exalt throughout all ages.",
+              "tier": 2,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Saturday-night Compline canon, Ode 8 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Consumed am I by the afflictions of men, O Theotokos, and I pray: Deliver me from their vain counsel.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 8, item 1"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "I have been vanquished in grief by my temptations, O Lady, and I pray: Preserve me unharmed by them.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 8, item 2"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "O pure one, save me from the lying man, from his tongue, mouth and tyranny, and from all want.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 8, item 3"
+                },
+                "label": "glory"
+              },
+              {
+                "text": "Led astray is my character, and, as I have no response, I cry to the Theotokos: Deliver me from all evils.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 8, item 4"
+                },
+                "label": "both_now"
+              }
+            ]
+          },
+          "9": {
+            "irmos": {
+              "text": "O Virgin who received the angel’s salutation * and hast given birth to thine own Creator, * save those who magnify thee.",
+              "tier": 2,
+              "src": {
+                "file": "6-1.pdf",
+                "locus": "Saturday-night Compline canon, Ode 9 irmos"
+              }
+            },
+            "items": [
+              {
+                "text": "Be thou merciful unto me amid the griefs of life, O Theotokos, and save me from misfortunes who now flee unto thee.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 9, item 1"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "Truly thou, alone upon the earth and the sea, hast been shown to be an indestructible shelter for those who flee to thee with unwavering soul.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 9, item 2"
+                },
+                "label": "plain"
+              },
+              {
+                "text": "By thine supplications, O all-hymned one, do thou grant freedom unto me who have mindlessly become a slave through all manner of evil falls.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 9, item 3"
+                },
+                "label": "glory"
+              },
+              {
+                "text": "Having acquired thee as my hope and steadfast help, O pure one, I bring this hymn to an end with faith, magnifying thee as the Theotokos.",
+                "tier": 1,
+                "src": {
+                  "file": "6-1.pdf",
+                  "locus": "Saturday-night Compline canon, Ode 9, item 4"
+                },
+                "label": "both_now"
+              }
+            ]
+          }
+        }
+      },
+      "after_ode6": {
+        "rubric": "Lord, have mercy, (Thrice). Glory ..., Both now ..., Sessional Hymn, in Tone VI:",
+        "sessional": {
+          "text": "O unashamed intercession for Christians, sure mediation before the Creator: Disdain not the cries of entreaty of Christians, but, in that thou art good, come thou to the aid of us who cry out to thee with faith: Haste thou to supplication and speed thou to entreaty, O Theotokos, ever interceding for those who honor thee.",
+          "tier": 1,
+          "src": {
+            "file": "6-1.pdf",
+            "locus": "Saturday-night Compline, sessional after Ode VI"
+          }
+        }
+      },
+      "closing_rubric": "Then, “It is truly meet ...,” and the rest as usual. Dismissal."
+    }
+  },
+  "matins_weekday": {
+    "mon": {
+      "sessionals": [
+        {
+          "rubric": "After the 1st chanting of the Psalter, the Sessional Hymns of repentance, in Tone VI:",
+          "spec_mel": null,
+          "items": [
+            {
+              "text": "I think upon the dread day, and I weep over my wicked deeds. How shall I answer the immortal King? With what boldness shall I, the prodigal, lift mine eyes to the Judge? O compassionate Father, only-begotten Son and Holy Spirit: Have mercy on me!",
+              "tier": 1,
+              "src": {
+                "file": "6-2.pdf",
+                "locus": "Monday Matins, sessional set 1, item 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ],
+              "label": "plain"
+            },
+            {
+              "text": "In the vale of weeping, in the place which Thou hast appointed, rebuke me not, O Merciful One, when Thou shalt come to render just judgment, neither shame me before the angels; but take pity on me, O God, and have mercy on me.",
+              "tier": 1,
+              "src": {
+                "file": "6-2.pdf",
+                "locus": "Monday Matins, sessional set 1, item 2"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 2
+                }
+              ],
+              "label": "plain"
+            }
+          ],
+          "verses": [
+            {
+              "text": "O Lord, rebuke me not in Thine anger, * nor chasten me in Thy wrath.",
+              "tier": 2,
+              "src": {
+                "file": "6-2.pdf",
+                "locus": "Monday Matins, sessional set 1 verse 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ]
+            }
+          ],
+          "closer": {
+            "text": "With heart and mouth let us hymn aloud the most glorious Mother of God, who is holier than the holy angels, confessing her to be the Theotokos, in that she truly gave birth to God incarnate, and prayeth unceasingly on behalf of our souls.",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Monday Matins, sessional set 1 closer"
+            },
+            "type": "theotokion"
+          }
+        },
+        {
+          "rubric": "After the 2nd chanting of the Psalter, the Sessional Hymns, in Tone VI:",
+          "spec_mel": null,
+          "items": [
+            {
+              "text": "Have mercy on us, O Lord, have mercy on us, for at a loss for any plea, we sinners offer Thee our Master this supplication: Have mercy on us!",
+              "tier": 1,
+              "src": {
+                "file": "6-2.pdf",
+                "locus": "Monday Matins, sessional set 2, item 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ],
+              "label": "plain"
+            },
+            {
+              "text": "Have mercy on us, O Lord, for we have placed our hope in Thee. Be not angry with us greatly, neither remember Thou our iniquities; but look upon us now, as Thou art compassionate, and deliver us from our enemies. For Thou art our God, and we are Thy people. We are all the work of Thy hands, and we call upon Thy name.",
+              "tier": 1,
+              "src": {
+                "file": "6-2.pdf",
+                "locus": "Monday Matins, sessional set 2, item 2"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ],
+              "label": "plain"
+            }
+          ],
+          "verses": [
+            {
+              "text": "O Lord, rebuke me not in Thine anger, * nor chasten me in Thy wrath.",
+              "tier": 2,
+              "src": {
+                "file": "6-2.pdf",
+                "locus": "Monday Matins, sessional set 2 verse 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ]
+            },
+            {
+              "text": "Wondrous is God in His saints, * the God of Israel To the martyrs: Ever enlightened by Thee, and having extinguished the lamp of the infidels, like lamps the saints always shine forth light upon the righteous. Through their supplications, O our Savior, light Thou my lamp, and save me, O Lord.",
+              "tier": 2,
+              "src": {
+                "file": "6-2.pdf",
+                "locus": "Monday Matins, sessional set 2 verse 2"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 2
+                }
+              ]
+            }
+          ],
+          "closer": {
+            "text": "Standing in the temple of Thy glory, we think we are standing in the heavens. O Theotokos, gate of heaven, open unto us the doors of thy mercy!",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Monday Matins, sessional set 2 closer"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "type": "theotokion"
+          }
+        },
+        {
+          "rubric": "After the 3rd chanting of the Psalter, the Sessional Hymns, in Tone VI:",
+          "spec_mel": "The Hope",
+          "items": [
+            {
+              "text": "I am in awe of the dread day of Thy coming, O Christ, I fear the inexorable judgment, and tremble, for I have committed a multitude offenses. But converting me before the end, save me, in that Thou art a merciful God, through the supplications of Thine angels, O only Compassionate Lover of mankind.",
+              "tier": 1,
+              "src": {
+                "file": "6-2.pdf",
+                "locus": "Monday Matins, sessional set 3, item 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 2
+                }
+              ],
+              "label": "plain"
+            },
+            {
+              "text": "O soul who hast spent thy whole life in slothfulness, unmindful of the day of dread judgment: Come to thy senses, and repent, and turn back and cry out to Christ: O Compassionate One, at the hour of condemnation be not mindful of our many offenses!",
+              "tier": 1,
+              "src": {
+                "file": "6-2.pdf",
+                "locus": "Monday Matins, sessional set 3, item 2"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 2
+                }
+              ],
+              "label": "plain"
+            }
+          ],
+          "verses": [],
+          "closer": {
+            "text": "O good Birthgiver of God, hope, protection and haven of those who trust in thee, and intercessor for the world: With the incorporeal ones earnestly pray to the loving God to Whom thou hast given birth, that our souls may be delivered from every threat, O only blessed one.",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Monday Matins, sessional set 3 closer"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "type": "theotokion"
+          }
+        }
+      ],
+      "canons": [
+        {
+          "title": "Canon of repentance to our Lord Jesus Christ and His holy martyrs, the acrostic whereof is “Accept Thou the weeping of mine eyes, O Christ,” the composition of Joseph, in Tone VI",
+          "heading_rubric": "Canon of repentance to our Lord Jesus Christ and His holy martyrs, the acrostic whereof is “Accept Thou the weeping of mine eyes, O Christ,” the composition of Joseph, in Tone VI:",
+          "odes": {
+            "1": {
+              "irmos": {
+                "text": "The lecherous Pharaoh was drowned with all his warriors, * and Israel, crossing through the midst of the sea, * cried aloud exclaiming: * Let us chant unto the Lord God, * for He hath been glorified!",
+                "tier": 2,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Monday Matins, canon 1, Ode 1 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Treating me with the oil of mercy, who have fallen into the hands of thieves and been half slain by soul-corrupting wounds, O Christ, have pity on me, that I may glorify Thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 1, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "I have sinned greatly, and become a den of thieves. O Christ Who wast born in a cave, grant me an outpouring of tears, and cleanse me, that I may become a temple for Thy Holy Spirit.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 1, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Having like youths cast down the enemy, O spiritual athletes, ye have truly been adorned with divinely plaited wreaths, and, full of glory, stand with the angels before God in the highest.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 1, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "O honored great-martyrs, who once drowned the noetic Pharaoh in the deep of your blood, ye have passed over to the promised land of heaven, glorifying Christ.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 1, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "With the martyrs, the divine prophets and all the angels pray to the Creator of all, O pure one, that He save those who with faith glorify and magnify thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 1, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "3": {
+              "irmos": {
+                "text": "Having established my thoughts upon the firm rock of Thy Faith, * make steadfast my soul, O Lord; * for I have Thee as my refuge * and confirmation, * O good One.",
+                "tier": 2,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Monday Matins, canon 1, Ode 3 irmos"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ]
+              },
+              "items": [
+                {
+                  "text": "I promised Christ to repent, yet in nowise do I cast off evil deeds. What shall I do, who am beset by great blindness? O Son of God, have pity on me!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 3, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Having wasted my life in slothfulness, wretch that I am, I consider the long- suffering of God; and I am afraid that the severing of death will suddenly overtake me.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 3, item 2"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "Desiring persecutions, pangs and tribulations as though they were food, the martyrs rejoiced, looking toward to everlasting delight with their neotic eyes.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 3, item 3"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "All-wisely making your minds steadfast upon the firm rock of piety, O holy martyrs, in your strength ye were undaunted by multifarious wounds.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 3, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Thou hast been revealed to us to be a new tree of paradise, O pure one, having in thy midst the Tree of which Adam, having eaten thereof, escapeth the mortality brought about by the evil one.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 3, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "4": {
+              "irmos": {
+                "text": "Thy virtue hath covered the heavens, O Christ, * and all things have been filled * with Thy praise, O Lord.",
+                "tier": 2,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Monday Matins, canon 1, Ode 4 irmos"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ]
+              },
+              "items": [
+                {
+                  "text": "Condemn us not, who have sinned greatly against Thee; but as Thou art merciful by nature have pity on us, O Master.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 4, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O Savior Who art the way of life, grant that I may never follow the deadly ways of sin.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 4, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "With your burning wounds ye quenched the fire, O martyrs who suffered, and through the dew of the divine Spirit ye remained unconsumed.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 4, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Having richly inherited it by the shedding of your blood, ye clearly delight in the torrent of divine sustenance, O martyrs.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 4, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Having wasted my life in slothfulness, O most pure one, I flee to thine aid. Have pity, and save me!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 4, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "5": {
+              "irmos": {
+                "text": "O Christ Who shineth Thy light upon the world, * illumine my heart * for I cry out to Thee in the night, * and save me.",
+                "tier": 2,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Monday Matins, canon 1, Ode 5 irmos"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ]
+              },
+              "items": [
+                {
+                  "text": "O Christ Who didst spring forth from the root of Jesse, wither the uprisings of my passions, and plant the fear of Thee within me.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 5, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Let us acquire sighs like the publican’s, and set aside all evil deeds, that we may escape everlasting sighing.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 5, item 2"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "Wounded by divine desire for Thee, O Lord, Thy martyrs rejoiced when they were wounded by tortures.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 5, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Suffering in body, O martyrs, ye cried out from the ends of the earth, and Christ hearkened to your voice.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 5, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Let us hymn the Theotokos, the gate of heaven, through which all sinners pass by the passage of repentance.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 5, item 5"
+                  },
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "6": {
+              "irmos": {
+                "text": "Slain by the sea-monster of sin, * I cry unto Thee, O Christ: * Free me from corruption, * as Thou didst the prophet.",
+                "tier": 2,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Monday Matins, canon 1, Ode 6 irmos"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ]
+              },
+              "items": [
+                {
+                  "text": "O Christ having given eyes to the blind, open Thou the eyes of my soul, that I may behold Thy light and be delivered from the darkness of the passions.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 6, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Make my soul full of the life-creating waters of repentance, O Compassionate One, granting me rivers of tears.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 6, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Like lilies of the valley the martyrs emit healings and fill with fragrance the hearts of all the pious.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 6, item 3"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Released from a corruptible body by tortures, O saints, ye bound yourselves to the Master with love and your hearts.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 6, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "O holy Mother of God, By thy prayers purify my heart, which hath been defiled by unclean deeds.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 6, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "7": {
+              "irmos": {
+                "text": "Hearkening to the hymnody of Thy venerable children * Thou didst bedew the burning furnace: * O Lord God of our fathers blessed art Thou!",
+                "tier": 2,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Monday Matins, canon 1, Ode 7 irmos"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ]
+              },
+              "items": [
+                {
+                  "text": "I have been blinded in mind by grave evil, and have not looked upon the light of repentance. O Christ my Savior, save me!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 7, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Trusting in thy tender compassion, I fall down before Thee, O Compassionate One, and ask for remission of mine evils. Disdain me not, O Master!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 7, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O my Christ, Who dost invest with heavenly glory those who suffer for Thee in the world: By their supplications save me.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 7, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "As divine keepers of the righteous law, ye spat upon unjust edicts, suffering lawfully with faith.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 7, item 4"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Thou hast given birth to the Master Who assumed the guise of a servant, O maiden. Him do thou entreat, O pure one, that He free me from slavery to the passions.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 7, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "8": {
+              "irmos": {
+                "text": "Thy venerable Children in the furnace * likened to the cherubim * chanted the thrice-holy hymn * Bless ye, praise ye and supremely exalt ye the Lord throughout all ages.",
+                "tier": 2,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Monday Matins, canon 1, Ode 8 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "In my conduct I have emulated the rich man’s lack of mercy. Overlooking mine impoverished mind, O Christ, send me not into the unquenchable fire, who stand before the gates of repentance corrupted by evil.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 8, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "From this life send me not, who am unprepared, into the wintry sabbath, the idle lack of good deeds, O Compassionate One Who easeth the winter of sin; but grant me divine conversion.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 8, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Trampling down deceptive falsehood by faith, the martyrs endured the threefold waves of tortures in every way, blessing, hymning and exalting Christ throughout the ages.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 8, item 3"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Extinguishing the burning flame of torments with the dew of patience, ye utterly consumed the tinder of ungodliness, afire with the zeal of divine love, O holy and right victorious martyrs.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 8, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "As higher in honor than the angels, and having been magnificently sanctified, O Virgin Theotokos, thou hast given birth to the most holy God; wherefore, sanctify my soul.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 8, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "9": {
+              "irmos": {
+                "text": "O Virgin who received the angel’s salutation * and hast given birth to thine own Creator, * save those who magnify thee.",
+                "tier": 2,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Monday Matins, canon 1, Ode 9 irmos"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ]
+              },
+              "items": [
+                {
+                  "text": "Having maintained his chastity, Joseph was appointed distributor of grain; but I, who commit fornication, am beset by a famine of virtuous deeds.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 9, item 1"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "Repenting like Peter, O Christ, I offer up tears; I sigh like the publican, and like the prodigal son I cry out from the depths of my heart: I have sinned! Forgive me!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 9, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "With Christ as your ally, ye cast down the evil of the enemy, O most wise ones, and received crowns of victory from on high.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 9, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Through the Holy Spirit the holy memorial of all the martyrs sanctifieth those who hallow it in an Orthodox manner.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 9, item 4"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "O thou who hast given birth to the Light of dispassion, enlighten me who have been darkened by sins, that I may hymn thee, O pure Ever-virgin.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 1, Ode 9, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            }
+          },
+          "acrostic": "Accept Thou the weeping of mine eyes, O Christ",
+          "composer": "Joseph"
+        },
+        {
+          "title": "Another canon, of the holy incorporeal angels, the acrostic whereof is “This is the sixth hymning of the noetic beings,” the composition of Theophanes, in Tone VI",
+          "heading_rubric": "Another canon, of the holy incorporeal angels, the acrostic whereof is “This is the sixth hymning of the noetic beings,” the composition of Theophanes, in Tone VI:",
+          "odes": {
+            "1": {
+              "irmos": {
+                "text": "When Israel walked on foot in the sea as on dry land, * on seeing their pursuer Pharaoh drowned, * they cried: * Let us sing to God * a song of victory.",
+                "tier": 2,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Monday Matins, canon 2, Ode 1 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "I praise the beauteous majesty of the heavenly choirs, and cry aloud: I pray Thee, O Christ, Who alone art compassionate, may I be illumined by their radiant lightning.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 1, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "repeat": 2
+                },
+                {
+                  "text": "Thou Who by Thy word and the most Holy Spirit adorned all things and the angelic choirs which Thou didst create, Thou hast created them to hymn Thee as the Cause of all, in that Thou art almighty.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 1, item 2"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "Having received thy Creator ineffably incarnate from thy seedless womb, as He Himself desired, O pure one, thou hast truly been revealed to be the Sovereign Lady of creation.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 1, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "3": {
+              "irmos": {
+                "text": "There is none as holy as Thou, * O Lord my God, * who hast exalted the horn of Thy faithful O good One, * and strengthened us upon the rock * of Thy confession.",
+                "tier": 2,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Monday Matins, canon 2, Ode 3 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "He Who by His will created every rational being out of nothingness is worshipped in three Hypostases with thrice-holy hymns, and is eternally glorified.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 3, item 1"
+                  },
+                  "label": "plain",
+                  "repeat": 2
+                },
+                {
+                  "text": "O Master of all things, Who lovest mankind, now pouring forth and richly exuding good upon all things, Thou hast shown forth the choirs of the incorporeal angels through their partaking of blessedness.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 3, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Because of thee hath release been given us, O Theotokos; for the Master of the law, incarnate from thee, endured suffering for our sake, delivering all mankind.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 3, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "4": {
+              "irmos": {
+                "text": "Christ is my power, * my God and my Lord, * the holy Church divinely singeth, * crying with a pure mind, * keeping festival in the Lord.",
+                "tier": 2,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Monday Matins, canon 2, Ode 4 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Possessed of a nature immune to corruption, Thy most divine and honorable intelligences stand round about Thy throne, having inherited Thee as a wellspring of immortality, O Lover of mankind.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 4, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "repeat": 2
+                },
+                {
+                  "text": "Sanctified by the Holy Spirit, the assemblies of the angels remain immune to evil, deified for the primal and good ascent.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 4, item 2"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "The curse of our first mother hath been annulled because of thee, O all-immaculate one; since for our sake thou hast given birth to the ever-flowing Wellspring of blessing, O most pure one.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 4, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "5": {
+              "irmos": {
+                "text": "Illumine with Thy divine light, I pray, O good One, * the souls of those who with love rise early to pray to Thee, * that they may know Thee, O Word of God, * as the true God, * Who recalleth us from the darkness of sin.",
+                "tier": 2,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Monday Matins, canon 2, Ode 5 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Beholding Thee, our God and Creator, sitting upon the throne of the cherubim, O Thou Who seest all things, by signs the prophet learned Thy majesty and dominion.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 5, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "repeat": 2
+                },
+                {
+                  "text": "Daniel beheld Thee, Who united Thyself to human form, surrounded by myriads of myriads and thousands of thousands of angels, O Master, and he learned the mystery of the dominion of Thy glory.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 5, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Thy Son was revealed to be comely in beauty more than the children of mortals, O all-immaculate Lady; for the Word is God over all, even though He received human nature from thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 5, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "6": {
+              "irmos": {
+                "text": "Beholding the sea of life surging with the tempest of temptations, * I run to Thy calm haven, and cry to Thee: * Raise up my life from corruption, * O greatly merciful One.",
+                "tier": 2,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Monday Matins, canon 2, Ode 6 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Beholding with purity of mind Thine angels radiantly descending upon the ladder, O Master, from afar Jacob learned most clearly of Thy coming in the flesh.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 6, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "repeat": 2
+                },
+                {
+                  "text": "Israel Thy favored one, O Master, rejoiced, perceiving the splendid and divine array of the angels, who join chorus in goodly ranks and stand round about Thine ineffable glory.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 6, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The maiden and Lady hath been shown to be a mountain truly higher than the heavenly mountains, the angelic hosts; for she contained the radiance of Thy divinity.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 6, item 3"
+                  },
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "7": {
+              "irmos": {
+                "text": "An angel made the furnace bedew the holy Children, * but the command of God consumed the Chaldeans * and prevailed upon the tyrant to cry: * “O God of our fathers, blessed art Thou.”",
+                "tier": 2,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Monday Matins, canon 2, Ode 7 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Drawing nigh to the ineffable glory of Christ, all the holy angels are made luminous by the beauty of the Almighty, and with love they ever sing unto Him: Blessed art Thou, O God, throughout the ages!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 7, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "repeat": 2
+                },
+                {
+                  "text": "Noetically revolving round about Thee, O Master, the angels eternally receive Thine effulgence transcending understanding, ever chanting and saying: Blessed art Thou, O God, throughout the ages!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 7, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The incorporeal archangel said: “O blessed one, the Lord is with thee!” For, desiring to restore corrupted nature, He made His abode within thy womb, O blessed one who hast given birth to God in the flesh.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 7, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "8": {
+              "irmos": {
+                "text": "Thou didst make flame bedew the holy children, * and didst burn the sacrifice of a righteous man with water. * For Thou alone, O Christ, dost do all as Thou willest, * Thee do we supremely exalt throughout all ages.",
+                "tier": 2,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Monday Matins, canon 2, Ode 8 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "As of old Thou didst protect Elisha, Thy favored one, with armies of incorporeal beings, O Christ, so now encompass the Church which exalteth Thee supremely, throughout the ages.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 8, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "repeat": 2
+                },
+                {
+                  "text": "O divine chief commanders, as ye stand before the dread throne, pray that those who with love glorify and exalt Christ throughout all ages may be delivered from transgressions.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 8, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O divinely joyous one, with the divine Gabriel we cry “Rejoice!” to thee, the Mother and Virgin; since for our sake thou hast given birth in the flesh to the Word of God, Whom we exalt supremely throughout all ages.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 8, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                },
+                {
+                  "text": "refrain: “More honorable than the cherubim ...,” and make prostrations.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 8, item 4"
+                  },
+                  "label": "plain"
+                }
+              ]
+            },
+            "9": {
+              "irmos": {
+                "text": "It is impossible for mankind to see God * upon Whom the orders of angels dare not gaze; * but through thee, O all-pure one, * did the Word Incarnate become a man * and with the heavenly hosts, * Him we magnify and thee we call blessed.",
+                "tier": 2,
+                "src": {
+                  "file": "6-2.pdf",
+                  "locus": "Monday Matins, canon 2, Ode 9 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "In that for the sake of Thy prophet David Thou didst cause Thine angel, who was cutting down Thy people, to desist, so also, in that Thou art compassionate, O Christ, grant peace to all the Churches, easing the temptations which now afflict them, in that Thou art greatly merciful.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 9, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "repeat": 2
+                },
+                {
+                  "text": "Seeing the afflictions of Thy people, O Christ Master, as the Physician of souls and bodies heal them, through the supplications of Thy ministers, who now stand round about Thee, the King of all, and with constant cries glorify Thee as God.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 9, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Honoring now thine exceedingly glorious birthgiving, O Virgin Mother, the principalities, archangels, dominions and seraphim, the powers, authorities, thrones and cherubim ever reverently glorify thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-2.pdf",
+                    "locus": "Monday Matins, canon 2, Ode 9, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            }
+          },
+          "acrostic": "This is the sixth hymning of the noetic beings",
+          "composer": "Theophanes"
+        }
+      ],
+      "magnificat_rubric": "We then chant the hymn of the Theotokos (the Magnificat), with the",
+      "post_canon_rubric": "Then, “It is truly meet to bless thee ...,” and a prostration. Small litany, Exapostilarion, and the usual psalms. Small Doxology (Read), Litany: Let us complete ..., On the Aposticha, these Stichera of repentance, in Tone VI:",
+      "aposticha": {
+        "rubric": "On the Aposticha, these Stichera of repentance, in Tone VI:",
+        "items": [
+          {
+            "text": "Finding me naked, and stripped of virtues, the enemy hath wounded me with the arrow of sin; but, do Thou as the Physician of both soul and body, heal the wounds of my soul O God, and have mercy on me.",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Monday Matins, aposticha item 1"
+            },
+            "label": "plain"
+          },
+          {
+            "text": "The wounds of my heart, inflicted on me by my many sins, do Thou heal O Savior, as Thou art the Physician of both soul and body, for Thou dost always grant the forgiveness of sins unto those that ask it of Thee. O Lord grant me tears of repentance and remission of debts, and have mercy on me.",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Monday Matins, aposticha item 2"
+            },
+            "label": "plain"
+          },
+          {
+            "text": "At the commemoration of Thy saints, O Lord, all creation celebrateth; the heavens rejoice with the angels, and the earth with all mankind keepeth festival. By their intercessions have mercy upon us.",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Monday Matins, aposticha item 3"
+            },
+            "label": "martyrs"
+          }
+        ],
+        "verses": {
+          "ref": "shared.weekday_aposticha_verses.sets.standard_matins"
+        }
+      },
+      "aposticha_theotokion": {
+        "text": "O Theotokos, thou didst receive the angel’s words, * wast shown to be the throne of the cherubim, ** and bore in thine arms the Hope of our souls.",
+        "tier": 2,
+        "src": {
+          "file": "6-2.pdf",
+          "locus": "Monday Matins, aposticha Glory/Both-now closer"
+        },
+        "homoglyph_log": [
+          {
+            "from": "U+041E О (Cyrillic)",
+            "to": "O",
+            "count": 1
+          }
+        ],
+        "type": "theotokion"
+      },
+      "closing_rubric": "Then, “It is good to give thanks ...,” Trisagion ..., Our Father ..., Troparia."
+    },
+    "tue": {
+      "sessionals": [
+        {
+          "rubric": "st After the 1 chanting of the Psalter, the Sessional Hymns of repentance, in Tone VI:",
+          "spec_mel": null,
+          "items": [
+            {
+              "text": "I think upon the dread day, and I weep over my wicked deeds. How shall I answer the immortal King? With what boldness shall I, the prodigal, lift mine eyes to the Judge? O compassionate Father, only-begotten Son and Holy Spirit: Have mercy on me!",
+              "tier": 1,
+              "src": {
+                "file": "6-3.pdf",
+                "locus": "Tuesday Matins, sessional set 1, item 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ],
+              "label": "plain"
+            },
+            {
+              "text": "In the vale of weeping, in the place which Thou hast appointed, rebuke me not, O Merciful One, when Thou shalt come to render just judgment, neither shame me before the angels; but take pity on me, O God, and have mercy on me.",
+              "tier": 1,
+              "src": {
+                "file": "6-3.pdf",
+                "locus": "Tuesday Matins, sessional set 1, item 2"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 2
+                }
+              ],
+              "label": "plain"
+            }
+          ],
+          "verses": [
+            {
+              "text": "O Lord, rebuke me not in Thine anger, * nor chasten me in Thy wrath.",
+              "tier": 2,
+              "src": {
+                "file": "6-3.pdf",
+                "locus": "Tuesday Matins, sessional set 1 verse 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ]
+            }
+          ],
+          "closer": {
+            "text": "Open unto us the doors of repentance, O blessed Virgin Theotokos. Let not those who trust in thee perish, but may we be delivered by thee from misfortunes, for thou art the salvation of the race of mankind.",
+            "tier": 1,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Tuesday Matins, sessional set 1 closer"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "type": "theotokion"
+          }
+        },
+        {
+          "rubric": "After the 2nd chanting of the Psalter, the Sessional Hymns, in Tone VI:",
+          "spec_mel": null,
+          "items": [
+            {
+              "text": "O my soul, how long shalt thou labor for sin in despondency; how long shalt thou, sick, fail to go to the Physician? Arise then from the evils thou hast committed, and cry unto the Lord, saying: O Savior, Hope of the hopeless and Life of the despairing, raise me up, and save me?",
+              "tier": 1,
+              "src": {
+                "file": "6-3.pdf",
+                "locus": "Tuesday Matins, sessional set 2, item 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 2
+                }
+              ],
+              "label": "plain"
+            },
+            {
+              "text": "Grant unto me the vigilance of the wise virgins, O Lord, and enlighten the lamp of my soul with the oil of Thy compassions, that I may chant unto Thee the angelic hymn: Alleluia!",
+              "tier": 1,
+              "src": {
+                "file": "6-3.pdf",
+                "locus": "Tuesday Matins, sessional set 2, item 2"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ],
+              "label": "plain"
+            },
+            {
+              "text": "Having endured the struggle of martyrdom, the saints receive from Thee the honors of victory; they set at naught the intentions of the iniquitous, and have received crowns of incorruption. For their sake be Thou entreated, O God, and grant us great mercy.",
+              "tier": 1,
+              "src": {
+                "file": "6-3.pdf",
+                "locus": "Tuesday Matins, sessional set 2, item 3"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ],
+              "label": "martyrs"
+            }
+          ],
+          "verses": [
+            {
+              "text": "O Lord, rebuke me not in Thine anger, * nor chasten me in Thy wrath.",
+              "tier": 2,
+              "src": {
+                "file": "6-3.pdf",
+                "locus": "Tuesday Matins, sessional set 2 verse 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ]
+            },
+            {
+              "text": "Wondrous is God in His saints, * the God of Israel.",
+              "tier": 2,
+              "src": {
+                "file": "6-3.pdf",
+                "locus": "Tuesday Matins, sessional set 2 verse 2"
+              }
+            }
+          ],
+          "closer": {
+            "text": "O thou good Virgin Theotokos, * the hope of the world, * we beg thine intercession which alone is mighty: * have compassionate mercy upon us, * a people bereft of an intercessor; * beseech the merciful God, that our souls be delivered from every threat, ** O thou who alone art blessed!",
+            "tier": 2,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Tuesday Matins, sessional set 2 closer"
+            },
+            "type": "theotokion"
+          }
+        },
+        {
+          "rubric": "After the 3rd chanting of the Psalter, the Sessional Hymns, in Tone VI:",
+          "spec_mel": "The Hope",
+          "items": [
+            {
+              "text": "As thou didst point out the ways of life unto the people, O John, crying out: “Set your hearts aright for the Lord!”, By thy prayers save my greatly sinful soul, bring my hardened mind to compunction, and deliver me from the torment to come, O Forerunner of the Savior.",
+              "tier": 1,
+              "src": {
+                "file": "6-3.pdf",
+                "locus": "Tuesday Matins, sessional set 3, item 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 2
+                }
+              ],
+              "label": "plain"
+            },
+            {
+              "text": "The tempest of the passions and the cruel threefold waves of transgressions have drowned me in the depths of despair, O Word; but stretch forth to me Thy mighty right hand, and save me, as Thou didst Peter, from the depths of my cruel iniquities, through the supplications of Thy Forerunner.",
+              "tier": 1,
+              "src": {
+                "file": "6-3.pdf",
+                "locus": "Tuesday Matins, sessional set 3, item 2"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ],
+              "label": "plain"
+            }
+          ],
+          "verses": [],
+          "closer": {
+            "text": "The Son and Word of God, Who was begotten of the Father before the ages without a mother, thou didst bear in times past, incarnate from thy pure blood without the aid of a man, O Birthgiver of God. Him do thou entreat, that we be granted remission of sins before the end.",
+            "tier": 1,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Tuesday Matins, sessional set 3 closer"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "type": "theotokion"
+          }
+        }
+      ],
+      "canons": [
+        {
+          "title": "Canon of repentance to our Lord Jesus Christ and His holy martyrs, the",
+          "heading_rubric": "Canon of repentance to our Lord Jesus Christ and His holy martyrs, the",
+          "odes": {
+            "1": {
+              "irmos": {
+                "text": "A helper and a protector * hath become unto me salvation. * My God, whom I will glorify, * the God of my fathers, * and I will exalt Him * for gloriously hath He been glorified.",
+                "tier": 2,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Tuesday Matins, canon 1, Ode 1 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "O Jesus my Redeemer, as Thou didst deliver from many transgressions the harlot who once made goodly repentance, I beseech Thee: Deliver me also from my countless evils, in that Thou art merciful.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 1, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Sailing this cruel sea of life in vain thoughts, O Jesus, I have fallen into many floods. Delivering me from them, save me.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 1, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Let us joyously honor the valiant spiritual athletes, the destroyers of the alien one, those who suffered patiently and have received from God crowns of victory.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 1, item 3"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Holding forth, O wise ones, with the boldness of the Word of God ye vanquished the orators; and having endured every kind of wound, ye have been greatly glorified.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 1, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Thou hast been shown to be the gate of Life, O pure one who by thy birthgiving shut the gates of death. Thou hast been revealed to be the chosen ground whereby our human substance hath been lifted from earth up to heaven.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 1, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "3": {
+              "irmos": {
+                "text": "O Lord, upon the rock * of Thy commandments * make firm my heart, * for Thou alone art Holy and Lord.",
+                "tier": 2,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Tuesday Matins, canon 1, Ode 3 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "When I must needs stand before Thee and be judged, O only easily reconciled Lord, look upon me with the eye of Thy mercy.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 3, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Accept me who sigh like the publican from the depths of my soul, and grant me repentance, O Savior, which delivereth me from every sin.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 3, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "By the flow of your most holy blood, O saints, the abominable blood which once was offered to the demons in pagan temples ceased.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 3, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Strengthened by the most holy Spirit, O holy ones, ye demolished the pernicious temples, making all steadfast in the Faith.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 3, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "O most holy one, thou didst conceive Him Who upholdeth the whole world; wherefore, I pray thee: Deliver me from every torment which holdeth me.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 3, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "4": {
+              "irmos": {
+                "text": "The prophet heard * of Thy coming, O Lord, * and he was afraid. * How wast Thou to be born of a virgin * and appear unto mankind? * and he said * “I have heard report of Thee and I am afraid”; * glory to Thy power, O Lord.",
+                "tier": 2,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Tuesday Matins, canon 1, Ode 4 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Grant me streams of tears which dry up the wellsprings of my passions, wash away the mire of every sin, and quench the everlasting and inextinguishable flame of the fire of Gehenna, O Compassionate and greatly Merciful One.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 4, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The sores of my soul continually itch with love of pleasures, and I remain unhealed, not desiring to come to my senses. What shall become of me? What shall I do? O compassionate Christ, heal and save me!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 4, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O ever-blessed martyrs, who with divine navigation sailed the roiling deep, the waters of perdition, ye reached the safe and stormless haven of the kingdom of heaven.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 4, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "As luminaries of piety and lamps of truth, with the light of your struggles ye destroyed the greatly painful darkness of ungodliness, and with rays of miracles ye dispel the gloom of suffering.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 4, item 4"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Of old, the prophet foresaw thee as a seven-branched lampstand bearing the Fire of the knowledge of God, O maiden, enlightening those who languish in the darkness of ignorance. Wherefore, I cry out to thee, O all- immaculate one: Enlighten me, I pray!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 4, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "5": {
+              "irmos": {
+                "text": "Out of the night I seek Thee early, * enlighten me I pray Thee, O Lover of mankind, * and guide me in Thy commandments, * and teach me, O Savior, * to do Thy will.",
+                "tier": 2,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Tuesday Matins, canon 1, Ode 5 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "O Christ, I am Thy slothful servant, who have hidden Thy talant and am confounded by the evil deeds of my passions; wherefore, send me not into the fire.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 5, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Though I became Thy child through grace, O compassionate Christ, yet I have enslaved myself to the enemy and have departed from Thee, living prodigally; wherefore, turn me back and save me.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 5, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The martyrs stood before the tribunal, arrayed in the armor of faith; wherefore, the cruel apostate was unable to wound them with arrows of falsehood.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 5, item 3"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Wounded, the bodies of the martyrs slew all the wiles of the enemy; and in joy they passed over to the life which waxeth not old, having received crowns of victory.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 5, item 4"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "O pure guide of all, thou impassable gate, open unto me the gates of true repentance, I pray, and show me the path of penitence.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 5, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "6": {
+              "irmos": {
+                "text": "With my whole heart, I cried * unto the tenderly compassionate God, * and he heard me * from the lowest depths of Hades; * and raised up my life from corruption.",
+                "tier": 2,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Tuesday Matins, canon 1, Ode 6 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Let me not be seen as a joy to the demons on the dread day, O Christ Jesus, lest I then hear the voice sentencing me to the fire of Gehenna.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 6, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The enemy of the righteous hath drowned me in the depths of transgressions, but I flee to the abyss of Thy compassions, O Jesus, crying aloud: Guide me now to the harbor of life!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 6, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Having cultivated the furrows of your souls with the plough of many pangs, O most wise ones, with the divine seed of faith ye manifestly produced the abundantly fruitful grain of martyrdom.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 6, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "With your wounds ye wounded him who wounded us, O pious warriors; wherefore, having passed over to life, ye now heal the sufferings of all.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 6, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Thou wast shown to be the temple of God, O all-immaculate one; and making His abode within thee in sanctity, He deified human nature and made the faithful into temples for Himself.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 6, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "7": {
+              "irmos": {
+                "text": "We have sinned, we have transgressed, * and we have done evil before Thee. * We have not kept nor followed * Thy commandments, but reject us not utterly, * O God of our fathers.",
+                "tier": 2,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Tuesday Matins, canon 1, Ode 7 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "I who have sinned beyond measure look upon Thine immeasurable mercy. I know Thy tender compassion; I know Thy long-suffering and forbearance. Grant me fruits of repentance, O compassionate Christ, and save me.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 7, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Heal the incurable sufferings of my heart, O Compassionate One, grant the severance of my debts, and ease my heavy burden, that in compunction I may ever glorify Thee, the God of our fathers.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 7, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Bound, beheaded, consumed by material fire, cast to the lions as food, stretched on the wheel, the divine and sacred spiritual athletes did not deny Thee, our living God.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 7, item 3"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Ye were parted from your bodies, yet were shown to be un- separated from God, O martyrs, because of your divine union with Him Who united Himself to us incorruptibly. Him do ye ever beseech, that we be delivered from all want.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 7, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Without seed thou didst put forth Him Whom the Father began incorruptibly, and thou didst remain a virgin even after giving birth, as thou wast before birthgiving. Wherefore, thou art unceasingly blessed and glorified, O most pure one, as the Mother of God.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 7, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "8": {
+              "irmos": {
+                "text": "Him whom the hosts of heaven glorify, * and before whom tremble the cherubim and seraphim, * let every breath and all creation * praise, bless, and supremely exalt, * throughout all ages.",
+                "tier": 2,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Tuesday Matins, canon 1, Ode 8 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Having sinned more than David, I gaze upon the great mercy of Thy compassions, O Christ, and with him cry aloud: O only Merciful One, speedily have mercy upon me!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 8, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "I pray that mine end may be good, and that I may bring an end to my wicked deeds. Yet my intention is not sincere, for my heart is hardened. Have pity on me, O Word of God.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 8, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O passion-bearers, ye willingly offered yourselves as chosen and unblemished sacrifices unto the only-begotten Word Who sacrificed Himself for our sake, abolishing all the sacrifices of the demons.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 8, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "The severing of your tendons, the uprooting of your teeth, the cutting off of your hands, the fracture of your members, and every other torture did ye valiantly endure, O martyrs, hymning Christ, the only Judge of the contest.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 8, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "For us thou hast given birth to the Ancient of days as a little babe, Who showeth us new paths on earth, renewing our nature which hath waxed old, O unwedded and blessed one.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 8, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "9": {
+              "irmos": {
+                "text": "Ineffable is the birthgiving * of a seedless conception, * from a mother who knew not a man; * an undefiled childbearing. * For the birth of God hath renewed nature, * wherefore all generations rightly worship and magnify thee * as the Bride and Mother of God.",
+                "tier": 2,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Tuesday Matins, canon 1, Ode 9 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "O Jesus Who lovest mankind, Thou alone knowest our infirmity, for in Thy tender compassion Thou didst clothe Thyself therein, desiring to cleanse it. Wherefore, cleanse my wicked defilements and the sores of mine evils, and save me.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 9, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Like the harlot I offer Thee tears, O Lover of mankind; like the publican I cry out, groaning, unto Thee: Cleanse and save me! And like the Canaanite woman I exclaim: Have mercy on me, as Thou didst the penitent Peter, and grant me forgiveness!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 9, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Wrestling in the flesh with the incorporeal prince of this world, by your struggles of suffering ye cast him down, and have worthily received crowns of victory. Wherefore, pray ye earnestly for all who praise you with faith, O holy ones.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 9, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "With the holy blood of Thy saints Thou didst sanctify the earth, O Lord, uniting their spirits to the spirits of the holy hosts, O most Holy One; and by them Thou dost ever sanctify those who hallow Thee with true faith.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 9, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "We offer unto thee the cry of the archangel, O all-pure and blessed one: Rejoice, thou who contained the uncontainable God! Rejoice, annulment of the curse and induction of blessing! Rejoice, thou who alone openest the gate of paradise!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 1, Ode 9, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "title": "Another canon, of the holy prophet and forerunner, the composition of",
+          "heading_rubric": "Another canon, of the holy prophet and forerunner, the composition of",
+          "odes": {
+            "1": {
+              "irmos": {
+                "text": "The lecherous Pharaoh was drowned with all his warriors, * and Israel, crossing through the midst of the sea, * cried aloud exclaiming: * Let us chant unto the Lord God, * for He hath been glorified!",
+                "tier": 2,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Tuesday Matins, canon 2, Ode 1 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "The divine angel announced thy birth beforehand to thy father, O angel of God. With him be thou mindful of us, that on the day of judgment we may find mercy, O holy Forerunner.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 1, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "As the beauteous scion of the desert, O Forerunner of Christ, uproot the slothfulness which continually springs up within me, and cause me to produce the fruits of repentance.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 1, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "A childless womb hath most gloriously giveth birth to thee as fruit, showing hearts which before were unfruitful to be right fertile. But I cry out to thee with faith: O Baptist, uproot my fruitless thoughts!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 1, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Unceasingly doth the wicked enemy lay traps for me with cunning. O all-immaculate one, rescue me from his pursuit, and instruct me how to do the divine will of the Master, O Theotokos.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 1, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "3": {
+              "irmos": {
+                "text": "Having established my thoughts upon the firm rock of Thy Faith, * make steadfast my soul, O Lord; * for I have Thee as my refuge * and confirmation, * O good One.",
+                "tier": 2,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Tuesday Matins, canon 2, Ode 3 irmos"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ]
+              },
+              "items": [
+                {
+                  "text": "Grant that I, who have strayed from, the path, may now return; and extend thy hand to me who ever navigates the abyss of evils, O blessed Forerunner.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 3, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "I live my life in slothfulness, and the time when I shall be cut down draweth nigh. By thy prayers grant that I may arise, O ever-glorious Forerunner, lest I be cast into the inextinguishable fire as barren.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 3, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The dread day is at hand, and I am laden with grievous burdens. Lift them from me, O Baptist of the Lord, by thy pure supplications.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 3, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Thou hast been revealed to be the throne of God, on which Christ sat in the flesh and raised up from the primal fall those who hymn thee with joyful voices.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 3, item 4"
+                  },
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "4": {
+              "irmos": {
+                "text": "O Lord, I have heard the report of Thee * and was afraid; * I have seen Thy works and was amazed. * Glory to Thy power, O Lord.",
+                "tier": 2,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Tuesday Matins, canon 2, Ode 4 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "With the effective medicine of thy prayers, O Forerunner, heal my heart, which hath been wounded by highway robbers, I pray thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 4, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Cast down the sin which yet liveth within my soul, O Forerunner, and grant that I may now arise, who fall headlong into pleasures.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 4, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Thou hast been shown to be a harbor for us who are tempest-tossed on the deep of the storm of life, and bring us all into tranquility, O thou who art most rich.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 4, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "She who gave birth to Thee entreateth Thee with the Forerunner, saying: “Condemn me not, O Lord, according to my deeds, but show Thyself to be merciful to me, O all-Compassionate One!”",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 4, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "5": {
+              "irmos": {
+                "text": "I seek Thee early in the morning, * Who for our sake didst mercifully empty Thyself without undergoing change, * and without passion didst submit to Thy Passion. * O Word of God, grant unto me the fallen one, Thy peace, * O Lover of mankind.",
+                "tier": 2,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Tuesday Matins, canon 2, Ode 5 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Thou wast the temple of the divine Trinity, O Forerunner; and, assembled in this thy holy temple, with fervent prayers we beseech thee: Deliver us from temptations and tribulations, O all-praised one.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 5, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "I, who have estranged my mind from every virtue, now entreat thee, O blessed one who walked a strange path in this life: Join me to the Lord of all, making me better by thine excellent gifts.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 5, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O prophet who immersed the Abyss of tender compassion in the streams of the Jordan, By thy prayers dry up the torrents of my passions now, giving me springs of tears.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 5, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Supremely adorned with divine rays, O Virgin, thou hast given birth unto Him Who is comely in beauty. Wherefore, ever entreat Him, that He save from corruption those who glorify thee with faith and love.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 5, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "6": {
+              "irmos": {
+                "text": "The uttermost depths of sin have encompassed me; * and its stormy waves I can endure no more, * wherefore like Jonah I cry out to Thee, O Master: * Lead me up from corruption.",
+                "tier": 2,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Tuesday Matins, canon 2, Ode 6 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Thou didst spring forth as an offshoot of a root, O prophet, showing hearts barren of all goodly knowledge to be right fruitful for the praise of God.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 6, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Crush the evil one speedily beneath our feet, and by thine intercessions direct our noetic footsteps toward the path of peace, O Forerunner.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 6, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Surround thy flock with righteousness, O prophet, delivering us from every attack of the demons and from everlasting torment.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 6, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "We now offer unto thee hymnody of thanksgiving, O Virgin; for saved from the ancient curse by thee, O pure one, we produce every blessing like fruit.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 6, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "7": {
+              "irmos": {
+                "text": "In Babylon the Children feared not the fiery furnace; * but cast into the midst of the flames * they were bedewed and sang: * ‘O Lord God of our fathers, Blessed art Thou.’",
+                "tier": 2,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Tuesday Matins, canon 2, Ode 7 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "As the voice of the Word, O Baptist, accept now our cries, and deliver thy people from sufferings and misfortunes, from many evil circumstances and everlasting torment.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 7, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "With thy hand thou didst point to the Lamb of God Who taketh away the sins of the world, O prophet. Him do thou ever beseech, that He take away my grievous offenses and difficult times, and grant me life.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 7, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O my soul, hasten thou and, abandoning the darkness of irrational deeds, cry out: Have pity on me, O Jesus, through the supplications of the Baptist, and rescue me from the mire of my deeds!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 7, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Unto Him, before Whom the ranks of heaven stand with trembling, and Who in His goodness united Himself unto mankind, didst thou give birth, O pure one. Him do thou earnestly entreat, that He have pity on thy servants.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 7, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "8": {
+              "irmos": {
+                "text": "Suffering affliction for the sake of the laws of their fathers, * the blessed Children in Babylon * scorned the foolish decree of the King. * Standing together in the midst of the flames, they remained unharmed, * and sang a song fitting for almighty God: * ‘O ye works of the Lord, praise ye the Lord * and supremely exalt Him throughout all ages.’",
+                "tier": 2,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Tuesday Matins, canon 2, Ode 8 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Thou didst behold the Holy Spirit descending in the form of a dove upon the Word as He was baptized, O blessed one, and wast deemed worthy to hear the voice of the Father, saying: “This is my Son, Who is co-enthroned with Me, to Whom all creation doth sing: Hymn the Lord, O ye works, and supremely exalt Him throughout all ages!”",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 8, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Having consumed the flammable passions of my mind with the fire of thy prayers, O prophet, light again the lamp of my heart, which hath gone out, that, seeing clearly, I may chant unto the Creator of the light of the commandments: Hymn the Lord, ye works, and supremely exalt Him throughout all ages!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 8, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "I am the wretched servant who hid the talant which I received from Thee to invest. What shall I do when Thou comest to render judgment, trying the deeds of each man? But have pity on me through the supplications of Thy Forerunner, and send me not into the fire who cry: Hymn the Lord, O ye works, and supremely exalt Him throughout the ages!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 8, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Maintain my mind in humility, O maiden full of the grace of God, who by thy birthgiving hast crushed the uprising of the demons. Raise me up from the dung-hill of the passions, and with thy grace fill me, who hunger and chant: Hymn the Lord, O ye works, and supremely exalt Him throughout all ages!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 8, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "theotokion"
+                },
+                {
+                  "text": "refrain: “More honorable than the cherubim ...,” and make prostrations.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 8, item 5"
+                  },
+                  "label": "plain"
+                }
+              ]
+            },
+            "9": {
+              "irmos": {
+                "text": "Come, ye faithful, let us raise our minds on high * and enjoy the Master’s hospitality * and the table of immortal life in the upper room; * and let us hear the exalted teaching of the Word * Whom We magnify.",
+                "tier": 2,
+                "src": {
+                  "file": "6-3.pdf",
+                  "locus": "Tuesday Matins, canon 2, Ode 9 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Cure thou my mind, which hath been grievously infected by the love of life’s pleasures, still the tempest which vexeth me greatly, and show me the straight ways of repentance, O Forerunner of the Lord.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 9, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Thou wast seen standing between the Old and the New Covenants, O prophet, causing the former to cease and revealing the latter as light. Quickly guide us to walk therein with a godly conscience, that we may be delivered from everlasting darkness.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 9, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The dread judgment will be a day full of wrath, a day of darkness for those whose works are dark, O Baptist and Forerunner of Christ. By thy prayers deliver us from all condemnation then, for we honor thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 9, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Thou wast shown to be holier than the cherubim, O Virgin, for thou hast given birth to the supremely holy God. Sanctify us all, who day and night hallow thee with holy voices and faith.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-3.pdf",
+                    "locus": "Tuesday Matins, canon 2, Ode 9, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "magnificat_rubric": "We then chant the hymn of the Theotokos (the Magnificat), with the",
+      "post_canon_rubric": "Then, “It is truly meet to bless thee ...,” and a prostration. Small litany, Exapostilarion, and the usual psalms. Small Doxology (Read), Litany: Let us complete ..., On the Aposticha, these Stichera of repentance, in Tone VI:",
+      "aposticha": {
+        "rubric": "On the Aposticha, these Stichera of repentance, in Tone VI:",
+        "items": [
+          {
+            "text": "Finding me naked, and stripped of virtues, * the enemy hath wounded me with the arrow of sin; * but, do Thou as the Physician of both soul and body, * heal the wounds of my soul O God, ** and have mercy upon me.",
+            "tier": 2,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Tuesday Matins, aposticha item 1"
+            },
+            "label": "plain"
+          },
+          {
+            "text": "The wounds of my heart, * inflicted on me by my many sins, * do Thou heal O Savior, * as Thou art the Physician of both soul and body, * for Thou dost always grant the forgiveness of sins * unto those that ask it of Thee. * O Lord grant me tears of repentance and remission of debts, ** and have mercy upon me.",
+            "tier": 2,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Tuesday Matins, aposticha item 2"
+            },
+            "label": "plain"
+          },
+          {
+            "text": "O Lord, if we did not have Thy saints as advocates * and in Thy goodness having mercy upon us, * how would we dare to hymn Thee, Whom the angels glorify without ceasing. ** O Thou Who knowest the hearts of men, spare our souls!",
+            "tier": 2,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Tuesday Matins, aposticha item 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ],
+            "label": "martyrs"
+          }
+        ],
+        "verses": {
+          "ref": "shared.weekday_aposticha_verses.sets.standard_matins"
+        }
+      },
+      "aposticha_theotokion": {
+        "text": "Thou wast deemed worthy of great gifts, * O pure Virgin Mother of God, * for thou didst give birth in the flesh * to One of the Holy Trinity, * Christ, the Giver of life, ** unto the salvation of our souls.",
+        "tier": 2,
+        "src": {
+          "file": "6-3.pdf",
+          "locus": "Tuesday Matins, aposticha Glory/Both-now closer"
+        },
+        "type": "theotokion"
+      },
+      "closing_rubric": "Then, “It is good to give thanks ...,” Trisagion ..., Our Father ..., Troparia."
+    },
+    "wed": {
+      "sessionals": [
+        {
+          "rubric": "st After the 1 chanting of the Psalter, the Sessional Hymns of the holy and precious Cross, in Tone VI:",
+          "spec_mel": null,
+          "items": [
+            {
+              "text": "Thy Cross, O Lord, hath been sanctified; for thereby are healings wrought for those who are made sick by sins. Wherefore, we fall down before Thee, crying aloud: Have mercy upon us!",
+              "tier": 1,
+              "src": {
+                "file": "6-4.pdf",
+                "locus": "Wednesday Matins, sessional set 1, item 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ],
+              "label": "plain"
+            },
+            {
+              "text": "No sooner was the tree of Thy Cross planted in the ground, O Christ our Lord, than the foundations of death were shaken; and Thou Who hast laid low Hades with love dismissed its trembling minions, and hast shown us Thy salvation, O Holy One; wherefore we glorify Thee, O Son of God. Have mercy upon us!",
+              "tier": 1,
+              "src": {
+                "file": "6-4.pdf",
+                "locus": "Wednesday Matins, sessional set 1, item 2"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 3
+                }
+              ],
+              "label": "plain"
+            }
+          ],
+          "verses": [
+            {
+              "text": "Exalt ye the Lord our God, * and worship the footstool of His feet, for He is holy.",
+              "tier": 2,
+              "src": {
+                "file": "6-4.pdf",
+                "locus": "Wednesday Matins, sessional set 1 verse 1"
+              }
+            }
+          ],
+          "closer": {
+            "text": "Thou art the hope, help and haven of thy people, O Virgin, for from thee the salvation of the world was truly born. As thou didst weep at the Cross of thy Son and God, thou savest those who place their trust in thee. Him do thou now beseech, that He deliver from corruption all who hymn thee.",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Wednesday Matins, sessional set 1 closer"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "type": "stavrotheotokion",
+            "sourceLabel": "Stavrotheotokion"
+          }
+        },
+        {
+          "rubric": "After the 2nd chanting of the Psalter, The Sessional Hymns of the holy and precious Cross, in Tone VI:",
+          "spec_mel": null,
+          "items": [
+            {
+              "text": "Today the words of the prophets are fulfilled; for, lo! we worship at the place where Thy feet stood, O Lord; and tasting of the Tree of salvation, we have received freedom from sinful passions by the prayers of the Theotokos, O Thou Lover of mankind.",
+              "tier": 1,
+              "src": {
+                "file": "6-4.pdf",
+                "locus": "Wednesday Matins, sessional set 2, item 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 2
+                }
+              ],
+              "label": "plain"
+            },
+            {
+              "text": "O Lord, the Jews condemned to death Thee, the Life of all; they who crossed the Red Sea by the staff of Moses nailed Thee to the Cross; they who sucked honey from the rock offered Thee gall. Yet Thou didst endure, that Thou might- est free us from slavery to the enemy. O Christ our God, glory to Thee!",
+              "tier": 1,
+              "src": {
+                "file": "6-4.pdf",
+                "locus": "Wednesday Matins, sessional set 2, item 2"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 2
+                }
+              ],
+              "label": "plain"
+            },
+            {
+              "text": "While the choirs of the incorporeal ones stood by, holding trophies of victory, and tyrants and kings were amazed, the most wise ones showed forth the firm opposition and the wounds of torture of spiritual athletes’ in their martyrdom at the tribunal, casting down the apostate by their confession of Christ. O Lord Who strengthened them, glory be to Thee!",
+              "tier": 1,
+              "src": {
+                "file": "6-4.pdf",
+                "locus": "Wednesday Matins, sessional set 2, item 3"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ],
+              "label": "martyrs"
+            }
+          ],
+          "verses": [
+            {
+              "text": "God is our King before the ages; * He hath wrought salvation in the midst of the earth.",
+              "tier": 2,
+              "src": {
+                "file": "6-4.pdf",
+                "locus": "Wednesday Matins, sessional set 2 verse 1"
+              }
+            },
+            {
+              "text": "Wondrous is God in His saints, * the God of Israel.",
+              "tier": 2,
+              "src": {
+                "file": "6-4.pdf",
+                "locus": "Wednesday Matins, sessional set 2 verse 2"
+              }
+            }
+          ],
+          "closer": {
+            "text": "Standing before the Cross, the Mother unwedded cried out unto Him to Whom she had given birth without seed: “A sword hath pierced my heart, O my Son, for I cannot bear to see hanging upon the Tree, Thee before Whom all things tremble, as Thou art our Creator and God. O long-suffering Lord, glory be to Thee!”",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Wednesday Matins, sessional set 2 closer"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ],
+            "type": "stavrotheotokion",
+            "sourceLabel": "Stavrotheotokion"
+          }
+        },
+        {
+          "rubric": "After the 3rd chanting of the Psalter, the Sessional Hymns, in Tone VI:",
+          "spec_mel": "Having set aside",
+          "items": [
+            {
+              "text": "When creation beheld Thee nailed of Thine own will to the Cross for our sake, O Christ, it quaked with fear; the sun wholly darkened its light; the stones split asunder; and the divine veil of the temple was rent in twain in rebuke of the cruel and iniquitous Jews.",
+              "tier": 1,
+              "src": {
+                "file": "6-4.pdf",
+                "locus": "Wednesday Matins, sessional set 3, item 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ],
+              "label": "plain"
+            },
+            {
+              "text": "In Eden the tree brought corruption upon the first of our race, but the tree of the Cross blossomed forth life at the place of the skull; for the malice of the enemy was trampled underfoot. And Adam received mercy when Christ was nailed to the Cross, crying aloud: “I have found paradise, O blessed Tree!”",
+              "tier": 1,
+              "src": {
+                "file": "6-4.pdf",
+                "locus": "Wednesday Matins, sessional set 3, item 2"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ],
+              "label": "plain"
+            }
+          ],
+          "verses": [],
+          "closer": {
+            "text": "O Christ, the Ever-virgin maiden who gave birth to Thee, beholding Thee lifted up upon the Cross for our sake, was wounded in heart and soul by the sword of grief, and wept, lamenting maternally. By her supplications, have mercy on us.",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Wednesday Matins, sessional set 3 closer"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "type": "stavrotheotokion",
+            "sourceLabel": "Stavrotheotokion"
+          }
+        }
+      ],
+      "canons": [
+        {
+          "title": "Canon of the precious and life-creating Cross, the acrostic whereof is “Nailed to the Tree, Thou savest me, O Savior,” the composition of Joseph, in Tone VI",
+          "heading_rubric": "Canon of the precious and life-creating Cross, the acrostic whereof is “Nailed to the Tree, Thou savest me, O Savior,” the composition of Joseph, in Tone VI:",
+          "odes": {
+            "1": {
+              "irmos": {
+                "text": "When Israel walked on foot in the sea as on dry land, * on seeing their pursuer Pharaoh drowned, * they cried: * Let us sing to God * a song of victory.",
+                "tier": 2,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Wednesday Matins, canon 1, Ode 1 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Extending Thy hands upon the Cross, O Master, Thou didst embrace rejected mankind and lead it to Thy Father, in that Thou art His beloved and consubstantial Son.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 1, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Thou wast raised up upon the Cross like a lamb, O Word, seeking Thy lost sheep; and having found it, Thou didst number it among those who had not strayed. O Jesus, glory to Thy might!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 1, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O right glorious passion-bearing martyrs, desiring the life of heaven ye died on earth, enduring many tortures and divers perils, O right blessed ones.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 1, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Standing up for Christ, Who is more just than all, at the unjust tribunals, O spiritual athletes, in God ye endured every unjust trial, which justified you.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 1, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "“O Master, enduring suffering upon the Cross, Thou dost mediate dispassion for all those descended from Adam; and beholding Thee, the earth quaked,” thou didst cry aloud, O Lady, lamenting maternally.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 1, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "3": {
+              "irmos": {
+                "text": "There is none as holy as Thou, * O Lord my God, * who hast exalted the horn of Thy faithful O good One, * and strengthened us upon the rock * of Thy confession.",
+                "tier": 2,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Wednesday Matins, canon 1, Ode 3 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "The Cross was planted in the earth, delusion fell, and creation quaked; and hearts shaken by the assaults of the enemy were made steadfast by faith.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 3, item 1"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "Possessed by the devil, unrighteous men condemned to death Thee, the only Righteous One, Who dost justify mortals rescuing them from the unrighteous hand of the deceiver.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 3, item 2"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "The deceiver, bringing all his malice to bear, contended against the saints; but he was vanquished, seeing the warriors of divine radiance refusing to submit.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 3, item 3"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "The comeliness of the bodies of the passion-bearers of Christ was altered by wicked wounds, yet the splendor of their effulgence shone forth all the more through the activity of the Holy Spirit.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 3, item 4"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "“O my Son, I understood that I was to give birth to Thee Who art comely in beauty more than all men. How now art Thou crucified, O Christ, bereft of all beauty?”, the Virgin said, weeping.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 3, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "4": {
+              "irmos": {
+                "text": "Christ is my power, * my God and my Lord, * the holy Church divinely singeth, * crying with a pure mind, * keeping festival in the Lord.",
+                "tier": 2,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Wednesday Matins, canon 1, Ode 4 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Beholding Thee, the never-setting Sun, crucified upon the Tree, the sun grew dark with fear, and all creation, hymning Thee, was released from dark deception.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 4, item 1"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "The violators of the law bound thy hands, O Savior, and all who were bound with unbreakable bonds were released; the enemy was bound, and falsehood was put to shame.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 4, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "With the outpouring of your blood, O martyrs, ye drowned the tyrannical Pharaoh who wickedly boasted beyond measure, and ye have passed over, rejoicing, to the good land.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 4, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Soaring over the snares of the enemy on the wings of the Spirit, O spiritual athletes, rejoicing, ye hastened to where are the primal goodness, life and never-waning light.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 4, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "When thou didst behold Him crucified and pierced in His most pure side with the spear for our sake, O Lady, thou wast wounded with the sword of the sufferings of Him Who became incarnate from thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 4, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "5": {
+              "irmos": {
+                "text": "Illumine with Thy divine light, I pray, O good One, * the souls of those who with love rise early to pray to Thee, * that they may know Thee, O Word of God, * as the true God, * Who recalleth us from the darkness of sin.",
+                "tier": 2,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Wednesday Matins, canon 1, Ode 5 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "O Christ Who dost clothe the sky in clouds, Thou wast willingly nailed, naked, to the Cross, covering the nakedness of mine evil and enlightening my form, adorning it with the robe of incorruption, O Master.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 5, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "As the true sweetness of our souls, Christ, the true Vine, was crucified on the Cross, exuding the wine which doth abolish all the drunkenness of the delusion of the adversary.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 5, item 2"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "Replete with sacred wounds, adorned with crowns, and standing before God Who suffered in the flesh, O spiritual athletes of Christ, ye ask remission for our transgressions.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 5, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Looking toward the glory, life and true joy of heaven, O passion-bearers, ye endured every threefold wave of torment, strengthened by the suffering of the Master.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 5, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "“O Christ, I who in my womb contained Thee, Whom naught can contain, gave birth unto Thee without pain; but now I experience pain, seeing Thee crucified, O Christ!”, said the most pure Virgin, weeping.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 5, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "6": {
+              "irmos": {
+                "text": "Beholding the sea of life surging with the tempest of temptations, * I run to Thy calm haven, and cry to Thee: * Raise up my life from corruption, * O greatly merciful One.",
+                "tier": 2,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Wednesday Matins, canon 1, Ode 6 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Thou wast crowned with thorns, O Long-suffering One, cutting down the thorns of the passions; and when Thy side was pierced by the spear, Thou didst slay the most wily serpent, who made us mortal.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 6, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Thou wast lifted up upon the Cross, laying low the power of the enemy; and didst accept buffeting, freeing me from bitter slavery. I worship Thy long- suffering, O Compassionate One!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 6, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Protected by the Cross, the spiritual athletes toppled the evil walls of delusion and, adorned with crowns of victory, passed over to make their abode in the heavenly city. Wherefore, they are called blessed.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 6, item 3"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Most gloriously scaling the heights of torments, O saints, ye brought low the wicked uprisings of the enemy on earth, and received crowns from on high.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 6, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "“O Effulgence of the Father, how hast Thou been lifted up upon the Cross, illumining all things and laying low the author of darkness?”, the most pure Lady exclaimed, weeping maternally.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 6, item 5"
+                  },
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "7": {
+              "irmos": {
+                "text": "An angel made the furnace bedew the holy Children, * but the command of God consumed the Chaldeans * and prevailed upon the tyrant to cry: * “O God of our fathers, blessed art Thou.”",
+                "tier": 2,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Wednesday Matins, canon 1, Ode 7 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "When Thou wast buffeted, Thou didst smite the venomous malice of the serpent; and when Thou wast suspended upon the Tree, O only Mighty One, Thou didst enlighten all to cry: O God of our fathers, blessed art Thou!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 7, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Having tasted of the Tree, Adam, the first man, found death; but when Christ, the new Adam, died on the Tree, He granted us immortal life, slaying the greatly crafty servant.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 7, item 2"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "Enduring suffering, O martyrs, ye were borne up to the Lord by your torment, and ye stood on the firm rock of faith, casting down all the wicked malice of the enemy at the command of God.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 7, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Illumined by your sufferings, O spiritual athletes, ye shine forth more brightly than the sun; having destroyed all the powers of darkness, and chanting to Christ: Blessed is the God of our fathers!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 7, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "“When Thou wast suspended upon the Cross, Thou didst alter all creation, O Thou who art immutable in Thy divinity,” said the Virgin to her Son. And seeing these things, she wept, marveling at Thy great long-suffering.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 7, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "8": {
+              "irmos": {
+                "text": "Thou didst make flame bedew the holy children, * and didst burn the sacrifice of a righteous man with water. * For Thou alone, O Christ, dost do all as Thou willest, * Thee do we supremely exalt throughout all ages.",
+                "tier": 2,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Wednesday Matins, canon 1, Ode 8 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Lifted up upon the Tree in humility of heart, O God Most High, Thou didst humble the most prideful serpent, and raised up Adam, who had been brought low by the passions, O Compassionate One.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 8, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Given gall to eat when Thou wast lifted up upon the Tree, Thou didst transform the ancient bitterness, O compassionate Master, sweetness of all, Who art hypostatic Life.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 8, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Ye did not bend your knee before graven images, O all-praised ones, but were sacrificed like unblemished lambs; and ye brought low the might of the evil one, hymning Christ throughout the ages.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 8, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Ye were shown to be temples of the living Spirit, O martyrs, and ye cast down the temples of the idols and were caught up to the heavenly temple, hymning Christ throughout the ages.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 8, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Jacob beheld thee beforehand, O Virgin, as the ladder leading up to the heights of heaven us who have plunged headlong into the abyss of evils; wherefore, we bless thee, the pure one, throughout the ages.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 8, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "9": {
+              "irmos": {
+                "text": "It is impossible for mankind to see God * upon Whom the orders of angels dare not gaze; * but through thee, O all-pure one, * did the Word Incarnate become a man * and with the heavenly hosts, * Him we magnify and thee we call blessed.",
+                "tier": 2,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Wednesday Matins, canon 1, Ode 9 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "O Lord of times and seasons, at noon Thou wast uplifted, crucified, upon the Tree in the midst of the earth, O only Long-suffering One, setting aright him who in the midst of paradise suffered the fall through the corrupting fruit.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 9, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The Cross was lifted up, and the tyrant was dealt a mortal wound to his soul; those bound were released from corruption, and understanding was planted in all mankind; the enemy stood by, paralyzed, and all were filled with joy.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 9, item 2"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "The earth was conjoined with the heavens, for Christ was sacrificed on the Cross, O martyrs of the Lord; and He drew unto Him the multitude of you who endured a multitude of extreme torments, and caused you to shine forth with the multitude of His divine ministers.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 9, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Shining with immaterial light, ye became gods by adoption, O martyrs of the Lord, making your abode in the mansions of the firstborn, full of eternal glory; wherefore, we, the faithful, honor you as is meet.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 9, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "“An awesome birthgiving did I endure, O long-suffering Master, when I gave birth to Thee in a strange manner. For when creation beheld Thee willingly crucified upon the Tree, it was filled with fear,” the immaculate one cried out maternally weeping, whom we magnify.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 1, Ode 9, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            }
+          },
+          "acrostic": "Nailed to the Tree, Thou savest me, O Savior",
+          "composer": "Joseph"
+        },
+        {
+          "title": "Another canon of the most holy Theotokos, in Tone VI",
+          "heading_rubric": "Another canon of the most holy Theotokos, in Tone VI",
+          "odes": {
+            "1": {
+              "irmos": {
+                "text": "Same as the foregoing.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Wednesday Matins, canon 2, Ode 1 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "The Lord, Who stretched out the sky and founded the earth, having issued forth in the flesh from thee, O all-holy Virgin, showed us an earthly heaven.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 1, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O pure one, who didst conceive God Who became a man for our sake, entreat Him, that on the day of judgment He have pity on us who have sinned greatly against Him.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 1, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The Sun Who shone forth with most brilliant rays from thy holy womb, O Lady, illumineth the whole earth; wherefore, enlightened, we honor thee, the Mother of God.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 1, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "With the light of the holy commandments of Him Who became incarnate from thee, O Lady Theotokos, dispel the darkness of my soul and the gloom of unseemly thoughts.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 1, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                }
+              ]
+            },
+            "3": {
+              "irmos": {
+                "text": "Same as the foregoing.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Wednesday Matins, canon 2, Ode 3 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Holding in thine hands Christ Who upholdeth all things, O pure Birthgiver of God, from the hands of the wicked devil and all harm deliver us who hymn thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 3, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "By thy prayers deliver us from demonic turmoil, from unjust men, from all temptations and corrupting infirmities, O all-immaculate Virgin Lady.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 3, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Behold, all generations call thee blessed, O maiden who in time supra-naturally gave birth in the flesh to the timeless Word, yet remained a virgin.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 3, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O Virgin who hast given birth to God, the Lover of mankind, at the hour of His dread coming deliver from all condemnation me, thine unprofitable servant.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 3, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                }
+              ]
+            },
+            "4": {
+              "irmos": {
+                "text": "Same as the foregoing.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Wednesday Matins, canon 2, Ode 4 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Let us all hymn the holy Virgin, the temple of God, radiantly blessing her, deified because of her, and delivered from evils.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 4, item 1"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "We bless the Virgin as the door leading to divine entry, the divine paradise, the noetic place of sanctification, and the beauty of Jacob.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 4, item 2"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "Christ hath shown thee to be a right calm harbor for those who in purity of mind invoke thee, the true Theotokos, with faith and love, O all-immaculate Lady.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 4, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O most pure Mary, thou wast the all-pure and spacious receptacle of the indwelling of God, and hast washed the defilement and mire from my soul.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 4, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                }
+              ]
+            },
+            "5": {
+              "irmos": {
+                "text": "Same as the foregoing.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Wednesday Matins, canon 2, Ode 5 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "The Lord, Who by His word created all things and Who alone feedeth them in His wise providence: As He desireth, in His compassion He took form from thee, O most pure one, and ineffably became flesh.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 5, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Behold, O Virgin, the God, Master and Lord of all was conceived in thy womb, as the prophets said; and thou hast ineffably given birth to Him, remaining an incorrupt virgin after giving birth, O pure one.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 5, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O Mary, Sovereign Lady of all, in that thou art merciful deliver me from dreadful captivity, I pray, and rend asunder the record of my sin with the spear of Him Who became incarnate from thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 5, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "By thy mediation and intercession loose the bonds of my sin, O Virgin, for thou art the hope of the desperate, who hasten to thy divine protection.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 5, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                }
+              ]
+            },
+            "6": {
+              "irmos": {
+                "text": "Same as the foregoing.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Wednesday Matins, canon 2, Ode 6 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Christ, Who is fire, did not consume thy womb when He issued forth from thee in the flesh. Him do thou beseech, O pure one, that those who hymn thee with faith may be delivered from fire and every torment.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 6, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O all-immaculate one, I hymn thee, the majesty of the holy angels, and I pray: Drive far from me the repulsiveness of the phantasms of the demons, preserving my heart in tranquility.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 6, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "He Who is the Only-begotten of the Father, and is the one Person in two natures, Who alone united Himself to the form of flesh in thy womb, issued forth from thee without seed, and preserved unharmed thy precious virginity, O all- immaculate one.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 6, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Wash away the multitude of my sins with the magnitude of thy mercy, O good one, and save me, thy servant, who flee unto thee and with faith entreat thy mercy.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 6, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                }
+              ]
+            },
+            "7": {
+              "irmos": {
+                "text": "Same as the foregoing.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Wednesday Matins, canon 2, Ode 7 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "The Uncircumscribable One, Who sitteth in the bosom of the Father, now sitteth, circumscribed, in thy bosom, O most pure one, clad in thy form, that as the new Adam He might save Adam.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 7, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Cease not to entreat our God the Lover of mankind, O all-immaculate one, that we may receive the ultimate forgiveness of evils, and may obtain the good things prepared in the heavens for those who love Him.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 7, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "We bless thee, O most immaculate one, who hast given birth to the blessed Lord, Who with divine blessings crowneth human nature, and maketh new what before had grown old.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 7, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Enriched at the havens of thy salvation, O pure one, we are saved from the storm; and holding our faith in thee to be the strength of our soul, we cry: Blessed art thou who hast given birth to God in the flesh!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 7, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                }
+              ]
+            },
+            "8": {
+              "irmos": {
+                "text": "Same as the foregoing.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Wednesday Matins, canon 2, Ode 8 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "We confess thee to be the true Theotokos, and with the angel with faith we cry out to thee “Rejoice!”; for on behalf of those on earth thou alone hast given birth to Joy, O joyous, pure and blessed one.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 8, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The divinely sounding harp of thine ancestor prefigured thee, who bore God in the flesh, as the all-holy ark, O all-immaculate one. Him do we supremely exalt throughout the ages.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 8, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O divinely joyous maiden who knewest not wedlock, haven and hope of Christians amid the storm, deliver thy servants from perils, sufferings and afflictions, and from everlasting fire.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 8, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "When Thou shalt come in glory to judge all mankind, O Master, number me, a sinner, with the lambs on Thy right side, through the supplications of Thy Mother, that I may glorify Thee throughout all ages.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 8, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "refrain: “More honorable than the cherubim ...,” and make prostrations.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 8, item 5"
+                  },
+                  "label": "plain"
+                }
+              ]
+            },
+            "9": {
+              "irmos": {
+                "text": "Same as the foregoing.",
+                "tier": 1,
+                "src": {
+                  "file": "6-4.pdf",
+                  "locus": "Wednesday Matins, canon 2, Ode 9 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "When He became incarnate, the Son and Word of God Who is without beginning became the Son of the Virgin; and at the good pleasure of the Father and by the activity of the divine Spirit, He hath wholly restored my corrupted nature.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 9, item 1"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "Arise, O my soul, and be vigilant in prayer and in all good things; with fervor casting aside the idleness of sleep, and ever having as a watchful protector the pure Mother of God, whom we glorify.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 9, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O all-immaculate Theotokos, thou art the hope, protection and joy of the faithful; wherefore, I beseech thy compassions: Enlighten my soul, which the gloom of many sins and evil thoughts have darkened.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 9, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O holy and divinely joyous Virgin: Open unto me the gates of light, lest the night of sin cover me; and guide my life to the calm harbor of the divine precepts of Him Who became man through thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-4.pdf",
+                    "locus": "Wednesday Matins, canon 2, Ode 9, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "magnificat_rubric": "We then chant the hymn of the Theotokos (the Magnificat), with the",
+      "post_canon_rubric": "Then, “It is truly meet to bless thee ...,” and a prostration. Small litany, Exapostilarion, and the usual psalms. Small Doxology (Read), Litany: Let us complete ..., On the Aposticha, these Stichera of the precious Cross, in Tone VI:",
+      "aposticha": {
+        "rubric": "On the Aposticha, these Stichera of the precious Cross, in Tone VI:",
+        "items": [
+          {
+            "text": "I trust in the Cross, O Christ, and, boasting therein, I cry out: O Lord and Lover of mankind, cast down the pride of those who do not confess Thee to be both God and man!",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Wednesday Matins, aposticha item 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Protected by the Cross, we set ourselves against the enemy, undaunted by his wiles and treachery; for the prideful one hath been set at naught and trampled underfoot by the power of Christ Who was nailed upon the Tree.",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Wednesday Matins, aposticha item 2"
+            },
+            "label": "plain"
+          },
+          {
+            "text": "The memory of the martyrs is a joy to those who fear the Lord; for, having suffered for the sake of Christ, they have received crowns from Him; and they now pray with boldness on behalf of our souls.",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Wednesday Matins, aposticha item 3"
+            },
+            "label": "martyrs"
+          }
+        ],
+        "verses": {
+          "ref": "shared.weekday_aposticha_verses.sets.standard_matins"
+        }
+      },
+      "aposticha_theotokion": {
+        "text": "When, of old, the unblemished ewe-lamb and immaculate Lady, * beheld her Lamb * upon the tree of the Cross, * she exclaimed maternally, and marveling cried aloud: * “O my Child most sweet, * what is this new and most strange sight I see? * How hath the thankless synagogue * betrayed Thee to the judgment-seat of Pilate * and condemned Thee to death, * Who art the Life of all? * Yet do I hymn Thine ineffable condescension, ** O Word!”",
+        "tier": 2,
+        "src": {
+          "file": "6-4.pdf",
+          "locus": "Wednesday Matins, aposticha Glory/Both-now closer"
+        },
+        "type": "stavrotheotokion",
+        "spec_mel": "Having set aside",
+        "sourceLabel": "Stavrotheotokion"
+      },
+      "closing_rubric": "Then, “It is good to give thanks ...,” Trisagion ..., Our Father ..., Troparia. Litany: Have mercy on us ..., First Hour, and Dismissal. ON WEDNESDAY MORNING: TONE VI AT LITURGY On the Beatitudes, these Troparia, in Tone VI"
+    },
+    "thu": {
+      "sessionals": [
+        {
+          "rubric": "After the 1st chanting of the Psalter, The Sessional Hymns of the holy apostles, in Tone VI:",
+          "spec_mel": null,
+          "items": [
+            {
+              "text": "As Thou didst come into the midst of Thy disciples, O Savior, bestowing Thy peace upon them, come amongst us, and save us.",
+              "tier": 1,
+              "src": {
+                "file": "6-5.pdf",
+                "locus": "Thursday Matins, sessional set 1, item 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ],
+              "label": "plain"
+            },
+            {
+              "text": "The choir of Thy disciples enlightened the whole world; for having once been fishermen, they became fishers of men. For their sake, O God, have mercy on us!",
+              "tier": 1,
+              "src": {
+                "file": "6-5.pdf",
+                "locus": "Thursday Matins, sessional set 1, item 2"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ],
+              "label": "plain"
+            }
+          ],
+          "verses": [
+            {
+              "text": "Their sound hath gone forth into all the earth, * and their words unto the ends of the world.",
+              "tier": 2,
+              "src": {
+                "file": "6-5.pdf",
+                "locus": "Thursday Matins, sessional set 1 verse 1"
+              }
+            }
+          ],
+          "closer": {
+            "text": "Great is the multitude of my many transgressions, O Theotokos. Unto thee have I fled, O pure one, in need of salvation. Visit mine ailing soul, and entreat thy Son and our God, that He grant me forgiveness for the evils I have done, O thou only blessed one.",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Thursday Matins, sessional set 1 closer"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 3
+              }
+            ],
+            "type": "theotokion"
+          }
+        },
+        {
+          "rubric": "After the 2nd chanting of the Psalter, the Sessional Hymns, in Tone VI:",
+          "spec_mel": null,
+          "items": [
+            {
+              "text": "Sent unto the ends of the earth, O Savior, Thy disciples piously fished for the nations as for fish, and brought them to Thy goodness. Wherefore, for their sake we cry out to Thee, O Christ: Grant great mercy to Thy people!",
+              "tier": 1,
+              "src": {
+                "file": "6-5.pdf",
+                "locus": "Thursday Matins, sessional set 2, item 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 2
+                }
+              ],
+              "label": "plain"
+            },
+            {
+              "text": "The twelve apostles, twelve times radiant, have appeared to the earth like the sun. For their sake Thou didst cause the planter of deception to wither up, and for their sake Thou dost illumine the souls of Thy servants. Save us for their sake, in that Thou art full of tender compassion!",
+              "tier": 1,
+              "src": {
+                "file": "6-5.pdf",
+                "locus": "Thursday Matins, sessional set 2, item 2"
+              },
+              "label": "plain"
+            },
+            {
+              "text": "The memory of Thy saints hath appeared today like the paradise in Eden, O Lord; for therein all creation rejoiceth, and by their prayers Thou hast granted us peace and great mercy.",
+              "tier": 1,
+              "src": {
+                "file": "6-5.pdf",
+                "locus": "Thursday Matins, sessional set 2, item 3"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ],
+              "label": "martyrs"
+            }
+          ],
+          "verses": [
+            {
+              "text": "The heavens declare the glory of God, * and the firmament proclaimeth the work of His hands.",
+              "tier": 2,
+              "src": {
+                "file": "6-5.pdf",
+                "locus": "Thursday Matins, sessional set 2 verse 1"
+              }
+            },
+            {
+              "text": "Wondrous is God in His saints, * the God of Israel.",
+              "tier": 2,
+              "src": {
+                "file": "6-5.pdf",
+                "locus": "Thursday Matins, sessional set 2 verse 2"
+              }
+            }
+          ],
+          "closer": {
+            "text": "O all-holy Theotokos, throughout my lifetime forsake me not, to human protection entrust me not; but do thou thyself defend and have mercy on me.",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Thursday Matins, sessional set 2 closer"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "type": "theotokion"
+          }
+        },
+        {
+          "rubric": "After the 3rd chanting of the Psalter, the Sessional Hymns, in Tone VI:",
+          "spec_mel": "Having set aside",
+          "items": [
+            {
+              "text": "Like lightning hath the saving proclamation of Thy most wise disciples gone forth into all the earth, O Christ, enlightening those in darkness and evil, and making us children of the day and the light; wherefore, all creation piously glorifies Thee.",
+              "tier": 1,
+              "src": {
+                "file": "6-5.pdf",
+                "locus": "Thursday Matins, sessional set 3, item 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ],
+              "label": "plain"
+            },
+            {
+              "text": "Trading their boats for the net of the divine Faith, the fishermen drew forth all mankind from the depths of vainglory, gaving unto God those who are pious and ever magnify Him.",
+              "tier": 1,
+              "src": {
+                "file": "6-5.pdf",
+                "locus": "Thursday Matins, sessional set 3, item 2"
+              },
+              "label": "plain"
+            }
+          ],
+          "verses": [],
+          "closer": {
+            "text": "O holy Lady, pure Mother of our God, * who didst ineffably give birth unto the Creator of all; * with the sacred apostles ever entreat His goodness, * that He deliver us from the passions ** and grant us the remission of sins.",
+            "tier": 2,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Thursday Matins, sessional set 3 closer"
+            },
+            "type": "theotokion"
+          }
+        }
+      ],
+      "canons": [
+        {
+          "title": "Canon of the holy, glorious and all-famed apostles, the composition of",
+          "heading_rubric": "Canon of the holy, glorious and all-famed apostles, the composition of",
+          "odes": {
+            "1": {
+              "irmos": {
+                "text": "When Israel walked on foot in the sea as on dry land, * on seeing their pursuer Pharaoh drowned, * they cried: * Let us sing to God * a song of victory.",
+                "tier": 2,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Thursday Matins, canon 1, Ode 1 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "O divinely eloquent ones, who became a light unto the world, illumine us with splendid radiance; and deliver us from the night of the passions and the gloom of temptations, O divinely blessed ones.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 1, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain",
+                  "repeat": 2
+                },
+                {
+                  "text": "With honor the Spirit set you as honored princes throughout the whole world, O disciples of the Lord; wherefore, as ye vanquished the prince of the air, deliver the faithful.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 1, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Like coals burning with immaterial fire, O most wise ones, utterly consume my material passions, guiding me to the light of dispassion and life.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 1, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Through the supplications of the apostles, prophets and martyrs, and of the pure one who gave birth to Thee, O Lord Jesus, King of all, have pity on those who have sinned against Thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 1, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "3": {
+              "irmos": {
+                "text": "There is none as holy as Thou, * O Lord my God, * who hast exalted the horn of Thy faithful O good One, * and strengthened us upon the rock * of Thy confession.",
+                "tier": 2,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Thursday Matins, canon 1, Ode 3 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "The divine Spirit, giving fire to your tongues by His dread coming, hath through you restored to life those who are broken, O glorious apostles.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 3, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "repeat": 2
+                },
+                {
+                  "text": "What mercy shall I, who sin in mind, find on the day of judgment? Wherefore, I cry unto Thee: For the sake of Thy disciples, have pity on me, who am self- condemned!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 3, item 2"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "O glorious apostles, who emulated the saving sufferings of Christ, as physicians heal ye the cruel temporal passions of my soul.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 3, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "For the sake of the Theotokos and Thine apostles, O Christ, grant conversion to me, the sinner; have mercy upon me, as Thou art God, and free me from everlasting fire, O Savior.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 3, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "4": {
+              "irmos": {
+                "text": "Christ is my power, * my God and my Lord, * the holy Church divinely singeth, * crying with a pure mind, * keeping festival in the Lord.",
+                "tier": 2,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Thursday Matins, canon 1, Ode 4 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "O right calm havens, harbors safe from storms, steer me to the tranquil haven for I am tempest-tossed by the threefold waves of grievous transgressions.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 4, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "repeat": 2
+                },
+                {
+                  "text": "Sigh, O my soul! Shed tears, O my soul! My lowly heart hath in nowise cleaved unto the good One, that God may deliver thee from the coming flame and torment.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 4, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Entreat the Savior and Lord, O all-blessed apostles who were high priests among men, that He save us from evil temptations, in that He is the Lover of mankind.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 4, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O most pure Virgin, immaculate Virgin, with the apostles supplicate for us, that we may be delivered from grievous temptations and misfortunes.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 4, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "5": {
+              "irmos": {
+                "text": "Illumine with Thy divine light, I pray, O good One, * the souls of those who with love rise early to pray to Thee, * that they may know Thee, O Word of God, * as the true God, * Who recalleth us from the darkness of sin.",
+                "tier": 2,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Thursday Matins, canon 1, Ode 5 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "O disciples of the Word, who manifestly traveled the way which leadeth to life by the exceeding narrow path of temptations and tribulations: Smooth ye the path of my soul.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 5, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "repeat": 2
+                },
+                {
+                  "text": "O apostles of Christ, ye luminaries of the divine East, deliver me from the darkness of the passions and the gloom of pleasures, temptations, evil circumstances, tempest and misfortunes.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 5, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O apostles, ye scrolls who beheld God, pray that I may be enrolled in the Book of Life, by your prayers rending asunder the evil record of my sins.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 5, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "By the supplications to thy Son of thee and the divine apostles, O only all-hymned maiden, save me who trust in thee, O my salvation and hope, the unashamed hope of all.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 5, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "6": {
+              "irmos": {
+                "text": "Beholding the sea of life surging with the tempest of temptations, * I run to Thy calm haven, and cry to Thee: * Raise up my life from corruption, * O greatly merciful One.",
+                "tier": 2,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Thursday Matins, canon 1, Ode 6 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "O glorious ones, ye truly and clearly had within your souls the honorable laws, like tablets graven by the Spirit, and thereby abolished the law in the Scriptures, saving the world.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 6, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "repeat": 2
+                },
+                {
+                  "text": "O sinful soul who hath insanely enslaved thyself to evil habits, turn and be converted, and cry out to the compassionate Lord: For the sake of the apostles, O Word, save me!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 6, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "At Thine awesome and dread coming, number me among Thy chosen sheep on Thy right hand, through the prayers of Thy divine preachers, O innocent Lamb Who wast slain for all.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 6, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The choirs of incorporeal servants beseeches Thee, O beginningless Son of God, and with her who gave birth to Thee the assemblies of the disciples entreats Thee: Grant Thy mercies unto Thy people!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 6, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "7": {
+              "irmos": {
+                "text": "An angel made the furnace bedew the holy Children, * but the command of God consumed the Chaldeans * and prevailed upon the tyrant to cry: * “O God of our fathers, blessed art Thou.”",
+                "tier": 2,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Thursday Matins, canon 1, Ode 7 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Drawing all mankind forth from the depths of delusion with the hook of the word, O apostles, ye brought them to the Word Who was slain for our sake, chanting unto Him: Blessed is the God of our fathers!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 7, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "repeat": 2
+                },
+                {
+                  "text": "Having conversed directly with Him Who revealed Himself in a material body, O apostles, ye were enlightened by His luminous brilliance; wherefore, enlighten me who cry aloud: Blessed is the God of our fathers!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 7, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Entreat the good Shepherd, O divine disciples, that He seek me who am lost among the mountains of disobedience and save me who earnestly cries aloud: Blessed is the God of our fathers!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 7, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "With the prophets, apostles and martyrs entreat Him to Whom thou hast given birth, O Virgin, that He deliver me from the evils of earth; and grant that I may share in the good things of heaven, O Lady.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 7, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "8": {
+              "irmos": {
+                "text": "Thou didst make flame bedew the holy children, * and didst burn the sacrifice of a righteous man with water. * For Thou alone, O Christ, dost do all as Thou willest, * Thee do we supremely exalt throughout all ages.",
+                "tier": 2,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Thursday Matins, canon 1, Ode 8 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "With the scythe of your prayers mow down all the tares of my mind, O divine husbandmen, apostles of the Savior, that I may produce as grain the fruit of salvation.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 8, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "repeat": 2
+                },
+                {
+                  "text": "With the plough of the word ye cultivated hardened hearts, O ye who beheld God; and, having sown precious doctrine therein, ye reaped the saved an hundredfold.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 8, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Having lulled the malice of the enemy to sleep, ye fell into sleep like that of the righteous, becoming unsleeping advocates for us, O disciples of the Word, throughout all ages.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 8, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "By the supplications of the prophets and martyrs, of Thine apostles and her who ineffably contained Thee within her womb, the Virgin who knew not a man, O Lord, deliver me from the unquenchable fire.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 8, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "9": {
+              "irmos": {
+                "text": "It is impossible for mankind to see God * upon Whom the orders of angels dare not gaze; * but through thee, O all-pure one, * did the Word Incarnate become a man * and with the heavenly hosts, * Him we magnify and thee we call blessed.",
+                "tier": 2,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Thursday Matins, canon 1, Ode 9 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Preaching throughout the world God, Who entered into fellowship with us and deified our mortal substance beyond compare, ye freed all from ungodly delusion; wherefore, ye are ever blessed, O divine apostles.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 9, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "repeat": 2
+                },
+                {
+                  "text": "O apostles who depicted the suffering of Christ in your own divers bodily sufferings, mortify the passions of my flesh and bring to life my soul, which is ailing, afflicted and dying.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 9, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Be Thou the path guiding me who have fallen into the abyss of sin, to the unerring path of Thy commandments, for I have become lost, having taken evil paths, and am afflicted, O Lover of mankind.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 9, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The choir of the angels and archangels, authorities and powers, principalities, dominions, cherubim, seraphim and thrones, with the assembly of the apostles and her who gave birth to Thee, beseech Thee, O only King: Save Thy servants!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 1, Ode 9, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "title": "Another canon, of the holy hierarch Nicholas the wonderworker, the acrostic whereof is “Accept my sixth hymn, O Nicholas,” the composition of Joseph, in",
+          "heading_rubric": "Another canon, of the holy hierarch Nicholas the wonderworker, the acrostic whereof is “Accept my sixth hymn, O Nicholas,” the composition of Joseph, in",
+          "odes": {
+            "1": {
+              "irmos": {
+                "text": "The lecherous Pharaoh was drowned with all his warriors, * and Israel, crossing through the midst of the sea, * cried aloud exclaiming: * Let us chant unto the Lord God, * for He hath been glorified!",
+                "tier": 2,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Thursday Matins, canon 2, Ode 1 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "O most wise father, who dwellest joyfully in the heavens: By thy mediation dispel every vexation of the evil one from the hearts of those who together hymn Thee with faith on earth.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 1, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O father Nicholas, those who with faith have recourse to thy holy protection do thou strengthen now against the harmful passions, the corrupting foe and all the malice of the deceiver.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 1, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "With the therapy of thy prayers, O Nicholas, cure us who have been wounded by invisible darts, that we may walk the paths of the Lord in health.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 1, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The Son Who is equally eternal with the Father hath in these latter times desired to make His abode within thy womb, O Theotokos, for the regeneration of us, the faithful; wherefore, we hymn thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 1, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "3": {
+              "irmos": {
+                "text": "Having established my thoughts upon the firm rock of Thy Faith, * make steadfast my soul, O Lord; * for I have Thee as my refuge * and confirmation, * O good One.",
+                "tier": 2,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Thursday Matins, canon 2, Ode 3 irmos"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ]
+              },
+              "items": [
+                {
+                  "text": "Thou didst clearly receive victory over the soul-corrupting passions, O all- blessed Nicholas. By thy prayers deliver us who are ever badly vanquished by them.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 3, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Having mortified thy carnal members by asceticism, thou didst pass over to the life which waxeth not old, O wise one. Pray thou that we who praise thee joyfully may likewise receive it.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 3, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Cease not to visit us from the heights of heaven, O holy hierarch, By thy prayers unto God dispelling all the difficulties of life.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 3, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Ever driving all gloom from our souls By thy prayers, O pure one, beseech the Redeemer, that He grant us remission of sins.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 3, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "4": {
+              "irmos": {
+                "text": "O Lord, I have heard the report of Thee * and was afraid; * I have seen Thy works and was amazed. * Glory to Thy power, O Lord.",
+                "tier": 2,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Thursday Matins, canon 2, Ode 4 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Entreating our God, the Bestower of good things, O holy Nicholas, heal mine uncorrected heart, which hath been wounded by the deceiver.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 4, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Thou didst demolish the temples of perdition, O favorite of Christ; wherefore, I entreat thee with faith, O Nicholas: Destroy thou the evil idols of my mind!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 4, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Through righteous works thou didst become fragrant myrrh, O divinely wise one, adorning thy throne in Myra, O holy hierarch father Nicholas.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 4, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O unwedded Lady, blessed Birthgiver of God: From all harm save those who hymn thee, O only helper of mankind.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 4, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "5": {
+              "irmos": {
+                "text": "O Christ Who shineth Thy light upon the world, * illumine my heart * for I cry out to Thee in the night, * and save me.",
+                "tier": 2,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Thursday Matins, canon 2, Ode 5 irmos"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ]
+              },
+              "items": [
+                {
+                  "text": "By thy mediations, O Nicholas, earnestly wake me who am stuck fast by the slumber of slothfulness.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 5, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Entreat Jesus the Savior, O holy hierarch Nicholas, that He deliver me from everlasting torment.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 5, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "By thy prayers, O holy hierarch Nicholas, preserve me from the hindrances of the world and from the vexation of the demons.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 5, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "He Who hath granted us existence made His abode within thee, O Theotokos. Him do thou entreat, that He save us.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 5, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "6": {
+              "irmos": {
+                "text": "Slain by the sea-monster of sin, * I cry unto Thee, O Christ: * Free me from corruption, * as Thou didst the prophet.",
+                "tier": 2,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Thursday Matins, canon 2, Ode 6 irmos"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ]
+              },
+              "items": [
+                {
+                  "text": "Possessing thee as a noetic lamp, O Nicholas, creation is enlightened with the rays of innumerable miracles.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 6, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O Nicholas, tireless advocate for those who have recourse unto thee, deliver me from the evil sleep of slothfulness.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 6, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Of old, O wise one, thou didst deliver those who were to be unjustly put to death. In like manner deliver me also from misfortunes and transgressions, O Nicholas.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 6, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O only pure and joyous Virgin, help me who am ever tempest- tossed by the perils of life.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 6, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "7": {
+              "irmos": {
+                "text": "Hearkening to the hymnody of Thy venerable children * Thou didst bedew the burning furnace: * O Lord God of our fathers blessed art Thou!",
+                "tier": 2,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Thursday Matins, canon 2, Ode 7 irmos"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ]
+              },
+              "items": [
+                {
+                  "text": "With the power of God thou didst trample hordes of heretics underfoot, O all- blessed Nicholas, saving thy flock from their deceit.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 7, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O father Nicholas, who appeared to those at sea, thou didst also feed thy suffering city. By thy prayers deliver me from soul corrupting famine.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 7, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "By thy prayers, O father Nicholas, make steadfast those who call upon thee for aid, stilling the evil storm of the demons.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 7, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O Sovereign Lady of all mankind, holy Theotokos, By thy prayers utterly free me from slavery to the passions.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 7, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "8": {
+              "irmos": {
+                "text": "Thy venerable Children in the furnace * likened to the cherubim * chanted the thrice-holy hymn * Bless ye, praise ye and supremely exalt ye the Lord throughout all ages.",
+                "tier": 2,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Thursday Matins, canon 2, Ode 8 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Known to the whole world, thou didst appear hastening to the heights of an exceedingly radiant life, O God-bearing Nicholas, enlightening those in darkness with divers miracles.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 8, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Fill with grace those who keep divine vigil and honor thee, O Nicholas; and lull to sleep the malice of the adversaries who assail us, O blessed one.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 8, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O holy hierarch Nicholas, as one who crushed all the snares of the enemy with the might of the Spirit, by thy prayers deliver me from them, piloting my life, O divinely wise one.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 8, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O Birthgiver of God, we hymn thee for whose sake the curse was annulled and blessing hath come upon all who acknowledge thee to be the only unwedded Mother of our God.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 8, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                },
+                {
+                  "text": "refrain: “More honorable than the cherubim ...,” and make prostrations.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 8, item 5"
+                  },
+                  "label": "plain"
+                }
+              ]
+            },
+            "9": {
+              "irmos": {
+                "text": "O Virgin who received the angel’s salutation * and hast given birth to thine own Creator, * save those who magnify thee.",
+                "tier": 2,
+                "src": {
+                  "file": "6-5.pdf",
+                  "locus": "Thursday Matins, canon 2, Ode 9 irmos"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ]
+              },
+              "items": [
+                {
+                  "text": "O Nicholas, adornment of holy hierarchs and wellspring of miracles, pray to God the Lover of mankind, that we be granted remission of sins.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 9, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "As of old thou didst deliver the prisoners from death, so do thou deliver us from the temptations of life, O Nicholas.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 9, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Thou wast buried in Myra of Lycia, O Nicholas, and always pouring forth myrrh, O Nicholas, ever dispel thou the fetid stench of the passions.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 9, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The coming of the Creator is nigh at hand. Be not idle, O my soul, but cry aloud: Through the prayers of Nicholas, O Christ, save me!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 9, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O all-hymned one, who hast given birth to the Savior, enlighten the blinded eye of my heart, that, saved through thee, I may hymn thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-5.pdf",
+                    "locus": "Thursday Matins, canon 2, Ode 9, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            }
+          },
+          "acrostic": "Accept my sixth hymn, O Nicholas",
+          "composer": "Joseph"
+        }
+      ],
+      "magnificat_rubric": "We then chant the hymn of the Theotokos (the Magnificat), with the",
+      "post_canon_rubric": "Then, “It is truly meet to bless thee ...,” and a prostration. Small litany, Exapostilarion, and the usual psalms. Small Doxology (Read), Litany: Let us complete ..., On the Aposticha, these Stichera of the holy apostles, in Tone VI:",
+      "aposticha": {
+        "rubric": "On the Aposticha, these Stichera of the holy apostles, in Tone VI:",
+        "items": [
+          {
+            "text": "Wisely transforming the tempest of demonic delusion into tranquility, O apostles of Christ, ye guided the whole world to the Orthodox Faith, and pray now on behalf of our souls.",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Thursday Matins, aposticha item 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "O ye faithful, with hymns let us fittingly honor the memory of the most wise disciples of Christ our King; for in the world they proclaimed faith in the Trinity.",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Thursday Matins, aposticha item 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Our God hath made wondrous His chosen saints. Rejoice and be glad, all ye, His servants, in that crowns and His kingdom have been made ready for you! We beseech you, to not forget us!",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Thursday Matins, aposticha item 3"
+            },
+            "label": "martyrs"
+          }
+        ],
+        "verses": {
+          "ref": "shared.weekday_aposticha_verses.sets.thursday_matins_as_printed"
+        }
+      },
+      "aposticha_theotokion": {
+        "text": "The recovery of the sorrowful * and the release of the ailing art thou, * O all- hymned Theotokos. * Save this city and people, * O pacification of those who are embattled, * the quietude of the tempest-tossed, ** who alone art the intercession of the faithful.",
+        "tier": 2,
+        "src": {
+          "file": "6-5.pdf",
+          "locus": "Thursday Matins, aposticha Glory/Both-now closer"
+        },
+        "type": "theotokion"
+      },
+      "closing_rubric": "Then, “It is good to give thanks ...,” Trisagion ..., Our Father ..., Troparia. Litany: Have mercy on us ..., First Hour, and Dismissal. ON THURSDAY MORNING: TONE VI AT LITURGY On the Beatitudes, these Troparia, in Tone VI:"
+    },
+    "fri": {
+      "sessionals": [
+        {
+          "rubric": "st After the 1 chanting of the Psalter, the Sessional Hymns of the holy and precious Cross, in Tone VI:",
+          "spec_mel": null,
+          "items": [
+            {
+              "text": "Today the words of the prophets are fulfilled; for, lo! we worship at the place where Thy feet stood, O Lord; and tasting of the Tree of salvation, we have received freedom from sinful passions through the supplications of the Theotokos, O Thou Who alone lovest mankind.",
+              "tier": 1,
+              "src": {
+                "file": "6-6.pdf",
+                "locus": "Friday Matins, sessional set 1, item 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 2
+                }
+              ],
+              "label": "plain"
+            },
+            {
+              "text": "No sooner was the tree of Thy Cross planted in the ground, O Christ our Lord, than the foundations of death were shaken; and Thou Who hast slain Hades, with love dismissed its trembling minions. Thou hast shown us Thy salvation, O Holy One; and we glorify Thee, O Son of God. Have mercy on us!",
+              "tier": 1,
+              "src": {
+                "file": "6-6.pdf",
+                "locus": "Friday Matins, sessional set 1, item 2"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 3
+                }
+              ],
+              "label": "plain"
+            }
+          ],
+          "verses": [
+            {
+              "text": "Exalt ye the Lord our God, * and worship the footstool of His feet, for He is holy.",
+              "tier": 2,
+              "src": {
+                "file": "6-6.pdf",
+                "locus": "Friday Matins, sessional set 1 verse 1"
+              }
+            }
+          ],
+          "closer": {
+            "text": "O Virgin Theotokos, only unblemished Ewe-lamb, beholding Him Who became incarnate from thy precious blood willingly hanging upon the Cross, thou didst cry out with bitter tears, O maiden: “O mine innocent Son, I hymn Thine awesome dispensation!”",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Friday Matins, sessional set 1 closer"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ],
+            "type": "stavrotheotokion",
+            "spec_mel": "O hope of the world",
+            "sourceLabel": "Stavrotheotokion"
+          }
+        },
+        {
+          "rubric": "After the 2nd chanting of the Psalter, the Sessional Hymns, in Tone VI:",
+          "spec_mel": null,
+          "items": [
+            {
+              "text": "Thy Cross, O Lord, hath been sanctified; for thereby healings are wrought for those who are sickened by sins. Wherefore, we fall down before Thee, crying: Have mercy upon us!",
+              "tier": 1,
+              "src": {
+                "file": "6-6.pdf",
+                "locus": "Friday Matins, sessional set 2, item 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ],
+              "label": "plain"
+            },
+            {
+              "text": "O Lord, the Jews condemned to death Thee, the Life of all; they who crossed the Red Sea by the staff of Moses nailed Thee to the Cross; they who sucked honey from, the rock offered Thee gall. Yet Thou didst endure, that Thou mightest free us from slavery to the enemy. O Christ our God, glory to Thee!",
+              "tier": 1,
+              "src": {
+                "file": "6-6.pdf",
+                "locus": "Friday Matins, sessional set 2, item 2"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 2
+                }
+              ],
+              "label": "plain"
+            }
+          ],
+          "verses": [
+            {
+              "text": "God is our King before the ages; * He hath wrought salvation in the midst of the earth.",
+              "tier": 2,
+              "src": {
+                "file": "6-6.pdf",
+                "locus": "Friday Matins, sessional set 2 verse 1"
+              }
+            }
+          ],
+          "closer": {
+            "text": "Standing before the Cross of Him Who transcending understanding painlessly became incarnate from her, the Virgin Mother cried aloud, shedding maternal tears: “I cannot bear to see Thee hanging, dead, O my Son and God, Who givest breath unto those who live on earth!”",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Friday Matins, sessional set 2 closer"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "type": "stavrotheotokion",
+            "spec_mel": "O hope of the world",
+            "sourceLabel": "Stavrotheotokion"
+          }
+        },
+        {
+          "rubric": "After the 3rd chanting of the Psalter, the Sessional Hymns, in Tone VI:",
+          "spec_mel": null,
+          "items": [
+            {
+              "text": "O Cross, expeller of the demons, physician of the ailing, strength and preserver of the faithful, true boast of the Orthodox, confirmation of the Church of Christ: Be thou for us a bulwark, rampart and protector, O blessed Tree!",
+              "tier": 1,
+              "src": {
+                "file": "6-6.pdf",
+                "locus": "Friday Matins, sessional set 3, item 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 2
+                }
+              ],
+              "label": "plain"
+            },
+            {
+              "text": "In Thy mercy and tender compassion Thou wast lifted up upon the tree of the Cross and pierced in the side by the spear, rending asunder the evil record of our sins, in that Thou art God almighty. Wherefore, we piously hymn Thine ineffable dispensation, O Word.",
+              "tier": 1,
+              "src": {
+                "file": "6-6.pdf",
+                "locus": "Friday Matins, sessional set 3, item 2"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ],
+              "label": "plain"
+            },
+            {
+              "text": "Illumined by Thee, like lamps the saints ever continually shine forth light upon the righteous, extinguishing the lamps of the ungodly. By their prayers, O our Savior, light Thou my lamp and save me, O my Lord!",
+              "tier": 1,
+              "src": {
+                "file": "6-6.pdf",
+                "locus": "Friday Matins, sessional set 3, item 3"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 2
+                }
+              ],
+              "label": "martyrs"
+            }
+          ],
+          "verses": [],
+          "closer": {
+            "text": "O all-holy Theotokos, throughout my lifetime forsake me not, to human protection entrust me not; but do thou thyself defend and have mercy on me.",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Friday Matins, sessional set 3 closer"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "type": "stavrotheotokion",
+            "sourceLabel": "Stavrotheotokion"
+          }
+        }
+      ],
+      "canons": [
+        {
+          "title": "Canon of the precious and life-creating Cross, in Tone VI",
+          "heading_rubric": "Canon of the precious and life-creating Cross, in Tone VI:",
+          "odes": {
+            "1": {
+              "irmos": {
+                "text": "He Who in ancient times * hid the pursuing tyrant beneath the waves of the sea, * is hidden beneath the earth by the children of those whom once He saved. * But let us, like the children, sing unto the Lord, * for gloriously hath He been glorified.",
+                "tier": 2,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Friday Matins, canon 1, Ode 1 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "By Thine honored Passion Thou didst honor the dishonored nature of mankind; wherefore, honoring Thee with fear, we magnify and glorify Thy might with faith; for gloriously hast Thou been glorified.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 1, item 1"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "By Thy blood, O Word, Thou didst stanch the unrighteous outpouring of blood and thereby cleanse human nature of its evil defilement, O Almighty; wherefore, saved, we glorify Thy might.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 1, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The right laudable opposition of the martyrs truly vanquished the bestial shedder of blood; it tamed the nature of fire with the dew of divine grace, and stilling the terrible storm of polytheism.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 1, item 3"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Having dried up the downpours of delusion with the showers of your blood, ye pour forth showers of healings upon the world, repelling the flame of ungodly passions. Wherefore, ye are blessed, O martyrs.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 1, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "When the maiden who knew not wedlock, the adornment of the faithful, beheld Thee, Who art comely in beauty, bereft of comeliness and form when suffering, she exclaimed maternally and glorified Thee with love.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 1, item 5"
+                  },
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "3": {
+              "irmos": {
+                "text": "When creation beheld Thee, * Who founded the whole earth upon the waters, * covered in the flesh by the waters, * it was seized with awe, and cried aloud: * None is holy save Thee, O Lord!",
+                "tier": 2,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Friday Matins, canon 1, Ode 3 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Beholding Thee, Who suspended the whole earth unsupported upon the waters, lifted up upon the Tree, Thy side pierced, O Lord, the sun grew dark, understanding Thee to be the enlightenment of all.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 3, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The evil-doer who of old wounded Adam in paradise is wounded by Thy nails, O Long-suffering One; and having been wounded, he remaineth forever incurable; but we, the faithful, have found Thee to be the healing of all wounds.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 3, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "When the angelic choir beheld the flock of the martyrs scattered for the Lamb Who was slain, they marveled at how, being material, they vanquished the immaterial foe, receiving crowns of victory.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 3, item 3"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Invested with the power of Him Who alone is the mightiest of all in strength, the saints wrestled with the enemy and trampled his feeble power underfoot, receiving crowns from God.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 3, item 4"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "When thou didst behold Him to Whom thou hast given birth wounded by the spear, thou wast wounded in thy heart, O most pure and all- immaculate one; and, marveling, thou didst say: “How hath the exceedingly iniquitous assembly repaid Thee, O my Child?”",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 3, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "4": {
+              "irmos": {
+                "text": "Foreseeing Thy divine self-emptying upon the Cross, * Habakkuk, in amazement, cried out: * “Thou hast cut asunder the strength of the mighty, * O good One, * and preached to those in Hades, * as the Almighty One.",
+                "tier": 2,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Friday Matins, canon 1, Ode 4 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Desiring to save our first parents, Thou wast slain dead upon the Tree, O Lord, pushing away the unrestrained outstretching of their hands toward the fruit of the tree; and from Thy side Thou hast poured forth remission of sins upon those bound.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 4, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Thou didst endure suffering, O supremely good One, that Thou mightest loose us from the irrationality of the passions; Thou didst eat gall, O Master, pouring forth divine sweetness upon me; and Thou wast slain, granting me life.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 4, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Bearing the fire of divine love in a rational soul, the passion- bearers of Christ quenched the flame of the most iniquitous ones, showing themselves to be radiant beacons.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 4, item 3"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Having separated themselves from carnal friendship, the divine friends of the King of all hastened mightily to every torment, and prevailing, they were crowned with glory.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 4, item 4"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "“I gave birth to Thee without suffering. How it is that I now see Thee partaking of suffering? How dost Thou endure this?”, the Virgin cried. “O my Son, Who art without beginning, I glorify Thy long-suffering!”",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 4, item 5"
+                  },
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "5": {
+              "irmos": {
+                "text": "I seek Thee early in the morning, * Who for our sake didst mercifully empty Thyself * and willingly submit to be baptized by the hand of a servant, * O Word of God, * Grant Thy peace unto me the fallen one, * O Lover of mankind.",
+                "tier": 2,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Friday Matins, canon 1, Ode 5 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Thou wast seen to be dead at the place of the skull, slaying Hades by the suffering of Thy flesh; and hanging there, bereft of form or comeliness, O Christ, Thou didst desire to make me beautiful, in that Thou lovest mankind.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 5, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Desiring to nail the passionate disposition of the first Adam, Thou wast transfixed with nails; and pierced by a spear, and turned away the fiery sword, that it might not deny entry to Thy servants.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 5, item 2"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "Following the sufferings of the Master, the choirs of the martyrs were nailed to trees and their hands were severed; but by their feet they were divinely directed to the way of honorable martyrdom.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 5, item 3"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Humbling yourselves with perfect mind and humility of heart, in emulation of Him Who hath exalted all, ye utterly cast down the mind of the prideful one who audaciously exalted himself, O martyrs of Christ.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 5, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Thou didst spring forth from the root of Jesse, O Virgin, and receiving the Planter of the world in the flesh, thou didst bud forth like a flower Him Who by the divine planting of the Cross dried up the offshoots of ungodliness.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 5, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "6": {
+              "irmos": {
+                "text": "Jonah was caught but not held * in the belly of the whale; * for, bearing the image of Thee, * Who hast suffered and wast given to burial, * he came forth from the sea-monster as from a bridal chamber, * and he called out to the watch: * “O ye who keep guard falsely and in vain, * ye have forsaken your own mercy.”",
+                "tier": 2,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Friday Matins, canon 1, Ode 6 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Of old, when he crossed His arms in blessing his grandsons, Jacob prefigured the Cross; wherefore, O Most High Who didst mount upon the Cross, Thou savest humanity from the ancient curse, and now pourest forth blessing upon those who bless Thee, O only blessed and supremely good Creator.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 6, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Prefiguring Thy suffering, O Word, of old the great Moses uplifted a brazen serpent upon a tree, delivering those who looked upon it from the venomous sting of the serpent; for when Thou wast crucified, O Master, all of us, the faithful, were delivered from the serpent’s harm.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 6, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Of old, the godly and honorable spiritual athletes suffered as though it were others suffering, looking forward to everlasting rewards and joy. By their prayers, O compassionate Christ, deliver from temptations, sins and evil circumstances those who hymn Thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 6, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "The honorable and divine passion-bearers caused the torrents of delusion to cease by the streams of their blood, and were truly shown to be wellsprings pouring forth the water of the knowledge of God upon the faithful. By their prayers, O Savior of the world, rain down remission, life, the cleansing of sins, and great mercy upon all.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 6, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "The Ewe-lamb, seeing the Chief Shepherd and Master lifted up upon the Tree, cried aloud, weeping maternally: “What is this new mystery, O my Child? How hast Thou, Who art immortal in essence, received death, desiring to deliver mankind from corruption?”",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 6, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "7": {
+              "irmos": {
+                "text": "O ineffable wonder! * He, Who in the furnace delivered the holy children from the flame, * is laid in the grave devoid of breath, * for the salvation of us who chant: * O God our Redeemer, blessed art Thou!",
+                "tier": 2,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Friday Matins, canon 1, Ode 7 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "When the council of the Jews condemned Thee to the Cross, the earth, beholding this, was stricken with fear and the sun hid its rays; but those in darkness beheld the light, chanting: O God our Redeemer, blessed art Thou!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 7, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O Savior, of Thine own will Thou didst endure mockery, being beaten with a reed and crowned as a king with thorns, O Christ God, for the salvation of us who chant: O God our Redeemer, blessed art Thou!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 7, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 3
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Ye were bound, O all-praised martyrs, manifestly loosing all the bonds of the devil’s delusion; and ye endured torments and an unjust death, desiring the life of heaven, and crying aloud: O God our Redeemer, blessed art Thou!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 7, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Ye stood in the midst of the flame, O all-praised martyrs, manifestly burning up delusion; and unconsumed by the dew of divine grace, ye cry out, chanting; O God our Redeemer, blessed art Thou!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 7, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Seeing Thee Who desired to be crucified, O Son without beginning, the Theotokos cried out: “I am now overwhelmed by grief of soul, for dying, Thou givest life to those who chant: O God our Redeemer, blessed art Thou!”",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 7, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "8": {
+              "irmos": {
+                "text": "Be thou astonished and afraid, O heaven, * and let the foundations of the earth be shaken; * for lo, He Who dwelleth on high is numbered with the dead * and lodgeth as a stranger in a narrow tomb. * Him do ye children bless, * ye priests praise, and ye people supremely exalt throughout all ages.",
+                "tier": 2,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Friday Matins, canon 1, Ode 8 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Drinking the cup of Thy suffering on the Cross, which Thou didst desire, O Christ, Thou hast poured forth upon me springs of remission from Thy life- bearing side, for the sake of the rib of Adam who had died. And I hymn Thee, O Christ, chanting: Ye priests bless; ye people supremely exalt Him throughout all ages!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 8, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "When the iniquitous men condemned Thee to be crucified between two malefactors, O Lord Jesus, Bestower of life, the earth quaked, and all chanted with fear: Ye children bless; ye priests hymn; ye people supremely exalt Him throughout all ages!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 8, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Your death was precious in the sight of God, O spiritual athletes; for having partaken of many sufferings, ye were shown to share in the honored sufferings of Christ, crying out in oneness of mind: Ye children bless; ye priests hymn; ye people supremely exalt Him throughout all ages!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 8, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "O martyrs, the weapons ye used against the hordes of the enemy were truly not fleshly, but were the hope, faith and truth which ye received from God; and ye have joined the choirs of the angels, crying out to the Master: Ye priests bless; ye people supremely exalt Him throughout all ages!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 8, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "“O Most High, beginningless Son, Thou didst endure to be spat upon, derided and crucified, and mockingly beaten with a reed,” the Birthgiver of God cried aloud; “I glorify the long-suffering of Thee Whom the children bless, the priests hymn, and the people supremely exalt throughout all ages!”",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 8, item 5"
+                  },
+                  "label": "theotokion"
+                }
+              ]
+            },
+            "9": {
+              "irmos": {
+                "text": "Weep not for Me, O Mother, * beholding in the tomb the Son Whom thou hast conceived * without seed in the womb; * for I shall arise and shall be glorified, * and as God I shall exalt with glory unceasing, * those that with faith and love magnify thee.",
+                "tier": 2,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Friday Matins, canon 1, Ode 9 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "That Thou mightest deliver from corruption him who became corrupt by eating of the sweet fruit of the tree, O only Savior, Thou wast crucified in the flesh and deigned to die, in that Thou art good. O Jesus, we unceasingly hymn Thy great tender compassion and power.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 9, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O how didst Thou endure pain, stretched out upon the Cross, releasing me from cruel pangs, O Savior? How didst Thou, Who wast crowned with thorns, burn up all the thorns of my passions? How hast Thou, Who drank vinegar, mixed for us the cup of gladness?",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 9, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Cast and held fast in prisons, your members cruelly severed, grievously stretched on the wheel, and thrown to the wild beasts as food, O all ye spiritual athletes, ye did not deny Christ, the Master of all.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 9, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "martyrs"
+                },
+                {
+                  "text": "The all-radiant and right renowned memory of the spiritual athletes shineth forth more brightly than the rays of the sun: ever enlightening the souls of the pious, driving away the darkness of passions and temptations, and dispelling the most profound gloom of the demons.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 9, item 4"
+                  },
+                  "label": "martyrs"
+                },
+                {
+                  "text": "Thou hast borne Him Who beareth all things, and held in thine hands, as a babe, Him Who hath delivered us from, the hand of the adverse foe, O most pure Lady; and thou didst behold Him Who hath delivered us from the yoke of evil, lifted up upon the tree of the Cross.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 1, Ode 9, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "theotokion"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "title": "Another canon, of the most holy Theotokos, the acrostic whereof is the Greek",
+          "heading_rubric": "Another canon, of the most holy Theotokos, the acrostic whereof is the Greek",
+          "odes": {
+            "1": {
+              "irmos": {
+                "text": "Same as the foregoing.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Friday Matins, canon 2, Ode 1 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "O most pure Virgin, gracious and glorious Mary, Mediatress of joy, impart grace with divine grace unto those who hymn thee, that we may send up to thee hymnody of thanksgiving.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 1, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O the wonder of thy mysteries, O Mother of God! For thou hast been revealed to be the Sovereign Lady of creation, bearing in thine arms Him upon Whom the armies of heaven dare not gaze. Wherefore, we call thee blessed.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 1, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The whole race of mankind hath been condemned to mortal corruption through our first mother’s tasting of the tree; but it hath been restored by thee, O pure one, in that thou hast given birth to Life incorruptible.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 1, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                }
+              ]
+            },
+            "3": {
+              "irmos": {
+                "text": "Same as the foregoing.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Friday Matins, canon 2, Ode 3 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "The enemy of old beguiled me through deception, with the desire for godhood, so that I must needs depart from Eden, O Mother of God; the serpent brought me down to the earth; but Christ took pity on me and, receiving flesh from thy womb, refashioned it.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 3, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "To the prophet Ezekiel of old, O maiden, thou didst appear as the portal of life through which the Lord incarnate alone passed; and He kept thee closed, O pure one, in that He is the Most High.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 3, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The condemnation of the ancient curse hath been lifted by thy mediation, O Mother of God; for, having appeared to thee, O most pure one, the Lord hath poured forth all blessings in abundance upon all, in that He is supremely good.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 3, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                }
+              ]
+            },
+            "4": {
+              "irmos": {
+                "text": "Same as the foregoing.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Friday Matins, canon 2, Ode 4 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "O thou who, alone from all generations, wast chosen and most pure, O honored and undefiled one who art resplendent in the virtues: With thy radiance enlighten those who hymn thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 4, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Of thy pure blood, O pure Virgin Mother, thou hast given birth unto God, the Savior Who delivereth from evils all who hymn thee, O maiden full of divine grace.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 4, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The nature of the immaterial beings doth minister in sanctity to thy divine Offspring, O pure one, and the assemblies of mankind hymns thee with love. Do thou illumine us with thine effulgence.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 4, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                }
+              ]
+            },
+            "5": {
+              "irmos": {
+                "text": "Same as the foregoing.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Friday Matins, canon 2, Ode 5 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "The ladder extending up to the highest, which appeared figuratively unto Jacob, revealed the truly extraordinary nature of thy birthgiving, O Bride of God; for through thee God in His divine condescension truly came to dwell with us, granting us life.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 5, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Delivered by thee from the grief of our first mother, we have been filled with comfort, O Birthgiver of God, for thou hast given birth to the Gladness of all, the universal Joy; wherefore, O all-hymned one, By thy prayers preserve from tribulations those who hymn thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 5, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Of old Moses beheld the bush unconsumed by fire, and was thereby mystically taught thine image by divine vision, O all-immaculate Virgin; for the Creator, making His abode within thee, did not consume thee, the highest of all created beings, O Bride of God.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 5, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                }
+              ]
+            },
+            "6": {
+              "irmos": {
+                "text": "Same as the foregoing.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Friday Matins, canon 2, Ode 6 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "The images of the law and the predictions of the prophets clearly revealed thee, O Theotokos, who wast to bear the Redeemer of the world, the Benefactor of all creation, Who in many and divers ways worketh good for those who glorify thee with faith and love, O pure Lady.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 6, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "O only Birthgiver of God, those who by the deception of the murderous enemy were of old separated from the first-given divine food of paradise, thou didst lead again into paradise when thou hast given birth to the Lord and Savior, Who endured crucifixion and burial in His divine power.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 6, item 2"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "He Who by His divine will and creative power brought all things out of non- existence, O pure one, passed through thy womb, both God and man; and with divine radiance, O pure Lady, He illumined those who were before in the darkness of ignorance.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 6, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                }
+              ]
+            },
+            "7": {
+              "irmos": {
+                "text": "Same as the foregoing.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Friday Matins, canon 2, Ode 7 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Thy Son and Lord desired Thee, O Mother of God, who art all-adorned as with magnificent golden ornaments, for the salvation of us who cry out to thee: Blessed is the Fruit of thy womb, O pure one!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 7, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Having found thee like a rose among thorns, O most pure one, with the fragrant beauties of spiritual graces the Master hath filled us, who cry out to Him in compunction: O God our Redeemer, blessed art Thou!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 7, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The divine prophets, perceiving all the signs of thy divine birthgiving, O pure one, gloriously cried aloud: God shall come forth from a virgin to save those who cry out: O God our Redeemer, blessed art Thou!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 7, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                }
+              ]
+            },
+            "8": {
+              "irmos": {
+                "text": "Same as the foregoing.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Friday Matins, canon 2, Ode 8 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Thou hast now been foreseen by the divine Daniel as the unquarried mountain, O maiden, for from thee alone Christ the Rock was cut, without the hand of man, O Virgin. Bless Him ye children; praise Him O priests; supremely exalt Him ye people, throughout all ages!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 8, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 3
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "With hymns the heavenly warriors ever glorify thy birthgiving, O pure, Ever- virgin maiden, and with us they joyously hymn thee as the Mother of God, whom the children bless, the priests praise, and the people supremely exalt throughout all ages.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 8, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "With the rays of thy light, O pure Theotokos Mary, make radiant those who now acknowledge thee to be the true Theotokos; for thou, O Virgin, wast revealed to be the habitation of Light for those who cry out with faith: Rejoice, O blessed and exceedingly glorious one, throughout all ages!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 8, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 3
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "refrain: “More honorable than the cherubim ...,” and make prostrations.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 8, item 4"
+                  },
+                  "label": "plain"
+                }
+              ]
+            },
+            "9": {
+              "irmos": {
+                "text": "Same as the foregoing.",
+                "tier": 1,
+                "src": {
+                  "file": "6-6.pdf",
+                  "locus": "Friday Matins, canon 2, Ode 9 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Unto us thou hast supra-naturally appeared as the Mediatress of everlasting joy and life, O pure Birthgiver of God, for thou hast given birth to the Savior of all, Who clearly wipeth ever tear from every mortal face, granting joy to all.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 9, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Chanting, David, thine ancestor, foretold thee in signs as the ark, and Moses as the golden jar of the divine Manna, O Theotokos; for thou alone didst contain Him Who is ever in the bosom of the Father. Wherefore, we glorify thee with hymns.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 9, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Thou wast truly more highly exalted than all creation, for thou hast given birth unto God in the flesh; wherefore, O Lady, we, who hope to receive salvation through thee, have thee as an intercessor, a sure hope and a firm bulwark.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-6.pdf",
+                    "locus": "Friday Matins, canon 2, Ode 9, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "magnificat_rubric": "We then chant the hymn of the Theotokos (the Magnificat), with the",
+      "post_canon_rubric": "Then, “It is truly meet to bless thee ...,” and a prostration. Small litany, Exapostilarion, and the usual psalms. Small Doxology (Read), Litany: Let us complete ..., On the Aposticha, these Stichera of the precious Cross, in Tone VI:",
+      "aposticha": {
+        "rubric": "On the Aposticha, these Stichera of the precious Cross, in Tone VI:",
+        "items": [
+          {
+            "text": "I trust in the Cross, O Christ, and, boasting therein, I cry aloud: O Lord Who lovest mankind, cast down the pride of those who do not confess Thee to be both God and man!",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Friday Matins, aposticha item 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Protected by the Cross, we array ourselves against the enemy, undaunted by his wiles and treachery; for the prideful one hath been trampled underfoot by the power of Christ Who was nailed upon the Tree.",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Friday Matins, aposticha item 2"
+            },
+            "label": "plain"
+          },
+          {
+            "text": "All creation doth celebrate the memory of Thy saints, O Lord: the heavens rejoice with the angels, and the earth with all mankind is made merry. By their prayers have mercy on us.",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Friday Matins, aposticha item 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "martyrs"
+          }
+        ],
+        "verses": {
+          "ref": "shared.weekday_aposticha_verses.sets.standard_matins"
+        }
+      },
+      "aposticha_theotokion": {
+        "text": "“As a man I was nailed to the Tree and died; as one mortal I was placed in a tomb. But as God I shall rise again in glory on the third day, O pure Virgin Mother. “",
+        "tier": 1,
+        "src": {
+          "file": "6-6.pdf",
+          "locus": "Friday Matins, aposticha Glory/Both-now closer"
+        },
+        "homoglyph_log": [
+          {
+            "from": "U+041E О (Cyrillic)",
+            "to": "O",
+            "count": 1
+          }
+        ],
+        "type": "stavrotheotokion",
+        "sourceLabel": "Stavrotheotokion"
+      },
+      "closing_rubric": "Then, “It is good to give thanks ...,” Trisagion ..., Our Father ..., Troparia."
+    },
+    "sat": {
+      "sessionals": [
+        {
+          "rubric": "After the 1st chanting of the Psalter, The Sessional Hymns of the holy martyrs, in Tone VI:",
+          "spec_mel": null,
+          "items": [
+            {
+              "text": "Ever enlightened by Thee, and having extinguished the lamp of the infidels, like lamps the saints always shine forth light upon the righteous. By their prayers, O our Savior, light Thou my lamp, and save me, O Lord.",
+              "tier": 1,
+              "src": {
+                "file": "6-7.pdf",
+                "locus": "Saturday Matins, sessional set 1, item 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 2
+                }
+              ],
+              "label": "plain"
+            },
+            {
+              "text": "Having patiently endured the struggle of martyrdom, the saints received from Thee the honors of victory; having set at naught the intentions of the iniquitous, they received crowns of incorruption. For their sake be Thou entreated, O God, and grant us great mercy.",
+              "tier": 1,
+              "src": {
+                "file": "6-7.pdf",
+                "locus": "Saturday Matins, sessional set 1, item 2"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ],
+              "label": "plain"
+            }
+          ],
+          "verses": [
+            {
+              "text": "Wondrous is God in His saints, * the God of Israel.",
+              "tier": 2,
+              "src": {
+                "file": "6-7.pdf",
+                "locus": "Saturday Matins, sessional set 1 verse 1"
+              }
+            }
+          ],
+          "closer": {
+            "text": "O Thou Who called Thy Mother blessed, Thou didst willingly go to Thy suffering, and shine forth upon the Cross, desiring to seek out Adam, and saying to the angels: Rejoice with Me, for I have found the lost coin! O our God Who hast wisely ordered all things, glory be to Thee!",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Matins, sessional set 1 closer"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ],
+            "type": "theotokion"
+          }
+        },
+        {
+          "rubric": "After the 2nd chanting of the Psalter, The Sessional Hymns of the holy martyrs, in Tone VI:",
+          "spec_mel": null,
+          "items": [
+            {
+              "text": "While the choirs of the incorporeal ones stood by, holding trophies of victory, and tyrants and kings were amazed, the most wise spiritual athletes showed forth a firm opposition amidst the wounds of torture, during their martyrdom at the tribunal, thereby casting down the apostate by their confession of Christ. O Lord Who strengthened them, glory be to Thee!",
+              "tier": 1,
+              "src": {
+                "file": "6-7.pdf",
+                "locus": "Saturday Matins, sessional set 2, item 1"
+              },
+              "homoglyph_log": [
+                {
+                  "from": "U+041E О (Cyrillic)",
+                  "to": "O",
+                  "count": 1
+                }
+              ],
+              "label": "martyrs"
+            },
+            {
+              "text": "The memorial of Thy saints, O Lord, hath appeared like the the garden of paradise in Eden, for therein all creation rejoiceth. By their prayers grant us peace and great mercy.",
+              "tier": 1,
+              "src": {
+                "file": "6-7.pdf",
+                "locus": "Saturday Matins, sessional set 2, item 2"
+              },
+              "label": "martyrs"
+            },
+            {
+              "text": "Truly all things are vanity; life is but a shadow and a dream: for in vain doth every mortal trouble himself, as the Scripture hath said, seeking to acquire the whole world, and then departing to the tomb, where kings and paupers are found together. Wherefore, O Christ God, grant rest to Thy departed servants in that Thou lovest mankind.",
+              "tier": 1,
+              "src": {
+                "file": "6-7.pdf",
+                "locus": "Saturday Matins, sessional set 2, item 3"
+              },
+              "label": "for_the_reposed"
+            }
+          ],
+          "verses": [
+            {
+              "text": "Wondrous is God in His saints, * the God of Israel.",
+              "tier": 2,
+              "src": {
+                "file": "6-7.pdf",
+                "locus": "Saturday Matins, sessional set 2 verse 1"
+              }
+            },
+            {
+              "text": "Many are the tribulations of the righteous, * and the Lord shall deliver them out of them all.",
+              "tier": 2,
+              "src": {
+                "file": "6-7.pdf",
+                "locus": "Saturday Matins, sessional set 2 verse 2"
+              }
+            }
+          ],
+          "closer": {
+            "text": "I offer thee sighs from the heart and my innermost being, and I pray for thy conciliatory help, O all-immaculate one, as saith the Scriptures. Have mercy on my passion-plagued soul, and entreat the greatly merciful God, that He deliver me from judgment and the lake of fire, O only blessed one.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Matins, sessional set 2 closer"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 2
+              }
+            ],
+            "type": "theotokion"
+          }
+        }
+      ],
+      "canons": [
+        {
+          "title": "Canon of the holy martyrs, hierarchs, the venerable, and the departed, the",
+          "heading_rubric": "Canon of the holy martyrs, hierarchs, the venerable, and the departed, the",
+          "odes": {
+            "1": {
+              "irmos": {
+                "text": "The lecherous Pharaoh was drowned with all his warriors, * and Israel, crossing through the midst of the sea, * cried aloud exclaiming: * Let us chant unto the Lord God, * for He hath been glorified!",
+                "tier": 2,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Saturday Matins, canon 1, Ode 1 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Having enlightened those in darkness with your radiant intelligence and put to shame the impious tyrants, O martyrs, ye manifestly became victors, and have passed over to the never-waning Light.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 1, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Resplendent in the beauties of the virtues, O holy hierarchs of Christ, ye choirs of the venerable, O only triumphal procession of the prophets and all the righteous, ye have entered the mansions of heaven.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 1, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "All the multitude of women who joined themselves unto Christ have with manly labors trampled underfoot him who by a grievous deception brought death upon Eve; wherefore they are blessed with divine hymns.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 1, item 3"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "O Christ Who in the beginning formed man out of the earth, in the habitations of the righteous, in places of ease, grant rest to the souls of Thy servants, we pray, in that Thou art supremely good.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 1, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": [
+                    "glory",
+                    "for_the_reposed"
+                  ],
+                  "sourceLabel": "Glory ..., For the reposed:"
+                },
+                {
+                  "text": "Thou hast been shown to be more sacred than the cherubim and the seraphim, O pure one who hast given birth to the Author of creation. Him do thou unceasingly entreat, that He have pity on thy servants, who glorify thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 1, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "both_now"
+                }
+              ]
+            },
+            "3": {
+              "irmos": {
+                "text": "Having established my thoughts upon the firm rock of Thy Faith, * make steadfast my soul, O Lord; * for I have Thee as my refuge * and confirmation, * O good One.",
+                "tier": 2,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Saturday Matins, canon 1, Ode 3 irmos"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 2
+                  }
+                ]
+              },
+              "items": [
+                {
+                  "text": "Subjected to bodily pangs, the spiritual athletes looked forward, rejoicing, to a painless reward; and they now dispel our many pangs with grace.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 3, item 1"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "Driving away the beasts of evil with steadfast mind, the divine hierarchs delivered the godly children of Christ unharmed by their malice.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 3, item 2"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "Having mortified carnal-mindedness, the choir of the venerable, willingly bowing under the yoke of the Lord, received life everlasting.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 3, item 3"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "Glory ...,For the reposed: From everlasting fire, O Christ, deliver those who have passed from this life in piety, and grant them remission of debts and eternal delight, O good One.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 3, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "The women who loved Christ, surrounding thee who ineffably gave birth unto Him, O all-holy Lady, rejoice and are glad with a joyous mind.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 3, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "both_now"
+                }
+              ]
+            },
+            "4": {
+              "irmos": {
+                "text": "O Lord, I have heard the report of Thee * and was afraid; * I have seen Thy works and was amazed. * Glory to Thy power, O Lord.",
+                "tier": 2,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Saturday Matins, canon 1, Ode 4 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Standing fast, the passion-bearers beheld the prideful one trampled under their feet; and in thanksgiving they glorified the Creator of all things.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 4, item 1"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "Armed with the splendors of words, the holy hierarchs save all from the darkness of heresies, leading them to the light of understanding.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 4, item 2"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "The venerable ones, consuming the material passions with an ardent understanding of God, were revealed to be burning coals, and are greatly glorified.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 4, item 3"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "O Lord Who hast dominion over the living and the dead, unto those whom Thou hast taken to Thyself grant rest with all who have been well-pleasing unto Thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 4, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": [
+                    "glory",
+                    "for_the_reposed"
+                  ],
+                  "sourceLabel": "Glory ..., For the reposed:"
+                },
+                {
+                  "text": "O most pure one, the Lord Who ineffably clothed Himself in flesh from thee hath taken to Himself the company of women who struggled manfully .",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 4, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "both_now"
+                }
+              ]
+            },
+            "5": {
+              "irmos": {
+                "text": "O Christ Who shineth Thy light upon the world, * illumine my heart * for I cry out to Thee in the night, * and save me.",
+                "tier": 2,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Saturday Matins, canon 1, Ode 5 irmos"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ]
+              },
+              "items": [
+                {
+                  "text": "Clothing yourselves in vesture woven of grace from on high, O spiritual athletes, ye stripped the enemy naked.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 5, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "We honor the holy prophets, the divinely wise hierarchs, and the venerable who were well-pleasing unto God.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 5, item 2"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "In psalms and hymns let us praise the company of women, for they were well pleasing unto God.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 5, item 3"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "Enroll Thy servants in the mansions of Thy righteous ones, O Lord, overlooking the offenses they committed in this life.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 5, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": [
+                    "glory",
+                    "for_the_reposed"
+                  ],
+                  "sourceLabel": "Glory ..., For the reposed:"
+                },
+                {
+                  "text": "Thou wast revealed to be she who hath delivered us from all the harm of the enemy, O Lady, entreating Christ, Who alone is compassionate.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 5, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "both_now"
+                }
+              ]
+            },
+            "6": {
+              "irmos": {
+                "text": "Slain by the sea-monster of sin, * I cry unto Thee, O Christ: * Free me from corruption, * as Thou didst the prophet.",
+                "tier": 2,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Saturday Matins, canon 1, Ode 6 irmos"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ]
+              },
+              "items": [
+                {
+                  "text": "Ye engulfed the noetic foe with the outpouring of your divine blood; and ye watered the hearts of the faithful, O passion-bearers.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 6, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Having crucified yourselves to the world and the passions, O venerable ones, and ye holy hierarchs, ye have been deemed worthy of divine glory.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 6, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "As is meet, we bless the choir of the prophets and the assembly of honorable women, who contended well.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 6, item 3"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "With Thine elect give rest to the souls who have fallen asleep in times past, O God, overlooking their transgressions.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 6, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": [
+                    "glory",
+                    "for_the_reposed"
+                  ],
+                  "sourceLabel": "Glory ..., For the reposed:"
+                },
+                {
+                  "text": "O thou who hast given birth to Christ in the flesh, slay the passions of my flesh, O Virgin, and give life to my soul by thy mediation.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 6, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "both_now"
+                }
+              ]
+            },
+            "7": {
+              "irmos": {
+                "text": "Hearkening to the hymnody of Thy venerable children * Thou didst bedew the burning furnace: * O Lord God of our fathers blessed art Thou!",
+                "tier": 2,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Saturday Matins, canon 1, Ode 7 irmos"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ]
+              },
+              "items": [
+                {
+                  "text": "Let us honor with hymns the passion-bearers of Christ, who quenched the flame of cruel ungodliness with the showers of their blood.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 7, item 1"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "Having destroyed the winter of heresies, the right glorious hierarchs proceeded, rejoicing, to the springtime of God.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 7, item 2"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "By patience the ascetics inherited the rich grace of the Spirit and destroyed a multitude of demons.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 7, item 3"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "Grant, O Compassionate and greatly Merciful One, that those who have passed from this life may inherit the paradise of Thy sustenance.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 7, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": [
+                    "glory",
+                    "for_the_reposed"
+                  ],
+                  "sourceLabel": "Glory ..., For the reposed:"
+                },
+                {
+                  "text": "He Who showed thee to be a virgin even after giving birth, O pure one, saved the choirs of holy women who followed thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 7, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "both_now"
+                }
+              ]
+            },
+            "8": {
+              "irmos": {
+                "text": "Thy venerable Children in the furnace * likened to the cherubim * chanted the thrice-holy hymn * Bless ye, praise ye and supremely exalt ye the Lord throughout all ages.",
+                "tier": 2,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Saturday Matins, canon 1, Ode 8 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Wounded in their valor by threefold waves of torments, the divine martyrs, passing into profound peace by grace, attained unto the kingdom on high.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 8, item 1"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "The venerable and all-wise hierarchs, shining like the sun, enlighten the whole world with the rays of their teachings and the splendors of healings.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 8, item 2"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "O all ye glorious prophets and hierarchs, ye venerable and righteous ones, ye multitudes of martyrs and women: Preserve your whole flock unshaken by the demons.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 8, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "We hymn the righteous of ages past and the divinely eloquent prophets, and we cry out with compunction: By their prayers, O Word, grant rest unto those who have fallen asleep in faith.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 8, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": [
+                    "glory",
+                    "for_the_reposed"
+                  ],
+                  "sourceLabel": "Glory ..., For the reposed:"
+                },
+                {
+                  "text": "The choir of women loved thee as the full and nearby beauty of God, O Virgin, and in thine entourage they were brought before the Master of all, blessing thee together, O most pure one.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 8, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "both_now"
+                }
+              ]
+            },
+            "9": {
+              "irmos": {
+                "text": "O Virgin who received the angel’s salutation * and hast given birth to thine own Creator, * save those who magnify thee.",
+                "tier": 2,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Saturday Matins, canon 1, Ode 9 irmos"
+                },
+                "homoglyph_log": [
+                  {
+                    "from": "U+041E О (Cyrillic)",
+                    "to": "O",
+                    "count": 1
+                  }
+                ]
+              },
+              "items": [
+                {
+                  "text": "Ye were brought to the Master as pure sheep, O passion-bearing martyrs. Him do ye entreat, that He save our souls.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 9, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "As shepherds ye tended the faithful in the fields of piety, O holy hierarchs, and now dwell in the fold of God.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 9, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain"
+                },
+                {
+                  "text": "Let us bless the choirs of the venerable with the holy hierarchs and prophets, and the women who suffered mightily.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 9, item 3"
+                  },
+                  "label": "plain"
+                },
+                {
+                  "text": "O greatly Merciful One, grant that the departed may receive the eternal gladness of which the councils of the saints partake.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 9, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": [
+                    "glory",
+                    "for_the_reposed"
+                  ],
+                  "sourceLabel": "Glory ..., For the reposed:"
+                },
+                {
+                  "text": "O Virgin who hast given birth to the Light, enlighten my soul, driving away the darkness of my slothfulness and sin.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 1, Ode 9, item 5"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "both_now"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "title": "Another canon, of the departed, the composition of Theophanes, in Tone VI",
+          "heading_rubric": "Another canon, of the departed, the composition of Theophanes, in Tone VI:",
+          "odes": {
+            "1": {
+              "irmos": {
+                "text": "When Israel walked on foot in the sea as on dry land, * on seeing their pursuer Pharaoh drowned, * they cried: * Let us sing to God * a song of victory.",
+                "tier": 2,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Saturday Matins, canon 2, Ode 1 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "In the chambers of heaven the valiant martyrs always beseech Thee, O Christ. Grant that the faithful whom Thou hast translated from the earth may receive everlasting good things.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 1, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "refrain": "Wondrous is God in His saints, the God of Israel."
+                },
+                {
+                  "text": "O Thou Who hast adorned all things, Thou didst form man’s living substance midway between lowliness and majesty; wherefore, grant rest to the souls of Thy servants, O Savior.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 1, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    },
+                    {
+                      "from": "U+041E О (Cyrillic), in refrain",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "refrain": "Grant rest, O Lord, to the souls of Thy departed servants."
+                },
+                {
+                  "text": "In the beginning Thou didst set me to be a dweller and husbandman in the garden of paradise; yet Thou didst eject me, who broke Thy commandment; but grant rest to the souls of Thy servants, O Savior.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 1, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "glory"
+                },
+                {
+                  "text": "He Who of old fashioned our first mother Eve from Adam’s rib is clothed in flesh through thy most pure womb; and therewith He hath destroyed the might of death, O pure one.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 1, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "both_now"
+                }
+              ]
+            },
+            "3": {
+              "irmos": {
+                "text": "There is none as holy as Thou, * O Lord my God, * who hast exalted the horn of Thy faithful O good One, * and strengthened us upon the rock * of Thy confession.",
+                "tier": 2,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Saturday Matins, canon 2, Ode 3 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Having suffered lawfully and been adorned by Thee with crowns of victory, Thy martyrs, O Bestower of life, earnestly ask that everlasting honor be given unto the faithful who have passed away.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 3, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "refrain": "Wondrous is God in His saints, the God of Israel."
+                },
+                {
+                  "text": "Having first with many miracles and signs instructed me, the lost one, in latter times Thou didst abase Thyself as One compassionate; and having searched, Thou didst find and save me.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 3, item 2"
+                  },
+                  "label": "plain",
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic), in refrain",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "refrain": "Grant rest, O Lord, to the souls of Thy departed servants."
+                },
+                {
+                  "text": "They who come to Thee from the one who poureth forth unstable corruption do Thou cause to dwell joyously in the eternal mansions, O good One, justifying them by faith and grace.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 3, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "glory"
+                },
+                {
+                  "text": "There is none as immaculate as thee, O most pure Mother of God; for thou alone didst conceive in thy womb the true God Who is from before the ages, and hath destroyed the power of death.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 3, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "both_now"
+                }
+              ]
+            },
+            "4": {
+              "irmos": {
+                "text": "Christ is my power, * my God and my Lord, * the holy Church divinely singeth, * crying with a pure mind, * keeping festival in the Lord.",
+                "tier": 2,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Saturday Matins, canon 2, Ode 4 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Revealing knowledge greater than wisdom and the most perfect goodness of spiritual gifts, O Master, Thou didst unite the choirs of the martyrs to the angels.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 4, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "refrain": "Wondrous is God in His saints, the God of Israel."
+                },
+                {
+                  "text": "Grant that those who have passed over to Thee may receive Thy most pure glory, O Christ, wherein are the dwelling-places of those who are glad and the voices of pure rejoicing.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 4, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    },
+                    {
+                      "from": "U+041E О (Cyrillic), in refrain",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "refrain": "Grant rest, O Lord, to the souls of Thy departed servants."
+                },
+                {
+                  "text": "Those who hymn Thy divine might do Thou receive, taking them from this earth and making them children of the Light, and cleansing them of the darkness of sin, O greatly Merciful One.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 4, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "glory"
+                },
+                {
+                  "text": "The Master chose thee as the most pure receptacle, the immaculate temple, the most holy ark, the virginal place of sanctity, the beauty of Jacob.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 4, item 4"
+                  },
+                  "label": "both_now"
+                }
+              ]
+            },
+            "5": {
+              "irmos": {
+                "text": "Illumine with Thy divine light, I pray, O good One, * the souls of those who with love rise early to pray to Thee, * that they may know Thee, O Word of God, * as the true God, * Who recalleth us from the darkness of sin.",
+                "tier": 2,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Saturday Matins, canon 2, Ode 5 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Sacrificing themselves to our glorious God as a sacred whole-burnt offering and the first-fruits of human nature, the martyrs ever win salvation for us.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 5, item 1"
+                  },
+                  "label": "plain",
+                  "refrain": "Wondrous is God in His saints, the God of Israel."
+                },
+                {
+                  "text": "Grant a sojourn in heaven and generous gifts unto Thy faithful servants who have fallen asleep, O Lord, granting them deliverance from transgressions.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 5, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    },
+                    {
+                      "from": "U+041E О (Cyrillic), in refrain",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "refrain": "Grant rest, O Lord, to the souls of Thy departed servants."
+                },
+                {
+                  "text": "O only Compassionate and Immortal One, Who alone art by nature the Bestower of life and the truly unfathomable Abyss of goodness: Grant Thy kingdom unto those who have fallen asleep.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 5, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "glory"
+                },
+                {
+                  "text": "O Sovereign Lady of the world, He Who was born from thee became the might, song and salvation of those who perished, delivering from the gates of Hades those who bless thee with faith.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 5, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "both_now"
+                }
+              ]
+            },
+            "6": {
+              "irmos": {
+                "text": "Beholding the sea of life surging with the tempest of temptations, * I run to Thy calm haven, and cry to Thee: * Raise up my life from corruption, * O greatly merciful One.",
+                "tier": 2,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Saturday Matins, canon 2, Ode 6 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Nailed to the Cross, Thou didst gather to Thee the choirs of the martyrs who emulated Thy suffering, O good One; wherefore, we beseech Thee: Grant rest unto those who have passed over to Thee.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 6, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "refrain": "Wondrous is God in His saints, the God of Israel."
+                },
+                {
+                  "text": "When in awesome manner and with ineffable glory Thou shalt come to judge the whole world, O Redeemer, be Thou well-pleased that thy faithful servants, whom Thou hast taken from the earth, may meet Thee in splendor on the clouds.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 6, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    },
+                    {
+                      "from": "U+041E О (Cyrillic), in refrain",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "refrain": "Grant rest, O Lord, to the souls of Thy departed servants."
+                },
+                {
+                  "text": "O Master, Who art the wellspring of life, make Thy servants to dwell amid the nourishment of paradise, for with divine courage they have departed unto Thee in faith; and do Thou lead up those who were bound chains. .",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 6, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "glory"
+                },
+                {
+                  "text": "Having broken the commandment of God, we returned to the earth; but because of thee, O Virgin, we have been elevated from earth to the heavens, shaking off the corruption of death.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 6, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "both_now"
+                }
+              ]
+            },
+            "7": {
+              "irmos": {
+                "text": "An angel made the furnace bedew the holy Children, * but the command of God consumed the Chaldeans * and prevailed upon the tyrant to cry: * “O God of our fathers, blessed art Thou.”",
+                "tier": 2,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Saturday Matins, canon 2, Ode 7 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Delivered from the first crime by Thy blood, the martyrs, stained with their own blood, manifestly prefigured Thy sacrifice. Blessed art Thou, O God of our fathers!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 7, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "refrain": "Wondrous is God in His saints, the God of Israel."
+                },
+                {
+                  "text": "Thou didst slay savage death, O life-creating Word. Accept those who have departed in faith, and who hymn Thee, O Christ, and say: O God of our fathers Blessed art Thou!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 7, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    },
+                    {
+                      "from": "U+041E О (Cyrillic), in refrain",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "refrain": "Grant rest, O Lord, to the souls of Thy departed servants."
+                },
+                {
+                  "text": "O most divine Master, Who breathed Thy divine breath into me, and grant Thy kingdom unto those who have passed from this life, O Savior, that they may hymn Thee and say: O God of our fathers Blessed art Thou!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 7, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "glory"
+                },
+                {
+                  "text": "Thou wast the most exalted of all created beings, O most immaculate one, having conceived Him Who broke down the gates of Hades and shattered its doors; wherefore, we, the faithful, hymn thee as the Mother of God.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 7, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "both_now"
+                }
+              ]
+            },
+            "8": {
+              "irmos": {
+                "text": "Thou didst make flame bedew the holy children, * and didst burn the sacrifice of a righteous man with water. * For Thou alone, O Christ, dost do all as Thou willest, * Thee do we supremely exalt throughout all ages.",
+                "tier": 2,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Saturday Matins, canon 2, Ode 8 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Mightily showing forth struggles, ye received crowns of victory, O martyrs and passion-bearers, crying out to Christ: We supremely exalt Thee, the Lord, throughout the ages!",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 8, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "refrain": "Wondrous is God in His saints, the God of Israel."
+                },
+                {
+                  "text": "The faithful, who in a sacred manner have forsaken the things of this life and have meekly gone to Thee, the Master, do Thou receive, in that Thou art full of tender compassion, granting peace unto those who supremely exalt Thee, the Lord, throughout the ages.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 8, item 2"
+                  },
+                  "label": "plain",
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic), in refrain",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "refrain": "Grant rest, O Lord, to the souls of Thy departed servants."
+                },
+                {
+                  "text": "Be Thou well-pleased, O Savior, that all who have fallen asleep in the past may now dwell in the land of the meek, justifying by faith in Thee and by grace those who supremely exalt Thee, the Lord, throughout the ages.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 8, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "glory"
+                },
+                {
+                  "text": "We all call thee blessed, O exceedingly blessed one, for thou didst truly give birth to the good Word, Who became flesh for our sake. Him do we exalt supremely throughout all ages.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 8, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "both_now"
+                },
+                {
+                  "text": "refrain: “More honorable than the cherubim ...,” and make prostrations.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 8, item 5"
+                  },
+                  "label": "plain"
+                }
+              ]
+            },
+            "9": {
+              "irmos": {
+                "text": "It is impossible for mankind to see God * upon Whom the orders of angels dare not gaze; * but through thee, O all-pure one, * did the Word Incarnate become a man * and with the heavenly hosts, * Him we magnify and thee we call blessed.",
+                "tier": 2,
+                "src": {
+                  "file": "6-7.pdf",
+                  "locus": "Saturday Matins, canon 2, Ode 9 irmos"
+                }
+              },
+              "items": [
+                {
+                  "text": "Hope strengthened the choirs of the martyrs, and enkindled thereby they took wing to the love of Thee, thereby depicting beforehand the truly unshakable rest which is to come, which do Thou grant unto the faithful departed, O good One.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 9, item 1"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "refrain": "Wondrous is God in His saints, the God of Israel."
+                },
+                {
+                  "text": "Be Thou well-pleased, O Christ, that those who have departed in faith may receive Thy radiant and divine effulgence, granting them rest in the bosom of Abraham, and granting them everlasting blessedness, in that Thou alone art merciful.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 9, item 2"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    },
+                    {
+                      "from": "U+041E О (Cyrillic), in refrain",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "plain",
+                  "refrain": "Grant rest, O Lord, to the souls of Thy departed servants."
+                },
+                {
+                  "text": "As Thou art good and full of tender compassion by nature, the Willer of mercies and the Abyss of compassion, those of this place of affliction and the shadow of death hast Thou taken away. Cause them to dwell where Thy light shineth, O Savior.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 9, item 3"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 1
+                    }
+                  ],
+                  "label": "glory"
+                },
+                {
+                  "text": "O pure one, we know thee to be the holy tabernacle, the ark, the tablets, the law and grace; in that for thy sake remission hath been given to those who have been justified by the blood of Him Who became incarnate from thy womb, O all-immaculate one.",
+                  "tier": 1,
+                  "src": {
+                    "file": "6-7.pdf",
+                    "locus": "Saturday Matins, canon 2, Ode 9, item 4"
+                  },
+                  "homoglyph_log": [
+                    {
+                      "from": "U+041E О (Cyrillic)",
+                      "to": "O",
+                      "count": 2
+                    }
+                  ],
+                  "label": "both_now"
+                }
+              ]
+            }
+          },
+          "condition": "which we chant when there is no Menaion"
+        }
+      ],
+      "magnificat_rubric": "We then chant the hymn of the Theotokos (the Magnificat), with the",
+      "post_canon_rubric": "Then, “It is truly meet to bless thee ...,” and a prostration. Small litany, Exapostilarion, and the usual psalms. On the Praises, these Stichera of the holy martyrs, in Tone V:",
+      "praises": {
+        "rubric": "On the Praises, these Stichera of the holy martyrs, in Tone V:",
+        "items": [
+          {
+            "text": "At the commemoration of Thy saints, O Lord, all creation celebrateth; the heavens rejoice with the angels, and the earth with all mankind keepeth festival. By their intercessions have mercy upon us.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Matins, Praises item 1"
+            },
+            "label": "martyrs"
+          },
+          {
+            "text": "O Lord, if we had not had Thy saints as intercessors, and Thy goodness being merciful to us, how should we have dared, O Savior, to hymn Thee, Whom angels do unceasingly glorify? O Thou that knowest the hearts of men, spare our souls.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Matins, Praises item 2"
+            },
+            "label": "plain"
+          },
+          {
+            "text": "The memorial of the martyrs is a joy to those who fear the Lord. For having suffered for Christ’s sake, they received from Him crowns of victory; and now they intercede with boldness on behalf of our souls.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Matins, Praises item 3"
+            },
+            "label": "plain"
+          },
+          {
+            "text": "Our God hath made wondrous His chosen saints. Rejoice and be glad, all ye His servants, for crowns and His kingdom have been prepared for you! We beseech you: Forget us not!",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Matins, Praises item 4"
+            },
+            "label": "plain"
+          },
+          {
+            "text": "Of old, the eating of the tree in Eden sickened Adam when the serpent spewed forth its venom; for from this universal death hath arisen, devouring man. But the Master came, and cast down the serpent, granting us resurrection. Unto Him, therefore, let us now cry aloud: Have pity on those whom Thou hast taken to Thyself, O Savior, and, as Thou art the Lover of mankind, grant them rest with the saints.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Matins, Praises item 5"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "for_the_reposed"
+          }
+        ],
+        "verses": [
+          {
+            "text": "Praise Him for His mighty acts, * praise Him according to the multitude of His greatness.",
+            "tier": 2,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Matins, Praises verse 1"
+            }
+          },
+          {
+            "text": "Praise Him with the sound of trumpet, * praise Him with the psaltery and harp.",
+            "tier": 2,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Matins, Praises verse 2"
+            }
+          },
+          {
+            "text": "Praise Him with timbrel and dance, * praise Him with strings and flute.",
+            "tier": 2,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Matins, Praises verse 3"
+            }
+          },
+          {
+            "text": "Praise Him with tuneful cymbals, praise Him with cymbals of jubilation. * Let every breath praise the Lord.",
+            "tier": 2,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Matins, Praises verse 4"
+            }
+          }
+        ],
+        "theotokion": {
+          "text": "We have come to know God Who was incarnate of thee, O Virgin Theotokos. Him do thou entreat that our souls be saved.",
+          "tier": 1,
+          "src": {
+            "file": "6-7.pdf",
+            "locus": "Saturday Matins, Praises Glory/Both-now Theotokion"
+          },
+          "type": "theotokion",
+          "sourceLabel": "Glory ..., Both now ..., Theotokion:"
+        },
+        "doxology_rubric": "Small Doxology (Read), Litany: Let us complete ...,"
+      },
+      "aposticha": {
+        "rubric": "On the Aposticha, these Stichera of the departed, in Tone VI:",
+        "items": [
+          {
+            "text": "O greatly merciful Master, Who hast unapproachable loving-kindness for us and an inexhaustible well-spring of divine goodness. Grant rest in the land of the living to those who have departed unto Thee, that they forever abide in Thy dwelling-place, which they so longed so for. For Thou, O Christ, hast shed Thy blood for all, and hast redeemed the world with Thy life.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Matins, aposticha of the departed, item 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain",
+            "spec_mel": "Having set aside"
+          },
+          {
+            "text": "Thou didst willingly endure a life-creating death; pouring forth life upon the faithful, and granting them eternal joy. Do Thou establish in this joy those who have fallen asleep in the hope of the Resurrection, and in Thy mercy forgive them all their offences, for Thou alone art sinless, Thou alone art good and the Lover of mankind, that Thy Name, O Christ, may be hymned by all, and that we may glorify Thy salvific love for mankind.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Matins, aposticha of the departed, item 2"
+            },
+            "label": "plain"
+          },
+          {
+            "text": "Knowing Thee to be, in Thy divine power, the Lord of the living and Master of the dead, O Christ, we pray Thee: With Thy chosen ones, O Lover of mankind, grant rest unto Thy faithful servants who have departed unto Thee, our Benefactor, in a place of comfort, amid the splendors of the saints; for Thou art He Who willest mercy, and as God savest those whom Thou didst create according to Thine image, O only greatly Merciful One.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Matins, aposticha of the departed, item 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 3
+              }
+            ],
+            "label": "plain"
+          }
+        ],
+        "verses": [
+          {
+            "text": "Blessed are they whom Thou hast chosen * and taken to Thyself, O Lord.",
+            "tier": 2,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Matins aposticha of the departed, verse 1 — pointed, \"they\", final period (§5 per-tone; the 4-7/5-7 pattern)"
+            }
+          },
+          {
+            "text": "Their souls * shall dwell among good things.",
+            "tier": 2,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Matins aposticha of the departed, verse 2 — tone 6 prints TWO verses where 2-7/3-7 carry three (§5 structural per-tone set)"
+            }
+          }
+        ]
+      },
+      "aposticha_theotokion": {
+        "text": "Thou wast shown to be a receptacle of divine majesty, O most pure one, for thou didst contain God and gave birth unto Christ in two natures but a single Hypostasis, O Mother who knewest not wedlock. O pure one, entreat thine only- begotten and firstborn Child, Who preserved thee an unblemished virgin even though thou hast given birth, that He grant rest amid light and incorrupt blessedness unto those who have fallen asleep in the Faith.",
+        "tier": 1,
+        "src": {
+          "file": "6-7.pdf",
+          "locus": "Saturday Matins, aposticha Glory/Both-now closer"
+        },
+        "homoglyph_log": [
+          {
+            "from": "U+041E О (Cyrillic)",
+            "to": "O",
+            "count": 3
+          }
+        ],
+        "type": "theotokion"
+      },
+      "closing_rubric": "Then, “It is good to give thanks ...,” Trisagion ..., Our Father ..., Troparia."
+    }
+  },
+  "liturgy_weekday": {
+    "mon": {
+      "beatitudes": {
+        "rubric": "On the Beatitudes, these Troparia, in Tone VI",
+        "items": [
+          {
+            "text": "Remember me, O God my Savior, when Thou shalt come in Thy kingdom, and save me, in that Thou alone lovest mankind.",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Monday Liturgy, Beatitudes item 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Overlook what I have done in knowledge and in ignorance, O Jesus Who lovest mankind, and grant unto me the portion of the saved.",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Monday Liturgy, Beatitudes item 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "O Christ Who enlightened the angelic choirs, by their supplications enlighten the eyes of my heart",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Monday Liturgy, Beatitudes item 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "O passion-bearers who underwent every trial of wounds, ever heal the stripes and sores of the believers.",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Monday Liturgy, Beatitudes item 4"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "martyrs"
+          },
+          {
+            "text": "Let us worship the Holy Trinity, Who is hymned by the armies of the angels, and let us cry out: Save Thou our souls!",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Monday Liturgy, Beatitudes item 5"
+            },
+            "label": "glory"
+          },
+          {
+            "text": "O Birthgiver of God, deliver me from everlasting fire and the torments which await me, that I may call thee blessed.",
+            "tier": 1,
+            "src": {
+              "file": "6-2.pdf",
+              "locus": "Monday Liturgy, Beatitudes item 6"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "both_now"
+          }
+        ]
+      },
+      "prokeimenon": {
+        "ref": "shared.daily_liturgy_propers.mon.prokeimenon"
+      },
+      "alleluia": {
+        "ref": "shared.daily_liturgy_propers.mon.alleluia"
+      },
+      "communion": {
+        "ref": "shared.daily_liturgy_propers.mon.communion"
+      }
+    },
+    "tue": {
+      "beatitudes": {
+        "rubric": "On the Beatitudes, these Troparia, in Tone VI",
+        "items": [
+          {
+            "text": "Remember me, O God my Savior, when Thou shalt come in Thy kingdom, and save me, in that Thou alone lovest mankind.",
+            "tier": 1,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Tuesday Liturgy, Beatitudes item 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "O Christ Who accepted the lamentation of Peter, accept also my repentance; and grant me forgiveness of mine offenses.",
+            "tier": 1,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Tuesday Liturgy, Beatitudes item 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "O Baptist and Forerunner of the Lord, who preached repentance to mankind, pray that I may repent with all my soul.",
+            "tier": 1,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Tuesday Liturgy, Beatitudes item 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Martyricon: Having endured threefold waves of sufferings, O passion- bearers, ye now heal the infirmities of all; wherefore, ye are called blessed.",
+            "tier": 1,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Tuesday Liturgy, Beatitudes item 4"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "O Thou Who by the prophets art glorified in the simple and uncommingled Trinity, save me by the supplications of the Forerunner!",
+            "tier": 1,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Tuesday Liturgy, Beatitudes item 5"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "glory"
+          },
+          {
+            "text": "O mighty intercession for those who find themselves amid tribulations, intercede for me, who partake of the pleasures of life, and save me, I pray thee.",
+            "tier": 1,
+            "src": {
+              "file": "6-3.pdf",
+              "locus": "Tuesday Liturgy, Beatitudes item 6"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "both_now"
+          }
+        ]
+      },
+      "prokeimenon": {
+        "ref": "shared.daily_liturgy_propers.tue.prokeimenon"
+      },
+      "alleluia": {
+        "ref": "shared.daily_liturgy_propers.tue.alleluia"
+      },
+      "communion": {
+        "ref": "shared.daily_liturgy_propers.tue.communion"
+      }
+    },
+    "wed": {
+      "beatitudes": {
+        "rubric": "On the Beatitudes, these Troparia, in Tone VI",
+        "items": [
+          {
+            "text": "Remember me, O God my Savior, when Thou shalt come in Thy kingdom, and save me, in that Thou alone lovest mankind.",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Wednesday Liturgy, Beatitudes item 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Thou wast willingly lifted up upon the Tree, O only greatly Merciful One, and didst call forth those who had stumbled into the abyss of evils.",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Wednesday Liturgy, Beatitudes item 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "The earth quaked and the sun hid its light, beholding Thee, the Sun of righteousness, upon the Tree, willingly suffering.",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Wednesday Liturgy, Beatitudes item 3"
+            },
+            "label": "plain"
+          },
+          {
+            "text": "Sharing in the sufferings of the Savior, O passion-bearers, together ye partake of divine effulgence, and are deified.",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Wednesday Liturgy, Beatitudes item 4"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "martyrs"
+          },
+          {
+            "text": "Lift me up from the depths of sin, O my Christ, Who, though One of the Trinity, didst willingly endure crucifixion.",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Wednesday Liturgy, Beatitudes item 5"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "glory"
+          },
+          {
+            "text": "Standing before the Cross, O Virgin Mother, and beholding thy Son willingly suffering, thou didst magnify Him.",
+            "tier": 1,
+            "src": {
+              "file": "6-4.pdf",
+              "locus": "Wednesday Liturgy, Beatitudes item 6"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "both_now"
+          }
+        ]
+      },
+      "prokeimenon": {
+        "ref": "shared.daily_liturgy_propers.wed.prokeimenon"
+      },
+      "alleluia": {
+        "ref": "shared.daily_liturgy_propers.wed.alleluia"
+      },
+      "communion": {
+        "ref": "shared.daily_liturgy_propers.wed.communion"
+      }
+    },
+    "thu": {
+      "beatitudes": {
+        "rubric": "On the Beatitudes, these Troparia, in Tone VI:",
+        "items": [
+          {
+            "text": "Remember me, O God my Savior, when Thou shalt come in Thy kingdom, and save me, in that Thou alone lovest mankind.",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Thursday Liturgy, Beatitudes item 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Traversing the world like mystical rays, O glorious apostles, with faith ye enlightened the race of mankind.",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Thursday Liturgy, Beatitudes item 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "O enlightened apostles of the Lord, like clouds ye rained down upon the world the water of divine knowledge.",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Thursday Liturgy, Beatitudes item 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Approaching the fire of torment, O martyrs, ye received from God a divine dew which cooled you.",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Thursday Liturgy, Beatitudes item 4"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "martyrs"
+          },
+          {
+            "text": "Worshipping the holy and adored Trinity, O ye faithful, let us cry out together: By the supplications of the apostles, save us all!",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Thursday Liturgy, Beatitudes item 5"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "glory"
+          },
+          {
+            "text": "O Theotokos, who in manner past all telling hast given birth to the Word Who with the Father is equally without beginning, entreat Him, that our souls may be saved.",
+            "tier": 1,
+            "src": {
+              "file": "6-5.pdf",
+              "locus": "Thursday Liturgy, Beatitudes item 6"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "both_now"
+          }
+        ]
+      },
+      "prokeimenon": {
+        "tone": 8,
+        "text": {
+          "text": "Their sound hath gone forth into all the earth, * and their words unto the ends of the world.",
+          "tier": 2,
+          "src": {
+            "file": "6-5.pdf",
+            "locus": "Thursday Liturgy prokeimenon (text byte-matches shared; stored per-tone beside its divergent verse)"
+          }
+        },
+        "verse": {
+          "text": "The heavens declare the glory of God, * and the firmament proclaimeth the work of His hands.",
+          "tier": 2,
+          "src": {
+            "file": "6-5.pdf",
+            "locus": "Thursday Liturgy prokeimenon verse — prints a * pointing mark absent from the shared/2-5 print (§5 divergence; 4-5/5-5 printed the same mark)"
+          }
+        }
+      },
+      "alleluia": {
+        "ref": "shared.daily_liturgy_propers.thu.alleluia"
+      },
+      "communion": {
+        "ref": "shared.daily_liturgy_propers.thu.communion"
+      },
+      "alleluia_note": "6-5 prints the digit-zero artifact (\"0 Lord\") at the same verse as 2-5/3-5/4-5/5-5 — five tones running; normalized per §9.10 (scan review delivered); post-normalization the print byte-matches shared, so the ref stands."
+    },
+    "fri": {
+      "beatitudes": {
+        "rubric": "On the Beatitudes, these Troparia, in Tone VI",
+        "items": [
+          {
+            "text": "Remember me, O God my Savior, when Thou shalt come in Thy kingdom, and save me, in that Thou alone lovest mankind.",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Friday Liturgy, Beatitudes item 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Stretching forth Thy hands upon the Tree, Thou didst embrace the nations, who hymn Thy tender compassion, O Christ our God.",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Friday Liturgy, Beatitudes item 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Thou wast willingly nailed to the Tree, and by Thy power didst perfectly break the sting of the prideful one, O Christ.",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Friday Liturgy, Beatitudes item 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Delighting in your torments, O passion-bearers, ye have been deemed worthy of the delights of paradise, praying unceasingly on behalf of the world.",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Friday Liturgy, Beatitudes item 4"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "martyrs"
+          },
+          {
+            "text": "Rescue us, Thy servants, from all torment, O Lord - Father, Son, and co-enthroned Spirit.",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Friday Liturgy, Beatitudes item 5"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "glory"
+          },
+          {
+            "text": "Seeing Thee stretched out upon the Cross, the Virgin sighed, weeping. By her prayers save us, O Lord.",
+            "tier": 1,
+            "src": {
+              "file": "6-6.pdf",
+              "locus": "Friday Liturgy, Beatitudes item 6"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "both_now"
+          }
+        ]
+      },
+      "prokeimenon": {
+        "ref": "shared.daily_liturgy_propers.fri.prokeimenon"
+      },
+      "alleluia": {
+        "ref": "shared.daily_liturgy_propers.fri.alleluia"
+      },
+      "communion": {
+        "ref": "shared.daily_liturgy_propers.fri.communion"
+      }
+    },
+    "sat": {
+      "beatitudes": {
+        "rubric": "On the Beatitudes, these Troparia, in Tone VI:",
+        "items": [
+          {
+            "text": "Remember me, O God my Savior, when Thou shalt come in Thy kingdom, and save me, in that Thou alone lovest mankind.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Liturgy, Beatitudes item 1"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Undaunted by fire, the sword, or the savage onslaught of wild beasts, O glorious passion-bearers, ye have been deemed worthy of life everlasting.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Liturgy, Beatitudes item 2"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "O Lover of mankind, and Who hast glorified the prophets and teachers, the venerable and the righteous, by their supplications save Thou our souls",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Liturgy, Beatitudes item 3"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "plain"
+          },
+          {
+            "text": "Those who in faith have departed from temporal things do Thou number with all the saints and righteous, O Word, that we may glorify Thee.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Liturgy, Beatitudes item 4"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "for_the_reposed"
+          },
+          {
+            "text": "Triadicon: We glorify the Father, the Son and the Holy Spirit, saying: O Holy Trinity, save Thou our souls!",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Liturgy, Beatitudes item 5"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "glory"
+          },
+          {
+            "text": "Thou hast been revealed to be blessed among all generations; for in truth thou didst ineffably give birth to our blessed God, O most pure one.",
+            "tier": 1,
+            "src": {
+              "file": "6-7.pdf",
+              "locus": "Saturday Liturgy, Beatitudes item 6"
+            },
+            "homoglyph_log": [
+              {
+                "from": "U+041E О (Cyrillic)",
+                "to": "O",
+                "count": 1
+              }
+            ],
+            "label": "both_now"
+          }
+        ]
+      },
+      "prokeimenon": {
+        "ref": "shared.daily_liturgy_propers.sat.prokeimenon"
+      },
+      "alleluia": {
+        "ref": "shared.daily_liturgy_propers.sat.alleluia"
+      },
+      "communion": {
+        "ref": "shared.daily_liturgy_propers.sat.communion"
+      },
+      "alleluia_note": "sat Liturgy Alleluia verse 1 byte-matches shared (ref stands). NOTE: the Saturday Matins sessional verse \"Many are the tribulations of the righteous, * and the Lord ...\" (pointed, \"and\") shadows this Alleluia marker in a flat scan — re-scoped after \"AT THE LITURGY\" the Liturgy verse reads \"but the Lord ... out of them all\" = shared. Cross-surface variant (sessional vs liturgy) registered."
+    }
+  }
+};

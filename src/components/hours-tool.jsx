@@ -8492,6 +8492,42 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.32.1",
+    date: "July 2026",
+    summary: "Octoechos V2: tone-6 DIFFERENTIAL scan + tone6.js encoded (\u00a711) \u2014 templates held; GREGORY per-tone from 6-1 (2-1/5-1 word-order side); schema SOURCE_FILES + 6-x",
+    items: [
+      "tone6.js encoded (~1,282 text nodes, 31 \u00a76 claims) from 6-1\u20266-7 via " +
+      "the adapted tone-5 generators \u2014 every \u00a74 template held. Sunday cycle " +
+      "(core, Little+Great Vespers, Nocturns, Sunday Matins Shape A, Liturgy) + " +
+      "weekday evenings/mornings/Compline/Saturday day-class. Nothing hand-retyped.",
+      "GREGORY (standing per-tone ruling): stored per-tone from 6-1 \u2014 7 stanzas, " +
+      "tracks the 5-1 byte-state ('in godly manner' no article, 'unshakable', " +
+      "'incarnate from the Virgin') and takes the 2-1/5-1 word-order side at " +
+      "stanza 2 ('the Might \u2026 the one Sovereignty'). 7 register pairs pinned.",
+      "\u00a75 divergences stored per-tone (verify_shared_t6): standard Vespers " +
+      "aposticha 'her mistress' lowercase at ALL FIVE weekday evenings (tone 5: " +
+      "Sunday only); Friday-eve departed v1 final period (4th tone); Thursday " +
+      "Liturgy prokeimenon verse '*' (4-5/5-5 class); Saturday Matins departed " +
+      "TWO-verse set (4-7/5-7); Thursday Liturgy Alleluia digit-zero '0 Lord' " +
+      "(5th tone, normalized). polyeleos / virgin-rejoice MATCH shared this tone.",
+      "\u00a79.10: NEW structural-site homoglyph \u2014 6-7 prints '\u041eDE IX' (Cyrillic " +
+      "\u041e) at the Friday-night Compline Ode IX heading; wk_lib.ode_of now " +
+      "normalizes the known class before matching (structural only; stored nodes " +
+      "keep raw bytes + log). 6-4 'Canon' heading is CLEAN (the 4-4/5-4 \u0421+\u0430 " +
+      "homoglyph does NOT recur); tone-6 laments clean (no ''Woe, no 'O Christ,?').",
+      "Per-print findings: LV troparion drops 'be' ('glory to Thee' vs the other " +
+      "three sites' 'glory be to Thee' \u2014 sic); Liturgy kontakion heading word-" +
+      "order variant ('Kontakion of the Resurrection'); Nocturns canon heading " +
+      "'Tone VI:' without 'in'; Matins canon 'Resurrection Canons Tone VI.'; all " +
+      "9 Nocturns\u2194Matins irmoi IDENTICAL; Shape A resurrection closer trinitarion " +
+      "at Ode IX; LV s1 FULL double print; troparion quote-marked at NO site.",
+      "Schema SOURCE_FILES + 6-1\u20266-7 (the version-bumping code change). Registers " +
+      "211 pairs (208 checked); sics 62 (46 checked; 3 new tone-6 sics pinned). " +
+      "Full gate green: pointing paths, sunday vespers 71/71, V1 validator, V2 " +
+      "gate, viewer coverage, vite build. Reading-view pages for tone 6 live.",
+    ],
+  },
+  {
     version: "v0.32.0",
     date: "July 2026",
     summary: "The Octoechos READING VIEW \u2014 the bound page, digitized (octoechos_reading_view_spec.md Phase A): tone \u2192 day \u2192 service navigation, print typography, as-printed pointing, sic footnotes",
