@@ -1568,6 +1568,28 @@ DIFFERENTIAL scans — templates assumed, texts and per-tone facts
 captured fresh from each tone's own chapters, protocol §10 unchanged.
 Nothing textual is ever ported between tones.
 
+**TONE-3 VERIFICATION VERDICT (July 7 2026).** The full seven-file tone-3
+scan ran against the §4 templates: **the skeleton is CONFIRMED** — every
+section template (LV/GV shapes, weekday Vespers with day-themed fallbacks,
+Friday no-fallback + dogmatikon closer, seven distinct Compline nights,
+weekday three-set Matins with de-interleaved double-canons, the §4.8a
+Saturday day-class, weekday Liturgies, Shape A/B canon grammar, all three
+§2.7 devices) parsed tone 3 without a shape change. Per-tone facts
+demoted/confirmed per-tone: Shape A resurrection-closer DISTRIBUTION
+(tone 3: trinitarion at Ode VII, theotokion at Ode IX), the §9.5
+quotation-variance pattern (tone 3: no quoted site), kontakion Spec. Mel.
+at the Matins site (tone 3: "Today the Virgin"), Nocturns "(Twice)"
+distribution (tone 3: odes 4/5/6/8/9), Matins prokeimenon verse line
+(tone 3: not printed), Nocturns↔Matins irmos sharing pattern (tone 3:
+odes 1/3/9). §5 shared tables: 97 print sites byte-verified against tone
+3, 91 IDENTICAL; 6 item-level divergences moved per-tone (3-6 "works of
+our hand"; 3-7 departed-verse wording/punctuation ×3; 3-6 "ages,"; plus
+the 3-5 stray-period Thursday pair) — the tables stand as shared with
+per-item exceptions. **§9.13: the Thursday Matins verse anomaly does NOT
+recur in tone 3** (normal pair printed, byte-verified) — strengthens the
+tone-2-misprint reading; encode-as-printed ruling unchanged. Tones 4–8
+and 1 proceed as DIFFERENTIAL scans per this section.
+
 **Phase 1 sequencing (after Bill declares the spec complete):**
 1. Schema + validators FIRST (`schema_v2.js`,
    `validate_octoechos_v2.mjs`, `scan_source.mjs`, recurrence + sic

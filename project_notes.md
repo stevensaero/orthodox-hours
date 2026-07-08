@@ -1,5 +1,15 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.31.6** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+**Tool version: v0.31.7** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+
+**Session July 7, 2026 (cont. 6) — TONE-3 VERIFICATION PASSED; tone3.js
+ENCODED, v0.31.7.** Scans of 3-1…3-7 delivered (3-1 clean; 3-2…3-7
+О-contaminated ×~130–160; NEW homoglyph classes М (3-6) and lowercase о
+(3-7), normalized-with-log; 3-5 digit-zero at the SAME Thursday Alleluia
+verse as 2-5). Skeleton CONFIRMED — every §4 template parsed tone 3
+unchanged; spec §11 verdict block added. §5: 97 sites compared, 91
+byte-identical, 6 item divergences per-tone. **§9.13 anomaly does NOT
+recur in tone 3** (normal pair, byte-verified). Register 141/138 live;
+sics 33/27. Tones 4–8/1 are now differential scans.**
 
 **Session July 7, 2026 (cont. 5) — Octoechos V2 §11 STEP 5: TONE 2
 COMPLETE, v0.31.6.** Weekday Vespers (sun–fri), all seven Compline nights,
