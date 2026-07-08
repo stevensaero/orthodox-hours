@@ -1,5 +1,32 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.32.4** | **Tone Trainer: v0.25.47** | Last synced: July 8, 2026
+**Tool version: v0.33.0** | **Tone Trainer: v0.25.47** | Last synced: July 8, 2026
+
+**Session July 8, 2026 (cont.) — READING VIEW PHASE A.1 + SEARCH, v0.33.0.**
+Mockup-review session with Bill (OctoView comparison): rulings captured in
+`octoechos_reading_view_spec.md` §7-§8 — theme parity with the house
+viewers is a REQUIREMENT; left rail with a tone NUMBER GRID, day/service/
+SECTIONS lists; mobile drawer collapse; search as Phase B lead. Built and
+shipped: rail navigation (sections scroll within the page — the book is
+never fragmented), rubric callouts + hide toggle (persists), prev/next
+across the liturgical sequence, responsive drawer under 720px, and SEARCH
+— client-side index across all eight tones + shared + theotokia; scope
+corpus/tone/day/service; reader mode (markers/quotes/case normalized) and
+exact-bytes mode (finds sics as stored); results carry breadcrumb, snippet,
+file/locus, sic glyph, and deep-link to position anchors (shared/theotokia
+results open in audit). Default tone now 1 (cycle complete). §12 audit
+walker untouched. Full gate green. NOTE: this session ran concurrently
+with the tone-6…tone-1 encoding sessions; the spec amendment was rebased
+onto the completed cycle (v0.32.4) and its stale unencoded-tones line
+updated.
+
+### Next
+
+- Bill's side-by-side review of the reading view against the bound book
+  (the human gate) — now over the COMPLETE eight-tone corpus.
+- Phase B remainder: assembled-service deep links from hours-tool;
+  propose-correction report; sic glyphs on ref-resolved/rubric paths.
+- Phase C: octoechos_v2 edit-engine adapter (lane 1, attestation).
+- Phase D: dataset-wide OCA override modules + structured sic entry.
 
 **Session July 8, 2026 (cont. 5) — Octoechos V2 TONE-1 DIFFERENTIAL SCAN;
 tone1.js ENCODED, v0.32.4 — THE EIGHT-TONE CYCLE IS COMPLETE (tones 1–8).**
