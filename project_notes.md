@@ -1,5 +1,17 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.33.0** | **Tone Trainer: v0.25.47** | Last synced: July 8, 2026
+**Tool version: v0.33.1** | **Tone Trainer: v0.25.47** | Last synced: July 8, 2026
+
+**Session July 8, 2026 (cont.) — STICKY HEADER + RAIL, v0.33.1.**
+Octoechos V2 browser (`octoechos-v2-browser.jsx`) UI fix: the top header
+bar and the left navigation rail no longer scroll off the page. Header is
+`position: sticky; top: 0` (opaque parchment, z-index 30) in both reading
+and audit views; the desktop rail is `position: sticky` with
+`align-self: flex-start`, pinned at the measured header height + 12px, with
+`max-height`/`overflow-y: auto` so a long SECTIONS list scrolls inside the
+rail. Header height is measured via a ref + resize listener so the rail's
+`top` tracks whatever the header wraps to at the current width. The narrow
+(<720px) drawer popup is untouched. No data, search, audit-walker, or
+mobile-drawer changes.
 
 **Session July 8, 2026 (cont.) — READING VIEW PHASE A.1 + SEARCH, v0.33.0.**
 Mockup-review session with Bill (OctoView comparison): rulings captured in
