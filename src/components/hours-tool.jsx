@@ -8492,6 +8492,20 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.33.1",
+    date: "July 2026",
+    summary: "Octoechos V2 browser: the top header bar and the left navigation rail are now sticky — they stay in place while the reading (and audit) column scrolls",
+    items: [
+      "The Octoechos V2 data browser now pins its top header bar (title, " +
+      "search, Today, Audit) to the top of the viewport, so it no longer " +
+      "scrolls off when reading a long service.",
+      "The left navigation rail (TONE grid, DAY / SERVICE / SECTIONS lists) " +
+      "is sticky on desktop: it stays beside the text as the reading column " +
+      "scrolls, pinned just beneath the header, and scrolls internally if the " +
+      "SECTIONS list runs long. The mobile (<720px) drawer is unchanged.",
+    ],
+  },
+  {
     version: "v0.33.0",
     date: "July 2026",
     summary: "Reading view Phase A.1 + SEARCH (spec \u00a77): left-rail navigation with tone number grid and in-rail sections, mobile drawer, rubric toggle, prev/next \u2014 and corpus search with scope + reader/exact-bytes modes",

@@ -23,7 +23,7 @@
 // Route: /orthodox-hours/octoechos-v2 — URL-only access (dev/truthing tool).
 // ─────────────────────────────────────────────────────────────────────────────
 
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
 import {
   registryLookup, SERVICE_ORDER, SERVICE_HEADINGS, DAY_HEADINGS,
 } from '../data/octoechos_v2/presentation.js';
@@ -384,6 +384,8 @@ export default function OctoechosV2Browser() {
   const [mode, setMode] = useState(() => { try { return localStorage.getItem('octoRdgMode') || 'printed'; } catch { return 'printed'; } });
   const [showRubrics, setShowRubrics] = useState(() => { try { return localStorage.getItem('octoRdgRub') !== '0'; } catch { return true; } });
   const [narrow, setNarrow] = useState(typeof window !== 'undefined' && window.innerWidth < 720);
+  const headerRef = useRef(null);
+  const [headerH, setHeaderH] = useState(0);
   const [railOpen, setRailOpen] = useState(false);
   const [q, setQ] = useState('');
   const [scope, setScope] = useState('corpus');
@@ -410,6 +412,14 @@ export default function OctoechosV2Browser() {
     window.addEventListener('resize', onR);
     return () => window.removeEventListener('resize', onR);
   }, []);
+  // Measure the sticky header so the rail can pin just beneath it, whatever the
+  // header wraps to at the current width (re-measures on resize and view/data change).
+  useEffect(() => {
+    const measure = () => setHeaderH(headerRef.current?.offsetHeight ?? 0);
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [narrow, view, results, data]);
   useEffect(() => {
     if (!data || results) return;
     const id = decodeURIComponent(window.location.hash.slice(1));
@@ -488,8 +498,19 @@ export default function OctoechosV2Browser() {
     background: active ? C.goldMid : "none", fontWeight: active ? 700 : 400,
   });
 
+  // On desktop the rail pins just beneath the sticky header and scrolls
+  // internally if its SECTIONS list runs long. In the narrow (<720px) drawer
+  // the rail lives inside an absolutely-positioned popup, so it stays static.
+  const railStickyStyle = narrow ? {} : {
+    position: "sticky",
+    top: headerH + 12,
+    alignSelf: "flex-start",
+    maxHeight: `calc(100vh - ${headerH + 24}px)`,
+    overflowY: "auto",
+  };
+
   const Rail = (
-    <div style={{ width: "168px", flexShrink: 0, borderRight: narrow ? "none" : `1px solid ${C.border}`, paddingRight: narrow ? 0 : "14px" }}>
+    <div style={{ width: "168px", flexShrink: 0, borderRight: narrow ? "none" : `1px solid ${C.border}`, paddingRight: narrow ? 0 : "14px", ...railStickyStyle }}>
       <div style={railLabel}>TONE</div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "4px" }}>
         {TONES.map(t => (
@@ -530,7 +551,7 @@ export default function OctoechosV2Browser() {
   return (
     <AuditContext.Provider value={{ audit, recurrences, tonePrefix: `tone${tone}.` }}>
       <div style={{ background: C.parchment, minHeight: "100vh", padding: narrow ? "12px" : "18px 26px", fontFamily: "Georgia, serif" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", borderBottom: `1px solid ${C.border}`, paddingBottom: "8px" }}>
+        <div ref={headerRef} style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", borderBottom: `1px solid ${C.border}`, paddingBottom: "8px", position: "sticky", top: 0, zIndex: 30, background: C.parchment }}>
           {narrow && view === 'reading' && (
             <button onClick={() => setRailOpen(o => !o)} style={{ ...navBtn(railOpen), padding: "3px 8px" }} title="Navigation">☰</button>
           )}
