@@ -1,6 +1,6 @@
 # Octoechos Reading View — Specification
 
-**Status:** DRAFT for Bill's review (July 8 2026) · **Target:** `octoechos-v2-browser.jsx` + `presentation.js` + edit-engine adapter
+**Status:** RULED (Bill, July 8 2026) — Phase A shipped v0.32.0; A.1/B–D specified, build pending Bill's side-by-side review · **Target:** `octoechos-v2-browser.jsx` + `presentation.js` + edit-engine adapter
 **Companion specs:** `octoechos_v2_spec.md` (§12 viewer contract), `local_editing_spec.md`, `encoding_rule_v2.md` §3
 
 ---
@@ -184,17 +184,64 @@ git.
 
 ## 7. Build phases (each gate-green, independently committable)
 
-- **Phase A — the page.** Reading view: tone shelf, chapter tabs,
-  print-order rendering with the §2 typography, ref resolution,
-  as-printed/clean toggle, sic footnotes, unencoded placeholders.
-  Audit demoted to toggle. Registry gains `reading` hints (same-commit
-  rule: new print variants get hints in the commit that encodes them).
-- **Phase B — the loop.** Position anchors + highlight; assembled-
-  service deep links from hours-tool; propose-correction report.
+- **Phase A — the page. SHIPPED (v0.32.0, July 8 2026).** Reading view:
+  tone shelf, day/service navigation, print-order rendering with the §2
+  typography, ref resolution, as-printed/clean toggle, sic footnotes,
+  unencoded placeholders, position anchors. Audit demoted to toggle.
+
+- **Phase A.1 — navigation, theme parity, mobile (RULED from mockup
+  review, Bill, July 8 2026).**
+  1. **Theme parity is a requirement, not a preference:** the reading
+     view uses the SAME visual language as the hours tool and the other
+     data browsers — parchment #FAF6EE page ground, ink/gold palette
+     (#1C1008 / #8B6914), Georgia serif, white cards with the #E8DEC8
+     hairline border and 4-6px radii, active controls filled
+     rgba(139,105,20,0.15) with a gold border. No new design system.
+  2. **Left navigation rail** replaces the horizontal chip rows:
+     TONE as a tappable 4×2 NUMBER GRID; DAY list (liturgical
+     sequence, evenings distinct); SERVICE list; SECTIONS list —
+     the sections of the open service (e.g. Lord I have cried /
+     Menaion fallback / Aposticha / Closing) navigate IN THE RAIL so
+     the page itself stays purely the book.
+  3. **Responsive collapse:** at narrow widths the rail folds into a
+     drawer behind a menu control; the compact header carries the
+     breadcrumb (Tone 5 · Wed Evening · Vespers) and a search icon;
+     the drawer holds the same tone grid, a day selector, service
+     chips, and the section list. The reading column is single-column
+     serif and needs no mobile variant of its own.
+  4. **Page toggles:** Rubrics show/hide (rubrics render as distinct
+     callout blocks); Clean reading (existing). Both persist.
+  5. **Prev/next** walks the liturgical sequence across services and
+     day slots.
+
+- **Phase B — search + the loop (search RULED as lead item, Bill,
+  July 8 2026).**
+  1. **Search with scope.** Client-side index built at load over every
+     loaded module (tones + shared + theotokia; ~5,300 nodes and
+     growing — no server, no dependency). Scope selector: whole
+     corpus / this tone / this day / this service. Two matching
+     modes: READER (normalize pointing markers, quote/apostrophe
+     glyphs, homoglyph-class characters, case) and EXACT BYTES
+     (truthing — finds sics and print variants as stored). Results:
+     highlighted snippet + breadcrumb (Tone 5 → Wednesday Evening →
+     Vespers → Aposticha) + file/locus provenance line + sic glyph
+     where registered + recurrence cross-links ("also printed at …
+     identical/variant"); every result deep-links to its position
+     anchor. Search UI renders in the house theme.
+  2. Assembled-service deep links from hours-tool; propose-correction
+     report (prefilled path/bytes/locus/reason).
+  3. Anchor/sic edges from Phase A: sic glyphs on ref-resolved shared
+     nodes and on rubric strings (path prop threaded through).
 - **Phase C — lane 1 editing.** octoechos_v2 edit-engine adapter with
   attestation + register-aware failure surfacing.
-- **Phase D — lanes 2/3 forms.** oca_overrides.js + assembler
-  precedence + dual display; structured sic entry.
+- **Phase D — lanes 2/3 forms.** Dataset-wide OCA override modules +
+  assembler precedence + dual display; structured sic entry.
+
+**Mockup provenance note:** the OctoView screen (external developer)
+contributed the section-level navigation, rubric toggle, and search
+concepts. Its placeholder/paraphrase content model is explicitly NOT
+adopted — this viewer renders canonical bytes only (amendment F), in
+the existing house theme rather than OctoView's.
 
 Version: minor bump at Phase A ship (v0.32.0), then per policy.
 Tones 6–8/1 encoding resumes after Phase A, landing into the new page
@@ -212,3 +259,12 @@ Tones 6–8/1 encoding resumes after Phase A, landing into the new page
 3. **OCA override scope — RULED:** dataset-wide design from day one
    (Menaion, Pentecostarion, Octoechos, Triodion) — shared shape and
    validator, per-dataset modules. (§5 lane 3 updated.)
+4. **Theme parity — RULED (July 8 2026):** unified with the hours
+   tool / existing viewers' parchment-ink-gold language; no separate
+   design system for the reading view. (§7 Phase A.1.)
+5. **Rail navigation + mobile collapse — RULED (July 8 2026):** tone
+   number grid, day/service/sections in a left rail; drawer collapse
+   on narrow screens. (§7 Phase A.1.)
+6. **Search — RULED (July 8 2026):** corpus/scoped search with reader
+   (normalized) and exact-bytes modes is the LEAD item of Phase B.
+   (§7 Phase B.)
