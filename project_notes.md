@@ -1,5 +1,91 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.32.0** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+**Tool version: v0.32.1** | **Tone Trainer: v0.25.47** | Last synced: July 8, 2026
+
+**Session July 8, 2026 (cont. 2) — Octoechos V2 TONE-6 DIFFERENTIAL SCAN;
+tone6.js ENCODED, v0.32.1.** Scans of 6-1…6-7 delivered and reviewed
+(Bill's go): 6-1 clean, 6-2…6-7 О ×139–167 — FIFTH tone with the
+N-1-clean pattern. Every §4 template parsed tone 6 unchanged via the
+adapted tone-5 generators (committed: gen_tone6_sun / gen_weekday6 /
+verify_shared_t6 / postpass_t6). tone6.js ~1,282 nodes, 31 claims.
+Schema SOURCE_FILES + 6-x (the version-bumping code change). Register
+211/208 live; sics 62/46. Reading-view pages for tone 6 live and
+sanity-checked (page order clean; Fri-night Compline Ode IX renders).
+
+### GREGORY — per-tone from 6-1 (standing ruling)
+
+Stored per-tone (7 stanzas). 6-1 takes the 2-1/5-1 word-order side at
+stanza 2 ("the Might … the one Sovereignty") and tracks the 5-1
+byte-state: s2 "in godly manner" (no article) + comma stanza-end; s6
+"unshakable" (shared: "immutable"); s7 "incarnate from the Virgin"
+(shared: "of the Virgin"). 7 register pairs (s0/s2/s3/s4 identical;
+s1/s5/s6 variant) pinned with the data.
+
+### Findings & flags (Bill review)
+
+- **§9.10 NEW STRUCTURAL-SITE HOMOGLYPH:** 6-7 prints "ОDE IX" with a
+  Cyrillic О (U+041E) at the Friday-night Compline Ode-IX HEADING — the
+  contamination hit a STRUCTURAL ode marker, not just body text, and
+  silently dropped Ode IX from the parse. Fix: `wk_lib.ode_of` now
+  normalizes the known homoglyph class BEFORE matching (structural only;
+  stored item nodes keep raw bytes + per-node log). Not a new class —
+  new SITE. Reversible/auditable; committed with the lib.
+- **Per-print findings (exact-variant guards, never loosened):** LV
+  troparion drops "be" — "glory to Thee" where GV/Matins/Liturgy print
+  "glory be to Thee" (word-level per-site divergence in a canonical §4.1
+  field; GV canonical per §9.5; recorded in provenance + sic-registered
+  PENDING). Liturgy kontakion heading word-order variant ("Kontakion of
+  the Resurrection, in Tone VI:" vs the Matins "Resurrection Kontakion").
+  Nocturns canon heading multi-line + "Tone VI:" WITHOUT "in"; composer
+  Metrophanes, acrostic "I offer a sixth hymn unto Thee, O Godhead".
+  Matins canon heading "Resurrection Canons Tone VI." (plural, period).
+- **§5 divergences stored per-tone:** standard Vespers aposticha v1 "her
+  mistress" lowercase at ALL FIVE weekday evenings (tone 5: Sunday only);
+  fri-eve departed v1 final period (4th tone, 3-7/4-7/5-7 class); thu
+  Liturgy prokeimenon verse gains a "*" (4-5/5-5 class); Saturday Matins
+  departed aposticha TWO-verse set (4-7/5-7; v2 byte-matches shared, the
+  missing v3 is the structural difference); thu Liturgy Alleluia
+  digit-zero "0 Lord" (FIFTH tone; normalized, ref stands). polyeleos,
+  virgin-rejoice, evlogitaria, sat GV prok all MATCH shared this tone.
+- **Marker-shadow caught (the 4-7 caution):** the Saturday Matins
+  sessional "Many are the tribulations … * and the Lord" shadowed the
+  Saturday Liturgy Alleluia marker in a flat scan; re-scoped after "AT
+  THE LITURGY" the Liturgy verse reads "but the Lord … out of them all"
+  = shared (ref stands). Cross-surface variant registered.
+- **Candidate sics (pinned, encode-as-printed):** 6-1 Gregory rubric
+  "(which, is chanted" (stray comma); 6-1 LV Theotokion "or nor the
+  appearance" (dropped/garbled word); 6-4 tue-eve LIC "crucifixion ,
+  the Virgin" (space before comma). Plus the LV "glory to Thee" drop.
+
+### Cross-tone watch list — tone-6 status
+
+- N-1 clean / N-2…N-7 О-contaminated: HOLDS (5th tone).
+- digit-zero "0 Lord" at Thursday Liturgy Alleluia: HOLDS (5th tone, 6-5).
+- "Саnon" С+а homoglyph (4-4/5-4): DOES NOT RECUR — 6-4 prints clean
+  ASCII "Canon of the precious Cross".
+- ewe-lamb/stavrotheotokion lament artifacts ("O Christ,?", ''Woe): DO
+  NOT RECUR — tone-6 laments print clean curly quotes.
+- §9.13 Thursday Matins verse anomaly: NORMAL pair prints (6-5) — the
+  tone-2 anomaly stands alone across 5 tones.
+- fri-eve departed v1 final period: RECURS (per-tone, stored).
+- thu Liturgy prokeimenon verse "*": RECURS (per-tone, stored).
+- Saturday Matins departed aposticha TWO-verse set: CONFIRMED (4-7/5-7).
+- LV s1 repeat device: FULL DOUBLE PRINT (tones 2/4 form; not tone-3
+  none, not tone-5 "Repeat:"-incipit).
+- Nocturns↔Matins irmos sharing: ALL NINE IDENTICAL (fully per-tone;
+  patterns so far 1/6 · 1/3/9 · 1/7/8 · all · all).
+- troparion §9.5 quote-site pattern: NONE (tones 3/5 form).
+
+### Next
+
+- Tone-7 differential scan on Bill's go (adapt the tone-6 generators).
+
+### Carry-forwards (unchanged, do not act without Bill)
+
+- §9.11(b) weekday daily exapostilaria — await Bill's Horologion source.
+- §9.13 physical-chapter check — optional, Bill's.
+- Menaion-external register pendings; amendment-F allowlist empties at
+  Phase 5 cutover.
+- Reading-view Phases B–D parked pending Bill's side-by-side review.
 
 **Session July 8, 2026 (cont.) — THE OCTOECHOS READING VIEW (Phase A),
 v0.32.0.** Course change on Bill's direction: the viewer must serve the
