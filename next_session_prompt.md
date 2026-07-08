@@ -1,78 +1,65 @@
-# Next Session Prompt — Tone Trainer v0.5.0 (Feature B)
+# Next-session kickoff — Octoechos V2, tone-4 differential scan
 
-## Project
-Orthodox Hours Tool — `stevensaero/orthodox-hours` (GitHub, private)
-**Hours tool version:** v0.6.0
-**Tone Trainer version:** v0.5.0 (Feature B shipped) → next: SATB mode or Tone 2+ propagation
-**Key files:**
-- `src/components/tone-trainer.jsx` — the trainer component
-- `tone_trainer_notes.md` — canonical trainer notes (READ THIS)
-- `SYLLABIFIER_SPEC.md` — full architecture + Feature B spec (§7 is critical)
-- `public/lexicon/` — syllable-table.json + name-residue.json (served at runtime)
-- `tools/lexicon-out/` — source of truth for lexicon data (commit both when updated)
+I'm continuing work on the Orthodox Hours Tool (`stevensaero/orthodox-hours`).
+State as of July 7, 2026 (v0.31.7, commit c0379a9+): Phase 1 §11 steps 1–5
+are COMPLETE — infrastructure (schema_v2/validators/§12 viewer at
+/octoechos-v2), shared.js, theotokia.js, tone2.js (reference derivation,
+31 claims), and the TONE-3 VERIFICATION (PASSED — skeleton confirmed,
+verdict block in spec §11; tone3.js encoded in the same pass). Registers:
+141 recurrence pairs / 138 live-byte-checked; 33 sics / 27 live-checked.
 
-## Read before starting
-1. `SYLLABIFIER_SPEC.md` §7 — the Feature B spec, including the bracket-parsing
-   detail and the critical "current vs. intended behavior" distinction
-2. `tone_trainer_notes.md` — full notes including the May 30 session summary
-3. `project_notes.md` — companion tools section
+Read IN FULL before anything else: `octoechos_v2_spec.md` (esp. §10, §11
+incl. the TONE-3 VERIFICATION VERDICT, §12), the top entries of
+`project_notes.md` (all July 7 sessions), `encoding_rule_v2.md` §3 live,
+and `tools/encoding/README.md` (the committed generation pipeline — adapt
+the tone-3 variants, do NOT rebuild from scratch, and do NOT hand-retype
+any text, ever).
 
-## State of v0.4.0 (fully deployed and verified)
-- Lexicon-driven syllabification fetched from `public/lexicon/` at mount
-- "show source" toggle: ? = unconfirmed residue, ~ = rule fallback (suppressed
-  on function words), no indicator for confirmed/truth sources
-- paraToPointerLine fully rewritten: lexicon syllabification + vowel-nucleus
-  underline mapping. Whole-word brackets use lexicon stressIdx; mid-word brackets
-  (Re[ceive], up[on]) use first underlined vowel nucleus
-- Non-underlined words in the docx path carry no accent (fixed)
-- Punctuation phantom chips fixed in both wordFromDisplay and paraToPointerLine
-- distribute() verified from OCA LIC sheet music: count < figure.length takes
-  first N notes sequentially — voice=ti, of=do, my=re, prayer=do (4 half notes,
-  no melisma). In moveable-do Obikhod absolute pitch is irrelevant; solfege
-  relationships are fixed regardless of key
+IMMEDIATE TASK — tone 4 DIFFERENTIAL scan per §11 (templates assumed,
+texts and per-tone facts captured fresh; nothing textual ported between
+tones):
+1. Sources: private repo `stevensaero/orthodox-sources`
+   (Octoechos/tone4/4-1…4-7.pdf) — clone with the token, scrub after.
+2. §10 step 1 FIRST: pdftotext + `tools/scan_source.mjs` on all seven
+   files → review files to me before encoding (expect the N-1-clean /
+   rest-О-contaminated pattern; watch for new homoglyph classes like
+   tone 3's М and о — every new class is flagged to me per §9.10).
+3. Adapt `tools/encoding/gen_tone3_sun.py` + `gen_weekday3.py` → tone 4.
+   Every parser assertion is a §4 template check; failures are FINDINGS
+   presented to me, not bugs to paper over. Per-tone facts (closer
+   censuses, device distributions, heading forms, counts the spec marks
+   per-tone) are REPORTED, never assumed.
+4. §5 verification per `verify_shared_t3.py`: byte-compare tone 4's
+   prints of every shared-table site; divergent items stored per-tone
+   (postpass pattern), matching items ref shared. Remember: apostrophe/
+   quote GLYPHS and punctuation are per-print-site facts (the "O new
+   wonder" and "ages," lessons).
+5. Registers in the SAME COMMIT as data (§2.3a/§9.12): pin new pairs
+   (incl. the tone-4 Part-3 "un-burnt bush" rows already seeded — the
+   cross-tone trap becomes live-checkable when tone4 tue sessionals
+   encode), refine any seeded entries the bytes contradict (surface each
+   to me), new sics verbatim.
+6. Gates after every piece: test_pointing_paths, test_sunday_vespers
+   (71/71), validate_octoechos (V1), validate_octoechos_v2,
+   validate_viewer_coverage, vite build. NOTE: vite crashes on
+   mounted/virtual filesystems — build from a native-filesystem clone
+   (e.g. /tmp), as recorded in project notes.
 
-## Feature B status: SHIPPED (v0.5.0)
-Brackets are now authoritative. Both whole-word ([Lord]) and mid-word (Re[ceive],
-up[on]) cases handled. Comparison harness live. See tone_trainer_notes.md for
-full session summary and test fixture verification.
+Version policy: data commits no bump; gate/viewer code changes take a
+patch bump with RELEASE_NOTES (badge derives from RELEASE_NOTES[0]) and
+the project_notes.md header updated in the docs commit. Commit by
+concern; hold pushes to batch end; scrub the token from the remote URL
+immediately after every clone/push.
 
-## What was built: Feature B (v0.5.0) — DONE
-Full spec in SYLLABIFIER_SPEC.md §7. Summary:
+Standing carry-forwards (do not act without my instruction): §9.11(b)
+weekday daily exapostilaria await my Horologion source; §9.13 stands
+encoded-as-printed (tone-3 evidence now recorded — the anomaly did not
+recur — my optional physical-chapter check remains open); the 3 pending
+recurrence externals (menaion july/june sites) resolve at OCA-backfill
+phase; amendment-F legacy allowlist (hours-tool.jsx, octoechos-data.js)
+MUST be emptied at Phase 5 cutover; Drive delivery is superseded by
+orthodox-sources for Octoechos material (update the project custom
+instructions if not yet done).
 
-### Encoding-aware text field
-- Detect `[accent]` marks + `|` line-ends + `//` in the textarea
-- If marks present → TRUTH mode: parse brackets as accent authority,
-  rebuild lines/rotation from `|`/`//` structure
-- If no marks → AUTO mode: current lexicon+heuristic behavior unchanged
-- "point ▸" on ingested sticheron populates this field with encoded text
-
-### Bracket parsing (both cases occur in OCA materials)
-- Whole-word `[Lord]`: entire word bracketed → lexicon stressIdx picks syllable
-- Mid-word `Re[ceive]`, `up[on]`: bracket covers character span → vowel-nucleus
-  mapping (first underlined nucleus = accented syllable)
-- `[Hear] [me]` consecutive: both accented, anchor rule still applies (backs off
-  final stressed monosyllable to [Hear])
-
-### Comparison harness
-1. Parse encoded text → truth accents (brackets authoritative)
-2. Strip brackets, keep line positions → clean text
-3. Auto-encode stripped text → machine version
-4. Display side by side: anchor-level (headline) + syllable-level (detail)
-5. Sing toggle: truth or machine
-6. JSON export: per-line per-syllable detail (truth accents, machine accents,
-   syllabification used, anchor-match bool, unconfirmed flags)
-
-### Version: v0.5.0 (minor — new capability)
-No hours-tool bump.
-
-## Pending items (parallel, not blocking Feature B)
-- Director review of `tools/lexicon-out/name-review.md` (68 residue words,
-  especially Theotokos, Kontakion, Troparion, Stichera stress). When corrections
-  arrive: update name-residue.json, copy to public/lexicon/, commit both.
-- Corpus expansion: run generator on more services, copy outputs to public/lexicon/
-- SATB mode (after B)
-- Tone 2+ propagation (only after B proven on Tone 1)
-
-## Token note
-Bill provides the GitHub token at session start and rotates after. Never reuse
-from history. Always ask fresh.
+Plan → my "go" before any file changes. Token: [I will supply — PAT
+rotation was overdue as of July 7; ask if I forget]
