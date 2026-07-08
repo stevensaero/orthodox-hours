@@ -8492,6 +8492,43 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.32.3",
+    date: "July 2026",
+    summary: "Octoechos V2: tone-8 DIFFERENTIAL scan + tone8.js encoded (\u00a711) \u2014 the SEVEN high tones complete (2\u20138); N-1 contamination first; GREGORY per-tone from 8-1; schema SOURCE_FILES + 8-x",
+    items: [
+      "tone8.js encoded (~1,287 text nodes, 31 \u00a76 claims) from 8-1\u20268-7 via the " +
+      "adapted tone-7 generators \u2014 every \u00a74 template held. anabathmoi = 4 (tone 8\u2019s " +
+      "four Songs of Ascent; the gate never hard-coded 3, \u00a79.7); Shape A resurrection " +
+      "closers trinitarion at odes 7 & 8, theotokion at ode 9. Nothing hand-retyped.",
+      "\u00a79.10 FIRST: 8-1 is CONTAMINATED (U+041E \u041e \u00d772) \u2014 tone 8 BREAKS the N-1-clean " +
+      "pattern that held for six tones (2-1..7-1). The Sunday generator now normalizes-" +
+      "with-log like the weekday walker (no clean assertion for this tone); 8-3 prints " +
+      "\u2018\u041eDE VI\u2019 (Cyrillic \u041e) at a structural heading (handled by the tone-6 ode_of fix); " +
+      "rubric strings normalized with a session count (779). No new homoglyph class.",
+      "GREGORY (per-tone ruling): from 8-1 \u2014 tracks the tone-7 byte-state (Kingship / " +
+      "immutable / of the Virgin) but prints \u2018Kingship\u2019 HYPHENATED across a line break " +
+      "(\u2018King- ship\u2019 \u2014 kept verbatim + sic). Divergences at stanzas 2, 5, 6, 7.",
+      "\u00a75 divergences stored per-tone (verify_shared_t8): Tuesday-eve Vespers aposticha " +
+      "v2 drops a comma; Wednesday-eve v1 comma-for-period; Friday-eve departed v1 final " +
+      "period; Thursday prokeimenon verse \u2018*\u2019; Tuesday prokeimenon verse \u2018when I pray\u2019; " +
+      "Friday Alleluia verse comma-for-semicolon; Thursday Alleluia digit-zero (7th tone). " +
+      "Saturday Matins departed REVERTS to a THREE-verse set (v1 \u2018they\u2019, v3 \u2018from " +
+      "generation to generation\u2019) after the 4-7..7-7 two-verse run. Monday communion not " +
+      "reprinted in 8-2 (ref stands).",
+      "Per-print findings (exact-variant guards): virgin-rejoice printed WITHOUT a \u2018Tone " +
+      "IV:\u2019 heading; God-is-the-Lord rubric \u2018At\u2019 for \u2018On\u2019; \u2018AT NOCTURNES\u2019 spelling; GV " +
+      "dismissal theotokion & GV aposticha[2] each carry TWO \u2018**\u2019 (pointing-anomaly sics); " +
+      "Saturday Matins sessional closer \u2018.Glory \u2026\u2019 stray leading period; the \u2018,?\u2019 lament " +
+      "artifact RECURS (8-4 \u2018O my Son,?\u2019 \u2014 absent in tones 6, 7). \u00a79.13 normal (tone-2 " +
+      "anomaly alone across 7 tones); \u2018Canon\u2019 homoglyph does NOT recur; Nocturns\u2194Matins " +
+      "irmos variant at ode 3.",
+      "Schema SOURCE_FILES + 8-1..8-7. Registers 244 pairs (241 checked); sics 68 (52 " +
+      "checked; 3 new tone-8 sics). Full gate green: pointing paths, sunday vespers 71/71, " +
+      "V1 validator, V2 gate, viewer coverage, vite build. Reading-view pages for tone 8 " +
+      "live and sanity-checked. Only tone 1 remains to close the eight-tone cycle.",
+    ],
+  },
+  {
     version: "v0.32.2",
     date: "July 2026",
     summary: "Octoechos V2: tone-7 DIFFERENTIAL scan + tone7.js encoded (\u00a711) \u2014 templates held; GREGORY per-tone from 7-1 with a NEW 'Kingship' stanza-2 variant; schema SOURCE_FILES + 7-x",

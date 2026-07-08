@@ -287,4 +287,20 @@ export default [
     path: 'tone7.matins_weekday.thu.sessionals[0].items[1]', approx: false,
     verbatim: 'to Him..',
     note: 'Doubled period — "ye brought them to Him.." Encode-as-printed.' },
+
+  // ── tone-8 additions (§11 tone-8 differential scan) ───────────────────────
+  { file: '8-1.pdf', locus: 'Nocturns, hymn of Gregory the Sinaite, stanza 2',
+    path: 'tone8.nocturns.gregory_rubric.stanzas[1]', approx: false,
+    verbatim: 'King- ship',
+    note: 'Line-break hyphenation of "Kingship" — the word broke across a line as "King- ship" (hyphen + space). Kept verbatim per strict-verbatim doctrine (not a real compound hyphen; candidate for de-hyphenation on Bill\'s word).' },
+  { file: '8-4.pdf', locus: 'Tuesday-evening Vespers, LIC Glory/Both-now Theotokion (Stavrotheotokion lament)',
+    path: 'tone8.vespers_weekday.tue.lic_theotokion', approx: false,
+    verbatim: 'O my Son,?',
+    note: 'Comma+question-mark artifact — "Whither hast Thou gone, O my Son,?" Same class as the 2-x "O Christ,?" lament sic; RECURS in tone 8 (absent in tones 6, 7). Encode-as-printed.' },
+
+  { file: '8-1.pdf', locus: 'Great Vespers, aposticha sticheron 3',
+    path: 'tone8.great_vespers.aposticha[2]', approx: false,
+    pointing_anomaly: true,
+    verbatim: 'life eternal, ** and Thy great mercy.',
+    note: 'Tier-2 text carries TWO ** markers ("tyranny of Hades, **" and "life eternal, **"). Genuine source pointing anomaly, kept verbatim (§9.12).' },
 ];
