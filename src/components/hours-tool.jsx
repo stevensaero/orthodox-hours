@@ -8492,6 +8492,57 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.31.8",
+    date: "July 2026",
+    summary: "Octoechos V2: tone-4 DIFFERENTIAL scan + tone4.js encoded (\u00a711) \u2014 templates held, \u00a75 tables hold with 5 per-tone exceptions, Gregory stanza-2 cross-tone flag raised",
+    items: [
+      "First \u00a711 DIFFERENTIAL scan (templates assumed after the tone-3 " +
+      "verification): all seven 4-x chapters parsed by the adapted tone-3 " +
+      "generators \u2014 every \u00a74 template held. tone4.js encoded (~1,258 " +
+      "nodes, 31 claims). Schema SOURCE_FILES vocabulary extended with " +
+      "4-1\u20264-7 (the version-bumping code change).",
+      "Tone-4 print facts: single-space paragraph indents; 4-1 alone breaks " +
+      "pages MID-PARAGRAPH (3 sites \u2014 formfeed treated as page separator); " +
+      "Spec. Mel. label variants ('Spec, Mel.', 'Spec. Mel:', curly-left " +
+      "close) which had silently corrupted three closer captures until the " +
+      "matcher accepted the exact attested forms; the 4-7 incipit device " +
+      "prints an explicit 'Repeat:' label (\u00a72.7 device mirrored, label " +
+      "split per \u00a74.11); 4-7 praises closer prints Glory and Both-now as " +
+      "SEPARATE sites; Ode-I sub-canon headings print long forms.",
+      "\u00a75 verification: 90 extractions byte-compared \u2014 83 identical " +
+      "(2 after re-scoping marker shadowing by tone-4's different Saturday " +
+      "sessional verses); per-tone divergences stored with register pairs: " +
+      "4-7 departed-verse final period (same class as 3-7), 4-5 Thu " +
+      "prokeimenon verse pointing, 4-6 'ages,' (SAME site/class as 3-6), " +
+      "Saturday departed aposticha is a TWO-verse set (2-7/3-7: three), and " +
+      "the Gregory hymn stored whole per-tone.",
+      "GREGORY FLAG (for Bill): 4-1 prints stanza 2 'the one Might in three " +
+      "Hypostases, the Sovereignty' \u2014 and 3-1 prints the SAME variant. Two " +
+      "tones now agree against the shared (2-1) reading, but tone3.js still " +
+      "refs shared at that stanza. Tone-3 data left untouched this session; " +
+      "Bill to rule (per-tone storage for tone 3, or shared-table reading " +
+      "re-examined at tone 5+).",
+      "Digit-zero '0 Lord' at the Thursday Liturgy Alleluia for the THIRD " +
+      "tone running (2-5, 3-5, 4-5) \u2014 a per-print-site artifact pattern; " +
+      "normalized per \u00a79.10, ref stands. TWO NEW homoglyph classes: " +
+      "U+0421 \u0421 and U+0430 \u0430 in 4-4's 'C\u0430non' heading \u2014 " +
+      "normalized-with-log per the standing ruling (wk_lib HOMOGLYPHS " +
+      "extended).",
+      "Registers: recurrence 141\u2192161 (Nocturns\u2194Matins irmoi odes 1/7/8 " +
+      "\u2014 third distinct per-tone pattern; LV full double print returns " +
+      "(tone 3 lacked it); the 'crowns of glory..' doubled-period irmos " +
+      "re-rendered IDENTICALLY at two sites incl. the sic; sun-eve " +
+      "aposticha theotokion vs Theotokia row 'bridal-chamber'/" +
+      "'bridalchamber' cross-corpus variant; 7 Gregory stanza pairs); sic " +
+      "register 33\u219251 (18 tone-4 entries, paths pinned same-commit). " +
+      "Tone-4 chapters do NOT print the un-burnt bush hymn \u2014 the " +
+      "cross-tone trap stays theotokia\u2194tone2.",
+      "\u00a79.13: tone-4 Thursday Matins prints the NORMAL pair (byte-" +
+      "verified) \u2014 the tone-2 anomaly now stands alone across three " +
+      "tones; ruling unchanged.",
+    ],
+  },
+  {
     version: "v0.31.7",
     date: "July 2026",
     summary: "Octoechos V2: TONE-3 VERIFICATION PASSED + tone3.js encoded (\u00a711) \u2014 skeleton confirmed, \u00a75 shared tables hold with 6 per-item exceptions, \u00a79.13 anomaly does NOT recur",
