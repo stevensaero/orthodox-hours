@@ -18,7 +18,12 @@ def ode_of(t):
 
 VERSE_CLASS = re.compile(r'^(The )?Verse: |^Refrain: |^(The )?Prokeimenon|^Communion Verse: |^Alleluia, in Tone|^Spec\. Mel\.')
 TERMINAL = re.compile(r'[.!?”’)]$|:$')
-BLOCK_START = re.compile(r'^((The )?Verse:|Refrain: |Alleluia, in Tone|Irmos: |Communion Verse: |Glory \.\.\.,|Both now \.\.\.,|Theotokion: |Trinitarion: |To the martyrs: |For the reposed: |Then the Stichera from the Menaion|Then, “|Vouchsafe, |On the Aposticha|Spec\. Mel\.)')
+# a following paragraph that OPENS a structural unit must never be absorbed into
+# a preceding non-terminal verse/refrain (tone-7 finding: the Ode-IX 'Refrain: We
+# bless the Lord; Father, Son, and Holy Spirit' lacks terminal punctuation and was
+# gluing the following 'Trinitarian:' closer onto itself — silent closer drop).
+STRUCT_START = re.compile(r'^(Trinitari(on|an): |Theotokion: |Irmos: |Refrain: |(The )?Verse: |Glory \.\.\.,|Both now \.\.\.,|Another[,:]| ?Another, of )')
+BLOCK_START = re.compile(r'^((The )?Verse:|Refrain: |Alleluia, in Tone|Irmos: |Communion Verse: |Glory \.\.\.,|Both now \.\.\.,|Theotokion: |Trinitari(on|an): |To the martyrs: |For the reposed: |Then the Stichera from the Menaion|Then, “|Vouchsafe, |On the Aposticha|Spec\. Mel\.|Another canon|Another, of |Canon of |Canon to )')
 
 def tokenize(path):
     raw = open(path).read().replace('\x0c', '')   # tone-5: weekday files break pages MID-PARAGRAPH (5-3/5-4/5-6/5-7 ×1 each) — formfeed is a page separator, not a paragraph boundary (the 4-1 rule, now tone-wide)
@@ -43,6 +48,7 @@ def tokenize(path):
             merged[-1]['text'] += ' ' + p['text']
         elif merged and merged[-1]['kind'] == 'para' and VERSE_CLASS.match(merged[-1]['text']) \
            and not TERMINAL.search(merged[-1]['text']) and p['kind'] == 'para' \
+           and not STRUCT_START.match(p['text']) \
            and not (merged[-1]['text'].endswith(',') and p['text'][:1].isupper()):
             # 4-2 print fact: sun-eve ladder verse 1 ENDS with a comma ("forgiveness," — sic
             # candidate); a comma-ended verse absorbs only lowercase-starting continuations

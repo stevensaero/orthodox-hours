@@ -62,6 +62,12 @@ Scripts:
   guarded EXACTLY at the multi-site §4.1 check (GV canonical); LV s1 full double
   print; Matins canon 'Resurrection Canons Tone VI.'. START FROM THESE for
   tones 7–8/1.
+- `gen_tone7_sun.py` / `gen_weekday7.py` — the tone-7 variants: GV dismissal-
+  theotokion heading without 'the'; God-is-the-Lord rubric 'At' for 'On';
+  troparion multi-site check now WORD-exact with pointing (*/**) recorded
+  per-site; unlabeled-irmos promotion (Tue-night Compline Ode III); canon
+  titles joined through the centered 'Tone VII:' terminator. START FROM THESE
+  for tone 8/1.
 - `verify_shared_t3.py` / `postpass_t3.py` — §5 byte-verification against
   shared.js + per-tone storage of divergent items.
 - `verify_shared_t4.py` / `postpass_t4.py` — the tone-4 §5 pass. CAUTION:
@@ -78,7 +84,10 @@ Scripts:
 'Both now...,' label variant). Tone-3 scripts import the same lib. Tone-6 addition:
 `ode_of` normalizes the known homoglyph class BEFORE structural matching (6-7
 prints a Cyrillic-О 'ОDE IX' at the Ode-IX heading — a structural-site
-homoglyph; stored item nodes keep raw bytes + per-node log). Tone-6 addition: `ode_of` normalizes the known
+homoglyph; stored item nodes keep raw bytes + per-node log). Tone-7 additions: a non-terminal verse/refrain never absorbs a following
+structural-unit start (STRUCT_START); col-0 canon headings ('Another canon',
+'Canon of/to') start a paragraph (BLOCK_START) so an Ode-I canon heading is not
+appended to the preceding theotokion. Tone-6 addition: `ode_of` normalizes the known
 homoglyph class BEFORE structural matching (6-7 prints a Cyrillic-О 'ОDE IX' at
 the Ode-IX heading — a structural-site homoglyph; stored nodes keep raw bytes
 + per-node log).
