@@ -68,6 +68,7 @@ export const SOURCE_FILES = [
   '6-1.pdf', '6-2.pdf', '6-3.pdf', '6-4.pdf', '6-5.pdf', '6-6.pdf', '6-7.pdf',
   '7-1.pdf', '7-2.pdf', '7-3.pdf', '7-4.pdf', '7-5.pdf', '7-6.pdf', '7-7.pdf',
   '8-1.pdf', '8-2.pdf', '8-3.pdf', '8-4.pdf', '8-5.pdf', '8-6.pdf', '8-7.pdf',
+  '1-1.pdf', '1-2.pdf', '1-3.pdf', '1-4.pdf', '1-5.pdf', '1-6.pdf', '1-7.pdf',
 ];
 
 // ── The universal text node (spec §4 hymn value shape + amendment D) ─────────

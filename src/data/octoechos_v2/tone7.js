@@ -1139,7 +1139,7 @@ export default {
       }
     ],
     "prokeimenon": {
-      "tone": 6,
+      "tone": 7,
       "text": {
         "text": "Arise, O Lord my God, let Thy hand be lifted high; * forget not Thy paupers to the end.",
         "tier": 2,
@@ -2162,7 +2162,7 @@ export default {
       }
     },
     "prokeimenon": {
-      "tone": 6,
+      "tone": 7,
       "text": {
         "text": "The Lord will give strength unto His people; * the Lord will bless His people with peace.",
         "tier": 2,
@@ -2181,7 +2181,7 @@ export default {
       }
     },
     "alleluia": {
-      "tone": 6,
+      "tone": 7,
       "verses": [
         {
           "text": "It is good to give praise unto the Lord, and to chant unto Thy name, O Most High.",

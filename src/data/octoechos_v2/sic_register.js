@@ -299,4 +299,10 @@ export default [
     pointing_anomaly: true,
     verbatim: 'life eternal, ** and Thy great mercy.',
     note: 'Tier-2 text carries TWO ** markers ("tyranny of Hades, **" and "life eternal, **"). Genuine source pointing anomaly, kept verbatim (§9.12).' },
+
+  // ── tone-1 additions (§11 tone-1 differential scan — CLOSES the cycle) ─────
+  { file: '1-6.pdf', locus: 'Thursday-evening Vespers, aposticha verse 1 (standard-vespers "lifted up mine eyes")',
+    path: 'tone1.vespers_weekday.thu.aposticha.verses[0]', approx: false,
+    verbatim: 'dwellest. in heaven',
+    note: 'Stray period mid-verse — "unto Thee that dwellest. in heaven" (shared: "dwellest in heaven"). Encode-as-printed.' },
 ];
