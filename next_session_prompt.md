@@ -1,65 +1,74 @@
-# Next-session kickoff — Octoechos V2, tone-4 differential scan
+# Next-session kickoff — Tone 6 DIFFERENTIAL scan
+
+Paste the following (with the token filled in) to start the session:
+
+---
 
 I'm continuing work on the Orthodox Hours Tool (`stevensaero/orthodox-hours`).
-State as of July 7, 2026 (v0.31.7, commit c0379a9+): Phase 1 §11 steps 1–5
-are COMPLETE — infrastructure (schema_v2/validators/§12 viewer at
-/octoechos-v2), shared.js, theotokia.js, tone2.js (reference derivation,
-31 claims), and the TONE-3 VERIFICATION (PASSED — skeleton confirmed,
-verdict block in spec §11; tone3.js encoded in the same pass). Registers:
-141 recurrence pairs / 138 live-byte-checked; 33 sics / 27 live-checked.
+State: v0.32.0. Octoechos V2: tones 2–5 encoded (§11 differential scans);
+registers 194/191 live, sics 58/43; GREGORY RULED per-tone in every tone
+(July 8 2026); the READING VIEW (Phase A, octoechos_reading_view_spec.md)
+is live — encoded tones land on human-readable pages now. Reading-view
+Phases B–D are PARKED pending my side-by-side review; do not touch viewer
+code this session unless I say so.
 
-Read IN FULL before anything else: `octoechos_v2_spec.md` (esp. §10, §11
-incl. the TONE-3 VERIFICATION VERDICT, §12), the top entries of
-`project_notes.md` (all July 7 sessions), `encoding_rule_v2.md` §3 live,
-and `tools/encoding/README.md` (the committed generation pipeline — adapt
-the tone-3 variants, do NOT rebuild from scratch, and do NOT hand-retype
-any text, ever).
+Read IN FULL first: `octoechos_v2_spec.md` (§10, §11 incl. the TONE-3
+VERDICT, §12), the July 7–8 entries of `project_notes.md`,
+`encoding_rule_v2.md` §3 live, `tools/encoding/README.md`, and skim
+`octoechos_reading_view_spec.md` for context. Adapt the committed TONE-5
+generators (`gen_tone5_sun.py` / `gen_weekday5.py` / `verify_shared_t5.py`
+/ `postpass_t5.py` — START FROM THESE per the README); never rebuild,
+never hand-retype text.
 
-IMMEDIATE TASK — tone 4 DIFFERENTIAL scan per §11 (templates assumed,
-texts and per-tone facts captured fresh; nothing textual ported between
-tones):
-1. Sources: private repo `stevensaero/orthodox-sources`
-   (Octoechos/tone4/4-1…4-7.pdf) — clone with the token, scrub after.
-2. §10 step 1 FIRST: pdftotext + `tools/scan_source.mjs` on all seven
-   files → review files to me before encoding (expect the N-1-clean /
-   rest-О-contaminated pattern; watch for new homoglyph classes like
-   tone 3's М and о — every new class is flagged to me per §9.10).
-3. Adapt `tools/encoding/gen_tone3_sun.py` + `gen_weekday3.py` → tone 4.
-   Every parser assertion is a §4 template check; failures are FINDINGS
-   presented to me, not bugs to paper over. Per-tone facts (closer
-   censuses, device distributions, heading forms, counts the spec marks
-   per-tone) are REPORTED, never assumed.
-4. §5 verification per `verify_shared_t3.py`: byte-compare tone 4's
-   prints of every shared-table site; divergent items stored per-tone
-   (postpass pattern), matching items ref shared. Remember: apostrophe/
-   quote GLYPHS and punctuation are per-print-site facts (the "O new
-   wonder" and "ages," lessons).
-5. Registers in the SAME COMMIT as data (§2.3a/§9.12): pin new pairs
-   (incl. the tone-4 Part-3 "un-burnt bush" rows already seeded — the
-   cross-tone trap becomes live-checkable when tone4 tue sessionals
-   encode), refine any seeded entries the bytes contradict (surface each
-   to me), new sics verbatim.
-6. Gates after every piece: test_pointing_paths, test_sunday_vespers
-   (71/71), validate_octoechos (V1), validate_octoechos_v2,
-   validate_viewer_coverage, vite build. NOTE: vite crashes on
-   mounted/virtual filesystems — build from a native-filesystem clone
-   (e.g. /tmp), as recorded in project notes.
+IMMEDIATE TASK — tone 6 DIFFERENTIAL scan per §11:
+(1) sources in private repo `stevensaero/orthodox-sources` Octoechos/tone6/
+    (6-1.pdf … 6-7.pdf); clone with token, scrub after every use;
+(2) §10 step 1 FIRST — scan all seven files (`tools/scan_source.mjs`),
+    review files to me BEFORE encoding; flag any NEW homoglyph class
+    per §9.10;
+(3) parser assertions are §4 template checks — failures are FINDINGS to
+    me, fixed with EXACT-variant guards, never loosened matchers;
+(4) §5 byte-verification per the verify_shared_t5 pattern; CAUTION:
+    extraction markers can be shadowed by earlier same-text sites
+    (README note) — re-scope with search_after before calling a
+    divergence; divergent items per-tone; glyphs/punctuation are
+    per-print-site facts;
+(5) GREGORY: standing ruling — the hymn is stored PER-TONE in every
+    tone; extract from 6-1, per-stanza register pairs vs shared, note
+    which side of the stanza-2 word-order split 6-1 takes
+    (2-1+5-1: "the Might … the one Sovereignty" / 3-1+4-1: "the one
+    Might … the Sovereignty");
+(6) registers + sics pinned in the SAME commit as the data;
+(7) full gate after every piece (pointing paths, sunday vespers 71/71,
+    V1 validator, V2 gate, viewer coverage, vite build from a
+    native-filesystem clone, not a mount);
+(8) after the encode, OPEN THE READING VIEW pages for tone 6 mentally /
+    via the data and sanity-check page order — the reading view is now
+    a human error-surfacing gate; report anything that "reads wrong."
 
-Version policy: data commits no bump; gate/viewer code changes take a
-patch bump with RELEASE_NOTES (badge derives from RELEASE_NOTES[0]) and
-the project_notes.md header updated in the docs commit. Commit by
-concern; hold pushes to batch end; scrub the token from the remote URL
-immediately after every clone/push.
+CROSS-TONE WATCH LIST (check each, report status):
+- N-1 file clean / N-2…N-7 О-contaminated (held 4 tones);
+- digit-zero "0 Lord" at the THURSDAY Liturgy Alleluia (held 4 tones);
+- "Саnon" С+а homoglyph at the WEDNESDAY Cross canon-1 heading (4-4,
+  5-4 — same word, same site);
+- ewe-lamb/stavrotheotokion lament artifacts (every tone so far:
+  "O Christ,?", "sweetest Light,?", ''Woe / ''Woe doubled quotes);
+- §9.13 Thursday Matins verse anomaly — verify the normal pair prints
+  (tone-2-only across 4 tones so far);
+- fri-eve departed verse 1 final period (3-7/4-7/5-7 all diverged);
+- thu Liturgy prokeimenon verse pointing * (4-5, 5-5);
+- Saturday Matins departed aposticha TWO-verse set (4-7, 5-7 vs 2-7/3-7
+  three);
+- LV s1 repeat device form (tone 2/4 full double; tone 3 none; tone 5
+  "Repeat:"-labeled incipit — per-tone device fact);
+- Nocturns↔Matins irmos sharing pattern (1/6 · 1/3/9 · 1/7/8 · all —
+  fully per-tone);
+- troparion §9.5 quote-site pattern (LV-only / none / all-four / none).
 
-Standing carry-forwards (do not act without my instruction): §9.11(b)
-weekday daily exapostilaria await my Horologion source; §9.13 stands
-encoded-as-printed (tone-3 evidence now recorded — the anomaly did not
-recur — my optional physical-chapter check remains open); the 3 pending
-recurrence externals (menaion july/june sites) resolve at OCA-backfill
-phase; amendment-F legacy allowlist (hours-tool.jsx, octoechos-data.js)
-MUST be emptied at Phase 5 cutover; Drive delivery is superseded by
-orthodox-sources for Octoechos material (update the project custom
-instructions if not yet done).
-
-Plan → my "go" before any file changes. Token: [I will supply — PAT
-rotation was overdue as of July 7; ask if I forget]
+Version policy: data no bump; gate/viewer code patch-bump with
+RELEASE_NOTES + notes header (schema SOURCE_FILES + 6-x is the expected
+bumping change → v0.32.1). Commit by concern, batch pushes, scrub token
+each time. Carry-forwards untouched without my word: §9.11(b) Horologion,
+§9.13 physical check, menaion-external register pendings, amendment-F
+allowlist empties at Phase 5 cutover, reading-view Phases B–D parked.
+Plan → my "go" before file changes. Token: (Bill supplies here)
