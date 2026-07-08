@@ -244,8 +244,16 @@ function checkCanonA(where, canon) {
 
 // ── per-tone validation ──────────────────────────────────────────────────────
 function sectionClaimed(tone, claim) { return (tone._encoded ?? []).includes(claim); }
+function resolveMaybeRef(v) {
+  if (v && typeof v === 'object' && typeof v.ref === 'string') {
+    const r = resolvePath(v.ref);
+    return r.status === 'found' ? r.node : undefined;
+  }
+  return v;
+}
 function countAt(obj, dotted) {
-  let n = obj; for (const s of dotted.split('.')) n = n?.[s];
+  let n = obj; for (const s of dotted.split('.')) n = resolveMaybeRef(n)?.[s];
+  n = resolveMaybeRef(n);
   return Array.isArray(n) ? n.length : undefined;
 }
 
@@ -283,7 +291,7 @@ for (const [key, tone] of Object.entries(data)) {
       fail(`${T}.matins.sessionals: Sunday has exactly ${S.SECTION_RULES.matins.sessionalSets} sets (found ${m.sessionals?.length}).`);
     }
     if (m.praises) {
-      const st = m.praises.stichera?.length, vs = m.praises.verses?.length;
+      const st = m.praises.stichera?.length, vs = resolveMaybeRef(m.praises.verses)?.length;
       if (st !== 8 || vs !== 8) fail(`${T}.matins.praises: expected 8 stichera + 8 verses (found ${st}+${vs}).`);
     }
     if (m.anabathmoi && !Array.isArray(m.anabathmoi)) fail(`${T}.matins.anabathmoi: expected an array (count is per-tone — NOT gated, §9.7).`);

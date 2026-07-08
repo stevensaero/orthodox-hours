@@ -8492,6 +8492,41 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.31.5",
+    date: "July 2026",
+    summary: "Octoechos V2 \u00a711 step 4: tone2.js Sunday cycle \u2014 core, Little+Great Vespers, Nocturns, Sunday Matins (Shape A), Sunday Liturgy",
+    items: [
+      "First per-tone V2 file: 192 text nodes generated from 2-1.pdf's " +
+      "-layout text by paragraph-grammar walking (nothing hand-retyped). " +
+      "_encoded claims: core, little_vespers, great_vespers, nocturns, " +
+      "matins, liturgy \u2014 all \u00a76 structural gates pass (LV 4+4 with the " +
+      "double-print device byte-asserted; GV 7+7+3 and 4; Sunday sessionals " +
+      "2 with the Kathisma-II stavrotheotokion closer typed from the source " +
+      "label; Shape A canon with trinitarion at Ode 9 and the Ode-7 " +
+      "cross_resurrection count of 3 the spec records; matins\u2260liturgy " +
+      "prokeimena).",
+      "\u00a74.1 canonical fields verified across ALL print sites at generation: " +
+      "troparion \u00d74 (the \u00a79.5 LV quotation-mark variance asserted EXACTLY \u2014 " +
+      "generation fails if any other divergence appears), kontakion \u00d72 and " +
+      "dismissal theotokion \u00d72 byte-identical.",
+      "Psalm-verse fields whose print site already lives in shared.js are " +
+      "stored as {ref} \u2014 one print site, one encoding; the validator now " +
+      "resolves refs for its structural counts.",
+      "GATE CATCH, first cross-source: the 'O new wonder' pair the spec " +
+      "verified line-for-line is byte-VARIANT \u2014 Theotokia.pdf prints " +
+      "mother's with a straight apostrophe (U+0027), 2-1 with a curly one " +
+      "(U+2019); both files mix glyphs internally, so apostrophes are " +
+      "per-print-site facts. Register updated with the evidence.",
+      "New byte-verified pairs: Nocturns shares Odes 1 and 6 irmoi with the " +
+      "Matins Resurrection canon; the other six are distinct compositions. " +
+      "Register: 109 pairs, 50 live-checked. Sic register: 'OD E' " +
+      "split-ode-heading typography recorded.",
+      "Magnificat block and Horologion frames printed in 2-1 are EXCLUDED " +
+      "per \u00a75, with the exclusion visible in the per-ode Menaion rubric " +
+      "boundary. Gate: full suite green.",
+    ],
+  },
+  {
     version: "v0.31.4",
     date: "July 2026",
     summary: "Octoechos V2 \u00a711 step 3: Common Theotokia tables (\u00a74.12) \u2014 all eight tones, 184 print sites; 42 new byte-verified register pairs",

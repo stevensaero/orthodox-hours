@@ -132,6 +132,17 @@ R['liturgy_weekday.<day>.prokeimenon'] = { heading: 'Prokeimenon', order: 2 };
 R['liturgy_weekday.<day>.alleluia']    = { heading: 'Alleluia', order: 3 };
 R['liturgy_weekday.<day>.communion']   = { heading: 'Communion verse (koinonikon)', order: 4 };
 
+R['little_vespers.closing_rubric']    = { heading: 'Closing rubric', order: 11 };
+R['little_vespers.dismissal_rubric']  = { heading: 'Dismissal (Theotokion slot marked without text, §9.6)', order: 12 };
+R['great_vespers.lic_menaion_rubric'] = { heading: 'Menaion stichera rubric', order: 4 };
+R['great_vespers.aposticha_glory_rubric'] = { heading: 'Aposticha Glory rubric', order: 8 };
+R['great_vespers.prokeimenon']        = { heading: 'Prokeimenon (shared)', order: 6 };
+R['great_vespers.vigil_rubric']       = { heading: 'Vigil block (shared)', order: 10 };
+R['great_vespers.no_vigil_rubric']    = { heading: 'If no Vigil', order: 11 };
+R['nocturns.gregory_rubric']          = { heading: 'Hymn of Gregory the Sinaite (shared)', order: 5 };
+R['matins.polyeleos_rubric']          = { heading: 'Polyeleos (shared)', order: 3 };
+R['matins.evlogitaria_rubric']        = { heading: 'Evlogitaria (shared)', order: 3 };
+
 // §5 shared tables
 R['shared.daily_vespers_prokeimena']      = { heading: 'Daily Vespers prokeimena (by evening)', order: 1 };
 R['shared.weekday_aposticha_verses']      = { heading: 'Weekday aposticha verse sets (day-keyed)', order: 2 };

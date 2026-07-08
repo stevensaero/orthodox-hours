@@ -175,7 +175,7 @@ export const FIELD_MANIFEST = [
   { path: 'little_vespers.aposticha',            kind: 'group',      section: 'little_vespers', required: true, label: 'LV aposticha' },
   { path: 'little_vespers.aposticha.resurrection',     kind: 'text_array', section: 'little_vespers', required: true, label: 'LV aposticha — Resurrection sticheron (as printed HERE, §2.2)' },
   { path: 'little_vespers.aposticha.theotokos',        kind: 'text_array', section: 'little_vespers', required: true, label: 'LV aposticha — Theotokos stichera' },
-  { path: 'little_vespers.aposticha.theotokos_verses', kind: 'text_array', section: 'little_vespers', required: true, label: 'LV aposticha — Theotokos verses' },
+  { path: 'little_vespers.aposticha.theotokos_verses', kind: 'ref', section: 'little_vespers', required: true, label: 'LV aposticha — Theotokos verses (print site in shared.lv_theotokos_aposticha_verses)' },
   { path: 'little_vespers.aposticha_theotokion', kind: 'text',       section: 'little_vespers', required: true, label: 'LV aposticha Theotokion' },
 
   // §4.3 great_vespers
@@ -186,7 +186,7 @@ export const FIELD_MANIFEST = [
   { path: 'great_vespers.dogmatikon',          kind: 'text',       section: 'great_vespers', required: true, label: 'Dogmatikon' },
   { path: 'great_vespers.dogmatikon_rubric',   kind: 'rubric',     section: 'great_vespers', required: true, label: 'Dogmatikon rubric' },
   { path: 'great_vespers.aposticha',           kind: 'text_array', section: 'great_vespers', required: true, label: 'GV aposticha (4)' },
-  { path: 'great_vespers.aposticha_verses',    kind: 'text_array', section: 'great_vespers', required: true, label: 'GV aposticha verses (3; first sticheron unversed)' },
+  { path: 'great_vespers.aposticha_verses',    kind: 'ref', section: 'great_vespers', required: true, label: 'GV aposticha verses (3; first sticheron unversed) — print site encoded in shared.saturday_gv_aposticha_verses' },
   { path: 'great_vespers.aposticha_theotokion',kind: 'text',       section: 'great_vespers', required: true, label: 'GV aposticha Theotokion — the REAL Saturday fallback (§4.3)' },
 
   // §4.4 vespers_weekday.<eve> (sun–thu template; Friday: no fallback tier,
@@ -247,6 +247,18 @@ export const FIELD_MANIFEST = [
   { path: 'liturgy_weekday.<day>.prokeimenon', kind: 'prokeimenon', section: 'liturgy_weekday.<day>', required: true, label: 'Weekday Liturgy prokeimenon (day cycle; shared-by-day hypothesis §5)' },
   { path: 'liturgy_weekday.<day>.alleluia',    kind: 'alleluia',    section: 'liturgy_weekday.<day>', required: true, label: 'Weekday Alleluia' },
   { path: 'liturgy_weekday.<day>.communion',   kind: 'text',        section: 'liturgy_weekday.<day>', required: true, label: 'Koinonikon (REQUIRED weekday, FORBIDDEN Sunday — §4.9/§4.10)' },
+
+  // print-site companions added at tone-2 Sunday-cycle encoding (step 4)
+  { path: 'little_vespers.closing_rubric',    kind: 'rubric', section: 'little_vespers', required: false, label: 'LV closing rubric' },
+  { path: 'little_vespers.dismissal_rubric',  kind: 'rubric', section: 'little_vespers', required: false, label: 'LV dismissal Glory/Both-now marked WITHOUT text (§9.6)' },
+  { path: 'great_vespers.lic_menaion_rubric', kind: 'rubric', section: 'great_vespers', required: false, label: 'GV Menaion-stichera rubric' },
+  { path: 'great_vespers.aposticha_glory_rubric', kind: 'rubric', section: 'great_vespers', required: false, label: 'GV aposticha Glory-from-Menaion rubric' },
+  { path: 'great_vespers.prokeimenon',        kind: 'ref', section: 'great_vespers', required: false, label: 'GV prokeimenon (→ shared.saturday_vespers_prokeimenon)' },
+  { path: 'great_vespers.vigil_rubric',       kind: 'ref', section: 'great_vespers', required: false, label: 'Vigil block (→ shared.theotokos_virgin_rejoice + its note)' },
+  { path: 'great_vespers.no_vigil_rubric',    kind: 'rubric', section: 'great_vespers', required: false, label: 'If-no-Vigil rubric (canonical troparion print site follows)' },
+  { path: 'nocturns.gregory_rubric',          kind: 'ref', section: 'nocturns', required: false, label: 'Gregory-the-Sinaite hymn (→ shared.gregory_sinaite_hymn)' },
+  { path: 'matins.polyeleos_rubric',          kind: 'ref', section: 'matins', required: false, label: 'Polyeleos block (→ shared.polyeleos, printed here)' },
+  { path: 'matins.evlogitaria_rubric',        kind: 'ref', section: 'matins', required: false, label: 'Evlogitaria (→ shared.evlogitaria, printed here in full)' },
 
   // §5 shared tables (shared.js — rendered by the viewer's Shared section;
   // coverage-gated like every other field)
@@ -327,7 +339,7 @@ export const CANON_B = {
   // the gate checks label validity and non-emptiness, not a fixed census.
   // composer and acrostic are BOTH optional and INDEPENDENT (2-4: neither;
   // 2-5: composer without acrostic; 2-7: acrostic without composer).
-  known: ['title', 'composer', 'acrostic', 'condition', 'odes'],
+  known: ['title', 'composer', 'acrostic', 'condition', 'odes', 'heading_rubric'],
   // 'condition' — the Saturday conditional fallback canon's own rubric
   // ("... WHICH WE CHANT WHEN THERE IS NO MENAION", §4.8a), verbatim.
 };
