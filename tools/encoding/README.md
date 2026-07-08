@@ -68,6 +68,11 @@ Scripts:
   per-site; unlabeled-irmos promotion (Tue-night Compline Ode III); canon
   titles joined through the centered 'Tone VII:' terminator. START FROM THESE
   for tone 8/1.
+- `gen_tone8_sun.py` / `gen_weekday8.py` — the tone-8 variants: 8-1 is
+  CONTAMINATED, so the Sunday node()/ode_of normalize homoglyphs (no clean
+  assertion); 'AT NOCTURNES' spelling; virgin-rejoice with no 'Tone IV:'
+  heading; anabathmoi = 4; gen_weekday8 accepts the '.Glory ...' stray-leading-
+  period sessional closer. START FROM THESE for tone 1.
 - `verify_shared_t3.py` / `postpass_t3.py` — §5 byte-verification against
   shared.js + per-tone storage of divergent items.
 - `verify_shared_t4.py` / `postpass_t4.py` — the tone-4 §5 pass. CAUTION:
