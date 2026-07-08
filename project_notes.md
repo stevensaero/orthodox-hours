@@ -1,5 +1,50 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.31.5** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+**Tool version: v0.31.6** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+
+**Session July 7, 2026 (cont. 5) — Octoechos V2 §11 STEP 5: TONE 2
+COMPLETE, v0.31.6.** Weekday Vespers (sun–fri), all seven Compline nights,
+weekday Matins (mon–fri), the §4.8a Saturday day-class, and weekday
+Liturgies encoded from 2-2…2-7 -layout layers (~1,060 new nodes; tone2.js
+carries all 31 §6 claims). Register: 133 pairs / 130 LIVE-byte-checked;
+sic register: 32 / 27 live-checked. All §2.3a approx entries pinned in
+this commit per the same-commit rule.
+
+### Findings & flags (Bill review)
+
+- **§9.14 chain break, gate catch:** the beatitudes opener is byte-identical
+  mon→fri but SATURDAY alone prints "mercy* upon us" — the §9.12 stray
+  asterisk IS the variance. Register refined identical→variant at fri↔sat;
+  sic pinned (tier kept 1; validator exempts sic-registered pointing
+  anomalies in Tier-1 prose).
+- **Every irmos-suite family entry upgraded to identical** (25 per-ode
+  pairs, all byte-verified): the suites genuinely duplicate, byte-for-byte.
+  The crown-jewel canon re-rendering (Fri-night Compline ↔ Wed Theotokos
+  canon) pinned VARIANT at Odes III/VI/IX — note the "Sick with corruption"
+  quote sits at Ode VI, not V as the spec prose suggested.
+- **Compline closing rubrics, per-night facts verified:** Tue "and
+  prostration" (vs "and a"), Wed carries 2-5's "It is truly meet . ...,"
+  stray period, Thu ALONE ends without "Dismissal." (absence verified
+  against all six others). Sat/Sun/Mon/Fri normal.
+- **New sics:** "forgiveness offenses" (2-5 thu sess-3 closer + 2-2
+  sun-Compline Ode I) and "cleansing offenses" (2-2 mon sess-3 closer +
+  2-4 wed canon-2 Ode III) — the dropped-"of" artifact class, four sites.
+- **Metadata parses match the spec's per-day attestations exactly:**
+  Theophanes-without-acrostic (thu c1), acrostic-without-composer (sat
+  c2), the near-duplicate-acrostic trap pair (wed/fri Cross canons,
+  register-checked variant), ‘‘Accept doubled quote in the Nicholas
+  heading (sic live-checked).
+- 17 О→O normalizations in RUBRIC strings (session count — per-node
+  homoglyph_log covers text nodes; census documented in the scan reviews).
+- Remaining pendings: 3 recurrence (menaion-external ×2, †ewe-lamb
+  june/july site), 5 sics (OD E headings + un-storable loci) — external
+  or structural, nothing awaiting tone-2 data.
+
+### Next
+
+- Tone-3 VERIFICATION scan (§11) — now unblocked: every [expected
+  tone-invariant] claim to be checked against tone 3's chapters before
+  promotion. Sources already in orthodox-sources (tone3/3-1…3-7).
+- OCA docx layering and the assembler integration remain later phases.
 
 **Session July 7, 2026 (cont. 4) — Octoechos V2 §11 STEP 4: tone2.js SUNDAY
 CYCLE ENCODED (first per-tone file), v0.31.5.** core/LV/GV/Nocturns/Sunday

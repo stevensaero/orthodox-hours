@@ -8492,6 +8492,43 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.31.6",
+    date: "July 2026",
+    summary: "Octoechos V2 \u00a711 step 5: TONE 2 COMPLETE \u2014 weekday Vespers/Matins/Liturgy, all seven Compline nights, the Saturday day-class; register 133 pairs / 130 live-checked",
+    items: [
+      "tone2.js now carries all 31 \u00a76 claims: vespers_weekday sun\u2013fri (day-themed " +
+      "fallback sets; Friday no-fallback shape with the dogmatikon closer and " +
+      "LIC incipit repeat), compline sat\u2013fri (seven distinct canons; per-night " +
+      "closing rubrics verbatim), matins_weekday mon\u2013fri (three sessional " +
+      "sets; de-interleaved double-canons with per-day composer/acrostic " +
+      "combos exactly as the spec attests, incl. Theophanes-without-acrostic " +
+      "and the \u2018\u2018Accept Nicholas heading), Saturday \u00a74.8a day-class " +
+      "(conditional fallback canon with per-item refrains, Ode VI double " +
+      "print, compound Glory+For-the-reposed label, praises, departed " +
+      "aposticha), liturgy_weekday with shared-propers refs. ~1,060 new text " +
+      "nodes, generated from the raw -layout text layers.",
+      "Devices verified against every attested site: incipit irmoi at Wed " +
+      "IV/VII/VIII/IX and Fri III/VII only; Friday-evening LIC incipit; " +
+      "Thursday sessional set-2 incipit; systematic (Twice) on Thursday canon " +
+      "1 \u2014 the gate prefix-checks every incipit against its referent.",
+      "GATE CATCH: the \u00a79.14 beatitudes-opener identity chain BREAKS at " +
+      "fri\u2194sat by exactly the recorded \u00a79.12 sic \u2014 Saturday alone prints " +
+      "'mercy* upon us'. Register refined; sic pinned with tier kept 1.",
+      "All six irmos-suite family entries UPGRADED to per-ode pairs \u2014 every " +
+      "one byte-IDENTICAL (Nocturns\u2194Sun-Compline \u00d75, Wed-canon-2\u2194Tue-night " +
+      "\u00d74, Tue\u2194Mon Ode VIII, Wed\u2194Tue \u00d77, Fri\u2194Wed \u00d78, Thu-night\u2194Matins Ode " +
+      "1). Crown-jewel re-rendering pairs (Fri-night Compline \u2194 Wed Theotokos " +
+      "canon, Odes III/VI/IX) pinned and byte-verified VARIANT.",
+      "New sics at encoding: 'cleansing offenses'/'forgiveness offenses' " +
+      "(dropped 'of', four sites); compline closings verified per night \u2014 " +
+      "Wed carries 2-5's stray spaced period, Thu alone lacks the final " +
+      "'Dismissal.' (absence verified). Register: 133 pairs / 130 " +
+      "live-checked; sics 32 / 27 live-checked. 17 \u041e\u2192O normalizations in " +
+      "rubric strings (session count; text nodes carry per-node logs).",
+      "Gate: full suite green.",
+    ],
+  },
+  {
     version: "v0.31.5",
     date: "July 2026",
     summary: "Octoechos V2 \u00a711 step 4: tone2.js Sunday cycle \u2014 core, Little+Great Vespers, Nocturns, Sunday Matins (Shape A), Sunday Liturgy",
