@@ -272,4 +272,19 @@ export default [
   { file: '6-1.pdf', locus: 'Little Vespers, Resurrection Troparion print site (LV dismissal)', path: null, approx: true,
     verbatim: 'glory to Thee',
     note: 'DROPPED WORD — the LV troparion print reads "… glory to Thee" where the GV/Matins/Liturgy sites print "… glory be to Thee" (drops "be"). Word-level per-site divergence in a canonical §4.1 field; GV canonical (§9.5). Recorded in the troparion provenance_note; not stored as its own node (LV dismissal is text-less), hence path null / PENDING.' },
+
+  // ── tone-7 additions (§11 tone-7 differential scan) ───────────────────────
+  { file: '7-1.pdf', locus: 'Great Vespers if-no-Vigil / Matins — dismissal Resurrection Theotokion',
+    path: 'tone7.dismissal_theotokion', approx: false,
+    pointing_anomaly: true,
+    verbatim: '** and thou didst remain a virgin **',
+    note: 'Tier-2 text carries TWO ** markers (the extended "virgin before / during / after birthgiving" theotokion prints ** at both "child-bearing," and "remain a virgin"). Genuine source pointing anomaly, kept verbatim (§9.12).' },
+  { file: '7-1.pdf', locus: 'Nocturns, Trinity canon Ode III, troparion 3',
+    path: 'tone7.nocturns.canon.odes.3.items[2]', approx: false,
+    verbatim: 'forgiveness offenses',
+    note: 'Dropped word — "let us ask forgiveness offenses" (should read "forgiveness OF offenses"). Same artifact class as the 2-5 Nicholas-acrostic sic. Encode-as-printed.' },
+  { file: '7-6.pdf', locus: 'Thursday Matins, sessional set 1, item 2',
+    path: 'tone7.matins_weekday.thu.sessionals[0].items[1]', approx: false,
+    verbatim: 'to Him..',
+    note: 'Doubled period — "ye brought them to Him.." Encode-as-printed.' },
 ];

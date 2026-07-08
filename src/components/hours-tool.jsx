@@ -8492,6 +8492,46 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.32.2",
+    date: "July 2026",
+    summary: "Octoechos V2: tone-7 DIFFERENTIAL scan + tone7.js encoded (\u00a711) \u2014 templates held; GREGORY per-tone from 7-1 with a NEW 'Kingship' stanza-2 variant; schema SOURCE_FILES + 7-x",
+    items: [
+      "tone7.js encoded (~1,282 text nodes, 31 \u00a76 claims) from 7-1\u20267-7 via " +
+      "the adapted tone-6 generators \u2014 every \u00a74 template held. Nothing hand-retyped.",
+      "GREGORY (per-tone ruling): stored from 7-1 \u2014 a DISTINCT byte-state whose " +
+      "stanza 2 reads 'the one KINGSHIP and Dominion' (a lexical variant no prior " +
+      "tone prints; all print 'Sovereignty'), on the 2-1/5-1 word-order side; further " +
+      "divergences at stanzas 5\u20137. 7 register pairs pinned.",
+      "\u00a75 divergences stored per-tone (verify_shared_t7): Wednesday Matins aposticha " +
+      "v2 DROPS the '*' shared prints (Wednesday only); Tuesday Liturgy prokeimenon " +
+      "verse 'when I pray unto Thee' (shared: 'make supplication'); Friday-eve departed " +
+      "v1 final period (5th tone); Thursday Liturgy prokeimenon verse '*' (4-5/5-5/6-5 " +
+      "class); Saturday Matins departed TWO-verse set; Thursday Liturgy Alleluia " +
+      "digit-zero '0 Lord' (6th tone). standard Vespers 'mistress', polyeleos, " +
+      "virgin-rejoice all MATCH shared this tone.",
+      "Silent-drop parser fixes (wk_lib + Sunday tokenizer): (1) a non-terminal " +
+      "verse/refrain no longer absorbs a following structural unit \u2014 the Ode-IX " +
+      "'Refrain: We bless the Lord \u2026' was gluing the following 'Trinitarian:' closer " +
+      "onto itself; (2) col-0 canon headings ('Another canon', 'Canon of/to') now start " +
+      "a paragraph \u2014 the Tuesday-morning forerunner canon's Ode-I heading was being " +
+      "appended to the preceding theotokion, dropping canon-2 Ode I; (3) an ode whose " +
+      "irmos prints WITHOUT the 'Irmos:' label (Tue-night Compline Ode III) promotes " +
+      "its first stanza to irmos. Canon titles now reconstructed through the centered " +
+      "'Tone VII:' terminator so they read whole.",
+      "Per-print findings (exact-variant guards): GV dismissal-theotokion heading " +
+      "'Resurrection Theotokion' (no 'the'); God-is-the-Lord rubric 'At' for 'On'; " +
+      "Liturgy troparion Matins site prints single '*' where GV prints '**' (pointing " +
+      "provenance, GV canonical); the dismissal theotokion carries TWO '**' (extended " +
+      "'virgin before/during/after birth' \u2014 pointing-anomaly sic). 6-4-style 'Canon' " +
+      "homoglyph and lament artifacts do NOT recur; \u00a79.13 normal (tone-2 anomaly alone " +
+      "across 6 tones); Nocturns\u2194Matins irmoi variant at odes 7 & 9 (per-tone).",
+      "Schema SOURCE_FILES + 7-1\u20267-7 (the version-bumping code change). Registers 226 " +
+      "pairs (223 checked); sics 65 (49 checked; 3 new tone-7 sics). Full gate green: " +
+      "pointing paths, sunday vespers 71/71, V1 validator, V2 gate, viewer coverage, " +
+      "vite build. Reading-view pages for tone 7 live and sanity-checked.",
+    ],
+  },
+  {
     version: "v0.32.1",
     date: "July 2026",
     summary: "Octoechos V2: tone-6 DIFFERENTIAL scan + tone6.js encoded (\u00a711) \u2014 templates held; GREGORY per-tone from 6-1 (2-1/5-1 word-order side); schema SOURCE_FILES + 6-x",
