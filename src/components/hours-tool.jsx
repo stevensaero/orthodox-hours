@@ -8492,6 +8492,50 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.31.9",
+    date: "July 2026",
+    summary: "Octoechos V2: tone-5 DIFFERENTIAL scan + tone5.js encoded (\u00a711) \u2014 templates held; GREGORY RULED per-tone everywhere (tone-3 retro-fix); heaviest \u00a75 divergence set yet",
+    items: [
+      "Second \u00a711 differential scan: all seven 5-x chapters parsed by the " +
+      "adapted tone-4 generators \u2014 every \u00a74 template held. tone5.js " +
+      "encoded (~1,288 nodes, 31 claims). Schema SOURCE_FILES + 5-1\u20265-7 " +
+      "(the version-bumping code change).",
+      "GREGORY RULED (Bill, July 8 2026): the hymn is stored PER-TONE in " +
+      "every tone \u2014 four prints yield three distinct byte-states with no " +
+      "majority reading (2-1+5-1 vs 3-1+4-1 at the stanza-2 clause; 5-1 " +
+      "adds 'in godly manner', 'unshakable', 'incarnate from the Virgin'). " +
+      "tone3.js retro-fixed to its own 3-1 bytes; 14 new Gregory register " +
+      "pairs (tone-3 \u00d77, tone-5 \u00d77) gate every stanza.",
+      "\u00a75 verification, heaviest divergence set yet: the 5-1 Polyeleos " +
+      "prints every select verse POINTED + 'God of Heaven' (whole set " +
+      "per-tone); virgin-rejoice prints a single * where 2-1 points ** " +
+      "(per-tone); sun-eve aposticha pair prints 'her mistress' lowercase " +
+      "(per-tone); Thu prokeimenon verse pointing and Fri-eve departed " +
+      "final period RECUR from tone 4; Saturday departed aposticha is the " +
+      "4-7 TWO-verse set again; Fri Liturgy 'ages;' MATCHES shared this " +
+      "tone (3-6/4-6 diverged).",
+      "\u00a72.7 device evolution: 5-1 LITTLE VESPERS prints the s1 repeat as " +
+      "a 'Repeat:'-labeled INCIPIT (tones 2/4: full double print; tone 3: " +
+      "no repeat \u2014 third distinct device form); the Friday-eve incipit " +
+      "repeats the SET-2 OPENER, not sticheron 1 \u2014 referent now resolved " +
+      "by prefix match, per-tone fact registered.",
+      "Tone-5 per-tone facts: ALL NINE Nocturns\u2194Matins irmoi identical " +
+      "(fourth distinct sharing pattern); troparion quote-marked at NO " +
+      "site; Shape A closers theotokion at every ode INCLUDING 9 (first " +
+      "tone without the Ode-9 trinitarion); Nocturns (Twice): none; " +
+      "sub-canon headings short throughout.",
+      "Artifact patterns, fourth tone running: 5-1 clean / 5-2\u20265-7 " +
+      "\u041e-contaminated; digit-zero '0 Lord' at the Thursday Alleluia " +
+      "(2-5/3-5/4-5/5-5); the 'C\u0430non' \u0421+\u0430 homoglyph at the SAME " +
+      "Wednesday Cross heading as 4-4. Doubled-quote lament class: " +
+      "''Woe straight-doubled at TWO byte-identical prints (register " +
+      "pair), \u2018\u2018Woe curly-doubled at a third. Registers: recurrence " +
+      "161\u2192194; sics 51\u219258.",
+      "\u00a79.13: tone-5 Thursday Matins prints the NORMAL pair \u2014 the " +
+      "tone-2 anomaly stands alone across four tones; ruling unchanged.",
+    ],
+  },
+  {
     version: "v0.31.8",
     date: "July 2026",
     summary: "Octoechos V2: tone-4 DIFFERENTIAL scan + tone4.js encoded (\u00a711) \u2014 templates held, \u00a75 tables hold with 5 per-tone exceptions, Gregory stanza-2 cross-tone flag raised",
