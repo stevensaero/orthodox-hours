@@ -1,5 +1,91 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.32.3** | **Tone Trainer: v0.25.47** | Last synced: July 8, 2026
+**Tool version: v0.32.4** | **Tone Trainer: v0.25.47** | Last synced: July 8, 2026
+
+**Session July 8, 2026 (cont. 5) — Octoechos V2 TONE-1 DIFFERENTIAL SCAN;
+tone1.js ENCODED, v0.32.4 — THE EIGHT-TONE CYCLE IS COMPLETE (tones 1–8).**
+Scans of 1-1…1-7 reviewed. Every §4 template held via the adapted tone-8
+generators (committed: gen_tone1_sun / gen_weekday1 / verify_shared_t1 /
+postpass_t1). tone1.js ~1,277 nodes, 31 claims. Schema SOURCE_FILES + 1-x.
+Register 258 pairs; sics 68. Reading-view pages live and sanity-checked.
+**The Octoechos Sunday+weekday cycle is now fully encoded in V2.**
+
+### FIRSTS / notable for tone 1
+
+- **1-1 CONTAMINATED (U+041E О ×76)** — second tone (with 8-1) to break the
+  N-1-clean pattern; the tone-8 Sunday normalize-with-log applies; 1-4 prints
+  "ОDE IX" (structural heading, handled). Rubric strings normalized (session
+  count 750).
+- **NO digit-zero anywhere** — tone 1 prints proper "O Lord" at the Thursday
+  Liturgy Alleluia; the "0 Lord" artifact (2-5…8-5, seven tones) does NOT recur.
+- **§9.13 Thursday Matins anomaly NORMAL** (1-5) — the tone-2 anomaly now stands
+  ALONE across ALL EIGHT tones.
+- anabathmoi = 3; Shape A resurrection closers ALL theotokion (incl. Ode 9, as
+  tone 5).
+
+### GREGORY — per-tone from 1-1 (tracks the tone-5/6 byte-state)
+
+"Sovereignty" (NOT the tone-7/8 "Kingship"), "in godly manner" (no article),
+"unshakable", "from the Virgin"; stanza 5 MATCHES shared. Divergences at
+stanzas 2, 6, 7. 7 register pairs pinned. (Gregory byte-states across the
+cycle: 2-1 canonical; 3-1/4-1 the "one Might…the Sovereignty" word order;
+5-1/6-1 "unshakable/from the Virgin"; 7-1/8-1 "Kingship"; 1-1 like 5/6.)
+
+### §5 divergences (per-tone)
+
+Thursday-eve Vespers aposticha v1 stray period ("dwellest. in heaven");
+fri-eve departed v1 final period; Friday Liturgy Alleluia verse comma-for-
+semicolon (as tone 8); Saturday Matins departed THREE-verse set (v1 "they",
+v3 "from generation to generation", as tone 8). standard Vespers otherwise,
+polyeleos, virgin-rejoice, thu/tue prokeimena all MATCH shared. mon-eve
+Vespers v1 byte-matches shared (a verify-window artifact, not a divergence).
+
+### Per-print facts + parser fixes (committed with the generators)
+
+- Heading variants: GV dogmatikon "the Dogmatic Theotokion" (word order);
+  "NOCTURNS" (no "AT"); Sunday-Matins Praises LABELED "On the Aposticha" with a
+  "Let every breath …" rubric; Liturgy prokeimenon "Prokeimenon" (no "The");
+  dismissal theotokion Matins/GV sites differ only in a trailing period (GV
+  canonical); hypakoe "The Sessional Hymns of the Resurrection, in Tone I:".
+- Parser fixes (backward-compatible): split "Glory …" + "Both now …, Theotokion"
+  sessional closer (Tue Forerunner set 3); "Canon, of" stray-comma canon heading
+  (Monday, wk_lib BLOCK_START + de-interleave); robust canon-end boundary
+  ("It is truly meet" omitted on Thursday); "Glory..., " no-space beatitudes
+  label (Saturday Liturgy, wk_lib label_split).
+- Sic: 1-6 Thursday-eve "dwellest. in heaven" (stray period). Saturday Liturgy
+  beatitudes "Glory..." missing space (label variant, not stored as text).
+
+### DATA FIX (found this session)
+
+tone-7 and tone-8 Matins/Liturgy prokeimenon + Alleluia "tone" fields were left
+at 6 (a transform miss from the tone-7/8 passes) — CORRECTED to 7 and 8, and
+the gen_tone7/8_sun generators fixed. tone-8 Gregory "King- ship" DE-HYPHENATED
+to "Kingship" per Bill's ruling.
+
+### Cross-tone watch list — final (tone-1) status
+
+- N-1 clean pattern: BROKEN (1-1, 8-1 contaminated).
+- digit-zero "0 Lord": does NOT recur in tone 1 (held 2-5…8-5, seven tones).
+- "Саnon" С+а homoglyph: does not recur.
+- lament ",?" artifact: does not recur (tone-8 had it).
+- §9.13: normal — tone-2 anomaly alone across all 8 tones.
+- Saturday Matins departed: THREE-verse (as tone 8; the two-verse run was 4-7…7-7).
+- LV s1 repeat device: FULL DOUBLE PRINT.
+- Nocturns↔Matins irmos: variant at ode 8, identical elsewhere (per-tone).
+- troparion §9.5 quote-site: NONE.
+
+### Next
+
+- Octoechos data cycle COMPLETE. Remaining open work: reading-view Phases B–D
+  (parked pending Bill's review); §9.11(b) Horologion exapostilaria; §9.13
+  physical check; weekday canon-title truncation in tones 2–6 (cosmetic).
+
+### Carry-forwards (unchanged, do not act without Bill)
+
+- §9.11(b) weekday daily exapostilaria; §9.13 physical-chapter check;
+  Menaion-external register pendings; amendment-F allowlist empties at Phase 5.
+- Reading-view Phases B–D parked pending Bill's side-by-side review.
+- Weekday canon-title truncation in tones 2–6 (tone 7/8/1 fixed) — future
+  corpus-wide cleanup candidate.
 
 **Session July 8, 2026 (cont. 4) — Octoechos V2 TONE-8 DIFFERENTIAL SCAN;
 tone8.js ENCODED, v0.32.3 — the SEVEN high tones (2–8) COMPLETE.** Scans of
