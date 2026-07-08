@@ -1,5 +1,76 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.31.8** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+**Tool version: v0.31.9** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+
+**Session July 8, 2026 — Octoechos V2 TONE-5 DIFFERENTIAL SCAN; tone5.js
+ENCODED; GREGORY RULED per-tone everywhere, v0.31.9.** Scans of 5-1…5-7
+delivered and reviewed (Bill's go): 5-1 clean, 5-2…5-7 О ×124–162 — fourth
+tone with the N-1-clean pattern; 5-4 prints the SAME "Саnon" С+а homoglyph
+at the same Wednesday Cross heading as 4-4; digit-zero "0 Lord" at the
+Thursday Alleluia a FOURTH tone running. Every §4 template parsed via the
+adapted tone-4 generators (committed: gen_tone5_sun/gen_weekday5/
+verify_shared_t5/postpass_t5; wk_lib formfeed rule now tone-wide — 5-x
+weekday files break pages mid-paragraph). tone5.js ~1,288 nodes, 31
+claims. Register 194/191 live; sics 58/43.
+
+### GREGORY — RULED (Bill, July 8 2026, go on the recommendation)
+
+The hymn is stored PER-TONE in EVERY tone. Four prints, three distinct
+byte-states, no majority reading: 2-1+5-1 print "the Might … the one
+Sovereignty"; 3-1+4-1 print "the one Might … the Sovereignty"; 5-1 alone
+adds "in godly manner" (no article), a comma stanza-end, "unshakable"
+(shared: "immutable"), "incarnate from the Virgin" (shared: "of the").
+The §5 shared hypothesis for this hymn is falsified. tone3.js RETRO-FIXED
+to its own 3-1 bytes (stanza 2 divergent, six identical); tone-5 stored
+from 5-1. 14 new Gregory register pairs gate every stanza in both tones.
+The shared table remains the 2-1 print (tone-2's own site).
+
+### Findings & flags (Bill review)
+
+- **§5, heaviest divergence set yet:** 5-1 Polyeleos prints ALL FOUR
+  select verses WITH `*` pointing + "God of Heaven" (whole set per-tone,
+  4 variant pairs); virgin-rejoice prints a SINGLE * at the final line
+  where 2-1 points ** (per-tone); 5-2 sun-eve aposticha "her mistress"
+  lowercase (per-tone pair); Thu prokeimenon verse pointing RECURS from
+  4-5; Fri-eve departed final period recurs (3-7/4-7/5-7); Saturday
+  departed aposticha = the 4-7 TWO-verse set again ("they", pointed,
+  periods). Friday Liturgy Alleluia MATCHES shared this tone ("ages;" —
+  3-6/4-6 diverged): the divergence was per-print, not systematic.
+- **§2.7 device, third distinct form:** 5-1 LITTLE VESPERS prints the s1
+  repeat as a "Repeat:"-labeled INCIPIT (tone 2/4: full double print;
+  tone 3: no repeat). And the Friday-eve LIC incipit repeats the SET-2
+  OPENER (sticheron 4), not sticheron 1 as tones 2–4 did — the walker
+  now resolves referents by prefix match instead of assuming index 0.
+- **Per-tone facts:** ALL NINE Nocturns↔Matins irmoi identical (patterns
+  so far: 1/6, 1/3/9, 1/7/8, all — fully per-tone); troparion
+  quote-marked at NO site; Shape A resurrection closers theotokion at
+  EVERY ode incl. 9 (first tone without the Ode-9 trinitarion); Nocturns
+  (Twice): none; kontakion Spec. Mel. absent; sub-canon headings short
+  throughout; hypakoe heading "The Sessional Hymn, in Tone V:".
+- **Print-grammar facts:** heading variants ("The Resurrection Stichera,
+  in Tone V." period; "Then, in Tone IV:" before virgin-rejoice); a page
+  break drops the Liturgy Prokeimenon to col 0 (block-start form added);
+  5-1 LV verse 3 prints WITHOUT its final period ("all ye peoples" —
+  exact tokenizer guard + sic).
+- **Doubled-quote lament class:** ''Woe (straight-doubled) prints
+  byte-IDENTICALLY at 5-4 Wed Matins and 5-6 Thu-eve Vespers closers —
+  true-dup pair registered + both sics; ‘‘Woe…thieves.’’ (curly-doubled,
+  open AND close) at the 5-6 Fri sessional-3 closer.
+- **§9.13:** tone-5 Thursday prints the NORMAL pair — the tone-2 anomaly
+  stands alone across four tones.
+- 28 О→O normalizations in rubric strings (session count).
+- Full gate green: pointing PASS, sunday vespers 71/71, V1 ✓, V2 gate ✓
+  (194 pairs/191 checked; 58 sics/43 checked), coverage ✓, vite build ✓.
+
+### Next
+
+- Tone-6 differential scan on Bill's go (adapt the tone-5 generators).
+
+### Carry-forwards (unchanged, do not act without Bill)
+
+- §9.11(b) weekday daily exapostilaria — await Bill's Horologion source.
+- §9.13 physical-chapter check — optional, Bill's.
+- Menaion-external register pendings; amendment-F allowlist empties at
+  Phase 5 cutover.
 
 **Session July 7, 2026 (cont. 7) — Octoechos V2 TONE-4 DIFFERENTIAL SCAN;
 tone4.js ENCODED, v0.31.8.** First §11 differential scan. Scans of 4-1…4-7
