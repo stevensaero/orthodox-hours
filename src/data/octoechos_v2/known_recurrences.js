@@ -51,24 +51,59 @@ export default [
     note: 'Spec. Mel. label itself varies: Mon "As A wellspring …" vs Tue "As THE wellspring …" (2-3). Labels stored verbatim per site.' },
 
   // ── irmoi recurrences (suite-level; byte-status per pair not pinned) ───────
-  { a: 'tone2.nocturns.canon.odes', b: 'tone2.compline.sun.canon.odes',
-    relation: 'family', approx: true,
-    note: 'Nocturns Odes 3/4/5/8/9 irmoi reappear in the Sunday-night Compline canon (2-1/2-2). Ode-level pairs to be pinned identical/variant at encoding.' },
-  { a: 'tone2.matins.canon.odes[1].irmos', b: 'tone2.compline.thu.canon.odes[1].irmos',
-    relation: 'family', approx: true,
-    note: '"In the deep of old" family — Thursday-night Compline switches to the Sunday-Matins irmos suite (2-6); Ode 1 attested in five canons.' },
-  { a: 'tone2.matins_weekday.wed.canons[1].odes', b: 'tone2.compline.tue.canon.odes',
-    relation: 'family', approx: true,
-    note: 'Wed Matins Theotokos canon shares Odes I/III/V/VI irmoi ("Come, O ye people"; "O Lord, who didst slay sin upon the Tree"; "O Lord, Bestower of light"; "Whirled about in the abyss of sin") with Tue-night Compline (2-4).' },
-  { a: 'tone2.compline.tue.canon.odes[8].irmos', b: 'tone2.compline.mon.canon.odes[8].irmos',
-    relation: 'family',
-    note: 'Ode VIII "God Who descended into the fiery furnace" — second attestation Tue night of Mon night\'s irmos (2-4).' },
-  { a: 'tone2.compline.wed.canon.odes', b: 'tone2.compline.tue.canon.odes',
-    relation: 'family', approx: true,
-    note: 'Wed night shares all irmoi with Tue night EXCEPT Ode IV (2-5).' },
-  { a: 'tone2.compline.fri.canon.odes', b: 'tone2.compline.wed.canon.odes',
-    relation: 'family', approx: true,
-    note: 'Fri night suite = Wed night\'s ("Come, O ye people" family incl. Ode IV "I have heard report") (2-7).' },
+  { a: 'tone2.nocturns.canon.odes.3.irmos', b: 'tone2.compline.sun.canon.odes.3.irmos',
+    relation: 'identical', note: 'Nocturns↔Sunday-night Compline shared irmos (family upgraded at encoding, byte-verified July 7 2026).' },
+  { a: 'tone2.nocturns.canon.odes.4.irmos', b: 'tone2.compline.sun.canon.odes.4.irmos',
+    relation: 'identical', note: 'Nocturns↔Sunday-night Compline shared irmos (family upgraded at encoding, byte-verified July 7 2026).' },
+  { a: 'tone2.nocturns.canon.odes.5.irmos', b: 'tone2.compline.sun.canon.odes.5.irmos',
+    relation: 'identical', note: 'Nocturns↔Sunday-night Compline shared irmos (family upgraded at encoding, byte-verified July 7 2026).' },
+  { a: 'tone2.nocturns.canon.odes.8.irmos', b: 'tone2.compline.sun.canon.odes.8.irmos',
+    relation: 'identical', note: 'Nocturns↔Sunday-night Compline shared irmos (family upgraded at encoding, byte-verified July 7 2026).' },
+  { a: 'tone2.nocturns.canon.odes.9.irmos', b: 'tone2.compline.sun.canon.odes.9.irmos',
+    relation: 'identical', note: 'Nocturns↔Sunday-night Compline shared irmos (family upgraded at encoding, byte-verified July 7 2026).' },
+  { a: 'tone2.matins.canon.odes.1.irmos', b: 'tone2.compline.thu.canon.odes.1.irmos',
+    relation: 'identical', note: '"In the deep of old" — Thursday-night Compline uses the Sunday-Matins suite (2-6); byte-verified at encoding.' },
+  { a: 'tone2.matins_weekday.wed.canons[1].odes.1.irmos', b: 'tone2.compline.tue.canon.odes.1.irmos',
+    relation: 'identical', note: 'Wed Matins Theotokos canon ↔ Tue-night Compline shared irmos (2-4; family upgraded, byte-verified).' },
+  { a: 'tone2.matins_weekday.wed.canons[1].odes.3.irmos', b: 'tone2.compline.tue.canon.odes.3.irmos',
+    relation: 'identical', note: 'Wed Matins Theotokos canon ↔ Tue-night Compline shared irmos (2-4; family upgraded, byte-verified).' },
+  { a: 'tone2.matins_weekday.wed.canons[1].odes.5.irmos', b: 'tone2.compline.tue.canon.odes.5.irmos',
+    relation: 'identical', note: 'Wed Matins Theotokos canon ↔ Tue-night Compline shared irmos (2-4; family upgraded, byte-verified).' },
+  { a: 'tone2.matins_weekday.wed.canons[1].odes.6.irmos', b: 'tone2.compline.tue.canon.odes.6.irmos',
+    relation: 'identical', note: 'Wed Matins Theotokos canon ↔ Tue-night Compline shared irmos (2-4; family upgraded, byte-verified).' },
+  { a: 'tone2.compline.tue.canon.odes.8.irmos', b: 'tone2.compline.mon.canon.odes.8.irmos',
+    relation: 'identical',
+    note: 'Ode VIII "God Who descended into the fiery furnace" — Tue night = Mon night (2-4; byte-verified).' },
+  { a: 'tone2.compline.wed.canon.odes.1.irmos', b: 'tone2.compline.tue.canon.odes.1.irmos',
+    relation: 'identical', note: 'Wed↔Tue night Compline shared irmos — all but Ode IV (2-5; byte-verified; the Ode IV pair is the Habakkuk variant entry).' },
+  { a: 'tone2.compline.wed.canon.odes.3.irmos', b: 'tone2.compline.tue.canon.odes.3.irmos',
+    relation: 'identical', note: 'Wed↔Tue night Compline shared irmos — all but Ode IV (2-5; byte-verified; the Ode IV pair is the Habakkuk variant entry).' },
+  { a: 'tone2.compline.wed.canon.odes.5.irmos', b: 'tone2.compline.tue.canon.odes.5.irmos',
+    relation: 'identical', note: 'Wed↔Tue night Compline shared irmos — all but Ode IV (2-5; byte-verified; the Ode IV pair is the Habakkuk variant entry).' },
+  { a: 'tone2.compline.wed.canon.odes.6.irmos', b: 'tone2.compline.tue.canon.odes.6.irmos',
+    relation: 'identical', note: 'Wed↔Tue night Compline shared irmos — all but Ode IV (2-5; byte-verified; the Ode IV pair is the Habakkuk variant entry).' },
+  { a: 'tone2.compline.wed.canon.odes.7.irmos', b: 'tone2.compline.tue.canon.odes.7.irmos',
+    relation: 'identical', note: 'Wed↔Tue night Compline shared irmos — all but Ode IV (2-5; byte-verified; the Ode IV pair is the Habakkuk variant entry).' },
+  { a: 'tone2.compline.wed.canon.odes.8.irmos', b: 'tone2.compline.tue.canon.odes.8.irmos',
+    relation: 'identical', note: 'Wed↔Tue night Compline shared irmos — all but Ode IV (2-5; byte-verified; the Ode IV pair is the Habakkuk variant entry).' },
+  { a: 'tone2.compline.wed.canon.odes.9.irmos', b: 'tone2.compline.tue.canon.odes.9.irmos',
+    relation: 'identical', note: 'Wed↔Tue night Compline shared irmos — all but Ode IV (2-5; byte-verified; the Ode IV pair is the Habakkuk variant entry).' },
+  { a: 'tone2.compline.fri.canon.odes.1.irmos', b: 'tone2.compline.wed.canon.odes.1.irmos',
+    relation: 'identical', note: 'Fri↔Wed night Compline shared irmos suite (2-7; byte-verified).' },
+  { a: 'tone2.compline.fri.canon.odes.3.irmos', b: 'tone2.compline.wed.canon.odes.3.irmos',
+    relation: 'identical', note: 'Fri↔Wed night Compline shared irmos suite (2-7; byte-verified).' },
+  { a: 'tone2.compline.fri.canon.odes.4.irmos', b: 'tone2.compline.wed.canon.odes.4.irmos',
+    relation: 'identical', note: 'Fri↔Wed night Compline shared irmos suite (2-7; byte-verified).' },
+  { a: 'tone2.compline.fri.canon.odes.5.irmos', b: 'tone2.compline.wed.canon.odes.5.irmos',
+    relation: 'identical', note: 'Fri↔Wed night Compline shared irmos suite (2-7; byte-verified).' },
+  { a: 'tone2.compline.fri.canon.odes.6.irmos', b: 'tone2.compline.wed.canon.odes.6.irmos',
+    relation: 'identical', note: 'Fri↔Wed night Compline shared irmos suite (2-7; byte-verified).' },
+  { a: 'tone2.compline.fri.canon.odes.7.irmos', b: 'tone2.compline.wed.canon.odes.7.irmos',
+    relation: 'identical', note: 'Fri↔Wed night Compline shared irmos suite (2-7; byte-verified).' },
+  { a: 'tone2.compline.fri.canon.odes.8.irmos', b: 'tone2.compline.wed.canon.odes.8.irmos',
+    relation: 'identical', note: 'Fri↔Wed night Compline shared irmos suite (2-7; byte-verified).' },
+  { a: 'tone2.compline.fri.canon.odes.9.irmos', b: 'tone2.compline.wed.canon.odes.9.irmos',
+    relation: 'identical', note: 'Fri↔Wed night Compline shared irmos suite (2-7; byte-verified).' },
 
   // ── two DISTINCT texts that look like variants of one (must differ) ────────
   { a: 'tone2.matins.canon.odes[9].irmos',
@@ -81,11 +116,11 @@ export default [
     note: 'TWO DISTINCT Habakkuk irmoi: "I have heard report O Lord, of Thy glorious dispensation" (Wed night, 2-5) vs "I hymn Thee, O Lord, for I have heard report of Thee" (Tue night, 2-4). Not variants of one text.' },
 
   // ── weekday compunction / martyrs recurrences ──────────────────────────────
-  { a: 'tone2.vespers_weekday.sun.aposticha.items', b: 'tone2.vespers_weekday.mon.aposticha.items',
-    relation: 'variant', approx: true,
+  { a: 'tone2.vespers_weekday.sun.aposticha.items[0]', b: 'tone2.vespers_weekday.mon.aposticha.items[0]',
+    relation: 'variant',
     note: 'Recurring compunction aposticha vary per day: Sun-eve "Have mercy ON me" vs Mon-eve "Have mercy UPON me" (2-3).' },
   { a: 'tone2.vespers_weekday.sun.aposticha.items[2]', b: 'tone2.vespers_weekday.thu.aposticha.items[2]',
-    relation: 'variant', approx: true,
+    relation: 'variant',
     note: 'Sun↔Thu evening martyrs pair: "pleasures of the earth … granted the good things … fellow citizens" vs "pleasures of life … deemed worthy … made their abode together" (2-2/2-6).' },
 
   // ── "We magnify thee, O Theotokos" family (2-2/2-3/2-4/2-5) ────────────────
@@ -109,7 +144,7 @@ export default [
   // ── cross-print-site pointing variance (external Menaion sites) ────────────
   { a: 'tone2.vespers_weekday.tue.aposticha_theotokion',
     b: 'menaion:july.lic_stavrotheotokion(07-24)',
-    relation: 'variant', approx: true,
+    relation: 'variant',
     note: '"Having endured many pangs" printed at Tue-eve aposticha (2-4) AND July 24 LIC (Menaion PDF) — same hymn, same dialect, DIFFERENT * line breaks (§2.3).' },
 
   // ── evening→morning reuse ──────────────────────────────────────────────────
@@ -134,11 +169,11 @@ export default [
   { a: 'tone2.liturgy_weekday.thu.beatitudes.items[0]', b: 'tone2.liturgy_weekday.fri.beatitudes.items[0]',
     relation: 'identical', note: '§9.14 chain — see mon/tue entry.' },
   { a: 'tone2.liturgy_weekday.fri.beatitudes.items[0]', b: 'tone2.liturgy_weekday.sat.beatitudes.items[0]',
-    relation: 'identical', note: '§9.14 chain — see mon/tue entry.' },
+    relation: 'variant', note: '§9.14 chain, refined at encoding (gate catch, July 7 2026): wording identical on all six days, but the SATURDAY print alone carries the §9.12 stray asterisk ("mercy* upon us") — the identity chain holds mon→fri and breaks at sat by exactly the recorded sic.' },
 
   // ── role-dependent micro-variance inside one day (2-5) ─────────────────────
-  { a: 'tone2.matins_weekday.thu.sessionals', b: 'tone2.liturgy_weekday.thu.prokeimenon.text',
-    relation: 'variant', approx: true,
+  { a: 'tone2.matins_weekday.thu.sessionals[0].verses[0]', b: 'shared.daily_liturgy_propers.thu.prokeimenon.text',
+    relation: 'variant',
     note: '"unto the END of the world" (Thu Matins sessional verse) vs "unto the ENDS of the world" (Thu Liturgy prokeimenon AND koinonikon — same psalm verse, one day) (2-5).' },
   { a: 'shared.daily_liturgy_propers.thu.prokeimenon.text', b: 'shared.daily_liturgy_propers.thu.communion',
     relation: 'variant',
@@ -146,16 +181,16 @@ export default [
 
   // ── the Wednesday↔Friday sessional recombination web (2-6) ─────────────────
   { a: 'tone2.matins_weekday.fri.sessionals[0].items[0]', b: 'tone2.matins_weekday.wed.sessionals[0].items[0]',
-    relation: 'variant', approx: true,
+    relation: 'variant',
     note: 'Fri set-1 items = Wed set-1\'s with micro-variances ("didst stretch out" vs "stretched out"; "who cry: Glory to Thee" vs "who cry aloud: Glory be to Thee"; "Thou camest as the Second Adam for this purpose: to seek out" vs "for, for this reason Thou didst come …, seeking out").' },
   { a: 'tone2.matins_weekday.fri.sessionals[1].items[0]', b: 'tone2.matins_weekday.wed.sessionals[1].items[0]',
     relation: 'variant',
     note: 'Fri set-2 item 1 = Wed set-2\'s ("given unto us" vs "bestowed upon us") (2-6).' },
   { a: 'tone2.matins_weekday.fri.sessionals[2].items[0]', b: 'tone2.matins_weekday.wed.sessionals[2].items[1]',
-    relation: 'identical', approx: true,
+    relation: 'identical',
     note: 'Fri set-3 = Wed set-3 item 2 IDENTICAL (2-6).' },
   { a: 'tone2.matins_weekday.fri.sessionals[2].items[1]', b: 'tone2.matins_weekday.wed.sessionals[1].items[1]',
-    relation: 'variant', approx: true,
+    relation: 'variant',
     note: 'Fri set-3 also recombines Wed set-2 item 2 with "flock"→"sheep" (2-6).' },
   { a: 'tone2.matins_weekday.fri.sessionals[0].closer', b: 'tone2.matins_weekday.wed.sessionals[1].closer',
     relation: 'identical',
@@ -189,14 +224,14 @@ export default [
     note: '"Those who ever enjoyed Thy gifts cried out … given to them" (Tue) vs "They who ever enjoyed … cried aloud … released unto them" (Thu) — source re-renders per evening; V1 carries both correctly (§8).' },
 
   // ── a whole canon in two renderings (2-4 vs 2-7) — crown jewel ─────────────
-  { a: 'tone2.compline.fri.canon.odes[3].items', b: 'tone2.matins_weekday.wed.canons[1].odes[3].items',
-    relation: 'variant', approx: true,
+  { a: 'tone2.compline.fri.canon.odes.3.items[0]', b: 'tone2.matins_weekday.wed.canons[1].odes.3.items[0]',
+    relation: 'variant',
     note: 'Fri-NIGHT Compline canon = Wed Matins Theotokos canon RE-RENDERED ode by ode (verified Odes III, V, VI, IX): "the jar of manna, the mountain of God and the divine and beauteous palace" ↔ "the jar of the Manna, the divine mountain, the all-comely palace".' },
-  { a: 'tone2.compline.fri.canon.odes[5].items', b: 'tone2.matins_weekday.wed.canons[1].odes[5].items',
-    relation: 'variant', approx: true,
+  { a: 'tone2.compline.fri.canon.odes.6.items[0]', b: 'tone2.matins_weekday.wed.canons[1].odes.6.items[0]',
+    relation: 'variant',
     note: '"those Sick with corruption" ↔ "those afflicted by corruption" (2-4/2-7).' },
-  { a: 'tone2.compline.fri.canon.odes[9].items', b: 'tone2.matins_weekday.wed.canons[1].odes[9].items',
-    relation: 'variant', approx: true,
+  { a: 'tone2.compline.fri.canon.odes.9.items[0]', b: 'tone2.matins_weekday.wed.canons[1].odes.9.items[0]',
+    relation: 'variant',
     note: '"Grant unto me the love of God for all … assumed flesh from thee" ↔ "Grant unto me God\'s love for mankind … borrowed flesh from thee" (2-4/2-7).' },
 
   // ── the dogmatikon multi-site family (2-1/2-7 + Theotokia.pdf + Menaion) ───
@@ -214,32 +249,32 @@ export default [
     note: '"All of thy most glorious mysteries" — Part 1 dismissal column = 2-1 post-troparion print (§4.12).' },
 
   // ── "Woe is me" — two positions in one file (2-7) ──────────────────────────
-  { a: 'tone2.vespers_weekday.fri.aposticha.items', b: 'tone2.matins_weekday.sat.praises.items',
-    relation: 'identical', approx: true,
+  { a: 'tone2.vespers_weekday.fri.aposticha.items[1]', b: 'tone2.matins_weekday.sat.praises.items[3]',
+    relation: 'identical',
     note: '"Woe is me! How great a struggle the soul endureth …" printed at BOTH Fri-eve aposticha and Sat Matins praises — same text, two positions (2-7).' },
 
   // ── Saturday praises martyrs pairs (2-7) ───────────────────────────────────
   { a: 'tone2.matins_weekday.sat.praises.items[0]', b: 'tone2.matins_weekday.fri.aposticha.items[2]',
-    relation: 'variant', approx: true,
+    relation: 'variant',
     note: 'Sat praises #1 re-renders Fri Matins aposticha martyrs: "Having suffered like Christ even unto death …" ↔ "Ye suffered for Christ\'s sake unto death …" (2-6/2-7).' },
   { a: 'tone2.matins_weekday.sat.praises.items[1]', b: 'tone2.matins_weekday.wed.aposticha.items[2]',
-    relation: 'variant', approx: true,
+    relation: 'variant',
     note: 'Sat praises #2 re-renders Wed Matins\': "Every city and land honoreth your relics … majesty of the Churches" ↔ "… doth honor your relics … majesty of the Church" (2-4/2-7).' },
   { a: 'tone2.matins_weekday.sat.sessionals[1].items[1]', b: 'tone2.matins_weekday.thu.sessionals[1].items[2]',
-    relation: 'variant', approx: true,
+    relation: 'variant',
     note: 'Sat sessional set-2 item 2 re-renders Thu Matins set-2 martyrs sessional: "blessed is the ground which was drenched in your blood" ↔ "… which drank your blood" (2-5/2-7).' },
 
   // ── "shine brighter than gold" — one hymn, three days, three renderings ────
-  { a: 'tone2.matins_weekday.tue.sessionals[1].items', b: 'tone2.matins_weekday.wed.sessionals[1].items',
-    relation: 'variant', approx: true,
+  { a: 'tone2.matins_weekday.tue.sessionals[1].items[2]', b: 'tone2.matins_weekday.wed.sessionals[1].items[2]',
+    relation: 'variant',
     note: 'Tue "shine with greater luster than gold … set their prayer before Thee like incense" vs Wed "shine more brightly than gold … set their supplication …" (2-3/2-4).' },
-  { a: 'tone2.matins_weekday.wed.sessionals[1].items', b: 'tone2.matins_weekday.sat.sessionals[1].items',
-    relation: 'variant', approx: true,
+  { a: 'tone2.matins_weekday.wed.sessionals[1].items[2]', b: 'tone2.matins_weekday.sat.sessionals[1].items[0]',
+    relation: 'variant',
     note: 'Wed vs Sat "Thou hast made Thy saints to shine brighter than gold, and in Thy love hast glorified Thy holy ones …" — third rendering (2-4/2-7).' },
 
   // ── trophy/ensign (2-3 vs 2-7) ─────────────────────────────────────────────
-  { a: 'tone2.matins_weekday.tue.aposticha.items[2]', b: 'tone2.matins_weekday.sat.praises.items',
-    relation: 'variant', approx: true,
+  { a: 'tone2.matins_weekday.tue.aposticha.items[2]', b: 'tone2.matins_weekday.sat.praises.items[2]',
+    relation: 'variant',
     note: '"Taking up the Cross of Christ as a TROPHY of victory" (Tue Matins aposticha martyrs) ↔ "… as an ENSIGN of victory" (Sat praises) (2-3/2-7).' },
 
   // ── Theotokia.pdf ↔ chapter closers: identical prints (§2.3, source 8) ─────
@@ -282,7 +317,7 @@ export default [
 
   // ── first CROSS-TONE trap ──────────────────────────────────────────────────
   { a: 'theotokia.dismissal_theotokia_annual.4.tue_lauds', b: 'tone2.matins_weekday.tue.sessionals[0].closer',
-    relation: 'family',
+    relation: 'identical',
     note: 'CROSS-TONE: "We magnify thee … un-burnt bush …" sits in TONE IV\'s Part 3 rows (Tue Lauds; Sat Matins) while the Tone 2 chapters print it at two positions. Same hymn across tone tables; per-position storage only.' },
 
 
@@ -379,4 +414,14 @@ export default [
     relation: 'identical', note: '"In the deep of old" — Nocturns and the Matins Resurrection canon share Ode 1 byte-identically (2-1); third+ sites in the Compline canons per the §2.3 five-canon family.' },
   { a: 'tone2.nocturns.canon.odes.6.irmos', b: 'tone2.matins.canon.odes.6.irmos',
     relation: 'identical', note: '"Whirled about in the abyss of sin" — Nocturns Ode 6 = Matins canon Ode 6 byte-identically (2-1). The other six Nocturns irmoi are DISTINCT compositions from the Matins suite.' },
+
+  // ── discovered at weekday encoding (July 7 2026, §2.3a same-commit) ────────
+  { a: 'tone2.matins_weekday.fri.sessionals[0].items[1]', b: 'tone2.matins_weekday.wed.sessionals[0].items[1]',
+    relation: 'variant', note: 'Second item of the Wed↔Fri set-1 recombination (§2.3 web).' },
+  { a: 'tone2.matins_weekday.fri.sessionals[1].items[0]', b: 'tone2.matins_weekday.wed.sessionals[1].items[0]',
+    relation: 'variant', note: 'Fri set-2 item 1 = Wed set-2 item 1 with "given unto us"/"bestowed upon us" (2-6).' },
+  { a: 'tone2.matins_weekday.mon.aposticha.items[2]', b: 'tone2.matins_weekday.sat.praises.items[0]',
+    relation: 'variant', note: 'NEW at encoding: Monday Matins aposticha martyrs ("Ye suffered for Christ even unto death …", 2-2) is a THIRD rendering beside Friday Matins\' martyrs and Saturday praises #1 (§2.3 family).' },
+  { a: 'tone2.matins_weekday.sat.canons[1].odes.6.items[0]', b: 'tone2.matins_weekday.sat.canons[1].odes.6.items[1]',
+    relation: 'identical', note: 'Saturday fallback canon Ode VI prints the SAME troparion twice in full under its two refrains (§2.7 full-double-print device; §4.8a) — byte-verified at encoding.' },
 ];
