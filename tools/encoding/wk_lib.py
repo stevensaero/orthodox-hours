@@ -23,7 +23,7 @@ TERMINAL = re.compile(r'[.!?”’)]$|:$')
 # bless the Lord; Father, Son, and Holy Spirit' lacks terminal punctuation and was
 # gluing the following 'Trinitarian:' closer onto itself — silent closer drop).
 STRUCT_START = re.compile(r'^(Trinitari(on|an): |Theotokion: |Irmos: |Refrain: |(The )?Verse: |Glory \.\.\.,|Both now \.\.\.,|Another[,:]| ?Another, of )')
-BLOCK_START = re.compile(r'^((The )?Verse:|Refrain: |Alleluia, in Tone|Irmos: |Communion Verse: |Glory \.\.\.,|Both now \.\.\.,|Theotokion: |Trinitari(on|an): |To the martyrs: |For the reposed: |Then the Stichera from the Menaion|Then, “|Vouchsafe, |On the Aposticha|Spec\. Mel\.|Another canon|Another, of |Canon of |Canon to )')
+BLOCK_START = re.compile(r'^((The )?Verse:|Refrain: |Alleluia, in Tone|Irmos: |Communion Verse: |Glory \.\.\.,|Both now \.\.\.,|Theotokion: |Trinitari(on|an): |To the martyrs: |For the reposed: |Then the Stichera from the Menaion|Then, “|Vouchsafe, |On the Aposticha|Spec\. Mel\.|Another canon|Another, of |Canon of |Canon to |Canon, of )')
 
 def tokenize(path):
     raw = open(path).read().replace('\x0c', '')   # tone-5: weekday files break pages MID-PARAGRAPH (5-3/5-4/5-6/5-7 ×1 each) — formfeed is a page separator, not a paragraph boundary (the 4-1 rule, now tone-wide)
@@ -99,6 +99,7 @@ LABELS = [('To the martyrs: ', 'martyrs'), ('For the reposed: ', 'for_the_repose
 
 def label_split(t):
     pairs = [('Both now..., ', 'both_now'),   # 4-6 print: missing space after 'Both now' (sic register)
+             ('Glory..., ', 'glory'),          # 1-7 print: missing space after 'Glory' (sic register)
              ('Glory ..., For the reposed: ', ['glory', 'for_the_reposed']),
              ('Both now ..., Theotokion: ', ['both_now', 'theotokion']),
              ('Glory ..., Theotokion: ', ['glory', 'theotokion']),

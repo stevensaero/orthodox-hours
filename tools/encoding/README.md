@@ -73,6 +73,13 @@ Scripts:
   assertion); 'AT NOCTURNES' spelling; virgin-rejoice with no 'Tone IV:'
   heading; anabathmoi = 4; gen_weekday8 accepts the '.Glory ...' stray-leading-
   period sessional closer. START FROM THESE for tone 1.
+- `gen_tone1_sun.py` / `gen_weekday1.py` — the tone-1 variants (CLOSES the cycle):
+  1-1 contaminated (Sunday normalize-with-log, as tone 8); GV rubric wrap-join;
+  GV 'the Dogmatic Theotokion'; 'NOCTURNS' (no 'AT'); Sunday-Matins Praises
+  LABELED 'On the Aposticha' (Let-every-breath); Liturgy 'Prokeimenon' (no 'The');
+  dismissal-theotokion trailing-period guard. gen_weekday1: split 'Glory'+'Both
+  now' sessional closer; 'Canon, of' stray-comma heading; robust canon-end
+  boundary. wk_lib: 'Canon, of' BLOCK_START, 'Glory..., ' no-space label_split.
 - `verify_shared_t3.py` / `postpass_t3.py` — §5 byte-verification against
   shared.js + per-tone storage of divergent items.
 - `verify_shared_t4.py` / `postpass_t4.py` — the tone-4 §5 pass. CAUTION:

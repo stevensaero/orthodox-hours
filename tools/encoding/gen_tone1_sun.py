@@ -3,7 +3,7 @@
 # Nothing hand-retyped. 2-1 layer is CLEAN (scan July 8 2026) — asserted.
 import json, re, sys
 
-RAW = open('/tmp/scan8/8-1L.txt').read().replace('\x0c', '')   # 4-1 print fact: 3 page breaks fall MID-PARAGRAPH — formfeed is a page separator, not a paragraph boundary
+RAW = open('/tmp/scan1/1-1L.txt').read().replace('\x0c', '')   # 4-1 print fact: 3 page breaks fall MID-PARAGRAPH — formfeed is a page separator, not a paragraph boundary
 # 8-1 is CONTAMINATED (U+041E О ×72) — tone 8 BREAKS the N-1-clean pattern;
 # normalize-with-log per §9.10 (see node()). No clean assertion for this tone.
 lines = RAW.split('\n')
@@ -65,7 +65,7 @@ def node(text, locus, tier=None, **extra):
         n = text.count(cy)
         if n: text = text.replace(cy, la); log.append({'from': f'U+{ord(cy):04X} {cy} (Cyrillic)', 'to': la, 'count': n})
     d = {'text': text, 'tier': tier if tier is not None else (2 if '*' in text else 1),
-         'src': {'file': '8-1.pdf', 'locus': locus}}
+         'src': {'file': '1-1.pdf', 'locus': locus}}
     if log: d['homoglyph_log'] = log
     d.update({k: v for k, v in extra.items() if v is not None})
     return d
@@ -92,9 +92,9 @@ findings = []
 # ═══ LITTLE VESPERS (§4.2) ════════════════════════════════════════════════════
 i = find('AT LITTLE VESPERS', 'heading') + 1
 lv_rubric = paras[i]['text']; assert lv_rubric.startswith('On “Lord, I have cried'), lv_rubric
-i = find('The Resurrection Stichera, in Tone VIII', start=i)   # 5-1 prints 'Tone VIII.' (period, not colon) — heading-punctuation print fact
+i = find('The Resurrection Stichera, in Tone I', start=i)   # 5-1 prints 'Tone I.' (period, not colon) — heading-punctuation print fact
 if paras[i]['text'].endswith('.'):
-    findings.append("LV stichera heading prints 'The Resurrection Stichera, in Tone VIII.' — period for colon (heading sic class)")
+    findings.append("LV stichera heading prints 'The Resurrection Stichera, in Tone I.' — period for colon (heading sic class)")
 i += 1
 lv_verses, lv_lic = [], []
 while paras[i]['text'].startswith('Verse:'):
@@ -104,7 +104,7 @@ while paras[i]['text'].startswith('Verse:'):
         # 5-1 print fact: the LV repeat is an INCIPIT with an explicit printed
         # 'Repeat:' label (§2.7 device mirrored; 2-1/4-1 printed it in full)
         lv_lic.append(node(_lt[len('Repeat: '):], f'Little Vespers, LIC sticheron position {len(lv_lic)+1} (incipit repeat of position 1, §2.7, printed with an explicit "Repeat:" label)',
-                           incipit_ref='tone8.little_vespers.lic[0]', sourceLabel='Repeat:'))
+                           incipit_ref='tone1.little_vespers.lic[0]', sourceLabel='Repeat:'))
     else:
         lv_lic.append(node(_lt, f'Little Vespers, LIC sticheron position {len(lv_lic)+1}'))
     i += 1
@@ -155,6 +155,9 @@ little_vespers = {
 # ═══ GREAT VESPERS (§4.3) ═════════════════════════════════════════════════════
 i = find('AT GREAT VESPERS', 'heading') + 1
 gv_rubric = paras[i]['text']; assert gv_rubric.startswith('On “Lord I have cried'), gv_rubric; i += 1
+# tone-1: the GV rubric wraps onto a 2nd col-4 line ('Saint of the day, or 4 and 6 …')
+while 'The Resurrection Stichera' not in paras[i]['text'] and not paras[i]['text'].startswith('Verse:'):
+    gv_rubric += ' ' + paras[i]['text']; i += 1
 assert 'The Resurrection Stichera' in paras[i]['text']; i += 1
 gv_lic, gv_verses = [], []
 anatolius = False
@@ -173,12 +176,15 @@ for n in range(3):
     assert paras[i]['text'].startswith('Verse:'), paras[i]['text']
     gv_menaion_verses.append(node(strip_verse(paras[i]['text']), f'Great Vespers, Menaion-stichera verse {n+1}')); i += 1
 assert paras[i]['text'].startswith('Glory from the Menaion'); dog_rub1 = paras[i]['text']; i += 1
-assert 'Theotokion Dogmatic' in paras[i]['text']; dog_rub2 = paras[i]['text']; i += 1
-gv_dogmatikon = node(paras[i]['text'], 'Great Vespers, Glory/Both-now — Theotokion Dogmatic',
-                     sourceLabel='Glory ..., Both now ..., Theotokion Dogmatic'); i += 1
+assert 'Theotokion Dogmatic' in paras[i]['text'] or 'Dogmatic Theotokion' in paras[i]['text'], paras[i]['text']
+dog_rub2 = paras[i]['text']; i += 1
+if 'Dogmatic Theotokion' in dog_rub2:
+    findings.append("GV dogmatikon heading prints 'the Dogmatic Theotokion' (word order; others: 'Theotokion Dogmatic') — per-print heading fact")
+gv_dogmatikon = node(paras[i]['text'], 'Great Vespers, Glory/Both-now — Dogmatic Theotokion',
+                     sourceLabel=dog_rub2.rstrip(':')); i += 1
 assert 'After the Entrance' in paras[i]['text']; i += 1
 assert 'Saturday Vespers Prokeimenon' in paras[i]['text']; i += 1
-i = find('On the Aposticha, these Stichera, in Tone VIII:', start=i) + 1
+i = find('On the Aposticha, these Stichera, in Tone I:', start=i) + 1
 gv_ap = [node(paras[i]['text'], 'Great Vespers, aposticha sticheron 1 (unversed)')]; i += 1
 for n in range(3):
     assert paras[i]['text'].startswith('Verse:'), paras[i]['text']
@@ -207,7 +213,7 @@ assert paras[i]['text'].startswith('If a Vigil is not served'); gv_novigil_rubri
 assert 'Resurrection Troparion' in paras[i]['text']; i += 1
 gv_troparion_site = paras[i]['text']; i += 1
 # EXACT-variant guard (tone-7 finding, 7-1): the GV dismissal-theotokion heading
-# prints 'Resurrection Theotokion, in Tone VIII:' WITHOUT 'the' (tone 6 printed
+# prints 'Resurrection Theotokion, in Tone I:' WITHOUT 'the' (tone 6 printed
 # 'the Resurrection Theotokion'). Accept both; record the per-print variance.
 assert 'Resurrection Theotokion' in paras[i]['text'], paras[i]['text']
 if 'the Resurrection Theotokion' not in paras[i]['text']:
@@ -281,9 +287,14 @@ if site_divergences:
     findings.append('SIC CANDIDATE (LV troparion): drops a word vs the other sites — encode-as-printed, GV canonical')
 troparion = node(gv_troparion_site, 'Great Vespers, if-no-Vigil (CANONICAL print, §9.5 convention)',
   provenance_note=f'Verified WORD-identical at all four print sites (LV dismissal, GV no-vigil, Matins God-is-the-Lord, Liturgy); quotation-mark variance at: {", ".join(quoted) if quoted else "none"}; pointing (*/**): {", ".join(pointing_divergences) if pointing_divergences else "identical"}; word-level divergence: {site_divergences.get("LV", "none")}. Canonical field stores the GV print per the §9.5 ruling.')
-assert matins_dismissal_site == gv_dismissal_site, 'dismissal theotokion sites must byte-match (§4.1)'
-dismissal_theotokion = node(gv_dismissal_site, 'Great Vespers, if-no-Vigil (verified identical at the Matins God-is-the-Lord site)')
-kont_i = find('Resurrection Kontakion, in Tone VIII:', start=find('AT MATINS','heading')) + 1
+# tone-1: the two dismissal-theotokion print sites differ ONLY by a trailing
+# period (GV 'birthgiving.', Matins 'birthgiving'). GV canonical (§4.1/§9.5);
+# record the per-site punctuation variance. Any DEEPER divergence still fails.
+if matins_dismissal_site != gv_dismissal_site:
+    assert matins_dismissal_site.rstrip('.') == gv_dismissal_site.rstrip('.'), f'dismissal theotokion sites diverge beyond trailing punctuation:\n{matins_dismissal_site}\n{gv_dismissal_site}'
+    findings.append("dismissal theotokion: Matins God-is-the-Lord site differs from the GV print only in trailing punctuation — GV canonical (§4.1/§9.5)")
+dismissal_theotokion = node(gv_dismissal_site, 'Great Vespers, if-no-Vigil (Matins God-is-the-Lord site verified identical mod trailing punctuation)')
+kont_i = find('Resurrection Kontakion, in Tone I:', start=find('AT MATINS','heading')) + 1
 kont_sm = None
 if specmel(paras[kont_i]['text']) is not None:
     kont_sm = specmel(paras[kont_i]['text']); kont_i += 1
@@ -292,10 +303,10 @@ kontakion_site1 = paras[kont_i]['text']
 assert paras[kont_i+1]['text'].startswith('Ikos:')
 ikos = node(re.sub(r'^Ikos: ', '', paras[kont_i+1]['text']), 'Sunday Matins, after Ode VI', sourceLabel='Ikos')
 # EXACT-variant guard (tone-6 finding, 6-1): the LITURGY kontakion heading
-# prints 'Kontakion of the Resurrection, in Tone VIII:' (word-order variant),
-# while the Matins site prints 'Resurrection Kontakion, in Tone VIII:'. Text is
+# prints 'Kontakion of the Resurrection, in Tone I:' (word-order variant),
+# while the Matins site prints 'Resurrection Kontakion, in Tone I:'. Text is
 # byte-identical; only the heading differs. Accept either KNOWN form exactly.
-LIT_KONT_HEADINGS = ('Resurrection Kontakion, in Tone VIII:', 'Kontakion of the Resurrection, in Tone VIII:')
+LIT_KONT_HEADINGS = ('Resurrection Kontakion, in Tone I:', 'Kontakion of the Resurrection, in Tone I:')
 lit_kont_i = None; _lit_kont_head = None
 for _h in LIT_KONT_HEADINGS:
     try:
@@ -303,8 +314,8 @@ for _h in LIT_KONT_HEADINGS:
     except AssertionError:
         continue
 assert lit_kont_i is not None, 'Liturgy kontakion heading not found in any known variant'
-if _lit_kont_head != 'Resurrection Kontakion, in Tone VIII:':
-    findings.append(f'Liturgy kontakion heading prints {_lit_kont_head!r} (Matins site: \'Resurrection Kontakion, in Tone VIII:\') — per-print heading word-order variance (per-tone print fact)')
+if _lit_kont_head != 'Resurrection Kontakion, in Tone I:':
+    findings.append(f'Liturgy kontakion heading prints {_lit_kont_head!r} (Matins site: \'Resurrection Kontakion, in Tone I:\') — per-print heading word-order variance (per-tone print fact)')
 assert paras[lit_kont_i]['text'] == kontakion_site1, 'kontakion sites must byte-match (§4.1)'
 kontakion = node(kontakion_site1, 'Sunday Matins after Ode VI (verified identical at the Liturgy site)', spec_mel=kont_sm)
 
@@ -349,32 +360,33 @@ def parse_shape_b(start_i, end_i, where):
     flush()
     return odes, after
 
-try:
-    noc_i = find('AT NOCTURNS', 'heading')
-except AssertionError:
-    noc_i = find('AT NOCTURNES', 'heading')  # tone-8 spelling 'NOCTURNES'
-    findings.append("Nocturns heading prints 'AT NOCTURNES' (spelling variant) — per-print fact")
+noc_i = None
+for _h in ('AT NOCTURNS', 'AT NOCTURNES', 'NOCTURNS', 'NOCTURNES'):
+    try:
+        noc_i = find(_h, 'heading'); _noc_head = _h; break
+    except AssertionError:
+        continue
+assert noc_i is not None, 'Nocturns heading not found in any known form'
+if _noc_head != 'AT NOCTURNS':
+    findings.append(f"Nocturns heading prints {_noc_head!r} (variant of 'AT NOCTURNS') — per-print fact")
 noc_frame = paras[noc_i+1]['text']
 canon_head_i = find('And then, the Canon to the Holy', start=noc_i)
 # tone-6 print fact: the Nocturns canon heading spans multiple tokenized lines
-# (acrostic on its own line; 'Tone VIII:' centered) AND prints 'Tone VIII:' WITHOUT
+# (acrostic on its own line; 'Tone I:' centered) AND prints 'Tone I:' WITHOUT
 # 'in' (5-1 printed a single-line heading with 'in Tone V'). Join forward to the
-# tone-line terminator; make 'in' optional. Backward-compatible: if 'Tone VIII' is
+# tone-line terminator; make 'in' optional. Backward-compatible: if 'Tone I' is
 # already on the first line the loop is a no-op and canon_body_start == head_i.
 head = paras[canon_head_i]['text']
 canon_body_start = canon_head_i
-while 'Tone VIII' not in head and canon_body_start + 1 < len(paras):
+while 'Tone I' not in head and canon_body_start + 1 < len(paras):
     canon_body_start += 1; head += ' ' + paras[canon_body_start]['text']
 head = re.sub(r'\s+', ' ', head).strip()
-m = re.search(r'the acrostic whereof is “(.+?),?” the composition of (.+?),? (?:in )?Tone VIII', head)
+m = re.search(r'the acrostic whereof is “(.+?),?” the composition of (.+?),? (?:in )?Tone I', head)
 assert m, head
 greg_i = find('Then, the hymn of Gregory the Sinaite', start=noc_i)
 noc_odes, noc_after = parse_shape_b(canon_body_start+1, greg_i, 'Nocturns, Trinity canon')
 assert sorted(noc_odes) == [1,3,4,5,6,7,8,9], sorted(noc_odes)
-try:
-    noc_close_i = find('The rest of Nocturns, and the Dismissal', start=greg_i)
-except AssertionError:
-    noc_close_i = find('The rest of Nocturnes, and the Dismissal', start=greg_i)  # tone-8 spelling
+noc_close_i = find('The rest of Nocturn', start=greg_i)  # tolerant: 'Nocturns'/'Nocturnes' + 'Dismissal'/'dismissal'
 nocturns = {
   'frame_rubric': noc_frame,
   'canon': {'title': 'Canon to the Holy & Life-creating Trinity',
@@ -409,7 +421,7 @@ for kath, label in [(i, 'Kathisma II'), (find('After the 2nd chanting of the Psa
     sessionals.append({'rubric': rub, 'items': [h1, h2], 'verses': [v], 'closer': closer})
 findings.append(f"Sunday sessional closer types: K-II {sessionals[0]['closer']['type']}, K-III {sessionals[1]['closer']['type']} (tone 2: stavrotheotokion, theotokion — spec §4.7 warned: do NOT assume the distribution)")
 
-hyp_i = find('The Sessional Hymn', 'heading')   # 5-1 prints 'The Sessional Hymn, in Tone VIII:' (3-1/4-1: 'The Sessional Hymn:')
+hyp_i = find('The Sessional Hymn', 'heading')   # 5-1 prints 'The Sessional Hymn, in Tone I:' (3-1/4-1: 'The Sessional Hymn:')
 findings.append('hypakoe heading form: ' + repr(paras[hyp_i]['text']) + " (3-1/4-1: 'The Sessional Hymn:') — per-print heading fact")
 hypakoe = node(paras[hyp_i+1]['text'], 'Sunday Matins, after the Evlogitaria', sourceLabel='The Sessional Hymn')
 asc_i = find('The Songs of Ascent:')
@@ -425,8 +437,8 @@ while 'Antiphon' in paras[j]['text']:
     g = node(paras[j]['text'], f'Sunday Matins, Anabathmoi antiphon {ant+1}, Glory/Both-now'); j += 1
     anabathmoi.append({'troparia': [t1, t2], 'gloria': g})
 findings.append(f'anabathmoi antiphon count (per-tone fact, §9.7): {len(anabathmoi)}')
-assert paras[j]['text'].startswith('Prokeimenon, in Tone VIII:'), paras[j]['text']
-m_prok = node(re.sub(r'^Prokeimenon, in Tone VIII: ', '', paras[j]['text']), 'Sunday Matins prokeimenon'); j += 1
+assert paras[j]['text'].startswith('Prokeimenon, in Tone I:'), paras[j]['text']
+m_prok = node(re.sub(r'^Prokeimenon, in Tone I: ', '', paras[j]['text']), 'Sunday Matins prokeimenon'); j += 1
 m_prok_verse = None
 if paras[j]['text'].startswith(('The Verse:', 'Verse:')):
     m_prok_verse = node(strip_verse(paras[j]['text']), 'Sunday Matins prokeimenon verse')
@@ -507,10 +519,21 @@ exap_rubric = paras[exap_i]['text'] + ' ' + paras[exap_i+1]['text']
 assert paras[exap_i+1]['text'].startswith('Note: The Exapostilarion')
 
 # praises
-pr_i = find('On the Praises')
+try:
+    pr_i = find('On the Praises')
+except AssertionError:
+    # tone-1: the Sunday-Matins Praises are LABELED 'On the Aposticha' — the rubric
+    # 'On the Aposticha: "Let every breath ...," 8 Stichera of the Resurrection …'
+    # (Let-every-breath = Ps 150, the Lauds/Praises). Scope after the exapostilarion.
+    pr_i = None
+    for k in range(exap_i, len(paras)):
+        if paras[k]['text'].startswith('On the Aposticha') and 'Let every breath' in paras[k]['text']:
+            pr_i = k; break
+    assert pr_i is not None, 'tone-1 Praises rubric (On the Aposticha / Let every breath) not found'
+    findings.append("Sunday-Matins Praises are LABELED 'On the Aposticha' with a 'Let every breath ...' rubric (per-print: tone 1 names the Lauds the Aposticha)")
 pr_rubric = paras[pr_i]['text']
 j = pr_i + 1
-assert 'Resurrection Stichera' in paras[j]['text']; j += 1
+assert 'Resurrection Stichera' in paras[j]['text'], paras[j]['text']; j += 1
 pr_stichera = []
 anat2 = False
 while True:
@@ -534,7 +557,7 @@ matins = {
   'evlogitaria_rubric': {'ref': 'shared.evlogitaria'},
   'hypakoe': hypakoe,
   'anabathmoi': anabathmoi,
-  'prokeimenon': {'tone': 8, 'text': m_prok, **({'verse': m_prok_verse} if m_prok_verse else {})},
+  'prokeimenon': {'tone': 1, 'text': m_prok, **({'verse': m_prok_verse} if m_prok_verse else {})},
   'canon': {'title': canon_title_print.rstrip('.:'), 'heading_rubric': 'After which: “O God, save Thy people ...,” Then the Canons: ' + canon_title_print,
             'odes': {str(k): v for k, v in odes_a.items()}},
   'exapostilarion_rubric': exap_rubric,
@@ -561,19 +584,23 @@ gloria['src']['locus'] = 'Sunday Liturgy, Beatitudes Gloria (Triadicon — final
 findings.append(f'Beatitude troparia: {len(beat)} + Gloria + Theotokion (tone 2: 6 + Gloria + Theotokion)')
 assert paras[j]['text'].startswith('Theotokion:')
 beat_theo = node(re.sub(r'^Theotokion: ', '', paras[j]['text']), 'Sunday Liturgy, Beatitudes Theotokion', sourceLabel='Theotokion'); j += 1
-j = find('The Prokeimenon, in Tone VIII:', start=lit_i)
-l_prok = node(re.sub(r'^The Prokeimenon, in Tone VIII: ', '', paras[j]['text']), 'Sunday Liturgy prokeimenon'); j += 1
+try:
+    j = find('The Prokeimenon, in Tone I:', start=lit_i)
+except AssertionError:
+    j = find('Prokeimenon, in Tone I:', start=lit_i)  # tone-1: no 'The'
+    findings.append("Sunday Liturgy prokeimenon heading prints 'Prokeimenon, in Tone I:' (no 'The') — per-print fact")
+l_prok = node(re.sub(r'^(The )?Prokeimenon, in Tone I: ', '', paras[j]['text']), 'Sunday Liturgy prokeimenon'); j += 1
 assert paras[j]['text'].startswith(('Verse:', 'The Verse:'))
 l_prok_verse = node(strip_verse(paras[j]['text']), 'Sunday Liturgy prokeimenon verse'); j += 1
-assert paras[j]['text'].startswith('Alleluia, in Tone VIII:')
-l_all = node(re.sub(r'^Alleluia, in Tone VIII: ', '', paras[j]['text']), 'Sunday Liturgy Alleluia'); j += 1
+assert paras[j]['text'].startswith('Alleluia, in Tone I:')
+l_all = node(re.sub(r'^Alleluia, in Tone I: ', '', paras[j]['text']), 'Sunday Liturgy Alleluia'); j += 1
 assert paras[j]['text'].startswith(('Verse:', 'The Verse:'))
 l_all_v = node(strip_verse(paras[j]['text']), 'Sunday Liturgy Alleluia verse 2')
 
 liturgy = {
   'beatitudes': {'rubric': beat_rubric, 'troparia': beat, 'gloria': gloria, 'theotokion': beat_theo},
-  'prokeimenon': {'tone': 8, 'text': l_prok, 'verse': l_prok_verse},
-  'alleluia': {'tone': 8, 'verses': [l_all, l_all_v]},
+  'prokeimenon': {'tone': 1, 'text': l_prok, 'verse': l_prok_verse},
+  'alleluia': {'tone': 1, 'verses': [l_all, l_all_v]},
 }
 assert l_prok['text'] != m_prok['text'], 'V1 conflation trap (§8): matins and liturgy prokeimena must differ'
 
@@ -587,7 +614,7 @@ for o in [1,3,4,5,6,7,8,9]:
         new_pairs.append((str(o), 'variant'))
 
 OUT = {
-  'tone': 8,
+  'tone': 1,
   '_encoded': ['core', 'little_vespers', 'great_vespers', 'nocturns', 'matins', 'liturgy'],
   'troparion': troparion, 'dismissal_theotokion': dismissal_theotokion,
   'kontakion': kontakion, 'ikos': ikos,
@@ -598,27 +625,27 @@ OUT = {
   'liturgy': liturgy,
 }
 
-header = '''// src/data/octoechos_v2/tone8.js
+header = '''// src/data/octoechos_v2/tone1.js
 // ─────────────────────────────────────────────────────────────────────────────
-// Octoechos V2 — Tone 8, DIFFERENTIAL scan (spec §11: templates assumed after
+// Octoechos V2 — Tone 1, DIFFERENTIAL scan (spec §11: templates assumed after
 // the tone-3 verification, texts and per-tone facts captured fresh from the
-// tone-8 chapters). THIS STEP: core §4.1 + Little Vespers + Great Vespers +
-// Nocturns + Sunday Matins + Sunday Liturgy from 8-1.pdf (text layer CLEAN,
+// tone-1 chapters). THIS STEP: core §4.1 + Little Vespers + Great Vespers +
+// Nocturns + Sunday Matins + Sunday Liturgy from 1-1.pdf (text layer CLEAN,
 // scan July 8 2026); weekday sections merge in next.
 //
 // GENERATED from the raw pdftotext -layout text by paragraph-grammar walking
-// (adapted tone-7 generators, July 8 2026) — nothing hand-retyped. Canonical
+// (adapted tone-8 generators, July 8 2026) — nothing hand-retyped. Canonical
 // §4.1 fields verified across ALL their print sites at generation. Psalm-verse
 // fields whose print site is already encoded in shared.js are stored as {ref}
 // — one print site, one encoding. Dynamically loaded only (§2.1).
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default '''
-open('/tmp/oh/src/data/octoechos_v2/tone8.js', 'w').write(header + json.dumps(OUT, ensure_ascii=False, indent=2) + ';\n')
+open('/tmp/oh/src/data/octoechos_v2/tone1.js', 'w').write(header + json.dumps(OUT, ensure_ascii=False, indent=2) + ';\n')
 n_nodes = json.dumps(OUT).count('"src"')
-print(f'tone8.js written — {n_nodes} text nodes')
+print(f'tone1.js written — {n_nodes} text nodes')
 import pickle
-pickle.dump(CAPTURED, open('/tmp/gen8/captured_t8_sun.pkl','wb'))
+pickle.dump(CAPTURED, open('/tmp/gen1/captured_t1_sun.pkl','wb'))
 print('captured for §5 comparison:', len(CAPTURED))
 print('\nNocturns↔Matins irmos comparison (per ode):')
 for o, rel in new_pairs: print(f'  Ode {o}: {rel}')

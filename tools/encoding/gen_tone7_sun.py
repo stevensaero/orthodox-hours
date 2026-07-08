@@ -513,7 +513,7 @@ matins = {
   'evlogitaria_rubric': {'ref': 'shared.evlogitaria'},
   'hypakoe': hypakoe,
   'anabathmoi': anabathmoi,
-  'prokeimenon': {'tone': 6, 'text': m_prok, **({'verse': m_prok_verse} if m_prok_verse else {})},
+  'prokeimenon': {'tone': 7, 'text': m_prok, **({'verse': m_prok_verse} if m_prok_verse else {})},
   'canon': {'title': canon_title_print.rstrip('.:'), 'heading_rubric': 'After which: “O God, save Thy people ...,” Then the Canons: ' + canon_title_print,
             'odes': {str(k): v for k, v in odes_a.items()}},
   'exapostilarion_rubric': exap_rubric,
@@ -551,8 +551,8 @@ l_all_v = node(strip_verse(paras[j]['text']), 'Sunday Liturgy Alleluia verse 2')
 
 liturgy = {
   'beatitudes': {'rubric': beat_rubric, 'troparia': beat, 'gloria': gloria, 'theotokion': beat_theo},
-  'prokeimenon': {'tone': 6, 'text': l_prok, 'verse': l_prok_verse},
-  'alleluia': {'tone': 6, 'verses': [l_all, l_all_v]},
+  'prokeimenon': {'tone': 7, 'text': l_prok, 'verse': l_prok_verse},
+  'alleluia': {'tone': 7, 'verses': [l_all, l_all_v]},
 }
 assert l_prok['text'] != m_prok['text'], 'V1 conflation trap (§8): matins and liturgy prokeimena must differ'
 
@@ -566,7 +566,7 @@ for o in [1,3,4,5,6,7,8,9]:
         new_pairs.append((str(o), 'variant'))
 
 OUT = {
-  'tone': 6,
+  'tone': 7,
   '_encoded': ['core', 'little_vespers', 'great_vespers', 'nocturns', 'matins', 'liturgy'],
   'troparion': troparion, 'dismissal_theotokion': dismissal_theotokion,
   'kontakion': kontakion, 'ikos': ikos,
