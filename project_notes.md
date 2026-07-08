@@ -1,5 +1,43 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.31.9** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+**Tool version: v0.32.0** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+
+**Session July 8, 2026 (cont.) — THE OCTOECHOS READING VIEW (Phase A),
+v0.32.0.** Course change on Bill's direction: the viewer must serve the
+READER as the data serves the machine — "as if I picked up a bound version
+of the Octoechos." Spec written and ruled (`octoechos_reading_view_spec.md`:
+tone → day of week → service navigation with Arabic tone numbers; DEFAULT
+pointing mode "as printed"; OCA override layer designed dataset-wide for
+Menaion/Pentecostarion/Octoechos/Triodion; three-lane correction model —
+transcription fix / sic record / OCA override — with in-place editing via
+the existing recast engine and the GATE as the integrity boundary, not a
+session). Phase A built: new `octoechos-v2-reading.jsx` (typography atoms,
+interleaving, ref resolution, canon renderers, day-slot model) hosted by
+`octoechos-v2-browser.jsx` — reading is now the default view; the §12
+audit walker is UNCHANGED behind a toggle. Sic footnotes derive from the
+register at runtime; every position's DOM id is its schema path (Phase-B
+deep-link grammar); unencoded tones/sections render coming-soon cards from
+`_encoded` claims; `getLiturgicalData` exported for the Today shortcut.
+Visibility guarantee holds in both views (unconsumed keys surface through
+a reading-styled fallback; coverage gate untouched, 67/67). Full gate
+green incl. vite build.
+
+### Known Phase-A edges (flagged, not hidden)
+
+- Ref-resolved shared verses render under the tone-prefixed anchor of
+  their position, not their shared path — shared-path sic glyphs and
+  anchors on ref'd nodes land in Phase B.
+- String-path sics (e.g. the 5-1 Gregory rubric comma) have register
+  entries but no inline glyph yet (RRubric carries no path prop).
+- Sunday Matins kontakion/ikos render in a labeled "After Ode VI" block
+  from the canonical fields (the print's position, reconstructed — not
+  a stored print site).
+
+### Next
+
+- Bill eyeballs the reading view against the bound book (the human gate).
+- Phase B: assembled-service deep links + propose-correction; Phase C:
+  octoechos_v2 edit adapter (lane 1, attestation); Phase D: override/sic
+  forms. Tones 6-8/1 encoding resumes any time — pages land visibly now.
 
 **Session July 8, 2026 — Octoechos V2 TONE-5 DIFFERENTIAL SCAN; tone5.js
 ENCODED; GREGORY RULED per-tone everywhere, v0.31.9.** Scans of 5-1…5-7
