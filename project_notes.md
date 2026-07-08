@@ -1,5 +1,17 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.33.1** | **Tone Trainer: v0.25.47** | Last synced: July 8, 2026
+**Tool version: v0.33.2** | **Tone Trainer: v0.25.47** | Last synced: July 8, 2026
+
+**Session July 8, 2026 (cont.) — STICKY HEADER DRIFT FIX, v0.33.2.**
+Follow-up to v0.33.1: the sticky header drifted ~18px before catching,
+because the parchment container's top padding sat above it and scrolled
+away first. Fix: dropped the container's top padding (`padding: "0 26px
+18px"` / `"0 12px 12px"`) and moved that spacing into the header
+(`paddingTop`), so the header box is flush at the top and pins with zero
+pre-stick travel. Also changed the header pin from a hard `top: 0` to
+`top: var(--hours-return-strip-h, 0px)` — HoursReturnStrip publishes its
+height to that CSS var precisely so each browser's header pins *below* it
+instead of hiding it on scroll; the rail's `top`/`max-height` fold in the
+same var. Direct visits (no strip) resolve the var to 0px.
 
 **Session July 8, 2026 (cont.) — STICKY HEADER + RAIL, v0.33.1.**
 Octoechos V2 browser (`octoechos-v2-browser.jsx`) UI fix: the top header
