@@ -8492,6 +8492,37 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.33.0",
+    date: "July 2026",
+    summary: "Reading view Phase A.1 + SEARCH (spec \u00a77): left-rail navigation with tone number grid and in-rail sections, mobile drawer, rubric toggle, prev/next \u2014 and corpus search with scope + reader/exact-bytes modes",
+    items: [
+      "Left navigation rail in the house theme: TONE as a tappable 4\u00d72 " +
+      "number grid, DAY list (liturgical sequence, evenings distinct), " +
+      "SERVICE list, and SECTIONS of the open service (Lord I have cried / " +
+      "Menaion fallback / Aposticha / Closing \u2026) navigating in the rail so " +
+      "the page stays purely the book. Section anchors scroll within the " +
+      "page \u2014 the bound page is never fragmented.",
+      "Mobile: below 720px the rail folds into a drawer behind a menu " +
+      "control; the compact header keeps the breadcrumb and search. The " +
+      "reading column is single-column serif and unchanged.",
+      "Rubrics toggle (rubrics now render as distinct callout blocks and " +
+      "can be hidden for prayer-desk reading); Clean-reading toggle " +
+      "unchanged; both persist. Prev/next walks the liturgical sequence " +
+      "across services and day slots.",
+      "SEARCH (Phase B lead, RULED): client-side index over the whole " +
+      "corpus \u2014 all eight tones + shared + theotokia, ~8,900 text nodes, " +
+      "no server. Scope selector (whole corpus / this tone / this day / " +
+      "this service); READER mode normalizes pointing markers, quote " +
+      "glyphs, and case; EXACT-BYTES mode finds sics and print variants " +
+      "as stored. Results: breadcrumb (Tone 5 \u2192 Wednesday Evening \u2192 " +
+      "Vespers), highlighted snippet, file/locus provenance, sic glyph " +
+      "where registered \u2014 each result deep-links to its position anchor " +
+      "(shared/theotokia results open in audit mode).",
+      "Default tone is now Tone 1 \u2014 the eight-tone cycle is complete " +
+      "(v0.32.1\u2013v0.32.4) and the book opens at its first page.",
+    ],
+  },
+  {
     version: "v0.32.4",
     date: "July 2026",
     summary: "Octoechos V2: tone-1 DIFFERENTIAL scan + tone1.js encoded (\u00a711) \u2014 the EIGHT-TONE CYCLE IS COMPLETE (tones 1\u20138); + tone-7/8 prokeimenon-tone data fix",

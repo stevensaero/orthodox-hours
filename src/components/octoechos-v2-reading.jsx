@@ -19,7 +19,7 @@
 import React, { useContext, createContext } from 'react';
 
 export const ReadingContext = createContext({
-  mode: 'printed', sics: {}, roots: {}, tonePrefix: '',
+  mode: 'printed', sics: {}, roots: {}, tonePrefix: '', showRubrics: true,
 });
 
 const C = {
@@ -105,21 +105,24 @@ function printedLabel(node) {
 }
 
 // ── typography atoms ─────────────────────────────────────────────────────────
-export function RHeading({ children }) {
+export function RHeading({ children, id }) {
   return (
-    <div style={{
+    <div id={id} style={{
       textAlign: "center", fontFamily: SERIF, fontSize: "0.78rem",
       letterSpacing: "0.14em", color: C.inkMid, margin: "18px 0 6px",
       textTransform: "uppercase",
     }}>{children}</div>
   );
 }
-export function RRubric({ text, center = false }) {
+export function RRubric({ text, center = false, id }) {
+  const { showRubrics } = useContext(ReadingContext);
+  if (!showRubrics) return id ? <span id={id} /> : null;
   return (
-    <div style={{
+    <div id={id} style={{
       fontFamily: SERIF, fontStyle: "italic", fontSize: "0.82rem",
       color: C.inkLight, margin: "8px 0", textAlign: center ? "center" : "left",
-      lineHeight: 1.5,
+      lineHeight: 1.5, background: C.goldFaint, borderLeft: `2px solid #D4C49A`,
+      padding: "5px 9px", borderRadius: 0,
     }}>{text}</div>
   );
 }
@@ -394,14 +397,14 @@ function SvcLittleVespers({ v }) {
     'aposticha', 'aposticha_theotokion', 'closing_rubric', 'dismissal_rubric']);
   return (
     <div>
-      <RHeading>At Little Vespers</RHeading>
+      <RHeading id="sec-lic">At Little Vespers</RHeading>
       {v.rubric && <RRubric text={v.rubric} center />}
       <RInterleaved verses={v.lic_verses} items={v.lic} itemsPath="little_vespers.lic" versesPath="little_vespers.lic_verses" />
       {v.lic_theotokion && <RText node={v.lic_theotokion} path="little_vespers.lic_theotokion" />}
       {v.prokeimenon && <RProk group={v.prokeimenon} path="little_vespers.prokeimenon" label="The Prokeimenon" />}
       {v.aposticha && (
         <div>
-          <RHeading>On the Aposticha</RHeading>
+          <RHeading id="sec-apost">On the Aposticha</RHeading>
           {(v.aposticha.resurrection ?? []).map((n, i) => <RText key={i} node={n} path={`little_vespers.aposticha.resurrection[${i}]`} />)}
           <RInterleaved verses={v.aposticha.theotokos_verses} items={v.aposticha.theotokos}
             itemsPath="little_vespers.aposticha.theotokos" versesPath="little_vespers.aposticha.theotokos_verses" />
@@ -421,7 +424,7 @@ function SvcGreatVespers({ v }) {
     'aposticha_glory_rubric', 'aposticha_theotokion', 'vigil_rubric', 'no_vigil_rubric']);
   return (
     <div>
-      <RHeading>At Great Vespers</RHeading>
+      <RHeading id="sec-lic">At Great Vespers</RHeading>
       {v.rubric && <RRubric text={v.rubric} center />}
       <RInterleaved verses={v.lic_verses} items={v.lic} itemsPath="great_vespers.lic" versesPath="great_vespers.lic_verses" />
       {v.lic_menaion_rubric && <RRubric text={v.lic_menaion_rubric} center />}
@@ -431,7 +434,7 @@ function SvcGreatVespers({ v }) {
       {v.prokeimenon && <RProk group={v.prokeimenon} path="great_vespers.prokeimenon" label="The Prokeimenon" />}
       {v.aposticha && (
         <div>
-          <RHeading>On the Aposticha</RHeading>
+          <RHeading id="sec-apost">On the Aposticha</RHeading>
           <RInterleaved verses={v.aposticha_verses} items={v.aposticha} firstUnversed
             itemsPath="great_vespers.aposticha" versesPath="great_vespers.aposticha_verses" />
         </div>
@@ -452,25 +455,25 @@ function SvcVespersWeekday({ v, eve }) {
   const lic = v.lic ?? {};
   return (
     <div>
-      <RHeading>At Vespers</RHeading>
+      <RHeading id="sec-lic">At Vespers</RHeading>
       {v.rubric && <RRubric text={v.rubric} center />}
       <RInterleaved verses={lic.octoechos_verses} items={lic.octoechos}
         itemsPath={`${p}.lic.octoechos`} versesPath={`${p}.lic.octoechos_verses`} />
-      {lic.menaion_rubric && <RRubric text={lic.menaion_rubric} center />}
+      {lic.menaion_rubric && <RRubric text={lic.menaion_rubric} center id="sec-fallback" />}
       <RInterleaved verses={lic.menaion_verses} items={lic.menaion_fallback}
         itemsPath={`${p}.lic.menaion_fallback`} versesPath={`${p}.lic.menaion_verses`} />
       {v.lic_theotokion && <RText node={v.lic_theotokion} path={`${p}.lic_theotokion`} />}
       {v.prokeimenon && <RProk group={v.prokeimenon} path={`${p}.prokeimenon`} label="The Prokeimenon" />}
       {v.aposticha && (
         <div>
-          <RHeading>On the Aposticha</RHeading>
+          <RHeading id="sec-apost">On the Aposticha</RHeading>
           {v.aposticha.rubric && <RRubric text={v.aposticha.rubric} center />}
           <RInterleaved verses={v.aposticha.verses} items={v.aposticha.items} firstUnversed
             itemsPath={`${p}.aposticha.items`} versesPath={`${p}.aposticha.verses`} />
         </div>
       )}
       {v.aposticha_theotokion && <RText node={v.aposticha_theotokion} path={`${p}.aposticha_theotokion`} />}
-      {v.closing_rubric && <RRubric text={v.closing_rubric} center />}
+      {v.closing_rubric && <RRubric text={v.closing_rubric} center id="sec-closing" />}
       <Leftovers obj={v} consumed={consumed} path={p} />
     </div>
   );
@@ -481,16 +484,16 @@ function SvcCompline({ cpl, night }) {
   const consumed = new Set(['frame_rubric', 'canon', 'after_ode6', 'closing_rubric']);
   return (
     <div>
-      <RHeading>At Compline</RHeading>
+      <RHeading id="sec-canon">At Compline</RHeading>
       {cpl.frame_rubric && <RRubric text={cpl.frame_rubric} center />}
       <RCanon canon={cpl.canon} path={`${p}.canon`} shape="B" />
       {cpl.after_ode6 && (
-        <div>
+        <div id="sec-after6">
           {cpl.after_ode6.rubric && <RRubric text={cpl.after_ode6.rubric} center />}
           {cpl.after_ode6.sessional && <RText node={cpl.after_ode6.sessional} path={`${p}.after_ode6.sessional`} />}
         </div>
       )}
-      {cpl.closing_rubric && <RRubric text={cpl.closing_rubric} center />}
+      {cpl.closing_rubric && <RRubric text={cpl.closing_rubric} center id="sec-closing" />}
       <Leftovers obj={cpl} consumed={consumed} path={p} />
     </div>
   );
@@ -502,7 +505,7 @@ function SvcNocturns({ n }) {
   const greg = n.gregory_rubric;
   return (
     <div>
-      <RHeading>At Nocturns</RHeading>
+      <RHeading id="sec-canon">At Nocturns</RHeading>
       {n.frame_rubric && <RRubric text={n.frame_rubric} center />}
       <RCanon canon={n.canon} path="nocturns.canon" shape="B" />
       {['after_ode3', 'after_ode6'].filter(k => n[k]).map(k => (
@@ -512,7 +515,7 @@ function SvcNocturns({ n }) {
         </div>
       ))}
       {greg && (
-        <div>
+        <div id="sec-gregory">
           {greg.rubric && <RRubric text={greg.rubric} center />}
           {Array.isArray(greg.stanzas)
             ? greg.stanzas.map((st, i) => <RText key={i} node={st} path={`nocturns.gregory_rubric.stanzas[${i}]`} />)
@@ -531,7 +534,7 @@ function SvcMatinsSunday({ m, core }) {
     'exapostilarion_rubric', 'praises', 'doxology_troparion']);
   return (
     <div>
-      <RHeading>At Matins</RHeading>
+      <RHeading id="sec-sessionals">At Matins</RHeading>
       {m.god_is_lord_rubric && <RRubric text={m.god_is_lord_rubric} center />}
       {(m.sessionals ?? []).map((s, i) => (
         <div key={i}>
@@ -543,7 +546,7 @@ function SvcMatinsSunday({ m, core }) {
       ))}
       {m.polyeleos_rubric && (
         <div>
-          <RHeading>Polyeleos</RHeading>
+          <RHeading id="sec-polyeleos">Polyeleos</RHeading>
           <RFallback value={m.polyeleos_rubric} path="matins.polyeleos_rubric" fieldKey="polyeleos" />
         </div>
       )}
@@ -553,10 +556,10 @@ function SvcMatinsSunday({ m, core }) {
           <RFallback value={m.evlogitaria_rubric} path="matins.evlogitaria_rubric" fieldKey="evlogitaria" />
         </div>
       )}
-      {m.hypakoe && (<div><RHeading>The Sessional Hymn (Hypakoe)</RHeading><RText node={m.hypakoe} path="matins.hypakoe" /></div>)}
+      {m.hypakoe && (<div><RHeading id="sec-hypakoe">The Sessional Hymn (Hypakoe)</RHeading><RText node={m.hypakoe} path="matins.hypakoe" /></div>)}
       {(m.anabathmoi ?? []).length > 0 && (
         <div>
-          <RHeading>The Songs of Ascent</RHeading>
+          <RHeading id="sec-ascent">The Songs of Ascent</RHeading>
           {m.anabathmoi.map((a, i) => (
             <div key={i}>
               <div style={{ textAlign: "center", fontFamily: SERIF, fontStyle: "italic", fontSize: "0.8rem", color: C.inkMid, margin: "6px 0 2px" }}>
@@ -569,10 +572,10 @@ function SvcMatinsSunday({ m, core }) {
         </div>
       )}
       {m.prokeimenon && <RProk group={m.prokeimenon} path="matins.prokeimenon" label="Prokeimenon" />}
-      {m.canon && (<div><RHeading>The Canons</RHeading><RCanon canon={m.canon} path="matins.canon" shape="A" /></div>)}
+      {m.canon && (<div><RHeading id="sec-canons">The Canons</RHeading><RCanon canon={m.canon} path="matins.canon" shape="A" /></div>)}
       {core?.kontakion && (
         <div>
-          <RHeading>After Ode VI — Kontakion and Ikos</RHeading>
+          <RHeading id="sec-kontakion">After Ode VI — Kontakion and Ikos</RHeading>
           <RText node={core.kontakion} path="kontakion" />
           {core.ikos && <RText node={core.ikos} path="ikos" />}
         </div>
@@ -580,7 +583,7 @@ function SvcMatinsSunday({ m, core }) {
       {m.exapostilarion_rubric && <RRubric text={m.exapostilarion_rubric} center />}
       {m.praises && (
         <div>
-          <RHeading>On the Praises</RHeading>
+          <RHeading id="sec-praises">On the Praises</RHeading>
           {m.praises.rubric && <RRubric text={m.praises.rubric} center />}
           <RInterleaved verses={m.praises.verses} items={m.praises.stichera}
             itemsPath="matins.praises.stichera" versesPath="matins.praises.verses" />
@@ -590,7 +593,7 @@ function SvcMatinsSunday({ m, core }) {
       )}
       {m.doxology_troparion && (
         <div>
-          <RHeading>Troparion after the Great Doxology</RHeading>
+          <RHeading id="sec-doxology">Troparion after the Great Doxology</RHeading>
           <RText node={m.doxology_troparion} path="matins.doxology_troparion" />
         </div>
       )}
@@ -605,7 +608,7 @@ function SvcMatinsWeekday({ m, morn }) {
     'praises', 'aposticha', 'aposticha_theotokion', 'closing_rubric']);
   return (
     <div>
-      <RHeading>At Matins</RHeading>
+      <RHeading id="sec-sessionals">At Matins</RHeading>
       {(m.sessionals ?? []).map((s, i) => (
         <div key={i}>
           {s.rubric && <RRubric text={s.rubric} center />}
@@ -614,6 +617,7 @@ function SvcMatinsWeekday({ m, morn }) {
           {s.closer && <RText node={s.closer} path={`${p}.sessionals[${i}].closer`} />}
         </div>
       ))}
+      <div id="sec-canons" />
       {(m.canons ?? []).map((c, i) => (
         <div key={i}><RCanon canon={c} path={`${p}.canons[${i}]`} shape="B" /></div>
       ))}
@@ -621,7 +625,7 @@ function SvcMatinsWeekday({ m, morn }) {
       {m.post_canon_rubric && <RRubric text={m.post_canon_rubric} center />}
       {m.praises && (
         <div>
-          <RHeading>On the Praises</RHeading>
+          <RHeading id="sec-praises">On the Praises</RHeading>
           {m.praises.rubric && <RRubric text={m.praises.rubric} center />}
           <RInterleaved verses={m.praises.verses} items={m.praises.items}
             itemsPath={`${p}.praises.items`} versesPath={`${p}.praises.verses`} />
@@ -631,14 +635,14 @@ function SvcMatinsWeekday({ m, morn }) {
       )}
       {m.aposticha && (
         <div>
-          <RHeading>On the Aposticha</RHeading>
+          <RHeading id="sec-apost">On the Aposticha</RHeading>
           {m.aposticha.rubric && <RRubric text={m.aposticha.rubric} center />}
           <RInterleaved verses={m.aposticha.verses} items={m.aposticha.items} firstUnversed
             itemsPath={`${p}.aposticha.items`} versesPath={`${p}.aposticha.verses`} />
         </div>
       )}
       {m.aposticha_theotokion && <RText node={m.aposticha_theotokion} path={`${p}.aposticha_theotokion`} />}
-      {m.closing_rubric && <RRubric text={m.closing_rubric} center />}
+      {m.closing_rubric && <RRubric text={m.closing_rubric} center id="sec-closing" />}
       <Leftovers obj={m} consumed={consumed} path={p} />
     </div>
   );
@@ -648,7 +652,7 @@ function SvcLiturgySunday({ l, core }) {
   const consumed = new Set(['beatitudes', 'prokeimenon', 'alleluia']);
   return (
     <div>
-      <RHeading>At Liturgy</RHeading>
+      <RHeading id="sec-beatitudes">At Liturgy</RHeading>
       {l.beatitudes && (
         <div>
           {l.beatitudes.rubric && <RRubric text={l.beatitudes.rubric} center />}
@@ -669,6 +673,7 @@ function SvcLiturgySunday({ l, core }) {
           <RText node={core.kontakion} path="kontakion" />
         </div>
       )}
+      <div id="sec-propers" />
       {l.prokeimenon && <RProk group={l.prokeimenon} path="liturgy.prokeimenon" label="The Prokeimenon" />}
       {l.alleluia && <RProk group={l.alleluia} path="liturgy.alleluia" label="Alleluia" />}
       <Leftovers obj={l} consumed={consumed} path="liturgy" />
@@ -681,13 +686,14 @@ function SvcLiturgyWeekday({ l, morn }) {
   const consumed = new Set(['beatitudes', 'prokeimenon', 'alleluia', 'communion', 'alleluia_note']);
   return (
     <div>
-      <RHeading>At Liturgy</RHeading>
+      <RHeading id="sec-beatitudes">At Liturgy</RHeading>
       {l.beatitudes && (
         <div>
           {l.beatitudes.rubric && <RRubric text={l.beatitudes.rubric} center />}
           {(l.beatitudes.items ?? []).map((t, i) => <RText key={i} node={t} path={`${p}.beatitudes.items[${i}]`} />)}
         </div>
       )}
+      <div id="sec-propers" />
       {l.prokeimenon && <RProk group={l.prokeimenon} path={`${p}.prokeimenon`} label="The Prokeimenon" />}
       {l.alleluia && <RProk group={l.alleluia} path={`${p}.alleluia`} label="Alleluia" />}
       {l.communion && (
@@ -709,25 +715,35 @@ const WK = [['sun','Sunday'],['mon','Monday'],['tue','Tuesday'],['wed','Wednesda
 export const DAY_SLOTS = (() => {
   const slots = [];
   slots.push({ id: 'sat_eve', label: 'Saturday Evening', services: [
-    { id: 'lv', label: 'Little Vespers', claim: 'little_vespers', render: d => <SvcLittleVespers v={d.little_vespers} /> },
-    { id: 'gv', label: 'Great Vespers', claim: 'great_vespers', render: d => <SvcGreatVespers v={d.great_vespers} /> },
-    { id: 'cpl', label: 'Compline', claim: 'compline.sat', render: d => <SvcCompline cpl={d.compline.sat} night="sat" /> },
+    { id: 'lv', label: 'Little Vespers', claim: 'little_vespers', render: d => <SvcLittleVespers v={d.little_vespers} />,
+      sections: [['sec-lic', 'Lord, I have cried'], ['sec-apost', 'Aposticha']] },
+    { id: 'gv', label: 'Great Vespers', claim: 'great_vespers', render: d => <SvcGreatVespers v={d.great_vespers} />,
+      sections: [['sec-lic', 'Lord, I have cried'], ['sec-apost', 'Aposticha']] },
+    { id: 'cpl', label: 'Compline', claim: 'compline.sat', render: d => <SvcCompline cpl={d.compline.sat} night="sat" />,
+      sections: [['sec-canon', 'Canon'], ['sec-after6', 'After Ode VI'], ['sec-closing', 'Closing']] },
   ]});
   slots.push({ id: 'sun', label: 'Sunday', services: [
-    { id: 'noc', label: 'Nocturns', claim: 'nocturns', render: d => <SvcNocturns n={d.nocturns} /> },
-    { id: 'mat', label: 'Matins', claim: 'matins', render: d => <SvcMatinsSunday m={d.matins} core={d} /> },
-    { id: 'lit', label: 'Liturgy', claim: 'liturgy', render: d => <SvcLiturgySunday l={d.liturgy} core={d} /> },
+    { id: 'noc', label: 'Nocturns', claim: 'nocturns', render: d => <SvcNocturns n={d.nocturns} />,
+      sections: [['sec-canon', 'Trinity canon'], ['sec-gregory', 'Hymn of Gregory']] },
+    { id: 'mat', label: 'Matins', claim: 'matins', render: d => <SvcMatinsSunday m={d.matins} core={d} />,
+      sections: [['sec-sessionals', 'Sessional hymns'], ['sec-polyeleos', 'Polyeleos'], ['sec-hypakoe', 'Hypakoe'], ['sec-ascent', 'Songs of Ascent'], ['sec-canons', 'The Canons'], ['sec-kontakion', 'Kontakion & Ikos'], ['sec-praises', 'Praises'], ['sec-doxology', 'Doxology']] },
+    { id: 'lit', label: 'Liturgy', claim: 'liturgy', render: d => <SvcLiturgySunday l={d.liturgy} core={d} />,
+      sections: [['sec-beatitudes', 'Beatitudes'], ['sec-propers', 'Prokeimenon & Alleluia']] },
   ]});
   for (const [k, name] of WK) {
     slots.push({ id: `${k}_eve`, label: `${name} Evening`, services: [
-      { id: 'vsp', label: 'Vespers', claim: `vespers_weekday.${k}`, render: d => <SvcVespersWeekday v={d.vespers_weekday[k]} eve={k} /> },
-      { id: 'cpl', label: 'Compline', claim: `compline.${k}`, render: d => <SvcCompline cpl={d.compline[k]} night={k} /> },
+      { id: 'vsp', label: 'Vespers', claim: `vespers_weekday.${k}`, render: d => <SvcVespersWeekday v={d.vespers_weekday[k]} eve={k} />,
+        sections: [['sec-lic', 'Lord, I have cried'], ['sec-fallback', 'Menaion fallback'], ['sec-apost', 'Aposticha'], ['sec-closing', 'Closing']] },
+      { id: 'cpl', label: 'Compline', claim: `compline.${k}`, render: d => <SvcCompline cpl={d.compline[k]} night={k} />,
+        sections: [['sec-canon', 'Canon'], ['sec-after6', 'After Ode VI'], ['sec-closing', 'Closing']] },
     ]});
     const morn = { sun: 'mon', mon: 'tue', tue: 'wed', wed: 'thu', thu: 'fri', fri: 'sat' }[k];
     const mname = { mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday', thu: 'Thursday', fri: 'Friday', sat: 'Saturday' }[morn];
     slots.push({ id: morn, label: mname, services: [
-      { id: 'mat', label: 'Matins', claim: `matins_weekday.${morn}`, render: d => <SvcMatinsWeekday m={d.matins_weekday[morn]} morn={morn} /> },
-      { id: 'lit', label: 'Liturgy', claim: `liturgy_weekday.${morn}`, render: d => <SvcLiturgyWeekday l={d.liturgy_weekday[morn]} morn={morn} /> },
+      { id: 'mat', label: 'Matins', claim: `matins_weekday.${morn}`, render: d => <SvcMatinsWeekday m={d.matins_weekday[morn]} morn={morn} />,
+        sections: [['sec-sessionals', 'Sessional hymns'], ['sec-canons', 'The Canons'], ['sec-praises', 'Praises'], ['sec-apost', 'Aposticha'], ['sec-closing', 'Closing']] },
+      { id: 'lit', label: 'Liturgy', claim: `liturgy_weekday.${morn}`, render: d => <SvcLiturgyWeekday l={d.liturgy_weekday[morn]} morn={morn} />,
+        sections: [['sec-beatitudes', 'Beatitudes'], ['sec-propers', 'Prokeimenon & Alleluia']] },
     ]});
   }
   return slots;

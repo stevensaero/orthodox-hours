@@ -320,19 +320,77 @@ function ServiceSection({ sectionKey, value }) {
   );
 }
 
+// ── search (reading-view spec §7 Phase B.1) ──────────────────────────────────
+// Client-side index over every loaded module; READER mode normalizes pointing
+// markers, quote/apostrophe glyphs, and case; EXACT BYTES searches the stored
+// strings verbatim (finds sics and print variants as stored).
+const normQ = (t) => t
+  .replace(/\s(\*\*|\*|\/\/|\|)\s/g, ' ')
+  .replace(/[‘’]/g, "'").replace(/[“”]/g, '"')
+  .replace(/\s+/g, ' ').toLowerCase();
+
+function walkIndex(value, path, out) {
+  if (value == null) return;
+  if (typeof value === 'object' && !Array.isArray(value) && typeof value.text === 'string') {
+    out.push({ path, text: value.text, file: value.src?.file, locus: value.src?.locus, type: value.type });
+    return;
+  }
+  if (Array.isArray(value)) { value.forEach((v, i) => walkIndex(v, `${path}[${i}]`, out)); return; }
+  if (typeof value === 'object') {
+    for (const [k, v] of Object.entries(value)) {
+      if (k === '_encoded' || k === 'src' || k === 'homoglyph_log') continue;
+      walkIndex(v, `${path}.${k}`, out);
+    }
+  }
+}
+let _searchIndex = null;
+async function buildSearchIndex() {
+  if (_searchIndex) return _searchIndex;
+  const out = [];
+  for (const t of TONES) {
+    try { walkIndex(await loadV2Module(`tone${t}`), `tone${t}`, out); } catch { /* tone absent */ }
+  }
+  try { walkIndex(await loadV2Module('shared'), 'shared', out); } catch { /* absent */ }
+  try { walkIndex(await loadV2Module('theotokia'), 'theotokia', out); } catch { /* absent */ }
+  for (const e of out) e.norm = normQ(e.text);
+  _searchIndex = out;
+  return out;
+}
+
+// breadcrumb + navigation target from a position path
+function navFromPath(path) {
+  const m = path.match(/^tone(\d)\.(.+)$/);
+  if (!m) return { crumb: path.split('.').slice(0, 2).join(' · '), audit: true, path };
+  const tone = Number(m[1]); const rest = m[2];
+  for (const slot of DAY_SLOTS) {
+    for (const svc of slot.services) {
+      if (rest === svc.claim || rest.startsWith(svc.claim + '.') || rest.startsWith(svc.claim + '[')) {
+        return { crumb: `Tone ${tone} → ${slot.label} → ${svc.label}`, tone, slotId: slot.id, svcId: svc.id, path };
+      }
+    }
+  }
+  return { crumb: `Tone ${tone} → canonical hymns`, tone, slotId: 'sun', svcId: null, path };
+}
+
 // ── main component — hosts the READING view (default) and the §12 AUDIT view ─
 export default function OctoechosV2Browser() {
-  const [tone, setTone] = useState(2);
-  const [data, setData] = useState(undefined);       // undefined=loading, null=absent
+  const [tone, setTone] = useState(1);
+  const [data, setData] = useState(undefined);
   const [recurrences, setRecurrences] = useState([]);
   const [sics, setSics] = useState([]);
-  const [view, setView] = useState('reading');       // 'reading' | 'audit'
+  const [view, setView] = useState('reading');
   const [slotId, setSlotId] = useState('sat_eve');
-  const [svcId, setSvcId] = useState(null);           // null = tone landing (canonical hymns)
-  const [mode, setMode] = useState(() => {
-    try { return localStorage.getItem('octoRdgMode') || 'printed'; } catch { return 'printed'; }
-  });
-  const setModePersist = (m) => { setMode(m); try { localStorage.setItem('octoRdgMode', m); } catch { /* private mode */ } };
+  const [svcId, setSvcId] = useState(null);
+  const [mode, setMode] = useState(() => { try { return localStorage.getItem('octoRdgMode') || 'printed'; } catch { return 'printed'; } });
+  const [showRubrics, setShowRubrics] = useState(() => { try { return localStorage.getItem('octoRdgRub') !== '0'; } catch { return true; } });
+  const [narrow, setNarrow] = useState(typeof window !== 'undefined' && window.innerWidth < 720);
+  const [railOpen, setRailOpen] = useState(false);
+  const [q, setQ] = useState('');
+  const [scope, setScope] = useState('corpus');
+  const [exact, setExact] = useState(false);
+  const [results, setResults] = useState(null);
+  const setModePersist = (m) => { setMode(m); try { localStorage.setItem('octoRdgMode', m); } catch { /* private */ } };
+  const setRubPersist = (v) => { setShowRubrics(v); try { localStorage.setItem('octoRdgRub', v ? '1' : '0'); } catch { /* private */ } };
   const audit = view === 'audit';
 
   const [shared, setShared] = useState(null);
@@ -344,43 +402,75 @@ export default function OctoechosV2Browser() {
   useEffect(() => {
     let live = true;
     setData(undefined);
-    loadOctoechosV2Tone(tone)
-      .then(d => { if (live) setData(d); })
-      .catch(() => { if (live) setData(null); });
+    loadOctoechosV2Tone(tone).then(d => { if (live) setData(d); }).catch(() => { if (live) setData(null); });
     return () => { live = false; };
   }, [tone]);
-
-  // deep-link anchors (spec §4): scroll once the page content is present
   useEffect(() => {
-    if (!data) return;
+    const onR = () => setNarrow(window.innerWidth < 720);
+    window.addEventListener('resize', onR);
+    return () => window.removeEventListener('resize', onR);
+  }, []);
+  useEffect(() => {
+    if (!data || results) return;
     const id = decodeURIComponent(window.location.hash.slice(1));
     if (!id) return;
     const el = document.getElementById(id);
     if (el) { el.scrollIntoView({ block: 'center' }); el.style.background = C.goldMid; }
-  }, [data, slotId, svcId, view]);
+  }, [data, slotId, svcId, view, results]);
 
-  // sic index: exact-path lookup for footnote glyphs (reading mode)
   const sicIndex = {};
-  for (const e of sics) {
-    if (e.path && !e.approx) (sicIndex[e.path] = sicIndex[e.path] ?? []).push(e);
-  }
+  for (const e of sics) if (e.path && !e.approx) (sicIndex[e.path] = sicIndex[e.path] ?? []).push(e);
   const roots = { shared, theotokia, [`tone${tone}`]: data };
   const encoded = new Set(data?._encoded ?? []);
   const slot = DAY_SLOTS.find(sl => sl.id === slotId) ?? DAY_SLOTS[0];
   const svc = svcId ? slot.services.find(x => x.id === svcId) : null;
 
+  const flat = [];
+  DAY_SLOTS.forEach(sl => sl.services.forEach(sv => flat.push({ slot: sl, svc: sv })));
+  const flatIdx = flat.findIndex(f => f.slot.id === slotId && svcId && f.svc.id === svcId);
+  const goFlat = (i) => {
+    if (i < 0 || i >= flat.length) return;
+    setSlotId(flat[i].slot.id); setSvcId(flat[i].svc.id); window.location.hash = '';
+  };
+
   const goToday = () => {
     try {
       const lit = getLiturgicalData(new Date());
-      const t = lit.tone || 1;
-      setTone(t);
-      const dow = new Date().getDay();       // 0=Sun … 6=Sat
+      setTone(lit.tone || 1);
+      const dow = new Date().getDay();
       const evening = new Date().getHours() >= 15;
-      const keys = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-      const k = keys[dow];
+      const k = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][dow];
       const id = evening ? (k === 'sat' ? 'sat_eve' : `${k}_eve`) : k;
       if (DAY_SLOTS.some(sl => sl.id === id)) { setSlotId(id); setSvcId(null); }
-    } catch { /* calendar engine unavailable — stay put */ }
+    } catch { /* calendar unavailable */ }
+  };
+
+  const runSearch = async () => {
+    const query = q.trim();
+    if (!query) { setResults(null); return; }
+    const idx = await buildSearchIndex();
+    const needle = exact ? query : normQ(query);
+    const scopePrefix = scope === 'tone' ? `tone${tone}.` : '';
+    const claims = scope === 'day' ? slot.services.map(x => `tone${tone}.${x.claim}`)
+      : scope === 'service' && svc ? [`tone${tone}.${svc.claim}`] : null;
+    const hits = [];
+    for (const e of idx) {
+      if (scopePrefix && !e.path.startsWith(scopePrefix)) continue;
+      if (claims && !claims.some(c => e.path === c || e.path.startsWith(c + '.') || e.path.startsWith(c + '['))) continue;
+      const hay = exact ? e.text : e.norm;
+      const at = hay.indexOf(needle);
+      if (at === -1) continue;
+      hits.push({ ...e, at });
+      if (hits.length >= 80) break;
+    }
+    setResults(hits);
+  };
+  const openResult = (r) => {
+    const nav = navFromPath(r.path);
+    setResults(null); setQ('');
+    if (nav.audit) { setView('audit'); window.location.hash = nav.path; return; }
+    setView('reading'); setTone(nav.tone); setSlotId(nav.slotId); setSvcId(nav.svcId);
+    window.location.hash = nav.path;
   };
 
   const navBtn = (active) => ({
@@ -390,97 +480,182 @@ export default function OctoechosV2Browser() {
     background: active ? C.goldMid : "#fff",
     color: active ? C.gold : C.inkMid, fontWeight: active ? 700 : 400,
   });
+  const railLabel = { fontSize: "0.62rem", letterSpacing: "0.12em", color: C.gold, margin: "12px 0 5px" };
+  const railItem = (active) => ({
+    fontSize: "0.8rem", color: active ? C.gold : C.inkMid, cursor: "pointer",
+    padding: "2px 8px", margin: "0 -8px", borderRadius: "4px",
+    border: `1px solid ${active ? C.gold : "transparent"}`,
+    background: active ? C.goldMid : "none", fontWeight: active ? 700 : 400,
+  });
+
+  const Rail = (
+    <div style={{ width: "168px", flexShrink: 0, borderRight: narrow ? "none" : `1px solid ${C.border}`, paddingRight: narrow ? 0 : "14px" }}>
+      <div style={railLabel}>TONE</div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "4px" }}>
+        {TONES.map(t => (
+          <button key={t} onClick={() => { setTone(t); setSvcId(null); setRailOpen(false); }} style={{
+            ...navBtn(t === tone), padding: "4px 0", textAlign: "center", fontSize: "0.8rem",
+          }}>{t}</button>
+        ))}
+      </div>
+      <div style={railLabel}>DAY</div>
+      <div>
+        {DAY_SLOTS.map(sl => (
+          <div key={sl.id} onClick={() => { setSlotId(sl.id); setSvcId(null); }} style={railItem(sl.id === slotId)}>{sl.label}</div>
+        ))}
+      </div>
+      <div style={railLabel}>SERVICE</div>
+      <div>
+        {slot.services.map(x => (
+          <div key={x.id} onClick={() => { setSvcId(x.id); setRailOpen(false); }} style={railItem(svcId === x.id)}>{x.label}</div>
+        ))}
+      </div>
+      {svc?.sections && (
+        <>
+          <div style={railLabel}>SECTIONS</div>
+          <div>
+            {svc.sections.map(([sid, lab]) => (
+              <div key={sid} onClick={() => { setRailOpen(false); document.getElementById(sid)?.scrollIntoView({ block: 'start' }); }}
+                   style={{ ...railItem(false), fontSize: "0.76rem" }}>{lab}</div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
 
   const coreKeys = ['troparion', 'dismissal_theotokion', 'kontakion', 'ikos'];
   const skip = new Set(['tone', '_encoded']);
 
   return (
     <AuditContext.Provider value={{ audit, recurrences, tonePrefix: `tone${tone}.` }}>
-      <div style={{ background: C.parchment, minHeight: "100vh", padding: "18px 26px", fontFamily: "Georgia, serif" }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: "14px", flexWrap: "wrap" }}>
-          <h1 style={{ fontSize: "1.25rem", color: C.ink, margin: 0 }}>The Octoechos</h1>
-          <span style={{ fontSize: "0.7rem", color: C.inkLight }}>
-            {view === 'reading'
-              ? 'Reading view — the bound page, digitized (octoechos_reading_view_spec.md)'
-              : '§12 Viewer Auditability Contract · schema-driven, default-visible · truthing view (markers verbatim, §3.4)'}
-          </span>
-          <span style={{ marginLeft: "auto", display: "flex", gap: "6px" }}>
-            <button style={navBtn(view === 'reading')} onClick={() => setView('reading')}>Reading</button>
-            <button style={navBtn(view === 'audit')} onClick={() => setView('audit')} title="Raw objects, provenance, recurrence links (§12)">Audit</button>
-          </span>
+      <div style={{ background: C.parchment, minHeight: "100vh", padding: narrow ? "12px" : "18px 26px", fontFamily: "Georgia, serif" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", borderBottom: `1px solid ${C.border}`, paddingBottom: "8px" }}>
+          {narrow && view === 'reading' && (
+            <button onClick={() => setRailOpen(o => !o)} style={{ ...navBtn(railOpen), padding: "3px 8px" }} title="Navigation">☰</button>
+          )}
+          <h1 style={{ fontSize: narrow ? "1.05rem" : "1.25rem", color: C.ink, margin: 0 }}>The Octoechos</h1>
+          {!narrow && (
+            <span style={{ fontSize: "0.68rem", color: C.inkLight, fontStyle: "italic" }}>
+              {view === 'reading' ? 'the bound page, digitized' : '§12 audit — markers verbatim, raw objects'}
+            </span>
+          )}
+          <form onSubmit={e => { e.preventDefault(); runSearch(); }} style={{ marginLeft: "auto", display: "flex", gap: "5px", alignItems: "center" }}>
+            <input value={q} onChange={e => setQ(e.target.value)} placeholder="Search…" style={{
+              fontFamily: "Georgia, serif", fontSize: "0.78rem", padding: "3px 8px",
+              border: `1px solid ${C.goldLight}`, borderRadius: "4px", width: narrow ? "110px" : "170px", background: "#fff",
+            }} />
+            <button type="submit" style={navBtn(false)}>Go</button>
+          </form>
+          <button onClick={goToday} style={navBtn(false)}>Today</button>
+          <button onClick={() => setView(view === 'audit' ? 'reading' : 'audit')} style={navBtn(view === 'audit')}
+                  title="Raw objects, provenance, recurrence links (§12)">Audit</button>
         </div>
 
-        <div style={{ margin: "10px 0 4px", display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
-          {TONES.map(t => (
-            <button key={t} onClick={() => { setTone(t); setSvcId(null); }} style={navBtn(t === tone)}>Tone {t}</button>
-          ))}
-          <button onClick={goToday} style={{ ...navBtn(false), marginLeft: "10px" }} title="Open the current tone and day from the calendar engine">Today</button>
-        </div>
-
-        {view === 'reading' && (
-          <>
-            <div style={{ margin: "6px 0 4px", display: "flex", gap: "6px", alignItems: "center", flexWrap: "wrap" }}>
-              {DAY_SLOTS.map(sl => (
-                <button key={sl.id} onClick={() => { setSlotId(sl.id); setSvcId(null); }} style={navBtn(sl.id === slotId)}>{sl.label}</button>
-              ))}
-            </div>
-            <div style={{ margin: "4px 0 10px", display: "flex", gap: "6px", alignItems: "center", flexWrap: "wrap" }}>
-              {slot.services.map(x => (
-                <button key={x.id} onClick={() => setSvcId(x.id)} style={navBtn(svcId === x.id)}>{x.label}</button>
-              ))}
-              <label style={{ marginLeft: "auto", fontSize: "0.72rem", color: C.inkMid, cursor: "pointer" }}
-                     title="As printed shows the * / ** pointing the bound page prints; clean reading sets one melodic line per row (§3.4)">
-                <input type="checkbox" checked={mode === 'clean'}
-                       onChange={e => setModePersist(e.target.checked ? 'clean' : 'printed')} />
-                {' '}Clean reading
+        {results !== null && (
+          <div style={{ maxWidth: "760px", margin: "14px auto" }}>
+            <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap", marginBottom: "8px" }}>
+              <span style={{ fontSize: "0.85rem", color: C.ink, fontWeight: 700 }}>“{q}” — {results.length}{results.length >= 80 ? '+' : ''} position{results.length === 1 ? '' : 's'}</span>
+              <select value={scope} onChange={e => setScope(e.target.value)} style={{ fontFamily: "Georgia, serif", fontSize: "0.72rem", border: `1px solid ${C.border}`, borderRadius: "4px", background: "#fff", color: C.inkMid }}>
+                <option value="corpus">Whole corpus</option>
+                <option value="tone">Tone {tone} only</option>
+                <option value="day">{slot.label}</option>
+                {svc && <option value="service">{svc.label} only</option>}
+              </select>
+              <label style={{ fontSize: "0.72rem", color: C.inkMid }}>
+                <input type="checkbox" checked={exact} onChange={e => setExact(e.target.checked)} /> Exact bytes
               </label>
+              <button onClick={runSearch} style={navBtn(false)}>Apply</button>
+              <button onClick={() => setResults(null)} style={{ ...navBtn(false), marginLeft: "auto" }}>Close</button>
             </div>
-
-            {data === undefined && <div style={{ color: C.inkLight }}>Loading…</div>}
-            {data === null && (
-              <div style={{ border: `1px dashed ${C.goldLight}`, borderRadius: "6px", padding: "26px", background: "#fff", maxWidth: "640px", margin: "20px auto", textAlign: "center" }}>
-                <div style={{ fontSize: "1.05rem", color: C.ink, fontWeight: 700 }}>Tone {tone}</div>
-                <div style={{ fontSize: "0.85rem", color: C.inkMid, marginTop: "8px" }}>Not yet encoded — coming soon.</div>
-                <div style={{ fontSize: "0.72rem", color: C.inkLight, marginTop: "6px" }}>
-                  Tones are encoded chapter-by-chapter from the St. Sergius print (§11 differential scans). Encoded so far: 2, 3, 4, 5.
+            <div style={{ fontSize: "0.66rem", color: C.inkLight, marginBottom: "8px" }}>
+              {exact ? 'matching stored bytes exactly (finds sics and print variants as stored)' : 'pointing and quote marks normalized'}
+            </div>
+            {results.map((r, i) => {
+              const nav = navFromPath(r.path);
+              const start = Math.max(0, r.at - 60);
+              return (
+                <div key={i} onClick={() => openResult(r)} style={{
+                  background: "#fff", border: `1px solid ${C.border}`, borderRadius: "6px",
+                  padding: "8px 12px", marginBottom: "6px", cursor: "pointer",
+                }}>
+                  <div style={{ fontSize: "0.68rem", color: C.gold, marginBottom: "2px" }}>{nav.crumb}</div>
+                  <div style={{ fontFamily: "Georgia, serif", fontSize: "0.82rem", color: C.ink, lineHeight: 1.5 }}>
+                    {start > 0 ? '…' : ''}{r.text.slice(start, r.at + 90)}{r.at + 90 < r.text.length ? '…' : ''}
+                    {sicIndex[r.path] && <sup style={{ color: C.gold }} title={sicIndex[r.path].map(h => h.note).join('; ')}>※</sup>}
+                  </div>
+                  <div style={{ fontSize: "0.62rem", color: C.inkLight, marginTop: "2px" }}>
+                    {r.file ? `${r.file} — ${r.locus}` : r.path}{r.type ? ` · ${r.type}` : ''}
+                  </div>
                 </div>
-              </div>
-            )}
-            {data && (
-              <ReadingContext.Provider value={{ mode, sics: sicIndex, roots, tonePrefix: `tone${tone}.` }}>
-                <div style={{ background: "#fff", border: `1px solid ${C.border}`, borderRadius: "6px", padding: "26px 34px", maxWidth: "720px", margin: "0 auto", boxShadow: "0 1px 3px rgba(60,40,10,0.08)" }}>
-                  <div style={{ textAlign: "center", fontFamily: "Georgia, serif", letterSpacing: "0.18em", color: C.gold, fontSize: "0.85rem" }}>TONE {tone}</div>
-                  <div style={{ textAlign: "center", fontSize: "0.78rem", color: C.inkLight, marginBottom: "8px" }}>{slot.label}{svc ? ` — ${svc.label}` : ''}</div>
-                  {!svc && <SvcCanonical d={data} />}
-                  {!svc && (
-                    <div style={{ textAlign: "center", fontSize: "0.78rem", color: C.inkLight, marginTop: "14px" }}>
-                      Choose a service above to open its page.
-                    </div>
-                  )}
-                  {svc && !encoded.has(svc.claim) && (
-                    <div style={{ textAlign: "center", padding: "20px 0" }}>
-                      <div style={{ fontSize: "0.9rem", color: C.inkMid }}>{svc.label} — not yet encoded for Tone {tone}.</div>
-                      <div style={{ fontSize: "0.72rem", color: C.inkLight, marginTop: "4px" }}>This section will appear when its chapter is encoded (coming soon).</div>
-                    </div>
-                  )}
-                  {svc && encoded.has(svc.claim) && svc.render(data)}
-                </div>
-              </ReadingContext.Provider>
-            )}
-          </>
+              );
+            })}
+            {results.length === 0 && <div style={{ color: C.inkLight, fontSize: "0.85rem" }}>No positions match.</div>}
+          </div>
         )}
 
-        {view === 'audit' && (
-          <>
+        {results === null && view === 'reading' && (
+          <div style={{ display: "flex", gap: "20px", marginTop: "12px", position: "relative" }}>
+            {(!narrow || railOpen) && (
+              narrow ? (
+                <div style={{ position: "absolute", zIndex: 5, background: C.parchment, border: `1px solid ${C.goldLight}`, borderRadius: "6px", padding: "10px 14px", boxShadow: "0 2px 8px rgba(60,40,10,0.15)" }}>
+                  {Rail}
+                </div>
+              ) : Rail
+            )}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              {data === undefined && <div style={{ color: C.inkLight }}>Loading…</div>}
+              {data === null && (
+                <div style={{ border: `1px dashed ${C.goldLight}`, borderRadius: "6px", padding: "26px", background: "#fff", maxWidth: "640px", margin: "20px auto", textAlign: "center" }}>
+                  <div style={{ fontSize: "1.05rem", color: C.ink, fontWeight: 700 }}>Tone {tone}</div>
+                  <div style={{ fontSize: "0.85rem", color: C.inkMid, marginTop: "8px" }}>Not yet encoded — coming soon.</div>
+                </div>
+              )}
+              {data && (
+                <ReadingContext.Provider value={{ mode, sics: sicIndex, roots, tonePrefix: `tone${tone}.`, showRubrics }}>
+                  <div style={{ background: "#fff", border: `1px solid ${C.border}`, borderRadius: "6px", padding: narrow ? "16px 18px" : "26px 34px", maxWidth: "720px", margin: "0 auto", boxShadow: "0 1px 3px rgba(60,40,10,0.08)" }}>
+                    <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", fontSize: "0.68rem", color: C.inkMid }}>
+                      <label style={{ cursor: "pointer" }}><input type="checkbox" checked={showRubrics} onChange={e => setRubPersist(e.target.checked)} /> Rubrics</label>
+                      <label style={{ cursor: "pointer" }} title="As printed shows the * / ** pointing of the bound page; clean reading sets one melodic line per row (§3.4)">
+                        <input type="checkbox" checked={mode === 'clean'} onChange={e => setModePersist(e.target.checked ? 'clean' : 'printed')} /> Clean reading
+                      </label>
+                    </div>
+                    <div style={{ textAlign: "center", letterSpacing: "0.18em", color: C.gold, fontSize: "0.85rem" }}>TONE {tone}</div>
+                    <div style={{ textAlign: "center", fontSize: "0.78rem", color: C.inkLight, marginBottom: "8px" }}>{slot.label}{svc ? ` — ${svc.label}` : ''}</div>
+                    {!svc && <SvcCanonical d={data} />}
+                    {!svc && <div style={{ textAlign: "center", fontSize: "0.78rem", color: C.inkLight, marginTop: "14px" }}>Choose a service to open its page.</div>}
+                    {svc && !encoded.has(svc.claim) && (
+                      <div style={{ textAlign: "center", padding: "20px 0" }}>
+                        <div style={{ fontSize: "0.9rem", color: C.inkMid }}>{svc.label} — not yet encoded for Tone {tone}.</div>
+                      </div>
+                    )}
+                    {svc && encoded.has(svc.claim) && svc.render(data)}
+                    {svc && flatIdx >= 0 && (
+                      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "18px", borderTop: `1px solid ${C.border}`, paddingTop: "8px", fontSize: "0.72rem" }}>
+                        <span onClick={() => goFlat(flatIdx - 1)} style={{ color: flatIdx > 0 ? C.gold : C.border, cursor: flatIdx > 0 ? "pointer" : "default" }}>
+                          {flatIdx > 0 ? `← ${flat[flatIdx - 1].slot.label} · ${flat[flatIdx - 1].svc.label}` : ''}
+                        </span>
+                        <span onClick={() => goFlat(flatIdx + 1)} style={{ color: flatIdx < flat.length - 1 ? C.gold : C.border, cursor: flatIdx < flat.length - 1 ? "pointer" : "default" }}>
+                          {flatIdx < flat.length - 1 ? `${flat[flatIdx + 1].slot.label} · ${flat[flatIdx + 1].svc.label} →` : ''}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </ReadingContext.Provider>
+              )}
+            </div>
+          </div>
+        )}
+
+        {results === null && view === 'audit' && (
+          <div style={{ marginTop: "12px" }}>
+            <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "8px" }}>
+              {TONES.map(t => <button key={t} onClick={() => setTone(t)} style={navBtn(t === tone)}>Tone {t}</button>)}
+            </div>
             {data === undefined && <div style={{ color: C.inkLight }}>Loading…</div>}
             {data === null && (
               <div style={{ border: `1px dashed ${C.goldLight}`, borderRadius: "6px", padding: "16px", color: C.inkMid, background: "#fff", maxWidth: "620px" }}>
                 <b>The Tone {tone} chapter file has no V2 data yet.</b>
-                <div style={{ fontSize: "0.8rem", marginTop: "6px", color: C.inkLight }}>
-                  Per-tone chapter encoding is §11; the schema, validators, registers, and this
-                  viewer ship first (§12.6). The tone-independent Shared tables below are
-                  unaffected by the tone selector.
-                </div>
               </div>
             )}
             {shared && (
@@ -538,7 +713,7 @@ export default function OctoechosV2Browser() {
                   ))}
               </>
             )}
-          </>
+          </div>
         )}
       </div>
     </AuditContext.Provider>
