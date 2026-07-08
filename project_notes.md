@@ -1,5 +1,30 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.31.4** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+**Tool version: v0.31.5** | **Tone Trainer: v0.25.47** | Last synced: July 7, 2026
+
+**Session July 7, 2026 (cont. 4) — Octoechos V2 §11 STEP 4: tone2.js SUNDAY
+CYCLE ENCODED (first per-tone file), v0.31.5.** core/LV/GV/Nocturns/Sunday
+Matins/Liturgy from 2-1.pdf -layout, paragraph-grammar generated, 192
+nodes. §4.1 multi-site verification automated (troparion ×4 incl. exact
+§9.5 variance assert; kontakion ×2; dismissal ×2). Register 109 pairs / 50
+live-checked; new pairs: Nocturns↔Matins Odes 1+6 irmoi identical.
+
+### Findings & flags (Bill review)
+
+- **APOSTROPHE GLYPHS ARE PER-PRINT-SITE:** the "O new wonder" pair
+  (Theotokia Part 1 ↔ 2-1 GV), spec-verified line-for-line, is
+  byte-VARIANT: mother's (U+0027, Theotokia.pdf) vs mother’s (U+2019,
+  2-1). Both files MIX glyphs internally (2-1: 4 straight/12 curly;
+  Theotokia: 3/2). Register entry updated identical→variant with evidence.
+  Rule implication for future pairs: expect glyph-level variance across
+  files even where wording+pointing agree.
+- Ode-heading typography: "OD E I"/"OD E V" split forms at four sites in
+  2-1 (sic register, structural headings — not stored text).
+- Ode 9 Matins irmos ends "…do we magnify" with NO terminal period as
+  printed — kept verbatim (no sic entry; end-punctuation absence is
+  print-faithful).
+- Magnificat block between Odes VIII–IX and all Horologion frames:
+  EXCLUDED per §5 (recorded; the per-ode Menaion-rubric boundary shows
+  where).
 
 **Session July 7, 2026 (cont. 3) — Octoechos V2 §11 STEP 3: Common
 Theotokia tables ENCODED (§4.12), v0.31.4.** Theotokia.pdf scanned per §10
