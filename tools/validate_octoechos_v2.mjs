@@ -186,7 +186,10 @@ function checkTextNode(where, n) {
       if (doubles > 1 && SIC_POINTING.has(where)) info.push(`${where}: doubled ** kept verbatim per sic register (pointing anomaly).`);
       if (singles + doubles < 1) fail(`${where}: Tier-2 sergius text carries no pointing markers — tier or text wrong.`);
     }
-    if (n.tier === 1 && /[*]/.test(t)) fail(`${where}: Tier-1 text contains pointing markers — either the tier or the text is wrong (per-item source fact, §3.2).`);
+    if (n.tier === 1 && /[*]/.test(t)) {
+      if (SIC_POINTING.has(where)) info.push(`${where}: Tier-1 prose with a sic-registered stray marker — kept verbatim (§9.12).`);
+      else fail(`${where}: Tier-1 text contains pointing markers — either the tier or the text is wrong (per-item source fact, §3.2).`);
+    }
   }
   if (n.tier === 3 && !n.director) info.push(`${where}: Tier-3 without director flag — check §3.5.`);
 
