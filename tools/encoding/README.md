@@ -39,8 +39,24 @@ Scripts:
   per-tone counts reported as findings instead of asserted, de-spaced
   service headings, 'The Verse:' forms, Trinitarian spelling, etc. START
   FROM THESE for tones 4–8/1.
+- `gen_tone4_sun.py` / `gen_weekday4.py` — the tone-4 variants (paths:
+  `/tmp/scan4/`, repo at `/tmp/oh`): single-space paragraph indents,
+  mid-paragraph page breaks in 4-1 (formfeed = page separator, not a
+  paragraph boundary), Spec. Mel. label variants ('Spec, Mel.'/'Spec.
+  Mel:'/curly-left close — SPECMEL_RE), Glory/Both-now heading sic
+  variants, the 4-7 'Repeat:'-labeled incipit device, split praises
+  closer, Ode-I long sub-canon headings, fallback-tier Spec. Mel.
+  START FROM THESE for tones 5–8/1.
 - `verify_shared_t3.py` / `postpass_t3.py` — §5 byte-verification against
   shared.js + per-tone storage of divergent items.
+- `verify_shared_t4.py` / `postpass_t4.py` — the tone-4 §5 pass. CAUTION:
+  extraction markers can be SHADOWED by earlier same-text sites (4-7
+  Saturday sessional verses shadowed the Liturgy Alleluia markers —
+  re-scope with search_after before calling a divergence).
+
+`wk_lib.py` carries the cumulative tolerances (tone-4 additions: HOMOGLYPHS
+С/а, indent ≥ 1, 'ODE IX.' trailing period, comma-ended-verse merge guard,
+'Both now...,' label variant). Tone-3 scripts import the same lib.
 
 Known per-print gotchas the walkers already handle: split headings
 ("OD E I", "AT M AT IN S"), canon-1 heading printed before OR after ODE I,

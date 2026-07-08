@@ -5,7 +5,7 @@ import re
 
 ROM2N = {'I':1,'II':2,'III':3,'IV':4,'V':5,'VI':6,'VII':7,'VIII':8,'IX':9}
 def ode_of(t):
-    m = re.match(r'^ODE(VIII|VII|VI|IX|IV|III|II|I|V)$', t.replace(' ', ''))
+    m = re.match(r'^ODE(VIII|VII|VI|IX|IV|III|II|I|V)\.?$', t.replace(' ', ''))   # 4-2 prints 'ODE IX.' (trailing period — heading-sic class)
     return ROM2N[m.group(1)] if m else None
 
 VERSE_CLASS = re.compile(r'^(The )?Verse: |^Refrain: |^(The )?Prokeimenon|^Communion Verse: |^Alleluia, in Tone|^Spec\. Mel\.')
@@ -22,7 +22,7 @@ def tokenize(path):
             cur = None; continue
         if indent >= 8:
             paras.append({'kind': 'heading', 'text': stripped}); cur = None; continue
-        if indent >= 2 or stripped.startswith('Irmos:') or (cur is None) or BLOCK_START.match(stripped):
+        if indent >= 1 or stripped.startswith('Irmos:') or (cur is None) or BLOCK_START.match(stripped):   # tone-4: single-space paragraph indents (merge passes absorb the two 1-space continuations)
             cur = {'kind': 'para', 'text': stripped}; paras.append(cur); continue
         cur['text'] += ' ' + stripped
     for p in paras: p['text'] = re.sub(r'\s+', ' ', p['text']).strip()
@@ -34,14 +34,17 @@ def tokenize(path):
            and not p['text'].startswith('Irmos:'):
             merged[-1]['text'] += ' ' + p['text']
         elif merged and merged[-1]['kind'] == 'para' and VERSE_CLASS.match(merged[-1]['text']) \
-           and not TERMINAL.search(merged[-1]['text']) and p['kind'] == 'para':
+           and not TERMINAL.search(merged[-1]['text']) and p['kind'] == 'para' \
+           and not (merged[-1]['text'].endswith(',') and p['text'][:1].isupper()):
+            # 4-2 print fact: sun-eve ladder verse 1 ENDS with a comma ("forgiveness," — sic
+            # candidate); a comma-ended verse absorbs only lowercase-starting continuations
             merged[-1]['text'] += ' ' + p['text']
         else:
             merged.append(p)
     return merged
 
 RUBRIC_O_COUNT = {'n': 0}
-HOMOGLYPHS = {'О': 'O', 'М': 'M', 'о': 'o'}   # U+041E, U+041C, U+043E (3-6/3-7 additions)
+HOMOGLYPHS = {'О': 'O', 'М': 'M', 'о': 'o', 'С': 'C', 'а': 'a'}   # U+041E, U+041C, U+043E (3-6/3-7), U+0421+U+0430 (4-4 additions, July 7 2026)
 def norm(s):
     # §9.10 normalize-at-encode for rubric/metadata strings; session-level
     # count reported in project notes (text nodes carry per-node logs).
@@ -81,7 +84,8 @@ LABELS = [('To the martyrs: ', 'martyrs'), ('For the reposed: ', 'for_the_repose
           ('Glory ..., ', 'glory'), ('Both now ..., ', 'both_now')]
 
 def label_split(t):
-    pairs = [('Glory ..., For the reposed: ', ['glory', 'for_the_reposed']),
+    pairs = [('Both now..., ', 'both_now'),   # 4-6 print: missing space after 'Both now' (sic register)
+             ('Glory ..., For the reposed: ', ['glory', 'for_the_reposed']),
              ('Both now ..., Theotokion: ', ['both_now', 'theotokion']),
              ('Glory ..., Theotokion: ', ['glory', 'theotokion']),
              ('Glory: ', 'glory')] + LABELS
