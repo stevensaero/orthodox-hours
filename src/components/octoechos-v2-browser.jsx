@@ -183,6 +183,11 @@ const isTextNode = (v) => v && typeof v === 'object' && !Array.isArray(v) && typ
 // ── generic renderer — walks the data, never enumerates fields (§12.1) ───────
 const ROMAN = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV', 5: 'V', 6: 'VI', 7: 'VII', 8: 'VIII' };
 
+// Compact weekday for the mobile breadcrumb (e.g. "Wednesday Evening" → "Wed Evening").
+const shortDay = (label = '') => label
+  .replace('Monday', 'Mon').replace('Tuesday', 'Tue').replace('Wednesday', 'Wed')
+  .replace('Thursday', 'Thu').replace('Friday', 'Fri').replace('Saturday', 'Sat').replace('Sunday', 'Sun');
+
 // A path is ALARMING only when neither it nor any ancestor is registered —
 // interior keys of a registered table are covered by their ancestor (§12.2's
 // unit of coverage is the schema-manifest field, not every nested key).
@@ -387,6 +392,7 @@ export default function OctoechosV2Browser() {
   const headerRef = useRef(null);
   const [headerH, setHeaderH] = useState(0);
   const [railOpen, setRailOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [q, setQ] = useState('');
   const [scope, setScope] = useState('corpus');
   const [exact, setExact] = useState(false);
@@ -545,52 +551,157 @@ export default function OctoechosV2Browser() {
     </div>
   );
 
+  // Mobile breadcrumb shown in the compact header (e.g. "Tone 5 · Wed Evening · Vespers").
+  const breadcrumb = `Tone ${tone} · ${shortDay(slot.label)}${svc ? ` · ${svc.label}` : ''}`;
+
+  // ── Mobile "Navigate" slide-over drawer (<720px) ───────────────────────────
+  // Full-height left panel over a dim backdrop. Selecting a tone/day/service
+  // keeps the drawer open (the user configures, then leaves): it closes only via
+  // the ✕, the hamburger, the "View →" button, or tapping a section.
+  const drawerChip = (active) => ({
+    fontFamily: "Georgia, serif", fontSize: "0.85rem", cursor: "pointer",
+    padding: "5px 14px", borderRadius: "16px",
+    border: `1px solid ${active ? C.gold : C.border}`,
+    background: active ? C.goldMid : "#fff",
+    color: active ? C.gold : C.inkMid, fontWeight: active ? 700 : 400,
+  });
+  const MobileDrawer = (
+    <>
+      <div onClick={() => setRailOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(28,16,8,0.38)", zIndex: 40 }} />
+      <div style={{
+        position: "fixed", top: 0, left: 0, bottom: 0, width: "min(320px, 86vw)",
+        background: C.parchment, borderRight: `1px solid ${C.goldLight}`,
+        boxShadow: "2px 0 14px rgba(60,40,10,0.25)", zIndex: 41,
+        padding: "14px 18px 22px", overflowY: "auto", boxSizing: "border-box",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "4px" }}>
+          <button onClick={() => setRailOpen(false)} aria-label="Close navigation" style={{
+            border: "none", background: "none", cursor: "pointer", fontSize: "1.15rem",
+            color: C.inkMid, padding: "0 2px", lineHeight: 1,
+          }}>✕</button>
+          <span style={{ fontSize: "1.05rem", fontWeight: 700, color: C.ink }}>Navigate</span>
+        </div>
+
+        <div style={railLabel}>TONE</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "6px" }}>
+          {TONES.map(t => (
+            <button key={t} onClick={() => { setTone(t); setSvcId(null); }} style={{
+              ...navBtn(t === tone), padding: "9px 0", textAlign: "center", fontSize: "0.9rem",
+            }}>{t}</button>
+          ))}
+        </div>
+
+        <div style={railLabel}>DAY</div>
+        <select value={slotId} onChange={e => { setSlotId(e.target.value); setSvcId(null); }} style={{
+          width: "100%", boxSizing: "border-box", fontFamily: "Georgia, serif", fontSize: "0.9rem",
+          padding: "8px 10px", border: `1px solid ${C.goldLight}`, borderRadius: "6px",
+          background: "#fff", color: C.inkMid,
+        }}>
+          {DAY_SLOTS.map(sl => <option key={sl.id} value={sl.id}>{sl.label}</option>)}
+        </select>
+
+        <div style={railLabel}>SERVICE</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+          {slot.services.map(x => (
+            <button key={x.id} onClick={() => setSvcId(x.id)} style={drawerChip(svcId === x.id)}>{x.label}</button>
+          ))}
+        </div>
+
+        {svc?.sections && (
+          <>
+            <div style={railLabel}>SECTIONS</div>
+            <div>
+              {svc.sections.map(([sid, lab]) => (
+                <div key={sid} onClick={() => { setRailOpen(false); document.getElementById(sid)?.scrollIntoView({ block: 'start' }); }}
+                     style={{ ...railItem(false), padding: "6px 8px", fontSize: "0.85rem" }}>{lab}</div>
+              ))}
+            </div>
+          </>
+        )}
+
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "18px", borderTop: `1px solid ${C.border}`, paddingTop: "12px" }}>
+          <button onClick={goToday} style={navBtn(false)}>Today</button>
+          <button onClick={() => { setView('audit'); setRailOpen(false); }} style={navBtn(false)}>Audit</button>
+          <button onClick={() => setRailOpen(false)} style={{ ...navBtn(true), marginLeft: "auto" }}>View →</button>
+        </div>
+      </div>
+    </>
+  );
+
   const coreKeys = ['troparion', 'dismissal_theotokion', 'kontakion', 'ikos'];
   const skip = new Set(['tone', '_encoded']);
 
   return (
     <AuditContext.Provider value={{ audit, recurrences, tonePrefix: `tone${tone}.` }}>
       <div style={{ background: C.parchment, minHeight: "100vh", padding: narrow ? "0 12px 12px" : "0 26px 18px", fontFamily: "Georgia, serif" }}>
-        <div ref={headerRef} style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", borderBottom: `1px solid ${C.border}`, paddingTop: narrow ? "12px" : "18px", paddingBottom: "8px", position: "sticky", top: "var(--hours-return-strip-h, 0px)", zIndex: 30, background: C.parchment }}>
-          {narrow && view === 'reading' && (
-            <button onClick={() => setRailOpen(o => !o)} style={{ ...navBtn(railOpen), padding: "3px 8px" }} title="Navigation">☰</button>
+        <div ref={headerRef} style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: narrow ? "nowrap" : "wrap", borderBottom: `1px solid ${C.border}`, paddingTop: narrow ? "12px" : "18px", paddingBottom: "8px", position: "sticky", top: "var(--hours-return-strip-h, 0px)", zIndex: 30, background: C.parchment }}>
+          {narrow ? (
+            <>
+              {view === 'reading' && results === null && (
+                <button onClick={() => setRailOpen(o => !o)} style={{ ...navBtn(railOpen), padding: "4px 10px", fontSize: "1.05rem", lineHeight: 1 }} title="Navigate">☰</button>
+              )}
+              {searchOpen ? (
+                <form onSubmit={e => { e.preventDefault(); runSearch(); setSearchOpen(false); }} style={{ flex: 1, minWidth: 0, display: "flex", gap: "5px", alignItems: "center" }}>
+                  <input autoFocus value={q} onChange={e => setQ(e.target.value)} placeholder="Search the corpus…" style={{
+                    flex: 1, minWidth: 0, fontFamily: "Georgia, serif", fontSize: "0.82rem", padding: "4px 8px",
+                    border: `1px solid ${C.goldLight}`, borderRadius: "4px", background: "#fff",
+                  }} />
+                  <button type="submit" style={navBtn(false)}>Go</button>
+                </form>
+              ) : (
+                <span style={{ flex: 1, minWidth: 0, fontFamily: "Georgia, serif", fontSize: "0.92rem", fontWeight: 700, color: C.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {view === 'reading' ? breadcrumb : '§12 Audit'}
+                </span>
+              )}
+              <button onClick={() => setSearchOpen(o => !o)} style={{ ...navBtn(searchOpen), padding: "4px 10px", fontSize: "0.95rem", lineHeight: 1 }} title={searchOpen ? 'Close search' : 'Search'}>{searchOpen ? '✕' : '🔍'}</button>
+              {view === 'audit' && (
+                <button onClick={() => setView('reading')} style={navBtn(false)} title="Back to the reading view">Read</button>
+              )}
+            </>
+          ) : (
+            <>
+              <h1 style={{ fontSize: "1.25rem", color: C.ink, margin: 0 }}>The Octoechos</h1>
+              <span style={{ fontSize: "0.68rem", color: C.inkLight, fontStyle: "italic" }}>
+                {view === 'reading' ? 'the bound page, digitized' : '§12 audit — markers verbatim, raw objects'}
+              </span>
+              <form onSubmit={e => { e.preventDefault(); runSearch(); }} style={{ marginLeft: "auto", display: "flex", gap: "5px", alignItems: "center" }}>
+                <input value={q} onChange={e => setQ(e.target.value)} placeholder="Search…" style={{
+                  fontFamily: "Georgia, serif", fontSize: "0.78rem", padding: "3px 8px",
+                  border: `1px solid ${C.goldLight}`, borderRadius: "4px", width: "170px", background: "#fff",
+                }} />
+                <button type="submit" style={navBtn(false)}>Go</button>
+              </form>
+              <button onClick={goToday} style={navBtn(false)}>Today</button>
+              <button onClick={() => setView(view === 'audit' ? 'reading' : 'audit')} style={navBtn(view === 'audit')}
+                      title="Raw objects, provenance, recurrence links (§12)">Audit</button>
+            </>
           )}
-          <h1 style={{ fontSize: narrow ? "1.05rem" : "1.25rem", color: C.ink, margin: 0 }}>The Octoechos</h1>
-          {!narrow && (
-            <span style={{ fontSize: "0.68rem", color: C.inkLight, fontStyle: "italic" }}>
-              {view === 'reading' ? 'the bound page, digitized' : '§12 audit — markers verbatim, raw objects'}
-            </span>
-          )}
-          <form onSubmit={e => { e.preventDefault(); runSearch(); }} style={{ marginLeft: "auto", display: "flex", gap: "5px", alignItems: "center" }}>
-            <input value={q} onChange={e => setQ(e.target.value)} placeholder="Search…" style={{
-              fontFamily: "Georgia, serif", fontSize: "0.78rem", padding: "3px 8px",
-              border: `1px solid ${C.goldLight}`, borderRadius: "4px", width: narrow ? "110px" : "170px", background: "#fff",
-            }} />
-            <button type="submit" style={navBtn(false)}>Go</button>
-          </form>
-          <button onClick={goToday} style={navBtn(false)}>Today</button>
-          <button onClick={() => setView(view === 'audit' ? 'reading' : 'audit')} style={navBtn(view === 'audit')}
-                  title="Raw objects, provenance, recurrence links (§12)">Audit</button>
         </div>
 
         {results !== null && (
-          <div style={{ maxWidth: "760px", margin: "14px auto" }}>
-            <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap", marginBottom: "8px" }}>
-              <span style={{ fontSize: "0.85rem", color: C.ink, fontWeight: 700 }}>“{q}” — {results.length}{results.length >= 80 ? '+' : ''} position{results.length === 1 ? '' : 's'}</span>
-              <select value={scope} onChange={e => setScope(e.target.value)} style={{ fontFamily: "Georgia, serif", fontSize: "0.72rem", border: `1px solid ${C.border}`, borderRadius: "4px", background: "#fff", color: C.inkMid }}>
-                <option value="corpus">Whole corpus</option>
-                <option value="tone">Tone {tone} only</option>
-                <option value="day">{slot.label}</option>
-                {svc && <option value="service">{svc.label} only</option>}
-              </select>
-              <label style={{ fontSize: "0.72rem", color: C.inkMid }}>
-                <input type="checkbox" checked={exact} onChange={e => setExact(e.target.checked)} /> Exact bytes
-              </label>
-              <button onClick={runSearch} style={navBtn(false)}>Apply</button>
-              <button onClick={() => setResults(null)} style={{ ...navBtn(false), marginLeft: "auto" }}>Close</button>
-            </div>
-            <div style={{ fontSize: "0.66rem", color: C.inkLight, marginBottom: "8px" }}>
-              {exact ? 'matching stored bytes exactly (finds sics and print variants as stored)' : 'pointing and quote marks normalized'}
+          <div style={{ maxWidth: "760px", margin: "0 auto" }}>
+            <div style={{
+              position: "sticky", top: `calc(var(--hours-return-strip-h, 0px) + ${headerH}px)`, zIndex: 20,
+              background: C.parchment, paddingTop: "14px", paddingBottom: "8px", marginBottom: "6px",
+              borderBottom: `1px solid ${C.border}`,
+            }}>
+              <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap", marginBottom: "6px" }}>
+                <span style={{ fontSize: "0.85rem", color: C.ink, fontWeight: 700 }}>“{q}” — {results.length}{results.length >= 80 ? '+' : ''} position{results.length === 1 ? '' : 's'}</span>
+                <select value={scope} onChange={e => setScope(e.target.value)} style={{ fontFamily: "Georgia, serif", fontSize: "0.72rem", border: `1px solid ${C.border}`, borderRadius: "4px", background: "#fff", color: C.inkMid }}>
+                  <option value="corpus">Whole corpus</option>
+                  <option value="tone">Tone {tone} only</option>
+                  <option value="day">{slot.label}</option>
+                  {svc && <option value="service">{svc.label} only</option>}
+                </select>
+                <label style={{ fontSize: "0.72rem", color: C.inkMid }}>
+                  <input type="checkbox" checked={exact} onChange={e => setExact(e.target.checked)} /> Exact bytes
+                </label>
+                <button onClick={runSearch} style={navBtn(false)}>Apply</button>
+                <button onClick={() => setResults(null)} style={{ ...navBtn(false), marginLeft: "auto" }}>Close</button>
+              </div>
+              <div style={{ fontSize: "0.66rem", color: C.inkLight }}>
+                {exact ? 'matching stored bytes exactly (finds sics and print variants as stored)' : 'pointing and quote marks normalized'}
+              </div>
             </div>
             {results.map((r, i) => {
               const nav = navFromPath(r.path);
@@ -617,13 +728,8 @@ export default function OctoechosV2Browser() {
 
         {results === null && view === 'reading' && (
           <div style={{ display: "flex", gap: "20px", marginTop: "12px", position: "relative" }}>
-            {(!narrow || railOpen) && (
-              narrow ? (
-                <div style={{ position: "absolute", zIndex: 5, background: C.parchment, border: `1px solid ${C.goldLight}`, borderRadius: "6px", padding: "10px 14px", boxShadow: "0 2px 8px rgba(60,40,10,0.15)" }}>
-                  {Rail}
-                </div>
-              ) : Rail
-            )}
+            {!narrow && Rail}
+            {narrow && railOpen && MobileDrawer}
             <div style={{ flex: 1, minWidth: 0 }}>
               {data === undefined && <div style={{ color: C.inkLight }}>Loading…</div>}
               {data === null && (

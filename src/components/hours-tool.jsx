@@ -8492,6 +8492,30 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.34.0",
+    date: "July 2026",
+    summary: "Octoechos V2 browser: mobile-first navigation (compact header + slide-over Navigate drawer) and a sticky search-options bar",
+    items: [
+      "Below 720px the browser now matches the phone mockup: a compact " +
+      "header carries the hamburger, a breadcrumb (Tone 5 · Wed Evening · " +
+      "Vespers), and a search icon that toggles an inline search field. The " +
+      "“The Octoechos” title bar and desktop controls are unchanged " +
+      "at wider widths.",
+      "The mobile rail is now a full-height “Navigate” slide-over " +
+      "drawer over a dimmed backdrop: the TONE number grid, DAY as a " +
+      "dropdown, SERVICE as wrapping chips, and the SECTIONS list. The drawer " +
+      "stays open while you pick tone/day/service and closes only via the " +
+      "✕, the hamburger, the “View →” button, or tapping a " +
+      "section; Today and Audit live in the drawer footer.",
+      "Search: the options bar (position count, scope selector, Exact-bytes " +
+      "toggle, Apply, Close) is now sticky beneath the header, so it stays " +
+      "put while the result list scrolls.",
+      "The V2 route no longer carries the desktop-only 760px min-width " +
+      "wrapper, so the responsive layout renders cleanly on an iPhone 12 mini " +
+      "with no horizontal scroll.",
+    ],
+  },
+  {
     version: "v0.33.2",
     date: "July 2026",
     summary: "Octoechos V2 browser: the sticky header no longer drifts a few pixels before catching — it stays anchored from load, pinned below the return strip",
