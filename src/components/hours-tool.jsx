@@ -1591,7 +1591,7 @@ function getKathismaForVespers(liturgicalData, rank, hadVigil = false, pentEntry
       omitted: true,
       rule: "On great feasts of the Lord there is no Psalter reading at Vespers.",
       source: SOURCE,
-      hadVigilNote: "⚠ FW: If a vigil was served last night, no kathisma applies — the tool cannot detect this automatically.",
+      hadVigilNote: "⚠︎ FW: If a vigil was served last night, no kathisma applies — the tool cannot detect this automatically.",
     };
   }
 
@@ -1618,7 +1618,7 @@ function getKathismaForVespers(liturgicalData, rank, hadVigil = false, pentEntry
   }
 
   // 7. Vigil shortcoming note for ordinary days
-  const vigiNote = "⚠ FW: If a vigil was served last night, no kathisma applies — the tool cannot detect this automatically.";
+  const vigiNote = "⚠︎ FW: If a vigil was served last night, no kathisma applies — the tool cannot detect this automatically.";
 
   // 8. Table lookup
   const table = VESPERS_KATHISMA[kathismaPeriod];
@@ -5138,7 +5138,7 @@ function GlossaryEntry({ term, def, highlight }) {
           color: "#8B6914", fontWeight: "bold", textAlign: "left",
           display: "flex", alignItems: "center", gap: "4px" }}
       >
-        <span style={{ fontSize: "0.65rem", color: "#C4A84A" }}>{open ? "▼" : "▶"}</span>
+        <span style={{ fontSize: "0.65rem", color: "#C4A84A" }}>{open ? "▼" : "▶︎"}</span>
         {displayTerm}
       </button>
       {open && (
@@ -7605,7 +7605,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
               whiteSpace: "nowrap",
             }}
           >
-            Read in Psalter ↗
+            Read in Psalter ↗︎
           </a>
         )}
         {isMovable && element.scriptureHref && (
@@ -7624,7 +7624,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
               whiteSpace: "nowrap",
             }}
           >
-            Read in Scripture ↗
+            Read in Scripture ↗︎
           </a>
         )}
         {/* Combined "Read in Scripture" for all of a Vespers's OT lessons at
@@ -7662,7 +7662,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
               appearance: "none",
             }}
           >
-            Read in Scripture ↗
+            Read in Scripture ↗︎
           </button>
         )}
         {/* Phase 3: element-level source link — quiet study aid, jumps to the
@@ -7685,7 +7685,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
               whiteSpace: "nowrap",
             }}
           >
-            ↗ source
+            ↗︎ source
           </a>
         )}
         {(isMovable || element.showFekula) && element.fekula && (
@@ -7711,7 +7711,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
               fontFamily: "Georgia, serif",
             }}
           >
-            ⚠ Unresolved — see Chapter 6
+            ⚠︎ Unresolved — see Chapter 6
           </span>
         )}
       </div>
@@ -8491,6 +8491,19 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.34.3",
+    date: "July 2026",
+    summary: "Hours tool: UI symbol glyphs (warning, external-link, play, copyright) forced to plain black-and-white so iOS/Safari no longer renders them as color emoji",
+    items: [
+      "Appended the text-presentation selector (U+FE0E) to the warning " +
+      "sign (⚠︎), the external-link arrow (↗︎ on the " +
+      "Read-in-Psalter / Read-in-Scripture / source links), the ▶︎ " +
+      "Point/expand glyph, and the footer copyright (©︎). Same " +
+      "glyphs and spacing, now guaranteed monochrome instead of color emoji " +
+      "on Apple platforms. No layout change.",
+    ],
+  },
   {
     version: "v0.34.2",
     date: "July 2026",
@@ -12410,7 +12423,7 @@ function HowItWorksPanel() {
           {sub("Pointed hymnography")}
           {p(<>Pointed text is stored as a single canonical marked string in the OCA dialect: <code>|</code> marks the end of a musical line, <code>//</code> marks the penultimate (cadence) line, and <code>[brackets]</code> mark a syllable for director emphasis — shown underlined. Source markers — the St. Sergius <code>*</code> and <code>**</code>, and underlines in director-pointed documents — are converted to this dialect <em>at encode time</em>, so the data carries one consistent notation. The markers are stripped at render: the assembled service shows clean line breaks and the emphasis underline, while the data browsers can show the raw marked string for verification.</>)}
           {sub("Point & Score")}
-          {p(<>Any pointable verse shows a <strong>▶ Point</strong> and <strong>♫ Score</strong> control at its right edge. <strong>Point</strong> hands the verse to the <strong>Tone Trainer</strong>, which works out the syllabification and accent placement and renders it singable — reciting tone plus cadence — across all four voices (SATB) with audio. <strong>Score</strong> takes the same verse and produces a <strong>printed four-part score</strong>, engraved with a self-hosted, frozen build of VexFlow so the notation cannot drift with upstream releases.</>)}
+          {p(<>Any pointable verse shows a <strong>▶︎ Point</strong> and <strong>♫ Score</strong> control at its right edge. <strong>Point</strong> hands the verse to the <strong>Tone Trainer</strong>, which works out the syllabification and accent placement and renders it singable — reciting tone plus cadence — across all four voices (SATB) with audio. <strong>Score</strong> takes the same verse and produces a <strong>printed four-part score</strong>, engraved with a self-hosted, frozen build of VexFlow so the notation cannot drift with upstream releases.</>)}
           {p(<>The controls are gold and active for the tones whose chant rules have been built and verified from score — <strong>Tones 1, 2, and 3</strong> today. For other tones they appear greyed with a tooltip noting the tone is not yet built, so the feature advertises its own coverage honestly. Each tone is encoded only after its melody and cadences are verified against the Obikhod score.</>)}
         </div>
       )}
@@ -12467,7 +12480,7 @@ function HowItWorksPanel() {
                 ["alleluia · tone, verse, stichos", "Alleluia verse at Liturgy", "✓ encoded — Liturgy future"],
                 ["communion_verse", "Communion hymn text at Liturgy", "✓ encoded — Liturgy future"],
                 ["oca_primary", "Whether this is the OCA calendar’s primary commemoration", "✓ active — multi-service selector"],
-                ["service_file", "Source PDF filename (e.g. 06-09.pdf)", "⚠ partial"],
+                ["service_file", "Source PDF filename (e.g. 06-09.pdf)", "⚠︎ partial"],
                 ["has_great_doxology", "Whether the Great Doxology is sung at Matins", "✓ encoded — all entries carry structural flags; Matins assembler not yet built"],
                 ["magnificat_sung", "Whether the Magnificat (Ode IX) is sung or omitted", "✓ encoded — all entries carry structural flags; Matins assembler not yet built"],
                 ["stichera_lord_i_call", "Vespers Lord I Call stichera texts and count", "✓ active — interleaved into Vespers for encoded dates (§4A/§4B rules)"],
@@ -12486,7 +12499,7 @@ function HowItWorksPanel() {
               ))}
             </tbody>
           </table>
-          {p(<>Legend: <strong>{"✓"} active</strong> = field drives assembled output today. <strong>{"✓"} encoded</strong> = data captured, service not yet built. <strong>{"⚠"} partial/future</strong> = not all entries carry this field, or the service that uses it is not yet built.</>, { fontStyle: "italic", color: "#5C4A1E" })}
+          {p(<>Legend: <strong>{"✓"} active</strong> = field drives assembled output today. <strong>{"✓"} encoded</strong> = data captured, service not yet built. <strong>{"⚠︎"} partial/future</strong> = not all entries carry this field, or the service that uses it is not yet built.</>, { fontStyle: "italic", color: "#5C4A1E" })}
         </div>
       )}
 
@@ -14151,7 +14164,7 @@ export default function App() {
                         WebkitAppearance: "none", appearance: "none",
                       }}
                     >
-                      Read in Scripture ↗
+                      Read in Scripture ↗︎
                     </button>
                   )}
                 </div>
@@ -14693,7 +14706,7 @@ export default function App() {
         {!copyrightExpanded ? (
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", justifyContent: "space-between", alignItems: "baseline" }}>
             <span>
-              © 2026 William Stevens. All Rights Reserved.{" "}
+              ©︎ 2026 William Stevens. All Rights Reserved.{" "}
               Orthodox Hours is free for personal liturgical use and study.{" "}
               Program design, code, and logic remain the exclusive property of William Stevens.{" "}
               Written permission required for redistribution or other uses.{" "}
@@ -14709,7 +14722,7 @@ export default function App() {
         ) : (
           <div>
             <p style={{ margin: "0 0 0.5rem" }}>
-              <strong>Copyright © 2026 William Stevens. All Rights Reserved.</strong>
+              <strong>Copyright ©︎ 2026 William Stevens. All Rights Reserved.</strong>
             </p>
             <p style={{ margin: "0 0 0.5rem" }}>
               Orthodox Hours is provided free of charge for personal liturgical use and study.
