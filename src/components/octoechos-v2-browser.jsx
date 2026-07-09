@@ -593,7 +593,7 @@ export default function OctoechosV2Browser() {
 
         <div style={railLabel}>DAY</div>
         <select value={slotId} onChange={e => { setSlotId(e.target.value); setSvcId(null); }} style={{
-          width: "100%", boxSizing: "border-box", fontFamily: "Georgia, serif", fontSize: "0.9rem",
+          width: "100%", boxSizing: "border-box", fontFamily: "Georgia, serif", fontSize: "16px",
           padding: "8px 10px", border: `1px solid ${C.goldLight}`, borderRadius: "6px",
           background: "#fff", color: C.inkMid,
         }}>
@@ -643,7 +643,7 @@ export default function OctoechosV2Browser() {
               {searchOpen ? (
                 <form onSubmit={e => { e.preventDefault(); runSearch(); setSearchOpen(false); }} style={{ flex: 1, minWidth: 0, display: "flex", gap: "5px", alignItems: "center" }}>
                   <input autoFocus value={q} onChange={e => setQ(e.target.value)} placeholder="Search the corpus…" style={{
-                    flex: 1, minWidth: 0, fontFamily: "Georgia, serif", fontSize: "0.82rem", padding: "4px 8px",
+                    flex: 1, minWidth: 0, fontFamily: "Georgia, serif", fontSize: "16px", padding: "5px 8px",
                     border: `1px solid ${C.goldLight}`, borderRadius: "4px", background: "#fff",
                   }} />
                   <button type="submit" style={navBtn(false)}>Go</button>
@@ -653,7 +653,16 @@ export default function OctoechosV2Browser() {
                   {view === 'reading' ? breadcrumb : '§12 Audit'}
                 </span>
               )}
-              <button onClick={() => setSearchOpen(o => !o)} style={{ ...navBtn(searchOpen), padding: "4px 10px", fontSize: "0.95rem", lineHeight: 1 }} title={searchOpen ? 'Close search' : 'Search'}>{searchOpen ? '✕' : '🔍'}</button>
+              <button onClick={() => setSearchOpen(o => !o)} style={{ ...navBtn(searchOpen), padding: "5px 10px", display: "flex", alignItems: "center", lineHeight: 1 }} title={searchOpen ? 'Close search' : 'Search'}>
+                {searchOpen ? (
+                  <span style={{ fontSize: "0.95rem", fontWeight: 700 }}>✕</span>
+                ) : (
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" style={{ display: "block" }} aria-hidden="true">
+                    <circle cx="10.5" cy="10.5" r="7" />
+                    <line x1="15.9" y1="15.9" x2="21" y2="21" />
+                  </svg>
+                )}
+              </button>
               {view === 'audit' && (
                 <button onClick={() => setView('reading')} style={navBtn(false)} title="Back to the reading view">Read</button>
               )}
@@ -679,7 +688,7 @@ export default function OctoechosV2Browser() {
         </div>
 
         {results !== null && (
-          <div style={{ maxWidth: "760px", margin: "0 auto" }}>
+          <div style={{ maxWidth: "720px", margin: "0 auto" }}>
             <div style={{
               position: "sticky", top: `calc(var(--hours-return-strip-h, 0px) + ${headerH}px)`, zIndex: 20,
               background: C.parchment, paddingTop: "14px", paddingBottom: "8px", marginBottom: "6px",
@@ -687,7 +696,7 @@ export default function OctoechosV2Browser() {
             }}>
               <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap", marginBottom: "6px" }}>
                 <span style={{ fontSize: "0.85rem", color: C.ink, fontWeight: 700 }}>“{q}” — {results.length}{results.length >= 80 ? '+' : ''} position{results.length === 1 ? '' : 's'}</span>
-                <select value={scope} onChange={e => setScope(e.target.value)} style={{ fontFamily: "Georgia, serif", fontSize: "0.72rem", border: `1px solid ${C.border}`, borderRadius: "4px", background: "#fff", color: C.inkMid }}>
+                <select value={scope} onChange={e => setScope(e.target.value)} style={{ fontFamily: "Georgia, serif", fontSize: narrow ? "16px" : "0.72rem", border: `1px solid ${C.border}`, borderRadius: "4px", background: "#fff", color: C.inkMid }}>
                   <option value="corpus">Whole corpus</option>
                   <option value="tone">Tone {tone} only</option>
                   <option value="day">{slot.label}</option>

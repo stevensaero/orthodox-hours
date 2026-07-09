@@ -8492,6 +8492,21 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.34.1",
+    date: "July 2026",
+    summary: "Octoechos V2 mobile search polish: no iOS focus-zoom, matched result width, and a clean monochrome search icon",
+    items: [
+      "Mobile form controls (search field, scope selector, day dropdown) are " +
+      "now 16px, which stops iOS Safari from auto-zooming the page when you " +
+      "tap into them.",
+      "Mobile search results share the reading page's content width so the " +
+      "two views line up.",
+      "The mobile search control is now a crisp monochrome magnifying-glass " +
+      "icon (inline SVG in the ink color) instead of the 🔍 emoji; it becomes " +
+      "a ✕ when the field is open.",
+    ],
+  },
+  {
     version: "v0.34.0",
     date: "July 2026",
     summary: "Octoechos V2 browser: mobile-first navigation (compact header + slide-over Navigate drawer) and a sticky search-options bar",
