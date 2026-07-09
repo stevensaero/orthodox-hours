@@ -1,5 +1,22 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.34.2** | **Tone Trainer: v0.25.47** | Last synced: July 9, 2026
+**Tool version: v0.34.3** | **Tone Trainer: v0.25.47** | Last synced: July 9, 2026
+
+**Session July 9, 2026 (cont.) — EMOJI → MONOCHROME GLYPHS, v0.34.3.**
+Audited `hours-tool.jsx` for characters iOS/Safari renders as COLOR emoji.
+Only four live-UI glyphs qualified (most symbols in the tool are already
+text-presentation code points — e.g. ► not ▶ for the Point control, ☩ not
+✝, ⓘ not ℹ, plain ▲▼▸▾ carets): ⚠ U+26A0 (warning), ↗ U+2197 (external-
+link marks), ▶ U+25B6 (two spots the earlier Point-glyph fix missed: the
+collapse caret at ~5141 and the How-It-Works "▶ Point" text), and © U+00A9
+(footer). Fix: appended U+FE0E (text variation selector) after each — forces
+monochrome on Apple without changing glyph or layout. Left the one bare ⚠
+at the `used.startsWith("⚠")` comparison (prefix-match still holds after the
+stored string gained U+FE0E). Verified: no bare display glyphs remain, gate
+71/71 + 24/24, build green, eslint unchanged (43 pre-existing, +0). NOTE:
+headless Chromium on Linux can't reproduce Apple color-emoji, so the fix is
+verified by U+FE0E placement, not a screenshot. The data browsers
+(octoechos etc.) were out of scope this pass; Psalter/Scripture not yet
+audited.
 
 **Session July 9, 2026 (cont.) — MOBILE TODAY IN HEADER, v0.34.2.**
 Per Bill: moved the Today button from the drawer footer into the compact
