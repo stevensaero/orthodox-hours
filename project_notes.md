@@ -1,5 +1,26 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.33.2** | **Tone Trainer: v0.25.47** | Last synced: July 8, 2026
+**Tool version: v0.34.0** | **Tone Trainer: v0.25.47** | Last synced: July 9, 2026
+
+**Session July 9, 2026 — MOBILE NAV + STICKY SEARCH BAR, v0.34.0.**
+Octoechos V2 browser mobile-first pass (`octoechos-v2-browser.jsx`), to the
+phone mockup Bill supplied. (1) SEARCH: the options row (position count,
+scope selector, Exact-bytes toggle, Apply, Close) + the normalized-note
+line are wrapped in a sticky sub-bar pinned at `calc(var(--hours-return-
+strip-h) + headerH)` so everything above the results stays put while cards
+scroll under it. (2) MOBILE (<720px): compact header = hamburger +
+breadcrumb (`Tone N · <shortDay> · <service>`, via a `shortDay` helper) +
+a 🔍 icon toggling an inline search field (`searchOpen` state). The old
+absolute popup rail is replaced by a full-height "Navigate" slide-over
+drawer over a dim backdrop: TONE grid, DAY as a `<select>`, SERVICE as
+wrapping chips, SECTIONS list, and a footer with Today / Audit / "View →".
+The drawer stays open on tone/day/service selection (per Bill's ruling) and
+closes only via ✕ / hamburger / View → / a section tap. Desktop header and
+rail unchanged. (3) ROOT-CAUSE FIX: `App.jsx` wrapped the V2 route in
+`<div style={{minWidth:"760px"}}>` (correct for the desktop-only table
+browsers, wrong here) — that forced horizontal scroll on the phone and
+clipped the reading column + search icon. Dropped the min-width for the V2
+route only; verified clean at 360×780 (iPhone 12 mini) via Playwright
+screenshots. Gate 71/71 + 24/24, build green.
 
 **Session July 8, 2026 (cont.) — STICKY HEADER DRIFT FIX, v0.33.2.**
 Follow-up to v0.33.1: the sticky header drifted ~18px before catching,
