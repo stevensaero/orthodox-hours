@@ -1,5 +1,19 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.34.0** | **Tone Trainer: v0.25.47** | Last synced: July 9, 2026
+**Tool version: v0.34.1** | **Tone Trainer: v0.25.47** | Last synced: July 9, 2026
+
+**Session July 9, 2026 (cont.) — MOBILE SEARCH POLISH, v0.34.1.**
+Three tweaks to the V2 mobile search (`octoechos-v2-browser.jsx`): (1) iOS
+focus-zoom killed by setting the touch form controls to 16px — the mobile
+search input, the scope `<select>` in the sticky bar (`narrow ? "16px"`),
+and the drawer DAY `<select>`. iOS Safari auto-zooms any field with a
+computed font < 16px; 16px is the fix (verified computed 16px via
+Playwright). (2) Search-results container maxWidth 760 → 720 to match the
+reading page's content width. (3) The mobile search toggle is now a
+monochrome inline-SVG magnifier (stroke `currentColor`, inherits ink)
+instead of the 🔍 emoji; the open state keeps the plain `✕` glyph. Note:
+headless Chromium doesn't reproduce iOS focus-zoom, so the zoom fix is
+verified by the 16px computed size (the documented remedy), not a
+screenshot.
 
 **Session July 9, 2026 — MOBILE NAV + STICKY SEARCH BAR, v0.34.0.**
 Octoechos V2 browser mobile-first pass (`octoechos-v2-browser.jsx`), to the
