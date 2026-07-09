@@ -620,7 +620,6 @@ export default function OctoechosV2Browser() {
         )}
 
         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "18px", borderTop: `1px solid ${C.border}`, paddingTop: "12px" }}>
-          <button onClick={goToday} style={navBtn(false)}>Today</button>
           <button onClick={() => { setView('audit'); setRailOpen(false); }} style={navBtn(false)}>Audit</button>
           <button onClick={() => setRailOpen(false)} style={{ ...navBtn(true), marginLeft: "auto" }}>View →</button>
         </div>
@@ -652,6 +651,9 @@ export default function OctoechosV2Browser() {
                 <span style={{ flex: 1, minWidth: 0, fontFamily: "Georgia, serif", fontSize: "0.92rem", fontWeight: 700, color: C.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {view === 'reading' ? breadcrumb : '§12 Audit'}
                 </span>
+              )}
+              {view === 'reading' && (
+                <button onClick={goToday} style={{ ...navBtn(false), padding: "4px 9px" }} title="Jump to today's service">Today</button>
               )}
               <button onClick={() => setSearchOpen(o => !o)} style={{ ...navBtn(searchOpen), padding: "5px 10px", display: "flex", alignItems: "center", lineHeight: 1 }} title={searchOpen ? 'Close search' : 'Search'}>
                 {searchOpen ? (

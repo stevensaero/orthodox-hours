@@ -8492,6 +8492,17 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.34.2",
+    date: "July 2026",
+    summary: "Octoechos V2 mobile: Today moved into the compact header (left of the search icon); Audit stays in the drawer",
+    items: [
+      "On mobile the Today button now lives in the header, just left of the " +
+      "search icon, so it's reachable without opening the drawer; it remains " +
+      "visible while the search field is open. Audit stays in the Navigate " +
+      "drawer footer alongside View →.",
+    ],
+  },
+  {
     version: "v0.34.1",
     date: "July 2026",
     summary: "Octoechos V2 mobile search polish: no iOS focus-zoom, matched result width, and a clean monochrome search icon",
