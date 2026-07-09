@@ -1,5 +1,12 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.34.1** | **Tone Trainer: v0.25.47** | Last synced: July 9, 2026
+**Tool version: v0.34.2** | **Tone Trainer: v0.25.47** | Last synced: July 9, 2026
+
+**Session July 9, 2026 (cont.) — MOBILE TODAY IN HEADER, v0.34.2.**
+Per Bill: moved the Today button from the drawer footer into the compact
+mobile header, just left of the search icon (`view === 'reading'` gated),
+where it stays visible even with the search field open — the open search
+form doesn't consume the full header, so there's room. Audit and View
+remain in the drawer footer. Verified no horizontal overflow at 360px.
 
 **Session July 9, 2026 (cont.) — MOBILE SEARCH POLISH, v0.34.1.**
 Three tweaks to the V2 mobile search (`octoechos-v2-browser.jsx`): (1) iOS
