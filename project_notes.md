@@ -1,5 +1,36 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.37.0** | **Tone Trainer: v0.25.47** | Last synced: July 11, 2026
+**Tool version: v0.37.0** | **Tone Trainer: v0.26.0** | Last synced: July 11, 2026
+
+**Session July 11, 2026 — TONE 5 COMPLETE (research + implementation), Tone
+Trainer v0.26.0.** Single live session: Bill read the Obikhod Tone 5 tutorial
+(Drillock & Ealy pp. 37–43) and the LIC score directly; every rule was
+score-confirmed before encoding. Full research record:
+`tone_trainer_tone5_analysis.md` (repo root) — rotation (pure A·B·C cycle),
+all four phrase models (A: same-pitch intonation, cad mi→do with CLOSE-pitch
+fills + the rhythmic-balancing anchor stretch; B: anchor-on-reciting-pitch;
+C: prep ti with the accented-monosyllable re·ti slur rule + dotted-anchor
+balancing + 2-syllable compression; Final: a genuinely NEW two-anchor rule —
+re(H) on the SECOND-TO-LAST internal accent, elastic do run, ti(H) melisma on
+the last accent with word-boundary-driven tail compression, la(W) close),
+reference pitch (re=G4 → do=F4 IS the notated tonic, unlike Tone 3), and
+full SATB (tenor sol=C4 drone with Final si=C♯4; bass sol=C3/do=F3, Final low
+mi=A2 via mi_low; soprano strict third; Final tail positional for both
+voices). Implemented and shipped as v0.26.0 (see TRAINER_RELEASE_NOTES):
+dedicated pointLine() handlers with explicit durs, BASS/TENOR_RULES[5],
+hold-tone membership (score-confirmed), the tone-5 tenor suffix-split
+(printed Q~W sustain on the Final "Hear"), PRESET_T5 (Bill's 6-line LIC),
+and gate fixtures (24→34 pointing-role checks). One real bug caught by
+fixture-building before ship: the Final's a1 anchor search collapsed onto a
+backed-up a2 ("…Dev-il falls."). PROVISIONAL rules flagged in the UI + the
+analysis doc: "!"-close → W (A/B), C's compressed la(H·) close; LIC dotted
+intonation accents deliberately NOT auto-rendered (Bill-ruled emphasis).
+Remaining: Bill's live verification of chips/audio/printed score against the
+LIC score. NOTE: this header's Tone Trainer version had been stale at
+v0.25.47 since July 6 while the trainer advanced to v0.25.59 (the Tone 3
+notation/frequency arc, fully logged in TRAINER_RELEASE_NOTES) — corrected
+as part of this session. (Ran concurrently with the Octoechos V2
+wire-in/cutover stream, v0.35.0–v0.37.0 — rebased cleanly on top of it; the
+two streams touch disjoint files.)
 
 **Session July 11, 2026 (cont. 2) — FEKULA CH.6 APPOINTMENTS + B.2 FIXES,
 v0.37.0.** Bill's three rulings post-cutover: (1) the doxasticon-conditional
