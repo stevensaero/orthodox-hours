@@ -10,9 +10,14 @@
  *
  *   1. The LIC split arithmetic (resurrection N + commemoration M = 10),
  *      replicated from the engine's SUN_RES_N map, asserted per rank.
- *   2. The Octoechos data contract the engine depends on for every tone:
- *      sat.lic (>=7), sat.aposticha (==4), sat.dogmatikon, sat.aposticha_glory.
- *   3. The new SUNDAY_APOSTICHA_THEOTOKIA table is present and 8-keyed.
+ *   2. The Octoechos data contract the engine depends on for every tone —
+ *      REBASED to V2 at the Phase 5 cutover (v0.36.0): great_vespers.lic
+ *      (==7), great_vespers.aposticha (==4), great_vespers.dogmatikon,
+ *      great_vespers.aposticha_theotokion, read through the assembler
+ *      adapter (src/data/octoechos_v2/adapter.js).
+ *   3. The resurrectional theotokia table (theotokia.js) is 8-keyed with
+ *      aposticha_theotokion present per tone (replaces V1's
+ *      SUNDAY_APOSTICHA_THEOTOKIA).
  *   4. The in-calendar acceptance saints carry the ranks the split assumes.
  *
  * A failure here means the engine would silently mis-split or lose its
@@ -62,30 +67,32 @@ for (const [rank, [eRes, eComm]] of Object.entries(expectedSplit)) {
   ok(resN + commN === 10, `${rank}: split must sum to 10 (got ${resN + commN})`);
 }
 
-// 2. Octoechos Sunday data contract for all 8 tones.
-console.log("2. Octoechos sat data contract (all 8 tones):");
+// 2. Octoechos V2 Sunday data contract for all 8 tones, read through the
+//    assembler adapter (the same read path the engine uses post-cutover).
+console.log("2. Octoechos V2 Great Vespers data contract (all 8 tones, via adapter):");
+const A = await imp("src/data/octoechos_v2/adapter.js");
 const tones = {};
 for (let t = 1; t <= 8; t++) {
-  const m = await imp(`src/data/octoechos/tone${t}.js`);
-  const d = m.default || m[Object.keys(m)[0]];
-  const sat = d?.vespers?.sat || {};
-  tones[t] = sat;
-  ok(Array.isArray(sat.lic) && sat.lic.length >= 7,
-    `T${t}: sat.lic must have >=7 entries (got ${Array.isArray(sat.lic) ? sat.lic.length : "—"})`);
-  ok(Array.isArray(sat.aposticha) && sat.aposticha.length === 4,
-    `T${t}: sat.aposticha must have 4 entries (got ${Array.isArray(sat.aposticha) ? sat.aposticha.length : "—"})`);
-  ok(!!sat.dogmatikon, `T${t}: sat.dogmatikon must be present (LIC Both-now)`);
-  ok(!!sat.aposticha_glory, `T${t}: sat.aposticha_glory must be present`);
+  await A.loadV2Tone(t);
+  const sv = A.getV2SundayVespers(t) || {};
+  // Keep the engine-facing shape for §4 below (lic + dogmatikon).
+  tones[t] = { lic: sv.lic || [], aposticha: sv.aposticha || [], dogmatikon: sv.dogmatikon };
+  ok(Array.isArray(sv.lic) && sv.lic.length === 7,
+    `T${t}: great_vespers.lic must have exactly 7 entries (got ${Array.isArray(sv.lic) ? sv.lic.length : "—"})`);
+  ok(Array.isArray(sv.aposticha) && sv.aposticha.length === 4,
+    `T${t}: great_vespers.aposticha must have 4 entries (got ${Array.isArray(sv.aposticha) ? sv.aposticha.length : "—"})`);
+  ok(!!sv.dogmatikon && !!sv.dogmatikon.text, `T${t}: great_vespers.dogmatikon must be present (LIC Both-now)`);
+  ok(!!sv.aposticha_theotokion && !!sv.aposticha_theotokion.text,
+    `T${t}: great_vespers.aposticha_theotokion must be present`);
+  ok(sv.lic.every(n => n && n.path && n.text),
+    `T${t}: every lic node must carry text + path (B.2 anchor)`);
 }
 
-// 3. SUNDAY_APOSTICHA_THEOTOKIA present and 8-keyed (values may be null in P1).
-console.log("3. SUNDAY_APOSTICHA_THEOTOKIA stub table:");
-const idx = await imp("src/data/octoechos/index.js");
-ok(idx.SUNDAY_APOSTICHA_THEOTOKIA && typeof idx.SUNDAY_APOSTICHA_THEOTOKIA === "object",
-  "SUNDAY_APOSTICHA_THEOTOKIA export must exist");
+// 3. Resurrectional theotokia table 8-keyed with aposticha_theotokion per tone.
+console.log("3. theotokia.resurrectional_theotokia (aposticha Both-now, tone of the Glory):");
 for (let t = 1; t <= 8; t++) {
-  ok(t in (idx.SUNDAY_APOSTICHA_THEOTOKIA || {}),
-    `SUNDAY_APOSTICHA_THEOTOKIA must key tone ${t}`);
+  const at = A.getV2ApostichaTheotokion(t);
+  ok(!!at && !!at.text, `resurrectional_theotokia[${t}].aposticha_theotokion must resolve`);
 }
 
 // 4. Build the combined Sunday LIC for the in-calendar acceptance saints using

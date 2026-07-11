@@ -213,9 +213,22 @@ regression for users on the default path).
 9. Re-point the two Explainer tables at canonical shared tables.
 10. §7 gate re-baseline; empty `LEGACY_V1_SURFACES`.
 11. Full gate + `compare_v1_v2.mjs --gate` green.
-12. Version v0.35.0 (minor — new functionality: V2 assembly + deep links);
-    RELEASE_NOTES entry; project_notes.md header + session entry;
-    commit `v0.35.0: Octoechos V2 wire-in — assembler cutover, V1 retired`.
+12. Version **v0.36.0** (v0.35.0 was claimed by the M3 prep release;
+    amended at execution); RELEASE_NOTES entry; project_notes.md header +
+    session entry.
+
+**STATUS: EXECUTED — v0.36.0, July 11 2026, on Bill's explicit go.**
+Execution notes beyond the checklist: (a) the weekday LIC Both-now closer is
+fetched RANK-INDEPENDENTLY at both emit paths (V1's LIC_THEOTOKIA reach did
+not depend on the stichera-guarded day object — parity kept); (b) rubric
+upgrade flagged for Bill's review, NOT implemented: doxasticon-conditional
+Both-now in the tone of the Glory (theotokia Part 2 tables) — V1 never did
+this, V2 data now enables it; (c) the viewer-coverage lint gained a
+documented CROSS_BOOK_FRAME_DUPLICATES allowlist (17 audited psalmody/frame
+texts that legitimately exist in both the Horologion frame and V2 print
+positions) — everything else hard-fails; (d) /octoechos redirects to
+/octoechos-v2; the V2 browser navigates tone/day/service from an external
+hash so assembled-service deep links resolve anywhere in the corpus.
 
 ## 9. Out of scope (unchanged carry-forwards)
 

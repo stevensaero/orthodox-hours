@@ -426,6 +426,17 @@ export default function OctoechosV2Browser() {
     window.addEventListener('resize', measure);
     return () => window.removeEventListener('resize', measure);
   }, [narrow, view, results, data]);
+  // Initial-hash navigation (Phase B.2): an EXTERNAL deep link (assembled-
+  // service "↗ source") can target any tone/day/service — navigate there
+  // first so the position element exists, then the scroll effect below
+  // resolves it. In-app search links (openResult) already navigate.
+  useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    if (!id) return;
+    const nav = navFromPath(id);
+    if (nav.audit) { setView('audit'); return; }
+    setView('reading'); setTone(nav.tone); setSlotId(nav.slotId); setSvcId(nav.svcId);
+  }, []);
   useEffect(() => {
     if (!data || results) return;
     const id = decodeURIComponent(window.location.hash.slice(1));

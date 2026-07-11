@@ -20,10 +20,12 @@ import { editSetValue } from './edit-engine.mjs';
 const ALLOW = [
   /^src\/data\/menaion\/[a-z]+\.js$/,
   /^src\/data\/pentecostarion\.js$/,
-  /^src\/data\/octoechos\/[a-z0-9]+\.js$/,
+  // octoechos_v2 joins at Phase C (edit-engine adapter, local_editing_spec);
+  // the V1 src/data/octoechos/ allowance was retired at the Phase 5 cutover.
+  /^src\/data\/octoechos_v2\/[a-z0-9_]+\.js$/,
 ];
 const VALIDATOR = (datasetId) =>
-  datasetId === 'octoechos' ? 'tools/validate_octoechos.mjs' : 'tools/validate_entries.mjs';
+  datasetId === 'octoechos_v2' ? 'tools/validate_octoechos_v2.mjs' : 'tools/validate_entries.mjs';
 
 function send(res, status, obj) {
   res.statusCode = status;

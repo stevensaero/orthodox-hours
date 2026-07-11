@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import {
-  LIC_THEOTOKIA, HYPAKOE, RESURRECTIONAL_TROPARIA, RESURRECTIONAL_DISMISSAL_THEOTOKIA,
-  SUNDAY_KONTAKIA, SUNDAY_PROKEIMENON, SUNDAY_ALLELUIA, SUNDAY_APOSTICHA_THEOTOKIA,
-  KATAVASIAE, RESURRECTION_GOSPEL_STICHERA, LIC_OPENING_FALLBACK,
-} from '../data/octoechos/index.js';
 import * as OctoV2 from '../data/octoechos_v2/adapter.js';
 import { PSALMS, KATHISMA_MAP, getPsalmRange } from '../data/psalter.js';
 import { hymnText, hymnProvenance } from '../lib/hymn-entry.js';
@@ -950,79 +945,42 @@ const _menaionLoaders = {
   "07": () => import("../data/menaion/july.js").then(m => m.default),
 };
 
-// ── Octoechos tone data — lazy-loaded per tone (same pattern as _menaionLoaders)
-// Source: src/data/octoechos/toneN.js; Phase 1 has vespers data; matins stubs.
-const _octoechosLoaders = {
-  1: () => import('../data/octoechos/tone1.js'),
-  2: () => import('../data/octoechos/tone2.js'),
-  3: () => import('../data/octoechos/tone3.js'),
-  4: () => import('../data/octoechos/tone4.js'),
-  5: () => import('../data/octoechos/tone5.js'),
-  6: () => import('../data/octoechos/tone6.js'),
-  7: () => import('../data/octoechos/tone7.js'),
-  8: () => import('../data/octoechos/tone8.js'),
-};
-const _octoechosCache = {};
-async function loadOctoechosTone(tone) {
-  if (_octoechosCache[tone]) return _octoechosCache[tone];
-  const loader = _octoechosLoaders[tone] || _octoechosLoaders[1];
-  const mod = await loader();
-  _octoechosCache[tone] = mod.default;
-  return mod.default;
-}
-
-// ── Octoechos SOURCE SWITCH (wire-in M3c — octoechos_wirein_spec.md §6) ──────
-// 'v1' (default until Phase 5 cutover) | 'v2'. Preview V2 assembly without a
-// rebuild via ?octoechos=v2. At M4 the default flips and the v1 branches are
-// removed. Every Octoechos read in the assembler routes through the src*
-// accessors below; in v2 mode they serve the adapter's provenance-carrying
-// results ({..., path, src} — the Phase B.2 deep-link anchors ride along).
-const OCTOECHOS_SOURCE = (() => {
-  try {
-    const q = new URLSearchParams(window.location.search).get("octoechos");
-    if (q === "v1" || q === "v2") return q;
-  } catch { /* non-browser context (tests) */ }
-  return "v1";
-})();
-const octoV2Active = () => OCTOECHOS_SOURCE === "v2";
-
-// Tone-keyed canonical fields + tables (spec §3 slot map, sites 1-3, 15-19).
-const srcResTroparion = (tone) =>
-  octoV2Active() ? OctoV2.getV2Troparion(tone) : RESURRECTIONAL_TROPARIA[tone];
-const srcSunKontakion = (tone) =>
-  octoV2Active() ? OctoV2.getV2Kontakion(tone) : (SUNDAY_KONTAKIA[tone] || null);
-const srcDismissalTheot = (tone) =>
-  octoV2Active() ? OctoV2.getV2DismissalTheotokion(tone) : RESURRECTIONAL_DISMISSAL_THEOTOKIA[tone];
-const srcSunApostTheot = (gloryTone) =>
-  octoV2Active() ? OctoV2.getV2ApostichaTheotokion(gloryTone) : SUNDAY_APOSTICHA_THEOTOKIA[gloryTone];
-// §8 conflation fix: in v2 mode the Typica serves the LITURGY prokeimenon/
-// Alleluia (never the Matins text). No `|| tone 1` hard fallback — all 8 encoded.
-const srcSunProkeimenon = (tone) =>
-  octoV2Active() ? OctoV2.getV2LiturgyProkeimenon(tone) : (SUNDAY_PROKEIMENON[tone] || SUNDAY_PROKEIMENON[1]);
-const srcSunAlleluia = (tone) =>
-  octoV2Active() ? OctoV2.getV2LiturgyAlleluia(tone) : (SUNDAY_ALLELUIA[tone] || SUNDAY_ALLELUIA[1]);
+// ── Octoechos source layer — V2 (octoechos_wirein_spec.md; Phase 5 CUTOVER) ──
+// All Octoechos data is served by the V2 adapter (src/data/octoechos_v2/
+// adapter.js): dynamic per-tone loading, refs resolved, every node carries
+// { text, path, src } — `path` is the reading-view deep-link anchor
+// (/octoechos-v2#<path>, Phase B.2) surfaced on elements as `srcPath` via
+// hymnProvenance. The V1 dataset (src/data/octoechos/) was retired at cutover
+// (v0.36.0); the V1↔V2 comparison evidence lives in
+// tools/compare_v1_v2_report.md.
+const srcResTroparion = (tone) => OctoV2.getV2Troparion(tone);
+const srcSunKontakion = (tone) => OctoV2.getV2Kontakion(tone);
+const srcDismissalTheot = (tone) => OctoV2.getV2DismissalTheotokion(tone);
+const srcSunApostTheot = (gloryTone) => OctoV2.getV2ApostichaTheotokion(gloryTone);
+// §8 conflation fix: the Typica serves the LITURGY prokeimenon/Alleluia
+// (never the Matins text — schema rule `prokeimenonNotEqual`).
+const srcSunProkeimenon = (tone) => OctoV2.getV2LiturgyProkeimenon(tone);
+const srcSunAlleluia = (tone) => OctoV2.getV2LiturgyAlleluia(tone);
 const srcHypakoe = (toneKey, tone) => {
-  // "pascha" is Pentecostarion material — stays on the V1 table until M4 moves
-  // it into pentecostarion.js (spec §8.3).
-  if (octoV2Active() && toneKey !== "pascha") return OctoV2.getV2Hypakoe(tone)?.text || null;
-  return HYPAKOE[toneKey] || HYPAKOE[tone] || HYPAKOE[1];
+  // "pascha" is Pentecostarion material (moved to pentecostarion.js at cutover,
+  // spec §8.3); tone keys serve the V2 matins hypakoë.
+  if (toneKey === "pascha") return _paschaHypakoe;
+  return OctoV2.getV2Hypakoe(tone)?.text || null;
 };
 
-// Day-object emulator: serves the V1 vespers[day] shape from the V2 sections
-// so call sites stay uniform (spec §3 sites 5-14). V2 additionally carries
-// `lic_theotokion` / `aposticha_theotokion` typed per-evening closers — the
-// per-position propers that make the V1 LIC_THEOTOKIA fallback chains dead.
+// Day-object accessor: serves the assembler's vespers[day] shape from the V2
+// sections. Carries `lic_theotokion` / `aposticha_theotokion` typed
+// per-evening closers — the per-position propers that replaced the V1
+// LIC_THEOTOKIA fallback chains (the §8 mis-slot failure class).
 function srcVespersDay(tone, dayKey) {
-  if (!octoV2Active()) return getOctoechosVespers(tone, dayKey);
   if (dayKey === "sat") {
     const sv = OctoV2.getV2SundayVespers(tone);
     if (!sv) return null;
     return {
       lic: sv.lic || [],
       aposticha: sv.aposticha || [],
-      // V1 sat.aposticha_glory was a "[Glory from Menaion if appointed]"
-      // placeholder rubric, never a text — V2 keeps that semantics (the
-      // printed rubric is great_vespers.aposticha_glory_rubric).
+      // The Saturday GV aposticha Glory slot is a rubric ("Glory from the
+      // Menaion, if appointed"), never an Octoechos text (spec §3 site 14).
       aposticha_glory: null,
       dogmatikon: sv.dogmatikon,
       _v2: sv,
@@ -1040,8 +998,7 @@ function srcVespersDay(tone, dayKey) {
     _v2: wv,
   };
 }
-const srcVespersUniversal = (tone) => {
-  if (!octoV2Active()) return getOctoechosUniversal(tone);
+const srcVespersUniversal = () => {
   const std = OctoV2.v2Shared.weekday_aposticha_verses?.sets?.standard_vespers || [];
   const sat = OctoV2.v2Shared.saturday_gv_aposticha_verses || [];
   return {
@@ -1049,16 +1006,19 @@ const srcVespersUniversal = (tone) => {
     saturday: { verse_sat_1: [sat[0]?.text], verse_sat_2: [sat[1]?.text], verse_sat_3: [sat[2]?.text] },
   };
 };
-// RULING (Bill, July 11 2026): director-pointed lic_opening RETIRES with V1 —
-// v2 mode returns null so the invariable LIC_OPENING_FALLBACK frame renders.
-// Re-integration re-imagined under the Phase D OCA-override architecture.
-const srcLicOpening = (tone) => (octoV2Active() ? null : getOctoechosLicOpening(tone));
+
+// LIC opening (Kekragarion, Ps 140:1-2) — invariable Horologion FRAME text,
+// not Octoechos canonical data (amendment-F clean). RULING (Bill, July 11
+// 2026): the V1 director-pointed per-tone lic_opening RETIRED at cutover;
+// re-integration re-imagined under the Phase D OCA-override architecture.
+const LIC_OPENING_FRAME = [
+  "Lord, I call upon Thee, hear me! Hear me, O Lord! Lord, I call upon Thee, hear me! Receive the voice of my prayer, when I call upon Thee! Hear me, O Lord!",
+  "Let my prayer arise in Thy sight as incense, and let the lifting up of my hands be an evening sacrifice! Hear me, O Lord!",
+];
 
 // Shared day-keyed tables (spec §3 local-table map).
-const srcWeeklyVespersProk = (dow) =>
-  octoV2Active() ? OctoV2.getV2DailyVespersProkeimenon(dow) : WEEKLY_VESPERS_PROKEIMENON[dow];
+const srcWeeklyVespersProk = (dow) => OctoV2.getV2DailyVespersProkeimenon(dow);
 const srcTypicaWeekdayProk = (dowNumber) => {
-  if (!octoV2Active()) return TYPICA_WEEKDAY_PROKEIMENON[dowNumber];
   const key = ["", "mon", "tue", "wed", "thu", "fri", "sat"][dowNumber];
   const p = key ? OctoV2.getV2DailyLiturgyPropers(key) : null;
   if (!p) return null;
@@ -1774,10 +1734,12 @@ function getKathismaForMatins(liturgicalData) {
 
 let _pentecostarionCache = null;
 
+let _paschaHypakoe = null; // PASCHA_HYPAKOE, captured from the dynamic module (no static import — keeps the lazy split)
 async function _loadPentecostarion() {
   if (_pentecostarionCache) return _pentecostarionCache;
   const m = await import("../data/pentecostarion.js");
   _pentecostarionCache = m.default;
+  _paschaHypakoe = m.PASCHA_HYPAKOE || null;
   return _pentecostarionCache;
 }
 
@@ -2578,6 +2540,7 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
       source: primaryTropSource,
       toneNote: `Tone ${primaryTrop.tone}`,
       text: primaryTrop.text,
+      ...(primaryTrop.path ? { srcPath: primaryTrop.path } : {}),
       rubric: hasTwoTroparia
         ? 'Here we say the first troparion, if there be two. — HTM'
         : null,
@@ -2673,6 +2636,7 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
       source: kontakionSource,
       toneNote: `Tone ${kontakion.tone || '—'}`,
       text: kontakion.text,
+      ...(kontakion.path ? { srcPath: kontakion.path } : {}),
       fekula: { section: fekulaSection,
         note: isPentecostarion
           ? 'Kontakion of the preceding Sunday. — Fekula §4A(3)'
@@ -2921,71 +2885,14 @@ const HTM_PSALM_103_REFRAIN =
 // NOTE: In the Russian Octoechos PDFs these appear as "The Sessional Hymn" following
 // the small litany after the Evlogitaria (Resurrectional Verses) at Sunday Matins.
 // The Pascha Hypakoë (Tone 8 variant) is drawn from the HTM Pentecostarion.
-const WEEKLY_VESPERS_PROKEIMENON = {
-  6: { tone: 6, text: "The Lord is King, He is clothed with majesty.",
-    verses: ["The Lord is clothed with strength and He hath girt Himself.",
-             "For He established the universe which shall not be shaken.",
-             "Holiness becometh Thy house, O Lord, unto length of days."] },
-  0: { tone: 8, text: "Behold now, bless ye the Lord, all ye servants of the Lord.",
-    verses: ["Ye that stand in the house of the Lord, in the courts of the house of our God."] },
-  1: { tone: 4, text: "The Lord will hearken unto me when I cry unto Him.",
-    verses: ["When I called upon Thee, O God of my righteousness, Thou didst hearken unto me."] },
-  2: { tone: 1, text: "Thy mercy, O Lord, shall pursue me all the days of my life.",
-    verses: ["The Lord is my shepherd, and I shall not want. In a place of green pasture, there hath He made me to dwell."] },
-  3: { tone: 5, text: "O God, in Thy name save me, and in Thy strength do Thou judge me.",
-    verses: ["O God, hearken unto my prayer, give ear unto the words of my mouth."] },
-  4: { tone: 6, text: "My help cometh from the Lord, Who hath made heaven and the earth.",
-    verses: ["I have lifted up mine eyes to the mountains, from whence cometh my help."] },
-  5: { tone: 7, text: "O God, my helper art Thou, and Thy mercy shall go before me.",
-    verses: ["Rescue me from mine enemies, O God, and from them that rise up against me redeem me."] },
-};
+// (WEEKLY_VESPERS_PROKEIMENON retired at Phase 5 cutover — the daily Vespers
+// prokeimena are canonical V2 shared tables, served by srcWeeklyVespersProk.)
 
 // ─── OCTOECHOS VESPERS DATA ─────────────────────────────────────────────
-// Inlined from octoechos-data.js — all 8 tones, 477 records.
-// Source: St. Sergius Octoechos PDFs. Generated from octoechos_vespers.txt.
-// To restore module import: remove this block and add import on line 2.
-
-// Octoechos Vespers Stichera — all 8 tones
-// Generated from octoechos_vespers.txt
-// Source: St. Sergius Octoechos PDFs
-//
-// Structure: OCTOECHOS_VESPERS[tone][day]
-// tone: 0 (universal verses) | 1–8
-// day: sat | sun_eve | mon | tue | wed | thu | fri
-// Fields per day:
-//   lic: string[]           — Lord I Have Cried stichera (3 weekday, 7 Saturday)
-//   aposticha: string[]     — Aposticha stichera
-//   aposticha_glory: string — Glory sticheron (Saturday: Menaion-supplied)
-//   dogmatikon: string      — Saturday Both Now (tone dogmatikon)
-//   lic_dogmatikon: string  — Friday Both Now (tone dogmatikon)
-//
-// FW: Move to public/data/octoechos-data.js and fetch at runtime
-//     when JSX file size becomes a concern.
-
-// Helper: get Octoechos stichera for a given tone and day
-// Reads synchronously from _octoechosCache (pre-loaded on date change).
-// Returns the day object or null if the cache miss or day not found.
-function getOctoechosVespers(tone, day) {
-  return _octoechosCache[tone]?.vespers?.[day] ?? null;
-}
-
-// Universal fixed aposticha verses (tone-independent, same in every tone file).
-function getOctoechosUniversal(tone) {
-  return _octoechosCache[tone]?.vespers_universal ?? null;
-}
-
-// Lord-I-Have-Cried opening (Kekragarion, Ps 140:1-2) — tone-of-week, OCA director-pointed
-// if encoded for the tone; null otherwise (caller falls back to LIC_OPENING_FALLBACK).
-function getOctoechosLicOpening(tone) {
-  return _octoechosCache[tone]?.lic_opening ?? null;
-}
-
-// ── Weekday LIC theotokia — Both Now after Glory at Lord I Have Cried ────────
-// Source: St. Sergius Octoechos, Monday Evening (N-3.pdf) for each tone.
-// Used at §2A weekday (Mon–Thu; also used at Fri when no lic_dogmatikon applies
-// though Fri Both Now = dogmatikon, so this is Mon–Thu only in practice).
-// Not used Saturday (dogmatikon) or Sunday evening (sun_eve uses Octoechos sun_eve).
-// Maps calendar day-of-week (0=Sun … 6=Sat) to the Octoechos day key for Vespers.
+// ── Vespers day-key mapping ──────────────────────────────────────────────────
+// Maps calendar day-of-week (0=Sun … 6=Sat) to the source-layer day key for
+// Vespers (srcVespersDay translates to the V2 section: 'sat' → great_vespers,
+// the rest → vespers_weekday.<eve>).
 // Saturday evening → 'sat' (Great Vespers, current week tone)
 // Sunday evening   → 'sun_eve' (new week tone — getLiturgicalData already advances tone on Sunday)
 // Monday–Friday    → 'mon'…'fri' (current week tone)
@@ -3478,6 +3385,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   }
   let primTrop = null, primTropTone = null, primSrc = "", secTrop = null, secTropTone = null, secSrc = "";
   let thirdTrop = null, thirdTropTone = null, thirdSrc = "";
+  let primTropPath = null; // V2 anchor when the primary troparion is Octoechos-sourced (B.2)
   if (isPentecostarion && pentEntry && pentEntry.troparion) {
     const pt = pentEntry.troparion;
     primTrop = typeof pt === "string" ? pt : pt.text;
@@ -3506,7 +3414,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     // Fekula Ch.1 / Ch.6.
     const _resTrop = srcResTroparion(tone);
     if (_resTrop) {
-      primTrop = _resTrop.text; primTropTone = _resTrop.tone;
+      primTrop = _resTrop.text; primTropTone = _resTrop.tone; primTropPath = _resTrop.path || null;
       primSrc = "Octoechos — Resurrectional troparion, Tone " + tone;
       if (effTrop) { secTrop = effTrop; secTropTone = effTropTone; secSrc = "Menaion — " + effSaint; }
     } else if (effTrop) {
@@ -3693,14 +3601,13 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       source:"HTM Vespers"});
   }
   // 6. LORD I HAVE CRIED — opening verses (Kekragarion, Ps 140:1-2), sung to the tone of
-  // the week. Prefer the tone's OCA director-pointed lic_opening; else the unpointed OCA
-  // fallback. Emitted as two elements so each pointable verse gets its own Point/Score
-  // control; `tone` is set so PointScoreControls resolves (else it greys "no tone").
+  // the week. Invariable Horologion frame text (LIC_OPENING_FRAME). The V1
+  // director-pointed per-tone overlay retired at cutover (ruling July 11 2026);
+  // Phase D OCA overrides will re-imagine its return. Emitted as two elements so
+  // each pointable verse gets its own Point/Score control; `tone` is set so
+  // PointScoreControls resolves (else it greys "no tone").
   {
-    const licOpening = srcLicOpening(tone);
-    const openingVerses = licOpening
-      ? licOpening.map(v => ({ text: hymnText(v), ...hymnProvenance(v) }))
-      : LIC_OPENING_FALLBACK.map(t => ({ text: t }));
+    const openingVerses = LIC_OPENING_FRAME.map(t => ({ text: t }));
     openingVerses.forEach((v, i) => {
       elements.push({
         id: "v-lic-" + (i + 1), type: "movable",
@@ -3865,11 +3772,12 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           text: hymnText(sunSat.dogmatikon), source: "Octoechos", ...hymnProvenance(sunSat.dogmatikon),
           fekula: { section: fekulaSection, note: "Both Now: resurrectional Dogmatikon in the tone of the week (Saturday-evening Great Vespers). Fekula §4B / Ch.6; Octoechos." } });
       } else {
-        const licTheot = LIC_THEOTOKIA[tone];
+        // V2 always carries great_vespers.dogmatikon — reaching here is a data
+        // bug the V2 validator would have caught, not a fallback condition.
         elements.push({ id: "v-lic-theotokion", type: "movable", label: "Theotokion",
-          unresolved: !licTheot,
+          unresolved: true,
           rubric: "Tone " + tone + ":",
-          text: licTheot || "[Dogmatikon — not found for Tone " + tone + "]",
+          text: "[Dogmatikon — not found for Tone " + tone + "]",
           source: "Octoechos",
           fekula: { section: fekulaSection, note: "Both Now: tone-of-week Dogmatikon (fallback theotokion — Octoechos sat.dogmatikon absent)." } });
       }
@@ -4027,11 +3935,24 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           text:hymnText(licSatDog.dogmatikon), source:"Octoechos", ...hymnProvenance(licSatDog.dogmatikon),
           fekula:{section:fekulaSection, note:"Both Now: resurrectional Dogmatikon in the tone of the week (Saturday-evening Great Vespers). Fekula §4B; Octoechos."}});
       } else {
-        const licTheot = LIC_THEOTOKIA[tone];
-        if (licTheot) {
-          elements.push({id:"v-lic-theotokion", type:"movable", label:"Theotokion",
+        // Weekday Both Now on the Menaion-mixed path: the per-evening typed
+        // closer from the Octoechos (rank-independent — fetched directly, not
+        // through the stichera-guarded octoDay). Friday: dogmatic_theotokion.
+        const _eveTheot = (srcVespersDay(tone, getVespersDayKey(dow)) || {}).lic_theotokion || null;
+        const _eveIsDog = _eveTheot && _eveTheot.type === "dogmatic_theotokion";
+        if (_eveTheot) {
+          elements.push({id: _eveIsDog ? "v-lic-dogmatikon" : "v-lic-theotokion", type:"movable",
+            label: _eveIsDog ? "Dogmatikon (Friday)" : "Theotokion",
             rubric:"Tone "+tone+":",
-            text:licTheot,
+            text:hymnText(_eveTheot), source:"Octoechos", ...hymnProvenance(_eveTheot),
+            fekula:{section:fekulaSection, note: _eveIsDog
+              ? "Friday evening: Both Now = dogmatic theotokion in tone of week (per-evening proper). Fekula §2A."
+              : "Both Now: per-evening weekday theotokion in tone of week. Fekula §2A/§4A."}});
+        } else {
+          elements.push({id:"v-lic-theotokion", type:"movable", label:"Theotokion",
+            unresolved:true,
+            rubric:"Tone "+tone+":",
+            text:"[Theotokion — not found for Tone "+tone+"]",
             source:"Octoechos",
             fekula:{section:fekulaSection, note:"Both Now: weekday theotokion in tone of week. Fekula §2A/§4A."}});
         }
@@ -4157,12 +4078,6 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           fekula:{section:fekulaSection, note: _ltIsDog
             ? "Friday evening §2A: Both Now = dogmatic theotokion in tone of week (per-evening proper). Fekula §2A."
             : "Both Now: per-evening weekday theotokion in tone of week. Fekula §2A."}});
-      } else if (isFriEve && octoDay && octoDay.lic_dogmatikon) {
-        // Friday evening §2A: Both Now = dogmatikon (not theotokion)
-        elements.push({id:"v-lic-dogmatikon", type:"movable", label:"Dogmatikon (Friday)",
-          rubric:"Tone "+tone+":",
-          text:hymnText(octoDay.lic_dogmatikon), source:"Octoechos", ...hymnProvenance(octoDay.lic_dogmatikon),
-          fekula:{section:fekulaSection, note:"Friday evening §2A: Both Now = dogmatikon in tone of week. Fekula §2A."}});
       } else if (octoDay && octoDay.dogmatikon) {
         // Saturday: dogmatikon
         elements.push({id:"v-lic-dogmatikon", type:"movable", label:"Dogmatikon",
@@ -4170,13 +4085,23 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           text:hymnText(octoDay.dogmatikon), source:"Octoechos", ...hymnProvenance(octoDay.dogmatikon),
           fekula:{section:fekulaSection, note:"Saturday §2A: Both Now = dogmatikon in tone of week. Fekula §2A."}});
       } else {
-        // Weekday (Mon–Thu) theotokion from Octoechos
-        const licTheot = LIC_THEOTOKIA[tone];
-        if (licTheot) {
-          elements.push({id:"v-lic-theotokion", type:"movable", label:"Theotokion",
+        // Rank-independent: octoDay is stichera-guarded (null above simple),
+        // but the Both-now closer is a property of the tone + evening — fetch
+        // it directly (V1 parity: LIC_THEOTOKIA was rank-independent here).
+        // CARRY-FORWARD (rubric upgrade, Bill's review): on doxasticon
+        // evenings Fekula Ch.6 appoints the doxasticon-conditional theotokion
+        // in the tone of the GLORY (theotokia.doxasticon_theotokia, Part 2) —
+        // V1 never implemented this; V2 data now enables it.
+        const _eveTheot2 = (srcVespersDay(tone, getVespersDayKey(dow)) || {}).lic_theotokion || null;
+        const _eveIsDog2 = _eveTheot2 && _eveTheot2.type === "dogmatic_theotokion";
+        if (_eveTheot2) {
+          elements.push({id: _eveIsDog2 ? "v-lic-dogmatikon" : "v-lic-theotokion", type:"movable",
+            label: _eveIsDog2 ? "Dogmatikon (Friday)" : "Theotokion",
             rubric:"Tone "+tone+":",
-            text:licTheot, source:"Octoechos",
-            fekula:{section:fekulaSection, note:"Both Now: weekday theotokion in tone of week. Octoechos (N-3.pdf). Fekula §2A."}});
+            text:hymnText(_eveTheot2), source:"Octoechos", ...hymnProvenance(_eveTheot2),
+            fekula:{section:fekulaSection, note: _eveIsDog2
+              ? "Friday evening: Both Now = dogmatic theotokion in tone of week (per-evening proper). Fekula §2A."
+              : "Both Now: per-evening weekday theotokion in tone of week. Fekula §2A."}});
         } else {
           elements.push({id:"v-lic-theotokion", type:"movable", label:"Theotokion",
             unresolved:true,
@@ -4268,7 +4193,8 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     prokRank: rank,
     source:(isPentecostarion && pentEntry && pentEntry.vespers_prokeimenon) ? "Pentecostarion"
       : greatFeastProk ? "Feast of the Lord · " + ((feastPeriod && feastPeriod.feast && feastPeriod.feast.name) || "feast")
-      : "HTM Vespers — daily",
+      : "Octoechos — daily prokeimena (shared table)",
+    ...(vespProk && vespProk.path ? { srcPath: vespProk.path } : {}),
     fekula:{section:fekulaSection, note:prokNote}});
   // 10. OT LESSONS (§2E / §2F only)
   if (paroemias && paroemias.length > 0) {
@@ -4646,6 +4572,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         elements.push({ id: "v-apost-theotokion", type: "movable", label: "Theotokion (Both now…)",
           rubric: "Tone " + ((sunApostTheot.tone) || gloryTone) + ":",
           text: typeof sunApostTheot === "string" ? sunApostTheot : sunApostTheot.text,
+          ...(sunApostTheot.path ? { srcPath: sunApostTheot.path } : {}),
           source: "Octoechos",
           fekula: { section: fekulaSection, note: "Aposticha Both Now: Sunday aposticha theotokion in the tone of the Glory (Tone " + gloryTone + "). Spec §4 / §8.3." } });
       } else {
@@ -4763,11 +4690,6 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           rubric:"Tone "+tone+":",
           text:hymnText(_at), source:"Octoechos", ...hymnProvenance(_at),
           fekula:{section:fekulaSection, note:"Aposticha Both Now: per-evening typed closer from the Octoechos. Fekula §2A."}});
-      } else if (isFriEve && apostOctoDay.lic_dogmatikon) {
-        elements.push({id:"v-apost-dogmatikon", type:"movable", label:"Dogmatikon (Friday)",
-          rubric:"Tone "+tone+":",
-          text:hymnText(apostOctoDay.lic_dogmatikon), source:"Octoechos", ...hymnProvenance(apostOctoDay.lic_dogmatikon),
-          fekula:{section:fekulaSection, note:"Friday Aposticha Both Now = dogmatikon. Fekula §2A."}});
       } else if (isSatEve && apostOctoDay.dogmatikon) {
         elements.push({id:"v-apost-dogmatikon", type:"movable", label:"Dogmatikon",
           rubric:"Tone "+tone+":",
@@ -4916,6 +4838,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           label:"Troparion (once)" + toneLabel,
           rubric:"",
           text: primTrop,
+          ...(primTropPath ? { srcPath: primTropPath } : {}),
           source: primSrc,
           fekula:{section:fekulaSection, note:"Saint's troparion sung once after O Theotokos ×2 on Sunday Vigil. — HTM Vespers"}});
       }
@@ -4927,6 +4850,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           label:"Troparion (twice)" + toneLabel,
           rubric:"",
           text: primTrop,
+          ...(primTropPath ? { srcPath: primTropPath } : {}),
           source: primSrc,
           fekula:{section:fekulaSection, note:"If it be some other vigil, and it be not Sunday, we chant the dismissal troparion of the saint twice, and O Theotokos and Virgin, rejoice! — HTM Vespers; Fekula " + fekulaSection}});
       }
@@ -4997,6 +4921,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       rubric:"",
       text: primTrop,
       source: primSrc,
+      ...(primTropPath ? { srcPath: primTropPath } : {}),
       fekula:{section:fekulaSection, note:"Troparia at Vespers: " + fekulaSection + ". Simple/weekday: troparion from Menaion; Glory…; Both now… theotokion per Chapter 6. — Fekula §2A–§2F"}});
   } else {
     elements.push({id:"v-trop-none",type:"movable",label:"Troparion",
@@ -5057,7 +4982,8 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       label:"Resurrectional Dismissal Theotokion · Tone " + _lastTropTone,
       rubric:"",
       text:_sundayDismissalTheotokion.text,
-      source:"Common Theotokia §I (SJKP)",
+      ...(_sundayDismissalTheotokion.path ? { srcPath: _sundayDismissalTheotokion.path } : {}),
+      source:"Octoechos — Resurrectional Dismissal Theotokion",
       fekula:{section:fekulaSection, note:"Sunday Vespers, Both now…: the resurrectional dismissal theotokion in the tone of the last troparion chanted, from §I of The Common Theotokia. — Fekula Chapter 6 (Sunday Vespers, troparia)"}});
   } else if (thirdTrop) {
     // Both now… as standalone fixed element between troparion boxes
@@ -5519,40 +5445,14 @@ const TYPICA_KONTAKIA = {
 // Source: St. Sergius Sunday Octoechos (resurrectional prokeimena by tone)
 // Routing in assembleTypica():
 //   1. pentEntry.prokeimenon_text — Pentecostarion Sunday/feast (already encoded)
-//   2. SUNDAY_PROKEIMENON[tone] — ordinary Sunday (Octoechos)
-//   3. TYPICA_WEEKDAY_PROKEIMENON[dowNumber] — Mon–Sat
+//   2. srcSunProkeimenon(tone) — ordinary Sunday (Octoechos V2 liturgy.prokeimenon)
+//   3. srcTypicaWeekdayProk(dowNumber) — Mon–Sat (V2 shared.daily_liturgy_propers)
 //   4. menaionEntry.prokeimenon_text — feast proper prokeimenon (appended)
 
 // Weekday prokeimena — invariable, keyed by day of week (1=Mon … 6=Sat)
 // Saturday has TWO prokeimena (All Saints + Departed), shown in sequence.
-const TYPICA_WEEKDAY_PROKEIMENON = {
-  1: { tone: 4,
-       text: "Who maketh His angels spirits, and His ministers a flame of fire.",
-       stichos: "Bless the Lord, O my soul; O Lord my God, Thou hast been magnified exceedingly." },
-  2: { tone: 7,
-       text: "The righteous man shall be glad in the Lord, and shall hope in Him.",
-       stichos: "Hearken, O God, unto my prayer, when I make supplication unto Thee." },
-  3: { tone: 3,
-       text: "My soul doth magnify the Lord, and my spirit hath rejoiced in God my Saviour.",
-       stichos: "For He hath looked upon the lowliness of His handmaiden; for behold, from henceforth all generations shall call me blessed.",
-       label: "the Song of the Theotokos" },
-  4: { tone: 8,
-       text: "Their sound hath gone forth into all the earth, and their words unto the ends of the world.",
-       stichos: "The heavens declare the glory of God, and the firmament proclaimeth the work of His hands." },
-  5: { tone: 7,
-       text: "Exalt ye the Lord our God, and worship the footstool of His feet; for it is holy.",
-       stichos: "The Lord is king, let the peoples rage." },
-  6: [
-    { tone: 8,
-      text: "Be glad in the Lord, and rejoice, ye righteous.",
-      stichos: "Blessed are they whose iniquities are forgiven, and whose sins are covered.",
-      label: "All Saints" },
-    { tone: 6,
-      text: "Their souls shall dwell among good things.",
-      stichos: "Unto Thee, O Lord, have I lifted up my soul. O my God, in Thee have I trusted; let me never be put to shame.",
-      label: "the Departed" },
-  ],
-};
+// (TYPICA_WEEKDAY_PROKEIMENON retired at Phase 5 cutover — the daily Liturgy
+// propers are canonical V2 shared tables, served by srcTypicaWeekdayProk.)
 
 // Weekday Alleluia verses — keyed by day of week (1=Mon … 6=Sat)
 // Source: HTM_daily_troparia_kontakia_alleluia_prokeimena.txt
@@ -5854,6 +5754,7 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
       ],
       readerMode,
       source: sourceStr,
+      ...(p.path ? { srcPath: p.path } : {}),
       fekula: { section: null, note: noteStr },
       typicaProkSource,
       typicaProkDow,
@@ -5989,6 +5890,7 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
           elements.push({ id: "typica-alleluia-res",
             label: "Alleluia (Resurrectional) · Tone " + tone,
             text: buildAlleluia(resAl), type: "movable", source: src,
+            ...(resAl && resAl.path ? { srcPath: resAl.path } : {}),
             note: "Sunday resurrectional Alleluia, Tone " + tone + " · Source: St. Sergius Sunday Octoechos",
             alleluiaSource: 'sunday_resurrectional', alleluiaDow: dowNumber, alleluiaRank: menaionEntry?.rank || 'simple', alleluiaTone: tone });
           // If polyeleos/vigil Menaion saint also has a festal Alleluia, add it second
@@ -6179,11 +6081,14 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
     );
     const toneKey = isPaschaWeek ? "pascha" : (tone || 1);
     const hypakoeText = srcHypakoe(toneKey, tone);
-    movable("typica-hypakoe", `Hypakoë — Tone ${tone}`,
-      hypakoeText,
-      `Sunday: Hypakoë of Tone ${tone} from the Octoechos sung in place of the Kontakia section. ` +
-      `OCA Typica: "On Sundays, if there is no Feast, only the Hypakoë in the appointed tone is sung." ` +
-      `Source: St. Sergius Sunday Octoechos PDF (${tone}-1.pdf).`);
+    const _hypNode = isPaschaWeek ? null : OctoV2.getV2Hypakoe(tone);
+    elements.push({ id: "typica-hypakoe", label: `Hypakoë — Tone ${tone}`,
+      text: hypakoeText, type: "movable", source: src,
+      ...(_hypNode && _hypNode.path ? { srcPath: _hypNode.path } : {}),
+      note: `Sunday: Hypakoë of Tone ${tone} from the Octoechos sung in place of the Kontakia section. ` +
+        `OCA Typica: "On Sundays, if there is no Feast, only the Hypakoë in the appointed tone is sung." ` +
+        `Source: St. Sergius Octoechos (${(_hypNode && _hypNode.src && _hypNode.src.file) || tone + "-1.pdf"}).`,
+      rubric: null, fekula: null });
   } else {
     // Weekday (no feast): build kontakia sequence per OCA Typica / HTM rubric.
     // OCA: "the Kontakion of the Transfiguration is sung first, followed by
@@ -8611,6 +8516,56 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.36.0",
+    date: "July 2026",
+    summary: "OCTOECHOS V2 CUTOVER (Phase 5 complete): the assembler now serves the St. Sergius V2 encoding everywhere; V1 dataset, browser, and validator retired; ↗ source deep links land on exact reading-view positions",
+    items: [
+      "The wire-in spec §8 checklist, executed on Bill's go (July 11 2026). " +
+      "Every Octoechos read in the assembler is served by the V2 adapter — " +
+      "the v1/v2 switch is gone, V2 is the only source. Assembled texts " +
+      "change per the committed comparison evidence " +
+      "(tools/compare_v1_v2_report.md): 23 expected corrections (incl. the " +
+      "tone-2 Typica prokeimenon/Alleluia genuine errors), 32 mis-slot " +
+      "relocations, 110 translation divergences (V1 tables were not " +
+      "St. Sergius-sourced), pointing upgrade dataset-wide.",
+      "Phase B.2 SHIPPED: every Octoechos-sourced element's ↗ source link " +
+      "lands on its exact V2 reading-view position (/octoechos-v2#<path>, " +
+      "scroll + highlight; the V2 browser now navigates tone/day/service " +
+      "from an external hash). Elements carry srcPath via hymnProvenance.",
+      "Behavior corrections beyond wording: per-evening weekday LIC/" +
+      "aposticha closers replace the collapsed LIC_THEOTOKIA entry and its " +
+      "cross-cycle Saturday fallback (RANK-INDEPENDENT, matching V1's " +
+      "reach); Friday aposticha Both-now serves the PRINTED closer; Typica " +
+      "serves the LITURGY prokeimenon (schema rule prokeimenonNotEqual). " +
+      "CARRY-FORWARD (rubric upgrade, Bill's review): doxasticon-" +
+      "conditional Both-now in the tone of the Glory (theotokia Part 2) is " +
+      "now possible with V2 data; V1 never implemented it — flagged in " +
+      "code at the weekday Both-now sites.",
+      "RETIRED: src/data/octoechos/ (all files), octoechos-browser.jsx " +
+      "(/octoechos now redirects to /octoechos-v2), octoechos-data.js " +
+      "(dead since Phase 1), validate_octoechos.mjs, compare_v1_v2.mjs " +
+      "(evidence report kept), the WEEKLY_VESPERS_PROKEIMENON / " +
+      "TYPICA_WEEKDAY_PROKEIMENON local tables (V2 shared tables serve " +
+      "them), the director-pointed lic_opening (RULING: re-imagined at " +
+      "Phase D; invariable Horologion frame text renders), and the " +
+      "prokeimenon Explainer display copies (now derived from canonical " +
+      "tables). HYPAKOE pascha moved to pentecostarion.js.",
+      "Gates re-baselined: test_sunday_vespers.mjs §2/§3 read the V2 " +
+      "contract through the adapter (great_vespers lic==7, aposticha==4, " +
+      "dogmatikon + aposticha_theotokion + B.2 paths; 78/78). " +
+      "validate_viewer_coverage.mjs LEGACY_V1_SURFACES emptied — display " +
+      "copies now HARD-FAIL; a documented CROSS_BOOK_FRAME_DUPLICATES " +
+      "allowlist (17 audited psalmody/frame texts) covers scripture that " +
+      "legitimately exists in both books. vite-edit-plugin allowlist: " +
+      "octoechos_v2 (Phase C ready).",
+      "Verified: full gate green (pointing paths, sunday vespers 78/78, " +
+      "pointing roles 24/24, V2 gate, viewer coverage, vite build, eslint " +
+      "+0); Playwright smoke — Sat-eve GV, Sunday Typica, 9th Hour, " +
+      "Mon (§2E polyeleos eve) / Tue / Fri weekday Vespers, /octoechos " +
+      "redirect, external deep links resolving across tone/day/service.",
+    ],
+  },
   {
     version: "v0.35.0",
     date: "July 2026",
@@ -11648,15 +11603,17 @@ const VESPERS_PAROEMIA_CASES = {
 // ⓘ badge that surfaces how the current prokeimenon tone was selected.
 // Rendered inline with the Fekula badge in the prokeimenon ServiceBlock.
 
+// Derived from the canonical V2 shared tables at module load (amendment F —
+// no display copies; the Explainer reads the same bytes the assembler serves).
+const _stripPointing = (s) => String(s || "").replace(/\s(\*\*|\*)\s/g, " ");
 const WEEKLY_PROK_TABLE = [
-  { day: "Sunday eve",  tone: 8, text: "Behold now, bless ye the Lord…" },
-  { day: "Monday",      tone: 4, text: "The Lord will hearken unto me…" },
-  { day: "Tuesday",     tone: 1, text: "Thy mercy, O Lord, shall pursue me…" },
-  { day: "Wednesday",   tone: 5, text: "O God, in Thy name save me…" },
-  { day: "Thursday",    tone: 6, text: "My help cometh from the Lord…" },
-  { day: "Friday",      tone: 7, text: "O God, my helper art Thou…" },
-  { day: "Saturday",    tone: 6, text: "The Lord is King, He is clothed with majesty…", great: true },
-];
+  ["Sunday eve", 0], ["Monday", 1], ["Tuesday", 2], ["Wednesday", 3],
+  ["Thursday", 4], ["Friday", 5], ["Saturday", 6],
+].map(([day, dowIdx]) => {
+  const p = OctoV2.getV2DailyVespersProkeimenon(dowIdx);
+  return { day, tone: p ? p.tone : "—", text: p ? _stripPointing(p.text) : "—",
+    ...(dowIdx === 6 ? { great: true } : {}) };
+});
 
 function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
   const [open, setOpen] = React.useState(false);
@@ -11828,14 +11785,22 @@ function ProkeimenonExplainer({ prokSource, prokDow, prokRank }) {
 // a different table (different tones/texts from Vespers), Sunday uses the
 // Octoechos tone (not DOW), and Saturday has two prokeimena.
 
+// Derived from the canonical V2 shared.daily_liturgy_propers (amendment F).
 const TYPICA_PROK_TABLE_DATA = [
-  { day: "Monday",    tone: 4, text: "Who maketh His angels spirits…" },
-  { day: "Tuesday",   tone: 7, text: "The righteous man shall be glad in the Lord…" },
-  { day: "Wednesday", tone: 3, text: "My soul doth magnify the Lord…", label: "Song of the Theotokos" },
-  { day: "Thursday",  tone: 8, text: "Their sound hath gone forth into all the earth…" },
-  { day: "Friday",    tone: 7, text: "Exalt ye the Lord our God…" },
-  { day: "Saturday",  tone: '8 + 6', text: "All Saints (T8) · the Departed (T6)", saturday: true },
-];
+  ["Monday", "mon"], ["Tuesday", "tue"], ["Wednesday", "wed"],
+  ["Thursday", "thu"], ["Friday", "fri"], ["Saturday", "sat"],
+].map(([day, key]) => {
+  const p = OctoV2.getV2DailyLiturgyPropers(key);
+  if (key === "sat" && p && p.prokeimenon_departed) {
+    return { day, tone: p.prokeimenon.tone + " + " + p.prokeimenon_departed.tone,
+      text: (p.prokeimenon.label || "All Saints") + " (T" + p.prokeimenon.tone + ") · " +
+            (p.prokeimenon_departed.label || "the Departed") + " (T" + p.prokeimenon_departed.tone + ")",
+      saturday: true };
+  }
+  return { day, tone: p ? p.prokeimenon.tone : "—",
+    text: p ? _stripPointing(p.prokeimenon.text) : "—",
+    ...(p && p.prokeimenon.label ? { label: p.prokeimenon.label } : {}) };
+});
 
 function TypicaProkeimenonExplainer({ typicaProkSource, typicaProkDow, typicaTone, typicaRank }) {
   const [open, setOpen] = React.useState(false);
@@ -13339,6 +13304,9 @@ function kindFromSource(source = "") {
 // unresolved placeholders, and anything not from an in-app book.
 function buildSourceRef(element, lit) {
   if (!element || element.type !== "movable" || element.unresolved || !element.source) return null;
+  // Phase B.2 (Octoechos V2 cutover): adapter-served elements carry their exact
+  // reading-view anchor as `srcPath` — link straight to the position.
+  if (element.srcPath) return { kind: "octoechos-v2", path: element.srcPath };
   const kind = kindFromSource(element.source);
   if (!kind) return null;
   const el = elFromId(element.id);
@@ -13372,8 +13340,14 @@ function sourceLinkFor(sourceRef, date) {
   switch (sourceRef.kind) {
     case "menaion-daily":
       return { href: "/orthodox-hours/menaion?" + dateQ + "&comm=" + sourceRef.comm + elQ, external: false };
+    case "octoechos-v2":
+      // Exact position anchor in the V2 reading view (Phase B.2). The browser
+      // decodes the hash and scroll-highlights the position.
+      return { href: "/orthodox-hours/octoechos-v2#" + encodeURIComponent(sourceRef.path), external: false };
     case "octoechos":
-      return { href: "/orthodox-hours/octoechos?" + dateQ + "&tone=" + sourceRef.tone + elQ, external: false };
+      // Octoechos-sourced element without a position anchor: open the book
+      // (the V1 /octoechos browser retired at the Phase 5 cutover).
+      return { href: "/orthodox-hours/octoechos-v2", external: false };
     case "pentecostarion":
       return { href: "/orthodox-hours/pentecostarion?" + dateQ + "&pascha=" + sourceRef.pascha + elQ, external: false };
     case "oca":
@@ -13621,9 +13595,8 @@ export default function App() {
     Promise.all([
       ...[...new Set([prev, m, next, ...dedMonths])].map(mo => _loadMenaionMonth(mo)),
       _loadPentecostarion(),
-      loadOctoechosTone(toneForDate),
-      loadOctoechosTone(toneForVespers),
-      ...(octoV2Active() ? [OctoV2.loadV2Tone(toneForDate), OctoV2.loadV2Tone(toneForVespers)] : []),
+      OctoV2.loadV2Tone(toneForDate),
+      OctoV2.loadV2Tone(toneForVespers),
     ]).then(() => setDataVersion(v => v + 1));
   }, [selectedDate, templeDedication]);
 

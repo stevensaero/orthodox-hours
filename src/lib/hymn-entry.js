@@ -21,6 +21,9 @@ export function normalizeHymn(entry) {
     tradition: entry.tradition ?? null,
     pointing_source: entry.pointing_source ?? null,
     verse: entry.verse ?? null,
+    // Octoechos V2 adapter nodes carry their schema path — the reading-view
+    // deep-link anchor (Phase B.2). Surfaced by hymnProvenance as `srcPath`.
+    path: typeof entry.path === "string" ? entry.path : null,
   };
 }
 
@@ -40,5 +43,6 @@ export function hymnProvenance(entry) {
   if (h.director) p.director = true;
   if (h.tradition) p.tradition = h.tradition;
   if (h.pointing_source) p.pointing_source = h.pointing_source;
+  if (h.path) p.srcPath = h.path;
   return p;
 }

@@ -6032,3 +6032,11 @@ const PENTECOSTARION_DATA = {
 };
 
 export default PENTECOSTARION_DATA;
+
+// ── Pascha Hypakoë ────────────────────────────────────────────────────────────
+// Sung at the Typica in place of the tone Hypakoë during Pascha and Bright Week
+// (§4B1–§4B4). Moved here from the V1 Octoechos HYPAKOE table at the Phase 5
+// cutover (octoechos_wirein_spec.md §8.3) — Pentecostarion material that was
+// parked in the Octoechos table for convenience.
+export const PASCHA_HYPAKOE =
+  "Forestalling the dawn, the women came with Mary, and found the stone rolled away from the sepulchre, and heard from the angel: Why seek ye among the dead, as though He were a mortal, Him Who liveth in everlasting light? Behold the grave-clothes. Go quickly and proclaim to the world that the Lord is risen and hath slain death. For He is the Son of God Who saveth mankind.";

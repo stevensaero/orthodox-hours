@@ -76,13 +76,42 @@ for (const f of v2files) {
   }
 }
 
-// V1's own data layer legitimately duplicates source texts during the
-// parallel build (spec §1: V1 stays live and untouched until Phase 5
-// cutover; §8 inventories its static prokeimena tables as the comparison
-// surface). Hits in these files are REPORTED as warnings, not failures —
-// AT PHASE 5 CUTOVER this set must be emptied so they hard-fail like
-// every other component.
-const LEGACY_V1_SURFACES = new Set(['hours-tool.jsx', 'octoechos-data.js']);
+// PHASE 5 CUTOVER (v0.36.0, July 11 2026): the legacy set is EMPTY. Any
+// literal copy of canonical V2 text in a component is now a hard failure —
+// components read the canonical tables (directly or via the adapter), full
+// stop. (Pre-cutover this set tolerated hours-tool.jsx and octoechos-data.js
+// as warnings while V1 ran in parallel.)
+const LEGACY_V1_SURFACES = new Set([]);
+
+// CROSS-BOOK FRAME DUPLICATES (audited at cutover, July 11 2026): texts that
+// legitimately exist BOTH as V2 print-position nodes AND as the assembler's
+// own Horologion/HTM FRAME material or psalmody. These are not display copies
+// of the Octoechos — the same scripture/frame text simply appears in more
+// than one book (V2 principle §2.3: true duplicates stored per position).
+// Keyed by fragment prefix; each entry documents the frame home. Anything
+// NOT on this list still hard-fails. Revisit when the Horologion source is
+// encoded (§9.11(b)).
+const CROSS_BOOK_FRAME_DUPLICATES = [
+  ["For with the Lord there is mercy", "LIC ladder verse (Ps 129) — Vespers frame, all services"],
+  ["Have mercy on us, O Lord, have mercy on ", "aposticha psalm verse (Ps 122) — Vespers frame"],
+  ["Remember Thy congregation which Thou has", "weekday Alleluia verse (Ps 73) — HTM daily table"],
+  ["All of thy most glorious mysteries are b", "Hours theotokion — Horologion frame (Common Theotokia)"],
+  ["With the saints give rest, O Christ, to ", "kontakion of the departed — HTM Typica kontakia sequence"],
+  ["They that are planted in the house of th", "weekday Alleluia verse (Ps 91) — HTM daily table"],
+  ["The righteous man shall flourish like a ", "weekday Alleluia verse (Ps 91) — HTM daily table"],
+  ["The rich among the people shall entreat ", "weekday Alleluia verse (Ps 44) — HTM daily table"],
+  ["The heavens shall confess Thy wonders, O", "weekday Alleluia verse (Ps 88) — HTM daily table"],
+  ["Praise the Lord, O my soul. I will prais", "psalm verse (Ps 145) — frame psalmody"],
+  ["Holiness becometh Thy house, O Lord, unt", "Saturday aposticha verse (Ps 92) — Vespers frame"],
+  ["Hearken, O daughter, and see, and inclin", "weekday Alleluia verse (Ps 44) — HTM daily table"],
+  ["God Who is glorified in the council of t", "psalm verse (Ps 88) — frame psalmody"],
+  ["Glory to the Father, and to the Son, and", "the lesser doxology — universal frame line"],
+  ["For He spake, and they came to be; He co", "weekday Alleluia verse (Ps 148) — HTM daily table"],
+  ["Bless the Lord, O my soul; O Lord my God", "Vespers opening psalm (Ps 103) — frame psalmody"],
+  ["As thou art the treasury of our resurrec", "Hours theotokion — Horologion frame (Common Theotokia)"],
+];
+const isFrameDuplicate = (fragment) =>
+  CROSS_BOOK_FRAME_DUPLICATES.some(([prefix]) => fragment.startsWith(prefix));
 const legacyWarnings = [];
 if (fragments.length) {
   const componentFiles = readdirSync(COMPONENTS_DIR).filter(f => /\.(jsx|js)$/.test(f));
@@ -90,6 +119,7 @@ if (fragments.length) {
     const src = readFileSync(join(COMPONENTS_DIR, cf), 'utf8');
     for (const { fragment, from } of fragments) {
       if (src.includes(fragment)) {
+        if (isFrameDuplicate(fragment)) continue; // audited cross-book frame text — see the allowlist above
         const msg = `DISPLAY COPY (amendment F): src/components/${cf} carries a literal copy of canonical text from ${from} ("${fragment.slice(0, 40)}…")`;
         if (LEGACY_V1_SURFACES.has(cf)) legacyWarnings.push(msg + ' — V1 legacy surface, tolerated until Phase 5 cutover.');
         else problems.push(msg + ' — components must read the canonical tables directly.');
