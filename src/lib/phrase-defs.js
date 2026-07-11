@@ -347,4 +347,102 @@ export const PH_DEFS = {
       cad: ["do", "ti", "la"],
     },
   },
+  5: {
+    // Tone 5 Common Chant — Drillock & Ealy tutorial (pp. 37–43) + live
+    // research session, July 2026 (see tone_trainer_tone5_analysis.md in the
+    // repo root for the full worked-example evidence behind every entry).
+    // Rotation: pure A·B·C cycle, last line Final — see ROT_DEFS[5].
+    // Reference pitch confirmed: re = G4, F major → do = F4 IS the notated
+    // tonic (unlike Tone 3; like Tones 1/2/4) — shared OFF/notation tables apply.
+    //
+    // ARCHITECTURE (per Tone 3's §22 isolation principle): every phrase below
+    // is handled by its own dedicated pointLine() branch in ../pointing.js,
+    // emitting explicit per-pitch `durs` — none route through shared
+    // distribute() or the twin duration engines' generic cad paths. The cad
+    // arrays here are reference documentation of each phrase's fixed figure
+    // (and the honest-fallback figure for degenerate Final cases); the
+    // dedicated handlers hardcode the same values directly.
+    //
+    // Duration defaults follow the TUTORIAL's plain values (Bill's ruling):
+    // the LIC score's dotted intonation accents (H· on "Lord,"/"ceive"/
+    // "Let"/"eve" — 6/6 LIC instances) are read as special emphasis on those
+    // verses, NOT auto-rendered.
+    // PROVISIONAL close rule (A and B only): close syllable ending "!" → W.
+    // Fits all 10 confirmed Tone 5 close data points (me!/Lord!/Thee!/fice!
+    // all W; every non-! close H or H·) — but Tone 4's own data shows "!"
+    // does NOT predict W there, so this is a per-tone empirical rule,
+    // flagged for Bill's review, not a cross-tone principle.
+    A: {
+      // Same-pitch intonation: re(H) on the first accented syllable,
+      // unaccented lead-ins re(Q) (like Tone 4 F's duration-only intonation,
+      // NOT Tone 4 C's two-pitch approach). Cadence mi(H)→do: a DIRECT
+      // descending third, no passing re (confirmed). Fills on do — the CLOSE
+      // pitch, not the anchor. A is the only Tone 5 phrase with close-pitch
+      // fill; B and C fill on their anchors — per-phrase rules, never ported.
+      // Anchor stretches to H· when EXACTLY ONE fill follows (rhythmic
+      // balancing, Bill-ruled): "prayer"/"sac" H· at 1 fill; H at 0/2/3 fills.
+      recite: "re", inton: true, prep: null,
+      cad: ["mi", "do"],
+    },
+    B: {
+      // Begins directly on the reciting tone. Anchor mi(H) sits ON the
+      // reciting pitch (the Q→H duration shift is the only cadence signal
+      // until the close), fills mi(Q), close re(H). KNOWN OPEN ITEMS: the
+      // 0-fill mid-unit close showed H· once ("in-cense," — balancing on the
+      // close side?) — ONE data point, deliberately NOT encoded until a
+      // second example confirms it. No 1-fill B cadence seen yet (whether B
+      // stretches its anchor like A does is untested).
+      recite: "mi", inton: false, prep: null,
+      cad: ["mi", "re"],
+    },
+    C: {
+      // Same-pitch intonation as A (re/H accent, re/Q lead-ins). Single prep
+      // ti(Q) stepping DOWN immediately before the cadence — with a SLUR
+      // rule: an ACCENTED one-syllable word in the prep position takes
+      // re(Q)+ti(Q) as a 2-note slur ("born", confirmed) where an unaccented
+      // syllable takes the bare ti(Q) ("of", "Thee," — pronouns read weak).
+      // Cadence do·ti·la: anchor do is H· (dotted) UNLESS do(Q) fills are
+      // absorbing syllables, then plain H (Bill's correction — the same
+      // rhythmic-balancing mechanism as A's anchor; "God" is H· in
+      // "born God the Word" and plain H in "Ark of God goes to her rest",
+      // a perfect minimal pair). Cadence ti is always Q; close la(H).
+      // 2-syllable compression: do(H·)+ti(Q) slur on the anchor syllable
+      // ("hab-i-ta-tions", "ra", "hear"), close la at H· in both LIC
+      // instances (the tutorial's own snippet prints plain H — the same
+      // tutorial-prints-plain / LIC-score-elongates split as the intonation
+      // emphasis; the LIC value is encoded since the LIC preset is the
+      // verification target). Close at unit end (// / final) UNVERIFIED for
+      // C — no example seen; stays H/H·, flagged in the analysis doc.
+      recite: "re", inton: true, prep: "ti",
+      cad: ["do", "ti", "la"],
+    },
+    Final: {
+      // TWO-ANCHOR architecture (dedicated handler in ../pointing.js):
+      //   First anchor:  re(H) on the SECOND-TO-LAST internal accent — a
+      //     genuinely new anchor rule (Tones 1–4 Finals anchor on the last
+      //     internal accent).
+      //   Elastic run:   do(Q) per syllable between the two accents; with
+      //     ZERO in-between syllables a single do(H) folds into the
+      //     first-anchor slur ("[Hear]" = mi/Q+re/H+do/H when no reciting
+      //     body exists — the reciting pitch folds in too, like Tone 4's
+      //     identical Final case); with ONE in-between syllable the anchor
+      //     takes re(H)+do(Q) slurred and the syllable takes do(Q)
+      //     ("stan-tial" — n+1 do's, the one anomaly in the elastic ladder,
+      //     encoded as score-confirmed; see the analysis doc's open item).
+      //   Second anchor: ti(H) ON the last internal accent, opening a slur
+      //     that absorbs the do(Q)·ti(Q) tail as syllable count requires; at
+      //     ONE trailing syllable the compression is WORD-BOUNDARY driven:
+      //     trailing syllable inside the accented word → ti(H)+do(Q) slur on
+      //     the accent ("Dev-il", "Trin-i"); trailing is a separate word →
+      //     plain ti(H) on the accent, do(Q)+ti(Q) slurred on the trailing
+      //     word ("me, O" — twice-confirmed in the LIC score).
+      //   Close:         la(W) — structurally guaranteed finality.
+      // Fallbacks (fewer than 2 accents, or >2 trailing syllables after the
+      // last accent) fall through to the standard single-anchor path with
+      // this cad figure via shared distribute() — honest best-effort, same
+      // convention as Tone 4 Phrase E's own untested-case fallback.
+      recite: "mi", inton: false, prep: null,
+      cad: ["re", "do", "ti", "do", "ti", "la"],
+    },
+  },
 };

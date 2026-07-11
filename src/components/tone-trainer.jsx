@@ -27,12 +27,27 @@ import { STOP, lookupWord, syllabifyWithSource, wordFromDisplay, parseBracketWor
 // AND add the new entry to TRAINER_RELEASE_NOTES — bumping only the array,
 // as happened for v0.25.31 through v0.25.35, silently leaves the actual
 // displayed badge and cache-busting queries on the old version.
-export const TONE_TRAINER_VERSION = "v0.25.59";
+export const TONE_TRAINER_VERSION = "v0.26.0";
 
 // Release notes for the trainer's clickable version badge's EXPANDED detail
 // panel (mirrors hours-tool). Newest entry first. The badge itself reads
 // TONE_TRAINER_VERSION (above) — keep both updated together on every bump.
 const TRAINER_RELEASE_NOTES = [
+  {
+    version: "v0.26.0",
+    date: "July 2026",
+    summary: "feat: TONE 5 — complete Obikhod implementation: alto pointing (A/B/C/Final), full SATB harmony, LIC preset, rotation, and score-print support; built in a single live research session with Bill reading the tutorial (pp. 37-43) and LIC score directly, every rule score-confirmed before encoding (full record: tone_trainer_tone5_analysis.md, repo root)",
+    items: [
+      "feat: ROT_DEFS[5] = [A,B,C] — pure three-phrase cycle, last line Final (tutorial-verbatim, Bill-verified; 8-line example A B C A B C A Final). Rotation hint + PH_DEFS-gated tone selector pick it up automatically.",
+      "feat: PH_DEFS[5] + four dedicated pointLine() handlers (src/lib/pointing.js), all emitting explicit per-pitch durs via the r.durs pass-through — no Tone 5 phrase routes through shared distribute() or the twin engines' generic cad branches (Tone 3 §22 isolation discipline). A: same-pitch intonation (re/H accent, re/Q lead-ins), cad mi(H)→do with CLOSE-pitch do(Q) fills (unique in this tone; B/C fill on their anchors) and the rhythmic-balancing anchor stretch (mi/H· at exactly one fill — Bill-ruled). B: anchor-on-reciting-pitch (mi/H), mi(Q) fills, close re. C: prep ti(Q) with the accented-monosyllable slur rule (re+ti 2-note slur, 'born'; weak pronouns take the bare prep — 'Thee,'), cad do·ti·la with dotted anchor when no fills absorb (the 'God' minimal pair), 2-syllable compression do(H·)+ti(Q) slur + la(H·) close (both LIC instances). Final: TWO-ANCHOR architecture — re(H) on the SECOND-TO-LAST internal accent (new anchor rule, first tone to use it), elastic do(Q) run (do/H folded into the anchor slur at zero in-between syllables, incl. the reciting pickup when no body exists — '[Hear]' = mi/Q+re/H+do/H), ti(H) melisma on the last accent with WORD-BOUNDARY-driven tail compression ('Dev-il'/'Trin-i' accent-side vs 'me, O' trailing-side, twice-confirmed), close la(W) always.",
+      "feat: full SATB — BASS_RULES[5] + TENOR_RULES[5] (direct interview against the tutorial's p. 41 harmony page + Transfiguration SATB score), Tone 5 added to SOPRANO_TONES (strict diatonic third at every position, incl. the Final's six-pitch cadence), BASS_TONES/TENOR_TONES, and — score-confirmed directly, not inherited — BASS_HOLD_TONES/TENOR_HOLD_TONES. Registers confirmed: tenor sol=C4, closes mi=A3, Final si=C#4 (octaveDiv si:1, same override + reason as Tones 1/4); bass sol=C3, do=F3, la=D3, and the Final tail's low mi=A2 encoded as mi_low (existing ÷4 low-register pitch — the default mi would land an octave high in audio AND print).",
+      "arch: the Final's TAIL requires POSITIONAL mapping for both bass and tenor — alto's ti at expanded tail positions 0 and 2 takes different answers (bass sol vs mi_low; tenor sol vs si), inexpressible as a flat cadMap (same class as Tone 4 Phrase E's bass). cadPositional on both rules, read via a new cadOnly index (counts role==='cad' entries only — Tone 5's variable-length cad1 run would misindex Tone 4 E's combined counter) threaded through deriveBassRolesWD and (newly) deriveTenorRolesWD/mapTenorPitch. cad1Map (first anchor + elastic run, incl. the folded reciting pickup mi) reuses Tone 3's existing cad1 dispatch, extended to tone 5. cad1Map also added to buildUnifiedVoiceMap's pitch collection (preventative, same closure class as preslurMap).",
+      "arch: Tone-5-gated suffix-split in deriveTenorRolesWD's collapse — the Final's 'Hear' slur (alto mi·re·do = Q+H+H = 2.5H on constant tenor sol) has no single representable value, and the printed score writes it as a quarter slurred to a whole ON THE SAME PITCH; the split emits the prefix as-is (melisma:true, so the existing slur-grouping draws the connecting curve) and collapses the representable suffix (H+H→W). Tones 1-4's all-or-nothing rule is untouched.",
+      "feat: PRESET_T5 — the 6-line LIC text provided by Bill (A B C A B Final), every line one of the session's own score-confirmed worked examples, incl. the compressed C cadence (hear = do/H·+ti/Q slur, me! = la/H·) and the Final's two-anchor shape.",
+      "note: PROVISIONAL rules flagged for review (also shown in the Tone 5 open-items note in the UI): the '!'-close → W rule for A/B (fits all 10 confirmed Tone 5 close data points; Tone 4's data shows ! does NOT predict W there — per-tone empirical, not cross-tone); LIC dotted intonation accents deliberately NOT auto-rendered (Bill-ruled special emphasis; tutorial H is the default); B's once-observed 0-fill H· close not encoded (one data point); C's unit-end close unverified; the Final's 1-in-between elastic rung follows its single confirmed example ('stan-tial', the n+1-do anomaly).",
+      "test: gate fixtures added to tools/test_pointing_roles.mjs covering all four Tone 5 handlers — incl. the C preslur/plain-prep pair, the compressed C cadence, the Final's pickup fold, both word-boundary tail variants, and the S4 elastic case. npm run gate green; vite build clean. Recommend live verification against the deployed tool (chips, audio, printed score) per standing practice.",
+    ],
+  },
   {
     version: "v0.25.59",
     date: "July 2026",
@@ -1643,6 +1658,13 @@ const ROT_DEFS = {
   //    to the last line of the text for the Final Phrase."
   //   9-line example: A B C D E F D E Final
   4: (i, _total) => i === 0 ? "A" : i === 1 ? "B" : i === 2 ? "C" : ["D","E","F"][(i - 3) % 3],
+  // Tone 5 rule (Drillock & Ealy Common Chant tutorial, Bill-verified):
+  //   "The sticheron melody for Tone 5 consists of three phrases (A, B, C,)
+  //    which are sung in rotation up to the last line of the sticheron,
+  //    which has its own independent phrase."
+  //   8-line example: A B C A B C A Final — a plain cycle, so the simple
+  //   array form suffices (Final handled by the caller, per the CONTRACT).
+  5: ["A", "B", "C"],
 };
 // phraseForLine: accepts active rotation (array OR function) as third argument.
 // Last line is always Final.
@@ -1707,7 +1729,9 @@ const buildVoiceHeightMap = (pitches, hzFn, phraseRules) => {
 // Tone 3: direct interview (July 2026), all 3 phrases — see
 // tone_trainer_tone3_analysis.md §14 onward. Tone 4: direct interview (July
 // 2026), all 7 phrases — see tone_trainer_tone4_analysis.md §8.
-const TENOR_TONES = new Set([1, 2, 3, 4]);
+// Tone 5: direct interview (July 2026), all 4 phrases + registers (tenor
+// sol=C4, closes mi=A3, Final si=C♯4) — see tone_trainer_tone5_analysis.md §4.
+const TENOR_TONES = new Set([1, 2, 3, 4, 5]);
 
 // Tones whose tenor MELISMA-HOLD behaviour is score-verified. The collapse in
 // deriveTenorRolesWD() (constant-pitch alto melisma → one held tenor note) fires
@@ -1731,7 +1755,15 @@ const TENOR_TONES = new Set([1, 2, 3, 4]);
 //            not inferred from the pitch data alone, even though the existing
 //            generic collapse mechanism (unchanged) produces exactly this
 //            shape once Tone 3 is added here.
-const TENOR_HOLD_TONES = new Set([1, 2, 3, 4]);
+//   Tone 5 — LIC score (Jul 2026), confirmed directly by Bill, not
+//            inherited: Phrase C "hear" (alto do·ti slur, H·+Q) → tenor
+//            sings a WHOLE NOTE on sol while bass slurs both notes; Final
+//            "Hear" (alto mi·re·do, Q+H+H = 5Q) → the printed score writes
+//            tenor as a quarter slurred to a whole ON THE SAME sol — see
+//            the Tone-5 suffix-split in deriveTenorRolesWD; Final "O"
+//            (alto do·ti) does NOT hold — tenor genuinely moves (sol→si),
+//            "everyone has a note to move to."
+const TENOR_HOLD_TONES = new Set([1, 2, 3, 4, 5]);
 
 // Soprano chip height — always above the corresponding alto chip.
 // Maps alto pitch through SOPRANO_MAP, then ensures the result sits
@@ -1767,7 +1799,11 @@ const TENOR_HOLD_TONES = new Set([1, 2, 3, 4]);
 // table mirroring BASS_RULES/TENOR_RULES. (Note: di→mi in SOPRANO_MAP is effectively
 // Tone-2-only in practice; Tone 1's alto never uses di. A future tone needing di to map
 // elsewhere is exactly the deviation case above — give it its own rules, not a remap.)
-const SOPRANO_TONES = new Set([1, 2, 3, 4]);
+// Tone 5: strict diatonic third above alto at EVERY position of every phrase,
+// including the Final's six-pitch cadence (re→fa, mi→sol, do→mi, ti→re,
+// la→do) — confirmed by Bill against the tutorial's harmony page (p. 41)
+// and the Transfiguration SATB score, July 2026 session.
+const SOPRANO_TONES = new Set([1, 2, 3, 4, 5]);
 
 // Tones with score-verified bass rules. Bass is suppressed for all other
 // tones. Mirrors TENOR_TONES/SOPRANO_TONES — added here after this exact
@@ -1776,8 +1812,10 @@ const SOPRANO_TONES = new Set([1, 2, 3, 4]);
 // traced back to a missing gate. Tone 1: partial (Phrase A verified, B/C/D/
 // Final pending — see BASS_RULES[1] comments). Tone 2: LIC score, all 5
 // phrases. Tone 3: direct interview (July 2026), all 3 phrases. Tone 4:
-// direct interview, all 7 phrases (July 2026 session).
-const BASS_TONES = new Set([1, 2, 3, 4]);
+// direct interview, all 7 phrases (July 2026 session). Tone 5: direct
+// interview (July 2026), all 4 phrases + registers (bass sol=C3, do=F3,
+// la=D3, Final's low mi=A2 via mi_low) — see tone_trainer_tone5_analysis.md §4.
+const BASS_TONES = new Set([1, 2, 3, 4, 5]);
 
 const chipH_soprano = (altoPitch) => {
   const mapped = SOPRANO_MAP[altoPitch] ?? altoPitch;
@@ -1962,7 +2000,30 @@ const PRESET_T4 = [
   ["Final", [["Hear",[["Hear",1]]],["me,",[["me",1]]],["O",[["O",0]]],["Lord!",[["Lord!",0]]]]],
 ];
 
-const PRESETS = { 1: PRESET_T1, 2: PRESET_T2, 3: PRESET_T3, 4: PRESET_T4 };
+// ── PRESET: "Lord, I call upon Thee..." — Tone 5 LIC (Lord, I Call) ──────────
+// Provided directly by Bill as the Tone 5 example text (July 2026 session).
+// 6-line sticheron: A B C A B Final, per ROT_DEFS[5] = ["A","B","C"] cycling.
+// Every line is one of that session's own score-confirmed worked examples —
+// see tone_trainer_tone5_analysis.md §3 for each line's verified shape:
+//   1 A: Lord,=intonation accent (re/H); hear=anchor (mi/H); me!=close (do/W).
+//   2 B: Hear=anchor (mi/H, no reciting body); me,/O fills (mi/Q); Lord!=close (re/W).
+//   3 C: Lord,=intonation; Thee,=prep (ti/Q, weak pronoun — no slur);
+//        hear=compressed anchor (do/H·+ti/Q slur); me!=close (la/H·).
+//   4 A: ceive=intonation accent; voice=anchor; of/my=fills (do/Q); prayer,=close (do/H).
+//   5 B: call=anchor; up/on=fills; Thee!//=close (re/W) — the // penultimate line.
+//   6 Final: Hear=first anchor (mi/Q+re/H+do/H slur — reciting pickup folds in);
+//        me=second anchor (ti/H, plain — separate-word tail); O=do/Q+ti/Q slur;
+//        Lord!=close (la/W).
+const PRESET_T5 = [
+  ["A", [["Lord,",[["Lord",1]]],["I",[["I",0]]],["call",[["call",0]]],["upon",[["up",0],["on",0]]],["Thee,",[["Thee,",0]]],["hear",[["hear",1]]],["me!",[["me!",0]]]]],
+  ["B", [["Hear",[["Hear",1]]],["me,",[["me,",0]]],["O",[["O",0]]],["Lord!",[["Lord!",0]]]]],
+  ["C", [["Lord,",[["Lord",1]]],["I",[["I",0]]],["call",[["call",0]]],["upon",[["up",0],["on",0]]],["Thee,",[["Thee,",0]]],["hear",[["hear",1]]],["me!",[["me!",0]]]]],
+  ["A", [["Receive",[["Re",0],["ceive",1]]],["the",[["the",0]]],["voice",[["voice",1]]],["of",[["of",0]]],["my",[["my",0]]],["prayer,",[["prayer,",0]]]]],
+  ["B", [["when",[["when",0]]],["I",[["I",0]]],["call",[["call",1]]],["upon",[["up",0],["on",0]]],["Thee!//",[["Thee!//",0]]]]],
+  ["Final", [["Hear",[["Hear",1]]],["me,",[["me",1]]],["O",[["O",0]]],["Lord!",[["Lord!",0]]]]],
+];
+
+const PRESETS = { 1: PRESET_T1, 2: PRESET_T2, 3: PRESET_T3, 4: PRESET_T4, 5: PRESET_T5 };
 
 function presetToLines(toneNum) {
   const preset = PRESETS[toneNum] || PRESETS[1];
@@ -2582,6 +2643,52 @@ const TENOR_RULES = {
       octaveDiv: { si: 1 },
     },
   },
+  // ── Tone 5, Obikhod (L'vov-Bakhmetev) ────────────────────────────────────
+  // Built from a direct interview (July 2026), Bill reading the tutorial's
+  // harmony page (p. 41) and the Transfiguration SATB score directly — see
+  // tone_trainer_tone5_analysis.md §4. Same central finding as Tone 4:
+  // tenor is a constant sol (C4) drone, breaking only at Phrase C's close
+  // (mi=A3 under alto's la) and in the Final cadence's tail (si=C♯4 — the
+  // raised sol / harmonic-minor leading tone, printed with its # — then
+  // mi=A3 at the close).
+  5: {
+    A: { recite: "sol", prepMap: {}, cadMap: { mi: "sol", do: "sol" }, preslurMap: {} },
+    B: { recite: "sol", prepMap: {}, cadMap: { mi: "sol", re: "sol" }, preslurMap: {} },
+    C: {
+      // recite covers intonation + reciting (both alto re → sol). Prep ti →
+      // sol. Cadence: do→sol, ti→sol, la→mi (A3, the phrase's one real move).
+      // preslurMap: the "born" re·ti slur — both recite-pitch and prep-pitch
+      // map to the same sol tenor already sings on either side (derived from
+      // the confirmed recite/prep values, not separately score-read; the
+      // constant-pitch pair then collapses to one held H via the standard
+      // hold mechanism).
+      recite: "sol",
+      prepMap: { ti: "sol" },
+      cadMap: { do: "sol", ti: "sol", la: "mi" },
+      preslurMap: { re: "sol", ti: "sol" },
+    },
+    Final: {
+      // cad1 (first anchor + elastic do run, incl. the folded reciting
+      // pickup mi) is constant sol. The TAIL (role cad, expanded pitches
+      // always [ti, do, ti, la]) is POSITIONAL — alto's ti at tail positions
+      // 0 and 2 takes two different tenor answers (sol vs si), which a flat
+      // cadMap cannot express (same architecture as Tone 4 Phrase E's bass).
+      // cadPositional is read by expanded-cad-entry index — safe because the
+      // Tone 5 Final pointLine handler guarantees exactly these four pitches
+      // in this order on the dedicated path (its >2-trailing fallback goes
+      // through the standard path and never reaches this rule).
+      recite: "sol",
+      prepMap: {},
+      cad1Map: { mi: "sol", re: "sol", do: "sol" },
+      cadPositional: ["sol", "sol", "si", "mi"], // under alto ti·do·ti·la
+      preslurMap: {},
+      // si must sound at C♯4 (÷1), same override + same reason as Tone 1's
+      // and Tone 4's Final tenor — the global TENOR_OCTAVE_DIV default (÷2)
+      // and the score-print payload's local default disagree on si, and only
+      // an explicit per-phrase override keeps audio, chips, and print in sync.
+      octaveDiv: { si: 1 },
+    },
+  },
 };
 
 // ── Tenor derivation: shared pitch-map + melisma-hold collapse ───────────────
@@ -2597,7 +2704,7 @@ const TENOR_RULES = {
 // Map one alto rolesWD entry's pitch to its tenor pitch per the phrase rules.
 // tone/phrase are optional — only needed for the Tone-4-Final-specific case
 // below; every other caller/tone works fine without passing them.
-const mapTenorPitch = (r, rules, tone, phrase) => {
+const mapTenorPitch = (r, rules, tone, phrase, cadOnlyIdx) => {
   const orig = r.pitches[0];
   // Tone 4 Final Phrase: when body.length<3 compresses the reciting-
   // transition re into the same melisma as the two true prep notes (do,
@@ -2608,10 +2715,21 @@ const mapTenorPitch = (r, rules, tone, phrase) => {
   if (tone === 4 && phrase === "Final" && r.role === "prep" && orig === "re") {
     return rules.recite;
   }
-  if (tone === 3 && phrase === "Final" && r.role === "cad1") {
-    // cad1 (Part 1) and cad (Part 2) need separate maps — alto's own "re"
-    // resolves differently in each part. See TENOR_RULES[3].Final.
+  if ((tone === 3 || tone === 5) && phrase === "Final" && r.role === "cad1") {
+    // cad1 and cad need separate maps — alto's own pitches resolve
+    // differently in each part. Tone 3: see TENOR_RULES[3].Final. Tone 5:
+    // cad1Map covers the first anchor + elastic run (incl. the folded
+    // reciting pickup mi) — see TENOR_RULES[5].Final.
     return rules.cad1Map?.[orig] ?? orig;
+  }
+  if (tone === 5 && phrase === "Final" && r.role === "cad") {
+    // Tone 5 Final TAIL is positional — alto's ti at expanded tail
+    // positions 0 and 2 takes sol vs si (a flat cadMap cannot express
+    // this; same class as Tone 4 Phrase E's bass). cadOnlyIdx counts
+    // expanded role==="cad" entries only (cad1 excluded), threaded through
+    // by deriveTenorRolesWD; the dedicated pointLine path guarantees the
+    // expanded tail is exactly [ti, do, ti, la].
+    return rules.cadPositional?.[cadOnlyIdx] ?? orig;
   }
   if (r.role === "recite" || r.role === "inton") return rules.recite;
   if (r.role === "prep")    return rules.prepMap?.[orig]    ?? orig;
@@ -2647,7 +2765,14 @@ const sumDurKeys = (keys) => {
 // (verified per tone from its own score) — a tone not in that set rearticulates every
 // note. See choir_director_review.md (Tone 1) and the LIC verification (Tone 2).
 const deriveTenorRolesWD = (rolesWD, rules, tone, phrase) => {
-  const mapped = rolesWD.map((r, i) => ({ ...r, pitches: [mapTenorPitch(r, rules, tone, phrase)], _idx: i }));
+  // cadOnly: running index over expanded role==="cad" entries only (cad1
+  // excluded) — consumed by mapTenorPitch's Tone 5 Final positional tail.
+  let cadOnly = 0;
+  const mapped = rolesWD.map((r, i) => {
+    const p = mapTenorPitch(r, rules, tone, phrase, cadOnly);
+    if (r.role === "cad") cadOnly++;
+    return { ...r, pitches: [p], _idx: i };
+  });
   const out = [];
   let i = 0;
   while (i < mapped.length) {
@@ -2669,9 +2794,35 @@ const deriveTenorRolesWD = (rolesWD, rules, tone, phrase) => {
           const sumDur = mapped.slice(i, j + 1).reduce((s, x) => s + (x.dur || 0), 0);
           out.push({ ...e, dur: sumDur, durKey: dk, melisma: false,
                      spanStart: e._idx, spanCount });
-        } else {
-          for (let k = i; k <= j; k++) out.push({ ...mapped[k], spanStart: mapped[k]._idx, spanCount: 1 });
+          i = j + 1;
+          continue;
         }
+        // Tone 5 exception, score-confirmed (NOT ported to other tones): the
+        // Final Phrase's "Hear" slur (alto mi·re·do = Q+H+H = 2.5H on a
+        // constant tenor sol) has no single representable value, and the
+        // printed score writes it as a quarter SLURRED TO a whole on the
+        // same pitch — a two-note tied sustain, not three re-struck notes.
+        // Split the run at the earliest point where the SUFFIX is
+        // representable: prefix entries emit as-is (keeping melisma:true so
+        // the existing slur-grouping draws the connecting curve), suffix
+        // collapses into one held note. Tones 1–4 keep the original
+        // all-or-nothing rule unchanged.
+        if (tone === 5) {
+          let split = -1;
+          for (let k = i + 1; k <= j; k++) {
+            if (sumDurKeys(mapped.slice(k, j + 1).map(x => x.durKey))) { split = k; break; }
+          }
+          if (split > i) {
+            for (let m = i; m < split; m++) out.push({ ...mapped[m], spanStart: mapped[m]._idx, spanCount: 1 });
+            const sdk = sumDurKeys(mapped.slice(split, j + 1).map(x => x.durKey));
+            const sumDur = mapped.slice(split, j + 1).reduce((s, x) => s + (x.dur || 0), 0);
+            out.push({ ...mapped[split], dur: sumDur, durKey: sdk, melisma: false,
+                       spanStart: mapped[split]._idx, spanCount: j - split + 1 });
+            i = j + 1;
+            continue;
+          }
+        }
+        for (let k = i; k <= j; k++) out.push({ ...mapped[k], spanStart: mapped[k]._idx, spanCount: 1 });
         i = j + 1;
         continue;
       }
@@ -2901,10 +3052,51 @@ const BASS_RULES = {
       preslurMap: {},
     },
   },
-  // Tones 5, 6, 7, 8 — bass rules not yet researched. Tone 1's own entries
+  // ── Tone 5, Obikhod (L'vov-Bakhmetev) ────────────────────────────────────
+  // Built from a direct interview (July 2026), Bill reading the tutorial's
+  // harmony page (p. 41) and the Transfiguration SATB score directly — see
+  // tone_trainer_tone5_analysis.md §4. Registers confirmed: sol=C3, do=F3,
+  // la=D3, and the Final tail's low mi=A2 — encoded as mi_low (the existing
+  // low-register mi pitch, BASS_OCTAVE_DIV ÷4 → A2, notation octave 2),
+  // exactly the mechanism Tone 1's own Final cadence already uses; the
+  // default `mi` (÷2 → A3) would land an octave high in both audio and print.
+  5: {
+    A: { recite: "sol", prepMap: {}, cadMap: { mi: "do", do: "do" }, preslurMap: {} },
+    B: { recite: "do", prepMap: {}, cadMap: { mi: "do", re: "sol" }, preslurMap: {} },
+    C: {
+      // Intonation + reciting (alto re) → sol; prep ti → sol; cadence
+      // do→do (F3), ti→sol, la→la (D3, the tone's first bass·alto
+      // same-degree close, octaves apart). preslurMap: the "born" re·ti
+      // slur — both pitches sit on the sol bass already holds around it
+      // (derived from the confirmed recite/prep values, not separately
+      // score-read; constant pitch → collapses to one held H).
+      recite: "sol",
+      prepMap: { ti: "sol" },
+      cadMap: { do: "do", ti: "sol", la: "la" },
+      preslurMap: { re: "sol", ti: "sol" },
+    },
+    Final: {
+      // cad1 (first anchor + elastic run): bass articulates note-for-note
+      // with alto ("do-sol-do" under the LIC "Hear" slur, confirmed) — the
+      // folded reciting pickup mi→do, anchor re→sol, elastic do→do.
+      // The TAIL (role cad, expanded pitches always [ti, do, ti, la]) is
+      // POSITIONAL — alto's ti at tail positions 0 and 2 takes two
+      // different bass answers (sol vs mi_low/A2), inexpressible as a flat
+      // cadMap (same architecture as Tone 4 Phrase E). Read by
+      // expanded-cad-entry index; safe for the same reason as tenor's —
+      // the dedicated pointLine path guarantees the four-pitch tail.
+      recite: "do",
+      prepMap: {},
+      cad1Map: { mi: "do", re: "sol", do: "do" },
+      cadPositional: ["sol", "do", "mi_low", "la"], // under alto ti·do·ti·la
+      preslurMap: {},
+    },
+  },
+  // Tones 6, 7, 8 — bass rules not yet researched. Tone 1's own entries
   // above are partial (Phrase A verified, B/C/D/Final pending). Tone 3
   // completed July 2026 (see the Tone 3 section above, inserted before Tone 4).
-  // Add entries here as score evidence is gathered per tone/setting.
+  // Tone 5 completed July 2026 (above). Add entries as score evidence is
+  // gathered per tone/setting.
 };
 
 // Tones whose BASS hold behaviour (constant-pitch alto/bass melisma spans
@@ -2922,7 +3114,13 @@ const BASS_RULES = {
 // one held half note. Both score-confirmed, not inferred from the pitch data
 // alone, even though the existing generic collapse mechanism (unchanged)
 // produces exactly this shape once Tone 3 is added here.
-const BASS_HOLD_TONES = new Set([3, 4]);
+// Tone 5 confirmed directly (Jul 2026), LIC score: Phrase C "hear" — bass
+// SLURS do(H·)→sol(Q) note-for-note with alto (pitches genuinely differ, so
+// no collapse fires there, correctly); Phrase C preslur "born" (re·ti →
+// bass sol·sol, Q+Q) is the constant-pitch case that holds. Final "Hear"
+// (alto mi·re·do → bass do·sol·do) articulates note-for-note — confirmed
+// "bass slurs note for note like the alto/soprano parts."
+const BASS_HOLD_TONES = new Set([3, 4, 5]);
 
 // ── Bass derivation: shared pitch-map + melisma-hold collapse ───────────────
 // Mirrors deriveTenorRolesWD exactly (see that function's comments for the
@@ -2942,7 +3140,7 @@ const BASS_HOLD_TONES = new Set([3, 4]);
 // cadPositional in BASS_RULES[4].E) — tracked via a running cad-entry index
 // as deriveBassRolesWD iterates, since alto's own re appears twice in that
 // phrase's figure with two different bass answers.
-const mapBassPitch = (r, rules, tone, phrase, cadIdx) => {
+const mapBassPitch = (r, rules, tone, phrase, cadIdx, cadOnlyIdx) => {
   const orig = r.pitches[0];
   if (tone === 4 && phrase === "E" && (r.role === "cad" || r.role === "cad1")) {
     return rules.cadPositional?.[cadIdx] ?? orig;
@@ -2953,10 +3151,20 @@ const mapBassPitch = (r, rules, tone, phrase, cadIdx) => {
   if (tone === 4 && phrase === "C" && r.role === "inton" && orig === "re") {
     return rules.intonCloseRe ?? orig;
   }
-  if (tone === 3 && phrase === "Final" && r.role === "cad1") {
-    // cad1 (Part 1) and cad (Part 2) need separate maps — alto's own "re"
-    // resolves differently in each part. See BASS_RULES[3].Final.
+  if ((tone === 3 || tone === 5) && phrase === "Final" && r.role === "cad1") {
+    // cad1 and cad need separate maps — alto's own pitches resolve
+    // differently in each part. Tone 3: see BASS_RULES[3].Final. Tone 5:
+    // cad1Map covers the first anchor + elastic run (incl. the folded
+    // reciting pickup mi) — see BASS_RULES[5].Final.
     return rules.cad1Map?.[orig] ?? orig;
+  }
+  if (tone === 5 && phrase === "Final" && r.role === "cad") {
+    // Tone 5 Final TAIL is positional — alto's ti at expanded tail
+    // positions 0 and 2 takes sol vs mi_low (A2). cadOnlyIdx counts
+    // expanded role==="cad" entries only (cad1 excluded — unlike the
+    // cadIdx that Tone 4 E uses, which counts both; Tone 5's cad1 run is
+    // variable-length, so a combined count would misindex the tail).
+    return rules.cadPositional?.[cadOnlyIdx] ?? orig;
   }
   if (r.role === "recite" || r.role === "inton") return rules.recite;
   if (r.role === "prep")    return rules.prepMap?.[orig]    ?? orig;
@@ -2967,9 +3175,11 @@ const mapBassPitch = (r, rules, tone, phrase, cadIdx) => {
 
 const deriveBassRolesWD = (rolesWD, rules, tone, phrase) => {
   let cadIdx = 0;
+  let cadOnly = 0; // role==="cad" only — see mapBassPitch's Tone 5 Final branch
   const mapped = rolesWD.map((r, i) => {
-    const p = mapBassPitch(r, rules, tone, phrase, cadIdx);
+    const p = mapBassPitch(r, rules, tone, phrase, cadIdx, cadOnly);
     if (r.role === "cad" || r.role === "cad1") cadIdx++;
+    if (r.role === "cad") cadOnly++;
     return { ...r, pitches: [p], _idx: i };
   });
   const out = [];
@@ -5472,7 +5682,12 @@ export default function ToneTrainer() {
         // this function doesn't know about), worth closing now rather than
         // waiting for a future tone's preslurMap to introduce a genuinely
         // unique pitch and silently repeat this.
-        [pr.recite, ...Object.values(pr.cadMap||{}), ...Object.values(pr.prepMap||{}), ...(pr.cadPositional||[]), ...Object.values(pr.preslurMap||{})]
+        // cad1Map added alongside Tone 5 (July 2026) — same preventative
+        // closure as preslurMap: every cad1Map output currently in use
+        // (Tones 3 and 5) is redundant with recite/cadMap/cadPositional
+        // values already collected, but the field is a legitimate output
+        // source this function should know about.
+        [pr.recite, ...Object.values(pr.cadMap||{}), ...Object.values(pr.prepMap||{}), ...(pr.cadPositional||[]), ...Object.values(pr.preslurMap||{}), ...Object.values(pr.cad1Map||{})]
           .forEach(p => {
             if (!p) return;
             const hz = hzFn(p, pr);
@@ -5851,6 +6066,7 @@ export default function ToneTrainer() {
                   2: "A, then B·C·D·…·Final",
                   3: "A·B·…·Final",
                   4: "A, B, C, then D·E·F·…·Final",
+                  5: "A·B·C·…·Final",
                 }[activeTone] ?? "A·B·C·D·…·Final";
                 return `Load a Service .docx | Paste in a sticheron — one verse per line. Tone ${activeTone} rotates ${rotDesc}.`;
               })()}
@@ -5868,6 +6084,20 @@ export default function ToneTrainer() {
               tutorial documents a with-intonation variant, but no confirmed real verse uses
               it. SATB harmony (bass/tenor/soprano) is not yet built for this tone. See
               tone_trainer_tone4_analysis.md in the repo for full detail.
+            </div>
+          )}
+          {activeTone === 5 && (
+            <div style={{ fontSize: "0.72rem", color: "#8a6a3a", background: "rgba(199,157,80,.12)",
+                          border: "1px solid rgba(199,157,80,.35)", borderRadius: 5, padding: "5px 9px",
+                          marginBottom: "0.5rem" }}>
+              Tone 5 open items: the LIC score's <b>dotted intonation accents</b> (H· on
+              "Lord,"/"ceive"/"Let"/"eve") are read as special emphasis and are NOT
+              auto-rendered (tutorial's plain H is the default). The <b>"!" → whole-note
+              close</b> rule for Phrases A/B is provisional (fits all 10 confirmed examples,
+              flagged for review). Phrase B's once-observed 0-fill H· close ("in-cense,") is
+              not encoded. Phrase C's close at a unit end is unverified. The Final Phrase's
+              1-syllable elastic case follows the one confirmed example ("stan-tial").
+              See tone_trainer_tone5_analysis.md in the repo for full detail.
             </div>
           )}
           <textarea value={text} onChange={(e) => { setText(e.target.value); setHasTruth(parseBracketedText(e.target.value).hasBrackets); }} rows={5}

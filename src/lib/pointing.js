@@ -237,6 +237,242 @@ export function pointLine(line, phDefs, activeTone) {
     }
   }
 
+  // ── TONE 5 (all four phrases): dedicated handlers, explicit durs ─────────
+  // Per Tone 3's §22 isolation principle, no Tone 5 phrase routes through
+  // shared distribute() or the twin duration engines' generic cad branches —
+  // every handler emits explicit per-pitch `durs`, consumed by the r.durs
+  // pass-through in lineToNotes()/lineToRolesWithDuration(). Full evidence:
+  // tone_trainer_tone5_analysis.md (repo root), July 2026 session.
+
+  // Shared Tone 5 helper: does the line's last word end with "!"?
+  // PROVISIONAL close rule for Phrases A and B: "!" close → W. Fits all 10
+  // confirmed Tone 5 close data points (me!/Lord!/Thee!/fice! all W; every
+  // non-! close H or H·). Tone 4's own data shows "!" does NOT predict W
+  // there — this is a per-tone empirical rule, flagged for review, not a
+  // cross-tone principle. Syllable text is punctuation-clean on some paths
+  // (docx/bracket parse) but not others (presets), so check the word-level
+  // display first and the raw last-syllable text as fallback.
+  const t5CloseIsBang = () => {
+    const lastWord = line.words?.[line.words.length - 1];
+    const disp = lastWord?.display ?? "";
+    const lastSyll = flat[flat.length - 1]?.text ?? "";
+    return /!/.test(disp) || /!/.test(lastSyll);
+  };
+
+  // ── Tone 5 Phrase A: same-pitch intonation · cad mi(H)→do, close-pitch fills ──
+  // Anchor mi(H) on the last internal accent (standard anchorIndex search —
+  // every confirmed example is explained by the ordinary rule, incl. the
+  // monosyllabic backups "Lord,"→"moun", "me!"→"hear"). Fills on do (the
+  // CLOSE pitch — unique among Tone 5 phrases). Anchor stretches to H· when
+  // exactly ONE fill follows (rhythmic balancing, Bill-ruled: "prayer",
+  // "sac"); plain H at 0/2/3 fills. Close do: H default, W on "!" (provisional).
+  if (activeTone === 5 && line.phrase === "A") {
+    const a = anchorIndex(flat);
+    const body = flat.slice(0, a);
+    const cad = flat.slice(a);
+    const roles = [];
+    const firstAcc = body.findIndex(s => s.accent);
+    const intonIdx = firstAcc >= 0 ? firstAcc : (body.length > 0 ? 0 : -1);
+    body.forEach((s, i) => {
+      if (i === intonIdx) roles.push({ role: "inton", pitches: ["re"], durs: ["H"], accent: s.accent, text: s.text, source: s.source });
+      else roles.push({ role: "recite", pitches: ["re"], durs: ["Q"], accent: s.accent, text: s.text, source: s.source });
+    });
+    const n = cad.length;
+    const closeDur = t5CloseIsBang() ? "W" : "H";
+    cad.forEach((s, i) => {
+      if (n === 1) {
+        // Degenerate (cadence floor is "two or more syllables" per the
+        // tutorial) — never observed; honest fallback compresses the full
+        // figure onto the one syllable as a melisma.
+        roles.push({ role: "cad", pitches: ["mi", "do"], durs: ["H", closeDur], accent: s.accent, text: s.text, source: s.source, anchor: true });
+        return;
+      }
+      let pitch, dur;
+      if (i === 0)          { pitch = "mi"; dur = (n === 3) ? "H·" : "H"; } // anchor; H· at exactly 1 fill
+      else if (i === n - 1) { pitch = "do"; dur = closeDur; }               // close
+      else                  { pitch = "do"; dur = "Q"; }                    // fills (close pitch)
+      roles.push({ role: "cad", pitches: [pitch], durs: [dur], accent: s.accent, text: s.text, source: s.source, anchor: i === 0 });
+    });
+    return roles;
+  }
+
+  // ── Tone 5 Phrase B: direct reciting · cad mi(H)→re, anchor-pitch fills ──
+  // No intonation. Anchor mi(H) sits ON the reciting pitch. Fills mi(Q)
+  // precede the close re. Close: H default, W on "!" (provisional). The
+  // once-observed 0-fill H· close ("in-cense,") is deliberately NOT encoded
+  // (one data point); no 1-fill example exists to test an anchor stretch.
+  if (activeTone === 5 && line.phrase === "B") {
+    const a = anchorIndex(flat);
+    const body = flat.slice(0, a);
+    const cad = flat.slice(a);
+    const roles = [];
+    body.forEach((s) => roles.push({ role: "recite", pitches: ["mi"], durs: ["Q"], accent: s.accent, text: s.text, source: s.source }));
+    const n = cad.length;
+    const closeDur = t5CloseIsBang() ? "W" : "H";
+    cad.forEach((s, i) => {
+      if (n === 1) {
+        // Degenerate — never observed; honest fallback melisma.
+        roles.push({ role: "cad", pitches: ["mi", "re"], durs: ["H", closeDur], accent: s.accent, text: s.text, source: s.source, anchor: true });
+        return;
+      }
+      let pitch, dur;
+      if (i === 0)          { pitch = "mi"; dur = "H"; }      // anchor
+      else if (i === n - 1) { pitch = "re"; dur = closeDur; } // close
+      else                  { pitch = "mi"; dur = "Q"; }      // fills (anchor pitch)
+      roles.push({ role: "cad", pitches: [pitch], durs: [dur], accent: s.accent, text: s.text, source: s.source, anchor: i === 0 });
+    });
+    return roles;
+  }
+
+  // ── Tone 5 Phrase C: intonation · prep ti (slur rule) · cad do·ti·la ─────
+  // Intonation identical in mechanism to Phrase A. Prep = the syllable
+  // immediately before the cadence anchor: bare ti(Q) when unaccented ("of",
+  // "Thee,"); a 2-note re(Q)+ti(Q) slur when it is an ACCENTED one-syllable
+  // word ("born" — tutorial-stated, score-confirmed). Cadence: anchor do —
+  // H· when NO fills follow (incl. the compressed case), plain H when do(Q)
+  // fills absorb syllables (Bill's correction; the "God" minimal pair) —
+  // then do(Q) fills, ti(Q), close la. 2-syllable compression: do(H·)+ti(Q)
+  // slur on the anchor syllable, close la(H·) (both LIC instances; the
+  // tutorial's own snippet prints plain H — see analysis doc). Uncompressed
+  // close: la(H). Unit-end close unverified for C (no example at a //).
+  if (activeTone === 5 && line.phrase === "C") {
+    const a = anchorIndex(flat);
+    const body = flat.slice(0, a);
+    const cad = flat.slice(a);
+    const roles = [];
+    const firstAcc = body.findIndex(s => s.accent);
+    const intonIdx = firstAcc >= 0 ? firstAcc : (body.length > 0 ? 0 : -1);
+    // Prep = last body syllable, but never the intonation accent itself —
+    // a prep-less C (anchor immediately after the intonation) has not been
+    // observed; when the two collide the intonation wins and no prep is
+    // emitted (flagged in the analysis doc rather than silently guessed).
+    const prepIdx = (body.length - 1 > intonIdx) ? body.length - 1 : -1;
+    body.forEach((s, i) => {
+      if (i === intonIdx) {
+        roles.push({ role: "inton", pitches: ["re"], durs: ["H"], accent: s.accent, text: s.text, source: s.source });
+      } else if (i === prepIdx) {
+        if (s.accent && s.single) {
+          // Accented monosyllable in the prep position → re+ti slur ("born").
+          roles.push({ role: "preslur", pitches: ["re", "ti"], durs: ["Q", "Q"], accent: s.accent, text: s.text, source: s.source });
+        } else {
+          roles.push({ role: "prep", pitches: ["ti"], durs: ["Q"], accent: s.accent, text: s.text, source: s.source });
+        }
+      } else {
+        roles.push({ role: "recite", pitches: ["re"], durs: ["Q"], accent: s.accent, text: s.text, source: s.source });
+      }
+    });
+    const n = cad.length;
+    cad.forEach((s, i) => {
+      if (n === 1) {
+        // Degenerate — never observed; honest fallback: full figure as a melisma.
+        roles.push({ role: "cad", pitches: ["do", "ti", "la"], durs: ["H·", "Q", "H"], accent: s.accent, text: s.text, source: s.source, anchor: true });
+        return;
+      }
+      if (n === 2) {
+        // Compressed: dotted anchor absorbs the ti as a 2-note slur; close la(H·).
+        if (i === 0) roles.push({ role: "cad", pitches: ["do", "ti"], durs: ["H·", "Q"], accent: s.accent, text: s.text, source: s.source, anchor: true });
+        else roles.push({ role: "cad", pitches: ["la"], durs: ["H·"], accent: s.accent, text: s.text, source: s.source });
+        return;
+      }
+      let pitch, dur;
+      if (i === 0)          { pitch = "do"; dur = (n === 3) ? "H·" : "H"; } // anchor: H· at exact fit (no fills), H when fills present
+      else if (i === n - 1) { pitch = "la"; dur = "H"; }                    // close
+      else if (i === n - 2) { pitch = "ti"; dur = "Q"; }                    // the fixed cadence ti, always just before the close
+      else                  { pitch = "do"; dur = "Q"; }                    // fills (anchor pitch)
+      roles.push({ role: "cad", pitches: [pitch], durs: [dur], accent: s.accent, text: s.text, source: s.source, anchor: i === 0 });
+    });
+    return roles;
+  }
+
+  // ── Tone 5 Final Phrase: two-anchor cadence (re · do-run · ti-melisma · la/W) ──
+  // First anchor re(H) on the SECOND-TO-LAST internal accent (role cad1, with
+  // the elastic do run); second anchor ti(H) on the LAST internal accent
+  // (role cad, with the do·ti tail and la/W close). Roles are split cad1/cad
+  // so the harmony voices can map them separately — the tail REQUIRES
+  // positional mapping (alto ti at tail positions 0 and 2 takes different
+  // bass/tenor answers: sol/sol vs mi_low/si) — see BASS_RULES[5].Final /
+  // TENOR_RULES[5].Final cadPositional. The expanded tail is exactly
+  // [ti, do, ti, la] in every dedicated-path branch below, which is what
+  // makes positional indexing safe; the >2-trailing-syllable case (which
+  // would break that invariant) falls through to the standard path instead.
+  if (activeTone === 5 && line.phrase === "Final") {
+    const acc = flat.map((s, i) => s.accent ? i : -1).filter(i => i >= 0);
+    if (acc.length >= 2) {
+      const a2 = anchorIndex(flat); // last internal accent (monosyllable backup incl.)
+      // a1: the accent immediately PRECEDING a2 in the accent list — computed
+      // relative to a2's actual position rather than as acc[len-2], because
+      // when a2's own monosyllable backup fires (e.g. "A-dam ris-es as the
+      // Dev-il falls." — "falls" backs a2 up to "Dev"), acc[len-2] IS a2 and
+      // the naive formula would collapse the two anchors onto one syllable.
+      const a2Pos = acc.indexOf(a2);
+      const a1 = a2Pos > 0 ? acc[a2Pos - 1] : -1;
+      const tailLen = flat.length - a2; // last accent + trailing syllables + close
+      if (a1 >= 0 && a1 < a2 && tailLen >= 1 && tailLen <= 4) {
+        const body = flat.slice(0, a1);
+        const between = flat.slice(a1 + 1, a2);
+        const tail = flat.slice(a2);
+        const roles = [];
+        body.forEach((s) => roles.push({ role: "recite", pitches: ["mi"], durs: ["Q"], accent: s.accent, text: s.text, source: s.source }));
+
+        // First anchor + elastic do run.
+        const s1 = flat[a1];
+        const b = between.length;
+        if (b === 0) {
+          // Zero in-between syllables: the elastic do(H) folds into the
+          // first-anchor slur. With no reciting body, the reciting pitch
+          // folds in too (LIC "[Hear]" = mi/Q+re/H+do/H — confirmed).
+          // With a body present this shape is an extrapolation (unseen).
+          const pitches = body.length === 0 ? ["mi", "re", "do"] : ["re", "do"];
+          const durs    = body.length === 0 ? ["Q", "H", "H"]    : ["H", "H"];
+          roles.push({ role: "cad1", pitches, durs, accent: s1.accent, text: s1.text, source: s1.source, anchor: true });
+        } else if (b === 1) {
+          // One in-between syllable: re(H)+do(Q) slur on the anchor, do(Q)
+          // on the syllable ("stan-tial" — score-confirmed; the n+1-do
+          // anomaly in the elastic ladder, see analysis doc open item).
+          roles.push({ role: "cad1", pitches: ["re", "do"], durs: ["H", "Q"], accent: s1.accent, text: s1.text, source: s1.source, anchor: true });
+        } else {
+          roles.push({ role: "cad1", pitches: ["re"], durs: ["H"], accent: s1.accent, text: s1.text, source: s1.source, anchor: true });
+        }
+        between.forEach((s) => roles.push({ role: "cad1", pitches: ["do"], durs: ["Q"], accent: s.accent, text: s.text, source: s.source }));
+
+        // Second anchor + tail. Expanded pitches are always [ti, do, ti, la].
+        const s2 = tail[0];
+        if (tailLen === 1) {
+          // Degenerate: accent IS the close — never observed; honest fallback melisma.
+          roles.push({ role: "cad", pitches: ["ti", "do", "ti", "la"], durs: ["H", "Q", "Q", "W"], accent: s2.accent, text: s2.text, source: s2.source, anchor: true });
+        } else if (tailLen === 2) {
+          // Only the close remains: 3-note slur on the accent ("mi", "mer").
+          roles.push({ role: "cad", pitches: ["ti", "do", "ti"], durs: ["H", "Q", "Q"], accent: s2.accent, text: s2.text, source: s2.source, anchor: true });
+          roles.push({ role: "cad", pitches: ["la"], durs: ["W"], accent: tail[1].accent, text: tail[1].text, source: tail[1].source });
+        } else if (tailLen === 3) {
+          // One trailing syllable — WORD-BOUNDARY-driven compression:
+          // trailing syllable inside the accented word → slur on the accent
+          // ("Dev-il", "Trin-i"); separate word → plain ti on the accent,
+          // do+ti slurred on the trailing word ("me, O" — twice-confirmed).
+          if (!s2.wordLast) {
+            roles.push({ role: "cad", pitches: ["ti", "do"], durs: ["H", "Q"], accent: s2.accent, text: s2.text, source: s2.source, anchor: true });
+            roles.push({ role: "cad", pitches: ["ti"], durs: ["Q"], accent: tail[1].accent, text: tail[1].text, source: tail[1].source });
+          } else {
+            roles.push({ role: "cad", pitches: ["ti"], durs: ["H"], accent: s2.accent, text: s2.text, source: s2.source, anchor: true });
+            roles.push({ role: "cad", pitches: ["do", "ti"], durs: ["Q", "Q"], accent: tail[1].accent, text: tail[1].text, source: tail[1].source });
+          }
+          roles.push({ role: "cad", pitches: ["la"], durs: ["W"], accent: tail[2].accent, text: tail[2].text, source: tail[2].source });
+        } else {
+          // tailLen === 4: the tutorial schematic's own 1:1 layout — not yet
+          // seen in a worked example, but structurally unambiguous.
+          roles.push({ role: "cad", pitches: ["ti"], durs: ["H"], accent: s2.accent, text: s2.text, source: s2.source, anchor: true });
+          roles.push({ role: "cad", pitches: ["do"], durs: ["Q"], accent: tail[1].accent, text: tail[1].text, source: tail[1].source });
+          roles.push({ role: "cad", pitches: ["ti"], durs: ["Q"], accent: tail[2].accent, text: tail[2].text, source: tail[2].source });
+          roles.push({ role: "cad", pitches: ["la"], durs: ["W"], accent: tail[3].accent, text: tail[3].text, source: tail[3].source });
+        }
+        return roles;
+      }
+      // Invalid split or >2 trailing syllables — fall through to the
+      // standard single-anchor path (honest best-effort on the 6-pitch
+      // figure via shared distribute(); flagged, never observed in real chant).
+    }
+  }
+
   // ── Tone 1 Phrase D: two-accent cadence (ti · do fills · re · do fills · ti) ──
   // Five structural positions driven by two director marks.
   // Primary anchor (ti, pos 1)   = first accented syllable in the line → cadence boundary.

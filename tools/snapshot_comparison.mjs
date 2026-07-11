@@ -96,6 +96,8 @@ const ROT_DEFS = {
   3: ["A", "B"],
   // Tone 4: A, B, C used once each at the start, then D·E·F rotate.
   4: (i, _total) => i === 0 ? "A" : i === 1 ? "B" : i === 2 ? "C" : ["D","E","F"][(i - 3) % 3],
+  // Tone 5: pure A·B·C cycle (mirrors tone-trainer.jsx ROT_DEFS[5]).
+  5: ["A", "B", "C"],
 };
 
 // ── Helper functions (replicated from tone-trainer.jsx) ───────────────────────
