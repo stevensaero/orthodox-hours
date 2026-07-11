@@ -1,5 +1,30 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.36.0** | **Tone Trainer: v0.25.47** | Last synced: July 11, 2026
+**Tool version: v0.37.0** | **Tone Trainer: v0.25.47** | Last synced: July 11, 2026
+
+**Session July 11, 2026 (cont. 2) — FEKULA CH.6 APPOINTMENTS + B.2 FIXES,
+v0.37.0.** Bill's three rulings post-cutover: (1) the doxasticon-conditional
+Both-now carry-forward is WANTED NOW — implemented from `fekula_chapter_6.txt`
+(the project doc, read this session): weekday Vespers Both-now resolver
+(`ch6WeekdayBothNow` in the assembler): DAILY class + doxasticon → §II
+theotokion in the TONE OF THE DOXASTICON (per-evening position; Tue/Thu eves
+print no §II position — Ch.6 appoints the Menaion STAVROTHEOTOKION, rendered
+as an unresolved marker until entries encode it); RES class → LIC §I
+dogmaticon in the tone of the doxasticon (Fri: tone of week), aposticha
+theotokion from the MENAION (Fri: §II Friday in the doxasticon's tone); no
+doxasticon → per-evening proper unchanged. Adapter gained
+`getV2Dogmatikon(tone)` + `getV2DoxasticonTheotokion(gloryTone, eve)`.
+NOTE the encoding implication: **six-stichera/simple entries with a
+doxasticon on Tue/Thu evenings, and res-class weekday entries, need their
+Both-now closers encoded in the Menaion data** (`aposticha_both_now` / a LIC
+closer) — the markers make the gaps visible date-by-date. (2) LIC source
+links: the three interleaved LIC emit paths dropped `srcPath` (aposticha
+kept it) — fixed; ↗ source from LIC now lands highlighted. (3) ← Hours Tool
+return strip on the V2 browser: source links + bookshelf now carry
+`?from=tool`; `/octoechos` redirect preserves query+hash; bookshelf card →
+`/octoechos-v2#tone{N}.great_vespers`. Verified by Playwright across
+polyeleos (07-14 T6, Kazan 07-08 T8), six-stichera Tue eve (07-01 stavro
+markers ×2), simple-with-doxasticon (07-21 §II T8), no-doxasticon defaults,
+GV LIC anchor+strip. Full gate green throughout.
 
 **Session July 11, 2026 (cont.) — OCTOECHOS V2 CUTOVER EXECUTED, v0.36.0.**
 Phase 5 complete, on Bill's explicit go ("proceed"). The assembler serves the
