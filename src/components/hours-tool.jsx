@@ -3344,6 +3344,90 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   const openedDow = dowMap[dayName] !== undefined ? dowMap[dayName] : 0;
   const dow = (openedDow + 6) % 7;
   const isFriEve = dow === 5; // Friday evening: Both Now = dogmatikon, not theotokion
+
+  // ── Fekula Ch.6 — Both-now appointments for WEEKDAY evenings ───────────────
+  // (The Sunday cycle — Saturday evening — is handled by the Sunday engines:
+  // LIC dogmatikon in the tone of the week; aposticha theotokion in the tone
+  // of the Glory from §I.) pos: 'lic' | 'aposticha'. doxTone: the tone of the
+  // doxasticon chanted at THIS position, or null when none is sung. Returns a
+  // descriptor, or null when the default applies (no doxasticon, daily class →
+  // the per-evening Octoechos proper; §II Friday aposticha note: "the same
+  // theotokion as that found in the Octoechos for Friday").
+  const ch6WeekdayBothNow = (pos, doxTone) => {
+    if (dow === 6) return null; // Sunday cycle
+    const eve = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri'][dow];
+    const resClass = rank === 'doxology' || rank === 'polyeleos' || rank === 'vigil';
+    if (pos === 'lic') {
+      if (resClass) {
+        // §III: the dogmaticon (§I) in the tone of the doxasticon; Friday: tone of week.
+        const gt = isFriEve ? tone : (doxTone || tone);
+        const dog = OctoV2.getV2Dogmatikon(gt);
+        return dog && { kind: 'dogmatikon', tone: gt, node: dog,
+          note: isFriEve
+            ? 'Fekula Ch.6 §III (LIC): Friday evening — the dogmaticon in the tone of the WEEK, from §I of the Common Theotokia.'
+            : 'Fekula Ch.6 §III (LIC): the dogmaticon in the tone of the DOXASTICON (Tone ' + gt + '), from §I of the Common Theotokia.' };
+      }
+      if (doxTone && !isFriEve) {
+        // §II: doxasticon chanted → theotokion in the tone of the doxasticon.
+        const dt = OctoV2.getV2DoxasticonTheotokion(doxTone, eve);
+        if (dt) return { kind: 'theotokion', tone: doxTone, node: dt,
+          note: 'Fekula Ch.6 §II (LIC): doxasticon chanted — the theotokion in the tone of the DOXASTICON (Tone ' + doxTone + '), from §II of the Common Theotokia (printed at the ' + eve + '-evening position).' };
+        return { kind: 'stavro-pending', tone: doxTone,
+          note: 'Fekula Ch.6 §II (LIC): ' + eve + ' evening — the STAVROTHEOTOKION from the Menaion follows the doxasticon (§II prints no position for Tuesday/Thursday evenings).' };
+      }
+      return null; // daily class, no doxasticon (or Friday) → per-evening proper
+    }
+    // aposticha
+    if (rank === 'doxology' || rank === 'polyeleos' || rank === 'vigil') {
+      if (isFriEve) {
+        const dt = OctoV2.getV2DoxasticonTheotokion(doxTone || tone, 'fri');
+        return dt && { kind: 'theotokion', tone: doxTone || tone, node: dt,
+          note: 'Fekula Ch.6 §III (aposticha): Friday evening — the Friday theotokion in the tone of the doxasticon (Tone ' + (doxTone || tone) + '), from §II of the Common Theotokia.' };
+      }
+      return { kind: 'menaion',
+        note: 'Fekula Ch.6 §III (aposticha): the theotokion from the MENAION.' };
+    }
+    if (doxTone && !isFriEve) {
+      const dt = OctoV2.getV2DoxasticonTheotokion(doxTone, eve);
+      if (dt) return { kind: 'theotokion', tone: doxTone, node: dt,
+        note: 'Fekula Ch.6 §II (aposticha): doxasticon chanted — the theotokion in the tone of the DOXASTICON (Tone ' + doxTone + '), from §II of the Common Theotokia.' };
+      return { kind: 'stavro-pending', tone: doxTone,
+        note: 'Fekula Ch.6 §II (aposticha): ' + eve + ' evening — the STAVROTHEOTOKION from the Menaion follows the doxasticon (§II prints no position for Tuesday/Thursday evenings).' };
+    }
+    return null;
+  };
+  // Emit a Ch.6 descriptor as the Both-now element. Returns true when it
+  // rendered (kinds 'menaion'/'stavro-pending' render an unresolved marker so
+  // the missing Menaion field is visible, per §D policy).
+  const pushCh6BothNow = (idBase, r) => {
+    if (!r) return false;
+    if (r.kind === 'dogmatikon' || r.kind === 'theotokion') {
+      elements.push({ id: idBase + (r.kind === 'dogmatikon' ? '-dogmatikon' : '-theotokion'),
+        type: 'movable',
+        label: (r.kind === 'dogmatikon' ? 'Dogmatikon' : 'Theotokion') + ' · Tone ' + r.tone,
+        rubric: 'Tone ' + r.tone + ':',
+        text: hymnText(r.node), source: 'Octoechos — Common Theotokia', ...hymnProvenance(r.node),
+        fekula: { section: fekulaSection, note: r.note } });
+      return true;
+    }
+    if (r.kind === 'stavro-pending') {
+      elements.push({ id: idBase + '-theotokion', type: 'movable', label: 'Stavrotheotokion',
+        unresolved: true, rubric: 'Tone ' + (r.tone || tone) + ':',
+        text: '[Stavrotheotokion from the Menaion — encode the Both-now closer for this entry]',
+        source: 'Menaion',
+        fekula: { section: fekulaSection, note: r.note } });
+      return true;
+    }
+    if (r.kind === 'menaion') {
+      elements.push({ id: idBase + '-theotokion', type: 'movable', label: 'Theotokion',
+        unresolved: true,
+        text: '[Theotokion from the Menaion — encode the Both-now closer for this entry]',
+        source: 'Menaion',
+        fekula: { section: fekulaSection, note: r.note } });
+      return true;
+    }
+    return false;
+  };
   const weeklyProk = srcWeeklyVespersProk(dow);
   // Great Feast of the Lord override — fixed-date case (movable case handled
   // via pentEntry.vespers_prokeimenon below, which already takes priority).
@@ -3734,6 +3818,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           elements.push({ id: "v-lic-stich-" + v.n, type: "movable", label: "",
             rubric: "Tone " + stichTone + (stich.repeatNote ? " " + stich.repeatNote : "") + ":",
             text: stich.text, source: stich.source,
+            ...(stich.srcPath ? { srcPath: stich.srcPath } : {}),
             fekula: { section: fekulaSection, note: stich.source + " sticheron at V.(" + v.n + "). " + sunNote } });
         } else {
           elements.push({ id: "v-lic-stich-" + v.n, type: "movable", label: "",
@@ -3892,6 +3977,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           elements.push({id:"v-lic-stich-"+v.n, type:"movable", label:"",
             rubric:"Tone "+(stich.tone||tone)+":",
             text:stich.text, source:stichSource,
+            ...(stich.srcPath ? { srcPath: stich.srcPath } : {}),
             fekula:{section:fekulaSection, note:stichSource+" sticheron at V.("+v.n+")."}});
         } else {
           elements.push({id:"v-lic-stich-"+v.n, type:"movable", label:"",
@@ -3934,6 +4020,11 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           rubric:"Tone "+tone+":",
           text:hymnText(licSatDog.dogmatikon), source:"Octoechos", ...hymnProvenance(licSatDog.dogmatikon),
           fekula:{section:fekulaSection, note:"Both Now: resurrectional Dogmatikon in the tone of the week (Saturday-evening Great Vespers). Fekula §4B; Octoechos."}});
+      } else if (pushCh6BothNow('v-lic', ch6WeekdayBothNow('lic', (pentDox && typeof pentDox === 'object' && pentDox.tone) || null))) {
+        // Fekula Ch.6 appointment rendered: §III dogmaticon in the tone of the
+        // doxasticon (res class), or §II theotokion in the tone of the
+        // doxasticon (daily class with doxasticon), or the stavrotheotokion
+        // marker (Tue/Thu evenings).
       } else {
         // Weekday Both Now on the Menaion-mixed path: the per-evening typed
         // closer from the Octoechos (rank-independent — fetched directly, not
@@ -4022,6 +4113,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
           elements.push({id:"v-lic-stich-"+v.n, type:"movable", label:"",
             rubric:"Tone "+stichTone+(stich.repeatNote ? " "+stich.repeatNote : "")+":",
             text:stich.text, source:stichSource,
+            ...(stich.srcPath ? { srcPath: stich.srcPath } : {}),
             fekula:{section:fekulaSection, note:stichSource+" sticheron at V.("+v.n+"), Tone "+stichTone+"."+(stich.repeatNote ? " Repeated to fill the appointed count (Fekula §2A/§2C)." : "")}});
         } else {
           elements.push({id:"v-lic-stich-"+v.n, type:"movable", label:"",
@@ -4066,7 +4158,9 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       if (!doxVerifiedAbsent) {
         elements.push({id:"v-lic-nowever", type:"fixed", label:"", text:"Now and ever and unto ages of ages. Amen.", source:"HTM Vespers"});
       }
-      if (octoDay && octoDay.lic_theotokion) {
+      if (pushCh6BothNow('v-lic', ch6WeekdayBothNow('lic', (doxasticonEntry && doxasticonEntry.tone) || null))) {
+        // Fekula Ch.6 appointment rendered (tone of the doxasticon — §II/§III).
+      } else if (octoDay && octoDay.lic_theotokion) {
         // Octoechos V2: the per-evening typed closer is the proper text for
         // this evening (Friday: dogmatic_theotokion, §9.2) — no fallback chain.
         const _lt = octoDay.lic_theotokion;
@@ -4680,7 +4774,9 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         // Now and ever → theotokion/dogmatikon
         elements.push({id:"v-apost-nowever", type:"fixed", label:"", text:"Now and ever and unto ages of ages. Amen.", source:"HTM Vespers"});
       }
-      if (apostOctoDay && apostOctoDay.aposticha_theotokion) {
+      if (!isSatEve && pushCh6BothNow('v-apost', ch6WeekdayBothNow('aposticha', (menaionApostGlory && menaionApostGlory.tone) || null))) {
+        // Fekula Ch.6 appointment rendered (tone of the doxasticon — §II/§III).
+      } else if (apostOctoDay && apostOctoDay.aposticha_theotokion) {
         // Octoechos V2: per-position aposticha closer (typed) — the proper
         // text at THIS print site (verbatim per-position storage, spec §2.2).
         const _at = apostOctoDay.aposticha_theotokion;
@@ -4758,12 +4854,32 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         elements.push({id:"v-apost-bothnow", type:"fixed", label:"", text:"Now and ever, and unto the ages of ages. Amen.", source:"HTM Vespers"});
       }
       if (menaionEntry.aposticha_both_now) {
+        // The Menaion's own encoded Both-now governs (it IS "the theotokion
+        // from the Menaion" — Fekula Ch.6 §III aposticha).
         const at = menaionEntry.aposticha_both_now;
         elements.push({id:"v-apost-theotokion", type:"movable", label:"Theotokion (Both now…)",
           rubric:"Tone "+(at.tone||"?")+":"  ,
           text: typeof at === "string" ? at : at.text,
           source:"Menaion — " + mSaint,
           fekula:{section:fekulaSection, note:"Aposticha Both Now: theotokion from Menaion. — Fekula " + fekulaSection}});
+      } else {
+        // No Menaion Both-now encoded — Fekula Ch.6 appointment: §II theotokion
+        // in the tone of the doxasticon (daily class with doxasticon), the
+        // Menaion-marker (res class), or the per-evening Octoechos closer
+        // (daily class, no doxasticon).
+        const _ag = menaionEntry.aposticha_glory;
+        const _agTone = (_ag && typeof _ag === "object" && _ag.tone) || null;
+        if (!pushCh6BothNow('v-apost', ch6WeekdayBothNow('aposticha', _agTone))) {
+          const _evAp = (srcVespersDay(tone, getVespersDayKey(dow)) || {}).aposticha_theotokion || null;
+          if (_evAp) {
+            elements.push({id: _evAp.type === "dogmatic_theotokion" ? "v-apost-dogmatikon" : "v-apost-theotokion",
+              type:"movable",
+              label: _evAp.type === "dogmatic_theotokion" ? "Dogmatikon (Friday)" : "Theotokion",
+              rubric:"Tone "+tone+":",
+              text:hymnText(_evAp), source:"Octoechos", ...hymnProvenance(_evAp),
+              fekula:{section:fekulaSection, note:"Aposticha Both Now: per-evening typed closer from the Octoechos (no doxasticon — Fekula Ch.6 §II)."}});
+          }
+        }
       }
     } else {
       // §2D/§2E/§2F: Menaion stichera + Menaion verses — not yet encoded
@@ -8516,6 +8632,42 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.37.0",
+    date: "July 2026",
+    summary: "Fekula Ch.6 tone-of-the-Glory Both-now appointments (weekday Vespers); LIC source deep links fixed; ← Hours Tool return strip on the V2 Octoechos browser",
+    items: [
+      "FEKULA CH.6 APPOINTMENTS (Bill's ruling, July 11 2026) — the weekday " +
+      "Vespers Both-now now follows the Common Theotokia rules: DAILY class " +
+      "(simple/six-stichera) with a doxasticon → the §II theotokion IN THE " +
+      "TONE OF THE DOXASTICON (theotokia.doxasticon_theotokia, per-evening " +
+      "position; Tuesday/Thursday evenings have no §II position — the " +
+      "STAVROTHEOTOKION from the Menaion is appointed, surfaced as an " +
+      "unresolved marker until encoded). RESURRECTIONAL class (doxology/" +
+      "polyeleos/vigil) → at LIC the §I DOGMATICON in the tone of the " +
+      "doxasticon (Friday: tone of the week); at the aposticha the theotokion " +
+      "from the MENAION (Friday: §II Friday in the tone of the doxasticon). " +
+      "No doxasticon, daily class → the per-evening Octoechos proper " +
+      "(unchanged). Every appointment's Fekula badge cites the §/rule. " +
+      "Adapter: getV2Dogmatikon(tone), getV2DoxasticonTheotokion(gloryTone, eve).",
+      "LIC SOURCE LINKS FIXED: the interleaved LIC sticheron emits dropped " +
+      "the srcPath anchor (aposticha kept it) — all three LIC emit paths now " +
+      "carry it, so ↗ source lands on the highlighted verse, same as the " +
+      "aposticha.",
+      "RETURN STRIP: assembled-service source links and the Library " +
+      "bookshelf now carry ?from=tool, so the ← Hours Tool strip renders in " +
+      "the V2 browser header and footer (parity with the Menaion browser); " +
+      "the /octoechos redirect preserves query + hash; the bookshelf " +
+      "Octoechos card opens the V2 reading view at the tone's Great Vespers; " +
+      "the How-It-Works browser link updated.",
+      "Verified (Playwright): polyeleos Mon/Tue eves render the §I " +
+      "dogmatikon in the doxasticon's tone (07-14 Nicodemus T6; 07-08 Kazan " +
+      "T8); six-stichera Tue eve renders the stavrotheotokion markers at LIC " +
+      "+ aposticha (07-01); simple-with-doxasticon renders §II in the " +
+      "doxasticon's tone (07-21 T8); no-doxasticon days unchanged; GV LIC " +
+      "links anchor-resolve with the strip present. Full gate green.",
+    ],
+  },
   {
     version: "v0.36.0",
     date: "July 2026",
@@ -12396,7 +12548,7 @@ function HowItWorksPanel() {
             <><strong>Scripture viewer</strong> (<a href="/orthodox-hours/scripture?from=tool" style={{color: "#8B6914"}}>open</a>) — Full-text epistle and gospel readings, linked from the liturgical context card and from within service elements.</>,
             <><strong>Menaion data browser</strong> (<a href="/orthodox-hours/menaion?from=tool" style={{color: "#8B6914"}}>open</a>) — Inspect all encoded fixed-calendar entries with per-entry completeness auditing. Shows every field, flags missing data, and displays Litiya stichera and Beatitudes troparia.</>,
             <><strong>Pentecostarion data browser</strong> (<a href="/orthodox-hours/pentecostarion?from=tool" style={{color: "#8B6914"}}>open</a>) — Same for Pascha-anchored entries, organized by liturgical period.</>,
-            <><strong>Octoechos data browser</strong> (<a href="/orthodox-hours/octoechos?from=tool" style={{color: "#8B6914"}}>open</a>) — Browse encoded Octoechos vespers and Sunday Matins data by tone (1–8). All eight tones carry full Sunday Resurrectional Matins. The Matins view surfaces its day (Sunday) explicitly.</>,
+            <><strong>Octoechos reading view (V2)</strong> (<a href="/orthodox-hours/octoechos-v2?from=tool" style={{color: "#8B6914"}}>open</a>) — The bound book, digitized: tone → day → service navigation, corpus search, audit mode. The complete eight-tone cycle; every assembled Octoechos text links to its exact position here.</>,
             <><strong>Service outline</strong> — A collapsible outline card with a jump button that lists the sections of the current service and scrolls to any of them; available for Vespers, the Typica, and the Order of the Psalter, making a specific point in a long service easy to find.</>,
             <><strong>Reader mode</strong> — Substitutes lay reader responses for priest exclamations throughout.</>,
           ])}
@@ -13242,10 +13394,12 @@ function buildLibraryBooks(ld, selectedDate, scriptureReadings) {
     },
     octoechos: {
       title: "The Octoechos", spine: "#4A7A4A", host: "app",
-      to: "/octoechos?" + dateQ + (tone ? "&tone=" + tone : ""),
+      // V2 reading view; the hash opens the tone's Great Vespers (the
+      // resurrectional cycle root) — rail navigation covers the rest.
+      to: "/octoechos-v2?" + dateQ + (tone ? "#tone" + tone + ".great_vespers" : ""),
       lab: "Open to",
       pv: tone ? toneTxt + (dayName ? " · " + dayName : "") : "resurrectional cycle",
-      cover: "Tones 1–8 · Vespers", partial: false,
+      cover: "Tones 1–8 · complete (V2)", partial: false,
     },
     psalter: {
       title: "The Psalter", spine: "#7A8A5A", host: "app",
@@ -13342,12 +13496,13 @@ function sourceLinkFor(sourceRef, date) {
       return { href: "/orthodox-hours/menaion?" + dateQ + "&comm=" + sourceRef.comm + elQ, external: false };
     case "octoechos-v2":
       // Exact position anchor in the V2 reading view (Phase B.2). The browser
-      // decodes the hash and scroll-highlights the position.
-      return { href: "/orthodox-hours/octoechos-v2#" + encodeURIComponent(sourceRef.path), external: false };
+      // decodes the hash and scroll-highlights the position; ?from=tool makes
+      // the ← Hours Tool return strip render (header + footer).
+      return { href: "/orthodox-hours/octoechos-v2?" + dateQ + "#" + encodeURIComponent(sourceRef.path), external: false };
     case "octoechos":
       // Octoechos-sourced element without a position anchor: open the book
       // (the V1 /octoechos browser retired at the Phase 5 cutover).
-      return { href: "/orthodox-hours/octoechos-v2", external: false };
+      return { href: "/orthodox-hours/octoechos-v2?" + dateQ, external: false };
     case "pentecostarion":
       return { href: "/orthodox-hours/pentecostarion?" + dateQ + "&pascha=" + sourceRef.pascha + elQ, external: false };
     case "oca":

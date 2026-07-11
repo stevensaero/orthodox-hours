@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import HoursTool from './components/hours-tool.jsx';
 import Psalter from './components/psalter.jsx';
 import Scripture from './components/scripture.jsx';
@@ -10,6 +10,11 @@ const MenaionBrowser = lazy(() => import('./components/menaion-browser.jsx'));
 const PentecostarionBrowser = lazy(() => import('./components/pentecostarion-browser.jsx'));
 const OctoechosV2Browser = lazy(() => import('./components/octoechos-v2-browser.jsx'));
 const ToneTrainer = lazy(() => import('./components/tone-trainer.jsx'));
+
+function OctoechosRedirect() {
+  const loc = useLocation();
+  return <Navigate to={{ pathname: "/octoechos-v2", search: loc.search, hash: loc.hash }} replace />;
+}
 
 function LazyFallback() {
   return (
@@ -51,8 +56,9 @@ function App() {
         <Route path="/menaion" element={<Suspense fallback={<LazyFallback />}><div style={{ minWidth: "760px" }}><HoursReturnStrip /><MenaionBrowser /><HoursReturnStrip position="bottom" /></div></Suspense>} />
         <Route path="/pentecostarion" element={<Suspense fallback={<LazyFallback />}><div style={{ minWidth: "760px" }}><HoursReturnStrip /><PentecostarionBrowser /><HoursReturnStrip position="bottom" /></div></Suspense>} />
         {/* The V1 /octoechos browser retired at the Phase 5 cutover (v0.36.0);
-            /octoechos redirects to the V2 reading view for old links. */}
-        <Route path="/octoechos" element={<Navigate to="/octoechos-v2" replace />} />
+            /octoechos redirects to the V2 reading view for old links,
+            preserving ?from=tool (return strip) and any hash. */}
+        <Route path="/octoechos" element={<OctoechosRedirect />} />
         {/* Octoechos V2 is fully responsive (mobile drawer + compact header), so
             unlike the desktop-only table browsers it carries no 760px min-width. */}
         <Route path="/octoechos-v2" element={<ErrorBoundary><Suspense fallback={<LazyFallback />}><div><HoursReturnStrip /><OctoechosV2Browser /><HoursReturnStrip position="bottom" /></div></Suspense></ErrorBoundary>} />

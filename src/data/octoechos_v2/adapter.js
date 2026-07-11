@@ -217,6 +217,39 @@ export function getV2ApostichaTheotokion(gloryTone) {                           
   };
 }
 
+// §I dogmatikon in an ARBITRARY tone — the Fekula Ch.6 tone-of-the-Glory
+// appointments (LIC Both-now at resurrectional-class weekday services chants
+// the dogmaticon in the tone of the doxasticon, §III; Friday: tone of week).
+export function getV2Dogmatikon(tone) {
+  const t = theotokia.resurrectional_theotokia?.[String(tone)];
+  if (!t?.dogmatikon) return null;
+  return {
+    tone: Number(tone),
+    ...node(t.dogmatikon, `theotokia.resurrectional_theotokia.${tone}.dogmatikon`, null),
+  };
+}
+
+// §II — "Theotokia Following Doxastica" (Common Theotokia Part 2): the
+// Both-now theotokion IN THE TONE OF THE DOXASTICON, keyed (evening ×
+// tone-of-Glory). The print provides evening positions for Sun/Mon/Wed/Fri
+// only — Tuesday/Thursday evenings take the STAVROTHEOTOKION from the
+// Menaion instead (Fekula Ch.6 §II), so those keys intentionally have no
+// table entry.
+const DOX_SLOT_BY_EVE = {
+  sun: 'sun_eve_aposticha', mon: 'mon_eve_aposticha',
+  wed: 'wed_eve_aposticha', fri: 'fri_eve_aposticha',
+};
+export function getV2DoxasticonTheotokion(gloryTone, eve) {
+  const slot = DOX_SLOT_BY_EVE[eve];
+  const t = slot ? theotokia.doxasticon_theotokia?.[String(gloryTone)]?.[slot] : null;
+  if (!t) return null;
+  return {
+    tone: Number(gloryTone),
+    slot,
+    ...node(t, `theotokia.doxasticon_theotokia.${gloryTone}.${slot}`, null),
+  };
+}
+
 // ── shared day-keyed tables ──────────────────────────────────────────────────
 const DVP_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri'];
 export function getV2DailyVespersProkeimenon(dow) {                             // ← WEEKLY_VESPERS_PROKEIMENON[dow]
