@@ -1,5 +1,36 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.34.3** | **Tone Trainer: v0.25.47** | Last synced: July 9, 2026
+**Tool version: v0.35.0** | **Tone Trainer: v0.25.47** | Last synced: July 11, 2026
+
+**Session July 11, 2026 — OCTOECHOS V2 WIRE-IN PREP (Phase 5 staging), v0.35.0.**
+Rulings (Bill): (1) director-pointed materials (V1 `lic_opening`, tone 1 only)
+RETIRE at cutover — no migration into V2 (would break St. Sergius provenance);
+re-integration re-imagined later under the Phase D OCA-override architecture.
+Until then the invariable `LIC_OPENING_FALLBACK` frame renders. (2) Comparison
+format: script report + in-app spot-check switch (no diff UI). (3) Milestones
+M2→M4; **M4 cutover fires only on Bill's explicit go** after the side-by-side
+review (the human gate) closes. Shipped: `octoechos_wirein_spec.md` (ruled
+scope: 18-site V1→V2 slot map, expected-diff register, retirement checklist,
+gate re-baseline); `src/data/octoechos_v2/adapter.js` (provenance-carrying
+accessors — every served text returns `{…, path, src}`, the B.2 deep-link
+anchors ride the cutover); hours-tool source switch (default **v1**,
+byte-identical; preview via `?octoechos=v2`); `tools/compare_v1_v2.mjs` +
+committed report — **596 cells, 0 UNEXPLAINED**: 230 identical, 197
+pointing-only, 23 expected corrections (§8), 32 relocations (mis-slot class),
+110 TRANSLATION DIVERGENCES (KEY FINDING: the V1 static tables were not
+St. Sergius-sourced — wholesale translation divergence across ALL tones, not
+just the §8-documented tone 2; these 110 are the human-gate review set, listed
+in full in the report), 4 retired. V2-mode behavior changes to review: Typica
+serves the LITURGY prokeimenon/Alleluia (§8 conflation fix); per-evening
+weekday closers replace the LIC_THEOTOKIA fallback chains; Friday aposticha
+Both-now serves the PRINTED closer, not a reused LIC dogmatikon. Carry-forward
+to M4 (checklist in wirein spec §8): flip default, B.2 links live, re-baseline
+`test_sunday_vespers.mjs`, retire V1 folder/browser/validator/route, empty
+amendment-F `LEGACY_V1_SURFACES`, move `HYPAKOE["pascha"]` →
+`pentecostarion.js`, v0.36.0. NOTE: wirein spec §8.12 wrote the cutover bump
+as v0.35.0 before this prep session claimed it — cutover becomes v0.36.0;
+amend the spec line at M4. Gate green throughout; eslint +0; Playwright smoke
+(Sat-eve GV / Sunday Typica / Mon+Fri weekday Vespers, both modes): no page
+errors, v1 output unchanged.
 
 **Session July 9, 2026 (cont.) — EMOJI → MONOCHROME GLYPHS, v0.34.3.**
 Audited `hours-tool.jsx` for characters iOS/Safari renders as COLOR emoji.
