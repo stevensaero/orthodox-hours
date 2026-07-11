@@ -1,5 +1,33 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.35.0** | **Tone Trainer: v0.25.47** | Last synced: July 11, 2026
+**Tool version: v0.36.0** | **Tone Trainer: v0.25.47** | Last synced: July 11, 2026
+
+**Session July 11, 2026 (cont.) — OCTOECHOS V2 CUTOVER EXECUTED, v0.36.0.**
+Phase 5 complete, on Bill's explicit go ("proceed"). The assembler serves the
+St. Sergius V2 encoding everywhere; the v1/v2 switch is gone. Executed per
+`octoechos_wirein_spec.md` §8 (see its STATUS: EXECUTED block for execution
+notes): V1 dataset + browser + validator + compare harness DELETED (evidence
+report kept at `tools/compare_v1_v2_report.md`); `/octoechos` →
+`/octoechos-v2` redirect; local prokeimena tables retired to V2 shared;
+Explainer tables now DERIVE from canonical tables; HYPAKOE pascha →
+`pentecostarion.js` (captured off the dynamic module — no static import, lazy
+split intact); director-pointed `lic_opening` retired per ruling (invariable
+`LIC_OPENING_FRAME` renders). **Phase B.2 SHIPPED**: `↗ source` on every
+Octoechos-sourced element lands on the exact reading-view position
+(`srcPath` threaded via hymnProvenance + emit-site stamps; the V2 browser
+now navigates tone/day/service from an external hash). Gates re-baselined:
+sunday vespers 78/78 reads the V2 contract via the adapter;
+`LEGACY_V1_SURFACES` EMPTIED (display copies hard-fail) with a documented
+17-entry CROSS_BOOK_FRAME_DUPLICATES allowlist (audited psalmody/frame texts
+present in both books by nature); edit-plugin allowlist → octoechos_v2
+(Phase C ready). BUG CAUGHT IN SMOKE, FIXED: the weekday LIC Both-now closer
+must be fetched RANK-INDEPENDENTLY (V1's LIC_THEOTOKIA reach didn't depend
+on the stichera-guarded octoDay; first cut placeholdered §2E eves — e.g.
+Vespers of Jul 13 serving Nicodemus of Athos §2E). CARRY-FORWARD for Bill's
+rubric review: doxasticon-conditional Both-now in the tone of the GLORY
+(theotokia Part 2, Fekula Ch.6) — V1 never implemented it; V2 data enables
+it; flagged in code at both weekday Both-now sites. Full gate green; smoke:
+SatGV / Sunday Typica / 9th Hour / Mon-§2E / Tue / Fri Vespers, redirect,
+cross-corpus deep links — no page errors, no unresolved regressions.
 
 **Session July 11, 2026 — OCTOECHOS V2 WIRE-IN PREP (Phase 5 staging), v0.35.0.**
 Rulings (Bill): (1) director-pointed materials (V1 `lic_opening`, tone 1 only)
