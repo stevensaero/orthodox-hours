@@ -12,4 +12,12 @@
 // gracefully return null/pass-through for the missing harmony parts rather
 // than breaking the Score feature). Harmony work is the next planned
 // session — see tone_trainer_tone4_analysis.md in the repo root.
-export const AVAILABLE_TONES = new Set([1, 2, 3, 4]);
+//
+// Tone 5 added July 2026. It had ALREADY shipped in the trainer (PH_DEFS,
+// ROT_DEFS, BASS_RULES and TENOR_RULES all carry a 5) but this Set was never
+// updated, so every Tone 5 verse in the Hours tool rendered its Point/Score
+// controls grey and inert with the "not yet built" tooltip — invisible on
+// mobile, where there is no hover. The trainer's dev-time drift guard only
+// warns inside the trainer, so it never caught this. If you build a tone,
+// add it HERE in the same commit.
+export const AVAILABLE_TONES = new Set([1, 2, 3, 4, 5]);
