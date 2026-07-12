@@ -8000,8 +8000,31 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
           );
         }
 
+        // A verse that carries a TONE is expected to be pointed. Three states,
+        // and the flag must name the right one (encoding_rule_v2.md §3 tiers):
+        //   Tier 1 — no marks at all. Structure AND director marks missing.
+        //            Renders no Point/Score controls, so without a flag it is a
+        //            silently dead slot: indistinguishable from a broken feature.
+        //   Tier 2 — line structure (| //) but no [] director emphasis.
+        //   Tier 3 — structured AND director-pointed. No flag.
+        // The old message said "verse not pointed" for BOTH Tier 1 and Tier 2,
+        // which is false for Tier 2: that verse IS pointed, it just lacks the
+        // director's emphasis marks. Tier 3 is currently zero across the whole
+        // Octoechos corpus, so this flag fires constantly and must be accurate.
+        // Only tone-bearing elements are flagged — prose (petitions, prayers,
+        // readings) is not expected to carry marks.
         if (!isPointable(element.text)) {
-          return <div style={bodyStyle}>{renderPointed(element.text)}</div>;
+          const pTone = elementTone(element);
+          return (
+            <div style={bodyStyle}>
+              {renderPointed(element.text)}
+              {pTone != null && (
+                <div style={{ fontSize: '0.72rem', color: '#A67C00', marginTop: '0.25rem', fontStyle: 'italic' }}>
+                  ⚑ verse missing structure and director marks
+                </div>
+              )}
+            </div>
+          );
         }
         // Pointable verse → show the Point control inside the verse window at far
         // right. Active when the verse's tone is built in the trainer; otherwise
@@ -8016,7 +8039,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
               {renderPointed(element.text)}
               {isNotOCAPointed && (
                 <div style={{ fontSize: '0.72rem', color: '#A67C00', marginTop: '0.25rem', fontStyle: 'italic' }}>
-                  ⚑ verse not pointed{isSergius ? ' (source: St. Sergius)' : ''}
+                  ⚑ verse structured but missing director marks{isSergius ? ' (source: St. Sergius)' : ''}
                 </div>
               )}
             </div>
@@ -8635,7 +8658,7 @@ const RELEASE_NOTES = [
   {
     version: "v0.38.0",
     date: "July 2026",
-    summary: "Tone 5 Point/Score unblocked in the Hours Tool; Octoechos audit view made addressable (§12); pointing-coverage gate with a frozen 283-sticheron baseline",
+    summary: "Tone 5 Point/Score unblocked; Octoechos audit view made addressable (§12); pointing-coverage gate; verse flag now distinguishes Tier 1 from Tier 2",
     items: [
       "TONE 5 POINT/SCORE — Tone 5 had ALREADY shipped in the Tone Trainer " +
       "(PH_DEFS, ROT_DEFS, BASS_RULES and TENOR_RULES all carry a 5), but " +
@@ -8669,22 +8692,46 @@ const RELEASE_NOTES = [
       "renders NO controls — indistinguishable, to a reader, from a broken " +
       "feature. Census: 120/403 singable Vespers stichera at Tier 2+. Great " +
       "Vespers is 88/88 (fully pointed, every tone); the weekday LIC and " +
-      "aposticha are almost entirely bare, with scattered exceptions (all of " +
-      "Tone 2's weekday LIC; Tone 8 Mon+Thu; Tone 4/6/3 Monday aposticha) that " +
-      "prove the St. Sergius weekday pages DO print the marks and the encoding " +
-      "pass simply dropped them. The 283 are frozen in " +
+      "aposticha are almost entirely bare. The 283 are registered in " +
       "tools/octoechos_pointing_baseline.json and the gate enforces MONOTONIC " +
       "SHRINK in both directions: a singable sticheron below Tier 2 that is not " +
-      "baselined is a HARD FAIL (regression guard), and a baselined path that " +
+      "registered is a HARD FAIL (regression guard), and a registered path that " +
       "reaches Tier 2 is a HARD FAIL until its line is deleted in the same " +
-      "commit (so the backfill cannot silently stall). Canon troparia and " +
-      "irmoi are out of scope — they are not sung to the tone formula.",
+      "commit. Canon troparia and irmoi are out of scope — they are not sung to " +
+      "the tone formula.",
 
-      "NOT FIXED, AND NOT A V2 REGRESSION — the 283 unpointed weekday stichera " +
-      "are a pre-existing encoding gap, NOT damage from the V2 cutover. V1 at " +
-      "094d871^ was checked tone by tone: every V1 weekday `lic` block had zero " +
-      "pointing markers in every tone. Only Saturday (Great Vespers) was ever " +
-      "pointed. The backfill from the source PDFs is the next data session.",
+      "THE UNPOINTED WEEKDAY STICHERA ARE A SOURCE FACT, NOT AN ENCODING ERROR " +
+      "(Bill, from the PDFs, July 11 2026) — an earlier draft of this very note " +
+      "claimed the St. Sergius weekday pages DO print the marks and the encoder " +
+      "dropped them. THAT WAS WRONG and is retracted. It was inferred from the " +
+      "exception pattern instead of read from the book. Bill opened the file and " +
+      "confirmed the Monday- and Thursday-evening LIC stichera are genuinely " +
+      "unpointed in print. The encoder was faithful. Tier 1 at these loci is " +
+      "VERIFIED ABSENCE, correctly recorded — not a debt. The source is uneven, " +
+      "and uneven WITHIN a single file: 4-3.pdf points its aposticha 3/3 and its " +
+      "LIC 0/3. Tone 2 points every weekday LIC and never an aposticha; Tones 3, " +
+      "4 and 6 do the opposite on Monday. (The obvious liturgical explanation — " +
+      "that unpointed means podoben, sung to a special melody rather than to the " +
+      "tone formula — was tested against the data and FAILS: 184 unpointed " +
+      "stichera carry no spec_mel, and 21 pointed ones do.) So the baseline file " +
+      "is a REGISTER OF SOURCE-UNPOINTED LOCI, not a backlog. Its shrink-guard " +
+      "now protects something better than it was built for: nobody can INVENT " +
+      "marks the source does not print without the gate catching it.",
+
+      "VERSE FLAG WORDING CORRECTED — the amber flag said 'verse not pointed' " +
+      "for BOTH Tier 1 and Tier 2, which is false for Tier 2: that verse IS " +
+      "pointed, it simply lacks the [] director emphasis. And Tier 1 verses got " +
+      "NO flag at all (the flag lived inside the pointable branch), so they were " +
+      "silently dead slots. Now: Tier 1 → '⚑ verse missing structure and " +
+      "director marks'; Tier 2 → '⚑ verse structured but missing director " +
+      "marks'. Only tone-bearing elements are flagged — prose is not expected to " +
+      "carry marks. Tier 3 is ZERO across the entire Octoechos corpus (10,215 " +
+      "text nodes: 7,690 Tier 1, 2,525 Tier 2, 0 Tier 3), so this flag fires " +
+      "constantly and had to be accurate.",
+
+      "NOT A V2 REGRESSION — V1 at 094d871^ was checked tone by tone: every V1 " +
+      "weekday `lic` block had zero pointing markers in every tone. Only " +
+      "Saturday (Great Vespers) was ever pointed. The gap predates the cutover.",
     ],
   },
   {
