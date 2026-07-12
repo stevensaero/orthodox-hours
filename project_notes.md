@@ -1,5 +1,87 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.37.0** | **Tone Trainer: v0.26.0** | Last synced: July 11, 2026
+**Tool version: v0.38.0** | **Tone Trainer: v0.26.0** | Last synced: July 11, 2026
+
+**Session July 11, 2026 (later) — WHY OCTOECHOS VERSES WOULD NOT POINT.
+Tool v0.38.0.** Bill reported that Octoechos-sourced stichera in the Hours Tool
+could not be handed to the Tone Trainer or the score-print tool, and believed
+the V2 cutover had broken it. Investigation found THREE separate causes, only
+one of which was what he was looking at, and none of which was a V2 regression.
+
+**1. Tone 5 was greyed by a stale flag (FIXED).** Tone 5 had already shipped in
+the trainer (`PH_DEFS`, `ROT_DEFS`, `BASS_RULES`, `TENOR_RULES` all carry a 5)
+but `AVAILABLE_TONES` in `src/lib/available-tones.js` still read
+`new Set([1,2,3,4])`. `PointScoreControls` gates on that Set, so every Tone 5
+verse rendered grey and inert with a "not yet built" tooltip. **On mobile there
+is no hover, so the reason was invisible.** The trainer's dev-time drift guard
+only warns inside the trainer. **RULE: the tone number lands in
+available-tones.js in the SAME commit that builds the tone.**
+
+**2. Weekday Octoechos stichera are unpointed DATA (not fixed — next session).**
+Simulating the exact gate against real V2 data: Great Vespers is 88/88 at Tier
+2 in all eight tones. Weekday Vespers LIC and aposticha are almost entirely
+Tier 1, i.e. no pointing markers at all. `isPointable` returns false, so
+`PointScoreControls` returns `null` and NO controls render — indistinguishable,
+to a reader, from a broken feature. Bill's screenshots (07-06 Mon, 07-09 Thu,
+both Tone 4) were both weekday evenings. **Census: 120/403 singable Vespers
+stichera at Tier 2+; 283 unpointed (144 LIC + 139 aposticha).**
+
+**NOT a V2 regression — verified.** V1 was checked at `094d871^`, tone by tone:
+every V1 weekday `lic` block had ZERO pointing markers in every tone. Only
+Saturday (Great Vespers) was ever pointed. The gap predates the cutover; V2
+actually GAINED pointing on Tone 2's weekday LIC.
+
+**The exceptions are the evidence.** All of Tone 2's weekday LIC is pointed; so
+is Tone 8 Mon+Thu; so is Tone 4's Monday aposticha (3/3), Tone 6's (2/3), Tone
+3's (1/3). That clustering is not liturgical — it is the fingerprint of an
+encoder that captured markers on some passes and dropped them on others, often
+decaying after the top of a file. **The St. Sergius weekday pages DO print the
+marks.** So the backfill is mechanical, not interpretive: reopen each `N-3.pdf`
+through `N-7.pdf` at the recorded `src.locus`, restore `*`/`**`, promote Tier 1
+→ Tier 2, machine-verify byte-identical under marker stripping.
+
+**3. The audit view had no anchors (FIXED).** `octoechos-v2-reading.jsx` has
+always set `id={tonePrefix + path}` on its text nodes; `octoechos-v2-browser.jsx`
+(the audit view) set NO ids at all — `grep 'id='` returned nothing.
+`navFromPath` sends any `toneN.…` deep link to the READING view, so "↗ source"
+landed correctly there; but the moment you toggled to Audit, the hash-scroll
+effect's `getElementById` returned `null` and you were dumped at the top of a
+whole-tone dump with no scroll and no highlight. That is why Bill could not
+find "O Compassionate One…" to inspect its encoding. **This was a §12 Viewer
+Auditability Contract violation: the contract promises locus-by-locus audit
+against the open PDF, and you could not ADDRESS a locus.** Visible ≠ addressable.
+`TextBlock` now carries the reading view's id scheme (the two views are mutually
+exclusive, so no collision) plus `src.file — src.locus` as a title tooltip.
+
+**4. New gate: check M, pointing coverage (`validate_octoechos_v2.mjs`).**
+Check H asked "are your markers legal for your tier?" Nothing asked "do you have
+markers AT ALL?" A Tier 1 sticheron is perfectly legal under H, which is exactly
+how 283 of them shipped unnoticed. Check M covers the SINGABLE surfaces only
+(Vespers LIC + aposticha; canon troparia and irmoi are out of scope, not being
+sung to the tone formula). The 283 are frozen in
+`tools/octoechos_pointing_baseline.json` and the gate enforces **monotonic
+shrink in both directions**: a singable sticheron below Tier 2 that is not
+baselined is a HARD FAIL (regression guard); a baselined path that REACHES Tier
+2 is a HARD FAIL until its line is deleted in the same commit (so the backfill
+cannot silently stall). Both directions were negative-tested. The coverage
+number now prints as a headline on every gate run.
+
+**Also learned: Tier 3 is ZERO across the entire corpus** (10,215 text nodes;
+7,690 Tier 1, 2,525 Tier 2, 0 Tier 3). There is no director-pointed OCA emphasis
+anywhere in the Octoechos. That is why the amber "⚑ verse not pointed" flag fires
+even on the fully-pointed Great Vespers stichera — it is reporting the absence of
+Tier 3, not claiming the verse is unsingable. The flag's wording is misleading and
+should be revisited.
+
+**Still open (deliberately NOT done this session):**
+- **The 283-sticheron weekday backfill** — needs the Octoechos PDFs; do it tone
+  by tone, starting with Tone 4. Delete baseline lines in the same commit.
+- **Point/Score controls in the V2 Octoechos browser** — V1's
+  `octoechos-browser.jsx` had them (2 call sites); the cutover retired that file
+  and neither `octoechos-v2-browser.jsx` nor `octoechos-v2-reading.jsx` wires
+  them back. Menaion and Pentecostarion browsers still have them. Pass `label`
+  so the `isIrmosLabel` guard fires — V2 carries the Matins irmoi.
+- **Sunday Matins Tier 1 (568 nodes)** — some of those ARE singable (the eight
+  Praises, the sessionals). A second front; scope it separately.
 
 **Session July 11, 2026 — TONE 5 COMPLETE (research + implementation), Tone
 Trainer v0.26.0.** Single live session: Bill read the Obikhod Tone 5 tutorial
