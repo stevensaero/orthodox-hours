@@ -125,11 +125,18 @@ not expected to carry marks.
 **Still open (deliberately NOT done this session):**
 - **Why St. Sergius points what it points** — genuinely unexplained. The podoben
   hypothesis is dead. Not a code question; read the book.
-- **Point/Score controls in the V2 Octoechos browser** — V1's
-  `octoechos-browser.jsx` had them (2 call sites); the cutover retired that file
-  and neither `octoechos-v2-browser.jsx` nor `octoechos-v2-reading.jsx` wires
-  them back. Menaion and Pentecostarion browsers still have them. Pass `label`
-  so the `isIrmosLabel` guard fires — V2 carries the Matins irmoi.
+- **Pointing from the V2 Octoechos data browser — OPEN, DEFERRED (Bill, July 11
+  2026).** V1's `octoechos-browser.jsx` had `PointScoreControls` at 2 call sites;
+  the cutover retired that file and neither `octoechos-v2-browser.jsx` nor
+  `octoechos-v2-reading.jsx` wires them back. **For now, ALL pointing hand-offs
+  to the Tone Trainer originate from the Hours Tool.** Whether to restore
+  pointing inside the data browser is **UNDECIDED — Bill is sleeping on it. Do
+  NOT restore it, and do NOT treat its absence as a bug to be fixed.** Related,
+  and part of the same question: the Menaion and Pentecostarion browsers DO still
+  carry `PointScoreControls`, so behavior is currently inconsistent across the
+  three browsers. Whatever gets decided should be decided for all three. (If it
+  is ever restored, pass `label` so the `isIrmosLabel` guard fires — V2 carries
+  the Matins irmoi.)
 - **Sunday Matins Tier 1 (568 nodes)** — some of those ARE singable (the eight
   Praises, the sessionals). A second front; scope it separately.
 
