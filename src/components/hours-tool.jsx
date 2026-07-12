@@ -8633,6 +8633,61 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.38.0",
+    date: "July 2026",
+    summary: "Tone 5 Point/Score unblocked in the Hours Tool; Octoechos audit view made addressable (§12); pointing-coverage gate with a frozen 283-sticheron baseline",
+    items: [
+      "TONE 5 POINT/SCORE — Tone 5 had ALREADY shipped in the Tone Trainer " +
+      "(PH_DEFS, ROT_DEFS, BASS_RULES and TENOR_RULES all carry a 5), but " +
+      "AVAILABLE_TONES in src/lib/available-tones.js was never updated past 4. " +
+      "The Hours Tool gates its Point/Score controls on that Set, so EVERY " +
+      "Tone 5 verse rendered its ▶/♫ grey and inert with a 'not yet built' " +
+      "tooltip — and on mobile there is no hover, so the reason was invisible. " +
+      "The trainer's dev-time drift guard only warns inside the trainer, so it " +
+      "never caught this. Tone 5 is now live everywhere. Rule going forward: " +
+      "the tone number lands in available-tones.js in the SAME commit that " +
+      "builds the tone.",
+
+      "OCTOECHOS AUDIT VIEW IS NOW ADDRESSABLE (§12 Viewer Auditability " +
+      "Contract) — the reading view has always set id={tonePrefix + path} on " +
+      "its text nodes, but the audit view set NO anchor ids at all. So an " +
+      "assembled-service '↗ source' deep link landed in the reading view, and " +
+      "the moment you toggled to Audit the hash-scroll effect's getElementById " +
+      "returned null: no scroll, no highlight, and you were dumped at the top " +
+      "of a whole-tone dump with no way to find the locus you came for. §12 " +
+      "promises the audit view is auditable locus-by-locus against the open " +
+      "PDF; you could not address a locus in it. TextBlock now carries the " +
+      "same id scheme as the reading view (the two views are mutually " +
+      "exclusive, so the ids cannot collide) plus the src file/locus as a " +
+      "title tooltip.",
+
+      "POINTING-COVERAGE GATE (check M in validate_octoechos_v2.mjs) — check H " +
+      "already asked 'are your markers legal for your tier?'. Nothing asked " +
+      "'do you have markers AT ALL?'. A Tier 1 sticheron is perfectly legal " +
+      "under H, and 283 of them shipped: the Hours Tool's Point/Score controls " +
+      "key off the presence of markers, so an unpointed sticheron silently " +
+      "renders NO controls — indistinguishable, to a reader, from a broken " +
+      "feature. Census: 120/403 singable Vespers stichera at Tier 2+. Great " +
+      "Vespers is 88/88 (fully pointed, every tone); the weekday LIC and " +
+      "aposticha are almost entirely bare, with scattered exceptions (all of " +
+      "Tone 2's weekday LIC; Tone 8 Mon+Thu; Tone 4/6/3 Monday aposticha) that " +
+      "prove the St. Sergius weekday pages DO print the marks and the encoding " +
+      "pass simply dropped them. The 283 are frozen in " +
+      "tools/octoechos_pointing_baseline.json and the gate enforces MONOTONIC " +
+      "SHRINK in both directions: a singable sticheron below Tier 2 that is not " +
+      "baselined is a HARD FAIL (regression guard), and a baselined path that " +
+      "reaches Tier 2 is a HARD FAIL until its line is deleted in the same " +
+      "commit (so the backfill cannot silently stall). Canon troparia and " +
+      "irmoi are out of scope — they are not sung to the tone formula.",
+
+      "NOT FIXED, AND NOT A V2 REGRESSION — the 283 unpointed weekday stichera " +
+      "are a pre-existing encoding gap, NOT damage from the V2 cutover. V1 at " +
+      "094d871^ was checked tone by tone: every V1 weekday `lic` block had zero " +
+      "pointing markers in every tone. Only Saturday (Great Vespers) was ever " +
+      "pointed. The backfill from the source PDFs is the next data session.",
+    ],
+  },
+  {
     version: "v0.37.0",
     date: "July 2026",
     summary: "Fekula Ch.6 tone-of-the-Glory Both-now appointments (weekday Vespers); LIC source deep links fixed; ← Hours Tool return strip on the V2 Octoechos browser",
