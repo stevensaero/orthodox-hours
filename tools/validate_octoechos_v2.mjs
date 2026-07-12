@@ -27,13 +27,18 @@
 //   L · Sic-register check (amendment E): stored text at each locus must still
 //       contain the recorded sic byte-for-byte — silent "correction" of a
 //       recorded sic is a hard fail.
+//   M · Pointing COVERAGE on the singable surfaces (Vespers LIC + aposticha).
+//       H says "your markers are legal"; M says "you have markers at all".
+//       Deficit frozen in tools/octoechos_pointing_baseline.json; the gate
+//       enforces monotonic shrink — a new unpointed sticheron fails, and a
+//       baselined one that reaches Tier 2 fails until its line is deleted.
 //
 // Run: node tools/validate_octoechos_v2.mjs   (exit 1 on any violation)
 // With no V2 data files yet, structural checks pass trivially; the registers
 // and the schema itself are still validated, so the gate is live from day one.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { readdirSync, existsSync } from 'node:fs';
+import { readdirSync, existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, join } from 'node:path';
 import * as S from '../src/data/octoechos_v2/schema_v2.js';
@@ -415,6 +420,80 @@ for (const [i, s] of SICS.entries()) {
   }
 }
 
+// ── M · pointing coverage on the SINGABLE surfaces ───────────────────────────
+// Check H already validates that whatever markers a node carries are legal for
+// its tier. It does NOT ask whether a node that OUGHT to be pointed actually
+// is — a Tier 1 sticheron is perfectly legal under H, and 283 of them shipped.
+// The user-visible consequence: the Hours tool's Point/Score controls key off
+// the presence of markers, so an unpointed sticheron silently renders no
+// controls at all. It looks like a broken feature, not missing data.
+//
+// The singable surfaces are the Vespers stichera — the LIC and aposticha slots
+// the Hours tool actually offers to the Tone Trainer. Canon troparia and irmoi
+// are NOT in scope (they are not sung to the tone formula, and the irmos guard
+// excludes them from Point/Score anyway).
+//
+// BASELINE, not a wall. Failing outright on all 283 would just paint the gate
+// red and teach everyone to ignore it. Instead the current deficit is frozen in
+// tools/octoechos_pointing_baseline.json and the gate enforces MONOTONIC
+// SHRINK in both directions:
+//   · a singable sticheron below Tier 2 that is NOT in the baseline  → HARD FAIL
+//     (a new unpointed sticheron just shipped — this is the regression guard)
+//   · a baseline path that has REACHED Tier 2                        → HARD FAIL
+//     (the backfill worked; delete the line, in the same commit)
+// So the file can only ever get shorter, and it cannot get shorter by accident.
+const SINGABLE_RE = /^tone\d+\.(?:great_vespers\.(?:lic|aposticha)|vespers_weekday\.[a-z]+\.(?:lic\.octoechos|aposticha\.items))\[\d+\]$/;
+const BASELINE_FILE = join(HERE, 'octoechos_pointing_baseline.json');
+let baseline = [];
+if (existsSync(BASELINE_FILE)) {
+  baseline = JSON.parse(readFileSync(BASELINE_FILE, 'utf8'));
+} else {
+  fail('tools/octoechos_pointing_baseline.json is MISSING — the pointing-coverage gate cannot run without its baseline.');
+}
+const baseSet = new Set(baseline);
+
+// Collect every singable sticheron across the tone modules actually present.
+const singable = new Map(); // path → tier
+for (const [name, mod] of Object.entries(data)) {
+  if (!/^tone\d+$/.test(name)) continue;
+  (function collect(v, p) {
+    if (isTextNode(v)) { if (SINGABLE_RE.test(p)) singable.set(p, v.tier); return; }
+    if (Array.isArray(v)) return v.forEach((x, i) => collect(x, `${p}[${i}]`));
+    if (v && typeof v === 'object') {
+      for (const [k, x] of Object.entries(v)) { if (k === '_encoded') continue; collect(x, `${p}.${k}`); }
+    }
+  })(mod, name);
+}
+
+let unpointed = 0, pointed = 0;
+for (const [p, tier] of [...singable].sort()) {
+  const isPointed = tier === 2 || tier === 3;
+  if (isPointed) {
+    pointed++;
+    if (baseSet.has(p)) {
+      fail(`pointing baseline STALE: ${p} is now Tier ${tier} — remove it from tools/octoechos_pointing_baseline.json in this same commit (the baseline may only shrink).`);
+    }
+    continue;
+  }
+  unpointed++;
+  if (!baseSet.has(p)) {
+    fail(`UNPOINTED singable sticheron not in the baseline: ${p} (Tier ${tier === undefined ? 'MISSING' : tier}). A Vespers sticheron with no pointing renders NO Point/Score controls in the Hours tool. Point it from its src locus, or — if the source genuinely prints no marks — add it to tools/octoechos_pointing_baseline.json with a note saying why.`);
+  }
+}
+// A baseline entry that no longer resolves means a path was renamed/removed
+// without curating the baseline.
+for (const p of baseline) {
+  if (!singable.has(p)) {
+    const tone = /^(tone\d+)\./.exec(p)?.[1];
+    if (tone && data[tone]) {
+      fail(`pointing baseline ORPHAN: ${p} does not resolve to a singable sticheron — the path moved or was deleted. Curate the baseline.`);
+    }
+  }
+}
+const coverageLine = singable.size
+  ? `Pointing coverage (singable Vespers stichera): ${pointed}/${singable.size} at Tier 2+${unpointed ? ` — ${unpointed} still unpointed, all baselined (tools/octoechos_pointing_baseline.json)` : ' — COMPLETE'}.`
+  : null;
+
 // ── report ───────────────────────────────────────────────────────────────────
 const tonesFound = Object.keys(data).filter(k => k.startsWith('tone'));
 console.log(`Octoechos V2 gate — modules found: ${[...tonesFound, data.shared && 'shared', data.theotokia && 'theotokia'].filter(Boolean).join(', ') || 'none (infrastructure phase — no V2 data yet)'}`);
@@ -424,6 +503,7 @@ if (pending.length) {
   for (const m of pending.slice(0, 12)) console.log(`  ◌ ${m}`);
   if (pending.length > 12) console.log(`  … and ${pending.length - 12} more.`);
 }
+if (coverageLine) console.log(`\n${coverageLine}`);
 console.log(`\nRegisters: ${RECURRENCES.length} recurrence pairs (${recChecked} checked, ${recPending + (RECURRENCES.filter(r => r.relation === 'family').length)} pending/informational); ${SICS.length} sics (${sicChecked} checked, ${sicPending} pending).`);
 if (problems.length) {
   console.error(`\n✗ ${problems.length} VIOLATION(S) — every §9.10 item below goes to Bill before resolution:\n`);
