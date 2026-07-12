@@ -27,11 +27,13 @@
 //   L · Sic-register check (amendment E): stored text at each locus must still
 //       contain the recorded sic byte-for-byte — silent "correction" of a
 //       recorded sic is a hard fail.
-//   M · Pointing COVERAGE on the singable surfaces (Vespers LIC + aposticha).
-//       H says "your markers are legal"; M says "you have markers at all".
-//       Deficit frozen in tools/octoechos_pointing_baseline.json; the gate
-//       enforces monotonic shrink — a new unpointed sticheron fails, and a
-//       baselined one that reaches Tier 2 fails until its line is deleted.
+//   M · Pointing register for the singable surfaces (Vespers LIC + aposticha).
+//       H says "your markers are legal"; M says "you have markers, or the
+//       source verifiably has none". The 283 loci St. Sergius prints unpointed
+//       are registered in tools/octoechos_pointing_baseline.json as VERIFIED
+//       ABSENCE (Bill, from the PDFs). The gate fails on an unregistered
+//       unpointed sticheron, and fails on a registered one that gains markers
+//       — which is what stops INVENTED pointing entering the corpus.
 //
 // Run: node tools/validate_octoechos_v2.mjs   (exit 1 on any violation)
 // With no V2 data files yet, structural checks pass trivially; the registers
@@ -422,33 +424,41 @@ for (const [i, s] of SICS.entries()) {
 
 // ── M · pointing coverage on the SINGABLE surfaces ───────────────────────────
 // Check H already validates that whatever markers a node carries are legal for
-// its tier. It does NOT ask whether a node that OUGHT to be pointed actually
-// is — a Tier 1 sticheron is perfectly legal under H, and 283 of them shipped.
-// The user-visible consequence: the Hours tool's Point/Score controls key off
-// the presence of markers, so an unpointed sticheron silently renders no
-// controls at all. It looks like a broken feature, not missing data.
+// its tier. It does NOT ask whether a node that is EXPECTED to be pointed
+// actually is — a Tier 1 sticheron is perfectly legal under H, and 283 of them
+// shipped. The user-visible consequence: the Hours tool's Point/Score controls
+// key off the presence of markers, so an unpointed sticheron renders no
+// controls at all.
+//
+// WHY THE 283 ARE UNPOINTED (Bill, from the PDFs, July 11 2026): because the
+// SOURCE does not point them. This was checked in the book, not inferred. An
+// earlier version of this comment claimed the encoder had dropped the marks;
+// that was wrong and is retracted. St. Sergius is simply uneven, and uneven
+// WITHIN a single file — 4-3.pdf points its aposticha 3/3 and its LIC 0/3.
+// Tier 1 at these loci is VERIFIED ABSENCE, correctly recorded.
+//
+// So the baseline is NOT a backlog. It is a REGISTER OF SOURCE-UNPOINTED LOCI,
+// and the gate's job is to hold the register honest in both directions:
+//   · a singable sticheron below Tier 2 that is NOT in the register → HARD FAIL
+//     (a newly unpointed sticheron appeared without anyone recording that the
+//     source prints no marks there — verify it against the PDF and register it)
+//   · a registered path that has REACHED Tier 2                     → HARD FAIL
+//     (the source was re-read and DOES print marks there, OR someone INVENTED
+//     marks the book does not have. Either way a human confirms against the PDF
+//     and deletes the line in the same commit. This is the important direction:
+//     it is what stops fabricated pointing entering the corpus.)
 //
 // The singable surfaces are the Vespers stichera — the LIC and aposticha slots
 // the Hours tool actually offers to the Tone Trainer. Canon troparia and irmoi
 // are NOT in scope (they are not sung to the tone formula, and the irmos guard
 // excludes them from Point/Score anyway).
-//
-// BASELINE, not a wall. Failing outright on all 283 would just paint the gate
-// red and teach everyone to ignore it. Instead the current deficit is frozen in
-// tools/octoechos_pointing_baseline.json and the gate enforces MONOTONIC
-// SHRINK in both directions:
-//   · a singable sticheron below Tier 2 that is NOT in the baseline  → HARD FAIL
-//     (a new unpointed sticheron just shipped — this is the regression guard)
-//   · a baseline path that has REACHED Tier 2                        → HARD FAIL
-//     (the backfill worked; delete the line, in the same commit)
-// So the file can only ever get shorter, and it cannot get shorter by accident.
 const SINGABLE_RE = /^tone\d+\.(?:great_vespers\.(?:lic|aposticha)|vespers_weekday\.[a-z]+\.(?:lic\.octoechos|aposticha\.items))\[\d+\]$/;
 const BASELINE_FILE = join(HERE, 'octoechos_pointing_baseline.json');
 let baseline = [];
 if (existsSync(BASELINE_FILE)) {
   baseline = JSON.parse(readFileSync(BASELINE_FILE, 'utf8'));
 } else {
-  fail('tools/octoechos_pointing_baseline.json is MISSING — the pointing-coverage gate cannot run without its baseline.');
+  fail('tools/octoechos_pointing_baseline.json is MISSING — the pointing gate cannot run without its source-unpointed register.');
 }
 const baseSet = new Set(baseline);
 
@@ -471,27 +481,27 @@ for (const [p, tier] of [...singable].sort()) {
   if (isPointed) {
     pointed++;
     if (baseSet.has(p)) {
-      fail(`pointing baseline STALE: ${p} is now Tier ${tier} — remove it from tools/octoechos_pointing_baseline.json in this same commit (the baseline may only shrink).`);
+      fail(`register CONFLICT: ${p} is registered as unpointed in the SOURCE, but now carries Tier ${tier} markers. Either the source was re-read and does print marks here — confirm against the PDF and delete the line from tools/octoechos_pointing_baseline.json in this same commit — or the marks were INVENTED. Pointing that the book does not print may not enter the corpus.`);
     }
     continue;
   }
   unpointed++;
   if (!baseSet.has(p)) {
-    fail(`UNPOINTED singable sticheron not in the baseline: ${p} (Tier ${tier === undefined ? 'MISSING' : tier}). A Vespers sticheron with no pointing renders NO Point/Score controls in the Hours tool. Point it from its src locus, or — if the source genuinely prints no marks — add it to tools/octoechos_pointing_baseline.json with a note saying why.`);
+    fail(`UNPOINTED singable sticheron not in the register: ${p} (Tier ${tier === undefined ? 'MISSING' : tier}). A Vespers sticheron with no pointing renders NO Point/Score controls in the Hours tool. Open its src locus: if the source genuinely prints no marks, add the path to tools/octoechos_pointing_baseline.json (verified absence). If the source DOES print marks, encode them.`);
   }
 }
-// A baseline entry that no longer resolves means a path was renamed/removed
-// without curating the baseline.
+// A register entry that no longer resolves means a path was renamed/removed
+// without curating the register.
 for (const p of baseline) {
   if (!singable.has(p)) {
     const tone = /^(tone\d+)\./.exec(p)?.[1];
     if (tone && data[tone]) {
-      fail(`pointing baseline ORPHAN: ${p} does not resolve to a singable sticheron — the path moved or was deleted. Curate the baseline.`);
+      fail(`register ORPHAN: ${p} does not resolve to a singable sticheron — the path moved or was deleted. Curate tools/octoechos_pointing_baseline.json.`);
     }
   }
 }
 const coverageLine = singable.size
-  ? `Pointing coverage (singable Vespers stichera): ${pointed}/${singable.size} at Tier 2+${unpointed ? ` — ${unpointed} still unpointed, all baselined (tools/octoechos_pointing_baseline.json)` : ' — COMPLETE'}.`
+  ? `Pointing coverage (singable Vespers stichera): ${pointed}/${singable.size} at Tier 2+${unpointed ? ` — ${unpointed} unpointed IN THE SOURCE (verified absence; tools/octoechos_pointing_baseline.json)` : ''}.`
   : null;
 
 // ── report ───────────────────────────────────────────────────────────────────
