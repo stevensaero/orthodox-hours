@@ -27,17 +27,58 @@ stichera at Tier 2+; 283 unpointed (144 LIC + 139 aposticha).**
 
 **NOT a V2 regression — verified.** V1 was checked at `094d871^`, tone by tone:
 every V1 weekday `lic` block had ZERO pointing markers in every tone. Only
-Saturday (Great Vespers) was ever pointed. The gap predates the cutover; V2
-actually GAINED pointing on Tone 2's weekday LIC.
+Saturday (Great Vespers) was ever pointed. The gap predates the cutover.
 
-**The exceptions are the evidence.** All of Tone 2's weekday LIC is pointed; so
-is Tone 8 Mon+Thu; so is Tone 4's Monday aposticha (3/3), Tone 6's (2/3), Tone
-3's (1/3). That clustering is not liturgical — it is the fingerprint of an
-encoder that captured markers on some passes and dropped them on others, often
-decaying after the top of a file. **The St. Sergius weekday pages DO print the
-marks.** So the backfill is mechanical, not interpretive: reopen each `N-3.pdf`
-through `N-7.pdf` at the recorded `src.locus`, restore `*`/`**`, promote Tier 1
-→ Tier 2, machine-verify byte-identical under marker stripping.
+**IT IS A SOURCE FACT, NOT AN ENCODING ERROR — and I got this wrong first.**
+My initial reading was that the exception pattern (all of Tone 2's weekday LIC;
+Tone 8 Mon+Thu; Tone 4/6/3 Monday aposticha) "proved" St. Sergius prints the
+marks and the encoder dropped them. **That was an inference from the pattern,
+not a reading of the book, and it was WRONG.** Bill opened the PDFs and
+confirmed the Monday- and Thursday-evening LIC stichera are genuinely unpointed
+in print. **The encoder was faithful to its task.** Tier 1 at these loci is
+VERIFIED ABSENCE, correctly recorded — not a debt, not a backlog.
+
+**The source is uneven, and uneven WITHIN a single file.** Every weekday file
+carrying any marks at all:
+
+```
+file    | LIC   | aposticha
+2-2.pdf | 3/3   | 0/3   ← Sun
+2-3.pdf | 3/3   | 0/3   ← Mon
+2-4.pdf | 3/3   | 0/3   ← Tue
+2-5.pdf | 3/3   | 0/3   ← Wed
+2-6.pdf | 3/3   | 0/3   ← Thu
+2-7.pdf | 5/6   | 0/2   ← Fri
+3-3.pdf | 0/3   | 1/3   ← Mon
+4-3.pdf | 0/3   | 3/3   ← Mon
+6-3.pdf | 0/3   | 2/3   ← Mon
+8-3.pdf | 3/3   | 0/3   ← Mon
+8-6.pdf | 3/3   | 0/3   ← Thu
+```
+
+`4-3.pdf` points its aposticha 3/3 and its LIC 0/3 — one file, both behaviors.
+Tone 2 points every weekday LIC and never an aposticha; Tones 3, 4 and 6 do the
+opposite on Monday. **The podoben hypothesis was tested and FAILS:** if
+"unpointed" meant "sung to a special melody rather than the tone formula", the
+`spec_mel` field would track it. It does not — 184 unpointed stichera carry no
+`spec_mel`, and 21 pointed ones do. **Why St. Sergius points what it points is
+not yet explained. Do not guess. Read the book.**
+
+**METHOD LESSON, recorded because it cost a false claim in a shipped release
+note:** the exception pattern was real, the inference from it was not. Source
+questions get answered from the source. A pattern in the data is a reason to
+open the PDF, never a substitute for opening it.
+
+**Consequence for the gate:** `tools/octoechos_pointing_baseline.json` is a
+**REGISTER OF SOURCE-UNPOINTED LOCI**, not a backlog. Its shrink-guard now
+protects something better than it was built for: **a registered path that gains
+markers is a HARD FAIL, so nobody can INVENT pointing the book does not print
+without the gate catching it.**
+
+**Decision (Bill, July 11 2026): do NOT offer Point/Score on unpointed sources.**
+The option of handing Tier 1 text to the trainer so the reader points it himself
+was raised and DECLINED for now. The tool does not point what the book leaves
+unpointed.
 
 **3. The audit view had no anchors (FIXED).** `octoechos-v2-reading.jsx` has
 always set `id={tonePrefix + path}` on its text nodes; `octoechos-v2-browser.jsx`
@@ -52,29 +93,38 @@ against the open PDF, and you could not ADDRESS a locus.** Visible ≠ addressab
 `TextBlock` now carries the reading view's id scheme (the two views are mutually
 exclusive, so no collision) plus `src.file — src.locus` as a title tooltip.
 
-**4. New gate: check M, pointing coverage (`validate_octoechos_v2.mjs`).**
+**4. New gate: check M, the pointing register (`validate_octoechos_v2.mjs`).**
 Check H asked "are your markers legal for your tier?" Nothing asked "do you have
 markers AT ALL?" A Tier 1 sticheron is perfectly legal under H, which is exactly
 how 283 of them shipped unnoticed. Check M covers the SINGABLE surfaces only
 (Vespers LIC + aposticha; canon troparia and irmoi are out of scope, not being
-sung to the tone formula). The 283 are frozen in
-`tools/octoechos_pointing_baseline.json` and the gate enforces **monotonic
-shrink in both directions**: a singable sticheron below Tier 2 that is not
-baselined is a HARD FAIL (regression guard); a baselined path that REACHES Tier
-2 is a HARD FAIL until its line is deleted in the same commit (so the backfill
-cannot silently stall). Both directions were negative-tested. The coverage
-number now prints as a headline on every gate run.
+sung to the tone formula). The 283 source-unpointed loci are registered in
+`tools/octoechos_pointing_baseline.json` and the gate holds the register honest
+in **both directions**: an unpointed singable sticheron that is NOT registered
+is a HARD FAIL (go read the PDF and either encode the marks or register the
+verified absence); a REGISTERED path that GAINS markers is a HARD FAIL until a
+human confirms against the book and deletes the line in the same commit. **That
+second direction is the important one: it is what stops invented pointing from
+entering the corpus.** Both were negative-tested. Coverage prints as a headline
+on every gate run.
 
-**Also learned: Tier 3 is ZERO across the entire corpus** (10,215 text nodes;
-7,690 Tier 1, 2,525 Tier 2, 0 Tier 3). There is no director-pointed OCA emphasis
-anywhere in the Octoechos. That is why the amber "⚑ verse not pointed" flag fires
-even on the fully-pointed Great Vespers stichera — it is reporting the absence of
-Tier 3, not claiming the verse is unsingable. The flag's wording is misleading and
-should be revisited.
+**5. Verse flag wording corrected (FIXED).** Tier 3 is ZERO across the entire
+corpus (10,215 text nodes; 7,690 Tier 1, 2,525 Tier 2, 0 Tier 3) — there is no
+director-pointed OCA emphasis anywhere in the Octoechos, so the amber flag fires
+constantly and had to be accurate. It said "⚑ verse not pointed" for BOTH Tier 1
+and Tier 2, which is FALSE for Tier 2: that verse IS pointed, it merely lacks the
+`[]` director emphasis. Worse, Tier 1 verses got NO flag at all (the flag lived
+inside the pointable branch), so they rendered as silently dead slots. Now, per
+Bill's wording:
+- **Tier 1** → `⚑ verse missing structure and director marks`
+- **Tier 2** → `⚑ verse structured but missing director marks`
+
+Only tone-bearing elements are flagged; prose (petitions, prayers, readings) is
+not expected to carry marks.
 
 **Still open (deliberately NOT done this session):**
-- **The 283-sticheron weekday backfill** — needs the Octoechos PDFs; do it tone
-  by tone, starting with Tone 4. Delete baseline lines in the same commit.
+- **Why St. Sergius points what it points** — genuinely unexplained. The podoben
+  hypothesis is dead. Not a code question; read the book.
 - **Point/Score controls in the V2 Octoechos browser** — V1's
   `octoechos-browser.jsx` had them (2 call sites); the cutover retired that file
   and neither `octoechos-v2-browser.jsx` nor `octoechos-v2-reading.jsx` wires
