@@ -129,12 +129,24 @@ function RawView({ value }) {
 
 // ── a single text node (the universal hymn value shape) ──────────────────────
 function TextBlock({ node, path }) {
-  const { audit } = useContext(AuditContext);
+  const { audit, tonePrefix } = useContext(AuditContext);
   const [rawOpen, setRawOpen] = useState(false);
   const showRaw = audit || rawOpen;
   const labels = node.label ? (Array.isArray(node.label) ? node.label : [node.label]) : [];
+  // §12 Viewer Auditability Contract: every text node must be ADDRESSABLE, not
+  // merely visible. The reading view has always set id={tonePrefix + path} on
+  // its text nodes (RVerse/RText/RTextInline); the audit view set no ids at
+  // all, so an "↗ source" deep link landed in reading, and the moment you
+  // toggled to Audit the scroll effect's getElementById returned null — you
+  // were dumped at the top of a full-tone dump with no highlight. Same id
+  // scheme as the reading view, so the hash resolves in EITHER view. The two
+  // views are mutually exclusive (view === 'audit' vs 'reading'), so this
+  // cannot collide.
+  const full = `${tonePrefix}${path}`;
   return (
-    <div style={{ margin: "6px 0", paddingLeft: "8px", borderLeft: `2px solid ${C.goldMid}` }}>
+    <div id={full}
+         title={node.src ? `${node.src.file} — ${node.src.locus}` : undefined}
+         style={{ margin: "6px 0", paddingLeft: "8px", borderLeft: `2px solid ${C.goldMid}` }}>
       <div style={{ marginBottom: "2px" }}>
         <Badge color={node.tier === undefined ? C.red : C.gold}
                title="Tier — mandatory on every text node (amendment D)">
