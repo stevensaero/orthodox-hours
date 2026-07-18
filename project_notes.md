@@ -1,5 +1,43 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.38.0** | **Tone Trainer: v0.26.0** | Last synced: July 11, 2026
+**Tool version: v0.38.0** | **Tone Trainer: v0.26.0** | Last synced: July 18, 2026
+
+**Session July 18, 2026 — TONE 6 RESEARCH COMPLETE (logic only, no code).**
+Bill's directive: establish all Tone 6 phrase logic autonomously — including
+the score reads prior models could not do — and present for review before any
+implementation. Done; full record in `tone_trainer_tone6_analysis.md` (repo
+root), including a §8 appendix with every line of the corpus read.
+
+**METHOD (new, and itself under review):** score pitches were read by
+pixel-measuring notehead positions against the staff grid on 150-dpi
+rasterizations of the raw PDFs (pulled byte-verified from Drive `Tone6/`),
+with durations from the engravings' text-layer glyphs. Pipeline validated
+blind on the tutorial's own worked sticheron (16/16 alto pitches) before
+touching the five OCA score files. Three of the most consequential new claims
+were re-verified by human-readable zoomed crops at the end. **84 corpus
+lines read** (LIC verses, LIC stichera 1–7, dogmatikon, aposticha 1–4,
+aposticha theotokion). Bill to spot-check against his printed copies —
+open question #10 in the doc asks whether this evidence class counts as
+"score-confirmed" going forward.
+
+**The tone in one paragraph:** E minor, one sharp, **la=E4 IS the notated
+tonic** (NOT do — Tone 3's dedicated-tables lesson applies; do=G4). Melody
+uses si (D#4) — first tone with si in the ALTO line. No intonation and no
+prep anywhere. Rotation A·B·C + Final with **B′ replacing B when the
+penultimate line lands on the B slot** (tutorial rule, 4 corpus
+confirmations incl. two 3-line and two 6-line stichera). Every phrase =
+recite → anchor on last internal accent → fixed phrase-specific tail with
+anchor-pitch elastic fills and leftward slur-compression: A(la recite,
+si…si, la close), B(ti; la-zone max 2 sylls; ti close), B′(=B closing si),
+C(do; ti fills; fixed la·si tail; anchor H·/H by balancing), Final(la;
+fixed 2-syll si zone; la-fills; la W close — 9/9 W). Rhythmic balancing to
+whole-note spans near-exceptionless (30/33). Key conflict resolved by the
+corpus: the tutorial's own Final example ("salvation of our souls") prints
+the only unbarable durations in the corpus; the identical text in the
+aposticha-theotokion score prints the clean |H·Q|HH|W| shape that all other
+5-syllable Finals use. SATB chord tables read off the tutorial's labeled
+harmony page (incl. Final anchor chord T fa/B **re=A2 low**, measured) —
+awaiting Bill's confirmation before BASS/TENOR_RULES[6]. Ten open questions
+for Bill at doc §9. NO code changed; no version bump (research only).
 
 **Session July 11, 2026 (later) — WHY OCTOECHOS VERSES WOULD NOT POINT.
 Tool v0.38.0.** Bill reported that Octoechos-sourced stichera in the Hours Tool
