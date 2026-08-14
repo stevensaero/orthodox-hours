@@ -13435,7 +13435,7 @@ function PsalterService({ mode, setMode, name, setName, gender, setGender, ortho
 // Psalter reads its param today). Horologion omitted until it has a viewer.
 // Spec: bookshelf_spec.md.
 const LIBRARY_SHELVES = [
-  { name: "Hymnography", books: ["menaion", "pentecostarion", "octoechos"] },
+  { name: "Hymnography", books: ["menaion", "menaionV2", "pentecostarion", "octoechos"] },
   { name: "Scripture & Psalmody", books: ["scripture", "psalter"] },
   { name: "Chant", books: ["toneTrainer"] },
   { name: "Guides", books: ["psb"] },
@@ -13484,7 +13484,18 @@ function buildLibraryBooks(ld, selectedDate, scriptureReadings) {
       to: "/menaion?" + dateQ + (comm ? "&comm=" + comm : ""),
       lab: "Open to",
       pv: (ld && ld.namedDay) ? ld.namedDay : (comm ? comm + " · commemoration of the day" : "commemoration of the day"),
-      cover: "May 18–31 · June complete", partial: true,
+      cover: "May 16–31 · June · July", partial: true,
+    },
+    // The V2 Menaion — a separate book on the shelf, not a replacement spine.
+    // V1 still drives the Hours assembler; V2 is the truthing/reading surface
+    // until the Phase 5 cutover (menaion_v2_spec.md §2.1). Both are listed so
+    // the V2 capture can be reviewed from the tool without a remembered URL.
+    menaionV2: {
+      title: "The Menaion (V2)", spine: "#A8763A", host: "app",
+      to: "/menaion-v2?" + dateQ + (comm ? "&comm=" + comm : ""),
+      lab: "Open to",
+      pv: (ld && ld.namedDay) ? ld.namedDay : (comm ? comm + " · commemoration of the day" : "commemoration of the day"),
+      cover: "Full capture · in progress", partial: true,
     },
     pentecostarion: {
       title: "The Pentecostarion", spine: "#7A5A8A", host: "app",
