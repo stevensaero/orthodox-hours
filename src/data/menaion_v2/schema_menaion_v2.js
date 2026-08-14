@@ -90,6 +90,11 @@ export const LABELS = [
 export const CLOSER_TYPES = [
   'theotokion', 'stavrotheotokion', 'dogmatic_theotokion',
   'of_the_feast', 'in_the_same_melody', 'plain',
+  // The General Menaion declines to fix the type, because it depends on the day
+  // the general service is used (Wed/Fri take the Stavrotheotokion). 80
+  // instances across 21 of the 26 files — pervasive, not marginal. Storing a
+  // concrete type here would invent a decision Fekula makes at assembly.
+  'theotokion_or_stavrotheotokion',
 ];
 
 // ── Pointing (§2.5; encoding_rule_v2.md §3) ──────────────────────────────────
@@ -153,9 +158,33 @@ const AUGUST_DATES = [
   '08-30A','08-31',
 ];
 export const SOURCE_FILES = AUGUST_DATES.map(d => `${d}.pdf`);
-// General Menaion filenames are enumerated from the folder when it is visible in
-// the mount — NEVER from encoding_rule_v2.md §2.1's prose (§6.2).
-export const GENERAL_MENAION_FILES = [];
+// ── The General Menaion (§6.2) — enumerated FROM THE FOLDER ─────────────────
+// Never from encoding_rule_v2.md §2.1's prose, which is wrong in three ways:
+// it names a "Venerable.pdf" that does not exist (the file is Monastic.pdf),
+// and it gives the placeholder as "(Name) / (N.)" when the printed token is
+// lowercase `(name)` — 445 instances corpus-wide, `(Name)` and `(N.)` zero.
+export const GENERAL_TYPES = [
+  'Angels', 'Apostle', 'Apostles', 'Cross', 'Fools', 'Heirarch', 'Heirarchs',
+  'Heiromartyrs', 'HieroConfessor', 'Hieromartyr', 'Holy Fathers', 'Martyr',
+  'Martyress', 'Martyresses', 'Martyrs', 'Monastic', 'MonasticMartyr',
+  'MonasticMartyrs', 'Monastics', 'Nun', 'NunMartyr', 'Nuns', 'Prophet',
+  'St John Baptist', 'Theotokos', 'Unmercenaries',
+];
+export const GENERAL_MENAION_FILES = GENERAL_TYPES.map(x => `${x}.pdf`);
+
+// Four of the 26 are not saint TYPES at all — they are general services to a
+// specific subject. The table keys by both axes (§6.2).
+export const GENERAL_SUBJECTS = ['Cross', 'Holy Fathers', 'St John Baptist', 'Theotokos'];
+
+// Only these carry the `(name)` placeholder; the plural/collective files name
+// nobody. `name_substituted` is EXPECTED on a fallback drawn from a file in
+// this list and FORBIDDEN on one drawn from any other.
+export const GENERAL_TAKES_NAME = [
+  'Angels', 'Apostle', 'Fools', 'Heirarch', 'HieroConfessor', 'Hieromartyr',
+  'Martyr', 'Martyress', 'Monastic', 'MonasticMartyr', 'Nun', 'NunMartyr',
+  'Nuns', 'Prophet', 'Unmercenaries',
+];
+export const NAME_PLACEHOLDER = '(name)';   // lowercase, verbatim
 
 // ── The universal text node (§5.1) ───────────────────────────────────────────
 // `src` (with BOTH file and locus) and `tier` are MANDATORY on every text node.
@@ -421,7 +450,23 @@ export const FIELD_MANIFEST = [
 
   // ── cross-date tables (§6) ────────────────────────────────────────────────
   { path: 'shared',  kind: 'group', service: 'shared',  required: false, tag: 'unattested', label: 'Menaion-wide tables — candidates only until two months confirm (§6.1)' },
-  { path: 'general', kind: 'group', service: 'general', required: false, tag: 'unattested', label: 'St. Sergius General Menaion by saint type — BLOCKED on the mount (§6.2)' },
+  { path: 'general', kind: 'group', service: 'general', required: false, tag: 'A-attested', label: 'St. Sergius General Menaion — 26 full Vigil services, by saint type and by subject (§6.2)' },
+
+  // ── General Menaion cells (§6.2) ──────────────────────────────────────────
+  // `<g>` ranges over GENERAL_TYPES. Structure is IDENTICAL across all 26 files
+  // — singular and plural differ only in wording and Spec. Mel. forms, not in
+  // shape (chunk 2a scan). One template covers the book.
+  // NOTE: there is no `AT VESPERS` heading; Vespers is everything printed
+  // before `AT MATINS`. The section still keys as `vespers`.
+  { path: '<g>.title',    kind: 'text',   section: 'general', required: true,  tag: 'A-attested', label: 'Service title, verbatim heading' },
+  { path: '<g>.subject',  kind: 'text',   section: 'general', required: false, tag: 'A-attested', label: 'Subject, where the file is a subject rather than a saint type' },
+  { path: '<g>.troparion',kind: 'text',   section: 'general', required: false, tag: 'A-attested', label: 'Troparion' },
+  { path: '<g>.kontakion',kind: 'text',   section: 'general', required: false, tag: 'A-attested', label: 'Kontakion' },
+  { path: '<g>.vespers',  kind: 'group',  section: 'general', required: false, tag: 'A-attested', label: 'At Vespers (unheaded in the source — everything before AT MATINS)' },
+  { path: '<g>.matins',   kind: 'group',  section: 'general', required: false, tag: 'A-attested', label: 'At Matins' },
+  { path: '<g>.liturgy',  kind: 'group',  section: 'general', required: false, tag: 'A-attested', label: 'At Liturgy' },
+  { path: '<g>.dogmatikon_rubric', kind: 'rubric', section: 'general', required: false, tag: 'A-attested',
+    label: 'Cross-book rubric pointing at the Octoechos dogmatikon (18 files) — rubric stored, text NOT fetched (R-5)' },
 ];
 
 // ── Exclusion register (§6.3) ────────────────────────────────────────────────

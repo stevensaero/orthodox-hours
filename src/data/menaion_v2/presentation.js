@@ -142,6 +142,16 @@ R['<c>.liturgy.closing_rubric']        = { heading: 'Closing rubric', order: 13 
 R['shared']  = { heading: 'Menaion-wide tables', order: 1 };
 R['general'] = { heading: 'General Menaion', order: 2 };
 
+// ── General Menaion cells (§6.2) — `<g>` ranges over GENERAL_TYPES ──────────
+R['<g>.title']             = { heading: 'Title', order: 1 };
+R['<g>.subject']           = { heading: 'Subject', order: 2 };
+R['<g>.troparion']         = { heading: 'Troparion', order: 3, group: 'canonical' };
+R['<g>.kontakion']         = { heading: 'Kontakion', order: 4, group: 'canonical' };
+R['<g>.vespers']           = { heading: 'At Vespers', order: 5 };
+R['<g>.matins']            = { heading: 'At Matins', order: 6 };
+R['<g>.liturgy']           = { heading: 'At Liturgy', order: 7 };
+R['<g>.dogmatikon_rubric'] = { heading: 'Dogmatikon (from the Octoechos)', order: 8 };
+
 export const REGISTRY = R;
 
 // Resolve a concrete data path onto its generic manifest path.
@@ -152,6 +162,7 @@ export function registryLookup(path) {
   if (REGISTRY[path]) return REGISTRY[path];
   const generic = path
     .replace(/^(\d{2}-\d{2})\.c\d+\./, '<c>.')
+    .replace(/^general\.[^.]+\./, '<g>.')
     .replace(/\[\d+\]/g, '');
   return REGISTRY[generic] ?? null;
 }

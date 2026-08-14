@@ -847,9 +847,13 @@ Two corrections, both of which would have become silent encoding errors:
    `Monastic.pdf` / `Monastics.pdf`. Revision 1 of this spec used
    `src: {file: 'Venerable.pdf'}` as its worked example in §2.10 — an invented
    filename, caught only because the rule is *list the folder, do not assume*.
-2. **The placeholder is `(Name)` only.** §2.1 says "the `(Name)` / `(N.)`
-   placeholders"; a scan of all 26 files finds **`(Name)` 445 times and `(N.)`
-   zero times.**
+2. **The placeholder is lowercase `(name)`.** §2.1 says "the `(Name)` / `(N.)`
+   placeholders". Case-sensitive scan of all 26 files: **`(name)` 445 ·
+   `(Name)` 0 · `(N.)` 0 · `(NAME)` 0.** Under verbatim storage the case
+   matters — a substitution keyed to `(Name)` matches nothing.
+   *(Recorded as a self-correction: an earlier pass this session reported
+   `(Name)` because the count was taken case-insensitively and the form was not
+   checked. The context scan that found the true token also found the error.)*
 
 Three further structural facts from the scan:
 
@@ -865,6 +869,29 @@ Three further structural facts from the scan:
   `St John Baptist`, `Theotokos` are general services to a specific subject.
   They key by subject, not by saint type, and the `general.js` table needs both
   axes.
+
+Two further findings from the chunk-2a structural pass on a matched
+singular/plural pair (`Monastic` / `Monastics`):
+
+- **A conditional closer the schema had no way to express** — the source prints
+  `Glory ..., Both now ..., Theotokion or Stavrotheotokion:`, declining to fix
+  the type because it depends on the day the general service is used (Wed/Fri
+  take the Stavrotheotokion). **80 instances across 21 of 26 files.** Added to
+  `CLOSER_TYPES` as `theotokion_or_stavrotheotokion` rather than forced to a
+  concrete value at encode time: flattening it would invent a decision Fekula
+  makes at assembly.
+- **A cross-book rubric**, 18 instances in 18 files: *"If the service is a
+  Resurrection service sing the Dogmatic of the Tone for that service"* — the
+  General Menaion pointing at the Octoechos. Stored as
+  `<g>.dogmatikon_rubric`; the text is NOT fetched (R-5). Carries a sic
+  candidate (a stray `)` before the colon).
+- **Structure is identical across singular and plural** — same headings, same
+  order, same label vocabulary; only wording ("venerable one" / "venerable
+  ones") and Spec. Mel. forms differ. One template covers all 26, and the
+  singular/plural split governs `name_substituted` applicability, not shape.
+- **There is no `AT VESPERS` heading.** Vespers is everything printed before
+  `AT MATINS`. The section still keys as `vespers`; the absent heading is a
+  source fact, not a gap.
 
 Text layer is St. Sergius dialect throughout (`*` / `**` present in all 26).
 **Closes D-40.**

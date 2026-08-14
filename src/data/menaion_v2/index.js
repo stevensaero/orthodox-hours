@@ -22,6 +22,18 @@ export const MONTH_LOADERS = {
   // '08': () => import('./august.js').then(m => m.default),
 };
 
+// The cross-date tables load like the months — dynamically, never statically
+// imported (§2.14).
+let _general = null, _shared = null;
+export async function loadMenaionV2General() {
+  if (!_general) _general = (await import('./general.js')).default;
+  return _general;
+}
+export async function loadMenaionV2Shared() {
+  if (!_shared) { try { _shared = (await import('./shared.js')).default; } catch { _shared = {}; } }
+  return _shared;
+}
+
 const _cache = {};
 export async function loadMenaionV2Month(mm) {
   if (_cache[mm]) return _cache[mm];
