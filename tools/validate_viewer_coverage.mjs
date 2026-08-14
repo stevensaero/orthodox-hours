@@ -16,41 +16,60 @@
 //       sources for literal copies (the V1 Typica-explainer "it/He is holy"
 //       drift class, generalized).
 //
+// Covers BOTH V2 books. The contract is per-book but identical, so the join
+// runs once per book and the amendment-F fragment lint pools every book's
+// canonical text against every component — a Menaion text copied into an
+// Octoechos component is the same violation as one copied into its own.
+//
 // Run: node tools/validate_viewer_coverage.mjs   (exit 1 on any violation)
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, join } from 'node:path';
-import * as S from '../src/data/octoechos_v2/schema_v2.js';
-import { REGISTRY } from '../src/data/octoechos_v2/presentation.js';
+import * as OCTO_S from '../src/data/octoechos_v2/schema_v2.js';
+import { REGISTRY as OCTO_R } from '../src/data/octoechos_v2/presentation.js';
+import * as MEN_S from '../src/data/menaion_v2/schema_menaion_v2.js';
+import { REGISTRY as MEN_R } from '../src/data/menaion_v2/presentation.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..');
 const V2_DIR = join(ROOT, 'src', 'data', 'octoechos_v2');
+const MENAION_DIR = join(ROOT, 'src', 'data', 'menaion_v2');
 const COMPONENTS_DIR = join(ROOT, 'src', 'components');
 
 const problems = [];
 
-// ── 1 · coverage join ────────────────────────────────────────────────────────
-const manifestPaths = new Set(S.FIELD_MANIFEST.map(f => f.path));
-for (const f of S.FIELD_MANIFEST) {
-  const entry = REGISTRY[f.path];
-  if (!entry) {
-    problems.push(`COVERAGE: manifest path "${f.path}" has NO registry entry and NO hidden:{reason} — §12.2: registered or explicitly hidden, never omitted.`);
-    continue;
+// The two books, each with its own contract pair. Adding a third book is one
+// row here.
+const BOOKS = [
+  { name: 'octoechos', manifest: OCTO_S.FIELD_MANIFEST, registry: OCTO_R },
+  { name: 'menaion',   manifest: MEN_S.FIELD_MANIFEST,  registry: MEN_R  },
+];
+
+// ── 1 · coverage join (per book) ─────────────────────────────────────────────
+const covStats = [];
+for (const { name, manifest, registry } of BOOKS) {
+  const manifestPaths = new Set(manifest.map(f => f.path));
+  for (const f of manifest) {
+    const entry = registry[f.path];
+    if (!entry) {
+      problems.push(`COVERAGE [${name}]: manifest path "${f.path}" has NO registry entry and NO hidden:{reason} — registered or explicitly hidden, never omitted.`);
+      continue;
+    }
+    if (entry.hidden && !entry.hidden.reason) {
+      problems.push(`COVERAGE [${name}]: "${f.path}" is hidden without a reason — hiding is opt-in WITH declaration.`);
+    }
+    if (!entry.hidden && !entry.heading) {
+      problems.push(`COVERAGE [${name}]: "${f.path}" registry entry lacks a heading.`);
+    }
   }
-  if (entry.hidden && !entry.hidden.reason) {
-    problems.push(`COVERAGE: "${f.path}" is hidden without a reason — hiding is opt-in WITH declaration (§12.1).`);
+  for (const key of Object.keys(registry)) {
+    if (!manifestPaths.has(key)) {
+      problems.push(`COVERAGE [${name}]: registry key "${key}" is not in the manifest — stale entry; the registry cannot drift from the schema.`);
+    }
   }
-  if (!entry.hidden && !entry.heading) {
-    problems.push(`COVERAGE: "${f.path}" registry entry lacks a heading.`);
-  }
-}
-for (const key of Object.keys(REGISTRY)) {
-  if (!manifestPaths.has(key)) {
-    problems.push(`COVERAGE: registry key "${key}" is not in schema_v2.FIELD_MANIFEST — stale entry; the registry cannot drift from the schema.`);
-  }
+  covStats.push(`${name} ${manifestPaths.size}\u22c8${Object.keys(registry).length}`);
 }
 
 // ── 2 · amendment F lint — no display copies ─────────────────────────────────
@@ -73,6 +92,15 @@ for (const f of v2files) {
   if (/^tone[1-8]\.js$/.test(f) || f === 'shared.js' || f === 'theotokia.js') {
     const mod = (await import(pathToFileURL(join(V2_DIR, f)).href)).default;
     collect(f.replace('.js', ''), mod);
+  }
+}
+// Menaion V2: month files plus the cross-date tables. Same rule — a literal
+// copy of any of this text inside a component is a display copy.
+const menFiles = existsSync(MENAION_DIR) ? readdirSync(MENAION_DIR) : [];
+for (const f of menFiles) {
+  if (/^(january|february|march|april|may|june|july|august|september|october|november|december|shared|general)\.js$/.test(f)) {
+    const mod = (await import(pathToFileURL(join(MENAION_DIR, f)).href)).default;
+    collect('menaion/' + f.replace('.js', ''), mod);
   }
 }
 
@@ -129,7 +157,7 @@ if (fragments.length) {
 }
 
 // ── report ───────────────────────────────────────────────────────────────────
-console.log(`Viewer coverage gate — ${manifestPaths.size} manifest paths ⋈ ${Object.keys(REGISTRY).length} registry entries; ${fragments.length} canonical fragments linted against components.`);
+console.log(`Viewer coverage gate — ${covStats.join(' · ')} (manifest ⋈ registry); ${fragments.length} canonical fragments linted against components.`);
 if (legacyWarnings.length) {
   console.log(`${legacyWarnings.length} V1-legacy display-copy warning(s) (non-fatal until Phase 5 cutover; incidentally byte-verifies V1's static tables against the source):`);
   for (const w of legacyWarnings.slice(0, 5)) console.log(`  ⚠ ${w}`);
