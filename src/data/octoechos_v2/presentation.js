@@ -98,18 +98,18 @@ R['nocturns.frame_rubric']   = { heading: 'Frame rubric', order: 1 };
 R['nocturns.canon']          = { heading: 'Trinity canon', order: 2 };
 R['nocturns.after_ode3']     = { heading: 'After Ode III', order: 3 };
 R['nocturns.after_ode6']     = { heading: 'After Ode VI', order: 4 };
-R['nocturns.closing_rubric'] = { heading: 'Closing rubric', order: 5 };
+R['nocturns.closing_rubric'] = { heading: 'Closing rubric', order: 6 };
 
 // matins (Sunday)
 R['matins.god_is_lord_rubric']    = { heading: 'God is the Lord — rubric', order: 1 };
 R['matins.sessionals']            = { heading: 'Sessional hymns (Kathismata II, III)', order: 2 };
-R['matins.hypakoe']               = { heading: 'Hypakoe', order: 3 };
-R['matins.anabathmoi']            = { heading: 'Anabathmoi (Songs of Ascent)', order: 4 };
-R['matins.prokeimenon']           = { heading: 'Matins prokeimenon', order: 5 };
-R['matins.canon']                 = { heading: 'Canon (Shape A)', order: 6 };
-R['matins.exapostilarion_rubric'] = { heading: 'Exapostilarion rubric', order: 7 };
-R['matins.praises']               = { heading: 'Praises', order: 8 };
-R['matins.doxology_troparion']    = { heading: 'Doxology troparion', order: 9 };
+R['matins.hypakoe']               = { heading: 'Hypakoe', order: 5 };
+R['matins.anabathmoi']            = { heading: 'Anabathmoi (Songs of Ascent)', order: 6 };
+R['matins.prokeimenon']           = { heading: 'Matins prokeimenon', order: 7 };
+R['matins.canon']                 = { heading: 'Canon (Shape A)', order: 8 };
+R['matins.exapostilarion_rubric'] = { heading: 'Exapostilarion rubric', order: 9 };
+R['matins.praises']               = { heading: 'Praises', order: 10 };
+R['matins.doxology_troparion']    = { heading: 'Doxology troparion', order: 11 };
 
 // matins_weekday.<day>
 R['matins_weekday.<day>.sessionals']           = { heading: 'Sessional sets', order: 1 };
@@ -141,7 +141,7 @@ R['great_vespers.vigil_rubric']       = { heading: 'Vigil block (shared)', order
 R['great_vespers.no_vigil_rubric']    = { heading: 'If no Vigil', order: 11 };
 R['nocturns.gregory_rubric']          = { heading: 'Hymn of Gregory the Sinaite (shared)', order: 5 };
 R['matins.polyeleos_rubric']          = { heading: 'Polyeleos (shared)', order: 3 };
-R['matins.evlogitaria_rubric']        = { heading: 'Evlogitaria (shared)', order: 3 };
+R['matins.evlogitaria_rubric']        = { heading: 'Evlogitaria (shared)', order: 4 };
 
 // §5 shared tables
 R['shared.daily_vespers_prokeimena']      = { heading: 'Daily Vespers prokeimena (by evening)', order: 1 };
