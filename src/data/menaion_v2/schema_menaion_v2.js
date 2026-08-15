@@ -248,12 +248,22 @@ export const ABSENCE_NODE = {
 // Both forms are required: the source's citation formats vary across files
 // ("§ 320 (HEB. 9: 1-7)", "§330 (11 :33-40)", "(MT. 5:14-19)"), so the verbatim
 // string preserves the print site and the normalized form is resolvable.
+// Where a citation COMES FROM is provenance, exactly as `basis` is for absence.
+// Three sources, and the viewer/gate must be able to tell them apart:
+//   printed    — the source prints the reference. Trusted.
+//   derived    — matched against public/bible and ROUND-TRIP VERIFIED (§2.11).
+//   identified — a human recognised the passage where derivation REFUSED,
+//                because the Menaion's translation diverges from the corpus.
+//                Carries no reconstruction score and must never be presented as
+//                if it were verified.
+export const CITATION_BASIS = ['printed', 'derived', 'identified'];
+
 export const READING_NODE = {
   required: ['heading'],
   // `citation_verbatim` is required only where the source PRINTS a reference.
   // The General Menaion's Vespers lessons print none; those carry `derived`
   // instead, and the gate re-runs the reconstruction rather than trusting it.
-  optional: ['src', 'citation_verbatim', 'citation', 'derived'],
+  optional: ['src', 'citation_verbatim', 'citation', 'citation_basis', 'derived', 'note'],
   citation: { required: ['book', 'chapter', 'verses'], optional: ['pericope_number'] },
 };
 

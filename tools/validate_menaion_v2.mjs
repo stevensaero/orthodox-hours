@@ -43,7 +43,7 @@ const manifestFor = p => MANIFEST.get(genericPath(p)) ?? null;
 const isPlainObj = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const isAbsence = v => isPlainObj(v) && v.absent === true;
 const isTextNode = v => isPlainObj(v) && typeof v.text === 'string';
-const isReading = v => isPlainObj(v) && typeof v.citation_verbatim === 'string';
+const isReading = v => isPlainObj(v) && typeof v.heading === 'string';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // A. Text node — provenance, tier, pointing, artifacts, register
@@ -191,6 +191,20 @@ function walk(value, path, ctx, kindHint) {
       if (value[k] === undefined) err(path, `reading missing required '${k}' (§2.11)`);
     if (value.text !== undefined)
       err(path, `reading must NOT carry 'text' — the scripture tool owns reading bodies (R-4)`);
+    // A reading with NEITHER a printed citation NOR a derived one is a silent
+    // gap: the heading alone cannot identify the passage, and three headings
+    // reading "A READING FROM THE WISDOM OF SOLOMON" are indistinguishable.
+    // Absence must be declared (§2.10), not left implicit.
+    if (value.citation === undefined && !value.derived)
+      err(path, `reading identifies no passage — needs a printed citation, a verified derived one, or an explicit absence node (§2.10/§2.11)`);
+    if (value.citation && value.citation_basis && !S.CITATION_BASIS.includes(value.citation_basis))
+      err(path, `citation_basis '${value.citation_basis}' not in CITATION_BASIS`);
+    if (value.citation && !value.citation_verbatim && !value.citation_basis)
+      err(path, `a citation the source did not print must declare its citation_basis (derived | identified)`);
+    if (value.citation_basis === 'identified')
+      work(path, `citation IDENTIFIED by a human — corpus derivation refused (translation divergence). Not verified; confirm against the printed page.`);
+    if (value.derived && value.derived.reconstruction < S.DERIVED_CITATION_FLOOR)
+      err(path, `derived citation below the ${S.DERIVED_CITATION_FLOOR} reconstruction floor — store no citation rather than a guess`);
     if (isPlainObj(value.citation))
       for (const k of S.READING_NODE.citation.required)
         if (value.citation[k] === undefined) err(`${path}.citation`, `missing '${k}'`);

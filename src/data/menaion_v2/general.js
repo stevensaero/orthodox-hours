@@ -20,6 +20,8 @@ const F = 'Monastic.pdf';
 const [t2, t1] = mk(F);
 const G = 'Monastics.pdf';
 const [g2, g1] = mk(G);
+const M1 = 'Martyr.pdf';
+const [m2, m1] = mk(M1);
 
 const GENERAL = {
   Monastic: {
@@ -109,13 +111,13 @@ const GENERAL = {
       readings: [
         { heading: 'THE READING FROM THE WISDOM OF SOLOMON', src: { file: F, locus: 'p2 Lesson 1' },
           citation: { book: 'Wisdom of Solomon', chapter: 3, verses: '3:1-3:9' },
-          derived: { method: 'corpus-match', reconstruction: 0.92 } },
+          citation_basis: 'derived', derived: { method: 'corpus-match', reconstruction: 0.92 } },
         { heading: 'A READING FROM THE WISDOM OF SOLOMON', src: { file: F, locus: 'p2 Lesson 2' },
           citation: { book: 'Wisdom of Solomon', chapter: 5, verses: '5:15-6:3' },
-          derived: { method: 'corpus-match', reconstruction: 0.93 } },
+          citation_basis: 'derived', derived: { method: 'corpus-match', reconstruction: 0.93 } },
         { heading: 'A READING FROM THE WISDOM OF SOLOMON', src: { file: F, locus: 'p3 Lesson 3' },
           citation: { book: 'Wisdom of Solomon', chapter: 4, verses: '4:7-4:14' },
-          derived: { method: 'corpus-match', reconstruction: 0.89 } },
+          citation_basis: 'derived', derived: { method: 'corpus-match', reconstruction: 0.89 } },
       ],
 
       aposticha_rubric: t1('On the Aposticha, these Stichera, in Tone I:', 'p3 Aposticha rubric'),
@@ -433,13 +435,13 @@ const GENERAL = {
       readings: [
         { heading: 'THE READING FROM THE WISDOM OF SOLOMON', src: { file: G, locus: 'p2 Lesson 1' },
           citation: { book: 'Wisdom of Solomon', chapter: 3, verses: '3:1-3:9' },
-          derived: { method: 'corpus-match', reconstruction: 0.92 } },
+          citation_basis: 'derived', derived: { method: 'corpus-match', reconstruction: 0.92 } },
         { heading: 'A READING FROM THE WISDOM OF SOLOMON', src: { file: G, locus: 'p2 Lesson 2' },
           citation: { book: 'Wisdom of Solomon', chapter: 5, verses: '5:15-6:3' },
-          derived: { method: 'corpus-match', reconstruction: 0.93 } },
+          citation_basis: 'derived', derived: { method: 'corpus-match', reconstruction: 0.93 } },
         { heading: 'A READING FROM THE WISDOM OF SOLOMON', src: { file: G, locus: 'p3 Lesson 3' },
           citation: { book: 'Wisdom of Solomon', chapter: 4, verses: '4:7-4:14' },
-          derived: { method: 'corpus-match', reconstruction: 0.89 } },
+          citation_basis: 'derived', derived: { method: 'corpus-match', reconstruction: 0.89 } },
       ],
 
       aposticha_rubric: g1('On the Aposticha, these Stichera, in Tone IV:', 'p3 Aposticha rubric'),
@@ -468,6 +470,68 @@ const GENERAL = {
       closer: { absent: true, reason: 'not_printed_in_source', basis: 'close_reading',
         note: 'Printed as “Glory ..., Both now ..., Theotokion or Stavrotheotokion:” with no text — the conditional closer (§5.8).' },
       closing_rubric: g1('The Dismissal:', 'p4 Dismissal'),
+    },
+  },
+  // ── Martyr.pdf — first NON-monastic file. Two structural departures:
+  //   1. The Vespers lessons are NOT three from Wisdom. Lesson 1 is from Isaiah.
+  //      The three-Wisdom set is a monastic-file fact, not a book-wide one.
+  //   2. The troparion is printed at TWO DIFFERENT DECLARED TONES — III at
+  //      Matins (p13), IV at Liturgy (p14) — with IDENTICAL text. Under R-1 a
+  //      canonical field is used only after every print site is verified
+  //      identical; the text matches and the TONE does not, so this is a logged
+  //      divergence, NOT a silent pick. See §13 open items.
+  Martyr: {
+    title: m1('THE GENERAL VIGIL SERVICE TO ONE MARTYR.', 'p1 title'),
+
+    vespers: {
+      order: [
+        'lic_rubric', 'lic', 'lic_closer', 'lic_stavrotheotokion',
+        'idiomelon_rubric', 'lic_glory',
+        'dogmatikon_rubric', 'dogmatikon', 'dogmatikon_alternate', 'dogmatikon_stavrotheotokion',
+        'entrance_rubric', 'readings',
+      ],
+
+      lic_rubric: m1('On “Lord, I have cried ...,” the Stichera, in Tone I:', 'p1 LIC rubric'),
+      lic: [
+        m2('O most blessed one, * comprehending with an upright and honorable heart * the uncircumscribable God, * and undeniably believing in Him; * thou hast faithfully followed * His ineffable and saving commandments, * O most wise one, * and patiently enduring sufferings, ** attained unto the eternal Kingdom.',
+           'p1 LIC 1', { spec_mel: 'O all-praised Martyrs ...', label: 'plain', tone: 1 }),
+        m2('With thine honored blood * consecrating the earth * and abolishing the defiled blood-sacrifice * offered lawlessly unto demons, * O all-honored one, * thou didst receive an incorruptible crown upon thy brow. * Wherefore do thou intercede for us * that our souls be granted peace ** and great mercy.',
+           'p1 LIC 2', { spec_mel: 'O all-praised Martyrs ...', label: 'plain' }),
+        m2('O all-honored Martyr (name), * Glorifying thy sacred struggles and exploits * we are also consecrated, * for by them thou hast become an associate of angels * and a companion of all the martyrs; * wherefore we beseech thee to pray, * together with them, * that our souls be granted ** peace and great mercy.',
+           'p1 LIC 3', { spec_mel: 'O all-praised Martyrs ...', label: 'plain' }),
+      ],
+      lic_closer: m2('Woe unto me the sinful one! * What shall become of me whose mind, soul, and body * are defiled by transgressions? * What must I do to escape the insufferable flames, * the unbreakable and eternal chains? * O all-immaculate one, * entreat thy Son before my end ** to grant me the remission of sins.',
+        'p1 LIC Glory/Both now', { type: 'theotokion', sourceLabel: 'Glory ..., Both now ..., Theotokion in Tone I', tone: 1 }),
+      lic_stavrotheotokion: m2('The Sovereign Lady, the unblemished ewe-lamb, * beholding her Lamb upon the Cross, * bereft of form and comeliness, * lamenting, said: “Woe is me! * Whither hath Thy comeliness gone, O most Sweet One? * Where is Thy splendor? Where is the brilliant grace * of Thine image, ** O my Son most beloved?”',
+        'p1 LIC Stavrotheotokion', { type: 'stavrotheotokion', sourceLabel: 'Stavrotheotokion', label_inline: true,
+          verified_sites: ['p1 LIC Stavrotheotokion', 'p12 Praises Stavrotheotokion'] }),
+
+      idiomelon_rubric: m1('If an Idiomelon be appointed, Glory ..., in Tone VI:', 'p1 Idiomelon rubric'),
+      // The `* *cease` case, RULED: the marker is in the right place and the hymn
+      // is otherwise fully pointed, so it is the penultimate `**` split by the
+      // typesetter. Encoded as `**`; the printed `* *` is sic-registered.
+      lic_glory: m2('Today the universe is illumined * with the bright rays of the passion-bearer, * and the Church of God, adorned with flowers, * doth cry aloud unto thee, O Martyr (name); * O favorite of Christ * and most fervent intercessor, ** cease not to pray for thy servants.',
+        'p1 Glory idiomelon', { tone: 6,
+          provenance_note: 'Source prints “* *cease”. Encoded as the penultimate ** per Bill’s ruling; see sic_register.' }),
+
+      dogmatikon_rubric: m1('If the Celebration be with a Polyeleos, and not a Resurrection Service, sing the following Dogmatic in Tone VI (If the service is a Resurrection service sing the Dogmatic of the Tone for that service):',
+        'p1 Dogmatikon rubric'),
+      dogmatikon: m2('Who doth not call thee blessed, O most holy Virgin? * Who will not hymn thy most pure birthgiving? * For the only-begotten Son Who hath shone forth timelessly from the Father, * came forth, ineffably incarnate, from thee, O pure one; * By nature he is God, by nature for our sakes, he hath become a man * not divided into two Hypostases, * but known in two natures without commingling. * Him do thou beseech, O pure and most blessed one, ** that our souls find mercy!',
+        'p2 Both now Dogmatikon', { type: 'dogmatic_theotokion', sourceLabel: 'Both now ..., in Tone VI', tone: 6 }),
+      dogmatikon_alternate: m2('We have come to know God * Who was incarnate of thee, * O Virgin Theotokos. ** Him do thou entreat for the salvation of our souls.',
+        'p2 Otherwise Theotokion', { type: 'theotokion', sourceLabel: 'Otherwise, Theotokion', label_inline: true }),
+      dogmatikon_stavrotheotokion: m2('When, of old, the unblemished ewe-lamb and immaculate Sovereign Lady, * beheld her Lamb * upon the tree of the Cross, * she exclaimed maternally, and marveling cried aloud: * “O my Child most sweet, * what is this new and most strange sight I see? * How hath the thankless synagogue * betrayed Thee to the judgment-seat of Pilate * and condemned Thee to death, * Who art the Life of all? * Yet do I hymn Thine ineffable condescension, ** O Word!”',
+        'p2 Stavrotheotokion', { type: 'stavrotheotokion', sourceLabel: 'Stavrotheotokion', label_inline: true }),
+
+      entrance_rubric: m1('The Entrance. The Prokeimenon of the day. The Three Lessons, if appointed.', 'p2 Entrance'),
+      // NOT three from Wisdom — lesson 1 is Isaiah. The monastic files' set is a
+      // per-file fact, not a property of the General Menaion.
+      readings: [
+        { heading: 'THE READING IS FROM ISAIAH', src: { file: M1, locus: 'p2 Lesson 1' },
+          citation: { book: 'Isaiah', chapter: 43, verses: '9-14' },
+          citation_basis: 'identified',
+          note: 'Corpus derivation REFUSED at 0.11 — and correctly. The Menaion prints a KJV-style rendering ("Let all the nations be gathered together, and let the people be assembled") where public/bible carries Brenton LXX ("All the nations are gathered together, and princes shall be gathered out of them"). Same passage, different translation. Identified by a human as the classic first martyr paremia; NOT verified, and the scripture-tool link will show wording the Menaion does not print.' },
+      ],
     },
   },
 };
