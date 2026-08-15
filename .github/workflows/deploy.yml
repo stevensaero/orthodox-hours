@@ -12,13 +12,18 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+      # GitHub forced JS actions onto the Node 24 runtime from 2 June 2026 and
+      # removes Node 20 from the runner on 16 Sept 2026. checkout@v4 and
+      # setup-node@v4 are Node-20 actions; v5 of each declares node24.
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
+      # node-version here is the BUILD runtime, separate from the action
+      # runtime above. Node 20 reached end-of-life in April 2026; 22 is LTS.
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies

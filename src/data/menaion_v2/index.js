@@ -34,15 +34,16 @@ export const MONTH_LOADERS = {
 
 // The cross-date tables load like the months — dynamically, never statically
 // imported (§2.14).
-let _general = null, _shared = null;
+let _general = null;
 export async function loadMenaionV2General() {
   if (!_general) _general = (await import('./general.js')).default;
   return _general;
 }
-export async function loadMenaionV2Shared() {
-  if (!_shared) { try { _shared = (await import('./shared.js')).default; } catch { _shared = {}; } }
-  return _shared;
-}
+// NO loadMenaionV2Shared() until shared.js EXISTS. A dynamic import of a missing
+// module is not a runtime concern the bundler forgives: Vite/rolldown resolves
+// it at BUILD time and fails with UNRESOLVED_IMPORT, try/catch notwithstanding.
+// That is what broke every deploy from the Phase 1 commit onward. Add the loader
+// in the same change that adds the file (§6.1).
 
 const _cache = {};
 export async function loadMenaionV2Month(mm) {
