@@ -1,5 +1,154 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.40.0** | **Tone Trainer: v0.26.0** | Last synced: August 15, 2026
+**Tool version: v0.41.0** | **Tone Trainer: v0.26.0** | Last synced: August 15, 2026
+
+**Session August 15, 2026 (third) — SHARED.JS CLOSED EMPTY; HEIRARCH ENCODED;
+A HANDOFF ERROR I WROTE MYSELF.**
+**Version bumped to v0.41.0.** All eight gates green before and after.
+
+### SHARED.JS: THE ANSWER WAS "NOTHING", AND IT TOOK A MEASUREMENT TO SAY SO
+
+Owed since 14 Aug and deferred three sessions. All 140 delivered daily files
+were extracted with `dedupe_chars()` and measured against §6.1's three candidate
+classes.
+
+**The two ladders are printed in 0 of 140 files.** The LIC verse ladder and the
+praises verse ladder are Horologion and Octoechos content; the Menaion never
+prints them.
+
+**The psalm verses that do recur are not byte-invariant:**
+
+| candidate | sites | files | distinct forms |
+|---|---|---|---|
+| `Precious in the sight of the Lord …` | 66 | 26 | **4** |
+| `Blessed is the man …` | 113 | 51 | **14** |
+| `In the saints that are in His earth …` | 9 | 8 | **2** |
+| `Let every breath …` | 49 | 49 | **6** |
+
+63 of 66 agree on the first — **95.5%**, which is exactly the ratio that makes a
+shared table look proven. **07-19 prints two different renderings of that one
+verse within a single file.** This is the Octoechos `lic_verse_ladder` history
+repeating; it was removed from that project's `shared.js` on 7 July 2026 on the
+same evidence.
+
+**And the recurrence has a cause that is not invariance.** The same verse prints
+under DIFFERENT LABELS at different positions — "Precious in the sight" is a
+Prokeimenon in 19 files and an aposticha Verse in 15; "Blessed is the man" is an
+Alleluia in 18 and a Verse in 12. What recurs widely across the Menaion is
+(a) reading bodies, which R-4 stores nowhere, (b) rubrics, per-position under
+§2.7, and (c) **common-of-the-saints propers keyed to SAINT TYPE — which is what
+`general.js` already models.** Hoisting those into `shared.js` would record a
+saint-type fact as a book-wide one.
+
+One string is byte-invariant across all 51 of its sites: `Prokeimenon of the
+day.` It is a rubric naming another book's text under R-5, and hoisting repeated
+rubric boilerplate is what the 15 Aug recurrence-register ruling already declined
+to do in a different register.
+
+**Bill's ruling: ship empty but reachable.** File, loader and browser axis in ONE
+change (warning 8 — a coverage gate proves every FIELD is registered, not that
+every TABLE is reachable). The rail STATES the emptiness rather than hiding the
+axis, so a reader can see the question was asked. §6.1's three candidates are
+demoted from `[unattested]` to falsified, and the bar for a future row is written
+into `shared.js`'s header.
+
+**Two gate changes came with it.** The render gate now renders `shared.js`
+through the same component and path grammar as `general.js` — empty today and
+*asserted* to render, because a table that only renders once it has a member gets
+discovered on the day someone adds one. And `validate_menaion_v2` no longer
+swallows a load failure of a cross-date table or a register: "not yet written"
+and "written and broken" were reported identically by a bare catch, which is the
+§2.10 silence in tooling form. Verified by deliberately breaking `shared.js` and
+confirming the gate says so.
+
+### THE HANDOFF ERROR WAS MINE
+
+Both the previous next-session prompt and **the one I wrote last session** say
+`Heirarch` is "the only file in the book printing `(Names)` capitalised". It is
+not. Measured:
+
+```
+Heirarch.pdf    16pp   (name)=38   (names)=0   (Names)=0
+Heirarchs.pdf   14pp   (name)=0    (names)=1   (Names)=2
+```
+
+`encoding_rule_v2.md` §2.1 and `menaion_v2_spec.md` §6.2 **both state it
+correctly** — the error is purely in the prompts, copied forward twice. The
+ordering survived on the divergence count alone (10 novel rubrics against
+Heirarchs' 6). Corrected in both documents.
+
+*This is the third session in a row in which a summary of the source was wrong
+where the source was right.* The pattern is now explicit enough to act on: the
+next-session prompt no longer asserts facts about unencoded files, it says where
+to measure them.
+
+### HEIRARCH — A FILE THAT ARGUES §2.3 BY ITSELF
+
+Six of 26 complete. What it teaches: **it prints three texts twice each within
+itself, and gets two of them wrong.**
+
+- The Doxasticon repeats **byte for byte** (Vespers aposticha Glory p4 = Doxology
+  Glory p14).
+- The same psalm verse is `inhabit the World` at the Megalynarion (p6) and
+  `the world` at the Liturgy prokeimenon (p15).
+- The same text is `speak of judgement` at the Matins prokeimenon verse (p7) and
+  `judgment` as the Liturgy Alleluia (p16).
+
+One file, one press, three repeats, two divergences. Every previous
+anti-deduplication argument needed a second file to compare against; this one
+does not.
+
+A fourth: `matins.prokeimenon` and `liturgy.prokeimenon` are **identical text at
+two declared tones** (IV and I). §7.4 compares them and surfaces inequality as a
+finding — the texts agree, so nothing is surfaced, and the tone divergence is
+recorded per position. That is the R-1 tone-per-site problem in a second form.
+
+**Its own novelties, all printed:**
+- **The TEXTLESS conditional closer at three sites** — `Glory ..., Both now ...,
+  Theotokion or Stavrotheotokion:` with nothing beneath it. Stored as absence
+  nodes carrying the printed label in their note, which is the convention the
+  four earlier files set. At the Doxology the same conditional IS stored as a
+  rubric text node — that is Monastic's treatment at that position, and **the
+  asymmetry is the fixture's, not this file's.** Flagged rather than smoothed.
+- **A PRINTED COUNT in a rubric**: `On the Praises, these 4 Stichera`. Three are
+  printed and the first takes `(Twice)` — 3 + 1 = 4. The count RECONCILES with
+  the device, so it is not a sic.
+- **Only TWO Vespers lessons**, the first from **PROVERBS** — a book `general.js`
+  had not carried. Both are composite paremias stitched from non-contiguous
+  spans, so both citations are `identified` and sit on the worklist.
+- **A longer great-Doxology conditional** than the fixture's, adding `and a
+  Doxasticon is appointed`.
+
+**R-1 collapses cleanly here** — troparion byte-identical at all four print
+sites, kontakion at both. Unmercenaries' split was a property of that file.
+
+**Eleven sic rows**, including soft hyphens frozen mid-line (`judg-ment-seat`),
+a doubled preposition (`entreat Him with by thy prayers`), two capitalised words
+mid-sentence, and a lowercase `hierarch` in the troparion at all four of its
+sites. **Twenty recurrence rows.**
+
+**Extraction:** `dedupe_chars()` left exactly one residue again — p8's `ODE I`
+as `OODDEE II`. Second file running with exactly one.
+
+### State
+
+`general.js`: **837 stored strings · 802 text nodes · 0 errors.** Complete:
+`Monastic`, `Monastics`, `Martyr`, `Martyrs`, `Unmercenaries`, `Heirarch`.
+**6 of 26.** `shared.js` exists, is loaded, is reachable, and is empty by
+measurement.
+
+### Owed before close
+
+1. **Re-verify the completed files against the render gate's limits.**
+   `renderToString` does not run effects; the harness passes data as props.
+2. **20 General Menaion files remain.** Next: `Heirarchs` (14pp, 6 novel) — the
+   file that actually prints `(Names)`, and the pair to the one just encoded.
+   Subject files (`Cross`, `Holy Fathers`, `St John Baptist`, `Theotokos`) LAST.
+3. **Bill to confirm the Romans/1-Corinthians heading in `Unmercenaries.pdf`
+   p13** against the physical book. Carried from the previous session.
+4. **Bill to confirm the two Heirarch paremia spans** (Proverbs and Wisdom) —
+   both composite, both `identified`, neither derivable from a contiguous span.
+
+---
 
 **Session August 15, 2026 (second) — UNMERCENARIES ENCODED; THE HANDOFF WAS
 WRONG IN BOTH DIRECTIONS; A CITATION WE CANNOT FOLLOW.**
