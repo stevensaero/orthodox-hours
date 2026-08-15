@@ -79,7 +79,13 @@ function checkTextNode(node, path, ctx) {
     err(path, `Tier 1 must carry no markers`);
   if (node.tier === 2 && dialect === 'sergius') {
     if (!hasStar) err(path, `Tier 2 (sergius) must contain '*'`);
-    if (dbl !== 1) err(path, `Tier 2 (sergius) must contain exactly one '**' (found ${dbl})`);
+    // AT MOST one '**', not exactly one. encoding_rule_v2.md §3.2: mark the
+    // penultimate line ONLY if the source marks it — "if it does not, do not add
+    // one … the expected, correct signal, not a bug". The Octoechos happens to
+    // point every sticheron; the General Menaion prints many irmoi and verses
+    // with '*' and no '**'. Copying the Octoechos constraint made 11 correct
+    // transcriptions look like errors.
+    if (dbl > 1) err(path, `Tier 2 (sergius) may contain at most one '**' (found ${dbl})`);
     if (hasPipe || hasSlash) err(path, `Tier 2 (sergius) must not contain '|' or '//'`);
     if (hasBracket) err(path, `no '[' permitted in a St. Sergius-dialect field`);
   }
@@ -208,7 +214,7 @@ function walk(value, path, ctx, kindHint) {
 // ─────────────────────────────────────────────────────────────────────────────
 // E. Service — print order (§5.1)
 // ─────────────────────────────────────────────────────────────────────────────
-function checkServiceOrder(svc, path) {
+function checkServiceOrder(svc, path, entry) {
   if (!S.SERVICE_REQUIRES_ORDER) return;
   const keys = Object.keys(svc).filter(k => k !== 'order');
   if (!Array.isArray(svc.order)) {
@@ -217,10 +223,17 @@ function checkServiceOrder(svc, path) {
   }
   const inOrder = new Set(svc.order), present = new Set(keys);
   const missing = keys.filter(k => !inOrder.has(k));
-  const extra = svc.order.filter(k => !present.has(k));
+  // `order` may name an ENTRY-level key: R-1 stores a multi-site hymn once and
+  // the service recycles it at each position the book prints it (§2.4).
+  const extra = svc.order.filter(k => !present.has(k) && !(entry && k in entry));
   if (missing.length) err(path, `'order' omits present key(s): ${missing.join(', ')}`);
-  if (extra.length) err(path, `'order' names absent key(s): ${extra.join(', ')}`);
-  if (new Set(svc.order).size !== svc.order.length) err(path, `'order' contains duplicates`);
+  if (extra.length) err(path, `'order' names a key present neither on the service nor the entry: ${extra.join(', ')}`);
+  // Duplicates are LEGITIMATE and were wrongly a hard-fail: Monastic's Matins
+  // prints the troparion twice (God-is-the-Lord, and after Our Father), so the
+  // same key appears twice in printed order. Flag only a key repeated ADJACENTLY,
+  // which is a transcription slip rather than a reprint.
+  for (let i = 1; i < svc.order.length; i++)
+    if (svc.order[i] === svc.order[i - 1]) err(path, `'order' repeats '${svc.order[i]}' adjacently`);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -247,7 +260,7 @@ function checkEntry(entry, path, claimed, ctx) {
     // Absence nodes are checked by walk() below — do not double-report.
     if (isAbsence(entry[svc])) continue;
     if (!claimed.has(svc)) find(`${path}.${svc}`, `service present in data but not claimed in _encoded`);
-    checkServiceOrder(entry[svc], `${path}.${svc}`);
+    checkServiceOrder(entry[svc], `${path}.${svc}`, entry);
     if (svc === 'compline' && entry[svc].canon) checkCanon(entry[svc].canon, `${path}.${svc}.canon`, ctx);
     if (svc === 'matins' && Array.isArray(entry[svc].canons))
       entry[svc].canons.forEach((c, i) => checkCanon(c, `${path}.${svc}.canons[${i}]`, ctx));
@@ -347,8 +360,10 @@ function checkSics(reg, roots) {
     const at = `sic_register[${i}]`;
     const r = resolvePath(roots, e.path);
     if (r.unresolved) { err(at, `sic path does not resolve: ${e.path}`); continue; }
-    const t = isTextNode(r.value) ? r.value.text : null;
-    if (t == null) { err(at, `sic path is not a text node`); continue; }
+    const t = isTextNode(r.value) ? r.value.text
+            : (isPlainObj(r.value) && typeof r.value.heading === 'string') ? r.value.heading
+            : null;
+    if (t == null) { err(at, `sic path is neither a text node nor a reading heading`); continue; }
     if (!t.includes(e.verbatim))
       err(at, `recorded sic no longer present — silent "correction" of a recorded sic is a hard-fail (§7.4): ${JSON.stringify(e.verbatim)}`);
   }
@@ -411,9 +426,27 @@ async function main() {
     }
   }
 
-  // Flatten so register paths resolve as MM-DD.cN.…
+  // ── cross-date tables (§6): general.js / shared.js are DATA and are checked
+  // like any other data. They are also mounted into the resolution roots so
+  // register paths of the form `general.<type>.…` resolve.
   const flat = {};
   for (const mm of Object.keys(roots.menaion)) Object.assign(flat, remapDate(roots.menaion[mm]));
+  for (const [name, key] of [['general.js', 'general'], ['shared.js', 'shared']]) {
+    try {
+      const mod = (await import(join(DATA_DIR, name))).default;
+      if (!mod || typeof mod !== 'object') continue;
+      flat[key] = mod;
+      for (const [id, entry] of Object.entries(mod)) {
+        for (const svc of S.SERVICES) {
+          if (!entry?.[svc] || isAbsence(entry[svc])) continue;
+          checkServiceOrder(entry[svc], `${key}.${id}.${svc}`, entry);
+          for (const c of (Array.isArray(entry[svc].canons) ? entry[svc].canons : []))
+            checkCanon(c, `${key}.${id}.${svc}.canons`, ctx);
+        }
+        walk(entry, `${key}.${id}`, ctx, null);
+      }
+    } catch { /* table not yet written */ }
+  }
   const resolveRoots = { menaion: flat };
 
   checkIncipits(ctx, resolveRoots);

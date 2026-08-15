@@ -209,7 +209,32 @@ export const TEXT_NODE = {
     'saint',             // which commemoration, where a section interleaves two
     'name_substituted',  // {placeholder, value} — General Menaion (§6.2)
     'verified_sites',    // [locus] — the R-1 multi-site verification record
+    'label_inline',      // TRUE where the source runs `sourceLabel` INTO the text on
+                         // one line ("Stavrotheotokion: The unblemished ewe-lamb …")
+                         // rather than printing it on its own line ("Glory ..., Both
+                         // now ..., Theotokion, in Tone VIII:" then the hymn beneath).
+                         // The book does BOTH, deliberately; without this the reading
+                         // view has to guess at a typographic fact the source states.
   ],
+};
+
+// ── Derived citations (§2.11, R-4 as ruled) ─────────────────────────────────
+// The General Menaion prints its three Vespers lessons with NO verse reference —
+// 26 such headings across the 26 files, against 83 that do carry one. Bill's
+// ruling: derive the citation by matching the printed text against the corpus.
+//
+// A derived citation is stored ONLY if it ROUND-TRIPS: the candidate range is
+// pulled back out of public/bible and compared against the printed text as a
+// whole. This guard is not optional and not a nicety. A naive similarity match
+// returns a confident citation for ANY prose — the first pass of this matcher
+// stamped "Wisdom of Solomon 4:2-7:19" onto a Tier-1 HYMN. Real readings
+// reconstruct at 0.89-0.93; that hymn reconstructed at 0.20 and is refused.
+//
+// Below threshold: NO citation is stored and the field takes an absence node.
+// Never a guess.
+export const DERIVED_CITATION_FLOOR = 0.72;
+export const DERIVED_NODE = {
+  required: ['method', 'reconstruction'],   // e.g. { method: 'corpus-match', reconstruction: 0.92 }
 };
 
 // An absence node stands wherever a text node may. Mutually exclusive with `text`.
@@ -224,8 +249,11 @@ export const ABSENCE_NODE = {
 // ("§ 320 (HEB. 9: 1-7)", "§330 (11 :33-40)", "(MT. 5:14-19)"), so the verbatim
 // string preserves the print site and the normalized form is resolvable.
 export const READING_NODE = {
-  required: ['heading', 'citation_verbatim', 'citation'],
-  optional: ['src'],
+  required: ['heading'],
+  // `citation_verbatim` is required only where the source PRINTS a reference.
+  // The General Menaion's Vespers lessons print none; those carry `derived`
+  // instead, and the gate re-runs the reconstruction rather than trusting it.
+  optional: ['src', 'citation_verbatim', 'citation', 'derived'],
   citation: { required: ['book', 'chapter', 'verses'], optional: ['pericope_number'] },
 };
 
@@ -339,6 +367,23 @@ export const ANCHOR_RE = /^(\d{2}-\d{2})\.c(\d+)\.(.+)$/;
 export const DOUBLED_RUN_TRIPWIRE = /\b(?:([A-Za-z])\1){3,}/;
 export const NON_LATIN_LETTER = /\p{L}/u;          // paired with an a-z test
 export const DIGIT_ZERO_AS_O = /\b0\s+[A-Z]/;
+
+// ── Scripture book-name canon (§7.4) ─────────────────────────────────────────
+// The high-precision sic checks do not catch a misspelled proper noun —
+// "THE EPISTLE TO THE GALATIONS" (Monastic.pdf, Monastics.pdf) slipped past
+// them. Reading headings are checked against this list; a near-miss is a
+// FINDING, surfaced with the nearest canonical name, never auto-corrected.
+export const SCRIPTURE_BOOK_NAMES = [
+  'Genesis','Exodus','Leviticus','Numbers','Deuteronomy','Joshua','Judges','Ruth',
+  'Kings','Chronicles','Ezra','Nehemiah','Esther','Job','Psalms','Proverbs',
+  'Ecclesiastes','Song of Songs','Wisdom of Solomon','Sirach','Isaiah','Jeremiah',
+  'Lamentations','Baruch','Ezekiel','Daniel','Hosea','Joel','Amos','Obadiah',
+  'Jonah','Micah','Nahum','Habakkuk','Zephaniah','Haggai','Zechariah','Malachi',
+  'Maccabees','Tobit','Judith','Esdras',
+  'Matthew','Mark','Luke','John','Acts','Romans','Corinthians','Galatians',
+  'Ephesians','Philippians','Colossians','Thessalonians','Timothy','Titus',
+  'Philemon','Hebrews','James','Peter','Jude','Revelation',
+];
 
 // ── Translation-register lint (§7.4) ─────────────────────────────────────────
 // Carried from validate_entries.mjs Check F, but applied to EVERY text node
