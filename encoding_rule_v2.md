@@ -1,6 +1,6 @@
 # ENCODING RULE v2.10 — Orthodox Hours Tool
 **Authority:** Fekula & Williams (2009) · St. Ignatius Orthodox Press Anthologion (2024) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** July 2026 · **Supersedes:** v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+**Updated:** August 2026 — §2 rewritten (Drive retired), §2.1 corrected against the folder, §6 superseded for V2.
 
 **v2.10 changes — PAROEMIA BOOK ABBREVIATIONS MUST BE UNAMBIGUOUS (§11, new #19):**
 07-28B (Smolensk Icon) was found encoding Ezekiel's shut-eastern-gate paroemia
@@ -106,9 +106,9 @@ A blank field is never acceptable. Blank = encoding error.
 |---|---|---|
 | 1 | **Fekula & Williams (2009)** | All assembly decisions; rank determination |
 | 2 | **OCA calendar — oca.org** | Primary commemoration; OCA troparion/kontakion if differing |
-| 3 | **St. Sergius Menaion PDF** — Drive: `orthodox_liturgics/Menaion/st-sergius-pdf/` | Full service texts for Menaion dates |
-| 4 | **St. Sergius Pentecostarion PDF** — Drive: `orthodox_liturgics/Pentecostarian/st-sergius-pdf/` | Full service texts for Pentecostarion dates |
-| 5 | **General Menaion PDF** — Drive: `orthodox_liturgics/Menaion/general-menaion/` | Fallback when no daily PDF exists |
+| 3 | **St. Sergius Menaion PDF** — `Orthodox Hours/Menaion - St. Sergius/` | Full service texts for Menaion dates |
+| 4 | **St. Sergius Pentecostarion PDF** — *(still to migrate off Drive)* | Full service texts for Pentecostarion dates |
+| 5 | **General Menaion PDF** — `Orthodox Hours/General_Menaion/` | Fallback when no daily PDF exists (§2.1) |
 
 **OCA primacy rule:** When OCA troparion, kontakion, or commemoration date differs from
 St. Sergius, the OCA text and date govern. Record both versions, flag the divergence.
@@ -170,52 +170,88 @@ silently pick one.
 
 ---
 
-## 2. DRIVE — SOURCE DELIVERY ONLY (PDF + docx)
+## 2. SOURCE DELIVERY — MOUNTED FOLDER (PDF + docx)
 
-Drive delivers source documents only. Nothing is written back to Drive, and no
-`.txt` records, project-notes snapshots, or versioned filenames live there. Two
-source kinds:
+**Drive is retired as a source channel (menaion_v2_spec.md R-7, August 2026).**
+Source documents now arrive as a MOUNTED LOCAL FOLDER. Nothing is written back
+to the source, and no `.txt` records, project-notes snapshots, or versioned
+filenames live there. Two source kinds:
 
 - **PDF** — St. Sergius Menaion / Pentecostarion full service texts; HTM
-  Horologion; General Menaion fallbacks.
+  Horologion; General Menaion.
 - **docx** — OCA Dept. of Liturgical Music director-edited / pointed verses
   (underline emphasis + `//` markers). These are the Tier-3 source for the §3
   marker dialect; more will be added over time as they become available.
 
-| Source | Drive folder |
+| Source | Folder |
 |---|---|
-| Menaion PDFs | `orthodox_liturgics/Menaion/st-sergius-pdf/` |
-| General Menaion fallback PDFs | `orthodox_liturgics/Menaion/general-menaion/` |
-| Pentecostarion PDFs | `orthodox_liturgics/Pentecostarion/st-sergius-pdf/` |
+| Menaion PDFs | `Orthodox Hours/Menaion - St. Sergius/` |
+| General Menaion PDFs | `Orthodox Hours/General_Menaion/` |
+| Pentecostarion PDFs | *(still to migrate)* |
+| Fekula chapter `.txt` | *(still to migrate)* |
 | Director-pointed docx | (added as available) |
+
+**Menaion coverage as delivered:** May 16-31, June, July, August — 140 files
+including `A`/`B`/`E`/`F` variants for multi-commemoration days. **`08-23.pdf`
+does not exist** (Apodosis of the Dormition): a confirmed permanent source gap,
+not a pending delivery.
+
+**EXTRACTION — use `pdfplumber`'s `dedupe_chars()`.** These PDFs draw display
+glyphs twice for faux-bold, so a naive extract returns `AATT MMAATTIINNSS`.
+`dedupe_chars()` takes 527 doubled lines across the 37 August files down to 3,
+with every `*` and `**` intact. This is one extractor setting, not an artifact
+class needing a normalizer.
 
 ### 2.1 The St. Sergius General Menaion (saint-type fallbacks) — READ THIS
 
-`orthodox_liturgics/Menaion/general-menaion/` holds the St. Sergius **General Menaion**:
-one PDF per saint *type*, used to supply propers (troparion, kontakion, stichera) when —
-and ONLY when — the daily Menaion PDF genuinely lacks them. Files present (singular =
-one saint, plural = several):
+`Orthodox Hours/General_Menaion/` holds the St. Sergius **General Menaion**.
 
-`Angels.pdf` · `Apostle.pdf` / `Apostles.pdf` · `Fools.pdf` (fool-for-Christ) ·
-`Heirarch.pdf` / `Heirarchs.pdf` · `Hieromartyr.pdf` / `Heiromartyrs.pdf` ·
-`Martyress.pdf` / `Martyresses.pdf` · plus Venerable (monastic), Prophet, Martyr,
-and others — list the folder to confirm the current set, do not assume.
-(Note the source spellings "Heirarch" / "Heiromartyrs" — match the actual filenames.)
+**These are FULL VIGIL SERVICES, 12-18 pages each — Vespers through Liturgy.**
+An earlier revision of this section described them as supplying "troparion,
+kontakion, stichera"; they carry far more, and a fallback drawn from here can
+fill a whole service.
 
-**This is the St. Sergius General Menaion, in the same translation register and the same
-`*`/`**` pointing dialect as the daily PDFs.** It is the correct step-2 fallback — NOT
-the OCA website, and NOT a generic text typed from memory.
+**The 26 files, listed from the folder (August 2026). Do not work from memory —
+this list was wrong in two places until it was checked:**
+
+```
+Angels · Apostle · Apostles · Cross · Fools · Heirarch · Heirarchs ·
+Heiromartyrs · HieroConfessor · Hieromartyr · Holy Fathers · Martyr ·
+Martyress · Martyresses · Martyrs · Monastic · MonasticMartyr ·
+MonasticMartyrs · Monastics · Nun · NunMartyr · Nuns · Prophet ·
+St John Baptist · Theotokos · Unmercenaries
+```
+
+**THERE IS NO `Venerable.pdf`.** This section previously named one. The files for
+the venerable/monastic class are `Monastic.pdf` and `Monastics.pdf`. Note also
+the source spellings `Heirarch` and `Heiromartyrs`.
+
+**THE PLACEHOLDER IS LOWERCASE `(name)`.** This section previously gave it as
+"`(Name)` / `(N.)`". A case-sensitive scan of all 26 files: **`(name)` 445 ·
+`(Name)` 0 · `(N.)` 0**. Under verbatim storage the case matters — a
+substitution keyed to `(Name)` matches nothing.
+
+**PLURAL AND SUBJECT FILES CARRY NO PLACEHOLDER AT ALL.** `Apostles`,
+`Heirarchs`, `Heiromartyrs`, `Martyrs`, `Martyresses`, `Monastics`,
+`MonasticMartyrs` name nobody, and `Cross`, `Holy Fathers`, `St John Baptist`,
+`Theotokos` are general services to a SUBJECT rather than a saint type. Name
+substitution applies only to the 15 singular files.
+
+**Not every file prints the same lessons.** The monastic files print three from
+the Wisdom of Solomon; `Martyr.pdf`'s first lesson is from Isaiah. Read the
+headings; do not assume the set.
 
 **How to apply it (in strict order):**
 1. **Exhaust the daily PDF first** (`MM-DD.pdf`). Only if a proper is genuinely absent
    there do you fall back. "I didn't see it at the position I expected" is NOT absence —
    see §5.x before concluding anything is missing.
-2. **Pick the file by saint type** (Venerable, Hierarch, Martyr, Apostle, …) as given on
+2. **Pick the file by saint type** (Monastic, Hierarch, Martyr, Apostle, …) as given on
    the OCA calendar / the daily PDF heading.
-3. **Substitute the name** into the `(Name)` / `(N.)` placeholders the General Menaion
-   prints; keep the `*`/`**` markers verbatim.
+3. **Substitute the name** into the lowercase `(name)` placeholders the General
+   Menaion prints — and ONLY for the 15 singular files; keep the `*`/`**`
+   markers verbatim.
 4. **Record the true source** in the field's `note`: e.g.
-   `"Kontakion: General Menaion — Venerable.pdf, name-substituted (daily PDF prints none)."`
+   `"Kontakion: General Menaion — Monastic.pdf, name-substituted (daily PDF prints none)."`
    Never label a General-Menaion or OCA text as coming from the daily `MM-DD.pdf`.
 5. **Then, and only for the troparion/kontakion, check OCA** (oca.org/saints/troparia)
    for a saint-specific text per §1's precedence rule.
@@ -428,6 +464,15 @@ looked only after Ode VI, declared none, and stored a generic monastic Common mi
 ---
 
 ## 6. MENAION SKELETON — ALL RANKS
+
+> **SUPERSEDED FOR MENAION V2 (menaion_v2_spec.md §2.2, August 2026).** Everything
+> below describes V1 capture and remains accurate for `src/data/menaion/`. V2
+> captures EVERYTHING ITS SOURCE PRINTS, at every rank — full canons, sessional
+> sets, Praises, Matins aposticha, Little Vespers. The test is not "does the
+> assembler consume it" but "would a reader holding the printed Menaion find it
+> here." **Rank governs what the ASSEMBLER selects; it never governs what the
+> ENCODER captures.** The `06-29` exception below is, under V2, the floor rather
+> than the outlier.
 
 ### Why a simple rank entry can pass the gate with many fields absent
 
