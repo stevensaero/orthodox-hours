@@ -64,39 +64,65 @@ superseded by full capture at every rank.
 A classifier was built and abandoned. It plateaued at 24 unclassified items
 across four files, and the deeper problem is that **a misclassification landing
 text in a plausible-but-wrong slot never appears in that count at all.**
-Monastic.pdf is now the reference fixture the remaining 25 files are checked
-AGAINST rather than tuned toward. Hand transcription immediately caught: two
+Monastic.pdf is the reference fixture the remaining files are checked AGAINST
+rather than tuned toward. Hand transcription immediately caught: two
 Tier-1/Tier-2 mixes, three alternative closers per slot, a conditional closer
 that is genuinely textless, and a troparion that had vanished from the page
 while the data still looked well-formed.
 
+**Cost, honestly:** roughly one chunk per file. Do not promise batches of four.
+
+### THE BEATITUDES COUNTER-EXAMPLE — read this before optimising anything
+
+`Monastic.pdf`'s Liturgy Beatitudes reprint its canon troparia **byte-identically**
+— all seven pairs verify. `Monastics.pdf`'s **do not**: three of seven differ.
+
+| | canon | Beatitude |
+|---|---|---|
+| Ode III trop. 3 | "**you** subdue the raging" | "**ye** subdue the raging" |
+| Ode VI trop. 2 | "bestowing them **upon** those in need" | "**unto** those in need" |
+| Ode VI Theotokion | "a **s**ource of dispassion" | "a **S**ource of dispassion" |
+
+Same book, same structure, same position, opposite behaviour. Deduplicating the
+Beatitudes against the canon is the obvious optimisation and would have looked
+PROVEN after the first file. It would have silently rewritten three hymns in the
+second. **This is the strongest argument for §2.3 anti-deduplication in the
+project, and it is Menaion-native rather than inherited.**
+
 ### STANDING WARNING — Octoechos rules do not transfer unexamined
 
-**Six** rules imported from the Octoechos have now been falsified by real Menaion
-data. Expect more, especially in the subject files (`Cross`, `Theotokos`,
-`St John Baptist`, `Holy Fathers`).
+**Eight** rules imported from the Octoechos have now been falsified by real
+Menaion data. Expect more in the subject files.
+
 1. "Tier 2 must contain exactly one `**`" — the Menaion prints many irmoi with
    `*` and no `**`. Now AT MOST one. (11 correct transcriptions were failing.)
 2. `order` may NOT contain duplicates — it may: Matins prints the troparion at
    two positions. Now only ADJACENT repeats fail.
 3. A sic may sit only on a text node — it may sit on a reading heading.
-4. The translation-register lint flagged `you/your` — but plural address takes
-   "you" correctly in this translation (thou singular / you plural). Ten plural
-   files would have produced ~30 noise items.
+4. The register lint flagged `you/your` — plural address takes "you" correctly
+   here (thou singular / you plural). Widened TWICE: first for plural vocatives,
+   then for `yourselves`/`ye`, which name no plural noun at all.
 5. Troparion/kontakion hoisted to entry level as a LAYOUT rule — R-1 is a
    STORAGE rule; the Menaion prints them in place in the service.
-6. Three Wisdom lessons at Vespers — a monastic-file fact; Martyr's lesson 1 is
-   Isaiah.
+6. Three Wisdom lessons at Vespers — a monastic-file fact; `Martyr.pdf`'s first
+   lesson is Isaiah.
+7. `isReading()` keyed on `citation_verbatim` — the one field a citationless
+   reading lacks, so the detector required exactly what its check was meant to
+   catch.
+8. **A coverage gate proves every FIELD is registered. It does NOT prove every
+   TABLE is reachable.** `general.js` was validated, gated, and completely
+   invisible in the browser until an axis was added for it. The same blind spot
+   will apply to `shared.js`.
 
 ### R-4 has a translation limit
 
-Derivation round-trips against `public/bible`. The six Wisdom lessons
-reconstruct at 0.89-0.93. **Isaiah reconstructs at 0.11** — the Menaion prints a
-KJV-style rendering where the corpus carries Brenton LXX. The mechanism REFUSED
-rather than fabricating (an earlier naive matcher had stamped a confident
-citation onto a Tier-1 hymn at 0.20). Citations now carry
+Derivation round-trips against `public/bible`. The six Wisdom lessons reconstruct
+at 0.89-0.93. **Isaiah reconstructs at 0.11** — the Menaion prints a KJV-style
+rendering where the corpus carries Brenton LXX. The mechanism REFUSED rather
+than fabricating (an earlier naive matcher had stamped a confident citation onto
+a Tier-1 HYMN at 0.20). Citations carry
 `citation_basis: printed | derived | identified`; `identified` reports on the
-worklist and is never shown as verified. **Consequence: where translations
+WORKLIST and is never shown as verified. **Consequence: where translations
 diverge, the scripture-tool link shows wording the Menaion does not print.**
 
 ### Extraction
@@ -108,14 +134,53 @@ class and specified a normalizer, a per-node log, a gate hard-fail, and hand
 transcription of every heading. It is one extractor setting. The tell: the same
 doubling appears in the Octoechos chapter PDFs, which encoded fine.
 
+---
+
+## NEXT SESSION — Menaion V2 Phase 2, resume here
+
+**State:** `general.js` holds **379 text nodes, 0 errors**. Complete:
+`Monastic`, `Monastics`, `Martyr` (all three services each). 3 of 26 files.
+Visible at `/menaion-v2` under the rail's GENERAL MENAION section.
+
+**Start with `Martyrs.pdf`.** Two divergences against `Martyr.pdf` are already
+known from the 2c scan and want a side-by-side read:
+- Wisdom 5:15 lesson: Martyrs prints "The righteous live **unto the ages**"
+  where Monastic prints "**for evermore**" — a `variant` pair.
+- Isaiah lesson: Martyr prints "Ye **(are)** my witnesses" with a parenthesised
+  copula; Martyrs prints "Ye **are**". Variant, and a sic candidate no automated
+  check flagged.
+
+**Then the remaining singular/plural pairs** (Apostle/Apostles, Heirarch/
+Heirarchs, Hieromartyr/Heiromartyrs, MonasticMartyr/MonasticMartyrs, Nun/Nuns,
+Martyress/Martyresses, NunMartyr, Prophet, Angels, Fools, HieroConfessor,
+Unmercenaries). The template has now survived a plural file and a non-monastic
+file without a shape change; treat it as load-bearing but not proven.
+
+**Leave the four SUBJECT files for last and read them carefully** — `Cross`,
+`Holy Fathers`, `St John Baptist`, `Theotokos`. These are services to a SUBJECT
+rather than a saint type: they carry no `(name)` placeholder, and they are the
+files most likely to break the template. `general.js`'s head carries the batch
+order.
+
+**Method reminders that cost time to learn:**
+- Transcribe against the printed page; do not classify.
+- Extract with `dedupe_chars()`.
+- Tier is a per-item source fact, never a property of a slot — `Monastics`'
+  Glory idiomelon is Tier 2 where `Monastic`'s is Tier 1, same position.
+- Key the extractor on the FULL printed heading, never the bare label:
+  `Troparion of the holy martyr` and `Troparion of the feast` are different
+  hymns and label-keying merges them.
+- Run the four gates before every commit.
+
 ### Owed before close
 
-1. **`encoding_rule_v2.md`** corrections above.
-2. **Martyr** Matins/Liturgy, then **Martyrs** (holds a Wisdom 5:15 variant:
-   "live unto the ages" vs Monastic's "for evermore").
-3. **PAT rotation** — the classic `ghp_` token has appeared in plaintext across
-   several sessions.
-4. `general.js` §6.2 batch order is at the head of that file.
+1. ~~`encoding_rule_v2.md` corrections~~ — **DONE**, v2.11 (7b771e6, cceb2a6).
+2. ~~Version bump~~ — **DONE**, v0.39.0 (4039ead).
+3. ~~Martyr Matins/Liturgy~~ — **DONE** (bb22039, ee3e982).
+4. **PAT rotation** — the classic `ghp_` token has appeared in plaintext across
+   this session and several before it. STILL OWED.
+5. **`shared.js`** is unwritten and has no browser axis — it will be invisible
+   the same way `general.js` was (warning 8 above).
 
 
 **Session July 18, 2026 — TONE 6 RESEARCH COMPLETE (logic only, no code).**
