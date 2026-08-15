@@ -114,6 +114,38 @@ Menaion data. Expect more in the subject files.
    invisible in the browser until an axis was added for it. The same blind spot
    will apply to `shared.js`.
 
+### RUN IT. DO NOT INSPECT IT.
+
+Two separate incidents this session, same root cause.
+
+**A gate you skip is not a gate.** The standing sequence ends with `vite build`.
+I ran the four validators before every commit and never once ran the build —
+four green checks read as "gates pass". `index.js` carried a dynamic
+`import('./shared.js')` for a file that does not exist; the `try/catch` reads
+like it handles that and at runtime would, but **Vite/rolldown resolves dynamic
+imports at BUILD time** and fails with `UNRESOLVED_IMPORT`. **Every deploy from
+the first Menaion V2 commit onward was red**, which is why the v0.39.0 badge
+never appeared on the live site though the source was correct. Run
+`npm run build`. Every time.
+
+**Parsing is not rendering; tracing wiring is not testing.** I reported the
+browser done twice — once after esbuild parsed it, once after tracing the
+loader/route/rail/branch chain by eye. Both times it was broken. Actually
+server-rendering it found three bugs in one pass:
+- `RCommemoration` rendered `entry.title` raw, but `title` is a TEXT NODE →
+  "Objects are not valid as a React child"; the ErrorBoundary would have
+  swallowed the whole view.
+- The troparion was hoisted above the services **again** — fixed in the static
+  preview generator and never in the React component.
+- The month picker read Oct Nov Dec Jan … Sep, because `Object.keys` orders
+  `"10"`,`"11"`,`"12"` first as canonical integer keys while `"01"`–`"09"`
+  follow in insertion order.
+
+To render a component here: copy it, seed the effect-loaded state with a static
+import, and `renderToString`. SSR does **not** run effects, so an effect-loaded
+section reads as absent unless seeded — that absence is the test's limit, not
+the code's.
+
 ### R-4 has a translation limit
 
 Derivation round-trips against `public/bible`. The six Wisdom lessons reconstruct
@@ -179,8 +211,15 @@ order.
 3. ~~Martyr Matins/Liturgy~~ — **DONE** (bb22039, ee3e982).
 4. **PAT rotation** — the classic `ghp_` token has appeared in plaintext across
    this session and several before it. STILL OWED.
-5. **`shared.js`** is unwritten and has no browser axis — it will be invisible
-   the same way `general.js` was (warning 8 above).
+5. **`shared.js`** is unwritten. It has no browser axis (warning 8) AND no
+   loader — the loader was removed because importing a non-existent module
+   breaks the build. Add file, loader and browser axis in ONE change.
+6. **Deploy** — `deploy.yml` moved to checkout@v5 / setup-node@v5 / node 22
+   (GitHub forced JS actions to the Node 24 runtime on 2 June 2026; Node 20
+   leaves the runners 16 Sept 2026). `peaceiris/actions-gh-pages@v4` is the
+   remaining third-party risk; if deploys still fail, replace it with the
+   GitHub-native `actions/upload-pages-artifact` + `actions/deploy-pages`.
+   **Confirm a green run before trusting the live badge.**
 
 
 **Session July 18, 2026 — TONE 6 RESEARCH COMPLETE (logic only, no code).**
