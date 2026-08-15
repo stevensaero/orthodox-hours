@@ -142,9 +142,18 @@ header now says so, so the next sweep does not read as 150 missing rows.
 
 ### Owed before close
 
-1. **PAT rotation — STILL OWED, and now more so.** The classic `ghp_` token was
-   pasted in plaintext again this session, including into a remote URL that was
-   scrubbed immediately after cloning. Revoke it and issue a fine-grained token.
+1. ~~PAT rotation~~ — **STRUCK, and it should never have been carried.**
+   Bill's correction: **the token is fresh every session** and always has been.
+   The standing "PAT rotation — STILL OWED" item had been inherited across at
+   least four sessions and re-asserted each time as though it were an
+   observation; this session escalated it to "now urgently, five sessions in
+   plaintext" on no evidence at all. Nobody had ever checked. A note repeated
+   often enough starts reading as a finding — which is the same failure as the
+   handoff that said `Martyr` was complete, in a different register. Struck
+   here, in the August 14 list, and in `field_coverage_spec.md`. **The scrub
+   step stays**: clone with the token inline, scrub the remote immediately,
+   verify tokenless. That is a real and cheap discipline; the rotation demand
+   was not.
 2. **`shared.js`** is still unwritten — no file, no loader, no browser axis.
    Add all three in ONE change (warning 8).
 3. **Re-verify the three completed files against the render gate's limits.**
@@ -380,8 +389,8 @@ order.
 1. ~~`encoding_rule_v2.md` corrections~~ — **DONE**, v2.11 (7b771e6, cceb2a6).
 2. ~~Version bump~~ — **DONE**, v0.39.0 (4039ead).
 3. ~~Martyr Matins/Liturgy~~ — **DONE** (bb22039, ee3e982).
-4. **PAT rotation** — the classic `ghp_` token has appeared in plaintext across
-   this session and several before it. STILL OWED.
+4. ~~PAT rotation~~ — **STRUCK 15 Aug.** The token is fresh every session; this
+   item was inherited, not observed. See the August 15 entry.
 5. **`shared.js`** is unwritten. It has no browser axis (warning 8) AND no
    loader — the loader was removed because importing a non-existent module
    breaks the build. Add file, loader and browser axis in ONE change.

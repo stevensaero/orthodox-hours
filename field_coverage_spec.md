@@ -290,4 +290,5 @@ source; automation may produce worklists, never declarations.
   feature/fix.
 - Gate before every push (`test_pointing_paths` + `test_sunday_vespers`, then `vite build`); token-inline
   → scrub → verify tokenless.
-- PAT rotation is overdue and the token has been in cleartext in chat — rotate after the next push.
+- ~~PAT rotation is overdue~~ — struck 15 Aug 2026: the token is fresh every session, so there is
+  nothing to rotate. The scrub step above stands on its own.
