@@ -1,4 +1,4 @@
-// src/data/menaion_v2/general.js — HAND-ENCODED, Monastic.pdf, Vespers only.
+// src/data/menaion_v2/general.js — HAND-ENCODED from the printed pages.
 //
 // menaion_v2_spec.md §6.2. Encoded by TRANSCRIPTION against the printed page,
 // not by classifier — the classifier route plateaued at 24 unclassified items
@@ -12,9 +12,14 @@
 // Placeholders stored VERBATIM as printed: lowercase `(name)`, unsubstituted.
 // Substitution happens only in the daily entry that falls back here (§6.2).
 
+const mk = (F) => [
+  (text, locus, extra = {}) => ({ text, tier: 2, src: { file: F, locus }, ...extra }),
+  (text, locus, extra = {}) => ({ text, tier: 1, src: { file: F, locus }, ...extra }),
+];
 const F = 'Monastic.pdf';
-const t2 = (text, locus, extra = {}) => ({ text, tier: 2, src: { file: F, locus }, ...extra });
-const t1 = (text, locus, extra = {}) => ({ text, tier: 1, src: { file: F, locus }, ...extra });
+const [t2, t1] = mk(F);
+const G = 'Monastics.pdf';
+const [g2, g1] = mk(G);
 
 const GENERAL = {
   Monastic: {
@@ -365,6 +370,104 @@ const GENERAL = {
         citation_verbatim: '(6:17-23)', citation: { book: 'Luke', chapter: 6, verses: '17-23' } },
       communion_verse: t1('In everlasting remembrance shall the righteous be, he shall not be afraid of evil tidings',
         'p15 Communion verse', { sourceLabel: 'Communion Verse', label_inline: true }),
+    },
+  },
+  // ── Monastics.pdf — the plural twin. Chosen as the SECOND file deliberately:
+  // it is the one guaranteed to share Monastic's template while differing in
+  // wording, so it tests the fixture rather than confirming it.
+  //
+  // Result: the template held with ZERO shape changes. What differed was texts,
+  // Spec. Mel. forms, tone assignments — and, importantly, tier: this file's
+  // Glory idiomelon is POINTED (Tier 2) where Monastic's is prose (Tier 1).
+  // Tier is a per-item source fact, never a property of the slot.
+  //
+  // NO (name) PLACEHOLDER. Plural/collective files name nobody — `name_substituted`
+  // is forbidden on fallbacks drawn from here (schema GENERAL_TAKES_NAME).
+  Monastics: {
+    title: g1('THE VIGIL SERVICE COMMON TO TWO OR MORE MONASTICS.', 'p1 title'),
+
+    troparion: g2('O God of our fathers, * ever deal with us according to Thy meekness. * Take not Thy mercy from us, * but by the prayers of these saints ** direct our life in peace.',
+      'p4 Troparion of the venerable ones', { sourceLabel: 'Troparion of the venerable ones, in Tone IV', tone: 4 }),
+
+    vespers: {
+      order: [
+        'lic_rubric', 'lic', 'lic_closer', 'lic_stavrotheotokion',
+        'idiomelon_rubric', 'lic_glory',
+        'dogmatikon_rubric', 'dogmatikon', 'dogmatikon_alternate', 'dogmatikon_stavrotheotokion',
+        'entrance_rubric', 'readings',
+        'aposticha_rubric', 'aposticha', 'aposticha_glory',
+        'aposticha_closer_rubric', 'aposticha_closer', 'aposticha_alternate', 'aposticha_stavrotheotokion',
+        'troparion_rubric', 'troparion', 'closer', 'closing_rubric',
+      ],
+
+      lic_rubric: g1('On “Lord, I have cried ...,” these Stichera, in Tone VIII:', 'p1 LIC rubric'),
+      lic: [
+        g2('O divinely-wise, fathers! * You give light to the blind, * cures to the infirm, and health to the lame, * hearkening mercifully unto those * who in faith come to your holy temple * entreating your help, * for all we who praise you, * know you to be sure protectors and intercessors ** for our souls.',
+           'p1 LIC 1', { spec_mel: 'O most glorious wonder ...', label: 'plain', tone: 8 }),
+        g2('O all-honored fathers! ascending to God * in the chariot of your virtues, * you received the honors of your victory, * and for our sakes, O fathers, * left your bodies in the grave * where they shed abundant healings, * driving away evil spirits; * wherefore we bless you, ** O all-famed ones.',
+           'p1 LIC 2', { spec_mel: 'O most glorious wonder ...', label: 'plain' }),
+        g2('Adorned with the life of fasting * you have been united * with the choirs of ascetics, * and now, O blessed ones, * you dwell joyfully in the heavenly habitations * where the choirs of angels rejoice, * truly deified with the divine light. * Remember those who with love bless you on earth ** and celebrate your holy feast.',
+           'p1 LIC 3', { spec_mel: 'O most glorious wonder ...', label: 'plain' }),
+      ],
+      lic_closer: g2('My thoughts are impure, * and my lips are false, * all my works are defiled. * What, then, shall I do? * How shall I meet the Judge? * O Virgin Sovereign Lady, * entreat the Lord, thy Son and Creator, * that He accept my soul in repentance, ** in that He alone is compassionate.',
+        'p1 LIC Glory/Both now', { type: 'theotokion', sourceLabel: 'Glory ..., Both now ..., Theotokion in Tone VIII', tone: 8 }),
+      lic_stavrotheotokion: g2('The unblemished ewe-lamb * upon beholding her lamb voluntarily nailed upon the tree, * lamented with maternal tenderness: * “Woe is me, O my most beloved child! * What is this that the ungrateful Jews have done to Thee, ** wishing to deprive me of Thee, O most beloved one.”',
+        'p1 LIC Stavrotheotokion', { type: 'stavrotheotokion', sourceLabel: 'Stavrotheotokion', label_inline: true }),
+
+      idiomelon_rubric: g1('If an Idiomelon be appointed, Glory ..., in Tone VI:', 'p1 Idiomelon rubric'),
+      // TIER 2 HERE — Monastic prints this position as unpointed prose. Same slot,
+      // different tier, two files. Tier is per-item, never per-slot.
+      lic_glory: g2('O venerable fathers! * the fame of your endeavors hath gone forth throughout all the earth, * for having vanquished hordes of demons * ye became like the angels whom you emulated in the purity of your lives, * wherefore ye now enjoy the reward of your labors in heaven. * Since ye posses great boldness before Christ God, ** entreat Him to grant peace to our souls.',
+        'p1 Glory idiomelon', { tone: 6 }),
+
+      dogmatikon_rubric: g1('If the Celebration be with a Polyeleos, and not a Resurrection Service, sing the following Dogmatic of Tone VI (If the service is a Resurrection service sing the Dogmatic of the Tone for that service ):',
+        'p1 Dogmatikon rubric'),
+      dogmatikon: g2('Who doth not call thee blessed, O most holy Virgin? * Who will not hymn thy most pure birthgiving? * For the only-begotten Son Who hath shone forth timelessly from the Father, * came forth, ineffably incarnate, from thee, O pure one; * By nature he is God, by nature for our sakes, he hath become a man * not divided into two Hypostases, * but known in two natures without commingling. * Him do thou beseech, O pure and most blessed one, ** that our souls find mercy!',
+        'p1 Both now Dogmatikon', { type: 'dogmatic_theotokion', sourceLabel: 'Both now ..., in Tone VI', tone: 6 }),
+      dogmatikon_alternate: g2('O pure Virgin Theotokos, * entreat the Lord that by thine intercessions, * He grant our souls remission of sins, ** peace and great mercy.',
+        'p2 Otherwise Theotokion', { type: 'theotokion', sourceLabel: 'Otherwise, Theotokion', label_inline: true }),
+      dogmatikon_stavrotheotokion: g2('Upon beholding our Life suspended upon the Tree, * the all-immaculate Theotokos cried aloud, * maternally lamenting: ** O my Son and my God, save those who with love hymn Thee!',
+        'p2 Stavrotheotokion', { type: 'stavrotheotokion', sourceLabel: 'Stavrotheotokion', label_inline: true }),
+
+      entrance_rubric: g1('The Entrance. The Prokeimenon of the day. The Three Lessons, if appointed:', 'p2 Entrance'),
+      readings: [
+        { heading: 'THE READING FROM THE WISDOM OF SOLOMON', src: { file: G, locus: 'p2 Lesson 1' },
+          citation: { book: 'Wisdom of Solomon', chapter: 3, verses: '3:1-3:9' },
+          derived: { method: 'corpus-match', reconstruction: 0.92 } },
+        { heading: 'A READING FROM THE WISDOM OF SOLOMON', src: { file: G, locus: 'p2 Lesson 2' },
+          citation: { book: 'Wisdom of Solomon', chapter: 5, verses: '5:15-6:3' },
+          derived: { method: 'corpus-match', reconstruction: 0.93 } },
+        { heading: 'A READING FROM THE WISDOM OF SOLOMON', src: { file: G, locus: 'p3 Lesson 3' },
+          citation: { book: 'Wisdom of Solomon', chapter: 4, verses: '4:7-4:14' },
+          derived: { method: 'corpus-match', reconstruction: 0.89 } },
+      ],
+
+      aposticha_rubric: g1('On the Aposticha, these Stichera, in Tone IV:', 'p3 Aposticha rubric'),
+      aposticha: [
+        g2('In a divinely-wise manner * ye put off the old man and put on Christ, * shining like radiant stars upon the earth, * illumined with spiritual grace, * ye intercede on behalf of those * who fervently and faithfully celebrate * your honorable memory * that they be delivered ** from corruption and all dangers.',
+           'p3 Aposticha 1', { spec_mel: 'As one valiant among the martyrs ...', label: 'plain', tone: 4 }),
+        g2('Precious in the sight of the Lord * is the death of His saints.', 'p3 Aposticha verse 1', { label: 'refrain', sourceLabel: 'Verse', label_inline: true }),
+        g2('Having inherited eternal life, * ye now enjoy spiritual nourishment * and immersion in the divine light, * O divinely-wise ones, * since ye have great boldness towards God, * reveal unto us your truly Christ-like love, * and deliver from dangers and the multiplicity of temptations * and from every affliction ** those who make recourse to you.',
+           'p3 Aposticha 2', { spec_mel: 'As one valiant among the martyrs ...', label: 'plain' }),
+        g2('Blessed is the man that feareth the Lord, * in His commandments shall he greatly delight.', 'p3 Aposticha verse 2', { label: 'refrain', sourceLabel: 'Verse', label_inline: true }),
+        g2('O all-wondrous God-bearers, * champions of the Trinity! * With wisdom vesting yourselves * for the struggle against * the prince of this world, * ye have firmly subdued him * and obtained crowns of victory; * wherefore we, illumined with grace, ** celebrate your splendid memory.',
+           'p3 Aposticha 3', { spec_mel: 'As one valiant among the martyrs ...', label: 'plain' }),
+      ],
+      aposticha_glory: g2('O venerable fathers! * loathing the sweetness of this world * and harboring a greater love for monastic life, * ye befriended the angels, * and by your miracles shone forth upon all the world like a multi-luminous sun; * remember us who celebrate your sacred memory, * for we are your children and the sheep of your pastoral teachings; * we entreat you to come to our aid, ** that by your prayers we may obtain peace and great mercy.',
+        'p3 Aposticha Glory', { sourceLabel: 'Glory ..., in Tone VIII', tone: 8 }),
+
+      aposticha_closer_rubric: g1('If the Celebration be with a Polyeleos, chant the Resurrection Theotokion:', 'p3 Aposticha Both-now rubric'),
+      aposticha_closer: g2('O unwedded Virgin! * thou who ineffably conceived God in the flesh, * mother of God most high: * Accept the supplications of thy servants, O all-immaculate one, * granting unto all cleansing of transgressions; * and, accepting now our supplications, ** pray thou that we all be saved.',
+        'p4 Aposticha Both now', { type: 'theotokion', sourceLabel: 'Both now ..., in Tone VIII', tone: 8 }),
+      aposticha_alternate: g2('Thy shelter, O Virgin Theotokos, * is spiritual healing; * for, having recourse unto it, ** we are delivered from spiritual infirmities.',
+        'p4 Otherwise Theotokion', { type: 'theotokion', sourceLabel: 'Otherwise, Theotokion', label_inline: true }),
+      aposticha_stavrotheotokion: g2('Beholding Thee O Lord Jesus, * nailed upon the cross and voluntarily accepting the passion, * the Virgin Mother cried aloud: * Woe is me, O my sweet Child! * how dost Thou wrongfully endure such wounds? * O compassionate Physician and healer of the infirmities of mankind, * Thou hast redeemed of all from corruption ** by Thy tender compassion.',
+        'p4 Stavrotheotokion', { type: 'stavrotheotokion', sourceLabel: 'Stavrotheotokion', label_inline: true }),
+
+      troparion_rubric: g1('The Troparion from the Typicon; but if there be none, chant the following:', 'p4 Troparion rubric'),
+      closer: { absent: true, reason: 'not_printed_in_source', basis: 'close_reading',
+        note: 'Printed as “Glory ..., Both now ..., Theotokion or Stavrotheotokion:” with no text — the conditional closer (§5.8).' },
+      closing_rubric: g1('The Dismissal:', 'p4 Dismissal'),
     },
   },
 };

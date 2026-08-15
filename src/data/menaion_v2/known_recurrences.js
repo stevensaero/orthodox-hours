@@ -36,6 +36,21 @@ export default [
     b: 'general.Monastic.liturgy.beatitudes[6]', relation: 'identical',
     note: 'Ode VI Theotokion = Beatitudes Theotokion.' },
 
+  // ── CROSS-FILE, Monastic ⟷ Monastics (the 2d fixture test) ────────────────
+  // The plural twin shares four hymns with the singular file. Two are BYTE
+  // IDENTICAL; one differs only in capitalization — precisely the micro-variance
+  // class the Octoechos catalog warns about, and the reason these are stored
+  // per position rather than shared.
+  { a: 'general.Monastic.vespers.lic_closer', b: 'general.Monastics.vespers.lic_closer',
+    relation: 'identical', note: '“My thoughts are impure …” — same Theotokion, both files.' },
+  { a: 'general.Monastic.vespers.lic_stavrotheotokion', b: 'general.Monastics.vespers.lic_stavrotheotokion',
+    relation: 'identical', note: '“The unblemished ewe-lamb …” — also printed twice in Octoechos 2-6 and at two V1 Menaion sites.' },
+  { a: 'general.Monastic.vespers.dogmatikon', b: 'general.Monastics.vespers.dogmatikon',
+    relation: 'identical', note: '“Who doth not call thee blessed …” — the Tone VI dogmatikon, both files.' },
+  { a: 'general.Monastic.vespers.aposticha_closer', b: 'general.Monastics.vespers.aposticha_closer',
+    relation: 'variant',
+    note: '“O unwedded Virgin …” — Monastic prints “Mother of God Most High: * accept”; Monastics prints “mother of God most high: * Accept”. Capitalization only, and it is a real per-print-site fact.' },
+
   // Cross-file, from the 2c batch scan. Not yet encodable — Martyrs.pdf is not
   // transcribed — but recorded so the pair is not rediscovered later.
   // { a: 'general.Monastic.vespers.readings[1]', b: 'general.Martyrs...',

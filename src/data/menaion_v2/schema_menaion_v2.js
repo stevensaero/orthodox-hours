@@ -392,6 +392,17 @@ export const REGISTER_MODERN = /\b(You|Your|Yours)\b/;
 export const REGISTER_MODERN_LC = /\b(you|your|yours)\b/;
 export const REGISTER_ARCHAIC = /\b(thee|thou|thy|thine|ye)\b/i;
 
+// PLURAL ADDRESS. The register lint was built on the Octoechos, whose hymns
+// mostly address God, Christ, or the Theotokos in the SINGULAR — where "you"
+// really is a modern-register tell against "thou". The General Menaion's plural
+// files address the saints in the PLURAL, and in this translation plural address
+// legitimately takes "you / your" (singular thou · plural you). Monastics.pdf's
+// three LIC stichera fired the lint three times for correct text.
+//
+// A text carrying a plural vocative is therefore NOT flagged for "you".
+export const REGISTER_PLURAL_ADDRESS =
+  /\b(fathers|mothers|ones|saints|martyrs|martyresses|apostles|hierarchs|monastics|nuns|prophets|God-bearers|unmercenaries|children)\b/i;
+
 // ── FIELD MANIFEST (§7.2) ────────────────────────────────────────────────────
 // Every renderable field path. Paths are COMMEMORATION-GENERIC, using a <c>
 // wildcard; presentation.js's registryLookup() resolves a concrete path

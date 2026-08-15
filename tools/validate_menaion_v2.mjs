@@ -111,10 +111,14 @@ function checkTextNode(node, path, ctx) {
     find(path, `doubled-glyph run survived extraction — re-extract with dedupe_chars() (§1.4)`);
 
   // ── translation-register lint (§7.4) ──
-  if (S.REGISTER_MODERN.test(t))
-    find(path, `modern register: capitalized You/Your`);
-  else if (S.REGISTER_MODERN_LC.test(t) && !S.REGISTER_ARCHAIC.test(t))
-    find(path, `modern register: lowercase you/your with no thee/thou/thy/ye`);
+  // Skipped for plural-address texts: "you/your" is the correct archaic plural
+  // (thou singular / you plural), and flagging it buries the real hits.
+  if (!S.REGISTER_PLURAL_ADDRESS.test(t)) {
+    if (S.REGISTER_MODERN.test(t))
+      find(path, `modern register: capitalized You/Your`);
+    else if (S.REGISTER_MODERN_LC.test(t) && !S.REGISTER_ARCHAIC.test(t))
+      find(path, `modern register: lowercase you/your with no thee/thou/thy/ye`);
+  }
 
   // ── placeholders (§7.4) ──
   for (const re of S.PLACEHOLDER_PATTERNS)
