@@ -5,6 +5,52 @@
 // sic still byte-matches the stored text at its locus, so silently correcting one
 // is a hard failure rather than an invisible improvement.
 export default [
+  // ── Heirarch.pdf ───────────────────────────────────────────────────────────
+  // Eleven rows. Three of them are the same word twice in one file, spelled two
+  // ways at two positions — which is this file's signature and the reason its
+  // recurrence rows carry as many `variant` relations as `identical` ones.
+  { path: 'general.Heirarch.vespers.dogmatikon_rubric', file: 'Heirarch.pdf', locus: 'p2',
+    verbatim: 'that service ):',
+    note: 'The corpus-wide stray space and ) before the colon, sixth file. Monastic, Monastics, Martyrs and Unmercenaries print it the same way; Martyr closes it up. Five to one and still not uniform.' },
+
+  { path: 'general.Heirarch.matins.canons[0].odes.3.items[0]', file: 'Heirarch.pdf', locus: 'p9 Ode III troparion 1',
+    verbatim: 'By Shedding forth',
+    note: 'Capitalised S mid-sentence. Reprinted identically at the Beatitudes (p15) — the canon-to-Beatitudes transmission showing itself again, as it did with Martyr\'s unclosed quotation and Unmercenaries\' missing "of".' },
+  { path: 'general.Heirarch.liturgy.beatitudes[0]', file: 'Heirarch.pdf', locus: 'p15 Beatitude 1',
+    verbatim: 'By Shedding forth', note: 'The reprint. Registered at both sites, because §2.3 stores both.' },
+
+  { path: 'general.Heirarch.matins.canons[0].odes.7.items[0]', file: 'Heirarch.pdf', locus: 'p11 Ode VII troparion 1',
+    verbatim: 'Thou wast Illumined',
+    note: 'Capitalised I mid-sentence, the same class as "By Shedding forth" two odes earlier.' },
+
+  { path: 'general.Heirarch.matins.praises_glory', file: 'Heirarch.pdf', locus: 'p13 Praises Glory',
+    verbatim: 'entreat Him with by thy prayers',
+    note: 'Doubled preposition — "with by". A well-formed pair of words in an impossible order, which no spelling check reaches.' },
+
+  { path: 'general.Heirarch.matins.canons[0].odes.4.items[3]', file: 'Heirarch.pdf', locus: 'p10 Ode IV Theotokion',
+    verbatim: 'The foremothers curse',
+    note: 'Missing apostrophe — "the foremother\'s curse".' },
+
+  { path: 'general.Heirarch.vespers.lic_stavrotheotokion', file: 'Heirarch.pdf', locus: 'p1 LIC Stavrotheotokion',
+    verbatim: 'judg-ment-seat',
+    note: 'SOFT HYPHENS FROZEN INTO THE TEXT. The word is broken as it would be across a line box, but it sits mid-line here — the typesetter\'s hyphenation survived into the printed page. Stored exactly as printed; NOT joined by the line-join rule, because these hyphens are inside a single extracted line and never met it.' },
+
+  { path: 'general.Heirarch.troparion', file: 'Heirarch.pdf', locus: 'p5 Troparion',
+    verbatim: 'O hierarch (name) our father',
+    note: 'Lowercase h, where the same file capitalises Hierarch everywhere else including in the service title. Present at all four print sites of this troparion, so it is the setting of the troparion rather than a slip at one site.' },
+
+  { path: 'general.Heirarch.matins.megalynarion_verse', file: 'Heirarch.pdf', locus: 'p6 Megalynarion verse',
+    verbatim: 'inhabit the World',
+    note: 'CAPITALISED World. The SAME psalm verse at the Liturgy prokeimenon (p15) prints "the world". One file, one verse, two capitalisations — registered as a variant pair as well as a sic.' },
+
+  { path: 'general.Heirarch.matins.prokeimenon_verse', file: 'Heirarch.pdf', locus: 'p7 Prokeimenon verse',
+    verbatim: 'speak of judgement',
+    note: 'British spelling, where the identical text printed as the Liturgy Alleluia on p16 reads "judgment". Second instance in this file of one text spelled two ways at two positions.' },
+
+  { path: 'general.Heirarch.vespers.readings[0]', file: 'Heirarch.pdf', locus: 'p2-p3 Lesson 1 heading',
+    verbatim: 'FROM BOOK OF PROVERBS',
+    note: 'Missing article — "FROM THE BOOK OF PROVERBS". The sic sits on a reading HEADING (warning 3).' },
+
   // ── Unmercenaries.pdf ──────────────────────────────────────────────────────
   // Fourteen rows from one file. As with Martyrs, not one of them would be
   // caught by an automated check: every entry is a well-formed English word, a

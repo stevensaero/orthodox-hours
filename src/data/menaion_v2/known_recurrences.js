@@ -21,6 +21,42 @@
 // positions store their own copy (§2.3, no dereferencing); these rows are what
 // make the duplication a checked fact rather than an invitation to collapse it.
 export default [
+  // ── Heirarch.pdf ───────────────────────────────────────────────────────────
+  // The Beatitudes reprint the canon troparia byte-identically at all seven
+  // positions. FOUR files identical now against ONE variant. Four-to-one is a
+  // stronger case for collapsing these than three-to-one was, and it is the same
+  // wrong case: Monastics still diverges at three of seven.
+  { a: 'general.Heirarch.matins.canons[0].odes.3.items[0]', b: 'general.Heirarch.liturgy.beatitudes[0]', relation: 'identical', note: 'Ode III troparion 1 = Beatitude 1 (Beatitude adds "(Twice)"). Carries the "By Shedding forth" sic at both sites.' },
+  { a: 'general.Heirarch.matins.canons[0].odes.3.items[1]', b: 'general.Heirarch.liturgy.beatitudes[1]', relation: 'identical', note: 'Ode III troparion 2 = Beatitude 2.' },
+  { a: 'general.Heirarch.matins.canons[0].odes.3.items[2]', b: 'general.Heirarch.liturgy.beatitudes[2]', relation: 'identical', note: 'Ode III troparion 3 = Beatitude 3.' },
+  { a: 'general.Heirarch.matins.canons[0].odes.6.items[0]', b: 'general.Heirarch.liturgy.beatitudes[3]', relation: 'identical', note: 'Ode VI troparion 1 = Beatitude 4.' },
+  { a: 'general.Heirarch.matins.canons[0].odes.6.items[1]', b: 'general.Heirarch.liturgy.beatitudes[4]', relation: 'identical', note: 'Ode VI troparion 2 = Beatitude 5.' },
+  { a: 'general.Heirarch.matins.canons[0].odes.6.items[2]', b: 'general.Heirarch.liturgy.beatitudes[5]', relation: 'identical', note: 'Ode VI troparion 3 = Beatitude 6.' },
+  { a: 'general.Heirarch.matins.canons[0].odes.6.items[3]', b: 'general.Heirarch.liturgy.beatitudes[6]', relation: 'identical', note: 'Ode VI Theotokion = Beatitude 7.' },
+
+  // WITHIN THE FILE — and this is the file that makes the case for §2.3 without
+  // needing a second file to compare against. Three texts print twice each; ONE
+  // pair is identical and TWO diverge, at a capital letter and at a spelling.
+  { a: 'general.Heirarch.vespers.aposticha_glory', b: 'general.Heirarch.matins.doxology_glory', relation: 'identical',
+    note: 'The Doxasticon. Printed in full at the Vespers aposticha (p4) and again after the Doxology (p14), byte for byte — which is what makes the two divergent pairs below evidence rather than noise.' },
+  { a: 'general.Heirarch.matins.megalynarion_verse', b: 'general.Heirarch.liturgy.prokeimenon_verse', relation: 'variant',
+    note: 'ONE CAPITAL LETTER. "give ear, all ye that inhabit the World" at the Megalynarion (p6); "the world" at the Liturgy prokeimenon (p15). Same psalm verse, same file, two settings.' },
+  { a: 'general.Heirarch.matins.prokeimenon_verse', b: 'general.Heirarch.liturgy.alleluia', relation: 'variant',
+    note: 'ONE SPELLING. "his tongue shall speak of judgement" at the Matins prokeimenon verse (p7); "judgment" as the Liturgy Alleluia (p16). Same text, two positions, two spellings.' },
+  { a: 'general.Heirarch.matins.prokeimenon', b: 'general.Heirarch.liturgy.prokeimenon', relation: 'identical',
+    note: 'IDENTICAL TEXT AT TWO DECLARED TONES — Tone IV at Matins, Tone I at Liturgy. §7.4 compares the two prokeimena and surfaces inequality as a finding; the texts agree, so nothing is surfaced, and the tone divergence is recorded per position rather than averaged. The R-1 tone-per-site problem in a second form.' },
+
+  // ACROSS FILES.
+  { a: 'general.Heirarch.matins.anabathmoi[0]', b: 'general.Martyrs.matins.anabathmoi[0]', relation: 'identical', note: '"From my youth" — now identical in all SIX encoded files.' },
+  { a: 'general.Heirarch.matins.anabathmoi[1]', b: 'general.Martyrs.matins.anabathmoi[1]', relation: 'identical', note: '"Ye haters of Zion" — identical in all six.' },
+  { a: 'general.Heirarch.matins.anabathmoi_closer', b: 'general.Martyrs.matins.anabathmoi_closer', relation: 'identical', note: '"In the Holy Spirit" — identical in all six. The most stable text in the General Menaion so far.' },
+  { a: 'general.Heirarch.matins.psalm50_closer', b: 'general.Martyrs.matins.psalm50_closer', relation: 'identical', note: 'The Both-now after Psalm 50.' },
+  { a: 'general.Heirarch.matins.psalm50_verse', b: 'general.Martyrs.matins.psalm50_verse', relation: 'identical', note: '"Have mercy on me, O God".' },
+  { a: 'general.Heirarch.vespers.dogmatikon', b: 'general.Unmercenaries.vespers.dogmatikon', relation: 'identical',
+    note: 'The Tone VIII dogmatic "In His love for mankind" — identical across two files that share nothing else. The dogmatikon is fixed by TONE, not by saint type, which is why it travels.' },
+  { a: 'general.Heirarch.liturgy.communion_verse', b: 'general.Martyr.liturgy.communion_verse', relation: 'variant',
+    note: 'A COMMA AND A CAPITAL. Martyr prints "shall the righteous be; He shall not be afraid"; Heirarch prints "be, he shall not". The same communion verse, and the third case in this one file of a text that recurs without recurring exactly.' },
+
   // ── Unmercenaries.pdf ──────────────────────────────────────────────────────
   // WITHIN THE FILE: the Beatitudes reprint the canon troparia BYTE-IDENTICALLY
   // at all seven positions — Ode III troparia 1-3, Ode VI troparia 1-3, and the
