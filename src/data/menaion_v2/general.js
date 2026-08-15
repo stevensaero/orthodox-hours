@@ -548,6 +548,130 @@ const GENERAL = {
           note: 'Corpus derivation REFUSED at 0.11 — and correctly. The Menaion prints a KJV-style rendering ("Let all the nations be gathered together, and let the people be assembled") where public/bible carries Brenton LXX ("All the nations are gathered together, and princes shall be gathered out of them"). Same passage, different translation. Identified by a human as the classic first martyr paremia; NOT verified, and the scripture-tool link will show wording the Menaion does not print.' },
       ],
     },
+
+    matins: {
+      order: [
+        'god_is_lord_rubric', 'troparion', 'troparion_closer',
+        'sessional_1_rubric', 'sessional_1', 'sessional_1_closer',
+        'sessional_2_rubric', 'sessional_2', 'sessional_2_closer',
+        'megalynarion_rubric', 'megalynarion', 'megalynarion_verse',
+        'sessional_polyeleos_rubric', 'sessional_polyeleos', 'sessional_polyeleos_closer',
+        'anabathmoi_rubric', 'anabathmoi_intro', 'anabathmoi', 'anabathmoi_closer',
+        'prokeimenon_rubric', 'prokeimenon', 'prokeimenon_verse',
+        'gospel_rubric', 'gospel',
+        'psalm50_rubric', 'psalm50_sticheron', 'psalm50_closer', 'psalm50_verse',
+        'sessional_post50_rubric', 'sessional_post50',
+        'canon_rubric', 'canons',
+      ],
+
+      god_is_lord_rubric: m1('On “God is the Lord ...,” the Troparion in Tone IV:', 'p5 God is the Lord'),
+      troparion_closer: { absent: true, reason: 'not_printed_in_source', basis: 'close_reading',
+        note: 'Printed as “Glory ..., Both now ..., Theotokion or Stavrotheotokion:” with no text — the conditional closer (§5.8).' },
+
+      sessional_1_rubric: m1('After the 1st chanting of the Psalter, the Sessional Hymn, in Tone I:', 'p5 Sessional 1 rubric'),
+      sessional_1: m2('Counting as naught * military honors upon the earth, * O great Martyr (name), * thou didst desire the glory of heaven, * enduring great pangs and ultimately death; * wherefore we celebrate today thine all-holy memory, ** offering praise unto Christ, O most blessed (name).',
+        'p5 Sessional 1', { spec_mel: 'The choir of Angels ...', tone: 1 }),
+      sessional_1_closer: m2('All we who with love flee for refuge to thy goodness * know thee to be the Mother of God * and after childbirth still truly Virgin; * for we sinners have thee as our protection; * we have thee as our salvation in misfortunes, ** as the only all-immaculate one.',
+        'p5 Sessional 1 Both now', { type: 'theotokion', sourceLabel: 'Glory ..., Both now ..., Theotokion, in Tone I', tone: 1 }),
+
+      sessional_2_rubric: m1('After the 2nd chanting of the Psalter, the Sessional Hymn, in Tone IV:', 'p5 Sessional 2 rubric'),
+      sessional_2: m2('Faithfully finishing thine earthly course, * thou hast vanquished all the might of thy tormentors, * and obtained an eternal crown from the hand of the Almighty, * O all-honored (name), * revealed unto all ** to be a companion of the Angels.',
+        'p5 Sessional 2', { spec_mel: 'Thou hast appeared today ...', tone: 4, repeat: 2 }),
+      sessional_2_closer: m2('The Word of the Father, Christ our God, * Who was incarnate of thee, * we have come to know, O Virgin Theotokos, * who alone art pure, who alone art blessed. ** Wherefore, we unceasingly hymn and magnify thee.',
+        'p5 Sessional 2 Both now', { type: 'theotokion', sourceLabel: 'Glory ..., Both now ..., Theotokion, in Tone IV', tone: 4 }),
+
+      megalynarion_rubric: m1('After the Polyeleos, the Megalynarion:', 'p5 Megalynarion rubric'),
+      megalynarion: m1('We magnify thee, O holy Martyr (name), and honor thy precious sufferings which thou didst endure for the sake of Christ.',
+        'p5 Megalynarion', { label_inline: true }),
+      megalynarion_verse: m1('Our God is refuge and strength, a helper in afflictions which mightily befall us.',
+        'p5 Megalynarion verse', { sourceLabel: 'Verse', label_inline: true }),
+
+      sessional_polyeleos_rubric: m1('After the Polyeleos, the Sessional Hymn, in Tone IV:', 'p5 Polyeleos sessional rubric'),
+      sessional_polyeleos: m2('As Christ’s invincible warrior, * and a great vanquisher of the enemy, * thou didst shine forth with great miracles, * wherefore let us all in faith magnify the Martyr (name), * for he poureth forth healings upon all those who come to him in faith, * a consoler of great pain ** and unceasing intercessor for the afflicted.',
+        'p5 Polyeleos sessional', { tone: 4, repeat: 2 }),
+      sessional_polyeleos_closer: m2('O Virgin Theotokos, * thou art an invincible wall for all Orthodox Christians. * For having recourse unto thee we remain unharmed * and in thee we have a sure intercessor for the forgiveness of our sins; * wherefore rendering thanks unto thee, we cry aloud! ** Rejoice, O thou who art full of grace, the Lord is with thee.',
+        'p6 Polyeleos sessional Both now', { type: 'theotokion', sourceLabel: 'Glory ..., Both now ..., Theotokion, in Tone IV', tone: 4 }),
+
+      anabathmoi_rubric: m1('If of Polyeleos rank, and not a Resurrection Service, chant the following:', 'p6 Anabathmoi condition'),
+      anabathmoi_intro: m1('The Song of Ascents: The first antiphon, in Tone IV:', 'p6 Anabathmoi rubric'),
+      anabathmoi: [
+        m2('From my youth * do many passions war against me; * but do Thou Thyself defend ** and save me, O my Savior.', 'p6 Anabathmoi 1', { tone: 4 }),
+        m2('Ye haters of Zion * shall be shamed by the Lord; * for like grass, by the fire ** shall ye be withered.', 'p6 Anabathmoi 2'),
+      ],
+      anabathmoi_closer: m2('In the Holy Spirit, * every soul is quickened, * and, through cleansing, is exalted ** and made radiant by the Triple Unity in a hidden sacred manner.',
+        'p6 Anabathmoi Both now', { type: 'theotokion', sourceLabel: 'Glory ..., Both now ...' }),
+
+      prokeimenon_rubric: m1('Prokeimenon, in Tone IV:', 'p6 Prokeimenon rubric'),
+      prokeimenon: m2('The righteous man shall flourish like a palm-tree; * like a cedar in Lebanon shall he be multiplied.',
+        'p6 Prokeimenon', { sourceLabel: 'The Prokeimenon', label_inline: true, tone: 4 }),
+      prokeimenon_verse: m1('They that are planted in the house of the Lord, in the courts of our God shall they blossom forth.',
+        'p6 Prokeimenon verse', { sourceLabel: 'Verse', label_inline: true }),
+
+      gospel_rubric: m1('Let every breath.', 'p6 Let every breath'),
+      gospel: { heading: 'THE GOSPEL ACCORDING TO ST. LUKE, (12, 2-12).', src: { file: M1, locus: 'p6 Matins Gospel' },
+        citation_verbatim: '(12, 2-12)', citation: { book: 'Luke', chapter: 12, verses: '2-12' } },
+
+      psalm50_rubric: m1('After the 50th Psalm:', 'p7 Psalm 50 rubric'),
+      psalm50_sticheron: m2('Through the prayers of the Martyr (name), * O Merciful One, ** blot out the multitude of our transgressions.',
+        'p7 Psalm 50 sticheron', { sourceLabel: 'Glory ..., in Tone VI', tone: 6 }),
+      psalm50_closer: m2('Through the prayers of the Theotokos, * O Merciful One, ** blot out the multitude of our transgressions.',
+        'p7 Psalm 50 Both now', { type: 'theotokion', sourceLabel: 'Both now ...' }),
+      psalm50_verse: m2('Have mercy on me, O God, * according to Thy great mercy; * and according to the multitude of Thy compassions, ** blot out my transgressions.',
+        'p7 Psalm 50 verse'),
+
+      sessional_post50_rubric: m1('Then the Sessional Hymn, in Tone VI:', 'p7 post-50 sessional rubric'),
+      // SAME HYMN as the Vespers Glory idiomelon, RE-RENDERED — and the reason
+      // this print site matters: here the source prints a PROPER `**` exactly
+      // where Vespers prints the split `* *`. Independent confirmation, from the
+      // same file, that the Vespers form is a broken penultimate marker and not
+      // a stray asterisk. Recorded as a `variant` pair (the wording also differs:
+      // "decorated with flowers" / "cries aloud" here).
+      sessional_post50: m2('Today the universe is illumined * with the bright rays of the passion-bearer, * and the Church of God, decorated with flowers, * cries aloud unto thee, O Martyr (name); * O favorite of Christ * and most fervent intercessor, ** cease not to pray for thy servants.',
+        'p7 post-50 sessional', { tone: 6 }),
+
+      canon_rubric: m1('The Canon, in Tone V,', 'p7 Canon rubric'),
+      canons: [{
+        tone: 5,
+        odes: {
+          1: { irmos: m2('Christ, who with an upraised arm * bringeth wars to naught, * hath shaken horse and rider in the Red Sea; * but Israel hath He saved * as they chanted a song of victory.', 'p7 Ode I irmos', { sourceLabel: 'Irmos', label_inline: true }),
+               refrain: m1('Holy Martyr (name) pray to God for us', 'p7 Ode I refrain', { sourceLabel: 'Refrain', label_inline: true }),
+               items: [
+                 m1('As an invincible Martyr standing with boldness before the throne of God, do thou, O god-blessed one, preserve by thine intercessions those who lovingly celebrate thy holy passion.', 'p7 Ode I 1', { label: 'plain' }),
+                 m1('Having in thy soul an abiding supply of the living water, thou O holy and all-glorious one, dried up the turbid streams of evil, being strengthened by the grace of the Savior, O god-blessed one.', 'p7 Ode I 2', { label: 'plain' }),
+                 m1('O god-blessed one, strengthened with the power of God, and empowered to overcome the pride of the enemy, thou didst become a great champion and citizen of the city on high.', 'p7 Ode I 3', { label: 'plain' }),
+                 m1('O most pure Sovereign Lady, reveal to me, the wretched one, thy compassion, diligently entreating thy Son, O most holy one, that by thine intercessions I may escape the eternal fire.', 'p7 Ode I Theotokion', { label: 'theotokion', type: 'theotokion', sourceLabel: 'Theotokion', label_inline: true }),
+               ] },
+          3: { irmos: m2('By Thy command Thou didst establish the earth upon nothing * and suspended it unsupported; * do Thou establish Thy Church on the unshakeable rock of Thy commandments, O Christ, * who alone art good * and the Lover of mankind.', 'p8 Ode III irmos', { sourceLabel: 'Irmos', label_inline: true }),
+               items: [
+                 m1('Withdrawing from the stench of the passions and approaching God with divine purity, thou, O right worthy one, didst obtain illumination from God, who revealed thee to be a son of light, as one who fulfilleth the work of light.', 'p8 Ode III 1', { label: 'plain' }),
+                 m1('Counting military calling and earthly glory as naught; thou didst enlist thyself as a soldier of Christ and now, numbered among the companies of Martyrs, thou dost rejoice therein O blessed god-bearer and Martyr (name).', 'p8 Ode III 2', { label: 'plain' }),
+                 m1('O wondrous one, directing the paths of thy progress in the ways of peace O glorious one, thou didst enter the Kingdom of God, and in the midst of paradise hast found eternal rest.', 'p8 Ode III 3', { label: 'plain' }),
+                 m1('O pure Lady, having given birth unto the Master and Creator of the whole of creation, thou hast appeared more honorable than the Cherubim and Seraphim, wherefore all generations, bless thee as is meet.', 'p8 Ode III Theotokion', { label: 'theotokion', type: 'theotokion', sourceLabel: 'Theotokion', label_inline: true }),
+               ] },
+          4: { irmos: m2('Habbakuk, prophetically apprehending * Thy divine self-emptying, O Christ, * cried out to Thee with trembling: * Thou hast come for the salvation of Thy people; * to save Thine anointed Ones.', 'p8 Ode IV irmos', { sourceLabel: 'Irmos', label_inline: true }),
+               items: [
+                 m1('O most wise one, adorned with love and trust in God, thou hast shone forth as a Martyr, O most blessed one, becoming a co-dweller with the Angels, O most glorious one.', 'p9 Ode IV 1', { label: 'plain' }),
+                 m1('Thou didst remain unshakable and unyielding, living in exile for the sake of the Lord God of all, deprived of thine own, O divinely blessed and most wise one.', 'p9 Ode IV 2', { label: 'plain' }),
+                 m1('Having labored well and adorned now with the virtues of a Martyr, thou didst pass over to unseen blessings, reaping the rewards of thy labors.', 'p9 Ode IV 3', { label: 'plain' }),
+                 m1('The only Good One, who co-enthroned on high with the Father, hath for our sake became incarnate below of thee, O all-immaculate Lady, through the abundance of His compassion and Love for mankind.', 'p9 Ode IV Theotokion', { label: 'theotokion', type: 'theotokion', sourceLabel: 'Theotokion', label_inline: true }),
+               ] },
+          5: { irmos: m2('O Thou Who hast clothed Thyself in light as with a garment, * I rise early unto Thee and cry out to Thee: * Enlighten my darkened soul, O Christ, * in that Thou alone art compassionate!', 'p9 Ode V irmos', { sourceLabel: 'Irmos', label_inline: true }),
+               items: [
+                 m1('Strengthened by the laws of the Almighty, thou didst reject the advice of the lawless, and suffering lawfully O Martyr (name), thou hast obtained a crown of incorruption.', 'p9 Ode V 1', { label: 'plain' }),
+                 m1('O most wise one, in the streams of thy blood thou hast extinguished the coals of carnal desire, and now, pouring forth healing waters, by the grace of God, thou drivest away the flames of infirmities.', 'p9 Ode V 2', { label: 'plain' }),
+                 m1('O Martyr thou wast empowered in the infirmity of thy flesh to bring to naught the snares of the crafty one, and by grace O wise one, thou hast cast off multitudes of his allurements.', 'p9 Ode V 3', { label: 'plain' }),
+                 m1('I beseech thee O most immaculate Virgin, Mortify the soul corrupting passions of my body, for thou hast given birth in the flesh unto Christ God, the Source of dispassion.', 'p9 Ode V Theotokion', { label: 'theotokion', type: 'theotokion', sourceLabel: 'Theotokion', label_inline: true }),
+               ] },
+          6: { irmos: m2('Calm the raging sea of the passions, * O Master Christ, * with its soul-destroying tempest, * and lead me up from corruption * in that Thou art compassionate.', 'p9 Ode VI irmos', { sourceLabel: 'Irmos', label_inline: true }),
+               items: [
+                 m1('Thou didst stand before the judgment seat of the law breakers, O Martyr of Christ (name), uprooting their deceit and manfully rebuking their accusations with thy wisdom, wherefore thou wast judged for the sake of Christ.', 'p9 Ode VI 1', { label: 'plain' }),
+                 m1('Thou wast adorned in thy passion with godly virtues, O most wise Martyr of Christ; by which thou wast enlightened by Christ and remained incorrupt.', 'p9 Ode VI 2', { label: 'plain' }),
+                 m1('With thy blood thou hast consecrated the earth and with thy consecrated soul hast thou, O most blessed one, illumined heaven and filled with joy the choirs of Martyrs.', 'p10 Ode VI 3', { label: 'plain' }),
+                 m1('Taught of the Spirit, the Prophet foresaw in thee a portal through which God would pass, becoming incarnate, yet leaving it sealed, O most immaculate one.', 'p10 Ode VI Theotokion', { label: 'theotokion', type: 'theotokion', sourceLabel: 'Theotokion', label_inline: true }),
+               ] },
+        },
+      }],
+    },
   },
 };
 

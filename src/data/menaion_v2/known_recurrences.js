@@ -51,6 +51,17 @@ export default [
     relation: 'variant',
     note: '“O unwedded Virgin …” — Monastic prints “Mother of God Most High: * accept”; Monastics prints “mother of God most high: * Accept”. Capitalization only, and it is a real per-print-site fact.' },
 
+  // ── Martyr.pdf, INTERNAL — and the entry that settles the `* *cease` ruling
+  // by evidence rather than inference. The same hymn is printed twice in this
+  // file: at the Vespers Glory idiomelon (p1) and as the post-Psalm-50 sessional
+  // (p7). The Vespers print reads "* *cease"; the Matins print reads "** cease"
+  // — a PROPER penultimate marker at exactly the same position. That is
+  // independent, same-file confirmation that the Vespers form is a broken `**`
+  // and not a stray asterisk. Wording also differs, so: variant.
+  { a: 'general.Martyr.vespers.lic_glory', b: 'general.Martyr.matins.sessional_post50',
+    relation: 'variant',
+    note: '“Today the universe is illumined …”. Vespers: “adorned with flowers”, “doth cry aloud”, and the split “* *cease”. Matins: “decorated with flowers”, “cries aloud”, and a proper “** cease”. The Matins print is why the Vespers ** reading is evidenced, not assumed.' },
+
   // Cross-file, from the 2c batch scan. Not yet encodable — Martyrs.pdf is not
   // transcribed — but recorded so the pair is not rediscovered later.
   // { a: 'general.Monastic.vespers.readings[1]', b: 'general.Martyrs...',

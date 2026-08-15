@@ -20,4 +20,7 @@ export default [
   { path: 'general.Monastic.liturgy.epistle', file: 'Monastic.pdf', locus: 'p15',
     verbatim: 'GALATIONS',
     note: 'For "Galatians". Also in Monastics.pdf. Missed by the high-precision sic checks — a misspelled proper noun trips none of them; the SCRIPTURE_BOOK_NAMES canon check exists for this class.' },
+  { path: 'general.Martyr.vespers.lic_glory', file: 'Martyr.pdf', locus: 'p1 Glory idiomelon',
+    verbatim: 'most fervent intercessor, ** cease not to pray',
+    note: 'SOURCE PRINTS “* *cease” — a split penultimate marker. Encoded as ** per Bill\'s ruling, and CONFIRMED by the same file: the post-Psalm-50 sessional (p7) prints the identical position as “** cease”. The stored text carries the corrected marker; this row records what the page shows and why the correction is evidenced.' },
 ];
