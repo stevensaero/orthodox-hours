@@ -847,13 +847,15 @@ Two corrections, both of which would have become silent encoding errors:
    `Monastic.pdf` / `Monastics.pdf`. Revision 1 of this spec used
    `src: {file: 'Venerable.pdf'}` as its worked example in §2.10 — an invented
    filename, caught only because the rule is *list the folder, do not assume*.
-2. **The placeholder is lowercase `(name)`.** §2.1 says "the `(Name)` / `(N.)`
-   placeholders". Case-sensitive scan of all 26 files: **`(name)` 445 ·
-   `(Name)` 0 · `(N.)` 0 · `(NAME)` 0.** Under verbatim storage the case
-   matters — a substitution keyed to `(Name)` matches nothing.
-   *(Recorded as a self-correction: an earlier pass this session reported
-   `(Name)` because the count was taken case-insensitively and the form was not
-   checked. The context scan that found the true token also found the error.)*
+2. **There are three placeholder tokens.** Case-sensitive scan of all 26 files,
+   corrected 15 Aug: **`(name)` 445 · `(names)` 31 · `(Names)` 2 · `(N.)` 0 ·
+   `(NAME)` 0.** Under verbatim storage the exact token matters — a substitution
+   keyed to `(name)` matches nothing in a file that prints `(names)`.
+   *(Two self-corrections now sit on this one line. The first: an earlier pass
+   reported `(Name)` because the count was taken case-insensitively. The second:
+   the correction to `(name)` searched only the singular, so `(names)` and
+   `(Names)` stayed invisible through three encoded files. A scan answers the
+   question it was asked.)*
 
 Three further structural facts from the scan:
 
@@ -861,10 +863,16 @@ Three further structural facts from the scan:
   §2.1 describes them as supplying "troparion, kontakion, stichera"; they carry
   Little Vespers through Liturgy. The fallback is therefore capable of filling
   far more than §2.1 implies, and §6.2's table must model a whole service.
-- **Plural files carry no placeholders at all** — `Apostles`, `Heirarchs`,
-  `Heiromartyrs`, `Martyrs`, `Martyresses`, `Monastics`, `MonasticMartyrs` are
-  generic to a group and name nobody. Singular files take a name. `name_substituted`
-  is therefore expected on singular-type fallbacks and forbidden on plural ones.
+- **Plurality does not predict placeholders — measure the file.** `[A-attested]`
+  Twenty-one of the 26 print one: the 15 singular files plus `Heirarchs`,
+  `Heiromartyrs`, `Martyresses`, `Martyrs`, `MonasticMartyrs`, `Monastics`
+  (`(names)`), with `Nuns` and `Unmercenaries` printing both forms and
+  `Heirarchs` also printing `(Names)`. Only `Apostles` and the four subject
+  files print none. `name_substituted` is therefore expected on a fallback from
+  any of the 21 and forbidden on the other five; `GENERAL_TAKES_NAME` is the
+  list. **This supersedes revision 2's claim that plural files name nobody** —
+  a claim that survived three encoded files because the verifying scan searched
+  only for the singular token.
 - **Four files are not saint-types at all** — `Cross`, `Holy Fathers`,
   `St John Baptist`, `Theotokos` are general services to a specific subject.
   They key by subject, not by saint type, and the `general.js` table needs both

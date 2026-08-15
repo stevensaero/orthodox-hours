@@ -36,7 +36,16 @@ const ROMAN = { 1:'I',2:'II',3:'III',4:'IV',5:'V',6:'VI',7:'VII',8:'VIII',9:'IX'
 
 const isTextNode = v => v && typeof v === 'object' && !Array.isArray(v) && typeof v.text === 'string';
 const isAbsence  = v => v && typeof v === 'object' && v.absent === true;
-const isReading  = v => v && typeof v === 'object' && typeof v.citation_verbatim === 'string';
+// STANDING WARNING #7, AGAIN — and this time in the component. The gate's
+// isReading() was keyed on `citation_verbatim` and corrected to `heading`,
+// because `citation_verbatim` is the one field a citationless reading lacks:
+// the detector required exactly what its check was meant to catch. The
+// RENDERER kept the old predicate. Consequence: the Epistle and Gospel, which
+// print a citation, rendered fine — and all three Vespers lessons in every
+// General Menaion file, which print a heading and no citation, returned null
+// and vanished from the reading view without a trace. Keyed on `heading`, as
+// the gate is.
+const isReading  = v => v && typeof v === 'object' && typeof v.heading === 'string';
 
 // ── pointing modes (encoding_rule_v2.md §3.4) ────────────────────────────────
 // "printed": the stored string verbatim — the * / ** the bound page shows.
@@ -158,16 +167,31 @@ export function RCitation({ node, path }) {
   // formatting; the normalized form is what resolves.
   if (!isReading(node)) return null;
   const c = node.citation ?? {};
+  const resolvable = c.book != null && c.chapter != null;
   const href = `/orthodox-hours/scripture?book=${encodeURIComponent(c.book ?? '')}` +
                `&chapter=${encodeURIComponent(c.chapter ?? '')}&verses=${encodeURIComponent(c.verses ?? '')}`;
+  // A reading may print a heading and no citation at all — every Vespers lesson
+  // in the General Menaion does. The heading is Menaion content and always
+  // shows; the link appears only when there is something to resolve, and the
+  // derived reference is labelled as ours rather than the book's.
+  const derived = !node.citation_verbatim && resolvable
+    ? `${c.book} ${c.chapter}${c.verses ? ':' + String(c.verses).replace(/^\d+:/, '') : ''}`
+    : null;
   return (
     <div id={path} style={{ fontFamily: SERIF, margin: "10px 0" }}>
       <div style={{ fontVariant: "small-caps", letterSpacing: "0.04em", color: C.inkMid, fontSize: "0.82rem" }}>
         {node.heading}
       </div>
-      <a href={href} style={{ color: C.gold, fontSize: "0.9rem", textDecoration: "none", borderBottom: `1px dotted ${C.gold}` }}>
-        {node.citation_verbatim} ↗
-      </a>
+      {resolvable && (
+        <a href={href} style={{ color: C.gold, fontSize: "0.9rem", textDecoration: "none", borderBottom: `1px dotted ${C.gold}` }}>
+          {node.citation_verbatim ?? derived} ↗
+        </a>
+      )}
+      {!node.citation_verbatim && (
+        <span style={{ marginLeft: "6px", color: C.inkLight, fontSize: "0.72rem", fontStyle: "italic" }}>
+          reference {node.citation_basis ?? 'derived'} — not printed in the source
+        </span>
+      )}
     </div>
   );
 }
@@ -185,13 +209,33 @@ export function RCanon({ canon, path }) {
       )}
       {Object.keys(canon.odes).sort((a, b) => Number(a) - Number(b)).map(k => {
         const ode = canon.odes[k];
+        // Everything an ode may carry beyond the three keys rendered below.
+        // The service renderer has had a Leftovers guard since it was written;
+        // the ODE renderer did not, and `refrain` — stored on Ode I in all four
+        // encoded General Menaion files — was dropped on the floor by every one
+        // of them without a single gate noticing. A component that renders some
+        // of a node is indistinguishable, from outside, from data that was never
+        // encoded. Same guard, same reason.
+        const known = ['irmos', 'refrain', 'items'];
+        const extra = Object.keys(ode).filter(x => !known.includes(x));
         return (
           <div key={k} style={{ margin: "12px 0" }}>
             <RSubHeading>Ode {ROMAN[Number(k)] ?? k}</RSubHeading>
             <RText node={ode.irmos} path={`${path}.odes.${k}.irmos`} label="Irmos:" />
+            {ode.refrain && <RText node={ode.refrain} path={`${path}.odes.${k}.refrain`} label="Refrain:" />}
             {(ode.items ?? []).map((it, i) => (
               <RText key={i} node={it} path={`${path}.odes.${k}.items[${i}]`} />
             ))}
+            {extra.length > 0 && (
+              <div style={{ marginTop: "10px", paddingTop: "6px", borderTop: `1px dashed ${C.border}` }}>
+                <div style={{ fontFamily: SERIF, fontSize: "0.75rem", color: C.red, marginBottom: "4px" }}>
+                  ode keys with no renderer — encoded but unrendered until now
+                </div>
+                {extra.map(x => (
+                  <RElement key={x} value={ode[x]} path={`${path}.odes.${k}.${x}`} fieldKey={x} />
+                ))}
+              </div>
+            )}
           </div>
         );
       })}

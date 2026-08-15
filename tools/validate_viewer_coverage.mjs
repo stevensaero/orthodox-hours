@@ -126,6 +126,15 @@ const CROSS_BOOK_FRAME_DUPLICATES = [
   ["All of thy most glorious mysteries are b", "Hours theotokion — Horologion frame (Common Theotokia)"],
   ["With the saints give rest, O Christ, to ", "kontakion of the departed — HTM Typica kontakia sequence"],
   ["They that are planted in the house of th", "weekday Alleluia verse (Ps 91) — HTM daily table"],
+  // Added 15 Aug with the Martyrs encode. Psalm 33:17 and 33:19 — the same
+  // class as the Ps 91 pair above, and audited the same way: hours-tool.jsx
+  // carries them TWICE over, once inside the full Psalm 33 frame text and once
+  // in the HTM weekday prokeimenon/Alleluia table. Martyrs.pdf prints them as
+  // its Matins prokeimenon verse, its aposticha verses and its Liturgy Alleluia,
+  // so they are now canonical V2 nodes as well. Genuine cross-book duplicates,
+  // not display copies: the psalm belongs to the frame and the Menaion quotes it.
+  ["The righteous cried, and the Lord heard ", "Ps 33:17 — Psalm 33 frame text + HTM weekday prokeimenon/Alleluia table"],
+  ["Many are the tribulations of the righteo", "Ps 33:19 — Psalm 33 frame text + HTM weekday prokeimenon/Alleluia table"],
   ["The righteous man shall flourish like a ", "weekday Alleluia verse (Ps 91) — HTM daily table"],
   ["The rich among the people shall entreat ", "weekday Alleluia verse (Ps 44) — HTM daily table"],
   ["The heavens shall confess Thy wonders, O", "weekday Alleluia verse (Ps 88) — HTM daily table"],

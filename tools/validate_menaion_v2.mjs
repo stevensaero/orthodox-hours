@@ -480,6 +480,7 @@ async function main() {
             checkCanon(c, `${key}.${id}.${svc}.canons`, ctx);
         }
         walk(entry, `${key}.${id}`, ctx, null);
+        if (key === 'general') checkGeneralPageCoverage(id, entry);
       }
     } catch { /* table not yet written */ }
   }
@@ -496,6 +497,62 @@ async function main() {
   }
 
   report(ctx);
+}
+
+// ── §7.4 PAGE COVERAGE — the check that catches an unread page ───────────────
+// A coverage gate proves every FIELD is registered. It does not prove every
+// PAGE was read. Martyr.pdf pp.3-4 — the whole second half of Vespers, from the
+// Aposticha to the Dismissal, plus two of three lessons — were simply not
+// encoded, and nothing failed: `order` named exactly the keys that were there,
+// every text node carried tier and src, the viewer registry matched, the build
+// was green. The only signal was that no `src.locus` in the entry cited p3 or
+// p4 at all.
+//
+// So: for every General Menaion file a claimed entry draws on, every page from
+// 1 to its real page count must be cited by at least one locus. Loci are
+// written `p<N> …` by convention; a locus that does not start with `p<N>` is
+// reported rather than ignored, because an unparseable locus is invisible to
+// this check and that is exactly the failure mode being closed.
+//
+// This is a coverage tripwire, NOT a classifier. It never says what is missing
+// or where it belongs — it says only "you have not cited this page", which is
+// a question for the encoder and the printed page, not for the machine.
+function checkGeneralPageCoverage(id, entry) {
+  const cited = new Map();   // file → Set(page)
+  const bad = [];
+  const visit = (n) => {
+    if (!n || typeof n !== 'object') return;
+    if (Array.isArray(n)) { n.forEach(visit); return; }
+    const src = n.src;
+    if (isPlainObj(src) && typeof src.file === 'string' && typeof src.locus === 'string') {
+      const m = /^p(\d+)\b/.exec(src.locus);
+      if (m) {
+        if (!cited.has(src.file)) cited.set(src.file, new Set());
+        cited.get(src.file).add(Number(m[1]));
+      } else {
+        bad.push(`${src.file} · ${src.locus}`);
+      }
+    }
+    for (const v of Object.values(n)) visit(v);
+  };
+  visit(entry);
+
+  for (const l of bad)
+    err(`general.${id}`, `locus does not begin with a page number, so it cannot be counted for page coverage: ${l}`);
+
+  for (const [file, pages] of cited) {
+    const stem = file.replace(/\.pdf$/, '');
+    const total = S.GENERAL_PAGE_COUNTS[stem];
+    if (total === undefined) {
+      err(`general.${id}`, `no GENERAL_PAGE_COUNTS entry for '${file}' — add the real page count before encoding against it`);
+      continue;
+    }
+    const missing = [];
+    for (let i = 1; i <= total; i++) if (!pages.has(i)) missing.push(i);
+    if (missing.length)
+      err(`general.${id}`, `${file} has ${total} pages; nothing cites page${missing.length > 1 ? 's' : ''} ${missing.join(', ')}. ` +
+        `Either encode what those pages print, or declare it absent with a basis (§2.10) — silence is not a declaration.`);
+  }
 }
 
 // `08-15.c0.great_vespers` → nested lookup shape

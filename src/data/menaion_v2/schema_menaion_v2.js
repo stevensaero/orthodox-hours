@@ -162,7 +162,16 @@ export const SOURCE_FILES = AUGUST_DATES.map(d => `${d}.pdf`);
 // Never from encoding_rule_v2.md §2.1's prose, which is wrong in three ways:
 // it names a "Venerable.pdf" that does not exist (the file is Monastic.pdf),
 // and it gives the placeholder as "(Name) / (N.)" when the printed token is
-// lowercase `(name)` — 445 instances corpus-wide, `(Name)` and `(N.)` zero.
+// PLACEHOLDER TOKENS — corpus-wide, case-sensitive, all 26 files:
+//   `(name)` 445 · `(names)` 31 · `(Names)` 2 · `(N.)` 0 · `(NAME)` 0.
+// An earlier scan looked only for the SINGULAR token and concluded that the
+// plural and collective files "carry no placeholder at all". They do: eight of
+// them print `(names)`, and Heirarchs prints `(Names)` with a capital. The
+// encoded data was never wrong — verbatim storage kept every token — but the
+// RULE was, and a daily fallback to Martyrs would have had a placeholder with
+// nothing declared to fill it. Falsified Octoechos-import rule #9.
+const S_DIFF = (all, some) => all.filter(x => !some.includes(x));
+
 export const GENERAL_TYPES = [
   'Angels', 'Apostle', 'Apostles', 'Cross', 'Fools', 'Heirarch', 'Heirarchs',
   'Heiromartyrs', 'HieroConfessor', 'Hieromartyr', 'Holy Fathers', 'Martyr',
@@ -176,15 +185,42 @@ export const GENERAL_MENAION_FILES = GENERAL_TYPES.map(x => `${x}.pdf`);
 // specific subject. The table keys by both axes (§6.2).
 export const GENERAL_SUBJECTS = ['Cross', 'Holy Fathers', 'St John Baptist', 'Theotokos'];
 
-// Only these carry the `(name)` placeholder; the plural/collective files name
-// nobody. `name_substituted` is EXPECTED on a fallback drawn from a file in
-// this list and FORBIDDEN on one drawn from any other.
+// The 21 files that print a placeholder of ANY form. `name_substituted` is
+// EXPECTED on a fallback drawn from one of these and FORBIDDEN on one drawn
+// from the other five. Measured per file, not inferred from singular/plural:
+// `Apostles` is plural and prints none, while `Nuns` is plural and prints both
+// `(name)` (2) and `(names)` (1).
 export const GENERAL_TAKES_NAME = [
-  'Angels', 'Apostle', 'Fools', 'Heirarch', 'HieroConfessor', 'Hieromartyr',
-  'Martyr', 'Martyress', 'Monastic', 'MonasticMartyr', 'Nun', 'NunMartyr',
-  'Nuns', 'Prophet', 'Unmercenaries',
+  'Angels', 'Apostle', 'Fools', 'Heirarch', 'Heirarchs', 'Heiromartyrs',
+  'HieroConfessor', 'Hieromartyr', 'Martyr', 'Martyress', 'Martyresses',
+  'Martyrs', 'Monastic', 'MonasticMartyr', 'MonasticMartyrs', 'Monastics',
+  'Nun', 'NunMartyr', 'Nuns', 'Prophet', 'Unmercenaries',
 ];
-export const NAME_PLACEHOLDER = '(name)';   // lowercase, verbatim
+// The five that print none: Apostles, Cross, Holy Fathers, St John Baptist,
+// Theotokos. Four are the subject files; `Apostles` is a genuine plural that
+// names nobody.
+export const GENERAL_NO_PLACEHOLDER =
+  S_DIFF(GENERAL_TYPES, GENERAL_TAKES_NAME);
+
+// Verbatim, case-sensitive. Stored unsubstituted in the table itself (§6.2);
+// substitution happens only in the daily copy that falls back here.
+export const NAME_PLACEHOLDERS = ['(name)', '(names)', '(Names)'];
+
+// Real page counts, read off the 26 PDFs. The page-coverage tripwire (§7.4)
+// hard-fails any claimed file with a page no `src.locus` cites. This is the
+// check that would have caught Martyr.pdf pp.3-4 — a whole Vespers half,
+// missing, with `order` naming exactly the keys that WERE present and every
+// other gate green. A coverage gate proves fields are registered; only this
+// proves the pages were read.
+export const GENERAL_PAGE_COUNTS = {
+  'Angels': 16, 'Apostle': 14, 'Apostles': 14, 'Cross': 15, 'Fools': 15,
+  'Heirarch': 16, 'Heirarchs': 14, 'Heiromartyrs': 14, 'HieroConfessor': 14,
+  'Hieromartyr': 14, 'Holy Fathers': 12, 'Martyr': 15, 'Martyress': 14,
+  'Martyresses': 15, 'Martyrs': 14, 'Monastic': 15, 'MonasticMartyr': 16,
+  'MonasticMartyrs': 15, 'Monastics': 14, 'Nun': 14, 'NunMartyr': 15,
+  'Nuns': 16, 'Prophet': 14, 'St John Baptist': 18, 'Theotokos': 16,
+  'Unmercenaries': 14,
+};
 
 // ── The universal text node (§5.1) ───────────────────────────────────────────
 // `src` (with BOTH file and locus) and `tier` are MANDATORY on every text node.

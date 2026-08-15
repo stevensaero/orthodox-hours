@@ -8656,6 +8656,59 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.39.1",
+    date: "August 2026",
+    summary: "General Menaion — Martyrs encoded; Martyr's missing Vespers half recovered; two gates added that would have caught both, and two renderer defects they did catch",
+    items: [
+      "MARTYRS ENCODED — the fourth of the 26 General Menaion files, complete " +
+      "across Vespers, Matins and Liturgy. Its Beatitudes reprint the canon " +
+      "troparia byte-identically at all seven positions, like Monastic and " +
+      "unlike Monastics: two files each way now, from the same press, which is " +
+      "the whole argument for storing every print site separately.",
+
+      "MARTYR WAS NOT COMPLETE, THOUGH THE HANDOFF SAID IT WAS. Its Vespers " +
+      "stopped after the lessons — 12 order keys where the template has 23 — " +
+      "and `readings` held one of three printed lessons. Everything from the " +
+      "Aposticha to the Dismissal, all of pp.3-4, was absent with no absence " +
+      "node. Nothing failed: `order` named exactly the keys that were present, " +
+      "every node carried tier and src, the registry matched, the build was " +
+      "green. Recovered and encoded from the page.",
+
+      "PAGE-COVERAGE TRIPWIRE (validate_menaion_v2) — every page of every " +
+      "General Menaion file a claimed entry draws on must be cited by at least " +
+      "one src.locus. GENERAL_PAGE_COUNTS carries the real count for all 26 " +
+      "files. A coverage gate proves every FIELD is registered; only this " +
+      "proves the PAGES were read. It reports an uncited page and nothing more " +
+      "— what belongs there is a question for the encoder, not the machine.",
+
+      "RENDER GATE (tools/test_menaion_v2_render.mjs) — server-renders every " +
+      "General Menaion entry and asserts that every stored string appears in " +
+      "the output. It immediately found two defects that every existing gate " +
+      "was blind to. First: the canon `refrain`, stored on Ode I in all four " +
+      "encoded files, was rendered by none of them — the ode renderer had no " +
+      "Leftovers guard, so it dropped the key silently. Second, and worse: the " +
+      "reading-view `isReading()` was still keyed on `citation_verbatim`, the " +
+      "one field a citationless reading lacks. STANDING WARNING #7 recorded " +
+      "exactly this defect in the GATE and it was fixed there; the component " +
+      "kept the old predicate. Every Vespers paremia in every General Menaion " +
+      "file — heading, citation and link — was invisible in the reading view.",
+
+      "THE PLACEHOLDER RULE WAS WRONG. A case-sensitive scan of all 26 files " +
+      "finds `(name)` 445, `(names)` 31 and `(Names)` 2. The rule that plural " +
+      "and subject files carry no placeholder at all is false: 21 of the 26 " +
+      "print one, and only Apostles, Cross, Holy Fathers, St John Baptist and " +
+      "Theotokos print none. GENERAL_TAKES_NAME, encoding_rule_v2.md §2.1 " +
+      "(now v2.12) and menaion_v2_spec.md §6.2 corrected together. The stored " +
+      "data was never wrong — verbatim capture kept every token — but a daily " +
+      "fallback to Martyrs would have had a placeholder and no rule to fill it.",
+
+      "MARTYRS' NEW SHAPES, both printed by the source: a conditional second " +
+      "Matins prokeimenon governed by a named commemoration (\"If it be the " +
+      "Forty Martyrs\"), and a bare \"The Doxology:\" rubric ahead of the " +
+      "great-Doxology rubric. Ten sic rows and twenty-two recurrence rows added.",
+    ],
+  },
+  {
     version: "v0.39.0",
     date: "August 2026",
     summary: "Menaion V2 — spec, contract, drift gate, coverage gate, browser at /menaion-v2, and a seventh book on the Library shelf; General Menaion encoding begun",

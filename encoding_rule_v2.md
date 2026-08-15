@@ -1,6 +1,19 @@
-# ENCODING RULE v2.11 — Orthodox Hours Tool
+# ENCODING RULE v2.12 — Orthodox Hours Tool
 **Authority:** Fekula & Williams (2009) · St. Ignatius Orthodox Press Anthologion (2024) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** August 2026 · **Supersedes:** v2.10, v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+**Updated:** August 2026 · **Supersedes:** v2.11, v2.10, v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+
+**v2.12 changes — THE PLACEHOLDER RULE WAS WRONG (§2.1):**
+- There are **three** placeholder tokens, not one: `(name)` 445, `(names)` 31,
+  `(Names)` 2. v2.11 corrected `(Name)` to `(name)` and, in doing so, scanned
+  only for the singular — so the plural tokens stayed invisible.
+- **"Plural and subject files carry no placeholder at all" is FALSE.** 21 of the
+  26 files print one. Only `Apostles`, `Cross`, `Holy Fathers`,
+  `St John Baptist`, `Theotokos` print none. `GENERAL_TAKES_NAME` in
+  `schema_menaion_v2.js` is the authoritative list and was corrected with it.
+- Step 3 of "How to apply it" now substitutes into whichever token the file
+  prints, rather than into `(name)` for "the 15 singular files".
+- The stale "read the source from Drive" line at the end of §2.1 now agrees
+  with §2, which retired Drive in v2.11.
 
 **v2.11 changes — SOURCE DELIVERY AND THE GENERAL MENAION (§2, §2.1, §6):**
 Drive is retired as a source channel; source arrives as a mounted folder (§2),
@@ -237,16 +250,29 @@ St John Baptist · Theotokos · Unmercenaries
 the venerable/monastic class are `Monastic.pdf` and `Monastics.pdf`. Note also
 the source spellings `Heirarch` and `Heiromartyrs`.
 
-**THE PLACEHOLDER IS LOWERCASE `(name)`.** This section previously gave it as
-"`(Name)` / `(N.)`". A case-sensitive scan of all 26 files: **`(name)` 445 ·
-`(Name)` 0 · `(N.)` 0**. Under verbatim storage the case matters — a
-substitution keyed to `(Name)` matches nothing.
+**THERE ARE THREE PLACEHOLDER TOKENS, NOT ONE.** A case-sensitive scan of all
+26 files, corrected 15 Aug 2026: **`(name)` 445 · `(names)` 31 · `(Names)` 2 ·
+`(N.)` 0 · `(NAME)` 0**. The previous revision of this section gave the count as
+"`(name)` 445 · `(Name)` 0 · `(N.)` 0" — right about the singular token and
+wrong about everything else, because the scan searched only for the singular.
+Under verbatim storage the exact token matters: a substitution keyed to `(name)`
+matches nothing in a file that prints `(names)`.
 
-**PLURAL AND SUBJECT FILES CARRY NO PLACEHOLDER AT ALL.** `Apostles`,
-`Heirarchs`, `Heiromartyrs`, `Martyrs`, `Martyresses`, `Monastics`,
-`MonasticMartyrs` name nobody, and `Cross`, `Holy Fathers`, `St John Baptist`,
-`Theotokos` are general services to a SUBJECT rather than a saint type. Name
-substitution applies only to the 15 singular files.
+**THE "PLURAL FILES CARRY NO PLACEHOLDER" RULE IS FALSE.** This section
+previously asserted it. Measured per file, 21 of the 26 print a placeholder of
+some form:
+
+- `(names)` in `Heirarchs`, `Heiromartyrs`, `Martyresses`, `Martyrs`,
+  `MonasticMartyrs`, `Monastics`, `Nuns`, `Unmercenaries`
+- `(Names)`, capitalized, in `Heirarchs`
+- `(name)` in the 15 singular files, and also in `Nuns` (2) and
+  `Unmercenaries` (1)
+
+**Only five files print none:** `Apostles`, `Cross`, `Holy Fathers`,
+`St John Baptist`, `Theotokos`. Four of those are the subject files; `Apostles`
+is a genuine plural that names nobody. So plurality does not predict this —
+measure the file. The authoritative list is `GENERAL_TAKES_NAME` in
+`schema_menaion_v2.js`.
 
 **Not every file prints the same lessons.** The monastic files print three from
 the Wisdom of Solomon; `Martyr.pdf`'s first lesson is from Isaiah. Read the
@@ -258,8 +284,10 @@ headings; do not assume the set.
    see §5.x before concluding anything is missing.
 2. **Pick the file by saint type** (Monastic, Hierarch, Martyr, Apostle, …) as given on
    the OCA calendar / the daily PDF heading.
-3. **Substitute the name** into the lowercase `(name)` placeholders the General
-   Menaion prints — and ONLY for the 15 singular files; keep the `*`/`**`
+3. **Substitute into whichever placeholder token the file actually prints** —
+   `(name)`, `(names)` or `(Names)`; the token is stored verbatim in the table
+   and replaced only in the daily copy. Applies to the 21 files in
+   `GENERAL_TAKES_NAME`, not to the 5 that print none. Keep the `*`/`**`
    markers verbatim.
 4. **Record the true source** in the field's `note`: e.g.
    `"Kontakion: General Menaion — Monastic.pdf, name-substituted (daily PDF prints none)."`
@@ -267,9 +295,11 @@ headings; do not assume the set.
 5. **Then, and only for the troparion/kontakion, check OCA** (oca.org/saints/troparia)
    for a saint-specific text per §1's precedence rule.
 
-**Workflow:** read the source from Drive → encode directly into the monthly data
-file (`src/data/menaion/{month}.js`, `src/data/pentecostarion.js`) → commit. Git
-history is the record. Claude never writes to Drive.
+**Workflow:** read the source from the MOUNTED FOLDER (§2 — Drive is retired)
+→ encode directly into the monthly data file (`src/data/menaion/{month}.js`,
+`src/data/pentecostarion.js`) or, for Menaion V2, into `src/data/menaion_v2/`
+→ commit. Git history is the record. Nothing is ever written back to the source
+folder.
 
 ---
 

@@ -8,6 +8,13 @@
 // Paths may cross books (§10.4): `octoechos:` and `pentecostarion:` prefixes are
 // reserved; an unqualified path means this book.
 //
+// SCOPE, ruled 15 Aug: this register records HYMN and READING recurrences. It
+// does NOT enumerate repeated RUBRIC boilerplate — "The Dismissal:", "Typika and
+// Beatitudes.", "After the 50th Psalm:" and the like recur by the dozen across
+// files and carry no information when paired. A byte-identity sweep over
+// general.js reports ~150 such pairs; they are deliberately absent, not
+// overlooked. If that sweep is ever run again, expect them.
+//
 // SEEDED FROM THE Monastic.pdf HAND-ENCODE. The General Menaion prints its
 // canon troparia a SECOND time under Typika and Beatitudes at Liturgy — the same
 // pattern V1 recorded by hand at 06-29 ("4 from Ode III … 4 from Ode VI"). Both
@@ -83,6 +90,12 @@ export default [
   { a: 'general.Monastics.matins.canons[0].odes.6.items[3]', b: 'general.Monastics.liturgy.beatitudes[6]',
     relation: 'variant', note: 'Ode VI Theotokion: canon “a source of dispassion”, Beatitude “a Source of dispassion”.' },
 
+  // Martyr INTERNAL — the same pairing Monastics shows, in the file whose
+  // Vespers half was missing until the page-coverage tripwire found it. The
+  // Vespers aposticha Glory (p4) and the Doxology Glory (p12) are byte-identical.
+  { a: 'general.Martyr.vespers.aposticha_glory', b: 'general.Martyr.matins.doxology_glory',
+    relation: 'identical', note: '“O come all ye lovers of the Martyrs …” — Vespers aposticha Glory (p4) and Doxology Glory (p12).' },
+
   // Monastics INTERNAL — one hymn, two print sites in one file.
   { a: 'general.Monastics.vespers.aposticha_glory', b: 'general.Monastics.matins.doxology_glory',
     relation: 'identical', note: '“O venerable fathers! * loathing the sweetness of this world …” — Vespers aposticha Glory and the Doxology Glory.' },
@@ -92,4 +105,61 @@ export default [
   // { a: 'general.Monastic.vespers.readings[1]', b: 'general.Martyrs...',
   //   relation: 'variant', note: '"The righteous live FOR EVERMORE" (Monastic) vs
   //   "UNTO THE AGES" (Martyrs) — same Wisdom 5:15 lesson, two renderings.' },
+
+  // ── Martyr.pdf Beatitudes — a gap, closed. Monastic and Monastics both had
+  // their seven pairs recorded from the day they were encoded; Martyr's were
+  // never registered, so the one file whose Beatitudes nobody had checked was
+  // the one with a half-missing Vespers. All seven are byte-identical.
+  { a: 'general.Martyr.matins.canons[0].odes.3.items[0]', b: 'general.Martyr.liturgy.beatitudes[0]',
+    relation: 'identical', note: 'Ode III troparion 1 = Beatitude 1.' },
+  { a: 'general.Martyr.matins.canons[0].odes.3.items[1]', b: 'general.Martyr.liturgy.beatitudes[1]',
+    relation: 'identical', note: 'Ode III troparion 2 = Beatitude 2.' },
+  { a: 'general.Martyr.matins.canons[0].odes.3.items[2]', b: 'general.Martyr.liturgy.beatitudes[2]',
+    relation: 'identical', note: 'Ode III troparion 3 = Beatitude 3.' },
+  { a: 'general.Martyr.matins.canons[0].odes.6.items[0]', b: 'general.Martyr.liturgy.beatitudes[3]',
+    relation: 'identical', note: 'Ode VI troparion 1 = Beatitude 4.' },
+  { a: 'general.Martyr.matins.canons[0].odes.6.items[1]', b: 'general.Martyr.liturgy.beatitudes[4]',
+    relation: 'identical', note: 'Ode VI troparion 2 = Beatitude 5.' },
+  { a: 'general.Martyr.matins.canons[0].odes.6.items[2]', b: 'general.Martyr.liturgy.beatitudes[5]',
+    relation: 'identical', note: 'Ode VI troparion 3 = Beatitude 6.' },
+  { a: 'general.Martyr.matins.canons[0].odes.6.items[3]', b: 'general.Martyr.liturgy.beatitudes[6]',
+    relation: 'identical', note: 'Ode VI Theotokion = Beatitudes Theotokion.' },
+
+  // Martyr INTERNAL — one stavrotheotokion, two print sites.
+  { a: 'general.Martyr.vespers.lic_stavrotheotokion', b: 'general.Martyr.matins.praises_stavrotheotokion',
+    relation: 'identical', note: '“The Sovereign Lady, the unblemished ewe-lamb …” — LIC (p1) and Praises (p12).' },
+
+  // ── Martyrs.pdf — the fourth file. Its Beatitudes reprint the canon troparia
+  // BYTE-IDENTICALLY at all seven positions: the Monastic behaviour. Two files
+  // now do this and one does not, from the same press. The tally is the point.
+  { a: 'general.Martyrs.matins.canons[0].odes.3.items[0]', b: 'general.Martyrs.liturgy.beatitudes[0]',
+    relation: 'identical', note: 'Ode III troparion 1 = Beatitude 1.' },
+  { a: 'general.Martyrs.matins.canons[0].odes.3.items[1]', b: 'general.Martyrs.liturgy.beatitudes[1]',
+    relation: 'identical', note: 'Ode III troparion 2 = Beatitude 2.' },
+  { a: 'general.Martyrs.matins.canons[0].odes.3.items[2]', b: 'general.Martyrs.liturgy.beatitudes[2]',
+    relation: 'identical', note: 'Ode III troparion 3 = Beatitude 3.' },
+  { a: 'general.Martyrs.matins.canons[0].odes.6.items[0]', b: 'general.Martyrs.liturgy.beatitudes[3]',
+    relation: 'identical', note: 'Ode VI troparion 1 = Beatitude 4 — including the unclosed quotation mark, which both sic rows record.' },
+  { a: 'general.Martyrs.matins.canons[0].odes.6.items[1]', b: 'general.Martyrs.liturgy.beatitudes[4]',
+    relation: 'identical', note: 'Ode VI troparion 2 = Beatitude 5.' },
+  { a: 'general.Martyrs.matins.canons[0].odes.6.items[2]', b: 'general.Martyrs.liturgy.beatitudes[5]',
+    relation: 'identical', note: 'Ode VI troparion 3 = Beatitude 6.' },
+  { a: 'general.Martyrs.matins.canons[0].odes.6.items[3]', b: 'general.Martyrs.liturgy.beatitudes[6]',
+    relation: 'identical', note: 'Ode VI Theotokion = Beatitudes Theotokion.' },
+
+  // Martyrs INTERNAL.
+  { a: 'general.Martyrs.vespers.aposticha_glory', b: 'general.Martyrs.matins.doxology_glory',
+    relation: 'identical', note: '“O come, all ye who adore the martyrs …” — Vespers aposticha Glory (p4) and Doxology Glory (p12). The same pairing Monastics and Martyr both show.' },
+  { a: 'general.Martyrs.vespers.aposticha_alternate', b: 'general.Martyrs.matins.doxology_closer',
+    relation: 'identical', note: '“We have come to know God …” — the alternative Theotokion, printed at the Vespers aposticha and again after the Doxology.' },
+
+  // Cross-file, Martyrs ⟷ Martyr. The two files share Theotokia while sharing
+  // almost no proper text — and they share them at DIFFERENT slots, which is
+  // why the pair is keyed by path and not by slot name.
+  { a: 'general.Martyrs.vespers.aposticha_closer', b: 'general.Martyr.vespers.aposticha_closer',
+    relation: 'identical', note: '“Christ the Lord, my Creator and Redeemer …” — the Resurrection Theotokion, same slot in both files.' },
+  { a: 'general.Martyrs.vespers.aposticha_alternate', b: 'general.Martyr.vespers.dogmatikon_alternate',
+    relation: 'identical', note: '“We have come to know God …” — Martyrs prints it at the aposticha, Martyr at the dogmatikon. Same text, different position: stored twice, per §2.3.' },
+  { a: 'general.Martyrs.vespers.dogmatikon', b: 'general.Martyr.vespers.dogmatikon',
+    relation: 'variant', note: 'Both files print a "Both now" dogmatikon in this slot and they are DIFFERENT hymns — Martyrs the Tone III “How can we, O all-honored one”, Martyr the Tone VI “Who doth not call thee blessed”. Recorded so the slot is never treated as carrying one shared text.' },
 ];

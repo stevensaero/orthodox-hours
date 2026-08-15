@@ -1,5 +1,169 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.39.0** | **Tone Trainer: v0.26.0** | Last synced: August 14, 2026
+**Tool version: v0.39.1** | **Tone Trainer: v0.26.0** | Last synced: August 15, 2026
+
+**Session August 15, 2026 — MARTYRS ENCODED; A HALF-MISSING FILE FOUND; TWO NEW GATES.**
+**Version bumped to v0.39.1.** Deploy confirmed GREEN before any work began:
+runs #934, #935, #936 all succeeded, so the checkout@v5 / setup-node@v5 / node 22
+fix held and `peaceiris/actions-gh-pages@v4` did not need replacing. Owed item 6
+is closed.
+
+### THE HANDOFF WAS WRONG ABOUT MARTYR, AND NOTHING COULD TELL
+
+`Martyr` was listed complete across all three services. Its Vespers stopped
+after the lessons: **12 order keys where the template has 23**, and `readings`
+held **one of the three printed lessons**. The Aposticha rubric, three stichera,
+two verses, the Glory, the Polyeleos-Theotokion rubric, the Both-now Theotokion,
+the "Otherwise" Theotokion, the Stavrotheotokion, the troparion rubric and
+troparion, the conditional closer and the Dismissal — the whole of pp.3-4 — were
+absent, with no absence node.
+
+**Every gate passed.** `order` named exactly the keys that were present, so the
+print-order check was satisfied. Every node carried tier and `src`. The registry
+matched at 99⋈99. The build was green. A half-encoded file is internally
+consistent, and internal consistency is all the contract could see.
+
+### THE PAGE-COVERAGE TRIPWIRE — what found it
+
+Nothing in the entry cited `Martyr.pdf` p3 or p4. That is the whole signal, and
+it is now a hard-fail:
+
+```
+Monastic.pdf   cited 1-15   UNCITED: none
+Monastics.pdf  cited 1-14   UNCITED: none
+Martyr.pdf     cited 1,2,5-15   UNCITED: 3,4   ← ERROR
+```
+
+`GENERAL_PAGE_COUNTS` in the schema carries the real page count for all 26 files,
+read off the PDFs. A locus that does not begin with `p<N>` is itself an error,
+because an unparseable locus is invisible to the check and that is exactly the
+failure mode being closed. **The tripwire is not a classifier**: it reports that
+a page is uncited and says nothing about what belongs there.
+
+**A coverage gate proves every FIELD is registered. Only this proves the PAGES
+were read.** That is warning 8's sibling and it now has a check.
+
+### THE RENDER GATE — and two defects that were invisible without it
+
+`tools/test_menaion_v2_render.mjs` server-renders every General Menaion entry
+and asserts that **every stored string appears in the output**. 556 strings, 0
+missing, on a clean tree. It was written because "parsing is not rendering" was
+already a lesson here; it immediately paid for itself twice.
+
+**1. The canon `refrain` was rendered by nothing.** Stored on Ode I in all four
+encoded files — `Holy Martyrs (names) pray to God for us` and its siblings — and
+displayed in none of them. `RCanon` rendered `irmos` and `items` and dropped
+every other ode key on the floor. The service renderer has had a Leftovers guard
+since it was written; the ode renderer did not. It does now.
+
+**2. `isReading()` was keyed on `citation_verbatim` — IN THE COMPONENT.**
+STANDING WARNING #7 records this exact defect in the GATE, where it was found
+and fixed: `citation_verbatim` is the one field a citationless reading lacks, so
+the detector required precisely what its check was meant to catch. The fix never
+crossed to `menaion-v2-reading.jsx`. Consequence: the Epistle and Gospel print a
+citation and rendered fine, while **every Vespers paremia in every General
+Menaion file — heading, reference and link — returned `null` and vanished from
+the reading view.** Three lessons × four files, silently gone, in a view whose
+entire purpose is that a reader can see what the book prints.
+
+**The lesson is not "check the renderer too." It is that a fix applied to a
+predicate must be applied to every copy of that predicate.** Two modules
+independently defined `isReading`; correcting one of them read as correcting the
+concept.
+
+### THE PLACEHOLDER RULE WAS FALSE — falsified Octoechos-import rule #9
+
+Case-sensitive scan of all 26 files: **`(name)` 445 · `(names)` 31 ·
+`(Names)` 2 · `(N.)` 0 · `(NAME)` 0.**
+
+v2.11 corrected `(Name)` → `(name)` and, in doing so, searched only for the
+singular token. So the rule "plural and subject files carry no placeholder at
+all" survived three encoded files. It is false: **21 of the 26 print one.** Only
+`Apostles`, `Cross`, `Holy Fathers`, `St John Baptist` and `Theotokos` print
+none — and `Apostles` is a genuine plural, so plurality does not predict this.
+`Nuns` and `Unmercenaries` print both forms; `Heirarchs` prints a capitalized
+`(Names)`.
+
+The stored data was never wrong — verbatim capture kept every token, including
+Monastics' three `(names)`. **The RULE was wrong**, and a daily fallback to
+`Martyrs` would have found a placeholder with nothing declared to fill it.
+Corrected together: `GENERAL_TAKES_NAME`, `NAME_PLACEHOLDERS`,
+`encoding_rule_v2.md` §2.1 (now **v2.12**), `menaion_v2_spec.md` §6.2.
+
+*A scan answers the question it was asked.* Both corrections to this one line
+were scans that confirmed what they searched for.
+
+### Martyrs — what the fourth file taught
+
+Complete across Vespers, Matins and Liturgy. The template held, with two
+additions the source itself prints:
+
+- **A conditional second Matins prokeimenon** — `If it be the Forty Martyrs,
+  this Prokeimenon should be sung:` followed by a full second prokeimenon and
+  verse. Not a variant, not a closer: a conditional alternative, which nothing
+  in the template had needed to express. Stored as
+  `prokeimenon_alt_rubric` / `prokeimenon_alt_label` / `prokeimenon_alt` /
+  `prokeimenon_alt_verse`; the condition is a rubric and the assembler decides.
+- **A bare `The Doxology:`** ahead of the great-Doxology rubric. Martyr prints
+  only the second. Both stored; neither folded into the other.
+
+**Beatitudes: byte-identical to the canon troparia at all seven positions** —
+the Monastic behaviour, not the Monastics one. Two files each way now. Also
+found: `Martyr`'s own seven Beatitude pairs had never been registered at all, so
+the one file nobody had checked for this was the one with the missing Vespers
+half. Registered.
+
+**Reading-body divergences cannot be recurrence rows.** The handoff asked for
+the Wisdom 5:15 and Isaiah divergences as `variant` pairs. They cannot be: R-4
+stores no reading text, so the register has nothing to compare. They are
+recorded as `provenance_note` on the readings themselves. Worth knowing before
+the next file: *a divergence in a reading BODY is unregistrable by design.*
+And the two files' third lessons are not even the same pericope — Martyr prints
+Wisdom 4:7, Martyrs Wisdom 5:15.
+
+**Ten sic rows** from one file, none of which any automated check would flag:
+`heal all or infirmities` (at all four troparion sites), `IS FROM FROM THE
+WISDOM` in a heading, `for each another`, a mid-sticheron full stop, spaces
+before punctuation twice, a doubled `and`, and a quotation opened at Ode VI and
+never closed — reprinted unclosed at the Beatitudes, which is itself evidence
+that the Beatitudes are set from the canon rather than proofread separately.
+
+### Recurrence register scope, ruled
+
+A byte-identity sweep over `general.js` reports ~163 identical pairs. Most are
+rubric boilerplate — `The Dismissal:`, `Typika and Beatitudes.`, `After the 50th
+Psalm:` — which carry no information when paired. The register records **hymn
+and reading** recurrences only; the boilerplate is deliberately absent, and the
+header now says so, so the next sweep does not read as 150 missing rows.
+
+### State
+
+`general.js`: **556 stored strings · 532 text nodes · 0 errors.** Complete:
+`Monastic`, `Monastics`, `Martyr` (now genuinely), `Martyrs`. **4 of 26.**
+
+### Owed before close
+
+1. **PAT rotation — STILL OWED, and now more so.** The classic `ghp_` token was
+   pasted in plaintext again this session, including into a remote URL that was
+   scrubbed immediately after cloning. Revoke it and issue a fine-grained token.
+2. **`shared.js`** is still unwritten — no file, no loader, no browser axis.
+   Add all three in ONE change (warning 8).
+3. **Re-verify the three completed files against the render gate's limits.**
+   `renderToString` does not run effects; the harness passes data as props. An
+   effect-loaded section still reads as absent to it.
+4. **The remaining 22 General Menaion files.** Batch order unchanged: the
+   singular/plural pairs first, the four SUBJECT files (`Cross`, `Holy Fathers`,
+   `St John Baptist`, `Theotokos`) last.
+
+### NEXT SESSION — start here
+
+Run all EIGHT gates on the clean tree first, `npm run build` and
+`test_menaion_v2_render.mjs` included. Then take `Apostle` / `Apostles` as the
+next pair. `Apostles` is the one plural file that prints no placeholder at all,
+so it is the natural check on the corrected `GENERAL_TAKES_NAME`: if
+`name_substituted` ever appears on a fallback drawn from it, the correction was
+mis-applied.
+
+---
 
 **Session August 14, 2026 — MENAION V2: spec, Phase 1 infrastructure, Phase 2 begun.**
 Commits: 536e190 · 00546fa · 573ac67 · 69eedef · 29efb19 · cc1dfbf · 5fb9a2a · 1ea4b8a.
@@ -113,6 +277,10 @@ Menaion data. Expect more in the subject files.
    TABLE is reachable.** `general.js` was validated, gated, and completely
    invisible in the browser until an axis was added for it. The same blind spot
    will apply to `shared.js`.
+9. **Plural files carry no `(name)` placeholder** — they carry `(names)`. 21 of
+   the 26 files print a placeholder of some form; only `Apostles` and the four
+   subject files print none. Falsified 15 Aug; the scan that "confirmed" the
+   rule had searched for the singular token only.
 
 ### RUN IT. DO NOT INSPECT IT.
 
@@ -168,10 +336,13 @@ doubling appears in the Octoechos chapter PDFs, which encoded fine.
 
 ---
 
-## NEXT SESSION — Menaion V2 Phase 2, resume here
+## NEXT SESSION — Menaion V2 Phase 2 *(SUPERSEDED by the August 15 entry above)*
 
-**State:** `general.js` holds **379 text nodes, 0 errors**. Complete:
-`Monastic`, `Monastics`, `Martyr` (all three services each). 3 of 26 files.
+**State AS OF AUGUST 14, retained for the record and now known to be wrong:**
+`general.js` holds **379 text nodes, 0 errors**. Complete: `Monastic`,
+`Monastics`, `Martyr` (all three services each). 3 of 26 files.
+**`Martyr` was NOT complete** — its Vespers was missing from the Aposticha
+onward. See the August 15 entry.
 Visible at `/menaion-v2` under the rail's GENERAL MENAION section.
 
 **Start with `Martyrs.pdf`.** Two divergences against `Martyr.pdf` are already
