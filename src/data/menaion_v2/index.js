@@ -11,6 +11,13 @@
 // Nothing month-keyed is ever statically imported (§2.14).
 // ─────────────────────────────────────────────────────────────────────────────
 
+// Iterate MONTHS, never Object.keys(MONTH_LABELS). "10", "11" and "12" are
+// canonical integer keys and JS orders them FIRST; "01"-"09" carry a leading
+// zero, are not integer indices, and follow in insertion order — so
+// Object.keys() yields Oct Nov Dec Jan Feb … Sep. The month picker shipped in
+// that order until the browser was actually rendered.
+export const MONTHS = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+
 export const MONTH_LABELS = {
   '01': 'January', '02': 'February', '03': 'March',     '04': 'April',
   '05': 'May',     '06': 'June',     '07': 'July',      '08': 'August',

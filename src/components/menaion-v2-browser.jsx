@@ -18,7 +18,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import React, { useState, useEffect, useRef, useMemo, createContext, useContext } from 'react';
-import { MONTH_LOADERS, MONTH_LABELS, loadMenaionV2General } from '../data/menaion_v2/index.js';
+import { MONTH_LOADERS, MONTH_LABELS, MONTHS, loadMenaionV2General } from '../data/menaion_v2/index.js';
 import { registryLookup, SERVICE_HEADINGS, SERVICE_ORDER } from '../data/menaion_v2/presentation.js';
 import { ANCHOR_RE, SERVICES } from '../data/menaion_v2/schema_menaion_v2.js';
 import { ReadingContext, RCommemoration } from './menaion-v2-reading.jsx';
@@ -351,7 +351,7 @@ export default function MenaionV2Browser() {
   // ── the month picker: 12 buttons, disabled where no month file exists ──────
   const MonthStrip = (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "4px" }}>
-      {Object.keys(MONTH_LABELS).map(k => {
+      {MONTHS.map(k => {
         const has = !!MONTH_LOADERS[k];
         return (
           <button key={k} disabled={!has}
@@ -527,7 +527,22 @@ export default function MenaionV2Browser() {
               <div style={{ color: C.inkLight, fontStyle: "italic" }}>loading…</div>
             ) : data === null ? (
               <div style={{ color: C.inkLight, fontStyle: "italic" }}>
-                {MONTH_LABELS[mm]} is not yet encoded. Create <code>src/data/menaion_v2/{(MONTH_LABELS[mm] ?? '').toLowerCase()}.js</code> and add it to <code>MONTH_LOADERS</code>.
+                <div>{MONTH_LABELS[mm]} is not yet encoded.</div>
+                {generalTypes.length > 0 && (
+                  <div style={{ marginTop: "10px", fontStyle: "normal" }}>
+                    Encoded and readable now — the <strong>General Menaion</strong>:{' '}
+                    {generalTypes.map((k, i) => (
+                      <span key={k}>
+                        {i > 0 && ' · '}
+                        <span onClick={() => setGeneralType(k)}
+                              style={{ color: C.gold, cursor: "pointer", borderBottom: `1px dotted ${C.gold}` }}>{k}</span>
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <div style={{ marginTop: "10px", fontSize: "0.75rem" }}>
+                  To add a month: create <code>src/data/menaion_v2/{(MONTH_LABELS[mm] ?? '').toLowerCase()}.js</code> and one line in <code>MONTH_LOADERS</code>.
+                </div>
               </div>
             ) : !entry ? (
               <div style={{ color: C.inkLight, fontStyle: "italic" }}>Choose a day.</div>

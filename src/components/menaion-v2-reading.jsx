@@ -226,7 +226,7 @@ export function RElement({ value, path, fieldKey }) {
 }
 
 // ── a whole service, rendered in the PAGE's order ────────────────────────────
-export function RService({ svc, svcKey, path }) {
+export function RService({ svc, svcKey, path, entry }) {
   if (!svc) return null;
   if (isAbsence(svc)) {
     return (<><RHeading id={`sec-${svcKey}`}>{SERVICE_HEADINGS[svcKey] ?? svcKey}</RHeading>
@@ -240,8 +240,9 @@ export function RService({ svc, svcKey, path }) {
   return (
     <>
       <RHeading id={`sec-${svcKey}`}>{SERVICE_HEADINGS[svcKey] ?? svcKey}</RHeading>
-      {ordered.map(k => (
-        <RElement key={k} value={svc[k]} path={`${path}.${k}`} fieldKey={k} />
+      {ordered.map((k, i) => (
+        <RElement key={`${k}-${i}`} value={(k in svc) ? svc[k] : entry?.[k]}
+                  path={`${path}.${k}`} fieldKey={k} />
       ))}
       {rest.length > 0 && (
         <div style={{ marginTop: "10px", paddingTop: "6px", borderTop: `1px dashed ${C.border}` }}>
@@ -263,20 +264,25 @@ export function RCommemoration({ entry, path }) {
     <div>
       <div style={{ textAlign: "center", margin: "8px 0 4px" }}>
         <div style={{ fontFamily: SERIF, fontVariant: "small-caps", letterSpacing: "0.05em",
-                      color: C.ink, fontSize: "1.05rem" }}>{entry.title}</div>
+                      color: C.ink, fontSize: "1.05rem" }}>
+          {/* `title` is a TEXT NODE, not a string — rendering it raw threw
+              "Objects are not valid as a React child" and the ErrorBoundary
+              swallowed the whole General Menaion view. Found by rendering; no
+              amount of reading the file would have shown it. */}
+          {typeof entry.title === 'string' ? entry.title : (entry.title?.text ?? '')}
+        </div>
         <div style={{ fontFamily: SERIF, fontSize: "0.72rem", color: C.inkLight, fontStyle: "italic" }}>
-          {entry.kind}{entry.rank ? ` · ${entry.rank.replace(/_/g, ' ')}` : ''}
+          {entry.kind ?? ''}{entry.rank ? ` · ${String(entry.rank).replace(/_/g, ' ')}` : ''}
           {entry.fekula_section ? ` · Fekula §${entry.fekula_section}` : ''}
         </div>
       </div>
-      {['troparion', 'kontakion', 'ikos'].map(k => entry[k] && (
-        <div key={k}>
-          <RSubHeading>{registryLookup(`<c>.${k}`)?.heading ?? k}</RSubHeading>
-          <RText node={entry[k]} path={`${path}.${k}`} />
-        </div>
-      ))}
+      {/* NOTHING HOISTED HERE. troparion/kontakion/ikos are stored once at
+          entry level (R-1) but PRINTED inside the services, and each service's
+          `order` names them at the position the book prints them. Rendering
+          them above the services is an Octoechos shape the Menaion does not
+          have — and it also made the hymn appear twice. */}
       {services.map(s => (
-        <RService key={s} svc={entry[s]} svcKey={s} path={`${path}.${s}`} />
+        <RService key={s} svc={entry[s]} svcKey={s} path={`${path}.${s}`} entry={entry} />
       ))}
     </div>
   );
