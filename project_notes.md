@@ -1,9 +1,9 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.38.0** | **Tone Trainer: v0.26.0** | Last synced: August 14, 2026
+**Tool version: v0.39.0** | **Tone Trainer: v0.26.0** | Last synced: August 14, 2026
 
 **Session August 14, 2026 — MENAION V2: spec, Phase 1 infrastructure, Phase 2 begun.**
 Commits: 536e190 · 00546fa · 573ac67 · 69eedef · 29efb19 · cc1dfbf · 5fb9a2a · 1ea4b8a.
-**No version bump yet — see "Owed before close" below.**
+**Version bumped to v0.39.0 this session.**
 
 ### What shipped
 
@@ -110,14 +110,12 @@ doubling appears in the Octoechos chapter PDFs, which encoded fine.
 
 ### Owed before close
 
-1. **Version bump to v0.39.0** — this session added new functionality
-   (`/menaion-v2`, two gates, a shelf book). Not yet done.
-2. **`encoding_rule_v2.md`** corrections above.
-3. **Martyr** Matins/Liturgy, then **Martyrs** (holds a Wisdom 5:15 variant:
+1. **`encoding_rule_v2.md`** corrections above.
+2. **Martyr** Matins/Liturgy, then **Martyrs** (holds a Wisdom 5:15 variant:
    "live unto the ages" vs Monastic's "for evermore").
-4. **PAT rotation** — the classic `ghp_` token has appeared in plaintext across
+3. **PAT rotation** — the classic `ghp_` token has appeared in plaintext across
    several sessions.
-5. `general.js` §6.2 batch order is at the head of that file.
+4. `general.js` §6.2 batch order is at the head of that file.
 
 
 **Session July 18, 2026 — TONE 6 RESEARCH COMPLETE (logic only, no code).**

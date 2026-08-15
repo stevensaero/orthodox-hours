@@ -8656,6 +8656,78 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.39.0",
+    date: "August 2026",
+    summary: "Menaion V2 — spec, contract, drift gate, coverage gate, browser at /menaion-v2, and a seventh book on the Library shelf; General Menaion encoding begun",
+    items: [
+      "MENAION V2 — a full-capture rebuild of the Menaion, modeled " +
+      "section-for-section on Octoechos V2 and specified in menaion_v2_spec.md " +
+      "(rev 2). Built in PARALLEL under src/data/menaion_v2/: V1 stays live and " +
+      "still drives the Hours assembler until a Phase 5 cutover. The governing " +
+      "change from V1 is scope — encoding_rule_v2.md §6 ruled full Matins " +
+      "canons, sessionals and Praises out of scope at every rank; V2 captures " +
+      "everything its source prints. Rank governs what the ASSEMBLER selects; " +
+      "it never governs what the ENCODER captures.",
+
+      "NEW ROUTE /menaion-v2 — reading and audit surfaces over the V2 data, " +
+      "with a month picker, a commemoration axis for multi-commemoration days, " +
+      "and the §8.1 Viewer Auditability Contract: the viewer never enumerates " +
+      "fields in component code, an unregistered field renders badged rather " +
+      "than vanishing, and hiding is opt-in with a reason. Styling is " +
+      "deliberately identical to the Octoechos V2 browser — same palette by " +
+      "hex, same nav/rail/drawer factories, same badge semantics — so the two " +
+      "books read as one tool.",
+
+      "LIBRARY — 'The Menaion (V2)' added as a SEVENTH book on the Hymnography " +
+      "shelf, beside V1 rather than replacing it, so the V2 capture is " +
+      "reviewable from the tool without a remembered URL. Date-aware via " +
+      "?comm=MM-DD. Also corrected the V1 Menaion coverage line, which read " +
+      "'May 18-31 · June complete' while july.js had been live since the July " +
+      "sessions.",
+
+      "GATES — validate_menaion_v2.mjs (the drift gate) and " +
+      "validate_viewer_coverage.mjs extended to both books (octoechos 92⋈92 · " +
+      "menaion 99⋈99). The coverage gate's fragment lint now also watches the " +
+      "Menaion's canonical texts. Three outcome classes are kept distinct: " +
+      "ERROR fails the build, FINDING is surfaced for Bill and never " +
+      "auto-resolved, WORKLIST is outstanding verification rather than defect.",
+
+      "ABSENCE IS DECLARED, NEVER INFERRED — every source-conditional field is " +
+      "a text node or an absence node carrying both a reason and a BASIS " +
+      "(close_reading | heading_scan | physical_book | structural). A missing " +
+      "key is a hard failure. This is what keeps 'full capture' honest: a " +
+      "capture that records 'nothing printed here' identically whether the " +
+      "encoder read the page or scanned headings is not complete, it merely " +
+      "looks complete.",
+
+      "PRINT ORDER IS DATA — every service carries an `order` array naming its " +
+      "elements in the sequence the page prints them, checked against the keys " +
+      "present. Without it a date whose page order differs from the template " +
+      "renders in template order and the divergence is invisible. `order` may " +
+      "name an entry-level key, so a hymn stored once (R-1) renders at every " +
+      "position the book prints it.",
+
+      "GENERAL MENAION ENCODING BEGUN — src/data/menaion_v2/general.js, 26 full " +
+      "Vigil services by saint type and subject. Monastic complete across all " +
+      "three services; Monastics and Martyr at Vespers. 172 text nodes, 0 " +
+      "errors. Encoded BY HAND: a classifier was built and abandoned after it " +
+      "plateaued at 24 unclassified items across four files, and because a " +
+      "misclassification landing text in a plausible-but-wrong slot never " +
+      "appears in that count at all. Monastic.pdf is now the reference fixture " +
+      "the remaining 25 files are checked AGAINST rather than tuned toward.",
+
+      "SOURCE DELIVERY OFF DRIVE — the liturgical library now arrives as a " +
+      "mounted folder. 08-23 (Apodosis of the Dormition) confirmed a permanent " +
+      "source gap, carried as no_daily_source rather than a pending delivery.",
+
+      "OCTOECHOS V2 FIX — three presentation-registry order collisions " +
+      "(matins.hypakoe / polyeleos_rubric / evlogitaria_rubric all at 3; " +
+      "nocturns.closing_rubric / gregory_rubric both at 5) left those fields' " +
+      "relative position determined by object insertion order rather than by " +
+      "design. Found by the new coverage gate's order-collision check.",
+    ],
+  },
+  {
     version: "v0.38.0",
     date: "July 2026",
     summary: "Tone 5 Point/Score unblocked; Octoechos audit view made addressable (§12); pointing-coverage gate; verse flag now distinguishes Tier 1 from Tier 2",
