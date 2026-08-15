@@ -8656,6 +8656,79 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.40.0",
+    date: "August 2026",
+    summary: "General Menaion — Unmercenaries encoded; a Matins tail that inverts, an epistle heading that names the wrong book, and a first-class way to record a printed citation we cannot follow",
+    items: [
+      "UNMERCENARIES ENCODED — the fifth of the 26 General Menaion files, " +
+      "complete across Vespers, Matins and Liturgy. Chosen ahead of the cheap " +
+      "Apostle/Apostles pair on a MEASURED divergence count (14 novel rubrics " +
+      "against 5 and 4), to put pressure on the schema while the schema is " +
+      "still cheap to change. It found three things worth the trade.",
+
+      "THE MATINS TAIL INVERTS. This file prints \"On the Aposticha, the " +
+      "Stichera\" at Matins and NO Praises at all; the four previously encoded " +
+      "files all print Praises and have no Matins aposticha. The spec already " +
+      "listed a matins aposticha, so no spec change was needed — but this is " +
+      "the first file to use it, and `praises` is now an absence node with a " +
+      "basis rather than a silence. Nothing in the handoff predicted this; the " +
+      "rubric it flagged as the big one turned out to be smaller.",
+
+      "THE 'THIRD DOXOLOGY BRANCH' IS NOT A DOXOLOGY BRANCH. The handoff read " +
+      "the Great-Doxology conditional on p12 as a third form of the Doxology. " +
+      "Read on the page, it adds no " +
+      "Doxology form and conditions WHERE THE TROPARION IS SUNG. Stored as its " +
+      "own rubric; the fixture's great/small-Doxology rubric, which answers a " +
+      "different question, is declared absent. A rubric classified from its " +
+      "opening words is a rubric not yet read.",
+
+      "THE EPISTLE HEADING NAMES THE WRONG BOOK. p13 prints \"THE EPISTLE TO " +
+      "THE ROMANS. (12:4-5, 15-21)\" over a body that is 1 Corinthians " +
+      "12:27-31 and 13:1-8 — 0.944 against 1 Corinthians, 0.262 against " +
+      "Romans 12:4-21. Under R-4 the stored citation IS the link the reader " +
+      "follows, so storing the printed reference would have actively sent a " +
+      "reader to the wrong epistle, and quietly substituting 1 Corinthians " +
+      "would have corrected the book on our own authority.",
+
+      "NEW: `citation_disputed`. A printed reference that does not match the " +
+      "printed body is none of `printed`, `derived` or `identified` — those " +
+      "three describe a reference we TRUST or a reference we SUPPLIED. This " +
+      "one the source gave and it is wrong. The reference is kept verbatim, no " +
+      "resolvable citation is stored, the measurement is recorded so the claim " +
+      "is falsifiable, and the gate reports it as a FINDING for Bill. The " +
+      "reading view shows the reference as plain text with a note, and offers " +
+      "no link. Schema, gate and renderer changed together (§12).",
+
+      "A per-site `repeat` on `verified_sites`, on the same footing as the " +
+      "per-site `tone` added for Martyr. The Unmercenaries troparion prints at " +
+      "four sites and only the God-is-the-Lord site carries \"(Twice)\"; a " +
+      "top-level `repeat` would have asserted the device at three sites that " +
+      "do not print it.",
+
+      "R-1 AT ITS BOUNDARY. That same troparion prints \"infirmities. ** " +
+      "Freely\" at p4 and p5 and a SINGLE asterisk at p12 and p13. Not " +
+      "byte-identical, so the canonical field claims only the two `**` sites " +
+      "and the other two are stored per-position and registered as a variant. " +
+      "A penultimate marker is a singable fact, not a typographic nicety.",
+
+      "Sics may now sit on a printed CITATION as well as on a text node or a " +
+      "reading heading — `(43, 9-14; )` has a dangling semicolon inside the " +
+      "reference itself, which lives in neither of the other two places.",
+
+      "Fourteen sic rows and twenty-one recurrence rows. The best of them: " +
+      "Martyrs and Unmercenaries print the same 431-character stavrotheotokion, " +
+      "at different positions in their two services, diverging at ONE " +
+      "preposition — \"AT Thy voluntary crucifixion\" against \"OF Thy " +
+      "voluntary crucifixion\". A deduplicating encoder would have matched 430 " +
+      "of 431 characters and called it the same hymn.",
+
+      "Beatitudes byte-identical to the canon at all seven positions — three " +
+      "files identical now, one variant. Three-to-one is precisely the ratio " +
+      "that makes deduplication look proven, and it would silently rewrite " +
+      "Monastics.",
+    ],
+  },
+  {
     version: "v0.39.1",
     date: "August 2026",
     summary: "General Menaion — Martyrs encoded; Martyr's missing Vespers half recovered; two gates added that would have caught both, and two renderer defects they did catch",
