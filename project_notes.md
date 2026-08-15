@@ -1,5 +1,168 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.39.1** | **Tone Trainer: v0.26.0** | Last synced: August 15, 2026
+**Tool version: v0.40.0** | **Tone Trainer: v0.26.0** | Last synced: August 15, 2026
+
+**Session August 15, 2026 (second) — UNMERCENARIES ENCODED; THE HANDOFF WAS
+WRONG IN BOTH DIRECTIONS; A CITATION WE CANNOT FOLLOW.**
+**Version bumped to v0.40.0.** All eight gates run green on the clean tree
+before any edit: 78/78 · 532 nodes/0 errors · 92⋈92 and 99⋈99 · 556 strings/0
+missing · build ✓.
+
+### THE HANDOFF PREDICTED FOUR THINGS. TWO WERE WRONG, AND IT MISSED THE BIGGEST.
+
+The `Unmercenaries` prompt named five "load-bearing" novel rubrics. Measured
+against the page:
+
+**Wrong — the two "cross-book conditionals" are not R-5 exclusions.** The prompt
+said of `If not a Resurrection Service, Sing the following:` and `If the
+Celebration be with a Polyeleos, sing the Theotokion of the Resurrection:` —
+"Rubric stored, text NOT fetched (R-5), exclusion register updated." **Both
+print their text in full**, and the fixture already encodes both slots
+(`anabathmoi_rubric/intro/anabathmoi/closer`; `aposticha_closer_rubric` and its
+alternate/stavrotheotokion trio). No exclusion rows were added. A rubric that
+opens with a condition is not thereby a pointer to another book.
+
+**Wrong — the "third Doxology branch" is not one.** The page prints `The
+Doxology:` and then `If the service be with the Great Doxology, but not a
+Resurrection service, the Troparion is sung after the Doxology:`. It adds **no
+Doxology form**; it conditions **where the troparion is sung**. Stored as
+`doxology_troparion_rubric`; the fixture's `great_doxology_rubric` — which
+governs which text FOLLOWS the Doxology — is not printed here and is declared
+absent. *A rubric classified from its opening words is a rubric not yet read.*
+
+**Right — the sessionals and the placeholders.** `After the 1st Kathisma` /
+`After the 2nd Kathisma` are the fixture's `sessional_1` / `sessional_2` slots,
+verified BY POSITION (between the God-is-the-Lord closer and the Polyeleos)
+rather than assumed from the label. Labels stored verbatim, including the stray
+colon in `the Sessional Hymn: in Tone II:`. Placeholder count exact: `(names)`
+×18, `(name)` ×1.
+
+**Right, and newly exercised — `citation_verbatim` on the Vespers lessons.**
+First file to print references there. The citationless branch was the only one
+the four encoded files exercised.
+
+### WHAT NOTHING PREDICTED — THE MATINS TAIL INVERTS
+
+`Unmercenaries` prints **`On the Aposticha, the Stichera, in Tone II:` at
+Matins and no Praises at all.** All four previously encoded files print Praises
+and have no Matins aposticha. `menaion_v2_spec.md` §5.6 already lists
+`aposticha` under matins, so this needed no spec change — but it is the first
+file to use it, and `praises` is now an absence node with a basis.
+
+The reading view needed nothing: `RService` is `order`-driven with a Leftovers
+guard, so new keys inside a general service render without a hand-written row.
+That is the §12 contract paying off rather than being violated.
+
+### THE EPISTLE HEADING NAMES THE WRONG BOOK
+
+p13 prints `THE EPISTLE TO THE ROMANS. (12:4-5, 15-21)`. The body beneath it is
+**1 Corinthians 12:27-31, 13:1-8** — the standard unmercenaries epistle.
+Measured against `public/bible`: **0.944 against 1 Corinthians, 0.262 against
+Romans 12:4-21.**
+
+Under R-4 we store no body, so **the stored citation IS the link the reader
+follows.** Storing the printed reference would have actively sent a reader to
+Romans 12; substituting 1 Corinthians would have corrected the book on our own
+authority. Bill's ruling: **keep the reference verbatim, store no resolvable
+citation, record the measurement, surface it as a FINDING.**
+
+`citation_disputed` is new and first-class:
+
+```js
+citation_verbatim: '(12:4-5, 15-21)',
+citation_disputed: { printed_as, body_is, reconstruction, printed_reconstruction, note }
+```
+
+It is none of the three `CITATION_BASIS` values, and that is the point:
+`printed` means the reference is trusted; `derived` and `identified` describe a
+reference WE supplied where the source gave none. Here the source gave one and
+it is wrong. A reading carrying `citation_disputed` satisfies the "identifies no
+passage" check — **the dispute IS the declaration** — and the gate reports it,
+the renderer shows the reference as plain text with a note and no link, and
+storing a resolvable `citation` alongside it is a hard-fail. Schema, gate and
+renderer changed in one commit.
+
+**Milder sibling, same class:** the Matins gospel heading `(9: 36-38; 10: 5-8)`
+under-states its own body, which also prints 10:1-4 (0.992 for Mt 9:36–10:8
+against 0.796 for the heading's claim). Right book, every cited verse present —
+so `printed` and resolvable, with a `provenance_note` recording that following
+it shows a reader less than the page does.
+
+### R-1 AT ITS BOUNDARY — FOUR PRINT SITES, TWO READINGS
+
+The troparion prints at p4, p5, p12 and p13. **p4 and p5 print `infirmities. **
+Freely`; p12 and p13 print a SINGLE asterisk.** Not byte-identical, so R-1
+cannot collapse all four. Bill's ruling: canonical field from the two `**`
+sites claiming only those two; the `*` sites stored per-position (§2.3); the
+pair registered as a `variant`. A penultimate marker is a singable fact, not a
+typographic nicety.
+
+`(Twice)` prints at p5 and nowhere else, so **`verified_sites` entries now take
+`repeat` beside `tone`** — a device is a per-site fact for exactly the reason a
+declared tone is, and a top-level `repeat` would assert it at three sites that
+do not print it.
+
+### TWO SMALL CONTRACT WIDENINGS
+
+- **A sic may sit on a printed CITATION.** `(43, 9-14; )` carries a dangling
+  semicolon inside the reference itself, which is in neither the text nor the
+  heading. `checkSics` now tries `citation_verbatim` as a third candidate.
+  Warning 3 said a sic may sit on a reading heading; this is its sibling.
+- **`verified_sites` entries are key-checked.** They were validated for `locus`
+  and nothing else, so an unknown key was silently accepted. Now enumerated.
+
+### EXTRACTION — ONE RESIDUE, AND A JOIN BUG WORTH RECORDING
+
+`dedupe_chars()` left exactly one doubled heading in 14 pages: p10's `ODE IX`
+extracts as `OODDEE IIXX`. Transcribed correctly, noted in the entry, and NOT
+put in the sic register — a sic row records what the page prints, and the page
+prints it correctly.
+
+Separately: joining wrapped lines with a space turned `soul-\ndestroying` into
+`soul- destroying`. The four encoded files carry only closed-up compounds, which
+is what caught it. Lines ending in `-` now join without a space. **The
+extraction was then verified by byte-matching ten strings against hand-encoded
+data in three other files** — anabathmoi ×3, psalm50 ×2, megalynarion verse,
+communion verse, an Ode V irmos, and two cross-file stavrotheotokia/closers. All
+ten matched exactly.
+
+### THE BEST RECURRENCE ROW IN THE BOOK SO FAR
+
+`Martyrs.vespers.lic_stavrotheotokion` and
+`Unmercenaries.vespers.aposticha_stavrotheotokion` are **431 characters,
+identical to the last comma and the last stray space before a question mark,
+diverging at one preposition**: "I stand in awe, O Compassionate One, **at** Thy
+voluntary crucifixion" against "**of** Thy voluntary crucifixion". Different
+positions in different services in different files. A deduplicating encoder
+would have matched 430 of 431 characters and called it one hymn.
+
+**Beatitudes: byte-identical to the canon at all seven positions.** Three files
+identical now (Monastic, Martyrs, Unmercenaries), one variant (Monastics).
+Three-to-one is precisely the ratio that makes deduplication look proven.
+
+### State
+
+`general.js`: **696 stored strings · 666 text nodes · 0 errors.** Complete:
+`Monastic`, `Monastics`, `Martyr`, `Martyrs`, `Unmercenaries`. **5 of 26.**
+Fourteen sic rows and twenty-one recurrence rows added this session.
+All eight gates green after the work, `npm run build` included.
+
+### Owed before close
+
+1. **`shared.js`** is STILL unwritten — no file, no loader, no browser axis.
+   Add all three in ONE change (warning 8). Carried from 14 and 15 Aug; it has
+   now been deferred three sessions and should be taken before more files.
+2. **Re-verify the completed files against the render gate's limits.**
+   `renderToString` does not run effects; the harness passes data as props.
+3. **21 General Menaion files remain.** Next: `Heirarch` (16pp, 10 novel) then
+   `Heirarchs` (14pp, 6 novel). `Heirarch` is the only file in the book printing
+   `(Names)` CAPITALISED — the case that exercises the corrected placeholder
+   rule rather than its negative. Subject files (`Cross`, `Holy Fathers`,
+   `St John Baptist`, `Theotokos`) LAST.
+4. **Bill to confirm the Romans/1-Corinthians heading against the physical
+   book.** The PDF may be faithful to a genuine misprint. Until then the
+   FINDING stands and no link is offered.
+
+---
 
 **Session August 15, 2026 — MARTYRS ENCODED; A HALF-MISSING FILE FOUND; TWO NEW GATES.**
 **Version bumped to v0.39.1.** Deploy confirmed GREEN before any work began:
