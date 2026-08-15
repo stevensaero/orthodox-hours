@@ -18,7 +18,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import React, { useState, useEffect, useRef, useMemo, createContext, useContext } from 'react';
-import { MONTH_LOADERS, MONTH_LABELS } from '../data/menaion_v2/index.js';
+import { MONTH_LOADERS, MONTH_LABELS, loadMenaionV2General } from '../data/menaion_v2/index.js';
 import { registryLookup, SERVICE_HEADINGS, SERVICE_ORDER } from '../data/menaion_v2/presentation.js';
 import { ANCHOR_RE, SERVICES } from '../data/menaion_v2/schema_menaion_v2.js';
 import { ReadingContext, RCommemoration } from './menaion-v2-reading.jsx';
@@ -221,6 +221,12 @@ function navFromPath(id) {
 
 export default function MenaionV2Browser() {
   const [mm, setMm] = useState('08');
+  // The General Menaion is a BOOK, not a month — 26 full Vigil services keyed by
+  // saint type and subject (§6.2). Without this axis its entries are validated,
+  // gated and completely invisible, which is a §8.1 violation on the contract's
+  // own terms: nothing inside the schema may be unviewable.
+  const [general, setGeneral] = useState(null);
+  const [generalType, setGeneralType] = useState(null);
   const [data, setData] = useState(undefined);       // undefined = loading, null = not encoded
   const [dateKey, setDateKey] = useState(null);
   const [cIdx, setCIdx] = useState(0);
@@ -249,6 +255,8 @@ export default function MenaionV2Browser() {
       if (nav.mm) { setMm(nav.mm); setDateKey(nav.dateKey); setCIdx(nav.cIdx ?? 0); }
     }
   }, []);
+
+  useEffect(() => { loadMenaionV2General().then(g => setGeneral(g ?? {})); }, []);
 
   useEffect(() => {
     let live = true;
@@ -283,9 +291,11 @@ export default function MenaionV2Browser() {
   const dates = useMemo(() => (data ? Object.keys(data).sort() : []), [data]);
   const dateObj = dateKey && data ? data[dateKey] : null;
   const comms = dateObj?.commemorations ?? [];
-  const entry = comms[cIdx] ?? null;
   const encoded = useMemo(() => new Set(dateObj?._encoded ?? []), [dateObj]);
-  const prefix = dateKey ? `${dateKey}.c${cIdx}.` : '';
+  // A selected General Menaion type takes precedence over the date axis.
+  const entry = generalType ? (general?.[generalType] ?? null) : (comms[cIdx] ?? null);
+  const prefix = generalType ? `general.${generalType}.` : (dateKey ? `${dateKey}.c${cIdx}.` : '');
+  const generalTypes = useMemo(() => Object.keys(general ?? {}).sort(), [general]);
 
   const goToday = () => {
     const d = new Date();
@@ -345,7 +355,7 @@ export default function MenaionV2Browser() {
         const has = !!MONTH_LOADERS[k];
         return (
           <button key={k} disabled={!has}
-                  onClick={() => { setMm(k); setDateKey(null); setCIdx(0); }}
+                  onClick={() => { setMm(k); setDateKey(null); setCIdx(0); setGeneralType(null); }}
                   title={has ? MONTH_LABELS[k] : `${MONTH_LABELS[k]} — not yet encoded`}
                   style={{ ...navBtn(k === mm), padding: "4px 0", textAlign: "center", fontSize: "0.72rem",
                            opacity: has ? 1 : 0.35, cursor: has ? "pointer" : "default" }}>
@@ -359,7 +369,7 @@ export default function MenaionV2Browser() {
   const DayGrid = (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 26px)", gap: "3px" }}>
       {dates.map(dk => (
-        <button key={dk} onClick={() => { setDateKey(dk); setCIdx(0); setRailOpen(false); }}
+        <button key={dk} onClick={() => { setDateKey(dk); setCIdx(0); setGeneralType(null); setRailOpen(false); }}
                 title={dk}
                 style={{ ...navBtn(dk === dateKey), width: "26px", height: "26px", padding: 0,
                          textAlign: "center", fontSize: "0.7rem" }}>
@@ -390,6 +400,17 @@ export default function MenaionV2Browser() {
           </div>
         </>
       )}
+      {generalTypes.length > 0 && (
+        <>
+          <div style={railLabel}>GENERAL MENAION</div>
+          <div>
+            {generalTypes.map(k => (
+              <div key={k} onClick={() => { setGeneralType(k === generalType ? null : k); setRailOpen(false); }}
+                   style={railItem(k === generalType)}>{k}</div>
+            ))}
+          </div>
+        </>
+      )}
       {entry && (
         <>
           <div style={railLabel}>SERVICE</div>
@@ -407,8 +428,10 @@ export default function MenaionV2Browser() {
     </div>
   );
 
-  const breadcrumb = `${MONTH_LABELS[mm] ?? mm}${dateKey ? ` ${Number(dateKey.slice(3))}` : ''}` +
-                     `${comms.length > 1 ? ` · ${entry?.kind ?? ''}` : ''}`;
+  const breadcrumb = generalType
+    ? `General Menaion · ${generalType}`
+    : `${MONTH_LABELS[mm] ?? mm}${dateKey ? ` ${Number(dateKey.slice(3))}` : ''}` +
+      `${comms.length > 1 ? ` · ${entry?.kind ?? ''}` : ''}`;
 
   const MobileDrawer = (
     <>
@@ -489,6 +512,17 @@ export default function MenaionV2Browser() {
                   </div>
                 ))}
               </div>
+            ) : generalType && entry ? (
+              audit ? (
+                <div>
+                  <div style={{ fontSize: "0.7rem", color: C.gold, marginBottom: "6px" }}>{prefix}</div>
+                  <Generic value={entry} path="" fieldKey={null} />
+                </div>
+              ) : (
+                <ReadingContext.Provider value={{ mode, sics: {}, prefix, showRubrics }}>
+                  <RCommemoration entry={entry} path={`general.${generalType}`} />
+                </ReadingContext.Provider>
+              )
             ) : data === undefined ? (
               <div style={{ color: C.inkLight, fontStyle: "italic" }}>loading…</div>
             ) : data === null ? (

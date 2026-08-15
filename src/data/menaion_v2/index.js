@@ -22,6 +22,9 @@ export const MONTH_LOADERS = {
   // '08': () => import('./august.js').then(m => m.default),
 };
 
+// The General Menaion is a BOOK, not a month (§6.2) — the browser surfaces it on
+// its own axis. Without that, its entries are gated and validated but invisible.
+
 // The cross-date tables load like the months — dynamically, never statically
 // imported (§2.14).
 let _general = null, _shared = null;
