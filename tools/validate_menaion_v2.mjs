@@ -97,6 +97,24 @@ function checkTextNode(node, path, ctx) {
   }
 
   // ── device checks (§2.8) ──
+  if (node.verified_sites !== undefined) {
+    if (!Array.isArray(node.verified_sites)) err(path, `verified_sites must be an array`);
+    else {
+      const tones = new Set();
+      for (const s of node.verified_sites) {
+        if (!isPlainObj(s) || !s.locus) { err(path, `verified_sites entries must be { locus, tone? }`); continue; }
+        if (s.tone !== undefined) tones.add(s.tone);
+      }
+      // Divergent tones across print sites are LEGITIMATE and recorded, not an
+      // error — but they must be visible, and a top-level `tone` alongside them
+      // would assert one reading over the others.
+      if (tones.size > 1) {
+        find(path, `text printed at ${tones.size} different declared tones (${[...tones].join(', ')}) — recorded per site per R-1`);
+        if (node.tone !== undefined)
+          err(path, `sites declare different tones; a top-level 'tone' would pick one and discard the rest — record tone per site only`);
+      }
+    }
+  }
   if (node.repeat !== undefined && node.repeat !== 2)
     err(path, `repeat may only be 2 (the "(Twice)" device); found ${JSON.stringify(node.repeat)}`);
   if (node.incipit_ref !== undefined) ctx.incipits.push({ path, node });

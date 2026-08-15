@@ -42,7 +42,10 @@ const GENERAL = {
       'In thee, O father, the image of God was preserved, * for taking up thy cross, thou didst follow after Christ; * by activity thou didst learn to disdain the flesh, as something transient, * but to care for thy soul as something immortal. ** Wherefore, with the angels thy spirit doth rejoice, O venerable (name).',
       'p4 Troparion of the venerable one',
       { sourceLabel: 'Troparion of the venerable one, in Tone VIII', tone: 8,
-        verified_sites: ['p4 Vespers dismissal', 'p5 God is the Lord', 'p13 after Our Father', 'p14 AT LITURGY'] }),
+        verified_sites: [
+          { locus: 'p4 Vespers dismissal', tone: 8 }, { locus: 'p5 God is the Lord', tone: 8 },
+          { locus: 'p13 after Our Father', tone: 8 }, { locus: 'p14 AT LITURGY', tone: 8 },
+        ] }),
 
     // Printed at TWO services — p9 (after Ode VI) and p14 (AT LITURGY) — so it
     // is stored ONCE at entry level and recycled, exactly like the troparion
@@ -50,7 +53,7 @@ const GENERAL = {
     // `order` name a key that existed on neither the service nor the entry.
     kontakion: t2('Having divinely armed thyself with purity of soul * and unceasing prayer, * thou didst valiantly slay legions of demons * as with a mighty sword, * wherefore we beseech thee O Father (name), * ever intercede for those ** who honor thee.',
       'p9 Kontakion of the venerable one', { sourceLabel: 'Kontakion of the venerable one, in Tone II', spec_mel: 'Seeking the highest ...', tone: 2,
-        verified_sites: ['p9 after Ode VI', 'p14 AT LITURGY'] }),
+        verified_sites: [{ locus: 'p9 after Ode VI', tone: 2 }, { locus: 'p14 AT LITURGY', tone: 2 }] }),
 
     vespers: {
       order: [
@@ -483,6 +486,18 @@ const GENERAL = {
   Martyr: {
     title: m1('THE GENERAL VIGIL SERVICE TO ONE MARTYR.', 'p1 title'),
 
+    // ONE field, tone recorded PER SITE (Bill's ruling). The text is identical
+    // at both print sites; the DECLARED TONE is not — III at Matins, IV at
+    // Liturgy. Keeping one field stays true to the text; recording tone per site
+    // keeps both readings. A top-level `tone` is forbidden here by the gate.
+    troparion: m2('In his sufferings, Thy martyr (name) O Lord, * received an imperishable crown from Thee, our God; * for, possessed of Thy might, * he set at naught the tyrants and crushed the feeble audacity of the demons. ** By his supplications save Thou our souls.',
+      'p13 Troparion', { sourceLabel: 'Troparion of the martyr',
+        verified_sites: [{ locus: 'p13 after the Doxology', tone: 3 }, { locus: 'p14 AT THE LITURGY', tone: 4 }] }),
+
+    kontakion: m2('Thou hast been manifest by thy splendor * as a bright star announcing Christ, * to the temporal world, O Martyr (name); * vanquishing the allurement of false gods, * thou hast granted the faithful true light, * ever interceding ** on behalf of us all.',
+      'p10 Kontakion of the martyr', { sourceLabel: 'Kontakion of the martyr, in Tone II', spec_mel: 'Seeking the highest ...',
+        verified_sites: [{ locus: 'p10 after Ode VI', tone: 2 }, { locus: 'p14 AT THE LITURGY', tone: 2 }] }),
+
     vespers: {
       order: [
         'lic_rubric', 'lic', 'lic_closer', 'lic_stavrotheotokion',
@@ -504,7 +519,7 @@ const GENERAL = {
         'p1 LIC Glory/Both now', { type: 'theotokion', sourceLabel: 'Glory ..., Both now ..., Theotokion in Tone I', tone: 1 }),
       lic_stavrotheotokion: m2('The Sovereign Lady, the unblemished ewe-lamb, * beholding her Lamb upon the Cross, * bereft of form and comeliness, * lamenting, said: “Woe is me! * Whither hath Thy comeliness gone, O most Sweet One? * Where is Thy splendor? Where is the brilliant grace * of Thine image, ** O my Son most beloved?”',
         'p1 LIC Stavrotheotokion', { type: 'stavrotheotokion', sourceLabel: 'Stavrotheotokion', label_inline: true,
-          verified_sites: ['p1 LIC Stavrotheotokion', 'p12 Praises Stavrotheotokion'] }),
+          verified_sites: [{ locus: 'p1 LIC Stavrotheotokion' }, { locus: 'p12 Praises Stavrotheotokion' }] }),
 
       idiomelon_rubric: m1('If an Idiomelon be appointed, Glory ..., in Tone VI:', 'p1 Idiomelon rubric'),
       // The `* *cease` case, RULED: the marker is in the right place and the hymn

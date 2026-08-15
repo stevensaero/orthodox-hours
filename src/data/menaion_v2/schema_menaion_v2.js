@@ -208,7 +208,13 @@ export const TEXT_NODE = {
     'acrostic',
     'saint',             // which commemoration, where a section interleaves two
     'name_substituted',  // {placeholder, value} — General Menaion (§6.2)
-    'verified_sites',    // [locus] — the R-1 multi-site verification record
+    'verified_sites',    // R-1 multi-site verification record. Entries are
+                         // { locus, tone? } — NOT bare strings. Martyr.pdf prints
+                         // one troparion text at TWO DECLARED TONES (III at
+                         // Matins, IV at Liturgy). Bill's ruling: stay true to
+                         // the text, keep ONE field, and record the tone PER
+                         // SITE. A single top-level `tone` would have had to
+                         // pick one and silently discard the other.
     'label_inline',      // TRUE where the source runs `sourceLabel` INTO the text on
                          // one line ("Stavrotheotokion: The unblemished ewe-lamb …")
                          // rather than printing it on its own line ("Glory ..., Both
