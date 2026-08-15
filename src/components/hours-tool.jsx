@@ -8656,6 +8656,72 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.41.0",
+    date: "August 2026",
+    summary: "shared.js closed — empty by measurement; Heirarch encoded; a file that prints three texts twice and gets two of them wrong",
+    items: [
+      "SHARED.JS SHIPS, AND IT IS EMPTY. Owed since 14 August and deferred three " +
+      "sessions. All 140 delivered daily files were measured against the three " +
+      "candidate classes the spec named. The LIC and praises verse ladders are " +
+      "printed in ZERO of them — they are Horologion and Octoechos content. The " +
+      "psalm verses that DO recur are not byte-invariant: \"Precious in the " +
+      "sight of the Lord\" runs to four distinct forms across 66 print sites, " +
+      "and 07-19 prints two of them within one file. 63 of 66 agree, which is " +
+      "exactly the ratio that makes a shared table look proven.",
+
+      "AND THE RECURRENCE HAS A CAUSE THAT IS NOT INVARIANCE. The same verse " +
+      "prints under different labels at different positions — a Prokeimenon in " +
+      "19 files and an aposticha Verse in 15. What recurs widely across the " +
+      "Menaion is reading bodies (stored nowhere under R-4), rubrics " +
+      "(per-position), and common-of-the-saints propers keyed to SAINT TYPE, " +
+      "which general.js already models. The file, the loader and the browser " +
+      "axis ship together anyway, because warning 8 is about reachability, and " +
+      "the rail states the emptiness rather than hiding the axis.",
+
+      "HEIRARCH ENCODED — the sixth of the 26 files, complete across all three " +
+      "services. It prints THREE texts twice each within itself, and gets two of " +
+      "them wrong: the Doxasticon repeats byte for byte, but the same psalm " +
+      "verse is \"the World\" at the Megalynarion and \"the world\" at the " +
+      "Liturgy, and the same verse is \"judgement\" at Matins and \"judgment\" " +
+      "at the Liturgy. One file, one press, three repeats, two divergences — the " +
+      "anti-deduplication argument without needing a second file to compare to.",
+
+      "THE HANDOFF SAID HEIRARCH PRINTS `(Names)` CAPITALISED. IT DOES NOT. " +
+      "Measured: Heirarch prints `(name)` 38 times and nothing else; the two " +
+      "`(Names)` are in HEIRARCHS, the plural file. The encoding rule and the " +
+      "spec both say so correctly — two successive next-session prompts " +
+      "mis-copied it from them, including the one written last session. Both " +
+      "prompts corrected. A summary is not the source.",
+
+      "Heirarch's own novelties, all printed: the TEXTLESS conditional closer " +
+      "at three sites (`Glory ..., Both now ..., Theotokion or " +
+      "Stavrotheotokion:` with nothing beneath it); a PRINTED COUNT in a rubric " +
+      "(`these 4 Stichera`, where three are printed and the first takes " +
+      "\"(Twice)\" — the count reconciles with the device); only TWO Vespers " +
+      "lessons, the first from PROVERBS, a book general.js had not carried; and " +
+      "a longer great-Doxology conditional than the fixture's.",
+
+      "R-1 collapses cleanly here — the troparion is byte-identical at all four " +
+      "print sites and the kontakion at both. Unmercenaries' four-site split was " +
+      "a property of that file, not of the book.",
+
+      "The render gate now renders shared.js through the same component and path " +
+      "grammar as general.js. Empty today, and ASSERTED to render rather than " +
+      "assumed to: a table that only renders once it has a member would be " +
+      "discovered on the day someone adds one.",
+
+      "validate_menaion_v2 no longer swallows a load failure of a cross-date " +
+      "table or a register. \"Not yet written\" and \"written and broken\" were " +
+      "reported identically by a bare catch. Verified by deliberately breaking " +
+      "shared.js and confirming the gate says so.",
+
+      "Eleven sic rows and twenty recurrence rows. Beatitudes byte-identical to " +
+      "the canon at all seven positions — four files identical now against one " +
+      "variant. Four-to-one is a stronger case for collapsing them than " +
+      "three-to-one was, and it is the same wrong case.",
+    ],
+  },
+  {
     version: "v0.40.0",
     date: "August 2026",
     summary: "General Menaion — Unmercenaries encoded; a Matins tail that inverts, an epistle heading that names the wrong book, and a first-class way to record a printed citation we cannot follow",
