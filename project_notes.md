@@ -1,5 +1,124 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.38.0** | **Tone Trainer: v0.26.0** | Last synced: July 18, 2026
+**Tool version: v0.38.0** | **Tone Trainer: v0.26.0** | Last synced: August 14, 2026
+
+**Session August 14, 2026 — MENAION V2: spec, Phase 1 infrastructure, Phase 2 begun.**
+Commits: 536e190 · 00546fa · 573ac67 · 69eedef · 29efb19 · cc1dfbf · 5fb9a2a · 1ea4b8a.
+**No version bump yet — see "Owed before close" below.**
+
+### What shipped
+
+`menaion_v2_spec.md` (repo root, rev 2). Modeled section-for-section on
+`octoechos_v2_spec.md`. Seven Phase 0 questions ruled (§13.1, R-1…R-7); all 40
+defects from an adversarial parity audit closed (§14).
+
+**Phase 1 complete** — `schema_menaion_v2.js` (the single contract, 99 manifest
+rows), `validate_menaion_v2.mjs` (drift gate), `presentation.js` (registry, 99⋈99),
+`index.js` (`MONTH_LOADERS`, single point of truth for which months exist),
+`menaion-v2-browser.jsx` + `menaion-v2-reading.jsx` at `/menaion-v2`.
+`validate_viewer_coverage.mjs` extended to both books.
+
+**Library shelf**: "The Menaion (V2)" added as a SEVENTH book on the Hymnography
+shelf, beside V1 rather than replacing it. V1 still drives the Hours assembler.
+
+**Phase 2 begun** — `general.js`: Monastic complete (all three services),
+Monastics and Martyr at Vespers. 172 text nodes, 0 errors. First real
+`known_recurrences.js` (11 pairs) and `sic_register.js` (4 entries).
+
+### Rulings (menaion_v2_spec.md §13.1)
+
+- **R-1** canonical field per (commemoration, hymn type); measured — August
+  troparion print sites match at 98.9% median, and every apparent outlier was a
+  measurement artifact. **Refined this session:** tone is recorded PER SITE
+  (`verified_sites: [{locus, tone?}]`) because Martyr prints one troparion text
+  at Tone III and Tone IV.
+- **R-2** OCA calendar live; OCA texts and Tier 3 pointing deferred to Phase 6.
+- **R-3** Menaion exapostilaria are Menaion content (the Octoechos exclusion
+  covers the eleven gospel-keyed Evangelical ones).
+- **R-4** scripture tool owns reading text; Menaion stores citation + link.
+- **R-5** printed rubrics captured; named-but-unprinted text not fetched.
+- **R-6** attestation is BIDIRECTIONAL — demotion and re-encoding are first-class.
+- **R-7** whole library off Drive; `encoding_rule_v2.md` §2 to be rewritten.
+
+### Source: Drive is retired
+
+All liturgical source now arrives as a mounted folder, not Drive:
+`Orthodox Hours/Menaion - St. Sergius/` (140 files: May 16-31, June, July,
+August) and `Orthodox Hours/General_Menaion/` (26 files).
+**`08-23` does not exist** — Apodosis of the Dormition, confirmed a permanent
+source gap, carried as `no_daily_source`.
+
+### `encoding_rule_v2.md` corrections owed
+
+The General Menaion folder falsified §2.1 in three places, all of which would
+have become silent encoding errors:
+1. There is **no `Venerable.pdf`** — the files are `Monastic.pdf`/`Monastics.pdf`.
+2. The placeholder is lowercase **`(name)`** — 445 occurrences; `(Name)` and
+   `(N.)` appear **zero** times.
+3. These are **full Vigil services, 12-18pp**, not the "troparion, kontakion,
+   stichera" snippets §2.1 describes.
+Plus §2 (Drive) needs rewriting per R-7, and §6 (out-of-scope Matins) is
+superseded by full capture at every rank.
+
+### METHOD FINDING — hand-encode, do not classify
+
+A classifier was built and abandoned. It plateaued at 24 unclassified items
+across four files, and the deeper problem is that **a misclassification landing
+text in a plausible-but-wrong slot never appears in that count at all.**
+Monastic.pdf is now the reference fixture the remaining 25 files are checked
+AGAINST rather than tuned toward. Hand transcription immediately caught: two
+Tier-1/Tier-2 mixes, three alternative closers per slot, a conditional closer
+that is genuinely textless, and a troparion that had vanished from the page
+while the data still looked well-formed.
+
+### STANDING WARNING — Octoechos rules do not transfer unexamined
+
+**Six** rules imported from the Octoechos have now been falsified by real Menaion
+data. Expect more, especially in the subject files (`Cross`, `Theotokos`,
+`St John Baptist`, `Holy Fathers`).
+1. "Tier 2 must contain exactly one `**`" — the Menaion prints many irmoi with
+   `*` and no `**`. Now AT MOST one. (11 correct transcriptions were failing.)
+2. `order` may NOT contain duplicates — it may: Matins prints the troparion at
+   two positions. Now only ADJACENT repeats fail.
+3. A sic may sit only on a text node — it may sit on a reading heading.
+4. The translation-register lint flagged `you/your` — but plural address takes
+   "you" correctly in this translation (thou singular / you plural). Ten plural
+   files would have produced ~30 noise items.
+5. Troparion/kontakion hoisted to entry level as a LAYOUT rule — R-1 is a
+   STORAGE rule; the Menaion prints them in place in the service.
+6. Three Wisdom lessons at Vespers — a monastic-file fact; Martyr's lesson 1 is
+   Isaiah.
+
+### R-4 has a translation limit
+
+Derivation round-trips against `public/bible`. The six Wisdom lessons
+reconstruct at 0.89-0.93. **Isaiah reconstructs at 0.11** — the Menaion prints a
+KJV-style rendering where the corpus carries Brenton LXX. The mechanism REFUSED
+rather than fabricating (an earlier naive matcher had stamped a confident
+citation onto a Tier-1 hymn at 0.20). Citations now carry
+`citation_basis: printed | derived | identified`; `identified` reports on the
+worklist and is never shown as verified. **Consequence: where translations
+diverge, the scripture-tool link shows wording the Menaion does not print.**
+
+### Extraction
+
+St. Sergius PDFs draw display glyphs twice (faux-bold). **Use
+`pdfplumber.dedupe_chars()`** — 527 doubled lines across 37 August files drop to
+3, with all `*`/`**` intact. An earlier pass diagnosed this as a new artifact
+class and specified a normalizer, a per-node log, a gate hard-fail, and hand
+transcription of every heading. It is one extractor setting. The tell: the same
+doubling appears in the Octoechos chapter PDFs, which encoded fine.
+
+### Owed before close
+
+1. **Version bump to v0.39.0** — this session added new functionality
+   (`/menaion-v2`, two gates, a shelf book). Not yet done.
+2. **`encoding_rule_v2.md`** corrections above.
+3. **Martyr** Matins/Liturgy, then **Martyrs** (holds a Wisdom 5:15 variant:
+   "live unto the ages" vs Monastic's "for evermore").
+4. **PAT rotation** — the classic `ghp_` token has appeared in plaintext across
+   several sessions.
+5. `general.js` §6.2 batch order is at the head of that file.
+
 
 **Session July 18, 2026 — TONE 6 RESEARCH COMPLETE (logic only, no code).**
 Bill's directive: establish all Tone 6 phrase logic autonomously — including
