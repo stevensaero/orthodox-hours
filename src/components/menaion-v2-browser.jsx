@@ -340,6 +340,27 @@ export default function MenaionV2Browser() {
     background: active ? C.goldMid : "#fff",
     color: active ? C.gold : C.inkMid, fontWeight: active ? 700 : 400,
   });
+  // The bound-page card and its in-card toggles — same values as the Octoechos
+  // reading view. Previously the Menaion rendered straight onto the parchment
+  // and put these toggles in the header as buttons, which is the most visible
+  // way the two books diverged.
+  const readingCard = {
+    background: "#fff", border: `1px solid ${C.border}`, borderRadius: "6px",
+    padding: narrow ? "16px 18px" : "26px 34px", maxWidth: "720px",
+    margin: "0 auto", boxShadow: "0 1px 3px rgba(60,40,10,0.08)",
+  };
+  const ReadingToggles = (
+    <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", fontSize: "0.68rem", color: C.inkMid }}>
+      <label style={{ cursor: "pointer" }}>
+        <input type="checkbox" checked={showRubrics} onChange={e => setShowRubrics(e.target.checked)} /> Rubrics
+      </label>
+      <label style={{ cursor: "pointer" }}
+             title="As printed shows the * / ** pointing of the bound page; clean reading sets one melodic line per row (§3.4)">
+        <input type="checkbox" checked={mode === 'clean'} onChange={e => setMode(e.target.checked ? 'clean' : 'printed')} /> Clean reading
+      </label>
+    </div>
+  );
+
   const railStickyStyle = narrow ? {} : {
     position: "sticky",
     top: `calc(var(--hours-return-strip-h, 0px) + ${headerH + 12}px)`,
@@ -485,11 +506,6 @@ export default function MenaionV2Browser() {
                 <button type="submit" style={navBtn(false)}>Go</button>
               </form>
               {results !== null && <button onClick={() => { setResults(null); setQ(''); }} style={navBtn(false)}>Clear</button>}
-              <button onClick={() => setMode(m => m === 'printed' ? 'clean' : 'printed')} style={navBtn(mode === 'clean')}
-                      title="Printed: the * / ** the page shows. Clean: one melodic line per row.">
-                {mode === 'printed' ? 'As printed' : 'Clean reading'}
-              </button>
-              <button onClick={() => setShowRubrics(r => !r)} style={navBtn(!showRubrics)}>Rubrics</button>
               <button onClick={goToday} style={navBtn(false)}>Today</button>
               <button onClick={() => setView(audit ? 'reading' : 'audit')} style={navBtn(audit)}
                       title="Raw objects, provenance, absence basis (§8.1)">Audit</button>
@@ -520,7 +536,10 @@ export default function MenaionV2Browser() {
                 </div>
               ) : (
                 <ReadingContext.Provider value={{ mode, sics: {}, prefix, showRubrics }}>
-                  <RCommemoration entry={entry} path={`general.${generalType}`} />
+                  <div style={readingCard}>
+                    {ReadingToggles}
+                    <RCommemoration entry={entry} path={`general.${generalType}`} />
+                  </div>
                 </ReadingContext.Provider>
               )
             ) : data === undefined ? (
@@ -556,7 +575,10 @@ export default function MenaionV2Browser() {
               </div>
             ) : (
               <ReadingContext.Provider value={{ mode, sics: {}, prefix, showRubrics }}>
-                <RCommemoration entry={entry} path={`${dateKey}.c${cIdx}`} />
+                <div style={readingCard}>
+                  {ReadingToggles}
+                  <RCommemoration entry={entry} path={`${dateKey}.c${cIdx}`} />
+                </div>
               </ReadingContext.Provider>
             )}
           </div>

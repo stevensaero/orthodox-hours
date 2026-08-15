@@ -66,20 +66,25 @@ function SicMark({ path }) {
 }
 
 // ── typography atoms ─────────────────────────────────────────────────────────
+// Values below are COPIED from octoechos-v2-reading.jsx, not approximated. An
+// earlier pass wrote these atoms from scratch while the commit message claimed
+// the styling was "deliberately identical" — the chrome matched and the page
+// body did not.
 export function RHeading({ id, children }) {
   return (
     <div id={id} style={{
-      fontFamily: SERIF, fontVariant: "small-caps", letterSpacing: "0.06em",
-      textAlign: "center", color: C.gold, fontSize: "0.95rem",
-      margin: "26px 0 10px", paddingBottom: "4px", borderBottom: `1px solid ${C.border}`,
+      textAlign: "center", fontFamily: SERIF, fontSize: "0.78rem",
+      letterSpacing: "0.14em", color: C.inkMid, margin: "18px 0 6px",
+      textTransform: "uppercase",
     }}>{children}</div>
   );
 }
 
 export function RSubHeading({ children }) {
   return (
-    <div style={{ fontFamily: SERIF, fontVariant: "small-caps", letterSpacing: "0.05em",
-                  color: C.inkMid, fontSize: "0.82rem", margin: "16px 0 6px" }}>{children}</div>
+    <div style={{ textAlign: "center", fontFamily: SERIF, fontSize: "0.74rem",
+                  letterSpacing: "0.12em", color: C.inkLight, margin: "14px 0 4px",
+                  textTransform: "uppercase" }}>{children}</div>
   );
 }
 
@@ -90,10 +95,10 @@ export function RRubric({ node, path, center }) {
   return (
     <div id={path} title={node?.src ? `${node.src.file} — ${node.src.locus}` : undefined}
          style={{
-           fontFamily: SERIF, fontStyle: "italic", color: C.inkMid, fontSize: "0.86rem",
-           margin: "10px 0", padding: "4px 0 4px 10px",
-           borderLeft: center ? "none" : `2px solid ${C.goldFaint}`,
-           textAlign: center ? "center" : "left",
+           fontFamily: SERIF, fontStyle: "italic", fontSize: "0.82rem",
+           color: C.inkLight, margin: "8px 0", textAlign: center ? "center" : "left",
+           lineHeight: 1.5, background: C.goldFaint, borderLeft: "2px solid #D4C49A",
+           padding: "5px 9px", borderRadius: 0,
          }}>{text}<SicMark path={path} /></div>
   );
 }
@@ -106,16 +111,18 @@ export function RText({ node, path, label }) {
   const lines = mode === 'clean' ? splitPointed(node.text) : null;
   return (
     <div id={full} title={node.src ? `${node.src.file} — ${node.src.locus}` : undefined}
-         style={{ fontFamily: SERIF, color: C.ink, fontSize: "0.95rem", lineHeight: 1.6, margin: "10px 0" }}>
+         style={{ fontFamily: SERIF, color: C.ink, fontSize: "0.95rem", lineHeight: 1.65,
+                  margin: "7px 0", textIndent: mode === 'printed' ? "1.4rem" : 0 }}>
+      {node.spec_mel && (
+        <div style={{ textAlign: "center", fontFamily: SERIF, fontStyle: "italic",
+                      fontSize: "0.8rem", color: C.inkMid, margin: "4px 0" }}>
+          Spec. Mel.: “{node.spec_mel}”
+        </div>
+      )}
       {(label || node.sourceLabel) && (
         <span style={{ fontStyle: "italic", color: C.inkMid, marginRight: "6px" }}>
           {node.sourceLabel ?? label}
         </span>
-      )}
-      {node.spec_mel && (
-        <div style={{ fontStyle: "italic", color: C.inkLight, fontSize: "0.8rem", marginBottom: "2px" }}>
-          Spec. Mel.: {node.spec_mel}
-        </div>
       )}
       {lines
         ? lines.map((l, i) => (
@@ -263,15 +270,15 @@ export function RCommemoration({ entry, path }) {
   return (
     <div>
       <div style={{ textAlign: "center", margin: "8px 0 4px" }}>
-        <div style={{ fontFamily: SERIF, fontVariant: "small-caps", letterSpacing: "0.05em",
-                      color: C.ink, fontSize: "1.05rem" }}>
+        <div style={{ fontFamily: SERIF, letterSpacing: "0.18em", color: C.gold,
+                      fontSize: "0.85rem", textTransform: "uppercase" }}>
           {/* `title` is a TEXT NODE, not a string — rendering it raw threw
               "Objects are not valid as a React child" and the ErrorBoundary
               swallowed the whole General Menaion view. Found by rendering; no
               amount of reading the file would have shown it. */}
           {typeof entry.title === 'string' ? entry.title : (entry.title?.text ?? '')}
         </div>
-        <div style={{ fontFamily: SERIF, fontSize: "0.72rem", color: C.inkLight, fontStyle: "italic" }}>
+        <div style={{ fontFamily: SERIF, fontSize: "0.78rem", color: C.inkLight, marginBottom: "8px" }}>
           {entry.kind ?? ''}{entry.rank ? ` · ${String(entry.rank).replace(/_/g, ' ')}` : ''}
           {entry.fekula_section ? ` · Fekula §${entry.fekula_section}` : ''}
         </div>
