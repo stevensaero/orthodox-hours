@@ -1,6 +1,17 @@
-# ENCODING RULE v2.10 — Orthodox Hours Tool
+# ENCODING RULE v2.11 — Orthodox Hours Tool
 **Authority:** Fekula & Williams (2009) · St. Ignatius Orthodox Press Anthologion (2024) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** August 2026 — §2 rewritten (Drive retired), §2.1 corrected against the folder, §6 superseded for V2.
+**Updated:** August 2026 · **Supersedes:** v2.10, v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+
+**v2.11 changes — SOURCE DELIVERY AND THE GENERAL MENAION (§2, §2.1, §6):**
+Drive is retired as a source channel; source arrives as a mounted folder (§2),
+and §1's authority table is repointed. §2.1 is corrected against the actual
+folder listing: there is **no `Venerable.pdf`** (the files are `Monastic.pdf` /
+`Monastics.pdf`), the placeholder is lowercase **`(name)`** (445 occurrences;
+`(Name)` and `(N.)` zero), and these are **full Vigil services, 12-18pp**, not
+proper-snippets. Adds: plural and subject files carry no placeholder at all, and
+the lesson set is per-file. §6 is marked SUPERSEDED for Menaion V2, which
+captures everything its source prints at every rank. Extraction rule added: use
+`pdfplumber.dedupe_chars()`.
 
 **v2.10 changes — PAROEMIA BOOK ABBREVIATIONS MUST BE UNAMBIGUOUS (§11, new #19):**
 07-28B (Smolensk Icon) was found encoding Ezekiel's shut-eastern-gate paroemia
