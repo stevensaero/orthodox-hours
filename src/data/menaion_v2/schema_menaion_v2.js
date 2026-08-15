@@ -416,8 +416,12 @@ export const REGISTER_ARCHAIC = /\b(thee|thou|thy|thine|ye)\b/i;
 // three LIC stichera fired the lint three times for correct text.
 //
 // A text carrying a plural vocative is therefore NOT flagged for "you".
+// Keyed on plural VOCATIVES plus the unambiguous plural reflexive/pronoun forms.
+// A vocative alone was too narrow: "Giving yourselves up entirely to your
+// Creator … you were deemed worthy" is plainly plural address and names no
+// plural noun at all.
 export const REGISTER_PLURAL_ADDRESS =
-  /\b(fathers|mothers|ones|saints|martyrs|martyresses|apostles|hierarchs|monastics|nuns|prophets|God-bearers|unmercenaries|children)\b/i;
+  /\b(fathers|mothers|ones|saints|martyrs|martyresses|apostles|hierarchs|monastics|nuns|prophets|God-bearers|unmercenaries|children|yourselves|ye)\b/i;
 
 // ── FIELD MANIFEST (§7.2) ────────────────────────────────────────────────────
 // Every renderable field path. Paths are COMMEMORATION-GENERIC, using a <c>

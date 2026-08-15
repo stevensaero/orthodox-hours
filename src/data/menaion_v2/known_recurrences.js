@@ -62,6 +62,31 @@ export default [
     relation: 'variant',
     note: '“Today the universe is illumined …”. Vespers: “adorned with flowers”, “doth cry aloud”, and the split “* *cease”. Matins: “decorated with flowers”, “cries aloud”, and a proper “** cease”. The Matins print is why the Vespers ** reading is evidenced, not assumed.' },
 
+  // ── Monastics.pdf, INTERNAL — and the counter-example to Monastic's ─────────
+  // Monastic's Beatitudes reprint its canon troparia BYTE-IDENTICALLY. Monastics'
+  // do NOT: three of the seven differ. Same book, same structure, same position,
+  // opposite behaviour. A design that deduplicated the Beatitudes against the
+  // canon would have been "correct" on the first file encoded and silently wrong
+  // on the second.
+  { a: 'general.Monastics.matins.canons[0].odes.3.items[0]', b: 'general.Monastics.liturgy.beatitudes[0]',
+    relation: 'identical', note: 'Ode III troparion 1 = Beatitude 1.' },
+  { a: 'general.Monastics.matins.canons[0].odes.3.items[1]', b: 'general.Monastics.liturgy.beatitudes[1]',
+    relation: 'identical', note: 'Ode III troparion 2 = Beatitude 2.' },
+  { a: 'general.Monastics.matins.canons[0].odes.3.items[2]', b: 'general.Monastics.liturgy.beatitudes[2]',
+    relation: 'variant', note: 'Ode III troparion 3: canon prints “you subdue the raging”, Beatitude prints “ye subdue the raging”.' },
+  { a: 'general.Monastics.matins.canons[0].odes.6.items[0]', b: 'general.Monastics.liturgy.beatitudes[3]',
+    relation: 'identical', note: 'Ode VI troparion 1 = Beatitude 4.' },
+  { a: 'general.Monastics.matins.canons[0].odes.6.items[1]', b: 'general.Monastics.liturgy.beatitudes[4]',
+    relation: 'variant', note: 'Ode VI troparion 2: canon “bestowing them upon those in need”, Beatitude “unto those in need”.' },
+  { a: 'general.Monastics.matins.canons[0].odes.6.items[2]', b: 'general.Monastics.liturgy.beatitudes[5]',
+    relation: 'identical', note: 'Ode VI troparion 3 = Beatitude 6.' },
+  { a: 'general.Monastics.matins.canons[0].odes.6.items[3]', b: 'general.Monastics.liturgy.beatitudes[6]',
+    relation: 'variant', note: 'Ode VI Theotokion: canon “a source of dispassion”, Beatitude “a Source of dispassion”.' },
+
+  // Monastics INTERNAL — one hymn, two print sites in one file.
+  { a: 'general.Monastics.vespers.aposticha_glory', b: 'general.Monastics.matins.doxology_glory',
+    relation: 'identical', note: '“O venerable fathers! * loathing the sweetness of this world …” — Vespers aposticha Glory and the Doxology Glory.' },
+
   // Cross-file, from the 2c batch scan. Not yet encodable — Martyrs.pdf is not
   // transcribed — but recorded so the pair is not rediscovered later.
   // { a: 'general.Monastic.vespers.readings[1]', b: 'general.Martyrs...',
