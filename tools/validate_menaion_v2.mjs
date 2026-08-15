@@ -102,8 +102,13 @@ function checkTextNode(node, path, ctx) {
     else {
       const tones = new Set();
       for (const s of node.verified_sites) {
-        if (!isPlainObj(s) || !s.locus) { err(path, `verified_sites entries must be { locus, tone? }`); continue; }
+        if (!isPlainObj(s) || !s.locus) { err(path, `verified_sites entries must be { locus, tone?, repeat? }`); continue; }
         if (s.tone !== undefined) tones.add(s.tone);
+        // A per-site device, on the same footing as a per-site tone (§2.8).
+        if (s.repeat !== undefined && s.repeat !== 2)
+          err(path, `verified_sites[${s.locus}].repeat may only be 2 (the "(Twice)" device)`);
+        const un = Object.keys(s).filter(k => !['locus', 'tone', 'repeat'].includes(k));
+        if (un.length) err(path, `verified_sites[${s.locus}] has unknown key(s): ${un.join(', ')}`);
       }
       // Divergent tones across print sites are LEGITIMATE and recorded, not an
       // error — but they must be visible, and a top-level `tone` alongside them
@@ -213,8 +218,30 @@ function walk(value, path, ctx, kindHint) {
     // gap: the heading alone cannot identify the passage, and three headings
     // reading "A READING FROM THE WISDOM OF SOLOMON" are indistinguishable.
     // Absence must be declared (§2.10), not left implicit.
-    if (value.citation === undefined && !value.derived)
-      err(path, `reading identifies no passage — needs a printed citation, a verified derived one, or an explicit absence node (§2.10/§2.11)`);
+    // A reading with NO citation, NO derivation and NO recorded dispute is the
+    // silent gap. A DISPUTED citation is not silence: it is a positive record
+    // that the page was read, its reference measured against the corpus, and
+    // found to name the wrong passage. That is a declaration (§2.10), so it
+    // satisfies this check — and it is surfaced below as a FINDING, because the
+    // one thing we must never do is quietly pick a side.
+    if (value.citation === undefined && !value.derived && !value.citation_disputed)
+      err(path, `reading identifies no passage — needs a printed citation, a verified derived one, a recorded citation_disputed, or an explicit absence node (§2.10/§2.11)`);
+    if (value.citation_disputed) {
+      const d = value.citation_disputed;
+      if (!isPlainObj(d)) err(path, `citation_disputed must be an object (§2.11)`);
+      else {
+        for (const k of S.CITATION_DISPUTED.required)
+          if (d[k] === undefined) err(`${path}.citation_disputed`, `missing required '${k}'`);
+        const unknown = Object.keys(d).filter(k =>
+          !S.CITATION_DISPUTED.required.includes(k) && !S.CITATION_DISPUTED.optional.includes(k));
+        if (unknown.length) err(`${path}.citation_disputed`, `unknown key(s): ${unknown.join(', ')}`);
+      }
+      if (value.citation !== undefined)
+        err(path, `a disputed citation must NOT also store a resolvable 'citation' — under R-4 the stored citation is the link the reader follows, and resolving a disputed one sends them to a passage the book does not print`);
+      if (value.citation_verbatim === undefined)
+        err(path, `citation_disputed requires citation_verbatim — the dispute is meaningless without what the page actually prints`);
+      find(path, `PRINTED CITATION DISPUTED — the page prints '${d.printed_as}' over a body that reconstructs as '${d.body_is}' (${d.reconstruction}). No link is offered. Confirm against the physical book.`);
+    }
     if (value.citation && value.citation_basis && !S.CITATION_BASIS.includes(value.citation_basis))
       err(path, `citation_basis '${value.citation_basis}' not in CITATION_BASIS`);
     if (value.citation && !value.citation_verbatim && !value.citation_basis)
@@ -396,10 +423,17 @@ function checkSics(reg, roots) {
     const at = `sic_register[${i}]`;
     const r = resolvePath(roots, e.path);
     if (r.unresolved) { err(at, `sic path does not resolve: ${e.path}`); continue; }
-    const t = isTextNode(r.value) ? r.value.text
-            : (isPlainObj(r.value) && typeof r.value.heading === 'string') ? r.value.heading
-            : null;
-    if (t == null) { err(at, `sic path is neither a text node nor a reading heading`); continue; }
+    // A sic may sit on a text node, on a reading HEADING (warning 3), or on a
+    // printed CITATION. The third was added when Unmercenaries.pdf printed
+    // `(43, 9-14; )` — a dangling semicolon inside the reference itself, which
+    // lives in `citation_verbatim` and in neither of the other two places.
+    const cands = [
+      isTextNode(r.value) ? r.value.text : null,
+      isPlainObj(r.value) && typeof r.value.heading === 'string' ? r.value.heading : null,
+      isPlainObj(r.value) && typeof r.value.citation_verbatim === 'string' ? r.value.citation_verbatim : null,
+    ].filter(x => x != null);
+    if (!cands.length) { err(at, `sic path is neither a text node, a reading heading, nor a printed citation`); continue; }
+    const t = cands.find(x => x.includes(e.verbatim)) ?? cands[0];
     if (!t.includes(e.verbatim))
       err(at, `recorded sic no longer present — silent "correction" of a recorded sic is a hard-fail (§7.4): ${JSON.stringify(e.verbatim)}`);
   }

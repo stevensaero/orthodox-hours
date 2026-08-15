@@ -245,7 +245,14 @@ export const TEXT_NODE = {
     'saint',             // which commemoration, where a section interleaves two
     'name_substituted',  // {placeholder, value} — General Menaion (§6.2)
     'verified_sites',    // R-1 multi-site verification record. Entries are
-                         // { locus, tone? } — NOT bare strings. Martyr.pdf prints
+                         // { locus, tone?, repeat? } — NOT bare strings.
+                         // `repeat` joins `tone` for the same reason and on the
+                         // same evidence: Unmercenaries.pdf prints one troparion
+                         // text at four sites, and ONLY the God-is-the-Lord site
+                         // (p5) carries "(Twice)". A device is a per-site fact
+                         // exactly as a declared tone is; a top-level `repeat`
+                         // would assert the device at three sites that do not
+                         // print it. Martyr.pdf prints
                          // one troparion text at TWO DECLARED TONES (III at
                          // Matins, IV at Liturgy). Bill's ruling: stay true to
                          // the text, keep ONE field, and record the tone PER
@@ -300,12 +307,44 @@ export const ABSENCE_NODE = {
 //                if it were verified.
 export const CITATION_BASIS = ['printed', 'derived', 'identified'];
 
+// ── A PRINTED citation that does not match the PRINTED body (§2.11, R-4) ─────
+// Unmercenaries.pdf p13 prints `THE EPISTLE TO THE ROMANS. (12:4-5, 15-21)` over
+// a body that is 1 Corinthians 12:27-31, 13:1-8 — measured against public/bible
+// at 0.944 for 1 Corinthians and 0.262 for Romans 12:4-21. The book names the
+// wrong epistle.
+//
+// This is NOT any of the three CITATION_BASIS values, and that is the point.
+// `printed` means the reference is trusted; `derived` and `identified` describe
+// a reference WE supplied where the source gave none. Here the source gave one
+// and it is wrong, so:
+//
+//   - `citation_verbatim` still stores what the page prints. Verbatim discipline
+//     is not suspended because the page is mistaken.
+//   - `citation` is OMITTED. Under R-4 the stored citation IS the link the
+//     reader follows, and resolving this one would send a reader to Romans 12
+//     to read text the Menaion does not print. That is worse than the
+//     translation-divergence risk §2.11 already accepts: a different book, not
+//     different wording.
+//   - `citation_disputed` carries the measurement, so the claim is falsifiable
+//     rather than a remembered caveat, and the gate reports it as a FINDING for
+//     Bill — never auto-resolved, never silently corrected.
+//
+// A reading carrying `citation_disputed` satisfies the "identifies no passage"
+// check: the dispute IS the declaration (§2.10 — absence is declared, never
+// inferred). Reading the page and recording that its reference is unusable is a
+// complete act of encoding; leaving the field silent would not be.
+export const CITATION_DISPUTED = {
+  required: ['printed_as', 'body_is', 'reconstruction', 'note'],
+  optional: ['printed_reconstruction'],
+};
+
 export const READING_NODE = {
   required: ['heading'],
   // `citation_verbatim` is required only where the source PRINTS a reference.
   // The General Menaion's Vespers lessons print none; those carry `derived`
   // instead, and the gate re-runs the reconstruction rather than trusting it.
-  optional: ['src', 'citation_verbatim', 'citation', 'citation_basis', 'derived', 'note'],
+  optional: ['src', 'citation_verbatim', 'citation', 'citation_basis', 'derived',
+             'citation_disputed', 'note', 'provenance_note'],
   citation: { required: ['book', 'chapter', 'verses'], optional: ['pericope_number'] },
 };
 

@@ -177,12 +177,25 @@ export function RCitation({ node, path }) {
   const derived = !node.citation_verbatim && resolvable
     ? `${c.book} ${c.chapter}${c.verses ? ':' + String(c.verses).replace(/^\d+:/, '') : ''}`
     : null;
+  // A DISPUTED citation renders as text and never as a link. The reference is
+  // Menaion content and still shows verbatim; what is withheld is the promise
+  // that following it leads to what the page prints. Rendering it as a live link
+  // would be the whole defect the dispute exists to record.
+  const disputed = node.citation_disputed;
   return (
     <div id={path} style={{ fontFamily: SERIF, margin: "10px 0" }}>
       <div style={{ fontVariant: "small-caps", letterSpacing: "0.04em", color: C.inkMid, fontSize: "0.82rem" }}>
         {node.heading}
       </div>
-      {resolvable && (
+      {disputed ? (
+        <>
+          <span style={{ color: C.inkMid, fontSize: "0.9rem" }}>{node.citation_verbatim}</span>
+          <div style={{ color: C.red, fontSize: "0.72rem", fontStyle: "italic", marginTop: "2px" }}>
+            printed reference disputed — the body printed here reconstructs as{' '}
+            {disputed.body_is} ({disputed.reconstruction}). No link is offered.
+          </div>
+        </>
+      ) : resolvable && (
         <a href={href} style={{ color: C.gold, fontSize: "0.9rem", textDecoration: "none", borderBottom: `1px dotted ${C.gold}` }}>
           {node.citation_verbatim ?? derived} ↗
         </a>
