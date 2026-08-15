@@ -39,11 +39,22 @@ export async function loadMenaionV2General() {
   if (!_general) _general = (await import('./general.js')).default;
   return _general;
 }
-// NO loadMenaionV2Shared() until shared.js EXISTS. A dynamic import of a missing
-// module is not a runtime concern the bundler forgives: Vite/rolldown resolves
-// it at BUILD time and fails with UNRESOLVED_IMPORT, try/catch notwithstanding.
-// That is what broke every deploy from the Phase 1 commit onward. Add the loader
-// in the same change that adds the file (§6.1).
+// shared.js NOW EXISTS, so the loader is safe to add — and it is added in the
+// same change that creates the file, which is the whole of the lesson here. A
+// dynamic import of a MISSING module is not a runtime concern the bundler
+// forgives: Vite/rolldown resolves it at BUILD time and fails with
+// UNRESOLVED_IMPORT, try/catch notwithstanding. That is what broke every deploy
+// from the Phase 1 commit onward.
+//
+// The table is EMPTY, by measurement rather than by omission — see shared.js's
+// header for the 140-file survey that falsified all three §6.1 candidates. It is
+// loaded and surfaced anyway, because warning 8 is about REACHABILITY: a table
+// with no loader and no axis is indistinguishable from one nobody has looked at.
+let _shared = null;
+export async function loadMenaionV2Shared() {
+  if (!_shared) _shared = (await import('./shared.js')).default;
+  return _shared;
+}
 
 const _cache = {};
 export async function loadMenaionV2Month(mm) {

@@ -29,10 +29,19 @@ writeFileSync(join(TMP, 'src/entry.jsx'), `
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import GENERAL from ${JSON.stringify(join(ROOT, 'src/data/menaion_v2/general.js'))};
+import SHARED from ${JSON.stringify(join(ROOT, 'src/data/menaion_v2/shared.js'))};
 import { RCommemoration } from ${JSON.stringify(join(ROOT, 'src/components/menaion-v2-reading.jsx'))};
 export function run() {
   return Object.keys(GENERAL).map(k => [k,
     renderToString(React.createElement(RCommemoration, { entry: GENERAL[k], path: 'general.' + k }))]);
+}
+// The cross-date tables render through the same component and the same path
+// grammar. Empty today, and asserted to render rather than assumed to: a table
+// that only renders once it has a member would be discovered on the day someone
+// adds one, which is the worst possible day to discover it.
+export function runShared() {
+  return Object.keys(SHARED).map(k => [k,
+    renderToString(React.createElement(RCommemoration, { entry: SHARED[k], path: 'shared.' + k }))]);
 }
 `);
 
@@ -47,8 +56,9 @@ await build({
 const OUT = join(ROOT, '.render-test-out');
 const bundle = readdirSync(OUT).find(f => /^entry\.m?js$/.test(f));
 if (!bundle) { console.error('render gate: no SSR bundle produced'); process.exit(2); }
-const { run } = await import(join(OUT, bundle));
+const { run, runShared } = await import(join(OUT, bundle));
 const GENERAL = (await import(join(ROOT, 'src/data/menaion_v2/general.js'))).default;
+const SHARED = (await import(join(ROOT, 'src/data/menaion_v2/shared.js'))).default;
 
 const collect = (n, path, out) => {
   if (!n || typeof n !== 'object') return out;
@@ -78,9 +88,23 @@ for (const [key, html] of run()) {
   }
 }
 
+for (const [key, html] of runShared()) {
+  const text = flatten(html);
+  for (const [path, t] of collect(SHARED[key], `shared.${key}`, [])) {
+    checked++;
+    if (!text.includes(t.replace(/\s+/g, ' ').trim())) {
+      missing++;
+      console.log(`  MISSING FROM RENDER · ${path}\n      ${JSON.stringify(t.slice(0, 90))}`);
+    }
+  }
+}
+const sharedCount = Object.keys(SHARED).length;
+
 rmSync(TMP, { recursive: true, force: true });
 rmSync(OUT, { recursive: true, force: true });
 
-console.log(`\n${checked} stored strings checked against the rendered output · ${missing} missing`);
+console.log(`\nshared.js: ${sharedCount} table(s) — EMPTY BY MEASUREMENT (see its header; ` +
+            `all three §6.1 candidates falsified against 140 daily files), rendered through the same path`);
+console.log(`${checked} stored strings checked against the rendered output · ${missing} missing`);
 if (missing) { console.log('FAIL — encoded but invisible'); process.exit(1); }
 console.log('✓ Menaion V2 render gate: PASS');

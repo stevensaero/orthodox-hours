@@ -18,6 +18,7 @@
 
 import * as S from '../src/data/menaion_v2/schema_menaion_v2.js';
 import { readdir } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -516,7 +517,14 @@ async function main() {
         walk(entry, `${key}.${id}`, ctx, null);
         if (key === 'general') checkGeneralPageCoverage(id, entry);
       }
-    } catch { /* table not yet written */ }
+    } catch (e) {
+      // "Not yet written" and "written and broken" are different facts, and a
+      // bare catch reports them identically — which is the silence §2.10 exists
+      // to remove, in tooling form. shared.js now always exists, so a throw from
+      // it is a defect and must be loud.
+      if (existsSync(join(DATA_DIR, name)))
+        err(key, `${name} exists but failed to load: ${e.message}`);
+    }
   }
   const resolveRoots = { menaion: flat };
 
@@ -527,7 +535,10 @@ async function main() {
     try {
       const mod = (await import(join(DATA_DIR, name))).default;
       fn(mod, resolveRoots);
-    } catch { /* register not yet written */ }
+    } catch (e) {
+      if (existsSync(join(DATA_DIR, name)))
+        err(name, `register exists but failed to load: ${e.message}`);
+    }
   }
 
   report(ctx);

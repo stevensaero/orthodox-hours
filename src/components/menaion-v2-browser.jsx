@@ -18,7 +18,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import React, { useState, useEffect, useRef, useMemo, createContext, useContext } from 'react';
-import { MONTH_LOADERS, MONTH_LABELS, MONTHS, loadMenaionV2General } from '../data/menaion_v2/index.js';
+import { MONTH_LOADERS, MONTH_LABELS, MONTHS, loadMenaionV2General, loadMenaionV2Shared } from '../data/menaion_v2/index.js';
 import { registryLookup, SERVICE_HEADINGS, SERVICE_ORDER } from '../data/menaion_v2/presentation.js';
 import { ANCHOR_RE, SERVICES } from '../data/menaion_v2/schema_menaion_v2.js';
 import { ReadingContext, RCommemoration } from './menaion-v2-reading.jsx';
@@ -227,6 +227,14 @@ export default function MenaionV2Browser() {
   // own terms: nothing inside the schema may be unviewable.
   const [general, setGeneral] = useState(null);
   const [generalType, setGeneralType] = useState(null);
+  // The cross-date tables (§6.1) are a THIRD axis beside the months and the
+  // General Menaion. The table is currently empty by measurement, not by
+  // omission — and it is surfaced anyway, because warning 8 is about
+  // reachability: a table nothing can navigate to is indistinguishable from a
+  // table nobody has looked at. The rail states the emptiness rather than
+  // hiding the axis, so a reader can see the question was asked.
+  const [shared, setShared] = useState(null);
+  const [sharedTable, setSharedTable] = useState(null);
   const [data, setData] = useState(undefined);       // undefined = loading, null = not encoded
   const [dateKey, setDateKey] = useState(null);
   const [cIdx, setCIdx] = useState(0);
@@ -257,6 +265,7 @@ export default function MenaionV2Browser() {
   }, []);
 
   useEffect(() => { loadMenaionV2General().then(g => setGeneral(g ?? {})); }, []);
+  useEffect(() => { loadMenaionV2Shared().then(t => setShared(t ?? {})); }, []);
 
   useEffect(() => {
     let live = true;
@@ -292,10 +301,16 @@ export default function MenaionV2Browser() {
   const dateObj = dateKey && data ? data[dateKey] : null;
   const comms = dateObj?.commemorations ?? [];
   const encoded = useMemo(() => new Set(dateObj?._encoded ?? []), [dateObj]);
-  // A selected General Menaion type takes precedence over the date axis.
-  const entry = generalType ? (general?.[generalType] ?? null) : (comms[cIdx] ?? null);
-  const prefix = generalType ? `general.${generalType}.` : (dateKey ? `${dateKey}.c${cIdx}.` : '');
+  // A selected cross-date table, then a selected General Menaion type, take
+  // precedence over the date axis — most specific selection wins.
+  const entry = sharedTable ? (shared?.[sharedTable] ?? null)
+              : generalType ? (general?.[generalType] ?? null)
+              : (comms[cIdx] ?? null);
+  const prefix = sharedTable ? `shared.${sharedTable}.`
+               : generalType ? `general.${generalType}.`
+               : (dateKey ? `${dateKey}.c${cIdx}.` : '');
   const generalTypes = useMemo(() => Object.keys(general ?? {}).sort(), [general]);
+  const sharedTables = useMemo(() => Object.keys(shared ?? {}).sort(), [shared]);
 
   const goToday = () => {
     const d = new Date();
@@ -426,10 +441,31 @@ export default function MenaionV2Browser() {
           <div style={railLabel}>GENERAL MENAION</div>
           <div>
             {generalTypes.map(k => (
-              <div key={k} onClick={() => { setGeneralType(k === generalType ? null : k); setRailOpen(false); }}
+              <div key={k} onClick={() => { setGeneralType(k === generalType ? null : k); setSharedTable(null); setRailOpen(false); }}
                    style={railItem(k === generalType)}>{k}</div>
             ))}
           </div>
+        </>
+      )}
+      {shared && (
+        <>
+          <div style={railLabel}>CROSS-DATE TABLES</div>
+          {sharedTables.length > 0 ? (
+            <div>
+              {sharedTables.map(k => (
+                <div key={k} onClick={() => { setSharedTable(k === sharedTable ? null : k); setGeneralType(null); setRailOpen(false); }}
+                     style={railItem(k === sharedTable)}>{k}</div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ fontSize: "0.68rem", color: C.inkLight, fontStyle: "italic",
+                          lineHeight: 1.45, padding: "2px 0 4px" }}>
+              none — the three §6.1 candidates were measured against all 140
+              daily files and falsified. The ladders are not printed in the
+              Menaion at all; the psalm verses that recur are not byte-identical
+              across their print sites. See <code>shared.js</code>.
+            </div>
+          )}
         </>
       )}
       {entry && (
@@ -449,7 +485,9 @@ export default function MenaionV2Browser() {
     </div>
   );
 
-  const breadcrumb = generalType
+  const breadcrumb = sharedTable
+    ? `Cross-date tables · ${sharedTable}`
+    : generalType
     ? `General Menaion · ${generalType}`
     : `${MONTH_LABELS[mm] ?? mm}${dateKey ? ` ${Number(dateKey.slice(3))}` : ''}` +
       `${comms.length > 1 ? ` · ${entry?.kind ?? ''}` : ''}`;
