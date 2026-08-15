@@ -21,6 +21,76 @@
 // positions store their own copy (§2.3, no dereferencing); these rows are what
 // make the duplication a checked fact rather than an invitation to collapse it.
 export default [
+  // ── Unmercenaries.pdf ──────────────────────────────────────────────────────
+  // WITHIN THE FILE: the Beatitudes reprint the canon troparia BYTE-IDENTICALLY
+  // at all seven positions — Ode III troparia 1-3, Ode VI troparia 1-3, and the
+  // Ode VI Theotokion. That is the Monastic and Martyrs behaviour.
+  //
+  // THE TALLY IS NOW THREE IDENTICAL TO ONE VARIANT (Monastics diverges at three
+  // of seven). Three-to-one is exactly the ratio that makes deduplication look
+  // safe, and it is not: the one file that diverges would be silently rewritten.
+  // Both positions keep their own copy (§2.3).
+  { a: 'general.Unmercenaries.matins.canons[0].odes.3.items[0]',
+    b: 'general.Unmercenaries.liturgy.beatitudes[0]', relation: 'identical',
+    note: 'Ode III troparion 1 reprinted as Beatitude 1 (the Beatitude adds "(Twice)"; the DEVICE differs, the text does not).' },
+  { a: 'general.Unmercenaries.matins.canons[0].odes.3.items[1]',
+    b: 'general.Unmercenaries.liturgy.beatitudes[1]', relation: 'identical', note: 'Ode III troparion 2 = Beatitude 2.' },
+  { a: 'general.Unmercenaries.matins.canons[0].odes.3.items[2]',
+    b: 'general.Unmercenaries.liturgy.beatitudes[2]', relation: 'identical', note: 'Ode III troparion 3 = Beatitude 3.' },
+  { a: 'general.Unmercenaries.matins.canons[0].odes.6.items[0]',
+    b: 'general.Unmercenaries.liturgy.beatitudes[3]', relation: 'identical', note: 'Ode VI troparion 1 = Beatitude 4.' },
+  { a: 'general.Unmercenaries.matins.canons[0].odes.6.items[1]',
+    b: 'general.Unmercenaries.liturgy.beatitudes[4]', relation: 'identical', note: 'Ode VI troparion 2 = Beatitude 5.' },
+  { a: 'general.Unmercenaries.matins.canons[0].odes.6.items[2]',
+    b: 'general.Unmercenaries.liturgy.beatitudes[5]', relation: 'identical', note: 'Ode VI troparion 3 = Beatitude 6.' },
+  { a: 'general.Unmercenaries.matins.canons[0].odes.6.items[3]',
+    b: 'general.Unmercenaries.liturgy.beatitudes[6]', relation: 'identical',
+    note: 'Ode VI Theotokion = Beatitude 7 — carrying the "summit all creation" sic identically at both sites.' },
+
+  // THE TROPARION, WITHIN THE FILE. Four print sites, two readings. The
+  // entry-level canonical field is taken from the two `**` sites (p4, p5); these
+  // two rows record that the other two are NOT the same string, which is the
+  // whole reason R-1 could not collapse them.
+  { a: 'general.Unmercenaries.troparion',
+    b: 'general.Unmercenaries.matins.doxology_troparion', relation: 'variant',
+    note: 'ONE ASTERISK, NOT TWO. p4 and p5 print "visit our infirmities. ** Freely ye have received"; p12 (after the Doxology) prints a single asterisk at the same position. A penultimate marker is a singable fact, not a typographic nicety, so the two are not interchangeable.' },
+  { a: 'general.Unmercenaries.matins.doxology_troparion',
+    b: 'general.Unmercenaries.liturgy.liturgy_troparion', relation: 'identical',
+    note: 'The two single-asterisk sites (p12, p13) agree with each other exactly. The file is internally consistent about having two readings; it is not simply careless at one site.' },
+
+  // ACROSS FILES. New identities the fifth file establishes. Each is registered
+  // against ONE prior file; where a text is common to more, the note says so
+  // rather than multiplying near-duplicate rows.
+  { a: 'general.Unmercenaries.matins.anabathmoi[0]',
+    b: 'general.Martyrs.matins.anabathmoi[0]', relation: 'identical',
+    note: 'The Tone IV first antiphon, "From my youth". Identical in ALL FIVE encoded files — Monastic, Monastics, Martyr, Martyrs, Unmercenaries. The first General Menaion text verified identical across every file that prints it.' },
+  { a: 'general.Unmercenaries.matins.anabathmoi[1]',
+    b: 'general.Martyrs.matins.anabathmoi[1]', relation: 'identical', note: '"Ye haters of Zion" — likewise identical in all five.' },
+  { a: 'general.Unmercenaries.matins.anabathmoi_closer',
+    b: 'general.Martyrs.matins.anabathmoi_closer', relation: 'identical', note: '"In the Holy Spirit" — likewise identical in all five.' },
+  { a: 'general.Unmercenaries.matins.psalm50_closer',
+    b: 'general.Martyrs.matins.psalm50_closer', relation: 'identical', note: 'The Both-now after Psalm 50. Also identical in Monastics and Martyr.' },
+  { a: 'general.Unmercenaries.matins.psalm50_verse',
+    b: 'general.Martyrs.matins.psalm50_verse', relation: 'identical', note: '"Have mercy on me, O God". Also identical in Monastics and Martyr.' },
+  { a: 'general.Unmercenaries.matins.megalynarion_verse',
+    b: 'general.Martyrs.matins.megalynarion_verse', relation: 'identical', note: 'The selected-psalm verse "Our God is our refuge and strength".' },
+  { a: 'general.Unmercenaries.liturgy.communion_verse',
+    b: 'general.Martyrs.liturgy.communion_verse', relation: 'identical', note: '"Rejoice in the Lord, O ye Righteous" — the martyric communion verse, shared with Martyrs.' },
+  { a: 'general.Unmercenaries.matins.canons[0].odes.5.irmos',
+    b: 'general.Monastic.matins.canons[0].odes.5.irmos', relation: 'identical',
+    note: 'Ode V irmos "Rising early we cry to Thee". Two files, two different canons, two different tones declared at the canon head — and the same irmos text. Worth knowing before assuming an irmos is canon-specific.' },
+  { a: 'general.Unmercenaries.matins.aposticha_stavrotheotokion',
+    b: 'general.Martyr.vespers.aposticha_stavrotheotokion', relation: 'identical',
+    note: 'CROSS-FILE AND CROSS-SERVICE: identical text at Martyr\'s VESPERS aposticha and at Unmercenaries\' MATINS aposticha. Position is not a property of the text.' },
+  { a: 'general.Unmercenaries.matins.sessional_ode3_closer',
+    b: 'general.Martyr.matins.sessional_polyeleos_closer', relation: 'identical',
+    note: 'CROSS-FILE AND CROSS-POSITION: "O Virgin Theotokos, thou art an invincible wall" closes Martyr\'s post-Polyeleos sessional and Unmercenaries\' post-Ode-III sessional.' },
+
+  // THE ONE VARIANT — and the best cross-file evidence in the book so far.
+  { a: 'general.Martyrs.vespers.lic_stavrotheotokion',
+    b: 'general.Unmercenaries.vespers.aposticha_stavrotheotokion', relation: 'variant',
+    note: 'ONE WORD. Martyrs prints "I stand in awe, O Compassionate One, AT Thy voluntary crucifixion"; Unmercenaries prints "OF Thy voluntary crucifixion". 431 characters, identical to the last comma and the last stray space before a question mark, diverging at a single preposition — and printed at different positions in the two files (LIC vs Vespers aposticha). This is what §2.3 is for: a deduplicating encoder would have matched 430 of 431 characters and called it the same hymn.' },
+
   { a: 'general.Monastic.matins.canons[0].odes.3.items[0]',
     b: 'general.Monastic.liturgy.beatitudes[0]', relation: 'identical',
     note: 'Ode III troparion 1 reprinted as Beatitude 1 (Beatitude adds "(Twice)").' },
