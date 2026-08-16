@@ -268,4 +268,61 @@ export default [
     relation: 'identical', note: '“We have come to know God …” — Martyrs prints it at the aposticha, Martyr at the dogmatikon. Same text, different position: stored twice, per §2.3.' },
   { a: 'general.Martyrs.vespers.dogmatikon', b: 'general.Martyr.vespers.dogmatikon',
     relation: 'variant', note: 'Both files print a "Both now" dogmatikon in this slot and they are DIFFERENT hymns — Martyrs the Tone III “How can we, O all-honored one”, Martyr the Tone VI “Who doth not call thee blessed”. Recorded so the slot is never treated as carrying one shared text.' },
+
+  // ── Heirarchs.pdf ──────────────────────────────────────────────────────────
+  // THE BEATITUDES ARE NOT BYTE-IDENTICAL TO THE CANON: five of seven agree,
+  // two diverge. Heirarchs joins Monastics as the SECOND variant file — four
+  // identical to two variant across six files, and the divergences are a
+  // spelling and a preposition, exactly the grain a deduplicating encoder
+  // cannot see.
+  { a: 'general.Heirarchs.matins.canons[0].odes.3.items[0]', b: 'general.Heirarchs.liturgy.beatitudes[0]', relation: 'identical', note: 'Ode III troparion 1 = Beatitude 1 (Beatitude adds "(Twice)").' },
+  { a: 'general.Heirarchs.matins.canons[0].odes.3.items[1]', b: 'general.Heirarchs.liturgy.beatitudes[1]', relation: 'variant', note: 'ONE WORD. "hymn your sacred memory" in the canon (p8); "hymn your sacred memorial" at the Beatitudes (p13).' },
+  { a: 'general.Heirarchs.matins.canons[0].odes.3.items[2]', b: 'general.Heirarchs.liturgy.beatitudes[2]', relation: 'identical', note: 'Ode III troparion 3 = Beatitude 3.' },
+  { a: 'general.Heirarchs.matins.canons[0].odes.6.items[0]', b: 'general.Heirarchs.liturgy.beatitudes[3]', relation: 'identical', note: 'Ode VI troparion 1 = Beatitude 4.' },
+  { a: 'general.Heirarchs.matins.canons[0].odes.6.items[1]', b: 'general.Heirarchs.liturgy.beatitudes[4]', relation: 'identical', note: 'Ode VI troparion 2 = Beatitude 5.' },
+  { a: 'general.Heirarchs.matins.canons[0].odes.6.items[2]', b: 'general.Heirarchs.liturgy.beatitudes[5]', relation: 'identical', note: 'Ode VI troparion 3 = Beatitude 6.' },
+  { a: 'general.Heirarchs.matins.canons[0].odes.6.items[3]', b: 'general.Heirarchs.liturgy.beatitudes[6]', relation: 'variant', note: 'ONE PREPOSITION. "Born from the Virgin" in the canon (p9); "Born of the Virgin" at the Beatitudes (p13) — while BOTH sites print the "Thou hast, enlightened" comma (sic register, both rows).' },
+
+  // WITHIN THE FILE
+  { a: 'general.Heirarchs.vespers.aposticha_glory', b: 'general.Heirarchs.matins.doxology_glory', relation: 'identical',
+    note: 'The Doxasticon reprints the Vespers aposticha Glory byte for byte — the Heirarch pattern, in the plural file.' },
+  { a: 'general.Heirarchs.kontakion', b: 'general.Heirarchs.liturgy.liturgy_kontakion', relation: 'variant',
+    note: 'ONE PHRASE. "us who with love honor you" after Ode VI (p9); "us who lovingly honor you" at the Liturgy (p13). R-1 at the Unmercenaries boundary, now on a kontakion: the canonical field claims p9 only.' },
+  { a: 'general.Heirarchs.vespers.aposticha_alternate', b: 'general.Heirarchs.matins.praises_closer', relation: 'variant',
+    note: 'ONE BREAK. The "true vine" theotokion without a break after "O Lady," at p4, with one at p11. Same file, same hymn, two pointings.' },
+  { a: 'general.Heirarchs.matins.prokeimenon', b: 'general.Heirarchs.liturgy.prokeimenon', relation: 'identical',
+    note: 'Identical text at two DECLARED TONES — IV at Matins, VII at the Liturgy. Heirarch\'s IV-against-I pattern at new tones; §7.4 compares the texts and stays silent because they agree.' },
+  { a: 'general.Heirarchs.matins.prokeimenon_verse', b: 'general.Heirarchs.liturgy.prokeimenon_verse', relation: 'variant',
+    note: 'ONE CAPITAL. "all that he hath rendered" at Matins (p6); "He" at the Liturgy (p13). Monastic prints the same divergence between the same two positions.' },
+  { a: 'general.Heirarchs.vespers.aposticha[3]', b: 'general.Heirarchs.liturgy.alleluia', relation: 'variant',
+    note: 'POINTED AGAINST PLAIN. "Thy priests shall be clothed" carries the * as an aposticha verse (p4) and no markers as the Alleluia (p14) — the judgement/judgment class from Heirarch, as pointing rather than spelling.' },
+
+  // ACROSS FILES
+  { a: 'general.Heirarchs.troparion', b: 'general.Monastics.troparion', relation: 'identical',
+    note: '"O God of our fathers" — ONE GENERAL TROPARION SERVING TWO SAINT TYPES, byte-identical at all four Heirarchs sites and at Monastics. The strongest cross-file recurrence in the book so far: not a theotokion or a psalm verse but the proper troparion itself.' },
+  { a: 'general.Heirarchs.vespers.lic_stavrotheotokion', b: 'general.Martyrs.vespers.lic_stavrotheotokion', relation: 'identical',
+    note: 'All 444 characters, including both spaces before question marks — the THIRD print site of the "at Thy voluntary crucifixion" form, which Unmercenaries prints as "of Thy" (that variant pair is already registered).' },
+  { a: 'general.Heirarchs.vespers.dogmatikon', b: 'general.Martyr.vespers.dogmatikon', relation: 'identical',
+    note: '"Who doth not call thee blessed" — the Tone VI dogmatic, byte-identical also in Monastic and Monastics.' },
+  { a: 'general.Heirarchs.vespers.dogmatikon', b: 'octoechos:tone6.great_vespers.dogmatikon', relation: 'variant',
+    note: 'FIRST CROSS-BOOK PAIR (§10.4). TWO BYTES: the Menaion prints "By nature he is God" and "for our sakes, he hath become" lowercase, in all four of its copies; the Octoechos Tone 6 Great Vespers copy capitalises both. The gate skips pairs into books not loaded this run — this row is checked by eye until octoechos roots are wired in.' },
+  { a: 'general.Heirarchs.vespers.dogmatikon_alternate', b: 'general.Heirarch.matins.praises_closer', relation: 'identical',
+    note: '"We have come to know God" — printed at four positions across four files (also Martyrs ×2, Martyr); chained to the sibling file.' },
+  { a: 'general.Heirarchs.vespers.aposticha_closer', b: 'general.Martyrs.vespers.aposticha_closer', relation: 'identical',
+    note: '"Christ the Lord, my Creator and Redeemer" — the Resurrection Theotokion, byte-identical also in Martyr, "Rejoice!," setting included.' },
+  { a: 'general.Heirarchs.matins.anabathmoi[0]', b: 'general.Heirarch.matins.anabathmoi[0]', relation: 'identical', note: '"From my youth" — six files, one text.' },
+  { a: 'general.Heirarchs.matins.anabathmoi[1]', b: 'general.Heirarch.matins.anabathmoi[1]', relation: 'identical', note: '"Ye haters of Zion" — six files, one text.' },
+  { a: 'general.Heirarchs.matins.anabathmoi_closer', b: 'general.Heirarch.matins.anabathmoi_closer', relation: 'identical', note: '"In the Holy Spirit" — six files, one text.' },
+  { a: 'general.Heirarchs.matins.psalm50_closer', b: 'general.Heirarch.matins.psalm50_closer', relation: 'identical', note: 'The Both-now after Psalm 50.' },
+  { a: 'general.Heirarchs.matins.psalm50_verse', b: 'general.Heirarch.matins.psalm50_verse', relation: 'identical', note: '"Have mercy on me, O God".' },
+  { a: 'general.Heirarchs.matins.megalynarion_verse', b: 'general.Heirarch.matins.megalynarion_verse', relation: 'identical',
+    note: '"inhabit the World" — the CAPITAL travels with the verse at the Megalynarion position: identical in both files here, lowercase at Heirarch\'s own Liturgy site (that variant pair is already registered).' },
+  { a: 'general.Heirarchs.matins.praises_stavrotheotokion', b: 'general.Martyr.vespers.aposticha_stavrotheotokion', relation: 'identical',
+    note: '"The most pure one seeing Thee hanging" — a VESPERS aposticha stavrotheotokion in Martyr and Unmercenaries, printed at the PRAISES here. Same text, different service, third file.' },
+  { a: 'general.Heirarchs.liturgy.communion_verse', b: 'general.Martyr.liturgy.communion_verse', relation: 'identical',
+    note: 'The semicolon-and-capital setting — against Heirarch\'s comma-and-lowercase (that variant pair is already registered).' },
+  { a: 'general.Heirarchs.matins.canons[0].odes.4.irmos', b: 'general.Monastic.matins.canons[0].odes.4.irmos', relation: 'identical', note: 'Ode IV irmos "O Lord, I have heard the mystery".' },
+  { a: 'general.Heirarchs.matins.canons[0].odes.5.irmos', b: 'general.Monastic.matins.canons[0].odes.5.irmos', relation: 'identical', note: 'Ode V irmos "Rising early we cry to Thee" — third file on this irmos.' },
+  { a: 'general.Heirarchs.matins.canons[0].odes.7.irmos', b: 'general.Unmercenaries.matins.canons[0].odes.7.irmos', relation: 'identical', note: 'Ode VII irmos "O Thou who in the beginning founded the earth".' },
+  { a: 'general.Heirarchs.matins.canons[0].odes.8.irmos', b: 'general.Unmercenaries.matins.canons[0].odes.8.irmos', relation: 'identical', note: 'Ode VIII irmos "Glorified in the holy mountain".' },
 ];
