@@ -101,6 +101,21 @@ tripwire, the render gate (its limit: `renderToString` does not run effects, so
 the harness passes data as props), and the no-display-copies lint, which will
 fail the build if a release note quotes a canonical string verbatim.
 
+**Two rulings now block the first daily month — and nothing else.** More
+General Menaion files are unblocked; a daily month is not. See spec §16.
+
+- **R-8, the sessionals shape.** `<c>` specifies `sessionals[]`, an array of
+  sets; the six encoded General Menaion files use five flat named slots
+  (`sessional_1`, `sessional_2`, `sessional_polyeleos`, `sessional_ode3`,
+  `sessional_post50`). The General Menaion may be the atypical corpus here and
+  nobody has measured how many sessional sets the daily files print.
+- **R-9, vocabulary reconciliation + `adapter.js` + per-key manifest rows.**
+  There are three vocabularies for the same movements (spec §16.3), `adapter.js`
+  does not exist, and **99 general keys have zero `FIELD_MANIFEST` rows** — a
+  gap the coverage gate cannot see, because `<g>.vespers` is one `group` row.
+  Whatever is decided, the manifest rows and `adapter.js` ship together with a
+  coverage-gate change that makes the granularity gap fail loudly.
+
 **Owed:**
 1. **Re-verify the completed files against the render gate's limits.**
 2. **Bill to confirm the Romans/1-Corinthians heading in `Unmercenaries.pdf`
