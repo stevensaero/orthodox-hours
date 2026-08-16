@@ -1862,10 +1862,10 @@ const GENERAL = {
   //    contradicting it, so it is not a sic. The fixture prints `these
   //    Stichera` with no number.
   //
-  // 3. ONLY TWO VESPERS LESSONS, and the first is from PROVERBS — new to
-  //    general.js, which has carried only Wisdom and Isaiah. Both are
-  //    citationless, so both take a derived citation and the gate re-runs the
-  //    reconstruction rather than trusting it.
+  // 3. THREE VESPERS LESSONS, the first two from PROVERBS — a book general.js
+  //    had not carried. None prints a reference. (An earlier pass here stored
+  //    only TWO: the p2/p3 break falls mid-word and the segmenter swallowed the
+  //    second heading. See the note on `readings`.)
   //
   // 4. A LONGER GREAT-DOXOLOGY CONDITIONAL than the fixture's, adding `and a
   //    Doxasticon is appointed`. Stored verbatim; not folded into the shorter
@@ -1909,19 +1909,38 @@ const GENERAL = {
       dogmatikon_alternate: h2("Thy shelter, O Virgin Theotokos, * is spiritual healing; * for, having recourse unto it, ** we are delivered from spiritual infirmities.", "p2 Otherwise Theotokion", { sourceLabel: "Otherwise, Theotokion", type: "theotokion", label: "theotokion", label_inline: true }),
       dogmatikon_stavrotheotokion: h2("“I cannot bear O my child, to behold Thee, * Who dost grant life and health unto all, * hung upon the Tree; * for of old those who were lulled into the sleep of death * by the fruit of the transgression * have been awakened * and granted divine and salvific life and health by Thee”, * thus said the Virgin weeping, ** whom we magnify.", "p2 Stavrotheotokion", { sourceLabel: "Stavrotheotokion", type: "stavrotheotokion", label: "stavrotheotokion", label_inline: true }),
       entrance_rubric: h1("The Entrance. The Prokeimenon of the day. The Three Lessons if appointed:", "p2 entrance rubric"),
-      // TWO lessons, not three, and the first is Proverbs — a book general.js
-      // has not carried before. Neither prints a reference.
+      // THREE lessons — Proverbs, Proverbs, Wisdom — and the first two are from
+      // a book general.js had not carried. None prints a reference.
+      //
+      // THIS SLOT WAS ENCODED WRONG ONCE, IN THE SESSION THAT FIRST ENCODED THIS
+      // FILE, AND EVERY GATE PASSED. The p2/p3 page break falls mid-word
+      // ("Blessed is the man who sh|all keep my ways"), so the paragraph
+      // segmenter never started a new unit at the p3 heading and lesson 2 was
+      // absorbed into lesson 1. Two readings were stored where three are
+      // printed. The PAGE-COVERAGE TRIPWIRE DID NOT CATCH IT: p3 was cited, by
+      // the very locus of the reading that had swallowed the other. That check
+      // proves a page was READ, not that everything ON it was encoded.
+      //
+      // Found by the cross-file heading census in
+      // menaion_v2_general_menaion_analysis.md — Heirarchs prints the same three
+      // lessons WITH references, which is also where the citations below come
+      // from: (3, 13-16; 8, 6), (10, 31-32 ; 11, 1-10) and (4, 7-15.).
       readings: [
         { heading: 'THE READING IS FROM BOOK OF PROVERBS',
           src: { file: H, locus: 'p2-p3 Lesson 1' },
-          citation: { book: 'Proverbs', chapter: 10, verses: '7-8, 11, 3:13-16, 8:6, 34-35, 4-5' },
+          citation: { book: 'Proverbs', chapter: 10, verses: '10:7, 3:13-16, 8:6' },
           citation_basis: 'identified',
-          provenance_note: 'THE HEADING OMITS `THE` before `BOOK OF PROVERBS`. This is the composite hierarchical Proverbs paremia — Proverbs 10:7-8, 10:11, 3:13-16 and 8:6, 34-35, 4-5 stitched into one reading, which is why no single contiguous span reconstructs it and the citation is human-identified rather than derived. Confirm the span against the printed page.' },
+          provenance_note: 'Heading omits THE before BOOK OF PROVERBS; lesson 2 on the next page prints it. Composite: opens at Proverbs 10:7 ("The memory of the just is praised"), moves to 3:13-16 ("Blessed is the man who hath found wisdom"), then 8:6 — so no contiguous span reconstructs it. Heirarchs.pdf prints the corresponding lesson WITH a reference, "(3, 13-16; 8, 6)", which omits the 10:7 opening this file carries. Identified, not derived; confirm the span against the printed page.' },
+        { heading: 'THE READING IS FROM THE BOOK OF PROVERBS',
+          src: { file: H, locus: 'p3 Lesson 2' },
+          citation: { book: 'Proverbs', chapter: 10, verses: '10:31-32, 11:1-10' },
+          citation_basis: 'identified',
+          provenance_note: 'Opens "The mouth of the righteous droppeth wisdom" (Proverbs 10:31) and runs through 11:1-10. Heirarchs.pdf prints this same lesson cited "(10, 31-32 ; 11, 1-10)" — note the space before the semicolon there. Identified from that cross-file reference; confirm against the page.' },
         { heading: 'THE READING IS FROM THE WISDOM OF SOLOMON.',
-          src: { file: H, locus: 'p3-p4 Lesson 2' },
-          citation: { book: 'Wisdom of Solomon', chapter: 4, verses: '1, 6:11-12, 17-21' },
+          src: { file: H, locus: 'p3-p4 Lesson 3' },
+          citation: { book: 'Wisdom of Solomon', chapter: 4, verses: '4:1, 6:11-12, 17-21' },
           citation_basis: 'identified',
-          provenance_note: 'Also composite, and the heading here DOES carry a full stop where lesson 1 does not. Opens at Wisdom 4:1 ("When the righteous is praised") and runs into the Wisdom 6 material. Human-identified; confirm against the page.' },
+          provenance_note: 'Heading carries a full stop where the two Proverbs headings do not — three lesson headings in one file, three forms. Composite, opening at Wisdom 4:1 ("When the righteous is praised") and running into the Wisdom 6 material. Heirarchs.pdf cites its corresponding lesson "(4, 7-15.)", a DIFFERENT pericope, so the plural file confirms the book and not the span. Identified; confirm against the page.' },
       ],
       aposticha_rubric: h1("On the Aposticha, these Stichera, In Tone VIII:", "p4 Aposticha rubric"),
       aposticha: [
