@@ -843,8 +843,12 @@ hymnographic, and the Menaion prints only a *rubric* naming it (`Song of Ascents
 the first antiphon of Tone IV`, 4 instances). Under R-5 we store that rubric and
 nothing else — `matins.anabathmoi_rubric`, no ref, no text. **Closes D-27.**
 
-Candidates, all `[unattested]` pending close reading: the LIC verse ladder as the
-Menaion prints it, the praises verse ladder, aposticha verse sets.
+The three candidate classes named at spec time — the LIC verse ladder as the
+Menaion prints it, the praises verse ladder, aposticha verse sets — were
+**falsified by measurement on 15 Aug 2026** across all 140 delivered daily
+files: the two ladders print in 0 of 140, and the recurring psalm verses are
+not byte-invariant. `shared.js` ships **empty by measurement**, with the survey
+and the four-part bar any future row must clear recorded in its header.
 
 ### 6.2 `general.js` — the St. Sergius General Menaion
 
@@ -854,11 +858,11 @@ whose every cell is a print site.** One sub-table per saint type.
 
 A daily entry that falls back to it stores its **own per-position copy** (§2.3)
 carrying `src: {file: 'Monastic.pdf', locus}` and
-`name_substituted: {placeholder: '(Name)', value}`; the recurrence register links copy to
+`name_substituted: {placeholder: '(name)', value}`; the recurrence register links copy to
 cell. A reader can then browse the General Menaion as its own book *and* see, at
 any daily position, that the text came from it and what was substituted.
 
-Placeholders (`(Name)`, `(N.)`) are stored **verbatim and unsubstituted** in the
+Placeholders (`(name)`, `(names)`, `(Names)`) are stored **verbatim and unsubstituted** in the
 table itself; substitution happens only in the daily copy.
 
 **Folder listed, and §2.1's prose is wrong in two places `[A-attested]`.** The
@@ -893,7 +897,11 @@ Three further structural facts from the scan:
 
 - **These are full Vigil services, 12–18 pages each**, not proper-snippets.
   §2.1 describes them as supplying "troparion, kontakion, stichera"; they carry
-  Little Vespers through Liturgy. The fallback is therefore capable of filling
+  **Vespers through Liturgy** — `AT LITTLE VESPERS` and `AT COMPLINE` print in
+  **0 of 26 files** (measured; `menaion_v2_general_menaion_analysis.md` §1, and
+  `encoding_rule_v2.md` §2.1 had this right). *(This line previously claimed
+  "Little Vespers through Liturgy" — the §16.4 compression class.)* The fallback
+  is therefore capable of filling
   far more than §2.1 implies, and §6.2's table must model a whole service.
 - **Plurality does not predict placeholders — measure the file.** `[A-attested]`
   Twenty-one of the 26 print one: the 15 singular files plus `Heirarchs`,
@@ -916,15 +924,21 @@ singular/plural pair (`Monastic` / `Monastics`):
 - **A conditional closer the schema had no way to express** — the source prints
   `Glory ..., Both now ..., Theotokion or Stavrotheotokion:`, declining to fix
   the type because it depends on the day the general service is used (Wed/Fri
-  take the Stavrotheotokion). **80 instances across 21 of 26 files.** Added to
+  take the Stavrotheotokion). **78 instances across 21 of 26 files**
+  (previously misstated as 80; the file count was right — analysis §6.3). Added to
   `CLOSER_TYPES` as `theotokion_or_stavrotheotokion` rather than forced to a
   concrete value at encode time: flattening it would invent a decision Fekula
   makes at assembly.
-- **A cross-book rubric**, 18 instances in 18 files: *"If the service is a
-  Resurrection service sing the Dogmatic of the Tone for that service"* — the
-  General Menaion pointing at the Octoechos. Stored as
-  `<g>.dogmatikon_rubric`; the text is NOT fetched (R-5). Carries a sic
-  candidate (a stray `)` before the colon).
+- **A cross-book rubric FAMILY** — the General Menaion pointing at the
+  Octoechos. Measured (analysis §6.1): **24 of 26 files carry one, in ≥17
+  distinct wordings**; `Cross` and `Theotokos` carry none. Tone, verb,
+  preposition and even the condition's polarity vary; `MonasticMartyrs`
+  restructures it entirely. **Store verbatim per print site; never match by
+  equality** — a rule keyed on any one wording matches none of the 24. Stored
+  as `<g>.dogmatikon_rubric`; the text is NOT fetched (R-5). The `service ):`
+  sic (stray space before the parenthesis) appears in 18 files; four close it
+  up — even the defect is not uniform. *(Previously described here as one
+  string in 18 files — the §16.4 compression class.)*
 - **Structure is identical across singular and plural** — same headings, same
   order, same label vocabulary; only wording ("venerable one" / "venerable
   ones") and Spec. Mel. forms differ. One template covers all 26, and the
@@ -1454,8 +1468,11 @@ August.
 
 ### 13.3 Blocked externally
 
-- **`08-23.pdf`** does not exist. Recorded as `source_unavailable`; the Dormition
-  cycle cannot be completed until it is supplied.
+- **`08-23.pdf`** does not exist. Recorded as **`no_daily_source`** (§7.3) —
+  closed and **not revisitable**; Bill confirmed it cannot be supplied (§1.2).
+  The Apodosis of the Dormition is resolved by the assembler from Fekula and
+  08-15, never reconstructed in data. *(Previously misstated here as
+  `source_unavailable`/revisitable, contradicting §1.2, §7.3 and §15.)*
 - ~~**The General Menaion folder**~~ — **CLOSED.** Listed; see §6.2.
 
 ---
@@ -1694,6 +1711,15 @@ alternative is to finish more of the 26 first and treat reconciliation as a gate
 on Phase 3. **Whichever is chosen, `adapter.js` and the per-key manifest rows
 ship together with a coverage-gate change that makes the granularity gap
 fail loudly**, or §16.2 will simply recur one phase later.
+
+**R-9 naming ruling (Bill, 15 Aug 2026): the source-nearest name wins.** Where
+`<g>` data and the `<c>` field list name one movement differently, the canonical
+key in the movement vocabulary follows the printed label family (the book prints
+`Megalynarion`, so `megalynarion` — `magnification` becomes an alias). V1 names
+and displaced `<c>`/`<g>` names are recorded as aliases, an alias lint makes
+re-introducing one a hard-fail, and the reconciliation table (the 9 divergent
+movements + the ~40 general-only keys, each with a disposition) is presented to
+Bill before any rename executes.
 
 **Neither R-8 nor R-9 blocks encoding more General Menaion files.** Both block
 encoding a daily month.
