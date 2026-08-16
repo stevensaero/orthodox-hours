@@ -8656,6 +8656,42 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.41.1",
+    date: "August 2026",
+    summary: "Heirarchs encoded (7 of 26); the kontakion diverges from itself; the first cross-book recurrence row",
+    items: [
+      "HEIRARCHS ENCODED — complete across Vespers, Matins and Liturgy, 14 " +
+      "pages, every page cited. The extraction was proven before capture by " +
+      "byte-matching EIGHT strings against four earlier files. The file " +
+      "prints (Names) twice and (names) once and (name) never — exactly what " +
+      "the corrected placeholder scan attested, measured true on the page.",
+
+      "THE KONTAKION DIVERGES BETWEEN ITS OWN TWO PRINT SITES — 'us who with " +
+      "love honor you' after Ode VI against 'us who lovingly honor you' at " +
+      "the Liturgy. The Unmercenaries troparion ruling applied to a " +
+      "kontakion: the canonical field claims the Matins site only, the " +
+      "Liturgy site is stored per-position, and the pair is a register " +
+      "variant.",
+
+      "FIRST CROSS-BOOK RECURRENCE ROW (§10.4). The Tone VI dogmatic 'Who " +
+      "doth not call thee blessed' is byte-identical across four General " +
+      "Menaion files and TWO BYTES off the Octoechos Tone 6 Great Vespers " +
+      "copy — the Menaion prints 'he is God' and 'he hath become' lowercase " +
+      "where the Octoechos capitalises both. Registered as " +
+      "octoechos:tone6.great_vespers.dogmatikon, variant.",
+
+      "THE BEATITUDES ARE NOT SET FROM THIS CANON CLEANLY EITHER — five of " +
+      "seven byte-identical, two variant ('memory'→'memorial', 'Born " +
+      "from'→'Born of'), while both sites of the second share the 'hast,' " +
+      "comma sic. FOUR files identical to TWO variant now. And the troparion " +
+      "is byte-identical to Monastics' — one general troparion serving two " +
+      "saint types, the strongest cross-file recurrence in the book so far.",
+
+      "31 recurrence rows and 7 sic rows. 938 text nodes, 0 errors; 980 " +
+      "strings render, 0 missing; all eight gates green including the build.",
+    ],
+  },
+  {
     version: "v0.41.0",
     date: "August 2026",
     summary: "shared.js closed — empty by measurement; Heirarch encoded; a file that prints three texts twice and gets two of them wrong",
