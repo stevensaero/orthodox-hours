@@ -3,11 +3,18 @@
 **Revision 2 — reconciled.** Supersedes revision 1 in full. Modeled
 section-for-section on `octoechos_v2_spec.md`.
 
-**Status: Phase 0 — ready for Bill's review.** All seven Phase 0 questions are
-ruled (§13). All fourteen blocking defects from the revision-1 parity audit are
-closed in this revision (§14). Two external blockers remain, neither of which
-prevents Phase 1: the General Menaion is not yet visible in the mount (§6.2),
-which gates Phase 2 only. The `08-23` gap is closed as a permanent source fact.
+**Status: Phase 2 in progress (as of 15 Aug 2026, v0.41.0).** Phase 0 and Phase 1
+are complete. Phase 2 — General Menaion encoding — stands at **6 of 26 files**:
+`Monastic`, `Monastics`, `Martyr`, `Martyrs`, `Unmercenaries`, `Heirarch`.
+No daily month file is encoded yet; `MONTH_LOADERS` is empty by design.
+All seven Phase 0 questions are ruled (§13); all fourteen blocking defects from
+the revision-1 parity audit are closed (§14). The `08-23` gap is closed as a
+permanent source fact.
+
+*(This header read "Phase 0 — ready for Bill's review" for three sessions after
+Phase 2 began. A stale status line is the first thing a new session reads and
+the last thing anyone thinks to update; §16.4 is about exactly this class of
+error.)*
 
 **Evidence basis.** Every structural claim carries a tag (§2.12). Claims tagged
 `[A-attested]` were confirmed by machine scan of all 37 August files plus hand
@@ -21,7 +28,32 @@ justification for per-position storage. This document has the principle and the
 register mechanism, but only a seed catalog. It is the first task of the August
 encoding pass, not a blocker on infrastructure.
 
-**Do not begin Phase 1 until Bill confirms this spec complete.**
+---
+
+## 0. Purpose — what this data is for
+
+**Menaion V2 is a complete, verbatim, provenance-carrying capture of what the
+printed Menaion says on a given date.** It replaces V1, which stored the subset
+the assembler happened to consume.
+
+The test of completeness is not *does the assembler use this field*. It is
+**would a reader holding the printed book find it here.** Rank governs what the
+*assembler selects*; it never governs what the *encoder captures* (§2.2).
+
+Three things follow, and they are the whole design:
+
+1. **Every stored text carries its print site** — `src: {file, locus}` and a
+   `tier` — so a reader can be shown where it came from, and a later session can
+   re-read the page rather than re-reasoning from the data.
+2. **Every source-conditional field is a text node or a declared absence.** A
+   missing key is a gate failure. Silence is not a declaration (§2.10).
+3. **Nothing is deduplicated across print sites** (§2.3), because the book itself
+   is not internally consistent — see §16.4 for the measured evidence.
+
+The end state is a Phase 5 cutover in which the Hours tool reads V2, `/menaion`
+redirects to `/menaion-v2`, and the reading view and the assembler are two
+consumers of one capture. **§16 states how far that is from true today, in
+measurements rather than intentions.**
 
 ---
 
@@ -1412,6 +1444,13 @@ August.
 7. **`matins_format` vocabulary** — V1's two values, unattested against August.
 8. **Every `[unattested]` field in §5.6 and §5.7** — confirmed with a print site
    or dropped. An encoder must not create one without evidence.
+9. **R-8 — the sessionals shape** (§16.5). `<c>` specifies an array of sets;
+   `<g>` encodes five flat named slots. Needs a measurement of the daily files
+   or a ruling. **Blocks the first daily month, not further General Menaion
+   files.**
+10. **R-9 — vocabulary reconciliation, the per-key `FIELD_MANIFEST` rows, and
+    `adapter.js`** (§16.5). One piece of work, currently unbuilt and invisible to
+    the coverage gate. **Blocks the first daily month.**
 
 ### 13.3 Blocked externally
 
@@ -1506,3 +1545,155 @@ in its own commit.
 
 **Phase 6 — the OCA layer.** OCA saint-specific troparia and kontakia, and Tier 3
 director pointing, layered over finished data (R-2).
+
+---
+
+## 16. Addressability — does every movement have a home?
+
+**Added 15 August 2026 (v0.41.0), from measurement, in answer to Bill's
+question: "are we flexible enough with our encoding that every movement in the
+document has an identifiable home, something to key on to render in the Hours
+viewer?"**
+
+The short answer: **for the reading view, yes, and it is verified. For the
+assembler, not yet — and the gap is currently invisible to every gate.**
+
+### 16.1 There are two consumers, and they address data differently
+
+The reading view reproduces **the page**: it walks each service's `order` array
+and renders whatever it finds, in the sequence the book prints it. It needs no
+prior knowledge of field names.
+
+The assembler selects **by name**: it asks for the LIC stichera, the aposticha
+Glory, the dismissal troparion. It cannot walk `order` — it is answering "what
+is sung tonight", not "what does page 4 say".
+
+`order` preserves the page; **named fields are what make the capture
+addressable.** §5.1 says this in one sentence and it is the load-bearing sentence
+of the whole design. Everything below is what happens when only the first half is
+built.
+
+### 16.2 Measured state, 15 Aug 2026
+
+Read off the live data and the contract, not from any note:
+
+```
+reading view   838 stored strings rendered, 0 missing (SSR render gate)
+               RService walks `order`; RElement dispatches generically;
+               both carry Leftovers guards, so an unnamed key is VISIBLE,
+               never silently dropped.
+
+assembler      src/data/menaion_v2/adapter.js  DOES NOT EXIST
+               (spec §3 lists it; octoechos_v2/adapter.js does exist)
+               the ONLY importer of menaion_v2 outside its own directory
+               is menaion-v2-browser.jsx
+               hours-tool.jsx still reads V1 on every date
+
+contract       99 distinct service-level keys in use across the 6 encoded
+                  General Menaion files
+                0 of them have a FIELD_MANIFEST row
+              840 of 858 leaf paths do not resolve through registryLookup()
+```
+
+**The coverage gate does not catch this, and that is the finding.**
+`FIELD_MANIFEST` declares `<g>.vespers`, `<g>.matins` and `<g>.liturgy` as
+`kind: 'group'` — **eight rows for the entire General Menaion.** The gate joins
+the manifest against the presentation registry and passes at 99⋈99 because all
+eight are registered. It proves the eight group rows are visible. It says nothing
+about the 99 keys inside them.
+
+This is **STANDING WARNING 8 one level down**. Warning 8: *a coverage gate proves
+every FIELD is registered; it does NOT prove every TABLE is reachable.* Its
+sibling: **a coverage gate proves every DECLARED field is registered; it does not
+prove the declaration is at the granularity the consumer needs.** A `group` row
+is a promise that something is there, not a contract about what.
+
+### 16.3 There are three vocabularies for the same movements
+
+| movement | V1 — drives the assembler today | V2 daily `<c>` — specified, unpopulated | V2 general `<g>` — populated, 6 files |
+|---|---|---|---|
+| LIC stichera | `stichera_lord_i_call` | `lic` | `lic` |
+| sessionals | `sessional_hymn_kathisma1` … | `sessionals[]` **(array of sets)** | `sessional_1`, `sessional_2`, `sessional_polyeleos`, `sessional_ode3`, `sessional_post50` **(flat)** |
+| magnification | `magnification` | `magnification` | `megalynarion` |
+| its psalm verse | `magnification_selected_psalm` | `selected_psalm_verse` | `megalynarion_verse` |
+| post-Polyeleos sessional | `matins_sessional_post_polyeleos` | `sessional_post_polyeleos` | `sessional_polyeleos` |
+| Vespers lessons | `paroemia_1/2/3` | `readings` | `readings` |
+| aposticha verses | own field | `lic_verses` | interleaved into the array, `label: 'refrain'` |
+| dismissal troparion | `troparion` | `dismissal_troparion` | `troparion`, named in `order` |
+| Liturgy propers rubric | — | `troparia_rubric` | `propers_rubric` |
+
+Plus roughly **40 general-only keys with no `<c>` counterpart at all** —
+`idiomelon_rubric`, the four `dogmatikon*` keys, `anabathmoi_intro`, the four
+`psalm50_*`, the five `praises_*`, the five `doxology_*`, `aposticha_closer_label`,
+`liturgy_troparion`, `doxology_troparion_rubric`.
+
+**V2-general is much closer to V2-daily than V1 is** — both use `lic` and
+`readings`. The divergence is narrower than it looks: the sessionals shape, the
+magnification naming, and the general-only keys. **This is reconcilable, not a
+rewrite** — but it is not free, and it gets more expensive with every file
+encoded.
+
+**Why the general-only keys exist is not carelessness.** Each was created against
+a printed page that the `<c>` field list has no way to express: the General
+Menaion prints an idiomelon conditional, a three-way dogmatikon alternative, and
+a Doxology whose *troparion position* is conditional. Those are real movements.
+The defect is that they were created **in the data** rather than **in the
+contract**, so nothing outside `general.js` knows they exist.
+
+### 16.4 What the General Menaion is teaching the daily encode
+
+The 26-file corpus is being encoded first because it exercises the same
+structures as the daily book, cheaply, before twelve months are committed to a
+schema. Five findings transfer directly. Evidence for each is in
+`menaion_v2_general_menaion_analysis.md`.
+
+1. **Rubrics are families, not strings.** The Polyeleos/Dogmatic rubric runs to
+   ≥17 distinct wordings across 24 files. A rule keyed on rubric equality matches
+   nothing. The daily book has 140 files and more feast-conditionals; expect
+   worse. **Store verbatim per print site; never match by equality.**
+2. **A per-file check cannot find a missing element.** `Martyr`'s half-missing
+   Vespers and `Heirarch`'s third lesson both passed every gate, including the
+   page-coverage tripwire — which cites a page as read while an element on it is
+   absorbed into its neighbour. Both were found by **cross-file comparison**,
+   which has something to compare against. The daily book needs an equivalent
+   instrument built **before** volume encoding, not after.
+3. **A zero is not a result.** `Monastics` carries zero sic rows and is the one
+   file whose Beatitudes are *known* to diverge from its canon at three of seven
+   positions. An empty register reads exactly like a clean one. This is §2.10's
+   principle applied to the registers rather than to the fields.
+4. **A summary of the source is not the source.** Eleven prior structural claims
+   were checked against the PDFs; several were false, and in three cases the
+   correct statement already lived in *another project document that was simply
+   not the one consulted*. The failure mode is compression: a scan answers the
+   question it was asked, a family of rubrics gets named by one member, a file
+   name loses its plural. **Prompts and notes must not assert facts about
+   unencoded files; they must say where to measure them.**
+5. **Per-position storage is now overdetermined** (§2.3). `Heirarch` alone prints
+   three texts twice within itself and gets two of them wrong. No second file is
+   needed to make the argument.
+
+### 16.5 Open rulings — R-8 and R-9
+
+Recorded here rather than decided, because both are Bill's.
+
+**R-8 — the sessionals shape.** `<c>` specifies `sessionals[]`, an array of sets;
+`<g>` encodes five flat named slots. The General Menaion prints sessionals at
+five fixed positions, always in that order, which makes flat naming directly
+addressable by both the assembler and a deep link. But **the General Menaion may
+be the atypical corpus here**, and whether daily entries carry a variable number
+of sessional sets has not been measured. Options: adopt flat and amend §5.6;
+adopt the array and migrate the six encoded files; or scan the 140 daily files
+first and let the measurement decide. **Do not encode a daily month until this is
+ruled** — it is the one conflict that a month of data would make expensive.
+
+**R-9 — when to reconcile.** The vocabulary reconciliation, the missing
+`FIELD_MANIFEST` rows for the 99 general keys, and `adapter.js` are one piece of
+work. Six encoded files is the cheapest it will ever be, and the 99 keys are
+still fresh enough that each can be justified against a printed page. The
+alternative is to finish more of the 26 first and treat reconciliation as a gate
+on Phase 3. **Whichever is chosen, `adapter.js` and the per-key manifest rows
+ship together with a coverage-gate change that makes the granularity gap
+fail loudly**, or §16.2 will simply recur one phase later.
+
+**Neither R-8 nor R-9 blocks encoding more General Menaion files.** Both block
+encoding a daily month.
