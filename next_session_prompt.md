@@ -1,32 +1,20 @@
 # Next-session kickoff — Menaion V2 Phase 2 (General Menaion encoding)
 
-State at handoff: **v0.41.0**. `general.js` holds **837 stored strings · 802
+State at handoff: **v0.41.1**. `general.js` holds **980 stored strings · 938
 text nodes · 0 errors** — `Monastic`, `Monastics`, `Martyr`, `Martyrs`,
-`Unmercenaries`, `Heirarch` complete across all three services. **6 of 26.**
-`shared.js` exists, is loaded, is reachable in the browser, and is **empty by
-measurement** (see its header). V1 Menaion still drives the Hours assembler; V2
-is a parallel build until a Phase 5 cutover.
+`Unmercenaries`, `Heirarch`, `Heirarchs` complete across all three services.
+**7 of 26.** V1 Menaion still drives the Hours assembler; V2 is a parallel
+build until a Phase 5 cutover.
 
 ---
 
 ## THIS PROMPT DOES NOT ASSERT FACTS ABOUT UNENCODED FILES. MEASURE THEM.
 
-Three sessions running, a summary of the source was wrong where the source was
-right:
-
-- The Unmercenaries prompt called two rubrics R-5 cross-book exclusions. Both
-  print their text in full.
-- The same prompt called a conditional a "third Doxology branch". It adds no
-  Doxology form; it conditions where the *troparion* is sung.
-- The Heirarch prompt — **written by the previous session, after both of those
-  were found** — said `Heirarch` prints `(Names)` capitalised. It prints
-  `(name)` 38 times and `(Names)` never; the `(Names)` are in `Heirarchs`.
-  `encoding_rule_v2.md` §2.1 and `menaion_v2_spec.md` §6.2 had it right the
-  whole time.
-
-So: novel-rubric counts below are a **scan of SHAPES**, useful only for choosing
-what to open. Everything else, measure before relying on it. The authoritative
-placeholder list is `GENERAL_TAKES_NAME` in `schema_menaion_v2.js`, and the
+The Heirarchs prompt said that file was "the only file printing (Names)
+capitalised" — measured true this time, but only because the session measured
+before relying on it. Keep the discipline: the counts and orderings below are
+a scan of SHAPES, useful only for choosing what to open. The authoritative
+placeholder list is `GENERAL_TAKES_NAME` in `schema_menaion_v2.js`; the
 authoritative anything-else is the PDF.
 
 ---
@@ -40,9 +28,10 @@ Token: [BILL: paste]. Clone, scrub the token from the remote immediately, and
 confirm the `hours-tool.jsx` version badge matches the `project_notes.md` header
 before anything else.
 
-**Read IN FULL before touching anything:** the three August 15 entries at the top
-of `project_notes.md`, newest first. Then `menaion_v2_spec.md` §§2, 5, 6.1, 6.2,
-7, and `encoding_rule_v2.md` §§2, 2.1, 3 (live — it is **v2.12**).
+**Read IN FULL before touching anything:** the four August 15 entries at the top
+of `project_notes.md`, newest first. Then `menaion_v2_spec.md` §§0, 2, 5, 6.1,
+6.2, 7, 16 (§16.5 carries the R-8/R-9 rulings and the R-9 naming ruling), and
+`encoding_rule_v2.md` §§2, 2.1, 3 (live — it is **v2.12**).
 
 **Run all EIGHT gates on the clean tree before editing anything.**
 
@@ -51,82 +40,47 @@ node tools/test_pointing_paths.mjs
 node tools/test_sunday_vespers.mjs          # expect 78/78
 node tools/validate_entries.mjs
 node tools/validate_octoechos_v2.mjs
-node tools/validate_menaion_v2.mjs          # expect 802 nodes · 0 errors
+node tools/validate_menaion_v2.mjs          # expect 938 nodes · 0 errors
 node tools/validate_viewer_coverage.mjs     # octoechos 92⋈92 · menaion 99⋈99
-node tools/test_menaion_v2_render.mjs       # expect 837 strings · 0 missing
+node tools/test_menaion_v2_render.mjs       # expect 980 strings · 0 missing
 npm run build                               # DO NOT SKIP
 ```
 
-**Task: `Heirarchs.pdf` (14pp).** The pair to the file just encoded, and the one
-that actually prints `(Names)` capitalised — measure it yourself before relying
-on that. Read its rubrics against the printed page BEFORE encoding a line and
-decide what the schema needs; do not bend them into the nearest existing key.
+**Owed from the v0.41.1 session, take before or beside the next file:**
 
-Then the rest of the singular/plural pairs. Subject files (`Cross`,
-`Holy Fathers`, `St John Baptist`, `Theotokos`) LAST, in a session with room.
+1. **The reconciliation table** (R-9 prerequisite, approved 15 Aug): every
+   `general.js` key × every `<c>` spec field × every V1 field the assembler
+   reads (`hours-tool.jsx` — grep `menaionEntry.`/`vMenaion.`), one canonical
+   name per movement under the source-nearest ruling (§16.5). Dispositions to
+   Bill before any rename executes.
+2. **Octoechos roots in `validate_menaion_v2.mjs`** — the register now holds
+   its first `octoechos:` row (the Tone VI dogmatic, two bytes off the
+   Octoechos copy) and the gate currently SKIPS it as a book not loaded.
+   Wire the roots so cross-book rows are byte-checked.
+
+**Then the next file.** The analysis §12 risk ordering (measured, but re-verify
+on the page): `Angels` (Joshua/Judges/Isaiah lessons; the census shows no
+Typika-and-Beatitudes heading — measure what stands in its place), or the
+`Apostle`/`Apostles` pair (New Testament Vespers lessons; the census shows
+`Apostles` printing no `Lord, I have cried` heading and no Communion Verse —
+measure what its Vespers opens with instead). Subject files (`Cross`,
+`Holy Fathers`, `St John Baptist`, `Theotokos`) LAST, in a session with room —
+`Holy Fathers` is a different shape, not a shorter one.
 
 **Method, non-negotiable:**
 - Transcribe against the printed page. **Do not build a classifier.**
-- Extract with `pdfplumber`'s `dedupe_chars()`, and **join lines ending in `-`
-  WITHOUT a space** — the corpus carries only closed-up compounds. Expect
-  roughly one doubled-heading residue per file that `dedupe_chars()` misses;
-  transcribe it correctly and NOTE it, do not register it as a sic (the page
-  prints it correctly — the doubling is the extractor's).
+- Extract with `pdfplumber`'s `dedupe_chars()`; **join lines ending in `-`
+  WITHOUT a space**.
 - **Verify the extraction before trusting it**: byte-match strings the new file
-  shares with already-encoded ones. Unmercenaries matched ten across three
-  files; Heirarch matched six. That, not the eye, is what proves the pipeline.
-- Key the extractor on the **full printed heading**, never the bare label.
-- Tier is a **per-item source fact**, never a property of a slot.
-- **Never deduplicate.** Heirarch settles this without needing a second file:
-  it prints three texts twice each within itself and two of the three diverge —
-  at one capital letter and at one spelling. Beatitudes now run four files
-  identical to one variant, and the variant is still real.
-- Absence is **declared with a basis**, never inferred.
-- A divergence in a reading **body** is unregistrable by design (R-4).
-  `provenance_note`, not a register row.
-- A **printed citation that does not match the printed body** has a home:
-  `citation_disputed` (§2.11). Keep the reference verbatim, store NO resolvable
-  citation, record the measurement, let the gate surface it. Do not pick a side.
-- A sic may sit on a text node, a reading **heading**, or a printed
-  **citation** — all three resolve.
-- `verified_sites` entries are `{locus, tone?, repeat?}` and are key-checked.
-- **Adding a row to `shared.js` requires clearing the bar in its header** —
-  psalm-verse or prokeimenon class, byte-identical at EVERY site, Menaion-wide
-  rather than merely common to one saint type. All three §6.1 candidates were
-  measured against 140 files and falsified; do not re-propose them from the
-  spec's candidate list without re-measuring.
-
-**The three checks that exist because they were missing** — the page-coverage
-tripwire, the render gate (its limit: `renderToString` does not run effects, so
-the harness passes data as props), and the no-display-copies lint, which will
-fail the build if a release note quotes a canonical string verbatim.
-
-**Two rulings now block the first daily month — and nothing else.** More
-General Menaion files are unblocked; a daily month is not. See spec §16.
-
-- **R-8, the sessionals shape.** `<c>` specifies `sessionals[]`, an array of
-  sets; the six encoded General Menaion files use five flat named slots
-  (`sessional_1`, `sessional_2`, `sessional_polyeleos`, `sessional_ode3`,
-  `sessional_post50`). The General Menaion may be the atypical corpus here and
-  nobody has measured how many sessional sets the daily files print.
-- **R-9, vocabulary reconciliation + `adapter.js` + per-key manifest rows.**
-  There are three vocabularies for the same movements (spec §16.3), `adapter.js`
-  does not exist, and **99 general keys have zero `FIELD_MANIFEST` rows** — a
-  gap the coverage gate cannot see, because `<g>.vespers` is one `group` row.
-  Whatever is decided, the manifest rows and `adapter.js` ship together with a
-  coverage-gate change that makes the granularity gap fail loudly.
-
-**Owed:**
-1. **Re-verify the completed files against the render gate's limits.**
-2. **Bill to confirm the Romans/1-Corinthians heading in `Unmercenaries.pdf`
-   p13** against the physical book. The heading names Romans; the body is
-   1 Corinthians 12:27-31, 13:1-8 (0.944 vs 0.262). Until confirmed the FINDING
-   stands and the reading offers no link.
-3. **Bill to confirm the two `Heirarch.pdf` paremia spans** (Proverbs and
-   Wisdom). Both are composite readings stitched from non-contiguous spans, so
-   neither derives from a contiguous match; both citations are `identified` and
-   sit on the worklist.
-4. **20 General Menaion files remain** after `Heirarchs`.
-
-Present a plan and get my go-ahead before modifying files or running terminal
-commands.
+  shares with already-encoded ones. Heirarchs matched eight across four files.
+- Key on the **full printed heading**, never the bare label.
+- Tier is a **per-item source fact**. Devices mirror the source (§2.8).
+- **Never deduplicate.** Heirarchs' kontakion diverges from itself between two
+  print sites; its Beatitudes diverge from its canon at two of seven while
+  copying the canon's sic exactly. The book is not internally consistent, and
+  that is the finding, not a problem to smooth.
+- **A zero is not a result** — an empty register row-count for a file is an
+  unexamined gap, not a clean bill (see Monastics).
+- Sic rows for what the page prints; extraction residue is noted, never
+  registered. Register updates in the SAME COMMIT as the data revealing them.
+- Full gates, commit by concern, token scrubbed after every push.

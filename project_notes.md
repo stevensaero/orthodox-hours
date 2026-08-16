@@ -1,5 +1,94 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.41.0** | **Tone Trainer: v0.26.0** | Last synced: August 15, 2026
+**Tool version: v0.41.1** | **Tone Trainer: v0.26.0** | Last synced: August 15, 2026
+
+**Session August 15, 2026 (fourth) — HEIRARCHS ENCODED; THE KONTAKION DIVERGES
+FROM ITSELF; THE FIRST CROSS-BOOK RECURRENCE ROW.**
+**Version bumped to v0.41.1.** All eight gates green before and after: 78/78 ·
+938 nodes/0 errors · 92⋈92 and 99⋈99 · 980 strings/0 missing · build ✓.
+
+*Session context: this encode followed a critical-review pass (external review
+doc, reconciled against `menaion_v2_general_menaion_analysis.md`) and the
+spec-corrections commit (553e43e) that closed six measured claims and recorded
+the R-9 naming ruling: source-nearest name wins.*
+
+### THE EXTRACTION WAS PROVEN BEFORE CAPTURE
+
+Eight strings byte-matched against four earlier files before a line was
+encoded: anabathmoi ×3, psalm50 ×2, the megalynarion verse, "We have come to
+know God", and the God-is-the-Lord rubric. Placeholder census: **(names) 1 ·
+(Names) 2 · (name) 0** — the corrected scan's prediction, measured true.
+`dedupe_chars()` left zero doubled runs in this file.
+
+### THE KONTAKION DIVERGES BETWEEN ITS OWN TWO PRINT SITES
+
+p9 prints `us who with love honor you`; p13 prints `us who lovingly honor
+you`. **The Unmercenaries troparion ruling applied to a kontakion**: canonical
+field from the Matins site claiming only it; `liturgy.liturgy_kontakion`
+stored per-position; the pair a register `variant`. The troparion, by
+contrast, is byte-identical at all four of its sites — and **byte-identical to
+Monastics' troparion**: one general troparion serving two saint types, the
+strongest cross-file recurrence in the book so far.
+
+### THE FIRST CROSS-BOOK RECURRENCE ROW — §10.4 EXERCISED FROM THE MENAION SIDE
+
+The Tone VI dogmatic `Who doth not call thee blessed` is byte-identical in
+Monastic, Monastics, Martyr and Heirarchs — and **exactly two bytes off the
+Octoechos Tone 6 Great Vespers copy**: the Menaion prints `he is God` and
+`he hath become` lowercase in all four copies; the Octoechos capitalises both.
+Registered as `octoechos:tone6.great_vespers.dogmatikon`, relation `variant`.
+**The gate skips pairs into books not loaded this run** (by design), so this
+row is checked by eye until octoechos roots are wired into
+`validate_menaion_v2.mjs` — a small, spec-sanctioned instrumentation item.
+
+### BEATITUDES: FOUR IDENTICAL, TWO VARIANT
+
+Five of seven pairs byte-match the canon; Beatitude 2 prints `memorial` for
+the canon's `memory`, the Theotokion prints `Born of` for `Born from` — while
+**both sites print the `Thou hast, enlightened` comma**, the third file of
+evidence that the Beatitudes are set from the canon and not proofread
+separately. Heirarchs joins Monastics as the second variant file.
+
+### SMALLER MEASUREMENTS, RECORDED
+
+- The `service ):` sic is CLOSED UP here — `service):` — as the analysis
+  predicted for this file; its dogmatikon rubric is byte-identical to Martyr's.
+- The `true vine` theotokion prints twice with different pointing (a break
+  after "O Lady," at p11, none at p4) — registered variant.
+- Matins/Liturgy prokeimenon: identical text, tones IV and VII — Heirarch's
+  pattern at new tones. Its verse diverges `he`/`He` between the same
+  positions, as Monastic's does.
+- `praises_stavrotheotokion` is byte-identical to a text Martyr and
+  Unmercenaries print at VESPERS aposticha — same hymn, different service.
+- Lesson references printed on all three Vespers lessons (the references that
+  identified Heirarch's citationless lessons): three formats — bare,
+  space-before-semicolon (sic), stop-inside-parens. Lesson 1's reference
+  understates its body (opens at Prov 10:7 before the cited 3:13), the
+  Unmercenaries Matins-gospel class: `printed`, with a provenance note. The
+  Matins gospel heading likewise understates — body runs through John 10:10.
+
+### State
+
+`general.js`: **980 stored strings · 938 text nodes · 0 errors.** Complete:
+`Monastic`, `Monastics`, `Martyr`, `Martyrs`, `Unmercenaries`, `Heirarch`,
+`Heirarchs`. **7 of 26.** 31 recurrence rows and 7 sic rows added this session.
+
+### Owed before close
+
+1. **The reconciliation table** (R-9 prerequisite): every `general.js` key ×
+   every `<c>` spec field × every V1 field the assembler reads, one canonical
+   name per movement under the source-nearest ruling, dispositions to Bill.
+   Drafting was approved this session; the encode took precedence.
+2. **Octoechos roots in `validate_menaion_v2.mjs`** so cross-book rows are
+   byte-checked rather than skipped. First row now exists to check.
+3. **19 General Menaion files remain.** Next per the analysis §12 ordering:
+   `Angels` (Joshua/Judges/Isaiah lessons, no Beatitudes) or the
+   `Apostle`/`Apostles` pair (New Testament Vespers lessons; `Apostles`
+   prints no LIC and no Communion Verse — measure, do not assume). Subject
+   files LAST.
+
+---
+
+
 
 **Session August 15, 2026 (third) — SHARED.JS CLOSED EMPTY; HEIRARCH ENCODED;
 A HANDOFF ERROR I WROTE MYSELF.**
