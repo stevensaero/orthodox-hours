@@ -325,4 +325,43 @@ export default [
   { a: 'general.Heirarchs.matins.canons[0].odes.5.irmos', b: 'general.Monastic.matins.canons[0].odes.5.irmos', relation: 'identical', note: 'Ode V irmos "Rising early we cry to Thee" — third file on this irmos.' },
   { a: 'general.Heirarchs.matins.canons[0].odes.7.irmos', b: 'general.Unmercenaries.matins.canons[0].odes.7.irmos', relation: 'identical', note: 'Ode VII irmos "O Thou who in the beginning founded the earth".' },
   { a: 'general.Heirarchs.matins.canons[0].odes.8.irmos', b: 'general.Unmercenaries.matins.canons[0].odes.8.irmos', relation: 'identical', note: 'Ode VIII irmos "Glorified in the holy mountain".' },
+
+  // ── Apostle.pdf ────────────────────────────────────────────────────────────
+  // BEATITUDES BYTE-IDENTICAL AT ALL SEVEN — five files identical, two variant.
+  { a: 'general.Apostle.matins.canons[0].odes.3.items[0]', b: 'general.Apostle.liturgy.beatitudes[0]', relation: 'identical', note: 'Ode III troparion 1 = Beatitude 1 (Beatitude adds "(Twice)").' },
+  { a: 'general.Apostle.matins.canons[0].odes.3.items[1]', b: 'general.Apostle.liturgy.beatitudes[1]', relation: 'identical', note: 'Ode III troparion 2 = Beatitude 2.' },
+  { a: 'general.Apostle.matins.canons[0].odes.3.items[2]', b: 'general.Apostle.liturgy.beatitudes[2]', relation: 'identical', note: 'Ode III troparion 3 = Beatitude 3.' },
+  { a: 'general.Apostle.matins.canons[0].odes.6.items[0]', b: 'general.Apostle.liturgy.beatitudes[3]', relation: 'identical', note: 'Ode VI troparion 1 = Beatitude 4.' },
+  { a: 'general.Apostle.matins.canons[0].odes.6.items[1]', b: 'general.Apostle.liturgy.beatitudes[4]', relation: 'identical', note: 'Ode VI troparion 2 = Beatitude 5.' },
+  { a: 'general.Apostle.matins.canons[0].odes.6.items[2]', b: 'general.Apostle.liturgy.beatitudes[5]', relation: 'identical', note: 'Ode VI troparion 3 = Beatitude 6.' },
+  { a: 'general.Apostle.matins.canons[0].odes.6.items[3]', b: 'general.Apostle.liturgy.beatitudes[6]', relation: 'identical', note: 'Ode VI Theotokion = Beatitude 7 — including the "one; to be" semicolon at both sites (sic register, both rows).' },
+
+  // WITHIN THE FILE — the four-site troparion split and the two-translation hymn.
+  { a: 'general.Apostle.troparion', b: 'general.Apostle.matins.doxology_troparion', relation: 'variant',
+    note: 'THE UNMERCENARIES SPLIT, SECOND FILE: p4/p5 print `sins ** unto`, p12/p13 a single `*`. Canonical claims the two ** sites; the * sites are per-position. A penultimate marker is a singable fact.' },
+  { a: 'general.Apostle.matins.doxology_troparion', b: 'general.Apostle.liturgy.liturgy_troparion', relation: 'identical',
+    note: 'The two single-asterisk sites agree with each other.' },
+  { a: 'general.Apostle.vespers.aposticha_glory', b: 'general.Apostle.matins.doxology_glory', relation: 'identical',
+    note: 'The Doxasticon reprints the Vespers aposticha Glory byte for byte — third file with this pattern.' },
+  { a: 'general.Apostle.vespers.aposticha_glory', b: 'general.Apostle.matins.praises_glory', relation: 'variant',
+    note: 'ONE HYMN, TWO TRANSLATIONS, ONE FILE. "Leaving earthly cares O Apostle (name), * and having followed Christ" against "O Apostle (name); * having given up earthly things * thou hast followed Christ" — tortures/torments, mankind/men, differing throughout. Three print sites; two renderings. The strongest single-file argument yet that a hymn-keyed deduplication would rewrite the book.' },
+
+  // ACROSS FILES
+  { a: 'general.Apostle.vespers.dogmatikon', b: 'general.Heirarchs.vespers.dogmatikon', relation: 'variant',
+    note: 'THE FIFTH PRINT SITE OF THE TONE VI DOGMATIC AND THE FIRST TO DIVERGE: "O pure and all-blessed one" against the four files\' "most blessed". The cross-book octoechos row sits on Heirarchs\' copy.' },
+  { a: 'general.Apostle.vespers.dogmatikon_stavrotheotokion', b: 'general.Heirarchs.vespers.dogmatikon_stavrotheotokion', relation: 'variant',
+    note: 'ONE PREPOSITION — "gaveth birth unto Thee" against Heirarchs\' "to Thee" — while BOTH print "O my Son How is it that Thou diest?," letter for letter. The defect travels with the hymn; the wording does not quite.' },
+  { a: 'general.Apostle.matins.sessional_polyeleos_closer', b: 'general.Heirarch.matins.sessional_polyeleos_closer', relation: 'variant',
+    note: 'TWO INTENSIFIERS, SWAPPED: "the most holy mountain … thine all-holy Offspring" here; "the all-holy mountain … thy most holy Offspring" in Heirarch. Same theotokion, same positions, exchanged epithets.' },
+  { a: 'general.Apostle.matins.sessional_ode3_closer', b: 'general.Heirarchs.matins.sessional_ode3_closer', relation: 'identical',
+    note: '"Whither doth each one who is saved" — the post-Ode-III closer travels intact.' },
+  { a: 'general.Apostle.matins.sessional_ode3_stavrotheotokion', b: 'general.Heirarchs.matins.sessional_ode3_stavrotheotokion', relation: 'identical',
+    note: '"Having obtained the Cross of thy Son" — with its closer, a travelling pair.' },
+  { a: 'general.Apostle.matins.canons[0].odes.6.irmos', b: 'general.Heirarchs.matins.canons[0].odes.6.irmos', relation: 'identical',
+    note: 'Ode VI irmos "O Thou that puttest on light as a garment" — third canon on this irmos (also Compline-class in the Octoechos corpus; in-book pair chained here).' },
+  { a: 'general.Apostle.matins.anabathmoi[0]', b: 'general.Heirarchs.matins.anabathmoi[0]', relation: 'identical', note: '"From my youth" — seven files, one text.' },
+  { a: 'general.Apostle.matins.anabathmoi[1]', b: 'general.Heirarchs.matins.anabathmoi[1]', relation: 'identical', note: '"Ye haters of Zion" — seven files, one text.' },
+  { a: 'general.Apostle.matins.anabathmoi_closer', b: 'general.Heirarchs.matins.anabathmoi_closer', relation: 'identical', note: '"In the Holy Spirit" — seven files, one text.' },
+  { a: 'general.Apostle.matins.psalm50_closer', b: 'general.Heirarchs.matins.psalm50_closer', relation: 'identical', note: 'The Both-now after Psalm 50 — here its label carries a tone, the text does not change.' },
+  { a: 'general.Apostle.matins.psalm50_verse', b: 'general.Heirarchs.matins.psalm50_verse', relation: 'identical', note: '"Have mercy on me, O God".' },
 ];
