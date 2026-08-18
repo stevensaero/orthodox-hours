@@ -31,6 +31,7 @@ and the disposition column.
 | B-1 | Unmercenaries Liturgy Epistle | `THE EPISTLE TO THE ROMANS. (12:4-5, 15-21)` | 1 Corinthians 12:27-31, 13:1-8 (0.944) | `citation_disputed`; no link offered; **confirm against the physical book** |
 | B-2 | MonasticMartyrs Liturgy Epistle | `(5: 4-10)` under ROMANS | Romans 8:28-39 (1.000) | `citation_disputed`; no link offered; **confirm against the physical book** |
 | B-4 | Nuns dogmatic rubric | rubric announces "Dogmatic in Tone II"; the page prints the Tone VIII dogmatic under a Tone VIII label | first rubric-tone/printed-tone mismatch | sic row on `general.Nuns.vespers.dogmatikon_rubric`; **check the physical book — the PDF may faithfully print a misprint** |
+| B-5 | Heiromartyrs prokeimenon tones | Matins announces "Prokeimenon, in Tone IV", Liturgy "Prokeimenon, in Tone VII" — over BYTE-IDENTICAL text ("Precious in the sight of the Lord") and byte-identical verses | first tone-mismatch on identical prokeimenon text; VII may be a misprint for IV, or a real Grave-Tone appointment | register row + node comments; **check the physical book** |
 | B-3 | 08-15 festal antiphons | census finds `ANTIPHON I/II/III` only in 08-06 | Dormition printing no festal antiphons is surprising | carried from spec §13.2-6; check before 08-15 is encoded |
 
 ## C. GATE FINDINGS — surfaced, standing, wanting your judgment once
