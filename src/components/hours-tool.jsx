@@ -8656,6 +8656,45 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.41.2",
+    date: "August 2026",
+    summary: "Apostle and Apostles encoded (9 of 26); the pattern holds — and inverts",
+    items: [
+      "APOSTLE AND APOSTLES ENCODED — the apostolic pair, complete across all " +
+      "three services, every page cited, extractions proven by nine " +
+      "byte-matches each. Apostles is the no-placeholder plural: zero name " +
+      "tokens, exactly as GENERAL_TAKES_NAME forbids — the corrected rule " +
+      "checked by its negative, and it held.",
+
+      "THE FOUR-SITE TROPARION SPLIT IS A BOOK HABIT: Apostle repeats the " +
+      "Unmercenaries pattern exactly (** at Vespers/God-is-the-Lord, * at " +
+      "the Doxology/Liturgy tail), and Apostles INVERTS it (* at the Vespers " +
+      "dismissal, ** everywhere else). Three files, one device, two " +
+      "polarities. The kontakion diverges between its own two sites in BOTH " +
+      "files — 'with love/lovingly' had a sibling waiting in 'wise/most " +
+      "wise'.",
+
+      "ONE HYMN, TWO TRANSLATIONS, ONE FILE: Apostle's aposticha Glory and " +
+      "Doxasticon are byte-identical while its PRAISES Glory prints a " +
+      "different rendering of the same hymn. Across files: the Tone VI " +
+      "dogmatic's fifth print site is the first to diverge (all-blessed / " +
+      "most blessed), the Tone VIII dogmatic travels intact, and 'He had " +
+      "became a man' arrives byte-perfect at its third site while the hymn " +
+      "carrying it changes sessional positions. The defects are more stable " +
+      "than the texts.",
+
+      "TWO CENSUS ABSENCES EXPLAINED: Apostles prints 'Lord I have cried' " +
+      "(no comma — invisible to the heading scan) and labels its communion " +
+      "psalm 'Communion Hymn'. Neither was absent; both were spelled " +
+      "differently than the question asked.",
+
+      "Odes I and IV of Apostles carry FOUR troparia — first file off the " +
+      "3+1 shape, no schema change needed (§7.6 never gated a census). 46 " +
+      "recurrence rows and 35 sic rows across the pair. 1214 nodes · 0 " +
+      "errors · 1268 strings render · all eight gates green.",
+    ],
+  },
+  {
     version: "v0.41.1",
     date: "August 2026",
     summary: "Heirarchs encoded (7 of 26); the kontakion diverges from itself; the first cross-book recurrence row",
