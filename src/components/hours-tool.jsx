@@ -8656,6 +8656,37 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.41.3",
+    date: "August 2026",
+    summary: "Angels encoded (10 of 26); the first homoglyph; Trinitarion attested; a sixth census absence that was a spelling",
+    items: [
+      "ANGELS ENCODED — 16 pages, the file that breaks the most template " +
+      "assumptions at once, all of them absorbed by the order-driven design " +
+      "with one schema constant extended (LABELS gains 'trinitarion', on " +
+      "attestation).",
+
+      "FIRST HOMOGLYPH IN THE GENERAL MENAION: page 5 prints 'О Theotokos' " +
+      "with CYRILLIC О (U+041E). Normalized per §2.13 with a per-node " +
+      "homoglyph_log — the artifact machinery built at spec time, firing for " +
+      "the first time, eleven files in.",
+
+      "'Typika and THE Beatitudes.' — the article hid the only 'missing' " +
+      "Beatitudes in the book from the census. Present, in a NEW SHAPE: six " +
+      "items with (Twice) on two of them, all byte-identical to the canon. " +
+      "SEVEN files identical, two variant.",
+
+      "THE DOXASTICON IS THE TROPARION IN A SECOND TRANSLATION — and the " +
+      "one/many axis runs the whole service: two megalynaria, two canon " +
+      "refrains, two post-Psalm-50 sessionals. The no-display-copies lint " +
+      "caught Psalm 103:33 shared between the Vespers frame psalm and the " +
+      "megalynarion verse — audited into the allowlist, not silenced.",
+
+      "23 recurrence rows and 11 sic rows, including 'the fist among the " +
+      "immaterial ranks' — fist for first, a defect no spelling checker can " +
+      "see. 1342 nodes · 0 errors · 1402 strings render · gates green.",
+    ],
+  },
+  {
     version: "v0.41.2",
     date: "August 2026",
     summary: "Apostle and Apostles encoded (9 of 26); the pattern holds — and inverts",
