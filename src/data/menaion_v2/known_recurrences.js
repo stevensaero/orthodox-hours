@@ -407,4 +407,41 @@ export default [
   { a: 'general.Apostles.matins.anabathmoi_closer', b: 'general.Apostle.matins.anabathmoi_closer', relation: 'identical', note: '"In the Holy Spirit" — eight files, one text.' },
   { a: 'general.Apostles.matins.psalm50_closer', b: 'general.Apostle.matins.psalm50_closer', relation: 'identical', note: 'The Both-now after Psalm 50.' },
   { a: 'general.Apostles.matins.psalm50_verse', b: 'general.Apostle.matins.psalm50_verse', relation: 'identical', note: '"Have mercy on me, O God".' },
+
+  // ── Angels.pdf ─────────────────────────────────────────────────────────────
+  // BEATITUDES: a NEW SHAPE (six items — Ode III ×3, Ode VI 1-2, Ode VI
+  // Theotokion; Ode VI troparion 3 NOT taken; (Twice) on items 1 AND 4) and
+  // every item byte-identical to its canon site. SEVEN files identical, two
+  // variant.
+  { a: 'general.Angels.matins.canons[0].odes.3.items[0]', b: 'general.Angels.liturgy.beatitudes[0]', relation: 'identical', note: 'Ode III troparion 1 = Beatitude 1 (Beatitude adds "(Twice)").' },
+  { a: 'general.Angels.matins.canons[0].odes.3.items[1]', b: 'general.Angels.liturgy.beatitudes[1]', relation: 'identical', note: 'Ode III troparion 2 = Beatitude 2.' },
+  { a: 'general.Angels.matins.canons[0].odes.3.items[2]', b: 'general.Angels.liturgy.beatitudes[2]', relation: 'identical', note: 'Ode III troparion 3 = Beatitude 3.' },
+  { a: 'general.Angels.matins.canons[0].odes.6.items[0]', b: 'general.Angels.liturgy.beatitudes[3]', relation: 'identical', note: 'Ode VI troparion 1 = Beatitude 4 (Beatitude adds "(Twice)" — the first mid-array repeat).' },
+  { a: 'general.Angels.matins.canons[0].odes.6.items[1]', b: 'general.Angels.liturgy.beatitudes[4]', relation: 'identical', note: 'Ode VI troparion 2 = Beatitude 5.' },
+  { a: 'general.Angels.matins.canons[0].odes.6.items[3]', b: 'general.Angels.liturgy.beatitudes[5]', relation: 'identical', note: 'Ode VI Theotokion = Beatitude 6 — "siteth" spelling at both sites (sic register, both rows). Ode VI troparion 3 is not taken into the Beatitudes at all.' },
+
+  // WITHIN THE FILE
+  { a: 'general.Angels.troparion', b: 'general.Angels.matins.doxology_glory', relation: 'variant',
+    note: 'THE TROPARION IN TWO TRANSLATIONS: "O supreme commanders of the heavenly hosts, * we entreat you … encompass us … from all misfortunes, ** for ye are the commanders of the hosts on high" at four sites; "Supreme Leaders of the Heavenly Hosts, * we implore you … encircle us … from dangers, ** for you are the commanders of the powers above" as the Doxasticon. Apostle\'s two-rendering Glory, now on the proper troparion itself — and the register lint independently flags the second rendering\'s modern "you".' },
+  { a: 'general.Angels.vespers.aposticha_closer', b: 'general.Angels.matins.sessional_post50', relation: 'variant',
+    note: 'ONE HYMN, TWO NUMBERS: "As the defenders and commanders of the Angels, O Supreme Leaders …" (plural, Glory-Both-now at the aposticha) against "As the chief defender and leader of Angels, do thou, O Supreme Commander (name) …" (singular, the For-One post-Psalm-50 sessional). The one/many axis as a recurrence.' },
+  { a: 'general.Angels.vespers.lic_glory', b: 'general.Angels.vespers.dogmatikon_alternate', relation: 'variant',
+    note: '"Rejoice with us, all ye angelic orders …" re-set as "Rejoice with us, all ye choirs of virgins …" — one opening, two subjects, facing pages.' },
+  { a: 'general.Angels.matins.prokeimenon', b: 'general.Angels.liturgy.prokeimenon', relation: 'identical',
+    note: 'Identical text at the SAME tone (IV) — first file whose two prokeimena agree in tone as well as text.' },
+
+  // ACROSS FILES
+  { a: 'general.Angels.vespers.dogmatikon', b: 'general.Heirarchs.vespers.dogmatikon', relation: 'identical',
+    note: 'SIXTH print site of the Tone VI dogmatic — five byte-identical sites (Monastic, Monastics, Martyr, Heirarchs, Angels) against Apostle\'s lone "all-blessed".' },
+  { a: 'general.Angels.matins.doxology_stavrotheotokion', b: 'general.Apostles.vespers.lic_stavrotheotokion', relation: 'identical',
+    note: 'The "I marvel" rendering of the 444-family, byte-identical — printed at the DOXOLOGY here, at the LIC there. Sixth print site of the family.' },
+  { a: 'general.Angels.matins.canons[0].odes.1.irmos', b: 'general.Apostle.matins.canons[0].odes.1.irmos', relation: 'identical', note: 'Ode I irmos "Let us, O ye people" — shared by the apostolic canon.' },
+  { a: 'general.Angels.matins.canons[0].odes.5.irmos', b: 'general.Apostle.matins.canons[0].odes.5.irmos', relation: 'identical', note: 'Ode V irmos "Thou hast enlightened".' },
+  { a: 'general.Angels.matins.canons[0].odes.7.irmos', b: 'general.Apostle.matins.canons[0].odes.7.irmos', relation: 'identical', note: 'Ode VII irmos "The Hebrew children in the furnace".' },
+  { a: 'general.Angels.matins.canons[0].odes.8.irmos', b: 'general.Heirarchs.matins.canons[0].odes.8.irmos', relation: 'identical', note: 'Ode VIII irmos "Glorified in the holy mountain".' },
+  { a: 'general.Angels.matins.anabathmoi[0]', b: 'general.Apostles.matins.anabathmoi[0]', relation: 'identical', note: '"From my youth" — nine files, one text.' },
+  { a: 'general.Angels.matins.anabathmoi[1]', b: 'general.Apostles.matins.anabathmoi[1]', relation: 'identical', note: '"Ye haters of Zion" — nine files, one text.' },
+  { a: 'general.Angels.matins.anabathmoi_closer', b: 'general.Apostles.matins.anabathmoi_closer', relation: 'identical', note: '"In the Holy Spirit" — nine files, one text.' },
+  { a: 'general.Angels.matins.psalm50_closer', b: 'general.Apostles.matins.psalm50_closer', relation: 'identical', note: 'The Both-now after Psalm 50.' },
+  { a: 'general.Angels.matins.psalm50_verse', b: 'general.Apostles.matins.psalm50_verse', relation: 'identical', note: '"Have mercy on me, O God".' },
 ];

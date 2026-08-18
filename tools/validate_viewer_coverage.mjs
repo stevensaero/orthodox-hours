@@ -136,6 +136,13 @@ const CROSS_BOOK_FRAME_DUPLICATES = [
   ["The righteous cried, and the Lord heard ", "Ps 33:17 — Psalm 33 frame text + HTM weekday prokeimenon/Alleluia table"],
   ["Many are the tribulations of the righteo", "Ps 33:19 — Psalm 33 frame text + HTM weekday prokeimenon/Alleluia table"],
   ["The righteous man shall flourish like a ", "weekday Alleluia verse (Ps 91) — HTM daily table"],
+  // Added 15 Aug with the Angels encode. Psalm 103:33 — hours-tool.jsx carries
+  // it inside the full Psalm 103 Vespers-opening frame text; Angels.pdf prints
+  // the same verse as its Megalynarion verse (a NEW verse at that position —
+  // nine files print other psalms there). The Martyrs Ps-33 class exactly:
+  // the psalm belongs to the frame and the Menaion quotes it. Audited, not a
+  // display copy.
+  ["I will sing unto the Lord throughout my ", "Ps 103:33 — Vespers opening psalm (frame) + Angels megalynarion verse"],
   ["The rich among the people shall entreat ", "weekday Alleluia verse (Ps 44) — HTM daily table"],
   ["The heavens shall confess Thy wonders, O", "weekday Alleluia verse (Ps 88) — HTM daily table"],
   ["Praise the Lord, O my soul. I will prais", "psalm verse (Ps 145) — frame psalmody"],

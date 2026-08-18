@@ -75,6 +75,10 @@ export const CANON_ODES_OPTIONAL = [2];
 export const LABELS = [
   'plain', 'martyrs', 'glory', 'both_now', 'theotokion', 'stavrotheotokion',
   'of_the_feast', 'forefeast', 'afterfeast', 'for_the_reposed', 'refrain',
+  // Attested 15 Aug 2026: Angels.pdf prints `Trinitarion:` on four canon
+  // items (Odes VII ×2 and VIII) — the first file to label items so.
+  // Extended on attestation, never by inference (§7.1).
+  'trinitarion',
 ];
 
 // ── Typed closers (§5.8) ─────────────────────────────────────────────────────
