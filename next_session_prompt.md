@@ -1,9 +1,9 @@
 # Next-session kickoff — Menaion V2 Phase 2 (General Menaion encoding)
 
-State at handoff: **v0.41.1**. `general.js` holds **980 stored strings · 938
-text nodes · 0 errors** — `Monastic`, `Monastics`, `Martyr`, `Martyrs`,
-`Unmercenaries`, `Heirarch`, `Heirarchs` complete across all three services.
-**7 of 26.** V1 Menaion still drives the Hours assembler; V2 is a parallel
+State at handoff: **v0.41.2**. `general.js` holds **1268 stored strings · 1214
+text nodes · 0 errors** — Monastic, Monastics, Martyr, Martyrs, Unmercenaries,
+Heirarch, Heirarchs, Apostle, Apostles complete across all three services.
+**9 of 26.** V1 Menaion still drives the Hours assembler; V2 is a parallel
 build until a Phase 5 cutover.
 
 ---
@@ -40,9 +40,9 @@ node tools/test_pointing_paths.mjs
 node tools/test_sunday_vespers.mjs          # expect 78/78
 node tools/validate_entries.mjs
 node tools/validate_octoechos_v2.mjs
-node tools/validate_menaion_v2.mjs          # expect 938 nodes · 0 errors
+node tools/validate_menaion_v2.mjs          # expect 1214 nodes · 0 errors
 node tools/validate_viewer_coverage.mjs     # octoechos 92⋈92 · menaion 99⋈99
-node tools/test_menaion_v2_render.mjs       # expect 980 strings · 0 missing
+node tools/test_menaion_v2_render.mjs       # expect 1268 strings · 0 missing
 npm run build                               # DO NOT SKIP
 ```
 
@@ -60,19 +60,19 @@ npm run build                               # DO NOT SKIP
 
 **Then the next file.** The analysis §12 risk ordering (measured, but re-verify
 on the page): `Angels` (Joshua/Judges/Isaiah lessons; the census shows no
-Typika-and-Beatitudes heading — measure what stands in its place), or the
-`Apostle`/`Apostles` pair (New Testament Vespers lessons; the census shows
-`Apostles` printing no `Lord, I have cried` heading and no Communion Verse —
-measure what its Vespers opens with instead). Subject files (`Cross`,
-`Holy Fathers`, `St John Baptist`, `Theotokos`) LAST, in a session with room —
-`Holy Fathers` is a different shape, not a shorter one.
+Typika-and-Beatitudes heading — measure what stands in its place; the
+Apostles lesson taught that a census absence may be a SPELLING, so look for
+the label before believing the absence), or `MonasticMartyrs` /
+`St John Baptist` (structurally rewritten Dogmatic rubrics). Subject files
+(`Cross`, `Holy Fathers`, `St John Baptist`, `Theotokos`) LAST, in a session
+with room — `Holy Fathers` is a different shape, not a shorter one.
 
 **Method, non-negotiable:**
 - Transcribe against the printed page. **Do not build a classifier.**
 - Extract with `pdfplumber`'s `dedupe_chars()`; **join lines ending in `-`
   WITHOUT a space**.
 - **Verify the extraction before trusting it**: byte-match strings the new file
-  shares with already-encoded ones. Heirarchs matched eight across four files.
+  shares with already-encoded ones. Heirarchs matched eight; Apostle and Apostles nine each.
 - Key on the **full printed heading**, never the bare label.
 - Tier is a **per-item source fact**. Devices mirror the source (§2.8).
 - **Never deduplicate.** Heirarchs' kontakion diverges from itself between two

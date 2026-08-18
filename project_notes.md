@@ -1,5 +1,97 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.41.1** | **Tone Trainer: v0.26.0** | Last synced: August 15, 2026
+**Tool version: v0.41.2** | **Tone Trainer: v0.26.0** | Last synced: August 15, 2026
+
+**Session August 15, 2026 (fifth) — APOSTLE AND APOSTLES ENCODED; THE PATTERN
+HOLDS, AND INVERTS.**
+**Version bumped to v0.41.2.** Eight gates green before, between and after:
+1214 nodes/0 errors · 1268 strings/0 missing · 92⋈92 · 99⋈99 · build ✓.
+
+### THE PAIR, MEASURED
+
+Extractions proven by nine byte-matches each before capture. `Apostle`:
+`(name)` ×30, one `OODDEE VV` residue (the analysis §11 prediction for this
+file, to the line). `Apostles`: **zero placeholder tokens** — the
+no-placeholder plural, `GENERAL_TAKES_NAME` checked by its negative and
+holding.
+
+### TWO CENSUS "ABSENCES" WERE SPELLINGS, NOT ABSENCES
+
+The structural census had `Apostles` printing no `Lord, I have cried` and no
+`Communion Verse`. Measured: it prints **“Lord I have cried” without the
+comma** — invisible to a scan keyed on the comma'd form — and labels its
+communion psalm **“Communion Hymn”**. *A scan answers the question it was
+asked*, instances four and five, now sic/provenance rows instead of
+remembered surprises.
+
+### THE FOUR-SITE TROPARION SPLIT IS A BOOK HABIT — AND IT HAS TWO POLARITIES
+
+`Apostle` repeats the Unmercenaries split exactly: `sins ** unto` at p4/p5,
+single `*` at p12/p13 — canonical claims the `**` sites, `doxology_troparion`
+/ `liturgy_troparion` per-position. `Apostles` **inverts it**: the Vespers
+dismissal prints the single `*` and the other three sites print `**` —
+per-position home `vespers.dismissal_troparion`, the §5.4 key's first use.
+Also: `Apostle` prints **no (Twice) at God-is-the-Lord** — the first file
+that does not double it.
+
+### THE KONTAKION SELF-DIVERGENCE IS ALSO A HABIT
+
+`Apostle`'s two kontakion sites MATCH — measured, both claimed by the
+canonical field. **`Apostles`' diverge twice over**: `O wise` with `* that`
+at p10 against `O MOST wise` with `** that` at p13 — a wording and a pointing
+at once. With Heirarchs' `with love`/`lovingly`, that is two self-divergent
+kontakia in three files, and the R-1 multi-site verification is the only
+thing standing between them and a silent merge.
+
+### TRANSLATIONS, NOT JUST VARIANTS
+
+- `Apostle` prints ONE HYMN IN TWO TRANSLATIONS: aposticha Glory =
+  Doxasticon byte-for-byte, while the Praises Glory renders the same hymn
+  differently ("Leaving earthly cares…" / "having given up earthly things…").
+- The Tone VI dogmatic's FIFTH print site is its first divergence
+  (`all-blessed` for `most blessed`); the Tone VIII dogmatic travels intact
+  between its two files. Two families, two behaviours.
+- The 444-char stavrotheotokion family gains a third rendering in `Apostles`
+  ("I marvel" for "I stand in awe"): five print sites, four forms.
+- "With a net of divine words" appears in singular and plural renderings AT
+  DIFFERENT SESSIONAL POSITIONS across the pair — and its Spec. Mel. is
+  cited "Of the wisdom ..." in one file and "Of the Wisdom ..." in another.
+  Even the melody names drift; reconciliation-table material.
+- `He had became a man` arrived byte-perfect at its THIRD site, inside a
+  theotokion that changed positions between files. **The defects are more
+  stable than the texts.**
+
+### SHAPE NEWS
+
+`Apostles` Odes I and IV print **four troparia** plus Theotokion — first file
+off the 3+1 shape. No schema change: §7.6 checks labels and non-emptiness,
+never a census. The gate also caught one real encoding error mid-session
+(`Apostle`'s unpointed exapostilarion stored as Tier 2) — fixed from the page.
+
+### State
+
+`general.js`: **1268 stored strings · 1214 text nodes · 0 errors.** Complete:
+Monastic, Monastics, Martyr, Martyrs, Unmercenaries, Heirarch, Heirarchs,
+Apostle, Apostles. **9 of 26.** Beatitudes tally: SIX files byte-identical,
+two variant. 46 recurrence rows and 35 sic rows this session.
+
+### Owed before close (carried)
+
+1. **The reconciliation table** (R-9 prerequisite) — now with three more
+   entries for its evidence column: the sessional_post50 label drift
+   ("Then the Sessional Hymn, in Tone VI:" / bare "In Tone VI:"), the
+   spec-mel name drift ("Thy Tomb"/"Thy sepulcher", "Of the wisdom"/"Of the
+   Wisdom"), and dismissal_troparion's first use.
+2. **Octoechos roots in `validate_menaion_v2.mjs`** — the cross-book row
+   still checked by eye.
+3. **17 General Menaion files remain.** Next by the analysis §12 ordering:
+   `Angels` (Joshua/Judges/Isaiah lessons; the census shows no Typika
+   heading — measure what stands in its place), or `MonasticMartyrs` /
+   `St John Baptist` (structurally rewritten Dogmatic rubrics). Subject
+   files LAST.
+
+---
+
+
 
 **Session August 15, 2026 (fourth) — HEIRARCHS ENCODED; THE KONTAKION DIVERGES
 FROM ITSELF; THE FIRST CROSS-BOOK RECURRENCE ROW.**
