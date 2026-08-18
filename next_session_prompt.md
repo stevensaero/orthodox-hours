@@ -42,9 +42,9 @@ node tools/test_pointing_paths.mjs
 node tools/test_sunday_vespers.mjs          # expect 78/78
 node tools/validate_entries.mjs
 node tools/validate_octoechos_v2.mjs
-node tools/validate_menaion_v2.mjs          # expect 1612 nodes · 0 errors
+node tools/validate_menaion_v2.mjs          # expect 1747 nodes · 0 errors
 node tools/validate_viewer_coverage.mjs     # octoechos 92⋈92 · menaion 99⋈99
-node tools/test_menaion_v2_render.mjs       # expect 1684 strings · 0 missing
+node tools/test_menaion_v2_render.mjs       # expect 1825 strings · 0 missing
 npm run build                               # DO NOT SKIP
 ```
 
@@ -61,7 +61,7 @@ npm run build                               # DO NOT SKIP
    Wire the roots so cross-book rows are byte-checked.
 
 **Then the next file.** The remaining singular/plural pairs —
-`Martyresses` (the pair to the file just encoded — measure its plural placeholders and lesson headings yourself), `Nun`/`Nuns` (census: no "Let every breath" —
+`Nun`/`Nuns` (census: no "Let every breath" —
 measure what stands there), `Hieromartyr`/`Heiromartyrs`, `HieroConfessor`,
 `MonasticMartyr`, `Fools`, `Prophet`. `St John Baptist` (the NEGATIVE
 conditional, 18pp, a subject file) and the other subject files (`Cross`,

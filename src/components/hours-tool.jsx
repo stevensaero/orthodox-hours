@@ -8656,6 +8656,35 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.41.6",
+    date: "August 2026",
+    summary: "Martyresses encoded (13 of 26) — half the General Menaion; one Glory at three sites in two forms",
+    items: [
+      "MARTYRESSES ENCODED — 13 of 26: HALF THE GENERAL MENAION. The " +
+      "singular/plural pair share their stock byte-for-byte (LIC closer, " +
+      "megalynarion verse, Alleluia, the stop-less communion verse) — and " +
+      "the stock circulates wider: the LIC stavrotheotokion is Apostle's " +
+      "copy exactly, the 444-family 'at Thy' form reaches a fourth site at " +
+      "a NEW slot, and defects (ST. MARK:, the missing final stop, the " +
+      "demons” irmos quote) travel as faithfully as the texts.",
+
+      "ONE GLORY, THREE PRINT SITES, TWO FORMS — aposticha Glory = " +
+      "Doxasticon byte-for-byte, REORDERED as the post-Psalm-50 sessional. " +
+      "And a sessional that ends MID-FORMULA: 'inherited eternal Glory " +
+      "...,' where 'eternal glory.' belongs — the label formula bled into " +
+      "hymn text.",
+
+      "'call the blessed' for 'call thee blessed' — copied canon → " +
+      "Beatitude exactly: sixth file of transmission evidence. Beatitudes " +
+      "now TEN files identical, two variant. The tier gate stopped three " +
+      "real capture errors before commit (two over-captures, one " +
+      "mis-tier).",
+
+      "31 recurrence rows, 11 sic rows. 1747 nodes · 0 errors · 1825 " +
+      "strings render · all eight gates green.",
+    ],
+  },
+  {
     version: "v0.41.5",
     date: "August 2026",
     summary: "Fekula delivered — the census comparison closes; Martyress encoded (12 of 26)",

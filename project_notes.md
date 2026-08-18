@@ -1,5 +1,57 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.41.5** | **Tone Trainer: v0.26.0** | Last synced: August 15, 2026
+**Tool version: v0.41.6** | **Tone Trainer: v0.26.0** | Last synced: August 15, 2026
+
+**Session August 15, 2026 (ninth) — MARTYRESSES ENCODED; HALF THE GENERAL
+MENAION.**
+**Version bumped to v0.41.6.** Eight gates green: 1747 nodes/0 errors · 1825
+strings/0 missing · build ✓. **13 of 26 — half the book.**
+
+### ONE GLORY, THREE SITES, TWO FORMS
+
+"Setting aside as transient" prints as the aposticha Glory, byte-identically
+as the Doxasticon, and REORDERED as the post-Psalm-50 sessional (clauses
+swapped, "passion-bearers" → "ones"). The tier gate stopped two related
+OVER-CAPTURES before commit — ambiguous grabs that swallowed everything
+between two print sites — plus one mis-tier. Three real errors, three
+instrument catches, zero shipped.
+
+### THE STRANGEST SIC IN THIRTEEN FILES
+
+Sessional 1 ends "… and inherited eternal Glory ...," — the LABEL FORMULA
+where the word "glory." belongs, with the real closer label printed on the
+next line. Also: "call the blessed" for "call thee blessed", copied
+canon→Beatitude defect-for-defect (sixth file of transmission evidence);
+the demons” irmos defect at its third file; ST. MARK: and the stop-less
+communion verse travelling with the pair.
+
+### THE PAIR SHARES ITS STOCK; THE STOCK CIRCULATES
+
+Byte-identical with Martyress: LIC closer, megalynarion verse, Alleluia +
+verse, communion verse (missing stop included). Byte-identical ACROSS pairs:
+the LIC stav = Apostle's copy exactly (where the singular Martyress prints a
+third rendering); the 444-family "at Thy" form at a FOURTH site and a NEW
+slot (aposticha); "Do thou accept" migrating sessional-2 → post-Ode-III;
+"O Sovereign lady" and "Mercifully regard" at their second files. The
+General Menaion is assembled from circulating stock, and the stock's
+defects travel with it.
+
+### State
+
+`general.js`: **1825 stored strings · 1747 text nodes · 0 errors.** THIRTEEN
+of 26. Beatitudes: TEN identical, two variant. New doxology shape
+(`doxology_alternate` — Otherwise-with-text, no conditional label).
+
+### Owed (carried)
+
+Reconciliation table (R-9) · octoechos gate roots · line-break-hyphen ruling
+(two rows) · physical-book checks (two disputed citations) · Pentecostarion
+off Drive · **13 files remain**: Nun/Nuns, Hieromartyr/Heiromartyrs,
+HieroConfessor, MonasticMartyr, Fools, Prophet, then the subject files LAST
+(St John Baptist 18pp, Cross, Holy Fathers, Theotokos).
+
+---
+
+
 
 **Session August 15, 2026 (eighth) — FEKULA DELIVERED, THE CENSUS COMPARISON
 CLOSES; MARTYRESS ENCODED.**
