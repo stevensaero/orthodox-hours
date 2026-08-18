@@ -1,8 +1,9 @@
 # Next-session kickoff — Menaion V2 Phase 2 (General Menaion encoding)
 
-State at handoff: **v0.41.4**. `general.js` holds **1543 stored strings · 1477
-text nodes · 0 errors** — eleven files complete across all three services
-(+ MonasticMartyrs). **11 of 26.** `menaion_rubric_census.md` now distills
+State at handoff: **v0.41.5**. `general.js` holds **1678 stored strings · 1612
+text nodes · 0 errors** — twelve files complete (+ Martyress). **12 of 26.**
+The rubric census's Fekula column is FILLED from the locally delivered
+`Fekula_ODS/` chapters. `menaion_rubric_census.md` now distills
 the rubric corpus to instruction-set families; read it before touching any
 rubric-bearing question. V1 Menaion still drives the Hours assembler; V2 is a parallel
 build until a Phase 5 cutover.
@@ -41,9 +42,9 @@ node tools/test_pointing_paths.mjs
 node tools/test_sunday_vespers.mjs          # expect 78/78
 node tools/validate_entries.mjs
 node tools/validate_octoechos_v2.mjs
-node tools/validate_menaion_v2.mjs          # expect 1477 nodes · 0 errors
+node tools/validate_menaion_v2.mjs          # expect 1612 nodes · 0 errors
 node tools/validate_viewer_coverage.mjs     # octoechos 92⋈92 · menaion 99⋈99
-node tools/test_menaion_v2_render.mjs       # expect 1543 strings · 0 missing
+node tools/test_menaion_v2_render.mjs       # expect 1678 strings · 0 missing
 npm run build                               # DO NOT SKIP
 ```
 
@@ -60,7 +61,7 @@ npm run build                               # DO NOT SKIP
    Wire the roots so cross-book rows are byte-checked.
 
 **Then the next file.** The remaining singular/plural pairs —
-`Martyress`/`Martyresses`, `Nun`/`Nuns` (census: no "Let every breath" —
+`Martyresses` (the pair to the file just encoded — measure its plural placeholders and lesson headings yourself), `Nun`/`Nuns` (census: no "Let every breath" —
 measure what stands there), `Hieromartyr`/`Heiromartyrs`, `HieroConfessor`,
 `MonasticMartyr`, `Fools`, `Prophet`. `St John Baptist` (the NEGATIVE
 conditional, 18pp, a subject file) and the other subject files (`Cross`,

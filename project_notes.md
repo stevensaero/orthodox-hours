@@ -1,5 +1,60 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.41.4** | **Tone Trainer: v0.26.0** | Last synced: August 15, 2026
+**Tool version: v0.41.5** | **Tone Trainer: v0.26.0** | Last synced: August 15, 2026
+
+**Session August 15, 2026 (eighth) — FEKULA DELIVERED, THE CENSUS COMPARISON
+CLOSES; MARTYRESS ENCODED.**
+**Version bumped to v0.41.5.** Eight gates green: 1612 nodes/0 errors · 1678
+strings/0 missing · build ✓. **12 of 26.**
+
+### THE FEKULA COMPARISON — CLOSED
+
+Bill delivered the ODS chapters locally (`Orthodox Hours/Fekula_ODS/`, OCR
+text + PDFs). The census's Fekula column is FILLED: **no family contradicts
+Fekula**; several match his words verbatim — "the dogmaticon in the tone of
+the week", "On Wednesday or Friday", "From my youth up", "The Great Doxology
+and then the troparion". **MonasticMartyrs' "rewritten" rubric is the corpus
+wording CLOSEST to Fekula's own** — the structural outlier is the most
+Fekula-conformant text in the book. Three one-directional asymmetries
+(Saturday's unconditional General-Menaion fallback, ch2 l162; the n.27
+Friday-evening aposticha provisions; his Menaion/Octoechos source-routing
+inside the theotokion-or-stavrotheotokion disjunction): **Fekula knows rules
+the Menaion cannot print, never the reverse.** OCR caveat recorded; verbatim
+display quotes should check the PDFs.
+
+### MARTYRESS — THE ANALYSIS'S OWN TABLE WAS WRONG
+
+§5 of the analysis lists Martyress as "Isaiah only, 1 lesson". The page
+prints THREE — Isaiah + Wisdom ×2 under **bare-name headings** ("THE WISDOM
+OF SOLOMON") that no READING-keyed scan can see. Census-absence-by-spelling,
+eighth instance, this time in the measured document itself. Lesson 3 is a
+THIRD RENDERING of the Wisdom 5 lesson.
+
+Also: **"cru-cified"** — the second line-break hyphen, inside the proper
+troparion at ALL FOUR byte-identical sites (the pas-sions ruling now governs
+a canonical field). One hymn re-rendered twice WITHIN the file. The
+dogmatic-slot stav is byte-identical to Heirarchs' PRAISES stav — texts
+migrate across slot classes, fourth instance. The rubric-then-label
+inversion at the aposticha closer. Two unclosed quotations; `be may
+delivered`; `the Creator of maketh`; a communion verse — and file — ending
+with no final stop.
+
+### State
+
+`general.js`: **1678 stored strings · 1612 text nodes · 0 errors.** Twelve
+files. Beatitudes: NINE identical, two variant. Tone VI dogmatic: 7 sites, 6
+identical. "All we, the generations": five sites. "We have come to know
+God": five sites.
+
+### Owed (carried)
+
+Reconciliation table (R-9) · octoechos gate roots · line-break-hyphen ruling
+(now TWO rows) · physical-book checks (two disputed citations) ·
+Pentecostarion off Drive · **14 files remain** — pairs next; subject files
+last.
+
+---
+
+
 
 **Session August 15, 2026 (seventh) — MONASTICMARTYRS ENCODED; THE RUBRIC
 CENSUS; TWO INSTRUMENTS CORRECTED BY THEIR FIRST REAL CASES.**

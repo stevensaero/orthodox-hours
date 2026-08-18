@@ -8656,6 +8656,39 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.41.5",
+    date: "August 2026",
+    summary: "Fekula delivered — the census comparison closes; Martyress encoded (12 of 26)",
+    items: [
+      "THE FEKULA COMPARISON CLOSES: Bill delivered the chapter files " +
+      "locally (Fekula_ODS/), and the census's Fekula column is FILLED. No " +
+      "family contradicts Fekula; several match his words verbatim — and " +
+      "MonasticMartyrs' 'rewritten' rubric is the corpus wording CLOSEST to " +
+      "his own ('the dogmaticon in the tone of the week'). Three " +
+      "asymmetries, all one-directional: Fekula knows rules the Menaion " +
+      "cannot print (Saturday's unconditional General-Menaion fallback; the " +
+      "n.27 Friday-evening provisions; his Menaion/Octoechos source-routing " +
+      "in the theotokion-or-stavrotheotokion disjunction). Never the " +
+      "reverse.",
+
+      "MARTYRESS ENCODED — and the analysis's own lesson table was wrong: " +
+      "'Isaiah only' is actually THREE lessons, two under bare-name " +
+      "headings no scan keyed on READING could see. The " +
+      "census-absence-by-spelling class, eighth instance, biting the " +
+      "measured document itself.",
+
+      "'cru-cified' — the second line-break hyphen, inside the proper " +
+      "troparion at all four byte-identical sites. One hymn re-rendered " +
+      "twice WITHIN the file (Idiomelon Glory = post-Psalm-50 sessional; " +
+      "dogmatic stav = its own Praises stav) — and the dogmatic stav is " +
+      "byte-identical to Heirarchs' PRAISES stav across slot classes.",
+
+      "Beatitudes: nine files identical, two variant. 28 recurrence rows, " +
+      "12 sic rows. 1612 nodes · 0 errors · 1678 strings render · all " +
+      "eight gates green.",
+    ],
+  },
+  {
     version: "v0.41.4",
     date: "August 2026",
     summary: "MonasticMartyrs encoded (11 of 26); the rubric census; two instruments corrected by their first real cases",
