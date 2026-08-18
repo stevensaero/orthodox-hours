@@ -332,11 +332,16 @@ function checkEntry(entry, path, claimed, ctx) {
   walk(entry, path, ctx, null);
 
   // §7.5 — surfaced FINDING, not a hard-fail. Evidence is one V1 entry.
-  const r = S.SECTION_RULES.matins?.prokeimenonDiffersFrom;
-  if (r && entry.matins?.prokeimenon && entry.liturgy?.prokeimenon) {
-    const a = JSON.stringify(entry.matins.prokeimenon.text ?? entry.matins.prokeimenon);
-    const b = JSON.stringify(entry.liturgy.prokeimenon.text ?? entry.liturgy.prokeimenon);
-    if (a === b) find(`${path}`, `matins and liturgy prokeimena are identical — verify against the source`);
+  // §7.4: the two prokeimena are COMPARED and INEQUALITY is the surfaced
+  // finding, never a hard-fail. As first written this check was inverted
+  // (surfaced equality) and gated behind a SECTION_RULES flag nothing set.
+  // Corrected during the MonasticMartyrs encode — and the corrected check
+  // immediately surfaced THREE files whose prokeimena differ (Monastics,
+  // Martyrs, MonasticMartyrs): two had been sitting invisible the whole
+  // time. An inverted check is a scan answering a question nobody asked.
+  if (entry.matins?.prokeimenon?.text && entry.liturgy?.prokeimenon?.text) {
+    const a = entry.matins.prokeimenon.text, b = entry.liturgy.prokeimenon.text;
+    if (a !== b) find(`${path}`, `matins and liturgy prokeimena DIFFER — "${a.slice(0,40)}…" vs "${b.slice(0,40)}…" (§7.4: a surfaced finding, not a fail)`);
   }
 }
 
@@ -515,6 +520,12 @@ async function main() {
             checkCanon(c, `${key}.${id}.${svc}.canons`, ctx);
         }
         walk(entry, `${key}.${id}`, ctx, null);
+        // §7.4 runs on the general table too — checkEntry never sees these
+        // entries. Three files differ (Monastics, Martyrs, MonasticMartyrs);
+        // two were invisible until this check was corrected.
+        if (entry?.matins?.prokeimenon?.text && entry?.liturgy?.prokeimenon?.text
+            && entry.matins.prokeimenon.text !== entry.liturgy.prokeimenon.text)
+          find(`${key}.${id}`, `matins and liturgy prokeimena DIFFER — "${entry.matins.prokeimenon.text.slice(0,40)}…" vs "${entry.liturgy.prokeimenon.text.slice(0,40)}…" (§7.4: a surfaced finding, not a fail)`);
         if (key === 'general') checkGeneralPageCoverage(id, entry);
       }
     } catch (e) {
