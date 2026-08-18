@@ -1,9 +1,10 @@
 # Next-session kickoff — Menaion V2 Phase 2 (General Menaion encoding)
 
-State at handoff: **v0.41.3**. `general.js` holds **1402 stored strings · 1342
-text nodes · 0 errors** — Monastic, Monastics, Martyr, Martyrs, Unmercenaries,
-Heirarch, Heirarchs, Apostle, Apostles, Angels complete across all three
-services. **10 of 26.** V1 Menaion still drives the Hours assembler; V2 is a parallel
+State at handoff: **v0.41.4**. `general.js` holds **1543 stored strings · 1477
+text nodes · 0 errors** — eleven files complete across all three services
+(+ MonasticMartyrs). **11 of 26.** `menaion_rubric_census.md` now distills
+the rubric corpus to instruction-set families; read it before touching any
+rubric-bearing question. V1 Menaion still drives the Hours assembler; V2 is a parallel
 build until a Phase 5 cutover.
 
 ---
@@ -40,9 +41,9 @@ node tools/test_pointing_paths.mjs
 node tools/test_sunday_vespers.mjs          # expect 78/78
 node tools/validate_entries.mjs
 node tools/validate_octoechos_v2.mjs
-node tools/validate_menaion_v2.mjs          # expect 1342 nodes · 0 errors
+node tools/validate_menaion_v2.mjs          # expect 1477 nodes · 0 errors
 node tools/validate_viewer_coverage.mjs     # octoechos 92⋈92 · menaion 99⋈99
-node tools/test_menaion_v2_render.mjs       # expect 1402 strings · 0 missing
+node tools/test_menaion_v2_render.mjs       # expect 1543 strings · 0 missing
 npm run build                               # DO NOT SKIP
 ```
 
@@ -58,17 +59,16 @@ npm run build                               # DO NOT SKIP
    Octoechos copy) and the gate currently SKIPS it as a book not loaded.
    Wire the roots so cross-book rows are byte-checked.
 
-**Then the next file.** `MonasticMartyrs` or `St John Baptist` — the two
-files whose Polyeleos/Dogmatic rubrics the analysis §6.1 measured as
-STRUCTURALLY REWRITTEN rather than reworded (`MonasticMartyrs` folds two
-conditions into one two-clause rubric; `St John Baptist` phrases the
-condition NEGATIVELY). Re-measure both on the page before encoding a line.
-Note `St John Baptist` is also a SUBJECT file (18pp, the longest) — if the
-session lacks room, take `MonasticMartyrs` with the remaining
-singular/plural pairs first. Subject files (`Cross`, `Holy Fathers`,
-`Theotokos`) LAST — `Holy Fathers` is a different shape, not a shorter one.
-Angels' census lesson stands: a reported absence may be a spelling; find the
-label before believing it.
+**Then the next file.** The remaining singular/plural pairs —
+`Martyress`/`Martyresses`, `Nun`/`Nuns` (census: no "Let every breath" —
+measure what stands there), `Hieromartyr`/`Heiromartyrs`, `HieroConfessor`,
+`MonasticMartyr`, `Fools`, `Prophet`. `St John Baptist` (the NEGATIVE
+conditional, 18pp, a subject file) and the other subject files (`Cross`,
+`Holy Fathers`, `Theotokos`) LAST — `Holy Fathers` is a different shape, not
+a shorter one. Two lessons stand: a reported census absence may be a
+SPELLING (find the label), and AFTER EVERY ENCODE grep the corpus for
+"===== PAGE" — a page marker survived into two shipped nodes before the
+register byte-check exposed the class.
 
 **Method, non-negotiable:**
 - Transcribe against the printed page. **Do not build a classifier.**

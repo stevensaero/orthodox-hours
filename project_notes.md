@@ -1,5 +1,87 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.41.3** | **Tone Trainer: v0.26.0** | Last synced: August 15, 2026
+**Tool version: v0.41.4** | **Tone Trainer: v0.26.0** | Last synced: August 15, 2026
+
+**Session August 15, 2026 (seventh) — MONASTICMARTYRS ENCODED; THE RUBRIC
+CENSUS; TWO INSTRUMENTS CORRECTED BY THEIR FIRST REAL CASES.**
+**Version bumped to v0.41.4.** Eight gates green: 1477 nodes/0 errors · 1543
+strings/0 missing · build ✓. **11 of 26.**
+
+### THE REWRITTEN RUBRIC COST NOTHING — WHICH WAS THE TEST
+
+MonasticMartyrs' dogmatic rubric restructures the family: two primary
+clauses, no parenthetical, "the Tone of the Week". Stored verbatim. Nothing
+anywhere keys on rubric wording, so the worst-case rubric was absorbed
+without a schema touch — the §2.7 design passing its stress test.
+
+### TWO INSTRUMENTS CORRECTED BY THEIR FIRST REAL CASES
+
+1. **§7.4 was inverted and gated.** The prokeimena check surfaced EQUALITY,
+   behind a `SECTION_RULES` flag nothing sets. Corrected to spec mid-encode,
+   it immediately surfaced THREE files whose Matins and Liturgy prokeimena
+   differ (Monastics, Martyrs, MonasticMartyrs) — two invisible all along.
+   The claim "first file whose prokeimena differ", made during this very
+   encode, was itself the summary error the inverted instrument was hiding.
+2. **The register byte-check caught a PAGE MARKER** ("===== PAGE 4 =====")
+   swallowed into a stored text at a page boundary — and the corpus grep it
+   forced found the same marker in TWO SHIPPED nodes (Apostle's and Angels'
+   p5-p6 sessionals, v0.41.2/.3). All three repaired. A per-node check finds
+   corruption only where a register pair covers it; **the corpus-wide grep
+   is now part of the close-of-encode hygiene.**
+
+### A SECOND citation_disputed
+
+The Epistle heading prints "(5: 4-10)" over a body reconstructing as
+**Romans 8:28-39 at 1.000** (0.31 against the printed span). Right book,
+wrong chapter — the Unmercenaries class one level down. No link offered;
+physical-book check owed (now two rows deep).
+
+### THE FIRST TRUE LINE-BREAK HYPHEN
+
+p6 breaks "passions" as "pas-/sions" across lines. The join rule — measured
+against a corpus of closed-up compounds — met its first soft hyphen and did
+what it says: joined without a space, hyphen kept ("pas-sions" stored, sic
+row). **Whether line-break hyphens should instead close up is Bill's to
+rule**; the sic row is the worklist entry.
+
+### THE RUBRIC CENSUS — menaion_rubric_census.md
+
+Bill's directive executed: 314 stored rubric nodes (11 files) + a
+conditional-opener sweep of the 37 August dailies, distilled to **nine
+General Menaion instruction-set families and six August candidates over a
+CLOSED set of eight decision variables** (rank, coincidence, day,
+appointment, number, identity, service-form, cycle) and five actions. The
+variables are Fekula's own vocabulary and already the assembler's input:
+**the rubrics never need parsing, and ~17 dogmatic wordings become one
+comparison row.** The Fekula column is prepared, not filled — blocked on the
+chapter files' migration off Drive (R-7). The August sweep's three
+false-positive classes are documented in the census so no rerun mistakes
+them for rubrics.
+
+### State
+
+`general.js`: **1543 stored strings · 1477 text nodes · 0 errors.** Eleven
+files complete. Beatitudes: eight identical, two variant. The Tone VIII
+dogmatic travels intact (3 sites); "O God of our fathers" serves THREE saint
+types; five irmoi arrived byte-identical from Apostles WITH their defects
+(Moses”, demons”) — **the defects travel with the texts, and are more stable
+than the texts.**
+
+### Owed before close (carried + new)
+
+1. **The reconciliation table** (R-9).
+2. **Octoechos roots in the gate.**
+3. **Fekula chapters off Drive (R-7)** → fill the census's Fekula column.
+4. **Line-break-hyphen ruling** (the pas-sions sic row).
+5. **Physical-book checks**: Romans/1 Cor (Unmercenaries) + Romans 5/8
+   (MonasticMartyrs).
+6. **15 files remain.** Next: the remaining pairs (Martyress/Martyresses,
+   Nun/Nuns, Hieromartyr/Heiromartyrs, HieroConfessor, MonasticMartyr,
+   Fools, Prophet); `St John Baptist` (negative conditional, 18pp, subject
+   file) and the other subject files LAST.
+
+---
+
+
 
 **Session August 15, 2026 (sixth) — ANGELS ENCODED; THE FIRST HOMOGLYPH; A
 LABEL THE SCHEMA HAD NEVER SEEN.**
