@@ -8656,6 +8656,41 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.41.4",
+    date: "August 2026",
+    summary: "MonasticMartyrs encoded (11 of 26); the rubric census; two instruments corrected by their first real cases",
+    items: [
+      "MONASTICMARTYRS ENCODED — the first rewritten-rubric file: its " +
+      "dogmatic conditional restructures the family (two clauses, no " +
+      "parenthetical, 'the Tone of the Week'). Stored verbatim; nothing " +
+      "keys on rubric wording; it cost nothing to absorb. A SECOND " +
+      "citation_disputed: '(5: 4-10)' printed over a body that reconstructs " +
+      "as Romans 8:28-39 at 1.000. And the corpus's first true line-break " +
+      "hyphen ('pas-/sions') — the join rule met its first non-compound.",
+
+      "THE §7.4 PROKEIMENA CHECK WAS INVERTED AND GATED — it surfaced " +
+      "equality, behind a flag nothing sets. Corrected, it immediately " +
+      "surfaced THREE files whose Matins and Liturgy prokeimena differ; " +
+      "two had been invisible the whole time. An inverted check is a scan " +
+      "answering a question nobody asked.",
+
+      "THE REGISTER BYTE-CHECK CAUGHT A PAGE MARKER swallowed into a stored " +
+      "text at a page boundary — and the corpus grep it forced found the " +
+      "same marker in two already-shipped nodes (Apostle, Angels). All " +
+      "three repaired; the corpus-wide grep joins the hygiene.",
+
+      "THE RUBRIC CENSUS (menaion_rubric_census.md): 314 stored rubric " +
+      "nodes + an August sweep, distilled to NINE General Menaion families " +
+      "and six August candidates over a CLOSED set of eight decision " +
+      "variables — Fekula's own vocabulary, already the assembler's input. " +
+      "The rubrics never need parsing; the Fekula column awaits the " +
+      "chapter files (R-7).",
+
+      "31 recurrence rows and 8 sic rows. 1477 nodes · 0 errors · 1543 " +
+      "strings render · all eight gates green.",
+    ],
+  },
+  {
     version: "v0.41.3",
     date: "August 2026",
     summary: "Angels encoded (10 of 26); the first homoglyph; Trinitarion attested; a sixth census absence that was a spelling",
