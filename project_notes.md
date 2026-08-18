@@ -1,5 +1,58 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.41.6** | **Tone Trainer: v0.26.0** | Last synced: August 15, 2026
+**Tool version: v0.41.7** | **Tone Trainer: v0.26.0** | Last synced: August 18, 2026
+
+**Session August 18, 2026 (tenth) — NUN AND NUNS ENCODED (15 of 26); A SECOND
+CROSS-BOOK PAIR; THE FIRST GENUINE CENSUS ABSENCES.**
+**Version bumped to v0.41.7.** Eight gates green: 2008 nodes/0 errors · 2098
+strings/0 missing · build ✓.
+
+### A SECOND CROSS-BOOK DOGMATIC PAIR
+
+Nun's Tone II dogmatic is TWO BYTES off the Octoechos tone-2 copy —
+capitals only, exactly the Tone VI class found at Heirarch. Two cross-book
+rows now sit in the register awaiting the octoechos roots wiring (ledger
+E-1); the pattern is no longer a single data point.
+
+### THE RUBRIC SAYS TONE II; THE PAGE PRINTS TONE VIII
+
+Nuns' dogmatikon rubric announces "the following Dogmatic in Tone II" and
+the page prints the TONE VIII dogmatic under a Tone VIII label — the first
+rubric-tone/printed-tone mismatch in fifteen files. Sic row on the rubric
+node; ledger row B-4 (physical-book check — the PDF may faithfully print a
+misprint).
+
+### THE GATE TAUGHT THE R-1 RULE AS WRITTEN
+
+Nuns' troparion is byte-identical at FOUR sites under TWO declared tones
+(II at Vespers dismissal / after Our Father / Liturgy; VIII at God-is-the-
+Lord). The validator refused the top-level `tone: 2` — "record tone per
+site only" — which is R-1 doing precisely what it was designed to do the
+first time the corpus produced the case. Also caught pre-commit: two
+mis-tiers (Nuns polyeleos-sessional closer; earlier Nun) and one
+mis-pathed sic row. Four instrument catches, zero shipped.
+
+### THE FIRST GENUINE ABSENCES
+
+Eight census absences to date had all dissolved into spelling variants on
+the page. "Let every breath" is now GENUINELY absent — from BOTH files of
+the pair. An absence that travels with a pair is a fact about the book's
+editing, recorded as absence nodes with basis in both files.
+
+### SMALL FACTS THAT ACCUMULATE
+
+Second and third Cyrillic О homoglyphs (one stavrotheotokion, both
+normalized + logged; corpus total 3). Beatitudes tally: TWELVE files
+identical canon→Beatitudes, two variant. The communion verse follows the
+FILE, not the pair — Nuns prints the hierarch/martyr-class semicolon form
+while Nun prints the female-martyric one. Nuns' Praises are the first
+unpointed Praises in the corpus. "The Word of the Father… incarnate OF
+thee" reaches its sixth site. The "inextinguishable lamp" aposticha
+sticheron: four byte-identical sites across two files.
+
+Commits: `4485563` (data: Nun + Nuns, registers, ledger B-4), plus this
+docs/version commit.
+
+---
 
 **Session August 15, 2026 (ninth) — MARTYRESSES ENCODED; HALF THE GENERAL
 MENAION.**

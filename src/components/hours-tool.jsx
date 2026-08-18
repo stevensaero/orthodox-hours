@@ -8656,6 +8656,29 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.41.7",
+    date: "August 2026",
+    summary: "Nun and Nuns encoded (15 of 26) — a second cross-book dogmatic pair; a rubric that announces Tone II over a Tone VIII page",
+    items: [
+      "NUN + NUNS ENCODED — 15 of 26. Nun's Tone II dogmatic sits TWO " +
+      "BYTES off the Octoechos tone-2 copy (capitals only) — the second " +
+      "cross-book pair, the Tone VI class exactly. Nuns' dogmatic rubric " +
+      "announces Tone II while the page prints the TONE VIII dogmatic — " +
+      "first rubric-tone/printed-tone mismatch (ledger B-4, book check).",
+      "THE GATE TAUGHT ITS OWN RULE: Nuns' troparion is byte-identical at " +
+      "four sites under two declared tones (II and VIII); the R-1 check " +
+      "refused a top-level tone and required per-site record. Also caught " +
+      "pre-commit: two mis-tiers and a mis-pathed sic row.",
+      "FIRST GENUINE CENSUS ABSENCES: after eight absences that were " +
+      "spellings, 'Let every breath' is REALLY absent — from both files " +
+      "of the pair. An absence that travels. Second and third Cyrillic О " +
+      "homoglyphs found (one hymn), normalized with homoglyph_log.",
+      "Beatitudes now TWELVE files identical / two variant. Corpus at " +
+      "2008 nodes · 2098 rendered strings · 0 errors · all eight gates " +
+      "green. Eleven files remain; subject files last.",
+    ],
+  },
+  {
     version: "v0.41.6",
     date: "August 2026",
     summary: "Martyresses encoded (13 of 26) — half the General Menaion; one Glory at three sites in two forms",
