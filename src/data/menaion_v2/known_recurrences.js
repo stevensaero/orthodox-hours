@@ -364,4 +364,47 @@ export default [
   { a: 'general.Apostle.matins.anabathmoi_closer', b: 'general.Heirarchs.matins.anabathmoi_closer', relation: 'identical', note: '"In the Holy Spirit" — seven files, one text.' },
   { a: 'general.Apostle.matins.psalm50_closer', b: 'general.Heirarchs.matins.psalm50_closer', relation: 'identical', note: 'The Both-now after Psalm 50 — here its label carries a tone, the text does not change.' },
   { a: 'general.Apostle.matins.psalm50_verse', b: 'general.Heirarchs.matins.psalm50_verse', relation: 'identical', note: '"Have mercy on me, O God".' },
+
+  // ── Apostles.pdf ───────────────────────────────────────────────────────────
+  // BEATITUDES BYTE-IDENTICAL AT ALL SEVEN — six files identical, two variant.
+  { a: 'general.Apostles.matins.canons[0].odes.3.items[0]', b: 'general.Apostles.liturgy.beatitudes[0]', relation: 'identical', note: 'Ode III troparion 1 = Beatitude 1 (Beatitude adds "(Twice)").' },
+  { a: 'general.Apostles.matins.canons[0].odes.3.items[1]', b: 'general.Apostles.liturgy.beatitudes[1]', relation: 'identical', note: 'Ode III troparion 2 = Beatitude 2.' },
+  { a: 'general.Apostles.matins.canons[0].odes.3.items[2]', b: 'general.Apostles.liturgy.beatitudes[2]', relation: 'identical', note: 'Ode III troparion 3 = Beatitude 3.' },
+  { a: 'general.Apostles.matins.canons[0].odes.6.items[0]', b: 'general.Apostles.liturgy.beatitudes[3]', relation: 'identical', note: 'Ode VI troparion 1 = Beatitude 4.' },
+  { a: 'general.Apostles.matins.canons[0].odes.6.items[1]', b: 'general.Apostles.liturgy.beatitudes[4]', relation: 'identical', note: 'Ode VI troparion 2 = Beatitude 5.' },
+  { a: 'general.Apostles.matins.canons[0].odes.6.items[2]', b: 'general.Apostles.liturgy.beatitudes[5]', relation: 'identical', note: 'Ode VI troparion 3 = Beatitude 6.' },
+  { a: 'general.Apostles.matins.canons[0].odes.6.items[3]', b: 'general.Apostles.liturgy.beatitudes[6]', relation: 'identical', note: 'Ode VI Theotokion = Beatitude 7.' },
+
+  // WITHIN THE FILE
+  { a: 'general.Apostles.troparion', b: 'general.Apostles.vespers.dismissal_troparion', relation: 'variant',
+    note: 'THE FOUR-SITE SPLIT, INVERTED: God-is-the-Lord, after-Our-Father and the Liturgy print `sins ** unto`; the VESPERS DISMISSAL prints a single `*`. In Apostle the Vespers site was canonical and the tail sites diverged; here the Vespers site is the odd one out. Third file with a four-site two-form troparion.' },
+  { a: 'general.Apostles.kontakion', b: 'general.Apostles.liturgy.liturgy_kontakion', relation: 'variant',
+    note: 'TWO DIVERGENCES: "O wise Apostles" with `* that we may` at p10; "O MOST wise Apostles" with `** that we may` at p13. The kontakion self-divergence, third file — a wording AND a pointing at once.' },
+  { a: 'general.Apostles.vespers.aposticha_glory', b: 'general.Apostles.matins.doxology_glory', relation: 'identical',
+    note: 'The Doxasticon reprints the Vespers aposticha Glory byte for byte — fourth file, "Like Vessels" capital included.' },
+  { a: 'general.Apostles.vespers.aposticha_alternate', b: 'general.Apostles.matins.praises_closer', relation: 'identical',
+    note: '"Having thee O Theotokos" — the Otherwise-Theotokion reprinted as the Praises Both-now, byte-identical.' },
+  { a: 'general.Apostles.vespers.lic_stavrotheotokion', b: 'general.Apostles.matins.praises_stavrotheotokion', relation: 'variant',
+    note: 'ONE POINTING BREAK: the Praises reprint drops the `*` after "lance," — otherwise byte-identical. Same file, same hymn, two pointings.' },
+  { a: 'general.Apostles.matins.prokeimenon', b: 'general.Apostles.liturgy.prokeimenon', relation: 'identical',
+    note: 'Identical text at tones IV and VIII — the per-site tone pattern, fourth file.' },
+
+  // ACROSS FILES
+  { a: 'general.Apostles.vespers.dogmatikon', b: 'general.Heirarch.vespers.dogmatikon', relation: 'identical',
+    note: 'The Tone VIII dogmatic "In His love for mankind" — byte-identical across the two files that print it, while the Tone VI family just produced its first divergence. Two dogmatic families, two behaviours.' },
+  { a: 'general.Apostles.vespers.lic_stavrotheotokion', b: 'general.Heirarchs.vespers.lic_stavrotheotokion', relation: 'variant',
+    note: 'THE 444-CHARACTER FAMILY IN A THIRD RENDERING: "I marvel, O Compassionate One, at Thy voluntary crucifixion!" against "I stand in awe … at Thy" (Martyrs/Heirarchs) and "of Thy" (Unmercenaries). Five print sites, four forms.' },
+  { a: 'general.Apostles.matins.sessional_polyeleos_closer', b: 'general.Heirarchs.matins.sessional_2_closer', relation: 'identical',
+    note: '"Without separating Himself" — byte-identical INCLUDING "He had became a man" (sic register, third site) — and it travels between DIFFERENT sessional positions: sessional-2 closer there, post-Polyeleos closer here.' },
+  { a: 'general.Apostles.matins.sessional_ode3', b: 'general.Apostle.matins.sessional_polyeleos', relation: 'variant',
+    note: 'ONE HYMN, TWO RENDERINGS, TWO POSITIONS, TWO FILES: "With a net of divine words * thou hast caught the spiritual fish" (Apostle, post-Polyeleos) against "With the net of divine words * you caught the rational fish" (here, post-Ode-III). The Spec. Mel. is cited "Of the wisdom ..." there and "Of the Wisdom ..." here.' },
+  { a: 'general.Apostles.liturgy.alleluia', b: 'general.Apostle.liturgy.alleluia', relation: 'identical',
+    note: '"The heavens shall confess thy wonders" — the apostolic Alleluia, shared by the pair.' },
+  { a: 'general.Apostles.liturgy.alleluia_verse', b: 'general.Apostle.liturgy.alleluia_verse', relation: 'identical',
+    note: 'Its verse likewise.' },
+  { a: 'general.Apostles.matins.anabathmoi[0]', b: 'general.Apostle.matins.anabathmoi[0]', relation: 'identical', note: '"From my youth" — eight files, one text.' },
+  { a: 'general.Apostles.matins.anabathmoi[1]', b: 'general.Apostle.matins.anabathmoi[1]', relation: 'identical', note: '"Ye haters of Zion" — eight files, one text.' },
+  { a: 'general.Apostles.matins.anabathmoi_closer', b: 'general.Apostle.matins.anabathmoi_closer', relation: 'identical', note: '"In the Holy Spirit" — eight files, one text.' },
+  { a: 'general.Apostles.matins.psalm50_closer', b: 'general.Apostle.matins.psalm50_closer', relation: 'identical', note: 'The Both-now after Psalm 50.' },
+  { a: 'general.Apostles.matins.psalm50_verse', b: 'general.Apostle.matins.psalm50_verse', relation: 'identical', note: '"Have mercy on me, O God".' },
 ];
