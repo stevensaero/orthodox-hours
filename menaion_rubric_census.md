@@ -19,10 +19,12 @@ that can be compared to Fekula."*
    **Nothing below asserts a fact about an unencoded daily file; the sweep says
    where to measure.**
 
-**The Fekula column is prepared, not filled.** The chapter `.txt` files are
-still on Drive (R-7 incomplete), so each family below carries its hook into the
-rule the assembler already encodes, and a `[FEKULA: verbatim comparison owed]`
-flag where the printed text must eventually be set beside Fekula's own wording.
+**The Fekula column is FILLED (15 Aug, second pass).** Bill delivered the
+chapter files locally (`Orthodox Hours/Fekula_ODS/`, OCR text of all ten
+chapters + appendices), unblocking the comparison the same day the census was
+written. Each family below now carries Fekula's own wording beside the
+Menaion's, cited by chapter and line of the delivered text. §5 records the
+comparison's verdict.
 
 ---
 
@@ -80,15 +82,23 @@ rubric found requires a variable the assembler does not already have.
 - **Texts governed:** the Tone VI dogmatic (6 sites, 5 byte-identical, Apostle's
   "all-blessed" the lone divergence) and the Tone VIII dogmatic (3 sites, all
   byte-identical).
-- **Fekula hook:** Saturday-evening/Resurrection dogmatic rule; the assembler's
-  `octoechos:toneN.great_vespers.dogmatikon` path. `[FEKULA: verbatim comparison owed]`
+- **FEKULA (filled):** his constant formula is *"Now and ever … the dogmaticon
+  in the tone of the week"* (ch. 1 ×7 sites; ch. 2 ll. 86-88 — *"But if it be
+  Friday evening: … dogmaticon in the tone of the week"*, l. 744, l. 1093).
+  **AGREEMENT — and MonasticMartyrs' "rewritten" rubric ("the Tone of the
+  Week") is the corpus wording CLOSEST to Fekula's own.** The structural
+  outlier is the most Fekula-conformant text in the book. Assembler path:
+  `octoechos:toneN.great_vespers.dogmatikon` (§2.14).
 
 ### F-2 · The Idiomelon Glory
 - **Instruction set:** IF an Idiomelon is APPOINTED → the printed Glory
   (its own tone); ELSE → the closer proceeds without it.
 - **Variance:** 10 files; comma/stop/colon after "appointed"; Apostles prints
   "Idiomelion". Angels prints no idiomelon slot at all.
-- **Fekula hook:** appointment source is the Typikon. `[FEKULA: owed]`
+- **FEKULA (filled):** appointment flows through his "if there be one/such"
+  idiom — *"Glory … from the Menaion, if there be one"* (ch. 2 l. 88 and
+  passim). AGREEMENT: existence-in-the-book is the condition; Fekula never
+  names the idiomelon class separately.
 
 ### F-3 · From-the-Typicon substitution (troparion · kontakion · both)
 - **Instruction set:** IF the Typikon supplies the proper → use it; ELSE → the
@@ -99,8 +109,13 @@ rubric found requires a variable the assembler does not already have.
   Typicon. If there be none," / "; if there be none," / "but if there be none
   in the Typicon" / bare label with NO conditional — Apostles Vespers+Liturgy,
   Angels kontakion).
-- **Fekula/OCA hook:** the daily proper resolution order (OCA overrides only
-  with a saint-specific proper). `[FEKULA: owed]`
+- **FEKULA (filled):** the fallback is his rule too, stated from the other
+  side — *"…prescribes the appropriate kontakion and ikos from the General
+  Menaion (on Saturdays, in such a case, we always use the kontakion and ikos
+  from the General Menaion)"* (ch. 2 ll. 161-162, repeated ch. 3a ll. 781-782).
+  AGREEMENT, plus one rule the Menaion cannot print: **Saturday makes the
+  General-Menaion fallback unconditional.** A day-variable on the fallback
+  itself — assembler-side only.
 
 ### F-4 · The aposticha closer (three-branch)
 - **Instruction set:** IF rank ≥ Polyeleos → the printed **Resurrection
@@ -111,7 +126,11 @@ rubric found requires a variable the assembler does not already have.
   between files and slots ("No one that fleeth": Apostle's dogmatic slot,
   MonasticMartyrs' aposticha slot). Angels prints NO alternatives — one
   combined Glory-Both-now.
-- **Fekula hook:** rank + day rules. `[FEKULA: owed]`
+- **FEKULA (filled):** ch. 2's aposticha and closer blocks branch exactly so,
+  with Friday-evening special provisions flagged at his n. 27 (ll. 92-94: the
+  Slavonic Typicon's Friday-evening aposticha provisions, which he rules
+  should be used). AGREEMENT on the branch structure; his n. 27 is a case the
+  Menaion never prints — assembler-side.
 
 ### F-5 · The textless conditional closer
 - **Instruction set:** "Glory…, Both now…, Theotokion or Stavrotheotokion:" —
@@ -120,7 +139,14 @@ rubric found requires a variable the assembler does not already have.
   `CLOSER_TYPES`; absence nodes at the textless sites).
 - **Variance:** 80 sites, 21 files; at the Doxology position one fixture-line
   stores it as a rubric text node (the preserved asymmetry).
-- **Fekula hook:** the Wed/Fri stavrotheotokion rule — the assembler decides.
+- **FEKULA (filled):** he prints the SAME disjunction and then resolves it —
+  *"Now and ever … theotokion from the Menaion or stavrotheotokion from the
+  Octoechos"* under the heading *"On Wednesday or Friday:"* (ch. 2 ll. 139-143,
+  182, 201). **AGREEMENT — the disjunction is Fekula's own habit of speech**,
+  which is why the book leaves it unresolved: both sources expect the day to
+  decide. Note his source split — theotokion from the MENAION,
+  stavrotheotokion from the OCTOECHOS — where the general files print both
+  texts locally.
 
 ### F-6 · The Anabathmoi
 - **Instruction set:** IF rank ≥ Polyeleos AND NOT Resurrection → the Tone IV
@@ -128,7 +154,10 @@ rubric found requires a variable the assembler does not already have.
   falsified); IF Resurrection → the tone-of-the-week antiphons (Octoechos).
 - **Variance:** none in wording that matters; the antiphon text is the book's
   most stable hymnography — byte-identical in all ten files that print it.
-- **Fekula hook:** §2.14 cross-book tone lookup. `[FEKULA: owed]`
+- **FEKULA (filled):** *"The first antiphon of the Hymns of Ascents of the
+  fourth tone, From my youth up …"* — verbatim in his Polyeleos (§2E, l. 645)
+  and Vigil (§2F) outlines, chs. 3b/4 likewise. EXACT AGREEMENT, down to the
+  Tone IV first-antiphon selection the Menaion prints in full.
 
 ### F-7 · Doxology grade and the Doxasticon
 - **Instruction set:** IF rank supplies the great Doxology → sung; IF a small
@@ -137,7 +166,11 @@ rubric found requires a variable the assembler does not already have.
   troparion is sung after the Doxology.
 - **Variance:** three forms (long, with the Doxasticon clause; short, without —
   Angels; plus the bare "The Doxology:" heading in three files only).
-- **Fekula hook:** the Doxology-rank branch of the waterfall. `[FEKULA: owed]`
+- **FEKULA (filled):** *"The Great Doxology and then the troparion from the
+  Menaion; Glory … Now and ever …"* (ch. 2 ll. 469, 555, 703, 813) —
+  AGREEMENT, and this is precisely Unmercenaries' doxology_troparion POSITION
+  rule ("the Troparion is sung after the Doxology") in Fekula's voice. The
+  doxasticon-after-aposticha branch is his small-doxology outline.
 
 ### F-8 · Identity- and number-conditionals
 - Martyrs: "If it be the Forty Martyrs, this Prokeimenon should be sung:" —
@@ -145,7 +178,9 @@ rubric found requires a variable the assembler does not already have.
 - Angels: the one/many axis at four positions (two megalynaria, two canon
   refrains, two post-Psalm-50 sessionals) — NUMBER selects; the singular
   variants carry `(name)`.
-- **Fekula hook:** commemoration identity/count from the calendar layer.
+- **FEKULA:** identity/number conditions live in the calendar layer he
+  presupposes; no contradicting rule found in chs. 1-2. (The Forty-Martyrs
+  prokeimenon is a Menaion-side privilege Fekula does not address.)
 
 ### F-9 · R-5 pointers and frame markers (unconditional)
 "Prokeimenon of the day." (byte-invariant at all 51 sites corpus-wide) ·
@@ -174,6 +209,16 @@ These add exactly three variables the General Menaion did not exercise —
 SERVICE-FORM, CYCLE, and the Sunday-combination case of COINCIDENCE — and no
 action class beyond the five. **The variable set stays closed.**
 
+**Fekula on the August candidates (filled):** A-1's Alleluia-format is his
+*"Instead of God is the Lord …, we sing Alleluia … with the verses"* (ch. 3a
+ll. 569, 1479, 1915 — Lenten chapter; the August instances extend the same
+SERVICE-FORM switch outside Lent). A-5 is his afterfeast rule verbatim in
+sense: *"If it be an afterfeast, in place of It is truly meet … we sing the
+refrain and irmos of Ode IX of the feast"* (ch. 1 ll. 596, 727, 836, 899) —
+the nine August NOTEs are the Menaion printing Fekula's rule at the point of
+use. A-4's feast-on-Sunday combination belongs to his coincidence chapters;
+close reading still owed on the August side.
+
 ---
 
 ## 4. What the census settles, and what it owes
@@ -184,14 +229,43 @@ assembler already possesses. The families above ARE the "common sets" — each
 one an instruction set the Fekula comparison can be run against family-by-
 family rather than rubric-by-rubric: ~17 dogmatic wordings become ONE row.
 
+---
+
+## 5. The Fekula comparison — verdict (filled 15 Aug, chapters delivered locally)
+
+**No family contradicts Fekula.** Nine of nine General Menaion families and
+the two August candidates checked resolve to rules Fekula states — several in
+his own words ("the dogmaticon in the tone of the week"; "On Wednesday or
+Friday"; "From my youth up"; "The Great Doxology and then the troparion").
+Three asymmetries, all one-directional — **Fekula knows rules the Menaion
+cannot print, never the reverse**:
+
+1. **Saturday makes the General-Menaion fallback unconditional** (ch. 2
+   l. 162) — a day-variable on F-3 that only the assembler can hold.
+2. **His n. 27 Friday-evening aposticha provisions** (ch. 2 ll. 92-94) — a
+   coincidence case inside F-4 the book never prints.
+3. **His source-routing inside F-5** — theotokion from the Menaion,
+   stavrotheotokion from the Octoechos — where the general files print both
+   texts locally.
+
+The comparison Bill commissioned therefore closes as: **the Menaion's rubrics
+are Fekula's rules restated at the point of use, over the same eight
+variables; the assembler needs Fekula (not the rubrics) for exactly the
+asymmetric cases above, and the stored rubrics are the per-position evidence
+that book and rule agree.** The dogmatic-family outlier proves the point in
+miniature: the most structurally divergent rubric in the corpus is the one
+closest to Fekula's own wording.
+
+*Caveat: the delivered chapter files are OCR text ("ouUine", "0 Lorcl",
+"Innes" for "Irmos") — citations above are by delivered-file line number, and
+any verbatim quotation for display should be checked against the PDF copies
+in `Fekula_ODS/pdf/`.*
+
 **Owed:**
-1. **Migrate the Fekula chapter files off Drive (R-7)** and fill the
-   `[FEKULA: owed]` flags — family-by-family, printed rubric beside Fekula's
-   rule, divergence rows where they disagree. This is the comparison Bill
-   asked for, blocked only on source delivery.
-2. **Close-read the six August families** (A-1 through A-6) when their dates
+1. **Close-read the six August families** (A-1 through A-6) when their dates
    are encoded — the sweep locates, it does not settle.
-3. **St John Baptist's negative conditional** — the third structural rewrite,
+2. **St John Baptist's negative conditional** — the third structural rewrite,
    unencoded; measure on the page.
-4. The census script's false-positive classes are documented above; any rerun
+3. The census script's false-positive classes are documented above; any rerun
    must expect them.
+4. The Pentecostarion remains on Drive — the last R-7 remnant.
