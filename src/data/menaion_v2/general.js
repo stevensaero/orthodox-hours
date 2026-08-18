@@ -38,6 +38,8 @@ const AN = 'Angels.pdf';
 const [an2, an1] = mk(AN);
 const MM = 'MonasticMartyrs.pdf';
 const [mm2, mm1] = mk(MM);
+const MS = 'Martyress.pdf';
+const [ms2, ms1] = mk(MS);
 
 const GENERAL = {
   Monastic: {
@@ -4039,6 +4041,371 @@ const GENERAL = {
       // "O ye Righteous" capitalised: the martyric communion verse in a
       // third setting (registered as a variant).
       communion_verse: mm1("Rejoice in the Lord, O ye righteous; praise is meet for the upright.", "p15 Communion Verse", { sourceLabel: "Communion Verse", label_inline: true }),
+    },
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Martyress.pdf — 14pp. (name) ×36, no plural token. Extraction proven by
+  // NINE byte-matches; no doubled runs, no homoglyphs; page markers stripped
+  // at flatten (the shipped-node lesson, now in the pipeline).
+  //
+  // AN EIGHTH CENSUS ABSENCE THAT WAS A SPELLING — this one in the ANALYSIS
+  // itself: §5 lists Martyress as "Isaiah only, 1 lesson". The page prints
+  // THREE — Isaiah, then Wisdom ×2 under BARE-NAME headings ("THE WISDOM OF
+  // SOLOMON") that no READING-keyed scan can see. The lesson-set census was
+  // a heading census, and the heading vocabulary is not uniform (its own
+  // warning, now biting its own table).
+  //
+  // WHAT ELSE THIS FILE ADDS:
+  //  • ONE HYMN, TWO RENDERINGS, TWICE OVER — the Idiomelon Glory reprints
+  //    as the post-Psalm-50 sessional with case/pointing changes ("O
+  //    all-powerful Savior ** send" → "O All-powerful Savior * send"), and
+  //    the dogmatic-slot stavrotheotokion (byte-identical to Heirarchs'
+  //    PRAISES stav) has a second rendering at THIS file's praises ("how is
+  //    it that Thou sufferest such a shameful death" / "how dost Thou endure
+  //    this shameful suffering"). Both registered.
+  //  • THE RUBRIC-THEN-LABEL INVERSION: at the aposticha closer the Polyeleos
+  //    conditional prints BEFORE the "Both now ..." label — every prior file
+  //    prints label first. The order array records the page; nothing else
+  //    needed.
+  //  • "cru-cified" — the SECOND line-break hyphen, and this one sits inside
+  //    the PROPER TROPARION at all four of its byte-identical print sites.
+  //    The pas-sions ruling now governs a canonical field.
+  //  • The Beatitudes: seven of seven byte-identical, no (Twice) — NINE files
+  //    identical, two variant.
+  Martyress: {
+    title: ms1("THE VIGIL SERVICE TO A FEMALE MARTYR.", "p1 title"),
+    // "Thy ewe-lamb (name)" — the classic female-martyr troparion, FOUR
+    // byte-identical sites INCLUDING the line-break hyphen "cru-cified" in
+    // each (sic register; the pas-sions ruling applies to a canonical field
+    // now).
+    troparion: ms2("Thy ewe-lamb (name), O Jesus crieth out with a loud voice: * “Thee do I love, O my Bridegroom, * and, seeking Thee, I endure suffering. * In Thy baptism I am cru-cified and buried with Thee. * I suffer for Thy sake, that I may reign with Thee; * I die for Thee, that I may live with Thee. * Accept me, who with love sacrifice myself for Thee, * as an unblemished offering!” ** By her supplications, in that Thou art merciful, save Thou our souls.", "p4 Troparion", { sourceLabel: "Troparion, in Tone IV", tone: 4, verified_sites: [{"locus": "p4 Vespers dismissal", "tone": 4}, {"locus": "p5 God is the Lord", "tone": 4, "repeat": 2}, {"locus": "p12 after Our Father", "tone": 4}, {"locus": "p13 AT THE LITURGY", "tone": 4}] }),
+    kontakion: ms2("Finding thine all-revered temple * to be a source of healing for our souls, * we the faithful with a loud voice cry unto thee, * O greatly renowned maiden-Martyr (name), ** entreat Christ God unceasingly on behalf of us all.", "p9 Kontakion after Ode VI", { sourceLabel: "Kontakion, in Tone II", spec_mel: "Seeking the highest ...", tone: 2, verified_sites: [{"locus": "p9 after Ode VI", "tone": 2}, {"locus": "p13 AT THE LITURGY", "tone": 2}] }),
+    // "our souls and bodies be may delivered" — inverted auxiliaries (sic).
+    ikos: ms1("Having gathered together today let us worthily honor the Martyr of Christ (name), that by her intercessions, our souls and bodies be may delivered from all pestilence, earthquake and plague, and that we may pass our lives in humility, and thereby be granted to praise God together with all the saints that pleased Him in ages past, and to walk in the un-waning light. For Thou, O Savior, hast bedewed with Thy mercies all those who in faith praise her. Wherefore we cry unto her, unceasingly pray for us all.", "p9 Ikos", { sourceLabel: "The Ikos", label_inline: true }),
+
+    vespers: {
+      order: ['lic_rubric', 'lic', 'lic_closer', 'lic_stavrotheotokion',
+              'idiomelon_rubric', 'lic_glory', 'dogmatikon_rubric', 'dogmatikon',
+              'dogmatikon_alternate', 'dogmatikon_stavrotheotokion',
+              'entrance_rubric', 'readings', 'aposticha_rubric', 'aposticha',
+              'aposticha_glory', 'aposticha_closer_rubric', 'aposticha_closer_label',
+              'aposticha_closer', 'aposticha_alternate', 'aposticha_stavrotheotokion',
+              'troparion_rubric', 'troparion', 'closer', 'closing_rubric'],
+      lic_rubric: ms1("On “Lord, I have cried ...,” the Stichera, in Tone IV:", "p1 LIC rubric"),
+      lic: [
+        ms2("Having adorned thy soul with the beauty of virginity * and the blood of martyrdom, * O glorious martyr (name), * thou hast handed thyself over unto thy Creator * Who indeed for ever preserveth thee incorrupt; * wherefore, O all-praised one, * thou hast been deemed worthy * to dwell together with the hosts of Angels and Archangels, ** and with the choirs of Apostles, Prophets and Martyrs.", "p1 LIC 1", { spec_mel: "As one valiant among the martyrs ...", label: "plain" }),
+        ms2("Tied to wheels of torture, * torn by ferocious beasts, * tortured both by fire and water, * thou didst illumine thy mind with the Divine Spirit, * and by the gushing forth of thy blood, manfully overcome the prince of darkness, * wherefore having reposed, * thou now dwellest in the noetic palaces, * bringing thy Martyrdom as a precious dowry ** unto thy Bridegroom, O martyr (name).", "p1 LIC 2", { spec_mel: "As one valiant among the martyrs ...", label: "plain" }),
+        ms2("Sanctified with the blood of Christ thy Bridegroom, * O all-famed martyr, * thou hast adorned the garment of thy flesh with thine own blood; * purifying both the inner and the outer man, * wherefore O most praiseworthy (name), * thou wast deemed worthy to dwell in Christ’s effulgent palaces; * beseech Him that those who in faith * celebrate thine all-honored memory ** may be delivered from corruption and every evil circumstance.", "p1 LIC 3", { spec_mel: "As one valiant among the martyrs ...", label: "plain" }),
+      ],
+      lic_closer: ms2("Thy supplications unto the Lord, O most pure one, * are inexhaustible * and thine intercessions ceaseless, * wherefore I pray thee, overcome the attacks of the adversary * and subdue the passions of my wretched soul; * I implore thee O Maiden, * grant consolation unto my sorrowing heart * and grace to my soul ** that I may worthily glorify thee.", "p1 LIC closer", { sourceLabel: "Glory ..., Both now ..., Theotokion, in Tone IV", tone: 4, type: "theotokion", label: ["glory", "both_now", "theotokion"] }),
+      // A THIRD RENDERING of the Apostle-family stavrotheotokion ("the
+      // ewe-lamb who GAVE BIRTH TO Thee" for "who bore Thee") — and its
+      // closing quotation mark is NEVER PRINTED: opened at "O my Son most
+      // desired" and left open at "O Master?" (sic; the Martyr unclosed-
+      // quotation class). Registered as a variant.
+      lic_stavrotheotokion: ms2("Upon beholding Thee, the Lamb and Shepherd, upon the Tree, * the ewe-lamb who gave birth to Thee * lamented and maternally cried aloud to Thee: * “O my Son most desired, * How is it that Thou art suspended upon the Tree of the Cross, O Long-suffering One? * How have Thy hands and feet * been pierced with nails by the iniquitous, O Word! ** And how hast Thou shed Thy blood, O Master?", "p1 LIC Stavrotheotokion", { sourceLabel: "Stavrotheotokion", type: "stavrotheotokion", label: "stavrotheotokion", label_inline: true }),
+      idiomelon_rubric: ms1("If an Idiomelon be appointed, Glory ..., in Tone VI:", "p1 idiomelon rubric"),
+      // Reprinted as the post-Psalm-50 sessional (p7) in a SECOND SETTING —
+      // martyr/Martyr, all-powerful/All-powerful, and the final break demoted
+      // ** → *. One hymn, two positions, two settings (registered).
+      lic_glory: ms2("At the right hand of the Savior standeth a virgin, * the great sufferer and martyr (name), * arrayed in unconquerable virtues, * adorned with purity and the blood of martyrdom, * joyfully holding her lamp and exclaiming unto Him: * “I have directed my steps according to Thy will, O Christ God, * since I was smitten with love for Thee; * send me not away, O Heavenly Bridegroom!” * Through her intercessions O all-powerful Savior ** send down upon us Thy great mercies.", "p1 Glory idiomelon", { sourceLabel: "If an Idiomelon be appointed, Glory ..., in Tone VI", tone: 6, label: "glory" }),
+      // "the following Dogmatic OF Tone VI" — "of" where ten files print
+      // "in". With the travelling "service ):" (sic).
+      dogmatikon_rubric: ms1("If the Celebration be with a Polyeleos, and not a Resurrection Service, sing the following Dogmatic of Tone VI (If the service is a Resurrection service sing the Dogmatic of the Tone for that service ):", "p2 dogmatikon rubric"),
+      // SEVENTH print site of the Tone VI dogmatic — six byte-identical
+      // ("most blessed") against Apostle's lone divergence.
+      dogmatikon: ms2("Who doth not call thee blessed, O most holy Virgin? * Who will not hymn thy most pure birthgiving? * For the only-begotten Son Who hath shone forth timelessly from the Father, * came forth, ineffably incarnate, from thee, O pure one; * By nature he is God, by nature for our sakes, he hath become a man * not divided into two Hypostases, * but known in two natures without commingling. * Him do thou beseech, O pure and most blessed one, ** that our souls find mercy!", "p2 Both now dogmatic", { sourceLabel: "Both now ..., in Tone VI", tone: 6, type: "dogmatic_theotokion", label: "both_now" }),
+      dogmatikon_alternate: ms2("No one that fleeth unto thee, O most pure Virgin Theotokos, * departeth from thee ashamed; * for those that asketh grace of thee, ** ever receiveth a gift for their profitable petition.", "p2 Otherwise Theotokion", { sourceLabel: "Otherwise, Theotokion", type: "theotokion", label: "theotokion", label_inline: true }),
+      // BYTE-IDENTICAL to Heirarchs' PRAISES stavrotheotokion — at the
+      // dogmatic slot here. And THIS file's own praises print the same hymn
+      // in a SECOND RENDERING (p12). Both registered.
+      dogmatikon_stavrotheotokion: ms2("The most pure one seeing Thee hanging upon the cross * with maternal tears cried aloud to Thee: * “O my Son and God, * O my sweetest Child, * how is it that Thou sufferest ** such a shameful death?”", "p2 Stavrotheotokion", { sourceLabel: "Stavrotheotokion", type: "stavrotheotokion", label: "stavrotheotokion", label_inline: true }),
+      entrance_rubric: ms1("The Entrance. The Prokeimenon of the day. The Three Lessons, if appointed.", "p2 entrance rubric"),
+      // THREE lessons where the analysis census said ONE — Isaiah, then
+      // Wisdom ×2 under BARE-NAME headings ("THE WISDOM OF SOLOMON") no
+      // READING-keyed scan can see. The eighth census absence that was a
+      // spelling, and this one was in the analysis's own lesson table.
+      // Lesson 3 prints a THIRD RENDERING of the Wisdom 5 lesson ("The
+      // righteous live unto the ages" against MonasticMartyrs' "for
+      // evermore"; "instead of an helmet" where MM has no helmet clause).
+      readings: [
+        { heading: 'THE READING IS FROM ISAIAH',
+          src: { file: MS, locus: 'p2 Lesson 1' },
+          citation: { book: 'Isaiah', chapter: 43, verses: '9-14' },
+          citation_basis: 'identified',
+          provenance_note: 'No reference printed. The body is the Isaiah lesson Unmercenaries prints WITH the reference "(43, 9-14; )". Identified from that cross-file correspondence; the corpus round-trip refuses Isaiah (translation divergence, 0.11). Confirm against the page. Body ends "Thus saith the Lord. The Holy One of Israel" with no final stop.' },
+        { heading: 'THE WISDOM OF SOLOMON',
+          src: { file: MS, locus: 'p2-p3 Lesson 2' },
+          citation: { book: 'Wisdom of Solomon', chapter: 3, verses: '3:1-3:9' },
+          citation_basis: 'identified',
+          provenance_note: 'BARE-NAME heading — no "READING" word for a scan to find. The body is the "souls of the righteous" lesson, derived at 3:1-9 in Monastic. Identified; confirm against the page.' },
+        { heading: 'THE WISDOM OF SOLOMON',
+          src: { file: MS, locus: 'p3 Lesson 3' },
+          citation: { book: 'Wisdom of Solomon', chapter: 5, verses: '5:15-6:3' },
+          citation_basis: 'identified',
+          provenance_note: 'The "righteous live" lesson in a rendering DIFFERENT from MonasticMartyrs\' printing of the same pericope ("unto the ages" / "for evermore"; "true judgment instead of an helmet. He shall take holiness for an invincible shield" where MM reads "true judgment for an invincible shield"; "right-arming" for MM\'s "right-aiming"). R-4 stores no bodies; recorded here so the third rendering is not lost. Identified; confirm against the page.' },
+      ],
+      aposticha_rubric: ms1("On the Aposticha, these Stichera, in Tone IV:", "p3 Aposticha rubric"),
+      aposticha: [
+        ms2("Having manfully and wisely withstood * the raging of the tormentor * and his brazen cruelty, * thou, O divinely-wise one, * didst foresee the never-ending delights of the life to come; * which thou, O glorious one, hast worthily received, * having passed from earth * to the heavenly habitations, ** and into the everlasting heavenly choirs.", "p3 Aposticha 1", { spec_mel: "As one valiant among the martyrs ...", tone: 4, label: "plain" }),
+        ms2("Wondrous is God in His saints, * the God of Israel.", "p3 Aposticha verse 1", { sourceLabel: "Verse", label: "refrain" }),
+        ms2("Thou hast been deemed worthy * to behold the magnificence of the Kingdom * and the handsome comeliness of thy Bridegroom Christ, * for adorned with the wounds * of thine uncompromising martyrdom, * thou didst worthily approach the Source of all blessedness; * from Whom thou, O blessed one, * hast been richly rewarded ** with the fruits of divine joy and everlasting glory.", "p3 Aposticha 2", { spec_mel: "As one valiant among the martyrs ...", label: "plain" }),
+        ms2("In the Congregations bless ye God, the Lord, * from the wellsprings of Israel.", "p3 Aposticha verse 2", { sourceLabel: "Verse", label: "refrain" }),
+        ms2("Neither the yoke of hard labor, * nor feminine weakness, * neither starvation nor painful wounds * could withhold thee, O all-praised one, * from exhibiting thy firm resolve in martyrdom, * and having joyfully suffered torments with thy fervent soul, * thou hast been adorned with a crown of grace, * ever abiding in the heavenly dwelling places, ** standing before thy Creator.", "p4 Aposticha 3", { spec_mel: "As one valiant among the martyrs ...", label: "plain" }),
+      ],
+      // Reprinted byte-for-byte as the Doxasticon (p12) — sixth file with
+      // the pattern.
+      aposticha_glory: ms2("From thy youth thou hast loved Christ the King of glory, * wherefore He betrothed thee as a virgin bride unto Himself * in a pure unblemished union; * for of His own will He granted thee strength against adversaries and the passions, * and revealed thee to be invincible * in thine endurance of the most painful wounds and grievous torments, * adorning thee with a twofold crown * and placing thee on His right hand like a resplendent queen. * Pray Him, O thou honorable and long-suffering martyr (name), * that those who hymn thee be granted salvation, ** eternal life and great mercy.", "p4 Aposticha Glory", { sourceLabel: "Glory ..., in Tone V", tone: 5, label: "glory" }),
+      // THE RUBRIC-THEN-LABEL INVERSION: the Polyeleos conditional prints
+      // BEFORE the "Both now ..." label here — ten files print label first.
+      // The order array records the page.
+      aposticha_closer_rubric: ms1("If the Celebration be with a Polyeleos, chant the Resurrection Theotokion:", "p4 aposticha closer rubric"),
+      aposticha_closer_label: ms1("Both now ..., in Tone V:", "p4 Both now label"),
+      aposticha_closer: ms2("Thou art the temple and portal, * the palace and throne of the King, * O most honored Virgin, * through whom Christ the Lord, my Redeemer, * Who is the Sun of righteousness, * hath revealed Himself unto those who sleep in darkness, * deigning to enlighten those * whom He hath fashioned in His image by His own hand. * Wherefore, O all-hymned one, * as thou hast acquired a mother’s boldness before Him, ** entreat Him without ceasing, that our souls be saved.", "p4 Resurrection Theotokion", { tone: 5, type: "theotokion", label: "theotokion" }),
+      // Byte-identical to Angels' PRAISES Both-now — another theotokion
+      // migrating between slots (registered).
+      aposticha_alternate: ms2("We bless thee, O Virgin Theotokos, * and we, the faithful, glorify thee as is meet, * thou unassailable city, * impregnable rampart, ** and steadfast intercession and refuge of our souls.", "p4 Otherwise Theotokion", { sourceLabel: "Otherwise, Theotokion", type: "theotokion", label: "theotokion", label_inline: true }),
+      // "O my Son * How canst Thou die" — the missing-stop-after-Son class
+      // (sic).
+      aposticha_stavrotheotokion: ms2("Beholding her Lamb lifted up upon the Cross, * the Virgin and Maiden blessed by all, * cried aloud with tears: * “Woe is me, O my Son * How canst Thou die, being God, ** and immortal by nature?”", "p4 Stavrotheotokion", { sourceLabel: "Stavrotheotokion", type: "stavrotheotokion", label: "stavrotheotokion", label_inline: true }),
+      // "; if there be none," — the drop-the-but form, second file.
+      troparion_rubric: ms1("The Troparion from the Typicon; if there be none, chant the following:", "p4 troparion rubric"),
+      closer: { absent: true, reason: "not_printed_in_source", basis: "close_reading", note: "Slot printed as “Glory ..., Both now ..., Theotokion or Stavrotheotokion:” with no text — the conditional closer (§5.8)." },
+      closing_rubric: ms1("The Dismissal:", "p4 Dismissal"),
+    },
+
+    matins: {
+      order: ['god_is_lord_rubric', 'troparion', 'troparion_closer',
+              'sessional_1_rubric', 'sessional_1', 'sessional_1_closer',
+              'sessional_2_rubric', 'sessional_2', 'sessional_2_closer',
+              'megalynarion_rubric', 'megalynarion', 'megalynarion_verse',
+              'sessional_polyeleos_rubric', 'sessional_polyeleos',
+              'sessional_polyeleos_closer', 'anabathmoi_rubric', 'anabathmoi_intro',
+              'anabathmoi', 'anabathmoi_closer', 'prokeimenon_rubric', 'prokeimenon',
+              'prokeimenon_verse', 'gospel_rubric', 'gospel', 'psalm50_rubric',
+              'psalm50_sticheron', 'psalm50_closer', 'psalm50_verse',
+              'sessional_post50_rubric', 'sessional_post50', 'canon_rubric', 'canons',
+              'sessional_ode3_rubric', 'sessional_ode3', 'sessional_ode3_closer',
+              'sessional_ode3_stavrotheotokion', 'kontakion_rubric', 'kontakion', 'ikos',
+              'exapostilarion_rubric', 'exapostilarion', 'exapostilarion_closer',
+              'praises_rubric', 'praises', 'praises_glory', 'praises_closer',
+              'praises_stavrotheotokion', 'great_doxology_rubric',
+              'doxology_glory', 'doxology_closer_rubric', 'troparion_rubric',
+              'troparion', 'closer', 'closing_rubric'],
+      god_is_lord_rubric: ms1("On “God is the Lord ...,” the Troparion in Tone IV:", "p5 God is the Lord rubric"),
+      troparion_closer: { absent: true, reason: "not_printed_in_source", basis: "close_reading", note: "Slot printed as “Glory ..., Both now ..., Theotokion or Stavrotheotokion:” with no text — the conditional closer (§5.8)." },
+      sessional_1_rubric: ms1("After the 1st chanting of the Psalter, the Sessional Hymn, in Tone V:", "p5 sessional 1 rubric"),
+      sessional_1: ms2("Piously giving thyself to the Almighty, * thou, O honored one, did not yield thyself to the will of the impious tyrant, * but firmly endured dark confinement and wounds from fire, * wherefore thou hast ascended unto God, O Divinely-wise Martyr (name). ** Pray for us who celebrate thy holy memory.", "p5 Sessional 1", { spec_mel: "The Co-beginningless Word ...", tone: 5, label: "plain", repeat: 2 }),
+      sessional_1_closer: ms2("O fervent and invincible intercessor, * diligent and unashamed hope, * rampart, protection and haven * of those who have recourse to thee, * O pure Ever-virgin do thou, together with the angels, * entreat thy Son and God, ** that He grant peace, salvation and great mercy to the world.", "p5 Sessional 1 closer", { sourceLabel: "Glory ..., Both now ..., Theotokion, in Tone V", tone: 5, type: "theotokion", label: ["glory", "both_now", "theotokion"] }),
+      // Spec. Mel. "Thy Tomb, O Savior ..." — a THIRD form of this melody's
+      // name (Heirarch: "Thy Tomb O Savior"; Apostles: "Thy sepulcher O
+      // Savior"). The melody-name drift, third instance.
+      sessional_2_rubric: ms1("After the 2nd chanting of the Psalter, the Sessional Hymn, in Tone I:", "p5 sessional 2 rubric"),
+      sessional_2: ms2("Thou, O honored one, * hast extinguished the fire of torments with the dew of the spirit, * and having now departed unto the divine and immaterial light * thou, O (name), dost besprinkle the faithful with drops of healing, * extinguishing the flame of the passions * by the power of the Spirit.", "p5 Sessional 2", { spec_mel: "Thy Tomb, O Savior ...", tone: 1, label: "plain", repeat: 2 }),
+      sessional_2_closer: ms2("Do thou accept, O Theotokos, * the entreaties of thy servants, * and deliver us from every difficulty, * since thou hast given birth unto the Savior Christ, ** the Redeemer of our souls.", "p5 Sessional 2 closer", { sourceLabel: "Glory ..., Both now ..., Theotokion, in Tone I", tone: 1, type: "theotokion", label: ["glory", "both_now", "theotokion"] }),
+      megalynarion_rubric: ms1("After the Polyeleos, the Megalynarion:", "p5 megalynarion rubric"),
+      megalynarion: ms1("We magnify thee, O holy Martyr (name), and honor thy precious sufferings which thou didst endure for the sake of Christ.", "p5 Megalynarion", { label_inline: true }),
+      // A FOURTH distinct megalynarion verse ("Our God is refuge and
+      // strength").
+      megalynarion_verse: ms1("Our God is refuge and strength, a helper in afflictions which mightily befall us.", "p5 Megalynarion verse", { sourceLabel: "Verse", label: "refrain" }),
+      sessional_polyeleos_rubric: ms1("After the Polyeleos the Sessional Hymn, in Tone IV:", "p5 post-Polyeleos sessional rubric"),
+      // "having adorning her heart" — doubled participle (sic). Spec. Mel.
+      // cited long: "Having been lifted up upon the Cross ..." where
+      // MonasticMartyrs cites "Having been lifted up ..." — melody-name
+      // drift, fourth instance.
+      sessional_polyeleos: ms2("Let us the multitude of the faithful with grace hymn (name), * who willingly came unto Christ * and having adorning her heart with virtues, * shamed the insolent tormentors, * shining forth like a sun in the midst of the lawless, * and after her repose appearing unto those on earth, ** confirming her sanctity and the power of God.", "p5-p6 post-Polyeleos Sessional", { spec_mel: "Having been lifted up upon the Cross ...", tone: 4, label: "plain", repeat: 2 }),
+      sessional_polyeleos_closer: ms2("Having heard from the Angel the good-tidings * and having received in thy womb the Word * thou didst give birth to Emmanuel, * God Incarnate, ** do thou, O Theotokos, ever pray that our souls be saved.", "p6 post-Polyeleos Sessional closer", { sourceLabel: "Glory ..., Both now ..., Theotokion, in Tone IV", tone: 4, type: "theotokion", label: ["glory", "both_now", "theotokion"] }),
+      anabathmoi_rubric: ms1("If of Polyeleos rank, and not a Resurrection Service, chant the following:", "p6 anabathmoi rubric"),
+      anabathmoi_intro: ms1("The Song of Ascents: The first antiphon, in Tone IV:", "p6 anabathmoi heading"),
+      anabathmoi: [
+        ms2("From my youth * do many passions war against me; * but do Thou Thyself defend ** and save me, O my Savior.", "p6 Anabathmoi 1", { label: "plain" }),
+        ms2("Ye haters of Zion * shall be shamed by the Lord; * for like grass, by the fire ** shall ye be withered.", "p6 Anabathmoi 2", { label: "plain" }),
+      ],
+      anabathmoi_closer: ms2("In the Holy Spirit, * every soul is quickened, * and, through cleansing, is exalted ** and made radiant by the Triple Unity in a hidden sacred manner.", "p6 Anabathmoi closer", { sourceLabel: "Glory ..., Both now ...,", type: "plain", label: ["glory", "both_now"] }),
+      prokeimenon_rubric: ms1("Prokeimenon, in Tone IV:", "p6 prokeimenon rubric"),
+      // Same text AND tone at both prokeimena (matins/liturgy) — §7.4
+      // stays silent, correctly.
+      prokeimenon: ms2("Wondrous is God in His saints, * the God of Israel.", "p6 Prokeimenon", { sourceLabel: "The Prokeimenon", tone: 4, label_inline: true }),
+      prokeimenon_verse: ms1("In the Congregations bless ye God, the Lord, from the wellsprings of Israel.", "p6 Prokeimenon verse", { sourceLabel: "Verse", label: "refrain" }),
+      gospel_rubric: ms1("Let every breath.", "p6 Let every breath"),
+      gospel: { heading: 'THE GOSPEL ACCORDING TO ST. MATTHEW',
+        src: { file: MS, locus: 'p6 Matins Gospel' },
+        citation_verbatim: '(15: 21-28)',
+        citation: { book: 'Matthew', chapter: 15, verses: '21-28' },
+        citation_basis: 'printed',
+        provenance_note: 'The body prints "their masters” table" — a closing curly quote for an apostrophe, the Moses”/demons” class, in unstored reading text.' },
+      psalm50_rubric: ms1("After the 50th Psalm:", "p6 After the 50th Psalm"),
+      psalm50_sticheron: ms2("Through the prayers of the Holy Martyr (name), * O Merciful One, ** blot out the multitude of our transgressions.", "p6 Psalm 50 Glory", { sourceLabel: "Glory ..., in Tone VI", tone: 6, label: "glory" }),
+      psalm50_closer: ms2("Through the prayers of the Theotokos, * O Merciful One, ** blot out the multitude of our transgressions.", "p7 Psalm 50 Both now", { sourceLabel: "Both now ...,", type: "theotokion", label: "both_now" }),
+      psalm50_verse: ms2("Have mercy on me, O God, * according to Thy great mercy; * and according to the multitude of Thy compassions, ** blot out my transgressions.", "p7 Psalm 50 verse", { label: "refrain" }),
+      sessional_post50_rubric: ms1("Then the Sessional Hymn, in Tone VI:", "p7 post-Psalm-50 sessional rubric"),
+      // THE IDIOMELON GLORY IN A SECOND SETTING — martyr/Martyr,
+      // martyrdom/Martyrdom, "O all-powerful ** send" → "O All-powerful *
+      // send". One hymn, two positions, two settings within one file
+      // (registered as a variant).
+      sessional_post50: ms2("At the right hand of the Savior standeth a virgin, * the great sufferer and Martyr (name), * arrayed in unconquerable virtues, * adorned with purity and the blood of Martyrdom, * joyfully holding her lamp and exclaiming unto Him: * “I have directed my steps according to Thy will, O Christ God, * since I was smitten with love for Thee; * send me not away, O Heavenly Bridegroom!” * Through her intercessions O All-powerful Savior * send down upon us Thy great mercies.", "p7 post-Psalm-50 Sessional", { tone: 6, label: "plain" }),
+      canon_rubric: ms1("The Canon, in Tone VIII:", "p7 Canon rubric"),
+      canons: [{
+        title: "The Canon, in Tone VIII:", tone: 8,
+        odes: {
+          1: {
+            irmos: ms2("Let us sing unto the Lord, * who led His people through the Red Sea: * for He alone hath gloriously been glorified.", "p7 Ode 1 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            refrain: ms1("Holy Martyr (name) pray to God for us", "p7 Ode 1 refrain", { sourceLabel: "Refrain", label_inline: true }),
+            items: [
+              ms1("By her wondrous actions the all-praised maiden (name) inspires the choirs of heavenly hosts above and those of us here on Earth below to hymn her holy deeds.", "p7 Ode 1 troparion 1", { label: "plain" }),
+              ms1("The Master of all loved the beauty of thy most fair heart, O all-praised one, wherefore He hath made thee worthy to dwell in the heavenly dwellings.", "p7 Ode 1 troparion 2", { label: "plain" }),
+              ms1("Thou, O Martyr, without fear underwent suffering, manifold wounds, and execution, taking with thee the sustaining grace of the Savior which helped thee to endure.", "p7 Ode 1 troparion 3", { label: "plain" }),
+              ms1("We ever hymn thee, O most pure Theotokos, who above nature hast given birth unto the pre-eternal Incarnate and supremely divine Word.", "p7 Ode 1 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          3: {
+            irmos: ms2("O Lord, thou art the confirmation of those who flee to Thee, * Thou art the Light of those in darkness, * and my spirit doth hymn Thee.", "p7 Ode 3 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              ms1("Thou O all-praised (name), didst appear before thy judges with a courageous soul, vanquishing the cowardly enemy.", "p7 Ode 3 troparion 1", { label: "plain" }),
+              ms1("Sporting neither blemish in thy beauty, nor any failing in thy soul, Christ received thee as a fair bride in His incorruptible palaces.", "p7 Ode 3 troparion 2", { label: "plain" }),
+              ms1("O all-praised Martyr of Christ (name), heal the scars of my soul, and by thine intercessions still the stormy seas of my life.", "p7 Ode 3 troparion 3", { label: "plain" }),
+              ms1("All Orthodox Christians have acquired in thee a refuge and an unshakable rampart, wherefore we unceasingly magnify thee, O thou who knewest not wedlock.", "p8 Ode 3 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          4: {
+            irmos: ms2("O Lord, I have heard the mystery of Thy dispensation; * I have considered Thy works, * and I have glorified Thy Divinity.", "p8 Ode 4 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              ms1("Presenting thyself as an unstained mirror of divine understanding, thou, O Martyr, doth shine forth in the midst of women sufferers like a golden lamp of priceless beauty.", "p8 Ode 4 troparion 1", { label: "plain" }),
+              ms1("Thou didst not offer sacrifice unto the dumb demons, O invincible Martyr (name), but rather with love desired to receive a life-bestowing death for thy piety.", "p8 Ode 4 troparion 2", { label: "plain" }),
+              ms1("With the other passion-bearers, O unblemished (name), thou didst bear upon thy body countless wounds, and yet remained without pangs through the manifestation of divine love.", "p8 Ode 4 troparion 3", { label: "plain" }),
+              ms1("As the only Sinless One, grant deliverance from ignorance unto us, and peace to Thy world, O God, through the intercession of her who gave birth to Thee.", "p9 Ode 4 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          5: {
+            irmos: ms2("Rising early we cry to Thee, O Lord; * save us, for Thou art our God, * and we know none other besides Thee.", "p9 Ode 5 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              ms1("Having learned the difference between the spiritual day and the darkness of the world, thou didst rebuke the contentious spirit.", "p9 Ode 5 troparion 1", { label: "plain" }),
+              ms1("Imagining he would be able to weaken thy divine strength, O Martyr (name), the most cunning enemy hath only made himself a subject of derision.", "p9 Ode 5 troparion 2", { label: "plain" }),
+              ms1("Grant unto me, O all-praised one, enlightenment and peace, and by thine intercessions disperse the great agitation and confusion that afflicts my soul.", "p9 Ode 5 troparion 3", { label: "plain" }),
+              ms1("We hymn thee as a Virgin, O Theotokos, even after child-birth, for thou hast brought forth into the world God the Word in the flesh.", "p9 Ode 5 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          6: {
+            irmos: ms2("O Thou that puttest on light as a garment * grant me also a robe of light, * O All-merciful Christ, our God.", "p9 Ode 6 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              ms1("Bearing valiant wisdom of mind while in thy feminine body, thou, O glorious one, didst not fear beasts of land and sea.", "p9 Ode 6 troparion 1", { label: "plain" }),
+              ms1("Vanquishing the pride of thy tormentors, thy soul remained unharmed, O invincible Martyr, wherefore thou didst receive a crown of victory.", "p9 Ode 6 troparion 2", { label: "plain" }),
+              ms1("As righteous and beautiful, as honorable and resplendent with the radiance of virginity, the Bridegroom, even the Lord, hath brought thee to Himself, O most glorious martyr.", "p9 Ode 6 troparion 3", { label: "plain" }),
+              ms1("As the only one who hath given birth in the flesh unto the Word, we beseech thee to deliver our souls from the snares of the enemy.", "p9 Ode 6 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          7: {
+            irmos: ms2("The Children of Judaea, * who of old came to dwell in Babylon, * trampled underfoot the flame of the furnace * through their faith in the Trinity, * as they sang: “O God of our fathers, blessed art Thou.”", "p10 Ode 7 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              ms1("The manly-courage of the divine Martyrs is beyond understanding, for the Creator of maketh His creation subject to those who in the midst of their suffering cry out: “O God of our Fathers, blessed art Thou.”", "p10 Ode 7 troparion 1", { label: "plain" }),
+              ms1("The glorious maiden hath silenced the wicked mouths of her tormentors and subdued the pride of the lawless, while in the Holy Spirit she divinely sang: “O God of our Fathers, blessed art Thou.”", "p10 Ode 7 troparion 2", { label: "plain" }),
+              ms1("Of old, the trio of devout youths burned those who superheated the fiery furnace; and now, as then, the Divinely-wise maiden, hymning the Trinity, inspires us to sing: “O God of our Fathers, blessed art Thou.”", "p10 Ode 7 troparion 3", { label: "plain" }),
+              ms1("O Savior, when thou didst deign to accomplish our salvation; Thou didst enter the womb of the Virgin and reveal her to be a sure intercessor for all the world: “O God of our Fathers, blessed art Thou.”", "p10 Ode 7 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          8: {
+            irmos: ms2("The King of heaven, * Who is glorified by the hosts of angels, * let us praise and supremely exalt throughout all ages.", "p10 Ode 8 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              ms1("The exceedingly blessed among women (name), having been rewarded with grace from the Most High, now hymneth, praising Christ throughout all ages.", "p10 Ode 8 troparion 1", { label: "plain" }),
+              ms1("Strengthened by the thought of the Bridegroom and caring for things spiritual, thou didst give up thy body, even unto death, and inherited eternal life.", "p10 Ode 8 troparion 2", { label: "plain" }),
+              ms1("The Bridegroom, mysteriously descending unto the most pure maiden in the furnace, hath, by the dew of the Holy Spirit, and in accordance with the good pleasure of the Father, saved her who hymneth Christ throughout all ages.", "p10 Ode 8 troparion 3", { label: "plain" }),
+              ms1("Despise not, O pure Virgin; those that seek thine aid, and who chant and extol thee throughout all ages.", "p10 Ode 8 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          9: {
+            irmos: ms2("With never ceasing praises we magnify thee, * the Mother of God Most High, * who art higher than the most pure hosts, * and who beyond comprehension knew not wedlock, * yet hath truly given birth to God.", "p10 Ode 9 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              ms1("From on high thou wast granted to understand that the flow of thy blood was a token of thy future incorruptible life, O all-praised martyr, wherefore thou hast appeared unto all who draw nigh to thee, to be an inexhaustible treasury of healings.", "p10 Ode 9 troparion 1", { label: "plain" }),
+              ms1("In accordance with the law of nature, O divinely-wise one, thou didst suffer death, which thou didst willingly endure; and upon death, which was witnessed to by the flow of thine own blood, thine all-precious body was laid to rest remaining incorrupt.", "p10 Ode 9 troparion 2", { label: "plain" }),
+              ms1("As the fairest bride of Christ and an illumining sun, as a truly chosen turtle-dove and as a fertile olive tree more comely than the cedars of Lebanon we all praise thee, O godly-revered (name).", "p11 Ode 9 troparion 3", { label: "plain" }),
+              ms1("O bride who knewest not wedlock, receptacle of sweet fragrance, the true and immaculate Virgin and Mother who received in thy womb the heavenly rain descending from the cloud of light, thee do we magnify.", "p11 Ode 9 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+        },
+      }],
+      sessional_ode3_rubric: ms1("The Sessional Hymn, in Tone VIII:", "p8 post-Ode-III sessional rubric"),
+      sessional_ode3: ms2("With the streams of thy blood * thou hast drowned the wicked, O all-praised Martyr of Christ, * and from joyous clouds of grace thou dost ever water the spiritual meadows, * rearing up therein the fruits of faith; * wherefore after thy repose thou hast appeared lustrously as a luminous cloud, * shedding forth the testimony of thy life. * O all-praised spiritual athlete (name), * pray to Christ God that those whom with love honor thy holy memory * be granted the remission of their sins.", "p8 post-Ode-III Sessional", { spec_mel: "Of the wisdom ...", tone: 8, label: "plain" }),
+      // "All we, the generations" — FIFTH site (registered, chained); and
+      // the ode-3 stav is byte-identical to Apostles' — the closer+stav pair
+      // travels again.
+      sessional_ode3_closer: ms2("All we, the generations of mankind, * call thee blessed, * in that thou art the Virgin who alone among women * hast given birth without seed unto God in the flesh; * for the fire of the Godhead made its abode within thee, * and thou didst feed the Creator and Lord * with milk as an infant. * Wherefore, we, the race of mankind and of angels, * worthily glorify thine all-holy birthgiving, * and together we cry out to thee: * Entreat Christ God to grant forgiveness of sins ** unto those who with faith worship thine all-holy Offspring.", "p8 post-Ode-III Sessional closer", { sourceLabel: "Glory ..., Both now ..., Theotokion in Tone VIII", tone: 8, type: "theotokion", label: ["glory", "both_now", "theotokion"] }),
+      sessional_ode3_stavrotheotokion: ms2("Upon beholding the Lamb, Shepherd and Redeemer * upon the Cross, * the ewe-lamb exclaimed weeping, bitterly lamenting, and crying aloud: * “The world rejoiceth, having received deliverance through Thee, * but my womb doth burn, beholding Thy crucifixion, * which Thou hast endured in Thy merciful loving-kindness. * O long-suffering Lord, * Thou abyss and inexhaustible well-spring of mercy, * take pity, and grant forgiveness of sins ** unto those who hymn Thy divine sufferings with faith!”", "p8 post-Ode-III Stavrotheotokion", { sourceLabel: "Stavrotheotokion", type: "stavrotheotokion", label: "stavrotheotokion", label_inline: true }),
+      kontakion_rubric: ms1("The Kontakion from the Typicon; if there be none, chant the following:", "p9 kontakion rubric"),
+      exapostilarion_rubric: ms1("Exapostilarion in Tone III:", "p11 exapostilarion rubric"),
+      exapostilarion: ms2("As a bride betrothed to the Bridegroom * thou wast adorned with the virtuous desires of thy heart, * and as one chosen thou hast entered into the resplendent palaces on high, * as a maiden carrying the lamp of her virtues, O (name) * thou dost reign ever rejoicing with Him Who exists throughout all ages.", "p11 Exapostilarion", { tone: 3, label: "plain" }),
+      exapostilarion_closer: ms2("Thee do we sinners have as our aid * O most pure Virgin. * By thy maternal supplications ** render thy Son reconciled with us.", "p11 Exapostilarion closer", { sourceLabel: "Glory ..., Both now ..., Theotokion in Tone III", tone: 3, type: "theotokion", label: ["glory", "both_now", "theotokion"] }),
+      // NO Spec. Mel. at the Praises — first file without one there.
+      praises_rubric: ms1("On the Praises, these Stichera, in Tone III:", "p11 Praises rubric"),
+      praises: [
+        ms2("Beholding the God-pleasing celebration * of the martyr (name), * let us the faithful sing a hymn of thanksgiving unto our God * Who is wondrous in His saints. * For He hath vanquished the might of the enemy * with a weaker vessel, * and hath shown forth His divine power in the frailty of a virtuous woman, * for by her intercessions He saveth our souls.", "p11 Praises 1", { tone: 3, label: "plain", repeat: 2 }),
+        // "proclaming" — dropped i (sic).
+        ms2("Having mingled the cup of truth with the blood of martyrdom, * the all-praised Martyr of Christ (name), * doth ever offer words of wisdom to those who are wisely gathered by her, proclaming: * “Draw from the nectar of martyrdom, * given to you as a pledge of the Resurrection”, * for it driveth away unbelievers and purifieth the passions, * and preserveth the souls of the devout who call upon the Savior exclaiming: * “Thou Who hast filled us with the sweet streams of the grace of the Spirit, save our souls.”", "p11 Praises 2", { label: "plain" }),
+        // The closing quote of "O Lord, who art glorified …" is NEVER
+        // printed (sic — the unclosed-quotation class, second site in this
+        // file).
+        ms2("Let us, whose souls have been sealed by the blood of Christ’s redemption, * with joy draw spiritual inspiration from the holy well-spring of martyrdom, * which prefigureth both the life-bearing passion of our Savior * and eternal glory; * let us cry out unto Him; * “O Lord, who art glorified in thy saints, * through the intercessions of Thy most glorious passion-bearer (name) save our souls.", "p11-p12 Praises 3", { label: "plain" }),
+      ],
+      // "flesh. * by thine intercessions" — lowercase after a full stop
+      // (sic, the Apostle class).
+      praises_glory: ms2("Proceeding along the path of martyrdom, * thou, O all-honored (name), * hast escaped the counsels of the tyrant; * for, as a wise maiden, thou hast entered into the courts of thy Lord * carrying the lamp of thy virtues, * and since thou art a valiant Martyr * thou hast been granted the grace to cure the passions of the flesh. * by thine intercessions before God, * also cure us who hymn thee, of spiritual infirmities.", "p12 Praises Glory", { sourceLabel: "Glory ..., in Tone VI", tone: 6, label: "glory" }),
+      praises_closer: ms2("We have come to know God * Who was incarnate of thee, * O Virgin Theotokos. ** Him do thou entreat for the salvation of our souls.", "p12 Praises Both now", { sourceLabel: "Both now ..., Theotokion in Tone VI", tone: 6, type: "theotokion", label: ["both_now", "theotokion"] }),
+      // A SECOND RENDERING of the hymn this file prints at the dogmatic
+      // slot (byte-identical there to Heirarchs' praises stav): "how dost
+      // Thou endure this shameful suffering" against "how is it that Thou
+      // sufferest such a shameful death". One hymn, two renderings, one file
+      // (registered).
+      praises_stavrotheotokion: ms2("Upon seeing Thee hanging upon the Cross * the most pure one weeping, cried aloud with a mother’s grief: * “O my Son and my God, O my sweetest Child, ** how dost Thou endure this shameful suffering?”", "p12 Praises Stavrotheotokion", { sourceLabel: "Stavrotheotokion", type: "stavrotheotokion", label: "stavrotheotokion", label_inline: true }),
+      great_doxology_rubric: ms1("The great Doxology: If a small Doxology is read, and a Doxasticon is appointed, the following is chanted after the Aposticha:", "p12 great Doxology rubric"),
+      doxology_glory: ms2("From thy youth thou hast loved Christ the King of glory, * wherefore He betrothed thee as a virgin bride unto Himself * in a pure unblemished union; * for of His own will He granted thee strength against adversaries and the passions, * and revealed thee to be invincible * in thine endurance of the most painful wounds and grievous torments, * adorning thee with a twofold crown * and placing thee on His right hand like a resplendent queen. * Pray Him, O thou honorable and long-suffering martyr (name), * that those who hymn thee be granted salvation, ** eternal life and great mercy.", "p12 Doxology Glory", { sourceLabel: "Glory ..., in Tone V", tone: 5, label: "glory" }),
+      doxology_closer_rubric: ms1("Both now ..., Theotokion or Stavrotheotokion:", "p12 Doxology Both now"),
+      troparion_rubric: ms1("After Our Father ..., the Troparion, in Tone IV:", "p12 after Our Father"),
+      closer: { absent: true, reason: "not_printed_in_source", basis: "close_reading", note: "Slot printed as “Glory ..., Both now ..., Theotokion or Stavrotheotokion:” with no text — the conditional closer (§5.8)." },
+      closing_rubric: ms1("The Dismissal:", "p12 Dismissal"),
+    },
+
+    liturgy: {
+      order: ['beatitudes_rubric', 'beatitudes', 'propers_rubric', 'troparion',
+              'kontakion', 'prokeimenon', 'prokeimenon_verse', 'epistle',
+              'alleluia', 'alleluia_verse', 'gospel', 'communion_verse'],
+      beatitudes_rubric: ms1("Typika and Beatitudes.", "p13 Typika and Beatitudes"),
+      // Seven of seven byte-identical, no (Twice) — NINE files identical,
+      // two variant.
+      beatitudes: [
+        ms1("Thou O all-praised (name), didst appear before thy judges with a courageous soul, vanquishing the cowardly enemy.", "p13 Beatitude 1", { label: "plain" }),
+        ms1("Sporting neither blemish in thy beauty, nor any failing in thy soul, Christ received thee as a fair bride in His incorruptible palaces.", "p13 Beatitude 2", { label: "plain" }),
+        ms1("O all-praised Martyr of Christ (name), heal the scars of my soul, and by thine intercessions still the stormy seas of my life.", "p13 Beatitude 3", { label: "plain" }),
+        ms1("Bearing valiant wisdom of mind while in thy feminine body, thou, O glorious one, didst not fear beasts of land and sea.", "p13 Beatitude 4", { label: "plain" }),
+        ms1("Vanquishing the pride of thy tormentors, thy soul remained unharmed, O invincible Martyr, wherefore thou didst receive a crown of victory.", "p13 Beatitude 5", { label: "plain" }),
+        ms1("As righteous and beautiful, as honorable and resplendent with the radiance of virginity, the Bridegroom, even the Lord, hath brought thee to Himself, O most glorious martyr.", "p13 Beatitude 6", { label: "plain" }),
+        ms1("As the only one who hath given birth in the flesh unto the Word, we beseech thee to deliver our souls from the snares of the enemy.", "p13 Beatitude 7", { label: "theotokion", sourceLabel: "Theotokion", label_inline: true }),
+      ],
+      // "The Troparion and THE Kontakion" — a NINTH wording of the
+      // conditional.
+      propers_rubric: ms1("The Troparion and the Kontakion from the Typicon; but if there be none, chant the following:", "p13 propers rubric"),
+      prokeimenon: ms2("Wondrous is God in His saints, * the God of Israel.", "p13 Liturgy Prokeimenon", { sourceLabel: "The Prokeimenon", tone: 4, label_inline: true }),
+      prokeimenon_verse: ms1("In the Congregations bless ye God, the Lord, from the wellsprings of Israel.", "p13 Liturgy Prokeimenon verse", { sourceLabel: "Verse", label: "refrain" }),
+      // "THE 2nd EPISTLE TO THE CORINTHIANS" — no "OF ST. PAUL": a new
+      // heading form.
+      epistle: { heading: 'THE 2nd EPISTLE TO THE CORINTHIANS',
+        src: { file: MS, locus: 'p13-p14 Epistle' },
+        citation_verbatim: '(6:1-10)',
+        citation: { book: '2 Corinthians', chapter: 6, verses: '1-10' },
+        citation_basis: 'printed' },
+      alleluia: ms2("I waited patiently for the Lord, and He was attentive unto me, * and hearkened unto my supplication.", "p14 Alleluia", { sourceLabel: "Alleluia, in Tone I", tone: 1, label_inline: true }),
+      alleluia_verse: ms1("And he brought me out of the pit of misery, out of the mire of clay.", "p14 Alleluia verse", { sourceLabel: "Verse", label: "refrain" }),
+      // "ST. MARK: (5:24-34)" — a COLON after the evangelist's name inside
+      // the heading (sic).
+      gospel: { heading: 'THE GOSPEL ACCORDING TO ST. MARK:',
+        src: { file: MS, locus: 'p14 Liturgy Gospel' },
+        citation_verbatim: '(5:24-34)',
+        citation: { book: 'Mark', chapter: 5, verses: '24-34' },
+        citation_basis: 'printed' },
+      // The martyric communion verse in a THIRD form — comma for the
+      // semicolon, lowercase r — and it ends with NO final stop: the page's
+      // last character is "upright" (sic; registered as a variant against
+      // MonasticMartyrs' form).
+      communion_verse: ms1("Rejoice in the Lord, O ye righteous, praise is meet for the upright", "p14 Communion Verse", { sourceLabel: "Communion Verse", label_inline: true }),
     },
   },
 };
