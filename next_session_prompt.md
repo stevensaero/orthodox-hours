@@ -1,9 +1,9 @@
 # Next-session kickoff — Menaion V2 Phase 2 (General Menaion encoding)
 
-State at handoff: **v0.41.2**. `general.js` holds **1268 stored strings · 1214
+State at handoff: **v0.41.3**. `general.js` holds **1402 stored strings · 1342
 text nodes · 0 errors** — Monastic, Monastics, Martyr, Martyrs, Unmercenaries,
-Heirarch, Heirarchs, Apostle, Apostles complete across all three services.
-**9 of 26.** V1 Menaion still drives the Hours assembler; V2 is a parallel
+Heirarch, Heirarchs, Apostle, Apostles, Angels complete across all three
+services. **10 of 26.** V1 Menaion still drives the Hours assembler; V2 is a parallel
 build until a Phase 5 cutover.
 
 ---
@@ -40,9 +40,9 @@ node tools/test_pointing_paths.mjs
 node tools/test_sunday_vespers.mjs          # expect 78/78
 node tools/validate_entries.mjs
 node tools/validate_octoechos_v2.mjs
-node tools/validate_menaion_v2.mjs          # expect 1214 nodes · 0 errors
+node tools/validate_menaion_v2.mjs          # expect 1342 nodes · 0 errors
 node tools/validate_viewer_coverage.mjs     # octoechos 92⋈92 · menaion 99⋈99
-node tools/test_menaion_v2_render.mjs       # expect 1268 strings · 0 missing
+node tools/test_menaion_v2_render.mjs       # expect 1402 strings · 0 missing
 npm run build                               # DO NOT SKIP
 ```
 
@@ -58,14 +58,17 @@ npm run build                               # DO NOT SKIP
    Octoechos copy) and the gate currently SKIPS it as a book not loaded.
    Wire the roots so cross-book rows are byte-checked.
 
-**Then the next file.** The analysis §12 risk ordering (measured, but re-verify
-on the page): `Angels` (Joshua/Judges/Isaiah lessons; the census shows no
-Typika-and-Beatitudes heading — measure what stands in its place; the
-Apostles lesson taught that a census absence may be a SPELLING, so look for
-the label before believing the absence), or `MonasticMartyrs` /
-`St John Baptist` (structurally rewritten Dogmatic rubrics). Subject files
-(`Cross`, `Holy Fathers`, `St John Baptist`, `Theotokos`) LAST, in a session
-with room — `Holy Fathers` is a different shape, not a shorter one.
+**Then the next file.** `MonasticMartyrs` or `St John Baptist` — the two
+files whose Polyeleos/Dogmatic rubrics the analysis §6.1 measured as
+STRUCTURALLY REWRITTEN rather than reworded (`MonasticMartyrs` folds two
+conditions into one two-clause rubric; `St John Baptist` phrases the
+condition NEGATIVELY). Re-measure both on the page before encoding a line.
+Note `St John Baptist` is also a SUBJECT file (18pp, the longest) — if the
+session lacks room, take `MonasticMartyrs` with the remaining
+singular/plural pairs first. Subject files (`Cross`, `Holy Fathers`,
+`Theotokos`) LAST — `Holy Fathers` is a different shape, not a shorter one.
+Angels' census lesson stands: a reported absence may be a spelling; find the
+label before believing it.
 
 **Method, non-negotiable:**
 - Transcribe against the printed page. **Do not build a classifier.**

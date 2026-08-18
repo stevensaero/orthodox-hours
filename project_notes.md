@@ -1,5 +1,85 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.41.2** | **Tone Trainer: v0.26.0** | Last synced: August 15, 2026
+**Tool version: v0.41.3** | **Tone Trainer: v0.26.0** | Last synced: August 15, 2026
+
+**Session August 15, 2026 (sixth) — ANGELS ENCODED; THE FIRST HOMOGLYPH; A
+LABEL THE SCHEMA HAD NEVER SEEN.**
+**Version bumped to v0.41.3.** Eight gates green: 1342 nodes/0 errors · 1402
+strings/0 missing · 92⋈92 · 99⋈99 · build ✓. **10 of 26.**
+
+### THE FIRST HOMOGLYPH, ELEVEN FILES IN
+
+p5 prints **“О Theotokos” with CYRILLIC О (U+041E)** — visually identical to
+Latin O, invisible to every eye and every register lint, caught by the
+codepoint census. Normalized per §2.13 with a per-node `homoglyph_log` — the
+machinery specified at Phase 0 and never before exercised. The August daily
+scan's 0/37 and the earlier general scans' clean results were true; the
+eleventh file was not. **Cheap checks stay switched on.**
+
+### A SIXTH CENSUS ABSENCE THAT WAS A SPELLING
+
+“Typika and **the** Beatitudes.” — one article, and the census reported the
+only file in the book without Beatitudes. They are present, in a **new
+shape**: SIX items — Ode III ×3, Ode VI troparia 1-2 and its Theotokion (Ode
+VI troparion 3 is NOT taken) — with **(Twice) on items 1 AND 4**. All six
+byte-identical to the canon: seven files identical, two variant.
+
+### THE TROPARION PRINTS IN TWO TRANSLATIONS
+
+The Doxasticon is the proper troparion in a different rendering — “we implore
+you … for **you** are the commanders of the powers above” against the four
+canonical sites' “we entreat you … for **ye** are the commanders of the hosts
+on high.” The register lint flagged the modern “you” of the second rendering
+on its own — two instruments, one finding. Apostle's two-translation Glory
+now has a sibling on a proper.
+
+### THE ONE/MANY AXIS
+
+Three alternative-pairs at positions no file had doubled: TWO Megalynaria
+(“Another:”), TWO canon refrains (“Refrain (for one):” naming `(name)`), TWO
+post-Psalm-50 sessionals (“For One Angel” / “Or for many”) — and the For-One
+sessional is the aposticha Glory-Both-now in a singular rendering. New keys
+`megalynarion_alternate`, `refrain_alternate`,
+`sessional_post50_alternate(_rubric)`, `doxology_closer`,
+`doxology_stavrotheotokion` — all reconciliation-table entries.
+
+### SHAPE NEWS
+
+**Trinitarion attested** — Odes VII (×2, and NO Theotokion) and VIII label
+items the schema had never seen; `LABELS` extended on attestation, never
+inference. Ode IV prints TWO troparia, the first taking **(Twice)** — the
+first repeat device inside a canon. Vespers is lean as printed: no LIC
+closer, no stavrotheotokia, no idiomelon conditional, one combined
+Glory-Both-now at the aposticha. The Praises print a reconciling count
+(“4 Stichera” = 3 + Twice) and a mid-array tone change (“In Tone IV:” on
+sticheron 3).
+
+### THE LINT THAT LOOKED BOTH WAYS
+
+The no-display-copies lint caught **Psalm 103:33** shared between
+`hours-tool.jsx`'s Vespers frame psalm and Angels' megalynarion verse — a
+genuine cross-book duplicate (the psalm belongs to the frame; the Menaion
+quotes it), audited into `CROSS_BOOK_FRAME_DUPLICATES` per the Martyrs Ps-33
+precedent. Not silenced: recorded.
+
+### State
+
+`general.js`: **1402 stored strings · 1342 text nodes · 0 errors.** Complete:
+ten files. 23 recurrence rows, 11 sic rows this session — including `the fist
+among the immaterial ranks` (fist for first) and the travelling `service ):`
+now inverted-parenthetical besides.
+
+### Owed before close (carried)
+
+1. **The reconciliation table** — five more general-only keys this session.
+2. **Octoechos roots in `validate_menaion_v2.mjs`.**
+3. **16 files remain.** Next: `MonasticMartyrs` / `St John Baptist` (the two
+   files whose dogmatic rubrics the analysis measured as structurally
+   REWRITTEN rather than reworded — the rubric-family stress test), or the
+   remaining singular/plural pairs. Subject files LAST.
+
+---
+
+
 
 **Session August 15, 2026 (fifth) — APOSTLE AND APOSTLES ENCODED; THE PATTERN
 HOLDS, AND INVERTS.**
