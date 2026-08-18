@@ -1,5 +1,66 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.41.7** | **Tone Trainer: v0.26.0** | Last synced: August 18, 2026
+**Tool version: v0.41.8** | **Tone Trainer: v0.26.0** | Last synced: August 18, 2026
+
+**Session August 18, 2026 (eleventh) — HIEROMARTYR PAIR ENCODED (17 of 26);
+THE FIRST PROPER THAT REFUSES R-1; THE sIn-TONE ETIOLOGY SURFACES.**
+**Version bumped to v0.41.8.** Eight gates green: 2279 nodes/0 errors · 2381
+strings/0 missing · build ✓. Commits `cb6243c` (Hieromartyr), `e641c9b`
+(Heiromartyrs), plus this docs/version commit.
+
+### THE FIRST PROPER WHOSE SITES REFUSE R-1
+
+Heiromartyrs' kontakion prints "those who fast" after Ode VI and "those
+that fast" at Liturgy — one word apart. Sixteen files of R-1 recycling met
+their first refusal; the Liturgy copy is stored AT ITS SITE (the renderer
+prefers a section-local node over the entry fallback — verified against
+the render gate before use). The refrain itself is a monastic formula
+under HIEROMARTYRS — flagged in the register.
+
+### THE sIn-TONE FIND-REPLACE, EXPLAINED BY ITS OWN FILE
+
+"cast as out of a sIn Tone bow" (Wisdom 5, now FIVE sites) finally shows
+its cause: Hieromartyr prints "Troparion, In Tone IV", "Prokeimenon, In
+Tone VIII", "Alleluia, In Tone II" — and the plural adds four more capital-
+I labels. A case-fixing find-replace on "tone" struck inside "stone". The
+plural's Isaiah citation carries the SAME dangling "; )" as Unmercenaries
+byte-for-byte, while its Isaiah BODY reads "or let them hear" correctly
+where four siblings print "our" — defects travel independently of texts.
+
+### ONE CANON, TWO TRANSLATIONS — TWICE
+
+Hieromartyr shares Monastics' Tone II canon irmoi byte-for-byte through
+Ode VI and then diverges: both print the Dura heirmos at Ode VII in
+DIFFERENT RENDERINGS ("The wise children did not adore the golden idol" /
+"When the golden image was worshipped"), VIII and IX likewise. The Tone IV
+canon family (plural) splits identically: its Ode VII = MonasticMartyrs
+while Apostles holds a variant of the same heirmos. Also two ways with the
+pair's own LIC stavrotheotokion ("Standing at the foot" / "Standing
+before"), a THIRD rendering of the Beholding-Thee hymn, and "Tempest-
+tossed" translated Theotokos/Birthgiver-of-God across files.
+
+### THE JOIN RULE'S FIRST CASUALTIES (A-1 SHARPENED)
+
+Five true compounds closed up silently at line breaks across the pair
+(all-immaculate, all-honored, godly-spoken ×2, All-compassionate) —
+restored, with the standing rule recorded in ledger A-1: compound hyphens
+at line breaks are restored; true hyphenation (pas-sions, cru-cified)
+still awaits the ruling — and "pas-sions" now has a SYMMETRIC PAIR, stored
+as-extracted at both sites, byte-identical with MonasticMartyrs.
+
+### MISCELLANY THAT ACCUMULATES
+
+Heiromartyrs' Matins and Liturgy print the SAME prokeimenon under tones
+IV and VII (ledger B-5, book check). "Redeemed OF all" now has a second
+site (= Heirarch). "O God of our fathers" serves its FOURTH file. T6
+dogmatic: seventh file; T8 dogmatic: seventh file. Beatitudes fourteen
+identical : two variant; the plural's Beatitude 1 brings its own (Twice).
+THREE unstopped closers in one file. Anabathmoi: seventeen files, one
+text. Instrument catches this session: a wrong sibling-comparison comment,
+one register over-claim (caught by the byte-gate), one doc-count drift
+(2383→2381, amended pre-push). The filename pair itself spells Hiero-/
+Heiro- across singular and plural.
+
+---
 
 **Session August 18, 2026 (tenth) — NUN AND NUNS ENCODED (15 of 26); A SECOND
 CROSS-BOOK PAIR; THE FIRST GENUINE CENSUS ABSENCES.**

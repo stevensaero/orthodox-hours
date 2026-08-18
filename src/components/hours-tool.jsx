@@ -8656,6 +8656,33 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.41.8",
+    date: "August 2026",
+    summary: "Hieromartyr pair encoded (17 of 26) — the first proper that refuses R-1; the sIn-Tone etiology; one canon in two translations",
+    items: [
+      "HIEROMARTYR + HEIROMARTYRS ENCODED — 17 of 26. The plural's kontakion " +
+      "prints 'those who fast' at Ode VI and 'those that fast' at Liturgy: " +
+      "the FIRST canonical proper whose sites refuse R-1 byte-identity — " +
+      "the variant site is stored locally. Its Matins and Liturgy print the " +
+      "SAME prokeimenon under tones IV and VII (ledger B-5, book check).",
+      "THE sIn-TONE CORRUPTION EXPLAINED: the singular prints 'Troparion, " +
+      "In Tone IV', 'Prokeimenon, In Tone VIII', 'Alleluia, In Tone II' — " +
+      "capital I mid-label, plus four more strikes in the plural. A " +
+      "find-replace on 'tone' struck inside Wisdom's 'stone bow' (now at " +
+      "FIVE sites). The stray '; )' in the plural's Isaiah citation is " +
+      "byte-identical with Unmercenaries — defects travel between files.",
+      "ONE CANON, TWO TRANSLATIONS: Hieromartyr shares Monastics' Tone II " +
+      "canon irmoi byte-for-byte through Ode VI, then prints different " +
+      "renderings for VII-IX (both print the Dura heirmos). The Tone IV " +
+      "canon family splits the same way (Apostles vs MonasticMartyrs).",
+      "THE JOIN RULE'S FIRST CASUALTIES: all-immaculate, all-honored, " +
+      "godly-spoken x2, All-compassionate closed up at line breaks — " +
+      "restored; 'pas-sions' kept as-extracted to match MonasticMartyrs " +
+      "byte-for-byte (A-1 now a symmetric pair). Beatitudes: FOURTEEN " +
+      "identical files : two variant. 2279 nodes · 2381 strings · 0 errors.",
+    ],
+  },
+  {
     version: "v0.41.7",
     date: "August 2026",
     summary: "Nun and Nuns encoded (15 of 26) — a second cross-book dogmatic pair; a rubric that announces Tone II over a Tone VIII page",
