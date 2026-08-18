@@ -448,4 +448,19 @@ export default [
   { path: 'general.Nun.liturgy.gospel', file: 'Nun.pdf', locus: 'p14 Liturgy Gospel heading',
     verbatim: 'ST. LUKE:',
     note: 'The colon-in-heading sic — THIRD file, a NEW evangelist: the defect belongs to the setting shop, not to one pair.' },
+
+  // ── Nuns.pdf ───────────────────────────────────────────────────────────────
+  { path: 'general.Nuns.vespers.dogmatikon_rubric', file: 'Nuns.pdf', locus: 'p1',
+    verbatim: 'the following Dogmatic in Tone II',
+    note: 'THE RUBRIC ANNOUNCES TONE II; THE PAGE PRINTS THE TONE VIII DOGMATIC under a Tone VIII label. A rubric-tone/printed-tone mismatch — first of its kind in fourteen files. Also carries the travelling "service ):" space.' },
+  { path: 'general.Nuns.vespers.lic_glory', file: 'Nuns.pdf', locus: 'p1 Glory idiomelon',
+    verbatim: 'who honour you',
+    note: 'British spelling in an American-spelling corpus. Reprinted byte-for-byte at the post-Psalm-50 sessional.' },
+  { path: 'general.Nuns.matins.sessional_post50', file: 'Nuns.pdf', locus: 'p7 post-Psalm-50 Sessional',
+    verbatim: 'who honour you', note: 'The reprint. Registered at both sites.' },
+  { path: 'general.Nuns.vespers.aposticha_glory', file: 'Nuns.pdf', locus: 'p3 Aposticha Glory',
+    verbatim: 'ever rejoicing with ye the venerable',
+    note: '"with ye" — objective slot, nominative pronoun; reprinted byte-for-byte at the Doxasticon. One defect, two sites.' },
+  { path: 'general.Nuns.matins.doxology_glory', file: 'Nuns.pdf', locus: 'p12 Doxology Glory',
+    verbatim: 'ever rejoicing with ye the venerable', note: 'The reprint. Registered at both sites.' },
 ];
