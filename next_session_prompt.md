@@ -1,6 +1,6 @@
 # Next-session kickoff — Menaion V2 Phase 2 (General Menaion encoding)
 
-State at handoff: **v0.41.5**. `general.js` holds **1678 stored strings · 1612
+State at handoff: **v0.41.5**. `general.js` holds **1684 stored strings · 1612
 text nodes · 0 errors** — twelve files complete (+ Martyress). **12 of 26.**
 The rubric census's Fekula column is FILLED from the locally delivered
 `Fekula_ODS/` chapters. `menaion_rubric_census.md` now distills
@@ -44,7 +44,7 @@ node tools/validate_entries.mjs
 node tools/validate_octoechos_v2.mjs
 node tools/validate_menaion_v2.mjs          # expect 1612 nodes · 0 errors
 node tools/validate_viewer_coverage.mjs     # octoechos 92⋈92 · menaion 99⋈99
-node tools/test_menaion_v2_render.mjs       # expect 1678 strings · 0 missing
+node tools/test_menaion_v2_render.mjs       # expect 1684 strings · 0 missing
 npm run build                               # DO NOT SKIP
 ```
 

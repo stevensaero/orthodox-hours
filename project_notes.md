@@ -40,7 +40,7 @@ with no final stop.
 
 ### State
 
-`general.js`: **1678 stored strings · 1612 text nodes · 0 errors.** Twelve
+`general.js`: **1684 stored strings · 1612 text nodes · 0 errors.** Twelve
 files. Beatitudes: NINE identical, two variant. Tone VI dogmatic: 7 sites, 6
 identical. "All we, the generations": five sites. "We have come to know
 God": five sites.

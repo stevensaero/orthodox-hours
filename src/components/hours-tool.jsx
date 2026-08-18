@@ -8684,7 +8684,7 @@ const RELEASE_NOTES = [
       "byte-identical to Heirarchs' PRAISES stav across slot classes.",
 
       "Beatitudes: nine files identical, two variant. 28 recurrence rows, " +
-      "12 sic rows. 1612 nodes · 0 errors · 1678 strings render · all " +
+      "12 sic rows. 1612 nodes · 0 errors · 1684 strings render · all " +
       "eight gates green.",
     ],
   },
