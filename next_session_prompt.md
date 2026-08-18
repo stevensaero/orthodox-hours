@@ -35,6 +35,11 @@ of `project_notes.md`, newest first. Then `menaion_v2_spec.md` §§0, 2, 5, 6.1,
 6.2, 7, 16 (§16.5 carries the R-8/R-9 rulings and the R-9 naming ruling), and
 `encoding_rule_v2.md` §§2, 2.1, 3 (live — it is **v2.12**).
 
+**Read `bill_review_ledger.md` and ADD A ROW for anything this session
+produces that needs Bill's eyes — a ruling, a physical-book check, a document
+erratum. Same commit as the work that produced it. Resolved rows are struck
+and dated, never deleted.**
+
 **Run all EIGHT gates on the clean tree before editing anything.**
 
 ```
