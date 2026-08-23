@@ -8656,6 +8656,32 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.41.9",
+    date: "August 2026",
+    summary: "HieroConfessor encoded (18 of 26) — a dual-subject file; four troparion sites in three states; the uncorrupted Wisdom copy exists",
+    items: [
+      "HIEROCONFESSOR ENCODED — 18 of 26. A DUAL-SUBJECT file (Hiero- " +
+      "Confessor OR Monk-Confessor) and the book provides for both: two " +
+      "megalynaria (hierarch text = Heirarch byte-for-byte; a 'For a " +
+      "Monk-confessor:' alternate one byte off Monastic's), a monastic " +
+      "Wisdom-x3 lesson set, and a monks'-multitude Doxasticon under the " +
+      "first 'in the same tone and melody' Glory label.",
+      "SECOND R-1 REFUSAL, WORSE: the troparion's four sites print THREE " +
+      "states — canonical p4/p5; p12 'instruction of Hierarchs'/'may be " +
+      "saved'; p13 a single asterisk where the others point '**'. Both " +
+      "variant sites stored locally.",
+      "THE UNCORRUPTED WISDOM EXISTS: this file's Wisdom 5 prints a clean " +
+      "'stone bow' and 'right-aiming' where five siblings carry the " +
+      "sIn-Tone corruption — same book, two renderings, one corrupted. " +
+      "And the dogmatic rubric prints 'service):' — first file without " +
+      "the travelling space.",
+      "FIRSTS: Beatitudes drawn from odes I and VI; a canon with NO " +
+      "printed refrain; a double-labelled prokeimenon; ALL EIGHT irmoi " +
+      "byte-identical with Heirarch — the first complete irmos-set match. " +
+      "2418 nodes · 2526 strings · 0 errors · all eight gates green.",
+    ],
+  },
+  {
     version: "v0.41.8",
     date: "August 2026",
     summary: "Hieromartyr pair encoded (17 of 26) — the first proper that refuses R-1; the sIn-Tone etiology; one canon in two translations",

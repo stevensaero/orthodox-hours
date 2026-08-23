@@ -1,5 +1,58 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.41.8** | **Tone Trainer: v0.26.0** | Last synced: August 18, 2026
+**Tool version: v0.41.9** | **Tone Trainer: v0.26.0** | Last synced: August 23, 2026
+
+**Session August 23, 2026 (twelfth) — HIEROCONFESSOR ENCODED (18 of 26); A
+DUAL-SUBJECT FILE; FOUR TROPARION SITES IN THREE STATES; THE UNCORRUPTED
+WISDOM EXISTS.**
+**Version bumped to v0.41.9.** Eight gates green: 2418 nodes/0 errors · 2526
+strings/0 missing · build ✓. Commits `62f9c27` (data) + this docs/version
+commit.
+
+### THE DUAL SUBJECT, PROVIDED FOR
+
+"TO A HIERO-CONFESSOR OR MONK-CONFESSOR." — and the book serves both
+faces: TWO megalynaria (the hierarch text = Heirarch's byte-for-byte; a
+"For a Monk-confessor:" alternate that is Monastic's megalynarion ONE BYTE
+off — "Instructor" for "instructor" — with the Nun-class "With patience"
+verse imported wholesale), the monastic Wisdom-×3 lesson set, and a monks'-
+multitude Doxasticon under the corpus's first "in the same tone and
+melody" Glory label (its Doxasticon reprint spells the tone and melody
+out). New slots: megalynarion_alternate_rubric / _alternate / _verse.
+
+### FOUR SITES, THREE STATES
+
+The second R-1 refusal is worse than Heiromartyrs' one-word first: p4/p5
+canonical; p12 "instruction of Hierarchs" + "may be saved"; p13 canonical
+words but a SINGLE asterisk where the others point "**". Both variant
+sites stored locally (matins.troparion_after_our_father, liturgy.
+troparion); register variant rows + sic rows at the bytes.
+
+### THE UNCORRUPTED WISDOM EXISTS
+
+This file's Wisdom 5 is a DIFFERENT, CORRECT rendering — "The righteous
+live for evermore", "right-aiming thunderbolts", a clean "cast as out of a
+stone bow" — where five siblings print the sIn-Tone corruption. The same
+book carries both copies. (Its own body defect: "Hear, therefore, aye
+kings".) And the dogmatic rubric prints "service):" — the first file
+WITHOUT the travelling "service ):" space.
+
+### FIRSTS AND FAMILY FACTS
+
+Beatitudes drawn from ODES I AND VI (seventeen prior files: III and VI).
+A canon with NO printed refrain (absence node). A double-labelled
+prokeimenon ("Prokeimenon, in Tone IV:" + "The Prokeimenon:"). ALL EIGHT
+irmoi byte-identical with Heirarch — the first complete irmos-set match
+between files. The translation-pair pattern reaches whole stichera sets
+(praises 1-2 = Hieromartyr's praises re-rendered). "saints?." mutates to
+"saints? ." at a second file. The honored-list family text swaps one word
+per file (Nun "patriarchs" / here "apostles"). The comparator caught the
+encoder about to sic-register the lowercase-"he" MATINS-family verse form
+— a family fact, not a defect; the wrong comment was corrected pre-commit.
+Four true compounds restored at line breaks (standing A-1 rule). Tone VI
+dogmatic: EIGHTH file. "Seeing Christ": sixth site. Anabathmoi: eighteen
+files, one text. Canon→Beatitudes: FIFTEEN identical files : two variant.
+
+---
 
 **Session August 18, 2026 (eleventh) — HIEROMARTYR PAIR ENCODED (17 of 26);
 THE FIRST PROPER THAT REFUSES R-1; THE sIn-TONE ETIOLOGY SURFACES.**
