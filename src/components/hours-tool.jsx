@@ -8656,6 +8656,34 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.41.10",
+    date: "August 2026",
+    summary: "MonasticMartyr + NunMartyr encoded (20 of 26) — the first rewritten Beatitude; the Tone V dogmatic; the ewe-lamb troparion pairs across files",
+    items: [
+      "MONASTICMARTYR + NUNMARTYR ENCODED — 20 of 26. MonasticMartyr: a " +
+      "GENERAL (non-Vigil) service with a megalynarion anyway — and the " +
+      "first megalynarion with NO (name) placeholder; the FIRST BEATITUDE " +
+      "TO REWRITE its canon source ('hast slain' for 'didst slay', 'godly " +
+      "venerable' for 'divinely revealed'); the TONE V DOGMATIC ('In the " +
+      "Red Sea of old'), third cross-book row; the first declared BLANK " +
+      "page (the completeness gate caught the silent p16).",
+      "NUNMARTYR: the ewe-lamb troparion = Martyress byte-for-byte, " +
+      "'cru-cified' line-break included — the A-1 case is now two files, " +
+      "eight sites, and 'pas-sions' reaches a third symmetric site. The " +
+      "dual nature splits the LESSON SET (martyric Isaiah + monastic " +
+      "Wisdom 4) and the megalynarion (Martyress's text, martyric verse). " +
+      "A THREE-SITE Glory. The six-file 'All we, the generations' " +
+      "Theotokion breaks its tail only here.",
+      "The idiomelon block grew a Both-now + stavrotheotokion (first " +
+      "file), with a Spec. Mel. naming the theotokion JUST SUNG as the " +
+      "stav's melody. Translation pairs multiply: sessional 1, idiomelon/" +
+      "praises Glory, exapostilarion closer, whole praises sets. The " +
+      "comparator withdrew three 'first appearance' claims pre-commit.",
+      "Corpus at 2688 nodes · 2808 rendered strings · 0 errors · all " +
+      "eight gates green. Six files remain; subject files last.",
+    ],
+  },
+  {
     version: "v0.41.9",
     date: "August 2026",
     summary: "HieroConfessor encoded (18 of 26) — a dual-subject file; four troparion sites in three states; the uncorrupted Wisdom copy exists",

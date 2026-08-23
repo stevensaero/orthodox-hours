@@ -1,5 +1,69 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.41.9** | **Tone Trainer: v0.26.0** | Last synced: August 23, 2026
+**Tool version: v0.41.10** | **Tone Trainer: v0.26.0** | Last synced: August 23, 2026
+
+**Session August 23, 2026 (thirteenth) — MONASTICMARTYR AND NUNMARTYR ENCODED
+(20 of 26); THE FIRST REWRITTEN BEATITUDE; THE TONE V DOGMATIC; THE EWE-LAMB
+TROPARION PAIRS.**
+**Version bumped to v0.41.10.** Eight gates green: 2688 nodes/0 errors · 2808
+strings/0 missing · build ✓. Commits `f348678` (MonasticMartyr), `8a28881`
+(NunMartyr), plus this docs/version commit.
+
+### THE FIRST REWRITTEN BEATITUDE
+
+MonasticMartyr's Beatitude 5 does not copy its canon source — it REWRITES
+it: "O godly venerable one … thou hast slain" against the canon's "O
+divinely revealed one … thou didst slay". Canon→Beatitudes across the
+corpus: seventeen files, THREE variants (Martyrs-class ×2, and now a
+rewrite). The plural's Beatitude-1 (Twice) marker appears in MonasticMartyr
+too, but NOT in NunMartyr.
+
+### THE TONE V DOGMATIC AND THE GROWING CROSS-BOOK SET
+
+"In the Red Sea of old" — first Tone V dogmatic in the General Menaion,
+third cross-book row (octoechos:tone5, ledger E-1), printed with nothing
+after it. And the tone2 pair gains a second General member: NunMartyr's T2
+dogmatic = Nun byte-for-byte, while its dogmatic STAVROTHEOTOKION sits one
+pointing asterisk off Nun's copy — the hymnography travels byte-true while
+the pointing travels loosely.
+
+### THE EWE-LAMB TROPARION PAIRS; A-1 BECOMES SYMMETRIC EVERYWHERE
+
+NunMartyr's troparion = Martyress's "Thy ewe-lamb" byte-for-byte INCLUDING
+the "cru-cified" line-break hyphen, as-extracted at all four sites of both
+files (eight sites total). "pas-sions" reaches its third symmetric site
+("As the all-immaculate Bride" = MonasticMartyrs = Heiromartyrs =
+NunMartyr). The A-1 ruling now governs clean, multi-file pairs on both of
+its test words.
+
+### STRUCTURE KEEPS INVENTING
+
+MonasticMartyr: a GENERAL (non-Vigil) service that prints a megalynarion
+anyway — the first with NO (name) placeholder; the idiomelon block grows a
+Both-now + stavrotheotokion (first file), with "Spec. Mel.: We bless thee"
+naming the theotokion JUST SUNG as the stav's melody; the first declared
+BLANK PAGE (p16 — the §2.10 completeness gate caught the silent gap; a
+`page_16` absence node with src now declares it). NunMartyr: the only
+title without its leading THE; NO Typicon-fallback rubric at Vespers
+troparion or kontakion (bare labels, declared absences); a THREE-SITE
+Glory; the double prokeimenon label in BOTH services; the dual nature
+splits the lesson set (martyric Isaiah with "our let them hear", fifth
+file + monastic Wisdom 4 with "un to men", second file) and the
+megalynarion (Martyress's text renamed "maiden martyr", with the MARTYRIC
+verse — the nun-half's "With patience" never appears).
+
+### THE COMPARATOR AS EDITOR
+
+Three "first appearance" claims withdrawn pre-commit ("All my hope" =
+Apostle; "Our God is refuge" = the martyric verse ×3; "Lament not for Me"
+= Nuns' aposticha). One wrong sic averted (the lowercase-"he" MATINS-family
+verse form). The six-file "All we, the generations" Theotokion BREAKS its
+tail only in NunMartyr ("unto those who with hymn thy glory" — word lost,
+sic + variant row). The T6 Resurrection Theotokion now has THREE byte-forms
+("most pure"/"all-pure" — the Mercifully-regard pattern on a second hymn).
+Translation pairs multiply: MonasticMartyr re-renders HieroConfessor's
+sessional 1, praises Glory (as its idiomelon), and exapostilarion closer.
+
+---
 
 **Session August 23, 2026 (twelfth) — HIEROCONFESSOR ENCODED (18 of 26); A
 DUAL-SUBJECT FILE; FOUR TROPARION SITES IN THREE STATES; THE UNCORRUPTED

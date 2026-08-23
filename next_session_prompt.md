@@ -1,8 +1,8 @@
 # Next-session kickoff — Menaion V2 Phase 2 (General Menaion encoding)
 
-State at handoff: **v0.41.9**. `general.js` holds **2526 stored strings · 2418
-text nodes · 0 errors** — eighteen files complete (through HieroConfessor).
-**18 of 26.**
+State at handoff: **v0.41.10**. `general.js` holds **2808 stored strings · 2688
+text nodes · 0 errors** — twenty files complete (through the MonasticMartyr/
+NunMartyr pair). **20 of 26.**
 The rubric census's Fekula column is FILLED from the locally delivered
 `Fekula_ODS/` chapters. `menaion_rubric_census.md` now distills
 the rubric corpus to instruction-set families; read it before touching any
