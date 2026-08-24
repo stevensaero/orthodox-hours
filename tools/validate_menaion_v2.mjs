@@ -106,8 +106,8 @@ function checkTextNode(node, path, ctx) {
         if (!isPlainObj(s) || !s.locus) { err(path, `verified_sites entries must be { locus, tone?, repeat? }`); continue; }
         if (s.tone !== undefined) tones.add(s.tone);
         // A per-site device, on the same footing as a per-site tone (§2.8).
-        if (s.repeat !== undefined && s.repeat !== 2 && s.repeat !== 3)
-          err(path, `verified_sites[${s.locus}].repeat may only be 2 or 3 (the "(Twice)"/"(Thrice)" devices — 3 attested at Cross p3, v0.41.13)`);
+        if (s.repeat !== undefined && ![1, 2, 3].includes(s.repeat))
+          err(path, `verified_sites[${s.locus}].repeat may only be 1, 2 or 3 (the "(Once)"/"(Twice)"/"(Thrice)" devices — 3 attested at Cross p3, 1 at Holy Fathers p4, v0.41.14)`);
         const un = Object.keys(s).filter(k => !['locus', 'tone', 'repeat'].includes(k));
         if (un.length) err(path, `verified_sites[${s.locus}] has unknown key(s): ${un.join(', ')}`);
       }
@@ -121,8 +121,8 @@ function checkTextNode(node, path, ctx) {
       }
     }
   }
-  if (node.repeat !== undefined && node.repeat !== 2 && node.repeat !== 3)
-    err(path, `repeat may only be 2 or 3 (the "(Twice)"/"(Thrice)" devices — 3 attested at Cross, v0.41.13); found ${JSON.stringify(node.repeat)}`);
+  if (node.repeat !== undefined && ![1, 2, 3].includes(node.repeat))
+    err(path, `repeat may only be 1, 2 or 3 (the "(Once)"/"(Twice)"/"(Thrice)" devices — 3 attested at Cross, 1 at Holy Fathers, v0.41.14); found ${JSON.stringify(node.repeat)}`);
   if (node.incipit_ref !== undefined) ctx.incipits.push({ path, node });
 
   // ── artifact tripwires (§1.4, §2.13) ──

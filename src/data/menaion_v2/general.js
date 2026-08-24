@@ -64,6 +64,8 @@ const JB = 'St John Baptist.pdf';
 const [jb2, jb1] = mk(JB);
 const CX = 'Cross.pdf';
 const [cx2, cx1] = mk(CX);
+const HF = 'Holy Fathers.pdf';
+const [hf2, hf1] = mk(HF);
 
 const GENERAL = {
   Monastic: {
@@ -8547,6 +8549,316 @@ const GENERAL = {
         citation_basis: 'printed' },
       // The Cross's own communion verse — new to the corpus.
       communion_verse: cx1("The light of Thy countenance hath been signed upon us, O Lord.", "p15 Communion verse", { sourceLabel: "Communion Verse", label_inline: true }),
+    },
+  },
+  HolyFathers: {
+    // A SUNDAY-LOCKED SERVICE WOVEN INTO THE OCTOECHOS — the only file
+    // that cannot stand alone: its rubrics appoint Resurrection stichera,
+    // sessionals, canon, kontakion, Eothinon and communion verse FROM THE
+    // OCTOECHOS by the current tone, and it opens with the corpus's first
+    // CALENDAR-APPOINTMENT rubric (the three Councils Sundays — matching
+    // the project's standing OCA note that the Fathers of the First
+    // Council are MOVABLE, Pascha+42).
+    title: hf1("THE GENERAL VIGIL SERVICE OF THE HOLY FATHERS, IN REMEMBRANCE OF COUNCILS", 'p1 title'),
+
+    // The Fathers troparion: p4 (blessing of the loaves, the corpus's first
+    // “(Once)” — repeat: 1, gate extended) and p5 (Matins Glory) are byte-
+    // identical (canonical); the LITURGY site inserts “since” — the SEVENTH
+    // wording/pointing refusal, stored at its site.
+    troparion: hf2("Most glorious art Thou, O Christ our God, * Thou hast established our Holy Fathers as luminaries upon the earth * and through them hath instructed us all in the true faith. ** O Most merciful One, glory be to Thee.", "p4 Troparion of the Fathers", { sourceLabel: "And of the Fathers, Troparion in Tone VIII", verified_sites: [{"locus": "p4 blessing of the loaves", "tone": 8, "repeat": 1}, {"locus": "p5 Matins Glory", "tone": 8}] }),
+    kontakion: hf2("The preaching of the apostles and the dogmas of the fathers * sealed the one Faith of the Church; * and clad in the robe of truth woven of theology from on high, ** it setteth aright and glorifieth the great mystery of piety.", "p7 Kontakion after Ode VI", { sourceLabel: "The Kontakion, in Tone VIII", spec_mel: "As the first fruits ...", tone: 8, verified_sites: [{"locus": "p7 after Ode VI", "tone": 8}, {"locus": "p11 AT LITURGY", "tone": 8}] }),
+    ikos: hf1("Let us hearken unto the Church of God which crieth out with exalted preaching: let him that thirsteth come to me and drink the cup which I hold, for it is the cup of wisdom! This drink of truth have I drawn by the word, which poureth forth not the water of gainsaying, but of confession, which drinking, the present Israel beholdeth God, Who declareth: Behold ye, and see that it is I Myself Who am God, and I change not! I have been God from the beginning, and will be so hereafter; and other than Me there is no God! They that drink hereof shall be satisfied, and shall praise the great mystery of piety.", "p7-p8 Ikos", { sourceLabel: "Ikos", label_inline: true }),
+
+    vespers: {
+      order: ['appointment_rubric', 'lic_rubric', 'lic', 'lic_glory', 'both_now_label',
+              'dogmatikon_reference_rubric', 'entrance_rubric',
+              'great_prokeimenon_rubric', 'great_prokeimenon', 'great_prokeimenon_verses',
+              'readings_rubric', 'readings',
+              'litiya_rubric', 'litiya_glory', 'litiya_closer',
+              'aposticha_rubric', 'aposticha_glory', 'aposticha_closer',
+              'nunc_dimittis_rubric', 'troparion_theotokos',
+              'troparion_rubric', 'troparion', 'closing_rubric'],
+      appointment_rubric: hf1("This service is always served on a Sunday. It is sung on the 7th Sunday after Pascha in memory of the holy Fathers of the 1st Ecumenical Council, on the Sunday closest to July 16th after the memory of the holy Fathers of the first six Ecumenical Councils; and on the Sunday closest to October 11th after the memory of the holy Fathers of the 7th Ecumenical Council.", 'p1 appointment rubric'),
+      // “4 Stichera from the Oktoechos, and the following 6 Stichera from the
+      // Fathers” — the first LIC with SHARE COUNTS and a cross-book
+      // appointment; and the six are FOUR texts plus TWO INCIPIT REPEATS,
+      // printed with their psalm verses — the first versed LIC.
+      lic_rubric: hf1("On “Lord, I have cried ...,” 4 Stichera from the Oktoechos, and the following 6 Stichera from the Fathers, in Tone VI:", 'p1 LIC rubric'),
+      lic: [
+        hf2("If Thou shouldest mark iniquities, O Lord, O Lord, who shall stand? * For with Thee there is forgiveness.", "p1 LIC verse 1", { sourceLabel: "Verse", label: "refrain" }),
+        hf2("Before the morning star * from the womb Thou wast begotten from the Father * motherless before the ages, * though Arius held Thou wast created and thus not God, * boldly and mindlessly identifying thee, the Creator, * with things created, * thus storing up fuel for the eternal fire. * But the Council gathered in Nicaea proclaimed that Thou, O Lord, * art truly the Son of God, ** one in rank with the Father and the Spirit.", "p1 LIC 1", { spec_mel: "The wretched ...", label: "plain", tone: 6 }),
+        hf2("For Thy name’s sake have I patiently waited for Thee, O Lord; my soul hath patiently waited for Thy word, * my soul hath hoped in the Lord.", "p1 LIC verse 2", { sourceLabel: "Verse", label: "refrain" }),
+        { text: "Before the morning star ...,", tier: 1, src: { file: HF, locus: 'p1 LIC 2 incipit' }, label: 'plain', incipit_ref: 'general.HolyFathers.vespers.lic[1]' },
+        hf2("From the morning watch until night, from the morning watch * let Israel hope in the Lord.", "p1 LIC verse 3", { sourceLabel: "Verse", label: "refrain" }),
+        hf2("O My Savior, Who hath rent Thy raiment? * Thou didst say: It was Arius who hath cut asunder the Trinity’s headship, * which is one in rank and honour, * disputing that Thou art One of the Most Holy Trinity; * thereby teaching Nestorius the godless one * to not say Theotokos. * But the Council gathered in Nicaea proclaimed that Thou, O Lord, * art truly the Son of God, ** one in rank with the Father and the Spirit.", "p1 LIC 3", { spec_mel: "The wretched ...", label: "plain" }),
+        hf2("For with the Lord there is mercy, and with Him is plenteous redemption; * and He shall redeem Israel out of all his iniquities.", "p1 LIC verse 4", { sourceLabel: "Verse", label: "refrain" }),
+        { text: "O My Savior, Who hath rent Thy raiment ...,", tier: 1, src: { file: HF, locus: 'p1 LIC 4 incipit' }, label: 'plain', incipit_ref: 'general.HolyFathers.vespers.lic[5]' },
+        hf2("O praise the Lord, all ye nations; * praise Him, all ye peoples.", "p1 LIC verse 5", { sourceLabel: "Verse", label: "refrain" }),
+        hf2("Keeping his eyes shut, that he might not see light, * Arius fell headlong into the deep pit of sin. * His bowels were rent asunder by a divine hook, * such that he violently gave up all his substance and his soul * and in this manner became another Judas, * through his most evil purpose and disposition. * But the Council gathered in Nicaea proclaimed that Thou, O Lord, * art truly the Son of God, ** one in rank with the Father and the Spirit.", "p1 LIC 5", { spec_mel: "The wretched ...", label: "plain" }),
+        hf2("For He hath made His mercy to prevail over us, * and the truth of the Lord abideth forever.", "p2 LIC verse 6", { sourceLabel: "Verse", label: "refrain" }),
+        hf2("Mindless, foolish Arius * once divided the most holy Trinity’s sole dominion * thus making three essences, * dissimilar and foreign. * Hence, the God-bearing Fathers fervently gathered together, * burning with zeal like Elias the Tishbite, * cutting down with the sharp sword of the Holy Spirit * the vile blasphemer, who taught blasphemous doctrines. ** Thus the Spirit revealed unto them.", "p2 LIC 6", { spec_mel: "The wretched ...", label: "plain" }),
+      ],
+      lic_glory: hf2("Let us praise today the mystic trumpets of the Spirit, * the God-bearing fathers who in the midst of the Church * chanted the harmonious hymn of theology, * that the Trinity is one and immutable in essence and divinity; * the destroyers of Arius, the champions of the Orthodox, * who ever pray to the Lord ** that our souls find mercy.", "p2 Glory", { sourceLabel: "Glory ..., in Tone VI", tone: 6, label: "glory" }),
+      both_now_label: hf1("Both now ...,", 'p2 Both now label'),
+      // A GARBLED REFERENCE RUBRIC — “The Dogmatic of the in Tone for the
+      // Saturday evening Vigil Service:” (the words scrambled; sic register)
+      // — no dogmatic is printed: it comes from the OCTOECHOS by the current
+      // tone. The only dogmatic slot in the corpus with no text.
+      dogmatikon_reference_rubric: hf1("The Dogmatic of the in Tone for the Saturday evening Vigil Service:", 'p2 dogmatikon reference rubric'),
+      entrance_rubric: hf1("After the Entrance and “O Joyous Light”,", 'p2 Entrance rubric'),
+      // THE GREAT PROKEIMENON — the first with numbered verses; and the
+      // prokeimenon itself is mislabeled “Verse:” (sic register).
+      great_prokeimenon_rubric: hf1("Saturday Vespers Prokeimenon, in Tone VI:", 'p2 great prokeimenon rubric'),
+      great_prokeimenon: hf2("The Lord is King, * He is clothed with majesty.", "p2 Great Prokeimenon", { sourceLabel: "Verse", tone: 6, label_inline: true }),
+      great_prokeimenon_verses: [
+        hf1("The Lord is clothed with strength and He hath girt Himself.", "p2 verse 1", { sourceLabel: "Verse 1", label: "refrain" }),
+        hf1("For He established the universe which shall not be shaken.", "p2 verse 2", { sourceLabel: "Verse 2", label: "refrain" }),
+        hf1("Holiness becometh Thy house, O Lord, unto length of days.", "p2 verse 3", { sourceLabel: "Verse 3", label: "refrain" }),
+      ],
+      readings_rubric: hf1("The readings for the Holy Fathers:", 'p2 readings rubric'),
+      // The Councils lesson set, all citations PRINTED — Genesis 14 (Abram's
+      // 318, the number of Nicaea), Deuteronomy 1 (with "AND" inside the
+      // citation), Deuteronomy 10. The Deut. 1 body prints "the great ; ye"
+      // (space before the semicolon — unstored per R-4, recorded here).
+      readings: [
+        { heading: 'THE READING IS FROM GENESIS',
+          src: { file: HF, locus: 'p2 Lesson 1' },
+          citation_verbatim: '(14, 14-20).',
+          citation: { book: 'Genesis', chapter: 14, verses: '14-20' },
+          citation_basis: 'printed' },
+        { heading: 'THE READING IS FROM DEUTERONOMY',
+          src: { file: HF, locus: 'p3 Lesson 2' },
+          citation_verbatim: '(1, 8-11 AND 15-17).',
+          citation: { book: 'Deuteronomy', chapter: 1, verses: '8-11, 15-17' },
+          citation_basis: 'printed' },
+        { heading: 'THE READING IS FROM DEUTERONOMY',
+          src: { file: HF, locus: 'p3 Lesson 3' },
+          citation_verbatim: '(10, 14-21).',
+          citation: { book: 'Deuteronomy', chapter: 10, verses: '14-21' },
+          citation_basis: 'printed' },
+      ],
+      // THE FIRST LITIYA IN THE CORPUS — appointing the temple-feast stichera
+      // and printing its own Glory (the anathema catalogue: Arius,
+      // Macedonius, Nestorius, Eutyches, Dioscorus, Sabellius, Severus) and
+      // an UNPOINTED Both-now theotokion.
+      litiya_rubric: hf1("At the Litiya, the Stichera of the Feast of the Temple then:", 'p3 Litiya rubric'),
+      litiya_glory: hf2("O holy fathers, ye were careful preservers of the Traditions of the apostles, * for, having taught in Orthodox manner * the consubstantiality of the holy Trinity, * in council ye cast down the blasphemy of Arius; * and having denounced both him and Macedonius, * who contended against the Spirit, * ye condemned Nestorius, Eutyches and Dioscorus, * Sabellius and the mindless Severus. * Pray ye that we be delivered from their deception, ** we beseech you to preserve our life undefiled in the Faith.", "p3 Litiya Glory", { sourceLabel: "Glory ..., in Tone III", tone: 3, label: "glory" }),
+      litiya_closer: hf1("Through the divine Spirit, by the will of the Father, without seed thou didst conceive the Son of God Who hath existed without mother from before the ages, and for our sake thou hast given birth in the flesh unto Him Who cameth forth from thee without father; and thou didst nurture Him on milk as a babe. Wherefore, cease not to pray, that our souls be saved.", "p4 Litiya Both now", { sourceLabel: "Both now ..., in Tone III", tone: 3, type: "theotokion", label: "both_now" }),
+      // The Aposticha themselves come FROM THE OCTOECHOS (“4 Stichera from
+      // the Oktoechos. Then:”) — only the Glory and Both-now are proper.
+      aposticha_rubric: hf1("On the Aposticha, 4 Stichera from the Oktoechos. Then:", 'p4 Aposticha rubric'),
+      aposticha_glory: hf2("O ye assemblies of the Orthodox, * let us celebrate today with faith and piety * the annual memorial of the God-bearing Fathers * who, in the illustrious city of Nicaea, * came together from the whole inhabited world. * For with pious mind they refuted the godless dogma of the grievous Arius, * and by synodal decree banished him from the Orthodox Catholic Church. * And they instructed all to openly confess the consubstantial and co-eternal Son of God, * Who existed before the ages. * This, in exactness and piety, did they set forth in the Symbol of Faith. * Wherefore, following their divine doctrines and believing with assurance, ** we worship, in One Godhead, the Father, Son and Most holy Spirit, the Trinity one in essence.", "p4 Aposticha Glory", { sourceLabel: "Glory ..., in Tone IV", tone: 4, label: "glory" }),
+      // “Mercifully regard” — SEVENTH file.
+      aposticha_closer: hf2("Mercifully regard the supplications of thy servants, * O all-immaculate one, * quelling the cruel uprisings of the demons against us, * delivering us from every sorrow; * for thee alone do we have as a steadfast and sure confirmation, * and having acquired thine intercession; * let not us who call upon thee be put to shame, * O Sovereign Lady. * Hasten thou to answer the entreaties of those who cry out to thee with faith: * Rejoice, thou help, joy and protection of all, ** and the salvation of our souls!", "p4 Aposticha Both now", { sourceLabel: "Both now ..., Theotokion in Tone IV", tone: 4, type: "theotokion", label: "both_now" }),
+      // THE ARTOKLASIA — Nunc dimittis, Trisagion-through-Our-Father, the
+      // blessing of the loaves — first in the corpus, with the O-Theotokos-
+      // and-Virgin troparion (Twice) and the Fathers troparion (Once).
+      nunc_dimittis_rubric: hf1("Then: “Now lettest Thou Thy servant depart ...,” Trisagion through Our Father ..., Then the blessing of the loaves. The Troparion, in Tone IV:", 'p4 artoklasia rubric'),
+      troparion_theotokos: hf2("O Theotokos and Virgin, rejoice, * O Mary, full of grace; the Lord is with thee; * blessed art thou among women, * and blessed is the Fruit of thy womb, ** for thou hast borne the Savior of our souls.", "p4 Theotokos Troparion", { sourceLabel: "The Troparion, in Tone IV", tone: 4, repeat: 2 }),
+      troparion_rubric: hf1("And of the Fathers, Troparion in Tone VIII:", 'p4 Fathers troparion rubric'),
+      closing_rubric: hf1("And the Dismissal.", 'p4 Dismissal'),
+    },
+
+    matins: {
+      order: ['god_is_lord_rubric', 'glory_label', 'troparion', 'both_now_closer',
+              'kathismata_rubric', 'canon_appointment_rubric', 'canons',
+              'ode3_reference_rubric', 'sessional_ode3', 'sessional_ode3_closer',
+              'kontakion', 'ikos',
+              'exapostilarion_rubric', 'exapostilarion', 'exapostilarion_closer',
+              'praises_rubric', 'praises', 'praises_glory', 'praises_closer',
+              'great_doxology_rubric', 'post_doxology_rubric', 'eothinon_rubric'],
+      // God-is-the-Lord appoints the RESURRECTION troparion “according to the
+      // Tone of the Vigil Service” — a current-tone Octoechos reference, no
+      // text, no closing punctuation, and the incipit printed WITHOUT its
+      // ellipsis (“On “God is the Lord”, …”).
+      god_is_lord_rubric: hf1("On “God is the Lord”, the Troparion of the Resurrection according to the Tone of the Vigil Service (Twice)", 'p5 God is the Lord rubric'),
+      glory_label: hf1("Glory ..., in Tone VIII:", 'p5 Glory label'),
+      // "O Good One, Who for our sake wast born" — FOURTH site (Unmercenaries
+      // holds it twice, Nuns at the Polyeleos sessional): the corpus's most
+      // slot-promiscuous theotokion (register).
+      both_now_closer: hf2("O Good One, Who for our sake wast born of the Virgin * and, having endured crucifixion, cast down death by death, * and as God revealed the resurrection: * disdain not that which Thou hast fashioned with Thine own hand. * Show forth Thy love for mankind, O Merciful One; * Accept the supplications of the Theotokos who bore Thee, ** and save Thy despairing people, O our Savior!", "p5 Both now Theotokion", { sourceLabel: "Both now ..., Theotokion", type: "theotokion", label: "both_now" }),
+      kathismata_rubric: hf1("After the 2nd and 3rd Kathismata, the Sessional Hymns from the Oktoechos.", 'p5 Kathismata rubric'),
+      // A FOUR-CANON SHARE TABLE (Resurrection 6 with troparia, Resurrection
+      // and Cross 2 each, Theotokos 2, Fathers 6) and the corpus's SECOND
+      // COMPOSER — “the work of the Holy Ecumenical Patriarch, Germanus”.
+      canon_appointment_rubric: hf1("The Canon of the Resurrection with the Troparia in 6, that of the Resurrection and Cross in 2 each, of the Theotokos in 2 and of the Fathers in 6. The Canon is the work of the Holy Ecumenical Patriarch, Germanus. In Tone VI:", 'p5 canon appointment rubric'),
+      canons: [{
+        title: "The Canon is the work of the Holy Ecumenical Patriarch, Germanus. In Tone VI:",
+        composer: "Patriarch Germanus", tone: 6,
+        odes: {
+          1: {
+            irmos: hf2("When Israel walked on foot in the sea as on dry land, * on seeing their pursuer Pharaoh drowned, * they cried: * Let us sing to God * a song of victory.", "p5 Ode 1 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            // No refrain printed — the Sunday interleave leaves no room.
+            refrain: { absent: true, reason: "not_printed_in_source", basis: "close_reading", note: "No Refrain line — the canon interleaves with the Octoechos canons per the share table." },
+            items: [
+              // “who from Nicaea. as it were from the sky” — a full stop
+              // where the comma belongs (sic register).
+              hf1("With sacred words let the fathers be honored who from Nicaea. as it were from the sky, thundered forth the Word of the living God everywhere, showing forth His enemies slain by their thunder.", "p5 Ode 1 troparion 1", { label: "plain" }),
+              hf1("With the Holy Spirit hath Christ driven the evil spirit of the Spirit-haters far from His Church, unifying the Church by the activity of the Second Council.", "p5 Ode 1 troparion 2", { label: "plain" }),
+              hf1("Cyril, the leader of the Council, who clearly confessed the Virgin Mary to be the pure Mother and Theotokos, dispelled the deception of Nestorius the Christ-hater.", "p5 Ode 1 troparion 3", { label: "plain" }),
+              hf1("O pure one, thou hast given birth unto Christ, One of the uncreated Trinity, in two natures and volitions, Who for thy sake hath accomplished the uniting of men and angels.", "p5 Ode 1 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          3: {
+            irmos: hf2("There is none as holy as Thou, * O Lord my God, * who hast exalted the horn of Thy faithful O good One, * and strengthened us upon the rock * of Thy confession.", "p5-p6 Ode 3 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              hf1("The mindless Arius, showing himself to be a servant of a created being, and Macedonius, likewise revealed as abominable, are equally tormented in the fire of Gehenna with the Hellenes.", "p5-p6 Ode 3 troparion 1", { label: "plain" }),
+              hf1("With the seven sacred councils of the holy fathers didst thou adorn the honored Church, O Christ, driving far away the darkness of deception as with the light of seven beacons.", "p5-p6 Ode 3 troparion 2", { label: "plain" }),
+              hf1("The multifarious murrain of the heretics destroyeth Thy flock, O Word; but the shepherds of Thy noetic sheep have changed this by their doctrine.", "p5-p6 Ode 3 troparion 3", { label: "plain" }),
+              hf1("O most pure one, thou hast given birth unto One of the uncreated Trinity, Who is two in nature and volition, and Whose image we worship, filled with grace.", "p5-p6 Ode 3 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          4: {
+            irmos: hf2("Christ is my power, * my God and my Lord, * the holy Church divinely singeth, * crying with a pure mind, * keeping festival in the Lord.", "p6 Ode 4 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              hf1("Thine enemies raised a great tumult, O Savior, and they that hate Thee have lifted up their head a little; yet straightway they have fallen, unable to endure the blare of Thy spiritual trumpets.", "p6 Ode 4 troparion 1", { label: "plain" }),
+              hf1("The suns of the Sun have with twofold radiance made clear that the Son and the Spirit are from the Father, uncreated, co-beginningless. The Father is believed to be the sole cause of both.", "p6 Ode 4 troparion 2", { label: "plain" }),
+              hf1("Seven are the spirits which rested on Christ, Isaiah said; and Christ, with the Father and the divine Spirit, rested on the seven councils.", "p6 Ode 4 troparion 3", { label: "plain" }),
+              hf1("From thy precious blood didst thou give birth unto God Who bore flesh, O pure Maiden; Him have the fathers professed to be in two natures, but in a single Hypostasis.", "p6 Ode 4 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          5: {
+            irmos: hf2("Illumine with Thy divine light, I pray, O Good One, * the souls of those who with love rise early to pray to Thee, * that they may know Thee, O Word of God, * as the true God, * Who recalleth us from the darkness of sin.", "p6-p7 Ode 5 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              hf1("The divine grapevine of Christ which was brought from Egypt was once consumed by the wild beasts of the accursed destroyer; but they have been driven far away with the sling of the holy fathers.", "p6-p7 Ode 5 troparion 1", { label: "plain" }),
+              hf1("Illumining their minds with thrice-radiant divine splendor, the honored fathers professed the Lord Christ to be One of the honorable Trinity and two in nature and volition.", "p6-p7 Ode 5 troparion 2", { label: "plain" }),
+              // A TRINITARIAN — the 'trinitarion' label's second attestation
+              // (Angels first).
+              hf1("O Trinity, among material things hath the Church been made heavenly by the wise fathers as among the seraphim; and ever chanting unto Thee the thrice-holy hymn, it uniteth Thy threefold nature into One.", "p6-p7 Ode 5 Trinitarian", { sourceLabel: "Trinitarian", label: "trinitarion", label_inline: true }),
+              hf1("Thou wast the Mother and handmaiden of thy Son, O pure one; for He Who came forth from thee existed before thee as thy Creator. Him do we know to be in two natures and we unite them in the hypostatic Word.", "p6-p7 Ode 5 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          6: {
+            irmos: hf2("Beholding the sea of life surging with the tempest of temptations, * I run to Thy calm haven, and cry to Thee: * Raise up my life from corruption, * O greatly Merciful One.", "p7 Ode 6 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              hf1("Once David, chanting, said: The God of gods, the Lord, hath spoken, and He hath called them from the ends of all the earth, from the rising of the sun and even unto the setting thereof, signifying the ecumenical councils of the fathers.", "p7 Ode 6 troparion 1", { label: "plain" }),
+              hf1("The wisdom of God hath founded seven pillars, Thy Church, O Master, which is maintained unshaken by all the heresies by the councils of the sacred fathers, seven in number.", "p7 Ode 6 troparion 2", { label: "plain" }),
+              hf1("May shame cover the countenances of Eutyches and Dioscorus, who spake foolishly of a commingling of the nature of Christ; for He received the nature of mortal not in appearance, but in His divinity.", "p7 Ode 6 troparion 3", { label: "plain" }),
+              hf1("Let Nestorius be admitted to the darkened councils of the Jews and let his blasphemous tongue be cut out; for the Virgin Mary gaveth birth to God Who became incarnate for us.", "p7 Ode 6 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          7: {
+            irmos: hf2("An Angel made the furnace bedew the holy Children. * But the command of God consumed the Chaldeans * and prevailed upon the tyrant to cry: * O God of our fathers, blessed art Thou.", "p8 Ode 7 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              hf1("Once Daniel destroyed the dragon of Babylon; and by the prayers of the fathers hath Arius, the cruel serpent of Egypt, which devoureth the flock of Christ, been manifestly broken asunder.", "p8 Ode 7 troparion 1", { label: "plain" }),
+              hf1("With unforgivable impiety the wolf Macedonius showed his disdain, striking out against the Spirit Who deifieth men and restoreth all the faithful to their pristine goodness with the laver of baptism.", "p8 Ode 7 troparion 2", { label: "plain" }),
+              hf1("Dioscorus, Eutyches and Severus the Leviathan, the three who have commingled and mixed the natures of Christ with mental confusion, have struck out with audacity against the adored Trinity.", "p8 Ode 7 troparion 3", { label: "plain" }),
+              hf1("With reverence do we venerate the image of the countenance of thine incarnation, O Master, and that of Thy Mother and of all the saints, knowing with right thought that the veneration passeth well to the Prototype.", "p8 Ode 7 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          8: {
+            irmos: hf2("Thou didst make flame bedew the holy children, * and didst burn the sacrifice of a righteous man with water. * For Thou alone, O Christ, dost do all as Thou willest, * Thee do we supremely exalt throughout all ages.", "p8 Ode 8 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              hf1("The Son and the Spirit shone forth as divinely planted shoots from a single Root; for the Father is the sole Cause, is timeless and of honor equal with the other timeless Hypostases.", "p8 Ode 8 troparion 1", { label: "plain" }),
+              hf1("Thou didst timelessly shine forth from an immaterial womb, O Word Who art of one essence with the Father and the Spirit; yet for our sake Thou madest Thine abode in the material womb of the only Theotokos.", "p8 Ode 8 troparion 2", { label: "plain" }),
+              hf1("Darts ablaze with the fire of the Spirit, the seven councils of the godly fathers pierced the shameful hearts of the heretical enemies and sent them to their death.", "p8 Ode 8 troparion 3", { label: "plain" }),
+              hf1("Not in more than one Person do we glorify the one Christ, nor do we unite Him by commingling His essence; for He is one and the same Person, thy Son and Creator, O Virgin, distinguished by being dual in nature.", "p8 Ode 8 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          9: {
+            irmos: hf2("It is impossible for mankind to see God * upon Whom the orders of Angels dare not gaze; * but through thee, O all-pure one, * did the Word Incarnate become a man * and with the Heavenly Hosts * Him we magnify and thee we call blessed.", "p9 Ode 9 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              hf1("One must not add or subtract ought from sacred Tradition, our Orthodox Faith; for therein have we faithfully been baptized. And they that add ought to this Faith shall be rightly given over to the ban of anathema.", "p9 Ode 9 troparion 1", { label: "plain" }),
+              hf1("Let us all leap up in joy of heart, uniting in one feast the memory of the sacred councils of the fathers, for their sake have we come to behold the light of Orthodoxy; for they have been revealed as beacons guiding all to find the right doctrines.", "p9 Ode 9 troparion 2", { label: "plain" }),
+              hf1("Let us ask cleansing for our souls, and let us strive to live our life piously, that we may have a portion with the holy fathers who have disclosed the riches of right doctrine unto us their children.", "p9 Ode 9 troparion 3", { label: "plain" }),
+              hf1("God shone forth from thy womb, O Mother of God, and hath deified the human race and counted it worthy of His own glory; and He hath shown all who ever proclaim thee truly the Theotokos to be His heirs.", "p9 Ode 9 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+        },
+      }],
+      // “Kontakion and Ikos of the Resurrection” — another current-tone
+      // Octoechos reference — then the Fathers' sessional.
+      ode3_reference_rubric: hf1("Kontakion and Ikos of the Resurrection; Sessional Hymn of the fathers, in Tone IV:", 'p6 post-Ode-III reference rubric'),
+      sessional_ode3: hf1("Ye have been shown to the world as most radiant beacons of the truth of Christ on earth, O truly most blessed and divinely eloquent fathers, having desiccated the heresies of the blasphemous confusion of tongues and quenched the flaming tumults of those who are of false faith. Wherefore, as holy hierarchs of Christ, pray ye that we be saved.", "p6 post-Ode-III Sessional", { spec_mel: "Go thou quickly before ...", tone: 4, repeat: 2 }),
+      // A THIRD RENDERING of the divine-birthgiving Theotokion (Monastic's
+      // kathisma closer and Fools' sessional-2 closer are the others) — the
+      // translation-family's last appearance (register: variant).
+      sessional_ode3_closer: hf2("By thy divine birthgiving, O pure one, * thou hast renewed the mortal nature of those born on earth, * which had become corrupt through the passions, * raising up all from death to a life of incorruption. * Wherefore, as is meet we all bless thee, ** O most glorious Virgin, as thou didst foretell.", "p6 post-Ode-III Theotokion", { sourceLabel: "Glory ..., Both now ..., Theotokion", type: "theotokion", label: ["glory", "both_now", "theotokion"] }),
+      // “Hearken O ye, women” — the melody label's comma migrates (Heirom-
+      // artyrs prints “Hearken, O ye women”).
+      exapostilarion_rubric: hf1("Exapostilarion in Tone II:", 'p9 exapostilarion rubric'),
+      exapostilarion: hf1("Celebrating the memory of the divine fathers today, by their supplications, O most Compassionate One, we entreat Thee: deliver Thy people, O Lord, from all the harm of heresies, and grant that all may glorify the Father, the Word and the most Holy Spirit.", "p9 Exapostilarion", { spec_mel: "Hearken O ye, women ...", tone: 2 }),
+      // A CHAIRETISMOS THEOTOKION — eight Rejoice-salutations as the
+      // exapostilarion closer, first of its kind.
+      exapostilarion_closer: hf2("Rejoice, palace of God! Rejoice, mountain overshadowed! * Rejoice, bush unburnt! Rejoice, throne of glory! * Rejoice, divine table! Rejoice, golden candlestick! * Rejoice, most radiant lamp! ** Rejoice, O Mary, Virgin and Mother, thou light cloud!", "p9 Exapostilarion Theotokion", { sourceLabel: "Glory ..., Both now ..., Theotokion in Tone II", tone: 2, type: "theotokion" }),
+      // “4 Stichera of the Resurrection. and 4 of the Fathers” — a full stop
+      // before “and” (sic register); the four are THREE texts plus an
+      // INCIPIT, versed like the LIC — and verse 2 embeds “Let every breath
+      // praise the Lord”.
+      praises_rubric: hf1("On the Praises, 4 Stichera of the Resurrection. and 4 of the Fathers, in Tone VI:", 'p9 Praises rubric'),
+      praises: [
+        hf2("Praise Him with timbrel and dance, * praise him with strings and flute.", "p9 Praises verse 1", { sourceLabel: "Verse", label: "refrain" }),
+        hf2("Having combined their spiritual art, * and reviewed the heavenly and precious Symbol of Faith through the divine Spirit, * the honored fathers inscribed it with a divine writing, * wherein the right glorious, most noetically rich and truly divine wise ones * teach most clearly that the Word is co-beginningless * and equally everlasting with Him that begot Him, ** thus following most carefully the teachings of the apostles.", "p9 Praises 1", { spec_mel: "Having set aside all ...", label: "plain", tone: 6 }),
+        hf2("Praise Him with tuneful cymbals, praise Him with cymbals of jubilation. * Let every breath praise the Lord.", "p10 Praises verse 2", { sourceLabel: "Verse", label: "refrain" }),
+        { text: "Having combined their spiritual art, ...,", tier: 1, src: { file: HF, locus: 'p10 Praises 2 incipit' }, label: 'plain', incipit_ref: 'general.HolyFathers.matins.praises[1]' },
+        hf1("Blessed art Thou, O Lord, the God of our Fathers, and praised and glorified is Thy name unto the ages.", "p10 Praises verse 3", { sourceLabel: "Verse", label: "refrain" }),
+        hf2("Having received all the noetic radiance of the Holy Spirit, * as preachers of Christ, the divine defenders of the teachings of the Gospel * and the traditions of the pious, inspired by God, * proclaimed their most supra-natural decision; * and having manifestly received from on high the revelation thereof, * being illumined, ** they expounded the Faith taught by God.", "p10 Praises 3", { spec_mel: "Having set aside all ...", label: "plain" }),
+        hf1("Gather unto Him His righteous.", "p10 Praises verse 4", { sourceLabel: "Verse", label: "refrain" }),
+        hf2("Having mustered all their pastoral skill * and then being moved to wrath most just, as champions, * as most true servants of Christ and most sacred keepers * of the mysteries of divine preaching, * the divine pastors drove forth the savage and pernicious wolves, * casting them out of the fullness of the Church; ** and they fell, as it were, to their deaths as ones afflicted incurably.", "p10 Praises 4", { spec_mel: "Having set aside all ...", label: "plain" }),
+      ],
+      praises_glory: hf1("The choir of the holy fathers, which hath gathered from the ends of the earth, hath taught the single essence of the Father, Son and Holy Spirit, and hath carefully committed to the Church the mystery of theology. Praising them in faith, let us bless them, saying: O divine legion, divinely eloquent swordsmen of the Lord’s command, most radiant stars of the noetic firmament, unassailable towers of the mystical Sion, sweet-scented blossoms of paradise, golden mouths of the Word, boast of Nicaea and adornments of the whole world: pray ye on behalf of our souls!", "p10 Praises Glory", { sourceLabel: "Glory ..., in Tone VIII", tone: 8, label: "glory" }),
+      // The great Sunday theotokion — “Thou art supremely blessed”.
+      praises_closer: hf2("Thou art supremely blessed, O Virgin Theotokos, * for through Him who was incarnate of thee * Hell hath been taken captive, Adam recalled, the curse slain, and Eve set free, * death hath been put to death and we have been given life; * therefore with hymns we cry unto Thee: ** Blessed art Thou O Christ our God who hast been thus well-pleased, glory be to Thee!", "p10 Praises Both now", { sourceLabel: "Both now ..., Theotokion, in Tone II", tone: 2, type: "theotokion", label: ["both_now", "theotokion"] }),
+      great_doxology_rubric: hf1("The Great Doxology.", 'p10 great Doxology rubric'),
+      // “The Ectinias” (for ectenias — sic register) — and the EOTHINON
+      // block: “the unread Eothinon of the Gospel” (captured verbatim; the
+      // sense wants the Eothinon sticheron of the current Gospel), then the
+      // First Hour: the corpus's only Sunday-dismissal sequence.
+      post_doxology_rubric: hf1("After the Trisagion, the Troparion of the Resurrection. The Ectinias. And the Dismissal.", 'p10 post-Doxology rubric'),
+      eothinon_rubric: hf1("Glory ..., Both now ..., the unread Eothinon of the Gospel. Thereupon the First Hour and the final Dismissal.", 'p10 Eothinon rubric'),
+    },
+
+    liturgy: {
+      order: ['beatitudes_rubric', 'beatitudes', 'troparion_rubric', 'troparion_liturgy',
+              'kontakion', 'prokeimenon', 'epistle',
+              'alleluia', 'alleluia_verse', 'gospel',
+              'communion_verse_resurrection', 'communion_verse'],
+      // “6 from the Oktoechos, and the following 4 from the Fathers” — the
+      // share-count at the Beatitudes; the four are ODE III ONLY (items 1-3
+      // + its Theotokion) — the first single-ode Beatitude set, byte-true.
+      beatitudes_rubric: hf1("Typika and Beatitudes, 6 from the Oktoechos, and the following 4 from the Fathers:", 'p11 Typika and Beatitudes'),
+      beatitudes: [
+        hf1("The mindless Arius, showing himself to be a servant of a created being, and Macedonius, likewise revealed as abominable, are equally tormented in the fire of Gehenna with the Hellenes.", "p11 Beatitude 1", { label: "plain" }),
+        hf1("With the seven sacred councils of the holy fathers didst thou adorn the honored Church, O Christ, driving far away the darkness of deception as with the light of seven beacons.", "p11 Beatitude 2", { label: "plain" }),
+        hf1("The multifarious murrain of the heretics destroyeth Thy flock, O Word; but the shepherds of Thy noetic sheep have changed this by their doctrine.", "p11 Beatitude 3", { label: "plain" }),
+        hf1("O most pure one, thou hast given birth unto One of the uncreated Trinity, Who is two in nature and volition, and Whose image we worship, filled with grace.", "p11 Beatitude 4", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+      ],
+      troparion_rubric: hf1("Troparion of the Fathers, in Tone VIII:", 'p11 Liturgy troparion rubric'),
+      // THE LITURGY SITE INSERTS “since” (“since Thou hast established”) —
+      // the seventh wording/pointing refusal, stored locally.
+      troparion_liturgy: hf2("Most glorious art Thou, O Christ our God, * since Thou hast established our Holy Fathers as luminaries upon the earth * and through them hath instructed us all in the true faith. ** O Most merciful One, glory be to Thee.", "p11 Liturgy Troparion", { sourceLabel: "Troparion of the Fathers, in Tone VIII", tone: 8 }),
+      // “The Prokeimenon of the Fathers: in Tone IV” — the colon-before-tone
+      // class — and NO VERSE follows: the first verse-less prokeimenon (the
+      // text doubles as Praises verse 3).
+      prokeimenon: hf1("Blessed art Thou, O Lord, the God of our Fathers, and praised and glorified is Thy name unto the ages.", "p11 Liturgy Prokeimenon", { sourceLabel: "The Prokeimenon of the Fathers: in Tone IV", tone: 4, label_inline: true }),
+      // "THE EPISTLE TO THE HEBREWS:" — the colon-in-heading class; and the
+      // body prints "He that despised Moses” law" — the Moses” right-quote
+      // defect's FOURTH site, its first in a reading body (unstored per R-4,
+      // recorded here).
+      epistle: { heading: 'THE EPISTLE TO THE HEBREWS:',
+        src: { file: HF, locus: 'p11-p12 Epistle' },
+        citation_verbatim: '(10: 19-31).',
+        citation: { book: 'Hebrews', chapter: 10, verses: '19-31' },
+        citation_basis: 'printed' },
+      // “Alleluia; of the fathers, in Tone I” — a SEMICOLON after Alleluia,
+      // new label form; the text is the psalm Ode VI troparion 1 quotes.
+      alleluia: hf1("The God of gods, the Lord, hath spoken, and He hath called the earth from the rising of the sun and unto the setting thereof.", "p12 Alleluia", { sourceLabel: "Alleluia; of the fathers, in Tone I", tone: 1, label_inline: true }),
+      // The LONG form of the Gather verse — Praises verse 4 prints the short
+      // (“Gather unto Him His righteous.”): one verse, two renderings in one
+      // file (register: variant).
+      alleluia_verse: hf1("Gather together unto Him His holy ones who have established His covenant upon sacrifices.", "p12 Alleluia verse", { sourceLabel: "Verse", label: "refrain" }),
+      // "At that time Jesus: lifted up his eyes" — the colon-after-Jesus
+      // class, second file (unstored body note).
+      gospel: { heading: 'THE GOSPEL ACCORDING TO ST. JOHN',
+        src: { file: HF, locus: 'p12 Liturgy Gospel' },
+        citation_verbatim: '(17: 1-13).',
+        citation: { book: 'John', chapter: 17, verses: '1-13' },
+        citation_basis: 'printed' },
+      // TWO COMMUNION VERSES — first file with a pair: the Resurrection's
+      // and “for the saint” (SINGULAR, in the Fathers' file — captured
+      // verbatim), the latter the semicolon righteous form (sixth file).
+      communion_verse_resurrection: hf1("Praise the Lord from the heavens, praise Him in the highest.", "p12 Resurrection Communion verse", { sourceLabel: "Communion Verse for the Resurrection", label_inline: true }),
+      communion_verse: hf1("Rejoice in the Lord, O ye righteous; praise is meet for the upright.", "p12 Communion verse", { sourceLabel: "Communion Verse for the saint", label_inline: true }),
     },
   },
 };

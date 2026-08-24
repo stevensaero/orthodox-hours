@@ -679,4 +679,21 @@ export default [
   { path: 'general.Cross.liturgy.prokeimenon_verse', file: 'Cross.pdf', locus: 'p13',
     verbatim: 'The Lord is King let the people rage.',
     note: 'The comma never printed. The GOSPEL body also leaks a verse number ("no king but Caesar. 16 Then delivered") and opens "At That time" — bodies unstored per R-4, recorded here.' },
+
+  // ── Holy Fathers.pdf ───────────────────────────────────────────────────────
+  { path: 'general.HolyFathers.vespers.dogmatikon_reference_rubric', file: 'Holy Fathers.pdf', locus: 'p2',
+    verbatim: 'The Dogmatic of the in Tone for the Saturday evening Vigil Service:',
+    note: 'A GARBLED REFERENCE RUBRIC — the words scrambled around "the in Tone for" (the sense wants the current tone\'s dogmatic). The only dogmatic slot in the corpus with no printed text: it comes from the Octoechos.' },
+  { path: 'general.HolyFathers.vespers.great_prokeimenon', file: 'Holy Fathers.pdf', locus: 'p2',
+    verbatim: 'The Lord is King, * He is clothed with majesty.',
+    note: 'The Great Prokeimenon itself is labeled "Verse:" — with its three verses then numbered Verse 1/2/3 (the corpus\'s first numbered-verse set).' },
+  { path: 'general.HolyFathers.matins.canons[0].odes.1.items[0]', file: 'Holy Fathers.pdf', locus: 'p5 Ode I troparion 1',
+    verbatim: 'who from Nicaea. as it were from the sky',
+    note: 'A full stop where the comma belongs.' },
+  { path: 'general.HolyFathers.matins.praises_rubric', file: 'Holy Fathers.pdf', locus: 'p9',
+    verbatim: '4 Stichera of the Resurrection. and 4 of the Fathers',
+    note: 'A full stop before "and".' },
+  { path: 'general.HolyFathers.matins.post_doxology_rubric', file: 'Holy Fathers.pdf', locus: 'p10',
+    verbatim: 'The Ectinias.',
+    note: '"Ectinias" for ectenias — and the next rubric prints "the unread Eothinon of the Gospel" (the sense wants the Eothinon sticheron of the current Sunday Gospel; captured verbatim).' },
 ];
