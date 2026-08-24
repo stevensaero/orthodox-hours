@@ -1,9 +1,10 @@
 # Next-session kickoff — Menaion V2 Phase 2 (General Menaion encoding)
 
-State at handoff: **v0.41.11**. `general.js` holds **3089 stored strings · 2957
-text nodes · 0 errors** — twenty-two files complete (through Fools/Prophet).
-**22 of 26.** Only the four SUBJECT files remain (St John Baptist, Cross, Holy
-Fathers, Theotokos) — encoded LAST per standing order.
+State at handoff: **v0.41.12**. `general.js` holds **3258 stored strings · 3120
+text nodes · 0 errors** — twenty-three files complete (through St John
+Baptist, the first subject file). **23 of 26.** Remaining: Cross, Holy
+Fathers, Theotokos — subject files; expect feast-keyed SETS of propers,
+incipit references, and no (name) placeholders (the Baptist pattern).
 The rubric census's Fekula column is FILLED from the locally delivered
 `Fekula_ODS/` chapters. `menaion_rubric_census.md` now distills
 the rubric corpus to instruction-set families; read it before touching any

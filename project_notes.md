@@ -1,5 +1,60 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.41.11** | **Tone Trainer: v0.26.0** | Last synced: August 23, 2026
+**Tool version: v0.41.12** | **Tone Trainer: v0.26.0** | Last synced: August 23, 2026
+
+**Session August 23, 2026 (fifteenth) — ST JOHN BAPTIST ENCODED (23 of 26);
+THE FIRST SUBJECT FILE; FEAST-KEYED SETS; THE NEGATIVE CONDITIONALS MEASURED.**
+**Version bumped to v0.41.12.** Eight gates green: 3120 nodes/0 errors · 3258
+strings/0 missing · build ✓. Commits `5de7d20` (data) + this docs/version
+commit.
+
+### THE SUBJECT FILES ARE A DIFFERENT ANIMAL
+
+No (name) anywhere — the saint is named, and the VARIABLE MOVES TO THE
+FEAST: six troparia (General/Beheading, Conception, Synaxis, Birth, 1st &
+2nd Finding, 3rd Finding) separated by printed rules; five feast-keyed
+megalynaria under the new "After Praise ye the name of the Lord" rubric,
+one of them a "The same as above" REFERENCE; six kontakia printed at BOTH
+Matins and Liturgy (byte-identical, labels differing) plus a SEVENTH
+generic fallback ("But if there be no Kontakion"); and the corpus's newest
+placeholder — "(name of the event.)" in the exapostilarion, period inside
+the parens. New slots invented: troparia_heading, per-feast troparion_*/
+kontakion_* names, canon_appointment_rubric, kontakion_fallback,
+god_is_lord_closer_rubric.
+
+### E-4 RESOLVED: THE NEGATIVE CONDITIONALS MEASURED
+
+Three on the page. The dogmatic rubric DROPS THE POLYELEOS CLAUSE
+entirely ("If the Celebration does not coincide with a Resurrection
+Service") — a Baptist Vigil always has a Polyeleos, so only the
+Resurrection escape remains, recast negatively. The anabathmoi rubric
+shortens to "If not a Resurrection Service". The Great-Doxology rubric
+adds a "(from above)" CROSS-REFERENCE to the Vespers troparia set. A
+logical simplification, not a new rule — ledger E-4 struck with the
+measurement.
+
+### FIRSTS THAT WILL MATTER FOR THE REMAINING THREE
+
+The corpus's FIRST INCIPIT REFERENCES ("All of thy most glorious
+mysteries are beyond comprehension ...," — incipit_ref, prefix-checked by
+the gate; four used). The FIFTH pointing refusal (Vespers General
+Troparion ends "mercy.." — double stop). The Synaxis troparion: a
+FOUR-DIFF variant reprint of the file's own principal troparion. THREE
+REWRITTEN BEATITUDES (1, 6, and the THEOTOKION — a first). The TONE IV
+dogmatic ("Prophet David") — fifth cross-book row. God-is-the-Lord CITES
+"the Troparion of the Feast" without printing it. A two-canon appointment
+rubric (Theotokos/Paraklisis in 6 + Forerunner in 8). Ode VIII prints
+FOUR troparia. Matins/Liturgy same-pericope pattern at its third file —
+with the Liturgy CORRECTING Matins' "our do we look" (our-for-or, sixth
+file). Prophetic lessons under "THE PROPHECY OF" headings; the first ACTS
+epistle — its printed body ending MID-SENTENCE on a comma; a toneless
+"Alleluia:" label; Melchisedech/forever against Prophet's Melchisedek/for
+ever — one psalm, two renderings, two tones.
+
+Instrument catches: the tier gate refused two Beatitude over-grabs; the
+register resolver caught a wrong Ikos path; three generator end-anchor
+misses caught by asserts. REMAINING: Cross, Holy Fathers, Theotokos.
+
+---
 
 **Session August 23, 2026 (fourteenth) — FOOLS AND PROPHET ENCODED (22 of 26);
 GENDER ALTERNATIVES; A CHAIRETISMOS IKOS; THE TONE-II TEMPLATE RUBRIC; ONLY

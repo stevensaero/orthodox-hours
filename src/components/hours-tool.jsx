@@ -8656,6 +8656,34 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.41.12",
+    date: "August 2026",
+    summary: "St John Baptist encoded (23 of 26) — the first subject file: feast-keyed sets, incipit references, the negative conditionals measured",
+    items: [
+      "ST JOHN BAPTIST ENCODED — 23 of 26, the FIRST SUBJECT FILE: no " +
+      "(name) placeholder anywhere; the variable moves to the FEAST. Six " +
+      "troparia, five feast-keyed megalynaria (with a 'The same as above' " +
+      "reference), six kontakia printed twice plus a generic fallback — " +
+      "and the new placeholder '(name of the event.)'.",
+      "THE NEGATIVE CONDITIONALS MEASURED (ledger E-4 resolved): the " +
+      "dogmatic rubric drops the Polyeleos clause — a Baptist Vigil " +
+      "always has one — leaving the Resurrection escape recast " +
+      "negatively; the anabathmoi rubric shortens; the Great-Doxology " +
+      "rubric cross-references '(from above)'. The corpus's FIRST " +
+      "INCIPIT REFERENCES carry the repeated theotokia (incipit_ref, " +
+      "gate prefix-checked).",
+      "The FIFTH pointing refusal (a double full stop at the Vespers " +
+      "General Troparion); a FOUR-DIFF Synaxis reprint of the same " +
+      "troparion; THREE rewritten Beatitudes — the most anywhere — " +
+      "including the first rewritten Beatitude THEOTOKION. The Tone IV " +
+      "dogmatic (fifth cross-book row). Prophetic lessons; the first " +
+      "Acts epistle, ending mid-sentence; a toneless Alleluia label.",
+      "Corpus at 3120 nodes · 3258 rendered strings · 0 errors · all " +
+      "eight gates green. Three files remain: Cross, Holy Fathers, " +
+      "Theotokos.",
+    ],
+  },
+  {
     version: "v0.41.11",
     date: "August 2026",
     summary: "Fools + Prophet encoded (22 of 26) — gender alternatives; a chairetismos Ikos; the Tone-II template rubric; only the four subject files remain",
