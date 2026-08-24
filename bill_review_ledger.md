@@ -75,8 +75,15 @@ Current machine-checked totals: **21 findings · 14 worklist items** (run
 2. **Pentecostarion off Drive** — the last R-7 remnant.
 3. **August close-reading items** (census §3, A-1…A-6) — settled only when
    their dates are encoded.
-4. **St John Baptist's negative conditional** — measure on the page when
-   that file is taken (18pp, subject file, LAST per standing order).
+4. ~~**St John Baptist's negative conditional** — measure on the page when
+   that file is taken (18pp, subject file, LAST per standing order).~~
+   **MEASURED (Aug 23, v0.41.12):** THREE negative conditionals on the page —
+   the dogmatic rubric drops the Polyeleos clause entirely ("If the
+   Celebration does not coincide with a Resurrection Service") because a
+   Baptist Vigil always has one; the anabathmoi rubric shortens to "If not a
+   Resurrection Service"; and the Great-Doxology rubric adds a "(from above)"
+   cross-reference to the Vespers troparia set. Captured verbatim at their
+   nodes; the negative form is a logical simplification, not a new rule.
 
 ---
 

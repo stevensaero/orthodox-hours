@@ -60,6 +60,8 @@ const FO = 'Fools.pdf';
 const [fo2, fo1] = mk(FO);
 const PF = 'Prophet.pdf';
 const [pr2, pr1] = mk(PF);
+const JB = 'St John Baptist.pdf';
+const [jb2, jb1] = mk(JB);
 
 const GENERAL = {
   Monastic: {
@@ -7763,6 +7765,445 @@ const GENERAL = {
       // A FOURTH byte-form of the In-everlasting verse: semicolon WITH
       // lowercase he — the two families' halves recombined.
       communion_verse: pr1("In everlasting remembrance shall the righteous be; he shall not be afraid of evil tidings.", "p14 Communion verse", { sourceLabel: "Communion Verse", label_inline: true }),
+    },
+  },
+  StJohnBaptist: {
+    // THE FIRST SUBJECT FILE — 23 of 26. NO (name) PLACEHOLDER ANYWHERE:
+    // the saint is named. Instead the file provides SETS — six troparia,
+    // five megalynaria, six kontakia plus a generic fallback — keyed to the
+    // Baptist's feasts (Conception, Birth, Beheading, three Findings,
+    // Synaxis), and ONE new placeholder: “(name of the event.)” in the
+    // exapostilarion — the FEAST is the variable, not the saint.
+    title: jb1("GENERAL VIGIL SERVICE TO ST. JOHN, THE FORERUNNER, PROPHET AND BAPTIST OF THE LORD.", 'p1 title'),
+
+    // The General Troparion prints at THREE sites: Matins (after the Great
+    // Doxology) and Liturgy byte-identical (canonical here); the VESPERS
+    // site ends “the great mercy..” — a DOUBLE full stop (stored at its
+    // site; sic register). The Synaxis reprint at p5 is a four-diff variant
+    // node of its own.
+    troparion: jb2("The memory of the just is celebrated with hymns of praise * but the Lord’s testimony is enough for thee, O Forerunner, * for thou wast shown to be more wonderful than the Prophets * since thou wast granted to baptize in the running waters * Him Whom thou didst proclaim. * Then having endured great suffering for the Truth, * Thou didst rejoice to bring, even to those in hell * the good tidings that God Who had appeared in the flesh * takes away the sin of the world * and grants us the great mercy.", "p14 Troparion", { sourceLabel: "The General Troparion (Also for the Beheading), in Tone II", verified_sites: [{"locus": "p14 after the Great Doxology", "tone": 2}, {"locus": "p15 AT LITURGY", "tone": 2}] }),
+
+    vespers: {
+      order: ['lic_rubric', 'lic', 'lic_glory', 'dogmatikon_rubric', 'dogmatikon',
+              'entrance_rubric', 'readings', 'aposticha_rubric', 'aposticha',
+              'aposticha_glory', 'aposticha_closer',
+              'troparia_heading',
+              'troparion_general', 'troparion_general_closer',
+              'troparion_conception', 'troparion_conception_closer',
+              'troparion_synaxis', 'troparion_synaxis_closer',
+              'troparion_birth', 'troparion_birth_closer',
+              'troparion_findings12', 'troparion_findings12_closer',
+              'troparion_finding3', 'troparion_finding3_closer',
+              'closing_rubric'],
+      lic_rubric: jb1("On “Lord, I have cried ...,” the Stichera, in Tone VIII:", 'p1 LIC rubric'),
+      // Sticheron 1 ends “** cleansing the senses of my heart, * that I may
+      // glorify thee.” — the ** BEFORE the final line's *. Sticheron 3 opens
+      // “the most purest joy” — a stacked superlative (verbatim).
+      lic: [
+        jb2("O blessed John the Forerunner, * sincere friend of the Lord, * who in the waters of the Jordan * touched with thy hand His most pure head, * by thy sacred intercessions * do thou always with love raise my humble soul to the Lord, * extinguishing the fire of my passions, * and leading me to the faithful fulfillment of the divine commands, ** cleansing the senses of my heart, * that I may glorify thee.", "p1 LIC 1", { spec_mel: "O most glorious wonder ...", label: "plain", tone: 8 }),
+        jb2("O thou, offspring of barrenness * and the Lord’s garden of purity, * ornament of all mankind, * Baptizer of the Lord, * all-praised John the Forerunner, * divine guardian of my humble soul, * grant me God’s grace by thine intercessions, * and deliver me from the serpent, ** and his malicious wiles and assaults.", "p1 LIC 2", { spec_mel: "O most glorious wonder ...", label: "plain" }),
+        jb2("Thou art the most purest joy of all, * full of the sweetness of divine grace, * O ever-glorious Prophet, * making glad all those who come unto thee with faith, * sweetening the senses of both soul and body, * vanquishing the bitterness * of infirmities and afflictions, * and subduing the assaults of the evil one, ** and of all the soul destroying passions.", "p1 LIC 3", { spec_mel: "O most glorious wonder ...", label: "plain" }),
+      ],
+      // No LIC theotokion, no idiomelon rubric — the Fools shape. “that
+      // followed after the voice the Word” — an “of” lost (sic register);
+      // “Zacharia’s offspring”.
+      lic_glory: jb2("Today hath appeared the great Forerunner, * who came forth from the barren womb of Elizabeth, * the greatest of all the Prophets, * for there was no greater before, nor hath one arisen since. * The lamp that preceded the most resplendent Light, * that followed after the voice the Word, * the Bridegroom’s harbinger. * He prepared multitudes of people for the Lord, * cleansing them with water in preparation for the cleansing of the Spirit; * Zacharia’s offspring and a good pupil of wilderness living, * the preacher of repentance and the cleansing of transgressions, * announcing to those in Hades ** the resurrection from the dead, and ever interceding for our souls.", "p1 Glory", { sourceLabel: "Glory ..., in Tone IV", tone: 4, label: "glory" }),
+      // THE NEGATIVE CONDITIONAL, MEASURED (ledger E-4): “If the Celebration
+      // does not coincide with a Resurrection Service” — the Polyeleos clause
+      // is GONE because a Vigil of the Baptist always has one; only the
+      // Resurrection escape remains, recast negatively. “Dogmatic OF Tone
+      // IV”; the travelling “service ):” space — TENTH file.
+      dogmatikon_rubric: jb1("If the Celebration does not coincide with a Resurrection Service, chant the following Dogmatic of Tone IV (If the service is a Resurrection service chant the Dogmatic of the Tone for that service ):", 'p1 dogmatikon rubric'),
+      // THE TONE IV DOGMATIC (“Prophet David, the ancestor of God”) — first
+      // in the General Menaion: the FIFTH cross-book dogmatic row
+      // (octoechos:tone4, ledger E-1). With “He - the source of life -” in
+      // spaced hyphens (the dash class, second file).
+      dogmatikon: jb2("Prophet David, the ancestor of God, * spoke of thee in psalmody unto Him Who hath accomplished great things in thee. * For God was well pleased without father to become a man from thee, * the Queen who standeth at His right hand, * and He - the source of life - showed thee to be His mother, * that He might renew His own image, corrupted by the passions. * Having found the lost sheep wandering on the mountain * He hath laid it upon his shoulders, * that He may bring it to his Father; * and in accordance with His own will * unite it to the heavenly Powers * and thus, O Theotokos, save the world, ** Christ, Who is richly and abundantly merciful.", "p1 Both now dogmatic", { sourceLabel: "Both now ..., in Tone IV", tone: 4, type: "dogmatic_theotokion", label: "both_now" }),
+      // “The Three Lessons” — UNCONDITIONAL: no “if appointed”, alone in the
+      // corpus. The lessons are proper and PROPHETIC — Isaiah 40 and Malachi 3
+      // under “THE PROPHECY OF …” headings (new forms), then the judgment-
+      // scene Wisdom with “bath not illumined us” (the Prophet defect,
+      // second file).
+      entrance_rubric: jb1("The Entrance. The Prokeimenon of the day. The Three Lessons", 'p2 Entrance rubric'),
+      readings: [
+        { heading: 'THE PROPHECY OF ISAIAH',
+          src: { file: JB, locus: 'p2 Lesson 1' },
+          citation: { book: 'Isaiah', chapter: 40, verses: '40:1-5, 40:9; 41:17-18; 45:8; 48:20-21; 54:1' },
+          citation_basis: 'identified',
+          provenance_note: 'The composite Forerunner Isaiah of the festal tradition (Comfort ye / The voice of him that crieth / Sing, O barren one). Identified; confirm against the page.' },
+        { heading: 'THE PROPHECY OF MALACHI',
+          src: { file: JB, locus: 'p2 Lesson 2' },
+          citation: { book: 'Malachi', chapter: 3, verses: '3:1-3, 3:5-7, 3:12, 3:17-18; 4:4-6' },
+          citation_basis: 'identified',
+          provenance_note: 'The composite Malachi (Behold I will send My messenger / Elijah the Tishbite). Identified; confirm against the page.' },
+        { heading: 'THE WISDOM OF SOLOMON',
+          src: { file: JB, locus: 'p3 Lesson 3' },
+          citation: { book: 'Wisdom of Solomon', chapter: 4, verses: '4:7, 4:16-5:7' },
+          citation_basis: 'identified',
+          provenance_note: 'The judgment-scene lesson, "bath not illumined us" included (second file). Identified; confirm against the page.' },
+      ],
+      aposticha_rubric: jb1("On the Aposticha, these Stichera, in Tone II:", 'p3 Aposticha rubric'),
+      // No Spec. Mel. — proper stichera with the Baptist's own verses (the
+      // Benedictus). Verse 2 reappears as the Matins prokeimenon MINUS its
+      // “a” (register: variant).
+      aposticha: [
+        jb2("O preacher and Baptist of Christ, * angel, apostle, and martyr, * prophet, forerunner, lamp, and nearest friend, * seal of the prophets, * supremely honored among those born of men, * mediator between the old and the new covenants, * joyful voice of the Word, * by thy sacred intercessions ** be thou a prayerful advocate for us before the tenderly compassionate God.", "p3 Aposticha 1", { label: "plain", tone: 2 }),
+        jb2("Blessed be the Lord God of Israel. * He hath visited and wrought deliverance unto His people.", "p3 Aposticha verse 1", { sourceLabel: "Verse", label: "refrain" }),
+        jb2("O blessed Forerunner, * upon seeing Christ walking upon the earth * thou didst cry out aloud * “Behold the Lamb of God that taketh away the sins of the world”; * Him do thou entreat that those who honor thee * be granted the remission of their sins * for thou, O Baptist, dost truly possess great boldness ** as the mediator of the law and grace.", "p3 Aposticha 2", { label: "plain" }),
+        jb2("And thou, O child, * shalt be called a Prophet of the Most High.", "p3 Aposticha verse 2", { sourceLabel: "Verse", label: "refrain" }),
+        jb2("I beseech thee O glorious Prophet of the Lord, * make haste and deliver me from temptations, * for in vain the bitter demons array themselves against me, * warring and seeking to seize the soul of thy servant like a helpless hatchling, * forsake me not even unto the end, * but rather make them understand, O all-blessed one, ** that thou art my refuge.", "p3 Aposticha 3", { label: "plain" }),
+      ],
+      aposticha_glory: jb2("O godly illustrious voice, * lamp of the Light, * Forerunner of the Lord, * testified to by Christ, * the first among the prophets! * While interceding with thy supplications on behalf of the world, ** remember also thy flock and preserve it unharmed.", "p4 Aposticha Glory", { sourceLabel: "Glory ..., in Tone I", tone: 1, label: "glory" }),
+      // “Both now ..., Theotokion of the Resurrection, in Tone I:” — a new
+      // label form, UNCONDITIONAL (no Polyeleos clause) — and the text is
+      // Prophet's aposticha closer byte-for-byte (register).
+      aposticha_closer: jb2("Behold, the prophecy of Isaiah hath been fulfilled, * for a Virgin hath given birth, * and after giving birth hath remained a Virgin as before. * For it was God who was born from her; * therefore He began nature anew. * O Mother of God, disdain not the supplications of thy servants, * which are offered unto thee in thy temple; * since thou didst bear the Compassionate one in thine embrace, ** have pity on thy servants, and beseech Him that our souls be saved.", "p4 Resurrection Theotokion", { sourceLabel: "Both now ..., Theotokion of the Resurrection, in Tone I", tone: 1, type: "theotokion", label: "both_now" }),
+
+      // ── THE TROPARIA — six for the Baptist's feasts, separated on the page
+      // by printed horizontal rules; theotokia given ONCE in full and then as
+      // INCIPIT REFERENCES (“...,” — the corpus's first use of incipit_ref).
+      troparia_heading: jb1("THE TROPARIA:", 'p4 THE TROPARIA heading'),
+      // The Vespers site of the General Troparion — “the great mercy..” with
+      // its DOUBLE full stop (sic register): the refused site, stored locally.
+      troparion_general: jb2("The memory of the just is celebrated with hymns of praise * but the Lord’s testimony is enough for thee, O Forerunner, * for thou wast shown to be more wonderful than the Prophets * since thou wast granted to baptize in the running waters * Him Whom thou didst proclaim. * Then having endured great suffering for the Truth, * Thou didst rejoice to bring, even to those in hell * the good tidings that God Who had appeared in the flesh * takes away the sin of the world * and grants us the great mercy..", "p4 General Troparion", { sourceLabel: "The General Troparion (Also for the Beheading), in Tone II", tone: 2 }),
+      troparion_general_closer: jb2("All of thy most glorious mysteries are beyond comprehension, * O Theotokos; * for, thy purity sealed and thy virginity intact, * thou art known to be a true Mother, having given birth unto God. ** Him do thou entreat, that our souls be saved.", "p4 General Theotokion", { sourceLabel: "Glory ..., Both now ..., Theotokion, in Tone II", tone: 2, type: "theotokion" }),
+      // “of the Conception of the Forerunner in Tone IV” — no comma before
+      // the tone.
+      troparion_conception: jb2("Sing, O barren one that didst not bear, * for thou hast conceived the lamp of the Sun * Who is to enlighten the whole world suffering from blindness. * O Zacharias rejoice and shout: * “The Prophet of the Most High is to be born.”", "p4 Conception Troparion", { sourceLabel: "Troparion of the Conception of the Forerunner in Tone IV", tone: 4 }),
+      troparion_conception_closer: jb2("The mystery hidden from all ages * and unknown to the ranks of Angels, * hath been revealed to those on earth through thee, O Theotokos: * God incarnate in an uncommingled union, * Who willingly accepted the Cross for our sake, * and through it hath raised up the first-formed man, ** and saved our souls from death.", "p4 Conception Theotokion", { sourceLabel: "Glory ..., Both now ..., Theotokion, in Tone IV", tone: 4, type: "theotokion" }),
+      // The SYNAXIS troparion is the General Troparion REPRINTED WITH FOUR
+      // VARIANTS — “praise,” gains a comma, “Forerunner” loses one, “Him
+      // whom” lowercases, “world and grants” drops the pointing — an in-file
+      // variant reprint of the file's own principal troparion (register).
+      troparion_synaxis: jb2("The memory of the just is celebrated with hymns of praise, * but the Lord’s testimony is enough for thee, O Forerunner * for thou wast shown to be more wonderful than the Prophets * since thou wast granted to baptize in the running waters * Him whom thou didst proclaim. * Then having endured great suffering for the Truth, * thou didst rejoice to bring, even to those in hell, * the good tidings that God Who had appeared in the flesh * takes away the sin of the world and grants us the great mercy.", "p5 Synaxis Troparion", { sourceLabel: "Troparion of the Synaxis of the Forerunner: in Tone II", tone: 2 }),
+      // THE CORPUS'S FIRST INCIPIT REFERENCES — the page prints the
+      // theotokion as “All of thy most glorious mysteries are beyond
+      // comprehension ...,” and the node carries incipit_ref to the full text
+      // (gate prefix-checks it).
+      troparion_synaxis_closer: { text: "All of thy most glorious mysteries are beyond comprehension ...,", tier: 1, src: { file: JB, locus: 'p5 Synaxis Theotokion incipit' }, sourceLabel: 'Glory ..., Both now ..., Theotokion, in Tone II', tone: 2, type: 'theotokion', incipit_ref: 'general.StJohnBaptist.vespers.troparion_general_closer' },
+      // “thy Father’s dumbness” — capital F on Zacharias (verbatim).
+      troparion_birth: jb2("O Prophet and Forerunner of the coming of Christ, * we honor thee lovingly but cannot extol thee worthily; * for by thy birth * thy mother’s barrenness and thy Father’s dumbness were unfettered; * and the Incarnation of the Son of God is proclaimed to the world.", "p5 Birth Troparion", { sourceLabel: "Troparion for the Birth of the Forerunner: in Tone IV", tone: 4 }),
+      troparion_birth_closer: { text: "The mystery hidden from all ages ...,", tier: 1, src: { file: JB, locus: 'p5 Birth Theotokion incipit' }, sourceLabel: 'Glory ..., Both now ..., Theotokion, in Tone IV', tone: 4, type: 'theotokion', incipit_ref: 'general.StJohnBaptist.vespers.troparion_conception_closer' },
+      troparion_findings12: jb2("The head of the Forerunner has risen from the earth * and sends forth healing rays of incorruption to all the faithful. * In heaven it is mustering a host of Angels, * and on earth it is assembling mankind * to ascribe glory to our God.", "p5 1st-2nd Finding Troparion", { sourceLabel: "Troparion for the 1st & 2nd Finding: in Tone IV", tone: 4 }),
+      troparion_findings12_closer: { text: "The mystery hidden from all ages ...", tier: 1, src: { file: JB, locus: 'p5 1st-2nd Finding Theotokion incipit' }, sourceLabel: 'Glory ..., Both now ..., Theotokion, in Tone IV', tone: 4, type: 'theotokion', incipit_ref: 'general.StJohnBaptist.vespers.troparion_conception_closer' },
+      // “through Thine intercessions” — the saint's pronoun capitalized (the
+      // class).
+      troparion_finding3: jb2("Christ has revealed thy head to us, O Prophet and Forerunner * as a divine treasure hidden in the earth. * We come with hymns to honor its discovery, * and praise the Savior Who saves us from corruption, * through Thine intercessions.", "p5 3rd Finding Troparion", { sourceLabel: "Troparion for the 3rd Finding: in Tone IV", tone: 4 }),
+      troparion_finding3_closer: { text: "The mystery hidden from all ages ...", tier: 1, src: { file: JB, locus: 'p5 3rd Finding Theotokion incipit' }, sourceLabel: 'Glory ..., Both now ..., Theotokion, in Tone IV', tone: 4, type: 'theotokion', incipit_ref: 'general.StJohnBaptist.vespers.troparion_conception_closer' },
+      closing_rubric: jb1("The Dismissal:", 'p5 Dismissal'),
+    },
+
+    matins: {
+      order: ['god_is_lord_rubric', 'god_is_lord_closer_rubric',
+              'sessional_1_rubric', 'sessional_1', 'sessional_1_closer',
+              'sessional_2_rubric', 'sessional_2', 'sessional_2_closer',
+              'megalynarion_rubric',
+              'megalynarion_nativity', 'megalynarion_nativity_verse',
+              'megalynarion_conception',
+              'megalynarion_beheading', 'megalynarion_beheading_verse',
+              'megalynarion_findings', 'megalynarion_findings_verse',
+              'megalynarion_synaxis', 'megalynarion_synaxis_verse',
+              'sessional_polyeleos_rubric', 'sessional_polyeleos',
+              'sessional_polyeleos_closer', 'anabathmoi_rubric', 'anabathmoi_intro',
+              'anabathmoi', 'anabathmoi_closer', 'prokeimenon_rubric', 'prokeimenon',
+              'prokeimenon_verse', 'gospel_rubric', 'gospel', 'psalm50_rubric',
+              'psalm50_sticheron', 'psalm50_closer', 'psalm50_verse',
+              'sessional_post50_rubric', 'sessional_post50',
+              'canon_appointment_rubric', 'canon_rubric', 'canons',
+              'sessional_ode3_rubric', 'sessional_ode3', 'sessional_ode3_closer',
+              'kontakia_heading',
+              'kontakion_beheading', 'kontakion_conception', 'kontakion_synaxis',
+              'kontakion_birth', 'kontakion_findings12', 'kontakion_finding3',
+              'ikos', 'exapostilarion_rubric', 'exapostilarion', 'exapostilarion_closer',
+              'praises_rubric', 'praises', 'praises_glory', 'praises_closer',
+              'great_doxology_rubric', 'troparion', 'doxology_closer_rubric',
+              'closing_rubric'],
+      // God-is-the-Lord CITES the troparion without printing it — “the
+      // Troparion of the Feast (Twice).” — first reference-only appointment;
+      // its closer likewise: “Glory ..., Both now ..., the Theotokion.”
+      god_is_lord_rubric: jb1("On “God is the Lord ...,” the Troparion of the Feast (Twice).", 'p6 God is the Lord rubric'),
+      god_is_lord_closer_rubric: jb1("Glory ..., Both now ..., the Theotokion.", 'p6 God is the Lord closer rubric'),
+      sessional_1_rubric: jb1("After the 1st chanting of the Psalter, the Sessional Hymn, in Tone IV:", 'p6 sessional 1 rubric'),
+      // “Joseph marveled” — the melody family's third label form; “the
+      // off-spring of Zachariah” hyphenated.
+      sessional_1: jb2("Today the off-spring of Zachariah hath sprouted forth, * bringing joy to the faithful, * the adornment of the desert and foundation of the prophets, * wherefore he hath been manifest as the Forerunner of Christ * a true witness of His coming; * let us therefore with one voice cry aloud * unto the Baptist in spiritual hymns: ** O prophet and proclaimer of the Truth, beseech Him that we be saved.", "p6 Sessional 1", { spec_mel: "Joseph marveled ...", tone: 4, repeat: 2 }),
+      sessional_1_closer: jb1("We hymn thee, O Bride of God, Mother of Christ God, glorifying thine unapproachable Offspring, by Whom we have been delivered from the deceit of the devil and from all misfortune, O Sovereign Lady Theotokos; and we faithfully cry out: Have mercy on thy flock, O thou who alone art all-hymned!", "p6 Sessional 1 Theotokion", { sourceLabel: "Glory ..., Both now ..., Theotokion, in Tone IV", tone: 4, type: "theotokion" }),
+      sessional_2_rubric: jb1("After the 2nd chanting of the Psalter, the Sessional Hymn, in Tone II:", 'p6 sessional 2 rubric'),
+      // Addressed to CHRIST, not the saint — the first Christological
+      // kathisma sessional (“As Thou art merciful”, a new melody).
+      sessional_2: jb2("O Good One, through Thy compassionate mercy * thou hast descended from on high to save Thy creation, * in Thy descent bowing down the heavens, * wherefore hymning Thine awesome dispensation, * we cry aloud to Thee, * By the intercessions of Thy Forerunner O Christ, * grant us cleansing of our sins, ** as Thou alone art tenderly compassionate.", "p6 Sessional 2", { spec_mel: "As Thou art merciful ...", tone: 2, repeat: 2 }),
+      sessional_2_closer: jb2("O Theotokos, * thou art a fervent defender of Orthodox Christians, * ever entreat Thy Son, * that we be rescued from every affliction * and evil deed of the persecutor, * and that by thy prayers He grant us the remission of our sins * for the sake of His abundant and rich mercies, ** O Mother and Virgin.", "p6 Sessional 2 Theotokion", { sourceLabel: "Glory ..., Both now ..., Theotokion, in Tone II", tone: 2, type: "theotokion" }),
+      // ── FIVE FEAST-KEYED MEGALYNARIA under a NEW rubric (“After Praise ye
+      // the name of the Lord” — not “After the Polyeleos”), with per-feast
+      // verses; the Conception entry is a REFERENCE: “The same as above”.
+      megalynarion_rubric: jb1("After Praise ye the name of the Lord, the following Megalynarions:", 'p6 megalynaria rubric'),
+      megalynarion_nativity: jb2("We magnify thee, * John the Forerunner of the Savior, * and honor thy most glorious birth * from the barren one.", "p6 Nativity Megalynarion", { sourceLabel: "For the Nativity of the Forerunner", label_inline: true }),
+      megalynarion_nativity_verse: jb1("Blessed is the Lord God of Israel, from everlasting to everlasting.", "p6 Nativity verse", { sourceLabel: "Verse", label: "refrain" }),
+      // “The same as above” — a same-as-above reference printed as the whole
+      // Conception entry: stored verbatim (the incipit device's blunter
+      // sibling).
+      megalynarion_conception: jb1("The same as above", 'p6 Conception Megalynarion reference', { sourceLabel: 'For the Conception', label_inline: true }),
+      megalynarion_beheading: jb2("We magnify thee, * John the Forerunner of the Savior, * and all honor the beheading of thy venerable head.", "p6 Beheading Megalynarion", { sourceLabel: "For the Beheading", label_inline: true }),
+      // The Beheading, Findings and Synaxis verses all end with a COLON where
+      // the stop belongs (sic register, one row for the class).
+      megalynarion_beheading_verse: jb1("O Lord God of hosts, blessed is the man that hopeth in Thee:", "p7 Beheading verse", { sourceLabel: "Verse", label: "refrain" }),
+      megalynarion_findings: jb2("We magnify thee, * John the Forerunner of the Savior, * and all honor the finding of thy venerable head.", "p7 Findings Megalynarion", { sourceLabel: "For the Findings", label_inline: true }),
+      megalynarion_findings_verse: jb1("Blessed is the man that feareth the Lord; in His commandments shall he greatly delight:", "p7 Findings verse", { sourceLabel: "Verse", label: "refrain" }),
+      megalynarion_synaxis: jb2("We magnify thee, * John the Forerunner of the Savior, * and all honor thine all-venerable synaxis.", "p7 Synaxis Megalynarion", { sourceLabel: "For the Synaxis", label_inline: true }),
+      megalynarion_synaxis_verse: jb1("Blessed is the man that feareth the Lord; in His commandments shall he greatly delight:", "p7 Synaxis verse", { sourceLabel: "Verse", label: "refrain" }),
+      sessional_polyeleos_rubric: jb1("After the Polyeleos, the Sessional Hymn, in Tone V:", 'p7 Polyeleos sessional rubric'),
+      sessional_polyeleos: jb2("Let us loudly praise in hymns * him who from the womb hath been revealed to be a Prophet of God * and a lamp unto the world, * who came forth from a barren mother, * the Baptist of Christ and the victorious sufferer and Forerunner John, * for he doth ever entreat God ** that our souls be saved.", "p7 Polyeleos sessional", { spec_mel: "The co-beginningless Word ...", tone: 5, repeat: 2 }),
+      sessional_polyeleos_closer: jb2("The Bride who knew not wedlock, the Birthgiver of God, * who turned Eve’s grief to joy, * do we the faithful hymn and worship, * for thou hast redeemed us from the ancient curse. * And now, O All-hymned Most holy one, ** cease not to make intercession for the salvation of our souls.", "p7 Polyeleos sessional Theotokion", { sourceLabel: "Glory ..., Both now ..., Theotokion, in Tone V", tone: 5, type: "theotokion" }),
+      // The SECOND negative conditional (E-4): “If not a Resurrection
+      // Service, chant the following:” — the shortest anabathmoi rubric.
+      anabathmoi_rubric: jb1("If not a Resurrection Service, chant the following:", 'p7 anabathmoi rubric'),
+      anabathmoi_intro: jb1("The Song of Ascents: The first antiphon, in Tone IV:", 'p7 anabathmoi heading'),
+      anabathmoi: [
+        jb2("From my youth * do many passions war against me; * but do Thou Thyself defend ** and save me, O my Savior.", "p7 anabathmoi 1", { label: "plain" }),
+        jb2("Ye haters of Zion * shall be shamed by the Lord; * for like grass, by the fire ** shall ye be withered.", "p7 anabathmoi 2", { label: "plain" }),
+      ],
+      anabathmoi_closer: jb2("In the Holy Spirit, * every soul is quickened, * and, through cleansing, is exalted ** and made radiant by the Triple Unity in a hidden sacred manner.", "p7 anabathmoi Glory Both now", { sourceLabel: "Glory ..., Both now ...,", label: ["glory", "both_now"] }),
+      prokeimenon_rubric: jb1("The Prokeimenon, in Tone IV:", 'p7 prokeimenon rubric'),
+      // The aposticha verse as prokeimenon MINUS its “a” (“called Prophet”
+      // for “called a Prophet”) — register: variant.
+      prokeimenon: jb2("And thou, O child, * shalt be called Prophet of the Most High.", "p7 Prokeimenon", { sourceLabel: "The Prokeimenon", tone: 4, label_inline: true }),
+      prokeimenon_verse: jb1("Blessed is the Lord God of Israel, from everlasting to everlasting.", "p7 Prokeimenon verse", { sourceLabel: "Verse", label: "refrain" }),
+      gospel_rubric: jb1("Let every breath ...,", 'p7 Let every breath'),
+      // "SAINT MATTHEW: (11, 2-15. )" — SAINT spelled out (first), the colon
+      // class, AND a stray ". )" (the Unmercenaries-class dangler). The body
+      // prints "our do we look for another?" — the our-for-or defect at its
+      // SIXTH file — and "kings” houses" (the right-quote class on another
+      // new word). The Liturgy reprints this same pericope corrected.
+      gospel: { heading: 'THE GOSPEL ACCORDING TO SAINT MATTHEW:',
+        src: { file: JB, locus: 'p8 Matins Gospel' },
+        citation_verbatim: '(11, 2-15. )',
+        citation: { book: 'Matthew', chapter: 11, verses: '2-15' },
+        citation_basis: 'printed' },
+      psalm50_rubric: jb1("After the 50th Psalm:", 'p8 After the 50th Psalm'),
+      psalm50_sticheron: jb2("Through the prayers of the Forerunner and Baptist John, * O Merciful One, ** blot out the multitude of our transgressions.", "p8 Psalm 50 Glory", { sourceLabel: "Glory ..., in Tone VI", tone: 6, label: "glory" }),
+      psalm50_closer: jb2("Through the prayers of the Theotokos, * O Merciful One, ** blot out the multitude of our transgressions.", "p8 Psalm 50 Both now", { sourceLabel: "Both now ...,", type: "theotokion", label: "both_now" }),
+      psalm50_verse: jb2("Have mercy on me, O God, * according to Thy great mercy; * and according to the multitude of Thy compassions, ** blot out my transgressions.", "p8 Psalm 50 verse", { label: "refrain" }),
+      // “Sessional Hymn, in Tone I:” — no “Then the”, the shortest post-50
+      // rubric.
+      sessional_post50_rubric: jb1("Sessional Hymn, in Tone I:", 'p8 post-Psalm-50 sessional rubric'),
+      sessional_post50: jb2("O John the Prophet and Forerunner, * thou art the Proclaimer of the Word, the Lamb of God, * thou who beforehand foretold the future * and declared it unto the nations saying: * “Behold, the Lamb of God that taketh away the sins of the world ** and granteth unto all peace and great mercy.”", "p8 post-Psalm-50 Sessional", { tone: 1 }),
+      // A TWO-CANON APPOINTMENT — “The Canon of the Theotokos (The
+      // Paraklisis) in 6, and that of the Forerunner in 8.” — first canon-
+      // count rubric; only the Forerunner's canon is printed.
+      canon_appointment_rubric: jb1("The Canon of the Theotokos (The Paraklisis) in 6, and that of the Forerunner in 8.", 'p8 canon appointment rubric'),
+      canon_rubric: jb1("The Canon, in Tone IV:", 'p8 Canon rubric'),
+      canons: [{
+        title: "The Canon, in Tone IV:", tone: 4,
+        odes: {
+          1: {
+            irmos: jb2("O Thou who wast born of the Virgin, * drown I implore Thee, in the depth of dispassion * the triune nature of my soul, * as Thou didst the mighty strongholds of the warriors, * that in the mortality of my flesh * as on a timbrel * I may chant unto Thee, a hymn of victory.", "p9 Ode 1 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            // The first refrain WITH a full stop — and the longest.
+            refrain: jb1("Holy great Prophet, Forerunner and Baptizer of the Lord, John, pray to God for us.", "p9 Ode 1 refrain", { sourceLabel: "Refrain", label_inline: true }),
+            items: [
+              jb1("As a great star of the living Sun, O Forerunner thou hast illumined the earth with thy radiance; wherefore I cry unto thee; enlighten also my heart O Baptist, blinded with the dark gloom of my numberless transgressions.", "p9 Ode 1 troparion 1", { label: "plain" }),
+              jb1("O blessed one, as once thou loosed by thy birth the bonds of barrenness; I now beseech thee; by thine intercessions, make my soul, made desolate through the fruitlessness of passions, appear fruitful, and bring forth the offspring of the virtues.", "p9 Ode 1 troparion 2", { label: "plain" }),
+              jb1("O ever-glorious Baptist, thou who hast prepared the way for the Redeemer, going before Him in the power of Elijah; do thou also lead Him to behold the state of my soul, that by thine intercessions I may be delivered from every temptation and the flame of passions.", "p9 Ode 1 troparion 3", { label: "plain" }),
+              jb1("O cloud of light, dispel through thy bright mediations, the multitude of benighting clouds that cover my soul, that I may see the dawn of Him Who shone forth from thee, and that I may through light receive the never-setting Light.", "p9 Ode 1 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          3: {
+            irmos: jb2("The bow of the mighty hath been rendered impotent * and the infirm are now girded with strength; * wherefore my heart is established in the Lord.", "p9 Ode 3 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              jb1("Thou hast manifested every virtue, and every evil deed hast thou fervently loathed, revealing to mankind the blessed path of penitence, O blessed one.", "p9 Ode 3 troparion 1", { label: "plain" }),
+              jb1("Thou didst appear unto all as the great Forerunner of the incarnate Word; wherefore I beseech thee to free me from the irrational influence of passions, and lead me to dispassion.", "p9 Ode 3 troparion 2", { label: "plain" }),
+              jb1("While still living in the flesh, O Forerunner, thou didst manifestly live the life of the bodiless ones, and now that thou, with them, approachest the Divinity, O god-bearing one, strengthen us by thine intercessions.", "p9 Ode 3 troparion 3", { label: "plain" }),
+              jb1("Through transgression the world became of no value, but was granted mercy because of thee, O Mother and Virgin; wherefore it blesses thee in songs and hymns as is meet.", "p9 Ode 3 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          4: {
+            irmos: jb2("For the sake of love for Thine image, * O compassionate One, * Thou didst ascend the cross * and the nations melted away. * For Thou, O Lover of mankind, * art my strength and my praise.", "p10 Ode 4 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              jb1("Like a dove that foretelleth the coming of spring, thou hast truly announced the coming of Christ, wherefore we bless thee, O ever-glorious Forerunner.", "p10 Ode 4 troparion 1", { label: "plain" }),
+              jb1("Being utterly devastated by the temptations of the deceitful one, do thou as the mediator of the old and the new covenant, wholly renew me who doth hymn thee, O Forerunner.", "p10 Ode 4 troparion 2", { label: "plain" }),
+              jb1("O Thou who didst depart into the wilderness to lead a life of irreproachable virtue, O Forerunner, by thy divine intercessions call back my mind, made desolate with many and varied transgressions.", "p10 Ode 4 troparion 3", { label: "plain" }),
+              jb1("Thy Son, O Virgin hath granted us to know remission and redemption; Him do thou entreat that the souls of those who with love praise thee, be saved.", "p10 Ode 4 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          5: {
+            irmos: jb2("Do Thou O Lord send down upon us * Thine enlightenment, and free us * from the gloom of transgression, O Good One, * granting us Thy peace.", "p10 Ode 5 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              jb1("O child of the wilderness, bedew me who am assaulted in the spiritual wilderness and inflamed with the burning coals of the passions, and by thine intercessions preserve me from the effects of their flames.", "p10 Ode 5 troparion 1", { label: "plain" }),
+              jb1("O all-blessed one, under thy holy right hand, the Father’s divine Son was baptized, He who by thy holy intercessions hath saved us from the hand of the deceiver.", "p10 Ode 5 troparion 2", { label: "plain" }),
+              jb1("O Forerunner, the whole world possesseth in thee a refuge, a mighty shelter, and a great wall; do thou by thine intercessions deliver us from every oppression.", "p10 Ode 5 troparion 3", { label: "plain" }),
+              jb1("In thee O Virgin Maiden, hath God beheld and loved the good qualities of Jacob, and through thee, hath adorned all who were darkened by original sin.", "p10 Ode 5 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          6: {
+            irmos: jb2("I have reached the depths of the sea * and the tempest of my many sins hath engulfed me; * but do Thou raise up my life from the abyss * O Greatly-merciful One.", "p10-p11 Ode 6 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              jb1("In the rapids thou didst stand baptizing the Lord, Who taketh away the sins of all mankind; cease not therefore, O Forerunner, to entreat Him to have mercy on our souls.", "p10-p11 Ode 6 troparion 1", { label: "plain" }),
+              jb1("Thou wast revealed as a preacher of repentance O Forerunner; do thou heal my heart, polluted with pernicious sins.", "p10-p11 Ode 6 troparion 2", { label: "plain" }),
+              jb1("O all-blessed one, thou hast proclaimed unto those in the impassable wilderness the Word Who came down to thee from above; wherefore every Church with never-silent voices blesses thee.", "p10-p11 Ode 6 troparion 3", { label: "plain" }),
+              jb1("The mysteries of the law were explained by thine awesome birth-giving, O Bride of God, and contemplating their fulfillment we honor thee, O Lady, as is meet.", "p10-p11 Ode 6 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          7: {
+            irmos: jb2("In the Persian furnace the youths and descendants of Abraham, * burning with a love of piety * rather than by a flame of fire, * cried aloud saying: * Blessed art Thou in the temple of Thy glory, O Lord.", "p12 Ode 7 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              jb1("Thou wast manifest as one greater than all those born of men, O prophet; by thy lofty intercessions, deliver me who hath sinned greatly against God, from the flames of Gehenna, and eternal darkness.", "p12 Ode 7 troparion 1", { label: "plain" }),
+              jb1("Like the barren fig-tree I am in fear of being cut down; By thine intercessions, O Forerunner of the Savior, establish me and make me fruitful, that I may bless thee.", "p12 Ode 7 troparion 2", { label: "plain" }),
+              jb1("O Forerunner John, by thy watchful supplications unto the Redeemer of all subdue every tempest of the adversary, raised against those who in faith have recourse to thee.", "p12 Ode 7 troparion 3", { label: "plain" }),
+              jb1("O Virgin, do thou deliver thy servants, who ever glorify thee with their minds and tongues, from all attacks of the deceiver, from wickedness, and from enslavement to the noetic enemies.", "p12 Ode 7 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          8: {
+            // Ode VIII prints FOUR troparia (the only four-troparion ode
+            // in the corpus) under a double-struck heading (OODDEE
+            // VVIIIIII — an extraction artifact of bold type, second
+            // file).
+            irmos: jb2("O almighty Redeemer of all, * having descended and bedewed the children * in the midst of the flame, * Thou didst teach them to sing: * All ye works bless and hymn the Lord.", "p12-p13 Ode 8 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              jb1("Held captive by the slumber of despair and darkened by the mist of malice, O Forerunner, renew me by thy radiant intercessions, and grant that I may walk worthily in the daylight of the virtues.", "p12-p13 Ode 8 troparion 1", { label: "plain" }),
+              jb1("The winter of temptations holdeth me fast, and the storm of passions doth trouble me, but O Forerunner, reach hither with thy hand, and by thine intercessions lead the vessel of my soul into the safe haven of penitence.", "p12-p13 Ode 8 troparion 2", { label: "plain" }),
+              jb1("Thou who hast baptized in the waters of the Jordan, Christ Who taketh away the sins of the world; do thou by the streams of thine intercessions make dry, O blessed John the Forerunner, the abyss of my evil deeds.", "p12-p13 Ode 8 troparion 3", { label: "plain" }),
+              jb1("Having beheld the Holy Spirit, thou didst hear the voice of the Begetter testifying of Jesus Whom thou wast ineffably baptizing, O Forerunner; Him do thou entreat that our souls be saved.", "p12-p13 Ode 8 troparion 4", { label: "plain" }),
+              jb1("O Theotokos and all-immaculate Virgin, the Source of our atonement, do thou entirely renew me who hath been weakened by the attacks of the evil one, that with faith and love I may bless thee.", "p12-p13 Ode 8 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          9: {
+            irmos: jb2("Eve dwelt under the curse of sin * because of the infirmity of disobedience; * but thou, O Virgin Theotokos, * hast through the Offspring of thy pregnancy * blossomed forth blessing upon the world. * Wherefore, we all magnify thee.", "p13 Ode 9 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              jb1("My strength and my song is Christ the Lord; do thou, O blessed Forerunner, entreat Him to strengthen me against the passions and all attacks of the noetic adversaries, and grant me to fulfill the divine will, that with love I may ever bless thee.", "p13 Ode 9 troparion 1", { label: "plain" }),
+              jb1("O divine Forerunner, thou hast appeared as a beautiful turtle-dove, and a sweetly-spoken swallow, announcing Christ the divine Spring; I beseech thee to entreat Him to deliver me from the soul-destroying wintry tempest of sin.", "p13 Ode 9 troparion 2", { label: "plain" }),
+              jb1("Having leaped for joy in thy mother’s womb, thou hast announced Him Who shone forth from the Virgin; entreat Him to vanquish the destructive passions of my flesh, and to fill my heart with joy, that I may ever hymn thee, O divine Forerunner.", "p13 Ode 9 troparion 3", { label: "plain" }),
+              jb1("O tender-loving Theotokos, thou who hast given birth to the tender-loving God, entreat Him to deliver me from every evil and incline my heart to turn away from the pleasures of the flesh, that I may magnify thee with hymns as is meet.", "p13 Ode 9 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+        },
+      }],
+      sessional_ode3_rubric: jb1("The Sessional Hymn, in Tone I:", 'p9 post-Ode-III sessional rubric'),
+      // A (Twice) on the post-Ode-III sessional — first in the corpus.
+      sessional_ode3: jb2("Thou didst dwell in the wilderness, * O Forerunner of Christ, * as did Elijah; * wherefore, O most blessed one, ** make firm my heart.", "p9 post-Ode-III Sessional", { tone: 1, repeat: 2 }),
+      sessional_ode3_closer: jb2("David proclaimed thee to be the Queen and pure Virgin, * O most pure one; * wherefore I entreat thee; * make me an heir of the heavenly Kingdom, ** that I also may bless thee.", "p10 post-Ode-III Theotokion", { sourceLabel: "Glory ..., Both now ..., Theotokion, in Tone I", tone: 1, type: "theotokion" }),
+
+      // ── THE KONTAKIA — six, feast-keyed, printed after Ode VI; the Liturgy
+      // reprints them under longer labels and adds a GENERIC FALLBACK.
+      kontakia_heading: jb1("THE KONTAKIA:", 'p11 THE KONTAKIA heading'),
+      kontakion_beheading: jb2("The beheading of the glorious Forerunner * was a divine dispensation * that the coming of the Savior might be preached to those in hell. * Lament then, Herodias, * that thou didst demand a murder * despising the law of God and eternal life.", "p11 Beheading Kontakion", { sourceLabel: "The Beheading of St John the Baptist, in Tone V", tone: 5 }),
+      kontakion_conception: jb2("Great Zacharias radiantly rejoices * together with Elizabeth: * she worthily conceived John the Forerunner whom the Angel announced with great gladness * and whom we honor as an initiate of grace.", "p11 Conception Kontakion", { sourceLabel: "The Conception of St John the Baptist, in Tone I", tone: 1 }),
+      kontakion_synaxis: jb2("Jordan turned back in fear at the sight of Thy bodily presence. * And having fulfilled his prophetic ministry, John drew back trembling. * The Angelic orders were amazed * to see Thee in the flesh baptized in the waters. * And all in darkness were illumined and praised Thee * Who had appeared and enlightened all creation.", "p11 Synaxis Kontakion", { sourceLabel: "The Synaxis of St John the Baptist, in Tone VI", tone: 6 }),
+      kontakion_birth: jb2("The formerly barren one today gives birth to the Forerunner of Christ * Who is the fulfillment of prophecy. * For the Prophet, Herald and Forerunner of the Word * submitted to Him Whom the Prophets foretold * by laying his hand on Him in the Jordan.", "p11 Birth Kontakion", { sourceLabel: "The Birth of St John the Baptist, in Tone III", tone: 3 }),
+      // The Matins label prints “Baptist,in Tone II” — no space after the
+      // comma (sic register).
+      kontakion_findings12: jb2("O Prophet of God and Forerunner of Grace, * having obtained thy head from the earth as a most sacred rose, * we ever receive healings; * for still as of old in the world * thou preachest repentance.", "p11 1st-2nd Finding Kontakion", { sourceLabel: "1st & 2nd Finding of the Glorious head of St. John the Baptist,in Tone II", tone: 2 }),
+      kontakion_finding3: jb2("The shining pillar on earth, the Forerunner, lamp of the spiritual Sun, * has revealed his radiant, holy head to the world. * He sanctifies those who venerate it and who faithfully cry: * O wise Baptist of Christ, save us all.", "p11 3rd Finding Kontakion", { sourceLabel: "3rd Finding of the Glorious head of St. John the Baptist, in Tone VI", tone: 6 }),
+      // A SECOND CHAIRETISMOS IKOS (thirteen Rejoice-salutations) — opening
+      // “Beginning an ODE unto thee” with ODE in capitals (sic register).
+      ikos: jb1("Beginning an ODE unto thee, O God-hymned blessed John, I am full of joy and yet also full of dread, for I fear that I shall not find words, O Forerunner to worthily praise thee, but do thou thyself strengthen me and grant that I may worthily speak of thee saying: Rejoice, thou by whom gladness came; Rejoice, thou by whom the curse was destroyed; Rejoice, teacher of the ends of the world; Rejoice, proclaimer of Christ’s wonders; Rejoice, height of conscience that reacheth unto the heavens; Rejoice, breadth of purity that cleanseth all the earth; Rejoice, since thou hast seen the Holy Trinity; Rejoice, thou who despised the deceit of fallen nature; Rejoice, star that revealeth the Sun; Rejoice, luminary that illuminates all that are under the heavens; Rejoice, thou by whom Christ hath been proclaimed; Rejoice, thou by whom Satan was rejected; Rejoice, O proclaimer of grace.", "p12 Ikos", { sourceLabel: "Ikos", label_inline: true }),
+      // THE FILE'S ONE PLACEHOLDER — “(name of the event.)”, period INSIDE
+      // the parens: the FEAST is the variable. Also “thou has shone forth”
+      // (has for hast, sic register).
+      exapostilarion_rubric: jb1("Exapostilarion, in Tone III:", 'p13 exapostilarion rubric'),
+      exapostilarion: jb2("O blessed Forerunner, like the morning star * before the Sun of Glory * thou has shone forth in a god-pleasing manner * from the aged and barren one and an elderly priest, * announcing the Lord’s birth from the Virgin * for the redemption of mankind; * wherefore O Baptist with love we hymn and adore, * thy most honored (name of the event.)", "p13 Exapostilarion", { tone: 3 }),
+      // = Prophet's sessional-2 Theotokion byte-for-byte — second site,
+      // different slot (register).
+      exapostilarion_closer: jb2("The prophets preached, the apostles taught, * the martyrs confessed, and we believe, * that thou art truly the Theotokos; ** wherefore, we glorify thine ineffable birthgiving.", "p13 Exapostilarion Theotokion", { sourceLabel: "Glory ..., Both now ..., Theotokion, in Tone III", tone: 3, type: "theotokion" }),
+      praises_rubric: jb1("On the Praises, these Stichera, in Tone IV:", 'p14 Praises rubric'),
+      praises: [
+        jb2("Possessing boldness before God * and being the greatest of all men, * O Forerunner, ever entreat Him * on behalf of those who with faith call upon thee, * to grant us our petition for repentance ** that being saved we may ever hymn thee.", "p14 Praises 1", { label: "plain", tone: 4, repeat: 2 }),
+        jb2("O Forerunner, thou wast called a Prophet from thy mother’s womb, * a preacher and Apostle from the bosom; * whereas I am given over to the demons * and am a slave to sin, * do thou as a powerful warrior, * deliver me from both, ** that I may proclaim thy speedy intercession.", "p14 Praises 2", { label: "plain" }),
+        jb2("Like a fan of the Divine Spirit, * blow away the chaff of passionate inclinations from my heart, * and like wheat gathered into the granary of God * gather the harvest of divine works from me * that I may become acceptable unto the Lord, O blessed one, ** enriched by thine intercession, O Baptist of Christ.", "p14 Praises 3", { label: "plain" }),
+      ],
+      praises_glory: jb2("Unto John the Baptist it is befitting * to offer the sweet fragrance of incense and beautiful hymns, * for when he leapt in his mother’s womb * he announced the commencement of our salvation, * and crying in the wilderness “Repent ye for the Kingdom of Heaven is at hand” * he was revealed to be the Sovereign’s warrior, * the Forerunner of grace who hath declared the Lamb ** and entreateth the Savior on behalf of our souls.", "p14 Praises Glory", { sourceLabel: "Glory ..., in Tone VIII", tone: 8, label: "glory" }),
+      // The O-Sovereign-lady family at a FIFTH file — but REWRITTEN: capital
+      // “Lady”, capital “Accept” mid-clause, and the pointing moved (“* and
+      // deliver us ** from all want”) — register: variant.
+      praises_closer: jb2("O Sovereign Lady, Accept the supplications of thy servants, * and deliver us ** from all want and grief.", "p14 Praises Both now", { sourceLabel: "Both now ..., Theotokion in Tone VIII", tone: 8, type: "theotokion", label: ["both_now", "theotokion"] }),
+      // The THIRD negative conditional (E-4) — with a “(from above)” CROSS-
+      // REFERENCE to the Vespers troparia set, and “or else:” introducing the
+      // General Troparion reprint (a canonical site).
+      great_doxology_rubric: jb1("The Great Doxology, after which, if not a Resurrection service, we sing The Troparion for the feast (from above) or else:", 'p14 great Doxology rubric'),
+      doxology_closer_rubric: jb1("Glory ..., Both now ..., Theotokion.", 'p14 Doxology closer rubric'),
+      closing_rubric: jb1("The Dismissal:", 'p14 Dismissal'),
+    },
+
+    liturgy: {
+      order: ['beatitudes_rubric', 'beatitudes',
+              'troparia_heading', 'troparion',
+              'troparion_conception', 'troparion_synaxis_incipit',
+              'troparion_birth', 'troparion_findings12', 'troparion_finding3',
+              'kontakia_heading',
+              'kontakion_beheading', 'kontakion_conception', 'kontakion_synaxis',
+              'kontakion_birth', 'kontakion_findings12', 'kontakion_finding3',
+              'kontakion_fallback_rubric', 'kontakion_fallback',
+              'prokeimenon', 'prokeimenon_verse', 'epistle',
+              'alleluia', 'alleluia_verse', 'gospel', 'communion_verse'],
+      beatitudes_rubric: jb1("Typika and Beatitudes.", 'p15 Typika and Beatitudes'),
+      // THREE REWRITTEN BEATITUDES — the most in any file: number 1 prints
+      // “O most blessed one” for the canon's “O blessed one”; number 6 “O
+      // most blessed one … the Word that came down” for “O all-blessed one …
+      // the Word Who came down”; and the THEOTOKION row “O Sovereign-Lady as
+      // is meet” for “O Lady, as is meet” — the first rewritten Beatitude
+      // THEOTOKION. Corpus rewrites: eight variant rows across five files.
+      beatitudes: [
+        jb1("Thou hast manifested every virtue, and every evil deed hast thou fervently loathed, revealing to mankind the blessed path of penitence, O most blessed one.", "p15 Beatitude 1", { label: "plain", repeat: 2 }),
+        jb1("Thou didst appear unto all as the great Forerunner of the incarnate Word; wherefore I beseech thee to free me from the irrational influence of passions, and lead me to dispassion.", "p15 Beatitude 2", { label: "plain" }),
+        jb1("While still living in the flesh, O Forerunner, thou didst manifestly live the life of the bodiless ones, and now that thou, with them, approachest the Divinity, O god-bearing one, strengthen us by thine intercessions.", "p15 Beatitude 3", { label: "plain" }),
+        jb1("In the rapids thou didst stand baptizing the Lord, Who taketh away the sins of all mankind; cease not therefore, O Forerunner, to entreat Him to have mercy on our souls.", "p15 Beatitude 4", { label: "plain" }),
+        jb1("Thou wast revealed as a preacher of repentance O Forerunner; do thou heal my heart, polluted with pernicious sins.", "p15 Beatitude 5", { label: "plain" }),
+        jb1("O most blessed one, thou hast proclaimed unto those in the impassable wilderness the Word that came down to thee from above; wherefore every Church with never-silent voices blesses thee.", "p15 Beatitude 6", { label: "plain" }),
+        jb1("The mysteries of the law were explained by thine awesome birth-giving, O Bride of God, and contemplating their fulfillment we honor thee, O Sovereign-Lady as is meet.", "p15 Beatitude 7", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+      ],
+
+      troparia_heading: jb1("TROPARIA:", 'p15 TROPARIA heading'),
+      // The Liturgy set reprints the troparia WITHOUT their theotokia; the
+      // General is a canonical site (entry-level); the Synaxis is an INCIPIT.
+      troparion_conception: jb2("Sing, O barren one that didst not bear, * for thou hast conceived the lamp of the Sun * Who is to enlighten the whole world suffering from blindness. * O Zacharias rejoice and shout: * “The Prophet of the Most High is to be born.”", "p15 Conception Troparion", { sourceLabel: "Troparion of the Conception of the Forerunner in Tone IV", tone: 4 }),
+      troparion_synaxis_incipit: { text: "The memory of the just is celebrated ...,", tier: 1, src: { file: JB, locus: 'p15 Synaxis Troparion incipit' }, sourceLabel: 'Troparion of the Synaxis of the Forerunner: in Tone II', tone: 2, incipit_ref: 'general.StJohnBaptist.troparion' },
+      troparion_birth: jb2("O Prophet and Forerunner of the coming of Christ, * we honor thee lovingly but cannot extol thee worthily; * for by thy birth * thy mother’s barrenness and thy Father’s dumbness were unfettered; * and the Incarnation of the Son of God is proclaimed to the world.", "p16 Birth Troparion", { sourceLabel: "Troparion for the Birth of the Forerunner: in Tone IV", tone: 4 }),
+      troparion_findings12: jb2("The head of the Forerunner has risen from the earth * and sends forth healing rays of incorruption to all the faithful. * In heaven it is mustering a host of Angels, * and on earth it is assembling mankind * to ascribe glory to our God.", "p16 1st-2nd Finding Troparion", { sourceLabel: "Troparion for the 1st & 2nd Finding: in Tone IV", tone: 4 }),
+      troparion_finding3: jb2("Christ has revealed thy head to us, O Prophet and Forerunner * as a divine treasure hidden in the earth. * We come with hymns to honor its discovery, * and praise the Savior Who saves us from corruption, * through Thine intercessions.", "p16 3rd Finding Troparion", { sourceLabel: "Troparion for the 3rd Finding: in Tone IV", tone: 4 }),
+
+      kontakia_heading: jb1("KONTAKIA:", 'p16 KONTAKIA heading'),
+      // The Liturgy labels grow a “The Kontakion for …” prefix the Matins set
+      // lacks; the 1st-2nd Finding label breaks across lines with a SPACE
+      // BEFORE ITS COMMA (“St. John the Baptist , in Tone II” — sic).
+      kontakion_beheading: jb2("The beheading of the glorious Forerunner * was a divine dispensation * that the coming of the Savior might be preached to those in hell. * Lament then, Herodias, * that thou didst demand a murder * despising the law of God and eternal life.", "p16 Beheading Kontakion", { sourceLabel: "The Kontakion for the Beheading of St John the Baptist, in Tone V", tone: 5 }),
+      kontakion_conception: jb2("Great Zacharias radiantly rejoices * together with Elizabeth: * she worthily conceived John the Forerunner whom the Angel announced with great gladness * and whom we honor as an initiate of grace.", "p16 Conception Kontakion", { sourceLabel: "The Kontakion for the Conception of St John the Baptist, in Tone I", tone: 1 }),
+      kontakion_synaxis: jb2("Jordan turned back in fear at the sight of Thy bodily presence. * And having fulfilled his prophetic ministry, John drew back trembling. * The Angelic orders were amazed * to see Thee in the flesh baptized in the waters. * And all in darkness were illumined and praised Thee * Who had appeared and enlightened all creation.", "p16 Synaxis Kontakion", { sourceLabel: "The Kontakion for the Synaxis of St John the Baptist, in Tone VI", tone: 6 }),
+      kontakion_birth: jb2("The formerly barren one today gives birth to the Forerunner of Christ * Who is the fulfillment of prophecy. * For the Prophet, Herald and Forerunner of the Word * submitted to Him Whom the Prophets foretold * by laying his hand on Him in the Jordan.", "p16 Birth Kontakion", { sourceLabel: "The Kontakion for the Birth of St John the Baptist, in Tone III", tone: 3 }),
+      kontakion_findings12: jb2("O Prophet of God and Forerunner of Grace, * having obtained thy head from the earth as a most sacred rose, * we ever receive healings; * for still as of old in the world * thou preachest repentance.", "p16-p17 1st-2nd Finding Kontakion", { sourceLabel: "Kontakion for the 1st & 2nd Finding of the Glorious head of St. John the Baptist , in Tone II", tone: 2 }),
+      kontakion_finding3: jb2("The shining pillar on earth, the Forerunner, lamp of the spiritual Sun, * has revealed his radiant, holy head to the world. * He sanctifies those who venerate it and who faithfully cry: * O wise Baptist of Christ, save us all.", "p17 3rd Finding Kontakion", { sourceLabel: "The Kontakion for 3rd Finding of the Glorious head of St. John the Baptist, in Tone VI", tone: 6 }),
+      // A SEVENTH, GENERIC FALLBACK KONTAKION — “But if there be no
+      // Kontakion, sing the following:” — with “greater of all the saints”
+      // (for “than”) and “since thou hath boldness” (the hath-class) on the
+      // page, and a chairetismos ending echoing the Ikos's final salutation.
+      kontakion_fallback_rubric: jb1("But if there be no Kontakion, sing the following:", 'p17 fallback rubric'),
+      kontakion_fallback: jb2("I the unworthy one, sin more than all mankind * nevertheless I bring unto thee a hymn, * O John the Forerunner who art truly greater of all the saints, * and since thou hath boldness before the Lord, * I implore thee to free me from all misfortunes that can be, * that I may sing unto thee: * Rejoice thou the proclaimer of grace.", "p17 Fallback Kontakion", { sourceLabel: "Kontakion, in Tone VIII", tone: 8 }),
+      // “Prokeimenon in Tone I” — no comma after Prokeimenon; “a priest
+      // FOREVER … MELCHISEDECH” against Prophet's “for ever … Melchisedek”:
+      // one psalm, two renderings, two tones (register: variant).
+      prokeimenon: jb2("Thou art a priest forever, * after the order of Melchisedech.", "p17 Liturgy Prokeimenon", { sourceLabel: "Prokeimenon in Tone I", tone: 1, label_inline: true }),
+      prokeimenon_verse: jb1("The Lord said unto my Lord, Sit thou at my right hand, until I make thine enemies a footstool for thy feet.", "p17 Liturgy Prokeimenon verse", { sourceLabel: "Verse", label: "refrain" }),
+      // THE FIRST ACTS READING — and the body ENDS MID-SENTENCE on a comma
+      // ("… the promise which was made unto the fathers,"): the pericope's
+      // final clause never printed (body unstored per R-4; recorded here).
+      epistle: { heading: 'THE ACTS OF THE APOSTLES',
+        src: { file: JB, locus: 'p17 Epistle' },
+        citation_verbatim: '(13: 25-32)',
+        citation: { book: 'Acts', chapter: 13, verses: '25-32' },
+        citation_basis: 'printed',
+        provenance_note: 'The printed body breaks off mid-verse at "the promise which was made unto the fathers," — the rest of v.32 (and v.33, if intended) is not on the page.' },
+      // “Alleluia:” — NO TONE NAMED, alone in the corpus; the text is
+      // Prophet's Alleluia byte-for-byte (register).
+      alleluia: jb1("Moses and Aaron among His priests, and Samuel among them that call upon His name.", "p17 Alleluia", { sourceLabel: "Alleluia", label_inline: true }),
+      alleluia_verse: jb1("The Lord preserveth the souls of His saints, from the hand of the sinner shall He deliver them.", "p17 Alleluia verse", { sourceLabel: "Verse", label: "refrain" }),
+      // The SAME pericope as Matins (third file with the pattern) — and the
+      // Liturgy copy prints "or do we look" CORRECTLY where Matins has "our",
+      // drops Matins' "(he)" parens, and lowercases "A prophet": the corrected
+      // dressing of the same text.
+      gospel: { heading: 'THE GOSPEL ACCORDING TO ST. MATTHEW',
+        src: { file: JB, locus: 'p18 Liturgy Gospel' },
+        citation_verbatim: '(11:2-15)',
+        citation: { book: 'Matthew', chapter: 11, verses: '2-15' },
+        citation_basis: 'printed' },
+      // The semicolon/capital-He family form — fourth file of that form.
+      communion_verse: jb1("In everlasting remembrance shall the righteous be; He shall not be afraid of evil tidings.", "p18 Communion verse", { sourceLabel: "Communion Verse", label_inline: true }),
     },
   },
 };
