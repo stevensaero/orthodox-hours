@@ -58,6 +58,8 @@ const NM = 'NunMartyr.pdf';
 const [nm2, nm1] = mk(NM);
 const FO = 'Fools.pdf';
 const [fo2, fo1] = mk(FO);
+const PF = 'Prophet.pdf';
+const [pr2, pr1] = mk(PF);
 
 const GENERAL = {
   Monastic: {
@@ -7426,6 +7428,341 @@ const GENERAL = {
       // The COMMA/lowercase-he form of the In-everlasting verse — the
       // female-class form (fourth site).
       communion_verse: fo1("In everlasting remembrance shall the righteous be, he shall not be afraid of evil tidings.", "p15 Communion verse", { sourceLabel: "Communion Verse", label_inline: true }),
+    },
+  },
+  Prophet: {
+    title: pr1("THE GENERAL VIGIL SERVICE TO A PROPHET.", 'p1 title'),
+
+    // The short prophet troparion — four sites byte-identical: R-1 holds
+    // again after Fools' double refusal.
+    troparion: pr2("Celebrating the memory of Thy Prophet (name), O Lord, * through him we entreat Thee: ** Save Thou our souls!", "p4 Troparion", { sourceLabel: "Troparion of the Prophet, in Tone II", verified_sites: [{"locus": "p4 Vespers dismissal", "tone": 2}, {"locus": "p5 God is the Lord", "tone": 2, "repeat": 2}, {"locus": "p12 after Our Father", "tone": 2}, {"locus": "p13 AT LITURGY", "tone": 2}] }),
+    // Both sites print “for thou dist behold” — the defect is CANONICAL
+    // (sic register): didst missing its d at both kontakion sites.
+    kontakion: pr2("Thy pure heart, enlightened by the Spirit, * became the dwelling place of most splendid prophecy; * for thou dist behold things afar off * as though they were near. * Wherefore, we honor thee, ** O blessed and glorious Prophet (name).", "p9 Kontakion after Ode VI", { sourceLabel: "Kontakion of the prophet, in Tone IV", spec_mel: "Thou hast appeared today ...", tone: 4, verified_sites: [{"locus": "p9 after Ode VI", "tone": 4}, {"locus": "p13 AT LITURGY", "tone": 4}] }),
+    // Bare “Ikos:” (third file) — with “the grace of prophesy” (verb-spelled
+    // noun) and a capital Thou mid-sentence, both in the register.
+    ikos: pr1("Adorned with the grace of prophesy, comprehending things to come, O most noetically rich (name), Thou wast taught of the Spirit in a godly manner, foretelling the coming of Christ and the fruitful calling of the Gentiles; wherefore we celebrate thine honored memory and with love hymn thee, glorifying thee in faith and calling unto thee, O glorious one: unceasingly entreat Christ God on behalf of us all.", "p9 Ikos", { sourceLabel: "Ikos", label_inline: true }),
+
+    vespers: {
+      order: ['lic_rubric', 'lic', 'lic_closer', 'lic_stavrotheotokion',
+              'idiomelon_rubric', 'lic_glory', 'dogmatikon_rubric', 'dogmatikon',
+              'dogmatikon_alternate', 'dogmatikon_stavrotheotokion',
+              'entrance_rubric', 'readings', 'aposticha_rubric', 'aposticha',
+              'aposticha_glory', 'aposticha_closer_label', 'aposticha_closer_rubric',
+              'aposticha_closer', 'aposticha_alternate', 'aposticha_stavrotheotokion',
+              'troparion_rubric', 'troparion', 'closer', 'closing_rubric'],
+      lic_rubric: pr1("On “Lord, I have cried ...,” these Stichera, in Tone IV:", 'p1 LIC rubric'),
+      // “Called from above” — a Spec. Mel. new to the corpus. Sticheron 2
+      // opens “Thou … hath shone forth” (hath for hast); sticheron 3
+      // addresses GOD about the prophet — “Thy Prophet (name) O Immortal
+      // One hast been revealed” (hast for hath — the pair swap their verbs).
+      lic: [
+        pr2("Having received, in the purity of thy mind, * inspiration from the effulgent and exceedingly divine light, * thou wast revealed to be a divine oracle of the Spirit, * and a blessed prophet, * conveying that which was unveiled unto thee by Him, * O all-honored (name), * declaring unto all peoples the salvation that was to be bestowed * by the kingdom of Christ; ** do thou entreat Him to save and enlighten our souls.", "p1 LIC 1", { spec_mel: "Called from above ...", label: "plain", tone: 4 }),
+        pr2("Thou, O God-inspired (name), * hath shone forth worthily with the vision of God * and prophetic understanding, * wherefore honored with grace, * thou wast deemed worthy of divine blessedness, * possessing now great boldness towards the exceedingly good One * and great compassion towards us, * cease not to pray on behalf of those who with faith praise thee * and honor thee as a god-declaring, venerable and acceptable prophet of God, * that we may be delivered from all misfortunes ** and that our souls be saved.", "p1 LIC 2", { spec_mel: "Called from above ...", label: "plain" }),
+        pr2("Thy Prophet (name) O Immortal One * hast been revealed to be like a light cloud sprinkling forth the waters of eternal life, * richly endowed with the most holy Spirit, * Which is one in essence with both Thee, the Father almighty, * and with Thy Son * Who shone forth from Thine essence; * Sending him forth Thou hast, through him, * foretold the saving revelation of Christ God, ** and announced the mystery of salvation unto all the Nations.", "p1 LIC 3", { spec_mel: "Called from above ...", label: "plain" }),
+      ],
+      lic_closer: pr2("In that I have fallen, accursed, * into the abyss of many falls * through my despondency and slothfulness, wretch that I am, * I am now held fast by doubt and despair. * Be a help and cleansing to me * and salvation, O most pure one, * bestowing upon me thy most compassionate consolation. * Thee do I beseech, * and to thee do I pray; * and I fall down and cry out to thee with faith: * Let me not utterly become ** a joy to the deceiver!", "p1 LIC closer", { sourceLabel: "Glory ..., Both now ..., Theotokion in Tone IV", tone: 4, type: "theotokion", label: ["glory", "both_now", "theotokion"] }),
+      // “Lament not for Me” — THIRD site (Nuns aposticha, NunMartyr praises):
+      // the wandering-slot pattern.
+      lic_stavrotheotokion: pr2("“Lament not for Me, O Mother, * beholding Me thy Son and God hanging upon the Tree, * Who hath suspended the earth upon the waters unsupported, * and hath fashioned all creation; * for I shall arise and be glorified, * and shall crush the kingdoms of Hades with strength; * destroying its power * and delivering those in bondage * from its wickedness, * for I am compassionate; * and I shall bring them to My Father, ** in that I am the Lover of mankind.”", "p1 Stavrotheotokion", { sourceLabel: "Stavrotheotokion", type: "stavrotheotokion", label: "stavrotheotokion", label_inline: true }),
+      idiomelon_rubric: pr1("If an Idiomelon be appointed, Glory ..., in Tone VI:", 'p1 idiomelon rubric'),
+      lic_glory: pr2("O Prophet and great herald of Christ, * thou who art never separated from the throne of glory, * ever present with all those who suffer; * thou dost ever minister from on high, blessing all the inhabited world * wherefore thou art ever glorified throughout all the world; ** pray thou that our souls be cleansed.", "p1 Glory idiomelon", { sourceLabel: "Glory ..., in Tone VI", tone: 6, label: "glory" }),
+      // THE SECOND RUBRIC-TONE/PRINTED-TONE MISMATCH (the Nuns B-4 case at
+      // another file): the rubric announces TONE II, the page prints the
+      // TONE VI DOGMATIC under a Tone VI label. And the travelling
+      // “service ):” space — NINTH file.
+      dogmatikon_rubric: pr1("If the Celebration be with a Polyeleos, and not a Resurrection Service, chant the following Dogmatic in Tone II (If the service is a Resurrection service chant the Dogmatic in the Tone for that service ):", 'p2 dogmatikon rubric'),
+      dogmatikon: pr2("Who doth not call thee blessed, O most holy Virgin? * Who will not hymn thy most pure birthgiving? * For the only-begotten Son Who hath shone forth timelessly from the Father, * came forth, ineffably incarnate, from thee, O pure one; * By nature he is God, by nature for our sakes, he hath become a man * not divided into two Hypostases, * but known in two natures without commingling. * Him do thou beseech, O pure and most blessed one, ** that our souls find mercy!", "p2 Both now dogmatic", { sourceLabel: "Both now ..., in Tone VI", tone: 6, type: "dogmatic_theotokion", label: "both_now" }),
+      dogmatikon_alternate: pr2("Like the Archangel, * let us the faithful hymn the bridal-chamber of heaven, * the portal truly sealed: * Rejoice, for whose sake hath budded forth unto us Christ the Savior of all, * the Bestower of life and God! * With thine arm O Lady * cast down the tyrants, our godless foes, * O most pure one, ** O thou hope of Christians!", "p2 Otherwise Theotokion", { sourceLabel: "Otherwise, Theotokion", type: "theotokion", label: "theotokion", label_inline: true }),
+      // The “diest?,” copy — SIXTH file, fifth byte-identical site.
+      dogmatikon_stavrotheotokion: pr2("Upon seeing Thee crucified, O Christ, * she who gaveth birth to Thee cried aloud: * “What is this strange mystery that I see, * O my Son How is it that Thou diest?, * suspended upon the Tree, ** O Bestower of life?”", "p2 Stavrotheotokion", { sourceLabel: "Stavrotheotokion", type: "stavrotheotokion", label: "stavrotheotokion", label_inline: true }),
+      entrance_rubric: pr1("The Entrance. The Prokeimenon of the day. The Three Lessons, if appointed.", 'p2 Entrance rubric'),
+      // Wisdom ×3, all "A READING" — and L2 is the CORRUPTED "sin Tone bow"
+      // copy at its SIXTH site (with "right-arming" and "well-drawn"). L3 is
+      // the Nun judgment-scene lesson with "the light of truth BATH not
+      // illumined us" (bath for hath — body defect, unstored per R-4).
+      readings: [
+        { heading: 'A READING FROM THE WISDOM OF SOLOMON',
+          src: { file: PF, locus: 'p2 Lesson 1' },
+          citation: { book: 'Wisdom of Solomon', chapter: 3, verses: '3:1-3:9' },
+          citation_basis: 'identified',
+          provenance_note: 'The "souls of the righteous" lesson. Identified; confirm against the page.' },
+        { heading: 'A READING FROM THE WISDOM OF SOLOMON',
+          src: { file: PF, locus: 'p2-p3 Lesson 2' },
+          citation: { book: 'Wisdom of Solomon', chapter: 5, verses: '5:15-6:3' },
+          citation_basis: 'identified',
+          provenance_note: 'The "unto the ages" rendering WITH the "sin Tone bow" corruption — SIXTH site. Identified; confirm against the page.' },
+        { heading: 'A READING FROM THE WISDOM OF SOLOMON',
+          src: { file: PF, locus: 'p3 Lesson 3' },
+          citation: { book: 'Wisdom of Solomon', chapter: 4, verses: '4:7, 4:16-5:7' },
+          citation_basis: 'identified',
+          provenance_note: 'The judgment-scene lesson as in Nun, with "bath not illumined us" on the page. Identified; confirm against the page.' },
+      ],
+      aposticha_rubric: pr1("On the Aposticha, these Stichera, in Tone II:", 'p3 Aposticha rubric'),
+      // Verse 2 ends WITHOUT a full stop (sic register) — and both verses
+      // reappear elsewhere in the file: verse 1 as the double-labelled
+      // prokeimenon (comma dropped), verse 2 as the Alleluia (stop added).
+      aposticha: [
+        pr2("Having found the purity of thy mind, * O Prophet (name), * to be manifestly like a resplendent mirror, * which through thee illumineth the world * with the brightness of the knowledge of God, * enlightening us with knowledge of the divine mysteries * and of the grace that was to be bestowed * upon all mankind, ** O most wondrous one.", "p3 Aposticha 1", { spec_mel: "When from the tree ...", label: "plain", tone: 2 }),
+        pr2("Thou art a priest for ever, * after the order of Melchisedek.", "p3 Aposticha verse 1", { sourceLabel: "Verse", label: "refrain" }),
+        pr2("Being the mouth of God, * thou hast openly reproved evil-doers, * sentencing them to their inevitable judgment, * O most noetically rich (name), * while following the righteous teachings of God’s decrees; * wherefore beholding the fulfillment * of thy most wise declarations, * we worthily praise thee in hymns, ** O blessed one.", "p4 Aposticha 2", { spec_mel: "When from the tree ...", label: "plain" }),
+        pr2("Moses and Aaron among His priests, * and Samuel among them that call upon His name", "p4 Aposticha verse 2", { sourceLabel: "Verse", label: "refrain" }),
+        pr2("Standing before the throne of the Master, * satiated with the ineffable and divine glory, * permeated with light, * perceiving things above this world, * do thou, O God-inspired Prophet (name), * remember those who in faith honor thee, * praying, O favored of God, * that they be granted the salvation of their souls, ** and the remission of their sins.", "p4 Aposticha 3", { spec_mel: "When from the tree ...", label: "plain" }),
+      ],
+      aposticha_glory: pr2("The glorious and honorable Prophets, * through communion and grace, * and as a gift of God, * became partakers of the attributes inherent to the first-formed image of God, * for the Lord enlighteneth with His brightness ** those who please Him.", "p4 Aposticha Glory", { sourceLabel: "Glory ..., in Tone I", tone: 1, label: "glory" }),
+      aposticha_closer_label: pr1("Both now ..., in Tone I:", 'p4 Both now label'),
+      aposticha_closer_rubric: pr1("If the Celebration be with a Polyeleos, chant the Resurrection Theotokion:", 'p4 aposticha closer rubric'),
+      // The TONE I Resurrection Theotokion — Isaiah's prophecy, aptly, for
+      // the prophet file.
+      aposticha_closer: pr2("Behold, the prophecy of Isaiah hath been fulfilled, * for a Virgin hath given birth, * and after giving birth hath remained a Virgin as before. * For it was God who was born from her; * therefore He began nature anew. * O Mother of God, disdain not the supplications of thy servants, * which are offered unto thee in thy temple; * since thou didst bear the Compassionate one in thine embrace, ** have pity on thy servants, and beseech Him that our souls be saved.", "p4 Resurrection Theotokion", { tone: 1, type: "theotokion", label: "theotokion" }),
+      // “Joy of the ranks of heaven” — the hymn whose INCIPIT the corpus
+      // uses as a Spec. Mel. label (Heirarchs' aposticha): the melody's
+      // source text appears in full for the first time.
+      aposticha_alternate: pr2("Joy of the ranks of heaven, * and mighty intercession for mankind on earth, * O most-pure Virgin: * save us who have recourse unto thee, * for in thee, after God, have we placed our hope, ** O Theotokos.", "p4 Otherwise Theotokion", { sourceLabel: "Otherwise, Theotokion", type: "theotokion", label: "theotokion", label_inline: true }),
+      aposticha_stavrotheotokion: pr2("“A sword hath pierced me, O my Son,” * said the Virgin upon seeing Christ hung upon the Tree, * “my heart hath been rent O Lord, * as Simeon once foretold to me. * But arise, I pray Thee, O immortal One, ** and glorify Thy Mother and handmaiden.”", "p4 Stavrotheotokion", { sourceLabel: "Stavrotheotokion", type: "stavrotheotokion", label: "stavrotheotokion", label_inline: true }),
+      // “from the TYPIKON” — the only K-spelling in twenty-two files (every
+      // sibling prints Typicon).
+      troparion_rubric: pr1("The Troparion from the Typikon; but if there be none, chant the following:", 'p4 troparion rubric'),
+      closer: { absent: true, reason: "not_printed_in_source", basis: "close_reading", note: "Slot printed as “Glory ..., Both now ..., Theotokion or Stavrotheotokion.” — full stop for the colon — with no text (§5.8)." },
+      closing_rubric: pr1("The Dismissal:", 'p4 Dismissal'),
+    },
+
+    matins: {
+      order: ['god_is_lord_rubric', 'troparion', 'troparion_closer',
+              'sessional_1_rubric', 'sessional_1', 'sessional_1_closer',
+              'sessional_2_rubric', 'sessional_2', 'sessional_2_closer',
+              'megalynarion_rubric', 'megalynarion', 'megalynarion_verse',
+              'sessional_polyeleos_rubric', 'sessional_polyeleos',
+              'sessional_polyeleos_closer', 'anabathmoi_rubric', 'anabathmoi_intro',
+              'anabathmoi', 'anabathmoi_closer', 'prokeimenon_rubric', 'prokeimenon',
+              'prokeimenon_verse', 'gospel_rubric', 'gospel', 'psalm50_rubric',
+              'psalm50_sticheron', 'psalm50_closer', 'psalm50_verse',
+              'sessional_post50_rubric', 'sessional_post50', 'canon_rubric', 'canons',
+              'sessional_ode3_rubric', 'sessional_ode3', 'sessional_ode3_closer',
+              'sessional_ode3_stavrotheotokion', 'kontakion_rubric', 'kontakion', 'ikos',
+              'exapostilarion_rubric', 'exapostilarion', 'exapostilarion_closer',
+              'praises_rubric', 'praises', 'praises_glory', 'praises_closer',
+              'praises_stavrotheotokion', 'great_doxology_rubric',
+              'doxology_glory', 'doxology_closer_rubric', 'troparion_rubric',
+              'troparion', 'closer', 'closing_rubric'],
+      god_is_lord_rubric: pr1("On “God is the Lord ...,” the Troparion, in Tone II:", 'p5 God is the Lord rubric'),
+      troparion_closer: { absent: true, reason: "not_printed_in_source", basis: "close_reading", note: "Slot printed as “Glory ..., Both now ..., Theotokion or Stavrotheotokion.” — full stop again — with no text (§5.8)." },
+      // “the Sessional Hymn: in Tone III:” — a COLON before the tone, at BOTH
+      // kathisma rubrics (sic register). No (Twice) on sessional 1 — and its
+      // Theotokion answers in TONE II, a mismatched pair.
+      sessional_1_rubric: pr1("After the 1st chanting of the Psalter, the Sessional Hymn: in Tone III:", 'p5 sessional 1 rubric'),
+      sessional_1: pr2("Enlightened by the Divine Spirit, * thou didst prophesy concerning the incarnation of the Word, * O divinely God-inspired (name); * wherefore we glorify thee as a Prophet * and celebrate thy memory today, * exclaiming unto thee with one voice, ** O wise one, entreat Christ God to save our souls.", "p5 Sessional 1", { spec_mel: "Awed by the beauty of thy virginity ...", tone: 3 }),
+      sessional_1_closer: pr2("Beyond all recounting and telling is the divine mystery * which hath taken place in thee, O divinely joyous Lady, * for in conceiving, thou hast brought forth the Uncircumscribed One * clothed in flesh from thy most pure blood; * ever entreat Him O pure one, as thy Son, ** that our souls be saved.", "p5 Sessional 1 Theotokion", { sourceLabel: "Glory ..., Both now ..., Theotokion, in Tone II", tone: 2, type: "theotokion" }),
+      sessional_2_rubric: pr1("After the 2nd chanting of the Psalter, the Sessional Hymn: in Tone VI:", 'p5 sessional 2 rubric'),
+      sessional_2: pr2("As a divine instrument of the Comforter, * ever manifestly prompted by His grace, * O blessed Prophet (name); * thou hast foretold the manifestation of things unknown, * illumining those who with faith have recourse unto thee, * O glorious (name); * entreat Christ God, that we be granted great mercy.", "p5 Sessional 2", { spec_mel: "Of the divine faith ...", tone: 6, repeat: 2 }),
+      // “The prophets preached, the apostles taught” — the catechetical
+      // theotokion, apt to the file.
+      sessional_2_closer: pr2("The prophets preached, the apostles taught, * the martyrs confessed, and we believe, * that thou art truly the Theotokos; ** wherefore, we glorify thine ineffable birthgiving.", "p5 Sessional 2 Theotokion", { sourceLabel: "Glory ..., Both now ..., Theotokion, in Tone VI", tone: 6, type: "theotokion" }),
+      megalynarion_rubric: pr1("After the Polyeleos, the Megalynarion:", 'p5 megalynarion rubric'),
+      megalynarion: pr1("We magnify thee, O Prophet of God (name), and honor thy holy memory, for thou dost pray for us unto Christ our God.", 'p5 Megalynarion'),
+      // The monastic Alleluia text as megalynarion verse — SECOND file (the
+      // Fools pattern).
+      megalynarion_verse: pr1("Blessed is the man that feareth the Lord, in His commandments shall he greatly delight.", "p5 Megalynarion verse", { sourceLabel: "Verse", label: "refrain" }),
+      sessional_polyeleos_rubric: pr1("After the Polyeleos the Sessional Hymn, in Tone VI:", 'p5 Polyeleos sessional rubric'),
+      // “The gates of compassion” — a Spec. Mel. new to the corpus; and this
+      // hymn is REPRINTED REWRITTEN as the post-Ode-III sessional (three
+      // substitutions — see below).
+      sessional_polyeleos: pr2("Having cleared thy mind from all corruption * O all-wise one, * transforming it into a reflection of the Divinity, * thou didst become receptive to illumination by the divine Spirit, * wherefore with joy thou hast departed * unto the source of thine illumination, ** O divine Prophet (name).", "p5 Polyeleos sessional", { spec_mel: "The gates of compassion ...", tone: 6, repeat: 2 }),
+      sessional_polyeleos_closer: pr2("The Son and Word of God, * begotten of the Father before the ages without a mother, * hast thou borne in these later days, * incarnate of thy pure blood, * without the aid of a man. * Him do thou entreat O Birthgiver of God, ** that we be granted the remission of sins before the end.", "p6 Polyeleos sessional Theotokion", { sourceLabel: "Glory ..., Both now ..., Theotokion, in Tone VI", tone: 6, type: "theotokion" }),
+      anabathmoi_rubric: pr1("If of Polyeleos rank, and not a Resurrection Service, chant the following:", 'p6 anabathmoi rubric'),
+      anabathmoi_intro: pr1("The Song of Ascents: The first antiphon, in Tone IV:", 'p6 anabathmoi heading'),
+      anabathmoi: [
+        pr2("From my youth * do many passions war against me; * but do Thou Thyself defend ** and save me, O my Savior.", "p6 anabathmoi 1", { label: "plain" }),
+        pr2("Ye haters of Zion * shall be shamed by the Lord; * for like grass, by the fire ** shall ye be withered.", "p6 anabathmoi 2", { label: "plain" }),
+      ],
+      anabathmoi_closer: pr2("In the Holy Spirit, * every soul is quickened, * and, through cleansing, is exalted ** and made radiant by the Triple Unity in a hidden sacred manner.", "p6 anabathmoi Glory Both now", { sourceLabel: "Glory ..., Both now ...,", label: ["glory", "both_now"] }),
+      // The double label — and the prokeimenon is this file's own aposticha
+      // verse 1 with the comma dropped (register: variant).
+      prokeimenon_rubric: pr1("Prokeimenon, in Tone IV:", 'p6 prokeimenon rubric'),
+      prokeimenon: pr2("Thou art a priest for ever * after the order of Melchisedek.", "p6 Prokeimenon", { sourceLabel: "The Prokeimenon", tone: 4, label_inline: true }),
+      prokeimenon_verse: pr1("The Lord said unto my Lord: Sit Thou at My right hand, until I make Thine enemies the footstool of Thy feet.", "p6 Prokeimenon verse", { sourceLabel: "Verse", label: "refrain" }),
+      gospel_rubric: pr1("Let every breath.", 'p6 Let every breath'),
+      // Matins and Liturgy read the SAME pericope (Matthew 23:29-39) — the
+      // HieroConfessor pattern at a second file, MORE divergent: the Matins
+      // body capitalizes Prophets/Fathers throughout and opens "Jesus spake
+      // unto the Jews that had come to Him saying:", where the Liturgy prints
+      // lowercase and "The Lord said:". Citation styles differ too.
+      gospel: { heading: 'THE GOSPEL ACCORDING TO ST. MATTHEW',
+        src: { file: PF, locus: 'p6 Matins Gospel' },
+        citation_verbatim: '(23, 29-39)',
+        citation: { book: 'Matthew', chapter: 23, verses: '29-39' },
+        citation_basis: 'printed' },
+      psalm50_rubric: pr1("After the 50th Psalm:", 'p7 After the 50th Psalm'),
+      psalm50_sticheron: pr2("Through the prayers of the prophet of God (name), * O Merciful One, ** blot out the multitude of our transgressions.", "p7 Psalm 50 Glory", { sourceLabel: "Glory ..., in Tone VI", tone: 6, label: "glory" }),
+      psalm50_closer: pr2("Through the prayers of the Theotokos, * O Merciful One, ** blot out the multitude of our transgressions.", "p7 Psalm 50 Both now", { sourceLabel: "Both now ...,", type: "theotokion", label: "both_now" }),
+      psalm50_verse: pr2("Have mercy on me, O God, * according to Thy great mercy; * and according to the multitude of Thy compassions, ** blot out my transgressions.", "p7 Psalm 50 verse", { label: "refrain" }),
+      sessional_post50_rubric: pr1("Then the Sessional Hymn, in Tone VI:", 'p7 post-Psalm-50 sessional rubric'),
+      // The IDIOMELON reprinted as the post-50 sessional — with its final
+      // line repointed “* pray thou” for the idiomelon's “**” (register:
+      // variant — the pointing travels loosely, again).
+      sessional_post50: pr2("O Prophet and great herald of Christ, * thou who art never separated from the throne of glory, * ever present with all those who suffer; * thou dost ever minister from on high, blessing all the inhabited world * wherefore thou art ever glorified throughout all the world; * pray thou that our souls be cleansed.", "p7 post-Psalm-50 Sessional", { tone: 6 }),
+      canon_rubric: pr1("The Canon, in Tone VI:", 'p7 Canon rubric'),
+      canons: [{
+        title: "The Canon, in Tone VI:", tone: 6,
+        odes: {
+          1: {
+            irmos: pr2("When Israel walked on foot in the sea as on dry land, * on seeing their pursuer Pharaoh drowned, * they cried: * Let us sing to God * a song of victory.", "p7 Ode 1 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            refrain: pr1("Holy Prophet of God (name) pray to God for us", "p7 Ode 1 refrain", { sourceLabel: "Refrain", label_inline: true }),
+            items: [
+              pr1("We beseech thee, O Prophet, standing before the throne of God, ever intercede that we who in faith hymn thine honored memory be granted illumination.", "p7 Ode 1 troparion 1", { label: "plain" }),
+              pr1("Thou wast revealed as a divine repository of the illuminations and gifts of the divine Spirit, O all-wise (name); wherefore rejoicing we the faithful glorify thee.", "p7 Ode 1 troparion 2", { label: "plain" }),
+              pr1("Standing before God the Savior as a Prophet, do thou boldly entreat Him that those who, by the inspiration of God, glorify thee, may be enlightened in the faith.", "p7 Ode 1 troparion 3", { label: "plain" }),
+              pr1("The rays of the Sun which hath shone forth from thy holy womb, O Lady, brilliantly illumine the whole earth; therewith enlightened, we honor thee as the Mother of God.", "p7 Ode 1 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          3: {
+            irmos: pr2("There is none as holy as Thou, * O Lord my God, * who hast exalted the horn of Thy faithful O good One, * and strengthened us upon the rock * of Thy confession.", "p7-p8 Ode 3 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              pr1("He who as God seeth all things, hath clearly revealed to thee in a godly manner, O blessed and right wondrous one, the knowledge and understanding of those things which shall come to pass.", "p7-p8 Ode 3 troparion 1", { label: "plain" }),
+              pr1("With devout boldness, and upright mind, O blessed one, thou didst submit thyself to the Divine Spirit, and become receptive to its divine inspirations.", "p7-p8 Ode 3 troparion 2", { label: "plain" }),
+              pr1("Like a stream of mysterious waters flowing from a deep abyss thou wast a herald of God’s gifts of the Spirit.", "p7-p8 Ode 3 troparion 3", { label: "plain" }),
+              pr1("Behold, with faith all generations call thee blessed, since thou hast supra-naturally brought forth in the flesh, and in time, the pre-eternal Word and yet remained a Virgin.", "p7-p8 Ode 3 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          4: {
+            irmos: pr2("Christ is my power, * my God and my Lord, * the holy Church divinely singeth, * crying with a pure mind, * keeping festival in the Lord.", "p8 Ode 4 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              pr1("The Lord of all hath appeared unto us, according to thy prophecy, O glorious one, summoning all to the intimate knowledge of Himself and hath thereby freed us from slavery.", "p8 Ode 4 troparion 1", { label: "plain" }),
+              pr1("Enlightened by grace, thou hast prophesied saying: “It behooves those who follow the faith and adore the Lord, to gather under one yoke and thus serve the Lord.”", "p8 Ode 4 troparion 2", { label: "plain" }),
+              pr1("Being a Prophet, ever enlightened by the effulgence of the light of grace, do thou, O glorious one, enlighten us who with love hymn thee.", "p8 Ode 4 troparion 3", { label: "plain" }),
+              pr1("O Mary, all-pure! vanquish the agitation of the passions in my soul and subdue the tempest of temptations, for thou, O Mother and Virgin, hast given birth to the Wellspring of dispassion.", "p8 Ode 4 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          5: {
+            irmos: pr2("Illumine with Thy divine light, I pray, O Good One, * the souls of those who with love rise early to pray to Thee, * that they may know Thee, O Word of God, * as the true God, * Who recalleth us from the darkness of sin.", "p8-p9 Ode 5 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              pr1("By thine intercessions O blessed and glorious Prophet, turn me from unrighteousness to virtue, and deliver me from slavery to the passions, guiding me to light of pious deeds.", "p8-p9 Ode 5 troparion 1", { label: "plain" }),
+              pr1("Having illumined thy soul with deeds of virtue, thou hast shown it to be receptive to illumination by the Divine Spirit, from Whom thou wast also enriched with the grace of prophecy.", "p8-p9 Ode 5 troparion 2", { label: "plain" }),
+              pr1("Having led a pure life, thou wast revealed to be a divine Prophet, and a vessel of the Holy Spirit; wherefore thou wast deemed worthy to behold Him Who is noetically comprehended.", "p8-p9 Ode 5 troparion 3", { label: "plain" }),
+              pr1("The prophetic utterances heralded thy birthgiving in a multitude of symbols, O most pure one, and we having beheld their fulfillment, proclaim thee to be in truth the Mother of God.", "p8-p9 Ode 5 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          6: {
+            irmos: pr2("Beholding the sea of life surging with the tempest of temptations, * I run to Thy calm haven, and cry to Thee: * Raise up my life from corruption, * O greatly Merciful One.", "p9 Ode 6 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              pr1("Having received the effulgence of the Spirit, O glorious one, thy divinely inspired prophecies, as if in a mirror, have foretold things to come as though things present.", "p9 Ode 6 troparion 1", { label: "plain" }),
+              pr1("Thy King is come, rejoice, O Zion, and exult beholding Him, Who hath enlightened the world with the brightness of His Divinity, putting to shame the deceit of the demons.", "p9 Ode 6 troparion 2", { label: "plain" }),
+              pr1("By the power of the divine Spirit, O Prophet, thou hast seen images of future blessed events, as if in the mirror of a splendid soul.", "p9 Ode 6 troparion 3", { label: "plain" }),
+              pr1("He that is the Only-begotten Son of the Father, became united to corruptible flesh within thy womb, one issuing forth from two without corruption and preserving thy virginity pure and unharmed, O all-hymned one.", "p9 Ode 6 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          7: {
+            irmos: pr2("An Angel made the furnace bedew the holy Children. * But the command of God consumed the Chaldeans * and prevailed upon the tyrant to cry: * O God of our fathers, blessed art Thou.", "p10 Ode 7 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              pr1("O Prophet, thy feast hath dawned upon the world, like the sun, illumining with the grace of thy prophecy all those who with one accord, in faith chant: “O God of our fathers, blessed art Thou.”", "p10 Ode 7 troparion 1", { label: "plain" }),
+              pr1("Revealed as a most abundant and light cloud, O blessed one, thou hast besprinkled us with the salvific dew of the knowledge of God, from the wellsprings of salvation, wherefore we cry aloud: “O God of our fathers, blessed art Thou.”", "p10 Ode 7 troparion 2", { label: "plain" }),
+              pr1("Enlightened by God, the Prophets foretold the significance of things to come, and in a godly wise manner proclaimed the coming of the pre-eternal Word, unto Whom we sing: “O God of our fathers, blessed art Thou.”", "p10 Ode 7 troparion 3", { label: "plain" }),
+              pr1("The Word, Who of old brought all into existence by his divine activity, wishing to recall mankind, O pure one, came and dwelt within thy womb, O blessed one, who hath given birth to God in the flesh.", "p10 Ode 7 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          8: {
+            irmos: pr2("Thou didst make flame bedew the holy children, * and didst burn the sacrifice of a righteous man with water. * For Thou alone, O Christ, dost do all as Thou willest, * Thee do we supremely exalt throughout all ages.", "p10 Ode 8 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              pr1("Having given thyself entirely to the Almighty, thou didst mystically learn His providence, thereby reproaching the Gentiles, wherefore we hymn Thee, O god-inspired Prophet.", "p10 Ode 8 troparion 1", { label: "plain" }),
+              pr1("Bring unto God a hymn of supplication, O thou who art blessed of God, for those who hymn thee, and subdue the tempest of temptations, that we may hymn thee, O god-inspired Prophet.", "p10 Ode 8 troparion 2", { label: "plain" }),
+              pr1("Thou hast appeared like a fire before those sitting in darkness, and in a divinely-wise manner illumined with the divine light those who with faith hymn the Lord throughout all ages.", "p10 Ode 8 troparion 3", { label: "plain" }),
+              // Theotokion: “By given birth” for “By giving birth” (sic).
+              pr1("By given birth unto the Giver of life, God and Lord, thou, O most holy one, hast put an end to the destruction of death which hath slain all without restraint; wherefore we hymn thee throughout all ages.", "p10 Ode 8 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+          9: {
+            // The Ode IX irmos DIVERGES from the Tone VI family copy —
+            // “did the Word Incarnate APPEAR TO MANKIND … with Heavenly
+            // Hosts” against the three-file “become a man … with the
+            // Heavenly Hosts”: one heirmos, two renderings, again
+            // (register: variant).
+            irmos: pr2("It is impossible for mankind to see God * upon Whom the orders of Angels dare not gaze; * but through thee, O all-pure one, * did the Word Incarnate appear to mankind * and with Heavenly Hosts * Him we magnify and thee we call blessed.", "p10-p11 Ode 9 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              pr1("Having made thy dwelling in the land of the meek, thou dost behold the splendor of the angels, O all-wise Prophet of God (name), being meek and resplendent with grace; wherefore we the faithful rejoicing, glorify thee.", "p10-p11 Ode 9 troparion 1", { label: "plain" }),
+              pr1("Clearly beholding the fulfillment of thy prophecies, O most glorious one, we are in awe beholding the grace given to thee, and amazed by the purity of thy mind, and the vision of God in thy soul.", "p10-p11 Ode 9 troparion 2", { label: "plain" }),
+              pr1("Thou, O Prophet (name), having made thine abode where the angelic orders, the Prophets and patriarchs, the heavenly choirs, and the effulgent venerable ones dwell; thou dost now joyfully exult with them; entreat thou the Lord that those who with faith praise thee be saved.", "p10-p11 Ode 9 troparion 3", { label: "plain" }),
+              pr1("There hath been none from generations past that have ever been as blessed as thee, O all-immaculate Mother of God; for thou alone among all woman art incomparably more pure and holy; wherefore thou didst receive God incarnate within thee.", "p10-p11 Ode 9 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            ],
+          },
+        },
+      }],
+      sessional_ode3_rubric: pr1("The Sessional Hymn, in Tone VI:", 'p8 post-Ode-III sessional rubric'),
+      // THE POLYELEOS SESSIONAL REPRINTED REWRITTEN — three substitutions in
+      // one reprint: “reflection of the Divinity”→“of the divine”,
+      // “illumination by the divine Spirit”→“by the Divine spirit” (the case
+      // pair SWAPS), “unto the source”→“unto the wellspring”. The rewritten-
+      // reprint pattern reaches the sessionals (register: variant).
+      sessional_ode3: pr2("Having cleared thy mind from all corruption * O all-wise one, * transforming it into a reflection of the divine, * thou didst become receptive to illumination by the Divine spirit, * wherefore with joy thou hast departed * unto the wellspring of thine illumination, ** O divine Prophet (name).", "p8 post-Ode-III Sessional", { spec_mel: "The gates of compassion ...", tone: 6 }),
+      sessional_ode3_closer: pr2("Let us unceasingly hymn with our hearts * and our tongues, * the most glorious Theotokos, * who is exceedingly holier than the holy Angels, * confessing her to be the Mother of God, * since she hath truly borne God incarnate ** and unceasingly intercedes for our souls.", "p8 post-Ode-III Theotokion", { sourceLabel: "Glory ..., Both now ..., Theotokion, in Tone VI", tone: 6, type: "theotokion" }),
+      sessional_ode3_stavrotheotokion: pr2("O come, let us all hymn the One Who was crucified for us, * Whom Mary beheld on the tree and lamented: * “Even though Thou dost suffer crucifixion, ** Thou art my Son and my God.”", "p8 post-Ode-III Stavrotheotokion", { sourceLabel: "Stavrotheotokion", type: "stavrotheotokion", label: "stavrotheotokion", label_inline: true }),
+      kontakion_rubric: pr1("The Kontakion from the Typicon; but if there be none, chant the following:", 'p9 Kontakion rubric'),
+      exapostilarion_rubric: pr1("Exapostilarion in Tone III:", 'p11 exapostilarion rubric'),
+      exapostilarion: pr2("All the Prophets rejoice and joyfully exult * celebrating thy feast day, O divinely-wise one, * participating in delight and thy godly glory; * do thou intercede together with them * that those who hymn thee be saved.", "p11 Exapostilarion", { tone: 3 }),
+      // = Heiromartyrs' exapostilarion Theotokion byte-for-byte — second
+      // site (register).
+      exapostilarion_closer: pr2("With the sprinkling of thy tender compassion, * O pure one, * cleanse the pollution of my soul, * and grant, O Maiden, that I may unceasingly pour forth tears ** which wither the streams of my passions.", "p11 Exapostilarion Theotokion", { sourceLabel: "Glory ..., Both now ..., Theotokion in Tone III", tone: 3, type: "theotokion" }),
+      praises_rubric: pr1("On the Praises, these Stichera, in Tone VIII:", 'p11 Praises rubric'),
+      // Praises 1: “those who receive this activity prophesize” — the
+      // nonstandard spelling, captured verbatim.
+      praises: [
+        pr2("The Divine Spirit hath been poured out * upon us the faithful, * as thou, O honored (name), moved by Him, * didst prophesy, * and thereby open unto us * revelations of divine mysteries, * and those who receive this activity prophesize, * being illumined by both the divine effulgence ** and divine grace.", "p11 Praises 1", { spec_mel: "O most glorious wonder ...", label: "plain", tone: 8, repeat: 2 }),
+        pr2("The wondrous Prophet (name), * cometh forth from Thy house O Master, * filled with godly messages, * and like a wellspring nourishing our souls, * trickling down to us the divine sweetness, * sweetening our thoughts, * he was revealed to be wondrous in the fullness of the Spirit * and carried aloft by his virtues ** he hath reached the divine heights of heaven.", "p11 Praises 2", { spec_mel: "O most glorious wonder ...", label: "plain" }),
+        pr2("Through thy prophetic boldness * and noetic nearness to God, * thou, O (name), beheld heavenly visions, * entreat Him to be merciful to us * who in faith celebrate thy memory, * O glorious one, * that we be granted great mercy, * and the remission of our sins, ** and partake of the delights of heaven.", "p11 Praises 3", { spec_mel: "O most glorious wonder ...", label: "plain" }),
+      ],
+      praises_glory: pr2("Rejoicing and exulting in the Lord God thy Savior, * O god-inspired and glorious one, * thou hast received the effulgence of the Immortal One, * noetically illumining thee with the light proceeding from God, * do thou, by thine intercessions, * deliver us who in faith celebrate thine all-festive memory, ** from all temptations and afflictions.", "p12 Praises Glory", { sourceLabel: "Glory ..., in Tone IV", tone: 4, label: "glory" }),
+      // “Deliver us from our needs” — THIRD file, fourth site.
+      praises_closer: pr2("Deliver us from our needs, * O Mother of Christ God, * thou who hast given birth to the Creator of all, * that we all may cry out to thee: ** Rejoice, O thou who alone art the intercessor for our souls!", "p12 Praises Both now", { sourceLabel: "Both now ..., Theotokion in Tone IV", tone: 4, type: "theotokion", label: ["both_now", "theotokion"] }),
+      // A SECOND sword-of-Simeon hymn in one file (the aposticha stav is the
+      // first-person “A sword hath pierced me”).
+      praises_stavrotheotokion: pr2("O most immaculate Virgin, * Mother of Christ God, * a sword pierced thy most holy soul * when thou didst behold thy Son and God * crucified of His own will. * Him do thou never cease to entreat, O blessed one, ** that He grant us the forgiveness of our transgressions.", "p12 Stavrotheotokion", { sourceLabel: "Stavrotheotokion", type: "stavrotheotokion", label: "stavrotheotokion", label_inline: true }),
+      great_doxology_rubric: pr1("The great Doxology: If a small Doxology is read, and a Doxasticon is appointed, the following is chanted after the Aposticha:", 'p12 great Doxology rubric'),
+      doxology_glory: pr2("The glorious and honorable Prophets, * through communion and grace, * and as a gift of God, * became partakers of the attributes inherent to the first-formed image of God, * for the Lord enlighteneth with His brightness ** those who please Him.", "p12 Doxology Glory", { sourceLabel: "Glory ..., in Tone I", tone: 1, label: "glory" }),
+      doxology_closer_rubric: pr1("Both now ..., Theotokion or Stavrotheotokion:", 'p12 Doxology closer rubric'),
+      troparion_rubric: pr1("After Our Father ..., the Troparion of the Prophet, in Tone II:", 'p12 after Our Father rubric'),
+      closer: { absent: true, reason: "not_printed_in_source", basis: "close_reading", note: "Slot printed as “Glory ..., Both now ..., Theotokion or Stavrotheotokion:” with no text (§5.8)." },
+      closing_rubric: pr1("The Dismissal:", 'p12 Dismissal'),
+    },
+
+    liturgy: {
+      order: ['beatitudes_rubric', 'beatitudes', 'propers_rubric', 'troparion',
+              'kontakion', 'prokeimenon_rubric', 'prokeimenon', 'prokeimenon_verse',
+              'epistle', 'alleluia', 'alleluia_verse', 'gospel', 'communion_verse'],
+      beatitudes_rubric: pr1("Typika and Beatitudes.", 'p13 Typika and Beatitudes'),
+      beatitudes: [
+        pr1("He who as God seeth all things, hath clearly revealed to thee in a godly manner, O blessed and right wondrous one, the knowledge and understanding of those things which shall come to pass.", "p13 Beatitude 1", { label: "plain" }),
+        pr1("With devout boldness, and upright mind, O blessed one, thou didst submit thyself to the Divine Spirit, and become receptive to its divine inspirations.", "p13 Beatitude 2", { label: "plain" }),
+        pr1("Like a stream of mysterious waters flowing from a deep abyss thou wast a herald of God’s gifts of the Spirit.", "p13 Beatitude 3", { label: "plain" }),
+        pr1("Having received the effulgence of the Spirit, O glorious one, thy divinely inspired prophecies, as if in a mirror, have foretold things to come as though things present.", "p13 Beatitude 4", { label: "plain" }),
+        pr1("Thy King is come, rejoice, O Zion, and exult beholding Him, Who hath enlightened the world with the brightness of His Divinity, putting to shame the deceit of the demons.", "p13 Beatitude 5", { label: "plain" }),
+        pr1("By the power of the divine Spirit, O Prophet, thou hast seen images of future blessed events, as if in the mirror of a splendid soul.", "p13 Beatitude 6", { label: "plain" }),
+        pr1("He that is the Only-begotten Son of the Father, became united to corruptible flesh within thy womb, one issuing forth from two without corruption and preserving thy virginity pure and unharmed, O all-hymned one.", "p13 Beatitude 7", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+      ],
+      // “from the Typicon. If there be none” — a full stop and capital If,
+      // alone in the corpus.
+      propers_rubric: pr1("The Troparion and Kontakion from the Typicon. If there be none, chant the following:", 'p13 Liturgy propers rubric'),
+      // The double label at the Liturgy too — and Matins and Liturgy print
+      // the SAME prokeimenon text and verse (no §7.4 finding for once).
+      prokeimenon_rubric: pr1("Prokeimenon, in Tone IV:", 'p13 Liturgy prokeimenon rubric'),
+      prokeimenon: pr2("Thou art a priest for ever * after the order of Melchisedek.", "p13 Liturgy Prokeimenon", { sourceLabel: "The Prokeimenon", tone: 4, label_inline: true }),
+      prokeimenon_verse: pr1("The Lord said unto my Lord: Sit Thou at My right hand, until I make Thine enemies the footstool of Thy feet.", "p13 Liturgy Prokeimenon verse", { sourceLabel: "Verse", label: "refrain" }),
+      // "THE FIRST EPISTLE TO THE CORINTHIANS" — a new heading form.
+      epistle: { heading: 'THE FIRST EPISTLE TO THE CORINTHIANS',
+        src: { file: PF, locus: 'p13-p14 Epistle' },
+        citation_verbatim: '(14:20-25)',
+        citation: { book: '1 Corinthians', chapter: 14, verses: '20-25' },
+        citation_basis: 'printed' },
+      // The aposticha verse 2 text as the Alleluia — UNPOINTED and with the
+      // full stop the aposticha site lacks (register: variant).
+      alleluia: pr1("Moses and Aaron among His priests, and Samuel among them that call upon His name.", "p14 Alleluia", { sourceLabel: "Alleluia, in Tone V", tone: 5, label_inline: true }),
+      alleluia_verse: pr1("A light hath dawned for the righteous man, and gladness for the upright of heart.", "p14 Alleluia verse", { sourceLabel: "Verse", label: "refrain" }),
+      gospel: { heading: 'THE GOSPEL ACCORDING TO ST. MATTHEW',
+        src: { file: PF, locus: 'p14 Liturgy Gospel' },
+        citation_verbatim: '(23:29-39)',
+        citation: { book: 'Matthew', chapter: 23, verses: '29-39' },
+        citation_basis: 'printed' },
+      // A FOURTH byte-form of the In-everlasting verse: semicolon WITH
+      // lowercase he — the two families' halves recombined.
+      communion_verse: pr1("In everlasting remembrance shall the righteous be; he shall not be afraid of evil tidings.", "p14 Communion verse", { sourceLabel: "Communion Verse", label_inline: true }),
     },
   },
 };
