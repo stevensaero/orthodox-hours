@@ -1,10 +1,12 @@
 # Next-session kickoff — Menaion V2 Phase 2 (General Menaion encoding)
 
-State at handoff: **v0.41.13**. `general.js` holds **3392 stored strings · 3248
-text nodes · 0 errors** — twenty-four files complete (through Cross). **24 of
-26.** Remaining: Holy Fathers (12pp), Theotokos (16pp) — subject files;
-expect the Baptist/Cross patterns (no (name), joint Glory-Both-nows,
-reference devices, possibly composers/katavasias).
+State at handoff: **v0.42.0**. **THE GENERAL MENAION IS COMPLETE — all 26
+files encoded.** `general.js` holds **3657 stored strings · 3502 text nodes ·
+0 errors**; all eight gates green. The encoding sweep is OVER: the next
+session's work is the LEDGER, not a PDF — A-2 (sessionals shape) blocks the
+first daily month and should be ruled first; then the octoechos roots wiring
+(five cross-book dogmatic rows waiting), the R-9 reconciliation table, and
+the four physical-book checks. Read bill_review_ledger.md before anything.
 The rubric census's Fekula column is FILLED from the locally delivered
 `Fekula_ODS/` chapters. `menaion_rubric_census.md` now distills
 the rubric corpus to instruction-set families; read it before touching any

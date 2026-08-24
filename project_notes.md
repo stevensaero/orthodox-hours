@@ -1,5 +1,75 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.41.13** | **Tone Trainer: v0.26.0** | Last synced: August 23, 2026
+**Tool version: v0.42.0** | **Tone Trainer: v0.26.0** | Last synced: August 23, 2026
+
+**Session August 23, 2026 (seventeenth) — HOLY FATHERS AND THEOTOKOS ENCODED:
+THE GENERAL MENAION IS COMPLETE (26 of 26).**
+**Version bumped to v0.42.0 (minor — the book is done).** Eight gates green:
+3502 nodes/0 errors · 3657 strings/0 missing · build ✓. Commits `126140d`
+(Holy Fathers), `f34fb90` (Theotokos), plus this docs/version commit. The
+gate's repeat vocabulary finished at 1|2|3 (the "(Once)" attested at the
+Fathers' blessing of the loaves).
+
+### HOLY FATHERS: THE FILE THAT CANNOT STAND ALONE
+
+The Sunday-locked Councils service — its rubrics appoint stichera,
+sessionals, canon parts, kontakion, Eothinon and communion verse FROM THE
+OCTOECHOS by the current tone, and it opens with the corpus's first
+CALENDAR-APPOINTMENT rubric (the three Councils Sundays, confirming the
+standing OCA movability note). Firsts: the LITIYA (anathema-catalogue
+Glory), the ARTOKLASIA (Ave-Maria troparion Twice, Fathers troparion
+ONCE), the VERSED LIC ("6 Stichera" = four texts + two incipit repeats),
+versed Praises, the GREAT PROKEIMENON with numbered verses (itself
+mislabeled "Verse:"), a GARBLED dogmatic reference rubric ("The Dogmatic
+of the in Tone for the Saturday evening" — the only dogmatic slot with no
+text), the first verse-less prokeimenon, the first single-ode Beatitude
+set, TWO communion verses, and the second COMPOSER (Patriarch Germanus)
+atop a four-canon share table. The seventh R-1 refusal (the Liturgy
+troparion inserts "since"). The T6 canon family closed at FIVE files.
+
+### THEOTOKOS: THE BOOK'S LAST WORD
+
+"THE VIGIL SERVICE COMMON TO THE FEASTS OF THE THEOTOKOS" — the
+placeholder's final evolution, "(name of the event/Icon)". Five
+feast-keyed megalynaria + the General (the AXION ESTIN; the Protection
+naming St Andrew's Pokrov vision; the Dormition printing "failing-
+asleep"). A four-items-per-ode canon with NO theotokia — the whole canon
+is hers — under the first REPEAT-INSTRUCTION rubric (irmoi twice,
+troparia to 12), and ITS KATAVASIAS ARE THE CROSS'S CANON IRMOI, nine
+byte-identical: one festal canon, two roles, three files. The first
+EIGHT-ROW Beatitude set. A second "Another Kontakion". A third
+chairetismos Ikos AND a chairetismos Glory-Both-now (= Unmercenaries'
+dogmatikon alternate byte-for-byte). The MAGNIFICAT as prokeimenon under
+a named-hymn label. The third reference device ("the same."). In HER file
+the Psalm-50 Glory and Both-now collapse into one byte-identical text.
+THE CLOSING FIND: the paraklesis troparion already lived in the corpus AS
+THEOTOKIA (Apostle's LIC closer, MonasticMartyrs' sessional closer) —
+one text, three roles, three files. R-1 held at the close.
+
+### THE BOOK, BY THE NUMBERS
+
+26 files · 3502 text nodes · 3657 rendered strings · 0 errors. Canon→
+Beatitudes: 23 files, 11 variant rows (5 rewrites). Psalm-50 closer: 23
+files, one text. Anabathmoi: one text wherever printed. "Mercifully
+regard": 7 files. The Tone VI dogmatic: 9 files. The "diest?," stav: 6
+files. The sIn-Tone corruption: 6 sites against 4 clean copies. SEVEN
+R-1 pointing/wording refusals. FIVE cross-book dogmatic rows (tones I,
+II, IV, V, VI) awaiting the octoechos roots (E-1). Two B-4 Tone-II
+template mismatches; B-5's Tone VII confirmed genuine at three files.
+Three chairetismoi; three reference devices ("the foregoing is
+repeated", "The same as above", "the same."); two composers (Gregory the
+Sinaite, Patriarch Germanus); repeat 1|2|3 all attested; placeholders
+(name) → (names) → his (her) → repose (glorification) → (name of the
+event.) → (name of the event/Icon).
+
+### WHAT THE BOOK NOW UNBLOCKS
+
+The ledger's rulings come due: A-2 (sessionals shape) BLOCKS THE FIRST
+DAILY MONTH; A-1 is narrowed to pas-sions/cru-cified (both now symmetric
+multi-file pairs); A-3 (reconciliation table) is at maximum price. E-1
+(octoechos roots) now has five dogmatic rows waiting. The four
+physical-book checks (B-1/B-2/B-4/B-5) stand.
+
+---
 
 **Session August 23, 2026 (sixteenth) — CROSS ENCODED (24 of 26); THE FIRST
 (THRICE); KATAVASIAS AND A COMPOSER; THE ANTI-TRISAGION; TONE VII CONFIRMED.**

@@ -1,5 +1,10 @@
 # Bill's Review Ledger — everything awaiting your eyes, in one place
 
+> **STATUS (Aug 23, 2026, v0.42.0): THE GENERAL MENAION IS FULLY ENCODED —
+> all 26 files, 3502 nodes, 0 errors. Every open item below now has its
+> complete evidence base; nothing further accrues from encoding. A-2 blocks
+> the first daily month and should be ruled first.**
+
 **Created 15 August 2026 at v0.41.6 (13 of 26), in answer to: "Are you
 capturing a list of items that you need my eyes on to verify?"** The honest
 answer was: partially — the items lived in four places (the gate's FINDINGS

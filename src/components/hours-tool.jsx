@@ -8656,6 +8656,37 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.42.0",
+    date: "August 2026",
+    summary: "THE GENERAL MENAION IS COMPLETE — all 26 files encoded (Holy Fathers + Theotokos close the book); 3502 nodes, 3657 rendered strings, 0 errors",
+    items: [
+      "ALL 26 GENERAL MENAION FILES ENCODED. Holy Fathers (25th): the " +
+      "Sunday-locked Councils service — the only file that cannot stand " +
+      "alone, appointing stichera, sessionals, canon, kontakion, Eothinon " +
+      "and communion verse from the Octoechos by the current tone; the " +
+      "first Litiya, artoklasia, versed LIC with incipit repeats, Great " +
+      "Prokeimenon with numbered verses, verse-less prokeimenon, single-" +
+      "ode Beatitude set, double communion verse, and the second composer " +
+      "(Patriarch Germanus). The first '(Once)' — repeat now 1|2|3.",
+      "Theotokos (26th): '(name of the event/Icon)' — the placeholder's " +
+      "final form; five feast-keyed megalynaria + the Axion Estin; a " +
+      "four-items-per-ode canon with no theotokia whose KATAVASIAS ARE " +
+      "THE CROSS'S CANON IRMOI (nine byte-identical — one festal canon, " +
+      "two roles, three files); the first eight-row Beatitude set; the " +
+      "Magnificat as prokeimenon. THE CLOSING FIND: the paraklesis " +
+      "troparion already lived in the corpus as THEOTOKIA in two files.",
+      "FINAL TALLIES: canon→Beatitudes 23 files/11 variant rows; the " +
+      "Psalm-50 family 23 files one text; seven R-1 refusals; five cross-" +
+      "book dogmatic rows (tones I, II, IV, V, VI) awaiting octoechos " +
+      "roots; six sIn-Tone sites vs four clean Wisdom copies; three " +
+      "chairetismoi; three reference devices; two composers; two B-4 " +
+      "Tone-II template mismatches; Tone VII confirmed genuine (B-5).",
+      "Corpus: 3502 nodes · 3657 rendered strings · 0 errors · all eight " +
+      "gates green. Next: the ledger rulings (A-2 blocks the first daily " +
+      "month), octoechos roots wiring, the R-9 reconciliation table.",
+    ],
+  },
+  {
     version: "v0.41.13",
     date: "August 2026",
     summary: "Cross encoded (24 of 26) — the first (Thrice), katavasias and a composer, the anti-Trisagion, Tone VII confirmed",
