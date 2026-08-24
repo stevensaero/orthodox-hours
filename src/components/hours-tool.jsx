@@ -8656,6 +8656,36 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.41.11",
+    date: "August 2026",
+    summary: "Fools + Prophet encoded (22 of 26) — gender alternatives; a chairetismos Ikos; the Tone-II template rubric; only the four subject files remain",
+    items: [
+      "FOOLS + PROPHET ENCODED — 22 of 26; only the four subject files " +
+      "remain. Fools names its exemplars in the title (Andrew, Isidore, " +
+      "Maxim, Basil, Xenia & OTHERS) and extends the placeholder device " +
+      "to GENDER — his (her), Father (Mother), O man (maiden) of God — " +
+      "and to the FEAST TYPE: 'repose (glorification)'.",
+      "THE THIRD AND FOURTH POINTING REFUSALS (Fools' troparion inverted: " +
+      "three sites '*', Vespers alone '**'; its kontakion splits p9/" +
+      "Liturgy). A CHAIRETISMOS IKOS — ten Rejoice-salutations. TWO " +
+      "REWRITTEN BEATITUDES under the corpus's first explicit source " +
+      "rubric — which MISCOUNTS (says 4+4, prints 3+4). The TONE I " +
+      "dogmatic (fourth cross-book row). Fools' dogmatic stav = Nuns' " +
+      "LIC stav byte-for-byte INCLUDING two Cyrillic О homoglyphs: the " +
+      "homoglyphs travel with the text.",
+      "PROPHET: the SECOND rubric-tone mismatch — both announce 'Tone " +
+      "II' over other tones: a copied template rubric never updated " +
+      "(ledger B-4). The rewritten-reprint pattern reaches the " +
+      "sessionals (three substitutions in one reprint). The Tone VI " +
+      "canon reaches FOUR files, Ode IX alone in a second rendering. " +
+      "'thou dist behold' at BOTH kontakion sites — a canonical defect. " +
+      "TYPIKON with a K. Tone VII on 'Precious in the sight' at a " +
+      "second file (B-5 strengthened).",
+      "Corpus at 2957 nodes · 3089 rendered strings · 0 errors · all " +
+      "eight gates green.",
+    ],
+  },
+  {
     version: "v0.41.10",
     date: "August 2026",
     summary: "MonasticMartyr + NunMartyr encoded (20 of 26) — the first rewritten Beatitude; the Tone V dogmatic; the ewe-lamb troparion pairs across files",

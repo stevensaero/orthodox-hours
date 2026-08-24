@@ -1,5 +1,67 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.41.10** | **Tone Trainer: v0.26.0** | Last synced: August 23, 2026
+**Tool version: v0.41.11** | **Tone Trainer: v0.26.0** | Last synced: August 23, 2026
+
+**Session August 23, 2026 (fourteenth) — FOOLS AND PROPHET ENCODED (22 of 26);
+GENDER ALTERNATIVES; A CHAIRETISMOS IKOS; THE TONE-II TEMPLATE RUBRIC; ONLY
+THE SUBJECT FILES REMAIN.**
+**Version bumped to v0.41.11.** Eight gates green: 2957 nodes/0 errors · 3089
+strings/0 missing · build ✓. Commits `78cd110` (Fools), `c2b20da` (Prophet),
+plus this docs/version commit.
+
+### FOOLS: THE DEVICE GROWS TWO DIMENSIONS
+
+The title NAMES ITS EXEMPLARS (Andrew of Constantinople, Isidore of
+Rostov, Maxim and Basil of Moscow, Xenia of St. Petersburg, & OTHERS) —
+and the (name) placeholder extends to GENDER throughout the file (his
+(her), Father (Mother), son (daughter), O man (maiden) of God, "bared in
+the midst of women (men)") and to the FEAST TYPE ("thy holy and honorable
+repose (glorification)"). The third and fourth POINTING refusals, both in
+one file — the troparion INVERTED (three sites agree on "*", Vespers alone
+"**"), the kontakion split p9/Liturgy. A CHAIRETISMOS IKOS (ten Rejoice-
+salutations, "thy parents” love" carrying the right-quote class to a new
+word). TWO REWRITTEN BEATITUDES under the corpus's FIRST explicit
+Beatitude-source rubric — which MISCOUNTS ("4 from ODE III, and 4 from
+ODE VI" over a 3+4 page). The TONE I dogmatic (fourth cross-book row).
+And Fools' dogmatic stav = NUNS' LIC stav byte-for-byte INCLUDING the two
+Cyrillic О homoglyphs — the homoglyphs travel with the text (corpus 5).
+
+### PROPHET: THE TONE-II TEMPLATE RUBRIC
+
+The second rubric-tone/printed-tone mismatch — Prophet's dogmatic rubric
+announces TONE II over the printed TONE VI dogmatic (ninth file of that
+dogmatic). BOTH B-4 mismatches announce "Tone II": a copied template
+rubric whose tone was never updated (ledger B-4 updated with the
+hypothesis — it makes the physical-book check MORE interesting, not
+less). The rewritten-reprint pattern reaches the sessionals (the
+Polyeleos sessional reprints after Ode III with three substitutions; the
+idiomelon reprints repointed **→*). The Tone VI canon family reaches
+FOUR files (I-VIII byte-identical), with Ode IX alone diverging into a
+second rendering. "thou dist behold" prints at BOTH kontakion sites — a
+canonical defect. TYPIKON with a K, alone in the corpus. Tone VII on
+"Precious in the sight" at a SECOND file (B-5: a real Grave-Tone
+appointment likelier). Two Simeon sword hymns in one file. "Joy of the
+ranks of heaven" — the Spec.-Mel. source hymn — appears in full.
+
+### PATTERNS AT TWENTY-TWO FILES
+
+Canon→Beatitudes: nineteen files, five variant rows (three rewrites).
+Doxasticon reprint: sixteen files. Anabathmoi/psalm-50 small parts: one
+text each across all files that print them. The travelling "service ):"
+space: nine files (HieroConfessor alone prints it clean). The sIn-Tone
+corruption: six sites; the CORRECT Wisdom 5 rendering: four files. The
+"diest?," stavrotheotokion: six files. "Mercifully regard": six files.
+The Tone VI dogmatic: nine files (Apostle's variant alone). Melody-
+doubling in one file: NunMartyr, Fools ×2, Prophet. The double
+prokeimenon label: five files, both services in two. Instrument catches
+this session: one order-gate catch (declared absence must be ordered),
+one mis-paired register row and two unstorable label-sics (byte-gate),
+three wrong end-anchors (generator asserts).
+
+REMAINING: the four SUBJECT files, per standing order LAST: St John
+Baptist (18pp, the negative conditional to measure), Cross, Holy
+Fathers, Theotokos.
+
+---
 
 **Session August 23, 2026 (thirteenth) — MONASTICMARTYR AND NUNMARTYR ENCODED
 (20 of 26); THE FIRST REWRITTEN BEATITUDE; THE TONE V DOGMATIC; THE EWE-LAMB
