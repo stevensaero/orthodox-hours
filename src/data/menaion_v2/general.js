@@ -62,6 +62,8 @@ const PF = 'Prophet.pdf';
 const [pr2, pr1] = mk(PF);
 const JB = 'St John Baptist.pdf';
 const [jb2, jb1] = mk(JB);
+const CX = 'Cross.pdf';
+const [cx2, cx1] = mk(CX);
 
 const GENERAL = {
   Monastic: {
@@ -8204,6 +8206,347 @@ const GENERAL = {
         citation_basis: 'printed' },
       // The semicolon/capital-He family form — fourth file of that form.
       communion_verse: jb1("In everlasting remembrance shall the righteous be; He shall not be afraid of evil tidings.", "p18 Communion verse", { sourceLabel: "Communion Verse", label_inline: true }),
+    },
+  },
+  Cross: {
+    // THE SECOND SUBJECT FILE — the Cross itself. No placeholders, no
+    // theotokia at Vespers (nothing displaces the Cross): the Glory and
+    // Both-now print as JOINT single hymns. A new reference device — “the
+    // foregoing is repeated” — stands where sessional theotokia would.
+    title: cx1("THE GENERAL VIGIL SERVICE TO THE VENERATED AND LIFE-CREATING CROSS.", 'p1 title'),
+
+    // “Save O lord Thy people” — LOWERCASE lord at all four byte-identical
+    // sites (a canonical defect, sic register). The Vespers site carries the
+    // corpus's FIRST (Thrice) — repeat: 3, gate extended deliberately.
+    troparion: cx2("Save O lord Thy people * and bless thine inheritance. * Grant now unto the faithful, * victory over adversaries, * and by the power of Thy Cross ** do Thou preserve Thy commonwealth.", "p3 Troparion", { sourceLabel: "The Troparion, in Tone I", verified_sites: [{"locus": "p3 Vespers dismissal", "tone": 1, "repeat": 3}, {"locus": "p4 God is the Lord", "tone": 1, "repeat": 2}, {"locus": "p12 after the Great Doxology", "tone": 1}, {"locus": "p13 AT THE LITURGY", "tone": 1}] }),
+    // THE SIXTH POINTING REFUSAL: p9 points “ally, * Thy weapon”, the
+    // Liturgy site “ally, ** Thy weapon”. The p9 copy is canonical; the
+    // Liturgy copy is stored at its site. Its Spec. Mel. is ITSELF — the
+    // kontakion sung to its own melody (“Thou that wast of Thine own
+    // will ...”), first self-referential melody label.
+    kontakion: cx2("Thou who wast of Thine own will lifted upon the Cross, * grant unto Thy new community named after Thee * Thy bounties, O Christ our God, * and by Thy power make glad all right believing Orthodox Christians, * conferring victories over enemies * upon those who have as an ally, * Thy weapon of peace, the invincible trophy.", "p9 Kontakion after Ode VI", { sourceLabel: "The Kontakion, in Tone IV", spec_mel: "Thou that wast of Thine own will ...", tone: 4, verified_sites: [{"locus": "p9 after Ode VI", "tone": 4}] }),
+    // The Ikos quotes Galatians with its punctuation outside the quotes —
+    // “But God forbid”, saith he — captured verbatim.
+    ikos: cx1("O ye who are zealous to understanding scripture, come and read what he who was caught up into the third heaven in paradise and who heard words divine and unspeakable, which cannot be uttered by human tongue, wrote unto the Galatians! “But God forbid”, saith he, “that I should glory, save in the Cross of our Lord Jesus Christ”, Who hath suffered thereupon and slain the passions. Therefore the same Cross of the Lord we all also hold in glory, for this tree of salvation is unto us a weapon of peace, and an invincible trophy.", "p9 Ikos", { sourceLabel: "The Ikos", label_inline: true }),
+
+    vespers: {
+      order: ['lic_rubric', 'lic', 'lic_glory_both_now',
+              'entrance_rubric', 'readings', 'aposticha_rubric', 'aposticha',
+              'aposticha_glory_both_now',
+              'troparion_rubric', 'troparion', 'closing_rubric'],
+      // TONE VII stichera — the first Tone VII hymnody in the corpus — under
+      // “Called from on high”: the same melody Prophet labels “Called from
+      // above” (one melody, two label renderings).
+      lic_rubric: cx1("On “Lord, I have cried ...,” the Stichera, in Tone VII:", 'p1 LIC rubric'),
+      lic: [
+        cx2("Today the divine multitude of the faithful rejoiceth; * for unto the ends of the world the Cross hath appeared, * illumining the firmament with light unapproachable, * brightening the air and adorning the face of the earth. * The Church of Christ hymneth with divine songs * venerating the divine and most wondrous Cross * which doth preserve her from above; * let us, strengthened by its power, * approach the Master calling out and saying: ** grant unto the world peace, and unto our souls enlightenment.", "p1 LIC 1", { spec_mel: "Called from on high ...", label: "plain", tone: 7 }),
+        cx2("Let creation today rejoice and be glad; * for the heavenly Cross shineth forth unto the ends of the world, * enlightening the earthly and uniting the scattered; * today mankind doth exult together * with the choirs of the Angels, * for the Cross, having destroyed the primal curse separating mankind from paradise, * hath now openly joined all into one. * Wherefore shining more brightly than the sun it enlighteneth the whole of creation with grace, ** cleansing and saving those who with faith honor it.", "p1 LIC 2", { spec_mel: "Called from on high ...", label: "plain" }),
+        cx2("The divine Cross hath appeared to the world * shining more brightly than the sun, * the revered scepter and crown of Christ the King. * It shineth forth clearly unto the ends of the world. * Bringing mankind forth from Hades * whom it hath greatly despoiled, * overturning the enemy and utterly destroying the arrogance of the demons. * And now declaring the resurrection of the Savior * it hath been revealed a Source of salvation to those who cry aloud: ** Grant unto the world peace and enlighten our souls.", "p1 LIC 3", { spec_mel: "Called from on high ...", label: "plain" }),
+      ],
+      // A JOINT Glory-Both-now — one hymn under both labels, UNPOINTED: no
+      // theotokion follows (nothing displaces the Cross), no dogmatic, no
+      // conditional rubric at all.
+      lic_glory_both_now: cx1("That which Moses prefigured with his body of old cast down and vanquished Amalek; and David the psalmist, crying out, hath commanded us to bow down before Thy footstool, Thy precious Cross, O Christ God. Today we sinners also do homage with our unworthy lips to Thee Whose will it was to be nailed thereto; and, chanting, we pray: O Lord, grant that with the thief we may receive Thy kingdom!", "p1 Glory Both now", { sourceLabel: "Glory ..., Both now ..., in Tone VIII", tone: 8, label: ["glory", "both_now"] }),
+      entrance_rubric: cx1("The Entrance. The Prokeimenon of the day. The Three Lessons", 'p1 Entrance rubric'),
+      // ALL THREE LESSON CITATIONS PRINTED, under "THE BOOK OF …" headings
+      // (new forms) — the Exaltation set: Exodus (Marah), Proverbs (the tree
+      // of life), Isaiah 60. The Exodus body prints "took their jorney"
+      // (journey misspelled — unstored per R-4, recorded here).
+      readings: [
+        { heading: 'THE BOOK OF EXODUS',
+          src: { file: CX, locus: 'p1-p2 Lesson 1' },
+          citation_verbatim: '(15, 22-27; 16, 1).',
+          citation: { book: 'Exodus', chapter: 15, verses: '15:22-27; 16:1' },
+          citation_basis: 'printed' },
+        { heading: 'THE BOOK OF PROVERBS',
+          src: { file: CX, locus: 'p2 Lesson 2' },
+          citation_verbatim: '(3, 11-18).',
+          citation: { book: 'Proverbs', chapter: 3, verses: '11-18' },
+          citation_basis: 'printed' },
+        { heading: 'THE BOOK OF ISAIAH',
+          src: { file: CX, locus: 'p2 Lesson 3' },
+          citation_verbatim: '(60, 11-16).',
+          citation: { book: 'Isaiah', chapter: 60, verses: '11-16' },
+          citation_basis: 'printed' },
+      ],
+      // “O house of Ephratha” — lowercase house where Fools capitalizes it:
+      // the melody label's case flexes per file.
+      aposticha_rubric: cx1("On the Aposticha, these Stichera, in Tone II:", 'p2 Aposticha rubric'),
+      // Sticheron 2: “wast affixed” where “was” belongs (the class). Verse 1
+      // returns as the Liturgy prokeimenon in TONE VII; verse 2 as the
+      // Alleluia verse re-pointed.
+      aposticha: [
+        cx2("With deified water O Word, * and Thy blood, * Thy Church * is brightly adorned like a bride, ** praising the glory of the cross.", "p2 Aposticha 1", { spec_mel: "O house of Ephratha ...", label: "plain", tone: 2 }),
+        cx2("Exalt ye the Lord our God, * and worship the footstool of His feet, for He is holy.", "p2 Aposticha verse 1", { sourceLabel: "Verse", label: "refrain" }),
+        cx2("Let us bow down whilst exalting * the spear and the Cross, * the nails and other instruments * with which the life-bearing body of Christ ** wast affixed to the cross.", "p3 Aposticha 2", { spec_mel: "O house of Ephratha ...", label: "plain" }),
+        cx2("But God is our King before the ages, * He hath wrought salvation in the midst of the earth.", "p3 Aposticha verse 2", { sourceLabel: "Verse", label: "refrain" }),
+        cx2("When Moses vanquished Amalek * holding his hands in the air, * he prefigured the form of the Cross * and the most pure passion ** of Christ our God.", "p3 Aposticha 3", { spec_mel: "O house of Ephratha ...", label: "plain" }),
+      ],
+      // The SECOND joint Glory-Both-now — pointed this time, and closing on
+      // Constantine.
+      aposticha_glory_both_now: cx2("Jacob, the patriarch, whilst blessing his grandchildren * prefigured Thy Cross, O Christ, * by laying his hands upon their heads in the form of a Cross, * which today we exalt crying aloud: * O Savior grant victory over all adversaries to Orthodox Christians * as Thou didst grant victory unto Constantine.", "p3 Aposticha Glory Both now", { sourceLabel: "Glory ..., Both now ...,", label: ["glory", "both_now"] }),
+      troparion_rubric: cx1("The Troparion, in Tone I:", 'p3 troparion rubric'),
+      // “The Dismissal.” — the full stop for the colon.
+      closing_rubric: cx1("The Dismissal.", 'p3 Dismissal'),
+    },
+
+    matins: {
+      order: ['god_is_lord_rubric', 'troparion', 'god_is_lord_closer_rubric',
+              'sessional_1_rubric', 'sessional_1', 'sessional_1_closer_rubric',
+              'sessional_2_rubric', 'sessional_2', 'sessional_2_closer_rubric',
+              'megalynarion_rubric', 'megalynarion', 'megalynarion_verse',
+              'sessional_polyeleos_rubric', 'sessional_polyeleos',
+              'sessional_polyeleos_closer_rubric',
+              'anabathmoi_rubric', 'anabathmoi_intro',
+              'anabathmoi', 'anabathmoi_closer', 'prokeimenon_rubric', 'prokeimenon',
+              'prokeimenon_verse', 'gospel_rubric', 'gospel', 'psalm50_rubric',
+              'psalm50_sticheron', 'psalm50_closer', 'psalm50_verse',
+              'sessional_post50_rubric', 'sessional_post50', 'canon_rubric', 'canons',
+              'sessional_ode3_rubric', 'sessional_ode3', 'sessional_ode3_closer_rubric',
+              'kontakion_rubric', 'kontakion', 'ikos',
+              'exapostilarion_rubric', 'exapostilarion',
+              'praises_rubric', 'praises', 'praises_glory_both_now',
+              'great_doxology_rubric', 'troparion_rubric', 'troparion',
+              'closing_rubric'],
+      god_is_lord_rubric: cx1("On “God is the Lord ...,” the Troparion, in Tone I:", 'p4 God is the Lord rubric'),
+      // THE FOREGOING-IS-REPEATED DEVICE — four sites in this file, standing
+      // where sessional theotokia would print; the first ends with a COLON,
+      // the rest with full stops (captured verbatim per site).
+      god_is_lord_closer_rubric: cx1("Glory ..., Both now ..., the foregoing is repeated:", 'p4 God is the Lord closer rubric'),
+      // “the Sessional Hymn: in Tone VI” — the colon-before-tone class (third
+      // file), at both kathisma rubrics; and neither sessional prints a
+      // Spec. Mel.
+      sessional_1_rubric: cx1("After the 1st chanting of the Psalter, the Sessional Hymn: in Tone VI:", 'p4 sessional 1 rubric'),
+      sessional_1: cx2("No sooner, O Christ, was the tree of Thy Cross, * fixed upon the earth, * than the very foundations of death were shaken O Lord; * for He Whom Hades so greedily engulfed, * with dread disgorged. * Thou, O Holy One, hast declared unto us * Thy salvation * and we glorify Thee; * O Son of God have mercy upon us.", "p4 Sessional 1", { tone: 6 }),
+      sessional_1_closer_rubric: cx1("Glory ..., Both now ..., the foregoing is repeated.", 'p4 sessional 1 closer rubric'),
+      // “Today is fulfilled the prophetic sayings” (number clash, verbatim);
+      // “the Theotokos , *” — the Theotokos-space class, THIRD file.
+      sessional_2_rubric: cx1("After the 2nd chanting of the Psalter, the Sessional Hymn: in Tone VI:", 'p4 sessional 2 rubric'),
+      sessional_2: cx2("Today is fulfilled the prophetic sayings, * for we bow down upon the spot upon which Thy feet stood, O Lord, * and having received the tree of salvation, * we obtain freedom from sinful passion, * through the supplications of the Theotokos , * O Only Lover of mankind.", "p4 Sessional 2", { tone: 6 }),
+      sessional_2_closer_rubric: cx1("Glory ..., Both now ..., the foregoing is repeated.", 'p4 sessional 2 closer rubric'),
+      megalynarion_rubric: cx1("After the Polyeleos, the Megalynarion:", 'p4 megalynarion rubric'),
+      // Addressed to CHRIST — the subject files keep relocating the
+      // megalynarion's addressee.
+      megalynarion: cx1("We magnify Thee, O Life-giver, Christ, and we venerate Thy holy Cross with which Thou hast delivered us from enslavement to the enemy.", 'p4 Megalynarion'),
+      megalynarion_verse: cx1("Judge them, O Lord, that do me injustice; war against them that war against me.", "p4 Megalynarion verse", { sourceLabel: "Verse", label: "refrain" }),
+      sessional_polyeleos_rubric: cx1("After the Polyeleos, the Sessional Hymn, in Tone VIII:", 'p4 Polyeleos sessional rubric'),
+      // “That which was secretly ordained” — and the post-Ode-III sessional
+      // names the SAME melody “That which was mystically commanded”: one
+      // melody, two renderings, ONE FILE.
+      sessional_polyeleos: cx2("In paradise a tree once made me aware of my nakedness, * for through eating from it the enemy brought about death, * but when the tree of the Cross was fixed upon the earth, * vesting mankind with life, * the whole of creation was filled with every manner of joy. * Seeing therefore the Cross lifted up, * let us O people, with one voice and one faith cry aloud unto God: * Thy Glory O Lord hath filled Thy house.", "p4 Polyeleos sessional", { spec_mel: "That which was secretly ordained ...", tone: 8 }),
+      sessional_polyeleos_closer_rubric: cx1("Glory ..., Both now ..., the foregoing is repeated.", 'p4 Polyeleos sessional closer rubric'),
+      // “If not a Resurrection Service, WE chant” — the negative short form
+      // with a new pronoun.
+      anabathmoi_rubric: cx1("If not a Resurrection Service, we chant the following:", 'p4 anabathmoi rubric'),
+      anabathmoi_intro: cx1("The Song of Ascents: The first antiphon, in Tone IV:", 'p4 anabathmoi heading'),
+      anabathmoi: [
+        cx2("From my youth * do many passions war against me; * but do Thou Thyself defend ** and save me, O my Savior.", "p4 anabathmoi 1", { label: "plain" }),
+        cx2("Ye haters of Zion * shall be shamed by the Lord; * for like grass, by the fire ** shall ye be withered.", "p5 anabathmoi 2", { label: "plain" }),
+      ],
+      anabathmoi_closer: cx2("In the Holy Spirit, * every soul is quickened, * and, through cleansing, is exalted ** and made radiant by the Triple Unity in a hidden sacred manner.", "p5 anabathmoi Glory Both now", { sourceLabel: "Glory ..., Both now ...,", label: ["glory", "both_now"] }),
+      // Back to the plain inline label — no double “The Prokeimenon:” here.
+      prokeimenon_rubric: cx1("Prokeimenon, in Tone IV:", 'p5 prokeimenon rubric'),
+      prokeimenon: cx2("All the ends of the earth * have seen the salvation of our God.", "p5 Prokeimenon", { sourceLabel: "Prokeimenon, in Tone IV", tone: 4, label_inline: true }),
+      // “O Sing unto the Lord” — capital S after the vocative O (verbatim).
+      prokeimenon_verse: cx1("O Sing unto the Lord a new song, for the Lord hath wrought wondrous things.", "p5 Prokeimenon verse", { sourceLabel: "Verse", label: "refrain" }),
+      gospel_rubric: cx1("Let every breath ...,", 'p5 Let every breath'),
+      // A MIXED-CASE gospel heading — "The Holy Gospel according to St.
+      // John" — first non-capitals heading in the corpus, with the book
+      // abbreviated INSIDE the citation and a stop before the close paren.
+      gospel: { heading: 'The Holy Gospel according to St. John',
+        src: { file: CX, locus: 'p5 Matins Gospel' },
+        citation_verbatim: '(JN. 12, 28-36.)',
+        citation: { book: 'John', chapter: 12, verses: '28-36' },
+        citation_basis: 'printed' },
+      psalm50_rubric: cx1("After the 50th Psalm:", 'p5 After the 50th Psalm'),
+      // “Through the prayers of the APOSTLES” — the Cross has no saint, so
+      // the Psalm-50 Glory borrows the apostolic sticheron; and the Both-now
+      // label carries a tone (“Both now ..., in Tone VI:”), alone in the
+      // corpus.
+      psalm50_sticheron: cx2("Through the prayers of the Apostles * O Merciful One, ** blot out the multitude of our transgressions.", "p5 Psalm 50 Glory", { sourceLabel: "Glory ..., in Tone VI", tone: 6, label: "glory" }),
+      psalm50_closer: cx2("Through the prayers of the Theotokos, * O Merciful One, ** blot out the multitude of our transgressions.", "p5 Psalm 50 Both now", { sourceLabel: "Both now ..., in Tone VI", tone: 6, type: "theotokion", label: "both_now" }),
+      psalm50_verse: cx2("Have mercy on me, O God, * according to Thy great mercy; * and according to the multitude of Thy compassions, ** blot out my transgressions.", "p5 Psalm 50 verse", { label: "refrain" }),
+      sessional_post50_rubric: cx1("Then the Sessional Hymn, in Tone VI:", 'p5 post-Psalm-50 sessional rubric'),
+      sessional_post50: cx2("O Cross of Christ, * the hope of Christians, * the instructor of those astray, * the haven of the assaulted, * victory in war, * establishment of the universe, * the healer of the infirm, * the resurrection of the dead, ** have mercy on us.", "p5 post-Psalm-50 Sessional", { tone: 6 }),
+      // THE FIRST AUTHOR ATTRIBUTION IN THE CORPUS — “a composition of
+      // Gregory the Sinaite” — carried on the canon's composer field; and
+      // the first KATAVASIAS (the Exaltation set, one per ode). Ode VI
+      // prints FOUR troparia and NO theotokion — nothing displaces the
+      // Cross there either.
+      canon_rubric: cx1("The Canon of the venerable and life-creating Cross, a composition of Gregory the Sinaite, in Tone IV:", 'p6 Canon rubric'),
+      canons: [{
+        title: "The Canon of the venerable and life-creating Cross, a composition of Gregory the Sinaite, in Tone IV:",
+        composer: "Gregory the Sinaite", tone: 4,
+        odes: {
+          1: {
+            irmos: cx2("I shall open my mouth, * and be filled with the Spirit, * and utter discourse to the Queen and Mother; * and be seen radiantly keeping festival, * joyfully praising her wonders.", "p6 Ode 1 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            refrain: cx1("Glory to Thy precious Cross O Lord", "p6 Ode 1 refrain", { sourceLabel: "Refrain", label_inline: true }),
+            items: [
+              cx1("O Cross all-powerful! Thou art the boast of the Apostles, the affirmation of ascetics and the emblem of the faithful, the glory of both Hierarchs and Martyrs, the victory and confirmation of all those who praise thee.", "p6 Ode 1 troparion 1", { label: "plain" }),
+              cx1("O all-venerable cross! Thou hast proved to be a four-ended power, the adornment of the Apostles and the Martyrs, the strength and health of the infirm, the resurrection of the dead and the raising up of the fallen.", "p6 Ode 1 troparion 2", { label: "plain" }),
+              cx1("O cross! Be unto me the might, the strength and the power, the deliverer and foremost defender against my assailants, the shield and protector, my victory and confirmation, ever preserving and sheltering me.", "p6 Ode 1 troparion 3", { label: "plain" }),
+            ],
+            theotokion: cx1("When thou, O all-immaculate one, beheld thy Son on the Cross, thy soul was deeply wounded, wherefore thou didst exclaim aloud lamenting painfully, but soon thereafter thou didst glorify the might of the cross.", "p6 Ode 1 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            katavasia: cx2("Inscribing the invincible weapon of the Cross * upon the waters, * Moses marked a straight line before him with his staff * and divided the Red Sea, * opening a path for Israel * who went over dry-shod. * Then he marked a second line across the waters and united them in one, * overwhelming the chariots of Pharaoh. * Therefore let us sing to Christ our God, for He hath been glorified.", "p6 Ode 1 Katavasia", { sourceLabel: "Katavasia, in Tone VIII", label_inline: true }),
+          },
+          3: {
+            irmos: cx2("O Theotokos, thou living and plentiful fount, * establish in spiritual fellowship those who sing hymns to thee, * and in thy divine glory * grant them crowns of glory.", "p6-p7 Ode 3 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              cx1("O all-venerable cross! Thou art the weapon of ascetics, the two-edged sword of Christ, the adornment of the faithful, the cure of the ailing and the protection and resurrection of the dead.", "p6-p7 Ode 3 troparion 1", { label: "plain" }),
+              cx1("Thou O Cross, hast proved to be the foundation of piety, the destruction of demons, the adornment of the Churches, the ruin of the wicked and our enemies, and their humiliation in the day of judgment.", "p6-p7 Ode 3 troparion 2", { label: "plain" }),
+              cx1("O life-bearing cross! Be unto me strength and victory, an unassailable shield and rampart, the driving away of demons, the extinguishing of wicked thoughts, and the preservation of my mind.", "p6-p7 Ode 3 troparion 3", { label: "plain" }),
+            ],
+            theotokion: cx1("O Virgin Lady, thy Son suffered a most humiliating crucifixion, as well as an unbecoming death; but as the Immortal One, He overturned the opposing forces of the enemy.", "p6-p7 Ode 3 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            // The Ode III katavasia ends WITHOUT a full stop (sic register).
+            katavasia: cx2("The rod of Aaron is an image of this mystery, * for when it budded forth it showed who should be priest. * So in the Church, that once was barren, * the wood of the Cross hath now budded forth, * filling her with strength and steadfastness", "p6-p7 Ode 3 Katavasia", { sourceLabel: "Katavasia", label_inline: true }),
+          },
+          4: {
+            irmos: cx2("He who sitteth in glory upon the throne of the Godhead, * Jesus the true God, * is come in a swift cloud * and with His sinless hands he hath saved those who cry: * Glory to Thy power, O Christ.", "p7 Ode 4 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              cx1("The ends of the world being four-ended, thou O Cross, dost therefore represent us, and as a three-edged sword thou dost cut off the principles of darkness, being the great weapon of Christ and an invincible and all-powerful trophy of victory.", "p7 Ode 4 troparion 1", { label: "plain" }),
+              cx1("Thy height, O life-bearing Cross, striketh at the prince of the air, and thy depth slayeth the serpent of the deep abyss, and thy width again appeareth subduing the prince of the world by thy might.", "p7 Ode 4 troparion 2", { label: "plain" }),
+              cx1("By being raised up, thou hast attracted the fallen towards thyself, for thou hast exalted the nature of earthly things and art equally praised with the Thrones of God; O Cross, the greatest height, bridge for the world, do thou speedily raise my soul from the depth of the passions.", "p7 Ode 4 troparion 3", { label: "plain" }),
+            ],
+            theotokion: cx1("O most pure Maiden Theotokos, stretching out thy hands in the form of a Cross unto Him Who was lifted up upon the Cross, do thou now O Virgin, entreat Him on behalf of those who in faith pray unto thee.", "p7 Ode 4 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            katavasia: cx2("O Lord, I have heard the mystery of Thy dispensation: * I have considered Thy works, * and I have glorified Thy Divinity.", "p7 Ode 4 Katavasia", { sourceLabel: "Katavasia", label_inline: true }),
+          },
+          5: {
+            irmos: cx2("All creation stands in awe of thy divine glory; * for thou, O Virgin who hast not known wedlock, * didst contain within thy womb the God of all, * and gave birth to the timeless Son, * bestowing peace, upon all who hymn thee.", "p8 Ode 5 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              cx1("O Cross! Thou art the ladder of the heavenly sanctuary, the marker of steps, the height and glory of Christ, the trophy of God of equal gravitas unto both the visible and invisible worlds.", "p8 Ode 5 troparion 1", { label: "plain" }),
+              cx1("O Cross! Thou art a form indescribable in power, the sanctification of waters, the purification of air, the consecration and enlightenment of the faithful, appearing as a symbol of valor and as Christ’s immutable scepter which overcometh every adversary.", "p8 Ode 5 troparion 2", { label: "plain" }),
+              cx1("O all-powerful Cross! Subdue the wicked enemies that foolishly hate and denounce thee; set afire the foolishness of the heathen and extinguish their rage. O Cross, most holy and Christ-bearing, preserve us by thy might.", "p8 Ode 5 troparion 3", { label: "plain" }),
+            ],
+            theotokion: cx1("O Sovereign-Lady and Queen of all, by the scepter of thine Offspring do thou O Virgin destroy the revolt of those who deny the might of the Cross, and grant strength, cleansing, victory and help unto all right believing Orthodox Christians.", "p8 Ode 5 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            katavasia: cx2("O thrice-blessed Tree, on which Christ the king and Lord was stretched! * Through thee the beguiler fell, * who tempted mankind with the tree. * For he was caught in the trap set by God, * who was crucified upon thee in the flesh, * granting peace unto our souls.", "p8 Ode 5 Katavasia", { sourceLabel: "Katavasia", label_inline: true }),
+          },
+          6: {
+            irmos: cx2("Celebrating the divine and solemn feast * of the Mother of God * O ye divinely wise, * let us come, clapping our hands, * and glorify God who was born of her.", "p8 Ode 6 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              cx1("The Cross is the resurrection of all, the Cross is the raising of the fallen, the mortification of passions and the subjugation of the body, the Cross is the glory of souls and light eternal.", "p8 Ode 6 troparion 1", { label: "plain" }),
+              cx1("The Cross is the destroyer of enemies, the Cross is the overthrow and captivation of the wicked, the might of the faithful, the preserver of the devout, and the expulsion of the demons.", "p8 Ode 6 troparion 2", { label: "plain" }),
+              cx1("The Cross is the destruction of passions, the Cross is the driving away of malicious thought, the Cross is the ruin of the crafty heathen and hath proved to be the captor of spirits.", "p8 Ode 6 troparion 3", { label: "plain" }),
+              cx1("No sooner was the Cross lifted, than the legions of the spirits of the air fell, and when the Cross descended, all the impious ones feared seeing the power of the Cross flashing like lightning.", "p8 Ode 6 troparion 4", { label: "plain" }),
+            ],
+            katavasia: cx2("Jonah stretched out his hands in the form of a Cross * within the belly of the sea monster, * plainly prefiguring the redeeming Passion. * Cast out from thence after three days, * he foreshadowed the marvelous Resurrection of Christ our God, * who was crucified in the flesh and enlightened the world * by His Rising on the third day.", "p8 Ode 6 Katavasia", { sourceLabel: "Katavasia", label_inline: true }),
+          },
+          7: {
+            irmos: cx2("Refusing to worship created things * in place of the Creator, * the divinely wise youths bravely trampled down the threatening fire * and rejoicing they sang aloud: * O supremely hymned Lord and God of our Fathers, Blessed art Thou.", "p9 Ode 7 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              cx1("The Undivided and Uncommingled Trinity we proclaim as One in nature, the Father Unbegotten, the Son Begotten, and the Holy Spirit Proceeding from God the Father, Him let us hymn in song chanting: O God of our fathers, Blessed art Thou.", "p9 Ode 7 troparion 1", { label: "plain" }),
+              cx1("O Thrice-Hypostatic God, with the flashes of thy never-setting spiritual lightning, enlighten our noetic eyes that we may comprehend Thy transcendent beauty, O Tri-luminous One, which is to man, incomprehensible, and to Angels, inaccessible.", "p9 Ode 7 troparion 2", { label: "plain" }),
+              cx1("With the rays of Thy divine light, O supremely hymned, gracious, and all-powerful God, raise up from the abyss, my fallen soul which hath been snatched from the light of Thy grace and cast into darkness.", "p9 Ode 7 troparion 3", { label: "plain" }),
+            ],
+            theotokion: cx1("O pure one, stretching thine arms Crosswise, unto Him Who had stretched His arms on the tree of the Cross and exalted our nature as well as slain the armies of the enemies, cease not to make supplication on our behalf.", "p9 Ode 7 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            katavasia: cx2("The senseless decree of the wicked tyrant, * breathing forth threats and blasphemy hateful to God, * confused the people. * Yet neither the fury of the wild beast nor the roaring of the fire could frighten the three Children: * but standing together in the flame, * fanned by the wind that brought refreshment as the dew, they sang: * “Blessed and supremely praised art Thou, O our God and the God of our Fathers.”", "p9 Ode 7 Katavasia", { sourceLabel: "Katavasia", label_inline: true }),
+          },
+          8: {
+            irmos: cx2("The Offspring of the Theotokos * saved the holy children in the furnace. * He who was then prefigured hath now been born on earth, * and He gathereth all creation to hymn thee: * all ye works praise ye the Lord * and supremely exalt Him throughout all ages.", "p10 Ode 8 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              cx1("The height of Christ’s passion, the bow and arrow and sword, an invincible weapon and unconquerable power, Christ’s footstool and victory over adversaries, symbol of reign and scepter of the faithful hast thou proved to be, O victorious cross.", "p10 Ode 8 troparion 1", { label: "plain" }),
+              cx1("Thou hast raised up our fallen nature, having restored us through Christ who was crucified upon thee, O height divine and depth unspeakable! Thou art the symbol of Christ, O exceedingly precious Cross, the breadth without measure, and the symbol of the Incomprehensible Trinity, O life-bearer.", "p10 Ode 8 troparion 2", { label: "plain" }),
+              cx1("Embracing the Cross of the Lord with our hearts souls and lips, let us now come together, to exalt and magnify it, and adoring it let us sing together the most pure hymn, exclaiming: Rejoice O Cross, the greatest of riches, and the adornment of the Church.", "p10 Ode 8 troparion 3", { label: "plain" }),
+              cx1("It is the tree of life and of salvation, the tree of immortality, the tree of knowledge, the thrice-beloved tree, incorruptible and inexhaustible threefold Cross, the honored tree, for it doth bear the image of the Thrice-Hypostatic Trinity.", "p10 Ode 8 troparion 4", { label: "plain" }),
+            ],
+            katavasia: cx1("O ye Children, equal in number to the Trinity, bless ye God the Father and creator; sing ye the praises of the Word who descended and changed the fire to dew; and exalt ye above all for ever the most Holy Spirit, who giveth life unto all.", "p10 Ode 8 Katavasia", { sourceLabel: "Katavasia", label_inline: true }),
+          },
+          9: {
+            irmos: cx2("Let every mortal born on earth, * radiant with light, in spirit leap for joy; * and let the host of the angelic powers * celebrate and honor the holy feast of the Mother of God, * and let them cry aloud: * Rejoice! O all-blessed Theotokos, * thou pure Ever-Virgin.", "p10-p11 Ode 9 irmos", { sourceLabel: "Irmos", label_inline: true }),
+            items: [
+              cx1("O Cross most precious to the world, who is able to proclaim in writing thy works, thy powers, and thy wonders, or the raising of the dead? The whole world exalteth Him Who is the greatly desired One, and who together with the Cross, ascended unto God.", "p10-p11 Ode 9 troparion 1", { label: "plain" }),
+              cx1("The thrice-blessed Cross, the all-powerful tree, the foundation of the faithful is their symbol and their Glory, The Cross of Christ is preeminent and most perfect, the glory of the Apostles, the cornerstone of ascetics, the strength and might of Martyrs, the victory and the glory of kings.", "p10-p11 Ode 9 troparion 2", { label: "plain" }),
+              cx1("Rejoice O Cross, the most preeminent and uncircumscribed image, the thrice-plentiful tree both fearful and all-blessed; Rejoice, O all-holy and all-powerful cross; Rejoice, protection of our lives, O abundantly hymned Cross of the Lord.", "p10-p11 Ode 9 troparion 3", { label: "plain" }),
+            ],
+            // Labeled Theotokion but addressed TO THE CROSS (“O venerable
+            // cross! …”), the Theotokos entering only in its last clause —
+            // captured verbatim under its printed label.
+            theotokion: cx1("O venerable cross! Be the preserver of my soul and body, and by the power of Thine image subdue the demons, drive away mine enemies, destroy the passions and grant me blessings, life and strength through the co-operation of the Holy Spirit and the honored supplications of the most pure one.", "p10-p11 Ode 9 Theotokion", { sourceLabel: "Theotokion", label: "theotokion", label_inline: true }),
+            katavasia: cx2("O Theotokos, thou art a mystical Paradise, * who untilled brought forth Christ. * by Whom the life-giving Tree of the Cross hath been planted upon the earth: * Therefore celebrating its exaltation on this day, * Him do we worship * and thee do we magnify.", "p10-p11 Ode 9 Katavasia", { sourceLabel: "Katavasia", label_inline: true }),
+          },
+        },
+      }],
+      sessional_ode3_rubric: cx1("The Sessional Hymn, in Tone VIII:", 'p7 post-Ode-III sessional rubric'),
+      sessional_ode3: cx2("Of old, the form of the Cross mysteriously typified Joshua the son of Nun, * when, O my Savior, he spread his arms forth in the form of a Cross, * and the sun stood still O God, * until the enemies that fought against Thee, were overthrown; * and seeing Thee upon the Cross the sun hath now set, * and having destroyed the power of death, * Thou hast raised the whole world with Thyself.", "p7 post-Ode-III Sessional", { spec_mel: "That which was mystically commanded ...", tone: 8 }),
+      sessional_ode3_closer_rubric: cx1("Glory ..., Both now ..., the foregoing is repeated.", 'p7 post-Ode-III closer rubric'),
+      kontakion_rubric: { absent: true, reason: "not_printed_in_source", basis: "close_reading", note: "No Typicon-fallback rubric — the page goes straight to “The Kontakion, in Tone IV:” (the subject files drop the conditional)." },
+      exapostilarion_rubric: cx1("Exapostilarion, in Tone III:", 'p11 exapostilarion rubric'),
+      // The famous exapostilarion — with the corpus's SECOND (Thrice), and NO
+      // theotokion after it.
+      exapostilarion: cx2("The Cross is the preserver of the universe; * the Cross is the adornment of the Church; * the Cross is the might of kings; * the Cross is the foundation of the faithful; * the Cross is the glory of Angels ** and the scourge of demons.", "p11 Exapostilarion", { tone: 3, repeat: 3 }),
+      praises_rubric: cx1("On the Praises, these Stichera, in Tone I:", 'p11 Praises rubric'),
+      // “Joy of the ranks of heaven” — the melody whose source hymn Prophet
+      // prints in full.
+      praises: [
+        cx2("The venerable Cross prepareth the way into heaven * unto all who adore it with undoubted faith; * and, along with the choirs of the bodiless hosts, * joineth unto Him Who was nailed thereon ** those who hymn it with love.", "p11 Praises 1", { spec_mel: "Joy of the ranks of heaven ...", label: "plain", tone: 1 }),
+        cx2("Adoring with faith the venerable Cross, * let us hymn the Lord crucified thereupon; * purifying both our souls and lips at His behest, * we shall become enlightened with its spiritual effulgence, ** whilst praising Him.", "p11 Praises 2", { spec_mel: "Joy of the ranks of heaven ...", label: "plain" }),
+        cx2("Sweetening the bitterness of the waters, * Moses of old delivered Israel * by making the form of the Cross over them, * and we the faithful, mystically and divinely making its impression upon our hearts, ** are always saved by its power.", "p11 Praises 3", { spec_mel: "Joy of the ranks of heaven ...", label: "plain" }),
+      ],
+      // The THIRD joint Glory-Both-now of the file.
+      praises_glory_both_now: cx2("Having helped meek David to subdue the alien one, * do Thou, also O Lord, succor us * thy faithful and right believing Orthodox Christians * and with the arms of the Cross subdue our enemies; * and shine down upon us Thy mercies of old, O all-plenteous One, * that our enemies may truly understand that Thou art God, * and that trusting in Thee we obtain victories, * wherefore we also pray unto Thy most pure Mother as is meet, ** that great mercy may be granted unto our souls.", "p11 Praises Glory Both now", { sourceLabel: "Glory ..., Both now ..., in Tone IV", tone: 4, label: ["glory", "both_now"] }),
+      // The shortest Great-Doxology rubric — no small-Doxology conditional
+      // at all: “after which the following Troparion is sung”.
+      great_doxology_rubric: cx1("The great Doxology after which the following Troparion is sung:", 'p12 great Doxology rubric'),
+      troparion_rubric: cx1("The Troparion, in Tone I:", 'p12 troparion rubric'),
+      closing_rubric: cx1("The Dismissal.", 'p12 Dismissal'),
+    },
+
+    liturgy: {
+      order: ['beatitudes_rubric', 'beatitudes', 'troparion_rubric', 'troparion',
+              'kontakion', 'trisagion_substitute_rubric', 'trisagion_substitute',
+              'prokeimenon', 'prokeimenon_verse', 'epistle',
+              'alleluia', 'alleluia_verse', 'gospel', 'communion_verse'],
+      beatitudes_rubric: cx1("Typika and Beatitudes.", 'p13 Typika and Beatitudes'),
+      // ALL THREE ODE-III BEATITUDES ARE REWRITTEN (“O most venerated” for
+      // “O all-venerable”; “O most sacred … ornament … their humiliation”
+      // for “Thou O Cross … adornment … and their humiliation”; “shield and
+      // wall” for “shield and rampart”) — and the set has NO THEOTOKION ROW,
+      // because Ode VI has none: seven rows = 3 rewritten + Ode VI's four.
+      beatitudes: [
+        cx1("O most venerated cross! Thou art the weapon of ascetics, the two-edged sword of Christ, the adornment of the faithful, the cure of the ailing and the protection and resurrection of the dead.", "p13 Beatitude 1", { label: "plain", repeat: 2 }),
+        cx1("O most sacred cross! Thou hast proved to be the foundation of piety, the destruction of demons, the ornament of Churches, the ruin of the wicked, and of our enemies, their humiliation in the day of judgment.", "p13 Beatitude 2", { label: "plain" }),
+        cx1("O life-bearing cross! Be unto me strength and victory, an unassailable shield and wall, the driving away of demons, the extinguishing of wicked thoughts, and the preservation of my mind.", "p13 Beatitude 3", { label: "plain" }),
+        cx1("The Cross is the resurrection of all, the Cross is the raising of the fallen, the mortification of passions and the subjugation of the body, the Cross is the glory of souls and light eternal.", "p13 Beatitude 4", { label: "plain" }),
+        cx1("The Cross is the destroyer of enemies, the Cross is the overthrow and captivation of the wicked, the might of the faithful, the preserver of the devout, and the expulsion of the demons.", "p13 Beatitude 5", { label: "plain" }),
+        cx1("The Cross is the destruction of passions, the Cross is the driving away of malicious thought, the Cross is the ruin of the crafty heathen and hath proved to be the captor of spirits.", "p13 Beatitude 6", { label: "plain" }),
+        cx1("No sooner was the Cross lifted, than the legions of the spirits of the air fell, and when the Cross descended, all the impious ones feared seeing the power of the Cross flashing like lightning.", "p13 Beatitude 7", { label: "plain" }),
+      ],
+      troparion_rubric: cx1("Troparion of the Cross, in Tone I:", 'p13 Liturgy troparion rubric'),
+      // THE LITURGY KONTAKION SITE — “ally, ** Thy weapon” against p9's
+      // single asterisk: the refused site, stored locally.
+      kontakion: cx2("Thou who wast of Thine own will lifted upon the Cross, * grant unto Thy new community named after Thee * Thy bounties, O Christ our God, * and by Thy power make glad all right believing Orthodox Christians, * conferring victories over enemies * upon those who have as an ally, ** Thy weapon of peace, the invincible trophy.", "p13 Liturgy Kontakion", { sourceLabel: "The Kontakion of the Cross, in Tone IV", tone: 4 }),
+      // THE ANTI-TRISAGION — “Instead of the Trisagion, we chant: We
+      // venerate Thy Cross” — first substitution rubric in the corpus.
+      trisagion_substitute_rubric: cx1("Instead of the Trisagion, we chant:", 'p13 Trisagion substitute rubric'),
+      trisagion_substitute: cx2("We venerate Thy Cross, O Master, * and we glorify Thy holy Resurrection!", "p13 Trisagion substitute", { label: "plain" }),
+      // TONE VII AGAIN — the third file printing Grave-Tone appointments
+      // (ledger B-5: for the Cross this is certainly genuine, which argues
+      // the other two are too). The text is this file's own aposticha
+      // verse 1.
+      prokeimenon: cx2("Exalt ye the Lord our God, * and worship the footstool of His feet, for He is holy.", "p13 Liturgy Prokeimenon", { sourceLabel: "Prokeimenon, in Tone VII", tone: 7, label_inline: true }),
+      // “The Lord is King let the people rage” — the comma never printed.
+      prokeimenon_verse: cx1("The Lord is King let the people rage.", "p13 Liturgy Prokeimenon verse", { sourceLabel: "Verse", label: "refrain" }),
+      // The body ends "the wisdom of God" with NO full stop (unstored per
+      // R-4, recorded here).
+      epistle: { heading: 'THE 1ST EPISTLE OF ST. PAUL TO THE CORINTHIANS',
+        src: { file: CX, locus: 'p14 Epistle' },
+        citation_verbatim: '(1: 18-24)',
+        citation: { book: '1 Corinthians', chapter: 1, verses: '18-24' },
+        citation_basis: 'printed' },
+      alleluia: cx1("Remember thy congregation, which thou hast purchased from the beginning.", "p14 Alleluia", { sourceLabel: "Alleluia, in Tone I", tone: 1, label_inline: true }),
+      // The aposticha verse 2 re-punctuated (“ages; He hath” for “ages, *
+      // He hath”) — the in-file recirculation pattern (register: variant).
+      alleluia_verse: cx1("But God is our King before the ages; He hath wrought salvation in the midst of the earth.", "p14 Alleluia verse", { sourceLabel: "Verse", label: "refrain" }),
+      // A FOUR-RANGE composite citation — the longest in the corpus — and
+      // the body opens "At That time" (capital T) and LEAKS A VERSE NUMBER
+      // ("no king but Caesar. 16 Then delivered he him") — the first
+      // verse-number leak; bodies unstored per R-4, recorded here.
+      gospel: { heading: 'THE HOLY GOSPEL ACCORDING TO ST. JOHN',
+        src: { file: CX, locus: 'p14-p15 Liturgy Gospel' },
+        citation_verbatim: '(19:6-11,13-20,25-28,31-35)',
+        citation: { book: 'John', chapter: 19, verses: '6-11, 13-20, 25-28, 31-35' },
+        citation_basis: 'printed' },
+      // The Cross's own communion verse — new to the corpus.
+      communion_verse: cx1("The light of Thy countenance hath been signed upon us, O Lord.", "p15 Communion verse", { sourceLabel: "Communion Verse", label_inline: true }),
     },
   },
 };

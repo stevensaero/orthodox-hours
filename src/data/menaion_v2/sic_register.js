@@ -662,4 +662,21 @@ export default [
   { path: 'general.StJohnBaptist.liturgy.kontakion_fallback', file: 'St John Baptist.pdf', locus: 'p17',
     verbatim: 'who art truly greater of all the saints',
     note: '"greater of" for "greater than" — and "since thou hath boldness" (the hath-class) in the same fallback kontakion.' },
+
+  // ── Cross.pdf ──────────────────────────────────────────────────────────────
+  { path: 'general.Cross.troparion', file: 'Cross.pdf', locus: 'p3, p4, p12, p13',
+    verbatim: 'Save O lord Thy people',
+    note: 'LOWERCASE lord at all four byte-identical sites — a canonical defect on the corpus\'s most famous troparion. The Vespers site carries the first (Thrice); the gate\'s repeat vocabulary was extended (2→2|3) deliberately.' },
+  { path: 'general.Cross.matins.sessional_2', file: 'Cross.pdf', locus: 'p4',
+    verbatim: 'the Theotokos , *',
+    note: 'The Theotokos-space class — THIRD file (space before the comma).' },
+  { path: 'general.Cross.matins.canons[0].odes.3.katavasia', file: 'Cross.pdf', locus: 'p7',
+    verbatim: 'filling her with strength and steadfastness',
+    note: 'The Ode III katavasia ends WITHOUT a full stop.' },
+  { path: 'general.Cross.vespers.aposticha[2]', file: 'Cross.pdf', locus: 'p3 Aposticha 2',
+    verbatim: 'wast affixed to the cross',
+    note: '"wast" where "was" belongs (the body of Christ as subject).' },
+  { path: 'general.Cross.liturgy.prokeimenon_verse', file: 'Cross.pdf', locus: 'p13',
+    verbatim: 'The Lord is King let the people rage.',
+    note: 'The comma never printed. The GOSPEL body also leaks a verse number ("no king but Caesar. 16 Then delivered") and opens "At That time" — bodies unstored per R-4, recorded here.' },
 ];
