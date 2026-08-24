@@ -1,5 +1,56 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.41.12** | **Tone Trainer: v0.26.0** | Last synced: August 23, 2026
+**Tool version: v0.41.13** | **Tone Trainer: v0.26.0** | Last synced: August 23, 2026
+
+**Session August 23, 2026 (sixteenth) — CROSS ENCODED (24 of 26); THE FIRST
+(THRICE); KATAVASIAS AND A COMPOSER; THE ANTI-TRISAGION; TONE VII CONFIRMED.**
+**Version bumped to v0.41.13.** Eight gates green: 3248 nodes/0 errors · 3392
+strings/0 missing · build ✓. Commits `d6c8006` (data) + this docs/version
+commit. The gate's repeat vocabulary was extended (2 → 2|3) deliberately for
+the corpus's first (Thrice).
+
+### NOTHING DISPLACES THE CROSS
+
+No theotokia at Vespers — the Glory and Both-now print as JOINT single
+hymns (three joint Glory-Both-nows in the file); Ode VI prints FOUR
+troparia and NO theotokion; the Beatitude set consequently has NO
+theotokion row (seven rows = three rewritten Ode-III + Ode VI's four).
+A new reference device — "the foregoing is repeated" — stands at four
+sessional-closer sites where theotokia would print (three byte-identical
+with full stops, the first with a colon).
+
+### THE CANON THE SCHEMA WAS WAITING FOR
+
+"The Canon of the venerable and life-creating Cross, a composition of
+GREGORY THE SINAITE, in Tone IV" — the first author attribution, carried
+on the schema's dormant `composer` field — with the first KATAVASIAS (the
+Exaltation set, one per ode, on the dormant `katavasia` ode key) and
+theotokia as named ode keys. The festal I-shall-open-my-mouth irmoi share
+odes I/IV/VIII with Martyresses; the Ode IV katavasia is Monastic's Ode
+IV irmos IN ANOTHER RENDERING — one heirmos, two roles, two renderings.
+
+### FIRSTS AND CONFIRMATIONS
+
+The first (Thrice) — on "Save O lord Thy people", whose LOWERCASE lord is
+a canonical defect at all four byte-identical sites. The first TONE VII
+hymnody (LIC stichera under "Called from on high" — the melody Prophet
+labels "Called from above"). THE ANTI-TRISAGION ("Instead of the
+Trisagion, we chant: We venerate Thy Cross") — first substitution rubric.
+A SELF-REFERENTIAL Spec. Mel. (the kontakion sung to its own melody). A
+mixed-case gospel heading ("The Holy Gospel according to St. John"). A
+four-range composite citation with a LEAKED VERSE NUMBER in the body
+("Caesar. 16 Then delivered"). The SIXTH pointing refusal (kontakion p9
+"*" / Liturgy "**"). ALL THREE Ode-III Beatitudes rewritten — corpus
+rewrites now ELEVEN variant rows across six files. TONE VII at a THIRD
+file (Liturgy prokeimenon "Exalt ye the Lord") — for the Cross certainly
+genuine: B-5 is now near-certainty, the residual question being only
+Heiromartyrs' IV/VII split on one text. One melody, two label renderings
+in ONE file ("secretly ordained"/"mystically commanded"). Psalm-50 Glory
+"of the Apostles" — no saint to name. The tier gate caught one unpointed
+katavasia mis-tier pre-commit.
+
+REMAINING: Holy Fathers (12pp), Theotokos (16pp).
+
+---
 
 **Session August 23, 2026 (fifteenth) — ST JOHN BAPTIST ENCODED (23 of 26);
 THE FIRST SUBJECT FILE; FEAST-KEYED SETS; THE NEGATIVE CONDITIONALS MEASURED.**

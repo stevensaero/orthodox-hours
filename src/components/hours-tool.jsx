@@ -8656,6 +8656,32 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.41.13",
+    date: "August 2026",
+    summary: "Cross encoded (24 of 26) — the first (Thrice), katavasias and a composer, the anti-Trisagion, Tone VII confirmed",
+    items: [
+      "CROSS ENCODED — 24 of 26. Nothing displaces the Cross: no Vespers " +
+      "theotokia (JOINT Glory-Both-now hymns), Ode VI prints four " +
+      "troparia and no theotokion, and the Beatitude set has no " +
+      "theotokion row. 'The foregoing is repeated' — a new reference " +
+      "device — stands at four sessional-closer sites.",
+      "FIRSTS: the corpus's first (Thrice) on 'Save O lord Thy people' " +
+      "(lowercase lord at all four sites — a canonical defect); the " +
+      "repeat vocabulary extended 2→2|3 deliberately. The first COMPOSER " +
+      "('a composition of Gregory the Sinaite') and the first KATAVASIAS " +
+      "— the schema's canon keys were waiting. The first Tone VII " +
+      "hymnody. The ANTI-TRISAGION. A self-referential Spec. Mel. A " +
+      "mixed-case gospel heading; a four-range citation with a leaked " +
+      "verse number in the body.",
+      "The SIXTH pointing refusal (kontakion). ALL THREE Ode-III " +
+      "Beatitudes rewritten — corpus rewrites now eleven variant rows. " +
+      "TONE VII at a third file: ledger B-5 strengthened to near-" +
+      "certainty. One melody, two label renderings in one file.",
+      "Corpus at 3248 nodes · 3392 rendered strings · 0 errors · all " +
+      "eight gates green. Two files remain: Holy Fathers, Theotokos.",
+    ],
+  },
+  {
     version: "v0.41.12",
     date: "August 2026",
     summary: "St John Baptist encoded (23 of 26) — the first subject file: feast-keyed sets, incipit references, the negative conditionals measured",
