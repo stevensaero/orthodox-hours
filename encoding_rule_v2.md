@@ -1,6 +1,29 @@
-# ENCODING RULE v2.12 — Orthodox Hours Tool
-**Authority:** Fekula & Williams (2009) · St. Ignatius Orthodox Press Anthologion (2024) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** August 2026 · **Supersedes:** v2.11, v2.10, v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+# ENCODING RULE v2.13 — Orthodox Hours Tool
+**Authority:** Fekula & Williams ODS 3rd ed. vol. III (2009, Menaion) · Fekula & Williams ODS 2nd ed. (2009, all other chapters) · St. Ignatius Orthodox Press Anthologion (2024) · HTM Horologion · OCA calendar (oca.org)
+**Updated:** August 2026 · **Supersedes:** v2.12, v2.11, v2.10, v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+
+**v2.13 changes — ODS CHAPTER V IS OBSOLETE; RANK IS SOMETIMES PRINTED (§1, §1.1):**
+- **A third Fekula volume exists and supersedes part of the second.** *The Order of
+  Divine Services* 3rd ed., **vol. III: Services of the Menaion** (SJKP 2009, ISBN
+  978-1-928920-41-0). Its preface states it "replaces entirely Chapter V of the
+  preceding edition... which chapter should now be considered obsolete." **Do not
+  cite ODS 2nd ed. ch. V for any Menaion decision.** The rest of the 2nd edition
+  stands until vols. I and II appear. §1 table amended.
+- **The waterfall is not always needed.** Vol. III prints an explicit rank rubric
+  for **50 of its 77 entries** (`A doxology-rank service on Sunday:`). Where present
+  it is decisive — do not run the §1.1 test. New step 0.
+- **A missing rank rubric is a deliberate editorial signal, not a gap.** The other
+  **27 entries print none**, and the preface says why: those services are "so
+  different from 'normal' that such a reference might be more confusing than
+  helpful." **Do not infer a rank for them** — not by stichera count, not by
+  analogy to a similar date. Follow the entry's own outline, which is complete in
+  itself. This is the §0 ABSENT vs NOT IN PDF distinction applied to rank.
+- **Thirteen entries are keyed to a date window, not a date** — `8-14 October`
+  means *the Sunday falling in that window*, not seven dates. New §1.2.
+- **Two errata in vol. III recorded** (pp. 90, 92) — new §1.3.
+- Vol. III covers **77 selected dates only**; it is not a complete Menaion, and
+  March, April and May are absent entirely. Where it is silent the existing
+  fallback chain is unchanged.
 
 **v2.12 changes — THE PLACEHOLDER RULE WAS WRONG (§2.1):**
 - There are **three** placeholder tokens, not one: `(name)` 445, `(names)` 31,
@@ -128,7 +151,8 @@ A blank field is never acceptable. Blank = encoding error.
 
 | Priority | Source | Role |
 |---|---|---|
-| 1 | **Fekula & Williams (2009)** | All assembly decisions; rank determination |
+| 1 | **Fekula & Williams, ODS 3rd ed. vol. III — Services of the Menaion (2009)** | Authoritative for the 77 Menaion dates it covers. **Supersedes ODS 2nd ed. ch. V, which is obsolete.** Cite by printed page |
+| 1b | **Fekula & Williams, ODS 2nd ed. (2009)** | All assembly decisions **outside ch. V** — general Sunday/weekday structure (ch. I–II), Triodion (ch. III), Pentecostarion (ch. IV), ch. VI, Appendices. Retires chapter by chapter as 3rd-ed. vols. I and II appear |
 | 2 | **OCA calendar — oca.org** | Primary commemoration; OCA troparion/kontakion if differing |
 | 3 | **St. Sergius Menaion PDF** — `Orthodox Hours/Menaion - St. Sergius/` | Full service texts for Menaion dates |
 | 4 | **St. Sergius Pentecostarion PDF** — *(still to migrate off Drive)* | Full service texts for Pentecostarion dates |
@@ -142,16 +166,58 @@ St. Sergius, the OCA text and date govern. Record both versions, flag the diverg
 ### 1.1 SERVICE RANK DETERMINATION (the waterfall test)
 
 **Authority:** St. Ignatius Orthodox Press, *Anthologion* (2024), "Festal Rankings"
-table (Drive: `Feasts/festal-calendar-saint-ignatius-orthodox-press-2024.pdf`) —
-cross-referenced against Fekula ch.1 (Sunday) / ch.2 (weekday) for what each rank's
-content entails, and the OCA calendar (oca.org/liturgics/outlines/classes-of-feasts)
-for a corroborating Typikon-symbol check.
+table — `Orthodox Hours/Feasts/festal-calendar-saint-ignatius-orthodox-press-2024.pdf`
+(mounted folder; migrated off Drive August 2026. One page, image scan, no text
+layer — read it as a render). Cross-referenced against Fekula ch.1 (Sunday) /
+ch.2 (weekday) for what each rank's content entails, and the OCA calendar
+(oca.org/liturgics/outlines/classes-of-feasts) for a corroborating Typikon-symbol
+check.
 
 **Governing principle:** rank is a property of the saint's own commemoration as
 printed in the Menaion — not derived from stichera count alone, and not dependent
 on what weekday the fixed date happens to fall on in a given year. Read the day's
 PDF rubric and apply this test in strict order. Stop at the first match; each
 rank below requires the negative of every rank above it.
+
+**0. ODS vol. III PRINTS THE RANK — check this before running the test.**
+For the 77 dates covered by ODS 3rd ed. vol. III, the rank is often stated
+outright in a rubric immediately below the commemoration header
+(`A doxology-rank service on Sunday:`, `A polyeleos-rank service on Monday
+through Saturday:`). **50 of the 77 entries carry one. Where present it is
+decisive — stop here and do not run steps 1–6.** Record the source of the rank,
+not merely the rank.
+
+This does **not** displace the Anthologion — it satisfies it. The Anthologion's
+table opens: *"To assess the class of a day's Saint or Commemoration, it is
+necessary to look up the service in the Menaion."* Vol. III **is** that
+looked-up service, with the class already stated. Steps 1–6 exist to infer the
+class from a service outline; where vol. III prints it, there is nothing left to
+infer. Vol. III also names its ranks `doxology-rank`, `polyeleos-rank`,
+`vigil-rank`, `six-stichera-rank` — the Anthologion's own tier names — so the two
+corroborate each other.
+
+Two forms count as stated. Most entries print the service rubric above. Two —
+the `15–31 January` pair — instead state the rank in their own heading
+(`Vigil-rank commemoration on a Sunday of the Lenten Triodion:`). Both are
+decisive.
+
+One form does **not** count: in the four *combined* entries, a line reading
+`And a Polyeleos-rank Commemoration` names the **additional coinciding saint**,
+not the service. It is not a rank rubric. Match the pattern anchored at the
+start of the line.
+
+**The 27 entries with no rank rubric are a deliberate editorial choice, not an
+omission.** The preface: the class is given "with the exception of a few services
+which are so different from 'normal' that such a reference might be more
+confusing than helpful." These are the Nativity and Theophany cycles, the Lenten
+Triodion Sunday cases, and the Ecumenical Council Sundays — the structurally
+irregular services. **Do not run the waterfall on them and do not infer a rank
+by any means.** Follow the entry's own printed outline, which is complete in
+itself. Assigning a class to these services is the specific error the editor was
+guarding against. Per §0 this is an **ABSENT** field, not a blank.
+
+Where vol. III does not cover the date, or covers it without a rank rubric,
+proceed as before:
 
 1. **Great Feast (Class I/II)** — a closed, enumerated list, not a content test:
    Great Feasts of the Master (Nativity, Theophany, Palm Sunday, Ascension,
@@ -170,6 +236,18 @@ rank below requires the negative of every rank above it.
 6. **Simple Rank (Class VI)** — three stichera at LIC for one saint (or six,
    split 3+3, for a double commemoration of two saints), and none of the above
    apply.
+
+**Open discrepancy — the Class numeral on the bottom tier.** The printed
+Anthologion table gives **Senary Rank Class V** and **Simple Rank Class V** —
+both Class V, verified against a render of the page. This file has carried
+Simple Rank as **Class VI** since v2.7. The provenance of that VI is unresolved:
+it may be a transcription slip, or it may come from the OCA calendar's own
+six-tier scheme, which the cross-check below describes as "this same six-tier
+classification." Not silently changed. **Nothing depends on it** — the tier
+ordering and every indicator are unaffected, and no code keys on the numeral.
+Note also that the Anthologion prints **seven rows**, splitting Great Feast of
+the Master (Class I) from Great Feast of the Theotokos (Class II), which step 1
+above collapses into "Class I/II".
 
 **Key disambiguations:**
 - "6 stichera at LIC" is never diagnostic by itself. It can mean Doxology rank
@@ -191,6 +269,47 @@ rank below requires the negative of every rank above it.
 colored Typikon symbols. When available, use it to corroborate the PDF-derived
 rank. If the two disagree, flag the divergence in the entry's `note` — do not
 silently pick one.
+
+---
+
+### 1.2 DATE WINDOWS ARE SUNDAYS, NOT DATE SETS (ODS vol. III)
+
+Thirteen vol. III entries are keyed to a **window of dates**, and every one of
+them means *the Sunday falling within that window* — never the dates themselves:
+
+`8–14 October` · `11–17 December` · `18–19 December` · `20–23 December` ·
+`26–30 December` · `15–31 January` · `3–8 February` · `13–19 July`
+
+Reading `8–14 October` as seven dates would emit the Fathers' service on six days
+that are not the Sunday. Resolve by finding the Sunday in the window; if no
+Sunday falls in it that year, the entry does not apply.
+
+Four of these windows also appear in a **combined** form — the same Sunday when a
+polyeleos- or vigil-rank saint coincides. The additional saint's rank is stated
+in the entry heading and is a property of that saint, not of the service (see
+§1.1 step 0).
+
+---
+
+### 1.3 KNOWN ERRATA — ODS vol. III
+
+Two defects confirmed in the printed volume. Encode as printed and flag; do not
+silently correct.
+
+| Page | Defect | Verdict |
+|---|---|---|
+| 92 | Royal Hours of the Nativity, Sixth Hour: the Gospel is announced "according to Luke" but cited as Matt §3 [2:1-12]. The citation matches the traditional Sixth Hour pericope, so the **announcement** appears to be the error | Book error. The only announcement/citation mismatch in all 77 entries — the whole volume was scanned mechanically |
+| 90 | Royal Hours of the Nativity, Third Hour psalms print as **62**, 86, 50. The set is normally 66/86/50 | Book error, not OCR. Confirmed against a 200 dpi render of the printed page — the glyph is unambiguously 62. Resolve against another Horologion before relying on it |
+
+**Method note.** These are two different classes and only one needs the page
+image. *Internal contradictions* — where the book states something twice and
+disagrees with itself — are found mechanically at no cost. *Liturgical
+anomalies* — internally consistent but wrong against outside knowledge — are not
+mechanically detectable, and confirming one needs a render. Render when it turns
+an ambiguous flag ("either the book is wrong or our OCR is") into an actionable
+one ("the book prints 62"). That only arises once a value is already suspected,
+so the trigger is suspicion, not coverage: vol. III carries 567 numeric values
+across 154 of its 235 pages, and checking them all by eye is not the same task.
 
 ---
 

@@ -1,5 +1,122 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.42.0** | **Tone Trainer: v0.26.0** | Last synced: August 23, 2026
+**Tool version: v0.42.0** | **Tone Trainer: v0.26.0** | Last synced: August 24, 2026
+
+**Session August 24, 2026 (eighteenth) — A THIRD FEKULA VOLUME: ODS CH. V IS
+OBSOLETE.** No tool or data change; this session moved the *rules*.
+`encoding_rule_v2.md` → **v2.13** (§1 authority table, §1.1 step 0, new §1.2 and
+§1.3). ODS 3rd ed. vol. III, *Services of the Menaion*, was intaken locally as a
+reference apparatus — 77 entries, pp. 5–239 — and its findings written into the
+rule file. **Nothing from the book is committed here** (see the pointer below).
+
+### THE VOLUME THAT REPLACES CHAPTER V
+
+Its preface: this volume "replaces entirely Chapter V of the preceding edition…
+which chapter should now be considered obsolete." The rest of ODS 2nd ed. stands
+until vols. I and II ship. So the supersession is **partial**, which is the whole
+difficulty — §1 now carries priority 1 (vol. III, Menaion) and 1b (2nd ed.,
+everything else) rather than one Fekula row.
+
+Vol. III is **not a complete Menaion**. It is 77 *hard cases*: feast
+coincidences, Sunday/weekday forks, and Sundays falling in named date windows.
+September–February and June–August only; **March, April and May are absent
+entirely**, being Triodion/Pentecostarion territory. Where it is silent the
+existing fallback chain is untouched.
+
+### RANK IS SOMETIMES SIMPLY PRINTED — AND SOMETIMES DELIBERATELY WITHHELD
+
+**50 of 77 entries print the rank outright** in a rubric below the commemoration
+header. For those dates the §1.1 waterfall is unnecessary; step 0 short-circuits
+it. The other **27 print none, on purpose** — the preface says such services are
+"so different from 'normal' that such a reference might be more confusing than
+helpful." They are the Nativity and Theophany cycles, the Triodion Sunday cases,
+and the Ecumenical Council Sundays: exactly the structurally irregular ones,
+which is good evidence the omission is principled rather than sloppy. Inferring
+a rank there is the error the editor was guarding against. §0 ABSENT, not blank.
+
+Two traps found while encoding, both now written into §1.1 step 0:
+
+- **Capitalization is not a signal.** `ods3-0725-sun` writes "the Saint" for
+  Righteous Anna, whom the entry names; two *combined* entries write the same
+  capital "the Saint" for a coinciding saint they cannot name; a third writes it
+  lowercase for that same unbound sense. Only the entry's structure separates
+  them. Matching on case would resolve bound and unbound references identically.
+- **`And a Polyeleos-rank Commemoration` is not a rank rubric.** In the four
+  combined entries that line names the additional coinciding saint, not the
+  service. The pattern must anchor at the start of the line.
+
+### THIRTEEN ENTRIES ARE SUNDAYS WEARING A DATE RANGE
+
+`8–14 October` means *the Sunday in that window*, not seven dates — new §1.2.
+Read literally it would emit the Fathers' service on six wrong days.
+
+### TWO ERRATA, AND WHEN A PAGE IMAGE IS WORTH IT
+
+Recorded at §1.3: the Sixth Hour Gospel announced "according to Luke" but cited
+Matt §3 (p. 92), and Third Hour psalms printed as 62/86/50 where the set is
+normally 66/86/50 (p. 90).
+
+The estimate that produced these was wrong and worth recording as a lesson. From
+two defects in a six-entry sample I projected "roughly twenty across the volume."
+Building the detector instead of extrapolating gave the real number: scanning all
+77 entries for announcement/citation mismatches finds **exactly one**, the known
+case. **The detector reported zero on its first run** — its search window
+excluded periods, and the intervening dialogue is full of them. A clean zero from
+a broken detector is indistinguishable from a clean volume, so the scanner now
+carries a known-positive fixture and exits non-zero if it can no longer find the
+Luke/Matt case.
+
+The psalm error needed a different method: internally consistent, wrong only
+against outside knowledge. A 200 dpi render of p. 90 settled it — the glyph is
+62, so the book is wrong and our OCR is right. Without the render the note could
+only have said "either the book or our OCR is wrong," which hands the work back.
+Hence the §1.3 rule: **render when it converts an ambiguous flag into an
+actionable one**, which is a suspicion trigger, not a coverage sweep.
+
+### WHERE THE INTAKE LIVES — AND WHY IT IS NOT HERE
+
+The apparatus is a reading aid for extracting logic, not a tool artifact, so it
+stays with the PDFs in the mounted folder, exactly as the ODS 2nd ed., St.
+Sergius and General Menaion sources do:
+
+```
+Orthodox Hours/Fekula_ODS_SOM_V3/          ← the 5 OCR'd PDFs (TOC + 001-004)
+Orthodox Hours/Fekula_ODS_SOM_V3/intake/
+    entries/                   77 per-entry markdown files, page-anchored
+    ods_v3_index.json          date, day-type, rank, rankSource, conditions, pages
+    ods_v3_hours.pilot.json    Hours payload, 6 entries, schema 0.1.0-pilot
+    ods_v3_full_repaired.txt   whole corpus in printed order
+    scripts/                   repair · split · build_index · verify ·
+                               encode_hours_pilot · scan_source_defects
+    HOURS_PILOT_NOTES.md       the four schema decisions, with reasoning
+    OCR_REPAIR_LOG.md          every transformation, counted and justified
+```
+
+**It rebuilds from the PDFs**: `python3 scripts/repair.py && python3
+scripts/split.py && python3 scripts/build_index.py && python3
+scripts/verify.py`. Paths default to the intake folder; `ODS_INTAKE` and
+`ODS_PDFS` override. Non-destructive — files are overwritten, never unlinked.
+
+**It is deliberately uncommitted.** `orthodox-hours` is a public repo and the
+intake is the substantially complete text of a book SJKP currently sells. The
+index and Hours payload would also be a *second* data shape that nothing
+consumes — the assembler reads `src/data/menaion/{month}.js`, and vol. III logic
+reaches the tool as entries in those files, not as a parallel format beside them.
+
+`verify.py` runs 23 checks over the intake, currently 0 failures. The strongest:
+**75 of 77 entries cross-checked against their own printed running head** for
+date and day-type with zero disagreements — the running heads are parsed from a
+different region of the page than the entry headings, so agreement between them
+independently confirms the entry boundaries.
+
+### WHAT VOL. III UNBLOCKS
+
+The 77 entries are precisely the dates where the ordinary rules need
+adjudication, and they now have a citable answer keyed to a printed page. Six are
+encoded to a settled schema; 71 remain. The four schema questions — placeholder
+binding, kontakion grouping, Royal Hours depth, and errata policy — are settled
+and recorded in `HOURS_PILOT_NOTES.md`.
+
+---
 
 **Session August 23, 2026 (seventeenth) — HOLY FATHERS AND THEOTOKOS ENCODED:
 THE GENERAL MENAION IS COMPLETE (26 of 26).**
