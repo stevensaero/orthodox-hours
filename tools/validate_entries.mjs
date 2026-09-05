@@ -30,6 +30,17 @@
 //             substring "No PDF" or "No AT LITURGY" (100% false-positive in the audit).
 //             WARNING by default; fatal under --strict. Skipped entirely under --editor
 //             (per-sticheron save path) to keep that path quiet.
+//   Check H — Menaion month-registry drift (FATAL): every src/data/menaion/*.js file
+//             must be registered in ALL THREE month registries — _menaionLoaders in
+//             hours-tool.jsx, MONTHS_WITH_DATA in menaion-browser.jsx, and this
+//             validator's own walk list below — and none may name a file that does
+//             not exist. The three are hand-maintained mirrors of each other, and
+//             nothing previously compared them. September (v0.43.0) shipped wired
+//             into _menaionLoaders and this validator but NOT into the browser, so
+//             the Hours tool served 09-05/09-06 correctly while the Menaion browser
+//             reported "No data file exists for September". Silent, and invisible to
+//             every other gate. Fatal, not a warning: a month that loads in one
+//             surface and not another is a shipped defect, not a checklist item.
 //   Check G — Aposticha doxasticon declaration (Menaion only): for ranks that carry a
 //             Vespers aposticha, Doxology+ SHOULD have aposticha_glory; simple/six_stichera
 //             must declare aposticha_glory OR aposticha_glory_absent: true. Mirrors C/D for
@@ -44,7 +55,7 @@
 // entries; regenerate with the snippet in the repo notes if the vocabulary grows.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import PENT from '../src/data/pentecostarion.js';
 import MAY from '../src/data/menaion/may.js';
 import JUNE from '../src/data/menaion/june.js';
@@ -384,6 +395,78 @@ walk('Menaion/may', MAY, 'menaion');
 walk('Menaion/june', JUNE, 'menaion');
 walk('Menaion/july', JULY, 'menaion');
 walk('Menaion/september', SEPTEMBER, 'menaion');
+
+// ── Check H — Menaion month-registry drift ───────────────────────────────────
+// The three month registries are hand-maintained mirrors. Compare them against
+// the actual contents of src/data/menaion/ and against each other.
+//
+// This list must be kept in step with the walk() calls immediately above; it is
+// the validator's own declaration of which months it audits, and Check H fails
+// if it drifts from the directory just like the other two registries do.
+const VALIDATOR_MONTH_FILES = new Set(['may.js', 'june.js', 'july.js', 'september.js']);
+
+const MENAION_DIR = new URL('../src/data/menaion/', import.meta.url);
+
+// Parse a registry object literal of the form
+//   "<key>": () => import("../data/menaion/<file>.js")
+// and return the set of month files it names.
+function parseLoaderFiles(sourcePath, registryName) {
+  let src;
+  try {
+    src = readFileSync(new URL(sourcePath, import.meta.url), 'utf8');
+  } catch {
+    problems.push(`Check H: cannot read ${sourcePath} to verify ${registryName}.`);
+    return null;
+  }
+  const start = src.indexOf(registryName);
+  if (start === -1) {
+    problems.push(`Check H: ${registryName} not found in ${sourcePath} — renamed or removed? Update Check H.`);
+    return null;
+  }
+  const open = src.indexOf('{', start);
+  const close = src.indexOf('\n};', open);
+  if (open === -1 || close === -1) {
+    problems.push(`Check H: could not delimit ${registryName} in ${sourcePath}.`);
+    return null;
+  }
+  const body = src.slice(open, close);
+  const files = new Set();
+  for (const m of body.matchAll(/data\/menaion\/([A-Za-z0-9_-]+\.js)/g)) files.add(m[1]);
+  return files;
+}
+
+const onDisk = new Set(
+  readdirSync(MENAION_DIR).filter(f => f.endsWith('.js'))
+);
+
+const REGISTRIES = [
+  { name: '_menaionLoaders (src/components/hours-tool.jsx)',
+    files: parseLoaderFiles('../src/components/hours-tool.jsx', '_menaionLoaders') },
+  { name: 'MONTHS_WITH_DATA (src/components/menaion-browser.jsx)',
+    files: parseLoaderFiles('../src/components/menaion-browser.jsx', 'MONTHS_WITH_DATA') },
+  { name: 'VALIDATOR_MONTH_FILES (tools/validate_entries.mjs walk list)',
+    files: VALIDATOR_MONTH_FILES },
+];
+
+for (const { name, files } of REGISTRIES) {
+  if (!files) continue; // parse failure already reported
+  for (const f of onDisk) {
+    if (!files.has(f)) {
+      problems.push(
+        `Check H: src/data/menaion/${f} exists but is NOT registered in ${name}. ` +
+        `A month must be wired into all three registries — data file, _menaionLoaders, ` +
+        `MONTHS_WITH_DATA, and the validator walk — or it loads in some surfaces and not others.`
+      );
+    }
+  }
+  for (const f of files) {
+    if (!onDisk.has(f)) {
+      problems.push(
+        `Check H: ${name} registers src/data/menaion/${f}, which does not exist on disk.`
+      );
+    }
+  }
+}
 
 // ── Report ───────────────────────────────────────────────────────────────────
 if (problems.length === 0) {

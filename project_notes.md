@@ -1,5 +1,61 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.43.0** | **Tone Trainer: v0.26.0** | Last synced: September 5, 2026
+**Tool version: v0.43.1** | **Tone Trainer: v0.26.0** | Last synced: September 5, 2026
+
+**Session September 5, 2026 (nineteenth, part b) — THE MONTH WAS ONLY HALF
+WIRED, AND THE DEFECT WAS ALREADY IN THE SPEC.** Tool **v0.43.1**. Reported from
+use: 09-05 and 09-06 rendered correctly in the Hours tool but the Menaion Data
+Browser said "No data file exists for September."
+
+### THREE REGISTRIES, ONE EDITED
+
+`menaion-browser.jsx` keeps its own `MONTHS_WITH_DATA` loader table, a
+hand-maintained mirror of `_menaionLoaders` in `hours-tool.jsx`, with a comment
+saying so. Part (a) wired `_menaionLoaders` and the validator and missed the
+mirror. `MONTHS` in the browser already listed September, so the month appeared
+in the tab strip and then reported no data — which reads like a data problem and
+is not one. **The encoded data was never wrong; only its registration was.**
+
+### IT WAS ALREADY WRITTEN DOWN
+
+`menaion_v2_spec.md` §3.1, "One month map, not two":
+
+> V1 duplicates its month map — `_menaionLoaders` in `hours-tool.jsx` and
+> `MONTHS_WITH_DATA` in `menaion-browser.jsx`, with a comment admitting the
+> mirror. Adding a month means editing both.
+
+V2 was designed to export a single `MONTH_LOADERS` with a gate asserting it
+agrees with the files on disk. V1 never got that gate — and meanwhile
+`github_workflow_prompt.md` and `project_notes.md` both told encoders the job was
+"one line to `_menaionLoaders`." A known trap, documented, left armed, with the
+instructions pointing straight into it. **The lesson is not "check the browser
+too." It is that a defect recorded in a spec for a future version is not
+mitigated in the current one.**
+
+### CHECK H — FATAL, AND PROVEN AGAINST THE BUG
+
+`validate_entries.mjs` Check H asserts every `src/data/menaion/*.js` is
+registered in all three registries and that none names a missing file. Fatal, not
+a warning: a month that loads in one surface and not another is a shipped defect,
+not a checklist item. **Verified by reverting the one-line fix** — Check H
+reproduces the exact reported symptom and exits 1; restored, exit 0. A gate that
+has never been shown to fail on the bug it was written for is an assumption.
+
+### DOCS
+
+`github_workflow_prompt.md` now states the real cost: **four edits** — data file,
+`_menaionLoaders`, `MONTHS_WITH_DATA`, and the validator's
+import/comment-map/`walk()` trio plus `VALIDATOR_MONTH_FILES`. The stale "one
+line" claim in `project_notes.md` is **annotated in place, not rewritten**, so
+the history of the bad advice stays legible.
+
+### BACKLOG
+
+- **Collapse the three registries into one** (the V2 `MONTH_LOADERS` shape,
+  backported to V1). Check H makes the drift loud but the duplication is still
+  there; one shared module would make the gate unnecessary. Not done here — the
+  fix was scoped to the reported bug plus its recurrence.
+- August still unencoded; September still 2 of 38 files; `ikos_ode3` still not
+  rendered by the Menaion browser.
 
 **Session September 5, 2026 (nineteenth) — SEPTEMBER OPENS, AND VOL. III PAYS
 OUT.** New month file `src/data/menaion/september.js` with 09-05 and 09-06,
@@ -7497,6 +7553,10 @@ src/data/pentecostarion.js     — full Pentecostarion
 Vite dynamic imports with module-level caching. Main bundle: 1,165 KB → 929 KB (20%).
 Monthly `.js` files are the **single point of truth** for encoding — git tracks all changes.
 Adding a new month: create `src/data/menaion/{month}.js` + one line in `_menaionLoaders`.
+> **CORRECTED September 5, 2026 (v0.43.1):** this was wrong — there are THREE month
+> registries, not one (`_menaionLoaders`, `MONTHS_WITH_DATA` in `menaion-browser.jsx`,
+> and the validator's own import/comment-map/walk trio). September shipped half-wired
+> on this advice. `validate_entries.mjs` Check H now gates all three.
 
 Drive `.txt` files are no longer the primary record. They remain useful for human review
 but are derived artifacts. The `.txt` step was omitted this session; records for

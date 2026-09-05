@@ -51,11 +51,19 @@ const MONTHS = [
   { key: "12", name: "December",  days: 31 },
 ];
 
-// Months with data files — mirrors _menaionLoaders in hours-tool.jsx
+// Months with data files — mirrors _menaionLoaders in hours-tool.jsx.
+// THIS MIRROR IS GATED: tools/validate_entries.mjs Check G fails the build if
+// this table, _menaionLoaders, or the validator's own month list drifts from
+// the set of files in src/data/menaion/. Adding a month means FOUR edits, not
+// one — the data file, this table, _menaionLoaders, and the validator's
+// import/comment-map/walk trio. September v0.43.0 shipped with this table
+// unedited, so the browser reported "No data file exists for September" while
+// the Hours tool served the same data correctly; hence the gate.
 const MONTHS_WITH_DATA = {
   "05": () => import("../data/menaion/may.js").then(m => m.default),
   "06": () => import("../data/menaion/june.js").then(m => m.default),
   "07": () => import("../data/menaion/july.js").then(m => m.default),
+  "09": () => import("../data/menaion/september.js").then(m => m.default),
 };
 
 // ── Helpers ─────────────────────────────────────────────────────────────────

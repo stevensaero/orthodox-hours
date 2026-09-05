@@ -8657,6 +8657,37 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.43.1",
+    date: "September 2026",
+    summary: "September now loads in the Menaion browser too — and the three-way month-registry drift that hid it is gated",
+    items: [
+      "FIX: the Menaion Data Browser reported 'No data file exists for " +
+      "September' while the Hours tool served 09-05 and 09-06 correctly. " +
+      "menaion-browser.jsx keeps its OWN loader table, MONTHS_WITH_DATA, a " +
+      "hand-maintained mirror of _menaionLoaders in hours-tool.jsx. " +
+      "v0.43.0 wired _menaionLoaders and the validator but not the mirror. " +
+      "The encoded data was never wrong — only its registration.",
+      "NEW GATE — validate_entries.mjs Check H (FATAL). Every " +
+      "src/data/menaion/*.js must be registered in all three month " +
+      "registries — _menaionLoaders, MONTHS_WITH_DATA, and the validator's " +
+      "own walk list — and none may name a file that is not on disk. " +
+      "Verified by reverting the fix: Check H reproduces the exact defect " +
+      "and exits 1. Fatal rather than a warning, because a month that " +
+      "loads in one surface and not another is a shipped defect.",
+      "THE DEFECT WAS ALREADY WRITTEN DOWN. menaion_v2_spec.md §3.1 says " +
+      "'V1 duplicates its month map... Adding a month means editing both', " +
+      "and specifies a single MONTH_LOADERS plus a gate — for V2. V1 never " +
+      "got the gate, and two documents kept telling encoders it was one " +
+      "line. Check H backports the V2 contract to V1.",
+      "DOCS CORRECTED: github_workflow_prompt.md said adding a month takes " +
+      "'one line to _menaionLoaders'. It takes four edits — data file, " +
+      "_menaionLoaders, MONTHS_WITH_DATA, and the validator's " +
+      "import/comment-map/walk trio plus VALIDATOR_MONTH_FILES. The stale " +
+      "claim in project_notes.md is annotated in place rather than " +
+      "rewritten, so the history of the bad advice stays legible.",
+    ],
+  },
+  {
     version: "v0.43.0",
     date: "September 2026",
     summary: "SEPTEMBER OPENS — first month wired since July; 09-05 and 09-06 encoded, and the first date whose rank came printed rather than inferred",

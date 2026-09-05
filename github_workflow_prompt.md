@@ -36,9 +36,22 @@ src/data/menaion/may.js       — May entries
 src/data/menaion/june.js      — June entries
 src/data/menaion/july.js      — July entries
 ```
-Encoding sessions edit these files directly. Adding a new month: create
-`src/data/menaion/{month}.js` and add one line to `_menaionLoaders` in
-`hours-tool.jsx`. No placeholders needed for unencode months.
+Encoding sessions edit these files directly. **Adding a new month takes FOUR
+edits, not one** — this was previously documented as "one line" and that was
+wrong; September v0.43.0 shipped half-wired because of it:
+
+1. Create `src/data/menaion/{month}.js`
+2. Add one line to `_menaionLoaders` in `src/components/hours-tool.jsx`
+3. Add one line to `MONTHS_WITH_DATA` in `src/components/menaion-browser.jsx`
+   — a hand-maintained mirror of (2); miss it and the Hours tool serves the
+   month correctly while the Menaion browser reports "No data file exists"
+4. Add the import, comment-map entry and `walk()` call in
+   `tools/validate_entries.mjs`, and add the filename to
+   `VALIDATOR_MONTH_FILES`
+
+`validate_entries.mjs` **Check H** now gates all four against the contents of
+`src/data/menaion/` and fails the build on drift, so a half-wired month cannot
+ship again. No placeholders needed for unencoded months.
 
 **Pentecostarion data — single point of truth:**
 ```
