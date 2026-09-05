@@ -49,6 +49,7 @@ import PENT from '../src/data/pentecostarion.js';
 import MAY from '../src/data/menaion/may.js';
 import JUNE from '../src/data/menaion/june.js';
 import JULY from '../src/data/menaion/july.js';
+import SEPTEMBER from '../src/data/menaion/september.js';
 
 const KNOWN_FIELDS = new Set([
   'alleluia_2_stichos', 'alleluia_2_tone', 'alleluia_2_verse', 'alleluia_stichos',
@@ -171,6 +172,7 @@ const COMMENT_MAPS = {
   'Menaion/may': buildCommentMap(new URL('../src/data/menaion/may.js', import.meta.url)),
   'Menaion/june': buildCommentMap(new URL('../src/data/menaion/june.js', import.meta.url)),
   'Menaion/july': buildCommentMap(new URL('../src/data/menaion/july.js', import.meta.url)),
+  'Menaion/september': buildCommentMap(new URL('../src/data/menaion/september.js', import.meta.url)),
 };
 
 // Collect {path, text} for every in-scope hymn object carrying a string `text`.
@@ -381,6 +383,7 @@ walk('Pentecostarion', PENT, 'pentecostarion');
 walk('Menaion/may', MAY, 'menaion');
 walk('Menaion/june', JUNE, 'menaion');
 walk('Menaion/july', JULY, 'menaion');
+walk('Menaion/september', SEPTEMBER, 'menaion');
 
 // ── Report ───────────────────────────────────────────────────────────────────
 if (problems.length === 0) {

@@ -943,6 +943,7 @@ const _menaionLoaders = {
   "05": () => import("../data/menaion/may.js").then(m => m.default),
   "06": () => import("../data/menaion/june.js").then(m => m.default),
   "07": () => import("../data/menaion/july.js").then(m => m.default),
+  "09": () => import("../data/menaion/september.js").then(m => m.default),
 };
 
 // ── Octoechos source layer — V2 (octoechos_wirein_spec.md; Phase 5 CUTOVER) ──
@@ -8655,6 +8656,57 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.43.0",
+    date: "September 2026",
+    summary: "SEPTEMBER OPENS — first month wired since July; 09-05 and 09-06 encoded, and the first date whose rank came printed rather than inferred",
+    items: [
+      "NEW MONTH: src/data/menaion/september.js, wired into _menaionLoaders " +
+      "and into tools/validate_entries.mjs (import, comment map, walk). " +
+      "First month added since July; the loader table now covers 05, 06, " +
+      "07, 09. August remains unencoded — its PDFs are delivered but no " +
+      "data file exists yet.",
+      "09-05 IS THE FIRST ENTRY WHOSE RANK WAS READ, NOT DERIVED. ODS 3rd " +
+      "ed. vol. III pp. 14-16 prints 'A polyeleos-rank service on Monday " +
+      "through Saturday' outright, so §1.1 step 0 fired and the waterfall " +
+      "was never run. Vol. III was intaken in the v0.42.0 session as a " +
+      "rule change; this is the first date to actually consume it.",
+      "THE A-FILE CONVENTION DOES NOT HOLD FOR 09-05. 09-05.pdf and " +
+      "09-05A.pdf are the same commemoration at two service levels, not " +
+      "two commemorations: the base file is Zacharias alone (6 stichera, " +
+      "no paroemias, no Polyeleos, no Great Doxology), the A file is " +
+      "Zacharias AND Elizabeth (8 stichera 4+4, three lessons, Polyeleos, " +
+      "Litiya, Great Doxology). The A file matches vol. III line for line " +
+      "and OCA names both saints, so 09-05 is a SINGLE entry sourced from " +
+      "09-05A. An array would have emitted Zacharias twice. Contrast " +
+      "06-07, where the A file genuinely is a second commemoration.",
+      "TWO SOURCES AGREED WITHOUT BEING COMPARED. The PDF prints " +
+      "Zacharias' kontakion after Ode III and Elizabeth's after Ode VI; " +
+      "§5 routes those to the 1st/6th and 3rd/9th Hours. Vol. III p.16 " +
+      "states that same routing in words. Neither was derived from the " +
+      "other, which is the strongest confirmation the pair has had.",
+      "09-06 (Miracle of the Archangel Michael at Colossae) is NOT in " +
+      "vol. III, so the full waterfall ran: six_stichera §2C. Martyr " +
+      "Eudoxius has a complete Compline canon but no LIC stichera, so the " +
+      "six are not a 3+3 split and the Simple-rank double test does not " +
+      "fire. In 2026 the date falls on the 14th Sunday after Pentecost, " +
+      "Tone 5, and OCA prints only the Sunday readings; the archangel's " +
+      "own Heb 2:2-10 / Luke 10:16-21 propers are recorded alongside " +
+      "rather than either being silently preferred.",
+      "BOTH IKOI CAPTURED ON 09-05 WITH NO VOCABULARY CHANGE. ikos_ode3 " +
+      "and ikos_ode6 were already in KNOWN_FIELDS and already used by " +
+      "pentecostarion.js. Placement follows the renderer: " +
+      "menaion-browser.jsx hardcodes the label 'Ikos (after Ode VI)' for " +
+      "entry.ikos, so the joint Ode VI ikos sits there and Zacharias' " +
+      "Ode III ikos in ikos_ode3. KNOWN DISPLAY GAP: the Menaion browser " +
+      "does not render ikos_ode3 yet, so that text is in the data but not " +
+      "on screen.",
+      "Validator: schema conformance passes, and neither September entry " +
+      "appears in any stichera, register or provenance warning. The 38 " +
+      "stichera warnings and the F-1/F-2 register warnings are all " +
+      "pre-existing May/June/July entries, unchanged by this session.",
+    ],
+  },
   {
     version: "v0.42.0",
     date: "August 2026",
