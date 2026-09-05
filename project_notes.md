@@ -1,5 +1,123 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.42.0** | **Tone Trainer: v0.26.0** | Last synced: August 24, 2026
+**Tool version: v0.43.0** | **Tone Trainer: v0.26.0** | Last synced: September 5, 2026
+
+**Session September 5, 2026 (nineteenth) — SEPTEMBER OPENS, AND VOL. III PAYS
+OUT.** New month file `src/data/menaion/september.js` with 09-05 and 09-06,
+wired into `_menaionLoaders` and into `tools/validate_entries.mjs`. Tool
+**v0.43.0**. The eighteenth session intook ODS vol. III and rewrote the rules
+around it; this is the first session where a date actually consumed it.
+
+### THE FIRST RANK WE DID NOT HAVE TO INFER
+
+`ods3-0905-wkd` (vol. III pp. 14-16) prints **"A polyeleos-rank service on
+Monday through Saturday"** in a rubric under the commemoration header. §1.1
+step 0 fired and the waterfall was never run. Sept 5 2026 is a Saturday, so the
+`-wkd` entry governs and its "On Saturday:" sub-rubrics apply. This is what the
+50-of-77 finding from last session looks like in practice: the rank arrives as
+data, and the six-step test is simply not needed.
+
+### 09-05 AND 09-05A ARE ONE COMMEMORATION, NOT TWO
+
+The A-file convention (A = second commemoration, as at 06-07) **does not hold
+here**, and following it would have been wrong in a way the gate would not have
+caught:
+
+| | `09-05.pdf` | `09-05A.pdf` |
+|---|---|---|
+| Header | Zacharias **alone** | Zacharias **& Elizabeth** |
+| LIC | 6 stichera | 8 (4+4), "Blessed is the man" |
+| Paroemias | none | 3 |
+| Polyeleos / Great Doxology | none | both |
+| Rank on its own | six_stichera §2C | **polyeleos §2E** |
+
+09-05A matches vol. III line for line — 8 stichera with the first of each group
+repeated, Gen 18:1-14 / Judg 13:2-20 / 1 Kgs 1:9-20, Luke §2, Heb §314, Matt §96
+— and OCA names **both** saints in the primary commemoration. So the two files
+are one commemoration at two service levels. Encoded as a **single entry sourced
+from 09-05A**; an array would have emitted Zacharias twice in one day's data.
+The lesson generalizes: the A suffix marks *a second file*, not *a second saint*,
+and which it is has to be read off the headers each time.
+
+### TWO SOURCES AGREED WITHOUT BEING COMPARED
+
+The St. Sergius PDF prints Zacharias' kontakion after Ode III and Elizabeth's
+after Ode VI. §5 routes Ode III to the 1st & 6th Hours and Ode VI to the 3rd &
+9th. Vol. III p.16 states that routing **in words**: "First Hour and Sixth Hour:
+kontakion of St. Zacharias. Third Hour and Ninth Hour: kontakion of St.
+Elizabeth." Neither was derived from the other. That is the strongest
+confirmation §5's ode-routing rule has had, and it came free.
+
+### 09-06 — THE WATERFALL, RUN IN FULL
+
+No `ods3-0906` among the 77, so step 0 does not apply. Not a Great Feast; no
+Small Vespers; no Polyeleos; no Great Doxology; 6 stichera at LIC all "of the
+holy archangel" → **six_stichera §2C**. Martyr Eudoxius has a complete Compline
+canon but **no LIC stichera**, so the six are not a 3+3 split and §1.1's
+Simple-rank double test does not fire — exactly the disambiguation §1.1's third
+key bullet warns about, and the first time the corpus has hit it.
+
+**Sept 6 2026 is a Sunday** (14th after Pentecost, Tone 5). OCA prints only the
+Sunday readings; the PDF's Heb 2:2-10 / Luke 10:16-21 are the archangel's own
+weekday-service propers. Both are recorded in the `note`; neither is silently
+preferred. The entry's `rank` is the saint's own, per §1.1's governing principle
+that rank does not depend on the weekday the fixed date lands on — Sunday
+layering stays the assembler's job.
+
+### TWO CLAIMS CHECKED RATHER THAN ASSUMED
+
+Both were about to become encoding decisions on bad premises:
+
+- **`ikos_ode3` / `ikos_ode6` were already legal.** Adding them was assumed to
+  require a KNOWN_FIELDS change; they were already in the set and already in use
+  in `pentecostarion.js`. So 09-05's two ikoi are both captured at zero cost.
+- **`menaion-browser.jsx` hardcodes the label "Ikos (after Ode VI)"** for
+  `entry.ikos`. Storing the Ode III ikos there would have rendered it under a
+  false label. Placement therefore follows the renderer: the joint Ode VI ikos in
+  `ikos`, Zacharias' Ode III ikos in `ikos_ode3`.
+
+**KNOWN DISPLAY GAP:** the Menaion browser does not render `ikos_ode3` (it is a
+Pentecostarion-browser field today), so that text is in the data but not on
+screen. Recorded, not worked around.
+
+### DIVERGENCES FLAGGED, NOT RECONCILED
+
+Vol. III routes 09-05's Litiya "Now & ever" and Vespers Aposticha "Now & ever"
+to the **resurrectional** theotokia in the Octoechos (Tones VI and II); the St.
+Sergius PDF prints **proper Menaion theotokia** in both slots. Both captured
+from the PDF, divergence recorded in the entry `note`. Vol. III also makes the
+Litiya conditional ("usually not an element of a polyeleos-rank commemoration…
+if the rector so direct"); the PDF prints it unconditionally, so `has_litya:
+true` on the PDF's authority with the conditional noted.
+
+### OCA CHECK — NO OVERRIDE APPLIED
+
+OCA's Tone 2 troparion is the PDF's "Troparion of the righteous ones" in
+contemporary register (§11 #17 keeps the thou/thy text). OCA's Tone 3 kontakion
+matches the PDF's Zacharias kontakion. OCA additionally lists a Zacharias-only
+Tone 4 troparion the PDF does not print; recorded in the `note`, not encoded,
+since §2.1 step 5 permits an OCA override only where the daily PDF lacks a
+proper.
+
+### GATES
+
+`tools/validate_entries.mjs`: schema conformance passes; **neither September
+entry appears in any stichera, register or provenance warning.** The 38 stichera
+warnings and the F-1/F-2 register warnings are all pre-existing May/June/July
+entries, untouched this session. `npm run build` succeeds and emits a
+`september` chunk; `eslint` clean on the new file.
+
+### BACKLOG TOUCHED
+
+- **August is still unencoded** — PDFs delivered (37 files, `08-23.pdf` a
+  confirmed permanent gap), no data file. The loader table now reads 05, 06, 07,
+  09, with 08 the visible hole.
+- **September is 2 of 38 files.** The rest of the month is open.
+- **`ikos_ode3` rendering** in the Menaion browser — new, small, blocks nothing.
+- One doc drift worth a later fix: `encoding_rule_v2.md` §2 and §2.1 give the
+  source folders as `Orthodox Hours/Menaion - St. Sergius/` and
+  `Orthodox Hours/General_Menaion/`; the mounted folder actually uses
+  `Menaion_St_Sergius/`. §2's "Menaion coverage as delivered" line also predates
+  the September delivery — the folder now holds 179 files across 05-09.
 
 **Session August 24, 2026 (eighteenth) — A THIRD FEKULA VOLUME: ODS CH. V IS
 OBSOLETE.** No tool or data change; this session moved the *rules*.
