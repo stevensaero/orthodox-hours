@@ -130,8 +130,11 @@ export const BULLETIN_CSS = `
         margin-left: -0.17in;
       }
       /* A margin at the top of a column would push the first line off the
-         baseline the budget assumed. */
+         baseline the budget assumed. The bottom one matters just as much and is
+         easier to miss: a grid item does not collapse its last child's bottom
+         margin away, so a trailing 12pt was being drawn but never counted. */
       .oh-col > *:first-child { margin-top: 0 !important; }
+      .oh-col > *:last-child { margin-bottom: 0 !important; }
 
       .oh-h {
         font-size: 10pt; line-height: 1.25; letter-spacing: 0.14em;

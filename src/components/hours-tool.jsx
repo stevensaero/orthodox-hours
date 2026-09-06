@@ -8589,6 +8589,44 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.46.2",
+    date: "September 2026",
+    summary: "Readings page ran one line long — two heights were rendered but never budgeted, and slack is now negotiated rather than fixed",
+    items: [
+      "THE CONTINUATION NOTICE WAS NEVER BUDGETED. A resumed part opens with " +
+      "\"…continued from page 2\" and a carried part closes with \"continued on " +
+      "page 3 →\". Both occupy a line; only the opening one was counted. At " +
+      "about 14.7pt each, a readings page with three splits ran roughly three " +
+      "lines past its column — which is exactly how a first readings page ends " +
+      "up spilling onto a second, nearly empty one.",
+
+      "A TRAILING MARGIN AT THE FOOT OF A COLUMN was drawn but not counted " +
+      "either. A grid item does not collapse its last child's bottom margin " +
+      "away, so up to 12pt per column was rendering unbudgeted. Removed at " +
+      "source with `.oh-col > *:last-child { margin-bottom: 0 }`, mirroring the " +
+      "rule already there for the first child.",
+
+      "SLACK IS NOW NEGOTIATED, NOT IMPOSED, because its cost is a cliff rather " +
+      "than a gradient. Measured on 6 September: at 0pt the propers sheet is 1 " +
+      "page at 99% and 97% column fill; at 6pt — a third of a line — it becomes " +
+      "2 pages with a third column 32% full. The readings sheet, meanwhile, " +
+      "stays at 2 pages however much slack it is given. A fixed margin would " +
+      "have bought safety on the sheet that never needed it and charged a whole " +
+      "page for it.",
+
+      "NEW paginateBest() walks a slack ladder from 33pt (two lines of the " +
+      "deepest body leading) down to none and keeps the most generous setting " +
+      "that still uses the fewest pages. On 6 September the propers sheet " +
+      "declines slack it cannot afford and keeps its page; the readings sheet " +
+      "takes the full two lines for free. Three pages in total, as before, but " +
+      "now with the margin sitting where it is actually needed.",
+
+      "Asserted both ways in `npm run gate`: the propers sheet must decline " +
+      "slack, a roomy sheet must take all of it, and no column of any layout " +
+      "may exceed the budget that layout chose.",
+    ],
+  },
+  {
     version: "v0.46.1",
     date: "September 2026",
     summary: "Bulletin text flickered and re-ordered in print preview — the verification pass was oscillating",

@@ -34,7 +34,7 @@ import { parseRefString, spanLabel } from "../lib/scripture-ref.js";
 import { spansToVerses, readingIntro } from "../lib/scripture-text.js";
 import { readingsInOrder } from "../lib/readings.js";
 import {
-  paginate, buildPropersFlow, buildReadingsFlow, PAGE,
+  paginateBest, buildPropersFlow, buildReadingsFlow, PAGE,
   continuationNotice, resumptionNotice, reconcileBudget,
 } from "../lib/bulletin-layout.js";
 import { BULLETIN_CSS } from "../lib/bulletin-css.js";
@@ -225,13 +225,13 @@ export default function Bulletin({ day, onClose }) {
   const page = budget || PAGE;
 
   const propers = useMemo(
-    () => paginate(buildPropersFlow(day), { page }),
+    () => paginateBest(buildPropersFlow(day), { page }),
     [day, page],
   );
   const readingPages = useMemo(() => {
     if (!withReadings || !resolved) return { pages: [], totalPages: 0, overflow: [] };
-    return paginate(buildReadingsFlow(resolved),
-                    { page, startPage: propers.totalPages + 1 });
+    return paginateBest(buildReadingsFlow(resolved),
+                        { page, startPage: propers.totalPages + 1 });
   }, [withReadings, resolved, page, propers.totalPages]);
 
   const totalPages = propers.totalPages + readingPages.totalPages;
@@ -275,6 +275,8 @@ export default function Bulletin({ day, onClose }) {
     const columnWidthIn = col.getBoundingClientRect().width / 96;
 
     const currentBudgetPt = budget ? budget.columnHeightPt : chromeBudgetPt;
+    // Drift is measured against the budget the columns were actually laid out
+    // with, which paginateBest may have reduced by its chosen slack.
     let drift = 0;
     for (const el of document.querySelectorAll(".oh-col")) {
       const d = px2pt(el.getBoundingClientRect().height) - currentBudgetPt;
@@ -288,7 +290,7 @@ export default function Bulletin({ day, onClose }) {
       || Math.abs(next.budgetPt - budget.columnHeightPt) > 0.5
       || Math.abs(columnWidthIn - budget.columnWidthIn) > 0.01;
     if (moved) {
-      setBudget({ ...PAGE, columnHeightPt: next.budgetPt, columnWidthIn, chromeBudgetPt });
+      setBudget({ ...PAGE, chromeBudgetPt, columnHeightPt: next.budgetPt, columnWidthIn });
     }
     setPass((p) => p + 1);
     if (next.settled) setSettled(true);

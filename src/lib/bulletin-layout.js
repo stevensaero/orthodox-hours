@@ -31,9 +31,32 @@ import { STYLES, blockHeightPt, wrapText } from "./bulletin-metrics.js";
 // Measured from a rendered sheet, not assumed. The component recomputes these
 // from the real DOM and passes them in; these values are the fallback for the
 // node-side proof renderer, which has no DOM.
+// SLACK — two lines of the deepest body leading (11pt x 1.5), held back from
+// each column so a sheet that only just fits is not one rounding error away
+// from spilling onto a nearly blank extra page.
+//
+// BUT IT IS NEGOTIATED, NOT IMPOSED, because the cost is a cliff rather than a
+// gradient. Measured on 6 September 2026:
+//
+//     slack   propers                       readings
+//     0pt     1 page   99% 97%              2 pages
+//     6pt     2 pages  82% 84% 32% 0%       2 pages
+//     33pt    2 pages  86% 88% 33% 0%       2 pages
+//
+// A third of a line of slack costs the propers sheet an entire page, with a
+// third column a third full — while the readings sheet, which is where sheets
+// actually overran, stays at two pages however much slack it is given.
+//
+// So `paginateBest` takes the largest slack that does not cost a page. The
+// margin is taken wherever it is free and declined where it is not, which is
+// the only version of this that is worth having.
+export const SLACK_PT = 33;
+const SLACK_LADDER = [33, 22, 16.5, 10, 6, 0];
+
 export const PAGE = {
   pageHeightPt: 792,           // 11in
-  columnHeightPt: 601.7,       // 11in less padding, masthead and footer
+  chromeBudgetPt: 601.7,       // 11in less padding, masthead and footer
+  columnHeightPt: 601.7 - SLACK_PT,
   columnWidthIn: 3.43,
   columnsPerPage: 2,
   mastheadPt: 94.16,
@@ -222,10 +245,22 @@ export function paginate(items, options = {}) {
     let lineCursor = 0;
     let first = true;
     while (lineCursor < block.lines.length) {
-      const headPt = first ? block.headPt : STYLES.continuation.pt * STYLES.continuation.leading
-                                            + STYLES.continuation.spaceBefore;
+      // A resumed part opens with "…continued from page 2"; a part that carries
+      // over closes with "continued on page 3 →". BOTH occupy a line, and
+      // v0.46.x budgeted only the first of them. The unbudgeted footer notice
+      // was about 14.7pt each time, so a readings page with three splits ran
+      // roughly three lines past its column and spilled onto a page of its own.
+      const noticePt = STYLES.continuation.pt * STYLES.continuation.leading
+                     + STYLES.continuation.spaceBefore;
+      const headPt = first ? block.headPt : noticePt;
       const linesLeft = block.lines.length - lineCursor;
-      let canTake = Math.floor((remaining() - gapBefore(block) - headPt) / block.linePt);
+
+      // Whether a tail notice is needed depends on how many lines are taken,
+      // which depends on whether a tail notice is needed. Resolve it by trying
+      // the optimistic case first and reserving the notice only if it splits.
+      const roomPt = remaining() - gapBefore(block) - headPt;
+      let canTake = Math.floor(roomPt / block.linePt);
+      if (canTake < linesLeft) canTake = Math.floor((roomPt - noticePt) / block.linePt);
 
       // Never strand fewer than two lines here or two lines over there.
       if (canTake < MIN_LINES_EITHER_SIDE ||
@@ -247,7 +282,7 @@ export function paginate(items, options = {}) {
         showHead: first,
         columnIndex: columnIndex(),
       };
-      place(entry, headPt + take * block.linePt);
+      place(entry, headPt + take * block.linePt + (isLast ? 0 : noticePt));
       lineCursor += take;
       first = false;
       if (!isLast) newColumn();
@@ -300,6 +335,35 @@ export function paginate(items, options = {}) {
   }
 
   return { pages, overflow, totalPages: pages.length, columnHeightPt: page.columnHeightPt };
+}
+
+/**
+ * Paginate at the most slack the day can afford.
+ *
+ * Tries the slack ladder from generous to none and keeps the most generous
+ * setting that still uses the fewest pages. A day with room gets the full
+ * safety margin; a day that only just fits keeps its page rather than paying
+ * for insurance it cannot afford.
+ *
+ * Returns the chosen layout with `slackPt` recording what it settled on.
+ */
+export function paginateBest(items, options = {}) {
+  const base = { ...PAGE, ...(options.page || {}) };
+  const chrome = base.chromeBudgetPt ?? base.columnHeightPt;
+  const ladder = SLACK_LADDER.filter((v) => v <= (options.maxSlackPt ?? SLACK_PT));
+
+  let best = null;
+  for (const slackPt of ladder) {
+    const laid = paginate(items, {
+      ...options,
+      page: { ...base, columnHeightPt: chrome - slackPt },
+    });
+    // The ladder descends, and a candidate replaces the incumbent only on a
+    // STRICTLY lower page count. So the winner is the most generous slack that
+    // achieves the fewest pages — ties always go to the earlier, roomier entry.
+    if (!best || laid.totalPages < best.totalPages) best = { ...laid, slackPt };
+  }
+  return best;
 }
 
 /**
@@ -443,11 +507,16 @@ const DRIFT_TOLERANCE_PT = 0.5;   // below this, rounding rather than real drift
  * @returns {{ budgetPt, settled, floored }}
  */
 export function reconcileBudget({ chromeBudgetPt, currentBudgetPt, measuredDriftPt, pass }) {
-  const floor = chromeBudgetPt * BUDGET_FLOOR_RATIO;
-  const current = currentBudgetPt ?? chromeBudgetPt;
+  // SLACK_PT is held back before anything else: the measured chrome height is
+  // what the page can physically hold, not what we are willing to fill.
+  const target = chromeBudgetPt - SLACK_PT;
+  const floor = target * BUDGET_FLOOR_RATIO;
+  const current = currentBudgetPt ?? target;
 
   if (pass >= MAX_LAYOUT_PASSES) return { budgetPt: current, settled: true, floored: false };
-  if (measuredDriftPt <= DRIFT_TOLERANCE_PT) return { budgetPt: current, settled: true, floored: false };
+  if (measuredDriftPt <= DRIFT_TOLERANCE_PT) {
+    return { budgetPt: Math.min(current, target), settled: true, floored: false };
+  }
 
   // Monotonic: never larger than the budget we just used.
   const wanted = current - Math.ceil(measuredDriftPt);

@@ -14,7 +14,8 @@ import { fileURLToPath } from "node:url";
 import { STYLES, wrapText, blockHeightPt } from "../src/lib/bulletin-metrics.js";
 import { paginate, buildPropersFlow, buildReadingsFlow,
          continuationNotice, resumptionNotice, PAGE,
-         reconcileBudget, MAX_LAYOUT_PASSES } from "../src/lib/bulletin-layout.js";
+         reconcileBudget, MAX_LAYOUT_PASSES, SLACK_PT,
+         paginateBest } from "../src/lib/bulletin-layout.js";
 import { readingsForDay } from "../src/lib/readings.js";
 import september from "../src/data/menaion/september.js";
 import { hymnText } from "../src/lib/hymn-entry.js";
@@ -102,7 +103,12 @@ const day = {
     { label: "Communion verse", text: entry.communion_verse },
   ],
 };
-const propers = paginate(buildPropersFlow(day));
+// paginateBest negotiates the slack: it takes the safety margin wherever it is
+// free and declines it where it would cost a page. On 6 September the propers
+// sheet has essentially no headroom — a third of a line of slack costs it a
+// whole page with a third column a third full — so it should decline.
+const propers = paginateBest(buildPropersFlow(day));
+check("the propers sheet declines slack it cannot afford", propers.slackPt, 0);
 check("propers pages", propers.totalPages, 1);
 check("nothing overflows a column", propers.overflow.length, 0);
 const fills = propers.pages[0].columns.map((c) => c.fillRatio);
@@ -180,7 +186,7 @@ const heavy = {
   kontakia: Array.from({ length: 3 }, (_, i) => ({ label: `Kontakion ${i + 1}`, tone: i + 1, text: BROWSER[3][0] })),
   extras: Array.from({ length: 8 }, (_, i) => ({ label: `Sticheron ${i + 1}`, tone: (i % 8) + 1, text: BROWSER[5][0] })),
 };
-const heavyOut = paginate(buildPropersFlow(heavy));
+const heavyOut = paginateBest(buildPropersFlow(heavy));
 console.log(`  ${heavyOut.totalPages} pages, fills ` +
   heavyOut.pages.flatMap((p) => p.columns).map((c) => (c.fillRatio * 100).toFixed(0) + "%").join(" / "));
 check("nothing overflows a column", heavyOut.overflow.length, 0);
@@ -189,6 +195,30 @@ for (const page of heavyOut.pages) {
   for (const col of page.columns) {
     if (col.usedPt > PAGE.columnHeightPt + 0.01) {
       failures++; console.log(`  ✗ column overfilled: ${col.usedPt}pt of ${PAGE.columnHeightPt}pt`);
+    }
+  }
+}
+
+// ─── 7b. Slack is negotiated, not imposed ───────────────────────────────────
+console.log("Slack is taken where free and declined where it costs a page");
+// A flow with room to spare should take the whole margin.
+const roomy = paginateBest([
+  { kind: "heading", text: "Troparia" },
+  { kind: "hymn", label: "One", tone: 1, text: BROWSER[0][0] },
+  { kind: "hymn", label: "Two", tone: 2, text: BROWSER[4][0] },
+]);
+check("a roomy sheet takes the full slack", roomy.slackPt, SLACK_PT);
+check("and still fits one page", roomy.totalPages, 1);
+
+// Whatever it chooses, no column may exceed the budget it chose.
+for (const layout of [propers, roomy, heavyOut]) {
+  const budget = (PAGE.chromeBudgetPt ?? PAGE.columnHeightPt) - (layout.slackPt ?? 0);
+  for (const page of layout.pages) {
+    for (const col of page.columns) {
+      if (col.usedPt > budget + 0.01) {
+        failures++;
+        console.log(`  ✗ column used ${col.usedPt.toFixed(1)}pt of a ${budget.toFixed(1)}pt budget`);
+      }
     }
   }
 }
@@ -221,7 +251,7 @@ console.log(`  budgets: ${history.join(" → ")} (settled after ${pass} pass${pa
 const clean = reconcileBudget({ chromeBudgetPt: chrome, currentBudgetPt: chrome,
                                 measuredDriftPt: 0, pass: 0 });
 check("no drift settles at once", clean.settled, true);
-check("and keeps the full budget", clean.budgetPt, chrome);
+check("and holds back the slack", clean.budgetPt, chrome - SLACK_PT);
 
 // Rounding noise is not drift.
 const noise = reconcileBudget({ chromeBudgetPt: chrome, currentBudgetPt: chrome,

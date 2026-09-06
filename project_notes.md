@@ -1,5 +1,65 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.46.1** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+**Tool version: v0.46.2** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+
+**Session September 6, 2026 (thirtieth) — THE READINGS PAGE RAN ONE LINE LONG.**
+Two heights were being rendered and never budgeted, and the fix for the residue
+turned out to need negotiating rather than imposing. Tool **v0.46.2**.
+
+### TWO UNBUDGETED HEIGHTS
+
+**The continuation notice.** A resumed part opens with *"…continued from page
+2"*; a carried part closes with *"continued on page 3 →"*. Both occupy a line.
+**Only the opening one was counted.** At ~14.7pt each, a readings page with
+three splits ran about three lines past its column — precisely how a first
+readings page spills onto a second, nearly empty one.
+
+The awkward part is that whether a tail notice is needed depends on how many
+lines are taken, which depends on whether a tail notice is needed. Resolved by
+trying the optimistic case first and reserving the notice only once the block is
+known to split.
+
+**A trailing margin at the foot of a column.** A grid item does not collapse its
+last child's bottom margin away, so up to 12pt per column was drawn and never
+counted. Removed at source with `.oh-col > *:last-child { margin-bottom: 0 }`,
+mirroring the first-child rule already there for the same reason.
+
+### SLACK IS A CLIFF, NOT A GRADIENT
+
+Bill asked for about two lines of slack. Measuring before applying it was worth
+the trouble:
+
+| slack | propers | readings |
+|---|---|---|
+| **0pt** | **1 page** — 99%, 97% | 2 pages |
+| 6pt | 2 pages — 82%, 84%, 32%, 0% | 2 pages |
+| 16.5pt | 2 pages | 2 pages |
+| 33pt | 2 pages — 86%, 88%, 33%, 0% | 2 pages |
+
+**A third of a line costs the propers sheet an entire page**, with a third
+column a third full. The readings sheet — the one that actually overran — stays
+at two pages however much slack it gets. A fixed margin would have bought
+insurance on the sheet that never needed it and charged a page for it.
+
+### paginateBest
+
+Walks a slack ladder (33 → 22 → 16.5 → 10 → 6 → 0) and keeps **the most
+generous setting that still uses the fewest pages**. A candidate replaces the
+incumbent only on a strictly lower page count, so ties go to the roomier entry.
+
+On 09-06: propers declines slack and keeps its page at 99%/97%; readings take
+the full 33pt for free. Three pages total, with the margin where it is needed.
+
+**The first attempt broke out of the ladder on its first iteration** and always
+returned 33pt — worth remembering that a descending search still has to run to
+the bottom before it knows what the minimum is.
+
+### GUARDS
+
+`npm run gate` now asserts the propers sheet declines slack, a roomy sheet takes
+all of it, and **no column of any layout exceeds the budget that layout chose** —
+the invariant that would have caught the unbudgeted notice on the day it was
+written.
+
 
 **Session September 6, 2026 (twenty-ninth) — THE VERIFICATION PASS WAS
 OSCILLATING.** Bulletin text flickered and re-ordered in Chrome's print preview

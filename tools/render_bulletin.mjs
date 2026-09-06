@@ -23,7 +23,7 @@ import { fileURLToPath } from "node:url";
 import { parseRefString, spanLabel } from "../src/lib/scripture-ref.js";
 import { spansToVerses, readingIntro } from "../src/lib/scripture-text.js";
 import { readingsForDay, readingsInOrder } from "../src/lib/readings.js";
-import { paginate, buildPropersFlow, buildReadingsFlow } from "../src/lib/bulletin-layout.js";
+import { paginateBest, buildPropersFlow, buildReadingsFlow } from "../src/lib/bulletin-layout.js";
 import { renderPage, renderMasthead } from "../src/lib/bulletin-html.js";
 import { BULLETIN_CSS } from "../src/lib/bulletin-css.js";
 import { hymnText } from "../src/lib/hymn-entry.js";
@@ -109,7 +109,7 @@ const day = {
   troparia, kontakia, extras,
 };
 
-const propers = paginate(buildPropersFlow(day));
+const propers = paginateBest(buildPropersFlow(day));
 
 let lections = [];
 if (wantReadings) {
@@ -131,8 +131,8 @@ if (wantReadings) {
   });
 }
 const readingPages = lections.length
-  ? paginate(buildReadingsFlow(lections), { startPage: propers.totalPages + 1 })
-  : { pages: [], totalPages: 0, overflow: [] };
+  ? paginateBest(buildReadingsFlow(lections), { startPage: propers.totalPages + 1 })
+  : { pages: [], totalPages: 0, overflow: [], slackPt: 0 };
 
 const totalPages = propers.totalPages + readingPages.totalPages;
 
