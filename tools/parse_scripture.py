@@ -34,6 +34,7 @@ Options:
 
 import os
 import re
+import glob
 import json
 import base64
 import argparse
@@ -188,6 +189,7 @@ def parse_chapter_file(filepath):
     lines = raw.splitlines()
     verses = []
     verse_num = 0
+    seen_content = False   # True once the first non-empty line has been examined
 
     for line in lines:
         # Strip leading/trailing whitespace
@@ -197,19 +199,44 @@ def parse_chapter_file(filepath):
         if not line:
             continue
 
-        # Skip book title line (contains no period mid-sentence, just "Book." or all-caps)
         # Skip chapter header line "Chapter N."
         if re.match(r'^Chapter\s+\d+\.\s*$', line, re.IGNORECASE):
             continue
-        if re.match(r'^THE\s+', line):  # KJV book headers like "THE GOSPEL..."
+
+        # KJV running heads are set entirely in capitals ("THE GOSPEL ACCORDING
+        # TO ST. MATTHEW."); verse text never is. Kept unconditional, as before.
+        if line.isupper() and re.match(r'^THE\s+', line):
             continue
-        # Check if it looks like a book title (short line ending with period, no lowercase words)
-        # "Genesis." — skip; "In the beginning God..." — keep
-        words = line.rstrip(".").split()
-        if len(words) <= 5 and line.endswith(".") and all(w[0].isupper() for w in words if w):
-            # Likely a book title — but be careful not to skip short verses
-            # Heuristic: if it matches a known book title pattern, skip
-            if re.match(r'^[A-Z][a-z]+(\s+[A-Z][a-z]*)*\.$', line):
+
+        # ── Book-title line ──────────────────────────────────────────────────
+        # Per the documented input format the title is always the FIRST
+        # non-empty line of the file. Gating on that position — rather than on
+        # the shape of the text alone — is what makes this safe: a genuine short
+        # verse ("Jesus wept.", "Rejoice evermore.") can never be eaten, because
+        # by the time one is reached the title has already been consumed.
+        #
+        # Real title shapes across Brenton LXX and KJV 2006:
+        #   "Genesis."                "1 Corinthians."          numeral-initial
+        #   "NEHEMIAH."               "Chronicles II."          trailing numeral
+        #   "Ezra and Nehemiah."      "Song of Solomon."        lowercase particle
+        #   "The Prayer of Manasses." "THE GOSPEL ACCORDING..." all-caps
+        #
+        # HISTORY: this test previously required `^[A-Z][a-z]+(\s+[A-Z][a-z]*)*\.$`,
+        # which rejects every shape in the right-hand column above. Those titles
+        # survived as verse 1 and pushed each chapter's real verses down by one,
+        # in 187 chapters across 21 books. Repaired by
+        # tools/fix_running_headers.py — read that script's docstring before
+        # tightening anything here, and re-run --verify afterwards.
+        if not seen_content:
+            seen_content = True
+            words = line.rstrip(".").split()
+            looks_like_title = (
+                len(words) <= 6
+                and not re.search(r'[,;:?!]', line)
+                and (line.endswith(".") or line.isupper())
+                and not re.search(r'\d+:\d+', line)
+            )
+            if looks_like_title:
                 continue
 
         # Strip KJV pilcrow/paragraph marker (¶ = \u00b6)
@@ -341,6 +368,23 @@ KNOWN_VERSE_COUNTS = {
     "John":  {1:51, 4:54, 21:25},
     "Acts":  {1:26, 11:30, 28:31},
     "Rom":   {1:32, 16:27},
+
+    # Books that shipped with the running-header verse shift (see
+    # tools/fix_running_headers.py). Every one was outside the table above,
+    # which is why --verify reported clean while 187 chapters were wrong.
+    # Counts are post-repair, confirmed against the printed editions.
+    "1Cor":  {1:31, 2:16, 13:13, 15:58, 16:24},
+    "2Cor":  {1:24, 2:17, 5:21, 13:14},
+    "1Tim":  {1:20, 2:15, 6:21},
+    "2Tim":  {1:18, 2:26, 4:22},
+    "1Thes": {1:10, 2:20, 5:28},
+    "2Thes": {1:12, 2:17, 3:18},
+    "1Pet":  {1:25, 2:25, 5:14},
+    "2Pet":  {1:21, 2:22, 3:18},
+    "1John": {1:10, 2:29, 4:21, 5:21},
+    "Song":  {1:17, 2:17, 8:14},
+    "Wis":   {1:16, 2:24},
+    "Neh":   {1:11, 2:20},
 }
 
 def verify_json_files(out_dir, verbose=False):
@@ -373,9 +417,42 @@ def verify_json_files(out_dir, verbose=False):
                 if verbose:
                     print(f"  ✓ {abbr} {ch_num}:{expected_count}")
 
+    # ── Structural check: no chapter may open with its own book title ────
+    # A verse-count table only catches books it lists. This check runs over
+    # EVERY shipped book and needs no reference data, because it tests an
+    # invariant rather than a number: scripture never opens a chapter by naming
+    # the book. It is the check that would have caught the running-header shift
+    # on the day it was introduced.
+    #
+    # Psalms is exempt: LXX superscriptions ("Song of a Psalm by David.") are
+    # genuine verse 1 in Brenton, and src/data/psalter.js encodes them the same
+    # way, with verse numbering that likewise begins at 2.
+    header_hits = []
+    for path in sorted(glob.glob(os.path.join(out_dir, "*.json"))):
+        name = os.path.basename(path)
+        if name in ("books.json", "pericopes.json", "ps.json"):
+            continue
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        book_words = set(re.findall(r"[A-Za-z]+", data.get("name", "").lower()))
+        for ch in data.get("chapters", []):
+            verses = ch.get("verses") or []
+            if not verses:
+                continue
+            text = verses[0].get("text", "").strip()
+            words = set(re.findall(r"[A-Za-z]+", text.lower()))
+            if len(text) <= 32 and words and words <= book_words:
+                header_hits.append(
+                    f'{data["name"]} ch.{ch["chapter"]}: verse 1 is "{text}"')
+    errors.extend(header_hits)
+
     print(f"\nVerification: {ok} checks passed, {len(errors)} errors")
     for e in errors:
         print(f"  ✗ {e}")
+    if header_hits:
+        print("\n  Chapters opening with their own book title are running-page")
+        print("  headers mis-parsed as verse 1. Repair with:")
+        print("      python3 tools/fix_running_headers.py --apply")
     return len(errors) == 0
 
 
@@ -400,7 +477,9 @@ def main():
         return
 
     if args.verify:
-        verify_json_files(out_dir, verbose=args.verbose)
+        # Exit non-zero on failure so this is usable as a CI / pre-commit gate.
+        if not verify_json_files(out_dir, verbose=args.verbose):
+            sys.exit(1)
         return
 
     total_books = 0

@@ -1,5 +1,167 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.44.0** | **Tone Trainer: v0.26.0** | Last synced: September 5, 2026
+**Tool version: v0.44.1** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+
+**Session September 6, 2026 (twenty-first) — SCRIPTURE DATA REPAIR.** A
+running-header parse defect had shifted every verse number in **187 chapters
+across 21 books**. Found while scoping the bulletin generator. Tool **v0.44.1**.
+
+### THE DEFECT, AND WHY IT SURVIVED A YEAR OF USE
+
+`parse_scripture.py` skips the book-title line that opens each source chapter
+file. The test required the title to begin with an uppercase *letter* and to
+consist of Capitalised-then-lowercase words:
+
+    if re.match(r'^[A-Z][a-z]+(\s+[A-Z][a-z]*)*\.$', line): continue
+
+Four real title shapes fail it — numeral-initial (`"1 Corinthians."`), trailing
+numeral (`"Chronicles II."`), all-caps (`"NEHEMIAH."`), lowercase conjunction
+(`"Ezra and Nehemiah."`). Where the title survived it became verse 1 and pushed
+every genuine verse down by one.
+
+**It survived because `--verify` was blind to it in two independent ways.**
+`KNOWN_VERSE_COUNTS` listed eleven books — Gen, Isa, Ps, Matt, Mark, Luke, John,
+Acts, Rom — and **not one of them is affected**, so the table reported 28/28
+clean while 187 chapters were wrong. And the on-screen reader is *browsed*, not
+read aloud against a printed book, so a wrong verse number in front of a reader
+is invisible in a way it would not be in front of a congregation. Printing
+readings in full is precisely the feature that would have exposed it, and
+scoping that feature is what did.
+
+### NOTHING WAS LOST — THE SHIFT IS AN INSERTION
+
+The first read of the evidence was wrong and is recorded here because the
+correction matters: 2 Cor 2 storing 18 entries where the KJV has 17 looked like
+a truncation with a missing final verse. It is the opposite. The header is
+*inserted* at position 1; every real verse is present, one number too high. The
+repair therefore required no external source. Verified: stored 2 Cor 2:18 is
+KJV 2 Cor 2:17, and after repair 2 Cor 2 holds exactly 17.
+
+### PSALM 107 IS NOT A DEFECT
+
+Ps 107:1, `"Song of a Psalm by David."`, trips the same detector and was
+deliberately **excluded**. It is the psalm's genuine LXX superscription, which
+Brenton numbers as verse 1. Confirmed against a second, independent encoding of
+the same text: `src/data/psalter.js` stores it as
+`107: {sub: 'Song of a Psalm by David.', v: [[2, "O God, my heart is ready…"]]}`
+— superscription in `sub`, verses beginning at 2. It is the only Psalm of 151
+flagged, which is itself the tell. Note Ps 108 by contrast merges its
+superscription *into* verse 1, so the two are inconsistent in the data; that is
+an observation, not a defect, and is not touched here.
+
+### WHAT WAS BUILT
+
+- `tools/fix_running_headers.py` — exact-match allowlist of the 21 confirmed
+  header strings keyed to the owning book, never a heuristic. Plans and
+  validates every book before writing anything; idempotent, and aborts rather
+  than double-shifting on a second run. Preserves the shipped formatting
+  exactly: indent=2, CRLF, no trailing newline.
+- `parse_scripture.py` title test now gates on **position** rather than on the
+  shape of the text alone. The title is always the first non-empty line, so a
+  generous pattern applied only there cannot eat a genuine short verse
+  (`"Jesus wept."`, `"Rejoice evermore."`).
+- `--verify` gained post-repair counts for twelve damaged books, and a
+  **structural check that needs no reference data at all**: no chapter may open
+  with a verse consisting solely of its own book's name. It runs over every
+  shipped book, tests an invariant rather than a number, and is the check that
+  would have caught this on day one. Psalms exempted. `--verify` now exits
+  non-zero, so it can gate CI. Regression-tested by reintroducing the defect
+  into a scratch copy and confirming both checks fire.
+
+### OPEN — NOT DONE HERE
+
+- **Full verse-count audit of all 80 books.** Would establish whether any other
+  defect class is present. Blocked on a reliable source for Brenton LXX counts,
+  which differ from the KJV throughout the Old Testament.
+- **Four lectionary refs silently truncate.** `scripture.jsx:382`'s
+  cross-chapter regex is `^…$`-anchored, so a cross span inside a comma list is
+  dropped without warning: `Acts 6:8-7:5, 47-60` renders as 47-60 only — the
+  Stephen pericope loses its opening. Same for `Luke 22:39-42, 45-23:1`,
+  `Galatians 1:1-10, 20-2:5`, `Mark 5:22-24, 35-6:1`.
+- **The two book-name maps disagree.** `hours-tool.jsx:389` `SCRIPTURE_BOOK_ID`
+  knows `Is`, `Ex`, `Judg`, `Jdt`; `scripture.jsx:296` `LECTIONARY_BOOK_ID` does
+  not, so the tool builds links the viewer refuses. Neither knows `First Kings`,
+  `Third Kings`, `3 Kgdms`, `First John`, `First Corinthians`,
+  `Acts of the Apostles`. About a fifth of the 141 encoded paroemias cannot
+  currently resolve to text, and they fail silently.
+- **No headless renderer.** Passage text only ever exists inside JSX;
+  `ReadingView` is hard-coded to `display:"block"`, one verse per line. A
+  `spansToText(spans, {verseNumbers, continuous})` helper is the prerequisite
+  for the bulletin readings supplement.
+
+### BULLETIN GENERATOR — SCOPE AGREED THIS SESSION
+
+Day-scoped, two formats: a 5.5x8.5 half sheet and an 8.5x11 two-column
+broadsheet, both with an optional appended readings supplement setting each
+reading as one continuous chapter-spanning passage. Entry point is the button
+row at `hours-tool.jsx:15893`. Service-order lists are **deferred** until Matins
+and Liturgy have assemblers. Fasting advice is **deferred** until a fasting
+engine exists.
+
+### READINGS CONCURRENCE — A RULING IS NEEDED, AND FEKULA DOES NOT GIVE IT
+
+On 2026-09-06 the OCA service text prints **only** the Sunday pair (2 Cor
+1:21-2:4 / Matt 22:1-14) and omits the Archangel's Heb 2:2-10 / Luke 10:16-21
+entirely, together with his Tone 4 prokeimenon and Ps 103:4 communion verse.
+
+**Fekula says the opposite.** Ch. 1 §1C — the governing line for a Six-Stichera
+commemoration on a Sunday — reads *"For Sunday and from the Menaion"*
+(`fekula_chapter_1.txt` L427). Note the wording: §1A and §1B hedge with *"and,
+if there be such, from the Menaion"*; §1C and §1E drop the hedge. **Fekula's
+gate is not rank at all — it is whether the Menaion appoints readings.** All 25
+Sunday templates in ODS 3rd ed. vol. III print the saint's pair; not one drops
+it (`ods_v3_full_repaired.txt` L8889-8897, the 31 July six-stichera Sunday).
+
+**OCA's own threshold is recoverable and is doxology-and-above:**
+
+| Date | Commemoration | Encoded rank | Saint's readings printed? |
+|---|---|---|---|
+| 09-06 | Michael at Chonae | six_stichera | No |
+| 09-13 | Dedication of the Holy Sepulcher | doxology | **Yes** — Heb 3:1-4 + own prokeimenon + own communion verse |
+| 09-20 | Gmt Eustathius | six_stichera | No — only Sunday After Elevation + cycle |
+
+Two negatives at six_stichera and one positive at doxology inside a fortnight.
+**Caveat: three data points, and 09-13 carries paroemias and a Magnificat, so it
+may be behaving as polyeleos-adjacent. The line could equally sit at polyeleos.
+More Sundays would settle it — do not encode the threshold until they do.**
+
+09-13 also supplies OCA's own fusion formula, the only instance in the whole
+OCA corpus: *"The above two readings are read as one, then:"*, used to join a
+named-Sunday pair to the cycle pair. Fekula has no vocabulary for this —
+`under one`, `read as one`, `read together` return nothing in a readings context
+across every chapter.
+
+**Bearing on the existing suppression:** `namedDayIsSunday` suppresses
+feast_e/feast_g for 19 movable Triodion/Pentecostarion Sundays on the rationale
+that the cycle reading at that offset *is* the Sunday proper. The 14th Sunday
+after Pentecost is an ordinary Sunday and is not among them, and the rationale
+does not transfer — here the two pairs are genuinely different readings. OCA's
+behaviour needs a new, rank-based gate, not an extension of that list.
+
+**Schema inconsistency to rule on first:** `encoding_rule_v2.md` L1189-1190 and
+L1228 state that feast_e/feast_g are `null` for §2A/§2C. 09-06 is encoded
+`fekula_section: "2C"` and carries `feast_e: "Hebrews 2:2-10"`. Precedent runs
+both ways — 05-23, also §2C, had its feast_e/g *corrected to null*
+(`hours-tool.jsx` L12333). Any concurrence gate will read this field, so settle
+it before building on top of it.
+
+### FASTING — FEKULA HAS NO DIETARY RULE AT ALL
+
+The word *fast* appears 19 times in the entire OCR (17 in the appendices, 1 in
+ch. 3b, 1 in the TOC) and **every occurrence is liturgical structure, not diet**
+— which service form the lesser fasts take, when bows are made, when the requiem
+litia is omitted. Fekula never says what may be eaten.
+
+The OCA outline is therefore the only source:
+https://www.oca.org/liturgics/outlines/fasting-fast-free-seasons-of-the-church
+Five fasting seasons, four fast-free weeks, Wednesdays and Fridays year-round
+except fast-free, three fixed strict days (Theophany Eve, the Beheading, the
+Elevation). Three of the five seasons are fixed-date; Meatfast and Great Lent
+key off the Paschal cycle the tool already computes; the Apostles' Fast derives
+from Pentecost. **Note for whoever builds it:** the Typikon ch. 33 passage the
+OCA page quotes gates allowances on *rank* — *"If there occur on Tuesday or
+Thursday a Saint who has a Doxology, we eat fish"* — so a fasting engine reads
+`rank`, which this tool already holds for every encoded date.
+
 
 **Session September 5, 2026 (twentieth) — SEPTEMBER IS SERVABLE.** Nine dates
 added (09-07, 09-08 +A, 09-12, 09-13, 09-14, 09-19 +A, 09-20, 09-26, 09-27),

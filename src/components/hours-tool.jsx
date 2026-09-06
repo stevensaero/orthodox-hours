@@ -8657,6 +8657,77 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.44.1",
+    date: "September 2026",
+    summary: "Scripture data repair — a running-header parse defect had shifted every verse number in 187 chapters across 21 books",
+    items: [
+      "THE DEFECT: parse_scripture.py skips the book-title line that opens each " +
+      "source chapter file. Its test required the title to begin with an " +
+      "uppercase LETTER and to consist of Capitalised-then-lowercase words " +
+      "(/^[A-Z][a-z]+(\\s+[A-Z][a-z]*)*\\.$/). Four real title shapes fail that " +
+      "pattern: numeral-initial (\"1 Corinthians.\"), trailing numeral " +
+      "(\"Chronicles II.\"), all-caps (\"NEHEMIAH.\") and lowercase-conjunction " +
+      "(\"Ezra and Nehemiah.\"). Where the title survived it was emitted as " +
+      "verse 1, pushing every genuine verse in that chapter down by one.",
+
+      "BLAST RADIUS: 187 chapters across 21 books — 1 Corinthians (15 of 16 " +
+      "chapters), 2 Chronicles (all 36), 2 Kingdoms (all 24), Ezra (all 23), " +
+      "4 Maccabees (18), 2 Maccabees (15), 2 Corinthians (12 of 13), Song of " +
+      "Songs (all 8), 3 Maccabees (7), 1 Timothy (5), 1 John / 1 Peter / " +
+      "1 Thessalonians (4 each), 2 Timothy (3), 2 Peter / 2 Thessalonians " +
+      "(2 each), and one chapter each in Nehemiah, Wisdom, Bel, the Letter of " +
+      "Jeremiah and the Prayer of Manasseh. Every affected book's name begins " +
+      "with a numeral, is set in caps, or carries a lowercase particle — so " +
+      "the damage is concentrated in the Apostolos, which the lectionary reads " +
+      "from most.",
+
+      "WHAT IT LOOKED LIKE: 2 Corinthians 1:21-2:4, the Epistle for the 14th " +
+      "Sunday after Pentecost, rendered its second half beginning with the " +
+      "words \"2 Corinthians.\" as verse 2:1, carried verses 1-3 under the " +
+      "numbers 2-4, and stopped one verse short of its appointed end. Found " +
+      "while scoping the bulletin generator's readings supplement, which is " +
+      "the first feature that would have printed a reading in full.",
+
+      "NOTHING WAS LOST. The shift is a pure insertion, not a truncation: the " +
+      "chapter's real last verse was present all along, one number too high. " +
+      "The repair therefore needed no external source — delete the spurious " +
+      "entry, decrement the rest.",
+
+      "REPAIR: new tools/fix_running_headers.py, an exact-match allowlist of " +
+      "the 21 confirmed header strings keyed to their owning book rather than " +
+      "a heuristic, so no genuine short verse can ever be deleted. It plans " +
+      "every book and validates affected-chapter counts BEFORE writing " +
+      "anything, and is idempotent — a second run finds nothing and aborts " +
+      "rather than double-shifting.",
+
+      "PSALM 107 IS NOT A DEFECT and was deliberately excluded. Its verse 1, " +
+      "\"Song of a Psalm by David.\", trips the same detector but is the " +
+      "psalm's genuine LXX superscription, which Brenton numbers as verse 1. " +
+      "Confirmed independently: src/data/psalter.js encodes the same Brenton " +
+      "text with sub: 'Song of a Psalm by David.' and its verse array " +
+      "beginning at 2. It is the only Psalm of 151 flagged, which is itself " +
+      "the tell.",
+
+      "ROOT CAUSE FIXED so a rebuild cannot reintroduce it. The title test now " +
+      "gates on POSITION rather than on the shape of the text alone: the title " +
+      "is always the first non-empty line of the file, so a generous pattern " +
+      "applied only there can never eat a genuine short verse (\"Jesus wept.\").",
+
+      "VERIFY HARDENED. --verify reported clean throughout, because " +
+      "KNOWN_VERSE_COUNTS covered eleven books and not one of them was " +
+      "affected. Added post-repair counts for twelve of the damaged books, and " +
+      "a structural check that runs over EVERY shipped book and needs no " +
+      "reference data at all: no chapter may open with a verse consisting " +
+      "solely of its own book's name. Psalms exempted. --verify now also exits " +
+      "non-zero on failure, so it can gate CI.",
+
+      "FOLLOW-ON, NOT DONE HERE: a full expected-verse-count audit of all 80 " +
+      "books would establish whether any other defect class is present. The " +
+      "LXX counts differ from the KJV in the Old Testament and need a reliable " +
+      "source before that table can be built.",
+    ],
+  },
+  {
     version: "v0.44.0",
     date: "September 2026",
     summary: "September is servable — 11 dates encoded including both Great Feasts; 305 hymn strings verified verbatim against source",
