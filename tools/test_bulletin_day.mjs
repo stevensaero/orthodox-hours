@@ -24,6 +24,7 @@ import september from "../src/data/menaion/september.js";
 import may from "../src/data/menaion/may.js";
 import * as OctoV2 from "../src/data/octoechos_v2/adapter.js";
 import { hymnText } from "../src/lib/hymn-entry.js";
+import { BULLETIN_CSS } from "../src/lib/bulletin-css.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SHOW = process.argv.includes("--show");
@@ -191,6 +192,58 @@ if (SHOW) {
     console.log("  " + t.text.slice(0, 260) + "…");
   }
   console.log("\n" + "─".repeat(72));
+}
+
+// ─── Print-path regression guard ────────────────────────────────────────────
+// v0.45.1 printed exactly one page and no readings sheet. The cause was two
+// INLINE declarations on the modal container — position:fixed and
+// overflow:auto — which beat the @media print rules, because an inline style
+// wins over a stylesheet rule that carries no !important. A fixed element
+// prints on the first page only in Chrome, and overflow:auto clipped 27in of
+// sheets into a 0.88in scroll box.
+//
+// These assertions are structural rather than visual, because the failure was
+// structural and nothing about the rendered sheet looked wrong on screen.
+console.log("\nPrint path");
+
+const componentSrc = fs.readFileSync(
+  path.join(ROOT, "src", "components", "bulletin.jsx"), "utf8");
+
+// 1. The overlay must not be positioned from inline styles again.
+if (/position:\s*["']fixed["']/.test(componentSrc)) {
+  failures++;
+  console.log("  ✗ bulletin.jsx sets position:fixed inline — the print rules cannot override it");
+}
+if (/overflow:\s*["']auto["']/.test(componentSrc)) {
+  failures++;
+  console.log("  ✗ bulletin.jsx sets overflow:auto inline — it will clip printing to one page");
+}
+
+// 2. The print block must unwind every containment the modal needs on screen.
+// lastIndexOf, not indexOf: the stylesheet mentions "@media print" in a
+// comment above the block itself, and indexOf would slice from the prose.
+const printBlock = BULLETIN_CSS.slice(BULLETIN_CSS.lastIndexOf("@media print"));
+for (const [what, re] of [
+  ["releases position",        /\.oh-overlay\s*\{[^}]*position:\s*static\s*!important/],
+  ["releases overflow",        /\.oh-overlay\s*\{[^}]*overflow:\s*visible\s*!important/],
+  ["releases height",          /\.oh-overlay\s*\{[^}]*height:\s*auto\s*!important/],
+  ["releases inset",           /\.oh-overlay\s*\{[^}]*inset:\s*auto\s*!important/],
+  ["sizes the page box",       /@page\s*\{[^}]*size:\s*8\.5in\s+11in/],
+  ["margins on the page box",  /@page\s*\{[^}]*margin:\s*0\.55in/],
+  ["breaks between sheets",    /\.oh-sheet\s*\{[^}]*page-break-after:\s*always/],
+  ["last sheet does not break", /\.oh-sheet:last-child\s*\{[^}]*page-break-after:\s*auto/],
+  ["hides the app",            /body\s*>\s*\*:not\(\.oh-overlay\)/],
+  ["keeps the proof page",     /:not\(\.oh-sheet\)\s*\{\s*display:\s*none/],
+]) {
+  if (!re.test(printBlock)) { failures++; console.log(`  ✗ print CSS: ${what}`); }
+}
+
+// 3. Paper geometry must live under @media screen only. A fixed 8.5in-wide box
+//    on a zero-margin 8.5in page is where stray blank pages come from.
+const screenBlock = BULLETIN_CSS.slice(
+  BULLETIN_CSS.indexOf("@media screen"), BULLETIN_CSS.lastIndexOf("@media print"));
+if (!/width:\s*8\.5in/.test(screenBlock)) {
+  failures++; console.log("  ✗ the 8.5in sheet width is not confined to @media screen");
 }
 
 if (failures) { console.log(`\nFAILED — ${failures} check(s)`); process.exit(1); }

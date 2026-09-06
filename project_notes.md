@@ -1,5 +1,85 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.45.1** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+**Tool version: v0.45.2** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+
+**Session September 6, 2026 (twenty-sixth) — THE BULLETIN WOULD NOT PRINT.**
+One page, no readings sheet, dead scrollbar in Chrome's print preview. Tool
+**v0.45.2**.
+
+### TWO INLINE DECLARATIONS BEAT THE WHOLE PRINT STYLESHEET
+
+The modal container was styled inline:
+
+    style={{ position: "fixed", ..., overflow: "auto", ... }}
+
+**An inline style beats a stylesheet rule that carries no `!important`.** So the
+entire `@media print` block — which did say `position: absolute` and
+`overflow: visible` — was inert. And then:
+
+- a `position: fixed` element **prints on the first page only** in Chrome;
+- `overflow: auto` clips everything past the box;
+- `inset: 0` on an absolutely positioned box pins top *and* bottom, making it
+  exactly one viewport tall even if the rule had applied.
+
+Three symptoms, one cause. Nothing about the sheet looked wrong on screen, which
+is why it shipped.
+
+### MEASURED, NOT INFERRED
+
+Rebuilt the app's DOM shape in a browser and read back computed styles:
+
+| | position | overflow | overlay height |
+|---|---|---|---|
+| v0.45.1 | `fixed` | `auto` | **0.88in** |
+| v0.45.2 | `static` | `visible` | **27.00in** |
+
+27 inches of sheets compressed into a 0.88in scroll box — precisely nothing for
+Chrome to paginate. After the fix the second sheet begins at exactly 11.00in,
+`#root` is hidden and the modal chrome is hidden.
+
+### THE FIX IS NOT MORE !important
+
+The overlay is now styled **from the stylesheet**, not inline, so the print
+block wins by ordinary cascade order; the `!important` flags that remain are
+belt-and-braces rather than the mechanism. Print releases all four
+containments — `position`, `inset`, `height`, `overflow` — and each one matters
+independently.
+
+### PAPER GEOMETRY BELONGS TO @media screen
+
+The 8.5x11 box with its 0.55in padding is a **preview device**. In print the
+`@page` box supplies size and margins, and the sheet carries none of its own:
+
+    @page { size: 8.5in 11in; margin: 0.55in 0.65in 0.45in; }
+    .oh-sheet { width: auto; min-height: 0; padding: 0; }
+
+A fixed 8.5in-wide box on a zero-margin 8.5in page is where stray blank pages
+come from, and the two sets were competing for the same job.
+
+Also added the break control the first cut lacked: headings, slot labels and
+reading references keep with what they introduce; hymns, reading rows and
+reading slots never split across a column or page.
+
+### THE GUARD
+
+`tools/test_bulletin_day.mjs` now fails if `bulletin.jsx` sets `position:fixed`
+or `overflow:auto` inline again, if the print block stops releasing any of the
+four containments, if `@page` loses its size or margins, if sheets stop breaking
+between pages, or if the 8.5in width escapes `@media screen`.
+
+**Structural assertions, because the failure was structural.** A visual check
+would not have caught this — the on-screen preview was correct throughout.
+
+One trap worth remembering: the guard first failed on the stylesheet's own
+prose. `indexOf("@media print")` matched a *comment* mentioning the block, and
+sliced from there. It uses `lastIndexOf` now.
+
+### THE PROOF PAGE HAD TO STAY HONEST
+
+`tools/render_bulletin.mjs` puts sheets straight in the body with no overlay, so
+the print rule that hides the app (`body > *:not(.oh-overlay)`) would have
+blanked it. It exempts a bare `.oh-sheet`. **A proof that does not print
+identically to the app is not a proof.**
+
 
 **Session September 6, 2026 (twenty-fifth) — BULLETIN LAYOUT PICKUPS.** White
 stock, one format, and type at a size a reader can actually use. Tool

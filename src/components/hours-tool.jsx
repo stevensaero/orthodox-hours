@@ -8589,6 +8589,55 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.45.2",
+    date: "September 2026",
+    summary: "Bulletin printed one page and stopped — two inline style declarations were beating the print stylesheet",
+    items: [
+      "THE BUG. v0.45.1 printed the first page only, offered no way to reach the " +
+      "readings sheet, and hung the scrollbar in Chrome's print preview. All " +
+      "three were one cause: the modal container carried position:fixed and " +
+      "overflow:auto as INLINE styles. An inline style beats a stylesheet rule " +
+      "that carries no !important, so the @media print block could not undo " +
+      "them. A position:fixed element prints on the FIRST PAGE ONLY in Chrome, " +
+      "and overflow:auto clipped the rest to the box.",
+
+      "MEASURED, not inferred. Rebuilding the app's DOM shape and reading back " +
+      "computed styles: with the v0.45.1 rules the overlay was position:fixed, " +
+      "overflow:auto and 0.88in tall — 27in of sheets compressed into a " +
+      "0.88in scroll box, which is precisely nothing for Chrome to paginate. " +
+      "After the fix: position:static, overflow:visible, 27.00in tall, with the " +
+      "second sheet starting at exactly 11.00in.",
+
+      "THE FIX is not more !important. The overlay is now styled from " +
+      "src/lib/bulletin-css.js rather than inline, so the print block wins by " +
+      "ordinary cascade order; the !important flags that remain are " +
+      "belt-and-braces. Print releases all four containments that matter — " +
+      "position (fixed prints one page), inset and height (a box with top and " +
+      "bottom pinned is one viewport tall), and overflow (auto clips to it).",
+
+      "PAPER GEOMETRY MOVED TO @media screen. The 8.5x11 box with its 0.55in " +
+      "padding is a preview device; in print the @page box supplies size and " +
+      "margins and the sheet carries none of its own. A fixed 8.5in-wide box on " +
+      "a zero-margin 8.5in page is where stray blank pages come from, and the " +
+      "two sets were competing.",
+
+      "Added break control the first cut lacked: headings, slot labels and " +
+      "reading references keep with what they introduce, and hymns, reading " +
+      "rows and reading slots never split across a column or page.",
+
+      "REGRESSION GUARD in tools/test_bulletin_day.mjs. It fails if bulletin.jsx " +
+      "sets position:fixed or overflow:auto inline again, if the print block " +
+      "stops releasing any of the four containments, if the @page box loses its " +
+      "size or margins, if sheets stop breaking between pages, or if the 8.5in " +
+      "width escapes @media screen. Structural assertions, because the failure " +
+      "was structural — nothing about the sheet looked wrong on screen.",
+
+      "The proof page from tools/render_bulletin.mjs puts sheets straight in the " +
+      "body with no overlay, so the print rule that hides the app exempts a " +
+      "bare .oh-sheet. A proof that does not print identically is not a proof.",
+    ],
+  },
+  {
     version: "v0.45.1",
     date: "September 2026",
     summary: "Bulletin: white stock, one format, and type at a size a reader can actually use",

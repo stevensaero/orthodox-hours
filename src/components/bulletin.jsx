@@ -286,9 +286,7 @@ export default function Bulletin({ day, onClose }) {
 
   return createPortal(
     <div
-      className="oh-print-root"
-      style={{ position: "fixed", inset: 0, background: "rgba(28,16,8,0.62)",
-               zIndex: 200, overflow: "auto", padding: "24px 16px 60px" }}
+      className="oh-overlay"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <SheetStyles />

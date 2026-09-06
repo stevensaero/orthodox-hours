@@ -42,17 +42,44 @@ const SERIF = "Georgia, 'Times New Roman', serif";
 // Re-measure with:  node tools/render_bulletin.mjs 2026-09-06 > /tmp/p.html
 
 export const BULLETIN_CSS = `
+      /* THE OVERLAY IS STYLED HERE, NOT INLINE, AND THAT IS LOAD-BEARING.
+         v0.45.1 set position:fixed and overflow:auto as inline styles on this
+         element. Inline styles beat a stylesheet rule unless it carries
+         !important, so the @media print block below could not undo them — and
+         a position:fixed element prints on the FIRST PAGE ONLY in Chrome while
+         overflow:auto clips everything past the first viewport. One page, no
+         readings sheet, and a dead scrollbar in print preview, all from two
+         inline declarations. Styling the overlay from the stylesheet lets the
+         print block win by ordinary cascade order. */
+      .oh-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(28,16,8,0.62);
+        z-index: 200;
+        overflow: auto;
+        padding: 24px 16px 60px;
+      }
+
       .oh-sheet {
         background: #fff;
         color: ${C.ink};
         font-family: ${SERIF};
         box-sizing: border-box;
         position: relative;
-        width: 8.5in;
-        min-height: 11in;
-        padding: 0.55in 0.65in 0.45in;
-        margin: 0 auto 24px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      }
+
+      /* Paper geometry belongs to the SCREEN preview only. In print the page
+         box itself supplies the size and margins — see @page below — so the
+         sheet must not carry a second, competing set. A fixed 8.5in-wide box
+         on a zero-margin 8.5in page is where stray blank pages come from. */
+      @media screen {
+        .oh-sheet {
+          width: 8.5in;
+          min-height: 11in;
+          padding: 0.55in 0.65in 0.45in;
+          margin: 0 auto 24px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+        }
       }
 
       .oh-masthead {
@@ -144,18 +171,62 @@ export const BULLETIN_CSS = `
       }
 
       @media print {
-        body > *:not(.oh-print-root) { display: none !important; }
-        .oh-print-root {
-          position: absolute; inset: 0;
-          background: #fff; padding: 0; margin: 0; overflow: visible;
+        /* The page box supplies the margins; nothing inside re-states them. */
+        @page { size: 8.5in 11in; margin: 0.55in 0.65in 0.45in; }
+
+        html, body {
+          background: #fff !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          height: auto !important;
+          overflow: visible !important;
         }
+
+        /* Everything the app rendered outside the bulletin. The .oh-sheet
+           exemption is for tools/render_bulletin.mjs, whose proof page puts
+           sheets straight in the body with no overlay around them — the proof
+           has to print identically or it is not a proof. */
+        body > *:not(.oh-overlay):not(.oh-sheet) { display: none !important; }
+
+        /* Unwind every containment the on-screen modal needs and print does
+           not. All four matter: position, because fixed prints one page;
+           inset/height, because an absolutely positioned box with top and
+           bottom pinned is one viewport tall; and overflow, because auto
+           clips to that box. !important is belt-and-braces here — the
+           cascade already wins now that the overlay is not styled inline. */
+        .oh-overlay {
+          position: static !important;
+          inset: auto !important;
+          width: auto !important;
+          height: auto !important;
+          max-height: none !important;
+          overflow: visible !important;
+          background: #fff !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          z-index: auto !important;
+        }
+
         .oh-no-print { display: none !important; }
+
         .oh-sheet {
-          box-shadow: none; margin: 0;
-          width: 8.5in; min-height: 11in;
-          page-break-after: always; break-after: page;
+          width: auto !important;
+          min-height: 0 !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          box-shadow: none !important;
+          break-after: page;
+          page-break-after: always;
         }
-        .oh-sheet:last-child { page-break-after: auto; break-after: auto; }
-        @page { size: 8.5in 11in; margin: 0; }
+        .oh-sheet:last-child { break-after: auto; page-break-after: auto; }
+
+        /* Keep a heading with what it introduces, and never split a hymn or a
+           reading row across a column or page break. */
+        .oh-h, .oh-slot-label, .oh-lection-ref {
+          break-after: avoid; page-break-after: avoid;
+        }
+        .oh-slot, .oh-hymn, .oh-reading-row {
+          break-inside: avoid; page-break-inside: avoid;
+        }
       }
     `;
