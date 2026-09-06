@@ -1,5 +1,102 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.45.3** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+**Tool version: v0.46.0** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+
+**Session September 6, 2026 (twenty-eighth) — THE BULLETIN OWNS ITS OWN PAGE
+BREAKS.** A real type budget, computed from Georgia metrics and verified against
+the rendered page. Tool **v0.46.0**.
+
+### THE PROBLEM WITH A MEASURED CONSTANT
+
+v0.45.3 knew one number: 6 September is 10.97in of an 11in page. That is not
+knowledge about the layout, it is knowledge about one day. CSS `column-count`
+broke wherever it landed — mid-troparion, mid-verse, across a page turn with no
+notice — and could not be asked anything in advance.
+
+### A CHARACTER BUDGET WAS TRIED FIRST, AND IS THE WRONG TOOL
+
+Chars-per-line cannot tell **"i" (0.293em) from "O" (0.744em)**, and the
+hymnography swings between both. Calibrated against the real hymns and biased
+never to underestimate — the only safe bias — it was wrong by **up to six lines
+on a nine-line sticheron**, a 66% overestimate that would have wasted a third of
+every column.
+
+### WHAT WORKS: SIMULATE THE BROWSER'S OWN WORD WRAP
+
+`src/lib/bulletin-metrics.js` carries real Georgia advance widths, measured from
+the browser at 1000px and stored per em, and reproduces the browser's greedy
+word-wrap algorithm rather than approximating it.
+
+**Twelve of twelve real line counts predicted exactly**, at both 10.5pt and
+11pt, against strings rendered in Chrome at the sheet's true 3.43in measure —
+every troparion and kontakion of 09-06, the aposticha doxasticon, the
+exapostilarion, and two Gospel passages. The simulation ignores hyphenation on
+purpose: hyphenation only ever fits MORE on a line, so ignoring it errs toward
+predicting more lines — space wasted rather than text lost.
+
+Verify the font before trusting a re-derivation: Georgia and Times give
+different widths for 'O' (0.7441 vs 0.7222), so a silent fallback is detectable.
+
+### THE RULES, IN THE ORDER THEY MATTER
+
+1. **A hymn is never split.** A choir turning a page mid-troparion is a
+   liturgical problem, not a typographic one. It moves whole, even at the cost
+   of white space. (Bill's ruling.)
+2. **A heading never ends a column.** It moves with what it introduces.
+3. **A reading may split**, but never leaves fewer than two lines either side.
+4. **A split is announced at both ends** — loudly across a page, quietly across
+   a column, because the eye already goes to the next column.
+
+### MARGINS COLLAPSE, AND THE FIRST MODEL DID NOT KNOW IT
+
+The first packer summed `spaceAfter + spaceBefore`. **CSS collapses them to the
+larger of the two.** Over six block boundaries that cost roughly **14% of a
+column** and pushed 09-06 onto a second page it did not need — the model saying
+"two pages" about a sheet measured at 10.97in of 11.
+
+Fixed by collapsing gaps in the packer and dropping the leading margin at the
+top of a column, which the stylesheet enforces with
+`.oh-col > *:first-child { margin-top: 0 }`.
+
+### PREDICT, RENDER, MEASURE, CORRECT
+
+A computed budget is a prediction. On mount the component measures the real
+masthead, footer and column width from the rendered sheet and re-paginates if
+they differ; it then measures whether any column rendered **taller** than its
+budget and shrinks the budget by that drift. That second half catches what the
+metrics cannot know about — a font substitution, a browser zoom, an unexpected
+glyph in a saint's name.
+
+### RESULTS
+
+| | |
+|---|---|
+| 09-06 propers | 1 page, columns at 99% and 97% |
+| 09-06 with readings | 3 pages, one page-crossing continuation |
+| Synthetic Vigil-weight day (4 troparia, 3 kontakia, 8 stichera) | 3 pages, no overflow |
+
+The paginator reproduces the same column break Chrome had chosen for 09-06 —
+column one ending on the Dismissal Theotokion — but now **by decision rather
+than by luck**.
+
+### THE GUARD THAT MATTERS MOST
+
+`tools/test_bulletin_layout.mjs` **fails if any size or leading in the metrics
+disagrees with `bulletin-css.js`**. A budget computed from stale numbers is
+worse than no budget: it is confidently wrong, and confidently wrong is the
+failure mode this whole month has been about. Every leading in the stylesheet is
+now pinned rather than inherited from a browser default, for the same reason.
+
+`npm run layout` runs the budget alone; it is also in `npm run gate`.
+
+### STILL OPEN
+
+- **Real print test.** Everything above is measured in Chrome's layout engine,
+  not on paper. The remaining unknowns are whether 0.55in clears the
+  unprintable edge on the parish's printers, and whether the explicit grid
+  paginates as cleanly as the measurements predict.
+- Service-order lists (awaiting Matins and Liturgy assemblers), fasting advice
+  (awaiting a fasting engine), and the full 80-book verse-count audit.
+
 
 **Session September 6, 2026 (twenty-seventh) — READINGS RESTACKED, AND THE ST
 MARY'S TEMPLATES REVIEWED.** Tool **v0.45.3**.

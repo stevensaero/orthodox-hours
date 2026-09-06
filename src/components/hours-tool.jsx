@@ -8589,6 +8589,77 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.46.0",
+    date: "September 2026",
+    summary: "The bulletin owns its own page breaks — a real type budget, computed from Georgia metrics and verified against the rendered page",
+    items: [
+      "WHY. Until now the bulletin handed its breaks to CSS column-count, which " +
+      "breaks wherever it lands — mid-troparion, mid-verse, across a page turn " +
+      "with no notice — and cannot be reasoned about before it renders. That " +
+      "made \"will this day fit\" unanswerable for any day but the one in front " +
+      "of us: 6 September fits at 10.97in of 11, which says nothing about a " +
+      "Vigil with litya stichera and three paroemias.",
+
+      "NEW src/lib/bulletin-metrics.js — real Georgia advance widths, measured " +
+      "from a browser at 1000px and stored per em. Line counts are not " +
+      "estimated from a character budget; they are computed by simulating the " +
+      "browser's own greedy word wrap. Against twelve real strings from the " +
+      "6 September propers and readings, rendered in Chrome at the sheet's true " +
+      "3.43in measure: TWELVE OF TWELVE line counts predicted exactly, at both " +
+      "10.5pt and 11pt.",
+
+      "A CHARACTER BUDGET WAS TRIED FIRST AND ABANDONED. Chars-per-line cannot " +
+      "tell \"i\" (0.293em) from \"O\" (0.744em), and the corpus swings between " +
+      "both. Calibrated against the real hymns and biased never to " +
+      "underestimate, it was wrong by up to SIX lines on a nine-line sticheron " +
+      "— a 66% overestimate that would have wasted a third of every column.",
+
+      "NEW src/lib/bulletin-layout.js — the paginator. Rules, in the order they " +
+      "matter: a hymn is NEVER split, because a choir turning a page " +
+      "mid-troparion is a liturgical problem rather than a typographic one; a " +
+      "heading never ends a column; a reading may split but never leaves fewer " +
+      "than two lines on either side; and a split is announced at both ends.",
+
+      "CONTINUATIONS ARE LOUD. A reading carried across a page reads " +
+      "\"continued on page 3 →\" at the foot and \"…continued from page 2\" where " +
+      "it resumes. Across the two columns of one page it says \"continued in " +
+      "the next column\" — the eye already goes there. Every page carries " +
+      "\"Page n of m\", numbered continuously across the propers sheet and the " +
+      "readings supplement.",
+
+      "MARGINS COLLAPSE, AND THE FIRST MODEL DID NOT KNOW IT. Summing CSS " +
+      "spaceAfter + spaceBefore instead of taking the larger of the two cost " +
+      "about 14% of a column and pushed 6 September onto a second page it did " +
+      "not need. The packer now collapses gaps between blocks and drops the " +
+      "leading margin at the top of a column, which the stylesheet enforces.",
+
+      "AND THEN VERIFIED AGAINST THE PAGE. On mount the component measures the " +
+      "real masthead, footer and column width from the rendered sheet and, if " +
+      "they differ from the baked geometry, re-paginates against the measured " +
+      "values. It also measures whether any column rendered TALLER than its " +
+      "budget and shrinks the budget by that drift — catching a font " +
+      "substitution or browser zoom that the metrics cannot know about. " +
+      "Predict, render, measure, correct.",
+
+      "CSS column-count is gone, replaced by an explicit two-column grid that " +
+      "keeps the same gutter and column rule while surrendering none of the " +
+      "breaks. Every leading in the stylesheet is now pinned rather than " +
+      "inherited from a browser default, and tools/test_bulletin_layout.mjs " +
+      "FAILS if a size or leading in the metrics disagrees with the stylesheet " +
+      "— a budget computed from stale numbers is worse than none, because it is " +
+      "confidently wrong.",
+
+      "A block too tall for any column is reported in the modal rather than " +
+      "silently clipped, naming what it is.",
+
+      "6 September lays out as 1 page of propers at 99% and 97% column fill, " +
+      "plus 2 pages of readings. A synthetic Vigil-weight day — four troparia, " +
+      "three kontakia, eight stichera — comes to 3 pages with nothing " +
+      "overflowing. Both are asserted in `npm run gate`; `npm run layout` runs " +
+      "the budget alone.",
+    ],
+  },
+  {
     version: "v0.45.3",
     date: "September 2026",
     summary: "Readings restacked — citation first, attribution beneath — and one borrowing from the St Mary's template",

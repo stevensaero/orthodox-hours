@@ -23,6 +23,8 @@ import { fileURLToPath } from "node:url";
 import { parseRefString, spanLabel } from "../src/lib/scripture-ref.js";
 import { spansToVerses, readingIntro } from "../src/lib/scripture-text.js";
 import { readingsForDay, readingsInOrder } from "../src/lib/readings.js";
+import { paginate, buildPropersFlow, buildReadingsFlow } from "../src/lib/bulletin-layout.js";
+import { renderPage, renderMasthead } from "../src/lib/bulletin-html.js";
 import { BULLETIN_CSS } from "../src/lib/bulletin-css.js";
 import { hymnText } from "../src/lib/hymn-entry.js";
 import * as OctoV2 from "../src/data/octoechos_v2/adapter.js";
@@ -45,13 +47,6 @@ const menaion = (await import(`../src/data/menaion/${monthFile}.js`)).default;
 const entry = menaion[`${mm}-${dd}`] && (Array.isArray(menaion[`${mm}-${dd}`])
   ? menaion[`${mm}-${dd}`][0] : menaion[`${mm}-${dd}`]);
 if (!entry) { console.error(`No entry encoded for ${mm}-${dd}.`); process.exit(1); }
-
-const esc = (s) => String(s ?? "")
-  .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-// Gold the asterisk phrase-marks, as the component does.
-const marks = (text) => esc(text).split(/(\*+)/)
-  .map((p) => (/^\*+$/.test(p) ? `<span class="oh-star">${p}</span>` : p)).join("");
 
 function loadBook(id) {
   const file = path.join(ROOT, "public", "bible", `${id.toLowerCase()}.json`);
@@ -106,96 +101,73 @@ const rankLabel = [
 ].filter(Boolean).join(" · ");
 const layer = isSunday ? "Fourteenth Sunday after Pentecost" : date.toLocaleDateString("en-US", { weekday: "long" });
 
-// ── markup ──────────────────────────────────────────────────────────────────
-const masthead = (title, sub, chip) => `
-  <div class="oh-masthead">
-    <div class="oh-eyebrow">${esc(MASTHEAD)}</div>
-    <div class="oh-date">${esc(title)}</div>
-    ${sub ? `<div class="oh-layer">${esc(sub)}</div>` : ""}
-    ${chip ? `<div class="oh-chip">${esc(chip)}</div>` : ""}
-  </div>`;
+// ── pagination and markup ───────────────────────────────────────────────────
+const day = {
+  saint: entry.saint,
+  secondSaint: null,
+  readings,
+  troparia, kontakia, extras,
+};
 
-const hymn = (h) => !h.text ? "" : `
-  <div class="oh-hymn">
-    <div class="oh-hymn-label">${esc(h.label)}${h.tone ? `<em>, Tone ${h.tone}</em>` : ""}</div>
-    <p class="oh-hymn-text">${marks(h.text)}</p>
-  </div>`;
+const propers = paginate(buildPropersFlow(day));
 
-const readingsBlock = `
-  <div class="oh-h">Readings at the Liturgy</div>
-  ${readings.groups.map((g) => `
-    <div class="oh-slot">
-      <div class="oh-slot-label">${esc(g.label)}</div>
-      ${g.items.map((it) => `
-        <div class="oh-reading-row">
-          <span class="oh-reading-ref">${esc(it.ref)}</span>
-          <span class="oh-reading-of">${esc(it.label)}</span>
-        </div>`).join("")}
-    </div>`).join("")}
-  <div class="oh-cite">${esc(readings.rule.section)}: “${esc(readings.rule.quote)}”${
-    readings.order === "menaion-first"
-      ? " The Menaion’s readings precede the day’s on a Saturday." : ""}</div>`;
-
-const propersSheet = `
-<div class="oh-sheet">
-  ${masthead(dateLabel, layer, [tone ? `Tone ${tone}` : null, rankLabel].filter(Boolean).join(" · "))}
-  <div class="oh-twocol">
-    <div class="oh-h">Commemoration</div>
-    <p class="oh-comm">${esc(entry.saint)}</p>
-    ${readingsBlock}
-    ${troparia.length ? '<div class="oh-h">Troparia</div>' : ""}
-    ${troparia.map(hymn).join("")}
-    ${kontakia.length ? '<div class="oh-h">Kontakia</div>' : ""}
-    ${kontakia.map(hymn).join("")}
-    ${extras.length ? '<div class="oh-h">Also Appointed</div>' : ""}
-    ${extras.map(hymn).join("")}
-  </div>
-  <div class="oh-foot">
-    <span>Assembled per Fekula &amp; Williams, The Order of Divine Services, 2nd ed. rev.</span>
-    <span>proof sheet</span>
-  </div>
-</div>`;
-
-let readingsSheet = "";
+let lections = [];
 if (wantReadings) {
-  const lections = readingsInOrder(readings).map((r) => {
+  lections = readingsInOrder(readings).map((r) => {
     const spans = parseRefString(r.ref, { strict: true });
-    if (!spans) return `<div class="oh-lection"><div class="oh-lection-ref oh-err">${esc(r.slotLabel)} · ${esc(r.ref)}</div><p class="oh-lection-intro oh-err">Not printed: unresolved reference.</p></div>`;
+    if (!spans) return { slotLabel: r.slotLabel, ref: r.ref, itemLabel: r.label,
+                         error: "the reference could not be resolved." };
     const books = {};
-    for (const s of spans) books[s.book] = loadBook(s.book);
+    for (const sp of spans) books[sp.book] = loadBook(sp.book);
     const { verses, missing } = spansToVerses(spans, books);
-    if (missing.length) return `<div class="oh-lection"><div class="oh-lection-ref oh-err">${esc(r.slotLabel)} · ${esc(r.ref)}</div><p class="oh-lection-intro oh-err">Not printed: ${esc(missing[0].reason)}. Left out rather than set short.</p></div>`;
-    const body = verses.map((v) =>
-      `${v.startsChapter ? '<span class="oh-star">¶ </span>' : ""}<sup class="oh-vnum">${v.verse}</sup>${esc(v.text)} `).join("");
-    return `
-      <div class="oh-lection">
-        <div class="oh-lection-ref">${esc(r.slotLabel)} · ${esc(spans.map(spanLabel).join(" · "))} · ${esc(r.label)}</div>
-        <p class="oh-lection-intro">${esc(readingIntro(spans[0].book, spans[0].bookName) || "")}</p>
-        <p class="oh-lection-body">${body}</p>
-      </div>`;
-  }).join("");
-
-  readingsSheet = `
-<div class="oh-sheet">
-  ${masthead("The Readings", `${dateLabel} · ${layer}`, null)}
-  <div class="oh-twocol">${lections}</div>
-  <div class="oh-foot">
-    <span>Brenton Septuagint (OT) · King James Version 2006 (NT), public domain</span>
-    <span>proof sheet</span>
-  </div>
-</div>`;
+    if (missing.length) return { slotLabel: r.slotLabel, ref: r.ref, itemLabel: r.label,
+                                 error: `${missing[0].reason}.` };
+    return {
+      slotLabel: r.slotLabel, itemLabel: r.label,
+      label: spans.map(spanLabel).join(" · "),
+      intro: readingIntro(spans[0].book, spans[0].bookName),
+      verses,
+    };
+  });
 }
+const readingPages = lections.length
+  ? paginate(buildReadingsFlow(lections), { startPage: propers.totalPages + 1 })
+  : { pages: [], totalPages: 0, overflow: [] };
+
+const totalPages = propers.totalPages + readingPages.totalPages;
+
+for (const o of [...propers.overflow, ...readingPages.overflow]) {
+  process.stderr.write(`warning: "${o.label}" is ${(o.heightPt / 72).toFixed(2)}in, ` +
+    `taller than a ${(o.columnHeightPt / 72).toFixed(2)}in column\n`);
+}
+
+const propersMast = renderMasthead({
+  eyebrow: MASTHEAD, title: dateLabel, sub: layer,
+  chip: [tone ? `Tone ${tone}` : null, rankLabel].filter(Boolean).join(" · "),
+});
+const readingsMast = renderMasthead({
+  eyebrow: MASTHEAD, title: "The Readings", sub: `${dateLabel} · ${layer}`, chip: null,
+});
+
+const sheets = [
+  ...propers.pages.map((page) => renderPage({
+    page, totalPages, masthead: propersMast,
+    footerLeft: "Assembled per Fekula & Williams, The Order of Divine Services, 2nd ed. rev.",
+  })),
+  ...readingPages.pages.map((page) => renderPage({
+    page, totalPages, masthead: readingsMast,
+    footerLeft: "Brenton Septuagint (OT) · King James Version 2006 (NT), public domain",
+  })),
+].join("\n");
 
 process.stdout.write(`<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
-<title>Bulletin — ${esc(dateLabel)}</title>
+<title>Bulletin — ${dateLabel}</title>
 <style>
   html, body { margin: 0; padding: 0; background: #6b6b6b; }
   ${BULLETIN_CSS}
-  @media screen { .oh-sheet { margin: 24px auto; } }
 </style>
 </head><body>
-${propersSheet}
-${readingsSheet}
+${sheets}
 </body></html>
 `);

@@ -110,15 +110,32 @@ export const BULLETIN_CSS = `
         color: ${C.accent};
       }
 
+      /* Explicit columns, not CSS multicol. src/lib/bulletin-layout.js decides
+         what goes in each one: multicol breaks wherever it lands — mid-hymn,
+         mid-verse, across a page turn with no notice — and cannot be reasoned
+         about before it renders. A grid keeps the two column rules and the
+         0.34in gutter without surrendering the breaks. */
       .oh-twocol {
-        column-count: 2; column-gap: 0.34in;
-        /* 0.5pt rounds to a sub-pixel and does not paint. 0.75pt is the
-           thinnest rule that actually renders and photocopies. */
-        column-rule: 0.75pt solid ${C.rule};
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 0.34in;
+        align-items: start;
       }
+      .oh-col { min-width: 0; }
+      /* 0.5pt rounds to a sub-pixel and does not paint. 0.75pt is the thinnest
+         rule that actually renders and photocopies. */
+      .oh-col + .oh-col {
+        border-left: 0.75pt solid ${C.rule};
+        padding-left: 0.17in;
+        margin-left: -0.17in;
+      }
+      /* A margin at the top of a column would push the first line off the
+         baseline the budget assumed. */
+      .oh-col > *:first-child { margin-top: 0 !important; }
 
       .oh-h {
-        font-size: 10pt; letter-spacing: 0.14em; text-transform: uppercase;
+        font-size: 10pt; line-height: 1.25; letter-spacing: 0.14em;
+        text-transform: uppercase;
         color: ${C.accent}; margin: 12pt 0 4pt;
         border-bottom: 0.5pt solid ${C.rule}; padding-bottom: 3pt;
         break-after: avoid; page-break-after: avoid;
@@ -126,11 +143,12 @@ export const BULLETIN_CSS = `
       .oh-twocol > .oh-h:first-child { margin-top: 0; }
 
       .oh-comm { font-size: 13pt; line-height: 1.32; margin: 0 0 3pt; }
-      .oh-comm2 { font-size: 11pt; color: ${C.inkLight}; font-style: italic; margin: 0; }
+      .oh-comm2 { font-size: 11pt; line-height: 1.3; color: ${C.inkLight}; font-style: italic; margin: 0; }
 
       .oh-slot { margin-bottom: 4pt; break-inside: avoid; page-break-inside: avoid; }
       .oh-slot-label {
-        font-size: 9.5pt; letter-spacing: 0.1em; text-transform: uppercase;
+        font-size: 9.5pt; line-height: 1.2; letter-spacing: 0.1em;
+        text-transform: uppercase;
         color: ${C.accent}; margin: 4pt 0 2pt;
       }
       /* The citation leads and its attribution sits under it. Side by side in a
@@ -152,7 +170,7 @@ export const BULLETIN_CSS = `
       }
 
       .oh-hymn { margin: 0 0 8pt; break-inside: avoid-column; }
-      .oh-hymn-label { font-size: 9.5pt; color: ${C.inkLight}; letter-spacing: 0.04em; }
+      .oh-hymn-label { font-size: 9.5pt; line-height: 1.2; color: ${C.inkLight}; letter-spacing: 0.04em; margin: 0 0 1pt; }
       .oh-hymn-label em { color: ${C.inkMid}; }
       .oh-hymn-text {
         font-size: 10.5pt; line-height: 1.42; margin: 1pt 0 0;
@@ -162,12 +180,13 @@ export const BULLETIN_CSS = `
 
       .oh-lection { margin: 0 0 12pt; }
       .oh-lection-ref {
-        font-size: 10pt; letter-spacing: 0.08em; text-transform: uppercase;
+        font-size: 10pt; line-height: 1.2; letter-spacing: 0.08em;
+        text-transform: uppercase;
         color: ${C.accent}; margin: 0 0 2pt;
         break-after: avoid; page-break-after: avoid;
       }
       .oh-lection-intro {
-        font-size: 10pt; font-style: italic; color: ${C.inkLight}; margin: 0 0 3pt;
+        font-size: 10pt; line-height: 1.3; font-style: italic; color: ${C.inkLight}; margin: 0 0 3pt;
       }
       .oh-lection-body {
         font-size: 11pt; line-height: 1.5; margin: 0;
@@ -178,6 +197,15 @@ export const BULLETIN_CSS = `
         vertical-align: super; margin-right: 1.5pt;
       }
       .oh-err { color: ${C.error}; }
+
+      /* Loud on purpose. A reader who reaches the foot of a column mid-verse
+         must be told where the rest is, without hunting for it. */
+      .oh-continues, .oh-resumes {
+        font-size: 9pt; line-height: 1.3; font-style: italic;
+        color: ${C.accent}; letter-spacing: 0.04em;
+      }
+      .oh-continues { text-align: right; margin: 3pt 0 0; }
+      .oh-resumes { margin: 0 0 3pt; }
 
       .oh-foot {
         border-top: 0.5pt solid ${C.rule};

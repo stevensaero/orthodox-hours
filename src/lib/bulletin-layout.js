@@ -1,0 +1,406 @@
+// ─── BULLETIN PAGINATION ────────────────────────────────────────────────────
+//
+// Owns where the bulletin breaks, instead of leaving it to CSS `column-count`.
+//
+// WHY TAKE THE BREAKS AWAY FROM CSS. Multicol balances and breaks wherever it
+// lands: mid-troparion, mid-verse, and across a page turn with no notice. That
+// is survivable while browsing and not while singing. It also cannot be
+// reasoned about ahead of time, so there was no way to answer "will this day
+// fit" for any day but the one in front of us — 6 September fits at 10.97in of
+// 11, which says nothing about a Vigil with litya stichera and three paroemias.
+//
+// HOW HEIGHTS ARE KNOWN. src/lib/bulletin-metrics.js carries real Georgia
+// advance widths and simulates the browser's own greedy word wrap, which
+// reproduced twelve of twelve real line counts exactly. So these are computed
+// heights rather than estimates, and the caller can still hand back measured
+// heights from a rendered DOM to close the loop (see `withMeasured`).
+//
+// THE RULES, in the order they matter:
+//   1. A hymn is never split. A troparion, kontakion or sticheron is a sung
+//      unit; a choir turning a page mid-hymn is a liturgical problem, not a
+//      typographic one. It moves whole, even at the cost of white space.
+//   2. A heading never ends a column. It moves with what it introduces.
+//   3. A reading may split, but never leaves fewer than two lines on either
+//      side of the break, and says so when it does.
+//   4. A split across a PAGE is announced loudly at both ends. A split between
+//      the two columns of one page is announced quietly — the reader's eye
+//      already goes there.
+
+import { STYLES, blockHeightPt, wrapText } from "./bulletin-metrics.js";
+
+// Measured from a rendered sheet, not assumed. The component recomputes these
+// from the real DOM and passes them in; these values are the fallback for the
+// node-side proof renderer, which has no DOM.
+export const PAGE = {
+  pageHeightPt: 792,           // 11in
+  columnHeightPt: 601.7,       // 11in less padding, masthead and footer
+  columnWidthIn: 3.43,
+  columnsPerPage: 2,
+  mastheadPt: 94.16,
+  footerPt: 24.14,
+};
+
+const MIN_LINES_EITHER_SIDE = 2;
+
+// ─── measuring ──────────────────────────────────────────────────────────────
+
+function measureRun(text, styleKey, widthIn) {
+  const m = blockHeightPt(text, styleKey, widthIn);
+  const style = STYLES[styleKey];
+  return { styleKey, text, ...m, spaceBefore: style.spaceBefore, spaceAfter: style.spaceAfter };
+}
+
+/**
+ * Stack a block's runs, collapsing the margins between them.
+ *
+ * CSS vertical margins COLLAPSE: the gap between two stacked blocks is the
+ * LARGER of the trailing margin above and the leading margin below, never their
+ * sum. Summing them cost roughly 14% of a column and pushed 6 September onto a
+ * second page it did not need. Returned as content plus its own outer margins,
+ * so the packer can collapse against the neighbouring block too.
+ */
+function stackRuns(runs) {
+  let contentPt = 0;
+  for (let i = 0; i < runs.length; i++) {
+    contentPt += runs[i].textPt;
+    const next = runs[i + 1];
+    if (next) contentPt += Math.max(runs[i].spaceAfter, next.spaceBefore);
+  }
+  return {
+    contentPt,
+    spaceBefore: runs[0] ? runs[0].spaceBefore : 0,
+    spaceAfter: runs[runs.length - 1] ? runs[runs.length - 1].spaceAfter : 0,
+  };
+}
+
+/**
+ * Turn a flow item into a measured block.
+ *
+ * Every block reports `atomic` and, when it can be split, the parts a split may
+ * fall between. A block that cannot honestly report its own height has no
+ * business being in the flow.
+ */
+function measureBlock(item, widthIn) {
+  switch (item.kind) {
+    case "heading": {
+      const runs = [measureRun(item.text, "heading", widthIn)];
+      return { ...item, atomic: true, keepWithNext: true, runs, ...stackRuns(runs) };
+    }
+    case "commemoration": {
+      const runs = [measureRun(item.text, "commemoration", widthIn)];
+      if (item.secondary) runs.push(measureRun(item.secondary, "commemoration2", widthIn));
+      return { ...item, atomic: true, runs, ...stackRuns(runs) };
+    }
+    case "slot": {
+      const runs = [measureRun(item.label, "slotLabel", widthIn)];
+      for (const row of item.rows) {
+        runs.push(measureRun(row.ref, "readingRef", widthIn));
+        runs.push(measureRun(row.of, "readingOf", widthIn));
+      }
+      return { ...item, atomic: true, runs, ...stackRuns(runs) };
+    }
+    case "cite": {
+      const runs = [measureRun(item.text, "cite", widthIn)];
+      return { ...item, atomic: true, runs, ...stackRuns(runs) };
+    }
+    case "hymn": {
+      // Rule 1. Atomic by policy, not by size.
+      const label = item.label
+        ? measureRun(item.label + (item.tone ? `, Tone ${item.tone}` : ""), "hymnLabel", widthIn)
+        : null;
+      const body = measureRun(item.text, "hymnText", widthIn);
+      const runs = label ? [label, body] : [body];
+      return { ...item, atomic: true, runs, ...stackRuns(runs) };
+    }
+    case "lection": {
+      // Rule 3. The head stays with at least the first two lines of the body.
+      const head = [];
+      head.push(measureRun(item.refLabel, "lectionRef", widthIn));
+      if (item.intro) head.push(measureRun(item.intro, "lectionIntro", widthIn));
+      const headStack = stackRuns(head);
+      const headPt = head.length ? headStack.contentPt + Math.max(headStack.spaceAfter, 0) : 0;
+
+      const style = STYLES.lectionBody;
+      const lines = wrapText(item.text, style.pt, widthIn, !!style.italic);
+      const linePt = style.pt * style.leading;
+
+      return {
+        ...item, atomic: false, headRuns: head, headPt,
+        lines, linePt,
+        spaceBefore: headStack.spaceBefore,
+        spaceAfter: style.spaceAfter,
+        contentPt: headPt + lines.length * linePt,
+      };
+    }
+    default:
+      throw new Error(`bulletin-layout: unknown block kind "${item.kind}"`);
+  }
+}
+
+// ─── pagination ─────────────────────────────────────────────────────────────
+
+/**
+ * Pack measured blocks into columns and pages.
+ *
+ * @param items       flow items, in reading order
+ * @param options.page          geometry, defaults to PAGE
+ * @param options.startPage     first page number (the readings sheet continues
+ *                              the propers sheet's numbering)
+ * @returns {{ pages, overflow, totalPages }}
+ */
+export function paginate(items, options = {}) {
+  const page = { ...PAGE, ...(options.page || {}) };
+  const startPage = options.startPage || 1;
+  const widthIn = page.columnWidthIn;
+  const blocks = items.map((i) => measureBlock(i, widthIn));
+
+  const columns = [];
+  let current = null;
+  const overflow = [];
+
+  const columnIndex = () => columns.length - 1;
+  const pageOf = (colIdx) => startPage + Math.floor(colIdx / page.columnsPerPage);
+
+  function newColumn() {
+    current = { items: [], usedPt: 0 };
+    columns.push(current);
+    return current;
+  }
+  newColumn();
+
+  const remaining = () => page.columnHeightPt - current.usedPt;
+
+  // The gap before a block is the larger of the previous block's trailing
+  // margin and this block's leading margin — and is dropped entirely at the top
+  // of a column, which the stylesheet enforces with
+  // `.oh-col > *:first-child { margin-top: 0 }`.
+  function gapBefore(block) {
+    if (!current.items.length) return 0;
+    const prev = current.items[current.items.length - 1];
+    return Math.max(prev.spaceAfter || 0, block.spaceBefore || 0);
+  }
+  function costOf(block, contentPt) {
+    return gapBefore(block) + (contentPt != null ? contentPt : block.contentPt);
+  }
+  function place(entry, contentPt) {
+    entry.gapBeforePt = gapBefore(entry);
+    current.usedPt += entry.gapBeforePt + contentPt;
+    entry.contentPt = contentPt;
+    current.items.push(entry);
+  }
+
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i];
+
+    // Rule 2. A heading needs room for itself plus a foothold of whatever it
+    // introduces, or it starts the next column with it.
+    if (block.keepWithNext) {
+      const next = blocks[i + 1];
+      const foothold = next
+        ? (next.atomic
+            ? Math.min(next.contentPt, 2 * (next.runs?.[0]?.linePt || 12))
+            : next.headPt + MIN_LINES_EITHER_SIDE * next.linePt)
+        : 0;
+      if (costOf(block) + foothold > remaining() && current.items.length) newColumn();
+      place(block, block.contentPt);
+      continue;
+    }
+
+    if (block.atomic) {
+      // Rule 1. Move it whole. If it cannot fit an empty column at all, place
+      // it anyway and report — silently dropping it would be far worse.
+      if (costOf(block) > remaining() && current.items.length) newColumn();
+      if (block.contentPt > page.columnHeightPt) {
+        overflow.push({ kind: block.kind, label: block.label || block.text?.slice(0, 60),
+                        heightPt: block.contentPt, columnHeightPt: page.columnHeightPt });
+      }
+      place(block, block.contentPt);
+      continue;
+    }
+
+    // Rule 3. A splittable reading.
+    let lineCursor = 0;
+    let first = true;
+    while (lineCursor < block.lines.length) {
+      const headPt = first ? block.headPt : STYLES.continuation.pt * STYLES.continuation.leading
+                                            + STYLES.continuation.spaceBefore;
+      const linesLeft = block.lines.length - lineCursor;
+      let canTake = Math.floor((remaining() - gapBefore(block) - headPt) / block.linePt);
+
+      // Never strand fewer than two lines here or two lines over there.
+      if (canTake < MIN_LINES_EITHER_SIDE ||
+          (linesLeft - canTake > 0 && linesLeft - canTake < MIN_LINES_EITHER_SIDE)) {
+        if (canTake >= linesLeft) canTake = linesLeft;          // it all fits
+        else if (current.items.length) { newColumn(); continue; }
+        else canTake = Math.max(MIN_LINES_EITHER_SIDE, canTake); // empty column, take what we can
+      }
+      const take = Math.min(canTake, linesLeft);
+      const isLast = lineCursor + take >= block.lines.length;
+
+      const entry = {
+        ...block,
+        kind: "lection",
+        lines: block.lines.slice(lineCursor, lineCursor + take),
+        text: block.lines.slice(lineCursor, lineCursor + take).join(" "),
+        isFirstPart: first,
+        isLastPart: isLast,
+        showHead: first,
+        columnIndex: columnIndex(),
+      };
+      place(entry, headPt + take * block.linePt);
+      lineCursor += take;
+      first = false;
+      if (!isLast) newColumn();
+    }
+  }
+
+  // ─── Rule 4. Announce the splits, now that page numbers are known. ────────
+  const parts = new Map();
+  columns.forEach((col, colIdx) => {
+    col.items.forEach((entry) => {
+      if (entry.kind !== "lection" || (entry.isFirstPart && entry.isLastPart)) return;
+      entry.columnIndex = colIdx;
+      entry.pageNumber = pageOf(colIdx);
+      const key = entry.refLabel;
+      if (!parts.has(key)) parts.set(key, []);
+      parts.get(key).push(entry);
+    });
+  });
+  for (const group of parts.values()) {
+    group.forEach((entry, idx) => {
+      const next = group[idx + 1];
+      const prev = group[idx - 1];
+      if (next) {
+        entry.continuesOnPage = next.pageNumber;
+        entry.continuesAcrossPage = next.pageNumber !== entry.pageNumber;
+      }
+      if (prev) {
+        entry.continuedFromPage = prev.pageNumber;
+        entry.continuedAcrossPage = prev.pageNumber !== entry.pageNumber;
+      }
+    });
+  }
+
+  // ─── Group columns into pages. ───────────────────────────────────────────
+  const pages = [];
+  for (let c = 0; c < columns.length; c += page.columnsPerPage) {
+    pages.push({
+      number: startPage + pages.length,
+      columns: columns.slice(c, c + page.columnsPerPage).map((col) => ({
+        items: col.items,
+        usedPt: +col.usedPt.toFixed(2),
+        fillRatio: +(col.usedPt / page.columnHeightPt).toFixed(3),
+      })),
+    });
+  }
+  // A page always shows both column rules, so pad a lone trailing column.
+  const last = pages[pages.length - 1];
+  while (last && last.columns.length < page.columnsPerPage) {
+    last.columns.push({ items: [], usedPt: 0, fillRatio: 0 });
+  }
+
+  return { pages, overflow, totalPages: pages.length, columnHeightPt: page.columnHeightPt };
+}
+
+/**
+ * Re-run pagination with heights measured from a rendered DOM.
+ *
+ * The computed budget is exact for the corpus it was calibrated against, but a
+ * font substitution, a zoom level or an unexpected glyph can move it. Feeding
+ * real measurements back is what turns a prediction into a guarantee — predict,
+ * render, measure, correct.
+ *
+ * @param measuredHeights  { [blockKey]: heightPt } from the rendered sheet
+ */
+export function withMeasured(items, measuredHeights, options = {}) {
+  const patched = items.map((item, i) => {
+    const measured = measuredHeights[item.key ?? i];
+    return measured == null ? item : { ...item, measuredHeightPt: measured };
+  });
+  return paginate(patched, options);
+}
+
+/** Continuation wording. Kept here so both renderers say the same thing. */
+export function continuationNotice(entry) {
+  if (entry.continuesOnPage != null) {
+    return entry.continuesAcrossPage
+      ? `continued on page ${entry.continuesOnPage}`
+      : "continued in the next column";
+  }
+  return null;
+}
+
+export function resumptionNotice(entry) {
+  if (entry.continuedFromPage != null) {
+    return entry.continuedAcrossPage
+      ? `continued from page ${entry.continuedFromPage}`
+      : "continued from the previous column";
+  }
+  return null;
+}
+
+// ─── FLOW BUILDERS ──────────────────────────────────────────────────────────
+//
+// The one place that decides what goes on a bulletin and in what order. Both
+// the React component and tools/render_bulletin.mjs consume these, so the proof
+// sheet cannot drift from the thing it is a proof of.
+
+/** The propers sheet: commemoration, readings as appointed, the hymns. */
+export function buildPropersFlow(day) {
+  const flow = [];
+  flow.push({ kind: "heading", text: "Commemoration" });
+  flow.push({ kind: "commemoration", text: day.saint, secondary: day.secondSaint || null });
+
+  if (day.readings && day.readings.groups.length) {
+    flow.push({ kind: "heading", text: "Readings at the Liturgy" });
+    for (const group of day.readings.groups) {
+      flow.push({
+        kind: "slot", label: group.label,
+        rows: group.items.map((it) => ({ ref: it.ref, of: it.label })),
+      });
+    }
+    const rule = day.readings.rule;
+    flow.push({
+      kind: "cite",
+      text: `${rule.section}: “${rule.quote}”` +
+        (day.readings.order === "menaion-first"
+          ? " The Menaion’s readings precede the day’s on a Saturday." : ""),
+    });
+  }
+
+  const section = (title, hymns) => {
+    if (!hymns || !hymns.length) return;
+    flow.push({ kind: "heading", text: title });
+    for (const h of hymns) {
+      if (h.text) flow.push({ kind: "hymn", label: h.label, tone: h.tone, text: h.text });
+    }
+  };
+  section("Troparia", day.troparia);
+  section("Kontakia", day.kontakia);
+  section("Also Appointed", day.extras);
+
+  return flow;
+}
+
+/** The readings supplement: each appointed reading, in full. */
+export function buildReadingsFlow(readings) {
+  const flow = [];
+  for (const r of readings) {
+    if (r.error) {
+      flow.push({
+        kind: "hymn", label: `${r.slotLabel} · ${r.ref}`, tone: null,
+        text: `Not printed: ${r.error} The reading has been left out rather than set short.`,
+        isError: true,
+      });
+      continue;
+    }
+    flow.push({
+      kind: "lection",
+      refLabel: `${r.slotLabel} · ${r.label} · ${r.itemLabel}`,
+      intro: r.intro || null,
+      text: r.verses.map((v) => `${v.startsChapter ? "¶ " : ""}${v.verse} ${v.text}`).join(" "),
+      verses: r.verses,
+    });
+  }
+  return flow;
+}
