@@ -8589,6 +8589,38 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.46.3",
+    date: "September 2026",
+    summary: "The Print button had disappeared behind a stalled \"Settling layout…\" — a dead-end in the verification effect",
+    items: [
+      "THE DEADLOCK. The settling effect began with two early returns — no " +
+      "sheet yet, or its parts not found. Both simply returned, which left " +
+      "`pass` unchanged and `settled` false while NONE of the effect's " +
+      "dependencies changed. So it never ran again, and the layout stayed " +
+      "\"settling\" for ever. Under StrictMode, whose simulated unmount detaches " +
+      "refs part-way through mounting, that is a live path rather than a " +
+      "theoretical one.",
+
+      "Every exit now either settles or schedules another attempt on the next " +
+      "frame, and gives up measuring rather than hanging if the DOM never " +
+      "arrives. A loop that can stop making progress must say so or try again; " +
+      "it must not simply stop.",
+
+      "THE BUTTON SHOULD NEVER HAVE BEEN GATED ON IT. Print is the primary " +
+      "action, and the layout is valid at every pass — the settling loop only " +
+      "refines the budget by a point or two. Blocking the primary action on a " +
+      "background refinement bought nothing, and when that refinement stalled " +
+      "it removed the button altogether. Print is now always present and always " +
+      "reads \"Print\"; only a genuine data-not-ready state (readings still " +
+      "loading) disables it. Settling shows as a quiet \"checking the fit…\" " +
+      "beside the page count.",
+
+      "Guarded in `npm run gate`: printing must not be gated on settling, the " +
+      "button must always read Print, and the settle effect must schedule a " +
+      "retry rather than return into a dead state.",
+    ],
+  },
+  {
     version: "v0.46.2",
     date: "September 2026",
     summary: "Readings page ran one line long — two heights were rendered but never budgeted, and slack is now negotiated rather than fixed",

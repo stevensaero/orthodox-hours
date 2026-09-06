@@ -35,7 +35,7 @@ import { spansToVerses, readingIntro } from "../lib/scripture-text.js";
 import { readingsInOrder } from "../lib/readings.js";
 import {
   paginateBest, buildPropersFlow, buildReadingsFlow, PAGE,
-  continuationNotice, resumptionNotice, reconcileBudget,
+  continuationNotice, resumptionNotice, reconcileBudget, MAX_LAYOUT_PASSES,
 } from "../lib/bulletin-layout.js";
 import { BULLETIN_CSS } from "../lib/bulletin-css.js";
 
@@ -255,14 +255,24 @@ export default function Bulletin({ day, onClose }) {
 
   useLayoutEffect(() => {
     if (settled) return;
-    const sheet = firstSheet.current;
-    if (!sheet) return;
-
     const px2pt = (px) => px * 0.75;
-    const mast = sheet.querySelector(".oh-masthead");
-    const foot = sheet.querySelector(".oh-foot");
-    const col = sheet.querySelector(".oh-col");
-    if (!mast || !foot || !col) return;
+    const sheet = firstSheet.current;
+    const mast = sheet && sheet.querySelector(".oh-masthead");
+    const foot = sheet && sheet.querySelector(".oh-foot");
+    const col = sheet && sheet.querySelector(".oh-col");
+
+    // NOTHING TO MEASURE YET — and this must not become a dead end. The
+    // previous version simply returned here, which left `pass` unchanged and
+    // `settled` false while none of the dependencies changed, so the effect
+    // never ran again and the layout stayed "settling" for ever. Under
+    // StrictMode, whose simulated unmount detaches refs mid-mount, that is a
+    // live path rather than a theoretical one. Schedule another attempt
+    // instead, and give up measuring rather than hang if it never arrives.
+    if (!sheet || !mast || !foot || !col) {
+      if (pass >= MAX_LAYOUT_PASSES) { setSettled(true); return; }
+      const id = requestAnimationFrame(() => setPass((p) => p + 1));
+      return () => cancelAnimationFrame(id);
+    }
 
     const style = getComputedStyle(sheet);
     const chromeBudgetPt = PAGE.pageHeightPt
@@ -331,6 +341,7 @@ export default function Bulletin({ day, onClose }) {
           <strong style={{ fontSize: "1rem" }}>Bulletin</strong>
           <span style={{ fontSize: "0.8rem", color: "#6B5A3A" }}>
             {day.dateLabel} · 8.5 × 11 in · {totalPages} page{totalPages === 1 ? "" : "s"}
+            {!settled && " · checking the fit…"}
           </span>
           <button onClick={onClose} style={{ ...control, marginLeft: "auto" }}>Close</button>
         </div>
@@ -343,11 +354,15 @@ export default function Bulletin({ day, onClose }) {
                    onChange={(e) => setWithReadings(e.target.checked)} />
             Print the readings in full
           </label>
+          {/* Never gated on `settled`. The layout is valid at every pass — the
+              settling loop only refines the budget — so blocking the primary
+              action on a background refinement buys nothing and, when that
+              loop stalled, hid the button entirely. Only a genuine
+              data-not-ready state disables it. */}
           <button style={{ ...primary, marginLeft: "auto" }}
                   onClick={() => window.print()}
-                  disabled={(withReadings && loading) || !settled}>
-            {withReadings && loading ? "Loading readings…"
-              : !settled ? "Settling layout…" : "Print"}
+                  disabled={withReadings && loading}>
+            {withReadings && loading ? "Loading readings…" : "Print"}
           </button>
         </div>
 

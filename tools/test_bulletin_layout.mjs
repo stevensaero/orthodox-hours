@@ -282,7 +282,13 @@ for (const [what, present] of [
   ["the budget goes through reconcileBudget", /reconcileBudget\(/.test(src)],
   ["there is a settled gate", /if \(settled\) return;/.test(src)],
   ["settling resets when the content changes", /setSettled\(false\)/.test(src)],
-  ["printing waits for it", /!settled \? "Settling layout/.test(src)],
+  // Print must NOT be gated on settling. The layout is valid at every pass, and
+  // when the settle loop stalled this hid the button altogether.
+  ["printing is never gated on settling", !/disabled=\{[^}]*!settled/.test(src)],
+  ["the button always reads Print", /: "Print"\}/.test(src)],
+  // Every exit from the settle effect must either settle or schedule a retry;
+  // a bare return leaves the deps unchanged and the effect never runs again.
+  ["the settle effect cannot dead-end", /requestAnimationFrame\(\(\) => setPass/.test(src)],
 ]) {
   if (!present) { failures++; console.log(`  ✗ ${what}`); }
 }

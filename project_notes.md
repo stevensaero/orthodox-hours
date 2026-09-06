@@ -1,5 +1,47 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.46.2** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+**Tool version: v0.46.3** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+
+**Session September 6, 2026 (thirty-first) — THE PRINT BUTTON VANISHED.** It sat
+permanently on "Settling layout…". Two faults, one of them a design mistake.
+Tool **v0.46.3**.
+
+### THE DEADLOCK
+
+The settling effect opened with two early returns — no sheet yet, or its parts
+not found:
+
+    if (!sheet) return;
+    if (!mast || !foot || !col) return;
+
+Both leave `pass` unchanged and `settled` false, **and none of the effect's
+dependencies change**, so it never runs again. The layout stays "settling" for
+ever.
+
+Under **StrictMode** — which `main.jsx` uses — the simulated unmount detaches
+refs part-way through mounting, so this is a live path, not a theoretical one.
+
+Every exit now either settles or schedules another attempt on the next frame,
+and gives up measuring rather than hanging if the DOM never arrives. **A loop
+that can stop making progress must say so or try again; it must not simply
+stop.**
+
+### THE DESIGN MISTAKE, WHICH MATTERS MORE
+
+Print was disabled while `!settled`. That was wrong independently of the
+deadlock: **the layout is valid at every pass** — settling only refines the
+budget by a point or two, and since v0.46.1 it runs before paint and is
+monotonic and capped. Gating the primary action on a background refinement
+bought nothing, and when the refinement stalled it removed the button entirely,
+leaving right-click → Print as the only way out.
+
+Print is now always present and always reads "Print". Only a genuine
+data-not-ready state — readings still loading — disables it. Settling shows as a
+quiet "checking the fit…" beside the page count.
+
+**The general rule worth keeping: an internal optimisation may never be able to
+withhold a user's primary action.** If the optimisation fails, the feature
+should degrade to the un-optimised behaviour, not to nothing.
+
 
 **Session September 6, 2026 (thirtieth) — THE READINGS PAGE RAN ONE LINE LONG.**
 Two heights were being rendered and never budgeted, and the fix for the residue
