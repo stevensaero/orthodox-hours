@@ -1425,7 +1425,7 @@ const JUNE_MENAION = {
       alleluia_stichos: "His seed shall be mighty upon the earth.",
       communion_verse: "In everlasting remembrance shall the righteous be; " +
         "he shall not be afraid of evil tidings.",
-      paroemia_1: "Wisdom 5:15ff; 6:1-3 — the righteous live for evermore; their reward with the Lord",
+      paroemia_1: "Wisdom 5:15-6:3 — the righteous live for evermore; their reward with the Lord",
       paroemia_2: "Wisdom 3:1-9 — souls of the righteous are in the hand of God",
       paroemia_3: "Wisdom 4:7-15 — though the righteous be prevented with death",
       matins_gospel: "Matthew 11:27-30 (§43)",

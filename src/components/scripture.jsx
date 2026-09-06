@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { parseRefString, spanLabel } from "../lib/scripture-ref.js";
 
 // ─── COLOR TOKENS ─────────────────────────────────────────────────────────────
 // Identical to psalter.jsx — unified liturgical library aesthetic
@@ -293,110 +294,11 @@ function navBtnStyle(disabled) {
 }
 
 // ─── REF PARSER + READING MODE ──────────────────────────────────────────────
-const LECTIONARY_BOOK_ID = {
-  "Matthew":"Matt","Mark":"Mark","Luke":"Luke","John":"John",
-  "Acts":"Acts","Romans":"Rom","Colossians":"Col","Ephesians":"Eph",
-  "Galatians":"Gal","Philippians":"Phil","Hebrews":"Heb",
-  "1 Corinthians":"1Cor","2 Corinthians":"2Cor",
-  "1 Thessalonians":"1Thes","2 Thessalonians":"2Thes",
-  "1 Timothy":"1Tim","2 Timothy":"2Tim",
-  "Titus":"Tit","Philemon":"Phlm",
-  "1 Peter":"1Pet","2 Peter":"2Pet",
-  "James":"Jas","Jude":"Jude",
-  "1 John":"1John","2 John":"2John","3 John":"3John",
-  "Genesis":"Gen","Gen":"Gen","Exodus":"Ex","Exod":"Ex",
-  "Leviticus":"Lev","Numbers":"Num","Deuteronomy":"Deut",
-  "Joshua":"Josh","Judges":"Judg","Ruth":"Ruth",
-  "1 Samuel":"1Sam","2 Samuel":"2Sam",
-  "1 Kings":"3Kgdm","2 Kings":"4Kgdm","3 Kings":"3Kgdm","4 Kings":"4Kgdm",
-  "1 Chronicles":"1Chr","2 Chronicles":"2Chr",
-  "Ezra":"Ezra","Nehemiah":"Neh","Tobit":"Tob","Judith":"Jdt","Job":"Job",
-  "Proverbs":"Prov","Prov":"Prov","Ecclesiastes":"Eccl",
-  "Wisdom":"Wis","Wis":"Wis","Wisdom of Solomon":"Wis",
-  "Sirach":"Sir","Baruch":"Bar",
-  "Isaiah":"Isa","Isa":"Isa","Jeremiah":"Jer","Lamentations":"Lam",
-  "Ezekiel":"Ezek","Ezek":"Ezek","Daniel":"Dan",
-  "Hosea":"Hos","Joel":"Joel","Amos":"Amos","Jonah":"Jon","Micah":"Mic",
-  "Zephaniah":"Zeph","Haggai":"Hag","Zechariah":"Zech","Malachi":"Mal",
-};
-
-function parseSpanSegments(bookId, bookName, seg) {
-  const cm = seg.match(/^(\d+):(.+)$/);
-  if (!cm) return null;
-  const chapter = parseInt(cm[1]);
-  const spans = [];
-  for (const s of cm[2].split(/,\s*/)) {
-    const part = s.trim();
-    // If this part contains a colon it's a new chapter reference (e.g. "19:27-30"
-    // following "10:32-33, 37-38, 19:27-30"). Recurse rather than drop it.
-    if (part.includes(':')) {
-      const sub = parseSpanSegments(bookId, bookName, part);
-      if (sub) spans.push(...sub);
-      continue;
-    }
-    const p = part.match(/^(\d+)(?:-(\d+))?$/);
-    if (!p) continue;
-    const vs = parseInt(p[1]), ve = p[2] ? parseInt(p[2]) : vs;
-    const rv = remapVerses(bookId, chapter, vs, ve);
-    const remapped = rv.chapter !== chapter || rv.verseStart !== vs;
-    spans.push({ book: bookId, bookName, chapter: rv.chapter, verseStart: rv.verseStart, verseEnd: rv.verseEnd,
-      ...(remapped ? { origChapter: chapter, origVerseStart: vs, origVerseEnd: ve } : {}) });
-  }
-  return spans.length ? spans : null;
-}
-
-// LXX versification: some books differ from Hebrew chapter/verse numbering.
-// Paroemia refs use Hebrew numbering; our Brenton LXX JSON uses LXX numbering.
-const LXX_REMAP = {
-  // Malachi: Hebrew ch4 = LXX ch3 (LXX Malachi has only 3 chapters)
-  // Mal 4:1-6 (Heb) = Mal 3:19-24 (LXX/Brenton)
-  Mal: { 4: { chapter: 3, verseOffset: 18 } },
-};
-
-function remapVerses(bookId, chapter, verseStart, verseEnd) {
-  const remap = LXX_REMAP[bookId]?.[chapter];
-  if (!remap) return { chapter, verseStart, verseEnd };
-  return {
-    chapter: remap.chapter,
-    verseStart: verseStart + remap.verseOffset,
-    verseEnd: verseEnd + remap.verseOffset,
-  };
-}
-
-function parseRefString(refStr) {
-  if (!refStr) return null;
-  const cleaned = refStr.trim().replace(/\s*\([^)]*\)\s*$/, "").trim();
-  const m = cleaned.match(/^((?:\d\s+)?[A-Za-z]+(?:\s+of\s+[A-Za-z]+)?(?:\s+[A-Za-z]+)?)\s+(.+)$/);
-  if (!m) return null;
-  const bookName = m[1].trim(), bookId = LECTIONARY_BOOK_ID[bookName];
-  if (!bookId) return null;
-  const rest = m[2].trim();
-  if (rest.includes(";")) {
-    const spans = [];
-    for (const seg of rest.split(/;\s*/)) {
-      const sub = parseSpanSegments(bookId, bookName, seg.trim());
-      if (sub) spans.push(...sub);
-    }
-    return spans.length ? spans : null;
-  }
-  const cross = rest.match(/^(\d+):(\d+)-(\d+):(\d+)$/);
-  if (cross) return [{ book: bookId, bookName,
-    chapterStart: parseInt(cross[1]), verseStart: parseInt(cross[2]),
-    chapterEnd: parseInt(cross[3]), verseEnd: parseInt(cross[4]) }];
-  return parseSpanSegments(bookId, bookName, rest);
-}
-
-function spanLabel(span) {
-  if (span.chapterStart !== undefined) {
-    return `${span.bookName} ${span.chapterStart}:${span.verseStart}\u2013${span.chapterEnd}:${span.verseEnd}`;
-  }
-  const lxx = `${span.bookName} ${span.chapter}:${span.verseStart}\u2013${span.verseEnd}`;
-  if (span.origChapter !== undefined) {
-    const heb = `${span.bookName} ${span.origChapter}:${span.origVerseStart}\u2013${span.origVerseEnd}`;
-    return `${lxx} (${heb})`;
-  }
-  return lxx;
-}
+// The book map and reference parser live in src/lib/scripture-ref.js, shared
+// with hours-tool.jsx. They used to be duplicated here, and the two copies
+// drifted: this file did not know the abbreviations "Is", "Ex", "Judg" or
+// "Jdt", so the tool built links that this viewer then silently refused to
+// render. See that module's header for the full account.
 
 function SpanHeading({ label }) {
   return (

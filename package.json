@@ -4,14 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "snapshot": "node tools/snapshot_comparison.mjs",
-    "validate": "node tools/validate_entries.mjs",
-    "gate": "node tools/test_pointing_paths.mjs && node tools/test_sunday_vespers.mjs && node tools/test_pointing_roles.mjs",
-    "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
+    "deploy": "gh-pages -d dist",
+    "dev": "vite",
+    "gate": "node tools/test_pointing_paths.mjs && node tools/test_sunday_vespers.mjs && node tools/test_pointing_roles.mjs && node tools/test_ref_resolution.mjs",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "preview": "vite preview",
+    "refs": "node tools/test_ref_resolution.mjs",
+    "snapshot": "node tools/snapshot_comparison.mjs",
+    "validate": "node tools/validate_entries.mjs"
   },
   "dependencies": {
     "jszip": "^3.10.1",

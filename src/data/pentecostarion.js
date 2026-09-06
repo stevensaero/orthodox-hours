@@ -4935,7 +4935,7 @@ const PENTECOSTARION_DATA = {
 
     paroemia_1: "Isaiah 43:9-14",
     paroemia_2: "Wisdom of Solomon 3:1-9",
-    paroemia_3: "Wisdom of Solomon 5:15ff",
+    paroemia_3: "Wisdom of Solomon 5:15-6:3",
 
     // Litiya stichera — source: 90.pdf AT VESPERS / AT THE LITIYA
     litya_stichera: [
@@ -5243,7 +5243,7 @@ const PENTECOSTARION_DATA = {
       "Two troparia at Vespers dismissal: Resurrection T8 (primary) + All Saints T4 (Glory). " +
       "Kontakion not sung at Vespers (vespers_kontakion: false). " +
       "LIC: 6 Octoechos (Resurrection T8, by Anatolius) + 4 All Saints (T6). " +
-      "Three OT paroemias at Saturday Great Vespers: Isaiah 43:9-14, Wisdom 3:1-9, Wisdom 5:15ff. " +
+      "Three OT paroemias at Saturday Great Vespers: Isaiah 43:9-14, Wisdom 3:1-9, Wisdom 5:15-6:3. " +
       "Polyeleos not sung on Sunday (Evlogitaria sung instead; Megalynarion only if temple dedicated to All Saints). " +
       "Magnificat sung. Great Doxology sung. Matins Gospel #1 (Resurrection). " +
       "Two prokeimena at Liturgy (T8 Resurrection + T4 All Saints). " +

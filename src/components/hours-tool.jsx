@@ -5,6 +5,7 @@ import * as OctoV2 from '../data/octoechos_v2/adapter.js';
 import { PSALMS, KATHISMA_MAP, getPsalmRange } from '../data/psalter.js';
 import { hymnText, hymnProvenance } from '../lib/hymn-entry.js';
 import { PointScoreControls, isPointable, normalizeSergius, renderPointed } from './point-score-controls.jsx';
+import { splitBookAndRest, paroemiaToRef, paroemiaRefSpan } from '../lib/scripture-ref.js';
 
 
 // ─── CALENDAR ENGINE ────────────────────────────────────────────────────────
@@ -387,73 +388,11 @@ function getDailyReading(dateObj) {
 // ── SCRIPTURE HREF HELPER ─────────────────────────────────────────────────────
 // Converts a LECTIONARY reference string (e.g. "Romans 6:3-11") to a scripture
 // deep-link URL. Lands on the first chapter:verse of the reading.
-const SCRIPTURE_BOOK_ID = {
-  // NT
-  "Matthew": "Matt", "Mark": "Mark", "Luke": "Luke", "John": "John",
-  "Acts": "Acts", "Romans": "Rom", "Colossians": "Col", "Ephesians": "Eph",
-  "Galatians": "Gal", "Philippians": "Phil", "Hebrews": "Heb",
-  "1 Corinthians": "1Cor", "2 Corinthians": "2Cor",
-  "1 Thessalonians": "1Thes", "2 Thessalonians": "2Thes",
-  "1 Timothy": "1Tim", "2 Timothy": "2Tim",
-  "Titus": "Tit", "Philemon": "Phlm",
-  "1 Peter": "1Pet", "2 Peter": "2Pet",
-  "James": "Jas", "Jude": "Jude",
-  "1 John": "1John", "2 John": "2John", "3 John": "3John",
-  // OT
-  "Genesis": "Gen", "Gen": "Gen",
-  "Exodus": "Ex", "Exod": "Ex", "Ex": "Ex",
-  "Leviticus": "Lev", "Numbers": "Num", "Deuteronomy": "Deut",
-  "Joshua": "Josh", "Judges": "Judg", "Judg": "Judg", "Ruth": "Ruth",
-  "1 Samuel": "1Sam", "2 Samuel": "2Sam",
-  "1 Kings": "3Kgdm", "2 Kings": "4Kgdm",
-  "3 Kings": "3Kgdm", "4 Kings": "4Kgdm",
-  "3 Kgdms": "3Kgdm", "4 Kgdms": "4Kgdm",
-  "1 Chronicles": "1Chr", "2 Chronicles": "2Chr",
-  "Ezra": "Ezra", "Nehemiah": "Neh",
-  "Tobit": "Tob", "Judith": "Jdt", "Jdt": "Jdt",
-  "Job": "Job",
-  "Proverbs": "Prov", "Prov": "Prov",
-  "Ecclesiastes": "Eccl",
-  "Wisdom": "Wis", "Wis": "Wis",
-  "Wisdom of Solomon": "Wis",
-  "Sirach": "Sir", "Baruch": "Bar",
-  "Isaiah": "Isa", "Isa": "Isa", "Is": "Isa",
-  "Jeremiah": "Jer", "Lamentations": "Lam",
-  "Ezekiel": "Ezek", "Ezek": "Ezek",
-  "Daniel": "Dan",
-  "Hosea": "Hos", "Joel": "Joel", "Amos": "Amos",
-  "Jonah": "Jon", "Micah": "Mic",
-  "Zephaniah": "Zeph", "Haggai": "Hag",
-  "Zechariah": "Zech", "Malachi": "Mal",
-};
-
-// Extract the clean scripture reference from a paroemia string (the Menaion
-// field itself carries a typological annotation alongside the ref — see the
-// two formats below). Pure ref extraction, no href — used both by
-// paroemiaToScriptureHref (single-lesson link) and by the combined "Read in
-// Scripture" handoff for all of a Vespers's OT lessons at once.
-// Handles two formats:
-//   "Genesis 28:10-17 (description)"       → ref = "Genesis 28:10-17"
-//   "Proverbs — description (Prov 10:7)"   → ref extracted from parens
-function paroemiaToRef(paroemia) {
-  if (!paroemia) return null;
-  // Format 1: book ref at start — "Isaiah 40:1-8, 10-11 — description"
-  // Capture everything up to " —" or end of string as the ref
-  const m1 = paroemia.match(/^((?:\d\s+)?(?:[A-Za-z]+(?:\s+of\s+[A-Za-z]+)?|[A-Za-z]+(?:\s+[A-Za-z]+)?))\s+(\d+:\d+[^—]*)(?:\s*—|$)/);
-  if (m1 && SCRIPTURE_BOOK_ID[m1[1].trim()]) {
-    return `${m1[1].trim()} ${m1[2].trim()}`;
-  }
-  // Format 2: ref in trailing parentheses — "Proverbs — desc (Prov 10:7; 3:13-16)"
-  const m2 = paroemia.match(/\(([A-Za-z]+(?:\s+[A-Za-z]+)?\s+\d+:\d+[^)]*)\)\s*$/);
-  if (m2) {
-    const firstRef = m2[1].split(/;/)[0].trim();
-    const mm = firstRef.match(/^([A-Za-z]+(?:\s+[A-Za-z]+)?)\s+(.+)$/);
-    if (mm && SCRIPTURE_BOOK_ID[mm[1].trim()]) {
-      return `${mm[1].trim()} ${mm[2].trim()}`;
-    }
-  }
-  return null;
-}
+// The book map and paroemia ref-extractor live in src/lib/scripture-ref.js,
+// shared with scripture.jsx. They used to be duplicated across both files and
+// the copies drifted apart — this one knew "Is", "Ex", "Judg" and "Jdt" while
+// the viewer's did not, so roughly a fifth of encoded paroemias produced a link
+// that rendered nothing. See that module's header.
 
 function paroemiaToScriptureHref(paroemia, service, date, commemoration) {
   const ref = paroemiaToRef(paroemia);
@@ -462,9 +401,11 @@ function paroemiaToScriptureHref(paroemia, service, date, commemoration) {
 
 function refToScriptureHref(ref, service, date, commemoration) {
   if (!ref) return null;
-  const m = ref.trim().match(/^((?:\d\s+)?(?:[A-Za-z]+(?:\s+of\s+[A-Za-z]+)?|[A-Za-z]+(?:\s+[A-Za-z]+)?))\s+(\d+:\d+)/);
-  if (!m) return null;
-  if (!SCRIPTURE_BOOK_ID[m[1].trim()]) return null;
+  // Longest-match book lookup from the shared map, so multi-word names
+  // ("Wisdom of Solomon", "Acts of the Apostles") and numeral-initial ones
+  // ("3 Kgdms") resolve without a bespoke regex here.
+  const split = splitBookAndRest(ref.trim());
+  if (!split || !/\d/.test(split.rest)) return null;
   let href = `/orthodox-hours/scripture?ref=${encodeURIComponent(ref.trim())}&service=${service}&date=${date}`;
   if (commemoration) href += `&commemoration=${encodeURIComponent(commemoration)}`;
   return href;
@@ -481,36 +422,21 @@ function refToScriptureHref(ref, service, date, commemoration) {
 // verses) — the same ?ref= mode paroemiaToScriptureHref already builds.
 function paroemiaLinkParts(paroemia, service, date, commemoration) {
   if (!paroemia) return null;
-  // Format 1: ref at start — "Isaiah 40:1-8, 10-11 — description"
-  const m1 = paroemia.match(/^((?:\d\s+)?(?:[A-Za-z]+(?:\s+of\s+[A-Za-z]+)?|[A-Za-z]+(?:\s+[A-Za-z]+)?))\s+(\d+:\d+[^—]*)(?:\s*—|$)/d);
-  if (m1 && SCRIPTURE_BOOK_ID[m1[1].trim()]) {
-    const ref = `${m1[1].trim()} ${m1[2].trim()}`;
-    const href = refToScriptureHref(ref, service, date, commemoration);
-    if (!href) return null;
-    // Group 2's [^—]* is greedy and swallows any trailing whitespace before
-    // the dash — trim it off the link text so the underline doesn't extend
-    // into blank space, but keep it in `after` so the visible gap survives.
-    const rawEnd = m1.indices[2][1];
-    const linkText = paroemia.slice(0, rawEnd).replace(/\s+$/, "");
-    return { before: "", linkText, href, after: paroemia.slice(linkText.length) };
-  }
-  // Format 2: ref in trailing parentheses — "Proverbs — desc (Prov 10:7; 3:13-16)"
-  const m2 = paroemia.match(/\(([A-Za-z]+(?:\s+[A-Za-z]+)?\s+\d+:\d+[^)]*)\)\s*$/);
-  if (m2) {
-    const firstRef = m2[1].split(/;/)[0].trim();
-    const mm = firstRef.match(/^([A-Za-z]+(?:\s+[A-Za-z]+)?)\s+(.+)$/);
-    if (mm && SCRIPTURE_BOOK_ID[mm[1].trim()]) {
-      const ref = `${mm[1].trim()} ${mm[2].trim()}`;
-      const href = refToScriptureHref(ref, service, date, commemoration);
-      if (!href) return null;
-      // Wrap the whole "(...)" parenthetical, matching the example given —
-      // m2.index/m2[0] already cover the parens themselves, no `d` flag needed.
-      const startIdx = m2.index;
-      const endIdx = startIdx + m2[0].length;
-      return { before: paroemia.slice(0, startIdx), linkText: paroemia.slice(startIdx, endIdx), href, after: paroemia.slice(endIdx) };
-    }
-  }
-  return null;
+  const found = paroemiaRefSpan(paroemia);
+  if (!found) return null;
+  const href = refToScriptureHref(found.ref, service, date, commemoration);
+  if (!href) return null;
+  // Trim trailing whitespace off the link text so the underline does not run
+  // into the gap before a following em-dash, but keep that whitespace in
+  // `after` so the visible spacing survives.
+  const raw = String(paroemia);
+  const linkText = raw.slice(found.start, found.end).replace(/\s+$/, "");
+  return {
+    before: raw.slice(0, found.start),
+    linkText,
+    href,
+    after: raw.slice(found.start + linkText.length),
+  };
 }
 
 // Build the combined-reading array for all of a Vespers's OT lessons at once
@@ -8657,6 +8583,88 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.44.2",
+    date: "September 2026",
+    summary: "One shared reference parser — cross-chapter spans in comma lists no longer truncate silently, and every encoded reference now resolves",
+    items: [
+      "NEW src/lib/scripture-ref.js. The book map and reference parser existed " +
+      "as two independent copies — SCRIPTURE_BOOK_ID here and " +
+      "LECTIONARY_BOOK_ID in scripture.jsx — and they had drifted. This file " +
+      "knew the abbreviations \"Is\", \"Ex\", \"Judg\" and \"Jdt\"; the viewer's " +
+      "did not. The tool therefore built a working-looking link that the " +
+      "viewer then silently refused to render, for about a fifth of the " +
+      "encoded paroemias. Both components now import one module.",
+
+      "TRUNCATION FIXED. The old parser special-cased a cross-chapter span " +
+      "against the ENTIRE string, so a cross span inside a comma list was " +
+      "dropped with no warning. Four lectionary references were affected and " +
+      "all four still rendered, just shorter: \"Acts 6:8-7:5, 47-60\" came out " +
+      "as Acts 6:47-60 — the Stephen pericope without its opening. Also " +
+      "\"Luke 22:39-42, 45-23:1\", \"Galatians 1:1-10, 20-2:5\" and " +
+      "\"Mark 5:22-24, 35-6:1\". The parser now walks comma and semicolon " +
+      "groups carrying a current chapter, so a boundary can be crossed " +
+      "anywhere in a list.",
+
+      "EDITORIAL MATTER. Encoded references carry annotation the parser must " +
+      "not see, and stripping only a trailing parenthetical — which is what it " +
+      "did — handled one shape of three. Cleaning now runs in a loop until the " +
+      "string stops changing, because removing one tail routinely exposes " +
+      "another: \"Philippians 2:5-11 (§240) — of the feast, repeated at its " +
+      "Leavetaking\" needs the dash annotation gone before its parenthetical " +
+      "is trailing. The comma rule is shape-based rather than a word list — a " +
+      "final comma group containing no digits is prose, never a verse range — " +
+      "so \", excerpted\", \", midpoint\" and \", as printed\" are all covered " +
+      "without anyone predicting the next annotation someone writes.",
+
+      "PAROEMIA EXTRACTION had three separate silent failures: the ref-first " +
+      "pattern ran to the em-dash or end of string and swallowed a following " +
+      "\" (annotation\", producing an unbalanced fragment; the ref-last pattern " +
+      "only examined a parenthetical at the very END, so any citation followed " +
+      "by prose was missed; and that pattern required the book name to begin " +
+      "with a letter, rejecting \"3 Kgdms 8:22-30\" and \"First Kings 1:9-20\". " +
+      "One extractor now serves paroemiaToRef, paroemiaLinkParts and the " +
+      "Scripture handoff, and it reports the character range of the citation " +
+      "so the Vespers view can still underline only the reference.",
+
+      "ALIASES ADDED: First/Second/Third/Fourth Kings and Book of Kings, " +
+      "1-4 Kgdms, 1-4 Kingdoms, First John, First Epistle of John, First and " +
+      "Second Corinthians, Acts of the Apostles, Song of Songs, Psalms, and " +
+      "the Is / Ex / Judg / Jdt abbreviations the viewer had been missing. " +
+      "Single-chapter books may now omit the chapter: \"Jude 1-10\" is " +
+      "Jude 1:1-10, not chapters 1 through 10.",
+
+      "TWO KINGS CONVENTIONS, FLAGGED NOT SILENTLY MERGED. Slavonic 1-2 " +
+      "Kingdoms are English 1-2 Samuel, and Slavonic 3-4 Kingdoms are English " +
+      "1-2 Kings. Both conventions are in the map and they collide: \"1 Kings\" " +
+      "resolves to 3Kgdm, \"First Kings\" to 1Sam — three books apart. That is " +
+      "deliberate. The evidence for the Slavonic reading is in the data: a " +
+      "paroemia reads \"First Kings (1 Samuel) — Hannah prays at Shiloh\", and " +
+      "Hannah at Shiloh is 1 Samuel 1:9-20. Neither \"1 Kings\" nor \"2 Kings\" " +
+      "is used in encoded data, so the collision is latent. Prefer the " +
+      "unambiguous forms when encoding: \"1 Samuel\", \"3 Kgdms\".",
+
+      "\"ff\" IS NOW REJECTED RATHER THAN GUESSED AT. \"and following\" names no " +
+      "endpoint, so any span built from it would be invented. Two paroemias " +
+      "read \"Wisdom 5:15ff\" against twenty-three places encoding the same " +
+      "lesson as 5:15-6:3, including pentecostarion.js two lines apart — a " +
+      "data defect, not a parser gap. Both normalised to the explicit range.",
+
+      "NEW tools/test_ref_resolution.mjs, wired into `npm run gate` and " +
+      "available as `npm run refs`. 806 checks: all 565 LECTIONARY " +
+      "references, all 129 feast_e/feast_g, all 87 paroemia annotations, 19 " +
+      "regression cases asserted by exact expected output, 5 paroemia " +
+      "extraction shapes, and a book-map sanity pass confirming every mapped " +
+      "id names a file that actually ships. It parses in strict mode, which " +
+      "rejects a partial result instead of accepting it — the whole point, " +
+      "since every defect in this release returned a shorter reading rather " +
+      "than an error, and a shorter reading is invisible on screen and only " +
+      "surfaces when someone reads it aloud.",
+
+      "RESOLUTION went from 561/565 lectionary, 125/131 feast readings and " +
+      "60/87 paroemias to 565, 129 and 87 — everything the corpus contains.",
+    ],
+  },
+  {
     version: "v0.44.1",
     date: "September 2026",
     summary: "Scripture data repair — a running-header parse defect had shifted every verse number in 187 chapters across 21 books",
@@ -14348,10 +14356,9 @@ const PENT_ENCODED_OFFSETS = new Set([19, 63, ...Array.from({ length: 22 }, (_, 
 // "Romans 5:1-10" -> "Rom 5:1–10". Falls back to the raw string if unparsed.
 function abbrevRef(ref) {
   if (!ref) return ref;
-  const m = String(ref).match(/^((?:[1-4]\s+)?[A-Za-z][A-Za-z.\s]*?)\s+(\d.*)$/);
-  if (!m) return ref;
-  const book = SCRIPTURE_BOOK_ID[m[1].trim()] || m[1].trim();
-  return (book + " " + m[2]).replace(/-/g, "\u2013");
+  const split = splitBookAndRest(String(ref).trim());
+  if (!split) return ref;
+  return (split.bookId + " " + split.rest).replace(/-/g, "\u2013");
 }
 
 function buildLibraryBooks(ld, selectedDate, scriptureReadings) {

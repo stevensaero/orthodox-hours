@@ -1,5 +1,119 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.44.1** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+**Tool version: v0.44.2** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+
+**Session September 6, 2026 (twenty-second) — ONE REFERENCE PARSER.** The book
+map and ref parser existed as two drifting copies; they are now one module,
+`src/lib/scripture-ref.js`. Every reference in the encoded corpus resolves.
+Tool **v0.44.2**.
+
+### THE SHAPE OF ALL THREE DEFECTS WAS THE SAME
+
+Nothing threw. Nothing logged. The viewer rendered a plausible passage that was
+simply *shorter* than the one appointed. That is the worst shape a bug can take
+in a liturgical tool: invisible on screen, and surfacing only when someone reads
+it aloud in church. It is the reason the fix ships with a corpus-wide test
+rather than a sample, and the reason the test parses in **strict mode**, which
+rejects a partial parse instead of accepting it.
+
+    "Acts 6:8-7:5, 47-60"   rendered Acts 6:47-60 — Stephen without his opening
+    "Is 61:1-9"             built a link the viewer refused to open
+    "Wisdom 5:15ff"         no endpoint, so no honest span could be built
+
+### 1. TRUNCATION — CROSS-CHAPTER SPANS INSIDE A COMMA LIST
+
+The old parser matched a cross-chapter span against the **entire** string
+(`/^(\d+):(\d+)-(\d+):(\d+)$/`); inside a comma list it could only handle
+`C:V-V` or `V-V`, and a `V-C:V` segment was dropped without warning. Four
+lectionary refs affected: `Acts 6:8-7:5, 47-60`, `Luke 22:39-42, 45-23:1`,
+`Galatians 1:1-10, 20-2:5`, `Mark 5:22-24, 35-6:1`.
+
+Replaced with a walk over comma/semicolon groups carrying a **current chapter**,
+accepting `C:V-C:V`, `C:V-V`, `C:V`, `V-C:V`, `V-V`, `V`. Anything else lands in
+`unparsed` so callers can surface a real failure rather than a short reading.
+
+### 2. THE TWO MAPS
+
+`SCRIPTURE_BOOK_ID` (hours-tool) knew `Is`, `Ex`, `Judg`, `Jdt`;
+`LECTIONARY_BOOK_ID` (scripture.jsx) did not. The tool built links the viewer
+refused. **Two maps for one job will always drift; one map cannot** — hence the
+extraction rather than syncing entries. Aliases added for
+First/Second/Third/Fourth Kings, 1-4 Kgdms, 1-4 Kingdoms, First John, First
+Epistle of John, First/Second Corinthians, Acts of the Apostles, Song of Songs,
+Psalms. Single-chapter books may omit the chapter: `Jude 1-10` = Jude 1:1-10.
+
+**THE KINGS COLLISION IS DELIBERATE AND FLAGGED.** Slavonic 1-2 Kingdoms are
+English 1-2 Samuel; Slavonic 3-4 Kingdoms are English 1-2 Kings. Both
+conventions are in the map, so `"1 Kings"` resolves to `3Kgdm` while
+`"First Kings"` resolves to `1Sam` — three books apart. The evidence for the
+Slavonic reading is in the data itself: a paroemia reads *"First Kings
+(1 Samuel) — Hannah prays at Shiloh and conceives Samuel (First Kings 1:9-20)"*,
+and Hannah at Shiloh is 1 Samuel 1:9-20. Neither `"1 Kings"` nor `"2 Kings"` is
+used anywhere in encoded data, so the collision is **latent, not live**. When
+encoding these books prefer the unambiguous forms: `1 Samuel`, `3 Kgdms`.
+
+### 3. EDITORIAL MATTER, AND WHY CLEANING NOW LOOPS
+
+Stripping only a trailing parenthetical handled one shape of three. Cleaning now
+repeats until the string stops changing, because removing one tail exposes
+another — `"Philippians 2:5-11 (§240) — of the feast, repeated at its
+Leavetaking"` needs the dash annotation gone before its parenthetical is
+trailing, and a single pass leaves `(§240)` stuck on the end.
+
+The comma rule is **shape-based, not a word list**: a final comma group
+containing no digits is prose, never a verse range. That covers `, excerpted`,
+`, midpoint` and `, as printed` without anyone predicting the next annotation
+someone writes.
+
+### 4. "ff" IS REJECTED, AND THE DATA WAS NORMALISED INSTEAD
+
+`ff` names no endpoint, so any span built from it is invented. Two paroemias
+read `Wisdom 5:15ff` against **twenty-three** places encoding the same lesson as
+`5:15-6:3` — including `pentecostarion.js` itself, two lines apart. That is a
+data defect, not a parser gap. Both normalised (`june.js` paroemia_1,
+`pentecostarion.js` paroemia_3, plus the prose note listing the same three
+lessons). The parser rejects `ff` under strict mode so a new one fails loudly.
+
+### 5. PAROEMIA EXTRACTION — THREE SILENT FAILURES
+
+1. the ref-first pattern ran to the em-dash or end of string and swallowed a
+   following `" (annotation"`, yielding an unbalanced fragment;
+2. the ref-last pattern examined only a parenthetical at the very **end**, so a
+   citation with prose after it (`"(Proverbs 3:19-34). The PDF prints only…"`)
+   was missed;
+3. that pattern required the book name to start with a letter, rejecting
+   `3 Kgdms 8:22-30` and `First Kings 1:9-20`.
+
+One extractor now serves `paroemiaToRef`, `paroemiaLinkParts` and the Scripture
+handoff. It returns the citation's **character range** as well as the ref, which
+is what lets the Vespers view underline the citation and leave the sentence
+around it plain — the reason three copies existed in the first place.
+
+### THE TEST
+
+`tools/test_ref_resolution.mjs`, in `npm run gate` and as `npm run refs`.
+**806 checks**: all 565 LECTIONARY refs, all 129 feast_e/feast_g, all 87
+paroemia annotations, 19 regression cases asserted by exact expected output, 5
+paroemia extraction shapes, and a book-map sanity pass confirming every mapped
+id names a file that actually ships. Resolution went from 561/125/60 to
+565/129/87.
+
+### INTEGRATION NOTE
+
+Cross-chapter spans can now appear **inside** a multi-span reading, which never
+happened before — `Acts 6:8-7:5, 47-60` returns one cross span and one same
+span. Checked: `ReadingView` dispatches per span on
+`span.chapterStart !== undefined`, and both shapes carry `book`, so book loading
+at `scripture.jsx:766`/`:781` is unaffected. No renderer change was needed.
+
+### STILL OPEN FOR THE BULLETIN
+
+- **No headless renderer.** Passage text exists only inside JSX;
+  `ReadingView` is hard-coded to `display:"block"`, one verse per line. A
+  `spansToText(spans, {verseNumbers, continuous})` helper is the last
+  prerequisite for the readings supplement.
+- **Full verse-count audit** of all 80 books (from v0.44.1), blocked on a
+  reliable source for Brenton LXX counts.
+
 
 **Session September 6, 2026 (twenty-first) — SCRIPTURE DATA REPAIR.** A
 running-header parse defect had shifted every verse number in **187 chapters
