@@ -1,5 +1,110 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.44.3** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+**Tool version: v0.45.0** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+
+**Session September 6, 2026 (twenty-fourth) — THE BULLETIN SHIPS.** A printable
+day sheet in two formats, with the readings optionally set out in full. Tool
+**v0.45.0**.
+
+### THE READINGS RULE — AND THE SPEC LINE THAT HAD IT BACKWARDS
+
+Bill's ruling this session: **Fekula governs. It is published, paginated and
+citable. Where usage diverges from the published rubrics, that is for whoever
+diverges to explain — it is not this tool's problem.** No inference from
+observed practice, and no footnote the tool cannot source.
+
+That ruling turned out to make the rule *simpler*, not harder. Fekula's Sunday
+sections each end their Divine Liturgy block with a readings line:
+
+| | |
+|---|---|
+| §1A simple, §1B double | "For Sunday (and, **if there be such**, from the Menaion)" |
+| §1C six-stichera / doxology, §1E vigil | "For Sunday **and** from the Menaion" |
+| §1D polyeleos | "As set forth for a doxology rank service. See §1C." |
+| §1F1 in a feast period | "…are for Sunday and the saint." |
+
+§1A and §1B hedge; §1C and §1E do not. **It is very tempting to read that as a
+rank threshold — as though a saint earns his own readings at six-stichera. He
+does not.** The hedge is about the *Menaion's contents*: at six-stichera and
+above the Menaion normally appoints readings, so the hedge would be redundant
+and Fekula drops it; at simple rank it often does not, so the hedge is there.
+
+**The gate is one question, asked identically at every rank: does the printed
+service have an AT LITURGY section?**
+
+### 05-23 AND 09-06 SETTLE IT, AND THE DATA WAS ALREADY RIGHT
+
+Both `six_stichera`, both `§2C`:
+
+| | feast_e | why |
+|---|---|---|
+| `05-23` Michael the Confessor | `null` | entry note: *"No AT LITURGY section — §2C; cycle readings govern."* |
+| `09-06` the Archangel at Chonae | `"Hebrews 2:2-10"` | the service prints them |
+
+Same rank, opposite value, because the two printed services differ — which is
+the only thing that should make them differ. **Last session I flagged this pair
+as an inconsistency. It was not; I had misread it.** A scan of every
+`fekula_section` entry confirms the practice is uniform: all 11 §2C entries
+carry the field, some null and some populated, encoding what the PDF prints.
+
+**`encoding_rule_v2.md` was the thing that was wrong.** Its FEAST_EPISTLE /
+FEAST_GOSPEL rows read *"null if §2A/§2C"*. That describes neither Fekula nor
+the data, and a future encoder following it would have **deleted real
+readings**. Corrected to *"null when the source prints no AT LITURGY readings —
+at ANY rank"*, with the wording contrast and the 05-23 / 09-06 pair written out
+under Common Mistakes.
+
+### ORDER — SATURDAY INVERTS
+
+Fekula ch.2 §2A: *"But if it be Saturday, and there be readings in the Menaion,
+the prokeimenon, epistle, alleluia, gospel, and communion hymn are first from
+the Menaion, and then for the day."* Implemented, and **gated on the Menaion
+actually having readings**, as the rubric explicitly conditions it. Sunday and
+weekdays are day-first.
+
+Readings group by **slot**, not by source — both Epistles stand together at the
+Epistle, both Gospels at the Gospel. That is how Fekula's line is written
+("Prokeimenon, Epistle, Alleluia and Gospel: For Sunday and from the Menaion")
+and how service books set it out.
+
+### WHAT SHIPPED
+
+- **`src/lib/readings.js`** — `readingsForDay()`, pure. The component is a
+  renderer that prints what it is handed and resolves nothing, so everything
+  that can be liturgically wrong about a bulletin is decided in one testable
+  place.
+- **`src/components/bulletin.jsx`** — modal over the tool, not a route: the data
+  it needs is already live in `App()`, and a route would mean re-deriving it.
+  Format A (5.5x8.5) / C (8.5x11 two-column), readings tick-box, print CSS with
+  `@page` sized per format.
+- **`tools/test_bulletin_day.mjs`** — in `npm run gate`; `npm run bulletin`
+  prints the sheet content to the terminal for eyeballing.
+
+### TWO DECISIONS WORTH REMEMBERING
+
+**The sheet cites its rule.** Every bulletin prints the governing section and
+the sentence it followed — *Fekula §1C: "For Sunday and from the Menaion"*. A
+reader holding the book can check the sheet against it. That is the whole point
+of the tool and it should never be dropped to save a line.
+
+**The commemoration's readings are labelled "Of the commemoration", not by
+name.** Menaion `saint` strings are full printed headings — *"Commemoration of
+the Miracle of the Archangel Michael at Colossae (Chonae)"* — which read badly
+after "Of" and overflow a column. Shortening them would mean **inventing a short
+name for every saint**, an editorial act the tool has no source for. The sheet
+names the commemoration in full directly above, and only one commemoration is
+ever selected, so nothing is ambiguous. Caught by running `npm run bulletin` and
+reading the output; it would not have shown up in a unit test.
+
+### STILL DEFERRED
+
+- **Service-order lists.** Matins and the Divine Liturgy are `built: false`, so
+  an ordo would be hand-authored rather than derived — a document the tool
+  merely typeset. Waits on those assemblers.
+- **Fasting advice.** Waits on a fasting engine. Fekula contains no dietary rule
+  at all — see the v0.44.1 notes and the OCA outline recorded there.
+- **Full verse-count audit** of all 80 bible books (from v0.44.1), blocked on a
+  reliable source for Brenton LXX counts.
+
 
 **Session September 6, 2026 (twenty-third) — TEXT, NOT JUST REFERENCES.** The
 headless passage renderer the bulletin needs, plus a gate that checks every

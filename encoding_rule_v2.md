@@ -1186,8 +1186,8 @@ After the .txt skeleton is complete, these fields map to the tool data objects:
 | LITYA_GLORY | `litya_glory` | `{tone, text}` — Glory sticheron at the Litiya |
 | LITYA_BOTH_NOW | `litya_both_now` | `{tone, text}` — Both Now theotokion at the Litiya |
 | MATINS_GOSPEL | `matins_gospel` | §2E/§2F only |
-| FEAST_EPISTLE | `feast_e` | null if §2A/§2C |
-| FEAST_GOSPEL | `feast_g` | null if §2A/§2C |
+| FEAST_EPISTLE | `feast_e` | null when the source prints no AT LITURGY readings — at ANY rank. See note below. |
+| FEAST_GOSPEL | `feast_g` | null when the source prints no AT LITURGY readings — at ANY rank. See note below. |
 | PROKEIMENON_TONE/TEXT/STICHOS | `prokeimenon_tone` / `_text` / `_stichos` | |
 | ALLELUIA_TONE/VERSE/STICHOS | `alleluia_tone` / `_verse` / `_stichos` | |
 | COMMUNION_VERSE | `communion_verse` | |
@@ -1225,8 +1225,39 @@ After the .txt skeleton is complete, these fields map to the tool data objects:
 3. **§2A aposticha** — come from Octoechos, not the Menaion. Write
    `APOSTICHA_SOURCE: Octoechos` and move on. Do not encode them.
 
-4. **feast_e / feast_g for §2A** — always `null`, never the string `"absent"`.
-   The assembler checks for null; the string bypasses that check silently.
+4. **feast_e / feast_g** — encode what the source prints, at any rank; use
+   `null` when it prints no AT LITURGY section, never the string `"absent"`
+   (the assembler checks for null and the string bypasses that check silently).
+
+   **The rank is not the gate.** An earlier version of this table read
+   *"null if §2A/§2C"*, which is wrong and would have caused an encoder to
+   delete real readings. Fekula's Sunday sections end their Divine Liturgy
+   block with a readings line, and the wording shift is easy to misread:
+
+   | | |
+   |---|---|
+   | §1A simple, §1B double | "For Sunday (and, **if there be such**, from the Menaion)" |
+   | §1C six-stichera / doxology, §1E vigil | "For Sunday **and** from the Menaion" |
+
+   §1A and §1B hedge; §1C and §1E do not. That is not a threshold a saint
+   crosses at six-stichera. The hedge is about **the Menaion's contents**: at
+   six-stichera and above the Menaion normally appoints readings, so the hedge
+   would be redundant and Fekula drops it. At simple rank it often does not, so
+   the hedge is there. The question at every rank is the same one — *does the
+   printed service have an AT LITURGY section?*
+
+   The encoded data already answers it correctly, and two §2C entries show it:
+
+   - `05-23` Michael the Confessor — note: *"No AT LITURGY section — §2C;
+     cycle readings govern."* → `feast_e: null`
+   - `09-06` the Archangel Michael at Chonae — the service prints them →
+     `feast_e: "Hebrews 2:2-10"`
+
+   Same rank, same section, opposite values, because the two printed services
+   differ. That is the only thing that should make them differ.
+
+   Consumed by `readingsForDay()` in `src/lib/readings.js`, which reads
+   non-null as "read them" and null as "the Menaion appoints none".
 
 5. **Kontakion field names carry the ode number** — `kontakion_ode6` governs 3rd & 9th
    Hours; `kontakion_ode3` governs 1st & 6th Hours. These names apply to both Menaion

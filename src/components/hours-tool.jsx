@@ -6,6 +6,8 @@ import { PSALMS, KATHISMA_MAP, getPsalmRange } from '../data/psalter.js';
 import { hymnText, hymnProvenance } from '../lib/hymn-entry.js';
 import { PointScoreControls, isPointable, normalizeSergius, renderPointed } from './point-score-controls.jsx';
 import { splitBookAndRest, paroemiaToRef, paroemiaRefSpan } from '../lib/scripture-ref.js';
+import { readingsForDay } from '../lib/readings.js';
+import Bulletin from './bulletin.jsx';
 
 
 // ─── CALENDAR ENGINE ────────────────────────────────────────────────────────
@@ -8587,6 +8589,96 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.45.0",
+    date: "September 2026",
+    summary: "The Bulletin — a printable day sheet in two formats, with the readings optionally set out in full",
+    items: [
+      "NEW Bulletin button in the footer row, opening a printable sheet for the " +
+      "liturgical day: commemoration, the readings Fekula appoints, and the " +
+      "dismissal hymns. Two formats — A, a 5.5x8.5 half sheet, two to a letter " +
+      "page with one cut; and C, an 8.5x11 two-column broadsheet carrying every " +
+      "proper the day appoints, including the aposticha doxasticon, the " +
+      "exapostilarion, the commemoration's prokeimenon and the communion verse.",
+
+      "OPTIONAL READINGS SUPPLEMENT. Tick 'Print the readings in full' and each " +
+      "appointed reading is appended, set CONTINUOUSLY as it is chanted rather " +
+      "than one verse per line, with a quiet ¶ where a chapter changes — so " +
+      "2 Corinthians 1:21-2:4 reads as the single pericope it is. Each carries " +
+      "its announcement formula. One reading per sheet on the half sheet, all " +
+      "of them on the broadsheet.",
+
+      "IT REFUSES TO PRINT SHORT. The supplement resolves text in strict mode. " +
+      "If any appointed verse is missing from the scripture data the reading is " +
+      "OMITTED with a red note naming what failed, rather than set one verse " +
+      "shy. A reading that looks complete and is not is the defect class the " +
+      "last three releases were spent eliminating, and it is far worse on paper " +
+      "than on screen.",
+
+      "NEW src/lib/readings.js — readingsForDay(), the rule for which readings " +
+      "are read and in what order, as a pure function. The component is a " +
+      "renderer: it prints what it is handed and resolves nothing, so " +
+      "everything that can be liturgically wrong about a bulletin is decided in " +
+      "one testable place.",
+
+      "THE RULE IS NOT ABOUT RANK, and the spec said otherwise. Fekula's Sunday " +
+      "sections end their Liturgy block with a readings line: §1A simple and " +
+      "§1B double hedge — \"For Sunday (and, IF THERE BE SUCH, from the " +
+      "Menaion)\" — while §1C six-stichera/doxology and §1E vigil do not: \"For " +
+      "Sunday AND from the Menaion\". That is not a threshold a saint crosses at " +
+      "six-stichera. The hedge is about the MENAION'S CONTENTS: at six-stichera " +
+      "and above it normally appoints readings, so the hedge would be " +
+      "redundant. The question at every rank is the same — does the printed " +
+      "service have an AT LITURGY section?",
+
+      "05-23 AND 09-06 PROVE IT. Both six_stichera, both §2C. 05-23 (Michael " +
+      "the Confessor) has feast_e: null and the note \"No AT LITURGY section — " +
+      "§2C; cycle readings govern\"; 09-06 (the Archangel at Chonae) carries " +
+      "Hebrews 2:2-10 because its service prints it. Same rank, opposite " +
+      "outcome, because the two printed services differ — which is the only " +
+      "thing that should make them differ. Asserted as a test case.",
+
+      "encoding_rule_v2.md CORRECTED. The FEAST_EPISTLE / FEAST_GOSPEL rows " +
+      "read \"null if §2A/§2C\", which is wrong and would have led an encoder to " +
+      "delete real readings. They now read \"null when the source prints no AT " +
+      "LITURGY readings — at ANY rank\", with the §1A/§1C wording contrast and " +
+      "the 05-23 / 09-06 pair set out in full under Common Mistakes.",
+
+      "SATURDAY INVERTS. Fekula ch.2 §2A: \"But if it be Saturday, and there be " +
+      "readings in the Menaion, the prokeimenon, epistle, alleluia, gospel, and " +
+      "communion hymn are first from the Menaion, and then for the day.\" " +
+      "Implemented, and gated on the Menaion actually having readings, as the " +
+      "rubric says. Sunday and weekdays are day-first. Readings group by SLOT — " +
+      "both Epistles together, both Gospels together — as Fekula's line is " +
+      "written and as service books set it out.",
+
+      "THE SHEET CITES ITS RULE. Every bulletin prints the governing section and " +
+      "the sentence it followed, e.g. \"Fekula §1C: 'For Sunday and from the " +
+      "Menaion'\". Nothing is inferred from observed practice, and the sheet " +
+      "makes no claim about any other calendar's usage: where usage diverges " +
+      "from the published rubrics, that is for whoever diverges to explain.",
+
+      "THE COMMEMORATION'S READINGS ARE LABELLED \"Of the commemoration\", not " +
+      "by name. Menaion `saint` strings are full printed headings — " +
+      "\"Commemoration of the Miracle of the Archangel Michael at Colossae " +
+      "(Chonae)\" — which read badly after \"Of\" and overflow a bulletin column. " +
+      "Shortening them would mean inventing a short name for every saint, which " +
+      "is an editorial act the tool has no source for. The sheet names the " +
+      "commemoration in full directly above.",
+
+      "SERVICE-ORDER LISTS ARE DEFERRED, not forgotten. Matins and the Divine " +
+      "Liturgy are still built: false, so an ordo would be hand-authored rather " +
+      "than derived — a document the tool merely typeset. It waits on those " +
+      "assemblers. Fasting advice likewise waits on a fasting engine; Fekula " +
+      "contains no dietary rule at all (see v0.44.1 notes).",
+
+      "NEW tools/test_bulletin_day.mjs, in `npm run gate`, with `npm run " +
+      "bulletin` to print the sheet content to the terminal. Exercises the whole " +
+      "data path without React: the Fekula rule, the encoded entry, the " +
+      "Octoechos V2 resurrectional hymns, and the full text of all four " +
+      "readings for 6 September 2026.",
+    ],
+  },
+  {
     version: "v0.44.3",
     date: "September 2026",
     summary: "Headless passage renderer, LXX versification remaps, and a text-coverage gate — every encoded reference now resolves to real text",
@@ -14714,6 +14806,7 @@ export default function App() {
   });
   const [showGlossary, setShowGlossary] = useState(false);
   const [showHowItWorks, setShowHowItWorks] = useState(false);
+  const [showBulletin, setShowBulletin] = useState(false);
   const [contextOpen, setContextOpen] = useState(false);
   const [copyrightExpanded, setCopyrightExpanded] = useState(false);
   const [selectedServiceKey, setSelectedServiceKey] = useState(() => {
@@ -15003,6 +15096,98 @@ export default function App() {
   // Vespers/Compline read the next liturgical day (vespersNext), everything
   // else reads the currently selected day/commemoration.
   const peekIsVesperlike = currentService.key === 'vespers' || currentService.key === 'compline';
+  // ── BULLETIN DAY BUNDLE ───────────────────────────────────────────────────
+  // Everything the printable sheet needs, assembled from the same values the
+  // context card and the assemblers already use. Built here rather than inside
+  // the component so the bulletin stays a renderer: it prints what it is given
+  // and resolves nothing on its own.
+  const bulletinDay = (() => {
+    const entry = selectedMenaionEntry || null;
+    const tone = liturgicalData.tone;
+    const saintRaw = entry && entry.saint && !String(entry.saint).startsWith("absent")
+      ? entry.saint : null;
+
+    const readings = readingsForDay({
+      liturgicalData,
+      menaionEntry: entry,
+      dailyReading,
+      feastReading,
+    });
+
+    const troparia = [];
+    const kontakia = [];
+    const extras = [];
+
+    if (liturgicalData.season === "sunday" && tone) {
+      const t = srcResTroparion(tone);
+      if (t) troparia.push({ label: "Of the Resurrection", tone, text: hymnText(t) });
+    }
+    if (entry && entry.troparion) {
+      troparia.push({
+        label: saintRaw ? `Of ${saintRaw}` : "Of the commemoration",
+        tone: entry.troparion.tone, text: hymnText(entry.troparion),
+      });
+    }
+    if (entry && entry.troparion_second) {
+      troparia.push({ label: "Second troparion", tone: entry.troparion_second.tone,
+                      text: hymnText(entry.troparion_second) });
+    }
+    if (liturgicalData.season === "sunday" && tone) {
+      const th = srcDismissalTheot(tone);
+      if (th) troparia.push({ label: "Dismissal Theotokion", tone, text: hymnText(th) });
+    }
+
+    if (liturgicalData.season === "sunday" && tone) {
+      const k = srcSunKontakion(tone);
+      if (k) kontakia.push({ label: "Of the Resurrection", tone, text: hymnText(k) });
+    }
+    const menaionKontakion = (entry && (entry.kontakion_ode6 || entry.kontakion_ode3)) || null;
+    if (menaionKontakion) {
+      kontakia.push({
+        label: saintRaw ? `Of ${saintRaw}` : "Of the commemoration",
+        tone: menaionKontakion.tone, text: hymnText(menaionKontakion),
+      });
+    }
+
+    // Broadsheet only — the half sheet has no room for these.
+    if (entry && entry.aposticha_glory) {
+      extras.push({ label: "Glory at the Aposticha", tone: entry.aposticha_glory.tone,
+                    text: hymnText(entry.aposticha_glory) });
+    }
+    if (entry && entry.exapostilarion) {
+      extras.push({ label: "Exapostilarion", text: hymnText(entry.exapostilarion) });
+    }
+    if (entry && entry.prokeimenon_text) {
+      extras.push({ label: "Prokeimenon of the commemoration", tone: entry.prokeimenon_tone,
+                    text: entry.prokeimenon_text });
+    }
+    if (entry && entry.communion_verse) {
+      extras.push({ label: "Communion verse", text: entry.communion_verse });
+    }
+
+    const rankLabel = entry && entry.rank
+      ? String(entry.rank).replace(/_/g, "-").replace(/\b\w/g, (c) => c.toUpperCase())
+      : null;
+
+    return {
+      dateLabel: date.toLocaleDateString("en-US",
+        { weekday: "long", year: "numeric", month: "long", day: "numeric" }),
+      layer: (liturgicalData.namedDay && liturgicalData.namedDay.name)
+        || (liturgicalData.pentecostWeekInfo && liturgicalData.pentecostWeekInfo.sundayLabel)
+        || liturgicalData.seasonNote || liturgicalData.dayName,
+      toneLabel: tone ? `Tone ${tone}` : null,
+      rankLabel: [rankLabel, entry && entry.fekula_section ? `Fekula §${entry.fekula_section}` : null]
+        .filter(Boolean).join(" · ") || null,
+      saint: saintRaw || "No commemoration encoded for this date",
+      secondSaint: (services.length > 1 && services[1] && services[1].saint) || null,
+      readings,
+      troparia,
+      kontakia,
+      extras,
+      version: RELEASE_NOTES[0].version,
+    };
+  })();
+
   const peekName = getPeekName(
     peekIsVesperlike ? vespersNext.vLit : liturgicalData,
     peekIsVesperlike ? vespersNext.vMenaion : menaionEntry
@@ -16057,6 +16242,15 @@ export default function App() {
           >
             {showGlossary ? "Hide Glossary" : "Glossary"}
           </button>
+          <button
+            onClick={() => setShowBulletin(true)}
+            style={{ background: "transparent", border: "1px solid #8B6914",
+                     color: "#8B6914", borderRadius: "3px", padding: "5px 14px",
+                     fontSize: "0.78rem", letterSpacing: "0.08em", cursor: "pointer",
+                     fontFamily: "Georgia, serif" }}
+          >
+            Bulletin
+          </button>
         </div>
 
         {showHowItWorks && (
@@ -16070,6 +16264,10 @@ export default function App() {
         )}
       </div>
       {/* ── END HOW IT WORKS ─────────────────────────────────────── */}
+
+      {showBulletin && (
+        <Bulletin day={bulletinDay} onClose={() => setShowBulletin(false)} />
+      )}
 
       {/* ── COPYRIGHT FOOTER ─────────────────────────────────────── */}
       <div style={{ maxWidth: "800px", margin: "1.5rem auto 0", borderTop: "1px solid #e8dfc8", padding: "0.7rem 1rem 0",
