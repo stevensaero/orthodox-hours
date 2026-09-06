@@ -32,8 +32,10 @@ const SERIF = "Georgia, 'Times New Roman', serif";
 
 // MEASURED, not guessed. With 6 September 2026 — a Sunday carrying both a full
 // resurrectional set and a six-stichera commemoration's propers — the two
-// columns come to 10.80in of the 11in page, leaving about one spare line across
-// both columns. The chrome above (page padding, masthead margins, heading
+// columns come to 10.97in of the 11in page, leaving well under a line of slack.
+// Stacking each reading's attribution under its citation (v0.45.3) cost four
+// lines and took the sheet to 11.16in; it was brought back by tightening the
+// readings block's own spacing and leading, never the body type. The chrome above (page padding, masthead margins, heading
 // leading, footer margin) was trimmed to buy that, and the TYPE SIZES WERE NOT
 // TOUCHED. If a heavier day overflows, it flows to a second page; do not
 // reclaim space by shrinking the body type below 10.5pt, which is the floor for
@@ -66,6 +68,13 @@ export const BULLETIN_CSS = `
         font-family: ${SERIF};
         box-sizing: border-box;
         position: relative;
+        /* Borrowed from the St Mary's template, which needs it for its tinted
+           page and sets it on body. Nothing here fills an area, so this is
+           insurance rather than a requirement: it keeps a browser from
+           dropping the gold rules and verse numbers when "Background graphics"
+           is off, and it costs a white sheet nothing. */
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
       }
 
       /* Paper geometry belongs to the SCREEN preview only. In print the page
@@ -119,20 +128,27 @@ export const BULLETIN_CSS = `
       .oh-comm { font-size: 13pt; line-height: 1.32; margin: 0 0 3pt; }
       .oh-comm2 { font-size: 11pt; color: ${C.inkLight}; font-style: italic; margin: 0; }
 
-      .oh-slot { margin-bottom: 6pt; break-inside: avoid; page-break-inside: avoid; }
+      .oh-slot { margin-bottom: 4pt; break-inside: avoid; page-break-inside: avoid; }
       .oh-slot-label {
         font-size: 9.5pt; letter-spacing: 0.1em; text-transform: uppercase;
-        color: ${C.accent}; margin: 6pt 0 2pt;
+        color: ${C.accent}; margin: 4pt 0 2pt;
       }
-      .oh-reading-row {
-        display: grid; grid-template-columns: auto 1fr; gap: 2pt 10pt;
-        font-size: 11pt; line-height: 1.4;
+      /* The citation leads and its attribution sits under it. Side by side in a
+         two-column grid the attribution ("Of the commemoration") was wider than
+         the reference it labelled, and on a 3.43in measure it squeezed the
+         reference into a column too narrow to keep on one line. */
+      .oh-reading-row { margin: 0 0 3pt; break-inside: avoid; page-break-inside: avoid; }
+      .oh-reading-ref {
+        display: block; font-size: 11pt; line-height: 1.25;
+        font-variant-numeric: tabular-nums;
       }
-      .oh-reading-of { color: ${C.inkLight}; white-space: nowrap; }
-      .oh-reading-ref { font-variant-numeric: tabular-nums; }
+      .oh-reading-of {
+        display: block; font-size: 9pt; line-height: 1.2;
+        color: ${C.inkLight}; font-style: italic;
+      }
       .oh-cite {
         font-size: 9pt; line-height: 1.4; color: ${C.inkLight}; font-style: italic;
-        border-left: 0.5pt solid ${C.rule}; padding-left: 7pt; margin-top: 7pt;
+        border-left: 0.5pt solid ${C.rule}; padding-left: 7pt; margin-top: 5pt;
       }
 
       .oh-hymn { margin: 0 0 8pt; break-inside: avoid-column; }

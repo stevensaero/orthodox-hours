@@ -8589,6 +8589,46 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.45.3",
+    date: "September 2026",
+    summary: "Readings restacked — citation first, attribution beneath — and one borrowing from the St Mary's template",
+    items: [
+      "READINGS RESTACKED. Each citation now leads its own line with the " +
+      "attribution set beneath it in 9pt italic, instead of the two sitting " +
+      "side by side. Side by side, \"Of the commemoration\" was wider than the " +
+      "reference it labelled and squeezed the reference itself into a column " +
+      "too narrow to keep on one line at a 3.43in measure.",
+
+      "IT COST FOUR LINES AND THE SHEET OVERFLOWED. Restacking took 6 September " +
+      "from 10.80in to 11.16in — past the page. Reclaimed by tightening the " +
+      "readings block's own spacing and leading (row margin 5→3pt, slot margin " +
+      "6→4pt, slot label 6→4pt, citation leading 1.3→1.25, attribution 1.3→1.2, " +
+      "rule note margin 7→5pt), which lands it at 10.97in. The body type was " +
+      "not touched; 10.5pt remains the floor.",
+
+      "REVIEWED AGAINST THE ST MARY'S TEMPLATES (both variants) for printable " +
+      "output. Adopted one thing: print-color-adjust: exact, which they set on " +
+      "body because their page carries a tint. Nothing on our sheet fills an " +
+      "area, so for us it is insurance — it stops a browser dropping the gold " +
+      "rules and verse numbers when \"Background graphics\" is off, and costs a " +
+      "white sheet nothing.",
+
+      "DELIBERATELY NOT ADOPTED: their page setup. The templates declare no " +
+      "@page rule at all and instead put width: 8.5in and padding: 0.45in on a " +
+      ".page div, which only prints correctly if the operator sets margins to " +
+      "None in the print dialog. Left on Chrome's default margins, an 8.5in-wide " +
+      "box on 8.5in paper does not fit and the browser scales the whole page " +
+      "down — shrinking the type, which is the defect v0.45.1 was about. Our " +
+      "@page { size; margin } with an auto-width sheet needs no operator step.",
+
+      "ALSO NOT ADOPTED: their two-column layout is a CSS grid (2fr 1fr), which " +
+      "pins content to a chosen column and cannot reflow. Ours is column-count " +
+      "because the propers must balance and the readings run to a second page; " +
+      "a single 7.2in column would set roughly 95 characters to the line, which " +
+      "is unreadable. Their body type is 9.5pt against our 10.5pt.",
+    ],
+  },
+  {
     version: "v0.45.2",
     date: "September 2026",
     summary: "Bulletin printed one page and stopped — two inline style declarations were beating the print stylesheet",

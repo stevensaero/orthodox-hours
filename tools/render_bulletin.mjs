@@ -128,8 +128,8 @@ const readingsBlock = `
       <div class="oh-slot-label">${esc(g.label)}</div>
       ${g.items.map((it) => `
         <div class="oh-reading-row">
-          <span class="oh-reading-of">${esc(it.label)}</span>
           <span class="oh-reading-ref">${esc(it.ref)}</span>
+          <span class="oh-reading-of">${esc(it.label)}</span>
         </div>`).join("")}
     </div>`).join("")}
   <div class="oh-cite">${esc(readings.rule.section)}: “${esc(readings.rule.quote)}”${

@@ -1,5 +1,76 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.45.2** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+**Tool version: v0.45.3** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+
+**Session September 6, 2026 (twenty-seventh) — READINGS RESTACKED, AND THE ST
+MARY'S TEMPLATES REVIEWED.** Tool **v0.45.3**.
+
+### CITATION FIRST, ATTRIBUTION BENEATH
+
+Each reading's citation now leads its own line with "Of the Sunday" / "Of the
+commemoration" set under it in 9pt italic. Side by side the attribution was
+**wider than the reference it labelled**, and on a 3.43in measure it squeezed
+the citation into a column too narrow to hold on one line.
+
+**It cost four lines and overflowed the page** — 10.80in → 11.16in. Reclaimed
+from the readings block's own spacing, never from body type:
+
+| | was | now |
+|---|---|---|
+| `.oh-reading-row` margin | 5pt | 3pt |
+| `.oh-slot` margin-bottom | 6pt | 4pt |
+| `.oh-slot-label` margin-top | 6pt | 4pt |
+| citation leading | 1.3 | 1.25 |
+| attribution leading | 1.3 | 1.2 |
+| rule-note margin-top | 7pt | 5pt |
+
+Lands at **10.97in**. Slack is now well under one line, so the next content
+addition will push 09-06 to a second page. That is acceptable — 10.5pt is the
+floor and the stylesheet says so.
+
+### THE ST MARY'S TEMPLATES — REVIEWED FOR PRINT OUTPUT ONLY
+
+Both variants (`bulletin/stmary_template_a.html`, `_b.html`) share one
+stylesheet approach. **It is less robust than what we have, not more**, which is
+worth recording so nobody re-opens the question.
+
+**Their whole print block is four lines:**
+
+    @media print {
+      body { background: white; }
+      .page { margin: 0; box-shadow: none; }
+    }
+
+**No `@page` rule anywhere.** Page geometry lives entirely on a div:
+`.page { width: 8.5in; min-height: 11in; padding: 0.45in }`. That prints
+correctly **only if the operator sets Margins to None** in the print dialog. Left
+on Chrome's default margins, an 8.5in-wide box on 8.5in paper does not fit, and
+the browser scales the entire page down — shrinking the type, which is precisely
+the defect v0.45.1 shipped. Our `@page { size; margin }` with an auto-width
+sheet needs no operator step and cannot be scaled.
+
+**Adopted — one thing.** `print-color-adjust: exact`. They set it on body
+because `.page` carries a background tint. Nothing on our sheet fills an area,
+so for us it is insurance: it stops a browser dropping the gold rules and verse
+numbers when "Background graphics" is off, and costs a white sheet nothing.
+
+**Not adopted — their columns.** `.two-col { display: grid;
+grid-template-columns: 2fr 1fr }`. A grid pins content to a chosen column and
+cannot reflow, which is safer across a page break but means every section must
+be assigned by hand. Ours is `column-count: 2` because the propers sheet must
+balance itself and the readings sheet runs to a second page. A single 7.2in
+column would set roughly 95 characters to the line, which is unreadable.
+
+**For reference:** their body type is 9.5pt, sizes ranging 7pt–14pt. Ours is
+10.5pt body / 11pt readings, at Bill's direction — deliberately larger.
+
+### THE REMAINING PRINT UNKNOWN
+
+`column-count` pagination across a page break is the one thing neither measured
+nor observed. The propers sheet is one page so it does not arise there; the
+readings sheet is two, and Chrome's multicol pagination is the flakier part of
+the spec. **This needs a real print test**, not a measurement — it is the first
+thing to check on the next reprint.
+
 
 **Session September 6, 2026 (twenty-sixth) — THE BULLETIN WOULD NOT PRINT.**
 One page, no readings sheet, dead scrollbar in Chrome's print preview. Tool

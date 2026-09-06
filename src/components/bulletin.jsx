@@ -159,8 +159,8 @@ function ReadingsBlock({ resolved }) {
           <div className="oh-slot-label">{group.label}</div>
           {group.items.map((item, i) => (
             <div key={i} className="oh-reading-row">
-              <span className="oh-reading-of">{item.label}</span>
               <span className="oh-reading-ref">{item.ref}</span>
+              <span className="oh-reading-of">{item.label}</span>
             </div>
           ))}
         </div>
