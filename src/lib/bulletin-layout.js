@@ -404,3 +404,53 @@ export function buildReadingsFlow(readings) {
   }
   return flow;
 }
+
+// ─── BUDGET RECONCILIATION ──────────────────────────────────────────────────
+//
+// The measure-and-correct pass is what turns a predicted budget into a verified
+// one, but naively applied it OSCILLATES, and the oscillation is visible:
+//
+//   1. render at the full budget; some column sets 3pt deeper than predicted
+//   2. shrink the budget by 3pt, re-paginate, content moves up a column
+//   3. measure again — now nothing overflows, so the budget returns to full
+//   4. which reproduces step 1, for ever
+//
+// In Chrome's print preview that reads as text flickering and re-ordering,
+// because every pass re-slices where each reading breaks. v0.46.0 shipped
+// exactly this.
+//
+// Two properties fix it, and both are needed:
+//   MONOTONIC  the budget only ever shrinks within a settling run, so a pass
+//              can never undo the pass before it.
+//   CAPPED     settling stops after MAX_LAYOUT_PASSES whatever the drift says,
+//              so a pathological measurement cannot spin.
+//
+// A floor stops a runaway measurement from squeezing the columns to nothing: if
+// drift ever demands more than a quarter of the column, something is wrong that
+// shrinking will not fix, and the caller is told rather than driven in circles.
+
+export const MAX_LAYOUT_PASSES = 3;
+const BUDGET_FLOOR_RATIO = 0.75;
+const DRIFT_TOLERANCE_PT = 0.5;   // below this, rounding rather than real drift
+
+/**
+ * Decide the next column budget from a measured pass.
+ *
+ * @param chromeBudgetPt    page height less padding, masthead and footer
+ * @param currentBudgetPt   the budget this pass was laid out with
+ * @param measuredDriftPt   worst (rendered column height − budget); ≤0 means it fitted
+ * @param pass              how many settling passes have already run
+ * @returns {{ budgetPt, settled, floored }}
+ */
+export function reconcileBudget({ chromeBudgetPt, currentBudgetPt, measuredDriftPt, pass }) {
+  const floor = chromeBudgetPt * BUDGET_FLOOR_RATIO;
+  const current = currentBudgetPt ?? chromeBudgetPt;
+
+  if (pass >= MAX_LAYOUT_PASSES) return { budgetPt: current, settled: true, floored: false };
+  if (measuredDriftPt <= DRIFT_TOLERANCE_PT) return { budgetPt: current, settled: true, floored: false };
+
+  // Monotonic: never larger than the budget we just used.
+  const wanted = current - Math.ceil(measuredDriftPt);
+  if (wanted < floor) return { budgetPt: floor, settled: true, floored: true };
+  return { budgetPt: wanted, settled: false, floored: false };
+}

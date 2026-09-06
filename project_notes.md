@@ -1,5 +1,57 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.46.0** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+**Tool version: v0.46.1** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+
+**Session September 6, 2026 (twenty-ninth) — THE VERIFICATION PASS WAS
+OSCILLATING.** Bulletin text flickered and re-ordered in Chrome's print preview
+with the readings ticked. Ours, not Chrome's. Tool **v0.46.1**.
+
+### THE LOOP
+
+v0.46.0's measure-and-correct pass had **no direction and no end**:
+
+1. render at the full budget; a column sets a few points deeper than predicted
+2. shrink the budget by that drift, re-break — now everything fits
+3. measure again: no drift, so the budget **returns to full**
+4. which reproduces step 1
+
+Each pass re-slices where every reading breaks, so the words visibly re-order.
+Worst with the readings ticked, because that is where there is most to re-slice.
+
+### THE FIX NEEDS BOTH PROPERTIES
+
+- **MONOTONIC** — within a settling run the budget only ever shrinks, so a pass
+  cannot undo the one before it. This is what starves the loop.
+- **CAPPED** — settling stops after `MAX_LAYOUT_PASSES` (3) whatever the
+  measurement says. This is what stops a pathological measurement spinning.
+
+Either one alone still permits a spin. Extracted as `reconcileBudget()` in
+`src/lib/bulletin-layout.js` — a pure function, so it is **tested rather than
+reasoned about**. Sub-point drift is rounding, not drift. A runaway measurement
+is floored at three quarters of the column and reported rather than squeezing
+the columns toward nothing.
+
+`useLayoutEffect` rather than `useEffect`, so the passes run **before paint** and
+are not something the reader watches. The Print button waits for `settled` and
+says "Settling layout…" meanwhile — printing mid-settle is precisely what made
+the preview flicker.
+
+### TESTED AS A SEQUENCE, NOT A SNAPSHOT
+
+The convergence test drives an **adversarial measurement that reports drift
+again every time the budget returns to full** — the exact shape of the v0.46.0
+loop — and asserts it settles, settles within the cap, and never grows the
+budget back.
+
+Structural guards alongside: settling must run before paint, go through
+`reconcileBudget`, have a `settled` gate, reset when content changes, and gate
+printing. The test fails outright if the v0.46.0 unbounded `measure()` effect
+reappears.
+
+**The sheet was correct at every individual moment and wrong only as a sequence
+of moments.** No visual review finds that, which is why the guards are
+structural — the same lesson as the v0.45.2 print-path bug, in a different
+dimension.
+
 
 **Session September 6, 2026 (twenty-eighth) — THE BULLETIN OWNS ITS OWN PAGE
 BREAKS.** A real type budget, computed from Georgia metrics and verified against

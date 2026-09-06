@@ -8589,6 +8589,51 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.46.1",
+    date: "September 2026",
+    summary: "Bulletin text flickered and re-ordered in print preview — the verification pass was oscillating",
+    items: [
+      "THE BUG, and it was ours, not Chrome's. v0.46.0's measure-and-correct " +
+      "pass had no direction and no end: (1) render at the full budget, and a " +
+      "column sets a few points deeper than predicted; (2) shrink the budget by " +
+      "that drift and re-break, and now everything fits; (3) measure again — " +
+      "no drift, so the budget returns to full; (4) which reproduces step 1. " +
+      "For ever. Every pass re-slices where each reading breaks, so the text " +
+      "visibly re-orders — worst with the readings ticked, because there is " +
+      "most to re-slice.",
+
+      "TWO PROPERTIES FIX IT, and both are needed. MONOTONIC: within a settling " +
+      "run the budget only ever shrinks, so a pass can never undo the one " +
+      "before it. CAPPED: settling stops after three passes whatever the " +
+      "measurement claims. Either alone still permits a spin.",
+
+      "NEW reconcileBudget() in src/lib/bulletin-layout.js — the decision " +
+      "extracted as a pure function so it can be tested rather than reasoned " +
+      "about. Sub-point drift is treated as rounding, not drift. A runaway " +
+      "measurement is floored at three quarters of the column and reported, " +
+      "instead of squeezing the columns toward nothing.",
+
+      "SETTLING NOW RUNS BEFORE PAINT. useLayoutEffect rather than useEffect, " +
+      "so the passes are not something the reader watches happen. The Print " +
+      "button waits for the layout to settle and says \"Settling layout…\" " +
+      "meanwhile — printing mid-settle is exactly what produced the flicker in " +
+      "the preview.",
+
+      "TESTED AS A SEQUENCE, not a snapshot. The convergence test drives an " +
+      "adversarial measurement that reports drift again every time the budget " +
+      "returns to full — the precise shape of the v0.46.0 loop — and asserts " +
+      "that it settles, that it settles within the cap, and that the budget " +
+      "never grows back. Plus structural guards: settling must run before " +
+      "paint, go through reconcileBudget, have a settled gate, reset when the " +
+      "content changes, and gate printing — and the test fails outright if the " +
+      "v0.46.0 unbounded effect reappears.",
+
+      "The sheet looked correct at every individual moment and misbehaved only " +
+      "as a sequence of moments, which is why a visual check would not have " +
+      "found it and why the guards are structural.",
+    ],
+  },
+  {
     version: "v0.46.0",
     date: "September 2026",
     summary: "The bulletin owns its own page breaks — a real type budget, computed from Georgia metrics and verified against the rendered page",

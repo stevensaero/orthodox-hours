@@ -8,9 +8,13 @@
  * The point of a budget is that it holds for days nobody has looked at, so the
  * cases below deliberately include a day heavier than anything encoded.
  */
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { STYLES, wrapText, blockHeightPt } from "../src/lib/bulletin-metrics.js";
 import { paginate, buildPropersFlow, buildReadingsFlow,
-         continuationNotice, resumptionNotice, PAGE } from "../src/lib/bulletin-layout.js";
+         continuationNotice, resumptionNotice, PAGE,
+         reconcileBudget, MAX_LAYOUT_PASSES } from "../src/lib/bulletin-layout.js";
 import { readingsForDay } from "../src/lib/readings.js";
 import september from "../src/data/menaion/september.js";
 import { hymnText } from "../src/lib/hymn-entry.js";
@@ -187,6 +191,76 @@ for (const page of heavyOut.pages) {
       failures++; console.log(`  ✗ column overfilled: ${col.usedPt}pt of ${PAGE.columnHeightPt}pt`);
     }
   }
+}
+
+// ─── 8. Budget reconciliation must converge ─────────────────────────────────
+// v0.46.0 shipped a measure-and-correct pass that oscillated: shrink on drift,
+// then grow back when the drift disappeared, then overflow again. In Chrome's
+// print preview that showed as text flickering and re-ordering, because every
+// pass re-sliced where each reading broke.
+console.log("Budget reconciliation converges");
+
+const chrome = 601.7;
+
+// The oscillation itself: an adversarial measurement that reports drift again
+// every time the budget returns to full. Monotonic shrinking must starve it.
+let budget = chrome, pass = 0, settled = false, history = [];
+for (let i = 0; i < 20 && !settled; i++) {
+  const drift = budget >= chrome ? 3 : -2;      // "fits only when shrunk"
+  const r = reconcileBudget({ chromeBudgetPt: chrome, currentBudgetPt: budget,
+                              measuredDriftPt: drift, pass });
+  history.push(+r.budgetPt.toFixed(1));
+  budget = r.budgetPt; settled = r.settled; pass += 1;
+}
+ok("it settles rather than spinning", settled);
+ok(`it settles within ${MAX_LAYOUT_PASSES} passes`, pass <= MAX_LAYOUT_PASSES + 1);
+ok("the budget never grows back", history.every((b, i) => i === 0 || b <= history[i - 1]));
+console.log(`  budgets: ${history.join(" → ")} (settled after ${pass} pass${pass === 1 ? "" : "es"})`);
+
+// A clean first pass settles immediately.
+const clean = reconcileBudget({ chromeBudgetPt: chrome, currentBudgetPt: chrome,
+                                measuredDriftPt: 0, pass: 0 });
+check("no drift settles at once", clean.settled, true);
+check("and keeps the full budget", clean.budgetPt, chrome);
+
+// Rounding noise is not drift.
+const noise = reconcileBudget({ chromeBudgetPt: chrome, currentBudgetPt: chrome,
+                                measuredDriftPt: 0.4, pass: 0 });
+check("sub-point noise is ignored", noise.settled, true);
+
+// A runaway measurement hits the floor and stops, rather than squeezing to nothing.
+const runaway = reconcileBudget({ chromeBudgetPt: chrome, currentBudgetPt: chrome,
+                                  measuredDriftPt: 400, pass: 0 });
+check("a runaway drift is floored", runaway.floored, true);
+check("and stops there", runaway.settled, true);
+ok("the floor is a sane column", runaway.budgetPt > chrome * 0.7);
+
+// The cap holds even if drift never resolves.
+const capped = reconcileBudget({ chromeBudgetPt: chrome, currentBudgetPt: 500,
+                                 measuredDriftPt: 10, pass: MAX_LAYOUT_PASSES });
+check("the pass cap forces a settle", capped.settled, true);
+
+// ─── 9. The settling loop cannot come back ──────────────────────────────────
+// Structural, because the failure was structural: the sheet looked correct at
+// every individual moment and only misbehaved as a sequence of moments.
+console.log("The component settles safely");
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const src = fs.readFileSync(path.join(ROOT, "src", "components", "bulletin.jsx"), "utf8");
+
+for (const [what, present] of [
+  ["settling runs before paint (useLayoutEffect)", /useLayoutEffect\(/.test(src)],
+  ["the budget goes through reconcileBudget", /reconcileBudget\(/.test(src)],
+  ["there is a settled gate", /if \(settled\) return;/.test(src)],
+  ["settling resets when the content changes", /setSettled\(false\)/.test(src)],
+  ["printing waits for it", /!settled \? "Settling layout/.test(src)],
+]) {
+  if (!present) { failures++; console.log(`  ✗ ${what}`); }
+}
+// The v0.46.0 shape: a plain effect that set geometry from a raw measurement
+// with nothing stopping it going round again.
+if (/useEffect\(\(\) => \{ measure\(\); \}/.test(src)) {
+  failures++;
+  console.log("  ✗ the unbounded measure() effect from v0.46.0 is back");
 }
 
 if (failures) { console.log(`\nFAILED — ${failures} check(s)`); process.exit(1); }

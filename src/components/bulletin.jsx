@@ -28,14 +28,14 @@
 // reading missing any appointed verse is omitted with a notice naming the
 // failure, never set one verse shy.
 
-import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { useState, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 import { parseRefString, spanLabel } from "../lib/scripture-ref.js";
 import { spansToVerses, readingIntro } from "../lib/scripture-text.js";
 import { readingsInOrder } from "../lib/readings.js";
 import {
   paginate, buildPropersFlow, buildReadingsFlow, PAGE,
-  continuationNotice, resumptionNotice,
+  continuationNotice, resumptionNotice, reconcileBudget,
 } from "../lib/bulletin-layout.js";
 import { BULLETIN_CSS } from "../lib/bulletin-css.js";
 
@@ -209,7 +209,9 @@ function Sheet({ page, totalPages, masthead, footerLeft, sheetRef }) {
 
 export default function Bulletin({ day, onClose }) {
   const [withReadings, setWithReadings] = useState(false);
-  const [geometry, setGeometry] = useState(null);   // measured, once rendered
+  const [budget, setBudget] = useState(null);     // measured, once rendered
+  const [pass, setPass] = useState(0);
+  const [settled, setSettled] = useState(false);
   const firstSheet = useRef(null);
 
   const flatReadings = useMemo(
@@ -220,7 +222,7 @@ export default function Bulletin({ day, onClose }) {
   );
   const { loading, resolved } = useReadingTexts(flatReadings, withReadings);
 
-  const page = geometry || PAGE;
+  const page = budget || PAGE;
 
   const propers = useMemo(
     () => paginate(buildPropersFlow(day), { page }),
@@ -236,13 +238,26 @@ export default function Bulletin({ day, onClose }) {
   const overflow = [...propers.overflow, ...readingPages.overflow];
 
   // ── the verification pass ────────────────────────────────────────────────
-  // Measure the real chrome once the first sheet exists. The baked geometry
-  // came from a browser on one machine; a font substitution, a zoom level or a
-  // different platform moves it, and a budget nobody checks is just a
-  // confident-sounding guess.
-  const measure = useCallback(() => {
+  // Measure the rendered sheet and re-break against what actually happened. The
+  // baked geometry came from one browser on one machine; a font substitution, a
+  // zoom level or a different platform moves it, and a budget nobody checks is
+  // a confident-sounding guess.
+  //
+  // SETTLING IS BOUNDED AND ONE-WAY, which v0.46.0's version was not. It
+  // shrank the budget on drift and then grew it back once the drift went away,
+  // reproducing the drift, for ever — visible in Chrome's print preview as text
+  // flickering and re-ordering, because each pass re-sliced where the readings
+  // broke. reconcileBudget() only ever shrinks and always terminates; see its
+  // header. useLayoutEffect runs the passes BEFORE paint, so settling is not
+  // something the reader watches happen.
+  const contentKey = `${day.dateLabel}|${withReadings}|${resolved ? resolved.length : 0}`;
+  useEffect(() => { setBudget(null); setPass(0); setSettled(false); }, [contentKey]);
+
+  useLayoutEffect(() => {
+    if (settled) return;
     const sheet = firstSheet.current;
     if (!sheet) return;
+
     const px2pt = (px) => px * 0.75;
     const mast = sheet.querySelector(".oh-masthead");
     const foot = sheet.querySelector(".oh-foot");
@@ -250,37 +265,34 @@ export default function Bulletin({ day, onClose }) {
     if (!mast || !foot || !col) return;
 
     const style = getComputedStyle(sheet);
-    const padTop = px2pt(parseFloat(style.paddingTop));
-    const padBottom = px2pt(parseFloat(style.paddingBottom));
-    const mastPt = px2pt(mast.getBoundingClientRect().height
-      + parseFloat(getComputedStyle(mast).marginBottom));
-    const footPt = px2pt(foot.getBoundingClientRect().height
-      + parseFloat(getComputedStyle(foot).marginTop));
-    const columnHeightPt = PAGE.pageHeightPt - padTop - padBottom - mastPt - footPt;
+    const chromeBudgetPt = PAGE.pageHeightPt
+      - px2pt(parseFloat(style.paddingTop))
+      - px2pt(parseFloat(style.paddingBottom))
+      - px2pt(mast.getBoundingClientRect().height
+              + parseFloat(getComputedStyle(mast).marginBottom))
+      - px2pt(foot.getBoundingClientRect().height
+              + parseFloat(getComputedStyle(foot).marginTop));
     const columnWidthIn = col.getBoundingClientRect().width / 96;
 
-    // Second half of the loop: did any column actually render taller than the
-    // budget allowed? The chrome measurement above catches a different page
-    // shape; this catches the type itself setting deeper than predicted, which
-    // is what a font substitution or an unusual glyph would do. Shrink the
-    // budget by the worst drift and let the next pass re-break.
-    let worstDrift = 0;
+    const currentBudgetPt = budget ? budget.columnHeightPt : chromeBudgetPt;
+    let drift = 0;
     for (const el of document.querySelectorAll(".oh-col")) {
-      const drift = px2pt(el.getBoundingClientRect().height) - columnHeightPt;
-      if (drift > worstDrift) worstDrift = drift;
+      const d = px2pt(el.getBoundingClientRect().height) - currentBudgetPt;
+      if (d > drift) drift = d;
     }
-    const budget = columnHeightPt - Math.ceil(worstDrift);
 
-    const drifted = !geometry
-      || Math.abs(budget - geometry.columnHeightPt) > 1
-      || Math.abs(columnWidthIn - geometry.columnWidthIn) > 0.01;
-    if (drifted) {
-      setGeometry({ ...PAGE, columnHeightPt: budget, columnWidthIn,
-                    mastheadPt: mastPt, footerPt: footPt });
+    const next = reconcileBudget({
+      chromeBudgetPt, currentBudgetPt, measuredDriftPt: drift, pass,
+    });
+    const moved = !budget
+      || Math.abs(next.budgetPt - budget.columnHeightPt) > 0.5
+      || Math.abs(columnWidthIn - budget.columnWidthIn) > 0.01;
+    if (moved) {
+      setBudget({ ...PAGE, columnHeightPt: next.budgetPt, columnWidthIn, chromeBudgetPt });
     }
-  }, [geometry]);
-
-  useEffect(() => { measure(); }, [measure, withReadings, resolved]);
+    setPass((p) => p + 1);
+    if (next.settled) setSettled(true);
+  }, [settled, pass, budget, contentKey]);
 
   useEffect(() => {
     const onKey = (e) => { if (e.key === "Escape") onClose(); };
@@ -331,8 +343,9 @@ export default function Bulletin({ day, onClose }) {
           </label>
           <button style={{ ...primary, marginLeft: "auto" }}
                   onClick={() => window.print()}
-                  disabled={withReadings && loading}>
-            {withReadings && loading ? "Loading readings…" : "Print"}
+                  disabled={(withReadings && loading) || !settled}>
+            {withReadings && loading ? "Loading readings…"
+              : !settled ? "Settling layout…" : "Print"}
           </button>
         </div>
 
