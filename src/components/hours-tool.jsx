@@ -8657,6 +8657,60 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.44.0",
+    date: "September 2026",
+    summary: "September is servable — 11 dates encoded including both Great Feasts; 305 hymn strings verified verbatim against source",
+    items: [
+      "NINE NEW DATES: 09-07, 09-08 (+09-08A), 09-12, 09-13, 09-14, 09-19 " +
+      "(+09-19A), 09-20, 09-26, 09-27. September now carries 11 dates " +
+      "across every rank the schema has — simple, six_stichera, doxology, " +
+      "polyeleos, vigil and great_feast — covering the weekend services " +
+      "and both Great Feasts of the month.",
+      "BOTH GREAT FEASTS RANKED THE SAME WAY, DELIBERATELY. ODS vol. III " +
+      "p.23 prints 'vigil-rank' for the Exaltation (09-14) and §1.1 step 0 " +
+      "normally makes a printed rank decisive. It is encoded great_feast " +
+      "anyway: vigil-rank is the FLOOR for the Twelve Great Feasts, not a " +
+      "ceiling, and FIXED_GREAT_FEASTS already carries both 09-08 and " +
+      "09-14 as rank 'great' with forLord and a Great Prokeimenon group. " +
+      "Ranking 09-14 vigil while 09-08 is great_feast would have made the " +
+      "festal class depend on which dates vol. III happens to cover — " +
+      "vol. III has no 09-08 entry. Both feasts print Little Vespers, " +
+      "Polyeleos, Litiya, three Lessons and the Great Doxology.",
+      "OPEN RULE DEFECT, FLAGGED NOT FIXED: §1.1 step 1's Great Feast list " +
+      "enumerates ELEVEN feasts and omits the Exaltation of the Cross. " +
+      "That omission is why steps 0 and 1 appear to conflict on 09-14. No " +
+      "code reads the list — the festal class comes from " +
+      "FIXED_GREAT_FEASTS and the season layer, independent of any Menaion " +
+      "entry's rank — so it is a documentation gap, not a live defect, and " +
+      "is left for a deliberate ruling rather than fixed as a side effect.",
+      "09-12 IS SYNTHESIZED, AND SAYS SO. There is no 09-12.pdf; September " +
+      "is otherwise complete and 12 is the only missing day, the second " +
+      "such gap after 08-23.pdf. Both are apodoses — but 09-21.pdf " +
+      "(Apodosis of the Exaltation) exists, so that is an observation " +
+      "about two files, not a rule. The Leavetaking is built from the " +
+      "feast's own propers in 09-08.pdf plus the OCA calendar, with " +
+      "source_file stating outright that no 09-12.pdf exists. The " +
+      "zadostoinik is not inferred: 09-08.pdf prints 'This is done until " +
+      "the leave-taking of the feast.'",
+      "VERIFICATION: all 305 encoded hymn strings were mechanically diffed " +
+      "against the extracted source PDFs — 100% verbatim, St. Sergius " +
+      "*/** pointing and curly quotes intact. Neither the default nor the " +
+      "--strict validator run flags a single September entry; all 44 " +
+      "--strict failures are pre-existing May/June/July register warnings.",
+      "TWO A-FILES ARE GENUINE SECOND COMMEMORATIONS, unlike the 09-05 " +
+      "pair: the Kursk-Root Icon (09-08A) and Prince Igor of Chernigov " +
+      "(09-19A), both encoded as second array elements with oca_primary " +
+      "false — each verified absent from the OCA calendar for its date.",
+      "ANOMALIES RECORDED IN THE ENTRY NOTES, not normalized away: the " +
+      "Cross kontakion sits at Ode VI on 09-19 but Ode III on 09-20, so " +
+      "§5.x's displacement pattern is not uniform; 09-14's Beatitudes are " +
+      "ABSENT by rubric because the Festal Antiphons replace them, and V1 " +
+      "has no field for festal antiphons; 09-27 prints two distinct " +
+      "kontakia under identical headings; 09-13 diverges from vol. III in " +
+      "six places (Little Vespers, Litia, stichera and Beatitude counts).",
+    ],
+  },
+  {
     version: "v0.43.1",
     date: "September 2026",
     summary: "September now loads in the Menaion browser too — and the three-way month-registry drift that hid it is gated",

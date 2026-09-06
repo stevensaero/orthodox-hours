@@ -1,5 +1,121 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.43.1** | **Tone Trainer: v0.26.0** | Last synced: September 5, 2026
+**Tool version: v0.44.0** | **Tone Trainer: v0.26.0** | Last synced: September 5, 2026
+
+**Session September 5, 2026 (twentieth) — SEPTEMBER IS SERVABLE.** Nine dates
+added (09-07, 09-08 +A, 09-12, 09-13, 09-14, 09-19 +A, 09-20, 09-26, 09-27),
+bringing the month to **11 dates across every rank the schema has** — simple,
+six_stichera, doxology, polyeleos, vigil, great_feast. Tool **v0.44.0**. Driven
+by a real deadline: parishes are using the tool this month.
+
+### THE ONE PLACE A PRINTED RANK WAS NOT TAKEN AT FACE VALUE
+
+09-05 established that a vol. III printed rank short-circuits the waterfall
+(§1.1 step 0). 09-14 is where that rule had to be argued rather than applied.
+
+Vol. III p.23 prints **"vigil-rank — on any day"** for the Exaltation. It is
+encoded **`great_feast`** anyway, for three converging reasons:
+
+1. **Vigil-rank is a floor, not a ceiling.** Every one of the Twelve Great
+   Feasts receives at least an All-Night Vigil, so "vigil-rank" states the
+   service structure the feast requires and does not cap its festal class.
+2. **The codebase already separates the two axes.** `FIXED_GREAT_FEASTS` in
+   `hours-tool.jsx` carries 09-14 as `rank: "great"` with `forLord: true`, a
+   Great Prokeimenon group, and the note "One of the Twelve Great Feasts"; the
+   `season` layer derives great_feast from the fixed calendar **independently of
+   any Menaion entry's rank**. §1.1 is the only place that collapses class and
+   structure into one waterfall.
+3. **The alternative encodes an accident as a distinction.** Vol. III has no
+   09-08 entry. Ranking 09-14 vigil and 09-08 great_feast would have made the
+   festal class of two of the Twelve depend on which dates vol. III happens to
+   cover — while both print Little Vespers, Polyeleos, Litiya, three Lessons and
+   the Great Doxology.
+
+**OPEN RULE DEFECT — flagged, not fixed.** §1.1 step 1's Great Feast list
+enumerates **eleven** feasts (six of the Master, five of the Theotokos) and
+**omits the Exaltation of the Cross**. That omission is precisely why steps 0
+and 1 appear to conflict here. Nothing in the code reads that list, so it is a
+documentation gap rather than a live defect — which is the reason to correct it
+by ruling rather than as a side effect of an encoding session.
+
+### 09-12: THE FIRST SYNTHESIZED ENTRY, AND IT SAYS SO IN ITS OWN source_file
+
+There is no `09-12.pdf`. Verified against the folder, not assumed: September is
+otherwise complete at 38 files and **12 is the only missing day**. It is the
+second gap of its kind after `08-23.pdf`. Both are apodoses — **but `09-21.pdf`
+(Apodosis of the Exaltation) exists**, so that is an observation about two
+files, not a rule about apodoses. Recorded as observed.
+
+The Leavetaking is built from the feast's own propers in `09-08.pdf` plus the
+OCA calendar. `source_file` reads *"NOT IN PDF — no 09-12.pdf exists…"* rather
+than naming a file that does not exist (§11 #12, §12 provenance). The
+zadostoinik is **not** inferred: 09-08.pdf prints *"This is done until the
+leave-taking of the feast."* — an instruction from the feast's service to this
+date.
+
+OCA gives 09-12 **three** reading pairs: the Leavetaking's, Saturday before
+Elevation, and the ordinary Saturday. V1 has no field for a
+Saturday-before/after-Elevation lectionary overlay. **That is a real assembler
+gap**, and 09-19 ("Saturday after Elevation") has it too.
+
+### VERIFICATION WAS MECHANICAL, AND THE FIRST TWO ATTEMPTS WERE WRONG
+
+All **305 encoded hymn strings** were diffed against the extracted source PDFs:
+**100% verbatim**, `*`/`**` pointing and curly quotes intact.
+
+Getting there took three passes, and the failures are the instructive part. Pass
+one reported 18 mismatches — the comparator had not stripped the `<!-- page N -->`
+markers the extractor injects mid-text. Pass two reported 11 — the comparator's
+dehyphenation regex was collapsing **genuine** hyphens in the source
+("all-immaculate" → "allimmaculate") while the encodings had correctly preserved
+them per §3.1. **Both times the tool was wrong and the data was right.** A
+verifier that has not itself been checked against a known-good case reports its
+own bugs as data defects — the same lesson as the v0.43.1 gate, which was only
+trusted after being made to fail on the bug it was written for.
+
+### WHAT THE PARALLEL AGENTS CAUGHT THAT I HAD GOT WRONG
+
+Six of the nine dates were encoded by subagents working from the same rule file.
+One of them **overrode an explicit instruction and was right to**: I had told it
+09-27 prints a single kontakion twice and to store it once. It found two
+genuinely distinct kontakia — different Spec. Mel., different texts — under
+identical headings, with AT LITURGY reprinting both under explicit "ODE III," and
+"ODE VI," labels. My grep had matched identical *headings* and I read that as
+identical *texts*. Collapsing them would have silently lost a hymn.
+
+### ANOMALIES RECORDED IN THE ENTRIES, NOT NORMALIZED AWAY
+
+- **§5.x's displacement pattern is not uniform.** The Cross kontakion sits at
+  Ode VI on 09-19 but at Ode III on 09-20 — consecutive days of the same
+  afterfeast.
+- **09-14's Beatitudes are ABSENT by rubric**: the three Festal Antiphons
+  replace them. V1 has **no field vocabulary for festal antiphons**, so they are
+  described in the note rather than encoded — a real capture gap on a Great Feast.
+- **09-13 diverges from vol. III in six places** (Little Vespers, Litia and its
+  doxasticon, 10 LIC vs 6, Cornelius to Compline, 10 Beatitude troparia vs 8).
+  Encoded as the PDF prints; every divergence flagged.
+- **09-26's paroemias are New Testament** — three readings from First John, not
+  Old Testament lessons. Field-name mismatch flagged.
+- Several "Both now" slots hold Cross stichera rather than theotokia; closest
+  KNOWN_FIELDS name used, mismatch flagged, no field invented.
+
+### GATES
+
+Validator schema conformance passes. **No September entry appears in any
+warning, under `--strict` either** — all 44 strict failures are pre-existing
+May/June/July register warnings. Build clean, `september` chunk emitted at
+205 kB. `eslint` clean on the data file. Check H (v0.43.1) confirms all four
+month registries agree.
+
+### BACKLOG
+
+- **August still unencoded** — the loader now reads 05, 06, 07, 09.
+- **September is 11 of 38 files**; the remaining 27 are open.
+- **Festal-antiphon fields** — needed before any Great Feast is fully captured.
+- **Saturday before/after Elevation lectionary overlay** — no field for it.
+- `ikos_ode3`, `stichera_both_now`, `prokeimenon_2_*`, `alleluia_2_*` and
+  `stichera_matins_aposticha` are all in KNOWN_FIELDS but **not rendered by
+  `menaion-browser.jsx`** — encoded data that is invisible in the browser.
+- §1.1's eleven-item Great Feast list, above.
 
 **Session September 5, 2026 (nineteenth, part b) — THE MONTH WAS ONLY HALF
 WIRED, AND THE DEFECT WAS ALREADY IN THE SPEC.** Tool **v0.43.1**. Reported from
