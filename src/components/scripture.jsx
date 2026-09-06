@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { parseRefString, spanLabel } from "../lib/scripture-ref.js";
+import { spansToVerses } from "../lib/scripture-text.js";
 
 // ─── COLOR TOKENS ─────────────────────────────────────────────────────────────
 // Identical to psalter.jsx — unified liturgical library aesthetic
@@ -313,60 +314,57 @@ function SpanHeading({ label }) {
   );
 }
 
-function ReadingView({ spans, allBookData, autoScroll = true }) {
+// Renders a set of spans as text. Two modes:
+//   default     one verse per line, numbered — the browsing/study setting
+//   continuous  verses run together as a paragraph with a quiet chapter marker,
+//               which is how a reading is chanted: "2 Corinthians 1:21-2:4"
+//               reads as the single pericope it is rather than as two chapters
+//
+// The verse walk itself lives in src/lib/scripture-text.js so the bulletin
+// generator draws the same text from the same place. `missing` is surfaced
+// rather than swallowed — a reading that renders SHORTER than the one appointed
+// is the exact defect class repaired in v0.44.1 and v0.44.2, and it is
+// invisible unless something says so.
+function ReadingView({ spans, allBookData, autoScroll = true, continuous = false }) {
   const topRef = useRef(null);
   useEffect(() => { if (autoScroll) topRef.current?.scrollIntoView({ behavior: "instant", block: "start" }); }, [spans, autoScroll]);
   if (!spans || spans.length === 0) return null;
 
-  const vStyle = { fontSize: "0.97rem", lineHeight: "1.9", color: C.inkMid, display: "block" };
   const supStyle = { fontSize: "0.62rem", color: C.gold, marginRight: "2px", verticalAlign: "super" };
-
-  const renderCross = (span, bookData) => {
-    if (!bookData) return null;
-    const els = [];
-    for (let ch = span.chapterStart; ch <= span.chapterEnd; ch++) {
-      const chData = bookData.chapters?.find(c => c.chapter === ch);
-      if (!chData) continue;
-      const vStart = ch === span.chapterStart ? span.verseStart : 1;
-      const vEnd = ch === span.chapterEnd ? span.verseEnd : 99999;
-      const verses = chData.verses.filter(v => v.verse >= vStart && v.verse <= vEnd);
-      if (ch > span.chapterStart && verses.length > 0)
-        els.push(<SpanHeading key={`ch${ch}`} label={`${span.bookName || span.book} ${ch}:${verses[0].verse}`} />);
-      verses.forEach(v => els.push(
-        <span key={`${ch}-${v.verse}`} style={vStyle}>
-          <sup style={supStyle}>{v.verse}</sup>{v.text}
-        </span>
-      ));
-    }
-    return <div>{els}</div>;
-  };
-
-  const renderSame = (span, bookData) => {
-    if (!bookData) return null;
-    const chData = bookData.chapters?.find(c => c.chapter === span.chapter);
-    if (!chData) return null;
-    const verses = chData.verses.filter(v => v.verse >= span.verseStart && v.verse <= span.verseEnd);
-    return (
-      <div>
-        {verses.map(v => (
-          <span key={v.verse} style={vStyle}>
-            <sup style={supStyle}>{v.verse}</sup>{v.text}
-          </span>
-        ))}
-      </div>
-    );
-  };
+  const vStyle = continuous
+    ? { fontSize: "0.97rem", lineHeight: "1.9", color: C.inkMid, display: "inline" }
+    : { fontSize: "0.97rem", lineHeight: "1.9", color: C.inkMid, display: "block" };
 
   return (
     <div ref={topRef}>
-      {spans.map((span, i) => (
-        <div key={i}>
-          <SpanHeading label={spanLabel(span)} />
-          {span.chapterStart !== undefined
-            ? renderCross(span, allBookData[span.book])
-            : renderSame(span, allBookData[span.book])}
-        </div>
-      ))}
+      {spans.map((span, i) => {
+        const { verses, missing } = spansToVerses([span], allBookData);
+        return (
+          <div key={i}>
+            <SpanHeading label={spanLabel(span)} />
+            <div>
+              {verses.map((v) => (
+                <span key={`${v.chapter}-${v.verse}`} style={vStyle}>
+                  {v.startsChapter && (continuous
+                    ? <span style={{ color: C.gold, margin: "0 3px" }}>¶</span>
+                    : null)}
+                  {v.startsChapter && !continuous
+                    ? <SpanHeading label={`${v.bookName} ${v.chapter}:${v.verse}`} />
+                    : null}
+                  <sup style={supStyle}>{v.verse}</sup>{v.text}
+                  {continuous ? " " : null}
+                </span>
+              ))}
+            </div>
+            {missing.length > 0 && (
+              <div style={{ fontSize: "0.78rem", color: "#B43C1E", fontStyle: "italic", margin: "6px 0 0" }}>
+                {missing.length} part{missing.length === 1 ? "" : "s"} of this reading could not be
+                shown — {missing.map((m) => `${m.book} ${m.chapter ?? "?"}: ${m.reason}`).join("; ")}.
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

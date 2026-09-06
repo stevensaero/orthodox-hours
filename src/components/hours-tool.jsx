@@ -95,7 +95,11 @@ const LECTIONARY = {
   "-60": { e: "1 John 3:21-4:6", g: "Mark 14:43-15:1" },
   "-59": { e: "1 John 4:20-5:21", g: "Mark 15:1-15" },
   "-58": { e: "2 John 1:1-13", g: "Mark 15:22-25, 33-41" },
-  "-55": { e: "3 John 1:1-15", g: "Luke 19:29-40, 22:7-39" },
+  // 3 John is read entire. The Greek critical text splits the final verse into
+  // 14 and 15; the KJV — which is what public/bible ships — numbers 14. Same
+  // words either way. Encoded to the shipped versification so the reading
+  // resolves to text; see project_notes.md, v0.44.3.
+  "-55": { e: "3 John 1:1-14", g: "Luke 19:29-40, 22:7-39" },
   "-54": { e: "Jude 1:1-10", g: "Luke 22:39-42, 45-23:1" },
   "-52": { e: "Jude 1:11-25", g: "Luke 23:2-34, 44-56" },
   "-50": { e: "Romans 14:19-23, 16:25-27", g: "Matthew 6:1-13" },
@@ -8582,6 +8586,72 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.44.3",
+    date: "September 2026",
+    summary: "Headless passage renderer, LXX versification remaps, and a text-coverage gate — every encoded reference now resolves to real text",
+    items: [
+      "NEW src/lib/scripture-text.js. Passage text used to come into being only " +
+      "inside JSX, in ReadingView's render, so there was no way to ask what a " +
+      "reference actually says outside a React tree — which is exactly what a " +
+      "printable bulletin needs. spansToVerses() flattens spans against loaded " +
+      "book data; spansToText() renders them, with { continuous } running the " +
+      "verses together as one paragraph the way a reading is chanted rather " +
+      "than one verse per line.",
+
+      "THE GAP REPORT IS THE POINT. spansToVerses returns `missing` alongside " +
+      "`verses`, and spansToText accepts { strict } to throw rather than return " +
+      "a short passage. Every defect of the last two releases was a reading " +
+      "that came out SHORTER than the one appointed, with nothing thrown and " +
+      "nothing logged. A renderer that quietly skips an absent chapter repeats " +
+      "that. Browsing may degrade; print must not.",
+
+      "ReadingView now draws from the same module instead of walking chapters " +
+      "itself, gained a `continuous` mode, and SHOWS gaps in red rather than " +
+      "swallowing them. Default rendering is unchanged.",
+
+      "readingIntro() supplies the liturgical announcement — \"The Reading is " +
+      "from the Second Epistle of the Holy Apostle Paul to the Corinthians.\" " +
+      "Covers the Gospels, Acts, all Pauline and Catholic epistles; Old " +
+      "Testament lessons fall back to the book name, as the Menaion prints " +
+      "them. Asserted for all 25 books the lectionary reads.",
+
+      "TEXT-COVERAGE GATE. The test now loads the real bible files and requires " +
+      "every appointed verse of every reference to actually be present — 1,616 " +
+      "checks. Parsing cleanly is necessary but not sufficient: a reference can " +
+      "resolve perfectly and still name verses the data does not hold, which is " +
+      "precisely what the v0.44.1 running-header shift did. This pass found " +
+      "four such mismatches on its first run.",
+
+      "LXX VERSIFICATION, RANGE-AWARE. Encoded references use Hebrew numbering, " +
+      "as the Menaion and OCA print it; the shipped Old Testament is Brenton's " +
+      "Septuagint, which numbers several books differently. The remap now " +
+      "carries a verse range and can SPLIT a span across a boundary, which the " +
+      "old flat per-chapter offset could not express. Joel: Hebrew 2:28-32 is " +
+      "Brenton 3:1-5, so \"Joel 2:23-32\" resolves as Joel 2:23-27 plus Joel " +
+      "3:1-5 — collapsing it would have silently dropped half the Pentecost " +
+      "lesson. Proverbs: the LXX reorders chapters 24-31, so Hebrew 31:10-31 " +
+      "(the virtuous woman) is Brenton 31:1-22.",
+
+      "BOTH REMAPS VERIFIED AGAINST THE SHIPPED TEXT, not assumed. Brenton Joel " +
+      "3:1 reads \"And it shall come to pass afterward, that I will pour out of " +
+      "my Spirit upon all flesh\" — Hebrew Joel 2:28. Brenton Proverbs 31:1 " +
+      "reads \"Who shall find a virtuous woman?\" — Hebrew Proverbs 31:10.",
+
+      "PROVERBS 31:1-9 IS DELIBERATELY NOT MAPPED. Hebrew 31:1-9, the words of " +
+      "Lemuel, sit elsewhere in the LXX. The rule is gated to verse 10 and " +
+      "above so a reference to Lemuel fails loudly rather than resolving to the " +
+      "wrong passage.",
+
+      "TWO REFERENCE CORRECTIONS, both surfaced by the text-coverage pass. " +
+      "\"3 John 1:1-15\" → 1:1-14: the epistle is read entire, and the Greek " +
+      "critical text splits the final verse into 14 and 15 where the KJV — " +
+      "which is what ships — numbers 14. Same words either way. " +
+      "\"John 21:15-26\" → 21:15-25 (pentecostarion feast_g): John 21 has 25 " +
+      "verses in every versification, KJV, Byzantine and Greek critical alike, " +
+      "so v26 does not exist. The 11th resurrectional Matins Gospel is 21:15-25.",
+    ],
+  },
   {
     version: "v0.44.2",
     date: "September 2026",

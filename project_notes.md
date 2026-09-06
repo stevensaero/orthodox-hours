@@ -1,5 +1,94 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.44.2** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+**Tool version: v0.44.3** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+
+**Session September 6, 2026 (twenty-third) — TEXT, NOT JUST REFERENCES.** The
+headless passage renderer the bulletin needs, plus a gate that checks every
+reference against the actual bible data. It found four mismatches on its first
+run. Tool **v0.44.3**.
+
+### PARSING CLEANLY IS NECESSARY BUT NOT SUFFICIENT
+
+v0.44.2 proved every encoded reference *parses*. That is a weaker guarantee than
+it sounds: a reference can resolve perfectly and still name verses the data does
+not hold — which is exactly what the v0.44.1 running-header shift did. The new
+text-coverage pass loads the real book files and requires every appointed verse
+to be present. **1,616 checks.** On its first run it failed four:
+
+| Reference | Cause |
+|---|---|
+| `Joel 2:23-32` | LXX versification — Hebrew 2:28-32 is Brenton 3:1-5 |
+| `Proverbs 31:10-31` | LXX reorders Prov 24-31 — Hebrew 31:10-31 is Brenton 31:1-22 |
+| `3 John 1:1-15` | Greek splits the final verse; KJV numbers 14 |
+| `John 21:15-26` | v26 does not exist in any versification |
+
+### THE RANGE-AWARE REMAP, AND WHY THE OLD MODEL COULD NOT EXPRESS IT
+
+`LXX_REMAP` was a flat per-chapter offset: chapter N maps to chapter M with
+every verse shifted by K. That works for Malachi, where the whole of Hebrew ch.4
+becomes Brenton ch.3. It cannot express Joel, where **only part of a chapter
+moves**: Hebrew Joel 2:1-27 is Brenton 2:1-27 unchanged, while Hebrew 2:28-32 is
+Brenton 3:1-5.
+
+A rule is now `{ chapter, from, to, toChapter, verseOffset }` and applies only
+within a verse range, and `remapRange()` **splits a span that straddles a
+boundary**. `Joel 2:23-32` resolves as *Joel 2:23-27 | Joel 3:1-5 (Joel
+2:28-32)*. A flat offset would have silently dropped half the Pentecost lesson —
+the same failure shape as everything else this month.
+
+**Both new rules were verified against the shipped text, not assumed:**
+- Brenton Joel 3:1 reads *"And it shall come to pass afterward, that I will pour
+  out of my Spirit upon all flesh"* — that is Hebrew Joel 2:28.
+- Brenton Proverbs 31:1 reads *"Who shall find a virtuous woman?"* — that is
+  Hebrew Proverbs 31:10.
+
+**Proverbs 31:1-9 is deliberately NOT mapped.** Hebrew 31:1-9, the words of
+Lemuel, sit elsewhere in the LXX. The rule is gated to verse 10 and above so a
+reference to Lemuel fails loudly rather than resolving to the wrong passage.
+
+**Known limitation, noted in code:** cross-chapter spans (`C:V-C:V`) bypass the
+remap. Nothing in the corpus crosses a boundary inside a remapped range, and the
+text-coverage pass would fail loudly if one were added.
+
+### TWO REFERENCE CORRECTIONS — RULED, NOT ASSUMED
+
+- **`3 John 1:1-15` → `1:1-14`** (LECTIONARY, Pascha−55). The epistle is read
+  entire; it sits in a run of whole-letter readings. The Greek critical text
+  splits the final verse into 14 and 15 where the KJV numbers 14. **The words
+  are identical either way** — only the split differs — so encoding to the
+  shipped versification loses nothing at the lectern. Comment left in place.
+- **`John 21:15-26` → `21:15-25`** (`pentecostarion.js` feast_g). John 21 has 25
+  verses in the KJV, the Byzantine text and the Greek critical text alike, so
+  v26 does not exist in any tradition. An encoding slip, not an errata-class
+  defect in a printed source. The 11th resurrectional Matins Gospel is 21:15-25.
+
+### src/lib/scripture-text.js
+
+`spansToVerses(spans, books)` → `{ verses, missing }`.
+`spansToText(spans, books, { verseNumbers, continuous, chapterMarker, strict })`.
+`readingIntro(bookId, bookName)` → *"The Reading is from the Second Epistle of
+the Holy Apostle Paul to the Corinthians."* — Gospels, Acts, all Pauline and
+Catholic epistles; OT lessons fall back to the book name, as the Menaion prints
+them. Asserted for all 25 books the lectionary reads.
+
+**`missing` is the reason this module exists in this shape.** Every defect of the
+last three releases was a reading that came out *shorter* than the one
+appointed, silently. A renderer that quietly skips an absent chapter repeats it.
+Browsing may degrade; print must not — hence `{ strict }`, which throws rather
+than returning a short passage, and which the bulletin will use.
+
+`ReadingView` now draws from the same module rather than walking chapters
+itself, gained a `continuous` mode (verses run together as one paragraph, a
+quiet ¶ at a chapter change — how a reading is actually chanted), and **shows
+gaps in red instead of swallowing them**. Default rendering is unchanged.
+
+### THE BULLETIN IS NOW UNBLOCKED
+
+Every prerequisite named in v0.44.1 and v0.44.2 is closed: the data is repaired,
+every reference resolves to real text, and there is a headless renderer with a
+continuous mode. Next: the bulletin component itself — day-scoped, formats A
+(5.5x8.5 half sheet) and C (8.5x11 two-column broadsheet), optional readings
+supplement, entry point at the button row in `hours-tool.jsx`.
+
 
 **Session September 6, 2026 (twenty-second) — ONE REFERENCE PARSER.** The book
 map and ref parser existed as two drifting copies; they are now one module,

@@ -115,22 +115,86 @@ const SINGLE_CHAPTER_BOOKS = new Set([
   "Jude", "Phlm", "2John", "3John", "Obad", "PrMan", "LJe", "Bel", "Sus",
 ]);
 
-// LXX versification: some books differ from Hebrew chapter/verse numbering.
-// Paroemia refs use Hebrew numbering; the Brenton LXX JSON uses LXX numbering.
+// ─── LXX VERSIFICATION ──────────────────────────────────────────────────────
+//
+// Encoded references use Hebrew (Masoretic) numbering, as the Menaion and the
+// OCA calendar print it. The shipped Old Testament is Brenton's Septuagint,
+// which numbers several books differently. Without a remap a reference resolves
+// cleanly and then renders the wrong verses, or renders short — the silent
+// failure mode this codebase keeps having to hunt down.
+//
+// Each rule is verified against the shipped text, not assumed:
+//
+//   Mal   Hebrew ch.4 is Brenton ch.3, continuing its verse count.
+//         Heb Mal 4:1 = Brenton Mal 3:19.
+//   Joel  Hebrew 2:28-32 is Brenton 3:1-5, and Hebrew ch.3 is Brenton ch.4
+//         (Brenton's Joel has four chapters). Confirmed: Brenton Joel 3:1 reads
+//         "And it shall come to pass afterward, that I will pour out of my
+//         Spirit upon all flesh" — Hebrew Joel 2:28.
+//   Prov  The LXX reorders Proverbs 24-31. The acrostic of the virtuous woman,
+//         Hebrew 31:10-31, is Brenton 31:1-22. Confirmed: Brenton Prov 31:1
+//         reads "Who shall find a virtuous woman?" — Hebrew Prov 31:10.
+//         Hebrew 31:1-9 (the words of Lemuel) sit elsewhere in the LXX and are
+//         deliberately NOT mapped: the rule is gated to verses 10 and above so
+//         a reference to Lemuel fails loudly rather than resolving to the wrong
+//         passage.
+//
+// A rule is { chapter, from, to, toChapter, verseOffset }, applying only to the
+// verse range [from, to] of that chapter. Ranges matter: a blanket per-chapter
+// offset would corrupt Joel 2:23-27, which needs no remap at all.
 const LXX_REMAP = {
-  // Malachi: Hebrew ch4 = LXX ch3 (LXX Malachi has only 3 chapters).
-  // Mal 4:1-6 (Heb) = Mal 3:19-24 (LXX/Brenton).
-  Mal: { 4: { chapter: 3, verseOffset: 18 } },
+  Mal: [
+    { chapter: 4, from: 1, to: Infinity, toChapter: 3, verseOffset: 18 },
+  ],
+  Joel: [
+    { chapter: 2, from: 28, to: Infinity, toChapter: 3, verseOffset: -27 },
+    { chapter: 3, from: 1, to: Infinity, toChapter: 4, verseOffset: 0 },
+  ],
+  Prov: [
+    { chapter: 31, from: 10, to: Infinity, toChapter: 31, verseOffset: -9 },
+  ],
 };
 
-function remapVerses(bookId, chapter, verseStart, verseEnd) {
-  const remap = LXX_REMAP[bookId]?.[chapter];
-  if (!remap) return { chapter, verseStart, verseEnd };
-  return {
-    chapter: remap.chapter,
-    verseStart: verseStart + remap.verseOffset,
-    verseEnd: verseEnd + remap.verseOffset,
-  };
+// Map one Hebrew-numbered verse range onto Brenton, returning one or more
+// pieces. A range that straddles a rule boundary is SPLIT rather than forced
+// through one rule: Joel 2:23-32 (Hebrew) is Brenton Joel 2:23-27 plus Joel
+// 3:1-5, and collapsing that into a single span would silently drop half the
+// Pentecost lesson.
+function remapRange(bookId, chapter, verseStart, verseEnd) {
+  const rules = LXX_REMAP[bookId];
+  if (!rules) return [{ chapter, verseStart, verseEnd, remapped: false }];
+
+  const pieces = [];
+  let cursor = verseStart;
+
+  while (cursor <= verseEnd) {
+    const rule = rules.find(
+      (r) => r.chapter === chapter && cursor >= r.from && cursor <= r.to,
+    );
+    if (!rule) {
+      // Run forward to just before the next rule that would apply.
+      const next = rules
+        .filter((r) => r.chapter === chapter && r.from > cursor)
+        .sort((a, b) => a.from - b.from)[0];
+      const stop = next ? Math.min(verseEnd, next.from - 1) : verseEnd;
+      pieces.push({ chapter, verseStart: cursor, verseEnd: stop, remapped: false });
+      cursor = stop + 1;
+      continue;
+    }
+    const stop = Math.min(verseEnd, rule.to);
+    pieces.push({
+      chapter: rule.toChapter,
+      verseStart: cursor + rule.verseOffset,
+      verseEnd: stop + rule.verseOffset,
+      remapped: true,
+      origChapter: chapter,
+      origVerseStart: cursor,
+      origVerseEnd: stop,
+    });
+    cursor = stop + 1;
+  }
+
+  return pieces;
 }
 
 // ─── REF STRING CLEANING ────────────────────────────────────────────────────
@@ -216,7 +280,11 @@ function parseGroup(bookId, bookName, group, state) {
 
     let m;
 
-    // C:V-C:V — cross-chapter
+    // C:V-C:V — cross-chapter.
+    // NOTE: cross-chapter spans bypass the LXX remap above. No reference in the
+    // encoded corpus crosses a chapter boundary inside a remapped range, and
+    // tools/test_ref_resolution.mjs would fail loudly if one were added — the
+    // text-coverage pass checks every appointed verse against the real data.
     if ((m = part.match(/^(\d+):(\d+)\s*[-–]\s*(\d+):(\d+)$/))) {
       state.chapter = parseInt(m[3], 10);
       spans.push({
@@ -243,14 +311,14 @@ function parseGroup(bookId, bookName, group, state) {
     if ((m = part.match(/^(\d+):(\d+)(?:\s*[-–]\s*(\d+))?$/))) {
       const chapter = parseInt(m[1], 10);
       state.chapter = chapter;
-      spans.push(sameChapter(bookId, bookName, chapter,
+      spans.push(...sameChapter(bookId, bookName, chapter,
         parseInt(m[2], 10), m[3] ? parseInt(m[3], 10) : parseInt(m[2], 10)));
       continue;
     }
 
     // V-V or V — continuing in the current chapter
     if ((m = part.match(/^(\d+)(?:\s*[-–]\s*(\d+))?$/)) && state.chapter != null) {
-      spans.push(sameChapter(bookId, bookName, state.chapter,
+      spans.push(...sameChapter(bookId, bookName, state.chapter,
         parseInt(m[1], 10), m[2] ? parseInt(m[2], 10) : parseInt(m[1], 10)));
       continue;
     }
@@ -263,15 +331,19 @@ function parseGroup(bookId, bookName, group, state) {
 }
 
 function sameChapter(bookId, bookName, chapter, verseStart, verseEnd) {
-  const rv = remapVerses(bookId, chapter, verseStart, verseEnd);
-  const remapped = rv.chapter !== chapter || rv.verseStart !== verseStart;
-  return {
+  return remapRange(bookId, chapter, verseStart, verseEnd).map((piece) => ({
     book: bookId, bookName,
-    chapter: rv.chapter, verseStart: rv.verseStart, verseEnd: rv.verseEnd,
-    ...(remapped
-      ? { origChapter: chapter, origVerseStart: verseStart, origVerseEnd: verseEnd }
+    chapter: piece.chapter,
+    verseStart: piece.verseStart,
+    verseEnd: piece.verseEnd,
+    ...(piece.remapped
+      ? {
+          origChapter: piece.origChapter,
+          origVerseStart: piece.origVerseStart,
+          origVerseEnd: piece.origVerseEnd,
+        }
       : {}),
-  };
+  }));
 }
 
 // Longest-match book name lookup. Tried longest-first so "Wisdom of Solomon"

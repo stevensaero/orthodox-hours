@@ -4068,7 +4068,10 @@ const PENTECOSTARION_DATA = {
     // ── LITURGY PROPERS ───────────────────────────────────────────────────────
     // For the Day:
     feast_e: "Acts 28:1-31",
-    feast_g: "John 21:15-26",
+    // Corrected from "John 21:15-26": John 21 has 25 verses in every
+    // versification — KJV, Byzantine and the Greek critical text alike — so
+    // v26 does not exist. The 11th resurrectional Matins Gospel is 21:15-25.
+    feast_g: "John 21:15-25",
     aposticha_source: "pentecostarion",
     aposticha_both_now: { tone: 6,
       text: "Who doth not call thee blessed, O most holy Virgin? " +

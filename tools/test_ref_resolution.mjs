@@ -43,6 +43,7 @@ import { fileURLToPath } from "node:url";
 import {
   parseRefString, paroemiaToRef, paroemiaRefSpan, spanLabel, BOOK_ID,
 } from "../src/lib/scripture-ref.js";
+import { spansToVerses, readingIntro } from "../src/lib/scripture-text.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => fs.readFileSync(path.join(ROOT, rel), "utf8");
@@ -155,8 +156,20 @@ const CASES = [
   ["1 Corinthians 13:11-14:5, midpoint (§154 midpoint)",
    "1 Corinthians 13:11–14:5"],
   ["Judges 4:1-5:31, excerpted",  "Judges 4:1–5:31"],
-  // LXX remap: Hebrew Malachi 4 is Brenton Malachi 3.
+  // ── LXX versification ──
+  // Hebrew Malachi 4 is Brenton Malachi 3, continuing the verse count.
   ["Malachi 4:4-6",               "Malachi 3:22–24 (Malachi 4:4–6)"],
+  // Hebrew Joel 2:28-32 is Brenton Joel 3:1-5, so a span crossing verse 28 has
+  // to SPLIT. Collapsing it would silently drop half the Pentecost lesson.
+  ["Joel 2:23-32",                "Joel 2:23–27 | Joel 3:1–5 (Joel 2:28–32)"],
+  ["Joel 2:23-27",                "Joel 2:23–27"],
+  // The LXX reorders Proverbs 24-31: the acrostic of the virtuous woman,
+  // Hebrew 31:10-31, is Brenton 31:1-22.
+  ["Proverbs 31:10-31",           "Proverbs 31:1–22 (Proverbs 31:10–31)"],
+  // Hebrew Proverbs 31:1-9 (the words of Lemuel) sit elsewhere in the LXX and
+  // are deliberately NOT mapped, so this passes through unremapped rather than
+  // resolving to the wrong passage.
+  ["Proverbs 31:1-9",             "Proverbs 31:1–9"],
 ];
 
 console.log(`regression cases — ${CASES.length}`);
@@ -206,9 +219,59 @@ for (const id of missing) {
   fail("book map", id, "no matching file in public/bible/");
 }
 
+// ─── 7. Every reference must resolve to actual TEXT, with no gaps ───────────
+// Spans resolving is necessary but not sufficient: a reference can parse
+// perfectly and still name verses the data does not hold. That is precisely
+// what the v0.44.1 running-header shift did — "2 Corinthians 2:4" pointed at a
+// verse that had been pushed out of range. This pass loads the real book files
+// and requires every appointed verse to actually be there.
+const bookCache = new Map();
+function loadBook(id) {
+  if (!bookCache.has(id)) {
+    const file = path.join(ROOT, "public", "bible", `${id.toLowerCase()}.json`);
+    bookCache.set(id, fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : null);
+  }
+  return bookCache.get(id);
+}
+
+function checkText(group, subject, ref) {
+  const spans = parseRefString(ref, { strict: true });
+  if (!spans) return;                     // already reported by the earlier pass
+  const books = {};
+  for (const s of spans) books[s.book] = loadBook(s.book);
+  const { verses, missing } = spansToVerses(spans, books);
+  if (missing.length) {
+    const m = missing[0];
+    fail(group, subject, `${missing.length} gap(s); first: ${m.book} ${m.chapter ?? "?"} — ${m.reason}` +
+      (m.requested ? ` (wanted v${m.requested}, data stops at v${m.found})` : ""));
+  } else if (!verses.length) {
+    fail(group, subject, "resolved to zero verses");
+  }
+}
+
+console.log("text coverage — every reference against the shipped bible data");
+for (const ref of lectRefs) checkText("text/LECTIONARY", ref, ref);
+for (const ref of feastRefs) checkText("text/feast", ref, ref);
+for (const p of paroemias) {
+  const ref = paroemiaToRef(p);
+  if (ref) checkText("text/paroemia", `${ref}  <- ${p.slice(0, 60)}`, ref);
+}
+
+// The announcement formula must exist for every book the lectionary reads.
+const introBooks = new Set();
+for (const ref of lectRefs) {
+  const spans = parseRefString(ref, { strict: true });
+  if (spans) introBooks.add(`${spans[0].book}\u0000${spans[0].bookName}`);
+}
+for (const key of introBooks) {
+  const [id, name] = key.split("\u0000");
+  if (!readingIntro(id, name)) fail("readingIntro", id, "no announcement formula");
+}
+console.log(`readingIntro — ${introBooks.size} lectionary books`);
+
 // ─── Result ─────────────────────────────────────────────────────────────────
-const total = lectRefs.length + feastRefs.length + paroemias.length +
-              CASES.length + PAROEMIA_CASES.length + 1;
+const total = (lectRefs.length + feastRefs.length + paroemias.length) * 2 +
+              CASES.length + PAROEMIA_CASES.length + introBooks.size + 1;
 if (failures) {
   console.log(`\nFAILED — ${failures} of ${total} checks`);
   process.exit(1);
