@@ -8589,6 +8589,58 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.45.1",
+    date: "September 2026",
+    summary: "Bulletin: white stock, one format, and type at a size a reader can actually use",
+    items: [
+      "TYPE SIZE — the real defect. v0.45.0 sized the sheet for its on-screen " +
+      "preview (8.5in rendered at 72dpi = 612px) and set type in px against " +
+      "that, so what looked reasonable on screen printed at roughly 6pt. " +
+      "Everything is now specified in POINTS and the sheet is 8.5in wide on " +
+      "screen as well, so the preview and the printed page are the same " +
+      "physical object. Body 10.5pt, readings and reading references 11pt, " +
+      "section headings 10pt, the date 19pt.",
+
+      "WHITE STOCK. The parchment tint is gone from the sheet. A background " +
+      "wash costs toner and, in greyscale, lifts the floor under every letter. " +
+      "Colour is now confined to rules, headings and verse numbers, and the " +
+      "accent moved from #8B6914 to #6E5210 so it survives a parish " +
+      "photocopier. Nothing on the sheet fills an area.",
+
+      "THE HALF SHEET IS GONE. At a type size a reader can use in a dim church " +
+      "5.5x8.5 could not hold the day's propers, and a bulletin that drops the " +
+      "aposticha doxasticon to fit is not worth the cut. One format: the " +
+      "8.5x11 two-column broadsheet.",
+
+      "MEASURED, NOT GUESSED. 6 September 2026 — a Sunday carrying both a full " +
+      "resurrectional set and a six-stichera commemoration's propers — comes to " +
+      "10.80in of the 11in page, about one spare line across both columns. That " +
+      "was bought by trimming CHROME (page padding, masthead margins, heading " +
+      "leading, footer margin), not type. A heavier day flows to a second page; " +
+      "10.5pt is the floor and the stylesheet says so.",
+
+      "The column rule was specified at 0.5pt, which rounds to a sub-pixel and " +
+      "never painted. 0.75pt is the thinnest that actually renders and " +
+      "photocopies. Justified text also gained -webkit-hyphens, which matters " +
+      "at a 3.43in measure.",
+
+      "NEW src/lib/bulletin-css.js — the stylesheet as a plain string, apart " +
+      "from the component, so tools/render_bulletin.mjs can inline exactly the " +
+      "same rules into a static proof sheet. A proof that is a copy of the " +
+      "stylesheet is worthless the moment it drifts.",
+
+      "NEW tools/render_bulletin.mjs — renders a date's bulletin to standalone " +
+      "HTML using the real data path and the real stylesheet. This is how a " +
+      "layout change gets reviewed without npm or a dev server, and it is why " +
+      "the 6pt type was caught this time: `node tools/render_bulletin.mjs " +
+      "2026-09-06 --readings > proof.html`.",
+
+      "With the readings supplement the full bulletin is three pages for 6 " +
+      "September — one of propers, two of the four readings set continuously at " +
+      "11pt. Sheets break cleanly; the propers sheet does not orphan its footer.",
+    ],
+  },
+  {
     version: "v0.45.0",
     date: "September 2026",
     summary: "The Bulletin — a printable day sheet in two formats, with the readings optionally set out in full",

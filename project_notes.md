@@ -1,5 +1,73 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.45.0** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+**Tool version: v0.45.1** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+
+**Session September 6, 2026 (twenty-fifth) — BULLETIN LAYOUT PICKUPS.** White
+stock, one format, and type at a size a reader can actually use. Tool
+**v0.45.1**.
+
+### THE TYPE SIZE DEFECT, AND WHY IT SHIPPED
+
+v0.45.0 sized the sheet for its **on-screen preview** — 8.5in rendered at 72dpi
+is 612px — and then set type in **pixels** against that 612px box. On screen it
+looked plausible. On paper it printed at roughly **6pt**.
+
+Everything is now in **points**, and the sheet is 8.5in wide on screen as well,
+so the preview and the printed page are the same physical object and nothing has
+to be mentally rescaled. Body 10.5pt · readings and reading refs 11pt · section
+headings 10pt · date 19pt.
+
+**The lesson is not "use points".** It is that a printed layout cannot be
+verified from a unit test or a description, and v0.45.0 shipped without anyone
+looking at a page. Hence `tools/render_bulletin.mjs`.
+
+### MEASURED, NOT GUESSED
+
+With 6 September 2026 — a Sunday carrying a full resurrectional set *and* a
+six-stichera commemoration's propers — the two columns come to **10.80in of the
+11in page**, roughly one spare line across both columns.
+
+That headroom was bought by trimming **chrome**, never type: page padding
+0.6→0.55in top and 0.5→0.45in bottom, masthead margin 12→10pt, heading leading
+14→12pt, hymn spacing 9→8pt, footer margin 14→9pt. Before the trim the sheet
+measured 11.07in and **orphaned its footer onto a second page**.
+
+**10.5pt is the floor** for reading from a sheet in a dimly lit church, and the
+stylesheet says so in a comment. A heavier day flows to a second page; that is
+the correct behaviour, not a bug to fix by shrinking type.
+
+Readings supplement, four full readings at 11pt/1.5: ~12.5in of two-column text
+→ 2 pages. Full bulletin for 09-06 is therefore **3 pages**.
+
+### WHITE STOCK
+
+The parchment tint is gone from the sheet. A background wash costs toner and, in
+greyscale, lifts the floor under every letter. Colour is confined to rules,
+headings and verse numbers, and the accent moved **#8B6914 → #6E5210** so it
+survives a parish photocopier. Nothing on the sheet fills an area.
+
+### TWO THINGS THAT NEVER RENDERED
+
+- **`column-rule: 0.5pt`** rounds to a sub-pixel and simply does not paint.
+  0.75pt is the thinnest rule that actually renders. Caught by reading back
+  `getComputedStyle(...).columnRuleWidth`, not by looking.
+- **`hyphens: auto`** needs a language on the document *and* the `-webkit-`
+  prefix. At a 3.43in measure with justified text, its absence shows.
+
+### THE HALF SHEET IS GONE
+
+At a type size a reader can use, 5.5x8.5 could not hold the day's propers, and a
+bulletin that drops the aposticha doxasticon to fit is not worth the cut. One
+format: the 8.5x11 two-column broadsheet.
+
+### HOW TO REVIEW A LAYOUT CHANGE
+
+    node tools/render_bulletin.mjs 2026-09-06 --readings > proof.html
+
+Renders a date's bulletin to standalone HTML using the real data path and the
+real stylesheet — `src/lib/bulletin-css.js`, **imported, not copied**, because a
+proof that is a copy of the stylesheet is worthless the moment it drifts. Open
+it in a browser and print it. Do this before shipping any layout change.
+
 
 **Session September 6, 2026 (twenty-fourth) — THE BULLETIN SHIPS.** A printable
 day sheet in two formats, with the readings optionally set out in full. Tool
