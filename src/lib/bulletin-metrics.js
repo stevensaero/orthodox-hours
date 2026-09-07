@@ -1,5 +1,8 @@
 // ─── TYPE METRICS FOR THE BULLETIN ──────────────────────────────────────────
 //
+// Full write-up of this subsystem, including the models that were tried and
+// rejected: bulletin_layout_spec.md in the repo root.
+//
 // Advance widths for Georgia, measured from the browser at 1000px and stored as
 // a fraction of the em, so they are size-independent. With them, line counts
 // are not estimated from a character budget — they are computed by simulating

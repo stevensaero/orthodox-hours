@@ -1,5 +1,8 @@
 // ─── BULLETIN PAGINATION ────────────────────────────────────────────────────
 //
+// Full write-up, including the failure modes this shape exists to avoid:
+// bulletin_layout_spec.md in the repo root.
+//
 // Owns where the bulletin breaks, instead of leaving it to CSS `column-count`.
 //
 // WHY TAKE THE BREAKS AWAY FROM CSS. Multicol balances and breaks wherever it

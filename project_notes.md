@@ -1,6 +1,13 @@
 # Orthodox Hours Tool — Project Notes
 **Tool version: v0.46.4** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
 
+**`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
+How line counts are computed, how columns and pages are packed, how the budget
+is verified against the rendering engine, and — at least as usefully — the
+models that were tried and rejected and the four bugs that shipped. Read it
+before touching `bulletin-metrics.js`, `bulletin-layout.js` or the print CSS.
+
+
 **Session September 6, 2026 (thirty-second) — VERSE NUMBERS, AND A REGRESSION
 THE PAGINATOR HAD CAUSED.** Tool **v0.46.4**.
 

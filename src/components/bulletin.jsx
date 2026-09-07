@@ -1,5 +1,8 @@
 // ─── BULLETIN ───────────────────────────────────────────────────────────────
 //
+// Full write-up of the layout budget, the print path and the verification loop:
+// bulletin_layout_spec.md in the repo root.
+//
 // A printable sheet for one liturgical day: commemoration, the readings Fekula
 // appoints, and the dismissal hymns — with an optional supplement setting each
 // reading out in full so a reader can chant from the sheet without a book.
