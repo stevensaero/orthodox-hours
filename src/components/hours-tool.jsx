@@ -8589,6 +8589,41 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.46.4",
+    date: "September 2026",
+    summary: "Verse numbers are gold superscripts again, and the pilcrow chapter marker is gone",
+    items: [
+      "A REGRESSION FROM v0.46.0, found by reading the sheet. Moving to the " +
+      "paginator turned a lection body into a flat string so its lines could be " +
+      "sliced across columns — and the verse numbers, which had been " +
+      "<sup class=\"oh-vnum\"> elements, became bare digits in body type and " +
+      "body colour. The stylesheet was never wrong; the markup had stopped " +
+      "reaching it.",
+
+      "RECOVERING THE MARKUP WITHOUT LOSING THE SLICING. The paginator has to " +
+      "cut a passage at line boundaries, so a lection body must survive as a " +
+      "string. Verse numbers are therefore bracketed by two control characters " +
+      "that cannot occur in scripture, and turned back into superscripts at " +
+      "render. Picking them out by pattern afterwards was rejected: scripture " +
+      "contains numerals of its own, and a heuristic that is right almost " +
+      "always is exactly the kind of quiet defect this codebase keeps finding.",
+
+      "The sentinels measure as zero width. The digits are still measured at " +
+      "body size although they render at 7.5pt — an overstatement of roughly " +
+      "0.4em per verse, which errs toward predicting more lines rather than " +
+      "fewer, the safe direction.",
+
+      "The numbers take the same gold as the reference heading above the " +
+      "passage, so they read as apparatus rather than as part of the sentence: " +
+      "there for a reader finding a verse, out of the way of one chanting it.",
+
+      "THE PILCROW IS GONE. A ¶ marked a chapter change mid-passage; with the " +
+      "verse numbers legible again the change is already plain, since the " +
+      "numbering simply restarts — 2 Corinthians 1:24 is followed by 2:1. One " +
+      "signal is better than two.",
+    ],
+  },
+  {
     version: "v0.46.3",
     date: "September 2026",
     summary: "The Print button had disappeared behind a stalled \"Settling layout…\" — a dead-end in the verification effect",

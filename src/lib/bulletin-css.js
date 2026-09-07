@@ -195,9 +195,14 @@ export const BULLETIN_CSS = `
         font-size: 11pt; line-height: 1.5; margin: 0;
         text-align: justify; -webkit-hyphens: auto; hyphens: auto;
       }
+      /* Same gold as the reference heading above the passage, so the numbers
+         read as apparatus rather than as part of the sentence. Small and
+         superscript: a reader finding a verse wants them, a reader chanting the
+         passage should not have to step over them. */
       .oh-vnum {
         font-size: 7.5pt; color: ${C.accent};
         vertical-align: super; margin-right: 1.5pt;
+        font-style: normal; letter-spacing: 0;
       }
       .oh-err { color: ${C.error}; }
 

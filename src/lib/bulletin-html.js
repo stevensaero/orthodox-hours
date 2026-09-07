@@ -6,6 +6,7 @@
 // and the app cannot drift apart.
 
 import { continuationNotice, resumptionNotice } from "./bulletin-layout.js";
+import { VERSE_OPEN, VERSE_CLOSE } from "./bulletin-metrics.js";
 
 export const esc = (s) => String(s ?? "")
   .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -13,6 +14,11 @@ export const esc = (s) => String(s ?? "")
 // Gold the asterisk phrase-marks without touching the words around them.
 export const marks = (text) => esc(text).split(/(\*+)/)
   .map((p) => (/^\*+$/.test(p) ? `<span class="oh-star">${p}</span>` : p)).join("");
+
+/** Verse numbers back out of the sentinels, as small gold superscripts. */
+const VERSE_RE = new RegExp(`${VERSE_OPEN}(\\d+)${VERSE_CLOSE}`, "g");
+export const lectionBody = (text) =>
+  esc(text).replace(VERSE_RE, (_, n) => `<sup class="oh-vnum">${n}</sup>`);
 
 export function renderBlock(block) {
   switch (block.kind) {
@@ -51,7 +57,7 @@ export function renderBlock(block) {
             (block.intro ? `<p class="oh-lection-intro">${esc(block.intro)}</p>` : "")
           : "") +
         (resume ? `<p class="oh-resumes">${esc(block.refLabel)} — ${esc(resume)}</p>` : "") +
-        `<p class="oh-lection-body">${esc(block.text)}</p>` +
+        `<p class="oh-lection-body">${lectionBody(block.text)}</p>` +
         (carry ? `<p class="oh-continues">${esc(carry)} →</p>` : "") +
         `</div>`;
     }

@@ -32,6 +32,7 @@ import { useState, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 import { parseRefString, spanLabel } from "../lib/scripture-ref.js";
 import { spansToVerses, readingIntro } from "../lib/scripture-text.js";
+import { VERSE_OPEN, VERSE_CLOSE } from "../lib/bulletin-metrics.js";
 import { readingsInOrder } from "../lib/readings.js";
 import {
   paginateBest, buildPropersFlow, buildReadingsFlow, PAGE,
@@ -106,6 +107,15 @@ function useReadingTexts(readings, enabled) {
 
 // ─── blocks ─────────────────────────────────────────────────────────────────
 
+// Verse numbers come back out of their sentinels as small gold superscripts —
+// present for a reader who needs to find a verse, and out of the way of one
+// who is simply reading it aloud.
+const VERSE_SPLIT = new RegExp(`${VERSE_OPEN}(\\d+)${VERSE_CLOSE}`);
+const lectionBody = (text) => String(text).split(VERSE_SPLIT).map((piece, i) =>
+  i % 2 === 1
+    ? <sup key={i} className="oh-vnum">{piece}</sup>
+    : <span key={i}>{piece}</span>);
+
 const marks = (text) => String(text).split(/(\*+)/).map((piece, i) =>
   /^\*+$/.test(piece)
     ? <span key={i} className="oh-star">{piece}</span>
@@ -164,7 +174,7 @@ function Block({ block }) {
             </>
           )}
           {resume && <p className="oh-resumes">{block.refLabel} — {resume}</p>}
-          <p className="oh-lection-body">{block.text}</p>
+          <p className="oh-lection-body">{lectionBody(block.text)}</p>
           {carry && <p className="oh-continues">{carry} →</p>}
         </div>
       );
@@ -370,7 +380,7 @@ export default function Bulletin({ day, onClose }) {
           Columns and page breaks are computed, so a hymn is never split and any
           reading that carries over says where it goes. The preview is full size:
           what you see is the sheet that prints.
-          {withReadings && " Readings are set continuously, as they are chanted; a ¶ marks a chapter change."}
+          {withReadings && " Readings are set continuously, as they are chanted, with verse numbers kept small and out of the way."}
         </p>
 
         {overflow.length > 0 && (

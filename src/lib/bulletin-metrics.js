@@ -255,11 +255,23 @@ const ADVANCE = {
 // mid-range rather than narrow keeps the estimate from running short.
 const FALLBACK = 0.5908;
 
+// Sentinels bracketing a verse number in a lection's text. Control characters,
+// so they cannot collide with scripture, and zero width so they cost the line
+// nothing. The digits between them are still measured at body size even though
+// they render as a 7.5pt superscript — an overstatement of roughly 0.4em per
+// verse, which errs toward predicting more lines rather than fewer.
+export const VERSE_OPEN = "\u0001";
+export const VERSE_CLOSE = "\u0002";
+const ZERO_WIDTH = new Set([VERSE_OPEN, VERSE_CLOSE]);
+
 /** Width of a string in ems. */
 export function widthEm(text, italic = false) {
   const table = italic ? ADVANCE.italic : ADVANCE.normal;
   let total = 0;
-  for (const ch of String(text)) total += table[ch] ?? FALLBACK;
+  for (const ch of String(text)) {
+    if (ZERO_WIDTH.has(ch)) continue;
+    total += table[ch] ?? FALLBACK;
+  }
   return total;
 }
 

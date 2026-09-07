@@ -26,7 +26,8 @@
 //      the two columns of one page is announced quietly — the reader's eye
 //      already goes there.
 
-import { STYLES, blockHeightPt, wrapText } from "./bulletin-metrics.js";
+import { STYLES, blockHeightPt, wrapText, VERSE_OPEN, VERSE_CLOSE }
+  from "./bulletin-metrics.js";
 
 // Measured from a rendered sheet, not assumed. The component recomputes these
 // from the real DOM and passes them in; these values are the fallback for the
@@ -462,7 +463,14 @@ export function buildReadingsFlow(readings) {
       kind: "lection",
       refLabel: `${r.slotLabel} · ${r.label} · ${r.itemLabel}`,
       intro: r.intro || null,
-      text: r.verses.map((v) => `${v.startsChapter ? "¶ " : ""}${v.verse} ${v.text}`).join(" "),
+      // Verse numbers are wrapped in sentinels rather than left as bare digits.
+      // The paginator slices a passage into lines as plain strings, so any
+      // structure has to survive inside the string itself; picking the numbers
+      // back out by pattern would be guesswork, since scripture contains
+      // numerals of its own. VERSE_OPEN/CLOSE are control characters that
+      // cannot occur in the text, measure as zero width, and are turned into
+      // superscripts at render.
+      text: r.verses.map((v) => `${VERSE_OPEN}${v.verse}${VERSE_CLOSE}${v.text}`).join(" "),
       verses: r.verses,
     });
   }

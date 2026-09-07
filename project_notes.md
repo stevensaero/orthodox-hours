@@ -1,5 +1,30 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.46.3** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+**Tool version: v0.46.4** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+
+**Session September 6, 2026 (thirty-second) — VERSE NUMBERS, AND A REGRESSION
+THE PAGINATOR HAD CAUSED.** Tool **v0.46.4**.
+
+Moving to the paginator in v0.46.0 turned each lection body into a flat string
+so its lines could be sliced across columns. The verse numbers, previously
+`<sup class="oh-vnum">`, became **bare digits in body type and body colour**.
+The stylesheet was never wrong — the markup had stopped reaching it.
+
+**Recovering it without losing the slicing.** The paginator must cut a passage
+at line boundaries, so the body has to survive as a string. Verse numbers are
+bracketed by two control characters that cannot occur in scripture
+(`VERSE_OPEN` / `VERSE_CLOSE` in `bulletin-metrics.js`) and turned back into
+superscripts at render. **Picking them out by pattern afterwards was rejected**:
+scripture contains numerals of its own, and a heuristic that is right almost
+always is precisely the class of quiet defect this month has been spent on.
+
+The sentinels measure zero width; the digits are still measured at body size
+though they render at 7.5pt, overstating by ~0.4em per verse — toward more
+lines, the safe direction.
+
+**The pilcrow is gone.** With the numbers legible again a chapter change is
+already plain, because the numbering restarts (1:24 → 2:1). One signal beats
+two.
+
 
 **Session September 6, 2026 (thirty-first) — THE PRINT BUTTON VANISHED.** It sat
 permanently on "Settling layout…". Two faults, one of them a design mistake.
