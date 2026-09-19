@@ -129,14 +129,14 @@ export function entranceOrder({ liturgicalData: ld = {}, menaionEntry = null, te
   const t = templeType;
 
   if (ld.isPentecostarion || season === "pentecostarion" || season === "brightweek") {
-    return { slots: null, section: "ch.4 pp.169–170", quote: "The order of chanting the troparia and kontakia at Liturgy (four Pentecostarion periods).", notes: ["Pentecostarion table not yet encoded — Phase 3b."], templeNeeded: false, unresolved: true };
+    return { templeDependent: false, slots: null, section: "ch.4 pp.169–170", quote: "The order of chanting the troparia and kontakia at Liturgy (four Pentecostarion periods).", notes: ["Pentecostarion table not yet encoded — Phase 3b."], templeNeeded: false, unresolved: true };
   }
   if (season === "great_feast" || period === "feast") {
-    return { slots: GREAT_FEAST_DAY, section: "Great Feast", quote: "Troparion of the feast; Glory… Now and ever… kontakion of the feast (the Menaion's own printed order; cf. §2G3 for the apodosis).", notes, templeNeeded: false };
+    return { templeDependent: false, slots: GREAT_FEAST_DAY, section: "Great Feast", quote: "Troparion of the feast; Glory… Now and ever… kontakion of the feast (the Menaion's own printed order; cf. §2G3 for the apodosis).", notes, templeNeeded: false };
   }
   if (isSunday) {
     if (season === "apodosis" || period === "apodosis") {
-      return { slots: SUNDAY_APODOSIS, section: "§1F3", page: "p.32", quote: "Sunday troparion / Troparion of the feast / Glory… Sunday kontakion / Now and ever… kontakion of the feast", notes, templeNeeded: false };
+      return { templeDependent: false, slots: SUNDAY_APODOSIS, section: "§1F3", page: "p.32", quote: "Sunday troparion / Troparion of the feast / Glory… Sunday kontakion / Now and ever… kontakion of the feast", notes, templeNeeded: false };
     }
     if (period === "forefeast" || period === "afterfeast") {
       if (!t) return { slots: null, section: HIGH_RANKS.has(rank) ? "§1F2" : "§1F1", templeNeeded: true, notes, quote: "" };
@@ -149,7 +149,7 @@ export function entranceOrder({ liturgicalData: ld = {}, menaionEntry = null, te
         quote: (feastIsLord ? "If it be a feast of the Lord" : "If it be a feast of the Theotokos") + ", in a temple dedicated to " + templeWords(t) + ".", notes, templeNeeded: false };
     }
     if (feastIsTheotokos && (season === "great_feast")) {
-      return { slots: SUNDAY_THEOTOKOS_FEAST, section: "§1E", page: "p.23", quote: "But if it be a feast of the Theotokos: Sunday troparion / Troparion of the Feast / Glory… Sunday kontakion / Now and ever… Kontakion of the Feast", notes, templeNeeded: false };
+      return { templeDependent: false, slots: SUNDAY_THEOTOKOS_FEAST, section: "§1E", page: "p.23", quote: "But if it be a feast of the Theotokos: Sunday troparion / Troparion of the Feast / Glory… Sunday kontakion / Now and ever… Kontakion of the Feast", notes, templeNeeded: false };
     }
     if (!t) return { slots: null, section: isDouble ? "§1B" : "§1A", templeNeeded: true, notes, quote: "" };
     if (isDouble) return { slots: SUNDAY_DOUBLE[t], section: "§1B", page: "p.15", quote: "Sunday, double commemoration, in a temple dedicated to " + templeWords(t) + ".", notes, templeNeeded: false };
@@ -165,8 +165,8 @@ export function entranceOrder({ liturgicalData: ld = {}, menaionEntry = null, te
 
   // ── weekday ──
   if (season === "apodosis" || period === "apodosis") {
-    if (isVigil) return { slots: WEEKDAY_APODOSIS_VIGIL, section: "§2G4", page: "p.67", quote: "Troparion of the feast / Troparion of the saint / Glory… Kontakion of the saint / Now and ever… Kontakion of the feast", notes, templeNeeded: false };
-    return { slots: WEEKDAY_APODOSIS, section: "§2G3", page: "p.65", quote: "We sing the troparion of the feast; Glory… Now and ever… and the kontakion of the feast.", notes, templeNeeded: false };
+    if (isVigil) return { templeDependent: false, slots: WEEKDAY_APODOSIS_VIGIL, section: "§2G4", page: "p.67", quote: "Troparion of the feast / Troparion of the saint / Glory… Kontakion of the saint / Now and ever… Kontakion of the feast", notes, templeNeeded: false };
+    return { templeDependent: false, slots: WEEKDAY_APODOSIS, section: "§2G3", page: "p.65", quote: "We sing the troparion of the feast; Glory… Now and ever… and the kontakion of the feast.", notes, templeNeeded: false };
   }
   if (period === "forefeast" || period === "afterfeast") {
     const high = rank === "polyeleos" || rank === "vigil";
@@ -177,7 +177,7 @@ export function entranceOrder({ liturgicalData: ld = {}, menaionEntry = null, te
     return { slots: tbl[t], section: high ? "§2G2" : "§2G1", page: high ? "p.62–63" : "p.58–59", quote: (feastIsLord ? "If it be a feast of the Lord" : "If it be a feast of the Theotokos") + ", in a temple dedicated to " + templeWords(t) + ".", notes, templeNeeded: false };
   }
   if (HIGH_RANKS.has(rank)) {
-    if (isVigil && feastIsTheotokos && season === "great_feast") return { slots: WEEKDAY_HIGH.vigilTheotokosFeast, section: "§2F", page: "p.54", quote: "If it be a feast of the Theotokos: Troparion of the feast; Glory… Now and ever… kontakion of the feast", notes, templeNeeded: false };
+    if (isVigil && feastIsTheotokos && season === "great_feast") return { templeDependent: false, slots: WEEKDAY_HIGH.vigilTheotokosFeast, section: "§2F", page: "p.54", quote: "If it be a feast of the Theotokos: Troparion of the feast; Glory… Now and ever… kontakion of the feast", notes, templeNeeded: false };
     if (!t) return { slots: null, section: rank === "vigil" ? "§2F" : rank === "polyeleos" ? "§2E" : "§2D", templeNeeded: true, notes, quote: "" };
     const sec = rank === "vigil" ? "§2F" : rank === "polyeleos" ? "§2E" : "§2D";
     const page = rank === "vigil" ? "p.54" : rank === "polyeleos" ? "p.50" : "p.47";
@@ -235,8 +235,8 @@ export function resolveEntrance({ liturgicalData: ld = {}, menaionEntry = null, 
   }
   if (order.templeNeeded) {
     return { elements: [
-      { id: "lit-tk-temple", type: "temple_selector", templeMode: "liturgy", label: "Temple dedication",
-        note: "The order of the troparia and kontakia depends on the temple's dedication (" + order.section + "). Choose the parish dedication to assemble it." },
+      { id: "lit-tk-temple", type: "temple_selector", templeMode: "troparion", label: "Temple dedication",
+        prompt: "The order of the troparia and kontakia after the Little Entrance depends on the temple's dedication (Fekula " + order.section + "). Select your parish dedication." },
       { id: "lit-tk-order", type: "movable", label: "Troparia and Kontakia", text: "Choose the temple dedication above; Fekula " + order.section + " orders the troparia and kontakia by whether the temple is dedicated to the Lord, the Theotokos, or a saint.", unresolved: true, unresolvedNote: "temple dedication not set", source: "—", fekula: cite },
     ], toneLabel: null, unresolved: true, section: order.section, quote: order.quote, notes: order.notes };
   }
@@ -246,8 +246,13 @@ export function resolveEntrance({ liturgicalData: ld = {}, menaionEntry = null, 
   // The temple picker rides with the hymns whenever the table has a temple
   // slot, showing the current dedication and letting the reader change it in
   // place — the same TempleSelector the Typica and Litiya use.
-  if (order.slots.some(sp => /temple_/.test(sp))) {
-    els.push({ id: "lit-tk-temple", type: "temple_selector", templeMode: "liturgy", label: "Temple dedication",
+  // Shown whenever the CHOICE of table depended on the temple — even when the
+  // chosen order has no temple hymns (a temple of the Lord on Sunday, §1A) —
+  // so the dedication can always be re-picked. Only the tables Fekula prints
+  // without temple variation (apodosis, Great Feast, a Theotokos feast) omit it.
+  if (order.templeDependent !== false) {
+    els.push({ id: "lit-tk-temple", type: "temple_selector", templeMode: "troparion", compact: true, label: "Temple dedication",
+      compactNote: "In a temple dedicated to the Lord, to the Theotokos, or to a saint, the troparia and kontakia stand in a different order; the temple's own troparion and kontakion take their slots below. — Fekula ch.1 / ch.2",
       fekula: { section: order.section, note: "The order of the troparia and kontakia depends on the temple's dedication." } });
   }
   const hymn = (slot) => {

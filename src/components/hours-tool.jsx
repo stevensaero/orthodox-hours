@@ -6603,13 +6603,15 @@ function Tooltip({ term, children }) {
 //   currentId: string | null — current selection from localStorage
 //   resolvedTroparion: { tone, text, saint } | null — the resolved troparion for display
 
-function TempleSelector({ availableDedications, onSelect, currentId, resolvedTroparion, fekulaSection, mode }) {
+function TempleSelector({ availableDedications, onSelect, currentId, resolvedTroparion, fekulaSection, mode, compact = false, compactNote = null, prompt = null }) {
   const [showMore, setShowMore] = useState(false);
   const isKontakion = mode === "kontakion";
   const elementLabel = isKontakion ? "Kontakion of the temple" : "Sticheron of the temple";
-  const pickerPrompt = isKontakion
+  // The unselected prompt says what the dedication decides HERE; a caller may
+  // pass its own (`prompt`) — the picker itself is the same everywhere.
+  const pickerPrompt = prompt || (isKontakion
     ? "The kontakion of your temple is sung here. Select your parish dedication."
-    : "The first sticheron at the Litiya is the troparion of your temple's dedication.";
+    : "The first sticheron at the Litiya is the troparion of your temple's dedication.");
 
   // Group available dedications by category
   const grouped = {};
@@ -6685,6 +6687,26 @@ function TempleSelector({ availableDedications, onSelect, currentId, resolvedTro
   );
 
   // If already selected, show the resolved state
+  // ONE PICKER, EVERY SERVICE. TempleSelector is the single parish-dedication
+  // control in the tool; the services differ only in what they do with the
+  // answer. Two invariants every caller inherits:
+  //   • once a dedication is chosen it stays re-pickable (changeSelect is in
+  //     every selected-state branch below), and
+  //   • the unselected state is always the same full picker.
+  // `compact` is a presentation, not a behaviour: the header + change control
+  // alone, for a service that renders the temple's hymns in their own slots
+  // (the Liturgy's Little Entrance, per Fekula's tables). Any service may use it.
+  if (compact && currentId) {
+    return (
+      <div style={{ display: "flex", alignItems: "baseline", gap: "8px", flexWrap: "wrap", margin: "4px 0 12px" }}>
+        <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.12em",
+          color: "#8B6914", fontFamily: "Georgia, serif", fontWeight: "bold" }}>Temple dedication</span>
+        {fekulaSection && <FekulaBadge section={fekulaSection} note={compactNote || "The parish dedication decides which hymns of the temple are appointed and where they stand."} />}
+        {changeSelect}
+      </div>
+    );
+  }
+
   if (currentId === "none") {
     return (
       <div style={{
@@ -6704,20 +6726,6 @@ function TempleSelector({ availableDedications, onSelect, currentId, resolvedTro
           color: "#7A6A4A", fontStyle: "italic",
           background: "rgba(180,160,112,0.06)", padding: "0.5rem 0.7rem", borderRadius: "4px",
         }}>The {isKontakion ? "kontakion" : "sticheron"} of the temple is omitted when serving outside a dedicated temple.{!isKontakion && " The Litiya proceeds directly to the stichera of the feast."}</div>
-      </div>
-    );
-  }
-
-  // Liturgy mode (liturgy-entrance.js): the dedication decides which Fekula
-  // table orders the troparia and kontakia, and the temple's own hymns render
-  // in their slot below — so this is the picker alone, with the reason.
-  if (currentId && mode === "liturgy") {
-    return (
-      <div style={{ display: "flex", alignItems: "baseline", gap: "8px", flexWrap: "wrap", margin: "4px 0 12px" }}>
-        <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.12em",
-          color: "#8B6914", fontFamily: "Georgia, serif", fontWeight: "bold" }}>Temple dedication</span>
-        {fekulaSection && <FekulaBadge section={fekulaSection} note="In a temple dedicated to the Lord, to the Theotokos, or to a saint, the troparia and kontakia stand in a different order; the temple's own troparion and kontakion take their slots below. — Fekula ch.1 / ch.2" />}
-        {changeSelect}
       </div>
     );
   }
@@ -7491,7 +7499,10 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
         currentId={templeDedication}
         resolvedTroparion={resolved}
         fekulaSection={element.fekula?.section}
-        mode={element.templeMode === "liturgy" ? "liturgy" : (isKontakionMode ? "kontakion" : "troparion")}
+        mode={isKontakionMode ? "kontakion" : "troparion"}
+        compact={!!element.compact}
+        compactNote={element.compactNote || null}
+        prompt={element.prompt || null}
       />
     );
   }
@@ -8765,6 +8776,26 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.49.3",
+    date: "September 2026",
+    summary: "One temple picker, always re-pickable — the Liturgy's emission rule fixed",
+    items: [
+      "BILL'S CATCH: pick a temple of the Lord on an ordinary Sunday and the picker " +
+      "vanished. The Liturgy was emitting it only when the resulting order contained the " +
+      "temple's own hymns; §1A in a temple of the Lord has none, so there was no way " +
+      "back. The rule is now: the picker appears whenever the CHOICE of table depends " +
+      "on the dedication, which is every table Fekula prints by temple. Only the tables " +
+      "printed without temple variation — the apodosis, a Great Feast, a feast of the " +
+      "Theotokos — omit it.",
+      "ONE COMPONENT, EVERYWHERE. TempleSelector is the single parish-dedication control " +
+      "in the tool (Litiya, Typica, Liturgy). Two invariants every caller inherits: once " +
+      "chosen it stays re-pickable, and the unselected state is always the same full " +
+      "picker. What the Liturgy adds is a `compact` presentation — header and change " +
+      "control only, because the temple's hymns render in their Fekula slots — and a " +
+      "caller-supplied prompt for the unselected state. Any service may use either.",
+    ],
+  },
   {
     version: "v0.49.2",
     date: "September 2026",

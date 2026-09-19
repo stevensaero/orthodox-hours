@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.49.2** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
+**Tool version: v0.49.3** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -58,9 +58,16 @@ Bill's confirmation).
   asked; they were in `Daily/HTM/HTM_daily_troparia_kontakia_alleluia_prokeimena.txt`
   on Drive (the `TYPICA_KONTAKIA` source) all along. Now
   `src/data/liturgy/daily_troparia.js`, HTM `*` marks retained.
-- **The temple picker now rides with the hymns** (v0.49.1, Bill's pickup): a
-  compact `mode="liturgy"` of `TempleSelector` — current dedication + change
-  control, no duplicated hymn — emitted whenever the table has a temple slot.
+- **The temple picker rides with the hymns** (v0.49.1, Bill's pickup), and
+  **stays re-pickable** (v0.49.3, Bill's second pickup): it is emitted whenever
+  the *choice* of table depends on the dedication (`entranceOrder().templeDependent`),
+  not only when the chosen order carries temple hymns — §1A in a temple of the
+  Lord had none, so the picker vanished after the pick. **Rule for every caller
+  of `TempleSelector`: emit it whenever the result depends on the dedication.**
+  The component is the one picker in the tool; `compact` (header + change
+  control) and `prompt` (unselected-state text) are presentations, not
+  behaviours; the selected state always carries the change control and the
+  unselected state is always the same full picker.
 - **Pentecostarion** (ch.4 pp.169–170 table; §4A Beatitudes) — Phase 3b.
   Note the extraction flagged an apparent misprint: period 3's "Now and ever"
   reads "kontakion of Thomas Sunday" where the parallel says "of the preceding

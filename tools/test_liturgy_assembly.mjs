@@ -247,6 +247,7 @@ const nativityT = { name: "Nativity of the Theotokos", month: 9, day: 8 };
   const els = run({ dow: 0, isSunday: true, season: "sunday", tone: 7 }, entry("09-27"), { temple: TEMPLES.lord });
   check(slotsOf(els).join(",") === "sunday_troparion,saint_troparion,saint_kontakion,sunday_kontakion", "§1A Lord temple order: " + slotsOf(els).join(","));
   check(beats(els).length === 8 && /Triadicon/.test(beats(els)[6].label), "§1A: eight of the resurrection with the Triadicon at Glory");
+  check(byId(els, "lit-tk-temple"), "§1A Lord temple: picker still shown though the order has no temple hymns (re-pickable)");
 }
 // C. No temple set: selector + unresolved
 {
