@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.47.0** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
+**Tool version: v0.48.0** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -12,6 +12,71 @@ before touching `bulletin-metrics.js`, `bulletin-layout.js` or the print CSS.
 service.** Read it before touching anything under `src/data/liturgy/` or writing
 `assembleLiturgy()`. The encoding history is `divine_liturgy_chrysostom_encoding_spec.md`
 (v24), also at the root.
+
+
+**Session September 19, 2026 (thirty-fifth) — THE LITURGY TAKES ITS MOVABLE
+PARTS: PHASE 2.** Tool **v0.48.0**. `built` still false — see the decision below.
+
+### WHAT LANDED
+
+- `src/lib/liturgy-propers.js` — `resolveLiturgyPropers()` (prokeimenon,
+  Alleluia, communion: day's proper then Menaion's, Saturday inverted via
+  `readingsForDay().order`), `trisagionReplacement()`, `zadostoinikFor()`
+  (`instead_of_*` first, `zadostoinik_*` fallback, `legacyField` flagged),
+  `entranceClause()` (the book's own le-11 table; Sunday wins over feast period),
+  `evangelistOf()`, `epistleTitle()`.
+- `liturgy-assembler.js` — `planHooks(ctx, variant)` returns `{ before, after,
+  replace, skip, section }` keyed on unit ids; the walk consults them. A
+  `replace` of `null` drops a unit (the answered le-11 table, the ep-03 options
+  rubric, tr-03 under a substitute). `skip` omits a whole movement after the
+  section's `open` element (the departed litany's omission). `section` carries
+  `toneLabel` / `unresolved` / `open` for the row.
+- Sources are injected from `hours-tool.jsx` (`srcSunProkeimenon`,
+  `srcSunAlleluia`, `OctoV2.getV2DailyLiturgyPropers`, `readingsForDay`,
+  `buildDismissal(…, 'liturgy', templeDedication, variant)`). `buildDismissalText`
+  now treats `serviceContext:"liturgy"` like post-communion (Great form + the
+  celebrant clause). Reading elements carry `readingRef`; the post-processor
+  turns it into `scriptureHref`.
+- Outline: `extraScrollOffset` = the measured height of the Liturgy's sticky
+  strip (`LiturgyControls` reports it via `ResizeObserver`), so a jump lands the
+  section header below the strip. Bill's pickup from the Phase 1 review.
+- `⚠︎ Unresolved` chip text is now `element.unresolvedNote || 'see Chapter 6'`.
+
+### TWO DECISIONS FOR BILL
+
+1. **The Typica's propers routing differs from the Liturgy's.** The Typica appends
+   the Menaion prokeimenon only at polyeleos/vigil and lets a Menaion Alleluia
+   *replace* the daily one; the Liturgy (per Fekula "of the day, and of the saint,
+   if there be such", and the v0.45.0 readings ruling) is presence-gated and keeps
+   both. `liturgy-propers.js` is the intended single home. Porting the Typica
+   changes what it shows on some days (e.g. a six-stichera saint with a printed
+   prokeimenon would now get it), so it was not done silently. Say the word.
+2. **`built: true` is one line away and was not flipped.** Decision 5 said "hold
+   until Phase 2 lands"; §6 of the spec says public distribution of the St.
+   Tikhon's text needs confirming. Bill confirmed development use. Flip it
+   (`SERVICE_REGISTRY`, `liturgy` row) when distribution is confirmed; until then
+   `?preview=liturgy`.
+
+### FOUND ON THE WAY
+
+- 09-20 prints **two** Menaion prokeimena (feast, Tone 7; saint, Tone 4), so a
+  Sunday there sings three — the row reads "Tone 7 · Tone 7 · Tone 4". Correct
+  per §1F1 afterfeast ("Prokeimenon: Sunday and Feast… if there be readings for
+  the saint…"), and a good first test of the "and of the saint" rule.
+- `prokeimenon_2_*` has no stichos field (09-20's note records the workaround);
+  the second prokeimenon renders without a verse.
+- On a feast of the Lord the entrance clause is the feast's second-antiphon
+  refrain, which V1 does not carry (same gap as the festal antiphons). Flagged,
+  not guessed. A Sunday inside an afterfeast keeps the Sunday clause; the
+  Fekula note on the element says so, so a reviewer can overrule.
+
+### NEXT — PHASE 3 (v0.49.0)
+
+`LITTLE_ENTRANCE_ORDER` from Fekula ch.1 / ch.2 / ch.4 (Sunday or weekday ×
+rank × forefeast/afterfeast × temple dedication), the Beatitude troparia
+interleave at the printed "(on 12 / 10 / 8)" marks (needs a `srcSunBeatitudes`
+accessor for Octoechos V2 `liturgy.beatitudes`), and the `unresolved` chips they
+replace.
 
 
 **Session September 19, 2026 (thirty-fourth) — THE LITURGY ASSEMBLES: PHASE 1.**
