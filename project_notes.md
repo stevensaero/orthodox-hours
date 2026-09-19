@@ -80,15 +80,58 @@ departed litany, zadostoinik, communion, dismissal), Little Entrance order for
 ch.1/ch.2/ch.4 with the shared temple picker, the Typica routed through
 `resolveLiturgyPropers`, the daily troparia, the generated dedication index.
 
-**Liturgy backlog (not requested; in priority order as Bill's questions
+### NEXT SESSION — FESTAL ANTIPHONS FROM FEKULA'S APPENDICES (decided, Bill, Sept 19)
+
+**Decision:** the festal antiphon texts are a separate encoding task sourced
+from Fekula & Williams **App. VI and VII** (the Liturgy encoding's own rubric
+a1-footnote points there: "On Feast Days, special Antiphons are sung. See
+App. VI and VII"), not something expected to arrive with Menaion V2.
+
+Why not V2: the V2 schema reserves `<c>.liturgy.antiphons` (`group`,
+`month-specific`) and `liturgy.entrance_verse`, but the St. Sergius Menaion
+prints antiphons under one August service in 37 (08-06 Transfiguration;
+08-15 prints none — `menaion_v2_spec.md` §13.2 item 6). V2 would carry them
+feast by feast only where printed, and never for the Pentecostarion feasts
+(Pascha/Bright Week, Ascension, Pentecost, Thomas Sunday, the apodoses),
+which today sit in `pentecostarion.js` as `beatitudes_troparia: null` with a
+`beatitudes_source` note naming the psalms. One source for all feasts avoids
+Transfiguration having antiphons while Pentecost never does.
+
+Plan for the session:
+
+1. Extract App. VI and VII into the project docs (`fekula_appendices.txt`
+   already holds the appendices — confirm it covers VI/VII in full before
+   any encoding; if not, scan from the book).
+2. New data file `src/data/liturgy/festal_antiphons.js`: one record per feast,
+   keyed by a feast id (`nativity`, `theophany`, `meeting`, `palm_sunday`,
+   `pascha`, `ascension`, `pentecost`, `transfiguration`, `exaltation`, …),
+   shape: three antiphons, each `{ verses: [...], refrain }`, with the third
+   antiphon's "Save us, O Son of God, …" carrying the feast's clause, plus the
+   entrance verse; every record cites its appendix and page. Long-text
+   protocol applies (copy, never transcribe).
+3. Wire: a Menaion V1/V2 entry or a Pentecostarion entry points at the record
+   by feast id (a `festal_antiphons: "<id>"` field replaces today's
+   `festalAntiphons` boolean); `assembleLiturgy` already has the antiphon
+   hook (Great Feast or `beat.festalAntiphons`) — it fills the antiphon
+   movements from the record instead of marking them unresolved.
+4. Gate: a validator for the record shape and a scenario per feast class
+   (fixed feast 09-14, Pentecostarion feast P+49, apodosis 09-21 which
+   §2G3 gives the feast's antiphons); `npm run gate` must fail on a feast id
+   referenced by an entry but missing from the file.
+5. Version: minor bump (new feature) with a `RELEASE_NOTES` entry; notes
+   updated; push per `github_workflow_prompt.md`.
+
+Out of scope for that session: the daily antiphons / typical psalms (those
+are Horologion material already in the Liturgy encoding) and Bright Week's
+order (§4B1), which stays on the backlog below.
+
+**Liturgy backlog (after the antiphons; in priority order as Bill's questions
 suggested them):**
 
 - Bright Week / the Paschal Liturgy (§4B1) — needs its own order, not a table.
 - §383 (Fekula ch.3, the Sunday-of-the-Fathers block referenced by §4B14) —
   not extracted into the project docs yet; `pentecostarionOrder()` cites it
   by number only.
-- Festal antiphons — no V1 Menaion field carries them; `festalAntiphons` is
-  a flag today, the texts are not assembled.
 - A temple of the Lord on a Sunday in a feast period (§1F1 with a Lord
   temple) — assembled, but the entrance clause for a feast of the Lord is
   still marked unresolved (`entranceClause`).
