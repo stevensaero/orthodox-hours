@@ -5641,7 +5641,9 @@ function buildDismissalText(opts) {
     || _fmt === 'pentecostarion_sunday' || _fmt === 'all_saints_sunday';
   const rank = (menaionEntry && menaionEntry.rank) || "simple";
   const isHighRank = rank === "polyeleos" || rank === "vigil" || rank === "great_feast";
-  const isPostCommunion = serviceContext === "post_communion";
+  // The Liturgy's own dismissal (liturgy_assembler_spec.md §3) is the same
+  // form as the one read after Communion: Great, with the celebrant clause.
+  const isPostCommunion = serviceContext === "post_communion" || serviceContext === "liturgy";
 
   // Reader's Service (Fekula Ch. 10): the priest's отпуст is replaced by the short
   // form. Same saint-of-day + temple resolution as the priest form below — no
@@ -7010,7 +7012,8 @@ function isOutlineMajor(el) {
 
 function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
                           activeSection, setActiveSection, serviceLabel, mm, dd,
-                          headerOffset = 128, liturgyExpanded = false, onToggleLiturgyLevel }) {
+                          headerOffset = 128, liturgyExpanded = false, onToggleLiturgyLevel,
+                          extraScrollOffset = 0 }) {
   // Divine Liturgy: two levels (liturgy_assembler_spec.md §2.4). Overview is
   // the registry's `core` movements; expanded is all of them.
   const isLiturgy = currentService && currentService.key === 'liturgy';
@@ -7022,7 +7025,10 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
   // day. Gap sizes (+8, +16) preserve the spacing the old hardcoded 120/128
   // pair implied.
   const stickyTop = headerOffset + 8;
-  const scrollOffset = headerOffset + 16;
+  // extraScrollOffset: a service's own sticky strip below the controls bar
+  // (the Liturgy's variant/layer toggles) — a jump must land the section
+  // header below it, not under it.
+  const scrollOffset = headerOffset + 16 + (extraScrollOffset || 0);
 
   // Wire IntersectionObserver here — legal because this is a component
   React.useEffect(() => {
@@ -7337,6 +7343,9 @@ function LiturgyUnit({ element }) {
           <span style={{ fontSize: '0.72rem', color: '#8A1C1C', fontStyle: 'italic', marginRight: '6px' }}>{element.cue}</span>
         )}
         {renderLiturgyText(element.text)}
+        {element.resolvedBlank && element.fekula && (
+          <span style={{ marginLeft: '8px' }}><FekulaBadge section={element.fekula.section} note={element.fekula.note} /></span>
+        )}
       </span>
     </div>
   );
@@ -7372,7 +7381,18 @@ function LiturgyHiddenRun({ element }) {
 // (liturgy_assembler_spec.md §2.2, §2.3). Rendered inside the service body so
 // `position: sticky` holds it under the controls bar for the whole service —
 // "toggling holds your place" needs the toggle within reach at any depth.
-function LiturgyControls({ variant, onVariant, appointed, view, onView, stickyTop }) {
+function LiturgyControls({ variant, onVariant, appointed, view, onView, stickyTop, onHeight }) {
+  const ref = React.useRef(null);
+  // Report the strip's height (it wraps to two rows on narrow screens) so the
+  // outline can land a section header below it rather than under it.
+  React.useLayoutEffect(() => {
+    if (!ref.current || !onHeight) return;
+    const measure = () => onHeight(ref.current ? ref.current.offsetHeight : 0);
+    measure();
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
+    if (ro) ro.observe(ref.current);
+    return () => { if (ro) ro.disconnect(); onHeight(0); };
+  }, [onHeight]);
   const btn = (key, label) => {
     const on = variant === key;
     return (
@@ -7392,7 +7412,7 @@ function LiturgyControls({ variant, onVariant, appointed, view, onView, stickyTo
     </label>
   );
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px 16px',
+    <div ref={ref} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px 16px',
       position: 'sticky', top: `${stickyTop}px`, zIndex: 15,
       background: '#FAF6EE', padding: '6px 0 8px', marginBottom: '0.6rem', borderBottom: '1px solid #E8DEC8' }}>
       <div role="group" aria-label="Liturgy" style={{ display: 'inline-flex', border: '1px solid #C4A84A',
@@ -8024,7 +8044,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
               fontFamily: "Georgia, serif",
             }}
           >
-            ⚠︎ Unresolved — see Chapter 6
+            ⚠︎ Unresolved — {element.unresolvedNote || 'see Chapter 6'}
           </span>
         )}
       </div>
@@ -8827,6 +8847,50 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.48.0",
+    date: "September 2026",
+    summary: "The Divine Liturgy takes its movable parts — Phase 2: readings, propers, substitutions, dismissal",
+    items: [
+      "THE MOVABLE PARTS V1 CAN FEED TODAY ARE IN. The Liturgy now resolves, " +
+      "per day: the Epistle and Gospel (through the same readingsForDay() rule " +
+      "the bulletin uses, Saturday inversion included); the prokeimenon, " +
+      "Alleluia and communion hymn — the day's from the Pentecostarion, the " +
+      "Sunday Octoechos or the weekday Octoechos propers, then the Menaion's " +
+      "when the printed service appoints one; the hymn sung instead of the " +
+      "Trisagion; the refrain and irmos sung instead of It is truly meet " +
+      "(instead_of_* fields first, the older zadostoinik_* pair as fallback); " +
+      "the entrance verse's day-type clause; the Litany for the Departed " +
+      "omitted on Sundays and feasts, with the book's own rubric as the " +
+      "reason; and the dismissal, built by the shared dismissal engine with " +
+      "the celebrant's name for the Liturgy being served.",
+      "BLANKS ARE FILLED. 'The Prokeimenon in the ___ Tone', 'In the ___ " +
+      "tone, Alleluia', 'The reading from…', and the evangelist in the three " +
+      "Gospel lines now read as the day requires, each with a Fekula badge " +
+      "saying where the answer came from.",
+      "ONE RULE FOR THE SUNG PROPERS. src/lib/liturgy-propers.js applies " +
+      "Fekula's 'of the day, and of the saint, if there be such' to the " +
+      "prokeimenon, Alleluia and communion hymn the way readings.js applies it " +
+      "to the readings: the gate is whether the printed service has one, not " +
+      "the saint's rank. The Typica still carries its older rank-gated routing; " +
+      "moving it onto this module is a separate decision, recorded in the notes.",
+      "WHAT IS STILL FLAGGED, NOT FILLED. Festal antiphons on a Great Feast " +
+      "(V1 has no field), the entrance clause on a feast of the Lord (the " +
+      "feast's second-antiphon refrain, also unencoded), and the order of the " +
+      "troparia and kontakia after the Little Entrance (Phase 3) each show as " +
+      "an Unresolved chip, and their outline rows read red.",
+      "THE OUTLINE ROWS SHOW THEIR TONES. Prokeimenon and Alleluia rows carry " +
+      "'Tone 7 · Tone 4' as resolved; the section header shows the same. " +
+      "Jumping from the outline now lands a section header below the sticky " +
+      "toggle strip instead of under it.",
+      "STILL BEHIND THE 'SOON' PILL. Everything above is reviewable with " +
+      "?preview=liturgy. built: true waits on one line, once distribution of " +
+      "the St. Tikhon's text in the public tool is confirmed.",
+      "GATE: six real-date hook scenarios (a Sunday in an afterfeast, a Monday, " +
+      "a Saturday, the Exaltation, an apodosis, a simple saint) join " +
+      "tools/test_liturgy_assembly.mjs.",
+    ],
+  },
   {
     version: "v0.47.0",
     date: "September 2026",
@@ -15597,6 +15661,7 @@ export default function App() {
       return next;
     });
   };
+  const [liturgyStripHeight, setLiturgyStripHeight] = useState(0);   // measured by LiturgyControls
   const [liturgyOutlineExpanded, setLiturgyOutlineExpanded] = useState(() => {
     try { return localStorage.getItem('liturgy_outline') === 'expanded'; } catch { return false; }
   });
@@ -15967,8 +16032,21 @@ export default function App() {
     } else if (currentService.key === 'liturgy') {
       // Phase 1: the fixed skeleton only. Hooks for the movable parts (V1
       // Menaion, Octoechos, Pentecostarion) land in Phase 2/3 — spec §3.
+      // Phase 2: the movable parts V1 can feed today (spec §3). Sources are
+      // passed in so the assembler stays pure; the Little Entrance order and
+      // the Beatitude troparia are Phase 3.
+      const liturgyCtx = {
+        liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading,
+        sources: {
+          sunProkeimenon: srcSunProkeimenon,
+          sunAlleluia: srcSunAlleluia,
+          dailyPropers: (dayKey) => OctoV2.getV2DailyLiturgyPropers(dayKey),
+          readingsForDay,
+          dismissal: (author) => buildDismissal(liturgicalData, menaionEntry, pentEntry, false, 'lit', 'liturgy', templeDedication, author),
+        },
+      };
       els = liturgyModule
-        ? assembleLiturgy({ units: liturgyModule.getLiturgy(liturgyVariant), variant: liturgyVariant, view: liturgyView })
+        ? assembleLiturgy({ units: liturgyModule.getLiturgy(liturgyVariant), variant: liturgyVariant, view: liturgyView, ctx: liturgyCtx })
         : [];
       // The Liturgy has no reader-without-priest form (Fekula ch.10 gives the
       // Typica for that); Reader's Service mode does not change the assembly.
@@ -15994,6 +16072,11 @@ export default function App() {
       let out = el;
       if (el.kathismaNum) {
         out = { ...out, psalterHref: `/orthodox-hours/psalter?kathisma=${el.kathismaNum}&service=${currentService.key}&date=${selectedDate}` };
+      }
+      if (el.readingRef) {
+        // Liturgy readings carry the bare reference (liturgy-assembler.js).
+        const href = refToScriptureHref(el.readingRef, currentService.key, selectedDate);
+        if (href) out = { ...out, scriptureHref: href };
       }
       const readingIds = new Set(["typica-epistle","typica-gospel","typica-epistle-feast","typica-gospel-feast"]);
       if (readingIds.has(el.id) && el.text) {
@@ -16613,6 +16696,7 @@ export default function App() {
           headerOffset={controlsBarHeight}
           liturgyExpanded={liturgyOutlineExpanded}
           onToggleLiturgyLevel={toggleLiturgyOutline}
+          extraScrollOffset={currentService.key === 'liturgy' ? liturgyStripHeight : 0}
         />
         {currentService.key === 'psalter_service' && (
           <PsalterOutline
@@ -16773,7 +16857,8 @@ export default function App() {
                     return (
                       <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
                         {liturgyVariant === 'basil' ? 'Liturgy of St. Basil the Great' : 'Liturgy of St. John Chrysostom'}
-                        {' '}· St. Tikhon's Seminary Press, 3rd ed. (2008) · Fixed order; movable parts assemble in a later release
+                        {' '}· St. Tikhon's Seminary Press, 3rd ed. (2008) · Readings, prokeimenon, Alleluia and communion hymn from the{' '}
+                        <Tooltip term="menaion">Menaion</Tooltip>, <Tooltip term="octoechos">Octoechos</Tooltip> and lectionary · Troparia and kontakia order: Phase 3
                         {appointed === 'presanctified' && ' · A Lenten weekday — the Presanctified Liturgy is appointed and is not assembled here'}
                       </div>
                     );
@@ -16877,7 +16962,8 @@ export default function App() {
                     variant={liturgyVariant} onVariant={switchLiturgyVariant}
                     appointed={getLiturgyType(liturgicalData)}
                     view={liturgyView} onView={setLiturgyViewKey}
-                    stickyTop={(controlsBarHeight || 0) + 6} />
+                    stickyTop={(controlsBarHeight || 0) + 6}
+                    onHeight={setLiturgyStripHeight} />
                 )}
                 {elements
                   .filter(el => !(el.openingElement && voOpen))
