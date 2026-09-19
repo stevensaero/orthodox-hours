@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.50.0** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
+**Tool version: v0.50.1** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -38,14 +38,23 @@ Typica propers port, the temple picker fixed twice on Bill's pickups).
   "kontakion of Thomas Sunday" read as the preceding Sunday's (noted on the
   element). Coverage is the data's: P+19, P+35–P+56.
 
-### BILL'S QUESTION — the dedication list
+### THE DEDICATION LIST — derived from the data (v0.50.1, Bill's decision)
 
-The temple picker offers the curated `TEMPLE_DEDICATIONS` (~30 ids), not every
-encoded commemoration. Bill expects any encoded saint/feast with a troparion to
-be choosable as a temple. Proposal (shared component, so a decision): build the
-picker's list as the curated entries plus every loaded Menaion/Pentecostarion
-entry with a troparion, under a group "Other encoded commemorations". Preload
-already loads the dedication's month by `dataKey`. Awaiting Bill's go-ahead.
+Bill: any encoded saint/feast with a troparion must be choosable as a temple,
+and the list must grow with encoding by enforcement, not by hand.
+`tools/build_temple_index.mjs` generates `src/data/temple_index.js` (committed;
+94 entries; forefeast/afterfeast/leavetaking/"Saturday before" entries and
+curated duplicates excluded; `type` by name heuristic). `--check` is in
+`npm run gate` and `npm run validate`; `github_workflow_prompt.md` lists it as
+the fifth edit and a post-encoding step. `TEMPLE_DEDICATIONS_ALL` (curated ∪
+index) feeds `findTempleDedication`, the picker, the preload and the Liturgy's
+temple type. Verified: a July saint as the temple on a September Sunday
+resolves (July preloads) in both Liturgy and Typica.
+
+**Picker placement:** it stands at the top of the movement whose order it
+governs (the Liturgy's Troparia and Kontakia; the Typica's kontakia; the
+Litiya), above the hymns it changes — Bill's requirement that the choice be
+seen applied directly below. It is not in the sticky strip on purpose.
 
 
 **Session September 19, 2026 (thirty-sixth) — THE LITTLE ENTRANCE AND THE

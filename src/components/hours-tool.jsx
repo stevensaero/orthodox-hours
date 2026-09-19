@@ -10,6 +10,7 @@ import { readingsForDay } from '../lib/readings.js';
 import { assembleLiturgy, LITURGY_VIEW_DEFAULTS, insertAnchors } from '../lib/liturgy-assembler.js';
 import { DAILY_TROPARIA, DAILY_TROPARIA_SOURCE } from '../data/liturgy/daily_troparia.js';
 import { resolveLiturgyPropers } from '../lib/liturgy-propers.js';
+import { TEMPLE_INDEX } from '../data/temple_index.js';
 import Bulletin from './bulletin.jsx';
 
 
@@ -2896,11 +2897,21 @@ const TEMPLE_DEDICATIONS = [
   { id: "pentecost",          label: "Pentecost",                     category: "Feasts & sacred events", source: "pentecostarion", dataKey: 49, note: "Same as Holy Trinity" },
 ];
 
+// ALL dedications = the curated list + every encoded Menaion commemoration
+// with a troparion (src/data/temple_index.js, generated from the data by
+// tools/build_temple_index.mjs and checked stale by npm run gate). The picker,
+// the resolvers and the preload all read this union, so an encoding session
+// grows the list by construction — never by hand (Bill, Sept 19 2026).
+const TEMPLE_DEDICATIONS_ALL = [...TEMPLE_DEDICATIONS, ...TEMPLE_INDEX];
+const findTempleDedication = (id) => TEMPLE_DEDICATIONS_ALL.find(d => d.id === id);
+// Index entries carry a `type`; curated entries derive it from their category.
+const templeTypeOf = (ded) => ded.type || (ded.category === "The Lord & Holy Trinity" ? "lord" : ded.category === "The Theotokos" ? "theotokos" : "saint");
+
 // Resolve a temple dedication to its troparion from live data.
 // Returns { tone, text, saint, source } or null if data not yet encoded.
 // Uses module-level caches directly (_menaionCache, _pentecostarionCache).
 function resolveTempleTroparion(dedicationId) {
-  const ded = TEMPLE_DEDICATIONS.find(d => d.id === dedicationId);
+  const ded = findTempleDedication(dedicationId);
   if (!ded) return null;
   if (ded.source === "pentecostarion") {
     const pentData = _pentecostarionCache || {};
@@ -2921,7 +2932,7 @@ function resolveTempleTroparion(dedicationId) {
 // Resolve a temple dedication to its kontakion from live data.
 // Returns { tone, text, saint, source } or null if data not yet encoded.
 function resolveTempleKontakion(dedicationId) {
-  const ded = TEMPLE_DEDICATIONS.find(d => d.id === dedicationId);
+  const ded = findTempleDedication(dedicationId);
   if (!ded) return null;
   if (ded.source === "pentecostarion") {
     const pentData = _pentecostarionCache || {};
@@ -5564,8 +5575,8 @@ const DISMISSAL_TEMPLE_PLACEHOLDER = "(Temple Commemoration)";
 // Resolve a temple dedication id to its display name for the intercession list.
 function resolveTempleName(dedicationId) {
   if (!dedicationId || dedicationId === "none") return null;
-  const ded = TEMPLE_DEDICATIONS.find(d => d.id === dedicationId);
-  return ded ? ded.label : null;
+  const ded = findTempleDedication(dedicationId);
+  return ded ? (ded.fullLabel || ded.label) : null;
 }
 
 // Clean a commemoration name for the saint-of-day slot (Q4 — flagged for review).
@@ -6616,7 +6627,10 @@ function TempleSelector({ availableDedications, onSelect, currentId, resolvedTro
   // Group available dedications by category
   const grouped = {};
   const primaryIds = new Set();
+  // The curated categories, then any further group the available list carries
+  // (the generated index groups encoded commemorations by month).
   const categories = ["The Lord & Holy Trinity", "The Theotokos", "Saints & archangels", "Feasts & sacred events"];
+  availableDedications.forEach(d => { if (d.category && !categories.includes(d.category)) categories.push(d.category); });
 
   // Primary list: top ~15 most common OCA dedications (if available)
   const primaryOrder = [
@@ -7474,9 +7488,14 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
   if (element.type === 'temple_selector') {
     const isKontakionMode = element.templeMode === "kontakion";
     // Compute available dedications: only those whose data is encoded with a troparion
-    const available = TEMPLE_DEDICATIONS.filter(d => {
-      const trop = resolveTempleTroparion(d.id);
-      return trop !== null;
+    // Every dedication whose data exists: curated entries when their month is
+    // loaded (Pentecostarion ones always resolve), and every index entry — the
+    // index is built from the data, so it exists by construction; choosing one
+    // triggers the preload of its month.
+    const available = TEMPLE_DEDICATIONS_ALL.filter(d => {
+      if (TEMPLE_INDEX.includes(d)) return true;
+      if (d.source === "menaion" && TEMPLE_INDEX.some(x => x.dataKey === d.dataKey)) return true;
+      return resolveTempleTroparion(d.id) !== null;
     });
     // Resolve current selection — kontakion for Typica, troparion for Litiya
     let resolved = null;
@@ -8776,6 +8795,29 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.50.1",
+    date: "September 2026",
+    summary: "Any encoded commemoration can be the temple — the dedication list is derived from the data and gated at rebuild",
+    items: [
+      "THE DEDICATION LIST IS NOW BUILT FROM THE MENAION. tools/build_temple_index.mjs " +
+      "walks every month file and writes src/data/temple_index.js: every service with a " +
+      "troparion becomes a choosable temple dedication (94 today, grouped by month under " +
+      "'Encoded commemorations'), except entries that are not dedications by nature — a " +
+      "forefeast, afterfeast, leavetaking or a 'Saturday/Sunday before/after' — and " +
+      "those the curated list already carries. The curated forty keep their categories.",
+      "ENFORCED AT REBUILD, AS BILL ASKED. npm run gate and npm run validate run the " +
+      "index in --check mode and fail while it is stale, so an encoding session cannot " +
+      "ship without the picker growing with it. The GitHub workflow doc lists it as the " +
+      "fifth edit for a new month, and a required step after any encoding session.",
+      "ONE PICKER, ONE SETTING. Litiya, Typica and Liturgy all read the union through " +
+      "the same resolvers and the same parish_dedication; choosing a saint from another " +
+      "month preloads that month, so the dedication resolves on any date. For the " +
+      "Liturgy's Little Entrance tables an index entry's type (the Lord, the Theotokos, " +
+      "a saint) is read from its printed name; the curated list stays authoritative " +
+      "where the two overlap.",
+    ],
+  },
   {
     version: "v0.50.0",
     date: "September 2026",
@@ -15790,7 +15832,7 @@ export default function App() {
     // Also preload the month for the temple dedication if set
     const dedMonths = new Set();
     if (templeDedication && templeDedication !== "none") {
-      const ded = TEMPLE_DEDICATIONS.find(d => d.id === templeDedication);
+      const ded = findTempleDedication(templeDedication);
       if (ded && ded.source === "menaion" && typeof ded.dataKey === "string") {
         dedMonths.add(ded.dataKey.substring(0, 2));
       }
@@ -16132,9 +16174,9 @@ export default function App() {
           sundayKontakion: srcSunKontakion,
           temple: (() => {
             if (!templeDedication || templeDedication === 'none') return null;
-            const ded = TEMPLE_DEDICATIONS.find(d => d.id === templeDedication);
+            const ded = findTempleDedication(templeDedication);
             if (!ded) return null;
-            const type = ded.category === 'The Lord & Holy Trinity' ? 'lord' : ded.category === 'The Theotokos' ? 'theotokos' : 'saint';
+            const type = templeTypeOf(ded);
             const tr = resolveTempleTroparion(templeDedication), ko = resolveTempleKontakion(templeDedication);
             return { type, label: ded.label, troparion: tr ? { tone: tr.tone, text: tr.text } : null, kontakion: ko ? { tone: ko.tone, text: ko.text } : null };
           })(),

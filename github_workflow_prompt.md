@@ -48,10 +48,15 @@ wrong; September v0.43.0 shipped half-wired because of it:
 4. Add the import, comment-map entry and `walk()` call in
    `tools/validate_entries.mjs`, and add the filename to
    `VALIDATOR_MONTH_FILES`
+5. Run `node tools/build_temple_index.mjs` and commit the regenerated
+   `src/data/temple_index.js` — every encoded commemoration with a troparion
+   becomes a choosable temple dedication. **Do this after ANY encoding
+   session, not only a new month**: `npm run gate` and `npm run validate`
+   fail while the index is stale.
 
-`validate_entries.mjs` **Check H** now gates all four against the contents of
-`src/data/menaion/` and fails the build on drift, so a half-wired month cannot
-ship again. No placeholders needed for unencoded months.
+`validate_entries.mjs` **Check H** now gates the first four against the contents
+of `src/data/menaion/` and fails the build on drift, so a half-wired month cannot
+ship again; `build_temple_index.mjs --check` gates the fifth. No placeholders needed for unencoded months.
 
 **Pentecostarion data — single point of truth:**
 ```
