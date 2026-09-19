@@ -8589,6 +8589,33 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.46.5",
+    date: "September 2026",
+    summary: "The Divine Liturgy data module lands in the repo — Phase 0 of the Liturgy assembler",
+    items: [
+      "THE ENCODED LITURGY IS NOW IN THE REPO. src/data/liturgy/chrysostom.js is a " +
+      "verbatim copy of the diocese encoding module: 624 units of the Liturgy of " +
+      "St. John Chrysostom (Liturgy proper, pp.31–86 of the St. Tikhon's 2008 " +
+      "edition) plus the St. Basil overlay — 28 overridden prayers and 4 " +
+      "Basil-only insertions — served by getLiturgy(variant). Nothing in the " +
+      "tool reads it yet; the service stays behind the 'soon' pill until Phase 2.",
+      "A CLOSED MOVEMENT VOCABULARY. src/data/liturgy/registry.js holds the 41 " +
+      "movements in order, which of them the book's own rubrics say vary by day " +
+      "(the assembler's hook points), which form the overview outline, and the " +
+      "TEACHING_RUBRICS — the rubric units that tell the reader what is " +
+      "appointed today, which the rubric-hiding toggle will never hide.",
+      "A GATE. tools/validate_liturgy.mjs (npm run validate:liturgy, also in " +
+      "npm run gate) checks vocabulary, movement order, id uniqueness, override " +
+      "and insert-chain resolution, never-blank fields and the 624/628 counts.",
+      "THE REVIEW PAGE MOVED WITH IT. tools/liturgy_preview/ carries the " +
+      "reassembly page and its builder, repointed at the repo data file, so the " +
+      "Chrysostom/Basil comparison view keeps working from the single point of truth.",
+      "TWO SPECS AT THE ROOT. liturgy_assembler_spec.md is the approved " +
+      "integration plan (phases, hooks, rendering, decisions); " +
+      "divine_liturgy_chrysostom_encoding_spec.md is the encoding history, now at v24.",
+    ],
+  },
+  {
     version: "v0.46.4",
     date: "September 2026",
     summary: "Verse numbers are gold superscripts again, and the pilcrow chapter marker is gone",
