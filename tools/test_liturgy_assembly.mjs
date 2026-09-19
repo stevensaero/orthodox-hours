@@ -22,6 +22,10 @@
 //     evangelist), Trisagion replacement, zadostoinik (instead_of_* first,
 //     zadostoinik_* fallback), departed litany gated, dismissal replaced
 //
+// …and the Phase 3 contract (liturgy-entrance.js): Beatitude troparia counted
+// and interleaved per Fekula ch.1/ch.2, the Little Entrance order by day ×
+// rank × feast period × temple, with the temple selector when none is set.
+//
 // Usage:  node tools/test_liturgy_assembly.mjs
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -107,18 +111,36 @@ check(assembleLiturgy({ units: [] }).length === 0, "empty units → empty elemen
 // ── Phase 2: hooks over real data ───────────────────────────────────────────
 await OctoV2.loadV2Tone(7);
 const entry = (k) => { const e = september[k]; return Array.isArray(e) ? e[0] : e; };
-const sources = {
+const FIXED_K = { departed: { tone: 8, text: "With the saints give rest…" }, protectress: { tone: null, text: "O protection of Christians…" } };
+const TEMPLES = {
+  lord: { type: "lord", label: "Holy Cross", troparion: { tone: 1, text: "Save, O Lord, Thy people…" }, kontakion: { tone: 4, text: "O Thou Who wast lifted up…" } },
+  theotokos: { type: "theotokos", label: "Dormition", troparion: { tone: 1, text: "In giving birth…" }, kontakion: { tone: 2, text: "Neither the tomb…" } },
+  saint: { type: "saint", label: "St. Nicholas", troparion: { tone: 4, text: "The truth of things…" }, kontakion: { tone: 3, text: "In Myra…" } },
+};
+const DOW_K = { 1: [{ label: "Kontakion — Bodiless Hosts", tone: 2, text: "Supreme commanders…" }], 2: [{ label: "Kontakion — Forerunner", tone: 2, text: "O Prophet…" }], 3: [{ label: "Kontakion — the Holy Cross", tone: 4, text: "Lifted up…" }],
+  4: [{ label: "Kontakion — Apostles", tone: 2, text: "Thou hast taken…" }, { label: "Kontakion — St Nicholas", tone: 3, text: "In Myra…" }], 5: [{ label: "Kontakion — the Holy Cross", tone: 4, text: "Lifted up…" }], 6: [{ label: "Kontakion of the Martyrs (Saturday)", tone: 8, text: "To Thee, O Lord, the Planter…" }] };
+const baseSources = {
   sunProkeimenon: (t) => OctoV2.getV2LiturgyProkeimenon(t),
   sunAlleluia: (t) => OctoV2.getV2LiturgyAlleluia(t),
   dailyPropers: (k) => OctoV2.getV2DailyLiturgyPropers(k),
   readingsForDay,
   dismissal: (author) => ({ type: "fixed", label: "Dismissal", rubric: "Priest:", text: "May Christ our true God… (" + author + ")" }),
+  sundayTroparion: (t) => OctoV2.getV2Troparion(t),
+  sundayKontakion: (t) => OctoV2.getV2Kontakion(t),
+  dowKontakia: (d) => DOW_K[d] || [],
+  dowTroparia: () => null,
+  departedKontakion: FIXED_K.departed, protectress: FIXED_K.protectress,
+  sundayBeatitudes: (t) => OctoV2.resolveV2Ref(`tone${t}.liturgy.beatitudes`, t) || null,
+  weekdayBeatitudes: (t, d) => OctoV2.resolveV2Ref(`tone${t}.liturgy_weekday.${d}.beatitudes`, t) || null,
 };
 const units = getLiturgy("chrysostom");
+const feastOf = (k) => { const e = entry(k); return e ? { name: e.saint, troparion: e.troparion, kontakion: e.kontakion_ode6 || e.kontakion_ode3 } : null; };
 const run = (ld, e, extra = {}) => assembleLiturgy({ units, view: { rubrics: true, quiet: true }, ctx: {
   liturgicalData: ld, menaionEntry: e, pentEntry: null,
   dailyReading: extra.dailyReading || { e: "Romans 5:1-10 (§88)", g: "Matthew 6:22-33 (§18)" },
-  feastReading: e && (e.feast_e || e.feast_g) ? { e: e.feast_e, g: e.feast_g } : null, sources } });
+  feastReading: e && (e.feast_e || e.feast_g) ? { e: e.feast_e, g: e.feast_g } : null,
+  sources: { ...baseSources, temple: extra.temple === undefined ? TEMPLES.saint : extra.temple, feast: extra.feast || null } } });
+const sources = baseSources;
 const byId = (els, id) => els.find(x => x.id === id);
 const section = (els, m) => byId(els, "mv-" + m);
 const textOf = (els, unitId) => { const x = els.find(y => y.unitId === unitId); return x ? x.text : null; };
@@ -198,6 +220,92 @@ const textOf = (els, unitId) => { const x = els.find(y => y.unitId === unitId); 
   const els = assembleLiturgy({ units });
   check(!els.some(x => x.type === "prokeimenon" || x.type === "omission"), "no ctx: fixed skeleton only");
 }
+// ── Phase 3: Little Entrance order and Beatitudes ───────────────────────────
+const tk = (els) => els.filter(x => /^lit-tk-\d+-/.test(x.id));
+const slotsOf = (els) => tk(els).map(x => x.id.replace(/^lit-tk-\d+-/, "").replace(/-\d+$/, ""));
+const beats = (els) => els.filter(x => /^lit-beat-\d+$/.test(x.id));
+const cross = { name: "Elevation of the Holy Cross", forLord: true, month: 9, day: 14 };
+const nativityT = { name: "Nativity of the Theotokos", month: 9, day: 8 };
+// A. Sunday, six-stichera, ordinary time, temple of a saint (§1C): 10 Beatitudes, 7 slots ending Protection of Christians
+{
+  const els = run({ dow: 0, isSunday: true, season: "sunday", tone: 7 }, entry("09-06"));
+  check(slotsOf(els).join(",") === "sunday_troparion,temple_troparion,saint_troparion,sunday_kontakion,temple_kontakion,saint_kontakion,steadfast_protectress", "§1C saint temple order: " + slotsOf(els).join(","));
+  check(!section(els, "troparia_kontakia").unresolved, "§1C: entrance resolved");
+  check(/Tone 7/.test(section(els, "troparia_kontakia").toneLabel || ""), "§1C: tone label carries the Sunday tone");
+  check(beats(els).length === 10, `§1C: ${beats(els).length} Beatitude troparia, expected 10`);
+  check(byId(els, "lit-a3-glory") && byId(els, "lit-a3-bothnow"), "§1C: Glory / Now and ever lines emitted");
+  
+  // first troparion sits after the verse marked "(on 10)" = a3-05
+  const i05 = els.findIndex(x => x.unitId === "a3-05"), i04 = els.findIndex(x => x.unitId === "a3-04");
+  check(els[i05 + 1] && els[i05 + 1].id === "lit-beat-0" && !(els[i04 + 1] && /^lit-beat/.test(els[i04 + 1].id)), "§1C: interleave starts at 'on 10'");
+}
+// B. Sunday simple saint (09-27), temple of the Lord (§1A): 8 resurrectional, 4 slots, no temple
+{
+  const els = run({ dow: 0, isSunday: true, season: "sunday", tone: 7 }, entry("09-27"), { temple: TEMPLES.lord });
+  check(slotsOf(els).join(",") === "sunday_troparion,saint_troparion,saint_kontakion,sunday_kontakion", "§1A Lord temple order: " + slotsOf(els).join(","));
+  check(beats(els).length === 8 && /Triadicon/.test(beats(els)[6].label), "§1A: eight of the resurrection with the Triadicon at Glory");
+}
+// C. No temple set: selector + unresolved
+{
+  const els = run({ dow: 0, isSunday: true, season: "sunday", tone: 7 }, entry("09-06"), { temple: null });
+  check(byId(els, "lit-tk-temple") && byId(els, "lit-tk-temple").type === "temple_selector", "no temple: selector emitted");
+  check(section(els, "troparia_kontakia").unresolved, "no temple: section unresolved");
+}
+// D. Sunday in the afterfeast of the Cross (09-20), temple of a saint (§1F1): feast slots, 12 Beatitudes
+{
+  const els = run({ dow: 0, isSunday: true, season: "afterfeast", tone: 7, feastPeriod: { periodType: "afterfeast", feast: cross } }, entry("09-20"), { feast: feastOf("09-14") });
+  check(slotsOf(els).join(",") === "sunday_troparion,feast_troparion,temple_troparion,saint_troparion,sunday_kontakion,temple_kontakion,saint_kontakion,feast_kontakion", "§1F1 order: " + slotsOf(els).join(","));
+  check(tk(els).some(x => /Troparion of the Feast/.test(x.label) && /Save,? O Lord/.test(x.text)), "§1F1: feast troparion is the Cross's (09-14 entry)");
+  check(beats(els).length === 12, `§1F1: ${beats(els).length} Beatitude troparia, expected 12 (4 res + 4 feast + 4 saint)`);
+  check(!section(els, "troparia_kontakia").unresolved, "§1F1: resolved");
+}
+// E. Monday, six-stichera saint (09-06), temple of the Lord (§2C → §2A mtt): dow troparion unresolved, rest resolved
+{
+  const els = run({ dow: 1, isSunday: false, season: "ordinary", tone: 7 }, entry("09-06"), { temple: TEMPLES.lord });
+  check(slotsOf(els).join(",") === "temple_troparion,dow_troparion,saint_troparion,dow_kontakion,saint_kontakion,departed_kontakion,temple_kontakion", "§2A Lord Mon order: " + slotsOf(els).join(","));
+  check(section(els, "troparia_kontakia").unresolved && tk(els).some(x => x.unresolved && /day of the week/.test(x.label)), "§2A: dow troparion flagged (not encoded)");
+  check(beats(els).length === 8 && /Ode III/.test(beats(els)[4].label), "§2C: 4 Octoechos then 4 Menaion Ode III");
+}
+// F. Thursday, temple of a saint: two dow kontakia; Saturday Lord temple: departed at Glory, Martyrs at Now
+{
+  const th = run({ dow: 4, isSunday: false, season: "ordinary", tone: 7 }, entry("09-27"));
+  check(tk(th).filter(x => /^lit-tk-\d+-dow_kontakion/.test(x.id)).length === 2, "§2A Thursday: two kontakia of the day");
+  check(beats(th).length === 6, "§2A simple, no Menaion troparia: six from the Octoechos");
+  const sa = run({ dow: 6, isSunday: false, season: "ordinary", tone: 7 }, entry("09-27"), { temple: TEMPLES.lord });
+  check(slotsOf(sa).join(",") === "temple_troparion,dow_troparion,saint_troparion,temple_kontakion,saint_kontakion,departed_kontakion,dow_kontakion", "§2A Saturday order: " + slotsOf(sa).join(","));
+  check(tk(sa).some(x => /Martyrs/.test(x.label)), "§2A Saturday: the Martyrs' kontakion at Now and ever");
+}
+// G. Polyeleos weekday (09-05), temple of the Theotokos (§2E): 4 slots; Beatitudes 4+4 from the Menaion
+{
+  const els = run({ dow: 2, isSunday: false, season: "ordinary", tone: 7 }, entry("09-05"), { temple: TEMPLES.theotokos });
+  check(slotsOf(els).join(",") === "temple_troparion,saint_troparion,saint_kontakion,temple_kontakion", "§2E order: " + slotsOf(els).join(","));
+  check(!section(els, "troparia_kontakia").unresolved, "§2E: resolved");
+  check(beats(els).length === 8 && /Ode III/.test(beats(els)[0].label) && /Ode VI/.test(beats(els)[7].label), "§2E: four from Ode III and four from Ode VI");
+}
+// H. Vigil weekday (09-26), temple of a saint (§2F): temple slots dropped
+{
+  const els = run({ dow: 5, isSunday: false, season: "ordinary", tone: 7 }, entry("09-26"));
+  check(slotsOf(els).join(",") === "saint_troparion,saint_kontakion,steadfast_protectress", "§2F vigil, saint temple: " + slotsOf(els).join(","));
+}
+// I. Weekday in the afterfeast of the Nativity of the Theotokos (09-12 is the apodosis: §2G3)
+{
+  const els = run({ dow: 3, isSunday: false, season: "apodosis", tone: 7, feastPeriod: { periodType: "apodosis", feast: nativityT } }, entry("09-12"), { feast: feastOf("09-08") });
+  check(slotsOf(els).join(",") === "feast_troparion,feast_kontakion", "§2G3 apodosis: " + slotsOf(els).join(","));
+  check(tk(els)[1] && /^Glory… Now and ever…/.test(tk(els)[1].label), "§2G3: single Glory… Now and ever… on the feast kontakion");
+}
+// J. Great Feast day (09-14): feast troparion + kontakion; Beatitudes flagged (festal antiphons)
+{
+  const els = run({ dow: 1, isSunday: false, season: "great_feast", tone: 7, feastPeriod: { periodType: "feast", feast: cross } }, entry("09-14"), { feast: feastOf("09-14") });
+  check(slotsOf(els).join(",") === "feast_troparion,feast_kontakion", "Great Feast: " + slotsOf(els).join(","));
+  check(beats(els).length === 0 && section(els, "antiphon_3").unresolved, "Great Feast: no Beatitude troparia; antiphons flagged");
+}
+// K. Pentecostarion: both flagged, not guessed
+{
+  const els = run({ dow: 1, isSunday: false, season: "pentecostarion", isPentecostarion: true, tone: 3 }, entry("09-27"));
+  check(section(els, "troparia_kontakia").unresolved && byId(els, "lit-tk-order"), "Pentecostarion: entrance order flagged (ch.4 table not encoded)");
+  check(section(els, "antiphon_3").unresolved, "Pentecostarion: Beatitudes flagged");
+}
+
 // Every replaced/filled line keeps its unitId and never leaks a blank
 for (const els of [run({ dow: 0, isSunday: true, season: "sunday", tone: 7 }, entry("09-20"))]) {
   for (const id of ["pk-06", "al-02", "ep-02", "go-02", "go-04", "go-11", "le-10"]) {
@@ -207,6 +315,6 @@ for (const els of [run({ dow: 0, isSunday: true, season: "sunday", tone: 7 }, en
 }
 
 const overview = assembleLiturgy({ units: getLiturgy("chrysostom") }).filter(e => e.type === "liturgy_section" && e.core).length;
-console.log(`liturgy assembly: ${MOVEMENT_ORDER.length} movements (${overview} core), 2 variants × ${VIEWS.length} views, ${Object.keys(BASIL_INSERTS).length} insert anchors, 6 hook scenarios`);
+console.log(`liturgy assembly: ${MOVEMENT_ORDER.length} movements (${overview} core), 2 variants × ${VIEWS.length} views, ${Object.keys(BASIL_INSERTS).length} insert anchors, 6 hook scenarios, 11 entrance/Beatitudes scenarios`);
 console.log(failures ? `${failures} failure(s)` : "OK");
 process.exit(failures ? 1 : 0);

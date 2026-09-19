@@ -21,6 +21,7 @@
 import { MOVEMENT_BY_ID, TEACHING_RUBRICS, VARIANT_TITLES } from "../data/liturgy/registry.js";
 import { resolveLiturgyPropers, toneLabelFor, trisagionReplacement, zadostoinikFor, entranceClause,
          evangelistOf, epistleTitle } from "./liturgy-propers.js";
+import { resolveEntrance, resolveBeatitudes } from "./liturgy-entrance.js";
 
 export const LITURGY_VIEW_DEFAULTS = Object.freeze({ rubrics: false, quiet: false, markDiff: true });
 
@@ -143,7 +144,10 @@ const EMPTY_HOOKS = Object.freeze({ before: {}, after: {}, replace: {}, skip: ne
 //
 // ctx = { liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading,
 //         sources: { sunProkeimenon, sunAlleluia, dailyPropers, readingsForDay,
-//                    dismissal(variant) → element | null } }
+//                    dismissal(variant) → element | null,
+//                    sundayTroparion, sundayKontakion, temple, feast, dowKontakia,
+//                    dowTroparia, departedKontakion, protectress,
+//                    sundayBeatitudes(tone), weekdayBeatitudes(tone, dayKey) } }
 function planHooks(ctx, variant) {
   const { liturgicalData: ld = {}, menaionEntry = null, pentEntry = null, dailyReading = null, feastReading = null, sources = {} } = ctx;
   const h = { before: {}, after: {}, replace: {}, skip: new Set(), section: {} };
@@ -180,11 +184,37 @@ function planHooks(ctx, variant) {
     }
   }
 
-  // ── Troparia and kontakia (Phase 3) ──────────────────────────────────────
-  h.section.troparia_kontakia = { unresolved: true };
-  h.after["tk-01"] = [unresolved("lit-tk-order", "Troparia and Kontakia",
-    "The appointed troparia and kontakia in their Fekula order (Sunday/weekday, rank, forefeast/afterfeast, temple dedication) land in Phase 3.",
-    { section: "ch.1 / ch.2", note: "Order of the troparia and kontakia after the Little Entrance — Phase 3." })];
+  // ── Beatitudes: the troparia interleaved into the last N verses ──────────
+  // The book marks the verses "(on 12)", "(on 10)", "(on 8)": N troparia occupy
+  // the last N of twelve slots — ten verses (a3-03…a3-12), then Glory…, then
+  // Now and ever…. liturgy-entrance.js decides N and the sources (Fekula ch.1/2).
+  if (!isGreatFeast) {
+    const b = resolveBeatitudes({ liturgicalData: ld, menaionEntry, sources });
+    const VERSES = ["a3-03", "a3-04", "a3-05", "a3-06", "a3-07", "a3-08", "a3-09", "a3-10", "a3-11", "a3-12"];
+    const cite = { section: b.section, note: [b.quote, ...(b.notes || [])].filter(Boolean).join(" ") };
+    if (b.troparia.length && !b.unresolved) {
+      const N = b.troparia.length, start = 12 - N;
+      const trop = (i, k) => mov("lit-beat-" + k, "Troparion " + (k + 1) + " of " + N + " · " + b.troparia[k].label, b.troparia[k].text,
+        { source: b.troparia[k].source, ...(b.troparia[k].path ? { srcPath: b.troparia[k].path } : {}), fekula: k === 0 ? cite : { section: b.section, note: b.troparia[k].label } });
+      VERSES.forEach((vid, i) => { if (i >= start) h.after[vid] = [trop(i, i - start)]; });
+      const line = (id, text) => ({ id: "lit-" + id, unitId: id, type: "liturgy_unit", kind: "line", movement: "antiphon_3", speaker: "choir", mode: null, cue: null, variantTag: null, markDiff: false, resolvedBlank: true, text });
+      const tail = [];
+      if (10 >= start) tail.push(line("a3-glory", "Glory to the Father, and to the Son, and to the Holy Spirit."), trop(10, 10 - start));
+      if (11 >= start) tail.push(line("a3-bothnow", "Now and ever, and unto ages of ages. Amen."), trop(11, 11 - start));
+      h.after["a3-12"] = [...(h.after["a3-12"] || []), ...tail];
+      h.section.antiphon_3 = { toneLabel: null };
+    } else {
+      h.section.antiphon_3 = { unresolved: true };
+      h.after["a3-01"] = [unresolved("lit-beat-none", "Beatitude troparia", (b.notes && b.notes.join(" ")) || ("Expected " + b.count + " troparia; " + b.troparia.length + " resolved."), cite)];
+    }
+  }
+
+  // ── Troparia and kontakia after the Little Entrance (Fekula ch.1 / ch.2) ─
+  {
+    const r = resolveEntrance({ liturgicalData: ld, menaionEntry, sources });
+    h.after["tk-01"] = r.elements;
+    h.section.troparia_kontakia = { toneLabel: r.toneLabel, unresolved: r.unresolved };
+  }
 
   // ── Trisagion replacement ────────────────────────────────────────────────
   {

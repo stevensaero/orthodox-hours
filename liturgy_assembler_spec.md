@@ -1,6 +1,6 @@
 # Divine Liturgy Assembler — Integration Spec (v1.1)
 
-**Status:** APPROVED with amendments (Bill, Sept 19 2026) — see §5. Phase 0 landed at v0.46.5; Phase 1 at v0.47.0; Phase 2 at v0.48.0; `built: true` at v0.48.1.
+**Status:** APPROVED with amendments (Bill, Sept 19 2026) — see §5. Phase 0 landed at v0.46.5; Phase 1 at v0.47.0; Phase 2 at v0.48.0; `built: true` at v0.48.1; Phase 3 at v0.49.0.
 **Baseline:** orthodox-hours at `dd13dac`, tool v0.46.4 (badge and notes header agree).
 **Data:** `src/data/liturgy/chrysostom.js` — 624 Chrysostom units, 628 Basil
 (28 overrides, 4 inserts, 0 pending); encoding spec at v24 (repo root).
@@ -234,10 +234,11 @@ saint, if there be such"); the Typica keeps its older routing until Bill decides
 on the port (notes, thirty-fifth session). `built: true` followed at **v0.48.1** on Bill's
 confirmation (Sept 19 2026).
 
-**Phase 3 — the Little Entrance and the Beatitudes.** `LITTLE_ENTRANCE_ORDER` from
-Fekula ch.1/ch.2/ch.4, `srcSunBeatitudes` accessor, Beatitude troparia interleave.
-This is the piece with the most rubric surface and the one the diocese most wants;
-it gets its own review pass against the chapter texts before code. **v0.48.0 / v0.49.0.**
+**Phase 3 — the Little Entrance and the Beatitudes. DONE, v0.49.0** (ch.1 and
+ch.2; ch.4 Pentecostarion is Phase 3b). `src/lib/liturgy-entrance.js` holds the
+tables and the Beatitudes counts; the app injects temple, feast-day entry,
+day-of-week kontakia and the Octoechos V2 Beatitudes. Data gap: the Horologion's
+troparia of the day of the week (a §2A weekday slot reads Unresolved until encoded).
 
 **Deferred, on record:** festal antiphons (needs V1 field vocabulary + encoding from
 the book's Appendices VI–VII; transcription, so subject to the v22 method);

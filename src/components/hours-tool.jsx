@@ -8848,6 +8848,51 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.49.0",
+    date: "September 2026",
+    summary: "The Little Entrance and the Beatitudes — Phase 3: Fekula's troparia/kontakia order and the interleaved troparia",
+    items: [
+      "THE TROPARIA AND KONTAKIA AFTER THE LITTLE ENTRANCE, IN FEKULA'S ORDER. " +
+      "src/lib/liturgy-entrance.js carries chapter 1 and chapter 2 as tables: " +
+      "Sunday (§1A, §1B double, §1C/§1D/§1E, a feast of the Theotokos on Sunday, " +
+      "§1F1/§1F2 in a forefeast or afterfeast, §1F3 apodosis) and weekday (§2A by " +
+      "day of week — Mon/Tue/Thu, Wed/Fri, Sat — with §2B/§2C deferring to it, " +
+      "§2D/§2E/§2F, §2G1/§2G2, §2G3/§2G4), each by temple dedication: the Lord, " +
+      "the Theotokos, or a saint. Vigil rank in a temple of a saint drops the " +
+      "temple's hymns, as §1E, §1F2 and §2F print it. Every footnote that " +
+      "changes the order rides on the Fekula badge.",
+      "THE TEMPLE DECIDES THE TABLE. With no parish dedication chosen, the " +
+      "section shows the temple selector and reads Unresolved; choose one and " +
+      "the order assembles. The dedication's category (the Lord, the Theotokos, " +
+      "a saint) picks the block.",
+      "THE FEAST'S OWN HYMNS COME FROM THE FEAST DAY. In a forefeast, afterfeast " +
+      "or apodosis the troparion and kontakion of the feast are read from the " +
+      "feast day's Menaion entry (§2G3: 'materials for the feast are taken from " +
+      "the service in the Menaion for the feast day itself'), not inferred from " +
+      "the afterfeast day's second printed troparion.",
+      "THE BEATITUDE TROPARIA ARE INTERLEAVED. The book marks the verses " +
+      "'(on 12)', '(on 10)', '(on 8)'; the assembler counts N per Fekula and " +
+      "sets the troparia into the last N of twelve slots — ten verses, then " +
+      "Glory…, then Now and ever…. Sunday: eight of the resurrection (§1A), six " +
+      "plus four from Ode III (§1C/§1E), six plus four of the feast or four + " +
+      "four + four with a saint (§1F1/§1F2), six plus four from Ode IX (§1F3). " +
+      "Weekday: four from Ode III before the Octoechos' four (§2A), the " +
+      "Octoechos first at six-stichera (§2C), four and four from the Menaion at " +
+      "doxology and above (§2D–§2F), the feast's at §2G1–§2G4; otherwise six " +
+      "from the Octoechos. A Menaion item noted '(Twice)' is sung twice.",
+      "STILL FLAGGED. The Horologion's troparia of the day of the week are not " +
+      "encoded, so a §2A weekday shows that one slot Unresolved (the kontakia of " +
+      "the day are in). The Pentecostarion table (ch.4 pp.169–170) and its " +
+      "Beatitudes are Phase 3b. Festal antiphons remain a data gap.",
+      "GATE: eleven entrance and Beatitudes scenarios over real September entries " +
+      "join tools/test_liturgy_assembly.mjs — a §1C Sunday in a temple of a " +
+      "saint, a §1A Sunday in a temple of the Lord, no temple set, the Sunday " +
+      "in the Cross's afterfeast (twelve troparia), a §2A Monday, Thursday and " +
+      "Saturday, a polyeleos weekday, a vigil in a temple of a saint, the " +
+      "apodosis, the Exaltation itself, and a Pentecostarion day.",
+    ],
+  },
+  {
     version: "v0.48.1",
     date: "September 2026",
     summary: "The Divine Liturgy is live in the service picker",
@@ -16058,6 +16103,39 @@ export default function App() {
           dailyPropers: (dayKey) => OctoV2.getV2DailyLiturgyPropers(dayKey),
           readingsForDay,
           dismissal: (author) => buildDismissal(liturgicalData, menaionEntry, pentEntry, false, 'lit', 'liturgy', templeDedication, author),
+          // Phase 3 — the Little Entrance order and the Beatitude troparia
+          sundayTroparion: srcResTroparion,
+          sundayKontakion: srcSunKontakion,
+          temple: (() => {
+            if (!templeDedication || templeDedication === 'none') return null;
+            const ded = TEMPLE_DEDICATIONS.find(d => d.id === templeDedication);
+            if (!ded) return null;
+            const type = ded.category === 'The Lord & Holy Trinity' ? 'lord' : ded.category === 'The Theotokos' ? 'theotokos' : 'saint';
+            const tr = resolveTempleTroparion(templeDedication), ko = resolveTempleKontakion(templeDedication);
+            return { type, label: ded.label, troparion: tr ? { tone: tr.tone, text: tr.text } : null, kontakion: ko ? { tone: ko.tone, text: ko.text } : null };
+          })(),
+          feast: (() => {
+            // The feast day's own Menaion entry (Fekula §2G3: "materials for the
+            // feast are taken from the service in the Menaion for the feast day itself").
+            const f = liturgicalData.feastPeriod && liturgicalData.feastPeriod.feast;
+            if (!f || !f.month || !f.day) return null;
+            const mm = String(f.month).padStart(2, '0'), key = mm + '-' + String(f.day).padStart(2, '0');
+            const raw = (_menaionCache[mm] || {})[key];
+            const e = Array.isArray(raw) ? (raw.find(x => x.oca_primary) || raw[0]) : raw;
+            if (!e) return null;
+            const k = e.kontakion_ode6 || e.hours_kontakion || e.kontakion_ode3 || null;
+            return { name: f.name, troparion: e.troparion ? { tone: e.troparion.tone, text: e.troparion.text } : null, kontakion: k ? { tone: k.tone, text: k.text } : null };
+          })(),
+          dowKontakia: (dow) => {
+            const ks = TYPICA_KONTAKIA[dow] || [];
+            if (dow === 6) return ks.filter(k => /Martyrs/.test(k.label)).map(k => ({ label: 'Kontakion of the Martyrs (Saturday)', tone: k.tone, text: k.text }));
+            return ks.filter(k => !/^Both now|^Glory/.test(k.label)).map(k => ({ label: k.label, tone: k.tone, text: k.text }));
+          },
+          dowTroparia: () => null,   // the Horologion's troparia of the day are not encoded yet
+          departedKontakion: (() => { const k = (TYPICA_KONTAKIA[6] || []).find(k => /Departed/.test(k.label)); return k ? { tone: k.tone, text: k.text } : null; })(),
+          protectress: (() => { const k = (TYPICA_KONTAKIA[1] || []).find(k => /^Both now/.test(k.label)); return k ? { tone: k.tone, text: k.text } : null; })(),
+          sundayBeatitudes: (tone) => OctoV2.resolveV2Ref(`tone${tone}.liturgy.beatitudes`, tone) || null,
+          weekdayBeatitudes: (tone, dayKey) => OctoV2.resolveV2Ref(`tone${tone}.liturgy_weekday.${dayKey}.beatitudes`, tone) || null,
         },
       };
       els = liturgyModule
@@ -16873,7 +16951,7 @@ export default function App() {
                       <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
                         {liturgyVariant === 'basil' ? 'Liturgy of St. Basil the Great' : 'Liturgy of St. John Chrysostom'}
                         {' '}· St. Tikhon's Seminary Press, 3rd ed. (2008) · Readings, prokeimenon, Alleluia and communion hymn from the{' '}
-                        <Tooltip term="menaion">Menaion</Tooltip>, <Tooltip term="octoechos">Octoechos</Tooltip> and lectionary · Troparia and kontakia order: Phase 3
+                        <Tooltip term="menaion">Menaion</Tooltip>, <Tooltip term="octoechos">Octoechos</Tooltip> and lectionary · Troparia and kontakia in Fekula's order; Beatitude troparia interleaved
                         {appointed === 'presanctified' && ' · A Lenten weekday — the Presanctified Liturgy is appointed and is not assembled here'}
                       </div>
                     );
