@@ -16,7 +16,8 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 
 **Session September 19, 2026 (thirty-seventh) — THE PENTECOSTARION AT THE
 LITURGY: PHASE 3b.** Tool **v0.50.0** (after v0.49.1–v0.49.3: daily troparia,
-Typica propers port, the temple picker fixed twice on Bill's pickups).
+Typica propers port, the temple picker fixed twice on Bill's pickups). Session
+closed at **v0.50.2**; `main` at `a4bb983`.
 
 ### WHAT LANDED
 
@@ -60,6 +61,39 @@ list, since the whole order is what the choice governs, and stays re-pickable.
 The Typica's kontakia and the Litiya keep their own positions. It is not in the
 sticky strip on purpose. `resolveEntrance()` in `src/lib/liturgy-entrance.js`
 places it; the gate asserts the placement in §1C, §1A, §2A and P+44.
+
+**Control strip (v0.50.2, second commit):** the sticky Chrysostom/Basil strip
+sat 6px below the page header with nothing painted in the gap, so a sliver of
+scrolling text showed through (Bill's screenshot). It now pins at header
+height − 1px (the header's z-index 40 draws over the overlap) and carries the
+spacing as 13px top padding inside its opaque background. `liturgyStripHeight`
+still measures `offsetHeight`, so the outline's landing offset is unchanged.
+
+### SESSION CLOSE-OUT — the Divine Liturgy, Phases 0–3b, all delivered
+
+Spec `liturgy_assembler_spec.md` status line records the version each phase
+shipped in. Delivered and pushed this session: encoding port (`chrysostom.js`,
+registry, validator), assembler and UI (variant toggle with diff marking,
+rubric/quiet layers, two-level outline, sticky strip), movable hooks
+(antiphons, Beatitudes interleave, entrance clause, Trisagion, propers,
+departed litany, zadostoinik, communion, dismissal), Little Entrance order for
+ch.1/ch.2/ch.4 with the shared temple picker, the Typica routed through
+`resolveLiturgyPropers`, the daily troparia, the generated dedication index.
+
+**Liturgy backlog (not requested; in priority order as Bill's questions
+suggested them):**
+
+- Bright Week / the Paschal Liturgy (§4B1) — needs its own order, not a table.
+- §383 (Fekula ch.3, the Sunday-of-the-Fathers block referenced by §4B14) —
+  not extracted into the project docs yet; `pentecostarionOrder()` cites it
+  by number only.
+- Festal antiphons — no V1 Menaion field carries them; `festalAntiphons` is
+  a flag today, the texts are not assembled.
+- A temple of the Lord on a Sunday in a feast period (§1F1 with a Lord
+  temple) — assembled, but the entrance clause for a feast of the Lord is
+  still marked unresolved (`entranceClause`).
+- `TEMPLE_INDEX.type` is a name heuristic; a curated override field on the
+  Menaion entry would be the drift-proof form.
 
 
 **Session September 19, 2026 (thirty-sixth) — THE LITTLE ENTRANCE AND THE
