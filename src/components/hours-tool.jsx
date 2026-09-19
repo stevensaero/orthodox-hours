@@ -7353,8 +7353,11 @@ function LiturgyControls({ variant, onVariant, appointed, view, onView, stickyTo
   );
   return (
     <div ref={ref} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px 16px',
+      // Butts against the sticky header (stickyTop = header height − 1px) so no
+      // sliver of scrolling text shows between the two; the breathing room the
+      // old 6px offset gave is carried as top padding inside the opaque strip.
       position: 'sticky', top: `${stickyTop}px`, zIndex: 15,
-      background: '#FAF6EE', padding: '6px 0 8px', marginBottom: '0.6rem', borderBottom: '1px solid #E8DEC8' }}>
+      background: '#FAF6EE', padding: '13px 0 8px', marginBottom: '0.6rem', borderBottom: '1px solid #E8DEC8' }}>
       <div role="group" aria-label="Liturgy" style={{ display: 'inline-flex', border: '1px solid #C4A84A',
         borderRadius: '4px', overflow: 'hidden' }}>
         {btn('chrysostom', 'St. John Chrysostom')}
@@ -8808,6 +8811,9 @@ const RELEASE_NOTES = [
       "what the choice governs, and it stays re-pickable there.",
       "Gate: tools/test_liturgy_assembly.mjs asserts the placement in §1C, §1A (Lord), §2A and " +
       "ch.4 (4) P+44 scenarios.",
+      "Visual: the sticky Chrysostom/Basil strip now butts against the page header — the 6px " +
+      "transparent offset that let a sliver of scrolling text show between them is closed; the " +
+      "spacing is carried as padding inside the opaque strip.",
     ],
   },
   {
@@ -17136,7 +17142,7 @@ export default function App() {
                     variant={liturgyVariant} onVariant={switchLiturgyVariant}
                     appointed={getLiturgyType(liturgicalData)}
                     view={liturgyView} onView={setLiturgyViewKey}
-                    stickyTop={(controlsBarHeight || 0) + 6}
+                    stickyTop={Math.max(0, (controlsBarHeight || 0) - 1)}
                     onHeight={setLiturgyStripHeight} />
                 )}
                 {elements
