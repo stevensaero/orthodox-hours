@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.49.0** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
+**Tool version: v0.49.1** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -54,10 +54,13 @@ Bill's confirmation).
 
 ### DATA GAPS FOUND
 
-- **Troparia of the day of the week (Horologion: Bodiless Hosts, Forerunner,
-  Cross, Apostles + St Nicholas, Martyrs/departed) are not encoded anywhere.**
-  Every §2A weekday shows the `dow_troparion` slot Unresolved. Six short texts;
-  an encoding item for Bill (HTM Horologion on Drive).
+- ~~Troparia of the day of the week not encoded~~ — **closed at v0.49.1.** Bill
+  asked; they were in `Daily/HTM/HTM_daily_troparia_kontakia_alleluia_prokeimena.txt`
+  on Drive (the `TYPICA_KONTAKIA` source) all along. Now
+  `src/data/liturgy/daily_troparia.js`, HTM `*` marks retained.
+- **The temple picker now rides with the hymns** (v0.49.1, Bill's pickup): a
+  compact `mode="liturgy"` of `TempleSelector` — current dedication + change
+  control, no duplicated hymn — emitted whenever the table has a temple slot.
 - **Pentecostarion** (ch.4 pp.169–170 table; §4A Beatitudes) — Phase 3b.
   Note the extraction flagged an apparent misprint: period 3's "Now and ever"
   reads "kontakion of Thomas Sunday" where the parallel says "of the preceding
@@ -74,14 +77,14 @@ inversion in §2A. The Typica reads the same Liturgy propers (HTM: "prokeimenon
 up. What holds it up is only regression risk: the Typica has no propers test,
 and three of its choices differ (Menaion prokeimenon only at polyeleos/vigil;
 Menaion Alleluia replacing the daily one; Pentecostarion suppressing the
-Menaion). Bill has now approved the port; it is queued as **v0.49.1**.
+Menaion). Bill has now approved the port; it is queued as **v0.49.2**.
 
 ### NEXT
 
-- **v0.49.1** — port the Typica's prokeimenon/Alleluia (and communion, if
+- **v0.49.2** — port the Typica's prokeimenon/Alleluia (and communion, if
   shown) to `resolveLiturgyPropers()`; add a Typica propers gate test; keep the
   explainer badges (`typicaProkSource`, `alleluiaSource`) fed.
-- **Phase 3b** — ch.4 table + §4A Beatitudes; day-of-week troparia data.
+- **Phase 3b** — ch.4 table + §4A Beatitudes.
 
 
 **Session September 19, 2026 (thirty-fifth) — THE LITURGY TAKES ITS MOVABLE

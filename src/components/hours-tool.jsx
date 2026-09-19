@@ -8,6 +8,7 @@ import { PointScoreControls, isPointable, normalizeSergius, renderPointed } from
 import { splitBookAndRest, paroemiaToRef, paroemiaRefSpan } from '../lib/scripture-ref.js';
 import { readingsForDay } from '../lib/readings.js';
 import { assembleLiturgy, LITURGY_VIEW_DEFAULTS, insertAnchors } from '../lib/liturgy-assembler.js';
+import { DAILY_TROPARIA, DAILY_TROPARIA_SOURCE } from '../data/liturgy/daily_troparia.js';
 import Bulletin from './bulletin.jsx';
 
 
@@ -6804,6 +6805,20 @@ function TempleSelector({ availableDedications, onSelect, currentId, resolvedTro
     );
   }
 
+  // Liturgy mode (liturgy-entrance.js): the dedication decides which Fekula
+  // table orders the troparia and kontakia, and the temple's own hymns render
+  // in their slot below — so this is the picker alone, with the reason.
+  if (currentId && mode === "liturgy") {
+    return (
+      <div style={{ display: "flex", alignItems: "baseline", gap: "8px", flexWrap: "wrap", margin: "4px 0 12px" }}>
+        <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.12em",
+          color: "#8B6914", fontFamily: "Georgia, serif", fontWeight: "bold" }}>Temple dedication</span>
+        {fekulaSection && <FekulaBadge section={fekulaSection} note="In a temple dedicated to the Lord, to the Theotokos, or to a saint, the troparia and kontakia stand in a different order; the temple's own troparion and kontakion take their slots below. — Fekula ch.1 / ch.2" />}
+        {changeSelect}
+      </div>
+    );
+  }
+
   if (currentId && resolvedTroparion) {
     return (
       <div style={{ padding: "12px 0 12px 12px", borderLeft: "3px solid #8B6914", margin: "12px 0" }}>
@@ -7573,7 +7588,7 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
         currentId={templeDedication}
         resolvedTroparion={resolved}
         fekulaSection={element.fekula?.section}
-        mode={isKontakionMode ? "kontakion" : "troparion"}
+        mode={element.templeMode === "liturgy" ? "liturgy" : (isKontakionMode ? "kontakion" : "troparion")}
       />
     );
   }
@@ -8847,6 +8862,25 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.49.1",
+    date: "September 2026",
+    summary: "The troparia of the day of the week, and the temple picker inline with the Little Entrance",
+    items: [
+      "THE §2A WEEKDAY IS COMPLETE. The Horologion's troparia of the day — Monday the " +
+      "Bodiless Hosts, Tuesday the Forerunner, Wednesday and Friday the Cross, Thursday " +
+      "the Holy Apostles and St Nicholas, Saturday All Saints — are encoded in " +
+      "src/data/liturgy/daily_troparia.js from the same HTM daily file the kontakia " +
+      "of the day came from. The slot that read Unresolved on every weekday now resolves.",
+      "THE TEMPLE PICKER RIDES WITH THE HYMNS. Whenever the Fekula table has a temple " +
+      "slot, the parish-dedication picker (the same one the Typica and Litiya use) " +
+      "sits at the top of the Troparia and Kontakia in a compact form: the current " +
+      "dedication and a change control, with the temple's own troparion and kontakion " +
+      "rendering in their proper slots below rather than duplicated in the picker. " +
+      "Changing it re-orders the section in place; tables with no temple slot " +
+      "(apodosis, Great Feast) show no picker.",
+    ],
+  },
   {
     version: "v0.49.0",
     date: "September 2026",
@@ -16131,7 +16165,7 @@ export default function App() {
             if (dow === 6) return ks.filter(k => /Martyrs/.test(k.label)).map(k => ({ label: 'Kontakion of the Martyrs (Saturday)', tone: k.tone, text: k.text }));
             return ks.filter(k => !/^Both now|^Glory/.test(k.label)).map(k => ({ label: k.label, tone: k.tone, text: k.text }));
           },
-          dowTroparia: () => null,   // the Horologion's troparia of the day are not encoded yet
+          dowTroparia: (dow) => (DAILY_TROPARIA[dow] || []).map(t => ({ ...t, source: DAILY_TROPARIA_SOURCE })),
           departedKontakion: (() => { const k = (TYPICA_KONTAKIA[6] || []).find(k => /Departed/.test(k.label)); return k ? { tone: k.tone, text: k.text } : null; })(),
           protectress: (() => { const k = (TYPICA_KONTAKIA[1] || []).find(k => /^Both now/.test(k.label)); return k ? { tone: k.tone, text: k.text } : null; })(),
           sundayBeatitudes: (tone) => OctoV2.resolveV2Ref(`tone${tone}.liturgy.beatitudes`, tone) || null,

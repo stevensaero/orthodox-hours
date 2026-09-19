@@ -235,7 +235,7 @@ export function resolveEntrance({ liturgicalData: ld = {}, menaionEntry = null, 
   }
   if (order.templeNeeded) {
     return { elements: [
-      { id: "lit-tk-temple", type: "temple_selector", templeMode: "troparion", label: "Temple dedication",
+      { id: "lit-tk-temple", type: "temple_selector", templeMode: "liturgy", label: "Temple dedication",
         note: "The order of the troparia and kontakia depends on the temple's dedication (" + order.section + "). Choose the parish dedication to assemble it." },
       { id: "lit-tk-order", type: "movable", label: "Troparia and Kontakia", text: "Choose the temple dedication above; Fekula " + order.section + " orders the troparia and kontakia by whether the temple is dedicated to the Lord, the Theotokos, or a saint.", unresolved: true, unresolvedNote: "temple dedication not set", source: "—", fekula: cite },
     ], toneLabel: null, unresolved: true, section: order.section, quote: order.quote, notes: order.notes };
@@ -243,6 +243,13 @@ export function resolveEntrance({ liturgicalData: ld = {}, menaionEntry = null, 
 
   const saintName = (menaionEntry && menaionEntry.saint) || "the saint of the day";
   const feast = sources.feast || null;
+  // The temple picker rides with the hymns whenever the table has a temple
+  // slot, showing the current dedication and letting the reader change it in
+  // place — the same TempleSelector the Typica and Litiya use.
+  if (order.slots.some(sp => /temple_/.test(sp))) {
+    els.push({ id: "lit-tk-temple", type: "temple_selector", templeMode: "liturgy", label: "Temple dedication",
+      fekula: { section: order.section, note: "The order of the troparia and kontakia depends on the temple's dedication." } });
+  }
   const hymn = (slot) => {
     const S = sources;
     switch (slot) {
@@ -259,7 +266,7 @@ export function resolveEntrance({ liturgicalData: ld = {}, menaionEntry = null, 
       case "departed_kontakion": return S.departedKontakion && { label: "Kontakion of the Departed", ...S.departedKontakion, source: "Horologion" };
       case "steadfast_protectress": return S.protectress && { label: "Theotokion — Protection of Christians", ...S.protectress, source: "Horologion" };
       case "dow_kontakion": { const ks = S.dowKontakia ? S.dowKontakia(dow) : null; return ks && ks.length ? ks.map(k => ({ label: k.label, tone: k.tone, text: k.text, source: "Horologion · kontakion of the day" })) : null; }
-      case "dow_troparion": { const ts = S.dowTroparia ? S.dowTroparia(dow) : null; return ts && ts.length ? ts.map(k => ({ label: k.label, tone: k.tone, text: k.text, source: "Horologion · troparion of the day" })) : null; }
+      case "dow_troparion": { const ts = S.dowTroparia ? S.dowTroparia(dow) : null; return ts && ts.length ? ts.map(k => ({ label: k.label, tone: k.tone, text: k.text, source: k.source || "HTM · troparion of the day" })) : null; }
       default: return null;
     }
   };

@@ -35,6 +35,7 @@ import { MOVEMENT_ORDER, TEACHING_RUBRICS } from "../src/data/liturgy/registry.j
 import { readingsForDay } from "../src/lib/readings.js";
 import september from "../src/data/menaion/september.js";
 import * as OctoV2 from "../src/data/octoechos_v2/adapter.js";
+import { DAILY_TROPARIA } from "../src/data/liturgy/daily_troparia.js";
 
 let failures = 0;
 const check = (ok, msg) => { if (!ok) { failures += 1; console.log(`  FAIL ${msg}`); } };
@@ -128,7 +129,7 @@ const baseSources = {
   sundayTroparion: (t) => OctoV2.getV2Troparion(t),
   sundayKontakion: (t) => OctoV2.getV2Kontakion(t),
   dowKontakia: (d) => DOW_K[d] || [],
-  dowTroparia: () => null,
+  dowTroparia: (d) => DAILY_TROPARIA[d] || [],
   departedKontakion: FIXED_K.departed, protectress: FIXED_K.protectress,
   sundayBeatitudes: (t) => OctoV2.resolveV2Ref(`tone${t}.liturgy.beatitudes`, t) || null,
   weekdayBeatitudes: (t, d) => OctoV2.resolveV2Ref(`tone${t}.liturgy_weekday.${d}.beatitudes`, t) || null,
@@ -263,17 +264,23 @@ const nativityT = { name: "Nativity of the Theotokos", month: 9, day: 8 };
 {
   const els = run({ dow: 1, isSunday: false, season: "ordinary", tone: 7 }, entry("09-06"), { temple: TEMPLES.lord });
   check(slotsOf(els).join(",") === "temple_troparion,dow_troparion,saint_troparion,dow_kontakion,saint_kontakion,departed_kontakion,temple_kontakion", "§2A Lord Mon order: " + slotsOf(els).join(","));
-  check(section(els, "troparia_kontakia").unresolved && tk(els).some(x => x.unresolved && /day of the week/.test(x.label)), "§2A: dow troparion flagged (not encoded)");
+  check(!section(els, "troparia_kontakia").unresolved && tk(els).some(x => /Bodiless Hosts/.test(x.label) && /Supreme Commanders/.test(x.text)), "§2A Monday: troparion of the Bodiless Hosts resolved");
+  check(byId(els, "lit-tk-temple") && byId(els, "lit-tk-temple").type === "temple_selector", "§2A: temple picker shown inline with the hymns");
   check(beats(els).length === 8 && /Ode III/.test(beats(els)[4].label), "§2C: 4 Octoechos then 4 Menaion Ode III");
 }
 // F. Thursday, temple of a saint: two dow kontakia; Saturday Lord temple: departed at Glory, Martyrs at Now
 {
   const th = run({ dow: 4, isSunday: false, season: "ordinary", tone: 7 }, entry("09-27"));
   check(tk(th).filter(x => /^lit-tk-\d+-dow_kontakion/.test(x.id)).length === 2, "§2A Thursday: two kontakia of the day");
+  check(tk(th).filter(x => /^lit-tk-\d+-dow_troparion/.test(x.id)).length === 2 && tk(th).some(x => /St. Nicholas/.test(x.label)), "§2A Thursday: two troparia of the day (Apostles, St Nicholas)");
   check(beats(th).length === 6, "§2A simple, no Menaion troparia: six from the Octoechos");
   const sa = run({ dow: 6, isSunday: false, season: "ordinary", tone: 7 }, entry("09-27"), { temple: TEMPLES.lord });
   check(slotsOf(sa).join(",") === "temple_troparion,dow_troparion,saint_troparion,temple_kontakion,saint_kontakion,departed_kontakion,dow_kontakion", "§2A Saturday order: " + slotsOf(sa).join(","));
   check(tk(sa).some(x => /Martyrs/.test(x.label)), "§2A Saturday: the Martyrs' kontakion at Now and ever");
+  check(tk(sa).some(x => /All Saints/.test(x.label)), "§2A Saturday: the troparion of All Saints");
+  // apodosis table has no temple slot → no picker
+  const ap = run({ dow: 3, isSunday: false, season: "apodosis", tone: 7, feastPeriod: { periodType: "apodosis", feast: nativityT } }, entry("09-12"), { feast: feastOf("09-08") });
+  check(!byId(ap, "lit-tk-temple"), "§2G3: no temple picker when the table has no temple slot");
 }
 // G. Polyeleos weekday (09-05), temple of the Theotokos (§2E): 4 slots; Beatitudes 4+4 from the Menaion
 {
