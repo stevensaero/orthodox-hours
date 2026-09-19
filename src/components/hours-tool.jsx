@@ -7,6 +7,7 @@ import { hymnText, hymnProvenance } from '../lib/hymn-entry.js';
 import { PointScoreControls, isPointable, normalizeSergius, renderPointed } from './point-score-controls.jsx';
 import { splitBookAndRest, paroemiaToRef, paroemiaRefSpan } from '../lib/scripture-ref.js';
 import { readingsForDay } from '../lib/readings.js';
+import { assembleLiturgy, LITURGY_VIEW_DEFAULTS, insertAnchors } from '../lib/liturgy-assembler.js';
 import Bulletin from './bulletin.jsx';
 
 
@@ -6267,13 +6268,23 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
 // block, which varies by which Liturgy was served that day.
 
 // ── Liturgy type detection ────────────────────────────────────────────────────
-// Basil Liturgy days: Jan 1, Jan 5, Lenten Sundays 1–5, Great Thursday, Great Saturday.
-// Presanctified: Lenten Wed & Fri (out of scope for now — stubbed).
-// All other days: St. John Chrysostom.
+// Which Liturgy is appointed. The Liturgy of St. Basil the Great is served
+// ten times a year: the feast of St. Basil (Jan 1), the Eves of Nativity
+// (Dec 24) and Theophany (Jan 5), the five Sundays of Great Lent, Great
+// Thursday and Great Saturday. Fekula ch.3: the Lenten Sundays §3813, §3815,
+// §3816, §3817, §3820 ("At Liturgy (Of Saint Basil the Great)"), Great
+// Thursday §3826 and Great Saturday §3828 ("Vespers and Divine Liturgy of
+// Saint Basil the Great");
+// the two Eves and Jan 1 per the Typicon and the St. Tikhon's 2008 service
+// book's own rubric. Presanctified: Lenten Wed & Fri (Fekula glossary,
+// "Presanctified, Liturgy of the"); not assembled.
+// Known limitation: when an Eve falls on Saturday or Sunday the Typicon moves
+// Basil's Liturgy to the feast day itself; that shift is not modelled here.
 function getLiturgyType(liturgicalData) {
   const { season, lentSunday, passionWeek, dow, mm, dd } = liturgicalData;
   if (mm === 1 && dd === 1) return 'basil';
   if (mm === 1 && dd === 5) return 'basil';
+  if (mm === 12 && dd === 24) return 'basil';
   if (season === 'lent' && lentSunday && lentSunday >= 1 && lentSunday <= 5) return 'basil';
   if (passionWeek && dow === 4) return 'basil';
   if (passionWeek && dow === 6) return 'basil';
@@ -6338,7 +6349,7 @@ const PC_TK_CHRYSOSTOM = {
 
 const PC_TK_BASIL = {
   liturgyLabel: 'The Divine Liturgy of Saint Basil the Great',
-  explainer: 'The Liturgy of Saint Basil the Great was celebrated today. The Basil Liturgy is served ten times a year: on the feast of Saint Basil (January 1), on the eve of Theophany (January 5), on the five Sundays of Great Lent, and on Great Thursday and Great Saturday. We therefore read the troparion and kontakion of Saint Basil the Great, whose Liturgy we have just celebrated.',
+  explainer: 'The Liturgy of Saint Basil the Great was celebrated today. The Basil Liturgy is served ten times a year: on the feast of Saint Basil (January 1), on the Eves of the Nativity (December 24) and of Theophany (January 5), on the five Sundays of Great Lent, and on Great Thursday and Great Saturday. We therefore read the troparion and kontakion of Saint Basil the Great, whose Liturgy we have just celebrated.',
   troparion: {
     tone: 1,
     label: 'Troparion to St. Basil the Great',
@@ -6594,6 +6605,12 @@ function ServiceSelector({ services, value, onChange }) {
                       letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B6914",
                       background: "rgba(139,105,20,0.12)", borderRadius: "3px", padding: "2px 6px",
                       fontStyle: "normal" }}>soon</span>
+                  )}
+                  {svc.preview && (
+                    <span style={{ marginLeft: "auto", flexShrink: 0, fontSize: "0.62rem",
+                      letterSpacing: "0.08em", textTransform: "uppercase", color: "#8A1C1C",
+                      background: "rgba(138,28,28,0.10)", borderRadius: "3px", padding: "2px 6px",
+                      fontStyle: "normal" }}>preview</span>
                   )}
                 </div>
               </React.Fragment>
@@ -6985,14 +7002,19 @@ const OUTLINE_LABEL_PREFIXES = [
 const OUTLINE_EXACT_LABELS = ['Aposticha'];
 
 function isOutlineMajor(el) {
-  return OUTLINE_MAJOR_IDS.includes(el.id) ||
+  return el.type === 'liturgy_section' ||
+    OUTLINE_MAJOR_IDS.includes(el.id) ||
     (el.label && OUTLINE_EXACT_LABELS.includes(el.label)) ||
     (el.label && OUTLINE_LABEL_PREFIXES.some(p => el.label.startsWith(p)));
 }
 
 function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
                           activeSection, setActiveSection, serviceLabel, mm, dd,
-                          headerOffset = 128 }) {
+                          headerOffset = 128, liturgyExpanded = false, onToggleLiturgyLevel }) {
+  // Divine Liturgy: two levels (liturgy_assembler_spec.md §2.4). Overview is
+  // the registry's `core` movements; expanded is all of them.
+  const isLiturgy = currentService && currentService.key === 'liturgy';
+  const rowVisible = (el) => !isLiturgy || el.type !== 'liturgy_section' || liturgyExpanded || el.core;
   // stickyTop/scrollOffset derive from the sticky CONTROLS bar's live measured
   // height (see controlsBarHeight in the main component) rather than a
   // hardcoded pixel value — the collapsed-header peek row (v0.26.0) is
@@ -7029,7 +7051,7 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
       // Mirror the row dedup below so the observed ids match the row ids exactly.
       const seen = new Set();
       for (const el of elements) {
-        if (!isOutlineMajor(el) || !el.label) continue;
+        if (!isOutlineMajor(el) || !el.label || !rowVisible(el)) continue;
         const key = el.id || el.label;
         if (!key || seen.has(key)) continue;
         seen.add(key);
@@ -7039,7 +7061,7 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
       }
     }, 80);
     return () => { clearTimeout(t); obs.disconnect(); };
-  }, [currentService, elements]);  // eslint-disable-line
+  }, [currentService, elements, liturgyExpanded]);  // eslint-disable-line
 
   if (!currentService || !currentService.built) return null;
   if (!elements || elements.length === 0) return null;
@@ -7070,6 +7092,7 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
     const el = elements[i];
     if (!isOutlineMajor(el)) continue;
     if (!el.label) continue;            // continuation lines carry a blank label — never a row, even if major by id
+    if (!rowVisible(el)) continue;      // Liturgy overview level hides non-core movements
     const key = el.id || el.label;
     if (!key || seen.has(key)) continue;
     seen.add(key);
@@ -7086,7 +7109,10 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
     for (let k = start; k < end; k++) {
       if (isPlaceholder(elements[k])) { missing = true; break; }
     }
-    rows.push({ id: el.id, label: el.label, missing, tag: toneTag(el.toneNote) });
+    rows.push({ id: el.id, label: el.label, missing, tag: toneTag(el.toneNote),
+      // Liturgy rows: the movable cross and the resolved tone (spec §2.4).
+      tone: el.type === 'liturgy_section' ? el.toneLabel : null,
+      movable: el.type === 'liturgy_section' ? el.movable : false });
   }
   if (rows.length === 0) return null;
 
@@ -7141,6 +7167,15 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
           <div style={{ fontSize: '9px', color: '#9A8A70', letterSpacing: '0.04em' }}>
             {dateLabel}
           </div>
+          {isLiturgy && onToggleLiturgyLevel && (
+            <button type="button" onClick={onToggleLiturgyLevel}
+              title={liturgyExpanded ? 'Show the core movements only' : 'Show every movement'}
+              style={{ marginTop: '5px', fontSize: '8px', letterSpacing: '0.12em', textTransform: 'uppercase',
+                color: '#8B6914', background: 'none', border: '1px solid #D4C49A', borderRadius: '2px',
+                padding: '2px 6px', cursor: 'pointer', fontFamily: 'Georgia, serif', fontWeight: 'bold' }}>
+              {liturgyExpanded ? '▾ expanded' : '▸ overview'}
+            </button>
+          )}
         </div>
         {/* Rows */}
         <div style={{ padding: '3px 0 4px', overflowY: 'auto', flex: 1 }}>
@@ -7178,7 +7213,15 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
                   fontFamily: 'Georgia, serif', lineHeight: 1.3, flex: 1,
                   color: isActive ? '#5A4010' : (row.missing ? '#8B3020' : '#2C1F0A'),
                   fontWeight: isActive ? 'bold' : 'normal',
-                }}>{row.label}</span>
+                }}>{row.movable ? '\u2626 ' : ''}{row.label}</span>
+                {row.tone && (
+                  <span style={{
+                    fontSize: '7.5px', letterSpacing: '0.06em', textTransform: 'uppercase',
+                    fontWeight: 'bold', padding: '1px 4px', borderRadius: '2px', flexShrink: 0,
+                    fontFamily: 'Georgia, serif', border: '1px solid rgba(139,105,20,0.5)',
+                    color: '#8B6914', background: 'rgba(139,105,20,0.08)', whiteSpace: 'nowrap',
+                  }}>{row.tone}</span>
+                )}
                 {row.tag && (
                   <span style={{
                     fontSize: '7.5px', letterSpacing: '0.06em', textTransform: 'uppercase',
@@ -7199,6 +7242,171 @@ function ServiceOutline({ elements, currentService, outlineOpen, setOutlineOpen,
 }
 
 // ─── SERVICE BLOCK ────────────────────────────────────────────────────────────
+// ─── DIVINE LITURGY UNITS ─────────────────────────────────────────────────────
+// Rendering for the liturgy_unit / liturgy_hidden elements the Liturgy
+// assembler emits (src/lib/liturgy-assembler.js). Mirrors the encoding
+// module's own review page: speaker label, quiet prayers in italic, a printed
+// cue as a small red tag, {{red}} editorial spans, ___ as a printed blank.
+// Page numbers are never shown (liturgy_assembler_spec.md decision 6).
+
+const LITURGY_SPEAKER_LABEL = {
+  priest: 'Priest', deacon: 'Deacon', choir: 'Choir', reader: 'Reader', people: 'People',
+};
+
+// "{{(3)}}" → red span; "___" → blank. Both conventions are the encoding's own
+// (encoding spec v4). Returns an array of React nodes.
+function renderLiturgyText(text) {
+  const nodes = [];
+  const re = /\{\{([^}]+)\}\}|(_{2,})/g;
+  let last = 0, m, k = 0;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) nodes.push(text.slice(last, m.index));
+    if (m[1] !== undefined) {
+      nodes.push(<span key={k++} style={{ color: '#8A1C1C' }}>{m[1]}</span>);
+    } else {
+      nodes.push(<span key={k++} aria-label="blank" style={{ display: 'inline-block', width: '3.2em',
+        borderBottom: '1px solid #3D3020', margin: '0 2px', verticalAlign: 'baseline' }} />);
+    }
+    last = re.lastIndex;
+  }
+  if (last < text.length) nodes.push(text.slice(last));
+  return nodes;
+}
+
+function LiturgyDiffTag({ variantTag }) {
+  if (!variantTag) return null;
+  const insert = variantTag === 'insert';
+  return (
+    <span style={{ fontSize: '0.6rem', fontStyle: 'normal', fontWeight: 'bold', letterSpacing: '0.06em',
+      textTransform: 'uppercase', color: '#FAF6EE', background: insert ? '#8A1C1C' : '#5A4632',
+      borderRadius: '3px', padding: '1px 6px', marginRight: '7px', verticalAlign: 'middle', whiteSpace: 'nowrap',
+      fontFamily: 'Georgia, serif' }}>
+      {insert ? 'Basil only' : 'Basil'}
+    </span>
+  );
+}
+
+function LiturgyUnit({ element }) {
+  const diff = element.markDiff && element.variantTag;
+  const wrap = {
+    position: 'relative',
+    margin: element.kind === 'heading' ? '1.1rem 0 0.4rem' : element.kind === 'subheading' ? '0.6rem 0 0.2rem' : '0 0 0.45rem',
+    paddingLeft: diff ? '10px' : '0',
+    marginLeft: diff ? '-13px' : '0',
+    borderLeft: diff ? `3px solid ${element.variantTag === 'insert' ? '#8A1C1C' : '#5A4632'}` : 'none',
+    fontFamily: 'Georgia, serif',
+  };
+  if (element.kind === 'heading') {
+    return (
+      <div id={element.id} data-id={element.unitId} style={{ ...wrap, fontSize: '0.74rem', letterSpacing: '0.12em',
+        textTransform: 'uppercase', fontWeight: 'bold', color: '#5A4010' }}>
+        {diff && <LiturgyDiffTag variantTag={element.variantTag} />}{element.text}
+      </div>
+    );
+  }
+  if (element.kind === 'subheading') {
+    return (
+      <div id={element.id} data-id={element.unitId} style={{ ...wrap, fontSize: '0.8rem', fontStyle: 'italic', color: '#9A8A70' }}>
+        {diff && <LiturgyDiffTag variantTag={element.variantTag} />}{element.text}
+      </div>
+    );
+  }
+  if (element.kind === 'rubric') {
+    return (
+      <p id={element.id} data-id={element.unitId} style={{ ...wrap, fontSize: '0.85rem', lineHeight: '1.6',
+        color: element.teaching ? '#7A4A10' : '#9A8A70', fontStyle: 'italic',
+        borderLeft: diff ? wrap.borderLeft : `3px solid ${element.teaching ? '#C4A84A' : '#E4DAC2'}`,
+        paddingLeft: '10px', marginLeft: diff ? '-13px' : '0' }}>
+        {diff && <LiturgyDiffTag variantTag={element.variantTag} />}
+        {renderLiturgyText(element.text)}
+      </p>
+    );
+  }
+  // kind === 'line'
+  const quiet = element.mode === 'quiet';
+  const label = LITURGY_SPEAKER_LABEL[element.speaker] || element.speaker;
+  const choir = element.speaker === 'choir' || element.speaker === 'people' || element.speaker === 'reader';
+  return (
+    <div id={element.id} data-id={element.unitId} style={{ ...wrap, display: 'flex', gap: '10px', alignItems: 'baseline' }}>
+      <span style={{ flexShrink: 0, width: '4.2em', fontSize: '0.66rem', letterSpacing: '0.1em', textTransform: 'uppercase',
+        color: choir ? '#8B6914' : '#5A4A2A', paddingTop: '0.25rem' }}>{label}</span>
+      <span style={{ flex: 1, fontSize: '0.97rem', lineHeight: '1.7', whiteSpace: 'pre-wrap',
+        color: quiet ? '#7A6A50' : (choir ? '#1C1008' : '#3D3020'), fontStyle: quiet ? 'italic' : 'normal' }}>
+        {diff && <LiturgyDiffTag variantTag={element.variantTag} />}
+        {element.cue && (
+          <span style={{ fontSize: '0.72rem', color: '#8A1C1C', fontStyle: 'italic', marginRight: '6px' }}>{element.cue}</span>
+        )}
+        {renderLiturgyText(element.text)}
+      </span>
+    </div>
+  );
+}
+
+// A collapsed run of rubrics / quiet prayers. Nothing is dropped: the chip
+// says what is folded and expands in place (spec §2.3).
+function LiturgyHiddenRun({ element }) {
+  const [open, setOpen] = useState(false);
+  const parts = [];
+  if (element.rubrics) parts.push(`${element.rubrics} rubric${element.rubrics === 1 ? '' : 's'}`);
+  if (element.quiet) parts.push(`${element.quiet} quiet prayer${element.quiet === 1 ? '' : 's'}`);
+  return (
+    <div id={element.id} data-id={element.hidden[0] && element.hidden[0].unitId}
+      style={{ margin: open ? '0.3rem 0 0.6rem' : '0 0 0.45rem' }}>
+      <button type="button" onClick={() => setOpen(o => !o)}
+        title={open ? 'Collapse' : 'Show'}
+        style={{ fontSize: '0.66rem', letterSpacing: '0.06em', color: '#9A8A70', background: 'none',
+          border: '1px dashed rgba(154,138,112,0.6)', borderRadius: '3px', padding: '1px 8px',
+          cursor: 'pointer', fontFamily: 'Georgia, serif' }}>
+        {open ? '▾ ' : '⋯ '}{parts.join(', ')}
+      </button>
+      {open && (
+        <div style={{ marginTop: '0.4rem', paddingLeft: '4px' }}>
+          {element.hidden.map(h => <LiturgyUnit key={h.id} element={h} />)}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// The Liturgy's own control strip: variant toggle and view layers
+// (liturgy_assembler_spec.md §2.2, §2.3). Rendered inside the service body so
+// `position: sticky` holds it under the controls bar for the whole service —
+// "toggling holds your place" needs the toggle within reach at any depth.
+function LiturgyControls({ variant, onVariant, appointed, view, onView, stickyTop }) {
+  const btn = (key, label) => {
+    const on = variant === key;
+    return (
+      <button key={key} type="button" onClick={() => onVariant(key)} aria-pressed={on}
+        style={{ fontFamily: 'Georgia, serif', fontSize: '0.78rem', fontWeight: on ? 'bold' : 'normal',
+          padding: '5px 12px', border: 'none', cursor: 'pointer',
+          background: on ? '#8B6914' : 'transparent', color: on ? '#FAF6EE' : '#8B6914' }}>
+        {label}{appointed === key && key === 'basil' && !on ? ' · appointed today' : ''}
+      </button>
+    );
+  };
+  const layer = (key, label, title) => (
+    <label key={key} title={title} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px',
+      fontSize: '0.74rem', color: '#5A4A2A', cursor: 'pointer', fontFamily: 'Georgia, serif' }}>
+      <input type="checkbox" checked={!!view[key]} onChange={e => onView(key, e.target.checked)} />
+      {label}
+    </label>
+  );
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px 16px',
+      position: 'sticky', top: `${stickyTop}px`, zIndex: 15,
+      background: '#FAF6EE', padding: '6px 0 8px', marginBottom: '0.6rem', borderBottom: '1px solid #E8DEC8' }}>
+      <div role="group" aria-label="Liturgy" style={{ display: 'inline-flex', border: '1px solid #C4A84A',
+        borderRadius: '4px', overflow: 'hidden' }}>
+        {btn('chrysostom', 'St. John Chrysostom')}
+        {btn('basil', 'St. Basil the Great')}
+      </div>
+      {variant === 'basil' && layer('markDiff', 'Mark Basil differences', 'Tag the prayers Basil changes and the lines only Basil has')}
+      {layer('rubrics', 'Rubrics', 'Show the ceremonial rubrics. Rubrics that say what is appointed today are always shown.')}
+      {layer('quiet', "Priest's quiet prayers", 'Show the prayers the priest says quietly')}
+    </div>
+  );
+}
+
 function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
 
   // ── Major service movement headers ───────────────────────────────────────
@@ -7285,6 +7493,37 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
         fontFamily: 'Georgia, serif',
         fontWeight: 'bold',
       };
+  // ── Divine Liturgy (liturgy_assembler_spec.md §2.1) ─────────────────────
+  // Three element types from src/lib/liturgy-assembler.js. Compact by design:
+  // the Liturgy is ~600 units, so a unit is one line, not a 1.4rem block.
+  if (element.type === 'liturgy_section') {
+    return (
+      <div id={element.id} data-movement={element.movement}
+        style={{ margin: '1.8rem 0 0.7rem', display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
+        <span style={{ ...labelStyle, fontSize: '0.82rem', textTransform: 'uppercase', letterSpacing: '0.14em',
+          fontWeight: 'bold', borderBottom: '1px solid rgba(139,105,20,0.25)', paddingBottom: '2px',
+          display: 'block', flex: 1, color: element.movable ? '#6B5214' : '#5A4010' }}>
+          {element.label}
+        </span>
+        {element.toneLabel && (
+          <span style={{ fontSize: '0.72rem', color: '#8B6914', fontFamily: 'Georgia, serif', whiteSpace: 'nowrap' }}>{element.toneLabel}</span>
+        )}
+        {element.movable && (
+          <span title="Varies by day or season — per the book's own rubric"
+            style={{ fontSize: '0.62rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#8B6914',
+              border: '1px solid rgba(139,105,20,0.35)', borderRadius: '3px', padding: '1px 6px',
+              fontFamily: 'Georgia, serif', whiteSpace: 'nowrap' }}>☦ movable</span>
+        )}
+      </div>
+    );
+  }
+  if (element.type === 'liturgy_hidden') {
+    return <LiturgyHiddenRun element={element} />;
+  }
+  if (element.type === 'liturgy_unit') {
+    return <LiturgyUnit element={element} />;
+  }
+
   // ── Temple selector — hybrid UI for parish dedication ──────────────────
   if (element.type === 'temple_selector') {
     const isKontakionMode = element.templeMode === "kontakion";
@@ -8588,6 +8827,45 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.47.0",
+    date: "September 2026",
+    summary: "The Divine Liturgy assembles — Phase 1: the fixed order, the Chrysostom/Basil toggle, and the view layers",
+    items: [
+      "A NEW SERVICE, STILL BEHIND THE 'SOON' PILL. assembleLiturgy() in " +
+      "src/lib/liturgy-assembler.js walks the encoded Liturgy (624 units of St. " +
+      "John Chrysostom, 628 of St. Basil) into the same elements[] every other " +
+      "service uses. No movable parts yet: readings, prokeimenon, troparia and " +
+      "the rest are Phase 2 and 3, and the service ships publicly only when they " +
+      "land. For review now, open the tool with ?preview=liturgy in the address.",
+      "ONE LINE PER UNIT. A speaker label (priest, deacon, choir, reader), quiet " +
+      "prayers in italic, a printed cue like '(facing east)' as a small red tag, " +
+      "the book's red editorial alternatives in red, and printed blanks as " +
+      "blanks. Page numbers are never shown.",
+      "CHRYSOSTOM OR BASIL. A toggle in a strip that stays pinned under the " +
+      "controls bar. Chrysostom is always the default; on a day Basil is " +
+      "appointed the Basil button says so. Switching holds your place — the " +
+      "line at the top of the window stays at the top — so the two Liturgies " +
+      "can be compared at any point. In the Basil view the prayers Basil " +
+      "changes carry a 'Basil' tag and a rule down the margin, the four lines " +
+      "only Basil has are tagged 'Basil only', and a checkbox hides the marks.",
+      "RUBRICS AND QUIET PRAYERS ARE FOLDED BY DEFAULT. Two checkboxes in the " +
+      "same strip show them; otherwise each run collapses to a small chip " +
+      "('⋯ 2 rubrics, 1 quiet prayer') that expands in place. The rubrics that " +
+      "say what is appointed today — 'the choir now sings the appointed " +
+      "Troparia and Kontakia…' — are never folded: they are the lesson.",
+      "AN OUTLINE IN TWO LEVELS. Overview shows the 22 core movements; " +
+      "'expanded' shows all 41. Movements the book's own rubrics say vary by " +
+      "day carry ☦, and the row is ready to show the tone once Phase 2 resolves it.",
+      "getLiturgyType() NOW CITES FEKULA (ch.3 §3813–§3820, §3826, §3828) and " +
+      "adds the Eve of the Nativity, which the explainer counted but the " +
+      "function omitted. The Basil Liturgy is served ten times a year, and the " +
+      "list now has ten entries.",
+      "GATE: tools/test_liturgy_assembly.mjs joins npm run gate — every unit " +
+      "accounted for in every view, teaching rubrics always visible, no page " +
+      "number in any element, the Basil tag counts, the insert anchors.",
+    ],
+  },
   {
     version: "v0.46.5",
     date: "September 2026",
@@ -15292,6 +15570,67 @@ export default function App() {
     }
   }, [selectedServiceKey]);
 
+  // ── Divine Liturgy (liturgy_assembler_spec.md §2) ─────────────────────────
+  // Data module lazy-loaded like pre-communion; the two view layers persist
+  // like readerMode's siblings; the variant is per visit (Chrysostom on every
+  // load — decision 4) and resets with the date.
+  const [liturgyModule, setLiturgyModule] = useState(null);   // { getLiturgy }
+  React.useEffect(() => {
+    if (selectedServiceKey === 'liturgy' && !liturgyModule) {
+      import('../data/liturgy/chrysostom.js').then(m => setLiturgyModule(m));
+    }
+  }, [selectedServiceKey]);  // eslint-disable-line
+  // The choice is remembered with the date it was made for, so a new date
+  // reads as Chrysostom without an effect that resets state.
+  const [liturgyChoice, setLiturgyChoice] = useState({ variant: 'chrysostom', date: selectedDate });
+  const liturgyVariant = liturgyChoice.date === selectedDate ? liturgyChoice.variant : 'chrysostom';
+  const [liturgyView, setLiturgyView] = useState(() => {
+    try {
+      const raw = localStorage.getItem('liturgy_view');
+      return raw ? { ...LITURGY_VIEW_DEFAULTS, ...JSON.parse(raw) } : { ...LITURGY_VIEW_DEFAULTS };
+    } catch { return { ...LITURGY_VIEW_DEFAULTS }; }
+  });
+  const setLiturgyViewKey = (key, value) => {
+    setLiturgyView(prev => {
+      const next = { ...prev, [key]: value };
+      try { localStorage.setItem('liturgy_view', JSON.stringify(next)); } catch { /* unavailable */ }
+      return next;
+    });
+  };
+  const [liturgyOutlineExpanded, setLiturgyOutlineExpanded] = useState(() => {
+    try { return localStorage.getItem('liturgy_outline') === 'expanded'; } catch { return false; }
+  });
+  const toggleLiturgyOutline = () => setLiturgyOutlineExpanded(v => {
+    try { localStorage.setItem('liturgy_outline', v ? 'overview' : 'expanded'); } catch { /* unavailable */ }
+    return !v;
+  });
+  // Toggling the variant holds the reader's place (spec §2.2): note the unit
+  // at the top of the window before the switch, scroll back to it after.
+  const liturgyAnchorRef = React.useRef(null);
+  const liturgyInsertAnchors = React.useMemo(
+    () => (liturgyModule ? insertAnchors(liturgyModule.getLiturgy('basil')) : {}),
+    [liturgyModule]
+  );
+  const switchLiturgyVariant = React.useCallback((next) => {
+    if (next === liturgyVariant) return;
+    const bar = controlsBarHeight || 0;
+    let anchor = null;
+    for (const el of document.querySelectorAll('[data-id]')) {
+      const r = el.getBoundingClientRect();
+      if (r.bottom > bar) { anchor = { id: el.dataset.id, offset: r.top }; break; }
+    }
+    liturgyAnchorRef.current = anchor;
+    setLiturgyChoice({ variant: next, date: selectedDate });
+  }, [liturgyVariant, controlsBarHeight, selectedDate]);
+  React.useLayoutEffect(() => {
+    const anchor = liturgyAnchorRef.current;
+    if (!anchor) return;
+    liturgyAnchorRef.current = null;
+    let el = document.querySelector(`[data-id="${anchor.id}"]`);
+    if (!el && liturgyInsertAnchors[anchor.id]) el = document.querySelector(`[data-id="${liturgyInsertAnchors[anchor.id]}"]`);
+    if (el) window.scrollBy({ top: el.getBoundingClientRect().top - anchor.offset, behavior: 'instant' });
+  }, [liturgyVariant]);  // eslint-disable-line
+
   // ── Data loading — preload month + Pentecostarion when date changes ─────────
   const [, setDataVersion] = useState(0);
   React.useEffect(() => {
@@ -15478,8 +15817,21 @@ export default function App() {
   // SERVICE computes its own paroemias for the day it opens (D+1); see FW-26 below.
   const paroemias = computeVespersParoemias(selectedMenaionEntry, pentEntry, isPentecostarion, isBrightWeek);
   // Current service metadata from registry
-  const currentServiceIdx = SERVICE_REGISTRY.findIndex(s => s.key === selectedServiceKey);
-  const currentService = SERVICE_REGISTRY[currentServiceIdx];
+  // ?preview=<key>[,<key>] unlocks a built:false service for development
+  // review without shipping it (liturgy_assembler_spec.md decision 5: the
+  // Liturgy stays behind the 'soon' pill until Phase 2). Deploy is unaffected.
+  const previewKeys = React.useMemo(() => {
+    try {
+      const q = new URLSearchParams(window.location.search).get('preview');
+      return new Set(q ? q.split(',').map(k => k.trim()).filter(Boolean) : []);
+    } catch { return new Set(); }
+  }, []);
+  const serviceRegistry = React.useMemo(
+    () => SERVICE_REGISTRY.map(s => (!s.built && previewKeys.has(s.key)) ? { ...s, built: true, preview: true } : s),
+    [previewKeys]
+  );
+  const currentServiceIdx = serviceRegistry.findIndex(s => s.key === selectedServiceKey);
+  const currentService = serviceRegistry[currentServiceIdx];
 
   // Collapsed-header peek name — mirrors the Tone display in the same row:
   // Vespers/Compline read the next liturgical day (vespersNext), everything
@@ -15612,6 +15964,20 @@ export default function App() {
       els = assemblePreCommunion(preCommunionData);
     } else if (currentService.key === 'post_communion') {
       els = assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMode, templeDedication);
+    } else if (currentService.key === 'liturgy') {
+      // Phase 1: the fixed skeleton only. Hooks for the movable parts (V1
+      // Menaion, Octoechos, Pentecostarion) land in Phase 2/3 — spec §3.
+      els = liturgyModule
+        ? assembleLiturgy({ units: liturgyModule.getLiturgy(liturgyVariant), variant: liturgyVariant, view: liturgyView })
+        : [];
+      // The Liturgy has no reader-without-priest form (Fekula ch.10 gives the
+      // Typica for that); Reader's Service mode does not change the assembly.
+      if (readerMode && els.length) {
+        els = [{ id: 'lit-reader-note', type: 'informational',
+          text: "Reader's Service mode does not apply to the Divine Liturgy — a priest is required. " +
+                "When no Liturgy is celebrated, the Typica is read in its place (Fekula Chapter 10).",
+          fekula: { section: '10', note: 'Reader\'s services: the Typica stands in for the Divine Liturgy.' } }, ...els];
+      }
     } else {
       els = assembleHour(currentService.key, liturgicalData, menaionEntry, pentEntry, tbOpen, readerMode, templeDedication);
     }
@@ -15827,7 +16193,7 @@ export default function App() {
           {/* ── Group 3: SERVICE label + selector */}
           <div style={{ display: "flex", alignItems: "center", gap: "6px", minWidth: 0 }}>
           {!isNarrow && <label className="hours-ctl-label" style={{ fontSize: "0.8rem", color: "#5C4A1E", letterSpacing: "0.05em", flexShrink: 0 }}>SERVICE</label>}
-          <ServiceSelector services={SERVICE_REGISTRY} value={selectedServiceKey} onChange={(key) => {
+          <ServiceSelector services={serviceRegistry} value={selectedServiceKey} onChange={(key) => {
             // Choosing a service from the Library returns you to the Reading for
             // that service: set the service, then flip back (keepScroll=false so
             // it lands at the top of the new service, not the Library's offset).
@@ -16245,6 +16611,8 @@ export default function App() {
           mm={liturgicalData ? liturgicalData.mm : null}
           dd={liturgicalData ? liturgicalData.dd : null}
           headerOffset={controlsBarHeight}
+          liturgyExpanded={liturgyOutlineExpanded}
+          onToggleLiturgyLevel={toggleLiturgyOutline}
         />
         {currentService.key === 'psalter_service' && (
           <PsalterOutline
@@ -16400,6 +16768,15 @@ export default function App() {
                         Read After Holy Communion · Following {_ltLabel}
                       </div>
                     );
+                  })() : currentService.key === 'liturgy' ? (() => {
+                    const appointed = getLiturgyType(liturgicalData);
+                    return (
+                      <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
+                        {liturgyVariant === 'basil' ? 'Liturgy of St. Basil the Great' : 'Liturgy of St. John Chrysostom'}
+                        {' '}· St. Tikhon's Seminary Press, 3rd ed. (2008) · Fixed order; movable parts assemble in a later release
+                        {appointed === 'presanctified' && ' · A Lenten weekday — the Presanctified Liturgy is appointed and is not assembled here'}
+                      </div>
+                    );
                   })() : currentService.key === 'psalter_service' ? (
                   <div style={{ fontSize: "0.78rem", color: "#9A8A70", marginTop: "0.4rem", fontStyle: "italic" }}>
                     Brenton Septuagint psalms (public domain) · Order of reading from A Psalter for Prayer (Jordanville) · {psalterMode === 'departed' ? 'For the Departed' : 'Normal reading'}
@@ -16489,6 +16866,18 @@ export default function App() {
                   <div style={{ textAlign: 'center', padding: '2rem', color: '#9A8A70', fontStyle: 'italic' }}>
                     Loading prayers…
                   </div>
+                )}
+                {currentService.key === 'liturgy' && !liturgyModule && (
+                  <div style={{ textAlign: 'center', padding: '2rem', color: '#9A8A70', fontStyle: 'italic' }}>
+                    Loading the Liturgy…
+                  </div>
+                )}
+                {currentService.key === 'liturgy' && liturgyModule && (
+                  <LiturgyControls
+                    variant={liturgyVariant} onVariant={switchLiturgyVariant}
+                    appointed={getLiturgyType(liturgicalData)}
+                    view={liturgyView} onView={setLiturgyViewKey}
+                    stickyTop={(controlsBarHeight || 0) + 6} />
                 )}
                 {elements
                   .filter(el => !(el.openingElement && voOpen))

@@ -8,7 +8,7 @@
     "bulletin": "node tools/test_bulletin_day.mjs --show",
     "deploy": "gh-pages -d dist",
     "dev": "vite",
-    "gate": "node tools/test_pointing_paths.mjs && node tools/test_sunday_vespers.mjs && node tools/test_pointing_roles.mjs && node tools/test_ref_resolution.mjs && node tools/test_bulletin_day.mjs && node tools/test_bulletin_layout.mjs && node tools/validate_liturgy.mjs",
+    "gate": "node tools/test_pointing_paths.mjs && node tools/test_sunday_vespers.mjs && node tools/test_pointing_roles.mjs && node tools/test_ref_resolution.mjs && node tools/test_bulletin_day.mjs && node tools/test_bulletin_layout.mjs && node tools/validate_liturgy.mjs && node tools/test_liturgy_assembly.mjs",
     "layout": "node tools/test_bulletin_layout.mjs",
     "predeploy": "npm run build",
     "preview": "vite preview",

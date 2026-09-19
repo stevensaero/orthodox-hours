@@ -1,6 +1,6 @@
 # Divine Liturgy Assembler — Integration Spec (v1.1)
 
-**Status:** APPROVED with amendments (Bill, Sept 19 2026) — see §5. Phase 0 landed at v0.46.5.
+**Status:** APPROVED with amendments (Bill, Sept 19 2026) — see §5. Phase 0 landed at v0.46.5; Phase 1 at v0.47.0.
 **Baseline:** orthodox-hours at `dd13dac`, tool v0.46.4 (badge and notes header agree).
 **Data:** `src/data/liturgy/chrysostom.js` — 624 Chrysostom units, 628 Basil
 (28 overrides, 4 inserts, 0 pending); encoding spec at v24 (repo root).
@@ -219,10 +219,12 @@ spec; `src/data/liturgy/chrysostom.js` (verbatim copy) and `registry.js`;
 `tools/validate_liturgy.mjs` (in `npm run gate`); `tools/liturgy_preview/`;
 encoding spec v24 at the repo root; `project_notes.md` section.
 
-**Phase 1 — the fixed Liturgy is servable (minor bump).** `assembleLiturgy()` with no
-hooks; unit rendering; Chrysostom/Basil toggle with diff marks and held scroll;
-rubric / quiet-prayer layers; outline; subtitle arm; `built` stays false (decision 5).
-`getLiturgyType` cited. **v0.47.0.**
+**Phase 1 — the fixed Liturgy is servable (minor bump). DONE, v0.47.0.**
+`assembleLiturgy()` with no hooks; unit rendering; Chrysostom/Basil toggle with
+diff marks and held scroll (in a sticky strip inside the service body);
+rubric / quiet-prayer layers; two-level outline; subtitle arm. `built` stays
+false (decision 5); review with `?preview=liturgy`. `getLiturgyType` cited and
+the missing Eve of the Nativity added.
 
 **Phase 2 — movables that V1 already carries.** Readings, prokeimenon, alleluia,
 communion hymn, Trisagion replacement, zadostoinik, entrance clause, departed-litany
