@@ -8777,6 +8777,41 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.50.0",
+    date: "September 2026",
+    summary: "The Pentecostarion at the Liturgy — Phase 3b: Fekula chapter 4's four-period table and the Sunday blocks",
+    items: [
+      "THE LITTLE ENTRANCE THROUGH THE PENTECOSTARION. src/lib/liturgy-entrance.js " +
+      "now carries Fekula ch.4: the four-period weekday table on pp.169–170 (the week " +
+      "after Thomas Sunday; the week after the Myrrhbearers; the fourth, fifth and " +
+      "sixth weeks; the afterfeasts of Mid-Pentecost, Ascension and Pentecost) with its " +
+      "temple conditions — the temple troparion 'if it be of a saint' (of the Theotokos " +
+      "too in Thomas week), the temple kontakion 'if it be of a saint', and ◊ at vigil " +
+      "rank in a temple of a saint — and the per-Sunday blocks: Antipascha §4B5, the " +
+      "2nd/3rd/5th/6th Sundays §4B6 (with a polyeleos or vigil saint, §4B7), the " +
+      "Samaritan Woman §4B9, the apodosis of Pascha §4B11, the Fathers §4B13, All " +
+      "Saints §4B17, and the feasts and apodoses (Mid-Pentecost, Ascension, Pentecost, " +
+      "Monday of the Holy Spirit). The day's own Pentecostarion entry supplies 'the " +
+      "troparion of the preceding Sunday / of the feast' and its kontakion — the same " +
+      "fields the Hours already read.",
+      "THE BEATITUDES THROUGH THE PENTECOSTARION. As the Pentecostarion prints them " +
+      "(six on a weekday, the Sunday's eight or ten); with a Menaion saint who has " +
+      "Beatitude troparia, four from the Pentecostarion and four from Ode III (§4A1/§4A3). " +
+      "Ascension and Pentecost have festal antiphons and say so.",
+      "TWO THINGS STATED, NOT GUESSED. Period (3)'s printed 'Now and ever… kontakion " +
+      "of Thomas Sunday' is read as the kontakion of the preceding Sunday, by parallel " +
+      "with the other three periods and the Hours table — the note says so on the " +
+      "element. The Saturday of the Departed (§4B14) defers to §383, which is not yet " +
+      "extracted; the entry's printed troparion and kontakion are shown with that note.",
+      "NOT ASSEMBLED: Bright Week (the Paschal Liturgy, §4B1) — flagged. A " +
+      "Pentecostarion day with no encoded entry (the data covers Pascha + 19 and + 35 " +
+      "to + 56) reads Unresolved rather than borrowing a neighbour.",
+      "GATE: seven Pentecostarion scenarios over the real entries — Blind Man Sunday, " +
+      "the Fathers, All Saints, the apodosis of Pascha, Ascension, an afterfeast Tuesday " +
+      "in temples of a saint and of the Lord, a period-(3) weekday, Bright Week.",
+    ],
+  },
+  {
     version: "v0.49.3",
     date: "September 2026",
     summary: "One temple picker, always re-pickable — the Liturgy's emission rule fixed",

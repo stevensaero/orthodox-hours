@@ -37,6 +37,7 @@ import { readingsForDay } from "../src/lib/readings.js";
 import september from "../src/data/menaion/september.js";
 import * as OctoV2 from "../src/data/octoechos_v2/adapter.js";
 import { DAILY_TROPARIA } from "../src/data/liturgy/daily_troparia.js";
+import pentecostarion from "../src/data/pentecostarion.js";
 
 let failures = 0;
 const check = (ok, msg) => { if (!ok) { failures += 1; console.log(`  FAIL ${msg}`); } };
@@ -311,9 +312,9 @@ const nativityT = { name: "Nativity of the Theotokos", month: 9, day: 8 };
 }
 // K. Pentecostarion: both flagged, not guessed
 {
-  const els = run({ dow: 1, isSunday: false, season: "pentecostarion", isPentecostarion: true, tone: 3 }, entry("09-27"));
-  check(section(els, "troparia_kontakia").unresolved && byId(els, "lit-tk-order"), "Pentecostarion: entrance order flagged (ch.4 table not encoded)");
-  check(section(els, "antiphon_3").unresolved, "Pentecostarion: Beatitudes flagged");
+  const els = run({ dow: 1, isSunday: false, season: "pentecostarion", isPentecostarion: true, paschaOffset: 30, tone: 3 }, entry("09-27"));
+  check(section(els, "troparia_kontakia").unresolved && byId(els, "lit-tk-order"), "Pentecostarion day with no encoded entry: entrance flagged, not guessed");
+  check(section(els, "antiphon_3").unresolved, "Pentecostarion day with no encoded entry: Beatitudes flagged");
 }
 
 // ── resolveLiturgyPropers() direct — the rule the Typica now shares (v0.49.2) ──
@@ -331,6 +332,66 @@ const nativityT = { name: "Nativity of the Theotokos", month: 9, day: 8 };
   check(pent.prokeimena.length === 2 && pent.prokeimena[0].origin === "pentecostarion" && pent.prokeimena[1].origin === "menaion", "propers: Pentecostarion feast first, then the Menaion's (§4A1)");
 }
 
+// ── Phase 3b: the Pentecostarion (Fekula ch.4) over the real entries ─────────
+{
+  const P = (k) => pentecostarion[String(k)] || null;
+  const runP = (offset, e, extra = {}) => assembleLiturgy({ units, view: { rubrics: true, quiet: true }, ctx: {
+    liturgicalData: { dow: offset % 7, isSunday: offset % 7 === 0, season: "pentecostarion", isPentecostarion: true, paschaOffset: offset, tone: 5 },
+    menaionEntry: e, pentEntry: P(offset), dailyReading: { e: "Acts 1:1-8", g: "John 1:1-17" }, feastReading: null,
+    sources: { ...baseSources, temple: extra.temple === undefined ? TEMPLES.saint : extra.temple, feast: null } } });
+  // Blind Man Sunday (P+35), §4B6: Sunday troparion; Glory… Pentecostarion kontakion; Now… kontakion of Pascha
+  {
+    const els = runP(35, null);
+    check(slotsOf(els).join(",") === "pent:troparion,pent:kontakion_ode6,pent:kontakion_ode3", "§4B6 P+35: " + slotsOf(els).join(","));
+    check(tk(els)[1] && /^Glory/.test(tk(els)[1].label) && tk(els)[1].toneNote === "Tone 4", "§4B6: Blind Man kontakion (Tone 4) at Glory");
+    check(tk(els)[2] && /^Now and ever/.test(tk(els)[2].label) && tk(els)[2].toneNote === "Tone 8", "§4B6: Pascha kontakion (Tone 8) at Now and ever");
+    check(!section(els, "troparia_kontakia").unresolved && !byId(els, "lit-tk-temple"), "§4B6: resolved; no temple slot on a Pentecostarion Sunday");
+    check(beats(els).length === 8 && !section(els, "antiphon_3").unresolved, "§4B6: eight Beatitude troparia as printed");
+  }
+  // Holy Fathers (P+42), §4B13
+  {
+    const els = runP(42, null);
+    check(slotsOf(els).join(",") === "pent:troparion,pent:troparion_3,pent:troparion_2,pent:kontakion_ode6,pent:kontakion", "§4B13 P+42: " + slotsOf(els).join(","));
+    check(tk(els)[1].toneNote === "Tone 4" && tk(els)[2].toneNote === "Tone 8", "§4B13: Ascension troparion (T4) then the Fathers' (T8)");
+  }
+  // All Saints (P+56), §4B17; Apodosis of Pascha (P+38), §4B11
+  {
+    const a = runP(56, null);
+    check(slotsOf(a).join(",") === "pent:troparion,pent:troparion_2,pent:kontakion" && /^Glory… Now and ever…/.test(tk(a)[2].label), "§4B17 P+56: " + slotsOf(a).join(","));
+    check(beats(a).length === 10, "§4B17: ten Beatitude troparia as printed");
+    const b = runP(38, null);
+    check(slotsOf(b).join(",") === "pent:troparion,pent:kontakion_ode3,pent:kontakion_ode6", "§4B11 P+38: " + slotsOf(b).join(","));
+  }
+  // Ascension (P+39): feast troparion + GN kontakion; festal antiphons flagged
+  {
+    const els = runP(39, null);
+    check(slotsOf(els).join(",") === "pent:troparion,pent:kontakion", "§4B12 P+39: " + slotsOf(els).join(","));
+    check(section(els, "antiphon_1").unresolved && byId(els, "lit-antiphons-festal") && beats(els).length === 0, "P+39: festal antiphons flagged, no Beatitudes");
+  }
+  // Afterfeast weekday (P+44, Tuesday), period (4): feast troparion … Menaion saint … Now… feast kontakion; temple of a saint
+  {
+    const els = runP(44, entry("09-06"));
+    check(slotsOf(els).join(",") === "pent:troparion,temple_troparion,saint_troparion,temple_kontakion,saint_kontakion,pent:kontakion", "ch.4 (4) P+44 saint temple: " + slotsOf(els).join(","));
+    check(tk(els)[5] && /^Now and ever/.test(tk(els)[5].label) && tk(els)[5].toneNote === "Tone 6", "ch.4 (4): Ascension kontakion at Now and ever");
+    check(beats(els).length === 8 && /Ode III/.test(beats(els)[4].label), "§4A1: four Pentecostarion + four Menaion Ode III");
+    check(byId(els, "lit-tk-temple"), "ch.4 weekday: temple picker shown");
+    const lord = runP(44, entry("09-06"), { temple: TEMPLES.lord });
+    check(slotsOf(lord).join(",") === "pent:troparion,saint_troparion,saint_kontakion,pent:kontakion", "ch.4 (4) P+44 Lord temple: no temple slots — " + slotsOf(lord).join(","));
+    const none = runP(44, null, { temple: TEMPLES.lord });
+    check(slotsOf(none).join(",") === "pent:troparion,pent:kontakion" && /^Glory… Now and ever…/.test(tk(none)[1].label), "ch.4 (4) no Menaion saint: Glory… Now and ever… on the feast kontakion");
+    check(beats(none).length === 6, "§4A1: six from the Pentecostarion when the Menaion appoints none");
+  }
+  // Period (3) weekday (P+36) and Bright Week (P+3)
+  {
+    const els = runP(36, null, { temple: TEMPLES.lord });
+    check(slotsOf(els).join(",") === "pent:troparion,pent:kontakion" && /Tone 5/.test(section(els, "troparia_kontakia").toneLabel || ""), "ch.4 (3) P+36: preceding Sunday's troparion (T5)");
+    const st = runP(36, null);
+    check(slotsOf(st).join(",") === "pent:troparion,temple_troparion,temple_kontakion,pent:kontakion", "ch.4 (3) P+36 saint temple: temple slots per ◊ — " + slotsOf(st).join(","));
+    const bw = runP(3, null);
+    check(section(bw, "troparia_kontakia").unresolved && section(bw, "antiphon_1").unresolved, "Bright Week: Paschal Liturgy flagged, not assembled");
+  }
+}
+
 // Every replaced/filled line keeps its unitId and never leaks a blank
 for (const els of [run({ dow: 0, isSunday: true, season: "sunday", tone: 7 }, entry("09-20"))]) {
   for (const id of ["pk-06", "al-02", "ep-02", "go-02", "go-04", "go-11", "le-10"]) {
@@ -340,6 +401,6 @@ for (const els of [run({ dow: 0, isSunday: true, season: "sunday", tone: 7 }, en
 }
 
 const overview = assembleLiturgy({ units: getLiturgy("chrysostom") }).filter(e => e.type === "liturgy_section" && e.core).length;
-console.log(`liturgy assembly: ${MOVEMENT_ORDER.length} movements (${overview} core), 2 variants × ${VIEWS.length} views, ${Object.keys(BASIL_INSERTS).length} insert anchors, 6 hook scenarios, 11 entrance/Beatitudes scenarios`);
+console.log(`liturgy assembly: ${MOVEMENT_ORDER.length} movements (${overview} core), 2 variants × ${VIEWS.length} views, ${Object.keys(BASIL_INSERTS).length} insert anchors, 6 hook scenarios, 11 entrance/Beatitudes scenarios, 7 Pentecostarion scenarios`);
 console.log(failures ? `${failures} failure(s)` : "OK");
 process.exit(failures ? 1 : 0);

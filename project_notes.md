@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.49.3** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
+**Tool version: v0.50.0** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -12,6 +12,40 @@ before touching `bulletin-metrics.js`, `bulletin-layout.js` or the print CSS.
 service.** Read it before touching anything under `src/data/liturgy/` or writing
 `assembleLiturgy()`. The encoding history is `divine_liturgy_chrysostom_encoding_spec.md`
 (v24), also at the root.
+
+
+**Session September 19, 2026 (thirty-seventh) — THE PENTECOSTARION AT THE
+LITURGY: PHASE 3b.** Tool **v0.50.0** (after v0.49.1–v0.49.3: daily troparia,
+Typica propers port, the temple picker fixed twice on Bill's pickups).
+
+### WHAT LANDED
+
+- `pentecostarionOrder()` in `liturgy-entrance.js`: ch.4 pp.169–170 (four
+  weekday periods, keyed on `paschaOffset`) and §4B5–§4B17 Sunday/feast blocks.
+  Slots `pent:<field>` read the day's own Pentecostarion entry — `troparion`
+  (an array on Myrrhbearers days), `troparion_2/3`, `hours_kontakion ||
+  kontakion_ode6` as "the kontakion", `kontakion_ode3/ode6` where a block names
+  two (P+35: Ode VI = the Sunday's, Ode III = Pascha's; P+42: Ode VI = the
+  Fathers', hours = Ascension's). These field semantics are per-entry as the
+  encoder captured them; the gate asserts the tones so a re-encode is caught.
+- Beatitudes: as printed (`beatitudes_troparia`), or 4 + 4 with a Menaion saint's
+  Ode III (§4A1/§4A3); `festalAntiphons` when the entry's source note says so.
+- `menaion_set_aside` on the entry removes the Menaion saint slots.
+
+### FLAGGED
+
+- Bright Week (§4B1) not assembled. §4B14 → §383 not extracted. Period (3)'s
+  "kontakion of Thomas Sunday" read as the preceding Sunday's (noted on the
+  element). Coverage is the data's: P+19, P+35–P+56.
+
+### BILL'S QUESTION — the dedication list
+
+The temple picker offers the curated `TEMPLE_DEDICATIONS` (~30 ids), not every
+encoded commemoration. Bill expects any encoded saint/feast with a troparion to
+be choosable as a temple. Proposal (shared component, so a decision): build the
+picker's list as the curated entries plus every loaded Menaion/Pentecostarion
+entry with a troparion, under a group "Other encoded commemorations". Preload
+already loads the dedication's month by `dataKey`. Awaiting Bill's go-ahead.
 
 
 **Session September 19, 2026 (thirty-sixth) — THE LITTLE ENTRANCE AND THE

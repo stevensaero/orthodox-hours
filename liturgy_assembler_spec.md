@@ -1,6 +1,6 @@
 # Divine Liturgy Assembler — Integration Spec (v1.1)
 
-**Status:** APPROVED with amendments (Bill, Sept 19 2026) — see §5. Phase 0 landed at v0.46.5; Phase 1 at v0.47.0; Phase 2 at v0.48.0; `built: true` at v0.48.1; Phase 3 at v0.49.0.
+**Status:** APPROVED with amendments (Bill, Sept 19 2026) — see §5. Phase 0 landed at v0.46.5; Phase 1 at v0.47.0; Phase 2 at v0.48.0; `built: true` at v0.48.1; Phase 3 at v0.49.0; Phase 3b (Pentecostarion) at v0.50.0.
 **Baseline:** orthodox-hours at `dd13dac`, tool v0.46.4 (badge and notes header agree).
 **Data:** `src/data/liturgy/chrysostom.js` — 624 Chrysostom units, 628 Basil
 (28 overrides, 4 inserts, 0 pending); encoding spec at v24 (repo root).
@@ -235,7 +235,7 @@ on the port (notes, thirty-fifth session). `built: true` followed at **v0.48.1**
 confirmation (Sept 19 2026).
 
 **Phase 3 — the Little Entrance and the Beatitudes. DONE, v0.49.0** (ch.1 and
-ch.2; ch.4 Pentecostarion is Phase 3b). `src/lib/liturgy-entrance.js` holds the
+ch.2); **Phase 3b (ch.4 Pentecostarion) DONE, v0.50.0.** `src/lib/liturgy-entrance.js` holds the
 tables and the Beatitudes counts; the app injects temple, feast-day entry,
 day-of-week kontakia and the Octoechos V2 Beatitudes. Data gap: the Horologion's
 troparia of the day of the week (a §2A weekday slot reads Unresolved until encoded).

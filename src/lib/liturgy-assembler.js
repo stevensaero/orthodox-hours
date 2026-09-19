@@ -188,8 +188,16 @@ function planHooks(ctx, variant) {
   // The book marks the verses "(on 12)", "(on 10)", "(on 8)": N troparia occupy
   // the last N of twelve slots — ten verses (a3-03…a3-12), then Glory…, then
   // Now and ever…. liturgy-entrance.js decides N and the sources (Fekula ch.1/2).
-  if (!isGreatFeast) {
-    const b = resolveBeatitudes({ liturgicalData: ld, menaionEntry, sources });
+  const beat = isGreatFeast ? null : resolveBeatitudes({ liturgicalData: ld, menaionEntry, pentEntry, sources });
+  if (beat && beat.festalAntiphons) {
+    // A Pentecostarion feast (Ascension, Pentecost) or Bright Week: festal antiphons, no Beatitudes.
+    const why = (beat.notes && beat.notes.join(" ")) || "Festal antiphons replace the Typika and Beatitudes.";
+    h.section.antiphon_1 = { unresolved: true, open: [unresolved("lit-antiphons-festal", "Festal Antiphons", why + " Not encoded; the typical antiphons are shown below as printed.",
+      { section: beat.section, note: beat.quote })] };
+    h.section.antiphon_2 = { unresolved: true };
+    h.section.antiphon_3 = { unresolved: true };
+  } else if (!isGreatFeast) {
+    const b = beat;
     const VERSES = ["a3-03", "a3-04", "a3-05", "a3-06", "a3-07", "a3-08", "a3-09", "a3-10", "a3-11", "a3-12"];
     const cite = { section: b.section, note: [b.quote, ...(b.notes || [])].filter(Boolean).join(" ") };
     if (b.troparia.length && !b.unresolved) {
@@ -211,7 +219,7 @@ function planHooks(ctx, variant) {
 
   // ── Troparia and kontakia after the Little Entrance (Fekula ch.1 / ch.2) ─
   {
-    const r = resolveEntrance({ liturgicalData: ld, menaionEntry, sources });
+    const r = resolveEntrance({ liturgicalData: ld, menaionEntry, pentEntry, sources });
     h.after["tk-01"] = r.elements;
     h.section.troparia_kontakia = { toneLabel: r.toneLabel, unresolved: r.unresolved };
   }
