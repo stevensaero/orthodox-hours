@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.46.5** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
+**Tool version: v0.47.0** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -12,6 +12,58 @@ before touching `bulletin-metrics.js`, `bulletin-layout.js` or the print CSS.
 service.** Read it before touching anything under `src/data/liturgy/` or writing
 `assembleLiturgy()`. The encoding history is `divine_liturgy_chrysostom_encoding_spec.md`
 (v24), also at the root.
+
+
+**Session September 19, 2026 (thirty-fourth) — THE LITURGY ASSEMBLES: PHASE 1.**
+Tool **v0.47.0**. The fixed order renders; nothing movable yet. `built` stays
+false (decision 5) — review with **`?preview=liturgy`** in the URL, which unlocks
+a `built:false` service for the session and marks it "preview" in the picker.
+
+### WHAT LANDED
+
+- `src/lib/liturgy-assembler.js` — pure. `assembleLiturgy({ units, view })`
+  emits `liturgy_section` (one per movement, id `mv-<movement>`), `liturgy_unit`
+  (kind heading | subheading | rubric | line, with speaker / mode / cue /
+  variantTag) and `liturgy_hidden` (a folded run). Hooks for the movable parts
+  slot in at one marked point in the walk. `insertAnchors()` maps each Basil-only
+  insert to the nearest shared unit for the scroll hold.
+- `ServiceBlock` gained three branches and two small components (`LiturgyUnit`,
+  `LiturgyHiddenRun`); `LiturgyControls` is the sticky strip.
+- App: lazy load of the data module, `liturgyChoice` (variant + the date it was
+  chosen for, so a new date reads Chrysostom without a reset effect), `liturgyView`
+  persisted in localStorage, `liturgyOutlineExpanded` likewise, the anchor ref +
+  `useLayoutEffect` that holds the reader's place across the toggle.
+- `ServiceOutline`: `liturgy_section` rows; overview (`core`) / expanded toggle in
+  the panel header; ☦ on movable rows; a `tone` tag slot fed by
+  `el.toneLabel` (empty until Phase 2).
+- `getLiturgyType()` cited and corrected (Dec 24 added — see below).
+- `tools/test_liturgy_assembly.mjs` in `npm run gate`.
+
+### THREE THINGS FOUND ON THE WAY
+
+1. **The Basil list was nine long.** The explainer said "ten times a year" and
+   listed nine; `getLiturgyType()` implemented the nine. The tenth is the Eve of
+   the Nativity (Dec 24), a Vesperal Liturgy of St. Basil like Theophany Eve.
+   Added. Still not modelled: when either Eve falls on Saturday or Sunday the
+   Typicon moves Basil to the feast itself — noted in the function's comment.
+2. **Sticky only works inside its own parent.** The first cut put the control
+   strip in the service-title block and it stuck for one line. It has to live in
+   the same container as the elements list, so `LiturgyControls` renders just
+   before them. Worth remembering for any future per-service toolbar.
+3. **A movement-opening ALL-CAPS heading is absorbed.** The registry label is the
+   section header; printing the book's "GREAT LITANY" under "THE GREAT LITANY"
+   is noise. Mid-movement headings ("EPISTLE READING" inside the prokeimenon
+   movement, "COMMUNION HYMN") are kept because the book placed them there on
+   purpose. 19 headings absorbed, all accounted for by the gate.
+
+### NEXT — PHASE 2 (v0.48.0, flips `built: true`)
+
+The hooks V1 can feed today: readings via `readingsForDay()`, prokeimenon and
+Alleluia via helpers **extracted from `assembleTypica`** (shared, not copied),
+communion hymn, Trisagion replacement, zadostoinik (`instead_of_*` first),
+entrance clause, departed-litany gate, dismissal with `serviceContext:"liturgy"`,
+festal-antiphon placeholder. Each resolved element sets `toneLabel` on its
+section so the outline row shows the tone. Test dates in the spec §4.
 
 
 **Session September 19, 2026 (thirty-third) — THE DIVINE LITURGY COMES HOME:
