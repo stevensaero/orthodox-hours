@@ -1,11 +1,92 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.46.4** | **Tone Trainer: v0.26.0** | Last synced: September 6, 2026
+**Tool version: v0.46.5** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
 is verified against the rendering engine, and — at least as usefully — the
 models that were tried and rejected and the four bugs that shipped. Read it
 before touching `bulletin-metrics.js`, `bulletin-layout.js` or the print CSS.
+
+
+**`liturgy_assembler_spec.md` (repo root) is the plan for the Divine Liturgy
+service.** Read it before touching anything under `src/data/liturgy/` or writing
+`assembleLiturgy()`. The encoding history is `divine_liturgy_chrysostom_encoding_spec.md`
+(v24), also at the root.
+
+
+**Session September 19, 2026 (thirty-third) — THE DIVINE LITURGY COMES HOME:
+PHASE 0.** Tool **v0.46.5**. Data and specs only; no UI, no assembler yet.
+
+### WHAT LANDED
+
+The diocese's request is that the Hours tool assemble the Divine Liturgy with its
+movable parts in place. The Liturgy of St. John Chrysostom (pp.31–86, St. Tikhon's
+Seminary Press 2008, 3rd ed.) was encoded outside the repo over 23 spec revisions —
+624 units, each `{ id, movement, speaker, mode, cue, text, pointing, source_page,
+note }` — with the Liturgy of St. Basil built as an **overlay** on that skeleton
+(`BASIL_OVERRIDES`, 28 prayers; `BASIL_INSERTS`, 4 Basil-only lines) rather than a
+second array. `getLiturgy("chrysostom" | "basil")` returns 624 / 628 units.
+
+- `src/data/liturgy/chrysostom.js` — **verbatim file copy**, sha256-identical to
+  the archive. Never re-typed: long verbatim transcription of this text trips the
+  output filter (encoding spec v22), and a file copy does not.
+- `src/data/liturgy/registry.js` — the closed movement vocabulary (41 ids, ordered),
+  `MOVABLE_MOVEMENTS` (the 14 the book's own rubrics say vary by day), `CORE_MOVEMENTS`
+  (22, the overview outline) and `TEACHING_RUBRICS` (the rubric unit per movable
+  movement that tells the reader what is appointed — never hidden).
+- `tools/validate_liturgy.mjs` — the gate, wired into `npm run gate`.
+- `tools/liturgy_preview/` — the reassembly review page + builder, repointed.
+- `liturgy_assembler_spec.md` (approved) and `divine_liturgy_chrysostom_encoding_spec.md`
+  (v24) at the root.
+
+### DECISIONS (Bill, this session)
+
+1. **Noise gating.** Two header toggles, off by default: rubrics and the priest's
+   quiet prayers, each collapsed to a click-to-expand chip. The gate is the unit's own
+   `speaker` / `mode` field, never a heuristic. **Teaching rubrics are exempt** —
+   the tool is a teaching aid and "the choir now sings the appointed Troparia and
+   Kontakia" is the lesson.
+2. **Single point of truth is the repo.** The local `divine-liturgy-chrysostom/`
+   folder is the archive of the scans; encoding continues in the repo file.
+3. **Zadostoinik field pair.** V1 carries both `zadostoinik_refrain/_irmos` (3 dates)
+   and `instead_of_it_is_truly_meet_refrain/_irmos` (2 dates + Pentecostarion). The
+   assembler reads `instead_of_*` first, `zadostoinik_*` as fallback; normalising the
+   three legacy dates is a Phase 2 data item, since V1 is otherwise frozen.
+4. **Chrysostom is always the default** on the variant toggle. Basil is served on a
+   handful of dates; on those the Basil button gets an "appointed today" hint.
+5. **Hold `built: true` until Phase 2** (readings and propers), not Phase 1.
+6. **Page numbers never render in the tool.** `source_page` / `basil_page` stay in
+   the data as provenance for the preview tool and future encoding.
+7. **Outline in two levels** — overview (`core`) by default, expanded on toggle —
+   and **every movable row shows its Tone**, as Vespers and Typica rows do.
+8. **Licensing.** Use in development is permitted. Public distribution still to be
+   confirmed with the diocese before `built: true` ships.
+
+### WHAT THE ASSEMBLER WILL FIND WAITING (discovered this session)
+
+- The tool was half-expecting it: `liturgy` is a registry row, the outline
+  whitelists it, `getLiturgyType()` and the author-aware dismissal exist, and four
+  V1 field families (`prokeimenon_*`, `alleluia_*`, `communion_verse`,
+  `beatitudes_troparia[]`) are encoded on 45–61 dates and read by nothing.
+- `src/lib/readings.js` (`readingsForDay`) is the readings rule; the Liturgy consumes
+  it, never re-derives it. Prokeimenon/Alleluia routing gets **extracted from
+  `assembleTypica`** into shared helpers so Typica and Liturgy cannot drift.
+- **Not in the repo at all:** the Little Entrance troparia/kontakia order (Fekula
+  ch.1 / ch.2 tables, per rank and temple dedication — project docs only), a
+  Trisagion-substitute rule, a zadostoinik rule, festal antiphons (no V1 field), and
+  an Octoechos V2 accessor for `liturgy.beatitudes` (encoded, unreachable).
+- Octoechos V2 already carries full Liturgy sections (`liturgy.beatitudes`,
+  `liturgy.prokeimenon`, `liturgy.alleluia`, `liturgy_weekday.*`); the Beatitudes
+  accessor is the single highest-value wire-in for Phase 3.
+- `getLiturgyType()` has no Fekula citation and its explainer says "ten times a
+  year" over a nine-item list. Phase 1 fixes both.
+
+### NEXT — PHASE 1 (v0.47.0)
+
+`src/lib/liturgy-assembler.js` with no hooks; unit → element rendering
+(speaker / mode / cue / `{{red}}` / blanks); Chrysostom–Basil toggle with diff marks
+and held scroll; the two view layers; two-level outline; subtitle arm. `built`
+stays false.
 
 
 **Session September 6, 2026 (thirty-second) — VERSE NUMBERS, AND A REGRESSION
