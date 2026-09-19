@@ -9,6 +9,7 @@ import { splitBookAndRest, paroemiaToRef, paroemiaRefSpan } from '../lib/scriptu
 import { readingsForDay } from '../lib/readings.js';
 import { assembleLiturgy, LITURGY_VIEW_DEFAULTS, insertAnchors } from '../lib/liturgy-assembler.js';
 import { DAILY_TROPARIA, DAILY_TROPARIA_SOURCE } from '../data/liturgy/daily_troparia.js';
+import { resolveLiturgyPropers } from '../lib/liturgy-propers.js';
 import Bulletin from './bulletin.jsx';
 
 
@@ -953,14 +954,8 @@ const LIC_OPENING_FRAME = [
 
 // Shared day-keyed tables (spec §3 local-table map).
 const srcWeeklyVespersProk = (dow) => OctoV2.getV2DailyVespersProkeimenon(dow);
-const srcTypicaWeekdayProk = (dowNumber) => {
-  const key = ["", "mon", "tue", "wed", "thu", "fri", "sat"][dowNumber];
-  const p = key ? OctoV2.getV2DailyLiturgyPropers(key) : null;
-  if (!p) return null;
-  return dowNumber === 6 && p.prokeimenon_departed
-    ? [p.prokeimenon, p.prokeimenon_departed]
-    : p.prokeimenon;
-};
+// srcTypicaWeekdayProk retired at v0.49.2 — the Typica reads the daily Liturgy
+// propers through resolveLiturgyPropers() (src/lib/liturgy-propers.js).
 
 
 async function _loadMenaionMonth(month) {
@@ -5508,29 +5503,9 @@ const TYPICA_KONTAKIA = {
 // Weekday Alleluia verses — keyed by day of week (1=Mon … 6=Sat)
 // Source: HTM_daily_troparia_kontakia_alleluia_prokeimena.txt
 // Saturday has two stichoi (All Saints + Departed).
-const TYPICA_WEEKDAY_ALLELUIA = {
-  1: { tone: 5,
-       verse: "Praise the Lord, all ye His angels; praise Him, all ye His hosts.",
-       stichoi: ["For He spake, and they came to be; He commanded, and they were created."] },
-  2: { tone: 4,
-       verse: "The righteous man shall flourish like a palm tree, and like a cedar in Lebanon shall he be multiplied.",
-       stichoi: ["They that are planted in the house of the Lord, in the courts of our God they shall blossom forth."] },
-  3: { tone: 8,
-       verse: "Hearken, O daughter, and see, and incline thine ear.",
-       stichoi: ["The rich among the people shall entreat thy countenance."] },
-  4: { tone: 1,
-       verse: "The heavens shall confess Thy wonders, O Lord, and Thy truth in the congregation of saints.",
-       stichoi: ["God Who is glorified in the council of the saints."] },
-  5: { tone: 1,
-       verse: "Remember Thy congregation which Thou hast purchased from the beginning.",
-       stichoi: ["But God is our king before the ages, He hath wrought salvation in the midst of the earth."] },
-  6: { tone: 4,
-       verse: "The righteous cried, and the Lord heard them, and He delivered them out of all their tribulations.",
-       stichoi: [
-         "Many are the tribulations of the righteous, and the Lord shall deliver them out of them all.",
-         "Blessed are they whom Thou hast chosen and hast taken to Thyself, O Lord, and their memorial is unto generation and generation.",
-       ]},
-};
+// TYPICA_WEEKDAY_ALLELUIA retired at v0.49.2 — the weekday Alleluia now comes from
+// the Octoechos V2 daily Liturgy propers via resolveLiturgyPropers(), the same
+// source the Liturgy uses (one table, not two).
 // Sunday resurrectional Alleluia verses — keyed by tone (1–8)
 // Source: St. Sergius Sunday Octoechos (resurrectional Alleluia table)
 // Used on ordinary Sundays when no pentEntry alleluia_verse is encoded.
@@ -5787,70 +5762,45 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
     TYPICA_BEATITUDES_FIXED.join("\n"));
 
   // ── 6. Prokeimenon ───────────────────────────────────────────────────────
-  // Routing: pentEntry > Sunday resurrectional > weekday daily > none
-  // Uses prokeimenon element type (same as Vespers) so ServiceBlock renders
-  // "Reader: The Prokeimenon in Tone X: [text]" with verse exchange correctly.
+  // v0.49.2: routed through resolveLiturgyPropers() — the Typica reads the
+  // Liturgy's own propers, so the one rule applies (Fekula §2A p.39: "For the
+  // day (and, if there be such, from the Menaion)"; §1A–§1E, §1F1; §4A1; the
+  // Saturday inversion). The Menaion's prokeimenon and Alleluia are included
+  // whenever the printed service appoints them — a presence gate, not the
+  // former polyeleos/vigil rank gate — and stand beside the day's, never in
+  // place of it. The shared element shape below keeps the explainer badges fed.
+  const typicaReadings = readingsForDay({ liturgicalData, menaionEntry, dailyReading, feastReading });
+  const typicaPropers = resolveLiturgyPropers({
+    liturgicalData, menaionEntry, pentEntry, menaionFirst: typicaReadings.order === "menaion-first",
+    sources: { sunProkeimenon: srcSunProkeimenon, sunAlleluia: srcSunAlleluia,
+               dailyPropers: (k) => OctoV2.getV2DailyLiturgyPropers(k) },
+  });
   {
-    const buildProkEl = (id, p, sourceStr, noteStr, typicaProkSource = 'weekday', typicaProkDow = dowNumber) => ({
-      id,
-      type: "prokeimenon",
-      typicaMode: true,
-      label: "Prokeimenon · Tone " + p.tone + (p.label ? " — " + p.label : ""),
-      announcement: "Wisdom! The Prokeimenon in Tone " + p.tone + ": " + p.text,
-      exchanges: [
-        { speaker: "chanters", text: p.text },
-        { speaker: "chanters", text: p.text },
-        ...(p.stichos ? [
-          { speaker: "deacon", text: "V.: " + p.stichos },
+    const originToProkSource = (o, note) => o === 'pentecostarion' ? 'pentecostarion' : o === 'sunday' ? 'sunday'
+      : o === 'menaion' ? 'menaion_festal' : (/departed/i.test(note || '') || dowNumber === 6) ? 'saturday' : 'weekday';
+    typicaPropers.prokeimena.forEach((p, i) => {
+      elements.push({
+        id: i === 0 ? "typica-prokeimenon" : "typica-prokeimenon-" + i,
+        type: "prokeimenon",
+        typicaMode: true,
+        label: "Prokeimenon · Tone " + p.tone + (p.label ? " — " + p.label : ""),
+        announcement: "Wisdom! The Prokeimenon in Tone " + p.tone + ": " + p.text,
+        exchanges: [
           { speaker: "chanters", text: p.text },
-        ] : []),
-      ],
-      readerMode,
-      source: sourceStr,
-      ...(p.path ? { srcPath: p.path } : {}),
-      fekula: { section: null, note: noteStr },
-      typicaProkSource,
-      typicaProkDow,
-      typicaTone: tone,
-      typicaRank: menaionEntry?.rank || 'simple',
+          { speaker: "chanters", text: p.text },
+          ...(p.stichoi || []).flatMap(st => [{ speaker: "deacon", text: "V.: " + st }, { speaker: "chanters", text: p.text }]),
+        ],
+        readerMode,
+        source: p.source,
+        ...(p.path ? { srcPath: p.path } : {}),
+        fekula: p.fekula,
+        note: p.note,
+        typicaProkSource: originToProkSource(p.origin, p.note),
+        typicaProkDow: dowNumber,
+        typicaTone: tone,
+        typicaRank: menaionEntry?.rank || 'simple',
+      });
     });
-
-    // In reader mode the prokeimenon element itself handles the Ch10 pattern:
-    // "Wisdom!" is stripped, "Reader:" label shown, verse in black — no separate note needed.
-
-    if (pentEntry?.prokeimenon_text) {
-      elements.push(buildProkEl("typica-prokeimenon",
-        { tone: pentEntry.prokeimenon_tone, text: pentEntry.prokeimenon_text, stichos: pentEntry.prokeimenon_stichos },
-        "Pentecostarion · " + (pentEntry.source_file || "St. Sergius PDF"),
-        "Pentecostarion proper prokeimenon.", 'pentecostarion'));
-      // Menaion feast-proper prokeimenon suppressed — Pentecostarion governs
-    } else if (isSunday) {
-      const p = srcSunProkeimenon(tone);
-      elements.push(buildProkEl("typica-prokeimenon", p,
-        "St. Sergius Sunday Octoechos",
-        "Sunday resurrectional prokeimenon, Tone " + tone + ".", 'sunday'));
-      // Menaion feast-proper prokeimenon suppressed on Sunday — resurrectional governs
-    } else {
-      const daily = srcTypicaWeekdayProk(dowNumber);
-      if (Array.isArray(daily)) {
-        daily.forEach((p, i) => elements.push(buildProkEl(
-          "typica-prokeimenon-" + i, p,
-          "HTM daily file",
-          "Saturday prokeimenon — " + p.label + ".", 'saturday')));
-      } else if (daily) {
-        elements.push(buildProkEl("typica-prokeimenon", daily,
-          "HTM daily file",
-          ["","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dowNumber] + " prokeimenon.", 'weekday'));
-      }
-      // Feast-proper prokeimenon appended after weekday for §2E/§2F rank
-      if (menaionEntry?.prokeimenon_text &&
-          (menaionEntry.rank === 'polyeleos' || menaionEntry.rank === 'vigil')) {
-        elements.push(buildProkEl("typica-prokeimenon-feast",
-          { tone: menaionEntry.prokeimenon_tone, text: menaionEntry.prokeimenon_text, stichos: menaionEntry.prokeimenon_stichos },
-          "Menaion · " + (menaionEntry.saint || "saint of the day"),
-          "Feast proper prokeimenon for " + (menaionEntry.saint || "this commemoration") + ".", 'menaion_festal'));
-      }
-    }
   }
 
   // ── 7. Readings ─────────────────────────────────────────────────────────
@@ -5917,69 +5867,22 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
       }
 
       // ── Alleluia — between Epistle and Gospel ──────────────────────────
-      // Routing priority: pentEntry > menaionEntry (weekday) > Sunday resurrectional > weekday daily table
-      // Sunday + polyeleos/vigil Menaion saint: resurrectional FIRST, then festal second. — Fekula §4A3
+      // v0.49.2: from resolveLiturgyPropers() (see the Prokeimenon note above).
+      // Order: the day's (Pentecostarion / Sunday resurrectional / weekday
+      // daily), then the Menaion's when printed; Saturday inverts.
       {
-        const buildAlleluia = (a) => {
-          const lines = ["Alleluia, Tone " + a.tone + ".\n\nV.: " + a.verse];
-          (a.stichoi || a.stichos ? [].concat(a.stichoi || a.stichos) : []).forEach(s => {
-            lines.push("V.: " + s);
-          });
-          return lines.join("\n\n");
-        };
-
-        let alData = null;
-        let alNote = null;
-        let alSource = 'weekly';  // for explainer badge
-
-        if (pentEntry?.alleluia_verse) {
-          alData = { tone: pentEntry.alleluia_tone, verse: pentEntry.alleluia_verse,
-                     stichoi: pentEntry.alleluia_stichos ? [pentEntry.alleluia_stichos] : [] };
-          alNote = "Pentecostarion proper Alleluia · Source: St. Sergius PDF";
-          alSource = 'pentecostarion';
-        } else if (isSunday) {
-          // Sunday: resurrectional Alleluia always comes first
-          const resAl = srcSunAlleluia(tone);
-          elements.push({ id: "typica-alleluia-res",
-            label: "Alleluia (Resurrectional) · Tone " + tone,
-            text: buildAlleluia(resAl), type: "movable", source: src,
-            ...(resAl && resAl.path ? { srcPath: resAl.path } : {}),
-            note: "Sunday resurrectional Alleluia, Tone " + tone + " · Source: St. Sergius Sunday Octoechos",
-            alleluiaSource: 'sunday_resurrectional', alleluiaDow: dowNumber, alleluiaRank: menaionEntry?.rank || 'simple', alleluiaTone: tone });
-          // If polyeleos/vigil Menaion saint also has a festal Alleluia, add it second
-          if (menaionEntry?.alleluia_verse &&
-              (menaionEntry?.rank === 'polyeleos' || menaionEntry?.rank === 'vigil')) {
-            elements.push({ id: "typica-alleluia-feast",
-              label: "Alleluia (Festal) · Tone " + menaionEntry.alleluia_tone,
-              text: buildAlleluia({ tone: menaionEntry.alleluia_tone, verse: menaionEntry.alleluia_verse,
-                stichoi: menaionEntry.alleluia_stichos ? [menaionEntry.alleluia_stichos] : [] }),
-              type: "movable", source: src,
-              note: "Festal Alleluia · Menaion proper · " + (menaionEntry.saint || "saint of the day") + " · Fekula §4A3",
-              alleluiaSource: 'menaion_festal_sunday', alleluiaDow: dowNumber, alleluiaRank: menaionEntry?.rank || 'simple', alleluiaTone: tone });
-          }
-          alData = null; // already pushed above
-        } else if (menaionEntry?.alleluia_verse) {
-          alData = { tone: menaionEntry.alleluia_tone, verse: menaionEntry.alleluia_verse,
-                     stichoi: menaionEntry.alleluia_stichos ? [menaionEntry.alleluia_stichos] : [] };
-          alNote = "Menaion proper Alleluia · Source: St. Sergius Menaion · " + (menaionEntry.saint || "saint of the day");
-          alSource = 'menaion_festal';
-        } else {
-          const daily = TYPICA_WEEKDAY_ALLELUIA[dowNumber];
-          if (daily) {
-            alData = daily;
-            alNote = ["","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dowNumber] +
-                     " Alleluia, Tone " + daily.tone + " · Source: HTM daily file";
-            alSource = 'weekly';
-          }
-        }
-
-        if (alData) {
-          elements.push({ id: "typica-alleluia",
-            label: "Alleluia · Tone " + alData.tone,
-            text: buildAlleluia(alData), type: "movable", source: src,
-            note: alNote,
+        const buildAlleluia = (a) => ["Alleluia, Tone " + a.tone + ".\n\nV.: " + a.text, ...(a.stichoi || []).map(st => "V.: " + st)].join("\n\n");
+        typicaPropers.alleluia.forEach((a, i) => {
+          const alSource = a.origin === 'pentecostarion' ? 'pentecostarion' : a.origin === 'sunday' ? 'sunday_resurrectional'
+            : a.origin === 'menaion' ? (isSunday ? 'menaion_festal_sunday' : 'menaion_festal') : 'weekly';
+          elements.push({
+            id: i === 0 ? "typica-alleluia" : "typica-alleluia-" + i,
+            label: "Alleluia" + (a.origin === 'sunday' ? " (Resurrectional)" : a.origin === 'menaion' ? " (Menaion)" : "") + " · Tone " + a.tone,
+            text: buildAlleluia(a), type: "movable", source: a.source,
+            ...(a.path ? { srcPath: a.path } : {}),
+            note: a.note, fekula: a.fekula,
             alleluiaSource: alSource, alleluiaDow: dowNumber, alleluiaRank: menaionEntry?.rank || 'simple', alleluiaTone: tone });
-        }
+        });
       }
 
       if (dailyReading.g) {
@@ -8862,6 +8765,28 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.49.2",
+    date: "September 2026",
+    summary: "One rule for the sung propers: the Typica joins the Liturgy on Fekula §2A — and a substitute appears once",
+    items: [
+      "THE TYPICA NOW READS ITS PROKEIMENON AND ALLELUIA THROUGH resolveLiturgyPropers(), " +
+      "the same module the Liturgy uses, so the two cannot drift. The rule is Fekula's " +
+      "own: the day's proper (Pentecostarion feast, Sunday resurrectional, or the day of " +
+      "the week), then the Menaion's whenever the printed service appoints one — 'for the " +
+      "day (and, if there be such, from the Menaion)', §2A p.39 — with Saturday inverted " +
+      "when the Menaion has readings. What changed for the Typica: a six-stichera saint's " +
+      "printed prokeimenon now appears (it was gated to polyeleos/vigil); a Menaion " +
+      "Alleluia joins the daily one instead of replacing it; a Pentecostarion feast no " +
+      "longer suppresses the Menaion's. The weekday Alleluia now comes from the daily " +
+      "Octoechos, the same source the Liturgy uses; the separate HTM table is retired. " +
+      "The Prokeimenon and Alleluia explainers say all this in Fekula's words.",
+      "A SUBSTITUTE APPEARS ONCE. Bill's catch: the zadostoinik, the Trisagion substitute " +
+      "and the weekday communion hymn were shown twice in the Liturgy — the book's line " +
+      "filled in, and the annotated element beneath it. The annotated element now stands " +
+      "in the line's place.",
+    ],
+  },
   {
     version: "v0.49.1",
     date: "September 2026",
@@ -13999,8 +13924,9 @@ function TypicaProkeimenonExplainer({ typicaProkSource, typicaProkDow, typicaTon
           {typicaProkSource === 'sunday' && (
             <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
               Sunday uses the <strong>resurrectional prokeimenon keyed by the weekly Octoechos
-              tone (Tone {typicaTone})</strong> — from the St. Sergius Sunday Octoechos.
-              Note: the Menaion festal prokeimenon is suppressed on Sundays — the resurrectional governs.
+              tone (Tone {typicaTone})</strong> — from the St. Sergius Sunday Octoechos. When the
+              Menaion prints a prokeimenon for the saint it follows this one: "Prokeimenon, Epistle,
+              Alleluia and Gospel: for Sunday and from the Menaion." — Fekula §1A–§1E
             </div>
           )}
           {typicaProkSource === 'saturday' && (
@@ -14011,20 +13937,22 @@ function TypicaProkeimenonExplainer({ typicaProkSource, typicaProkDow, typicaTon
           )}
           {typicaProkSource === 'menaion_festal' && (
             <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
-              This <strong>{typicaRank}</strong> saint appoints a proper festal prokeimenon
-              from the Menaion, which <em>appends</em> after the weekday daily entry
-              (both are sung). — Fekula §2E–§2F
+              The printed service for this <strong>{typicaRank}</strong> commemoration appoints
+              a prokeimenon, so it is sung beside the day's — "for the day (and, if there be such,
+              from the Menaion)". The gate is whether the Menaion prints one, not the saint's rank.
+              On Saturday the Menaion's comes first. — Fekula §2A p.39
             </div>
           )}
           {typicaProkSource === 'pentecostarion' && (
             <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
-              This Pentecostarion feast appoints its own prokeimenon, overriding the daily table. — Fekula §4B
+              This Pentecostarion feast appoints its own prokeimenon in place of the daily table;
+              the Menaion's, if there be such, follows it. — Fekula §4A1
             </div>
           )}
           {typicaProkSource === 'weekday' && (
             <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
-              No feast overrides — the fixed Typica prokeimenon for this day of the week applies.
-              At §2E/§2F rank, a second festal prokeimenon is appended after this one.
+              The prokeimenon of the day of the week, from the daily Octoechos. When the Menaion
+              prints one for the saint it follows (or, on Saturday, precedes) this one. — Fekula §2A
             </div>
           )}
         </div>
@@ -14033,9 +13961,9 @@ function TypicaProkeimenonExplainer({ typicaProkSource, typicaProkDow, typicaTon
         <div style={{ marginBottom: '0.75rem', fontSize: '0.78rem' }}>
           <strong>Priority order (Typica differs from Vespers):</strong>
           <ol style={{ margin: '4px 0 0 1rem', padding: 0, color: '#3D3020' }}>
-            <li>Pentecostarion feast prokeimenon</li>
-            <li>Sunday resurrectional (Octoechos, keyed by <em>tone</em>, not day-of-week)</li>
-            <li>Weekday daily table + Menaion festal appended after at §2E/§2F rank</li>
+            <li>The day's prokeimenon: Pentecostarion feast, or Sunday resurrectional (Octoechos, keyed by <em>tone</em>), or the day of the week (daily Octoechos; Saturday adds the Departed's)</li>
+            <li>Then the Menaion's, whenever the printed service appoints one — "for the day (and, if there be such, from the Menaion)" — Fekula §2A, §1A–§1E, §4A1</li>
+            <li>Saturday: the Menaion's first, then the day's, when the Menaion has readings — Fekula §2A</li>
           </ol>
           <div style={{ fontSize: '0.75rem', color: '#9A8A70', marginTop: '4px' }}>
             Note: Vespers uses day-of-week for ordinary prokeimena; Typica uses Octoechos tone
@@ -14186,34 +14114,34 @@ function AlleluiaExplainer({ alleluiaSource, alleluiaDow, alleluiaRank, alleluia
           {alleluiaSource === 'sunday_resurrectional' && (
             <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
               Sunday always uses the <strong>resurrectional Alleluia keyed by the weekly
-              Octoechos tone (Tone {alleluiaTone})</strong>. On Sundays with a Polyeleos or
-              Vigil Menaion saint, a second festal Alleluia follows. — St. Sergius Sunday
-              Octoechos; Fekula §4A3
+              Octoechos tone (Tone {alleluiaTone})</strong>. When the Menaion prints an Alleluia
+              for the saint it follows this one. — St. Sergius Sunday Octoechos; Fekula §1A–§1E, §4A3
             </div>
           )}
           {alleluiaSource === 'menaion_festal_sunday' && (
             <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
-              This <strong>{alleluiaRank}</strong> saint appoints a festal Alleluia from the
-              Menaion. On Sundays it is sung <em>after</em> the resurrectional Alleluia
-              (Tone {alleluiaTone}). — Fekula §4A3
+              The printed service for this <strong>{alleluiaRank}</strong> commemoration appoints
+              an Alleluia. On Sunday it is sung <em>after</em> the resurrectional Alleluia
+              (Tone {alleluiaTone}). — Fekula §1A–§1E, §4A3
             </div>
           )}
           {alleluiaSource === 'menaion_festal' && (
             <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
-              This <strong>{alleluiaRank}</strong> saint appoints a proper festal Alleluia
-              from the Menaion, replacing the weekday daily table entry. — Fekula §2E–§2F
+              The printed service for this <strong>{alleluiaRank}</strong> commemoration appoints
+              an Alleluia, sung beside the day's — "for the day (and, if there be such, from the
+              Menaion)"; on Saturday the Menaion's comes first. — Fekula §2A p.39
             </div>
           )}
           {alleluiaSource === 'pentecostarion' && (
             <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
-              This Pentecostarion feast appoints its own Alleluia verse, overriding all
-              other sources. — St. Sergius Pentecostarion PDF; Fekula §4B
+              This Pentecostarion feast appoints its own Alleluia in place of the daily table;
+              the Menaion's, if there be such, follows. — St. Sergius Pentecostarion PDF; Fekula §4A1
             </div>
           )}
           {alleluiaSource === 'weekly' && (
             <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
-              No feast overrides the ordinary table — the fixed Alleluia for this day of
-              the week applies. — HTM Horologion
+              The Alleluia of the day of the week, from the daily Octoechos. When the Menaion
+              prints one for the saint it follows (or, on Saturday, precedes) this one. — Fekula §2A
             </div>
           )}
         </div>
@@ -14222,13 +14150,9 @@ function AlleluiaExplainer({ alleluiaSource, alleluiaDow, alleluiaRank, alleluia
         <div style={{ marginBottom: '0.75rem', fontSize: '0.78rem' }}>
           <strong>Priority order:</strong>
           <ol style={{ margin: '4px 0 0 1rem', padding: 0, color: '#3D3020' }}>
-            <li>Pentecostarion feast Alleluia (when in Pentecostarion season)</li>
-            <li>Sunday resurrectional Alleluia keyed by Octoechos tone</li>
-            <li style={{ marginLeft: '0.75rem', listStyle: 'disc', fontSize: '0.75rem', color: '#5C4A1E' }}>
-              + Menaion festal Alleluia appended after, when Polyeleos §2E or Vigil §2F on a Sunday — Fekula §4A3
-            </li>
-            <li>Menaion festal Alleluia — Polyeleos §2E or Vigil §2F rank (weekday)</li>
-            <li>Weekday daily table — keyed by day of week (HTM Horologion)</li>
+            <li>The day's Alleluia: Pentecostarion feast, or Sunday resurrectional (Octoechos tone), or the day of the week (daily Octoechos)</li>
+            <li>Then the Menaion's, whenever the printed service appoints one — "for the day (and, if there be such, from the Menaion)" — Fekula §2A, §1A–§1E, §4A1</li>
+            <li>Saturday: the Menaion's first, then the day's, when the Menaion has readings — Fekula §2A</li>
           </ol>
         </div>
 

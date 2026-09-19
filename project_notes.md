@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.49.1** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
+**Tool version: v0.49.2** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -77,13 +77,18 @@ inversion in §2A. The Typica reads the same Liturgy propers (HTM: "prokeimenon
 up. What holds it up is only regression risk: the Typica has no propers test,
 and three of its choices differ (Menaion prokeimenon only at polyeleos/vigil;
 Menaion Alleluia replacing the daily one; Pentecostarion suppressing the
-Menaion). Bill has now approved the port; it is queued as **v0.49.2**.
+Menaion). Bill approved the port; **done at v0.49.2** — `assembleTypica` calls
+`resolveLiturgyPropers()`; `srcTypicaWeekdayProk` and `TYPICA_WEEKDAY_ALLELUIA`
+retired; both explainers rewritten to the presence gate. Direct resolver cases
+are in `test_liturgy_assembly.mjs`; the Typica was render-checked on a Sunday in
+an afterfeast, a simple Sunday, a Tuesday and a vigil Saturday.
+
+Same release: **substitutes appeared twice** in the Liturgy (zadostoinik,
+Trisagion substitute, weekday communion) — the filled book line plus the
+annotated movable. Bill caught it; the movable now replaces the line.
 
 ### NEXT
 
-- **v0.49.2** — port the Typica's prokeimenon/Alleluia (and communion, if
-  shown) to `resolveLiturgyPropers()`; add a Typica propers gate test; keep the
-  explainer badges (`typicaProkSource`, `alleluiaSource`) fed.
 - **Phase 3b** — ch.4 table + §4A Beatitudes.
 
 

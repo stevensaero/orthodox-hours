@@ -30,6 +30,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { assembleLiturgy, insertAnchors } from "../src/lib/liturgy-assembler.js";
+import { resolveLiturgyPropers } from "../src/lib/liturgy-propers.js";
 import { getLiturgy, BASIL_OVERRIDES, BASIL_INSERTS } from "../src/data/liturgy/chrysostom.js";
 import { MOVEMENT_ORDER, TEACHING_RUBRICS } from "../src/data/liturgy/registry.js";
 import { readingsForDay } from "../src/lib/readings.js";
@@ -166,6 +167,7 @@ const textOf = (els, unitId) => { const x = els.find(y => y.unitId === unitId); 
   check(byId(els, "lit-zadostoinik"), "09-20: zadostoinik present (afterfeast, legacy fields)");
   check(byId(els, "lit-di-08") && /basil|chrysostom/.test(byId(els, "lit-di-08").text), "09-20: dismissal replaced");
   check(textOf(els, "ef-09") && /Praise the Lord/.test(textOf(els, "ef-09")), "09-20: Sunday communion hymn unchanged");
+  check(!els.some(x => x.unitId === "cm-07") && byId(els, "lit-zadostoinik"), "09-20: zadostoinik stands in place of It is truly meet — once");
   check(els.filter(x => /^lit-communion-/.test(x.id)).length === 1, "09-20: one Menaion communion hymn appended");
 }
 // 2. Weekday (Monday), same entry shape — day propers from the Octoechos, then the Menaion
@@ -176,7 +178,7 @@ const textOf = (els, unitId) => { const x = els.find(y => y.unitId === unitId); 
   check(prok.length === 2 && /Monday/.test(prok[0].note), "09-06 Monday: weekday prokeimenon first, then Menaion");
   check(/Who art wondrous in the saints/.test(textOf(els, "le-10")), "09-06: weekday entrance clause");
   check(els.some(x => x.movement === "litany_departed" && x.type === "liturgy_unit"), "09-06: departed litany present on a weekday");
-  check(textOf(els, "ef-09") && !/Praise the Lord from the heavens/.test(textOf(els, "ef-09")), "09-06: weekday communion hymn replaces the Sunday text");
+  check(!els.some(x => x.unitId === "ef-09") && byId(els, "lit-communion-0") && /of the day/.test(byId(els, "lit-communion-0").label), "09-06: weekday communion hymn stands in place of the Sunday text — once");
   check(!byId(els, "lit-zadostoinik") && !byId(els, "lit-zadostoinik-missing"), "09-06: no zadostoinik");
 }
 // 3. Saturday: Menaion first
@@ -191,7 +193,7 @@ const textOf = (els, unitId) => { const x = els.find(y => y.unitId === unitId); 
 {
   const e = entry("09-14");
   const els = run({ dow: 1, isSunday: false, season: "great_feast", tone: 7, feastPeriod: { feast: { name: "Elevation of the Cross" } } }, e);
-  check(/We venerate Thy Cross/.test(textOf(els, "tr-01")), "09-14: Trisagion replaced");
+  check(!els.some(x => x.unitId === "tr-01") && byId(els, "lit-trisagion-sub") && /We venerate Thy Cross/.test(byId(els, "lit-trisagion-sub").text), "09-14: Trisagion replaced — once");
   check(!els.some(x => x.unitId === "tr-03"), "09-14: tr-03 dropped under the substitute");
   check(byId(els, "lit-antiphons-festal") && section(els, "antiphon_1").unresolved, "09-14: festal antiphons flagged unresolved");
   check(byId(els, "lit-zadostoinik") && /legacy/.test(byId(els, "lit-zadostoinik").note || ""), "09-14: zadostoinik via the legacy zadostoinik_* fallback");
@@ -311,6 +313,21 @@ const nativityT = { name: "Nativity of the Theotokos", month: 9, day: 8 };
   const els = run({ dow: 1, isSunday: false, season: "pentecostarion", isPentecostarion: true, tone: 3 }, entry("09-27"));
   check(section(els, "troparia_kontakia").unresolved && byId(els, "lit-tk-order"), "Pentecostarion: entrance order flagged (ch.4 table not encoded)");
   check(section(els, "antiphon_3").unresolved, "Pentecostarion: Beatitudes flagged");
+}
+
+// ── resolveLiturgyPropers() direct — the rule the Typica now shares (v0.49.2) ──
+{
+  const P = (ld, e, menaionFirst = false) => resolveLiturgyPropers({ liturgicalData: ld, menaionEntry: e, pentEntry: null, menaionFirst, sources: baseSources });
+  const wk = P({ dow: 1, tone: 7 }, entry("09-06"));
+  check(wk.prokeimena.length === 2 && wk.prokeimena[0].origin === "weekday" && wk.prokeimena[1].origin === "menaion", "propers: six-stichera weekday keeps the day's prokeimenon and adds the Menaion's (presence gate)");
+  check(wk.alleluia.length === 2 && wk.alleluia[0].origin === "weekday", "propers: Menaion Alleluia joins the daily one, does not replace it");
+  const sat = P({ dow: 6, tone: 7 }, entry("09-06"), true);
+  check(sat.prokeimena[0].origin === "menaion" && sat.prokeimena.length === 3, "propers: Saturday Menaion first, then day + departed");
+  const sun = P({ dow: 0, isSunday: true, tone: 7 }, entry("09-27"));
+  check(sun.prokeimena.length === 1 && sun.prokeimena[0].origin === "sunday" && sun.communion.length === 0, "propers: simple Sunday with no AT LITURGY section — resurrectional only");
+  const pent = resolveLiturgyPropers({ liturgicalData: { dow: 1, tone: 3 }, menaionEntry: entry("09-06"),
+    pentEntry: { prokeimenon_tone: 8, prokeimenon_text: "Pent prok", alleluia_tone: 8, alleluia_verse: "Pent al", communion_verse: "Pent comm", source_file: "P+40.pdf" }, sources: baseSources });
+  check(pent.prokeimena.length === 2 && pent.prokeimena[0].origin === "pentecostarion" && pent.prokeimena[1].origin === "menaion", "propers: Pentecostarion feast first, then the Menaion's (§4A1)");
 }
 
 // Every replaced/filled line keeps its unitId and never leaks a blank

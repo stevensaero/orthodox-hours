@@ -223,11 +223,13 @@ function planHooks(ctx, variant) {
       const sub = (id, unitId, text) => ({ id, unitId, type: "liturgy_unit", kind: "line", movement: "trisagion", speaker: "choir",
         mode: null, cue: null, variantTag: null, markDiff: false, resolvedBlank: true, text,
         fekula: { section: "Trisagion", note: t.note + " Source: " + t.source } });
-      h.replace["tr-01"] = sub("lit-tr-01", "tr-01", t.text + " {{(3)}}");
+      // The annotated movable stands in the Trisagion's place (thrice); the
+      // Glory… line stays; the half-line and the final repetition become the
+      // substitute once more, as a plain line.
+      h.replace["tr-01"] = [mov("lit-trisagion-sub", "Instead of the Trisagion (thrice)", t.text, { source: t.source,
+        fekula: { section: "Trisagion", note: "On certain Feast Days this is replaced by another hymn (the book's footnote); the printed service appoints the hymn." } })];
       h.replace["tr-03"] = null;                       // "Holy Immortal…" has no half-line in the substitute
       h.replace["tr-04"] = sub("lit-tr-04", "tr-04", t.text);
-      h.before["tr-01"] = [mov("lit-trisagion-sub", "Instead of the Trisagion", t.text, { source: t.source,
-        fekula: { section: "Trisagion", note: "On certain Feast Days this is replaced by another hymn (the book's footnote); the printed service appoints the hymn." } })];
       h.section.trisagion = { toneLabel: null };
     }
   }
@@ -324,9 +326,6 @@ function planHooks(ctx, variant) {
     const z = zadostoinikFor({ menaionEntry, pentEntry });
     if (z && !z.suppressedOnly) {
       h.replace["cm-07"] = [
-        { id: "lit-cm-07", unitId: "cm-07", type: "liturgy_unit", kind: "line", movement: "commemorations", speaker: "choir",
-          mode: null, cue: null, variantTag: null, markDiff: false, resolvedBlank: true,
-          text: [z.refrain, z.irmos].filter(Boolean).join("\n") },
         mov("lit-zadostoinik", "Instead of It is truly meet", [z.refrain, z.irmos].filter(Boolean).join("\n\n"), {
           source: z.source,
           note: z.legacyField ? "Read from the legacy zadostoinik_* fields (decision 3)." : undefined,
@@ -342,14 +341,14 @@ function planHooks(ctx, variant) {
   // ── Communion hymn ──────────────────────────────────────────────────────
   {
     const c = propers.communion;
+    // The book prints the Sunday hymn ("Praise the Lord…"). On a weekday the
+    // day's hymn stands in its place; the Menaion's (any day) follows. Each
+    // resolved hymn appears once, as the annotated element.
     const dayC = c.find(x => x.origin !== "menaion");
-    if (dayC && !isSunday) {
-      h.replace["ef-09"] = { id: "lit-ef-09", unitId: "ef-09", type: "liturgy_unit", kind: "line", movement: "elevation_and_fraction", speaker: "choir",
-        mode: null, cue: null, variantTag: null, markDiff: false, resolvedBlank: true, text: dayC.text + " Alleluia! Alleluia! Alleluia!" };
-    }
+    if (dayC && !isSunday) h.replace["ef-09"] = null;
     const els = c.map((x, i) => mov("lit-communion-" + i, "Communion Hymn · " + (x.origin === "menaion" ? "of the commemoration" : x.origin === "pentecostarion" ? "of the feast" : "of the day"),
-      x.text, { source: x.source, note: x.note, fekula: x.fekula }));
-    if (els.length) h.after["ef-footnote"] = els;
+      x.text + " Alleluia! Alleluia! Alleluia!", { source: x.source, note: x.note, fekula: x.fekula }));
+    if (els.length) h.after["ef-09"] = els;
     h.section.elevation_and_fraction = {};
   }
 
