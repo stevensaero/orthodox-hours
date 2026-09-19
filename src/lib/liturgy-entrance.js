@@ -308,11 +308,15 @@ export function resolveEntrance({ liturgicalData: ld = {}, menaionEntry = null, 
   // chosen order has no temple hymns (a temple of the Lord on Sunday, §1A) —
   // so the dedication can always be re-picked. Only the tables Fekula prints
   // without temple variation (apodosis, Great Feast, a Theotokos feast) omit it.
-  if (order.templeDependent !== false) {
-    els.push({ id: "lit-tk-temple", type: "temple_selector", templeMode: "troparion", compact: true, label: "Temple dedication",
-      compactNote: "In a temple dedicated to the Lord, to the Theotokos, or to a saint, the troparia and kontakia stand in a different order; the temple's own troparion and kontakion take their slots below. — Fekula ch.1 / ch.2",
-      fekula: { section: order.section, note: "The order of the troparia and kontakia depends on the temple's dedication." } });
-  }
+  // Placement (Bill, Sept 19 2026): the picker sits DIRECTLY ABOVE the first
+  // verse it changes — the temple's own troparion (or kontakion, if the table
+  // has only that) — so the effect of a choice is visible right below it. When
+  // the chosen order carries no temple hymn at all it stands at the head of the
+  // list, since the whole order is what the choice governs.
+  const templeSelector = order.templeDependent !== false ? {
+    id: "lit-tk-temple", type: "temple_selector", templeMode: "troparion", compact: true, label: "Temple dedication",
+    compactNote: "In a temple dedicated to the Lord, to the Theotokos, or to a saint, the troparia and kontakia stand in a different order; the temple's own troparion and kontakion take the slots that follow. — Fekula ch.1 / ch.2",
+    fekula: { section: order.section, note: "The order of the troparia and kontakia depends on the temple's dedication." } } : null;
   const hymn = (slot) => {
     const S = sources;
     switch (slot) {
@@ -343,10 +347,14 @@ export function resolveEntrance({ liturgicalData: ld = {}, menaionEntry = null, 
     }
   };
 
+  let pickerPlaced = false;
   order.slots.forEach((spec, i) => {
     const m = spec.match(/^(GN|G|N):(.*)$/);
     const prefix = m ? m[1] : null, slot = m ? m[2] : spec;
     const lead = prefix === "GN" ? "Glory… Now and ever…" : prefix === "G" ? "Glory…" : prefix === "N" ? "Now and ever…" : null;
+    if (templeSelector && !pickerPlaced && (slot === "temple_troparion" || slot === "temple_kontakion")) {
+      els.push(templeSelector); pickerPlaced = true;
+    }
     let h = hymn(slot);
     const list = Array.isArray(h) ? h : (h ? [h] : []);
     if (!list.length) {
@@ -362,6 +370,9 @@ export function resolveEntrance({ liturgicalData: ld = {}, menaionEntry = null, 
         source: x.source, ...(x.path ? { srcPath: x.path } : {}), fekula: j === 0 && i === 0 ? cite : { section: order.section, note: slotLabel(slot) + " — " + order.section + (order.page ? " " + order.page : "") } });
     });
   });
+  // No temple slot in the chosen order (e.g. §1A, temple of the Lord): the
+  // picker heads the list so the dedication stays re-pickable.
+  if (templeSelector && !pickerPlaced) els.unshift(templeSelector);
   const toneLabel = tones.length ? [...new Set(tones)].map(t => "Tone " + t).join(" · ") : null;
   return { elements: els, toneLabel, unresolved, section: order.section, quote: order.quote, notes: order.notes };
 }

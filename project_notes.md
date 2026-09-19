@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.50.1** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
+**Tool version: v0.50.2** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -51,10 +51,15 @@ index) feeds `findTempleDedication`, the picker, the preload and the Liturgy's
 temple type. Verified: a July saint as the temple on a September Sunday
 resolves (July preloads) in both Liturgy and Typica.
 
-**Picker placement:** it stands at the top of the movement whose order it
-governs (the Liturgy's Troparia and Kontakia; the Typica's kontakia; the
-Litiya), above the hymns it changes — Bill's requirement that the choice be
-seen applied directly below. It is not in the sticky strip on purpose.
+**Picker placement (v0.50.2):** in the Liturgy the compact picker stands
+directly above the first temple hymn it changes — the Troparion of the Temple,
+or the Kontakion of the Temple where the table has only that — not at the head
+of the movement (Bill, Sept 19: "above the verse it changes directly"). When the
+chosen order has no temple hymn at all (§1A, temple of the Lord) it heads the
+list, since the whole order is what the choice governs, and stays re-pickable.
+The Typica's kontakia and the Litiya keep their own positions. It is not in the
+sticky strip on purpose. `resolveEntrance()` in `src/lib/liturgy-entrance.js`
+places it; the gate asserts the placement in §1C, §1A, §2A and P+44.
 
 
 **Session September 19, 2026 (thirty-sixth) — THE LITTLE ENTRANCE AND THE

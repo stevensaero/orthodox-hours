@@ -8796,6 +8796,21 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.50.2",
+    date: "September 2026",
+    summary: "Liturgy: the temple picker sits directly above the verse it changes",
+    items: [
+      "THE TEMPLE PICKER MOVED NEXT TO ITS EFFECT. After the Little Entrance the compact " +
+      "dedication picker now stands immediately above the Troparion of the Temple (or the " +
+      "Kontakion of the Temple where the table has only that), so the impact of a choice is " +
+      "read right below it. When the chosen order carries no temple hymn — a temple of the " +
+      "Lord on an ordinary Sunday, §1A — the picker heads the list, since the whole order is " +
+      "what the choice governs, and it stays re-pickable there.",
+      "Gate: tools/test_liturgy_assembly.mjs asserts the placement in §1C, §1A (Lord), §2A and " +
+      "ch.4 (4) P+44 scenarios.",
+    ],
+  },
+  {
     version: "v0.50.1",
     date: "September 2026",
     summary: "Any encoded commemoration can be the temple — the dedication list is derived from the data and gated at rebuild",

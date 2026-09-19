@@ -227,6 +227,14 @@ const textOf = (els, unitId) => { const x = els.find(y => y.unitId === unitId); 
 // ── Phase 3: Little Entrance order and Beatitudes ───────────────────────────
 const tk = (els) => els.filter(x => /^lit-tk-\d+-/.test(x.id));
 const slotsOf = (els) => tk(els).map(x => x.id.replace(/^lit-tk-\d+-/, "").replace(/-\d+$/, ""));
+// Picker placement: the element right after `lit-tk-temple` must be the first
+// temple hymn (troparion or kontakion) — or, when the order has no temple
+// slot, the first troparion of the list (picker heads the list).
+const pickerAbove = (els) => {
+  const i = els.findIndex(x => x.id === "lit-tk-temple");
+  const next = els[i + 1];
+  return i >= 0 && next ? next.id.replace(/^lit-tk-\d+-/, "").replace(/-\d+$/, "") : null;
+};
 const beats = (els) => els.filter(x => /^lit-beat-\d+$/.test(x.id));
 const cross = { name: "Elevation of the Holy Cross", forLord: true, month: 9, day: 14 };
 const nativityT = { name: "Nativity of the Theotokos", month: 9, day: 8 };
@@ -235,6 +243,7 @@ const nativityT = { name: "Nativity of the Theotokos", month: 9, day: 8 };
   const els = run({ dow: 0, isSunday: true, season: "sunday", tone: 7 }, entry("09-06"));
   check(slotsOf(els).join(",") === "sunday_troparion,temple_troparion,saint_troparion,sunday_kontakion,temple_kontakion,saint_kontakion,steadfast_protectress", "§1C saint temple order: " + slotsOf(els).join(","));
   check(!section(els, "troparia_kontakia").unresolved, "§1C: entrance resolved");
+  check(pickerAbove(els) === "temple_troparion" && els[els.findIndex(x => x.id === "lit-tk-temple") - 1].id.endsWith("sunday_troparion"), "§1C: picker between the Sunday troparion and the troparion of the temple");
   check(/Tone 7/.test(section(els, "troparia_kontakia").toneLabel || ""), "§1C: tone label carries the Sunday tone");
   check(beats(els).length === 10, `§1C: ${beats(els).length} Beatitude troparia, expected 10`);
   check(byId(els, "lit-a3-glory") && byId(els, "lit-a3-bothnow"), "§1C: Glory / Now and ever lines emitted");
@@ -249,6 +258,7 @@ const nativityT = { name: "Nativity of the Theotokos", month: 9, day: 8 };
   check(slotsOf(els).join(",") === "sunday_troparion,saint_troparion,saint_kontakion,sunday_kontakion", "§1A Lord temple order: " + slotsOf(els).join(","));
   check(beats(els).length === 8 && /Triadicon/.test(beats(els)[6].label), "§1A: eight of the resurrection with the Triadicon at Glory");
   check(byId(els, "lit-tk-temple"), "§1A Lord temple: picker still shown though the order has no temple hymns (re-pickable)");
+  check(pickerAbove(els) === "sunday_troparion", "§1A Lord temple: no temple slot → picker heads the list (above " + pickerAbove(els) + ")");
 }
 // C. No temple set: selector + unresolved
 {
@@ -270,6 +280,7 @@ const nativityT = { name: "Nativity of the Theotokos", month: 9, day: 8 };
   check(slotsOf(els).join(",") === "temple_troparion,dow_troparion,saint_troparion,dow_kontakion,saint_kontakion,departed_kontakion,temple_kontakion", "§2A Lord Mon order: " + slotsOf(els).join(","));
   check(!section(els, "troparia_kontakia").unresolved && tk(els).some(x => /Bodiless Hosts/.test(x.label) && /Supreme Commanders/.test(x.text)), "§2A Monday: troparion of the Bodiless Hosts resolved");
   check(byId(els, "lit-tk-temple") && byId(els, "lit-tk-temple").type === "temple_selector", "§2A: temple picker shown inline with the hymns");
+  check(pickerAbove(els) === "temple_troparion", "§2A: picker sits directly above the troparion of the temple (above " + pickerAbove(els) + ")");
   check(beats(els).length === 8 && /Ode III/.test(beats(els)[4].label), "§2C: 4 Octoechos then 4 Menaion Ode III");
 }
 // F. Thursday, temple of a saint: two dow kontakia; Saturday Lord temple: departed at Glory, Martyrs at Now
@@ -375,6 +386,7 @@ const nativityT = { name: "Nativity of the Theotokos", month: 9, day: 8 };
     check(tk(els)[5] && /^Now and ever/.test(tk(els)[5].label) && tk(els)[5].toneNote === "Tone 6", "ch.4 (4): Ascension kontakion at Now and ever");
     check(beats(els).length === 8 && /Ode III/.test(beats(els)[4].label), "§4A1: four Pentecostarion + four Menaion Ode III");
     check(byId(els, "lit-tk-temple"), "ch.4 weekday: temple picker shown");
+    check(pickerAbove(els) === "temple_troparion", "ch.4 (4): picker directly above the troparion of the temple, after the Pentecostarion troparion");
     const lord = runP(44, entry("09-06"), { temple: TEMPLES.lord });
     check(slotsOf(lord).join(",") === "pent:troparion,saint_troparion,saint_kontakion,pent:kontakion", "ch.4 (4) P+44 Lord temple: no temple slots — " + slotsOf(lord).join(","));
     const none = runP(44, null, { temple: TEMPLES.lord });
