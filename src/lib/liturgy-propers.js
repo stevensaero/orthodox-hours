@@ -6,6 +6,8 @@
 // One rule, from Fekula, applied to all three the way readings.js applies it to
 // the Epistle and Gospel:
 //
+//   "Prokeimenon, Epistle, Alleluia, Gospel, and Communion Hymn: For the day
+//    (and, if there be such, from the Menaion)."                 — ch.2 §2A p.39
 //   "Prokeimenon, Epistle, Alleluia and Gospel: Sunday and saint" — ch.1 §1F1
 //   "Communion Hymn: Praise the Lord … and for the saint (if there be such)"
 //   "Prokeimenon of the feast (preceding Sunday), and of the saint, if there be
@@ -101,7 +103,7 @@ export function resolveLiturgyPropers({ liturgicalData, menaionEntry = null, pen
       const mk = (pr, extra) => ({
         tone: pr.tone, text: pr.text, stichoi: pr.stichos ? [pr.stichos] : [], path: pr.path,
         origin: "weekday", source: "Octoechos · daily Liturgy propers",
-        fekula: { section: "§2A", note: "The prokeimenon, Epistle, Alleluia, Gospel and communion hymn of the day, and of the saint if there be such." },
+        fekula: { section: "§2A", note: "Prokeimenon, Epistle, Alleluia, Gospel, and Communion Hymn: For the day (and, if there be such, from the Menaion)." },
         ...extra,
       });
       if (p.prokeimenon) day.prokeimena.push(mk(p.prokeimenon, { note: DAY_NAMES[dow] + " prokeimenon." }));
@@ -110,12 +112,12 @@ export function resolveLiturgyPropers({ liturgicalData, menaionEntry = null, pen
         tone: p.alleluia.tone, text: textOf(p.alleluia.text),
         stichoi: (p.alleluia.verses || []).map(textOf).filter(Boolean), path: p.alleluia.path,
         origin: "weekday", source: "Octoechos · daily Liturgy propers", note: DAY_NAMES[dow] + " Alleluia.",
-        fekula: { section: "§2A", note: "Alleluia of the day, and of the saint if there be such." },
+        fekula: { section: "§2A", note: "Alleluia: for the day (and, if there be such, from the Menaion)." },
       });
       if (p.communion) day.communion.push({
         text: textOf(p.communion), origin: "weekday", source: "Octoechos · daily Liturgy propers",
         note: DAY_NAMES[dow] + " communion hymn.",
-        fekula: { section: "§2A", note: "Communion hymn of the day, and of the saint if there be such." },
+        fekula: { section: "§2A", note: "Communion Hymn: for the day (and, if there be such, from the Menaion)." },
       });
     }
   }

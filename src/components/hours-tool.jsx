@@ -6523,7 +6523,7 @@ const SERVICE_REGISTRY = [
   { key: "1st_hour",       label: "The First Hour",             built: true  },
   { key: "3rd_hour",       label: "The Third Hour",             built: true  },
   { key: "6th_hour",       label: "The Sixth Hour",             built: true  },
-  { key: "liturgy",        label: "Divine Liturgy",             built: false },
+  { key: "liturgy",        label: "Divine Liturgy",             built: true },   // v0.48.1 — Bill confirmed (Sept 19 2026)
   { key: "9th_hour",       label: "The Ninth Hour",             built: true  },
   { key: "typica",         label: "The Order of the Typica",    built: true  },
   { key: "vespers",        label: "Vespers",                    built: true  },
@@ -8847,6 +8847,21 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.48.1",
+    date: "September 2026",
+    summary: "The Divine Liturgy is live in the service picker",
+    items: [
+      "built: true. Bill confirmed the release with Phase 2 (Sept 19, 2026); the " +
+      "'soon' pill is gone and ?preview=liturgy is no longer needed. Everything " +
+      "still flagged Unresolved — festal antiphons, the feast-of-the-Lord entrance " +
+      "clause, the order of the troparia and kontakia — shows as such.",
+      "The weekday propers rule now quotes Fekula §2A p.39 verbatim on its badge: " +
+      "'Prokeimenon, Epistle, Alleluia, Gospel, and Communion Hymn: For the day " +
+      "(and, if there be such, from the Menaion).' The same hedge the Sunday " +
+      "sections use, and the same presence gate readings.js already applies.",
+    ],
+  },
   {
     version: "v0.48.0",
     date: "September 2026",

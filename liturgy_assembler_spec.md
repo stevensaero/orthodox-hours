@@ -1,6 +1,6 @@
 # Divine Liturgy Assembler — Integration Spec (v1.1)
 
-**Status:** APPROVED with amendments (Bill, Sept 19 2026) — see §5. Phase 0 landed at v0.46.5; Phase 1 at v0.47.0; Phase 2 at v0.48.0.
+**Status:** APPROVED with amendments (Bill, Sept 19 2026) — see §5. Phase 0 landed at v0.46.5; Phase 1 at v0.47.0; Phase 2 at v0.48.0; `built: true` at v0.48.1.
 **Baseline:** orthodox-hours at `dd13dac`, tool v0.46.4 (badge and notes header agree).
 **Data:** `src/data/liturgy/chrysostom.js` — 624 Chrysostom units, 628 Basil
 (28 overrides, 4 inserts, 0 pending); encoding spec at v24 (repo root).
@@ -231,8 +231,8 @@ prokeimenon, alleluia, communion hymn, Trisagion replacement, zadostoinik, entra
 clause, departed-litany gate, dismissal, festal-antiphon placeholder. The sung
 propers live in `src/lib/liturgy-propers.js` (presence-gated, Fekula "and of the
 saint, if there be such"); the Typica keeps its older routing until Bill decides
-on the port (notes, thirty-fifth session). `built: true` was **not** flipped —
-it waits on the distribution confirmation in §6; `?preview=liturgy` until then.
+on the port (notes, thirty-fifth session). `built: true` followed at **v0.48.1** on Bill's
+confirmation (Sept 19 2026).
 
 **Phase 3 — the Little Entrance and the Beatitudes.** `LITTLE_ENTRANCE_ORDER` from
 Fekula ch.1/ch.2/ch.4, `srcSunBeatitudes` accessor, Beatitude troparia interleave.
@@ -267,5 +267,5 @@ until the Triodion is); §2G2 kontakion at 3rd/9th Hours (pre-existing, unrelate
 ## 6. Not a code question, but blocking release
 
 The text is St. Tikhon's Seminary Press 2008, © (spec v14/v22). **Permission for use
-in development is confirmed (Bill, Sept 19 2026).** Distribution in the public tool
-is still to be confirmed with the diocese before `built: true` ships.
+in development is confirmed (Bill, Sept 19 2026), and Bill confirmed the public
+release with Phase 2 (v0.48.1).**

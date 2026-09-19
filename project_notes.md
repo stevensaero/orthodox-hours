@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.48.0** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
+**Tool version: v0.48.1** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -51,11 +51,8 @@ PARTS: PHASE 2.** Tool **v0.48.0**. `built` still false — see the decision bel
    both. `liturgy-propers.js` is the intended single home. Porting the Typica
    changes what it shows on some days (e.g. a six-stichera saint with a printed
    prokeimenon would now get it), so it was not done silently. Say the word.
-2. **`built: true` is one line away and was not flipped.** Decision 5 said "hold
-   until Phase 2 lands"; §6 of the spec says public distribution of the St.
-   Tikhon's text needs confirming. Bill confirmed development use. Flip it
-   (`SERVICE_REGISTRY`, `liturgy` row) when distribution is confirmed; until then
-   `?preview=liturgy`.
+2. ~~`built: true` not flipped~~ — **flipped at v0.48.1** on Bill's confirmation,
+   same session. The Liturgy is in the picker.
 
 ### FOUND ON THE WAY
 
