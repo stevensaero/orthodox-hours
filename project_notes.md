@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.48.1** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
+**Tool version: v0.49.0** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -12,6 +12,76 @@ before touching `bulletin-metrics.js`, `bulletin-layout.js` or the print CSS.
 service.** Read it before touching anything under `src/data/liturgy/` or writing
 `assembleLiturgy()`. The encoding history is `divine_liturgy_chrysostom_encoding_spec.md`
 (v24), also at the root.
+
+
+**Session September 19, 2026 (thirty-sixth) — THE LITTLE ENTRANCE AND THE
+BEATITUDES: PHASE 3.** Tool **v0.49.0** (v0.48.1 in between: `built: true` on
+Bill's confirmation).
+
+### WHAT LANDED
+
+- `src/lib/liturgy-entrance.js` — `entranceOrder()` picks the Fekula table
+  (ch.1 §1A/§1B/§1C→§1D/§1E, Theotokos feast on Sunday, §1F1/§1F2/§1F3; ch.2 §2A
+  by Mon-Tue-Thu / Wed-Fri / Sat with §2B and §2C deferring, §2D/§2E/§2F,
+  §2G1/§2G2, §2G3/§2G4; Great Feast day) × temple type (lord / theotokos /
+  saint); `resolveEntrance()` fills the slots from injected sources;
+  `resolveBeatitudes()` counts and sources the troparia per the same chapters.
+  The tables were transcribed from the project's Fekula chapter files this
+  session (verbatim extraction on record in the session transcript).
+- `planHooks()` interleaves the Beatitude troparia into the last N of twelve
+  slots (the book's "(on 12 / 10 / 8)" marks; Glory… and Now and ever… are slots
+  11 and 12) and replaces the Phase 2 placeholder after `tk-01`.
+- App sources: temple type from `TEMPLE_DEDICATIONS.category`; the feast day's
+  own Menaion entry for `feast_*` slots; `TYPICA_KONTAKIA` for the kontakia of
+  the day (Saturday: the Martyrs'), "With the saints give rest" and "Protection
+  of Christians" from the same table; Octoechos V2 `liturgy.beatitudes` and
+  `liturgy_weekday.<day>.beatitudes` via `resolveV2Ref`.
+
+### INTERPRETIVE CHOICES ON RECORD (each carried on the element's Fekula note)
+
+1. **"Four from the Octoechos" on a §2A weekday = the Octoechos' last four**, so
+   its Glory… and Now and ever… stay in place. Fekula does not say which four.
+2. **A second printed troparion outside a feast period is read as a second
+   saint** (§1B/§2B "both are used"). Inside a feast period it is ignored — the
+   feast's hymns come from the feast day's entry instead.
+3. **A Menaion Beatitude item noted "(Twice)" is sung twice** — how V1 records
+   "on 4" over three printed troparia.
+4. **Great Feast day itself**: feast troparion; Glory… Now and ever… feast
+   kontakion, cited to the Menaion's printed order and §2G3's form; ch.5 has
+   not been extracted for a direct quote.
+5. **Sunday in an afterfeast keeps the Sunday entrance clause** (Phase 2, still
+   flagged on the element).
+
+### DATA GAPS FOUND
+
+- **Troparia of the day of the week (Horologion: Bodiless Hosts, Forerunner,
+  Cross, Apostles + St Nicholas, Martyrs/departed) are not encoded anywhere.**
+  Every §2A weekday shows the `dow_troparion` slot Unresolved. Six short texts;
+  an encoding item for Bill (HTM Horologion on Drive).
+- **Pentecostarion** (ch.4 pp.169–170 table; §4A Beatitudes) — Phase 3b.
+  Note the extraction flagged an apparent misprint: period 3's "Now and ever"
+  reads "kontakion of Thomas Sunday" where the parallel says "of the preceding
+  Sunday".
+- `prokeimenon_2_*` has no stichos field (Phase 2 note); `kontakion_2` is
+  supported if it ever appears.
+
+### THE TYPICA QUESTION (Bill asked; answered in chat, recorded here)
+
+The Liturgy's propers rule is fully sourced: §2A p.39 "For the day (and, if
+there be such, from the Menaion)", §1A–§1E, §1F1, §4A1, and the Saturday
+inversion in §2A. The Typica reads the same Liturgy propers (HTM: "prokeimenon
+… of the day") so the same rule governs it; nothing rubrical holds the port
+up. What holds it up is only regression risk: the Typica has no propers test,
+and three of its choices differ (Menaion prokeimenon only at polyeleos/vigil;
+Menaion Alleluia replacing the daily one; Pentecostarion suppressing the
+Menaion). Bill has now approved the port; it is queued as **v0.49.1**.
+
+### NEXT
+
+- **v0.49.1** — port the Typica's prokeimenon/Alleluia (and communion, if
+  shown) to `resolveLiturgyPropers()`; add a Typica propers gate test; keep the
+  explainer badges (`typicaProkSource`, `alleluiaSource`) fed.
+- **Phase 3b** — ch.4 table + §4A Beatitudes; day-of-week troparia data.
 
 
 **Session September 19, 2026 (thirty-fifth) — THE LITURGY TAKES ITS MOVABLE
