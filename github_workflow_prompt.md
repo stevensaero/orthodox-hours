@@ -111,6 +111,8 @@ make edits directly in the clone, commit, push, then scrub the token.
 >   `git pull out.bundle main && git push` locally. Proven same day.
 > - Terminal Claude Code and claude.ai/code repo-scoped sessions are
 >   unaffected; this applies to cloud sandboxes reached via Cowork/claude.ai.
+> - Re-verified Sept 19 2026 (v0.46.5 push). Read this section BEFORE the
+>   first push attempt; the bundle fallback is a last resort, not step one.
 
 ```bash
 # 1. Clone fresh (reads pass the proxy; token in URL is fine for clone auth)
