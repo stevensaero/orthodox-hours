@@ -61,6 +61,7 @@ import MAY from '../src/data/menaion/may.js';
 import JUNE from '../src/data/menaion/june.js';
 import JULY from '../src/data/menaion/july.js';
 import SEPTEMBER from '../src/data/menaion/september.js';
+import OCTOBER from '../src/data/menaion/october.js';
 
 const KNOWN_FIELDS = new Set([
   'alleluia_2_stichos', 'alleluia_2_tone', 'alleluia_2_verse', 'alleluia_stichos',
@@ -184,6 +185,7 @@ const COMMENT_MAPS = {
   'Menaion/june': buildCommentMap(new URL('../src/data/menaion/june.js', import.meta.url)),
   'Menaion/july': buildCommentMap(new URL('../src/data/menaion/july.js', import.meta.url)),
   'Menaion/september': buildCommentMap(new URL('../src/data/menaion/september.js', import.meta.url)),
+  'Menaion/october': buildCommentMap(new URL('../src/data/menaion/october.js', import.meta.url)),
 };
 
 // Collect {path, text} for every in-scope hymn object carrying a string `text`.
@@ -395,6 +397,7 @@ walk('Menaion/may', MAY, 'menaion');
 walk('Menaion/june', JUNE, 'menaion');
 walk('Menaion/july', JULY, 'menaion');
 walk('Menaion/september', SEPTEMBER, 'menaion');
+walk('Menaion/october', OCTOBER, 'menaion');
 
 // ── Check H — Menaion month-registry drift ───────────────────────────────────
 // The three month registries are hand-maintained mirrors. Compare them against
@@ -403,7 +406,7 @@ walk('Menaion/september', SEPTEMBER, 'menaion');
 // This list must be kept in step with the walk() calls immediately above; it is
 // the validator's own declaration of which months it audits, and Check H fails
 // if it drifts from the directory just like the other two registries do.
-const VALIDATOR_MONTH_FILES = new Set(['may.js', 'june.js', 'july.js', 'september.js']);
+const VALIDATOR_MONTH_FILES = new Set(['may.js', 'june.js', 'july.js', 'september.js', 'october.js']);
 
 const MENAION_DIR = new URL('../src/data/menaion/', import.meta.url);
 

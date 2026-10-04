@@ -64,6 +64,7 @@ const MONTHS_WITH_DATA = {
   "06": () => import("../data/menaion/june.js").then(m => m.default),
   "07": () => import("../data/menaion/july.js").then(m => m.default),
   "09": () => import("../data/menaion/september.js").then(m => m.default),
+  "10": () => import("../data/menaion/october.js").then(m => m.default),
 };
 
 // ── Helpers ─────────────────────────────────────────────────────────────────

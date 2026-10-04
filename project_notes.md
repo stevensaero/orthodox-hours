@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.50.2** | **Tone Trainer: v0.26.0** | Last synced: September 19, 2026
+**Tool version: v0.50.3** | **Tone Trainer: v0.26.0** | Last synced: October 3, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -13,6 +13,50 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 `assembleLiturgy()`. The encoding history is `divine_liturgy_chrysostom_encoding_spec.md`
 (v24), also at the root.
 
+
+**Session October 3, 2026 (thirty-eighth) — V1 MENAION PASS: OCTOBER OPENS
+WITH 10-04.** A side pass on the V1 Menaion for Sunday 4 October while V2 is
+under way. Tool **v0.50.3**.
+
+### WHAT LANDED
+
+- `src/data/menaion/october.js` created and wired into all three month
+  registries (`_menaionLoaders`, `MONTHS_WITH_DATA`, `validate_entries.mjs`).
+- `10-04` = array: Hierotheus of Athens (`10-04.pdf`, `oca_primary`) and Paul
+  the Simple (`10-04A.pdf`). Both Simple §2A by the full waterfall — ODS vol.
+  III has no entry for or window over 4 October (checked against
+  `Fekula_ODS_SOM_V3/intake/ods_v3_index.json` and the repaired full text).
+- Rendered headless for 2026-10-04: the First Hour gives Sunday troparion +
+  Hierotheus (OCA Tone 1) + Sunday kontakion, per §1A.
+
+### NEW SOURCE: `Orthodox Hours/OCA_service_texts/`
+
+OCA Dept. of Liturgical Music service texts, one docx per served day
+(`2026-MMDD-texts-tt.docx`; currently 2026-08-23 through 2026-11-01). They
+carry **Tier-3 director pointing** (underlines → `[brackets]`, `//`) and OCA's
+saint-specific troparia/kontakia for the day. Decision this session (Bill):
+where the docx prints a Menaion text, store the OCA version with
+`director: true` (06-17 precedent); keep St. Sergius `*`/`**` for everything
+the docx does not print, and record set-aside St. Sergius propers in the note.
+**Check this folder for every V1 date it covers.** Extraction: read
+`word/document.xml`, wrap underlined runs in brackets, merge `][`.
+
+### FLAGGED
+
+- **Undefined `^` marker in the OCA docx** — printed before a bracketed
+  syllable (`Hierarch of ^[Ath]ens`, `godly ^[doc]trine.//`; also twice in the
+  Tone 1 dismissal theotokion). Not in `encoding_rule_v2.md` §3. Stripped on
+  Bill's ruling, positions recorded in the 10-04 note. Define it in §3 before
+  the next docx-sourced encode.
+- **The skeleton gate is red on `main`, independent of this session.**
+  `check-skeleton.mjs all` reports 67 pre-existing gaps (May 13, June 25, July
+  27, Pentecostarion 2; September adds 5, e.g. 09-27 omits `feast_e`/`feast_g`
+  rather than setting null) and calls `tools/validate_octoechos.mjs`, deleted at
+  the Octoechos V2 cutover (v0.36.0). October passes clean (`check-skeleton
+  october` 0 gaps); `validate_entries`, pointing paths, ref resolution, viewer
+  coverage, Sunday Vespers and the build all pass. Menaion V2 is not involved.
+- Gurias of Kazan & Barsanuphius of Tver (OCA #2 on 10-04) have no St. Sergius
+  file for the date; not encoded.
 
 **Session September 19, 2026 (thirty-seventh) — THE PENTECOSTARION AT THE
 LITURGY: PHASE 3b.** Tool **v0.50.0** (after v0.49.1–v0.49.3: daily troparia,

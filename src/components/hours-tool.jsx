@@ -880,6 +880,7 @@ const _menaionLoaders = {
   "06": () => import("../data/menaion/june.js").then(m => m.default),
   "07": () => import("../data/menaion/july.js").then(m => m.default),
   "09": () => import("../data/menaion/september.js").then(m => m.default),
+  "10": () => import("../data/menaion/october.js").then(m => m.default),
 };
 
 // ── Octoechos source layer — V2 (octoechos_wirein_spec.md; Phase 5 CUTOVER) ──
@@ -8798,6 +8799,28 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.50.3",
+    date: "October 2026",
+    summary: "October opens — 10-04 encoded (Hierotheus of Athens + Paul the Simple), first OCA director-pointed Menaion texts since 06-17",
+    items: [
+      "NEW MONTH: src/data/menaion/october.js, wired into _menaionLoaders, the Menaion " +
+      "browser's MONTHS_WITH_DATA, and tools/validate_entries.mjs (import, comment map, walk, " +
+      "VALIDATOR_MONTH_FILES). The loader table now covers 05, 06, 07, 09, 10.",
+      "10-04 is an array of two independent Simple (§2A) commemorations: Hieromartyr " +
+      "Hierotheus of Athens (10-04.pdf, oca_primary) and Ven. Paul the Simple (10-04A.pdf). " +
+      "ODS vol. III does not cover 4 October (checked against ods_v3_index.json and the full " +
+      "text), so the §1.1 waterfall was run for both.",
+      "OCA SERVICE TEXT AS A SOURCE: the OCA Dept. of Liturgical Music docx for 2026-10-04 " +
+      "supplies Tier-3 director pointing ([brackets], //, director: true) for Hierotheus's " +
+      "LIC stichera, Glory, troparion and Ode III kontakion. Its Tone 1 troparion is a " +
+      "saint-specific proper and overrides St. Sergius's Tone IV (kept in the note). The Ode VI " +
+      "kontakion, ikos, stavrotheotokion and exapostilarion OCA does not print stay St. Sergius.",
+      "UNDEFINED OCA MARKER: the docx prints '^' before two bracketed syllables of the " +
+      "troparion. Stripped from the stored text, positions recorded in the entry note, flagged " +
+      "for encoding_rule_v2.md §3.",
+    ],
+  },
   {
     version: "v0.50.2",
     date: "September 2026",
