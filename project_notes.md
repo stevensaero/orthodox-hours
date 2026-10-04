@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.50.3** | **Tone Trainer: v0.26.0** | Last synced: October 3, 2026
+**Tool version: v0.50.4** | **Tone Trainer: v0.26.0** | Last synced: October 3, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -13,6 +13,43 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 `assembleLiturgy()`. The encoding history is `divine_liturgy_chrysostom_encoding_spec.md`
 (v24), also at the root.
 
+
+**Session October 3, 2026 (thirty-ninth) — V1 MENAION: THE REST OF OCTOBER'S
+SUNDAYS.** Tool **v0.50.4**. 10-11, 10-18, 10-25 encoded against the St. Sergius
+PDFs and the OCA service-text docx for each Sunday.
+
+### WHAT LANDED
+
+- `10-11` = [Fathers of the 7th Council (10-11A, oca_primary) · Philip & Theophanes
+  (10-11, §2B double) · Zinaida & Philonilla (10-11B, §2A)].
+- `10-18` = St. Luke, Polyeleos §2E (waterfall; no vol. III entry).
+- `10-25` = [Marcian & Martyrius (10-25, §2A, oca_primary) · Tabitha (10-25A,
+  Polyeleos §2E with Litiya)].
+- OCA Tier-3 pointed texts used wherever the OCA docx prints the hymn (LIC,
+  Glories, Litia/Aposticha Glory and Both-now, troparion, kontakion); St. Sergius
+  for everything else. Each entry's note lists the split field by field.
+
+### DECISIONS (Bill, this session)
+
+- **Fathers keyed at 10-11 for 2026 only.** Their service is the Sunday on or
+  after 11 October; V1 has no Sunday-window mechanism. **In any year where 11
+  October is not a Sunday, `10-11[0]` is wrong and must be removed or replaced by
+  a window mechanism before that October.** Window is **11-17 October** (St.
+  Sergius/OCA), not ODS vol. III's 8-14.
+- **OCA contemporary "you" stored verbatim** (Fathers' stichera, all of Marcian &
+  Martyrius). Check F-1 warnings on 10-11[0] and 10-25[0] are expected, not gaps.
+- Rank for the Fathers: vol. III prints none (deliberately unranked).
+  `rank: "vigil"`, `fekula_section: "1E"` are schema tokens for the printed
+  service shape so the assembler and gate behave; not an inferred class. V2 item.
+
+### FLAGGED
+
+- St. Luke: OCA prints optional Litya stichera (3 + Glory + Theotokion) that the
+  St. Sergius service lacks; not encoded (`has_litya` false per the PDF).
+- St. Luke and 09-08A: `has_great_doxology` false because the PDF does not print
+  it, though §2E appoints it. Consistent with precedent; revisit with V2.
+- No live oca.org lookups were possible this session (fetch not permitted); the
+  OCA docx was the OCA source for each Sunday's primary commemoration.
 
 **Session October 3, 2026 (thirty-eighth) — V1 MENAION PASS: OCTOBER OPENS
 WITH 10-04.** A side pass on the V1 Menaion for Sunday 4 October while V2 is

@@ -53,6 +53,7 @@ const DATA_FILES = [
   "src/data/menaion/june.js",
   "src/data/menaion/july.js",
   "src/data/menaion/september.js",
+  "src/data/menaion/october.js",
   "src/data/pentecostarion.js",
 ];
 

@@ -8800,6 +8800,30 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.50.4",
+    date: "October 2026",
+    summary: "October Sundays encoded: 10-11 (Fathers of the 7th Council, 2026 only), 10-18 (St. Luke), 10-25 (Marcian & Martyrius; Tabitha)",
+    items: [
+      "10-11 is an array of three: the Holy Fathers of the Seventh Ecumenical Council (10-11A.pdf, " +
+      "oca_primary), Philip of the Seventy & Theophanes the Confessor (10-11.pdf, §2B double) and " +
+      "Zinaida & Philonilla (10-11B.pdf, §2A). THE FATHERS ARE KEYED AT 10-11 FOR 2026 ONLY: their " +
+      "service belongs to the Sunday on or after 11 October (11-17, St. Sergius/OCA), and V1 has no " +
+      "Sunday-window mechanism. In other years the first element is wrong for 10-11; flagged in the " +
+      "entry and the project notes. ODS vol. III prints no rank for the Fathers; 'vigil'/'1E' are " +
+      "schema tokens for the printed service shape, not an inferred class.",
+      "10-18 St. Luke: Polyeleos §2E by the waterfall. 10-25: Marcian & Martyrius (Simple §2A, " +
+      "oca_primary) and Righteous Tabitha (10-25A.pdf, Polyeleos §2E with Litiya).",
+      "OCA DIRECTOR POINTING WHEREVER OCA PRINTS IT: from the OCA service-text docx for each Sunday — " +
+      "LIC stichera and Glory, Litia and Aposticha Glory/Both-now, troparion and kontakion (Tier-3, " +
+      "director: true). OCA troparia override St. Sergius for St. Luke (Tone 5 over Tone III) and for " +
+      "Marcian & Martyrius (OCA's own Tone 3 over the general martyrs' Tone IV). OCA's contemporary " +
+      "'you' is stored verbatim on Bill's ruling; the resulting Check F-1 warnings are expected.",
+      "Hours verified headless for all three Sundays: resurrectional troparion, Glory the saint's; " +
+      "Sunday kontakion at the 1st/6th Hours, the saint's at the 3rd/9th (matching ODS vol. III for " +
+      "the Fathers). tools/test_ref_resolution.mjs now covers october.js.",
+    ],
+  },
+  {
     version: "v0.50.3",
     date: "October 2026",
     summary: "October opens — 10-04 encoded (Hierotheus of Athens + Paul the Simple), first OCA director-pointed Menaion texts since 06-17",
