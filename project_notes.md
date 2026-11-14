@@ -129,6 +129,16 @@ missing, coverage 151⋈151, build ✓.
 - **`fekula_chapter_5.txt` is four lines long.** Fekula's own section for 15
   November (p. 214) could not be read. Ledger E-5, Q-0004.
 
+### 11-16 ADDED (same session, after the Open Questions page)
+
+Apostle and Evangelist Matthew, 16 pages, c0, `great_vespers`. Zero unclaimed
+lines. New key `matins.exapostilarion_glory` ("Glory ..., another
+Exapostilarion"). The same two findings as Philip, now a pattern: the general
+apostle troparion loses its final period at the Liturgy, and a second troparion
+is printed ("Or this Troparion"). One sessional hymn appears in two wordings,
+after the Polyeleos and after Ode III. The Praises repeat device is printed bare
+("Twice", no parentheses) and lifted by hand in the map. 8 sic rows.
+
 ### OWED
 
 1. **adapter.js and the wire-in** after November: Hours reads V2 only; "not
@@ -137,7 +147,7 @@ missing, coverage 151⋈151, build ✓.
 2. Variant pairs against general.js were not hunted (only byte-identity was
    swept). Stated in known_recurrences.js.
 3. Per-key manifest rows for the General Menaion's own keys; alias lint.
-4. The rest of November: 33 files (11-01..11-13, 11-16..11-30 with variants).
+4. The rest of November: 32 files (11-01..11-13, 11-17..11-30 with variants).
    Measured rate this session: three files, 40 pages, in one session, including
    building the pipeline. `11-1A.pdf` is the folder's name for the 11-01 variant.
 5. The Nov 8 "V1 encoding pass" chat was never pushed and is abandoned with V1.
