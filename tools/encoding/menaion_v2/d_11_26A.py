@@ -167,11 +167,12 @@ def build():
     entry = {
         'kind': 'saint',
         'title': s.node(s.raw(3, 4), 3, 'title', sourceLabel=s.raw(2)),
-        'rank': 'vigil',
-        'fekula_section': '2F',
+        'rank': 'polyeleos',
+        'fekula_section': '2E',
         'oca_primary': False,
         'source_file': s.file,
-        'note': ('Rank by the encoding_rule_v2.md 1.1 waterfall: AT GREAT VESPERS with 8 stichera, three lessons, a '
+        'note': ('RANK CORRECTED 14 Nov 2026: `polyeleos`, Fekula 2E, provisional under Q-0002. The encoding_rule_v2.md 1.1 waterfall takes Vigil only where the Menaion prints a Little Vespers, and this file prints none; storing it vigil on the printed Litiya was a misapplication of the rule (the same test Q-0001 states for the Apostle Philip). The note below was written when it was stored vigil. '
+                 'Rank by the encoding_rule_v2.md 1.1 waterfall: AT GREAT VESPERS with 8 stichera, three lessons, a '
                  'LITIYA ("the Sticheron of the temple, and these Stichera"), the blessing of the Loaves, Polyeleos '
                  'with a megalynarion, and the Great Doxology: stored Vigil, Fekula 2F PROVISIONALLY (open question Q-0002: ODS vol. III has no entry for this date, and it shows that a printed Litiya does not by itself prove Vigil rank, since its polyeleos-rank outlines can carry a Litia at the rector\'s direction). The page also prints "But if a '
                  'vigil is not served" with a dismissal theotokion, so a lesser form is provided for; no Little '

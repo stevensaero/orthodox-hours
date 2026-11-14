@@ -146,11 +146,12 @@ def build():
     entry = {
         'kind': 'feast',
         'title': s.node(s.raw(3, 4), 3, 'title', sourceLabel=s.raw(2)),
-        'rank': 'vigil',
-        'fekula_section': '2F',
+        'rank': 'polyeleos',
+        'fekula_section': '2E',
         'oca_primary': False,
         'source_file': s.file,
-        'note': ('A feast of an icon of the Theotokos (the Kursk-Root Icon of the Sign), second file of 27 November; '
+        'note': ('RANK RULED 14 Nov 2026 (Bill): `polyeleos`, Fekula 2E, still provisional under Q-0002, to agree with 09-08A, which prints this same service and which V1 ranked polyeleos. The note below was written when it was stored vigil. '
+                 'A feast of an icon of the Theotokos (the Kursk-Root Icon of the Sign), second file of 27 November; '
                  'the first (11-27) is the Great-martyr James the Persian. Rank by the encoding_rule_v2.md 1.1 '
                  'waterfall: AT GREAT VESPERS with 8 stichera, three lessons, a LITIYA, and Polyeleos with a '
                  'magnification: stored Vigil, Fekula 2F PROVISIONALLY (open question Q-0002: ODS vol. III has no entry for this date, and it shows that a printed Litiya does not by itself prove Vigil rank, since its polyeleos-rank outlines can carry a Litia at the rector\'s direction), on the strength of the printed Litiya (as 11-26A). The page '

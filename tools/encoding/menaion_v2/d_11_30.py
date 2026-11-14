@@ -204,11 +204,12 @@ def build():
     entry = {
         'kind': 'saint',
         'title': s.node(s.raw(3, 4), 3, 'title', sourceLabel=s.raw(2)),
-        'rank': 'vigil',
-        'fekula_section': '2F',
+        'rank': 'polyeleos',
+        'fekula_section': '2E',
         'oca_primary': True,
         'source_file': s.file,
-        'note': ('ODS 3rd ed. vol. III has no entry for 30 November (index checked 14 Nov 2026). The page is headed AT '
+        'note': ('RANK RULED 14 Nov 2026 (Bill): `polyeleos`, Fekula 2E, still provisional under Q-0001. The OCA service text for 30 November 2026 gives Great Vespers, the three lessons, and a Litya only "if the rector desires", the same form it gives the Apostles Philip and Matthew. The note below was written when it was stored vigil. '
+                 'ODS 3rd ed. vol. III has no entry for 30 November (index checked 14 Nov 2026). The page is headed AT '
                  'VESPERS (stored under `vespers`, the name printed) but is in the vigil form: Blessed is the man, 8 '
                  'stichera (three printed: Thrice, Thrice, Twice), three lessons, a LITIYA with "the Sticheron of the '
                  'temple", the blessing of the Loaves, Polyeleos with a magnification, and the Great Doxology. Stored '

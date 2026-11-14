@@ -194,11 +194,12 @@ def build():
         'kind': 'forefeast',
         'feast_ref': 'entrance_theotokos',
         'title': s.node(s.raw(3, 6), 3, 'title', sourceLabel=s.raw(2)),
-        'rank': 'simple',
+        'rank': 'six_stichera',
         'fekula_section': '2G1',
         'oca_primary': True,
         'source_file': s.file,
-        'note': ('ONE printed service for the Forefeast of the Entrance and two saints (Gregory the Decapolite, '
+        'note': ('RANK WORD RULED 14 Nov 2026 (Bill): a forefeast or afterfeast day with 3 + 3 stichera and no doxology is `six_stichera`, as V1 has it (09-07); the note below was written when it was stored `simple`. The section, 2G1, is unchanged. '
+                 'ONE printed service for the Forefeast of the Entrance and two saints (Gregory the Decapolite, '
                  'Proclus of Constantinople): one entry, every item tagged with `saint` ("forefeast", "Gregory", '
                  '"Proclus", or "Gregory and Proclus" for the shared Troparion of the holy fathers). 3 stichera of the '
                  'forefeast and 3 of St. Gregory at Lord I have cried; St. Proclus has the Vespers aposticha. No '

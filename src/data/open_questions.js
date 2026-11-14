@@ -141,7 +141,7 @@ export default [
       oca: 'oca.org lists the Holy, All-Praised Apostle Philip first on 14 November. The troparia page gives no rank symbol. The OCA service text for 14 November 2026 (Department of Liturgical Music and Translations) gives Great Vespers with 8 stichera (two repeats each), the Dogmatikon, three readings from 1 Peter, and a Litya only "if the rector desires"; it marks nothing as a Vigil. The same form is given for the Apostle Matthew (16 Nov) and the Apostle Andrew (30 Nov). That is the shape of a Polyeleos service to which a Vigil may be added.',
       web: 'orthochristian.com calendar, 14 November (O.S.): "Совершается служба с полиелеем" (a service with Polyeleos) for the Apostle Philip. mci.archpitt.org Menaion, November 14, labels the day "Polyeleos".',
     },
-    provisional: 'polyeleos, Fekula 2E: the encoding_rule_v2.md 1.1 waterfall (Vigil only where the Menaion prints a Little Vespers), supported by the two calendars above.',
+    provisional: 'polyeleos, Fekula 2E: the encoding_rule_v2.md 1.1 waterfall (Vigil only where the Menaion prints a Little Vespers), supported by the two calendars above. The same holds for the Apostle Matthew (16 Nov) and the Apostle Andrew (30 Nov, changed from vigil to polyeleos on 14 Nov 2026).',
     impact: 'If Vigil: Vespers and Matins are joined, the Litiya and blessing of the Loaves are served, and the troparion is sung twice with "Virgin Theotokos, rejoice" once, as the page prints. If Polyeleos without Vigil: the troparion once with its theotokion, and the Litiya only by local custom. The Hours are unaffected.',
   },
   {
@@ -155,7 +155,7 @@ export default [
       oca: 'oca.org lists St. Gregory Palamas third on 14 November, after the Apostle Philip and St. Philip of Irap, with his own troparion and kontakion (Tone 8). Not yet checked for 26 and 27 November. The OCA service texts for 2026 serve ONE service on each two-file date they cover and do not mention the other: 14 November is the Apostle Philip alone (no St. Gregory Palamas); 4 October is Hieromartyr Hierotheus alone (no Paul the Simple); 8 September is the Nativity of the Theotokos alone (no Kursk-Root Icon). No OCA text was available for 5 September, 26 or 27 November.',
       web: 'ponomar.net (Lambertsen Menaion, November): the 14 November service to the Apostle Philip is headed "(for this day we provide also the service in honor of St. Gregory Palamas)", i.e. supplied as an additional service, not combined with the Apostle\'s.',
     },
-    provisional: 'Each second file is stored whole as its own commemoration (c1), uncombined, oca_primary false. Ranks by the 1.1 waterfall and provisional: Palamas polyeleos (2E); Innocent and the Kursk-Root Icon vigil (2F) on the printed Litiya, which vol. III shows is not decisive.',
+    provisional: 'Each second file is stored whole as its own commemoration (c1), uncombined. The service shown by default is the one marked oca_primary (the first file, except 5 September where ODS vol. III and V1 take the second); the other is offered as a choice (ruled 14 Nov 2026). Ranks by the 1.1 waterfall (Vigil only where a Little Vespers is printed) and provisional: Palamas, Innocent and the Kursk-Root Icon are all polyeleos (2E).',
     impact: 'Decides which troparion and kontakion the Hours and Liturgy read on these dates. Until answered the assembler reads the first file (c0) alone, and offers the second as a service a parish may choose.',
   },
   {

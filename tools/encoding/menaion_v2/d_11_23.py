@@ -193,11 +193,12 @@ def build():
         'kind': 'afterfeast',
         'feast_ref': 'entrance_theotokos',
         'title': s.node(s.raw(3, 5), 3, 'title', sourceLabel=s.raw(2)),
-        'rank': 'simple',
+        'rank': 'six_stichera',
         'fekula_section': '2G1',
         'oca_primary': True,
         'source_file': s.file,
-        'note': ('ONE printed service for the Afterfeast of the Entry and two hierarchs (Amphilochius of Iconium, '
+        'note': ('RANK WORD RULED 14 Nov 2026 (Bill): a forefeast or afterfeast day with 3 + 3 stichera and no doxology is `six_stichera`, as V1 has it (09-07); the note below was written when it was stored `simple`. The section, 2G1, is unchanged. '
+                 'ONE printed service for the Afterfeast of the Entry and two hierarchs (Amphilochius of Iconium, '
                  'Gregory of Agrigentum): one entry, items tagged with `saint`. 3 stichera of each hierarch at Lord I '
                  'have cried with the feast at Glory/Both now; no Polyeleos, no Great Doxology: stored Simple, Fekula '
                  '2G1, whose outline covers a Double Commemoration in an afterfeast. THREE canons (feast, by Basil, '

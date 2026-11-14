@@ -157,8 +157,8 @@ def build():
                  'September, a separate service (the Finding of the Kursk-Root Icon), beside the Great Feast. RANK '
                  'FOLLOWS V1: polyeleos, Fekula 2E. THE SAME PRINTED SERVICE appears again as 11-27A.pdf, which was '
                  'stored `vigil` / 2F provisionally on its printed Litiya; ODS vol. III shows a printed Litiya does '
-                 'not settle Vigil against Polyeleos, and V1 took Polyeleos. The two entries must end up with one '
-                 'rank: open question Q-0002. Great Vespers with 8 stichera, three lessons, a Litiya; Polyeleos with '
+                 'not settle Vigil against Polyeleos, and V1 took Polyeleos. RULED 14 Nov 2026 (Bill): both are polyeleos, '
+                 'still provisional under Q-0002. Great Vespers with 8 stichera, three lessons, a Litiya; Polyeleos with '
                  'a magnification; no blessing of the Loaves rubric, no Great Doxology rubric; Matins ends with the '
                  'Praises. The first two Vespers lessons print no reference; the third prints "(9:1-11)". This file '
                  'writes "Both now" where 11-27A writes "Now & ever".'),

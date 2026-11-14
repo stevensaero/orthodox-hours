@@ -173,7 +173,7 @@ def build():
                  'Aposticha). RANK FOLLOWS V1 (six_stichera, Fekula 2G1) so the comparison starts level; by the 1.1 '
                  'waterfall as applied to 11-20 and 11-22 the same shape was stored `simple` under 2G1. 2G1 covers '
                  'both, so the section agrees; the rank word is a difference between V1 and the November entries '
-                 'TO BE SETTLED at the wire-in. Two canons (forefeast, by Joseph; martyr, by Theophanes), stored '
+                 'SETTLED 14 Nov 2026 (Bill): six_stichera, and the November entries were changed to match. Two canons (forefeast, by Joseph; martyr, by Theophanes), stored '
                  'whole. The forefeast canon prints no theotokion label in its odes. Two troparia and two kontakia at '
                  'every print site in positional lists. The Liturgy propers printed are the martyr\'s only.'),
         'vespers': vespers, 'matins': matins, 'liturgy': liturgy,
