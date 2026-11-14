@@ -21,6 +21,19 @@
 // positions store their own copy (§2.3, no dereferencing); these rows are what
 // make the duplication a checked fact rather than an invitation to collapse it.
 export default [
+  // ── 11-17, St. Gregory the Wonderworker (identical rows by sweep; no variant
+  // pair surfaced in the encode, and none was hunted) ─────────────────────────
+  { a: '11-17.c0.matins.canons[0].odes.3.items[0]', b: '11-17.c0.liturgy.beatitudes[0]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-17.c0.matins.canons[0].odes.3.items[1]', b: '11-17.c0.liturgy.beatitudes[1]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-17.c0.matins.canons[0].odes.3.items[3]', b: '11-17.c0.liturgy.beatitudes[2]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-17.c0.matins.canons[0].odes.3.items[4]', b: '11-17.c0.liturgy.beatitudes[3]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c1.great_vespers.aposticha[1]', b: '11-17.c0.liturgy.prokeimenon', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c1.matins.prokeimenon_verse', b: '11-17.c0.liturgy.prokeimenon_verse', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c1.liturgy.communion_verse', b: '11-17.c0.liturgy.communion_verse', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-17.c0.vespers.lic_stavrotheotokion', b: 'general.Heirarchs.vespers.dogmatikon_stavrotheotokion', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-17.c0.matins.canons[0].odes.5.irmos', b: 'general.Nuns.matins.canons[0].odes.5.irmos', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-17.c0.matins.canons[0].odes.6.irmos', b: 'general.Theotokos.matins.canons[0].odes.6.irmos', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-17.c0.matins.canons[0].odes.9.irmos', b: 'general.Nun.matins.canons[0].odes.9.irmos', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
   // ── 11-16, Apostle and Evangelist Matthew (same method: identical rows by
   // sweep, variant rows by hand) ─────────────────────────────────────────────
   { a: '11-16.c0.troparion', b: '11-16.c0.liturgy.liturgy_troparion', relation: 'variant', note: 'No final period at the Liturgy site (p15), as on 11-14. Two apostles, the same lost period: this is the general apostle troparion as this book sets it at Liturgy.' },

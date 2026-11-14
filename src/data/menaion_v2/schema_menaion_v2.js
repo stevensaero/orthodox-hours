@@ -177,7 +177,7 @@ export const SOURCE_FILES = [...AUGUST_DATES, ...NOVEMBER_DATES].map(d => `${d}.
 // tools/encoding/menaion_v2/build_month.py from the PDFs themselves.
 export const DAILY_PAGE_COUNTS = {
   '11-14.pdf': 14, '11-14A.pdf': 16, '11-15.pdf': 10,
-  '11-16.pdf': 16,
+  '11-16.pdf': 16, '11-17.pdf': 10,
 };
 // ── The General Menaion (§6.2) — enumerated FROM THE FOLDER ─────────────────
 // Never from encoding_rule_v2.md §2.1's prose, which is wrong in three ways:
@@ -673,6 +673,9 @@ export const DAILY_KEYS = {
     ['troparion_alternate', 'text', 'Alternate troparion ("Or this Troparion")'],
     ['no_vigil_rubric', 'rubric', '"But if a vigil is not served" rubric'],
     ['troparion_closer', 'closer', 'Theotokion after the troparion'],
+    ['lic_closer_rubric', 'rubric', 'Both now rubric at Lord I have cried (Theotokion named, not printed)'],
+    ['aposticha_stavrotheotokion', 'closer', 'Aposticha Stavrotheotokion'],
+    ['troparion_closer_rubric', 'rubric', 'Rubric for the Theotokion after the troparion (text not printed)'],
   ],
   matins: [
     ['troparion_closer', 'closer', 'Theotokion after the troparion at God is the Lord'],
@@ -693,6 +696,8 @@ export const DAILY_KEYS = {
     ['praises_glory', 'text', 'Praises Glory'],
     ['praises_closer', 'closer', 'Praises Both now'],
     ['aposticha_rubric', 'rubric', 'Matins Aposticha rubric'],
+    ['aposticha_closer_rubric', 'rubric', 'Matins Aposticha Both now rubric'],
+    ['aposticha_stavrotheotokion', 'closer', 'Matins Aposticha Stavrotheotokion'],
   ],
   liturgy: [
     ['beatitudes_rubric', 'rubric', 'Beatitudes rubric'],
