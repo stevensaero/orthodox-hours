@@ -1723,3 +1723,29 @@ Bill before any rename executes.
 
 **Neither R-8 nor R-9 blocks encoding more General Menaion files.** Both block
 encoding a daily month.
+
+**R-8 RULED, 14 November 2026 (Bill): positional slots holding ordered lists.**
+Settled by the third option, measurement. A heading scan of all 264 daily files
+then on hand (May 16 to November 30) found sessional hymns at a small fixed set
+of positions (after Ode III about 358 label instances; after the 2nd Psalter
+reading about 125; after the 1st about 123; after the Polyeleos about 89; under
+ten each anywhere else) and a count per file running from one to ten, with
+several hymns at one position common ("these Sessional Hymns", "Glory ...,
+Another Sessional Hymn", a saint's hymn with "Both now" of the feast). So the
+position is fixed and nameable and the count is not. The daily book keeps
+general.js's slot names (`sessional_1`, `sessional_2`, `sessional_polyeleos`,
+`sessional_ode3`, and `sessional_3` where a page prints one) and each slot holds
+an ORDERED LIST of what the page prints there, every item under its own printed
+label. general.js is not migrated: its single node is the one-item case, and the
+adapter will read both. **§5.6's `sessionals[]` and `sessional_post_polyeleos`
+are superseded by this ruling for the daily book.** First data: 11-15 prints
+four items after Ode III.
+
+**R-9, per key, for the daily book (14 November 2026).** The daily months are
+encoded in general.js's vocabulary under the source-nearest ruling. Every
+service-level key a daily entry uses has its own `FIELD_MANIFEST` row
+(`DAILY_KEYS` in the schema) and registry row, and the gate hard-fails an
+unregistered key. What remains of R-9: the per-key rows for the `<g>` keys
+themselves, the alias lint, and `adapter.js`. The adapter is scheduled for the
+wire-in, after November is encoded (Bill, 14 Nov: V2 replaces V1 with no
+fallback; a date V2 has not reached shows "not encoded").
