@@ -177,6 +177,7 @@ export const SOURCE_FILES = [...AUGUST_DATES, ...NOVEMBER_DATES].map(d => `${d}.
 // tools/encoding/menaion_v2/build_month.py from the PDFs themselves.
 export const DAILY_PAGE_COUNTS = {
   '11-14.pdf': 14, '11-14A.pdf': 16, '11-15.pdf': 10,
+  '11-16.pdf': 16,
 };
 // ── The General Menaion (§6.2) — enumerated FROM THE FOLDER ─────────────────
 // Never from encoding_rule_v2.md §2.1's prose, which is wrong in three ways:
@@ -687,6 +688,7 @@ export const DAILY_KEYS = {
     ['prokeimenon_verse', 'text', 'Prokeimenon verse'],
     ['gospel_rubric', 'rubric', '"Let every breath" rubric'],
     ['canon_rubric', 'rubric', 'Canon rubric'],
+    ['exapostilarion_glory', 'text', 'Glory: another Exapostilarion (11-16)'],
     ['praises_rubric', 'rubric', 'Praises rubric'],
     ['praises_glory', 'text', 'Praises Glory'],
     ['praises_closer', 'closer', 'Praises Both now'],

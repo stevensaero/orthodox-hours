@@ -21,6 +21,39 @@
 // positions store their own copy (§2.3, no dereferencing); these rows are what
 // make the duplication a checked fact rather than an invitation to collapse it.
 export default [
+  // ── 11-16, Apostle and Evangelist Matthew (same method: identical rows by
+  // sweep, variant rows by hand) ─────────────────────────────────────────────
+  { a: '11-16.c0.troparion', b: '11-16.c0.liturgy.liturgy_troparion', relation: 'variant', note: 'No final period at the Liturgy site (p15), as on 11-14. Two apostles, the same lost period: this is the general apostle troparion as this book sets it at Liturgy.' },
+  { a: '11-16.c0.great_vespers.troparion_alternate', b: '11-16.c0.liturgy.troparion_alternate', relation: 'variant', note: 'The "Or this Troparion" is pointed differently at its two sites: Vespers (p5) runs "mankind on the earth, and called thee" with no break; the Liturgy (p15) prints "on the earth, * and called thee".' },
+  { a: '11-16.c0.matins.sessional_polyeleos[0]', b: '11-16.c0.matins.sessional_ode3[0]', relation: 'variant', note: 'One sessional hymn in two wordings on facing pages: after the Polyeleos "for thou didst manifestly preach to all the vision of God, bringing the nations", after Ode III "for thou, manifestly preaching to all the vision of God, didst draw the nations". The Polyeleos print carries "(Twice)".' },
+  { a: '11-14.c1.great_vespers.dogmatikon', b: '11-16.c0.great_vespers.dogmatikon', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.vespers.litiya.stichera[1]', b: '11-16.c0.great_vespers.litiya.stichera[1]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.vespers.litiya.stichera[2]', b: '11-16.c0.great_vespers.litiya.stichera[2]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.vespers.aposticha[1]', b: '11-16.c0.great_vespers.aposticha[1]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.vespers.aposticha[3]', b: '11-16.c0.great_vespers.aposticha[3]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.troparion_closer', b: '11-16.c0.great_vespers.troparion_closer', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.troparion_closer', b: '11-16.c0.matins.troparion_closer', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.megalynarion_verse', b: '11-16.c0.matins.megalynarion_verse', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-15.c0.matins.sessional_ode3[2]', b: '11-16.c0.matins.sessional_polyeleos[1]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.vespers.aposticha[1]', b: '11-16.c0.matins.prokeimenon', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.megalynarion_verse', b: '11-16.c0.matins.prokeimenon_verse', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-16.c0.matins.canons[0].odes.3.items[0]', b: '11-16.c0.liturgy.beatitudes[0]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-16.c0.matins.canons[0].odes.3.items[1]', b: '11-16.c0.liturgy.beatitudes[1]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-16.c0.matins.canons[0].odes.3.items[2]', b: '11-16.c0.liturgy.beatitudes[2]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-16.c0.matins.canons[0].odes.6.items[0]', b: '11-16.c0.liturgy.beatitudes[3]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-16.c0.matins.canons[0].odes.6.items[1]', b: '11-16.c0.liturgy.beatitudes[4]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-16.c0.matins.canons[0].odes.6.items[2]', b: '11-16.c0.liturgy.beatitudes[5]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-16.c0.matins.canons[0].odes.6.items[3]', b: '11-16.c0.liturgy.beatitudes[6]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.vespers.aposticha[1]', b: '11-16.c0.liturgy.prokeimenon', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.megalynarion_verse', b: '11-16.c0.liturgy.prokeimenon_verse', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.liturgy.alleluia_verse', b: '11-16.c0.liturgy.alleluia_verse', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.liturgy.communion_verse', b: '11-16.c0.liturgy.communion_verse', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-16.c0.matins.canons[0].odes.1.irmos', b: 'general.Martyresses.matins.canons[0].odes.1.irmos', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-16.c0.matins.canons[0].odes.3.irmos', b: 'general.Cross.matins.canons[0].odes.3.irmos', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-16.c0.matins.canons[0].odes.5.irmos', b: 'general.Cross.matins.canons[0].odes.5.irmos', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-16.c0.matins.canons[0].odes.6.irmos', b: 'general.StJohnBaptist.matins.canons[0].odes.6.irmos', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-16.c0.matins.canons[0].odes.7.irmos', b: 'general.Cross.matins.canons[0].odes.7.irmos', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-16.c0.matins.canons[0].odes.8.irmos', b: 'general.Martyresses.matins.canons[0].odes.8.irmos', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
   // ── NOVEMBER, the first daily month (14 Nov 2026): 11-14, 11-14A, 11-15 ────
   // The `identical` rows below were FOUND BY MACHINE (a byte-identity sweep of
   // november.js against itself and against general.js, texts of 45+ characters,
