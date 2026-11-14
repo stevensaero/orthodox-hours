@@ -82,6 +82,7 @@ block is the consolidated state. Tool **v0.52.2**; nine gates green.
 | 11-20 | 11-20.pdf | Forefeast of the Entrance; Gregory the Decapolite; Proclus; three canons, appendix | simple / 2G1 |
 | 11-21 | 11-21.pdf | ENTRY OF THE THEOTOKOS; Little Vespers, Litiya, two canons, katavasiae | great_feast / 2F |
 | 11-22 | 11-22.pdf | Afterfeast of the Entry; Apostle Philemon and those with him; two canons | simple / 2G1 |
+| 11-23 | 11-23.pdf | Afterfeast of the Entry; Amphilochius of Iconium; Gregory of Agrigentum; three canons | simple / 2G1 |
 
 About 890 daily text nodes; 4,413 with the General Menaion. 27 files of
 November remain (11-01..11-13 with 11-1A, 11-09A, 11-09B; 11-21..11-30 with
@@ -310,6 +311,29 @@ the canonical field stands (R-1), as before. Applied: 11-20 as encoded; **11-19
 rebuilt to this form** (its `troparion_other_saint` key is retired and removed
 from the schema; its single kontakion keeps the canonical field). 11-18 has one
 troparion and one kontakion and is unchanged.
+
+### 11-23 ADDED — AFTERFEAST PLUS TWO HIERARCHS
+
+18 pages, 659 lines, all claimed. One entry, `saint` tags, three canons stored
+whole, positional lists, paired Liturgy propers. Simple, Fekula 2G1 (its outline
+covers a Double Commemoration in an afterfeast). No new storage form.
+
+Noticed and recorded:
+
+- The canon of the feast here is **Canon II of 21 November (Basil)**, printed
+  without the "Glory" / "Both now" labels it carries on the feast, except one
+  "Both now" left in Ode VIII. The recurrence sweep pairs every troparion.
+- That settles the Ode VII comma: the troparion ends "is led into the Holy of
+  holies," on 11-21 at a page foot and on 11-23 in mid-page. **The book's text
+  is unfinished, not lost at a page turn.** Both sic rows say so.
+- Sic rows: a sticheron ending on a single stray asterisk (Vespers aposticha 1);
+  a theotokion with no final full stop (Gregory, Ode IX).
+- The Gregory kontakion label at Liturgy ends in a dangling "Spec. Mel.:" with
+  no melody named; kept in `sourceLabel`.
+- "OODDEE II", "OODDEE VVIIIIII": doubled-letter ODE headings, as 11-22 Ode V.
+  Bold text overprinted in the PDF that `dedupe_chars()` does not collapse.
+  Headings are marked, never stored, so nothing in the data is affected; every
+  such heading is asserted verbatim in its map so a change would be seen.
 
 ### 11-22 ADDED — AFTERFEAST PLUS A SAINT; PAIRED LITURGY PROPERS
 
