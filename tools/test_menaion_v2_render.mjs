@@ -30,10 +30,22 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import GENERAL from ${JSON.stringify(join(ROOT, 'src/data/menaion_v2/general.js'))};
 import SHARED from ${JSON.stringify(join(ROOT, 'src/data/menaion_v2/shared.js'))};
+import { MONTH_LOADERS } from ${JSON.stringify(join(ROOT, 'src/data/menaion_v2/index.js'))};
 import { RCommemoration } from ${JSON.stringify(join(ROOT, 'src/components/menaion-v2-reading.jsx'))};
 export function run() {
   return Object.keys(GENERAL).map(k => [k,
     renderToString(React.createElement(RCommemoration, { entry: GENERAL[k], path: 'general.' + k }))]);
+}
+// The DAILY months (first: november.js, 14 Nov 2026). Every commemoration of
+// every encoded date renders through the same component, path MM-DD.cN.
+export async function runMonths() {
+  const out = [];
+  for (const mm of Object.keys(MONTH_LOADERS)) {
+    const data = await MONTH_LOADERS[mm]();
+    for (const [dk, d] of Object.entries(data)) d.commemorations.forEach((e, i) =>
+      out.push([dk + '.c' + i, e, renderToString(React.createElement(RCommemoration, { entry: e, path: dk + '.c' + i }))]));
+  }
+  return out;
 }
 // The cross-date tables render through the same component and the same path
 // grammar. Empty today, and asserted to render rather than assumed to: a table
@@ -56,7 +68,7 @@ await build({
 const OUT = join(ROOT, '.render-test-out');
 const bundle = readdirSync(OUT).find(f => /^entry\.m?js$/.test(f));
 if (!bundle) { console.error('render gate: no SSR bundle produced'); process.exit(2); }
-const { run, runShared } = await import(join(OUT, bundle));
+const { run, runShared, runMonths } = await import(join(OUT, bundle));
 const GENERAL = (await import(join(ROOT, 'src/data/menaion_v2/general.js'))).default;
 const SHARED = (await import(join(ROOT, 'src/data/menaion_v2/shared.js'))).default;
 
@@ -98,6 +110,21 @@ for (const [key, html] of runShared()) {
     }
   }
 }
+let dailyChecked = 0, dailyEntries = 0;
+for (const [key, entry, html] of await runMonths()) {
+  const text = flatten(html);
+  dailyEntries++;
+  for (const [path, t] of collect(entry, key, [])) {
+    // `title.sourceLabel` (the date line) and reading provenance are not text
+    // nodes; collect() returns only `text` and `heading` strings.
+    checked++; dailyChecked++;
+    if (!text.includes(t.replace(/\s+/g, ' ').trim())) {
+      missing++;
+      console.log(`  MISSING FROM RENDER · ${path}\n      ${JSON.stringify(t.slice(0, 90))}`);
+    }
+  }
+}
+console.log(`daily months: ${dailyEntries} commemoration(s), ${dailyChecked} stored strings`);
 const sharedCount = Object.keys(SHARED).length;
 
 rmSync(TMP, { recursive: true, force: true });

@@ -324,12 +324,22 @@ function checkEntry(entry, path, claimed, ctx) {
     // Absence nodes are checked by walk() below — do not double-report.
     if (isAbsence(entry[svc])) continue;
     if (!claimed.has(svc)) find(`${path}.${svc}`, `service present in data but not claimed in _encoded`);
+    // R-9 / A-3, per key: every service-level key a DAILY entry uses must have
+    // its own manifest row. `<g>` passed for a year on eight `group` rows that
+    // said nothing about the 99 keys inside them (spec 16.2); the daily book
+    // does not get that loophole.
+    for (const k of Object.keys(entry[svc])) {
+      if (k === 'order') continue;
+      if (!MANIFEST.has(`<c>.${svc}.${k}`))
+        err(`${path}.${svc}.${k}`, `key has no FIELD_MANIFEST row — add '<c>.${svc}.${k}' to the schema deliberately, in this commit (R-9)`);
+    }
     checkServiceOrder(entry[svc], `${path}.${svc}`, entry);
     if (svc === 'compline' && entry[svc].canon) checkCanon(entry[svc].canon, `${path}.${svc}.canon`, ctx);
     if (svc === 'matins' && Array.isArray(entry[svc].canons))
       entry[svc].canons.forEach((c, i) => checkCanon(c, `${path}.${svc}.canons[${i}]`, ctx));
   }
   walk(entry, path, ctx, null);
+  checkPageCoverage(path, entry, S.DAILY_PAGE_COUNTS, 'DAILY_PAGE_COUNTS');
 
   // §7.5 — surfaced FINDING, not a hard-fail. Evidence is one V1 entry.
   // §7.4: the two prokeimena are COMPARED and INEQUALITY is the surfaced
@@ -445,6 +455,31 @@ function checkSics(reg, roots) {
   }
 }
 
+// The open-question register (open_questions.js). A row that points at nothing,
+// or leaves a rung of the ladder empty, is a hard-fail: the register is only
+// worth reading if every row is anchored and every rung says what was done.
+function checkQuestions(mod, roots, statuses) {
+  const seen = new Set();
+  let open = 0;
+  for (const [i, q] of (mod ?? []).entries()) {
+    const at = `open_questions[${q.id ?? i}]`;
+    for (const k of ['id', 'path', 'status', 'opened', 'question', 'printed', 'consulted', 'provisional', 'impact'])
+      if (q[k] === undefined || q[k] === '') err(at, `missing '${k}'`);
+    if (seen.has(q.id)) err(at, `duplicate id`);
+    seen.add(q.id);
+    if (!/^Q-\d{4}$/.test(q.id ?? '')) err(at, `id must be Q-NNNN`);
+    if (!statuses.includes(q.status)) err(at, `status '${q.status}' not in QUESTION_STATUS`);
+    for (const rung of ['fekula', 'oca', 'web'])
+      if (!q.consulted || typeof q.consulted[rung] !== 'string' || !q.consulted[rung].trim())
+        err(at, `ladder rung '${rung}' is empty — say what was done there, even if that is "not searched, because ..."`);
+    if (q.status === 'answered' && !q.resolution) err(at, `status 'answered' requires 'resolution'`);
+    const r = resolvePath(roots, q.path ?? '');
+    if (r.unresolved) err(at, `path does not resolve to stored data: ${q.path}`);
+    if (q.status !== 'answered') { open++; work(at, `${q.status.toUpperCase()} — ${q.question}`); }
+  }
+  return open;
+}
+
 function checkOca(reg, roots) {
   for (const [i, e] of (reg ?? []).entries()) {
     const at = `oca_register[${i}]`;
@@ -552,6 +587,14 @@ async function main() {
     }
   }
 
+  try {
+    const qm = await import(join(DATA_DIR, 'open_questions.js'));
+    checkQuestions(qm.default, resolveRoots, qm.QUESTION_STATUS);
+  } catch (e) {
+    if (existsSync(join(DATA_DIR, 'open_questions.js')))
+      err('open_questions.js', `register exists but failed to load: ${e.message}`);
+  }
+
   report(ctx);
 }
 
@@ -574,6 +617,10 @@ async function main() {
 // or where it belongs — it says only "you have not cited this page", which is
 // a question for the encoder and the printed page, not for the machine.
 function checkGeneralPageCoverage(id, entry) {
+  const counts = Object.fromEntries(Object.entries(S.GENERAL_PAGE_COUNTS).map(([k, v]) => [`${k}.pdf`, v]));
+  checkPageCoverage(`general.${id}`, entry, counts, 'GENERAL_PAGE_COUNTS');
+}
+function checkPageCoverage(where, entry, counts, tableName) {
   const cited = new Map();   // file → Set(page)
   const bad = [];
   const visit = (n) => {
@@ -594,19 +641,18 @@ function checkGeneralPageCoverage(id, entry) {
   visit(entry);
 
   for (const l of bad)
-    err(`general.${id}`, `locus does not begin with a page number, so it cannot be counted for page coverage: ${l}`);
+    err(where, `locus does not begin with a page number, so it cannot be counted for page coverage: ${l}`);
 
   for (const [file, pages] of cited) {
-    const stem = file.replace(/\.pdf$/, '');
-    const total = S.GENERAL_PAGE_COUNTS[stem];
+    const total = counts[file];
     if (total === undefined) {
-      err(`general.${id}`, `no GENERAL_PAGE_COUNTS entry for '${file}' — add the real page count before encoding against it`);
+      err(where, `no ${tableName} entry for '${file}' — add the real page count before encoding against it`);
       continue;
     }
     const missing = [];
     for (let i = 1; i <= total; i++) if (!pages.has(i)) missing.push(i);
     if (missing.length)
-      err(`general.${id}`, `${file} has ${total} pages; nothing cites page${missing.length > 1 ? 's' : ''} ${missing.join(', ')}. ` +
+      err(where, `${file} has ${total} pages; nothing cites page${missing.length > 1 ? 's' : ''} ${missing.join(', ')}. ` +
         `Either encode what those pages print, or declare it absent with a basis (§2.10) — silence is not a declaration.`);
   }
 }

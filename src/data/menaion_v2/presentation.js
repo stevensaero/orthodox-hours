@@ -20,7 +20,7 @@
 // Entry shape: { heading, order, group?, hidden?: {reason} }
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { SERVICES } from './schema_menaion_v2.js';
+import { SERVICES, DAILY_KEYS } from './schema_menaion_v2.js';
 
 // Print order of services within a commemoration. This is the DEFAULT spine of
 // the reading view; an individual service's own element order comes from its
@@ -139,6 +139,14 @@ R['<c>.liturgy.megalynarion']          = { heading: 'Megalynarion', order: 12 };
 R['<c>.liturgy.closing_rubric']        = { heading: 'Closing rubric', order: 13 };
 
 // ── cross-date tables ────────────────────────────────────────────────────────
+// Daily keys registered per key (R-9, A-3): one registry row per manifest row,
+// headings taken from the schema's own table so the two cannot drift.
+R['<c>.preface_rubric'] = { heading: 'Preface rubric', order: 2 };
+for (const sv of ['vespers', 'great_vespers'])
+  DAILY_KEYS.vespers_like.forEach(([k, , label], i) => { R[`<c>.${sv}.${k}`] = { heading: label, order: 30 + i }; });
+for (const sv of ['matins', 'liturgy'])
+  DAILY_KEYS[sv].forEach(([k, , label], i) => { R[`<c>.${sv}.${k}`] = { heading: label, order: 30 + i }; });
+
 R['shared']  = { heading: 'Menaion-wide tables', order: 1 };
 R['general'] = { heading: 'General Menaion', order: 2 };
 

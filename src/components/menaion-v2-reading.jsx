@@ -229,7 +229,7 @@ export function RCanon({ canon, path }) {
         // of them without a single gate noticing. A component that renders some
         // of a node is indistinguishable, from outside, from data that was never
         // encoded. Same guard, same reason.
-        const known = ['irmos', 'refrain', 'items'];
+        const known = ['irmos', 'refrain', 'items', 'katavasia'];
         const extra = Object.keys(ode).filter(x => !known.includes(x));
         return (
           <div key={k} style={{ margin: "12px 0" }}>
@@ -239,6 +239,9 @@ export function RCanon({ canon, path }) {
             {(ode.items ?? []).map((it, i) => (
               <RText key={i} node={it} path={`${path}.odes.${k}.items[${i}]`} />
             ))}
+            {/* The daily book prints a labeled katavasia incipit after an ode's
+                last troparion (11-14, Ode I). Rendered in that place. */}
+            {ode.katavasia && <RText node={ode.katavasia} path={`${path}.odes.${k}.katavasia`} label="Katavasia:" />}
             {extra.length > 0 && (
               <div style={{ marginTop: "10px", paddingTop: "6px", borderTop: `1px dashed ${C.border}` }}>
                 <div style={{ fontFamily: SERIF, fontSize: "0.75rem", color: C.red, marginBottom: "4px" }}>
@@ -345,6 +348,9 @@ export function RCommemoration({ entry, path }) {
           `order` names them at the position the book prints them. Rendering
           them above the services is an Octoechos shape the Menaion does not
           have — and it also made the hymn appear twice. */}
+      {/* Printed between the title and the first service heading (11-15's
+          "Be it known"): it belongs to no service, so it renders here. */}
+      {entry.preface_rubric && <RRubric node={entry.preface_rubric} path={`${path}.preface_rubric`} />}
       {services.map(s => (
         <RService key={s} svc={entry[s]} svcKey={s} path={`${path}.${s}`} entry={entry} />
       ))}

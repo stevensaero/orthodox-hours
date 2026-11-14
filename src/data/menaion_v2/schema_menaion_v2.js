@@ -161,7 +161,23 @@ const AUGUST_DATES = [
   '08-24','08-25','08-26','08-26A','08-27','08-28','08-28A','08-29','08-30',
   '08-30A','08-31',
 ];
-export const SOURCE_FILES = AUGUST_DATES.map(d => `${d}.pdf`);
+// November — the 36 files delivered 14 Nov 2026, enumerated FROM THE FOLDER.
+// `11-1A` is the folder's own name for the 11-01 variant (no leading zero).
+const NOVEMBER_DATES = [
+  '11-01','11-1A','11-02','11-03','11-04','11-05','11-06','11-07','11-08','11-09',
+  '11-09A','11-09B','11-10','11-11','11-12','11-13','11-14','11-14A','11-15','11-16',
+  '11-17','11-18','11-19','11-20','11-21','11-22','11-23','11-24','11-25','11-26',
+  '11-26A','11-27','11-27A','11-28','11-29','11-30',
+];
+export const SOURCE_FILES = [...AUGUST_DATES, ...NOVEMBER_DATES].map(d => `${d}.pdf`);
+
+// Real page counts of the DAILY files that are encoded. The page-coverage
+// tripwire (7.4) runs on daily entries exactly as on the General Menaion: every
+// page of a claimed file must be cited by at least one locus. Written by
+// tools/encoding/menaion_v2/build_month.py from the PDFs themselves.
+export const DAILY_PAGE_COUNTS = {
+  '11-14.pdf': 14, '11-14A.pdf': 16, '11-15.pdf': 10,
+};
 // ── The General Menaion (§6.2) — enumerated FROM THE FOLDER ─────────────────
 // Never from encoding_rule_v2.md §2.1's prose, which is wrong in three ways:
 // it names a "Venerable.pdf" that does not exist (the file is Monastic.pdf),
@@ -357,6 +373,7 @@ export const FIELD_KINDS = [
   'rubric', 'text', 'closer', 'text_array', 'labeled_items', 'sessional_sets',
   'canon', 'canons', 'after_ode', 'prokeimenon', 'alleluia', 'reading',
   'readings', 'praises', 'aposticha', 'beatitudes', 'litiya', 'group',
+  'sessional_slot',   // A-2: a positional list of labeled items
 ];
 
 // ── Claim vocabulary (§4) ────────────────────────────────────────────────────
@@ -395,6 +412,7 @@ export const ENTRY_TOP = {
   known: [
     'kind', 'title', 'feast_ref', 'day_of', 'rank', 'fekula_section',
     'oca_primary', 'source_file', 'note',
+    'preface_rubric',            // printed between the title and the first service heading (11-15)
     'troparion', 'kontakion', 'ikos',
     ...SERVICES,
   ],
@@ -623,6 +641,75 @@ export const FIELD_MANIFEST = [
   { path: '<g>.dogmatikon_rubric', kind: 'rubric', section: 'general', required: false, tag: 'A-attested',
     label: 'Cross-book rubric pointing at the Octoechos dogmatikon (18 files) — rubric stored, text NOT fetched (R-5)' },
 ];
+
+// ── DAILY KEYS, per key (R-9, A-3) ───────────────────────────────────────────
+// Added 14 Nov 2026 with the first daily month. The daily book is encoded in the
+// General Menaion's own vocabulary (R-9 naming ruling: source-nearest name wins),
+// and EVERY service-level key a daily entry uses must have a row here: the gate
+// hard-fails an unregistered key, which is the granularity check 16.2 found
+// missing for `<g>`. A row is added in the commit that first uses the key.
+//
+// A-2, RULED 14 Nov 2026 (Bill): sessional hymns live in POSITIONAL slots named
+// as general.js names them (sessional_1, sessional_2, sessional_polyeleos,
+// sessional_ode3; sessional_3 when a page prints one). In the daily book each
+// slot holds an ORDERED LIST of everything printed at that position, each item
+// under its own printed label. Measured over 264 daily files before ruling: the
+// positions are fixed, the count per position is not (11-15 prints four items
+// after Ode III). general.js is not migrated; its single node is the one-item case.
+export const DAILY_KEYS = {
+  vespers_like: [   // applies to `vespers` and `great_vespers`
+    ['lic_rubric', 'rubric', '"On Lord, I have cried" rubric'],
+    ['dogmatikon', 'closer', 'Both now: Dogmatic Theotokion'],
+    ['lic_stavrotheotokion', 'closer', 'Stavrotheotokion at Lord I have cried'],
+    ['theotokos_stichera_rubric', 'rubric', 'Rubric for the Stichera of the Theotokos (Alleluia days)'],
+    ['theotokos_stichera', 'labeled_items', 'Stichera of the Theotokos (Alleluia days)'],
+    ['lic_glory_rubric', 'rubric', 'Rubric before the Glory ("But if God is the Lord be chanted")'],
+    ['lic_glory_closer_rubric', 'rubric', 'Both now rubric after the Glory (text not printed)'],
+    ['aposticha_closer_rubric', 'rubric', 'Aposticha Both now rubric (text not printed)'],
+    ['troparion_rubric', 'rubric', 'Troparion rubric (blessing of the Loaves / dismissal)'],
+    ['virgin_theotokos_rubric', 'rubric', '"Virgin Theotokos, rejoice" rubric'],
+    ['troparion_alternate_rubric', 'rubric', '"Or this Troparion" rubric'],
+    ['troparion_alternate', 'text', 'Alternate troparion ("Or this Troparion")'],
+    ['no_vigil_rubric', 'rubric', '"But if a vigil is not served" rubric'],
+    ['troparion_closer', 'closer', 'Theotokion after the troparion'],
+  ],
+  matins: [
+    ['troparion_closer', 'closer', 'Theotokion after the troparion at God is the Lord'],
+    ['sessional_1', 'sessional_slot', 'After the 1st chanting of the Psalter: sessional hymns'],
+    ['sessional_2', 'sessional_slot', 'After the 2nd chanting of the Psalter: sessional hymns'],
+    ['sessional_polyeleos', 'sessional_slot', 'After the Polyeleos: sessional hymns'],
+    ['sessional_ode3', 'sessional_slot', 'After Ode III: sessional hymns'],
+    ['megalynarion_rubric', 'rubric', 'Magnification rubric'],
+    ['megalynarion', 'text', 'Magnification (the book prints "magnification"; key per R-9)'],
+    ['megalynarion_verse_rubric', 'rubric', 'Selected Psalm verse rubric'],
+    ['megalynarion_verse', 'text', 'Selected Psalm verse'],
+    ['megalynarion_closing_rubric', 'rubric', 'Rubric closing the selected verses'],
+    ['prokeimenon_verse', 'text', 'Prokeimenon verse'],
+    ['gospel_rubric', 'rubric', '"Let every breath" rubric'],
+    ['canon_rubric', 'rubric', 'Canon rubric'],
+    ['praises_rubric', 'rubric', 'Praises rubric'],
+    ['praises_glory', 'text', 'Praises Glory'],
+    ['praises_closer', 'closer', 'Praises Both now'],
+    ['aposticha_rubric', 'rubric', 'Matins Aposticha rubric'],
+  ],
+  liturgy: [
+    ['beatitudes_rubric', 'rubric', 'Beatitudes rubric'],
+    ['liturgy_troparion', 'text', 'Troparion as printed at Liturgy (stored apart when it diverges from the canonical field, R-1)'],
+    ['troparion_alternate_rubric', 'rubric', '"Or this Troparion" rubric'],
+    ['troparion_alternate', 'text', 'Alternate troparion ("Or this Troparion")'],
+    ['prokeimenon_verse', 'text', 'Prokeimenon verse'],
+    ['alleluia_verse', 'text', 'Alleluia verse'],
+  ],
+};
+const DAILY_ROWS = [
+  { path: '<c>.preface_rubric', kind: 'rubric', service: 'identity', required: false, tag: 'month-specific',
+    label: 'Rubric printed between the title and the first service ("Be it known", 11-15)' },
+  ...['vespers', 'great_vespers'].flatMap(sv => DAILY_KEYS.vespers_like.map(([k, kind, label]) =>
+    ({ path: `<c>.${sv}.${k}`, kind, service: sv, required: false, tag: 'month-specific', label }))),
+  ...['matins', 'liturgy'].flatMap(sv => DAILY_KEYS[sv].map(([k, kind, label]) =>
+    ({ path: `<c>.${sv}.${k}`, kind, service: sv, required: false, tag: 'month-specific', label }))),
+];
+FIELD_MANIFEST.push(...DAILY_ROWS);
 
 // ── Exclusion register (§6.3) ────────────────────────────────────────────────
 // NOT empty. Every exclusion is recorded, with a reason, so the audit trail shows
