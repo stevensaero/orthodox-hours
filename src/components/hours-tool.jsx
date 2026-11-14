@@ -8800,6 +8800,24 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.52.0",
+    date: "November 2026",
+    summary: "Open Questions page: every place the books left us unsure, set out for priests and liturgists to answer",
+    items: [
+      "NEW PAGE /questions. Each open question shows what the book prints, what an answer would " +
+      "change, what Fekula, OCA and other sources said, and the value stored in the meantime, with " +
+      "a link to the place in the book. Group by source work or by subject; show unanswered, " +
+      "answered or all. Reached from the Menaion V2 browser's side rail.",
+      "ONE REGISTER FOR EVERY BOOK. Questions may come from the daily Menaion, the General Menaion, " +
+      "the Octoechos, the Pentecostarion, the Lenten Triodion when it is built, or any other source; " +
+      "adding a work or a subject is one line. Answers received are logged on the question by the " +
+      "respondent's role, not by name.",
+      "ANSWER BY E-MAIL. Each question carries a plain e-mail link with the question number and " +
+      "title in the subject. It needs no script, so it opens in iPhone Mail. The button stays " +
+      "hidden until the address for answers is set.",
+    ],
+  },
+  {
     version: "v0.51.0",
     date: "November 2026",
     summary: "Menaion V2: the first daily entries. 14 November (Apostle Philip; St. Gregory Palamas) and 15 November (Gurias, Samonas & Abibus) captured whole, in the V2 browser",
