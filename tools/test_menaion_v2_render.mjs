@@ -31,10 +31,20 @@ import { renderToString } from 'react-dom/server';
 import GENERAL from ${JSON.stringify(join(ROOT, 'src/data/menaion_v2/general.js'))};
 import SHARED from ${JSON.stringify(join(ROOT, 'src/data/menaion_v2/shared.js'))};
 import { MONTH_LOADERS } from ${JSON.stringify(join(ROOT, 'src/data/menaion_v2/index.js'))};
+import OpenQuestions from ${JSON.stringify(join(ROOT, 'src/components/open-questions.jsx'))};
+import QUESTIONS, { mailtoFor } from ${JSON.stringify(join(ROOT, 'src/data/open_questions.js'))};
 import { RCommemoration } from ${JSON.stringify(join(ROOT, 'src/components/menaion-v2-reading.jsx'))};
 export function run() {
   return Object.keys(GENERAL).map(k => [k,
     renderToString(React.createElement(RCommemoration, { entry: GENERAL[k], path: 'general.' + k }))]);
+}
+// The Open Questions page: rendered with 'all' rows visible by default group,
+// and once with a test address so the mailto link itself is checked.
+export function runQuestions() {
+  return { questions: QUESTIONS,
+           html: renderToString(React.createElement(OpenQuestions, {})),
+           withMail: renderToString(React.createElement(OpenQuestions, { email: 'test@example.org' })),
+           sample: QUESTIONS.length ? mailtoFor(QUESTIONS[0], 'test@example.org') : null };
 }
 // The DAILY months (first: november.js, 14 Nov 2026). Every commemoration of
 // every encoded date renders through the same component, path MM-DD.cN.
@@ -68,7 +78,7 @@ await build({
 const OUT = join(ROOT, '.render-test-out');
 const bundle = readdirSync(OUT).find(f => /^entry\.m?js$/.test(f));
 if (!bundle) { console.error('render gate: no SSR bundle produced'); process.exit(2); }
-const { run, runShared, runMonths } = await import(join(OUT, bundle));
+const { run, runShared, runMonths, runQuestions } = await import(join(OUT, bundle));
 const GENERAL = (await import(join(ROOT, 'src/data/menaion_v2/general.js'))).default;
 const SHARED = (await import(join(ROOT, 'src/data/menaion_v2/shared.js'))).default;
 
@@ -125,6 +135,23 @@ for (const [key, entry, html] of await runMonths()) {
   }
 }
 console.log(`daily months: ${dailyEntries} commemoration(s), ${dailyChecked} stored strings`);
+{
+  const { questions, html, withMail, sample } = runQuestions();
+  const text = flatten(html);
+  let qMissing = 0;
+  for (const q of questions.filter(x => x.status !== 'answered'))
+    for (const k of ['question', 'printed', 'impact']) {
+      checked++;
+      if (!text.includes(q[k].replace(/\s+/g, ' ').trim())) { missing++; qMissing++; console.log(`  MISSING FROM QUESTIONS PAGE · ${q.id}.${k}`); }
+    }
+  const links = (withMail.match(/href="mailto:/g) || []).length;
+  const unanswered = questions.filter(x => x.status !== 'answered').length;
+  if (links !== unanswered) { missing++; console.log(`  QUESTIONS PAGE: ${links} mailto links for ${unanswered} unanswered questions`); }
+  if (/href="mailto:/.test(html) && !(await import(join(ROOT, 'src/data/open_questions.js'))).CONTACT_EMAIL) { missing++; console.log('  QUESTIONS PAGE: mailto link rendered with no address set'); }
+  const bodyLen = sample ? (sample.split('&body=')[1] ?? '').length : 0;
+  if (bodyLen > 100) { missing++; console.log(`  QUESTIONS PAGE: mailto body is ${bodyLen} encoded chars (iOS Mail truncates past ~100)`); }
+  console.log(`questions page: ${questions.length} question(s), ${links} mailto link(s) with a test address, body ${bodyLen} encoded chars, ${qMissing} missing`);
+}
 const sharedCount = Object.keys(SHARED).length;
 
 rmSync(TMP, { recursive: true, force: true });

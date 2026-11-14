@@ -1,10 +1,15 @@
-// src/data/menaion_v2/open_questions.js — THE OPEN-QUESTION REGISTER
+// src/data/open_questions.js — THE OPEN-QUESTION REGISTER, for every book.
 //
-// Established 14 Nov 2026 (Bill). Capture never waits on a question: what the
-// page prints is stored verbatim, and a field that needs liturgical JUDGMENT
-// (rank, Fekula section, which hymn governs) takes its best-supported value and
-// a row here. The register is what lets the daily book be encoded by a layman
-// and reviewed by people who know more.
+// Established 14 Nov 2026 (Bill). One register for the whole tool: a question
+// may come from the daily Menaion, the General Menaion, the Octoechos, the
+// Pentecostarion, the Lenten Triodion (not yet built), or any other liturgical
+// source. Each row names its SOURCE work and its SUBJECT, and the Open
+// Questions page (/questions) groups by either.
+//
+// Capture never waits on a question: what the page prints is stored verbatim,
+// and a field that needs liturgical JUDGMENT takes its best-supported value and
+// a row here. The register is how the books can be encoded by a layman and
+// reviewed by people who know more.
 //
 // THE LADDER, in order, before a row is written:
 //   1. fekula  — the chapter text, and ODS vol. III for the date where it has one
@@ -21,15 +26,74 @@
 //         'answered'          settled; `resolution` says by what. Rows are
 //                             never deleted.
 //
-// The gate (validate_menaion_v2.mjs) checks every row: the path must resolve to
-// stored data, the status must be in the vocabulary, and each rung must say
-// what was actually done there, including a plain "not searched, because ...".
-// An empty rung is a hard-fail; an honest gap is not.
+// ROW FIELDS
+//   id        Q-NNNN, one sequence across all books
+//   source    key of SOURCES     subject   key of SUBJECTS
+//   title     a few words; it becomes the e-mail subject line
+//   path      where the stored value lives, in the source book's own path
+//             grammar. The Menaion gate resolves Menaion paths; a row for a
+//             book with no gate yet carries `locus` (plain words) instead.
+//   responses [{ date, role, summary, source }] — answers received. The
+//             respondent is recorded by ROLE ("OCA priest"), never by name or
+//             address, unless they have agreed to be named.
+//
+// The gate (validate_menaion_v2.mjs) checks every row: vocabulary, a unique id,
+// a path or locus, and each rung saying what was actually done there, including
+// a plain "not searched, because ...". An empty rung is a hard-fail; an honest
+// gap is not.
+
+// Where answers are sent. EMPTY until Bill supplies the address: the page then
+// shows the questions and says plainly that no address is set, and offers no
+// button. Set it here and nowhere else.
+export const CONTACT_EMAIL = '';
+
+// The works a question can come from. Add a line to add a work; `href` builds
+// the link from a row to the place in that work's viewer, where there is one.
+export const SOURCES = {
+  menaion:         { label: 'Menaion (daily services)',
+                     href: q => { const m = /^(\d{2}-\d{2})\./.exec(q.path ?? ''); return m ? `/orthodox-hours/menaion-v2?comm=${m[1]}#${encodeURIComponent(q.path)}` : null; } },
+  general_menaion: { label: 'General Menaion',
+                     href: q => q.path ? `/orthodox-hours/menaion-v2#${encodeURIComponent(q.path)}` : null },
+  octoechos:       { label: 'Octoechos',
+                     href: q => q.path ? `/orthodox-hours/octoechos-v2#${encodeURIComponent(q.path)}` : '/orthodox-hours/octoechos-v2' },
+  pentecostarion:  { label: 'Pentecostarion', href: () => '/orthodox-hours/pentecostarion' },
+  triodion:        { label: 'Lenten Triodion', href: () => null },
+  horologion:      { label: 'Horologion (the Hours)', href: () => null },
+  psalter:         { label: 'Psalter', href: () => '/orthodox-hours/psalter' },
+  liturgy:         { label: 'Divine Liturgy', href: () => null },
+  typikon:         { label: 'Order of services (Fekula, Typikon)', href: () => null },
+  other:           { label: 'Other sources', href: () => null },
+};
+
+export const SUBJECTS = {
+  rank:            'Rank of a service',
+  combination:     'Two commemorations on one day',
+  hymn_selection:  'Which hymn is taken',
+  rubric:          'A rubric or heading',
+  printed_text:    'Printed text that may be an error',
+  readings:        'Scripture readings',
+  calendar:        'Calendar and dates',
+  pointing:        'Chant pointing and tones',
+  source_gap:      'A source we could not consult',
+  other:           'Other',
+};
+
+// The e-mail link for one question. Plain mailto, no script. The body is kept
+// short on purpose: iOS Mail silently drops a long pre-filled body.
+export function mailtoFor(q, email = CONTACT_EMAIL) {
+  if (!email) return null;
+  const subject = `Orthodox Hours ${q.id}: ${q.title}`;
+  const body = `My answer to ${q.id}, and my source:`;
+  return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
 export const QUESTION_STATUS = ['open', 'provisional_web', 'answered'];
 
 export default [
   {
-    id: 'Q-0001', path: '11-14.c0.rank', status: 'provisional_web', opened: '2026-11-14',
+    id: 'Q-0001', source: 'menaion', subject: 'rank',
+    title: 'Apostle Philip: Polyeleos or Vigil?',
+    path: '11-14.c0.rank', status: 'provisional_web', opened: '2026-11-14',
     question: 'Apostle Philip (14 November): is the service Polyeleos rank or Vigil rank?',
     printed: 'No Little Vespers. 8 stichera at Lord I have cried; Entrance and three lessons; a Litiya with its own stichera; at the blessing of the Loaves the troparion "(Twice)" and "Virgin Theotokos, rejoice" "(Once)"; Matins with Polyeleos and magnification; Great Doxology.',
     consulted: {
@@ -41,7 +105,9 @@ export default [
     impact: 'If Vigil: Vespers and Matins are joined, the Litiya and blessing of the Loaves are served, and the troparion is sung twice with "Virgin Theotokos, rejoice" once, as the page prints. If Polyeleos without Vigil: the troparion once with its theotokion, and the Litiya only by local custom. The Hours are unaffected.',
   },
   {
-    id: 'Q-0002', path: '11-14.c1.rank', status: 'open', opened: '2026-11-14',
+    id: 'Q-0002', source: 'menaion', subject: 'combination',
+    title: 'St. Gregory Palamas beside the Apostle Philip',
+    path: '11-14.c1.rank', status: 'open', opened: '2026-11-14',
     question: 'St. Gregory Palamas (14 November, 11-14A.pdf): what rank, and how does this service stand beside the Apostle Philip on the same day?',
     printed: 'Headed AT GREAT VESPERS; no Little Vespers; 6 stichera; three lessons; blessing of the Loaves with the troparion "(Twice)"; then "But if a vigil is not served, then after the Troparion: Glory ..., Both now ..., Theotokion"; Matins with Polyeleos and magnification; Great Doxology.',
     consulted: {
@@ -53,7 +119,9 @@ export default [
     impact: 'Decides whether a parish keeping St. Gregory on this day serves his service in place of the Apostle\'s or combines them, and which troparion and kontakion the Hours and Liturgy read. Until answered the assembler should read c0 (Apostle Philip) alone.',
   },
   {
-    id: 'Q-0003', path: '11-14.c1.matins.aposticha_rubric', status: 'open', opened: '2026-11-14',
+    id: 'Q-0003', source: 'menaion', subject: 'rubric',
+    title: 'Palamas Matins: "On the Aposticha" before the Great Doxology',
+    path: '11-14.c1.matins.aposticha_rubric', status: 'open', opened: '2026-11-14',
     question: '11-14A Matins prints "On the Aposticha, 4 Stichera of the holy hierarch" and then "Great Doxology". Are these the Praises stichera under a wrong heading?',
     printed: '"On the Aposticha, 4 Stichera of the holy hierarch, in Tone I:" with three stichera, the first "(Twice)" (so four sung), Glory in Tone IV, Both now Theotokion; the next line is "Great Doxology, Troparion, Litanies, and the Dismissal. First Hour". No "On the Praises" heading is printed. 11-14 (Philip), the same rank, prints "On the Praises, 4 Stichera".',
     consulted: {
@@ -65,7 +133,9 @@ export default [
     impact: 'An assembler building this Matins must take these four stichera at the Praises. If the answer is yes, the adapter maps them there and a sic row records the heading; the stored text does not change.',
   },
   {
-    id: 'Q-0004', path: '11-15.c0.fekula_section', status: 'open', opened: '2026-11-14',
+    id: 'Q-0004', source: 'menaion', subject: 'source_gap',
+    title: '15 November, first day of the Nativity Fast: Fekula p. 214',
+    path: '11-15.c0.fekula_section', status: 'open', opened: '2026-11-14',
     question: '15 November, first day of the Nativity Fast: which Fekula outline governs, and what does his own section for this date say?',
     printed: 'A "Be it known" rubric before Vespers: on Saturday, 6 stichera of the martyrs and God is the Lord; on Sunday, 7 from the Oktoechos and 3 of the martyrs with God is the Lord; Monday through Friday, Alleluia "because of the beginning of the holy fast", with three stichera of the Theotokos before the three of the martyrs.',
     consulted: {
@@ -77,7 +147,9 @@ export default [
     impact: 'The stored texts do not change. The assembly does: which stichera and closers are taken depends on the weekday, and Fekula p. 214 is the authority for that selection. Needs the ch. 5 text (or the page read from the PDF) before the wire-in handles this date.',
   },
   {
-    id: 'Q-0005', path: '11-14.c0.troparion', status: 'open', opened: '2026-11-14',
+    id: 'Q-0005', source: 'menaion', subject: 'hymn_selection',
+    title: 'Apostle Philip: which of two troparia',
+    path: '11-14.c0.troparion', status: 'open', opened: '2026-11-14',
     question: 'Apostle Philip: which troparion do the Hours and Liturgy read, the first printed or the "Or this Troparion"?',
     printed: 'Two troparia in Tone III at Vespers and again at Liturgy: first "O holy apostle Philip, entreat the Merciful God" (the general troparion of an apostle), then "Or this Troparion, in the same tone: The whole world is splendidly adorned; Ethiopia doth dance". Matins at God is the Lord prints only the first.',
     consulted: {

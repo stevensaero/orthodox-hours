@@ -458,12 +458,12 @@ function checkSics(reg, roots) {
 // The open-question register (open_questions.js). A row that points at nothing,
 // or leaves a rung of the ladder empty, is a hard-fail: the register is only
 // worth reading if every row is anchored and every rung says what was done.
-function checkQuestions(mod, roots, statuses) {
+function checkQuestions(mod, roots, statuses, SOURCES = {}, SUBJECTS = {}) {
   const seen = new Set();
   let open = 0;
   for (const [i, q] of (mod ?? []).entries()) {
     const at = `open_questions[${q.id ?? i}]`;
-    for (const k of ['id', 'path', 'status', 'opened', 'question', 'printed', 'consulted', 'provisional', 'impact'])
+    for (const k of ['id', 'source', 'subject', 'title', 'status', 'opened', 'question', 'printed', 'consulted', 'provisional', 'impact'])
       if (q[k] === undefined || q[k] === '') err(at, `missing '${k}'`);
     if (seen.has(q.id)) err(at, `duplicate id`);
     seen.add(q.id);
@@ -473,8 +473,16 @@ function checkQuestions(mod, roots, statuses) {
       if (!q.consulted || typeof q.consulted[rung] !== 'string' || !q.consulted[rung].trim())
         err(at, `ladder rung '${rung}' is empty — say what was done there, even if that is "not searched, because ..."`);
     if (q.status === 'answered' && !q.resolution) err(at, `status 'answered' requires 'resolution'`);
-    const r = resolvePath(roots, q.path ?? '');
-    if (r.unresolved) err(at, `path does not resolve to stored data: ${q.path}`);
+    if (!SOURCES[q.source]) err(at, `source '${q.source}' not in SOURCES`);
+    if (!SUBJECTS[q.subject]) err(at, `subject '${q.subject}' not in SUBJECTS`);
+    if (!q.path && !q.locus) err(at, `needs a 'path' (or a plain-words 'locus' where the book has no path grammar yet)`);
+    // The register serves every book; THIS gate can resolve only Menaion paths.
+    const menaionPath = q.path && /^(\d{2}-\d{2}\.|general\.|shared\.)/.test(q.path);
+    if (menaionPath && resolvePath(roots, q.path).unresolved)
+      err(at, `path does not resolve to stored data: ${q.path}`);
+    for (const [j, r] of (q.responses ?? []).entries())
+      for (const k of ['date', 'role', 'summary'])
+        if (!r[k]) err(at, `responses[${j}] missing '${k}'`);
     if (q.status !== 'answered') { open++; work(at, `${q.status.toUpperCase()} — ${q.question}`); }
   }
   return open;
@@ -588,10 +596,10 @@ async function main() {
   }
 
   try {
-    const qm = await import(join(DATA_DIR, 'open_questions.js'));
-    checkQuestions(qm.default, resolveRoots, qm.QUESTION_STATUS);
+    const qm = await import(join(DATA_DIR, '..', 'open_questions.js'));
+    checkQuestions(qm.default, resolveRoots, qm.QUESTION_STATUS, qm.SOURCES, qm.SUBJECTS);
   } catch (e) {
-    if (existsSync(join(DATA_DIR, 'open_questions.js')))
+    if (existsSync(join(DATA_DIR, '..', 'open_questions.js')))
       err('open_questions.js', `register exists but failed to load: ${e.message}`);
   }
 

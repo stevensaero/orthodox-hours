@@ -11,6 +11,7 @@ const PentecostarionBrowser = lazy(() => import('./components/pentecostarion-bro
 const OctoechosV2Browser = lazy(() => import('./components/octoechos-v2-browser.jsx'));
 const MenaionV2Browser = lazy(() => import('./components/menaion-v2-browser.jsx'));
 const ToneTrainer = lazy(() => import('./components/tone-trainer.jsx'));
+const OpenQuestions = lazy(() => import('./components/open-questions.jsx'));
 
 function OctoechosRedirect() {
   const loc = useLocation();
@@ -64,6 +65,7 @@ function App() {
             unlike the desktop-only table browsers it carries no 760px min-width. */}
         <Route path="/octoechos-v2" element={<ErrorBoundary><Suspense fallback={<LazyFallback />}><div><HoursReturnStrip /><OctoechosV2Browser /><HoursReturnStrip position="bottom" /></div></Suspense></ErrorBoundary>} />
         <Route path="/menaion-v2" element={<ErrorBoundary><Suspense fallback={<LazyFallback />}><div><HoursReturnStrip /><MenaionV2Browser /><HoursReturnStrip position="bottom" /></div></Suspense></ErrorBoundary>} />
+        <Route path="/questions" element={<ErrorBoundary><Suspense fallback={<LazyFallback />}><div><HoursReturnStrip /><OpenQuestions /><HoursReturnStrip position="bottom" /></div></Suspense></ErrorBoundary>} />
         <Route path="/tone-trainer" element={<Suspense fallback={<LazyFallback />}><HoursReturnStrip /><ToneTrainer /><HoursReturnStrip position="bottom" /></Suspense>} />
       </Routes>
     </BrowserRouter>

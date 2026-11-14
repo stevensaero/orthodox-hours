@@ -438,6 +438,10 @@ export default function MenaionV2Browser() {
       )}
       {generalTypes.length > 0 && (
         <>
+          <div style={railLabel}>OPEN QUESTIONS</div>
+          <a href="/orthodox-hours/questions?from=tool" style={{ ...railItem(false), display: "block", textDecoration: "none" }}>
+            Questions for review ↗
+          </a>
           <div style={railLabel}>GENERAL MENAION</div>
           <div>
             {generalTypes.map(k => (
