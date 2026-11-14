@@ -6235,6 +6235,1131 @@ const NOVEMBER = {
     }
    }
   ]
+ },
+ "11-18": {
+  "_encoded": [
+   "c0.identity",
+   "c0.vespers",
+   "c0.matins",
+   "c0.liturgy"
+  ],
+  "commemorations": [
+   {
+    "kind": "saint",
+    "title": {
+     "text": "COMMEMORATION OF THE HOLY MARTYRS PLATO & ROMANUS",
+     "tier": 1,
+     "src": {
+      "file": "11-18.pdf",
+      "locus": "p1 title"
+     },
+     "sourceLabel": "THE 18th DAY OF THE MONTH OF NOVEMBER"
+    },
+    "rank": "simple",
+    "fekula_section": "2B",
+    "oca_primary": true,
+    "source_file": "11-18.pdf",
+    "note": "A double commemoration: 3 stichera of the martyr Plato and 3 of the martyr Romanus at Lord I have cried, so 6 printed for two saints, which the encoding_rule_v2.md 1.1 waterfall reads as Simple rank, double service (Fekula 2B). ODS vol. III has no 11-18 entry. No Polyeleos, no Great Doxology. TWO canons, printed interleaved ode by ode and stored whole. The Glory, the kontakion, the ikos and the exapostilarion are Plato's alone; Romanus has stichera, a canon and a sessional hymn. No aposticha and no aposticha Glory are printed at Vespers, not even a rubric. At Liturgy only the troparion and kontakion are printed: no prokeimenon, readings, alleluia or communion verse.",
+    "troparion": {
+     "text": "In their sufferings, Thy martyrs O Lord, * received imperishable crowns from Thee, our God; * for, possessed of Thy might, * they set at naught the tyrants and crushed the feeble audacity of the demons. ** By their supplications save Thou our souls.",
+     "tier": 2,
+     "src": {
+      "file": "11-18.pdf",
+      "locus": "p2 Troparion of the holy martyrs"
+     },
+     "verified_sites": [
+      {
+       "locus": "p2 end of Vespers",
+       "tone": 4
+      },
+      {
+       "locus": "p11 AT LITURGY",
+       "tone": 4
+      }
+     ],
+     "sourceLabel": "Troparion of the holy martyrs, in Tone IV",
+     "tone": 4
+    },
+    "kontakion": {
+     "text": "Thy holy memory doth gladden the whole world, * summoning all the faithful to thine all honorable temple, * where, assembled now with joy, we chant in hymns amid splendor. * Wherefore, O Plato, we cry out to thee: ** Deliver thy city from the invasion of the heathen, O holy one.",
+     "tier": 2,
+     "src": {
+      "file": "11-18.pdf",
+      "locus": "p8 Kontakion of the holy martyr Plato"
+     },
+     "saint": "Plato",
+     "verified_sites": [
+      {
+       "locus": "p8 after Ode VI",
+       "tone": 3
+      },
+      {
+       "locus": "p11 AT LITURGY",
+       "tone": 3
+      }
+     ],
+     "sourceLabel": "Kontakion of the holy martyr Plato, in Tone III",
+     "spec_mel": "Today the Virgin ...",
+     "tone": 3
+    },
+    "ikos": {
+     "text": "Having abandoned all pagan superstition, the divinely wise Plato came to love the soul-saving teachings of the disciples of Christ. Wherefore, he appeared honorable to all, like an anchor of the Faith in his native land, and manifestly bore the title “Of Ancyra.” For, nurtured well, it found him to be an excellent protection against the enemy and a fervent helper in battle, crying aloud: Deliver thy city from the invasion of the heathen, O holy one!",
+     "tier": 1,
+     "src": {
+      "file": "11-18.pdf",
+      "locus": "p8 Ikos"
+     },
+     "saint": "Plato",
+     "sourceLabel": "Ikos",
+     "label_inline": true
+    },
+    "vespers": {
+     "order": [
+      "lic_rubric",
+      "lic",
+      "lic_glory",
+      "lic_closer_rubric",
+      "lic_stavrotheotokion",
+      "troparion"
+     ],
+     "lic_rubric": {
+      "text": "On “Lord, I have cried ...,” 6 Stichera: 3 of the martyr Plato, in Tone VIII:",
+      "tier": 1,
+      "src": {
+       "file": "11-18.pdf",
+       "locus": "p1 LIC rubric"
+      }
+     },
+     "lic": [
+      {
+       "text": "Full of valiant wisdom, * with a most courageous resolve thou didst endure * the severing of thy limbs * and the dismemberment of thy body, * unbearable fire, * starvation and death, * in expectation of the glory which ageth not, * which lieth eternally before thee, ** and foreseeing everlasting blessedness.",
+       "tier": 2,
+       "src": {
+        "file": "11-18.pdf",
+        "locus": "p1 LIC 1"
+       },
+       "label": "plain",
+       "saint": "Plato",
+       "tone": 8,
+       "spec_mel": "O most glorious wonder ..."
+      },
+      {
+       "text": "Having transcended every sense * and directed thy mind * toward life on high, * with divinely wise thought * and great wisdom of soul * thou didst spurn the baseness and lowliness * of visible things. * Wherefore, lacerated and burned with fire for Christ, O martyr, ** thou didst endure valiantly.",
+       "tier": 2,
+       "src": {
+        "file": "11-18.pdf",
+        "locus": "p1 LIC 2"
+       },
+       "label": "plain",
+       "saint": "Plato",
+       "spec_mel": "O most glorious wonder ..."
+      },
+      {
+       "text": "Every assault of the enemy * and the onslaughts of the persecutors * didst thou set at naught by grace; * and wast crowned with the wreath of victory, * O spiritually rich martyr, * being deemed worthy of incorruptible gladness * and ineffable and divine radiance. * And as thou art now in the midst thereof, ** ask remission of sins for those who praise thee as is meet.",
+       "tier": 2,
+       "src": {
+        "file": "11-18.pdf",
+        "locus": "p1 LIC 3"
+       },
+       "label": "plain",
+       "saint": "Plato",
+       "spec_mel": "O most glorious wonder ..."
+      },
+      {
+       "text": "Consumed by fasting, * hardened by ascetic endeavor, * and tormented with manifold tortures, * thou didst become a two-edged sword, * cutting down hordes of demons, O Romanus, * thou adornment of spiritual athletes, * divine boast, * precious ornament of the Church ** of those who died shedding their own blood, O all-praised one.",
+       "tier": 2,
+       "src": {
+        "file": "11-18.pdf",
+        "locus": "p1 LIC 4"
+       },
+       "label": "plain",
+       "saint": "Romanus",
+       "sourceLabel": "And 3 Stichera of the martyr Romanus, in Tone IV",
+       "spec_mel": "As one valiant among the martyrs ...",
+       "tone": 4
+      },
+      {
+       "text": "Lacerated and rent asunder, * imprisoned in a dungeon, * thy tongue cut of, O glorious spiritual athlete, * thy jaw broken, * receiving a blessed end through violent suffocation, * thou wast shown to be * unshakable and steadfast * through the activity of the divine Spirit, O Romanus; ** wherefore, we praise thee with faith.",
+       "tier": 2,
+       "src": {
+        "file": "11-18.pdf",
+        "locus": "p1 LIC 5"
+       },
+       "label": "plain",
+       "saint": "Romanus",
+       "spec_mel": "As one valiant among the martyrs ..."
+      },
+      {
+       "text": "A child speaketh eloquently * and amazeth the mindless: * he is adorned with honorable opposition * and is illumined by his death; * he is enriched by the goodly fame of the holy spiritual athletes, * whose zeal he acquired. * O right wise Romanus, * pray thou with them, ** that remission of debts be sent down upon us all.",
+       "tier": 2,
+       "src": {
+        "file": "11-18.pdf",
+        "locus": "p1 LIC 6"
+       },
+       "label": "plain",
+       "saint": "Romanus",
+       "spec_mel": "As one valiant among the martyrs ..."
+      }
+     ],
+     "lic_glory": {
+      "text": "Awesome and most glorious are the victories of Thy martyr, O Lord! For, emulating the boldness of the fishermen, by his words and deeds he rent asunder the mythology and historical blasphemy of Plato with the nets of theology; and when his skin was flayed and his head severed, he choked the enemy with the outpouring of his blood. O all-blessed wonderworker Plato, thou adornment of the martyrs, who preached the great name of Christ with boldness, ask that great mercy be given our souls.",
+      "tier": 1,
+      "src": {
+       "file": "11-18.pdf",
+       "locus": "p2 LIC Glory"
+      },
+      "saint": "Plato",
+      "sourceLabel": "Glory ..., in Tone VI",
+      "tone": 6
+     },
+     "lic_closer_rubric": {
+      "text": "Both now ..., Theotokion, or this Stavrotheotokion, in Tone VI:",
+      "tier": 1,
+      "src": {
+       "file": "11-18.pdf",
+       "locus": "p2 LIC Both now rubric"
+      }
+     },
+     "lic_stavrotheotokion": {
+      "text": "Upon seeing Thee crucified, O Christ, * she who gaveth birth to Thee cried aloud: * “What is this strange mystery that I see, * O my Son How is it that Thou diest?, * suspended upon the Tree, ** O Bestower of life?”",
+      "tier": 2,
+      "src": {
+       "file": "11-18.pdf",
+       "locus": "p2 LIC Stavrotheotokion"
+      },
+      "type": "stavrotheotokion",
+      "tone": 6,
+      "sourceLabel": "Stavrotheotokion",
+      "label_inline": true,
+      "spec_mel": "On the third day ..."
+     }
+    },
+    "matins": {
+     "order": [
+      "canon_rubric",
+      "canons",
+      "sessional_ode3",
+      "kontakion",
+      "ikos",
+      "exapostilarion",
+      "exapostilarion_closer"
+     ],
+     "canon_rubric": {
+      "text": "One canon from the Oktoechos, and two canons of the holy martyrs.",
+      "tier": 1,
+      "src": {
+       "file": "11-18.pdf",
+       "locus": "p3 Canon rubric"
+      }
+     },
+     "canons": [
+      {
+       "title": "Canon of the holy martyr Plato, the acrostic whereof is: “I hymn the expanse of thy praises, O Plato”, the composition of Theophanes, in Tone VIII:",
+       "composer": "Theophanes",
+       "acrostic": "I hymn the expanse of thy praises, O Plato",
+       "tone": 8,
+       "odes": {
+        "1": {
+         "irmos": {
+          "text": "The wonderworking staff of Moses, * striking and dividing the sea in the figure of a cross, * once drowned pharaoh the pursuing charioteer, * while it saved the fleeing people of Israel * as they fled on foot, * chanting a hymn unto God.",
+          "tier": 2,
+          "src": {
+           "file": "11-18.pdf",
+           "locus": "p3 Ode 1 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Traversing the most pure expanse of the eternal kingdom, O glorious one, from all tribulation and the dangers of imprisonment save those who hymn thee, leading to the path to heaven those who walk without turning back.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p3 Ode 1 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Protected by the armor of piety, and having shown thyself to be an unshakable pillar, O Plato, thou didst endure all the savagery of wounds and accepted the pangs of imprisonment, exalted by divine grace.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p3 Ode 1 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Showing forth the mettle of youth, in thy suffering thou didst cast off mortal and corruptible coarseness, O all-wise one, and, arrayed in the garment of incorruption, thou standest, rejoicing, before the Master.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p3 Ode 1 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "In a manner surpassing understanding thou hast given birth to the incarnate and only-begotten Word, Who is co-beginningless and everlasting with the Father, O blessed and most pure Theotokos. Wherefore, reasoning correctly, we proclaim and honorably glorify thee.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p3 Ode 1 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "3": {
+         "irmos": {
+          "text": "O Christ fortify me on the rock of Thy commandments, * Thou who in the beginning didst establish the heavens with understanding * and didst establish the earth upon the waters, * for there is none holy save Thee, O only Lover of mankind.",
+          "tier": 2,
+          "src": {
+           "file": "11-18.pdf",
+           "locus": "p4 Ode 3 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Manifestly aflame with the zeal of piety, and enlightened by the divine fire of the Faith, O all-blessed one, with endurance thou didst enter into the cruel flame like a spark of incorruption.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p4 Ode 3 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Having supra-naturally vanquished the servants of the demons, and borne with patience the pain of mighty tortures, O blessed and divinely wise Plato, thou wast shown to be a dweller with the angels and a crown-bearer.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p4 Ode 3 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Having struggled for Christ on earth, O all-blessed one, receiving from Him heavenly gifts and crowns which abide forever, thou dwellest in the pure land of paradise.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p4 Ode 3 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O Mother of God, thou art the portal of the Light, adorned with the rays of the light of the Spirit; for through thee descended unto us the Word Who illumineth with divine light all who hymn thee.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p4 Ode 3 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "4": {
+         "irmos": {
+          "text": "Thou, O Lord, art my strength and Thou art my power, * Thou art my God and Thou art my joy, * Thou Who, while never leaving the bosom of Thy Father, * hast visited our poverty. * Therefore with the prophet Habbakuk I cry unto Thee, * “Glory to Thy power, O Lover of mankind!”",
+          "tier": 2,
+          "src": {
+           "file": "11-18.pdf",
+           "locus": "p5 Ode 4 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Wholly transformed by the love of thy Creator, thou didst not feel the pain of thy body, having shed the skin garments of thy flesh from passions and mortality, and clothed thyself in the robe of chastity and salvation.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p5 Ode 4 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou wast revealed to be a true priest of God, offering thyself unto Christ the Redeemer Who was slain for all, as an unblemished lamb and a perfect sacrifice, O martyr; for, having set thy soul afire with love for the Master, thou didst pay no heed to thy burning flesh.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p5 Ode 4 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Emulating the three youths who were in Babylon, thou didst not fear the all-devouring fire, but mightily and youthfully endured the unbearable flame thereof. Wherefore, the Bestower of dew hath rightly taken thee with them into the chamber of glory.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p5 Ode 4 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "In that thou art the royal root, thou hast given birth for us unto the Word of God Who reigneth over all, Who became flesh, yet remained unchanged. Wherefore, O all-holy Virgin, with truth and authority we glorify thee, the Theotokos.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p5 Ode 4 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "5": {
+         "irmos": {
+          "text": "O Light never-waning, * why hast Thou turned Thy face from me * and why hath the alien darkness surrounded me, * wretched though I be? * But do Thou guide my steps I implore Thee * and turn me back towards the light of Thy commandments.",
+          "tier": 2,
+          "src": {
+           "file": "11-18.pdf",
+           "locus": "p6 Ode 5 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Thou gavest neither slumber to thine eyelids, nor sleep to thine eyes, O martyr, until, beheaded by the sword, thou didst sleep the sleep of the blessed like those who love God, O blessed one.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p6 Ode 5 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Suffering, thou didst struggle as in another's body, O all-blessed one; thou didst suffer, viewing thy pangs as though another was experiencing them. For, set afire with divine zeal, thou didst not fear the future torments, O glorious one.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p6 Ode 5 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou hast discovered riches which cannot be taken away, and unfading glory, joining chorus with the angels in the mansions of heaven, partaking of incorruptible immortality, O most eminent one.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p6 Ode 5 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "By thy supplications grant remission of sins to thy servants, delivering them from temptations, misfortunes and sorrows, and from enslavement to blasphemous heretics, O all-praised Virgin Theotokos.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p6 Ode 5 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "6": {
+         "irmos": {
+          "text": "Cleanse me, O Savior, * for many are mine iniquities; * lead me up from the abyss of evils I pray Thee, * for unto Thee have I cried, * and Thou hast hearkened unto me, * O God of my salvation.",
+          "tier": 2,
+          "src": {
+           "file": "11-18.pdf",
+           "locus": "p7 Ode 6 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Transcending sufferings and tortures, thou didst endure the cutting away of thy flesh, O glorious one; for thou didst have Christ as thy Helper, Assistant and Companion.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p7 Ode 6 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Ever gazing upon the majesty of the Creator with spiritual understanding, and contemplating ineffable beauty, thou didst spurn the baseness of visible things.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p7 Ode 6 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "As an animate ark thou didst hold the Bestower of life, as a holy temple thou didst receive the Holy One Who had become a man, for the good of mankind, O all-blessed one.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p7 Ode 6 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "7": {
+         "irmos": {
+          "text": "Once in Babylon the fire stood in awe * of God's condescension; * for which sake the youths in the furnace, * dancing with joyous steps as in a meadow, chanted: * O God of our fathers, blessed art Thou!",
+          "tier": 2,
+          "src": {
+           "file": "11-18.pdf",
+           "locus": "p8 Ode 7 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "He Who set down the law hath crowned with a wreath of victory thee who suffered lawfully and trampled underfoot thine enemies, and who cried aloud, saying: O God of our fathers, Blessed art Thou!",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p8 Ode 7 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou didst pass over, rejoicing, to Him Whom from of old thou didst desire, emulating His most pure sufferings, which were the cause of the salvation of mankind; and thou didst chant: O God of our fathers, Blessed art Thou!",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p8 Ode 7 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "All the hosts of heaven, and the people looking on, marveled at thy patient endurance of suffering; for thy severed tongue supra-naturally cried aloud: O God of our fathers, Blessed art Thou!",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p8 Ode 7 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Delivered from the bonds of death and the curse of the first-formed Adam by the divine Offspring of thy virginity, O most pure one, mindful that thou art the Theotokos, we cry aloud: O God of our fathers, Blessed art Thou!",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p8 Ode 7 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "8": {
+         "irmos": {
+          "text": "In his wrath the Chaldean tyrant made the furnace blaze, * with heat fanned sevenfold for the servants of God; * but when he perceived that they had been saved by a greater power * he cried aloud to the Creator and Redeemer; * “Ye children bless, ye priests praise, * ye people, supremely exalt Him throughout all ages”.",
+          "tier": 2,
+          "src": {
+           "file": "11-18.pdf",
+           "locus": "p9 Ode 8 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Thou didst struggle in radiant feats, O all-praised one, and Christ bestowed upon thee the most splendid, blessed and ever-enduring fame, causing thee to dwell in the mansions of heaven, wherefore thou dost fervently chant: Ye priests hymn; ye people, supremely exalt Christ throughout the ages!",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p9 Ode 8 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "As a most faithful supplicant, as a most fervent intercessor for us, we now set thee before the King of all, the Author of creation. Pray thou for us, interceding in thy martyr's boldness on behalf of those who praise thee and chant with faith: Ye people, supremely exalt Christ throughout the ages!",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p9 Ode 8 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Because of thine active faith thou wast deemed worthy to receive a kingship which cannot be taken away; for God, Who lieth not, promised to give it thee, and for Him thou didst commit thy body to fire and torture, crying aloud: Ye priests hymn; ye people, supremely exalt Christ throughout the ages!",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p9 Ode 8 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "In a manner most divine thou didst give birth to the Word of God, Who is co-beginningless and of equal honor with the Father, Who brought all things forth out of non-existence by the counsel of the Father, and assumed flesh for the sake of mankind. Wherefore, acknowledging thee, in an Orthodox fashion, to be the Theotokos, we supremely exalt Christ throughout the ages.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p9 Ode 8 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "9": {
+         "irmos": {
+          "text": "Every ear is awestruck at hearing of God's ineffable condescension, * for the Most High voluntarily descended and assumed flesh, * becoming man in the Virgin's womb; * wherefore we the faithful magnify the most pure Theotokos.",
+          "tier": 2,
+          "src": {
+           "file": "11-18.pdf",
+           "locus": "p10 Ode 9 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "O ye who love the martyrs, come, let us hymn the martyr, crowned by God, who extended the piety of his birth; for, as an offshoot of the branch of life, he bringeth forth fruit which poureth forth the wine of compunction for us.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p10 Ode 9 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Precious in the sight of the Lord was the death of the martyr, for he hath become the mediator of the true life which is everlasting and imperishable, giving abundant recompense, incorruption and immortal glory.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p10 Ode 9 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "All thy life didst thou consecrate to God almighty, O martyr, and, rejoicing, thou didst offer thyself as a well-pleasing and living sacrifice. Wherefore, thou hast manifestly been deemed worthy of the sweetness which passeth understanding. Pray thou that those who hymn thee be delivered from temptations.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p10 Ode 9 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Save me, O Mother of God who hast given birth to Christ my Savior, Who is both God and man, in two natures, but not in two hypostases, the Only-begotten of the Father and of thee, the first-born of all creation. Wherefore, all of us ever magnify thee.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p10 Ode 9 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        }
+       }
+      },
+      {
+       "title": "Canon of the holy martyr Romanus, the acrostic whereof is: “With spiritual athletes' wreaths I crown thee, O Romanus”, in Tone IV:",
+       "acrostic": "With spiritual athletes' wreaths I crown thee, O Romanus",
+       "tone": 4,
+       "odes": {
+        "1": {
+         "irmos": {
+          "text": "Through the deep of the Red Sea, * marched dry shod Israel of old, * and by Moses’ outstretched hands, * raised in the form of a cross, * the power of Amalek was routed in the wilderness.",
+          "tier": 2,
+          "src": {
+           "file": "11-18.pdf",
+           "locus": "p3 Ode 1 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Shining brightly with the never-waning radiance of the Trinity, and enlightened with the choirs of spiritual athletes, O Romanus, send down enlightenment upon me, and drive away the darkness of the passions by thy supplications, which are acceptable to God.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p3 Ode 1 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Unmoved by the raging waves of the sea of idolatry, in that thou wast set firmly upon Christ the rock, thou didst destroy the threefold billows of most seditious ungodliness with the calm of the divine Spirit.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p3 Ode 1 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The Church of Christ, which aboundeth in every good thing, O Romanus, didst thou preserve untouched by the wolves, like a right-glorious and right-fruitful meadow, making it steadfast by thy teaching.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p3 Ode 1 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Truly, human nature hath found mercy through thee, O all-immaculate one; for the Creator, having become incarnate from thee in a manner past all telling and understanding, was led to death for us, delivering us from Hades.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p4 Ode 1 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "3": {
+         "irmos": {
+          "text": "Thy Church, O Christ, rejoiceth in Thee crying aloud: * Thou, O Lord, art my strength, * my refuge and foundation.",
+          "tier": 2,
+          "src": {
+           "file": "11-18.pdf",
+           "locus": "p4 Ode 3 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Having slain the spiritual beast with the sling of thy words, O Romanus, thou didst preserve the flock of Christ uncorrupted by the evil of idolatry.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p4 Ode 3 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Rendered mighty by the armor of the Cross, thou didst turn back the assaults of the enemy and denounced their impotence, O wise and right blessed Romanus.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p4 Ode 3 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "When thy cheek was lacerated for Christ, O glorious, blessed and ever-memorable Romanus, thou didst cast down the enemy, breaking their jaws.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p4 Ode 3 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Clothed in the flesh He received from thee, He Who alone is God by nature, the Word of the Father, Who is one in essence with the Spirit, hath deified mortals, O Mother of God.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p4 Ode 3 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "4": {
+         "irmos": {
+          "text": "Beholding Thee, the Sun of righteousness, * lifted up upon the Cross, * the Church now standeth arrayed and doth worthily cry aloud: * Glory be to Thy power, O Lord!",
+          "tier": 2,
+          "src": {
+           "file": "11-18.pdf",
+           "locus": "p6 Ode 4 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "With ineffable beauty thou didst ascend the tree, mounting it like a stairway, O blessed one, and attained unto the everlasting choir, O right glorious martyr Romanus.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p6 Ode 4 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Having shed thy mortal garments amid thy tortures, O blessed one, thou didst array thyself splendidly in a garment of light, O all-glorious martyr Romanus.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p6 Ode 4 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Made wise by the inspiration of the Comforter, the tongue of the boy proclaimed Thee to be the Lord of glory, the Creator of all and God Who art able to save, O Lover of mankind.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p6 Ode 4 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Blessed is the Fruit of thy womb, O Virgin, whereby all peoples of the world have been delivered from the curse of death; and blessed by thee, we hymn thee as the mediatress of Life.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p6 Ode 4 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "5": {
+         "irmos": {
+          "text": "Thou, O Lord, who camest into the world, * art my light, * a holy Light turning from the darkness of ignorance * those who sing Thy praises in faith.",
+          "tier": 2,
+          "src": {
+           "file": "11-18.pdf",
+           "locus": "p6 Ode 5 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "With the martyric streams of thy blood thou didst engulf the sea of ungodliness; and thou hast poured forth rivers of healing, O Romanus.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p6 Ode 5 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O Romanus, thou didst offer to the Master as a choice gift, an unblemished sacrifice, the slain boy Varulus who proclaimed theological things.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p7 Ode 5 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou didst wound the foolishness of the enemy with the wisdom of the Holy Spirit, as he inflicted wounds upon thy body, O all-glorious Romanus.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p7 Ode 5 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "In that thou hast given birth unto Joy, O Virgin Mary who knewest not wedlock, thou hast destroyed the curse and restored mankind through thy birthgiving.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p7 Ode 5 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "6": {
+         "irmos": {
+          "text": "The Church crieth out unto Thee O Lord, * ‘I will sacrifice unto Thee with a voice of praise * having been cleansed of the blood of the demons' * by the blood that for mercy's sake flowed from Thy side.",
+          "tier": 2,
+          "src": {
+           "file": "11-18.pdf",
+           "locus": "p7 Ode 6 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Having with ease shed mortality and corruption and arrayed thyself in the beauty of life incorruptible, O Romanus, thou hast been adorned with never-diminishing spiritual splendors.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p7 Ode 6 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thy tongue was severed and poured forth torrents of blood like teachings, O passion-bearer, and thou didst thereby inherit the imperishable blessedness which is ever-abiding.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p7 Ode 6 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thirsting for a stream of wisdom, by the counsel of his mother thou didst pour drink into the mouth of the boy who uttered theology, and who entered into the endless life by means of the sword.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p7 Ode 6 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Be thou a ready refuge for me, O most pure Mother of God, delivering me from violence, taking from me the shame of the passions and guiding me to the godly path.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p7 Ode 6 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "7": {
+         "irmos": {
+          "text": "In the Persian furnace the youths and descendants of Abraham, * burning with a love of piety * rather than by a flame of fire, * cried aloud saying: * Blessed art Thou in the temple of Thy glory, O Lord.",
+          "tier": 2,
+          "src": {
+           "file": "11-18.pdf",
+           "locus": "p8 Ode 7 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "By being strangled, thou didst choke the serpent, O passion-bearer, and didst truly find life, O most glorious Romanus, ever crying aloud: Blessed art Thou in the temple of Thy glory, O Lord!",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p8 Ode 7 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Illumined with rays of never-waning light, O Romanus, thou didst quench the lofty flame, adorned with the gift of prophecy and numbered among the choirs of the martyrs, crying aloud: Blessed art Thou in the temple of Thy glory, O Lord!",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p8 Ode 7 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "A fragrant rose of tender growth, watered with his mother's teachings and the blood of martyrdom, hath been incorruptibly offered to Christ as from a garden of many flowers.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p9 Ode 7 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O all-hymned one who hast alone given birth to God without seed, lead us forth who have fallen into the abyss of sin, but who hymn thee, saying: Blessed art Thou among women, O all-immaculate Lady.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p9 Ode 7 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "8": {
+         "irmos": {
+          "text": "Having spread his hands, Daniel closed the lions’ jaws * in their den; * while the zealously pious youths, * girded with virtue, * quenched the power of the fire and cried aloud: * Bless ye the Lord, all ye works of the Lord.",
+          "tier": 2,
+          "src": {
+           "file": "11-18.pdf",
+           "locus": "p9 Ode 8 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Thou wast obedient to the words of Christ, O glorious one, laying down thy life for thy flock, being strangled in thy zeal for it, tortured, lacerated and wounded; and thou didst cry aloud: Bless the Lord, all ye works of the Lord.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p9 Ode 8 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Truly thy mouth and tongue were full of joy and gladness, continually blessing God; for, cut out and dripping with blood, O Romanus, it setteth forth for us the law of faith, crying: Bless the Lord, all ye works of the Lord.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p10 Ode 8 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Having given birth to the Word of the Father through the divine Spirit, thou didst remain a virgin, O Birthgiver of God, who knewest not a man, transcending the laws of nature in thy birthgiving. Wherefore, rejoicing, we chant: Bless the Lord, all ye works of the Lord!",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p10 Ode 8 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "9": {
+         "irmos": {
+          "text": "A cornerstone not cut by hand O Virgin, * was cut from thee the unhewn mountain: * even Christ, Who hath joined together the disparate natures; * therefore rejoicing we magnify thee, * O Theotokos.",
+          "tier": 2,
+          "src": {
+           "file": "11-18.pdf",
+           "locus": "p10 Ode 9 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "All thy trust didst thou place in the Master, O glorious martyr Romanus, enduring many and varied wounds; wherefore thou hast received ineffable glory and divine delight.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p10 Ode 9 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Behold, instead of pain a torrent of sweetness hath been granted thee, O martyr Romanus, bearing a crown and wearing a robe dyed red in thine own blood. Like a fragrant and never-fading rose thou wast slain as a child for Christ's sake.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p10 Ode 9 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O Virgin, thou hast delivered mortals from the primal curse of our ancestors, and opened unto us the life of Eden by thy birthgiving, which transcendeth nature. Wherefore, in gladness we magnify thee, O Theotokos.",
+           "tier": 1,
+           "src": {
+            "file": "11-18.pdf",
+            "locus": "p11 Ode 9 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        }
+       }
+      }
+     ],
+     "sessional_ode3": [
+      {
+       "text": "Exalted in the breadth of thy struggles, O wise martyr, thou didst destroy the snares of the enemy, discomfiting them, O all-glorious one; and having run well the divine course, thou didst reach the expanse of heaven, rejoicing. Wherefore, the Church, resplendent today in an abundance of piety, doth celebrate thy memorial, O blessed one, and crieth out to thee: Entreat Christ God, that He grant remission of sins unto those who with love honor thy holy memory.",
+       "tier": 1,
+       "src": {
+        "file": "11-18.pdf",
+        "locus": "p4 Ode III sessional (Plato)"
+       },
+       "label": "plain",
+       "saint": "Plato",
+       "sourceLabel": "Sessional Hymn of the holy martyr Plato, in Tone VIII.",
+       "spec_mel": "Of the Wisdom ...",
+       "tone": 8
+      },
+      {
+       "text": "Having trampled underfoot the wicked one by fasting, thou wast glorified by suffering, O martyr of Christ, having endured manfully with a perfected mind. Wherefore, thou hast been numbered among the choirs of martyrs and reached the everlasting kingdom. Joining chorus therein, be thou mindful of us who celebrate thy holy memory with faith.",
+       "tier": 1,
+       "src": {
+        "file": "11-18.pdf",
+        "locus": "p5 Ode III sessional (Romanus)"
+       },
+       "label": "glory",
+       "saint": "Romanus",
+       "sourceLabel": "Glory ..., Sessional Hymn of the holy martyr Romanus, in Tone IV",
+       "spec_mel": "Having been lifted up ...",
+       "tone": 4
+      },
+      {
+       "text": "O Theotokos, fleeing to thy divine protection after God, * I humbly fall down and beseech thee: * Have mercy, O most pure one, * for my sins have submerged my being, * and trembling O Lady, I fear the torments to come, * O pure one, entreat thy Son, ** that I may be delivered from them.",
+       "tier": 2,
+       "src": {
+        "file": "11-18.pdf",
+        "locus": "p5 Ode III sessional Theotokion"
+       },
+       "type": "theotokion",
+       "label": [
+        "both_now",
+        "theotokion"
+       ],
+       "sourceLabel": "Both now ..., Theotokion, in Tone IV",
+       "tone": 4
+      },
+      {
+       "text": "She who in the latter days * gave birth in the flesh unto Thee O Christ, * Who wast begotten of the beginningless Father, * upon seeing Thee hanging upon the Cross, cried aloud: * “Woe is me, O Jesus, most beloved Christ! * How is it that Thou Who art glorified as God by the angels * dost now consent to be crucified by iniquitous men O my Son? ** I hymn Thee, O Thou Long-suffering One!”",
+       "tier": 2,
+       "src": {
+        "file": "11-18.pdf",
+        "locus": "p5 Ode III sessional Stavrotheotokion"
+       },
+       "type": "stavrotheotokion",
+       "label": "stavrotheotokion",
+       "sourceLabel": "Stavrotheotokion",
+       "label_inline": true
+      }
+     ],
+     "exapostilarion": {
+      "text": "In all thy ways thou didst tread the hard and divine path, ascending unto the expanse of the kingdom of heaven, O Plato, glory of martyrs, shining with the light of the incorruptible Trinity. Wherefore, partaking of endless glory, be thou mindful of those who honor thee.",
+      "tier": 1,
+      "src": {
+       "file": "11-18.pdf",
+       "locus": "p11 Exapostilarion"
+      },
+      "label": "plain",
+      "sourceLabel": "Exapostilarion of the holy martyrs",
+      "spec_mel": "By the Spirit in the sanctuary ..."
+     },
+     "exapostilarion_closer": {
+      "text": "O Virgin Theotokos, I set forth thy protection as a truly invincible help and wall of defense and thee as a mediator before God, that I may be delivered from everlasting torment, O Lady, and through thee find a share in the kingdom, and in life incorruptible.",
+      "tier": 1,
+      "src": {
+       "file": "11-18.pdf",
+       "locus": "p11 Exapostilarion Theotokion"
+      },
+      "type": "theotokion",
+      "sourceLabel": "Theotokion",
+      "label_inline": true
+     }
+    },
+    "liturgy": {
+     "order": [
+      "troparion",
+      "kontakion"
+     ]
+    }
+   }
+  ]
  }
 };
 

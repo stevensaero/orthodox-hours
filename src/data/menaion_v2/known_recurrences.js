@@ -21,6 +21,24 @@
 // positions store their own copy (§2.3, no dereferencing); these rows are what
 // make the duplication a checked fact rather than an invitation to collapse it.
 export default [
+  // ── 11-18, Martyrs Plato and Romanus (identical rows by sweep; the irmoi of
+  // both canons recur in 11-15 and 11-17, which is where most of these come from) ─
+  { a: '11-17.c0.vespers.lic_stavrotheotokion', b: '11-18.c0.vespers.lic_stavrotheotokion', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-17.c0.matins.canons[0].odes.1.irmos', b: '11-18.c0.matins.canons[0].odes.1.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-17.c0.matins.canons[0].odes.3.irmos', b: '11-18.c0.matins.canons[0].odes.3.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-17.c0.matins.canons[0].odes.4.irmos', b: '11-18.c0.matins.canons[0].odes.4.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-17.c0.matins.canons[0].odes.5.irmos', b: '11-18.c0.matins.canons[0].odes.5.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-17.c0.matins.canons[0].odes.6.irmos', b: '11-18.c0.matins.canons[0].odes.6.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-17.c0.matins.canons[0].odes.7.irmos', b: '11-18.c0.matins.canons[0].odes.7.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-17.c0.matins.canons[0].odes.8.irmos', b: '11-18.c0.matins.canons[0].odes.8.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-15.c0.matins.canons[0].odes.1.irmos', b: '11-18.c0.matins.canons[1].odes.1.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-15.c0.matins.canons[0].odes.3.irmos', b: '11-18.c0.matins.canons[1].odes.3.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-15.c0.matins.canons[0].odes.4.irmos', b: '11-18.c0.matins.canons[1].odes.4.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-15.c0.matins.canons[0].odes.5.irmos', b: '11-18.c0.matins.canons[1].odes.5.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-15.c0.matins.canons[0].odes.6.irmos', b: '11-18.c0.matins.canons[1].odes.6.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-15.c0.matins.canons[0].odes.7.irmos', b: '11-18.c0.matins.canons[1].odes.7.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-15.c0.matins.canons[0].odes.8.irmos', b: '11-18.c0.matins.canons[1].odes.8.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-15.c0.matins.canons[0].odes.9.irmos', b: '11-18.c0.matins.canons[1].odes.9.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
   // ── 11-17, St. Gregory the Wonderworker (identical rows by sweep; no variant
   // pair surfaced in the encode, and none was hunted) ─────────────────────────
   { a: '11-17.c0.matins.canons[0].odes.3.items[0]', b: '11-17.c0.liturgy.beatitudes[0]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },

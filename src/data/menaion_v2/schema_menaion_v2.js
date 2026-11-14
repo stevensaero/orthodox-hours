@@ -177,7 +177,7 @@ export const SOURCE_FILES = [...AUGUST_DATES, ...NOVEMBER_DATES].map(d => `${d}.
 // tools/encoding/menaion_v2/build_month.py from the PDFs themselves.
 export const DAILY_PAGE_COUNTS = {
   '11-14.pdf': 14, '11-14A.pdf': 16, '11-15.pdf': 10,
-  '11-16.pdf': 16, '11-17.pdf': 10,
+  '11-16.pdf': 16, '11-17.pdf': 10, '11-18.pdf': 11,
 };
 // ── The General Menaion (§6.2) — enumerated FROM THE FOLDER ─────────────────
 // Never from encoding_rule_v2.md §2.1's prose, which is wrong in three ways:
