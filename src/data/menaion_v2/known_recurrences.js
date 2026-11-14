@@ -21,6 +21,48 @@
 // positions store their own copy (§2.3, no dereferencing); these rows are what
 // make the duplication a checked fact rather than an invitation to collapse it.
 export default [
+  // ── 11-21, The Entry of the Theotokos into the Temple ───────────────────────
+  // The Ode IX refrain of Canon I is printed in TWO wordings in one file: "the
+  // most pure one" where a rubric introduces it (p16, p19, and at Liturgy p22)
+  // and "the all-pure one" at each of its six repetitions inside the ode.
+  { a: '11-21.c0.matins.canons[0].odes.9.preface[1]', b: '11-21.c0.matins.canons[0].odes.9.items[0]', relation: 'variant', note: 'Same refrain, two wordings in one file: "the entry of the most pure one" (p16, before the irmos) against "the entry of the all-pure one" (p16-p17, before each troparion). Both stored as printed.' },
+  { a: '11-20.c0.matins.aposticha[1]', b: '11-21.c0.little_vespers.aposticha[1]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-20.c0.matins.aposticha[3]', b: '11-21.c0.little_vespers.aposticha[3]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-20.c0.matins.aposticha[1]', b: '11-21.c0.great_vespers.aposticha[1]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-20.c0.matins.aposticha[3]', b: '11-21.c0.great_vespers.aposticha[3]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-16.c0.matins.canons[0].odes.4.irmos', b: '11-21.c0.matins.canons[0].odes.4.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-20.c0.matins.canons[0].odes.6.irmos', b: '11-21.c0.matins.canons[0].odes.6.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-16.c0.matins.canons[0].odes.7.irmos', b: '11-21.c0.matins.canons[0].odes.7.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-20.c0.matins.canons[0].odes.8.irmos', b: '11-21.c0.matins.canons[0].odes.8.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[0].odes.9.items[0]', b: '11-21.c0.matins.canons[0].odes.9.items[2]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[0].odes.9.items[0]', b: '11-21.c0.matins.canons[0].odes.9.items[4]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[0].odes.9.items[0]', b: '11-21.c0.matins.canons[0].odes.9.items[6]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[0].odes.9.items[0]', b: '11-21.c0.matins.canons[0].odes.9.items[8]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[0].odes.9.items[0]', b: '11-21.c0.matins.canons[0].odes.9.items[10]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c1.matins.canons[0].odes.6.irmos', b: '11-21.c0.matins.canons[1].odes.6.katavasia', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[1].odes.9.preface[1]', b: '11-21.c0.matins.canons[1].odes.9.items[0]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[1].odes.9.preface[1]', b: '11-21.c0.matins.canons[1].odes.9.items[2]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[1].odes.9.preface[1]', b: '11-21.c0.matins.canons[1].odes.9.items[4]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[1].odes.9.preface[1]', b: '11-21.c0.matins.canons[1].odes.9.items[6]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[1].odes.9.preface[1]', b: '11-21.c0.matins.canons[1].odes.9.items[8]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[1].odes.9.preface[1]', b: '11-21.c0.matins.canons[1].odes.9.items[10]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[1].odes.9.preface[1]', b: '11-21.c0.matins.canons[1].odes.9.items[12]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[1].odes.9.preface[1]', b: '11-21.c0.matins.canons[1].odes.9.items[14]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[0].odes.9.preface[1]', b: '11-21.c0.matins.canons[1].odes.9.closing[1]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.little_vespers.lic[2]', b: '11-21.c0.matins.praises[3]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[0].odes.3.items[0]', b: '11-21.c0.liturgy.beatitudes[0]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[0].odes.3.items[1]', b: '11-21.c0.liturgy.beatitudes[1]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[0].odes.3.items[2]', b: '11-21.c0.liturgy.beatitudes[2]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[0].odes.3.items[3]', b: '11-21.c0.liturgy.beatitudes[3]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[1].odes.6.items[0]', b: '11-21.c0.liturgy.beatitudes[4]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[1].odes.6.items[1]', b: '11-21.c0.liturgy.beatitudes[5]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[1].odes.6.items[2]', b: '11-21.c0.liturgy.beatitudes[6]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[1].odes.6.items[3]', b: '11-21.c0.liturgy.beatitudes[7]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[0].odes.9.preface[1]', b: '11-21.c0.liturgy.megalynarion_refrain', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.matins.canons[0].odes.9.irmos', b: '11-21.c0.liturgy.megalynarion', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-21.c0.liturgy.prokeimenon', b: 'general.Theotokos.liturgy.prokeimenon', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-21.c0.liturgy.alleluia_verse', b: 'general.Theotokos.liturgy.alleluia_verse', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-21.c0.liturgy.communion_verse', b: 'general.Theotokos.liturgy.communion_verse', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
   // ── 11-20, Forefeast of the Entrance; Gregory the Decapolite; Proclus ──────
   // This file stores NO entry-level canonical troparion or kontakion: two
   // troparia and three kontakia are stored at every print site, and the

@@ -9,6 +9,21 @@ export default [
   // Each was confirmed against TWO independent extractions of the PDF text
   // layer (pdfplumber and poppler) before being registered: these are what the
   // page prints, not extraction residue.
+  { path: '11-21.c0.matins.canons[1].odes.7.items[2]', file: '11-21.pdf', locus: 'p14 Ode 7 Glory ...',
+    verbatim: 'is led into the Holy of holies,',
+    note: 'The troparion ENDS on a comma at the foot of p14; p15 opens with "Both now". The sentence is unfinished in print: text appears to have been lost at the page turn. Stored as printed; a candidate for a physical-book check.' },
+  { path: '11-21.c0.matins.canons[0].odes.9.items[5]', file: '11-21.pdf', locus: 'p16-p17 Ode 9 Canon I 3',
+    verbatim: 'awe-some ark', note: 'Hyphen inside the word, mid-line (not a line-break hyphen).' },
+  { path: '11-21.c0.matins.canons[1].odes.9.items[3]', file: '11-21.pdf', locus: 'p18 Ode 9 Canon II 2',
+    verbatim: 'supernaturally re-vealed',
+    note: 'LINE-BREAK HYPHEN (ledger A-1 class): the page breaks "re-" / "vealed". Stored joined with the hyphen kept, pending the A-1 ruling.' },
+  { path: '11-21.c0.matins.canons[0].odes.9.preface[2]', file: '11-21.pdf', locus: 'p16 Ode 9 Canon I preface rubric',
+    verbatim: '“ In nowise', note: 'Space after the opening quotation mark.' },
+  { path: '11-21.c0.matins.canons[0].odes.3.items[2]', file: '11-21.pdf', locus: 'p10 Ode 3 troparion 3',
+    verbatim: 'From her, whom transgressions issued forth',
+    note: 'Grammar as printed ("From her, whom ..."), and printed the same way a second time at the Beatitudes (p21), so it is the book\'s reading and not a slip at one site.' },
+  { path: '11-21.c0.liturgy.beatitudes[2]', file: '11-21.pdf', locus: 'p21 Beatitude 3',
+    verbatim: 'From her, whom transgressions issued forth', note: 'Second print site of the same reading; see Ode III.' },
   { path: '11-14.c0.liturgy.liturgy_troparion', file: '11-14.pdf', locus: 'p13 Troparion at Liturgy',
     verbatim: '** unto our souls',
     note: 'No final period at the Liturgy print site; p4 and p5 print "unto our souls." The whole difference between this node and the canonical troparion.' },
