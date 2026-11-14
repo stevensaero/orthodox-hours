@@ -9,6 +9,10 @@ export default [
   // Each was confirmed against TWO independent extractions of the PDF text
   // layer (pdfplumber and poppler) before being registered: these are what the
   // page prints, not extraction residue.
+  { path: '11-26.c1.great_vespers.lic[1]', file: '11-26A.pdf', locus: 'p1 LIC 2',
+    verbatim: 'streams of grace,', note: 'The sticheron ends on a comma before its "(Twice)".' },
+  { path: '11-26.c0.matins.canon_rubric', file: '11-26.pdf', locus: 'p2 Canon rubric',
+    verbatim: 'Oktoechos. and that', note: 'Full stop in mid-sentence.' },
   { path: '11-25.c0.appendix[8]', file: '11-25.pdf', locus: 'p4 After Ode VI, to the Hours',
     verbatim: '4 of me resurrection', note: '"me" for "the".' },
   { path: '11-25.c0.appendix[5]', file: '11-25.pdf', locus: 'p3 At Matins',

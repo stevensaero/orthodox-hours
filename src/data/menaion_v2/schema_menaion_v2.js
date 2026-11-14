@@ -181,7 +181,7 @@ export const SOURCE_FILES = [...AUGUST_DATES, ...NOVEMBER_DATES].map(d => `${d}.
 export const DAILY_PAGE_COUNTS = {
   '11-14.pdf': 14, '11-14A.pdf': 16, '11-15.pdf': 10,
   '11-16.pdf': 16, '11-17.pdf': 10, '11-18.pdf': 11, '11-19.pdf': 10,
-  '11-20.pdf': 21, '11-21.pdf': 22, '11-22.pdf': 16, '11-23.pdf': 18, '11-24.pdf': 22, '11-25.pdf': 22,
+  '11-20.pdf': 21, '11-21.pdf': 22, '11-22.pdf': 16, '11-23.pdf': 18, '11-24.pdf': 22, '11-25.pdf': 22, '11-26.pdf': 6, '11-26A.pdf': 16,
 };
 // ── The General Menaion (§6.2) — enumerated FROM THE FOLDER ─────────────────
 // Never from encoding_rule_v2.md §2.1's prose, which is wrong in three ways:
@@ -666,6 +666,7 @@ export const FIELD_MANIFEST = [
 // after Ode III). general.js is not migrated; its single node is the one-item case.
 export const DAILY_KEYS = {
   vespers_like: [   // applies to `vespers`, `great_vespers` and `little_vespers`
+    ['litiya_glory', 'text', 'Litiya Glory, where Both now is printed apart'],
     ['litiya_closer', 'closer', 'Litiya Glory / Both now'],
     ['lic_rubric', 'rubric', '"On Lord, I have cried" rubric'],
     ['dogmatikon', 'closer', 'Both now: Dogmatic Theotokion'],
@@ -711,6 +712,7 @@ export const DAILY_KEYS = {
     ['psalm50_verse_rubric', 'rubric', 'After Psalm 50: "Have mercy on me O God" rubric'],
     ['exapostilarion_glory', 'text', 'Glory: another Exapostilarion (11-16)'],
     ['exapostilarion_closer_rubric', 'rubric', 'Exapostilarion: "Glory, Both now, the foregoing is repeated"'],
+    ['doxology_theotokion', 'text', 'Theotokion printed after the Great Doxology troparion (11-26A)'],
     ['praises_rubric', 'rubric', 'Praises rubric'],
     ['praises_glory', 'text', 'Praises Glory'],
     ['praises_closer', 'closer', 'Praises Both now'],
@@ -732,6 +734,7 @@ export const DAILY_KEYS = {
     ['megalynarion_refrain', 'text', 'Refrain chanted before the festal Irmos at Liturgy'],
     ['megalynarion_closing_rubric', 'rubric', 'Rubric closing the festal megalynarion (until the leave-taking)'],
     ['gospel_rubric', 'rubric', 'Gospel rubric'],
+    ['liturgy_kontakion', 'text', 'Kontakion as printed at Liturgy (stored apart when it diverges from the canonical field, R-1)'],
     ['liturgy_troparion', 'text', 'Troparion as printed at Liturgy (stored apart when it diverges from the canonical field, R-1)'],
     ['troparion_alternate_rubric', 'rubric', '"Or this Troparion" rubric'],
     ['troparion_alternate', 'text', 'Alternate troparion ("Or this Troparion")'],

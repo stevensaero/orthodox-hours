@@ -21646,6 +21646,2099 @@ const NOVEMBER = {
     ]
    }
   ]
+ },
+ "11-26": {
+  "_encoded": [
+   "c0.identity",
+   "c0.vespers",
+   "c0.matins",
+   "c0.liturgy",
+   "c1.identity",
+   "c1.great_vespers",
+   "c1.matins",
+   "c1.liturgy"
+  ],
+  "commemorations": [
+   {
+    "kind": "saint",
+    "title": {
+     "text": "COMMEMORATION OF OUR VENERABLE FATHER ALYPIUS THE STYLITE OF ADRIANOPOLIS",
+     "tier": 1,
+     "src": {
+      "file": "11-26.pdf",
+      "locus": "p1 title"
+     },
+     "sourceLabel": "THE 26th DAY OF THE MONTH OF NOVEMBER"
+    },
+    "rank": "simple",
+    "fekula_section": "2A",
+    "oca_primary": true,
+    "source_file": "11-26.pdf",
+    "note": "Rank by the encoding_rule_v2.md 1.1 waterfall: 3 stichera at Lord I have cried, no Glory of the saint, no Polyeleos, no Great Doxology: Simple, Fekula 2A. The file prints no aposticha at Vespers or Matins and no rubric for them. The canon rubric opens \"Both canons from the Oktoechos. and that of the venerable one\" (full stop mid-sentence, as printed). AT LITURGY prints only the troparion and kontakion: no prokeimenon, readings or communion verse. First file of the date; 11-26A (Innocent, Bishop of Irkutsk) is the second commemoration.",
+    "troparion": {
+     "text": "Thou wast a pillar of endurance, O venerable one, * emulating the forefathers: * Job in sufferings and Joseph in temptations, * and the life of the incorporeal ones while yet in thy body. * O Alypius, our father, ** entreat Christ God, that our souls be saved.",
+     "tier": 2,
+     "src": {
+      "file": "11-26.pdf",
+      "locus": "p1 Troparion of the venerable one"
+     },
+     "verified_sites": [
+      {
+       "locus": "p1 end of Vespers",
+       "tone": 1
+      },
+      {
+       "locus": "p6 AT LITURGY",
+       "tone": 1
+      }
+     ],
+     "sourceLabel": "Troparion of the venerable one, in Tone I",
+     "tone": 1
+    },
+    "kontakion": {
+     "text": "Today the Church doth glorify and hymn thee, O Alypius, * as a cause of virtues and the adornment of fasters. * In accordance with thy name thy supplications grant deliverance from grievous transgressions ** unto those who with love honor thy brave deeds and struggles.",
+     "tier": 2,
+     "src": {
+      "file": "11-26.pdf",
+      "locus": "p4 Kontakion of the venerable one"
+     },
+     "verified_sites": [
+      {
+       "locus": "p4 after Ode VI",
+       "tone": 8
+      },
+      {
+       "locus": "p6 AT LITURGY",
+       "tone": 8
+      }
+     ],
+     "sourceLabel": "Kontakion of the venerable one, in Tone VIII",
+     "spec_mel": "As the first-fruits ...",
+     "tone": 8
+    },
+    "ikos": {
+     "text": "Come, ye priests and princes, ye monastics and all ye divinely wise people, let us marvel at the godly life of Alypius, which equaled that of the angels, and let us emulate his deeds, that by his prayers we may be deemed worthy of his portion, O ye who love the feasts of the Church; for he happily chanteth a heavenly hymn unto God in accordance with his name.",
+     "tier": 1,
+     "src": {
+      "file": "11-26.pdf",
+      "locus": "p4 Ikos"
+     },
+     "sourceLabel": "Ikos",
+     "label_inline": true
+    },
+    "vespers": {
+     "order": [
+      "lic_rubric",
+      "lic",
+      "lic_closer",
+      "lic_stavrotheotokion",
+      "troparion"
+     ],
+     "lic_rubric": {
+      "text": "On “Lord, I have cried ...,” 3 Stichera of the venerable one, in Tone I:",
+      "tier": 1,
+      "src": {
+       "file": "11-26.pdf",
+       "locus": "p1 LIC rubric"
+      }
+     },
+     "lic": [
+      {
+       "text": "O all-blessed Alypius, * from thy childhood thou didst offer thy life * to Christ our God, and, strengthened by Him, * thou didst submit the passions of thy flesh to thy mind, * subjecting what is worse to that which is higher. * Wherefore, pray thou * that the Lord grant our souls ** peace and great mercy.",
+       "tier": 2,
+       "src": {
+        "file": "11-26.pdf",
+        "locus": "p1 LIC 1"
+       },
+       "label": "plain",
+       "tone": 1,
+       "spec_mel": "O all-praised martyrs ..."
+      },
+      {
+       "text": "O divinely wise Alypius, * thou wast revealed to be a magnificent beacon, * illumining the earth with the splendors of thy wonders * and thy godly deeds. * Wherefore, after thy repose * the unwaning Light received thee. * Wherefore, pray thou, * that Christ grant to our souls ** peace and great mercy.",
+       "tier": 2,
+       "src": {
+        "file": "11-26.pdf",
+        "locus": "p1 LIC 2"
+       },
+       "label": "plain",
+       "spec_mel": "O all-praised martyrs ..."
+      },
+      {
+       "text": "Thou wast an immovable pillar for monks, O wise one, * standing higher than thy pillar, * vexed by the heat of day and the cold of night * and by many fasts. * Wherefore, thou didst receive the divine gifts of the Spirit * to heal infirmities and to drive out the most cruel passions. * Pray thou now, that Christ grant our souls ** peace and great mercy.",
+       "tier": 2,
+       "src": {
+        "file": "11-26.pdf",
+        "locus": "p1 LIC 3"
+       },
+       "label": "plain",
+       "spec_mel": "O all-praised martyrs ..."
+      }
+     ],
+     "lic_closer": {
+      "text": "Rejoice, O bush unburnt! * Rejoice, thou who alone hast given birth * unto the angel of Great Counsel! * Rejoice, thou choice of the honored Trinity! * Rejoice, confirmation of mortals! * Rejoice, thou who gavest rise unto the uncultivated Grain of paradise: * the King and Lord, ** Who withereth the shoots of malice!",
+      "tier": 2,
+      "src": {
+       "file": "11-26.pdf",
+       "locus": "p1 LIC Glory/Both now, Theotokion"
+      },
+      "type": "theotokion",
+      "sourceLabel": "Glory ..., Both now ..., Theotokion, in the same melody"
+     },
+     "lic_stavrotheotokion": {
+      "text": "The unblemished ewe-lamb and Lady, * as she beheld her Lamb on the Cross, * bereft of form and beauty, * lamenting, said: Woe is me! * Whither hath Thy beauty set, O Thou Who art most sweet? * Where is Thy splendor? * Where the shining grace of Thine image, ** O my Son most beloved?",
+      "tier": 2,
+      "src": {
+       "file": "11-26.pdf",
+       "locus": "p1 LIC Stavrotheotokion"
+      },
+      "type": "stavrotheotokion",
+      "sourceLabel": "Or this Stavrotheotokion, in the same melody"
+     }
+    },
+    "matins": {
+     "order": [
+      "canon_rubric",
+      "canons",
+      "sessional_ode3",
+      "kontakion",
+      "ikos",
+      "exapostilarion",
+      "exapostilarion_closer"
+     ],
+     "canon_rubric": {
+      "text": "Both canons from the Oktoechos. and that of the venerable one, the acrostic whereof is: “Rejoicing, I praise the pangs of Alypius”, the composition of Joseph, in Tone V:",
+      "tier": 1,
+      "src": {
+       "file": "11-26.pdf",
+       "locus": "p2 Canon rubric"
+      }
+     },
+     "canons": [
+      {
+       "title": "Both canons from the Oktoechos. and that of the venerable one, the acrostic whereof is: “Rejoicing, I praise the pangs of Alypius”, the composition of Joseph, in Tone V:",
+       "composer": "Joseph",
+       "acrostic": "Rejoicing, I praise the pangs of Alypius",
+       "tone": 5,
+       "odes": {
+        "1": {
+         "irmos": {
+          "text": "Christ, who with an upraised arm * bringeth wars to naught, * hath shaken horse and rider in the Red Sea; * but Israel hath He saved * as they chanted a song of victory.",
+          "tier": 2,
+          "src": {
+           "file": "11-26.pdf",
+           "locus": "p2 Ode 1 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Full of grace, O Alypius, do thou fill my soul with joy to praise thy life and manner of living, wherein struggling, thou didst fill all the angels with gladness.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p2 Ode 1 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "God consecrated thee like a second Samuel from thy mother's womb, O blessed Alypius, causing thee, as a divine prophet, to see things to come, O right glorious one.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p2 Ode 1 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "That God might reveal the splendor which thou didst possess in the latter times O venerable one, as one who would struggle well in a manner transcending understanding, He filled the house with divine light when thou wast born.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p2 Ode 1 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The saying of the honored prophet hath come to pass; for, lo! the Virgin hath given birth in the flesh unto God, Who fashioned mankind anew who before was crushed by sins and transgressions.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p2 Ode 1 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "3": {
+         "irmos": {
+          "text": "By Thy command Thou didst establish the earth upon nothing * and suspended it unsupported; * do Thou establish Thy Church on the unshakeable rock of Thy commandments, O Christ, * Who alone art good * and the Lover of mankind.",
+          "tier": 2,
+          "src": {
+           "file": "11-26.pdf",
+           "locus": "p2 Ode 3 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Set like a candle upon the candlestick of lofty activity, O father, with thy splendid virtues thou hast illumined with pious wisdom every soul which approacheth thee with faith, delivering it from the darkness of sin.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p2 Ode 3 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Directing the sacred movements of thy mind toward the keeping of the divine commandments of the Spirit, thou wast revealed to be an angel on earth, leading an angelic way of life in the flesh, O God-bearing father Alypius.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p2 Ode 3 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou didst wisely show thyself to be a recluse from the tumults of life, O venerable Alypius, eagerly undertaking the contests of the path of fasting, showing thy heart to be a dwelling-place of the Spirit.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p2 Ode 3 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O pure Virgin, thou palace of the Word, show my soul to be a habitation of the Spirit, and grant me to drink of the water of the life-creating Wellspring, for I am parched by the burning heat of sin, that I may glorify thee as is meet.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p2 Ode 3 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "4": {
+         "irmos": {
+          "text": "Habbakuk, prophetically apprehending * Thy divine self-emptying, O Christ, * cried out to Thee with trembling: * Thou hast come for the salvation of Thy people; * to save Thine anointed ones.",
+          "tier": 2,
+          "src": {
+           "file": "11-26.pdf",
+           "locus": "p3 Ode 4 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Possessed of true love and compassion, steadfast faith and hope, and a guileless manner of life, O father, thou wast a favorite of Christ.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p3 Ode 4 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Standing upon thy pillar, unmoved by the assaults of the adversary, thou didst vanquish hordes of demons and wast an immovable foundation for the wavering, O all-blessed one.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p3 Ode 4 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Full of divine waters, thou didst bedew souls which were wasting away in the burning heat of grievous sin, O divinely wise and spiritually rich Alypius.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p3 Ode 4 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou wast shown to be truly dreadful and unapproachable to all the demons, O Alypius, inflicting upon them wounds by thy sacred prayers, driving them far away.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p3 Ode 4 troparion 4"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Heal thou the sufferings of my soul and illumine my mind and heart, O Lady, who hast given birth unto the supremely good God, Christ the Bestower of light.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p3 Ode 4 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "5": {
+         "irmos": {
+          "text": "O Thou Who hast clothed Thyself in light as with a garment, * I rise early unto Thee and cry out to Thee: * Enlighten my darkened soul, O Christ, * in that Thou alone art compassionate!",
+          "tier": 2,
+          "src": {
+           "file": "11-26.pdf",
+           "locus": "p3 Ode 5 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Placing thyself wholly in the hands of the Almighty, O father, and suffering greatly in thy standing without shelter for many years, through rain and the heat of day, thou didst earnestly endure.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p3 Ode 5 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Training thyself in hymnody and prayer, O venerable one, in thy purity of mind thou didst receive the grace of the radiance of the threefold Sun, emitting the brilliant light of healings.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p4 Ode 5 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Confining thy body to thy pillar, O father, full of light, thou didst permit thyself to pass unhindered to Him Whom thou didst desire.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p4 Ode 5 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou hast given birth, O holy maiden, unto our holy God, Who, in His tender compassion, became a man and sanctified those who hallow Him with faith and fear.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p4 Ode 5 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "6": {
+         "irmos": {
+          "text": "Calm the raging sea of the passions, * O Master Christ, * with its soul-destroying tempest, * and lead me up from corruption * in that Thou art compassionate.",
+          "tier": 2,
+          "src": {
+           "file": "11-26.pdf",
+           "locus": "p4 Ode 6 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "The spirits of wickedness, openly smiting with stones, thee who stood on the pillar like a steadfast stone, were in no wise able to shake thee.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p4 Ode 6 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "With patience didst thou endure for the Lord, Who gaveth thee true patience and delivered thee from all difficulties.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p4 Ode 6 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Most gloriously was a light seen above thy pillar every day, illumining thy spiritual senses, O venerable wonderworker.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p4 Ode 6 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "All we who are in sorrow have thee as a mighty consolation, a refuge and a renowned helper, O Theotokos. Save thou thy servants from misfortunes.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p4 Ode 6 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "7": {
+         "irmos": {
+          "text": "The supremely exalted Lord of our fathers * quenched the flame, * and bedewed the youths * as they chanted in harmony: * O God, blessed art Thou!",
+          "tier": 2,
+          "src": {
+           "file": "11-26.pdf",
+           "locus": "p4 Ode 7 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "The most patient and mighty Alypius, vexed by winter for many years, was most gloriously warmed by the fervor of the Spirit.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p4 Ode 7 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Possessed of a way of life which led thee toward the heights of heaven, thou didst disdain the body as something which was destined for corruption; and when it began to putrefy, thou didst pay no heed to thy pain.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p4 Ode 7 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Spurning all love of pleasure, O father, thou didst suffer, contending against winter and the heat of day, chanting whilst exposed to the elements: Blessed is the God of our fathers!",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p5 Ode 7 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The Unapproachable One received noetic and animate flesh from thee, O Ever-virgin, that He might save those who chant: O God, blessed art Thou!",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p5 Ode 7 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "8": {
+         "irmos": {
+          "text": "Unto Thee the Fashioner of all, * the children in the furnace chanted a hymn: * All ye works of the Lord, * supremely exalt Him throughout all ages.",
+          "tier": 2,
+          "src": {
+           "file": "11-26.pdf",
+           "locus": "p5 Ode 8 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Thou wast revealed to be like a new Samuel, O father Alypius, foreseeing the future with purity of mind and foretelling to all, as a prophet of God, the things revealed to thee by the Lord.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p5 Ode 8 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Let Alypius, the favorite of Christ, be honored, the luminous pillar of the Church, the immovable bulwark, the indestructible rampart of all those who believe in God.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p5 Ode 8 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou didst sleep well the needful sleep of the just, O father, having first lulled to sleep the multifarious passions by prayers and vigils. Wherefore, we have become rich, having thee now as an ever-vigilant intercessor.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p5 Ode 8 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thine Offspring hath now rendered fruitless the sin engendered by the malice of the serpent, O only Virgin, who hast abolished the curse. Wherefore, we honor thee throughout all ages.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p5 Ode 8 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "9": {
+         "irmos": {
+          "text": "O Isaiah, rejoice and be glad! * The Virgin hath conceived in her womb, * and hath borne a Son, Emmanuel, * Who is both God and man; * and Orient is His name; * Him we magnify, and the Virgin we call blessed.",
+          "tier": 2,
+          "src": {
+           "file": "11-26.pdf",
+           "locus": "p5 Ode 9 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "From earliest infancy thy sacred life was revealed to Christ, shining with the light of the virtues, O blessed one; and thy death was precious in the sight of God, O father Alypius, instructor of monastics.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p5 Ode 9 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Like a most radiant beacon, thou dost illumine the whole earth, driving away the wicked passions, dispelling the darkness of sin, and enlightening those who hymn thee with the divine splendors of healings.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p5 Ode 9 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Contending most diligently like a spiritual athlete, O wise father, thou didst unflaggingly make thy stand upon thy pillar for fifty-three years, vexed by winter, frost and the heat of day.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p5 Ode 9 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thy holy commemoration sanctifieth by the Holy Spirit us who keep it in a sacred manner and hymn thee thereon with faith, O wise father, as the helper and intercessor of our souls.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p5 Ode 9 troparion 4"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Do thou grant unto me enlightenment, for I languish in the darkness of the passions, and am wretched and sinful; deliver me from my wicked deeds and from the flame which lieth before me, O most pure Lady, who ever intercedest for those who hymn thee.",
+           "tier": 1,
+           "src": {
+            "file": "11-26.pdf",
+            "locus": "p5 Ode 9 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        }
+       }
+      }
+     ],
+     "sessional_ode3": [
+      {
+       "text": "By the radiance of faith and the light of spiritual activity wast thou truly revealed to be an equal of the angels on earth, O venerable Alypius; and manfully showing the strength of thy mind, thou didst vanquish all the assaults of the passions through fasting. Wherefore, as thou livest even after thy repose, pray that we be saved.",
+       "tier": 1,
+       "src": {
+        "file": "11-26.pdf",
+        "locus": "p3 Ode III sessional"
+       },
+       "label": "plain",
+       "sourceLabel": "Sessional Hymn of the venerable one, in Tone IV",
+       "spec_mel": "Go thou quickly before ...",
+       "tone": 4
+      },
+      {
+       "text": "O all-immaculate Virgin * who hast given birth to the transcendent God: * do thou unceasingly entreat Him with the incorporeal ones, * that He grant forgiveness of transgressions * and correction of life before the end, * to us who, as is meet, hymn thee with faith and love, ** O thou who alone art all-hymned.",
+       "tier": 2,
+       "src": {
+        "file": "11-26.pdf",
+        "locus": "p3 Ode III sessional Theotokion"
+       },
+       "type": "theotokion",
+       "label": [
+        "glory",
+        "both_now",
+        "theotokion"
+       ],
+       "sourceLabel": "Glory ..., Both now ..., Theotokion, in Tone IV",
+       "tone": 4
+      },
+      {
+       "text": "O most immaculate Virgin, * Mother of Christ God, * a sword pierced thy most holy soul * when thou didst behold thy Son and God * crucified of His own will. * Him do thou never cease to entreat, O blessed one, ** that He grant us the forgiveness of our transgressions.",
+       "tier": 2,
+       "src": {
+        "file": "11-26.pdf",
+        "locus": "p3 Ode III sessional Stavrotheotokion"
+       },
+       "type": "stavrotheotokion",
+       "label": "stavrotheotokion",
+       "sourceLabel": "Stavrotheotokion",
+       "label_inline": true
+      }
+     ],
+     "exapostilarion": {
+      "text": "By the power of Christ thou didst pass through struggles exceeding the power of human nature, O venerable one; for thou didst stand for fifty three years upon thy pillar, vexed from every quarter, O wise Alypius, and hast now found the goal of all good things, O blessed one.",
+      "tier": 1,
+      "src": {
+       "file": "11-26.pdf",
+       "locus": "p6 Exapostilarion"
+      },
+      "label": "plain",
+      "sourceLabel": "Exapostilarion of the venerable one",
+      "spec_mel": "Hearken, ye women ..."
+     },
+     "exapostilarion_closer": {
+      "text": "Thou art mine intercessor and steadfast refuge, O pure one; thou art my helper and protection; and, falling down before thee, I cry: deliver me from mine ailments, in that thou art the greatest of all; and from everlasting fire rescue me, who place my hope in thee, O Virgin.",
+      "tier": 1,
+      "src": {
+       "file": "11-26.pdf",
+       "locus": "p6 Exapostilarion Theotokion"
+      },
+      "type": "theotokion",
+      "sourceLabel": "Theotokion",
+      "label_inline": true
+     }
+    },
+    "liturgy": {
+     "order": [
+      "troparion",
+      "kontakion"
+     ]
+    }
+   },
+   {
+    "kind": "saint",
+    "title": {
+     "text": "COMMEMORATION OF OUR FATHER AMONG THE SAINTS, INNOCENT, BISHOP OF IRKUTSK, THE WONDERWORKER",
+     "tier": 1,
+     "src": {
+      "file": "11-26A.pdf",
+      "locus": "p1 title"
+     },
+     "sourceLabel": "THE 26th DAY OF THE MONTH OF NOVEMBER"
+    },
+    "rank": "vigil",
+    "fekula_section": "2F",
+    "oca_primary": false,
+    "source_file": "11-26A.pdf",
+    "note": "Rank by the encoding_rule_v2.md 1.1 waterfall: AT GREAT VESPERS with 8 stichera, three lessons, a LITIYA (\"the Sticheron of the temple, and these Stichera\"), the blessing of the Loaves, Polyeleos with a megalynarion, and the Great Doxology: stored Vigil, Fekula 2F. The page also prints \"But if a vigil is not served\" with a dismissal theotokion, so a lesser form is provided for; no Little Vespers is printed. Second file of 26 November; the first (11-26) is Alypius the Stylite, a simple service. Which of the two a parish serves is the same kind of question as Q-0002. The canon rubric appoints the Paraklisis canon of the Theotokos first; only the hierarch's canon is printed. Ode I ends with the katavasia given as an incipit, \"Christ is born ...,\". The three lessons print no reference; citations are identifications. The Liturgy Gospel citation prints a capital letter O for the zero: \"(1O:9-16).\"; the troparion and its theotokion are printed again after the Great Doxology. The kontakion is pointed differently at its Liturgy site and is stored there as `liturgy_kontakion`.",
+    "troparion": {
+     "text": "O most radiant beacon of the Church, * who hast illumined the Russian land with the rays of thy good works, * and hast glorified God by many healings of those * who have recourse to thy reliquary with faith, * O holy hierarch Innocent, our father, * we entreat thee to protect this city ** from all misfortune and grief.",
+     "tier": 2,
+     "src": {
+      "file": "11-26A.pdf",
+      "locus": "p5 Troparion of the holy hierarch"
+     },
+     "sourceLabel": "At the blessing of the Loaves, the Troparion of the holy hierarch, in Tone III",
+     "tone": 3,
+     "verified_sites": [
+      {
+       "locus": "p5 blessing of the Loaves",
+       "tone": 3,
+       "repeat": 2
+      },
+      {
+       "locus": "p6 God is the Lord",
+       "tone": 3,
+       "repeat": 2
+      },
+      {
+       "locus": "p14 after the Great Doxology",
+       "tone": 3
+      },
+      {
+       "locus": "p15 AT LITURGY",
+       "tone": 3
+      }
+     ]
+    },
+    "kontakion": {
+     "text": "Ye faithful, let us all with love praise the pastor * the namesake of innocence, * the preacher of the Faith among the pagans of Mongolia, * the glory and adornment of the flock of Irkutsk; ** for he is the protector of this land and an intercessor for our souls.",
+     "tier": 2,
+     "src": {
+      "file": "11-26A.pdf",
+      "locus": "p10 Kontakion of the holy hierarch"
+     },
+     "verified_sites": [
+      {
+       "locus": "p10 after Ode VI",
+       "tone": 4
+      }
+     ],
+     "sourceLabel": "Kontakion of the holy hierarch, in Tone IV",
+     "tone": 4
+    },
+    "ikos": {
+     "text": "Thou wast exalted in thine angelic life, O father, even beholding face to face uncreated beauty, wherein delighting now in heaven, thou dost pray for our salvation, instructing us on earth to cry out to thee such things as these: Rejoice, O lily, who budded forth in the mild south; Rejoice, thou firstborn son of spiritual adoption, dedicated to God by the Ukraine! Rejoice, glory and pride of the city of Kiev; Rejoice, teacher of heavenly wisdom in an earthly school! Rejoice, wise fulfiller of the commandments of an earthly sovereign; Rejoice, spiritual athlete of the King of heaven! Rejoice, preacher of the Faith among the heathen of Mongolia; Rejoice, initiator of the good and sacred labor in the lands of Siberia! Rejoice, adornment of the flock of Irkutsk; Rejoice, sweet fragrance of the wilderness! Rejoice, assurance of the general resurrection in thine incorruption; Rejoice, wellspring of inexhaustible wonders! Rejoice, O Innocent, intercessor for our souls!",
+     "tier": 1,
+     "src": {
+      "file": "11-26A.pdf",
+      "locus": "p10-p11 Ikos"
+     },
+     "sourceLabel": "Ikos",
+     "label_inline": true
+    },
+    "great_vespers": {
+     "order": [
+      "rubric",
+      "lic_rubric",
+      "lic",
+      "lic_glory",
+      "dogmatikon",
+      "entrance_rubric",
+      "readings",
+      "litiya",
+      "litiya_glory",
+      "litiya_closer",
+      "aposticha_rubric",
+      "aposticha",
+      "aposticha_glory",
+      "aposticha_closer",
+      "troparion_rubric",
+      "troparion",
+      "virgin_theotokos_rubric",
+      "no_vigil_rubric",
+      "troparion_closer"
+     ],
+     "rubric": {
+      "text": "We chant “Blessed is the man ...,” the first Antiphon.",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p1 Great Vespers rubric"
+      }
+     },
+     "lic_rubric": {
+      "text": "On “Lord, I have cried ...,” 8 Stichera, in Tone VI:",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p1 LIC rubric"
+      }
+     },
+     "lic": [
+      {
+       "text": "Let us praise a man glorious in his being, our father, the holy hierarch Innocent; for the Lord hath wrought much glory in the incorruption of his holy body, placing it as a candle upon a candle-stand, and enlightening the flock of Irkutsk with the rays of his miracles, that the memory of the righteous one not depart therefrom, but his name live unto generations of generations; that the nations declare his wisdom, beholding the holy Church, proclaiming his praise continually in hymns and spiritual odes.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p1 LIC 1"
+       },
+       "label": "plain",
+       "tone": 6,
+       "repeat": 2
+      },
+      {
+       "text": "Let us praise the new apostle of Christ, who hath come to the land of barbarous heathens bearing the Gospel, who maketh fragrant the uttermost ends of Russia with faith, who flourisheth like a lily in the east of the Siberian realm, who rained with words of heavenly wisdom upon the pagans who had not been watered with streams of grace,",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p1 LIC 2"
+       },
+       "label": "plain",
+       "repeat": 2
+      },
+      {
+       "text": "When the dark kingdom of the Chinese, clouded over with the pride of the ancient serpent, could not contain the light of the kingdom of Jesus Christ, and did not wish to receive the right glorious Russian hierarch, the holy Christian Faith began to grow and increase among the pagans ruled by the Russian scepter, through the mouth of the holy and great hierarch Innocent, who prayeth for our souls.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p1 LIC 3"
+       },
+       "label": "plain",
+       "repeat": 2
+      },
+      {
+       "text": "Thy name was like a fragrant myrrh, O father, pouring forth upon thy flock, illumining them, and all those who reverently honor thy holy memory, with the rays of thy spiritual beauty, enlightening all Christian cities and lands which glorify the God of Israel, Who is wondrous in His saints. Him do thou entreat, that our souls be saved.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p1 LIC 4"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "Upon thee, O father, the truth of the Lord was confirmed, which was foretold by the prophet David, who of old proclaimed: The righteous shall flourish like a palm tree, and like a cedar in Lebanon shall he be multiplied; and he shall be like the tree which is planted by the streams of the waters. Wherefore, we beseech thee, O most wondrous hierarch: Overshadow this city and all Orthodox Christians by thine intercessions.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p1 LIC 5"
+       },
+       "label": "plain"
+      }
+     ],
+     "lic_glory": {
+      "text": "O holy hierarch, father Innocent, thy life was in accordance with thy name, for thou wast whitened with innocence all the days of thy life. And, sojourning upon the earth as a pilgrim and wanderer, thou didst receive within thyself the Holy Trinity, preparing within thy heart a habitation for the Father, the Son and the Holy Spirit. Wherefore, even in the grave thy holy body flourished, and not one of thy divinely preserved bones was broken. Thus, venerating with faith thy precious relics, which have been glorified by an abundance of healings, we beseech thee, O favorite of God, zealous pastor, adornment of hierarchs: Render us pleasing unto the Holy Trinity, Whom on earth thou didst glorify in holiness and righteousness, and before Whom thou dost now stand, ever interceding for the peace of thy flock and the salvation of our souls.",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p1-p2 LIC Glory"
+      },
+      "sourceLabel": "Glory ..., in Tone VIII",
+      "tone": 8
+     },
+     "dogmatikon": {
+      "text": "In His love for mankind, the King of heaven appeared on earth * and dwelt among men; * for He Who received flesh from the pure Virgin * and cameth forth from her having received human nature, * is the only Son of God, * twofold in nature but not Hypostasis. * Therefore, proclaiming Him to be truly perfect God and perfect man, * we confess Christ our God. * Him do thou beseech, O unwedded Mother, ** that our souls find mercy!",
+      "tier": 2,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p2 LIC Both now, Dogmatic Theotokion"
+      },
+      "type": "dogmatic_theotokion",
+      "sourceLabel": "Both now ..., Dogmatic Theotokion, in Tone VIII",
+      "tone": 8
+     },
+     "entrance_rubric": {
+      "text": "Entrance. Prokeimenon of the Day. Three Lessons:",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p2 Entrance"
+      }
+     },
+     "readings": [
+      {
+       "heading": "READING FROM THE BOOK OF THE PROPHET ISAIAH",
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p2 Lesson 1"
+       },
+       "citation": {
+        "book": "Isaiah",
+        "chapter": 35,
+        "verses": "1-10"
+       },
+       "citation_basis": "identified",
+       "provenance_note": "No reference printed. The body opens \"The wilderness and the solitary place shall be glad\" and closes \"sorrow and sighing shall flee away\": Isaiah 35:1-10 in the King James wording. Identified by first and last words; confirm against the page."
+      },
+      {
+       "heading": "READING FROM THE WISDOM OF SOLOMON",
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p2 Lesson 2"
+       },
+       "citation": {
+        "book": "Wisdom of Solomon",
+        "chapter": 3,
+        "verses": "1-9"
+       },
+       "citation_basis": "identified",
+       "provenance_note": "No reference printed. Opens \"But the souls of the righteous are in the hand of God\", closes \"care for his elect\": Wisdom 3:1-9. Identified by first and last words; confirm against the page."
+      },
+      {
+       "heading": "READING FROM THE WISDOM OF SOLOMON",
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p3 Lesson 3"
+       },
+       "citation": {
+        "book": "Wisdom of Solomon",
+        "chapter": 4,
+        "verses": "7-15"
+       },
+       "citation_basis": "identified",
+       "provenance_note": "No reference printed. Opens \"But though the righteous be prevented with death\", closes \"respect unto his chosen\": Wisdom 4:7-15. Identified by first and last words; confirm against the page."
+      }
+     ],
+     "litiya": [
+      {
+       "text": "O ye peoples of Siberia, kiss ye the footprints of the beautiful feet of the holy hierarch Innocent, who proclaimed peace and the confirmation of the faith within your borders, who initiated a new hierarchy in one of your cities, and flourished in incorruption in one of your monasteries, as if flourishing an irrigated garden which lacketh not the water of grace, giving those who thirst to drink of spiritual and bodily healings without recompense.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p3 Litiya 1"
+       },
+       "label": "plain",
+       "sourceLabel": "At the Litiya, the Sticheron of the temple, and these Stichera, in Tone V",
+       "tone": 5
+      },
+      {
+       "text": "Thou art the glory of Irkutsk, O Innocent; thou art the adornment of the Siberian lands, the boast of the Orthodox Church, the magnification of the Ukraine, wherein thou didst bud forth as a fragrant lily; wherein thou wast kindled as a most radiant beacon; wherein thou wast born, a son of the kingdom of Christ; from whence thou wast called forth, an apostle who made thy way bearing the Gospel from the royal cities unto the boundaries of Mongolia, instructing darkened pagans during thy lifetime and after thy repose.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p3 Litiya 2"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "In an earthly school thou wast a teacher of heavenly wisdom, instructing all to set their affection on things above, and not on the things of earth. Impressing upon young minds the ancient truths of the Gospel, thou didst show thyself to be a God-bearer, sealed with the Holy Spirit, walking in God's sight, zealous for God, and standing before God as an intercessor for those who honor thy holy memory, O Innocent.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p3 Litiya 3"
+       },
+       "label": "plain"
+      }
+     ],
+     "litiya_glory": {
+      "text": "The Spirit of wisdom and understanding rested upon thee, O holy hierarch, whereby thou wast made wise for the salvation of the heathen; the Spirit of good counsel and strength, whereby thou wast able to comply with the wondrous counsel of the far-sighted Emperor Peter; the Spirit of knowledge and piety, whereby thou didst piously teach those who sought a new heart and spirit to know the Holy Trinity.",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p4 Litiya Glory"
+      },
+      "sourceLabel": "Glory ..., in Tone IV",
+      "tone": 4
+     },
+     "litiya_closer": {
+      "text": "Mercifully regard the supplications of thy servants, * O all-immaculate one, * quelling the cruel uprisings of the demons against us, * delivering us from every sorrow; * for thee alone do we have as a steadfast and sure confirmation, * and having acquired thine intercession; * let not us who call upon thee be put to shame, * O Lady. * Hasten thou to answer the entreaties of those who cry out to thee with faith: * Rejoice, thou help, joy and protection of all, ** and the salvation of our souls!",
+      "tier": 2,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p4 Litiya Both now, Theotokion"
+      },
+      "type": "theotokion",
+      "sourceLabel": "Both now ..., Theotokion, in Tone IV",
+      "tone": 4
+     },
+     "aposticha_rubric": {
+      "text": "On the Aposticha, these Stichera, in Tone VII:",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p4 Aposticha rubric"
+      }
+     },
+     "aposticha": [
+      {
+       "text": "O brethren, let us commemorate the wondrous instructor, who with eloquent tongue and a right glorious life spake unto us the words of salvation. Wherefore, regarding the blessed end of his life, let us emulate the faith of the hierarch, which clothed this corruptible flesh in incorruption and robed this mortal body in immortality, prefiguring an image of the general resurrection.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p4 Aposticha 1"
+       },
+       "label": "plain",
+       "tone": 7
+      },
+      {
+       "text": "The righteous man shall flourish like a palm tree, * and like a cedar in Lebanon shall he be multiplied.",
+       "tier": 2,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p4 Aposticha verse 1"
+       },
+       "label": "refrain",
+       "sourceLabel": "Verse",
+       "label_inline": true
+      },
+      {
+       "text": "The vine transplanted from the ancient city of Kiev hath blossomed in the land of Siberia, stretching forth its branches beyond the sea, and bringing forth the fruit of the healing of the heathen. Wherein, O ye faithful, finding great spiritual gladness, let us not depart from beneath the shadow of his grace until we obtain healing of our infirmities, both spiritual and bodily.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p4 Aposticha 2"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "The Lord keepeth all their bones, * not one of them shall be broken.",
+       "tier": 2,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p4 Aposticha verse 2"
+       },
+       "label": "refrain",
+       "sourceLabel": "Verse",
+       "label_inline": true
+      },
+      {
+       "text": "Come, O ye former pagans, and see that in your days a great deed hath been accomplished by the Lord, in Whom ye would not have been able to believe had ye not been shown how to do so. Yet behold and marvel how the Lord preserveth all the bones of His elect one, and not one of them is broken. Wherefore, be ye not faithless, but believing.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p4 Aposticha 3"
+       },
+       "label": "plain"
+      }
+     ],
+     "aposticha_glory": {
+      "text": "O holy hierarch, father Innocent, thou didst make manifest the glory of Christ's kingdom in thy sanctity; by good struggles thou didst proclaim the might of His grace; by many miracles thou didst exalt the holy Faith, the victory which vanquisheth things worldly, and wast thyself robed as a priest in salvation. Wherefore, the holiness of the Lord flourisheth within thee, for thou wast anointed by the Holy Spirit, of Whom may He Who is good deprive not us sinners, but by thy prayers may He renew us, O favored one of God.",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p4 Aposticha Glory"
+      },
+      "sourceLabel": "Glory ..., in Tone VIII",
+      "tone": 8
+     },
+     "aposticha_closer": {
+      "text": "O unwedded Virgin! * thou who ineffably conceived God in the flesh, * Mother of God Most High: * accept the supplications of thy servants, O all-immaculate one, * granting unto all cleansing of transgressions; * and, accepting now our supplications, ** pray thou that we all be saved.",
+      "tier": 2,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p5 Aposticha Both now, Theotokion"
+      },
+      "type": "theotokion",
+      "sourceLabel": "Both now ..., Theotokion, in Tone VIII",
+      "tone": 8
+     },
+     "troparion_rubric": {
+      "text": "At the blessing of the Loaves, the Troparion of the holy hierarch, in Tone III:",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p5 Blessing of the Loaves rubric"
+      }
+     },
+     "virgin_theotokos_rubric": {
+      "text": "And “Virgin Theotokos, rejoice ...,” (Once).",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p5 Virgin Theotokos rejoice rubric"
+      }
+     },
+     "no_vigil_rubric": {
+      "text": "But if a vigil is not served, then after the Troparion:",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p5 If a vigil is not served"
+      }
+     },
+     "troparion_closer": {
+      "text": "We hymn thee who hast mediated the salvation of our race, * O Virgin Theotokos; * for thy Son and our God, * accepting suffering on the Cross in the flesh * He had received of thee, * hath delivered us from corruption, ** in that He is the Lover of mankind.",
+      "tier": 2,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p5 Dismissal Theotokion (no vigil)"
+      },
+      "type": "theotokion",
+      "sourceLabel": "Glory ..., Both now ..., Theotokion, in Tone III",
+      "tone": 3
+     }
+    },
+    "matins": {
+     "order": [
+      "god_is_lord_rubric",
+      "troparion",
+      "troparion_closer",
+      "sessional_1",
+      "sessional_2",
+      "megalynarion_rubric",
+      "megalynarion",
+      "megalynarion_verse",
+      "megalynarion_closing_rubric",
+      "sessional_polyeleos",
+      "anabathmoi_rubric",
+      "prokeimenon",
+      "prokeimenon_verse",
+      "gospel_rubric",
+      "gospel",
+      "psalm50_sticheron",
+      "canon_rubric",
+      "canons",
+      "sessional_ode3",
+      "kontakion",
+      "ikos",
+      "exapostilarion",
+      "exapostilarion_closer",
+      "praises_rubric",
+      "praises",
+      "praises_glory",
+      "praises_closer",
+      "great_doxology_rubric",
+      "doxology_theotokion",
+      "closing_rubric"
+     ],
+     "god_is_lord_rubric": {
+      "text": "On “God is the Lord ...,” the Troparion of the holy hierarch, in Tone III:",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p6 God is the Lord rubric"
+      }
+     },
+     "troparion_closer": {
+      "text": "We hymn thee who hast mediated the salvation of our race, * O Virgin Theotokos; * for thy Son and our God, * accepting suffering on the Cross in the flesh * He had received of thee, * hath delivered us from corruption, ** in that He is the Lover of mankind.",
+      "tier": 2,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p6 God is the Lord Theotokion"
+      },
+      "type": "theotokion",
+      "sourceLabel": "Glory ..., Both now ..., Theotokion, in Tone III",
+      "tone": 3
+     },
+     "sessional_1": [
+      {
+       "text": "Thou gavest neither sleep to thine eyes, nor slumber to thine eyelids, O man of God, until thou didst find a place for the Lord amid the ruined dominion of the ancient deceiver of the pagans, and established there a dwelling-place for the God of Jacob, not in Judea, nor in Jerusalem, but in the confines of Mongolia. Wherefore, thou wast revealed to be like David, in laying a firm foundation for the Faith in a land of unbelief, and as Solomon, being wise in building up the, salvation of thy flock.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p6 Sessional 1"
+       },
+       "label": "plain",
+       "sourceLabel": "After the 1st chanting of the Psalter, the Sessional Hymn, in Tone V",
+       "tone": 5
+      },
+      {
+       "text": "The God Who was incarnate of thee have we come to know, O Virgin Theotokos. Him do thou entreat for the salvation of our city and of all those signed with the name of thy Son.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p6 Sessional 1 Theotokion"
+       },
+       "type": "theotokion",
+       "label": [
+        "glory",
+        "both_now",
+        "theotokion"
+       ],
+       "sourceLabel": "Glory ..., Both now ..., Theotokion, in Tone V",
+       "tone": 5
+      }
+     ],
+     "sessional_2": [
+      {
+       "text": "Like the oil of myrrh upon the head, which runneth down upon the beard, upon the beard of Aaron, which runneth down to the fringe of his raiment; like the dew of Hermon, which cometh down upon the mountains of Zion, so the grace of the Holy Spirit, which ever wafteth its fragrance upon thy body, which hath been glorified with incorruption, doth pour forth abundantly upon those who make haste to thy reliquary with faith, in the joy of the Lord Who glorifieth thee.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p6 Sessional 2"
+       },
+       "label": "plain",
+       "sourceLabel": "After the 2nd chanting of the Psalter, the Sessional Hymn, in Tone IV",
+       "tone": 4
+      },
+      {
+       "text": "O most pure one, with the holy hierarch and all the saints, do thou entreat Him, Who alone resteth in the saints, to sanctify all of us who glorify thee, throughout all ages.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p6 Sessional 2 Theotokion"
+       },
+       "type": "theotokion",
+       "label": [
+        "glory",
+        "both_now",
+        "theotokion"
+       ],
+       "sourceLabel": "Glory ..., Both now ..., Theotokion, in Tone IV",
+       "tone": 4
+      }
+     ],
+     "megalynarion_rubric": {
+      "text": "After the Polyeleos, the Megalynarion:",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p6 megalynarion rubric"
+      }
+     },
+     "megalynarion": {
+      "text": "We magnify thee, O hierarch, Father Innocent, and honor thy holy memory, for thou dost pray for us unto Christ our God.",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p6 Megalynarion"
+      },
+      "label_inline": true
+     },
+     "megalynarion_verse": {
+      "text": "Hearken unto this all ye nations, praise him, all ye peoples.",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p6 Megalynarion verse"
+      },
+      "label": "refrain",
+      "sourceLabel": "Verse",
+      "label_inline": true
+     },
+     "megalynarion_closing_rubric": {
+      "text": "Glory ..., Both now ..., Alleluia ..., Glory to Thee, O God. (Thrice)",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p6 after the verse"
+      }
+     },
+     "sessional_polyeleos": [
+      {
+       "text": "The Lord, not withholding good things from those who walk in innocence, bestowed upon thee grace and glory, O holy hierarch Innocent, which thou didst plant in the Russian land. Wherefore, by thy supplications grant unto us everlasting crowns of glory in heaven, with thee and all the saints who have been well-pleasing unto God.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p7 Polyeleos sessional"
+       },
+       "label": "plain",
+       "sourceLabel": "After the Polyeleos, the Sessional Hymn, in Tone III",
+       "tone": 3
+      },
+      {
+       "text": "Be thou my defense and mediation, aid and boast, O Virgin; for thou art the invincible might of the helpless and the hope of the hopeless.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p7 Polyeleos sessional Theotokion"
+       },
+       "type": "theotokion",
+       "label": [
+        "glory",
+        "both_now",
+        "theotokion"
+       ],
+       "sourceLabel": "Glory ..., Both now ..., Theotokion, in Tone III",
+       "tone": 3
+      }
+     ],
+     "anabathmoi_rubric": {
+      "text": "Song of Ascents, the first antiphon of Tone IV.",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p7 Song of Ascents rubric"
+      }
+     },
+     "prokeimenon": {
+      "text": "Precious in the sight of the Lord * is the death of His saints.",
+      "tier": 2,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p7 Prokeimenon"
+      },
+      "sourceLabel": "Prokeimenon, in Tone IV",
+      "label_inline": true,
+      "tone": 4
+     },
+     "prokeimenon_verse": {
+      "text": "What shall I render unto the Lord for all that He hath rendered unto me?",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p7 Prokeimenon verse"
+      },
+      "label": "refrain",
+      "sourceLabel": "Verse",
+      "label_inline": true
+     },
+     "gospel_rubric": {
+      "text": "Let every breath praise the Lord.",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p7 Let every breath"
+      }
+     },
+     "gospel": {
+      "heading": "THE GOSPEL ACCORDING TO ST. MATTHEW",
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p7 Matins Gospel"
+      },
+      "citation_verbatim": "(5:14-19)",
+      "citation": {
+       "book": "Matthew",
+       "chapter": 5,
+       "verses": "14-19"
+      },
+      "citation_basis": "printed"
+     },
+     "psalm50_sticheron": {
+      "text": "Let my mouth be filled with Thy praise, O Lord, that I may hymn the glory of Thy saint, whom Thou hast glorified with incorruption and the working of wonders, whom Thou hast revealed to be a helper for those who are amid misfortunes, a quick healer for the afflicted, a comforter amid sorrows, and a fervent intercessor for those who honor his holy memory.",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p7 After Psalm 50 sticheron"
+      },
+      "sourceLabel": "After Psalm 50, this Sticheron, in Tone VI",
+      "tone": 6
+     },
+     "canon_rubric": {
+      "text": "Canon of supplication to the Theotokos (the Paraklisis), with 6 Troparia, including the Irmos; and that of the holy hierarch, with 8 Troparia, the acrostic whereof is: “Innocent, intercessor for our souls,” in Tone VIII:",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p7 Canon rubric"
+      }
+     },
+     "canons": [
+      {
+       "title": "Canon of supplication to the Theotokos (the Paraklisis), with 6 Troparia, including the Irmos; and that of the holy hierarch, with 8 Troparia, the acrostic whereof is: “Innocent, intercessor for our souls,” in Tone VIII:",
+       "acrostic": "Innocent, intercessor for our souls",
+       "tone": 8,
+       "odes": {
+        "1": {
+         "irmos": {
+          "text": "Unto Him Who overthrew the tyranny of Pharaoh in the sea * and led Israel over dry land, * let us chant unto Christ our God, * for He hath been glorified throughout the ages.",
+          "tier": 2,
+          "src": {
+           "file": "11-26A.pdf",
+           "locus": "p7 Ode 1 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "O blameless hierarch, look down from heaven and behold, and with thy divine overshadowing visit this vine, which thy right hand hath planted in a pagan land, that we may piously glorify Thy wonders, even though it is impossible to number them.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p8 Ode 1 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Once, upon the way, the ass warned Balaam not to go forth to curse Israel, and he who came from Mesopotamia blessed them. In a like manner the enraged traveler was admonished by his troubled steeds to render unto the holy hierarch Innocent glory, which he vowed to do.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p8 Ode 1 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou didst manifest thyself as a speedy healer unto him who was afflicted with a disease of the legs and paralysis of all his members, O Innocent, our father. Wherefore, disdain not now those who in faith have recourse to thy life-bearing and ever-healing relics.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p8 Ode 1 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou didst give birth in the flesh to the Son, Who is co-beginningless with the Father, O all-immaculate Virgin, Whom do thou beseech with the holy hierarch, that He make us sons of His kingdom and heirs to the eternal promise.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p8 Ode 1 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ],
+         "katavasia": {
+          "text": "Christ is born ...,",
+          "tier": 1,
+          "src": {
+           "file": "11-26A.pdf",
+           "locus": "p8 Ode 1 katavasia"
+          },
+          "sourceLabel": "Katavasia",
+          "label_inline": true
+         }
+        },
+        "3": {
+         "irmos": {
+          "text": "O Thou Who established the heavens by Thy word, * establish our mind and heart, * that we may hymn and glorify Thee * unto the salvation of our souls.",
+          "tier": 2,
+          "src": {
+           "file": "11-26A.pdf",
+           "locus": "p8 Ode 3 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Thou didst show forth a second unburnt bush, O noetic shepherd, when, by thy prayers, thou didst preserve unharmed in the midst of the flame the holy church wherein thine incorrupt body rested, which had not yet been glorified on earth, but whose sanctity was clearly attested to by an abundance of wonders from heaven.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p8 Ode 3 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou hast appeared to be accessible to the only true faith. Wherefore, contrary to the laws of nature, ice and snow hid thy purity from the eyes of the impious, who dared, in their unbelief, to attempt to look upon thee; and thou didst not grant them to behold thy glory, teaching us to glorify thee with a pure heart.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p8 Ode 3 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Speedily didst thou hasten to help the old man who saw with difficulty; and, touching his afflicted head, thou didst make manifest upon him an act of God. Wherefore, illumine also our spiritual eyes through thy supplications, O high priest.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p8 Ode 3 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "We know thee to be a firm and steadfast hope, O Theotokos, which we hold fast; and, trusting therein, we pray: Preserve this city and all Christian cities and lands from all the misfortunes which befall sinful people, who nevertheless straightway receive remission of their offenses through thine intercession.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p8 Ode 3 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "4": {
+         "irmos": {
+          "text": "O Lord, I have heard the mystery of Thy dispensation; * I have considered Thy works, * and I have glorified Thy Divinity.",
+          "tier": 2,
+          "src": {
+           "file": "11-26A.pdf",
+           "locus": "p9 Ode 4 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "In Peter's house Jesus touched the hand of his disciple's mother-in-law, who was sick of a fever, and straightway the fever left her. And these signs followed thee, also, His faithful wonderworker; for thou didst subdue by a single touch the fever of him that lay upon his deathbed, but who cried aloud to thee in the hope of life.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p9 Ode 4 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Of old believers were cured by the application of Paul's handkerchiefs and aprons. And God hath not wrought His powers simply through thy hands, O new apostle, for the dust from thy sacred reliquary and the oil from thy lamp open the eyes of the blind and bestow healing.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p9 Ode 4 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The prayer of faith saved him who was grievously ill, and who confessed that the physician cannot raise the dead; and hope in thee never putteth to shame those who with faith call upon thee for help in time of need, O compassionate father.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p9 Ode 4 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The unwedded maiden gave birth to Him Who was foreseen by Habbakuk in the Spirit, and she prayeth to Him Who was born from her for the souls of us who have been wisely tended by the pastor who, in the incorruption of his holy body, doth ever abide with us, even after his repose.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p9 Ode 4 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "5": {
+         "irmos": {
+          "text": "Out of the night of ignorance * hath the day of divine knowledge dawned, * in the light O Christ, of Thy countenance. * May Thy praise shine forth in our hearts * like the light of the dawn.",
+          "tier": 2,
+          "src": {
+           "file": "11-26A.pdf",
+           "locus": "p9 Ode 5 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "He who was covered from head to toe with sores, and could find no healing for his flesh, was plunged by love into torrents of hope in the favorite of God; and straightway he was cleansed of his painful impurity, as was Naaman of leprosy through immersion in the Jordan at the command of Elisha.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p9 Ode 5 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou art found to be a ready helper for those who seek thee, O holy hierarch Innocent; and thou dost quickly grant healing unto the infirm; for of old thou didst appear in a dream unto a woman afflicted in her right arm, and restored it to health at the invocation of thy holy name.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p9 Ode 5 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Establishing a firm knowledge of grace in the faithful, thou hast taught us to know thee as a merciful instructor, a treasury of compassion, a teacher of the true faith, the boast of hierarchs, a helper of the helpless, who ever prayest for the salvation of thy children who have recourse unto thee in faith.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p10 Ode 5 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The bars of the gates of Hades were shattered, and the everlasting bolts were driven apart by Him Who was born of thee, O most pure Mother. Wherefore, we beseech thee: Deliver us from eternal death by thine intercession, and grant us to dwell in the light of thy Son, Who hath shone upon the world the light of redemption.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p10 Ode 5 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "6": {
+         "irmos": {
+          "text": "O Thou that puttest on light as a garment * grant me also a robe of light, * O All-merciful Christ, our God.",
+          "tier": 2,
+          "src": {
+           "file": "11-26A.pdf",
+           "locus": "p10 Ode 6 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "As many as have had recourse unto thee, O fervent helper, have not departed ashamed, the infirm have been healed; those who were in the pangs of childbirth received speedy relief from their affliction through thy much-healing beneficence; the blind recovered their sight. Wherefore, visit thou even us with thine aid, O compassionate father.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p10 Ode 6 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Be thou not faithless, but believing, thou didst say, O father, appearing twice to him who suffered grievously from a broken leg; and striking with thy staff the place whereon thy feet stood, thou didst heal by a mark in the wood the spiritual wound of him who was darkened by unbelief; for straightway he confessed thee to be the grace-bearing physician who had raised him up from his bed of pain.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p10 Ode 6 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "With thine immaculate hands thou didst dispense the immortal Food to a suffering woman, O hierarch of God. O, the wonder! Whilst partaking more fully of the unwaning light in heaven, more than seventy years after thy repose thou didst appear on earth as a celebrant of the divine Mysteries, assuring thy flock of thine uninterrupted stay among those who ever have recourse unto thine aid.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p10 Ode 6 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O teacher of the truth, instruct us in the true Faith, together with the most pure Virgin Theotokos, imploring our salvation from Him Who was born of her for the salvation of the whole world.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p10 Ode 6 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "7": {
+         "irmos": {
+          "text": "O Thou who in the beginning founded the earth * and by Thy word made the heavens firm, * blessed art Thou throughout the ages, * O Lord God of our Fathers.",
+          "tier": 2,
+          "src": {
+           "file": "11-26A.pdf",
+           "locus": "p11 Ode 7 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Those afflicted in the flesh have received strength and healing from thee, O father; and those who sorrow in spirit and are overcome by the grief of life have found spiri-tual comfort in calling upon the holy and glorious name of thee with compunction, glorifying the God of Israel, Who is wondrous in His saints.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p11 Ode 7 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O father, thou namesake of innocence: thy light hath so shone before us that, seeing thy good works and thy many miracles, we glorify the God of Israel, wondrous in His saints, Who worketh wonders through thee.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p11 Ode 7 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Trinitarian: O God, heal Thou our spiritual ailments through the supplications of the saint whom Thou hast glorified, and who with tender solicitude doth hasten to Thee, O Holy Trinity, to the aid of those who are in need of his active assistance.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p11 Ode 7 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Lead our mind captive to obedience to the Faith, O Birthgiver of God, keep our spirit and soul most perfect, and preserve our bodies undefiled until the coming of our Lord Jesus Christ.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p11 Ode 7 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "8": {
+         "irmos": {
+          "text": "The Beginningless King of glory, * before Whom tremble all the hosts of heaven, * ye priests hymn, and ye peoples * supremely exalt throughout all ages.",
+          "tier": 2,
+          "src": {
+           "file": "11-26A.pdf",
+           "locus": "p11 Ode 8 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "The wide path which leadeth to destruction didst thou shun, O venerable one, and by the narrow gate entered into the kingdom of heaven. From thenre, ever regarding those who call upon thee with faith, do thou strengthen us also to bear the light and easy yoke of the Cross, that we may enter into the rest of our blessed God.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p11 Ode 8 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Through thy life on earth, like unto that of the angels, didst thou find the grace of healing; and truly revealed thyself to be a guardian angel for thy flock, carefully confirming it in the Faith by thy divers miracles and keeping it fast in the pure confession of the blessed God of our fathers.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p11 Ode 8 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou hast made manifest the fragrance of Christ among those who were saved by thee from infirmities, both spiritual and bodily, O father; wherefore, the inhabitants of the city chosen by thee, glorifying thy holy memory, bless the blessed God of our fathers, Who hath glorified thee.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p12 Ode 8 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Our battle is not against flesh and blood, but against principalities, against powers, against the rulers of the darkness of this age, against spirits of wickedness in high places. Show us forth as victorious over them, O Lady, that, following the example of this blameless pastor, we may quench all the fiery darts of the evil one.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p12 Ode 8 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "9": {
+         "irmos": {
+          "text": "The prophetic vision of the lawgiver on the mountain, * in the fire of the burning bush, * prefigured thy birthgiving O Ever-Virgin, * the salvation of us the faithful, * wherefore with never silent hymns we magnify thee.",
+          "tier": 2,
+          "src": {
+           "file": "11-26A.pdf",
+           "locus": "p12 Ode 9 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Like Paul thou wast an apostle to the heathen. Wherefore, thou hast now been caught up to the heights of the vision of God, where thou dost pray that God increase that which thou hast planted and watered, O wise husbandman.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p12 Ode 9 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Taking up the helmet of salvation and girding thyself with the sword of the Spirit, thou didst go forth to thy task, O wondrous pastor, and built a rampart of piety amid the darkness of paganism. Wherefore, entreat the supremely good God, that He strengthen that which He hath wrought among us through thy hand.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p12 Ode 9 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O thou who art innocent in name and life, accept these hymns of praise offered unto thee with love, overshadowing with thy supplications thy flock, which hath been illumined with the rays of thy virtues, and making haste in thy gracious assistance in the time of need.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p12 Ode 9 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O thou that art more honorable than the cherubim and more glorious beyond compare than the seraphim, disdain not the entreaties of thy servants; but protect us with thy precious omophorion. Save thou our faithful hierarchs and people, who piously honor in this city the memory of the innocent pastor, the won-drous Innocent.",
+           "tier": 1,
+           "src": {
+            "file": "11-26A.pdf",
+            "locus": "p12 Ode 9 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        }
+       }
+      }
+     ],
+     "sessional_ode3": [
+      {
+       "text": "Such a hierarch is it fitting we should have, for he was venerable, guileless, meek, removed from sinful things, and ever prays before Jesus Christ, the eternal High Priest, for the salvation of his flock, for the effectual fervent prayer of a righteous man availeth much.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p8 Ode III sessional"
+       },
+       "label": "plain",
+       "sourceLabel": "Sessional Hymn of the holy hierarch, in Tone III",
+       "tone": 3
+      },
+      {
+       "text": "Water rose up in the wilderness; a fount of healings floweth forth from the incorrupt relics of the holy hierarch Innocent. Everlasting joy is upon his head, of may which we also be deemed worthy, through his supplications, on the never-waning day of the resurrection.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p9 Ode III sessional, Glory"
+       },
+       "label": "glory",
+       "sourceLabel": "Glory ..., in Tone III",
+       "tone": 3
+      },
+      {
+       "text": "Thee, O maiden, did the prophet proclaim, saying: Behold the gate of the East; it shall be shut, and no one shall pass through it; but the Lord God alone shall enter by it, and the gate shall remain shut.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p9 Ode III sessional Theotokion"
+       },
+       "type": "theotokion",
+       "label": [
+        "both_now",
+        "theotokion"
+       ],
+       "sourceLabel": "Both now ..., Theotokion, in Tone III",
+       "tone": 3
+      }
+     ],
+     "exapostilarion": {
+      "text": "Glory be to Thee; the God Who hast shown us the light of salvation in the life and words of Thy favorite one! Glory be to Thee, the Benefactor Who hast shone forth the radiance of truth in this champion of piety and truth! Glory be to Thee, the wondrous Bestower of compassion, Who hast made wondrous Thy mercies upon him who walked in the light of Thy countenance, the holy hierarch and wonderworker Innocent!",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p12 Exapostilarion"
+      },
+      "label": "plain",
+      "sourceLabel": "Exapostilarion of the holy hierarch"
+     },
+     "exapostilarion_closer": {
+      "text": "In thy birthgiving thou didst illumine the world, O most pure Theotokos. Wherefore, illumining our minds with the knowledge of thy Son, wound thou our hearts with love for the divine commandments, strengthening us in faith and the doing of good by thy supplications.",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p13 Exapostilarion Theotokion"
+      },
+      "type": "theotokion",
+      "sourceLabel": "Glory ..., Both now ..., Theotokion"
+     },
+     "praises_rubric": {
+      "text": "On the Praises, 4 Stichera, in Tone VIII:",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p13 Praises rubric"
+      }
+     },
+     "praises": [
+      {
+       "text": "The great multitude of thy wonders, O Innocent, proclaimeth the greatness of the glory of our God, Who is unceasingly hymned by the noetic hosts of heaven, and on earth is glorified in the souls and bodies of His saints. Him do thou beseech, O exceedingly glorious and holy hierarch, for the salvation of our souls.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p13 Praises 1"
+       },
+       "label": "plain",
+       "tone": 8
+      },
+      {
+       "text": "With one mouth and one mind, O ye people, let us glorify God, Who worketh wonders, and Who is wondrous in His compassions in our days; Who gaveth utterance to the ancient mercies spoken of to our fathers in the wonders of His saints and, now, in the incorruption of the innocent pastor, the new wonderworker, who set his beauteous feet firmly in the lands of Siberia, adorning the wilderness like a comely lily.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p13 Praises 2"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "It is not our fathers who have proclaimed thy glory unto us, O father, nor is it our elders who have published abroad tidings of thy miracles, O wonderworker; but we ourselves have beheld the power of God which overshadoweth Thine unblemished body and which through thee worketh wonders in many marvelous signs. Our kinsmen and friends have known thy grace-bearing aid, which we also dare to request, and which we receive in abundance.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p13 Praises 3"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "God, Who of old spake through the prophets to our fathers, spake to us in times past in His Son, through Whose grace He speaketh to us even now in our instructors, who in their life teach us faith and hope, and after their repose confirm us in perfect love which never faileth.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p13 Praises 4"
+       },
+       "label": "plain"
+      }
+     ],
+     "praises_glory": {
+      "text": "Rejoice, O father Innocent, namesake of innocence, confirmation of the Church, treasury of countless miracles, boast of hierarchs, model for pastors, helper of the flock, intercessor for strangers and those who are afar off, adornment of thy monastery, glory of the Russian land. Pray thou therefore, that the arrogance of schisms be extinguished, and that peace flourish in the days of its Orthodox children.",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p13 Praises Glory"
+      },
+      "sourceLabel": "Glory ..., in Tone VIII",
+      "tone": 8
+     },
+     "praises_closer": {
+      "text": "O Sovereign Lady, accept the supplications of thy servants, and deliver us from all want and grief.",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p13 Praises Both now, Theotokion"
+      },
+      "type": "theotokion",
+      "sourceLabel": "Both now ..., Theotokion, in Tone VIII",
+      "tone": 8
+     },
+     "great_doxology_rubric": {
+      "text": "Great Doxology. Troparion.",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p13 Great Doxology. Troparion."
+      }
+     },
+     "doxology_theotokion": {
+      "text": "We hymn thee who hast mediated the salvation of our race, * O Virgin Theotokos; * for thy Son and our God, * accepting suffering on the Cross in the flesh * He had received of thee, * hath delivered us from corruption, ** in that He is the Lover of mankind.",
+      "tier": 2,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p14 Theotokion after the Great Doxology"
+      },
+      "type": "theotokion",
+      "sourceLabel": "Glory ..., Both now ..., Theotokion in the same tone"
+     },
+     "closing_rubric": {
+      "text": "Litanies. Dismissal. First Hour.",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p14 Litanies. Dismissal. First Hour."
+      }
+     }
+    },
+    "liturgy": {
+     "order": [
+      "beatitudes_rubric",
+      "beatitudes",
+      "troparion",
+      "liturgy_kontakion",
+      "prokeimenon",
+      "prokeimenon_verse",
+      "epistle",
+      "alleluia",
+      "gospel",
+      "communion_verse"
+     ],
+     "liturgy_kontakion": {
+      "text": "Ye faithful, let us all with love praise the pastor * the namesake of innocence, the preacher of the Faith among the pagans of Mongolia, * the glory and adornment of the flock of Irkutsk; * for he is the protector of this land ** and an intercessor for our souls.",
+      "tier": 2,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p16 Kontakion at Liturgy"
+      },
+      "sourceLabel": "Kontakion of the holy hierarch, in Tone IV",
+      "tone": 4
+     },
+     "beatitudes_rubric": {
+      "text": "On the Beatitudes, 8 Troparia: 4 from ODE III, and 4 from ODE VI of the canon of the holy hierarch.",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p15 Beatitudes rubric"
+      }
+     },
+     "beatitudes": [
+      {
+       "text": "Thou didst show forth a second unburnt bush, O noetic shepherd, when, by thy prayers, thou didst preserve unharmed in the midst of the flame the holy church wherein thine incorrupt body rested, which had not yet been glorified on earth, but whose sanctity was clearly attested to by an abundance of wonders from heaven.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p15 Beatitude 1"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "Thou hast appeared to be accessible to the only true faith. Wherefore, contrary to the laws of nature, ice and snow hid thy purity from the eyes of the impious, who dared, in their unbelief, to attempt to look upon thee; and thou didst not grant them to behold thy glory, teaching us to glorify thee with a pure heart.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p15 Beatitude 2"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "Speedily didst thou hasten to help the old man who saw with difficulty; and, touching his afflicted head, thou didst make manifest upon him an act of God. Wherefore, illumine also our spiritual eyes through thy supplications, O high priest.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p15 Beatitude 3"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "As many as have had recourse unto thee, O fervent helper, have not departed ashamed, the infirm have been healed; those who were in the pangs of childbirth received speedy relief from their affliction through thy much-healing beneficence; the blind recovered their sight. Wherefore, visit thou even us with thine aid, O compassionate father.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p15 Beatitude 4"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "Be thou not faithless, but believing, thou didst say, O father, appearing twice to him who suffered grievously from a broken leg; and striking with thy staff the place whereon thy feet stood, thou didst heal by a mark in the wood the spiritual wound of him who was darkened by unbelief; for straightway he confessed thee to be the grace-bearing physician who had raised him up from his bed of pain.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p15 Beatitude 5"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "With thine immaculate hands thou didst dispense the immortal Food to a suffering woman, O hierarch of God. O, the wonder! Whilst partaking more fully of the unwaning light in heaven, more than seventy years after thy repose thou didst appear on earth as a celebrant of the divine Mysteries, assuring thy flock of thine uninterrupted stay among those who ever have recourse unto thine aid.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p15 Beatitude 6"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "O teacher of the truth, instruct us in the true Faith, together with the most pure Virgin Theotokos, imploring our salvation from Him Who was born of her for the salvation of the whole world.",
+       "tier": 1,
+       "src": {
+        "file": "11-26A.pdf",
+        "locus": "p15 Beatitude Theotokion"
+       },
+       "label": "theotokion",
+       "sourceLabel": "Theotokion",
+       "label_inline": true
+      }
+     ],
+     "prokeimenon": {
+      "text": "My mouth shall speak wisdom, * and the meditation of my heart shall be of understanding.",
+      "tier": 2,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p16 Liturgy Prokeimenon"
+      },
+      "sourceLabel": "Prokeimenon, in Tone I",
+      "label_inline": true,
+      "tone": 1
+     },
+     "prokeimenon_verse": {
+      "text": "Hear this, all ye nations; give ear, all ye that inhabit the world.",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p16 Liturgy Prokeimenon verse"
+      },
+      "label": "refrain",
+      "sourceLabel": "Verse",
+      "label_inline": true
+     },
+     "epistle": {
+      "heading": "THE EPISTLE OF ST. PAUL TO THE HEBREWS",
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p16 Epistle"
+      },
+      "citation_verbatim": "(7:26-8:2).",
+      "citation": {
+       "book": "Hebrews",
+       "chapter": 7,
+       "verses": "7:26-8:2"
+      },
+      "citation_basis": "printed"
+     },
+     "alleluia": {
+      "text": "The saints shall boast in glory, and they shall rejoice upon their beds.",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p16 Alleluia"
+      },
+      "sourceLabel": "Alleluia, in Tone I",
+      "label_inline": true,
+      "tone": 1
+     },
+     "gospel": {
+      "heading": "THE GOSPEL ACCORDING TO ST. JOHN",
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p16 Gospel"
+      },
+      "citation_verbatim": "(1O:9-16).",
+      "citation": {
+       "book": "John",
+       "chapter": 10,
+       "verses": "9-16"
+      },
+      "citation_basis": "printed"
+     },
+     "communion_verse": {
+      "text": "In everlasting remembrance shall the righteous be; he shall not be afraid of evil tidings.",
+      "tier": 1,
+      "src": {
+       "file": "11-26A.pdf",
+       "locus": "p16 Communion Verse"
+      },
+      "sourceLabel": "Communion Verse",
+      "label_inline": true
+     }
+    }
+   }
+  ]
  }
 };
 
