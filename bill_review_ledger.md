@@ -31,7 +31,7 @@ and the disposition column.
 
 **A-3 update (14 Nov 2026):** the daily book now registers every key it uses, per key, and the gate fails an unregistered one. Still unbuilt: per-key rows for the General Menaion's own keys, the alias lint, and `adapter.js` (scheduled for the wire-in after November).
 
-**OPEN QUESTIONS now have their own register: `src/data/menaion_v2/open_questions.js`.** Liturgical questions raised by the daily encode (rank, which hymn governs, a heading that looks wrong) go there, each with what Fekula, OCA and the web said, the value stored meanwhile, and what changes if the answer flips. The gate lists them on its worklist. Five rows as of 14 Nov: Q-0001 to Q-0005. This ledger keeps the items that need YOUR ruling or your book.
+**OPEN QUESTIONS now have their own register: `src/data/open_questions.js`.** Liturgical questions raised by the daily encode (rank, which hymn governs, a heading that looks wrong) go there, each with what Fekula, OCA and the web said, the value stored meanwhile, and what changes if the answer flips. The gate lists them on its worklist. Five rows as of 14 Nov: Q-0001 to Q-0005. This ledger keeps the items that need YOUR ruling or your book.
 
 ## B. PHYSICAL-BOOK CHECKS — the PDF may be faithful to a misprint
 

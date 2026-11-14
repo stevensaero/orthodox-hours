@@ -20,7 +20,7 @@ reading a tone number out of a printed label.
    manifest row (`DAILY_KEYS`) for any key used for the first time.
 6. Sic rows for what the page prints wrong (confirm against a second
    extraction, `pdftotext -layout`, first). Recurrence rows. Open questions go
-   through the ladder in `src/data/menaion_v2/open_questions.js`.
+   through the ladder in `src/data/open_questions.js`.
 7. All gates, then commit by concern.
 
 ## Conventions the three November maps establish

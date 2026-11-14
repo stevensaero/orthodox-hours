@@ -16,7 +16,7 @@ matches the `project_notes.md` header, and run all eight gates on the clean tree
 **Read first:** the November 14 entry at the top of `project_notes.md`;
 `tools/encoding/menaion_v2/README.md`; `menaion_v2_spec.md` §§2, 5, 7, 12 and
 the two rulings at the end of §16.5; `encoding_rule_v2.md` §§1.1 and 3 (live);
-`src/data/menaion_v2/open_questions.js` (the ladder is in its header);
+`src/data/open_questions.js` (the ladder is in its header);
 `bill_review_ledger.md`.
 
 **Then encode whole days**, one file at a time, by the README's per-file steps.

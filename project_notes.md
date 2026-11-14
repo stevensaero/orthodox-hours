@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.51.0** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
+**Tool version: v0.52.0** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -13,6 +13,30 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 `assembleLiturgy()`. The encoding history is `divine_liturgy_chrysostom_encoding_spec.md`
 (v24), also at the root.
 
+
+**Same session, later — THE OPEN QUESTIONS PAGE (v0.52.0).** Bill's idea: put
+the open questions in front of priests and liturgists and let them answer.
+
+- **`/questions`** (`src/components/open-questions.jsx`), linked from the Menaion
+  V2 browser rail. Reads the register and holds no question text of its own.
+  Group by source work or subject; filter unanswered / answered / all.
+- **The register moved to `src/data/open_questions.js` and now serves EVERY
+  book** (Bill: Octoechos, General Menaion, daily Menaion, Triodion,
+  Pentecostarion, anything else). Rows carry `source` (`SOURCES`), `subject`
+  (`SUBJECTS`) and a short `title`. Adding a work or a subject is one line. The
+  Menaion gate checks vocabulary on every row and resolves Menaion paths; a row
+  for a book without a gate carries a plain-words `locus`.
+- **Answers by e-mail:** a plain `mailto:` link per question, question id and
+  title in the subject, a 51-character encoded body (iOS Mail truncates long
+  ones). `CONTACT_EMAIL` in the register is EMPTY until Bill supplies the
+  address; with no address the page shows the questions and no button. The
+  render gate checks all of this.
+- **Logging answers:** `responses: [{date, role, summary, source}]` on the row.
+  By ROLE, never name or address, unless the respondent agrees (default taken;
+  Bill has not ruled). In-tool comment logging was NOT built: a static site has
+  nowhere to save it. Revisit only if e-mail proves too thin.
+- **OWED:** the address; a link to /questions from the Hours tool itself (only
+  the V2 browser links it today); checking the inbox and filing answers.
 
 **Session November 14, 2026 (fortieth) — MENAION V2: THE DAILY BOOK BEGINS.
 11-14 (PHILIP), 11-14A (PALAMAS), 11-15 (GURIAS, SAMONAS & ABIBUS).** Tool
@@ -31,7 +55,7 @@ missing, coverage 151⋈151, build ✓.
   first"; the template is being tested by ordinary days instead.
 - **Capture does not wait on a liturgical question.** The ladder is Fekula, then
   OCA, then a named web source, then a row in
-  `src/data/menaion_v2/open_questions.js`. Only a question that changes the
+  `src/data/open_questions.js`. Only a question that changes the
   SHAPE of the capture stops work.
 
 ### RULED
