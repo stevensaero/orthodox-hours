@@ -15,6 +15,13 @@ NAMES = {'01': 'january', '02': 'february', '03': 'march', '04': 'april', '05': 
 # date -> map modules, in commemoration order (c0, c1, ...). A lettered variant
 # file is a further commemoration of the SAME date (spec 4), never its own key.
 DATES = {
+    # OVERLAP DATES, encoded for the V1/V2 comparison (menaion_v2_wirein_spec.md 5).
+    '09': {
+        '09-27': ['d_09_27'],
+    },
+    '10': {
+        '10-04': ['d_10_04', 'd_10_04A'],
+    },
     '11': {
         '11-14': ['d_11_14', 'd_11_14A'],
         '11-15': ['d_11_15'],

@@ -27,6 +27,8 @@ export const MONTH_LABELS = {
 // One line per encoded month. Add a month here and nowhere else.
 export const MONTH_LOADERS = {
   // '08': () => import('./august.js').then(m => m.default),
+  '09': () => import('./september.js').then(m => m.default),
+  '10': () => import('./october.js').then(m => m.default),
   '11': () => import('./november.js').then(m => m.default),
 };
 

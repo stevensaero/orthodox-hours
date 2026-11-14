@@ -21,6 +21,11 @@
 // positions store their own copy (§2.3, no dereferencing); these rows are what
 // make the duplication a checked fact rather than an invitation to collapse it.
 export default [
+  // ── OVERLAP DATES (September, October) ─────────────────────────────────────
+  { a: '10-04.c0.matins.kontakia_ode3[0]', b: '10-04.c0.liturgy.kontakia[0]', relation: 'variant', note: 'Kontakion of Hierotheus (Tone VIII): UNPOINTED after Ode III (p3), POINTED at Liturgy (p8); same words.' },
+  { a: '10-04.c0.matins.kontakia_ode6[0]', b: '10-04.c0.liturgy.kontakia[1]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '09-27.c0.matins.kontakia_ode3[0]', b: '09-27.c0.liturgy.kontakia[0]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '09-27.c0.matins.kontakia_ode6[0]', b: '09-27.c0.liturgy.kontakia[1]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
   // ── 11-30, Apostle Andrew the First-called ─────────────────────────────────
   { a: '11-30.c0.matins.canons[2].odes.6.items[5]', b: '11-30.c0.liturgy.beatitudes[6]', relation: 'variant', note: 'The Beatitudes print the Ode VI theotokion of Canon II CUT SHORT, ending "... in His image."; the ode prints it whole. Both stored as printed.' },
   { a: '11-14.c0.vespers.aposticha[1]', b: '11-30.c0.vespers.aposticha[1]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },

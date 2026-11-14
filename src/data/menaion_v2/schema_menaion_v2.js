@@ -172,13 +172,30 @@ const NOVEMBER_DATES = [
   '11-17','11-18','11-19','11-20','11-21','11-22','11-23','11-24','11-25','11-26',
   '11-26A','11-27','11-27A','11-28','11-29','11-30',
 ];
-export const SOURCE_FILES = [...AUGUST_DATES, ...NOVEMBER_DATES].map(d => `${d}.pdf`);
+// September and October — enumerated FROM THE FOLDER listing of 14 Nov 2026, when
+// the overlap dates were encoded (menaion_v2_wirein_spec.md 5). There is no
+// 09-12.pdf; 09-22B does not exist (the folder has 09-22, 09-22A, 09-22C).
+const SEPTEMBER_DATES = [
+  '09-01','09-02','09-03','09-03A','09-04','09-04A','09-05','09-05A','09-06','09-07',
+  '09-08','09-08A','09-09','09-10','09-11','09-13','09-14','09-15','09-16','09-17',
+  '09-18','09-19','09-19A','09-20','09-21','09-22','09-22A','09-22C','09-23','09-24',
+  '09-25','09-25A','09-26','09-27','09-28','09-28A','09-29','09-30','09-30A',
+];
+const OCTOBER_DATES = [
+  '10-01','10-01A','10-02','10-03','10-04','10-04A','10-05','10-05A','10-06','10-07',
+  '10-08','10-09','10-10','10-10A','10-10B','10-11','10-11A','10-11B','10-12','10-12A',
+  '10-13','10-13A','10-14','10-15','10-16','10-17','10-18','10-19','10-19A','10-20',
+  '10-21','10-22','10-22A','10-23','10-24','10-24A','10-25','10-25A','10-26','10-27',
+  '10-27A','10-28','10-28A','10-28B','10-28C','10-28D','10-29','10-30','10-31',
+];
+export const SOURCE_FILES = [...AUGUST_DATES, ...SEPTEMBER_DATES, ...OCTOBER_DATES, ...NOVEMBER_DATES].map(d => `${d}.pdf`);
 
 // Real page counts of the DAILY files that are encoded. The page-coverage
 // tripwire (7.4) runs on daily entries exactly as on the General Menaion: every
 // page of a claimed file must be cited by at least one locus. Written by
 // tools/encoding/menaion_v2/build_month.py from the PDFs themselves.
 export const DAILY_PAGE_COUNTS = {
+  '09-27.pdf': 6, '10-04.pdf': 8, '10-04A.pdf': 6,
   '11-14.pdf': 14, '11-14A.pdf': 16, '11-15.pdf': 10,
   '11-16.pdf': 16, '11-17.pdf': 10, '11-18.pdf': 11, '11-19.pdf': 10,
   '11-20.pdf': 21, '11-21.pdf': 22, '11-22.pdf': 16, '11-23.pdf': 18, '11-24.pdf': 22, '11-25.pdf': 22, '11-26.pdf': 6, '11-26A.pdf': 16, '11-27.pdf': 14, '11-27A.pdf': 16, '11-28.pdf': 14, '11-29.pdf': 12, '11-30.pdf': 27,
