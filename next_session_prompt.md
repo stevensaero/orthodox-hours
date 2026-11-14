@@ -1,7 +1,7 @@
 # Next-session kickoff — Menaion V2 DAILY encoding (November, continued)
 
 State at handoff: **v0.52.2**, nine gates green. The General Menaion is complete.
-`november.js` holds 11-14 through 11-24 (twelve files). The consolidated state,
+`november.js` holds 11-14 through 11-25 (thirteen files). The consolidated state,
 rulings, patterns and the owed list are the FIRST block of `project_notes.md`
 ("WHERE THINGS STAND"). V1 still drives the Hours tool until the wire-in; **no
 V1 encoding is done any more.** This prompt asserts nothing about unencoded

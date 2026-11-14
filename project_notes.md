@@ -84,6 +84,7 @@ block is the consolidated state. Tool **v0.52.2**; nine gates green.
 | 11-22 | 11-22.pdf | Afterfeast of the Entry; Apostle Philemon and those with him; two canons | simple / 2G1 |
 | 11-23 | 11-23.pdf | Afterfeast of the Entry; Amphilochius of Iconium; Gregory of Agrigentum; three canons | simple / 2G1 |
 | 11-24 | 11-24.pdf | Afterfeast of the Entry; Great Martyrs Catherine and Mercurius; three canons; Praises AND Aposticha (Q-0006) | simple / 2G1, provisional |
+| 11-25 | 11-25.pdf | APODOSIS of the Entry; Clement of Rome; Peter of Alexandria; three canons; Sunday order printed mid-file | doxology / 2G3 |
 
 About 890 daily text nodes; 4,413 with the General Menaion. 27 files of
 November remain (11-01..11-13 with 11-1A, 11-09A, 11-09B; 11-21..11-30 with
@@ -313,6 +314,22 @@ rebuilt to this form** (its `troparion_other_saint` key is retired and removed
 from the schema; its single kontakion keeps the canonical field). 11-18 has one
 troparion and one kontakion and is unchanged.
 
+### 11-25 ADDED — APODOSIS; TWO EPISTLES AND TWO GOSPELS
+
+22 pages, 777 lines, all claimed. kind `apodosis`, Doxology rank (6 stichera on
+the Praises, "Great Doxology" printed, no Polyeleos), Fekula 2G3.
+
+- New lists `epistles` and `gospels`: the Liturgy prints a reading "FOR THE
+  FEAST:" and one "FOR THE HOLY HIEROMARTYRS:". Those headings are marked, not
+  stored as nodes; each reading's `note` records which heading it stands under.
+- `appendix` here is printed BETWEEN Vespers and Matins (pp. 3-4): the Sunday
+  order, with a troparion and a kontakion of Clement alone printed nowhere else.
+  The reading view shows the appendix after the services; the entry note says
+  where it stands on the page.
+- The canon of the feast (Basil) adds a Triadicon and a closing troparion per
+  ode that 11-21 and 11-23 do not print, and Ode IX has refrains as on the feast.
+- One katavasia in the whole file, after Ode IV; stored where it stands.
+
 ### 11-24 ADDED — CATHERINE AND MERCURIUS; RANK QUESTION Q-0006
 
 22 pages, 828 lines, all claimed. One entry, `saint` tags, three canons,
@@ -325,12 +342,15 @@ positional lists, paired Liturgy propers. No new storage form.
   read, Aposticha); saintjonah.org treats Catherine with Polyeleos and Great
   Doxology on a Sunday; the Metropolitan Cantor Institute page heads the day
   "Six stichera".
-- **The troparion of the feast is not one text across the afterfeast.** 11-21,
-  11-22, 11-23 print "Rejoice, thou fulfillment"; 11-24 prints "Rejoice, O thou
-  fulfillment". And 11-24's Liturgy site moves three pointing asterisks against
-  its own Vespers and Matins sites. Two `variant` rows; every site stored as
-  printed. **The adapter must not assume an afterfeast day's feast troparion
-  equals the feast day's canonical field.**
+- **The troparion of the feast is not one text from the feast to its
+  afterfeast.** 11-21 alone prints "Rejoice, thou fulfillment"; every afterfeast
+  day (11-22 through 11-25) prints "Rejoice, O thou fulfillment". Separately, two
+  POINTINGS of the afterfeast text circulate: the usual one, and one that moves
+  three asterisks, printed at 11-24 Liturgy and 11-25 Vespers. `variant` rows;
+  every site stored as printed. **The adapter must not assume an afterfeast
+  day's feast troparion equals the feast day's canonical field.** (An earlier
+  wording here wrongly grouped 11-22 and 11-23 with 11-21; corrected after
+  tabulating all thirteen sites.)
 - Catherine has two troparia ("Or this Troparion"), stored at both print sites.
 - Label oddities kept verbatim: "Troparion of the feast, , in Tone IV:" and a
   Spec. Mel. line ending in a hyphen instead of a colon.
