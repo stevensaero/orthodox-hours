@@ -169,6 +169,21 @@ The page prints no Vespers aposticha at all (not even a rubric) and, at Liturgy,
 only the troparion and kontakion: the `liturgy` service holds nothing but its
 `order`. No reading bodies in this file. 3 sic rows.
 
+### 11-19 ADDED — TWO SAINTS, TWO TROPARIA, ONE ENTRY (a shape choice for Bill)
+
+Prophet Obadiah and Martyr Barlaam, 10 pages, double service (2B). Zero
+unclaimed lines. Two title lines, two canons. **The two saints have SEPARATE
+troparia**, and the schema holds one canonical `troparion` per commemoration.
+Stored as ONE entry like 11-18: the martyr's troparion (two print sites) is the
+canonical field, the prophet's (printed only at Liturgy) is the new key
+`liturgy.troparion_other_saint`; every item carries `saint`. The alternative,
+two commemorations (c0, c1) sharing one file with interleaved sections, is what
+spec 5.2 seems to intend and was NOT done: it would split one printed service
+across two entries. **Flagged to Bill; because the month is generated, changing
+this is a map edit and a rebuild, not a migration.** The adapter must hand the
+Hours both troparia on a double day. 3 sic rows; one canon label prints "Canon
+TO the holy prophet" where the other six print "of".
+
 ### OWED
 
 1. **adapter.js and the wire-in** after November: Hours reads V2 only; "not
@@ -177,7 +192,7 @@ only the troparion and kontakion: the `liturgy` service holds nothing but its
 2. Variant pairs against general.js were not hunted (only byte-identity was
    swept). Stated in known_recurrences.js.
 3. Per-key manifest rows for the General Menaion's own keys; alias lint.
-4. The rest of November: 30 files (11-01..11-13, 11-19..11-30 with variants).
+4. The rest of November: 29 files (11-01..11-13, 11-20..11-30 with variants).
    Measured rate this session: three files, 40 pages, in one session, including
    building the pipeline. `11-1A.pdf` is the folder's name for the 11-01 variant.
 5. The Nov 8 "V1 encoding pass" chat was never pushed and is abandoned with V1.
