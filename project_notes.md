@@ -87,6 +87,8 @@ block is the consolidated state. Tool **v0.52.2**; nine gates green.
 | 11-25 | 11-25.pdf | APODOSIS of the Entry; Clement of Rome; Peter of Alexandria; three canons; Sunday order printed mid-file | doxology / 2G3 |
 | 11-26 | 11-26.pdf | Alypius the Stylite (c0) | simple / 2A |
 | 11-26 | 11-26A.pdf | Innocent of Irkutsk (c1); Litiya, Polyeleos, Great Doxology | vigil / 2F |
+| 11-27 | 11-27.pdf | Great-martyr James the Persian; Palladius AT COMPLINE (c0) | six_stichera / 2C |
+| 11-27 | 11-27A.pdf | Kursk-Root Icon of the Sign (c1); Litiya, Polyeleos | vigil / 2F |
 
 About 890 daily text nodes; 4,413 with the General Menaion. 27 files of
 November remain (11-01..11-13 with 11-1A, 11-09A, 11-09B; 11-21..11-30 with
@@ -315,6 +317,27 @@ the canonical field stands (R-1), as before. Applied: 11-20 as encoded; **11-19
 rebuilt to this form** (its `troparion_other_saint` key is retired and removed
 from the schema; its single kontakion keeps the canonical field). 11-18 has one
 troparion and one kontakion and is unchanged.
+
+### 11-27 ADDED — FIRST COMPLINE; AN ICON FEAST
+
+`11-27.pdf` (14 pages) is c0, `11-27A.pdf` (16 pages) is c1.
+
+- **First `compline` in the daily book.** The title names James the Persian and
+  the venerable Palladius, but Palladius gets nothing at Vespers or Matins: his
+  canon and stichera are printed AT COMPLINE. Stored in `compline` (`canon`, a
+  single canon object as the spec's 5.5 shape requires, then `after_ode6_rubric`,
+  `sessional_ode6`, `stichera_rubric`, `stichera`, `stichera_closer`,
+  `stichera_stavrotheotokion`), tagged `saint: "Palladius"`. `DAILY_KEYS` gained a
+  `compline` table. **For the Hours this matters:** a second saint named in the
+  title may have NO troparion or kontakion anywhere in the file (Palladius has
+  neither). The adapter must not expect one per named saint.
+- James has two troparia ("Or this Troparion"), as Philip and Catherine.
+- 11-27A is a feast of an icon: `kind: 'feast'` with no `feast_ref`, Vigil / 2F
+  on the printed Litiya. It prints no blessing of the Loaves rubric and no
+  "Great Doxology" rubric; Matins ends with the Praises. It writes "Now & ever"
+  throughout where the rest of the book writes "Both now"; labels kept verbatim,
+  typed `both_now` in `label`.
+- Its third Vespers lesson prints a reference, "(9:1-11)"; the first two do not.
 
 ### 11-26 ADDED — TWO FILES: ALYPIUS (SIMPLE) AND INNOCENT OF IRKUTSK (VIGIL)
 
