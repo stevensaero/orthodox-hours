@@ -111,17 +111,40 @@ export default function OpenQuestions({ questions = QUESTIONS, email = CONTACT_E
   return (
     <div style={{ background: C.parchment, minHeight: "100vh", fontFamily: SERIF, padding: "18px 14px 40px" }}>
       <div style={{ maxWidth: "820px", margin: "0 auto" }}>
-        <h1 style={{ fontSize: "1.35rem", color: C.ink, margin: "0 0 6px" }}>Open Questions</h1>
-        <p style={{ fontSize: "0.92rem", color: C.inkMid, lineHeight: 1.6, margin: "0 0 10px" }}>
-          These are places where the service books and our rubrical sources left us unsure. Each one says what
-          the book prints, what we consulted, and what we stored in the meantime. If you know the answer,
-          and especially if you can name a source, we would be grateful to hear it.
+        <h1 style={{ fontSize: "1.4rem", color: C.ink, margin: "0 0 6px" }}>Help improve the tool</h1>
+        <p style={{ fontSize: "0.95rem", color: C.inkMid, lineHeight: 1.65, margin: "0 0 10px" }}>
+          This tool assembles the daily services from the service books, following Fekula and Williams,
+          <em> The Order of Divine Services</em>. It is built by a parish reader, not a liturgical scholar.
+          Where the books and our sources leave us unsure, we do not guess in silence: we store the best-supported
+          value, mark it provisional, and write the question down here.
         </p>
+        <div style={{ background: "#fff", border: `1px solid ${C.border}`, borderRadius: "6px", padding: "10px 16px", margin: "0 0 12px" }}>
+          <div style={{ fontSize: "0.7rem", letterSpacing: "0.12em", color: C.gold, textTransform: "uppercase", marginBottom: "4px" }}>
+            How you can help
+          </div>
+          <ol style={{ margin: 0, paddingLeft: "1.2rem", fontSize: "0.92rem", color: C.ink, lineHeight: 1.65 }}>
+            <li>Find a question you can speak to. Group them by book or by subject below.</li>
+            <li>Read what the book prints and what the answer would change. &ldquo;Show what we consulted&rdquo; lists what
+                we already found, so you need not repeat it.</li>
+            <li>Send your answer by e-mail from the button on the question. Say what you would do and, if you can,
+                name your source: a Typikon, a rubrics book, your bishop&rsquo;s direction, or the practice you were taught.</li>
+          </ol>
+          <div style={{ fontSize: "0.85rem", color: C.inkMid, lineHeight: 1.6, marginTop: "8px" }}>
+            Priests, deacons, choir directors, readers and students of the services are all welcome. A short answer
+            helps. We record answers by role (for example &ldquo;OCA priest&rdquo;) and do not publish names or addresses
+            without permission. Seen something wrong that is not listed?{' '}
+            {email
+              ? <a href={`mailto:${email}?subject=${encodeURIComponent('Orthodox Hours: something to correct')}`}
+                   style={{ color: C.gold }}>Write to us about it.</a>
+              : 'An address for that has not been set yet.'}
+          </div>
+        </div>
         {!email && (
           <p style={{ fontSize: "0.82rem", color: C.amber, fontStyle: "italic", margin: "0 0 10px" }}>
             An address for answers has not been set yet, so no e-mail button is shown.
           </p>
         )}
+        <h2 style={{ fontSize: "1.05rem", color: C.ink, margin: "14px 0 2px" }}>Open questions</h2>
         <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center", margin: "8px 0" }}>
           <span style={{ fontSize: "0.72rem", color: C.inkLight }}>Group by</span>
           <button style={btn(groupBy === 'source')} onClick={() => setGroupBy('source')}>Source work</button>

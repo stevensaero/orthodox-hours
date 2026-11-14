@@ -42,10 +42,10 @@
 // a plain "not searched, because ...". An empty rung is a hard-fail; an honest
 // gap is not.
 
-// Where answers are sent. EMPTY until Bill supplies the address: the page then
-// shows the questions and says plainly that no address is set, and offers no
-// button. Set it here and nowhere else.
-export const CONTACT_EMAIL = '';
+// Where answers are sent (Bill, 14 Nov 2026): a mailbox kept for this purpose and
+// checked at the start of encoding sessions. Set here and nowhere else. If it is
+// ever emptied, the page shows the questions and offers no e-mail button.
+export const CONTACT_EMAIL = 'stevensaero.mail@gmail.com';
 
 // The works a question can come from. Add a line to add a work; `href` builds
 // the link from a row to the place in that work's viewer, where there is one.

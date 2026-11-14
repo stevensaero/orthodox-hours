@@ -144,7 +144,7 @@ console.log(`daily months: ${dailyEntries} commemoration(s), ${dailyChecked} sto
       checked++;
       if (!text.includes(q[k].replace(/\s+/g, ' ').trim())) { missing++; qMissing++; console.log(`  MISSING FROM QUESTIONS PAGE · ${q.id}.${k}`); }
     }
-  const links = (withMail.match(/href="mailto:/g) || []).length;
+  const links = (withMail.match(/href="mailto:[^"]*Q-\d{4}/g) || []).length;   // per-question links only
   const unanswered = questions.filter(x => x.status !== 'answered').length;
   if (links !== unanswered) { missing++; console.log(`  QUESTIONS PAGE: ${links} mailto links for ${unanswered} unanswered questions`); }
   if (/href="mailto:/.test(html) && !(await import(join(ROOT, 'src/data/open_questions.js'))).CONTACT_EMAIL) { missing++; console.log('  QUESTIONS PAGE: mailto link rendered with no address set'); }

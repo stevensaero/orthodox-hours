@@ -8804,6 +8804,9 @@ const RELEASE_NOTES = [
     date: "November 2026",
     summary: "Open Questions page: every place the books left us unsure, set out for priests and liturgists to answer",
     items: [
+      "'I'd like to help improve the tool' in the footer of the Hours tool opens the page, which now " +
+      "begins by explaining what the questions are and how to answer one. Answers go by e-mail to a " +
+      "mailbox kept for the purpose; the button is live.",
       "NEW PAGE /questions. Each open question shows what the book prints, what an answer would " +
       "change, what Fekula, OCA and other sources said, and the value stored in the meantime, with " +
       "a link to the place in the book. Group by source work or by subject; show unanswered, " +
@@ -17386,6 +17389,15 @@ export default function App() {
           >
             Bulletin
           </button>
+          {/* A plain link, not a button with a handler: it opens the Open
+              Questions landing page (/questions) with the return strip. */}
+          <a href="/orthodox-hours/questions?from=tool"
+             style={{ display: "inline-block", background: "transparent", border: "1px solid #8B6914",
+                      color: "#8B6914", borderRadius: "3px", padding: "5px 14px",
+                      fontSize: "0.78rem", letterSpacing: "0.08em", textDecoration: "none",
+                      fontFamily: "Georgia, serif" }}>
+            I&rsquo;d like to help improve the tool
+          </a>
         </div>
 
         {showHowItWorks && (
