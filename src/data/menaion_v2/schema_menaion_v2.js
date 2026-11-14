@@ -181,7 +181,7 @@ export const SOURCE_FILES = [...AUGUST_DATES, ...NOVEMBER_DATES].map(d => `${d}.
 export const DAILY_PAGE_COUNTS = {
   '11-14.pdf': 14, '11-14A.pdf': 16, '11-15.pdf': 10,
   '11-16.pdf': 16, '11-17.pdf': 10, '11-18.pdf': 11, '11-19.pdf': 10,
-  '11-20.pdf': 21, '11-21.pdf': 22, '11-22.pdf': 16, '11-23.pdf': 18,
+  '11-20.pdf': 21, '11-21.pdf': 22, '11-22.pdf': 16, '11-23.pdf': 18, '11-24.pdf': 22,
 };
 // ── The General Menaion (§6.2) — enumerated FROM THE FOLDER ─────────────────
 // Never from encoding_rule_v2.md §2.1's prose, which is wrong in three ways:

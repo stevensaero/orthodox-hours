@@ -200,4 +200,18 @@ export default [
     provisional: 'The canonical `troparion` field holds the first-printed text (three print sites); the second is stored at both of its print sites as troparion_alternate.',
     impact: 'An OCA parish following oca.org sings the "Ethiopia" troparion. If OCA governs here, the adapter should hand the Hours the alternate; both texts are already stored, so only the selection changes.',
   },
+  {
+    id: 'Q-0006', source: 'menaion', subject: 'rank',
+    title: 'Great Martyr Catherine: Praises stichera and Aposticha both printed',
+    path: '11-24.c0.matins.praises_rubric', status: 'open', opened: '2026-11-14',
+    question: '24 November Matins prints 4 stichera on the Praises (with Glory and Both now) and then stichera on the Aposticha. What rank is the service of the Great Martyr Catherine, and which set is sung?',
+    printed: 'At Vespers, 3 stichera of Catherine and 3 of Mercurius; no entrance, no lessons. At Matins no Polyeleos and no "Great Doxology" rubric. After the exapostilaria: "On the Praises, 4 Stichera, in Tone IV" (three printed, the first "(Twice)"), Glory by Babylas the Monk, Both now by Sergius of the Holy City; then "On the Aposticha, these Stichera of the feast, in Tone II" with verses and Glory, Both now.',
+    consulted: {
+      fekula: 'Ch. 2, 2G1 covers simple through doxology services in an afterfeast and does not rank individual dates. Ch. 4 (2A1/4A2, the Pentecostarion weekday outlines) describes the same printed shape: stichera at the Praises, the Doxology READ, then the Aposticha. ODS vol. III has no 11-24 entry.',
+      oca: 'Not addressed: oca.org gives lives, troparia and kontakia for the day, no rank.',
+      web: 'saintjonah.org rubrics for 24 November falling on a Sunday (ROCOR) appoint a Polyeleos and take 4 stichera of the martyr at the Praises before the Great Doxology, with Mercurius moved to Compline. The Metropolitan Cantor Institute menaion page for 11-24 (Byzantine Catholic) heads the day "Six stichera".',
+    },
+    provisional: 'Stored Simple, Fekula 2G1, and stored exactly as printed: Praises stichera, then Aposticha. Nothing depends on the rank yet.',
+    impact: 'The 9th Hour reads the troparion of the feast and of the saint either way. Rank decides the kontakion at the Hours (2G1: feast only unless Doxology; then the saint at 3rd and 9th) and whether Matins ends with the Great Doxology.',
+  },
 ];
