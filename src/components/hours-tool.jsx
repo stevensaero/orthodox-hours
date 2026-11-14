@@ -8800,6 +8800,23 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.52.1",
+    date: "November 2026",
+    summary: "fix: the Menaion V2 browser crashed on opening; the e-mail for a question now quotes the question",
+    items: [
+      "FIXED: the Menaion V2 browser showed an error page as soon as November existed, and so did " +
+      "every 'See it in the book' link. Its date list treated a commemoration's title as plain text " +
+      "when the data stores it with its source. The data was sound; the page could not list it.",
+      "A new check now opens the real browser page for every encoded day, in both the reading and " +
+      "the audit view, and fails on any error. The earlier checks rendered the services but never " +
+      "the page around them, which is how this got out.",
+      "The e-mail for a question now opens with the question itself as a quoted line, so the writer " +
+      "has it in view. On iPhone and iPad the message carries the question number only, because " +
+      "iOS Mail opens a blank message when the pre-filled text is long; the subject names the " +
+      "question either way.",
+    ],
+  },
+  {
     version: "v0.52.0",
     date: "November 2026",
     summary: "Open Questions page: every place the books left us unsure, set out for priests and liturgists to answer",
