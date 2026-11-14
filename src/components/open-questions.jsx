@@ -33,7 +33,11 @@ function Row({ label, children }) {
 export function QuestionCard({ q, email = CONTACT_EMAIL }) {
   const [open, setOpen] = useState(false);
   const href = SOURCES[q.source]?.href?.(q) ?? null;
-  const mail = mailtoFor(q, email);
+  // iPhone and iPad get the short body (see mailtoFor). The link itself stays a
+  // plain href either way; only which href is chosen depends on the device.
+  const ios = typeof navigator !== 'undefined' &&
+    (/iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+  const mail = mailtoFor(q, email, { short: ios });
   const statusColor = q.status === 'answered' ? C.green : q.status === 'open' ? C.amber : C.gold;
   return (
     <div id={q.id} style={{ border: `1px solid ${C.border}`, borderRadius: "6px", background: "#fff",

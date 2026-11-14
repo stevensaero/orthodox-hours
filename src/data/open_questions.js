@@ -78,12 +78,20 @@ export const SUBJECTS = {
   other:           'Other',
 };
 
-// The e-mail link for one question. Plain mailto, no script. The body is kept
-// short on purpose: iOS Mail silently drops a long pre-filled body.
-export function mailtoFor(q, email = CONTACT_EMAIL) {
+// The e-mail link for one question. Plain mailto, no script.
+//
+// Two bodies. The FULL body restates the question as a quoted line, the way a
+// reply shows the message it answers, so the writer has it in front of them
+// (Bill, 14 Nov 2026). The SHORT body is the question number only, for iPhone
+// and iPad: iOS Mail silently drops a long pre-filled body and opens a blank
+// message, and a quoted question runs well past the ~100 encoded characters
+// it tolerates. The subject carries the number and title in both.
+export function mailtoFor(q, email = CONTACT_EMAIL, { short = false } = {}) {
   if (!email) return null;
   const subject = `Orthodox Hours ${q.id}: ${q.title}`;
-  const body = `My answer to ${q.id}, and my source:`;
+  const body = short
+    ? `My answer to ${q.id}, and my source:`
+    : `> ${q.id}: ${q.question}\n\nMy answer, and my source:\n\n`;
   return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
