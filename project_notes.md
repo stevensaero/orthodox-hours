@@ -16,6 +16,14 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 
 ## WHERE THINGS STAND — 14 November 2026, end of the fortieth session (READ THIS FIRST)
 
+> **Fekula vol. III (Services of the Menaion) — where it is and how to use it.**
+> On Bill's computer at `Orthodox Hours/Fekula_ODS_SOM_V3/intake/` (made in the
+> eighteenth session, 24 Aug 2026; never committed here). Stage
+> `ods_v3_index.json` and the `entries/ods3-MMDD-*.md` file for the date. Check
+> every date against the index BEFORE ranking. Findings so far are under "TWO
+> FILES ON ONE DATE ARE TWO SERVICES" below. For the Hours wire-in, each covered
+> entry states the Hours outright; `HOURS_PILOT_NOTES.md` has the settled schema.
+
 Everything below this block is the session's running log, newest first. This
 block is the consolidated state. Tool **v0.52.2**; nine gates green.
 
