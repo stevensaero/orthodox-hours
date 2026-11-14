@@ -181,7 +181,7 @@ export const SOURCE_FILES = [...AUGUST_DATES, ...NOVEMBER_DATES].map(d => `${d}.
 export const DAILY_PAGE_COUNTS = {
   '11-14.pdf': 14, '11-14A.pdf': 16, '11-15.pdf': 10,
   '11-16.pdf': 16, '11-17.pdf': 10, '11-18.pdf': 11, '11-19.pdf': 10,
-  '11-20.pdf': 21, '11-21.pdf': 22,
+  '11-20.pdf': 21, '11-21.pdf': 22, '11-22.pdf': 16,
 };
 // ── The General Menaion (§6.2) — enumerated FROM THE FOLDER ─────────────────
 // Never from encoding_rule_v2.md §2.1's prose, which is wrong in three ways:
@@ -710,6 +710,7 @@ export const DAILY_KEYS = {
     ['psalm50_closer_rubric', 'rubric', 'After Psalm 50: Both now rubric ("The foregoing is repeated")'],
     ['psalm50_verse_rubric', 'rubric', 'After Psalm 50: "Have mercy on me O God" rubric'],
     ['exapostilarion_glory', 'text', 'Glory: another Exapostilarion (11-16)'],
+    ['exapostilarion_closer_rubric', 'rubric', 'Exapostilarion: "Glory, Both now, the foregoing is repeated"'],
     ['praises_rubric', 'rubric', 'Praises rubric'],
     ['praises_glory', 'text', 'Praises Glory'],
     ['praises_closer', 'closer', 'Praises Both now'],
@@ -721,6 +722,9 @@ export const DAILY_KEYS = {
     ['beatitudes_rubric', 'rubric', 'Beatitudes rubric'],
     ['troparia', 'labeled_items', 'Troparia at Liturgy, where the service has more than one'],
     ['kontakia', 'labeled_items', 'Kontakia at Liturgy, where the service has more than one'],
+    ['prokeimena', 'labeled_items', 'Prokeimena and their verses, where the Liturgy prints more than one (11-22)'],
+    ['alleluias', 'labeled_items', 'Alleluia verses, where the Liturgy prints more than one set (11-22)'],
+    ['communion_verses', 'labeled_items', 'Communion verses, where the Liturgy prints more than one (11-22)'],
     ['epistle_rubric', 'rubric', 'Epistle rubric'],
     ['megalynarion_rubric', 'rubric', 'Rubric for what is chanted instead of "It is truly meet"'],
     ['megalynarion_refrain', 'text', 'Refrain chanted before the festal Irmos at Liturgy'],

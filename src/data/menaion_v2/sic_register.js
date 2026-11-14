@@ -9,6 +9,11 @@ export default [
   // Each was confirmed against TWO independent extractions of the PDF text
   // layer (pdfplumber and poppler) before being registered: these are what the
   // page prints, not extraction residue.
+  { path: '11-22.c0.matins.sessional_ode3[0]', file: '11-22.pdf', locus: 'p5 Ode III sessional (apostle)',
+    verbatim: 'grant re-mission of sins',
+    note: 'LINE-BREAK HYPHEN (ledger A-1 class): the page breaks "re-" / "mission". Stored joined with the hyphen kept, pending the A-1 ruling.' },
+  { path: '11-22.c0.matins.canons[0].odes.9.items[2]', file: '11-22.pdf', locus: 'p10 Ode 9 troparion 3',
+    verbatim: 'awe-some ark', note: 'Hyphen inside the word, mid-line; 11-21.pdf prints the same troparion the same way.' },
   { path: '11-21.c0.matins.canons[1].odes.7.items[2]', file: '11-21.pdf', locus: 'p14 Ode 7 Glory ...',
     verbatim: 'is led into the Holy of holies,',
     note: 'The troparion ENDS on a comma at the foot of p14; p15 opens with "Both now". The sentence is unfinished in print: text appears to have been lost at the page turn. Stored as printed; a candidate for a physical-book check.' },
