@@ -318,6 +318,33 @@ rebuilt to this form** (its `troparion_other_saint` key is retired and removed
 from the schema; its single kontakion keeps the canonical field). 11-18 has one
 troparion and one kontakion and is unchanged.
 
+### TWO FILES ON ONE DATE ARE TWO SERVICES (ruled by Bill, 14 Nov) — AND WHAT VOL. III ADDS
+
+Bill confirmed: where the folder holds `MM-DD.pdf` and `MM-DDA.pdf`, they are
+SEPARATE SERVICES, not a multi-commemoration. Fekula's "Double Service" (2B,
+2G1) is one service shared by two saints (11-18, 11-23, 11-24); it does not
+describe the "A" files. Q-0002 now covers all three two-file dates so far
+(11-14, 11-26, 11-27) as one question. The assembler reads c0 by default.
+
+**Consult `Fekula_ODS_SOM_V3/intake/` on every date before ranking.** It is on
+Bill's machine, not in the repo; stage `ods_v3_index.json` plus the entry file.
+Its November coverage is ONE date, 25 November (three entries). What it gave:
+
+- 11-25 rank is PRINTED: doxology, Monday through Saturday (`ods3-1125-wkd`,
+  pp. 56-58). The entry also gives the Hours outright: troparion of the feast;
+  Glory, of the Hieromartyrs; kontakion of the feast.
+- It confirms the 11-25 encoding: the feast canon is Canon II; the unlabeled
+  last troparion of each ode is the theotokion; the single printed katavasia is
+  one of the Nativity katavasiae sung after every ode.
+- 16 August shows the two-services pattern in Fekula's own hand: entries
+  "using the second service in the Menaion", lesser saint "transferred to
+  Little Compline".
+- **A printed Litiya does not prove Vigil rank** (the Litia may be served at a
+  polyeleos service if the rector directs). So the Vigil ranks on 11-26A and
+  11-27A are now marked provisional under Q-0002.
+- Vol. III has a Sunday entry for St. Clement of Ochrid on 25 November, a
+  service the St. Sergius folder does not appear to hold.
+
 ### 11-27 ADDED — FIRST COMPLINE; AN ICON FEAST
 
 `11-27.pdf` (14 pages) is c0, `11-27A.pdf` (16 pages) is c1.
