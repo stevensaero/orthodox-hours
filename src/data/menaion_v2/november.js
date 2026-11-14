@@ -19265,6 +19265,2387 @@ const NOVEMBER = {
     }
    }
   ]
+ },
+ "11-25": {
+  "_encoded": [
+   "c0.identity",
+   "c0.vespers",
+   "c0.matins",
+   "c0.liturgy"
+  ],
+  "commemorations": [
+   {
+    "kind": "apodosis",
+    "feast_ref": "entrance_theotokos",
+    "title": {
+     "text": "APODOSIS OF THE ENTRY OF THE THEOTOKOS INTO THE TEMPLE COMMEMORATION OF OUR FATHERS AMONG THE SAINTS, THE HIEROMARTYR CLEMENT, POPE OF ROME, AND PETER, PATRIARCH OF ALEXANDRIA",
+     "tier": 1,
+     "src": {
+      "file": "11-25.pdf",
+      "locus": "p1 title"
+     },
+     "sourceLabel": "THE 25th DAY OF THE MONTH OF NOVEMBER"
+    },
+    "rank": "doxology",
+    "fekula_section": "2G3",
+    "oca_primary": true,
+    "source_file": "11-25.pdf",
+    "note": "ONE printed service for the Apodosis (leave-taking) of the Entry and two hieromartyrs (Clement of Rome, Peter of Alexandria): one entry, items tagged with `saint`. No Polyeleos; Matins prints 6 stichera on the Praises and \"Great Doxology\": Doxology rank, Fekula 2G3 (Apodosis of a feast of the Theotokos). THREE canons (the feast, by Basil; Clement; Peter), interleaved, stored whole. The canon of the feast here prints a Triadicon and a closing troparion in each ode that 11-21 and 11-23 do not, and Ode IX carries refrains before each troparion, stored labeled in page order. ONE katavasia is printed in the whole file, after Ode IV; it is stored on Peter's Ode IV, where it stands. The Liturgy prints TWO Epistles and TWO Gospels under \"FOR THE FEAST:\" / \"FOR THE HOLY HIEROMARTYRS:\": lists `epistles`, `gospels`, each reading noting its heading. The `appendix` is printed BETWEEN Vespers and Matins (pp. 3-4): the order when the apodosis falls on a Sunday, with a troparion and a kontakion of Clement alone that appear nowhere else in the file.",
+    "vespers": {
+     "order": [
+      "lic_rubric",
+      "lic",
+      "lic_closer",
+      "aposticha_rubric",
+      "aposticha",
+      "aposticha_closer",
+      "troparia"
+     ],
+     "lic_rubric": {
+      "text": "On “Lord, I have cried ...,” 6 Stichera: 3 of the feast, in Tone I:",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p1 LIC rubric"
+      }
+     },
+     "lic": [
+      {
+       "text": "Let us join chorus today, O ye faithful, chanting to the Lord in psalms and hymns, and honoring His sacred tabernacle, the animate ark, who contained the uncontainable Word; for she is brought to the Lord, having become a babe in a manner transcending nature. And Zachariah, the great high priest, receiveth her with gladness as the dwelling-place of God.",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p1 LIC 1"
+       },
+       "label": "plain",
+       "saint": "feast",
+       "tone": 1,
+       "spec_mel": "O wondrous miracle ..."
+      },
+      {
+       "text": "Today the animate temple of the holy glory of Christ our God, the pure one who alone among women is blessed, is led into the temple of the law, to dwell in the Holy of holies; with her Joachim and Anna rejoice in spirit, and choirs of virgins sing to the Lord, chanting in psalms and honoring His Mother.",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p1 LIC 2"
+       },
+       "label": "plain",
+       "saint": "feast",
+       "spec_mel": "O wondrous miracle ..."
+      },
+      {
+       "text": "Thou art the proclamation of the prophets, the glory of the apostles, the boast of the martyrs, the restoration of all mortals, O Virgin Mother of God; for through thee have we been reconciled with God. Wherefore, we honor thine entrance into the temple of the Lord, and with the angel all of us who find salvation through thy supplications cry out to thee in hymns: Rejoice, O most pure one!",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p1 LIC 3"
+       },
+       "label": "plain",
+       "saint": "feast",
+       "spec_mel": "O wondrous miracle ..."
+      },
+      {
+       "text": "As a branch of the vine of life, * O all-wise father and hierarch, * through the Spirit thou didst put forth * the beautiful grapes of dogmas, * which ever exude the saving wine * of divine knowledge, * gladdening the hearts of all the pious * who truly honor thee, ** O all-blessed God-bearer Clement.",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p1 LIC 4"
+       },
+       "label": "plain",
+       "saint": "Clement",
+       "sourceLabel": "And 3 Stichera of the holy hieromartyr Clement, in Tone II",
+       "spec_mel": "When from the Tree ...",
+       "tone": 2
+      },
+      {
+       "text": "As a disciple of the preeminent Peter, * O all-praised father, * thou didst establish thyself like a precious stone * upon his Stone, * demolishing the fabric of polytheism * with the strength of thy words * and raising up divine temples for the worship of the Trinity, * for Whom thou didst struggle, O blessed one, ** and for Whom thou didst receive the crown of martyrdom.",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p1 LIC 5"
+       },
+       "label": "plain",
+       "saint": "Clement",
+       "spec_mel": "When from the Tree ..."
+      },
+      {
+       "text": "Like the light-giving sun * thou didst shine forth from the lands of the West, O father, * splendidly illumining the earth with the radiance * of thy dogmas and thy wounds; * and having reached the lands of the East, O thrice-blessed one, * thou wast slain and set; * but hast richly shone forth unto Christ * with heavenly beams, O Clement, ** enlightened unceasingly through divine communion.",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p1 LIC 6"
+       },
+       "label": "plain",
+       "saint": "Clement",
+       "spec_mel": "When from the Tree ..."
+      }
+     ],
+     "lic_closer": {
+      "text": "After thy nativity, O Lady, Bride of God, thou didst go to the Temple of the Lord to be raised in the Holy of Holies as a consecrated maiden. Gabriel was then sent to thee, the all-immaculate one, bringing food unto thee. All of the heavenly powers marveled, beholding the Holy Spirit abiding within thee: Wherefore, O most pure and undefiled Mother of God, who art glorified in heaven and on earth, save thou our race.",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p2 LIC Glory/Both now"
+      },
+      "type": "of_the_feast",
+      "saint": "feast",
+      "sourceLabel": "Glory ..., Both now ..., in Tone VIII",
+      "tone": 8
+     },
+     "aposticha_rubric": {
+      "text": "On the Aposticha, these Stichera of the feast, in Tone V:",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p2 Aposticha rubric"
+      }
+     },
+     "aposticha": [
+      {
+       "text": "Rejoice, O heaven and earth, beholding the only immaculate Virgin, the noetic heaven, coming forth to be raised in honor in the house of God! To her Zachariah cried out, marveling: “O portal of the Lord, I open unto thee the gates of the temple! Rejoice therein, joining chorus! For I have come to know and believe that the deliverance of Israel is manifestly coming, and that God the Word will be born through thee, granting the world great mercy!”",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p2 Aposticha 1"
+       },
+       "label": "plain",
+       "tone": 5,
+       "saint": "feast",
+       "spec_mel": "Rejoice ..."
+      },
+      {
+       "text": "The virgins that follow after her shall be brought unto the King, * those near her shall be brought unto Thee.",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p2 Aposticha verse 1"
+       },
+       "label": "refrain",
+       "sourceLabel": "Verse",
+       "label_inline": true
+      },
+      {
+       "text": "O divinely manifest grace! With gladness Anna leadeth into the temple of God the pure Ever-virgin given her by grace, and she calleth maidens to go before her, bearing lamps and saying: “Go forth, my child! Be thou an offering and incense of sweet savor unto Him Who gave thee to us! Enter into the impassable precincts and learn the mysteries! And prepare thyself to be the gladsome and comely dwelling-place of Jesus, Who bestoweth upon the world great mercy!”",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p2 Aposticha 2"
+       },
+       "label": "plain",
+       "saint": "feast",
+       "spec_mel": "Rejoice ..."
+      },
+      {
+       "text": "They shall be brought with gladness and rejoicing, * they shall be brought into the temple of the King.",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p2 Aposticha verse 2"
+       },
+       "label": "refrain",
+       "sourceLabel": "Verse",
+       "label_inline": true
+      },
+      {
+       "text": "The all-holy Virgin, the temple in which God dwelleth, is borne into the temple of God, and maidens bearing lamps now precede her. Joachim and Anna, the excellent couple, her parents, leap for joy, dancing, for they gave birth to her who gave birth to the Creator, who, rejoicing in the divine tabernacles is fed by the hand of an angel, and hath been revealed to be the all-immaculate Mother of Christ, Who bestoweth great mercy upon the world.",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p2 Aposticha 3"
+       },
+       "label": "plain",
+       "saint": "feast",
+       "spec_mel": "Rejoice ..."
+      }
+     ],
+     "aposticha_closer": {
+      "text": "Assembling today, ye councils of the faithful, let us keep spiritual festival, and let us piously praise the divine maiden, the Virgin Theotokos, who is led into the temple of the Lord, she who was chosen before out of all generations to be the habitation of Christ God, the King of all. Bearing candles, O virgins, go ye on before, doing homage to the honored entry of the Ever-virgin! Ye mothers, setting aside all grief, follow joyously her who is to become the Mother of God, the mediatress of joy for the world! And with the angel let us all joyfully cry out to the joyous one “Rejoice!”, for she ever prayeth for our souls.",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p2 Aposticha Glory/Both now"
+      },
+      "type": "of_the_feast",
+      "composer": "Sergius of Jerusalem",
+      "saint": "feast",
+      "sourceLabel": "Glory ..., Both now ..., the composition of Sergius of Jerusalem, in Tone VI",
+      "tone": 6
+     },
+     "troparia": [
+      {
+       "text": "O God of our fathers, * ever deal with us according to Thy meekness. * Take not Thy mercy from us, * but by the prayers of these saints ** direct our life in peace.",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p3 Troparion of the hieromartyrs"
+       },
+       "label": "plain",
+       "saint": "Clement and Peter",
+       "sourceLabel": "Troparion of the hieromartyrs, in Tone IV",
+       "tone": 4
+      },
+      {
+       "text": "Today is the prelude of God's good will * and the proclamation of the salvation of mankind. * The Virgin hath manifestly appeared in the temple of God, * proclaiming Christ unto all. * To her let us cry aloud: * Rejoice, O thou fulfillment ** of the Creator's dispensation!",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p3 Troparion of the feast"
+       },
+       "label": [
+        "glory",
+        "both_now",
+        "of_the_feast"
+       ],
+       "saint": "feast",
+       "sourceLabel": "Glory ..., Both now ..., Troparion of the feast, in Tone IV",
+       "tone": 4
+      }
+     ]
+    },
+    "matins": {
+     "order": [
+      "troparia",
+      "troparia_closing_rubric",
+      "sessional_1",
+      "sessional_2",
+      "canon_rubric",
+      "canons",
+      "kontakia_ode3",
+      "sessional_ode3",
+      "kontakia_ode6",
+      "exapostilarion",
+      "exapostilarion_closer",
+      "praises_rubric",
+      "praises",
+      "praises_glory",
+      "praises_closer",
+      "great_doxology_rubric"
+     ],
+     "troparia": [
+      {
+       "text": "Today is the prelude of God's good will * and the proclamation of the salvation of mankind. * The Virgin hath manifestly appeared in the temple of God, proclaiming Christ unto all. * To her let us cry aloud: ** Rejoice, O thou fulfillment of the Creator's dispensation!",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p5 Troparion of the feast at God is the Lord"
+       },
+       "label": "of_the_feast",
+       "saint": "feast",
+       "repeat": 2,
+       "sourceLabel": "On “God is the Lord ...,” the Troparion of the feast, in Tone IV",
+       "tone": 4
+      },
+      {
+       "text": "O God of our fathers, * ever deal with us according to Thy meekness. * Take not Thy mercy from us, * but by the prayers of these saints ** direct our life in peace.",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p5 Troparion of the hieromartyrs at God is the Lord"
+       },
+       "label": "glory",
+       "saint": "Clement and Peter",
+       "sourceLabel": "Glory ..., that of the holy hieromartyrs, in Tone IV",
+       "tone": 4
+      }
+     ],
+     "troparia_closing_rubric": {
+      "text": "Both now ..., that of the feast (Once).",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p5 Both now, that of the feast (Once)"
+      }
+     },
+     "sessional_1": [
+      {
+       "text": "The fruit of the righteous Joachim and Anna is offered to God in the holy sanctuary, the nourisher of our Life who became a babe in the flesh, whom the sacred Zachariah blessed. With faith let us all bless her as the Mother of God.",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p5 Sessional 1"
+       },
+       "label": "plain",
+       "saint": "feast",
+       "sourceLabel": "After the 1st chanting of the Psalter, the Sessional Hymn, in Tone I",
+       "spec_mel": "The choir of the angels ...",
+       "tone": 1
+      },
+      {
+       "text": "Glory ..., Both now ..., the foregoing is repeated.",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p5 Sessional 1 repeat device"
+       },
+       "label": [
+        "glory",
+        "both_now"
+       ]
+      }
+     ],
+     "sessional_2": [
+      {
+       "text": "Even before thy conception thou wast consecrated to God, O pure one, and, having been born on earth, thou hast now been offered to Him as a gift, fulfilling thy parents' vow; and having been presented in the divine temple, accompanied as a babe by lighted lamps in purity, thou hast been revealed to be the receptacle of the unapproachable and divine light, as the temple of God. Truly great is thy going forth, O only Ever-virgin Bride of God!",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p5 Sessional 2"
+       },
+       "label": "plain",
+       "saint": "feast",
+       "sourceLabel": "After the 2nd chanting of the Psalter, the Sessional Hymn, in Tone IV",
+       "spec_mel": "Joseph marveled ...",
+       "tone": 4
+      },
+      {
+       "text": "Glory ..., Both now ..., the foregoing is repeated.",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p5 Sessional 2 repeat device"
+       },
+       "label": [
+        "glory",
+        "both_now"
+       ]
+      }
+     ],
+     "canon_rubric": {
+      "text": "Canon of the feast, with 6 Troparia, including the Irmos; and two canons of the saints, with 8 Troparia.",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p5 Canon rubric"
+      }
+     },
+     "canons": [
+      {
+       "title": "Canon of the feast, the composition of Basil, in Tone I:",
+       "composer": "Basil",
+       "tone": 1,
+       "odes": {
+        "1": {
+         "irmos": {
+          "text": "Let us all chant a hymn of victory unto God, Who hath wrought wondrous miracles with His upraised arm, and saved Israel, for He hath been glorified!",
+          "tier": 1,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p5 Ode 1 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Let us hasten today, honoring the Theotokos with hymns, and let us celebrate a spiritual feast; for she is offered as a gift to God in the temple.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p5 Ode 1 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "With songs let us hymn the glorious arrival of the Theotokos; for today, as the prophets foretold, she is borne as a gift of great price into the temple, though she is herself the temple of God.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p5 Ode 1 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O consubstantial Trinity-Father, Son and Holy Spirit: Thee do we glorify with faith as the Creator of all, and to Thee do we piously cry aloud: Save us, O God!",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p6 Ode 1 Triadicon"
+           },
+           "label": "trinitarion",
+           "sourceLabel": "Triadicon",
+           "label_inline": true
+          },
+          {
+           "text": "Clad in a robe stained purple by the dye of thy blood, our King and God, coming forth, hath restored the whole human race in His compassion.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p6 Ode 1 troparion 4"
+           },
+           "label": "plain"
+          }
+         ]
+        },
+        "3": {
+         "irmos": {
+          "text": "Let my heart be established in Thy will O Christ God, * Who hath established a second heaven over the waters, * and founded the earth upon the waters, * O all-powerful One.",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p6 Ode 3 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "O ye who love the feasts of the Church, let us keep festival and rejoice today together in spirit, and in gladness, on the holy feast of the daughter of the King, the Mother of our God.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p7 Ode 3 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Rejoice today, O Joachim! Be thou glad in spirit, O Anna, leading to the Lord the three year old child born from thee, as though she were a pure and most immaculate heifer.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p7 Ode 3 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Mary, the Theotokos, the habitation of God, is led into the holy temple, being three years of age in the flesh; and, going before her, virgins bear lighted lamps.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p7 Ode 3 Glory ..."
+           },
+           "label": "glory",
+           "sourceLabel": "Glory ...,",
+           "label_inline": true
+          },
+          {
+           "text": "The pure ewe-lamb of God, the undefiled turtle-dove, the tabernacle containing God, the sanctuary of glory, hath chosen to dwell within the holy tabernacle.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p7 Ode 3 Both now ..."
+           },
+           "label": "both_now",
+           "sourceLabel": "Both now ...,",
+           "label_inline": true
+          }
+         ]
+        },
+        "4": {
+         "irmos": {
+          "text": "Foreseeing in the Spirit O prophet Habbakuk, * the incarnation of the Word, * thou didst proclaim, crying aloud: * When the years draw nigh, Thou shalt be known; * when the season cometh, Thou shalt be shown forth! * Glory to Thy power, O Lord!",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p8 Ode 4 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "O prophet Isaiah, prophesy unto us: Who is the Virgin Who will conceive in her womb, who springing forth from the root of Judah, and who shall give birth to the right glorious Fruit of the holy seed of King David?",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p8 Ode 4 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O virgins, commence ye to chant hymns, holding candles in your hands, and praising the arrival of the pure Theotokos who now cometh to the temple of God, celebrating with us!",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p8 Ode 4 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Let us piously glorify the Hypostases of the Trinity, the Unity in image, the true God, Whom the ranks of angels and archangels hymn as the Master of all creation and Whom mankind ever faithfully worships.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p8 Ode 4 Triadicon"
+           },
+           "label": "trinitarion",
+           "sourceLabel": "Triadicon",
+           "label_inline": true
+          },
+          {
+           "text": "O most holy and pure one, unceasingly entreat thy Son and God, to Whom thou hast given birth in the flesh, that He deliver all thy servants from the multifarious snares of the devil and from all temptations which assail us.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p9 Ode 4 troparion 4"
+           },
+           "label": "plain"
+          }
+         ]
+        },
+        "5": {
+         "irmos": {
+          "text": "Shine forth thy radiant and everlasting light * upon us who rise early at dawn, * unto the judgments of Thy commandments, * O Master, Lover of mankind, * Christ our God.",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p10 Ode 5 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "O all ye Orthodox, let us take up lamps, hastening to glorify the Mother of God, for she is led to the Lord today as a right acceptable sacrifice.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p10 Ode 5 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Let thine ancestors be glad today, O Lady; and let her who gave birth to thee rejoice with thy father, for their fruit is offered to the Lord.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p10 Ode 5 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Rendering glory, let us worship the one beginningless and everlasting Godhead, Who in three Hypostases is indivisible by nature and is equal in honor by glory.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p10 Ode 5 Triadicon"
+           },
+           "label": "trinitarion",
+           "sourceLabel": "Triadicon",
+           "label_inline": true
+          },
+          {
+           "text": "O Birthgiver of God, ever delivered from misfortunes and sorrows, we have acquired thee as a calm haven and an impregnable rampart, and a supplicant amid evil circumstances.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p10 Ode 5 troparion 4"
+           },
+           "label": "plain"
+          }
+         ]
+        },
+        "6": {
+         "irmos": {
+          "text": "Emulating the prophet Jonah, I cry aloud: * Free Thou my life from corruption, O good One; * and save me who crieth out: * O Savior of the world, Glory be to Thee!",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p11 Ode 6 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "O ye faithful, let us celebrate the spiritual feast of the Mother of God, chanting piously; for she is more holy than the heavenly intelligences.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p11 Ode 6 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "With spiritual hymns let us praise the Mother of the Light, O ye faithful, for she hath appeared to us today, going forth into the temple of God.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p11 Ode 6 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O Unity in three Hypostases Father, Son and upright Spirit, indivisible Trinity: Have mercy upon those who worship thy divine dominion.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p11 Ode 6 Triadicon"
+           },
+           "label": "trinitarion",
+           "sourceLabel": "Triadicon",
+           "label_inline": true
+          },
+          {
+           "text": "He Who is uncontainable by anything, being contained within thy womb, O most pure Mother of God, issued forth from thee as God and man in two natures.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p11 Ode 6 troparion 4"
+           },
+           "label": "plain"
+          }
+         ]
+        },
+        "7": {
+         "irmos": {
+          "text": "The furnace became bedewed, O Savior, * and the children dancing, chanted: * O God of our fathers, blessed art Thou!",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p12 Ode 7 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "O ye who love the feasts of the Church let us join chorus and hymn the pure Lady honoring Joachim and Anna as is meet.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p12 Ode 7 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Prophesy, O David, speaking in the Spirit: The virgins who follow after thee shall be brought to thee into the temple of the Queen and Mother.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p12 Ode 7 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Let us glorify the indivisible Trinity, and let us hymn the one Godhead: the Father, the Word and the all-holy Spirit.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p12 Ode 7 Triadicon"
+           },
+           "label": "trinitarion",
+           "sourceLabel": "Triadicon",
+           "label_inline": true
+          },
+          {
+           "text": "Entreat the Lord to Whom thou hast given birth, in that He is compassionate by nature, O Birthgiver of God, that He save the souls of those who hymn thee.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p13 Ode 7 troparion 4"
+           },
+           "label": "plain"
+          }
+         ]
+        },
+        "8": {
+         "irmos": {
+          "text": "Him of whom the angels and all the hosts of heaven are in awe * as their Lord and Creator, * ye priests hymn, ye children praise, * ye peoples bless and supremely exalt * throughout all ages.",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p14 Ode 8 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Joachim rejoiceth today in splendor, and the blameless Anna offereth to the Lord God a sacrifice: the holy daughter given her according to God's promise.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p14 Ode 8 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The holy David and Jesse render praise, and Judah offereth homage; for the pure Virgin, of whom the pre-eternal God was born, grew forth as fruit from their root.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p14 Ode 8 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Let the thrice-holy Father, the Son and the Holy Spirit, the indivisible Unity, the one Godhead Who holdeth all creation in His hand, be hymned throughout all ages!",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p14 Ode 8 Triadicon"
+           },
+           "label": "trinitarion",
+           "sourceLabel": "Triadicon",
+           "label_inline": true
+          },
+          {
+           "text": "The beginningless Word began to exist in the flesh, being born of the Virgin maiden as was His good pleasure, both God and man, restoring us who before had fallen, in His extreme compassion.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p14 Ode 8 troparion 4"
+           },
+           "label": "plain"
+          }
+         ]
+        },
+        "9": {
+         "preface": [
+          {
+           "text": "At ODE IX the Magnificat is not chanted, but we chant the refrain of the feast:",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p15 Ode 9 preface rubric"
+           },
+           "label": "rubric"
+          },
+          {
+           "text": "Magnify, O my soul, her who hath been led into the temple of the Lord and been blessed by the hands of the priest.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p15 Ode 9 preface refrain"
+           },
+           "label": "refrain",
+           "sourceLabel": "Refrain",
+           "label_inline": true
+          }
+         ],
+         "irmos": {
+          "text": "The light-bearing cloud upon whom * the beginningless Master of all descended from heaven, * like the dew upon the fleece, * and of whom He was incarnate, * becoming a man for our sake, * let us all magnify as the pure Mother of God.",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p15 Ode 9 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Magnify, O my soul, her who hath been led into the temple of the Lord and been blessed by the hands of the priest.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p15 Ode 9 Canon of the feast refrain"
+           },
+           "label": "refrain",
+           "sourceLabel": "Refrain",
+           "label_inline": true
+          },
+          {
+           "text": "The divine maiden Mary, the fruit of the promise, issued forth from the righteous Joachim and Anna, and, a babe in the flesh, she is brought into the holy sanctuary like pleasing incense, to dwell in the Holy of holies.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p15 Ode 9 Canon of the feast 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Magnify, O my soul, her who hath been led into the temple of the Lord and been blessed by the hands of the priest.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p15 Ode 9 Canon of the feast refrain"
+           },
+           "label": "refrain",
+           "sourceLabel": "Refrain",
+           "label_inline": true
+          },
+          {
+           "text": "With hymns let us praise her who was a babe by nature and was supernaturally re-vealed as the Mother of God; for she is led unto the Lord in the temple of the law, as the fragrance of sweet savor for the righteous, as the spiritual fruit of her righteous parents.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p15 Ode 9 Canon of the feast 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Magnify, O my soul, the dominion of the indivisible Godhead in three Hypostases.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p16 Ode 9 Canon of the feast refrain"
+           },
+           "label": "refrain",
+           "sourceLabel": "Refrain",
+           "label_inline": true
+          },
+          {
+           "text": "Let us glorify the indivisible Trinity, the one Essence in three Hypostases, the undivided glory, Who, in a single Godhead, is unceasingly hymned in heaven and on earth, piously worshiping the Father, the Son and the Spirit.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p16 Ode 9 Canon of the feast Triadicon"
+           },
+           "label": "trinitarion",
+           "sourceLabel": "Triadicon",
+           "label_inline": true
+          },
+          {
+           "text": "Magnify, O my soul, the most pure Theotokos, who is more honorable and more glorious than the armies on high.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p16 Ode 9 Canon of the feast refrain"
+           },
+           "label": "refrain",
+           "sourceLabel": "Refrain",
+           "label_inline": true
+          },
+          {
+           "text": "O Virgin Birthgiver of God, pray thou, that we who flee with faith beneath thy compassion and piously worship thy Son as God and Lord of the world be delivered from corruption, misfortunes and all manner of temptations.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p16 Ode 9 Canon of the feast 3"
+           },
+           "label": "plain"
+          }
+         ]
+        }
+       }
+      },
+      {
+       "title": "Canon of hieromartyr Clement, the composition of Theophanes, in Tone VIII:",
+       "composer": "Theophanes",
+       "tone": 8,
+       "odes": {
+        "1": {
+         "irmos": {
+          "text": "Having passed through the water as upon dry land, * and having escaped the malice of the Egyptians, * the Israelites cried aloud: * Unto our God and Redeemer let us sing.",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p6 Ode 1 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Having been taught by the godly Peter, preeminent among the apostles, and acquired divine understanding from him, O father, thou didst denounce the delusion of idolatry.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p6 Ode 1 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Christ setteth thee forth on earth as a divinely planted vine, the virtuous fruits of pious doctrines, a truly flourishing vineyard.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p6 Ode 1 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The sound of thy divine precepts hath truly passed over all the ends of the earth, O wise Clement, enlightening all to theologize concerning the Trinity, the Godhead in unity.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p6 Ode 1 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Behold, the prophets' predictions concerning thee have truly been fulfilled! For, having seedlessly conceived the Word, O Birthgiver of God, thou hast given birth to Him in the flesh.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p6 Ode 1 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "3": {
+         "irmos": {
+          "text": "Thy fear, O Lord, do Thou plant * in the hearts of Thy servants * and be Thou the confirmation of us * who in truth call upon Thee.",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p7 Ode 3 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Richly, O wise one, was the grace of the Spirit poured forth through thy lips, whereby thou hast enlightened all by thy divine teachings, leading them to Christ.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p7 Ode 3 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "With the fire of abstinence thou didst utterly consume the fiery assaults of the passions having made thyself a temple of the divine Spirit, O father of valiant mind.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p7 Ode 3 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Having ascended the mountain of divine virtues and been covered by noetic darkness thou didst perceive the ineffable effulgence of the Spirit in thy pure soul.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p7 Ode 3 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O most pure one, thou didst ineffably conceive the Savior and Lord, Who hath delivered from evils us who call upon thee in truth.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p7 Ode 3 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "4": {
+         "irmos": {
+          "text": "Thou, O Lord, art my strength and Thou art my power, * Thou art my God and Thou art my joy, * Thou Who, while never leaving the bosom of Thy Father, * hast visited our poverty. * Therefore with the prophet Habbakuk I cry unto Thee, * “Glory to Thy power, O Lover of mankind!”",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p9 Ode 4 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Having arrived in the East from the West, O blessed one, thou didst join the apostle Peter, and, illumined by his divine effulgence and teachings, thou didst pass over all the lands of the West, announcing with him the word of salvation.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p9 Ode 4 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou wast another Moses, O Clement, for, setting forth the laws of God for all and writing down sacred teachings, thou hast ordered all the fullness of the Church. Wherefore, having thee as our legislator and teacher, we all honor thee with faith.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p9 Ode 4 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Having washed away all the sweat of ascetic endeavor, O blessed one, thou wast revealed to be a pious hierarch, leading all by thy divine proclamations to the faith of Christ; and having suffered lawfully, thou didst fittingly plait a wreath, O ever-memorable one.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p9 Ode 4 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "We have acquired thee, with God, as our helper; for thou wast the Mother of God, the Creator and Fashioner, Who took upon Himself our image and saved it from corruption and death, and glorified it with divine glory, O all-immaculate one.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p9 Ode 4 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "5": {
+         "irmos": {
+          "text": "Illumine us O Lord with Thy commandments, * and with Thine arm raised on high * grant us Thy peace, * O Lover of mankind!",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p10 Ode 5 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Walking in the light of the Lord's commandments, O blessed one, thou wast verily revealed to be His true child.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p10 Ode 5 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou didst renounce all passionate attachments on earth, O hierarch, that thou mightest receive the goodly fame which is to come and the splendor of the glory of Christ.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p10 Ode 5 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Adorned with the splendors of the martyrs, thou dost now stand with the angels before the Master. Pray thou for those who hymn thee.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p10 Ode 5 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O Virgin Mother of God, by thy supplications deliver from misfortunes those who hymn thee with faith, for we know thee to be our intercessor, O pure one.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p10 Ode 5 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "6": {
+         "irmos": {
+          "text": "Cleanse me, O Savior, * for many are mine iniquities; * lead me up from the abyss of evils I pray Thee, * for unto Thee have I cried, * and Thou hast hearkened unto me, * O God of my salvation.",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p11 Ode 6 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Afire with zeal for the love of the Lord, O wise one, thou didst mightily denounce the delusion of idolatry with thy discourse directed against it and with miraculous manifestations, O all-praised one.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p11 Ode 6 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou didst preserve the eye of thy heart from slumber, in nowise falling into the sleep of evil, ascending to the preeminent one with the divine ascents of the virtues.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p11 Ode 6 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "As an honored hierarch who received the authority to bind and loose sins from Christ the Savior, lift thou the debt of my manifold transgressions, and lead me to repentance.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p11 Ode 6 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "By thy prayers, O pure one, rescue me from misfortunes and cruel perils, and deliver me, I pray; for thou art an impregnable rampart, a haven and wall of protection, and an unassailable bulwark.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p11 Ode 6 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "7": {
+         "irmos": {
+          "text": "In Babylon, the pious youths did not worship the golden image, * but, bedewed in the midst of the fiery furnace, * they chanted a hymn, saying: * O supremely exalted God of our fathers, blessed art Thou!",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p13 Ode 7 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Thou didst shine forth like the dawn, illumining all the ends of the earth and driving away the most deceitful night of the delusion of idolatry, O divinely eloquent one, crying: O God of our fathers, Blessed art Thou!",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p13 Ode 7 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Desiring to save all by thy supplications, God bestowed clear sight upon Sisinnius, opening the eyes of both his soul and body, O father; and thereafter he found enlightenment in the divine font.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p13 Ode 7 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou dost pour forth streams of healings from thy divine shrine, O glorious Clement, ever delivering from many sufferings those who have recourse to thee and chant: O God of our fathers, Blessed art Thou!",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p13 Ode 7 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "It was fitting that He Who became incarnate from thee without seed issue forth, O most pure Virgin; for thou hast given rise to thy Son in a manner greater than all others, O pure one. Wherefore, we unceasingly cry aloud: Blessed is the Fruit of thy womb!",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p13 Ode 7 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "8": {
+         "irmos": {
+          "text": "The instruments of music sounded out in harmony, * and countless multitudes worshipped the image in Dura; * but the three children, refusing to bow in obeisance, * hymn and glorify the Lord throughout all ages.",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p14 Ode 8 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "As a disciple of Peter, thou didst emulate his divine character, O spiritual athlete Clement; wherefore, thou wast truly shown to be the inheritor of his cathedra, illumining all creation.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p14 Ode 8 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Having mystically reddened thy lips with the cup of wisdom, O Clement, thou didst cause the abyss of divine teachings to overflow, drowning the fear wrought by the demons and pouring forth salvation upon men's souls.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p14 Ode 8 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The Church, having acquired thy divine statutes as a most precious ornament, boasteth in thee and moveth all to honor thy memory with faith throughout all ages.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p14 Ode 8 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O Mary, Virgin Theotokos, who for our sake hast given birth to God the Savior in the flesh: Save those who hymn thy birthgiving with faith and supremely exalt thee throughout all ages.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p14 Ode 8 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "9": {
+         "irmos": {
+          "text": "Saved by thee, O pure Virgin, * we confess thee to be truly the Theotokos, * and together with the choirs of the bodiless hosts * thee do we magnify.",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p16 Ode 9 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Having finished thy race with many struggles and kept the Faith of Christ without wavering, thou hast been adorned with the crown of righteousness.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p16 Ode 9 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "As of old thou didst save the boy overtaken by the sea at the time of thine annual procession, O martyr of Christ, so also save me from the abyss of sin.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p16 Ode 9 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O spiritual athlete Clement, from perils, misfortunes and sorrows save those who honor thee with love, entreating Christ the Creator.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p16 Ode 9 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Fill my heart with joy, O Virgin who received the Fullness of joy, wiping away the grief of sin.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p16 Ode 9 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        }
+       }
+      },
+      {
+       "title": "Canon of hieromartyr Peter, the acrostic whereof is: “I praise the thrice-rich Peter”, the composition of Theophanes, in Tone VIII:",
+       "composer": "Theophanes",
+       "tone": 8,
+       "odes": {
+        "1": {
+         "irmos": {
+          "text": "Let us sing unto the Lord, * who led His people through the Red Sea: * for He alone hath gloriously been glorified.",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p6 Ode 1 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "As thou hast thy dwelling in the most splendid mansions, O all-blessed Peter, by thy supplications grant me enlightenment.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p6 Ode 1 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Having been taught understanding and been adorned with the priesthood, O all-blessed Peter, thou didst offer thyself to Christ in the shedding of thy blood.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p6 Ode 1 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O blessed one, thou wast given by God to the Church of Christ as an offering of great value, as an elaborate ornament.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p6 Ode 1 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O most pure Theotokos, we hymn thee, who hast given birth supra-naturally to the Incarnate, everlasting and all-divine Word. Katavasia: Christ is born, render ye glory. * Christ cometh from heaven, meet ye Him. * Christ is on earth, be ye exalted. * O all the earth, sing unto the Lord, * and sing praises in gladness, O ye people, * for He hath been glorified.",
+           "tier": 2,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p6 Ode 1 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "3": {
+         "irmos": {
+          "text": "There is none as holy as the Lord, * and none as righteous as our God, * Whom the whole of creation doth hymn: * There is none more righteous than Thee, O Lord.",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p7 Ode 3 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Thou didst ascend to the heavens, riding thy blood as it were a chariot, O most wise one, where Christ, our Forerunner, Who alone is sinless, hath entered.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p7 Ode 3 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou didst forsake this corruptible life and find immortal life, O blessed one, where, crowned, thou dost rejoice, praying that our souls be saved.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p7 Ode 3 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou didst flourish like a most fruitful palm-tree; and wast revealed to be like a fertile olive-tree in the courts of the Lord, O divinely inspired one, who art like myrrh, frankincense and sweetly fragrant ointment.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p7 Ode 3 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "We all hymn the holy Virgin, as the door of salvation, the beauteous garden, the cloud of the everlasting Light, saying to her: Rejoice! Katavasia: To the Son who was begotten of the Father * without change before all ages, * and in the last times, without seed, was made flesh of the Virgin, * to Christ our God let us cry aloud: * Thou hast raised up our horn, holy art Thou, O Lord.",
+           "tier": 2,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p7 Ode 3 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "4": {
+         "irmos": {
+          "text": "From the overshadowed mountain, * from the only Theotokos, * the prophet in divine vision * foresaw Thy coming in the flesh, O Word, * and with fear he glorified Thy power.",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p9 Ode 4 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Having trod the path of the virtues, O God-bearing father, thou didst attain to the mansions on high, adorned with the anointing of the priesthood and resplendent with the blood of martyrdom.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p9 Ode 4 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "With the outpourings of the torrents of thy blood, O blessed one, thou didst quench the furnace of deception, destroying the darkness of the persecutors, O right glorious hieromartyr.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p9 Ode 4 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou hast been revealed to us to be like a new Peter, truly shining with apostolic gifts, a performer of sacred mysteries and a witness to the sufferings of thy Master, O spiritually rich hieromartyr.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p9 Ode 4 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Having given birth to the Fulfillment of all good things, O Virgin, fulfill thou our petitions, asking for us deliverance from sins, enlightenment and great mercy.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p9 Ode 4 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ],
+         "katavasia": {
+          "text": "Rod of the root of Jesse, * and flower that blossomed from his stem, * O Christ, Thou hast sprung from the Virgin. * From the Mountain overshadowed by the forest * Thou hast come, made flesh from her that knew not wedlock, * O God who art not formed from matter. * Glory to Thy power, O Lord.",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p10 Ode 4 katavasia"
+          },
+          "sourceLabel": "Katavasia",
+          "label_inline": true
+         }
+        },
+        "5": {
+         "irmos": {
+          "text": "Rising early we cry to Thee, O Lord; * save us, for Thou art our God, * and we know none other besides Thee.",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p10 Ode 5 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Having ascended the rock of faith, O spiritual athlete, thou didst remain unshaken amid temptation by the adversary.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p10 Ode 5 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "With the flaming sword of the Holy Spirit, O hierarch, by divine judgment thou didst slay Arius the blasphemer.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p11 Ode 5 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Strengthened by the might of the Savior, O glorious one, thou didst trample down the power and might of the enemy.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p11 Ode 5 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "We hymn thee, as Virgin after giving birth, O Theotokos, who for the sake of the world thou hast given birth in the flesh unto God the Word. Katavasia: As Thou art the God of peace and Father of compassions, * Thou hast sent unto us Thine angel of great counsel, * granting us peace. * Wherefore guided towards the light of the knowledge of God, * and watching by night we glorify Thee, * O Lover of mankind.",
+           "tier": 2,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p11 Ode 5 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "6": {
+         "irmos": {
+          "text": "O Thou that puttest on light as a garment * grant me also a robe of light, * O All-merciful Christ, our God.",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p12 Ode 6 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Having lived for God in chastity and righteousness, O all-blessed Peter, thou didst receive from Him a blessed end.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p12 Ode 6 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O wondrous Peter, thou didst offer thyself as a most perfect and acceptable sacrifice unto God Who became a sacrifice for thy sake.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p12 Ode 6 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Full of spiritual discourse, thou wast an instrument played by the Spirit, giving rise to ineffable music, O divinely eloquent one.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p12 Ode 6 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O thou who at the word of the angel alone hast given birth to the Word in the flesh, we pray thee to deliver our souls from the snares of the enemy. Katavasia: The sea monster spat forth Jonah as it had received him, * like a babe from the womb: * while the Word, having dwelt in the Virgin and taken flesh, * came forth from her yet kept her incorrupt. * For being Himself not subject to decay. * He preserved His Mother free from all harm.",
+           "tier": 2,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p12 Ode 6 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "7": {
+         "irmos": {
+          "text": "In Babylon, the pious youths did not worship the golden image, * but, bedewed in the midst of the fiery furnace, * they chanted a hymn, saying: * O supremely exalted God of our fathers, blessed art Thou!",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p13 Ode 7 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Adorned with a godly life and illumined with divine light, O wise one, thou didst enter into the impassable precincts of heaven, making thine abode there, and crying out to the Creator: O God of our fathers, Blessed art Thou!",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p13 Ode 7 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "That thou mightest please Christ God most splendidly, O most noetically rich and divinely blessed one, thou didst willingly give thyself over to the hands of the iniquitous, chanting: O God of our fathers, Blessed art Thou!",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p13 Ode 7 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Wholly illumined, thou wast deemed worthy to behold Christ Who showed thee His own robe, woven from on high, which was cruelly rent, O venerable one, and thou didst cry: O God of our fathers, Blessed art Thou!",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p13 Ode 7 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "In that thou art wholly pure, thou didst receive the incarnate Word within thy womb; do thou entreat Him, that He cleanse my soul and body of transgressions, O most pure one, for I run to thee with pure faith. Katavasia: Scorning the impious decree of the godless one, * the children brought up together in godliness * feared not the threat of fire, * but standing in the midst of the flames, they sang: * “O God of our fathers, blessed art Thou.”",
+           "tier": 2,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p13-p14 Ode 7 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "8": {
+         "irmos": {
+          "text": "Glorified in the holy mountain, * the Lord revealed the mystery of the ever-virgin unto Moses * in the flames of the burning bush: * praise ye and supremely exalt Him throughout all ages.",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p14 Ode 8 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Thou didst suppress the ripe perniciousness of the most evil blasphemy of Arius, cutting him off from the company of the faithful and driving him from the fold of the Church, O divinely wise one.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p14-p15 Ode 8 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Peter was revealed to be a leader, and divine primate of the choir of the apostles, and thou wast revealed to be a pillar of the martyrs, O all-wise God-bearer Peter, and a sacred performer of the divine mysteries.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p15 Ode 8 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Having been taught the understanding of things to come through divine revelation, O thou of godly eloquence, and having perceived thy departure from the earth through martyrdom, thou didst pass over to the highest, unto Christ, the Lord of glory throughout all ages.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p15 Ode 8 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The Lord Who dwelt in the Virgin's womb and in an awesome manner surpassing all understanding issued forth from her and restored ancient Adam, hymn ye and supremely exalt Him throughout all ages. Katavasia: The furnace moist with dew showed forth an image * of a wonder past nature, * for it burned not the youths whom it had received; * neither did the fire of the Godhead consume the Virgin * when it descended into her womb. * Wherefore, chanting, we sing: * Let all creation bless the Lord and supremely exalt Him throughout all ages!",
+           "tier": 2,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p15 Ode 8 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "9": {
+         "irmos": {
+          "text": "The prophetic vision of the lawgiver on the mountain, * in the fire of the burning bush, * prefigured thy birthgiving O Ever-Virgin, * the salvation of us the faithful, * wherefore with never silent hymns we magnify thee.",
+          "tier": 2,
+          "src": {
+           "file": "11-25.pdf",
+           "locus": "p16 Ode 9 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Let us hymn the wondrous Peter who was appointed beforehand to serve in sanctity as a hierarch, who right gloriously received the crown of the priesthood and emulated the suffering of Christ.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p16 Ode 9 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Let us hymn the God-bearing Peter, who was strengthened by the staff of the power of the Lord, who was made a priest and served as a priest, and who offered himself to Christ as a sacrifice.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p16 Ode 9 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Let us hymn the God-pleasing Peter, who was permeated with the effulgence of the Trinity, having found delight in the most splendid radiance thereof and asketh for salvation on our behalf.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p16 Ode 9 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou givest salvation abundantly to my soul, for as primate thou hast the authority to loose and bind transgressions through thine entreaties, O most sacred one.",
+           "tier": 1,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p16 Ode 9 troparion 4"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou art our sword and rampart, O Theotokos, thou art the help of those who have recourse to thee, and we now prompt thee to make supplications, that we may be delivered from our enemies. Katavasia: A strange and most wondrous mystery do I see: * the cave is heaven; * the Virgin the throne of the cherubim; * the manger a room, in which Christ God, * whom nothing can contain, is laid. * Whom we praise and magnify.",
+           "tier": 2,
+           "src": {
+            "file": "11-25.pdf",
+            "locus": "p16-p17 Ode 9 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        }
+       }
+      }
+     ],
+     "kontakia_ode3": [
+      {
+       "text": "O ye divine and immovable towers of the Church, * truly strong and divine pillars of piety, * O all-praised Clement and Peter: * by your supplications ** preserve us all.",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p8 Kontakion of the holy hieromartyrs (after Ode III)"
+       },
+       "label": "plain",
+       "saint": "Clement and Peter",
+       "sourceLabel": "Kontakion of the holy hieromartyrs, in Tone IV",
+       "spec_mel": "Thou hast appeared today ...",
+       "tone": 4
+      }
+     ],
+     "sessional_ode3": [
+      {
+       "text": "Having shone forth like the radiance of the sun, O venerable Clement, divinely eloquent light-bearer, boast of martyrs, thou dost radiantly shine upon the whole world with thy teachings.",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p8 Ode III sessional (Clement)"
+       },
+       "label": "plain",
+       "saint": "Clement",
+       "sourceLabel": "Sessional Hymn of the holy hieromartyr Clement, in the same melody"
+      },
+      {
+       "text": "Thou didst lead the flock given thee by Christ, the Most High Judge, and didst tend it in the meadows of proper living with thine all-wise dogmas, driving away Arius, as a savage wolf, who had come among them with ungodly teachings, wherefore, having laid down thy life for them, thou didst earn the name shepherd, as saith the Lord. O blessed hierarch Peter, entreat Christ God, that He grant remission of sins to those who honor thy holy memory with love.",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p8 Ode III sessional (Peter)"
+       },
+       "label": "glory",
+       "saint": "Peter",
+       "sourceLabel": "Glory ..., Sessional Hymn of the holy hieromartyr Peter, in Tone VIII",
+       "spec_mel": "Of the Wisdom ...",
+       "tone": 8
+      },
+      {
+       "text": "With gladness Mary, the Theotokos, is most gloriously brought into the house of God: the unblemished ewe-lamb, the undefiled bridal-chamber, whom the angels of God, escort with faith and all the faithful ever call blessed and hymn her unceasingly with a loud voice in thanksgiving: Thou art our glory and salvation, O most immaculate one!",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p8 Ode III sessional (feast)"
+       },
+       "label": [
+        "both_now",
+        "of_the_feast"
+       ],
+       "saint": "feast",
+       "sourceLabel": "Both now ..., Sessional Hymn of the feast, in Tone IV",
+       "spec_mel": "Joseph marveled ...",
+       "tone": 4
+      }
+     ],
+     "kontakia_ode6": [
+      {
+       "text": "The most pure temple of the Savior, * the precious bridal chamber and Virgin, * the sacred treasury of the glory of God, * hath been brought into the house of the Lord this day, * bringing with her the grace that is in the divine Spirit. * To her do the angels of God chant the hymn: ** She is the heavenly tabernacle!",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p12 Kontakion of the feast (after Ode VI)"
+       },
+       "label": "of_the_feast",
+       "saint": "feast",
+       "sourceLabel": "Kontakion of the feast, in Tone IV",
+       "spec_mel": "Having been lifted up ...",
+       "tone": 4
+      },
+      {
+       "text": "Beholding the grace of the ineffable and divine mysteries of God made plainly manifest in and filling the Virgin, I rejoice; yet I know not how to understand this strange and ineffable image. How hath the pure one alone been shown to be above all creation, visible and immaterial? Wherefore, wishing to praise her, I am greatly in awe in mind and word; yet, bold, I proclaim and magnify her, saying: She is the heavenly tabernacle!",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p12 Ikos of the feast"
+       },
+       "label": "of_the_feast",
+       "saint": "feast",
+       "sourceLabel": "Ikos",
+       "label_inline": true
+      }
+     ],
+     "exapostilarion": {
+      "text": "The most excellent day of the sacred heirs of the sacred apostles, Peter and Clement hath now been revealed to us, the preachers of the Faith, the invincible martyrs, whose annual memorial we all celebrate with faith.",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p17 Exapostilarion of the hieromartyrs"
+      },
+      "label": "plain",
+      "saint": "Clement and Peter",
+      "sourceLabel": "Exapostilarion of the holy hieromartyrs",
+      "spec_mel": "Hearken, ye women ..."
+     },
+     "exapostilarion_closer": {
+      "text": "With faith let us praise the divine maiden Mary, whom the company of the prophets of old proclaimed to be the jar, the staff, the tablet and the unquarried mountain; for she is led today into the Holy of holies to be raised for the Lord.",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p17 Exapostilarion of the feast"
+      },
+      "type": "of_the_feast",
+      "saint": "feast",
+      "sourceLabel": "Glory ..., Both now ..., Exapostilarion of the feast, in the same melody"
+     },
+     "praises_rubric": {
+      "text": "On the Praises, 6 Stichera: 3 of the feast, in Tone I:",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p17 Praises rubric"
+      }
+     },
+     "praises": [
+      {
+       "text": "Virgins bearing lamps, * escorting the Ever-virgin with splendor, * truly prophesy the future in the Spirit; * for the Theotokos, as the temple of God, * is led as a child with virginal glory ** into the temple.",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p17 Praises 1"
+       },
+       "label": "plain",
+       "saint": "feast",
+       "tone": 1,
+       "spec_mel": "Joy of the ranks of heaven ..."
+      },
+      {
+       "text": "Truly the Theotokos hath appeared to the world * as the right glorious fruit of a holy promise, * for she surpasseth all. * Piously led into the temple of God, * she fulfilleth the supplication of her parents, ** and is preserved by the divine Spirit.",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p17 Praises 2"
+       },
+       "label": "plain",
+       "saint": "feast",
+       "spec_mel": "Joy of the ranks of heaven ..."
+      },
+      {
+       "text": "Faithfully raised on heavenly bread, O Virgin, * in the temple of the Lord, * thou hast given birth to the Word, the Bread of life, for the world, * to Whom thou wast mystically promised beforehand by the Spirit * as the chosen and all-immaculate temple, ** betrothed to God the Father.",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p17 Praises 3"
+       },
+       "label": "plain",
+       "saint": "feast",
+       "spec_mel": "Joy of the ranks of heaven ..."
+      },
+      {
+       "text": "Defending the consubstantiality * of the transcendent Trinity, O all-blessed one, * as of an uncreated Unity, thou didst cast down Arius, * showing us the inseparability of the Son, * and that His divinity is the same ** as that of the Father and the Spirit.",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p17 Praises 4"
+       },
+       "label": "plain",
+       "saint": "Peter",
+       "sourceLabel": "And 3 Stichera of the holy hieromartyr Peter, in the same melody"
+      },
+      {
+       "text": "The murderous assault of the persecutors hath ceased, * the outpouring of blood hath now staunched, and been vanquished, * both being sealed, O wise Peter, * by thy sacred witness, * as once the young Moses ** staunched the flow with the stone of Zipporah.",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p17 Praises 5"
+       },
+       "label": "plain",
+       "saint": "Peter"
+      },
+      {
+       "text": "Having lived as a pastor, O hieromartyr of Christ, * thou didst valiantly show forth struggles of martyrdom, * receiving a single crown through both, * adorned with both * the priesthood and the pangs of suffering; ** wherefore, pray thou, that we be saved.",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p17-p18 Praises 6"
+       },
+       "label": "plain",
+       "saint": "Peter"
+      }
+     ],
+     "praises_glory": {
+      "text": "Anointed a priest by the hand of God, O namesake of the preeminent one and a participant in his works, thou didst feed the noetic sheep with the grass of the Gospel, as a wise and true pastor, and didst show thyself to be a worthy successor of Mark. With the blood of suffering thou didst finish the race of faith, sacrificed beforehand for the people and emulating Christ. Pray thou on behalf of our souls.",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p18 Praises Glory"
+      },
+      "sourceLabel": "Glory ..., in Tone IV",
+      "tone": 4
+     },
+     "praises_closer": {
+      "text": "Today the all-immaculate Virgin is brought to the temple, to the habitation of God, the King of all, the Nourisher of our whole life. Today the most pure and holy one, is led to the Holy of holies like a heifer three years of age. Let us cry out unto her like the angel: “Rejoice, thou who alone art blessed among women!”",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p18 Praises Both now"
+      },
+      "type": "of_the_feast",
+      "saint": "feast",
+      "sourceLabel": "Both now ..., in Tone II",
+      "tone": 2
+     },
+     "great_doxology_rubric": {
+      "text": "Great Doxology. Troparia. Litanies. Dismissal. First Hour.",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p18 Great Doxology. Troparia. Litanies. Dismissal. First Hour."
+      }
+     }
+    },
+    "liturgy": {
+     "order": [
+      "beatitudes_rubric",
+      "beatitudes",
+      "troparia",
+      "kontakia",
+      "prokeimena",
+      "epistles",
+      "alleluias",
+      "gospels",
+      "megalynarion_rubric",
+      "megalynarion_refrain",
+      "megalynarion",
+      "communion_verses"
+     ],
+     "beatitudes_rubric": {
+      "text": "On the Beatitudes: 8 Troparia, from ODE IX of both canons of the feast.",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p19 Beatitudes rubric"
+      }
+     },
+     "beatitudes": [
+      {
+       "text": "O pure Theotokos, as thou hast the most radiant beauty of purity of soul and art full of the grace of God from heaven, with the ever-existent light thou dost ever enlighten those who cry out with joy: Truly thou art more highly exalted than all, O pure Virgin!",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p19 Beatitude 1"
+       },
+       "label": "plain",
+       "saint": "feast"
+      },
+      {
+       "text": "Thy wonder doth surpass the power of words, O pure Theotokos, for in thee I perceive a body impervious to the movement of sin. Wherefore, thankfully I cry out to thee: Truly thou art more highly exalted than all, O pure Virgin!",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p19 Beatitude 2"
+       },
+       "label": "plain",
+       "saint": "feast"
+      },
+      {
+       "text": "Most gloriously did the Law prefigure thee, O pure one, as the tabernacle, the divine jar, the awe-some ark, the veil, the staff, the inviolable temple and portal of God. Wherefore, all these things teach us to cry to thee: Truly thou art more highly exalted than all, O pure Virgin!",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p19 Beatitude 3"
+       },
+       "label": "plain",
+       "saint": "feast"
+      },
+      {
+       "text": "In hymnody David cried out to thee prophetically, calling thee the daughter of the King in the comeliness of thy virtues, beholding thee standing, elaborately adorned, at the right hand of God. Wherefore, in prophecy he cried out: Truly thou art more highly exalted than all, O pure Virgin!",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p19 Beatitude 4"
+       },
+       "label": "plain",
+       "saint": "feast"
+      },
+      {
+       "text": "The divine maiden Mary, the fruit of the promise, issued forth from the righteous Joachim and Anna, and, a babe in the flesh, she is brought into the holy sanctuary like pleasing incense, to dwell in the Holy of holies.",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p19 Beatitude 5"
+       },
+       "label": "plain",
+       "saint": "feast"
+      },
+      {
+       "text": "With hymns let us praise her who was a babe by nature and was supernaturally re-vealed as the Mother of God; for she is led unto the Lord in the temple of the law, as the fragrance of sweet savor for the righteous, as the spiritual fruit of her righteous parents.",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p19 Beatitude 6"
+       },
+       "label": "plain",
+       "saint": "feast"
+      },
+      {
+       "text": "O ye faithful, with the angel let us fittingly cry out to the Theotokos “Rejoice!” Rejoice, O most comely Bride! Rejoice, O radiant cloud, from whom the Lord hath shone forth upon us who sit in the darkness of ignorance! Rejoice, thou hope of all!",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p19 Beatitude 7"
+       },
+       "label": "plain",
+       "saint": "feast"
+      },
+      {
+       "text": "O pure Mary Mother of God, thou Holy of holies, from the snares of the enemy and from all heresy and tribulation do thou free us by thy supplications, who bow down with faith before the image of thy holy countenance.",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p19 Beatitude 8"
+       },
+       "label": "plain",
+       "saint": "feast"
+      }
+     ],
+     "troparia": [
+      {
+       "text": "Today is the prelude of God's good will * and the proclamation of the salvation of mankind. * The Virgin hath manifestly appeared in the temple of God, proclaiming Christ unto all. * To her let us cry aloud: ** Rejoice, O thou fulfillment of the Creator's dispensation!",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p19 Troparion of the feast at Liturgy"
+       },
+       "label": "of_the_feast",
+       "saint": "feast",
+       "sourceLabel": "At the entrance, the Troparion of the feast, in Tone IV",
+       "tone": 4
+      },
+      {
+       "text": "O God of our fathers, * ever deal with us according to Thy meekness. * Take not Thy mercy from us, * but by the prayers of these saints ** direct our life in peace.",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p20 Troparion of the holy hieromartyrs at Liturgy"
+       },
+       "label": "plain",
+       "saint": "Clement and Peter",
+       "sourceLabel": "Troparion of the holy hieromartyrs, in Tone IV",
+       "tone": 4
+      }
+     ],
+     "kontakia": [
+      {
+       "text": "O ye divine and immovable towers of the Church, * truly strong and divine pillars of piety, * O all-praised Clement and Peter: * by your supplications ** preserve us all.",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p20 Kontakion of the holy hieromartyrs at Liturgy"
+       },
+       "label": "glory",
+       "saint": "Clement and Peter",
+       "sourceLabel": "Glory ..., Kontakion of the holy hieromartyrs, in Tone IV",
+       "tone": 4
+      },
+      {
+       "text": "The most pure temple of the Savior, * the precious bridal chamber and Virgin, * the sacred treasury of the glory of God, * hath been brought into the house of the Lord this day, * bringing with her the grace that is in the divine Spirit. * To her do the angels of God chant the hymn: ** She is the heavenly tabernacle!",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p20 Kontakion of the feast at Liturgy"
+       },
+       "label": [
+        "both_now",
+        "of_the_feast"
+       ],
+       "saint": "feast",
+       "sourceLabel": "Both now ..., Kontakion of the feast, in Tone IV",
+       "tone": 4
+      }
+     ],
+     "prokeimena": [
+      {
+       "text": "My soul doth magnify the Lord, * and my spirit hath rejoiced in God my Savior.",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p20 Prokeimenon of the feast"
+       },
+       "tone": 3,
+       "label": "of_the_feast",
+       "saint": "feast",
+       "sourceLabel": "Prokeimenon of the feast, in Tone III: The Hymn of the Theotokos",
+       "label_inline": true
+      },
+      {
+       "text": "For He hath looked upon the lowliness of His handmaiden; for behold, from henceforth all generations shall call me blessed.",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p20 Prokeimenon verse"
+       },
+       "label": "refrain",
+       "saint": "feast",
+       "sourceLabel": "Verse",
+       "label_inline": true
+      },
+      {
+       "text": "Precious in the sight of the Lord * is the death of His saints.",
+       "tier": 2,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p20 Prokeimenon of the saints"
+       },
+       "label": "plain",
+       "saint": "Clement and Peter",
+       "sourceLabel": "Prokeimenon of the saints, in Tone VI",
+       "label_inline": true,
+       "tone": 6
+      }
+     ],
+     "epistles": [
+      {
+       "heading": "EPISTLE TO THE HEBREWS,",
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p20 Epistle for the feast"
+       },
+       "citation_verbatim": "§ 320(HEB. 9: 1-7)",
+       "citation": {
+        "book": "Hebrews",
+        "chapter": 9,
+        "verses": "1-7",
+        "pericope_number": 320
+       },
+       "citation_basis": "printed",
+       "note": "Printed under the heading \"FOR THE FEAST:\""
+      },
+      {
+       "heading": "EPISTLE TO THE PHILIPPIANS,",
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p20 Epistle for the hieromartyrs"
+       },
+       "citation_verbatim": "§ 246(PHIL. 3: 20-4: 3)",
+       "citation": {
+        "book": "Philippians",
+        "chapter": 3,
+        "verses": "3:20-4:3",
+        "pericope_number": 246
+       },
+       "citation_basis": "printed",
+       "note": "Printed under the heading \"FOR THE HOLY HIEROMARTYRS:\""
+      }
+     ],
+     "alleluias": [
+      {
+       "text": "Hearken, daughter, and see, and incline thine ear.",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p21 Alleluia of the feast"
+       },
+       "label": "of_the_feast",
+       "saint": "feast",
+       "sourceLabel": "Alleluia, in Tone VIII",
+       "label_inline": true,
+       "tone": 8
+      },
+      {
+       "text": "The rich among the people shall entreat thy countenance.",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p21 Alleluia verse"
+       },
+       "label": "refrain",
+       "saint": "feast",
+       "sourceLabel": "Verse",
+       "label_inline": true
+      },
+      {
+       "text": "Thy priests shall be clothed with righteousness, and thy righteous shall rejoice.",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p21 Alleluia of the saints"
+       },
+       "label": "plain",
+       "saint": "Clement and Peter",
+       "sourceLabel": "Alleluia, In Tone II",
+       "label_inline": true,
+       "tone": 2
+      }
+     ],
+     "gospels": [
+      {
+       "heading": "GOSPEL ACCORDING TO LUKE,",
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p21 Gospel for the feast"
+       },
+       "citation_verbatim": "§54 (LK. 10: 38-42; 11: 27-28)",
+       "citation": {
+        "book": "Luke",
+        "chapter": 10,
+        "verses": "10:38-42, 11:27-28",
+        "pericope_number": 54
+       },
+       "citation_basis": "printed",
+       "note": "Printed under the heading \"FOR THE FEAST:\""
+      },
+      {
+       "heading": "GOSPEL ACCORDING TO MATTHEW,",
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p21 Gospel for the hieromartyrs"
+       },
+       "citation_verbatim": "§ 11(MT. 5: 14-19)",
+       "citation": {
+        "book": "Matthew",
+        "chapter": 5,
+        "verses": "14-19",
+        "pericope_number": 11
+       },
+       "citation_basis": "printed",
+       "note": "Printed under the heading \"FOR THE HOLY HIEROMARTYRS:\""
+      }
+     ],
+     "megalynarion_rubric": {
+      "text": "Instead of “It is truly meet...”",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p22 Instead of It is truly meet"
+      }
+     },
+     "megalynarion_refrain": {
+      "text": "The angels, beholding the entry of the most pure one, were amazed to see the Virgin enter into the Holy of holies.",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p22 Refrain before the festal Irmos"
+      },
+      "label": "refrain",
+      "sourceLabel": "Refrain",
+      "label_inline": true
+     },
+     "megalynarion": {
+      "text": "In nowise may the hand of the defiled * touch the animate ark of God; * and let the lips of the faithful * never-silently cry out with joy to the Theotokos, * chanting the words of the angel: * Rejoice, O thou who art full of grace! * The Lord is with thee!",
+      "tier": 2,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p22 Irmos of Ode IX of Canon I of the feast, at Liturgy"
+      },
+      "sourceLabel": "Irmos",
+      "label_inline": true
+     },
+     "communion_verses": [
+      {
+       "text": "I will take the cup of salvation, and I will call upon the name of the Lord.",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p22 Communion Verse, Feast"
+       },
+       "label": "of_the_feast",
+       "saint": "feast",
+       "sourceLabel": "Communion Verse, Feast",
+       "label_inline": true
+      },
+      {
+       "text": "In everlasting remembrance shall the righteous be; he shall not be afraid of evil tidings.",
+       "tier": 1,
+       "src": {
+        "file": "11-25.pdf",
+        "locus": "p22 Communion Verse, Saint"
+       },
+       "label": "plain",
+       "saint": "Clement and Peter",
+       "sourceLabel": "Communion Verse, Saint",
+       "label_inline": true
+      }
+     ]
+    },
+    "appendix": [
+     {
+      "text": "Be it known that if the apodosis of the feast of the Entry of the most holy Theotokos fall on a Sunday, the service of Hieromartyr Peter is omitted and chanted whenever the ecclesiarch desireth.",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p3 Be it known: apodosis on a Sunday"
+      }
+     },
+     {
+      "text": "On Saturday, at Little Vespers, the Stichera of the resurrection and of the Theotokos, as usual; Troparia of the resurrection and of the feast.",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p3 On Saturday, at Little Vespers"
+      }
+     },
+     {
+      "text": "At Great Vespers: After “Blessed is the man ...,” on “Lord, I have cried ...,” 10 Stichera: 3 of the resurrection, 1 of Anatolius, 3 Stichera prosomia of the feast, and 3 of St. Clement; Glory ..., the Doxasticon of the feast; Both now ..., the Dogmaticon in the tone of the week. Entrance. Prokeimenon of the day. At Litiya, the Stichera of the feast; Glory..., Both now ..., of the feast. On the Aposticha, the Stichera of the resurrection; Glory ..., Both now ..., of the feast. At the blessing of the loaves, “Virgin Theotokos, rejoice ...,” thrice. But if vigil is not celebrated, we chant the Troparion of the resurrection; Glory ...,",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p3 At Great Vespers"
+      }
+     },
+     {
+      "text": "Most gloriously amazing all the ends of the world with miracles of God, O sacred spiritual athlete, in a manner transcending nature thou didst cause the substance of the waters of the sea to withdraw on the day of thine honored memorial, for those who ever earnestly had recourse to the church erected for thee by God to shelter thy precious relics; and after the people had returned, thou didst miraculously cause the sea to return to the shore. O all-wondrous Clement, entreat Christ God, that our souls be saved.",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p3 Troparion of the holy hieromartyr Clement"
+      },
+      "label": "glory",
+      "saint": "Clement",
+      "sourceLabel": "Troparion of the holy hieromartyr Clement, in Tone IV",
+      "tone": 4
+     },
+     {
+      "text": "Both now ..., Troparion of the feast.",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p3 Both now, Troparion of the feast"
+      }
+     },
+     {
+      "text": "At Matins, On “God is the Lord ...,” the Troparion of the resurrection, twice; Glory ..., that of Clement; Both now ..., that of the feast. After the Kathismata, the Resurrectional Sessional Hymns with their Theotokia. Polyeleos, and the Troparia: “The assembly of the angels ...” Hypacoi' and hymns of ascent of the tone. Prokeimenon and Resurrectional Gospel. “Having beheld the resurrection of Christ. .. “ Psalm 50, and Gospel Sticheron. Canon of the resurrection, with 4 Troparia, including the Irmos; that of the Theotokos, with 2 Troparia; the first canon of the feast, with 4 Troparia; and that of Clement, with 4 Troparia. Katavasia: “Christ is born ...” After Ode III, the Kontakion and Ikos of the feast, and the following Kontakion:",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p3 At Matins"
+      }
+     },
+     {
+      "text": "Thou hast been shown to all as a branch of the divine vine arrayed in sanctity, exuding the sweetness of wisdom with thy supplications, O most honored and holy Clement, that we may offer thee the noetic hymn, like a woven robe of purple: Save thou thy servants!",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p3 Kontakion of Clement"
+      },
+      "sourceLabel": "Kontakion of Clement, in Tone II",
+      "spec_mel": "The steadfast ...",
+      "tone": 2,
+      "label": "plain",
+      "saint": "Clement"
+     },
+     {
+      "text": "Sessional Hymn of the saint; Glory ..., Both now ..., that of the feast.",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p3 Sessional Hymn of the saint"
+      }
+     },
+     {
+      "text": "After Ode VI, Kontakion and Ikos of the resurrection. At Ode IX we do chant the Magnificat. Exapostilarion of the resurrection; Glory ..., that of the saints; Both now ..., that of the feast. On the Praises, 8 Stichera: 4 of me resurrection, and 4 of the feast, including the Doxasticon, with the festal Verse: Glory ..., the evangelical Sticheron; Both now ..., Theotokion: “Most blessed art thou ...” Great Doxology. Troparion of the resurrection, alone. Litanies; dismissal; First Hour. On the hours: Troparion of the resurrection; Glory ..., that of the feast; Both now ..., Theotokia of the hours. After “Our Father. .. “, the Kontakia of the feast and the resurrection, alternating.",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p4 After Ode VI, to the Hours"
+      }
+     },
+     {
+      "text": "At Liturgy: 10 Troparia on the Beatitudes: 6 of the resurrection, and 4 from Ode IX of the canon of the feast. After the entrance: Troparia of the resurrection, the feast and the saint; then, Kontakion of the resurrection; Glory ..., that of the saint; Both now ..., that of the feast. Prokimena, Epistles, Alleluias and Gospels of the tone and of the feast. Communion Verses: Praise the Lord from the heavens ..., and that of the feast.",
+      "tier": 1,
+      "src": {
+       "file": "11-25.pdf",
+       "locus": "p4 At Liturgy"
+      }
+     }
+    ]
+   }
+  ]
  }
 };
 

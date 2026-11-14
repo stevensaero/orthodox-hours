@@ -9,6 +9,10 @@ export default [
   // Each was confirmed against TWO independent extractions of the PDF text
   // layer (pdfplumber and poppler) before being registered: these are what the
   // page prints, not extraction residue.
+  { path: '11-25.c0.appendix[8]', file: '11-25.pdf', locus: 'p4 After Ode VI, to the Hours',
+    verbatim: '4 of me resurrection', note: '"me" for "the".' },
+  { path: '11-25.c0.appendix[5]', file: '11-25.pdf', locus: 'p3 At Matins',
+    verbatim: 'resurrection of Christ. .. “', note: 'Spaced ellipsis and an OPENING quotation mark where a closing one belongs.' },
   { path: '11-23.c0.vespers.aposticha[0]', file: '11-23.pdf', locus: 'p2 Aposticha 1',
     verbatim: 'the ancestor of God. *',
     note: 'The sticheron ENDS on a single asterisk after its full stop; the other two stichera of the set end plainly. A stray pointing mark, kept.' },
