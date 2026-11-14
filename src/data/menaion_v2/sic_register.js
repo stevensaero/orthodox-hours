@@ -9,6 +9,18 @@ export default [
   // Each was confirmed against TWO independent extractions of the PDF text
   // layer (pdfplumber and poppler) before being registered: these are what the
   // page prints, not extraction residue.
+  { path: '11-23.c0.vespers.aposticha[0]', file: '11-23.pdf', locus: 'p2 Aposticha 1',
+    verbatim: 'the ancestor of God. *',
+    note: 'The sticheron ENDS on a single asterisk after its full stop; the other two stichera of the set end plainly. A stray pointing mark, kept.' },
+  { path: '11-23.c0.matins.canons[0].odes.7.items[2]', file: '11-23.pdf', locus: 'p10 Ode 7 troparion 3',
+    verbatim: 'is led into the Holy of holies,',
+    note: 'Ends on a comma, unfinished, exactly as 11-21.pdf p14 prints it.' },
+  { path: '11-23.c0.matins.canons[2].odes.9.items[4]', file: '11-23.pdf', locus: 'p14 Ode 9 Theotokion',
+    verbatim: 'the ever-blessed hope of the faithful',
+    note: 'No final punctuation: the theotokion ends without a full stop.' },
+  { path: '11-23.c0.matins.canons[0].odes.9.items[1]', file: '11-23.pdf', locus: 'p13 Ode 9 troparion 2',
+    verbatim: 'supernaturally re-vealed',
+    note: 'LINE-BREAK HYPHEN (ledger A-1 class), the same break as 11-21.pdf p18.' },
   { path: '11-22.c0.matins.sessional_ode3[0]', file: '11-22.pdf', locus: 'p5 Ode III sessional (apostle)',
     verbatim: 'grant re-mission of sins',
     note: 'LINE-BREAK HYPHEN (ledger A-1 class): the page breaks "re-" / "mission". Stored joined with the hyphen kept, pending the A-1 ruling.' },
@@ -16,7 +28,7 @@ export default [
     verbatim: 'awe-some ark', note: 'Hyphen inside the word, mid-line; 11-21.pdf prints the same troparion the same way.' },
   { path: '11-21.c0.matins.canons[1].odes.7.items[2]', file: '11-21.pdf', locus: 'p14 Ode 7 Glory ...',
     verbatim: 'is led into the Holy of holies,',
-    note: 'The troparion ENDS on a comma at the foot of p14; p15 opens with "Both now". The sentence is unfinished in print: text appears to have been lost at the page turn. Stored as printed; a candidate for a physical-book check.' },
+    note: 'The troparion ENDS on a comma at the foot of p14; p15 opens with "Both now". The sentence is unfinished in print. NOT a loss at the page turn: 11-23.pdf prints the same troparion ending on the same comma in mid-page (p10). Stored as printed; a candidate for a physical-book check.' },
   { path: '11-21.c0.matins.canons[0].odes.9.items[5]', file: '11-21.pdf', locus: 'p16-p17 Ode 9 Canon I 3',
     verbatim: 'awe-some ark', note: 'Hyphen inside the word, mid-line (not a line-break hyphen).' },
   { path: '11-21.c0.matins.canons[1].odes.9.items[3]', file: '11-21.pdf', locus: 'p18 Ode 9 Canon II 2',
