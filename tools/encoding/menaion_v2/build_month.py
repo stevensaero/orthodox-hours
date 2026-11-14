@@ -17,6 +17,7 @@ NAMES = {'01': 'january', '02': 'february', '03': 'march', '04': 'april', '05': 
 DATES = {
     # OVERLAP DATES, encoded for the V1/V2 comparison (menaion_v2_wirein_spec.md 5).
     '09': {
+        '09-05': ['d_09_05', 'd_09_05A'],
         '09-27': ['d_09_27'],
     },
     '10': {

@@ -6,6 +6,2741 @@
 // Vocabulary follows general.js (R-9: source-nearest names). Sessional slots
 // are positional lists (A-2, ruled 14 Nov 2026).
 const SEPTEMBER = {
+ "09-05": {
+  "_encoded": [
+   "c0.identity",
+   "c0.vespers",
+   "c0.matins",
+   "c0.liturgy",
+   "c1.identity",
+   "c1.vespers",
+   "c1.matins",
+   "c1.liturgy"
+  ],
+  "commemorations": [
+   {
+    "kind": "saint",
+    "title": {
+     "text": "COMMEMORATION OF THE HOLY PROPHET ZACHARIAS THE FATHER OF THE HONORABLE FORERUNNER JOHN THE BAPTIST",
+     "tier": 1,
+     "src": {
+      "file": "09-05.pdf",
+      "locus": "p1 title"
+     },
+     "sourceLabel": "THE 5th DAY OF THE MONTH OF SEPTEMBER"
+    },
+    "rank": "six_stichera",
+    "fekula_section": "2C",
+    "oca_primary": false,
+    "source_file": "09-05.pdf",
+    "note": "OVERLAP DATE for the V1/V2 comparison (menaion_v2_wirein_spec.md section 5). First FILE of 5 September; the second, 09-05A, is a Polyeleos service of the Prophet Zacharias and Righteous Elizabeth and is the one V1 encoded and ODS 3rd ed. vol. III (pp. 14-16, `ods3-0905-wkd`) follows. This file is the lesser form: by the encoding_rule_v2.md 1.1 waterfall, 6 stichera of one saint (three printed, each \"(Twice)\"), a Glory of the saint, no Polyeleos, no Great Doxology: Six-Stichera, Fekula 2C. `oca_primary` is false because the vol. III entry and V1 take the second service. Two files are two services (ruling of 14 Nov 2026). The aposticha print only their Glory and Both now at Vespers and at Matins (\"At the Stichera, Glory ...\").",
+    "troparion": {
+     "text": "Arrayed in the vesture of the priesthood, * and in accordance with the law, * thou didst offer the sacrifice of oblation in a sacred manner O all-wise one, * and wast manifestly a beacon and seer of sacred mysteries, * who bore within thyself the tokens of grace, * and thou wast slain by the sword in the Temple of God O prophet of Christ, ** together with the forerunner entreat Him that our souls be saved.",
+     "tier": 2,
+     "src": {
+      "file": "09-05.pdf",
+      "locus": "p2 Troparion of the holy prophet"
+     },
+     "verified_sites": [
+      {
+       "locus": "p2 end of Vespers",
+       "tone": 4
+      },
+      {
+       "locus": "p8 AT LITURGY",
+       "tone": 4
+      }
+     ],
+     "sourceLabel": "Troparion of the holy prophet, in Tone IV",
+     "tone": 4
+    },
+    "kontakion": {
+     "text": "Today Zacharias, the prophet and high priest of the Most High, * the father of the Forerunner, * setteth the table of his memorial, * feeding the faithful; * for he hath distributed the food of righteousness unto all. * Wherefore, he hath reposed * as a divine initiate ** of the mysteries of the grace of God.",
+     "tier": 2,
+     "src": {
+      "file": "09-05.pdf",
+      "locus": "p5 Kontakion of the holy prophet"
+     },
+     "verified_sites": [
+      {
+       "locus": "p5 after Ode VI",
+       "tone": 3
+      },
+      {
+       "locus": "p8 AT LITURGY",
+       "tone": 3
+      }
+     ],
+     "sourceLabel": "Kontakion of the holy prophet, in Tone III",
+     "spec_mel": "Today the Virgin ...",
+     "tone": 3
+    },
+    "ikos": {
+     "text": "The high priest of the law was bound to silence by the voice of an angel, for within the barren and chaste Elizabeth, the angel of the coming of Christ, the prophet and initiate of the mysteries was to come forth. By his nativity, the grace, deliverance, universal reconciliation and renewal of our nature was to be revealed. By Him Who giveth fruit from the barren womb, the Son Who hath appeared from the Virgin, the divine initiate of the mysteries of the grace of God and his preaching of the Lamb was to be made manifest.",
+     "tier": 1,
+     "src": {
+      "file": "09-05.pdf",
+      "locus": "p5 Ikos"
+     },
+     "sourceLabel": "Ikos",
+     "label_inline": true
+    },
+    "vespers": {
+     "order": [
+      "lic_rubric",
+      "lic",
+      "lic_glory",
+      "lic_closer_rubric",
+      "lic_stavrotheotokion",
+      "aposticha_glory",
+      "aposticha_closer_rubric",
+      "aposticha_stavrotheotokion",
+      "troparion",
+      "troparion_closer_rubric"
+     ],
+     "lic_rubric": {
+      "text": "On “Lord, I have cried ...,” we chant 6 Stichera of the holy prophet, in Tone IV:",
+      "tier": 1,
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p1 LIC rubric"
+      }
+     },
+     "lic": [
+      {
+       "text": "With the oil of anointing and holy vesture upon thyself, * O ever-memorable Zacharias, * thou didst minister unto God like an angel, * mediating, O blessed one, * between the Creator and His creation, * and manifestly receiving the words of the divine Spirit. * Wherefore, we call thee blessed, * and celebrate today thy holy festival, ** glorifying the Savior.",
+       "tier": 2,
+       "src": {
+        "file": "09-05.pdf",
+        "locus": "p1 LIC 1"
+       },
+       "label": "plain",
+       "tone": 4,
+       "repeat": 2,
+       "spec_mel": "Thou hast granted a sign ..."
+      },
+      {
+       "text": "O divinely inspired Zacharias, * thou didst behold born of a maiden * a Babe Who is co-beginningless with the Father; * and unto thine own child thou dost prophecy manifestly beforehand: * “A prophet shalt thou truly be, * preparing His ways!” * With him we call thee blessed * and in a sacred manner we celebrate thine honored festival, ** O most noetically rich God-bearer.",
+       "tier": 2,
+       "src": {
+        "file": "09-05.pdf",
+        "locus": "p1 LIC 2"
+       },
+       "label": "plain",
+       "repeat": 2,
+       "spec_mel": "Thou hast granted a sign ..."
+      },
+      {
+       "text": "Thou wast the living and animate temple * of the divine Spirit; * and, ministering unto God * with a pure heart, O glorious one, * in the midst of the temple thou wast unjustly slain, * finishing thy godly course in martyrdom, O right-glorious one. * Wherefore, with thine own blood * thou hast entered into the temple of heaven, ** entreating cleansing for our souls.",
+       "tier": 2,
+       "src": {
+        "file": "09-05.pdf",
+        "locus": "p1 LIC 3"
+       },
+       "label": "plain",
+       "repeat": 2,
+       "spec_mel": "Thou hast granted a sign ..."
+      }
+     ],
+     "lic_glory": {
+      "text": "Truly arrayed in the vestments of the priesthood of the law, thou didst serve according to the order of Aaron; and, standing in the temple, thou didst clearly behold the countenance of the angel, O most blessed one. Wherefore, hymning thy repose as is meet, O Zacharias, we all praise with songs thee who, in thine old age, begat the glorious John. Entreat thou the merciful God for us, that we be saved.",
+      "tier": 1,
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p1 LIC Glory"
+      },
+      "composer": "John the Monk",
+      "sourceLabel": "Glory ..., the composition of John the Monk, in Tone VIII",
+      "tone": 8
+     },
+     "lic_closer_rubric": {
+      "text": "Both now ..., the Theotokion, or this Stavrotheotokion, in Tone VIII:",
+      "tier": 1,
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p1 LIC Both now rubric"
+      }
+     },
+     "lic_stavrotheotokion": {
+      "text": "“What is this sight which I see, * which mine eyes behold, O Master? * How is it that Thou Who dost sustain all creation, * art lifted up upon the Tree and diest, * granting life unto all? * thus said the Theotokos weeping, * upon seeing God and man * Who had shone forth ineffably from her ** hanging upon the Cross.",
+      "tier": 2,
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p1 LIC Stavrotheotokion"
+      },
+      "type": "stavrotheotokion",
+      "tone": 8,
+      "sourceLabel": "Stavrotheotokion",
+      "label_inline": true,
+      "spec_mel": "O most glorious wonder ..."
+     },
+     "aposticha_glory": {
+      "text": "As a pure priest thou didst enter into the holy of holies and, clad in sacred vesture, didst blamelessly minister unto God, observing the law like Aaron and leading the tribes of Israel like Moses, in the pure signaling of the little bells. Wherefore, thou wast slain. But thy righteous blood hath become for us a saving healing, and like fragrant myrrh it openeth deaf ears to the way of everlasting life. O thrice blessed Zacharias, father of John the Baptist and husband of Elizabeth: pray thou earnestly on behalf of our souls.",
+      "tier": 1,
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p1-p2 Aposticha Glory"
+      },
+      "sourceLabel": "On the Aposticha, Glory ..., in Tone II",
+      "tone": 2
+     },
+     "aposticha_closer_rubric": {
+      "text": "Both now ..., Theotokion, or this Stavrotheotokion, in Tone II:",
+      "tier": 1,
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p2 Aposticha Both now rubric"
+      }
+     },
+     "aposticha_stavrotheotokion": {
+      "text": "When the unblemished ewe-lamb beheld her Lamb * willingly led as a man to the slaughter, * she said, weeping: * “Dost Thou now hasten to leave me childless * who gave Thee birth O Christ,? * What is this that Thou hast done, O Redeemer of all? * Even so I will hymn and glorify Thine extreme goodness, * which is beyond understanding and all telling, ** O Lover of mankind!”",
+      "tier": 2,
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p2 Aposticha Stavrotheotokion"
+      },
+      "type": "stavrotheotokion",
+      "tone": 2,
+      "sourceLabel": "Stavrotheotokion",
+      "label_inline": true,
+      "spec_mel": "When from the tree ..."
+     },
+     "troparion_closer_rubric": {
+      "text": "Glory ..., Both now ..., Theotokion:",
+      "tier": 1,
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p2 Troparion Theotokion rubric"
+      }
+     }
+    },
+    "matins": {
+     "order": [
+      "canon_rubric",
+      "canons",
+      "sessional_ode3",
+      "kontakion",
+      "ikos",
+      "exapostilarion",
+      "exapostilarion_closer",
+      "aposticha_glory",
+      "aposticha_closer_rubric",
+      "aposticha_stavrotheotokion"
+     ],
+     "canon_rubric": {
+      "text": "Both canons from the Oktoechos, without the martyria, and the canon of the holy prophet, with 6 Troparia; the composition of Theophanes in Tone I.",
+      "tier": 1,
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p3 Canon rubric"
+      }
+     },
+     "canons": [
+      {
+       "title": "Both canons from the Oktoechos, without the martyria, and the canon of the holy prophet, with 6 Troparia; the composition of Theophanes in Tone I.",
+       "composer": "Theophanes",
+       "tone": 1,
+       "odes": {
+        "1": {
+         "irmos": {
+          "text": "Having passed through the water as upon dry land, * and having escaped the malice of the Egyptians, * the Israelites cried aloud: * Unto our God and Redeemer let us sing.",
+          "tier": 2,
+          "src": {
+           "file": "09-05.pdf",
+           "locus": "p3 Ode 1 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "By thy mediation, O prophet, impart unto me the grace of the Spirit, to help me praise thy memory, crying out: Let us chant unto our Redeemer and God!",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p3 Ode 1 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thy life was found to be blameless, and thou wast arrayed in the vesture of the priesthood and the luminous splendors of prophecy, O divinely eloquent and blessed one.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p3 Ode 1 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Having thy head adorned with the crown of the law, O Zacharias, thou wast shown to be sacred, crying aloud: Let us chant unto our Redeemer and God!",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p3 Ode 1 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Clad in the vestment of the full-length tunic like Aaron, thou didst receive the maiden who sprouted forth from the root of Jesse and bore the Redeemer in her womb.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p3 Ode 1 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "3": {
+         "irmos": {
+          "text": "O Lord, thou art the confirmation of those who flee to Thee, * Thou art the Light of those in darkness, * and my spirit doth hymn Thee.",
+          "tier": 2,
+          "src": {
+           "file": "09-05.pdf",
+           "locus": "p3 Ode 3 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "When thou didst offer the incense of the covenant, O high priest, then didst thou receive the prophetic proclamation of the Forerunner.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p3 Ode 3 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The priesthood anointed thee with oil to serve as a priest, like Aaron. Wherefore, thou wast deemed worthy to behold the angel.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p3 Ode 3 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Zacharias begat John, the dawn which announced to the whole world Thee, the noetic Sun, O Savior.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p3 Ode 3 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Set my life aright, O all-pure Birthgiver of God, thou life which filled with light the house of Zacharias.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p3 Ode 3 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "4": {
+         "irmos": {
+          "text": "O Lord, I have heard the mystery of Thy dispensation; * I have considered Thy works, * and I have glorified Thy Divinity.",
+          "tier": 2,
+          "src": {
+           "file": "09-05.pdf",
+           "locus": "p4 Ode 4 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Thy prophet, O Master, faithfully ministered unto Thee with the symbols of the law and was deemed worthy of the grace to perceive Thy truth.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p4 Ode 4 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou, the most brilliant and most blessed one, didst receive light through darkest light; for through the law grace hath now been added unto thee.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p4 Ode 4 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The divine Gabriel, who standeth before God, announced and revealed to thee the manifestation of the voice and Forerunner of the Word, O blessed one.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p4 Ode 4 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The Fashioner of creation, Who loosed the barrenness of Elizabeth, found thee, O Virgin, to be a pure habitation, and dwelt therein.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p4 Ode 4 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "5": {
+         "irmos": {
+          "text": "Rising early we cry to Thee, O Lord; * save us, for Thou art our God, * and we know none other besides Thee.",
+          "tier": 2,
+          "src": {
+           "file": "09-05.pdf",
+           "locus": "p4 Ode 5 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Upon thy head, O prophet, was the mitre placed which bore the impress of the true and divine priesthood.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p4 Ode 5 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Creation rejoiceth in thine offspring, O high priest; for thou didst beget the preacher of repentance.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p4 Ode 5 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou didst lead a life adorned, for with Elizabeth thou didst keep all the commandments of the Lord.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p4 Ode 5 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thy tongue is directed toward hymnody, O divinely eloquent one; for thou didst behold her who knoweth not wedlock bearing a Child within her womb.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p4 Ode 5 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "6": {
+         "irmos": {
+          "text": "O Thou that puttest on light as a garment * grant me also a robe of light, * O All-merciful Christ, our God.",
+          "tier": 2,
+          "src": {
+           "file": "09-05.pdf",
+           "locus": "p4 Ode 6 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "He who served the shadow of the law was shown to be a preacher of grace, O our Savior; for he was deemed worthy to behold Thine incarnation.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p4 Ode 6 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Adorned with words of judgment, O sacred Zacharias, thou didst receive the ever-existing Word bearing flesh.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p4 Ode 6 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou wast shown to serve God in the temple as a right wondrous priest, O divinely inspired initiate of the mysteries of God.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p4 Ode 6 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou wast recognized by the prophetess Elizabeth, O Virgin Mother of God, bearing the beginningless Word and Savior in thy womb.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p4 Ode 6 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "7": {
+         "irmos": {
+          "text": "The Hebrew children in the furnace * boldly trampled upon the flames, * changing the fire into dew, they cried aloud: * ‘Blessed art Thou, O Lord our God, throughout the ages’.",
+          "tier": 2,
+          "src": {
+           "file": "09-05.pdf",
+           "locus": "p5 Ode 7 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "When the voice of one crying in the wilderness came forth from the barren woman supra-naturally, he loosed the bonds of thy tongue that thou couldst cry: Blessed art Thou, O Lord our God, throughout the ages!",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p5 Ode 7 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The Forerunner, the beloved friend of the Bridegroom, was born of a barren woman, manifestly proclaiming the birthgiving of the Virgin unto those who cry out with faith: Blessed art Thou, O Lord our God, throughout the ages!",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p5 Ode 7 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O thrice-blessed Zacharias, thou wast wholly a divine instrument of the Spirit, and didst proclaim thy son to be a prophet, who crieth: Blessed art Thou, O Lord our God, throughout the ages!",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p5 Ode 7 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Zacharias, beholding thee, recognized thee as the fulfillment of the law, the chief object of all prophecy, O maiden, and he cried aloud: Blessed is the fruit of thy womb, O most pure one!",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p5 Ode 7 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "8": {
+         "irmos": {
+          "text": "Glorified in the holy mountain, * the Lord revealed the mystery of the ever-virgin unto Moses * in the flames of the burning bush: * praise ye and supremely exalt Him throughout all ages.",
+          "tier": 2,
+          "src": {
+           "file": "09-05.pdf",
+           "locus": "p5 Ode 8 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Thou wast shown to be a prophet of the truth, for thou didst prepare John the Forerunner to tread first the paths of Christ, O blessed high priest. Him do we supremely exalt throughout all ages.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p5 Ode 8 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Giving voice in speech, thou didst bless the Master, the Lord of glory Who hath bestowed salvation upon us, Who shone forth upon us in the flesh from David. Him do we supremely exalt throughout all ages.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p6 Ode 8 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou was deemed worthy of great gifts, O divinely revealed one, begetting the Forerunner, the greatest of all the prophets, who hymneth and supremely exalteth the Lord throughout all ages.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p6 Ode 8 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Rejoicing, Zacharias, the high priest and preacher of God, paid homage to the Virgin and Mother who beareth the Lord of creation. Her do we supremely exalt throughout all ages.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p6 Ode 8 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "9": {
+         "irmos": {
+          "text": "Saved by thee, O pure Virgin, * we confess thee to be truly the Theotokos, * and together with the choirs of the bodiless hosts * thee do we magnify.",
+          "tier": 2,
+          "src": {
+           "file": "09-05.pdf",
+           "locus": "p6 Ode 9 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Thou wast filled with the inspiration of the Comforter and wast the beginning of the blessing of the Lord, O divinely wise initiate of the sacred mysteries, divinely blessed one.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p6 Ode 9 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Perceiving the fulfillment of the archangel’s words, O all-famed and divinely eloquent one, thou didst straightway move thy tongue to blessing.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p6 Ode 9 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou wast adorned with crowns of suffering and the priesthood and with the enlightenment of prophecy, O most blessed Zacharias, divinely eloquent one.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p6 Ode 9 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "As thou art the dwelling-place of the Light, O Virgin, illumine my soul which hath been darkened by the passions, and by thy supplications deliver me from the outermost darkness.",
+           "tier": 1,
+           "src": {
+            "file": "09-05.pdf",
+            "locus": "p6 Ode 9 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        }
+       }
+      }
+     ],
+     "sessional_ode3": [
+      {
+       "text": "Having ministered to God as a priest according to the law, O Zacharias, thou wast shown to the whole world as a pillar of light, prophesying that Christ would come forth from the Virgin, incarnate of the Holy Spirit, the Orient from the heights of righteousness, Who doth illumine all the world, direct our feet to the ways of peace, and save our race, thou didst say.",
+       "tier": 1,
+       "src": {
+        "file": "09-05.pdf",
+        "locus": "p3 Ode III sessional"
+       },
+       "label": "plain",
+       "sourceLabel": "Sessional Hymn of the holy prophet, in Tone VIII",
+       "spec_mel": "That which hath been commanded ...",
+       "tone": 8
+      },
+      {
+       "text": "O thou who hast given birth to the immutable God, * by thy maternal supplications * make steadfast my heart which is ever-changing due to sin, * slothfulness and the attacks of the deceiver; * that in thanksgiving I also may glorify thee O good one. * O all-immaculate Mary, Birthgiver of God, * have mercy on the flock ** which thou hast acquired.",
+       "tier": 2,
+       "src": {
+        "file": "09-05.pdf",
+        "locus": "p3 Ode III sessional Theotokion"
+       },
+       "type": "theotokion",
+       "label": [
+        "glory",
+        "both_now",
+        "theotokion"
+       ],
+       "sourceLabel": "Glory ..., Both now ..., Theotokion, in Tone IV",
+       "tone": 4
+      },
+      {
+       "text": "Ever protected by the Cross of thy Son and God, O Virgin, we vanquish the assaults and wiles of the demons, hymning thee who art truly the Theotokos; and all generations bless thee with love, O most pure one, as thou didst foretell. Wherefore, by thy supplications grant us forgiveness of sins.",
+       "tier": 1,
+       "src": {
+        "file": "09-05.pdf",
+        "locus": "p4 Ode III sessional Stavrotheotokion"
+       },
+       "type": "stavrotheotokion",
+       "label": "stavrotheotokion",
+       "tone": 4,
+       "sourceLabel": "Stavrotheotokion in Tone IV",
+       "label_inline": true
+      }
+     ],
+     "exapostilarion": {
+      "text": "At first, thou wast struck mute in the holy of holies, by the voice of the angel, for the springing forth from thee of the voice of one crying in the wilderness; and now thou art silent for his sake, slain, O Zacharias, before the holy of holies.",
+      "tier": 1,
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p6 Exapostilarion"
+      },
+      "label": "plain",
+      "sourceLabel": "Exapostilarion of the holy prophet",
+      "spec_mel": "O Light immutable ..."
+     },
+     "exapostilarion_closer": {
+      "text": "Having shone forth eternally, Light from Light, before the morning star, O Word, Thou didst come forth as Light, immutably, under time, from Thy Mother, illumining the ends of the world with radiant effulgence, as Thou art the Light of the world.",
+      "tier": 1,
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p6 Exapostilarion Theotokion"
+      },
+      "type": "theotokion",
+      "sourceLabel": "Glory ..., Both now ..., Theotokion"
+     },
+     "aposticha_glory": {
+      "text": "Offering sacrifices in accordance with the law, O Zacharias, thou didst willingly present thy holy soul to God, Who wast born in the flesh, as a whole-burnt offering in the Holy of Holies, when thou wast slain like a lamb by the sword, between the temple and the alter.",
+      "tier": 1,
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p6 Matins Stichera, Glory"
+      },
+      "sourceLabel": "At the Stichera, Glory ..., in Tone VIII",
+      "tone": 8
+     },
+     "aposticha_closer_rubric": {
+      "text": "Both now ..., Theotokion, or this Stavrotheotokion, in Tone VIII:",
+      "tier": 1,
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p7 Matins Stichera, Both now rubric"
+      }
+     },
+     "aposticha_stavrotheotokion": {
+      "text": "O Lord, when the sun beheld Thee * the Sun of righteousness, hanging upon the Tree, * it hid its rays, and the light of the moon was changed to darkness; * and Thine all-immaculate Mother ** was pierced in the depths of her soul.",
+      "tier": 2,
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p7 Matins Stichera Stavrotheotokion"
+      },
+      "type": "stavrotheotokion",
+      "tone": 8,
+      "sourceLabel": "Stavrotheotokion",
+      "label_inline": true,
+      "spec_mel": "O Lord, before the tribunal ..."
+     }
+    },
+    "liturgy": {
+     "order": [
+      "beatitudes_rubric",
+      "beatitudes",
+      "troparion",
+      "kontakion",
+      "prokeimenon",
+      "prokeimenon_verse",
+      "epistle",
+      "alleluia",
+      "gospel",
+      "communion_verse"
+     ],
+     "beatitudes_rubric": {
+      "text": "On the Beatitudes, 8 Troparia: 4 from the Oktoechos, and 4, from ODE III of the canon of the holy prophet.",
+      "tier": 1,
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p8 Beatitudes rubric"
+      }
+     },
+     "beatitudes": [
+      {
+       "text": "When thou didst offer the incense of the covenant, O high priest, then didst thou receive the prophetic proclamation of the Forerunner.",
+       "tier": 1,
+       "src": {
+        "file": "09-05.pdf",
+        "locus": "p8 Beatitude 1"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "The priesthood anointed thee with oil to serve as a priest, like Aaron. Wherefore, thou wast deemed worthy to behold the angel.",
+       "tier": 1,
+       "src": {
+        "file": "09-05.pdf",
+        "locus": "p8 Beatitude 2"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "Zacharias begat John, the dawn which announced to the whole world Thee, the noetic Sun, O Savior.",
+       "tier": 1,
+       "src": {
+        "file": "09-05.pdf",
+        "locus": "p8 Beatitude 3"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "Set my life aright, O all-pure Birthgiver of God, thou life which filled with light the house of Zacharias.",
+       "tier": 1,
+       "src": {
+        "file": "09-05.pdf",
+        "locus": "p8 Beatitude Theotokion"
+       },
+       "label": "theotokion",
+       "sourceLabel": "Theotokion",
+       "label_inline": true
+      }
+     ],
+     "prokeimenon": {
+      "text": "The righteous man shall be glad in the Lord, * and shall hope in Him.",
+      "tier": 2,
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p8 Liturgy Prokeimenon"
+      },
+      "sourceLabel": "Prokeimenon, in Tone VII",
+      "label_inline": true,
+      "tone": 7
+     },
+     "prokeimenon_verse": {
+      "text": "Hearken, O God, unto my prayer, when I make supplication unto Thee.",
+      "tier": 1,
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p8 Liturgy Prokeimenon verse"
+      },
+      "label": "refrain",
+      "sourceLabel": "Verse",
+      "label_inline": true
+     },
+     "epistle": {
+      "heading": "EPISTLE TO THE HEBREWS,",
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p8 Epistle"
+      },
+      "citation_verbatim": "§314 (HEB.6: 13-20)",
+      "citation": {
+       "book": "Hebrews",
+       "chapter": 6,
+       "verses": "13-20",
+       "pericope_number": 314
+      },
+      "citation_basis": "printed"
+     },
+     "alleluia": {
+      "text": "A light hath dawned for the righteous man, and gladness for the upright of heart.",
+      "tier": 1,
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p9 Alleluia"
+      },
+      "sourceLabel": "Alleluia, in Tone VII",
+      "label_inline": true,
+      "tone": 7
+     },
+     "gospel": {
+      "heading": "GOSPEL ACCORDING TO ST. MATTHEW,",
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p9 Gospel"
+      },
+      "citation_verbatim": "§ 96 (MT. 23: 29-39)",
+      "citation": {
+       "book": "Matthew",
+       "chapter": 23,
+       "verses": "29-39",
+       "pericope_number": 96
+      },
+      "citation_basis": "printed"
+     },
+     "communion_verse": {
+      "text": "Rejoice in the Lord, O ye righteous; praise is meet for the upright.",
+      "tier": 1,
+      "src": {
+       "file": "09-05.pdf",
+       "locus": "p9 Communion Verse"
+      },
+      "sourceLabel": "Communion Verse",
+      "label_inline": true
+     }
+    }
+   },
+   {
+    "kind": "saint",
+    "title": {
+     "text": "COMMEMORATION OF THE HOLY PROPHET ZACHARIAS & THE HOLY & RIGHTEOUS ELIZABETH, THE PARENTS OF THE HONORABLE FORERUNNER JOHN THE BAPTIST",
+     "tier": 1,
+     "src": {
+      "file": "09-05A.pdf",
+      "locus": "p1 title"
+     },
+     "sourceLabel": "THE 5th DAY OF THE MONTH OF SEPTEMBER"
+    },
+    "rank": "polyeleos",
+    "fekula_section": "2E",
+    "oca_primary": true,
+    "source_file": "09-05A.pdf",
+    "note": "OVERLAP DATE for the V1/V2 comparison (menaion_v2_wirein_spec.md section 5). Second FILE of 5 September and the service of the day: RANK IS PRINTED by ODS 3rd ed. vol. III, pp. 14-16, entry `ods3-0905-wkd` (a polyeleos-rank service on a weekday; encoding_rule_v2.md 1.1 step 0), as V1 recorded. The page prints a Litiya (\"the Sticheron of the temple, followed by these Stichera\") in a Polyeleos service: the case vol. III allows for. 8 stichera, 4 of the prophet (three printed, the first \"(Twice)\") and 4 of the righteous Elizabeth (three printed, the first \"(Twice)\" on a line of its own). TWO canons, the prophet's (Theophanes, headed Tone VIII here; 09-05.pdf heads the same canon \"Tone I\") and the righteous one's, interleaved, stored whole. One troparion \"of the righteous ones\" (entry-level); two kontakia, one per saint, in positional lists. The three lessons print no reference; citations are V1's identifications. Ode I of the second canon ends with the katavasia as an incipit.",
+    "troparion": {
+     "text": "Celebrating the memory of Thy righteous ones, * Zacharias and Elizabeth, O Lord, * through them do we entreat Thee: ** Save Thou our souls!",
+     "tier": 2,
+     "src": {
+      "file": "09-05A.pdf",
+      "locus": "p5 Troparion of the righteous ones"
+     },
+     "saint": "Zacharias and Elizabeth",
+     "verified_sites": [
+      {
+       "locus": "p5 end of Vespers",
+       "tone": 2
+      },
+      {
+       "locus": "p18 AT LITURGY",
+       "tone": 2
+      }
+     ],
+     "sourceLabel": "Troparion of the righteous ones, in Tone II",
+     "tone": 2
+    },
+    "vespers": {
+     "order": [
+      "rubric",
+      "lic_rubric",
+      "lic",
+      "lic_glory",
+      "dogmatikon",
+      "entrance_rubric",
+      "readings",
+      "litiya",
+      "litiya_glory",
+      "litiya_closer",
+      "aposticha_rubric",
+      "aposticha",
+      "aposticha_glory",
+      "aposticha_closer",
+      "troparion",
+      "troparion_closer"
+     ],
+     "rubric": {
+      "text": "We chant “Blessed is the man ...,” the first antiphon.",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p1 Vespers rubric"
+      }
+     },
+     "lic_rubric": {
+      "text": "On “Lord, I have cried ...,” 8 Stichera: 4 of the holy prophet, in Tone IV:",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p1 LIC rubric"
+      }
+     },
+     "lic": [
+      {
+       "text": "With the oil of anointing and holy vesture upon thyself, * O ever-memorable Zacharias, * thou didst minister unto God like an angel, * mediating, O blessed one, * between the Creator and His creation, * and manifestly receiving the words of the divine Spirit. * Wherefore, we call thee blessed, * and celebrate today thy holy festival, ** glorifying the Savior.",
+       "tier": 2,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p1 LIC 1"
+       },
+       "label": "plain",
+       "saint": "Zacharias",
+       "tone": 4,
+       "repeat": 2,
+       "spec_mel": "Thou hast granted a sign ..."
+      },
+      {
+       "text": "O divinely inspired Zacharias, * thou didst behold born of a maiden * a Babe Who is co-beginningless with the Father; * and unto thine own child thou dost prophecy manifestly beforehand: * “A prophet shalt thou truly be, * preparing His ways!” * With him we call thee blessed * and in a sacred manner we celebrate thine honored festival, ** O most noetically rich God-bearer.",
+       "tier": 2,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p1 LIC 2"
+       },
+       "label": "plain",
+       "saint": "Zacharias",
+       "spec_mel": "Thou hast granted a sign ..."
+      },
+      {
+       "text": "Thou wast the living and animate temple * of the divine Spirit; * and, ministering unto God * with a pure heart, O glorious one, * in the midst of the temple thou wast unjustly slain, * finishing thy godly course in martyrdom, O right-glorious one. * Wherefore, with thine own blood * thou hast entered into the temple of heaven, ** entreating cleansing for our souls.",
+       "tier": 2,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p1 LIC 3"
+       },
+       "label": "plain",
+       "saint": "Zacharias",
+       "spec_mel": "Thou hast granted a sign ..."
+      },
+      {
+       "text": "When thou didst call the Virgin who greeted thee * the Mother of thy Lord, * thou didst behold in her virginal womb * Him, incarnate, Whose goings forth are from before time began. * Pray with her, O righteous Elizabeth, ** that He save our souls.",
+       "tier": 2,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p1 LIC 4"
+       },
+       "label": "plain",
+       "saint": "Elizabeth",
+       "repeat": 2,
+       "sourceLabel": "And 4 Stichera of the righteous Elizabeth, in Tone I",
+       "spec_mel": "Joy of the ranks of heaven ...",
+       "tone": 1
+      },
+      {
+       "text": "“Blessed is the Fruit of the Virgin’s womb, * Who filleth all things!”, * thou didst exclaim, O most blessed Elizabeth, * moved thus to speak by the Spirit of God. * Wherefore, honoring thee in hymns, ** we magnify God Who is worshiped in Trinity.",
+       "tier": 2,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p1 LIC 5"
+       },
+       "label": "plain",
+       "saint": "Elizabeth",
+       "spec_mel": "Joy of the ranks of heaven ..."
+      },
+      {
+       "text": "That which was said by the Lord * became reality in the Virgin, * for she gave birth to Jesus Who saveth His people from their sins. * “He shall be the fulfillment of those things which were said to her,” * thou didst exclaim, inspired by the Holy Spirit, O Elizabeth. ** Wherefore, we crown thee with wreaths of praise, as is meet.",
+       "tier": 2,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p1 LIC 6"
+       },
+       "label": "plain",
+       "saint": "Elizabeth",
+       "spec_mel": "Joy of the ranks of heaven ..."
+      }
+     ],
+     "lic_glory": {
+      "text": "Truly arrayed in the vestments of the priesthood of the law, thou didst serve according to the order of Aaron; and, standing in the temple, thou didst clearly behold the countenance of the angel, O most blessed one. Wherefore, hymning thy repose as is meet, O Zacharias, we all praise with songs thee who, in thine old age, begat the glorious John. Entreat thou the merciful God for us, that we be saved.",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p2 LIC Glory"
+      },
+      "composer": "John the Monk",
+      "saint": "Zacharias",
+      "sourceLabel": "Glory ..., the composition of John the Monk, in Tone VIII",
+      "tone": 8
+     },
+     "dogmatikon": {
+      "text": "In His love for mankind, the King of heaven appeared on earth * and dwelt among men; * for He Who received flesh from the pure Virgin * and cameth forth from her having received human nature, * is the only Son of God, * twofold in nature but not Hypostasis. * Therefore, proclaiming Him to be truly perfect God and perfect man, * we confess Christ our God. * Him do thou beseech, O unwedded Mother, ** that our souls find mercy!",
+      "tier": 2,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p2 LIC Both now, Dogmatic Theotokion"
+      },
+      "type": "dogmatic_theotokion",
+      "sourceLabel": "Both now ..., the Dogmatic Theotokion, in Tone VIII",
+      "tone": 8
+     },
+     "entrance_rubric": {
+      "text": "Entrance. Prokeimenon of the day. Three Lessons:",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p2 Entrance"
+      }
+     },
+     "readings": [
+      {
+       "heading": "A READING FROM GENESIS",
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p2 Lesson 1"
+       },
+       "citation": {
+        "book": "Genesis",
+        "chapter": 18,
+        "verses": "1-14"
+       },
+       "citation_basis": "identified",
+       "provenance_note": "Opens \"God appeared to Abraham by the oak of Mamre\". No reference printed. Citation as V1 recorded it for this file (identified from the printed text, not read off a printed reference); confirm the span against the page."
+      },
+      {
+       "heading": "A READING FROM THE BOOK OF JUDGES",
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p3 Lesson 2"
+       },
+       "citation": {
+        "book": "Judges",
+        "chapter": 13,
+        "verses": "2-20"
+       },
+       "citation_basis": "identified",
+       "provenance_note": "Opens \"And there was a man of Zorah\" (the birth of Samson announced). No reference printed. Citation as V1 recorded it for this file (identified from the printed text, not read off a printed reference); confirm the span against the page."
+      },
+      {
+       "heading": "A READING FROM THE FIRST BOOK OF KINGS",
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p4 Lesson 3"
+       },
+       "citation": {
+        "book": "1 Kings",
+        "chapter": 1,
+        "verses": "9-20"
+       },
+       "citation_basis": "identified",
+       "provenance_note": "Opens \"And Hannah rose up after they had eaten in Shiloh\" (First Kings, i.e. 1 Samuel). No reference printed. Citation as V1 recorded it for this file (identified from the printed text, not read off a printed reference); confirm the span against the page."
+      }
+     ],
+     "litiya": [
+      {
+       "text": "Seeing Jesus, John cried aloud: “Behold the Lamb of God!” fulfilling the prophecy of Isaiah. Thy son was the last of the prophets, O Elizabeth. Wherefore, the people call thee blessed, as is meet.",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p4 Litiya 1"
+       },
+       "label": "plain",
+       "sourceLabel": "At Litiya, the Sticheron of the temple, followed by these Stichera, in Tone VI",
+       "tone": 6
+      },
+      {
+       "text": "Jesus, Who is the Lord of lords and Master of masters, bowed His head beneath the right hand of thy son. Great is thy glory, O right-laudable Elizabeth!",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p4 Litiya 2"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "The voice of one crying in the wilderness denounced the boastful Pharisees, saying unto them: “O generation of vipers, bring forth fruits worthy of repentance!” And he worshiped the Master. Of such a son art thou the mother, O holy Elizabeth!",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p4 Litiya 3"
+       },
+       "label": "plain"
+      }
+     ],
+     "litiya_glory": {
+      "text": "Keeping the commandments of God, thou didst bring forth the fruit of living faith which dwelt within thee, O divinely wise Elizabeth. With what worthy hymns, with what worthy praises can we, the faithful, crown thee?",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p4 Litiya Glory"
+      },
+      "sourceLabel": "Glory ..., in Tone VI",
+      "tone": 6
+     },
+     "litiya_closer": {
+      "text": "Christ the Lord, my Creator and Redeemer, * Who came forth from thy womb, O most pure one, * and clothed Himself in my nature, * hath freed Adam from the primal curse. * Wherefore, like the angel * we unceasingly cry out to thee, * O all-pure one, * who art truly the Mother of God and Virgin: * Rejoice!, O Sovereign Lady, ** the intercession, protection and salvation of our souls!",
+      "tier": 2,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p5 Litiya Both now, Theotokion"
+      },
+      "type": "theotokion",
+      "sourceLabel": "Both now ..., Theotokion, in Tone VI",
+      "tone": 6
+     },
+     "aposticha_rubric": {
+      "text": "On the Aposticha, these Stichera of the righteous one, in Tone I:",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p5 Aposticha rubric"
+      }
+     },
+     "aposticha": [
+      {
+       "text": "Thou art worthy of many praises, O divinely wise Elizabeth, who art called righteous by the word of God, thou didst walk blamelessly in the commandments of the Lord, moved so by the mercy of God.",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p5 Aposticha 1"
+       },
+       "label": "plain",
+       "tone": 1,
+       "saint": "Elizabeth"
+      },
+      {
+       "text": "Precious in the sight of the Lord * is the death of His saints.",
+       "tier": 2,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p5 Aposticha verse 1"
+       },
+       "label": "refrain",
+       "sourceLabel": "Verse",
+       "label_inline": true
+      },
+      {
+       "text": "Walking in the commandments of the Lord, O abundantly glorious Elizabeth, thou didst have unfeigned love for God and unfeigned love for thy neighbor. And, lo! the fruit of thy faith was made reality. Wherefore, holding festival, we call thee blessed.",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p5 Aposticha 2"
+       },
+       "label": "plain",
+       "saint": "Elizabeth"
+      },
+      {
+       "text": "Blessed is the man that feareth the Lord; * in His commandments shall he greatly delight.",
+       "tier": 2,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p5 Aposticha verse 2"
+       },
+       "label": "refrain",
+       "sourceLabel": "Verse",
+       "label_inline": true
+      },
+      {
+       "text": "A most glorious fruit of the womb was given by the most compassionate God to thee, a woman barren and past childbearing: the preacher of repentance. Wherefore, calling thee blessed, we magnify the almighty mercy of God.",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p5 Aposticha 3"
+       },
+       "label": "plain",
+       "saint": "Elizabeth"
+      }
+     ],
+     "aposticha_glory": {
+      "text": "As a pure priest thou didst enter into the holy of holies and, clad in sacred vesture, blamelessly ministered unto God, observing the law like Aaron and leading the tribes of Israel like Moses, in the pure signaling of the little bells. Wherefore, thou wast slain. But thy righteous blood hath become for us a salvific healing, like fragrant myrrh opening the ears of the deaf leading them to the way of everlasting life. O thrice blessed Zacharias, father of John the Baptist and husband of Elizabeth: pray thou earnestly on behalf of our souls.",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p5 Aposticha Glory, of the holy prophet"
+      },
+      "composer": "Anatolius",
+      "saint": "Zacharias",
+      "sourceLabel": "Glory ..., of the holy prophet, the composition of Anatolius, in Tone II",
+      "tone": 2
+     },
+     "aposticha_closer": {
+      "text": "O new wonder greater than all the wonders of old! * For who hath ever known a mother to give birth without having known a man, * and to bear on her arm Him Who sustaineth all creation? * Yet it was the will of God to be born. * O most pure one, who carried Him as an infant in Thine embrace * and before Whom thou hast a mother’s boldness: * cease not to pray on behalf of those who honor thee, ** that He have compassion and save our souls.",
+      "tier": 2,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p5 Aposticha Both now, Theotokion"
+      },
+      "type": "theotokion",
+      "sourceLabel": "Both now ..., Theotokion, in Tone II",
+      "tone": 2
+     },
+     "troparion_closer": {
+      "text": "All of thy most glorious mysteries are beyond comprehension, * O Theotokos; * for, thy purity sealed and thy virginity intact, * thou art known to be a true Mother, having given birth unto God. ** Him do thou entreat, that our souls be saved.",
+      "tier": 2,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p6 Troparion Theotokion"
+      },
+      "type": "theotokion",
+      "sourceLabel": "Glory ..., Both now ..., Theotokion, in Tone II",
+      "tone": 2
+     }
+    },
+    "matins": {
+     "order": [
+      "sessional_1",
+      "sessional_2",
+      "megalynarion_rubric",
+      "megalynarion",
+      "megalynarion_verse_rubric",
+      "megalynarion_verse",
+      "megalynarion_closing_rubric",
+      "sessional_polyeleos",
+      "prokeimenon",
+      "prokeimenon_verse",
+      "gospel_rubric",
+      "gospel",
+      "psalm50_sticheron",
+      "canon_rubric",
+      "canons",
+      "kontakia_ode3",
+      "sessional_ode3",
+      "kontakia_ode6",
+      "exapostilarion",
+      "exapostilarion_glory",
+      "exapostilarion_closer",
+      "praises_rubric",
+      "praises",
+      "praises_glory",
+      "praises_closer",
+      "great_doxology_rubric"
+     ],
+     "sessional_1": [
+      {
+       "text": "Great is the love for mankind which the supremely good God hath toward mortals, and which He showed thee, O Elizabeth, in that it was His will, in His ineffable goodness, that thou be with Zacharias. What thanksgiving is due to Thee, O Merciful One! What hymns can we, Thy sinful servants, offer to Thee, O Master?",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p7 Sessional 1"
+       },
+       "label": "plain",
+       "repeat": 2,
+       "sourceLabel": "After the 1st chanting of the Psalter, the Sessional Hymn, in Tone IV",
+       "spec_mel": "Joseph marveled ...",
+       "tone": 4
+      },
+      {
+       "text": "Through the overshadowing of the Holy Spirit, Who cameth from on high, O all-immaculate one, thou didst conceive and bear Him Who existed from before all ages. Let creation hold festival, praising thee and magnifying thy most glorious birthgiving; and let her who hath borne the Redeemer of our souls, the only blessed one, chant, made glad by spiritual joy.",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p7 Sessional 1 Theotokion"
+       },
+       "type": "theotokion",
+       "label": [
+        "glory",
+        "both_now",
+        "theotokion"
+       ],
+       "sourceLabel": "Glory ..., Both now ..., Theotokion, in Tone IV",
+       "tone": 4
+      }
+     ],
+     "sessional_2": [
+      {
+       "text": "Samuel was a most welcome gift to the barren Hannah, and unto thee, O righteous Elizabeth, was the namesake of grace bestowed most joyously. Wondrous is Thy mercy unto mankind, O God! Glory to Thy many compassions! Glory to Thy loving-kindness!",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p7 Sessional 2"
+       },
+       "label": "plain",
+       "repeat": 2,
+       "sourceLabel": "After the 2nd chanting of the Psalter, the Sessional Hymn, in Tone IV",
+       "spec_mel": "Joseph marveled ...",
+       "tone": 4
+      },
+      {
+       "text": "O Mother who hast not known wedlock, thy womb hath been shown to be the cherubic throne of the unapproachable God; for thou alone art the dwelling-place of God, having given birth unto God incarnate Who delivereth His servants from all sins. Wherefore, meet it is to call thee blessed with heart and lips.",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p7 Sessional 2 Theotokion"
+       },
+       "type": "theotokion",
+       "label": [
+        "glory",
+        "both_now",
+        "theotokion"
+       ],
+       "sourceLabel": "Glory ..., Both now ..., Theotokion, in Tone IV",
+       "tone": 4
+      }
+     ],
+     "megalynarion_rubric": {
+      "text": "Polyeleos, and this Megalynarion:",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p7 megalynarion rubric"
+      }
+     },
+     "megalynarion": {
+      "text": "We magnify you, O holy and righteous Zacharias and Elizabeth, and we honor your holy memory; for ye entreat Christ our God on our behalf.",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p7 Megalynarion"
+      },
+      "label_inline": true
+     },
+     "megalynarion_verse_rubric": {
+      "text": "Selected Psalm Verse:",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p7 Selected Psalm Verse rubric"
+      }
+     },
+     "megalynarion_verse": {
+      "text": "Blessed be the Lord God of Israel; for He hath visited and wrought redemption for His people.",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p7 Selected Psalm verse"
+      },
+      "label": "refrain",
+      "sourceLabel": "A",
+      "label_inline": true
+     },
+     "megalynarion_closing_rubric": {
+      "text": "Glory ..., Both now ..., Alleluia ..., Glory to Thee, O God! (Thrice)",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p7 after the selected verses"
+      }
+     },
+     "sessional_polyeleos": [
+      {
+       "text": "Blossoming forth in the statutes of God with the most blessed Zacharias, O all-praised Elizabeth, offshoot of the daughters of Aaron, thou wast moved by the hand of God. Entreat the supremely good Master that we sinners may also offer the good fruit of living faith.",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p7 Polyeleos sessional"
+       },
+       "label": "plain",
+       "repeat": 2,
+       "sourceLabel": "After the Polyeleos, the Sessional Hymn, in Tone IV",
+       "spec_mel": "Joseph marveled ...",
+       "tone": 4
+      },
+      {
+       "text": "Thou alone art the Mother of God, thou alone art ever-virgin. O most pure Bride of God, in that thou hast given birth as a virgin, and remainest incorrupt. Wherefore, the ranks of angels and men magnify thee.",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p8 Polyeleos sessional Theotokion"
+       },
+       "type": "theotokion",
+       "label": [
+        "glory",
+        "both_now",
+        "theotokion"
+       ],
+       "sourceLabel": "Glory ..., Both now ..., Theotokion, in Tone IV",
+       "tone": 4
+      }
+     ],
+     "prokeimenon": {
+      "text": "In the saints that are in His earth hath the Lord been wondrous; * He hath wrought all His desires in them.",
+      "tier": 2,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p8 Prokeimenon"
+      },
+      "sourceLabel": "Prokeimenon, in Tone IV",
+      "label_inline": true,
+      "tone": 4
+     },
+     "prokeimenon_verse": {
+      "text": "Wondrous is God in His saints, the God of Israel.",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p8 Prokeimenon verse"
+      },
+      "label": "refrain",
+      "sourceLabel": "Verse",
+      "label_inline": true
+     },
+     "gospel_rubric": {
+      "text": "Let every breath praise the Lord.",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p8 Let every breath"
+      }
+     },
+     "gospel": {
+      "heading": "GOSPEL ACCORDING TO LUKE.",
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p8 Matins Gospel"
+      },
+      "citation_verbatim": "§ 2 (LK. 1: 5-25)",
+      "citation": {
+       "book": "Luke",
+       "chapter": 1,
+       "verses": "5-25",
+       "pericope_number": 2
+      },
+      "citation_basis": "printed"
+     },
+     "psalm50_sticheron": {
+      "text": "That which was said by the Lord became reality in the Virgin, for she gave birth to Jesus Who saveth His people from their sins. “He shall be the fulfillment of those things which were said to her,” thou didst exclaim, inspired by the Holy Spirit, O Elizabeth. Wherefore, we crown thee with wreaths of praise, as is meet.",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p9 After Psalm 50 sticheron"
+      },
+      "sourceLabel": "After Psalm 50, this Sticheron, in Tone I",
+      "tone": 1
+     },
+     "canon_rubric": {
+      "text": "Canon of supplication to the Theotokos (the Paraklisis), with 6 Troparia, including its Irmos; canon of the holy prophet, with 4 Troparia; and canon of the righteous one, with 4 Troparia.",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p9 Canon rubric"
+      }
+     },
+     "canons": [
+      {
+       "title": "Canon of the prophet Zacharias, the composition of Theophanes, in Tone VIII:",
+       "composer": "Theophanes",
+       "tone": 8,
+       "odes": {
+        "1": {
+         "irmos": {
+          "text": "Having passed through the water as upon dry land, * and having escaped the malice of the Egyptians, * the Israelites cried aloud: * Unto our God and Redeemer let us sing.",
+          "tier": 2,
+          "src": {
+           "file": "09-05A.pdf",
+           "locus": "p9 Ode 1 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "By thy mediation, O prophet, impart unto me the grace of the Spirit, to help me praise thy memory, crying out: Let us chant unto our Redeemer and God!",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p9 Ode 1 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thy life was found to be blameless, and thou wast arrayed in the vesture of the priesthood and the luminous splendors of prophecy, O divinely eloquent and blessed one.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p9 Ode 1 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Having thy head adorned with the crown of the law, O Zacharias, thou wast shown to be sacred, crying aloud: Let us chant unto our Redeemer and God!",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p9 Ode 1 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Clad in the vestment of the full-length tunic like Aaron, thou didst receive the maiden who sprouted forth from the root of Jesse and bore the Redeemer in her womb.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p9 Ode 1 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "3": {
+         "irmos": {
+          "text": "O Lord, thou art the confirmation of those who flee to Thee, * Thou art the Light of those in darkness, * and my spirit doth hymn Thee.",
+          "tier": 2,
+          "src": {
+           "file": "09-05A.pdf",
+           "locus": "p10 Ode 3 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "When thou didst offer the incense of the covenant, O high priest, then didst thou receive the prophetic proclamation of the Forerunner.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p10 Ode 3 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The priesthood anointed thee with oil to serve as a priest, like Aaron. Wherefore, thou wast deemed worthy to behold the angel.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p10 Ode 3 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Zacharias begat John, the dawn which announced to the whole world Thee, the noetic Sun, O Savior.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p10 Ode 3 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Set my life aright, O all-pure Birthgiver of God, thou life which filled with light the house of Zacharias.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p10 Ode 3 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "4": {
+         "irmos": {
+          "text": "O Lord, I have heard the mystery of Thy dispensation; * I have considered Thy works, * and I have glorified Thy Divinity.",
+          "tier": 2,
+          "src": {
+           "file": "09-05A.pdf",
+           "locus": "p11 Ode 4 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Thy prophet, O Master, faithfully ministered unto Thee with the symbols of the law and was deemed worthy of the grace to perceive Thy truth.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p11 Ode 4 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou, the most brilliant and most blessed one, didst receive light through darkest light; for through the law grace hath now been added unto thee.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p11 Ode 4 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The divine Gabriel, who standeth before God, announced and revealed to thee the manifestation of the voice and Forerunner of the Word, O blessed one.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p11 Ode 4 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The Fashioner of creation, Who loosed the barrenness of Elizabeth, found thee, O Virgin, to be a pure habitation, and dwelt therein.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p11 Ode 4 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "5": {
+         "irmos": {
+          "text": "Rising early we cry to Thee, O Lord; * save us, for Thou art our God, * and we know none other besides Thee.",
+          "tier": 2,
+          "src": {
+           "file": "09-05A.pdf",
+           "locus": "p12 Ode 5 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Upon thy head, O prophet, was the mitre placed which bore the impress of the true and divine priesthood.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p12 Ode 5 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Creation rejoiceth in thine offspring, O high priest; for thou didst beget the preacher of repentance.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p12 Ode 5 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou didst lead a life adorned, for with Elizabeth thou didst keep all the commandments of the Lord.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p12 Ode 5 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thy tongue is directed toward hymnody, O divinely eloquent one; for thou didst behold her who knoweth not wedlock bearing a Child within her womb.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p12 Ode 5 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "6": {
+         "irmos": {
+          "text": "O Thou that puttest on light as a garment * grant me also a robe of light, * O All-merciful Christ, our God.",
+          "tier": 2,
+          "src": {
+           "file": "09-05A.pdf",
+           "locus": "p13 Ode 6 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "He who served the shadow of the law was shown to be a preacher of grace, O our Savior; for he was deemed worthy to behold Thine incarnation.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p13 Ode 6 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Adorned with words of judgment, O sacred Zacharias, thou didst receive the ever-existing Word bearing flesh.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p13 Ode 6 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou wast shown to serve God in the temple as a right wondrous priest, O divinely inspired initiate of the mysteries of God.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p13 Ode 6 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou wast recognized by the prophetess Elizabeth, O Virgin Mother of God, bearing the beginningless Word and Savior in thy womb.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p13 Ode 6 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "7": {
+         "irmos": {
+          "text": "The Hebrew children in the furnace * boldly trampled upon the flames, * changing the fire into dew, they cried aloud: * ‘Blessed art Thou, O Lord our God, throughout the ages’.",
+          "tier": 2,
+          "src": {
+           "file": "09-05A.pdf",
+           "locus": "p14 Ode 7 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "When the voice of one crying in the wilderness came forth from the barren woman supra-naturally, he loosed the bonds of thy tongue that thou couldst cry: Blessed art Thou, O Lord our God, throughout the ages!",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p14 Ode 7 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The Forerunner, the beloved friend of the Bridegroom, was born of a barren woman, manifestly proclaiming the birthgiving of the Virgin unto those who cry out with faith: Blessed art Thou, O Lord our God, throughout the ages!",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p14 Ode 7 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O thrice-blessed Zacharias, thou wast wholly a divine instrument of the Spirit, and didst proclaim thy son to be a prophet, who crieth: Blessed art Thou, O Lord our God, throughout the ages!",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p14 Ode 7 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Zacharias, beholding thee, recognized thee as the fulfillment of the law, the chief object of all prophecy, O maiden, and he cried aloud: Blessed is the fruit of thy womb, O most pure one!",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p14 Ode 7 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "8": {
+         "irmos": {
+          "text": "Glorified in the holy mountain, * the Lord revealed the mystery of the ever-virgin unto Moses * in the flames of the burning bush: * praise ye and supremely exalt Him throughout all ages.",
+          "tier": 2,
+          "src": {
+           "file": "09-05A.pdf",
+           "locus": "p15 Ode 8 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Thou wast shown to be a prophet of the truth, for thou didst prepare John the Forerunner to tread first the paths of Christ, O blessed high priest. Him do we supremely exalt throughout all ages.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p15 Ode 8 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Giving voice in speech, thou didst bless the Master, the Lord of glory Who hath bestowed salvation upon us, Who shone forth upon us in the flesh from David. Him do we supremely exalt throughout all ages.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p15 Ode 8 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou was deemed worthy of great gifts, O divinely revealed one, begetting the Forerunner, the greatest of all the prophets, who hymneth and supremely exalteth the Lord throughout all ages.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p15 Ode 8 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Rejoicing, Zacharias, the high priest and preacher of God, paid homage to the Virgin and Mother who beareth the Lord of creation. Her do we supremely exalt throughout all ages.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p15 Ode 8 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "9": {
+         "irmos": {
+          "text": "Saved by thee, O pure Virgin, * we confess thee to be truly the Theotokos, * and together with the choirs of the bodiless hosts * thee do we magnify.",
+          "tier": 2,
+          "src": {
+           "file": "09-05A.pdf",
+           "locus": "p16 Ode 9 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Thou wast filled with the inspiration of the Comforter and wast the beginning of the blessing of the Lord, O divinely wise initiate of the sacred mysteries, divinely blessed one.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p16 Ode 9 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Perceiving the fulfillment of the archangel’s words, O all-famed and divinely eloquent one, thou didst straightway move thy tongue to blessing.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p16 Ode 9 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou wast adorned with crowns of suffering and the priesthood and with the enlightenment of prophecy, O most blessed Zacharias, divinely eloquent one.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p16 Ode 9 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "As thou art the dwelling-place of the Light, O Virgin, illumine my soul which hath been darkened by the passions, and by thy supplications deliver me from the outermost darkness.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p16 Ode 9 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        }
+       }
+      },
+      {
+       "title": "Canon of the righteous one, in Tone VIII:",
+       "tone": 8,
+       "odes": {
+        "1": {
+         "irmos": {
+          "text": "To Him who crushed the enemy with His arm * and led Israel through the Red Sea, * to our Redeemer and our God let us sing, * for He hath been glorified.",
+          "tier": 2,
+          "src": {
+           "file": "09-05A.pdf",
+           "locus": "p9 Ode 1 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Thou didst have true love for God, O right loving Elizabeth, preserving His commandments; for those who keepeth His commandments truly love God. Wherefore, we magnify thee, beloved of God, with praises.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p9 Ode 1 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "We who are saved by grace must please God with virtues, just as Elizabeth walked in the commandments of the Lord blamelessly, whom let us bless with hymns, as is meet.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p9 Ode 1 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O God Who dost accomplish all things, Thou didst manifest Thine almighty mercy in the blessed Elizabeth. We offer thee thanks for all Thy works.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p9 Ode 1 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Giving birth to Isaac, Sarah rejoiced; and when thou, O Virgin, didst give birth to the Lord Jesus, it was fitting that thou rejoice yet more, O most pure one.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p9 Ode 1 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ],
+         "katavasia": {
+          "text": "Tracing an upright line with his staff ...,",
+          "tier": 1,
+          "src": {
+           "file": "09-05A.pdf",
+           "locus": "p9 Ode 1 katavasia"
+          },
+          "sourceLabel": "Katavasia",
+          "label_inline": true
+         }
+        },
+        "3": {
+         "irmos": {
+          "text": "My heart is established in the Lord, * my horn is exalted in my God, * my mouth is enlarged against mine enemies, * and I rejoice in Thy salvation.",
+          "tier": 2,
+          "src": {
+           "file": "09-05A.pdf",
+           "locus": "p10 Ode 3 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "In the Scriptures, the Holy Spirit called thee and Zacharias righteous, O blessed Elizabeth, saying that ye were righteous in the sight of God. The Messiah is the truth for us from God, and therefore, by the Messiah wast thou justified. Who will not magnify thee with hymns of praise?",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p10 Ode 3 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Not everyone who liveth is justified in God’s sight; but in that thou wast righteous, O ever-memorable Elizabeth, the Lord Jesus sanctified thee. Let each of us praise thee as holy.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p10 Ode 3 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O God Who art wondrous in Thy saints, Thou wast wondrous also in the blessed Elizabeth. We offer unto Thee, the most compassionate One, a hymn of thanksgiving.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p10 Ode 3 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The barren Sarah, giving birth in her old age, was blessed to be a mother. We are at a loss, O most pure one, how to praise thee, Mother and Virgin, as is meet.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p10 Ode 3 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "4": {
+         "irmos": {
+          "text": "With noetic eyes the prophet Habbakuk * foresaw Thy coming, O Lord; * wherefore he cried aloud: * ‘God shall come out of Theman!’ Glory to Thy power! * Glory to Thy condescension!",
+          "tier": 2,
+          "src": {
+           "file": "09-05A.pdf",
+           "locus": "p11 Ode 4 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "As the wife of Zacharias, thou didst walk blamelessly in all the commandments; but there were others, virgins, who possessed not the oil of the virtues. Better is thy dignity than their virginity. Let people of every age glorify thee!",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p11 Ode 4 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Paul, betrothing the faithful to Christ, referred to the betrothed as pure virgins saying: I have betrothed you a pure virgin to one Husband. How much more hath God joined to the wise virgins thee who hast walked in all His commandments, O divinely wise Elizabeth. Wherefore, we praise thee as is meet.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p12 Ode 4 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou, O God, hast shown the blessed Zacharias and Elizabeth, who walked in the commandments of the Lord, to be a model of how to please Thee, like unto the pillar of fire and the cloud when Israel was journeying to the promised land. Ineffable is Thy love for mankind, O almighty Master!",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p12 Ode 4 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The birth of Isaac removed the reproach of childlessness from his mother and magnified her with glory; and when the Holy One was born of thee, O most pure Virgin and Mother, He brought thee pristine glory. Let every mortal glorify thee!",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p12 Ode 4 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "5": {
+         "irmos": {
+          "text": "O Lord our God, bestow Thy peace upon us; * O Lord our God, take us for Thy possession; * O Lord, besides Thee we know none other: * and we call upon Thy Name.",
+          "tier": 2,
+          "src": {
+           "file": "09-05A.pdf",
+           "locus": "p12 Ode 5 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "To him whom God, through His angel, spake in the prophecy of Malachi, saying: “Behold, I will send Mine angel before Thy face”, didst thou, a barren woman, give birth, O Elizabeth. We crown thee with worthy praises.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p12 Ode 5 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The voice of God crying in the wilderness is born of thee, O most honored Elizabeth. Wherefore, who will not praise thee as the mouth of God?",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p12 Ode 5 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "As once from a barren rock Thou didst pour forth water for Thy people, O God, so from the barren Elizabeth Thou hast given the preacher of repentance. O almighty Master, most glorious are all Thy works!",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p12 Ode 5 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Two sons, Joseph and Benjamin, did the barren Rachel bring forth as fruit; and she is honored for her goodly offspring. And thou, a Virgin, hast given birth to Him Who is one in Hypostasis but dual in essence. Ineffable is thy glory, O Mother of Emmanuel.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p13 Ode 5 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "6": {
+         "irmos": {
+          "text": "The billows of life trouble me like the waters of the sea, * O Lover of Mankind. * Wherefore, like Jonah I cry unto Thee, O Word: * Raise up my life from corruption, O compassionate Lord.",
+          "tier": 2,
+          "src": {
+           "file": "09-05A.pdf",
+           "locus": "p13 Ode 6 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "When John was in thy womb, O holy Elizabeth, seeing His Savior he, the babe, did leap. Blessed is thy womb which made manifest the babe who recognized Jesus as his salvation.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p13 Ode 6 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Strengthened by the Holy Spirit against the will of others, O most blessed Elizabeth, thou didst name thy son John. Let everyone praise thee, the instrument of the Holy Spirit.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p13 Ode 6 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O God, Thou didst show forth Elizabeth’s conceiving as an image of Thine own inconceivable birthgiving from the Virgin. Glory to Thy mighty wisdom!",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p13 Ode 6 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "When he was born of Rachel, Benjamin caused his own mother’s death; but the Word Who was born of thee is the true life of all. Him do thou beseech, that we who place our trust in Him may have everlasting life.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p13 Ode 6 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "7": {
+         "irmos": {
+          "text": "Having quenched the all-consuming power of the Chaldean furnace * with the form of the angel, that had descended therein, * the children cried out to the Creator: * Blessed and praised art Thou, O God of our fathers!",
+          "tier": 2,
+          "src": {
+           "file": "09-05A.pdf",
+           "locus": "p14 Ode 7 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "O divinely wise Elizabeth, thou teachest us to give thanks unto God, saying of thy birthgiving: “Thus hath the Lord dealt with me!” And therein thou wast a teacher instructed by God.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p14 Ode 7 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "He whom the angel, within the sanctuary, told Zacharias to call John, thou didst thus name, instructed by God, when he was born of thee for all people. Thy tongue is like unto the angels’, O ever-memorable Elizabeth.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p14 Ode 7 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "As when God, making the heavens heavy with manna, let it fall upon His people in the wilderness, so hath He given us John, the herald of grace, through the blessed Elizabeth. Great is Thy mercy toward mankind, O God!",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p14 Ode 7 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Giving birth to Isaac, a prefiguring of Christ, Sarah said: “The Lord hath made me to laugh!” But do thou, O all-praised Mother and Virgin, who hast given birth to Him Whom Isaac prefigured and yet hast remained a Virgin, rejoice yet more.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p15 Ode 7 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "8": {
+         "irmos": {
+          "text": "O Thou who dost cover Thy chambers on high with waters, * Thou Who hast set the sands to bound the sea * and Who upholdest all things: * the sun doth sing Thy praises, * the moon giveth Thee glory, * every creature offereth a hymn unto Thee, * as their Fashioner, throughout the ages.",
+          "tier": 2,
+          "src": {
+           "file": "09-05A.pdf",
+           "locus": "p15 Ode 8 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "As God said of His Church: “Thou art most comely, my beloved, and there is no blemish in thee”, so art thou also blameless, O righteous Elizabeth. In that the Lord Jesus is the sanctification of His faithful, we magnify thee as most comely.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p15 Ode 8 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The people saw thee, who didst walk in all the commandments of the Lord, freely justified by the grace of God, O right blessed Elizabeth. Wherefore, it is meet to glorify the mercy of God in thee.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p15 Ode 8 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Elizabeth was the first to proclaim the mystery wrought in Thee, O Jesus, when she said: “Blessed is the Fruit of the Virgin’s womb, Who is our Lord and God!” Behold the working of Thy wisdom! Glory to Thy love for mankind!",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p15 Ode 8 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The birth of Samuel from his barren mother did away with the tears of her eyes and brought her joy; and the Lord born of thee is the cause of joy for the whole world. Wherefore we unceasingly magnify thee with hymns, O Virgin Mother.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p15 Ode 8 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "9": {
+         "irmos": {
+          "text": "Virginity is alien to motherhood, * and childbearing is a thing strange to virgins: * yet in thee, O Theotokos, both have come to pass. * Therefore we, and all the nations of the earth, * without ceasing call thee blessed.",
+          "tier": 2,
+          "src": {
+           "file": "09-05A.pdf",
+           "locus": "p16 Ode 9 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Believing the Messiah Who had come to be thy Lord, and keeping the commandments of the Lord, thou didst well please Him, O Elizabeth. Wherefore, entreat the supremely good Master on behalf of those who bear thy name and all who praise thee, that their souls may be saved.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p16 Ode 9 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "He who keepeth the commandments of God hath God promised to love and appear to him; wherefore, thou art loved by God, O Elizabeth, who didst walk in His commandments. Entreat the supremely good One on behalf of those who bear thy name, that they may love God and be loved through His tender compassion.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p16 Ode 9 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Elizabeth, the kinswoman of Mary, hath given birth, though barren and bereft of children. Thou didst magnify Thy mercy with her, O God, for every good work cometh from Thee. Glory to Thine ineffable compassion!",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p16 Ode 9 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Sampson, was revealed to be strong from his youth, and was the glory of his barren mother. And in Jesus Who was born of thee hath all the fullness of the Godhead been embodied. We magnify thee, who art more glorious than all the saints, O most pure Virgin.",
+           "tier": 1,
+           "src": {
+            "file": "09-05A.pdf",
+            "locus": "p16 Ode 9 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        }
+       }
+      }
+     ],
+     "kontakia_ode3": [
+      {
+       "text": "Today Zacharias, the prophet and high priest of the Most High, * the father of the Forerunner, * setteth the table of his memorial, * feeding the faithful; * for he hath distributed the food of righteousness unto all. * Wherefore, he hath reposed * as a divine initiate ** of the mysteries of the grace of God.",
+       "tier": 2,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p10 Kontakion of the holy prophet (after Ode III)"
+       },
+       "label": "plain",
+       "saint": "Zacharias",
+       "sourceLabel": "Kontakion of the holy prophet, in Tone III",
+       "spec_mel": "Today the Virgin ...",
+       "tone": 3
+      },
+      {
+       "text": "The high priest of the law was bound to silence by the voice of an angel, for within the barren and chaste Elizabeth, the angel of the coming of Christ, the prophet and initiate of the mysteries was to come forth. By his nativity, the grace, deliverance, universal reconciliation and renewal of our nature was to be revealed. By Him Who giveth fruit from the barren womb, the Son Who hath appeared from the Virgin, the divine initiate of the mysteries of the grace of God and his preaching of the Lamb was to be made manifest.",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p10-p11 Ikos of the holy prophet"
+       },
+       "label": "plain",
+       "saint": "Zacharias",
+       "sourceLabel": "Ikos",
+       "label_inline": true
+      }
+     ],
+     "sessional_ode3": [
+      {
+       "text": "Having ministered to God as a priest according to the law, O Zacharias, thou wast shown to the whole world as a pillar of light, prophesying that Christ would come forth from the Virgin, incarnate of the Holy Spirit, the Orient from the heights of righteousness, Who doth illumine all the world, direct our feet to the ways of peace, and save our race, thou didst say.",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p11 Ode III sessional (prophet)"
+       },
+       "label": "plain",
+       "saint": "Zacharias",
+       "sourceLabel": "Sessional Hymn of the holy prophet, in Tone VIII",
+       "spec_mel": "That which hath been commanded ...",
+       "tone": 8
+      },
+      {
+       "text": "When the Messiah was already incarnate, we listened to thee, His first herald, when, with awe, thou didst say unto the divinely chosen maiden who embraced thee: “Whence is this to me, that the Mother of my Lord should come to me?” Wherefore, praising thee, we cry aloud: Rejoice, thou mirror revealing the mysteries of God to us!",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p11 Ode III sessional (righteous one)"
+       },
+       "label": "glory",
+       "saint": "Elizabeth",
+       "sourceLabel": "Glory ..., Sessional Hymn of the righteous one, in Tone IV",
+       "tone": 4
+      },
+      {
+       "text": "We, thy sinful servants, saved by thee through the Son Who was born of thee, confess thee to be our Sovereign Lady, O Theotokos; for having given birth inaccessibly unto God Who cleanseth us of every sin by His own blood and bringeth us into the joy of paradise, in gladness we praise thee and Him.",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p11 Ode III sessional Theotokion"
+       },
+       "type": "theotokion",
+       "label": [
+        "both_now",
+        "theotokion"
+       ],
+       "sourceLabel": "Both now ..., Theotokion, in Tone IV",
+       "tone": 4
+      }
+     ],
+     "kontakia_ode6": [
+      {
+       "text": "Like the full moon, * thou didst receive the light of righteousness from the Messiah, * the noetic Sun, * O Elizabeth beloved of God, * and with Zacharias didst walk in all the commandments of the Lord. * Wherefore, blessing thee with worthy hymns, * we magnify the Lord, ** the most compassionate Light, Who illumineth all.",
+       "tier": 2,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p13 Kontakion of the righteous one (after Ode VI)"
+       },
+       "label": "plain",
+       "saint": "Elizabeth",
+       "sourceLabel": "Kontakion of the righteous one, in Tone IV",
+       "tone": 4
+      },
+      {
+       "text": "As God once inscribed His commandments upon two tablets of stone, so hath He illumined you with His grace, O blessed Zacharias and Elizabeth; for ye walked blamelessly in His commandments. Therefore, worthily praising you, we magnify the Lord of all, the most compassionate Light Who illumineth all.",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p14 Ikos of the righteous one"
+       },
+       "label": "plain",
+       "saint": "Elizabeth",
+       "sourceLabel": "Ikos",
+       "label_inline": true
+      }
+     ],
+     "exapostilarion": {
+      "text": "At first, thou wast struck mute in the holy of holies, by the voice of the angel, for the springing forth from thee of the voice of one crying in the wilderness; and now thou art silent for his sake, slain, O Zacharias, before the holy of holies.",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p17 Exapostilarion of the prophet"
+      },
+      "label": "plain",
+      "saint": "Zacharias",
+      "sourceLabel": "Exapostilarion of the prophet",
+      "spec_mel": "O Light immutable ..."
+     },
+     "exapostilarion_glory": {
+      "text": "Thou wast the glory of barren mothers, the model of virtues for sinners, O blessed Elizabeth, keeping the commandments of the Lord. We glorify the goodness of God which hath been made manifest in thee.",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p17 Exapostilarion of the righteous one"
+      },
+      "label": "glory",
+      "saint": "Elizabeth",
+      "sourceLabel": "Glory ..., Exapostilarion of the righteous one",
+      "spec_mel": "The heaven with stars ..."
+     },
+     "exapostilarion_closer": {
+      "text": "Having shone forth eternally, Light from Light, before the morning star, O Word, Thou didst come forth as Light, immutably, under time, from Thy Mother, illumining the ends of the world with radiant effulgence, as Thou art the Light of the world.",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p17 Exapostilarion Theotokion"
+      },
+      "type": "theotokion",
+      "sourceLabel": "Both now ..., Theotokion"
+     },
+     "praises_rubric": {
+      "text": "On the Praises, 4 Stichera of the righteous one, in Tone I:",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p17 Praises rubric"
+      }
+     },
+     "praises": [
+      {
+       "text": "The barren and childless Elizabeth didst Thou bless with fertility, O God, that Thou mayest reveal Thine almighty goodness. By Thy grace, have compassion upon us, who every day are withered by sins, that we may be aright fruitful tree, O Omnipotent One.",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p17 Praises 1"
+       },
+       "label": "plain",
+       "saint": "Elizabeth",
+       "tone": 1,
+       "repeat": 2
+      },
+      {
+       "text": "The ever-memorable couple walked blamelessly in Thy commandments and through Thy grace were righteous in Thy sight, O compassionate One. All this was Thy mercy, O Master. Glory to Thy compassionate tender compassion!",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p17 Praises 2"
+       },
+       "label": "plain",
+       "saint": "Elizabeth"
+      },
+      {
+       "text": "God Who worketh within you that which He willed to accomplish, O right blessed couple, made you heirs to the Kingdom in His great mercy. Glory to Thee, O all-merciful Master!",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p17 Praises 3"
+       },
+       "label": "plain",
+       "saint": "Elizabeth"
+      }
+     ],
+     "praises_glory": {
+      "text": "The greatest born of women is named by eternal Wisdom and hath come forth from thee, a barren woman, O God-loving Elizabeth. Let the faithful rejoice in the ever-memorable one, magnifying our Benefactor!",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p17 Praises Glory"
+      },
+      "sourceLabel": "Glory ..., in Tone VI",
+      "tone": 6
+     },
+     "praises_closer": {
+      "text": "He Who is hymned by the seraphim and borne up by the cherubim chose the womb of the pure divine maiden as a most beautiful throne. Wherefore, we send up to Thee this hymn of thanksgiving: Glory to Thee, O Thou Who alone lovest mankind! Glory to Thee, O Jesus all-sweet! Glory to Thee, O all our hope! Glory to Thee, salvation of the faithful! Glory to Thy compassionate dispensation!",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p17 Praises Both now"
+      },
+      "type": "theotokion",
+      "sourceLabel": "Both now ..., in Tone IV",
+      "tone": 4
+     },
+     "great_doxology_rubric": {
+      "text": "Great Doxology, and the dismissal.",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p17 Great Doxology, and the dismissal."
+      }
+     }
+    },
+    "liturgy": {
+     "order": [
+      "beatitudes_rubric",
+      "beatitudes",
+      "troparion",
+      "kontakia",
+      "prokeimenon",
+      "prokeimenon_verse",
+      "epistle",
+      "alleluia",
+      "gospel",
+      "communion_verse"
+     ],
+     "beatitudes_rubric": {
+      "text": "On the Beatitudes, 8 Troparia: 4 from ODE III of the canon of the holy prophet, and 4 from ODE VI of the canon of the righteous one.",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p18 Beatitudes rubric"
+      }
+     },
+     "beatitudes": [
+      {
+       "text": "When thou didst offer the incense of the covenant, O high priest, then didst thou receive the prophetic proclamation of the Forerunner.",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p18 Beatitude 1"
+       },
+       "label": "plain",
+       "repeat": 2
+      },
+      {
+       "text": "The priesthood anointed thee with oil to serve as a priest, like Aaron. Wherefore, thou wast deemed worthy to behold the angel.",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p18 Beatitude 2"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "Zacharias begat John, the dawn which announced to the whole world Thee, the noetic Sun, O Savior.",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p18 Beatitude 3"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "When John was in thy womb, O holy Elizabeth, seeing His Savior he, the babe, did leap. Blessed is thy womb which made manifest the babe who recognized Jesus as his salvation.",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p18 Beatitude 4"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "Strengthened by the Holy Spirit against the will of others, O most blessed Elizabeth, thou didst name thy son John. Let everyone praise thee, the instrument of the Holy Spirit.",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p18 Beatitude 5"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "O God, Thou didst show forth Elizabeth’s conceiving as an image of Thine own inconceivable birthgiving from the Virgin. Glory to Thy mighty wisdom!",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p18 Beatitude 6"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "When he was born of Rachel, Benjamin caused his own mother’s death; but the Word Who was born of thee is the true life of all. Him do thou beseech, that we who place our trust in Him may have everlasting life.",
+       "tier": 1,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p18 Beatitude Theotokion"
+       },
+       "label": "theotokion",
+       "sourceLabel": "Theotokion",
+       "label_inline": true
+      }
+     ],
+     "kontakia": [
+      {
+       "text": "Today Zacharias, the prophet and high priest of the Most High, * the father of the Forerunner, * setteth the table of his memorial, * feeding the faithful; * for he hath distributed the food of righteousness unto all. * Wherefore, he hath reposed * as a divine initiate ** of the mysteries of the grace of God.",
+       "tier": 2,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p18 Kontakion of the holy prophet at Liturgy"
+       },
+       "label": "plain",
+       "saint": "Zacharias",
+       "sourceLabel": "Kontakion of the holy prophet, in Tone III",
+       "tone": 3
+      },
+      {
+       "text": "Like the full moon, * thou didst receive the light of righteousness from the Messiah, * the noetic Sun, * O Elizabeth beloved of God, * and with Zacharias didst walk in all the commandments of the Lord. * Wherefore, blessing thee with worthy hymns, * we magnify the Lord, ** the most compassionate Light, Who illumineth all.",
+       "tier": 2,
+       "src": {
+        "file": "09-05A.pdf",
+        "locus": "p18 Kontakion of the righteous one at Liturgy"
+       },
+       "label": "plain",
+       "saint": "Elizabeth",
+       "sourceLabel": "Kontakion of the righteous one, in Tone IV",
+       "tone": 4
+      }
+     ],
+     "prokeimenon": {
+      "text": "The righteous man shall be glad in the Lord, * and shall hope in Him.",
+      "tier": 2,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p18 Liturgy Prokeimenon"
+      },
+      "sourceLabel": "Prokeimenon, in Tone VII",
+      "label_inline": true,
+      "tone": 7
+     },
+     "prokeimenon_verse": {
+      "text": "Hearken, O God, unto my prayer, when I make supplication unto Thee.",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p18 Liturgy Prokeimenon verse"
+      },
+      "label": "refrain",
+      "sourceLabel": "Verse",
+      "label_inline": true
+     },
+     "epistle": {
+      "heading": "EPISTLE TO THE HEBREWS,",
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p19 Epistle"
+      },
+      "citation_verbatim": "§314 (HEB.6: 13-20)",
+      "citation": {
+       "book": "Hebrews",
+       "chapter": 6,
+       "verses": "13-20",
+       "pericope_number": 314
+      },
+      "citation_basis": "printed"
+     },
+     "alleluia": {
+      "text": "A light hath dawned for the righteous man, and gladness for the upright of heart.",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p19 Alleluia"
+      },
+      "sourceLabel": "Alleluia, in Tone VII",
+      "label_inline": true,
+      "tone": 7
+     },
+     "gospel": {
+      "heading": "GOSPEL ACCORDING TO ST. MATTHEW,",
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p19 Gospel"
+      },
+      "citation_verbatim": "§ 96 (MT. 23: 29-39)",
+      "citation": {
+       "book": "Matthew",
+       "chapter": 23,
+       "verses": "29-39",
+       "pericope_number": 96
+      },
+      "citation_basis": "printed"
+     },
+     "communion_verse": {
+      "text": "Rejoice in the Lord, O ye righteous; praise is meet for the upright.",
+      "tier": 1,
+      "src": {
+       "file": "09-05A.pdf",
+       "locus": "p19 Communion Verse"
+      },
+      "sourceLabel": "Communion Verse",
+      "label_inline": true
+     }
+    }
+   }
+  ]
+ },
  "09-27": {
   "_encoded": [
    "c0.identity",
