@@ -97,6 +97,8 @@ block is the consolidated state. Tool **v0.52.2**; nine gates green.
 | 11-26 | 11-26A.pdf | Innocent of Irkutsk (c1); Litiya, Polyeleos, Great Doxology | vigil / 2F |
 | 11-27 | 11-27.pdf | Great-martyr James the Persian; Palladius AT COMPLINE (c0) | six_stichera / 2C |
 | 11-27 | 11-27A.pdf | Kursk-Root Icon of the Sign (c1); Litiya, Polyeleos | vigil / 2F |
+| 11-28 | 11-28.pdf | Stephen the New (two kontakia); Irenarchus AT COMPLINE | six_stichera / 2C |
+| 11-29 | 11-29.pdf | Paramon; Acacius AT COMPLINE; NO troparion or kontakion printed; no Liturgy | simple / 2A |
 
 About 890 daily text nodes; 4,413 with the General Menaion. 27 files of
 November remain (11-01..11-13 with 11-1A, 11-09A, 11-09B; 11-21..11-30 with
@@ -325,6 +327,26 @@ the canonical field stands (R-1), as before. Applied: 11-20 as encoded; **11-19
 rebuilt to this form** (its `troparion_other_saint` key is retired and removed
 from the schema; its single kontakion keeps the canonical field). 11-18 has one
 troparion and one kontakion and is unchanged.
+
+### 11-28 AND 11-29 ADDED — TWO KONTAKIA; A DAY WITH NO HYMNS AT ALL
+
+Neither date has a vol. III entry (index checked). Both repeat the 11-27 shape:
+the second saint of the title is served AT COMPLINE only.
+
+- **11-28, Stephen the New:** two kontakia for ONE saint, Tone VIII after Ode
+  III and Tone III with the Ikos after Ode VI, both printed again at Liturgy
+  under "ODE III, Kontakion ..." / "ODE VI, Kontakion ...". Positional lists, no
+  entry-level canonical kontakion. Which one the Hours read is a rule question
+  for the adapter (Fekula: after Ode III the kontakion of the second saint,
+  after Ode VI of the first; here both are the same saint's).
+- **11-29, Paramon and Acacius: the file prints NO troparion and NO kontakion,
+  and no AT LITURGY.** After Ode VI: "the Martyricon from the Oktoechos".
+  `troparion` and `kontakion` are stored as explicit absence nodes. **This is
+  the first V2 day where the Hours must go to the fallback chain** (General
+  Menaion: Martyr), so the adapter needs that path before 11-29 can display.
+  Vespers prints stichera of the Theotokos "if Alleluia is to be chanted at
+  Matins": a fast-day (Alleluia) service is provided for.
+- New matins key `after_ode6_rubric`.
 
 ### A BROKEN BUILD REACHED MAIN FOR A FEW MINUTES (14 Nov) — GATE BEFORE COMMIT, BY EXIT CODE
 
