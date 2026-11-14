@@ -20,6 +20,23 @@ are the plan and await Bill's confirmation before any assembler code changes.**
    both datasets and compared. V1 is not the answer key: Bill expects V2 to be
    RIGHT where V1 was often wrong, notably the theotokia and dogmatika at Vespers.
 7. The Fekula texts never enter the repo.
+8. **(14 Nov, after the OCA texts were read)** The service shown by default on a
+   two-file date is the one marked `oca_primary`: the first file, except 5
+   September. The other is offered as a choice. This replaces "c0 by default".
+9. **Rank words:** a forefeast or afterfeast day with 3 + 3 stichera and no
+   doxology is `six_stichera` (V1's word). Apostles Philip, Matthew, Andrew and
+   the second-file services of Palamas, Innocent and the Kursk-Root Icon are
+   `polyeleos`, provisional (Q-0001, Q-0002). The waterfall takes Vigil only
+   where a Little Vespers is printed.
+10. **Kontakion at the Hours** when a saint has two: V1's existing rule
+    (`getKontakionForHour`) is kept; ruling 5 is withdrawn. The Hours read the
+    Matins print site, Typica the Liturgy site.
+11. **An OCA hymns layer is added**, with a "Prefer OCA" toggle that switches
+    OCA hymns on wholesale wherever they exist, so OCA pointed hymns appear in
+    the services and can be handed to the Tone Trainer. The layer grows only as
+    the OCA publishes service texts: it does not publish one for every day.
+12. A hand-entered short `name` per commemoration for the dismissal, checked
+    against the OCA title line.
 
 ## 1. The fact that shapes the work
 
@@ -249,6 +266,42 @@ twelve fall on a Sunday in 2026.
 9. **Short names** for the dismissal are on the title lines: "Holy and
    All-praised Apostle Philip", "Hieromartyr Hierotheus, Bishop of Athens",
    "Martyr Paramon and 370 Martyrs in Bithynia".
+
+### 5c. The OCA hymns layer — PLAN (awaiting Bill's confirmation of the open points)
+
+**What it is.** A separate dataset beside the Menaion capture, never mixed into
+it: `src/data/oca_hymns/`. The Menaion V2 files stay a faithful copy of the St.
+Sergius page; the OCA layer is a second witness the tool can prefer.
+
+**Source and method.** The OCA `-tt` service texts carry Tier 3 director
+pointing (encoding_rule_v2.md 3.2): one hymn line per paragraph, `//` printed
+before the last line, stressed syllables UNDERLINED. An extractor reads the
+docx XML and writes line breaks as ` | `, keeps `//`, wraps underlined runs in
+`[brackets]` (merging `][`), exactly as the V1 precedent did (06-17, 10-04).
+Text is lifted, never retyped; a gate re-extracts and byte-compares. The docx
+files stay on Bill's machine.
+
+**Shape (one record per hymn).**
+`{ id, kind (troparion | kontakion | sticheron | theotokion | prokeimenon ...),
+subject, tone, text, tier: 3, slot, src: { file, locus }, seen_in: [files] }`
+keyed by the commemoration's Menaion date (`10-04`), or by tone for
+resurrectional hymns (which belong to the Octoechos, not to a date). `slot`
+names the place it fills (`troparion`, `kontakion`, `vespers.lic[2]`), so the
+adapter can lay it over the Menaion text at that place.
+
+**The toggle.** One setting, "Prefer OCA", remembered per reader. On: wherever
+an OCA hymn exists for a slot it is shown, marked as OCA, with the Menaion text
+one tap away. Off: the Menaion text. Where no OCA hymn exists the Menaion text
+shows either way. Every element says which source it came from.
+
+**Phases.** A: troparia and kontakia of the dated commemorations (what the
+Hours and Typica read). B: the dated stichera, Glory and theotokia at Vespers.
+C: resurrectional hymns by tone. D: the Tone Trainer reads the layer directly.
+
+**Open points.** (i) Is the toggle ON by default? (ii) Capture everything in
+each document from the start, or phase A first? (iii) The `^` mark the OCA
+prints before some stressed syllables: V1 stripped it and logged the positions;
+keep doing that until its meaning is known?
 
 ## 6. Adapter (`src/data/menaion_v2/adapter.js`) — PLAN
 

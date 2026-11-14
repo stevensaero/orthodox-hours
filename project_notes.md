@@ -334,6 +334,23 @@ rebuilt to this form** (its `troparion_other_saint` key is retired and removed
 from the schema; its single kontakion keeps the canonical field). 11-18 has one
 troparion and one kontakion and is unchanged.
 
+### RULINGS AFTER THE OCA TEXTS (Bill, 14 Nov) — AND A RANK I HAD WRONG
+
+Recorded as rulings 8-12 in `menaion_v2_wirein_spec.md`:
+
+- Default service on a two-file date = the `oca_primary` one.
+- `six_stichera` is the word for a 3 + 3 forefeast or afterfeast day (11-20,
+  11-22, 11-23 changed from `simple`). Section 2G1 unchanged.
+- Polyeleos, provisional: Andrew (11-30), the Kursk-Root Icon (11-27A, to agree
+  with 09-08A), and **Innocent (11-26A), which I had stored vigil in breach of
+  the waterfall**: section 1.1 takes Vigil only where a Little Vespers is
+  printed, as Q-0001 itself says. A printed Litiya was never the test.
+- V1's kontakion-by-Hour rule is kept where a saint has two kontakia.
+- **An OCA hymns layer begins**, with a "Prefer OCA" toggle (plan: spec 5c).
+  The OCA does not publish a text for every day, so the layer grows as Bill's
+  `OCA_service_texts` folder grows. Each new docx is a chance to add hymns.
+- A short `name` per commemoration for the dismissal.
+
 ### OCA SERVICE TEXTS READ (14 Nov) — A THIRD WITNESS, AND A GAP IN V2
 
 Bill's machine has `Orthodox Hours/OCA_service_texts/` (.docx, the OCA's own
