@@ -81,6 +81,7 @@ block is the consolidated state. Tool **v0.52.2**; nine gates green.
 | 11-19 | 11-19.pdf | Prophet Obadiah; Martyr Barlaam; double, two troparia | simple / 2B |
 | 11-20 | 11-20.pdf | Forefeast of the Entrance; Gregory the Decapolite; Proclus; three canons, appendix | simple / 2G1 |
 | 11-21 | 11-21.pdf | ENTRY OF THE THEOTOKOS; Little Vespers, Litiya, two canons, katavasiae | great_feast / 2F |
+| 11-22 | 11-22.pdf | Afterfeast of the Entry; Apostle Philemon and those with him; two canons | simple / 2G1 |
 
 About 890 daily text nodes; 4,413 with the General Menaion. 27 files of
 November remain (11-01..11-13 with 11-1A, 11-09A, 11-09B; 11-21..11-30 with
@@ -309,6 +310,20 @@ the canonical field stands (R-1), as before. Applied: 11-20 as encoded; **11-19
 rebuilt to this form** (its `troparion_other_saint` key is retired and removed
 from the schema; its single kontakion keeps the canonical field). 11-18 has one
 troparion and one kontakion and is unchanged.
+
+### 11-22 ADDED — AFTERFEAST PLUS A SAINT; PAIRED LITURGY PROPERS
+
+16 pages, 553 lines, all claimed. One printed service, one entry, `saint` tags
+("feast" / "Philemon and those with him"), positional `troparia` / `kontakia`
+lists, no entry-level canonical hymn (as 11-20). Simple, Fekula 2G1.
+
+New: the Liturgy prints **two prokeimena, two alleluia verses and two communion
+verses** (feast, then apostles). Stored as lists `prokeimena`, `alleluias`,
+`communion_verses`, each item labeled and tagged, in page order; only the
+apostles' Epistle and Gospel are printed. Also `exapostilarion_closer_rubric`
+for "Glory, Both now, the foregoing is repeated" after the exapostilarion.
+A `saint` key on a canon object is rejected by the validator; the canon title
+carries the attribution.
 
 ### 11-21 ADDED — FIRST GREAT FEAST IN THE DAILY BOOK
 
