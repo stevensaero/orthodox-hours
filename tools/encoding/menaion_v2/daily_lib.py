@@ -24,6 +24,10 @@ PDF_DIR = os.environ.get(
 
 ROMAN = {'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6, 'VII': 7, 'VIII': 8, 'IX': 9}
 DEVICE = {'Once': 1, 'Twice': 2, 'Thrice': 3}
+# inline labels printed at the head of a canon troparion -> the LABELS vocabulary
+INLINE_LABELS = {'Theotokion': 'theotokion', 'Stavrotheotokion': 'stavrotheotokion',
+                 'Trinitarion': 'trinitarion', 'Triadicon': 'trinitarion',
+                 'Glory ...': 'glory', 'Both now ...': 'both_now'}
 
 
 def extract_lines(stem):
@@ -200,18 +204,46 @@ class Src:
             while self.lines[a - 1].startswith('===== PAGE'):
                 a += 1
             head = self.lines[a - 1].strip()
-            m = re.match(r'^(Theotokion|Stavrotheotokion|Trinitarion|Glory \.\.\.|Both now \.\.\.): ', head)
+            m = re.match(r'^(Theotokion|Stavrotheotokion|Trinitarion|Triadicon): |^(Glory \.\.\.|Both now \.\.\.), ', head)
             if m:
-                lab = {'Theotokion': 'theotokion', 'Stavrotheotokion': 'stavrotheotokion',
-                       'Trinitarion': 'trinitarion', 'Glory ...': 'glory', 'Both now ...': 'both_now'}[m.group(1)]
-                items.append(self.t(a, b, 'Ode %d %s' % (n, m.group(1)), pre=m.group(0), label=lab))
+                name = m.group(1) or m.group(2)
+                lab = INLINE_LABELS[name]
+                items.append(self.t(a, b, 'Ode %d %s' % (n, name), pre=m.group(0), label=lab))
             else:
                 items.append(self.t(a, b, 'Ode %d troparion %d' % (n, i), label='plain'))
             a = b + 1
         d['items'] = items
         if kat is not None:
-            d['katavasia'] = self.t(kat, kat, 'Ode %d katavasia' % n, pre='Katavasia: ')
+            ka, kb = kat if isinstance(kat, tuple) else (kat, kat)
+            d['katavasia'] = self.t(ka, kb, 'Ode %d katavasia' % n, pre='Katavasia: ')
         return d
+
+    def mix(self, specs, desc):
+        """An ordered run of unlike things, each given its kind and line range by
+        the encoder: ('t', a, b) a troparion or sticheron; ('ref', a, b) a line
+        printed "Refrain: ..."; ('rub', a, b) a rubric; ('glory'|'both'|'theot'|
+        'tri', a, b) an item printed under that inline label; ('lab', a, b, n)
+        an item whose label is line n. Used where a refrain is printed before
+        every troparion (11-21, Ode IX) and for Beatitude sets with Glory/Both now."""
+        out, count = [], 0
+        for sp in specs:
+            kind, a, b = sp[0], sp[1], sp[2]
+            if kind == 't':
+                count += 1
+                out.append(self.t(a, b, '%s %d' % (desc, count), label='plain'))
+            elif kind == 'ref':
+                out.append(self.t(a, b, '%s refrain' % desc, pre='Refrain: ', label='refrain'))
+            elif kind == 'rub':
+                out.append(self.t(a, b, '%s rubric' % desc, device=False, label='rubric'))
+            elif kind == 'lab':
+                count += 1
+                out.append(self.t(a, b, '%s %d' % (desc, count), sl=sp[3], label='glory'))
+            else:
+                pre = {'glory': 'Glory ..., ', 'both': 'Both now ..., ', 'theot': 'Theotokion: ',
+                       'tri': 'Triadicon: '}[kind]
+                lab = {'glory': 'glory', 'both': 'both_now', 'theot': 'theotokion', 'tri': 'trinitarion'}[kind]
+                out.append(self.t(a, b, '%s %s' % (desc, pre.strip(' ,:')), pre=pre, label=lab))
+        return out
 
     # -- coverage -----------------------------------------------------------
     def unaccounted(self, ignore=()):

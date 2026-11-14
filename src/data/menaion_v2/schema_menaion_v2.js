@@ -79,6 +79,9 @@ export const LABELS = [
   // items (Odes VII ×2 and VIII) — the first file to label items so.
   // Extended on attestation, never by inference (§7.1).
   'trinitarion',
+  // Attested 14 Nov 2026, 11-21.pdf: Ode IX prints RUBRICS inside the ode, between
+  // its refrains and troparia. A rubric in an item list is labeled as one.
+  'rubric',
 ];
 
 // ── Typed closers (§5.8) ─────────────────────────────────────────────────────
@@ -178,7 +181,7 @@ export const SOURCE_FILES = [...AUGUST_DATES, ...NOVEMBER_DATES].map(d => `${d}.
 export const DAILY_PAGE_COUNTS = {
   '11-14.pdf': 14, '11-14A.pdf': 16, '11-15.pdf': 10,
   '11-16.pdf': 16, '11-17.pdf': 10, '11-18.pdf': 11, '11-19.pdf': 10,
-  '11-20.pdf': 21,
+  '11-20.pdf': 21, '11-21.pdf': 22,
 };
 // ── The General Menaion (§6.2) — enumerated FROM THE FOLDER ─────────────────
 // Never from encoding_rule_v2.md §2.1's prose, which is wrong in three ways:
@@ -399,7 +402,9 @@ export const CANON = {
   required: ['odes'],
   odeKeys: CANON_ODES,
   odeOptional: CANON_ODES_OPTIONAL,
-  ode: { required: ['irmos', 'items'], optional: ['katavasia', 'theotokion'] },
+  // preface / closing / katavasia_rubric: 11-21 (Ode IX refrains and choir rubrics; the
+  // rubric after the first katavasia).
+  ode: { required: ['irmos', 'items'], optional: ['katavasia', 'theotokion', 'preface', 'closing', 'katavasia_rubric'] },
 };
 
 // ── Vocabulary guards (§7.4) ─────────────────────────────────────────────────
@@ -660,7 +665,8 @@ export const FIELD_MANIFEST = [
 // positions are fixed, the count per position is not (11-15 prints four items
 // after Ode III). general.js is not migrated; its single node is the one-item case.
 export const DAILY_KEYS = {
-  vespers_like: [   // applies to `vespers` and `great_vespers`
+  vespers_like: [   // applies to `vespers`, `great_vespers` and `little_vespers`
+    ['litiya_closer', 'closer', 'Litiya Glory / Both now'],
     ['lic_rubric', 'rubric', '"On Lord, I have cried" rubric'],
     ['dogmatikon', 'closer', 'Both now: Dogmatic Theotokion'],
     ['lic_stavrotheotokion', 'closer', 'Stavrotheotokion at Lord I have cried'],
@@ -699,6 +705,10 @@ export const DAILY_KEYS = {
     ['prokeimenon_verse', 'text', 'Prokeimenon verse'],
     ['gospel_rubric', 'rubric', '"Let every breath" rubric'],
     ['canon_rubric', 'rubric', 'Canon rubric'],
+    ['psalm50_rubric', 'rubric', 'Rubric after Psalm 50 (11-21)'],
+    ['psalm50_glory', 'text', 'After Psalm 50: the Glory verse printed in place of "Through the prayers"'],
+    ['psalm50_closer_rubric', 'rubric', 'After Psalm 50: Both now rubric ("The foregoing is repeated")'],
+    ['psalm50_verse_rubric', 'rubric', 'After Psalm 50: "Have mercy on me O God" rubric'],
     ['exapostilarion_glory', 'text', 'Glory: another Exapostilarion (11-16)'],
     ['praises_rubric', 'rubric', 'Praises rubric'],
     ['praises_glory', 'text', 'Praises Glory'],
@@ -712,6 +722,9 @@ export const DAILY_KEYS = {
     ['troparia', 'labeled_items', 'Troparia at Liturgy, where the service has more than one'],
     ['kontakia', 'labeled_items', 'Kontakia at Liturgy, where the service has more than one'],
     ['epistle_rubric', 'rubric', 'Epistle rubric'],
+    ['megalynarion_rubric', 'rubric', 'Rubric for what is chanted instead of "It is truly meet"'],
+    ['megalynarion_refrain', 'text', 'Refrain chanted before the festal Irmos at Liturgy'],
+    ['megalynarion_closing_rubric', 'rubric', 'Rubric closing the festal megalynarion (until the leave-taking)'],
     ['gospel_rubric', 'rubric', 'Gospel rubric'],
     ['liturgy_troparion', 'text', 'Troparion as printed at Liturgy (stored apart when it diverges from the canonical field, R-1)'],
     ['troparion_alternate_rubric', 'rubric', '"Or this Troparion" rubric'],
@@ -725,7 +738,7 @@ const DAILY_ROWS = [
     label: 'Appendix printed after the last service ("Be it known" orders, extra troparia; 11-20)' },
   { path: '<c>.preface_rubric', kind: 'rubric', service: 'identity', required: false, tag: 'month-specific',
     label: 'Rubric printed between the title and the first service ("Be it known", 11-15)' },
-  ...['vespers', 'great_vespers'].flatMap(sv => DAILY_KEYS.vespers_like.map(([k, kind, label]) =>
+  ...['vespers', 'great_vespers', 'little_vespers'].flatMap(sv => DAILY_KEYS.vespers_like.map(([k, kind, label]) =>
     ({ path: `<c>.${sv}.${k}`, kind, service: sv, required: false, tag: 'month-specific', label }))),
   ...['matins', 'liturgy'].flatMap(sv => DAILY_KEYS[sv].map(([k, kind, label]) =>
     ({ path: `<c>.${sv}.${k}`, kind, service: sv, required: false, tag: 'month-specific', label }))),

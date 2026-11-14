@@ -229,19 +229,24 @@ export function RCanon({ canon, path }) {
         // of them without a single gate noticing. A component that renders some
         // of a node is indistinguishable, from outside, from data that was never
         // encoded. Same guard, same reason.
-        const known = ['irmos', 'refrain', 'items', 'katavasia'];
+        const known = ['irmos', 'refrain', 'items', 'katavasia', 'preface', 'closing', 'katavasia_rubric'];
+        const run = (list, key) => (list ?? []).map((it, i) => (it?.label === 'rubric'
+          ? <RRubric key={`${key}${i}`} node={it} path={`${path}.odes.${k}.${key}[${i}]`} />
+          : <RText key={`${key}${i}`} node={it} path={`${path}.odes.${k}.${key}[${i}]`} />));
         const extra = Object.keys(ode).filter(x => !known.includes(x));
         return (
           <div key={k} style={{ margin: "12px 0" }}>
             <RSubHeading>Ode {ROMAN[Number(k)] ?? k}</RSubHeading>
+            {/* 11-21, Ode IX: rubrics and a refrain are printed BEFORE the irmos. */}
+            {run(ode.preface, 'preface')}
             <RText node={ode.irmos} path={`${path}.odes.${k}.irmos`} label="Irmos:" />
             {ode.refrain && <RText node={ode.refrain} path={`${path}.odes.${k}.refrain`} label="Refrain:" />}
-            {(ode.items ?? []).map((it, i) => (
-              <RText key={i} node={it} path={`${path}.odes.${k}.items[${i}]`} />
-            ))}
+            {run(ode.items, 'items')}
+            {run(ode.closing, 'closing')}
             {/* The daily book prints a labeled katavasia incipit after an ode's
                 last troparion (11-14, Ode I). Rendered in that place. */}
             {ode.katavasia && <RText node={ode.katavasia} path={`${path}.odes.${k}.katavasia`} label="Katavasia:" />}
+            {ode.katavasia_rubric && <RRubric node={ode.katavasia_rubric} path={`${path}.odes.${k}.katavasia_rubric`} />}
             {extra.length > 0 && (
               <div style={{ marginTop: "10px", paddingTop: "6px", borderTop: `1px dashed ${C.border}` }}>
                 <div style={{ fontFamily: SERIF, fontSize: "0.75rem", color: C.red, marginBottom: "4px" }}>
