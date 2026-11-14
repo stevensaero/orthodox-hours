@@ -35,8 +35,16 @@ the open questions in front of priests and liturgists and let them answer.
   By ROLE, never name or address, unless the respondent agrees (default taken;
   Bill has not ruled). In-tool comment logging was NOT built: a static site has
   nowhere to save it. Revisit only if e-mail proves too thin.
-- **OWED:** the address; a link to /questions from the Hours tool itself (only
-  the V2 browser links it today); checking the inbox and filing answers.
+- **Address set (Bill): `stevensaero.mail@gmail.com`**, a Gmail mailbox to be
+  connected to these sessions and checked at session start. The button is live.
+- **Hours tool footer link: "I'd like to help improve the tool"** → /questions,
+  which now opens as a landing page: what the questions are, three steps to
+  answer one, who is welcome, how answers are recorded, and a general
+  "something to correct" e-mail link.
+- **OWED:** at each session start, search that mailbox for subjects beginning
+  "Orthodox Hours Q-", and bring Bill proposed `responses` rows to approve.
+  Nothing is written to the register without his say. Confirm first that the
+  connected Gmail account IS that mailbox.
 
 **Session November 14, 2026 (fortieth) — MENAION V2: THE DAILY BOOK BEGINS.
 11-14 (PHILIP), 11-14A (PALAMAS), 11-15 (GURIAS, SAMONAS & ABIBUS).** Tool
