@@ -5878,6 +5878,2077 @@ const SEPTEMBER = {
    }
   ]
  },
+ "09-08": {
+  "_encoded": [
+   "c0.identity",
+   "c0.little_vespers",
+   "c0.great_vespers",
+   "c0.matins",
+   "c0.liturgy"
+  ],
+  "commemorations": [
+   {
+    "kind": "feast",
+    "feast_ref": "nativity_theotokos",
+    "title": {
+     "text": "THE NATIVITY OF OUR MOST HOLY SOVEREIGN LADY, THE THEOTOKOS AND EVER-VIRGIN MARY",
+     "tier": 1,
+     "src": {
+      "file": "09-08.pdf",
+      "locus": "p1 title"
+     },
+     "sourceLabel": "THE 8th DAY OF THE MONTH OF SEPTEMBER"
+    },
+    "rank": "great_feast",
+    "fekula_section": "2F",
+    "oca_primary": true,
+    "source_file": "09-08.pdf",
+    "note": "OVERLAP DATE for the V1/V2 comparison (menaion_v2_wirein_spec.md section 5). Great Feast of the Theotokos; ODS 3rd ed. vol. III has no entry for 8 September (index checked). Fekula 2F names the Nativity (Sept. 8) among the feasts of the Theotokos it covers; rank and section as V1. Little Vespers; Great Vespers with 8 stichera (three of Sergius, the third \"(Twice)\"; three of Stephen of Jerusalem, the first \"(Twice)\"), three lessons, Litiya, blessing of the loaves; Matins with two canons (John of Damascus, Tone II; Andrew of Crete, Tone VIII), interleaved, stored whole. Canon II closes each ode with a Triadicon and a Theotokion. Ode IX: a rubric and refrain before each irmos (`preface`); no refrain is printed between the troparia here, unlike 21 November. ONE katavasia is printed before Ode IX, after Ode VII; after Ode IX the page gives \"As Katavasia ... both Irmoi of ODE IX of the canon of the Exaltation of the Cross\", stored in `closing`. The three lessons print no reference; citations are V1's identifications. The kontakion is pointed differently at its Liturgy site (final \"**\") and stored there as `liturgy_kontakion`. The Ode IX heading prints \"OODE IX\".",
+    "troparion": {
+     "text": "Thy nativity, O Virgin Theotokos, * hath proclaimed joy to all the world; * for from thee hath shone forth Christ our God, the Sun of righteousness, * Who, having annulled the curse, hath given His blessing, ** and having abolished death, hath granted us life everlasting.",
+     "tier": 2,
+     "src": {
+      "file": "09-08.pdf",
+      "locus": "p2 Troparion of the feast"
+     },
+     "sourceLabel": "Troparion of the feast, in Tone IV",
+     "tone": 4,
+     "verified_sites": [
+      {
+       "locus": "p2 Little Vespers",
+       "tone": 4
+      },
+      {
+       "locus": "p6 blessing of the loaves",
+       "tone": 4,
+       "repeat": 3
+      },
+      {
+       "locus": "p7 God is the Lord",
+       "tone": 4,
+       "repeat": 3
+      },
+      {
+       "locus": "p18 after the Great Doxology",
+       "tone": 4
+      },
+      {
+       "locus": "p19 AT LITURGY",
+       "tone": 4
+      }
+     ]
+    },
+    "kontakion": {
+     "text": "In thy holy nativity, O most pure one, * Joachim and Anna have been freed from the reproach of childlessness, * and Adam and Eve from mortal corruption. * And, delivered from the affliction of sin, * thy people celebrate it, crying out to thee: * A barren woman giveth birth to the Theotokos, * the nurturer of our Life!",
+     "tier": 2,
+     "src": {
+      "file": "09-08.pdf",
+      "locus": "p13 Kontakion of the feast"
+     },
+     "verified_sites": [
+      {
+       "locus": "p13 after Ode VI",
+       "tone": 4
+      }
+     ],
+     "sourceLabel": "Kontakion of the feast, in Tone IV",
+     "tone": 4
+    },
+    "ikos": {
+     "text": "The supplication of Joachim over his childlessness, together with the sighing of Anna over her barrenness, were right acceptable to God: they entered the ears of the Lord and brought forth life-bearing fruit for the world. For the one made supplication on the mountain, and the other bore her reproach in the garden; and with joy the barren woman giveth birth to the Theotokos, the nurturer of our Life.",
+     "tier": 1,
+     "src": {
+      "file": "09-08.pdf",
+      "locus": "p13 Ikos"
+     },
+     "sourceLabel": "Ikos",
+     "label_inline": true
+    },
+    "little_vespers": {
+     "order": [
+      "lic_rubric",
+      "lic",
+      "lic_closer",
+      "aposticha_rubric",
+      "aposticha",
+      "aposticha_closer",
+      "troparion"
+     ],
+     "lic_rubric": {
+      "text": "On “Lord, I have cried ...,” 4 Stichera of the feast, in Tone I:",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p1 Little Vespers LIC rubric"
+      }
+     },
+     "lic": [
+      {
+       "text": "Joachim and Anna hold festival, * having given birth to the only Theotokos, * the beginning of our salvation; * and with them we also celebrate today, * blessing the pure Virgin ** who sprang forth from the root of Jesse.",
+       "tier": 2,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p1 Little Vespers LIC 1"
+       },
+       "label": "plain",
+       "tone": 1,
+       "spec_mel": "Joy of the ranks of heaven ..."
+      },
+      {
+       "text": "Today the Theotokos hath sprung forth * from Anna as a flower, a divinely wrought garden, * the salvation of mankind; * and in His beneficence the Creator of all, * Who was born of her in a manner past understanding, ** washeth away all the defilement of Adam, in that He is good.",
+       "tier": 2,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p1 Little Vespers LIC 2"
+       },
+       "label": "plain",
+       "spec_mel": "Joy of the ranks of heaven ..."
+      },
+      {
+       "text": "Who is sufficiently worthy * to hymn the Virgin * who ineffably became a babe through Anna? * Ye mountains and hills, therefore, let sweetness fall today; * for the pure Theotokos, the life and cleansing of all, ** is nourished on milk.",
+       "tier": 2,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p1 Little Vespers LIC 3"
+       },
+       "label": "plain",
+       "spec_mel": "Joy of the ranks of heaven ..."
+      },
+      {
+       "text": "She who before was as a barren land * giveth birth to fertile ground, * and, having given forth a holy fruit from her fruitless womb, * she nurtureth her with milk. * O awesome wonder! The nurturer of our Life, ** who received the Bread of heaven in her womb is nourished with milk at her mother’s breasts!",
+       "tier": 2,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p1 Little Vespers LIC 4"
+       },
+       "label": "plain",
+       "spec_mel": "Joy of the ranks of heaven ..."
+      }
+     ],
+     "lic_closer": {
+      "text": "O most holy and pure Virgin, the multitude of angels in heaven, and we, the race of mankind on earth, bless thy most honored nativity, for thou hast become the Mother of Christ God, the Creator of all. We pray thee: cease not to beseech Him on behalf of us who after God, have set our hope on thee, O most hymned Theotokos who knewest not wedlock.",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p1 Little Vespers LIC Glory/Both now"
+      },
+      "type": "of_the_feast",
+      "sourceLabel": "Glory ..., Both now ..., in Tone IV",
+      "tone": 4
+     },
+     "aposticha_rubric": {
+      "text": "On the Aposticha, these Stichera of the feast, in Tone II:",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p1 Little Vespers Aposticha rubric"
+      }
+     },
+     "aposticha": [
+      {
+       "text": "Rejoice, O Joachim and Anna! * Rejoice, for the Virgin, * the Mediatress of joy and salvation * is born unto us ** from a barren woman!",
+       "tier": 2,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p1 Little Vespers Aposticha 1"
+       },
+       "label": "plain",
+       "tone": 2,
+       "spec_mel": "O house of Ephratha ..."
+      },
+      {
+       "text": "Hearken, O daughter, and see, * and Incline thine ear.",
+       "tier": 2,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p1 Little Vespers Aposticha verse 1"
+       },
+       "label": "refrain",
+       "sourceLabel": "Verse",
+       "label_inline": true
+      },
+      {
+       "text": "Thou alone hast been shown to be * the salvation of mortals, * having given birth to the Word * in a manner transcending discourse and nature. ** Wherefore, we call thee blessed.",
+       "tier": 2,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p1 Little Vespers Aposticha 2"
+       },
+       "label": "plain",
+       "spec_mel": "O house of Ephratha ..."
+      },
+      {
+       "text": "The rich among the people * shall entreat thy countenance.",
+       "tier": 2,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p1 Little Vespers Aposticha verse 2"
+       },
+       "label": "refrain",
+       "sourceLabel": "Verse",
+       "label_inline": true
+      },
+      {
+       "text": "Put away all grief, * O Adam and Eve; * for the Mother of Joy * springeth forth today most gloriously ** from a barren woman.",
+       "tier": 2,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p1 Little Vespers Aposticha 3"
+       },
+       "label": "plain",
+       "spec_mel": "O house of Ephratha ..."
+      }
+     ],
+     "aposticha_closer": {
+      "text": "The temple of God, * the only Theotokos, * doth issue forth * from a barren woman who hath not given birth; ** and Adam rejoiceth, crying aloud.",
+      "tier": 2,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p2 Little Vespers Aposticha Glory/Both now"
+      },
+      "type": "of_the_feast",
+      "sourceLabel": "Glory ..., Both now ..., in Tone II",
+      "spec_mel": "O house of Ephratha ...",
+      "tone": 2
+     }
+    },
+    "great_vespers": {
+     "order": [
+      "rubric",
+      "lic_rubric",
+      "lic",
+      "lic_closer",
+      "entrance_rubric",
+      "readings",
+      "litiya",
+      "litiya_closer",
+      "aposticha_rubric",
+      "aposticha",
+      "aposticha_closer",
+      "troparion_rubric",
+      "troparion"
+     ],
+     "rubric": {
+      "text": "After the Introductory Psalm, we chant “Blessed is the man ...,” the first antiphon.",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p3 Great Vespers rubric"
+      }
+     },
+     "lic_rubric": {
+      "text": "On “Lord, I have cried ...,” 8 Stichera of the feast, the composition of Sergius the Patriarch, in Tone VI:",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p3 LIC rubric"
+      }
+     },
+     "lic": [
+      {
+       "text": "Today God, Who resteth on noetic thrones, hath prepared for Himself a holy throne on earth. He Who hath established the heavens by His wisdom hath in His loving-kindness created an animate heaven. For the God of wonders, the Hope of the hopeless, hath caused His Mother to spring forth as a Life-bearing plant from a barren root. Glory be to Thee, O Lord!",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p3 LIC 1"
+       },
+       "label": "plain",
+       "composer": "Sergius the Patriarch",
+       "tone": 6
+      },
+      {
+       "text": "This is the day of the Lord! Rejoice, O ye people! For lo! the bridal-chamber of the Light and the book of the Word of life hath issued forth from the womb, and the portal which faceth toward the east, having been born, awaiteth the entry of the great High Priest. She alone hath led the one Christ into the world, for the salvation of our souls.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p3 LIC 2"
+       },
+       "label": "plain",
+       "composer": "Sergius the Patriarch"
+      },
+      {
+       "text": "Even though, by the will of God, famous barren women have produced offspring, yet in divine majesty hath Mary outshone all who have been born; for, having been most gloriously born of a barren mother, she supra-naturally gave birth in the flesh to the God of all, from a womb which knew not seed. She alone is the gate of the only-begotten Son of God; and He, passing through it, hath kept it closed, and, arranging all things wisely in accordance with His knowledge, hath wrought salvation for all mankind.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p3 LIC 3"
+       },
+       "label": "plain",
+       "composer": "Sergius the Patriarch",
+       "repeat": 2
+      },
+      {
+       "text": "Today the gateway of the barren woman hath been opened, and the divine Virgin portal cometh forth! Today grace beginneth to bear fruit, revealing to the world the Mother of God, through whom those on earth are united to those in heaven, for the salvation of our souls.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p3 LIC 4"
+       },
+       "label": "plain",
+       "composer": "Stephen of Jerusalem",
+       "repeat": 2,
+       "sourceLabel": "The composition of Stephen of Jerusalem, in Tone VI",
+       "tone": 6
+      },
+      {
+       "text": "Today is the pronouncement of universal joy! Today the winds have blown which herald salvation, and our nature is released from barrenness! For the barren woman is shown to be the mother of her who remaineth virgin even after giving birth to the Creator, from whom God taketh upon Himself that which is alien to Him by nature, and Christ, the Redeemer of our souls, the Lover of mankind, doth accomplish salvation for the lost by means of flesh.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p3 LIC 5"
+       },
+       "label": "plain",
+       "composer": "Stephen of Jerusalem"
+      },
+      {
+       "text": "Today barren Anna giveth birth to the divine maiden who was chosen beforehand out of all generations to be the dwelling-place of Christ our God, the King and Creator of all, in fulfillment of the divine dispensation. Thereby, O ye mortals, we have been fashioned anew and restored from corruption to endless life.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p3 LIC 6"
+       },
+       "label": "plain",
+       "composer": "Stephen of Jerusalem"
+      }
+     ],
+     "lic_closer": {
+      "text": "Today God, Who resteth on noetic thrones, hath prepared for Himself a holy throne on earth. He Who hath established the heavens by His wisdom hath in His loving-kindness created an animate heaven. For the God of wonders, the Hope of the hopeless, hath caused His Mother to spring forth as a Life-bearing plant from a barren root. Glory be to Thee, O Lord!",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p4 LIC Glory/Both now"
+      },
+      "type": "of_the_feast",
+      "sourceLabel": "Glory ..., Both now ..., in Tone VI",
+      "tone": 6
+     },
+     "entrance_rubric": {
+      "text": "Entrance. Prokeimenon of the day. Three Lessons:",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p4 Entrance"
+      }
+     },
+     "readings": [
+      {
+       "heading": "A READING FROM GENESIS",
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p4 Lesson 1"
+       },
+       "citation": {
+        "book": "Genesis",
+        "chapter": 28,
+        "verses": "10-17"
+       },
+       "citation_basis": "identified",
+       "provenance_note": "Opens \"Jacob went forth from the well of the oath\"; closes \"gate of heaven!\" No reference printed. Citation as V1 recorded it for this file, identified from the printed text; confirm the span against the page."
+      },
+      {
+       "heading": "A READING FROM THE PROPHECY OF EZEKIEL",
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p4 Lesson 2"
+       },
+       "citation": {
+        "book": "Ezekiel",
+        "chapter": 43,
+        "verses": "43:27-44:4"
+       },
+       "citation_basis": "identified",
+       "provenance_note": "Opens \"Thus saith the Lord: It shall come to pass from the eighth day\". No reference printed. Citation as V1 recorded it for this file, identified from the printed text; confirm the span against the page."
+      },
+      {
+       "heading": "A READING FROM PROVERBS",
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p4 Lesson 3"
+       },
+       "citation": {
+        "book": "Proverbs",
+        "chapter": 9,
+        "verses": "1-11"
+       },
+       "citation_basis": "identified",
+       "provenance_note": "Opens \"Wisdom hath built a house for herself\". No reference printed. Citation as V1 recorded it for this file, identified from the printed text; confirm the span against the page."
+      }
+     ],
+     "litiya": [
+      {
+       "text": "Today is the beginning of our salvation, O ye people! For, lo! the Virgin Mother, who was foretold from generations of old as the receptacle of God, cometh forth to be born from a barren woman. The flower of Jesse and the rod of his root have sprung forth. Let Adam our forefather rejoice, and let Eve revel in jubilation! For, behold! She who was fashioned from the rib of Adam manifestly blesseth her daughter and descendant, saying: “Deliverance hath been born within me, for which cause I have been freed of the bonds of Hades!” Let David rejoice, striking his harp, and let him bless God: for, lo! the Virgin issueth forth from the womb of the barren woman, unto the salvation of our souls!",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p5 Litiya 1"
+       },
+       "label": "plain",
+       "composer": "Stephen of Jerusalem",
+       "sourceLabel": "At Litiya, these Stichera, the composition of Stephen of Jerusalem, in Tone I",
+       "tone": 1
+      },
+      {
+       "text": "Come, all ye who love virginity, ye zealots of purity! Come, and with love take up the praise of the Virgin: the well-spring of Life which floweth from the hardened stone, the bush which grew from the barren ground, unconsumed by the immaterial Fire, which purifieth and illumineth our souls.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p5 Litiya 2"
+       },
+       "label": "plain",
+       "tone": 2,
+       "sourceLabel": "In Tone II",
+       "label_inline": true
+      },
+      {
+       "text": "What is this noise of revelers? Joachim and Anna keep festival mystically, saying: “Rejoice with us today, O Adam and Eve!” For by their transgression paradise was shut, but a right glorious fruit hath now been granted unto us: Mary, the divine maiden, the fruit which openeth wide its gates unto all.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p5 Litiya 3"
+       },
+       "label": "plain",
+       "composer": "Anatolius the Patriarch",
+       "sourceLabel": "The composition of Anatolius the Patriarch"
+      },
+      {
+       "text": "The Queen of all who hath been foretold, the habitation of God, the divine dwelling place of the eternal Essence, hath come forth today from the barren womb of the glorious Anna, and by her, shameless Hades hath been trampled underfoot, and Eve, the mother of our race, hath been led into everlasting life. To her do we cry out, as is meet: Blessed art thou among women, and blessed is the fruit of thy womb!",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p5 Litiya 4"
+       },
+       "label": "plain"
+      }
+     ],
+     "litiya_closer": {
+      "text": "On the most excellent day of our feast let us strike the spiritual harp; for the Mother of Life is born today from the seed of David, dispelling darkness: the renewal of Adam, the restoration of Eve, the Well-spring of incorruption, our release from corruption. Because of her we have been deified and delivered from death. And we, the faithful, cry out to her with Gabriel: Rejoice, thou who art full of grace, the Lord is with thee, granting us great mercy for thy sake!",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p5 Litiya Glory/Both now"
+      },
+      "type": "of_the_feast",
+      "composer": "Sergius",
+      "sourceLabel": "Glory ..., Both now ..., the composition of Sergius, in Tone VIII",
+      "tone": 8
+     },
+     "aposticha_rubric": {
+      "text": "On the Aposticha, these Stichera of the feast, by Germanus, in Tone IV:",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p6 Aposticha rubric"
+      }
+     },
+     "aposticha": [
+      {
+       "text": "The joy of the whole world hath shone forth upon us from the righteous Joachim and Anna: the most laudable Virgin who, because of her surpassing purity, hath become the animate temple of God and is known as the one true Theotokos. Through her prayers, O Christ God, send down peace upon the world and great mercy upon our souls.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p6 Aposticha 1"
+       },
+       "label": "plain",
+       "tone": 4,
+       "composer": "Germanus"
+      },
+      {
+       "text": "Hearken, O daughter, and see, * and incline thine ear.",
+       "tier": 2,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p6 Aposticha verse 1"
+       },
+       "label": "refrain",
+       "sourceLabel": "Verse",
+       "label_inline": true
+      },
+      {
+       "text": "In accordance with the angel’s prophecy, thou didst issue forth from the righteous Joachim and Anna, as a most pure fruit, heaven and the throne of God, a receptacle of purity, heralding forth joy to all the world, O Virgin, mediatress of our life, removal of the curse, bestowal of blessing. Wherefore, on the feast of thy nativity, O divinely called Virgin, ask peace for the world and great mercy for our souls.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p6 Aposticha 2"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "The rich among the people * shall entreat thy countenance.",
+       "tier": 2,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p6 Aposticha verse 2"
+       },
+       "label": "refrain",
+       "sourceLabel": "Verse",
+       "label_inline": true
+      },
+      {
+       "text": "Today let the barren and childless Anna clap her hands with splendor, let those on earth bear lamps, let kings leap for joy, let hierarchs be glad in blessing, and let all the world keep festival; for, behold, the Queen, the immaculate Bride of the Father, hath sprung forth from the root of Jesse. No longer will women bear children in grief, for Joy hath blossomed forth and Life shall live amongst mortals in the world. No longer will the offerings of Joachim be rejected, for the lamentation of Anna hath been changed to joy, and she saith: “Rejoice with me, all ye chosen Israel, for, lo! the Lord hath given me the animate palace of His divine glory, for our common gladness and joy, and the salvation of our souls!”",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p6 Aposticha 3"
+       },
+       "label": "plain"
+      }
+     ],
+     "aposticha_closer": {
+      "text": "Come, all ye faithful, let us make haste to the Virgin, for lo! she is born who was foreseen before the womb as the Mother of our God, the vessel of virginity, the rod of Aaron which sprang forth from the root of Jesse, the proclamation of the prophets, the offspring of the righteous Joachim and Anna! She is born, and with her the world hath been restored! She is born, and the Church adorneth herself in her majesty! She is the holy temple and receptacle of the Godhead, the vessel of virginity, the bridal chamber of the King, wherein was wrought the most glorious and perfect mystery of the ineffable union of the natures which have come together in Christ! And worshipping Him, we hymn the nativity of the all-immaculate Virgin.",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p6 Aposticha Glory/Both now"
+      },
+      "type": "of_the_feast",
+      "composer": "Sergius",
+      "sourceLabel": "Glory ..., Both now ..., the composition of Sergius, in Tone VIII",
+      "tone": 8
+     },
+     "troparion_rubric": {
+      "text": "At the blessing of the loaves, the Troparion of the feast, in Tone IV:",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p6 Blessing of the loaves rubric"
+      }
+     }
+    },
+    "matins": {
+     "order": [
+      "god_is_lord_rubric",
+      "troparion",
+      "sessional_1",
+      "sessional_2",
+      "megalynarion_rubric",
+      "megalynarion",
+      "megalynarion_verse_rubric",
+      "megalynarion_verse",
+      "megalynarion_closing_rubric",
+      "sessional_polyeleos",
+      "anabathmoi_rubric",
+      "prokeimenon",
+      "prokeimenon_verse",
+      "gospel_rubric",
+      "gospel",
+      "psalm50_sticheron",
+      "canon_rubric",
+      "canons",
+      "sessional_ode3",
+      "kontakion",
+      "ikos",
+      "exapostilarion",
+      "exapostilarion_closer",
+      "praises_rubric",
+      "praises",
+      "praises_closer",
+      "great_doxology_rubric",
+      "closing_rubric"
+     ],
+     "god_is_lord_rubric": {
+      "text": "On “God is the Lord ...,” the Troparion of the feast, in Tone IV:",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p7 God is the Lord rubric"
+      }
+     },
+     "sessional_1": [
+      {
+       "text": "Cry aloud, O David! What hath God sworn unto thee? “That which He hath sworn unto me,” saith he, “hath already been fulfilled! He hath given me of the fruit of my loins the Virgin, from whom Christ the Creator is to be born: the new Adam, the King Who sitteth on my throne! And He Whose kingdom is invisible reigneth today! A barren woman giveth birth to the Theotokos, the nurturer of our Life!”",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p7 Sessional 1"
+       },
+       "label": "plain",
+       "sourceLabel": "After the 1st chanting of the Psalter, the Sessional Hymn, in Tone IV",
+       "spec_mel": "Joseph marveled ...",
+       "tone": 4
+      },
+      {
+       "text": "Glory ..., Both now ..., the foregoing is repeated.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p7 Sessional 1 repeat device"
+       },
+       "label": [
+        "glory",
+        "both_now"
+       ]
+      }
+     ],
+     "sessional_2": [
+      {
+       "text": "Today is Mary, the divine maiden, born for us from the root of Jesse and the loins of David. All things rejoice with joy and are renewed. Rejoice together, O heaven and earth! Praise her, ye people of our native land! Joachim maketh merry, and Anna keepeth festival, crying aloud: A barren woman giveth birth to the Theotokos, the nurturer of our Life!",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p7 Sessional 2"
+       },
+       "label": "plain",
+       "sourceLabel": "After the 2nd chanting of the Psalter, the Sessional Hymn, in Tone IV",
+       "spec_mel": "Joseph marveled ...",
+       "tone": 4
+      },
+      {
+       "text": "Glory ..., Both now ..., the foregoing is repeated.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p7 Sessional 2 repeat device"
+       },
+       "label": [
+        "glory",
+        "both_now"
+       ]
+      }
+     ],
+     "megalynarion_rubric": {
+      "text": "Polyeleos, and this magnification:",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p7 magnification rubric"
+      }
+     },
+     "megalynarion": {
+      "text": "We magnify thee, O most holy Virgin, we honor thy holy parents, and we glorify thy most glorious nativity.",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p7 Magnification"
+      },
+      "label_inline": true
+     },
+     "megalynarion_verse_rubric": {
+      "text": "Selected Psalm verse:",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p7 Selected Psalm verse rubric"
+      }
+     },
+     "megalynarion_verse": {
+      "text": "Remember, O Lord, David and all his meekness.",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p7 Selected Psalm verse"
+      },
+      "label": "refrain",
+      "sourceLabel": "A",
+      "label_inline": true
+     },
+     "megalynarion_closing_rubric": {
+      "text": "Glory ..., Both now ..., Alleluia ..., Glory to Thee, O God. (Thrice)",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p7 after the selected verses"
+      }
+     },
+     "sessional_polyeleos": [
+      {
+       "text": "Let heaven rejoice, and let the earth be glad! For the divine heaven, the Bride of God, hath been born on earth according to His promise. The barren woman giveth suck to Mary as a babe, and Joachim rejoiceth in her birth, saying: “Unto me hath been born the staff from whence Christ shall spring forth as a flower, from the root of David! Truly most glorious is this wonder!”",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p7 Polyeleos sessional"
+       },
+       "label": "plain",
+       "sourceLabel": "After the Polyeleos, the Sessional Hymn, in Tone VIII",
+       "spec_mel": "That which was mystically commanded ...",
+       "tone": 8
+      },
+      {
+       "text": "Be thou renewed, O Adam! Rejoice, O Eve! Make merry, O David! Be of good cheer, O Anna, for the Mother of thy Creator is born most gloriously! All the earth joineth chorus, renewed, and rejoicing, clad in the vesture of gladness. Let every tongue now cry out to thee, O Mary, in chorus: Blessed is the house of David, for it nurtureth her who nourisheth our Life!",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p8 Polyeleos sessional Glory/Both now"
+       },
+       "label": [
+        "glory",
+        "both_now"
+       ],
+       "sourceLabel": "Glory ..., Both now ..., in Tone VIII",
+       "tone": 8
+      }
+     ],
+     "anabathmoi_rubric": {
+      "text": "Song of Ascents, the first antiphon of Tone IV:",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p8 Song of Ascents rubric"
+      }
+     },
+     "prokeimenon": {
+      "text": "I shall commemorate thy name * in every generation and generation.",
+      "tier": 2,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p8 Prokeimenon"
+      },
+      "sourceLabel": "Prokeimenon, in Tone IV",
+      "label_inline": true,
+      "tone": 4
+     },
+     "prokeimenon_verse": {
+      "text": "Hearken, O daughter, and see, * and incline thine ear.",
+      "tier": 2,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p8 Prokeimenon verse"
+      },
+      "label": "refrain",
+      "sourceLabel": "Verse",
+      "label_inline": true
+     },
+     "gospel_rubric": {
+      "text": "Let every breath praise the Lord.",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p8 Let every breath"
+      }
+     },
+     "gospel": {
+      "heading": "GOSPEL ACCORDING TO LUKE,",
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p8 Matins Gospel"
+      },
+      "citation_verbatim": "§ 4 (LK. 1: 39-49, 56)",
+      "citation": {
+       "book": "Luke",
+       "chapter": 1,
+       "verses": "39-49, 56",
+       "pericope_number": 4
+      },
+      "citation_basis": "printed"
+     },
+     "psalm50_sticheron": {
+      "text": "This is the day of the Lord! Rejoice, O ye people! For, lo! the bridal-chamber of the Light and the book of the Word of life hath issued forth from the womb, and the portal which faceth toward the east, having been born, awaiteth the entry of the great High Priest. She alone leadeth the one Christ into the world, for the salvation of our souls.",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p8 After Psalm 50 sticheron"
+      },
+      "sourceLabel": "After Psalm 50, this Sticheron, in Tone VI",
+      "tone": 6
+     },
+     "canon_rubric": {
+      "text": "Two canons of the feast, with a total of 12 Troparia, each Irmos being chanted twice",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p8 Canon rubric"
+      }
+     },
+     "canons": [
+      {
+       "title": "Canon I of the feast, the composition of John of Damascus, in Tone II:",
+       "composer": "John of Damascus",
+       "tone": 2,
+       "odes": {
+        "1": {
+         "irmos": {
+          "text": "Come, O ye people, * let us sing a song to Christ our God, * Who divided the sea, * and made a way for the nation * which He had brought up out of the bondage of Egypt; * for He hath been glorified.",
+          "tier": 2,
+          "src": {
+           "file": "09-08.pdf",
+           "locus": "p8 Ode 1 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Come ye faithful and rejoicing with divine spirit, let us honor with hymns the Ever-virgin maiden who today hath issued forth from a barren woman for the salvation of mankind.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p9 Ode 1 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Rejoice, O pure one, Mother and handmaid of Christ God, mediatress of our primal blessedness! All of us, the race of mankind, glorify thee with hymns, as is meet.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p9 Ode 1 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Today the bridge of life is born, through which mortals have attained restoration after their fall into Hades, glorifying Christ, the Bestower of life, with hymns.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p9 Ode 1 troparion 3"
+           },
+           "label": "plain"
+          }
+         ]
+        },
+        "3": {
+         "irmos": {
+          "text": "O Lord, who didst slay sin upon the Tree, * firmly establish us in Thee, * and in the hearts of us who hymn Thee * plant the fear of Thee.",
+          "tier": 2,
+          "src": {
+           "file": "09-08.pdf",
+           "locus": "p9 Ode 3 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Having lived blamelessly for God, ye gave birth unto the salvation of all, O divinely wise parents of her who hath given birth to our Creator and God.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p10 Ode 3 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "From a barren woman did the Lord, Who poureth forth life upon all, cause the Virgin to come forth, in whom He was pleased to make His abode, preserving her incorrupt even after giving birth.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p10 Ode 3 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Let us hymn Mary today as the Theotokos, the fruit of Anna, the intercessor and helper of all, who gaveth birth to the life-bearing Cluster.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p10 Ode 3 troparion 3"
+           },
+           "label": "plain"
+          }
+         ]
+        },
+        "4": {
+         "irmos": {
+          "text": "I have heard report of Thy dispensation, O Lord, * and have glorified Thee * Who alone lovest mankind.",
+          "tier": 2,
+          "src": {
+           "file": "09-08.pdf",
+           "locus": "p10 Ode 4 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "We hymn Thee, O Lord, Who hast given unto all, as a haven of salvation, her who gaveth birth to Thee.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p11 Ode 4 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Christ hath revealed thee, O Bride of God, to all who with faith hymn thy mystery as their boast and might.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p11 Ode 4 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Delivered from transgressions by thy supplications, O Lady who knewest not wedlock, we all bless thee with a good and proper understanding.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p11 Ode 4 troparion 3"
+           },
+           "label": "plain"
+          }
+         ]
+        },
+        "5": {
+         "irmos": {
+          "text": "Having destroyed the darkness of shadowy images * and illumined the hearts of the faithful * by the coming of Truth through the divine maiden, O Christ, * do Thou guide us by Thy light.",
+          "tier": 2,
+          "src": {
+           "file": "09-08.pdf",
+           "locus": "p11 Ode 5 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "O ye people, let us hymn the cause of the Cause of all that is, Who became like unto us. For the prophets, deemed worthy to behold her image, rejoiced, clearly seeing the fruit of salvation brought forth through her.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p11 Ode 5 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The sprouting of the dry rod of the priest showed forth the destiny of Israel; and now the all-glorious offspring of the barren woman most gloriously shineth forth the splendor of those who gave birth to her.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p12 Ode 5 troparion 2"
+           },
+           "label": "plain"
+          }
+         ]
+        },
+        "6": {
+         "irmos": {
+          "text": "From within the sea monster Jonah cried unto the Lord: * “Lead me up from the abyss of Hades, I pray Thee; * for with a voice of praise as to my Redeemer, * in the spirit of truth * I offer myself to Thee.”",
+          "tier": 2,
+          "src": {
+           "file": "09-08.pdf",
+           "locus": "p12 Ode 6 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "The divinely wise parents of the Mother of God cried out to the Lord in grief over their barrenness; but they have now given birth to her, our common boast and salvation for generations of generations.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p12 Ode 6 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The divinely wise parents of the Mother of God received a gift worthy of heaven from God, for she is a chariot more highly exalted than the cherubim, the Mother of the Word and Creator.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p13 Ode 6 troparion 2"
+           },
+           "label": "plain"
+          }
+         ]
+        },
+        "7": {
+         "irmos": {
+          "text": "The bush which burned with fire on the mountain * and the dew-bearing furnace of the Chaldeans * clearly prefigured thee, O Bride of God; * for, without being consumed, * thou didst receive the divine and immaterial Fire * within thy material womb. * Wherefore, we chant unto Him Who was born of thee: * O God of our fathers, blessed art Thou!",
+          "tier": 2,
+          "src": {
+           "file": "09-08.pdf",
+           "locus": "p14 Ode 7 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Once, the transmitter of the law was prevented from understanding thy great mystery in material manifestations, O most pure one, though instructed through images to not think earthly thoughts. Wherefore, marveling at the wonder, he said: O God of our fathers, blessed art Thou!",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p14 Ode 7 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "In a godly manner the divine choir called thee beforehand the mountain and portal of heaven and the noetic ladder; for from thee was the Stone cut without the aid of the hands of man, and thou art the door through which passed the Lord of wonders, the God of our fathers.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p14 Ode 7 troparion 2"
+           },
+           "label": "plain"
+          }
+         ]
+        },
+        "8": {
+         "irmos": {
+          "text": "Of old in the furnace of the holy children, * Thou didst prefigure Thy Mother, O Lord, * in the image of those who entered therein, * and rescued therefrom remained unconsumed. * Her who hath been revealed today do we hymn * unto the ends of the earth, * supremely exalting her throughout all ages.",
+          "tier": 2,
+          "src": {
+           "file": "09-08.pdf",
+           "locus": "p15 Ode 8 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Now the designated tabernacle of our reconciliation to God, who is to give birth to the Word Who hath revealed Himself to us in the coarseness of our flesh, beginneth her existence. Him do we, who have been brought into existence out of non-existence, hymn and supremely exalt throughout all ages.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p15 Ode 8 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The reversal of Anna’s barrenness hath loosed the world’s lack of good things, and hath plainly shown forth a miracle: Christ, Who hath come to mortal men. Him do we, who have been brought into existence out of non-existence, hymn and supremely exalt throughout all ages.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p15 Ode 8 troparion 2"
+           },
+           "label": "plain"
+          }
+         ]
+        },
+        "9": {
+         "preface": [
+          {
+           "text": "At ODE IX we do not sing the Magnificat, we chant before the Irmos and before each of the Troparia of Canon I, this refrain:",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p16 Ode 9 Canon I preface rubric"
+           },
+           "label": "rubric"
+          },
+          {
+           "text": "Magnify, O my soul, the most glorious nativity of the Mother of God!",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p16 Ode 9 Canon I preface refrain"
+           },
+           "label": "refrain",
+           "sourceLabel": "Refrain",
+           "label_inline": true
+          }
+         ],
+         "irmos": {
+          "text": "Thee do we magnify, O blessed and all-pure Theotokos, * who through thy virginal womb ineffably brought forth * God incarnate, * the Luminary Who shone forth before the sun * and hath come to us in the flesh.",
+          "tier": 2,
+          "src": {
+           "file": "09-08.pdf",
+           "locus": "p16 Ode 9 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "He Who poured forth water from the stone for the rebellious people, through the womb of a barren woman hath given to us, the right submissive nations, the fruit of gladness: thee, O most pure Mother of God, whom we magnify as is meet.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p16 Ode 9 Canon I 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thee, O Theotokos, do we magnify, who hast removed the ancient and precipitous condemnation: the restoration of our first mother, the cause of the reconciliation of our race to God, the bridge to the Creator.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p16 Ode 9 Canon I 2"
+           },
+           "label": "plain"
+          }
+         ]
+        }
+       }
+      },
+      {
+       "title": "Canon II of the feast, the composition of Andrew of Crete, in Tone VIII:",
+       "composer": "Andrew of Crete",
+       "tone": 8,
+       "odes": {
+        "1": {
+         "irmos": {
+          "text": "To Him who crushed the enemy with His arm * and led Israel through the Red Sea, * to our Redeemer and our God let us sing, * for He hath been glorified.",
+          "tier": 2,
+          "src": {
+           "file": "09-08.pdf",
+           "locus": "p9 Ode 1 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Let all creation join chorus, and let David be glad, for from his tribe and seed hath come forth the rod which beareth the Lord, the Creator of all, as a flower.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p9 Ode 1 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "She who is holy among the saints is placed in the holy sanctuary as a babe, to be fed by the hands of angels. Let us all, therefore, faithfully keep festival together on her nativity.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p9 Ode 1 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Anna was barren and unable to give birth, yet she was not childless in God’s eyes; for, lo! she hath become known by all generations as the mother of the pure Virgin, from whom the Creator of nature hath sprung forth in the guise of a servant.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p9 Ode 1 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "With hymns we all honor thee, the innocent ewe-lamb who hast been born of Anna and who through thy womb brought Christ the Lamb into our nature.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p9 Ode 1 troparion 4"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "I glorify the three Beginningless Ones, I hymn the three Holy Ones, I proclaim the three equally Everlasting Ones to be of a single Essence; for the one God is glorified in the Father, the Son, and the Holy Spirit.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p9 Ode 1 Triadicon"
+           },
+           "label": "trinitarion",
+           "sourceLabel": "Triadicon",
+           "label_inline": true
+          },
+          {
+           "text": "Who hath seen a Babe fed with milk Whom a father hath now sown? Or where hath there been seen a Mother who is a Virgin? Truly past understanding are both of these things, O pure Birthgiver of God. Katavasia: Inscribing the invincible weapon of the Cross upon the waters, * Moses marked a straight line before him with his staff * and divided the Red Sea, * opening a path for Israel who went over dry-shod. * Then he marked a second line across the waters * and united them in one, * overwhelming the chariots of Pharaoh. * Therefore let us sing to Christ our God, * for He hath been glorified.",
+           "tier": 2,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p9 Ode 1 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "3": {
+         "irmos": {
+          "text": "My heart is established in the Lord, * my horn is exalted in my God, * my mouth is enlarged against mine enemies, * and I rejoice in Thy salvation.",
+          "tier": 2,
+          "src": {
+           "file": "09-08.pdf",
+           "locus": "p10 Ode 3 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Blessed is thy womb, O chaste Anna, for thou didst pour forth the fruit of virginity, who gaveth birth without seed to Jesus the Redeemer the Nurturer of creation.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p10 Ode 3 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O Ever-virgin, all creation calleth thee blessed who hast been born today of Anna as the rod sprung forth from the root of Jesse, who put forth Christ as a most pure Bloom.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p10 Ode 3 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Showing thee to be more exalted than all creation, O pure Theotokos, thy Son magnifieth thy birth from Anna, gladdening all today.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p10 Ode 3 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "We worship Thee, O Father, beginningless in essence, we hymn Thy timeless Son, and we honor Thy Spirit Who is equally everlasting: as God three in Hypostases but one in Essence.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p10 Ode 3 Triadicon"
+           },
+           "label": "trinitarion",
+           "sourceLabel": "Triadicon",
+           "label_inline": true
+          },
+          {
+           "text": "O pure Birthgiver of God, who hast given birth unto the Bestower of light, the Author of man’s life, thou hast been revealed to be the treasure of our life and the portal of the unapproachable Light. Katavasia: The rod of Aaron is an image of this mystery, * for when it budded it showed who should be priest. * So in the Church, that once was barren, * the wood of the Cross hath now budded forth, * filling her with strength and steadfastness.",
+           "tier": 2,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p10 Ode 3 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "4": {
+         "irmos": {
+          "text": "With noetic eyes the prophet Habbakuk * foresaw Thy coming, O Lord; * wherefore he cried aloud: * ‘God shall come out of Theman!’ Glory to Thy power! * Glory to Thy condescension!",
+          "tier": 2,
+          "src": {
+           "file": "09-08.pdf",
+           "locus": "p11 Ode 4 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "The Patriarch Jacob, clearly foreseeing the mighty works of Thy dispensation, O Savior, cried out in the Spirit, saying mystically to Judah: “From the tender plant thou art gone up, O my Son!”, referring to Thee, O God, Who wast born of the Virgin.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p11 Ode 4 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Now the pure Virgin, the rod of Aaron which sprung forth from the root of David, cometh forth from Anna, and heaven and earth, and all the nations of the gentiles mystically join chorus together with Anna and Joachim.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p11 Ode 4 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Let heaven now be glad; let the earth rejoice! And let Joachim and David join chorus: the one as the father of thee who truly hast given birth to God, and the other as thine ancestor who proclaimed thy mighty deeds, O pure one.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p11 Ode 4 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "The whole world rejoiceth with thee today, O divinely wise Anna; for thou hast budded forth the Mother of its Redeemer, she who from the root of David put forth for us the rod of strength which beareth Christ as a flower.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p11 Ode 4 troparion 4"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "I glorify God, the beginningless Father, the Son and the Holy Spirit, the consubstantial, uncreated Trinity, before Whom, the seraphim stand with reverence, crying aloud: Holy, Holy, Holy art Thou, O God!",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p11 Ode 4 Triadicon"
+           },
+           "label": "trinitarion",
+           "sourceLabel": "Triadicon",
+           "label_inline": true
+          },
+          {
+           "text": "The beginningless Origin receiveth a beginning from thee in the flesh and in time, O Theotokos, and He remaineth equally the beginningless and incarnate Word of the Father, equally everlasting with the Spirit, maintaining His divine dignity. Katavasia: O Lord, I have heard the mystery of Thy dispensation; * I have considered Thy works, * and I have glorified Thy Divinity.",
+           "tier": 2,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p11 Ode 4 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "5": {
+         "irmos": {
+          "text": "O Lord our God, bestow Thy peace upon us; * O Lord our God, take us for Thy possession; * O Lord, besides Thee we know none other: * and we call upon Thy Name.",
+          "tier": 2,
+          "src": {
+           "file": "09-08.pdf",
+           "locus": "p12 Ode 5 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Thy nativity is most pure, O immaculate Virgin, thy conception is ineffable, and thy birthgiving unutterable, O Bride unwedded; for God hath clothed Himself in all of me.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p12 Ode 5 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Let the angelic ranks be glad; let the descendants of Adam join chorus; for the rod who alone budded forth the Flower Christ, our Redeemer, hath been born.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p12 Ode 5 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Today the condemnation of Eve hath been lifted by thy nativity, the barrenness of Anna hath been loosed, and Adam hath been freed from the ancient curse; for by thee have we been delivered from corruption.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p12 Ode 5 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Glory to Thee Who hast glorified the barren woman today! For, according to the promise, she hath given birth to the flowering rod from whence Christ, the Flower of our life, hath budded forth.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p12 Ode 5 troparion 4"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Glory to Thee, O holy Father, unbegotten God! Glory to Thee, O timeless and only-begotten Son! Glory to Thee, O Spirit divine and co-enthroned, Who proceedest from the Father and restest in the Son!",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p12 Ode 5 Triadicon"
+           },
+           "label": "trinitarion",
+           "sourceLabel": "Triadicon",
+           "label_inline": true
+          },
+          {
+           "text": "Thy womb became the chariot of the Sun; thy purity remained intact as before, O Virgin; for Christ the Sun hath appeared from thee like a Bridegroom from a bridal chamber. Katavasia: O thrice-blessed Tree, on which Christ the king and Lord was stretched! * Through thee the beguiler fell, * who tempted mankind with the tree. * He was caught in the trap set by God, * who was crucified upon thee in the flesh, * granting peace unto our souls.",
+           "tier": 2,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p12 Ode 5 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "6": {
+         "irmos": {
+          "text": "The billows of life trouble me like the waters of the sea, * O Lover of Mankind. * Wherefore, like Jonah I cry unto Thee, O Word: * Raise up my life from corruption, O compassionate Lord.",
+          "tier": 2,
+          "src": {
+           "file": "09-08.pdf",
+           "locus": "p13 Ode 6 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "We hymn thy holy nativity and honor thine immaculate conception of Christ, O divinely chosen Bride and Virgin. And with us the ranks of angels and the souls of the saints glorify thee.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p13 Ode 6 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thy chaste parents placed thee, who art holy among the saints, in the temple of the Lord, O pure one, to be raised with honor in preparation to become His Mother.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p13 Ode 6 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Join chorus, ye barren women and mothers! Be of good cheer and leap up, O ye childless! For a childless and barren woman hath budded forth the Theotokos who delivereth Eve from her birth pangs and Adam from the curse.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p13 Ode 6 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "I hearken to David who singeth to thee: The virgins that follow after thee shall be brought into the temple of the King. And with him I also hymn thee, the daughter of the King.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p13 Ode 6 troparion 4"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "In thee, O pure one, is the mystery of the Trinity hymned and glorified; for well pleased was the Father to have the Word make His abode within thee, and the divine Spirit to overshadow thee.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p13 Ode 6 Triadicon"
+           },
+           "label": "trinitarion",
+           "sourceLabel": "Triadicon",
+           "label_inline": true
+          },
+          {
+           "text": "Thou wast a golden candlestick, O pure Birthgiver of God, for in thy womb the Fire made His abode: the Word from the Holy Spirit; and He became visible in thee in human form. Katavasia: Jonah stretched out his hands in the form of a cross * within the belly of the sea monster, * plainly prefiguring the redeeming Passion. * Cast out from thence after three days, * he foreshadowed the marvelous Resurrection of Christ our God, * who was crucified in the flesh and enlightened the world * by His Rising on the third day.",
+           "tier": 2,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p13 Ode 6 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "7": {
+         "irmos": {
+          "text": "The Chaldean furnace, burning with fire, * was bedewed by the Spirit * through the presence of God; * and the children chanted: * O God of our fathers, blessed art Thou!",
+          "tier": 2,
+          "src": {
+           "file": "09-08.pdf",
+           "locus": "p14 Ode 7 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "We celebrate and bow down with faith before thy holy nativity, O pure one, honoring thy Son, by Whom we have now been delivered from the ancient condemnation of Adam.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p14 Ode 7 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Now Anna maketh merry and, rendering praise, crieth aloud: Though barren, I have given birth unto the Mother of God, for whose sake the condemnation of Eve, the travail of birthgiving, hath been loosed!",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p14 Ode 7 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Adam hath been freed and Eve danceth; and they cry out to thee in spirit, O Theotokos: Through thee have we been delivered from the primeval curse by the appearance of Christ!",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p14 Ode 7 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O the womb which contained the dwelling place of God! O the womb which bore her who is more spacious than the heavens, the holy throne, the noetic ark of sanctification!",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p14 Ode 7 troparion 4"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "We glorify-the Father, the Son and the Holy Spirit in the unity of the Godhead, the most holy Trinity, indivisible, uncreated, equally everlasting and consubstantial.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p14 Ode 7 Triadicon"
+           },
+           "label": "trinitarion",
+           "sourceLabel": "Triadicon",
+           "label_inline": true
+          },
+          {
+           "text": "Most gloriously didst thou alone give birth unto God, O Virgin. By thy nativity thou hast renewed nature, O Mary. Thou hast released Eve from the primeval curse, O pure Birthgiver of God.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p14 Ode 7 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ],
+         "katavasia": {
+          "text": "The senseless decree of the wicked tyrant, * breathing forth threats and blasphemy hateful to God, * confused the people. * Yet neither the fury of the wild beast nor the roaring of the fire * could frighten the three children: * but standing together in the flame, * fanned by the wind that brought the dew as refreshment, they sang: * ‘Blessed and supremely praised art Thou, * O our God and the God of our fathers.’",
+          "tier": 2,
+          "src": {
+           "file": "09-08.pdf",
+           "locus": "p15 Ode 7 katavasia"
+          },
+          "sourceLabel": "Katavasia",
+          "label_inline": true
+         }
+        },
+        "8": {
+         "irmos": {
+          "text": "O Thou who dost cover Thy chambers on high with the waters, * Thou Who hast set the sands to bound the sea * and Who upholdest all things: * the sun doth sing Thy praises, * the moon giveth Thee glory, * every creature offereth a hymn unto Thee, * as their Fashioner, throughout the ages.",
+          "tier": 2,
+          "src": {
+           "file": "09-08.pdf",
+           "locus": "p15 Ode 8 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Thou, O holy God, Who wrought most glorious things through the barren womb, Who opened the childless womb of Anna and gave her fruit, and Thou, O Son of the Virgin, didst receive flesh from her, the ever-flourishing Virgin and Theotokos.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p15 Ode 8 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Thou, O Lord, Who dost close the abyss and open it, Who dost raise water to the clouds and give rain, hast granted the holy Anna to bud forth and give birth unto the most pure fruit, the Theotokos, from a barren root.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p15 Ode 8 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O Cultivator of our thoughts, Planter of our souls, Who hast shown forth the barren earth to be right fruitful, hast made the holy Anna, a field which before was barren, to become plentiful, right fertile and fruitful, giving rise to the Theotokos, the most pure fruit.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p15 Ode 8 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "Come ye all, let us gaze upon the city of God born as if from a little chamber, issuing forth from the gate of Anna’s womb, yet lacking in any knowledge of the path of intercourse, for the one God and Creator hath issued forth via this strange path.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p15 Ode 8 troparion 4"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "O transcendent Trinity, beginningless Unity, the multitude of angels hymneth and trembleth before Thee; heaven and earth are in awe of Thee; men bless Thee, and fire doth serve Thee in obedience. Everything in creation doth submit to Thee with fear, O holy Trinity.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p16 Ode 8 Triadicon"
+           },
+           "label": "trinitarion",
+           "sourceLabel": "Triadicon",
+           "label_inline": true
+          },
+          {
+           "text": "O report most new! God hath become the Son of a woman! O seedless birthgiving! O Mother without a husband, O begotten God! O awesome sight! O, the strange conception of the Virgin! O the ineffable nativity, truly past all understanding and contemplation! Katavasia: O children equal in number to the Trinity: * bless ye God, the Father and Creator; * hymn ye the Word Who came down * and transformed the fire into dew; * and supremely exalt ye Him Who giveth life unto all, * the all-holy Spirit, * throughout the ages!",
+           "tier": 2,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p16 Ode 8 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ]
+        },
+        "9": {
+         "irmos": {
+          "text": "Virginity is alien to motherhood, * and childbearing is a thing strange to virgins: * yet in thee, O Theotokos, both have come to pass. * Therefore we, and all the nations of the earth, * without ceasing call thee blessed.",
+          "tier": 2,
+          "src": {
+           "file": "09-08.pdf",
+           "locus": "p16 Ode 9 irmos"
+          },
+          "sourceLabel": "Irmos",
+          "label_inline": true
+         },
+         "items": [
+          {
+           "text": "Thou hast received a nativity worthy of thy purity, O Mother of God; for, according to the promise, thou wast given to the barren one as a fruit divinely springing forth. Wherefore, all we, the peoples of the earth, unceasingly magnify thee.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p16 Ode 9 troparion 1"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "I shall raise up the tabernacle of sacred David which hath fallen, which was a fore-type of thee, O pure one, through whom the dust of all mankind hath been fashioned into a body for God.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p17 Ode 9 troparion 2"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "We venerate thy swaddling clothes, O Theotokos. We glorify Him Who gaveth fruit to her who before was barren, and Who most gloriously opened the womb of her who was unable to give birth. For as God, He doeth all things whatsoever He desireth with complete authority.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p17 Ode 9 troparion 3"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "To thee, O Theotokos who wast born of Anna, do we faithfully offer up hymnody as a gift, mothers and virgins glorifying thee as the only Mother and Virgin; and we bow down before thee and hymn and glorify thee.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p17 Ode 9 troparion 4"
+           },
+           "label": "plain"
+          },
+          {
+           "text": "It is foreign for the iniquitous to glorify the beginningless Trinity: the Father, the Son and the Holy Spirit, the uncreated omnipotent Principle, by Whom the whole world is held fast at the behest of His might.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p17 Ode 9 Triadicon"
+           },
+           "label": "trinitarion",
+           "sourceLabel": "Triadicon",
+           "label_inline": true
+          },
+          {
+           "text": "Within thy womb, O Mother, thou didst contain One of the Trinity: Christ the King, Whom all creation doth hymn and before Whom the ranks of heaven tremble. Him do thou entreat, O all-pure one, that our souls be saved.",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p17 Ode 9 Theotokion"
+           },
+           "label": "theotokion",
+           "sourceLabel": "Theotokion",
+           "label_inline": true
+          }
+         ],
+         "preface": [
+          {
+           "text": "Before the Irmos and Troparia of Canon II, we chant this refrain:",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p16 Ode 9 Canon II preface rubric"
+           },
+           "label": "rubric"
+          },
+          {
+           "text": "Magnify, O my soul, the Virgin Mary who hath been born of the barren woman!",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p16 Ode 9 Canon II preface refrain"
+           },
+           "label": "refrain",
+           "sourceLabel": "Refrain",
+           "label_inline": true
+          }
+         ],
+         "closing": [
+          {
+           "text": "As Katavasia, we chant here both Irmoi of ODE IX of the canon of the Exaltation of the Cross:",
+           "tier": 1,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p17 Ode 9 katavasia rubric"
+           },
+           "label": "rubric"
+          },
+          {
+           "text": "O Theotokos, thou art a mystical Paradise, * who untilled brought forth Christ. * by Whom the life-giving Tree of the Cross hath been planted upon the earth: * Therefore celebrating its exaltation on this day, * Him do we worship * and thee do we magnify.",
+           "tier": 2,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p17 Ode 9 Katavasia I"
+           },
+           "label": "plain",
+           "sourceLabel": "Katavasia I",
+           "label_inline": true
+          },
+          {
+           "text": "Today the death that came to man through eating of the tree, * is made of no effect through the Cross. * For the curse of our Mother Eve * that fell on all mankind * is destroyed by the fruit of the pure Mother of God, * whom all the powers of heaven magnify.",
+           "tier": 2,
+           "src": {
+            "file": "09-08.pdf",
+            "locus": "p17 Ode 9 Katavasia II"
+           },
+           "label": "plain",
+           "sourceLabel": "Katavasia II",
+           "label_inline": true
+          }
+         ]
+        }
+       }
+      }
+     ],
+     "sessional_ode3": [
+      {
+       "text": "Like a cloud of light the Virgin Mary, the Theotokos, hath truly shone forth upon us today, coming forth from the righteous ones for our glory. No longer is Adam condemned, and Eve hath been freed from her bonds. Wherefore, we exclaim, crying aloud with boldness to her who alone is pure: Thy nativity doth announce joy to the whole world!",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p10 Ode III sessional"
+       },
+       "label": "plain",
+       "sourceLabel": "Sessional Hymn of the feast, in Tone IV",
+       "spec_mel": "Joseph marveled ...",
+       "tone": 4
+      },
+      {
+       "text": "Glory ..., Both now ..., the foregoing is repeated.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p10 Ode III sessional repeat device"
+       },
+       "label": [
+        "glory",
+        "both_now"
+       ]
+      }
+     ],
+     "exapostilarion": {
+      "text": "Today the Theotokos doth issue forth like a flower from the barren Anna, instilling all the ends of the world with a most divine fragrance, filling all creation with joy. Hymning her, we praise her as is meet, as the one who is more exalted than all those earthborn.",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p17 Exapostilarion"
+      },
+      "label": "plain",
+      "repeat": 2,
+      "sourceLabel": "Exapostilarion of the feast"
+     },
+     "exapostilarion_closer": {
+      "text": "Be thou renewed, O Adam! Be thou magnified, O Eve! Join ye chorus with the apostles and the righteous! For Mary the Theotokos, the common joy of the angels and mortals, hath shone forth today from the righteous Joachim and Anna.",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p17 Exapostilarion Glory/Both now"
+      },
+      "type": "of_the_feast",
+      "sourceLabel": "Glory ..., Both now ...,"
+     },
+     "praises_rubric": {
+      "text": "On the Praises, 4 Stichera of the feast, in Tone I:",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p18 Praises rubric"
+      }
+     },
+     "praises": [
+      {
+       "text": "O wondrous miracle! The well-spring of Life is born of the barren woman, and grace doth splendidly begin to bring forth fruit. Be glad, O Joachim, as thou art the father of the Theotokos! There is none to compare with thee among mortal parents, O God-pleaser! For the maiden who contained God, the divine dwelling place, the most holy mountain, hath been given to us by thee!",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p18 Praises 1"
+       },
+       "label": "plain",
+       "tone": 1,
+       "repeat": 2,
+       "spec_mel": "O wondrous marvel! ..."
+      },
+      {
+       "text": "O wondrous miracle! Fruit hath shone forth from the barren woman at the behest of the Almighty Creator of all. She hath boldly loosed the barrenness of the world. Ye mothers, join chorus with the mother of the Theotokos, crying: O joyous one, rejoice! The Lord is with thee, Who through thee granteth the world great mercy!",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p18 Praises 2"
+       },
+       "label": "plain",
+       "spec_mel": "O wondrous marvel! ..."
+      },
+      {
+       "text": "The right glorious Anna, who hath been revealed to be an animate pillar of chastity, a splendid receptacle resplendent with grace, hath truly given birth to the bulwark of virginity, the divine flower who manifestly imparteth the beauty of virginity to all the virginal who desire to preserve the gift of virginity, and bestoweth great mercy upon all the faithful.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p18 Praises 3"
+       },
+       "label": "plain",
+       "spec_mel": "O wondrous marvel! ..."
+      }
+     ],
+     "praises_closer": {
+      "text": "This is the day of the Lord! Rejoice, O ye people! For, lo! the bridal-chamber of the Light and the book of the Word of life hath issued forth from the womb, and the portal which faceth toward the east, having been born, awaiteth the entry of the great High Priest. She alone leadeth the one Christ into the world, for the salvation of our souls.",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p18 Praises Glory/Both now"
+      },
+      "type": "of_the_feast",
+      "sourceLabel": "Glory ..., Both now ..., in Tone VI",
+      "tone": 6
+     },
+     "great_doxology_rubric": {
+      "text": "Great Doxology. Troparion, in Tone IV:",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p18 Great Doxology. Troparion"
+      }
+     },
+     "closing_rubric": {
+      "text": "Litanies. Dismissal. First Hour.",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p18 Litanies. Dismissal. First Hour."
+      }
+     }
+    },
+    "liturgy": {
+     "order": [
+      "beatitudes_rubric",
+      "beatitudes",
+      "troparion",
+      "liturgy_kontakion",
+      "prokeimenon",
+      "prokeimenon_verse",
+      "epistle",
+      "alleluia",
+      "alleluia_verse",
+      "gospel",
+      "megalynarion_rubric",
+      "megalynarion_refrain",
+      "megalynarion",
+      "megalynarion_closing_rubric",
+      "communion_verse"
+     ],
+     "beatitudes_rubric": {
+      "text": "On the Beatitudes, 8 Troparia: 4 from ODE III of Canon I of the feast, and 4 from ODE VI of Canon II of the feast.",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p19 Beatitudes rubric"
+      }
+     },
+     "liturgy_kontakion": {
+      "text": "In thy holy nativity, O most pure one, * Joachim and Anna have been freed from the reproach of childlessness, * and Adam and Eve from mortal corruption. * And, delivered from the affliction of sin, * thy people celebrate it, crying out to thee: * A barren woman giveth birth to the Theotokos, ** the nurturer of our Life!",
+      "tier": 2,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p19 Kontakion at Liturgy"
+      },
+      "sourceLabel": "Kontakion of the feast, in Tone IV",
+      "tone": 4
+     },
+     "beatitudes": [
+      {
+       "text": "Having lived blamelessly for God, ye gave birth unto the salvation of all, O divinely wise parents of her who hath given birth to our Creator and God.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p19 Beatitude 1"
+       },
+       "label": "plain",
+       "repeat": 2
+      },
+      {
+       "text": "From a barren woman did the Lord, Who poureth forth life upon all, cause the Virgin to come forth, in whom He was pleased to make His abode, preserving her incorrupt even after giving birth.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p19 Beatitude 2"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "Let us hymn Mary today as the Theotokos, the fruit of Anna, the intercessor and helper of all, who gaveth birth to the life-bearing Cluster.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p19 Beatitude 3"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "We hymn thy holy nativity and honor thine immaculate conception of Christ, O divinely chosen Bride and Virgin. And with us the ranks of angels and the souls of the saints glorify thee.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p19 Beatitude 4"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "Thy chaste parents placed thee, who art holy among the saints, in the temple of the Lord, O pure one, to be raised with honor in preparation to become His Mother.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p19 Beatitude 5"
+       },
+       "label": "plain"
+      },
+      {
+       "text": "In thee, O pure one, is the mystery of the Trinity hymned and glorified; for well pleased was the Father to have the Word make His abode within thee, and the divine Spirit to overshadow thee.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p19 Beatitude Glory ..."
+       },
+       "label": "glory",
+       "sourceLabel": "Glory ...,",
+       "label_inline": true
+      },
+      {
+       "text": "Thou wast a golden candlestick, O pure Birthgiver of God, for in thy womb the Fire made His abode: the Word from the Holy Spirit; and He became visible in thee in human form.",
+       "tier": 1,
+       "src": {
+        "file": "09-08.pdf",
+        "locus": "p19 Beatitude Both now ..."
+       },
+       "label": "both_now",
+       "sourceLabel": "Both now ...,",
+       "label_inline": true
+      }
+     ],
+     "prokeimenon": {
+      "text": "My soul doth magnify the Lord, * and my spirit hath rejoiced in God my Savior.",
+      "tier": 2,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p19 Liturgy Prokeimenon"
+      },
+      "tone": 3,
+      "sourceLabel": "Prokeimenon, in Tone III: The hymn of the Theotokos",
+      "label_inline": true
+     },
+     "prokeimenon_verse": {
+      "text": "For He hath looked upon the lowliness of His handmaiden; for behold, from henceforth all generations shall call me blessed.",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p19 Liturgy Prokeimenon verse"
+      },
+      "label": "refrain",
+      "sourceLabel": "Verse",
+      "label_inline": true
+     },
+     "epistle": {
+      "heading": "EPISTLE TO THE PHILIPPIANS,",
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p20 Epistle"
+      },
+      "citation_verbatim": "§ 240 (PHIL. 2: 5-11)",
+      "citation": {
+       "book": "Philippians",
+       "chapter": 2,
+       "verses": "5-11",
+       "pericope_number": 240
+      },
+      "citation_basis": "printed"
+     },
+     "alleluia": {
+      "text": "Hearken, O daughter, and see, and incline thine ear.",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p20 Alleluia"
+      },
+      "sourceLabel": "Alleluia, in Tone VIII",
+      "label_inline": true,
+      "tone": 8
+     },
+     "alleluia_verse": {
+      "text": "The rich among the people shall entreat thy countenance.",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p20 Alleluia verse"
+      },
+      "label": "refrain",
+      "sourceLabel": "Verse",
+      "label_inline": true
+     },
+     "gospel": {
+      "heading": "GOSPEL ACCORDING TO LUKE,",
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p20 Gospel"
+      },
+      "citation_verbatim": "§ 54 (LK. 10: 38-42; 11: 27-28)",
+      "citation": {
+       "book": "Luke",
+       "chapter": 10,
+       "verses": "10:38-42, 11:27-28",
+       "pericope_number": 54
+      },
+      "citation_basis": "printed"
+     },
+     "megalynarion_rubric": {
+      "text": "Instead of “It is truly meet ...,” we chant the Irmos of ODE IX of Canon I:",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p20 Instead of It is truly meet"
+      }
+     },
+     "megalynarion_refrain": {
+      "text": "Magnify, O my soul, the most glorious nativity of the Mother of God!",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p20 Refrain before the festal Irmos"
+      },
+      "label": "refrain",
+      "sourceLabel": "Refrain",
+      "label_inline": true
+     },
+     "megalynarion": {
+      "text": "Thee do we magnify, O blessed and all-pure Theotokos, * who through thy virginal womb ineffably brought forth * God incarnate, * the Luminary Who shone forth before the sun * and hath come to us in the flesh.",
+      "tier": 2,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p20 Irmos of Ode IX of Canon I, at Liturgy"
+      },
+      "sourceLabel": "Irmos",
+      "label_inline": true
+     },
+     "megalynarion_closing_rubric": {
+      "text": "This is done until the leave-taking of the feast.",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p20 until the leave-taking"
+      }
+     },
+     "communion_verse": {
+      "text": "I will take the cup of salvation, and I will call upon the name of the Lord.",
+      "tier": 1,
+      "src": {
+       "file": "09-08.pdf",
+       "locus": "p20 Communion Verse"
+      },
+      "sourceLabel": "Communion Verse",
+      "label_inline": true
+     }
+    }
+   }
+  ]
+ },
  "09-27": {
   "_encoded": [
    "c0.identity",

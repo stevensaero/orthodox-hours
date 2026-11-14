@@ -195,7 +195,7 @@ export const SOURCE_FILES = [...AUGUST_DATES, ...SEPTEMBER_DATES, ...OCTOBER_DAT
 // page of a claimed file must be cited by at least one locus. Written by
 // tools/encoding/menaion_v2/build_month.py from the PDFs themselves.
 export const DAILY_PAGE_COUNTS = {
-  '09-05.pdf': 9, '09-05A.pdf': 19, '09-06.pdf': 15, '09-07.pdf': 15, '09-27.pdf': 6, '10-04.pdf': 8, '10-04A.pdf': 6,
+  '09-05.pdf': 9, '09-05A.pdf': 19, '09-06.pdf': 15, '09-07.pdf': 15, '09-08.pdf': 20, '09-27.pdf': 6, '10-04.pdf': 8, '10-04A.pdf': 6,
   '11-14.pdf': 14, '11-14A.pdf': 16, '11-15.pdf': 10,
   '11-16.pdf': 16, '11-17.pdf': 10, '11-18.pdf': 11, '11-19.pdf': 10,
   '11-20.pdf': 21, '11-21.pdf': 22, '11-22.pdf': 16, '11-23.pdf': 18, '11-24.pdf': 22, '11-25.pdf': 22, '11-26.pdf': 6, '11-26A.pdf': 16, '11-27.pdf': 14, '11-27A.pdf': 16, '11-28.pdf': 14, '11-29.pdf': 12, '11-30.pdf': 27,
