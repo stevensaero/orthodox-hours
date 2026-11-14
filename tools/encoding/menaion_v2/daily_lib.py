@@ -26,7 +26,7 @@ ROMAN = {'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6, 'VII': 7, 'VIII': 
 DEVICE = {'Once': 1, 'Twice': 2, 'Thrice': 3}
 # inline labels printed at the head of a canon troparion -> the LABELS vocabulary
 INLINE_LABELS = {'Theotokion': 'theotokion', 'Stavrotheotokion': 'stavrotheotokion',
-                 'Trinitarion': 'trinitarion', 'Triadicon': 'trinitarion',
+                 'Trinitarion': 'trinitarion', 'Triadicon': 'trinitarion', 'Trinitarian': 'trinitarion',
                  'Glory ...': 'glory', 'Both now ...': 'both_now'}
 
 
@@ -204,8 +204,14 @@ class Src:
             while self.lines[a - 1].startswith('===== PAGE'):
                 a += 1
             head = self.lines[a - 1].strip()
-            m = re.match(r'^(Theotokion|Stavrotheotokion|Trinitarion|Triadicon): |^(Glory \.\.\.|Both now \.\.\.), ', head)
-            if m:
+            # 11-30: "Glory ..., Trinitarian: " and "Both now ..., Theotokion: " are
+            # DOUBLE inline labels; both parts are kept, in print order.
+            m2 = re.match(r'^(Glory \.\.\.|Both now \.\.\.), (Trinitarian|Theotokion|Stavrotheotokion): ', head)
+            m = re.match(r'^(Theotokion|Stavrotheotokion|Trinitarion|Trinitarian|Triadicon): |^(Glory \.\.\.|Both now \.\.\.), ', head)
+            if m2:
+                lab = [INLINE_LABELS[m2.group(1)], INLINE_LABELS[m2.group(2)]]
+                items.append(self.t(a, b, 'Ode %d %s' % (n, m2.group(0).strip(' :')), pre=m2.group(0), label=lab))
+            elif m:
                 name = m.group(1) or m.group(2)
                 lab = INLINE_LABELS[name]
                 items.append(self.t(a, b, 'Ode %d %s' % (n, name), pre=m.group(0), label=lab))
@@ -240,8 +246,10 @@ class Src:
                 out.append(self.t(a, b, '%s %d' % (desc, count), sl=sp[3], label='glory'))
             else:
                 pre = {'glory': 'Glory ..., ', 'both': 'Both now ..., ', 'theot': 'Theotokion: ',
-                       'tri': 'Triadicon: '}[kind]
-                lab = {'glory': 'glory', 'both': 'both_now', 'theot': 'theotokion', 'tri': 'trinitarion'}[kind]
+                       'tri': 'Triadicon: ', 'glorytri': 'Glory ..., Trinitarian: ',
+                       'boththeot': 'Both now ..., Theotokion: '}[kind]
+                lab = {'glory': 'glory', 'both': 'both_now', 'theot': 'theotokion', 'tri': 'trinitarion',
+                       'glorytri': ['glory', 'trinitarion'], 'boththeot': ['both_now', 'theotokion']}[kind]
                 out.append(self.t(a, b, '%s %s' % (desc, pre.strip(' ,:')), pre=pre, label=lab))
         return out
 

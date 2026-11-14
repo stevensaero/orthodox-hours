@@ -9,6 +9,8 @@ export default [
   // Each was confirmed against TWO independent extractions of the PDF text
   // layer (pdfplumber and poppler) before being registered: these are what the
   // page prints, not extraction residue.
+  { path: '11-30.c0.matins.great_doxology_rubric', file: '11-30.pdf', locus: 'p24 Great Doxology. Troparia. Litinies. Dismissal. First Hour',
+    verbatim: 'Litinies', note: '"Litinies" for "Litanies"; the rubric also lacks its final full stop.' },
   { path: '11-27.c0.liturgy.alleluia', file: '11-27.pdf', locus: 'p13 Alleluia',
     verbatim: 'out of all their tribulations', note: 'No final full stop. The label also runs "Alleluia, in Tone IV Verse:" with no colon after the tone.' },
   { path: '11-27.c1.matins.sessional_2[1]', file: '11-27A.pdf', locus: 'p6 Sessional 2 repeat device',
