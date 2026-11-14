@@ -318,6 +318,21 @@ rebuilt to this form** (its `troparion_other_saint` key is retired and removed
 from the schema; its single kontakion keeps the canonical field). 11-18 has one
 troparion and one kontakion and is unchanged.
 
+### A BROKEN BUILD REACHED MAIN FOR A FEW MINUTES (14 Nov) — GATE BEFORE COMMIT, BY EXIT CODE
+
+Commit `fedb2fc` and its parent pushed an `open_questions.js` with a syntax
+error: a scripted replace of Q-0002 cut at the first `  },` it found, which was
+the end of the inner `consulted` block, and left two orphaned lines. The
+validator, the render gate and `npm run build` all failed, and the commit and
+push ran anyway, because the commands were chained with `;` and only the last
+line of each output was being looked at. Fixed in the next commit.
+
+Rules from it:
+- **Run the gates in a step of their own and check exit codes (`fail=0`) before
+  any `git commit`.** Never chain gates and push in one command with `;`.
+- Do not edit a JS register by slicing between string markers. Replace exact,
+  whole, unique text, or edit by line after reading the lines.
+
 ### TWO FILES ON ONE DATE ARE TWO SERVICES (ruled by Bill, 14 Nov) — AND WHAT VOL. III ADDS
 
 Bill confirmed: where the folder holds `MM-DD.pdf` and `MM-DDA.pdf`, they are
