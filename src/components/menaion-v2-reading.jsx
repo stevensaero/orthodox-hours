@@ -354,6 +354,16 @@ export function RCommemoration({ entry, path }) {
       {services.map(s => (
         <RService key={s} svc={entry[s]} svcKey={s} path={`${path}.${s}`} entry={entry} />
       ))}
+      {/* Printed after the last service (11-20: the order for a Sunday, and two
+          troparia printed nowhere else). Rendered last, as on the page. */}
+      {Array.isArray(entry.appendix) && entry.appendix.length > 0 && (
+        <>
+          <RHeading id={`${path}.appendix`}>Appendix</RHeading>
+          {entry.appendix.map((n, i) => (!n?.saint)   /* a hymn carries `saint`; everything else here is a rubric */
+            ? <RRubric key={i} node={n} path={`${path}.appendix[${i}]`} />
+            : <RText key={i} node={n} path={`${path}.appendix[${i}]`} />)}
+        </>
+      )}
     </div>
   );
 }

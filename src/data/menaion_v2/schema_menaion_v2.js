@@ -178,6 +178,7 @@ export const SOURCE_FILES = [...AUGUST_DATES, ...NOVEMBER_DATES].map(d => `${d}.
 export const DAILY_PAGE_COUNTS = {
   '11-14.pdf': 14, '11-14A.pdf': 16, '11-15.pdf': 10,
   '11-16.pdf': 16, '11-17.pdf': 10, '11-18.pdf': 11, '11-19.pdf': 10,
+  '11-20.pdf': 21,
 };
 // ── The General Menaion (§6.2) — enumerated FROM THE FOLDER ─────────────────
 // Never from encoding_rule_v2.md §2.1's prose, which is wrong in three ways:
@@ -414,6 +415,7 @@ export const ENTRY_TOP = {
     'kind', 'title', 'feast_ref', 'day_of', 'rank', 'fekula_section',
     'oca_primary', 'source_file', 'note',
     'preface_rubric',            // printed between the title and the first service heading (11-15)
+    'appendix',                  // printed after the last service: ordered rubrics and texts (11-20)
     'troparion', 'kontakion', 'ikos',
     ...SERVICES,
   ],
@@ -676,9 +678,15 @@ export const DAILY_KEYS = {
     ['lic_closer_rubric', 'rubric', 'Both now rubric at Lord I have cried (Theotokion named, not printed)'],
     ['aposticha_stavrotheotokion', 'closer', 'Aposticha Stavrotheotokion'],
     ['troparion_closer_rubric', 'rubric', 'Rubric for the Theotokion after the troparion (text not printed)'],
+    ['lic_closer_alternate_rubric', 'rubric', 'Alternative closer rubric ("But if it be Friday evening")'],
+    ['troparia', 'labeled_items', 'Troparia printed at the end of Vespers, where the service has more than one'],
   ],
   matins: [
     ['troparion_closer', 'closer', 'Theotokion after the troparion at God is the Lord'],
+    ['troparia', 'labeled_items', 'Troparia at God is the Lord, where the service has more than one'],
+    ['troparia_closing_rubric', 'rubric', 'Rubric closing the troparia ("Both now ..., of the forefeast")'],
+    ['kontakia_ode3', 'labeled_items', 'Kontakia printed after Ode III'],
+    ['kontakia_ode6', 'labeled_items', 'Kontakion and Ikos printed after Ode VI, where the entry holds no single canonical kontakion'],
     ['sessional_1', 'sessional_slot', 'After the 1st chanting of the Psalter: sessional hymns'],
     ['sessional_2', 'sessional_slot', 'After the 2nd chanting of the Psalter: sessional hymns'],
     ['sessional_polyeleos', 'sessional_slot', 'After the Polyeleos: sessional hymns'],
@@ -701,6 +709,10 @@ export const DAILY_KEYS = {
   ],
   liturgy: [
     ['beatitudes_rubric', 'rubric', 'Beatitudes rubric'],
+    ['troparia', 'labeled_items', 'Troparia at Liturgy, where the service has more than one'],
+    ['kontakia', 'labeled_items', 'Kontakia at Liturgy, where the service has more than one'],
+    ['epistle_rubric', 'rubric', 'Epistle rubric'],
+    ['gospel_rubric', 'rubric', 'Gospel rubric'],
     ['liturgy_troparion', 'text', 'Troparion as printed at Liturgy (stored apart when it diverges from the canonical field, R-1)'],
     ['troparion_alternate_rubric', 'rubric', '"Or this Troparion" rubric'],
     ['troparion_alternate', 'text', 'Alternate troparion ("Or this Troparion")'],
@@ -710,6 +722,8 @@ export const DAILY_KEYS = {
   ],
 };
 const DAILY_ROWS = [
+  { path: '<c>.appendix', kind: 'labeled_items', service: 'identity', required: false, tag: 'month-specific',
+    label: 'Appendix printed after the last service ("Be it known" orders, extra troparia; 11-20)' },
   { path: '<c>.preface_rubric', kind: 'rubric', service: 'identity', required: false, tag: 'month-specific',
     label: 'Rubric printed between the title and the first service ("Be it known", 11-15)' },
   ...['vespers', 'great_vespers'].flatMap(sv => DAILY_KEYS.vespers_like.map(([k, kind, label]) =>

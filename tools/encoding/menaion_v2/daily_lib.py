@@ -107,9 +107,13 @@ class Src:
         return m.group(1)          # verbatim between the printed quotation marks
 
     # -- nodes --------------------------------------------------------------
-    def node(self, text, a, desc, **x):
+    def node(self, text, a, desc, _end=None, **x):
+        # A text that runs over a page break cites BOTH pages ("p20-p21 ..."),
+        # as general.js does, so the page-coverage tripwire counts the second.
+        pa, pb = self.page(a), self.page(_end if _end is not None else a)
+        pages = 'p%d' % pa if pb == pa else 'p%d-p%d' % (pa, pb)
         d = {'text': text, 'tier': 2 if '*' in text else 1,
-             'src': {'file': self.file, 'locus': 'p%d %s' % (self.page(a), desc)}}
+             'src': {'file': self.file, 'locus': '%s %s' % (pages, desc)}}
         d.update({k: v for k, v in x.items() if v is not None})
         return d
 
@@ -141,7 +145,7 @@ class Src:
             tn = tone_of(x.get('sourceLabel'))
             if tn:
                 x['tone'] = tn
-        return self.node(text, a, desc, **x)
+        return self.node(text, a, desc, _end=b, **x)
 
     def r(self, a, b, desc):
         """A rubric: verbatim, devices NOT lifted (a rubric's '(Thrice)' is its text)."""

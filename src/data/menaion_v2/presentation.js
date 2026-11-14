@@ -142,6 +142,7 @@ R['<c>.liturgy.closing_rubric']        = { heading: 'Closing rubric', order: 13 
 // Daily keys registered per key (R-9, A-3): one registry row per manifest row,
 // headings taken from the schema's own table so the two cannot drift.
 R['<c>.preface_rubric'] = { heading: 'Preface rubric', order: 2 };
+R['<c>.appendix'] = { heading: 'Appendix (printed after the last service)', order: 98 };
 for (const sv of ['vespers', 'great_vespers'])
   DAILY_KEYS.vespers_like.forEach(([k, , label], i) => { R[`<c>.${sv}.${k}`] = { heading: label, order: 30 + i }; });
 for (const sv of ['matins', 'liturgy'])

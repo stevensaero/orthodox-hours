@@ -636,10 +636,11 @@ function checkPageCoverage(where, entry, counts, tableName) {
     if (Array.isArray(n)) { n.forEach(visit); return; }
     const src = n.src;
     if (isPlainObj(src) && typeof src.file === 'string' && typeof src.locus === 'string') {
-      const m = /^p(\d+)\b/.exec(src.locus);
+      // "p20 ..." cites one page; "p20-p21 ..." cites every page of the span.
+      const m = /^p(\d+)(?:-p(\d+))?\b/.exec(src.locus);
       if (m) {
         if (!cited.has(src.file)) cited.set(src.file, new Set());
-        cited.get(src.file).add(Number(m[1]));
+        for (let pg = Number(m[1]); pg <= Number(m[2] ?? m[1]); pg++) cited.get(src.file).add(pg);
       } else {
         bad.push(`${src.file} · ${src.locus}`);
       }
