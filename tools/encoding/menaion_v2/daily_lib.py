@@ -208,6 +208,14 @@ class Src:
             # DOUBLE inline labels; both parts are kept, in print order.
             m2 = re.match(r'^(Glory \.\.\.|Both now \.\.\.), (Trinitarian|Theotokion|Stavrotheotokion): ', head)
             m = re.match(r'^(Theotokion|Stavrotheotokion|Trinitarion|Trinitarian|Triadicon): |^(Glory \.\.\.|Both now \.\.\.), ', head)
+            # 09-06 Compline: "Glory ...O martyr" — the label runs straight into the
+            # text with no comma. Kept as the label it is; the oddity is in sourceLabel.
+            m3 = re.match(r'^(Glory \.\.\.|Both now \.\.\.)(?=[A-Z])', head)
+            if m3 and not m2 and not m:
+                items.append(self.t(a, b, 'Ode %d %s' % (n, m3.group(1)), pre=m3.group(1),
+                                    label=INLINE_LABELS[m3.group(1)]))
+                a = b + 1
+                continue
             if m2:
                 lab = [INLINE_LABELS[m2.group(1)], INLINE_LABELS[m2.group(2)]]
                 items.append(self.t(a, b, 'Ode %d %s' % (n, m2.group(0).strip(' :')), pre=m2.group(0), label=lab))
