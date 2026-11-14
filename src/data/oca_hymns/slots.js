@@ -1,0 +1,40 @@
+// HAND-KEPT. Which OCA hymn fills which place on a Menaion date.
+// `doc` is a captured document (docs/<doc>.js); `head` is the heading the hymn is
+// printed under in it, copied exactly. Only dates Menaion V2 holds are mapped; the
+// other captured documents wait in docs/ until their dates are encoded.
+// tools/validate_oca_hymns.mjs fails if a head is missing or resolves to two texts.
+//
+// Slots: troparion, kontakion = the day's own commemoration (the oca_primary service).
+//        troparion_alt, kontakion_alt = printed as an alternative ("or this Troparion").
+//        troparion_2, kontakion_2 = a further commemoration of the day.
+//        feast_troparion, feast_kontakion = the feast, on its afterfeast and leavetaking days.
+const at = (doc, slots) => Object.fromEntries(Object.entries(slots).map(([k, head]) => [k, { doc, head }]));
+
+export const OCA_SLOTS = {
+  '09-06': at('2026-0906-texts-tt', {
+    troparion: 'Tone 4 Troparion (Archangel Michael)', kontakion: 'Tone 2 Kontakion (Archangel Michael)' }),
+  '09-08': at('2026-0908-texts-tt', { troparion: 'Tone 4 Troparion', kontakion: 'Tone 4 Kontakion' }),
+  '09-27': at('2026-0927-texts-tt--', {
+    troparion: 'Tone 3 Troparion (St. Callistratus)', kontakion: 'Tone 4 Kontakion (St. Callistratus)' }),
+  '10-04': at('2026-1004-texts-tt', {
+    troparion: 'Tone 1 Troparion (St. Hierotheus)', kontakion: 'Tone 8 Kontakion (St. Hierotheus)' }),
+  '11-14': at('2026-1114-texts-tt', { troparion: 'Tone 3 Troparion', kontakion: 'Tone 8 Kontakion' }),
+  '11-15': at('2026-1115-texts-tt-', {
+    troparion: 'Tone 5 Troparion (Martyrs)', kontakion: 'Tone 2 Kontakion (Martyrs)' }),
+  '11-16': at('2026-1116-texts-tt', {
+    troparion: 'Tone 3 Troparion', troparion_alt: 'Tone 3 (or this Troparion)', kontakion: 'Tone 4 Kontakion' }),
+  '11-21': at('2026-1121-texts-tt', { troparion: 'Tone 4 Troparion', kontakion: 'Tone 4 Kontakion' }),
+  '11-22': at('2026-1122-texts-tt', {
+    troparion: 'Tone 3 Troparion (Apostles)', kontakion: 'Tone 2 Kontakion (Apostles)',
+    feast_troparion: 'Tone 4 Troparion (Feast)', feast_kontakion: 'Tone 4 Kontakion (Feast)' }),
+  // The OCA prints St. Clement's troparion first and, under a starred note, the
+  // troparion and kontakion "when both Hieromartyr Clement and Hieromartyr Peter
+  // are celebrated together". No kontakion of St. Clement alone is printed.
+  '11-25': at('2026-1125-texts-tt', {
+    troparion: 'Tone 4* Troparion (St. Clement)',
+    troparion_alt: 'Tone 4 Troparion (Sts. Clement and Peter)', kontakion_alt: 'Tone 4 Kontakion (Sts. Clement and Peter)',
+    feast_troparion: 'Tone 4 Troparion (Feast)', feast_kontakion: 'Tone 4 Kontakion (Feast)' }),
+  '11-29': at('2026-1129-texts-tt', {
+    troparion: 'Tone 4 Troparion (Martyrs)', kontakion: 'Tone 4 Kontakion (Martyrs)' }),
+  '11-30': at('2026-1130-texts-tt', { troparion: 'Tone 4 Troparion', kontakion: 'Tone 2 Kontakion' }),
+};
