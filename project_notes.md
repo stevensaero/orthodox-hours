@@ -85,6 +85,8 @@ block is the consolidated state. Tool **v0.52.2**; nine gates green.
 | 11-23 | 11-23.pdf | Afterfeast of the Entry; Amphilochius of Iconium; Gregory of Agrigentum; three canons | simple / 2G1 |
 | 11-24 | 11-24.pdf | Afterfeast of the Entry; Great Martyrs Catherine and Mercurius; three canons; Praises AND Aposticha (Q-0006) | simple / 2G1, provisional |
 | 11-25 | 11-25.pdf | APODOSIS of the Entry; Clement of Rome; Peter of Alexandria; three canons; Sunday order printed mid-file | doxology / 2G3 |
+| 11-26 | 11-26.pdf | Alypius the Stylite (c0) | simple / 2A |
+| 11-26 | 11-26A.pdf | Innocent of Irkutsk (c1); Litiya, Polyeleos, Great Doxology | vigil / 2F |
 
 About 890 daily text nodes; 4,413 with the General Menaion. 27 files of
 November remain (11-01..11-13 with 11-1A, 11-09A, 11-09B; 11-21..11-30 with
@@ -313,6 +315,31 @@ the canonical field stands (R-1), as before. Applied: 11-20 as encoded; **11-19
 rebuilt to this form** (its `troparion_other_saint` key is retired and removed
 from the schema; its single kontakion keeps the canonical field). 11-18 has one
 troparion and one kontakion and is unchanged.
+
+### 11-26 ADDED — TWO FILES: ALYPIUS (SIMPLE) AND INNOCENT OF IRKUTSK (VIGIL)
+
+`11-26.pdf` (6 pages) is c0, `11-26A.pdf` (16 pages) is c1, in file order.
+
+- Alypius: 3 stichera, one canon, no aposticha printed, and AT LITURGY prints
+  only the troparion and kontakion. `liturgy` holds just `order`.
+- Innocent: stored **Vigil / 2F** because the page prints a Litiya and the
+  blessing of the Loaves (11-14A, which prints neither a Litiya, stays
+  Polyeleos). It also prints "But if a vigil is not served". Which of the two
+  services a parish takes on 26 November is the Q-0002 kind of question.
+- New keys: `litiya_glory`, `doxology_theotokion`, `liturgy_kontakion`.
+  **The kontakion of Innocent is pointed differently at Liturgy**, so by R-1 the
+  canonical field holds the Ode VI text and the Liturgy text is stored apart
+  (the 11-14 `liturgy_troparion` precedent). Variant row registered.
+- Ode I ends with a katavasia printed as an incipit: "Christ is born ...,".
+- Liturgy Gospel citation prints a letter O for zero: "(1O:9-16)." Kept in
+  `citation_verbatim`; the parsed citation is John 10:9-16.
+- **A mistake caught before commit:** I wrote into the 11-26 map's note what the
+  second file was before opening it, and guessed wrong. Corrected once 11-26A
+  was read. Nothing about a file goes in a note until the file has been read.
+
+**Pattern worth knowing for the adapter:** pointing differences between print
+sites of one hymn are now attested four times (11-14 troparion, 11-24 and 11-25
+feast troparion, 11-26A kontakion). The words agree; the asterisks do not.
 
 ### 11-25 ADDED — APODOSIS; TWO EPISTLES AND TWO GOSPELS
 
