@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.52.1** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
+**Tool version: v0.52.2** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -62,6 +62,12 @@ the open questions in front of priests and liturgists and let them answer.
   which now opens as a landing page: what the questions are, three steps to
   answer one, who is welcome, how answers are recorded, and a general
   "something to correct" e-mail link.
+- **General feedback (v0.52.2, Bill):** "I found a bug" and "I have a
+  suggestion" buttons on /questions, subjects "Orthodox Hours bug report" and
+  "Orthodox Hours suggestion" (`FEEDBACK` in the register module). At session
+  start these are read WITH the question answers and run against the open
+  questions; a general remark that bears on a question is proposed as a
+  `responses` row on it.
 - **OWED:** at each session start, search that mailbox for subjects beginning
   "Orthodox Hours Q-", and bring Bill proposed `responses` rows to approve.
   Nothing is written to the register without his say. Confirm first that the
