@@ -169,6 +169,14 @@ The page prints no Vespers aposticha at all (not even a rubric) and, at Liturgy,
 only the troparion and kontakion: the `liturgy` service holds nothing but its
 `order`. No reading bodies in this file. 3 sic rows.
 
+### RULED (Bill, 14 Nov 2026): ONE ENTRY PER PRINTED SERVICE
+
+A service that appears on the page as one service is ONE entry, however many
+saints it honors (11-18, 11-19): saints are told apart by `saint` on each item.
+A date with more than one FILE gets one entry per file, in file order (11-14 =
+c0 from 11-14.pdf, c1 from 11-14A.pdf). So: entries follow printed services,
+never saints. The 11-19 arrangement below stands.
+
 ### 11-19 ADDED — TWO SAINTS, TWO TROPARIA, ONE ENTRY (a shape choice for Bill)
 
 Prophet Obadiah and Martyr Barlaam, 10 pages, double service (2B). Zero

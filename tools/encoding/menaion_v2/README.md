@@ -26,6 +26,9 @@ reading a tone number out of a printed label.
 ## Conventions the three November maps establish
 
 - Vocabulary is general.js's (R-9). Sessional slots are positional lists (A-2).
+- One entry per printed service (ruled 14 Nov 2026): a double service in one file
+  is one entry with `saint` on its items; each further FILE of a date is a
+  further entry of that date.
 - A canonical hymn (`troparion`, `kontakion`) is entry-level only when every
   print site byte-matches; the map asserts it. A divergent site is stored at its
   own position (11-14's Liturgy troparion) with a variant row.
