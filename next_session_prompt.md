@@ -23,7 +23,9 @@ the two rulings at the end of §16.5; `encoding_rule_v2.md` §§1.1 and 3 (live)
 `src/data/open_questions.js` (the ladder is in its header);
 `bill_review_ledger.md`.
 
-**Fekula volume III lives on Bill's computer, NOT in the repo.** Folder
+**Fekula volume III lives on Bill's computer, NOT in the repo.** It is a copyrighted
+reference work and is never committed here, in whole or in part (Bill, 14 Nov):
+cite an entry by id and page, quote at most a short rubric phrase. Folder
 `Orthodox Hours/Fekula_ODS_SOM_V3/intake/`: `ods_v3_index.json` (which dates are
 covered, printed rank, pages), `entries/ods3-MMDD-*.md` (the rubrics, quotable,
 page-anchored), `ods_v3_full_repaired.txt` (searchable whole), plus

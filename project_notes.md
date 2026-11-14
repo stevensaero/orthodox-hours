@@ -23,6 +23,11 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > every date against the index BEFORE ranking. Findings so far are under "TWO
 > FILES ON ONE DATE ARE TWO SERVICES" below. For the Hours wire-in, each covered
 > entry states the Hours outright; `HOURS_PILOT_NOTES.md` has the settled schema.
+> **RULED BY BILL, 14 Nov: the Fekula texts are NEVER put in this repo.** They
+> live on his machine as a copyrighted reference work for our process. That
+> covers the PDFs, `entries/`, the repaired full text, the index and the pilot
+> JSON. The repo may cite an entry by id and page and quote a short rubric
+> phrase in a note; nothing more.
 
 Everything below this block is the session's running log, newest first. This
 block is the consolidated state. Tool **v0.52.2**; nine gates green.
