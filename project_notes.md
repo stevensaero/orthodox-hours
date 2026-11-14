@@ -156,6 +156,19 @@ one sticheron of the saint to follow the Oktoechos aposticha. 3 sic rows.
 **Measured rate once the pipeline existed: 11-16 (16 pages) and 11-17 (10 pages)
 in one stretch, about one file per working chunk.**
 
+### 11-18 ADDED — THE FIRST DOUBLE SERVICE, THE FIRST TWO-CANON FILE
+
+Martyrs Plato and Romanus, 11 pages, Simple rank double service (2B). Zero
+unclaimed lines. **Two canons printed interleaved ode by ode**, stored as
+`canons[0]` (Plato) and `canons[1]` (Romanus), each whole, per spec 5.6. From
+Ode III each canon is re-announced by a bare label; the map asserts those 14
+labels read exactly as expected and marks them structural. `saint` is used on
+items for the first time (LIC 3+3, the sessional slot, the kontakion). The
+Ode III slot holds four items across two saints: A-2's shape took it unchanged.
+The page prints no Vespers aposticha at all (not even a rubric) and, at Liturgy,
+only the troparion and kontakion: the `liturgy` service holds nothing but its
+`order`. No reading bodies in this file. 3 sic rows.
+
 ### OWED
 
 1. **adapter.js and the wire-in** after November: Hours reads V2 only; "not
@@ -164,7 +177,7 @@ in one stretch, about one file per working chunk.**
 2. Variant pairs against general.js were not hunted (only byte-identity was
    swept). Stated in known_recurrences.js.
 3. Per-key manifest rows for the General Menaion's own keys; alias lint.
-4. The rest of November: 31 files (11-01..11-13, 11-18..11-30 with variants).
+4. The rest of November: 30 files (11-01..11-13, 11-19..11-30 with variants).
    Measured rate this session: three files, 40 pages, in one session, including
    building the pipeline. `11-1A.pdf` is the folder's name for the 11-01 variant.
 5. The Nov 8 "V1 encoding pass" chat was never pushed and is abandoned with V1.
