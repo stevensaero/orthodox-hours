@@ -199,6 +199,57 @@ Each difference found is classed: **expected** (V2 lifts bytes, V1 was typed),
 **V1 error**, **V2 or adapter error**, or **for Bill**. Register: §4a, to be
 written with the harness.
 
+### 5b. What the OCA service texts show (read 14 November 2026)
+
+Source: the OCA Department of Liturgical Music and Translations service texts
+for 2026, on Bill's machine in `Orthodox Hours/OCA_service_texts/` (reference
+only, like the Fekula volume; never in the repo). Twelve were read: 6, 8, 27
+September; 4 October; 14, 15, 16, 21, 22, 25, 29, 30 November. They carry
+Vespers and Liturgy propers (Matins too on the two Great Feasts), in the OCA's
+own translation, so they check SELECTION and ORDER, not wording. Seven of the
+twelve fall on a Sunday in 2026.
+
+1. **Two files, one service.** On every two-file date covered, the OCA serves
+   one service and is silent about the other: Philip (not Palamas), Hierotheus
+   (not Paul the Simple), the Nativity of the Theotokos (not the Kursk Icon).
+   Each is the FIRST file. No OCA text covers 5 September, the one date where
+   vol. III and V1 take the second file.
+2. **The Compline saints are not mentioned** (Eudoxius on 6 Sept; Acacius on 29
+   Nov), consistent with their having no troparion or kontakion.
+3. **The OCA often sings a different troparion or kontakion than the Menaion
+   prints.** 4 Oct: OCA troparion "We the faithful all praise Hierotheus" (Tone
+   1) where the Menaion prints a general hieromartyr troparion (Tone IV). 27
+   Sept: OCA troparion Tone 3 and kontakion "Like stars you have shone" where
+   the Menaion prints the general martyrs' troparion (Tone IV) and two other
+   kontakia. 29 Nov: OCA gives Paramon a troparion and a kontakion (both Tone
+   4); the Menaion prints NEITHER. 25 Nov: OCA sings a troparion of St. Clement
+   alone ("O holy athlete") that the Menaion prints only in its Sunday
+   appendix, with "O God of our fathers" as the alternative when Clement and
+   Peter are kept together. This is the encoding_rule_v2.md 1 / 2.1 case: OCA
+   overrides with a saint-specific proper. **V2 does not hold the OCA texts.**
+   The adapter needs a place for them (as V1 had), or the Hours on those days
+   read the Menaion's general text. NEEDS BILL.
+4. **Which kontakion, when a saint has two.** 4 Oct: the OCA sings the Tone 8
+   kontakion, which is the Menaion's ODE III one, not the Ode VI one.
+5. **Philip's troparion (Q-0005).** The OCA service text prints the first
+   (general) troparion; oca.org's saint page gives the "Ethiopia" one. The two
+   OCA sources disagree.
+6. **Apostles' rank (Q-0001).** Philip, Matthew and Andrew all get Great
+   Vespers, lessons from 1 Peter, and a Litya "if the rector desires": the
+   Polyeleos form with a Vigil optional. Nothing marks them Vigil.
+7. **Vespers on a Sunday**: resurrection stichera, then the saint's; Glory of
+   the saint; the DOGMATIKON in the tone of the week; aposticha of the
+   resurrection with the saint's Glory and a theotokion in that tone;
+   resurrectional dismissal theotokion in the tone of the last troparion.
+   Exactly the Octoechos lookups section 3.3 assigns to the adapter.
+8. **Lessons confirmed.** 21 Nov: Exodus 40:1-5, 9, 10, 16, 34-35; 3 Kings
+   7:51, 8:1, 3-7, 9-11; Ezekiel 43:27-44:4, as identified. 8 Sept: Genesis
+   28:10-17, Ezekiel (printed "43:2-44:4", presumably 43:27), Proverbs 9:1-11.
+   The apostles' lessons: 1 Peter 1:1-2:6, 2:21-3:9, 4:1-11, as 11-30 prints.
+9. **Short names** for the dismissal are on the title lines: "Holy and
+   All-praised Apostle Philip", "Hieromartyr Hierotheus, Bishop of Athens",
+   "Martyr Paramon and 370 Martyrs in Bithynia".
+
 ## 6. Adapter (`src/data/menaion_v2/adapter.js`) — PLAN
 
 Pure functions over loaded month data; no React. `getDay(date)` returns

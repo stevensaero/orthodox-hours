@@ -23,6 +23,10 @@ the two rulings at the end of §16.5; `encoding_rule_v2.md` §§1.1 and 3 (live)
 `src/data/open_questions.js` (the ladder is in its header);
 `bill_review_ledger.md`.
 
+**OCA service texts** for many 2026 dates are on Bill's computer in
+`Orthodox Hours/OCA_service_texts/` (`2026-MMDD-texts-tt.docx`; reference only,
+never in the repo). Check for the date before opening a liturgical question.
+
 **The wire-in is under way.** `menaion_v2_wirein_spec.md` holds the rulings, the
 slot map and the plan; sections 1-5 are done (six overlap dates are encoded in
 V2 `september.js` / `october.js`), sections 6-9 await Bill's confirmation.

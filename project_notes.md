@@ -334,6 +334,25 @@ rebuilt to this form** (its `troparion_other_saint` key is retired and removed
 from the schema; its single kontakion keeps the canonical field). 11-18 has one
 troparion and one kontakion and is unchanged.
 
+### OCA SERVICE TEXTS READ (14 Nov) — A THIRD WITNESS, AND A GAP IN V2
+
+Bill's machine has `Orthodox Hours/OCA_service_texts/` (.docx, the OCA's own
+worked-out propers per date for 2026; reference only, never in the repo). Convert
+with `pandoc -t plain`. Twelve were read; the findings are in
+`menaion_v2_wirein_spec.md` section 5b. The three that change the work:
+
+- **On a two-file date the OCA serves one service, the first file**, and does
+  not mention the second (14 Nov, 4 Oct, 8 Sept).
+- **The OCA frequently sings its own troparion or kontakion** where the Menaion
+  prints a general one, another one, or none (Hierotheus, Callistratus, Paramon,
+  Clement). V2 captures the Menaion faithfully and so does NOT hold these. The
+  wire-in needs an OCA-propers layer or those days read the Menaion's text.
+- **Apostles (Philip, Matthew, Andrew): Polyeleos form, Litya at the rector's
+  wish.** Q-0001, Q-0002 and Q-0005 carry the evidence.
+
+Check the folder for a date BEFORE opening a question on it: file names are
+`2026-MMDD-texts-tt.docx`.
+
 ### WIRE-IN STARTED: SPEC, SLOT MAP, AND SIX OVERLAP DATES IN V2 (14 Nov)
 
 `menaion_v2_wirein_spec.md` (repo root) is the working document: Bill's seven
