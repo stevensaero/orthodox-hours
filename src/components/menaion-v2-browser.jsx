@@ -430,7 +430,8 @@ export default function MenaionV2Browser() {
           <div>
             {comms.map((c, i) => (
               <div key={i} onClick={() => setCIdx(i)} style={railItem(i === cIdx)}>
-                {c.kind === 'saint' ? (c.title ?? '').slice(0, 28) : c.kind}
+                {/* `title` is a TEXT NODE in the data (general.js and the daily months), not a string. */}
+                {c.kind === 'saint' ? String(typeof c.title === 'string' ? c.title : (c.title?.text ?? '')).slice(0, 28) : c.kind}
               </div>
             ))}
           </div>
