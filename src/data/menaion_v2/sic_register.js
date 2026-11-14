@@ -5,6 +5,41 @@
 // sic still byte-matches the stored text at its locus, so silently correcting one
 // is a hard failure rather than an invisible improvement.
 export default [
+  // ── NOVEMBER daily files (14 Nov 2026) ─────────────────────────────────────
+  // Each was confirmed against TWO independent extractions of the PDF text
+  // layer (pdfplumber and poppler) before being registered: these are what the
+  // page prints, not extraction residue.
+  { path: '11-14.c0.liturgy.liturgy_troparion', file: '11-14.pdf', locus: 'p13 Troparion at Liturgy',
+    verbatim: '** unto our souls',
+    note: 'No final period at the Liturgy print site; p4 and p5 print "unto our souls." The whole difference between this node and the canonical troparion.' },
+  { path: '11-14.c0.matins.canons[0].odes.5.items[2]', file: '11-14.pdf', locus: 'p9 Ode V troparion 3',
+    verbatim: 'enlight-ening',
+    note: 'LINE-BREAK HYPHEN (ledger A-1 class, with pas-sions and cru-cified): the page breaks "enlight-" / "ening" at the line end. Stored joined with the hyphen kept, pending the A-1 ruling.' },
+  { path: '11-14.c1.great_vespers.lic[0]', file: '11-14A.pdf', locus: 'p1 LIC 1',
+    verbatim: 'God -loving', note: 'Space before the hyphen.' },
+  { path: '11-14.c1.great_vespers.aposticha_glory', file: '11-14A.pdf', locus: 'p5 Aposticha Glory',
+    verbatim: 'from-the honeycomb', note: 'Stray hyphen joining "from" and "the".' },
+  { path: '11-14.c1.matins.megalynarion', file: '11-14A.pdf', locus: 'p6 Magnification',
+    verbatim: 'we rumor thy holy memory',
+    note: '"rumor" where every other magnification in the corpus prints "honor". In the MAGNIFICATION, which is sung. Stored as printed; a candidate for a physical-book check.' },
+  { path: '11-14.c1.matins.canons[0].odes.4.irmos', file: '11-14A.pdf', locus: 'p9 Ode IV irmos',
+    verbatim: 'Habbakuk', note: 'Spelling (Habakkuk). 11-15.pdf prints the same form at Ode VI.' },
+  { path: '11-14.c1.matins.canons[0].odes.5.irmos', file: '11-14A.pdf', locus: 'p10 Ode V irmos',
+    verbatim: 'O Hou hast shone', note: '"O Hou" for "O Thou" or "Thou": a dropped letter at the head of the irmos.' },
+  { path: '11-14.c1.matins.canons[0].odes.8.items[1]', file: '11-14A.pdf', locus: 'p12 Ode VIII troparion 2',
+    verbatim: 'having became', note: 'Grammar: "having became united".' },
+  { path: '11-14.c1.matins.canons[0].odes.9.items[1]', file: '11-14A.pdf', locus: 'p12 Ode IX troparion 2',
+    verbatim: 'beginingless', note: 'One n. The preceding troparion prints "beginningless".' },
+  { path: '11-14.c1.matins.aposticha_glory', file: '11-14A.pdf', locus: 'p14 Matins Aposticha Glory',
+    verbatim: 'the(doctrine of the) one', note: 'A parenthetical gloss with no space before it; absent from the Vespers print of the same sticheron (p2).' },
+  { path: '11-14.c1.matins.aposticha_glory', file: '11-14A.pdf', locus: 'p14 Matins Aposticha Glory',
+    verbatim: 'where· fore', note: 'Raised dot and space inside "wherefore"; the Vespers print (p2) has the word whole.' },
+  { path: '11-15.c0.title', file: '11-15.pdf', locus: 'p1 title',
+    verbatim: 'MARTYRS; GURIAS', note: 'Semicolon after MARTYRS in the service title.' },
+  { path: '11-15.c0.preface_rubric', file: '11-15.pdf', locus: 'p1 Be it known',
+    verbatim: 'mar-tyrs', note: 'LINE-BREAK HYPHEN (ledger A-1 class): "mar-" / "tyrs" at the line end, in a rubric.' },
+  { path: '11-15.c0.matins.canons[0].odes.6.items[1]', file: '11-15.pdf', locus: 'p6 Ode VI troparion 2',
+    verbatim: 'Habbakuk', note: 'Spelling, as at 11-14A.pdf p9.' },
   // ── Heirarch.pdf ───────────────────────────────────────────────────────────
   // Eleven rows. Three of them are the same word twice in one file, spelled two
   // ways at two positions — which is this file's signature and the reason its

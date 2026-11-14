@@ -27,6 +27,7 @@ export const MONTH_LABELS = {
 // One line per encoded month. Add a month here and nowhere else.
 export const MONTH_LOADERS = {
   // '08': () => import('./august.js').then(m => m.default),
+  '11': () => import('./november.js').then(m => m.default),
 };
 
 // The General Menaion is a BOOK, not a month (§6.2) — the browser surfaces it on

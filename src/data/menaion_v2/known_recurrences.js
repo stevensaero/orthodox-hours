@@ -21,6 +21,62 @@
 // positions store their own copy (§2.3, no dereferencing); these rows are what
 // make the duplication a checked fact rather than an invitation to collapse it.
 export default [
+  // ── NOVEMBER, the first daily month (14 Nov 2026): 11-14, 11-14A, 11-15 ────
+  // The `identical` rows below were FOUND BY MACHINE (a byte-identity sweep of
+  // november.js against itself and against general.js, texts of 45+ characters,
+  // rubrics and titles excluded) and are byte-checked by the gate like any
+  // other. A sweep can only find identity. The VARIANT rows are by hand, and
+  // only the two the encode itself tripped over are here: no hunt for variant
+  // pairs against general.js has been made (the Tone VI dogmatic and the
+  // apostle's troparion are the obvious candidates). That is a gap, stated.
+  { a: '11-14.c0.troparion', b: '11-14.c0.liturgy.liturgy_troparion', relation: 'variant', note: 'The Liturgy site (p13) prints the troparion with NO final period ("unto our souls"); the Vespers and Matins sites (p4, p5) close it. One byte. The R-1 refusal that keeps the Liturgy copy out of the canonical field.' },
+  { a: '11-14.c1.great_vespers.lic_glory', b: '11-14.c1.matins.aposticha_glory', relation: 'variant', note: 'One Glory sticheron printed at Vespers (p2) and again at Matins (p14). The Matins print inserts "(doctrine of the)" with no space after "the", and breaks "wherefore" as "where· fore" with a raised dot. Both sic-registered.' },
+  { a: '11-14.c0.vespers.aposticha[1]', b: '11-14.c0.matins.prokeimenon', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.megalynarion_verse', b: '11-14.c0.matins.prokeimenon_verse', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.sessional_polyeleos[1]', b: '11-14.c0.matins.sessional_ode3[2]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.canons[0].odes.3.items[0]', b: '11-14.c0.liturgy.beatitudes[0]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.canons[0].odes.3.items[1]', b: '11-14.c0.liturgy.beatitudes[1]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.canons[0].odes.3.items[2]', b: '11-14.c0.liturgy.beatitudes[2]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.canons[0].odes.6.items[0]', b: '11-14.c0.liturgy.beatitudes[3]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.canons[0].odes.6.items[1]', b: '11-14.c0.liturgy.beatitudes[4]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.canons[0].odes.6.items[2]', b: '11-14.c0.liturgy.beatitudes[5]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.canons[0].odes.6.items[3]', b: '11-14.c0.liturgy.beatitudes[6]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.vespers.troparion_alternate', b: '11-14.c0.liturgy.troparion_alternate', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.vespers.aposticha[1]', b: '11-14.c0.liturgy.prokeimenon', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.matins.megalynarion_verse', b: '11-14.c0.liturgy.prokeimenon_verse', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c1.great_vespers.troparion_closer', b: '11-14.c1.matins.troparion_closer', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c1.great_vespers.aposticha[1]', b: '11-14.c1.matins.prokeimenon', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c1.matins.canons[0].odes.3.items[0]', b: '11-14.c1.liturgy.beatitudes[0]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c1.matins.canons[0].odes.3.items[1]', b: '11-14.c1.liturgy.beatitudes[1]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c1.matins.canons[0].odes.3.items[2]', b: '11-14.c1.liturgy.beatitudes[2]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c1.matins.canons[0].odes.3.items[3]', b: '11-14.c1.liturgy.beatitudes[3]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c1.matins.canons[0].odes.6.items[0]', b: '11-14.c1.liturgy.beatitudes[4]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c1.matins.canons[0].odes.6.items[1]', b: '11-14.c1.liturgy.beatitudes[5]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c1.matins.canons[0].odes.6.items[2]', b: '11-14.c1.liturgy.beatitudes[6]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c1.matins.canons[0].odes.6.items[4]', b: '11-14.c1.liturgy.beatitudes[7]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c1.matins.megalynarion_verse', b: '11-14.c1.liturgy.prokeimenon_verse', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-14.c0.vespers.aposticha[3]', b: 'general.Apostle.vespers.aposticha[3]', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-14.c0.matins.sessional_1[1]', b: 'general.Apostles.matins.sessional_1_closer', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-14.c0.matins.megalynarion_verse', b: 'general.Apostle.matins.megalynarion_verse', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-14.c0.matins.canons[0].odes.1.irmos', b: 'general.Heirarch.matins.canons[0].odes.1.irmos', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-14.c0.matins.canons[0].odes.3.irmos', b: 'general.Heirarch.matins.canons[0].odes.3.irmos', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-14.c0.matins.canons[0].odes.4.irmos', b: 'general.Heirarch.matins.canons[0].odes.4.irmos', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-14.c1.great_vespers.aposticha[1]', b: 'general.Monastic.vespers.aposticha[1]', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-14.c1.matins.megalynarion_verse', b: 'general.Heirarch.liturgy.prokeimenon_verse', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-14.c1.matins.prokeimenon_verse', b: 'general.Monastic.liturgy.prokeimenon_verse', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-14.c1.liturgy.prokeimenon', b: 'general.Heirarch.matins.prokeimenon', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-14.c1.liturgy.alleluia', b: 'general.Heirarch.liturgy.alleluia', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-14.c1.liturgy.alleluia_verse', b: 'general.Heirarch.liturgy.alleluia_verse', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-14.c1.liturgy.communion_verse', b: 'general.Prophet.liturgy.communion_verse', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-15.c0.matins.canons[0].odes.3.irmos', b: 'general.Apostles.matins.canons[0].odes.3.irmos', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-15.c0.matins.canons[0].odes.4.irmos', b: 'general.MonasticMartyrs.matins.canons[0].odes.4.irmos', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-15.c0.matins.canons[0].odes.7.irmos', b: 'general.MonasticMartyrs.matins.canons[0].odes.7.irmos', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-15.c0.matins.canons[0].odes.8.irmos', b: 'general.Apostles.matins.canons[0].odes.8.irmos', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-15.c0.matins.canons[0].odes.9.irmos', b: 'general.Apostles.matins.canons[0].odes.9.irmos', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-15.c0.matins.sessional_ode3[3]', b: 'general.Apostles.matins.sessional_ode3_stavrotheotokion', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-15.c0.liturgy.prokeimenon_verse', b: 'general.Martyrs.liturgy.prokeimenon_verse', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-15.c0.liturgy.alleluia', b: 'general.Martyrs.liturgy.alleluia', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
+  { a: '11-15.c0.liturgy.communion_verse', b: 'general.MonasticMartyrs.liturgy.communion_verse', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
   // ── Heirarch.pdf ───────────────────────────────────────────────────────────
   // The Beatitudes reprint the canon troparia byte-identically at all seven
   // positions. FOUR files identical now against ONE variant. Four-to-one is a
