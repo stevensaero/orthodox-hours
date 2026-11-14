@@ -83,6 +83,7 @@ block is the consolidated state. Tool **v0.52.2**; nine gates green.
 | 11-21 | 11-21.pdf | ENTRY OF THE THEOTOKOS; Little Vespers, Litiya, two canons, katavasiae | great_feast / 2F |
 | 11-22 | 11-22.pdf | Afterfeast of the Entry; Apostle Philemon and those with him; two canons | simple / 2G1 |
 | 11-23 | 11-23.pdf | Afterfeast of the Entry; Amphilochius of Iconium; Gregory of Agrigentum; three canons | simple / 2G1 |
+| 11-24 | 11-24.pdf | Afterfeast of the Entry; Great Martyrs Catherine and Mercurius; three canons; Praises AND Aposticha (Q-0006) | simple / 2G1, provisional |
 
 About 890 daily text nodes; 4,413 with the General Menaion. 27 files of
 November remain (11-01..11-13 with 11-1A, 11-09A, 11-09B; 11-21..11-30 with
@@ -311,6 +312,35 @@ the canonical field stands (R-1), as before. Applied: 11-20 as encoded; **11-19
 rebuilt to this form** (its `troparion_other_saint` key is retired and removed
 from the schema; its single kontakion keeps the canonical field). 11-18 has one
 troparion and one kontakion and is unchanged.
+
+### 11-24 ADDED — CATHERINE AND MERCURIUS; RANK QUESTION Q-0006
+
+22 pages, 828 lines, all claimed. One entry, `saint` tags, three canons,
+positional lists, paired Liturgy propers. No new storage form.
+
+- **Q-0006 (open).** Matins prints 4 stichera on the Praises with Glory and
+  Both now, then stichera on the Aposticha; no Polyeleos, no Great Doxology
+  rubric. Stored as printed, rank Simple / 2G1 provisionally. Fekula's
+  Pentecostarion outlines describe the same shape (Praises stichera, Doxology
+  read, Aposticha); saintjonah.org treats Catherine with Polyeleos and Great
+  Doxology on a Sunday; the Metropolitan Cantor Institute page heads the day
+  "Six stichera".
+- **The troparion of the feast is not one text across the afterfeast.** 11-21,
+  11-22, 11-23 print "Rejoice, thou fulfillment"; 11-24 prints "Rejoice, O thou
+  fulfillment". And 11-24's Liturgy site moves three pointing asterisks against
+  its own Vespers and Matins sites. Two `variant` rows; every site stored as
+  printed. **The adapter must not assume an afterfeast day's feast troparion
+  equals the feast day's canonical field.**
+- Catherine has two troparia ("Or this Troparion"), stored at both print sites.
+- Label oddities kept verbatim: "Troparion of the feast, , in Tone IV:" and a
+  Spec. Mel. line ending in a hyphen instead of a colon.
+
+**Working method improved this session:** `/home/claude/work/para.py <stem>`
+prints a file grouped into paragraphs by left indent (`a-b first words … last
+words`), which gives every item boundary directly and costs a third of the
+reading. A canon label and the irmos under it print as one paragraph: the label
+is the first line. It is a session scratch tool; if it proves itself over the
+rest of the month, move it beside `extract.py`.
 
 ### 11-23 ADDED — AFTERFEAST PLUS TWO HIERARCHS
 
