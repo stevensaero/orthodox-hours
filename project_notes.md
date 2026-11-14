@@ -192,6 +192,17 @@ this is a map edit and a rebuild, not a migration.** The adapter must hand the
 Hours both troparia on a double day. 3 sic rows; one canon label prints "Canon
 TO the holy prophet" where the other six print "of".
 
+### RULED (Bill, 14 Nov 2026): MORE THAN ONE TROPARION OR KONTAKION = POSITIONAL LISTS
+
+Where a printed service has more than one troparion, none is the entry-level
+canonical `troparion`: each is stored at every print site in `troparia`, under
+its printed label, tagged with `saint`. The same for kontakia (`kontakia`,
+`kontakia_ode3`, `kontakia_ode6`). Where there is exactly ONE hymn of a type,
+the canonical field stands (R-1), as before. Applied: 11-20 as encoded; **11-19
+rebuilt to this form** (its `troparion_other_saint` key is retired and removed
+from the schema; its single kontakion keeps the canonical field). 11-18 has one
+troparion and one kontakion and is unchanged.
+
 ### 11-20 ADDED — FOREFEAST PLUS TWO SAINTS; NO CANONICAL HYMN FIELDS
 
 Forefeast of the Entrance, Gregory the Decapolite, Proclus: 21 pages, 755

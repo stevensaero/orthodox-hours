@@ -29,8 +29,12 @@ reading a tone number out of a printed label.
 - One entry per printed service (ruled 14 Nov 2026): a double service in one file
   is one entry with `saint` on its items; each further FILE of a date is a
   further entry of that date.
-- A canonical hymn (`troparion`, `kontakion`) is entry-level only when every
-  print site byte-matches; the map asserts it. A divergent site is stored at its
+- A canonical hymn (`troparion`, `kontakion`) is entry-level only when the
+  service has exactly ONE of that type and every print site byte-matches; the
+  map asserts it. More than one troparion or kontakion (double services with
+  separate troparia, forefeasts, afterfeasts): each goes at its print site in
+  `troparia` / `kontakia` / `kontakia_ode3` / `kontakia_ode6`, tagged `saint`
+  (ruled 14 Nov 2026; see d_11_19.py and d_11_20.py). A divergent site is stored at its
   own position (11-14's Liturgy troparion) with a variant row.
 - Reading bodies are never stored: heading and citation only. A heading with no
   printed reference takes `citation_basis: 'identified'` and lands on the gate's
