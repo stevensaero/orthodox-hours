@@ -181,7 +181,7 @@ export const SOURCE_FILES = [...AUGUST_DATES, ...NOVEMBER_DATES].map(d => `${d}.
 export const DAILY_PAGE_COUNTS = {
   '11-14.pdf': 14, '11-14A.pdf': 16, '11-15.pdf': 10,
   '11-16.pdf': 16, '11-17.pdf': 10, '11-18.pdf': 11, '11-19.pdf': 10,
-  '11-20.pdf': 21, '11-21.pdf': 22, '11-22.pdf': 16, '11-23.pdf': 18, '11-24.pdf': 22, '11-25.pdf': 22, '11-26.pdf': 6, '11-26A.pdf': 16,
+  '11-20.pdf': 21, '11-21.pdf': 22, '11-22.pdf': 16, '11-23.pdf': 18, '11-24.pdf': 22, '11-25.pdf': 22, '11-26.pdf': 6, '11-26A.pdf': 16, '11-27.pdf': 14, '11-27A.pdf': 16,
 };
 // ── The General Menaion (§6.2) — enumerated FROM THE FOLDER ─────────────────
 // Never from encoding_rule_v2.md §2.1's prose, which is wrong in three ways:
@@ -688,6 +688,14 @@ export const DAILY_KEYS = {
     ['lic_closer_alternate_rubric', 'rubric', 'Alternative closer rubric ("But if it be Friday evening")'],
     ['troparia', 'labeled_items', 'Troparia printed at the end of Vespers, where the service has more than one'],
   ],
+  compline: [   // 11-27: a second saint's canon appointed at Compline, with stichera after it
+    ['after_ode6_rubric', 'rubric', 'After Ode VI: "Lord, have mercy. (Thrice)"'],
+    ['sessional_ode6', 'sessional_slot', 'Sessional hymn after Ode VI of the Compline canon'],
+    ['stichera_rubric', 'rubric', 'Rubric for the stichera printed after the Compline canon'],
+    ['stichera', 'labeled_items', 'Stichera after the Compline canon, with their verses'],
+    ['stichera_closer', 'closer', 'Stichera Both now'],
+    ['stichera_stavrotheotokion', 'text', 'Stichera: "Or this Stavrotheotokion"'],
+  ],
   matins: [
     ['troparion_closer', 'closer', 'Theotokion after the troparion at God is the Lord'],
     ['troparia', 'labeled_items', 'Troparia at God is the Lord, where the service has more than one'],
@@ -749,7 +757,7 @@ const DAILY_ROWS = [
     label: 'Rubric printed between the title and the first service ("Be it known", 11-15)' },
   ...['vespers', 'great_vespers', 'little_vespers'].flatMap(sv => DAILY_KEYS.vespers_like.map(([k, kind, label]) =>
     ({ path: `<c>.${sv}.${k}`, kind, service: sv, required: false, tag: 'month-specific', label }))),
-  ...['matins', 'liturgy'].flatMap(sv => DAILY_KEYS[sv].map(([k, kind, label]) =>
+  ...['matins', 'liturgy', 'compline'].flatMap(sv => DAILY_KEYS[sv].map(([k, kind, label]) =>
     ({ path: `<c>.${sv}.${k}`, kind, service: sv, required: false, tag: 'month-specific', label }))),
 ];
 FIELD_MANIFEST.push(...DAILY_ROWS);

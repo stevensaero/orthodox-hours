@@ -145,7 +145,7 @@ R['<c>.preface_rubric'] = { heading: 'Preface rubric', order: 2 };
 R['<c>.appendix'] = { heading: 'Appendix (printed after the last service)', order: 98 };
 for (const sv of ['vespers', 'great_vespers', 'little_vespers'])
   DAILY_KEYS.vespers_like.forEach(([k, , label], i) => { R[`<c>.${sv}.${k}`] = { heading: label, order: 30 + i }; });
-for (const sv of ['matins', 'liturgy'])
+for (const sv of ['matins', 'liturgy', 'compline'])
   DAILY_KEYS[sv].forEach(([k, , label], i) => { R[`<c>.${sv}.${k}`] = { heading: label, order: 30 + i }; });
 
 R['shared']  = { heading: 'Menaion-wide tables', order: 1 };

@@ -9,6 +9,12 @@ export default [
   // Each was confirmed against TWO independent extractions of the PDF text
   // layer (pdfplumber and poppler) before being registered: these are what the
   // page prints, not extraction residue.
+  { path: '11-27.c0.liturgy.alleluia', file: '11-27.pdf', locus: 'p13 Alleluia',
+    verbatim: 'out of all their tribulations', note: 'No final full stop. The label also runs "Alleluia, in Tone IV Verse:" with no colon after the tone.' },
+  { path: '11-27.c1.matins.sessional_2[1]', file: '11-27A.pdf', locus: 'p6 Sessional 2 repeat device',
+    verbatim: 'the foregoing is repeated..', note: 'Doubled full stop.' },
+  { path: '11-27.c1.matins.gospel_rubric', file: '11-27A.pdf', locus: 'p7 Let every breath',
+    verbatim: 'praise the Lord. “', note: 'Space and an OPENING quotation mark where a closing one belongs.' },
   { path: '11-26.c1.great_vespers.lic[1]', file: '11-26A.pdf', locus: 'p1 LIC 2',
     verbatim: 'streams of grace,', note: 'The sticheron ends on a comma before its "(Twice)".' },
   { path: '11-26.c0.matins.canon_rubric', file: '11-26.pdf', locus: 'p2 Canon rubric',
