@@ -7384,28 +7384,7 @@ const NOVEMBER = {
     "fekula_section": "2B",
     "oca_primary": true,
     "source_file": "11-19.pdf",
-    "note": "A double commemoration under two title lines: the Prophet Obadiah and the Martyr Barlaam. 3 + 3 stichera, Simple rank, double service (Fekula 2B) by the encoding_rule_v2.md 1.1 waterfall; ODS vol. III has no 11-19 entry. Two canons, interleaved in print and stored whole. STORED AS ONE ENTRY, the saints told apart by `saint` on each item, as on 11-18. The two saints have separate troparia: the martyr's is printed at Vespers and Liturgy and holds the canonical `troparion` field; the prophet's is printed once, at Liturgy, and is stored there as `troparion_other_saint`. The kontakion is the martyr's; no kontakion of the prophet and no ikos are printed. No Glory at Lord I have cried, no aposticha at Vespers, and at Liturgy only the troparia and kontakion.",
-    "troparion": {
-     "text": "In his sufferings, Thy martyr Barlaam O Lord, * received an imperishable crown from Thee, our God; * for, possessed of Thy might, * he set at naught the tyrants and crushed the feeble audacity of the demons. ** By his supplications save Thou our souls.",
-     "tier": 2,
-     "src": {
-      "file": "11-19.pdf",
-      "locus": "p2 Troparion of the holy martyr"
-     },
-     "saint": "Barlaam",
-     "verified_sites": [
-      {
-       "locus": "p2 end of Vespers",
-       "tone": 4
-      },
-      {
-       "locus": "p10 AT LITURGY",
-       "tone": 4
-      }
-     ],
-     "sourceLabel": "Troparion of the holy martyr, in Tone IV",
-     "tone": 4
-    },
+    "note": "A double commemoration under two title lines: the Prophet Obadiah and the Martyr Barlaam. 3 + 3 stichera, Simple rank, double service (Fekula 2B) by the encoding_rule_v2.md 1.1 waterfall; ODS vol. III has no 11-19 entry. Two canons, interleaved in print and stored whole. STORED AS ONE ENTRY, the saints told apart by `saint` on each item, as on 11-18. The two saints have separate troparia, so there is no entry-level troparion: each is stored where it is printed, in `troparia` (the martyr's at Vespers and Liturgy, the prophet's at Liturgy only). The kontakion is the martyr's; no kontakion of the prophet and no ikos are printed. No Glory at Lord I have cried, no aposticha at Vespers, and at Liturgy only the troparia and kontakion.",
     "kontakion": {
      "text": "Thou wast shown to be most amazing * in the fortitude whereby thou didst endure immolation, * offering thyself in sacrifice unto Christ as incense of sweet savor. * Having received a crown of honor, O Barlaam, ** do thou ever pray for us, O spiritual athlete.",
      "tier": 2,
@@ -7434,7 +7413,7 @@ const NOVEMBER = {
       "lic",
       "lic_closer",
       "lic_stavrotheotokion",
-      "troparion"
+      "troparia"
      ],
      "lic_rubric": {
       "text": "On “Lord, I have cried ...,” 6 Stichera; 3 of the holy prophet, in Tone I:",
@@ -7536,7 +7515,21 @@ const NOVEMBER = {
       "type": "stavrotheotokion",
       "sourceLabel": "Stavrotheotokion",
       "label_inline": true
-     }
+     },
+     "troparia": [
+      {
+       "text": "In his sufferings, Thy martyr Barlaam O Lord, * received an imperishable crown from Thee, our God; * for, possessed of Thy might, * he set at naught the tyrants and crushed the feeble audacity of the demons. ** By his supplications save Thou our souls.",
+       "tier": 2,
+       "src": {
+        "file": "11-19.pdf",
+        "locus": "p2 Troparion of the holy martyr"
+       },
+       "label": "plain",
+       "saint": "Barlaam",
+       "sourceLabel": "Troparion of the holy martyr, in Tone IV",
+       "tone": 4
+      }
+     ]
     },
     "matins": {
      "order": [
@@ -8487,21 +8480,35 @@ const NOVEMBER = {
     },
     "liturgy": {
      "order": [
-      "troparion_other_saint",
-      "troparion",
+      "troparia",
       "kontakion"
      ],
-     "troparion_other_saint": {
-      "text": "Celebrating the memory of Thy prophet Obadiah, O Lord, * through him we entreat Thee: ** Save Thou our souls!",
-      "tier": 2,
-      "src": {
-       "file": "11-19.pdf",
-       "locus": "p10 Troparion of the holy prophet"
+     "troparia": [
+      {
+       "text": "Celebrating the memory of Thy prophet Obadiah, O Lord, * through him we entreat Thee: ** Save Thou our souls!",
+       "tier": 2,
+       "src": {
+        "file": "11-19.pdf",
+        "locus": "p10 Troparion of the holy prophet at Liturgy"
+       },
+       "label": "plain",
+       "saint": "Obadiah",
+       "sourceLabel": "Troparion of the holy prophet, in Tone II",
+       "tone": 2
       },
-      "saint": "Obadiah",
-      "sourceLabel": "Troparion of the holy prophet, in Tone II",
-      "tone": 2
-     }
+      {
+       "text": "In his sufferings, Thy martyr Barlaam O Lord, * received an imperishable crown from Thee, our God; * for, possessed of Thy might, * he set at naught the tyrants and crushed the feeble audacity of the demons. ** By his supplications save Thou our souls.",
+       "tier": 2,
+       "src": {
+        "file": "11-19.pdf",
+        "locus": "p10 Troparion of the holy martyr at Liturgy"
+       },
+       "label": "plain",
+       "saint": "Barlaam",
+       "sourceLabel": "Troparion of the holy martyr, in Tone IV",
+       "tone": 4
+      }
+     ]
     }
    }
   ]

@@ -718,7 +718,6 @@ export const DAILY_KEYS = {
     ['troparion_alternate', 'text', 'Alternate troparion ("Or this Troparion")'],
     ['prokeimenon_verse', 'text', 'Prokeimenon verse'],
     ['alleluia_verse', 'text', 'Alleluia verse'],
-    ['troparion_other_saint', 'text', 'Troparion of the other saint of a double service, where it is printed only at Liturgy (11-19)'],
   ],
 };
 const DAILY_ROWS = [

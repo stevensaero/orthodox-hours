@@ -15,20 +15,18 @@ def build():
     for n in martyr_labels:
         assert s.raw(n) == 'Canon of the holy martyr', (n, s.raw(n))
 
-    # The martyr's troparion is printed at Vespers and at Liturgy; the prophet's
-    # is printed ONCE, at Liturgy. The canonical field takes the one with more
-    # than one site; the other is stored where it is printed.
+    # TWO troparia (the martyr's at Vespers and Liturgy, the prophet's at Liturgy
+    # only): more than one, so no entry-level canonical troparion. Each is stored
+    # at its print site in `troparia` (ruled 14 Nov 2026). ONE kontakion, so that
+    # keeps its canonical field.
     assert same(t(48, 51, 'tr1'), t(317, 320, 'tr2')), 'martyr troparion sites diverge'
-    s.mark(316)
-    troparion = t(48, 51, 'Troparion of the holy martyr', sl=47, saint='Barlaam',
-                  verified_sites=[{'locus': 'p2 end of Vespers', 'tone': 4}, {'locus': 'p10 AT LITURGY', 'tone': 4}])
     assert same(t(216, 219, 'k1'), t(322, 325, 'k2')), 'kontakion sites diverge'
     s.mark(321)
     kontakion = t(216, 219, 'Kontakion of the holy martyr', sl=214, sm=215, saint='Barlaam',
                   verified_sites=[{'locus': 'p7 after Ode VI', 'tone': 4}, {'locus': 'p10 AT LITURGY', 'tone': 4}])
 
     vespers = {
-        'order': ['lic_rubric', 'lic', 'lic_closer', 'lic_stavrotheotokion', 'troparion'],
+        'order': ['lic_rubric', 'lic', 'lic_closer', 'lic_stavrotheotokion', 'troparia'],
         'lic_rubric': r(7, 7, 'LIC rubric'),
         'lic': s.seq(9, [12, 16, 20], 'LIC', sm=8, first={'tone': 1}, saint='Obadiah') + [
             t(23, 26, 'LIC 4', sl=21, sm=22, label='plain', saint='Barlaam'),
@@ -37,6 +35,7 @@ def build():
         ],
         'lic_closer': t(36, 39, 'LIC Glory/Both now Theotokion', sl=35, type='theotokion'),
         'lic_stavrotheotokion': t(41, 46, 'LIC Stavrotheotokion', pre='Stavrotheotokion: ', type='stavrotheotokion'),
+        'troparia': [t(48, 51, 'Troparion of the holy martyr', sl=47, label='plain', saint='Barlaam')],
     }
 
     assert s.raw(304) == 'Spec. Mel.: “When the disciples beheld ...”-', s.raw(304)
@@ -87,8 +86,11 @@ def build():
     s.mark(304, *prophet_labels, *martyr_labels)
 
     liturgy = {
-        'order': ['troparion_other_saint', 'troparion', 'kontakion'],
-        'troparion_other_saint': t(314, 315, 'Troparion of the holy prophet', sl=313, saint='Obadiah'),
+        'order': ['troparia', 'kontakion'],
+        'troparia': [
+            t(314, 315, 'Troparion of the holy prophet at Liturgy', sl=313, label='plain', saint='Obadiah'),
+            t(317, 320, 'Troparion of the holy martyr at Liturgy', sl=316, label='plain', saint='Barlaam'),
+        ],
     }
 
     entry = {
@@ -101,12 +103,12 @@ def build():
         'note': ('A double commemoration under two title lines: the Prophet Obadiah and the Martyr Barlaam. 3 + 3 '
                  'stichera, Simple rank, double service (Fekula 2B) by the encoding_rule_v2.md 1.1 waterfall; ODS vol. '
                  'III has no 11-19 entry. Two canons, interleaved in print and stored whole. STORED AS ONE ENTRY, the '
-                 'saints told apart by `saint` on each item, as on 11-18. The two saints have separate troparia: the '
-                 'martyr\'s is printed at Vespers and Liturgy and holds the canonical `troparion` field; the '
-                 'prophet\'s is printed once, at Liturgy, and is stored there as `troparion_other_saint`. The '
+                 'saints told apart by `saint` on each item, as on 11-18. The two saints have separate troparia, so '
+                 'there is no entry-level troparion: each is stored where it is printed, in `troparia` (the '
+                 'martyr\'s at Vespers and Liturgy, the prophet\'s at Liturgy only). The '
                  'kontakion is the martyr\'s; no kontakion of the prophet and no ikos are printed. No Glory at Lord I '
                  'have cried, no aposticha at Vespers, and at Liturgy only the troparia and kontakion.'),
-        'troparion': troparion, 'kontakion': kontakion,
+        'kontakion': kontakion,
         'vespers': vespers, 'matins': matins, 'liturgy': liturgy,
     }
     return s, entry, ['identity', 'vespers', 'matins', 'liturgy']

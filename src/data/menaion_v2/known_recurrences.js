@@ -71,6 +71,7 @@ export default [
   { a: '11-20.c0.matins.sessional_1[1]', b: 'general.Cross.matins.sessional_1_closer_rubric', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
   { a: '11-20.c0.matins.canons[0].odes.6.irmos', b: 'general.Cross.matins.canons[0].odes.6.irmos', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
   // ── 11-19, Prophet Obadiah and Martyr Barlaam (identical rows by sweep) ────
+  { a: '11-19.c0.vespers.troparia[0]', b: '11-19.c0.liturgy.troparia[1]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
   { a: '11-15.c0.matins.canons[0].odes.9.irmos', b: '11-19.c0.matins.canons[1].odes.9.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
   { a: '11-18.c0.matins.sessional_ode3[3]', b: '11-19.c0.matins.sessional_ode3[3]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
   { a: '11-19.c0.vespers.lic_closer', b: 'general.Hieromartyr.vespers.aposticha_alternate', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
