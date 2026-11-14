@@ -173,7 +173,7 @@ def build():
         'source_file': s.file,
         'note': ('Rank by the encoding_rule_v2.md 1.1 waterfall: AT GREAT VESPERS with 8 stichera, three lessons, a '
                  'LITIYA ("the Sticheron of the temple, and these Stichera"), the blessing of the Loaves, Polyeleos '
-                 'with a megalynarion, and the Great Doxology: stored Vigil, Fekula 2F. The page also prints "But if a '
+                 'with a megalynarion, and the Great Doxology: stored Vigil, Fekula 2F PROVISIONALLY (open question Q-0002: ODS vol. III has no entry for this date, and it shows that a printed Litiya does not by itself prove Vigil rank, since its polyeleos-rank outlines can carry a Litia at the rector\'s direction). The page also prints "But if a '
                  'vigil is not served" with a dismissal theotokion, so a lesser form is provided for; no Little '
                  'Vespers is printed. Second file of 26 November; the first (11-26) is Alypius the Stylite, a simple '
                  'service. Which of the two a parish serves is the same kind of question as Q-0002. The canon rubric '

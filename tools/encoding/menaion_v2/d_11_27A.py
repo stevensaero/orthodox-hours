@@ -153,7 +153,7 @@ def build():
         'note': ('A feast of an icon of the Theotokos (the Kursk-Root Icon of the Sign), second file of 27 November; '
                  'the first (11-27) is the Great-martyr James the Persian. Rank by the encoding_rule_v2.md 1.1 '
                  'waterfall: AT GREAT VESPERS with 8 stichera, three lessons, a LITIYA, and Polyeleos with a '
-                 'magnification: stored Vigil, Fekula 2F, on the strength of the printed Litiya (as 11-26A). The page '
+                 'magnification: stored Vigil, Fekula 2F PROVISIONALLY (open question Q-0002: ODS vol. III has no entry for this date, and it shows that a printed Litiya does not by itself prove Vigil rank, since its polyeleos-rank outlines can carry a Litia at the rector\'s direction), on the strength of the printed Litiya (as 11-26A). The page '
                  'does NOT print a blessing of the Loaves rubric, a "Great Doxology" rubric after the Praises, or a '
                  'closing rubric; Matins ends with the Praises. The troparion is printed "(Thrice)" at God is the '
                  'Lord, as for a feast of the Theotokos. This file writes "Now & ever" where the rest of the book '
