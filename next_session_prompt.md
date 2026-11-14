@@ -11,7 +11,7 @@ Paste the following (with the token filled in) to start the session:
 
 I'm continuing the Orthodox Hours Tool (`stevensaero/orthodox-hours`). Token:
 [BILL: paste]. Clone with the header method, confirm the `hours-tool.jsx` badge
-matches the `project_notes.md` header, and run all eight gates on the clean tree.
+matches the `project_notes.md` header, and run all nine gates on the clean tree.
 
 **Read first:** the November 14 entry at the top of `project_notes.md`;
 `tools/encoding/menaion_v2/README.md`; `menaion_v2_spec.md` §§2, 5, 7, 12 and
@@ -30,5 +30,5 @@ Remaining in November: 11-01 through 11-13 and 11-16 through 11-30, with the
 variant files the folder lists. After November: `adapter.js` and the switch of
 the Hours tool to V2 (no V1 fallback; "not encoded" where V2 has no entry).
 
-Gates: the eight in `project_notes.md`. Commit by concern. Push by
+Gates: the eight in `project_notes.md` PLUS `node tools/test_menaion_v2_mount.mjs` (mounts the real V2 browser for every encoded day; added after a crash shipped on 14 Nov). Commit by concern. Push by
 `github_workflow_prompt.md` § "The push workflow"; scrub the remote after.

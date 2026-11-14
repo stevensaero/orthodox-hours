@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.52.0** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
+**Tool version: v0.52.1** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -13,6 +13,25 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 `assembleLiturgy()`. The encoding history is `divine_liturgy_chrysostom_encoding_spec.md`
 (v24), also at the root.
 
+
+**Same session, v0.52.1 — A SHIPPED CRASH, AND THE GATE THAT WAS MISSING.**
+Bill opened /menaion-v2 on the live site and got the ErrorBoundary:
+`(e.title ?? "").slice is not a function`. The browser's date rail assumed a
+commemoration title was a string; the data (general.js and november.js) stores a
+text node. It had never run, because no month existed until today. **Every gate
+was green.** The render gate hands RCommemoration its data and never mounts the
+browser component, so the rail, the effects and the audit view were untested.
+I had reported the page unverified in a real browser and pushed anyway.
+
+- Fixed in the rail (reads `title.text`).
+- **NEW NINTH GATE: `node tools/test_menaion_v2_mount.mjs`** mounts the real
+  component in jsdom for every encoded commemoration, reading and audit views,
+  and fails on any error. Confirmed to FAIL on the unfixed component. Run it
+  with the other eight; jsdom is a devDependency.
+- **Standing lesson: a new data SHAPE reaching a component for the first time is
+  a first contact. Mount it before pushing.**
+- E-mail body now quotes the question (`> Q-NNNN: question`); iPhone/iPad get
+  the short body because iOS Mail blanks a long one.
 
 **Same session, later — THE OPEN QUESTIONS PAGE (v0.52.0).** Bill's idea: put
 the open questions in front of priests and liturgists and let them answer.
