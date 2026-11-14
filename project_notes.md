@@ -192,6 +192,29 @@ this is a map edit and a rebuild, not a migration.** The adapter must hand the
 Hours both troparia on a double day. 3 sic rows; one canon label prints "Canon
 TO the holy prophet" where the other six print "of".
 
+### 11-20 ADDED — FOREFEAST PLUS TWO SAINTS; NO CANONICAL HYMN FIELDS
+
+Forefeast of the Entrance, Gregory the Decapolite, Proclus: 21 pages, 755
+lines, one printed service, ONE entry (kind `forefeast`, feast_ref
+`entrance_theotokos`). Zero unclaimed lines. THREE canons, stored whole.
+
+- **The entry-level `troparion`/`kontakion` fields were NOT used.** The page
+  prints two troparia (three sites each) and three kontakia (two sites each); a
+  single canonical field cannot hold them. Each is stored at every print site in
+  a positional list, tagged with `saint`: `troparia` (Vespers, Matins, Liturgy),
+  `kontakia` (Liturgy), `kontakia_ode3`, `kontakia_ode6` (kontakion + ikos).
+  The map asserts the sites byte-match; the recurrence rows record it. **This is
+  the general form for any service with more than one troparion or kontakion,
+  which is every forefeast and afterfeast day.** 11-19's `troparion_other_saint`
+  predates it and could be moved to this form in a rebuild (Bill to say).
+- New entry-level `appendix`: pp. 20-21 print the "Be it known" order for a
+  Sunday and two troparia found nowhere else. Rendered after the services.
+- "Glory ..., Both now ..., the foregoing is repeated" is stored as printed, as
+  an item in its sessional slot (reference device, spec 2.8).
+- `rank` simple / `2G1` is the waterfall's reading (no Polyeleos, no Great
+  Doxology) of a forefeast weekday; not a question I could sharpen today.
+- 5 sic rows. "O Hou hast shone" recurs from 11-14A in the same irmos.
+
 ### OWED
 
 1. **adapter.js and the wire-in** after November: Hours reads V2 only; "not
@@ -200,7 +223,7 @@ TO the holy prophet" where the other six print "of".
 2. Variant pairs against general.js were not hunted (only byte-identity was
    swept). Stated in known_recurrences.js.
 3. Per-key manifest rows for the General Menaion's own keys; alias lint.
-4. The rest of November: 29 files (11-01..11-13, 11-20..11-30 with variants).
+4. The rest of November: 28 files (11-01..11-13, 11-21..11-30 with variants).
    Measured rate this session: three files, 40 pages, in one session, including
    building the pipeline. `11-1A.pdf` is the folder's name for the 11-01 variant.
 5. The Nov 8 "V1 encoding pass" chat was never pushed and is abandoned with V1.
