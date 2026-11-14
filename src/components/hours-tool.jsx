@@ -8800,6 +8800,19 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.52.2",
+    date: "November 2026",
+    summary: "'I found a bug' and 'I have a suggestion' on the help page; 16 and 17 November added to Menaion V2",
+    items: [
+      "The 'Help improve the tool' page now takes feedback that is not tied to a question: two " +
+      "e-mail buttons, 'I found a bug' and 'I have a suggestion', each opening a short message to " +
+      "fill in. These are read alongside the answers to the open questions, since a general remark " +
+      "often settles a specific one.",
+      "Menaion V2: 16 November (Apostle and Evangelist Matthew) and 17 November (St. Gregory the " +
+      "Wonderworker) captured whole. November now holds the 14th through the 17th.",
+    ],
+  },
+  {
     version: "v0.52.1",
     date: "November 2026",
     summary: "fix: the Menaion V2 browser crashed on opening; the e-mail for a question now quotes the question",
