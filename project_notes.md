@@ -99,6 +99,7 @@ block is the consolidated state. Tool **v0.52.2**; nine gates green.
 | 11-27 | 11-27A.pdf | Kursk-Root Icon of the Sign (c1); Litiya, Polyeleos | vigil / 2F |
 | 11-28 | 11-28.pdf | Stephen the New (two kontakia); Irenarchus AT COMPLINE | six_stichera / 2C |
 | 11-29 | 11-29.pdf | Paramon; Acacius AT COMPLINE; NO troparion or kontakion printed; no Liturgy | simple / 2A |
+| 11-30 | 11-30.pdf | Apostle Andrew the First-called; Litiya, Polyeleos, Great Doxology; three canons | vigil / 2F, provisional |
 
 About 890 daily text nodes; 4,413 with the General Menaion. 27 files of
 November remain (11-01..11-13 with 11-1A, 11-09A, 11-09B; 11-21..11-30 with
@@ -327,6 +328,27 @@ the canonical field stands (R-1), as before. Applied: 11-20 as encoded; **11-19
 rebuilt to this form** (its `troparion_other_saint` key is retired and removed
 from the schema; its single kontakion keeps the canonical field). 11-18 has one
 troparion and one kontakion and is unchanged.
+
+### 11-30 ADDED — APOSTLE ANDREW; THE SECOND HALF OF NOVEMBER IS DONE
+
+27 pages, 959 lines, all claimed. No vol. III entry. Headed AT VESPERS (stored
+under `vespers`, the printed name) but in the vigil form. Vigil / 2F
+provisionally: the Q-0001 question (Apostle Philip) applies here unchanged.
+
+- Three canons: the Theotokos, and Canon I and Canon II of the apostle.
+- Canon II closes each ode with **double inline labels**, "Glory ...,
+  Trinitarian:" and "Both now ..., Theotokion:". `ode()` and `mix()` now keep
+  both parts in print order (`label: ['glory', 'trinitarion']`).
+- The three Vespers lessons are from 1 Peter and PRINT their references.
+- "Both now" at Lord I have cried, the Aposticha and the Praises are stichera
+  of the FOREFEAST of the Nativity. `CLOSER_TYPES` has no `forefeast`; they are
+  typed `of_the_feast`, as 11-20 does. Their printed labels say "of the
+  forefeast" (the Praises one says only "in Tone VIII").
+- Matins prints no troparion at God is the Lord.
+- The Beatitudes print the Ode VI theotokion cut short; variant row.
+
+**`november.js` now holds 11-14 through 11-30: 22 files, 17 dates.** Remaining
+in November: 11-01 through 11-13 with 11-1A, 11-09A, 11-09B (16 files).
 
 ### 11-28 AND 11-29 ADDED — TWO KONTAKIA; A DAY WITH NO HYMNS AT ALL
 

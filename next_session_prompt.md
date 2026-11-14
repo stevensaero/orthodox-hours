@@ -1,7 +1,7 @@
 # Next-session kickoff — Menaion V2 DAILY encoding (November, continued)
 
 State at handoff: **v0.52.2**, nine gates green. The General Menaion is complete.
-`november.js` holds 11-14 through 11-29 (nineteen files). The consolidated state,
+`november.js` holds 11-14 through 11-30 (22 files). The consolidated state,
 rulings, patterns and the owed list are the FIRST block of `project_notes.md`
 ("WHERE THINGS STAND"). V1 still drives the Hours tool until the wire-in; **no
 V1 encoding is done any more.** This prompt asserts nothing about unencoded
@@ -42,8 +42,8 @@ in a second extraction; a liturgical question goes Fekula, then OCA, then a
 named web source, then the register, and never stops the capture. A question
 that changes the SHAPE of the capture goes to Bill before any data is written.
 
-Remaining in November: 11-01 through 11-13 and whatever of 11-28 through 11-30
-`build_month.py` does not yet list, with the variant files the folder holds. After November: `adapter.js` and the
+Remaining in November: 11-01 through 11-13, with the variant files the folder
+holds (11-1A, 11-09A, 11-09B were listed; re-list the folder to be sure). After November: `adapter.js` and the
 switch of the Hours tool to V2 (no V1 fallback; "not encoded" where V2 has no
 entry).
 
