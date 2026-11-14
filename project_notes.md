@@ -334,6 +334,32 @@ rebuilt to this form** (its `troparion_other_saint` key is retired and removed
 from the schema; its single kontakion keeps the canonical field). 11-18 has one
 troparion and one kontakion and is unchanged.
 
+### WIRE-IN STARTED: SPEC, SLOT MAP, AND SIX OVERLAP DATES IN V2 (14 Nov)
+
+`menaion_v2_wirein_spec.md` (repo root) is the working document: Bill's seven
+rulings, the measured inventory of who reads V1, the V1-to-V2 slot map, and the
+plan for adapter, gates, switch and retirement. **Read it before touching the
+adapter.** Everything switches together (Hours, Vespers, Typica, post-communion,
+dismissal, bulletin); no V1 fallback; May-October go "not encoded" at the switch
+except the overlap dates.
+
+V1 and V2 shared no date, so six V1 dates were encoded in V2 for comparison
+(nine files): 09-05 (+A), 09-06, 09-07, 09-08 (+A), 09-27, 10-04 (+A).
+`september.js` and `october.js` now exist under `src/data/menaion_v2/`.
+Spec section 5a lists what that already showed; the two that need Bill:
+
+- **"First file by default" is wrong as a blanket rule.** On 09-05 the service
+  of the day is the SECOND file (09-05A, polyeleos, the one vol. III and V1
+  follow). The default should follow `oca_primary`.
+- **The dismissal needs a short name per commemoration**; V2 stores the printed
+  title in capitals. Proposed: a hand-entered `name` field.
+
+Also: `daily_lib.py` now reads "Glory ...O" (label run into the text, 09-06
+Compline). New keys: `litiya_rubric`, `praises_closer_rubric`,
+`praises_stavrotheotokion`. `SOURCE_FILES` lists the September and October
+folders. OWED: run the recurrence sweep over September and October (the scratch
+`recur.mjs` reads November only).
+
 ### 11-30 ADDED — APOSTLE ANDREW; THE SECOND HALF OF NOVEMBER IS DONE
 
 27 pages, 959 lines, all claimed. No vol. III entry. Headed AT VESPERS (stored

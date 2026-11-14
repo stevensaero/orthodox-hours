@@ -23,6 +23,11 @@ the two rulings at the end of §16.5; `encoding_rule_v2.md` §§1.1 and 3 (live)
 `src/data/open_questions.js` (the ladder is in its header);
 `bill_review_ledger.md`.
 
+**The wire-in is under way.** `menaion_v2_wirein_spec.md` holds the rulings, the
+slot map and the plan; sections 1-5 are done (six overlap dates are encoded in
+V2 `september.js` / `october.js`), sections 6-9 await Bill's confirmation.
+Read it, and section 5a in particular, before any adapter work.
+
 **Fekula volume III lives on Bill's computer, NOT in the repo.** It is a copyrighted
 reference work and is never committed here, in whole or in part (Bill, 14 Nov):
 cite an entry by id and page, quote at most a short rubric phrase. Folder

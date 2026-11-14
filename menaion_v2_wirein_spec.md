@@ -1,8 +1,8 @@
 # Menaion V2 wire-in and V1 retirement — spec
 
 Opened 14 November 2026. Pattern: `octoechos_wirein_spec.md` (the July cutover).
-Status: **§§1-4 written (slot map); §5 overlap dates in progress; §§6-9 are the
-plan and await Bill's confirmation before any assembler code changes.**
+Status: **§§1-5 done (slot map; six overlap dates encoded, nine files). §§6-9
+are the plan and await Bill's confirmation before any assembler code changes.**
 
 ## 0. Rulings (Bill, 14 November 2026)
 
@@ -159,6 +159,41 @@ One per shape. Chosen from V1's September and October:
 | 09-08 | 09-08, 09-08A | Great Feast of the Theotokos; second service | great_feast / 2F | check index |
 
 V1 has no date that falls back to the General Menaion; 11-29 covers that path.
+
+**Encoded 14 November 2026**, whole files, all gates green: 09-05 (c0 six
+stichera, c1 polyeleos), 09-06, 09-07, 09-08 (c0 Great Feast, c1 Kursk-Root
+Icon), 09-27, 10-04 (c0, c1). `september.js` and `october.js` exist in V2 and
+are in `MONTH_LOADERS`. The recurrence sweep (`recur.mjs`) has NOT been run on
+these two months; only the within-file rows needed by the maps are registered.
+
+### 5a. What the overlap encoding already showed (before any harness)
+
+1. **V1 encoded only one file where a date has two.** 09-05: V1 holds 09-05A
+   (polyeleos) and never 09-05 (six stichera). V2 holds both as c0 and c1, so
+   on this date the service of the day is c1, not c0. "c0 by default" (ruling
+   4) is therefore WRONG as a blanket rule: the default must follow
+   `oca_primary`, which is true on 09-05 c1 and false on c0. NEEDS BILL.
+2. **One rank word is used two ways.** A forefeast or afterfeast day with 3 + 3
+   stichera and no doxology is `six_stichera` in V1 (09-07) and `simple` in the
+   November V2 entries (11-20, 11-22, 11-23). Both sit under Fekula 2G1, so the
+   section agrees and the Hours do not change; the word must be made one.
+   09-07 follows V1 for now.
+3. **One printed service, two ranks.** The Kursk-Root Icon service is printed
+   twice, as 09-08A and 11-27A. V1 ranked it polyeleos; I had stored 11-27A as
+   vigil. 09-08A follows V1. Q-0002.
+4. **Pointing differs between print sites again**: 10-04 (Ode III kontakion
+   unpointed at Matins, pointed at Liturgy) and 09-08 (kontakion's last phrase
+   "*" at Ode VI, "**" at Liturgy). Six cases in all now. Ruling 3 (take the
+   end-of-Vespers site) covers the troparion; the KONTAKION has no Vespers
+   site. Proposed: the Hours take the Ode VI (or Ode III) site, Typica the
+   Liturgy site.
+5. **Two kontakia for one saint is common, not rare**: 09-27, 10-04, 11-28.
+   V1 already carried both as kontakion_ode3 / kontakion_ode6 and
+   `getKontakionForHour` already chooses between them. So ruling 5 can be
+   replaced by "do what V1's rule does"; the harness will show what that is.
+6. **Readings without a printed reference**: for the overlap dates the V2
+   citation is V1's identification, marked `identified`.
+
 
 Each difference found is classed: **expected** (V2 lifts bytes, V1 was typed),
 **V1 error**, **V2 or adapter error**, or **for Bill**. Register: §4a, to be
