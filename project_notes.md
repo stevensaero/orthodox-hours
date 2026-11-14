@@ -14,6 +14,112 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 (v24), also at the root.
 
 
+## WHERE THINGS STAND — 14 November 2026, end of the fortieth session (READ THIS FIRST)
+
+Everything below this block is the session's running log, newest first. This
+block is the consolidated state. Tool **v0.52.2**; nine gates green.
+
+### Direction (Bill)
+
+1. **V2 only.** No more V1 encoding. V2 replaces V1 with NO fallback; a date V2
+   has not reached will show "not encoded". Interim gaps are accepted.
+2. **Whole days only.** Everything a daily file prints is captured before the
+   date is claimed. The goal is to capture the Menaion faithfully, including the
+   extra files that give alternate services on the same date.
+3. **Order:** finish November, then `adapter.js` and the switch of the Hours
+   tool to V2, then the rest of the year.
+4. **Capture never waits on a liturgical question.** Ladder: Fekula, then OCA,
+   then a named web source, then a row in the question register. Only a question
+   that changes the SHAPE of the capture goes to Bill first.
+
+### Rulings made this session
+
+| Ruling | Where recorded |
+|---|---|
+| **A-2:** sessional hymns live in positional slots (`sessional_1`, `_2`, `_polyeleos`, `_ode3`), each an ordered list of what the page prints there | spec §16.5; schema `DAILY_KEYS` |
+| **One entry per printed service.** A double service in one file is one entry, saints told apart by `saint` on each item. Each further FILE of a date is a further entry of that date, in file order | encoding README |
+| **More than one troparion or kontakion = positional lists** (`troparia`, `kontakia`, `kontakia_ode3`, `kontakia_ode6`), stored at every print site. Exactly one keeps the entry-level canonical field | encoding README; d_11_19.py, d_11_20.py |
+| Question answers are logged by ROLE, not name (default; Bill has not objected) | `src/data/open_questions.js` header |
+
+### What was built
+
+- **The daily pipeline** (`tools/encoding/menaion_v2/`): `extract.py` prints a
+  PDF as numbered lines; a hand-written map per file (`d_MM_DD*.py`) assigns
+  every element its line range; `build_month.py` lifts the bytes and writes
+  `src/data/menaion_v2/november.js`. Nothing is retyped. The build FAILS if any
+  printed line is neither stored, marked structural, nor declared skipped.
+  `daily_lib.py` holds the helpers; README has the per-file steps and conventions.
+- **Schema, for the daily book:** vocabulary is general.js's (R-9). Every daily
+  key has its own manifest row (`DAILY_KEYS`); the gate fails an unregistered
+  key. New entry fields `preface_rubric` (before the first service) and
+  `appendix` (after the last). Odes may carry `katavasia`. `DAILY_PAGE_COUNTS`
+  drives the page-coverage tripwire on daily files; a text crossing a page break
+  cites `pA-pB`.
+- **Nine gates.** The eight, plus `tools/test_menaion_v2_mount.mjs`, which
+  mounts the real V2 browser in jsdom for every encoded commemoration, reading
+  and audit views. Added after a crash shipped (the date rail read a text-node
+  title as a string). The render gate also covers month files and the questions
+  page.
+- **The question register** (`src/data/open_questions.js`), tool-wide: rows carry
+  `source` (which book) and `subject`; gate-checked. Q-0001..Q-0005 open.
+- **The help page** (`/questions`, "Help improve the tool"): linked from the
+  Hours tool footer and the V2 browser rail. Explains the questions, three steps
+  to answer one, group by source work or subject, answer by e-mail (question
+  quoted in the body; iPhone/iPad get as much as fits in 100 encoded
+  characters), plus "I found a bug" and "I have a suggestion". Answers go to
+  `stevensaero.mail@gmail.com`.
+
+### Encoded in V2 (all whole; zero unclaimed lines each)
+
+| Date | File(s) | What | Rank stored |
+|---|---|---|---|
+| 11-14 | 11-14.pdf, 11-14A.pdf | Apostle Philip (c0); St. Gregory Palamas (c1) | polyeleos / 2E, both provisional (Q-0001, Q-0002) |
+| 11-15 | 11-15.pdf | Gurias, Samonas & Abibus; first day of the fast, "Be it known" | simple / 2A (Q-0004) |
+| 11-16 | 11-16.pdf | Apostle & Evangelist Matthew | polyeleos / 2E (as Q-0001) |
+| 11-17 | 11-17.pdf | St. Gregory the Wonderworker | six_stichera / 2C |
+| 11-18 | 11-18.pdf | Martyrs Plato & Romanus; double, two canons | simple / 2B |
+| 11-19 | 11-19.pdf | Prophet Obadiah; Martyr Barlaam; double, two troparia | simple / 2B |
+| 11-20 | 11-20.pdf | Forefeast of the Entrance; Gregory the Decapolite; Proclus; three canons, appendix | simple / 2G1 |
+
+About 890 daily text nodes; 4,413 with the General Menaion. 27 files of
+November remain (11-01..11-13 with 11-1A, 11-09A, 11-09B; 11-21..11-30 with
+11-26A, 11-27A).
+
+### Patterns the first eight files established (expect them; assert them)
+
+- The general apostle troparion LOSES ITS FINAL PERIOD at the Liturgy print site
+  (11-14, 11-16): stored apart as `liturgy.liturgy_troparion`, variant row.
+- Apostles print a second troparion ("Or this Troparion"); OCA gives that one
+  for Philip (Q-0005).
+- Polyeleos-form files print the Vigil outline (Litiya, loaves, "if a vigil is
+  not served") with no Little Vespers (Q-0001).
+- Simple and double services print nothing at Matins before the canon, often no
+  Vespers aposticha, and at Liturgy only troparia and kontakia.
+- Closers often NAME a Theotokion and PRINT only the Stavrotheotokion.
+- Beatitude counts include the ode's theotokion ("4 from ODE VI" = 3 + theotokion).
+- Lessons and Gospels print their bodies; R-4 holds, bodies are declared skipped.
+- "Habbakuk" in six of eight files; "O Hou hast shone" in two (same irmos).
+- From Ode III, interleaved canons are re-announced by bare labels; the map
+  asserts the labels and marks them structural.
+
+### Owed, in order
+
+1. The rest of November (27 files). Next: **11-21, the Entrance, a Great Feast.**
+2. `adapter.js` and the wire-in: read both sessional shapes; canonical field OR
+   positional lists; pick between entries of a date (Q-0002); pick Philip's
+   troparion (Q-0005); weekday branches of 11-15 (Q-0004); "not encoded" state.
+3. Connect `stevensaero.mail@gmail.com` here; at session start read "Orthodox
+   Hours Q-", "bug report" and "suggestion" mail and propose `responses` rows.
+4. `fekula_chapter_5.txt` is four lines: re-extract ch. 5 from the PDF (Q-0004).
+5. Variant pairs against general.js were never hunted (identity only was swept).
+6. Per-key manifest rows for the General Menaion's own keys; alias lint.
+7. Bill to check on a phone: the help page, one question e-mail, the two
+   feedback buttons. Nothing here has been seen in a real browser by Claude.
+8. Ledger: A-1 (line-break hyphens) now has `enlight-ening`, `mar-tyrs`; B-6
+   ("we rumor thy holy memory") wants the physical book.
+
+---
+
 **Same session, v0.52.1 — A SHIPPED CRASH, AND THE GATE THAT WAS MISSING.**
 Bill opened /menaion-v2 on the live site and got the ErrorBoundary:
 `(e.title ?? "").slice is not a function`. The browser's date rail assumed a
