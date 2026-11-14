@@ -8811,9 +8811,9 @@ const RELEASE_NOTES = [
       "the audit view, and fails on any error. The earlier checks rendered the services but never " +
       "the page around them, which is how this got out.",
       "The e-mail for a question now opens with the question itself as a quoted line, so the writer " +
-      "has it in view. On iPhone and iPad the message carries the question number only, because " +
-      "iOS Mail opens a blank message when the pre-filled text is long; the subject names the " +
-      "question either way.",
+      "has it in view. On iPhone and iPad the message quotes as much of the question as fits in " +
+      "100 characters, because iOS Mail opens a blank message when the pre-filled text is long; " +
+      "the subject names the question either way.",
     ],
   },
   {

@@ -31,7 +31,9 @@ I had reported the page unverified in a real browser and pushed anyway.
 - **Standing lesson: a new data SHAPE reaching a component for the first time is
   a first contact. Mount it before pushing.**
 - E-mail body now quotes the question (`> Q-NNNN: question`); iPhone/iPad get
-  the short body because iOS Mail blanks a long one.
+  as much of the quoted question as fits in 100 ENCODED characters (`shortBody`,
+  cut at a word, "..."), because iOS Mail blanks a long one. Render gate checks
+  the longest short body.
 
 **Same session, later — THE OPEN QUESTIONS PAGE (v0.52.0).** Bill's idea: put
 the open questions in front of priests and liturgists and let them answer.

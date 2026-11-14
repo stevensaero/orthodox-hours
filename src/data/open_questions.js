@@ -82,16 +82,31 @@ export const SUBJECTS = {
 //
 // Two bodies. The FULL body restates the question as a quoted line, the way a
 // reply shows the message it answers, so the writer has it in front of them
-// (Bill, 14 Nov 2026). The SHORT body is the question number only, for iPhone
-// and iPad: iOS Mail silently drops a long pre-filled body and opens a blank
-// message, and a quoted question runs well past the ~100 encoded characters
-// it tolerates. The subject carries the number and title in both.
+// (Bill, 14 Nov 2026). The SHORT body, for iPhone and iPad, quotes as much of
+// the question as fits: iOS Mail silently drops a long pre-filled body and opens
+// a blank message past about 100 encoded characters. The subject carries the
+// number and title in both.
+// The iPhone/iPad body: as much of the quoted question as fits in IOS_BODY_LIMIT
+// ENCODED characters (a space costs three), cut at a word and closed with "...",
+// then a blank line to type under. Whole question if it fits.
+export const IOS_BODY_LIMIT = 100;
+export function shortBody(q) {
+  const head = `> ${q.id}: `, tail = '\n\n';
+  const fits = t => encodeURIComponent(head + t + tail).length <= IOS_BODY_LIMIT;
+  if (fits(q.question)) return head + q.question + tail;
+  let kept = '';
+  for (const w of q.question.split(' ')) {
+    const next = kept ? `${kept} ${w}` : w;
+    if (!fits(next + '...')) break;
+    kept = next;
+  }
+  return head + kept.replace(/[\s,;:(]+$/, '') + '...' + tail;
+}
+
 export function mailtoFor(q, email = CONTACT_EMAIL, { short = false } = {}) {
   if (!email) return null;
   const subject = `Orthodox Hours ${q.id}: ${q.title}`;
-  const body = short
-    ? `My answer to ${q.id}, and my source:`
-    : `> ${q.id}: ${q.question}\n\nMy answer, and my source:\n\n`;
+  const body = short ? shortBody(q) : `> ${q.id}: ${q.question}\n\nMy answer, and my source:\n\n`;
   return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 

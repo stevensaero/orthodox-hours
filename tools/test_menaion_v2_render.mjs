@@ -151,7 +151,8 @@ console.log(`daily months: ${dailyEntries} commemoration(s), ${dailyChecked} sto
   const unanswered = questions.filter(x => x.status !== 'answered').length;
   if (links !== unanswered) { missing++; console.log(`  QUESTIONS PAGE: ${links} mailto links for ${unanswered} unanswered questions`); }
   if (/href="mailto:/.test(html) && !(await import(join(ROOT, 'src/data/open_questions.js'))).CONTACT_EMAIL) { missing++; console.log('  QUESTIONS PAGE: mailto link rendered with no address set'); }
-  const bodyLen = sample ? (sample.split('&body=')[1] ?? '').length : 0;
+  const { mailtoFor } = await import(join(ROOT, 'src/data/open_questions.js'));
+  const bodyLen = Math.max(0, ...questions.map(q => (mailtoFor(q, 'test@example.org', { short: true }).split('&body=')[1] ?? '').length));   // the LONGEST short body
   if (bodyLen > 100) { missing++; console.log(`  QUESTIONS PAGE: SHORT (iOS) mailto body is ${bodyLen} encoded chars (iOS Mail truncates past ~100)`); }
   console.log(`questions page: ${questions.length} question(s), ${links} mailto link(s) with a test address, body ${bodyLen} encoded chars, ${qMissing} missing`);
 }
