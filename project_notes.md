@@ -80,6 +80,7 @@ block is the consolidated state. Tool **v0.52.2**; nine gates green.
 | 11-18 | 11-18.pdf | Martyrs Plato & Romanus; double, two canons | simple / 2B |
 | 11-19 | 11-19.pdf | Prophet Obadiah; Martyr Barlaam; double, two troparia | simple / 2B |
 | 11-20 | 11-20.pdf | Forefeast of the Entrance; Gregory the Decapolite; Proclus; three canons, appendix | simple / 2G1 |
+| 11-21 | 11-21.pdf | ENTRY OF THE THEOTOKOS; Little Vespers, Litiya, two canons, katavasiae | great_feast / 2F |
 
 About 890 daily text nodes; 4,413 with the General Menaion. 27 files of
 November remain (11-01..11-13 with 11-1A, 11-09A, 11-09B; 11-21..11-30 with
@@ -308,6 +309,47 @@ the canonical field stands (R-1), as before. Applied: 11-20 as encoded; **11-19
 rebuilt to this form** (its `troparion_other_saint` key is retired and removed
 from the schema; its single kontakion keeps the canonical field). 11-18 has one
 troparion and one kontakion and is unchanged.
+
+### 11-21 ADDED — FIRST GREAT FEAST IN THE DAILY BOOK
+
+22 pages, 771 lines, all claimed. First file with a **Little Vespers**, a
+**Litiya**, a **katavasia after every ode**, and the special verses after
+Psalm 50. Rank `great_feast`, Fekula 2F, which names 21 November among the
+feasts of the Theotokos it covers and, in note 48, the Psalm 50 replacement. No
+open question was needed.
+
+Storage forms added (all in the schema and the reading view):
+
+- `little_vespers` takes the same keys as `vespers`.
+- `litiya` (list) and `litiya_closer` under Great Vespers.
+- `psalm50_rubric`, `psalm50_glory`, `psalm50_closer_rubric`,
+  `psalm50_verse_rubric`, then the existing `psalm50_sticheron`.
+- Ode fields `preface` and `closing` (ordered lists of labeled items) and
+  `katavasia_rubric`. **Ode IX prints a rubric, a refrain, and another rubric
+  before each irmos, and a refrain before every troparion.** The refrains are
+  stored inside `items`, each labeled `refrain`, in page order; rubrics inside
+  an ode are labeled `rubric` (new LABELS value).
+- Liturgy: `megalynarion_rubric`, `megalynarion_refrain`, `megalynarion`,
+  `megalynarion_closing_rubric` for what replaces "It is truly meet".
+- `daily_lib.py`: `Src.mix()` for runs of unlike items; `ode()` now reads
+  "Glory ..., " / "Both now ..., " / "Triadicon: " labels and multi-line katavasiae.
+
+Found on the page and recorded:
+
+- **The Ode IX refrain of Canon I is printed in two wordings in one file**:
+  "the most pure one" where a rubric introduces it and at Liturgy, "the all-pure
+  one" at its six repetitions inside the ode. `variant` row in the recurrence
+  register; both stored as printed.
+- Ode VII, Canon II, Glory: the troparion **ends on a comma at the foot of p14**
+  and is not completed on p15. Sic row; physical-book check.
+- Ode VIII, Canon II prints "We bless the Father, the son and the Holy Spirit,
+  the Lord:" (lower-case "son") as the label of its third troparion. Kept in
+  `sourceLabel`; the sic gate reads `text` only, so it is recorded here.
+- The three Vespers lessons print no reference. Citations are identifications
+  by opening words (`citation_basis: 'identified'`), on the validator worklist.
+- A scare worth remembering: a `cut -c1-90` in a shell check made a line look
+  as if the extraction had dropped a word. It had not. **Check the stored node,
+  not a truncated terminal line, before calling something a sic.**
 
 ### 11-20 ADDED — FOREFEAST PLUS TWO SAINTS; NO CANONICAL HYMN FIELDS
 
