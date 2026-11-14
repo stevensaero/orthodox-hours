@@ -154,6 +154,15 @@ console.log(`daily months: ${dailyEntries} commemoration(s), ${dailyChecked} sto
   const { mailtoFor } = await import(join(ROOT, 'src/data/open_questions.js'));
   const bodyLen = Math.max(0, ...questions.map(q => (mailtoFor(q, 'test@example.org', { short: true }).split('&body=')[1] ?? '').length));   // the LONGEST short body
   if (bodyLen > 100) { missing++; console.log(`  QUESTIONS PAGE: SHORT (iOS) mailto body is ${bodyLen} encoded chars (iOS Mail truncates past ~100)`); }
+  {
+    const { FEEDBACK, feedbackMailto } = await import(join(ROOT, 'src/data/open_questions.js'));
+    for (const k of Object.keys(FEEDBACK)) {
+      const href = feedbackMailto(k, 'test@example.org');
+      const len = (href.split('&body=')[1] ?? '').length;
+      if (len > 100) { missing++; console.log(`  QUESTIONS PAGE: '${k}' feedback body is ${len} encoded chars (iOS limit 100)`); }
+      if (!withMail.includes(FEEDBACK[k].label) || !withMail.includes(encodeURIComponent(FEEDBACK[k].subject))) { missing++; console.log(`  QUESTIONS PAGE: '${k}' feedback link not rendered`); }
+    }
+  }
   console.log(`questions page: ${questions.length} question(s), ${links} mailto link(s) with a test address, body ${bodyLen} encoded chars, ${qMissing} missing`);
 }
 const sharedCount = Object.keys(SHARED).length;

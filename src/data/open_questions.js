@@ -110,6 +110,23 @@ export function mailtoFor(q, email = CONTACT_EMAIL, { short = false } = {}) {
   return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
+// General feedback, not tied to a question (Bill, 14 Nov 2026): "I found a bug"
+// and "I have a suggestion". Each is a plain mailto with a fixed subject prefix,
+// so the mailbox can be searched by kind, and a body short enough for iOS Mail.
+// At session start these are read ALONGSIDE the question answers and run
+// against the open questions: a general remark often settles a specific one.
+export const FEEDBACK = {
+  bug:        { label: 'I found a bug',       subject: 'Orthodox Hours bug report',
+                body: 'What I saw, and the date and service I was viewing:\n\n' },
+  suggestion: { label: 'I have a suggestion', subject: 'Orthodox Hours suggestion',
+                body: 'My suggestion, and any source for it:\n\n' },
+};
+export function feedbackMailto(kind, email = CONTACT_EMAIL) {
+  const f = FEEDBACK[kind];
+  if (!email || !f) return null;
+  return `mailto:${email}?subject=${encodeURIComponent(f.subject)}&body=${encodeURIComponent(f.body)}`;
+}
+
 export const QUESTION_STATUS = ['open', 'provisional_web', 'answered'];
 
 export default [

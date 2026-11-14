@@ -6,7 +6,7 @@
 // any device. No script is involved in the link, so it works in iPhone Mail;
 // the pre-filled body is kept short because iOS truncates long ones silently.
 import React, { useMemo, useState } from 'react';
-import QUESTIONS, { SOURCES, SUBJECTS, CONTACT_EMAIL, mailtoFor } from '../data/open_questions.js';
+import QUESTIONS, { SOURCES, SUBJECTS, CONTACT_EMAIL, mailtoFor, FEEDBACK, feedbackMailto } from '../data/open_questions.js';
 
 const C = {
   ink: "#1C1008", inkMid: "#3D3020", inkLight: "#9A8A70", gold: "#8B6914",
@@ -136,11 +136,25 @@ export default function OpenQuestions({ questions = QUESTIONS, email = CONTACT_E
           <div style={{ fontSize: "0.85rem", color: C.inkMid, lineHeight: 1.6, marginTop: "8px" }}>
             Priests, deacons, choir directors, readers and students of the services are all welcome. A short answer
             helps. We record answers by role (for example &ldquo;OCA priest&rdquo;) and do not publish names or addresses
-            without permission. Seen something wrong that is not listed?{' '}
-            {email
-              ? <a href={`mailto:${email}?subject=${encodeURIComponent('Orthodox Hours: something to correct')}`}
-                   style={{ color: C.gold }}>Write to us about it.</a>
-              : 'An address for that has not been set yet.'}
+            without permission.
+          </div>
+        </div>
+        <div style={{ background: "#fff", border: `1px solid ${C.border}`, borderRadius: "6px", padding: "10px 16px", margin: "0 0 12px" }}>
+          <div style={{ fontSize: "0.7rem", letterSpacing: "0.12em", color: C.gold, textTransform: "uppercase", marginBottom: "4px" }}>
+            Something else to tell us
+          </div>
+          <div style={{ fontSize: "0.9rem", color: C.ink, lineHeight: 1.6 }}>
+            You do not need to pick a question. If a service came out wrong, a text is missing, or you have a
+            thought on how something should be done, write to us in your own words. General remarks often
+            settle one of the questions below.
+          </div>
+          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "9px" }}>
+            {email ? Object.keys(FEEDBACK).map(k => (
+              <a key={k} href={feedbackMailto(k, email)}
+                 style={{ display: "inline-block", fontFamily: SERIF, fontSize: "0.85rem", fontWeight: 700, color: C.gold,
+                          background: "#fff", border: `1px solid ${C.gold}`, textDecoration: "none", padding: "6px 14px",
+                          borderRadius: "4px" }}>{FEEDBACK[k].label}</a>
+            )) : <span style={{ color: C.amber, fontStyle: "italic", fontSize: "0.82rem" }}>An address for this has not been set yet.</span>}
           </div>
         </div>
         {!email && (
