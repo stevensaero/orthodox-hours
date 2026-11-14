@@ -61,6 +61,7 @@ export const SOURCES = {
   horologion:      { label: 'Horologion (the Hours)', href: () => null },
   psalter:         { label: 'Psalter', href: () => '/orthodox-hours/psalter' },
   liturgy:         { label: 'Divine Liturgy', href: () => null },
+  oca_hymns:       { label: 'OCA service texts', href: () => null },
   typikon:         { label: 'Order of services (Fekula, Typikon)', href: () => null },
   other:           { label: 'Other sources', href: () => null },
 };
@@ -213,5 +214,19 @@ export default [
     },
     provisional: 'Stored Simple, Fekula 2G1, and stored exactly as printed: Praises stichera, then Aposticha. Nothing depends on the rank yet.',
     impact: 'The 9th Hour reads the troparion of the feast and of the saint either way. Rank decides the kontakion at the Hours (2G1: feast only unless Doxology; then the saint at 3rd and 9th) and whether Matins ends with the Great Doxology.',
+  },
+  {
+    id: 'Q-0007', source: 'oca_hymns', subject: 'pointing',
+    title: 'OCA service texts: the "^" mark, and passages underlined whole',
+    locus: 'OCA service texts, 23 August to 9 December 2026 (src/data/oca_hymns/docs); first seen 4 October, troparion of St. Hierotheus', status: 'open', opened: '2026-11-14',
+    question: 'In the OCA service texts, what does the "^" printed before a stressed syllable tell the singer, and what does it mean when a whole passage is underlined instead of single syllables?',
+    printed: 'The "^": 23 times in 45 documents (23 Aug to 9 Dec 2026), always inside a troparion, a kontakion or a dismissal theotokion. 21 are in Tone 1; 2 are the Tone 3 troparion of the Apostles of 22 Nov, printed twice ("entreat the ^[mer]ciful God//"). In 19 it stands directly before an underlined syllable, and that syllable is the only underline in its line ("Hierarch of ^[Ath]ens,"; "and poured forth streams of godly ^[doc]trine.//"; "having imitated the Forefathers, O ^[Ven]erable One:"). In the other 4, the Tone 1 troparia of Hieromartyr John of Chicago (31 Oct), the hymn is underlined end to end and the mark stands before a whole word ("the Martyr\'s ^crown!//"; "for Christ and ^neighbor,"). Other Tone 1 and Tone 3 troparia carry no such mark (the Tone 1 resurrectional troparion; the Tone 3 troparia of 27 Sep and 16 Nov). Whole-passage underline: most hymns of 1 Oct, 31 Oct and 14 Nov and several of 16 Nov, including the Litya; on 14 Nov every hymn of the Apostle Philip is underlined whole and none carries syllable pointing. A single line underlined inside an otherwise pointed hymn occurs in ten documents.',
+    consulted: {
+      fekula: 'Not addressed: the Order of Divine Services does not treat musical pointing.',
+      oca: 'The documents carry no legend for either mark. Not yet searched on oca.org (Department of Liturgical Music and Translations).',
+      web: 'Not yet searched.',
+    },
+    provisional: 'Both are captured exactly: "^" is stored in the text as printed and stripped wherever the text is shown or sung; a passage underlined end to end is flagged `underlined` and given no syllable brackets, so it is treated as unpointed (ruled 14 Nov 2026).',
+    impact: 'If "^" marks a different melodic treatment of that accent, the Tone Trainer should read it instead of ignoring it. If whole-passage underline means "optional" or "not yet pointed", the tool should say so beside those hymns.',
   },
 ];

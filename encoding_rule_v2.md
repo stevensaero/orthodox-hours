@@ -1,6 +1,12 @@
-# ENCODING RULE v2.13 — Orthodox Hours Tool
+# ENCODING RULE v2.14 — Orthodox Hours Tool
 **Authority:** Fekula & Williams ODS 3rd ed. vol. III (2009, Menaion) · Fekula & Williams ODS 2nd ed. (2009, all other chapters) · St. Ignatius Orthodox Press Anthologion (2024) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** August 2026 · **Supersedes:** v2.12, v2.11, v2.10, v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+**Updated:** August 2026 · **Supersedes:** v2.13, v2.12, v2.11, v2.10, v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+
+**v2.14 changes (14 Nov 2026) — OCA SERVICE TEXTS ARE CAPTURED WHOLE (§3.6, new):**
+- The OCA `-tt` service texts become a separate layer, `src/data/oca_hymns/`,
+  lifted whole from the docx by script. Never a partial capture.
+- Two marks in those documents are not yet defined and are stored as printed:
+  the `^` before a stressed syllable, and passages underlined end to end (Q-0007).
 
 **v2.13 changes — ODS CHAPTER V IS OBSOLETE; RANK IS SOMETIMES PRINTED (§1, §1.1):**
 - **A third Fekula volume exists and supersedes part of the second.** *The Order of
@@ -500,6 +506,28 @@ sequence. Record the end-of-line marks faithfully; that is all.
 A field whose text carries Tier-3 director marks sets `director: true` beside
 `tone` / `text` / `source`, telling the Tone Trainer a director pointing exists
 (vs. machine-only). Tier-1 / Tier-2 fields omit the flag.
+
+### 3.6 OCA service texts — whole-document capture (the OCA hymns layer)
+
+The OCA `-tt` service texts are captured WHOLE, never in part (Bill, 14 Nov 2026:
+"never partial captures"). `tools/encoding/oca_hymns/extract.py` lifts every
+non-empty paragraph of each docx into `src/data/oca_hymns/docs/<stem>.js`, in
+print order, as `heading` (bold), `note` (wholly italic) or `text` blocks; the
+lines of a hymn are joined with ` | ` and the `//` line with ` // `. Nothing is
+retyped. `--check` re-extracts and byte-compares. The docx stay on Bill's
+machine; the captures are generated files and are not edited by hand.
+
+- Underlined syllables become `[brackets]` (3.3). A paragraph underlined from
+  end to end is NOT syllable pointing: the block is flagged `underlined` and
+  carries no brackets for it.
+- The `^` mark is stored exactly as printed and stripped wherever text is shown
+  or sung (`stripCaret`). Meaning unknown: Q-0007.
+- A closing "(once)" / "(twice)" / "(thrice)" is lifted into `repeat`.
+- Layout whitespace (tabs, runs of spaces) is collapsed to one space.
+- `src/data/oca_hymns/slots.js` is the only hand-kept file: Menaion date ->
+  slot -> the heading the hymn stands under in its document. A date gets slots
+  when Menaion V2 holds it. Gate: `tools/validate_oca_hymns.mjs`.
+- The layer is a second witness. It is never copied into the Menaion capture.
 
 ---
 

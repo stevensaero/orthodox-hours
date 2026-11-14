@@ -298,10 +298,14 @@ shows either way. Every element says which source it came from.
 Hours and Typica read). B: the dated stichera, Glory and theotokia at Vespers.
 C: resurrectional hymns by tone. D: the Tone Trainer reads the layer directly.
 
-**Open points.** (i) Is the toggle ON by default? (ii) Capture everything in
-each document from the start, or phase A first? (iii) The `^` mark the OCA
-prints before some stressed syllables: V1 stripped it and logged the positions;
-keep doing that until its meaning is known?
+**Settled (Bill, 14 Nov).** The toggle is ON by default. Every document is
+captured whole from the start: never a partial capture. The `^` mark is stored
+as printed and stripped at display, and is open question Q-0007.
+
+**Built (14 Nov).** Extractor, 45 documents captured, `slots.js` for the 12
+shared dates, `index.js`, gate `tools/validate_oca_hymns.mjs`. Rule:
+`encoding_rule_v2.md` 3.6. Not built: the toggle, and the adapter that lays an
+OCA hymn over the Menaion text.
 
 ## 6. Adapter (`src/data/menaion_v2/adapter.js`) — PLAN
 
