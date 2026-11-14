@@ -139,6 +139,17 @@ is printed ("Or this Troparion"). One sessional hymn appears in two wordings,
 after the Polyeleos and after Ode III. The Praises repeat device is printed bare
 ("Twice", no parentheses) and lifted by hand in the map. 8 sic rows.
 
+### 11-17 ADDED
+
+St. Gregory the Wonderworker, 10 pages, six-stichera rank (2C). Zero unclaimed
+lines. First file where the Both-now closers print ONLY a Stavrotheotokion and
+name the Theotokion without printing it: new keys `lic_closer_rubric`,
+`aposticha_stavrotheotokion`, `troparion_closer_rubric` (Vespers) and
+`aposticha_closer_rubric`, `aposticha_stavrotheotokion` (Matins). Matins prints
+one sticheron of the saint to follow the Oktoechos aposticha. 3 sic rows.
+**Measured rate once the pipeline existed: 11-16 (16 pages) and 11-17 (10 pages)
+in one stretch, about one file per working chunk.**
+
 ### OWED
 
 1. **adapter.js and the wire-in** after November: Hours reads V2 only; "not
@@ -147,7 +158,7 @@ after the Polyeleos and after Ode III. The Praises repeat device is printed bare
 2. Variant pairs against general.js were not hunted (only byte-identity was
    swept). Stated in known_recurrences.js.
 3. Per-key manifest rows for the General Menaion's own keys; alias lint.
-4. The rest of November: 32 files (11-01..11-13, 11-17..11-30 with variants).
+4. The rest of November: 31 files (11-01..11-13, 11-18..11-30 with variants).
    Measured rate this session: three files, 40 pages, in one session, including
    building the pipeline. `11-1A.pdf` is the folder's name for the 11-01 variant.
 5. The Nov 8 "V1 encoding pass" chat was never pushed and is abandoned with V1.
