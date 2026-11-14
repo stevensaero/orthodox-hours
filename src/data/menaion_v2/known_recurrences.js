@@ -21,6 +21,10 @@
 // positions store their own copy (§2.3, no dereferencing); these rows are what
 // make the duplication a checked fact rather than an invitation to collapse it.
 export default [
+  // ── 11-19, Prophet Obadiah and Martyr Barlaam (identical rows by sweep) ────
+  { a: '11-15.c0.matins.canons[0].odes.9.irmos', b: '11-19.c0.matins.canons[1].odes.9.irmos', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-18.c0.matins.sessional_ode3[3]', b: '11-19.c0.matins.sessional_ode3[3]', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
+  { a: '11-19.c0.vespers.lic_closer', b: 'general.Hieromartyr.vespers.aposticha_alternate', relation: 'identical', note: 'Daily text byte-identical to its General Menaion print (first general site found).' },
   // ── 11-18, Martyrs Plato and Romanus (identical rows by sweep; the irmoi of
   // both canons recur in 11-15 and 11-17, which is where most of these come from) ─
   { a: '11-17.c0.vespers.lic_stavrotheotokion', b: '11-18.c0.vespers.lic_stavrotheotokion', relation: 'identical', note: 'Printed twice in the daily book; each position stores its own copy (2.3).' },
