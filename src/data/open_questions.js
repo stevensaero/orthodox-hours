@@ -158,9 +158,6 @@ export default [
     provisional: 'Each second file is stored whole as its own commemoration (c1), uncombined, oca_primary false. Ranks by the 1.1 waterfall and provisional: Palamas polyeleos (2E); Innocent and the Kursk-Root Icon vigil (2F) on the printed Litiya, which vol. III shows is not decisive.',
     impact: 'Decides which troparion and kontakion the Hours and Liturgy read on these dates. Until answered the assembler reads the first file (c0) alone, and offers the second as a service a parish may choose.',
   },
-    provisional: 'polyeleos, Fekula 2E by the 1.1 waterfall; oca_primary false. Stored as the second commemoration of the date (c1), complete and uncombined.',
-    impact: 'Decides whether a parish keeping St. Gregory on this day serves his service in place of the Apostle\'s or combines them, and which troparion and kontakion the Hours and Liturgy read. Until answered the assembler should read c0 (Apostle Philip) alone.',
-  },
   {
     id: 'Q-0003', source: 'menaion', subject: 'rubric',
     title: 'Palamas Matins: "On the Aposticha" before the Great Doxology',
