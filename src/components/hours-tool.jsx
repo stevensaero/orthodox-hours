@@ -8800,6 +8800,32 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.51.0",
+    date: "November 2026",
+    summary: "Menaion V2: the first daily entries. 14 November (Apostle Philip; St. Gregory Palamas) and 15 November (Gurias, Samonas & Abibus) captured whole, in the V2 browser",
+    items: [
+      "THE DAILY BOOK BEGINS. Three files captured complete, every printed line accounted for: 11-14 " +
+      "(Apostle Philip, 14 pages), 11-14A (St. Gregory Palamas, 16 pages, the second commemoration " +
+      "of the day) and 11-15 (the first day of the Nativity Fast, 10 pages, with its 'Be it known' " +
+      "rubric and every branch it governs). Vespers, Matins with the whole canon, and Liturgy. " +
+      "Open the Menaion V2 browser and choose November. THE HOURS TOOL STILL READS V1: the switch " +
+      "to V2 comes after November is finished, and then V1 retires with no fallback.",
+      "Sessional hymns ruled (A-2): named by position, each position holding everything the page " +
+      "prints there. Measured across 264 daily files before the ruling; 15 November prints four " +
+      "hymns after Ode III.",
+      "AN OPEN-QUESTION REGISTER. Capture no longer waits on a liturgical question. A field that " +
+      "needs judgment takes its best-supported value and a row recording what Fekula, OCA and other " +
+      "named sources say, and what would change if the answer went the other way. Five questions " +
+      "are open, among them: is the Apostle Philip's service a Polyeleos or a Vigil, and which of " +
+      "his two printed troparia should the Hours read (OCA gives the second).",
+      "Text is lifted from the PDF by line ranges assigned by hand, never retyped; the build fails " +
+      "if any printed line is left unclaimed. The gate now checks page coverage and per-key " +
+      "registration for daily entries, and the render gate covers them: 325 stored strings, none missing.",
+      "Fourteen printed errors recorded as printed (among them 'we rumor thy holy memory' in St. " +
+      "Gregory's magnification) and 48 recurrences byte-checked.",
+    ],
+  },
+  {
     version: "v0.50.4",
     date: "October 2026",
     summary: "October Sundays encoded: 10-11 (Fathers of the 7th Council, 2026 only), 10-18 (St. Luke), 10-25 (Marcian & Martyrius; Tabitha)",
