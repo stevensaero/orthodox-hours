@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.56.0** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
+**Tool version: v0.56.1** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,39 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### v0.56.1 — the matcher reads NAMES (15 Nov 2026)
+
+**RULED BY BILL, 15 Nov:** "we need to exclude oca from the general menaion when they
+modify a general entry with a saint name, since sergius doesn't preserve names in the
+general."
+
+- **A LIVE DEFECT this found and fixed:** auto-match `o79dd33c31c` paired the OCA's
+  troparion of St. Simeon the Stylite (1 Sept text) with our 11-26 troparion of St.
+  Alypius: one general hymn, the name changed. v0.56.0 showed "O Simeon, our Father"
+  on 26 Nov under Prefer OCA (the viewer had shown it since the register was built).
+  Also `o4224f9a2d9`: an OCA hymn of St. Luke on our 11-16 Litiya Glory of St. Matthew
+  (viewer only). Both are gone.
+- **Where the General Menaion stands:** it is NOT in the matcher's pool (0 `general.*`
+  hymns), and a General Menaion fallback in a service is never looked up in the
+  register (`fromGeneral` / `generalHymn` bypass `slot()`). So an OCA text can never
+  stand over a General Menaion text. The exposure was the DAY pages that print a
+  general hymn with a name in it.
+- **The rule** (`tools/match_oca_hymns.mjs`, "NAMES"): a NAME = a word our own books
+  capitalise inside a sentence and never write in lower case, df <= 150 (298 words; the
+  OCA's capitals are not used, it capitalises Maker, Entrance, Ark). `sameName` allows
+  two spellings (Habakkuk/Habbakuk). A name on EACH side the other lacks -> not a
+  candidate at all. A name on ONE side only -> never automatic; review, with
+  "NAMES DIFFER: ..." in the evidence and the ruling in the `why`.
+- Effect: automatic 192 -> 185. Removed outright: the two above. To review: the OCA's
+  "O Michael, commander..." (09-06; ours names no one), and four held only because of
+  a sacred word our books capitalise (Maker, Redeemer, Mary, Orthodox/Christians):
+  true matches, a click each on the review page.
+- **Limits, known:** a name that appears nowhere in our books is not seen (Philumenus);
+  a general hymn changed in NUMBER and not in name is not seen: on 09-06 the OCA's
+  plural "O Commanders of the heavenly hosts" (8 Nov, Bodiless Powers) is auto-matched
+  to our singular "O supreme commander" and is shown there. PUT TO BILL.
+- Matched pairs where both name the SAME saint stand (Philip 11-14, Matthew 11-16).
 
 ### v0.56.0 — Prefer OCA is HYMN BY HYMN, never by the day (15 Nov 2026)
 

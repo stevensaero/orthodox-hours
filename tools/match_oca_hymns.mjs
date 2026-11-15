@@ -106,6 +106,41 @@ const norm = (ws) => Math.sqrt(ws.reduce((a, w) => a + idf(w) ** 2, 0));
 const index = new Map();
 cands.forEach((c, i) => { c.norm = norm(c.w); for (const w of c.w) (index.get(w) ?? index.set(w, []).get(w)).push(i); });
 
+// ── NAMES (ruled by Bill, 15 Nov 2026) ─────────────────────────────────────────
+// A general hymn is sung of many saints with the name changed ("...O Simeon, our
+// father" / "...O Alypius, our father"), and the OCA writes the saint's name into
+// general texts that our books print without one. Such a pair is NOT one reusable
+// hymn: matched, it would put one saint's name on another's day (it did: the OCA's
+// troparion of St. Simeon stood on St. Alypius's day, v0.56.0, for some hours).
+//   - a name on EACH side that the other lacks: another saint's hymn; no candidate.
+//   - a name on ONE side only: never automatic; a person looks, with the name shown.
+// A NAME is a word our own books capitalise inside a sentence and never write in
+// lower case, less the few sacred words found everywhere. The OCA capitalises far
+// more freely (Maker, Entrance, Ark), so its capitals are not used to find names.
+const plainText = (t) => t.replace(/[\[\]^]/g, '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const lowerWords = (t) => new Set(plainText(t).toLowerCase().split(/[^a-z]+/).filter(Boolean));
+const NAMES = (() => {
+  const cap = new Map(); const low = new Set();
+  for (const c of cands) {
+    const seen = new Set(); let start = true;
+    for (const raw of plainText(c.text).split(/\s+/)) {
+      if (/^[|*/]+$/.test(raw)) continue;
+      const w = raw.replace(/^[^A-Za-z]+|[^A-Za-z]+$/g, '').replace(/[’']s$/, '');
+      if (/^[a-z]{3,}$/.test(w)) low.add(w);
+      else if (/^[A-Z][a-z]{2,}$/.test(w) && !start) seen.add(w.toLowerCase());
+      start = /[.!?:]["”’']?$/.test(raw);
+    }
+    for (const w of seen) cap.set(w, (cap.get(w) || 0) + 1);
+  }
+  return new Set([...cap].filter(([w, n]) => !low.has(w) && n <= 150).map(([w]) => w));
+})();
+// The same name in two spellings (Habakkuk / Habbakuk, Zachariah / Zacharias).
+const sameName = (a, b) => a.slice(0, 5) === b.slice(0, 5) || (a.length > 5 && b.length > 5 && a.slice(0, 3) === b.slice(0, 3) && a.replace(/[aeiouy]|(.)(?=\1)/g, '') === b.replace(/[aeiouy]|(.)(?=\1)/g, ''));
+const lacking = (names, other) => [...names].filter((n) => ![...other].some((w) => sameName(n, w)));
+for (const c of cands) { c.low = lowerWords(c.text); c.names = new Set([...c.low].filter((w) => NAMES.has(w))); }
+const nameGap = (o, c) => ({ oca: lacking(o.names, c.low), ours: lacking(c.names, o.low) });
+const Cap = (w) => w[0].toUpperCase() + w.slice(1);
+
 const melodyOf = (head) => { const m = /\(([^()]*)\)\s*$/.exec(head || ''); return m && !/^for |Theotokion|Resurrection|Feast|St\.|Sts\.|Martyr|Apostle|Archangel|Cross|Hierarch|Dogmatikon/i.test(m[1]) ? m[1] : null; };
 const round = (x) => Math.round(x * 100) / 100;
 
@@ -124,12 +159,14 @@ for (const o of [...oca.values()].sort((a, b) => a.id.localeCompare(b.id))) {
   const rejected = new Set(human?.reject ?? []);
   if (notAHymn(o)) { stats.short++; continue; }
   const acc = new Map(); const on = norm(o.w);
+  o.low = lowerWords(o.text); o.names = new Set([...o.low].filter((w) => NAMES.has(w)));
+  const otherSaint = (c) => { const g = nameGap(o, c); return g.oca.length > 0 && g.ours.length > 0; };
   for (const w of o.w) for (const i of index.get(w) || []) acc.set(i, (acc.get(i) || 0) + idf(w) ** 2);
   const tones = [...new Set(o.prints.map((p) => p.tone).filter((t) => t != null))];
   const places = new Set(o.prints.map(placeOfOca));
   const inTone = (c) => c.tones.size === 0 || tones.length === 0 || tones.some((t) => c.tones.has(t));
   const inPlace = (c) => places.has('any') || c.places.has('any') || [...places].some((p) => c.places.has(p));
-  const scored = [...acc].map(([i, dot]) => ({ c: cands[i], score: dot / (on * cands[i].norm) })).filter((r) => !rejected.has(r.c.hash)).sort((a, b) => b.score - a.score).slice(0, 40);
+  const scored = [...acc].map(([i, dot]) => ({ c: cands[i], score: dot / (on * cands[i].norm) })).filter((r) => !rejected.has(r.c.hash) && !otherSaint(r.c)).sort((a, b) => b.score - a.score).slice(0, 40);
   // Only a hymn in the OCA's own tone is a candidate. Among near ties, one of the
   // same service comes first.
   const ranked = scored.filter((r) => inTone(r.c));
@@ -167,16 +204,19 @@ for (const o of [...oca.values()].sort((a, b) => a.id.localeCompare(b.id))) {
   else if (!places.has('any') && where.length) evidence.push(`place: ${[...places].filter((p) => c.places.has(p)).join('/') || where.join('/')}`);
   if (melodyAgrees) evidence.push(`melody “${c.melody}”`);
   if (sameDate) evidence.push('same date');
+  const gap = nameGap(o, c); const named = gap.oca.length ? `the OCA text names ${gap.oca.map(Cap).join(', ')}; ours does not` : gap.ours.length ? `our text names ${gap.ours.map(Cap).join(', ')}; the OCA text does not` : null;
+  if (named) evidence.push(`NAMES DIFFER: ${named}`);
   // Name the mate by its home: a hymn of the tone is the Octoechos's, even where a
   // Menaion service prints it too (a dogmatikon written out at a saint's Vespers).
   const home = (list) => list.find((p) => p.book === 'octoechos' && /^tone\d\./.test(p.path)) ?? list[0];
   const mate = home(c.paths.filter((p) => tones.includes(p.tone))) ?? home(c.paths);
   const entry = { mate: `${mate.book}:${mate.path}`, mateHash: c.hash, tone: tones[0] ?? null, score: round(best.score), next: round(next), evidence,
     first: { doc: o.prints[0].doc, head: o.prints[0].head } };
-  const isAuto = best.score >= AUTO_SCORE && best.score - next >= AUTO_MARGIN && !toneDiffers && !closerElsewhere;
+  const isAuto = best.score >= AUTO_SCORE && best.score - next >= AUTO_MARGIN && !toneDiffers && !closerElsewhere && !named;
   if (isAuto) { auto[o.id] = { ...entry, by: 'auto' }; stats.auto++; }
   else {
     review[o.id] = { ...entry, why: [best.score < AUTO_SCORE ? 'wording below the bar' : null, best.score - next < AUTO_MARGIN ? 'a second hymn is close' : null, toneDiffers ? 'tone differs: the two sources may print this hymn in different tones, or a tone is recorded wrongly' : null,
+        named ? `${named}. A general hymn with a saint's name written into it is not the same hymn for another saint (ruled 15 Nov 2026): confirm only if both texts are of the same saint and the name would be right wherever our text is used` : null,
         closerElsewhere ? `a Menaion hymn in Tone ${[...closerElsewhere.c.tones].join('/')} is closer in wording (${round(closerElsewhere.score)}): ${closerElsewhere.c.paths[0].path}` : null].filter(Boolean),
       // Everything the review page shows, so it loads this one file and nothing else.
       text: o.text, prints: o.prints.length, dates: [...new Set(o.prints.map((p) => p.doc.slice(0, 9)))], mateText: c.text, mateTones: [...c.tones],

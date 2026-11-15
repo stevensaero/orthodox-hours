@@ -8525,6 +8525,19 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.56.1",
+    date: "November 2026",
+    summary: "An OCA text naming one saint can no longer stand on another saint's day",
+    items: [
+      "Fixed: with 'Prefer OCA texts' on, 26 November showed the OCA's troparion of St. Simeon " +
+      "the Stylite in the place of St. Alypius's. The two are one general hymn with the name " +
+      "changed, and the matcher had taken them for the same hymn.",
+      "The matcher now reads the names. Where each text names a saint the other does not, they " +
+      "are not matched at all. Where only one of them names a saint, the match is never made " +
+      "automatically and waits for a person, with the name shown.",
+    ],
+  },
+  {
     version: "v0.56.0",
     date: "November 2026",
     summary: "Prefer OCA texts now works hymn by hymn, never by the day",
