@@ -20,7 +20,9 @@ import { fileURLToPath } from "node:url";
 import { parseRefString, spanLabel } from "../src/lib/scripture-ref.js";
 import { spansToVerses, spansToText, readingIntro } from "../src/lib/scripture-text.js";
 import { readingsForDay, readingsInOrder } from "../src/lib/readings.js";
-import september from "../src/data/menaion/september.js";
+import { loadMenaionV2Month } from "../src/data/menaion_v2/index.js";
+import { servicesOf, entrancePlan, liturgyPlan } from "../src/data/menaion_v2/adapter.js";
+import { buildBulletinDay } from "../src/lib/bulletin-day.js";
 import may from "../src/data/menaion/may.js";
 import * as OctoV2 from "../src/data/octoechos_v2/adapter.js";
 import { hymnText } from "../src/lib/hymn-entry.js";
@@ -66,30 +68,35 @@ function resolveText(ref) {
 // its own readings. Both pairs are therefore read, per Fekula §1C.
 console.log("Sunday 6 September 2026 — Michael at Chonae");
 
-const entry = september["09-06"];
-checkTruthy("09-06 entry present", entry);
+// The sheet is built by the tool's own code (src/lib/bulletin-day.js) from the
+// Menaion V2 service, through the same plans the Liturgy reads.
+const svc = servicesOf((await loadMenaionV2Month("09"))["09-06"], "09-06")[0];
+checkTruthy("09-06 service present in Menaion V2", svc);
+const entry = svc.c;
 check("rank", entry.rank, "six_stichera");
 check("fekula_section", entry.fekula_section, "2C");
 
+await OctoV2.loadV2Tone(5);
 const liturgicalData = { dow: 0, season: "sunday", tone: 5 };
-const resolved = readingsForDay({
-  liturgicalData,
-  menaionEntry: entry,
+const day = buildBulletinDay({
+  liturgicalData, service: svc, entrance: entrancePlan(svc.c, svc.path, {}), liturgy: liturgyPlan(svc.c, svc.path),
   dailyReading: { e: "2 Corinthians 1:21-2:4", g: "Matthew 22:1-14" },
-  feastReading: { e: entry.feast_e, g: entry.feast_g },
+  sources: { resTroparion: (t) => OctoV2.getV2Troparion(t), sunKontakion: (t) => OctoV2.getV2Kontakion(t),
+             dismissalTheotokion: (t) => OctoV2.getV2DismissalTheotokion(t), hymnText },
 });
+const resolved = day.readings;
 
-check("governing rule", resolved.rule.section, "Fekula §1C");
+check("governing rule", resolved.rule.section, "§1C");
 check("order", resolved.order, "day-first");
 check("groups", resolved.groups.length, 2);
 check("epistles read", resolved.groups[0].items.length, 2);
 check("gospels read", resolved.groups[1].items.length, 2);
 check("epistle 1 is the Sunday's", resolved.groups[0].items[0].ref, "2 Corinthians 1:21-2:4");
-check("epistle 2 is the Archangel's", resolved.groups[0].items[1].ref, "Hebrews 2:2-10");
+checkTruthy("epistle 2 is the Archangel's (Hebrews 2:2-10)", resolved.groups[0].items[1].ref.startsWith("Hebrews 2:2-10"));
 check("menaion label is generic, not the full printed heading",
       resolved.groups[0].items[1].label, "Of the commemoration");
 check("gospel 1 is the Sunday's", resolved.groups[1].items[0].ref, "Matthew 22:1-14");
-check("gospel 2 is the Archangel's", resolved.groups[1].items[1].ref, "Luke 10:16-21");
+checkTruthy("gospel 2 is the Archangel's (Luke 10:16-21)", resolved.groups[1].items[1].ref.startsWith("Luke 10:16-21"));
 
 // Every reading must resolve to complete text, or the supplement refuses it.
 const flat = readingsInOrder(resolved);
@@ -100,16 +107,37 @@ for (const r of flat) {
   else checkTruthy(`${r.ref} has an announcement formula`, t.intro);
 }
 
-// The Octoechos side must supply the resurrectional hymns for Tone 5.
-await OctoV2.loadV2Tone(5);
-const resTrop = OctoV2.getV2Troparion(5);
-const resKont = OctoV2.getV2Kontakion(5);
-const dismTheot = OctoV2.getV2DismissalTheotokion(5);
-checkTruthy("Tone 5 resurrectional troparion", resTrop && hymnText(resTrop));
-checkTruthy("Tone 5 resurrectional kontakion", resKont && hymnText(resKont));
-checkTruthy("Tone 5 dismissal theotokion", dismTheot && hymnText(dismTheot));
-checkTruthy("Menaion troparion", entry.troparion && hymnText(entry.troparion));
-checkTruthy("Menaion kontakion", entry.kontakion_ode6 && hymnText(entry.kontakion_ode6));
+// The hymns: the Sunday's from the Octoechos, the commemoration's from the service.
+check("troparia on the sheet", day.troparia.map((x) => x.label.replace(/^Of the holy.*/, "Of the commemoration")).join(" | "),
+      "Of the Resurrection | Of the commemoration | Dismissal Theotokion");
+check("kontakia on the sheet", day.kontakia.length, 2);
+for (const h of [...day.troparia, ...day.kontakia]) checkTruthy(`${h.label}: text`, h.text && h.text.length > 20);
+check("Sunday hymns are in the tone of the week", day.troparia[0].tone, 5);
+check("the commemoration is named by its short name, not the printed title",
+      day.saint, "The holy Archangel Michael and the holy Martyr Eudoxius and those with him");
+check("rank line", day.rankLabel, "Six-Stichera · Fekula §2C");
+
+// A polyeleos weekday (16 Nov, Apostle Matthew): Fekula §2E reads the day's and the
+// Menaion's; the sheet follows the same rule as the Liturgy.
+{
+  const s16 = servicesOf((await loadMenaionV2Month("11"))["11-16"], "11-16")[0];
+  const d16 = buildBulletinDay({ liturgicalData: { dow: 1, season: "ordinary", tone: 7 }, service: s16, entrance: entrancePlan(s16.c, s16.path, {}),
+    liturgy: liturgyPlan(s16.c, s16.path), dailyReading: { e: "1 Thessalonians 1:1-5", g: "Luke 12:13-15, 22-31" }, sources: { hymnText } });
+  check("16 Nov rule", d16.readings.rule.section, "§2E");
+  check("16 Nov epistles (day, then the Apostle's)", d16.readings.groups[0].items.map((x) => x.source).join(","), "day,menaion");
+  check("16 Nov: no Sunday hymns on a weekday", d16.troparia.length, 1);
+}
+// 25 Nov (weekday): the order ODS vol. III prints is not applied here without the
+// order; with it the sheet lists three Epistles.
+{
+  const { ods3OrderFor } = await import("../src/data/ods_v3/orders.js");
+  const s25 = servicesOf((await loadMenaionV2Month("11"))["11-25"], "11-25")[0];
+  const d25 = buildBulletinDay({ liturgicalData: { dow: 3, season: "apodosis", tone: 8, feastPeriod: { periodType: "apodosis", feast: { forLord: false } } }, service: s25,
+    entrance: entrancePlan(s25.c, s25.path, { order: ods3OrderFor(s25.path, 3) }), liturgy: liturgyPlan(s25.c, s25.path),
+    dailyReading: { e: "2 Thessalonians 2:1-12", g: "Luke 12:48-59" }, sources: { hymnText } });
+  check("25 Nov epistles (ODS vol. III: day, feast, hieromartyrs)", d25.readings.groups[0].items.length, 3);
+  check("25 Nov troparia: the feast's, then the saints'", d25.troparia.map((x) => x.label.slice(0, 12)).join(" | "), "Of the feast | Of Clement a");
+}
 
 // ─── The counter-case: same rank, no Menaion readings ──────────────────────
 // 05-23, Michael the Confessor of Synada: also six_stichera, also §2C, but its
@@ -131,7 +159,7 @@ const r23 = readingsForDay({
   dailyReading: { e: "Romans 5:1-10", g: "Matthew 6:22-33" },
   feastReading: hasOwn23 ? { e: may23.feast_e, g: may23.feast_g } : null,
 });
-check("05-23 cites the same rule as 09-06", r23.rule.section, resolved.rule.section);
+check("05-23 cites §1C (the retired V1 path, until May is in Menaion V2)", r23.rule.section, "Fekula §1C");
 check("05-23 reads one epistle", r23.groups[0].items.length, 1);
 check("05-23 reads one gospel", r23.groups[1].items.length, 1);
 check("05-23 has no Menaion readings", r23.hasMenaionReadings, false);
@@ -169,7 +197,7 @@ if (SHOW) {
   console.log("BULLETIN — Sunday, September 6, 2026");
   console.log("14th Sunday after Pentecost · Tone 5 · Six-Stichera · Fekula §2C");
   console.log("─".repeat(72));
-  console.log("\nCOMMEMORATION\n  " + entry.saint);
+  console.log("\nCOMMEMORATION\n  " + day.saint);
   console.log("\nREADINGS AT THE LITURGY");
   for (const g of resolved.groups) {
     console.log("  " + g.label);
@@ -177,13 +205,9 @@ if (SHOW) {
   }
   console.log(`  ${resolved.rule.section}: “${resolved.rule.quote}”`);
   console.log("\nTROPARIA");
-  console.log("  Of the Resurrection, Tone 5\n    " + hymnText(resTrop).slice(0, 150) + "…");
-  console.log(`  Of the commemoration, Tone ${entry.troparion.tone}\n    ` +
-              hymnText(entry.troparion).slice(0, 150) + "…");
+  for (const h of day.troparia) console.log(`  ${h.label}, Tone ${h.tone}\n    ` + h.text.slice(0, 150) + "…");
   console.log("\nKONTAKIA");
-  console.log("  Of the Resurrection, Tone 5\n    " + hymnText(resKont).slice(0, 150) + "…");
-  console.log(`  Of the commemoration, Tone ${entry.kontakion_ode6.tone}\n    ` +
-              hymnText(entry.kontakion_ode6).slice(0, 150) + "…");
+  for (const h of day.kontakia) console.log(`  ${h.label}, Tone ${h.tone}\n    ` + h.text.slice(0, 150) + "…");
   console.log("\nREADINGS IN FULL (supplement)");
   for (const r of flat) {
     const t = resolveText(r.ref);

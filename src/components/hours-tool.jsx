@@ -16,6 +16,7 @@ import { stripCaret, ocaVespersReadingsFor, ocaLiturgyPropersFor } from '../data
 import { ocaReadingPractice } from '../lib/liturgy-propers.js';
 import { loadMenaionV2Month, loadMenaionV2General } from '../data/menaion_v2/index.js';
 import { ods3OrderFor } from '../data/ods_v3/orders.js';
+import { buildBulletinDay } from '../lib/bulletin-day.js';
 import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor, liturgyPlan as v2LiturgyPlan, entrancePlan as v2EntrancePlan, shown as v2Shown, dismissalOf as v2DismissalOf } from '../data/menaion_v2/adapter.js';
 import { TEMPLE_INDEX } from '../data/temple_index.js';
 import Bulletin from './bulletin.jsx';
@@ -15949,88 +15950,22 @@ export default function App() {
   // the component so the bulletin stays a renderer: it prints what it is given
   // and resolves nothing on its own.
   const bulletinDay = (() => {
-    const entry = selectedMenaionEntry || null;
-    const tone = liturgicalData.tone;
-    const saintRaw = entry && entry.saint && !String(entry.saint).startsWith("absent")
-      ? entry.saint : null;
-
-    const readings = readingsForDay({
-      liturgicalData,
-      menaionEntry: entry,
-      dailyReading,
-      feastReading,
+    // src/lib/bulletin-day.js: the Menaion V2 service through the Liturgy's own plans.
+    const other = v2DaySvc ? v2ServicesOf((_menaionV2Cache[v2DaySvc.path.slice(0, 2)] || {})[v2DaySvc.path.slice(0, 5)], v2DaySvc.path.slice(0, 5)).find(x => x.path !== v2DaySvc.path) : null;
+    const day = buildBulletinDay({
+      liturgicalData, service: v2DaySvc, entrance: v2Entrance, liturgy: v2Liturgy,
+      otherName: other ? (other.c.name || null) : ((!v2DaySvc && services.length > 1 && services[1] && services[1].saint) || null),
+      legacy: v2DaySvc ? null : (selectedMenaionEntry || null), dailyReading, feastReading,
+      sources: { resTroparion: srcResTroparion, sunKontakion: srcSunKontakion, dismissalTheotokion: srcDismissalTheot, hymnText },
     });
-
-    const troparia = [];
-    const kontakia = [];
-    const extras = [];
-
-    if (liturgicalData.season === "sunday" && tone) {
-      const t = srcResTroparion(tone);
-      if (t) troparia.push({ label: "Of the Resurrection", tone, text: hymnText(t) });
-    }
-    if (entry && entry.troparion) {
-      troparia.push({
-        label: saintRaw ? `Of ${saintRaw}` : "Of the commemoration",
-        tone: entry.troparion.tone, text: hymnText(entry.troparion),
-      });
-    }
-    if (entry && entry.troparion_second) {
-      troparia.push({ label: "Second troparion", tone: entry.troparion_second.tone,
-                      text: hymnText(entry.troparion_second) });
-    }
-    if (liturgicalData.season === "sunday" && tone) {
-      const th = srcDismissalTheot(tone);
-      if (th) troparia.push({ label: "Dismissal Theotokion", tone, text: hymnText(th) });
-    }
-
-    if (liturgicalData.season === "sunday" && tone) {
-      const k = srcSunKontakion(tone);
-      if (k) kontakia.push({ label: "Of the Resurrection", tone, text: hymnText(k) });
-    }
-    const menaionKontakion = (entry && (entry.kontakion_ode6 || entry.kontakion_ode3)) || null;
-    if (menaionKontakion) {
-      kontakia.push({
-        label: saintRaw ? `Of ${saintRaw}` : "Of the commemoration",
-        tone: menaionKontakion.tone, text: hymnText(menaionKontakion),
-      });
-    }
-
-    // Broadsheet only — the half sheet has no room for these.
-    if (entry && entry.aposticha_glory) {
-      extras.push({ label: "Glory at the Aposticha", tone: entry.aposticha_glory.tone,
-                    text: hymnText(entry.aposticha_glory) });
-    }
-    if (entry && entry.exapostilarion) {
-      extras.push({ label: "Exapostilarion", text: hymnText(entry.exapostilarion) });
-    }
-    if (entry && entry.prokeimenon_text) {
-      extras.push({ label: "Prokeimenon of the commemoration", tone: entry.prokeimenon_tone,
-                    text: entry.prokeimenon_text });
-    }
-    if (entry && entry.communion_verse) {
-      extras.push({ label: "Communion verse", text: entry.communion_verse });
-    }
-
-    const rankLabel = entry && entry.rank
-      ? String(entry.rank).replace(/_/g, "-").replace(/\b\w/g, (c) => c.toUpperCase())
-      : null;
-
     return {
       dateLabel: date.toLocaleDateString("en-US",
         { weekday: "long", year: "numeric", month: "long", day: "numeric" }),
       layer: (liturgicalData.namedDay && liturgicalData.namedDay.name)
         || (liturgicalData.pentecostWeekInfo && liturgicalData.pentecostWeekInfo.sundayLabel)
         || liturgicalData.seasonNote || liturgicalData.dayName,
-      toneLabel: tone ? `Tone ${tone}` : null,
-      rankLabel: [rankLabel, entry && entry.fekula_section ? `Fekula §${entry.fekula_section}` : null]
-        .filter(Boolean).join(" · ") || null,
-      saint: saintRaw || "No commemoration encoded for this date",
-      secondSaint: (services.length > 1 && services[1] && services[1].saint) || null,
-      readings,
-      troparia,
-      kontakia,
-      extras,
+      toneLabel: liturgicalData.tone ? `Tone ${liturgicalData.tone}` : null,
+      ...day,
       version: RELEASE_NOTES[0].version,
     };
   })();
