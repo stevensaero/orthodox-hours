@@ -47,11 +47,15 @@ function Card({ id, m, d, set }) {
         <strong style={{ color: C.gold, fontSize: "0.82rem" }}>{m.first.head || 'no heading'}</strong>
         <span>OCA text of {m.dates.map((x) => `${x.slice(5, 7)}/${x.slice(7, 9)}/${x.slice(0, 4)}`).slice(0, 3).join(', ')}{m.dates.length > 3 ? ` and ${m.dates.length - 3} more` : ''}</span>
         <span>printed {m.prints}×</span>
-        <a href={`/orthodox-hours/menaion-v2?oca=${encodeURIComponent(m.first.doc)}&from=tool`} style={{ color: C.gold }}>open the OCA text ↗</a>
+        <a href={`/orthodox-hours/menaion-v2?oca=${encodeURIComponent(m.first.doc)}&at=${id}&from=tool`} style={{ color: C.gold }}
+           title="Opens the whole OCA service text at this hymn, so you can see where in the service it stands">see it in the OCA text ↗</a>
         {state && <span style={{ marginLeft: "auto", color: state === 'confirm' ? C.green : state === 'none' ? C.inkMid : C.amber, fontWeight: 700 }}>
           {state === 'confirm' ? 'confirmed' : state === 'none' ? 'no mate' : 'candidate rejected'} (not yet sent)</span>}
       </div>
       <div style={{ fontFamily: SERIF, fontSize: "0.95rem", lineHeight: 1.55, color: C.ink, margin: "8px 0 4px" }}><OcaText text={m.text} /></div>
+      {m.sections && m.sections.length > 0 && (
+        <div style={{ fontSize: "0.74rem", color: C.inkMid, margin: "2px 0" }}>Where the OCA prints it: <strong>{m.sections.join(' · ')}</strong></div>
+      )}
       <div style={{ fontSize: "0.72rem", color: C.inkMid, margin: "8px 0 2px" }}>
         Held because: {m.why.join('; ')}. <span style={{ color: C.inkLight }}>{m.evidence.join(' · ')}</span>
       </div>

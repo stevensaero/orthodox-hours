@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.55.1** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
+**Tool version: v0.55.2** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,16 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### v0.55.2 — match review: the hymn in its place in the OCA text (15 Nov 2026)
+
+Bill: placement narrows the candidates (LIC vs Aposticha). The card's link is now
+`/menaion-v2?oca=<stem>&at=<hymn id>`: `OcaDocView focusId` highlights every
+place the document prints that hymn and scrolls to the first (a query
+parameter, not a hash: the viewer reads a hash as a Menaion path). Opened on an
+OCA text alone, the rail stands at that text's date. Each review entry also
+carries `sections` (the division headings the hymn is printed under), shown on
+the card as "Where the OCA prints it". Checked in headless Chrome.
 
 ### v0.55.1 — the match review joins "Help improve the tool" (15 Nov 2026)
 

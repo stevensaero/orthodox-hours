@@ -255,6 +255,7 @@ export default function MenaionV2Browser() {
   const [ocaMap, setOcaMap] = useState(null);         // Map<text key, OCA hymn> for the commemoration on the page
   const [ocaDoc, setOcaDoc] = useState(null);         // an OCA service text opened whole (its file stem)
   const [ocaListOpen, setOcaListOpen] = useState(false);
+  const [ocaFocus, setOcaFocus] = useState(null);     // an OCA hymn id to show in place (?at=, from the review page)
   const [q, setQ] = useState('');
   const [results, setResults] = useState(null);
   const headerRef = useRef(null);
@@ -267,7 +268,9 @@ export default function MenaionV2Browser() {
     const p = new URLSearchParams(window.location.search);
     const comm = p.get('comm');
     const oca = p.get('oca');
-    if (oca && ocaDocInfo(oca)) setOcaDoc(oca);
+    if (oca && ocaDocInfo(oca)) { setOcaDoc(oca); const at = p.get('at'); if (at && /^o[0-9a-f]{10}$/.test(at)) setOcaFocus(at); }
+    // Opened on an OCA text alone: stand the rail at that text's own date.
+    if (oca && ocaDocInfo(oca) && !comm) { const k = ocaDocInfo(oca).key; setMm(k.slice(0, 2)); setDateKey(k); }
     if (comm && /^\d{2}-\d{2}$/.test(comm)) { setMm(comm.slice(0, 2)); setDateKey(comm); }
     const hash = window.location.hash ? decodeAnchor(window.location.hash.slice(1)) : '';
     if (hash) {
@@ -671,7 +674,7 @@ export default function MenaionV2Browser() {
                 <div style={{ textAlign: "right", fontSize: "0.72rem", marginBottom: "6px" }}>
                   <span onClick={() => setOcaDoc(null)} style={{ color: C.gold, cursor: "pointer", borderBottom: `1px dotted ${C.gold}` }}>← back to the Menaion</span>
                 </div>
-                <OcaDocView stem={ocaDoc} />
+                <OcaDocView stem={ocaDoc} focusId={ocaFocus} />
               </div>
             ) : generalType && entry ? (
               audit ? (

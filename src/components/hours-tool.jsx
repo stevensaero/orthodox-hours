@@ -8534,6 +8534,19 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.55.2",
+    date: "November 2026",
+    summary: "OCA match review: see the hymn in its place in the OCA text",
+    items: [
+      "On a review card, 'see it in the OCA text' now opens the whole OCA service text at that " +
+      "hymn, highlighted and scrolled into view, so you can see whether it stands at 'Lord, I " +
+      "call', the Aposticha, the Litya or elsewhere. If the text prints the hymn more than " +
+      "once, each place is marked.",
+      "Each card also says where the OCA prints the hymn ('Where the OCA prints it: " +
+      "Aposticha'), without leaving the page.",
+    ],
+  },
+  {
     version: "v0.55.1",
     date: "November 2026",
     summary: "The OCA match review is now on the 'Help improve the tool' page, and decisions can be e-mailed",

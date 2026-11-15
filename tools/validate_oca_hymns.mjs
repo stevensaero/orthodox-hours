@@ -101,7 +101,7 @@ check('matches_human', OCA_MATCHES_HUMAN, 'human');
 check('matches_review', OCA_MATCHES_REVIEW, null);
 // The review page reads matches_review.js and nothing else: each entry must carry what it shows and what a decision needs.
 for (const [id, m] of Object.entries(OCA_MATCHES_REVIEW)) {
-  if (!m.text || !m.mateText || !m.first?.doc || !Array.isArray(m.why) || !m.why.length || !Array.isArray(m.dates)) E(`matches_review ${id}: missing what the review page shows`);
+  if (!m.text || !m.mateText || !m.first?.doc || !Array.isArray(m.why) || !m.why.length || !Array.isArray(m.dates) || !Array.isArray(m.sections)) E(`matches_review ${id}: missing what the review page shows`);
   for (const o of m.others ?? []) if (!o.text || !o.mate || !pool.hymns.has(o.mateHash)) E(`matches_review ${id}: a candidate is incomplete`);
 }
 for (const [id, m] of Object.entries(OCA_MATCHES_HUMAN)) if ('mate' in m && (id in OCA_MATCHES_AUTO || id in OCA_MATCHES_REVIEW)) E(`${id}: decided by a person but still in a generated file (run tools/match_oca_hymns.mjs)`);

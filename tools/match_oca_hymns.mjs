@@ -180,6 +180,8 @@ for (const o of [...oca.values()].sort((a, b) => a.id.localeCompare(b.id))) {
         closerElsewhere ? `a Menaion hymn in Tone ${[...closerElsewhere.c.tones].join('/')} is closer in wording (${round(closerElsewhere.score)}): ${closerElsewhere.c.paths[0].path}` : null].filter(Boolean),
       // Everything the review page shows, so it loads this one file and nothing else.
       text: o.text, prints: o.prints.length, dates: [...new Set(o.prints.map((p) => p.doc.slice(0, 9)))], mateText: c.text, mateTones: [...c.tones],
+      // Where in the service the OCA prints it (the division it stands under), which narrows the candidates.
+      sections: [...new Set(o.prints.map((p) => (p.section || '').replace(/^\(|\)$/g, '').replace(/^"|"$/g, '').replace(/\.\.\." Tone \d$/, '...').trim()).filter(Boolean))].slice(0, 4),
       others: rivals.slice(0, 3).map((r) => { const m2 = home(r.c.paths.filter((p) => tones.includes(p.tone))) ?? home(r.c.paths);
         return { mate: `${m2.book}:${m2.path}`, mateHash: r.c.hash, score: round(r.score), text: r.c.text, tones: [...r.c.tones] }; }) };
     stats.review++;
