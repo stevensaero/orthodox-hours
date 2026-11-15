@@ -6,7 +6,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { loadOcaDoc, ocaDocInfo, stripCaret } from '../data/oca_hymns/index.js';
 
 const SERIF = "Georgia, 'Times New Roman', serif";
-const C = { ink: "#1C1008", inkMid: "#5C4A1E", inkLight: "#9A8A70", gold: "#8B6914", border: "#E0D5BC", rubricBg: "#F5F0E3" };
+const C = { ink: "#1C1008", inkMid: "#5C4A1E", inkLight: "#9A8A70", gold: "#8B6914", border: "#E0D5BC", rubricBg: "#F5F0E3", red: "#A03030" };
 
 /** A [bracketed] syllable is the OCA's pointing: underlined, without the brackets. */
 export function Pointed({ text }) {
@@ -28,11 +28,14 @@ function Lines({ text }) {
 
 /**
  * @param stem     the document
+ * @param year     the year the reader stands in. A text of another year is an
+ *                 ARCHIVE record and says so loudly: it was assembled for its
+ *                 date in its year only (ruling, 15 Nov 2026).
  * @param focusId  an OCA hymn id: every place the document prints that hymn is
  *                 highlighted and the first is scrolled to (the review page's
  *                 "open the OCA text", so its place in the service can be seen)
  */
-export default function OcaDocView({ stem, focusId = null }) {
+export default function OcaDocView({ stem, focusId = null, year = new Date().getFullYear(), stickyTop = 0 }) {
   const [doc, setDoc] = useState(undefined);
   const first = useRef(null);
   useEffect(() => { let live = true; setDoc(undefined); loadOcaDoc(stem).then((d) => { if (live) setDoc(d ?? null); }); return () => { live = false; }; }, [stem]);
@@ -40,14 +43,27 @@ export default function OcaDocView({ stem, focusId = null }) {
   if (doc === undefined) return <div style={{ color: C.inkLight, fontStyle: "italic" }}>loading…</div>;
   if (doc === null) return <div style={{ color: C.inkLight, fontStyle: "italic" }}>That OCA service text is not captured.</div>;
   const info = ocaDocInfo(stem);
+  const archive = info.year !== year;
+  const when = new Date(info.date + "T12:00:00").toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
   let seen = 0;
   const hits = focusId ? doc.blocks.filter((b) => b.k === 'text' && b.id === focusId).length : 0;
   return (
     <div style={{ fontFamily: SERIF, color: C.ink }}>
+      {archive && (
+        <div role="alert" style={{ border: `2px solid ${C.red}`, background: "#FBEDEA", color: C.red, padding: "10px 12px", marginBottom: "10px", borderRadius: "3px", lineHeight: 1.5,
+                                   position: "sticky", top: stickyTop, zIndex: 1, boxShadow: "0 -8px 0 #fff" }}>
+          <div style={{ fontWeight: 700, fontSize: "0.9rem", letterSpacing: "0.04em" }}>ARCHIVE. Published by the OCA for {when}.</div>
+          <div style={{ fontSize: "0.8rem" }}>
+            This text was assembled for that day in that year only. The same date in another year will usually call for a
+            different service. <strong>Do not use it liturgically outside {info.year}.</strong>
+          </div>
+        </div>
+      )}
       <div style={{ fontSize: "0.72rem", color: C.inkMid, background: C.rubricBg, borderLeft: `2px solid ${C.gold}`, padding: "7px 10px", marginBottom: "14px", lineHeight: 1.5 }}>
-        <strong>OCA service text for {new Date(info.date + "T12:00:00").toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</strong>, shown
+        <strong>OCA service text for {when}</strong>, shown
         whole and in the order the OCA printed it ({doc.file}). Published by the Orthodox Church in America, Department of
-        Liturgical Music and Translations. It was issued for this date in {info.year}; the same date in another year is a different service.
+        Liturgical Music and Translations. {archive ? `It is kept here as a record of what the OCA appointed in ${info.year}.`
+          : `It was issued for this day in ${info.year}; the same date in another year is a different service.`}
       </div>
       {doc.blocks.map((b, i) => {
         if (b.k === 'heading') {

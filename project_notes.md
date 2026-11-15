@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.55.2** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
+**Tool version: v0.55.3** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,29 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### v0.55.3 — an OCA service text of another year is an ARCHIVE (15 Nov 2026)
+
+**RULED BY BILL, 15 Nov:** a match on day, month AND year is "the OCA text for this
+day"; the same date in another year is a historical record, and the tool must say
+so loudly: archived, not to be used liturgically outside the year it was published.
+"We can't assume the texts from year to year will ever match on the same day."
+
+- `menaion-v2-browser.jsx`: `year` = the year of `?date=YYYY-MM-DD` (the Hours tool
+  already sends it on every link) else the calendar year. Rail: "OCA text for this
+  day" only for `d.year === year`; otherwise "Archive: OCA text for Nov 15, 2026" in
+  red; the folded list marks other-year texts ARCHIVE.
+- `oca-doc-view.jsx`: props `year`, `stickyTop`; an other-year text carries a red
+  `role="alert"` notice that stays on screen while the text is read.
+- Hymn-by-hymn "Prefer OCA texts" is untouched (a matched hymn is reusable in any year).
+- Viewer mount gate: cases for the same year, another year (rail and text), no year.
+- **OPEN, same flaw, NOT fixed (reported to Bill, awaiting his word):** the Hours
+  tool takes two DOCUMENT-level things by month and day alone, through `slots.js`:
+  `ocaVespersReadingsFor(key)` (the Vespers readings shown under Prefer OCA,
+  hours-tool `_ocaReadingsCache`) and `ocaLiturgyPropersFor(key)` (the OCA-practice
+  notes at the Liturgy). In 2027 these would apply the 2026 document. They need the
+  year of the service date; the appointed troparion/kontakion in `slots.js` is a
+  date-in-year appointment too and wants the same look.
 
 ### v0.55.2 — match review: the hymn in its place in the OCA text (15 Nov 2026)
 

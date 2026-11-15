@@ -84,16 +84,29 @@ await visit('https://example.org/orthodox-hours/menaion-v2', 'no date selected',
 // Prefer OCA on: a matched hymn shows the OCA's words (no brackets: they are
 // underlines) with its mark, and the Menaion's own words for that hymn are not
 // the ones on the page. Off: the page is the printed book again.
-const u = 'https://example.org/orthodox-hours/menaion-v2?comm=11-15';
+// The year is given, as the Hours tool gives it: an OCA text is "for this day" only in its own year.
+const u = 'https://example.org/orthodox-hours/menaion-v2?comm=11-15&date=2026-11-15';
 await visit(u, '11-15 prefer OCA on', null, { preferOca: true, wait: 400,
-  must: ['Prefer OCA texts', 'OCA 2026', 'The most wise Abíbus, the wondrous Samónas', 'OCA text for this day'], mustNot: ['The all-wise Abibus, * the wondrous Samonas', '[Gúr]ias'] });
+  must: ['Prefer OCA texts', 'OCA 2026', 'The most wise Abíbus, the wondrous Samónas', 'OCA text for this day'], mustNot: ['The all-wise Abibus, * the wondrous Samonas', '[Gúr]ias', 'Archive: OCA text'] });
+// Another year (ruling, 15 Nov 2026): the same date's text is an archive record, loudly so,
+// while a matched hymn is still shown hymn by hymn under "Prefer OCA texts".
+await visit('https://example.org/orthodox-hours/menaion-v2?comm=11-15&date=2027-11-15', '11-15 in 2027: rail', null, { preferOca: true, wait: 400,
+  must: ['Archive: OCA text for Nov 15, 2026', 'OCA 2026'], mustNot: ['OCA text for this day'] });
+await visit('https://example.org/orthodox-hours/menaion-v2?oca=2026-1115-texts-tt-&date=2027-11-15', '11-15 in 2027: the text', null, { wait: 300,
+  must: ['ARCHIVE. Published by the OCA for November 15, 2026.', 'Do not use it liturgically outside 2026.'] });
+await visit('https://example.org/orthodox-hours/menaion-v2?oca=2026-1115-texts-tt-&date=2026-11-15', '11-15 in 2026: the text', null, { wait: 300,
+  must: ['OCA service text for November 15, 2026', 'It was issued for this day in 2026'], mustNot: ['ARCHIVE.', 'Do not use it liturgically'] });
+// No year given: the calendar year stands in.
+{ const now = new Date().getFullYear() === 2026;
+  await visit('https://example.org/orthodox-hours/menaion-v2?comm=11-15', '11-15, no year given', null, { wait: 400,
+    must: [now ? 'OCA text for this day' : 'Archive: OCA text for Nov 15, 2026'], mustNot: [now ? 'Archive: OCA text' : 'OCA text for this day'] }); }
 await visit(u, '11-15 prefer OCA off', null, { preferOca: false, wait: 400,
   must: ['The all-wise Abibus, * the wondrous Samonas'], mustNot: ['OCA 2026', 'The most wise Abíbus'] });
 // Every captured OCA service text opens whole.
 const { ocaStems, loadOcaDoc, ocaTexts } = await import(join(ROOT, 'src/data/oca_hymns/index.js'));
 for (const stem of ocaStems()) {
   const last = ocaTexts(await loadOcaDoc(stem)).at(-1).text.replace(/[\[\]^]/g, '').split(/ \| | \/\/ /)[0];
-  await visit(`https://example.org/orthodox-hours/menaion-v2?oca=${encodeURIComponent(stem)}`, `OCA text ${stem}`, null, { wait: 250, must: ['OCA service text for', 'back to the Menaion', last] });
+  await visit(`https://example.org/orthodox-hours/menaion-v2?oca=${encodeURIComponent(stem)}&date=${stem.slice(0, 4)}-01-01`, `OCA text ${stem}`, null, { wait: 250, must: ['OCA service text for', 'back to the Menaion', last] });
 }
 
 rmSync(TMP, { recursive: true, force: true }); rmSync(OUT, { recursive: true, force: true });

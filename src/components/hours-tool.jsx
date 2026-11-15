@@ -8534,6 +8534,20 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.55.3",
+    date: "November 2026",
+    summary: "An OCA service text of another year is marked as an archive",
+    items: [
+      "The Menaion now knows the year you came from in the Hours tool (or the calendar year when " +
+      "opened on its own). 'OCA text for this day' is offered only for a text of that year.",
+      "A text for the same date in another year is listed in red as 'Archive: OCA text for …', and " +
+      "when opened carries a notice that stays on screen: it was assembled for that day in that " +
+      "year only and is not to be used liturgically outside it.",
+      "'Prefer OCA texts' is unchanged: a single matched hymn is the same hymn in any year and " +
+      "keeps its 'OCA 2026' mark.",
+    ],
+  },
+  {
     version: "v0.55.2",
     date: "November 2026",
     summary: "OCA match review: see the hymn in its place in the OCA text",

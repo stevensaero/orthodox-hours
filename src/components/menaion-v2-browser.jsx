@@ -256,6 +256,13 @@ export default function MenaionV2Browser() {
   const [ocaDoc, setOcaDoc] = useState(null);         // an OCA service text opened whole (its file stem)
   const [ocaListOpen, setOcaListOpen] = useState(false);
   const [ocaFocus, setOcaFocus] = useState(null);     // an OCA hymn id to show in place (?at=, from the review page)
+  // The year the reader stands in: the Hours tool's date (?date=YYYY-MM-DD) when it
+  // sent one, else the calendar year. An OCA service text belongs to its date IN ITS
+  // YEAR only (ruling, 15 Nov 2026); one of another year is an archive record.
+  const [year] = useState(() => {
+    try { const m = /^(\d{4})-\d\d-\d\d$/.exec(new URLSearchParams(window.location.search).get('date') || ''); if (m) return Number(m[1]); } catch { /* no window */ }
+    return new Date().getFullYear();
+  });
   const [q, setQ] = useState('');
   const [results, setResults] = useState(null);
   const headerRef = useRef(null);
@@ -514,9 +521,16 @@ export default function MenaionV2Browser() {
                title="The service texts the OCA published, whole and in their printed order" onClick={() => setOcaListOpen(!ocaListOpen)}>
             {ocaListOpen ? "▾" : "▸"} OCA SERVICE TEXTS <span style={{ letterSpacing: 0, color: C.inkLight }}>({ocaDocs.length})</span>
           </div>
-          {ocaToday.map(d => (
+          {ocaToday.filter(d => d.year === year).map((d, _, cur) => (
             <div key={d.stem} onClick={() => { setOcaDoc(d.stem === ocaDoc ? null : d.stem); setRailOpen(false); }} style={railItem(d.stem === ocaDoc)}>
-              OCA text for this day{ocaToday.length > 1 ? ` — ${ocaLabel(d)}` : ''}
+              OCA text for this day{cur.length > 1 ? ` — ${ocaLabel(d)}` : ''}
+            </div>
+          ))}
+          {ocaToday.filter(d => d.year !== year).map(d => (
+            <div key={d.stem} onClick={() => { setOcaDoc(d.stem === ocaDoc ? null : d.stem); setRailOpen(false); }}
+                 title={`Published for this date in ${d.year} only. Not the service for ${year}.`}
+                 style={{ ...railItem(d.stem === ocaDoc), color: C.red, borderColor: d.stem === ocaDoc ? C.red : "transparent" }}>
+              Archive: OCA text for {ocaLabel(d)}
             </div>
           ))}
           <a href="/orthodox-hours/oca-matches?from=tool" style={{ ...railItem(false), display: "block", textDecoration: "none" }}
@@ -525,7 +539,9 @@ export default function MenaionV2Browser() {
           </a>
           <div style={{ display: ocaListOpen ? "block" : "none" }}>
             {ocaDocs.map(d => (
-              <div key={d.stem} onClick={() => { setOcaDoc(d.stem === ocaDoc ? null : d.stem); setRailOpen(false); }} style={railItem(d.stem === ocaDoc)}>{ocaLabel(d)}</div>
+              <div key={d.stem} onClick={() => { setOcaDoc(d.stem === ocaDoc ? null : d.stem); setRailOpen(false); }} style={railItem(d.stem === ocaDoc)}>
+                {ocaLabel(d)}{d.year !== year && <span style={{ color: C.red, fontSize: "0.66rem", letterSpacing: "0.06em" }}> ARCHIVE</span>}
+              </div>
             ))}
           </div>
           <div style={railLabel}>OPEN QUESTIONS</div>
@@ -674,7 +690,7 @@ export default function MenaionV2Browser() {
                 <div style={{ textAlign: "right", fontSize: "0.72rem", marginBottom: "6px" }}>
                   <span onClick={() => setOcaDoc(null)} style={{ color: C.gold, cursor: "pointer", borderBottom: `1px dotted ${C.gold}` }}>← back to the Menaion</span>
                 </div>
-                <OcaDocView stem={ocaDoc} focusId={ocaFocus} />
+                <OcaDocView stem={ocaDoc} focusId={ocaFocus} year={year} stickyTop={`calc(var(--hours-return-strip-h, 0px) + ${headerH + 6}px)`} />
               </div>
             ) : generalType && entry ? (
               audit ? (
