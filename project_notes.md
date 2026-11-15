@@ -371,7 +371,30 @@ DONE on the branch — the Hours:
   the Menaion's at the 1st and 6th and the Sunday at the 3rd and 9th (1C-1E).
 - Sundays in a forefeast or afterfeast had no rule at all (1F1-1F3 now).
 
-NEXT on the branch, in order: Vespers section by section (Lord I call, Litiya,
+DONE on the branch — Vespers, "Lord, I have cried", Glory and Both now (14 Nov):
+- `src/lib/vespers-propers.js` `resolveLicClosers`: PRINTED FIRST. (1) the page
+  prints the hymn: that hymn; (2) the page prints only a rubric: the Octoechos
+  in the tone the rubric names; (3) nothing printed: Fekula's rule. Saturday
+  evening lays ch. 1 over all three (Glory the saint's doxasticon, else the
+  feast's; Both now the dogmaticon in the tone of the week). Tuesday and
+  Thursday evenings take the printed stavrotheotokion; Friday evening the
+  dogmatic theotokion in the tone of the week.
+- **Gate `tools/test_menaion_v2_vespers.mjs`: the OCA texts are the answer key.
+  24 of 24 places on the 12 shared dates agree in tone and kind** (`--table`).
+  A disagreement fails unless listed in `KNOWN` with a reason. It grows with
+  the OCA folder.
+- `assembleVespers`: the Sunday and weekday closer blocks are replaced by
+  `emitLicClosers()`. The Pentecostarion block is unchanged and marked so.
+- `tools/test_hours_mount.mjs` now opens Vespers on two dates.
+- MID-STATE on the branch: the stichera before the Glory still come from V1,
+  so a November Vespers shows Octoechos stichera with V2 closers, and a V1-only
+  date (May-October) has lost its V1 doxasticon. Both end when the stichera
+  section is rewritten. The branch is not live.
+- Not yet checked against a source: Friday evening in a forefeast or afterfeast
+  (2G1/2G2). 2G3 states it; the others take what the page prints.
+
+NEXT on the branch, in order: the rest of Lord I call (the stichera and their
+count), then Litiya, Aposticha, troparia. Original sizing: Vespers section by section (Lord I call, Litiya,
 Aposticha, troparia; ~1,400 of 1,920 lines), each gated against the OCA texts;
 then Typica and Liturgy propers, dismissal `name`, bulletin; then the Prefer
 OCA toggle, the service chooser, merge, retire V1. Sized in
