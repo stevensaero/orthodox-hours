@@ -6,7 +6,7 @@
 //   node tools/test_menaion_v2_vespers.mjs [--table]
 import { loadMenaionV2Month } from '../src/data/menaion_v2/index.js';
 import { servicesOf } from '../src/data/menaion_v2/adapter.js';
-import { resolveLicClosers, resolveLicStichera, resolveAposticha } from '../src/lib/vespers-propers.js';
+import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya } from '../src/lib/vespers-propers.js';
 import { loadOcaDoc, ocaStems } from '../src/data/oca_hymns/index.js';
 import { OCA_SLOTS } from '../src/data/oca_hymns/slots.js';
 import * as OctoV2 from '../src/data/octoechos_v2/adapter.js';
@@ -95,8 +95,32 @@ function ocaAposticha(doc) {
   }
   return out;
 }
+// The OCA's Litya: the tones of its stichera, then Glory and Both now.
+function ocaLitya(doc) {
+  const out = { stichera: [] }; let inL = false, after = null, seen = false;
+  for (const b of doc.blocks) {
+    const t = b.text.replace(/[[\]]/g, '');
+    if (b.k === 'heading' && /^Litya/i.test(t)) { inL = true; seen = true; continue; }
+    if (!inL) continue;
+    if (b.k === 'heading' && !/^Tone \d/.test(t) && !/^\(/.test(t)) break;
+    if (b.k !== 'heading' && /Glory to the Father.*now and ever/i.test(t)) after = 'both';
+    else if (b.k !== 'heading' && /^Glory to the Father/i.test(t)) after = 'glory';
+    else if (b.k !== 'heading' && /^now and ever/i.test(t)) after = after === 'glory' && !out.glory ? 'both' : 'bothNow';
+    const h = b.k === 'heading' && t.match(/^Tone (\d)\s*(.*)$/);
+    if (!h) continue;
+    const slot = { tone: Number(h[1]), kind: /Theotokion/i.test(h[2]) ? 'theotokion' : /Feast|Forefeast/i.test(h[2]) ? 'feast' : 'doxasticon', head: t };
+    if (!after) out.stichera.push(slot.tone); else if (after === 'glory') out.glory = slot; else { out.bothNow = slot; out.combined = after === 'both'; }
+    after = null;
+  }
+  return seen ? out : null;
+}
 // Disagreements that are understood and accepted. Each needs a reason.
 const KNOWN = {
+  '11-14 litiya Glory': 'the page prints stichera only; the OCA adds a Glory (Tone 2) the page does not print. Printed-only is the ruling.',
+  '11-14 litiya Both now': 'as above: the OCA adds a Both now (Tone 2) the page does not print.',
+  '11-16 litiya Glory': 'as 14 Nov: the OCA adds a Glory (Tone 2) the page does not print.',
+  '11-16 litiya Both now': 'as 14 Nov: the OCA adds a Both now (Tone 2) the page does not print.',
+  '11-22 litiya': 'NOT BUILT: the page prints no Litiya; the OCA gives the Saturday-evening Litiya composed by Fekula ch. 1 from the feast.',
   '11-30 aposticha Glory': 'the OCA sings a different doxasticon here (Tone 3, "by Germanos"); the Menaion prints one in Tone 2. An OCA-layer matter, not a rule.',
   '11-30 aposticha Both now': 'follows from the Glory above: the OCA\'s Both now is in Tone 3, the Menaion\'s in Tone 2; both are of the forefeast.',
 };
@@ -121,6 +145,19 @@ for (const key of Object.keys(OCA_SLOTS).sort()) {
     rows.push(`| ${key} | ${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow]} | ${tone} | ${svc.c.rank} | ${place} | ${show(g)}${g ? ' (' + g.basis + ')' : ''} | ${show(w)} | ${ok ? 'agree' : KNOWN[id] ? 'KNOWN: ' + KNOWN[id] : 'DIFFER'} |`);
   }
   if (!got.bothNow?.node?.text) fail(`${key}: no Both now hymn resolved`);
+  // The Litiya: printed only.
+  { const li = resolveLitiya({ c: svc.c, base: svc.path }); const wl = ocaLitya(doc); const D = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow];
+    if (!!li !== !!wl) { checked++; const id = `${key} litiya`; if (!KNOWN[id]) fail(`${id}: tool ${li ? 'has one' : 'none'}, OCA ${wl ? 'has one' : 'none'}`); rows.push(`| ${key} | ${D} | ${tone} | ${svc.c.rank} | Litiya | ${li ? 'printed' : 'none'} | ${wl ? 'has one' : 'none'} | ${KNOWN[id] ? 'KNOWN' : 'DIFFER'} |`); }
+    else if (li) {
+      checked++; const mineL = [...new Set(li.stichera.map((x) => x.tone))].join(','); const theirsL = [...new Set(wl.stichera)].join(',');
+      if (mineL !== theirsL && !KNOWN[`${key} litiya stichera`]) fail(`${key} litiya stichera: tool tones ${mineL}, OCA tones ${theirsL}`);
+      rows.push(`| ${key} | ${D} | ${tone} | ${svc.c.rank} | Litiya stichera, tones | ${mineL} | ${theirsL} | ${mineL === theirsL ? 'agree' : 'DIFFER'} |`);
+      for (const [place, gg, w] of [['Glory', li.combined ? null : li.glory, wl.combined ? null : wl.glory], ['Both now', li.bothNow, wl.bothNow]]) {
+        checked++; const okL = same(gg, w) || (gg && w && gg.tone === w.tone && gg.kind === 'doxasticon' && w.kind === 'doxasticon'); const id = `${key} litiya ${place}`;
+        if (!okL && !KNOWN[id]) fail(`${id}: tool ${show(gg)}, OCA ${show(w)}${w ? ' ("' + w.head + '")' : ''}`);
+        rows.push(`| ${key} | ${D} | ${tone} | ${svc.c.rank} | Litiya ${place} | ${show(gg)} | ${show(w)} | ${okL ? 'agree' : KNOWN[id] ? 'KNOWN' : 'DIFFER'} |`);
+      }
+    } }
   // The Aposticha: whose stichera, the Glory, the Both now.
   const ap = resolveAposticha({ c: svc.c, base: svc.path, eveDow, tone, octo }); const wa = ocaAposticha(doc);
   const apFirst = ap.stichera.source === 'menaion' ? ap.stichera.items.find((x) => x.kind === 'sticheron')?.tone : tone;

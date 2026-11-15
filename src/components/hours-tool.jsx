@@ -11,7 +11,7 @@ import { assembleLiturgy, LITURGY_VIEW_DEFAULTS, insertAnchors } from '../lib/li
 import { DAILY_TROPARIA, DAILY_TROPARIA_SOURCE } from '../data/liturgy/daily_troparia.js';
 import { resolveLiturgyPropers } from '../lib/liturgy-propers.js';
 import { resolveHoursPropers } from '../lib/hours-propers.js';
-import { resolveLicClosers, resolveLicStichera, resolveAposticha } from '../lib/vespers-propers.js';
+import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya } from '../lib/vespers-propers.js';
 import { loadMenaionV2Month, loadMenaionV2General } from '../data/menaion_v2/index.js';
 import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor } from '../data/menaion_v2/adapter.js';
 import { TEMPLE_INDEX } from '../data/temple_index.js';
@@ -3103,7 +3103,9 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   const _fmt = pentEntry ? pentEntry.hours_format : null;
   const isSunday = season === "sunday" || _fmt === "pentecostarion_sunday" || _fmt === "all_saints_sunday";
   const christIsRisenActive = isPentecostarion && paschaOffset >= 7 && paschaOffset <= 38;
-  const rank = (menaionEntry && menaionEntry.rank) || "simple";
+  // Rank and section: from the Menaion V2 service. (V1's entry is read only where a
+  // date has no V2 service yet; that fallback goes when V1 is retired.)
+  const rank = (menaionV2 && menaionV2.c.rank) || (menaionEntry && menaionEntry.rank) || "simple";
   const isHighRank = rank === "polyeleos" || rank === "vigil" || rank === "great_feast";
   const isDoxOrAbove = rank === "doxology" || isHighRank;
   const fekulaSection = (() => {
@@ -3113,6 +3115,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       if (fmt === "pentecost") return "§4B15";
       return "§4A";
     }
+    if (menaionV2 && menaionV2.c.fekula_section) return "§" + menaionV2.c.fekula_section;
     if (!menaionEntry) return "§2A";
     // fekula_section_override: escape hatch for §2G afterfeast entries — see encoding_rule_v2.md
     if (menaionEntry.fekula_section_override) return "§" + menaionEntry.fekula_section_override;
@@ -4168,16 +4171,20 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   // NOTE: must check BOTH menaionEntry and pentEntry — Pentecostarion feasts
   // (P+35 Blind Man, P+39 Ascension, P+42 Holy Fathers, P+49 Pentecost,
   //  P+56 All Saints) carry has_litya: true on the pentEntry, not the menaionEntry.
-  const menaionHasLitya = menaionEntry && menaionEntry.has_litya === true;
+  // The Menaion's Litiya is whatever the V2 page prints, and no more (printed only:
+  // src/lib/vespers-propers.js resolveLitiya; ruled 14 Nov 2026).
+  const v2Litiya = menaionV2 ? resolveLitiya({ c: menaionV2.c, base: menaionV2.path }) : null;
+  const menaionHasLitya = !!v2Litiya;
   const pentHasLitya = pentEntry && pentEntry.has_litya === true;
   const hasLitya = menaionHasLitya || pentHasLitya;
   // Determine which entry supplies the Litiya texts:
   // - Pentecostarion governs when: it has has_litya AND menaion is set aside,
   //   OR the Menaion does not have its own Litiya (feast Litiya overrides saint Litiya)
   const litEntryIsPent = pentHasLitya && (!menaionHasLitya || !!pentEntry.menaion_set_aside);
-  const litEntry = litEntryIsPent ? pentEntry : menaionEntry;
+  const litEntry = litEntryIsPent ? pentEntry : null;
   if (hasLitya) {
-    const litSaint = litEntry.saint || litEntry.name || "the feast of the day";
+    const litSaint = litEntryIsPent ? (litEntry.saint || litEntry.name || "the feast of the day")
+      : [].concat(menaionV2.c.title || []).map((t) => t.text || t).join(" ");
 
     // Processional rubric
     elements.push({id:"v-litiya-rubric", type:"fixed", label:"Litiya",
@@ -4199,6 +4206,30 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         fekula:{section:fekulaSection, note:"We always chant first the first Litiya sticheron of the temple, unless it be one of the great feasts. — HTM Vespers"}});
     }
 
+    if (!litEntryIsPent) {
+      // Menaion V2: the stichera, Glory and Both now the page prints.
+      const litNote = (v2Litiya.rubric ? "The page: \u201c" + v2Litiya.rubric + "\u201d " : "") + "The Litiya as the Menaion prints it; nothing is supplied where the page is silent.";
+      v2Litiya.stichera.forEach((st, i) => {
+        elements.push({ id: "v-litiya-stich-" + i, type: "movable", label: i === 0 ? "Litiya Stichera" : "",
+          rubric: "Tone " + (st.tone || "?") + ":", text: st.text, source: "Menaion — " + litSaint,
+          ...(st.path ? { srcPath: st.path } : {}),
+          fekula: { section: fekulaSection, note: litNote } });
+      });
+      const litHymn = (slot, id, label) => ({ id, type: "movable", label, rubric: "Tone " + (slot.tone || "?") + ":",
+        text: slot.node.text, source: "Menaion — " + (slot.kind === "feast" ? "of the feast" : litSaint),
+        ...(slot.node.path ? { srcPath: slot.node.path } : {}), fekula: { section: fekulaSection, note: litNote } });
+      if (v2Litiya.glory) {
+        elements.push({ id: "v-litiya-glory-tag", type: "fixed", label: "", text: "Glory to the Father, and to the Son, and to the Holy Spirit.", source: "HTM Vespers" });
+        elements.push(litHymn(v2Litiya.glory, "v-litiya-glory", "Litiya Doxasticon (Glory…)"));
+      }
+      if (v2Litiya.bothNow) {
+        elements.push({ id: "v-litiya-bothnow-tag", type: "fixed", label: "",
+          text: v2Litiya.combined ? "Glory to the Father, and to the Son, and to the Holy Spirit, now and ever, and unto the ages of ages. Amen."
+                                  : "Both now and ever, and unto the ages of ages. Amen.", source: "HTM Vespers" });
+        elements.push(litHymn(v2Litiya.bothNow, "v-litiya-bothnow", v2Litiya.bothNow.kind === "feast" ? "Litiya sticheron of the feast" : "Litiya Theotokion (Both now…)"));
+      }
+    } else {
+    // PENTECOSTARION — unchanged from v0.52.2, not yet reworked (its data is in the old shape).
     // Litiya stichera from Menaion
     const litStichera = litEntry.litya_stichera;
     if (litStichera && litStichera.length > 0) {
@@ -4242,6 +4273,8 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         text: lbn.text,
         source: "Menaion — " + litSaint,
         fekula:{section:fekulaSection, note:"Litiya Both Now: theotokion from Menaion. — Fekula " + fekulaSection}});
+    }
+
     }
 
     // Litiya Petitions

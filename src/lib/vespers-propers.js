@@ -10,7 +10,7 @@
 // V1 went wrong here because it started at step 3.
 //
 // BUILT SO FAR: "Lord, I have cried" (stichera, Glory, Both now); the Aposticha
-// (whose stichera, Glory, Both now).
+// (whose stichera, Glory, Both now); the Litiya (what the page prints, and no more).
 const ROMAN = { I: 1, II: 2, III: 3, IV: 4, V: 5, VI: 6, VII: 7, VIII: 8 };
 const EVES = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri']; // the evening Vespers is sung on
 const isText = (n) => !!n && typeof n.text === 'string';
@@ -236,4 +236,28 @@ export function resolveAposticha({ c, base, eveDow, tone, octo }) {
     notes.push('No Octoechos theotokion was found for this tone and evening.');
   }
   return out(dox, fromOcto('theotokion', tone, octo.eveningApostichaTheotokion(tone, eve), 'rule'), 'Both now: the theotokion of the evening\'s Aposticha in the tone of the week, from the Octoechos.', !dox);
+}
+
+// ── The Litiya ──────────────────────────────────────────────────────────────
+// PRINTED ONLY (Bill, 14 Nov 2026): a Litiya is shown when the page prints one, with
+// the stichera, Glory and Both now the page prints, and nothing is supplied where
+// the page is silent. NOT BUILT: the Saturday-evening Litiya that Fekula ch. 1
+// composes from the temple's sticheron and stichera of the Aposticha.
+// Returns null, or { rubric, stichera: [{ text, tone, path }], glory, bothNow, combined }.
+export function resolveLitiya({ c, base }) {
+  const vname = c.great_vespers ? 'great_vespers' : 'vespers'; const v = c[vname] ?? {};
+  if (v.litiya == null) return null;
+  // Two stored shapes: the list itself, or { rubric, stichera } where the rubric sits inside.
+  const nested = !Array.isArray(v.litiya) && Array.isArray(v.litiya.stichera);
+  const list = nested ? v.litiya.stichera : [].concat(v.litiya);
+  const rubric = nested ? v.litiya.rubric : v.litiya_rubric;
+  let lastTone = rubricTone(rubric);
+  const stichera = list.filter(isText).map((n, i) => {
+    if (n.tone != null) lastTone = n.tone;
+    return { text: n.text, tone: lastTone, spec_mel: n.spec_mel ?? null, path: `${base}.${vname}.litiya${nested ? '.stichera' : ''}[${i}]` };
+  });
+  const slot = (key, kind) => (isText(v[key]) ? { kind, source: 'menaion', tone: v[key].tone ?? null, node: { ...v[key], path: `${base}.${vname}.${key}` }, basis: 'printed' } : null);
+  const glory = slot('litiya_glory', 'doxasticon');
+  const bothNow = slot('litiya_closer', v.litiya_closer?.type === 'of_the_feast' ? 'feast' : 'theotokion');
+  return { rubric: isText(rubric) ? rubric.text : null, stichera, glory, bothNow, combined: !glory && !!bothNow };
 }
