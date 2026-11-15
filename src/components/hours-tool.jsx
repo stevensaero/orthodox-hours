@@ -15,7 +15,7 @@ import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya,
 import { stripCaret, ocaVespersReadingsFor, ocaLiturgyPropersFor } from '../data/oca_hymns/index.js';
 import { ocaReadingPractice } from '../lib/liturgy-propers.js';
 import { loadMenaionV2Month, loadMenaionV2General } from '../data/menaion_v2/index.js';
-import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor, liturgyPlan as v2LiturgyPlan } from '../data/menaion_v2/adapter.js';
+import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor, liturgyPlan as v2LiturgyPlan, entrancePlan as v2EntrancePlan, shown as v2Shown } from '../data/menaion_v2/adapter.js';
 import { TEMPLE_INDEX } from '../data/temple_index.js';
 import Bulletin from './bulletin.jsx';
 
@@ -5465,7 +5465,7 @@ function buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, idP
 // Readings slot: Prokeimenon and Epistle/Gospel rubric noted but not rendered
 //   (readings engine FW-19/20 not yet built).
 
-function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode = false, templeDedication = null, menaionPlan = null, menaionRank = null, ocaPractice = null) {
+function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode = false, templeDedication = null, menaionPlan = null, menaionRank = null, ocaPractice = null, menaionEntrance = null) {
   // OCA practice is shown in the element's heading, where it is always visible: the
   // full order is rendered and each item says whether the OCA text for the day has it.
   const ocaTag = (oca) => (oca === "printed" ? " · OCA: sung" : oca === "not_printed" ? " · OCA: likely omitted" : "");
@@ -5554,7 +5554,7 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
         typicaProkSource: originToProkSource(p.origin, p.note),
         typicaProkDow: dowNumber,
         typicaTone: tone,
-        typicaRank: menaionEntry?.rank || 'simple',
+        typicaRank: menaionRank || 'simple',
       });
     });
   }
@@ -5637,7 +5637,7 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
             text: buildAlleluia(a), type: "movable", source: a.source,
             ...(a.path ? { srcPath: a.path } : {}),
             note: a.note, fekula: a.fekula,
-            alleluiaSource: alSource, alleluiaDow: dowNumber, alleluiaRank: menaionEntry?.rank || 'simple', alleluiaTone: tone });
+            alleluiaSource: alSource, alleluiaDow: dowNumber, alleluiaRank: menaionRank || 'simple', alleluiaTone: tone });
         });
       }
 
@@ -5834,8 +5834,14 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
     const dailyKontakia = TYPICA_KONTAKIA[dowNumber] || [];
     const dayKontakia = dailyKontakia.filter(k =>
       !k.label.startsWith("Both now") && !k.label.startsWith("Glory"));
-    const saint = menaionEntry || pentEntry;
-    const saintKontakion = saint?.kontakion_ode6;
+    // The saint's kontakion: what the Menaion V2 service gives the Liturgy
+    // (entrancePlan: the kontakion after Ode VI where two are printed, both where
+    // the page has two saints; the OCA's in its place when Prefer OCA is on). In
+    // the Pentecostarion with no Menaion service, the entry's own.
+    const saintKontakia = menaionEntrance
+      ? menaionEntrance.saints.kontakia.filter(k => k.node).map(k => ({ tone: k.node.tone, text: v2Shown(k.node), who: k.node.saint || null, path: k.node.path || null, oca: k.source === 'oca', general: k.source === 'general' }))
+      : (pentEntry && pentEntry.kontakion_ode6 ? [{ tone: pentEntry.kontakion_ode6.tone, text: pentEntry.kontakion_ode6.text, who: pentEntry.saint || null, path: null }] : []);
+    const saintTitle = (menaionEntrance && menaionEntrance.saintName) || (pentEntry && pentEntry.saint) || "Saint of the day";
     const isSaturday = dowNumber === 6;
 
     const dowNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
@@ -5869,12 +5875,12 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
 
     // 4. Kontakion of the saint of the date (if present)
     // OCA: "(the Kontakion of the saint of the date, if desired)"
-    if (saintKontakion) {
-      const toneLabel = saintKontakion.tone ? " · Tone " + saintKontakion.tone : "";
-      movable("typica-kont-saint", "Kontakion — " + (saint.saint || "Saint of the day") + toneLabel,
-        saintKontakion.text,
-        ocaNote + " Saint of the date (if desired).");
-    }
+    saintKontakia.forEach((k, i) => {
+      const toneLabel = k.tone ? " · Tone " + k.tone : "";
+      movable("typica-kont-saint" + (i ? "-" + i : ""), "Kontakion — " + (k.who || saintTitle) + toneLabel,
+        k.text,
+        ocaNote + " Saint of the date (if desired)." + (k.oca ? " OCA text." : k.general ? " From the General Menaion: the page prints none." : ""));
+    });
 
     // 5. Glory… With the saints give rest…
     elements.push({
@@ -15772,6 +15778,11 @@ export default function App() {
   const v2DaySvc = getMenaionV2Service(date, selectedServiceIndex);
   const v2Liturgy = v2DaySvc ? v2LiturgyPlan(v2DaySvc.c, v2DaySvc.path) : null;
   const v2Rank = v2DaySvc ? v2DaySvc.c.rank : null;
+  // What the service gives the Little Entrance and the Beatitudes (entrancePlan),
+  // with the OCA hymn in the place of its own counterpart when Prefer OCA is on.
+  const v2Entrance = v2DaySvc ? v2EntrancePlan(v2DaySvc.c, v2DaySvc.path, {
+    oca: PREFER_OCA_DEFAULT && v2DaySvc.c.oca_primary ? (_ocaHymnCache[v2DaySvc.path.slice(0, 5)] || null) : null,
+    general: _menaionV2General }) : null;
   // What the OCA text for this day prints at the Liturgy, to NOTE OCA practice beside
   // the full order (nothing is dropped). Null when there is no OCA text for the day.
   const ocaPractice = (v2DaySvc && v2DaySvc.c.oca_primary) ? (_ocaLiturgyCache[v2DaySvc.path.slice(0, 5)] || null) : null;
@@ -16056,7 +16067,7 @@ export default function App() {
       els = assembleVespers(vespersNext.vLit, vMen, vPnt, vPar, readerMode, vespersNext.vDateStr, templeDedication,
         getMenaionV2Service(parseCalendarDate(vespersNext.vDateStr), selectedServiceIndex));
     } else if (currentService.key === 'typica') {
-      els = assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode, templeDedication, v2Liturgy, v2Rank, ocaPractice);
+      els = assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode, templeDedication, v2Liturgy, v2Rank, ocaPractice, v2Entrance);
     } else if (currentService.key === 'pre_communion') {
       els = assemblePreCommunion(preCommunionData);
     } else if (currentService.key === 'post_communion') {
@@ -16068,7 +16079,7 @@ export default function App() {
       // passed in so the assembler stays pure; the Little Entrance order and
       // the Beatitude troparia are Phase 3.
       const liturgyCtx = {
-        liturgicalData, menaionEntry, menaionPlan: v2Liturgy, menaionRank: v2Rank, ocaPractice, pentEntry, dailyReading, feastReading,
+        liturgicalData, menaionEntry, menaionPlan: v2Liturgy, menaionEntrance: v2Entrance, menaionRank: v2Rank, ocaPractice, pentEntry, dailyReading, feastReading,
         sources: {
           sunProkeimenon: srcSunProkeimenon,
           sunAlleluia: srcSunAlleluia,
@@ -16087,16 +16098,18 @@ export default function App() {
             return { type, label: ded.label, troparion: tr ? { tone: tr.tone, text: tr.text } : null, kontakion: ko ? { tone: ko.tone, text: ko.text } : null };
           })(),
           feast: (() => {
-            // The feast day's own Menaion entry (Fekula §2G3: "materials for the
-            // feast are taken from the service in the Menaion for the feast day itself").
+            // Read only when this day's own page does not print the feast's hymn:
+            // the feast day's own service (Fekula §2G3: "materials for the feast are
+            // taken from the service in the Menaion for the feast day itself"), from
+            // Menaion V2 when that month is loaded.
             const f = liturgicalData.feastPeriod && liturgicalData.feastPeriod.feast;
             if (!f || !f.month || !f.day) return null;
             const mm = String(f.month).padStart(2, '0'), key = mm + '-' + String(f.day).padStart(2, '0');
-            const raw = (_menaionCache[mm] || {})[key];
-            const e = Array.isArray(raw) ? (raw.find(x => x.oca_primary) || raw[0]) : raw;
-            if (!e) return null;
-            const k = e.kontakion_ode6 || e.hours_kontakion || e.kontakion_ode3 || null;
-            return { name: f.name, troparion: e.troparion ? { tone: e.troparion.tone, text: e.troparion.text } : null, kontakion: k ? { tone: k.tone, text: k.text } : null };
+            const svc = v2ServicesOf((_menaionV2Cache[mm] || {})[key], key)[0];
+            if (!svc) return null;
+            const fp = v2EntrancePlan(svc.c, svc.path, {});
+            const node = (sl) => (sl && sl.node ? { tone: sl.node.tone, text: sl.node.text, path: sl.node.path } : null);
+            return { name: f.name, troparion: node(fp.saints.troparia[0]), kontakion: node(fp.saints.kontakia[0]) };
           })(),
           dowKontakia: (dow) => {
             const ks = TYPICA_KONTAKIA[dow] || [];

@@ -16,10 +16,18 @@
 //
 // Slot vocabulary (Fekula's own words, snake_cased):
 //   sunday_troparion  feast_troparion  temple_troparion  dow_troparion
-//   saint_troparion   saint2_troparion
+//   saint_troparion
 //   sunday_kontakion  feast_kontakion  temple_kontakion  dow_kontakion
-//   saint_kontakion   saint2_kontakion departed_kontakion ("With the saints
-//   give rest") steadfast_protectress ("Protection of Christians")
+//   saint_kontakion   departed_kontakion ("With the saints give rest")
+//   steadfast_protectress ("Protection of Christians")
+//
+// THE MENAION is read through the Menaion V2 plan (entrancePlan in
+// src/data/menaion_v2/adapter.js): `menaion` below. A "saint" slot stands for
+// every troparion (or kontakion) the page prints for the day's saints, in print
+// order: "if there be troparia and kontakia for both saints, both are used"
+// (§2B); "if there be two kontakia provided, the first is chanted before
+// Glory…, and the second following Glory…" (§2G1 *). So the tables carry one
+// saint slot and the page decides how many hymns fill it.
 //   pent:<field>      a hymn from the day's own Pentecostarion entry (the
 //                     encoder captured what the day's PDF prints): troparion,
 //                     troparion_2, troparion_3, kontakion (hours_kontakion or
@@ -29,6 +37,7 @@
 //
 // Pure. Sources are injected (see resolveEntrance / resolveBeatitudes).
 // ─────────────────────────────────────────────────────────────────────────────
+import { shown } from "../data/menaion_v2/adapter.js";
 
 const LORD = "lord", THEOTOKOS = "theotokos", SAINT = "saint";
 
@@ -43,12 +52,7 @@ const SUNDAY_ORDINARY = {
 };
 // §1E p.23, temple of a saint at vigil rank: the temple slots are absent.
 const SUNDAY_VIGIL_SAINT_TEMPLE = ["sunday_troparion", "saint_troparion", "sunday_kontakion", "G:saint_kontakion", "N:steadfast_protectress"];
-// §1B p.15 — two saints.
-const SUNDAY_DOUBLE = {
-  [LORD]:      ["sunday_troparion", "saint_troparion", "saint2_troparion", "saint_kontakion", "G:saint2_kontakion", "N:sunday_kontakion"],
-  [THEOTOKOS]: ["sunday_troparion", "temple_troparion", "saint_troparion", "saint2_troparion", "sunday_kontakion", "saint_kontakion", "G:saint2_kontakion", "N:temple_kontakion"],
-  [SAINT]:     ["sunday_troparion", "temple_troparion", "saint_troparion", "saint2_troparion", "sunday_kontakion", "temple_kontakion", "saint_kontakion", "G:saint2_kontakion", "N:steadfast_protectress"],
-};
+// §1B p.15, two saints: the same tables, with both saints' hymns in the saint slots.
 // §1E p.23 — a feast of the Theotokos on Sunday, regardless of temple.
 const SUNDAY_THEOTOKOS_FEAST = ["sunday_troparion", "feast_troparion", "G:sunday_kontakion", "N:feast_kontakion"];
 // §1F1 p.26–27 / §1F2 p.30 — Sunday in a forefeast or afterfeast.
@@ -120,24 +124,32 @@ const HIGH_RANKS = new Set(["doxology", "polyeleos", "vigil"]);
  * Pick the table. Returns { slots, section, page, quote, notes[], templeNeeded }.
  * templeNeeded: the chosen table varies by temple and no dedication is known.
  */
-export function entranceOrder({ liturgicalData: ld = {}, menaionEntry = null, templeType = null, isDouble = false, pentEntry = null }) {
+export function entranceOrder({ liturgicalData: ld = {}, menaion = null, templeType = null, isDouble = false, pentEntry = null }) {
   void pentEntry;
   const isSunday = ld.dow === 0 || ld.isSunday === true;
   const dow = typeof ld.dow === "number" ? ld.dow : 0;
-  const rank = (menaionEntry && menaionEntry.rank) || "simple";
+  const rank = (menaion && menaion.rank) || "simple";
   const isVigil = rank === "vigil";
+  const greatFeast = rank === "great_feast";
   const feast = ld.feastPeriod && ld.feastPeriod.feast;
   const period = ld.feastPeriod && ld.feastPeriod.periodType;   // feast | forefeast | afterfeast | apodosis
   const season = ld.season;
-  const feastIsLord = !!(feast && feast.forLord);
-  const feastIsTheotokos = !!(feast && !feast.forLord);
+  // A Great Feast's own page says whose feast it is when the calendar gives no period.
+  const feastIsLord = feast ? !!feast.forLord : !!(greatFeast && menaion.lordsFeast);
+  const feastIsTheotokos = feast ? !feast.forLord : !!(greatFeast && !menaion.lordsFeast);
   const notes = [];
   const t = templeType;
 
   if (ld.isPentecostarion || season === "pentecostarion" || season === "brightweek") {
-    return pentecostarionOrder({ offset: ld.paschaOffset, pent: pentEntry, menaionEntry, templeType: t, isVigil, notes });
+    return pentecostarionOrder({ offset: ld.paschaOffset, pent: pentEntry, menaion, templeType: t, isVigil, notes });
   }
-  if (season === "great_feast" || period === "feast") {
+  const isGreat = season === "great_feast" || period === "feast" || greatFeast;
+  // A feast of the Theotokos on a Sunday keeps the Sunday (§1E); a feast of the
+  // Lord sets the Sunday service aside (ch. 5), so it takes the feast's own order.
+  if (isGreat && isSunday && feastIsTheotokos) {
+    return { templeDependent: false, slots: SUNDAY_THEOTOKOS_FEAST, section: "§1E", page: "p.23", quote: "But if it be a feast of the Theotokos: Sunday troparion / Troparion of the Feast / Glory… Sunday kontakion / Now and ever… Kontakion of the Feast", notes, templeNeeded: false };
+  }
+  if (isGreat) {
     return { templeDependent: false, slots: GREAT_FEAST_DAY, section: "Great Feast", quote: "Troparion of the feast; Glory… Now and ever… kontakion of the feast (the Menaion's own printed order; cf. §2G3 for the apodosis).", notes, templeNeeded: false };
   }
   if (isSunday) {
@@ -154,11 +166,8 @@ export function entranceOrder({ liturgicalData: ld = {}, menaionEntry = null, te
       return { slots: tbl[t], section: HIGH_RANKS.has(rank) && rank !== "doxology" ? "§1F2" : "§1F1", page: HIGH_RANKS.has(rank) && rank !== "doxology" ? "p.30" : "p.26–27",
         quote: (feastIsLord ? "If it be a feast of the Lord" : "If it be a feast of the Theotokos") + ", in a temple dedicated to " + templeWords(t) + ".", notes, templeNeeded: false };
     }
-    if (feastIsTheotokos && (season === "great_feast")) {
-      return { templeDependent: false, slots: SUNDAY_THEOTOKOS_FEAST, section: "§1E", page: "p.23", quote: "But if it be a feast of the Theotokos: Sunday troparion / Troparion of the Feast / Glory… Sunday kontakion / Now and ever… Kontakion of the Feast", notes, templeNeeded: false };
-    }
     if (!t) return { slots: null, section: isDouble ? "§1B" : "§1A", templeNeeded: true, notes, quote: "" };
-    if (isDouble) return { slots: SUNDAY_DOUBLE[t], section: "§1B", page: "p.15", quote: "Sunday, double commemoration, in a temple dedicated to " + templeWords(t) + ".", notes, templeNeeded: false };
+    if (isDouble) { notes.push("§1B: the troparia and kontakia of both saints are used."); return { slots: SUNDAY_ORDINARY[t], section: "§1B", page: "p.15", quote: "Sunday, double commemoration, in a temple dedicated to " + templeWords(t) + ".", notes, templeNeeded: false }; }
     if (isVigil && t === SAINT) {
       notes.push("§1E: at vigil rank in a temple of a saint the temple troparion and kontakion are not chanted.");
       return { slots: SUNDAY_VIGIL_SAINT_TEMPLE, section: "§1E", page: "p.23", quote: "Sunday troparion / Troparion from the Menaion / Sunday kontakion / Glory… Kontakion from the Menaion / Now and ever… Protection of Christians…", notes, templeNeeded: false };
@@ -172,6 +181,13 @@ export function entranceOrder({ liturgicalData: ld = {}, menaionEntry = null, te
   // ── weekday ──
   if (season === "apodosis" || period === "apodosis") {
     if (isVigil) return { templeDependent: false, slots: WEEKDAY_APODOSIS_VIGIL, section: "§2G4", page: "p.67", quote: "Troparion of the feast / Troparion of the saint / Glory… Kontakion of the saint / Now and ever… Kontakion of the feast", notes, templeNeeded: false };
+    // §2G3 names the feast only. Where the day's page also prints a troparion and
+    // kontakion of its saints for the Liturgy, they are sung as printed (PRINTED
+    // FIRST), in the order the page and §2G4 both give.
+    if (menaion && menaion.saints.troparia.length) {
+      notes.push("§2G3 names the feast alone; this day's Menaion also prints the troparion and kontakion of its saints at the Liturgy, and they are sung as printed.");
+      return { templeDependent: false, slots: WEEKDAY_APODOSIS_VIGIL, section: "§2G3", page: "p.65", quote: "Troparion of the feast / Troparion of the saints / Glory… kontakion of the saints / Now and ever… kontakion of the feast (as the Menaion prints for this day).", notes, templeNeeded: false };
+    }
     return { templeDependent: false, slots: WEEKDAY_APODOSIS, section: "§2G3", page: "p.65", quote: "We sing the troparion of the feast; Glory… Now and ever… and the kontakion of the feast.", notes, templeNeeded: false };
   }
   if (period === "forefeast" || period === "afterfeast") {
@@ -183,7 +199,7 @@ export function entranceOrder({ liturgicalData: ld = {}, menaionEntry = null, te
     return { slots: tbl[t], section: high ? "§2G2" : "§2G1", page: high ? "p.62–63" : "p.58–59", quote: (feastIsLord ? "If it be a feast of the Lord" : "If it be a feast of the Theotokos") + ", in a temple dedicated to " + templeWords(t) + ".", notes, templeNeeded: false };
   }
   if (HIGH_RANKS.has(rank)) {
-    if (isVigil && feastIsTheotokos && season === "great_feast") return { templeDependent: false, slots: WEEKDAY_HIGH.vigilTheotokosFeast, section: "§2F", page: "p.54", quote: "If it be a feast of the Theotokos: Troparion of the feast; Glory… Now and ever… kontakion of the feast", notes, templeNeeded: false };
+    if (isVigil && feastIsTheotokos && isGreat) return { templeDependent: false, slots: WEEKDAY_HIGH.vigilTheotokosFeast, section: "§2F", page: "p.54", quote: "If it be a feast of the Theotokos: Troparion of the feast; Glory… Now and ever… kontakion of the feast", notes, templeNeeded: false };
     if (!t) return { slots: null, section: rank === "vigil" ? "§2F" : rank === "polyeleos" ? "§2E" : "§2D", templeNeeded: true, notes, quote: "" };
     const sec = rank === "vigil" ? "§2F" : rank === "polyeleos" ? "§2E" : "§2D";
     const page = rank === "vigil" ? "p.54" : rank === "polyeleos" ? "p.50" : "p.47";
@@ -196,11 +212,8 @@ export function entranceOrder({ liturgicalData: ld = {}, menaionEntry = null, te
   // §2A (simple), §2B (double: both saints), §2C (six-stichera) — by day of week.
   if (!t) return { slots: null, section: rank === "six_stichera" ? "§2C → §2A" : isDouble ? "§2B → §2A" : "§2A", templeNeeded: true, notes, quote: "" };
   const dk = dow === 6 ? "sat" : (dow === 3 || dow === 5) ? "wf" : "mtt";
-  let slots = WEEKDAY_SIMPLE[t][dk];
-  if (isDouble) {
-    slots = slots.flatMap(s => s === "saint_troparion" ? ["saint_troparion", "saint2_troparion"] : s === "saint_kontakion" ? ["saint_kontakion", "saint2_kontakion"] : [s]);
-    notes.push("§2B: If there be troparia and kontakia for both saints, both are used.");
-  }
+  const slots = WEEKDAY_SIMPLE[t][dk];
+  if (isDouble) notes.push("§2B: If there be troparia and kontakia for both saints, both are used.");
   if (t === LORD && dk === "wf") notes.push("§2A: if the priest so desires, the kontakion of the temple may be sung instead of that for the day of the week.");
   if (t === SAINT && dk !== "sat") notes.push("§2A fn.31: If the commemoration for the day of the week is the same as that for the temple (e.g. a temple of the Holy Angels on Monday), the troparion and kontakion of the temple are not chanted.");
   if (dow === 4) notes.push("§2A: on Thursday, two troparia and two kontakia of the day of the week (the Apostles; St Nicholas).");
@@ -216,16 +229,13 @@ export function entranceOrder({ liturgicalData: ld = {}, menaionEntry = null, te
 // fields). Menaion saint slots follow the table; `menaion_set_aside` on the
 // entry removes them. ◊ (pp.169–170): at vigil rank in a temple of a saint the
 // temple troparion and kontakion are not chanted.
-function pentecostarionOrder({ offset, pent, menaionEntry, templeType: t, isVigil, notes }) {
+function pentecostarionOrder({ offset, pent, menaion, templeType: t, isVigil, notes }) {
   const R = (slots, section, page, quote, extra = {}) => ({ slots, section, page, quote, notes, templeDependent: false, templeNeeded: false, ...extra });
   if (offset == null) return R(null, "ch.4", null, "", { unresolved: true, notes: ["Pascha offset unknown."] });
   if (offset >= 1 && offset <= 6) return R(null, "§4B1", "p.181", "Bright Week: the Paschal Liturgy — Christ is risen…, the hypakoe and the kontakion of Pascha in place of any troparia; festal antiphons.", { unresolved: true, notes: ["The Paschal Liturgy is not assembled."] });
   if (!pent) return R(null, "ch.4", null, "", { unresolved: true, notes: ["No Pentecostarion entry is encoded for Pascha + " + offset + "."] });
   const setAside = !!pent.menaion_set_aside;
-  const two = !!(menaionEntry && menaionEntry.troparion_second);
-  const saintSlots = (!setAside && menaionEntry && menaionEntry.troparion)
-    ? (two ? ["saint_troparion", "saint2_troparion", "saint_kontakion", "G:saint2_kontakion"] : ["saint_troparion", "G:saint_kontakion"])
-    : [];
+  const saintSlots = (!setAside && menaion && menaion.saints.troparia.length) ? ["saint_troparion", "G:saint_kontakion"] : [];
   // temple slots per the table's own conditions
   const templeTrop = (period) => (t === SAINT || (period === 1 && t === THEOTOKOS)) && !(isVigil && t === SAINT) ? ["temple_troparion"] : [];
   const templeKont = () => (t === SAINT && !(isVigil && t === SAINT)) ? ["temple_kontakion"] : [];
@@ -249,7 +259,7 @@ function pentecostarionOrder({ offset, pent, menaionEntry, templeType: t, isVigi
   if (offset === 28) return R(["pent:troparion", "pent:troparion_3", "G:pent:kontakion_ode6", "N:pent:kontakion"], "§4B9", "p.195", "Sunday troparion / Troparion of the feast / Glory… kontakion of the Samaritan / Now and ever… kontakion of the feast.");
   if (isSunday) {
     // §4B6 / §4B7 — the 2nd (Myrrhbearers), 3rd, 5th, 6th Sundays
-    const high = menaionEntry && !setAside && (menaionEntry.rank === "polyeleos" || menaionEntry.rank === "vigil");
+    const high = menaion && !setAside && (menaion.rank === "polyeleos" || menaion.rank === "vigil");
     if (high) return R(["pent:troparion", "saint_troparion", "G:saint_kontakion", "N:pent:kontakion_ode6"], "§4B7", "p.192", "Sunday troparion / Troparion from the Menaion / Glory… kontakion from the Menaion / Now and ever… kontakion from the Pentecostarion.");
     return R(["pent:troparion", "G:pent:kontakion_ode6", "N:pent:kontakion_ode3"], "§4B6", "p.189", "Sunday troparion (the Myrrhbearers' two on their Sunday); Glory… kontakion from the Pentecostarion; Now and ever… kontakion of Pascha, Though Thou, O deathless….");
   }
@@ -274,14 +284,14 @@ function templeWords(t) { return t === LORD ? "the Lord" : t === THEOTOKOS ? "th
  * }
  * Returns { elements, toneLabel, unresolved, section, quote, notes }.
  */
-export function resolveEntrance({ liturgicalData: ld = {}, menaionEntry = null, pentEntry = null, sources = {} }) {
+export function resolveEntrance({ liturgicalData: ld = {}, menaion = null, pentEntry = null, sources = {} }) {
   const temple = sources.temple || null;
   const templeType = temple && temple.type;
   const inFeastPeriod = ["forefeast", "afterfeast", "apodosis"].includes(ld.season) || ["forefeast", "afterfeast", "apodosis"].includes(ld.feastPeriod && ld.feastPeriod.periodType);
   // Outside a feast period, a second printed troparion is a second saint (double).
-  const isDouble = !!(menaionEntry && menaionEntry.troparion_second && !inFeastPeriod && ld.season !== "great_feast");
-  const order = entranceOrder({ liturgicalData: ld, menaionEntry, templeType, isDouble, pentEntry });
-  const cite = { section: order.section, note: [order.quote, ...(order.notes || [])].filter(Boolean).join(" ") };
+  const isDouble = !!(menaion && menaion.saints.troparia.length > 1 && !inFeastPeriod && ld.season !== "great_feast" && menaion.rank !== "great_feast");
+  const order = entranceOrder({ liturgicalData: ld, menaion, templeType, isDouble, pentEntry });
+  const cite = { section: order.section, note: [order.quote, ...(order.notes || []), ...((menaion && menaion.notes) || [])].filter(Boolean).join(" ") };
   const dow = typeof ld.dow === "number" ? ld.dow : 0;
   const tone = ld.tone;
   const els = [];
@@ -299,7 +309,25 @@ export function resolveEntrance({ liturgicalData: ld = {}, menaionEntry = null, 
     ], toneLabel: null, unresolved: true, section: order.section, quote: order.quote, notes: order.notes };
   }
 
-  const saintName = (menaionEntry && menaionEntry.saint) || "the saint of the day";
+  const saintName = (menaion && menaion.saintName) || "the saint of the day";
+  // A Menaion slot as a hymn: the text as shown (the OCA's undefined '^' mark
+  // hidden, Q-0007), its tone, where it is stored, and which witness it is from.
+  const fromPlan = (sl, label) => {
+    if (!sl || !sl.node) return null;
+    const n = sl.node;
+    const source = sl.source === "oca" ? "OCA service texts" + (n.subject ? " · " + n.subject : "")
+      : sl.source === "general" ? "General Menaion · " + (n.generalType || "")
+      : "Menaion · " + saintName;
+    return { label: label + (sl.source === "menaion" && n.saint && !["feast", "forefeast"].includes(n.saint) ? " · " + n.saint : ""), tone: n.tone != null ? n.tone : null, text: shown(n), source, path: n.path || null };
+  };
+  // On the feast day itself the feast's hymns are the service's own.
+  const ownFeast = !!(menaion && menaion.kind === "feast");
+  const feastSlot = (which) => {
+    const own = menaion && (ownFeast ? menaion.saints[which === "troparion" ? "troparia" : "kontakia"][0] : menaion.feast[which]);
+    if (own) return fromPlan(own, (which === "troparion" ? "Troparion" : "Kontakion") + " of the Feast");
+    const f = sources.feast || null;   // the feast day's own service, when this day's page does not print the feast's hymn
+    return f && f[which] ? { label: (which === "troparion" ? "Troparion" : "Kontakion") + " of the Feast", ...f[which], source: "Menaion · " + f.name } : null;
+  };
   const feast = sources.feast || null;
   // The temple picker rides with the hymns whenever the table has a temple
   // slot, showing the current dedication and letting the reader change it in
@@ -322,14 +350,13 @@ export function resolveEntrance({ liturgicalData: ld = {}, menaionEntry = null, 
     switch (slot) {
       case "sunday_troparion": { const h = S.sundayTroparion && S.sundayTroparion(tone); return h && { label: "Sunday Troparion", ...h, source: "Octoechos · Tone " + tone }; }
       case "sunday_kontakion": { const h = S.sundayKontakion && S.sundayKontakion(tone); return h && { label: "Sunday Kontakion", ...h, source: "Octoechos · Tone " + tone }; }
-      case "feast_troparion":  return feast && feast.troparion && { label: "Troparion of the Feast", ...feast.troparion, source: "Menaion · " + feast.name };
-      case "feast_kontakion":  return feast && feast.kontakion && { label: "Kontakion of the Feast", ...feast.kontakion, source: "Menaion · " + feast.name };
+      case "feast_troparion":  return feastSlot("troparion");
+      case "feast_kontakion":  return feastSlot("kontakion");
       case "temple_troparion": return temple && temple.troparion && { label: "Troparion of the Temple", ...temple.troparion, source: "Temple · " + temple.label };
       case "temple_kontakion": return temple && temple.kontakion && { label: "Kontakion of the Temple", ...temple.kontakion, source: "Temple · " + temple.label };
-      case "saint_troparion":  return menaionEntry && menaionEntry.troparion && { label: "Troparion", ...pick(menaionEntry.troparion), source: "Menaion · " + saintName };
-      case "saint2_troparion": return menaionEntry && menaionEntry.troparion_second && { label: "Troparion (second)", ...pick(menaionEntry.troparion_second), source: "Menaion · " + saintName };
-      case "saint_kontakion":  { const k = menaionEntry && (menaionEntry.kontakion_ode6 || menaionEntry.kontakion_ode3); return k && { label: "Kontakion", ...pick(k), source: "Menaion · " + saintName }; }
-      case "saint2_kontakion": { const k = menaionEntry && (menaionEntry.kontakion_2 || (menaionEntry.kontakion_ode6 && menaionEntry.kontakion_ode3 ? menaionEntry.kontakion_ode3 : null)); return k && { label: "Kontakion (second)", ...pick(k), source: "Menaion · " + saintName }; }
+      // Every troparion / kontakion the page prints for the day's saints, in print order.
+      case "saint_troparion":  { const l = menaion ? menaion.saints.troparia.map(x => fromPlan(x, "Troparion")).filter(Boolean) : []; return l.length ? l : null; }
+      case "saint_kontakion":  { const l = menaion ? menaion.saints.kontakia.map(x => fromPlan(x, "Kontakion")).filter(Boolean) : []; return l.length ? l : null; }
       case "departed_kontakion": return S.departedKontakion && { label: "Kontakion of the Departed", ...S.departedKontakion, source: "Horologion" };
       case "steadfast_protectress": return S.protectress && { label: "Theotokion — Protection of Christians", ...S.protectress, source: "Horologion" };
       case "dow_kontakion": { const ks = S.dowKontakia ? S.dowKontakia(dow) : null; return ks && ks.length ? ks.map(k => ({ label: k.label, tone: k.tone, text: k.text, source: "Horologion · kontakion of the day" })) : null; }
@@ -363,10 +390,13 @@ export function resolveEntrance({ liturgicalData: ld = {}, menaionEntry = null, 
         unresolvedNote: slot === "dow_troparion" ? "troparia of the day of the week not yet encoded" : "not available for this date", source: "—", fekula: cite });
       return;
     }
+    // "If there be two kontakia provided, the first is chanted before Glory…, and
+    // the second following Glory…" (§2G1 *): the lead stands on the last of them.
+    const leadAt = slot === "saint_kontakion" && prefix === "G" ? list.length - 1 : 0;
     list.forEach((x, j) => {
       if (x.tone != null) tones.push(x.tone);
       els.push({ id: `lit-tk-${i}-${slot}${list.length > 1 ? "-" + j : ""}`, type: "movable",
-        label: (lead && j === 0 ? lead + " " : "") + x.label, text: x.text, toneNote: x.tone != null ? "Tone " + x.tone : null,
+        label: (lead && j === leadAt ? lead + " " : "") + x.label, text: x.text, toneNote: x.tone != null ? "Tone " + x.tone : null,
         source: x.source, ...(x.path ? { srcPath: x.path } : {}), fekula: j === 0 && i === 0 ? cite : { section: order.section, note: slotLabel(slot) + " — " + order.section + (order.page ? " " + order.page : "") } });
     });
   });
@@ -377,11 +407,10 @@ export function resolveEntrance({ liturgicalData: ld = {}, menaionEntry = null, 
   return { elements: els, toneLabel, unresolved, section: order.section, quote: order.quote, notes: order.notes };
 }
 
-const pick = (h) => ({ tone: h.tone, text: h.text });
 function slotLabel(slot) {
   return { sunday_troparion: "Sunday Troparion", sunday_kontakion: "Sunday Kontakion", feast_troparion: "Troparion of the Feast", feast_kontakion: "Kontakion of the Feast",
     temple_troparion: "Troparion of the Temple", temple_kontakion: "Kontakion of the Temple", dow_troparion: "Troparion of the day of the week", dow_kontakion: "Kontakion of the day of the week",
-    saint_troparion: "Troparion of the saint", saint2_troparion: "Troparion of the second saint", saint_kontakion: "Kontakion of the saint", saint2_kontakion: "Kontakion of the second saint",
+    saint_troparion: "Troparion of the saint", saint_kontakion: "Kontakion of the saint",
     departed_kontakion: "With the saints give rest", steadfast_protectress: "Protection of Christians",
     "pent:troparion": "Troparion (Pentecostarion)", "pent:troparion_2": "Second troparion (Pentecostarion)", "pent:troparion_3": "Third troparion (Pentecostarion)",
     "pent:kontakion": "Kontakion (Pentecostarion)", "pent:kontakion_ode3": "Kontakion (Pentecostarion, Ode III)", "pent:kontakion_ode6": "Kontakion (Pentecostarion, Ode VI)" }[slot] || slot;
@@ -390,39 +419,37 @@ function missingText(slot, saintName, temple, feast) {
   if (slot === "dow_troparion") return "The troparion of the day of the week (Horologion) is appointed here; the daily troparia are not yet encoded.";
   if (slot.startsWith("pent:")) return "The Pentecostarion entry for this day does not carry the " + slot.slice(5).replace(/_/g, " ") + " this slot needs.";
   if (slot.startsWith("temple")) return "The temple " + (slot.endsWith("troparion") ? "troparion" : "kontakion") + " for " + (temple ? temple.label : "the parish dedication") + " is not encoded yet.";
-  if (slot.startsWith("feast")) return "The feast's " + (slot.endsWith("troparion") ? "troparion" : "kontakion") + (feast ? " (" + feast.name + ")" : "") + " is not available: the feast day's Menaion entry is not encoded.";
-  if (slot.startsWith("saint")) return "The Menaion entry for " + saintName + " carries no " + (slot.endsWith("troparion") ? "troparion" : "kontakion") + " for this slot.";
+  if (slot.startsWith("feast")) return "The feast's " + (slot.endsWith("troparion") ? "troparion" : "kontakion") + (feast ? " (" + feast.name + ")" : "") + " is not printed in this day's service, and the feast day's own service is not encoded.";
+  if (slot.startsWith("saint")) return "The Menaion service for " + saintName + " prints no " + (slot.endsWith("troparion") ? "troparion" : "kontakion") + ", or the day is not yet encoded.";
   return "Not available.";
 }
 
 // ── Beatitudes ─────────────────────────────────────────────────────────────
 
-// Expand the Menaion's printed list: an item whose note says "(Twice)" is sung twice.
-function expandMenaion(items, source) {
-  const out = [];
-  for (const it of items || []) {
-    const n = /twice/i.test(it.note || "") ? 2 : 1;
-    for (let i = 0; i < n; i++) out.push({ text: it.text, label: it.label || it.source || "Menaion", source, repeat: n === 2 && i === 1 });
-  }
-  return out;
-}
-const byOde = (items, ode) => items.filter(i => new RegExp("Ode\\s+" + ode + "\\b", "i").test(i.label || ""));
+// The Menaion's Beatitude troparia come from the V2 plan (beatitudesOf): the
+// troparia as printed, a troparion marked "Twice" standing twice, set against the
+// page's own rubric ("4 from the Oktoechos, and 4 from ODE III of the canon…").
+const menItems = (part, source) => (part.items || []).map(it => ({ text: it.text, label: "Ode " + part.ode + (it.labels.includes("theotokion") ? " · Theotokion" : ""), source, path: it.path }));
 
 /**
  * sources: { sundayBeatitudes(tone) → { troparia:[{text}], gloria:{text}, theotokion:{text} },
  *            weekdayBeatitudes(tone, dayKey) → { items:[{text,label}] } }
  * Returns { troparia:[{text,label,source}], count, section, quote, unresolved, notes }.
  */
-export function resolveBeatitudes({ liturgicalData: ld = {}, menaionEntry = null, pentEntry = null, sources = {} }) {
+export function resolveBeatitudes({ liturgicalData: ld = {}, menaion = null, pentEntry = null, sources = {} }) {
   void pentEntry;
   const isSunday = ld.dow === 0 || ld.isSunday === true;
   const dow = typeof ld.dow === "number" ? ld.dow : 0;
-  const rank = (menaionEntry && menaionEntry.rank) || "simple";
+  const rank = (menaion && menaion.rank) || "simple";
   const tone = ld.tone;
   const period = ld.feastPeriod && ld.feastPeriod.periodType;
   const inFeastPeriod = ["forefeast", "afterfeast"].includes(ld.season) || ["forefeast", "afterfeast"].includes(period);
   const isApodosis = ld.season === "apodosis" || period === "apodosis";
-  const menaionAll = expandMenaion(menaionEntry && menaionEntry.beatitudes_troparia, "Menaion · " + ((menaionEntry && menaionEntry.saint) || "commemoration"));
+  const mb = menaion ? menaion.beatitudes : null;
+  const mSrc = "Menaion · " + ((menaion && menaion.saintName) || "commemoration");
+  const mParts = mb ? mb.parts.filter(g => g.from === "menaion") : [];
+  const menaionAll = mParts.flatMap(g => menItems(g, mSrc));
+  const odeIII = () => { const g = mParts.find(x => x.ode === "III"); return g ? menItems(g, mSrc).slice(0, 4) : []; };
   const notes = [];
   const R = (troparia, count, section, quote) => ({ troparia, count, section, quote, unresolved: troparia.length === 0 || troparia.length !== count, notes });
 
@@ -437,57 +464,71 @@ export function resolveBeatitudes({ liturgicalData: ld = {}, menaionEntry = null
     const printed = (pent.beatitudes_troparia || []).map((t, i) => ({ text: t.text, label: t.label || t.source || ("Pentecostarion " + (i + 1)), source: "Pentecostarion · " + (pent.source_file || pent.name || "") }));
     const isSun = ld.dow === 0 || ld.isSunday === true;
     // §4A1–§4A3: on a weekday, four from the Pentecostarion and four from Ode III in the Menaion when the Menaion appoints them
-    const menIII = (!pent.menaion_set_aside && !isSun) ? byOde(menaionAll, "III").slice(0, 4) : [];
+    const menIII = (!pent.menaion_set_aside && !isSun) ? odeIII() : [];
     if (menIII.length === 4 && printed.length) {
-      return R([...printed.slice(0, 4), ...menIII], 8, (menaionEntry && (menaionEntry.rank === "polyeleos" || menaionEntry.rank === "vigil")) ? "§4A3" : "§4A1", "But if the Menaion calls for Beatitudes we read four troparia from the Pentecostarion and four from Ode III in the Menaion.");
+      return R([...printed.slice(0, 4), ...menIII], 8, (rank === "polyeleos" || rank === "vigil") ? "§4A3" : "§4A1", "But if the Menaion calls for Beatitudes we read four troparia from the Pentecostarion and four from Ode III in the Menaion.");
     }
     if (!printed.length) return { troparia: [], count: 0, section: isSun ? "§4B" : "§4A1", quote: src || "As appointed by the Pentecostarion.", unresolved: true, notes: ["The Pentecostarion entry prints no Beatitude troparia (" + (src || "no source note") + ")."] };
     notes.push("As the Pentecostarion prints: " + src);
     return R(printed, printed.length, isSun ? "§4B (as printed)" : "§4A1", isSun ? "The Sunday's Beatitude troparia as the Pentecostarion appoints them." : "At the Beatitudes we read six troparia from the canon appointed by the Pentecostarion.");
   }
-  if (ld.season === "great_feast") {
-    return { troparia: [], count: 0, section: "Great Feast", quote: "Festal antiphons replace the Typika and Beatitudes.", unresolved: true, notes: ["Festal antiphons — no V1 field."] };
-  }
   const sunday = () => {
-    const s = sources.sundayBeatitudes ? sources.sundayBeatitudes(tone) : null;
-    if (!s) return { six: [], eight: [] };
-    const six = (s.troparia || []).map((t, i) => ({ text: t.text, label: "Resurrection " + (i + 1), source: "Octoechos · Tone " + tone, path: t.path }));
-    const eight = [...six, ...(s.gloria ? [{ text: s.gloria.text, label: "Glory… Triadicon", source: "Octoechos · Tone " + tone }] : []), ...(s.theotokion ? [{ text: s.theotokion.text, label: "Now and ever… Theotokion", source: "Octoechos · Tone " + tone }] : [])];
+    const sb = sources.sundayBeatitudes ? sources.sundayBeatitudes(tone) : null;
+    if (!sb) return { six: [], eight: [] };
+    const six = (sb.troparia || []).map((t, i) => ({ text: t.text, label: "Resurrection " + (i + 1), source: "Octoechos · Tone " + tone, path: t.path }));
+    const eight = [...six, ...(sb.gloria ? [{ text: sb.gloria.text, label: "Glory… Triadicon", source: "Octoechos · Tone " + tone }] : []), ...(sb.theotokion ? [{ text: sb.theotokion.text, label: "Now and ever… Theotokion", source: "Octoechos · Tone " + tone }] : [])];
     return { six, eight };
   };
+  const asRubric = mb && mb.rubric ? "Menaion: " + mb.rubric : "";
+  if (mb && mb.note) notes.push(mb.note + " The troparia are given as printed; nothing is added to make up the number.");
+
+  // ── a Great Feast ──
+  // Festal antiphons belong to the feasts of the Lord ("in which case there would
+  // have been festal antiphons on the Feast itself", ch.2 note 68). A feast of the
+  // Theotokos keeps the Typika, and its page prints the Beatitude troparia.
+  const isGreat = ld.season === "great_feast" || period === "feast" || rank === "great_feast";
+  if (isGreat) {
+    if (mb && mb.antiphons) return { troparia: [], count: 0, section: "Great Feast", quote: "Festal antiphons replace the Typika and Beatitudes.", unresolved: true, festalAntiphons: true, notes: ["The feast's own antiphons are printed in the Menaion; they are not yet assembled."] };
+    if (!menaionAll.length) return { troparia: [], count: 0, section: "Great Feast", quote: "Festal antiphons replace the Typika and Beatitudes.", unresolved: true, festalAntiphons: true, notes: [menaion ? "This feast's service prints no Beatitude troparia." : "The feast's service is not yet encoded."] };
+    if (isSunday && !menaion.lordsFeast) return R([...sunday().six, ...odeIII()], 10, "§1E", "At the Beatitudes we read ten troparia: six of the resurrection and four from the Menaion (from Ode III of the canon).");
+    return R(menaionAll, menaionAll.length, "§" + (menaion.section || "2F"), asRubric);
+  }
 
   if (isSunday) {
-    if (isApodosis) return R([...sunday().six, ...byOde(menaionAll, "IX").slice(0, 4)], 10, "§1F3", "At the Beatitudes we read ten troparia: six of the resurrection and four from Ode IX of the feast.");
+    if (isApodosis) return R([...sunday().six, ...menaionAll.slice(0, 4)], 10, "§1F3", "At the Beatitudes we read ten troparia: six of the resurrection and four from Ode IX of the feast.");
     if (inFeastPeriod) {
-      // The afterfeast day's Menaion prints the feast's four (and the saint's four when appointed).
-      const printed = menaionAll;
-      if (printed.length >= 8) { notes.push("Menaion prints troparia for the feast and the saint: twelve in all."); return R([...sunday().six.slice(0, 4), ...printed.slice(0, 8)], 12, rank === "polyeleos" || rank === "vigil" ? "§1F2" : "§1F1", "…we read twelve troparia: four troparia of the resurrection, four troparia from the canon of the feast and four troparia of the saint (from Ode VI of his canon)."); }
-      return R([...sunday().six, ...printed.slice(0, 4)], 10, "§1F1", "At the Beatitudes we read ten troparia: six troparia of the resurrection and four troparia from Ode III of the canon of the forefeast, or if it be an afterfeast four troparia from the Ode indicated in the Menaion.");
+      // The day's page prints the feast's troparia and, when appointed, the saint's.
+      const ofFeast = mParts.filter(g => g.feast).flatMap(g => menItems(g, mSrc)).slice(0, 4);
+      const ofSaint = mParts.filter(g => !g.feast).flatMap(g => menItems(g, mSrc)).slice(0, 4);
+      const high = rank === "polyeleos" || rank === "vigil";
+      if (ofFeast.length === 4 && ofSaint.length === 4) return R([...sunday().six.slice(0, 4), ...ofFeast, ...ofSaint], 12, high ? "§1F2" : "§1F1", "…we read twelve troparia: four troparia of the resurrection, four troparia from the canon of the feast and four troparia of the saint (from Ode VI of his canon).");
+      if (ofFeast.length === 4) return R([...sunday().six, ...ofFeast], 10, "§1F1", "At the Beatitudes we read ten troparia: six troparia of the resurrection and four troparia from Ode III of the canon of the forefeast, or if it be an afterfeast four troparia from the Ode indicated in the Menaion.");
+      notes.push("This day's service prints no Beatitude troparia of the feast; the eight of the resurrection are read (§1A form).");
+      return R(sunday().eight, 8, "§1F1", "…six troparia of the resurrection and four troparia of the feast: none printed, so the resurrectional eight.");
     }
     if (rank === "simple") return R(sunday().eight, 8, "§1A", "At the Beatitudes we read eight troparia of the resurrection.");
-    const four = byOde(menaionAll, "III").slice(0, 4);
+    const four = odeIII();
     if (four.length === 4) return R([...sunday().six, ...four], 10, rank === "vigil" ? "§1E" : rank === "polyeleos" ? "§1D → §1C" : "§1C", "At the Beatitudes we read ten troparia: six of the resurrection and four from the Menaion (from Ode III of the canon).");
     notes.push("The Menaion appoints no Beatitude troparia for this commemoration; the eight of the resurrection are read (§1A form).");
-    return R(sunday().eight, 8, rank === "vigil" ? "§1E" : "§1C", "…six of the resurrection and four from the Menaion (from Ode III of the canon) — none printed, so the resurrectional eight.");
+    return R(sunday().eight, 8, rank === "vigil" ? "§1E" : "§1C", "…six of the resurrection and four from the Menaion (from Ode III of the canon): none printed, so the resurrectional eight.");
   }
 
   // ── weekday ──
   const w = sources.weekdayBeatitudes ? sources.weekdayBeatitudes(tone, ["", "mon", "tue", "wed", "thu", "fri", "sat"][dow]) : null;
   const octo = w && w.items ? w.items.map((it, i) => ({ text: it.text, label: it.label === "glory" ? "Glory…" : it.label === "both_now" ? "Now and ever…" : "Octoechos " + (i + 1), source: "Octoechos · Tone " + tone + " · " + ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][dow] })) : [];
-  if (isApodosis) return R(byOde(menaionAll, "IX").slice(0, 8).length ? byOde(menaionAll, "IX").slice(0, 8) : menaionAll.slice(0, 8), 8, rank === "vigil" ? "§2G4" : "§2G3", rank === "vigil" ? "…eight troparia: four from ode IX of the feast (first canon) and four from ode VI of the saint." : "At the Beatitudes we read eight troparia from ode IX of the feast.");
-  if (inFeastPeriod) {
-    const high = rank === "polyeleos" || rank === "vigil";
-    if (rank === "simple" && menaionAll.length <= 6) return R(menaionAll.slice(0, 6), Math.min(6, menaionAll.length) || 6, "§2G1", "At the Beatitudes we read six troparia from Ode III of the forefeast, or from the appointed ode of the feast (as noted in the Menaion).");
-    return R(menaionAll.slice(0, 8), 8, high ? "§2G2" : "§2G1", "…we read eight troparia, taking four from Ode III of the forefeast, or from the appointed ode of the feast, and four from Ode VI of the canon of the saint.");
+  // Nothing printed for the Beatitudes: six from the Octoechos (§2A).
+  if (!menaionAll.length) return R(octo.slice(0, 6), 6, "§2A", "…otherwise, we use six troparia on the Beatitudes, all from the Octoechos.");
+  // PRINTED FIRST: the page's own rubric says how many, from where and in what
+  // order. A part "from the Oktoechos" is the Octoechos' last four, so that its
+  // Glory… and Now and ever… stay in place (Fekula does not say which four).
+  let parts = mb.parts.length ? mb.parts : [{ from: "menaion", all: true }];
+  const hasOcto = parts.some(g => g.from === "octoechos");
+  if (hasOcto && dow === 6) {
+    parts = [...parts.filter(g => g.from === "menaion"), ...parts.filter(g => g.from === "octoechos")];
+    notes.push("Saturday: the troparia from the Menaion \"precede those of the Octoechos (four each)\" (§2A).");
   }
-  if (rank === "doxology" || rank === "polyeleos" || rank === "vigil") {
-    return R([...byOde(menaionAll, "III").slice(0, 4), ...byOde(menaionAll, "VI").slice(0, 4)], 8, rank === "vigil" ? "§2F" : rank === "polyeleos" ? "§2E" : "§2D", "At the Beatitudes we read four troparia from ode III and four from ode VI of the canon in the Menaion.");
-  }
-  const three = byOde(menaionAll, "III").slice(0, 4);
-  if (three.length === 4) {
-    if (rank === "six_stichera") return R([...octo.slice(-4), ...three], 8, "§2C", "At the Beatitudes we read four troparia from the Octoechos and four troparia from ode III in the Menaion.");
-    notes.push("The Octoechos supplies its last four (its Glory… and Now and ever… among them).");
-    return R([...three, ...octo.slice(-4)], 8, "§2A", "If the Menaion calls for Beatitude troparia for the saint (from Ode III), these precede those of the Octoechos (four each).");
-  }
-  return R(octo.slice(0, 6), 6, "§2A", "…otherwise, we use six troparia on the Beatitudes, all from the Octoechos.");
+  if (hasOcto) notes.push("The Octoechos supplies its last four (its Glory… and Now and ever… among them).");
+  const out = parts.flatMap(g => g.from === "octoechos" ? octo.slice(-g.n) : g.all ? menaionAll : menItems(g, mSrc));
+  const want = mb.complete ? mb.total : out.length;
+  return R(out, want, "§" + (menaion.section || "2A"), asRubric);
 }

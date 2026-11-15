@@ -216,12 +216,13 @@ export function toneLabelFor(items) {
 // ── Liturgy-only substitutions ─────────────────────────────────────────────
 
 /** The hymn sung instead of the Trisagion, when the day appoints one. */
-export function trisagionReplacement({ menaionEntry, pentEntry }) {
-  const t = (pentEntry && pentEntry.trisagion_replacement) || (menaionEntry && menaionEntry.trisagion_replacement) || null;
-  if (!t) return null;
-  const from = pentEntry && pentEntry.trisagion_replacement ? "Pentecostarion" : "Menaion";
-  return { text: t, source: from + " · " + ((from === "Menaion" ? menaionEntry.source_file : pentEntry.source_file) || from),
+export function trisagionReplacement({ menaion = null, pentEntry }) {
+  // The Pentecostarion entry first, then the Menaion V2 service (entrancePlan.trisagion).
+  if (pentEntry && pentEntry.trisagion_replacement) return { text: pentEntry.trisagion_replacement, source: "Pentecostarion · " + (pentEntry.source_file || "Pentecostarion"),
     note: "Sung instead of the Trisagion, as the printed service appoints." };
+  if (menaion && menaion.trisagion) return { text: menaion.trisagion.text, source: "Menaion · " + menaion.saintName, srcPath: menaion.trisagion.path,
+    note: "Sung instead of the Trisagion, as the printed service appoints." };
+  return null;
 }
 
 /**

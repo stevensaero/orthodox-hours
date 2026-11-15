@@ -1,7 +1,8 @@
 // Menaion V2 adapter — what the services read from a V2 day.
 // Plan and rulings: menaion_v2_wirein_spec.md (0, 3, 6). Pure functions, no React.
 //
-// STATUS: the HOURS plan. Vespers, Typica and the dismissal are not built yet.
+// STATUS: the Hours plan, the Liturgy propers plan and the Little Entrance /
+// Beatitudes plan. Vespers reads the service directly (src/lib/vespers-propers.js).
 // RULE (Bill, 14 Nov 2026): no shims. The assemblers read these plans as they
 // are; nothing here is flattened into the retired V1 field names.
 //
@@ -69,6 +70,19 @@ export function hymnsOf(c, base) {
 const SUNDAY = Object.freeze({ role: 'sunday', source: 'octoechos', node: null });
 const SUNDAY_SECTION = { simple: '1A', six_stichera: '1C', doxology: '1C', polyeleos: '1D', vigil: '1E', great_feast: '1E' };
 
+// General Menaion fallback: the named service's hymn, with the printed
+// placeholder replaced by the saint's name in this copy only. The tone is the
+// one printed at the end of Vespers when the sites differ (ruling 3). Read only
+// where the service prints none of its own AND names its fallback.
+function generalHymn(c, h, general, field, role, notes) {
+  const g = c.general_fallback; const src = g && general?.[g.type]?.[field];
+  if (!h.absent[field] || !isText(src)) return null;
+  const text = src.text.replace(/\((name|names|Names)\)/g, g.name ?? '$&');
+  const tone = src.tone ?? src.verified_sites?.[0]?.tone ?? null;
+  notes.push(`${field}: the page prints none; taken from the General Menaion, ${g.type}.`);
+  return { role, source: 'general', node: { ...src, text, tone, path: `general.${g.type}.${field}`, generalType: g.type } };
+}
+
 export function hoursPlan(c, base, opts = {}) {
   const { oca = null, sunday = false, general = null } = opts;
   const h = hymnsOf(c, base); const notes = [];
@@ -87,17 +101,7 @@ export function hoursPlan(c, base, opts = {}) {
     if (o) return { role, source: 'oca', node: o, menaion: node ?? null };
     return node ? { role, source: 'menaion', node } : null;
   };
-  // General Menaion fallback: the named service's hymn, with the printed
-  // placeholder replaced by the saint's name in this copy only. The tone is the
-  // one printed at the end of Vespers when the sites differ (ruling 3).
-  const fromGeneral = (field, role) => {
-    const g = c.general_fallback; const src = g && general?.[g.type]?.[field];
-    if (!h.absent[field] || !isText(src)) return null;
-    const text = src.text.replace(/\((name|names|Names)\)/g, g.name ?? '$&');
-    const tone = src.tone ?? src.verified_sites?.[0]?.tone ?? null;
-    notes.push(`${field}: the page prints none; taken from the General Menaion, ${g.type}.`);
-    return { role, source: 'general', node: { ...src, text, tone, path: `general.${g.type}.${field}`, generalType: g.type } };
-  };
+  const fromGeneral = (field, role) => generalHymn(c, h, general, field, role, notes);
   const gap = (what, absent) => {
     notes.push(absent
       ? `${what}: the Menaion prints none (${absent.reason}) and the entry names no General Menaion service for it.`
@@ -225,6 +229,129 @@ export function liturgyPlan(c, base) {
     ? { refrain: l.megalynarion_refrain?.text ?? null, irmos: l.megalynarion?.text ?? null, rubric: l.megalynarion_rubric?.text ?? null, path: `${base}.liturgy.megalynarion` } : null;
   return { has: true, title, section: c.fekula_section, prokeimena: hymns('prokeimenon', 'prokeimenon_verse', 'prokeimena'), alleluia: hymns('alleluia', 'alleluia_verse', 'alleluias'),
     communion: hymns('communion_verse', null, 'communion_verses'), epistles: refs('epistle', 'epistles'), gospels: refs('gospel', 'gospels'), zadostoinik: zad };
+}
+
+// "On the Beatitudes, 8 Troparia: 4 from the Oktoechos, and 4 from ODE III of the
+// canon of the holy prophet." The page's own rubric says how many troparia, from
+// where, and in what order; it is read as printed. Returns the parts in the
+// rubric's order: { n, from: 'octoechos' | 'menaion', ode, of, feast }.
+const BEAT_NUM = { four: 4, six: 6, eight: 8 };
+export function parseBeatitudesRubric(text) {
+  if (!text) return [];
+  const re = /(\d+|four|six|eight)(?:\s+Troparia)?,?\s+(each\s+)?from\s+(the\s+Oktoechos|ODES?\s+([IVX]+)(?:\s+and\s+([IVX]+))?)/gi;
+  const hits = [...text.matchAll(re)]; const out = [];
+  hits.forEach((m, i) => {
+    const n = BEAT_NUM[m[1].toLowerCase()] ?? Number(m[1]);
+    const of = text.slice(m.index + m[0].length, hits[i + 1]?.index ?? text.length).replace(/^[\s,]+|[\s,.]+$/g, '').replace(/(^|[\s,]+)and$/i, '').replace(/^of\s+/, '');
+    const feast = /feast/i.test(of);
+    if (/Oktoechos/i.test(m[3])) out.push({ n, from: 'octoechos', ode: null, of: null, feast: false });
+    else if (m[2] && m[5]) out.push({ n, from: 'menaion', ode: m[4].toUpperCase(), of, feast }, { n, from: 'menaion', ode: m[5].toUpperCase(), of, feast });
+    else out.push({ n, from: 'menaion', ode: m[5] ? `${m[4].toUpperCase()} and ${m[5].toUpperCase()}` : m[4].toUpperCase(), of, feast });
+  });
+  // "4 from ODE III and 4 from ODE VI of the canon of the forefeast": the canon is
+  // named once, after the last part it covers.
+  for (let i = out.length - 2; i >= 0; i--) if (out[i].from === 'menaion' && !out[i].of && out[i + 1].from === 'menaion') { out[i].of = out[i + 1].of; out[i].feast = out[i + 1].feast; }
+  return out;
+}
+
+// The Beatitude troparia a service prints, set against its own rubric. A troparion
+// marked to be sung twice stands twice. `complete` is false when the rubric and the
+// printed troparia do not add up; nothing is supplied to make them agree.
+export function beatitudesOf(c, base) {
+  const l = c.liturgy ?? {};
+  const rubric = l.beatitudes_rubric?.text ?? null;
+  const items = [];
+  (l.beatitudes ?? []).forEach((n, i) => {
+    if (!isText(n)) return;
+    for (let r = 0; r < (n.repeat ?? 1); r++) items.push({ text: n.text, labels: labels(n), repeat: r > 0, path: `${base}.liturgy.beatitudes[${i}]` });
+  });
+  const parts = parseBeatitudesRubric(rubric); let k = 0;
+  for (const g of parts) if (g.from === 'menaion') { g.items = items.slice(k, k + g.n); k += g.n; if (c.kind === 'feast') g.feast = true; }
+  const appointed = parts.filter((g) => g.from === 'menaion').reduce((a, g) => a + g.n, 0);
+  const complete = !!rubric && parts.length > 0 && appointed === items.length;
+  const note = !rubric ? null : !parts.length ? 'The Beatitudes rubric could not be read into parts.'
+    : complete ? null : `The rubric appoints ${appointed} troparia from the Menaion; the page prints ${items.length}.`;
+  return { rubric, parts, items, total: parts.reduce((a, g) => a + g.n, 0), complete, note, antiphons: !!l.antiphons };
+}
+
+// What a service gives the Liturgy at the Little Entrance: its troparia and
+// kontakia as printed for the Liturgy, and its Beatitude troparia. WHICH of them
+// are sung, and in what order with the Sunday, the temple and the day of the
+// week, is Fekula's table by temple (src/lib/liturgy-entrance.js); this only says
+// what the page holds for each place.
+//
+// PRINTED FIRST: the lists printed at the Liturgy are read where the page has
+// them; a troparion or kontakion printed apart for the Liturgy (R-1) is read in
+// place of the one at Vespers or Matins; otherwise those are read.
+//
+// Returns { section, rank, kind, saintName, lordsFeast, feast: { troparion,
+// kontakion }, saints: { troparia: [slot], kontakia: [slot] }, alternates,
+// rubrics, beatitudes, notes }. slot as in hoursPlan.
+export function entrancePlan(c, base, opts = {}) {
+  const { general = null } = opts; const oca = opts.oca ? { ...opts.oca } : null;
+  const h = hymnsOf(c, base); const l = c.liturgy ?? {}; const notes = [];
+  const title = [].concat(c.title ?? []).map((t) => t.text ?? t).join(' ');
+  const feastDay = FEAST_KINDS.includes(c.kind);
+  const texts = (key) => (l[key] ?? []).map((n, i) => (isText(n) ? { ...n, path: `${base}.liturgy.${key}[${i}]` } : null)).filter(Boolean);
+  const isAlt = (n) => /^Or this/i.test(n.sourceLabel ?? '');
+  const onePerSaint = (list) => { const seen = new Set(); return list.filter((n) => !n.saint || (!seen.has(n.saint) && seen.add(n.saint))); };
+
+  let trops = texts('troparia');
+  if (!trops.length) trops = isText(l.liturgy_troparion) ? [{ ...l.liturgy_troparion, path: `${base}.liturgy.liturgy_troparion` }] : h.troparia;
+  const alternates = [...trops.filter(isAlt), ...(isText(l.troparion_alternate) ? [{ ...l.troparion_alternate, path: `${base}.liturgy.troparion_alternate` }] : h.troparion_alt ? [h.troparion_alt] : [])];
+  trops = trops.filter((n) => !isAlt(n));
+  const feastTrop = feastDay ? trops.find(ofFeast) ?? null : null;
+  const saintTrops = onePerSaint(feastDay ? trops.filter((n) => !ofFeast(n)) : trops);
+
+  // Kontakia: each with the ode it follows at Matins, where the page says.
+  const odeOf = (n) => (/ODE III\b/i.test(n.sourceLabel ?? '') ? 3 : /ODE VI\b/i.test(n.sourceLabel ?? '') ? 6 : null);
+  let konts = texts('kontakia').map((n) => ({ ...n, ode: odeOf(n) }));
+  if (!konts.length) konts = isText(l.liturgy_kontakion) ? [{ ...l.liturgy_kontakion, path: `${base}.liturgy.liturgy_kontakion`, ode: null }]
+    : [...h.ode3.map((n) => ({ ...n, ode: 3 })), ...h.ode6.map((n) => ({ ...n, ode: 6 }))];
+  const feastKont = feastDay ? konts.find(ofFeast) ?? null : null;
+  const pool = feastDay ? konts.filter((n) => !ofFeast(n)) : konts;
+  // One saint with a kontakion after Ode III and another after Ode VI: the one
+  // after Ode VI is the kontakion of the Liturgy (ODS Appendix A-V, note: "we use
+  // the kontakion sung after Ode VI of the canon in Matins", stated there for an
+  // icon of the Theotokos and applied here by the same reasoning).
+  const saintKonts = []; const byWho = new Map();
+  for (const n of pool) { const who = n.saint ?? ''; if (!byWho.has(who)) byWho.set(who, []); byWho.get(who).push(n); }
+  let droppedOde3 = false;
+  for (const list of byWho.values()) {
+    const six = list.filter((n) => n.ode === 6); const three = list.filter((n) => n.ode === 3);
+    if (six.length && three.length) { droppedOde3 = true; saintKonts.push(...list.filter((n) => n.ode !== 3)); } else saintKonts.push(...list);
+  }
+  if (droppedOde3) notes.push('Two kontakia are printed for the commemoration; the one after Ode VI is sung at the Liturgy (ODS Appendix A-V note, by the same reasoning).');
+
+  const slot = (node, ocaSlot, role) => {
+    const o = ocaSlot ? oca?.[ocaSlot] : null;
+    if (o) return { role, source: 'oca', node: o, menaion: node ?? null };
+    return node ? { role, source: 'menaion', node } : null;
+  };
+  const own = c.kind === 'feast' ? 'feast' : 'saint';
+  // The OCA text prints one kontakion of the saint at the Liturgy, and it stands in
+  // this one place (an OCA hymn replaces its own counterpart, ruled 14 Nov 2026).
+  // Where it is the Menaion's kontakion after Ode III (4 Oct), the two witnesses
+  // differ on which kontakion the Liturgy takes; that is noted, not hidden.
+  // 25 Nov: the OCA prints no kontakion of St. Clement alone; the kontakion it
+  // prints at the Liturgy is the one of both hieromartyrs (slot kontakion_alt),
+  // which is the counterpart of the Menaion's.
+  if (oca && !oca.kontakion && oca.kontakion_alt) oca.kontakion = oca.kontakion_alt;
+  const ocaKontHere = !!oca?.kontakion;
+  if (ocaKontHere && oca.kontakion.replaces === 'ode3' && droppedOde3) notes.push('The OCA prints at the Liturgy the kontakion the Menaion gives after Ode III; the Menaion-only reading takes the one after Ode VI.');
+  const troparia = saintTrops.map((n, i) => slot(n, i === 0 ? 'troparion' : null, own));
+  const kontakia = saintKonts.map((n, i) => slot(n, i === 0 && ocaKontHere ? 'kontakion' : null, own));
+  if (!troparia.length) { const t = slot(null, 'troparion', own) ?? generalHymn(c, h, general, 'troparion', own, notes); if (t) troparia.push(t); }
+  if (!kontakia.length) { const k = (ocaKontHere ? slot(null, 'kontakion', own) : null) ?? generalHymn(c, h, general, 'kontakion', own, notes); if (k) kontakia.push(k); }
+  if (alternates.length) notes.push(`${alternates.length === 1 ? 'An alternative troparion is' : 'Alternative troparia are'} printed ("Or this Troparion"); the first printed is shown.`);
+  const beatitudes = beatitudesOf(c, base);
+  return { section: c.fekula_section, rank: c.rank, kind: c.kind, saintName: title,
+    lordsFeast: c.rank === 'great_feast' && !/THEOTOKOS/i.test(title),
+    feast: { troparion: slot(feastTrop, 'feast_troparion', 'feast'), kontakion: slot(feastKont, 'feast_kontakion', 'feast') },
+    saints: { troparia, kontakia }, alternates,
+    rubrics: { troparia: l.troparia_rubric?.text ?? null, kontakion: l.kontakion_rubric?.text ?? null },
+    beatitudes, trisagion: isText(l.trisagion_replacement) ? { text: l.trisagion_replacement.text, path: `${base}.liturgy.trisagion_replacement` } : null,
+    notes: [...new Set(notes)] };
 }
 
 // The OCA hymns for a date, as { slot: node }, or null when there are none.
