@@ -8534,6 +8534,27 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.54.1",
+    date: "November 2026",
+    summary: "OCA matching: a hymn in another tone is no longer a candidate, and the service a hymn belongs to now counts",
+    items: [
+      "The OCA's Tone 6 dogmatikon was being offered a short Tone 1 canon hymn as its mate, " +
+      "because every word of the short hymn is also in the long one. It was held for review, " +
+      "not recorded, but it should never have been offered. A hymn in a different tone can no " +
+      "longer outrank one in the right tone that is nearly as close, and is never confirmed " +
+      "automatically.",
+      "A different tone does not rule a match out, though. On 30 November the OCA sets 'Tell " +
+      "us, O Joseph' in Tone 3 and the St. Sergius Menaion prints it in Tone II: one hymn, two " +
+      "tones. Where the wording is strong and only the tone differs, the match is put before a " +
+      "person, marked 'tone differs'.",
+      "The service counts as well: among candidates that are nearly as close in wording, one " +
+      "from the same service (Vespers, Matins, the Liturgy) comes first, and a hymn found only " +
+      "in another service is held for a person rather than confirmed automatically.",
+      "After the change: 190 matched automatically (was 184), 162 awaiting review (was 217). " +
+      "The dogmatikon now matches the Tone 6 dogmatikon.",
+    ],
+  },
+  {
     version: "v0.54.0",
     date: "November 2026",
     summary: "OCA texts in the Menaion: 'Prefer OCA texts' in the book, each OCA service text readable whole, and the first matching of OCA hymns to their mates",

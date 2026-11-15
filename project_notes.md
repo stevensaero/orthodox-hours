@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.54.0** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
+**Tool version: v0.54.1** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,32 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### v0.54.1 — OCA matcher: tone is a requirement, the service counts (15 Nov 2026)
+
+Bill, from the spot-check sheet: the OCA Tone 6 dogmatikon ("Who will not bless
+thee") was offered `tone1.matins.canon.odes.1.cross_resurrection.closer` (0.63)
+over the true Tone 6 dogmatikon (0.58). Cause: the score rewards a short hymn
+whose words are all inside a long one. It was HELD, not recorded, but "I'm
+surprised that we'd even consider a different tone as a match".
+- **A hymn in another tone never outranks an in-tone candidate that is within
+  0.10, and is never automatic** (tone unknown on either side still passes).
+  It is NOT discarded: Bill pointed at 30 Nov "Tell us, O Joseph" (OCA Tone 3;
+  the St. Sergius page prints "Both now ..., of the forefeast, in Tone II",
+  checked in 11-30.pdf p6; a true mate, same date). THE TWO SOURCES CAN PRINT
+  ONE HYMN IN DIFFERENT TONES. So strong wording (≥ 0.5) in another tone, with
+  nothing in the OCA's tone near it, goes to review marked TONE DIFFERS.
+- **Place** (vespers / matins / liturgy / any), read from the OCA heading and
+  from the mate's paths. Among candidates within 0.10, one of the same service
+  is ranked first; a mate found only in another service is never automatic (17
+  held for it). Those 17 include true mates: the OCA does reuse a hymn in
+  another service (a Praises doxasticon at the Litiya), so a person decides.
+- The margin is taken over the next different hymn IN THE SAME TONE.
+- A hymn of the tone is named by its Octoechos path even where a Menaion
+  service prints it too.
+Result: see the counts printed by the tool (190 auto, was 184; 11 added, 5 moved
+to review, all 5 for place).
+All 11 added were read and are true mates. THE BAR IS STILL PROVISIONAL.
 
 ### v0.54.0 — OCA TEXTS: library, match register, and the Menaion viewer (15 Nov 2026)
 
