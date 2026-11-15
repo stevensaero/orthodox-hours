@@ -393,8 +393,28 @@ DONE on the branch — Vespers, "Lord, I have cried", Glory and Both now (14 Nov
 - Not yet checked against a source: Friday evening in a forefeast or afterfeast
   (2G1/2G2). 2G3 states it; the others take what the page prints.
 
-NEXT on the branch, in order: the rest of Lord I call (the stichera and their
-count), then Litiya, Aposticha, troparia. Original sizing: Vespers section by section (Lord I call, Litiya,
+DONE on the branch — Vespers, "Lord, I have cried", the STICHERA (14 Nov):
+- `resolveLicStichera` (same module). Weekday: the page's own count with its
+  repeats; where the page prints fewer than six the Octoechos supplies the
+  first ones (2A). Saturday evening: ten, resurrection first, the page's fitted
+  to what is left by Fekula ch. 1 (7+3, 4+3+3, 6+4, 4+6, 3+3+4, 4+6).
+- **Gate: verse by verse (whose sticheron, what tone) the tool agrees with the
+  OCA texts on all 12 shared dates** — 36 of 36 checks with the closers.
+- **Finding:** on 22 Nov (Sunday, afterfeast) the OCA sings 4 + 3 + 3, Fekula's
+  SIMPLE split. Our rank word for that day is `six_stichera` (ruled, following
+  V1), whose split would be 3 + 3 + 4. The rule therefore reads the page's own
+  numbers (3 and 3 leave 4), not the rank word. The rank word is only a label
+  on such days; do not derive counts from it.
+- Unconfirmed: a Saturday evening when the page prints more different stichera
+  than are sung (a polyeleos with five texts, six sung): the first are taken
+  and the element says so.
+- `expandSticheraToCount` is deleted. The mid-state note above no longer
+  applies to Lord I call: its stichera, Glory and Both now are all V2.
+- **OCA capture fix (on main):** a psalm verse printed in roman type directly
+  under a hymn had been read as a line of that hymn (19 blocks). A paragraph
+  beginning "V. " is now always its own block. The comparison found it.
+
+NEXT on the branch, in order: Litiya, Aposticha, troparia. Original sizing: Vespers section by section (Lord I call, Litiya,
 Aposticha, troparia; ~1,400 of 1,920 lines), each gated against the OCA texts;
 then Typica and Liturgy propers, dismissal `name`, bulletin; then the Prefer
 OCA toggle, the service chooser, merge, retire V1. Sized in
