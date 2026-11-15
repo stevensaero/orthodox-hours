@@ -334,21 +334,65 @@ rebuilt to this form** (its `troparion_other_saint` key is retired and removed
 from the schema; its single kontakion keeps the canonical field). 11-18 has one
 troparion and one kontakion and is unchanged.
 
-### V2 ADAPTER: THE HOURS SLICE IS BUILT (14 Nov) — nothing switched yet
+### V2 WIRE-IN IS A REWRITE OF THE LOGIC, NOT A SHIM (Bill, 14 Nov) — branch `v2-wirein`
 
-`src/data/menaion_v2/adapter.js` (spec 6a). The tool still reads V1. Gates:
-`node tools/test_menaion_v2_hours.mjs` (`--table` for the per-date table) and
-the report `node tools/compare_menaion_v1_v2.mjs`.
+**Rule (Bill): no shims, props or bandages.** V1 was consistently wrong against
+the printed OCA texts because the assembler WORKED HYMNS OUT BY RULE and did not
+read what the page prints. Flattening V2 into V1's field names would have kept
+that alive, so the V1-shaped adapter function was deleted. Each service's
+selection logic is rewritten to lay in a V2 PLAN: for every movable place the
+plan says "printed here", "rubric only, fetch from the Octoechos in this tone",
+or "nothing printed". A rule is applied only where the page prints nothing.
 
-- The adapter gives the assemblers a **V1-shaped entry**, so the switch is a
-  loader change and not a rewrite of the assembler.
-- **V1 had forefeast and afterfeast Hours wrong** (saint's troparion alone);
-  V2 follows Fekula 2G1 / 2G3. The assembler needs a small change to read a
-  feast troparion ahead of the saint's. That is the next piece of work.
-- Next after that: Vespers slice, Typica slice, dismissal `name`, General
-  Menaion fallback (11-29), then the switch with the "Prefer OCA" toggle and a
-  service chooser. Open for Bill: with Prefer OCA on and two Menaion kontakia,
-  is OCA's one kontakion read at every Hour?
+**Work happens on branch `v2-wirein`, not `main`.** Everything switches together
+(ruling 1), so `main` keeps serving V1 until every service is rewritten; then
+the branch is merged, V1 deleted, version 0.53.0. Encoding goes on in `main`;
+merge `main` into the branch as it moves. Push the branch with the same
+header-auth method (`... push <url> v2-wirein`).
+
+DONE on the branch — the Hours:
+- `src/data/menaion_v2/adapter.js` `hoursPlan(c, path, { oca, sunday })`: per
+  Hour, the troparia and kontakion by Fekula ch. 2 (weekdays) and ch. 1
+  (Sundays: 1A, 1B, 1C, 1D, 1E, 1F1, 1F2, 1F3), citing the section applied.
+- `src/lib/hours-propers.js`: lays the plan beside the Octoechos and the
+  Pentecostarion. Plain module, so the gate runs the tool's own code.
+  **The Pentecostarion branch was MOVED there unchanged, not reworked.**
+- `assembleHour` lost its ~130 lines of selection and `getKontakionForHour`.
+- Gates: `tools/test_menaion_v2_hours.mjs` (82 plans, weekday and Sunday, with
+  and without OCA; `--table`), `tools/test_hours_mount.mjs` (mounts the app in
+  jsdom on three dates and reads the Hour it shows).
+
+**V1 errors this fixed (found by reading Fekula, not by patching):**
+- Forefeast and afterfeast weekdays: V1 read the saint's troparion alone. 2G1:
+  troparion of the feast, Glory, of the saint; kontakion of the feast.
+- **Sunday kontakion was wrong for every rank.** V1 read the Sunday kontakion at
+  the 1st and 6th Hours and the Menaion's at the 3rd and 9th. Fekula: simple and
+  six-stichera, ONLY the Sunday kontakion (1A, 1C); doxology, polyeleos, vigil,
+  the Menaion's at the 1st and 6th and the Sunday at the 3rd and 9th (1C-1E).
+- Sundays in a forefeast or afterfeast had no rule at all (1F1-1F3 now).
+
+NEXT on the branch, in order: Vespers section by section (Lord I call, Litiya,
+Aposticha, troparia; ~1,400 of 1,920 lines), each gated against the OCA texts;
+then Typica and Liturgy propers, dismissal `name`, bulletin; then the Prefer
+OCA toggle, the service chooser, merge, retire V1. Sized in
+`menaion_v2_wirein_spec.md` 6b.
+
+Open for Bill: with Prefer OCA on and two Menaion kontakia (10-04), is OCA's
+one kontakion read at every Hour? (Currently yes.) Weekday apodosis: Fekula's
+note 25 (nothing of the feast at the 9th Hour) is applied on Sundays only,
+where he states it.
+
+Found and NOT fixed: `npm run gate` fails on `main` at "temple index: STALE"
+(independent of this work; `node tools/build_temple_index.mjs` regenerates it).
+
+### NEXT MENAION V2 BROWSER PASS (Bill, 14 Nov, with a screenshot)
+
+1. Move the "Hours Tool" return link to the LEFT edge of the page (it sits
+   centred now).
+2. Widen the left rail: the day buttons and some commemoration titles are
+   clipped.
+3. The General Menaion list is collapsible, and collapsed by default while a
+   daily entry is being shown.
 
 ### THE OCA HYMNS LAYER IS STARTED (14 Nov) — `src/data/oca_hymns/`
 
