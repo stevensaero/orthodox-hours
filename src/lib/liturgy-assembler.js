@@ -241,7 +241,7 @@ function planHooks(ctx, variant) {
   // ── Readings, prokeimenon, Alleluia, communion ───────────────────────────
   const readings = sources.readingsForDay
     ? sources.readingsForDay({ liturgicalData: ld, menaionEntry, rank: ctx.menaionRank || null, dailyReading, feastReading,
-        menaionRefs: menaionPlan && menaionPlan.has ? { e: menaionPlan.epistles, g: menaionPlan.gospels } : null, order: (menaionEntrance && menaionEntrance.order) || null })
+        menaionRefs: menaionPlan && !(ld.namedDay && ld.namedDay.isSunday) ? { e: menaionPlan.epistles, g: menaionPlan.gospels } : null, kind: menaionPlan ? menaionPlan.kind : null, order: (menaionEntrance && menaionEntrance.order) || null })
     : { groups: [], order: "day-first", rule: { section: null, quote: "" }, hasMenaionReadings: false };
   const propers = resolveLiturgyPropers({ liturgicalData: ld, menaionEntry, menaionPlan, ocaPractice: ctx.ocaPractice || null, pentEntry, order: (menaionEntrance && menaionEntrance.order) || null, menaionFirst: readings.order === "menaion-first", sources });
 
@@ -271,7 +271,7 @@ function planHooks(ctx, variant) {
     if (!g) return [];
     return g.items.map((it, i) => mov("lit-" + slot + "-" + i, g.label + " · " + it.label, it.ref, {
       readingRef: it.ref, source: it.source === "menaion" ? "Menaion" : "OCA lectionary",
-      fekula: { section: readings.rule.section, note: readings.rule.quote + (readings.order === "menaion-first" ? " — Saturday: Menaion first." : "") },
+      fekula: { section: readings.rule.section, note: readings.rule.quote },
     }));
   };
   const ep = readingEls("e"), go = readingEls("g");

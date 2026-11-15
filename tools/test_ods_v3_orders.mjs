@@ -102,8 +102,8 @@ for (const [id, o] of Object.entries(ODS3_ORDERS)) {
     for (const sat of (o.liturgy.saturday ? [false, true] : [false])) {
       const l2 = sat ? { ...ld, dow: 6 } : ld;
       const first = lp.epistles[0] || lp.gospels[0] ? { e: lp.epistles[0]?.display ?? null, g: lp.gospels[0]?.display ?? null } : null;
-      const w = readingsForDay({ liturgicalData: l2, rank: c.rank, dailyReading: daily, feastReading: first, menaionRefs: refs, order });
-      const g = readingsForDay({ liturgicalData: l2, rank: c.rank, dailyReading: daily, feastReading: first });
+      const w = readingsForDay({ liturgicalData: l2, rank: c.rank, kind: c.kind, dailyReading: daily, feastReading: first, menaionRefs: refs, order });
+      const g = readingsForDay({ liturgicalData: l2, rank: c.rank, kind: c.kind, dailyReading: daily, feastReading: first, menaionRefs: refs });
       if (!w.ods3) { fail(`${id}: the readings did not take the order`); continue; }
       if (w.ods3.unbound.length) fail(`${id}: the order names readings the page does not print: ${w.ods3.unbound.join(', ')}`);
       for (const [slot, part] of [['e', 'epistle'], ['g', 'gospel']]) {

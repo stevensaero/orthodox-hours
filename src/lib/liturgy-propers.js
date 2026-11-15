@@ -32,6 +32,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { ods3Cite } from "../data/ods_v3/orders.js";
+import { fekulaProperOrder } from "./liturgy-order.js";
 
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const DAY_KEYS = ["", "mon", "tue", "wed", "thu", "fri", "sat"];
@@ -57,8 +58,8 @@ const textOf = (v) => (v && typeof v === "object" ? v.text : v) || null;
 // Apostle's; on a simple Sunday only the Sunday's), which Bill takes to be brevity.
 // So nothing is dropped. Where an OCA text exists for the day, each item is marked:
 // printed there (sung in OCA practice) or not printed there (likely omitted).
-export const OCA_SUNG = "OCA practice: sung. The OCA service text for this day prints it.";
-export const OCA_OMITTED = "OCA practice: likely omitted. The OCA service text for this day does not print it; the full order appoints it.";
+export const OCA_SUNG = "";
+export const OCA_OMITTED = "The OCA service text for this day does not print this; Fekula's order appoints it.";
 const lesson = (ref) => { const m = String(ref || "").replace(/^(\d) /, "$1").match(/^([A-Za-z0-9]+) (\d+):/); return m ? (m[1] + " " + m[2]).toLowerCase() : null; };
 /** For an Epistle or Gospel reference: { oca: 'printed'|'not_printed', note } or null when there is no OCA text. */
 export function ocaReadingPractice(ocaPractice, kind, ref) {
@@ -74,7 +75,7 @@ function markOcaPractice(items, ocaList) {
     // The Sunday's is matched to the heading the OCA labels "(Resurrection)"; otherwise by tone.
     const i = pool.findIndex((o) => o.tone === it.tone && (o.sunday === undefined || o.sunday === (it.origin === "sunday")));
     const j = i >= 0 ? i : pool.findIndex((o) => o.tone === it.tone);
-    if (j >= 0) { pool.splice(j, 1); it.oca = "printed"; it.note = (it.note ? it.note + " " : "") + OCA_SUNG; }
+    if (j >= 0) { pool.splice(j, 1); it.oca = "printed"; }
     else { it.oca = "not_printed"; it.note = (it.note ? it.note + " " : "") + OCA_OMITTED; }
   }
 }
@@ -205,6 +206,26 @@ export function resolveLiturgyPropers({ liturgicalData, menaionEntry = null, men
 
   const join = (k) => (menaionFirst ? [...men[k], ...day[k]] : [...day[k], ...men[k]]);
   const result = { prokeimena: join("prokeimena"), alleluia: join("alleluia"), communion: join("communion"), menaionFirst };
+  const pick = (k, who) => who === "day" ? day[k] : who === "menaion" ? men[k] : men[k].filter((x) => (who === "feast") === !!x.feast);
+  // THE GENERAL RULE IS FEKULA'S, BY SECTION (ruled 14 Nov 2026): whose prokeimenon,
+  // Alleluia and communion hymn, and in what order (src/lib/liturgy-order.js). It
+  // is not "the day's and the Menaion's wherever printed": at a polyeleos service
+  // they are "from the Menaion, only" (§2E), in a feast period of the feast or the
+  // saint (§2G). Outside the Pentecostarion, for an encoded Menaion service.
+  const pentSeason = inPent || ld.isPentecostarion || ld.season === "pentecostarion" || ld.season === "brightweek";
+  if (menaionPlan && !pentSeason) {
+    const rule = fekulaProperOrder({ ld, rank: menaionPlan.rank, kind: menaionPlan.kind,
+      saintReadings: [...(menaionPlan.epistles || []), ...(menaionPlan.gospels || [])].some((r) => !r.feast) });
+    const fk = { section: rule.section, note: rule.quote + " (ODS 2nd ed. " + rule.page + ")" };
+    const by = (k, whos) => {
+      const got = whos.flatMap((who) => pick(k, who)).map((x) => ({ ...x, fekula: fk }));
+      // Fekula names a source the page prints nothing for: the day's is given, and said so.
+      if (!got.length && day[k].length && !(k === "communion")) return day[k].map((x) => ({ ...x, fekula: { section: rule.section, note: rule.quote + " The Menaion service prints none here, so the day's is given." } }));
+      return got;
+    };
+    result.prokeimena = by("prokeimena", rule.prokeimenon); result.alleluia = by("alleluia", rule.alleluia); result.communion = by("communion", rule.communion);
+    result.rule = rule; result.menaionFirst = rule.prokeimenon[0] !== "day";
+  }
   // ODS 3rd ed. vol. III prints whose prokeimenon, Alleluia and communion verse are
   // sung on this date, and in what order: it overrides the general rule (ruled 14
   // Nov 2026). `order` is the entry from src/data/ods_v3/orders.js. The general
@@ -212,7 +233,6 @@ export function resolveLiturgyPropers({ liturgicalData, menaionEntry = null, men
   const ol = order && order.liturgy;
   if (ol && (ol.prokeimenon || ol.alleluia || ol.communion)) {
     const cite = ods3Cite(order, "liturgy");
-    const pick = (k, who) => who === "day" ? day[k] : men[k].filter((x) => (who === "feast") === !!x.feast);
     const by = (k, whos) => (whos ? whos.flatMap((who) => pick(k, who)).map((x) => ({ ...x, fekula: { section: cite, note: "Appointed for this date: " + whos.map((w) => (w === "day" ? "of the day" : w === "feast" ? "of the feast" : "of the saints")).join(", then ") + "." } })) : result[k]);
     const general = { prokeimena: result.prokeimena, alleluia: result.alleluia, communion: result.communion };
     result.prokeimena = by("prokeimena", ol.prokeimenon); result.alleluia = by("alleluia", ol.alleluia); result.communion = by("communion", ol.communion);

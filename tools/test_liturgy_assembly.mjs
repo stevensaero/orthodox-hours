@@ -167,9 +167,10 @@ const textOf = (els, unitId) => { const x = els.find(y => y.unitId === unitId); 
   const els = run({ dow: 0, isSunday: true, season: "afterfeast", tone: 7, feastPeriod: { feast: { name: "Elevation of the Cross" } } }, e, { plan: planOf('11-22') });
   const prok = els.filter(x => x.type === "prokeimenon");
   // 09-20 prints two Menaion prokeimena (feast in Tone 7, saint in Tone 4): Sunday + both
-  check(prok.length === 3, `Sunday in an afterfeast (V2 11-22 propers): ${prok.length} prokeimena, expected 3 (Sunday + feast + saint)`);
+  // §1F1: afterfeast, Sunday and feast; "but if there be readings for the saint ... for Sunday and the saint". 11-22 prints the Apostles' readings.
+  check(prok.length === 2, `Sunday in an afterfeast (V2 11-22 propers): ${prok.length} prokeimena, expected 2 (Sunday + saint, §1F1)`);
   check(prok[0] && /Tone 7/.test(prok[0].label) && /Sunday Octoechos/.test(prok[0].source), "09-20 Sunday: resurrectional prokeimenon first");
-  check(section(els, "prokeimenon").toneLabel === "Tone 7 · Tone 3 · Tone 8", "V2 11-22 propers: prokeimenon row tone label " + section(els, "prokeimenon").toneLabel);
+  check(section(els, "prokeimenon").toneLabel === "Tone 7 · Tone 8", "V2 11-22 propers: prokeimenon row tone label " + section(els, "prokeimenon").toneLabel);
   check(/Seventh Tone/.test(textOf(els, "pk-06")), "09-20: pk-06 blank filled");
   check(!/___/.test(textOf(els, "al-02")), "09-20: al-02 blank filled");
   check(byId(els, "lit-e-0") && byId(els, "lit-e-0").readingRef, "09-20: epistle element with readingRef");
@@ -182,7 +183,7 @@ const textOf = (els, unitId) => { const x = els.find(y => y.unitId === unitId); 
   check(byId(els, "lit-di-08") && /basil|chrysostom/.test(byId(els, "lit-di-08").text), "09-20: dismissal replaced");
   check(textOf(els, "ef-09") && /Praise the Lord/.test(textOf(els, "ef-09")), "09-20: Sunday communion hymn unchanged");
   check(!els.some(x => x.unitId === "cm-07") && byId(els, "lit-zadostoinik"), "09-20: zadostoinik stands in place of It is truly meet — once");
-  check(els.filter(x => /^lit-communion-/.test(x.id)).length === 2, "V2 11-22 propers: the feast's and the saints' communion hymns appended");
+  check(els.filter(x => /^lit-communion-/.test(x.id)).length === 1, "V2 11-22 propers: the saints' communion hymn appended (§1F1, Sunday and saint)");
 }
 // 2. Weekday (Monday), same entry shape — day propers from the Octoechos, then the Menaion
 {
@@ -464,7 +465,7 @@ for (const els of [run({ dow: 0, isSunday: true, season: "sunday", tone: 7 }, en
 }
 
 const overview = assembleLiturgy({ units: getLiturgy("chrysostom") }).filter(e => e.type === "liturgy_section" && e.core).length;
-// ── OCA practice is NOTED, never applied: the full order stands (Bill, 14 Nov 2026) ──
+// ── The general rule is Fekula's by section; the OCA mark stands only where the OCA text differs (Bill, 14 Nov 2026) ──
 {
   const { ocaLiturgyPropersFor } = await import('../src/data/oca_hymns/index.js');
   const { ocaReadingPractice } = await import('../src/lib/liturgy-propers.js');
@@ -473,16 +474,22 @@ const overview = assembleLiturgy({ units: getLiturgy("chrysostom") }).filter(e =
   const oca = await ocaLiturgyPropersFor('11-16'); const plan = planOf('11-16');
   const base = { liturgicalData: { dow: 1, tone: 7 }, menaionPlan: plan, sources: baseSources };
   const full = resolveLiturgyPropers(base); const noted = resolveLiturgyPropers({ ...base, ocaPractice: oca });
-  ck(noted.prokeimena.length === full.prokeimena.length && noted.alleluia.length === full.alleluia.length && full.prokeimena.length === 2, 'noting OCA practice must not drop anything (day + Apostle)');
-  ck(noted.prokeimena.find((x) => x.origin === 'weekday')?.oca === 'not_printed', "the day's prokeimenon is marked likely omitted");
-  ck(noted.prokeimena.find((x) => x.origin === 'menaion')?.oca === 'printed', "the Apostle's prokeimenon is marked sung");
-  ck(ocaReadingPractice(oca, 'g', 'Matthew 9:9-13 (§30)')?.oca === 'printed' && ocaReadingPractice(oca, 'e', 'Romans 5:1-10 (§88)')?.oca === 'not_printed', 'readings are marked the same way');
+  // The general rule is Fekula's (§2E, polyeleos): prokeimenon and Alleluia "from the Menaion, only". The OCA text agrees.
+  ck(full.prokeimena.length === 1 && full.prokeimena[0].origin === 'menaion' && full.alleluia.length === 1 && full.rule.section === '§2E', '§2E: the Apostle\'s prokeimenon and Alleluia only (' + full.prokeimena.length + ', ' + full.rule.section + ')');
+  ck(noted.prokeimena.length === full.prokeimena.length && noted.prokeimena[0].oca === 'printed', 'the OCA text prints what Fekula appoints: nothing to mark');
+  ck(ocaReadingPractice(oca, 'g', 'Matthew 9:9-13 (§30)')?.oca === 'printed' && ocaReadingPractice(oca, 'e', 'Romans 5:1-10 (§88)')?.oca === 'not_printed', 'a reading the OCA text does not print is still marked');
   ck(ocaReadingPractice(null, 'e', 'Romans 5:1-10') === null && !full.prokeimena.some((x) => x.oca), 'no OCA text for the day: no mark at all');
-  // 6 Sep 2026, a Sunday: the OCA prints only the Sunday's.
-  const sun = resolveLiturgyPropers({ liturgicalData: { dow: 0, isSunday: true, tone: 5 }, menaionPlan: planOf('09-06'), ocaPractice: await ocaLiturgyPropersFor('09-06'), sources: { ...baseSources } });
+  // Saturday at polyeleos: "all from the Menaion and then for the day"
+  const satP = resolveLiturgyPropers({ ...base, liturgicalData: { dow: 6, tone: 7 } });
+  ck(satP.prokeimena[0].origin === 'menaion' && satP.prokeimena.some((x) => x.origin === 'weekday'), '§2E Saturday: the Menaion\'s, then the day\'s');
+  // Feast periods (§2G1): a weekday afterfeast takes the feast's and the saint's, not the day's (11-23, Monday)
+  const af = resolveLiturgyPropers({ liturgicalData: { dow: 1, tone: 7, season: 'afterfeast', feastPeriod: { periodType: 'afterfeast', feast: { name: 'Entry', forLord: false } } }, menaionPlan: planOf('11-23'), sources: baseSources });
+  ck(af.prokeimena.length >= 1 && af.prokeimena.every((x) => x.origin === 'menaion') && af.prokeimena[0].feast && af.rule.section === '§2G1', '§2G1 afterfeast: of the feast (and of the saint), not the day\'s');
+  // 6 Sep 2026, a six-stichera Sunday (§1C): for Sunday and from the Menaion. The OCA text prints only the Sunday's: that difference is marked.
   await OctoV2.loadV2Tone(5);
+  const sun = null;
   const sun2 = resolveLiturgyPropers({ liturgicalData: { dow: 0, isSunday: true, tone: 5 }, menaionPlan: planOf('09-06'), ocaPractice: await ocaLiturgyPropersFor('09-06'), sources: baseSources });
-  ck(sun2.prokeimena.find((x) => x.origin === 'sunday')?.oca === 'printed' && sun2.prokeimena.find((x) => x.origin === 'menaion')?.oca === 'not_printed', 'Sunday: the Sunday prokeimenon sung, the saint\'s likely omitted, both shown');
+  ck(sun2.prokeimena.find((x) => x.origin === 'sunday')?.oca === 'printed' && sun2.prokeimena.find((x) => x.origin === 'menaion')?.oca === 'not_printed', 'Sunday §1C: Sunday and Menaion both shown; the saint\'s, which the OCA text does not print, is marked');
   void sun;
   console.log(bad ? `OCA practice notes: ${bad} failure(s)` : 'OCA practice notes: OK');
   failures += bad;

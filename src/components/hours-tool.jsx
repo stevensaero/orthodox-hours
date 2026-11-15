@@ -5471,8 +5471,9 @@ function buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, idP
 function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode = false, templeDedication = null, menaionPlan = null, menaionRank = null, ocaPractice = null, menaionEntrance = null) {
   // OCA practice is shown in the element's heading, where it is always visible: the
   // full order is rendered and each item says whether the OCA text for the day has it.
-  const ocaTag = (oca) => (oca === "printed" ? " · OCA: sung" : oca === "not_printed" ? " · OCA: likely omitted" : "");
-  const ocaRead = (kind, ref) => { const p = ocaReadingPractice(ocaPractice, kind, ref); return p ? " · " + p.note : ""; };
+  // Shown only where the tool's order and the OCA text for the day DIFFER (ruled 14 Nov 2026).
+  const ocaTag = (oca) => (oca === "not_printed" ? " · OCA: not in the OCA text" : "");
+  const ocaRead = (kind, ref) => { const p = ocaReadingPractice(ocaPractice, kind, ref); return p && p.oca === "not_printed" ? " · " + p.note : ""; };
   const ocaReadTag = (kind, ref) => { const p = ocaReadingPractice(ocaPractice, kind, ref); return p ? ocaTag(p.oca) : ""; };
   const { dow: dowNumber, tone } = liturgicalData;
   const isSunday = dowNumber === 0;
@@ -5529,7 +5530,9 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
   // former polyeleos/vigil rank gate — and stand beside the day's, never in
   // place of it. The shared element shape below keeps the explainer badges fed.
   const typicaReadings = readingsForDay({ liturgicalData, menaionEntry, rank: menaionRank, dailyReading, feastReading,
-    menaionRefs: menaionPlan && menaionPlan.has ? { e: menaionPlan.epistles, g: menaionPlan.gospels } : null, order: (menaionEntrance && menaionEntrance.order) || null });
+    // Every reference the service prints, except on a named Sunday, whose own proper stands at the cycle reading.
+    menaionRefs: menaionPlan && !(liturgicalData.namedDay && liturgicalData.namedDay.isSunday) ? { e: menaionPlan.epistles, g: menaionPlan.gospels } : null,
+    kind: menaionPlan ? menaionPlan.kind : null, order: (menaionEntrance && menaionEntrance.order) || null });
   const typicaPropers = resolveLiturgyPropers({
     liturgicalData, menaionEntry, menaionPlan, ocaPractice, pentEntry, menaionFirst: typicaReadings.order === "menaion-first",
     order: (menaionEntrance && menaionEntrance.order) || null,
@@ -5616,16 +5619,24 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
       return "The reading is from the Holy Gospel according to " + book + ".";
     };
 
-    if (dailyReading) {
-      if (dailyReading.e) {
-        const intro = epistleIntro(dailyReading.e);
-        const cycleNote = isSunday
-          ? `Sunday proper Epistle · Source: OCA lectionary`
-          : "Daily cycle Epistle · Source: OCA lectionary";
-        movable("typica-epistle", "Epistle" + ocaReadTag('e', dailyReading.e),
-          (intro ? intro + "\n\n" : "") + dailyReading.e,
-          cycleNote + ocaRead('e', dailyReading.e));
-      }
+    // The Epistles and Gospels in the order the rule gives (readingsForDay: Fekula
+    // by section, or the order ODS vol. III prints for the date): every Epistle,
+    // then the Alleluia, then every Gospel.
+    const readingsOf = (slot) => (typicaReadings.groups.find(g => g.slot === slot) || { items: [] }).items;
+    const readingEl = (slot, it, i) => {
+      const isE = slot === 'e'; const own = it.source !== 'day';
+      const intro = (isE ? epistleIntro : gospelIntro)(it.ref);
+      const base = "typica-" + (isE ? "epistle" : "gospel") + (own ? "-feast" : "");
+      const nth = readingsOf(slot).slice(0, i).filter(x => (x.source !== 'day') === own).length;
+      const what = (isE ? "Epistle" : "Gospel") + (own ? (it.who === 'feast' ? " of the feast" : " of the commemoration") : "");
+      const src = own
+        ? `Proper ${isE ? "Epistle" : "Gospel"} ${it.who === 'feast' ? "of the feast" : "of the commemoration"}${menaionPlan && menaionPlan.title ? " (" + menaionPlan.title + ")" : ""} · Source: Menaion`
+        : (isSunday ? `Sunday proper ${isE ? "Epistle" : "Gospel"} · Source: OCA lectionary` : `Daily cycle ${isE ? "Epistle" : "Gospel"} · Source: OCA lectionary` + (!isE && dailyReading && dailyReading.lukanJump ? " · Luke series" : ""));
+      movable(base + (nth ? "-" + nth : ""), what + ocaReadTag(slot, it.ref), (intro ? intro + "\n\n" : "") + it.ref,
+        src + " · " + typicaReadings.rule.section + ocaRead(slot, it.ref));
+    };
+    if (readingsOf('e').length || readingsOf('g').length) {
+      readingsOf('e').forEach((it, i) => readingEl('e', it, i));
 
       // ── Alleluia — between Epistle and Gospel ──────────────────────────
       // v0.49.2: from resolveLiturgyPropers() (see the Prokeimenon note above).
@@ -5646,38 +5657,14 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
         });
       }
 
-      if (dailyReading.g) {
-        const intro = gospelIntro(dailyReading.g);
-        const cycleNote = isSunday
-          ? `Sunday proper Gospel · Source: OCA lectionary`
-          : "Daily cycle Gospel · Source: OCA lectionary" +
-            (dailyReading.lukanJump ? " · Luke series" : "");
-        movable("typica-gospel", "Gospel" + ocaReadTag('g', dailyReading.g),
-          (intro ? intro + "\n\n" : "") + dailyReading.g,
-          cycleNote + ocaRead('g', dailyReading.g));
-      }
+      readingsOf('g').forEach((it, i) => readingEl('g', it, i));
     } else {
       fixed("typica-readings-cycle", "Epistle and Gospel",
         "No cycle reading appointed for this date.",
         "HTM p.3: Prokeimenon may be chanted, Epistle and Gospel may be read.");
     }
-
-    // Feast proper readings
-    if (feastReading && (feastReading.e || feastReading.g)) {
-      if (feastReading.e) {
-        const intro = epistleIntro(feastReading.e);
-        movable("typica-epistle-feast", "Epistle of the commemoration" + ocaReadTag('e', feastReading.e),
-          (intro ? intro + "\n\n" : "") + feastReading.e,
-          `Proper Epistle of the commemoration${menaionPlan && menaionPlan.title ? " (" + menaionPlan.title + ")" : ""} · Source: Menaion` + ocaRead('e', feastReading.e));
-      }
-      if (feastReading.g) {
-        const intro = gospelIntro(feastReading.g);
-        movable("typica-gospel-feast", "Gospel of the commemoration" + ocaReadTag('g', feastReading.g),
-          (intro ? intro + "\n\n" : "") + feastReading.g,
-          `Proper Gospel of the commemoration${menaionPlan && menaionPlan.title ? " (" + menaionPlan.title + ")" : ""} · Source: Menaion` + ocaRead('g', feastReading.g));
-      }
-    }
   }
+
 
   // ── 8. Remember us ───────────────────────────────────────────────────────
   fixed("typica-remember", "Remember Us",

@@ -242,7 +242,7 @@ export function hoursPlan(c, base, opts = {}) {
 export function liturgyPlan(c, base) {
   const l = c.liturgy ?? null;
   const title = [].concat(c.title ?? []).map((t) => t.text ?? t).join(' ');
-  const empty = { has: false, title, prokeimena: [], alleluia: [], communion: [], epistles: [], gospels: [], zadostoinik: null };
+  const empty = { has: false, title, section: c.fekula_section, rank: c.rank, kind: c.kind, prokeimena: [], alleluia: [], communion: [], epistles: [], gospels: [], zadostoinik: null };
   if (!l) return empty;
   const isVerse = (n) => labels(n).includes('refrain') || n.sourceLabel === 'Verse';
   const hymns = (single, verse, list) => {
@@ -262,7 +262,7 @@ export function liturgyPlan(c, base) {
   });
   const zad = isText(l.megalynarion) || isText(l.megalynarion_refrain)
     ? { refrain: l.megalynarion_refrain?.text ?? null, irmos: l.megalynarion?.text ?? null, rubric: l.megalynarion_rubric?.text ?? null, path: `${base}.liturgy.megalynarion` } : null;
-  return { has: true, title, section: c.fekula_section, prokeimena: hymns('prokeimenon', 'prokeimenon_verse', 'prokeimena'), alleluia: hymns('alleluia', 'alleluia_verse', 'alleluias'),
+  return { has: true, title, section: c.fekula_section, rank: c.rank, kind: c.kind, prokeimena: hymns('prokeimenon', 'prokeimenon_verse', 'prokeimena'), alleluia: hymns('alleluia', 'alleluia_verse', 'alleluias'),
     communion: hymns('communion_verse', null, 'communion_verses'), epistles: refs('epistle', 'epistles'), gospels: refs('gospel', 'gospels'), zadostoinik: zad };
 }
 
