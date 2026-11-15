@@ -1,6 +1,18 @@
-# ENCODING RULE v2.15 — Orthodox Hours Tool
+# ENCODING RULE v2.16 — Orthodox Hours Tool
 **Authority:** Fekula & Williams ODS 3rd ed. vol. III (2009, Menaion) · Fekula & Williams ODS 2nd ed. (2009, all other chapters) · St. Ignatius Orthodox Press Anthologion (2024) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** August 2026 · **Supersedes:** v2.14, v2.13, v2.12, v2.11, v2.10, v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+**Updated:** August 2026 · **Supersedes:** v2.15, v2.14, v2.13, v2.12, v2.11, v2.10, v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+
+**v2.16 changes (14 Nov 2026) — THE SUMMARIZED MENAION IS RETIRED (v0.53.0):**
+- `src/data/menaion/` (the "V1" month files), its browser and its validator
+  checks are deleted. The Menaion is `src/data/menaion_v2/`, full capture only,
+  gated by `tools/validate_menaion_v2.mjs`. In the tool it is simply "the Menaion".
+- Every section below that describes the summarized entry shape (§6 the skeleton,
+  the stichera-count fields, `feast_e` / `feast_g`, `validate_entries.mjs` Checks
+  C, G and H) now applies to **`src/data/pentecostarion.js` only**, until the
+  Pentecostarion has its own full-capture pass. `validate_entries.mjs` keeps
+  Checks A, B, D, E and F for it.
+- A date is encoded by writing its line map in `tools/encoding/menaion_v2/` and
+  rebuilding the month; the month files are generated and never hand-edited.
 
 **v2.15 changes (14 Nov 2026) — ODS VOL. III ORDERS OVERRIDE THE GENERAL RULE (§1.4, new):**
 - Ruled by Bill: where vol. III prints an order for a date, the tool follows it
@@ -477,9 +489,9 @@ headings; do not assume the set.
    for a saint-specific text per §1's precedence rule.
 
 **Workflow:** read the source from the MOUNTED FOLDER (§2 — Drive is retired)
-→ encode directly into the monthly data file (`src/data/menaion/{month}.js`,
-`src/data/pentecostarion.js`) or, for Menaion V2, into `src/data/menaion_v2/`
-→ commit. Git history is the record. Nothing is ever written back to the source
+→ for the Menaion, write the day's line map in `tools/encoding/menaion_v2/` and
+rebuild the month into `src/data/menaion_v2/`; for the Pentecostarion, encode
+directly into `src/data/pentecostarion.js` → commit. Git history is the record. Nothing is ever written back to the source
 folder.
 
 ---
@@ -709,8 +721,9 @@ looked only after Ode VI, declared none, and stored a generic monastic Common mi
 
 ## 6. MENAION SKELETON — ALL RANKS
 
-> **SUPERSEDED FOR MENAION V2 (menaion_v2_spec.md §2.2, August 2026).** Everything
-> below describes V1 capture and remains accurate for `src/data/menaion/`. V2
+> **SUPERSEDED FOR THE MENAION (menaion_v2_spec.md §2.2, August 2026).** Everything
+> below describes the summarized capture, retired for the Menaion at v0.53.0 and
+> still the shape of `src/data/pentecostarion.js`. The Menaion
 > captures EVERYTHING ITS SOURCE PRINTS, at every rank — full canons, sessional
 > sets, Praises, Matins aposticha, Little Vespers. The test is not "does the
 > assembler consume it" but "would a reader holding the printed Menaion find it

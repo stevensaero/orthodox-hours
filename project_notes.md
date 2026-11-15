@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.52.2** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
+**Tool version: v0.53.0** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -29,8 +29,86 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
 
+### v0.53.0 — THE MERGE: ONE MENAION (14 Nov 2026)
+
+`v2-wirein` is merged into `main` and the summarized Menaion ("V1") is deleted.
+The full capture in `src/data/menaion_v2/` drives the Hours, Vespers, the Typica
+and the Divine Liturgy. In the tool it is "The Menaion"; "V2" survives only in
+file paths, the route `/menaion-v2`, code comments, and the small cover line on
+the shelf (ruled by Bill).
+
+**Deleted** (in git history only): `src/data/menaion/` (five month files),
+`src/components/menaion-browser.jsx`, the `/menaion` route and its shelf book,
+`src/components/editor-adapters.js`, `tools/compare_menaion_v1_v2.mjs`, the
+month loaders in `hours-tool.jsx`, `auditMenaionEntry` and every Menaion branch
+of `src/lib/audit.js`, Checks C, G and H of `tools/validate_entries.mjs`.
+
+**What still has the summarized entry shape, and why it stays:** the
+Pentecostarion (`src/data/pentecostarion.js`) and its P+63 overlay. The
+assemblers therefore still take a `menaionEntry` / `pentEntry` argument in that
+shape; outside P+63 `menaionEntry` is always null. Those branches go at the
+Pentecostarion's own full-capture pass, not before.
+`validate_entries.mjs`, `scripts/audit.js`, `scripts/check-skeleton.mjs` and
+`src/lib/audit.js` are now Pentecostarion-only (the audit's result for every
+Pentecostarion entry was compared before and after: identical).
+
+**Coverage after the merge:** 09-05..09-08, 09-27, 10-04, 11-14..11-30. The 86
+dates the summarized data served and the capture does not hold (16 May–31 July:
+77; September: 6; October: 3) read "not yet encoded". The summer ones are wanted
+before next May.
+
+**Re-based gates** (none weakened to pass):
+- `test_bulletin_day`: the "rank does not decide" counter-case is now 11-15 vs
+  09-27 (both simple §2A; one prints Liturgy readings, one does not).
+- `test_bulletin_layout`: builds the 6 Sept sheet with `buildBulletinDay`.
+  **The sheet is now 2 pages** (was 1 at 99% / 97%): the correct dismissal
+  theotokion (tone of the last troparion) is a line longer and the hymn labels
+  carry the saints' names. Recorded, not tuned. A layout decision for Bill.
+- `render_bulletin`: same builder as the app.
+- `test_ref_resolution`: reads the Pentecostarion from source and every
+  Epistle, Gospel and Vespers reading from the Menaion's services (76).
+- `test_sunday_vespers`: sections 4 and 5 (old month files) removed; the
+  Saturday split is proved in `test_menaion_v2_vespers`.
+- `test_liturgy_assembly`: `menaionEntry` is null as in the app; the
+  "instead of It is truly meet" cases read 11-21 and the Pentecostarion.
+- `test_edit_engine`: fixtures moved to `pentecostarion.js`.
+- `test_hours_mount`: 57 cases. 40 new ones mount the 3rd Hour, Vespers, the
+  Liturgy and the Typica on ten dates the old data served (Pentecostarion
+  Sundays and weekdays, Ascension, Pentecost, All Saints of North America, June,
+  July, September, October): each renders with no error.
+- `build_temple_index`: built from the Menaion (kind saint or feast, a printed
+  troparion): 19 entries. A saint inside a forefeast/afterfeast (St. Catherine,
+  11-24) is not offered yet.
+
+**Found and fixed during the merge:**
+- A Menaion hymn's source link went to `/octoechos-v2#<menaion path>`. Paths
+  beginning `MM-DD.cN`, `general.` or `shared.` now link to `/menaion-v2`.
+- `RankExplainer` taught the stichera-count shortcut the encoding rule forbids,
+  called a simple service "Small Vespers", and showed a Great Feast as Simple.
+  Rewritten to §1.1; shows the service's own `fekula_section`.
+- The Typica prokeimenon and Alleluia explainers said the Menaion's is always
+  sung beside the day's; on a polyeleos or vigil weekday it stands alone.
+- Reader-visible placeholders still said "Enter … in SAMPLE_MENAION".
+- `scripts/check-skeleton.mjs` called a validator retired at v0.36.0.
+
+**Left for Bill to decide:**
+- The dev-only in-context editor (`src/components/field-editor.jsx`,
+  `tools/vite-edit-plugin.mjs`, `tools/edit-engine.mjs`) has no screen that
+  uses it now: its only caller was the deleted browser. Kept because
+  `local_editing_spec.md` plans it for the Octoechos; delete if not wanted.
+- The 6 Sept bulletin at 2 pages (above).
+- A "Vigil is served tonight" switch for lower-ranking Saturday evenings:
+  deferred to when Matins is assembled (Bill asked, 14 Nov; agreed not needed
+  for the merge).
+- The project's own instructions (claude.ai Project) still list
+  `src/data/menaion/may.js` etc. under Repository Structure; only Bill can edit
+  them.
+
+**Not verified:** nothing has been opened in a real browser. All checks are
+gates, the build, and the jsdom mount.
+
 Everything below this block is the session's running log, newest first. This
-block is the consolidated state. Tool **v0.52.2**; nine gates green.
+block is the consolidated state. Tool **v0.53.0**; gates green.
 
 ### Direction (Bill)
 
@@ -854,9 +932,8 @@ DONE — THE HOW-IT-WORKS PASS (owed since 14 Nov):
   What it lacks is a switch for "a Vigil is served tonight" at lower ranks,
   which is the case the vol. III Sunday orders describe.
 
-NEXT on the branch: the merge. Re-base the gates that import V1, delete V1
-whole (list above), re-read the explainers, version 0.53.0 with its release
-note. Still V1 in the Liturgy:
+DONE at v0.53.0: the merge (see the v0.53.0 block at the top). What follows was
+written before it. Still in the old shape in the Liturgy:
 only the dismissal and the Pentecostarion paths. Festal antiphons for feasts of
 the Lord are still flagged, not assembled (no such day is in V2 yet).
 
