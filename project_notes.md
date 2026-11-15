@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.53.2** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
+**Tool version: v0.53.3** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,15 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### v0.53.3 — bulletin: OCA [bracketed] syllables are underlined (15 Nov 2026)
+
+Bill: on the printed bulletin an OCA text showed its pointing as literal
+brackets; the Hours show those syllables underlined. `marks()` in both
+`bulletin.jsx` and `bulletin-html.js` now sets `[x]` as `<u>x</u>`; `|` and `//`
+are left as printed. The hymn is MEASURED without the brackets
+(`bulletin-layout.js`, hymn case), since they are no longer drawn. Gate: section
+4b of `test_bulletin_layout`. The OCA's stress accents (Gúrias) are kept.
 
 ### v0.53.2 — the bulletin's fit check was dead; footer on a sheet of its own (15 Nov 2026)
 

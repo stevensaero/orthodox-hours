@@ -8534,6 +8534,18 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.53.3",
+    date: "November 2026",
+    summary: "The bulletin underlines the OCA's pointed syllables instead of printing them in brackets",
+    items: [
+      "Where an OCA text is shown on the bulletin, a syllable the OCA marks in [brackets] is now " +
+      "set underlined, without the brackets, as the Hours already show it. The line marks ( | " +
+      "and // ) are unchanged.",
+      "The page fit is worked out from the text as it is drawn, so the brackets no longer count " +
+      "toward a line's width.",
+    ],
+  },
+  {
     version: "v0.53.2",
     date: "November 2026",
     summary: "fix: the bulletin could print its footer on a sheet of its own; the fit check never finished",

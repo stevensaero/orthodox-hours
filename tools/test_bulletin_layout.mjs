@@ -130,6 +130,20 @@ const whole = split.pages.flatMap((p) => p.columns).flatMap((c) => c.items)
 check("the hymn appears exactly once", whole.length, 1);
 check("and is not marked as a part", whole[0].isFirstPart, undefined);
 
+// ─── 4b. OCA pointing: brackets are drawn as underlines and take no width ────
+console.log("A [bracketed] syllable is underlined, not printed in brackets");
+{
+  const plain = "O Christ our God, Thou hast granted us the miracles of Thy holy martyrs | as a stronghold and protection. // for Thou alone art merciful and lovest mankind!";
+  const pointed = "O Christ our [God], Thou hast granted us the miracles of Thy holy [mar]tyrs | as a [strong]hold and pro[tec]tion. // for Thou alone art merciful and [lov]est [man]kind!";
+  const h = (text) => paginate([{ kind: "hymn", label: "x", tone: 5, text }]).pages[0].columns[0].usedPt;
+  check("the pointed hymn is budgeted as its underlined form", h(pointed), h(plain));
+  const { marks } = await import("../src/lib/bulletin-html.js");
+  const out = marks(pointed);
+  ok("brackets do not reach the sheet", !/[\[\]]/.test(out));
+  check("each bracketed syllable is underlined", (out.match(/<u>/g) || []).length, 6);
+  ok("the line marks are left as they are", out.includes(" | ") && out.includes(" // "));
+}
+
 // ─── 5. A heading never ends a column ───────────────────────────────────────
 console.log("A heading never ends a column");
 const headingTest = paginate([

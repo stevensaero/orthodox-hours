@@ -12,8 +12,10 @@ export const esc = (s) => String(s ?? "")
   .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 // Gold the asterisk phrase-marks without touching the words around them.
-export const marks = (text) => esc(text).split(/(\*+)/)
-  .map((p) => (/^\*+$/.test(p) ? `<span class="oh-star">${p}</span>` : p)).join("");
+// A [bracketed] syllable (OCA pointing) is underlined without its brackets.
+export const marks = (text) => esc(text).split(/(\*+|\[[^\]]+\])/)
+  .map((p) => (/^\*+$/.test(p) ? `<span class="oh-star">${p}</span>`
+    : /^\[[^\]]+\]$/.test(p) ? `<u>${p.slice(1, -1)}</u>` : p)).join("");
 
 /** Verse numbers back out of the sentinels, as small gold superscripts. */
 const VERSE_RE = new RegExp(`${VERSE_OPEN}(\\d+)${VERSE_CLOSE}`, "g");

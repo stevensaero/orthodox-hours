@@ -119,10 +119,14 @@ const lectionBody = (text) => String(text).split(VERSE_SPLIT).map((piece, i) =>
     ? <sup key={i} className="oh-vnum">{piece}</sup>
     : <span key={i}>{piece}</span>);
 
-const marks = (text) => String(text).split(/(\*+)/).map((piece, i) =>
+// Phrase marks in gold; a [bracketed] syllable (the OCA's pointing for the
+// director's emphasis) set underlined without its brackets, as the Hours show it.
+const marks = (text) => String(text).split(/(\*+|\[[^\]]+\])/).map((piece, i) =>
   /^\*+$/.test(piece)
     ? <span key={i} className="oh-star">{piece}</span>
-    : <span key={i}>{piece}</span>);
+    : /^\[[^\]]+\]$/.test(piece)
+      ? <u key={i}>{piece.slice(1, -1)}</u>
+      : <span key={i}>{piece}</span>);
 
 function Block({ block }) {
   switch (block.kind) {

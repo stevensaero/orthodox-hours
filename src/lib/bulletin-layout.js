@@ -135,7 +135,9 @@ function measureBlock(item, widthIn) {
       const label = item.label
         ? measureRun(item.label + (item.tone ? `, Tone ${item.tone}` : ""), "hymnLabel", widthIn)
         : null;
-      const body = measureRun(item.text, "hymnText", widthIn);
+      // Measured as drawn: a [bracketed] syllable is underlined and its brackets
+      // are not set, so they take no width.
+      const body = measureRun(String(item.text).replace(/\[([^\]]+)\]/g, "$1"), "hymnText", widthIn);
       const runs = label ? [label, body] : [body];
       return { ...item, atomic: true, runs, ...stackRuns(runs) };
     }
