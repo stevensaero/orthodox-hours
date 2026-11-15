@@ -21,7 +21,13 @@ reading a tone number out of a printed label.
 6. Sic rows for what the page prints wrong (confirm against a second
    extraction, `pdftotext -layout`, first). Recurrence rows. Open questions go
    through the ladder in `src/data/open_questions.js`.
-7. All gates, then commit by concern.
+7. **The OCA intake** (`encoding_rule_v2.md` §3.7): `npm run oca:intake` (add the
+   docx folder if Bill has given new OCA texts). If the date has an OCA text, add
+   its slots to `src/data/oca_hymns/slots.js`; the validator fails until you do.
+   Every difference it prints is a finding: a reason in the test's `KNOWN` list,
+   and an open question where the two books appoint different things. Never
+   decide a match for Bill.
+8. All gates, then commit by concern.
 
 ## Conventions the three November maps establish
 

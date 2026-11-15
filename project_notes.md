@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.59.0** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
+**Tool version: v0.59.1** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,42 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### STANDING: OWED WHEN THE PENTECOSTARION V2 PASS BEGINS (Bill, 15 Nov 2026)
+
+"For vespers in the pentecostarion ... when we pick that up for a V2 run we capture
+the OCA verse tie in. I don't want to bother with it now because we will be doing a
+recapture." The full list is **`encoding_rule_v2.md` §3.8** (and it is flagged at the
+head of `src/data/pentecostarion.js`, at §7 of the encoding rule, in
+`next_session_prompt.md`, and on each of the five "PENTECOSTARION — unchanged"
+branches in `hours-tool.jsx`). In short: add the recaptured Pentecostarion to the
+matcher's pool; capture the Paschal-season OCA texts (none on hand); put its services
+through the SAME Prefer-OCA overlay; key the by-day comparison from Pascha; give its
+viewer the toggle and badge.
+
+### v0.59.1 — step 3 ("OCA text of ..." link); THE OCA INTAKE made permanent (15 Nov 2026)
+
+- **Step 3.** A hymn in the OCA's words carries a second link beside "source":
+  "↗ OCA text of Nov 30, 2026" -> `/menaion-v2?oca=<stem>&at=<id>&why=service&date=<the
+  service's date>&from=tool`. Done in ONE place, the element-stamping pass in
+  `hours-tool.jsx`: the element's text is looked up in the register maps already
+  loaded (`ocaByText`), so the Hours, Vespers, Typica and Liturgy all get it and no
+  assembler has to remember. `why=service` makes the viewer label the marked hymn
+  "the hymn you came from". (On the Liturgy the entrance troparia appear only once a
+  temple dedication is chosen; the mount case sets `parish_dedication`.)
+- **THE OCA INTAKE (Bill: "make it known to future encoding sessions what work must
+  be performed on the OCA service docs intake ... a permanent part of the intake
+  pipeline").** `encoding_rule_v2.md` v2.19 **§3.7** is the checklist, with two
+  triggers: (A) OCA texts arrive, (B) a date or book is encoded. It is step 6 of the
+  encoding rule's session workflow and step 7 of `tools/encoding/menaion_v2/README.md`.
+  - `npm run oca:intake [-- "<docx folder>"]` (`tools/oca_intake.mjs`): capture (if a
+    folder is given), match, validate, the three by-day comparisons, then "WHAT IS
+    STILL OWED": review items per encoded date, pending suggestions, OCA texts for
+    dates not yet held, and how a difference is to be handled.
+  - **New gate** (`validate_oca_hymns.mjs`): an encoded date that has an OCA text and
+    no entry in `slots.js` FAILS (or `OCA_NO_SLOTS` with a reason). All 12 such dates
+    have slots today; 31 OCA texts are for dates not yet encoded.
+- Mount gate aids: `ONLY="2026-11-22 liturgy"`, `DUMP=<regex>`, `SHOW=1`.
 
 ### v0.59.0 — Prefer OCA covers ALL the hymns of Vespers, with the tone guard (15 Nov 2026)
 

@@ -255,6 +255,7 @@ export default function MenaionV2Browser() {
   const [ocaDoc, setOcaDoc] = useState(null);         // an OCA service text opened whole (its file stem)
   const [ocaListOpen, setOcaListOpen] = useState(false);
   const ocaReturn = useRef(null);                     // where the reader was when an OCA badge took them to the OCA text
+  const [ocaWhy, setOcaWhy] = useState(null);         // how an OCA text opened from a link names its marked hymn
   const [ocaFocus, setOcaFocus] = useState(null);     // an OCA hymn id to show in place (?at=, from the review page)
   // The year the reader stands in: the Hours tool's date (?date=YYYY-MM-DD) when it
   // sent one, else the calendar year. An OCA service text belongs to its date IN ITS
@@ -275,7 +276,9 @@ export default function MenaionV2Browser() {
     const p = new URLSearchParams(window.location.search);
     const comm = p.get('comm');
     const oca = p.get('oca');
-    if (oca && ocaDocInfo(oca)) { setOcaDoc(oca); const at = p.get('at'); if (at && /^o[0-9a-f]{10}$/.test(at)) setOcaFocus(at); }
+    if (oca && ocaDocInfo(oca)) { setOcaDoc(oca); const at = p.get('at'); if (at && /^o[0-9a-f]{10}$/.test(at)) setOcaFocus(at);
+      // Opened from a hymn in a service (the Hours tool's "OCA text of ..." link), not from the review page.
+      if (p.get('why') === 'service') setOcaWhy('the hymn you came from'); }
     // Opened on an OCA text alone: stand the rail at that text's own date.
     if (oca && ocaDocInfo(oca) && !comm) { const k = ocaDocInfo(oca).key; setMm(k.slice(0, 2)); setDateKey(k); }
     if (comm && /^\d{2}-\d{2}$/.test(comm)) { setMm(comm.slice(0, 2)); setDateKey(comm); }
@@ -673,7 +676,7 @@ export default function MenaionV2Browser() {
                         style={{ color: C.gold, cursor: "pointer", borderBottom: `1px dotted ${C.gold}` }}>← back to the Menaion</span>
                 </div>
                 <OcaDocView stem={ocaDoc} focusId={ocaFocus} year={year} stickyTop={`calc(var(--hours-return-strip-h, 0px) + ${headerH + 6}px)`}
-                            {...(ocaReturn.current ? { focusLabel: ocaReturn.current.label } : {})} />
+                            {...(ocaReturn.current ? { focusLabel: ocaReturn.current.label } : ocaWhy ? { focusLabel: ocaWhy } : {})} />
               </div>
             ) : generalType && entry ? (
               audit ? (

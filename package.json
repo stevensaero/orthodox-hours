@@ -10,6 +10,7 @@
     "dev": "vite",
     "gate": "node tools/test_pointing_paths.mjs && node tools/test_sunday_vespers.mjs && node tools/test_pointing_roles.mjs && node tools/test_ref_resolution.mjs && node tools/test_bulletin_day.mjs && node tools/test_bulletin_layout.mjs && node tools/validate_liturgy.mjs && node tools/test_liturgy_assembly.mjs && node tools/build_temple_index.mjs --check",
     "layout": "node tools/test_bulletin_layout.mjs",
+    "oca:intake": "node tools/oca_intake.mjs",
     "predeploy": "npm run build",
     "preview": "vite preview",
     "refs": "node tools/test_ref_resolution.mjs",

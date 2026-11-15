@@ -3127,7 +3127,7 @@ function computeVespersParoemias(menaionEntry, pentEntry, isPent, isBright, mena
     const r = resolveVespersReadings({ c: menaionV2.c, base: menaionV2.path, eveDow: 0 }).readings;
     return r.length ? r.map((x) => x.display) : null;
   }
-  // PENTECOSTARION — unchanged from v0.52.2, not yet reworked (its data is in the old shape).
+  // PENTECOSTARION — unchanged from v0.52.2, not yet reworked (its data is in the old shape). No "Prefer OCA" here on purpose: owed in the Pentecostarion's V2 pass, through the SAME overlay (encoding_rule_v2.md §3.8).
   if (isPent || isBright) {
     if (!pentEntry || !pentEntry.paroemia_1) {
       const rank = menaionEntry && menaionEntry.rank;
@@ -3953,7 +3953,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       if (!isPentecostarion) {
         emitLicClosers();
       } else {
-      // PENTECOSTARION — unchanged from v0.52.2, not yet reworked (its data is in the old shape).
+      // PENTECOSTARION — unchanged from v0.52.2, not yet reworked (its data is in the old shape). No "Prefer OCA" here on purpose: owed in the Pentecostarion's V2 pass, through the SAME overlay (encoding_rule_v2.md §3.8).
       // Glory → doxasticon (Fekula: "if there be one"; stichera_glory_absent = verified absent in PDF)
       const doxasticonEntry = (isPentecostarion && pentEntry && pentEntry.menaion_set_aside && pentEntry.stichera_glory)
         ? pentEntry.stichera_glory
@@ -4287,7 +4287,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         elements.push(litHymn(v2Litiya.bothNow, "v-litiya-bothnow", v2Litiya.bothNow.kind === "feast" ? "Litiya sticheron of the feast" : "Litiya Theotokion (Both now…)"));
       }
     } else {
-    // PENTECOSTARION — unchanged from v0.52.2, not yet reworked (its data is in the old shape).
+    // PENTECOSTARION — unchanged from v0.52.2, not yet reworked (its data is in the old shape). No "Prefer OCA" here on purpose: owed in the Pentecostarion's V2 pass, through the SAME overlay (encoding_rule_v2.md §3.8).
     // Litiya stichera from Menaion
     const litStichera = litEntry.litya_stichera;
     if (litStichera && litStichera.length > 0) {
@@ -4517,7 +4517,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       else elements.push({ id: "v-apost-theotokion", type: "movable", label: "Theotokion", unresolved: true,
         text: "[Both now — no hymn found for Tone " + tone + "]", source: "Octoechos", fekula: { section: fekulaSection, note: apNote } });
     } else {
-      // PENTECOSTARION — unchanged from v0.52.2, not yet reworked (its data is in the old shape).
+      // PENTECOSTARION — unchanged from v0.52.2, not yet reworked (its data is in the old shape). No "Prefer OCA" here on purpose: owed in the Pentecostarion's V2 pass, through the SAME overlay (encoding_rule_v2.md §3.8).
       // Pentecostarion Great Feast: use encoded stichera_aposticha if present
       if (pentEntry && pentEntry.stichera_aposticha && pentEntry.stichera_aposticha.length > 0) {
         const pentAposticha = pentEntry.stichera_aposticha;
@@ -4741,7 +4741,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       text: menaionV2 ? "[Troparion — none is printed for this service]" : "[Troparion — the Menaion is not yet encoded for this date]",
       source: "Menaion", fekula: { section: fekulaSection, note: trNote } });
   } else {
-  // PENTECOSTARION — unchanged from v0.52.2, not yet reworked (its data is in the old shape).
+  // PENTECOSTARION — unchanged from v0.52.2, not yet reworked (its data is in the old shape). No "Prefer OCA" here on purpose: owed in the Pentecostarion's V2 pass, through the SAME overlay (encoding_rule_v2.md §3.8).
   elements.push({id:"v-chanters",type:"fixed",label:"",rubric:"",
     text:"Chanters sing the appointed dismissal troparia.",
     source:"HTM Vespers"});
@@ -7745,6 +7745,17 @@ function ServiceBlock({ element, templeDedication, onTempleDedicationChange }) {
             ↗︎ source
           </a>
         )}
+        {/* These are the OCA's words: say which of its service texts they are from, and open it at the hymn. */}
+        {isMovable && element.ocaHref && (
+          <a
+            href={element.ocaHref}
+            title={"These are the OCA's words, taken from its service text for " + new Date(element.ocaFrom.date + "T12:00:00").toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) + ". A matched hymn is the same hymn on any day; open that text at this hymn."}
+            style={{ fontSize: "0.68rem", color: "#9A8A70", textDecoration: "none", borderBottom: "1px dotted rgba(139,105,20,0.45)",
+                     fontFamily: "Georgia, serif", letterSpacing: "0.04em", whiteSpace: "nowrap" }}
+          >
+            ↗︎ OCA text of {new Date(element.ocaFrom.date + "T12:00:00").toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+          </a>
+        )}
         {(isMovable || element.showFekula) && element.fekula && (
           <FekulaBadge section={element.fekula.section} note={element.fekula.note} />
         )}
@@ -8579,6 +8590,18 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.59.1",
+    date: "November 2026",
+    summary: "A hymn in the OCA's words says which OCA service text it is from",
+    items: [
+      "In the Hours, Vespers, the Typica and the Liturgy, a hymn shown in the OCA's words now " +
+      "carries a second link beside 'source': 'OCA text of Nov 30, 2026'. It opens that OCA " +
+      "service text at the hymn, highlighted.",
+      "The date in the link is the OCA text's own. A matched hymn is the same hymn on any day, " +
+      "so the text it came from is often for another date than the service you are reading.",
+    ],
+  },
   {
     version: "v0.59.0",
     date: "November 2026",
@@ -16482,8 +16505,21 @@ export default function App() {
     const isVespers = currentService.key === 'vespers';
     const srcLit = isVespers ? vespersNext.vLit : liturgicalData;
     const srcDate = isVespers ? vespersNext.vDateStr : selectedDate;
+    // "Which OCA text are these words from?" (step 3, 15 Nov 2026). Every OCA text the
+    // services can show comes out of the register maps loaded above, so a hymn in the
+    // OCA's words is recognised here by its text and given a link to the OCA service
+    // text it was taken from, at that hymn. Done in this one place, so no assembler has
+    // to remember to say it. (The date in the link is the OCA text's own; the viewer
+    // marks it as an archive when it is of another year than the service.)
+    const ocaByText = new Map();
+    if (preferOca) for (const m of [...Object.values(_ocaHymnCache), ...Object.values(_ocaOctoCache)]) if (m) for (const o of m.values()) ocaByText.set(stripCaret(o.text), o);
     return els.map(el => {
       let out = el;
+      if (ocaByText.size && el.type === 'movable' && typeof el.text === 'string') {
+        const o = ocaByText.get(stripCaret(el.text));
+        if (o && o.from) out = { ...out, ocaFrom: { id: o.id, doc: o.from.doc, date: o.from.date },
+          ocaHref: `/orthodox-hours/menaion-v2?oca=${encodeURIComponent(o.from.doc)}&at=${o.id}&why=service&date=${srcDate}&from=tool` };
+      }
       if (el.kathismaNum) {
         out = { ...out, psalterHref: `/orthodox-hours/psalter?kathisma=${el.kathismaNum}&service=${currentService.key}&date=${selectedDate}` };
       }

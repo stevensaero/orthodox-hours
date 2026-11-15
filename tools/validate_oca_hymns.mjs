@@ -108,6 +108,20 @@ for (const [id, m] of Object.entries(OCA_MATCHES_REVIEW)) {
 }
 for (const [id, m] of Object.entries(OCA_MATCHES_HUMAN)) if ('mate' in m && (id in OCA_MATCHES_AUTO || id in OCA_MATCHES_REVIEW)) E(`${id}: decided by a person but still in a generated file (run tools/match_oca_hymns.mjs)`);
 console.log(`Match register: ${Object.keys(OCA_MATCHES_AUTO).length} automatic, ${Object.values(OCA_MATCHES_HUMAN).filter((m) => m.mate).length} by a person (and ${Object.values(OCA_MATCHES_HUMAN).filter((m) => m.reject).length} candidates rejected), ${Object.keys(OCA_MATCHES_REVIEW).length} awaiting review`);
+// THE INTAKE RULE (encoding_rule_v2.md 3.7): a date the Menaion holds, for which the OCA
+// printed a service text, must have its slots, so the by-day comparison of our render
+// with the OCA text covers it from the session the date is encoded in. A date that
+// truly has nothing to place is listed in OCA_NO_SLOTS (slots.js) with its reason.
+{
+  const { MONTH_LOADERS } = await import('../src/data/menaion_v2/index.js');
+  const { OCA_NO_SLOTS = {} } = await import('../src/data/oca_hymns/slots.js');
+  const docKeys = new Map(); for (const stem of listed) { const key = `${stem.slice(5, 7)}-${stem.slice(7, 9)}`; (docKeys.get(key) ?? docKeys.set(key, []).get(key)).push(stem); }
+  for (const mm of Object.keys(MONTH_LOADERS)) for (const key of Object.keys(await MONTH_LOADERS[mm]())) {
+    if (docKeys.has(key) && !OCA_SLOTS[key] && !OCA_NO_SLOTS[key]) E(`${key} is encoded and the OCA printed a service text for it (${docKeys.get(key).join(', ')}), but slots.js has no entry for ${key}. Add the day's troparion and kontakion slots so our render is compared with the OCA text (encoding_rule_v2.md 3.7), or list the date in OCA_NO_SLOTS with the reason.`);
+  }
+  for (const key of Object.keys(OCA_NO_SLOTS)) if (OCA_SLOTS[key]) E(`slots.js: ${key} is in both OCA_SLOTS and OCA_NO_SLOTS`);
+}
+
 // RULED 15 Nov 2026: the running tool takes nothing from an OCA document by its date.
 // by_date.js and slots.js are for the tests and tools; nothing the app loads may import them.
 {

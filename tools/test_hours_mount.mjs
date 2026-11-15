@@ -52,6 +52,11 @@ const CASES = [
   // "Waiting for review on this day": the header counts the open items that touch the day's own hymns and links to them, filtered.
   ['2026-11-15', '3rd_hour', ['Help us improve this tool. Review items for this day:', 'OCA matches'], [], null, null, [/\/oca-matches\?day=2026-11-15&ids=o[0-9a-f]{10}(,o[0-9a-f]{10})*&on=m[0-9a-f,m]+&from=tool$/, /\/oca-matches\?day=(?!2026-11-15)/]],
   ['2026-11-28', 'vespers', ['Help us improve this tool. Review items for this day:', 'open question'], [], null, null, [/\/questions\?day=11-29&date=2026-11-29&from=tool$/, /\/questions\?day=11-28/]],   // Vespers belongs to the next day: Q-0009 is about 29 Nov
+  // Step 3 (15 Nov 2026): a hymn in the OCA's words says which OCA service text it is from and links to it at the hymn.
+  ['2026-11-15', '3rd_hour', ['OCA text of Nov 15, 2026', 'OCA text of Sep 20, 2026'], [], { prefer_oca: '1' }, null, [/\/menaion-v2\?oca=2026-1115-texts-tt-&at=o0d1f858f0c&why=service&date=2026-11-15&from=tool$/, /\/menaion-v2\?oca=[^&]*&at=(?!o[0-9a-f]{10}&)/]],
+  ['2026-11-15', '3rd_hour', ['O come, let us worship'], ['OCA text of'], { prefer_oca: '0' }, null, [/\/octoechos-v2\?/, /why=service/]],
+  ['2026-11-29', 'vespers', ['OCA text of Nov 30, 2026'], [], { prefer_oca: '1' }, null, [/\/menaion-v2\?oca=2026-1130-texts-tt&at=o[0-9a-f]{10}&why=service&date=2026-11-30&from=tool$/, /why=service&date=2026-11-29/]],
+  ['2026-11-22', 'liturgy', ['OCA text of'], [], { prefer_oca: '1', parish_dedication: 'dormition' }, null, [/\/menaion-v2\?oca=[^&]+&at=o[0-9a-f]{10}&why=service&date=2026-11-22&from=tool$/, /why=service&date=(?!2026-11-22)/]],
   ['2026-11-14', 'vespers', ['By Thy Cross Thou didst destroy death'], ['not yet entered'], { prefer_oca: '1' }],   // Saturday evening: the same troparion at Vespers
   ['2027-11-15', '6th_hour', ['You received grace from on high'], ['not yet encoded'], { prefer_oca: '1' }, null, [/\/menaion-v2\?date=2027-11-15&from=tool#11-15\.c0\.kontakion$/, /\/octoechos-v2\?.*#\d\d-\d\d\./]],   // a hymn shown in the OCA's words links to the place in OUR book it stands in (the viewer shows the OCA text there too)
   ['2026-11-16', '1st_hour', ['O come, let us worship'], ['not yet encoded'], { prefer_oca: '0' }, null, [/\/menaion-v2\?.*#11-16\.c0/, /\/octoechos-v2\?.*#\d\d-\d\d\./]],   // a Menaion hymn links to its own place in the Menaion (Prefer OCA off, so the Menaion's texts show)
@@ -100,7 +105,9 @@ const CASES = [
   ['2026-10-01', 'typica', ['Bless the Lord, O my soul'], []],   // Protection, not yet captured
 ];
 let bad = 0;
+// Debugging aids: ONLY="2026-11-22 liturgy" runs the cases for one date and service; DUMP=<regex> prints where it occurs on the page.
 for (const [iso, service, must, mustNot, local, pick, links] of CASES) {
+  if (process.env.ONLY && process.env.ONLY !== `${iso} ${service}`) continue;
   const dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', { url: 'http://localhost/orthodox-hours/', pretendToBeVisual: true });
   const { window } = dom;
   window.sessionStorage.setItem('hours.date', iso); window.sessionStorage.setItem('hours.serviceKey', service);
@@ -125,6 +132,7 @@ for (const [iso, service, must, mustNot, local, pick, links] of CASES) {
   const miss = must.filter((m) => !text.includes(m)); const extra = mustNot.filter((m) => text.includes(m));
   // `links`: [a pattern some link must match, a pattern no link may match].
   if (links) { if (!hrefs.some((h) => links[0].test(h))) miss.push('link ' + links[0]); if (hrefs.some((h) => links[1].test(h))) extra.push('link ' + links[1]); }
+  if (process.env.DUMP) { const re = new RegExp(process.env.DUMP, 'g'); let m, n = 0; while ((m = re.exec(text)) && n++ < 12) console.log('    …' + text.slice(Math.max(0, m.index - 90), m.index + 130) + '…'); console.log('    links:', hrefs.filter((h) => /oca=|#/.test(h)).slice(0, 12).join('  ')); }
   if (process.env.SHOW) for (const m of extra) { const i = text.indexOf(m); console.log('    …' + text.slice(Math.max(0, i - 160), i + 120) + '…'); }
   const fatal = errs.filter((e) => /THREW|Error boundary|Something went wrong|is not defined|Cannot read/.test(e));
   if (miss.length || extra.length || fatal.length) { bad++; console.log(`FAIL ${iso} ${service}: missing ${JSON.stringify(miss)} unexpected ${JSON.stringify(extra)}`); fatal.slice(0, 3).forEach((e) => console.log('   ', e)); console.log('    page text length', text.length, '|', text.replace(/\s+/g, ' ').slice(0, 300)); }

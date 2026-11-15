@@ -1,6 +1,13 @@
-# ENCODING RULE v2.18 — Orthodox Hours Tool
+# ENCODING RULE v2.19 — Orthodox Hours Tool
 **Authority:** Fekula & Williams ODS 3rd ed. vol. III (2009, Menaion) · Fekula & Williams ODS 2nd ed. (2009, all other chapters) · St. Ignatius Orthodox Press Anthologion (2024) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** August 2026 · **Supersedes:** v2.17, v2.16, v2.15, v2.14, v2.13, v2.12, v2.11, v2.10, v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+**Updated:** August 2026 · **Supersedes:** v2.18, v2.17, v2.16, v2.15, v2.14, v2.13, v2.12, v2.11, v2.10, v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+
+**v2.19 changes (15 Nov 2026) — THE OCA INTAKE IS PART OF EVERY ENCODING SESSION (§3.7, §3.8, new):**
+- `npm run oca:intake` (with the docx folder when new OCA texts have arrived) is run
+  in every session that captures an OCA text OR encodes a date. §3.7 is the checklist.
+- An encoded date that has an OCA text must have its slots: gated.
+- §3.8: what the Pentecostarion's full-capture pass owes the OCA layer. READ IT
+  BEFORE STARTING THAT PASS.
 
 **v2.18 changes (15 Nov 2026) — OCA TEXTS ARE USED HYMN BY HYMN, NEVER BY THE DAY:**
 - The running tool takes NOTHING from an OCA document by its date. "Prefer OCA
@@ -631,6 +638,87 @@ machine; the captures are generated files and are not edited by hand.
   `tools/validate_oca_hymns.mjs`.
 - The layer is a second witness. It is never copied into the Menaion capture.
 
+### 3.7 THE OCA INTAKE — a permanent part of every encoding session
+
+The OCA service texts do two jobs, and BOTH depend on this being done every time
+(Bill, 15 Nov 2026): they give an alternate reading, hymn by hymn, for those who
+prefer the OCA; and, day by day, they are compared with what the tool renders, to
+hone the tool's logic and settle disputes. One command does the mechanical part and
+ends by listing what is still owed:
+
+```
+npm run oca:intake -- "<folder of -tt docx>"     (A) new OCA texts have arrived
+npm run oca:intake                               (B) after encoding ANY date or book
+```
+
+**(A) When OCA service texts arrive** (Bill supplies the docx; they stay on his machine):
+
+1. Capture them WHOLE (3.6). The command runs `extract.py`; never capture part of one.
+2. The command re-runs the matcher, the validator and the three by-day comparisons.
+3. For every new text whose date the Menaion already holds, add its slots to
+   `src/data/oca_hymns/slots.js` (the day's troparion and kontakion, and a feast's).
+   `validate_oca_hymns.mjs` FAILS on an encoded date that has an OCA text and no slots
+   (or list the date in `OCA_NO_SLOTS` with the reason).
+4. Read every difference the comparisons print (see "Differences" below).
+
+**(B) When a date is encoded in the Menaion (or a book is recaptured):**
+
+1. Run the command. New hymns in our books can be the mates of OCA hymns that had none.
+2. If an OCA text exists for the date, add its slots (the gate will insist) and read
+   the differences.
+3. Commit the regenerated files (`matches_auto.js`, `matches_review.js`,
+   `matches_review_index.js`, `matches_reprints.js`) with the encoding.
+
+**Differences.** A place where our render and the OCA text disagree is a FINDING. It
+gets a reason in the test's `KNOWN` list. Where the two appoint different things (a
+different hymn, a different reading, a different order), it also gets a row in
+`src/data/open_questions.js` for Bill to rule on. It is NEVER settled by taking the
+OCA text for the date: the running tool uses OCA texts hymn by hymn only (v2.18). If
+OCA practice is to win, the ruling becomes a rule of the tool that holds in any year.
+
+**What only Bill does.** Matches the matcher is not sure of wait on the review page
+(`/oca-matches`; the Hours tool's "Review items for this day" line leads there). Only
+his decisions are applied (`node tools/apply_match_decisions.mjs <file>`). Anything
+from anyone else, a priest included, is filed as a suggestion
+(`--suggest <file> --role "<role>"`), presented to him, and applied only on his
+approval (`--approve`). Never decide a match for him.
+
+**Standing rules of the layer** (each has a gate):
+- An OCA text is the record of ITS date in ITS year; its order and assembly are never
+  used on another date. Its hymns are reusable anywhere they are appointed.
+- A match means the same points of content, in the same tone, of the same saint: a
+  general hymn with another saint's name written in is a different hymn.
+- An OCA hymn never stands over a General Menaion text.
+
+### 3.8 OWED WHEN THE PENTECOSTARION IS RECAPTURED (the "V2 pass")
+
+When the Pentecostarion gets its full-capture ("V2") pass, the OCA tie-in is PART OF
+THAT PASS, not a later job (Bill, 15 Nov 2026: "when we pick that up for a V2 run we
+capture the OCA verse tie in"). It was deliberately NOT built on the old-shape data,
+because that data is to be recaptured. Owed in that pass:
+
+1. **The pool.** `tools/lib/hymn_pool.mjs` holds the Menaion and the Octoechos only.
+   Add the recaptured Pentecostarion (mate paths `pentecostarion:...`), so OCA hymns
+   can be matched to it. Then `node tools/match_oca_hymns.mjs`.
+2. **The OCA texts of the Paschal season.** None is captured yet (the earliest OCA
+   text on hand is 23 August 2026). Ask Bill for the season's `-tt` docx and run the
+   intake (3.7).
+3. **Prefer OCA in the services.** Vespers, the Hours and the Liturgy show an OCA text
+   through ONE overlay: `ocaWords` in `src/lib/vespers-propers.js`, `slot()` in
+   `src/data/menaion_v2/adapter.js`, `octoOca` in `hours-tool.jsx`. The four branches
+   of `assembleVespers` marked "PENTECOSTARION — unchanged ... old shape" bypass it.
+   When they are rewritten on the new data, they go through the same overlay; do not
+   write a second one.
+4. **The by-day comparison.** `slots.js` / `by_date.js` are keyed by month and day. A
+   Pentecostarion day is a day counted from Pascha, so an OCA text (which is for a date
+   in a year) has to be tied to its day-from-Pascha for that year before the comparison
+   gates can cover the season.
+5. **The viewer and the review line.** The Pentecostarion viewer gets the Prefer OCA
+   toggle and the "OCA <year>" badge the Menaion viewer has; `reviewForDay`
+   (`hours-tool.jsx`) counts the Pentecostarion day's hymns too.
+6. **The rules do not change:** hymn by hymn, never by the day; the tone guard; only
+   Bill's decisions are applied.
+
 ---
 
 ## 4. SESSION WORKFLOW
@@ -662,7 +750,10 @@ Every encoding session follows these steps in order:
    The same conformance check is also appended to the pointing gate
    (`node tools/test_pointing_paths.mjs`), so either gate command enforces it.
    To add a genuinely new field, extend `KNOWN_FIELDS` deliberately.
-6. **Push** — one push per session after version bump and gate passes
+6. **Run the OCA intake — MANDATORY in every session that encodes a date or captures
+   an OCA text** (§3.7): `npm run oca:intake` (give the docx folder when new OCA
+   texts have arrived). Commit what it regenerates; act on its "what is still owed".
+7. **Push** — one push per session after version bump and gate passes
 
 ---
 
@@ -1085,6 +1176,9 @@ log and the action threshold for implementing `stichera_lord_i_call_count_ordina
 ---
 
 ## 7. PENTECOSTARION SKELETON — WEEKDAY AFTERFEAST
+
+> **Before any full-capture ("V2") pass of the Pentecostarion, read §3.8:** the OCA
+> tie-in (matching, Prefer OCA, the by-day comparison) is owed in that same pass.
 
 ```
 ═══════════════════════════════════════════════════════════

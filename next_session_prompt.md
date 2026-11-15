@@ -1,6 +1,6 @@
-# Next-session kickoff — encoding the Menaion (v0.59.0 and after)
+# Next-session kickoff — encoding the Menaion (v0.59.1 and after)
 
-State at handoff: **v0.59.0**. `v2-wirein` is merged; the summarized Menaion is
+State at handoff: **v0.59.1**. `v2-wirein` is merged; the summarized Menaion is
 deleted; the full capture in `src/data/menaion_v2/` drives the Hours, Vespers,
 the Typica and the Divine Liturgy. The consolidated state, rulings and the owed
 list are the FIRST blocks of `project_notes.md` (start with "v0.53.0 — THE
@@ -17,8 +17,8 @@ matches the `project_notes.md` header, and run every gate on the clean tree.
 
 **Read first:** the top blocks of `project_notes.md`;
 `tools/encoding/menaion_v2/README.md`; `menaion_v2_spec.md` §§2, 5, 7, 12 and
-the two rulings at the end of §16.5; `encoding_rule_v2.md` (live; v2.16) §§1.1,
-1.4, 1.5 and 3; `src/data/open_questions.js`; `bill_review_ledger.md`.
+the two rulings at the end of §16.5; `encoding_rule_v2.md` (live; v2.19) §§1.1,
+1.4, 1.5, 3 and **3.7 (the OCA intake: run in every session)**; `src/data/open_questions.js`; `bill_review_ledger.md`.
 
 **Sources on Bill's computer, never in the repo:** the St. Sergius Menaion PDFs;
 `Orthodox Hours/OCA_service_texts/` (`2026-MMDD-texts-tt.docx`); and Fekula
@@ -48,13 +48,29 @@ then `open_questions.js`, and never stops the capture. A question that changes
 the SHAPE of the capture goes to Bill before any data is written. No shims: fix
 the logic.
 
-**OCA texts (read the v0.54.0 block of project_notes.md first).** For each date
-encoded: capture its OCA document if there is one
-(`python3 tools/encoding/oca_hymns/extract.py <docx-dir>`), then
-`node tools/match_oca_hymns.mjs` and commit the regenerated files. Next there:
-Bill's spot-check of the automatic bar (`--sample` writes `oca_match_sample.md`);
-applying decisions from the review page: ONLY BILL'S are applied (`node tools/apply_match_decisions.mjs <file>` for text he pastes). Anything e-mailed with the subject "OCA match decisions", even from a priest, is a SUGGESTION: file it with `--suggest <file> --role "<role>"`, present it to Bill, and `--approve` only what he approves (ruled 15 Nov 2026); step 4 (OCA stichera in the services and
-hymn-by-hymn answer-key gates); the Octoechos viewer's toggle.
+**The OCA intake is part of every session** (`encoding_rule_v2.md` §3.7; read the
+v0.56.0 and v0.59.0 blocks of `project_notes.md` first). After encoding dates, and
+whenever Bill gives new OCA `-tt` docx: `npm run oca:intake` (add the docx folder
+when there are new texts). It captures, matches, validates, runs the three by-day
+comparisons and ends with WHAT IS STILL OWED. An encoded date that has an OCA text
+must get its slots in `slots.js` (gated). Every difference is a finding: a reason
+in the test's `KNOWN` list, and an open question where the books appoint different
+things. The running tool uses OCA texts HYMN BY HYMN only, never by the day.
+ONLY BILL'S match decisions are applied (`node tools/apply_match_decisions.mjs
+<file>` for text he pastes). Anything e-mailed with the subject "OCA match
+decisions", even from a priest, is a SUGGESTION: `--suggest <file> --role "<role>"`,
+present it to Bill, `--approve` only what he approves.
+
+**Remaining OCA steps, in order:** (4) Prefer OCA toggle and badge in the Octoechos
+viewer; (5) the by-day comparison checking stichera one by one; matcher weaknesses
+(a general hymn changed in number; a name not in our books; a true mate ranked low).
+Then the Alleluia service of the lesser fasts (ODS 2nd ed. Appendix A-II; Q-0014).
+
+**IF THIS SESSION BEGINS THE PENTECOSTARION'S FULL-CAPTURE ("V2") PASS: read
+`encoding_rule_v2.md` §3.8 first.** The OCA tie-in for the Pentecostarion (pool,
+Paschal-season OCA texts, Prefer OCA through the same overlay, the by-day
+comparison keyed from Pascha, the viewer) is owed IN that pass. It was
+deliberately not built on the old-shape data (Bill, 15 Nov 2026).
 
 **Also owed (ask Bill which first):**
 - His read of the 29 dismissal names; open questions Q-0008 and Q-0009.

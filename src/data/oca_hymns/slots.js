@@ -54,3 +54,8 @@ export const OCA_SLOTS = {
     troparion: 'Tone 4 Troparion (Martyrs)', kontakion: 'Tone 4 Kontakion (Martyrs)' }),
   '11-30': at('2026-1130-texts-tt', { troparion: 'Tone 4 Troparion', kontakion: 'Tone 2 Kontakion' }),
 };
+
+// A date the Menaion holds, with an OCA service text, that has nothing to place: the
+// date and WHY. tools/validate_oca_hymns.mjs fails on an encoded date with an OCA text
+// that is in neither list (encoding_rule_v2.md 3.7).
+export const OCA_NO_SLOTS = {};

@@ -3,6 +3,11 @@
 // Source: St. Sergius Pentecostarion (Russian usage) + OCA calendar  
 // Encoding rule: v2.2 — see encoding_rule_v2.md (§3 pointed-hymnography markers)
 // Single point of truth — edit this file for Pentecostarion encoding updates
+//
+// OLD SHAPE, TO BE RECAPTURED. Before starting the Pentecostarion's full-capture
+// ("V2") pass, read encoding_rule_v2.md §3.8: the OCA tie-in (matching its hymns to the
+// OCA service texts, "Prefer OCA texts" in its services, the by-day comparison) is
+// owed in that same pass. It was deliberately not built on this file (Bill, 15 Nov 2026).
 
 const PENTECOSTARION_DATA = {
 
