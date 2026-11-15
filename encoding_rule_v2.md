@@ -13,6 +13,13 @@
   not a match and is used nowhere.
 - A mate supplies a TRANSLATION. It never decides what is sung, how many times,
   or in what order: that is the Menaion's page and Fekula's rule, as before.
+- TONE (ruled 15 Nov 2026). An OCA text carries its own tone and pointing
+  wherever it is shown. An Octoechos hymn in another tone is never its mate. A
+  Menaion hymn in another tone is decided by a person: confirmed where it is the
+  same hymn in the same use and the two books print different tones; rejected
+  (`reject`) where it is the same words in another use.
+- A MATCH MEANS THE SAME POINTS OF CONTENT (the same request, the same appeal),
+  not shared names or a shared scriptural source.
 - After encoding a date, run `node tools/match_oca_hymns.mjs`; `npm run
   validate` fails while the generated match files are stale.
 

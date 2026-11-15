@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.54.1** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
+**Tool version: v0.54.2** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,56 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### v0.54.2 — OCA matching after Bill's first review; the tone rules (15 Nov 2026)
+
+**Bill read the numbered spot-check sheet (A1-10, B1-10, C1-15).** A and B (the
+automatic ones): none wrong. C (held): all "close enough to match" EXCEPT
+- **C8** (22 Nov, Tone 3 Troparion (Apostles) vs a Tone 2 canon troparion): "the
+  wording is so different": the OCA asks the apostles to entreat God for
+  forgiveness; the Menaion text makes no such request. Only the names match.
+- **C15** (20 Sept sticheron vs a Tone 3 Beatitudes troparion): the Octoechos
+  text has an appeal ("Remember us also in Thy kingdom") the OCA lacks.
+HIS TEST FOR A MATCH: the same points of content (the same request, the same
+appeal), not shared names or shared scripture.
+
+**RULED (Bill, 15 Nov):**
+- **An OCA text carries its own tone and pointing.** Shown in a hymn's place, it
+  is shown in the OCA's tone and goes to the trainer in that tone. The St.
+  Sergius text keeps its own. (My "words without pointing" idea is dropped.)
+- **Octoechos: OCA and St. Sergius tones never differ.** An Octoechos hymn in
+  another tone is not a mate ("an immediate failure ... in a week with a
+  different tone"). Not offered at all.
+- **Menaion: a tone difference goes to a person**, who answers one of two:
+  same hymn, same use, the sources differ (30 Nov "Tell us, O Joseph": confirm;
+  the OCA text and tone are used), or same words in another use (reject).
+
+**Built:**
+- `matches_human.js`: 10 confirmations (C1-4, C6, C7, C9, C10, C12, C13), 2
+  rejections (C8, C15), each with its sheet number and reason. New form
+  `{ reject: [mateHash], ... }` = "not this one": the matcher drops that
+  candidate for that hymn and keeps looking. Register entries carry `tone` (the
+  OCA's).
+- The pool keeps EVERY tone a text is printed in (`tones`). C11: the irmos "O
+  Lord, I have heard the mystery of Thy dispensation" is printed in the 5 Sept
+  canon (Tone I) and in the Tone 8 book; the OCA's Tone 8 katavasia now matches
+  it in Tone 8, automatically. (Bill had passed C11 as a match; this is why its
+  "tone differs" was false.) C5 and C14 were Octoechos tone conflicts and are no
+  longer offered; their real mates are Menaion hymns not yet encoded.
+- An in-tone candidate that is at least plausible (≥ 0.3) is preferred to a
+  closer one in another tone; the other only keeps it from being automatic.
+  (C8: after the rejection the matcher now offers the true mate, the 22 Nov
+  Tone 3 troparion, at 0.34, for review.)
+- Place no longer blocks an automatic match (4 of 4 read were true); it still
+  breaks near ties.
+Counts: 192 auto, 10 human, 2 rejected candidates, 148 review, 443 none.
+
+**KNOWN GAP for step 4:** the run-time lookup is by the text alone. A text
+printed in two tones (C11's irmos) would get the OCA Tone 8 text at its Tone I
+print site too. Before the services use the register beyond troparion and
+kontakion, the lookup must also require the tone of the place (register entries
+carry `tone`), except where a person confirmed a tone difference. The Menaion
+viewer has this gap today.
 
 ### v0.54.1 — OCA matcher: tone is a requirement, the service counts (15 Nov 2026)
 

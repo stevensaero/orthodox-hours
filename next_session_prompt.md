@@ -1,6 +1,6 @@
-# Next-session kickoff — encoding the Menaion (v0.54.1 and after)
+# Next-session kickoff — encoding the Menaion (v0.54.2 and after)
 
-State at handoff: **v0.54.1**. `v2-wirein` is merged; the summarized Menaion is
+State at handoff: **v0.54.2**. `v2-wirein` is merged; the summarized Menaion is
 deleted; the full capture in `src/data/menaion_v2/` drives the Hours, Vespers,
 the Typica and the Divine Liturgy. The consolidated state, rulings and the owed
 list are the FIRST blocks of `project_notes.md` (start with "v0.53.0 — THE
@@ -53,7 +53,7 @@ encoded: capture its OCA document if there is one
 (`python3 tools/encoding/oca_hymns/extract.py <docx-dir>`), then
 `node tools/match_oca_hymns.mjs` and commit the regenerated files. Next there:
 Bill's spot-check of the automatic bar (`--sample` writes `oca_match_sample.md`);
-a review page for the 162 held matches; step 4 (OCA stichera in the services and
+a review page for the 148 held matches (with confirm / no mate / not this one); step 4 (OCA stichera in the services and
 hymn-by-hymn answer-key gates); the Octoechos viewer's toggle.
 
 **Also owed (ask Bill which first):**

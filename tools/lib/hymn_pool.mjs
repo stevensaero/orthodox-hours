@@ -32,7 +32,7 @@ function walk(root, base, book, out, tone0 = null) {
   })(root, base, tone0);
 }
 
-/** @returns {Promise<{ hymns: Map<hash, {hash,text,tone,melody,paths:[{book,path}]}>, byPath: Map<'book:path', hash> }>} */
+/** @returns {Promise<{ hymns: Map<hash, {hash,text,tone,tones:Set,melody,paths:[{book,path,tone}]}>, byPath: Map<'book:path', hash> }>} */
 export async function loadHymnPool() {
   const nodes = [];
   for (const mm of MONTHS) {
@@ -46,10 +46,13 @@ export async function loadHymnPool() {
   const hymns = new Map(); const byPath = new Map();
   for (const n of nodes) {
     const hash = textHash(n.text);
-    if (!hymns.has(hash)) hymns.set(hash, { hash, text: n.text, tone: n.tone, melody: n.melody, paths: [] });
+    if (!hymns.has(hash)) hymns.set(hash, { hash, text: n.text, tone: n.tone, tones: new Set(), melody: n.melody, paths: [] });
     const h = hymns.get(hash);
     if (h.text !== n.text) throw new Error(`text key collision: ${n.book}:${n.path} and ${h.paths[0].book}:${h.paths[0].path}`);
-    h.paths.push({ book: n.book, path: n.path });
+    // One text can be printed in more than one tone (an irmos that a Tone I canon and
+    // the Tone VIII book both use): every tone it is printed in is kept.
+    h.paths.push({ book: n.book, path: n.path, tone: n.tone });
+    if (n.tone != null) h.tones.add(n.tone);
     if (h.tone == null) h.tone = n.tone;
     if (!h.melody) h.melody = n.melody;
     byPath.set(`${n.book}:${n.path}`, hash);

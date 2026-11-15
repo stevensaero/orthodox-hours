@@ -2,11 +2,32 @@
 // hymn is. These are final: tools/match_oca_hymns.mjs never overwrites an id that
 // is decided here, and leaves it out of the generated files.
 //
-//   o1a2b3c4d5e: { mate: 'menaion:11-15.c0.vespers.lic[0]', mateHash: 'm…', by: 'human', decided: '2026-11-15', note: '…' },
-//   o1a2b3c4d5e: { mate: null, by: 'human', decided: '2026-11-15', note: 'no mate: the OCA appoints a hymn the Menaion does not print' },
+//   CONFIRMED   { mate: 'menaion:11-15.c0.vespers.lic[0]', mateHash: 'm…', tone: 4, first: { doc, head }, by: 'human', decided: 'YYYY-MM-DD', note: '…' }
+//               (`first` = an OCA document the hymn is printed in, and its heading there: where its words are read from)
+//   NO MATE     { mate: null, by: 'human', decided: 'YYYY-MM-DD', note: 'why' }      the hymn has no mate; never offered again
+//   NOT THIS    { reject: ['m…'], by: 'human', decided: 'YYYY-MM-DD', note: 'why' }  that candidate is wrong; the search goes on
 //
-// `mate: null` is a decision too ("this has no mate"), and stops the hymn being
-// offered for review again. `mateHash` is the hash the matcher printed for the
-// candidate (matches_review.js); the validator checks it still names that text.
+// `mateHash` and `tone` are the ones the matcher printed for the candidate
+// (matches_review.js); the validator checks the hash still names that text.
+// `tone` is the OCA's tone for the hymn: an OCA text carries its own tone and
+// pointing wherever it is shown (Bill, 15 Nov 2026).
+const B = { by: 'human', decided: '2026-11-15' };
+const ok = (mate, mateHash, tone, doc, head, note) => ({ mate, mateHash, tone, first: { doc, head }, ...B, note: `Bill, spot-check sheet of 15 Nov 2026, ${note}` });
 export const OCA_MATCHES_HUMAN = {
+  // ── confirmed: "close enough to match" ──
+  o7234c23bb8: ok('menaion:09-08.c0.matins.canons[0].odes.4.irmos', 'm1361bcde7b44a7', 2, "2026-0908-texts-tt", "Tone 2 1st Canon, Ode 4 \u2013 Heirmos", 'C1 (held: a second hymn was close)'),
+  o9416d9d164: ok('menaion:09-06.c0.matins.praises_glory', 'm08ff085b80d9be', 1, "2026-1108-texts-tt-", "Tone 1 (by Arsenius)", 'C2 (held: the OCA prints it at Vespers, the Menaion at the Praises)'),
+  o9b4b8ae5cd: ok('octoechos:tone1.compline.thu.canon.odes.6.irmos', 'm139b59ebff86e7', 1, "2026-1121-texts-tt", "Tone 1 Ode 6 \u2013 Katavasia", 'C3 (held: a second hymn was close)'),
+  oefe2828c91: ok('menaion:11-20.c0.vespers.lic[2]', 'm11ac115d991d3f', 1, "2026-1121-texts-tt", "Tone 1 (Joy of the Heavenly Hosts)", 'C4 (held: another service)'),
+  oa881b3e703: ok('octoechos:tone8.matins_weekday.fri.canons[0].odes.3.irmos', 'm15aecd7e5746e2', 8, "2026-0908-texts-tt", "Tone 8 Katavasia, Ode 3", 'C6 (held: a second hymn was close)'),
+  o879be089ae: ok('octoechos:tone6.matins_weekday.sat.sessionals[0].closer', 'm14daaefc92e863', 6, "2026-1114-texts-tt", "Tone 6 Resurrectional Dismissal Theotokion", 'C7 (held: another service)'),
+  // The two sources print this hymn in different tones: the OCA Tone 3, the St.
+  // Sergius Menaion "Both now ..., of the forefeast, in Tone II" (11-30.pdf p6).
+  oa2599d6af7: ok('menaion:11-30.c0.vespers.aposticha_closer', 'm108a921ace3616', 3, "2026-1130-texts-tt", "Tone 3 (for the Forefeast of the Nativity of Christ)", 'C9 (held: tone differs)'),
+  o1549ab124f: ok('menaion:11-22.c0.vespers.lic[5]', 'm150fdbf25bc1e2', 2, "2026-1122-texts-tt", "Tone 2 (for the Apostles) (Joseph of Arimathea)", 'C10 (held: a second hymn was close)'),
+  o3b252534ee: ok('octoechos:tone1.great_vespers.aposticha[3]', 'm07291517931698', 1, "2026-1004-texts-tt", "Tone 1 (for the Resurrection)", 'C12 (held: a second hymn was close)'),
+  o0ac6cbf19a: ok('octoechos:tone8.vespers_weekday.thu.lic.octoechos[0]', 'm174e1c967ec1aa', 8, "2026-0914-texts-tt", "Tone 8 (Oh, most glorious wonder)", 'C13 (held: another service)'),
+  // ── not this one ──
+  ofb11bcbe8e: { reject: ['m1016e20256f72b'], ...B, note: 'Bill, C8: the OCA troparion asks the apostles to entreat the merciful God for forgiveness; the Menaion canon troparion makes no such request. The four names are all they share.' },
+  o6dfe0f78a8: { reject: ['m1c8948b6574bd6'], ...B, note: 'Bill, C15: the Octoechos troparion ends with the appeal "Remember us also in Thy kingdom"; the OCA sticheron (Moses raising his arms, prefiguring the Cross) has none. Also a Tone 3 Octoechos hymn against the OCA\'s Tone 2.' },
 };

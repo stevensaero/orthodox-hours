@@ -85,18 +85,22 @@ const check = (name, reg, by) => {
   for (const [id, m] of Object.entries(reg)) {
     if (!printedIn.has(id)) { E(`${name} ${id}: no such OCA hymn`); continue; }
     if (by && m.by !== by) E(`${name} ${id}: by is '${m.by}', expected '${by}'`);
+    if (by === 'human' && !/^\d{4}-\d\d-\d\d$/.test(m.decided || '')) E(`${name} ${id}: a person's decision needs its date`);
+    if (m.reject) { if (by !== 'human') E(`${name} ${id}: only a person can reject a candidate`); if (!m.note) E(`${name} ${id}: a rejection needs a note`);
+      for (const h of m.reject) if (!pool.hymns.has(h)) E(`${name} ${id}: rejected candidate ${h} is not in the tool's books`); }
+    if (!('mate' in m)) { if (!m.reject) E(`${name} ${id}: neither a mate nor a rejection`); continue; }
     if (m.mate === null) { if (by !== 'human') E(`${name} ${id}: only a person can decide "no mate"`); if (!m.note) E(`${name} ${id}: a "no mate" decision needs a note`); continue; }
+    if (!m.first || !printedIn.get(id).has(m.first.doc)) E(`${name} ${id}: \`first.doc\` must name a document the hymn is printed in`);
     const at = pool.byPath.get(m.mate);
     if (!at) E(`${name} ${id}: mate ${m.mate} is not in the tool's books`);
     else if (at !== m.mateHash) E(`${name} ${id}: the text at ${m.mate} has changed since this match was made`);
-    if (by === 'human' && !/^\d{4}-\d\d-\d\d$/.test(m.decided || '')) E(`${name} ${id}: a person's decision needs its date`);
   }
 };
 check('matches_auto', OCA_MATCHES_AUTO, 'auto');
 check('matches_human', OCA_MATCHES_HUMAN, 'human');
 check('matches_review', OCA_MATCHES_REVIEW, null);
-for (const id of Object.keys(OCA_MATCHES_HUMAN)) if (id in OCA_MATCHES_AUTO || id in OCA_MATCHES_REVIEW) E(`${id}: decided by a person but still in a generated file (run tools/match_oca_hymns.mjs)`);
-console.log(`Match register: ${Object.keys(OCA_MATCHES_AUTO).length} automatic, ${Object.keys(OCA_MATCHES_HUMAN).length} by a person, ${Object.keys(OCA_MATCHES_REVIEW).length} awaiting review`);
+for (const [id, m] of Object.entries(OCA_MATCHES_HUMAN)) if ('mate' in m && (id in OCA_MATCHES_AUTO || id in OCA_MATCHES_REVIEW)) E(`${id}: decided by a person but still in a generated file (run tools/match_oca_hymns.mjs)`);
+console.log(`Match register: ${Object.keys(OCA_MATCHES_AUTO).length} automatic, ${Object.values(OCA_MATCHES_HUMAN).filter((m) => m.mate).length} by a person (and ${Object.values(OCA_MATCHES_HUMAN).filter((m) => m.reject).length} candidates rejected), ${Object.keys(OCA_MATCHES_REVIEW).length} awaiting review`);
 console.log(`OCA hymns: ${listed.length} documents, ${blocks} blocks, ${hymns} hymns (${printedIn.size} distinct, ${Object.keys(LIBRARY).length} stored once in the library), ${pointed} pointed, ${carets} caret marks, ${slots} slots on ${Object.keys(OCA_SLOTS).length} dates`);
 if (errs.length) { errs.slice(0, 40).forEach((e) => console.log('  ERROR', e)); console.log(`${errs.length} error(s)`); process.exit(1); }
 console.log('OK');

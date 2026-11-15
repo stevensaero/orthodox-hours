@@ -141,7 +141,7 @@ export const loadOcaMatches = () => (register ??= Promise.all([import('./matches
     const byMate = new Map();   // mate's text key -> [{ id, by, first, ... }], a person's decision first
     const all = { ...a.OCA_MATCHES_AUTO, ...h.OCA_MATCHES_HUMAN };
     for (const [id, m] of Object.entries(all)) {
-      if (!m.mate || !m.mateHash) continue;            // decided: no mate
+      if (!m.mate || !m.mateHash) continue;            // decided: no mate, or only a rejected candidate
       (byMate.get(m.mateHash) ?? byMate.set(m.mateHash, []).get(m.mateHash)).push({ id, ...m });
     }
     for (const list of byMate.values()) list.sort((x, y) => (x.by === y.by ? y.first.doc.localeCompare(x.first.doc) : x.by === 'human' ? -1 : 1));

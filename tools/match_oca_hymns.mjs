@@ -16,17 +16,22 @@
 //            different tones (30 Nov, "Tell us, O Joseph": the OCA Tone 3, the
 //            St. Sergius Menaion "in Tone II"). So where the wording is strong
 //            and nothing in the OCA's tone comes near, it is put before a
-//            person, marked TONE DIFFERS.
+//            person, marked TONE DIFFERS. That is for a MENAION mate only: an
+//            Octoechos hymn belongs to its tone, so one in another tone is
+//            never the mate (it would be wrong every week that tone came round).
+//            A text printed in several tones counts as being in each of them.
 //   place    the service the OCA prints the hymn in (Vespers, Matins, the
 //            Liturgy) against the service the candidate is printed in. A hymn
 //            of another service is ranked below one of the same service that
-//            is nearly as close, and is never confirmed automatically.
+//            is nearly as close. It does not block a match: the OCA does use a
+//            hymn in another service (a Praises doxasticon at Vespers), and all
+//            four such matches Bill read on 15 Nov 2026 were true.
 //   melody   the special melody the OCA heading names against the candidate's
 //   date     whether the candidate is printed in the Menaion service of the
 //            OCA document's own date
 //
 //   auto     wording ≥ AUTO_SCORE, margin ≥ AUTO_MARGIN over the next different
-//            hymn, the same tone, and the place does not conflict
+//            hymn, and the same tone
 //                       →  src/data/oca_hymns/matches_auto.js   (by: 'auto')
 //   review   a plausible candidate that falls short of that
 //                       →  src/data/oca_hymns/matches_review.js (awaiting a person)
@@ -38,6 +43,8 @@
 //
 // A person's decisions live in matches_human.js (hand-kept, by: 'human') and are
 // NEVER overwritten: an id decided there is left out of both generated files.
+// A person can also say "not this one" (`reject: [mateHash]`, with no `mate`):
+// that candidate is never offered for that OCA hymn again, and the search goes on.
 //
 //   node tools/match_oca_hymns.mjs            write the generated files, print the report
 //   node tools/match_oca_hymns.mjs --check    fail if the generated files are stale
@@ -112,15 +119,17 @@ const sameHymn = (a, b) => { const B = new Set(b.w); const n = a.w.filter((w) =>
 const auto = {}; const review = {}; const stats = { hymns: oca.size, short: 0, human: 0, auto: 0, review: 0, none: 0 };
 const rows = [];
 for (const o of [...oca.values()].sort((a, b) => a.id.localeCompare(b.id))) {
-  if (OCA_MATCHES_HUMAN[o.id]) { stats.human++; continue; }
+  const human = OCA_MATCHES_HUMAN[o.id];
+  if (human && 'mate' in human) { stats.human++; continue; }
+  const rejected = new Set(human?.reject ?? []);
   if (notAHymn(o)) { stats.short++; continue; }
   const acc = new Map(); const on = norm(o.w);
   for (const w of o.w) for (const i of index.get(w) || []) acc.set(i, (acc.get(i) || 0) + idf(w) ** 2);
   const tones = [...new Set(o.prints.map((p) => p.tone).filter((t) => t != null))];
   const places = new Set(o.prints.map(placeOfOca));
-  const inTone = (c) => c.tone == null || tones.length === 0 || tones.includes(c.tone);
+  const inTone = (c) => c.tones.size === 0 || tones.length === 0 || tones.some((t) => c.tones.has(t));
   const inPlace = (c) => places.has('any') || c.places.has('any') || [...places].some((p) => c.places.has(p));
-  const scored = [...acc].map(([i, dot]) => ({ c: cands[i], score: dot / (on * cands[i].norm) })).sort((a, b) => b.score - a.score).slice(0, 40);
+  const scored = [...acc].map(([i, dot]) => ({ c: cands[i], score: dot / (on * cands[i].norm) })).filter((r) => !rejected.has(r.c.hash)).sort((a, b) => b.score - a.score).slice(0, 40);
   // Only a hymn in the OCA's own tone is a candidate. Among near ties, one of the
   // same service comes first.
   const ranked = scored.filter((r) => inTone(r.c));
@@ -129,23 +138,30 @@ for (const o of [...oca.values()].sort((a, b) => a.id.localeCompare(b.id))) {
     const pick = tie.find((r) => inPlace(r.c));
     if (pick && pick !== ranked[0]) { ranked.splice(ranked.indexOf(pick), 1); ranked.unshift(pick); }
   }
-  const otherTone = scored.find((r) => !inTone(r.c));     // the closest wording in ANOTHER tone
+  // The closest wording in ANOTHER tone, among Menaion hymns only.
+  const otherTone = scored.find((r) => !inTone(r.c) && r.c.paths.some((p) => p.book === 'menaion'));
   let best = ranked[0];
   // Strong wording in another tone, and nothing in the OCA's tone near it: that
   // hymn is the one to put before a person.
-  const toneDiffers = !!otherTone && otherTone.score >= AUTO_SCORE && (!best || otherTone.score - best.score > NEAR);
+  // (Only when NOTHING in the OCA's tone is even plausible. On 22 Nov the apostles'
+  // troparion has its true mate in Tone 3 at 0.4, and a Tone 2 canon troparion
+  // that merely shares the four names at 0.65: the in-tone hymn is the candidate,
+  // and the closer other-tone wording only keeps it from being automatic.)
+  const toneDiffers = !!otherTone && otherTone.score >= AUTO_SCORE && (!best || best.score < REVIEW_SCORE);
+  const closerElsewhere = !toneDiffers && !!otherTone && otherTone.score >= AUTO_SCORE && otherTone.score - best.score > NEAR ? otherTone : null;
   if (toneDiffers) { ranked.unshift(otherTone); best = otherTone; }
   if (!best || best.score < REVIEW_SCORE) { stats.none++; continue; }
   const c = best.c;
   const rivals = ranked.slice(1).filter((r) => !sameHymn(r.c, c));
   const next = rivals[0] ? rivals[0].score : 0;
-  const toneAgrees = c.tone != null && tones.includes(c.tone);
+  const toneAgrees = tones.some((t) => c.tones.has(t));
+  const agreed = tones.filter((t) => c.tones.has(t));
   const placeConflict = !inPlace(c);
   const sameDate = c.paths.some((p) => p.book === 'menaion' && o.prints.some((pr) => p.path.startsWith(pr.key + '.')));
   const melodies = [...new Set(o.prints.map((p) => melodyOf(p.head)).filter(Boolean))];
   const melodyAgrees = !!c.melody && melodies.some((m) => { const a = words(m), b = new Set(words(c.melody)); return a.length && a.filter((w) => b.has(w)).length / a.length >= 0.5; });
   const evidence = [`wording ${round(best.score)} (next ${round(next)})`];
-  evidence.push(toneDiffers ? `TONE DIFFERS: OCA ${tones.join('/')}, mate ${c.tone}` : toneAgrees ? `tone ${c.tone}` : 'tone not printed on one side');
+  evidence.push(toneDiffers ? `TONE DIFFERS: OCA ${tones.join('/')}, mate ${[...c.tones].join('/')}` : toneAgrees ? `tone ${agreed.join('/')}` : 'tone not printed on one side');
   const where = [...c.places].filter((p) => p !== 'any');
   if (placeConflict) evidence.push(`PLACE DIFFERS: OCA prints it at ${[...places].join('/')}, the mate is at ${where.join('/')}`);
   else if (!places.has('any') && where.length) evidence.push(`place: ${[...places].filter((p) => c.places.has(p)).join('/') || where.join('/')}`);
@@ -153,13 +169,15 @@ for (const o of [...oca.values()].sort((a, b) => a.id.localeCompare(b.id))) {
   if (sameDate) evidence.push('same date');
   // Name the mate by its home: a hymn of the tone is the Octoechos's, even where a
   // Menaion service prints it too (a dogmatikon written out at a saint's Vespers).
-  const mate = c.paths.find((p) => p.book === 'octoechos' && /^tone\d\./.test(p.path)) ?? c.paths[0];
-  const entry = { mate: `${mate.book}:${mate.path}`, mateHash: c.hash, score: round(best.score), next: round(next), evidence,
+  const home = (list) => list.find((p) => p.book === 'octoechos' && /^tone\d\./.test(p.path)) ?? list[0];
+  const mate = home(c.paths.filter((p) => tones.includes(p.tone))) ?? home(c.paths);
+  const entry = { mate: `${mate.book}:${mate.path}`, mateHash: c.hash, tone: tones[0] ?? null, score: round(best.score), next: round(next), evidence,
     first: { doc: o.prints[0].doc, head: o.prints[0].head } };
-  const isAuto = best.score >= AUTO_SCORE && best.score - next >= AUTO_MARGIN && !placeConflict && !toneDiffers;
+  const isAuto = best.score >= AUTO_SCORE && best.score - next >= AUTO_MARGIN && !toneDiffers && !closerElsewhere;
   if (isAuto) { auto[o.id] = { ...entry, by: 'auto' }; stats.auto++; }
   else {
-    review[o.id] = { ...entry, why: [best.score < AUTO_SCORE ? 'wording below the bar' : null, best.score - next < AUTO_MARGIN ? 'a second hymn is close' : null, placeConflict ? 'it belongs to another service' : null, toneDiffers ? 'tone differs: the two sources may print this hymn in different tones, or a tone is recorded wrongly' : null].filter(Boolean),
+    review[o.id] = { ...entry, why: [best.score < AUTO_SCORE ? 'wording below the bar' : null, best.score - next < AUTO_MARGIN ? 'a second hymn is close' : null, toneDiffers ? 'tone differs: the two sources may print this hymn in different tones, or a tone is recorded wrongly' : null,
+        closerElsewhere ? `a Menaion hymn in Tone ${[...closerElsewhere.c.tones].join('/')} is closer in wording (${round(closerElsewhere.score)}): ${closerElsewhere.c.paths[0].path}` : null].filter(Boolean),
       others: rivals.slice(0, 2).map((r) => ({ mate: `${r.c.paths[0].book}:${r.c.paths[0].path}`, mateHash: r.c.hash, score: round(r.score) })) };
     stats.review++;
   }
@@ -169,7 +187,7 @@ for (const o of [...oca.values()].sort((a, b) => a.id.localeCompare(b.id))) {
 const dump = (name, banner, obj) => `${banner}\nexport const ${name} = {\n` + Object.keys(obj).sort().map((k) => `  ${k}: ${JSON.stringify(obj[k])},\n`).join('') + '};\n';
 const files = {
   'src/data/oca_hymns/matches_auto.js': dump('OCA_MATCHES_AUTO',
-    `// GENERATED by tools/match_oca_hymns.mjs. Do not edit by hand: a decision of your own goes in matches_human.js.\n// OCA hymn id -> its mate in the tool's books, confirmed automatically (by: 'auto') on the evidence listed.\n// Bar: wording >= ${AUTO_SCORE}; margin over the next different hymn in the same tone >= ${AUTO_MARGIN}; same tone; not a hymn of another service.`, auto),
+    `// GENERATED by tools/match_oca_hymns.mjs. Do not edit by hand: a decision of your own goes in matches_human.js.\n// OCA hymn id -> its mate in the tool's books, confirmed automatically (by: 'auto') on the evidence listed.\n// Bar: wording >= ${AUTO_SCORE}; margin over the next different hymn in the same tone >= ${AUTO_MARGIN}; same tone.`, auto),
   'src/data/oca_hymns/matches_review.js': dump('OCA_MATCHES_REVIEW',
     '// GENERATED by tools/match_oca_hymns.mjs. OCA hymns with a plausible mate that fell short of the automatic bar.\n// NOT matches: nothing here is used until a person records the decision in matches_human.js.', review),
 };
@@ -183,7 +201,7 @@ console.log(`OCA hymns: ${stats.hymns} distinct · matched automatically ${stats
 console.log(`pool: ${cands.length} distinct hymns (Menaion and Octoechos)`);
 // Per document: how much of what it prints now has a mate.
 const held = new Set([...pool.byPath.keys()].filter((k) => k.startsWith('menaion:')).map((k) => k.slice(8, 13)));
-const outcome = (id) => (OCA_MATCHES_HUMAN[id] ? 'human' : auto[id] ? 'auto' : review[id] ? 'review' : notAHymn(oca.get(id)) ? 'skip' : 'none');
+const outcome = (id) => (OCA_MATCHES_HUMAN[id] && 'mate' in OCA_MATCHES_HUMAN[id] ? 'human' : auto[id] ? 'auto' : review[id] ? 'review' : notAHymn(oca.get(id)) ? 'skip' : 'none');
 const perDoc = [];
 for (const stem of ocaStems()) {
   const ids = [...new Set(ocaTexts(await loadOcaDoc(stem)).map((t) => t.id))]; const n = { auto: 0, human: 0, review: 0, none: 0, skip: 0 };
@@ -202,7 +220,7 @@ if (args.has('--sample')) {
   const autos = rows.filter((r) => r.isAuto).sort((a, b) => a.score - b.score);
   const pick = (list, n) => list.filter((_, i) => i % Math.max(1, Math.floor(list.length / n)) === 0).slice(0, n);
   const revs = rows.filter((r) => !r.isAuto).sort((a, b) => b.score - a.score);
-  const md = [`# OCA match spot-check\n`, `${stats.auto} matched automatically, ${stats.review} awaiting review, ${stats.none} with no plausible mate, ${stats.short} not hymns (verses and fixed texts), not attempted. Bar for automatic: wording ≥ ${AUTO_SCORE}, margin ≥ ${AUTO_MARGIN} over the next different hymn in the same tone, same tone, same service.\n`,
+  const md = [`# OCA match spot-check\n`, `${stats.auto} matched automatically, ${stats.review} awaiting review, ${stats.none} with no plausible mate, ${stats.short} not hymns (verses and fixed texts), not attempted. Bar for automatic: wording ≥ ${AUTO_SCORE}, margin ≥ ${AUTO_MARGIN} over the next different hymn in the same tone, same tone.\n`,
     `## A. The ten automatic matches CLOSEST to the bar\n\nIf any of these is wrong, the bar is too low.\n`, ...autos.slice(0, 10).map(show),
     `## B. Ten automatic matches spread across the rest\n`, ...pick(autos.slice(10), 10).map(show),
     `## C. The fifteen strongest candidates held for review\n\nIf these are all right, the bar could come down.\n`, ...revs.slice(0, 15).map((r) => show(r) + `\nHeld because: ${review[r.o.id].why.join('; ')}\n`)];

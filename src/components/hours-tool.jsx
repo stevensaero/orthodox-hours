@@ -8534,6 +8534,28 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.54.2",
+    date: "November 2026",
+    summary: "OCA matching after the first review: ten matches confirmed by a person, two candidates rejected, and the tone rules settled",
+    items: [
+      "The first spot-check is recorded. Ten held matches are now confirmed by a person, and two " +
+      "candidates are rejected with the reason given (the OCA hymn makes a request, or lacks an " +
+      "appeal, that the proposed mate does not share).",
+      "A person can now say 'not this one': that candidate is never offered for that hymn again " +
+      "and the search continues. Before, the only choices were a mate or no mate at all.",
+      "TONE, SETTLED. An OCA text carries its own tone and pointing wherever it is shown. An " +
+      "Octoechos hymn in a different tone is never a mate, since it would be wrong every week " +
+      "that tone came round. A Menaion hymn in a different tone goes to a person, because the " +
+      "two books do sometimes print one hymn in different tones.",
+      "A text printed in more than one tone is now counted in each. One irmos is printed in a " +
+      "Tone 1 canon of the Menaion and in the Tone 8 book; the OCA's Tone 8 katavasia now finds " +
+      "it in Tone 8.",
+      "A hymn found in another service no longer blocks a match: all four such matches read in " +
+      "the review were true.",
+      "Now: 192 matched automatically, 10 confirmed by a person, 148 awaiting review.",
+    ],
+  },
+  {
     version: "v0.54.1",
     date: "November 2026",
     summary: "OCA matching: a hymn in another tone is no longer a candidate, and the service a hymn belongs to now counts",
