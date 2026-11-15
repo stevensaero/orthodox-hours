@@ -80,3 +80,33 @@ export async function ocaVespersReadingsFor(key) {
   const doc = ref ? await loadOcaDoc(ref.doc) : null;
   return doc ? ocaVespersReadings(doc) : [];
 }
+
+// What an OCA document prints for the Divine Liturgy: its prokeimena and Alleluia
+// (tone and the label the heading gives), and the Epistle and Gospel references.
+// Used to NOTE OCA practice beside the full order, never to shorten it.
+export function ocaLiturgyPropers(doc) {
+  const out = { prokeimena: [], alleluia: [], epistles: [], gospels: [], file: doc.file };
+  let on = false; let sec = null;
+  for (const b of doc.blocks) {
+    const t = b.text.replace(/[[\]]/g, '').replace(/[–—]/g, '-');
+    if (b.k === 'heading' && /^\(at the Divine Liturgy\)/i.test(t)) { on = true; continue; }
+    if (!on) continue;
+    if (b.k === 'heading') {
+      const h = t.match(/^Tone (\d)\*?\s*(.*)$/);
+      if (/^Epistle/i.test(t)) sec = 'epistles'; else if (/^Gospel/i.test(t)) sec = 'gospels'; else if (/^Communion/i.test(t)) sec = 'communion';
+      else if (h && /Prokeimenon/i.test(h[2])) { out.prokeimena.push({ tone: Number(h[1]), sunday: /Resurrection/i.test(h[2]), label: h[2] }); sec = 'prokeimenon'; }
+      else if (h && !h[2] && (sec === 'epistles' || sec === 'alleluia')) { out.alleluia.push({ tone: Number(h[1]) }); sec = 'alleluia'; }
+      continue;
+    }
+    if (sec === 'epistles' || sec === 'gospels') {
+      const m = t.match(/^(?:\((\d+)\)\s*)?((?:[1-4] )?[A-Z][A-Za-z]+ \d+:\d[\d:,;\- ]*)/);
+      if (m) out[sec].push({ ref: m[2].trim(), pericope: m[1] ? Number(m[1]) : null });
+    }
+  }
+  return out.prokeimena.length || out.epistles.length ? out : null;
+}
+export async function ocaLiturgyPropersFor(key) {
+  const ref = Object.values(OCA_SLOTS[key] || {})[0];
+  const doc = ref ? await loadOcaDoc(ref.doc) : null;
+  return doc ? ocaLiturgyPropers(doc) : null;
+}
