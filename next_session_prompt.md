@@ -66,8 +66,9 @@ shims, props or bandages; fix the logic. The assemblers lay in PLANS from
   service; 29 names await Bill's read) and the bulletin (`src/lib/bulletin-day.js`) are
   done. The Prefer OCA toggle and the V2 service chooser are
   done. NEXT: How-It-Works pass, the three Menaion browser items, merge, retire V1, v0.53.0.
-  RULED: at the switch the reader sees "The Menaion", never "V2" (one Library book, the
-  new browser at `/menaion`, `/menaion-v2` redirecting); inventory in project_notes.md.
+  RULED: at the switch the reader sees "The Menaion", never "V2" in a book TITLE or in the services;
+  "(V2)" may stand in the small cover line as on the Octoechos, and STAYS in file paths
+  and routes (no renames, no redirects). Details in project_notes.md.
 - **Vespers, in service order, one section at a time:** Lord I call (~500 lines),
   Litiya (~190), Aposticha (~330), troparia (~200), in `assembleVespers`
   (hours-tool.jsx). Build `vespersPlan` in the adapter first; for each movable

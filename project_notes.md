@@ -775,22 +775,20 @@ DONE — PREFER OCA TOGGLE AND SERVICE CHOOSER (14 Nov):
 progress. The retiring of V1 sees V2 replacing it and the V2 vanishes from the
 output, only to be found referenced in our devlogs." So "V2" stays in
 RELEASE_NOTES, project_notes.md and the specs, and nowhere a reader looks.
-What a reader sees today that must change AT THE MERGE (inventory, 14 Nov):
-- Library shelf: two books, "The Menaion" (V1, `/menaion`) and "The Menaion
-  (V2)" (`/menaion-v2`). After: ONE book, "The Menaion", opening the new browser.
-- The address bar: `/menaion-v2`. After: the new browser is served at
-  `/menaion`; `/menaion-v2` redirects there so saved links keep working.
-- `open_questions.js` SOURCES links point at `/menaion-v2`: repoint to `/menaion`.
-- The new browser's own headings carry no "V2" (checked). The How-It-Works pass
-  must not introduce the word.
-- Messages in the services already say "the Menaion" ("the Menaion is not yet
-  encoded for this date").
-Not decided, to ask at the merge: (a) whether code names follow (the directory
-`src/data/menaion_v2`, `menaion-v2-*.jsx`, the gate file names); (b) the
-Octoechos, which was cut over earlier and STILL shows "V2" to the reader:
-Library cover "Tones 1-8 · complete (V2)", the help line "Octoechos reading
-view (V2)", the route `/octoechos-v2` (`/octoechos` redirects TO it), and
-"no V2 data yet" in its browser.
+**REFINED BY BILL THE SAME EVENING, on a marked screenshot of the Library shelf:**
+- The book TITLE is "The Menaion", with no "(V2)". DONE on the branch.
+- "(V2)" MAY stand in the small cover line under the book, the way the
+  Octoechos has "Tones 1-8 · complete (V2)". The Menaion's now reads "Full
+  capture · in progress (V2)". The Octoechos is fine as it is.
+- **"V2" STAYS in the file paths**: `src/data/menaion_v2`, `menaion-v2-*.jsx`,
+  the gate names, and the route `/menaion-v2` (as `/octoechos-v2`). No renames
+  and no redirects at the switch.
+- At the merge the V1 book ("The Menaion", `/menaion`, "May 16-31 · June ·
+  July") leaves the shelf with V1, so one book named "The Menaion" remains.
+  Until then the shelf shows two books of that name, told apart by the cover
+  line; this ships only with the merge.
+- Services and messages say "the Menaion"; keep "V2" out of the How-It-Works
+  text.
 
 **OPEN QUESTIONS ADDED (Bill: "fire off any uncertainties"):** Q-0008, how the
 dismissal names 6 September (a miracle of the Archangel, with the Martyr

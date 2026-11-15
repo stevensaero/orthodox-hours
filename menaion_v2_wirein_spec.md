@@ -37,9 +37,10 @@ are the plan and await Bill's confirmation before any assembler code changes.**
     the OCA publishes service texts: it does not publish one for every day.
 12. A hand-entered short `name` per commemoration for the dismissal, checked
     against the OCA title line.
-13. (14 Nov) At the switch the reader sees "The Menaion" and never "V2": one
-    Library book, the new browser at `/menaion`, `/menaion-v2` redirecting to
-    it. "V2" lives on only in the devlogs (release notes, project notes, specs).
+13. (14 Nov) The reader sees "The Menaion": no "V2" in the book title or in the
+    services. "(V2)" may stand in the Library's small cover line, as on the
+    Octoechos. File paths and routes keep "v2" (`menaion_v2`, `/menaion-v2`): no
+    renames, no redirects.
 
 ## 1. The fact that shapes the work
 
