@@ -316,38 +316,41 @@ resolved, provisional mark), `vespers()`, `typica()`, `dismissalName()`. Every
 returned node carries `path` for the V2 reading-view deep link, as the
 Octoechos adapter does.
 
-### 6a. Built so far (14 Nov): the HOURS slice
+### 6a. RULING (Bill, 14 Nov): rewrite the logic; no shims
 
-`adapter.js` has `servicesOf` (default service first, ruling 8), `hymnsOf`
-(every troparion and kontakion of a service with its path, both V2 shapes),
-`hoursPlan` (what the four Hours read on a weekday, by Fekula's rule for the
-section, with the OCA hymn laid over the Menaion hymn when preferred),
-`ocaFor`, and `toV1Hours` (the same answer under V1's field names, so the
-present assembler can read it unchanged). Not built: Vespers, Typica,
-dismissal name, General Menaion fallback, the Sunday overlay (the assembler's).
+The adapter returns PLANS in V2's own terms and the assemblers lay them in.
+The V1-shaped function built first was a shim and is deleted. Reason: V1's
+errors against the OCA texts came from the assembler calculating hymns by rule
+without reading the page; V1's field names have no place for what the page
+prints, so a V1-shaped entry would have carried the fault over.
 
-Decision taken in building it: the adapter hands the assemblers a V1-SHAPED
-entry (`toV1...`). The 17,000-line assembler then switches by changing one
-loader, not by being rewritten. Where V1's shape cannot say what V2 knows (a
-feast troparion ahead of the saint's), the field is added, not bent.
+A plan names, for each movable place, one of: printed here (the node);
+rubric only (fetch from the Octoechos in the tone the rubric names); nothing
+printed (the rule for the section applies). Selection logic lives in plain
+modules under `src/lib/` so gates run the tool's own code; the 17,000-line
+component only lays elements out.
 
-What the Hours table showed:
-- **Forefeast and afterfeast days were wrong in V1.** V1 read the saint's
-  troparion alone and the saint's kontakion at the 1st and 6th Hours. Fekula
-  2G1: troparion of the feast, Glory, of the saint; kontakion of the feast
-  only. V2 follows 2G1 (09-07, 11-20, 11-22, 11-23, 11-24); 2G3 on 11-25.
-  The assembler must learn to read a feast troparion ahead of the saint's.
-- 11-23 prints the feast troparion with no tone at that site.
-- 11-24 prints three troparia of saints (two for Catherine, one for
-  Mercurius); the first is shown and the rest noted.
-- 11-29 has no troparion or kontakion without the OCA layer: the General
-  Menaion fallback is not wired.
-- With "Prefer OCA" on and two Menaion kontakia (10-04), the one OCA kontakion
-  is read at every Hour. V1 read OCA's at the 1st and 6th and the St. Sergius
-  Ode VI kontakion at the 3rd and 9th. OPEN: which does Bill want?
-- V1's 10-04 entry had OCA hymns typed into the Menaion entry. V2 holds the
-  St. Sergius text there and the OCA text in the OCA layer; with the toggle on
-  the two give the same words.
+Done on branch `v2-wirein`: the Hours (`hoursPlan`, `src/lib/hours-propers.js`).
+
+### 6b. Size of the rest (measured 14 Nov)
+
+| Part | Lines | Selection logic to rewrite |
+|---|---|---|
+| Hours | 628 | ~130 — DONE |
+| Vespers | 1,920 | ~1,400: Lord I call ~500, Litiya ~190, Aposticha ~330, troparia ~200, rule helpers ~175 |
+| Typica + `liturgy-propers.js` | 472 + 257 | ~100 |
+| Dismissal | ~130 | ~30 (needs the short `name`) |
+| Bulletin, audit, explainers, library | — | ~80 lines of field reads |
+
+Vespers interleaves Pentecostarion, Sunday Octoechos and Menaion in the same
+blocks, so its sections are restructured, not patched. The Pentecostarion
+logic is carried over unchanged and marked as not reworked. The Sunday Vespers
+and bulletin gates pin today's output; each change is listed with the OCA text
+or Fekula section that justifies it.
+
+What the Hours showed: see project_notes.md (forefeast and afterfeast days;
+the Sunday kontakion wrong at every rank in V1; 11-23 feast troparion printed
+with no tone; 11-24 three troparia of saints; 11-29 needs the General Menaion).
 
 ## 7. Gates — status
 
