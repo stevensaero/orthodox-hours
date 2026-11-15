@@ -448,6 +448,24 @@ General Menaion kontakion. Not yet asked of Bill.
 entries were added without regenerating it (`node tools/build_temple_index.mjs`).
 The index is derived from V1 data and must be rebuilt on V2 at the switch.
 
+### OWED BEFORE THE SWITCH: bring "How the tool works" into line with the tool as built (Bill, 14 Nov)
+
+The How-It-Works panel (`HowItWorksPanel` in hours-tool.jsx) and the explainers
+must describe what the tool now does, not what V1 did. A full pass is owed
+before `v2-wirein` is merged. It must cover at least:
+- **Printed first**: the page is read before any rule; a rubric sends the tool
+  to the Octoechos in the named tone; a rule applies only where nothing is
+  printed; the Sunday order is laid over the page on Saturday evening.
+- **The OCA layer and "Prefer OCA"**: where OCA hymns come from, that an OCA
+  hymn replaces only its own counterpart, how the toggle works, and that the
+  layer grows as OCA service texts are added.
+- **The OCA texts as the answer key** for Vespers, and what "agree" means.
+- **The General Menaion fallback** and how a hymn from it is labelled.
+- Two services on one date and which shows by default; "not encoded".
+- The Hours rules by Fekula section, including Sundays and feast periods.
+- That every element names its source and the rule applied.
+Check each explainer too (RankExplainer, the kontakion and prokeimenon ones).
+
 ### NEXT MENAION V2 BROWSER PASS (Bill, 14 Nov, with a screenshot)
 
 1. Move the "Hours Tool" return link to the LEFT edge of the page (it sits
