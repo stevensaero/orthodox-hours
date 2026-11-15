@@ -99,8 +99,11 @@ export function ocaLiturgyPropers(doc) {
       continue;
     }
     if (sec === 'epistles' || sec === 'gospels') {
-      const m = t.match(/^(?:\((\d+)\)\s*)?((?:[1-4] )?[A-Z][A-Za-z]+ \d+:\d[\d:,;\- ]*)/);
-      if (m) out[sec].push({ ref: m[2].trim(), pericope: m[1] ? Number(m[1]) : null });
+      // Two readings are printed one under the other and captured as lines of one block.
+      for (const line of t.split(/ \| | \/\/ /)) {
+        const m = line.match(/^(?:\((\d+)\)\s*)?((?:[1-4] )?[A-Z][A-Za-z]+ \d+:\d[\d:,;\- ]*)/);
+        if (m) out[sec].push({ ref: m[2].trim(), pericope: m[1] ? Number(m[1]) : null });
+      }
     }
   }
   return out.prokeimena.length || out.epistles.length ? out : null;
