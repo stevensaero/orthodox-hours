@@ -65,7 +65,9 @@ shims, props or bandages; fix the logic. The assemblers lay in PLANS from
   assembled by the tool, so not entered). The dismissal name (hand-entered on every
   service; 29 names await Bill's read) and the bulletin (`src/lib/bulletin-day.js`) are
   done. The Prefer OCA toggle and the V2 service chooser are
-  done. NEXT: How-It-Works pass, the three Menaion browser items, merge, retire V1, v0.53.0.
+  done. The How-It-Works pass and the three Menaion browser
+  items are done. NEXT: THE MERGE: re-base the gates that import V1, delete V1 whole (the
+  list is in project_notes.md), re-read the pop-up explainers, v0.53.0 and its release note.
   RULED: at the switch the reader sees "The Menaion", never "V2" in a book TITLE or in the services;
   "(V2)" may stand in the small cover line as on the Octoechos, and STAYS in file paths
   and routes (no renames, no redirects). Details in project_notes.md.

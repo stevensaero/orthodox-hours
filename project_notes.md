@@ -818,8 +818,45 @@ Eudoxius); Q-0009, whom it names on 29 November (the Menaion's Paramon and
 Acacius, or the OCA's Paramon and the 370 martyrs). The other names stand as
 entered: Bill read the list and approved it.
 
-NEXT on the branch: the How-It-Works pass; the Menaion browser items; merge and
-retire V1 (with the naming change above); v0.53.0. Still V1 in the Liturgy:
+DONE — THE THREE MENAION BROWSER ITEMS (Bill's screenshot, 14 Nov):
+- The "← Hours Tool" link stands at the page's left edge (`HoursReturnStrip
+  align="left"`, used on `/menaion-v2` only; the other browsers keep the
+  centered row).
+- The left rail is 236px (was 168px, narrower than its own 7-column day grid,
+  which is why the dates were clipped). A commemoration is listed by its short
+  name, whole and wrapping, with the printed title on hover; it was the first
+  28 characters of the title.
+- The General Menaion list folds. It is closed while a day's own service is on
+  the page and open when none is or when one of its services is being read;
+  the heading toggles it and shows the count.
+
+DONE — THE HOW-IT-WORKS PASS (owed since 14 Nov):
+- New section **"How the Tool Decides"**: the printed page first; a printed
+  order for the date (Fekula vol. III); the general rule by section, with what
+  it decides at the Hours, Vespers and the Liturgy; OCA service texts, "Prefer
+  OCA texts", the answer key and the "not in the OCA text" mark; two services
+  on a date; the General Menaion fallback and "not yet encoded"; the dismissal
+  name; questions for review.
+- Rewritten to the tool as built: the service inventory (the Divine Liturgy is
+  built: 11 of 14), the feature list (the Menaion; Questions for review),
+  Sources (both Fekula editions; OCA service texts; whole capture; the General
+  Menaion's name), stichera at "Lord, I have cried" (the page states the count),
+  how a date is captured (the waterfall for rank, not a stichera count),
+  coverage, limits, the translation note.
+- REMOVED: the V1 "Data record fields" table.
+- Coverage is written for the state AFTER the merge (September 5-8 and 27,
+  October 4, November 14-30), since this ships only with it.
+- Not done in this pass: `RankExplainer` and the other pop-up explainers were
+  not re-read line by line.
+- **Correction to an earlier statement:** the tool DOES give the Vigil form of
+  the Vespers troparia ("O Theotokos and Virgin, rejoice", the loaves) when the
+  service is of Vigil rank or a Great Feast with a Litiya (`isVigilFormula`).
+  What it lacks is a switch for "a Vigil is served tonight" at lower ranks,
+  which is the case the vol. III Sunday orders describe.
+
+NEXT on the branch: the merge. Re-base the gates that import V1, delete V1
+whole (list above), re-read the explainers, version 0.53.0 with its release
+note. Still V1 in the Liturgy:
 only the dismissal and the Pentecostarion paths. Festal antiphons for feasts of
 the Lord are still flagged, not assembled (no such day is in V2 yet).
 
