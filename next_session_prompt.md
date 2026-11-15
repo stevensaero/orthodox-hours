@@ -61,8 +61,9 @@ shims, props or bandages; fix the logic. The assemblers lay in PLANS from
   (encoding_rule_v2.md 1.4). RULED AND BUILT: the general rule for the Liturgy's
   prokeimenon, Alleluia, communion hymn and readings is Fekula's by section
   (`src/lib/liturgy-order.js`); the OCA mark shows only where the OCA text differs.
-  NEXT: Vespers and Matins of the four vol. III orders; then dismissal, bulletin (its
-  readings still use the old path), toggle, chooser, How-It-Works.
+  Vespers of the four vol. III orders is entered and gated (Matins and Compline are not
+  assembled by the tool, so not entered). NEXT: dismissal `name`, bulletin (its readings
+  still use the old path), Prefer OCA toggle, service chooser, How-It-Works, merge.
 - **Vespers, in service order, one section at a time:** Lord I call (~500 lines),
   Litiya (~190), Aposticha (~330), troparia (~200), in `assembleVespers`
   (hours-tool.jsx). Build `vespersPlan` in the adapter first; for each movable

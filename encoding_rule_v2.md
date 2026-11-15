@@ -353,8 +353,12 @@ one, enter its order in `src/data/ods_v3/orders.js` in the same session.**
    gate's OWED table or the gate fails.
 5. **Driven so far:** the Hours; at the Liturgy the Beatitudes, the troparia and
    kontakia after the entrance, the prokeimenon, Alleluia and communion verse,
-   and the Epistle and Gospel. **Not yet entered or driven:** Vespers, Little
-   Compline, Matins.
+   and the Epistle and Gospel; at Vespers the Litiya where the order composes
+   one. **Vespers is entered in full and checked** place by place against the
+   tool's own resolvers; where they differ the gate fails, and either the
+   general rule is corrected (if Fekula's chapters agree with vol. III) or the
+   order is made to drive that place. **Not entered:** Little Compline and
+   Matins, which the tool does not yet assemble.
 6. A printed rank in vol. III is still decisive for rank (§1.1 step 0); the gate
    fails if the order's rank and the stored rank differ.
 
