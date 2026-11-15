@@ -656,6 +656,9 @@ export default function OctoechosV2Browser() {
   return (
     <AuditContext.Provider value={{ audit, recurrences, tonePrefix: `tone${tone}.` }}>
       <div style={{ background: C.parchment, minHeight: "100vh", padding: narrow ? "0 12px 12px" : "0 26px 18px", fontFamily: "Georgia, serif" }}>
+      {/* Desktop: the header, the rail and the page share one centred column (rail 168 + gap 20 + page 720),
+          so the rail sits beside the page and the search lines up with its right edge. */}
+      <div style={{ maxWidth: narrow ? "none" : "908px", margin: "0 auto" }}>
         <div ref={headerRef} style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: narrow ? "nowrap" : "wrap", borderBottom: `1px solid ${C.border}`, paddingTop: narrow ? "12px" : "18px", paddingBottom: "8px", position: "sticky", top: "var(--hours-return-strip-h, 0px)", zIndex: 30, background: C.parchment }}>
           {narrow ? (
             <>
@@ -713,7 +716,9 @@ export default function OctoechosV2Browser() {
         </div>
 
         {results !== null && (
-          <div style={{ maxWidth: "720px", margin: "0 auto" }}>
+          // Where the page stands (past the rail's 168px and the 20px gap), so the
+          // results do not jump sideways from the reading view.
+          <div style={{ maxWidth: "720px", margin: narrow ? "0 auto" : "0 0 0 188px" }}>
             <div style={{
               position: "sticky", top: `calc(var(--hours-return-strip-h, 0px) + ${headerH}px)`, zIndex: 20,
               background: C.parchment, paddingTop: "14px", paddingBottom: "8px", marginBottom: "6px",
@@ -876,6 +881,7 @@ export default function OctoechosV2Browser() {
             )}
           </div>
         )}
+      </div>
       </div>
     </AuditContext.Provider>
   );

@@ -537,6 +537,9 @@ export default function MenaionV2Browser() {
   return (
     <AuditContext.Provider value={{ audit, prefix }}>
       <div style={{ background: C.parchment, minHeight: "100vh", padding: narrow ? "0 12px 12px" : "0 26px 18px", fontFamily: "Georgia, serif" }}>
+      {/* Desktop: the header, the rail and the page share one centred column (rail 236 + gap 20 + page 720),
+          so the rail sits beside the page and the search lines up with its right edge. */}
+      <div style={{ maxWidth: narrow ? "none" : "976px", margin: "0 auto" }}>
         <div ref={headerRef} style={{
           display: "flex", alignItems: "center", gap: "10px", flexWrap: narrow ? "nowrap" : "wrap",
           borderBottom: `1px solid ${C.border}`, paddingTop: narrow ? "12px" : "18px", paddingBottom: "8px",
@@ -642,6 +645,7 @@ export default function MenaionV2Browser() {
             )}
           </div>
         </div>
+      </div>
       </div>
     </AuditContext.Provider>
   );

@@ -61,8 +61,8 @@ function App() {
         <Route path="/octoechos" element={<OctoechosRedirect />} />
         {/* Octoechos V2 is fully responsive (mobile drawer + compact header), so
             unlike the desktop-only table browsers it carries no 760px min-width. */}
-        <Route path="/octoechos-v2" element={<ErrorBoundary><Suspense fallback={<LazyFallback />}><div><HoursReturnStrip /><OctoechosV2Browser /><HoursReturnStrip position="bottom" /></div></Suspense></ErrorBoundary>} />
-        <Route path="/menaion-v2" element={<ErrorBoundary><Suspense fallback={<LazyFallback />}><div><HoursReturnStrip align="left" /><MenaionV2Browser /><HoursReturnStrip position="bottom" align="left" /></div></Suspense></ErrorBoundary>} />
+        <Route path="/octoechos-v2" element={<ErrorBoundary><Suspense fallback={<LazyFallback />}><div><HoursReturnStrip maxWidth={908} /><OctoechosV2Browser /><HoursReturnStrip position="bottom" maxWidth={908} /></div></Suspense></ErrorBoundary>} />
+        <Route path="/menaion-v2" element={<ErrorBoundary><Suspense fallback={<LazyFallback />}><div><HoursReturnStrip maxWidth={976} /><MenaionV2Browser /><HoursReturnStrip position="bottom" maxWidth={976} /></div></Suspense></ErrorBoundary>} />
         <Route path="/questions" element={<ErrorBoundary><Suspense fallback={<LazyFallback />}><div><HoursReturnStrip /><OpenQuestions /><HoursReturnStrip position="bottom" /></div></Suspense></ErrorBoundary>} />
         <Route path="/tone-trainer" element={<Suspense fallback={<LazyFallback />}><HoursReturnStrip /><ToneTrainer /><HoursReturnStrip position="bottom" /></Suspense>} />
       </Routes>

@@ -5,9 +5,10 @@ import React from "react";
 // (URL carries ?from=tool, e.g. from the Library bookshelf). Plain history.back()
 // returns to the tool exactly where it was left (incl. the Library view).
 // The Psalter, Scripture, and Tone Trainer carry their own equivalent strip.
-// `align="left"`: the link stands at the page's left edge (a browser whose content
-// runs the full width, with a rail at the left) instead of on a centered 960px row.
-export default function HoursReturnStrip({ position = "top", align = "center" }) {
+// `maxWidth`: the width of the centred column the link lines up with. A browser
+// whose own column is not the default 960px passes its width, so the link stands
+// over the left edge of that browser's rail.
+export default function HoursReturnStrip({ position = "top", maxWidth }) {
   const ref = React.useRef(null);
   let fromTool = false;
   try { fromTool = new URLSearchParams(window.location.search).get("from") === "tool"; } catch (e) {}
@@ -43,7 +44,7 @@ export default function HoursReturnStrip({ position = "top", align = "center" })
         boxSizing: "border-box",
         // Outer 1.5rem horizontal padding mirrors the browser headers, so the
         // 960px-centered inner row lines the link up with the title and body.
-        padding: align === "left" ? "0.5rem 26px" : "0.5rem 1.5rem",
+        padding: maxWidth ? "0.5rem 26px" : "0.5rem 1.5rem",
         position: "sticky",
         top: isBottom ? undefined : 0,
         bottom: isBottom ? 0 : undefined,
@@ -57,7 +58,7 @@ export default function HoursReturnStrip({ position = "top", align = "center" })
     >
       <span style={{
         display: "flex", alignItems: "center", gap: "0.3rem",
-        maxWidth: align === "left" ? "none" : "960px", margin: align === "left" ? 0 : "0 auto",
+        maxWidth: `${maxWidth || 960}px`, margin: "0 auto",
       }}>
         <span style={{ fontSize: "1.2rem", lineHeight: 1, color: "#8B6914" }}>←</span>
         <span style={{ fontSize: "0.95rem", color: "#8B6914", marginLeft: "0.3rem" }}>Hours Tool</span>

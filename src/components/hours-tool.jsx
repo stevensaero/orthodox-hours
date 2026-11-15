@@ -8534,6 +8534,19 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.53.1",
+    date: "November 2026",
+    summary: "The Menaion and the Octoechos sit in one centred column on a desktop screen, the rail beside the page",
+    items: [
+      "On a wide screen the Menaion's date rail stood at the far left of the window and its search " +
+      "at the far right, with the page alone in the middle. The header, the rail and the page now " +
+      "share one centred column, as the Pentecostarion's do: the rail is beside the page, the " +
+      "search ends at the page's right edge, and the return link stands over the rail.",
+      "The Octoechos has the same arrangement, and its search results open where the page stands.",
+      "Phones and narrow windows are unchanged.",
+    ],
+  },
+  {
     version: "v0.53.0",
     date: "November 2026",
     summary: "One Menaion: every service is now assembled from the full capture of the printed book, with the OCA's texts beside it and Fekula's printed orders followed date by date; the earlier summarized Menaion is retired",

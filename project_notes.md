@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.53.0** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
+**Tool version: v0.53.1** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,19 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### v0.53.1 — the Menaion and Octoechos browsers tightened for desktop (15 Nov 2026)
+
+Bill's screenshot: the rail at the window's far left, the search at the far
+right, the 720px page alone in the middle. Both browsers now wrap header, rail
+and page in ONE centred column on desktop (`narrow` layouts untouched): Menaion
+976px (rail 236 + gap 20 + page 720), Octoechos 908px (rail 168 + 20 + 720).
+`HoursReturnStrip` takes `maxWidth` (replacing `align="left"`) so the return link
+stands over the rail. Octoechos search results start at the page's left edge.
+Checked in headless Chrome at 1870px (reading views only; the audit views and
+the results list were not photographed). The Pentecostarion stays at 960px.
+Seen there: the Menaion's "not yet encoded" month page still prints a developer
+line ("To add a month: create src/data/menaion_v2/…"); left as is.
 
 ### v0.53.0 — THE MERGE: ONE MENAION (14 Nov 2026)
 
