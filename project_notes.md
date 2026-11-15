@@ -523,6 +523,14 @@ General Menaion kontakion. Not yet asked of Bill.
 entries were added without regenerating it (`node tools/build_temple_index.mjs`).
 The index is derived from V1 data and must be rebuilt on V2 at the switch.
 
+### PENTECOSTARION V2 IS ON THE HORIZON — read `pentecostarion_v2_pass_notes.md` (repo root)
+
+Written 14 Nov at Bill's request: the kontakion-at-Vespers concern (only one
+entry of 24 switches it off), the V1 errors likely to have twins there, the
+code-path switches stored as data, what the Menaion V2 method requires, and a
+suggested order of work. **Collect OCA service texts from the Pentecostarion
+season before that rewrite: the present folder has none.**
+
 ### OWED BEFORE THE SWITCH: bring "How the tool works" into line with the tool as built (Bill, 14 Nov)
 
 The How-It-Works panel (`HowItWorksPanel` in hours-tool.jsx) and the explainers
