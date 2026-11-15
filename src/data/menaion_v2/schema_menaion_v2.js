@@ -439,6 +439,12 @@ export const ENTRY_TOP = {
     'preface_rubric',            // printed between the title and the first service heading (11-15)
     'appendix',                  // printed after the last service: ordered rubrics and texts (11-20)
     'troparion', 'kontakion', 'ikos',
+    // HAND-ENTERED, only where the page prints no troparion or kontakion of its
+    // own (an absence node): which General Menaion service supplies them
+    // (encoding_rule_v2.md 2.1). { type: a GENERAL_TYPES key, name: what replaces
+    // the printed placeholder, basis: why this type }. The text is never copied
+    // here; the adapter reads it from general.js and substitutes the name.
+    'general_fallback',
     ...SERVICES,
   ],
   required: ['kind', 'title', 'rank', 'source_file'],

@@ -306,6 +306,13 @@ function checkServiceOrder(svc, path, entry) {
 function checkEntry(entry, path, claimed, ctx) {
   const unknown = Object.keys(entry).filter(k => !S.ENTRY_TOP.known.includes(k));
   if (unknown.length) err(path, `unknown entry key(s): ${unknown.join(', ')} — add to the schema deliberately (§7.4)`);
+  if (entry.general_fallback) {
+    const g = entry.general_fallback;
+    if (!S.GENERAL_TYPES.includes(g.type)) err(path, `general_fallback.type '${g.type}' is not a General Menaion service`);
+    if (!g.basis) err(path, `general_fallback needs a 'basis'`);
+    if (S.GENERAL_TAKES_NAME.includes(g.type) && !g.name) err(path, `general_fallback.type '${g.type}' prints a name placeholder: give 'name'`);
+    if (!entry.troparion?.absent && !entry.kontakion?.absent) err(path, `general_fallback is only for a service whose own troparion or kontakion is an absence node`);
+  }
   for (const k of S.ENTRY_TOP.required)
     if (entry[k] === undefined) err(path, `entry missing required '${k}'`);
 
