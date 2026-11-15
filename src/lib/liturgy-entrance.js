@@ -38,6 +38,7 @@
 // Pure. Sources are injected (see resolveEntrance / resolveBeatitudes).
 // ─────────────────────────────────────────────────────────────────────────────
 import { shown } from "../data/menaion_v2/adapter.js";
+import { ods3Cite } from "../data/ods_v3/orders.js";
 
 const LORD = "lord", THEOTOKOS = "theotokos", SAINT = "saint";
 
@@ -142,6 +143,15 @@ export function entranceOrder({ liturgicalData: ld = {}, menaion = null, templeT
 
   if (ld.isPentecostarion || season === "pentecostarion" || season === "brightweek") {
     return pentecostarionOrder({ offset: ld.paschaOffset, pent: pentEntry, menaion, templeType: t, isVigil, notes });
+  }
+  // ODS 3rd ed. vol. III prints the order for this service on this day: it
+  // overrides the tables below (ruled 14 Nov 2026; src/data/ods_v3/orders.js).
+  const ord = menaion && menaion.order && menaion.order.liturgy && menaion.order.liturgy.entrance;
+  if (ord) {
+    const cite = ods3Cite(menaion.order, "liturgy"); const byTemple = !Array.isArray(ord);
+    if (byTemple && !t) return { slots: null, section: cite, templeNeeded: true, notes, quote: "" };
+    return { slots: byTemple ? ord[t] : ord, templeDependent: byTemple, section: cite, ods3: true,
+      quote: "The order ODS vol. III appoints for this date" + (byTemple ? ", in a temple dedicated to " + templeWords(t) : "") + ".", notes, templeNeeded: false };
   }
   const isGreat = season === "great_feast" || period === "feast" || greatFeast;
   // A feast of the Theotokos on a Sunday keeps the Sunday (§1E); a feast of the
@@ -481,6 +491,16 @@ export function resolveBeatitudes({ liturgicalData: ld = {}, menaion = null, pen
   };
   const asRubric = mb && mb.rubric ? "Menaion: " + mb.rubric : "";
   if (mb && mb.note) notes.push(mb.note + " The troparia are given as printed; nothing is added to make up the number.");
+
+  // ODS 3rd ed. vol. III prints the Beatitudes for this service on this day: it
+  // overrides the rules below. Each part is taken from where the order says.
+  const ordB = menaion && menaion.order && menaion.order.liturgy && menaion.order.liturgy.beatitudes;
+  if (ordB) {
+    const wk = () => { const w = sources.weekdayBeatitudes ? sources.weekdayBeatitudes(tone, ["", "mon", "tue", "wed", "thu", "fri", "sat"][dow]) : null; return w && w.items ? w.items.map((it, i) => ({ text: it.text, label: "Octoechos " + (i + 1), source: "Octoechos · Tone " + tone })) : []; };
+    const out = ordB.flatMap(([from, a, b]) => from === "resurrection" ? (a === 8 ? sunday().eight : sunday().six.slice(0, a)) : from === "octoechos" ? wk().slice(-a) : menaionAll.slice(a, b));
+    const want = ordB.reduce((n, [from, a, b]) => n + (from === "menaion" ? b - a : a), 0);
+    return R(out, want, ods3Cite(menaion.order, "liturgy"), "The Beatitude troparia ODS vol. III appoints for this date: " + ordB.map(([from, a, b]) => from === "menaion" ? (b - a) + " from the Menaion" : a + (from === "resurrection" ? " of the resurrection" : " from the Octoechos")).join(", ") + ".");
+  }
 
   // ── a Great Feast ──
   // Festal antiphons belong to the feasts of the Lord ("in which case there would

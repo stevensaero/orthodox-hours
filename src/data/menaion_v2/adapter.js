@@ -9,6 +9,7 @@
 // A V2 day is { commemorations: [c0, c1...] }. Each commemoration is ONE printed
 // service (ruling 4); saints sharing a service are tagged `saint` on its hymns.
 import { ocaHymn, ocaSlotsForKey, stripCaret } from '../oca_hymns/index.js';
+import { ods3Cite } from '../ods_v3/orders.js';
 
 export const HOURS = ['1st_hour', '3rd_hour', '6th_hour', '9th_hour'];
 const isText = (n) => !!n && typeof n.text === 'string';
@@ -196,9 +197,41 @@ export function hoursPlan(c, base, opts = {}) {
       }
     }
   }
-  const hours = Object.fromEntries(HOURS.map((hr) => [hr, { troparia: trop(hr), kontakion: kont(hr) }]));
+  let hours = Object.fromEntries(HOURS.map((hr) => [hr, { troparia: trop(hr), kontakion: kont(hr) }]));
+  // ODS 3rd ed. vol. III prints an order for this service on this day: it overrides
+  // the general rule (ruled 14 Nov 2026). opts.order is the entry from
+  // src/data/ods_v3/orders.js; each name in it is bound to what the page prints.
+  let ods3 = null;
+  if (opts.order?.hours) {
+    const o = opts.order.hours; const cite = ods3Cite(opts.order, 'hours'); const unbound = [];
+    const bind = (who, what) => {
+      if (who === 'sunday') return SUNDAY;
+      const list = what === 'troparion' ? h.troparia : [...h.ode6, ...h.ode3];
+      if (who === 'feast') return slot(c.kind === 'feast' ? list[0] : list.find(ofFeast), feastDay ? `feast_${what}` : what, 'feast');
+      if (who === 'saint') return slot(list.find((n) => !ofFeast(n)), what, 'saint') ?? generalHymn(c, h, general, what, 'saint', notes);
+      const tagged = list.find((n) => (n.saint ?? '').includes(who.replace(/^saint:/, '')));
+      return tagged ? { role: 'saint', source: 'menaion', node: tagged } : null;
+    };
+    const key = (x) => [...x.troparia, x.kontakion].map((sl) => sl?.node?.path ?? sl?.role ?? '-').join('|');
+    const bound = {};
+    for (const hr of HOURS) {
+      const t = o.troparia[hr].map((who) => bind(who, 'troparion') ?? (unbound.push(`${hr}: troparion ${who}`), null)).filter(Boolean);
+      const k = bind(o.kontakion[hr], 'kontakion') ?? (unbound.push(`${hr}: kontakion ${o.kontakion[hr]}`), null);
+      bound[hr] = { troparia: t, kontakion: k };
+    }
+    if (unbound.length) notes.push(`${cite} appoints hymns this page does not print (${unbound.join('; ')}); the general rule is kept.`);
+    else {
+      const changed = HOURS.filter((hr) => key(bound[hr]) !== key(hours[hr]));
+      const say = (who) => who.replace(/^saint:/, '').replace('sunday', 'of the resurrection').replace(/^feast$/, 'of the feast').replace(/^saint$/, 'of the saints');
+      const same = (f) => HOURS.every((hr) => JSON.stringify(f(hr)) === JSON.stringify(f(HOURS[0])));
+      const tWords = same((hr) => o.troparia[hr]) ? o.troparia[HOURS[0]].map(say).join(', then ') : HOURS.map((hr) => `${hr.replace('_hour', '')}: ${o.troparia[hr].map(say).join(', ')}`).join('; ');
+      const kWords = same((hr) => o.kontakion[hr]) ? say(o.kontakion[HOURS[0]]) : HOURS.map((hr) => `${hr.replace('_hour', '')} ${say(o.kontakion[hr])}`).join(', ');
+      ods3 = { id: opts.order.id, cite, changed, general: { rule, cited } };
+      hours = bound; rule = `${cite}: troparion ${tWords}; kontakion ${kWords}.`;
+    }
+  }
   for (const hr of HOURS) for (const t of hours[hr].troparia) if (t.node && t.node.tone == null) notes.push(`The ${t.role} troparion is printed here with no tone.`);
-  return { section, cited, rank: c.rank, kind: c.kind, rule, saintName: title, hours, troparion_alt: h.troparion_alt, notes: [...new Set(notes)] };
+  return { section, cited, rank: c.rank, kind: c.kind, rule, saintName: title, hours, ods3, troparion_alt: h.troparion_alt, notes: [...new Set(notes)] };
 }
 
 // What a service prints for the Liturgy, in print order: prokeimena, Alleluia,
@@ -221,7 +254,9 @@ export function liturgyPlan(c, base) {
   };
   const refs = (single, list) => [].concat(l[single] ?? [], l[list] ?? []).filter((r) => r && r.citation).map((r) => {
     const cit = r.citation; const ref = String(cit.verses).includes(':') ? `${cit.book} ${cit.verses}` : `${cit.book} ${cit.chapter}:${cit.verses}`;
-    return { ref, pericope: cit.pericope_number ?? null, heading: r.heading ?? null, basis: r.citation_basis ?? 'printed', feast: ofFeast(r),
+    return { ref, pericope: cit.pericope_number ?? null, heading: r.heading ?? null, basis: r.citation_basis ?? 'printed',
+      // Whose reading: the page's own heading over it ("FOR THE FEAST:"), as the capture records it.
+      feast: ofFeast(r) || /for the (fore)?feast/i.test(`${r.note ?? ''} ${r.src?.locus ?? ''}`),
       // "Book c:v (§n)" is the form the lectionary helpers read.
       display: ref + (cit.pericope_number != null ? ` (§${cit.pericope_number})` : '') };
   });
@@ -350,6 +385,7 @@ export function entrancePlan(c, base, opts = {}) {
     feast: { troparion: slot(feastTrop, 'feast_troparion', 'feast'), kontakion: slot(feastKont, 'feast_kontakion', 'feast') },
     saints: { troparia, kontakia }, alternates,
     rubrics: { troparia: l.troparia_rubric?.text ?? null, kontakion: l.kontakion_rubric?.text ?? null },
+    order: opts.order ?? null,   // ODS vol. III's order for this service on this day, when it prints one
     beatitudes, trisagion: isText(l.trisagion_replacement) ? { text: l.trisagion_replacement.text, path: `${base}.liturgy.trisagion_replacement` } : null,
     notes: [...new Set(notes)] };
 }

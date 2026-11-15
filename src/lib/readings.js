@@ -120,6 +120,8 @@ export function readingsForDay({
   rank: rankGiven = null,          // the service's rank, from the Menaion V2 service
   dailyReading = null,
   feastReading = null,
+  menaionRefs = null,              // { e: [{ display, feast }], g: [...] }: every reference the service prints (liturgyPlan)
+  order = null,                    // ODS vol. III's order for this service on this day (src/data/ods_v3/orders.js)
 } = {}) {
   const ld = liturgicalData || {};
   const isSunday = ld.dow === 0 || ld.season === "sunday" || ld.isSunday === true;
@@ -164,7 +166,31 @@ export function readingsForDay({
     return items.length ? { slot, label, items } : null;
   };
 
-  const groups = [build("e", "Epistle"), build("g", "Gospel")].filter(Boolean);
+  let groups = [build("e", "Epistle"), build("g", "Gospel")].filter(Boolean);
+
+  // ODS 3rd ed. vol. III prints whose Epistle and Gospel are read on this date,
+  // and in what order (its own Saturday order where it prints one): it overrides
+  // the general rule (ruled 14 Nov 2026). Each name is bound to a reference the
+  // service prints; a name that binds to nothing is left out and reported.
+  const ol = order && order.liturgy;
+  let ods3 = null;
+  if (ol && (ol.epistle || ol.gospel) && menaionRefs) {
+    const cite = "ODS 3rd ed. vol. III, p. " + (ol.page || order.pages[0]) + " (" + order.id + ")";
+    const unbound = [];
+    const pick = (slot, who) => {
+      if (who === "day") return dayItems[slot] ? [dayItems[slot]] : [];
+      const refs = (menaionRefs[slot] || []).filter((r) => (who === "feast") === !!r.feast);
+      if (!refs.length) unbound.push((slot === "e" ? "Epistle" : "Gospel") + " of the " + who);
+      return refs.map((r) => ({ source: "menaion", label: who === "feast" ? "Of the feast" : menaionLabel, ref: r.display, who }));
+    };
+    const whos = (slot) => { const k = slot === "e" ? "epistle" : "gospel"; return (isSaturday && ol.saturday && ol.saturday[k]) || ol[k] || null; };
+    const made = ["e", "g"].map((slot) => { const w = whos(slot); if (!w) return groups.find((x) => x.slot === slot) || null;
+      const items = w.flatMap((who) => pick(slot, who)); return items.length ? { slot, label: slot === "e" ? "Epistle" : "Gospel", items } : null; }).filter(Boolean);
+    ods3 = { id: order.id, cite, general: groups, unbound };
+    groups = made;
+    return { groups, order: (whos("e") || [])[0] === "day" || !whos("e") ? "day-first" : "menaion-first",
+      rule: { section: cite, quote: "The readings appointed for this date." }, hasMenaionReadings, ods3 };
+  }
 
   return {
     groups,

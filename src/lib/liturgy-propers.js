@@ -31,6 +31,8 @@
 // separate decision because it changes what the Typica shows on some days.
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { ods3Cite } from "../data/ods_v3/orders.js";
+
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const DAY_KEYS = ["", "mon", "tue", "wed", "thu", "fri", "sat"];
 
@@ -77,7 +79,7 @@ function markOcaPractice(items, ocaList) {
   }
 }
 
-export function resolveLiturgyPropers({ liturgicalData, menaionEntry = null, menaionPlan = null, ocaPractice = null, pentEntry = null, menaionFirst = false, sources = {} }) {
+export function resolveLiturgyPropers({ liturgicalData, menaionEntry = null, menaionPlan = null, ocaPractice = null, pentEntry = null, menaionFirst = false, order = null, sources = {} }) {
   const ld = liturgicalData || {};
   const isSunday = ld.dow === 0 || ld.isSunday === true;
   const dow = typeof ld.dow === "number" ? ld.dow : 0;
@@ -203,6 +205,19 @@ export function resolveLiturgyPropers({ liturgicalData, menaionEntry = null, men
 
   const join = (k) => (menaionFirst ? [...men[k], ...day[k]] : [...day[k], ...men[k]]);
   const result = { prokeimena: join("prokeimena"), alleluia: join("alleluia"), communion: join("communion"), menaionFirst };
+  // ODS 3rd ed. vol. III prints whose prokeimenon, Alleluia and communion verse are
+  // sung on this date, and in what order: it overrides the general rule (ruled 14
+  // Nov 2026). `order` is the entry from src/data/ods_v3/orders.js. The general
+  // result is kept beside it (`general`) so the difference can be shown and tested.
+  const ol = order && order.liturgy;
+  if (ol && (ol.prokeimenon || ol.alleluia || ol.communion)) {
+    const cite = ods3Cite(order, "liturgy");
+    const pick = (k, who) => who === "day" ? day[k] : men[k].filter((x) => (who === "feast") === !!x.feast);
+    const by = (k, whos) => (whos ? whos.flatMap((who) => pick(k, who)).map((x) => ({ ...x, fekula: { section: cite, note: "Appointed for this date: " + whos.map((w) => (w === "day" ? "of the day" : w === "feast" ? "of the feast" : "of the saints")).join(", then ") + "." } })) : result[k]);
+    const general = { prokeimena: result.prokeimena, alleluia: result.alleluia, communion: result.communion };
+    result.prokeimena = by("prokeimena", ol.prokeimenon); result.alleluia = by("alleluia", ol.alleluia); result.communion = by("communion", ol.communion);
+    result.ods3 = { id: order.id, cite, general };
+  }
   if (ocaPractice) { markOcaPractice(result.prokeimena, ocaPractice.prokeimena); markOcaPractice(result.alleluia, ocaPractice.alleluia); }
   return result;
 }

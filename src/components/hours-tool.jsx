@@ -15,6 +15,7 @@ import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya,
 import { stripCaret, ocaVespersReadingsFor, ocaLiturgyPropersFor } from '../data/oca_hymns/index.js';
 import { ocaReadingPractice } from '../lib/liturgy-propers.js';
 import { loadMenaionV2Month, loadMenaionV2General } from '../data/menaion_v2/index.js';
+import { ods3OrderFor } from '../data/ods_v3/orders.js';
 import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor, liturgyPlan as v2LiturgyPlan, entrancePlan as v2EntrancePlan, shown as v2Shown } from '../data/menaion_v2/adapter.js';
 import { TEMPLE_INDEX } from '../data/temple_index.js';
 import Bulletin from './bulletin.jsx';
@@ -1014,7 +1015,9 @@ function getMenaionHoursPlans(date, serviceIndex, isOrdinarySunday) {
   const svc = list[Math.min(serviceIndex, list.length - 1)];
   const oca = PREFER_OCA_DEFAULT && svc.c.oca_primary ? (_ocaHymnCache[key] || null) : null;
   const general = _menaionV2General;
-  return { plan: v2HoursPlan(svc.c, svc.path, { oca, general, sunday: isOrdinarySunday }),
+  // ODS vol. III's order for this service on this day overrides the general rule.
+  const order = ods3OrderFor(svc.path, date.getDay());
+  return { plan: v2HoursPlan(svc.c, svc.path, { oca, general, sunday: isOrdinarySunday, order }),
            weekdayPlan: v2HoursPlan(svc.c, svc.path, { oca, general, sunday: false }) };
 }
 
@@ -5525,9 +5528,11 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
   // whenever the printed service appoints them — a presence gate, not the
   // former polyeleos/vigil rank gate — and stand beside the day's, never in
   // place of it. The shared element shape below keeps the explainer badges fed.
-  const typicaReadings = readingsForDay({ liturgicalData, menaionEntry, rank: menaionRank, dailyReading, feastReading });
+  const typicaReadings = readingsForDay({ liturgicalData, menaionEntry, rank: menaionRank, dailyReading, feastReading,
+    menaionRefs: menaionPlan && menaionPlan.has ? { e: menaionPlan.epistles, g: menaionPlan.gospels } : null, order: (menaionEntrance && menaionEntrance.order) || null });
   const typicaPropers = resolveLiturgyPropers({
     liturgicalData, menaionEntry, menaionPlan, ocaPractice, pentEntry, menaionFirst: typicaReadings.order === "menaion-first",
+    order: (menaionEntrance && menaionEntrance.order) || null,
     sources: { sunProkeimenon: srcSunProkeimenon, sunAlleluia: srcSunAlleluia,
                dailyPropers: (k) => OctoV2.getV2DailyLiturgyPropers(k) },
   });
@@ -15782,7 +15787,7 @@ export default function App() {
   // with the OCA hymn in the place of its own counterpart when Prefer OCA is on.
   const v2Entrance = v2DaySvc ? v2EntrancePlan(v2DaySvc.c, v2DaySvc.path, {
     oca: PREFER_OCA_DEFAULT && v2DaySvc.c.oca_primary ? (_ocaHymnCache[v2DaySvc.path.slice(0, 5)] || null) : null,
-    general: _menaionV2General }) : null;
+    general: _menaionV2General, order: ods3OrderFor(v2DaySvc.path, date.getDay()) }) : null;
   // What the OCA text for this day prints at the Liturgy, to NOTE OCA practice beside
   // the full order (nothing is dropped). Null when there is no OCA text for the day.
   const ocaPractice = (v2DaySvc && v2DaySvc.c.oca_primary) ? (_ocaLiturgyCache[v2DaySvc.path.slice(0, 5)] || null) : null;
