@@ -334,6 +334,22 @@ rebuilt to this form** (its `troparion_other_saint` key is retired and removed
 from the schema; its single kontakion keeps the canonical field). 11-18 has one
 troparion and one kontakion and is unchanged.
 
+### V2 ADAPTER: THE HOURS SLICE IS BUILT (14 Nov) — nothing switched yet
+
+`src/data/menaion_v2/adapter.js` (spec 6a). The tool still reads V1. Gates:
+`node tools/test_menaion_v2_hours.mjs` (`--table` for the per-date table) and
+the report `node tools/compare_menaion_v1_v2.mjs`.
+
+- The adapter gives the assemblers a **V1-shaped entry**, so the switch is a
+  loader change and not a rewrite of the assembler.
+- **V1 had forefeast and afterfeast Hours wrong** (saint's troparion alone);
+  V2 follows Fekula 2G1 / 2G3. The assembler needs a small change to read a
+  feast troparion ahead of the saint's. That is the next piece of work.
+- Next after that: Vespers slice, Typica slice, dismissal `name`, General
+  Menaion fallback (11-29), then the switch with the "Prefer OCA" toggle and a
+  service chooser. Open for Bill: with Prefer OCA on and two Menaion kontakia,
+  is OCA's one kontakion read at every Hour?
+
 ### THE OCA HYMNS LAYER IS STARTED (14 Nov) — `src/data/oca_hymns/`
 
 Rule (Bill): **never a partial capture.** Capture everything, so the complete

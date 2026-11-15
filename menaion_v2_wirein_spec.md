@@ -316,12 +316,47 @@ resolved, provisional mark), `vespers()`, `typica()`, `dismissalName()`. Every
 returned node carries `path` for the V2 reading-view deep link, as the
 Octoechos adapter does.
 
-## 7. Gates — PLAN
+### 6a. Built so far (14 Nov): the HOURS slice
 
-- `tools/test_menaion_v2_hours.mjs`: every encoded date assembles all four Hours
-  with no gap; prints the per-date table for Bill.
-- `tools/compare_menaion_v1_v2.mjs`: assembles Hours, Vespers and Typica from
-  both datasets on the overlap dates and reports differences by class.
+`adapter.js` has `servicesOf` (default service first, ruling 8), `hymnsOf`
+(every troparion and kontakion of a service with its path, both V2 shapes),
+`hoursPlan` (what the four Hours read on a weekday, by Fekula's rule for the
+section, with the OCA hymn laid over the Menaion hymn when preferred),
+`ocaFor`, and `toV1Hours` (the same answer under V1's field names, so the
+present assembler can read it unchanged). Not built: Vespers, Typica,
+dismissal name, General Menaion fallback, the Sunday overlay (the assembler's).
+
+Decision taken in building it: the adapter hands the assemblers a V1-SHAPED
+entry (`toV1...`). The 17,000-line assembler then switches by changing one
+loader, not by being rewritten. Where V1's shape cannot say what V2 knows (a
+feast troparion ahead of the saint's), the field is added, not bent.
+
+What the Hours table showed:
+- **Forefeast and afterfeast days were wrong in V1.** V1 read the saint's
+  troparion alone and the saint's kontakion at the 1st and 6th Hours. Fekula
+  2G1: troparion of the feast, Glory, of the saint; kontakion of the feast
+  only. V2 follows 2G1 (09-07, 11-20, 11-22, 11-23, 11-24); 2G3 on 11-25.
+  The assembler must learn to read a feast troparion ahead of the saint's.
+- 11-23 prints the feast troparion with no tone at that site.
+- 11-24 prints three troparia of saints (two for Catherine, one for
+  Mercurius); the first is shown and the rest noted.
+- 11-29 has no troparion or kontakion without the OCA layer: the General
+  Menaion fallback is not wired.
+- With "Prefer OCA" on and two Menaion kontakia (10-04), the one OCA kontakion
+  is read at every Hour. V1 read OCA's at the 1st and 6th and the St. Sergius
+  Ode VI kontakion at the 3rd and 9th. OPEN: which does Bill want?
+- V1's 10-04 entry had OCA hymns typed into the Menaion entry. V2 holds the
+  St. Sergius text there and the OCA text in the OCA layer; with the toggle on
+  the two give the same words.
+
+## 7. Gates — status
+
+- BUILT `tools/test_menaion_v2_hours.mjs`: every encoded service yields the
+  Hours plan with and without the OCA layer; `--table` prints the per-date
+  table. It reads the adapter, not yet the assembled Hours.
+- BUILT (Hours fields only) `tools/compare_menaion_v1_v2.mjs`: V1 against V2
+  on the overlap dates. Vespers and Typica to be added with their slices.
+- BUILT `tools/validate_oca_hymns.mjs`.
 - 25 November Hours checked against vol. III (`ods3-1125-wkd`).
 - The existing V2 gates and the mount gate unchanged.
 
