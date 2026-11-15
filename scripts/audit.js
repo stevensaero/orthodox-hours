@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // audit.js — Encoding completeness audit
-// Usage: node scripts/audit.js [may|june|july|pentecostarion|all]
+// Usage: node scripts/audit.js [pentecostarion|all]
 //
 // Single source of truth: all field requirements come from FIELD_REGISTRY
 // in src/lib/audit.js. This script imports the data modules directly and
@@ -47,25 +47,6 @@ function printBlock(label, entries) {
 
 // ── Data loading ──────────────────────────────────────────────────────────────
 
-async function loadMenaion(month) {
-  const url = pathToFileURL(join(root, `src/data/menaion/${month}.js`)).href;
-  const mod = await import(url);
-  // Module exports a default object keyed by 'MM-DD' strings
-  const data = mod.default;
-  const entries = [];
-  for (const [key, raw] of Object.entries(data)) {
-    // Double entries (e.g. 05-27 = array) — audit each element
-    if (Array.isArray(raw)) {
-      raw.forEach((entry, i) =>
-        entries.push({ key: `${key}[${i}]`, entry, type: 'menaion' })
-      );
-    } else {
-      entries.push({ key, entry: raw, type: 'menaion' });
-    }
-  }
-  return entries;
-}
-
 async function loadPentecostarion() {
   const url = pathToFileURL(join(root, 'src/data/pentecostarion.js')).href;
   const mod = await import(url);
@@ -79,17 +60,6 @@ async function loadPentecostarion() {
 
 const target = process.argv[2] || 'all';
 let C = 0, I = 0, P = 0;
-
-for (const month of ['may', 'june', 'july']) {
-  if (target !== 'all' && target !== month) continue;
-  try {
-    const entries = await loadMenaion(month);
-    const r = printBlock(`Menaion/${month}.js`, entries);
-    C += r.c; I += r.i; P += r.p;
-  } catch (e) {
-    console.log(`\n── Menaion/${month}.js — not found (${e.message})`);
-  }
-}
 
 if (target === 'all' || target === 'pentecostarion') {
   try {

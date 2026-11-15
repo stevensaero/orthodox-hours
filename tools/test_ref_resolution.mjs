@@ -48,12 +48,9 @@ import { spansToVerses, readingIntro } from "../src/lib/scripture-text.js";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => fs.readFileSync(path.join(ROOT, rel), "utf8");
 
+// The Pentecostarion keeps the summarized entry shape and is read from source.
+// The Menaion's references are read from its services (section 2b).
 const DATA_FILES = [
-  "src/data/menaion/may.js",
-  "src/data/menaion/june.js",
-  "src/data/menaion/july.js",
-  "src/data/menaion/september.js",
-  "src/data/menaion/october.js",
   "src/data/pentecostarion.js",
 ];
 
@@ -100,6 +97,36 @@ console.log(`feast_e / feast_g — ${feastRefs.length} unique references`);
 for (const ref of feastRefs) {
   const spans = parseRefString(ref, { strict: true });
   if (!spans) fail("feast_e/g", ref, "did not resolve");
+}
+
+// ─── 2b. The Menaion: every Epistle, Gospel and Vespers reading it prints ────
+{
+  const { MONTHS, loadMenaionV2Month } = await import("../src/data/menaion_v2/index.js");
+  const { servicesOf, liturgyPlan } = await import("../src/data/menaion_v2/adapter.js");
+  const { resolveVespersReadings } = await import("../src/lib/vespers-propers.js");
+  let n = 0;
+  for (const mm of MONTHS) {
+    const data = await loadMenaionV2Month(mm);
+    if (!data) continue;
+    for (const key of Object.keys(data).sort()) {
+      for (const svc of servicesOf(data[key], key)) {
+        const lit = liturgyPlan(svc.c, svc.path);
+        const vesp = resolveVespersReadings({ c: svc.c, base: svc.path, eveDow: 0 }).readings;
+        for (const r of [...lit.epistles, ...lit.gospels]) {
+          n++;
+          if (!r.display || !parseRefString(r.display, { strict: true })) fail("Menaion", `${svc.path}: ${r.display}`, "did not resolve");
+        }
+        // A Vespers reading is shown as "HEADING (reference)": the reference must
+        // resolve, and the same extractor the Vespers view uses must find it.
+        for (const r of vesp) {
+          n++;
+          if (!r.ref || !parseRefString(r.ref, { strict: true })) fail("Menaion", `${r.path}: ${r.ref}`, "did not resolve");
+          else if (!parseRefString(paroemiaToRef(r.display) || "", { strict: true })) fail("Menaion", `${r.path}: ${r.display}`, "the reference could not be extracted from what is shown");
+        }
+      }
+    }
+  }
+  console.log(`Menaion readings — ${n} references`);
 }
 
 // ─── 3. Paroemias ───────────────────────────────────────────────────────────

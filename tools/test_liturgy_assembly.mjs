@@ -32,11 +32,10 @@
 import { loadMenaionV2Month } from '../src/data/menaion_v2/index.js';
 import { servicesOf, liturgyPlan, entrancePlan } from '../src/data/menaion_v2/adapter.js';
 import { assembleLiturgy, insertAnchors } from "../src/lib/liturgy-assembler.js";
-import { resolveLiturgyPropers } from "../src/lib/liturgy-propers.js";
+import { resolveLiturgyPropers, zadostoinikFor } from "../src/lib/liturgy-propers.js";
 import { getLiturgy, BASIL_OVERRIDES, BASIL_INSERTS } from "../src/data/liturgy/chrysostom.js";
 import { MOVEMENT_ORDER, TEACHING_RUBRICS } from "../src/data/liturgy/registry.js";
 import { readingsForDay } from "../src/lib/readings.js";
-import september from "../src/data/menaion/september.js";
 import * as OctoV2 from "../src/data/octoechos_v2/adapter.js";
 import { DAILY_TROPARIA } from "../src/data/liturgy/daily_troparia.js";
 import pentecostarion from "../src/data/pentecostarion.js";
@@ -115,7 +114,6 @@ check(assembleLiturgy({ units: [] }).length === 0, "empty units → empty elemen
 
 // ── Phase 2: hooks over real data ───────────────────────────────────────────
 await OctoV2.loadV2Tone(7);
-const entry = (k) => { const e = september[k]; return Array.isArray(e) ? e[0] : e; };
 const FIXED_K = { departed: { tone: 8, text: "With the saints give rest…" }, protectress: { tone: null, text: "O protection of Christians…" } };
 const TEMPLES = {
   lord: { type: "lord", label: "Holy Cross", troparion: { tone: 1, text: "Save, O Lord, Thy people…" }, kontakion: { tone: 4, text: "O Thou Who wast lifted up…" } },
@@ -139,10 +137,9 @@ const baseSources = {
   weekdayBeatitudes: (t, d) => OctoV2.resolveV2Ref(`tone${t}.liturgy_weekday.${d}.beatitudes`, t) || null,
 };
 const units = getLiturgy("chrysostom");
-const feastOf = (k) => { const e = entry(k); return e ? { name: e.saint, troparion: e.troparion, kontakion: e.kontakion_ode6 || e.kontakion_ode3 } : null; };
 // The Menaion's sung propers and the "instead of It is truly meet" hymn come from
-// the Menaion V2 service (liturgyPlan). The entrance order and the readings in these
-// scenarios still take the V1-shaped fixture entry, until those parts are reworked.
+// the Menaion's service (liturgyPlan), as in the app. `e` in run() is the old-shape
+// entry, which only the P+63 overlay still supplies; it is null in these scenarios.
 const _v2 = { '09': await loadMenaionV2Month('09'), '11': await loadMenaionV2Month('11') };
 const planOf = (key) => { const svc = servicesOf(_v2[key.slice(0, 2)][key], key)[0]; return liturgyPlan(svc.c, svc.path); };
 // The Little Entrance / Beatitudes plan of a V2 service (default service, or by index in the file).
@@ -163,8 +160,7 @@ const textOf = (els, unitId) => { const x = els.find(y => y.unitId === unitId); 
 
 // 1. Sunday, six-stichera saint with an AT LITURGY section (09-20), tone 7
 {
-  const e = entry("09-20");
-  const els = run({ dow: 0, isSunday: true, season: "afterfeast", tone: 7, feastPeriod: { feast: { name: "Elevation of the Cross" } } }, e, { plan: planOf('11-22') });
+  const els = run({ dow: 0, isSunday: true, season: "afterfeast", tone: 7, feastPeriod: { feast: { name: "Elevation of the Cross" } } }, null, { plan: planOf('11-22') });
   const prok = els.filter(x => x.type === "prokeimenon");
   // 09-20 prints two Menaion prokeimena (feast in Tone 7, saint in Tone 4): Sunday + both
   // §1F1: afterfeast, Sunday and feast; "but if there be readings for the saint ... for Sunday and the saint". 11-22 prints the Apostles' readings.
@@ -187,8 +183,7 @@ const textOf = (els, unitId) => { const x = els.find(y => y.unitId === unitId); 
 }
 // 2. Weekday (Monday), same entry shape — day propers from the Octoechos, then the Menaion
 {
-  const e = entry("09-06");
-  const els = run({ dow: 1, isSunday: false, season: "ordinary", tone: 7 }, e, { plan: planOf('09-06') });
+  const els = run({ dow: 1, isSunday: false, season: "ordinary", tone: 7 }, null, { plan: planOf('09-06') });
   const prok = els.filter(x => x.type === "prokeimenon");
   check(prok.length === 2 && /Monday/.test(prok[0].note), "09-06 Monday: weekday prokeimenon first, then Menaion");
   check(/Who art wondrous in the saints/.test(textOf(els, "le-10")), "09-06: weekday entrance clause");
@@ -198,36 +193,38 @@ const textOf = (els, unitId) => { const x = els.find(y => y.unitId === unitId); 
 }
 // 3. Saturday: Menaion first
 {
-  const e = entry("09-06");
-  const els = run({ dow: 6, isSunday: false, season: "ordinary", tone: 7 }, e, { plan: planOf('09-06') });
+  const els = run({ dow: 6, isSunday: false, season: "ordinary", tone: 7 }, null, { plan: planOf('09-06') });
   const prok = els.filter(x => x.type === "prokeimenon");
   check(prok.length === 3 && /Menaion/.test(prok[0].source), "Saturday: Menaion prokeimenon first (§2A), then day + departed");
   check(byId(els, "lit-e-0").source === "Menaion", "Saturday: Menaion epistle first");
 }
 // 4. Great Feast (09-14): Trisagion replaced, festal antiphons flagged, zadostoinik via instead_of_*
 {
-  const e = entry("09-14");
-  const els = run({ dow: 1, isSunday: false, season: "great_feast", tone: 7, feastPeriod: { feast: { name: "Elevation of the Cross" } } }, e, { ent: LORDS_FEAST });
+  const els = run({ dow: 1, isSunday: false, season: "great_feast", tone: 7, feastPeriod: { feast: { name: "Elevation of the Cross" } } }, null, { ent: LORDS_FEAST });
   check(!els.some(x => x.unitId === "tr-01") && byId(els, "lit-trisagion-sub") && /We venerate Thy Cross/.test(byId(els, "lit-trisagion-sub").text), "09-14: Trisagion replaced — once");
   check(!els.some(x => x.unitId === "tr-03"), "09-14: tr-03 dropped under the substitute");
   check(byId(els, "lit-antiphons-festal") && section(els, "antiphon_1").unresolved, "09-14: festal antiphons flagged unresolved");
-  check(byId(els, "lit-zadostoinik") && /legacy/.test(byId(els, "lit-zadostoinik").note || ""), "09-14: zadostoinik via the legacy zadostoinik_* fallback");
+  {
+    // The hymn sung instead of It is truly meet comes from the feast's own service (11-21).
+    const z = byId(run({ dow: 1, isSunday: false, season: "great_feast", tone: 7, feastPeriod: { feast: { name: "Entry of the Theotokos" } } }, null, { plan: planOf('11-21'), ent: ent('11-21') }), "lit-zadostoinik");
+    check(z && /The angels, beholding the entry/.test(z.text) && !/legacy/.test(z.note || ""), "11-21: the refrain and irmos instead of It is truly meet, from the service");
+  }
   check(!els.some(x => x.movement === "litany_departed" && x.type === "liturgy_unit"), "09-14: departed litany skipped on a feast");
   check(byId(els, "lit-departed-omitted"), "09-14: departed omission shown");
   check(section(els, "little_entrance").unresolved && byId(els, "lit-le-clause"), "09-14: feast-of-the-Lord entrance clause flagged (no V1 field)");
 }
-// 4b. A day encoded with the instead_of_* pair (whichever September service carries it), and a Theotokos-feast entrance clause
+// 4b. The two old-shape field pairs, which the Pentecostarion still carries: instead_of_* is
+// read first, zadostoinik_* as the fallback; and a Theotokos-feast entrance clause.
 {
-  const withNew = Object.values(september).flatMap(e => Array.isArray(e) ? e : [e]).find(e => e.instead_of_it_is_truly_meet_refrain);
-  check(!!withNew, "a September service carries instead_of_it_is_truly_meet_refrain");
-  const els = run({ dow: 3, isSunday: false, season: "apodosis", tone: 7, feastPeriod: { feast: { name: "Nativity of the Theotokos" } } }, withNew || entry("09-12"));
-  check(byId(els, "lit-zadostoinik") && !/legacy/.test(byId(els, "lit-zadostoinik").note || ""), "instead_of_* fields read first");
+  const zNew = zadostoinikFor({ pentEntry: pentecostarion["39"] }), zOld = zadostoinikFor({ pentEntry: pentecostarion["35"] });
+  check(zNew && zNew.refrain && zNew.legacyField === false, "instead_of_* fields read first (P+39)");
+  check(zOld && zOld.refrain && zOld.legacyField === true, "zadostoinik_* fields read as the fallback (P+35)");
+  const els = run({ dow: 3, isSunday: false, season: "apodosis", tone: 7, feastPeriod: { feast: { name: "Nativity of the Theotokos" } } }, null);
   check(/Through the prayers of the Theotokos/.test(textOf(els, "le-10")), "Theotokos-feast entrance clause");
 }
 // 5. Simple saint with no AT LITURGY section (09-27): day only
 {
-  const e = entry("09-27");
-  const els = run({ dow: 2, isSunday: false, season: "ordinary", tone: 7 }, e);
+  const els = run({ dow: 2, isSunday: false, season: "ordinary", tone: 7 }, null);
   const prok = els.filter(x => x.type === "prokeimenon");
   check(prok.length === 1 && /Tuesday/.test(prok[0].note), "09-27 Tuesday: day prokeimenon only");
   check(els.filter(x => /^lit-e-/.test(x.id)).length === 1, "09-27: day epistle only");
@@ -383,14 +380,14 @@ const theotokosFeast = { name: "Entry of the Theotokos", forLord: false, month: 
 // ── resolveLiturgyPropers() direct — the rule the Typica now shares (v0.49.2) ──
 {
   const P = (ld, e, menaionFirst = false, plan = null) => resolveLiturgyPropers({ liturgicalData: ld, menaionEntry: e, menaionPlan: plan, pentEntry: null, menaionFirst, sources: baseSources });
-  const wk = P({ dow: 1, tone: 7 }, entry("09-06"), false, planOf('09-06'));
+  const wk = P({ dow: 1, tone: 7 }, null, false, planOf('09-06'));
   check(wk.prokeimena.length === 2 && wk.prokeimena[0].origin === "weekday" && wk.prokeimena[1].origin === "menaion", "propers: six-stichera weekday keeps the day's prokeimenon and adds the Menaion's (presence gate)");
   check(wk.alleluia.length === 2 && wk.alleluia[0].origin === "weekday", "propers: Menaion Alleluia joins the daily one, does not replace it");
-  const sat = P({ dow: 6, tone: 7 }, entry("09-06"), true, planOf('09-06'));
+  const sat = P({ dow: 6, tone: 7 }, null, true, planOf('09-06'));
   check(sat.prokeimena[0].origin === "menaion" && sat.prokeimena.length === 3, "propers: Saturday Menaion first, then day + departed");
-  const sun = P({ dow: 0, isSunday: true, tone: 7 }, entry("09-27"));
+  const sun = P({ dow: 0, isSunday: true, tone: 7 }, null);
   check(sun.prokeimena.length === 1 && sun.prokeimena[0].origin === "sunday" && sun.communion.length === 0, "propers: simple Sunday with no AT LITURGY section — resurrectional only");
-  const pent = resolveLiturgyPropers({ liturgicalData: { dow: 1, tone: 3 }, menaionEntry: entry("09-06"),
+  const pent = resolveLiturgyPropers({ liturgicalData: { dow: 1, tone: 3 }, menaionEntry: null, menaionPlan: planOf('09-06'),
     pentEntry: { prokeimenon_tone: 8, prokeimenon_text: "Pent prok", alleluia_tone: 8, alleluia_verse: "Pent al", communion_verse: "Pent comm", source_file: "P+40.pdf" }, sources: baseSources });
   check(pent.prokeimena.length === 2 && pent.prokeimena[0].origin === "pentecostarion" && pent.prokeimena[1].origin === "menaion", "propers: Pentecostarion feast first, then the Menaion's (§4A1)");
 }
@@ -457,7 +454,7 @@ const theotokosFeast = { name: "Entry of the Theotokos", forLord: false, month: 
 }
 
 // Every replaced/filled line keeps its unitId and never leaks a blank
-for (const els of [run({ dow: 0, isSunday: true, season: "sunday", tone: 7 }, entry("09-20"))]) {
+for (const els of [run({ dow: 0, isSunday: true, season: "sunday", tone: 7 }, null)]) {
   for (const id of ["pk-06", "al-02", "ep-02", "go-02", "go-04", "go-11", "le-10"]) {
     const t = textOf(els, id);
     check(t && !/___/.test(t), `resolved line ${id} still carries a blank`);

@@ -262,8 +262,9 @@ export function trisagionReplacement({ menaion = null, pentEntry }) {
 
 /**
  * "Instead of It is truly meet": the refrain and irmos of Ode IX.
- * V1 carries two field pairs (decision 3): `instead_of_it_is_truly_meet_*`
- * is read first, `zadostoinik_*` as the fallback.
+ * The Menaion's service prints it (liturgyPlan). The Pentecostarion's entries
+ * carry two field pairs (decision 3): `instead_of_it_is_truly_meet_*` is read
+ * first, `zadostoinik_*` as the fallback.
  * Returns { refrain, irmos, source, suppressedOnly } or null.
  */
 export function zadostoinikFor({ menaionEntry, menaionPlan = null, pentEntry }) {
@@ -272,8 +273,9 @@ export function zadostoinikFor({ menaionEntry, menaionPlan = null, pentEntry }) 
     const z = menaionPlan.zadostoinik;
     return { refrain: z.refrain, irmos: z.irmos, source: "Menaion", path: z.path, suppressedOnly: false, legacyField: false };
   }
-  // PENTECOSTARION (and, until V1 is retired, a date V2 does not hold) — unchanged.
-  for (const [entry, from] of [[pentEntry, "Pentecostarion"], [menaionEntry, "Menaion"]]) {
+  // The Pentecostarion keeps the summarized entry shape. (`menaionEntry` is that
+  // shape too and is only ever the P+63 overlay, which also arrives as pentEntry.)
+  for (const [entry, from] of [[pentEntry, "Pentecostarion"], [menaionEntry, "Pentecostarion"]]) {
     if (!entry) continue;
     const refrain = entry.instead_of_it_is_truly_meet_refrain || entry.zadostoinik_refrain || null;
     const irmos = entry.instead_of_it_is_truly_meet_irmos || entry.zadostoinik_irmos || null;

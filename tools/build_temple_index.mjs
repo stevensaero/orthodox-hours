@@ -14,32 +14,32 @@
 // is committed (the app imports it statically; the picker must list a
 // dedication before its month is loaded).
 //
-// What qualifies: every service in every month file that carries a
-// `troparion`, except entries that are not dedications by nature — a
-// forefeast, afterfeast, leavetaking/apodosis, or a "Saturday/Sunday before/
-// after" — since a temple is dedicated to a saint or a feast, not to a day in
-// a feast period. Entries already in the curated TEMPLE_DEDICATIONS (matched
-// by dataKey + service index) are skipped so nothing is listed twice.
+// What qualifies: every service the Menaion holds for a saint or a feast that
+// prints a troparion of its own. A forefeast, afterfeast or leavetaking service is
+// not listed (a temple is dedicated to a saint or a feast, not to a day in a feast
+// period), so a saint who falls inside one is not offered yet. Entries already
+// in the curated TEMPLE_DEDICATIONS (matched by dataKey + stored index) are
+// skipped so nothing is listed twice.
 //
 // `type` (lord | theotokos | saint) is a heuristic on the printed name, used
 // by the Liturgy's Little Entrance tables; the curated list carries its own
 // categories and is authoritative where the two overlap.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { readdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { MONTHS, loadMenaionV2Month } from "../src/data/menaion_v2/index.js";
+import { hymnsOf } from "../src/data/menaion_v2/adapter.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..");
-const MENAION_DIR = join(ROOT, "src", "data", "menaion");
 const OUT = join(ROOT, "src", "data", "temple_index.js");
 const CHECK = process.argv.includes("--check");
 
 const MONTH_NAMES = { "01": "January", "02": "February", "03": "March", "04": "April", "05": "May", "06": "June",
   "07": "July", "08": "August", "09": "September", "10": "October", "11": "November", "12": "December" };
 
-const NOT_A_DEDICATION = /^(forefeast|afterfeast|leave-?taking|apodosis|saturday (before|after)|sunday (before|after)|the (saturday|sunday) (before|after))/i;
 const typeOf = (name) => {
   if (/theotokos|mother of god|dormition|annunciation|protection|pokrov|entrance of the (most holy )?theotokos/i.test(name)) return "theotokos";
   if (/\bcross\b|transfiguration|nativity of (our lord|christ)|theophany|baptism of (our|the) lord|ascension|meeting of (our|the) lord|presentation of (our|the) lord|circumcision|holy trinity|pentecost/i.test(name)) return "lord";
@@ -54,29 +54,28 @@ const curated = new Set();
 for (const m of curatedBlock.matchAll(/dataKey:\s*"(\d\d-\d\d)"(?:[^}]*arrayIndex:\s*(\d+))?/g)) curated.add(m[1] + "#" + (m[2] || "0"));
 
 const rows = [];
-// Calendar order, not filename order: months by their MM key.
-const loaded = [];
-for (const file of readdirSync(MENAION_DIR).filter(f => /^[a-z]+\.js$/.test(f))) {
-  const mod = await import(`file://${join(MENAION_DIR, file)}`);
-  loaded.push(mod.default || {});
-}
-loaded.sort((a, b) => (Object.keys(a)[0] || "").localeCompare(Object.keys(b)[0] || ""));
-for (const data of loaded) {
+for (const mm of MONTHS) {
+  const data = await loadMenaionV2Month(mm);
+  if (!data) continue;
   for (const key of Object.keys(data).sort()) {
-    const services = Array.isArray(data[key]) ? data[key] : [data[key]];
-    services.forEach((e, i) => {
-      if (!e || !e.troparion || !e.saint) return;
-      if (NOT_A_DEDICATION.test(String(e.saint).trim())) return;
+    (data[key].commemorations || []).forEach((c, i) => {
+      if (!["saint", "feast"].includes(c.kind)) return;
+      const h = hymnsOf(c, `${key}.c${i}`);
+      if (!h.troparia.length) return;
       if (curated.has(key + "#" + i)) return;
-      const mm = key.slice(0, 2);
-      const label = String(e.saint).replace(/\s+/g, " ").trim();
+      const title = [].concat(c.title || []).map(t => t.text || t).join(" ").replace(/\s+/g, " ").trim();
+      // A feast has no dismissal name; its printed title is in capitals, so set it
+      // in title case (small words lowered, each part of a hyphenated word raised).
+      const sentence = title.toLowerCase().replace(/[a-z][a-z']*/g, (w, at) =>
+        at && /^(of|the|and|as|in|into|our|a|an|to|by)$/.test(w) ? w : w.charAt(0).toUpperCase() + w.slice(1));
+      const label = c.name ? c.name.charAt(0).toUpperCase() + c.name.slice(1) : sentence;
       rows.push({
         id: "m-" + key + (i ? "-" + i : ""),
         label: label.length > 72 ? label.slice(0, 69).replace(/[\s,;:]+\S*$/, "") + "…" : label,
         fullLabel: label,
         category: "Encoded commemorations · " + (MONTH_NAMES[mm] || mm),
-        source: "menaion", dataKey: key, arrayIndex: i, type: typeOf(label),
-        hasKontakion: !!(e.kontakion_ode6 || e.kontakion_ode3 || e.kontakion),
+        source: "menaion", dataKey: key, arrayIndex: i, type: typeOf(title),
+        hasKontakion: h.ode6.length > 0,
       });
     });
   }

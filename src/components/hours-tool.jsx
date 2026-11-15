@@ -17,7 +17,7 @@ import { ocaReadingPractice } from '../lib/liturgy-propers.js';
 import { loadMenaionV2Month, loadMenaionV2General } from '../data/menaion_v2/index.js';
 import { ods3OrderFor } from '../data/ods_v3/orders.js';
 import { buildBulletinDay } from '../lib/bulletin-day.js';
-import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor, liturgyPlan as v2LiturgyPlan, entrancePlan as v2EntrancePlan, shown as v2Shown, dismissalOf as v2DismissalOf } from '../data/menaion_v2/adapter.js';
+import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor, liturgyPlan as v2LiturgyPlan, entrancePlan as v2EntrancePlan, shown as v2Shown, dismissalOf as v2DismissalOf, hymnsOf as v2HymnsOf } from '../data/menaion_v2/adapter.js';
 import { TEMPLE_INDEX } from '../data/temple_index.js';
 import Bulletin from './bulletin.jsx';
 
@@ -877,20 +877,6 @@ function getNamedDay(date, pascha) {
 }
 
 // ── MAIN LITURGICAL DATA FUNCTION ───────────────────────────────────────────
-// ── Menaion data — dynamically loaded per month ────────────────────────────
-// Each month lives in src/data/menaion/{month}.js
-// Loaded on first access for that month, then cached.
-
-const _menaionCache = {};
-
-const _menaionLoaders = {
-  "05": () => import("../data/menaion/may.js").then(m => m.default),
-  "06": () => import("../data/menaion/june.js").then(m => m.default),
-  "07": () => import("../data/menaion/july.js").then(m => m.default),
-  "09": () => import("../data/menaion/september.js").then(m => m.default),
-  "10": () => import("../data/menaion/october.js").then(m => m.default),
-};
-
 // ── Octoechos source layer — V2 (octoechos_wirein_spec.md; Phase 5 CUTOVER) ──
 // All Octoechos data is served by the V2 adapter (src/data/octoechos_v2/
 // adapter.js): dynamic per-tone loading, refs resolved, every node carries
@@ -967,8 +953,8 @@ const srcWeeklyVespersProk = (dow) => OctoV2.getV2DailyVespersProkeimenon(dow);
 // propers through resolveLiturgyPropers() (src/lib/liturgy-propers.js).
 
 
-// Menaion V2 (branch v2-wirein: the Hours read V2; the other services still read
-// V1 until their own rewrites land, then V1 and its loader are deleted together).
+// The Menaion: the full capture in src/data/menaion_v2/ (the earlier summarized
+// dataset was retired at v0.53.0). Months load on demand and are cached here.
 const _menaionV2Cache = {};
 const isText2 = (n) => !!n && typeof n.text === "string";
 // The Octoechos lookups the Vespers rules read (src/lib/vespers-propers.js).
@@ -1036,32 +1022,6 @@ function getMenaionHoursPlans(date, serviceIndex, isOrdinarySunday, preferOca = 
   const order = ods3OrderFor(svc.path, date.getDay());
   return { plan: v2HoursPlan(svc.c, svc.path, { oca, general, sunday: isOrdinarySunday, order }),
            weekdayPlan: v2HoursPlan(svc.c, svc.path, { oca, general, sunday: false }) };
-}
-
-async function _loadMenaionMonth(month) {
-  if (_menaionCache[month]) return _menaionCache[month];
-  const loader = _menaionLoaders[month];
-  if (!loader) return {};
-  const data = await loader();
-  _menaionCache[month] = data;
-  return data;
-}
-
-
-
-function getMenaionEntry(date) {
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  const key = `${month}-${day}`;
-  const monthData = _menaionCache[month] || {};
-  return monthData[key] || null;
-}
-
-// Normalise a SAMPLE_MENAION value (single object or array) into an array of services.
-// Single-service dates return a one-element array; multi-service dates return all entries.
-function getServices(raw) {
-  if (!raw) return [];
-  return Array.isArray(raw) ? raw : [raw];
 }
 
 // renderPointed (the forward-facing choir renderer for pointed hymnography,
@@ -2873,9 +2833,20 @@ const findTempleDedication = (id) => TEMPLE_DEDICATIONS_ALL.find(d => d.id === i
 // Index entries carry a `type`; curated entries derive it from their category.
 const templeTypeOf = (ded) => ded.type || (ded.category === "The Lord & Holy Trinity" ? "lord" : ded.category === "The Theotokos" ? "theotokos" : "saint");
 
-// Resolve a temple dedication to its troparion from live data.
-// Returns { tone, text, saint, source } or null if data not yet encoded.
-// Uses module-level caches directly (_menaionCache, _pentecostarionCache).
+// The Menaion service a dedication names: its day's commemoration at `arrayIndex`
+// (the index it is STORED at, not the chooser's order). Null until that month is
+// loaded, or when the date is not yet captured.
+function templeService(ded) {
+  const key = ded.dataKey, i = ded.arrayIndex || 0;
+  const day = (_menaionV2Cache[key.substring(0, 2)] || {})[key];
+  const c = day && day.commemorations[i];
+  return c ? { c, hymns: v2HymnsOf(c, `${key}.c${i}`) } : null;
+}
+const templeName = (c) => c.name ? c.name.charAt(0).toUpperCase() + c.name.slice(1)
+  : [].concat(c.title || []).map(t => t.text || t).join(" ");
+
+// Resolve a temple dedication to its troparion: the first the service prints.
+// Returns { tone, text, saint, source, path } or null if not yet captured.
 function resolveTempleTroparion(dedicationId) {
   const ded = findTempleDedication(dedicationId);
   if (!ded) return null;
@@ -2885,18 +2856,13 @@ function resolveTempleTroparion(dedicationId) {
     if (!entry || !entry.troparion) return null;
     return { tone: entry.troparion.tone, text: entry.troparion.text, saint: entry.name, source: "Pentecostarion" };
   }
-  // Menaion — dataKey is "MM-DD" string
-  const month = ded.dataKey.substring(0, 2);
-  const monthData = _menaionCache[month] || {};
-  const raw = monthData[ded.dataKey];
-  if (!raw) return null;
-  const e = (ded.arrayIndex != null && Array.isArray(raw)) ? raw[ded.arrayIndex] : (Array.isArray(raw) ? raw[0] : raw);
-  if (!e || !e.troparion) return null;
-  return { tone: e.troparion.tone, text: e.troparion.text, saint: e.saint, source: "Menaion" };
+  const svc = templeService(ded);
+  const n = svc && svc.hymns.troparia[0];
+  if (!n) return null;
+  return { tone: n.tone, text: v2Shown(n), saint: templeName(svc.c), source: "Menaion", path: n.path };
 }
 
-// Resolve a temple dedication to its kontakion from live data.
-// Returns { tone, text, saint, source } or null if data not yet encoded.
+// Resolve a temple dedication to its kontakion: the one printed after Ode VI.
 function resolveTempleKontakion(dedicationId) {
   const ded = findTempleDedication(dedicationId);
   if (!ded) return null;
@@ -2908,16 +2874,10 @@ function resolveTempleKontakion(dedicationId) {
     if (!k) return null;
     return { tone: k.tone, text: k.text, saint: entry.name, source: "Pentecostarion" };
   }
-  // Menaion
-  const month = ded.dataKey.substring(0, 2);
-  const monthData = _menaionCache[month] || {};
-  const raw = monthData[ded.dataKey];
-  if (!raw) return null;
-  const e = (ded.arrayIndex != null && Array.isArray(raw)) ? raw[ded.arrayIndex] : (Array.isArray(raw) ? raw[0] : raw);
-  if (!e) return null;
-  const k = e.kontakion_ode6 || e.kontakion;
-  if (!k) return null;
-  return { tone: k.tone, text: k.text, saint: e.saint, source: "Menaion" };
+  const svc = templeService(ded);
+  const n = svc && svc.hymns.ode6[0];
+  if (!n) return null;
+  return { tone: n.tone, text: v2Shown(n), saint: templeName(svc.c), source: "Menaion", path: n.path };
 }
 
 // ── LITIYA FIXED TEXTS ───────────────────────────────────────────────────────
@@ -3140,8 +3100,8 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   const _fmt = pentEntry ? pentEntry.hours_format : null;
   const isSunday = season === "sunday" || _fmt === "pentecostarion_sunday" || _fmt === "all_saints_sunday";
   const christIsRisenActive = isPentecostarion && paschaOffset >= 7 && paschaOffset <= 38;
-  // Rank and section: from the Menaion V2 service. (V1's entry is read only where a
-  // date has no V2 service yet; that fallback goes when V1 is retired.)
+  // Rank and section: from the Menaion's service. (`menaionEntry` is the summarized
+  // entry shape, which only the P+63 overlay still supplies.)
   const rank = (menaionV2 && menaionV2.c.rank) || (menaionEntry && menaionEntry.rank) || "simple";
   const isHighRank = rank === "polyeleos" || rank === "vigil" || rank === "great_feast";
   const isDoxOrAbove = rank === "doxology" || isHighRank;
@@ -3936,7 +3896,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
               ? stich.diagnostic
               : "[Menaion sticheron "+(i+1)+" — not yet entered. Requires Track B data entry.]",
             source:"Menaion",
-            fekula:{section:fekulaSection, note:"Menaion sticheron at V.("+v.n+"). Enter stichera_lord_i_call in SAMPLE_MENAION to complete."}});
+            fekula:{section:fekulaSection, note:"Menaion sticheron at V.("+v.n+"): not yet encoded for this date."}});
         }
       });
       if (!isPentecostarion) {
@@ -3967,9 +3927,9 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
         elements.push({id:"v-lic-glory", type:"fixed", label:"", text:"Glory to the Father, and to the Son, and to the Holy Spirit.", source:"HTM Vespers"});
         elements.push({id:"v-lic-doxasticon", type:"movable", label:"Doxasticon",
           unresolved:true,
-          text:"[Doxasticon — not yet entered. Enter stichera_glory in SAMPLE_MENAION.]",
+          text:"[Doxasticon — the Menaion is not yet encoded for this date]",
           source:"Menaion",
-          fekula:{section:fekulaSection, note:"Glory: doxasticon from Menaion (Track B)."}});
+          fekula:{section:fekulaSection, note:"Glory: doxasticon from the Menaion."}});
       }
       // Now and ever → theotokion or dogmatikon
       // (When doxVerifiedAbsent, "now and ever" was already included in the combined Glory line above)
@@ -4031,9 +3991,9 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       });
       elements.push({id:"v-stichera",type:"movable",label:"Stichera on Lord I Have Cried",
         rubric:licCount+" stichera inserted here (from Menaion)", unresolved:true,
-        text:"[Menaion stichera not yet entered]\n\nRequired: "+sticheraRule+"\n\nEnter stichera_lord_i_call[] in SAMPLE_MENAION to complete (Track B).",
+        text:"[Menaion stichera — the Menaion is not yet encoded for this date]\n\nRequired: "+sticheraRule+".",
         source:"Menaion",
-        fekula:{section:fekulaSection, note:"At Lord I Have Cried: "+sticheraRule+". Menaion stichera entry required (Track B)."}});
+        fekula:{section:fekulaSection, note:"At Lord I Have Cried: "+sticheraRule+"."}});
     }
   }
 
@@ -5161,7 +5121,7 @@ const TYPICA_PSALM_33 =
 
 // ── TYPICA KONTAKIA (fixed weekday/Saturday texts) ─────────────────────────
 // Source: HTM htm_typica.pdf pp.5-6
-// Keys: day-of-week (0=Sun … 6=Sat). Sunday uses Hypakoë (OCTOECHOS_HYPAKOE).
+// Keys: day-of-week (0=Sun … 6=Sat). Sunday uses the Hypakoë of the tone (srcHypakoe).
 // Structure: each entry is an ordered array of { label, tone, text } objects.
 // The saint's own kontakion (from menaionEntry) is appended at runtime
 // per the rubric: "the Kontakion to the saint is said first: Glory…Both now…
@@ -5344,8 +5304,8 @@ function resolveTempleName(dedicationId) {
 // Clean a commemoration name for the saint-of-day slot (Q4 — flagged for review).
 // `commemoration` is the Menaion V2 service's { name, rank, kind } (dismissalOf): the
 // name is hand-entered to read after "and of" (ruling 12) and is null on a feast.
-// Where a date is not in Menaion V2 the retired V1 entry's `saint` is still read,
-// until V1 is removed.
+// (`menaionEntry` is the summarized entry of the P+63 overlay, read when the day
+// has no Menaion service; on any other date not yet captured no saint is named.)
 function _dismissalSaintName(menaionEntry, namedDay, isSunday, commemoration = null) {
   if (commemoration) { if (commemoration.name) return commemoration.name; if (commemoration.kind === 'feast') return null; }
   else if (menaionEntry && menaionEntry.saint && !String(menaionEntry.saint).startsWith("absent")) {
@@ -5482,7 +5442,7 @@ function buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, idP
 // ─── TYPICA ASSEMBLER ────────────────────────────────────────────────────────
 // Source: HTM htm_typica.pdf (complete order)
 // Assembly rules:
-//   Sunday  → Hypakoë of the tone from OCTOECHOS_HYPAKOE; no Kontakia section
+//   Sunday  → Hypakoë of the tone (srcHypakoe, from the Octoechos); no Kontakia section
 //   Weekday → TYPICA_KONTAKIA[dow]; saint's kontakion prepended if present
 //   Beatitudes troparia: from pentEntry.beatitudes_troparia or
 //     menaionEntry.beatitudes_troparia if available; else placeholder shown
@@ -8063,51 +8023,58 @@ const SUNDAY_HOURS_THEOTOKIA = {
 // Informational ⓘ icon next to the service rank label. Expands inline to explain
 // how the rank was determined and what it means for assembly.
 
+// How each rank is recognized (encoding_rule_v2.md §1.1, the waterfall test) and
+// what it brings. The section shown is the service's own (`fekula_section`); the
+// `fekula` here is only the fallback when a service carries none.
+const RANK_DETECTION = 'Rank is read from the printed service in a fixed order, stopping at the first that applies: a Great Feast; a Small Vespers printed for the saint (Vigil); the Polyeleos at Matins; the Great Doxology sung at Matins; six stichera for one saint. A service with none of these is Simple. Where Fekula’s volume III prints the rank for the date, that is decisive. The number of stichera alone does not decide the rank.';
 const RANK_EXPLANATIONS = {
   simple: {
     label: 'Simple',
     fekula: '§2A',
-    evidence: '3 stichera on "Lord I Call" at Vespers',
-    detection: 'The number of stichera (hymns) sung on "Lord I Call" at Vespers is the definitive indicator of service rank. Three stichera = Simple rank.',
-    assembly: 'At the Hours: troparion and kontakion from the Menaion. No structural change to the Hour skeleton. Readings at Liturgy come from the Oktoechos, not the Menaion.',
-    vespers: 'Small Vespers. No Litya, no paroemias (OT readings). Aposticha from the Oktoechos.',
-    source: 'Fekula §2A — Simple Saint',
+    evidence: 'Three stichera for the saint at “Lord, I have cried” (or six, three each, for two saints), and no Great Doxology, Polyeleos or Small Vespers appointed.',
+    assembly: 'At the Hours: the saint’s troparion and kontakion from the Menaion. At the Liturgy: the day’s prokeimenon and readings; the Menaion’s are added only if the service prints its own.',
+    vespers: 'Daily Vespers, without an entrance. At “Lord, I have cried”, three stichera from the Octoechos and three from the Menaion; the Aposticha from the Octoechos.',
+    source: 'Fekula, The Order of Divine Services, ch. 2',
   },
   six_stichera: {
     label: 'Six-Stichera',
     fekula: '§2C',
-    evidence: '6 stichera on "Lord I Call" at Vespers',
-    detection: 'Six stichera on "Lord I Call" at Vespers raises the service to Six-Stichera rank. The Hours structure is identical to Simple rank — the difference shows at Vespers and Matins.',
-    assembly: 'At the Hours: same troparion and kontakion rules as Simple (§2A). The rank difference is in Vespers (6 stichera vs 3) and Matins (Alleluia service, same as §2A).',
-    vespers: 'Great Vespers with 6 stichera. No Litya, no paroemias. Aposticha from the Oktoechos.',
-    source: 'Fekula §2C — Six-Stichera Saint',
+    evidence: 'Six stichera for one saint at “Lord, I have cried”, and no Great Doxology, Polyeleos or Small Vespers appointed.',
+    assembly: 'At the Hours: as for a Simple service. The difference shows at Vespers and Matins.',
+    vespers: 'Daily Vespers, without an entrance. All six stichera at “Lord, I have cried” are the Menaion’s.',
+    source: 'Fekula, The Order of Divine Services, ch. 2',
   },
   doxology: {
     label: 'Doxology',
     fekula: '§2D',
-    evidence: 'Great Doxology sung (not read) at Matins',
-    detection: 'The Great Doxology is sung at Matins rather than read. This is noted in the Menaion rubric and raises the service above Six-Stichera.',
-    assembly: 'At the Hours: troparion and kontakion from the Menaion. If the Menaion saint is Doxology rank, the 3rd and 9th Hours use the Menaion kontakion even when a Pentecostarion kontakion would otherwise govern.',
-    vespers: 'Great Vespers with 6 stichera. Great Doxology at Matins.',
-    source: 'Fekula §2D — Doxology Saint',
+    evidence: 'Matins appoints the Great Doxology to be sung; no Polyeleos and no Small Vespers.',
+    assembly: 'At the Hours: the saint’s troparion and kontakion from the Menaion.',
+    vespers: 'Vespers without an entrance, with six stichera from the Menaion. The Great Doxology is sung at Matins.',
+    source: 'Fekula, The Order of Divine Services, ch. 2',
   },
   polyeleos: {
     label: 'Polyeleos',
     fekula: '§2E',
-    evidence: 'Polyeleos (Psalms 134–135) sung at Matins',
-    detection: 'The Polyeleos ("Great Mercy") — Psalms 134 and 135 — is sung at Matins. This is among the most visible rank indicators: the church is fully lit and the priest censes the whole temple.',
-    assembly: 'At the Hours: Menaion troparion and kontakion. OT Paroemias (3 readings) at Vespers. Feast proper Epistle and Gospel at Liturgy.',
-    vespers: 'Great Vespers with Litya, 3 OT paroemias. Polyeleos and Matins Gospel at Matins.',
-    source: 'Fekula §2E — Polyeleos Saint',
+    evidence: 'Matins appoints the Polyeleos with the Magnification; no Small Vespers.',
+    assembly: 'At the Hours: the saint’s troparion and kontakion from the Menaion. At the Liturgy on a weekday: the prokeimenon, Alleluia and communion hymn are the Menaion’s; the Epistle and Gospel are the day’s and the Menaion’s.',
+    vespers: 'Great Vespers with an entrance and, where the service prints them, three readings. The Polyeleos and a Gospel at Matins.',
+    source: 'Fekula, The Order of Divine Services, ch. 2',
   },
   vigil: {
     label: 'Vigil',
     fekula: '§2F',
-    evidence: 'All-Night Vigil prescribed in the Menaion',
-    detection: 'The Menaion explicitly prescribes an All-Night Vigil. This is the highest rank for a fixed Menaion commemoration, reserved for great feasts and especially venerated saints.',
-    assembly: 'At the Hours: Menaion troparion and kontakion govern exclusively. Great Vespers with Litya, 3 OT paroemias. Polyeleos, Matins Gospel, and Great Doxology at Matins.',
-    vespers: 'All-Night Vigil: Great Vespers + Matins combined. Full feast structure throughout.',
-    source: 'Fekula §2F — Vigil Saint',
+    evidence: 'The Menaion prints a Small Vespers for the service.',
+    assembly: 'At the Hours: the saint’s troparion and kontakion from the Menaion.',
+    vespers: 'Great Vespers with an entrance, readings and a Litiya, joined to Matins as an All-Night Vigil.',
+    source: 'Fekula, The Order of Divine Services, ch. 2',
+  },
+  great_feast: {
+    label: 'Great Feast',
+    fekula: null,
+    evidence: 'One of the Great Feasts of the Lord or of the Theotokos. This is decided by which feast it is, not by a test of the printed service.',
+    assembly: 'At the Hours: the troparion and kontakion of the feast alone.',
+    vespers: 'Great Vespers with an entrance, readings and a Litiya, joined to Matins as an All-Night Vigil.',
+    source: 'Fekula, The Order of Divine Services, ch. 2',
   },
 };
 
@@ -8118,6 +8085,7 @@ function RankExplainer({ menaionEntry, isSunday }) {
 
   const rank = (menaionEntry && menaionEntry.rank) || 'simple';
   const info = RANK_EXPLANATIONS[rank] || RANK_EXPLANATIONS.simple;
+  const section = (menaionEntry && menaionEntry.fekula_section) ? '§' + menaionEntry.fekula_section : info.fekula;
 
   // Extract rank confirmation note from encoding record
   const encodingNote = (menaionEntry && menaionEntry.note) || '';
@@ -8193,9 +8161,9 @@ function RankExplainer({ menaionEntry, isSunday }) {
       </div>
 
       <div style={firstHeadStyle}>Rank</div>
-      <div><strong>{info.label}</strong> — Fekula <strong>{info.fekula}</strong></div>
+      <div><strong>{info.label}</strong>{section ? <> — Fekula <strong>{section}</strong></> : null}</div>
 
-      <div style={headStyle}>Evidence from the Menaion PDF</div>
+      <div style={headStyle}>Evidence in the printed service</div>
       <div>{info.evidence}</div>
       {rankConfirm && (
         <div style={{ marginTop: '0.3rem', color: '#9A8A70', fontStyle: 'italic' }}>
@@ -8204,7 +8172,7 @@ function RankExplainer({ menaionEntry, isSunday }) {
       )}
 
       <div style={headStyle}>Detection rule</div>
-      <div>{info.detection}</div>
+      <div>{RANK_DETECTION}</div>
 
       <div style={headStyle}>At the Hours</div>
       <div>{info.assembly}</div>
@@ -8565,6 +8533,56 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.53.0",
+    date: "November 2026",
+    summary: "One Menaion: every service is now assembled from the full capture of the printed book, with the OCA's texts beside it and Fekula's printed orders followed date by date; the earlier summarized Menaion is retired",
+    items: [
+      "THE MENAION IS NOW THE FULL CAPTURE. Until this release the tool assembled services from a " +
+      "summarized record of each day (a troparion, a kontakion, some stichera) while the complete " +
+      "capture of the printed book sat beside it for comparison. The complete capture now drives " +
+      "the Hours, Vespers, the Typica and the Divine Liturgy, and the summarized record, its " +
+      "browser and its checks are removed. There is one book on the Library shelf: The Menaion.",
+      "THE PRINTED PAGE COMES FIRST. If the day's service prints a hymn, that hymn is used; if it " +
+      "prints only a rubric, the tool follows the rubric; a rule decides only where the page is " +
+      "silent. 'How This Tool Works' has a new section, 'How the Tool Decides', that walks " +
+      "through this in order.",
+      "FEKULA'S PRINTED ORDER FOR THE DATE. Where The Order of Divine Services, 3rd edition, " +
+      "volume III prints the whole order for a date, the tool follows it in place of the general " +
+      "rule and cites the page. Elsewhere the general rule is applied by section, including for " +
+      "the Liturgy's prokeimenon, Alleluia, readings and communion hymn (on a polyeleos weekday " +
+      "the prokeimenon is the Menaion's alone, as Fekula's section 2E gives).",
+      "OCA SERVICE TEXTS, AND 'PREFER OCA TEXTS'. Where the OCA publishes a service text for the " +
+      "day, its hymn is shown in the place of its own counterpart in the Menaion. The switch is " +
+      "beside Reader's Service and is on by default. Where the tool follows Fekula and the OCA " +
+      "text does not print an item, the item is marked 'OCA: not in the OCA text'.",
+      "THE DIVINE LITURGY: the troparia and kontakia after the Little Entrance by the temple's " +
+      "dedication, with every hymn the page prints for two saints; the Beatitudes by the page's " +
+      "own rubric; festal antiphons only for feasts of the Lord (a feast of the Theotokos keeps " +
+      "the Beatitudes).",
+      "TWO SERVICES ON ONE DATE are kept whole and separate. The context card lists them, the " +
+      "one on the OCA calendar first; choosing the other re-assembles every service.",
+      "THE DISMISSAL names the day's saints by a short name entered for each service, in place " +
+      "of the printed title in capitals. On a feast itself no saint is added.",
+      "FIXED: a hymn from the Menaion linked to the Octoechos book. Each now opens its own place " +
+      "in the Menaion.",
+      "FIXED: the 'How this rank was determined' note said the number of stichera decides a " +
+      "service's rank, described a simple service as Small Vespers, and showed a Great Feast as " +
+      "Simple. It now states the rule the tool uses and shows the service's own Fekula section.",
+      "FIXED on the bulletin: the dismissal theotokion is in the tone of the last troparion " +
+      "(Fekula ch. 6), not the tone of the week. With that longer hymn and the saints' names on " +
+      "the hymn labels, the sheet for 6 September now runs onto a second page.",
+      "THE TEMPLE DEDICATION LIST is rebuilt from the Menaion: every captured service of a saint " +
+      "or a feast that prints a troparion (19 beyond the standing list). A saint whose day falls " +
+      "inside a forefeast or afterfeast is not offered yet.",
+      "WHAT IS NOT YET HERE. The Menaion holds 5 to 8 and 27 September, 4 October, and 14 to 30 " +
+      "November. The dates the summarized record used to serve and the full capture does not " +
+      "yet hold (16 May to 31 July, and other days of September and October) now show 'the " +
+      "Menaion is not yet encoded for this date' at each hymn the Menaion would supply. The " +
+      "Pentecostarion's own material is unchanged. Those dates return as each printed service " +
+      "is captured.",
+    ],
+  },
   {
     version: "v0.52.2",
     date: "November 2026",
@@ -13957,9 +13975,11 @@ function TypicaProkeimenonExplainer({ typicaProkSource, typicaProkDow, typicaTon
           {typicaProkSource === 'menaion_festal' && (
             <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
               The printed service for this <strong>{typicaRank}</strong> commemoration appoints
-              a prokeimenon, so it is sung beside the day's — "for the day (and, if there be such,
-              from the Menaion)". The gate is whether the Menaion prints one, not the saint's rank.
-              On Saturday the Menaion's comes first. — Fekula §2A p.39
+              a prokeimenon. Whose are sung follows Fekula's section for the day. For a simple,
+              six-stichera or doxology service it is sung beside the day's — "for the day (and, if
+              there be such, from the Menaion)" — and on Saturday the Menaion's comes first
+              (§2A p.39, §2D p.47). For a polyeleos or vigil service on a weekday the Menaion's
+              is sung alone (§2E p.50, §2F p.54).
             </div>
           )}
           {typicaProkSource === 'pentecostarion' && (
@@ -14147,8 +14167,10 @@ function AlleluiaExplainer({ alleluiaSource, alleluiaDow, alleluiaRank, alleluia
           {alleluiaSource === 'menaion_festal' && (
             <div style={{ fontSize: '0.77rem', color: '#5C4A1E', marginTop: '2px' }}>
               The printed service for this <strong>{alleluiaRank}</strong> commemoration appoints
-              an Alleluia, sung beside the day's — "for the day (and, if there be such, from the
-              Menaion)"; on Saturday the Menaion's comes first. — Fekula §2A p.39
+              an Alleluia. For a simple, six-stichera or doxology service it is sung beside the
+              day's — "for the day (and, if there be such, from the Menaion)" — and on Saturday
+              the Menaion's comes first (Fekula §2A p.39, §2D p.47). For a polyeleos or vigil
+              service on a weekday the Menaion's is sung alone (§2E p.50, §2F p.54).
             </div>
           )}
           {alleluiaSource === 'pentecostarion' && (
@@ -15264,7 +15286,7 @@ function PsalterService({ mode, setMode, name, setName, gender, setGender, ortho
 // Psalter reads its param today). Horologion omitted until it has a viewer.
 // Spec: bookshelf_spec.md.
 const LIBRARY_SHELVES = [
-  { name: "Hymnography", books: ["menaion", "menaionV2", "pentecostarion", "octoechos"] },
+  { name: "Hymnography", books: ["menaionV2", "pentecostarion", "octoechos"] },
   { name: "Scripture & Psalmody", books: ["scripture", "psalter"] },
   { name: "Chant", books: ["toneTrainer"] },
   { name: "Guides", books: ["psb"] },
@@ -15307,19 +15329,8 @@ function buildLibraryBooks(ld, selectedDate, scriptureReadings) {
   // past All Saints), so we open it at the start and grey the chip.
   const pentInScope = off != null && PENT_ENCODED_OFFSETS.has(off);
   return {
-    menaion: {
-      title: "The Menaion", spine: "#8B6914", host: "app",
-      to: "/menaion?" + dateQ + (comm ? "&comm=" + comm : ""),
-      lab: "Open to",
-      pv: (ld && ld.namedDay) ? ld.namedDay : (comm ? comm + " · commemoration of the day" : "commemoration of the day"),
-      cover: "May 16–31 · June · July", partial: true,
-    },
-    // The V2 Menaion — a separate book on the shelf, not a replacement spine.
-    // V1 still drives the Hours assembler; V2 is the truthing/reading surface
-    // until the Phase 5 cutover (menaion_v2_spec.md §2.1). Both are listed so
-    // the V2 capture can be reviewed from the tool without a remembered URL.
     menaionV2: {
-      title: "The Menaion", spine: "#A8763A", host: "app",
+      title: "The Menaion", spine: "#8B6914", host: "app",
       to: "/menaion-v2?" + dateQ + (comm ? "&comm=" + comm : ""),
       lab: "Open to",
       pv: (ld && ld.namedDay) ? ld.namedDay : (comm ? comm + " · commemoration of the day" : "commemoration of the day"),
@@ -15388,7 +15399,6 @@ function elFromId(id = "") {
   return null;
 }
 function kindFromSource(source = "") {
-  if (source.startsWith("Menaion")) return "menaion-daily";
   if (source.startsWith("Octoechos")) return "octoechos";
   if (source.startsWith("Pentecostarion")) return "pentecostarion";
   return null; // HTM / Fekula / not a book proper
@@ -15401,17 +15411,11 @@ function buildSourceRef(element, lit) {
   if (!element || element.type !== "movable" || element.unresolved || !element.source) return null;
   // Phase B.2 (Octoechos V2 cutover): adapter-served elements carry their exact
   // reading-view anchor as `srcPath` — link straight to the position.
-  if (element.srcPath) return { kind: "octoechos-v2", path: element.srcPath };
+  if (element.srcPath) return { kind: /^(\d\d-\d\d\.c\d|general\.|shared\.)/.test(element.srcPath) ? "menaion" : "octoechos-v2", path: element.srcPath };
   const kind = kindFromSource(element.source);
   if (!kind) return null;
   const el = elFromId(element.id);
   const withEl = el ? { el } : {};
-  if (kind === "menaion-daily") {
-    const mm = lit && lit.mm != null ? String(lit.mm).padStart(2, "0") : null;
-    const dd = lit && lit.dd != null ? String(lit.dd).padStart(2, "0") : null;
-    if (!mm || !dd) return null;
-    return { kind, comm: mm + "-" + dd, ...withEl };
-  }
   if (kind === "octoechos") {
     const tone = lit && lit.tone;
     if (!tone) return null;
@@ -15433,8 +15437,9 @@ function sourceLinkFor(sourceRef, date) {
   const dateQ = "date=" + encodeURIComponent(date) + "&from=tool";
   const elQ = sourceRef.el ? "&el=" + sourceRef.el : "";
   switch (sourceRef.kind) {
-    case "menaion-daily":
-      return { href: "/orthodox-hours/menaion?" + dateQ + "&comm=" + sourceRef.comm + elQ, external: false };
+    case "menaion":
+      // The hymn's own place in the Menaion (a General Menaion path opens that book).
+      return { href: "/orthodox-hours/menaion-v2?" + dateQ + "#" + encodeURIComponent(sourceRef.path), external: false };
     case "octoechos-v2":
       // Exact position anchor in the V2 reading view (Phase B.2). The browser
       // decodes the hash and scroll-highlights the position; ?from=tool makes
@@ -15744,8 +15749,6 @@ export default function App() {
   React.useEffect(() => {
     const d = parseCalendarDate(selectedDate);
     const m = String(d.getMonth() + 1).padStart(2, "0");
-    const prev = String(d.getMonth() === 0 ? 12 : d.getMonth()).padStart(2, "0");
-    const next = String(d.getMonth() + 2 > 12 ? 1 : d.getMonth() + 2).padStart(2, "0");
     // Also preload the month for the temple dedication if set
     const dedMonths = new Set();
     if (templeDedication && templeDedication !== "none") {
@@ -15761,7 +15764,7 @@ export default function App() {
     const dNext = parseCalendarDate(selectedDate); dNext.setDate(dNext.getDate() + 1);
     const toneForVespers = getLiturgicalData(dNext).tone || 1;
     Promise.all([
-      ...[...new Set([prev, m, next, ...dedMonths])].map(mo => _loadMenaionMonth(mo)),
+      ...[...dedMonths].map(mo => _loadMenaionV2(mo)),
       _loadMenaionV2(m, `${m}-${String(d.getDate()).padStart(2, "0")}`),
       _loadMenaionV2(String(dNext.getMonth() + 1).padStart(2, "0"),            // Vespers opens the next day
         `${String(dNext.getMonth() + 1).padStart(2, "0")}-${String(dNext.getDate()).padStart(2, "0")}`),
@@ -15774,7 +15777,6 @@ export default function App() {
   const date = parseCalendarDate(selectedDate);
   const liturgicalData = getLiturgicalData(date);
   const dailyReading = getDailyReading(date);  // Lectionary: epistle & gospel for the day
-  const rawMenaion = getMenaionEntry(date);
   // P+63 (All Saints of North America / Russia): the day's services are the two
   // pentecostarion overlay entries, fed through the SAME multi-service selector
   // (oca_primary default = North America). The fixed Menaion (Ss. Elisha &
@@ -15782,7 +15784,9 @@ export default function App() {
   // with menaion_set_aside on the overlay, fires no service content.
   const rawPent63 = liturgicalData.paschaOffset === 63 ? getPentecostarionEntry(63) : null;
   const isAllSaintsNA = Array.isArray(rawPent63) && rawPent63.length > 0;
-  const services = isAllSaintsNA ? rawPent63 : getServices(rawMenaion);
+  // `services` is the P+63 overlay pair only; a Menaion date's services are
+  // v2ServicesFor(date).
+  const services = isAllSaintsNA ? rawPent63 : [];
   const isMultiService = services.length > 1;
   const [selectedServiceIndex, setSelectedServiceIndex] = useState(0);
   const selectedMenaionEntry = services[selectedServiceIndex] || services[0];
@@ -15903,7 +15907,7 @@ export default function App() {
     // overlay array (OCA-primary = North America), mirroring the selected-day path.
     const vRawPent63 = vLit.paschaOffset === 63 ? getPentecostarionEntry(63) : null;
     const vIsAllSaintsNA = Array.isArray(vRawPent63) && vRawPent63.length > 0;
-    const vServices = vIsAllSaintsNA ? vRawPent63 : getServices(getMenaionEntry(vDate));
+    const vServices = vIsAllSaintsNA ? vRawPent63 : [];
     const vOcaIdx = vServices.findIndex(s => s.oca_primary === true);
     const vMenaion = vServices[vOcaIdx >= 0 ? vOcaIdx : 0] || null;
     const vIsPent = vLit.season === "pentecostarion";
@@ -15996,8 +16000,7 @@ export default function App() {
   })();
 
   // What the page says about the day's service above the texts: its name, rank and
-  // the Fekula section applied, from the Menaion V2 service where the date has one
-  // (the retired V1 entry otherwise).
+  // the Fekula section applied, from the Menaion's service where the date has one.
   const shownSvc = (svc, sunday) => (svc ? { entry: v2CardService(svc), cited: "§" + v2HoursPlan(svc.c, svc.path, { sunday, general: _menaionV2General }).cited } : null);
   const shownDay = shownSvc(v2DaySvc, isSunday);
   const shownEve = shownSvc(getMenaionV2Service(vespersNext.vDate, selectedServiceIndex, preferOca), vespersNext.vLit.season === "sunday");
@@ -16038,9 +16041,8 @@ export default function App() {
     } else if (currentService.key === 'post_communion') {
       els = assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMode, templeDedication, v2DaySvc ? v2DismissalOf(v2DaySvc.c) : null);
     } else if (currentService.key === 'liturgy') {
-      // Phase 1: the fixed skeleton only. Hooks for the movable parts (V1
-      // Menaion, Octoechos, Pentecostarion) land in Phase 2/3 — spec §3.
-      // Phase 2: the movable parts V1 can feed today (spec §3). Sources are
+      // The fixed skeleton, with hooks for the movable parts (Menaion, Octoechos,
+      // Pentecostarion). Sources are
       // passed in so the assembler stays pure; the Little Entrance order and
       // the Beatitude troparia are Phase 3.
       const liturgyCtx = {

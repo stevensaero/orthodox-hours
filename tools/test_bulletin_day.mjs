@@ -23,7 +23,6 @@ import { readingsForDay, readingsInOrder } from "../src/lib/readings.js";
 import { loadMenaionV2Month } from "../src/data/menaion_v2/index.js";
 import { servicesOf, entrancePlan, liturgyPlan } from "../src/data/menaion_v2/adapter.js";
 import { buildBulletinDay } from "../src/lib/bulletin-day.js";
-import may from "../src/data/menaion/may.js";
 import * as OctoV2 from "../src/data/octoechos_v2/adapter.js";
 import { hymnText } from "../src/lib/hymn-entry.js";
 import { BULLETIN_CSS } from "../src/lib/bulletin-css.js";
@@ -145,34 +144,33 @@ check("rank line", day.rankLabel, "Six-Stichera · Fekula §2C");
 }
 
 // ─── The counter-case: same rank, no Menaion readings ──────────────────────
-// 05-23, Michael the Confessor of Synada: also six_stichera, also §2C, but its
-// service prints no AT LITURGY section, so feast_e is null and the
-// commemoration contributes nothing. Identical rank to 09-06, opposite outcome
-// — which is the whole point. The gate is the Menaion's contents, not rank.
+// Two simple services under the same section, set on the same Sunday: 15 Nov
+// (the holy Martyrs Gurias, Samonas and Abibus) prints an AT LITURGY section with
+// its own Epistle and Gospel; 27 Sept (the holy Martyr Callistratus) prints none.
+// Same rank, same rule, opposite outcome, which is the whole point: what is read
+// is decided by what the service prints, not by its rank.
 console.log("\nRank does not decide — the Menaion's contents do");
-const may23 = may["05-23"];
-checkTruthy("05-23 entry present", may23);
-check("05-23 rank matches 09-06", may23.rank, entry.rank);
-check("05-23 section matches 09-06", may23.fekula_section, entry.fekula_section);
-check("05-23 appoints no epistle", may23.feast_e, null);
-check("05-23 appoints no gospel", may23.feast_g, null);
-
-const hasOwn23 = !!(may23.feast_e && !String(may23.feast_e).startsWith("absent"));
-const r23 = readingsForDay({
-  liturgicalData: { dow: 0, season: "sunday", tone: 5 },
-  menaionEntry: may23,
-  dailyReading: { e: "Romans 5:1-10", g: "Matthew 6:22-33" },
-  feastReading: hasOwn23 ? { e: may23.feast_e, g: may23.feast_g } : null,
-});
-check("05-23 cites §1C (the retired V1 path, until May is in Menaion V2)", r23.rule.section, "Fekula §1C");
-check("05-23 reads one epistle", r23.groups[0].items.length, 1);
-check("05-23 reads one gospel", r23.groups[1].items.length, 1);
-check("05-23 has no Menaion readings", r23.hasMenaionReadings, false);
-console.log(`  09-06 and 05-23 are both ${entry.rank}, both §${entry.fekula_section}, ` +
-            `both cite ${resolved.rule.section} —`);
-console.log(`  09-06 reads ${resolved.groups[0].items.length} epistles, ` +
-            `05-23 reads ${r23.groups[0].items.length}. The rank is identical; ` +
-            `the printed services differ.`);
+{
+  const sunday = { dow: 0, season: "sunday", tone: 5 };
+  const dailyReading = { e: "Romans 5:1-10", g: "Matthew 6:22-33" };
+  const dayOf = (svc) => buildBulletinDay({ liturgicalData: sunday, service: svc, entrance: entrancePlan(svc.c, svc.path, {}),
+    liturgy: liturgyPlan(svc.c, svc.path), dailyReading, sources: { hymnText } }).readings;
+  const sWith = servicesOf((await loadMenaionV2Month("11"))["11-15"], "11-15")[0];
+  const sNone = servicesOf((await loadMenaionV2Month("09"))["09-27"], "09-27")[0];
+  checkTruthy("11-15 and 09-27 services present", sWith && sNone);
+  check("the two share a rank", sNone.c.rank, sWith.c.rank);
+  check("the two share a section", sNone.c.fekula_section, sWith.c.fekula_section);
+  check("09-27 prints no epistle", liturgyPlan(sNone.c, sNone.path).epistles.length, 0);
+  check("09-27 prints no gospel", liturgyPlan(sNone.c, sNone.path).gospels.length, 0);
+  const rWith = dayOf(sWith), rNone = dayOf(sNone);
+  check("both cite the same rule", rNone.rule.section, rWith.rule.section);
+  check("11-15 reads two epistles", rWith.groups[0].items.length, 2);
+  check("09-27 reads one epistle", rNone.groups[0].items.length, 1);
+  check("09-27 reads one gospel", rNone.groups[1].items.length, 1);
+  check("09-27 has no Menaion readings", rNone.hasMenaionReadings, false);
+  console.log(`  both are ${sWith.c.rank}, both §${sWith.c.fekula_section}, both cite ${rWith.rule.section}: ` +
+              `11-15 reads ${rWith.groups[0].items.length} epistles, 09-27 reads ${rNone.groups[0].items.length}.`);
+}
 
 // ─── The Saturday inversion ─────────────────────────────────────────────────
 console.log("\nSaturday inverts the order — Fekula §2A");

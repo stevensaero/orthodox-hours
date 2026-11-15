@@ -1,5 +1,9 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// validate_entries.mjs — schema-conformance gate for liturgical data
+// validate_entries.mjs — schema-conformance gate for the Pentecostarion
+//
+// (Until v0.53.0 this also walked the summarized Menaion month files; those were
+// retired and the Menaion is now gated by tools/validate_menaion_v2.mjs. The
+// Menaion-only checks C, G and H went with them.)
 //
 // Closes the blind spot that let the P+63 entries ship with mis-named fields
 // (litya_glory_both_now, exapostilarion_saints, stichera_praises, praises_glory)
@@ -12,13 +16,6 @@
 //             blessed vocabulary below). A typo or a non-canonical name fails loudly.
 //   Check B — Sunday-overlay flag block: all_saints_sunday / pentecostarion_sunday
 //             entries must carry the full structural flag set (encoding_rule_v2.md §12).
-//   Check C — Stichera completeness audit (Menaion only): an entry whose rank carries
-//             Lord-I-Call stichera (§2A–§2F) must actually have stichera_lord_i_call.
-//             This catches "skeleton" entries that passed the vocabulary guard while
-//             their LIC stichera were never filled (e.g. the June simple saints). It is
-//             a WARNING by default (non-fatal — it lists the gaps as a checklist); pass
-//             --strict to promote the warnings to failures. An entry may suppress the
-//             warning by carrying a stichera_lord_i_call_note documenting the source.
 //   Check F — Register + provenance lint (encoding_rule_v2.md §11 #17–18):
 //             F-1 register — stored hymnography is traditional thou/thy. A hymn text is
 //             flagged if (a) it carries a capitalized standalone You/Your/Yours
@@ -30,38 +27,18 @@
 //             substring "No PDF" or "No AT LITURGY" (100% false-positive in the audit).
 //             WARNING by default; fatal under --strict. Skipped entirely under --editor
 //             (per-sticheron save path) to keep that path quiet.
-//   Check H — Menaion month-registry drift (FATAL): every src/data/menaion/*.js file
-//             must be registered in ALL THREE month registries — _menaionLoaders in
-//             hours-tool.jsx, MONTHS_WITH_DATA in menaion-browser.jsx, and this
-//             validator's own walk list below — and none may name a file that does
-//             not exist. The three are hand-maintained mirrors of each other, and
-//             nothing previously compared them. September (v0.43.0) shipped wired
-//             into _menaionLoaders and this validator but NOT into the browser, so
-//             the Hours tool served 09-05/09-06 correctly while the Menaion browser
-//             reported "No data file exists for September". Silent, and invisible to
-//             every other gate. Fatal, not a warning: a month that loads in one
-//             surface and not another is a shipped defect, not a checklist item.
-//   Check G — Aposticha doxasticon declaration (Menaion only): for ranks that carry a
-//             Vespers aposticha, Doxology+ SHOULD have aposticha_glory; simple/six_stichera
-//             must declare aposticha_glory OR aposticha_glory_absent: true. Mirrors C/D for
-//             the LIC Glory. WARNING by default, fatal under --strict; _absent integrity fatal.
 //
 // Run: node tools/validate_entries.mjs [--strict] [--editor]
-//   exit 1 on any Check A/B violation (always) or any Check C/F gap (only with --strict);
-//   exit 0 when clean (Check C/F gaps still print as warnings).
+//   exit 1 on any Check A/B violation (always) or any Check F gap (only with --strict);
+//   exit 0 when clean (Check F gaps still print as warnings).
 //
 // To add a GENUINELY new field, add it to KNOWN_FIELDS deliberately — that is the
 // gate. The list was seeded from the union of all shipped Menaion + Pentecostarion
 // entries; regenerate with the snippet in the repo notes if the vocabulary grows.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import PENT from '../src/data/pentecostarion.js';
-import MAY from '../src/data/menaion/may.js';
-import JUNE from '../src/data/menaion/june.js';
-import JULY from '../src/data/menaion/july.js';
-import SEPTEMBER from '../src/data/menaion/september.js';
-import OCTOBER from '../src/data/menaion/october.js';
 
 const KNOWN_FIELDS = new Set([
   'alleluia_2_stichos', 'alleluia_2_tone', 'alleluia_2_verse', 'alleluia_stichos',
@@ -115,11 +92,6 @@ const REQUIRED_OVERLAY_FLAGS = [
   'heavenly_king_omitted', 'it_is_truly_meet_suppressed',
 ];
 
-// Check C — ranks whose Vespers carries Lord-I-Call stichera from the Menaion saint
-// (§2A simple → §2F vigil). great_feast is intentionally excluded: its propers have
-// varied sourcing (often menaion_set_aside / Pentecostarion) and don't fit one rule.
-const RANKS_REQUIRING_LIC = new Set(['simple', 'six_stichera', 'doxology', 'polyeleos', 'vigil']);
-const SIMPLE_MIN_LIC = 3; // §2A weekday = 3 Octoechos + 3 Menaion
 
 // Check F — register + provenance lint (encoding_rule_v2.md §11 #17–18).
 // Scalar hymn fields: an object carrying a string `text`. Plain-string pointers
@@ -181,11 +153,6 @@ function buildCommentMap(fileUrl) {
 
 const COMMENT_MAPS = {
   'Pentecostarion': buildCommentMap(new URL('../src/data/pentecostarion.js', import.meta.url)),
-  'Menaion/may': buildCommentMap(new URL('../src/data/menaion/may.js', import.meta.url)),
-  'Menaion/june': buildCommentMap(new URL('../src/data/menaion/june.js', import.meta.url)),
-  'Menaion/july': buildCommentMap(new URL('../src/data/menaion/july.js', import.meta.url)),
-  'Menaion/september': buildCommentMap(new URL('../src/data/menaion/september.js', import.meta.url)),
-  'Menaion/october': buildCommentMap(new URL('../src/data/menaion/october.js', import.meta.url)),
 };
 
 // Collect {path, text} for every in-scope hymn object carrying a string `text`.
@@ -245,33 +212,6 @@ function checkEntry(label, entry, kind, key, locPrefix, commentBlob) {
     }
   }
 
-  // Check C — stichera completeness (Menaion entries only)
-  if (kind === 'menaion' && RANKS_REQUIRING_LIC.has(entry.rank)) {
-    // menaion_set_aside (a Great-Feast / overlay contract) sources stichera elsewhere.
-    // A stichera_lord_i_call_note documents a deliberate exception and suppresses the warning.
-    const exempt = entry.menaion_set_aside === true || typeof entry.stichera_lord_i_call_note === 'string';
-    const lic = entry.stichera_lord_i_call;
-    const n = Array.isArray(lic) ? lic.length : 0;
-    if (!exempt) {
-      if (n === 0) {
-        warnings.push(`${label}: rank "${entry.rank}" carries Lord-I-Call stichera, but stichera_lord_i_call is empty/absent (enter the stichera, or add a stichera_lord_i_call_note documenting the source).`);
-      } else if (entry.rank === 'simple' && n < SIMPLE_MIN_LIC) {
-        warnings.push(`${label}: simple/§2A entry has only ${n} Lord-I-Call sticheron(a); §2A expects ${SIMPLE_MIN_LIC} Menaion stichera.`);
-      }
-    }
-  }
-
-  // Check G — aposticha doxasticon declaration (Fekula "if there be one" /
-  // "higher ranks always have a doxasticon"; the aposticha twin of Check C/D for
-  // the Lord-I-Call Glory). For ranks that carry a Vespers aposticha:
-  //   - Doxology / Polyeleos / Vigil: an aposticha_glory SHOULD be present —
-  //     these ranks always carry a doxasticon (Fekula); the warning says so.
-  //     aposticha_glory_absent is rejected here (integrity block below).
-  //   - Simple / Six-Stichera: "if there be one" — the entry must DECLARE the
-  //     state: aposticha_glory present, OR aposticha_glory_absent: true (the
-  //     encoder checked the PDF and there is none). A bare absence means the
-  //     aposticha was never examined at encode time — the silent-omission case
-  //     (e.g. 06-21 Julian, whose PDF prints a Tone VI Glory the entry dropped).
   // aposticha_glory_absent integrity mirrors Check D for stichera_glory_absent.
   if ('aposticha_glory_absent' in entry) {
     if (entry.aposticha_glory_absent !== true) {
@@ -284,23 +224,6 @@ function checkEntry(label, entry, kind, key, locPrefix, commentBlob) {
       problems.push(`${label}: aposticha_glory_absent used on rank "${entry.rank}" — only valid for simple/six_stichera (§2A/§2C). Higher ranks always have a doxasticon.`);
     }
   }
-  if (kind === 'menaion' && RANKS_REQUIRING_LIC.has(entry.rank)) {
-    // menaion_set_aside (Great-Feast / overlay) sources the aposticha elsewhere;
-    // an aposticha_note documents a deliberate exception and suppresses the warning.
-    // aposticha_source: "octoechos" does NOT exempt — the stichera come from the
-    // Octoechos but the Glory is still the saint's doxasticon (e.g. 06-21).
-    const exempt = entry.menaion_set_aside === true || typeof entry.aposticha_note === 'string';
-    const hasGlory = entry.aposticha_glory != null;
-    const declaredAbsent = entry.aposticha_glory_absent === true;
-    if (!exempt && !hasGlory && !declaredAbsent) {
-      if (['doxology', 'polyeleos', 'vigil'].includes(entry.rank)) {
-        warnings.push(`${label}: rank "${entry.rank}" should have an aposticha_glory — Doxology rank and above always carry an aposticha doxasticon (Fekula), but none is encoded.`);
-      } else {
-        warnings.push(`${label}: §2A/§2C entry declares no aposticha doxasticon — add aposticha_glory (the PDF prints one) or aposticha_glory_absent: true (verified none in the PDF). A bare absence means the aposticha was not examined.`);
-      }
-    }
-  }
-
   // Check E — pointing marker well-formedness and intra-group consistency.
   // Rule: if any text item within a spec_mel sub-group carries pointing markers
   // (* /** or | //), ALL text items in that SAME sub-group must carry markers.
@@ -393,83 +316,6 @@ function walk(name, data, kind) {
 }
 
 walk('Pentecostarion', PENT, 'pentecostarion');
-walk('Menaion/may', MAY, 'menaion');
-walk('Menaion/june', JUNE, 'menaion');
-walk('Menaion/july', JULY, 'menaion');
-walk('Menaion/september', SEPTEMBER, 'menaion');
-walk('Menaion/october', OCTOBER, 'menaion');
-
-// ── Check H — Menaion month-registry drift ───────────────────────────────────
-// The three month registries are hand-maintained mirrors. Compare them against
-// the actual contents of src/data/menaion/ and against each other.
-//
-// This list must be kept in step with the walk() calls immediately above; it is
-// the validator's own declaration of which months it audits, and Check H fails
-// if it drifts from the directory just like the other two registries do.
-const VALIDATOR_MONTH_FILES = new Set(['may.js', 'june.js', 'july.js', 'september.js', 'october.js']);
-
-const MENAION_DIR = new URL('../src/data/menaion/', import.meta.url);
-
-// Parse a registry object literal of the form
-//   "<key>": () => import("../data/menaion/<file>.js")
-// and return the set of month files it names.
-function parseLoaderFiles(sourcePath, registryName) {
-  let src;
-  try {
-    src = readFileSync(new URL(sourcePath, import.meta.url), 'utf8');
-  } catch {
-    problems.push(`Check H: cannot read ${sourcePath} to verify ${registryName}.`);
-    return null;
-  }
-  const start = src.indexOf(registryName);
-  if (start === -1) {
-    problems.push(`Check H: ${registryName} not found in ${sourcePath} — renamed or removed? Update Check H.`);
-    return null;
-  }
-  const open = src.indexOf('{', start);
-  const close = src.indexOf('\n};', open);
-  if (open === -1 || close === -1) {
-    problems.push(`Check H: could not delimit ${registryName} in ${sourcePath}.`);
-    return null;
-  }
-  const body = src.slice(open, close);
-  const files = new Set();
-  for (const m of body.matchAll(/data\/menaion\/([A-Za-z0-9_-]+\.js)/g)) files.add(m[1]);
-  return files;
-}
-
-const onDisk = new Set(
-  readdirSync(MENAION_DIR).filter(f => f.endsWith('.js'))
-);
-
-const REGISTRIES = [
-  { name: '_menaionLoaders (src/components/hours-tool.jsx)',
-    files: parseLoaderFiles('../src/components/hours-tool.jsx', '_menaionLoaders') },
-  { name: 'MONTHS_WITH_DATA (src/components/menaion-browser.jsx)',
-    files: parseLoaderFiles('../src/components/menaion-browser.jsx', 'MONTHS_WITH_DATA') },
-  { name: 'VALIDATOR_MONTH_FILES (tools/validate_entries.mjs walk list)',
-    files: VALIDATOR_MONTH_FILES },
-];
-
-for (const { name, files } of REGISTRIES) {
-  if (!files) continue; // parse failure already reported
-  for (const f of onDisk) {
-    if (!files.has(f)) {
-      problems.push(
-        `Check H: src/data/menaion/${f} exists but is NOT registered in ${name}. ` +
-        `A month must be wired into all three registries — data file, _menaionLoaders, ` +
-        `MONTHS_WITH_DATA, and the validator walk — or it loads in some surfaces and not others.`
-      );
-    }
-  }
-  for (const f of files) {
-    if (!onDisk.has(f)) {
-      problems.push(
-        `Check H: ${name} registers src/data/menaion/${f}, which does not exist on disk.`
-      );
-    }
-  }
-}
 
 // ── Report ───────────────────────────────────────────────────────────────────
 if (problems.length === 0) {
@@ -489,8 +335,6 @@ if (warnings.length > 0) {
       ? '\n--strict: warnings are treated as failures. Enter the stichera, finish pointing the array, or add a stichera_lord_i_call_note.'
       : '\nThese are warnings (non-fatal). Run with --strict to gate on them once the data is filled in.'
   );
-} else if (problems.length === 0) {
-  console.log('✓ Stichera completeness (Check C): all rank-bearing Menaion entries carry Lord-I-Call stichera.');
 }
 
 if (!editorMode) {
