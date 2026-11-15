@@ -11,7 +11,7 @@ import { assembleLiturgy, LITURGY_VIEW_DEFAULTS, insertAnchors } from '../lib/li
 import { DAILY_TROPARIA, DAILY_TROPARIA_SOURCE } from '../data/liturgy/daily_troparia.js';
 import { resolveLiturgyPropers } from '../lib/liturgy-propers.js';
 import { resolveHoursPropers } from '../lib/hours-propers.js';
-import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya, resolveVespersTroparia } from '../lib/vespers-propers.js';
+import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya, resolveVespersTroparia, resolveVespersReadings } from '../lib/vespers-propers.js';
 import { stripCaret } from '../data/oca_hymns/index.js';
 import { loadMenaionV2Month, loadMenaionV2General } from '../data/menaion_v2/index.js';
 import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor } from '../data/menaion_v2/adapter.js';
@@ -3082,7 +3082,15 @@ function applyStichRepeat(stich, array, idx) {
 // which opens the following liturgical day). Mirrors the original inline rule:
 //   §2E (Polyeleos)/§2F (Vigil) Menaion saints show their paroemias; Pentecostarion
 //   entries show their own unless a Great Feast of the Lord; otherwise none.
-function computeVespersParoemias(menaionEntry, pentEntry, isPent, isBright) {
+function computeVespersParoemias(menaionEntry, pentEntry, isPent, isBright, menaionV2 = null) {
+  // Outside the Pentecostarion: the readings the Menaion V2 page prints (printed
+  // first; src/lib/vespers-propers.js). No rank test: the page decides.
+  if (!isPent && !isBright) {
+    if (!menaionV2) return null;
+    const r = resolveVespersReadings({ c: menaionV2.c, base: menaionV2.path, eveDow: 0 }).readings;
+    return r.length ? r.map((x) => x.display) : null;
+  }
+  // PENTECOSTARION — unchanged from v0.52.2, not yet reworked (its data is in the old shape).
   if (isPent || isBright) {
     if (!pentEntry || !pentEntry.paroemia_1) {
       const rank = menaionEntry && menaionEntry.rank;
@@ -3095,10 +3103,7 @@ function computeVespersParoemias(menaionEntry, pentEntry, isPent, isBright) {
     if (isGreatFeastOfLord) return null;
     return [pentEntry.paroemia_1, pentEntry.paroemia_2, pentEntry.paroemia_3].filter(Boolean);
   }
-  const rank = menaionEntry && menaionEntry.rank;
-  if (rank !== 'polyeleos' && rank !== 'vigil') return null;
-  if (!menaionEntry.paroemia_1) return null;
-  return [menaionEntry.paroemia_1, menaionEntry.paroemia_2, menaionEntry.paroemia_3].filter(Boolean);
+  return null;
 }
 
 function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, readerMode = false, selectedDate = "", templeDedication = null, menaionV2 = null) {
@@ -4006,7 +4011,12 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   }
 
   // 7. ENTRANCE (Great Vespers: Polyeleos+, Vigil, Saturday evening)
-  if (isDoxOrAbove || dow === 6) {
+  // The entrance. Outside the Pentecostarion: when the Menaion page prints one, and
+  // always on Saturday evening (src/lib/vespers-propers.js). A doxology service has none.
+  const v2Entrance = !isPentecostarion
+    ? resolveVespersReadings({ c: menaionV2 ? menaionV2.c : {}, base: menaionV2 ? menaionV2.path : "", eveDow: dow }).entrance
+    : (isDoxOrAbove || dow === 6);
+  if (v2Entrance) {
     elements.push({id:"v-entrance",type:"fixed",label:"Entrance",rubric:"Deacon (or Priest):",
       text:"Wisdom, Aright!\n\n(Entrance with the censer at Daily Vespers; with the Gospel at Vigil on Sundays)",
       source:"HTM Vespers",
@@ -15836,7 +15846,7 @@ export default function App() {
     const vIsBright = vLit.season === "brightweek";
     const vPent = vIsAllSaintsNA ? vMenaion
       : ((vIsPent || vIsBright) ? getPentecostarionEntry(vLit.paschaOffset) : null);
-    const vParoemias = computeVespersParoemias(vMenaion, vPent, vIsPent, vIsBright);
+    const vParoemias = computeVespersParoemias(vMenaion, vPent, vIsPent, vIsBright, getMenaionV2Service(vDate, selectedServiceIndex));
     const vDailyReading = getDailyReading(vDate);
     const vNamedDaySunday = !!(vLit.namedDay && vLit.namedDay.isSunday);
     const vHasFeastE = vMenaion && vMenaion.feast_e && !vMenaion.feast_e.startsWith('absent');
@@ -15873,7 +15883,7 @@ export default function App() {
   // - All other cases: no paroemias
   // Selected-day (D) paroemias — feeds the day-summary context card. The Vespers
   // SERVICE computes its own paroemias for the day it opens (D+1); see FW-26 below.
-  const paroemias = computeVespersParoemias(selectedMenaionEntry, pentEntry, isPentecostarion, isBrightWeek);
+  const paroemias = computeVespersParoemias(selectedMenaionEntry, pentEntry, isPentecostarion, isBrightWeek, getMenaionV2Service(date, selectedServiceIndex));
   // Current service metadata from registry
   // ?preview=<key>[,<key>] unlocks a built:false service for development
   // review without shipping it (liturgy_assembler_spec.md decision 5: the
@@ -16007,13 +16017,13 @@ export default function App() {
       if (vespersNext.vIsAllSaintsNA) {
         const sel = vespersNext.vServices[selectedServiceIndex] || vespersNext.vMenaion;
         vMen = sel; vPnt = sel;
-        vPar = computeVespersParoemias(sel, sel, vespersNext.vIsPent, vespersNext.vIsBright);
+        vPar = computeVespersParoemias(sel, sel, vespersNext.vIsPent, vespersNext.vIsBright, getMenaionV2Service(vespersNext.vDate, selectedServiceIndex));
       } else if (vespersNext.vServices.length > 1) {
         // Ordinary multi-service day (e.g. June 15: Amos + Jerome + Jonah):
         // apply selectedServiceIndex so radio selection actually changes what assembles.
         const sel = vespersNext.vServices[selectedServiceIndex] || vespersNext.vMenaion;
         vMen = sel;
-        vPar = computeVespersParoemias(sel, vPnt, vespersNext.vIsPent, vespersNext.vIsBright);
+        vPar = computeVespersParoemias(sel, vPnt, vespersNext.vIsPent, vespersNext.vIsBright, getMenaionV2Service(vespersNext.vDate, selectedServiceIndex));
       }
       els = assembleVespers(vespersNext.vLit, vMen, vPnt, vPar, readerMode, vespersNext.vDateStr, templeDedication,
         getMenaionV2Service(parseCalendarDate(vespersNext.vDateStr), selectedServiceIndex));

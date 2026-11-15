@@ -11,7 +11,7 @@
 //
 // BUILT SO FAR: "Lord, I have cried" (stichera, Glory, Both now); the Aposticha
 // (whose stichera, Glory, Both now); the Litiya (what the page prints, and no more);
-// the troparia at the end (never a kontakion).
+// the troparia at the end (never a kontakion); the entrance and the readings.
 const ROMAN = { I: 1, II: 2, III: 3, IV: 4, V: 5, VI: 6, VII: 7, VIII: 8 };
 const EVES = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri']; // the evening Vespers is sung on
 const isText = (n) => !!n && typeof n.text === 'string';
@@ -335,4 +335,27 @@ export function resolveVespersTroparia({ c, base, eveDow, tone, octo, own = {} }
   if (high) { items.push(theot(t, octo.resDismissalTheotokion(t), lead)); return { items, rule: `Both now: the dismissal theotokion in the tone of the last troparion (Tone ${t}; Fekula ch. 6 §III).`, notes }; }
   items.push(theot(t, octo.dailyDismissalTheotokion(t, eve), lead));
   return { items, rule: `Both now: the theotokion of the day in the tone of the last troparion (Tone ${t}; Fekula ch. 6 §II).`, notes };
+}
+
+// ── The entrance and the Old Testament (or apostolic) readings ──────────────
+// Printed first: there are readings when the page prints them, and they are the
+// ones it prints. The Menaion capture holds each reading's heading and citation,
+// not its text (ruling R-4): the scripture viewer supplies the passage.
+// An entrance is made when the page says so ("Entrance. Prokeimenon of the day.
+// Three lessons:"), and always on a Saturday evening. A doxology service has none:
+// its page prints no entrance, and ODS vol. III says of 25 November "No entrance".
+// Returns { entrance, entranceRubric, readings: [{ display, ref, heading, basis, note, path }] }.
+export function resolveVespersReadings({ c, base, eveDow }) {
+  const vname = c.great_vespers ? 'great_vespers' : 'vespers'; const v = c[vname] ?? {};
+  const rubric = isText(v.entrance_rubric) ? v.entrance_rubric.text : null;
+  const readings = (v.readings ?? []).filter((r) => r && r.citation).map((r, i) => {
+    const cit = r.citation;
+    const ref = String(cit.verses).includes(':') ? `${cit.book} ${cit.verses}` : `${cit.book} ${cit.chapter}:${cit.verses}`;
+    const identified = r.citation_basis === 'identified';
+    return { ref, heading: r.heading ?? null, basis: r.citation_basis ?? 'printed', note: r.provenance_note ?? r.note ?? null,
+      path: `${base}.${vname}.readings[${i}]`,
+      // "(Book c:v)" is the form the scripture link reads the reference from.
+      display: `${r.heading ?? 'A reading'} (${ref})${identified ? ' — the page prints no reference; this one is identified from the opening words' : ''}` };
+  });
+  return { entrance: eveDow === 6 || /entrance/i.test(rubric ?? ''), entranceRubric: rubric, readings };
 }

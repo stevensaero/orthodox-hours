@@ -6,7 +6,7 @@
 //   node tools/test_menaion_v2_vespers.mjs [--table]
 import { loadMenaionV2Month } from '../src/data/menaion_v2/index.js';
 import { servicesOf } from '../src/data/menaion_v2/adapter.js';
-import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya, resolveVespersTroparia } from '../src/lib/vespers-propers.js';
+import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya, resolveVespersTroparia, resolveVespersReadings } from '../src/lib/vespers-propers.js';
 import { hoursPlan, ocaFor } from '../src/data/menaion_v2/adapter.js';
 import { loadMenaionV2General } from '../src/data/menaion_v2/index.js';
 import { loadOcaDoc, ocaStems } from '../src/data/oca_hymns/index.js';
@@ -116,6 +116,24 @@ function ocaTroparia(doc) {
   }
   return out;
 }
+// The OCA's readings at Vespers: the references it heads them with.
+function ocaReadings(doc) {
+  const out = []; let on = false;
+  for (const b of doc.blocks) {
+    const t = b.text.replace(/[[\]]/g, '');
+    if (b.k === 'heading' && /^(Old Testament )?Readings/i.test(t)) { on = true; continue; }
+    if (!on) continue;
+    // "Genesis 28:10-17", or "Composite 17 (Exod. 40:1–5, 9, 10, 16, 34–35)".
+    const m = t.replace(/[–—]/g, '-').replace(/^Composite \d+ \((.*)\)$/, '$1').match(/^(?:\(\d+\)\s*)?((?:[1-4] )?[A-Z][A-Za-z.]+(?: [a-z]+ [A-Z][a-z]+)? \d+:\d[\d:,;\- ]*)/);
+    if (b.k === 'heading' && m) { out.push(m[1].trim()); continue; }
+    if (b.k === 'heading' && /^(Litya|Aposticha|Tone \d)/.test(t)) break;
+  }
+  return out;
+}
+// Book and opening verse, so "Genesis 28:10-17" and "Genesis 28:10-17a" compare equal.
+// The Greek 3 and 4 Kings are the Hebrew 1 and 2 Kings: the OCA uses the Hebrew numbering.
+const BOOK = { 'exod.': 'exodus', '3kings': '1kings', '4kings': '2kings' };
+const refKey = (r) => r.replace(/^(\d) /, '$1').replace(/^([A-Za-z0-9. ]+?) (\d+):(\d+).*$/, (_, b, c, v) => { const k = b.toLowerCase().replace(/ of solomon/, ''); return `${BOOK[k] ?? k} ${c}:${v}`; });
 // The OCA's Litya: the tones of its stichera, then Glory and Both now.
 function ocaLitya(doc) {
   const out = { stichera: [] }; let inL = false, after = null, seen = false;
@@ -137,6 +155,9 @@ function ocaLitya(doc) {
 }
 // Disagreements that are understood and accepted. Each needs a reason.
 const KNOWN = {
+  '09-08 readings': 'the OCA text heads the second lesson "Ezekiel 43:2-44:4"; on 21 Nov it heads the same lesson "Ezekiel 43:27-44:4", as the Menaion has it. Taken as a slip in the OCA text.',
+  '11-14 readings': 'A REAL DIVERGENCE: the Menaion prints three lessons from 1 John for the Apostle Philip; the OCA reads three from 1 Peter (the same three it reads for St. Andrew). For the OCA layer.',
+  '11-16 readings': 'as 14 Nov: the Menaion prints 1 John for the Apostle Matthew; the OCA reads the three lessons from 1 Peter.',
   '11-14 litiya Glory': 'the page prints stichera only; the OCA adds a Glory (Tone 2) the page does not print. Printed-only is the ruling.',
   '11-14 litiya Both now': 'as above: the OCA adds a Both now (Tone 2) the page does not print.',
   '11-16 litiya Glory': 'as 14 Nov: the OCA adds a Glory (Tone 2) the page does not print.',
@@ -177,6 +198,13 @@ for (const key of Object.keys(OCA_SLOTS).sort()) {
     if (wt.length) { checked++; const id = `${key} troparia`;
       if (mineT !== theirsT && !KNOWN[id]) fail(`${id}: tool ${mineT} | OCA ${theirsT}`);
       rows.push(`| ${key} | ${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow]} | ${tone} | ${svc.c.rank} | Troparia | ${mineT} | ${theirsT} | ${mineT === theirsT ? 'agree' : KNOWN[id] ? 'KNOWN' : 'DIFFER'} |`); } }
+  // The entrance and the readings.
+  { const rd = resolveVespersReadings({ c: svc.c, base: svc.path, eveDow }); const wr = ocaReadings(doc);
+    if (rd.readings.length || wr.length) { checked++; const id = `${key} readings`;
+      const mineR = rd.readings.map((x) => refKey(x.ref)).join(' ; '); const theirsR = wr.map(refKey).join(' ; ');
+      if (mineR !== theirsR && !KNOWN[id]) fail(`${id}: tool ${rd.readings.map((x) => x.ref).join(' ; ') || 'none'} | OCA ${wr.join(' ; ') || 'none'}`);
+      rows.push(`| ${key} | ${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow]} | ${tone} | ${svc.c.rank} | Readings | ${rd.readings.map((x) => x.ref).join(' ; ') || 'none'} | ${wr.join(' ; ') || 'none'} | ${mineR === theirsR ? 'agree' : KNOWN[id] ? 'KNOWN' : 'DIFFER'} |`); }
+    if (rd.readings.length && !rd.entrance) fail(`${key}: readings without an entrance`); }
   // The Litiya: printed only.
   { const li = resolveLitiya({ c: svc.c, base: svc.path }); const wl = ocaLitya(doc); const D = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow];
     if (!!li !== !!wl) { checked++; const id = `${key} litiya`; if (!KNOWN[id]) fail(`${id}: tool ${li ? 'has one' : 'none'}, OCA ${wl ? 'has one' : 'none'}`); rows.push(`| ${key} | ${D} | ${tone} | ${svc.c.rank} | Litiya | ${li ? 'printed' : 'none'} | ${wl ? 'has one' : 'none'} | ${KNOWN[id] ? 'KNOWN' : 'DIFFER'} |`); }
