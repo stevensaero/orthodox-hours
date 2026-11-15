@@ -5,7 +5,7 @@
 // each question a plain mailto link so a priest or liturgist can answer from
 // any device. No script is involved in the link, so it works in iPhone Mail;
 // the pre-filled body is kept short because iOS truncates long ones silently.
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import QUESTIONS, { SOURCES, SUBJECTS, CONTACT_EMAIL, mailtoFor, FEEDBACK, feedbackMailto } from '../data/open_questions.js';
 
 const C = {
@@ -97,9 +97,14 @@ export function QuestionCard({ q, email = CONTACT_EMAIL }) {
 export default function OpenQuestions({ questions = QUESTIONS, email = CONTACT_EMAIL }) {
   const [groupBy, setGroupBy] = useState('source');        // 'source' | 'subject'
   const [status, setStatus] = useState('unanswered');      // 'unanswered' | 'all' | 'answered'
-  const shown = useMemo(() => questions.filter(q =>
-    status === 'all' ? true : status === 'answered' ? q.status === 'answered' : q.status !== 'answered'),
-    [questions, status]);
+  // Opened from the Hours tool's "waiting for review on this day" line (?day=MM-DD):
+  // only the questions about that day's page, and the list brought into view.
+  const [day, setDay] = useState(() => { try { const d = new URLSearchParams(window.location.search).get('day'); return /^\d\d-\d\d$/.test(d || '') ? d : null; } catch { return null; } });
+  const listRef = useRef(null);
+  useEffect(() => { if (day && listRef.current && listRef.current.scrollIntoView) listRef.current.scrollIntoView({ block: 'start' }); }, []);   // eslint-disable-line react-hooks/exhaustive-deps
+  const shown = useMemo(() => questions.filter(q => (!day || (typeof q.path === 'string' && q.path.startsWith(day + '.'))) &&
+    (status === 'all' ? true : status === 'answered' ? q.status === 'answered' : q.status !== 'answered')),
+    [questions, status, day]);
   const vocab = groupBy === 'source'
     ? Object.fromEntries(Object.entries(SOURCES).map(([k, v]) => [k, v.label]))
     : SUBJECTS;
@@ -179,7 +184,13 @@ export default function OpenQuestions({ questions = QUESTIONS, email = CONTACT_E
             An address for answers has not been set yet, so no e-mail button is shown.
           </p>
         )}
-        <h2 style={{ fontSize: "1.05rem", color: C.ink, margin: "14px 0 2px" }}>Open questions</h2>
+        <h2 ref={listRef} style={{ fontSize: "1.05rem", color: C.ink, margin: "14px 0 2px", scrollMarginTop: "60px" }}>Open questions</h2>
+        {day && (
+          <div style={{ border: `1px solid ${C.gold}`, background: C.goldFaint, borderRadius: "6px", padding: "8px 12px", margin: "8px 0", fontSize: "0.84rem", color: C.inkMid }}>
+            Showing only the questions about <strong>{new Date(`2024-${day}T12:00:00`).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</strong>, the day you came from.
+            {' '}<span role="button" onClick={() => setDay(null)} style={{ color: C.gold, cursor: "pointer", borderBottom: `1px dotted ${C.gold}` }}>show all</span>
+          </div>
+        )}
         <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center", margin: "8px 0" }}>
           <span style={{ fontSize: "0.72rem", color: C.inkLight }}>Group by</span>
           <button style={btn(groupBy === 'source')} onClick={() => setGroupBy('source')}>Source work</button>

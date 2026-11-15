@@ -36,7 +36,7 @@ function OcaText({ text }) {
 const btn = (color, on) => ({ fontFamily: SERIF, fontSize: "0.76rem", cursor: "pointer", padding: "3px 10px", borderRadius: "4px",
   border: `1px solid ${color}`, background: on ? color : "#fff", color: on ? "#fff" : color });
 
-function Card({ id, m, d, set }) {
+function Card({ id, m, d, set, onDay }) {
   const cands = [{ mate: m.mate, mateHash: m.mateHash, score: m.score, text: m.mateText, tones: m.mateTones, top: true }, ...(m.others || [])];
   const rejected = new Set(d?.reject ?? []);
   const state = d?.none ? 'none' : d?.confirm ? 'confirm' : rejected.size ? 'reject' : null;
@@ -70,6 +70,7 @@ function Card({ id, m, d, set }) {
               <span>{c.top ? 'Proposed mate' : `Candidate ${i + 1}`}</span>
               {href ? <a href={href} style={{ color: C.gold, fontFamily: "monospace", fontSize: "0.7rem" }}>{c.mate}</a> : <span style={{ fontFamily: "monospace", fontSize: "0.7rem" }}>{c.mate}</span>}
               <span>wording {c.score}</span>
+              {onDay && onDay.has(c.mateHash) && <span style={{ color: C.green, fontWeight: 700 }}>a hymn of the day you came from</span>}
               {c.tones && c.tones.length > 0 && <span style={{ color: toneDiffers ? C.red : C.inkLight, fontWeight: toneDiffers ? 700 : 400 }}>Tone {c.tones.join('/')}{toneDiffers ? ` (the OCA: Tone ${m.tone})` : ''}</span>}
             </div>
             <div style={{ fontFamily: SERIF, fontSize: "0.92rem", lineHeight: 1.55, color: C.ink, margin: "4px 0 6px" }}>{c.text}</div>
@@ -100,15 +101,24 @@ export default function OcaMatchReview() {
   const [show, setShow] = useState('all');         // all | waiting | decided
   const [why, setWhy] = useState('any');
   const [out, setOut] = useState(null);
+  // Opened from the Hours tool's "waiting for review on this day" line: only the items
+  // that touch that day's hymns (?ids=), with those hymns marked among the candidates (?on=).
+  const [dayFilter, setDayFilter] = useState(() => {
+    try { const p = new URLSearchParams(window.location.search); const ids = (p.get('ids') || '').split(',').filter((x) => /^o[0-9a-f]{10}$/.test(x));
+      if (!ids.length) return null;
+      const day = /^\d{4}-\d\d-\d\d$/.test(p.get('day') || '') ? p.get('day') : null;
+      return { ids: new Set(ids), on: new Set((p.get('on') || '').split(',').filter((x) => /^m[0-9a-f]+$/.test(x))), day };
+    } catch { return null; }
+  });
   useEffect(() => { import('../data/oca_hymns/matches_review.js').then((m) => setReview(m.OCA_MATCHES_REVIEW)); }, []);
   useEffect(() => { try { localStorage.setItem(KEY, JSON.stringify(dec)); } catch { /* private mode: decisions last for this visit only */ } }, [dec]);
 
   const isDecided = (d) => !!d && (d.none || !!d.confirm || (d.reject && d.reject.length > 0));
   const set = (id, d) => setDec((all) => { const next = { ...all }; if (isDecided(d) || d?.note) next[id] = { ...d, decided: today() }; else delete next[id]; return next; });
-  const ids = useMemo(() => (review ? Object.keys(review).sort((a, b) => review[b].score - review[a].score) : []), [review]);
-  const reasons = useMemo(() => { const r = {}; for (const id of ids) for (const w of review[id].why) { const k = w.replace(/:.*/, '').replace(/a Menaion hymn in Tone.*/, 'another tone is closer'); r[k] = (r[k] || 0) + 1; } return r; }, [ids, review]);
+  const ids = useMemo(() => (review ? Object.keys(review).filter((id) => !dayFilter || dayFilter.ids.has(id)).sort((a, b) => review[b].score - review[a].score) : []), [review, dayFilter]);
+  const reasons = useMemo(() => { const r = {}; for (const id of ids) for (const w of review[id].why) { const k = w.replace(/^(the OCA text|our text) names.*/, 'a name is in one text only').replace(/:.*/, '').replace(/a Menaion hymn in Tone.*/, 'another tone is closer'); r[k] = (r[k] || 0) + 1; } return r; }, [ids, review]);
   const shown = ids.filter((id) => (show === 'all' || (show === 'decided') === isDecided(dec[id]))
-    && (why === 'any' || review[id].why.some((w) => w.replace(/:.*/, '').replace(/a Menaion hymn in Tone.*/, 'another tone is closer') === why)));
+    && (why === 'any' || review[id].why.some((w) => w.replace(/^(the OCA text|our text) names.*/, 'a name is in one text only').replace(/:.*/, '').replace(/a Menaion hymn in Tone.*/, 'another tone is closer') === why)));
   const decidedIds = ids.filter((id) => isDecided(dec[id]));
 
   const exportText = () => JSON.stringify(decidedIds.map((id) => {
@@ -139,9 +149,18 @@ export default function OcaMatchReview() {
         </div>
         <div style={{ fontSize: "0.78rem", color: C.inkLight, lineHeight: 1.5, margin: "6px 0 10px" }}>
           Your choices are kept in this browser only. When you are done, press <strong>Copy decisions</strong>, then
-          <strong> E-mail them</strong> and paste the copied text into the message. Nothing in the tool changes until they are applied.
+          <strong> E-mail them</strong> and paste the copied text into the message. What you send is a suggestion: it is read and approved
+          before anything in the tool changes.
           {' '}<a href="/orthodox-hours/questions?from=tool" style={{ color: C.gold }}>Other ways to help</a>
         </div>
+        {dayFilter && (
+          <div style={{ border: `1px solid ${C.gold}`, background: "rgba(139,105,20,0.08)", borderRadius: "6px", padding: "8px 12px", margin: "8px 0", fontSize: "0.84rem", color: C.inkMid }}>
+            Showing only the {ids.length === 1 ? 'item that touches' : `${ids.length} items that touch`} the hymns of{' '}
+            <strong>{dayFilter.day ? new Date(dayFilter.day + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'the day you came from'}</strong>.
+            {' '}A candidate marked <span style={{ color: C.green, fontWeight: 700 }}>a hymn of the day you came from</span> is one our books give for that day: on the Menaion's page for it, or a Sunday hymn of its tone.
+            {' '}<span role="button" onClick={() => setDayFilter(null)} style={{ color: C.gold, cursor: "pointer", borderBottom: `1px dotted ${C.gold}` }}>show all</span>
+          </div>
+        )}
         {!review ? <div style={{ color: C.inkLight, fontStyle: "italic" }}>loading…</div> : (
           <>
             <div style={{ position: "sticky", top: "var(--hours-return-strip-h, 0px)", background: C.parchment, zIndex: 5, padding: "8px 0", borderBottom: `1px solid ${C.border}` }}>
@@ -169,7 +188,7 @@ export default function OcaMatchReview() {
               </div>
             )}
             <div style={{ fontSize: "0.76rem", color: C.inkLight, margin: "10px 0 0" }}>{shown.length} shown, strongest wording first.</div>
-            {shown.map((id) => <Card key={id} id={id} m={review[id]} d={dec[id]} set={set} />)}
+            {shown.map((id) => <Card key={id} id={id} m={review[id]} d={dec[id]} set={set} onDay={dayFilter ? dayFilter.on : null} />)}
           </>
         )}
       </div>

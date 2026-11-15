@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.57.0** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
+**Tool version: v0.58.0** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,32 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### v0.58.0 — review BY DAY; outside decisions are SUGGESTIONS (15 Nov 2026)
+
+**RULED BY BILL, 15 Nov:** "outside decisions land as suggestions (even from priests)
+that you present for approval through me." Only Bill's decisions are applied.
+
+- **The day line** (`hours-tool.jsx`, header strip, always visible, not in the reading
+  flow or the bulletin): "Waiting for review on this day: N OCA matches · M open
+  questions". `reviewForDay(date, tone)`: the day's HYMNS = every text on the Menaion
+  page of the date + the tone's Sunday troparion and kontakion; an OCA review item
+  counts if any of its candidates is one of them (`matches_review_index.js`, GENERATED
+  by the matcher: text key -> review ids; ~20 KB, lazy). Questions: unanswered rows
+  whose `path` begins with the date. For Vespers the day is the NEXT day.
+- **Filtered pages, no new page:** `/oca-matches?day=YYYY-MM-DD&ids=...&on=...` (cards
+  limited to those ids; candidates in `on` marked "a hymn of the day you came from";
+  "show all"), `/questions?day=MM-DD` (same, list scrolled into view).
+- The card ALREADY lets a reviewer confirm the 2nd or 3rd candidate (I told Bill
+  otherwise; wrong). 15 Nov's troparion: its true mate is Candidate 3.
+- **Suggestions:** `tools/apply_match_decisions.mjs --suggest <file> --role "<role>"`
+  files them in `tools/encoding/oca_hymns/suggestions.json` (role, never a name or
+  address; the tool refuses one); `--pending` lists; `--approve all|ids` applies with
+  "suggested by: <role> (<date>); approved by Bill <date>" in the note; `--decline ids`.
+  **An e-mail with the subject "OCA match decisions" is ALWAYS a suggestion.** Bill's
+  own pasted decisions go in directly, as before. The review page tells the reviewer so.
+  Answers to open questions were already recorded as `responses`, never as rulings.
+- Hours mount gate: the line and both links (11-15; 11-28 Vespers -> 11-29).
 
 ### v0.57.0 — Prefer OCA: the Octoechos half (Sunday troparion and kontakion) (15 Nov 2026)
 

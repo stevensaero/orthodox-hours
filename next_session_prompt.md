@@ -1,6 +1,6 @@
-# Next-session kickoff — encoding the Menaion (v0.57.0 and after)
+# Next-session kickoff — encoding the Menaion (v0.58.0 and after)
 
-State at handoff: **v0.57.0**. `v2-wirein` is merged; the summarized Menaion is
+State at handoff: **v0.58.0**. `v2-wirein` is merged; the summarized Menaion is
 deleted; the full capture in `src/data/menaion_v2/` drives the Hours, Vespers,
 the Typica and the Divine Liturgy. The consolidated state, rulings and the owed
 list are the FIRST blocks of `project_notes.md` (start with "v0.53.0 — THE
@@ -53,7 +53,7 @@ encoded: capture its OCA document if there is one
 (`python3 tools/encoding/oca_hymns/extract.py <docx-dir>`), then
 `node tools/match_oca_hymns.mjs` and commit the regenerated files. Next there:
 Bill's spot-check of the automatic bar (`--sample` writes `oca_match_sample.md`);
-applying decisions from the review page (pasted by Bill, or e-mailed with the subject "OCA match decisions"; `node tools/apply_match_decisions.mjs <file>`); step 4 (OCA stichera in the services and
+applying decisions from the review page: ONLY BILL'S are applied (`node tools/apply_match_decisions.mjs <file>` for text he pastes). Anything e-mailed with the subject "OCA match decisions", even from a priest, is a SUGGESTION: file it with `--suggest <file> --role "<role>"`, present it to Bill, and `--approve` only what he approves (ruled 15 Nov 2026); step 4 (OCA stichera in the services and
 hymn-by-hymn answer-key gates); the Octoechos viewer's toggle.
 
 **Also owed (ask Bill which first):**

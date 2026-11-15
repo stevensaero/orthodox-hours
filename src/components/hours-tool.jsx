@@ -12,7 +12,7 @@ import { DAILY_TROPARIA, DAILY_TROPARIA_SOURCE } from '../data/liturgy/daily_tro
 import { resolveLiturgyPropers } from '../lib/liturgy-propers.js';
 import { resolveHoursPropers } from '../lib/hours-propers.js';
 import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya, resolveVespersTroparia, resolveVespersReadings } from '../lib/vespers-propers.js';
-import { stripCaret, ocaMatesFor, ocaMate } from '../data/oca_hymns/index.js';
+import { stripCaret, ocaMatesFor, ocaMate, textsUnder, textKey } from '../data/oca_hymns/index.js';
 import { loadMenaionV2Month, loadMenaionV2General } from '../data/menaion_v2/index.js';
 import { ods3OrderFor } from '../data/ods_v3/orders.js';
 import { buildBulletinDay } from '../lib/bulletin-day.js';
@@ -896,6 +896,26 @@ async function _loadOctoOca(tone) {
   if (tone in _ocaOctoCache) return;
   const map = await ocaMatesFor([OctoV2.getV2Troparion(tone), OctoV2.getV2Kontakion(tone)].filter(Boolean).map((n) => n.text));
   _ocaOctoCache[tone] = map.size ? map : null;
+}
+// ── "Waiting for review on this day" (Bill, 15 Nov 2026) ──────────────────────
+// The day's own hymns are where a reader notices a deficiency, so the header says
+// how many open items touch them and links to the two review pages, filtered.
+// "This day" is the HYMNS the tool shows for it (the Menaion page of the date and
+// the tone's Sunday troparion and kontakion), never the date of an OCA text.
+let _reviewIndex = null, _openQuestions = null;
+const _loadReviewData = () => Promise.all([
+  _reviewIndex ? null : import('../data/oca_hymns/matches_review_index.js').then((m) => { _reviewIndex = m.OCA_REVIEW_INDEX; }),
+  _openQuestions ? null : import('../data/open_questions.js').then((m) => { _openQuestions = m.default; }),
+]);
+function reviewForDay(dateObj, tone) {
+  if (!_reviewIndex || !_openQuestions) return null;
+  const mm = String(dateObj.getMonth() + 1).padStart(2, "0"); const key = `${mm}-${String(dateObj.getDate()).padStart(2, "0")}`;
+  const day = (_menaionV2Cache[mm] || {})[key];
+  const texts = [...(day ? textsUnder(day) : []), ...[OctoV2.getV2Troparion(tone), OctoV2.getV2Kontakion(tone)].filter(Boolean).map((n) => n.text)];
+  const ids = new Set(), on = new Set();
+  for (const k of new Set(texts.map(textKey))) for (const id of _reviewIndex[k] || []) { ids.add(id); on.add(k); }
+  const questions = _openQuestions.filter((q) => q.status !== 'answered' && typeof q.path === 'string' && q.path.startsWith(key + '.'));
+  return { key, ids: [...ids].sort(), on: [...on].sort(), questions: questions.length };
 }
 const octoOca = (n) => {
   const o = n && _preferOcaNow ? ocaMate(_ocaOctoCache[n.tone], n) : null;
@@ -8544,6 +8564,20 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.58.0",
+    date: "November 2026",
+    summary: "The day's header says what is waiting for review on that day",
+    items: [
+      "Under the date, a quiet line now says how many open items touch the hymns of the day " +
+      "you have chosen: OCA matches the tool was not sure of, and open questions about that " +
+      "day's page. It links to each, showing only those items.",
+      "On the match review page a candidate that is one of that day's hymns is marked, and " +
+      "'show all' returns to the full list.",
+      "What a reviewer sends in is a suggestion. It is read and approved before anything in " +
+      "the tool changes.",
+    ],
+  },
+  {
     version: "v0.57.0",
     date: "November 2026",
     summary: "Prefer OCA texts now reaches the Sunday troparion and kontakion",
@@ -16043,6 +16077,7 @@ export default function App() {
       _loadPentecostarion(),
       _loadOctoOca(toneForDate),
       _loadOctoOca(toneForVespers),
+      _loadReviewData(),
     ]).then(() => setDataVersion(v => v + 1));
   }, [selectedDate, templeDedication]);
 
@@ -16691,6 +16726,27 @@ export default function App() {
             {peekName}
           </div>
           )}{/* end row two-and-a-half */}
+
+          {/* ── Open review items that touch this day's hymns. One quiet line; it is in the
+              header strip, so it is not in the reading flow and not on the bulletin. ── */}
+          {(() => {
+            const isVesp = currentService.key === 'vespers';
+            const rv = reviewForDay(isVesp ? parseCalendarDate(vespersNext.vDateStr) : date, (isVesp ? vespersNext.vLit : liturgicalData).tone || 1);
+            if (!rv || (!rv.ids.length && !rv.questions)) return null;
+            const iso = isVesp ? vespersNext.vDateStr : selectedDate;
+            const a = { color: "#8B6914", textDecoration: "none", borderBottom: "1px dotted #8B6914" };
+            return (
+              <div style={{ padding: "0 10px 6px 0", textAlign: "center", fontSize: "0.72rem", color: "#8B7040" }}
+                   title="Places in this day's services where the tool is not yet sure, or where two sources differ. Your answer helps settle them.">
+                Waiting for review on this day:{" "}
+                {rv.ids.length > 0 && <a style={a} href={"/orthodox-hours/oca-matches?day=" + iso + "&ids=" + rv.ids.join(",") + "&on=" + rv.on.join(",") + "&from=tool"}>
+                  {rv.ids.length} OCA {rv.ids.length === 1 ? "match" : "matches"}</a>}
+                {rv.ids.length > 0 && rv.questions > 0 && " · "}
+                {rv.questions > 0 && <a style={a} href={"/orthodox-hours/questions?day=" + rv.key + "&date=" + iso + "&from=tool"}>
+                  {rv.questions} open {rv.questions === 1 ? "question" : "questions"}</a>}
+              </div>
+            );
+          })()}
 
           {/* ── LITURGICAL CONTEXT BODY — inside maxWidth wrapper, aligns with rows ── */}
           {contextOpen && (() => {
