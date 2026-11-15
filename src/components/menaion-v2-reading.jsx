@@ -122,7 +122,7 @@ function pointed(text) {
 }
 
 export function RText({ node, path, label }) {
-  const { mode, oca } = useContext(ReadingContext);
+  const { mode, oca, openOca } = useContext(ReadingContext);
   if (isAbsence(node)) return <RAbsence node={node} path={path} />;
   if (!isTextNode(node)) return null;
   // The id IS the hymn's stored path ("11-15.c0.troparion"): the address the Hours
@@ -152,10 +152,14 @@ export function RText({ node, path, label }) {
       {mate && (
         <span title={`OCA text from the service text for ${mate.from.date}${mate.from.head ? ` (${mate.from.head})` : ''}. `
                      + (mate.by === 'human' ? 'Match confirmed by a person.' : mate.by === 'auto' ? `Matched automatically: ${(mate.evidence || []).join('; ')}.` : 'Appointed by the OCA for this day in the place of this hymn.')
+                     + (openOca ? ' Click to see it in the OCA service text.' : '')
                      + ` The Menaion prints: ${node.text}`}
+              role={openOca ? "button" : undefined} tabIndex={openOca ? 0 : undefined}
+              onClick={openOca ? () => openOca(mate) : undefined}
+              onKeyDown={openOca ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openOca(mate); } } : undefined}
               style={{ fontFamily: SERIF, fontSize: "0.62rem", letterSpacing: "0.06em", color: C.gold, border: `1px solid ${C.gold}`,
-                       borderRadius: "3px", padding: "0 4px", marginRight: "6px", textIndent: 0, whiteSpace: "nowrap", cursor: "help" }}>
-          OCA {mate.from.date.slice(0, 4)}
+                       borderRadius: "3px", padding: "0 4px", marginRight: "6px", textIndent: 0, whiteSpace: "nowrap", cursor: openOca ? "pointer" : "help" }}>
+          OCA {mate.from.date.slice(0, 4)}{openOca ? ' ↗' : ''}
         </span>
       )}
       {lines

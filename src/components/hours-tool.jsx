@@ -8525,6 +8525,20 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 
 const RELEASE_NOTES = [
   {
+    version: "v0.56.3",
+    date: "November 2026",
+    summary: "The OCA badge opens the OCA service text; 6 September troparion corrected",
+    items: [
+      "In the Menaion, the 'OCA 2026' badge on a hymn can now be clicked. It opens the OCA " +
+      "service text the words came from, at that hymn, highlighted. 'Back to the Menaion' " +
+      "returns you to the place you left.",
+      "With 'Prefer OCA texts' on, 6 September showed the OCA's plural 'O Commanders of the " +
+      "heavenly hosts' (its text for the Bodiless Powers, 8 November) in the place of the " +
+      "singular troparion of the Archangel Michael. That match is rejected; the St. Sergius " +
+      "troparion is shown until a match for it is confirmed.",
+    ],
+  },
+  {
     version: "v0.56.2",
     date: "November 2026",
     summary: "The 'source' link opens the Menaion at the hymn itself",

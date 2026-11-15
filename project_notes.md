@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.56.2** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
+**Tool version: v0.56.3** | **Tone Trainer: v0.26.0** | Last synced: November 15, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,28 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### v0.56.3 — the OCA badge opens the OCA text; 09-06 plural "O Commanders" rejected (15 Nov 2026)
+
+- **OCA badge (Bill, 15 Nov):** in the Menaion viewer the "OCA 2026 ↗" badge on a hymn
+  is a button: `ReadingContext.openOca(mate)` -> `setOcaFocus(mate.id)`,
+  `setOcaDoc(mate.from.doc)`. `OcaDocView` got `focusLabel` ("the hymn you came from";
+  the review page's links keep "the hymn under review"). "← back to the Menaion"
+  restores the scroll position (`ocaReturn` ref). The archive notice shows as for any
+  other-year text. Gate: a click case in the viewer mount gate.
+  The whole chain now reads: Hours tool hymn -> "source" -> our book at the hymn (OCA
+  words if matched) -> badge -> the OCA service text at the hymn.
+
+- **Bill, 15 Nov: "I'd reject and send to review."** `oc900d62fa2` (OCA 8 Nov, Bodiless
+  Powers, plural) against our 09-06 troparion (singular): recorded in `matches_human.js`
+  as a rejected candidate. Automatic 185 -> 184. Nothing else comes within 0.3 of it,
+  so it is not on the review page (the page lists only hymns with a candidate); it
+  will be looked at again when 11-08 is encoded and our plural troparion is in the pool.
+- On the review page for 09-06 stands the OCA's own 6 Sept troparion "O Michael,
+  commander..." (held by the NAMES rule: the OCA names Michael, ours names no one).
+- 09-06 shows the St. Sergius troparion under Prefer OCA until Bill decides that one.
+- **Not a rule yet:** a general hymn changed in NUMBER (singular/plural) is not detected
+  by the matcher; this one was caught by eye. If more turn up, it wants a rule.
 
 ### v0.56.2 — "source" links land ON the hymn (15 Nov 2026)
 

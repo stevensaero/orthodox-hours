@@ -254,6 +254,7 @@ export default function MenaionV2Browser() {
   const [ocaMap, setOcaMap] = useState(null);         // Map<text key, OCA hymn> for the commemoration on the page
   const [ocaDoc, setOcaDoc] = useState(null);         // an OCA service text opened whole (its file stem)
   const [ocaListOpen, setOcaListOpen] = useState(false);
+  const ocaReturn = useRef(null);                     // where the reader was when an OCA badge took them to the OCA text
   const [ocaFocus, setOcaFocus] = useState(null);     // an OCA hymn id to show in place (?at=, from the review page)
   // The year the reader stands in: the Hours tool's date (?date=YYYY-MM-DD) when it
   // sent one, else the calendar year. An OCA service text belongs to its date IN ITS
@@ -666,9 +667,13 @@ export default function MenaionV2Browser() {
             ) : ocaDoc ? (
               <div style={readingCard}>
                 <div style={{ textAlign: "right", fontSize: "0.72rem", marginBottom: "6px" }}>
-                  <span onClick={() => setOcaDoc(null)} style={{ color: C.gold, cursor: "pointer", borderBottom: `1px dotted ${C.gold}` }}>← back to the Menaion</span>
+                  <span onClick={() => { const back = ocaReturn.current; ocaReturn.current = null; setOcaDoc(null);
+                    // Back to the hymn the reader left, not to the top of the page.
+                    if (back) requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo(0, back.y))); }}
+                        style={{ color: C.gold, cursor: "pointer", borderBottom: `1px dotted ${C.gold}` }}>← back to the Menaion</span>
                 </div>
-                <OcaDocView stem={ocaDoc} focusId={ocaFocus} year={year} stickyTop={`calc(var(--hours-return-strip-h, 0px) + ${headerH + 6}px)`} />
+                <OcaDocView stem={ocaDoc} focusId={ocaFocus} year={year} stickyTop={`calc(var(--hours-return-strip-h, 0px) + ${headerH + 6}px)`}
+                            {...(ocaReturn.current ? { focusLabel: ocaReturn.current.label } : {})} />
               </div>
             ) : generalType && entry ? (
               audit ? (
@@ -716,7 +721,9 @@ export default function MenaionV2Browser() {
                 <Generic value={entry} path="" fieldKey={null} />
               </div>
             ) : (
-              <ReadingContext.Provider value={{ mode, sics: {}, prefix, showRubrics, oca: preferOca ? ocaMap : null }}>
+              <ReadingContext.Provider value={{ mode, sics: {}, prefix, showRubrics, oca: preferOca ? ocaMap : null,
+                  // The OCA badge on a hymn opens the OCA service text it came from, at that hymn.
+                  openOca: (m) => { ocaReturn.current = { y: window.scrollY, label: 'the hymn you came from' }; setOcaFocus(m.id); setOcaDoc(m.from.doc); } }}>
                 <div style={readingCard}>
                   {ReadingToggles}
                   <RCommemoration entry={entry} path={`${dateKey}.c${cIdx}`} />

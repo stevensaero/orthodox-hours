@@ -61,6 +61,10 @@ async function visit(url, label, expectText, opts = {}) {
     // Every hymn the services take from this page must be findable by its stored path:
     // that path is what the Hours tool's "source" link carries (#11-15.c0.troparion).
     for (const id of opts.ids ?? []) if (!window.document.getElementById(id)) errors.push(`${label}: no element with id ${JSON.stringify(id)}; a "source" link to this hymn would not find it`);
+    // `clickOca`: click the first OCA badge, as a reader would; the OCA text must open at that hymn.
+    if (opts.clickOca) { const b = [...window.document.querySelectorAll('[role="button"]')].find((x) => /^OCA \d{4}/.test(x.textContent.trim()));
+      if (!b) errors.push(`${label}: no OCA badge to click`); else { b.click(); await sleep(400); const t2 = window.document.body.textContent;
+        for (const t of opts.clickOca) if (!t2.includes(t)) errors.push(`${label}: after clicking the OCA badge, expected ${JSON.stringify(t)}`); } }
     if (expectText && !text.includes(expectText)) errors.push(`${label}: expected text not on the page: ${JSON.stringify(expectText.slice(0, 60))}`);
     // the audit view, by clicking the page's own button
     const auditBtn = [...window.document.querySelectorAll('button')].find(b => b.textContent.trim() === 'Audit');
@@ -106,6 +110,9 @@ await visit('https://example.org/orthodox-hours/menaion-v2?oca=2026-1115-texts-t
   must: ['ARCHIVE. Published by the OCA for November 15, 2026.', 'Do not use it liturgically outside 2026.'] });
 await visit('https://example.org/orthodox-hours/menaion-v2?oca=2026-1115-texts-tt-&date=2026-11-15', '11-15 in 2026: the text', null, { wait: 300,
   must: ['OCA service text for November 15, 2026', 'It was issued for this day in 2026'], mustNot: ['ARCHIVE.', 'Do not use it liturgically'] });
+// The OCA badge on a hymn opens the OCA service text it came from, at that hymn.
+await visit('https://example.org/orthodox-hours/menaion-v2?comm=11-15&date=2026-11-15', '11-15: the OCA badge', null, { preferOca: true, wait: 400,
+  clickOca: ['the hymn you came from', 'OCA service text for', 'back to the Menaion'] });
 // No year given: the calendar year stands in.
 { const now = new Date().getFullYear() === 2026;
   await visit('https://example.org/orthodox-hours/menaion-v2?comm=11-15', '11-15, no year given', null, { wait: 400,

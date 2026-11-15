@@ -35,7 +35,7 @@ function Lines({ text }) {
  *                 highlighted and the first is scrolled to (the review page's
  *                 "open the OCA text", so its place in the service can be seen)
  */
-export default function OcaDocView({ stem, focusId = null, year = new Date().getFullYear(), stickyTop = 0 }) {
+export default function OcaDocView({ stem, focusId = null, year = new Date().getFullYear(), stickyTop = 0, focusLabel = 'the hymn under review' }) {
   const [doc, setDoc] = useState(undefined);
   const first = useRef(null);
   useEffect(() => { let live = true; setDoc(undefined); loadOcaDoc(stem).then((d) => { if (live) setDoc(d ?? null); }); return () => { live = false; }; }, [stem]);
@@ -78,7 +78,7 @@ export default function OcaDocView({ stem, focusId = null, year = new Date().get
                style={{ fontSize: "0.95rem", lineHeight: 1.6, margin: "6px 0 10px", textDecoration: b.underlined === 'all' ? "underline" : "none",
                         ...(hit ? { background: "rgba(139,105,20,0.14)", borderLeft: `3px solid ${C.gold}`, padding: "6px 10px", borderRadius: "3px" } : {}) }}>
             {hit && <div style={{ fontSize: "0.68rem", letterSpacing: "0.08em", color: C.gold, textTransform: "uppercase", marginBottom: "2px" }}>
-              the hymn under review{hits > 1 ? ` (printed ${hits} times in this text; this is no. ${seen})` : ''}</div>}
+              {focusLabel}{hits > 1 ? ` (printed ${hits} times in this text; this is no. ${seen})` : ''}</div>}
             <Lines text={b.text} />
             {b.repeat && <div style={{ fontStyle: "italic", fontSize: "0.8rem", color: C.inkMid }}>({b.repeat})</div>}
           </div>
