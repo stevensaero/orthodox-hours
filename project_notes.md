@@ -1,5 +1,5 @@
 # Orthodox Hours Tool — Project Notes
-**Tool version: v0.53.3** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
+**Tool version: v0.54.0** | **Tone Trainer: v0.26.0** | Last synced: November 14, 2026
 
 **`bulletin_layout_spec.md` (repo root) is the reference for the layout engine.**
 How line counts are computed, how columns and pages are packed, how the budget
@@ -28,6 +28,83 @@ service.** Read it before touching anything under `src/data/liturgy/` or writing
 > covers the PDFs, `entries/`, the repaired full text, the index and the pilot
 > JSON. The repo may cite an entry by id and page and quote a short rubric
 > phrase in a note; nothing more.
+
+### v0.54.0 — OCA TEXTS: library, match register, and the Menaion viewer (15 Nov 2026)
+
+**Direction (Bill, 15 Nov).** Alongside the Menaion encoding, use the OCA
+service texts (a) to CHECK the tool's Vespers, Liturgy, Litiya and Vigil flows
+and (b) to MAP each OCA hymn to its mate in the St. Sergius books, so the
+capture grows over time. RULED:
+- **Hymn by hymn.** Each OCA hymn is matched and shown on its own; a group of
+  stichera may be part OCA, part St. Sergius, each marked with its source.
+- **Tags.** `by: 'auto'` when confidence is high; `by: 'human'` when a person
+  decided. Both keep their evidence.
+- **Reuse.** A confirmed match is hymn to hymn: good for any year, day or tone.
+  The OCA text carries its source document and date wherever it is shown.
+- **A document is for its date in its year only.** Its ORDER and SELECTION are
+  an answer key for that date, never reused for another year. What is sung is
+  decided by the Menaion and Fekula; a mate only supplies the translation.
+- **Prior years.** Once prior-year OCA texts are captured, the tool's output for
+  a past date is compared with what the OCA printed for it (and they add
+  matches of their own). Any date the Menaion holds can be checked now.
+- **Record a repeating part once** (the tone cycle repeats).
+
+**Three layers, kept apart** (`src/data/oca_hymns/`):
+1. `docs/<stem>.js` — each document whole, by date and year. GENERATED.
+2. `library.js` — a hymn printed in MORE THAN ONE document, once, by `id`
+   (`'o'` + 10 hex of SHA-1 of its exact text). Its blocks carry the id and no
+   text; `loadOcaDoc()` puts the words back. 1,842 hymns, 1,141 distinct, 283 in
+   the library. `manifest.js` holds a SHA-256 of each document as read from the
+   docx; `validate_oca_hymns.mjs` rebuilds each and compares (mutation-tested).
+3. The match register: `matches_auto.js` (GENERATED), `matches_human.js`
+   (HAND-KEPT, always wins, `mate: null` = "decided: no mate"),
+   `matches_review.js` (GENERATED, candidates only, used nowhere).
+   A mate is named by path AND by `mateHash` = `textKey(text)`
+   (`text_key.js`, cyrb53, same in browser and tools). Lookup at run time is by
+   the hash of a hymn's text, so a mate is found wherever that text is printed.
+   The validator fails if the text at a mate's path has changed.
+
+**The matcher** (`tools/match_oca_hymns.mjs`, pool in `tools/lib/hymn_pool.mjs`:
+10,597 distinct hymns of the Menaion and Octoechos). Evidence: weighted shared
+wording, margin over the next DIFFERENT hymn (near-identical prints are not
+rivals), tone, special melody, same date. Auto bar: wording ≥ 0.5, margin ≥
+0.15, tone not in conflict. **THE BAR IS PROVISIONAL: Bill is to spot-check
+`oca_match_sample.md` (`--sample`) and set it.** Not matched at all: psalm
+verses and fixed texts (the opening of "Lord, I call", prokeimena, Alleluia,
+communion hymns, readings, "Glory to the Father"), anything under 60 characters.
+First run: 184 auto, 217 review, 392 none (mostly dates not yet encoded), 348
+not hymns. On the 12 documents whose date the Menaion holds: 57% auto, 38%
+review, 5% none. In the sample every auto match read was a true mate; most held
+ones are true too (held for a close second, usually an irmos printed in several
+books in slightly different words). `npm run validate` now runs the OCA
+validator and `match_oca_hymns.mjs --check`, so **after any encoding session
+run `node tools/match_oca_hymns.mjs`** (new hymns bring new matches).
+
+**The viewer** (`menaion-v2-browser.jsx`, `menaion-v2-reading.jsx`,
+`oca-doc-view.jsx`): "Prefer OCA texts" (the tool's own `prefer_oca` setting);
+a matched hymn shows the OCA words, underlined pointing, an "OCA 2026" mark
+whose tooltip gives source, how it was matched, and the Menaion's words. Also
+shown: the troparion and kontakion the OCA appointed for the day (`slots.js`),
+marked the same way. The audit view never swaps. Rail: "OCA SERVICE TEXTS (45)"
+by date, and "OCA text for this day"; `?oca=<stem>` deep-links. Mount gate: 77
+visits (toggle on/off on 11-15, all 45 documents).
+
+**NOT YET (the next steps):**
+- Step 4: Prefer OCA in the SERVICES beyond troparion/kontakion (stichera,
+  aposticha, Litiya), and the answer-key gates comparing hymn by hymn.
+- Step 5: carry-over wording in the services ("OCA text (from the 2026 text)").
+- A review page for `matches_review.js` (217 waiting), like Questions for review.
+- The Octoechos viewer has no toggle yet, though 8,000+ of the pool is Octoechos.
+- `slots.js` (date → appointed troparion/kontakion) is still separate from the
+  register: a slot says "fills this place", which is not always "is a
+  translation of" (09-27's kontakion is a different hymn).
+- Notes (psalm verses) repeat across documents too and are not deduplicated.
+
+**Found on the way:** `tone7.js` and `tone8.js` each had `"tone": 6` at their
+head (carried over from the generator they were adapted from, July 2026).
+Nothing read it. Corrected in the data files; the validator now checks it.
+`gen_tone7_sun.py` / `gen_tone8_sun.py` were NOT traced: re-running them could
+bring it back, and the gate would then fail.
 
 ### v0.53.3 — bulletin: OCA [bracketed] syllables are underlined (15 Nov 2026)
 

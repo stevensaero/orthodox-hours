@@ -21,6 +21,7 @@
 
 import React, { useContext, createContext } from 'react';
 import { registryLookup, SERVICE_HEADINGS, SERVICE_ORDER } from '../data/menaion_v2/presentation.js';
+import { textKey } from '../data/oca_hymns/text_key.js';
 
 export const ReadingContext = createContext({
   mode: 'printed', sics: {}, prefix: '', showRubrics: true,
@@ -112,12 +113,24 @@ export function RRubric({ node, path, center }) {
   );
 }
 
+// A [bracketed] syllable is the OCA's pointing: underlined, without the brackets.
+// St. Sergius text carries no brackets and passes through unchanged.
+function pointed(text) {
+  if (!text.includes('[')) return text;
+  return text.split(/(\[[^\]]+\])/).map((seg, i) =>
+    (/^\[[^\]]+\]$/.test(seg) ? <u key={i}>{seg.slice(1, -1)}</u> : <React.Fragment key={i}>{seg}</React.Fragment>));
+}
+
 export function RText({ node, path, label }) {
-  const { mode, prefix } = useContext(ReadingContext);
+  const { mode, prefix, oca } = useContext(ReadingContext);
   if (isAbsence(node)) return <RAbsence node={node} path={path} />;
   if (!isTextNode(node)) return null;
   const full = prefix + path;
-  const lines = mode === 'clean' ? splitPointed(node.text) : null;
+  // "Prefer OCA texts": where this hymn has an OCA mate, the OCA's words are
+  // shown in its place, marked, with the book's own text one hover away.
+  const mate = oca ? oca.get(textKey(node.text)) : null;
+  const shownText = mate ? mate.text.replace(/\^/g, '') : node.text;
+  const lines = mode === 'clean' ? splitPointed(shownText) : null;
   return (
     <div id={full} title={node.src ? `${node.src.file} — ${node.src.locus}` : undefined}
          style={{ fontFamily: SERIF, color: C.ink, fontSize: "0.95rem", lineHeight: 1.65,
@@ -133,13 +146,22 @@ export function RText({ node, path, label }) {
           {node.sourceLabel ?? label}
         </span>
       )}
+      {mate && (
+        <span title={`OCA text from the service text for ${mate.from.date}${mate.from.head ? ` (${mate.from.head})` : ''}. `
+                     + (mate.by === 'human' ? 'Match confirmed by a person.' : mate.by === 'auto' ? `Matched automatically: ${(mate.evidence || []).join('; ')}.` : 'Appointed by the OCA for this day in the place of this hymn.')
+                     + ` The Menaion prints: ${node.text}`}
+              style={{ fontFamily: SERIF, fontSize: "0.62rem", letterSpacing: "0.06em", color: C.gold, border: `1px solid ${C.gold}`,
+                       borderRadius: "3px", padding: "0 4px", marginRight: "6px", textIndent: 0, whiteSpace: "nowrap", cursor: "help" }}>
+          OCA {mate.from.date.slice(0, 4)}
+        </span>
+      )}
       {lines
         ? lines.map((l, i) => (
             <div key={i} style={{ paddingLeft: i ? "1.4em" : 0, textIndent: i ? "-1.4em" : 0 }}>
-              {l.t}{l.pen && <span style={{ color: C.inkLight }}> //</span>}
+              {pointed(l.t)}{l.pen && <span style={{ color: C.inkLight }}> //</span>}
             </div>
           ))
-        : <span>{node.text}</span>}
+        : <span>{pointed(shownText)}</span>}
       <SicMark path={full} />
     </div>
   );

@@ -4,13 +4,29 @@
 // date to the OCA hymns that fill its places. Rulings: menaion_v2_wirein_spec.md 0.11, 5c.
 import { OCA_DOCS } from './manifest.js';
 import { OCA_SLOTS } from './slots.js';
+import { textKey } from './text_key.js';
 
+// A hymn printed in more than one document is stored once, in library.js, and its
+// blocks carry only the id. The words are put back here, so every reader of a
+// document gets it whole and as printed.
+let library = null;
+const loadLibrary = () => (library ??= import('./library.js').then((m) => m.default));
 const cache = new Map();
 export async function loadOcaDoc(stem) {
   if (!OCA_DOCS[stem]) return null;
-  if (!cache.has(stem)) cache.set(stem, OCA_DOCS[stem]().then((m) => m.default));
+  if (!cache.has(stem)) cache.set(stem, Promise.all([OCA_DOCS[stem](), loadLibrary()]).then(([m, lib]) => ({
+    ...m.default,
+    blocks: m.default.blocks.map((b) => {
+      if (b.k !== 'text' || b.text != null) return b;
+      const text = lib[b.id];
+      if (text == null) throw new Error(`OCA hymn ${b.id} is not in the library (${stem})`);
+      return { ...b, text, ...(text.includes('[') ? { pointed: true } : {}) };
+    }),
+  })));
   return cache.get(stem);
 }
+// When and where a document was published, for marking a text shown from it.
+export const ocaDocInfo = (stem) => { const m = /^(\d{4})-(\d\d)(\d\d)-texts-(.*)$/.exec(stem); return m ? { stem, year: Number(m[1]), key: `${m[2]}-${m[3]}`, date: `${m[1]}-${m[2]}-${m[3]}`, variant: m[4] } : null; };
 export const ocaStems = () => Object.keys(OCA_DOCS);
 export const ocaStemsForKey = (key) =>
   ocaStems().filter((s) => `${s.slice(5, 7)}-${s.slice(7, 9)}` === key);
@@ -50,7 +66,7 @@ export async function ocaHymn(key, slot) {
   if (!hit) return null;
   return {
     text: hit.text, tier: hit.pointed ? 3 : (hit.n > 1 ? 2 : 1), tone: hit.tone, director: !!hit.pointed,
-    type: slot, source: 'oca', sourceLabel: 'OCA', subject: hit.subject,
+    type: slot, source: 'oca', sourceLabel: 'OCA', subject: hit.subject, id: hit.id, from: { doc: ref.doc, date: doc.date, head: hit.head },
     ...(ref.replaces ? { replaces: ref.replaces } : {}),
     ...(hit.repeat ? { repeat: hit.repeat } : {}), ...(hit.underlined ? { underlined: hit.underlined } : {}),
     src: { file: doc.file, locus: `paragraphs ${hit.p[0]}-${hit.p[1]}` },
@@ -113,3 +129,45 @@ export async function ocaLiturgyPropersFor(key) {
   const doc = ref ? await loadOcaDoc(ref.doc) : null;
   return doc ? ocaLiturgyPropers(doc) : null;
 }
+
+// ─── THE MATCH REGISTER ─────────────────────────────────────────────────────
+// Which hymn of the tool's own books an OCA hymn is (two translations of one
+// hymn). matches_auto.js is written by tools/match_oca_hymns.mjs on evidence
+// (by: 'auto'); matches_human.js is a person's decision (by: 'human') and always
+// wins. A match is hymn to hymn: it holds on any date, in any year.
+let register = null;
+export const loadOcaMatches = () => (register ??= Promise.all([import('./matches_auto.js'), import('./matches_human.js')])
+  .then(([a, h]) => {
+    const byMate = new Map();   // mate's text key -> [{ id, by, first, ... }], a person's decision first
+    const all = { ...a.OCA_MATCHES_AUTO, ...h.OCA_MATCHES_HUMAN };
+    for (const [id, m] of Object.entries(all)) {
+      if (!m.mate || !m.mateHash) continue;            // decided: no mate
+      (byMate.get(m.mateHash) ?? byMate.set(m.mateHash, []).get(m.mateHash)).push({ id, ...m });
+    }
+    for (const list of byMate.values()) list.sort((x, y) => (x.by === y.by ? y.first.doc.localeCompare(x.first.doc) : x.by === 'human' ? -1 : 1));
+    return { all, byMate };
+  }));
+
+// An OCA hymn by id, read from the document it was first matched in.
+export async function ocaHymnById(id, stem) {
+  const doc = await loadOcaDoc(stem);
+  const hit = doc && ocaTexts(doc).find((t) => t.id === id);
+  return hit ? { id, text: hit.text, tone: hit.tone ?? null, pointed: !!hit.pointed, from: { doc: stem, date: doc.date, head: hit.head ?? null } } : null;
+}
+
+/**
+ * The OCA texts for a set of the tool's own hymns.
+ * @param texts  the hymns' texts, exactly as stored
+ * @returns Map<textKey, { id, text, by, from: { doc, date, head }, evidence }>
+ */
+export async function ocaMatesFor(texts) {
+  const { byMate } = await loadOcaMatches(); const out = new Map();
+  for (const key of new Set(texts.map(textKey))) {
+    const m = (byMate.get(key) || [])[0];
+    if (!m) continue;
+    const h = await ocaHymnById(m.id, m.first.doc);
+    if (h) out.set(key, { ...h, by: m.by, evidence: m.evidence ?? null, note: m.note ?? null });
+  }
+  return out;
+}
+export { textKey };

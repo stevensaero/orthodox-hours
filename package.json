@@ -14,7 +14,7 @@
     "preview": "vite preview",
     "refs": "node tools/test_ref_resolution.mjs",
     "snapshot": "node tools/snapshot_comparison.mjs",
-    "validate": "node tools/validate_entries.mjs && node tools/build_temple_index.mjs --check",
+    "validate": "node tools/validate_entries.mjs && node tools/build_temple_index.mjs --check && node tools/validate_oca_hymns.mjs && node tools/match_oca_hymns.mjs --check",
     "temple-index": "node tools/build_temple_index.mjs",
     "validate:liturgy": "node tools/validate_liturgy.mjs"
   },

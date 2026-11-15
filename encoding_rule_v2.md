@@ -1,6 +1,20 @@
-# ENCODING RULE v2.16 — Orthodox Hours Tool
+# ENCODING RULE v2.17 — Orthodox Hours Tool
 **Authority:** Fekula & Williams ODS 3rd ed. vol. III (2009, Menaion) · Fekula & Williams ODS 2nd ed. (2009, all other chapters) · St. Ignatius Orthodox Press Anthologion (2024) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** August 2026 · **Supersedes:** v2.15, v2.14, v2.13, v2.12, v2.11, v2.10, v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+**Updated:** August 2026 · **Supersedes:** v2.16, v2.15, v2.14, v2.13, v2.12, v2.11, v2.10, v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+
+**v2.17 changes (15 Nov 2026) — OCA TEXTS: THE LIBRARY AND THE MATCH REGISTER:**
+- An OCA document is captured whole and is the record for ITS date in ITS year.
+  A hymn printed in more than one document is stored once (`library.js`); the
+  extractor does this, never a hand.
+- An OCA hymn's mate in the Menaion or Octoechos is recorded hymn to hymn in the
+  match register. `by: 'auto'` is written only by `tools/match_oca_hymns.mjs`;
+  a person's decision goes in `matches_human.js` with `by: 'human'`, its date
+  and a note, and is never overwritten. A candidate in `matches_review.js` is
+  not a match and is used nowhere.
+- A mate supplies a TRANSLATION. It never decides what is sung, how many times,
+  or in what order: that is the Menaion's page and Fekula's rule, as before.
+- After encoding a date, run `node tools/match_oca_hymns.mjs`; `npm run
+  validate` fails while the generated match files are stale.
 
 **v2.16 changes (14 Nov 2026) — THE SUMMARIZED MENAION IS RETIRED (v0.53.0):**
 - `src/data/menaion/` (the "V1" month files), its browser and its validator

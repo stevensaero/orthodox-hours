@@ -22,6 +22,9 @@ import { MONTH_LOADERS, MONTH_LABELS, MONTHS, loadMenaionV2General, loadMenaionV
 import { registryLookup, SERVICE_HEADINGS, SERVICE_ORDER } from '../data/menaion_v2/presentation.js';
 import { ANCHOR_RE, SERVICES } from '../data/menaion_v2/schema_menaion_v2.js';
 import { ReadingContext, RCommemoration } from './menaion-v2-reading.jsx';
+import { hymnsOf } from '../data/menaion_v2/adapter.js';
+import { ocaStems, ocaDocInfo, ocaMatesFor, ocaHymn, ocaSlotsForKey, textKey } from '../data/oca_hymns/index.js';
+import OcaDocView from './oca-doc-view.jsx';
 
 // ── palette — IDENTICAL to octoechos-v2-browser.jsx ──────────────────────────
 const C = {
@@ -246,6 +249,12 @@ export default function MenaionV2Browser() {
   // The General Menaion list in the rail: null = decide by what is on the page.
   const [generalOpen, setGeneralOpen] = useState(null);
   const [headerH, setHeaderH] = useState(0);
+  // "Prefer OCA texts": the SAME setting as the Hours tool's (localStorage
+  // `prefer_oca`, on by default), so the book and the services always agree.
+  const [preferOca, setPreferOca] = useState(() => { try { const v = localStorage.getItem('prefer_oca'); return v === null ? true : v === '1'; } catch { return true; } });
+  const [ocaMap, setOcaMap] = useState(null);         // Map<text key, OCA hymn> for the commemoration on the page
+  const [ocaDoc, setOcaDoc] = useState(null);         // an OCA service text opened whole (its file stem)
+  const [ocaListOpen, setOcaListOpen] = useState(false);
   const [q, setQ] = useState('');
   const [results, setResults] = useState(null);
   const headerRef = useRef(null);
@@ -257,6 +266,8 @@ export default function MenaionV2Browser() {
     if (typeof window === 'undefined') return;
     const p = new URLSearchParams(window.location.search);
     const comm = p.get('comm');
+    const oca = p.get('oca');
+    if (oca && ocaDocInfo(oca)) setOcaDoc(oca);
     if (comm && /^\d{2}-\d{2}$/.test(comm)) { setMm(comm.slice(0, 2)); setDateKey(comm); }
     const hash = window.location.hash ? decodeAnchor(window.location.hash.slice(1)) : '';
     if (hash) {
@@ -298,6 +309,7 @@ export default function MenaionV2Browser() {
 
   useEffect(() => { try { localStorage.setItem('menRdgMode', mode); } catch {} }, [mode]);
   useEffect(() => { try { localStorage.setItem('menRdgRub', showRubrics ? '1' : '0'); } catch {} }, [showRubrics]);
+  useEffect(() => { try { localStorage.setItem('prefer_oca', preferOca ? '1' : '0'); } catch {} }, [preferOca]);
 
   const dates = useMemo(() => (data ? Object.keys(data).sort() : []), [data]);
   const dateObj = dateKey && data ? data[dateKey] : null;
@@ -312,12 +324,52 @@ export default function MenaionV2Browser() {
                : generalType ? `general.${generalType}.`
                : (dateKey ? `${dateKey}.c${cIdx}.` : '');
   const generalTypes = useMemo(() => Object.keys(general ?? {}).sort(), [general]);
+
+  // The OCA service texts captured, newest first, and those for the day on the page.
+  const ocaDocs = useMemo(() => ocaStems().map(ocaDocInfo).filter(Boolean).sort((a, b) => b.date.localeCompare(a.date) || a.stem.localeCompare(b.stem)), []);
+  const ocaToday = useMemo(() => (dateKey && !generalType && !sharedTable ? ocaDocs.filter((d) => d.key === dateKey) : []), [ocaDocs, dateKey, generalType, sharedTable]);
+  const ocaLabel = (d) => new Date(d.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    + (/alaska/i.test(d.variant) ? (/outside/i.test(d.variant) ? ' (outside Alaska)' : ' (Alaska)') : '');
+
+  // The OCA texts that stand for hymns of the commemoration on the page:
+  //   1. every hymn with a mate in the match register (hymn to hymn, any year);
+  //   2. on the day's own service, the troparion and kontakion the OCA appointed
+  //      for this date (slots.js), which may be a different hymn altogether.
+  useEffect(() => {
+    let live = true;
+    const onDay = !!dateKey && !generalType && !sharedTable;
+    if (!preferOca || !entry || !onDay) { setOcaMap(null); return undefined; }
+    const texts = [];
+    (function walk(v) {
+      if (!v || typeof v !== 'object') return;
+      if (Array.isArray(v)) { v.forEach(walk); return; }
+      if (typeof v.text === 'string') texts.push(v.text);
+      for (const [k, x] of Object.entries(v)) if (k !== 'src') walk(x);
+    })(entry);
+    (async () => {
+      const map = await ocaMatesFor(texts);
+      if (comms.length === 1 || entry.oca_primary) {
+        const h = hymnsOf(entry, `${dateKey}.c${cIdx}`);
+        const slots = new Set(ocaSlotsForKey(dateKey));
+        const put = async (slot, node) => {
+          if (!slots.has(slot) || !node) return;
+          const o = await ocaHymn(dateKey, slot);
+          if (o) map.set(textKey(node.text), { id: o.id, text: o.text, from: o.from, by: 'appointed' });
+        };
+        await put('troparion', h.troparia[0]);
+        const k = await ocaHymn(dateKey, 'kontakion');
+        if (k) await put('kontakion', k.replaces === 'ode3' ? h.ode3[0] : (h.ode6[0] ?? h.ode3[0]));
+      }
+      if (live) setOcaMap(map.size ? map : null);
+    })();
+    return () => { live = false; };
+  }, [preferOca, entry, dateKey, cIdx, generalType, sharedTable, comms.length]);
   const sharedTables = useMemo(() => Object.keys(shared ?? {}).sort(), [shared]);
 
   const goToday = () => {
     const d = new Date();
     const k = `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    setMm(k.slice(0, 2)); setDateKey(k); setCIdx(0); setRailOpen(false);
+    setMm(k.slice(0, 2)); setDateKey(k); setCIdx(0); setOcaDoc(null); setRailOpen(false);
   };
 
   const runSearch = () => {
@@ -379,6 +431,10 @@ export default function MenaionV2Browser() {
         <input type="checkbox" checked={showRubrics} onChange={e => setShowRubrics(e.target.checked)} /> Rubrics
       </label>
       <label style={{ cursor: "pointer" }}
+             title="Where the OCA has published its own text of a hymn on this page, show it in the hymn's place, marked 'OCA' with its year. The same setting as in the Hours tool. The audit view always shows the printed book.">
+        <input type="checkbox" checked={preferOca} onChange={e => setPreferOca(e.target.checked)} /> Prefer OCA texts{preferOca && ocaMap ? ` (${ocaMap.size})` : ''}
+      </label>
+      <label style={{ cursor: "pointer" }}
              title="As printed shows the * / ** pointing of the bound page; clean reading sets one melodic line per row (§3.4)">
         <input type="checkbox" checked={mode === 'clean'} onChange={e => setMode(e.target.checked ? 'clean' : 'printed')} /> Clean reading
       </label>
@@ -400,7 +456,7 @@ export default function MenaionV2Browser() {
         const has = !!MONTH_LOADERS[k];
         return (
           <button key={k} disabled={!has}
-                  onClick={() => { setMm(k); setDateKey(null); setCIdx(0); setGeneralType(null); }}
+                  onClick={() => { setMm(k); setDateKey(null); setCIdx(0); setGeneralType(null); setOcaDoc(null); }}
                   title={has ? MONTH_LABELS[k] : `${MONTH_LABELS[k]} — not yet encoded`}
                   style={{ ...navBtn(k === mm), padding: "4px 0", textAlign: "center", fontSize: "0.72rem",
                            opacity: has ? 1 : 0.35, cursor: has ? "pointer" : "default" }}>
@@ -414,7 +470,7 @@ export default function MenaionV2Browser() {
   const DayGrid = (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 26px)", gap: "3px" }}>
       {dates.map(dk => (
-        <button key={dk} onClick={() => { setDateKey(dk); setCIdx(0); setGeneralType(null); setRailOpen(false); }}
+        <button key={dk} onClick={() => { setDateKey(dk); setCIdx(0); setGeneralType(null); setOcaDoc(null); setRailOpen(false); }}
                 title={dk}
                 style={{ ...navBtn(dk === dateKey), width: "26px", height: "26px", padding: 0,
                          textAlign: "center", fontSize: "0.7rem" }}>
@@ -438,7 +494,7 @@ export default function MenaionV2Browser() {
           <div style={railLabel}>COMMEMORATION</div>
           <div>
             {comms.map((c, i) => (
-              <div key={i} onClick={() => setCIdx(i)} title={commTitle(c)}
+              <div key={i} onClick={() => { setCIdx(i); setOcaDoc(null); }} title={commTitle(c)}
                    style={{ ...railItem(i === cIdx), lineHeight: 1.35, padding: "4px 8px", marginBottom: "2px" }}>
                 {/* The short hand-entered name, whole and wrapping; on a feast (no name) its title. */}
                 {commLabel(c)}
@@ -449,6 +505,22 @@ export default function MenaionV2Browser() {
       )}
       {generalTypes.length > 0 && (
         <>
+          {/* The OCA's own service texts, as published: the one(s) for the day on the page,
+              then the whole list by date, folded. */}
+          <div style={{ ...railLabel, cursor: "pointer", userSelect: "none" }} role="button" aria-expanded={ocaListOpen}
+               title="The service texts the OCA published, whole and in their printed order" onClick={() => setOcaListOpen(!ocaListOpen)}>
+            {ocaListOpen ? "▾" : "▸"} OCA SERVICE TEXTS <span style={{ letterSpacing: 0, color: C.inkLight }}>({ocaDocs.length})</span>
+          </div>
+          {ocaToday.map(d => (
+            <div key={d.stem} onClick={() => { setOcaDoc(d.stem === ocaDoc ? null : d.stem); setRailOpen(false); }} style={railItem(d.stem === ocaDoc)}>
+              OCA text for this day{ocaToday.length > 1 ? ` — ${ocaLabel(d)}` : ''}
+            </div>
+          ))}
+          <div style={{ display: ocaListOpen ? "block" : "none" }}>
+            {ocaDocs.map(d => (
+              <div key={d.stem} onClick={() => { setOcaDoc(d.stem === ocaDoc ? null : d.stem); setRailOpen(false); }} style={railItem(d.stem === ocaDoc)}>{ocaLabel(d)}</div>
+            ))}
+          </div>
           <div style={railLabel}>OPEN QUESTIONS</div>
           <a href="/orthodox-hours/questions?from=tool" style={{ ...railItem(false), display: "block", textDecoration: "none" }}>
             Questions for review ↗
@@ -462,7 +534,7 @@ export default function MenaionV2Browser() {
           </div>
           <div style={{ display: generalShown ? "block" : "none" }}>
             {generalTypes.map(k => (
-              <div key={k} onClick={() => { setGeneralType(k === generalType ? null : k); setSharedTable(null); setRailOpen(false); }}
+              <div key={k} onClick={() => { setGeneralType(k === generalType ? null : k); setSharedTable(null); setOcaDoc(null); setRailOpen(false); }}
                    style={railItem(k === generalType)}>{k}</div>
             ))}
           </div>
@@ -474,7 +546,7 @@ export default function MenaionV2Browser() {
           {sharedTables.length > 0 ? (
             <div>
               {sharedTables.map(k => (
-                <div key={k} onClick={() => { setSharedTable(k === sharedTable ? null : k); setGeneralType(null); setRailOpen(false); }}
+                <div key={k} onClick={() => { setSharedTable(k === sharedTable ? null : k); setGeneralType(null); setOcaDoc(null); setRailOpen(false); }}
                      style={railItem(k === sharedTable)}>{k}</div>
               ))}
             </div>
@@ -590,6 +662,13 @@ export default function MenaionV2Browser() {
                   </div>
                 ))}
               </div>
+            ) : ocaDoc ? (
+              <div style={readingCard}>
+                <div style={{ textAlign: "right", fontSize: "0.72rem", marginBottom: "6px" }}>
+                  <span onClick={() => setOcaDoc(null)} style={{ color: C.gold, cursor: "pointer", borderBottom: `1px dotted ${C.gold}` }}>← back to the Menaion</span>
+                </div>
+                <OcaDocView stem={ocaDoc} />
+              </div>
             ) : generalType && entry ? (
               audit ? (
                 <div>
@@ -636,7 +715,7 @@ export default function MenaionV2Browser() {
                 <Generic value={entry} path="" fieldKey={null} />
               </div>
             ) : (
-              <ReadingContext.Provider value={{ mode, sics: {}, prefix, showRubrics }}>
+              <ReadingContext.Provider value={{ mode, sics: {}, prefix, showRubrics, oca: preferOca ? ocaMap : null }}>
                 <div style={readingCard}>
                   {ReadingToggles}
                   <RCommemoration entry={entry} path={`${dateKey}.c${cIdx}`} />

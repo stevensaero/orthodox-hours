@@ -26,3 +26,6 @@ dist-ssr
 # scratch drafts / review artifacts (never commit)
 draft_*.js
 _review_*.md
+
+# a spot-check sheet written by tools/match_oca_hymns.mjs --sample
+oca_match_sample.md

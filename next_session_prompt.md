@@ -1,6 +1,6 @@
-# Next-session kickoff — encoding the Menaion (v0.53.3 and after)
+# Next-session kickoff — encoding the Menaion (v0.54.0 and after)
 
-State at handoff: **v0.53.3**. `v2-wirein` is merged; the summarized Menaion is
+State at handoff: **v0.54.0**. `v2-wirein` is merged; the summarized Menaion is
 deleted; the full capture in `src/data/menaion_v2/` drives the Hours, Vespers,
 the Typica and the Divine Liturgy. The consolidated state, rulings and the owed
 list are the FIRST blocks of `project_notes.md` (start with "v0.53.0 — THE
@@ -47,6 +47,14 @@ stored; a liturgical question goes Fekula, then OCA, then a named web source,
 then `open_questions.js`, and never stops the capture. A question that changes
 the SHAPE of the capture goes to Bill before any data is written. No shims: fix
 the logic.
+
+**OCA texts (read the v0.54.0 block of project_notes.md first).** For each date
+encoded: capture its OCA document if there is one
+(`python3 tools/encoding/oca_hymns/extract.py <docx-dir>`), then
+`node tools/match_oca_hymns.mjs` and commit the regenerated files. Next there:
+Bill's spot-check of the automatic bar (`--sample` writes `oca_match_sample.md`);
+a review page for the 217 held matches; step 4 (OCA stichera in the services and
+hymn-by-hymn answer-key gates); the Octoechos viewer's toggle.
 
 **Also owed (ask Bill which first):**
 - His read of the 29 dismissal names; open questions Q-0008 and Q-0009.

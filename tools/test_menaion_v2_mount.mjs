@@ -1,4 +1,5 @@
 // tools/test_menaion_v2_mount.mjs — MOUNT the Menaion V2 browser and click through it.
+// (Also: the Prefer OCA toggle on and off, and every captured OCA service text opened whole.)
 //
 // The render gate server-renders RCommemoration with data handed to it, which
 // never runs the BROWSER component's own effects, rail or audit view. On 14 Nov
@@ -36,7 +37,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const errors = [];
 let visits = 0;
 
-async function visit(url, label, expectText) {
+async function visit(url, label, expectText, opts = {}) {
   const dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', { url, pretendToBeVisual: true });
   const { window } = dom;
   for (const k of ['window', 'document', 'localStorage', 'HTMLElement', 'Node', 'MutationObserver', 'getComputedStyle', 'requestAnimationFrame', 'cancelAnimationFrame'])
@@ -51,9 +52,12 @@ async function visit(url, label, expectText) {
   console.error = (...a) => { const m = a.map(String).join(' '); if (/Error|not a function|Cannot read|undefined is not/.test(m)) errors.push(`${label}: ${m.slice(0, 300)}`); };
   try {
     const mod = await import(join(OUT, bundle) + `?v=${visits}`);
+    if (opts.preferOca != null) window.localStorage.setItem('prefer_oca', opts.preferOca ? '1' : '0');
     mod.mount(window.document.getElementById('root'));
-    await sleep(120);
+    await sleep(opts.wait ?? 120);
     const text = window.document.body.textContent;
+    for (const t of opts.must ?? []) if (!text.includes(t)) errors.push(`${label}: expected on the page: ${JSON.stringify(t)}`);
+    for (const t of opts.mustNot ?? []) if (text.includes(t)) errors.push(`${label}: should not be on the page: ${JSON.stringify(t)}`);
     if (expectText && !text.includes(expectText)) errors.push(`${label}: expected text not on the page: ${JSON.stringify(expectText.slice(0, 60))}`);
     // the audit view, by clicking the page's own button
     const auditBtn = [...window.document.querySelectorAll('button')].find(b => b.textContent.trim() === 'Audit');
@@ -75,6 +79,22 @@ for (const mm of Object.keys(MONTH_LOADERS)) {
     }
 }
 await visit('https://example.org/orthodox-hours/menaion-v2', 'no date selected', null);
+
+// ── OCA texts in the viewer ──────────────────────────────────────────────────
+// Prefer OCA on: a matched hymn shows the OCA's words (no brackets: they are
+// underlines) with its mark, and the Menaion's own words for that hymn are not
+// the ones on the page. Off: the page is the printed book again.
+const u = 'https://example.org/orthodox-hours/menaion-v2?comm=11-15';
+await visit(u, '11-15 prefer OCA on', null, { preferOca: true, wait: 400,
+  must: ['Prefer OCA texts', 'OCA 2026', 'The most wise Abíbus, the wondrous Samónas', 'OCA text for this day'], mustNot: ['The all-wise Abibus, * the wondrous Samonas', '[Gúr]ias'] });
+await visit(u, '11-15 prefer OCA off', null, { preferOca: false, wait: 400,
+  must: ['The all-wise Abibus, * the wondrous Samonas'], mustNot: ['OCA 2026', 'The most wise Abíbus'] });
+// Every captured OCA service text opens whole.
+const { ocaStems, loadOcaDoc, ocaTexts } = await import(join(ROOT, 'src/data/oca_hymns/index.js'));
+for (const stem of ocaStems()) {
+  const last = ocaTexts(await loadOcaDoc(stem)).at(-1).text.replace(/[\[\]^]/g, '').split(/ \| | \/\/ /)[0];
+  await visit(`https://example.org/orthodox-hours/menaion-v2?oca=${encodeURIComponent(stem)}`, `OCA text ${stem}`, null, { wait: 250, must: ['OCA service text for', 'back to the Menaion', last] });
+}
 
 rmSync(TMP, { recursive: true, force: true }); rmSync(OUT, { recursive: true, force: true });
 for (const e of errors) console.log('  ✗ ' + e);
