@@ -9,7 +9,8 @@
 // The Sunday cycle (Saturday evening) is laid over all three, as ch. 1 directs.
 // V1 went wrong here because it started at step 3.
 //
-// BUILT SO FAR: "Lord, I have cried" — the stichera, the Glory and the Both now.
+// BUILT SO FAR: "Lord, I have cried" (stichera, Glory, Both now); the Aposticha
+// (whose stichera, Glory, Both now).
 const ROMAN = { I: 1, II: 2, III: 3, IV: 4, V: 5, VI: 6, VII: 7, VIII: 8 };
 const EVES = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri']; // the evening Vespers is sung on
 const isText = (n) => !!n && typeof n.text === 'string';
@@ -176,4 +177,63 @@ export function resolveLicStichera({ c, base, eveDow, tone, octo }) {
   const res = fromOcto(octo.sundayLic(tone), 10 - menaion.length);
   if (res.length < 10 - menaion.length) notes.push(`The Octoechos gave ${res.length} of the ${10 - menaion.length} resurrection stichera.`);
   return done([...res, ...menaion], 'Saturday evening, ten stichera. ' + rule);
+}
+
+// ── The Aposticha ───────────────────────────────────────────────────────────
+// Whose stichera, then the Glory and the Both now. Printed first, as above.
+//   stichera  the page prints its own with their verses (polyeleos and feasts) or
+//             says nothing, and then they are the Octoechos's. On a Saturday evening
+//             they are always the Octoechos's (ch. 1), save on a feast of the Theotokos.
+//   Glory     the doxasticon the page prints. Where the page heads it "Glory ...,
+//             Both now ...", it is sung once for both.
+//   Both now  the hymn the page prints (of the feast, or a theotokion); else the
+//             Octoechos theotokion in the tone of the Glory; else that of the evening.
+// octo adds: apostichaTheotokion(tone) (the resurrectional one, by the tone of the
+//   Glory), sundayApostichaTheotokion(tone), eveningApostichaTheotokion(tone, eve).
+// Returns { stichera: { source: 'menaion', items } | { source: 'octoechos' }, glory,
+//   bothNow, combined, rule, notes }.
+export function resolveAposticha({ c, base, eveDow, tone, octo }) {
+  const vname = c.great_vespers ? 'great_vespers' : 'vespers'; const v = c[vname] ?? {};
+  const at = (key, node) => ({ ...node, path: `${base}.${vname}.${key}` });
+  const notes = []; const saturday = eveDow === 6; const friday = eveDow === 5; const eve = EVES[eveDow];
+  const stavroEvening = eveDow === 2 || eveDow === 4;
+  const printed = (key, kind) => (isText(v[key]) ? { kind, source: 'menaion', tone: v[key].tone ?? null, node: at(key, v[key]), basis: 'printed' } : null);
+  const fromOcto = (kind, t, node, basis) => (node ? { kind, source: 'octoechos', tone: node.tone ?? t, node, basis } : null);
+  const dox = printed('aposticha_glory', 'doxasticon');
+  const doxIsBoth = dox && [].concat(v.aposticha_glory.label ?? []).includes('both_now');
+  const closer = printed('aposticha_closer', v.aposticha_closer?.type === 'of_the_feast' ? 'feast' : 'theotokion');
+  const feast = closer?.kind === 'feast' ? closer : null;
+  const theot = closer?.kind === 'theotokion' ? closer : null;
+  const stavro = printed('aposticha_stavrotheotokion', 'stavrotheotokion');
+  const named = rubricTone(v.aposticha_closer_rubric);
+  const theotokosFeast = c.kind === 'feast' && c.rank === 'great_feast';
+  // The page's own stichera with their verses, each under the tone it is printed in.
+  let lastTone = null;
+  const own = Array.isArray(v.aposticha) ? v.aposticha.filter(isText).map((n, i) => {
+    const verse = [].concat(n.label ?? []).includes('refrain');
+    if (!verse && n.tone != null) lastTone = n.tone;
+    return { kind: verse ? 'verse' : 'sticheron', text: n.text, tone: verse ? null : lastTone, spec_mel: n.spec_mel ?? null, path: `${base}.${vname}.aposticha[${i}]` };
+  }) : null;
+  const useOwn = own && own.length && (!saturday || theotokosFeast);
+  const stichera = useOwn ? { source: 'menaion', items: own } : { source: 'octoechos' };
+  if (own && own.length && !useOwn) notes.push('The page prints stichera for the Aposticha; on a Saturday evening the stichera of the Octoechos are sung (ch. 1).');
+  const whose = useOwn ? 'the stichera the page prints, with their verses' : `the stichera of the Octoechos${saturday ? ' (resurrection)' : ''}`;
+  const out = (glory, bothNow, rule, combined = false) => ({ stichera, glory, bothNow, combined, rule: `Aposticha: ${whose}. ${rule}`, notes });
+
+  if (doxIsBoth) return out(null, dox, 'Glory, Both now: the one hymn the page prints for both.', true);
+  if (feast) return out(dox, feast, dox ? 'Glory, the doxasticon; Both now, of the feast, as the page prints them.' : 'Glory, Both now: of the feast, as the page prints it.', !dox);
+  if (saturday) {
+    if (dox) return out(dox, fromOcto('theotokion', dox.tone, octo.apostichaTheotokion(dox.tone), 'rule'), `Glory, the doxasticon from the Menaion; Both now, the resurrectional theotokion in the tone of the Glory (Tone ${dox.tone}; Fekula §1C).`);
+    return out(null, fromOcto('theotokion', tone, octo.sundayApostichaTheotokion(tone), 'rule'), 'Glory, Both now: the theotokion of the Sunday Aposticha in the tone of the week (Fekula §1A).', true);
+  }
+  if (stavroEvening && stavro) return out(dox, stavro, 'Tuesday or Thursday evening: the stavrotheotokion the page prints.', !dox);
+  if (theot) return out(dox, theot, 'Both now: the theotokion the page prints.', !dox);
+  const t = named ?? dox?.tone ?? null;
+  if (t != null) {
+    const node = octo.doxTheotokion(t, friday ? 'fri' : eve);
+    if (node) return out(dox, fromOcto('theotokion', t, node, named != null ? 'rubric' : 'rule'), `Both now: the theotokion in Tone ${t}${named != null ? ', the tone the page\'s rubric names' : ', the tone of the Glory'}, from the Octoechos (Fekula ch. 6 §II).`, !dox);
+    if (stavro) return out(dox, stavro, 'Both now: the stavrotheotokion the page prints (the Octoechos has no theotokion at this place for this evening).', !dox);
+    notes.push('No Octoechos theotokion was found for this tone and evening.');
+  }
+  return out(dox, fromOcto('theotokion', tone, octo.eveningApostichaTheotokion(tone, eve), 'rule'), 'Both now: the theotokion of the evening\'s Aposticha in the tone of the week, from the Octoechos.', !dox);
 }
