@@ -68,7 +68,7 @@ Each was found by reading Fekula's own section for the case, not by testing.
 V1 lets the data steer the assembler. Each of these is a place where a rule
 was not written down and a flag was added instead:
 
-- `hours_format` — 9 values (`pentecostarion_weekday`, `pentecostarion_sunday`,
+- `hours_format` — 10 values (`pentecostarion_weekday`, `pentecostarion_sunday`,
   `ascension`, `pentecost`, `holy_spirit_day`, `apodosis_pascha`,
   `apodosis_ascension`, `apodosis_pentecost`, `all_saints_sunday`, and
   `pentecostarion_saturday_reposed`); P+63 has none. The assembler branches on
