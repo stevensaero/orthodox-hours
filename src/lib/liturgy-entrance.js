@@ -319,7 +319,8 @@ export function resolveEntrance({ liturgicalData: ld = {}, menaion = null, pentE
     ], toneLabel: null, unresolved: true, section: order.section, quote: order.quote, notes: order.notes };
   }
 
-  const saintName = (menaion && menaion.saintName) || "the saint of the day";
+  // The short hand-entered name where there is one, else the printed title.
+  const saintName = (menaion && (menaion.name || menaion.saintName)) || "the saint of the day";
   // A Menaion slot as a hymn: the text as shown (the OCA's undefined '^' mark
   // hidden, Q-0007), its tone, where it is stored, and which witness it is from.
   const fromPlan = (sl, label) => {

@@ -38,6 +38,8 @@ const CASES = [
   ['2026-11-21', 'liturgy', ['Troparion 1 of 8', 'Troparion of the Feast', 'Today is the prelude of the good will'], ['Festal Antiphons']], // feast of the Theotokos: the Typika with its printed troparia; the OCA troparion
   ['2026-11-25', 'liturgy', ['Philippians 3:20-4:3', 'Hebrews 9:1-7', 'Matthew 5:14-19'], []],        // Wednesday apodosis: ODS vol. III appoints the day's, the feast's and the hieromartyrs' readings
   ['2026-11-25', '6th_hour', ['Today is the prelude', 'thou didst gloriously amaze'], ['not yet encoded']],     // feast, Glory, St. Clement (OCA text) (the vol. III order; its citation is behind the Fekula badge)
+  ['2026-11-30', 'typica', ['the holy and all-praised Apostle Andrew the First-called, whose memory we celebrate'], ['COMMEMORATION OF']], // the dismissal names the saint by the hand-entered name
+  ['2026-11-21', 'typica', ['have mercy upon us and save us'], ['whose memory we celebrate']],                                         // a feast of the Theotokos: no saint is added
 ];
 let bad = 0;
 for (const [iso, service, must, mustNot] of CASES) {

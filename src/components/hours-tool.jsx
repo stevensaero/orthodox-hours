@@ -16,7 +16,7 @@ import { stripCaret, ocaVespersReadingsFor, ocaLiturgyPropersFor } from '../data
 import { ocaReadingPractice } from '../lib/liturgy-propers.js';
 import { loadMenaionV2Month, loadMenaionV2General } from '../data/menaion_v2/index.js';
 import { ods3OrderFor } from '../data/ods_v3/orders.js';
-import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor, liturgyPlan as v2LiturgyPlan, entrancePlan as v2EntrancePlan, shown as v2Shown } from '../data/menaion_v2/adapter.js';
+import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor, liturgyPlan as v2LiturgyPlan, entrancePlan as v2EntrancePlan, shown as v2Shown, dismissalOf as v2DismissalOf } from '../data/menaion_v2/adapter.js';
 import { TEMPLE_INDEX } from '../data/temple_index.js';
 import Bulletin from './bulletin.jsx';
 
@@ -2657,7 +2657,7 @@ function assembleHour(hourKey, liturgicalData, menaionEntry, pentEntry, tbOpen =
       });
       elements.push({
         id: '1st_hour-dismissal', type: 'substitution', label: 'Dismissal', rubric: 'Reader:',
-        text: buildDismissalText({ liturgicalData, menaionEntry, pentEntry, serviceContext: "hours", templeDedication, readerMode: true }),
+        text: buildDismissalText({ liturgicalData, menaionEntry, pentEntry, serviceContext: "hours", templeDedication, readerMode: true, commemoration: menaionPlan ? menaionPlan.dismissal : null }),
         source: 'Fekula Chapter 10',
         fekula: { section: '§10', note: 'The dismissal of the Hours without a priest: Through the prayers of our holy fathers, of (saints of the day and of the temple), and of all the saints, Lord Jesus Christ, Son of God, have mercy on us. Amen. (More honorable is not said since it has been said earlier.) — Fekula Chapter 10' },
       });
@@ -4832,7 +4832,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       text:"Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen.\n\nLord, have mercy. (thrice) Lord, bless!",
       source:"HTM Vespers"});
     elements.push({id:"v-diss-dismissal",type:"substitution",label:"Dismissal",rubric:"Reader:",
-      text: buildDismissalText({ liturgicalData, menaionEntry, pentEntry, serviceContext: "vespers", templeDedication, readerMode: true }),
+      text: buildDismissalText({ liturgicalData, menaionEntry, pentEntry, serviceContext: "vespers", templeDedication, readerMode: true, commemoration: menaionV2 ? v2DismissalOf(menaionV2.c) : null }),
       source:"Fekula Chapter 10",
       fekula:{section:CH10,
         note:"The dismissal of Vespers without a priest: More honorable… Glory… Lord, have mercy. (thrice) Lord, bless! Through the prayers of our holy fathers, of (saints of the day and of the temple), and of all the saints, Lord Jesus Christ, Son of God, have mercy on us. Amen. — Fekula Chapter 10"}});
@@ -4879,7 +4879,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
   // Source: HTM Vespers; OCA Order of Vespers (2021)
   const _vespersDismissalText = buildDismissalText({
     liturgicalData, menaionEntry, pentEntry,
-    serviceContext: "vespers", templeDedication,
+    serviceContext: "vespers", templeDedication, commemoration: menaionV2 ? v2DismissalOf(menaionV2.c) : null,
   });
 
   elements.push({id:"v-diss-dismissal",type:"movable",label:"Dismissal",rubric:"Priest:",
@@ -5325,8 +5325,13 @@ function resolveTempleName(dedicationId) {
 }
 
 // Clean a commemoration name for the saint-of-day slot (Q4 — flagged for review).
-function _dismissalSaintName(menaionEntry, namedDay, isSunday) {
-  if (menaionEntry && menaionEntry.saint && !String(menaionEntry.saint).startsWith("absent")) {
+// `commemoration` is the Menaion V2 service's { name, rank, kind } (dismissalOf): the
+// name is hand-entered to read after "and of" (ruling 12) and is null on a feast.
+// Where a date is not in Menaion V2 the retired V1 entry's `saint` is still read,
+// until V1 is removed.
+function _dismissalSaintName(menaionEntry, namedDay, isSunday, commemoration = null) {
+  if (commemoration) { if (commemoration.name) return commemoration.name; if (commemoration.kind === 'feast') return null; }
+  else if (menaionEntry && menaionEntry.saint && !String(menaionEntry.saint).startsWith("absent")) {
     return menaionEntry.saint;
   }
   if (isSunday && namedDay && namedDay.name) {
@@ -5366,12 +5371,12 @@ function getPeekName(lit, men) {
 //   readerMode:     true → Ch. 10 short form (saint + temple only)
 function buildDismissalText(opts) {
   const { liturgicalData, menaionEntry, pentEntry, serviceContext,
-          templeDedication, liturgyAuthor, readerMode } = opts;
+          templeDedication, liturgyAuthor, readerMode, commemoration = null } = opts;
   const { season, namedDay, dow } = liturgicalData;
   const _fmt = pentEntry ? pentEntry.hours_format : null;
   const isSunday = season === 'sunday' || season === 'pentecostarion_sunday'
     || _fmt === 'pentecostarion_sunday' || _fmt === 'all_saints_sunday';
-  const rank = (menaionEntry && menaionEntry.rank) || "simple";
+  const rank = (commemoration ? commemoration.rank : (menaionEntry && menaionEntry.rank)) || "simple";
   const isHighRank = rank === "polyeleos" || rank === "vigil" || rank === "great_feast";
   // The Liturgy's own dismissal (liturgy_assembler_spec.md §3) is the same
   // form as the one read after Communion: Great, with the celebrant clause.
@@ -5384,7 +5389,7 @@ function buildDismissalText(opts) {
   // "of (the saints of the day and of the temple)".
   if (readerMode) {
     const rTemple = resolveTempleName(templeDedication);
-    const rSaint = _dismissalSaintName(menaionEntry, namedDay, isSunday);
+    const rSaint = _dismissalSaintName(menaionEntry, namedDay, isSunday, commemoration);
     let slot;
     if (rSaint && rTemple) slot = `of ${rSaint} and of ${rTemple}, `;
     else if (rSaint)       slot = `of ${rSaint} (and of the temple), `;
@@ -5428,7 +5433,7 @@ function buildDismissalText(opts) {
 
   const ancestors = "of the holy and righteous Ancestors of God, Joachim and Anna; ";
 
-  const saintName = _dismissalSaintName(menaionEntry, namedDay, isSunday);
+  const saintName = _dismissalSaintName(menaionEntry, namedDay, isSunday, commemoration);
   const saint = saintName ? `and of ${saintName}, whose memory we celebrate, ` : "";
 
   const closing = "and of all the Saints, have mercy upon us and save us, "
@@ -5438,11 +5443,11 @@ function buildDismissalText(opts) {
 }
 
 function buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, idPrefix,
-                        serviceContext = "typica", templeDedication = null, liturgyAuthor = null) {
+                        serviceContext = "typica", templeDedication = null, liturgyAuthor = null, commemoration = null) {
   if (readerMode) {
     return {
       id: `${idPrefix}-dismissal`, type: "substitution", label: "Dismissal", rubric: "Reader:",
-      text: buildDismissalText({ liturgicalData, menaionEntry, pentEntry, serviceContext, templeDedication, readerMode: true }),
+      text: buildDismissalText({ liturgicalData, menaionEntry, pentEntry, serviceContext, templeDedication, readerMode: true, commemoration }),
       source: "Fekula Chapter 10",
       dismissalHasPlaceholder: !resolveTempleName(templeDedication),
       fekula: { section: "§10", note: "Reader's service (Fekula Ch. 10): the priest's dismissal is replaced by the short form — 'Through the prayers of our holy fathers, of (the saints of the day and of the temple), and of all the saints, Lord Jesus Christ, Son of God, have mercy on us. Amen.' Saint + temple resolved identically to the priest form. — Fekula Chapter 10" },
@@ -5450,7 +5455,7 @@ function buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, idP
   }
   return {
     id: `${idPrefix}-dismissal`, type: "fixed", label: "Dismissal", rubric: "Priest:",
-    text: buildDismissalText({ liturgicalData, menaionEntry, pentEntry, serviceContext, templeDedication, liturgyAuthor }),
+    text: buildDismissalText({ liturgicalData, menaionEntry, pentEntry, serviceContext, templeDedication, liturgyAuthor, commemoration }),
     source: "OCA Order of Vespers (2021); Antiochian dismissal pattern",
     dismissalHasPlaceholder: !resolveTempleName(templeDedication),
     fekula: { section: null, note: "Unified dismissal: characteristic phrase as the front prefix on 'Christ our true God'; Great vs Little (vigil vs Vespers-alone, Fekula); day-of-week intercession set keyed on the opened/liturgical day; temple patron, Ancestors, saint(s) of the day, and (after Liturgy) the celebrant. Antiochian wording — flagged for OCA migration. — dismissal_assembler_spec.md" },
@@ -5835,7 +5840,7 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
     const saintKontakia = menaionEntrance
       ? menaionEntrance.saints.kontakia.filter(k => k.node).map(k => ({ tone: k.node.tone, text: v2Shown(k.node), who: k.node.saint || null, path: k.node.path || null, oca: k.source === 'oca', general: k.source === 'general' }))
       : (pentEntry && pentEntry.kontakion_ode6 ? [{ tone: pentEntry.kontakion_ode6.tone, text: pentEntry.kontakion_ode6.text, who: pentEntry.saint || null, path: null }] : []);
-    const saintTitle = (menaionEntrance && menaionEntrance.saintName) || (pentEntry && pentEntry.saint) || "Saint of the day";
+    const saintTitle = (menaionEntrance && (menaionEntrance.name || menaionEntrance.saintName)) || (pentEntry && pentEntry.saint) || "Saint of the day";
     const isSaturday = dowNumber === 6;
 
     const dowNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
@@ -5913,7 +5918,7 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
     TYPICA_PSALM_33);
 
   // ── 16. Dismissal ────────────────────────────────────────────────────────
-  elements.push(buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, "typica", "typica", templeDedication));
+  elements.push(buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, "typica", "typica", templeDedication, null, menaionPlan ? menaionPlan.dismissal : null));
 
   // ── End marker ──────────────────────────────────────────────────────────
   elements.push({id:"typica-end",type:"end_marker",label:"",text:"THE END OF THE TYPICA",source:"HTM, Order of the Typica"});
@@ -6073,7 +6078,7 @@ function assemblePreCommunion(data) {
 
 // ── Assembler ─────────────────────────────────────────────────────────────────
 
-function assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMode = false, templeDedication = null) {
+function assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMode = false, templeDedication = null, commemoration = null) {
   const elements = [];
   const src = 'HTM, Prayers After Holy Communion';
   const liturgyType = getLiturgyType(liturgicalData);
@@ -6166,7 +6171,7 @@ function assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMo
   }
 
   // ── Dismissal ─────────────────────────────────────────────────────────────
-  elements.push(buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, "pc", "post_communion", templeDedication, liturgyType));
+  elements.push(buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, "pc", "post_communion", templeDedication, liturgyType, commemoration));
 
   // ── End marker ──────────────────────────────────────────────────────────
   elements.push({id:"pc-end",type:"end_marker",label:"",text:"THE END OF THE POST-COMMUNION PRAYERS",source:"HTM"});
@@ -16065,7 +16070,7 @@ export default function App() {
     } else if (currentService.key === 'pre_communion') {
       els = assemblePreCommunion(preCommunionData);
     } else if (currentService.key === 'post_communion') {
-      els = assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMode, templeDedication);
+      els = assemblePostCommunion(liturgicalData, menaionEntry, pentEntry, readerMode, templeDedication, v2DaySvc ? v2DismissalOf(v2DaySvc.c) : null);
     } else if (currentService.key === 'liturgy') {
       // Phase 1: the fixed skeleton only. Hooks for the movable parts (V1
       // Menaion, Octoechos, Pentecostarion) land in Phase 2/3 — spec §3.
@@ -16079,7 +16084,7 @@ export default function App() {
           sunAlleluia: srcSunAlleluia,
           dailyPropers: (dayKey) => OctoV2.getV2DailyLiturgyPropers(dayKey),
           readingsForDay,
-          dismissal: (author) => buildDismissal(liturgicalData, menaionEntry, pentEntry, false, 'lit', 'liturgy', templeDedication, author),
+          dismissal: (author) => buildDismissal(liturgicalData, menaionEntry, pentEntry, false, 'lit', 'liturgy', templeDedication, author, v2DaySvc ? v2DismissalOf(v2DaySvc.c) : null),
           // Phase 3 — the Little Entrance order and the Beatitude troparia
           sundayTroparion: srcResTroparion,
           sundayKontakion: srcSunKontakion,

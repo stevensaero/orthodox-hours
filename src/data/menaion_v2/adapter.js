@@ -19,6 +19,10 @@ const ofFeast = (n) => labels(n).includes('of_the_feast') || ['feast', 'forefeas
 const isIkos = (n) => n?.sourceLabel === 'Ikos';
 const FEAST_KINDS = ['forefeast', 'afterfeast', 'apodosis'];
 
+// How the dismissal names a service: its hand-entered `name` (ruling 12; null on a
+// feast, where no saint is added) and its rank, which decides Great or Little.
+export const dismissalOf = (c) => ({ name: c.name ?? null, rank: c.rank, kind: c.kind });
+
 // The services of a day, default first (ruling 8: the one marked oca_primary).
 export function servicesOf(day, key) {
   const list = (day?.commemorations ?? []).map((c, index) => ({ c, index, path: `${key}.c${index}` }));
@@ -231,7 +235,7 @@ export function hoursPlan(c, base, opts = {}) {
     }
   }
   for (const hr of HOURS) for (const t of hours[hr].troparia) if (t.node && t.node.tone == null) notes.push(`The ${t.role} troparion is printed here with no tone.`);
-  return { section, cited, rank: c.rank, kind: c.kind, rule, saintName: title, hours, ods3, troparion_alt: h.troparion_alt, notes: [...new Set(notes)] };
+  return { section, cited, rank: c.rank, kind: c.kind, rule, saintName: title, dismissal: dismissalOf(c), hours, ods3, troparion_alt: h.troparion_alt, notes: [...new Set(notes)] };
 }
 
 // What a service prints for the Liturgy, in print order: prokeimena, Alleluia,
@@ -242,7 +246,7 @@ export function hoursPlan(c, base, opts = {}) {
 export function liturgyPlan(c, base) {
   const l = c.liturgy ?? null;
   const title = [].concat(c.title ?? []).map((t) => t.text ?? t).join(' ');
-  const empty = { has: false, title, section: c.fekula_section, rank: c.rank, kind: c.kind, prokeimena: [], alleluia: [], communion: [], epistles: [], gospels: [], zadostoinik: null };
+  const empty = { has: false, title, section: c.fekula_section, rank: c.rank, kind: c.kind, dismissal: dismissalOf(c), prokeimena: [], alleluia: [], communion: [], epistles: [], gospels: [], zadostoinik: null };
   if (!l) return empty;
   const isVerse = (n) => labels(n).includes('refrain') || n.sourceLabel === 'Verse';
   const hymns = (single, verse, list) => {
@@ -262,7 +266,7 @@ export function liturgyPlan(c, base) {
   });
   const zad = isText(l.megalynarion) || isText(l.megalynarion_refrain)
     ? { refrain: l.megalynarion_refrain?.text ?? null, irmos: l.megalynarion?.text ?? null, rubric: l.megalynarion_rubric?.text ?? null, path: `${base}.liturgy.megalynarion` } : null;
-  return { has: true, title, section: c.fekula_section, rank: c.rank, kind: c.kind, prokeimena: hymns('prokeimenon', 'prokeimenon_verse', 'prokeimena'), alleluia: hymns('alleluia', 'alleluia_verse', 'alleluias'),
+  return { has: true, title, section: c.fekula_section, rank: c.rank, kind: c.kind, dismissal: dismissalOf(c), prokeimena: hymns('prokeimenon', 'prokeimenon_verse', 'prokeimena'), alleluia: hymns('alleluia', 'alleluia_verse', 'alleluias'),
     communion: hymns('communion_verse', null, 'communion_verses'), epistles: refs('epistle', 'epistles'), gospels: refs('gospel', 'gospels'), zadostoinik: zad };
 }
 
@@ -380,7 +384,7 @@ export function entrancePlan(c, base, opts = {}) {
   if (!kontakia.length) { const k = (ocaKontHere ? slot(null, 'kontakion', own) : null) ?? generalHymn(c, h, general, 'kontakion', own, notes); if (k) kontakia.push(k); }
   if (alternates.length) notes.push(`${alternates.length === 1 ? 'An alternative troparion is' : 'Alternative troparia are'} printed ("Or this Troparion"); the first printed is shown.`);
   const beatitudes = beatitudesOf(c, base);
-  return { section: c.fekula_section, rank: c.rank, kind: c.kind, saintName: title,
+  return { section: c.fekula_section, rank: c.rank, kind: c.kind, saintName: title, name: c.name ?? null,
     lordsFeast: c.rank === 'great_feast' && !/THEOTOKOS/i.test(title),
     feast: { troparion: slot(feastTrop, 'feast_troparion', 'feast'), kontakion: slot(feastKont, 'feast_kontakion', 'feast') },
     saints: { troparia, kontakia }, alternates,
