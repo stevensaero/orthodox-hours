@@ -440,9 +440,40 @@ DONE on the branch — Vespers, the LITIYA, PRINTED ONLY (ruled by Bill, 14 Nov)
 - At Vespers the rank and Fekula section now come from the V2 service.
 - Mount test: the Litiya for 30 Nov is found on the page.
 
-NEXT on the branch: the troparia at the end of Vespers (with the dismissal
-theotokion: the OCA has it in the tone of the last troparion, and on Friday
-evening 14 Nov in the tone of the week; check Fekula ch. 6 before coding).
+DONE on the branch — Vespers, the TROPARIA at the end (14 Nov):
+- **NO KONTAKION IS SUNG AT VESPERS** (Bill recalled it; confirmed). Every
+  Vespers order in Fekula ch. 1 and ch. 2 ends "For the troparia" with troparia
+  and a theotokion; of 80 kontakion headings in the 45 OCA texts none is under
+  Vespers. **V1 put the saint's kontakion at Both now on every non-Sunday.**
+- `resolveVespersTroparia`: the troparia the page prints, under its own Glory
+  and Both now; a feast period closes with the feast's troparion as printed.
+  Otherwise Both now is a theotokion by Fekula ch. 6: the one the page prints;
+  doxology and above, the resurrectional dismissal theotokion in the tone of
+  the last troparion (III); simple, double, six-stichera, the theotokion of the
+  day in that tone (II, read from `dismissal_theotokia_annual`, never used
+  before); Saturday evening, the Sunday troparion first (I).
+- **Friday evening: the dismissal theotokion in the tone of the WEEK. Not an
+  open question: Fekula ch. 6 states it in both II and III, and the OCA text
+  for 14 Nov agrees (troparion Tone 3, theotokion Tone 6).**
+- The OCA troparion and the General Menaion fallback stand here as at the
+  Hours (taken from the Hours plan).
+- Gate: 9 of 9 dates with OCA troparia agree in order, tone and kind; it fails
+  if the OCA ever prints a kontakion at Vespers. Whole gate: 97 checks.
+- Two Octoechos lookups added: `getV2ResDismissalTheotokion`,
+  `getV2DailyDismissalTheotokion`.
+- NOT CHECKED: the Pentecostarion path still shows a kontakion at Vespers
+  unless its entry switches it off (`vespers_kontakion: false`). Check Fekula
+  ch. 4 when the Pentecostarion is reworked; it is very likely wrong too.
+- The Vigil formula (O Theotokos Virgin, rejoice; blessing of the loaves) is
+  kept as it was; it now takes the day's own troparion from the V2 service.
+
+**VESPERS: all four movable sections now read V2 outside the Pentecostarion.**
+Left in Vespers: the Old Testament readings and prokeimenon (still V1 fields),
+the Saturday-evening Litiya by Fekula's rule, the dismissal `name`.
+
+NEXT on the branch: Vespers readings and prokeimenon; then Typica and Liturgy
+propers, dismissal, bulletin; Prefer OCA toggle and service chooser; the
+How-It-Works pass; merge and retire V1.
 
 **RULED (Bill, 14 Nov, on the evidence):**
 - **An OCA hymn replaces its own counterpart and nothing else.** 10-04: the OCA
@@ -507,6 +538,8 @@ before `v2-wirein` is merged. It must cover at least:
 - **The General Menaion fallback** and how a hymn from it is labelled.
 - Two services on one date and which shows by default; "not encoded".
 - The Hours rules by Fekula section, including Sundays and feast periods.
+- **No kontakion at Vespers**; how the Both now at the troparia is chosen
+  (Fekula ch. 6), with the Friday-evening exception.
 - That every element names its source and the rule applied.
 Check each explainer too (RankExplainer, the kontakion and prokeimenon ones).
 
