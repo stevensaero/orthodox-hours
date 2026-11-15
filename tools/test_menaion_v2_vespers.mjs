@@ -6,12 +6,15 @@
 //   node tools/test_menaion_v2_vespers.mjs [--table]
 import { loadMenaionV2Month } from '../src/data/menaion_v2/index.js';
 import { servicesOf } from '../src/data/menaion_v2/adapter.js';
-import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya } from '../src/lib/vespers-propers.js';
+import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya, resolveVespersTroparia } from '../src/lib/vespers-propers.js';
+import { hoursPlan, ocaFor } from '../src/data/menaion_v2/adapter.js';
+import { loadMenaionV2General } from '../src/data/menaion_v2/index.js';
 import { loadOcaDoc, ocaStems } from '../src/data/oca_hymns/index.js';
 import { OCA_SLOTS } from '../src/data/oca_hymns/slots.js';
 import * as OctoV2 from '../src/data/octoechos_v2/adapter.js';
 const table = process.argv.includes('--table');
 for (let t = 1; t <= 8; t++) await OctoV2.loadV2Tone(t);
+const general = await loadMenaionV2General();
 const octo = {
   sundayDogmatikon: (t) => OctoV2.getV2SundayVespers(t)?.dogmatikon ?? null,
   dogmatikon: (t) => OctoV2.getV2Dogmatikon(t),
@@ -22,6 +25,9 @@ const octo = {
   apostichaTheotokion: (t) => OctoV2.getV2ApostichaTheotokion(t),
   sundayApostichaTheotokion: (t) => OctoV2.getV2SundayVespers(t)?.aposticha_theotokion ?? null,
   eveningApostichaTheotokion: (t, eve) => OctoV2.getV2WeekdayVespers(t, eve)?.aposticha_theotokion ?? null,
+  resTroparion: (t) => OctoV2.getV2Troparion(t),
+  resDismissalTheotokion: (t) => OctoV2.getV2ResDismissalTheotokion(t),
+  dailyDismissalTheotokion: (t, eve) => OctoV2.getV2DailyDismissalTheotokion(t, eve),
 };
 // Tone of the week in 2026, anchored on a Sunday the OCA titles "TONE 7" and checked
 // below against every Sunday title the OCA documents print.
@@ -95,6 +101,21 @@ function ocaAposticha(doc) {
   }
   return out;
 }
+// The OCA's troparia at Vespers: each hymn's tone and kind, in order. An alternative
+// ("or this Troparion") is left out; so is a second printing under "(at Vigil)".
+function ocaTroparia(doc) {
+  const out = []; let on = false;
+  for (const b of doc.blocks) {
+    const t = b.text.replace(/[[\]]/g, '');
+    if (b.k === 'heading' && /^\(at (Great )?Vespers\)/i.test(t)) { on = true; continue; }
+    if (!on) continue;
+    if (b.k === 'heading' && !/^Tone \d/.test(t)) break;
+    const h = b.k === 'heading' && t.match(/^Tone (\d)\*?\s*(.*)$/);
+    if (!h || /or this/i.test(h[2])) continue;
+    out.push({ tone: Number(h[1]), kind: /Kontakion/i.test(h[2]) ? 'KONTAKION' : /Theotokion/i.test(h[2]) ? 'theotokion' : /Resurrection/i.test(h[2]) ? 'sunday' : /Feast|Forefeast/i.test(h[2]) ? 'feast' : 'saint' });
+  }
+  return out;
+}
 // The OCA's Litya: the tones of its stichera, then Glory and Both now.
 function ocaLitya(doc) {
   const out = { stichera: [] }; let inL = false, after = null, seen = false;
@@ -145,6 +166,17 @@ for (const key of Object.keys(OCA_SLOTS).sort()) {
     rows.push(`| ${key} | ${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow]} | ${tone} | ${svc.c.rank} | ${place} | ${show(g)}${g ? ' (' + g.basis + ')' : ''} | ${show(w)} | ${ok ? 'agree' : KNOWN[id] ? 'KNOWN: ' + KNOWN[id] : 'DIFFER'} |`);
   }
   if (!got.bothNow?.node?.text) fail(`${key}: no Both now hymn resolved`);
+  // The troparia at the end. Text as the tool will show it: Prefer OCA on, General Menaion where the page is silent.
+  { const oca = await ocaFor(key); const hp = hoursPlan(svc.c, svc.path, { oca, general }).hours['1st_hour'];
+    const own = { saint: hp.troparia.find((x) => x.role !== 'feast' || svc.c.kind === 'feast'), feast: svc.c.kind === 'feast' ? null : hp.troparia.find((x) => x.role === 'feast') };
+    const tr = resolveVespersTroparia({ c: svc.c, base: svc.path, eveDow, tone, octo, own }); const wt = ocaTroparia(doc);
+    const kk = (x) => (x.kind === 'feast' && svc.c.kind === 'feast' ? 'saint' : x.kind);
+    const mineT = tr.items.map((x) => `T${x.tone}${kk(x)[0]}`).join(' '); const theirsT = wt.map((x) => `T${x.tone}${x.kind[0]}`).join(' ');
+    if (tr.items.some((x) => !x.node?.text)) fail(`${key} troparia: a place with no hymn (${tr.items.filter((x) => !x.node?.text).map((x) => x.kind + ' T' + x.tone).join(', ')})`);
+    if (wt.some((x) => x.kind === 'KONTAKION')) fail(`${key} troparia: the OCA prints a kontakion at Vespers — the "no kontakion at Vespers" rule needs review`);
+    if (wt.length) { checked++; const id = `${key} troparia`;
+      if (mineT !== theirsT && !KNOWN[id]) fail(`${id}: tool ${mineT} | OCA ${theirsT}`);
+      rows.push(`| ${key} | ${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow]} | ${tone} | ${svc.c.rank} | Troparia | ${mineT} | ${theirsT} | ${mineT === theirsT ? 'agree' : KNOWN[id] ? 'KNOWN' : 'DIFFER'} |`); } }
   // The Litiya: printed only.
   { const li = resolveLitiya({ c: svc.c, base: svc.path }); const wl = ocaLitya(doc); const D = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow];
     if (!!li !== !!wl) { checked++; const id = `${key} litiya`; if (!KNOWN[id]) fail(`${id}: tool ${li ? 'has one' : 'none'}, OCA ${wl ? 'has one' : 'none'}`); rows.push(`| ${key} | ${D} | ${tone} | ${svc.c.rank} | Litiya | ${li ? 'printed' : 'none'} | ${wl ? 'has one' : 'none'} | ${KNOWN[id] ? 'KNOWN' : 'DIFFER'} |`); }

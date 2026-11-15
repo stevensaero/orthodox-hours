@@ -11,7 +11,8 @@ import { assembleLiturgy, LITURGY_VIEW_DEFAULTS, insertAnchors } from '../lib/li
 import { DAILY_TROPARIA, DAILY_TROPARIA_SOURCE } from '../data/liturgy/daily_troparia.js';
 import { resolveLiturgyPropers } from '../lib/liturgy-propers.js';
 import { resolveHoursPropers } from '../lib/hours-propers.js';
-import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya } from '../lib/vespers-propers.js';
+import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya, resolveVespersTroparia } from '../lib/vespers-propers.js';
+import { stripCaret } from '../data/oca_hymns/index.js';
 import { loadMenaionV2Month, loadMenaionV2General } from '../data/menaion_v2/index.js';
 import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor } from '../data/menaion_v2/adapter.js';
 import { TEMPLE_INDEX } from '../data/temple_index.js';
@@ -966,6 +967,7 @@ const srcWeeklyVespersProk = (dow) => OctoV2.getV2DailyVespersProkeimenon(dow);
 // Menaion V2 (branch v2-wirein: the Hours read V2; the other services still read
 // V1 until their own rewrites land, then V1 and its loader are deleted together).
 const _menaionV2Cache = {};
+const isText2 = (n) => !!n && typeof n.text === "string";
 // The Octoechos lookups the Vespers rules read (src/lib/vespers-propers.js).
 const VESPERS_OCTO = {
   sundayDogmatikon: (t) => { const sv = OctoV2.getV2SundayVespers(t); return sv ? sv.dogmatikon : null; },
@@ -977,6 +979,9 @@ const VESPERS_OCTO = {
   apostichaTheotokion: (t) => OctoV2.getV2ApostichaTheotokion(t),
   sundayApostichaTheotokion: (t) => { const sv = OctoV2.getV2SundayVespers(t); return sv ? sv.aposticha_theotokion : null; },
   eveningApostichaTheotokion: (t, eve) => { const wv = OctoV2.getV2WeekdayVespers(t, eve); return wv ? wv.aposticha_theotokion : null; },
+  resTroparion: (t) => OctoV2.getV2Troparion(t),
+  resDismissalTheotokion: (t) => OctoV2.getV2ResDismissalTheotokion(t),
+  dailyDismissalTheotokion: (t, eve) => OctoV2.getV2DailyDismissalTheotokion(t, eve),
 };
 // The Menaion V2 service of a date, { c, path }, or null when not encoded.
 function getMenaionV2Service(date, serviceIndex) {
@@ -4537,6 +4542,11 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     // like June 24 which use the non-Sunday, non-Lord pattern.
     false; // placeholder — will be refined when Lord-feast dates are encoded
 
+  if (isVigilFormula && !isPentecostarion && menaionV2) {
+    // The Vigil formula repeats the day's own troparion: take it from the V2 service.
+    const own = isText2(menaionV2.c.troparion) ? menaionV2.c.troparion : null;
+    if (own) { primTrop = own.text; primTropTone = own.tone || null; primTropPath = menaionV2.path + ".troparion"; primSrc = "Menaion"; }
+  }
   if (isVigilFormula) {
     // Vigil troparion formula per HTM Vespers and June 24 PDF
     elements.push({id:"v-chanters",type:"fixed",label:"",rubric:"",
@@ -4639,6 +4649,45 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
 
   } else {
     // Standard troparion logic (non-Vigil or no Litiya)
+  if (!isPentecostarion) {
+    // The troparia at the end of Vespers, chosen printed-first in
+    // src/lib/vespers-propers.js. NO KONTAKION is sung at Vespers.
+    const vKey = menaionV2 ? menaionV2.path.slice(0, 5) : null;
+    const vOwn = (() => {
+      if (!menaionV2) return {};
+      const oca = PREFER_OCA_DEFAULT && menaionV2.c.oca_primary ? (_ocaHymnCache[vKey] || null) : null;
+      const h = v2HoursPlan(menaionV2.c, menaionV2.path, { oca, general: _menaionV2General }).hours["1st_hour"];
+      const isFeast = menaionV2.c.kind === "feast";
+      return { saint: h.troparia.find((x) => x.role !== "feast" || isFeast), feast: isFeast ? null : h.troparia.find((x) => x.role === "feast") };
+    })();
+    const tr = resolveVespersTroparia({ c: menaionV2 ? menaionV2.c : {}, base: menaionV2 ? menaionV2.path : "", eveDow: dow, tone, octo: VESPERS_OCTO, own: vOwn });
+    const trNote = tr.rule + (tr.notes.length ? " " + tr.notes.join(" ") : "") + " No kontakion is sung at Vespers.";
+    const trSaint = menaionV2 ? [].concat(menaionV2.c.title || []).map((t) => t.text || t).join(" ") : "saint of the day";
+    const TR_LEAD = { glory: "Glory to the Father, and to the Son, and to the Holy Spirit.", bothNow: "Both now and ever, and unto the ages of ages. Amen.",
+      gloryBothNow: "Glory to the Father, and to the Son, and to the Holy Spirit, both now and ever, and unto the ages of ages. Amen." };
+    const TR_LABEL = { sunday: "Troparion of the Resurrection", saint: "Troparion", feast: "Troparion of the feast", theotokion: "Theotokion" };
+    const TR_SRC = { octoechos: "Octoechos", oca: "OCA", general: "General Menaion", menaion: "Menaion" };
+    elements.push({id:"v-chanters",type:"fixed",label:"",rubric:"", text:"Chanters sing the appointed dismissal troparia.", source:"HTM Vespers"});
+    tr.items.forEach((it, i) => {
+      if (it.lead) elements.push({ id: "v-trop-lead-" + i, type: "fixed", label: "", text: TR_LEAD[it.lead], source: "HTM Vespers" });
+      if (it.node && it.node.text) {
+        elements.push({ id: it.kind === "theotokion" ? "v-trop-theotokion" : "v-trop-" + (i + 1), type: "movable",
+          label: TR_LABEL[it.kind] + (it.tone ? " · Tone " + it.tone : ""), rubric: "",
+          text: stripCaret(hymnText(it.node)),
+          source: it.source === "octoechos" ? "Octoechos" : TR_SRC[it.source] + " — " + (it.kind === "feast" ? "of the feast" : trSaint),
+          ...(it.source === "octoechos" ? hymnProvenance(it.node) : (it.node.path ? { srcPath: it.node.path } : {})),
+          fekula: { section: fekulaSection, note: trNote } });
+      } else {
+        elements.push({ id: "v-trop-missing-" + i, type: "movable", label: TR_LABEL[it.kind], unresolved: true,
+          text: "[" + TR_LABEL[it.kind] + " — not found" + (it.tone ? " for Tone " + it.tone : "") + "]", source: "Octoechos",
+          fekula: { section: fekulaSection, note: trNote } });
+      }
+    });
+    if (!tr.items.length) elements.push({ id: "v-trop-none", type: "movable", label: "Troparion", rubric: "", unresolved: true,
+      text: menaionV2 ? "[Troparion — none is printed for this service]" : "[Troparion — the Menaion is not yet encoded for this date]",
+      source: "Menaion", fekula: { section: fekulaSection, note: trNote } });
+  } else {
+  // PENTECOSTARION — unchanged from v0.52.2, not yet reworked (its data is in the old shape).
   elements.push({id:"v-chanters",type:"fixed",label:"",rubric:"",
     text:"Chanters sing the appointed dismissal troparia.",
     source:"HTM Vespers"});
@@ -4734,6 +4783,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
       text: kont,
       source: kontSrc,
       fekula:{section:fekulaSection, note:"Theotokion/kontakion at Both now… — governed by rank, day of week, and Fekula Chapter 6 rules."}});
+  }
   }
   } // end else (standard troparion logic)
   // 19. DISMISSAL SEQUENCE
@@ -15660,7 +15710,8 @@ export default function App() {
     Promise.all([
       ...[...new Set([prev, m, next, ...dedMonths])].map(mo => _loadMenaionMonth(mo)),
       _loadMenaionV2(m, `${m}-${String(d.getDate()).padStart(2, "0")}`),
-      _loadMenaionV2(String(dNext.getMonth() + 1).padStart(2, "0"), null), // Vespers opens the next day
+      _loadMenaionV2(String(dNext.getMonth() + 1).padStart(2, "0"),            // Vespers opens the next day
+        `${String(dNext.getMonth() + 1).padStart(2, "0")}-${String(dNext.getDate()).padStart(2, "0")}`),
       _loadPentecostarion(),
       OctoV2.loadV2Tone(toneForDate),
       OctoV2.loadV2Tone(toneForVespers),

@@ -220,6 +220,25 @@ export function getV2ApostichaTheotokion(gloryTone) {                           
 // §I dogmatikon in an ARBITRARY tone — the Fekula Ch.6 tone-of-the-Glory
 // appointments (LIC Both-now at resurrectional-class weekday services chants
 // the dogmaticon in the tone of the doxasticon, §III; Friday: tone of week).
+// The Common Theotokia, section I: the resurrectional dismissal theotokion of a tone.
+// Read from the theotokia table, so it does not need that tone's file loaded (the
+// tone asked for is the tone of the last troparion, not the tone of the week).
+export function getV2ResDismissalTheotokion(tone) {
+  const t = theotokia.resurrectional_theotokia?.[String(tone)];
+  if (!t?.dismissal_theotokion) return null;
+  return { tone: Number(tone), ...node(t.dismissal_theotokion, `theotokia.resurrectional_theotokia.${tone}.dismissal_theotokion`, null) };
+}
+// Section III: the daily dismissal theotokion (or stavrotheotokion) for the troparia
+// at Vespers, by the tone of the troparion and the evening it is sung on.
+const DAILY_DISMISSAL_SLOT = { sun: 'sun_vespers_mon_matins', mon: 'mon_vespers_tue_matins', tue: 'tue_vespers_wed_matins',
+  wed: 'wed_vespers_thu_matins', thu: 'thu_vespers_fri_matins', fri: 'fri_vespers_sat_matins' };
+export function getV2DailyDismissalTheotokion(tone, eve) {
+  const slot = DAILY_DISMISSAL_SLOT[eve];
+  const t = slot ? theotokia.dismissal_theotokia_annual?.[String(tone)]?.[slot] : null;
+  if (!t) return null;
+  return { tone: Number(tone), slot, ...node(t, `theotokia.dismissal_theotokia_annual.${tone}.${slot}`, null) };
+}
+
 export function getV2Dogmatikon(tone) {
   const t = theotokia.resurrectional_theotokia?.[String(tone)];
   if (!t?.dogmatikon) return null;

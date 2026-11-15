@@ -10,7 +10,8 @@
 // V1 went wrong here because it started at step 3.
 //
 // BUILT SO FAR: "Lord, I have cried" (stichera, Glory, Both now); the Aposticha
-// (whose stichera, Glory, Both now); the Litiya (what the page prints, and no more).
+// (whose stichera, Glory, Both now); the Litiya (what the page prints, and no more);
+// the troparia at the end (never a kontakion).
 const ROMAN = { I: 1, II: 2, III: 3, IV: 4, V: 5, VI: 6, VII: 7, VIII: 8 };
 const EVES = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri']; // the evening Vespers is sung on
 const isText = (n) => !!n && typeof n.text === 'string';
@@ -260,4 +261,78 @@ export function resolveLitiya({ c, base }) {
   const glory = slot('litiya_glory', 'doxasticon');
   const bothNow = slot('litiya_closer', v.litiya_closer?.type === 'of_the_feast' ? 'feast' : 'theotokion');
   return { rubric: isText(rubric) ? rubric.text : null, stichera, glory, bothNow, combined: !glory && !!bothNow };
+}
+
+// ── The troparia at the end of Vespers ──────────────────────────────────────
+// NO KONTAKION IS SUNG AT VESPERS. Every Vespers order in Fekula ch. 1 and ch. 2
+// ends "For the troparia" and names troparia and a theotokion; none of the 45 OCA
+// texts prints a kontakion there. (V1 put the saint's kontakion at Both now on
+// weekdays. That was wrong.)
+//   The troparia the page prints, in its order and under its own "Glory" and "Both
+//   now" headings; in a feast period the page itself closes with the troparion of
+//   the feast. Otherwise, at Both now, a theotokion (Fekula ch. 6):
+//     the page prints one                  that one
+//     doxology, polyeleos, vigil           the resurrectional dismissal theotokion in
+//                                          the tone of the last troparion (§III)
+//     simple, double, six-stichera         the theotokion of the day, in that tone (§II)
+//     Friday evening, any rank             the dismissal theotokion in the tone of the WEEK
+//   Saturday evening: the Sunday troparion first; Glory, the saint's; Both now, the
+//   feast's, else the dismissal theotokion in the tone of the last troparion (§I).
+// own: { saint, feast } slots from the day's Hours plan, so the OCA hymn or the
+//   General Menaion fallback stands here exactly as it does at the Hours.
+// octo adds: resTroparion(tone), resDismissalTheotokion(tone), dailyDismissalTheotokion(tone, eve).
+// Returns { items: [{ lead, kind, source, tone, node }], rule, notes }; lead is
+//   null | 'glory' | 'bothNow' | 'gloryBothNow'.
+export function resolveVespersTroparia({ c, base, eveDow, tone, octo, own = {} }) {
+  const vname = c.great_vespers ? 'great_vespers' : 'vespers'; const v = c[vname] ?? {};
+  const notes = []; const saturday = eveDow === 6; const friday = eveDow === 5; const eve = EVES[eveDow];
+  const high = ['doxology', 'polyeleos', 'vigil', 'great_feast'].includes(c.rank);
+  const theotokosFeast = c.kind === 'feast' && c.rank === 'great_feast';
+  const list = [];
+  if (isText(c.troparion)) list.push({ node: { ...c.troparion, path: `${base}.troparion` }, feast: theotokosFeast, labels: [] });
+  (v.troparia ?? []).forEach((n, i) => isText(n) && list.push({ node: { ...n, path: `${base}.${vname}.troparia[${i}]` }, labels: [].concat(n.label ?? []),
+    feast: ['feast', 'forefeast'].includes(n.saint) || [].concat(n.label ?? []).includes('of_the_feast') }));
+  // The OCA hymn or the General Menaion fallback, where the Hours plan chose one.
+  const swap = (slot, isFeast) => {
+    if (!slot?.node || slot.source === 'menaion') return;
+    const i = list.findIndex((x) => x.feast === isFeast);
+    const entry = { node: slot.node, feast: isFeast, labels: i >= 0 ? list[i].labels : [], source: slot.source };
+    if (i >= 0) list[i] = entry; else if (!isFeast) list.unshift(entry);
+  };
+  swap(own.saint, false); swap(own.feast, true);
+  let lastTone = null;
+  const item = (x, lead, kind) => { if (x.node.tone != null) lastTone = x.node.tone;
+    return { lead, kind, source: x.source ?? 'menaion', tone: x.node.tone ?? lastTone, node: x.node }; };
+  const theot = (t, node, lead) => (node ? { lead, kind: 'theotokion', source: 'octoechos', tone: node.tone ?? t, node } : { lead, kind: 'theotokion', source: 'none', tone: t, node: null });
+  const saints = list.filter((x) => !x.feast); const feast = list.find((x) => x.feast) ?? null;
+
+  if (saturday) {
+    const sunday = { lead: null, kind: 'sunday', source: 'octoechos', tone, node: octo.resTroparion(tone) };
+    if (theotokosFeast && feast) return { items: [sunday, item(feast, 'gloryBothNow', 'feast')], rule: '§1E, a feast of the Theotokos: the Sunday troparion; Glory, Both now, the troparion of the feast.', notes };
+    const items = [sunday];
+    if (saints[0]) items.push(item(saints[0], 'glory', 'saint'));
+    if (saints.length > 1) notes.push('Three troparia are never sung at Vespers before the theotokion: the second saint\'s is left out (Fekula §1B, note 9).');
+    const lead = saints[0] ? 'bothNow' : 'gloryBothNow';
+    if (feast) { items.push(item(feast, lead, 'feast')); return { items, rule: 'Saturday evening: the Sunday troparion; Glory, of the saint; Both now, the troparion of the feast (Fekula §1F).', notes }; }
+    const t = lastTone ?? tone;
+    items.push(theot(t, octo.resDismissalTheotokion(t), lead));
+    return { items, rule: `Saturday evening: the Sunday troparion; Glory, from the Menaion; Both now, the dismissal theotokion in the tone of the last troparion (Tone ${t}; Fekula ch. 6 §I).`, notes };
+  }
+
+  if (!list.length) {
+    notes.push('The Menaion prints no troparion for this service.');
+    return { items: [], rule: 'No troparion is printed.', notes };
+  }
+  if (theotokosFeast) return { items: [item(feast ?? list[0], null, 'feast')], rule: 'The troparion of the feast.', notes };
+  // As printed: each troparion under the heading the page gives it.
+  const leadOf = (x, i) => { const g = x.labels.includes('glory'), b = x.labels.includes('both_now'); return g && b ? 'gloryBothNow' : g ? 'glory' : b ? 'bothNow' : (i > 0 && !x.feast && saints.length === 2 && x === saints[1] ? 'glory' : null); };
+  const items = list.map((x, i) => item(x, leadOf(x, i), x.feast ? 'feast' : 'saint'));
+  if (feast) return { items, rule: 'The troparia as the page prints them, closing with the troparion of the feast.', notes };
+  const lead = items.some((x) => x.lead === 'glory') ? 'bothNow' : 'gloryBothNow';
+  const t = lastTone ?? tone;
+  if (friday) { items.push(theot(tone, octo.resDismissalTheotokion(tone), lead)); return { items, rule: `Friday evening: Both now, the dismissal theotokion in the tone of the week (Tone ${tone}; Fekula ch. 6 §II and §III).`, notes }; }
+  if (isText(v.troparion_closer)) { items.push({ lead, kind: 'theotokion', source: 'menaion', tone: v.troparion_closer.tone ?? t, node: { ...v.troparion_closer, path: `${base}.${vname}.troparion_closer` } }); return { items, rule: 'Both now: the theotokion the page prints.', notes }; }
+  if (high) { items.push(theot(t, octo.resDismissalTheotokion(t), lead)); return { items, rule: `Both now: the dismissal theotokion in the tone of the last troparion (Tone ${t}; Fekula ch. 6 §III).`, notes }; }
+  items.push(theot(t, octo.dailyDismissalTheotokion(t, eve), lead));
+  return { items, rule: `Both now: the theotokion of the day in the tone of the last troparion (Tone ${t}; Fekula ch. 6 §II).`, notes };
 }
