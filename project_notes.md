@@ -521,25 +521,27 @@ DONE on the branch — Typica and Liturgy, FIRST PART (14 Nov):
   (`src/lib/liturgy-entrance.js`, by rank and temple), the Beatitudes troparia,
   the Trisagion substitute. These still read V1 fields.
 
-**THE LITURGY RULE NEEDS BILL'S RULING BEFORE IT IS GATED AGAINST THE OCA.**
-The module applies Fekula's "for the day, and, if there be such, from the
-Menaion" by PRESENCE: whenever the page prints a prokeimenon, Alleluia or
-readings, they are added to the day's. The OCA texts do less:
-- 16 Nov (Monday, Apostle Matthew, polyeleos): ONLY the saint's prokeimenon,
-  Epistle, Alleluia and Gospel; nothing of the day.
-- 6 Sep (Sunday, six-stichera): ONLY the Sunday's; nothing of the Archangel,
-  though the Menaion prints a prokeimenon, Epistle and Gospel for him.
-- 22 Nov (Sunday, afterfeast): Sunday and feast prokeimena and Alleluia, the
-  Sunday Epistle and Gospel; nothing of the Apostles, though printed.
-- 14 Nov (Saturday): the saint's first, then the day's (as the module does).
-Either the OCA documents are not a full statement of the Liturgy (they may
-leave the daily readings to the lectionary), or presence is the wrong gate and
-rank decides. Fekula ch. 1 and ch. 2 "Divine Liturgy" lines must be read
-section by section, as was done for the Hours, before any change.
+**RULED (Bill, 14 Nov): THE TOOL ALWAYS RENDERS THE FULL ORDER AND NOTES OCA
+PRACTICE.** The tool's presence rule (the day's proper, and the Menaion's
+wherever the page prints one) is the more correct order. The OCA texts print
+less, which Bill takes to be brevity: 16 Nov (Monday, Apostle Matthew) only the
+Apostle's; 6 Sep (a six-stichera Sunday) only the Sunday's; 22 Nov (Sunday in
+the afterfeast) Sunday and feast but not the Apostles'; 14 Nov (Saturday) the
+saint's, then the day's. So NOTHING IS DROPPED and there is no toggle for it.
+Where an OCA text exists for the day each item says in its heading
+"· OCA: sung" (the OCA text prints it) or "· OCA: likely omitted" (it does not).
+Where there is no OCA text for the day, nothing is said: the mark rests on a
+document, never on a guessed pattern.
+- `ocaLiturgyPropers(doc)` in the OCA layer; `ocaPractice` into
+  `resolveLiturgyPropers` (prokeimena, Alleluia) and `ocaReadingPractice` for
+  the Epistle and Gospel. Typica headings carry the mark; the Liturgy context
+  receives it. Tests: noting OCA practice never changes the count of items.
+- This is different from Prefer OCA, which swaps a hymn for its own OCA
+  counterpart. Describe both in the How-It-Works pass.
 
-NEXT on the branch: that ruling and the Liturgy gate; the entrance troparia and
-kontakia and the Beatitudes; dismissal `name`; bulletin; Prefer OCA toggle and
-service chooser; the How-It-Works pass; merge and retire V1.
+NEXT on the branch: the Liturgy's entrance troparia and kontakia and the
+Beatitudes; dismissal `name`; bulletin; Prefer OCA toggle and service chooser;
+the How-It-Works pass; merge and retire V1.
 
 **RULED (Bill, 14 Nov, on the evidence):**
 - **An OCA hymn replaces its own counterpart and nothing else.** 10-04: the OCA
@@ -614,6 +616,9 @@ before `v2-wirein` is merged. It must cover at least:
 - The Hours rules by Fekula section, including Sundays and feast periods.
 - **No kontakion at Vespers**; how the Both now at the troparia is chosen
   (Fekula ch. 6), with the Friday-evening exception.
+- **OCA practice marks at the Liturgy and Typica** ("OCA: sung" / "OCA: likely
+  omitted"): the full order is always rendered; the mark only reports what
+  the OCA text for that day prints. How this differs from Prefer OCA.
 - That every element names its source and the rule applied.
 Check each explainer too (RankExplainer, the kontakion and prokeimenon ones).
 

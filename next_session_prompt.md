@@ -48,9 +48,9 @@ shims, props or bandages; fix the logic. The assemblers lay in PLANS from
   (`resolveVespersTroparia`; NO kontakion at Vespers), the entrance and readings, and the
   composed Litiya of Fekula 1F1. Vespers reads V2 throughout outside the Pentecostarion.
   The Typica and Liturgy take their Menaion propers and readings from `liturgyPlan`.
-  NEXT: read Fekula's "Divine Liturgy" lines section by section and settle the rule with
-  Bill (the OCA texts sing less than the presence rule gives; see project_notes.md), gate it,
-  then the entrance troparia and kontakia, the Beatitudes, the dismissal and the bulletin.
+  Ruled: the full order is always rendered and each Liturgy item is marked "OCA: sung" or
+  "OCA: likely omitted" where an OCA text exists for the day (built). NEXT: the entrance
+  troparia and kontakia, the Beatitudes, the dismissal and the bulletin.
 - **Vespers, in service order, one section at a time:** Lord I call (~500 lines),
   Litiya (~190), Aposticha (~330), troparia (~200), in `assembleVespers`
   (hours-tool.jsx). Build `vespersPlan` in the adapter first; for each movable
