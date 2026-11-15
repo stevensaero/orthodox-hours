@@ -27,7 +27,7 @@ const known = [];
 
 // key|what -> reason. Each was checked against the page or the OCA text.
 const KNOWN = {
-  '10-04|kontakion tone': 'The OCA prints at the Liturgy its Tone 8 kontakion, which is the Menaion\'s kontakion after Ode III; the Menaion-only reading takes the Tone 4 kontakion after Ode VI. The two witnesses differ; with Prefer OCA on the OCA\'s is shown.',
+  '10-04|kontakion tone': 'FOR RULING. The OCA prints at the Liturgy its Tone 8 kontakion, which is the Menaion\'s kontakion after Ode III; the tool takes the Tone 4 kontakion after Ode VI (ODS Appendix A-V note, by the same reasoning). The two witnesses differ on which kontakion the Liturgy takes.',
   '09-27|troparion tone': 'Different hymns: the Menaion prints the general troparion of martyrs (Tone 4, "In their sufferings"); the OCA prints a troparion of St. Callistratus (Tone 3).',
   '10-04|troparion tone': 'Different hymns: the Menaion prints "Having learned goodness" (Tone 4); the OCA prints "We the faithful all praise Hierotheus" (Tone 1).',
   '11-29|kontakion tone': 'Different hymns: the page prints no kontakion, so the General Menaion\'s for a martyr is read (Tone 2); the OCA prints a kontakion of the martyrs (Tone 4).',
@@ -59,7 +59,7 @@ const seq = (els) => els.filter((e) => /^lit-tk-\d+-/.test(e.id)).map((e) => ({ 
 
 // ── 1. the OCA answer key ────────────────────────────────────────────────────
 const data = {}; for (const mm of ['09', '10', '11']) data[mm] = await loadMenaionV2Month(mm);
-let checked = 0;
+let checked = 0; const unmatched = [];
 for (const [key, slots] of Object.entries(OCA_SLOTS)) {
   const day = data[key.slice(0, 2)]?.[key]; if (!day) continue;
   const svc = servicesOf(day, key)[0]; const c = svc.c; const own = c.kind === 'feast';
@@ -68,7 +68,7 @@ for (const [key, slots] of Object.entries(OCA_SLOTS)) {
     .map((t) => ({ kind: (t.label === 'Troparion' ? 'T' : 'K') + ':' + (/Resurrection/i.test(t.subject ?? '') ? 'res' : /^Feast$/i.test(t.subject ?? '') ? 'feast' : 'saint'), tone: t.tone, head: t.head }));
   const ld = ldFor(key, c);
   for (const preferOca of [true, false]) {
-    const plan = entrancePlan(c, svc.path, { oca: preferOca ? await ocaFor(key) : null, general });
+    const plan = entrancePlan(c, svc.path, { oca: preferOca ? await ocaFor(day) : null, general });
     const r = resolveEntrance({ liturgicalData: ld, menaion: plan, sources });
     const ours = seq(r.elements).map((x) => ({ kind: kindOf(x.slot, own), tone: Number((x.e.toneNote ?? '').replace('Tone ', '')) || null, unresolved: !!x.e.unresolved, source: x.e.source }));
     const a = ours.map((x) => x.kind).join(' '); const b = oca.map((x) => x.kind).join(' ');
@@ -79,11 +79,10 @@ for (const [key, slots] of Object.entries(OCA_SLOTS)) {
       else if (x.kind.endsWith('res')) { if (x.tone !== oca[i].tone) fail(`${key}: Sunday ${x.kind} Tone ${x.tone}, OCA ${oca[i].head}`); }
       else if (x.tone !== oca[i].tone) allow(`${key}|${x.kind[0] === 'T' ? 'troparion' : 'kontakion'} tone`, `${preferOca ? 'Prefer OCA' : 'Menaion'} ${x.kind} Tone ${x.tone} (${x.source}); the OCA prints ${oca[i].head}`);
     });
-    if (preferOca && ours.some((x) => !x.kind.endsWith('res') && !/^OCA/.test(x.source) && oca.find((o) => o.kind === x.kind))) {
-      const miss = ours.filter((x) => !x.kind.endsWith('res') && !/^OCA/.test(x.source));
-      // A hymn the OCA prints but slots.js does not map stays the Menaion's: report it.
-      for (const m of miss) allow(`${key}|${m.kind} unmapped`, `Prefer OCA is on and ${m.kind} is still the Menaion's (${m.source}); slots.js has no OCA hymn for it`);
-    }
+    // Prefer OCA shows a hymn in the OCA's words only where the match register holds its
+    // mate (ruled 15 Nov 2026). A hymn the OCA prints here whose place the tool still
+    // fills from the Menaion has no confirmed match yet: counted, not an error.
+    if (preferOca) for (const m of ours.filter((x) => !x.kind.endsWith('res') && !/^OCA/.test(x.source) && oca.find((o) => o.kind === x.kind))) unmatched.push(`${key} ${m.kind} (${m.source})`);
     if (table && preferOca) console.log(`${key} ${c.rank}/${c.kind} ${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][ld.dow]} §${r.section}: ${ours.map((x) => x.kind + '/T' + x.tone).join('  ')}`);
   }
 }
@@ -107,5 +106,6 @@ for (const mm of Object.keys(data)) for (const key of Object.keys(data[mm]).sort
 }
 
 for (const k of [...new Set(known)]) console.log('  KNOWN', k);
-console.log(`menaion v2 liturgy: ${checked} entrance hymns checked against the OCA on ${Object.keys(OCA_SLOTS).length} dates, ${rubrics} Beatitudes rubrics read, ${new Set(known).size} known differences, ${bad} errors`);
+if (table) for (const u of new Set(unmatched)) console.log('  no matched OCA text yet: ' + u);
+console.log(`menaion v2 liturgy: ${checked} entrance hymns checked against the OCA on ${Object.keys(OCA_SLOTS).length} dates, ${rubrics} Beatitudes rubrics read, ${new Set(known).size} known differences, ${new Set(unmatched).size} places where the OCA prints a hymn the register has no match for yet, ${bad} errors`);
 process.exit(bad ? 1 : 0);

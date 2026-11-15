@@ -2,6 +2,7 @@
 // and the hand-kept slot map. (Byte fidelity to the docx is the extractor's
 // --check, run where the documents are.)
 import fs from 'node:fs';
+import path from 'node:path';
 import crypto from 'node:crypto';
 import { OCA_DOCS, OCA_DIGESTS } from '../src/data/oca_hymns/manifest.js';
 import LIBRARY from '../src/data/oca_hymns/library.js';
@@ -10,7 +11,8 @@ import { OCA_MATCHES_HUMAN } from '../src/data/oca_hymns/matches_human.js';
 import { OCA_MATCHES_REVIEW } from '../src/data/oca_hymns/matches_review.js';
 import { loadHymnPool } from './lib/hymn_pool.mjs';
 import { OCA_SLOTS } from '../src/data/oca_hymns/slots.js';
-import { ocaTexts, ocaHymn, loadOcaDoc } from '../src/data/oca_hymns/index.js';
+import { ocaTexts, loadOcaDoc } from '../src/data/oca_hymns/index.js';
+import { ocaHymn } from '../src/data/oca_hymns/by_date.js';
 const errs = []; const E = (m) => errs.push(m);
 const dir = new URL('../src/data/oca_hymns/docs/', import.meta.url);
 const onDisk = fs.readdirSync(dir).filter((f) => f.endsWith('.js')).map((f) => f.slice(0, -3)).sort();
@@ -106,6 +108,16 @@ for (const [id, m] of Object.entries(OCA_MATCHES_REVIEW)) {
 }
 for (const [id, m] of Object.entries(OCA_MATCHES_HUMAN)) if ('mate' in m && (id in OCA_MATCHES_AUTO || id in OCA_MATCHES_REVIEW)) E(`${id}: decided by a person but still in a generated file (run tools/match_oca_hymns.mjs)`);
 console.log(`Match register: ${Object.keys(OCA_MATCHES_AUTO).length} automatic, ${Object.values(OCA_MATCHES_HUMAN).filter((m) => m.mate).length} by a person (and ${Object.values(OCA_MATCHES_HUMAN).filter((m) => m.reject).length} candidates rejected), ${Object.keys(OCA_MATCHES_REVIEW).length} awaiting review`);
+// RULED 15 Nov 2026: the running tool takes nothing from an OCA document by its date.
+// by_date.js and slots.js are for the tests and tools; nothing the app loads may import them.
+{
+  const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : /\.(jsx?|mjs)$/.test(e.name) ? [path.join(d, e.name)] : []));
+  for (const f of walk('src')) {
+    if (/oca_hymns[\\/](by_date|slots)\.js$/.test(f)) continue;
+    if (/from\s+['"][^'"]*oca_hymns\/(by_date|slots)(\.js)?['"]|import\(['"][^'"]*oca_hymns\/(by_date|slots)/.test(fs.readFileSync(f, 'utf8'))) E(`${f} imports the by-date OCA layer (by_date.js or slots.js); the running tool may use the match register only`);
+  }
+}
+
 console.log(`OCA hymns: ${listed.length} documents, ${blocks} blocks, ${hymns} hymns (${printedIn.size} distinct, ${Object.keys(LIBRARY).length} stored once in the library), ${pointed} pointed, ${carets} caret marks, ${slots} slots on ${Object.keys(OCA_SLOTS).length} dates`);
 if (errs.length) { errs.slice(0, 40).forEach((e) => console.log('  ERROR', e)); console.log(`${errs.length} error(s)`); process.exit(1); }
 console.log('OK');

@@ -1,4 +1,9 @@
-// HAND-KEPT. Which OCA hymn fills which place on a Menaion date.
+// HAND-KEPT. BACKEND ONLY since 15 Nov 2026 (ruled by Bill): the running tool no longer reads
+// this file. It records what the OCA appointed on a date IN 2026, so the tests can compare the
+// tool's own render of that day with the OCA text (by_date.js). What the reader sees under
+// "Prefer OCA texts" comes from the match register alone, hymn by hymn.
+//
+// Which OCA hymn fills which place on a Menaion date.
 // `doc` is a captured document (docs/<doc>.js); `head` is the heading the hymn is
 // printed under in it, copied exactly. Only dates Menaion V2 holds are mapped; the
 // other captured documents wait in docs/ until their dates are encoded.

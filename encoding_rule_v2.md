@@ -1,6 +1,17 @@
-# ENCODING RULE v2.17 — Orthodox Hours Tool
+# ENCODING RULE v2.18 — Orthodox Hours Tool
 **Authority:** Fekula & Williams ODS 3rd ed. vol. III (2009, Menaion) · Fekula & Williams ODS 2nd ed. (2009, all other chapters) · St. Ignatius Orthodox Press Anthologion (2024) · HTM Horologion · OCA calendar (oca.org)
-**Updated:** August 2026 · **Supersedes:** v2.16, v2.15, v2.14, v2.13, v2.12, v2.11, v2.10, v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+**Updated:** August 2026 · **Supersedes:** v2.17, v2.16, v2.15, v2.14, v2.13, v2.12, v2.11, v2.10, v2.9, v2.8, v2.7, v2.6, v2.5, v2.4, v2.3, v2.2, v2.1, v2.0, encoding_rule_complete_capture.md (and all prior)
+
+**v2.18 changes (15 Nov 2026) — OCA TEXTS ARE USED HYMN BY HYMN, NEVER BY THE DAY:**
+- The running tool takes NOTHING from an OCA document by its date. "Prefer OCA
+  texts" shows the matched OCA text of a hymn the tool's own logic has chosen
+  (match register, with the tone guard), and nothing else.
+- `slots.js` and `by_date.js` are BACKEND ONLY: what the OCA appointed on a date
+  in its year, for the tests that compare the tool's render with the OCA text.
+  Nothing else under `src/` may import them (gated).
+- Where the OCA appoints a different hymn or reading, that is a FINDING for a
+  ruling. If OCA practice is to win, it goes into the tool's logic as a rule
+  that holds in any year; it is never restored as a by-date override.
 
 **v2.17 changes (15 Nov 2026) — OCA TEXTS: THE LIBRARY AND THE MATCH REGISTER:**
 - An OCA document is captured whole and is the record for ITS date in ITS year.
@@ -613,9 +624,11 @@ machine; the captures are generated files and are not edited by hand.
   or sung (`stripCaret`). Meaning unknown: Q-0007.
 - A closing "(once)" / "(twice)" / "(thrice)" is lifted into `repeat`.
 - Layout whitespace (tabs, runs of spaces) is collapsed to one space.
-- `src/data/oca_hymns/slots.js` is the only hand-kept file: Menaion date ->
-  slot -> the heading the hymn stands under in its document. A date gets slots
-  when Menaion V2 holds it. Gate: `tools/validate_oca_hymns.mjs`.
+- `src/data/oca_hymns/slots.js` is hand-kept: Menaion date -> slot -> the
+  heading the hymn stands under in its document. A date gets slots when Menaion
+  V2 holds it. BACKEND ONLY (v2.18): the tests read it to compare the tool's
+  render with the OCA text; the running tool does not. Gate:
+  `tools/validate_oca_hymns.mjs`.
 - The layer is a second witness. It is never copied into the Menaion capture.
 
 ---

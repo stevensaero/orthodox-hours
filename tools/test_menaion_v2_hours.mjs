@@ -21,11 +21,11 @@ const fail = (m) => { bad++; console.log('  ERROR', m); };
 for (const mo of Object.keys(MONTH_LOADERS).sort()) {
   const M = await loadMenaionV2Month(mo);
   for (const key of Object.keys(M).filter((k) => /^\d\d-\d\d$/.test(k)).sort()) {
-    const oca = await ocaFor(key);
+    const oca = await ocaFor(M[key]);   // the matched OCA texts of the day's own hymns (hymn by hymn, no date)
     for (const { c, index, path } of servicesOf(M[key], key)) {
       services++;
       for (const sunday of [false, true]) for (const useOca of [false, true]) {
-        const o = useOca && c.oca_primary ? oca : null;
+        const o = useOca ? oca : null;
         if (useOca && !o) continue;
         plans++;
         const plan = hoursPlan(c, path, { oca: o, general, sunday }); const weekdayPlan = hoursPlan(c, path, { oca: o, general, sunday: false });
@@ -42,8 +42,12 @@ for (const mo of Object.keys(MONTH_LOADERS).sort()) {
           if (p.primaryTrop && p.secondaryTrop && p.primaryTrop.text === p.secondaryTrop.text) fail(`${at} ${HOURS[i]}: the same troparion twice`);
         });
         if (!plan.rule || !/^§\d/.test(plan.rule)) fail(`${at}: no Fekula section cited`);
-        if (plan.notes.some((x) => /does not say which one/.test(x))) fail(`${at}: two kontakia are printed; the OCA kontakion slot needs 'replaces'`);
-        if (o && !per.some((p) => /(^|\|)OCA/.test(p.primaryTropSource + '|' + p.secondaryTropSource + '|' + p.kontakionSource))) fail(`${at}: OCA hymns are mapped but none is read`);
+        // Hymn by hymn: an OCA text may stand only in the place of its own mate, in the mate's tone
+        // unless a person confirmed the match across tones.
+        for (const hr of HOURS) for (const sl of [...plan.hours[hr].troparia, plan.hours[hr].kontakion]) if (sl?.source === 'oca') {
+          if (!sl.menaion) fail(`${at} ${hr}: an OCA text with no hymn of ours under it`);
+          else if (sl.node.tone != null && sl.menaion.tone != null && sl.node.tone !== sl.menaion.tone && !sl.node.toneDiffers) fail(`${at} ${hr}: OCA Tone ${sl.node.tone} in the place of a Tone ${sl.menaion.tone} hymn`);
+        }
         if (missing) gaps++;
         rows.push({ path: path + (c.oca_primary || M[key].commemorations.length === 1 ? '' : ' (2nd)'), day: sunday ? 'Sunday' : 'Weekday', text: o ? 'OCA' : 'Menaion', sec: `${c.rank}, §${plan.cited}`,
           trop: squash(per.map((p) => [cell(p.primaryTrop, p.primaryTropSource), ...(p.secondaryTrop ? ['Glory: ' + cell(p.secondaryTrop, p.secondaryTropSource)] : [])].join('; '))),

@@ -464,13 +464,15 @@ for (const els of [run({ dow: 0, isSunday: true, season: "sunday", tone: 7 }, nu
 const overview = assembleLiturgy({ units: getLiturgy("chrysostom") }).filter(e => e.type === "liturgy_section" && e.core).length;
 // ── The general rule is Fekula's by section; the OCA mark stands only where the OCA text differs (Bill, 14 Nov 2026) ──
 {
-  const { ocaLiturgyPropersFor } = await import('../src/data/oca_hymns/index.js');
-  const { ocaReadingPractice } = await import('../src/lib/liturgy-propers.js');
+  const { ocaLiturgyPropersFor } = await import('../src/data/oca_hymns/by_date.js');
+  const { ocaReadingPractice, markOcaPractice } = await import('./lib/oca_practice.mjs');
+  // The comparison is made HERE, on the tool's own render (ruled 15 Nov 2026: the tool shows no by-date OCA marks).
+  const compare = (r, oca) => { markOcaPractice(r.prokeimena, oca?.prokeimena); markOcaPractice(r.alleluia, oca?.alleluia); return r; };
   let bad = 0; const ck = (c, m) => { if (!c) { bad++; console.log('  FAIL OCA practice: ' + m); } };
   // 16 Nov 2026, Monday, Apostle Matthew: the OCA prints only the Apostle's.
   const oca = await ocaLiturgyPropersFor('11-16'); const plan = planOf('11-16');
   const base = { liturgicalData: { dow: 1, tone: 7 }, menaionPlan: plan, sources: baseSources };
-  const full = resolveLiturgyPropers(base); const noted = resolveLiturgyPropers({ ...base, ocaPractice: oca });
+  const full = resolveLiturgyPropers(base); const noted = compare(resolveLiturgyPropers(base), oca);
   // The general rule is Fekula's (§2E, polyeleos): prokeimenon and Alleluia "from the Menaion, only". The OCA text agrees.
   ck(full.prokeimena.length === 1 && full.prokeimena[0].origin === 'menaion' && full.alleluia.length === 1 && full.rule.section === '§2E', '§2E: the Apostle\'s prokeimenon and Alleluia only (' + full.prokeimena.length + ', ' + full.rule.section + ')');
   ck(noted.prokeimena.length === full.prokeimena.length && noted.prokeimena[0].oca === 'printed', 'the OCA text prints what Fekula appoints: nothing to mark');
@@ -485,7 +487,7 @@ const overview = assembleLiturgy({ units: getLiturgy("chrysostom") }).filter(e =
   // 6 Sep 2026, a six-stichera Sunday (§1C): for Sunday and from the Menaion. The OCA text prints only the Sunday's: that difference is marked.
   await OctoV2.loadV2Tone(5);
   const sun = null;
-  const sun2 = resolveLiturgyPropers({ liturgicalData: { dow: 0, isSunday: true, tone: 5 }, menaionPlan: planOf('09-06'), ocaPractice: await ocaLiturgyPropersFor('09-06'), sources: baseSources });
+  const sun2 = compare(resolveLiturgyPropers({ liturgicalData: { dow: 0, isSunday: true, tone: 5 }, menaionPlan: planOf('09-06'), sources: baseSources }), await ocaLiturgyPropersFor('09-06'));
   ck(sun2.prokeimena.find((x) => x.origin === 'sunday')?.oca === 'printed' && sun2.prokeimena.find((x) => x.origin === 'menaion')?.oca === 'not_printed', 'Sunday §1C: Sunday and Menaion both shown; the saint\'s, which the OCA text does not print, is marked');
   void sun;
   console.log(bad ? `OCA practice notes: ${bad} failure(s)` : 'OCA practice notes: OK');

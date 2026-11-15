@@ -1,9 +1,11 @@
 // OCA hymns layer: a second witness beside the Menaion capture, never mixed into it.
 // docs/*.js are whole-document captures of the OCA service texts (generated; see
-// tools/encoding/oca_hymns/extract.py). slots.js is the hand-kept map from a Menaion
-// date to the OCA hymns that fill its places. Rulings: menaion_v2_wirein_spec.md 0.11, 5c.
+// tools/encoding/oca_hymns/extract.py).
+//
+// RULED 15 Nov 2026: the running tool shows an OCA text only HYMN BY HYMN, through the
+// match register below, inside its own logic. Nothing here answers "what does the OCA
+// appoint on this date": that is by_date.js, which only the tests and tools read.
 import { OCA_DOCS } from './manifest.js';
-import { OCA_SLOTS } from './slots.js';
 import { textKey } from './text_key.js';
 
 // A hymn printed in more than one document is stored once, in library.js, and its
@@ -56,24 +58,6 @@ export function ocaTexts(doc) {
   return out;
 }
 
-// The OCA hymn for one slot of one Menaion date, or null. Returned as a V2-shaped
-// text node (tier 3, director pointing) so every consumer reads it like any other.
-export async function ocaHymn(key, slot) {
-  const ref = OCA_SLOTS[key]?.[slot];
-  if (!ref) return null;
-  const doc = await loadOcaDoc(ref.doc);
-  const hit = doc && ocaTexts(doc).find((t) => t.head === ref.head && (ref.p == null || t.p[0] === ref.p));
-  if (!hit) return null;
-  return {
-    text: hit.text, tier: hit.pointed ? 3 : (hit.n > 1 ? 2 : 1), tone: hit.tone, director: !!hit.pointed,
-    type: slot, source: 'oca', sourceLabel: 'OCA', subject: hit.subject, id: hit.id, from: { doc: ref.doc, date: doc.date, head: hit.head },
-    ...(ref.replaces ? { replaces: ref.replaces } : {}),
-    ...(hit.repeat ? { repeat: hit.repeat } : {}), ...(hit.underlined ? { underlined: hit.underlined } : {}),
-    src: { file: doc.file, locus: `paragraphs ${hit.p[0]}-${hit.p[1]}` },
-  };
-}
-export const ocaSlotsForKey = (key) => Object.keys(OCA_SLOTS[key] || {});
-
 // The readings an OCA document appoints at Vespers: the references it heads them
 // with, in order ("Genesis 28:10-17"; "Composite 17 (Exod. 40:1–5, 9, 10, 16, 34–35)").
 // Dashes are made plain hyphens; nothing else is changed.
@@ -90,13 +74,6 @@ export function ocaVespersReadings(doc) {
   }
   return out;
 }
-// The same, for a Menaion date that has a mapped OCA document; [] when it has none.
-export async function ocaVespersReadingsFor(key) {
-  const ref = Object.values(OCA_SLOTS[key] || {})[0];
-  const doc = ref ? await loadOcaDoc(ref.doc) : null;
-  return doc ? ocaVespersReadings(doc) : [];
-}
-
 // What an OCA document prints for the Divine Liturgy: its prokeimena and Alleluia
 // (tone and the label the heading gives), and the Epistle and Gospel references.
 // Used to NOTE OCA practice beside the full order, never to shorten it.
@@ -124,11 +101,6 @@ export function ocaLiturgyPropers(doc) {
   }
   return out.prokeimena.length || out.epistles.length ? out : null;
 }
-export async function ocaLiturgyPropersFor(key) {
-  const ref = Object.values(OCA_SLOTS[key] || {})[0];
-  const doc = ref ? await loadOcaDoc(ref.doc) : null;
-  return doc ? ocaLiturgyPropers(doc) : null;
-}
 
 // ─── THE MATCH REGISTER ─────────────────────────────────────────────────────
 // Which hymn of the tool's own books an OCA hymn is (two translations of one
@@ -136,29 +108,47 @@ export async function ocaLiturgyPropersFor(key) {
 // (by: 'auto'); matches_human.js is a person's decision (by: 'human') and always
 // wins. A match is hymn to hymn: it holds on any date, in any year.
 let register = null;
-export const loadOcaMatches = () => (register ??= Promise.all([import('./matches_auto.js'), import('./matches_human.js')])
-  .then(([a, h]) => {
-    const byMate = new Map();   // mate's text key -> [{ id, by, first, ... }], a person's decision first
+export const loadOcaMatches = () => (register ??= Promise.all([import('./matches_auto.js'), import('./matches_human.js'), import('./matches_reprints.js')])
+  .then(([a, h, r]) => {
+    const byMate = new Map();   // mate's text key -> [{ id, by, first, ... }], best first
     const all = { ...a.OCA_MATCHES_AUTO, ...h.OCA_MATCHES_HUMAN };
     for (const [id, m] of Object.entries(all)) {
       if (!m.mate || !m.mateHash) continue;            // decided: no mate, or only a rejected candidate
       (byMate.get(m.mateHash) ?? byMate.set(m.mateHash, []).get(m.mateHash)).push({ id, ...m });
     }
-    for (const list of byMate.values()) list.sort((x, y) => (x.by === y.by ? y.first.doc.localeCompare(x.first.doc) : x.by === 'human' ? -1 : 1));
+    // Where more than one OCA hymn is matched to one of ours (the OCA words a hymn
+    // differently on different days): a person's decision first; then the OCA hymn
+    // printed for the same day of the year as our hymn's own place (a property of the
+    // pair, not of the day being served); then the closer wording; then the newer text.
+    const md = (stem) => `${stem.slice(5, 7)}-${stem.slice(7, 9)}`;
+    const home = (m) => (m.mate.startsWith('menaion:') && m.mate.slice(8, 13) === md(m.first.doc) ? 0 : 1);
+    for (const list of byMate.values()) list.sort((x, y) => (x.by !== y.by ? (x.by === 'human' ? -1 : 1) : 0)
+      || home(x) - home(y) || (y.score ?? 0) - (x.score ?? 0) || y.first.doc.localeCompare(x.first.doc));
+    // The same hymn printed again (matches_reprints.js): the match holds at every print.
+    for (const [mate, others] of Object.entries(r.OCA_MATE_REPRINTS)) for (const k of others) if (!byMate.has(k) && byMate.has(mate)) byMate.set(k, byMate.get(mate));
     return { all, byMate };
   }));
+
+// One printed OCA hymn as a V2-shaped text node (tier 3, director pointing), so every
+// consumer reads it like any other. It carries its OWN tone and pointing.
+export const ocaNode = (hit, doc, stem) => ({
+  text: hit.text, tier: hit.pointed ? 3 : (hit.n > 1 ? 2 : 1), tone: hit.tone ?? null, director: !!hit.pointed, pointed: !!hit.pointed,
+  source: 'oca', sourceLabel: 'OCA', subject: hit.subject ?? null, id: hit.id, from: { doc: stem, date: doc.date, head: hit.head ?? null },
+  ...(hit.repeat ? { repeat: hit.repeat } : {}), ...(hit.underlined ? { underlined: hit.underlined } : {}),
+  src: { file: doc.file, locus: `paragraphs ${hit.p[0]}-${hit.p[1]}` },
+});
 
 // An OCA hymn by id, read from the document it was first matched in.
 export async function ocaHymnById(id, stem) {
   const doc = await loadOcaDoc(stem);
   const hit = doc && ocaTexts(doc).find((t) => t.id === id);
-  return hit ? { id, text: hit.text, tone: hit.tone ?? null, pointed: !!hit.pointed, from: { doc: stem, date: doc.date, head: hit.head ?? null } } : null;
+  return hit ? ocaNode(hit, doc, stem) : null;
 }
 
 /**
  * The OCA texts for a set of the tool's own hymns.
  * @param texts  the hymns' texts, exactly as stored
- * @returns Map<textKey, { id, text, by, from: { doc, date, head }, evidence }>
+ * @returns Map<textKey, OCA node + { by, toneDiffers, evidence, note }>
  */
 export async function ocaMatesFor(texts) {
   const { byMate } = await loadOcaMatches(); const out = new Map();
@@ -166,8 +156,30 @@ export async function ocaMatesFor(texts) {
     const m = (byMate.get(key) || [])[0];
     if (!m) continue;
     const h = await ocaHymnById(m.id, m.first.doc);
-    if (h) out.set(key, { ...h, by: m.by, evidence: m.evidence ?? null, note: m.note ?? null });
+    if (h) out.set(key, { ...h, by: m.by, toneDiffers: m.toneDiffers === true, evidence: m.evidence ?? null, note: m.note ?? null });
   }
   return out;
+}
+// Every text under a stored value (a day, a commemoration, a tone), for ocaMatesFor.
+export function textsUnder(v, out = []) {
+  if (!v || typeof v !== 'object') return out;
+  if (Array.isArray(v)) { for (const x of v) textsUnder(x, out); return out; }
+  if (typeof v.text === 'string') out.push(v.text);
+  for (const [k, x] of Object.entries(v)) if (k !== 'src') textsUnder(x, out);
+  return out;
+}
+/**
+ * The OCA text that may stand in the place of one of the tool's hymns, or null.
+ * THE TONE GUARD: an OCA text carries its own tone, so it stands only where that is
+ * the tone of the place, unless a person confirmed the match although the two books
+ * print the hymn in different tones (`toneDiffers`), when it is sung in the OCA's.
+ * @param map   from ocaMatesFor
+ * @param node  the tool's own hymn at the place ({ text, tone })
+ */
+export function ocaMate(map, node) {
+  const o = map && node && typeof node.text === 'string' ? map.get(textKey(node.text)) : null;
+  if (!o) return null;
+  if (o.tone != null && node.tone != null && o.tone !== node.tone && !o.toneDiffers) return null;
+  return o;
 }
 export { textKey };

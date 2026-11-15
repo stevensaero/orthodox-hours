@@ -12,8 +12,7 @@ import { DAILY_TROPARIA, DAILY_TROPARIA_SOURCE } from '../data/liturgy/daily_tro
 import { resolveLiturgyPropers } from '../lib/liturgy-propers.js';
 import { resolveHoursPropers } from '../lib/hours-propers.js';
 import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya, resolveVespersTroparia, resolveVespersReadings } from '../lib/vespers-propers.js';
-import { stripCaret, ocaVespersReadingsFor, ocaLiturgyPropersFor } from '../data/oca_hymns/index.js';
-import { ocaReadingPractice } from '../lib/liturgy-propers.js';
+import { stripCaret } from '../data/oca_hymns/index.js';
 import { loadMenaionV2Month, loadMenaionV2General } from '../data/menaion_v2/index.js';
 import { ods3OrderFor } from '../data/ods_v3/orders.js';
 import { buildBulletinDay } from '../lib/bulletin-day.js';
@@ -981,16 +980,15 @@ function getMenaionV2Service(date, serviceIndex, preferOca = PREFER_OCA_DEFAULT)
   const list = v2ServicesOf((_menaionV2Cache[mo] || {})[key], key);
   return list.length ? { ...list[Math.min(serviceIndex, list.length - 1)], preferOca } : null;
 }
+// date key -> the OCA mates of that day's own hymns, from the match register (Map<text
+// key, OCA node>). RULED 15 Nov 2026: Prefer OCA shows the MATCHED OCA text of a hymn
+// the tool's logic has chosen; nothing is taken from an OCA document by its date.
 const _ocaHymnCache = {};
-const _ocaReadingsCache = {}; // date key -> the readings the OCA text appoints at Vespers
-const _ocaLiturgyCache = {};  // date key -> what the OCA text prints for the Liturgy (for the OCA-practice notes)
 let _menaionV2General = null; // the General Menaion, read for a service that names its fallback
 const PREFER_OCA_DEFAULT = true; // ruling 11: on by default; the reader's toggle is `preferOca` in the component
 async function _loadMenaionV2(month, key) {
   if (!_menaionV2Cache[month]) _menaionV2Cache[month] = (await loadMenaionV2Month(month)) || {};
-  if (key && !(key in _ocaHymnCache)) _ocaHymnCache[key] = await v2OcaFor(key);
-  if (key && !(key in _ocaReadingsCache)) _ocaReadingsCache[key] = await ocaVespersReadingsFor(key);
-  if (key && !(key in _ocaLiturgyCache)) _ocaLiturgyCache[key] = await ocaLiturgyPropersFor(key);
+  if (key && !(key in _ocaHymnCache)) _ocaHymnCache[key] = _menaionV2Cache[month][key] ? await v2OcaFor(_menaionV2Cache[month][key]) : null;
   const day = key && _menaionV2Cache[month][key];
   if (!_menaionV2General && day && day.commemorations.some(c => c.general_fallback)) _menaionV2General = await loadMenaionV2General();
 }
@@ -1016,7 +1014,7 @@ function getMenaionHoursPlans(date, serviceIndex, isOrdinarySunday, preferOca = 
   const list = v2ServicesOf((_menaionV2Cache[mo] || {})[key], key);
   if (!list.length) return { plan: null, weekdayPlan: null };
   const svc = list[Math.min(serviceIndex, list.length - 1)];
-  const oca = preferOca && svc.c.oca_primary ? (_ocaHymnCache[key] || null) : null;
+  const oca = preferOca ? (_ocaHymnCache[key] || null) : null;
   const general = _menaionV2General;
   // ODS vol. III's order for this service on this day overrides the general rule.
   const order = ods3OrderFor(svc.path, date.getDay());
@@ -3073,8 +3071,7 @@ function computeVespersParoemias(menaionEntry, pentEntry, isPent, isBright, mena
   if (!isPent && !isBright) {
     if (!menaionV2) return null;
     const key = menaionV2.path.slice(0, 5);
-    const ocaReadings = menaionV2.preferOca !== false && menaionV2.c.oca_primary ? (_ocaReadingsCache[key] || null) : null;
-    const r = resolveVespersReadings({ c: menaionV2.c, base: menaionV2.path, eveDow: 0, ocaReadings }).readings;
+    const r = resolveVespersReadings({ c: menaionV2.c, base: menaionV2.path, eveDow: 0 }).readings;
     return r.length ? r.map((x) => x.display) : null;
   }
   // PENTECOSTARION — unchanged from v0.52.2, not yet reworked (its data is in the old shape).
@@ -4657,7 +4654,7 @@ function assembleVespers(liturgicalData, menaionEntry, pentEntry, paroemias, rea
     const vKey = menaionV2 ? menaionV2.path.slice(0, 5) : null;
     const vOwn = (() => {
       if (!menaionV2) return {};
-      const oca = menaionV2.preferOca !== false && menaionV2.c.oca_primary ? (_ocaHymnCache[vKey] || null) : null;
+      const oca = menaionV2.preferOca !== false ? (_ocaHymnCache[vKey] || null) : null;
       const h = v2HoursPlan(menaionV2.c, menaionV2.path, { oca, general: _menaionV2General }).hours["1st_hour"];
       const isFeast = menaionV2.c.kind === "feast";
       return { saint: h.troparia.find((x) => x.role !== "feast" || isFeast), feast: isFeast ? null : h.troparia.find((x) => x.role === "feast") };
@@ -5452,13 +5449,7 @@ function buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, idP
 // Readings slot: Prokeimenon and Epistle/Gospel rubric noted but not rendered
 //   (readings engine FW-19/20 not yet built).
 
-function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode = false, templeDedication = null, menaionPlan = null, menaionRank = null, ocaPractice = null, menaionEntrance = null) {
-  // OCA practice is shown in the element's heading, where it is always visible: the
-  // full order is rendered and each item says whether the OCA text for the day has it.
-  // Shown only where the tool's order and the OCA text for the day DIFFER (ruled 14 Nov 2026).
-  const ocaTag = (oca) => (oca === "not_printed" ? " · OCA: not in the OCA text" : "");
-  const ocaRead = (kind, ref) => { const p = ocaReadingPractice(ocaPractice, kind, ref); return p && p.oca === "not_printed" ? " · " + p.note : ""; };
-  const ocaReadTag = (kind, ref) => { const p = ocaReadingPractice(ocaPractice, kind, ref); return p ? ocaTag(p.oca) : ""; };
+function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode = false, templeDedication = null, menaionPlan = null, menaionRank = null, menaionEntrance = null) {
   const { dow: dowNumber, tone } = liturgicalData;
   const isSunday = dowNumber === 0;
   const elements = [];
@@ -5518,7 +5509,7 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
     menaionRefs: menaionPlan && !(liturgicalData.namedDay && liturgicalData.namedDay.isSunday) ? { e: menaionPlan.epistles, g: menaionPlan.gospels } : null,
     kind: menaionPlan ? menaionPlan.kind : null, order: (menaionEntrance && menaionEntrance.order) || null });
   const typicaPropers = resolveLiturgyPropers({
-    liturgicalData, menaionEntry, menaionPlan, ocaPractice, pentEntry, menaionFirst: typicaReadings.order === "menaion-first",
+    liturgicalData, menaionEntry, menaionPlan, pentEntry, menaionFirst: typicaReadings.order === "menaion-first",
     order: (menaionEntrance && menaionEntrance.order) || null,
     sources: { sunProkeimenon: srcSunProkeimenon, sunAlleluia: srcSunAlleluia,
                dailyPropers: (k) => OctoV2.getV2DailyLiturgyPropers(k) },
@@ -5531,7 +5522,7 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
         id: i === 0 ? "typica-prokeimenon" : "typica-prokeimenon-" + i,
         type: "prokeimenon",
         typicaMode: true,
-        label: "Prokeimenon · Tone " + p.tone + (p.label ? " — " + p.label : "") + ocaTag(p.oca),
+        label: "Prokeimenon · Tone " + p.tone + (p.label ? " — " + p.label : ""),
         announcement: "Wisdom! The Prokeimenon in Tone " + p.tone + ": " + p.text,
         exchanges: [
           { speaker: "chanters", text: p.text },
@@ -5616,8 +5607,8 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
       const src = own
         ? `Proper ${isE ? "Epistle" : "Gospel"} ${it.who === 'feast' ? "of the feast" : "of the commemoration"}${menaionPlan && menaionPlan.title ? " (" + menaionPlan.title + ")" : ""} · Source: Menaion`
         : (isSunday ? `Sunday proper ${isE ? "Epistle" : "Gospel"} · Source: OCA lectionary` : `Daily cycle ${isE ? "Epistle" : "Gospel"} · Source: OCA lectionary` + (!isE && dailyReading && dailyReading.lukanJump ? " · Luke series" : ""));
-      movable(base + (nth ? "-" + nth : ""), what + ocaReadTag(slot, it.ref), (intro ? intro + "\n\n" : "") + it.ref,
-        src + " · " + typicaReadings.rule.section + ocaRead(slot, it.ref));
+      movable(base + (nth ? "-" + nth : ""), what, (intro ? intro + "\n\n" : "") + it.ref,
+        src + " · " + typicaReadings.rule.section);
     };
     if (readingsOf('e').length || readingsOf('g').length) {
       readingsOf('e').forEach((it, i) => readingEl('e', it, i));
@@ -5633,7 +5624,7 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
             : a.origin === 'menaion' ? (isSunday ? 'menaion_festal_sunday' : 'menaion_festal') : 'weekly';
           elements.push({
             id: i === 0 ? "typica-alleluia" : "typica-alleluia-" + i,
-            label: "Alleluia" + (a.origin === 'sunday' ? " (Resurrectional)" : a.origin === 'menaion' ? " (Menaion)" : "") + " · Tone " + a.tone + ocaTag(a.oca),
+            label: "Alleluia" + (a.origin === 'sunday' ? " (Resurrectional)" : a.origin === 'menaion' ? " (Menaion)" : "") + " · Tone " + a.tone,
             text: buildAlleluia(a), type: "movable", source: a.source,
             ...(a.path ? { srcPath: a.path } : {}),
             note: a.note, fekula: a.fekula,
@@ -8533,6 +8524,28 @@ function OrdinaryBeginning({ liturgicalData, open, setOpen, readerMode, collapsi
 // Clickable version badge in the header. Expands inline to show release notes.
 
 const RELEASE_NOTES = [
+  {
+    version: "v0.56.0",
+    date: "November 2026",
+    summary: "Prefer OCA texts now works hymn by hymn, never by the day",
+    items: [
+      "'Prefer OCA texts' no longer takes anything from the OCA's service text for a date. The " +
+      "tool decides the service by its own rules, and each hymn it has chosen is shown in the " +
+      "OCA's words only where that hymn has a matched OCA text (the same hymn in the OCA's " +
+      "translation). A match holds on any date and in any year.",
+      "Because of this, a matched hymn now appears wherever the tool uses it: the troparion " +
+      "and kontakion of the Entry of the Theotokos are in the OCA's words on every day of the " +
+      "afterfeast, not only on the days the OCA published a text for.",
+      "Where the OCA appoints a different hymn or reading from the Menaion's, the tool now " +
+      "shows its own. On several days in September through November the troparion, kontakion " +
+      "or Vespers readings go back to the St. Sergius Menaion until a match is confirmed or " +
+      "the difference is ruled on.",
+      "The marks at the Liturgy saying what the OCA text for the day does not print are gone " +
+      "from the reader's view. That comparison is now made in the tool's own tests.",
+      "An OCA text keeps its own tone: it stands only where that is the tone of the place, " +
+      "unless the match was confirmed by a person across two tones.",
+    ],
+  },
   {
     version: "v0.55.3",
     date: "November 2026",
@@ -15982,11 +15995,8 @@ export default function App() {
   // What the service gives the Little Entrance and the Beatitudes (entrancePlan),
   // with the OCA hymn in the place of its own counterpart when Prefer OCA is on.
   const v2Entrance = v2DaySvc ? v2EntrancePlan(v2DaySvc.c, v2DaySvc.path, {
-    oca: preferOca && v2DaySvc.c.oca_primary ? (_ocaHymnCache[v2DaySvc.path.slice(0, 5)] || null) : null,
+    oca: preferOca ? (_ocaHymnCache[v2DaySvc.path.slice(0, 5)] || null) : null,
     general: _menaionV2General, order: ods3OrderFor(v2DaySvc.path, date.getDay()) }) : null;
-  // What the OCA text for this day prints at the Liturgy, to NOTE OCA practice beside
-  // the full order (nothing is dropped). Null when there is no OCA text for the day.
-  const ocaPractice = (v2DaySvc && v2DaySvc.c.oca_primary) ? (_ocaLiturgyCache[v2DaySvc.path.slice(0, 5)] || null) : null;
   const feastReading = namedDayIsSunday ? null
     : v2Liturgy
       ? ((v2Liturgy.epistles.length || v2Liturgy.gospels.length)
@@ -16209,7 +16219,7 @@ export default function App() {
       els = assembleVespers(vespersNext.vLit, vMen, vPnt, vPar, readerMode, vespersNext.vDateStr, templeDedication,
         getMenaionV2Service(parseCalendarDate(vespersNext.vDateStr), selectedServiceIndex, preferOca));
     } else if (currentService.key === 'typica') {
-      els = assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode, templeDedication, v2Liturgy, v2Rank, ocaPractice, v2Entrance);
+      els = assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode, templeDedication, v2Liturgy, v2Rank, v2Entrance);
     } else if (currentService.key === 'pre_communion') {
       els = assemblePreCommunion(preCommunionData);
     } else if (currentService.key === 'post_communion') {
@@ -16220,7 +16230,7 @@ export default function App() {
       // passed in so the assembler stays pure; the Little Entrance order and
       // the Beatitude troparia are Phase 3.
       const liturgyCtx = {
-        liturgicalData, menaionEntry, menaionPlan: v2Liturgy, menaionEntrance: v2Entrance, menaionRank: v2Rank, ocaPractice, pentEntry, dailyReading, feastReading,
+        liturgicalData, menaionEntry, menaionPlan: v2Liturgy, menaionEntrance: v2Entrance, menaionRank: v2Rank, pentEntry, dailyReading, feastReading,
         sources: {
           sunProkeimenon: srcSunProkeimenon,
           sunAlleluia: srcSunAlleluia,
@@ -16665,7 +16675,7 @@ export default function App() {
                   letterSpacing: "0.06em", cursor: "pointer", fontFamily: "Georgia, serif",
                   flexShrink: 0,
                 }}
-                title={"Where the OCA publishes a service text for the day, its troparion, kontakion or reading is shown in the place of the Menaion's own. Off: the St. Sergius Menaion throughout. " + (ocaPractice || _ocaHymnCache[selectedDate.slice(5)] ? "The OCA has a text for this day." : "The OCA has no text captured for this day, so this changes nothing here.")}
+                title={"Where one of the day's hymns has a matched OCA text (the same hymn in the OCA's translation), the OCA's words are shown in its place, marked OCA. The service itself, which hymns and readings and in what order, is the tool's own and does not change. Off: the St. Sergius books throughout. " + (_ocaHymnCache[selectedDate.slice(5)] ? "Hymns of this day have matched OCA texts." : "No hymn of this day has a matched OCA text yet, so this changes nothing here.")}
               >
                 {preferOca ? "☩ Prefer OCA texts" : "Prefer OCA texts"}
               </button>

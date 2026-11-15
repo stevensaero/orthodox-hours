@@ -243,7 +243,7 @@ function planHooks(ctx, variant) {
     ? sources.readingsForDay({ liturgicalData: ld, menaionEntry, rank: ctx.menaionRank || null, dailyReading, feastReading,
         menaionRefs: menaionPlan && !(ld.namedDay && ld.namedDay.isSunday) ? { e: menaionPlan.epistles, g: menaionPlan.gospels } : null, kind: menaionPlan ? menaionPlan.kind : null, order: (menaionEntrance && menaionEntrance.order) || null })
     : { groups: [], order: "day-first", rule: { section: null, quote: "" }, hasMenaionReadings: false };
-  const propers = resolveLiturgyPropers({ liturgicalData: ld, menaionEntry, menaionPlan, ocaPractice: ctx.ocaPractice || null, pentEntry, order: (menaionEntrance && menaionEntrance.order) || null, menaionFirst: readings.order === "menaion-first", sources });
+  const propers = resolveLiturgyPropers({ liturgicalData: ld, menaionEntry, menaionPlan, pentEntry, order: (menaionEntrance && menaionEntrance.order) || null, menaionFirst: readings.order === "menaion-first", sources });
 
   const prokEls = propers.prokeimena.map((p, i) => ({
     id: "lit-prokeimenon-" + i, type: "prokeimenon",

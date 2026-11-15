@@ -22,8 +22,7 @@ import { MONTH_LOADERS, MONTH_LABELS, MONTHS, loadMenaionV2General, loadMenaionV
 import { registryLookup, SERVICE_HEADINGS, SERVICE_ORDER } from '../data/menaion_v2/presentation.js';
 import { ANCHOR_RE, SERVICES } from '../data/menaion_v2/schema_menaion_v2.js';
 import { ReadingContext, RCommemoration } from './menaion-v2-reading.jsx';
-import { hymnsOf } from '../data/menaion_v2/adapter.js';
-import { ocaStems, ocaDocInfo, ocaMatesFor, ocaHymn, ocaSlotsForKey, textKey } from '../data/oca_hymns/index.js';
+import { ocaStems, ocaDocInfo, ocaMatesFor, textsUnder } from '../data/oca_hymns/index.js';
 import OcaDocView from './oca-doc-view.jsx';
 
 // ── palette — IDENTICAL to octoechos-v2-browser.jsx ──────────────────────────
@@ -341,39 +340,16 @@ export default function MenaionV2Browser() {
   const ocaLabel = (d) => new Date(d.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
     + (/alaska/i.test(d.variant) ? (/outside/i.test(d.variant) ? ' (outside Alaska)' : ' (Alaska)') : '');
 
-  // The OCA texts that stand for hymns of the commemoration on the page:
-  //   1. every hymn with a mate in the match register (hymn to hymn, any year);
-  //   2. on the day's own service, the troparion and kontakion the OCA appointed
-  //      for this date (slots.js), which may be a different hymn altogether.
+  // The OCA texts that stand for hymns of the commemoration on the page: every hymn
+  // with a mate in the match register (hymn to hymn, any year). Nothing is taken from
+  // an OCA document by its date (ruled 15 Nov 2026).
   useEffect(() => {
     let live = true;
     const onDay = !!dateKey && !generalType && !sharedTable;
     if (!preferOca || !entry || !onDay) { setOcaMap(null); return undefined; }
-    const texts = [];
-    (function walk(v) {
-      if (!v || typeof v !== 'object') return;
-      if (Array.isArray(v)) { v.forEach(walk); return; }
-      if (typeof v.text === 'string') texts.push(v.text);
-      for (const [k, x] of Object.entries(v)) if (k !== 'src') walk(x);
-    })(entry);
-    (async () => {
-      const map = await ocaMatesFor(texts);
-      if (comms.length === 1 || entry.oca_primary) {
-        const h = hymnsOf(entry, `${dateKey}.c${cIdx}`);
-        const slots = new Set(ocaSlotsForKey(dateKey));
-        const put = async (slot, node) => {
-          if (!slots.has(slot) || !node) return;
-          const o = await ocaHymn(dateKey, slot);
-          if (o) map.set(textKey(node.text), { id: o.id, text: o.text, from: o.from, by: 'appointed' });
-        };
-        await put('troparion', h.troparia[0]);
-        const k = await ocaHymn(dateKey, 'kontakion');
-        if (k) await put('kontakion', k.replaces === 'ode3' ? h.ode3[0] : (h.ode6[0] ?? h.ode3[0]));
-      }
-      if (live) setOcaMap(map.size ? map : null);
-    })();
+    ocaMatesFor(textsUnder(entry)).then((map) => { if (live) setOcaMap(map.size ? map : null); });
     return () => { live = false; };
-  }, [preferOca, entry, dateKey, cIdx, generalType, sharedTable, comms.length]);
+  }, [preferOca, entry, dateKey, cIdx, generalType, sharedTable]);
   const sharedTables = useMemo(() => Object.keys(shared ?? {}).sort(), [shared]);
 
   const goToday = () => {

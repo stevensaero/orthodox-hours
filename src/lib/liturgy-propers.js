@@ -52,35 +52,7 @@ const textOf = (v) => (v && typeof v === "object" ? v.text : v) || null;
  * @returns {{ prokeimena: Array, alleluia: Array, communion: Array }}
  *   each item: { tone, text, stichoi:[], origin, source, note, fekula:{section,note}, path? }
  */
-// ── OCA practice, noted beside the full order (Bill, 14 Nov 2026) ──────────────
-// The tool ALWAYS gives the full order Fekula appoints: the day's proper and the
-// Menaion's. The OCA service texts often print less (on 16 Nov 2026 only the
-// Apostle's; on a simple Sunday only the Sunday's), which Bill takes to be brevity.
-// So nothing is dropped. Where an OCA text exists for the day, each item is marked:
-// printed there (sung in OCA practice) or not printed there (likely omitted).
-export const OCA_SUNG = "";
-export const OCA_OMITTED = "The OCA service text for this day does not print this; Fekula's order appoints it.";
-const lesson = (ref) => { const m = String(ref || "").replace(/^(\d) /, "$1").match(/^([A-Za-z0-9]+) (\d+):/); return m ? (m[1] + " " + m[2]).toLowerCase() : null; };
-/** For an Epistle or Gospel reference: { oca: 'printed'|'not_printed', note } or null when there is no OCA text. */
-export function ocaReadingPractice(ocaPractice, kind, ref) {
-  const list = ocaPractice && ocaPractice[kind === "e" ? "epistles" : "gospels"];
-  if (!list || !list.length || !ref) return null;
-  const printed = list.some((x) => lesson(x.ref) === lesson(ref));
-  return { oca: printed ? "printed" : "not_printed", note: printed ? OCA_SUNG : OCA_OMITTED };
-}
-function markOcaPractice(items, ocaList) {
-  if (!ocaList || !ocaList.length) return;
-  const pool = ocaList.map((x) => ({ ...x }));
-  for (const it of items) {
-    // The Sunday's is matched to the heading the OCA labels "(Resurrection)"; otherwise by tone.
-    const i = pool.findIndex((o) => o.tone === it.tone && (o.sunday === undefined || o.sunday === (it.origin === "sunday")));
-    const j = i >= 0 ? i : pool.findIndex((o) => o.tone === it.tone);
-    if (j >= 0) { pool.splice(j, 1); it.oca = "printed"; }
-    else { it.oca = "not_printed"; it.note = (it.note ? it.note + " " : "") + OCA_OMITTED; }
-  }
-}
-
-export function resolveLiturgyPropers({ liturgicalData, menaionEntry = null, menaionPlan = null, ocaPractice = null, pentEntry = null, menaionFirst = false, order = null, sources = {} }) {
+export function resolveLiturgyPropers({ liturgicalData, menaionEntry = null, menaionPlan = null, pentEntry = null, menaionFirst = false, order = null, sources = {} }) {
   const ld = liturgicalData || {};
   const isSunday = ld.dow === 0 || ld.isSunday === true;
   const dow = typeof ld.dow === "number" ? ld.dow : 0;
@@ -238,7 +210,6 @@ export function resolveLiturgyPropers({ liturgicalData, menaionEntry = null, men
     result.prokeimena = by("prokeimena", ol.prokeimenon); result.alleluia = by("alleluia", ol.alleluia); result.communion = by("communion", ol.communion);
     result.ods3 = { id: order.id, cite, general };
   }
-  if (ocaPractice) { markOcaPractice(result.prokeimena, ocaPractice.prokeimena); markOcaPractice(result.alleluia, ocaPractice.alleluia); }
   return result;
 }
 

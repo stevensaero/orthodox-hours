@@ -21,7 +21,7 @@
 
 import React, { useContext, createContext } from 'react';
 import { registryLookup, SERVICE_HEADINGS, SERVICE_ORDER } from '../data/menaion_v2/presentation.js';
-import { textKey } from '../data/oca_hymns/text_key.js';
+import { ocaMate } from '../data/oca_hymns/index.js';
 
 export const ReadingContext = createContext({
   mode: 'printed', sics: {}, prefix: '', showRubrics: true,
@@ -128,7 +128,7 @@ export function RText({ node, path, label }) {
   const full = prefix + path;
   // "Prefer OCA texts": where this hymn has an OCA mate, the OCA's words are
   // shown in its place, marked, with the book's own text one hover away.
-  const mate = oca ? oca.get(textKey(node.text)) : null;
+  const mate = ocaMate(oca, node);   // the tone guard applies where the node prints its tone
   const shownText = mate ? mate.text.replace(/\^/g, '') : node.text;
   const lines = mode === 'clean' ? splitPointed(shownText) : null;
   return (

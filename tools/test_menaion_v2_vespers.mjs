@@ -150,6 +150,13 @@ const KNOWN = {
   '11-16 litiya Glory': 'as 14 Nov: the OCA adds a Glory (Tone 2) the page does not print.',
   '11-16 litiya Both now': 'as 14 Nov: the OCA adds a Both now (Tone 2) the page does not print.',
 
+  // FOR RULING (15 Nov 2026). Until that day the tool showed the OCA's hymn or reading here by date;
+  // it now shows only its own, and the difference stands here for Bill to rule on.
+  '09-27 troparia': 'FOR RULING: different hymns. The Menaion prints the general troparion of martyrs (Tone 4); the OCA a troparion of St. Callistratus (Tone 3).',
+  '10-04 troparia': 'FOR RULING: different hymns. The Menaion prints "Having learned goodness" (Tone 4); the OCA "We the faithful all praise Hierotheus" (Tone 1).',
+  '11-14 readings': 'FOR RULING: the Menaion prints three lessons from 1 John; the OCA appoints three from 1 Peter.',
+  '11-16 readings': 'FOR RULING: as 14 Nov: 1 John in the Menaion, 1 Peter in the OCA text.',
+
   '11-30 aposticha Glory': 'the OCA sings a different doxasticon here (Tone 3, "by Germanos"); the Menaion prints one in Tone 2. An OCA-layer matter, not a rule.',
   '11-30 aposticha Both now': 'follows from the Glory above: the OCA\'s Both now is in Tone 3, the Menaion\'s in Tone 2; both are of the forefeast.',
 };
@@ -175,7 +182,7 @@ for (const key of Object.keys(OCA_SLOTS).sort()) {
   }
   if (!got.bothNow?.node?.text) fail(`${key}: no Both now hymn resolved`);
   // The troparia at the end. Text as the tool will show it: Prefer OCA on, General Menaion where the page is silent.
-  { const oca = await ocaFor(key); const hp = hoursPlan(svc.c, svc.path, { oca, general }).hours['1st_hour'];
+  { const oca = await ocaFor(M[key]); const hp = hoursPlan(svc.c, svc.path, { oca, general }).hours['1st_hour'];
     const own = { saint: hp.troparia.find((x) => x.role !== 'feast' || svc.c.kind === 'feast'), feast: svc.c.kind === 'feast' ? null : hp.troparia.find((x) => x.role === 'feast') };
     const tr = resolveVespersTroparia({ c: svc.c, base: svc.path, eveDow, tone, octo, own }); const wt = ocaTroparia(doc);
     const kk = (x) => (x.kind === 'feast' && svc.c.kind === 'feast' ? 'saint' : x.kind);
@@ -186,11 +193,11 @@ for (const key of Object.keys(OCA_SLOTS).sort()) {
       if (mineT !== theirsT && !KNOWN[id]) fail(`${id}: tool ${mineT} | OCA ${theirsT}`);
       rows.push(`| ${key} | ${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow]} | ${tone} | ${svc.c.rank} | Troparia | ${mineT} | ${theirsT} | ${mineT === theirsT ? 'agree' : KNOWN[id] ? 'KNOWN' : 'DIFFER'} |`); } }
   // The entrance and the readings.
-  { const wr = ocaReadings(doc); const rd = resolveVespersReadings({ c: svc.c, base: svc.path, eveDow, ocaReadings: ocaVespersReadings(doc) });  // as the tool shows them, Prefer OCA on
+  { const wr = ocaReadings(doc); const rd = resolveVespersReadings({ c: svc.c, base: svc.path, eveDow });  // the tool's own: the Menaion's (nothing is taken from the OCA text by its date)
     if (rd.readings.length || wr.length) { checked++; const id = `${key} readings`;
       const mineR = rd.readings.map((x) => refKey(x.ref)).join(' ; '); const theirsR = wr.map(refKey).join(' ; ');
       if (mineR !== theirsR && !KNOWN[id]) fail(`${id}: tool ${rd.readings.map((x) => x.ref).join(' ; ') || 'none'} | OCA ${wr.join(' ; ') || 'none'}`);
-      rows.push(`| ${key} | ${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow]} | ${tone} | ${svc.c.rank} | Readings | ${rd.readings.map((x) => (x.source === 'oca' ? 'OCA ' : '') + x.ref).join(' ; ') || 'none'} | ${wr.join(' ; ') || 'none'} | ${mineR === theirsR ? 'agree' : KNOWN[id] ? 'KNOWN' : 'DIFFER'} |`); }
+      rows.push(`| ${key} | ${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow]} | ${tone} | ${svc.c.rank} | Readings | ${rd.readings.map((x) => x.ref).join(' ; ') || 'none'} | ${wr.join(' ; ') || 'none'} | ${mineR === theirsR ? 'agree' : KNOWN[id] ? 'KNOWN' : 'DIFFER'} |`); }
     if (rd.readings.length && !rd.entrance) fail(`${key}: readings without an entrance`); }
   // The Litiya: printed only.
   { const li = resolveLitiya({ c: svc.c, base: svc.path, eveDow }); const wl = ocaLitya(doc); const D = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow];

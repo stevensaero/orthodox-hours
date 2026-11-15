@@ -8,7 +8,7 @@
 //
 // A V2 day is { commemorations: [c0, c1...] }. Each commemoration is ONE printed
 // service (ruling 4); saints sharing a service are tagged `saint` on its hymns.
-import { ocaHymn, ocaSlotsForKey, stripCaret } from '../oca_hymns/index.js';
+import { ocaMatesFor, ocaMate, textsUnder, stripCaret } from '../oca_hymns/index.js';
 import { ods3Cite } from '../ods_v3/orders.js';
 
 export const HOURS = ['1st_hour', '3rd_hour', '6th_hour', '9th_hour'];
@@ -61,9 +61,12 @@ export function hymnsOf(c, base) {
 // opts.sunday: an ordinary Sunday (outside the Pentecostarion). A slot with role
 //   'sunday' stands for the resurrectional troparion or kontakion of the tone; the
 //   caller supplies it from the Octoechos.
-// opts.oca: { troparion, kontakion, feast_troparion, ... } from the OCA layer when
-//   "Prefer OCA" is on (ruling 11), else null. An OCA hymn takes the place of the
-//   Menaion hymn; the Menaion node is kept beside it as `menaion`.
+// opts.oca: the OCA mates of this day's hymns (ocaFor) when "Prefer OCA" is on, else
+//   null. RULED 15 Nov 2026: Prefer OCA means the MATCHED OCA text of a hymn the
+//   tool's own logic has already chosen, never what an OCA document appoints for
+//   the date. So the plan is built from the Menaion alone and each chosen hymn is
+//   then shown in the OCA's words where the match register holds its mate (and the
+//   tone agrees: ocaMate). The Menaion node is kept beside it as `menaion`.
 //
 // opts.general: the General Menaion (loadMenaionV2General). Read only where the
 //   service prints no troparion or kontakion of its own AND names its fallback
@@ -101,10 +104,10 @@ export function hoursPlan(c, base, opts = {}) {
   const saintOde3 = pick(h.ode3, false); const saintOde6 = pick(h.ode6, false);
   const own = c.kind === 'feast' ? 'feast' : 'saint';
 
-  const slot = (node, ocaSlot, role) => {
-    const o = ocaSlot ? oca?.[ocaSlot] : null;
-    if (o) return { role, source: 'oca', node: o, menaion: node ?? null };
-    return node ? { role, source: 'menaion', node } : null;
+  const slot = (node, role) => {
+    if (!node) return null;
+    const o = ocaMate(oca, node);
+    return o ? { role, source: 'oca', node: { ...o, type: node.type ?? null, saint: node.saint ?? null }, menaion: node } : { role, source: 'menaion', node };
   };
   const fromGeneral = (field, role) => generalHymn(c, h, general, field, role, notes);
   const gap = (what, absent) => {
@@ -117,10 +120,10 @@ export function hoursPlan(c, base, opts = {}) {
   let trop; let kont; let rule; let cited = section;
 
   if (feastDay) {
-    const feast = slot(feastTrop, 'feast_troparion', 'feast') ?? gap('troparion of the feast');
-    const saint = slot(saintTrops[0], 'troparion', 'saint');
-    const fk = slot(feastKont, 'feast_kontakion', 'feast') ?? gap('kontakion of the feast');
-    const sk = slot(saintOde6 ?? saintOde3, 'kontakion', 'saint');
+    const feast = slot(feastTrop, 'feast') ?? gap('troparion of the feast');
+    const saint = slot(saintTrops[0], 'saint');
+    const fk = slot(feastKont, 'feast') ?? gap('kontakion of the feast');
+    const sk = slot(saintOde6 ?? saintOde3, 'saint');
     if (saintTrops.length > 1) notes.push(`${saintTrops.length} troparia of saints are printed; "if there be troparia for two saints, they are alternated" (2G1). The first is shown.`);
     const apodosis = section === '2G3';
     const high = section === '2G2' || section === '2G4';
@@ -161,30 +164,20 @@ export function hoursPlan(c, base, opts = {}) {
       rule = `§${cited}: Sunday troparion, with the troparion of the feast at the 1st and 6th Hours and of the saint at the 3rd and 9th; kontakion: ${four ? '1st feast, 3rd Sunday, 6th saint, 9th feast' : 'of the feast at the 1st and 6th Hours, the Sunday kontakion at the 3rd and 9th'}.`;
     }
   } else {
-    const first = slot(saintTrops[0] ?? feastTrop, 'troparion', own) ?? fromGeneral('troparion', own) ?? gap('troparion', h.absent.troparion);
-    const second = saintTrops[1] ? { role: 'saint', source: 'menaion', node: saintTrops[1] } : null;
+    const first = slot(saintTrops[0] ?? feastTrop, own) ?? fromGeneral('troparion', own) ?? gap('troparion', h.absent.troparion);
+    const second = slot(saintTrops[1], 'saint');
     const double = section === '2B' && second;
     if (second && !double) notes.push(`${saintTrops.length} troparia are printed; the first is shown.`);
     // Two kontakia (after Ode III and after Ode VI): V1's rule is kept (ruling 10):
     // Ode III at the 1st and 6th Hours, Ode VI at the 3rd and 9th.
     const k6 = saintOde6 ?? feastKont; const k3 = saintOde3;
-    const o = oca?.kontakion ? { role: own, source: 'oca', node: oca.kontakion, menaion: k6 ?? k3 ?? null } : null;
-    const m6 = k6 ? { role: own, source: 'menaion', node: k6 } : null;
-    const m3 = k3 ? { role: own, source: 'menaion', node: k3 } : null;
-    const one = o ?? m6 ?? m3 ?? fromGeneral('kontakion', own) ?? null;
+    const m6 = slot(k6, own); const m3 = slot(k3, own);
+    const one = m6 ?? m3 ?? fromGeneral('kontakion', own) ?? null;
     const lordsFeast = c.rank === 'great_feast' && !/THEOTOKOS/i.test(title);
     if (sunday && lordsFeast) notes.push('A feast of the Lord on a Sunday supersedes the Sunday service (ODS ch. 5): the weekday order is given.');
     if (!sunday || lordsFeast) {
       trop = () => (double ? [first, second] : [first]);
-      // An OCA hymn stands in for its own counterpart and nothing else (ruled 14 Nov
-      // 2026): `replaces` names which of two Menaion kontakia the OCA text is.
-      const rep = o?.node.replaces;
-      if (o && m3 && m6 && !rep) notes.push('Two kontakia are printed and the OCA slot does not say which one its kontakion replaces.');
-      if (o && m3 && m6 && (rep === 'ode3' || rep === 'ode6')) {
-        kont = (hr) => (firstSixth(hr) ? (rep === 'ode3' ? o : m3) : (rep === 'ode6' ? o : m6));
-        rule = `§${section}: troparion from the Menaion; two kontakia are printed: that after Ode III at the 1st and 6th Hours, that after Ode VI at the 3rd and 9th (the OCA text is the one after Ode ${rep === 'ode3' ? 'III' : 'VI'}).`;
-      } else if (o) { kont = () => o; rule = `§${section}: troparion and kontakion (the OCA prints one kontakion${m3 && m6 ? ', which is neither of the Menaion\'s two' : ''}; it is read at every Hour).`; }
-      else if (m3 && m6) { kont = (hr) => (firstSixth(hr) ? m3 : m6); rule = `§${section}: troparion from the Menaion; two kontakia are printed: that after Ode III at the 1st and 6th Hours, that after Ode VI at the 3rd and 9th.`; }
+      if (m3 && m6) { kont = (hr) => (firstSixth(hr) ? m3 : m6); rule = `§${section}: troparion from the Menaion; two kontakia are printed: that after Ode III at the 1st and 6th Hours, that after Ode VI at the 3rd and 9th.`; }
       else { kont = () => one ?? gap('kontakion', h.absent.kontakion); rule = `§${section}: troparion and kontakion from the Menaion.`; }
     } else {
       cited = double ? '1B' : (SUNDAY_SECTION[c.rank] ?? '1A');
@@ -211,8 +204,8 @@ export function hoursPlan(c, base, opts = {}) {
     const bind = (who, what) => {
       if (who === 'sunday') return SUNDAY;
       const list = what === 'troparion' ? h.troparia : [...h.ode6, ...h.ode3];
-      if (who === 'feast') return slot(c.kind === 'feast' ? list[0] : list.find(ofFeast), feastDay ? `feast_${what}` : what, 'feast');
-      if (who === 'saint') return slot(list.find((n) => !ofFeast(n)), what, 'saint') ?? generalHymn(c, h, general, what, 'saint', notes);
+      if (who === 'feast') return slot(c.kind === 'feast' ? list[0] : list.find(ofFeast), 'feast');
+      if (who === 'saint') return slot(list.find((n) => !ofFeast(n)), 'saint') ?? generalHymn(c, h, general, what, 'saint', notes);
       const tagged = list.find((n) => (n.saint ?? '').includes(who.replace(/^saint:/, '')));
       return tagged ? { role: 'saint', source: 'menaion', node: tagged } : null;
     };
@@ -327,7 +320,7 @@ export function beatitudesOf(c, base) {
 // kontakion }, saints: { troparia: [slot], kontakia: [slot] }, alternates,
 // rubrics, beatitudes, notes }. slot as in hoursPlan.
 export function entrancePlan(c, base, opts = {}) {
-  const { general = null } = opts; const oca = opts.oca ? { ...opts.oca } : null;
+  const { general = null, oca = null } = opts;
   const h = hymnsOf(c, base); const l = c.liturgy ?? {}; const notes = [];
   const title = [].concat(c.title ?? []).map((t) => t.text ?? t).join(' ');
   const feastDay = FEAST_KINDS.includes(c.kind);
@@ -362,31 +355,23 @@ export function entrancePlan(c, base, opts = {}) {
   }
   if (droppedOde3) notes.push('Two kontakia are printed for the commemoration; the one after Ode VI is sung at the Liturgy (ODS Appendix A-V note, by the same reasoning).');
 
-  const slot = (node, ocaSlot, role) => {
-    const o = ocaSlot ? oca?.[ocaSlot] : null;
-    if (o) return { role, source: 'oca', node: o, menaion: node ?? null };
-    return node ? { role, source: 'menaion', node } : null;
+  const slot = (node, role) => {
+    if (!node) return null;
+    const o = ocaMate(oca, node);
+    return o ? { role, source: 'oca', node: { ...o, type: node.type ?? null, saint: node.saint ?? null }, menaion: node } : { role, source: 'menaion', node };
   };
   const own = c.kind === 'feast' ? 'feast' : 'saint';
-  // The OCA text prints one kontakion of the saint at the Liturgy, and it stands in
-  // this one place (an OCA hymn replaces its own counterpart, ruled 14 Nov 2026).
-  // Where it is the Menaion's kontakion after Ode III (4 Oct), the two witnesses
-  // differ on which kontakion the Liturgy takes; that is noted, not hidden.
-  // 25 Nov: the OCA prints no kontakion of St. Clement alone; the kontakion it
-  // prints at the Liturgy is the one of both hieromartyrs (slot kontakion_alt),
-  // which is the counterpart of the Menaion's.
-  if (oca && !oca.kontakion && oca.kontakion_alt) oca.kontakion = oca.kontakion_alt;
-  const ocaKontHere = !!oca?.kontakion;
-  if (ocaKontHere && oca.kontakion.replaces === 'ode3' && droppedOde3) notes.push('The OCA prints at the Liturgy the kontakion the Menaion gives after Ode III; the Menaion-only reading takes the one after Ode VI.');
-  const troparia = saintTrops.map((n, i) => slot(n, i === 0 ? 'troparion' : null, own));
-  const kontakia = saintKonts.map((n, i) => slot(n, i === 0 && ocaKontHere ? 'kontakion' : null, own));
-  if (!troparia.length) { const t = slot(null, 'troparion', own) ?? generalHymn(c, h, general, 'troparion', own, notes); if (t) troparia.push(t); }
-  if (!kontakia.length) { const k = (ocaKontHere ? slot(null, 'kontakion', own) : null) ?? generalHymn(c, h, general, 'kontakion', own, notes); if (k) kontakia.push(k); }
+  // Each hymn the page gives is shown in the OCA's words where the register holds
+  // its mate (ruled 15 Nov 2026: hymn by hymn, never by what the OCA appoints for the date).
+  const troparia = saintTrops.map((n) => slot(n, own));
+  const kontakia = saintKonts.map((n) => slot(n, own));
+  if (!troparia.length) { const t = generalHymn(c, h, general, 'troparion', own, notes); if (t) troparia.push(t); }
+  if (!kontakia.length) { const k = generalHymn(c, h, general, 'kontakion', own, notes); if (k) kontakia.push(k); }
   if (alternates.length) notes.push(`${alternates.length === 1 ? 'An alternative troparion is' : 'Alternative troparia are'} printed ("Or this Troparion"); the first printed is shown.`);
   const beatitudes = beatitudesOf(c, base);
   return { section: c.fekula_section, rank: c.rank, kind: c.kind, saintName: title, name: c.name ?? null,
     lordsFeast: c.rank === 'great_feast' && !/THEOTOKOS/i.test(title),
-    feast: { troparion: slot(feastTrop, 'feast_troparion', 'feast'), kontakion: slot(feastKont, 'feast_kontakion', 'feast') },
+    feast: { troparion: slot(feastTrop, 'feast'), kontakion: slot(feastKont, 'feast') },
     saints: { troparia, kontakia }, alternates,
     rubrics: { troparia: l.troparia_rubric?.text ?? null, kontakion: l.kontakion_rubric?.text ?? null },
     order: opts.order ?? null,   // ODS vol. III's order for this service on this day, when it prints one
@@ -394,13 +379,12 @@ export function entrancePlan(c, base, opts = {}) {
     notes: [...new Set(notes)] };
 }
 
-// The OCA hymns for a date, as { slot: node }, or null when there are none.
-export async function ocaFor(key) {
-  const slots = ocaSlotsForKey(key);
-  if (!slots.length) return null;
-  const out = {};
-  for (const s of slots) { const n = await ocaHymn(key, s); if (n) out[s] = n; }
-  return Object.keys(out).length ? out : null;
+// The OCA mates of every hymn under a stored value (a day, a commemoration), from the
+// match register: Map<text key, OCA node>, or null when there are none. Hymn to hymn;
+// the date plays no part.
+export async function ocaFor(stored) {
+  const map = await ocaMatesFor(textsUnder(stored));
+  return map.size ? map : null;
 }
 
 // Text as shown or sung: the undefined OCA '^' mark hidden (Q-0007).
