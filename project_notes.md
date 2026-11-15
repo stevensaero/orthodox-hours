@@ -414,7 +414,24 @@ DONE on the branch — Vespers, "Lord, I have cried", the STICHERA (14 Nov):
   under a hymn had been read as a line of that hymn (19 blocks). A paragraph
   beginning "V. " is now always its own block. The comparison found it.
 
-NEXT on the branch, in order: Litiya, Aposticha, troparia. Original sizing: Vespers section by section (Lord I call, Litiya,
+DONE on the branch — Vespers, the APOSTICHA (14 Nov):
+- `resolveAposticha` (same module): whose stichera (the page's own with their
+  verses, else the Octoechos's; always the Octoechos's on Saturday evening save
+  on a feast of the Theotokos), the Glory, the Both now. A doxasticon the page
+  heads "Glory ..., Both now ..." is sung once for both. Both now with a Glory
+  and nothing printed: the theotokion in the tone of the Glory (on Saturday the
+  resurrectional one, by tone).
+- **Gate: 34 of 36 Aposticha places agree with the OCA texts; 2 are listed as
+  KNOWN** — 30 Nov, where the OCA sings a different doxasticon (Tone 3, "by
+  Germanos") from the one the Menaion prints (Tone 2). That is for the OCA
+  layer (phase B: stichera), not a rule. Whole gate: 72 checks, 0 errors.
+- `assembleVespers`: three Aposticha branches replaced by one; Pentecostarion
+  unchanged. Mount test checks the Aposticha on the page.
+
+NEXT on the branch, in order: Litiya, then the troparia at the end of Vespers.
+The Litiya needs care: on Saturday evening Fekula builds it from the temple's
+sticheron and from Aposticha stichera, and the OCA prints its own choice
+(14 and 16 Nov differ from the page; 8 Sep, 21 Nov, 30 Nov agree). Original sizing: Vespers section by section (Lord I call, Litiya,
 Aposticha, troparia; ~1,400 of 1,920 lines), each gated against the OCA texts;
 then Typica and Liturgy propers, dismissal `name`, bulletin; then the Prefer
 OCA toggle, the service chooser, merge, retire V1. Sized in
