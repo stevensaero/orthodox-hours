@@ -739,11 +739,39 @@ DONE — THE BULLETIN (14 Nov):
   sheet by hand from V1 fields.
 - The retired V1 / Pentecostarion entry is read only for a date with no V2
   service; the May counter-case in the gate still exercises that path.
-- Kept as it was, not reviewed: the sheet's "Dismissal Theotokion" line on an
-  ordinary Sunday.
+- The sheet's "Dismissal Theotokion" line was then reviewed and corrected (below).
 
-NEXT on the branch: Prefer OCA toggle and service chooser; the How-It-Works
-pass; the Menaion browser items; merge and retire V1. Still V1 in the Liturgy:
+DONE — BULLETIN DISMISSAL THEOTOKION REVIEWED AND CORRECTED (Bill asked, 14 Nov):
+the sheet's troparia are "the dismissal hymns" (bulletin.jsx's own words): the
+Sunday troparion, Glory the Menaion's, Both now the dismissal theotokion. It
+printed that theotokion in the TONE OF THE WEEK. Fekula 1C and ch. 6 §I: "in the
+tone of the last troparion". On 6 Sep (week Tone 5, the Archangel's troparion
+Tone 4) the sheet gave Tone 5 where Vespers, whose gate holds this against the
+OCA texts, gives Tone 4. Now the tone of the last troparion on the sheet.
+The kontakia on the same sheet are not dismissal hymns (no kontakion at
+Vespers); they are what the Hours and Liturgy sing. Left as a list.
+
+DONE — PREFER OCA TOGGLE AND SERVICE CHOOSER (14 Nov):
+- "Prefer OCA texts" button beside "Reader's Service" in the context card; on by
+  default (ruling 11), saved in localStorage (`prefer_oca`). The service handle
+  from `getMenaionV2Service` carries `preferOca`, so Hours, Vespers, Typica,
+  Liturgy and bulletin read one setting. The "not in the OCA text" marks do not
+  depend on it.
+- The context card and the chooser list the MENAION V2 services for a date V2
+  holds (`v2ServicesFor`, `v2CardService`), the OCA's first, each by its short
+  name with rank and the OCA badge. `selectedServiceIndex` counts in that
+  order; the default is 0 and is re-set when the month's data arrives. Before
+  this, November (no V1 at all) showed no chooser, so the second service of
+  14, 26 and 27 Nov could not be reached.
+- The page header ("Polyeleos service · Assembled per Fekula §2E"), the
+  collapsed-header name and the Hours' source labels read the V2 service. They
+  had been reading V1 and showed "Simple service · §2A" on every November day.
+- The context card's open state is kept in sessionStorage (`hours.contextOpen`).
+- Mount test: the chooser by name; Prefer OCA off; CLICKING the second service
+  re-assembles the Hour for it (St. Gregory Palamas).
+
+NEXT on the branch: the How-It-Works pass; the Menaion browser items; merge and
+retire V1; v0.53.0. Still V1 in the Liturgy:
 only the dismissal and the Pentecostarion paths. Festal antiphons for feasts of
 the Lord are still flagged, not assembled (no such day is in V2 yet).
 
