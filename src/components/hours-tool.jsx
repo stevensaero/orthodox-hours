@@ -12,7 +12,8 @@ import { DAILY_TROPARIA, DAILY_TROPARIA_SOURCE } from '../data/liturgy/daily_tro
 import { resolveLiturgyPropers } from '../lib/liturgy-propers.js';
 import { resolveHoursPropers } from '../lib/hours-propers.js';
 import { resolveLicClosers, resolveLicStichera, resolveAposticha, resolveLitiya, resolveVespersTroparia, resolveVespersReadings } from '../lib/vespers-propers.js';
-import { stripCaret, ocaVespersReadingsFor } from '../data/oca_hymns/index.js';
+import { stripCaret, ocaVespersReadingsFor, ocaLiturgyPropersFor } from '../data/oca_hymns/index.js';
+import { ocaReadingPractice } from '../lib/liturgy-propers.js';
 import { loadMenaionV2Month, loadMenaionV2General } from '../data/menaion_v2/index.js';
 import { servicesOf as v2ServicesOf, hoursPlan as v2HoursPlan, ocaFor as v2OcaFor, liturgyPlan as v2LiturgyPlan } from '../data/menaion_v2/adapter.js';
 import { TEMPLE_INDEX } from '../data/temple_index.js';
@@ -992,12 +993,14 @@ function getMenaionV2Service(date, serviceIndex) {
 }
 const _ocaHymnCache = {};
 const _ocaReadingsCache = {}; // date key -> the readings the OCA text appoints at Vespers
+const _ocaLiturgyCache = {};  // date key -> what the OCA text prints for the Liturgy (for the OCA-practice notes)
 let _menaionV2General = null; // the General Menaion, read for a service that names its fallback
 const PREFER_OCA_DEFAULT = true; // ruling 11; the reader's toggle arrives with the switch
 async function _loadMenaionV2(month, key) {
   if (!_menaionV2Cache[month]) _menaionV2Cache[month] = (await loadMenaionV2Month(month)) || {};
   if (key && !(key in _ocaHymnCache)) _ocaHymnCache[key] = await v2OcaFor(key);
   if (key && !(key in _ocaReadingsCache)) _ocaReadingsCache[key] = await ocaVespersReadingsFor(key);
+  if (key && !(key in _ocaLiturgyCache)) _ocaLiturgyCache[key] = await ocaLiturgyPropersFor(key);
   const day = key && _menaionV2Cache[month][key];
   if (!_menaionV2General && day && day.commemorations.some(c => c.general_fallback)) _menaionV2General = await loadMenaionV2General();
 }
@@ -5462,7 +5465,12 @@ function buildDismissal(liturgicalData, menaionEntry, pentEntry, readerMode, idP
 // Readings slot: Prokeimenon and Epistle/Gospel rubric noted but not rendered
 //   (readings engine FW-19/20 not yet built).
 
-function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode = false, templeDedication = null, menaionPlan = null, menaionRank = null) {
+function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode = false, templeDedication = null, menaionPlan = null, menaionRank = null, ocaPractice = null) {
+  // OCA practice is shown in the element's heading, where it is always visible: the
+  // full order is rendered and each item says whether the OCA text for the day has it.
+  const ocaTag = (oca) => (oca === "printed" ? " · OCA: sung" : oca === "not_printed" ? " · OCA: likely omitted" : "");
+  const ocaRead = (kind, ref) => { const p = ocaReadingPractice(ocaPractice, kind, ref); return p ? " · " + p.note : ""; };
+  const ocaReadTag = (kind, ref) => { const p = ocaReadingPractice(ocaPractice, kind, ref); return p ? ocaTag(p.oca) : ""; };
   const { dow: dowNumber, tone } = liturgicalData;
   const isSunday = dowNumber === 0;
   const elements = [];
@@ -5519,7 +5527,7 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
   // place of it. The shared element shape below keeps the explainer badges fed.
   const typicaReadings = readingsForDay({ liturgicalData, menaionEntry, rank: menaionRank, dailyReading, feastReading });
   const typicaPropers = resolveLiturgyPropers({
-    liturgicalData, menaionEntry, menaionPlan, pentEntry, menaionFirst: typicaReadings.order === "menaion-first",
+    liturgicalData, menaionEntry, menaionPlan, ocaPractice, pentEntry, menaionFirst: typicaReadings.order === "menaion-first",
     sources: { sunProkeimenon: srcSunProkeimenon, sunAlleluia: srcSunAlleluia,
                dailyPropers: (k) => OctoV2.getV2DailyLiturgyPropers(k) },
   });
@@ -5531,7 +5539,7 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
         id: i === 0 ? "typica-prokeimenon" : "typica-prokeimenon-" + i,
         type: "prokeimenon",
         typicaMode: true,
-        label: "Prokeimenon · Tone " + p.tone + (p.label ? " — " + p.label : ""),
+        label: "Prokeimenon · Tone " + p.tone + (p.label ? " — " + p.label : "") + ocaTag(p.oca),
         announcement: "Wisdom! The Prokeimenon in Tone " + p.tone + ": " + p.text,
         exchanges: [
           { speaker: "chanters", text: p.text },
@@ -5609,9 +5617,9 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
         const cycleNote = isSunday
           ? `Sunday proper Epistle · Source: OCA lectionary`
           : "Daily cycle Epistle · Source: OCA lectionary";
-        movable("typica-epistle", "Epistle",
+        movable("typica-epistle", "Epistle" + ocaReadTag('e', dailyReading.e),
           (intro ? intro + "\n\n" : "") + dailyReading.e,
-          cycleNote);
+          cycleNote + ocaRead('e', dailyReading.e));
       }
 
       // ── Alleluia — between Epistle and Gospel ──────────────────────────
@@ -5625,7 +5633,7 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
             : a.origin === 'menaion' ? (isSunday ? 'menaion_festal_sunday' : 'menaion_festal') : 'weekly';
           elements.push({
             id: i === 0 ? "typica-alleluia" : "typica-alleluia-" + i,
-            label: "Alleluia" + (a.origin === 'sunday' ? " (Resurrectional)" : a.origin === 'menaion' ? " (Menaion)" : "") + " · Tone " + a.tone,
+            label: "Alleluia" + (a.origin === 'sunday' ? " (Resurrectional)" : a.origin === 'menaion' ? " (Menaion)" : "") + " · Tone " + a.tone + ocaTag(a.oca),
             text: buildAlleluia(a), type: "movable", source: a.source,
             ...(a.path ? { srcPath: a.path } : {}),
             note: a.note, fekula: a.fekula,
@@ -5639,9 +5647,9 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
           ? `Sunday proper Gospel · Source: OCA lectionary`
           : "Daily cycle Gospel · Source: OCA lectionary" +
             (dailyReading.lukanJump ? " · Luke series" : "");
-        movable("typica-gospel", "Gospel",
+        movable("typica-gospel", "Gospel" + ocaReadTag('g', dailyReading.g),
           (intro ? intro + "\n\n" : "") + dailyReading.g,
-          cycleNote);
+          cycleNote + ocaRead('g', dailyReading.g));
       }
     } else {
       fixed("typica-readings-cycle", "Epistle and Gospel",
@@ -5653,15 +5661,15 @@ function assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, f
     if (feastReading && (feastReading.e || feastReading.g)) {
       if (feastReading.e) {
         const intro = epistleIntro(feastReading.e);
-        movable("typica-epistle-feast", "Feast Epistle",
+        movable("typica-epistle-feast", "Epistle of the commemoration" + ocaReadTag('e', feastReading.e),
           (intro ? intro + "\n\n" : "") + feastReading.e,
-          `Proper Epistle for ${menaionEntry ? menaionEntry.saint : "saint of the day"} · Source: Menaion`);
+          `Proper Epistle of the commemoration${menaionPlan && menaionPlan.title ? " (" + menaionPlan.title + ")" : ""} · Source: Menaion` + ocaRead('e', feastReading.e));
       }
       if (feastReading.g) {
         const intro = gospelIntro(feastReading.g);
-        movable("typica-gospel-feast", "Feast Gospel",
+        movable("typica-gospel-feast", "Gospel of the commemoration" + ocaReadTag('g', feastReading.g),
           (intro ? intro + "\n\n" : "") + feastReading.g,
-          `Proper Gospel for ${menaionEntry ? menaionEntry.saint : "saint of the day"} · Source: Menaion`);
+          `Proper Gospel of the commemoration${menaionPlan && menaionPlan.title ? " (" + menaionPlan.title + ")" : ""} · Source: Menaion` + ocaRead('g', feastReading.g));
       }
     }
   }
@@ -15764,6 +15772,9 @@ export default function App() {
   const v2DaySvc = getMenaionV2Service(date, selectedServiceIndex);
   const v2Liturgy = v2DaySvc ? v2LiturgyPlan(v2DaySvc.c, v2DaySvc.path) : null;
   const v2Rank = v2DaySvc ? v2DaySvc.c.rank : null;
+  // What the OCA text for this day prints at the Liturgy, to NOTE OCA practice beside
+  // the full order (nothing is dropped). Null when there is no OCA text for the day.
+  const ocaPractice = (v2DaySvc && v2DaySvc.c.oca_primary) ? (_ocaLiturgyCache[v2DaySvc.path.slice(0, 5)] || null) : null;
   const feastReading = namedDayIsSunday ? null
     : v2Liturgy
       ? ((v2Liturgy.epistles.length || v2Liturgy.gospels.length)
@@ -16045,7 +16056,7 @@ export default function App() {
       els = assembleVespers(vespersNext.vLit, vMen, vPnt, vPar, readerMode, vespersNext.vDateStr, templeDedication,
         getMenaionV2Service(parseCalendarDate(vespersNext.vDateStr), selectedServiceIndex));
     } else if (currentService.key === 'typica') {
-      els = assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode, templeDedication, v2Liturgy, v2Rank);
+      els = assembleTypica(liturgicalData, menaionEntry, pentEntry, dailyReading, feastReading, readerMode, templeDedication, v2Liturgy, v2Rank, ocaPractice);
     } else if (currentService.key === 'pre_communion') {
       els = assemblePreCommunion(preCommunionData);
     } else if (currentService.key === 'post_communion') {
@@ -16057,7 +16068,7 @@ export default function App() {
       // passed in so the assembler stays pure; the Little Entrance order and
       // the Beatitude troparia are Phase 3.
       const liturgyCtx = {
-        liturgicalData, menaionEntry, menaionPlan: v2Liturgy, menaionRank: v2Rank, pentEntry, dailyReading, feastReading,
+        liturgicalData, menaionEntry, menaionPlan: v2Liturgy, menaionRank: v2Rank, ocaPractice, pentEntry, dailyReading, feastReading,
         sources: {
           sunProkeimenon: srcSunProkeimenon,
           sunAlleluia: srcSunAlleluia,

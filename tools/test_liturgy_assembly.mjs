@@ -420,6 +420,30 @@ for (const els of [run({ dow: 0, isSunday: true, season: "sunday", tone: 7 }, en
 }
 
 const overview = assembleLiturgy({ units: getLiturgy("chrysostom") }).filter(e => e.type === "liturgy_section" && e.core).length;
+// ── OCA practice is NOTED, never applied: the full order stands (Bill, 14 Nov 2026) ──
+{
+  const { ocaLiturgyPropersFor } = await import('../src/data/oca_hymns/index.js');
+  const { ocaReadingPractice } = await import('../src/lib/liturgy-propers.js');
+  let bad = 0; const ck = (c, m) => { if (!c) { bad++; console.log('  FAIL OCA practice: ' + m); } };
+  // 16 Nov 2026, Monday, Apostle Matthew: the OCA prints only the Apostle's.
+  const oca = await ocaLiturgyPropersFor('11-16'); const plan = planOf('11-16');
+  const base = { liturgicalData: { dow: 1, tone: 7 }, menaionPlan: plan, sources: baseSources };
+  const full = resolveLiturgyPropers(base); const noted = resolveLiturgyPropers({ ...base, ocaPractice: oca });
+  ck(noted.prokeimena.length === full.prokeimena.length && noted.alleluia.length === full.alleluia.length && full.prokeimena.length === 2, 'noting OCA practice must not drop anything (day + Apostle)');
+  ck(noted.prokeimena.find((x) => x.origin === 'weekday')?.oca === 'not_printed', "the day's prokeimenon is marked likely omitted");
+  ck(noted.prokeimena.find((x) => x.origin === 'menaion')?.oca === 'printed', "the Apostle's prokeimenon is marked sung");
+  ck(ocaReadingPractice(oca, 'g', 'Matthew 9:9-13 (§30)')?.oca === 'printed' && ocaReadingPractice(oca, 'e', 'Romans 5:1-10 (§88)')?.oca === 'not_printed', 'readings are marked the same way');
+  ck(ocaReadingPractice(null, 'e', 'Romans 5:1-10') === null && !full.prokeimena.some((x) => x.oca), 'no OCA text for the day: no mark at all');
+  // 6 Sep 2026, a Sunday: the OCA prints only the Sunday's.
+  const sun = resolveLiturgyPropers({ liturgicalData: { dow: 0, isSunday: true, tone: 5 }, menaionPlan: planOf('09-06'), ocaPractice: await ocaLiturgyPropersFor('09-06'), sources: { ...baseSources } });
+  await OctoV2.loadV2Tone(5);
+  const sun2 = resolveLiturgyPropers({ liturgicalData: { dow: 0, isSunday: true, tone: 5 }, menaionPlan: planOf('09-06'), ocaPractice: await ocaLiturgyPropersFor('09-06'), sources: baseSources });
+  ck(sun2.prokeimena.find((x) => x.origin === 'sunday')?.oca === 'printed' && sun2.prokeimena.find((x) => x.origin === 'menaion')?.oca === 'not_printed', 'Sunday: the Sunday prokeimenon sung, the saint\'s likely omitted, both shown');
+  void sun;
+  console.log(bad ? `OCA practice notes: ${bad} failure(s)` : 'OCA practice notes: OK');
+  failures += bad;
+}
+
 console.log(`liturgy assembly: ${MOVEMENT_ORDER.length} movements (${overview} core), 2 variants × ${VIEWS.length} views, ${Object.keys(BASIL_INSERTS).length} insert anchors, 6 hook scenarios, 11 entrance/Beatitudes scenarios, 7 Pentecostarion scenarios`);
 console.log(failures ? `${failures} failure(s)` : "OK");
 process.exit(failures ? 1 : 0);
